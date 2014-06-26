@@ -54,32 +54,28 @@ using namespace studio;
 JackDial::JackDial(): Gtk::Table(3, 1, false)
 {
 	Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon_16x16");
-	enable_jack =  create_icon(iconsize, "synfig-jack_mode_off",_("Enable JACK"));
-	disable_jack =  create_icon(iconsize, "synfig-jack_mode_on",_("Disable JACK"));
+	toggle_jack =  create_icon(iconsize, "synfig-jack_mode_off",_("Disable JACK"));
 	offset = manage(new Widget_Time());
 	offset->set_value(synfig::Time(0.0));
 	offset->set_size_request(48,-1); // request horizontal shrink
 	offset->set_tooltip_text(_("JACK Offset"));
 
 	attach(*offset,       0, 1, 0, 1, Gtk::FILL|Gtk::EXPAND, Gtk::SHRINK, 0, 0);
-	attach(*enable_jack,  1, 2, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	attach(*disable_jack, 2, 3, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	attach(*toggle_jack,  1, 2, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 	
 	offset->hide();
-	disable_jack->hide();
 #ifndef WITH_JACK
-	enable_jack->set_sensitive(false);
-	disable_jack->set_sensitive(false);
 	offset->set_sensitive(false);
 #endif
 }
 
-Gtk::Button *
-JackDial::create_icon(Gtk::IconSize iconsize, const char * stockid, const char * tooltip)
+
+Gtk::ToggleButton *
+JackDial::create_icon(Gtk::IconSize iconsize, const char *stockid, const char *tooltip)
 {
 	iconsize = Gtk::IconSize::from_name("synfig-small_icon_16x16");
 	Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID(stockid), iconsize));
-	Gtk::Button *button = manage(new class Gtk::Button());
+	Gtk::ToggleButton *button = manage(new class Gtk::ToggleButton());
 	button->add(*icon);
 	button->set_tooltip_text(tooltip);
 	icon->set_padding(0, 0);
@@ -90,19 +86,3 @@ JackDial::create_icon(Gtk::IconSize iconsize, const char * stockid, const char *
 	return button;
 }
 
-void
-JackDial::toggle_enable_jack(bool jack_is_enabled)
-{
-	if(jack_is_enabled)
-	{
-		enable_jack->hide();
-		disable_jack->show();
-		offset->show();
-	}
-	else
-	{
-		disable_jack->hide();
-		offset->hide();
-		enable_jack->show();
-	}
-}

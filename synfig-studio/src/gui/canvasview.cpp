@@ -1019,7 +1019,32 @@ void CanvasView::set_jack_enabled(bool value)
 		jack_client = NULL;
 	}
 
-	jackdial->toggle_enable_jack(jack_enabled);
+	Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon_16x16");
+	Gtk::Image *icon;
+	offset_widget = jackdial->get_offsetwidget();
+
+	if (jackbutton->get_active())
+	{
+		icon = manage(new Gtk::Image(Gtk::StockID("synfig-jack_mode_on"),iconsize));
+		jackbutton->remove();
+		jackbutton->add(*icon);
+		jackbutton->set_tooltip_text(_("Disable JACK"));
+		icon->set_padding(0,0);
+		icon->show();
+
+		offset_widget->show();
+	}
+	else
+	{
+		icon = manage(new Gtk::Image(Gtk::StockID("synfig-jack_mode_off"),iconsize));
+		jackbutton->remove();
+		jackbutton->add(*icon);
+		jackbutton->set_tooltip_text(_("Enable JACK"));
+		icon->set_padding(0,0);
+		icon->show();
+
+		offset_widget->hide();
+	}
 }
 #endif
 
@@ -1137,8 +1162,8 @@ CanvasView::create_time_bar()
 	
 	jackdial = manage(new class JackDial());
 #ifdef WITH_JACK
-	jackdial->signal_enable_jack().connect(sigc::mem_fun(*this, &studio::CanvasView::on_toggle_jack_pressed));
-	jackdial->signal_disable_jack().connect(sigc::mem_fun(*this, &studio::CanvasView::on_toggle_jack_pressed));
+	jackbutton = jackdial->get_toggle_jackbutton();
+	jackdial->signal_toggle_jack().connect(sigc::mem_fun(*this, &studio::CanvasView::toggle_jack_button));
 	jackdial->signal_offset_changed().connect(sigc::mem_fun(*this, &studio::CanvasView::on_jack_offset_changed));
 	jackdial->set_fps(get_canvas()->rend_desc().get_frame_rate());
 	jackdial->set_offset(get_jack_offset());
@@ -4184,7 +4209,7 @@ CanvasView::is_time_equal_to_current_frame(const synfig::Time &time, const synfi
 
 #ifdef WITH_JACK
 void
-CanvasView::on_toggle_jack_pressed()
+CanvasView::toggle_jack_button()
 {
 	set_jack_enabled(!get_jack_enabled());
 }

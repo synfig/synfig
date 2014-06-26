@@ -323,6 +323,8 @@ private:
 	bool toggling_animate_mode_;
 	FrameDial *framedial;
 	JackDial *jackdial;
+	Gtk::ToggleButton *jackbutton;
+	Widget_Time *offset_widget;
 	ToggleDucksDial toggleducksdial;
 	bool toggling_ducks_;
 	ResolutionDial resolutiondial;
@@ -819,8 +821,9 @@ private:
 	void on_play_pause_pressed();
 
 #ifdef WITH_JACK
-	void on_toggle_jack_pressed();
 	void on_jack_offset_changed();
+	void toggle_jack_button();
+
 	synfig::Time get_jack_offset()const;
 	void set_jack_offset(const synfig::Time &value);
 #endif

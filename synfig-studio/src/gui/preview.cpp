@@ -537,9 +537,11 @@ Widget_Preview::Widget_Preview():
 	jackdial = Gtk::manage(new JackDial());
 #ifdef WITH_JACK
 	jack_dispatcher.connect(sigc::mem_fun(*this, &Widget_Preview::on_jack_sync));
-	jackdial->signal_enable_jack().connect(sigc::mem_fun(*this, &studio::Widget_Preview::on_toggle_jack_pressed));
+	jack_dispatcher.connect(sigc::mem_fun(*this, &Widget_Preview::on_jack_sync));
+
+	jackbutton = jackdial->get_toggle_jackbutton();
+	jackdial->signal_toggle_jack().connect(sigc::mem_fun(*this, &studio::Widget_Preview::toggle_jack_button));
 	jackdial->signal_offset_changed().connect(sigc::mem_fun(*this, &studio::Widget_Preview::on_jack_offset_changed));
-	jackdial->signal_disable_jack().connect(sigc::mem_fun(*this, &studio::Widget_Preview::on_toggle_jack_pressed));
 #endif
 	//FIXME: Hardcoded FPS!
 	jackdial->set_fps(24.f);
@@ -1415,13 +1417,41 @@ void Widget_Preview::set_jack_enabled(bool value) {
 		jack_client = NULL;
 	}
 
-	jackdial->toggle_enable_jack(jack_enabled);
+	//jackdial->toggle_enable_jack(jack_enabled);
+
+	Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon_16x16");
+	Gtk::Image *icon;
+	offset_widget = jackdial->get_offsetwidget();
+
+	if (jackbutton->get_active())
+	{
+		icon = manage(new Gtk::Image(Gtk::StockID("synfig-jack_mode_on"),iconsize));
+		jackbutton->remove();
+		jackbutton->add(*icon);
+		jackbutton->set_tooltip_text(_("Disable JACK"));
+		icon->set_padding(0,0);
+		icon->show();
+
+		offset_widget->show();
+	}
+	else
+	{
+		icon = manage(new Gtk::Image(Gtk::StockID("synfig-jack_mode_off"),iconsize));
+		jackbutton->remove();
+		jackbutton->add(*icon);
+		jackbutton->set_tooltip_text(_("Enable JACK"));
+		icon->set_padding(0,0);
+		icon->show();
+
+		offset_widget->hide();
+	}
 #endif
 }
 
-#ifdef WITH_JACK
 
-void Widget_Preview::on_toggle_jack_pressed() {
+#ifdef WITH_JACK
+void Widget_Preview::toggle_jack_button()
+{
 	set_jack_enabled(!get_jack_enabled());
 }
 

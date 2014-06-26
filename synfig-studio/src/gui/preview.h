@@ -221,6 +221,8 @@ class Widget_Preview : public Gtk::Table
 	sigc::connection	prevchanged;
 
 	Widget_Sound		disp_sound;
+	Gtk::ToggleButton *jackbutton;
+	Widget_Time *offset_widget;
 	Glib::RefPtr<Gtk::Adjustment> adj_sound;
 
 	Gtk::Label		l_lasttime;
@@ -331,7 +333,7 @@ private:
 	void set_jack_enabled(bool value);
 
 #ifdef WITH_JACK
-	void on_toggle_jack_pressed();
+	void toggle_jack_button();
 	void on_jack_offset_changed();
 	Glib::Dispatcher jack_dispatcher;
 	jack_client_t *jack_client;
