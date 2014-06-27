@@ -310,7 +310,6 @@ bool studio::App::navigator_uses_cairo=false;
 bool studio::App::workarea_uses_cairo=false;
 
 bool studio::App::enable_mainwin_menubar = true;
-bool studio::App::enable_mainwin_toolbar = true;
 String studio::App::ui_language ("os_LANG");
 
 static int max_recent_files_=25;
@@ -632,11 +631,6 @@ public:
 				value=strprintf("%i", (int)App::enable_mainwin_menubar);
 				return true;
 			}
-			if(key=="enable_mainwin_toolbar")
-			{
-				value=strprintf("%i", (int)App::enable_mainwin_toolbar);
-				return true;
-			}
 			if(key == "ui_language")
 			{
 				value = strprintf ("%s", App::ui_language.c_str());
@@ -786,12 +780,6 @@ public:
 				App::enable_mainwin_menubar = i;
 				return true;
 			}
-			if(key=="enable_mainwin_toolbar")
-			{
-				int i(atoi(value.c_str()));
-				App::enable_mainwin_toolbar = i;
-				return true;
-			}
 			if(key == "ui_language")
 			{
 				App::ui_language = value;
@@ -832,7 +820,6 @@ public:
 		ret.push_back("navigator_uses_cairo");
 		ret.push_back("workarea_uses_cairo");
 		ret.push_back("enable_mainwin_menubar");
-		ret.push_back("enable_mainwin_toolbar");
 
 		return ret;
 	}
@@ -1421,7 +1408,6 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 
 		// Set main window menu and toolbar
 		load_settings("pref.enable_mainwin_menubar");
-		load_settings("pref.enable_mainwin_toolbar");
 
 		studio_init_cb.task(_("Loading Plugins..."));
 		
@@ -2040,8 +2026,6 @@ App::restore_default_settings()
 	synfigapp::Main::settings().set_value("navigator_uses_cairo", "0");
 	synfigapp::Main::settings().set_value("workarea_uses_cairo", "0");
 	synfigapp::Main::settings().set_value("pref.enable_mainwin_menubar", "1");
-	synfigapp::Main::settings().set_value("pref.enable_mainwin_toolbar", "1");
-
 }
 
 bool

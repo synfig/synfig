@@ -229,7 +229,6 @@ public:
 	static bool navigator_uses_cairo;
 	static bool workarea_uses_cairo;
 	static bool enable_mainwin_menubar;
-	static bool enable_mainwin_toolbar;
 	static synfig::String ui_language;
 
 	/*
