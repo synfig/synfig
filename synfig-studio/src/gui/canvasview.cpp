@@ -709,6 +709,8 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	time_adjustment_		(Gtk::Adjustment::create(0,0,25,0,0,0)),
 	time_window_adjustment_	(new studio::Adjust_Window(0,0,25,0,0,0)),
 	statusbar				(manage(new class Gtk::Statusbar())),
+	jackbutton              (NULL),
+	offset_widget           (NULL),
 	toggleducksdial         (Gtk::IconSize::from_name("synfig-small_icon_16x16")),
 	resolutiondial         	(Gtk::IconSize::from_name("synfig-small_icon_16x16")),
 	quality_adjustment_		(Gtk::Adjustment::create(8,1,10,1,1,0)),
@@ -1247,6 +1249,23 @@ CanvasView::create_status_bar()
 	return statusbartable;
 }
 
+Gtk::ToolButton*
+CanvasView::create_action_toolbutton(const synfig::String &action)
+{
+	Gtk::ToolButton *button = Gtk::manage(new Gtk::ToolButton());
+	button->set_related_action(App::ui_manager()->get_action(action));
+	button->show();
+	return button;
+}
+
+Gtk::SeparatorToolItem*
+CanvasView::create_tool_separator()
+{
+	Gtk::SeparatorToolItem *separator = Gtk::manage(new Gtk::SeparatorToolItem());
+	separator->show();
+	return separator;
+}
+
 Gtk::Widget*
 CanvasView::create_display_bar()
 {
@@ -1255,6 +1274,23 @@ CanvasView::create_display_bar()
 	displaybar = manage(new class Gtk::Toolbar());
 	displaybar->set_icon_size(iconsize);
 	displaybar->set_toolbar_style(Gtk::TOOLBAR_BOTH_HORIZ);
+
+	// File
+	displaybar->append( *create_action_toolbutton("/toolbar-main/new") );
+	displaybar->append( *create_action_toolbutton("/toolbar-main/open") );
+	displaybar->append( *create_action_toolbutton("/toolbar-main/save") );
+	displaybar->append( *create_action_toolbutton("/toolbar-main/save-as") );
+	displaybar->append( *create_action_toolbutton("/toolbar-main/save-all") );
+
+	// Separator
+	displaybar->append( *create_tool_separator() );
+
+	// Edit
+	displaybar->append( *create_action_toolbutton("/toolbar-main/undo") );
+	displaybar->append( *create_action_toolbutton("/toolbar-main/redo") );
+
+	// Separator
+	displaybar->append( *create_tool_separator() );
 
 	// Setup the ToggleDuckDial widget
 	Duck::Type m = work_area->get_type_mask();
@@ -1273,11 +1309,8 @@ CanvasView::create_display_bar()
 		sigc::bind(sigc::mem_fun(*this, &studio::CanvasView::toggle_duck_mask),Duck::TYPE_ANGLE) );
 	toggleducksdial.insert_to_toolbar(*displaybar);
 
-	{ // Separator
-		Gtk::SeparatorToolItem *separator = Gtk::manage(new Gtk::SeparatorToolItem());
-		separator->show();
-		displaybar->append(*separator);
-	}
+	// Separator
+	displaybar->append( *create_tool_separator() );
 
 	// Set up the ResolutionDial widget
 	resolutiondial.update_lowres(work_area->get_low_resolution_flag());
@@ -1289,11 +1322,8 @@ CanvasView::create_display_bar()
 		sigc::mem_fun(*this, &studio::CanvasView::toggle_low_res_pixel_flag));
 	resolutiondial.insert_to_toolbar(*displaybar);
 
-	{ // Separator
-		Gtk::SeparatorToolItem *separator = Gtk::manage(new Gtk::SeparatorToolItem());
-		separator->show();
-		displaybar->append(*separator);
-	}
+	// Separator
+	displaybar->append( *create_tool_separator() );
 
 	/*
 	{ // Set up quality spin button
@@ -1311,11 +1341,8 @@ CanvasView::create_display_bar()
 		displaybar->append(*toolitem);
 	}
 
-	{ // Separator
-		Gtk::SeparatorToolItem *separator = Gtk::manage(new Gtk::SeparatorToolItem());
-		separator->show();
-		displaybar->append(*separator);
-	}
+	// Separator
+	displaybar->append( *create_tool_separator() );
 	*/
 
 	{ // Set up the show grid toggle button
@@ -1352,11 +1379,8 @@ CanvasView::create_display_bar()
 		displaybar->append(*snap_grid);
 	}
 
-	{ // Separator
-		Gtk::SeparatorToolItem *separator = Gtk::manage(new Gtk::SeparatorToolItem());
-		separator->show();
-		displaybar->append(*separator);
-	}
+	// Separator
+	displaybar->append( *create_tool_separator() );
 
 	/*
 	{ // Set up the onion skin toggle button
@@ -1406,11 +1430,8 @@ CanvasView::create_display_bar()
 		displaybar->append(*toolitem);
 	}
 
-	{ // Separator
-		Gtk::SeparatorToolItem *separator = Gtk::manage(new Gtk::SeparatorToolItem());
-		separator->show();
-		displaybar->append(*separator);
-	}
+	// Separator
+	displaybar->append( *create_tool_separator() );
 	*/
 
 	{ // Setup render options dialog button

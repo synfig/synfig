@@ -54,8 +54,8 @@ class ResolutionDial
 	Gtk::ToolButton decrease_resolution;
 	Gtk::ToggleToolButton use_low_resolution;
 
-	void init_button(Gtk::ToolButton &button, Gtk::IconSize size, const Gtk::StockID & stockid, const char * tooltip);
-	void init_toggle_button(Gtk::ToggleToolButton &button, const char *text, const char *tooltip);
+	void init_button(Gtk::ToolButton &button, Gtk::IconSize size, const Gtk::StockID &stockid, const char *text, const char *tooltip);
+	void init_toggle_button(Gtk::ToggleToolButton &button, const char *label, const char *tooltip);
 
 public:
 	ResolutionDial(const Gtk::IconSize &size);

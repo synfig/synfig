@@ -52,12 +52,12 @@ using namespace studio;
 
 ToggleDucksDial::ToggleDucksDial(const Gtk::IconSize &size)
 {
-	init_label_button(ducks_position, size, "synfig-toggle_duck_position", _("Toggle position handles"));
-	init_label_button(ducks_vertex,   size, "synfig-toggle_duck_vertex", _("Toggle vertex handles"));
-	init_label_button(ducks_tangent,  size, "synfig-toggle_duck_tangent", _("Toggle tangent handles"));
-	init_label_button(ducks_radius,   size, "synfig-toggle_duck_radius", _("Toggle radius handles"));
-	init_label_button(ducks_width,    size, "synfig-toggle_duck_width", _("Toggle width handles"));
-	init_label_button(ducks_angle,    size, "synfig-toggle_duck_angle", _("Toggle angle handles"));
+	init_label_button(ducks_position, size, "synfig-toggle_duck_position", _("Position handles"), _("Toggle position handles"));
+	init_label_button(ducks_vertex,   size, "synfig-toggle_duck_vertex",   _("Vertex handles"),   _("Toggle vertex handles"));
+	init_label_button(ducks_tangent,  size, "synfig-toggle_duck_tangent",  _("Tangent handles"),  _("Toggle tangent handles"));
+	init_label_button(ducks_radius,   size, "synfig-toggle_duck_radius",   _("Radius handles"),   _("Toggle radius handles"));
+	init_label_button(ducks_width,    size, "synfig-toggle_duck_width",    _("Width handles"),    _("Toggle width handles"));
+	init_label_button(ducks_angle,    size, "synfig-toggle_duck_angle",    _("Angle handles"),    _("Toggle angle handles"));
 }
 
 void
@@ -86,12 +86,13 @@ ToggleDucksDial::remove_from_toolbar(Gtk::Toolbar &toolbar)
 }
 
 void
-ToggleDucksDial::init_label_button(Gtk::ToggleToolButton &button, Gtk::IconSize iconsize, const char *stockid, const char * tooltip)
+ToggleDucksDial::init_label_button(Gtk::ToggleToolButton &button, Gtk::IconSize iconsize, const char *stockid, const char *label, const char *tooltip)
 {
 	Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID(stockid), iconsize));
 	icon->set_padding(0, 0);
 	icon->show();
 
+	button.set_label(label);
 	button.set_tooltip_text(tooltip);
 	button.set_icon_widget(*icon);
 	button.show();

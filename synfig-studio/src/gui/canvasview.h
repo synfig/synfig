@@ -50,6 +50,7 @@
 #include <gtkmm/toolitem.h>
 #include <gtkmm/toolbutton.h>
 #include <gtkmm/toggletoolbutton.h>
+#include <gtkmm/separatortoolitem.h>
 
 
 #include <synfigapp/canvasinterface.h>
@@ -505,7 +506,9 @@ private:
 
 	Gtk::Widget *create_time_bar();
 
-	Gtk::Widget *create_display_bar();
+	Gtk::ToolButton* create_action_toolbutton(const synfig::String &action);
+	Gtk::SeparatorToolItem* create_tool_separator();
+	Gtk::Widget* create_display_bar();
 
 	//! Pop up menu for the bezier (bline, draw) tool (?)
 	void popup_param_menu_bezier(float location, synfigapp::ValueDesc value_desc)

@@ -52,8 +52,8 @@ using namespace studio;
 
 ResolutionDial::ResolutionDial(const Gtk::IconSize &size)
 {
-	init_button(increase_resolution, size, Gtk::StockID("synfig-increase_resolution"), _("Increase Display Resolution"));
-	init_button(decrease_resolution, size, Gtk::StockID("synfig-decrease_resolution"), _("Decrease Display Resolution"));
+	init_button(increase_resolution, size, Gtk::StockID("synfig-increase_resolution"), _("Increase Resolution"), _("Increase Display Resolution"));
+	init_button(decrease_resolution, size, Gtk::StockID("synfig-decrease_resolution"), _("Decrease Resolution"), _("Decrease Display Resolution"));
 	init_toggle_button(use_low_resolution, _("Low Res"), _("Use Low Resolution when enabled"));
 }
 
@@ -77,19 +77,20 @@ ResolutionDial::remove_from_toolbar(Gtk::Toolbar &toolbar)
 }
 
 void
-ResolutionDial::init_button(Gtk::ToolButton &button, Gtk::IconSize size, const Gtk::StockID & stockid, const char * tooltip)
+ResolutionDial::init_button(Gtk::ToolButton &button, Gtk::IconSize size, const Gtk::StockID & stockid, const char *label, const char *tooltip)
 {
 	Gtk::Image *icon = manage(new Gtk::Image(stockid, size));
 	icon->set_padding(0, 0);
 	icon->show();
 
 	button.set_icon_widget(*icon);
+	button.set_label(label);
 	button.set_tooltip_text(tooltip);
 	button.show();
 }
 
 void
-ResolutionDial::init_toggle_button(Gtk::ToggleToolButton &button, const char *label, const char * tooltip)
+ResolutionDial::init_toggle_button(Gtk::ToggleToolButton &button, const char *label, const char *tooltip)
 {
 	button.set_label(label);
 	button.set_tooltip_text(tooltip);

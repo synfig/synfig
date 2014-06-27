@@ -845,8 +845,6 @@ init_ui_manager()
 {
 	Glib::RefPtr<Gtk::ActionGroup> menus_action_group = Gtk::ActionGroup::create("menus");
 
-	Glib::RefPtr<Gtk::ActionGroup> toolbox_action_group = Gtk::ActionGroup::create("toolbox");
-
 	Glib::RefPtr<Gtk::ActionGroup> actions_action_group = Gtk::ActionGroup::create("actions");
 
 	menus_action_group->add( Gtk::Action::create("menu-file", _("_File")));
