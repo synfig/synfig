@@ -50,47 +50,55 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-ResolutionDial::ResolutionDial(Gtk::IconSize & size): Gtk::Table(3, 1, false)
+ResolutionDial::ResolutionDial(const Gtk::IconSize &size)
 {
-
-	increase_resolution = create_icon(size, Gtk::StockID("synfig-increase_resolution"), _("Increase Display Resolution"));
-	decrease_resolution = create_icon(size, Gtk::StockID("synfig-decrease_resolution"), _("Decrease Display Resolution"));
-	use_low_resolution = create_check(_("Low Res"), _("Use Low Resolution when enabled"));
-
-	attach(*decrease_resolution, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	attach(*use_low_resolution, 1, 2, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	attach(*increase_resolution, 2, 3, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	init_button(increase_resolution, size, Gtk::StockID("synfig-increase_resolution"), _("Increase Display Resolution"));
+	init_button(decrease_resolution, size, Gtk::StockID("synfig-decrease_resolution"), _("Decrease Display Resolution"));
+	init_toggle_button(use_low_resolution, _("Low Res"), _("Use Low Resolution when enabled"));
 }
 
-Gtk::Button *
-ResolutionDial::create_icon(Gtk::IconSize size, const Gtk::StockID & stockid,
-		const char * tooltip)
+void
+ResolutionDial::insert_to_toolbar(Gtk::Toolbar &toolbar, int index)
 {
-	Gtk::Button *button = manage(new class Gtk::Button());
+	if (index < 0) index = toolbar.get_n_items();
+
+	// reverse order
+	toolbar.insert(increase_resolution, index);
+	toolbar.insert(use_low_resolution,  index);
+	toolbar.insert(decrease_resolution, index);
+}
+
+void
+ResolutionDial::remove_from_toolbar(Gtk::Toolbar &toolbar)
+{
+	toolbar.remove(decrease_resolution);
+	toolbar.remove(use_low_resolution);
+	toolbar.remove(increase_resolution);
+}
+
+void
+ResolutionDial::init_button(Gtk::ToolButton &button, Gtk::IconSize size, const Gtk::StockID & stockid, const char * tooltip)
+{
 	Gtk::Image *icon = manage(new Gtk::Image(stockid, size));
-	button->add(*icon);
-	button->set_tooltip_text(tooltip);
 	icon->set_padding(0, 0);
 	icon->show();
-	button->set_relief(Gtk::RELIEF_NONE);
-	button->show();
 
-	return button;
+	button.set_icon_widget(*icon);
+	button.set_tooltip_text(tooltip);
+	button.show();
 }
 
-Gtk::CheckButton *
-ResolutionDial::create_check(const char *label, const char * tooltip)
+void
+ResolutionDial::init_toggle_button(Gtk::ToggleToolButton &button, const char *label, const char * tooltip)
 {
-	Gtk::CheckButton *cbutton = manage(new class Gtk::CheckButton());
-	cbutton->set_label(label);
-	cbutton->set_tooltip_text(tooltip);
-	cbutton->show();
-
-	return cbutton;
+	button.set_label(label);
+	button.set_tooltip_text(tooltip);
+	button.set_is_important(true);
+	button.show();
 }
 
 void
 ResolutionDial::update_lowres(bool flag)
 {
-	use_low_resolution->set_active(flag);
+	use_low_resolution.set_active(flag);
 }

@@ -32,7 +32,8 @@
 
 #include <gtkmm/tooltip.h>
 #include <gtkmm/table.h>
-#include <gtkmm/togglebutton.h>
+#include <gtkmm/toolbar.h>
+#include <gtkmm/toggletoolbutton.h>
 #include "duckmatic.h"
 
 #include "general.h"
@@ -47,27 +48,31 @@
 namespace studio
 {
 
-class ToggleDucksDial : public Gtk::Table
+class ToggleDucksDial
 {
-	Gtk::ToggleButton *ducks_position;
-	Gtk::ToggleButton *ducks_vertex;
-	Gtk::ToggleButton *ducks_tangent;
-	Gtk::ToggleButton *ducks_radius;
-	Gtk::ToggleButton *ducks_width;
-	Gtk::ToggleButton *ducks_angle;
+	Gtk::ToggleToolButton ducks_position;
+	Gtk::ToggleToolButton ducks_vertex;
+	Gtk::ToggleToolButton ducks_tangent;
+	Gtk::ToggleToolButton ducks_radius;
+	Gtk::ToggleToolButton ducks_width;
+	Gtk::ToggleToolButton ducks_angle;
 
-	Gtk::ToggleButton *create_label_button(Gtk::IconSize iconsize, const char * stockid, const char * tooltip);
+	void init_label_button(Gtk::ToggleToolButton &button, Gtk::IconSize iconsize, const char * stockid, const char * tooltip);
 
 public:
 
-	ToggleDucksDial(Gtk::IconSize & size);
+	ToggleDucksDial(const Gtk::IconSize &size);
 	void update_toggles(Duck::Type mask);
-	Glib::SignalProxy0<void> signal_ducks_position()  { return ducks_position->signal_toggled(); }
-	Glib::SignalProxy0<void> signal_ducks_vertex()    { return ducks_vertex->  signal_toggled(); }
-	Glib::SignalProxy0<void> signal_ducks_tangent()   { return ducks_tangent-> signal_toggled(); }
-	Glib::SignalProxy0<void> signal_ducks_radius()    { return ducks_radius->  signal_toggled(); }
-	Glib::SignalProxy0<void> signal_ducks_width()     { return ducks_width->   signal_toggled(); }
-	Glib::SignalProxy0<void> signal_ducks_angle()     { return ducks_angle->   signal_toggled(); }
+
+	void insert_to_toolbar(Gtk::Toolbar &toolbar, int index = -1);
+	void remove_from_toolbar(Gtk::Toolbar &toolbar);
+
+	Glib::SignalProxy0<void> signal_ducks_position()  { return ducks_position.signal_toggled(); }
+	Glib::SignalProxy0<void> signal_ducks_vertex()    { return ducks_vertex.  signal_toggled(); }
+	Glib::SignalProxy0<void> signal_ducks_tangent()   { return ducks_tangent. signal_toggled(); }
+	Glib::SignalProxy0<void> signal_ducks_radius()    { return ducks_radius.  signal_toggled(); }
+	Glib::SignalProxy0<void> signal_ducks_width()     { return ducks_width.   signal_toggled(); }
+	Glib::SignalProxy0<void> signal_ducks_angle()     { return ducks_angle.   signal_toggled(); }
 
 }; // END of class ToggleDucksDial
 

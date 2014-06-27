@@ -31,8 +31,9 @@
 /* === H E A D E R S ======================================================= */
 
 #include <gtkmm/tooltip.h>
-#include <gtkmm/table.h>
-#include <gtkmm/checkbutton.h>
+#include <gtkmm/toolbar.h>
+#include <gtkmm/toolbutton.h>
+#include <gtkmm/toggletoolbutton.h>
 #include "duckmatic.h"
 
 #include "general.h"
@@ -47,23 +48,25 @@
 namespace studio
 {
 
-class ResolutionDial : public Gtk::Table
+class ResolutionDial
 {
-	Gtk::Button *increase_resolution;
-	Gtk::Button *decrease_resolution;
-	Gtk::CheckButton *use_low_resolution;
+	Gtk::ToolButton increase_resolution;
+	Gtk::ToolButton decrease_resolution;
+	Gtk::ToggleToolButton use_low_resolution;
 
-	Gtk::Button *create_icon(Gtk::IconSize size, const Gtk::StockID & stockid, const char * tooltip);
-	Gtk::CheckButton *create_check(const char *text, const char *tooltip);
+	void init_button(Gtk::ToolButton &button, Gtk::IconSize size, const Gtk::StockID & stockid, const char * tooltip);
+	void init_toggle_button(Gtk::ToggleToolButton &button, const char *text, const char *tooltip);
 
 public:
+	ResolutionDial(const Gtk::IconSize &size);
 
-	ResolutionDial(Gtk::IconSize & size);
+	void insert_to_toolbar(Gtk::Toolbar &toolbar, int index = -1);
+	void remove_from_toolbar(Gtk::Toolbar &toolbar);
 
 	void update_lowres(bool flag);
-	Glib::SignalProxy0<void> signal_increase_resolution()  { return increase_resolution->signal_clicked(); }
-	Glib::SignalProxy0<void> signal_decrease_resolution()  { return decrease_resolution->signal_clicked(); }
-	Glib::SignalProxy0<void> signal_use_low_resolution()   { return use_low_resolution-> signal_toggled(); }
+	Glib::SignalProxy0<void> signal_increase_resolution()  { return increase_resolution.signal_clicked(); }
+	Glib::SignalProxy0<void> signal_decrease_resolution()  { return decrease_resolution.signal_clicked(); }
+	Glib::SignalProxy0<void> signal_use_low_resolution()   { return use_low_resolution. signal_toggled(); }
 
 }; // END of class ResolutionDial
 

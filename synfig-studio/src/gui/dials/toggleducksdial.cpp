@@ -50,46 +50,60 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-ToggleDucksDial::ToggleDucksDial(Gtk::IconSize & size): Gtk::Table(1, 6, false)
+ToggleDucksDial::ToggleDucksDial(const Gtk::IconSize &size)
 {
-	ducks_position = create_label_button(size, "synfig-toggle_duck_position", _("Toggle position handles"));
-	ducks_vertex = create_label_button(size, "synfig-toggle_duck_vertex", _("Toggle vertex handles"));
-	ducks_tangent = create_label_button(size, "synfig-toggle_duck_tangent", _("Toggle tangent handles"));
-	ducks_radius = create_label_button(size, "synfig-toggle_duck_radius", _("Toggle radius handles"));
-	ducks_width = create_label_button(size, "synfig-toggle_duck_width", _("Toggle width handles"));
-	ducks_angle = create_label_button(size, "synfig-toggle_duck_angle", _("Toggle angle handles"));
-
-	attach(*ducks_position, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	attach(*ducks_vertex, 1, 2, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	attach(*ducks_tangent, 2, 3, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	attach(*ducks_radius, 3, 4, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	attach(*ducks_width, 4, 5, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	attach(*ducks_angle, 5, 6, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	init_label_button(ducks_position, size, "synfig-toggle_duck_position", _("Toggle position handles"));
+	init_label_button(ducks_vertex,   size, "synfig-toggle_duck_vertex", _("Toggle vertex handles"));
+	init_label_button(ducks_tangent,  size, "synfig-toggle_duck_tangent", _("Toggle tangent handles"));
+	init_label_button(ducks_radius,   size, "synfig-toggle_duck_radius", _("Toggle radius handles"));
+	init_label_button(ducks_width,    size, "synfig-toggle_duck_width", _("Toggle width handles"));
+	init_label_button(ducks_angle,    size, "synfig-toggle_duck_angle", _("Toggle angle handles"));
 }
 
-Gtk::ToggleButton *
-ToggleDucksDial::create_label_button(Gtk::IconSize iconsize, const char *stockid,
-		const char * tooltip)
+void
+ToggleDucksDial::insert_to_toolbar(Gtk::Toolbar &toolbar, int index)
 {
-	Gtk::ToggleButton *tbutton = manage(new class Gtk::ToggleButton());
+	if (index < 0) index = toolbar.get_n_items();
+
+	// reverse order
+	toolbar.insert(ducks_angle,    index);
+	toolbar.insert(ducks_width,    index);
+	toolbar.insert(ducks_radius,   index);
+	toolbar.insert(ducks_tangent,  index);
+	toolbar.insert(ducks_vertex,   index);
+	toolbar.insert(ducks_position, index);
+}
+
+void
+ToggleDucksDial::remove_from_toolbar(Gtk::Toolbar &toolbar)
+{
+	toolbar.remove(ducks_position);
+	toolbar.remove(ducks_vertex);
+	toolbar.remove(ducks_tangent);
+	toolbar.remove(ducks_radius);
+	toolbar.remove(ducks_width);
+	toolbar.remove(ducks_angle);
+}
+
+void
+ToggleDucksDial::init_label_button(Gtk::ToggleToolButton &button, Gtk::IconSize iconsize, const char *stockid, const char * tooltip)
+{
 	Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID(stockid), iconsize));
-	tbutton->set_tooltip_text(tooltip);
-	tbutton->add(*icon);
 	icon->set_padding(0, 0);
 	icon->show();
-	tbutton->set_relief(Gtk::RELIEF_NONE);
-	tbutton->show();
 
-	return tbutton;
+	button.set_tooltip_text(tooltip);
+	button.set_icon_widget(*icon);
+	button.show();
 }
 
 void
 ToggleDucksDial::update_toggles(Duck::Type mask)
 {
-	ducks_position-> set_active((mask & Duck::TYPE_POSITION));
-	ducks_vertex  -> set_active((mask & Duck::TYPE_VERTEX));
-	ducks_tangent -> set_active((mask & Duck::TYPE_TANGENT));
-	ducks_radius  -> set_active((mask & Duck::TYPE_RADIUS));
-	ducks_width   -> set_active((mask & Duck::TYPE_WIDTH));
-	ducks_angle   -> set_active((mask & Duck::TYPE_ANGLE));
+	ducks_position. set_active((mask & Duck::TYPE_POSITION));
+	ducks_vertex  . set_active((mask & Duck::TYPE_VERTEX));
+	ducks_tangent . set_active((mask & Duck::TYPE_TANGENT));
+	ducks_radius  . set_active((mask & Duck::TYPE_RADIUS));
+	ducks_width   . set_active((mask & Duck::TYPE_WIDTH));
+	ducks_angle   . set_active((mask & Duck::TYPE_ANGLE));
 }

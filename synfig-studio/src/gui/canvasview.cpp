@@ -54,6 +54,11 @@
 #include <gtkmm/menuitem.h>
 #include <gtkmm/imagemenuitem.h>
 #include <gtkmm/separatormenuitem.h>
+#include <gtkmm/toolitem.h>
+#include <gtkmm/toolbutton.h>
+#include <gtkmm/toggletoolbutton.h>
+#include <gtkmm/separatortoolitem.h>
+#include <gtkmm/menutoolbutton.h>
 
 #include <glibmm/uriutils.h>
 #include <glibmm/convert.h>
@@ -704,6 +709,8 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	time_adjustment_		(Gtk::Adjustment::create(0,0,25,0,0,0)),
 	time_window_adjustment_	(new studio::Adjust_Window(0,0,25,0,0,0)),
 	statusbar				(manage(new class Gtk::Statusbar())),
+	toggleducksdial         (Gtk::IconSize::from_name("synfig-small_icon_16x16")),
+	resolutiondial         	(Gtk::IconSize::from_name("synfig-small_icon_16x16")),
 	quality_adjustment_		(Gtk::Adjustment::create(8,1,10,1,1,0)),
 	future_onion_adjustment_(Gtk::Adjustment::create(0,0,2,1,1,0)),
 	past_onion_adjustment_  (Gtk::Adjustment::create(0,0,2,1,1,0)),
@@ -1218,163 +1225,203 @@ CanvasView::create_status_bar()
 Gtk::Widget*
 CanvasView::create_display_bar()
 {
-	displaybar = manage(new class Gtk::Table(1, 16, false));
-	Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon_16x16");
+	Gtk::IconSize iconsize = Gtk::IconSize::from_name("synfig-small_icon_16x16");
+
+	displaybar = manage(new class Gtk::Toolbar());
+	displaybar->set_icon_size(iconsize);
+	displaybar->set_toolbar_style(Gtk::TOOLBAR_BOTH_HORIZ);
+
 	// Setup the ToggleDuckDial widget
-	toggleducksdial = Gtk::manage(new class ToggleDucksDial(iconsize));
-
 	Duck::Type m = work_area->get_type_mask();
-	toggleducksdial->update_toggles(m);
+	toggleducksdial.update_toggles(m);
+	toggleducksdial.signal_ducks_position().connect(
+		sigc::bind(sigc::mem_fun(*this, &studio::CanvasView::toggle_duck_mask),Duck::TYPE_POSITION) );
+	toggleducksdial.signal_ducks_vertex().connect(
+		sigc::bind(sigc::mem_fun(*this, &studio::CanvasView::toggle_duck_mask),Duck::TYPE_VERTEX) );
+	toggleducksdial.signal_ducks_tangent().connect(
+		sigc::bind(sigc::mem_fun(*this, &studio::CanvasView::toggle_duck_mask),Duck::TYPE_TANGENT) );
+	toggleducksdial.signal_ducks_radius().connect(
+		sigc::bind(sigc::mem_fun(*this, &studio::CanvasView::toggle_duck_mask),Duck::TYPE_RADIUS) );
+	toggleducksdial.signal_ducks_width().connect(
+		sigc::bind(sigc::mem_fun(*this, &studio::CanvasView::toggle_duck_mask),Duck::TYPE_WIDTH) );
+	toggleducksdial.signal_ducks_angle().connect(
+		sigc::bind(sigc::mem_fun(*this, &studio::CanvasView::toggle_duck_mask),Duck::TYPE_ANGLE) );
+	toggleducksdial.insert_to_toolbar(*displaybar);
 
-	toggleducksdial->signal_ducks_position().connect(
-			sigc::bind(sigc::mem_fun(*this, &studio::CanvasView::toggle_duck_mask),Duck::TYPE_POSITION)
-			);
-	toggleducksdial->signal_ducks_vertex().connect(
-			sigc::bind(sigc::mem_fun(*this, &studio::CanvasView::toggle_duck_mask),Duck::TYPE_VERTEX)
-			);
-	toggleducksdial->signal_ducks_tangent().connect(
-			sigc::bind(sigc::mem_fun(*this, &studio::CanvasView::toggle_duck_mask),Duck::TYPE_TANGENT)
-			);
-	toggleducksdial->signal_ducks_radius().connect(
-			sigc::bind(sigc::mem_fun(*this, &studio::CanvasView::toggle_duck_mask),Duck::TYPE_RADIUS)
-			);
-	toggleducksdial->signal_ducks_width().connect(
-			sigc::bind(sigc::mem_fun(*this, &studio::CanvasView::toggle_duck_mask),Duck::TYPE_WIDTH)
-			);
-	toggleducksdial->signal_ducks_angle().connect(
-			sigc::bind(sigc::mem_fun(*this, &studio::CanvasView::toggle_duck_mask),Duck::TYPE_ANGLE)
-			);
-	toggleducksdial->show();
+	{ // Separator
+		Gtk::SeparatorToolItem *separator = Gtk::manage(new Gtk::SeparatorToolItem());
+		separator->show();
+		displaybar->append(*separator);
+	}
 
 	// Set up the ResolutionDial widget
-	resolutiondial=Gtk::manage(new class ResolutionDial(iconsize));
+	resolutiondial.update_lowres(work_area->get_low_resolution_flag());
+	resolutiondial.signal_increase_resolution().connect(
+		sigc::mem_fun(*this, &studio::CanvasView::decrease_low_res_pixel_size));
+	resolutiondial.signal_decrease_resolution().connect(
+		sigc::mem_fun(*this, &studio::CanvasView::increase_low_res_pixel_size));
+	resolutiondial.signal_use_low_resolution().connect(
+		sigc::mem_fun(*this, &studio::CanvasView::toggle_low_res_pixel_flag));
+	resolutiondial.insert_to_toolbar(*displaybar);
 
-	resolutiondial->update_lowres(work_area->get_low_resolution_flag());
-	resolutiondial->signal_increase_resolution().connect(
-			sigc::mem_fun(*this, &studio::CanvasView::decrease_low_res_pixel_size));
-	resolutiondial->signal_decrease_resolution().connect(
-			sigc::mem_fun(*this, &studio::CanvasView::increase_low_res_pixel_size));
-	resolutiondial->signal_use_low_resolution().connect(
-			sigc::mem_fun(*this, &studio::CanvasView::toggle_low_res_pixel_flag));
-	resolutiondial->show();
+	{ // Separator
+		Gtk::SeparatorToolItem *separator = Gtk::manage(new Gtk::SeparatorToolItem());
+		separator->show();
+		displaybar->append(*separator);
+	}
 
-	// Set up some separators
-	Gtk::VSeparator *separator1 = Gtk::manage(new class Gtk::VSeparator());
-	separator1->show();
-	Gtk::VSeparator *separator2 = Gtk::manage(new class Gtk::VSeparator());
-	separator2->show();
-	Gtk::VSeparator *separator3 = Gtk::manage(new class Gtk::VSeparator());
-	separator3->show();
-	Gtk::VSeparator *separator4 = Gtk::manage(new class Gtk::VSeparator());
-	separator4->show();
-	Gtk::VSeparator *separator5 = Gtk::manage(new class Gtk::VSeparator());
-	separator5->show();
-
-	// Set up quality spin button
-	quality_spin=Gtk::manage(new class Gtk::SpinButton(quality_adjustment_));
-	quality_spin->signal_value_changed().connect(
+	/*
+	{ // Set up quality spin button
+		quality_spin=Gtk::manage(new class Gtk::SpinButton(quality_adjustment_));
+		quality_spin->signal_value_changed().connect(
 			sigc::mem_fun(*this, &studio::CanvasView::update_quality));
-	quality_spin->set_tooltip_text( _("Quality (lower is better)"));
-	quality_spin->show();
+		quality_spin->set_tooltip_text( _("Quality (lower is better)"));
+		quality_spin->show();
 
-	// Set up the show grid toggle button
-	show_grid = Gtk::manage(new class Gtk::ToggleButton());
-	show_grid->set_active(work_area->grid_status());
-	Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-toggle_show_grid"), iconsize));
-	icon->set_padding(0, 0);
-	icon->show();
-	show_grid->add(*icon);
-	show_grid->signal_toggled().connect(
+		Gtk::ToolItem *toolitem = Gtk::manage(new Gtk::ToolItem());
+		toolitem->add(*quality_spin);
+		toolitem->set_is_important(true);
+		toolitem->show();
+
+		displaybar->append(*toolitem);
+	}
+
+	{ // Separator
+		Gtk::SeparatorToolItem *separator = Gtk::manage(new Gtk::SeparatorToolItem());
+		separator->show();
+		displaybar->append(*separator);
+	}
+	*/
+
+	{ // Set up the show grid toggle button
+		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-toggle_show_grid"), iconsize));
+		icon->set_padding(0, 0);
+		icon->show();
+
+		show_grid = Gtk::manage(new class Gtk::ToggleToolButton());
+		show_grid->set_active(work_area->grid_status());
+		show_grid->set_icon_widget(*icon);
+		show_grid->signal_toggled().connect(
 			sigc::mem_fun(*this, &studio::CanvasView::toggle_show_grid));
-	show_grid->set_tooltip_text( _("Show grid when enabled"));
-	show_grid->set_relief(Gtk::RELIEF_NONE);
-	show_grid->show();
+		show_grid->set_label(_("Show grid"));
+		show_grid->set_tooltip_text( _("Show grid when enabled"));
+		show_grid->show();
 
-	// Set up the snap to grid toggle button
-	snap_grid = Gtk::manage(new class Gtk::ToggleButton());
-	snap_grid->set_active(work_area->grid_status());
-	Gtk::Image *icon2 = manage(new Gtk::Image(Gtk::StockID("synfig-toggle_snap_grid"), iconsize));
-	icon2->set_padding(0, 0);
-	icon2->show();
-	snap_grid->add(*icon2);
-	snap_grid->signal_toggled().connect(
+		displaybar->append(*show_grid);
+	}
+
+	{ // Set up the snap to grid toggle button
+		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-toggle_snap_grid"), iconsize));
+		icon->set_padding(0, 0);
+		icon->show();
+
+		snap_grid = Gtk::manage(new class Gtk::ToggleToolButton());
+		snap_grid->set_active(work_area->grid_status());
+		snap_grid->set_icon_widget(*icon);
+		snap_grid->signal_toggled().connect(
 			sigc::mem_fun(*this, &studio::CanvasView::toggle_snap_grid));
-	snap_grid->set_tooltip_text( _("Snap to grid when enabled"));
-	snap_grid->set_relief(Gtk::RELIEF_NONE);
-	snap_grid->show();
+		snap_grid->set_label(_("Snap to grid"));
+		snap_grid->set_tooltip_text( _("Snap to grid when enabled"));
+		snap_grid->show();
 
-	// Set up the onion skin toggle button
-	onion_skin = Gtk::manage(new class Gtk::ToggleButton());
-	onion_skin->set_active(work_area->get_onion_skin());
-	Gtk::Image *icon3 = manage(new Gtk::Image(Gtk::StockID("synfig-toggle_onion_skin"), iconsize));
-	icon3->set_padding(0, 0);
-	icon3->show();
-	onion_skin->add(*icon3);
-	onion_skin->signal_toggled().connect(
+		displaybar->append(*snap_grid);
+	}
+
+	{ // Separator
+		Gtk::SeparatorToolItem *separator = Gtk::manage(new Gtk::SeparatorToolItem());
+		separator->show();
+		displaybar->append(*separator);
+	}
+
+	/*
+	{ // Set up the onion skin toggle button
+		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-toggle_onion_skin"), iconsize));
+		icon->set_padding(0, 0);
+		icon->show();
+
+		onion_skin = Gtk::manage(new class Gtk::ToggleToolButton());
+		onion_skin->set_active(work_area->get_onion_skin());
+		onion_skin->set_icon_widget(*icon);
+		onion_skin->signal_toggled().connect(
 			sigc::mem_fun(*this, &studio::CanvasView::toggle_onion_skin));
-	onion_skin->set_tooltip_text( _("Shows onion skin when enabled"));
-	onion_skin->set_relief(Gtk::RELIEF_NONE);
-	onion_skin->show();
+		onion_skin->set_label(_("Onion skin"));
+		onion_skin->set_tooltip_text( _("Shows onion skin when enabled"));
+		onion_skin->show();
 
-	// Set up past onion skin spin button
-	past_onion_spin=Gtk::manage(new class Gtk::SpinButton(past_onion_adjustment_));
-	past_onion_spin->signal_value_changed().connect(
+		displaybar->append(*onion_skin);
+	}
+
+	{ // Set up past onion skin spin button
+		past_onion_spin=Gtk::manage(new class Gtk::SpinButton(past_onion_adjustment_));
+		past_onion_spin->signal_value_changed().connect(
 			sigc::mem_fun(*this, &studio::CanvasView::set_onion_skins));
-	past_onion_spin->set_tooltip_text( _("Past onion skins"));
-	past_onion_spin->show();
+		past_onion_spin->set_tooltip_text( _("Past onion skins"));
+		past_onion_spin->show();
 
-	// Set up future onion skin spin button
-	future_onion_spin=Gtk::manage(new class Gtk::SpinButton(future_onion_adjustment_));
-	future_onion_spin->signal_value_changed().connect(
+		Gtk::ToolItem *toolitem = Gtk::manage(new Gtk::ToolItem());
+		toolitem->add(*past_onion_spin);
+		toolitem->set_is_important(true);
+		toolitem->show();
+
+		displaybar->append(*toolitem);
+	}
+
+	{ // Set up future onion skin spin button
+		future_onion_spin=Gtk::manage(new class Gtk::SpinButton(future_onion_adjustment_));
+		future_onion_spin->signal_value_changed().connect(
 			sigc::mem_fun(*this, &studio::CanvasView::set_onion_skins));
-	future_onion_spin->set_tooltip_text( _("Future onion skins"));
-	future_onion_spin->show();
+		future_onion_spin->set_tooltip_text( _("Future onion skins"));
+		future_onion_spin->show();
 
-	// Setup render options dialog button
-	render_options_button = Gtk::manage(new class Gtk::Button());
-	Gtk::Image *icon4 = manage(new Gtk::Image(Gtk::StockID("synfig-render_options"), iconsize));
-	icon4->set_padding(0, 0);
-	icon4->show();
-	render_options_button->add(*icon4);
-	render_options_button->signal_clicked().connect(
+		Gtk::ToolItem *toolitem = Gtk::manage(new Gtk::ToolItem());
+		toolitem->add(*future_onion_spin);
+		toolitem->set_is_important(true);
+		toolitem->show();
+
+		displaybar->append(*toolitem);
+	}
+
+	{ // Separator
+		Gtk::SeparatorToolItem *separator = Gtk::manage(new Gtk::SeparatorToolItem());
+		separator->show();
+		displaybar->append(*separator);
+	}
+	*/
+
+	{ // Setup render options dialog button
+		Gtk::Image *icon = Gtk::manage(new Gtk::Image(Gtk::StockID("synfig-render_options"), iconsize));
+		icon->set_padding(0, 0);
+		icon->show();
+
+		render_options_button = Gtk::manage(new class Gtk::ToolButton());
+		render_options_button->set_icon_widget(*icon);
+		render_options_button->signal_clicked().connect(
 			sigc::mem_fun0(render_settings,&studio::RenderSettings::present));
-	render_options_button->set_tooltip_text( _("Shows the Render Settings Dialog"));
-	render_options_button->set_relief(Gtk::RELIEF_NONE);
-	render_options_button->show();
+		render_options_button->set_label(_("Render"));
+		render_options_button->set_tooltip_text( _("Shows the Render Settings Dialog"));
+		render_options_button->show();
 
-	// Setup preview options dialog button
-	preview_options_button = Gtk::manage(new class Gtk::Button());
-	Gtk::Image *icon5 = manage(new Gtk::Image(Gtk::StockID("synfig-preview_options"), iconsize));
-	icon5->set_padding(0, 0);
-	icon5->show();
-	preview_options_button->add(*icon5);
-	preview_options_button->signal_clicked().connect(
+		displaybar->append(*render_options_button);
+	}
+
+	{ // Setup preview options dialog button
+		Gtk::Image *icon = Gtk::manage(new Gtk::Image(Gtk::StockID("synfig-preview_options"), iconsize));
+		icon->set_padding(0, 0);
+		icon->show();
+
+		preview_options_button = Gtk::manage(new class Gtk::ToolButton());
+		preview_options_button->set_icon_widget(*icon);
+		preview_options_button->signal_clicked().connect(
 			sigc::mem_fun(*this,&CanvasView::on_preview_option));
-	preview_options_button->set_tooltip_text( _("Shows the Preview Settings Dialog"));
-	preview_options_button->set_relief(Gtk::RELIEF_NONE);
-	preview_options_button->show();
+		preview_options_button->set_label(_("Preview"));
+		preview_options_button->set_tooltip_text(_("Shows the Preview Settings Dialog"));
+		preview_options_button->show();
 
-
-	displaybar->attach(*toggleducksdial,         0,  1, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
-	displaybar->attach(*separator1,              1,  2, 0, 1, Gtk::FILL, Gtk::FILL, 8);
-	displaybar->attach(*resolutiondial,          2,  3, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
-	displaybar->attach(*separator2,              3,  4, 0, 1, Gtk::FILL, Gtk::FILL, 8);
-	displaybar->attach(*quality_spin,            4,  5, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
-	displaybar->attach(*separator3,              5,  6, 0, 1, Gtk::FILL, Gtk::FILL, 8);
-	displaybar->attach(*show_grid,               6,  7, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
-	displaybar->attach(*snap_grid,               7,  8, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
-	displaybar->attach(*separator4,              8,  9, 0, 1, Gtk::FILL, Gtk::FILL, 8);
-	displaybar->attach(*past_onion_spin,         9, 10, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
-	displaybar->attach(*onion_skin,             10, 11, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
-	displaybar->attach(*future_onion_spin,      11, 12, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
-	displaybar->attach(*separator5,             12, 13, 0, 1, Gtk::FILL, Gtk::FILL, 8);
-	displaybar->attach(*render_options_button,  13, 14, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
-	displaybar->attach(*preview_options_button, 14, 15, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
+		displaybar->append(*preview_options_button);
+	}
 
 	displaybar->show();
-
 	return displaybar;
-
 }
 
 void
@@ -2853,7 +2900,7 @@ CanvasView::decrease_low_res_pixel_size()
 	Glib::RefPtr<Gtk::ToggleAction> action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-low-res"));
 	action->set_active(work_area->get_low_resolution_flag());
 	// Update toggle low res button
-	resolutiondial->update_lowres(work_area->get_low_resolution_flag());
+	resolutiondial.update_lowres(work_area->get_low_resolution_flag());
 	changing_resolution_=false;
 }
 
@@ -2873,7 +2920,7 @@ CanvasView::increase_low_res_pixel_size()
 		Glib::RefPtr<Gtk::ToggleAction> action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-low-res"));
 		action->set_active(true);
 		// Update the toggle low res button
-		resolutiondial->update_lowres(true);
+		resolutiondial.update_lowres(true);
 		changing_resolution_=false;
 		return;
 	}
@@ -2894,7 +2941,7 @@ CanvasView::increase_low_res_pixel_size()
 	Glib::RefPtr<Gtk::ToggleAction> action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-low-res"));
 	action->set_active(work_area->get_low_resolution_flag());
 	// Update toggle low res button
-	resolutiondial->update_lowres(work_area->get_low_resolution_flag());
+	resolutiondial.update_lowres(work_area->get_low_resolution_flag());
 	changing_resolution_=false;
 }
 
@@ -2906,7 +2953,7 @@ CanvasView::toggle_low_res_pixel_flag()
 	changing_resolution_=true;
 	work_area->toggle_low_resolution_flag();
 	// Update the toggle low res button
-	resolutiondial->update_lowres(work_area->get_low_resolution_flag());
+	resolutiondial.update_lowres(work_area->get_low_resolution_flag());
 	// Update the "toggle-low-res" action
 	Glib::RefPtr<Gtk::ToggleAction> action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-low-res"));
 	action->set_active(work_area->get_low_resolution_flag());
@@ -3716,7 +3763,7 @@ CanvasView::toggle_duck_mask(Duckmatic::Type type)
 		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("mask-angle-ducks"));
 		action->set_active((bool)(work_area->get_type_mask()&Duck::TYPE_ANGLE));
 		// Update toggle ducks buttons
-		toggleducksdial->update_toggles(work_area->get_type_mask());
+		toggleducksdial.update_toggles(work_area->get_type_mask());
 	}
 	catch(...)
 	{

@@ -46,6 +46,11 @@
 #include <gdkmm/device.h>
 #include <gtkmm/spinbutton.h>
 #include <gtkmm/alignment.h>
+#include <gtkmm/toolbar.h>
+#include <gtkmm/toolitem.h>
+#include <gtkmm/toolbutton.h>
+#include <gtkmm/toggletoolbutton.h>
+
 
 #include <synfigapp/canvasinterface.h>
 #include <synfigapp/selectionmanager.h>
@@ -310,7 +315,7 @@ private:
 	Gtk::Button *treetogglebutton;  // not used
 	Gtk::Notebook *notebook; // not used
 	Gtk::Table *timebar;
-	Gtk::Table *displaybar;
+	Gtk::Toolbar *displaybar;
 	Gtk::ToggleButton *animatebutton;
 	Gtk::Button *keyframebutton;
 	Gtk::ToggleButton *pastkeyframebutton;
@@ -318,9 +323,9 @@ private:
 	bool toggling_animate_mode_;
 	FrameDial *framedial;
 	JackDial *jackdial;
-	ToggleDucksDial *toggleducksdial;
+	ToggleDucksDial toggleducksdial;
 	bool toggling_ducks_;
-	ResolutionDial *resolutiondial;
+	ResolutionDial resolutiondial;
 	bool changing_resolution_;
 	Glib::RefPtr<Gtk::Adjustment> quality_adjustment_;
 	Gtk::SpinButton *quality_spin;
@@ -329,11 +334,11 @@ private:
 	Gtk::SpinButton *past_onion_spin;
 	Gtk::SpinButton *future_onion_spin;
 	bool updating_quality_;
-	Gtk::ToggleButton *show_grid;
-	Gtk::ToggleButton *snap_grid;
-	Gtk::ToggleButton *onion_skin;
-	Gtk::Button *render_options_button;
-	Gtk::Button *preview_options_button;
+	Gtk::ToggleToolButton *show_grid;
+	Gtk::ToggleToolButton *snap_grid;
+	Gtk::ToggleToolButton *onion_skin;
+	Gtk::ToolButton *render_options_button;
+	Gtk::ToolButton *preview_options_button;
 	bool toggling_show_grid;
 	bool toggling_snap_grid;
 	bool toggling_onion_skin;
