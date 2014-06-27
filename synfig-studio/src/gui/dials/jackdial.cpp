@@ -35,6 +35,7 @@
 #include "jackdial.h"
 #include <gtkmm/image.h>
 #include <gtkmm/stock.h>
+#include <gtkmm/alignment.h>
 
 #endif
 
@@ -60,8 +61,14 @@ JackDial::JackDial(): Gtk::Table(3, 1, false)
 	offset->set_size_request(48,-1); // request horizontal shrink
 	offset->set_tooltip_text(_("JACK Offset"));
 
+	Gtk::Alignment *space = Gtk::manage(new Gtk::Alignment());
+	space->set_size_request(4);
+        space->show();
+	
+
 	attach(*offset,       0, 1, 0, 1, Gtk::FILL|Gtk::EXPAND, Gtk::SHRINK, 0, 0);
 	attach(*toggle_jack,  1, 2, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	attach(*space,  2, 3, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 	
 	offset->hide();
 #ifndef WITH_JACK
