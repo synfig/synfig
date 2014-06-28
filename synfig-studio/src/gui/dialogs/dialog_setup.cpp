@@ -727,12 +727,13 @@ GammaPattern::refresh()
 bool
 GammaPattern::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 {
-	static unsigned char hlines[] = { 3, 0 };
-
 	int i;
 	Gdk::Color trueblack("#000000");
 
-	Cairo::RefPtr<Cairo::ImageSurface> stipple_mask_img = Cairo::ImageSurface::create(hlines, Cairo::FORMAT_A1, 2, 2, 1);
+	int stride = Cairo::ImageSurface::format_stride_for_width(Cairo::FORMAT_A1, 2);
+	std::vector<unsigned char> hlines(2*stride, 0);
+	hlines[0] = 3;
+	Cairo::RefPtr<Cairo::ImageSurface> stipple_mask_img = Cairo::ImageSurface::create(&hlines.front(), Cairo::FORMAT_A1, 2, 2, stride);
 
 	// 50% Pattern
 	for(i=0;i<4;i++)

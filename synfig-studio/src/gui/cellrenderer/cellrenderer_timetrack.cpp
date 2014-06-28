@@ -60,8 +60,6 @@ using namespace studio;
 
 /* === G L O B A L S ======================================================= */
 
-static unsigned char stipple_xpm[] = { 2, 0 };
-
 //mode for modifier keys
 enum MODMODE
 {
@@ -239,7 +237,10 @@ CellRenderer_TimeTrack::render_vfunc(
 	activepoint_color[0]=Gdk::Color("#ff0000");
 	activepoint_color[1]=Gdk::Color("#00ff00");
 
-	Cairo::RefPtr<Cairo::ImageSurface> inactive_mask_img = Cairo::ImageSurface::create(stipple_xpm, Cairo::FORMAT_A1, 2, 2, 1);
+	int stride = Cairo::ImageSurface::format_stride_for_width(Cairo::FORMAT_A1, 2);
+	std::vector<unsigned char> stipple_xpm(2*stride, 0);
+	stipple_xpm[0] = 2;
+	Cairo::RefPtr<Cairo::ImageSurface> inactive_mask_img = Cairo::ImageSurface::create(&stipple_xpm.front(), Cairo::FORMAT_A1, 2, 2, stride);
 
 	synfig::Canvas::Handle canvas(property_canvas().get_value());
 

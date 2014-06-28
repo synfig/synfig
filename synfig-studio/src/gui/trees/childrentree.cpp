@@ -107,7 +107,6 @@ ChildrenTree::ChildrenTree()
 		column->set_min_width(150);
 		column->set_sort_column(model.label);
 		tree_view.append_column(*column);
-
 	}
 	{	// --- T Y P E --------------------------------------------------------
 		int cols_count = tree_view.append_column(_("Type"),model.type);
