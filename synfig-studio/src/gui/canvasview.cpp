@@ -127,6 +127,7 @@
 #include "preview.h"
 #include "audiocontainer.h"
 #include "widgets/widget_timeslider.h"
+#include "widgets/widget_enum.h"
 #include "dials/keyframedial.h"
 #include "dials/jackdial.h"
 
@@ -1085,6 +1086,30 @@ CanvasView::create_time_bar()
 
 	//time_scroll->signal_value_changed().connect(sigc::mem_fun(*work_area, &studio::WorkArea::render_preview_hook));
 	//time_scroll->set_update_policy(Gtk::UPDATE_DISCONTINUOUS);
+	
+	// Interpolation widget
+	widget_interpolation = manage(new Widget_Enum());
+	widget_interpolation->signal_changed().connect(sigc::mem_fun(*this,&studio::CanvasView::on_interpolation_changed));
+	synfigapp::Main::signal_interpolation_changed().connect(sigc::mem_fun(*this,&studio::CanvasView::interpolation_refresh));
+	widget_interpolation->set_param_desc(
+		ParamDesc("interpolation")
+			.set_hint("enum")
+			.add_enum_value(INTERPOLATION_CLAMPED,"clamped",_("Clamped"))
+			.add_enum_value(INTERPOLATION_TCB,"auto",_("TCB"))
+			.add_enum_value(INTERPOLATION_CONSTANT,"constant",_("Constant"))
+			.add_enum_value(INTERPOLATION_HALT,"ease",_("Ease In/Out"))
+			.add_enum_value(INTERPOLATION_LINEAR,"linear",_("Linear"))
+	);
+	widget_interpolation->set_icon(0, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_clamped"), Gtk::ICON_SIZE_MENU));
+	widget_interpolation->set_icon(1, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_tcb"), Gtk::ICON_SIZE_MENU));
+	widget_interpolation->set_icon(2, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_const"), Gtk::ICON_SIZE_MENU));
+	widget_interpolation->set_icon(3, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_ease"), Gtk::ICON_SIZE_MENU));
+	widget_interpolation->set_icon(4, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_linear"), Gtk::ICON_SIZE_MENU));
+	synfigapp::Main::set_interpolation(INTERPOLATION_CLAMPED); // Clamped by default.
+	widget_interpolation->set_tooltip_text(_("Default Interpolation"));
+	widget_interpolation->set_popup_fixed_width(false);
+	interpolation_refresh();
+	widget_interpolation->show();
 
 	//Setup the Animation Mode Button and the Keyframe Lock button
 	Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon_16x16");
@@ -1179,9 +1204,10 @@ CanvasView::create_time_bar()
 	//Attach widgets to the timebar
 	//timebar->attach(*manage(disp_audio), 1, 5, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
 	timebar->attach(*current_time_widget, 0, 1, 0, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	timebar->attach(*widget_interpolation, 1, 2, 0, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	timebar->attach(*framedial, 0, 2, 2, 3, Gtk::SHRINK, Gtk::SHRINK);
-	timebar->attach(*widget_kf_list, 1, 3, 0, 1, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::SHRINK);
-	timebar->attach(*timeslider, 1, 3, 1, 2, Gtk::FILL|Gtk::SHRINK, Gtk::FILL|Gtk::SHRINK);
+	timebar->attach(*widget_kf_list, 2, 3, 0, 1, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::SHRINK);
+	timebar->attach(*timeslider, 2, 3, 1, 2, Gtk::FILL|Gtk::SHRINK, Gtk::FILL|Gtk::SHRINK);
 	timebar->attach(*time_window_scroll, 2, 3, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
 	timebar->attach(*space2, 3, 4, 0, 2, Gtk::FILL, Gtk::FILL);
 	timebar->attach(*jackdial, 4, 5, 0, 2, Gtk::SHRINK, Gtk::SHRINK);
@@ -4288,3 +4314,15 @@ CanvasView::jack_sync_callback(jack_transport_state_t /* state */, jack_position
 	return 1;
 }
 #endif
+
+void
+CanvasView::interpolation_refresh()
+{
+	widget_interpolation->set_value(synfigapp::Main::get_interpolation());
+}
+
+void
+CanvasView::on_interpolation_changed()
+{
+	synfigapp::Main::set_interpolation(Waypoint::Interpolation(widget_interpolation->get_value()));
+}

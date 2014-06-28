@@ -48,7 +48,7 @@ namespace studio {
 class Widget_Brush;
 class Widget_Color;
 class Widget_Distance;
-class Widget_Enum;
+//class Widget_Enum;
 
 class Widget_Defaults : public Gtk::VBox
 {
@@ -75,15 +75,12 @@ class Widget_Defaults : public Gtk::VBox
 
 	//Widget_Enum	*widget_blend_method;
 
-	Widget_Enum	*widget_interpolation;
-
 	//Gtk::HScale 	*widget_opacity;
 
 	void otln_color_refresh();
 	void fill_color_refresh();
 	void gradient_refresh();
 	void bline_width_refresh();
-	void interpolation_refresh();
 
 	void on_bline_width_changed();
 	void on_otln_color_clicked();
@@ -91,7 +88,6 @@ class Widget_Defaults : public Gtk::VBox
 	void on_swap_color_clicked();
 	void on_reset_color_clicked();
 	void on_gradient_clicked();
-	void on_interpolation_changed();
 
 	//void blend_method_refresh();
 	//void on_blend_method_changed();

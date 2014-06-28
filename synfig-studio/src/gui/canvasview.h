@@ -141,6 +141,8 @@ class WorkArea;
 
 class Duckmatic;
 
+class Widget_Enum;
+
 class Preview;
 struct PreviewInfo;
 class AudioContainer;
@@ -317,6 +319,7 @@ private:
 	Gtk::Notebook *notebook; // not used
 	Gtk::Table *timebar;
 	Gtk::Toolbar *displaybar;
+	Widget_Enum *widget_interpolation;
 	Gtk::ToggleButton *animatebutton;
 	Gtk::Button *keyframebutton;
 	Gtk::ToggleButton *pastkeyframebutton;
@@ -538,6 +541,9 @@ private:
 	void toggle_animatebutton();
 
 	void on_play_timeout();
+	
+	void interpolation_refresh();
+	void on_interpolation_changed();
 
 
 	/*
