@@ -320,6 +320,7 @@ private:
 	Gtk::Table *timebar;
 	Gtk::Toolbar *displaybar;
 	Widget_Enum *widget_interpolation;
+	Gtk::ScrolledWindow *widget_interpolation_scroll;
 	Gtk::ToggleButton *animatebutton;
 	Gtk::ToggleButton *timetrackbutton;
 	Gtk::VBox *timetrack;

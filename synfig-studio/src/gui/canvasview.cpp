@@ -1095,8 +1095,6 @@ CanvasView::create_time_bar()
 	
 	// Interpolation widget
 	widget_interpolation = manage(new Widget_Enum());
-	widget_interpolation->signal_changed().connect(sigc::mem_fun(*this,&studio::CanvasView::on_interpolation_changed));
-	synfigapp::Main::signal_interpolation_changed().connect(sigc::mem_fun(*this,&studio::CanvasView::interpolation_refresh));
 	widget_interpolation->set_param_desc(
 		ParamDesc("interpolation")
 			.set_hint("enum")
@@ -1111,16 +1109,14 @@ CanvasView::create_time_bar()
 	widget_interpolation->set_icon(2, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_const"), Gtk::ICON_SIZE_MENU));
 	widget_interpolation->set_icon(3, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_ease"), Gtk::ICON_SIZE_MENU));
 	widget_interpolation->set_icon(4, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_linear"), Gtk::ICON_SIZE_MENU));
-	synfigapp::Main::set_interpolation(INTERPOLATION_CLAMPED); // Clamped by default.
 	widget_interpolation->set_tooltip_text(_("Default Interpolation"));
 	widget_interpolation->set_popup_fixed_width(false);
 	widget_interpolation->set_size_request(120,0);
-	interpolation_refresh();
 	widget_interpolation->show();
 	Gtk::Alignment* widget_interpolation_align=manage(new Gtk::Alignment(1, Gtk::ALIGN_CENTER, 0, 0));
 	widget_interpolation_align->add(*widget_interpolation);
 	widget_interpolation_align->show();
-	Gtk::ScrolledWindow* widget_interpolation_scroll=manage(new Gtk::ScrolledWindow);
+	widget_interpolation_scroll=manage(new class Gtk::ScrolledWindow());
 	widget_interpolation_scroll->add(*widget_interpolation_align);
 	widget_interpolation_scroll->show();
 	widget_interpolation_scroll->set_shadow_type(Gtk::SHADOW_NONE);
@@ -1128,6 +1124,11 @@ CanvasView::create_time_bar()
 	widget_interpolation_scroll->set_size_request(25,0);
 	Gtk::Scrollbar* hscroll=widget_interpolation_scroll->get_hscrollbar();
 	hscroll->hide();
+	
+	widget_interpolation->signal_changed().connect(sigc::mem_fun(*this,&studio::CanvasView::on_interpolation_changed));
+	synfigapp::Main::signal_interpolation_changed().connect(sigc::mem_fun(*this,&studio::CanvasView::interpolation_refresh));
+	synfigapp::Main::set_interpolation(INTERPOLATION_CLAMPED); // Clamped by default.
+	interpolation_refresh();
 
 	//Setup the Animation Mode Button and the Keyframe Lock button
 	{
@@ -4362,10 +4363,14 @@ void
 CanvasView::interpolation_refresh()
 {
 	widget_interpolation->set_value(synfigapp::Main::get_interpolation());
+	widget_interpolation_scroll->get_hscrollbar()->get_adjustment()->set_value(0);
+	synfig::info("!!!-1");
 }
 
 void
 CanvasView::on_interpolation_changed()
 {
 	synfigapp::Main::set_interpolation(Waypoint::Interpolation(widget_interpolation->get_value()));
+	widget_interpolation_scroll->get_hscrollbar()->get_adjustment()->set_value(0);
+	synfig::info("!!!-2");
 }
