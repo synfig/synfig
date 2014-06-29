@@ -1143,6 +1143,7 @@ CanvasView::create_time_bar()
 		sigc::mem_fun(*this,&CanvasView::on_current_time_widget_changed)
 	);
 	current_time_widget->set_size_request(0,-1); // request horizontal shrink
+	current_time_widget->set_width_chars(4);
 	current_time_widget->set_tooltip_text(_("Current time"));
 	current_time_widget->show();
 
@@ -1168,8 +1169,6 @@ CanvasView::create_time_bar()
 	keyframedial->show();
 	pastkeyframebutton=keyframedial->get_toggle_pastbutton();
 	futurekeyframebutton=keyframedial->get_toggle_futurebutton();
-
-	timebar = Gtk::manage(new class Gtk::Table(8, 3, false));
 
 	//Adjust both widgets to be the same as the
 	int header_height = 0;
@@ -1200,21 +1199,23 @@ CanvasView::create_time_bar()
 		space2->show();
 	}
 #endif
+	
+	timebar = Gtk::manage(new class Gtk::Table(10, 4, false));
 
 	//Attach widgets to the timebar
 	//timebar->attach(*manage(disp_audio), 1, 5, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
-	timebar->attach(*current_time_widget, 0, 1, 0, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	timebar->attach(*widget_interpolation, 1, 2, 0, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	timebar->attach(*framedial, 0, 2, 2, 3, Gtk::SHRINK, Gtk::SHRINK);
-	timebar->attach(*widget_kf_list, 2, 3, 0, 1, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::SHRINK);
-	timebar->attach(*timeslider, 2, 3, 1, 2, Gtk::FILL|Gtk::SHRINK, Gtk::FILL|Gtk::SHRINK);
-	timebar->attach(*time_window_scroll, 2, 3, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
-	timebar->attach(*space2, 3, 4, 0, 2, Gtk::FILL, Gtk::FILL);
-	timebar->attach(*jackdial, 4, 5, 0, 2, Gtk::SHRINK, Gtk::SHRINK);
-	timebar->attach(*keyframedial, 5, 6, 0, 2, Gtk::SHRINK, Gtk::SHRINK);
-	timebar->attach(*space, 6, 7, 0, 2, Gtk::FILL, Gtk::FILL);
-	timebar->attach(*animatebutton, 7, 8, 0, 2, Gtk::SHRINK, Gtk::SHRINK);
-	//timebar->attach(*keyframebutton, 1, 2, 3, 4, Gtk::SHRINK, Gtk::SHRINK);
+	timebar->attach(*current_time_widget, 0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	timebar->attach(*framedial, 2, 4, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
+	timebar->attach(*space2, 4, 5, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::FILL);
+	timebar->attach(*jackdial, 5, 6, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
+	timebar->attach(*widget_interpolation, 6, 7, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	timebar->attach(*keyframedial, 7, 8, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
+	timebar->attach(*space, 8, 9, 0, 1, Gtk::SHRINK, Gtk::FILL);
+	timebar->attach(*animatebutton, 9, 10, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
+	
+	timebar->attach(*widget_kf_list, 0, 10, 1, 2, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::SHRINK);
+	timebar->attach(*timeslider, 0, 10, 2, 3, Gtk::FILL|Gtk::SHRINK, Gtk::FILL|Gtk::SHRINK);
+	timebar->attach(*time_window_scroll, 0, 10, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
 
 	timebar->show();
 
