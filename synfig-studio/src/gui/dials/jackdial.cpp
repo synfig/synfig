@@ -58,7 +58,8 @@ JackDial::JackDial(): Gtk::Table(3, 1, false)
 	toggle_jack =  create_icon(iconsize, "synfig-jack_mode_off",_("Disable JACK"));
 	offset = manage(new Widget_Time());
 	offset->set_value(synfig::Time(0.0));
-	offset->set_size_request(48,-1); // request horizontal shrink
+	offset->set_size_request(0,-1); // request horizontal shrink
+	offset->set_width_chars(6);
 	offset->set_tooltip_text(_("JACK Offset"));
 
 	Gtk::Alignment *space = Gtk::manage(new Gtk::Alignment());
@@ -66,8 +67,8 @@ JackDial::JackDial(): Gtk::Table(3, 1, false)
         space->show();
 	
 
-	attach(*offset,       0, 1, 0, 1, Gtk::FILL|Gtk::EXPAND, Gtk::SHRINK, 0, 0);
-	attach(*toggle_jack,  1, 2, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	attach(*toggle_jack,  0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	attach(*offset,       1, 2, 0, 1, Gtk::FILL|Gtk::EXPAND, Gtk::SHRINK, 0, 0);
 	attach(*space,  2, 3, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 	
 	offset->hide();
