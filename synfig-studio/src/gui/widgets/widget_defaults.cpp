@@ -244,7 +244,7 @@ Widget_Defaults::Widget_Defaults()
 
 	// widget brush
 	_widget_brush = manage(new Widget_Brush());
-	_widget_brush->set_size_request(30, 48);
+	_widget_brush->set_size_request(56, 48);
 	_widget_brush->set_tooltip_text(_("Brush Preview"));
 	
 	brush_increase = Gtk::manage(new class Gtk::Button("+"));
@@ -266,9 +266,9 @@ Widget_Defaults::Widget_Defaults()
 	brush_entry->set_tooltip_text(_("Brush Size"));
 	
 	Gtk::Table* brush_layout = Gtk::manage(new class Gtk::Table(2, 3, false));
-	brush_layout->attach(*_widget_brush, 0, 1, 0, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	brush_layout->attach(*brush_increase, 1, 2, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	brush_layout->attach(*brush_decrease, 1, 2, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	brush_layout->attach(*_widget_brush, 0, 2, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	brush_layout->attach(*brush_decrease, 0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	brush_layout->attach(*brush_increase, 1, 2, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	brush_layout->attach(*brush_entry, 0, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 2);
 	brush_layout->show_all();
 
