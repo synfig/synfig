@@ -137,6 +137,7 @@
 #include <pangomm.h>
 
 #include "general.h"
+#include "tool/progress.h"
 
 #endif
 
@@ -1248,7 +1249,7 @@ CanvasView::create_time_bar()
 	timebar->attach(*space, 8, 9, 1, 2, Gtk::SHRINK, Gtk::FILL);
 	timebar->attach(*animatebutton, 9, 10, 1, 2, Gtk::SHRINK, Gtk::SHRINK);
 	
-	timebar->attach(*timetrack, 0, 10, 0, 1, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::SHRINK);
+	timebar->attach(*timetrack, 0, 10, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL);
 
 	timebar->show();
 
@@ -1287,7 +1288,7 @@ CanvasView::create_status_bar()
 	//statusbartable->attach(*treetogglebutton, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 //	statusbartable->attach(*lowerbutton, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 //	statusbartable->attach(*raisebutton, 1, 2, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-
+	
 	statusbartable->attach(*statusbar, 1, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	statusbartable->attach(*progressbar, 2, 3, 0, 1, Gtk::SHRINK, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	statusbartable->attach(*refreshbutton, 3, 4, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
