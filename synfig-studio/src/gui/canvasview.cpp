@@ -802,6 +802,7 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	event_box->show();
 	event_box->signal_button_press_event().connect(sigc::mem_fun(*this,&studio::CanvasView::on_button_press_event));
 
+	set_use_scrolled(false);
 	add(*event_box);
 
 	//set_transient_for(*App::toolbox);
