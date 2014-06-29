@@ -1075,25 +1075,17 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 
 	Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon");
 
-
-	// TODO: Implement Rulers
 	// Create the vertical and horizontal rulers
-	//vruler = manage(new class Gtk::VRuler());
-	//hruler = manage(new class Gtk::HRuler());
-	//vruler->set_metric(Gtk::PIXELS);
-	//hruler->set_metric(Gtk::PIXELS);
-	//Pango::FontDescription fd(hruler->get_style()->get_font());
-	//fd.set_size(Pango::SCALE*8);
-	//vruler->modify_font(fd);
-	//hruler->modify_font(fd);
-	//vruler->show();
-	//hruler->show();
-	//attach(*vruler, 0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	//attach(*hruler, 1, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	//hruler->signal_event().connect(sigc::mem_fun(*this, &WorkArea::on_hruler_event));
-	//vruler->signal_event().connect(sigc::mem_fun(*this, &WorkArea::on_vruler_event));
-	//hruler->add_events(Gdk::BUTTON1_MOTION_MASK | Gdk::BUTTON2_MOTION_MASK |Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK|Gdk::POINTER_MOTION_MASK);
-	//vruler->add_events(Gdk::BUTTON1_MOTION_MASK | Gdk::BUTTON2_MOTION_MASK |Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK|Gdk::POINTER_MOTION_MASK);
+	vruler = manage(new Widget_Ruler(true));
+	hruler = manage(new Widget_Ruler(false));
+	vruler->show();
+	hruler->show();
+	attach(*vruler, 0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	attach(*hruler, 1, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	hruler->signal_event().connect(sigc::mem_fun(*this, &WorkArea::on_hruler_event));
+	vruler->signal_event().connect(sigc::mem_fun(*this, &WorkArea::on_vruler_event));
+	hruler->add_events(Gdk::BUTTON1_MOTION_MASK | Gdk::BUTTON2_MOTION_MASK |Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK|Gdk::POINTER_MOTION_MASK);
+	vruler->add_events(Gdk::BUTTON1_MOTION_MASK | Gdk::BUTTON2_MOTION_MASK |Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK|Gdk::POINTER_MOTION_MASK);
 
 	// Create the menu button
 	menubutton=manage(new class Gtk::Button());
@@ -1176,10 +1168,6 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 				load_sketch(dirname(canvas->get_file_name())+ETL_DIRECTORY_SEPARATOR+basename(data));
 		}
 	}
-
-	// TODO: Implement rulers
-	//hruler->property_max_size()=double(10.0);
-	//vruler->property_max_size()=double(10.0);
 
 	drawing_area->set_can_focus(true);
 }
@@ -2163,9 +2151,8 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 		if(dragging!=DRAG_WINDOW)
 		{	// Update those triangle things on the rulers
 			const synfig::Point point(mouse_pos);
-			// TODO: Implement Rulers
-			//hruler->property_position()=Distance(point[0],Distance::SYSTEM_UNITS).get(App::distance_system,get_canvas()->rend_desc());
-			//vruler->property_position()=Distance(point[1],Distance::SYSTEM_UNITS).get(App::distance_system,get_canvas()->rend_desc());
+			hruler->set_position( Distance(point[0],Distance::SYSTEM_UNITS).get(App::distance_system,get_canvas()->rend_desc()) );
+			vruler->set_position( Distance(point[1],Distance::SYSTEM_UNITS).get(App::distance_system,get_canvas()->rend_desc()) );
 		}
 
 		if(dragging == DRAG_WINDOW)
@@ -2503,8 +2490,7 @@ WorkArea::on_hruler_event(GdkEvent *event)
 
 			// Event is in the hruler, which has a slightly different
 			// coordinate system from the canvas.
-			// TODO: Implement Rulers
-			//y -= 2*hruler->property_max_size();
+			y -= 20.0; // TODO: Why 20?
 
 			// place the recalculated y coordinate back on the event
 			if(event->motion.axes)
@@ -2572,8 +2558,7 @@ WorkArea::on_vruler_event(GdkEvent *event)
 
 			// Event is in the vruler, which has a slightly different
 			// coordinate system from the canvas.
-			// TODO: Implement Rulers
-			//x -= 2*vruler->property_max_size();
+			x -= 20.f; // TODO: Why 20?
 
 			// place the recalculated x coordinate back on the event
 			if(event->motion.axes)
@@ -2626,8 +2611,6 @@ WorkArea::refresh_dimension_info()
 	scrolly_adjustment->set_step_increment(abs(ph));
 	scrolly_adjustment->set_page_increment(abs(get_grid_size()[1]));
 
-
-
 	if(drawing_area->get_width()<=0 || drawing_area->get_height()<=0 || w==0 || h==0)
 		return;
 
@@ -2641,11 +2624,10 @@ WorkArea::refresh_dimension_info()
 	window_tl[1]=rend_desc.get_tl()[1]-ph*y;
 	window_br[1]=rend_desc.get_br()[1]+ph*(drawing_area->get_height()-y-h);
 
-	// TODO: Implement Rulers
-	//hruler->property_lower()=Distance(window_tl[0],Distance::SYSTEM_UNITS).get(App::distance_system,rend_desc);
-	//hruler->property_upper()=Distance(window_br[0],Distance::SYSTEM_UNITS).get(App::distance_system,rend_desc);
-	//vruler->property_lower()=Distance(window_tl[1],Distance::SYSTEM_UNITS).get(App::distance_system,rend_desc);
-	//vruler->property_upper()=Distance(window_br[1],Distance::SYSTEM_UNITS).get(App::distance_system,rend_desc);
+	hruler->set_min( Distance(window_tl[0],Distance::SYSTEM_UNITS).get(App::distance_system,rend_desc) );
+	hruler->set_max( Distance(window_br[0],Distance::SYSTEM_UNITS).get(App::distance_system,rend_desc) );
+	vruler->set_min( Distance(window_tl[1],Distance::SYSTEM_UNITS).get(App::distance_system,rend_desc) );
+	vruler->set_max( Distance(window_br[1],Distance::SYSTEM_UNITS).get(App::distance_system,rend_desc) );
 
 	view_window_changed();
 }

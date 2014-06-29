@@ -51,6 +51,7 @@
 #include <synfig/canvas.h>
 
 #include "dials/zoomdial.h"
+#include "widgets/widget_ruler.h"
 #include "duckmatic.h"
 #include "instance.h"
 #include "app.h"
@@ -181,8 +182,8 @@ private:
 	Glib::RefPtr<Gtk::Adjustment> scrollx_adjustment;
 	Glib::RefPtr<Gtk::Adjustment> scrolly_adjustment;
 	// TODO: Implement Rulers
-	//Gtk::VRuler *vruler;
-	//Gtk::HRuler *hruler;
+	Widget_Ruler *vruler;
+	Widget_Ruler *hruler;
 	Gtk::Button *menubutton;
 	Gtk::Frame *drawing_frame;
 
