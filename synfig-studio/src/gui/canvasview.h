@@ -321,6 +321,8 @@ private:
 	Gtk::Toolbar *displaybar;
 	Widget_Enum *widget_interpolation;
 	Gtk::ToggleButton *animatebutton;
+	Gtk::ToggleButton *timetrackbutton;
+	Gtk::VBox *timetrack;
 	Gtk::Button *keyframebutton;
 	Gtk::ToggleButton *pastkeyframebutton;
 	Gtk::ToggleButton *futurekeyframebutton;
@@ -539,6 +541,7 @@ private:
 	void toggle_onion_skin();
 
 	void toggle_animatebutton();
+	void toggle_timetrackbutton();
 
 	void on_play_timeout();
 	
