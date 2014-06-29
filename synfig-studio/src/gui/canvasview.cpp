@@ -1111,6 +1111,14 @@ CanvasView::create_time_bar()
 	widget_interpolation->set_popup_fixed_width(false);
 	interpolation_refresh();
 	widget_interpolation->show();
+	// This ScrolledWindow is useless for now, because I wasn't able to make it work in the way I want. --KD
+	Gtk::ScrolledWindow* widget_interpolation_scroll=manage(new Gtk::ScrolledWindow);
+	widget_interpolation_scroll->add(*widget_interpolation);
+	widget_interpolation_scroll->show();
+	widget_interpolation_scroll->set_shadow_type(Gtk::SHADOW_NONE);
+	widget_interpolation_scroll->set_policy(Gtk::POLICY_NEVER,Gtk::POLICY_NEVER);
+	Gtk::Scrollbar* hscroll=widget_interpolation_scroll->get_hscrollbar();
+	hscroll->hide();
 
 	//Setup the Animation Mode Button and the Keyframe Lock button
 	Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon_16x16");
@@ -1209,7 +1217,7 @@ CanvasView::create_time_bar()
 	timebar->attach(*framedial, 2, 4, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
 	timebar->attach(*space2, 4, 5, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::FILL);
 	timebar->attach(*jackdial, 5, 6, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
-	timebar->attach(*widget_interpolation, 6, 7, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	timebar->attach(*widget_interpolation_scroll, 6, 7, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	timebar->attach(*keyframedial, 7, 8, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
 	timebar->attach(*space, 8, 9, 0, 1, Gtk::SHRINK, Gtk::FILL);
 	timebar->attach(*animatebutton, 9, 10, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
