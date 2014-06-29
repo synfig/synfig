@@ -1114,14 +1114,18 @@ CanvasView::create_time_bar()
 	synfigapp::Main::set_interpolation(INTERPOLATION_CLAMPED); // Clamped by default.
 	widget_interpolation->set_tooltip_text(_("Default Interpolation"));
 	widget_interpolation->set_popup_fixed_width(false);
+	widget_interpolation->set_size_request(120,0);
 	interpolation_refresh();
 	widget_interpolation->show();
-	// This ScrolledWindow is useless for now, because I wasn't able to make it work in the way I want. --KD
+	Gtk::Alignment* widget_interpolation_align=manage(new Gtk::Alignment(1, Gtk::ALIGN_CENTER, 0, 0));
+	widget_interpolation_align->add(*widget_interpolation);
+	widget_interpolation_align->show();
 	Gtk::ScrolledWindow* widget_interpolation_scroll=manage(new Gtk::ScrolledWindow);
-	widget_interpolation_scroll->add(*widget_interpolation);
+	widget_interpolation_scroll->add(*widget_interpolation_align);
 	widget_interpolation_scroll->show();
 	widget_interpolation_scroll->set_shadow_type(Gtk::SHADOW_NONE);
-	widget_interpolation_scroll->set_policy(Gtk::POLICY_NEVER,Gtk::POLICY_NEVER);
+	widget_interpolation_scroll->set_policy(Gtk::POLICY_ALWAYS,Gtk::POLICY_NEVER);
+	widget_interpolation_scroll->set_size_request(25,0);
 	Gtk::Scrollbar* hscroll=widget_interpolation_scroll->get_hscrollbar();
 	hscroll->hide();
 
@@ -1237,8 +1241,8 @@ CanvasView::create_time_bar()
 	timebar->attach(*current_time_widget, 1, 2, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	timebar->attach(*framedial, 2, 4, 1, 2, Gtk::SHRINK, Gtk::SHRINK);
 	timebar->attach(*jackdial, 4, 5, 1, 2, Gtk::SHRINK, Gtk::SHRINK);
-	timebar->attach(*space2, 5, 6, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::FILL);
-	timebar->attach(*widget_interpolation_scroll, 6, 7, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	//timebar->attach(*space2, 5, 6, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::FILL);
+	timebar->attach(*widget_interpolation_scroll, 5, 7, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	timebar->attach(*keyframedial, 7, 8, 1, 2, Gtk::SHRINK, Gtk::SHRINK);
 	timebar->attach(*space, 8, 9, 1, 2, Gtk::SHRINK, Gtk::FILL);
 	timebar->attach(*animatebutton, 9, 10, 1, 2, Gtk::SHRINK, Gtk::SHRINK);
