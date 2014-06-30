@@ -1049,6 +1049,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	refreshes=0;
 
   	drawing_area=manage(new class Gtk::DrawingArea());
+  	drawing_area->add_events(Gdk::SCROLL_MASK);
 	drawing_area->show();
 
 	drawing_frame=manage(new Gtk::Frame);
