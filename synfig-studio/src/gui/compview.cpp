@@ -342,21 +342,27 @@ void
 CompView::init_menu()
 {
 	Gtk::MenuItem *item = NULL;
-	menu.append(*manage(new Gtk::SeparatorMenuItem()));
+
+	item = manage(new Gtk::SeparatorMenuItem());
+	item->show();
+	menu.append(*item);
 
 	item = manage(new Gtk::ImageMenuItem(Gtk::StockID("synfig-canvas_new")));
 	item->signal_activate().connect(
 		sigc::mem_fun(*this,&CompView::menu_new_canvas));
+	item->show_all();
 	menu.append(*item);
 
 	item = manage(new Gtk::ImageMenuItem(Gtk::StockID("gtk-delete")));
 	item->signal_activate().connect(
 		sigc::mem_fun(*this,&CompView::menu_delete));
+	item->show_all();
 	menu.append(*item);
 
 	item = manage(new Gtk::ImageMenuItem(Gtk::StockID("synfig-rename")));
 	item->signal_activate().connect(
 		sigc::mem_fun(*this,&CompView::menu_rename));
+	item->show_all();
 	menu.append(*item);
 }
 

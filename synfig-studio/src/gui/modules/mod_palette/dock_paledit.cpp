@@ -318,6 +318,7 @@ Dock_PalEdit::show_menu(int i)
 		sigc::bind(
 			sigc::mem_fun(*this,&studio::Dock_PalEdit::edit_color),
 			i ));
+	item->show_all();
 	menu->append(*item);
 
 	item = manage(new Gtk::ImageMenuItem(Gtk::StockID("gtk-delete")));
@@ -325,6 +326,7 @@ Dock_PalEdit::show_menu(int i)
 		sigc::bind(
 			sigc::mem_fun(*this,&studio::Dock_PalEdit::erase_color),
 			i ));
+	item->show_all();
 	menu->append(*item);
 
 	menu->popup(3,gtk_get_current_event_time());

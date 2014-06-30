@@ -1617,22 +1617,31 @@ StateBLine_Context::popup_vertex_menu(synfig::ValueNode_Const::Handle value_node
 		item = manage(new Gtk::MenuItem(_("Unloop Spline")));
 		item->signal_activate().connect(
 			sigc::mem_fun(*this,&studio::StateBLine_Context::unloop_bline) );
+		item->show();
 		menu.append(*item);
 	} else {
 		item = manage(new Gtk::MenuItem(_("Loop Spline")));
 		item->signal_activate().connect(
 			sigc::mem_fun(*this,&studio::StateBLine_Context::loop_bline) );
+		item->show();
 		menu.append(*item);
 	}
-	menu.append(*manage(new Gtk::SeparatorMenuItem()));
+
+	item = manage(new Gtk::SeparatorMenuItem());
+	item->show();
+	menu.append(*item);
 
 	item = manage(new Gtk::MenuItem(_("Delete Vertex")));
 	item->signal_activate().connect(
 		sigc::bind(
 				sigc::mem_fun(*this,&studio::StateBLine_Context::bline_delete_vertex),
 				value_node ));
+	item->show();
 	menu.append(*item);
-	menu.append(*manage(new Gtk::SeparatorMenuItem()));
+
+	item = manage(new Gtk::SeparatorMenuItem());
+	item->show();
+	menu.append(*item);
 
 	BLinePoint bline_point(value_node->get_value().get(BLinePoint()));
 	#define STATE_BLINE_ADD_MENU_ITEM(title, split_angle, split_radius) \
@@ -1642,6 +1651,7 @@ StateBLine_Context::popup_vertex_menu(synfig::ValueNode_Const::Handle value_node
 				sigc::bind(                                             \
 					sigc::mem_fun(*this,&studio::StateBLine_Context::bline_set_split_handle), \
 					value_node, split_angle, split_radius ));           \
+		item->show();                                                   \
 		menu.append(*item);                                             \
 	} while (false)
 
@@ -1684,19 +1694,24 @@ StateBLine_Context::popup_bezier_menu(float location, synfig::ValueNode_Const::H
 				location
 			),
 			value_node ));
+	item->show();
 	menu.append(*item);
-	menu.append(*manage(new Gtk::SeparatorMenuItem()));
+	item = manage(new Gtk::SeparatorMenuItem());
+	item->show();
+	menu.append(*item);
 
 	if(loop_)
 	{
 		item = manage(new Gtk::MenuItem(_("Unloop Spline")));
 		item->signal_activate().connect(
 			sigc::mem_fun(*this,&studio::StateBLine_Context::unloop_bline) );
+		item->show();
 		menu.append(*item);
 	} else {
 		item = manage(new Gtk::MenuItem(_("Loop Spline")));
 		item->signal_activate().connect(
 			sigc::mem_fun(*this,&studio::StateBLine_Context::loop_bline) );
+		item->show();
 		menu.append(*item);
 	}
 	menu.popup(0,0);
@@ -1786,6 +1801,7 @@ StateBLine_Context::popup_handle_menu(synfig::ValueNode_Const::Handle value_node
 			sigc::bind(													\
 				sigc::mem_fun(*this,&studio::StateBLine_Context::bline_set_split_handle), \
 				value_node, split_angle, split_radius ));               \
+		item->show();                                                   \
 		menu.append(*item);                                             \
 	} while(false)
 
@@ -1809,26 +1825,33 @@ StateBLine_Context::popup_handle_menu(synfig::ValueNode_Const::Handle value_node
 
 	#undef STATE_BLINE_ADD_MENU_ITEM
 
-	menu.append(*manage(new Gtk::SeparatorMenuItem()));
+	item = manage(new Gtk::SeparatorMenuItem());
+	item->show();
+	menu.append(*item);
 	if(loop_)
 	{
 		item = manage(new Gtk::MenuItem(_("Unloop Spline")));
 		item->signal_activate().connect(
 			sigc::mem_fun(*this,&studio::StateBLine_Context::unloop_bline) );
+		item->show();
 		menu.append(*item);
 	} else {
 		item = manage(new Gtk::MenuItem(_("Loop Spline")));
 		item->signal_activate().connect(
 			sigc::mem_fun(*this,&studio::StateBLine_Context::loop_bline) );
+		item->show();
 		menu.append(*item);
 	}
-	menu.append(*manage(new Gtk::SeparatorMenuItem()));
+	item = manage(new Gtk::SeparatorMenuItem());
+	item->show();
+	menu.append(*item);
 
 	item = manage(new Gtk::MenuItem(_("Delete Vertex")));
 	item->signal_activate().connect(
 		sigc::bind(
 			sigc::mem_fun(*this,&studio::StateBLine_Context::bline_delete_vertex),
 			value_node ));
+	item->show();
 	menu.append(*item);
 
 	menu.popup(0,0);

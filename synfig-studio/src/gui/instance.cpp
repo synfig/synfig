@@ -797,6 +797,7 @@ Instance::add_actions_to_menu(Gtk::Menu *menu, const synfigapp::Action::ParamLis
 							&studio::Instance::process_action ),
 						param_list ),
 					iter->name ));
+			item->show_all();
 			menu->append(*item);
 		}
 	}
@@ -843,6 +844,7 @@ Instance::add_actions_to_menu(Gtk::Menu *menu, const synfigapp::Action::ParamLis
 							&studio::Instance::process_action ),
 						param_list2 ),
 					iter->name ));
+			item->show_all();
 			menu->append(*item);
 		}
 	}
@@ -862,6 +864,7 @@ Instance::add_actions_to_menu(Gtk::Menu *menu, const synfigapp::Action::ParamLis
 							&studio::Instance::process_action ),
 						param_list ),
 					iter->name ));
+			item->show_all();
 			menu->append(*item);
 		}
 	}
@@ -997,12 +1000,14 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 								sigc::mem_fun(*canvas_interface.get(),&synfigapp::CanvasInterface::convert),
 								iter->first ),
 							value_desc )));
+				item->show();
 				convert_menu->append(*item);
 			}
 		}
 
 		item = Gtk::manage(new Gtk::ImageMenuItem(Gtk::Stock::CONVERT));
 		item->set_submenu(*convert_menu);
+		item->show();
 		parammenu.append(*item);
 	}
 	
@@ -1029,6 +1034,7 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 					sigc::mem_fun(*const_cast<studio::Instance*>(this),&studio::Instance::process_action),
 					param_list ),
 				"ValueDescSetInterpolation" ));
+		item->show();
 		param_interpolation_menu->append(*item);
 		param_list.erase("new_value");
 
@@ -1043,6 +1049,7 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 					sigc::mem_fun(*const_cast<studio::Instance*>(this),&studio::Instance::process_action), \
 					param_list ), \
 				"ValueDescSetInterpolation" )); \
+		item->show_all(); \
 		param_interpolation_menu->append(*item); \
 		param_list.erase("new_value");
 		
@@ -1054,9 +1061,10 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 		ADD_IMAGE_MENU_ITEM(INTERPOLATION_CLAMPED, "synfig-interpolation_type_clamped", _("Clamped"));
 		
 		#undef ADD_IMAGE_MENU_ITEM
-		
+
 		item = Gtk::manage(new Gtk::MenuItem(_("Interpolation")));
 		item->set_submenu(*param_interpolation_menu);
+		item->show();
 		parammenu.append(*item);
 	}
 
@@ -1105,6 +1113,7 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 							-1 ),
 						waypoint_set ),
 					value_desc2 ));
+			item->show();
 			parammenu.append(*item);
 		}
 		catch(...)
@@ -1117,12 +1126,12 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 	{
 		ValueNode_Composite::Handle wpoint_composite(ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node()));
 		synfigapp::Action::ParamList param_list;
-		Gtk::Menu *before_menu=Gtk::manage(new Gtk::Menu());
-		Gtk::Menu *after_menu=Gtk::manage(new Gtk::Menu());
 		param_list.add("canvas",canvas);
 		param_list.add("canvas_interface",canvas_interface);
 		param_list.add("time",canvas_interface->get_time());
-		parammenu.append(*Gtk::manage(new Gtk::SeparatorMenuItem()));
+		item = Gtk::manage(new Gtk::SeparatorMenuItem());
+		item->show();
+		parammenu.append(*item);
 
 
 		#define ADD_IMAGE_MENU_ITEM(Type, StockId, Text) \
@@ -1136,6 +1145,8 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 						sigc::mem_fun(*const_cast<studio::Instance*>(this),&studio::Instance::process_action), \
 						param_list ), \
 					"ValueDescSet" )); \
+			item->show_all(); \
+			parammenu.append(*item); \
 			param_list.erase("new_value");
 
 		////// Before //////////////////
@@ -1158,7 +1169,9 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 		ADD_IMAGE_MENU_ITEM(TYPE_FLAT, "synfig-flat_interpolation", "Flat")
 
 		///////
-		parammenu.append(*Gtk::manage(new Gtk::SeparatorMenuItem()));
+		item = Gtk::manage(new Gtk::SeparatorMenuItem());
+		item->show();
+		parammenu.append(*item);
 
 		/////// Set WIDTH to ZERO
 		param_list.erase("value_desc");
@@ -1172,6 +1185,7 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 					sigc::mem_fun(*const_cast<studio::Instance*>(this),&studio::Instance::process_action),
 					param_list ),
 				"ValueDescSet" ));
+		item->show();
 		parammenu.append(*item);
 
 		/////// Set WIDTH to DEFAULT
@@ -1185,6 +1199,7 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 					sigc::mem_fun(*const_cast<studio::Instance*>(this),&studio::Instance::process_action),
 					param_list ),
 				"ValueDescSet" ));
+		item->show();
 		parammenu.append(*item);
 	}
 }
@@ -1337,6 +1352,7 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas,const st
 					sigc::ptr_fun(&edit_several_waypoints),
 					value_desc_list ),
 				find_canvas_view(canvas) ));
+		item->show();
 		menu->append(*item);
 	}
 	// add here the rest of specific actions for multiple selected value_descs

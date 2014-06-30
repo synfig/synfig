@@ -2016,6 +2016,7 @@ CanvasView::popup_layer_menu(synfig::Layer::Handle layer)
 					*layer_tree,
 					&studio::LayerTree::select_all_children_layers ),
 				layer ));
+		item->show_all();
 		menu->append(*item);
 	}
 
@@ -2427,7 +2428,6 @@ CanvasView::popup_param_menu(synfigapp::ValueDesc value_desc, float location, bo
 	for(std::vector<Widget*>::iterator i = children.begin(); i != children.end(); ++i)
 		parammenu.remove(**i);
 	get_instance()->make_param_menu(&parammenu,get_canvas(),value_desc,location,bezier);
-
 	parammenu.popup(3,gtk_get_current_event_time());
 }
 
@@ -3542,6 +3542,7 @@ CanvasView::on_waypoint_clicked_canvasview(synfigapp::ValueDesc value_desc,
 					_(Text) )); \
 				item->signal_activate().connect( \
 					sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())); \
+				item->show_all(); \
 				menu->append(*item);
 
 			#define APPEND_ITEMS_TO_ALL_MENUS3(Interpolation, StockId, TextIn, TextOut, TextBoth) \
@@ -3575,23 +3576,28 @@ CanvasView::on_waypoint_clicked_canvasview(synfigapp::ValueDesc value_desc,
 			get_instance()->make_param_menu(waypoint_menu,canvas_interface()->get_canvas(),value_desc,0.5f);
 
 			// ------------------------------------------------------------------------
-			waypoint_menu->append(*manage(new Gtk::SeparatorMenuItem()));
+			item = manage(new Gtk::SeparatorMenuItem());
+			item->show();
+			waypoint_menu->append(*item);
 		}
 
 		// ------------------------------------------------------------------------
 		item = manage(new Gtk::MenuItem(_("_Jump To")));
 		item->signal_activate().connect(
 			sigc::bind(sigc::mem_fun(*canvas_interface(), &synfigapp::CanvasInterface::set_time), time));
+		item->show();
 		waypoint_menu->append(*item);
 
 		item = manage(new Gtk::MenuItem(_("_Duplicate")));
 		item->signal_activate().connect(
 			sigc::bind(sigc::ptr_fun(duplicate_waypoints), waypoint_set, canvas_interface()));
+		item->show();
 		waypoint_menu->append(*item);
 
 		item = manage(new Gtk::MenuItem(size == 1 ? _("_Remove") : strprintf(_("_Remove %d Waypoints"), size)));
 		item->signal_activate().connect(
 			sigc::bind(sigc::ptr_fun(remove_waypoints), waypoint_set, canvas_interface()));
+		item->show();
 		waypoint_menu->append(*item);
 
 		if (size == 1 && value_desc.is_valid())
@@ -3599,23 +3605,29 @@ CanvasView::on_waypoint_clicked_canvasview(synfigapp::ValueDesc value_desc,
 			item = manage(new Gtk::MenuItem(_("_Edit")));
 			item->signal_activate().connect(
 					sigc::mem_fun(waypoint_dialog,&Gtk::Widget::show));
+			item->show();
 			waypoint_menu->append(*item);
 		}
 
 		// ------------------------------------------------------------------------
-		waypoint_menu->append(*manage(new Gtk::SeparatorMenuItem()));
+		item = manage(new Gtk::SeparatorMenuItem());
+		item->show();
+		waypoint_menu->append(*item);
 
 		// ------------------------------------------------------------------------
 		item = manage(new Gtk::MenuItem(_("_Both")));
 		item->set_submenu(*interp_menu_both);
+		item->show();
 		waypoint_menu->append(*item);
 
 		item = manage(new Gtk::MenuItem(_("_In")));
 		item->set_submenu(*interp_menu_in);
+		item->show();
 		waypoint_menu->append(*item);
 
 		item = manage(new Gtk::MenuItem(_("_Out")));
 		item->set_submenu(*interp_menu_out);
+		item->show();
 		waypoint_menu->append(*item);
 
 		// ------------------------------------------------------------------------

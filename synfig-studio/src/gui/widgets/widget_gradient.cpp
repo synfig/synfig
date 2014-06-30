@@ -211,6 +211,7 @@ Widget_Gradient::popup_menu(float x)
 		sigc::bind(
 			sigc::mem_fun(*this,&studio::Widget_Gradient::insert_cpoint),
 			x ));
+	item->show();
 	menu->append(*item);
 
 	if(!gradient_.empty())
@@ -220,6 +221,7 @@ Widget_Gradient::popup_menu(float x)
 			sigc::bind(
 				sigc::mem_fun(*this,&studio::Widget_Gradient::remove_cpoint),
 				x ));
+		item->show();
 		menu->append(*item);
 	}
 
