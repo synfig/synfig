@@ -66,7 +66,7 @@ DockBook::DockBook():
 	allow_empty(false)
 {
 	std::vector<Gtk::TargetEntry> listTargets;
-	listTargets.push_back( Gtk::TargetEntry("DOCK") );
+	listTargets.push_back( Gtk::TargetEntry("SYNFIG_DOCK") );
 
 	drag_dest_set(listTargets);
 	//set_sensitive(true);
