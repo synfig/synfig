@@ -71,8 +71,10 @@ MAKE_THREADS=2					#count of threads for make
 # package = chroot, clean, configure, make
 MODE='standart'
 OPENGL=0
-DEBUG=1
 BREED=
+if [ -z $DEBUG ]; then
+	export DEBUG=0
+fi
 
 export EMAIL='root@synfig.org'
 
@@ -522,7 +524,6 @@ if [[ $MODE != 'quick' ]]; then
 		--with-magickpp \
 		--without-libavcodec \
 		--without-included-ltdl \
-		--with-boost=$HOME/synfig/ \
 		$BOOST_CONFIGURE_OPTIONS \
 		$DEBUG
 fi
