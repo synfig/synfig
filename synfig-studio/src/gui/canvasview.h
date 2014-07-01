@@ -545,6 +545,7 @@ private:
 	
 	void interpolation_refresh();
 	void on_interpolation_changed();
+	void on_interpolation_event(GdkEvent *event);
 
 
 	/*

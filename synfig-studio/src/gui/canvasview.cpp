@@ -1132,6 +1132,9 @@ CanvasView::create_time_bar()
 	hscroll->hide();
 	
 	widget_interpolation->signal_changed().connect(sigc::mem_fun(*this,&studio::CanvasView::on_interpolation_changed));
+	widget_interpolation_scroll->add_events(Gdk::POINTER_MOTION_MASK);
+	widget_interpolation_scroll->signal_event().connect(sigc::bind_return(sigc::mem_fun(*this,&studio::CanvasView::on_interpolation_event),false));
+
 	synfigapp::Main::signal_interpolation_changed().connect(sigc::mem_fun(*this,&studio::CanvasView::interpolation_refresh));
 	synfigapp::Main::set_interpolation(INTERPOLATION_CLAMPED); // Clamped by default.
 	interpolation_refresh();
@@ -4386,14 +4389,16 @@ void
 CanvasView::interpolation_refresh()
 {
 	widget_interpolation->set_value(synfigapp::Main::get_interpolation());
-	widget_interpolation_scroll->get_hscrollbar()->get_adjustment()->set_value(0);
-	synfig::info("!!!-1");
 }
 
 void
 CanvasView::on_interpolation_changed()
 {
 	synfigapp::Main::set_interpolation(Waypoint::Interpolation(widget_interpolation->get_value()));
+}
+
+void
+CanvasView::on_interpolation_event(GdkEvent *event)
+{
 	widget_interpolation_scroll->get_hscrollbar()->get_adjustment()->set_value(0);
-	synfig::info("!!!-2");
 }
