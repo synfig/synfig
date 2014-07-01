@@ -1322,6 +1322,41 @@ CanvasView::create_display_bar()
 
 	// Separator
 	displaybar->append( *create_tool_separator() );
+	
+	{ // Setup render options dialog button
+		Gtk::Image *icon = Gtk::manage(new Gtk::Image(Gtk::StockID("synfig-render_options"), iconsize));
+		icon->set_padding(0, 0);
+		icon->show();
+
+		render_options_button = Gtk::manage(new class Gtk::ToolButton());
+		render_options_button->set_icon_widget(*icon);
+		render_options_button->signal_clicked().connect(
+			sigc::mem_fun0(render_settings,&studio::RenderSettings::present));
+		render_options_button->set_label(_("Render"));
+		render_options_button->set_tooltip_text( _("Shows the Render Settings Dialog"));
+		render_options_button->show();
+
+		displaybar->append(*render_options_button);
+	}
+
+	{ // Setup preview options dialog button
+		Gtk::Image *icon = Gtk::manage(new Gtk::Image(Gtk::StockID("synfig-preview_options"), iconsize));
+		icon->set_padding(0, 0);
+		icon->show();
+
+		preview_options_button = Gtk::manage(new class Gtk::ToolButton());
+		preview_options_button->set_icon_widget(*icon);
+		preview_options_button->signal_clicked().connect(
+			sigc::mem_fun(*this,&CanvasView::on_preview_option));
+		preview_options_button->set_label(_("Preview"));
+		preview_options_button->set_tooltip_text(_("Shows the Preview Settings Dialog"));
+		preview_options_button->show();
+
+		displaybar->append(*preview_options_button);
+	}
+
+	// Separator
+	displaybar->append( *create_tool_separator() );
 
 	// Setup the ToggleDuckDial widget
 	Duck::Type m = work_area->get_type_mask();
@@ -1339,19 +1374,6 @@ CanvasView::create_display_bar()
 	toggleducksdial.signal_ducks_angle().connect(
 		sigc::bind(sigc::mem_fun(*this, &studio::CanvasView::toggle_duck_mask),Duck::TYPE_ANGLE) );
 	toggleducksdial.insert_to_toolbar(*displaybar);
-
-	// Separator
-	displaybar->append( *create_tool_separator() );
-
-	// Set up the ResolutionDial widget
-	resolutiondial.update_lowres(work_area->get_low_resolution_flag());
-	resolutiondial.signal_increase_resolution().connect(
-		sigc::mem_fun(*this, &studio::CanvasView::decrease_low_res_pixel_size));
-	resolutiondial.signal_decrease_resolution().connect(
-		sigc::mem_fun(*this, &studio::CanvasView::increase_low_res_pixel_size));
-	resolutiondial.signal_use_low_resolution().connect(
-		sigc::mem_fun(*this, &studio::CanvasView::toggle_low_res_pixel_flag));
-	resolutiondial.insert_to_toolbar(*displaybar);
 
 	// Separator
 	displaybar->append( *create_tool_separator() );
@@ -1464,38 +1486,6 @@ CanvasView::create_display_bar()
 	// Separator
 	displaybar->append( *create_tool_separator() );
 	*/
-
-	{ // Setup render options dialog button
-		Gtk::Image *icon = Gtk::manage(new Gtk::Image(Gtk::StockID("synfig-render_options"), iconsize));
-		icon->set_padding(0, 0);
-		icon->show();
-
-		render_options_button = Gtk::manage(new class Gtk::ToolButton());
-		render_options_button->set_icon_widget(*icon);
-		render_options_button->signal_clicked().connect(
-			sigc::mem_fun0(render_settings,&studio::RenderSettings::present));
-		render_options_button->set_label(_("Render"));
-		render_options_button->set_tooltip_text( _("Shows the Render Settings Dialog"));
-		render_options_button->show();
-
-		displaybar->append(*render_options_button);
-	}
-
-	{ // Setup preview options dialog button
-		Gtk::Image *icon = Gtk::manage(new Gtk::Image(Gtk::StockID("synfig-preview_options"), iconsize));
-		icon->set_padding(0, 0);
-		icon->show();
-
-		preview_options_button = Gtk::manage(new class Gtk::ToolButton());
-		preview_options_button->set_icon_widget(*icon);
-		preview_options_button->signal_clicked().connect(
-			sigc::mem_fun(*this,&CanvasView::on_preview_option));
-		preview_options_button->set_label(_("Preview"));
-		preview_options_button->set_tooltip_text(_("Shows the Preview Settings Dialog"));
-		preview_options_button->show();
-
-		displaybar->append(*preview_options_button);
-	}
 	
 	{ // Setup refresh button
 		Gtk::Image *icon = Gtk::manage(new Gtk::Image(Gtk::StockID("gtk-refresh"), iconsize));
@@ -1511,6 +1501,19 @@ CanvasView::create_display_bar()
 
 		displaybar->append(*refreshbutton);
 	}
+	
+	// Separator
+	displaybar->append( *create_tool_separator() );
+	
+	// Set up the ResolutionDial widget
+	resolutiondial.update_lowres(work_area->get_low_resolution_flag());
+	resolutiondial.signal_increase_resolution().connect(
+		sigc::mem_fun(*this, &studio::CanvasView::decrease_low_res_pixel_size));
+	resolutiondial.signal_decrease_resolution().connect(
+		sigc::mem_fun(*this, &studio::CanvasView::increase_low_res_pixel_size));
+	resolutiondial.signal_use_low_resolution().connect(
+		sigc::mem_fun(*this, &studio::CanvasView::toggle_low_res_pixel_flag));
+	resolutiondial.insert_to_toolbar(*displaybar);
 
 	displaybar->show();
 	
