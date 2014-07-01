@@ -39,6 +39,9 @@
 #include "app.h"
 #include <gtkmm/menu.h>
 #include <gtkmm/scale.h>
+#include <gtkmm/toolitem.h>
+#include <gtkmm/toolitemgroup.h>
+#include <gtkmm/toolpalette.h>
 #include <synfig/exception.h>
 #include <synfigapp/main.h>
 #include "canvasview.h"
@@ -343,16 +346,46 @@ Widget_Defaults::Widget_Defaults()
 			widget_brush_bline_width->pack_start(*widget_bline_width, Gtk::PACK_EXPAND_WIDGET, 2);
 		}
 
-		pack_start(*widget_colors_gradient, Gtk::PACK_EXPAND_PADDING, 4);
+		//pack_start(*widget_colors_gradient, Gtk::PACK_EXPAND_PADDING, 4);
 		//pack_start(*widget_blend_method, Gtk::PACK_EXPAND_PADDING, 4);
 		//pack_start(*widget_opacity, Gtk::PACK_EXPAND_PADDING, 4);
-		pack_start(*widget_brush, Gtk::PACK_EXPAND_PADDING, 6);
+		//pack_start(*widget_brush, Gtk::PACK_EXPAND_PADDING, 6);
 
 		// show all widgets
 		widget_colors_gradient->show_all();
 		//widget_blend_method->show();
 		//widget_opacity->show();
-		widget_brush_bline_width->show_all();
+		//widget_brush_bline_width->show_all();
+		
+		Gtk::ToolItemGroup *tool_item_group = manage(new class Gtk::ToolItemGroup());
+		gtk_tool_item_group_set_label(tool_item_group->gobj(), NULL);
+
+		Gtk::ToolPalette *palette = manage(new Gtk::ToolPalette());
+		palette->add(*tool_item_group);
+		palette->set_expand(*tool_item_group);
+		palette->set_exclusive(*tool_item_group, true);
+		palette->set_icon_size(Gtk::IconSize::from_name("synfig-small_icon_16x16"));
+		palette->set_size_request(100,100);
+		palette->show();
+		
+		Gtk::ToolItem *tool_item1 = manage(new class Gtk::ToolItem());
+		tool_item1->add(*widget_colors_gradient);
+		tool_item_group->insert(*tool_item1);
+		tool_item1->show();
+		Gtk::ToolItem *tool_item2 = manage(new class Gtk::ToolItem());
+		tool_item2->add(*widget_brush);
+		tool_item_group->insert(*tool_item2);
+		tool_item2->show();
+		
+		tool_item_group->show_all();
+		
+		//Gtk::ScrolledWindow *scrolled_window = manage(new Gtk::ScrolledWindow());
+		//scrolled_window->add(*palette);
+		//scrolled_window->show();
+		
+		//pack_start(*scrolled_window, Gtk::PACK_EXPAND_PADDING, 4);
+		pack_start(*palette, Gtk::PACK_EXPAND_WIDGET|Gtk::PACK_SHRINK, 4);
+		
 	}
 
 
