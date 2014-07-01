@@ -181,12 +181,12 @@ Widget_Ruler::on_draw(const ::Cairo::RefPtr< ::Cairo::Context>& cr)
 	Real height = (Real)get_height();
 
 	// draw background
-	if (is_vertical)
-		cr->rectangle(0.0, screen_min, width, screen_max - screen_min);
-	else
-		cr->rectangle(screen_min, 0.0, screen_max - screen_min, height);
-	cr->set_source_rgb(1, 1, 1);
-	cr->fill();
+	//if (is_vertical)
+	//	cr->rectangle(0.0, screen_min, width, screen_max - screen_min);
+	//else
+	//	cr->rectangle(screen_min, 0.0, screen_max - screen_min, height);
+	//cr->set_source_rgb(1, 1, 1);
+	//cr->fill();
 
 	// draw bounds
 	//draw_line(cr, screen_min, is_vertical ? width : height, width, height);
