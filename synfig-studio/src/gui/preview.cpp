@@ -582,6 +582,7 @@ Widget_Preview::Widget_Preview():
 
 	//set the zoom widget width
 	zoom_preview.set_size_request(100, -1);
+	zoom_preview.show();
 
 	toolbar->pack_end(zoom_preview, Gtk::PACK_SHRINK, 0);
 
