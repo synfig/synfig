@@ -314,7 +314,7 @@ private:
 	Gtk::TreeRow children_valuenode_row;
 
 	Gtk::Button *stopbutton;
-	Gtk::Button *refreshbutton;
+	Gtk::ToolButton *refreshbutton;
 	Gtk::Button *treetogglebutton;  // not used
 	Gtk::Notebook *notebook; // not used
 	Gtk::Table *timebar;
@@ -489,9 +489,6 @@ private:
 
 	//! Constructor Helper
 	// Gtk::Widget* create_keyframe_tree();
-
-	//! Constructor Helper
-	Gtk::Widget* create_status_bar();
 
 	//! Constructor Helper - Initializes all of the menus
 	void init_menus();

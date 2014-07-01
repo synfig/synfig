@@ -783,15 +783,20 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	//synfig::info("Canvasview: Before big chunk of allocation and tabling stuff");
 	//create all allocated stuff for this canvas
 	audio = new AudioContainer();
+	
+	Gtk::Alignment *space = Gtk::manage(new Gtk::Alignment());
+	space->set_size_request(4,4);
+        space->show();
 
-	Gtk::Table *layout_table= manage(new class Gtk::Table(5, 1, false));
+	Gtk::Table *layout_table= manage(new class Gtk::Table(4, 1, false));
 	//layout_table->attach(*vpaned, 0, 1, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	layout_table->attach(*create_work_area(),   0, 1, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	layout_table->attach(*create_work_area(),   0, 1, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	layout_table->attach(*create_display_bar(), 0, 1, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	layout_table->attach(*space, 0, 1, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	init_menus();
 	//layout_table->attach(*App::ui_manager()->get_widget("/menu-main"), 0, 1, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	layout_table->attach(*create_time_bar(),    0, 1, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	layout_table->attach(*create_status_bar(),  0, 1, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	//layout_table->attach(*create_status_bar(),  0, 1, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 
 	update_title();
 
@@ -1234,8 +1239,9 @@ CanvasView::create_time_bar()
 		space2->show();
 	}
 #endif
+	statusbar->show();
 	
-	timebar = Gtk::manage(new class Gtk::Table(10, 2, false));
+	timebar = Gtk::manage(new class Gtk::Table(11, 2, false));
 
 	//Attach widgets to the timebar
 	//timebar->attach(*manage(disp_audio), 1, 5, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
@@ -1244,12 +1250,14 @@ CanvasView::create_time_bar()
 	timebar->attach(*framedial, 2, 4, 1, 2, Gtk::SHRINK, Gtk::SHRINK);
 	timebar->attach(*jackdial, 4, 5, 1, 2, Gtk::SHRINK, Gtk::SHRINK);
 	//timebar->attach(*space2, 5, 6, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::FILL);
-	timebar->attach(*widget_interpolation_scroll, 5, 7, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	timebar->attach(*keyframedial, 7, 8, 1, 2, Gtk::SHRINK, Gtk::SHRINK);
-	timebar->attach(*space, 8, 9, 1, 2, Gtk::SHRINK, Gtk::FILL);
-	timebar->attach(*animatebutton, 9, 10, 1, 2, Gtk::SHRINK, Gtk::SHRINK);
+	timebar->attach(*statusbar, 5, 7, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	//timebar->attach(*progressbar, 5, 6, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	timebar->attach(*widget_interpolation_scroll, 7, 8, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	timebar->attach(*keyframedial, 8, 9, 1, 2, Gtk::SHRINK, Gtk::SHRINK);
+	timebar->attach(*space, 9, 10, 1, 2, Gtk::SHRINK, Gtk::FILL);
+	timebar->attach(*animatebutton, 10, 11, 1, 2, Gtk::SHRINK, Gtk::SHRINK);
 	
-	timebar->attach(*timetrack, 0, 10, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL);
+	timebar->attach(*timetrack, 0, 11, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL);
 
 	timebar->show();
 
@@ -1267,47 +1275,6 @@ CanvasView::create_work_area()
 	work_area->signal_popup_menu().connect(sigc::mem_fun(*this, &studio::CanvasView::popup_main_menu));
 	work_area->show();
 	return work_area.get();
-}
-
-Gtk::Widget*
-CanvasView::create_status_bar()
-{
-	Gtk::Image *icon;
-	Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon");
-	cancel=false;
-
-	// Create the status bar at the bottom of the window
-	Gtk::Table *statusbartable= manage(new class Gtk::Table(5, 1, false));
-//	statusbar = manage(new class Gtk::Statusbar()); // This is already done at construction
-	progressbar =manage(new class Gtk::ProgressBar());
-	SMALL_BUTTON(stopbutton,"gtk-stop",_("Stop"));
-	SMALL_BUTTON(refreshbutton,"gtk-refresh",_("Refresh"));
-	//SMALL_BUTTON(treetogglebutton,"gtk-go-down",_("Toggle Layer Tree"));
-//	NEW_SMALL_BUTTON(raisebutton,"gtk-go-up",_("Raise Layer"));
-//	NEW_SMALL_BUTTON(lowerbutton,"gtk-go-down",_("Lower Layer"));
-	//statusbartable->attach(*treetogglebutton, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-//	statusbartable->attach(*lowerbutton, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-//	statusbartable->attach(*raisebutton, 1, 2, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	
-	statusbartable->attach(*statusbar, 1, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	statusbartable->attach(*progressbar, 2, 3, 0, 1, Gtk::SHRINK, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	statusbartable->attach(*refreshbutton, 3, 4, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	statusbartable->attach(*stopbutton, 4, 5, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	statusbar->show();
-	stopbutton->show();
-	refreshbutton->show();
-	progressbar->show();
-	stopbutton->set_sensitive(false);
-
-	//refreshbutton->signal_clicked().connect(sigc::mem_fun(*this, &studio::CanvasView::on_refresh_pressed));
-	//stopbutton->signal_clicked().connect(sigc::mem_fun(*this, &studio::CanvasView::stop));
-	//treetogglebutton->signal_clicked().connect(sigc::mem_fun(*this, &studio::CanvasView::toggle_tables));
-
-	refreshbutton->signal_clicked().connect(SLOT_EVENT(EVENT_REFRESH));
-	stopbutton->signal_clicked().connect(SLOT_EVENT(EVENT_STOP));
-
-	statusbartable->show_all();
-	return statusbartable;
 }
 
 Gtk::ToolButton*
@@ -1526,9 +1493,52 @@ CanvasView::create_display_bar()
 
 		displaybar->append(*preview_options_button);
 	}
+	
+	{ // Setup refresh button
+		Gtk::Image *icon = Gtk::manage(new Gtk::Image(Gtk::StockID("gtk-refresh"), iconsize));
+		icon->set_padding(0, 0);
+		icon->show();
+
+		refreshbutton = Gtk::manage(new class Gtk::ToolButton());
+		refreshbutton->set_icon_widget(*icon);
+		refreshbutton->signal_clicked().connect(SLOT_EVENT(EVENT_REFRESH));
+		refreshbutton->set_label(_("Refresh"));
+		refreshbutton->set_tooltip_text( _("Refresh workarea"));
+		refreshbutton->show();
+
+		displaybar->append(*refreshbutton);
+	}
 
 	displaybar->show();
-	return displaybar;
+	
+	progressbar =manage(new class Gtk::ProgressBar());
+	//progressbar->set_text("Idle");
+	//progressbar->set_show_text(true);
+	progressbar->show();
+	cancel=false;
+	
+	{
+		Gtk::Image *icon = Gtk::manage(new Gtk::Image(Gtk::StockID("gtk-stop"), iconsize));
+		icon->set_padding(0, 0);
+		icon->show();
+		
+		stopbutton = Gtk::manage(new class Gtk::Button());
+		stopbutton->set_image(*icon);
+		stopbutton->signal_clicked().connect(SLOT_EVENT(EVENT_STOP));
+		stopbutton->set_relief(Gtk::RELIEF_NONE);
+		//stopbutton->set_label(_("Stop"));
+		stopbutton->set_tooltip_text( _("Stop current operation"));
+		stopbutton->show();
+		stopbutton->set_sensitive(false);
+	}
+	
+	Gtk::HBox *hbox = manage(new class Gtk::HBox(false, 0));
+	hbox->pack_start(*displaybar, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0);
+	hbox->pack_start(*progressbar, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0);
+	hbox->pack_start(*stopbutton, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0);
+	hbox->show();
+	
+	return hbox;
 }
 
 void
