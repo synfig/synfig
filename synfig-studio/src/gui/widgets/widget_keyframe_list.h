@@ -130,6 +130,12 @@ public:
 	//! \return true: if success otherwise false
 	bool perform_move_kf(bool delta);
 
+	static void draw_arrow(
+		const Cairo::RefPtr<Cairo::Context> &cr,
+		double x, double y,
+		double width, double height,
+		bool fill,
+		const synfig::Color &color );
 
 
 /* ======================= EVENTS HANDLERS ===========================*/

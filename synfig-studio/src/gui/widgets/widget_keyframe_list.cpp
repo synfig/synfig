@@ -93,6 +93,23 @@ Widget_Keyframe_List::~Widget_Keyframe_List()
 {
 }
 
+void
+Widget_Keyframe_List::draw_arrow(
+	const Cairo::RefPtr<Cairo::Context> &cr,
+	double x, double y,
+	double width, double height,
+	bool fill,
+	const synfig::Color &color )
+{
+	cr->set_source_rgba(color.get_r(), color.get_g(), color.get_b(), color.get_a());
+	cr->set_line_width(0.5);
+	cr->move_to(x, y);
+	cr->line_to(x - 0.5*width, y - height);
+	cr->line_to(x + 0.5*width, y - height);
+	cr->close_path();
+	if (fill) cr->fill(); else cr->stroke();
+}
+
 bool
 Widget_Keyframe_List::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 {
@@ -100,8 +117,11 @@ Widget_Keyframe_List::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 	Glib::RefPtr<Gdk::Window> window = get_window();
 	if(!window) return true;
 
-	const int h(get_height());
-	const int w(get_width());
+	const double h(get_height());
+	const double w(get_width());
+	const double y(h - 2);
+	const double ah(h - 4);
+	const double aw(2*ah);
 
 	//!Boundaries of the drawing area in time units.
 	synfig::Time top(adj_timescale->get_upper());
@@ -111,12 +131,15 @@ Widget_Keyframe_List::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 	Glib::RefPtr<Gtk::StyleContext> style = get_style_context();
 	Gtk::StateFlags state = style->get_state();
 
-	//! A rectangle that defines the drawing area.
-	Gdk::Rectangle area(0,0,w,h);
-	Gdk::RGBA background("#9d9d9d");
+	//! Colors
+	Color background(0.62, 0.62, 0.62, 1.0);
+	Color normal(0.0, 0.0, 0.0, 1.0);
+	Color selected(0.0, 0.0, 0.75, 1.0);
+	Color drag_old_position(0.0, 0.0, 0.75, 1.0);
+	Color drag_new_position(0.0, 0.0, 1.0, 1.0);
 
-	//! draw a background
-	cr->set_source_rgb(background.get_red(), background.get_green(), background.get_blue());
+	//! Draw a background
+	cr->set_source_rgba(background.get_r(), background.get_g(), background.get_b(), background.get_a());
 	cr->rectangle(0.0, 0.0, w, h);
 	cr->fill();
 	cr->restore();
@@ -134,20 +157,12 @@ Widget_Keyframe_List::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 
 	for(iter=kf_list_->begin();iter!=kf_list_->end();iter++)
 	{
-		//!do not draw keyframes out of the widget boundaries
 		if (iter->get_time()>top || iter->get_time()<bottom)
 			continue;
-		//! If the keyframe is not the selected one
 		if(*iter!=selected_kf)
 		{
-			const int x((int)((float)(iter->get_time()-bottom) * (w/(top-bottom)) ) );
-			// Change shape for disabled keyframe
-			if (iter->active())
-				style->set_state(Gtk::STATE_FLAG_NORMAL);
-			else
-				style->set_state(Gtk::STATE_FLAG_INSENSITIVE);
-			style->render_arrow(cr, 1.5*PI, x+1, h, h);
-			style->set_state(state);
+			const double x = (double)(iter->get_time()-bottom) * (w/(top-bottom));
+			draw_arrow(cr, x, y, aw, ah, iter->active(), normal);
 		}
 		else
 		{
@@ -160,37 +175,17 @@ Widget_Keyframe_List::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 	// the selected keyframe is shown on top
 	if(show_selected)
 	{
-		// If not dragging just show the selected keyframe
 		if (!dragging_)
 		{
-			int x((int)((float)(selected_iter->get_time()-bottom) * (w/(top-bottom)) ) );
-			// Change shape for selected disabled keyframe
-			style->set_state(Gtk::STATE_FLAG_NORMAL);
-			if (selected_iter->active())
-			{
-				// Draw a selected arrow with "normal border"
-				style->render_arrow(cr, 1.5*PI, x+1, h, h);
-				style->render_arrow(cr, 1.5*PI, x+3, h-1, h-3);
-			}
-			else
-			{
-				style->render_arrow(cr, PI, x+h/2+1, h/2, h);
-				style->render_arrow(cr, PI, x+h/2, 2+(h-3)/2, h-3);
-			}
-			style->set_state(state);
+			const double x = (double)(selected_iter->get_time()-bottom) * (w/(top-bottom));
+			draw_arrow(cr, x, y, aw, ah, selected_iter->active(), selected);
 		}
-		// If dragging then show the selected as insensitive and the
-		// dragged as selected
 		else
 		{
-			style->set_state(Gtk::STATE_FLAG_NORMAL);
-			int x((int)((float)(selected_iter->get_time()-bottom) * (w/(top-bottom)) ) );
-			style->render_arrow(cr, 1.5*PI, x, h, h);
-
-			x=(int)((float)(dragging_kf_time-bottom) * (w/(top-bottom)) ) ;
-			style->render_arrow(cr, 1.5*PI, x+1, h, h);
-
-			style->set_state(state);
+			const double prev_x = (double)(selected_iter->get_time()-bottom) * (w/(top-bottom));
+			const double new_x = (double)(dragging_kf_time-bottom) * (w/(top-bottom));
+			draw_arrow(cr, prev_x, y, aw, ah, selected_iter->active(), drag_old_position);
+			draw_arrow(cr, new_x, y, aw, ah, selected_iter->active(), drag_new_position);
 		}
 	}
 	return true;
