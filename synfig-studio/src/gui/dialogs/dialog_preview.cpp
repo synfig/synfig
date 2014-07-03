@@ -208,11 +208,13 @@ settings(this,"prevoptions")
 	Gtk::Button *cancelButton = manage(new Gtk::Button(Gtk::StockID("gtk-cancel")));
 	cancelButton->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_PreviewOptions::on_cancel_pressed));
 	add_action_widget(*cancelButton, 1);
+	cancelButton->show();
 
 	Gtk::Button *okbutton = manage(new Gtk::Button(Gtk::StockID("gtk-go-forward")));
 	okbutton->set_label(_("Preview"));
 	okbutton->signal_clicked().connect(sigc::mem_fun(*this,&Dialog_PreviewOptions::on_ok_pressed));
 	add_action_widget(*okbutton, 0);
+	okbutton->show();
 
 	time_begin.set_sensitive(false);
 	time_end.set_sensitive(false);
