@@ -79,13 +79,14 @@ Widget_Ruler::draw_line(
 	const ::Cairo::RefPtr< ::Cairo::Context>& cr,
 	synfig::Real position,
 	synfig::Real size,
+	const Gdk::RGBA &color,
 	synfig::Real width,
 	synfig::Real height )
 {
 	position = round(position) - 0.5;
 
 	cr->set_line_width(0.5);
-	cr->set_source_rgb(0, 0, 0);
+	cr->set_source_rgba(color.get_red(), color.get_green(), color.get_blue(), color.get_alpha());
 	if (is_vertical) {
 		cr->move_to(width - size, position);
 		cr->line_to(width, position);
@@ -104,6 +105,7 @@ Widget_Ruler::draw_text(
 	synfig::Real position,
 	const synfig::String &text,
 	int size,
+	const Gdk::RGBA &color,
 	synfig::Real offset,
 	synfig::Real width,
 	synfig::Real height )
@@ -111,40 +113,43 @@ Widget_Ruler::draw_text(
 	layout->set_text(text);
 
 	int w = 0, h = 0;
-	for(int s = size; s > 0; --s)
-	{
-		Pango::AttrList attr_list;
-		Pango::AttrInt pango_size(Pango::Attribute::create_attr_size(Pango::SCALE*s));
-		pango_size.set_start_index(0);
-		pango_size.set_end_index(64);
-		attr_list.change(pango_size);
-		layout->set_attributes(attr_list);
-		layout->get_pixel_size(w, h);
-		if (!is_vertical || w + offset <= width) break;
+	Pango::AttrList attr_list;
+	Pango::AttrInt pango_size(Pango::Attribute::create_attr_size(Pango::SCALE*size));
+	pango_size.set_start_index(0);
+	pango_size.set_end_index(64);
+	attr_list.change(pango_size);
+	layout->set_attributes(attr_list);
+	layout->get_pixel_size(w, h);
+
+	if (is_vertical) {
+		cr->save();
+		cr->set_source_rgba(color.get_red(), color.get_green(), color.get_blue(), color.get_alpha());
+		cr->rotate_degrees(-90.f);
+		cr->move_to(-position + 3, width - offset - h);
+		layout->show_in_cairo_context(cr);
+		cr->restore();
+	} else {
+		cr->set_source_rgba(color.get_red(), color.get_green(), color.get_blue(), color.get_alpha());
+		cr->move_to(position + 3, height - offset - h);
+		layout->show_in_cairo_context(cr);
 	}
-
-	if (is_vertical)
-		cr->move_to(width - offset - w, position - h/2);
-	else
-		cr->move_to(position - w/2, height - offset - h);
-
-	cr->set_source_rgb(0, 0, 0);
-	layout->show_in_cairo_context(cr);
 }
 
 bool
 Widget_Ruler::on_draw(const ::Cairo::RefPtr< ::Cairo::Context>& cr)
 {
 	const Real min_screen_text_mark_distance = 50.0;
-	const Real mark_1_size = 10.0;
-	const Real mark_2_size = 7.0;
+	const Real mark_1_size = 18.0;
+	const Real mark_2_size = 18.0;
 	const Real mark_3_size = 5.0;
 	const Real mark_4_size = 3.0;
 	const int text_size = 8;
-	const Real text_offset = 12.0;
+	const Real text_offset = 5.0;
 
 	Real screen_min = get_screen_min();
 	Real screen_max = get_screen_max();
+
+	Gdk::RGBA color = get_style_context()->get_color(Gtk::STATE_FLAG_NORMAL);
 
 	Real min_text_mark_distance = fabs(distance_from_screen(min_screen_text_mark_distance));
 	int text_degree = (int)round(ceil(log10(min_text_mark_distance)));
@@ -207,36 +212,36 @@ Widget_Ruler::on_draw(const ::Cairo::RefPtr< ::Cairo::Context>& cr)
 
 		if (i%sub_divisions_count == 0)
 		{
-			draw_line(cr, screen_pos, mark_1_size, width, height);
+			draw_line(cr, screen_pos, mark_1_size, color, width, height);
 			String format = etl::strprintf("%%.%df", text_degree < 0 ? -text_degree : 0);
 			String text = etl::strprintf(format.c_str(), pos);
-			draw_text(cr, screen_pos, text, text_size, text_offset, width, height);
+			draw_text(cr, screen_pos, text, text_size, color, text_offset, width, height);
 		}
 		else
 		if ( (mode == 5 && i%10 == 0)
 		  || (mode == 2 && i%10 == 0) )
 		{
-			draw_line(cr, screen_pos, mark_2_size, width, height);
+			draw_line(cr, screen_pos, mark_2_size, color, width, height);
 			String format = etl::strprintf("%%.%df", text_degree < 1 ? 1-text_degree : 0);
 			String text = etl::strprintf(format.c_str(), pos);
-			draw_text(cr, screen_pos, text, text_size, text_offset, width, height);
+			draw_text(cr, screen_pos, text, text_size, color, text_offset, width, height);
 		}
 		else
 		if ( (mode == 10 && i%2 == 0)
 		  || (mode ==  5 && i%2 == 0)
 		  || (mode ==  2 && i%5 == 0) )
 		{
-			draw_line(cr, screen_pos, mark_3_size, width, height);
+			draw_line(cr, screen_pos, mark_3_size, color, width, height);
 		}
 		else
 		{
-			draw_line(cr, screen_pos, mark_4_size, width, height);
+			draw_line(cr, screen_pos, mark_4_size, color, width, height);
 		}
 	}
 
 	// draw current position
 	if (screen_position > screen_min && screen_position < screen_max)
-		draw_line(cr, screen_position, is_vertical ? width : height, width, height);
+		draw_line(cr, screen_position, is_vertical ? width : height, color, width, height);
 
 	return true;
 }

@@ -57,6 +57,7 @@ private:
 		const ::Cairo::RefPtr< ::Cairo::Context>& cr,
 		synfig::Real position,
 		synfig::Real size,
+		const Gdk::RGBA &color,
 		synfig::Real width,
 		synfig::Real height );
 
@@ -65,6 +66,7 @@ private:
 		synfig::Real position,
 		const synfig::String &text,
 		int size,
+		const Gdk::RGBA &color,
 		synfig::Real offset,
 		synfig::Real width,
 		synfig::Real height );

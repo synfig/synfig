@@ -1090,10 +1090,11 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 
 	// Create the menu button
 	menubutton=manage(new class Gtk::Button());
-	Gtk::Arrow *arrow1 = manage(new class Gtk::Arrow(Gtk::ARROW_RIGHT, Gtk::SHADOW_OUT));
-	arrow1->set_size_request(6,7);
-	menubutton->add(*arrow1);
+	//Gtk::Arrow *arrow1 = manage(new class Gtk::Arrow(Gtk::ARROW_RIGHT, Gtk::SHADOW_OUT));
+	//arrow1->set_size_request(3,3);
+	//menubutton->add(*arrow1);
 	menubutton->show_all();
+	menubutton->set_size_request(18, 18);
 	menubutton->signal_pressed().connect(sigc::mem_fun(*this, &WorkArea::popup_menu));
 	attach(*menubutton, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 
