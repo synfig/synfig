@@ -40,6 +40,9 @@
 #include "general.h"
 #include <ETL/clock>
 
+#include <vector>
+#include <algorithm>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -69,6 +72,75 @@ const unsigned int	DEF_TILE_HEIGHT= TILE_SIZE / 2;
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
+
+struct Target_Tile::TileGroup
+{
+	struct TileInfo {
+		int tile_index;
+		int x, y;
+		TileInfo(): tile_index(), x(), y() { }
+		bool operator < (const TileInfo &other) const
+		{
+			return y < other.y ? true
+				 : other.y < y ? false
+				 : x < other.x ? false
+				 : other.x < x ? false
+				 : tile_index < other.tile_index;
+		}
+	};
+
+	int x0, y0, x1, y1;
+	std::vector<TileInfo> tiles;
+
+	TileGroup(): x0(), y0(), x1(), y1() { }
+
+	static bool can_fill_rectangle(int x0, int y0, int x1, int y1, const std::vector<TileInfo> &tiles)
+	{
+		for(int x = x0; x < x1; ++x)
+		{
+			for(int y = y0; y < y1; ++y)
+			{
+				bool found = false;
+				for(std::vector<TileInfo>::const_iterator i = tiles.begin(); i != tiles.end(); ++i)
+					if (i->x == x && i->y == y) { found = true; break; }
+				if (!found) return false;
+			}
+		}
+		return true;
+	}
+
+	void take_tiles(std::vector<TileInfo> &tiles)
+	{
+		for(int x = x0; x < x1; ++x)
+			for(int y = y0; y < y1; ++y)
+				for(std::vector<TileInfo>::iterator i = tiles.begin(); i != tiles.end(); ++i)
+					if (i->x == x && i->y == y)
+						{ this->tiles.push_back(*i); tiles.erase(i); break; }
+	}
+
+	static void group_tiles(std::vector<TileGroup> &out_groups, std::vector<TileInfo> &in_tiles)
+	{
+		while(!in_tiles.empty())
+		{
+			out_groups.push_back(TileGroup());
+			TileGroup &group = out_groups.back();
+			group.x0 = in_tiles.front().x;
+			group.y0 = in_tiles.front().y;
+			group.x1 = group.x0 + 1;
+			group.y1 = group.y0 + 1;
+			group.take_tiles(in_tiles);
+			while(can_fill_rectangle(group.x0 - 1, group.y0, group.x0, group.y1, in_tiles))
+				{ --group.x0; group.take_tiles(in_tiles); }
+			while(can_fill_rectangle(group.x0, group.y0 - 1, group.x1, group.y0, in_tiles))
+				{ --group.y0; group.take_tiles(in_tiles); }
+			while(can_fill_rectangle(group.x1, group.y0, group.x1 + 1, group.y1, in_tiles))
+				{ ++group.x1; group.take_tiles(in_tiles); }
+			while(can_fill_rectangle(group.x0, group.y1, group.x1, group.y1 + 1, in_tiles))
+				{ ++group.y1; group.take_tiles(in_tiles); }
+			std::sort(group.tiles.begin(), group.tiles.end());
+		}
+	}
+};
 
 Target_Tile::Target_Tile():
 	threads_(2),
@@ -200,84 +272,112 @@ synfig::Target_Tile::render_frame_(Context context,ProgressCallback *cb)
 	}
 	else // If quality is set otherwise, then we use the accelerated renderer
 	{
-		Surface surface;
-
-		RendDesc tile_desc;
-		int x,y,w,h;
-		int i;
 		etl::clock tile_timer;
 		tile_timer.reset();
-		while((i=next_tile(x,y)))
+
+		// Gather tiles
+		std::vector<TileGroup::TileInfo> tiles;
+		TileGroup::TileInfo tile_info;
+		while((tile_info.tile_index = next_tile(tile_info.x, tile_info.y)) != 0) {
+			if (clipping_)
+				if (tile_info.x >= rend_desc.get_w() || tile_info.y >= rend_desc.get_h())
+					continue;
+			tile_info.x /= tile_w_;
+			tile_info.y /= tile_h_;
+			tiles.push_back(tile_info);
+		}
+		find_tile_time += tile_timer();
+
+		// Group tiles
+		std::vector<TileGroup> groups;
+		TileGroup::group_tiles(groups, tiles);
+
+		// Render groups
+		for(std::vector<TileGroup>::iterator i = groups.begin(); i != groups.end(); ++i)
 		{
-			find_tile_time+=tile_timer();
-			SuperCallback	super(cb,(total_tiles-i)*1000,(total_tiles-i+1)*1000,total_tiles*1000);
+			// Progress callback
+			int group_index = i - groups.begin();
+			int groups_count = (int)groups.size();
+			SuperCallback super(cb, (groups_count-group_index)*1000, (groups_count-group_index+1)*1000, groups_count*1000);
 			if(!super.amount_complete(0,1000))
 				return false;
-//			if(cb && !cb->amount_complete(total_tiles-i,total_tiles))
-//				return false;
-			// Perform clipping on the tile
-			if(clipping_)
+
+			// Render group
+			tile_timer.reset();
+
+			int x0 = i->x0 * tile_w_;
+			int y0 = i->y0 * tile_w_;
+			int x1 = i->x1 * tile_w_;
+			int y1 = i->y1 * tile_w_;
+
+			if (clipping_)
 			{
-				w=x+tile_w_<rend_desc.get_w()?tile_w_:rend_desc.get_w()-x;
-				h=y+tile_h_<rend_desc.get_h()?tile_h_:rend_desc.get_h()-y;
-				if(w<=0||h<=0)continue;
-			}
-			else
-			{
-				w=tile_w_;
-				h=tile_h_;
+				x1 = std::min(x1, rend_desc.get_w());
+				y1 = std::min(y1, rend_desc.get_h());
 			}
 
-			tile_desc=rend_desc;
-			tile_desc.set_subwindow(x,y,w,h);
+			RendDesc group_desc=rend_desc;
+			group_desc.set_subwindow(x0,y0,x1-x0,y1-y0);
 
-			etl::clock timer2;
-			timer2.reset();
-
-			if(!context.accelerated_render(&surface,get_quality(),tile_desc,&super))
+			Surface surface;
+			if (!context.accelerated_render(&surface, get_quality(), group_desc, &super))
 			{
 				// For some reason, the accelerated renderer failed.
 				if(cb)cb->error(_("Accelerated Renderer Failure"));
 				return false;
 			}
-			else
+
+			if(!surface)
 			{
-				work_time+=timer2();
-				if(!surface)
-				{
-					if(cb)cb->error(_("Bad surface"));
-					return false;
-				}
-				switch(get_alpha_mode())
-				{
-					case TARGET_ALPHA_MODE_FILL:
-						for(int i=0;i<surface.get_w()*surface.get_h();i++)
-							surface[0][i]=Color::blend(surface[0][i],desc.get_bg_color(),1.0f);
-						break;
-					case TARGET_ALPHA_MODE_EXTRACT:
-						for(int i=0;i<surface.get_w()*surface.get_h();i++)
-						{
-							float a=surface[0][i].get_a();
-							surface[0][i] = Color(a,a,a,a);
-						}
-						break;
-					case TARGET_ALPHA_MODE_REDUCE:
-						for(int i=0;i<surface.get_w()*surface.get_h();i++)
-							surface[0][i].set_a(1.0f);
-						break;
+				if(cb)cb->error(_("Bad surface"));
+				return false;
+			}
+			switch(get_alpha_mode())
+			{
+				case TARGET_ALPHA_MODE_FILL:
+					for(int i=0; i<surface.get_w()*surface.get_h(); ++i)
+						surface[0][i] = Color::blend(surface[0][i], desc.get_bg_color(), 1.0f);
+					break;
+				case TARGET_ALPHA_MODE_EXTRACT:
+					for(int i=0; i<surface.get_w()*surface.get_h(); ++i)
+					{
+						float a=surface[0][i].get_a();
+						surface[0][i] = Color(a,a,a,a);
+					}
+					break;
+				case TARGET_ALPHA_MODE_REDUCE:
+					for(int i=0;i<surface.get_w()*surface.get_h(); ++i)
+						surface[0][i].set_a(1.0f);
+					break;
 				}
 
-				etl::clock timer;
-				timer.reset();
+			work_time += tile_timer();
+
+			// Split group by tiles
+			for(std::vector<TileGroup::TileInfo>::iterator j = i->tiles.begin(); j != i->tiles.end(); ++j)
+			{
+				int tx0 = j->x * tile_w_;
+				int ty0 = j->y * tile_w_;
+				int tx1 = std::min(tx0 + tile_w_, x1);
+				int ty1 = std::min(ty0 + tile_w_, y1);
+
+				Surface tile_surface(Surface::size_type(tx1-tx0, ty1-ty0));
+				Surface::pen pen = tile_surface.get_pen(0, 0);
+				surface.blit_to(
+					pen,
+					tx0-x0, ty0-y0,
+					tile_surface.get_w(), tile_surface.get_h() );
+
 				// Add the tile to the target
-				if(!add_tile(surface,x,y))
+				tile_timer.reset();
+				if(!add_tile(tile_surface, tx0, ty0))
 				{
 					if(cb)cb->error(_("add_tile():Unable to put surface on target"));
 					return false;
 				}
-				add_tile_time+=timer();
+				add_tile_time+=tile_timer();
 			}
-			tile_timer.reset();
+
 			signal_progress()();
 		}
 	}
