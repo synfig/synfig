@@ -406,6 +406,8 @@ Dock_Timetrack::Dock_Timetrack():
 	table_=0;
 	widget_timeslider_= new Widget_Timeslider();
 	widget_kf_list_= new Widget_Keyframe_List();
+	
+	set_use_scrolled(false);
 
 	int header_height = 0;
 /* Commented during Align rows fixing
