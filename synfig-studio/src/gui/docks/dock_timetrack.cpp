@@ -508,6 +508,8 @@ Dock_Timetrack::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_v
 	if(table_)
 	{
 		table_->hide();
+		remove(*table_);
+		clear_previous();
 		delete table_;
 		hscrollbar_->unset_adjustment();
 		vscrollbar_->unset_adjustment();
