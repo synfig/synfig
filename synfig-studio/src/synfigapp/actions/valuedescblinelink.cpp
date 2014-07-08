@@ -257,6 +257,38 @@ Action::ValueDescBLineLink::prepare()
 			// ANGLE layer parameter
 			else if (value_desc.get_value_type() == type_angle)
 				calculated_value_node = ValueNode_BLineCalcTangent::create(type_angle);
+			// TRANSFORMATION layer parameter
+			else if (value_desc.get_value_type() == type_transformation)
+			{
+				LinkableValueNode::Handle composite_node = ValueNode_Composite::create(value_desc.get_value(time), get_canvas());
+				LinkableValueNode::Handle offset_node = ValueNode_BLineCalcVertex::create(type_vector);
+				LinkableValueNode::Handle angle_node = ValueNode_BLineCalcTangent::create(type_angle);
+				composite_node->set_link("offset", offset_node);
+				composite_node->set_link("angle", angle_node);
+
+				offset_node->set_link("bline",  bline_value_node );
+				offset_node->set_link("loop",   loop_value_node  );
+				offset_node->set_link("amount", amount_value_node);
+				offset_node->set_link("homogeneous", homogeneous_value_node);
+
+				angle_node->set_link("bline",  bline_value_node );
+				angle_node->set_link("loop",   loop_value_node  );
+				angle_node->set_link("amount", amount_value_node);
+				angle_node->set_link("homogeneous", homogeneous_value_node);
+
+				action = LayerParamConnect::create();
+				action->set_param("layer", value_desc.get_layer());
+				action->set_param("param", value_desc.get_param_name());
+				action->set_param("canvas", get_canvas());
+				action->set_param("canvas_interface", get_canvas_interface());
+				action->set_param("value_node", ValueNode::Handle(composite_node));
+
+				assert(action->is_ready());
+				if (!action->is_ready()) throw Error(Error::TYPE_NOTREADY);
+				add_action_front(action);
+
+				continue;
+			}
 			else
 				continue;
 
