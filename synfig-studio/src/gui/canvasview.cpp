@@ -791,9 +791,9 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	Gtk::Table *layout_table= manage(new class Gtk::Table(4, 1, false));
 	//layout_table->attach(*vpaned, 0, 1, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	layout_table->attach(*create_work_area(),   0, 1, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	layout_table->attach(*create_display_bar(), 0, 1, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	layout_table->attach(*space, 0, 1, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	init_menus();
+	layout_table->attach(*create_display_bar(), 0, 1, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	//layout_table->attach(*App::ui_manager()->get_widget("/menu-main"), 0, 1, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	layout_table->attach(*create_time_bar(),    0, 1, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	//layout_table->attach(*create_status_bar(),  0, 1, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
@@ -1281,10 +1281,10 @@ CanvasView::create_work_area()
 }
 
 Gtk::ToolButton*
-CanvasView::create_action_toolbutton(const synfig::String &action)
+CanvasView::create_action_toolbutton(const Glib::RefPtr<Gtk::Action> &action)
 {
 	Gtk::ToolButton *button = Gtk::manage(new Gtk::ToolButton());
-	button->set_related_action(App::ui_manager()->get_action(action));
+	button->set_related_action(action);
 	button->show();
 	return button;
 }
@@ -1307,18 +1307,18 @@ CanvasView::create_display_bar()
 	displaybar->set_toolbar_style(Gtk::TOOLBAR_BOTH_HORIZ);
 
 	// File
-	displaybar->append( *create_action_toolbutton("/toolbar-main/new") );
-	displaybar->append( *create_action_toolbutton("/toolbar-main/open") );
-	displaybar->append( *create_action_toolbutton("/toolbar-main/save") );
-	displaybar->append( *create_action_toolbutton("/toolbar-main/save-as") );
-	displaybar->append( *create_action_toolbutton("/toolbar-main/save-all") );
+	displaybar->append( *create_action_toolbutton( App::ui_manager()->get_action("/toolbar-main/new") ) );
+	displaybar->append( *create_action_toolbutton( App::ui_manager()->get_action("/toolbar-main/open") ) );
+	displaybar->append( *create_action_toolbutton( action_group->get_action("save") ) );
+	displaybar->append( *create_action_toolbutton( action_group->get_action("save-as") ) );
+	displaybar->append( *create_action_toolbutton( App::ui_manager()->get_action("/toolbar-main/save-all") ) );
 
 	// Separator
 	displaybar->append( *create_tool_separator() );
 
 	// Edit
-	displaybar->append( *create_action_toolbutton("/toolbar-main/undo") );
-	displaybar->append( *create_action_toolbutton("/toolbar-main/redo") );
+	displaybar->append( *create_action_toolbutton( App::ui_manager()->get_action("/toolbar-main/undo") ) );
+	displaybar->append( *create_action_toolbutton( App::ui_manager()->get_action("/toolbar-main/redo") ) );
 
 	// Separator
 	displaybar->append( *create_tool_separator() );

@@ -509,7 +509,7 @@ private:
 
 	Gtk::Widget *create_time_bar();
 
-	Gtk::ToolButton* create_action_toolbutton(const synfig::String &action);
+	Gtk::ToolButton* create_action_toolbutton(const Glib::RefPtr<Gtk::Action> &action);
 	Gtk::SeparatorToolItem* create_tool_separator();
 	Gtk::Widget* create_display_bar();
 
