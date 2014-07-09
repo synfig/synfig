@@ -102,7 +102,7 @@ Widget_Keyframe_List::draw_arrow(
 	const synfig::Color &color )
 {
 	cr->set_source_rgba(color.get_r(), color.get_g(), color.get_b(), color.get_a());
-	cr->set_line_width(0.5);
+	cr->set_line_width(1.0);
 	cr->move_to(x, y);
 	cr->line_to(x - 0.5*width, y - height);
 	cr->line_to(x + 0.5*width, y - height);
@@ -134,9 +134,9 @@ Widget_Keyframe_List::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 	//! Colors
 	Color background(0.62, 0.62, 0.62, 1.0);
 	Color normal(0.0, 0.0, 0.0, 1.0);
-	Color selected(0.0, 0.0, 0.75, 1.0);
-	Color drag_old_position(0.0, 0.0, 0.75, 1.0);
-	Color drag_new_position(0.0, 0.0, 1.0, 1.0);
+	Color selected(1.0, 1.0, 1.0, 1.0);
+	Color drag_old_position(1.0, 1.0, 1.0, 0.6);
+	Color drag_new_position(1.0, 1.0, 1.0, 1.0);
 
 	//! Draw a background
 	cr->set_source_rgba(background.get_r(), background.get_g(), background.get_b(), background.get_a());
