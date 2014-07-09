@@ -678,7 +678,7 @@ Action::ValueDescSet::prepare()
 		action->set_param("canvas",get_canvas());
 		action->set_param("canvas_interface",get_canvas_interface());
 		action->set_param("time",time);
-		action->set_param("new_value",new_amount);
+		action->set_param("new_value",ValueBase(new_amount));
 		action->set_param("value_desc",ValueDesc(bline_vertex, bline_vertex->get_link_index_from_name("amount")));
 		if(!action->is_ready())
 			throw Error(Error::TYPE_NOTREADY);
