@@ -409,18 +409,6 @@ Dock_Timetrack::Dock_Timetrack():
 	
 	set_use_scrolled(false);
 
-	int header_height = 0;
-/* Commented during Align rows fixing
-// http://www.synfig.org/issues/thebuggenie/synfig/issues/161
-	if(getenv("SYNFIG_TIMETRACK_HEADER_HEIGHT"))
-		header_height = atoi(getenv("SYNFIG_TIMETRACK_HEADER_HEIGHT"));
-	if (header_height < 3)
-*/
-		header_height = 24;
-
-	widget_timeslider_->set_size_request(-1,header_height-header_height/3+1);
-	widget_kf_list_->set_size_request(-1,header_height/3+1);
-
 	hscrollbar_=new Gtk::HScrollbar();
 	vscrollbar_=new Gtk::VScrollbar();
 }
@@ -450,6 +438,7 @@ Dock_Timetrack::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view
 	tree_view->set_model(tree_store);
 	Gtk::TreeView* param_tree_view(dynamic_cast<Gtk::TreeView*>(canvas_view->get_ext_widget("params")));
 	tree_view->mimic(param_tree_view);
+	mimic_tree_view=param_tree_view;
 
 	tree_view->signal_waypoint_clicked_timetrackview.connect(sigc::mem_fun(*canvas_view, &studio::CanvasView::on_waypoint_clicked_canvasview));
 
@@ -584,17 +573,10 @@ ALIGN2 = align_drawingArea2
 void
 Dock_Timetrack::on_update_header_height( int header_height)
 {
-	// FIXME very bad hack (curves dock also contains this)
-	//! Adapt the border size "according" to different windows manager rendering
-#ifdef WIN32
-	header_height-=2;
-#elif defined(__APPLE__)
-	header_height+=6;
-#else
-// *nux and others
-	header_height+=2;
-#endif
-
-	widget_timeslider_->set_size_request(-1,header_height-header_height/3+1);
-	widget_kf_list_->set_size_request(-1,header_height/3+1);
+	int width=0;
+	int height=0;
+	int kf_list_height=10;
+	mimic_tree_view->convert_bin_window_to_widget_coords(0, 0, width, height);
+	widget_timeslider_->set_size_request(-1,height-kf_list_height);
+	widget_kf_list_->set_size_request(-1,kf_list_height);
 }

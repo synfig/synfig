@@ -51,6 +51,7 @@ class Dock_Timetrack : public Dock_CanvasSpecific
 	Widget_Timeslider* widget_timeslider_;
 	Widget_Keyframe_List* widget_kf_list_;
 	Gtk::Table* table_;
+	Gtk::TreeView *mimic_tree_view;
 
 protected:
 	virtual void init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view);
