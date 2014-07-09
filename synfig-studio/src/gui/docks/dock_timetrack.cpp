@@ -510,7 +510,11 @@ Dock_Timetrack::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_v
 	{
 		TimeTrackView* tree_view(dynamic_cast<TimeTrackView*>(canvas_view->get_ext_widget(get_name())));
 		Gtk::TreeView* param_tree_view(dynamic_cast<Gtk::TreeView*>(canvas_view->get_ext_widget("params")));
-		tree_view->set_vadjustment(param_tree_view->get_vadjustment());
+		Gtk::ScrolledWindow* scrolled = Gtk::manage(new Gtk::ScrolledWindow);
+		scrolled->add(*tree_view);
+		scrolled->set_policy(Gtk::POLICY_NEVER,Gtk::POLICY_AUTOMATIC);
+		scrolled->set_vadjustment(param_tree_view->get_vadjustment());
+		scrolled->show_all();
 
 		assert(tree_view);
 		// Fixed size drawing areas to align the widget_timeslider and tree_view time cursors
@@ -555,7 +559,7 @@ ALIGN2 = align_drawingArea2
 		table_->attach(*widget_kf_list_, 1, 2, 0, 1, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::SHRINK);
 		table_->attach(*widget_timeslider_, 1, 2, 1, 2, Gtk::FILL|Gtk::SHRINK, Gtk::FILL|Gtk::SHRINK);
 		table_->attach(*align_drawingArea2, 2, 3, 0, 2, Gtk::SHRINK, Gtk::FILL);
-		table_->attach(*tree_view, 0, 3, 2, 3, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::EXPAND);
+		table_->attach(*scrolled, 0, 3, 2, 3, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::EXPAND);
 		table_->attach(*hscrollbar_, 0, 3, 3, 4, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::SHRINK);
 		table_->attach(*vscrollbar_, 3, 4, 0, 3, Gtk::FILL|Gtk::SHRINK, Gtk::FILL|Gtk::EXPAND);
 		add(*table_);
@@ -563,6 +567,8 @@ ALIGN2 = align_drawingArea2
 		//add(*last_widget_curves_);
 		table_->show_all();
 		show_all();
+		
+		scrolled->get_vscrollbar()->hide();
 	}
 	else
 	{
