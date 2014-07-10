@@ -1049,7 +1049,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	refreshes=0;
 
   	drawing_area=manage(new class Gtk::DrawingArea());
-  	drawing_area->add_events(Gdk::SCROLL_MASK);
+  	drawing_area->add_events(Gdk::SCROLL_MASK | Gdk::BUTTON3_MOTION_MASK);
 	drawing_area->show();
 
 	drawing_frame=manage(new Gtk::Frame);
@@ -1119,10 +1119,11 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	attach(*hbox, 0, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	hbox->show();
 
-	drawing_area->add_events(Gdk::KEY_PRESS_MASK | Gdk::KEY_RELEASE_MASK);
 	add_events(Gdk::KEY_PRESS_MASK);
+	drawing_area->add_events(Gdk::KEY_PRESS_MASK | Gdk::KEY_RELEASE_MASK);
 	drawing_area->add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK);
-	drawing_area->add_events(Gdk::BUTTON1_MOTION_MASK | Gdk::BUTTON2_MOTION_MASK |Gdk::POINTER_MOTION_MASK);
+	drawing_area->add_events(Gdk::BUTTON1_MOTION_MASK | Gdk::BUTTON2_MOTION_MASK | Gdk::BUTTON3_MOTION_MASK | Gdk::POINTER_MOTION_MASK);
+	drawing_area->add_events(Gdk::SCROLL_MASK);
 
 	// ----------------- Attach signals
 
@@ -1705,7 +1706,6 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 	const float radius((abs(pw)+abs(ph))*4);
 	int button_pressed(0);
 	float pressure(0);
-	bool is_mouse(false);
 	Gdk::ModifierType modifier(Gdk::ModifierType(0));
 
 	// Handle input stuff
@@ -2005,12 +2005,11 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				bezier->signal_user_click(1)(bezier_click_pos);
 
 			if(canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MOUSE_BUTTON_DOWN,BUTTON_MIDDLE,mouse_pos,pressure,modifier))==Smach::RESULT_OK)
-			if(is_mouse)
-			{
-				dragging=DRAG_WINDOW;
-				drag_point=mouse_pos;
-				signal_user_click(1)(mouse_pos);
-			}
+
+			dragging=DRAG_WINDOW;
+			drag_point=mouse_pos;
+			signal_user_click(1)(mouse_pos);
+
 			break;
 		}
 		case 3:	// Attempt to either get info on a duck, or open the menu
