@@ -62,7 +62,11 @@ SYNFIG_LAYER_SET_CVS_ID(Layer_SkeletonDeformation,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 
-Layer_SkeletonDeformation::Layer_SkeletonDeformation()
+Layer_SkeletonDeformation::Layer_SkeletonDeformation():
+	param_point1(ValueBase(Point(-4,4))),
+	param_point2(ValueBase(Point(4,-4))),
+	param_x_subdivisions(32),
+	param_y_subdivisions(32)
 {
 	max_texture_scale = 1.f;
 	param_bones.set_list_of(std::vector<BonePair>(1));
@@ -91,6 +95,27 @@ Layer_SkeletonDeformation::get_param_vocab()const
 		.set_local_name(_("Bones"))
 		.set_description(_("List of bones"))
 		.set_static(true)
+	);
+
+	ret.push_back(ParamDesc("point1")
+		.set_local_name(_("Point 1"))
+		.set_box("point2")
+		.set_description(_("First corner of the bounds rectangle"))
+	);
+
+	ret.push_back(ParamDesc("point2")
+		.set_local_name(_("Point 2"))
+		.set_description(_("Second corner of the bounds rectangle"))
+	);
+
+	ret.push_back(ParamDesc("x_subdivisions")
+		.set_local_name(_("Horizontal subdivisions"))
+		.set_description(_("Count of horizontal subdivisions of the transformation grid"))
+	);
+
+	ret.push_back(ParamDesc("y_subdivisions")
+		.set_local_name(_("Vertical subdivisions"))
+		.set_description(_("Count of vertical subdivisions of the transformation grid"))
 	);
 
 	return ret;
@@ -138,23 +163,24 @@ Layer_SkeletonDeformation::prepare_mesh()
 
 	mesh.clear();
 
-	// TODO: custom grid step
-	// TODO: custom grid size
 	// TODO: build grid with dynamic size
 
-	const Real recommended_grid_step = 0.25;
-	const Real grid_size = 8.0;
-	const int grid_side_count = (int)roundf(grid_size / recommended_grid_step) + 1;
-	const Real grid_step = grid_size / (Real)(grid_side_count - 1);
+	const Point grid_p0 = param_point1.get(Point());
+	const Point grid_p1 = param_point2.get(Point());
+	const int grid_side_count_x = std::max(1, param_x_subdivisions.get(int())) + 1;
+	const int grid_side_count_y = std::max(1, param_y_subdivisions.get(int())) + 1;
+
+	const Real grid_step_x = (grid_p1[0] - grid_p0[0]) / (Real)(grid_side_count_x - 1);
+	const Real grid_step_y = (grid_p1[1] - grid_p0[1]) / (Real)(grid_side_count_y - 1);
 
 	// build grid
 	std::vector<GridPoint> grid;
-	grid.reserve(grid_side_count * grid_side_count);
-	for(int i = 0; i < grid_side_count; ++i)
-		for(int j = 0; j < grid_side_count; ++j)
+	grid.reserve(grid_side_count_x * grid_side_count_y);
+	for(int j = 0; j < grid_side_count_y; ++j)
+		for(int i = 0; i < grid_side_count_x; ++i)
 			grid.push_back(GridPoint(Vector(
-				i*grid_step - 0.5f*grid_size,
-				j*grid_step - 0.5f*grid_size )));
+				grid_p0[0] + i*grid_step_x,
+				grid_p0[1] + j*grid_step_y )));
 
 	// apply deformation
 	if (param_bones.can_get(ValueBase::List()))
@@ -203,19 +229,19 @@ Layer_SkeletonDeformation::prepare_mesh()
 		mesh.vertices.push_back(Mesh::Vertex(i->get_average(), i->initial));
 
 	// build triangles
-	mesh.triangles.reserve(2*(grid_side_count-1)*(grid_side_count-1));
-	for(int i = 1; i < grid_side_count; ++i)
+	mesh.triangles.reserve(2*(grid_side_count_x-1)*(grid_side_count_y-1));
+	for(int j = 1; j < grid_side_count_y; ++j)
 	{
-		for(int j = 1; j < grid_side_count; ++j)
+		for(int i = 1; i < grid_side_count_x; ++i)
 		{
 			mesh.triangles.push_back(Mesh::Triangle(
-				(j-1)*grid_side_count + (i-1),
-				(j-1)*grid_side_count + i,
-				j*grid_side_count + (i-1) ));
+				(j-1)*grid_side_count_x + (i-1),
+				(j-1)*grid_side_count_x + i,
+				j*grid_side_count_x + (i-1) ));
 			mesh.triangles.push_back(Mesh::Triangle(
-				j*grid_side_count + i,
-				j*grid_side_count + (i-1),
-				(j-1)*grid_side_count + i ));
+				j*grid_side_count_x + i,
+				j*grid_side_count_x + (i-1),
+				(j-1)*grid_side_count_x + i ));
 		}
 	}
 
@@ -226,6 +252,10 @@ bool
 Layer_SkeletonDeformation::set_param(const String & param, const ValueBase &value)
 {
     IMPORT_VALUE_PLUS(param_bones, prepare_mesh());
+	IMPORT_VALUE_PLUS(param_point1, prepare_mesh());
+	IMPORT_VALUE_PLUS(param_point2, prepare_mesh());
+	IMPORT_VALUE_PLUS(param_x_subdivisions, prepare_mesh());
+	IMPORT_VALUE_PLUS(param_y_subdivisions, prepare_mesh());
     return Layer_MeshTransform::set_param(param,value);
 }
 
@@ -233,6 +263,10 @@ ValueBase
 Layer_SkeletonDeformation::get_param(const String& param)const
 {
 	EXPORT_VALUE(param_bones);
+	EXPORT_VALUE(param_point1);
+	EXPORT_VALUE(param_point2);
+	EXPORT_VALUE(param_x_subdivisions);
+	EXPORT_VALUE(param_y_subdivisions);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
