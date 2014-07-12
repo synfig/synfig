@@ -511,6 +511,7 @@ Dock_Timetrack::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_v
 		TimeTrackView* tree_view(dynamic_cast<TimeTrackView*>(canvas_view->get_ext_widget(get_name())));
 		Gtk::TreeView* param_tree_view(dynamic_cast<Gtk::TreeView*>(canvas_view->get_ext_widget("params")));
 		Gtk::ScrolledWindow* scrolled = Gtk::manage(new Gtk::ScrolledWindow);
+		scrolled->get_vscrollbar()->hide();
 		scrolled->add(*tree_view);
 		scrolled->set_policy(Gtk::POLICY_NEVER,Gtk::POLICY_AUTOMATIC);
 		scrolled->set_vadjustment(param_tree_view->get_vadjustment());
@@ -563,12 +564,13 @@ ALIGN2 = align_drawingArea2
 		table_->attach(*hscrollbar_, 0, 3, 3, 4, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::SHRINK);
 		table_->attach(*vscrollbar_, 3, 4, 0, 3, Gtk::FILL|Gtk::SHRINK, Gtk::FILL|Gtk::EXPAND);
 		add(*table_);
+		
+		// Should be here, after the widget was attached to table
+		tree_view->add_events(Gdk::SCROLL_MASK);
 
 		//add(*last_widget_curves_);
 		table_->show_all();
 		show_all();
-		
-		scrolled->get_vscrollbar()->hide();
 	}
 	else
 	{
