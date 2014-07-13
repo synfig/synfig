@@ -357,14 +357,14 @@ StateCircle_Context::load_settings()
 			set_opacity(1);
 
 		if(settings.get_value("circle.bline_width",value) && value != "")
-			set_bline_width(Distance(atof(value.c_str()), Distance::SYSTEM_POINTS));
+			set_bline_width(Distance(atof(value.c_str()), App::distance_system));
 		else
-			set_bline_width(Distance(1, Distance::SYSTEM_POINTS)); // default width
+			set_bline_width(Distance(1, App::distance_system)); // default width
 
 		if(settings.get_value("circle.feather",value))
-			set_feather_size(Distance(atof(value.c_str()), Distance::SYSTEM_POINTS));
+			set_feather_size(Distance(atof(value.c_str()), App::distance_system));
 		else
-			set_feather_size(Distance(0, Distance::SYSTEM_POINTS)); // default feather
+			set_feather_size(Distance(0, App::distance_system)); // default feather
 
 		if(settings.get_value("circle.number_of_bline_points",value))
 			set_number_of_bline_points(atof(value.c_str()));

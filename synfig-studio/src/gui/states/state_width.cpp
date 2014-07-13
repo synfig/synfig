@@ -184,9 +184,9 @@ StateWidth_Context::load_settings()
 			set_delta(6);
 
 		if(settings.get_value("width.radius",value))
-			set_radius(Distance(value.c_str()));
+			set_radius(Distance(atof(value.c_str()), App::distance_system));
 		else
-			set_radius(Distance("60pt"));
+			set_radius(Distance(60, App::distance_system));
 
 		//defaults to false
 		if(settings.get_value("width.relative",value) && value == "1")

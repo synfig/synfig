@@ -415,9 +415,9 @@ StateDraw_Context::load_settings()
 			set_opacity(1);
 
 		if(settings.get_value("draw.bline_width",value) && value != "")
-			set_bline_width(Distance(atof(value.c_str()), Distance::SYSTEM_POINTS));
+			set_bline_width(Distance(atof(value.c_str()), App::distance_system));
 		else
-			set_bline_width(Distance(1, Distance::SYSTEM_POINTS)); // default width
+			set_bline_width(Distance(1, App::distance_system)); // default width
 
 		if(settings.get_value("draw.pressure_width",value) && value=="0")
 			set_pressure_width_flag(false);
@@ -472,9 +472,9 @@ StateDraw_Context::load_settings()
 			set_min_pressure(0);
 
 		if(settings.get_value("draw.feather",value))
-			set_feather_size(Distance(value.c_str()));
+			set_feather_size(Distance(atof(value.c_str()), App::distance_system));
 		else
-			set_feather_size(Distance("0pt"));
+			set_feather_size(Distance(0, App::distance_system));
 
 		if(settings.get_value("draw.gthreshold",value))
 		{
