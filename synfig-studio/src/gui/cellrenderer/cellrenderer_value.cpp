@@ -56,6 +56,8 @@
 #include "dialogs/dialog_color.h"
 #include <gtkmm/textview.h>
 
+#include <gdkmm/general.h>
+
 #include "general.h"
 
 #endif
@@ -332,6 +334,9 @@ CellRenderer_ValueBase::render_vfunc(
 	if(!cr)
 		return;
 
+	Gdk::Rectangle aligned_area;
+	get_aligned_area(widget, flags, cell_area, aligned_area);
+
 	int	height = cell_area.get_height();
 
 	/*
@@ -433,13 +438,10 @@ CellRenderer_ValueBase::render_vfunc(
 	else
 	if (type == type_string)
 	{
-		if(data.get_type()==type_string)
-		{
-			if(!data.get(synfig::String()).empty())
-				property_text()=static_cast<Glib::ustring>(data.get(synfig::String()));
-			else
-				property_text()=Glib::ustring("<empty>");
-		}
+		if(!data.get(synfig::String()).empty())
+			property_text()=static_cast<Glib::ustring>(data.get(synfig::String()));
+		else
+			property_text()=Glib::ustring("<empty>");
 	}
 	else
 	if (type == type_canvas)
@@ -463,13 +465,31 @@ CellRenderer_ValueBase::render_vfunc(
 	else
 	if (type == type_bool)
 	{
-		widget.get_style_context()->render_check(
+		Glib::RefPtr<Gtk::StyleContext> context = widget.get_style_context();
+		context->context_save();
+		Gtk::StateFlags state = get_state(widget, flags);
+		state &= ~(Gtk::STATE_FLAG_INCONSISTENT | Gtk::STATE_FLAG_ACTIVE);
+		if ((flags & Gtk::CELL_RENDERER_SELECTED) != 0 && widget.has_focus())
+			state |= Gtk::STATE_FLAG_SELECTED;
+		if (!property_editable())
+			state |= Gtk::STATE_FLAG_INSENSITIVE;
+		if (data.get(bool()))
+			state |= Gtk::STATE_FLAG_ACTIVE;
+
+		cr->save();
+		Gdk::Cairo::add_rectangle_to_path(cr, cell_area);
+		cr->clip();
+
+		context->add_class("check");
+		context->set_state(state);
+		context->render_check(
 			cr,
-			cell_area.get_x()/* + x_offset + cell_xpad*/,
-			cell_area.get_y()/* + y_offset + cell_ypad*/,
-			height-1,
-			height-1
+			aligned_area.get_x(),
+			aligned_area.get_y(),
+			aligned_area.get_height(),
+			aligned_area.get_height()
 		);
+		context->context_restore();
 		return;
 	}
 	else
