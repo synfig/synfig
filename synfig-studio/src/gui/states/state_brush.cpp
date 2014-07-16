@@ -456,6 +456,10 @@ StateBrush_Context::load_settings()
 		{
 			// force add Ubuntu path to mypaint brushes
 			paths.insert("/usr/share/mypaint/brushes");
+			// a small temp change to get the brushes working for Win Users 
+			#ifdef WIN32
+			paths.insert("C:\brushes");
+			#endif
 		}
 		refresh_tool_options();
 
