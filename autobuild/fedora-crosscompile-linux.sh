@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # TODO: LD_PRELOAD wrapper
-# TODO: rpm/deb/tgz packaging
 # TODO: i386 build
 # TODO: Migrate to crosstool-ng ???
 # TODO: Bundle ALL dependent lib (libpng issue)
@@ -11,28 +10,51 @@ set -e
 
 export SCRIPTPATH=$(cd `dirname "$0"`; pwd)
 
+RELEASE=8
+
 BUILDROOT_VERSION=2
 BUILDROOT_LIBRARY_SET_ID=1
 
 if [ -z $ARCH ]; then
-	export ARCH="64"
+	if [[ `uname -i` == "x86_64" ]]; then
+		export ARCH="64"
+	else
+		export ARCH="32"
+	fi
 fi
 
 if [ -z $THREADS ]; then
 	export THREADS=2
 fi
 
+if [ -z $DEBUG ]; then
+	export DEBUG=0
+fi
+
+if [[ $DEBUG == 1 ]]; then
+	echo
+	echo "Debug mode: enabled"
+	echo
+	DEBUG_OPT='--enable-debug --enable-optimization=0'
+	export SUFFIX="-debug"
+else
+	DEBUG_OPT=''
+fi
+
+if [ ! -z $SUBSET ]; then
+	export SUFFIX="-$SUBSET"
+fi
+
 export WORKSPACE=$HOME/synfig-buildroot
-export SYSPREFIX=$WORKSPACE/linux$ARCH/sys
-export PREFIX=$WORKSPACE/linux$ARCH/build
-export DEPSPREFIX=$WORKSPACE/linux$ARCH/build
-#export DEPSPREFIX=$WORKSPACE/linux$ARCH/sys-deps
-export SRCPREFIX=$WORKSPACE/linux$ARCH/source
-export DISTPREFIX=$WORKSPACE/linux$ARCH/dist	# not used yet
+export SYSPREFIX=$WORKSPACE/linux$ARCH$SUFFIX/sys
+export PREFIX=$WORKSPACE/linux$ARCH$SUFFIX/build
+#export DEPSPREFIX=$WORKSPACE/linux$ARCH$SUFFIX/build
+export DEPSPREFIX=$WORKSPACE/linux$ARCH$SUFFIX/sys-deps
+export SRCPREFIX=$WORKSPACE/linux$ARCH$SUFFIX/source
+export DISTPREFIX=$WORKSPACE/linux$ARCH$SUFFIX/dist
 export CACHEDIR=$WORKSPACE/cache
 
 [ -e ${SRCPREFIX} ] || mkdir -p ${SRCPREFIX}
-[ -e ${DEPSPREFIX} ] || mkdir -p ${DEPSPREFIX}
 [ -e ${WORKSPACE}/cache ] || mkdir -p ${WORKSPACE}/cache
 
 export EMAIL='root@synfig.org'
@@ -64,36 +86,48 @@ PANGO_VERSION=1.24.5
 FONTCONFIG_VERSION=2.5.0
 JACK_VERSION=0.124.1
 
-if [ -z $DEBUG ]; then
-	export DEBUG=1
-fi
-
-if [[ $DEBUG == 1 ]]; then
-	echo
-	echo "Debug mode: enabled"
-	echo
-	DEBUG_OPT='--enable-debug --enable-optimization=0'
-else
-	DEBUG_OPT=''
-fi
-
 if [[ $ARCH == "32" ]]; then
 	export SYS_ARCH=i386
+	export RPM_ARCH=i386
 	export LIBDIR="lib"
 	if ( cat /etc/issue | egrep "Ubuntu" ); then
 		export UBUNTU_LIBDIR="/lib/i386-linux-gnu/"
 	fi
 else
 	export SYS_ARCH=amd64
+	export RPM_ARCH=x86_64
 	export LIBDIR="lib64"
 	if ( cat /etc/issue | egrep "Ubuntu" ); then
 		export UBUNTU_LIBDIR="/lib/x86_64-linux-gnu/"
 	fi
 fi
 
-export VERSION=`cat ${SCRIPTPATH}/../synfig-core/configure.ac |egrep "AC_INIT\(\[Synfig Core\],"| sed "s|.*Core\],\[||" | sed "s|\],\[.*||"`
+
 pushd "${SCRIPTPATH}" > /dev/null
+export VERSION=`cat ${SCRIPTPATH}/../synfig-core/configure.ac |egrep "AC_INIT\(\[Synfig Core\],"| sed "s|.*Core\],\[||" | sed "s|\],\[.*||"`
 export REVISION=`git show --pretty=format:%ci HEAD |  head -c 10 | tr -d '-'`
+if [ -z $BREED ]; then
+	BREED="`git branch -a --no-color --contains HEAD | sed -e s/\*\ // | sed -e s/\(no\ branch\)// | tr '\n' ' ' | tr -s ' ' | sed s/^' '//`"
+	if ( echo $BREED | egrep origin/master > /dev/null ); then
+		#give a priority to master branch
+		BREED='master'
+	else
+		BREED=`echo $BREED | cut -d ' ' -f 1`
+		BREED=${BREED##*/}
+	fi
+	BREED=${BREED%_master}
+fi
+if [[ ${VERSION##*-RC} != ${VERSION} ]]; then
+	#if [[ $BREED == 'master' ]]; then
+		BREED=rc${VERSION##*-RC}
+	#else
+	#	BREED=rc${VERSION##*-RC}.$BREED
+	#fi
+	VERSION=${VERSION%%-*}
+fi
+[[ $DEBUG == 1 ]] && BREED=${BREED}.dbg
+BREED=`echo $BREED | tr _ . | tr - .`	# No "-" or "_" characters, becuse RPM and DEB complain
+
 popd > /dev/null
 
 set_environment()
@@ -109,6 +143,7 @@ set_environment()
 	export PATH=${PREFIX}/bin:${DEPSPREFIX}/bin:${SYSPREFIX}/bin:${SYSPREFIX}/usr/bin
 	export LDFLAGS="-Wl,-rpath -Wl,\\\$\$ORIGIN/lib -L${PREFIX}/lib -L${SYSPREFIX}/${LIBDIR} -L${SYSPREFIX}/usr/${LIBDIR}"
 	#export CFLAGS=" -nostdinc  -I${SYSPREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.3.2/include -I${SYSPREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.3.2/include-fixed  -I${PREFIX}/include  -I${DEPSPREFIX}/include -I${SYSPREFIX}/usr/include"
+	export CFLAGS="-I${SYSPREFIX}/usr/include"
 	#export CXXFLAGS=" -nostdinc   -I${SYSPREFIX}/usr/lib/gcc/../../include/c++/4.3  -I${SYSPREFIX}/usr/lib/gcc/../../include/c++/4.3/x86_64-linux-gnu -I${SYSPREFIX}/usr/lib/gcc/../../include/c++/4.3/backward -I${SYSPREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.3.2/include -I${SYSPREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.3.2/include-fixed -I${PREFIX}/include  -I${DEPSPREFIX}/include -I${SYSPREFIX}/usr/include"
 	export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:${DEPSPREFIX}/lib/pkgconfig:${SYSPREFIX}/usr/lib/pkgconfig
 	PERL_VERSION=`perl -v | sed -n '3p' | sed "s|This is perl, v||g" | cut -f 1 -d " "`
@@ -141,12 +176,12 @@ mkprefix()
 	
 	#LD_LIBRARY_PATH=/lib64 PATH=/usr/local/sbin:/usr/sbin:/sbin:/sbin:/bin:/usr/bin:${SYSPREFIX}/usr/bin:$PATH fakeroot fakechroot chroot ${SYSPREFIX}  /debootstrap/debootstrap --second-stage
 
-	mkprefix-deps
+	mkprefix_deps
 	
 	echo "Synfig Buildroot v${BUILDROOT_VERSION}" > ${SYSPREFIX}/etc/chroot.id
 }
 
-mkprefix-deps()
+mkprefix_deps()
 {
 	DEB_LIST_MINIMAL="\
 			build-essential \
@@ -159,12 +194,18 @@ mkprefix-deps()
 			x11proto-xext-dev libdirectfb-dev libxfixes-dev libxinerama-dev libxdamage-dev libxcomposite-dev libxcursor-dev libxft-dev libxrender-dev libxt-dev libxrandr-dev libxi-dev libxext-dev libx11-dev \
 			libdb-dev uuid-dev \
 			libxml-parser-perl m4 cvs \
+			libdb-dev uuid-dev \
 			bzip2"
 
 	LD_LIBRARY_PATH=${UBUNTU_LIBDIR}:/${LIBDIR}:${SYSPREFIX}/usr/${LIBDIR} \
 		PATH=/usr/local/sbin:/usr/sbin:/sbin:/sbin:/bin:/usr/bin:${SYSPREFIX}/usr/sbin:${SYSPREFIX}/sbin:${SYSPREFIX}/usr/bin:${SYSPREFIX}/bin:$PATH HOME=/ LOGNAME=root \
 		fakeroot fakechroot chroot ${SYSPREFIX} \
 		aptitude install -o Aptitude::Cmdline::ignore-trust-violations=true -y ${DEB_LIST_MINIMAL}
+		
+	[ -e "${PREFIX}/lib" ] || mkdir -p ${PREFIX}/lib
+	#cp ${SYSPREFIX}/usr/lib/libltdl* ${PREFIX}/lib/
+	cp ${SYSPREFIX}/usr/lib/libpng12* ${PREFIX}/lib/
+	cp ${SYSPREFIX}/usr/lib/libdb-4*.so ${PREFIX}/lib/
 
 }
 
@@ -172,11 +213,15 @@ mkprep()
 {
 
 MISSING_PKGS=""
-for PKG in debootstrap dpkg fakeroot fakechroot; do
-	if ! ( which $PKG ) ; then
+for PKG in debootstrap dpkg fakeroot fakechroot rpmbuild alien; do
+	if ! ( which $PKG > /dev/null ) ; then
 		MISSING_PKGS="$MISSING_PKGS $PKG"
 	fi
 done
+
+if ! ( rpm -qv dpkg-dev > /dev/null ); then
+	MISSING_PKGS="$MISSING_PKGS dpkg-dev"
+fi
 
 if [ ! -z "$MISSING_PKGS" ]; then
 	echo "ERROR: Please install following packages:"
@@ -244,13 +289,6 @@ chmod a+x  ${DEPSPREFIX}/bin/rsync
 #for binary in bzip2; do
 #	ln -sf /usr/bin/$binary  ${DEPSPREFIX}/bin/$binary
 #done
-
-[ -e "${PREFIX}/lib" ] || mkdir -p ${PREFIX}/lib
-#cp ${SYSPREFIX}/usr/lib/libltdl* ${PREFIX}/lib/
-cp ${SYSPREFIX}/usr/lib/libpng12* ${PREFIX}/lib/
-
-[ -e "${PREFIX}/lib.extra" ] || mkdir -p ${PREFIX}/lib.extra
-cp ${SYSPREFIX}/usr/lib/libjack.so* ${PREFIX}/lib.extra/
 
 }
 
@@ -596,13 +634,18 @@ if ! pkg-config jack --exact-version=${PKG_VERSION}  --print-errors; then
 	pushd ${SRCPREFIX}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xzf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
-	./configure --prefix=${SYSPREFIX} --includedir=${SYSPREFIX}/include \
-		--libdir=${SYSPREFIX}/lib \
+	./configure --prefix=${DEPSPREFIX} --includedir=${DEPSPREFIX}/include \
+		--libdir=${DEPSPREFIX}/lib \
 		--disable-static --enable-shared
 	make -j${THREADS}
 	make install
 	cd ..
 	popd
+fi
+
+[ -e "${PREFIX}/lib.extra" ] || mkdir -p ${PREFIX}/lib.extra
+if [ ${PREFIX} != ${DEPSPREFIX} ]; then
+	cp ${DEPSPREFIX}/lib/libjack.so* ${PREFIX}/lib.extra/
 fi
 }
 
@@ -827,15 +870,30 @@ make install
 
 mkconfig()
 {
+	
+if [ ${PREFIX} == ${DEPSPREFIX} ]; then
+	#if [ ! -e "${PREFIX}/etc/pango/pango.modules.in" ]; then
+	#	sed "s?${PREFIX}/lib/pango/1.6.0/modules?@ROOTDIR@/modules?" < ${PREFIX}/etc/pango/pango.modules > ${PREFIX}/etc/pango/pango.modules.in
+	#fi
 
-#if [ ! -e "${PREFIX}/etc/pango/pango.modules.in" ]; then
-#	sed "s?${PREFIX}/lib/pango/1.6.0/modules?@ROOTDIR@/modules?" < ${PREFIX}/etc/pango/pango.modules > ${PREFIX}/etc/pango/pango.modules.in
-#fi
 
-# !!!
-#if [ ! -e "${PREFIX}/etc/gtk-2.0/gdk-pixbuf.loaders.in" ]; then
-#	sed "s?${PREFIX}/lib/gtk-2.0/2.10.0/loaders?@ROOTDIR@/loaders?" < ${PREFIX}/etc/gtk-2.0/gdk-pixbuf.loaders > ${PREFIX}/etc/gtk-2.0/gdk-pixbuf.loaders.in
-#fi
+	if [ ! -e "${PREFIX}/etc/gtk-2.0/gdk-pixbuf.loaders.in" ]; then
+		sed "s?${PREFIX}/lib/gtk-2.0/2.10.0/loaders?@ROOTDIR@/loaders?" < ${PREFIX}/etc/gtk-2.0/gdk-pixbuf.loaders > ${PREFIX}/etc/gtk-2.0/gdk-pixbuf.loaders.in
+	fi
+fi
+
+cat > ${PREFIX}/synfig <<EOF
+#!/bin/sh
+
+SYSPREFIX=\`dirname "\$0"\`
+
+export LD_LIBRARY_PATH=\${SYSPREFIX}/lib:\$LD_LIBRARY_PATH
+export SYNFIG_ROOT=\${SYSPREFIX}/
+export SYNFIG_MODULE_LIST=\${SYSPREFIX}/etc/synfig_modules.cfg
+
+\$SYSPREFIX/bin/synfig "\$@"
+EOF
+	chmod a+x $PREFIX/synfig
 
 cat > ${PREFIX}/synfigstudio <<EOF
 #!/bin/sh
@@ -865,7 +923,9 @@ export FONTCONFIG_PATH="\${SYSPREFIX}/etc/fonts"
 [ -e "\$USER_CONFIG_DIR" ] || mkdir -p "\$USER_CONFIG_DIR"
 
 #sed "s?@ROOTDIR@/modules?\${SYSPREFIX}/lib/pango/1.6.0/modules?" < \$ETC_DIR/pango/pango.modules.in > \$USER_CONFIG_DIR/pango/pango.modules
-sed "s?@ROOTDIR@/loaders?\${SYSPREFIX}/lib/gtk-2.0/2.10.0/loaders?" < \$ETC_DIR/gtk-2.0/gdk-pixbuf.loaders.in > \$GDK_PIXBUF_MODULE_FILE
+if [ -e \$ETC_DIR/gtk-2.0/gdk-pixbuf.loaders.in ]; then
+	sed "s?@ROOTDIR@/loaders?\${SYSPREFIX}/lib/gtk-2.0/2.10.0/loaders?" < \$ETC_DIR/gtk-2.0/gdk-pixbuf.loaders.in > \$GDK_PIXBUF_MODULE_FILE
+fi
 
 \${SYSPREFIX}/bin/synfigstudio "\$@"
 
@@ -927,66 +987,159 @@ cp synfig-pkg-preloader.so ${PREFIX}/lib
 
 mkpackage()
 {
-#[ ! -d PREFIX ] || rm -rf $PREFIX
-#mkdir -p $PREFIX/bin
-#cp  ${SYSPREFIX}/bin/*.exe $PREFIX/bin
-#cp  ${SYSPREFIX}/bin/*.dll $PREFIX/bin
-#cp -rf ${SYSPREFIX}/etc $PREFIX/etc
-#mkdir -p $PREFIX/lib
-#cp -rf ${SYSPREFIX}/lib/synfig $PREFIX/lib
-#mkdir -p $PREFIX/share
-#cp -rf ${SYSPREFIX}/share/pixmaps $PREFIX/share
-#cp -rf ${SYSPREFIX}/share/synfig $PREFIX/share
-cp -rf $SCRIPTPATH/../synfig-core/examples $SYSPREFIX/
-mkdir -p $SYSPREFIX/licenses
-cp -rf $SCRIPTPATH/../synfig-studio/COPYING $SYSPREFIX/licenses/synfigstudio.txt
-cp -rf $SCRIPTPATH/../synfig-studio/images/installer_logo.bmp $SYSPREFIX/
+	[ ! -e ${DISTPREFIX} ] || rm -rf ${DISTPREFIX}
+	mkdir -p ${DISTPREFIX}
+	cp -r  ${PREFIX}/etc ${DISTPREFIX}
+	cp -r  ${PREFIX}/lib ${DISTPREFIX}
+	cp -r  ${PREFIX}/lib.extra ${DISTPREFIX}
+	cp -r  ${PREFIX}/share ${DISTPREFIX}
+	
+	cp -r  ${PREFIX}/synfig ${DISTPREFIX}
+	cp -r  ${PREFIX}/synfigstudio ${DISTPREFIX}
+	
+	mkdir -p ${DISTPREFIX}/bin
+	BINARIES="\
+		synfig
+		synfigstudio"
+	for FILE in $BINARIES; do
+		cp -r  ${PREFIX}/bin/${FILE} ${DISTPREFIX}/bin/
+	done
+	
+	#cleaning devel stuff
+	rm -f ${DISTPREFIX}/lib/*.la
+	rm -f ${DISTPREFIX}/lib/*.a
+	rm -f ${DISTPREFIX}/lib/cairo/*.la
+	rm -rf ${DISTPREFIX}/include
+	rm -rf ${DISTPREFIX}/lib/gdkmm-2.4
+	rm -rf ${DISTPREFIX}/lib/libxml++-2.6
+	rm -rf ${DISTPREFIX}/lib/giomm-2.4
+	rm -rf ${DISTPREFIX}/lib/glibmm-2.4
+	rm -rf ${DISTPREFIX}/lib/pangomm-1.4
+	rm -rf ${DISTPREFIX}/lib/gtkmm-2.4
+	rm -rf ${DISTPREFIX}/lib/pkgconfig
+	rm -rf ${DISTPREFIX}/lib/sigc++-2.0
+	rm -rf ${DISTPREFIX}/share/doc
+	rm -rf ${DISTPREFIX}/share/devhelp
+	rm -rf ${DISTPREFIX}/share/gtk-doc
+	rm -rf ${DISTPREFIX}/share/gtkmm-2.4
+	rm -rf ${DISTPREFIX}/share/aclocal
+	rm -rf ${DISTPREFIX}/share/ImageMagick-6.4.0
+	rm -rf ${DISTPREFIX}/share/man
+	
+	mkpackage_tar
+	mkpackage_rpm
+	mkpackage_deb
+}
+	
+mkpackage_tar()
+{
+	#== tar.bz2 ==
+	rm -f ${WORKSPACE}/synfigstudio-${VERSION}-${REVISION}.$BREED.$RELEASE.${RPM_ARCH}.tar.bz2 || true
+	pushd ${DISTPREFIX}/..
+	[ ! -d synfigstudio-${VERSION}-${REVISION}.$BREED.$RELEASE.${RPM_ARCH} ] || rm -rf synfigstudio-${VERSION}-${REVISION}.$BREED.$RELEASE.${RPM_ARCH}
+	cp -rf dist synfigstudio-${VERSION}-${REVISION}.$BREED.$RELEASE.${RPM_ARCH}
+	tar cjf ${WORKSPACE}/synfigstudio-${VERSION}-${REVISION}.$BREED.$RELEASE.${RPM_ARCH}.tar.bz2 synfigstudio-${VERSION}-${REVISION}.$BREED.$RELEASE.${RPM_ARCH}
+	rm -rf synfigstudio-${VERSION}-${REVISION}.$BREED.$RELEASE.${RPM_ARCH}
+	popd
+}
 
-[ -d $CACHEDIR ] || mkdir -p $CACHEDIR
-cd $CACHEDIR
+mkpackage_rpm()
+{
+	#== rpm ==
+    cat > ${WORKSPACE}/linux$ARCH$SUFFIX/synfigstudio.spec << EOF
+%define __spec_install_post /bin/true
 
-[ -e ffmpeg-latest-win32-static.7z ] || wget -c http://ffmpeg.zeranoe.com/builds/win32/static/ffmpeg-latest-win32-static.7z
-[ ! -d ffmpeg ] || rm -rf ffmpeg
-mkdir -p ffmpeg
-cd ffmpeg
-7z e ../ffmpeg-latest-win32-static.7z
-cp ffmpeg.exe $SYSPREFIX/bin
-[ -d $SYSPREFIX/licenses ] || mkdir -p $SYSPREFIX/licenses
-cp *.txt $SYSPREFIX/licenses
-cd ..
-rm -rf ffmpeg
-
-[ -e portable-python-3.2.5.1.zip ] || wget -c http://download.tuxfamily.org/synfig/packages/sources/portable-python-3.2.5.1.zip
-[ ! -d python ] || rm -rf python
-unzip portable-python-3.2.5.1.zip
-[ ! -d $SYSPREFIX/python ] || rm -rf $SYSPREFIX/python
-mv python $SYSPREFIX
+Name:           synfigstudio
+Version:        ${VERSION}
+Release:        ${REVISION}.${BREED}.${RELEASE}
+Summary:        Film-Quality 2D Vector Animation package
+Group:          Applications/Graphics
+License:        GPL
+URL:            http://www.synfig.org/
+BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+Obsoletes:       synfig ETL
+AutoReqProv: no
 
 
+%description
+Synfig Animation Studio is a powerful, industrial-strength vector-based
+2D animation software, designed from the ground-up for producing
+feature-film quality animation with fewer people and resources.
+It eliminates the need for tweening, preventing the need to hand-draw
+each frame. Synfig features spatial and temporal resolution independence
+(sharp and smooth at any resolution or framerate), high dynamic range
+images, and a flexible plugin system.
 
-cd $SYSPREFIX
 
-#generate file lists
+%prep
 
-gen_list_nsh bin bin
-sed -i '/ffmpeg\.exe/d' bin.nsh		# exclude ffmpeg from he list of binaries - it will go into separate group
-gen_list_nsh etc etc
-gen_list_nsh examples examples
-gen_list_nsh lib/gtk-2.0 lib-gtk
-gen_list_nsh lib/synfig lib-synfig
-gen_list_nsh licenses licenses
-#gen_list_nsh python python # -- takes too long
-gen_list_nsh share/locale share-locale
-gen_list_nsh share/pixmaps share-pixmaps
-gen_list_nsh share/synfig share-synfig
-gen_list_nsh share/themes share-themes
 
-cp -f $SCRIPTPATH/synfigstudio.nsi $SYSPREFIX/synfigstudio.nsi
-sed -i "s/@VERSION@/$VERSION/g" $SYSPREFIX/synfigstudio.nsi
-cp -f $SCRIPTPATH/win${ARCH}-specific.nsh $SYSPREFIX/arch-specific.nsh
-makensis synfigstudio.nsi
+%build
 
-mv synfigstudio-${VERSION}.exe ../synfigstudio-${VERSION}-${REVISION}-${ARCH}bit.exe
+%install
+rm -rf \$RPM_BUILD_ROOT
+mkdir -p \$RPM_BUILD_ROOT/opt/synfig
+cp -r  ${DISTPREFIX}/* \$RPM_BUILD_ROOT/opt/synfig
+mkdir -p \$RPM_BUILD_ROOT/usr/share
+mv \$RPM_BUILD_ROOT/opt/synfig/share/applications \$RPM_BUILD_ROOT/usr/share
+mv \$RPM_BUILD_ROOT/opt/synfig/share/appdata \$RPM_BUILD_ROOT/usr/share
+mv \$RPM_BUILD_ROOT/opt/synfig/share/icons \$RPM_BUILD_ROOT/usr/share
+mv \$RPM_BUILD_ROOT/opt/synfig/share/mime \$RPM_BUILD_ROOT/usr/share
+mv \$RPM_BUILD_ROOT/opt/synfig/share/mime-info \$RPM_BUILD_ROOT/usr/share
+mkdir -p \$RPM_BUILD_ROOT/usr/share/pixmaps
+ln -sf /opt/synfig/share/pixmaps/sif_icon.png \$RPM_BUILD_ROOT/usr/share/pixmaps/sif_icon.png
+ln -sf /opt/synfig/share/pixmaps/synfig_icon.png \$RPM_BUILD_ROOT/usr/share/pixmaps/synfig_icon.png
+mkdir -p \$RPM_BUILD_ROOT/usr/bin
+cp \$RPM_BUILD_ROOT/opt/synfig/synfig \$RPM_BUILD_ROOT/usr/bin/
+cp \$RPM_BUILD_ROOT/opt/synfig/synfigstudio \$RPM_BUILD_ROOT/usr/bin/
+sed -i 's|^SYSPREFIX=.*|SYSPREFIX=/opt/synfig|' \$RPM_BUILD_ROOT/usr/bin/synfig
+sed -i 's|^SYSPREFIX=.*|SYSPREFIX=/opt/synfig|' \$RPM_BUILD_ROOT/usr/bin/synfigstudio
+
+
+%clean
+rm -rf \$RPM_BUILD_ROOT
+
+%post
+if [ -x /usr/bin/update-mime-database ]; then
+  update-mime-database /usr/share/mime
+fi
+if [ -x /usr/bin/update-desktop-database ]; then
+  update-desktop-database
+fi
+
+%postun
+if [ -x /usr/bin/update-mime-database ]; then
+  update-mime-database /usr/share/mime
+fi
+if [ -x /usr/bin/update-desktop-database ]; then
+  update-desktop-database
+fi
+
+%files
+%defattr(-,root,root,-)
+/opt/synfig/
+/usr/share/*
+/usr/bin/*
+
+%changelog
+* Sat Mar 21 2009 Konstantin Dmitriev <ksee.zelgadis@gmail.com> - 0.61.09-2354.morevnapackage.1
+- Update to SVN2354
+- Include ImageMagick-c++
+
+* Wed Jan 14 2009 Konstantin Dmitriev <ksee.zelgadis@gmail.com> - 0.61.09-2316.morevnapackage.1
+- First release
+
+EOF
+    run_native rpmbuild -bb ${WORKSPACE}/linux$ARCH$SUFFIX/synfigstudio.spec
+    
+    cp $HOME/rpmbuild/RPMS/${RPM_ARCH}/synfigstudio-${VERSION}-${REVISION}.${BREED}.$RELEASE.${RPM_ARCH}.rpm ${WORKSPACE}
+}
+
+mkpackage_deb()
+{    
+    cd ${WORKSPACE}
+    run_native fakeroot alien -k --scripts synfigstudio-${VERSION}-${REVISION}.${BREED}.$RELEASE.${RPM_ARCH}.rpm
+    rm -rf synfigstudio-${VERSION}
 }
 
 mkall()
@@ -1037,12 +1190,15 @@ mkall()
 	mksynfig
 	mksynfigstudio
 	mkconfig
-	#mkpackage
+	mkpackage
 }
 
 do_cleanup()
 {
 	echo "Cleaning up..."
+	if [ ${PREFIX} != ${DEPSPREFIX} ]; then
+		[ ! -e ${DEPSPREFIX} ] || mv ${DEPSPREFIX} ${DEPSPREFIX}.off
+	fi
 	[ ! -e ${SYSPREFIX} ] || mv ${SYSPREFIX} ${SYSPREFIX}.off
 	exit
 }
@@ -1050,6 +1206,8 @@ do_cleanup()
 trap do_cleanup INT SIGINT SIGTERM EXIT
 
 [ ! -e ${SYSPREFIX}.off ] || mv ${SYSPREFIX}.off ${SYSPREFIX}
+[ ! -e ${DEPSPREFIX}.off ] || mv ${DEPSPREFIX}.off ${DEPSPREFIX}
+[ -e ${DEPSPREFIX} ] || mkdir -p ${DEPSPREFIX}
 
 if [ -z $1 ]; then
 	mkall
