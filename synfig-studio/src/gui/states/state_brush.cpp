@@ -456,6 +456,9 @@ StateBrush_Context::load_settings()
 		{
 			// force add Ubuntu path to mypaint brushes
 			paths.insert("/usr/share/mypaint/brushes");
+#ifdef WIN32
+			paths.insert(App::get_base_path()+ETL_DIRECTORY_SEPARATOR+"brushes");
+#endif
 		}
 		refresh_tool_options();
 
