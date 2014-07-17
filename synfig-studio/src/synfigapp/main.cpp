@@ -235,11 +235,13 @@ synfigapp::Main::get_gradient()
 	return gradient_;
 }
 
+/*
 const synfig::Real&
 synfigapp::Main::get_opacity()
 {
 	return 1.0;
 }
+*/
 
 synfig::Color::BlendMethod
 synfigapp::Main::get_blend_method()
