@@ -166,38 +166,65 @@ ffmpeg_trgt::init()
 		multi_image=true;
 	// this should avoid conflicts with locale settings
 	synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
+	
+	String video_codec_real;
+	if (video_codec == "libx264-lossless")
+		video_codec_real="libx264";
+	else
+		video_codec_real=video_codec;
 
+	String binary_path;
 #if defined(WIN32_PIPE_TO_PROCESSES)
-
-	string command;
-
-	String binary_path = synfig::get_binary_path("");
+	binary_path = synfig::get_binary_path("");
 	if (binary_path != "")
 		binary_path = etl::dirname(binary_path)+ETL_DIRECTORY_SEPARATOR;
 	binary_path += "ffmpeg.exe";
+	binary_path = "\"" + binary_path + "\"";
+	filename=strprintf("\"%s\"", filename.c_str());
+#else
+	binary_path = "ffmpeg";
+#endif
+	
+	std::vector<String> vargs;
+	vargs.push_back(binary_path);
+	vargs.push_back("-f");
+	vargs.push_back("image2pipe");
+	vargs.push_back("-vcodec");
+	vargs.push_back("ppm");
+	vargs.push_back("-an");
+	vargs.push_back("-r");
+	vargs.push_back(strprintf("%f", desc.get_frame_rate()));
+	vargs.push_back("-i");
+	vargs.push_back("pipe:");
+	vargs.push_back("-loop");
+	vargs.push_back("1");
+	vargs.push_back("-metadata");
+	vargs.push_back(strprintf("title=\"%s\"", get_canvas()->get_name().c_str()));
+	vargs.push_back("-vcodec");
+	vargs.push_back(video_codec_real);
+	vargs.push_back("-b:v");
+	vargs.push_back(strprintf("%ik", bitrate));
+	if (video_codec == "libx264-lossless") {
+		vargs.push_back("-tune");
+		vargs.push_back("fastdecode");
+		vargs.push_back("-pix_fmt");
+		vargs.push_back("yuv420p");
+		vargs.push_back("-qp");
+		vargs.push_back("0");
+	}
+	vargs.push_back("-y");
+	// We need "--" to separate filename from arguments (for the case when filename starts with "-")
+	vargs.push_back("--"); 
+	vargs.push_back(filename);
 
-	if( filename.c_str()[0] == '-' )
-		command = strprintf("\"%s\" -f image2pipe -vcodec ppm -an"
-							" -r %f -i pipe: -loop 1"
-							" -metadata title=\"%s\" "
-							" -vcodec %s -b %ik"
-							" -y -- \"%s\"\n",
-							binary_path.c_str(),
-							desc.get_frame_rate(),
-							get_canvas()->get_name().c_str(),
-							video_codec.c_str(), bitrate,
-							filename.c_str());
-	else
-		command = strprintf("\"%s\" -f image2pipe -vcodec ppm -an"
-							" -r %f -i pipe: -loop 1"
-							" -metadata title=\"%s\" "
-							"-vcodec %s -b %ik"
-							" -y -- \"%s\"\n",
-							binary_path.c_str(),
-							desc.get_frame_rate(),
-							get_canvas()->get_name().c_str(),
-							video_codec.c_str(), bitrate,
-							filename.c_str());
+#if defined(WIN32_PIPE_TO_PROCESSES)
+
+	String command;
+	for( std::vector<std::string>::size_type i = 0; i != vargs.size(); i++ )
+	{
+		command+=" "+vargs[i];
+	}
+	command+="\n";
 
 	// This covers the dumb cmd.exe behavior.
 	// See: http://eli.thegreenplace.net/2011/01/28/on-spaces-in-the-paths-of-programs-and-files-on-windows/
@@ -232,53 +259,21 @@ ffmpeg_trgt::init()
 		}
 		// Close the unneeded pipeout
 		close(p[0]);
-		if( filename.c_str()[0] == '-' )
+		
+		char *args[vargs.size()+1];
+		size_t idx = 0;
+		for( std::vector<std::string>::size_type i = 0; i != vargs.size(); i++ )
 		{
-			// x264 codec needs -vpre hq parameters
-			if (video_codec == "libx264")
-				execlp("ffmpeg", "ffmpeg", "-f", "image2pipe", "-vcodec",
-					   "ppm", "-an", "-r",
-					   strprintf("%f", desc.get_frame_rate()).c_str(),
-					   "-i", "pipe:", "-loop", "1", "-metadata",
-						strprintf("title=\"%s\"", get_canvas()->get_name().c_str()).c_str(),
-						"-vcodec", video_codec.c_str(),
-						"-b", strprintf("%ik", bitrate).c_str(),
-						"-vpre", "hq",
-						"-y", "--", filename.c_str(), (const char *)NULL);
-			else
-				execlp("ffmpeg", "ffmpeg", "-f", "image2pipe", "-vcodec",
-					   "ppm", "-an", "-r",
-					   strprintf("%f", desc.get_frame_rate()).c_str(),
-					   "-i", "pipe:", "-loop", "1", "-metadata",
-						strprintf("title=\"%s\"", get_canvas()->get_name().c_str()).c_str(),
-						"-vcodec", video_codec.c_str(),
-						"-b", strprintf("%ik", bitrate).c_str(),
-						"-y", "--", filename.c_str(), (const char *)NULL);
+			//std::vector<char> writable(vargs[i].begin(), vargs[i].end());
+			//writable.push_back('\0');
+			//args[idx++] = &writable[0];
+			//args[idx++] = strdup(vargs[i].c_str());
+			args[idx++] = &vargs[i][0];
+			//synfig::info(&vargs[i][0]);
 		}
-		else
-		{
-			if (video_codec == "libx264")
-				execlp("ffmpeg", "ffmpeg", "-f", "image2pipe", "-vcodec",
-					   "ppm", "-an", "-r",
-					   strprintf("%f", desc.get_frame_rate()).c_str(),
-					   "-i", "pipe:", "-loop", "1",
-					   "-metadata",
-					   strprintf("title=\"%s\"", get_canvas()->get_name().c_str()).c_str(),
-					   "-vcodec", video_codec.c_str(),
-					   "-b", strprintf("%ik", bitrate).c_str(),
-					   "-vpre", "hq",
-					   "-y", filename.c_str(), (const char *)NULL);
-			else
-				execlp("ffmpeg", "ffmpeg", "-f", "image2pipe", "-vcodec",
-					   "ppm", "-an", "-r",
-					   strprintf("%f", desc.get_frame_rate()).c_str(),
-					   "-i", "pipe:", "-loop", "1",
-					   "-metadata",
-					   strprintf("title=\"%s\"", get_canvas()->get_name().c_str()).c_str(),
-					   "-vcodec", video_codec.c_str(),
-					   "-b", strprintf("%ik", bitrate).c_str(),
-					   "-y", filename.c_str(), (const char *)NULL);
-		}
+		args[idx++] = (char *)NULL;
+		
+		execvp(binary_path.c_str(), args);
 
 		// We should never reach here unless the exec failed
 		synfig::error(_("Unable to open pipe to ffmpeg (exec failed)"));
