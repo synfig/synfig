@@ -88,7 +88,7 @@ int threads = 1;
  */
 const char* allowed_video_codecs[] =
 {
-	"flv", "h263p", "huffyuv", "libtheora", "libx264",
+	"flv", "h263p", "huffyuv", "libtheora", "libx264", "libx264-lossless",
 	"mjpeg", "mpeg1video", "mpeg2video", "mpeg4", "msmpeg4",
 	"msmpeg4v1", "msmpeg4v2", "wmv1", "wmv2", NULL
 };
@@ -103,7 +103,8 @@ const char* allowed_video_codecs_description[] =
 	"H.263+ / H.263-1998 / H.263 version 2.",
 	"Huffyuv / HuffYUV.",
 	"libtheora Theora.",
-	"libx264 H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10.",
+	"H.264 / AVC / MPEG-4 AVC.",
+	"H.264 / AVC / MPEG-4 AVC (LossLess).",
 	"MJPEG (Motion JPEG).",
 	"raw MPEG-1 video.",
 	"raw MPEG-2 video.",

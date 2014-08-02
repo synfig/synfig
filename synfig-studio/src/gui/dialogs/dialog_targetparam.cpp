@@ -54,7 +54,7 @@ using namespace studio;
  */
 const char* allowed_video_codecs[] =
 {
-	"flv", "h263p", "huffyuv", "libtheora", "libx264",
+	"flv", "h263p", "huffyuv", "libtheora", "libx264", "libx264-lossless",
 	"mjpeg", "mpeg1video", "mpeg2video", "mpeg4", "msmpeg4",
 	"msmpeg4v1", "msmpeg4v2", "wmv1", "wmv2", CUSTOM_VCODEC, NULL
 };
@@ -65,20 +65,21 @@ const char* allowed_video_codecs[] =
  */
 const char* allowed_video_codecs_description[] =
 {
-	_("Flash Video (FLV) / Sorenson Spark / Sorenson H.263."),
-	_("H.263+ / H.263-1998 / H.263 version 2."),
-	_("Huffyuv / HuffYUV."),
-	_("libtheora Theora."),
-	_("libx264 H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10."),
-	_("MJPEG (Motion JPEG)."),
-	_("raw MPEG-1 video."),
-	_("raw MPEG-2 video."),
+	_("Flash Video (FLV) / Sorenson Spark / Sorenson H.263"),
+	_("H.263+ / H.263-1998 / H.263 version 2"),
+	_("Huffyuv / HuffYUV"),
+	_("libtheora Theora"),
+	_("H.264 / AVC / MPEG-4 AVC"),
+	_("H.264 / AVC / MPEG-4 AVC (LossLess)"),
+	_("MJPEG (Motion JPEG)"),
+	_("raw MPEG-1 video"),
+	_("raw MPEG-2 video"),
 	_("MPEG-4 part 2. (XviD/DivX)"),
-	_("MPEG-4 part 2 Microsoft variant version 3."),
-	_("MPEG-4 part 2 Microsoft variant version 1."),
-	_("MPEG-4 part 2 Microsoft variant version 2."),
-	_("Windows Media Video 7."),
-	_("Windows Media Video 8."),
+	_("MPEG-4 part 2 Microsoft variant version 3"),
+	_("MPEG-4 part 2 Microsoft variant version 1"),
+	_("MPEG-4 part 2 Microsoft variant version 2"),
+	_("Windows Media Video 7"),
+	_("Windows Media Video 8"),
 	CUSTOM_VCODEC_DESCRIPTION,
 	NULL
 };
