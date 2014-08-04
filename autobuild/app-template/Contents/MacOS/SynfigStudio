@@ -12,7 +12,7 @@ APPDIR=`pwd`
 cd - > /dev/null
 # edit the next line to match version file
 VERSION=_VERSION_
-LNDIR=/tmp/skl/SynfigStudio
+LNDIR=/tmp/skl/SynfigStudio.app
 
 rm -f "$LNDIR" || true
 mkdir -p /tmp/skl

@@ -40,7 +40,7 @@ export RELEASE=1
 export BUILDROOT_VERSION=1
 
 BUILDDIR=~/src/macports/SynfigStudio-app
-LNKDIR=/tmp/skl/SynfigStudio
+LNKDIR=/tmp/skl/SynfigStudio.app
 MACPORTS=$LNKDIR/Contents/Resources
 MPSRC=MacPorts-2.2.1
 
