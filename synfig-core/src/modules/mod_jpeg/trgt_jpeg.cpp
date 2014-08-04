@@ -69,7 +69,7 @@ jpeg_trgt::jpeg_trgt(const char *Filename, const synfig::TargetParam &params):
 	color_buffer(NULL),
 	sequence_separator(params.sequence_separator)
 {
-	set_remove_alpha();
+	set_alpha_mode(TARGET_ALPHA_MODE_FILL);
 }
 
 jpeg_trgt::~jpeg_trgt()

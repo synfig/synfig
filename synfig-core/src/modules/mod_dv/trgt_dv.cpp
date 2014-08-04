@@ -87,7 +87,7 @@ dv_trgt::dv_trgt(const char *Filename, const synfig::TargetParam & /* params */)
 	buffer(NULL),
 	color_buffer(NULL)
 {
-	set_remove_alpha();
+	set_alpha_mode(TARGET_ALPHA_MODE_FILL);
 }
 
 dv_trgt::~dv_trgt()

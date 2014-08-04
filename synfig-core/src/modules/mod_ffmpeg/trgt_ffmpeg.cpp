@@ -88,7 +88,7 @@ ffmpeg_trgt::ffmpeg_trgt(const char *Filename, const synfig::TargetParam &params
 	color_buffer(NULL),
 	bitrate()
 {
-	set_remove_alpha();
+	set_alpha_mode(TARGET_ALPHA_MODE_FILL);
 
 	// Set default video codec and bitrate if they weren't given.
 	if (params.video_codec == "none")

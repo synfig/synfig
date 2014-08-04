@@ -64,7 +64,7 @@ ppm::ppm(const char *Filename, const synfig::TargetParam &params):
 	buffer(NULL),
 	sequence_separator(params.sequence_separator)
 {
-	set_remove_alpha();
+	set_alpha_mode(TARGET_ALPHA_MODE_FILL);
 }
 
 ppm::~ppm()
