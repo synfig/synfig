@@ -69,6 +69,7 @@ RenderSettings::RenderSettings(Gtk::Window& parent, etl::handle<synfigapp::Canva
 	adjustment_antialias(1,1,31),
 	entry_antialias(adjustment_antialias,1,0),
 	toggle_single_frame(_("Render _current frame only"), true),
+	toggle_extract_alpha(_("Extract alpha"), true),
 	tparam("mpeg4",200)
 {
 	tparam.sequence_separator=App::sequence_separator;
@@ -151,7 +152,7 @@ RenderSettings::RenderSettings(Gtk::Window& parent, etl::handle<synfigapp::Canva
 	settingsPadding->set_padding(6, 0, 24, 0);
 	settings_frame->add(*settingsPadding);
 
-	Gtk::Table *settings_table=manage(new Gtk::Table(2,2,false));
+	Gtk::Table *settings_table=manage(new Gtk::Table(3,2,false));
 	settings_table->set_row_spacings(6);
 	settings_table->set_col_spacings(12);
 	settingsPadding->add(*settings_table);
@@ -169,7 +170,12 @@ RenderSettings::RenderSettings(Gtk::Window& parent, etl::handle<synfigapp::Canva
 	settings_table->attach(entry_antialias, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 
 	toggle_single_frame.set_alignment(0, 0.5);
-	settings_table->attach(toggle_single_frame, 0, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	settings_table->attach(toggle_single_frame, 2, 3, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	toggle_single_frame.set_active(false);
+	
+	toggle_extract_alpha.set_alignment(0, 0.5);
+	settings_table->attach(toggle_extract_alpha, 2, 3, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	toggle_extract_alpha.set_active(false);
 
 	dialogBox->pack_start(widget_rend_desc);
 
@@ -188,7 +194,6 @@ RenderSettings::RenderSettings(Gtk::Window& parent, etl::handle<synfigapp::Canva
 
 	set_title(_("Render Settings")+String(" - ")+canvas_interface_->get_canvas()->get_name());
 
-	toggle_single_frame.set_active(false);
 	widget_rend_desc.enable_time_section();
 
 	set_entry_filename();
@@ -263,7 +268,7 @@ void
 RenderSettings::on_render_pressed()
 {
 	String filename=entry_filename.get_text();
-	synfig::String calculated_target_name(target_name);
+	calculated_target_name=target_name;
 
 	if(filename.empty())
 	{
@@ -304,59 +309,91 @@ RenderSettings::on_render_pressed()
 		return;
 	}
 
-	Target::Handle target=Target::create(calculated_target_name,filename, tparam);
-	if(!target)
-	{
-		canvas_interface_->get_ui_interface()->error(_("Unable to create target for ")+filename);
-		return;
-	}
-	// Test whether the output file is writable (path exists or has write permit)
-	if (access(dirname(filename).c_str(),W_OK) == -1)
-	{
-		canvas_interface_->get_ui_interface()->error(_("Unable to create file for ")+filename+": "+strerror( errno ));
-		return;
-	}
-
 	hide();
-
-	target->set_canvas(canvas_interface_->get_canvas());
-	RendDesc rend_desc(widget_rend_desc.get_rend_desc());
-	rend_desc.set_antialias((int)adjustment_antialias.get_value());
-	rend_desc.set_render_excluded_contexts(false);
-
-	// If we are to only render the current frame
-	if(toggle_single_frame.get_active())
-		rend_desc.set_time(canvas_interface_->get_time());
-
-	target->set_rend_desc(&rend_desc);
-	target->set_quality((int)adjustment_quality.get_value());
-	if( !target->init() ){
-		canvas_interface_->get_ui_interface()->error(_("Target initialization failure"));
-		return;
-	}
-
-	canvas_interface_->get_ui_interface()->task(_("Rendering ")+filename);
-
-	if(async_renderer)
+	
+	render_passes.clear();
+	if (toggle_extract_alpha.get_active())
 	{
-		async_renderer->stop();
-		async_renderer.detach();
+		String filename_alpha(filename_sans_extension(filename)+"-alpha"+filename_extension(filename));
+		
+		render_passes.push_back(make_pair(TARGET_ALPHA_MODE_EXTRACT, filename_alpha));
+		render_passes.push_back(make_pair(TARGET_ALPHA_MODE_REDUCE, filename));
+		
+	} else {
+		render_passes.push_back(make_pair(TARGET_ALPHA_MODE_KEEP, filename));
 	}
-	async_renderer=new AsyncRenderer(target);
-	async_renderer->signal_finished().connect( sigc::mem_fun(*this,&RenderSettings::on_finished));
-	async_renderer->start();
-	/*
-	if(!target->render(canvas_interface_->get_ui_interface().get()))
-	{
-		canvas_interface_->get_ui_interface()->error(_("Render Failure"));
+	
+	submit_next_render_pass();
+	
+	return;
+}
+	
+void
+RenderSettings::submit_next_render_pass()
+{
+	if (render_passes.size()>0) {
+		pair<TargetAlphaMode,String> pass_info = render_passes.back();
+		render_passes.pop_back();
+		
+		TargetAlphaMode pass_alpha_mode = pass_info.first;
+		String pass_filename = pass_info.second;
+		
+		Target::Handle target=Target::create(calculated_target_name,pass_filename, tparam);
+		if(!target)
+		{
+			canvas_interface_->get_ui_interface()->error(_("Unable to create target for ")+pass_filename);
+			return;
+		}
+		// Test whether the output file is writable (path exists or has write permit)
+		if (access(dirname(pass_filename).c_str(),W_OK) == -1)
+		{
+			canvas_interface_->get_ui_interface()->error(_("Unable to create file for ")+pass_filename+": "+strerror( errno ));
+			return;
+		}
+
+		target->set_canvas(canvas_interface_->get_canvas());
+		RendDesc rend_desc(widget_rend_desc.get_rend_desc());
+		rend_desc.set_antialias((int)adjustment_antialias.get_value());
+		rend_desc.set_render_excluded_contexts(false);
+
+		// If we are to only render the current frame
+		if(toggle_single_frame.get_active())
+			rend_desc.set_time(canvas_interface_->get_time());
+
+		target->set_rend_desc(&rend_desc);
+		target->set_quality((int)adjustment_quality.get_value());
+		if( !target->init() ){
+			canvas_interface_->get_ui_interface()->error(_("Target initialization failure"));
+			return;
+		}
+		if(pass_alpha_mode!=TARGET_ALPHA_MODE_KEEP)
+			target->set_alpha_mode(pass_alpha_mode);
+
+		canvas_interface_->get_ui_interface()->task(_("Rendering ")+pass_filename);
+
+		/*
+		if(async_renderer)
+		{
+			async_renderer->stop();
+			async_renderer.detach();
+		}
+		*/
+		async_renderer=new AsyncRenderer(target);
+		async_renderer->signal_finished().connect( sigc::mem_fun(*this,&RenderSettings::on_finished));
+		async_renderer->start();
+		/*
+		if(!target->render(canvas_interface_->get_ui_interface().get()))
+		{
+			canvas_interface_->get_ui_interface()->error(_("Render Failure"));
+			canvas_interface_->get_ui_interface()->amount_complete(0,10000);
+			return;
+		}
+
+		// Success!
+		canvas_interface_->get_ui_interface()->task(pass_filename+_(" rendered successfully"));
 		canvas_interface_->get_ui_interface()->amount_complete(0,10000);
-		return;
+		*/
 	}
-
-	// Success!
-	canvas_interface_->get_ui_interface()->task(filename+_(" rendered successfully"));
-	canvas_interface_->get_ui_interface()->amount_complete(0,10000);
-	*/
 	return;
 }
 
@@ -369,6 +406,8 @@ RenderSettings::on_finished()
 
 	canvas_interface_->get_ui_interface()->task(text);
 	canvas_interface_->get_ui_interface()->amount_complete(0,10000);
+	
+	submit_next_render_pass();
 }
 
 void

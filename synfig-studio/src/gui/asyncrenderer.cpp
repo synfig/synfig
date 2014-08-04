@@ -783,10 +783,12 @@ AsyncRenderer::stop()
 			if(success)
 				signal_success_();
 
-			signal_finished_();
-
 			target=0;
 			render_thread=0;
+			
+			lock.release();
+			
+			signal_finished_();
 		}
 	}
 }
