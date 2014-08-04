@@ -39,6 +39,7 @@
 
 #include <synfig/string.h>
 #include <synfig/targetparam.h>
+#include <synfig/target.h>
 
 #include <synfigapp/canvasinterface.h>
 
@@ -68,12 +69,15 @@ class RenderSettings : public Gtk::Dialog
 	Gtk::SpinButton entry_antialias;
 
 	Gtk::CheckButton toggle_single_frame;
+	Gtk::CheckButton toggle_extract_alpha;
 
 	Gtk::OptionMenu optionmenu_target;
 	Gtk::Menu *menu_target;
 	Gtk::Button *tparam_button;
 
 	synfig::String target_name;
+	synfig::String calculated_target_name;
+	std::vector< std::pair<synfig::TargetAlphaMode,synfig::String> > render_passes;
 
 	void set_target(synfig::String name);
 
@@ -94,7 +98,7 @@ private:
 	void on_render_pressed();
 	void on_cancel_pressed();
 	void on_targetparam_pressed();
-
+	void submit_next_render_pass();
 	void on_finished();
 }; // END of class RenderSettings
 
