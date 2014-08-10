@@ -24,6 +24,7 @@
 
 #ifndef __SYNFIG_JOB_H
 #define __SYNFIG_JOB_H
+#include "synfig/target.h"
 
 struct Job
 {
@@ -32,6 +33,7 @@ struct Job
 	std::string target_name;
 
 	synfig::RendDesc desc;
+	synfig::TargetAlphaMode alpha_mode;
 
 	synfig::Canvas::Handle root;
 	synfig::Canvas::Handle canvas;
@@ -40,6 +42,7 @@ struct Job
 	int quality;
 	bool sifout;
 	bool list_canvases;
+	bool extract_alpha;
 
 	bool canvas_info, canvas_info_all, canvas_info_time_start,
 		 canvas_info_time_end, canvas_info_frame_rate,
@@ -55,6 +58,8 @@ struct Job
 
     Job()
     {
+		alpha_mode = synfig::TARGET_ALPHA_MODE_KEEP;
+		extract_alpha = false;
 		canvas_info = canvas_info_all = canvas_info_time_start =
 		  canvas_info_time_end = canvas_info_frame_rate =
 		  canvas_info_frame_start = canvas_info_frame_end =

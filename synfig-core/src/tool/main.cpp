@@ -203,6 +203,7 @@ int main(int ac, char* av[])
             ("verbose,v", verbosity_arg_desc, _("Output verbosity level"))
             ("quiet,q", _("Quiet mode (No progress/time-remaining display)"))
             ("benchmarks,b", _("Print benchmarks"))
+            ("extract-alpha,x", _("Extract alpha"))
             ;
 
         po::options_description po_misc(_("Misc options"));
@@ -300,7 +301,15 @@ int main(int ac, char* av[])
 		job = op.extract_job();
 		job.desc = job.canvas->rend_desc() = op.extract_renddesc(job.canvas->rend_desc());
 
-		job_list.push_front(job);
+		if (job.extract_alpha) {
+			job.alpha_mode = TARGET_ALPHA_MODE_REDUCE;
+			job_list.push_front(job);
+			job.alpha_mode = TARGET_ALPHA_MODE_EXTRACT;
+			job.outfilename = filename_sans_extension(job.outfilename)+"-alpha"+filename_extension(job.outfilename);
+			job_list.push_front(job);
+		} else {
+			job_list.push_front(job);
+		}
 
 		process_job_list(job_list, op.extract_targetparam());
 

@@ -505,6 +505,11 @@ Job OptionsProcessor::extract_job() throw (SynfigToolException&)
 	{
 		job.outfilename = _vm["output-file"].as<string>();
 	}
+	
+	if (_vm.count("extract-alpha"))
+	{
+		job.extract_alpha = true;
+	}
 
 	if (_vm.count("quality"))
 		job.quality = _vm["quality"].as<int>();
