@@ -191,7 +191,10 @@ png_trgt::start_frame(synfig::ProgressCallback *callback)
 	png_set_filter(png_ptr,0,PNG_FILTER_NONE);
 
 	setjmp(png_jmpbuf(png_ptr));
-	png_set_IHDR(png_ptr,info_ptr,w,h,8,PNG_COLOR_TYPE_RGBA,PNG_INTERLACE_NONE,PNG_COMPRESSION_TYPE_DEFAULT,PNG_FILTER_TYPE_DEFAULT);
+	if (get_alpha_mode()==TARGET_ALPHA_MODE_KEEP)
+		png_set_IHDR(png_ptr,info_ptr,w,h,8,PNG_COLOR_TYPE_RGBA,PNG_INTERLACE_NONE,PNG_COMPRESSION_TYPE_DEFAULT,PNG_FILTER_TYPE_DEFAULT);
+	else
+		png_set_IHDR(png_ptr,info_ptr,w,h,8,PNG_COLOR_TYPE_RGB,PNG_INTERLACE_NONE,PNG_COMPRESSION_TYPE_DEFAULT,PNG_FILTER_TYPE_DEFAULT);
 
 	// Write the gamma
 	//png_set_gAMA(png_ptr, info_ptr,1.0/gamma().get_gamma());
@@ -237,7 +240,10 @@ png_trgt::end_scanline()
 	if(!file || !ready)
 		return false;
 
-	convert_color_format(buffer, color_buffer, desc.get_w(), PF_RGB|PF_A, gamma());
+	if (get_alpha_mode()==TARGET_ALPHA_MODE_KEEP)
+		convert_color_format(buffer, color_buffer, desc.get_w(), PF_RGB|PF_A, gamma());
+	else
+		convert_color_format(buffer, color_buffer, desc.get_w(), PF_RGB, gamma());
 
 	setjmp(png_jmpbuf(png_ptr));
 	png_write_row(png_ptr,buffer);
