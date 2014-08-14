@@ -156,7 +156,7 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(eyedrop,"tool_eyedrop_icon."IMAGE_EXT,_("Eyedrop Tool"));
 	INIT_STOCK_ICON(fill,"tool_fill_icon."IMAGE_EXT,_("Fill Tool"));
 	INIT_STOCK_ICON(draw,"tool_draw_icon."IMAGE_EXT,_("Draw Tool"));
-    INIT_STOCK_ICON(brush,"tool_brush_icon."IMAGE_EXT,_("Brush Tool"));
+	INIT_STOCK_ICON(brush,"tool_brush_icon."IMAGE_EXT,_("Brush Tool"));
 	INIT_STOCK_ICON(sketch,"tool_sketch_icon."IMAGE_EXT,_("Sketch Tool"));
 	INIT_STOCK_ICON(circle,"tool_circle_icon."IMAGE_EXT,_("Circle Tool"));
 	INIT_STOCK_ICON(rectangle,"tool_rectangle_icon."IMAGE_EXT,_("Rectangle Tool"));
@@ -231,6 +231,8 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(layer_other_plant,"layer_other_plant_icon."IMAGE_EXT,_("Plant Layer"));
 	INIT_STOCK_ICON(layer_other_stroboscope,"layer_other_stroboscope_icon."IMAGE_EXT,_("Stroboscope Layer"));
 	INIT_STOCK_ICON(layer_other_supersample,"layer_other_supersample_icon."IMAGE_EXT,_("Super Sample Layer"));
+	INIT_STOCK_ICON(layer_other_sound,"layer_other_sound_icon."IMAGE_EXT,_("Sound Layer"));
+	INIT_STOCK_ICON(layer_other_switch,"layer_other_switch_icon."IMAGE_EXT,_("Switch Layer"));
 	INIT_STOCK_ICON(layer_other_skeleton,"layer_other_skeleton_icon."IMAGE_EXT,_("Skeleton Layer"));
 	INIT_STOCK_ICON(layer_other_text,"layer_other_text_icon."IMAGE_EXT,_("Text Layer"));
 	INIT_STOCK_ICON(layer_other_timeloop,"layer_other_timeloop_icon."IMAGE_EXT,_("Time Loop Layer"));
@@ -619,8 +621,12 @@ studio::layer_icon(const synfig::String &layer)
 		return Gtk::StockID("synfig-layer_other_skeleton");
 	else if(layer=="super_sample")
 		return Gtk::StockID("synfig-layer_other_supersample");
+	else if(layer=="switch")
+		return Gtk::StockID("synfig-layer_other_switch");
 	else if(layer=="text")
 		return Gtk::StockID("synfig-layer_other_text");
+	else if(layer=="sound")
+		return Gtk::StockID("synfig-layer_other_sound");
 	else if(layer=="timeloop")
 		return Gtk::StockID("synfig-layer_other_timeloop");
 	else if(layer=="xor_pattern")

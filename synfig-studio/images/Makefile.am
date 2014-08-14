@@ -117,6 +117,8 @@ EXTRA_DIST = \
 	layer_other_stroboscope_icon.sif \
 	layer_other_supersample_icon.sif \
 	layer_other_skeleton_icon.sif \
+	layer_other_sound_icon.sif \
+	layer_other_switch_icon.sif \
 	layer_other_text_icon.sif \
 	layer_other_timeloop_icon.sif \
 	layer_other_xorpattern_icon.sif \
@@ -126,6 +128,7 @@ EXTRA_DIST = \
 	layer_transform_scale_icon.sif \
 	layer_transform_translate_icon.sif \
 	\
+	tool_brush_icon.sif \
 	tool_spline_icon.sif \
 	tool_circle_icon.sif \
 	tool_draw_icon.sif \
@@ -290,6 +293,8 @@ IMAGES = \
 	layer_other_stroboscope_icon.$(EXT) \
 	layer_other_supersample_icon.$(EXT) \
 	layer_other_skeleton_icon.$(EXT) \
+	layer_other_sound_icon.$(EXT) \
+	layer_other_switch_icon.$(EXT) \
 	layer_other_text_icon.$(EXT) \
 	layer_other_timeloop_icon.$(EXT) \
 	layer_other_xorpattern_icon.$(EXT) \
@@ -299,6 +304,7 @@ IMAGES = \
 	layer_transform_scale_icon.$(EXT) \
 	layer_transform_translate_icon.$(EXT) \
 	\
+	tool_brush_icon.$(EXT) \
 	tool_spline_icon.$(EXT) \
 	tool_circle_icon.$(EXT) \
 	tool_draw_icon.$(EXT) \
