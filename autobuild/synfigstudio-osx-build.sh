@@ -221,7 +221,7 @@ mkdeps()
 	STUDIO_DEPS=" \
 		gtkmm \
 		python33 \
-		gtk-quartz-engine \
+		gtk-engines2 \
 		intltool"
 	port install -f $CORE_DEPS $STUDIO_DEPS
 	
@@ -232,6 +232,18 @@ mkdeps()
 	pushd $MACPORTS/bin/ > /dev/null
 	ln -sf python3.3 python3
 	popd > /dev/null
+	
+	# Gtk theme
+	cat > ${MACPORTS}/etc/gtk-2.0/gtkrc <<EOF
+
+# Enable native look
+gtk-theme-name = "Clearlooks"
+
+# Use small toolbar buttons
+gtk-toolbar-style = 0
+
+EOF
+
 }
 
 mketl()
