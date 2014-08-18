@@ -214,7 +214,7 @@ gif::end_frame()
 	Palette prev_palette(curr_palette);
 
 	// Fill in the background color
-	if(!get_remove_alpha())
+	if(get_alpha_mode()==TARGET_ALPHA_MODE_KEEP)
 	{
 		Surface::alpha_pen pen(curr_surface.begin(),1.0,Color::BLEND_BEHIND);
 		pen.set_value(get_canvas()->rend_desc().get_bg_color());

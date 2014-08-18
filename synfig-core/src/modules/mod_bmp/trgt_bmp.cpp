@@ -115,7 +115,7 @@ bmp::bmp(const char *Filename, const synfig::TargetParam& params)
 	multi_image=false;
 	buffer=0;
 	color_buffer=0;
-	set_remove_alpha();
+	set_alpha_mode(TARGET_ALPHA_MODE_FILL);
 	sequence_separator=params.sequence_separator;
 }
 

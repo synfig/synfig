@@ -80,6 +80,14 @@ class Canvas;
 class ProgressCallback;
 struct TargetParam;
 
+enum TargetAlphaMode
+{
+	TARGET_ALPHA_MODE_KEEP,          // 0
+	TARGET_ALPHA_MODE_FILL,          // 1
+	TARGET_ALPHA_MODE_REDUCE,        // 2
+	TARGET_ALPHA_MODE_EXTRACT        // 3
+}; // END enum TargetAlphaMode
+
 /*!	\class Target
 **	\brief Used to produce rendered animations of the documents
 **
@@ -163,10 +171,11 @@ public:
 	int quality_;
 	//! Gamma value used for the render process of the target
 	Gamma gamma_;
-
+	
+	//! Tells how to handle alpha
 	//! Used by non alpha supported targets to decide if the background
 	//! must be filled or not
-	bool remove_alpha;
+	TargetAlphaMode alpha_mode;
 
 	//! When set to true, the target doesn't sync to canvas time.
 	bool avoid_time_sync_;
@@ -188,11 +197,12 @@ public:
 	void set_avoid_time_sync(bool x=true) { avoid_time_sync_=x; }
 	//! Gets the target avoid time synchronization
 	bool get_avoid_time_sync()const { return avoid_time_sync_; }
-	//! Gets the target remove alpha
-	bool get_remove_alpha()const { return remove_alpha; }
-	//! Sets the target remove alpha
-	void set_remove_alpha(bool x=true) { remove_alpha=x; }
-	//! Gets the target gamma
+	//! Tells how to handle alpha
+	//! Used by non alpha supported targets to decide if the background
+	//! must be filled or not
+	TargetAlphaMode get_alpha_mode()const { return alpha_mode; }
+	//! Sets how to handle alpha
+	void set_alpha_mode(TargetAlphaMode x=TARGET_ALPHA_MODE_KEEP) { alpha_mode=x; }
 	Gamma &gamma() { return gamma_; }
 	//! Sets the target gamma
 	const Gamma &gamma()const { return gamma_; }

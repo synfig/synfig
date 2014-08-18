@@ -65,7 +65,7 @@ jpeg_trgt::jpeg_trgt(const char *Filename,
 	ready=false;
 	quality=95;
 	color_buffer=0;
-	set_remove_alpha();
+	set_alpha_mode(TARGET_ALPHA_MODE_FILL);
 	sequence_separator=params.sequence_separator;
 }
 

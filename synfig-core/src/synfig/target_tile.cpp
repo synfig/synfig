@@ -169,9 +169,24 @@ synfig::Target_Tile::render_frame_(Context context,ProgressCallback *cb)
 					if(cb)cb->error(_("Bad surface"));
 					return false;
 				}
-				if(get_remove_alpha())
-					for(int i=0;i<surface.get_w()*surface.get_h();i++)
-						surface[0][i]=Color::blend(surface[0][i],desc.get_bg_color(),1.0f);
+				switch(get_alpha_mode())
+				{
+					case TARGET_ALPHA_MODE_FILL:
+						for(int i=0;i<surface.get_w()*surface.get_h();i++)
+							surface[0][i]=Color::blend(surface[0][i],desc.get_bg_color(),1.0f);
+						break;
+					case TARGET_ALPHA_MODE_EXTRACT:
+						for(int i=0;i<surface.get_w()*surface.get_h();i++)
+						{
+							float a=surface[0][i].get_a();
+							surface[0][i] = Color(a,a,a,a);
+						}
+						break;
+					case TARGET_ALPHA_MODE_REDUCE:
+						for(int i=0;i<surface.get_w()*surface.get_h();i++)
+							surface[0][i].set_a(1.0f);
+						break;
+				}
 
 				// Add the tile to the target
 				if(!add_tile(surface,x,y))
@@ -233,9 +248,24 @@ synfig::Target_Tile::render_frame_(Context context,ProgressCallback *cb)
 					if(cb)cb->error(_("Bad surface"));
 					return false;
 				}
-				if(get_remove_alpha())
-					for(int i=0;i<surface.get_w()*surface.get_h();i++)
-						surface[0][i]=Color::blend(surface[0][i],desc.get_bg_color(),1.0f);
+				switch(get_alpha_mode())
+				{
+					case TARGET_ALPHA_MODE_FILL:
+						for(int i=0;i<surface.get_w()*surface.get_h();i++)
+							surface[0][i]=Color::blend(surface[0][i],desc.get_bg_color(),1.0f);
+						break;
+					case TARGET_ALPHA_MODE_EXTRACT:
+						for(int i=0;i<surface.get_w()*surface.get_h();i++)
+						{
+							float a=surface[0][i].get_a();
+							surface[0][i] = Color(a,a,a,a);
+						}
+						break;
+					case TARGET_ALPHA_MODE_REDUCE:
+						for(int i=0;i<surface.get_w()*surface.get_h();i++)
+							surface[0][i].set_a(1.0f);
+						break;
+				}
 
 				etl::clock timer;
 				timer.reset();

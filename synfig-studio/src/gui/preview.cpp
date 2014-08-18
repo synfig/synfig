@@ -136,7 +136,7 @@ public:
 
 	Preview_Target()
 	{
-		set_remove_alpha();
+		set_alpha_mode(TARGET_ALPHA_MODE_FILL);
 		tbegin = tend = 0;
 		scanline = 0;
 		nframes = curframe = 0;

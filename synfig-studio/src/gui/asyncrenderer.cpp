@@ -110,7 +110,7 @@ public:
 		set_tile_h(warm_target->get_tile_h());
 		set_canvas(warm_target->get_canvas());
 		set_quality(warm_target->get_quality());
-		set_remove_alpha(warm_target->get_remove_alpha());
+		set_alpha_mode(warm_target->get_alpha_mode());
 		set_threads(warm_target->get_threads());
 		set_clipping(warm_target->get_clipping());
 		set_rend_desc(&warm_target->rend_desc());
@@ -295,7 +295,7 @@ public:
 		set_tile_h(warm_target->get_tile_h());
 		set_canvas(warm_target->get_canvas());
 		set_quality(warm_target->get_quality());
-		set_remove_alpha(warm_target->get_remove_alpha());
+		set_alpha_mode(warm_target->get_alpha_mode());
 		set_threads(warm_target->get_threads());
 		set_clipping(warm_target->get_clipping());
 		set_rend_desc(&warm_target->rend_desc());
@@ -455,7 +455,7 @@ public:
 		set_avoid_time_sync(warm_target->get_avoid_time_sync());
 		set_canvas(warm_target->get_canvas());
 		set_quality(warm_target->get_quality());
-		set_remove_alpha(warm_target->get_remove_alpha());
+		set_alpha_mode(warm_target->get_alpha_mode());
 		set_threads(warm_target->get_threads());
 		set_rend_desc(&warm_target->rend_desc());
 		alive_flag=true;
@@ -584,7 +584,7 @@ public:
 		set_avoid_time_sync(warm_target->get_avoid_time_sync());
 		set_canvas(warm_target->get_canvas());
 		set_quality(warm_target->get_quality());
-		set_remove_alpha(warm_target->get_remove_alpha());
+		set_alpha_mode(warm_target->get_alpha_mode());
 		set_rend_desc(&warm_target->rend_desc());
 		alive_flag=true;
 #ifndef GLIB_DISPATCHER_BROKEN

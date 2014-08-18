@@ -221,13 +221,27 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 									return false;
 								}
 
-								if(get_remove_alpha())
+								switch(get_alpha_mode())
 								{
-									for(int i = 0; i < surface.get_w(); i++)
-										colordata[i] = Color::blend(surface[y][i],desc.get_bg_color(),1.0f);
-								}
-								else
-									memcpy(colordata,surface[y],rowspan);
+									case TARGET_ALPHA_MODE_FILL:
+										for(int i = 0; i < surface.get_w(); i++)
+											colordata[i] = Color::blend(surface[y][i],desc.get_bg_color(),1.0f);
+										break;
+									case TARGET_ALPHA_MODE_EXTRACT:
+										for(int i = 0; i < surface.get_w(); i++)
+										{
+											float a=surface[y][i].get_a();
+											colordata[i] = Color(a,a,a,a);
+										}
+										break;
+									case TARGET_ALPHA_MODE_REDUCE:
+										for(int i = 0; i < surface.get_w(); i++)
+											colordata[i] = Color(surface[y][i].get_r(),surface[y][i].get_g(),surface[y][i].get_b(),1.0f);
+										break;
+									case TARGET_ALPHA_MODE_KEEP:
+										memcpy(colordata,surface[y],rowspan);
+										break;
+								}	
 
 								if(!end_scanline())
 								{
@@ -366,13 +380,27 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 								return false;
 							}
 
-							if(get_remove_alpha())
+							switch(get_alpha_mode())
 							{
-								for(int i = 0; i < surface.get_w(); i++)
-									colordata[i] = Color::blend(surface[y][i],desc.get_bg_color(),1.0f);
-							}
-							else
-								memcpy(colordata,surface[y],rowspan);
+								case TARGET_ALPHA_MODE_FILL:
+									for(int i = 0; i < surface.get_w(); i++)
+										colordata[i] = Color::blend(surface[y][i],desc.get_bg_color(),1.0f);
+									break;
+								case TARGET_ALPHA_MODE_EXTRACT:
+									for(int i = 0; i < surface.get_w(); i++)
+									{
+										float a=surface[y][i].get_a();
+										colordata[i] = Color(a,a,a,a);
+									}
+									break;
+								case TARGET_ALPHA_MODE_REDUCE:
+									for(int i = 0; i < surface.get_w(); i++)
+										colordata[i] = Color(surface[y][i].get_r(),surface[y][i].get_g(),surface[y][i].get_b(),1.0f);
+									break;
+								case TARGET_ALPHA_MODE_KEEP:
+									memcpy(colordata,surface[y],rowspan);
+									break;
+							}	
 
 							if(!end_scanline())
 							{
@@ -458,13 +486,27 @@ Target_Scanline::add_frame(const Surface *surface)
 			return false;
 		}
 
-		if(get_remove_alpha())
+		switch(get_alpha_mode())
 		{
-			for(int i=0;i<surface->get_w();i++)
-				colordata[i]=Color::blend((*surface)[y][i],desc.get_bg_color(),1.0f);
+			case TARGET_ALPHA_MODE_FILL:
+				for(int i=0;i<surface->get_w();i++)
+					colordata[i]=Color::blend((*surface)[y][i],desc.get_bg_color(),1.0f);
+				break;
+			case TARGET_ALPHA_MODE_EXTRACT:
+				for(int i=0;i<surface->get_w();i++)
+				{
+					float a=(*surface)[y][i].get_a();
+					colordata[i] = Color(a,a,a,a);
+				}
+				break;
+			case TARGET_ALPHA_MODE_REDUCE:
+				for(int i = 0; i < surface->get_w(); i++)
+					colordata[i] = Color((*surface)[y][i].get_r(),(*surface)[y][i].get_g(),(*surface)[y][i].get_b(),1.0f);
+				break;
+			case TARGET_ALPHA_MODE_KEEP:
+				memcpy(colordata,(*surface)[y],rowspan);
+				break;
 		}
-		else
-			memcpy(colordata,(*surface)[y],rowspan);
 
 		if(!end_scanline())
 		{

@@ -96,7 +96,7 @@ Target::ext_book()
 Target::Target():
 	quality_(4),
 	gamma_(*default_gamma_),
-	remove_alpha(false),
+	alpha_mode(TARGET_ALPHA_MODE_KEEP),
 	avoid_time_sync_(false),
 	curr_frame_(0)
 {

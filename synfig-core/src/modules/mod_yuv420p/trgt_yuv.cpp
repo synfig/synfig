@@ -67,7 +67,7 @@ yuv::yuv(const char *FILENAME, const synfig::TargetParam& /* params */):
 	dithering(true)
 {
 	// YUV420P doesn't have an alpha channel
-	set_remove_alpha();
+	set_alpha_mode(TARGET_ALPHA_MODE_FILL);
 }
 
 yuv::~yuv()
