@@ -1434,7 +1434,6 @@ CanvasView::create_display_bar()
 	// Separator
 	displaybar->append( *create_tool_separator() );
 
-	/*
 	{ // Set up the onion skin toggle button
 		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-toggle_onion_skin"), iconsize));
 		icon->set_padding(0, 0);
@@ -1452,6 +1451,7 @@ CanvasView::create_display_bar()
 		displaybar->append(*onion_skin);
 	}
 
+/*
 	{ // Set up past onion skin spin button
 		past_onion_spin=Gtk::manage(new class Gtk::SpinButton(past_onion_adjustment_));
 		past_onion_spin->signal_value_changed().connect(
