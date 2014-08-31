@@ -137,7 +137,6 @@
 #include <pangomm.h>
 
 #include "general.h"
-#include "tool/progress.h"
 
 #endif
 
