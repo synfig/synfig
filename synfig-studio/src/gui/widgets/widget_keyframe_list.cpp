@@ -214,6 +214,8 @@ Widget_Keyframe_List::set_selected_keyframe(const synfig::Keyframe &x)
 		selected_kf.set_description(x.get_description());
 		// refresh keyframe time also.
 		selected_kf.set_time(x.get_time());
+		// and activation status
+		selected_kf.set_active(x.active());
 		return;
 	}
 
