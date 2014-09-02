@@ -283,7 +283,8 @@ Widget_Keyframe_List::perform_move_kf(bool delta=false)
 		}
 	else
 		{
-			Keyframe prev_kf(*kf_list_->find_prev(selected_kf_time));
+			// find prev from selected kf time including deactivated kf
+			Keyframe prev_kf(*kf_list_->find_prev(selected_kf_time, false));
 			Time prev_kf_time(prev_kf.get_time());
 			if (prev_kf_time >= dragging_kf_time) //Not allowed
 			{
