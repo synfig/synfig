@@ -70,7 +70,7 @@ RenderSettings::RenderSettings(Gtk::Window& parent, etl::handle<synfigapp::Canva
 	entry_antialias(adjustment_antialias,1,0),
 	toggle_single_frame(_("Render _current frame only"), true),
 	toggle_extract_alpha(_("Extract alpha"), true),
-	tparam("mpeg4",2000)
+	tparam("libx264-lossless",2000)
 {
 	tparam.sequence_separator=App::sequence_separator;
 	widget_rend_desc.show();
