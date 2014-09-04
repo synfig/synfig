@@ -268,8 +268,22 @@ KeyframeActionManager::refresh()
 	// but the removing will effect the toolbar buttons on keyframe panel, to have
 	// a quick solution, I just remove the menu items and let it here before someone
 	// figure out how this String ui_info works.
+//	String full_ui_info;
+//	full_ui_info="<ui><popup action=''><menu action='menu-keyframe'>"+ui_info+"</menu></popup></ui>";
+//	popup_id_=get_ui_manager()->add_ui_from_string(full_ui_info);
+
 	String full_ui_info;
-	full_ui_info="<ui><popup action=''><menu action='menu-keyframe'>"+ui_info+"</menu></popup></ui>";
+	full_ui_info=
+			"<ui>"
+				"<popup action='menu-keyframe'>"
+					"<menu action='menu-keyframe'>"
+						"<menuitem action='action-KeyframeAdd' />"
+						"<menuitem action='action-KeyframeDuplicate' />"
+						"<menuitem action='action-KeyframeRemove' />"
+						"<menuitem action='keyframe-properties' />"
+					"</menu>"
+				"</popup>"
+			"</ui>";
 	popup_id_=get_ui_manager()->add_ui_from_string(full_ui_info);
 
 #ifdef ONE_ACTION_GROUP
