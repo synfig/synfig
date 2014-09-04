@@ -264,24 +264,15 @@ KeyframeActionManager::refresh()
 		action_group_->get_action("action-KeyframeAdd")->set_sensitive(true);
 	}
 
-	// this popup menu should be removed since we don't provide a keyframe menu
-	// but the removing will effect the toolbar buttons on keyframe panel, to have
-	// a quick solution, I just remove the menu items and let it here before someone
-	// figure out how this String ui_info works.
-//	String full_ui_info;
-//	full_ui_info="<ui><popup action=''><menu action='menu-keyframe'>"+ui_info+"</menu></popup></ui>";
-//	popup_id_=get_ui_manager()->add_ui_from_string(full_ui_info);
-
+	// this popup menu is used from widget_keyframe_list
 	String full_ui_info;
 	full_ui_info=
 			"<ui>"
 				"<popup action='menu-keyframe'>"
-					"<menu action='menu-keyframe'>"
 						"<menuitem action='action-KeyframeAdd' />"
 						"<menuitem action='action-KeyframeDuplicate' />"
 						"<menuitem action='action-KeyframeRemove' />"
 						"<menuitem action='keyframe-properties' />"
-					"</menu>"
 				"</popup>"
 			"</ui>";
 	popup_id_=get_ui_manager()->add_ui_from_string(full_ui_info);
