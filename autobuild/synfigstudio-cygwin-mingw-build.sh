@@ -415,7 +415,7 @@ export PREP_VERSION=4
 if [[ `cat /prep-done` != "${PREP_VERSION}" ]]; then
 
 $CYGWIN_SETUP \
--s http://ftp.linux.kiev.ua/pub/cygwin/ \
+-s http://gd.tuwien.ac.at/gnu/cygwin/ \
 -P git \
 -P make \
 -P gcc-core \
@@ -445,7 +445,7 @@ $CYGWIN_SETUP \
 
 # yum dependencies
 $CYGWIN_SETUP \
--s http://ftp.linux.kiev.ua/pub/cygwin/ \
+-s http://gd.tuwien.ac.at/gnu/cygwin/ \
 -P urlgrabber \
 -P libglib2.0-devel \
 -P libxml2-devel \
@@ -498,7 +498,7 @@ if false; then
 #CYGPORT_MIRROR="-s ftp://ftp.cygwinports.org/pub/cygwinports"
 CYGPORT_MIRROR="-s http://mirrors.kernel.org/sources.redhat.com/cygwinports"
 $CYGWIN_SETUP \
--K http://cygwinports.org/ports.gpg $CYGPORT_MIRROR -s http://ftp.linux.kiev.ua/pub/cygwin/ \
+-K http://cygwinports.org/ports.gpg $CYGPORT_MIRROR -s http://gd.tuwien.ac.at/gnu/cygwin/ \
 -P git \
 -P make \
 -P gcc \
