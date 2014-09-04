@@ -71,6 +71,10 @@ Dock_Keyframes::Dock_Keyframes():
 	keyframe_action_manager->signal_show_keyframe_properties().connect(
 		sigc::mem_fun(*this,&Dock_Keyframes::show_keyframe_properties)
 	);
+	keyframe_action_manager->signal_keyframe_toggle().connect(
+		sigc::mem_fun(*this,&Dock_Keyframes::keyframe_toggle)
+	);
+
 
     Glib::ustring ui_info =
 	"<ui>"
@@ -97,6 +101,13 @@ Dock_Keyframes::show_keyframe_properties()
 {
 	if(get_canvas_view())
 		get_canvas_view()->show_keyframe_dialog();
+}
+
+void
+Dock_Keyframes::keyframe_toggle()
+{
+	if(get_canvas_view())
+		get_canvas_view()->on_keyframe_toggle();
 }
 
 /*! \fn Dock_Keyframes::refresh_rend_desc()

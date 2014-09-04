@@ -155,7 +155,16 @@ KeyframeActionManager::on_keyframe_properties()
 	signal_show_keyframe_properties_();
 }
 
-/*! \fn KeyframeActionManager::on_keyframe_properties()
+/*! \fn KeyframeActionManager::on_keyframe_toggle()
+**	\brief Signal handler for selected keyframe toogle
+*/
+void
+KeyframeActionManager::on_keyframe_toggle()
+{
+	signal_keyframe_toggle_();
+}
+
+/*! \fn KeyframeActionManager::on_add_keyframe()
 **	\brief Signal handler for add keyframe
 */
 void
@@ -253,6 +262,13 @@ KeyframeActionManager::refresh()
 			action->set_sensitive(false);
 	}
 
+	{
+		Glib::RefPtr<Gtk::Action> action(Gtk::Action::create("keyframe-toggle", _("Keyframe Toggle"), _("Keyframe Toggle")));
+		action_group_->add(action,sigc::mem_fun(*this,&KeyframeActionManager::on_keyframe_toggle));
+		if(keyframe_tree_->get_selection()->count_selected_rows()==0)
+			action->set_sensitive(false);
+	}
+
 	//get the beginning and ending time of the time slider
 	Time begin_time=canvas_interface_->get_canvas()->rend_desc().get_time_start();
 	Time end_time=canvas_interface_->get_canvas()->rend_desc().get_time_end();
@@ -275,6 +291,7 @@ KeyframeActionManager::refresh()
 						"<menuitem action='action-KeyframeDuplicate' />"
 						"<menuitem action='action-KeyframeRemove' />"
 						"<menuitem action='keyframe-properties' />"
+						"<menuitem action='keyframe-toggle' />"
 				"</popup>"
 			"</ui>";
 	popup_id_=get_ui_manager()->add_ui_from_string(full_ui_info);

@@ -1958,21 +1958,6 @@ CanvasView::on_unselect_layers()
 }
 
 void
-CanvasView::show_keyframe_dialog()
-{
-	Glib::RefPtr<Gtk::TreeSelection> selection(keyframe_tree->get_selection());
-	if(selection->get_selected())
-	{
-		Gtk::TreeRow row(*selection->get_selected());
-
-		Keyframe keyframe(row[keyframe_tree->model.keyframe]);
-
-		keyframe_dialog.set_keyframe(keyframe);
-		keyframe_dialog.present();
-	}
-}
-
-void
 CanvasView::add_layer(synfig::String x)
 {
 	Canvas::Handle canvas;
@@ -3869,6 +3854,45 @@ CanvasView::on_keyframe_remove_pressed()
 	action->set_param("keyframe",keyframe);
 
 	canvas_interface()->get_instance()->perform_action(action);
+}
+
+void
+CanvasView::show_keyframe_dialog()
+{
+	Glib::RefPtr<Gtk::TreeSelection> selection(keyframe_tree->get_selection());
+	if(selection->get_selected())
+	{
+		Gtk::TreeRow row(*selection->get_selected());
+
+		Keyframe keyframe(row[keyframe_tree->model.keyframe]);
+
+		keyframe_dialog.set_keyframe(keyframe);
+		keyframe_dialog.present();
+	}
+}
+
+void
+CanvasView::on_keyframe_toggle()
+{
+	Glib::RefPtr<Gtk::TreeSelection> selection(keyframe_tree->get_selection());
+	if(selection->get_selected())
+	{
+		Gtk::TreeRow row(*selection->get_selected());
+
+		Keyframe keyframe(row[keyframe_tree->model.keyframe]);
+
+		synfigapp::Action::Handle action(synfigapp::Action::create("KeyframeToggl"));
+
+		if(!action)
+			return;
+		action->set_param("canvas",canvas_interface()->get_canvas());
+		action->set_param("canvas_interface",canvas_interface());
+		action->set_param("keyframe",keyframe);
+		action->set_param("new_status",!keyframe.active ());
+
+		canvas_interface()->get_instance()->perform_action(action);
+
+	}
 }
 
 void

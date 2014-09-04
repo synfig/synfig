@@ -45,6 +45,7 @@ class KeyframeTree;
 class KeyframeActionManager
 {
 	sigc::signal<void> signal_show_keyframe_properties_;
+	sigc::signal<void> signal_keyframe_toggle_;
 
 	Glib::RefPtr<Gtk::UIManager> ui_manager_;
 	//Glib::RefPtr<Gtk::TreeSelection> tree_selection_;
@@ -63,9 +64,11 @@ class KeyframeActionManager
 
 	void on_add_keyframe();
 	void on_keyframe_properties();
+	void on_keyframe_toggle();
 
 public:
 	sigc::signal<void>& signal_show_keyframe_properties() { return signal_show_keyframe_properties_; }
+	sigc::signal<void>& signal_keyframe_toggle() { return signal_keyframe_toggle_; }
 
 	void queue_refresh();
 

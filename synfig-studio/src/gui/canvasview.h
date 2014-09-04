@@ -726,6 +726,7 @@ public:
 	void add_layer(synfig::String x);
 
 	void show_keyframe_dialog();
+	void on_keyframe_toggle();
 
 	void play_audio(float t);
 	void stop_audio();
