@@ -62,7 +62,6 @@ public:
 				const synfig::TargetParam& params);
 
 	virtual bool set_rend_desc(synfig::RendDesc *desc);
-	virtual bool init();
 	virtual bool start_frame(synfig::ProgressCallback *cb);
 	virtual void end_frame();
 
@@ -70,6 +69,11 @@ public:
 
 	virtual synfig::Color * start_scanline(int scanline);
 	virtual bool end_scanline();
+	
+	//! Initialization tasks of ffmpeg target.
+	//! @returns true if the initialization has no errors
+	virtual bool init(synfig::ProgressCallback *cb);
+	bool check_ffmpeg_binary(std::string path);
 };
 
 /* === E N D =============================================================== */

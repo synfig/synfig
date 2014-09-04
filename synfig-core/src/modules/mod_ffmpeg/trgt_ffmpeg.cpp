@@ -121,6 +121,29 @@ ffmpeg_trgt::~ffmpeg_trgt()
 }
 
 bool
+ffmpeg_trgt::check_ffmpeg_binary(String path)
+{
+	String command;
+	String result;
+	command = path + " -version 2>&1";
+	FILE* pipe = popen(command.c_str(), "r");
+	if (!pipe) {
+		return false;
+	}
+	char buffer[128];
+	while(!feof(pipe)) {
+		if(fgets(buffer, 128, pipe) != NULL)
+				result += buffer;
+	}
+	pclose(pipe);
+	// Output is like: "ffmpeg version ..."
+	if (result.substr(0,6) != "ffmpeg" && result.substr(0,6) != "avconv"){
+		return false;
+	}
+	return true;
+}
+
+bool
 ffmpeg_trgt::set_rend_desc(RendDesc *given_desc)
 {
 	//given_desc->set_pixel_format(PF_RGB);
@@ -158,9 +181,37 @@ ffmpeg_trgt::set_rend_desc(RendDesc *given_desc)
 }
 
 bool
-ffmpeg_trgt::init()
+ffmpeg_trgt::init(ProgressCallback *cb=NULL)
 {
-	synfig::info("ffmpeg_trgt::init called...");
+	String ffmpeg_binary_path;
+	std::list< String > binary_choices;
+	binary_choices.push_back("ffmpeg");
+	binary_choices.push_back("avconv");
+	std::list< String >::iterator iter;
+	for(iter=binary_choices.begin();iter!=binary_choices.end();iter++)
+	{
+		String binary_path;
+#if defined(WIN32_PIPE_TO_PROCESSES)
+		binary_path = synfig::get_binary_path("");
+		if (binary_path != "")
+			binary_path = etl::dirname(binary_path)+ETL_DIRECTORY_SEPARATOR;
+		binary_path += iter+".exe";
+		binary_path = "\"" + binary_path + "\"";
+#else
+		binary_path = *iter;
+#endif
+		if (check_ffmpeg_binary(binary_path))
+		{
+			ffmpeg_binary_path = binary_path;
+			break;
+		}
+
+	}
+	if (ffmpeg_binary_path == "")
+	{
+		if (cb) cb->error(_("Error: No FFmpeg binary found.\n\nPlease install \"ffmpeg\" or \"avconv\" package."));
+		return false;
+	}
 	
 	imagecount=desc.get_frame_start();
 	if(desc.get_frame_end()-desc.get_frame_start()>0)
@@ -173,21 +224,9 @@ ffmpeg_trgt::init()
 		video_codec_real="libx264";
 	else
 		video_codec_real=video_codec;
-
-	String binary_path;
-#if defined(WIN32_PIPE_TO_PROCESSES)
-	binary_path = synfig::get_binary_path("");
-	if (binary_path != "")
-		binary_path = etl::dirname(binary_path)+ETL_DIRECTORY_SEPARATOR;
-	binary_path += "ffmpeg.exe";
-	binary_path = "\"" + binary_path + "\"";
-	filename=strprintf("\"%s\"", filename.c_str());
-#else
-	binary_path = "ffmpeg";
-#endif
 	
 	std::vector<String> vargs;
-	vargs.push_back(binary_path);
+	vargs.push_back(ffmpeg_binary_path);
 	vargs.push_back("-f");
 	vargs.push_back("image2pipe");
 	vargs.push_back("-vcodec");
@@ -274,7 +313,7 @@ ffmpeg_trgt::init()
 		}
 		args[idx++] = (char *)NULL;
 		
-		execvp(binary_path.c_str(), args);
+		execvp(ffmpeg_binary_path.c_str(), args);
 
 		// We should never reach here unless the exec failed
 		synfig::error(_("Unable to open pipe to ffmpeg (exec failed)"));
