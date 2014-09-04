@@ -61,9 +61,9 @@ if [ -d "$PACKAGES_BUILDROOT" ]; then
 PACKAGES_BUILDROOT=`cd $PACKAGES_BUILDROOT; pwd`	# canonify buildroot path
 fi
 
-BUILDROOT_VERSION=8
-BUILDROOT_LIBRARY_SET_ID=2
-MAKE_THREADS=4					#count of threads for make
+BUILDROOT_VERSION=9
+BUILDROOT_LIBRARY_SET_ID=4
+MAKE_THREADS=2					#count of threads for make
 
 # full = clean, configure, make
 # standart = configure, make
@@ -77,28 +77,30 @@ BREED=
 export EMAIL='root@synfig.org'
 
 # Bundled libraries
-LIBSIGCPP=2.0.18
+LIBSIGCPP=2.2.10
 GLEW=1.5.1
 CAIROMM=1.8.0
 IMAGEMAGICK=6.8.6
-PANGOMM=2.24.0
-GTKMM=2.16.0 # !!! we need pangomm have show_in_cairo_context()
+PANGOMM=2.26.3		# required by GTKMM 2.20.3
+GTKMM=2.20.3 		# !!! we need Notebook.set_action_widget()
 FTGL=2.1.2
 FREEGLUT=2.4.0
 GTKGLEXT=1.2.0
 GTKGLEXTMM=1.2.0
 LIBXMLPP=2.22.0
-GLIBMM=2.18.2 #!!! >= 2.18.0
+GLIBMM=2.24.2		# required by GTKMM 2.20.3
 CAIRO=1.12.0		# required by the cairo render engine 2013-04-01
+BOOST=1_53_0
 
 # System libraries
-ATK=1.25.2
-GLIB=2.20.5
-GTK=2.16.6
+ATK=1.29.4			# required by GTK 2.20.1
+GLIB=2.24.2			# required by GLIBMM 2.24.2
+GTK=2.20.1			# !!! we need Notebook.set_action_widget()
 PIXMAN=0.22.0		# required by CAIRO 1.12.0
 PANGO=1.24.5
 FONTCONFIG=2.5.0
-BOOST=1_53_0
+JACK=0.124.1
+
 
 GITVERSION=1.7.0   # git version for chroot environment
 
@@ -122,7 +124,8 @@ mklibsigcpp()
 {
 if ! pkg-config sigc\+\+-2.0 --exact-version=${LIBSIGCPP}  --print-errors; then
 	pushd /source
-	[ ! -d libsigc++-${LIBSIGCPP} ] && tar -xjf libsigc++-${LIBSIGCPP}.tar.bz2 && cd libsigc++-${LIBSIGCPP} && patch -p1 < ../libsigc++-2.0_2.0.18-2.diff && cd ..
+	wget -c --no-check-certificate http://ftp.gnome.org/pub/GNOME/sources/libsigc++/${LIBSIGCPP%.*}/libsigc++-${LIBSIGCPP}.tar.bz2
+	[ ! -d libsigc++-${LIBSIGCPP} ] && tar -xjf libsigc++-${LIBSIGCPP}.tar.bz2 #&& cd libsigc++-${LIBSIGCPP} && patch -p1 < ../libsigc++-2.0_2.0.18-2.diff && cd ..
 	cd libsigc++-${LIBSIGCPP}
 	#make clean || true
 	./configure --prefix=${PREFIX}/ --includedir=${PREFIX}/include --disable-static --enable-shared
@@ -487,7 +490,22 @@ if [[ $MODE != 'quick' ]]; then
 	sed -i 's/^AC_CONFIG_SUBDIRS(libltdl)$/m4_ifdef([_AC_SEEN_TAG(libltdl)], [], [AC_CONFIG_SUBDIRS(libltdl)])/' configure.ac || true
 	sed -i 's/^# AC_CONFIG_SUBDIRS(libltdl)$/m4_ifdef([_AC_SEEN_TAG(libltdl)], [], [AC_CONFIG_SUBDIRS(libltdl)])/' configure.ac || true
 	autoreconf --install --force
-	/bin/sh ./configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared --with-magickpp --without-libavcodec $DEBUG
+	if [ -e /etc/debian_version ] && [ -z $BOOST_CONFIGURE_OPTIONS ]; then
+		# Debian/Ubuntu multiarch
+		MULTIARCH_LIBDIR="/usr/lib/`uname -i`-linux-gnu/"
+		if [ -e "${MULTIARCH_LIBDIR}/libboost_program_options.so" ]; then
+			export BOOST_CONFIGURE_OPTIONS="--with-boost-libdir=$MULTIARCH_LIBDIR"
+		fi
+	fi
+	export CONFIG_SHELL=/bin/bash
+	/bin/bash ./configure --prefix=${PREFIX} \
+		--includedir=${PREFIX}/include \
+		--disable-static --enable-shared \
+		--with-magickpp \
+		--without-libavcodec \
+		--without-included-ltdl \
+		$BOOST_CONFIGURE_OPTIONS \
+		$DEBUG
 fi
 
 #It looks like mod_libavcodec causes segfault on synfig-core when rendering to png.
@@ -557,7 +575,7 @@ mkpack()
 	# bundle libltdl
 	rm -f ${PREFIX}/lib/libltdl* || true
 	cp -av /usr/lib/libltdl*.so* ${PREFIX}/lib
-	
+
 	cat > $PREFIX/synfig <<EOF
 #!/bin/sh
 
@@ -802,7 +820,6 @@ initialize()
 		gettext \
 		cvs \
 		libpng12-dev \
-		libjpeg62-dev \
 		fontconfig \
 		libfreetype6-dev \
 		libfontconfig1-dev \
@@ -811,8 +828,12 @@ initialize()
 		libjasper-dev \
 		x11proto-xext-dev libdirectfb-dev libxfixes-dev libxinerama-dev libxdamage-dev libxcomposite-dev libxcursor-dev libxft-dev libxrender-dev libxt-dev libxrandr-dev libxi-dev libxext-dev libx11-dev \
 		libatk1.0-dev \
+		imagemagick \
 		bzip2"
 	if which yum >/dev/null; then
+		#
+		#  Fedora
+		#
 		PKG_LIST="git"
 		if [[ $MODE == 'package' ]]; then
 			PKG_LIST="${PKG_LIST} \
@@ -837,6 +858,7 @@ initialize()
 				automake \
 				libtool \
 				libtool-ltdl-devel \
+				boost-devel \
 				boost-program-options \
 				cvs \
 				shared-mime-info \
@@ -851,13 +873,16 @@ initialize()
 			su -c "yum install $PKG_LIST" || true
 		fi
 	elif which zypper >/dev/null; then
+		#
+		#  OpenSUSE
+		#
 		PKG_LIST="git"
 		if [[ $MODE == 'package' ]]; then
 			PKG_LIST="${PKG_LIST} \
 				debootstrap \
 				rsync"
 		else
-			PKG_LIST="${PKG_LIST} libpng-devel libjpeg-devel freetype-devel fontconfig-devel atk-devel pango-devel cairo-devel gtk2-devel gettext-devel libxml2-devel libxml++-devel gcc-c++ autoconf automake libtool libtool-ltdl-devel cvs boost-program-options shared-mime-info"
+			PKG_LIST="${PKG_LIST} libpng-devel libjpeg-devel freetype-devel fontconfig-devel atk-devel pango-devel cairo-devel gtk2-devel gettext-devel libxml2-devel libxml++-devel gcc-c++ autoconf automake libtool libtool-ltdl-devel cvs boost-devel boost-program-options shared-mime-info"
 			PKG_LIST="${PKG_LIST} OpenEXR-devel libmng-devel ImageMagick-c++-devel gtkmm2-devel glibmm2-devel"
 		fi
 		if ! ( rpm -qv $PKG_LIST ); then
@@ -875,17 +900,71 @@ initialize()
 				PKG_LIST="${PKG_LIST} debootstrap rsync"
 			fi
 		else
-			PKG_LIST="${PKG_LIST} ${DEB_LIST_MINIMAL} libmng-dev libgtkmm-2.4-dev libglibmm-2.4-dev libsigc++-2.0-dev libxml++2.6-dev libboost-program-options-dev"
+			if ( cat /etc/altlinux-release | egrep "ALT Linux" ); then
+				#
+				#  ALT Linux case
+				#
+				PKG_LIST=" \
+					rpm-build \
+					boost-program_options-devel \
+					git-core \
+					shared-mime-info \
+					libltdl3-devel \
+					intltool \
+					gettext \
+					cvs \
+					libpng12-devel \
+					libjpeg-devel \
+					fontconfig \
+					libfreetype-devel \
+					fontconfig-devel \
+					libxml2-devel \
+					libtiff-devel \
+					libjasper-devel \
+					libdirectfb-devel \
+					libXfixes-devel \
+					libXinerama-devel \
+					libXdamage-devel \
+					libXcomposite-devel \
+					libXcursor-devel \
+					libXft-devel \
+					libXrender-devel \
+					libXt-devel \
+					libXrandr-devel \
+					libXi-devel \
+					libXext-devel \
+					libX11-devel \
+					libatk-devel \
+					bzip2 \
+					libmng-devel \
+					libgtkmm2-devel \
+					libglibmm-devel \
+					libsigc++2-devel \
+					libxml++2-devel \
+				"
+			else
+				#
+				#  Ubuntu/Debian case
+				#
+				PKG_LIST=" \
+					${PKG_LIST} \
+					${DEB_LIST_MINIMAL} \
+					git-core \
+					libmng-dev \
+					libjack-jackd2-dev \
+					libgtkmm-2.4-dev \
+					libglibmm-2.4-dev \
+					libsigc++-2.0-dev \
+					libxml++2.6-dev \
+					libboost-program-options-dev \
+				"
+			fi
 		fi
-		if ! ( dpkg -s $PKG_LIST >/dev/null ); then
-			echo "Running apt-get (you need root privelegies to do that)..."
-			echo
-			#echo "http_proxy =====" $http_proxy
-			#env
-			sudo apt-get update || true
-			sudo apt-get install -y $PKG_LIST
-			sudo apt-get install -y autopoint || true # Ubuntu special case
-		fi
+		echo "Running apt-get (you need root privelegies to do that)..."
+		echo
+		sudo apt-get update || true
+		sudo apt-get install -y $PKG_LIST
+		sudo apt-get install -y autopoint || true # Ubuntu special case
 	else
 		if [[ $MODE == 'package' ]]; then
 			if ! ( which git && which debootstrap ) ; then
@@ -1066,8 +1145,8 @@ mkpackage()
 			if [ -e $PACKAGES_BUILDROOT.$ARCH/ ]; then
 				rm -rf $PACKAGES_BUILDROOT.$ARCH/
 			fi
-			debootstrap --arch=$ARCH --variant=buildd  --include=sudo etch $PACKAGES_BUILDROOT.$ARCH http://archive.debian.org/debian
-			#debootstrap --arch=$ARCH --variant=buildd  --include=sudo lenny $PACKAGES_BUILDROOT.$ARCH http://ftp.de.debian.org/debian
+			debootstrap --arch=$ARCH --variant=buildd  --include=sudo lenny $PACKAGES_BUILDROOT.$ARCH http://archive.debian.org/debian
+			#debootstrap --arch=$ARCH --variant=buildd  --include=sudo squeeze $PACKAGES_BUILDROOT.$ARCH http://ftp.de.debian.org/debian
 		fi
 		#set chroot ID
 		echo "Synfig Packages Buildroot v${BUILDROOT_VERSION}" > $PACKAGES_BUILDROOT.$ARCH/etc/chroot.id
@@ -1178,7 +1257,11 @@ case $ARG in
 		mk$ARG
 		exit;;
 	*)
-		MODE='package'
+		if [ -e /etc/chroot.id ]; then
+			MODE='package'
+		else
+			MODE='standart'
+		fi
 		initialize
 		mk$ARG
 		exit;;
