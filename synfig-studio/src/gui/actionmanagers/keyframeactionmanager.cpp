@@ -164,6 +164,15 @@ KeyframeActionManager::on_keyframe_toggle()
 	signal_keyframe_toggle_();
 }
 
+/*! \fn KeyframeActionManager::on_keyframe_description_set()
+**	\brief Signal handler for selected keyframe description change
+*/
+void
+KeyframeActionManager::on_keyframe_description_set()
+{
+	signal_keyframe_description_set_();
+}
+
 /*! \fn KeyframeActionManager::on_add_keyframe()
 **	\brief Signal handler for add keyframe
 */
@@ -250,7 +259,7 @@ KeyframeActionManager::refresh()
 
 	// Keyframe description defintion
 	Glib::RefPtr<Gtk::Action> action_kf_description(Gtk::Action::create("keyframe-description-set", _("Keyframe Set Description"), _("Keyframe Set Description")));
-	action_group_->add(action_kf_description,sigc::mem_fun(*this,&KeyframeActionManager::on_keyframe_toggle));
+	action_group_->add(action_kf_description,sigc::mem_fun(*this,&KeyframeActionManager::on_keyframe_description_set));
 
 	//activate actions depending on context
 	{

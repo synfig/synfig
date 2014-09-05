@@ -727,6 +727,7 @@ public:
 
 	void show_keyframe_dialog();
 	void on_keyframe_toggle();
+	void on_keyframe_description_set();
 
 	void play_audio(float t);
 	void stop_audio();

@@ -74,6 +74,9 @@ Dock_Keyframes::Dock_Keyframes():
 	keyframe_action_manager->signal_keyframe_toggle().connect(
 		sigc::mem_fun(*this,&Dock_Keyframes::keyframe_toggle)
 	);
+	keyframe_action_manager->signal_keyframe_description_set().connect(
+		sigc::mem_fun(*this,&Dock_Keyframes::keyframe_description_set)
+	);
 
 
     Glib::ustring ui_info =
@@ -109,6 +112,14 @@ Dock_Keyframes::keyframe_toggle()
 	if(get_canvas_view())
 		get_canvas_view()->on_keyframe_toggle();
 }
+
+void
+Dock_Keyframes::keyframe_description_set()
+{
+	if(get_canvas_view())
+		get_canvas_view()->on_keyframe_description_set();
+}
+
 
 /*! \fn Dock_Keyframes::refresh_rend_desc()
 **	\brief Signal handler for animation render description change

@@ -3896,6 +3896,36 @@ CanvasView::on_keyframe_toggle()
 }
 
 void
+CanvasView::on_keyframe_description_set()
+{
+	Glib::RefPtr<Gtk::TreeSelection> selection(keyframe_tree->get_selection());
+	if(selection->get_selected())
+	{
+		Gtk::TreeRow row(*selection->get_selected());
+
+		Keyframe keyframe(row[keyframe_tree->model.keyframe]);
+
+		synfigapp::Action::Handle action(synfigapp::Action::create("KeyframeSet"));
+
+		if(!action)
+			return;
+
+		String str(keyframe.get_description ());
+		if(!studio::App::dialog_entry(action->get_name(), action->get_local_name(),str))
+			return;
+
+		keyframe.set_description(str);
+
+		action->set_param("canvas",canvas_interface()->get_canvas());
+		action->set_param("canvas_interface",canvas_interface());
+		action->set_param("keyframe",keyframe);
+
+		canvas_interface()->get_instance()->perform_action(action);
+
+	}
+}
+
+void
 CanvasView::toggle_duck_mask(Duckmatic::Type type)
 {
 	if(toggling_ducks_)
