@@ -430,23 +430,11 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 						queue_draw();
 					break;
 					case 3:
-
-
-	//Gtk::Menu *tabmenu=manage(new class Gtk::Menu());
-	//tabmenu->signal_hide().connect(sigc::bind(sigc::ptr_fun(&delete_widget), tabmenu));
-
-	Gtk::Menu* menu = dynamic_cast<Gtk::Menu*>(App::ui_manager()->get_widget("/menu-keyframe"));
-	if(menu)
-	{
-		menu->popup(event->button.button,gtk_get_current_event_time());
-	}
-
-
-	//Gtk::MenuItem *item = new Gtk::ImageMenuItem(Gtk::StockID("gtk-close"));
-	//item->show();
-	//tabmenu->append(*item);
-//	tabmenu->popup(event->button.button,gtk_get_current_event_time());
-
+						Gtk::Menu* menu = dynamic_cast<Gtk::Menu*>(App::ui_manager()->get_widget("/menu-keyframe"));
+						if(menu)
+						{
+							menu->popup(event->button.button,gtk_get_current_event_time());
+						}
 					break;
 					}
 				}
@@ -460,11 +448,15 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 						selected_=true;
 					break;
 					case 3:
-	Gtk::Menu* menu = dynamic_cast<Gtk::Menu*>(App::ui_manager()->get_widget("/menu-keyframe"));
-	if(menu)
-	{
-		menu->popup(event->button.button,gtk_get_current_event_time());
-	}
+						set_selected_keyframe(*(kf_list_->find_prev(t, false)));
+						queue_draw();
+						selected_=true;
+
+						Gtk::Menu* menu = dynamic_cast<Gtk::Menu*>(App::ui_manager()->get_widget("/menu-keyframe"));
+						if(menu)
+						{
+							menu->popup(event->button.button,gtk_get_current_event_time());
+						}
 					break;
 					}
 				}
@@ -478,11 +470,15 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 						selected_=true;
 						break;
 					case 3:
-	Gtk::Menu* menu = dynamic_cast<Gtk::Menu*>(App::ui_manager()->get_widget("/menu-keyframe"));
-	if(menu)
-	{
-		menu->popup(event->button.button,gtk_get_current_event_time());
-	}
+						set_selected_keyframe(*(kf_list_->find_next(t, false)));
+						queue_draw();
+						selected_=true;
+
+						Gtk::Menu* menu = dynamic_cast<Gtk::Menu*>(App::ui_manager()->get_widget("/menu-keyframe"));
+						if(menu)
+						{
+							menu->popup(event->button.button,gtk_get_current_event_time());
+						}
 						break;
 					}
 				}
