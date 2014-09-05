@@ -96,8 +96,10 @@ popd > /dev/null
 
 
 if [ ! -e "$SZIP_BINARY" ]; then
-    echo "7zip not found! Please download and install 7zip (http://downloads.sourceforge.net/sevenzip/7z920-x64.msi). Install into C:\synfig-build\7zip\ directory."
-    exit 1
+    if [[ $ARCH == "64" ]]; then
+        echo "7zip not found! Please download and install 7zip (http://downloads.sourceforge.net/sevenzip/7z920-x64.msi). Install into C:\synfig-build\7zip\ directory."
+        exit 1
+    fi
 fi
 if [ ! -e "$NSIS_BINARY" ]; then
     echo "NSIS not found! Please download and install NSIS >=3.0 (http://nsis.sourceforge.net/). Install into C:\synfig-build\NSIS\ directory."
