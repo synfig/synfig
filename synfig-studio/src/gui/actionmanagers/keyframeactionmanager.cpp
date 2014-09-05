@@ -229,11 +229,10 @@ KeyframeActionManager::refresh()
 		);
 	}
 
-// unnecessary has KeyframeActionManager::clear() is performed upper
-//	if(action_group_->get_action("action-KeyframeAdd"))
-//	{
-//		action_group_->remove(action_group_->get_action("action-KeyframeAdd"));
-//	}
+	if(action_group_->get_action("action-KeyframeAdd"))
+	{
+		action_group_->remove(action_group_->get_action("action-KeyframeAdd"));
+	}
 
 		action_group_->add(Gtk::Action::create(
 			"action-KeyframeAdd",
