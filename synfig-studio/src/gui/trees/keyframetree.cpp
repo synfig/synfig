@@ -31,6 +31,7 @@
 #	include <config.h>
 #endif
 
+#include "app.h"
 #include "trees/keyframetree.h"
 #include "cellrenderer/cellrenderer_time.h"
 #include <gtkmm/treemodelsort.h>
@@ -278,27 +279,38 @@ KeyframeTree::on_event(GdkEvent *event)
 		break;
 	case GDK_BUTTON_PRESS:
 		{
-			Gtk::TreeModel::Path path;
-			Gtk::TreeViewColumn *column;
-			int cell_x, cell_y;
-			int wx(round_to_int(event->button.x)),wy(round_to_int(event->button.y));
-			//tree_to_widget_coords (,, wx, wy);
-			send_selection = true;
-
-			if(!get_path_at_pos(
-				wx,wy,	// x, y
-				path, // TreeModel::Path&
-				column, //TreeViewColumn*&
-				cell_x,cell_y //int&cell_x,int&cell_y
-				)
-			) break;
-			const Gtk::TreeRow row = *(get_model()->get_iter(path));
-
-			signal_user_click()(event->button.button,row,(ColumnID)column->get_sort_column_id());
-			if (synfig::String(column->get_title ()) == _("Jump"))
+			if (event->button.button == 1)
 			{
-				keyframe_tree_store_->canvas_interface()->set_time(row[model.time]);
+				Gtk::TreeModel::Path path;
+				Gtk::TreeViewColumn *column;
+				int cell_x, cell_y;
+				int wx(round_to_int(event->button.x)),wy(round_to_int(event->button.y));
+				//tree_to_widget_coords (,, wx, wy);
+				send_selection = true;
+
+				if(!get_path_at_pos(
+					wx,wy,	// x, y
+					path, // TreeModel::Path&
+					column, //TreeViewColumn*&
+					cell_x,cell_y //int&cell_x,int&cell_y
+					)
+				) break;
+				const Gtk::TreeRow row = *(get_model()->get_iter(path));
+
+				signal_user_click()(event->button.button,row,(ColumnID)column->get_sort_column_id());
+				if (synfig::String(column->get_title ()) == _("Jump"))
+				{
+					keyframe_tree_store_->canvas_interface()->set_time(row[model.time]);
+				}
+			} else if (event->button.button == 3)
+			{
+				Gtk::Menu* menu = dynamic_cast<Gtk::Menu*>(App::ui_manager()->get_widget("/menu-keyframe"));
+				if(menu)
+				{
+					menu->popup(event->button.button,gtk_get_current_event_time());
+				}
 			}
+
 		}
 		break;
 	case GDK_2BUTTON_PRESS:
