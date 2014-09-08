@@ -711,17 +711,17 @@ mknative mkyum-metadata-parser
 #mknative mkyum-utils
 
 cd $WORKSPACE
-wget -c http://fedora.inode.at/fedora/linux/releases/18/Everything/i386/os/Packages/y/yum-3.4.3-47.fc18.noarch.rpm
-rpm -Uhv --force --ignoreos --nodeps yum-3.4.3-47.fc18.noarch.rpm
-wget -c http://fedora.inode.at/fedora/linux/releases/18/Everything/i386/os/Packages/y/yum-utils-1.1.31-6.fc18.noarch.rpm
-rpm -Uhv --force --ignoreos --nodeps yum-utils-1.1.31-6.fc18.noarch.rpm
+wget -c http://fedora.inode.at/fedora/linux/releases/20/Everything/i386/os/Packages/y/yum-3.4.3-106.fc20.noarch.rpm
+rpm -Uhv --force --ignoreos --nodeps yum-3.4.3-106.fc20.noarch.rpm
+wget -c http://fedora.inode.at/fedora/linux/releases/20/Everything/i386/os/Packages/y/yum-utils-1.1.31-18.fc20.noarch.rpm
+rpm -Uhv --force --ignoreos --nodeps yum-utils-1.1.31-18.fc20.noarch.rpm
 
 fedora-mingw-install mingw${ARCH}-libxml++
 fedora-mingw-install mingw${ARCH}-cairo
 fedora-mingw-install mingw${ARCH}-pango
 fedora-mingw-install mingw${ARCH}-boost
 fedora-mingw-install mingw${ARCH}-libjpeg-turbo
-fedora-mingw-install mingw${ARCH}-gtkmm24
+fedora-mingw-install mingw${ARCH}-gtkmm30
 fedora-mingw-install mingw${ARCH}-dlfcn
 fedora-mingw-install mingw${ARCH}-SDL
 cp /usr/${TOOLCHAIN_HOST}/sys-root/mingw/include/SDL/* /usr/${TOOLCHAIN_HOST}/sys-root/mingw/include/
@@ -813,7 +813,7 @@ rm -rf /usr/${TOOLCHAIN_HOST}/sys-root/mingw/share/pixmaps/synfigstudio
 mkdir -p $MINGWPREFIX/licenses
 cp -rf COPYING $MINGWPREFIX/licenses/synfigstudio.txt
 
-cat > ${MINGWPREFIX}/etc/gtk-2.0/gtkrc <<EOF
+cat > ${MINGWPREFIX}/etc/gtk-3.0/gtkrc <<EOF
 
 # Enable native look
 gtk-theme-name = "MS-Windows"
@@ -917,7 +917,7 @@ do
 done
 cp -rf $MINGWPREFIX/etc $DISTPREFIX
 #cp -rf $MINGWPREFIX/lib/gdk-pixbuf-2.0 $DISTPREFIX/lib
-cp -rf $MINGWPREFIX/lib/gtk-2.0 $DISTPREFIX/lib
+cp -rf $MINGWPREFIX/lib/gtk-3.0 $DISTPREFIX/lib
 #cp -rf $MINGWPREFIX/lib/pango $DISTPREFIX/lib
 cp -rf $MINGWPREFIX/lib/synfig $DISTPREFIX/lib
 cp -rf $MINGWPREFIX/share/locale $DISTPREFIX/share
@@ -962,7 +962,7 @@ gen_list_nsh bin bin
 sed -i '/ffmpeg\.exe/d' bin.nsh		# exclude ffmpeg from the list of binaries - it will go into separate group
 gen_list_nsh etc etc
 gen_list_nsh examples examples
-gen_list_nsh lib/gtk-2.0 lib-gtk
+gen_list_nsh lib/gtk-3.0 lib-gtk
 gen_list_nsh lib/synfig lib-synfig
 gen_list_nsh licenses licenses
 #gen_list_nsh python python # -- takes too long
