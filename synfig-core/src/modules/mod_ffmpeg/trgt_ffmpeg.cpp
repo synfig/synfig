@@ -210,7 +210,7 @@ ffmpeg_trgt::init(ProgressCallback *cb=NULL)
 	}
 	if (ffmpeg_binary_path == "")
 	{
-		if (cb) cb->error(_("Error: No FFmpeg binary found.\n\nPlease install \"ffmpeg\" or \"avconv\" package."));
+		if (cb) cb->error(_("Error: No FFmpeg binary found.\n\nPlease install \"ffmpeg\" or \"avconv\" (libav-tools package)."));
 		return false;
 	}
 	
@@ -237,8 +237,6 @@ ffmpeg_trgt::init(ProgressCallback *cb=NULL)
 	vargs.push_back(strprintf("%f", desc.get_frame_rate()));
 	vargs.push_back("-i");
 	vargs.push_back("pipe:");
-	vargs.push_back("-loop");
-	vargs.push_back("1");
 	vargs.push_back("-metadata");
 	vargs.push_back(strprintf("title=\"%s\"", get_canvas()->get_name().c_str()));
 	vargs.push_back("-vcodec");
@@ -255,7 +253,8 @@ ffmpeg_trgt::init(ProgressCallback *cb=NULL)
 	}
 	vargs.push_back("-y");
 	// We need "--" to separate filename from arguments (for the case when filename starts with "-")
-	vargs.push_back("--"); 
+	if ( filename.substr(0,1) == "-" )
+		vargs.push_back("--"); 
 	vargs.push_back(filename);
 
 #if defined(WIN32_PIPE_TO_PROCESSES)
