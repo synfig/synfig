@@ -445,9 +445,6 @@ Widget_RendDesc::create_image_tab()
 	Gtk::Label *size_physheight_label = manage(new Gtk::Label(_("Phy_sical Height"), 0, 0.5, true));
 	size_physheight_label->set_mnemonic_widget(*entry_phy_height);
 
-	Gtk::Label *size_span = manage(new Gtk::Label(_("I_mage Span"), 0, 0.5, true));
-	size_span->set_mnemonic_widget(*entry_span);
-
 	imageSizeTable->attach(*size_width_label, 0, 1, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	imageSizeTable->attach(*size_height_label, 0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	imageSizeTable->attach(*entry_width, 1, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
@@ -463,9 +460,6 @@ Widget_RendDesc::create_image_tab()
 	imageSizeTable->attach(*entry_phy_width, 5, 6, 0, 1, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
 	imageSizeTable->attach(*entry_phy_height, 5, 6, 1, 2, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
 
-	imageSizeTable->attach(*size_span, 0, 1, 2, 3, Gtk::SHRINK|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	imageSizeTable->attach(*entry_span, 1, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-
 	Gtk::Frame *imageAreaFrame = manage(new Gtk::Frame(_("Image Area")));
 	imageAreaFrame->set_shadow_type(Gtk::SHADOW_NONE);
 	((Gtk::Label *) imageAreaFrame->get_label_widget())->set_markup(_("<b>Image Area</b>"));
@@ -475,7 +469,7 @@ Widget_RendDesc::create_image_tab()
 	imageAreaPadding->set_padding(6, 0, 24, 0);
 	imageAreaFrame->add(*imageAreaPadding);
 
-	Gtk::Table *imageAreaTable = manage(new Gtk::Table(2, 2, false));
+	Gtk::Table *imageAreaTable = manage(new Gtk::Table(3, 4, false));
 	imageAreaTable->set_row_spacings(6);
 	imageAreaTable->set_col_spacings(12);
 	imageAreaPadding->add(*imageAreaTable);
@@ -486,10 +480,16 @@ Widget_RendDesc::create_image_tab()
 	Gtk::Label *imageAreaBottomRightLabel = manage(new Gtk::Label(_("_Bottom Right"), 0, 0.5, true));
 	imageAreaBottomRightLabel->set_mnemonic_widget(*entry_br);
 
+	Gtk::Label *size_span = manage(new Gtk::Label(_("I_mage Span"), 0, 0.5, true));
+	size_span->set_mnemonic_widget(*entry_span);
+
 	imageAreaTable->attach(*imageAreaTopLeftLabel, 0, 1, 0, 1, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	imageAreaTable->attach(*imageAreaBottomRightLabel, 0, 1, 1, 2, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
+	imageAreaTable->attach(*imageAreaBottomRightLabel, 0, 1, 2, 3, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
 	imageAreaTable->attach(*entry_tl, 1, 2, 0, 1, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	imageAreaTable->attach(*entry_br, 1, 2, 1, 2, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
+	imageAreaTable->attach(*entry_br, 1, 2, 2, 3, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
+
+	imageAreaTable->attach(*size_span, 2, 3, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	imageAreaTable->attach(*entry_span, 3, 4, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 	paddedPanel->show_all();
 	return paddedPanel;
