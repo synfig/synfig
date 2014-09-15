@@ -357,7 +357,9 @@ Widget_RendDesc::create_widgets()
 	entry_span=manage(new Gtk::SpinButton(adjustment_span,0.1,4));
 	entry_span->set_alignment(1);
 	entry_tl=manage(new Widget_Vector());
+	entry_tl->set_digits(4);
 	entry_br=manage(new Widget_Vector());
+	entry_br->set_digits(4);
 	entry_fps=manage(new Gtk::SpinButton(adjustment_fps,1,5));
 	entry_start_time=manage(new Widget_Time());
 	entry_end_time=manage(new Widget_Time());
