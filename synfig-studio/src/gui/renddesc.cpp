@@ -471,10 +471,11 @@ Widget_RendDesc::create_image_tab()
 	imageAreaPadding->set_padding(6, 0, 24, 0);
 	imageAreaFrame->add(*imageAreaPadding);
 
-	Gtk::Table *imageAreaTable = manage(new Gtk::Table(3, 4, false));
-	imageAreaTable->set_row_spacings(6);
-	imageAreaTable->set_col_spacings(12);
-	imageAreaPadding->add(*imageAreaTable);
+	Gtk::Box *imageAreaBox = manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL,12));
+	Gtk::Box *imageAreaTlbrLabelBox = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL,6));
+	Gtk::Box *imageAreaTlbrBox = manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL,6));
+	Gtk::Box *imageAreaSpanBox = manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL,6));
+	imageAreaPadding->add(*imageAreaBox);
 
 	Gtk::Label *imageAreaTopLeftLabel = manage(new Gtk::Label(_("_Top Left"), 0, 0.5, true));
 	imageAreaTopLeftLabel->set_mnemonic_widget(*entry_tl);
@@ -485,13 +486,17 @@ Widget_RendDesc::create_image_tab()
 	Gtk::Label *size_span = manage(new Gtk::Label(_("I_mage Span"), 0, 0.5, true));
 	size_span->set_mnemonic_widget(*entry_span);
 
-	imageAreaTable->attach(*imageAreaTopLeftLabel, 0, 1, 0, 1, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	imageAreaTable->attach(*imageAreaBottomRightLabel, 0, 1, 2, 3, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	imageAreaTable->attach(*entry_tl, 1, 2, 0, 1, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	imageAreaTable->attach(*entry_br, 1, 2, 2, 3, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
+	imageAreaTlbrLabelBox->pack_start(*imageAreaTopLeftLabel);
+	imageAreaTlbrLabelBox->pack_start(*imageAreaBottomRightLabel);
+	imageAreaTlbrBox->pack_start(*entry_tl);
+	imageAreaTlbrBox->pack_start(*entry_br);
 
-	imageAreaTable->attach(*size_span, 2, 3, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	imageAreaTable->attach(*entry_span, 3, 4, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	imageAreaSpanBox->pack_start(*size_span);
+	imageAreaSpanBox->pack_start(*entry_span);
+
+	imageAreaBox->pack_start(*imageAreaTlbrLabelBox);
+	imageAreaBox->pack_start(*imageAreaTlbrBox);
+	imageAreaBox->pack_start(*imageAreaSpanBox);
 
 	paddedPanel->show_all();
 	return paddedPanel;
