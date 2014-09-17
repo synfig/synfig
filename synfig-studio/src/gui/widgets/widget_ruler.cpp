@@ -153,7 +153,7 @@ Widget_Ruler::on_draw(const ::Cairo::RefPtr< ::Cairo::Context>& cr)
 
 	Real min_text_mark_distance = fabs(distance_from_screen(min_screen_text_mark_distance));
 	int text_degree = (int)round(ceil(log10(min_text_mark_distance)));
-	Real text_mark_distance = exp10((Real)text_degree);
+	Real text_mark_distance = exp(log(10)*(Real)text_degree);
 	Real screen_text_mark_distance = fabs(distance_to_screen(text_mark_distance));
 
 	int mode = 0.2*screen_text_mark_distance >= min_screen_text_mark_distance ? 2
