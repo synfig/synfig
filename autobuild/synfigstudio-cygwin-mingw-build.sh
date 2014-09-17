@@ -547,6 +547,7 @@ if ! pkg-config ${PKG_NAME}\+\+ --exact-version=${PKG_VERSION}  --print-errors; 
         touch src/modules/disable-motion_est
         touch src/modules/disable-xine
     fi
+    touch src/modules/disable-gtk2
 
     make all
     make install
