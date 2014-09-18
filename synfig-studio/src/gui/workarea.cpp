@@ -2733,8 +2733,9 @@ WorkArea::refresh_second_check()
 	int width = canvas_view->get_width();
 	int height = canvas_view->get_height();
 	if (width==old_window_width && height==old_window_height ) {
-		GdkEventExpose event;
-		refresh(&event);
+		queue_draw();
+		//GdkEventExpose event;
+		//refresh(&event);
 	}
 }
 #endif
