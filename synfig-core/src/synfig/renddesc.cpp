@@ -105,6 +105,31 @@ RendDesc::get_w()const
 RendDesc &
 RendDesc::set_w(int x)
 {
+	if(FLAGS(flags,LINK_IM_ASPECT)) // "Width and Height ratio"
+	{
+		double new_h = h_ratio_*x/w_ratio_;
+		if(FLAGS(flags,PX_ASPECT))
+		{
+			br_[1]-=focus[1];
+			br_[1]=br_[1]/h_*new_h;
+			br_[1]+=focus[1];
+			tl_[1]-=focus[1];
+			tl_[1]=tl_[1]/h_*new_h;
+			tl_[1]+=focus[1];
+
+			br_[0]-=focus[0];
+			br_[0]=br_[0]/w_*x;
+			br_[0]+=focus[0];
+			tl_[0]-=focus[0];
+			tl_[0]=tl_[0]/w_*x;
+			tl_[0]+=focus[0];
+		}
+		h_=new_h;
+		w_=x;
+
+		return *this;
+	}
+
 	if(FLAGS(flags,LINK_PX_ASPECT)) // never set
 	{
 		h_=h_*x/w_;
@@ -166,6 +191,31 @@ RendDesc::get_h()const
 RendDesc &
 RendDesc::set_h(int y)
 {
+	if(FLAGS(flags,LINK_IM_ASPECT)) // "Width and Height ratio"
+	{
+		double new_w = w_ratio_*y/h_ratio_;
+		if(FLAGS(flags,PX_ASPECT))
+		{
+			br_[0]-=focus[0];
+			br_[0]=br_[0]/w_*new_w;
+			br_[0]+=focus[0];
+			tl_[0]-=focus[0];
+			tl_[0]=tl_[0]/w_*new_w;
+			tl_[0]+=focus[0];
+
+			br_[1]-=focus[1];
+			br_[1]=br_[1]/h_*y;
+			br_[1]+=focus[1];
+			tl_[1]-=focus[1];
+			tl_[1]=tl_[1]/h_*y;
+			tl_[1]+=focus[1];
+		}
+		w_=new_w;
+		h_=y;
+
+		return *this;
+	}
+
 	if(FLAGS(flags,LINK_PX_ASPECT)) // never set
 	{
 		w_=w_*y/h_;
@@ -405,6 +455,14 @@ RendDesc::get_image_aspect()const
 	return tmp[0];
 }
 
+
+//! Affect the pixel ratio for LINK_IM_ASPECT flag
+void
+RendDesc::set_pixel_ratio(const int &x, const int &y)
+{
+	w_ratio_ = x;
+	h_ratio_ = y;
+}
 
 //! Return the antialias amount
 const int &

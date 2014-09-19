@@ -71,21 +71,23 @@ public:
 
 		LINK_PX_ASPECT=(1<<10),	// not used
 		LINK_PX_AREA=(1<<11),	// not used
-		LINK_IM_ASPECT=(1<<12),	// not used
+		LINK_IM_ASPECT=(1<<12),	// "Width and Height pixel ratio" in Image Size
 		LINK_IM_SPAN=(1<<13),	// not used
 		LINK_IM_CENTER=(1<<14)	// not used
 	};
 
 private:
-	//! Width and height of the compostion in pixels
+	//! Width and height of the composition in pixels
 	int w_,h_;
+	//! Width and height used for fixed ratio
+	int w_ratio_, h_ratio_;
 	//! Horizontal resolution of the composition in pixels per meter
 	Real x_res;
 	//! Vertical resolution of the composition in pixels per meter
 	Real y_res;
 	//! The Top Left and the Bottom Right Points of the composition
 	Point tl_, br_;
-	//! The Focus Point of the compostion. Used when zooming in
+	//! The Focus Point of the composition. Used when zooming in
 	Point focus;
 	//! Anti-alias value
 	int a;
@@ -94,7 +96,7 @@ private:
 	//! The result of the flags combination.
 	//! \see enum Lock
 	int flags;
-	//! Interlaced flag for targets that suports it
+	//! Interlaced flag for targets that supports it
 	bool interlaced;
 	//! Clamp flag to decide if color must be clamped or not
 	bool clamp;
@@ -269,6 +271,9 @@ public:
 
 	//!	Return the aspect ratio of the entire image
 	Point::value_type get_image_aspect()const;
+
+	//! Affect the pixel ratio for LINK_IM_ASPECT flag
+	void set_pixel_ratio(const int &x, const int &y);
 
 	//! Return the antialias amount
 	const int &get_antialias()const;
