@@ -56,11 +56,6 @@
 #ifdef HAVE_FCNTL_H
 #include <fcntl.h>
 #endif
-
-#ifdef _WIN32
-#include <windows.h>
-#define BUFSIZE   128
-#define read	_read
 #endif
 
 #include "docks/dock_toolbox.h"
@@ -70,6 +65,11 @@
 #include <synfigapp/main.h>
 #include <glibmm/thread.h>
 #include <glibmm/miscutils.h>
+
+#ifdef _WIN32
+#include <windows.h>
+#define BUFSIZE   128
+#define read	_read
 
 #include "general.h"
 

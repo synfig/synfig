@@ -34,11 +34,6 @@
 #	include <config.h>
 #endif
 
-#ifdef WIN32
-#define WINVER 0x0500
-#include <windows.h>
-#endif
-
 #include <fstream>
 #include <iostream>
 #include <locale>
@@ -68,6 +63,11 @@
 #include <gtk/gtk.h>
 
 #include <gdkmm/general.h>
+
+#ifdef WIN32
+#define WINVER 0x0500
+#include <windows.h>
+#endif
 
 #include <synfig/loadcanvas.h>
 #include <synfig/savecanvas.h>
