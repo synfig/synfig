@@ -56,7 +56,6 @@
 #ifdef HAVE_FCNTL_H
 #include <fcntl.h>
 #endif
-#endif
 
 #include "docks/dock_toolbox.h"
 #include <glibmm/dispatcher.h>
@@ -70,6 +69,7 @@
 #include <windows.h>
 #define BUFSIZE   128
 #define read	_read
+#endif
 
 #include "general.h"
 
