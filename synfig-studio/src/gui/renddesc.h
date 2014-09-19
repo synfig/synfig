@@ -70,6 +70,10 @@ class Widget_RendDesc : public Gtk::Notebook
 	Gtk::SpinButton *entry_fps;
 	Gtk::SpinButton *entry_span;
 
+	Gtk::ToggleButton *toggle_wh_ratio;
+	Gtk::ToggleButton *toggle_res_ratio;
+	Gtk::ToggleButton *toggle_phy_ratio;
+
 	Gtk::CheckButton *toggle_px_aspect;
 	Gtk::CheckButton *toggle_px_width;
 	Gtk::CheckButton *toggle_px_height;
@@ -137,6 +141,8 @@ private:
 	void on_lock_changed();
 	void on_focus_changed();
 	void on_span_changed();
+
+	void on_ratio_wh_toggled();
 
 	void create_widgets();
 	void connect_signals();

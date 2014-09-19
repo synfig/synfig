@@ -39,6 +39,7 @@
 #include <ETL/misc>
 #include <synfig/general.h>
 //#include <gtkmm/separator.h>
+#include <gtkmm/stock.h>
 
 #include "general.h"
 
@@ -340,6 +341,39 @@ Widget_RendDesc::enable_time_section()
 }
 
 void
+Widget_RendDesc::on_ratio_wh_toggled()
+{
+	if(update_lock)return;
+	UpdateLock lock(update_lock);
+
+	Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon_16x16");
+	Gtk::Image *icon;
+
+
+	if(!(rend_desc_.get_flags()&RendDesc::LINK_IM_ASPECT))
+	{
+		icon=manage(new Gtk::Image(Gtk::StockID("synfig-animate_mode_off"),iconsize));
+		toggle_wh_ratio->set_tooltip_text(_("Link width and height"));
+
+		rend_desc_.set_pixel_ratio(adjustment_width->get_value(), adjustment_height->get_value());
+		rend_desc_.set_flags(rend_desc_.get_flags()|RendDesc::LINK_IM_ASPECT);
+	}
+	else
+	{
+		icon=manage(new Gtk::Image(Gtk::StockID("synfig-animate_mode_on"),iconsize));
+		toggle_wh_ratio->set_tooltip_text(_("Turn off animate editing mode"));
+
+		rend_desc_.set_flags(rend_desc_.get_flags()&~RendDesc::LINK_IM_ASPECT);
+	}
+
+	toggle_wh_ratio->remove();
+	toggle_wh_ratio->add(*icon);
+	icon->set_padding(0,0);
+	icon->show();
+
+}
+
+void
 Widget_RendDesc::create_widgets()
 {
 	entry_width=manage(new Gtk::SpinButton(adjustment_width,1,0));
@@ -379,6 +413,17 @@ Widget_RendDesc::create_widgets()
 	toggle_im_height->set_alignment(0, 0.5);
 	toggle_im_span=manage(new Gtk::CheckButton(_("Image _Span"), true));
 	toggle_im_span->set_alignment(0, 0.5);
+
+
+
+	Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon_16x16");
+	Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-animate_mode_off"), iconsize));
+	toggle_wh_ratio = manage(new Gtk::ToggleButton());
+	toggle_wh_ratio->set_tooltip_text(_("Link width and height"));
+	icon->set_padding(0,0);
+	icon->show();
+	toggle_wh_ratio->add(*icon);
+	toggle_wh_ratio->set_relief(Gtk::RELIEF_NONE);
 }
 
 void
@@ -405,6 +450,8 @@ Widget_RendDesc::connect_signals()
 	toggle_im_width->signal_toggled().connect(sigc::mem_fun(*this, &studio::Widget_RendDesc::on_lock_changed));
 	toggle_im_height->signal_toggled().connect(sigc::mem_fun(*this, &studio::Widget_RendDesc::on_lock_changed));
 	toggle_im_span->signal_toggled().connect(sigc::mem_fun(*this, &studio::Widget_RendDesc::on_lock_changed));
+
+	toggle_wh_ratio->signal_toggled().connect(sigc::mem_fun(*this, &studio::Widget_RendDesc::on_ratio_wh_toggled));
 }
 
 Gtk::Widget *
@@ -451,6 +498,8 @@ Widget_RendDesc::create_image_tab()
 	imageSizeTable->attach(*size_height_label, 0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	imageSizeTable->attach(*entry_width, 1, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	imageSizeTable->attach(*entry_height, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+
+	imageSizeTable->attach(*toggle_wh_ratio,2,3,0,2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 	imageSizeTable->attach(*size_xres_label, 2, 3, 0, 1, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
 	imageSizeTable->attach(*size_yres_label, 2, 3, 1, 2, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
