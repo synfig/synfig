@@ -352,16 +352,16 @@ Widget_RendDesc::on_ratio_wh_toggled()
 
 	if(!(rend_desc_.get_flags()&RendDesc::LINK_IM_ASPECT))
 	{
-		icon=manage(new Gtk::Image(Gtk::StockID("synfig-animate_mode_off"),iconsize));
-		toggle_wh_ratio->set_tooltip_text(_("Link width and height"));
+		icon=manage(new Gtk::Image(Gtk::StockID("synfig-utils_chain_link_on"),iconsize));
+		toggle_wh_ratio->set_tooltip_text(_("Unlink width and height"));
 
 		rend_desc_.set_pixel_ratio(adjustment_width->get_value(), adjustment_height->get_value());
 		rend_desc_.set_flags(rend_desc_.get_flags()|RendDesc::LINK_IM_ASPECT);
 	}
 	else
 	{
-		icon=manage(new Gtk::Image(Gtk::StockID("synfig-animate_mode_on"),iconsize));
-		toggle_wh_ratio->set_tooltip_text(_("Turn off animate editing mode"));
+		icon=manage(new Gtk::Image(Gtk::StockID("synfig-utils_chain_link_off"),iconsize));
+		toggle_wh_ratio->set_tooltip_text(_("Link width and height"));
 
 		rend_desc_.set_flags(rend_desc_.get_flags()&~RendDesc::LINK_IM_ASPECT);
 	}
@@ -414,10 +414,8 @@ Widget_RendDesc::create_widgets()
 	toggle_im_span=manage(new Gtk::CheckButton(_("Image _Span"), true));
 	toggle_im_span->set_alignment(0, 0.5);
 
-
-
-	Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon_16x16");
-	Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-animate_mode_off"), iconsize));
+	Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon");
+	Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-utils_chain_link_off"), iconsize));
 	toggle_wh_ratio = manage(new Gtk::ToggleButton());
 	toggle_wh_ratio->set_tooltip_text(_("Link width and height"));
 	icon->set_padding(0,0);
@@ -470,7 +468,7 @@ Widget_RendDesc::create_image_tab()
 
 	Gtk::Alignment *tablePadding = manage(new Gtk::Alignment(0, 0, 1, 1));
 	tablePadding->set_padding(6, 0, 24, 0);
-	Gtk::Table *imageSizeTable = manage(new Gtk::Table(2, 6, false));
+	Gtk::Table *imageSizeTable = manage(new Gtk::Table(2, 7, false));
 	imageSizeTable->set_row_spacings(6);
 	imageSizeTable->set_col_spacings(12);
 	tablePadding->add(*imageSizeTable);
@@ -499,17 +497,17 @@ Widget_RendDesc::create_image_tab()
 	imageSizeTable->attach(*entry_width, 1, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	imageSizeTable->attach(*entry_height, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
-	imageSizeTable->attach(*toggle_wh_ratio,2,3,0,2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	imageSizeTable->attach(*toggle_wh_ratio, 2, 3, 0, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
-	imageSizeTable->attach(*size_xres_label, 2, 3, 0, 1, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	imageSizeTable->attach(*size_yres_label, 2, 3, 1, 2, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	imageSizeTable->attach(*entry_xres, 3, 4, 0, 1, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	imageSizeTable->attach(*entry_yres, 3, 4, 1, 2, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
+	imageSizeTable->attach(*size_xres_label, 3, 4, 0, 1, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
+	imageSizeTable->attach(*size_yres_label, 3, 4, 1, 2, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
+	imageSizeTable->attach(*entry_xres, 4, 5, 0, 1, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
+	imageSizeTable->attach(*entry_yres, 4, 5, 1, 2, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
 
-	imageSizeTable->attach(*size_physwidth_label, 4, 5, 0, 1, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	imageSizeTable->attach(*size_physheight_label, 4, 5, 1, 2, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	imageSizeTable->attach(*entry_phy_width, 5, 6, 0, 1, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	imageSizeTable->attach(*entry_phy_height, 5, 6, 1, 2, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
+	imageSizeTable->attach(*size_physwidth_label, 5, 6, 0, 1, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
+	imageSizeTable->attach(*size_physheight_label, 5, 6, 1, 2, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
+	imageSizeTable->attach(*entry_phy_width, 6, 7, 0, 1, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
+	imageSizeTable->attach(*entry_phy_height, 6, 7, 1, 2, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
 
 	Gtk::Frame *imageAreaFrame = manage(new Gtk::Frame(_("Image Area")));
 	imageAreaFrame->set_shadow_type(Gtk::SHADOW_NONE);

@@ -333,6 +333,8 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(interpolation_type_linear,"interpolation_type_linear_icon."IMAGE_EXT,_("Linear interpolation"));
 	INIT_STOCK_ICON(interpolation_type_clamped,"interpolation_type_clamped_icon."IMAGE_EXT,_("Clamped interpolation"));
 
+	INIT_STOCK_ICON(utils_chain_link_on,"utils_chain_link_on_icon."IMAGE_EXT,_("Linked"));
+	INIT_STOCK_ICON(utils_chain_link_off,"utils_chain_link_off_icon."IMAGE_EXT,_("Unlinked"));
 	INIT_STOCK_ICON(utils_timetrack_align,"utils_timetrack_align_icon."IMAGE_EXT,"Utils Timetrack align");
 
 	INIT_STOCK_ICON_CLONE(cvs_add,"gtk-add",_("CVS Add"));

@@ -175,6 +175,7 @@ EXTRA_DIST = \
 	parameters_icon.sif \
 	time_track_icon.sif \
 	\
+	utils_chain_link_icons.sif \
 	utils_timetrack_align_icon.sif
 
 IMAGES = \
@@ -352,6 +353,8 @@ IMAGES = \
 	parameters_icon.$(EXT) \
 	time_track_icon.$(EXT) \
 	\
+	utils_chain_link_on_icon.$(EXT) \
+	utils_chain_link_off_icon.$(EXT) \
 	utils_timetrack_align_icon.$(EXT)
 
 if WIN32_PKG
@@ -547,6 +550,16 @@ canvas_icon.$(EXT): $(srcdir)/canvas_and_importimage_icons.sif
 	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
 layer_other_importimage_icon.$(EXT): $(srcdir)/canvas_and_importimage_icons.sif
+	$(SYNFIG) -q $< -o $@ --time 1
+	echo " File \"images\\$@\"" >>./images.nsh
+	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
+
+utils_chain_link_on_icon.$(EXT): $(srcdir)/utils_chain_link_icons.sif
+	$(SYNFIG) -q $< -o $@ --time 0
+	echo " File \"images\\$@\"" >>./images.nsh
+	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
+
+utils_chain_link_off_icon.$(EXT): $(srcdir)/utils_chain_link_icons.sif
 	$(SYNFIG) -q $< -o $@ --time 1
 	echo " File \"images\\$@\"" >>./images.nsh
 	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
