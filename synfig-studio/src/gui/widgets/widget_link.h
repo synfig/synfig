@@ -28,6 +28,9 @@
 /* === H E A D E R S ======================================================= */
 
 #include <gtkmm/togglebutton.h>
+#include "synfig/string.h"
+
+#include "general.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -39,13 +42,14 @@ namespace studio {
 
 class Widget_Link: public Gtk::ToggleButton
 {
+	synfig::String tooltip_inactive_;
+	synfig::String tooltip_active_;
 
 protected:
 	void on_toggled();
 
 public:
-	Widget_Link();
-	Widget_Link(string &unactive, string &active);
+	Widget_Link(const std::string &tlt_inactive = _("Link Values"), const std::string &tlt_active = _("Unlink Values"));
 	~Widget_Link();
 }; // END of class Widget_Link
 

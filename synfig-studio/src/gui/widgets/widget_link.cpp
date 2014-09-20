@@ -32,8 +32,6 @@
 #include <gtkmm/stock.h>
 #include "widgets/widget_link.h"
 
-#include "general.h"
-
 #endif
 
 /* === U S I N G =========================================================== */
@@ -52,15 +50,19 @@ using namespace studio;
 
 namespace studio {
 
-Widget_Link::Widget_Link() {
-
+Widget_Link::Widget_Link(const std::string &tlt_inactive, const std::string &tlt_active)
+{
 	Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon");
 	Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-utils_chain_link_off"), iconsize));
-//	toggle_wh_ratio->set_tooltip_text(_("Link width and height"));
+
 	icon->set_padding(0,0);
 	icon->show();
 	add(*icon);
 	set_relief(Gtk::RELIEF_NONE);
+
+	tooltip_inactive_ = tlt_inactive;
+	tooltip_active_ = tlt_active;
+	set_tooltip_text(tooltip_inactive_);
 }
 
 Widget_Link::~Widget_Link() {
@@ -77,22 +79,16 @@ void Widget_Link::on_toggled()
 	if(get_active())
 	{
 		icon=manage(new Gtk::Image(Gtk::StockID("synfig-utils_chain_link_on"),iconsize));
-//		toggle_wh_ratio->set_tooltip_text(_("Unlink width and height"));
-
-//		rend_desc_.set_pixel_ratio(adjustment_width->get_value(), adjustment_height->get_value());
-//		rend_desc_.set_flags(rend_desc_.get_flags()|RendDesc::LINK_IM_ASPECT);
+		set_tooltip_text(tooltip_active_);
 	}
 	else
 	{
 		icon=manage(new Gtk::Image(Gtk::StockID("synfig-utils_chain_link_off"),iconsize));
-//		toggle_wh_ratio->set_tooltip_text(_("Link width and height"));
-
-//		rend_desc_.set_flags(rend_desc_.get_flags()&~RendDesc::LINK_IM_ASPECT);
+		set_tooltip_text(tooltip_inactive_);
 	}
 
 	remove();
 	add(*icon);
 	icon->set_padding(0,0);
 	icon->show();
-
 }

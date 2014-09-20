@@ -147,6 +147,8 @@ Widget_RendDesc::refresh()
 	toggle_im_width->set_active((bool)(rend_desc_.get_flags()&RendDesc::IM_W));
 	toggle_im_height->set_active((bool)(rend_desc_.get_flags()&RendDesc::IM_H));
 	toggle_im_span->set_active((bool)(rend_desc_.get_flags()&RendDesc::IM_SPAN));
+
+	toggle_wh_ratio->set_active((bool)(rend_desc_.get_flags()&RendDesc::LINK_IM_ASPECT));
 }
 
 void Widget_RendDesc::apply_rend_desc(const synfig::RendDesc &rend_desc)
@@ -345,28 +347,15 @@ Widget_RendDesc::on_ratio_wh_toggled()
 	if(update_lock)return;
 	UpdateLock lock(update_lock);
 
-//	if(!(rend_desc_.get_flags()&RendDesc::LINK_IM_ASPECT))
 	if(toggle_wh_ratio->get_active())
 	{
-//		icon=manage(new Gtk::Image(Gtk::StockID("synfig-utils_chain_link_on"),iconsize));
-		toggle_wh_ratio->set_tooltip_text(_("Unlink width and height"));
-
 		rend_desc_.set_pixel_ratio(adjustment_width->get_value(), adjustment_height->get_value());
 		rend_desc_.set_flags(rend_desc_.get_flags()|RendDesc::LINK_IM_ASPECT);
 	}
 	else
 	{
-//		icon=manage(new Gtk::Image(Gtk::StockID("synfig-utils_chain_link_off"),iconsize));
-		toggle_wh_ratio->set_tooltip_text(_("Link width and height"));
-
 		rend_desc_.set_flags(rend_desc_.get_flags()&~RendDesc::LINK_IM_ASPECT);
 	}
-
-//	toggle_wh_ratio->remove();
-//	toggle_wh_ratio->add(*icon);
-//	icon->set_padding(0,0);
-//	icon->show();
-
 }
 
 void
@@ -410,7 +399,7 @@ Widget_RendDesc::create_widgets()
 	toggle_im_span=manage(new Gtk::CheckButton(_("Image _Span"), true));
 	toggle_im_span->set_alignment(0, 0.5);
 
-	toggle_wh_ratio=manage(new Widget_Link());
+	toggle_wh_ratio=manage(new Widget_Link(_("Link width and height"), _("Unlink width and height")));
 
 }
 
