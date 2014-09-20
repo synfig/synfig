@@ -38,6 +38,7 @@
 #include <gtkmm/notebook.h>
 #include "widgets/widget_vector.h"
 #include "widgets/widget_time.h"
+#include "widgets/widget_link.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -70,9 +71,9 @@ class Widget_RendDesc : public Gtk::Notebook
 	Gtk::SpinButton *entry_fps;
 	Gtk::SpinButton *entry_span;
 
-	Gtk::ToggleButton *toggle_wh_ratio;
-	Gtk::ToggleButton *toggle_res_ratio;
-	Gtk::ToggleButton *toggle_phy_ratio;
+	Widget_Link *toggle_wh_ratio;
+	//TODO Gtk::ToggleButton *toggle_res_ratio;
+	//TODO Gtk::ToggleButton *toggle_phy_ratio;
 
 	Gtk::CheckButton *toggle_px_aspect;
 	Gtk::CheckButton *toggle_px_width;

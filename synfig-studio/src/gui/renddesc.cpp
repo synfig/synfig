@@ -39,7 +39,6 @@
 #include <ETL/misc>
 #include <synfig/general.h>
 //#include <gtkmm/separator.h>
-#include <gtkmm/stock.h>
 
 #include "general.h"
 
@@ -346,13 +345,10 @@ Widget_RendDesc::on_ratio_wh_toggled()
 	if(update_lock)return;
 	UpdateLock lock(update_lock);
 
-	Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon_16x16");
-	Gtk::Image *icon;
-
-
-	if(!(rend_desc_.get_flags()&RendDesc::LINK_IM_ASPECT))
+//	if(!(rend_desc_.get_flags()&RendDesc::LINK_IM_ASPECT))
+	if(toggle_wh_ratio->get_active())
 	{
-		icon=manage(new Gtk::Image(Gtk::StockID("synfig-utils_chain_link_on"),iconsize));
+//		icon=manage(new Gtk::Image(Gtk::StockID("synfig-utils_chain_link_on"),iconsize));
 		toggle_wh_ratio->set_tooltip_text(_("Unlink width and height"));
 
 		rend_desc_.set_pixel_ratio(adjustment_width->get_value(), adjustment_height->get_value());
@@ -360,16 +356,16 @@ Widget_RendDesc::on_ratio_wh_toggled()
 	}
 	else
 	{
-		icon=manage(new Gtk::Image(Gtk::StockID("synfig-utils_chain_link_off"),iconsize));
+//		icon=manage(new Gtk::Image(Gtk::StockID("synfig-utils_chain_link_off"),iconsize));
 		toggle_wh_ratio->set_tooltip_text(_("Link width and height"));
 
 		rend_desc_.set_flags(rend_desc_.get_flags()&~RendDesc::LINK_IM_ASPECT);
 	}
 
-	toggle_wh_ratio->remove();
-	toggle_wh_ratio->add(*icon);
-	icon->set_padding(0,0);
-	icon->show();
+//	toggle_wh_ratio->remove();
+//	toggle_wh_ratio->add(*icon);
+//	icon->set_padding(0,0);
+//	icon->show();
 
 }
 
@@ -414,14 +410,8 @@ Widget_RendDesc::create_widgets()
 	toggle_im_span=manage(new Gtk::CheckButton(_("Image _Span"), true));
 	toggle_im_span->set_alignment(0, 0.5);
 
-	Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon");
-	Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-utils_chain_link_off"), iconsize));
-	toggle_wh_ratio = manage(new Gtk::ToggleButton());
-	toggle_wh_ratio->set_tooltip_text(_("Link width and height"));
-	icon->set_padding(0,0);
-	icon->show();
-	toggle_wh_ratio->add(*icon);
-	toggle_wh_ratio->set_relief(Gtk::RELIEF_NONE);
+	toggle_wh_ratio=manage(new Widget_Link());
+
 }
 
 void
