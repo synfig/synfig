@@ -1297,32 +1297,32 @@ EOF
 mkpackage_deb()
 {    
     cd ${WORKSPACE}
-    if [[ $ARCH == '64' ]]; then
-		run_native fakeroot alien -k --scripts synfigstudio-${VERSION}-${REVISION}.${BREED}.$RELEASE.${RPM_ARCH}.rpm
-	else
+    #if [[ $ARCH == '64' ]]; then
+	#	run_native fakeroot alien -k --scripts synfigstudio-${VERSION}-${REVISION}.${BREED}.$RELEASE.${RPM_ARCH}.rpm
+    #else
 		rm -rf synfigstudio-${VERSION} || true
 		rm -rf synfigstudio_${VERSION}-${REVISION}.${BREED}.${RELEASE}_${RPM_ARCH}.deb || true
 		run_native fakeroot alien -g -k --scripts synfigstudio-${VERSION}-${REVISION}.${BREED}.$RELEASE.${RPM_ARCH}.rpm
 		
 		# Allow to build i386 on x86_64 host
-		run_native sed -i "s|Architecture: i386|Architecture: any|g" synfigstudio-${VERSION}/debian/control
+		run_native sed -i "s|Architecture: .*|Architecture: any|g" synfigstudio-${VERSION}/debian/control
 		# Workaround permissions problem
 		echo >> synfigstudio-${VERSION}/debian/postinst
 		echo "chmod a+rX -R /opt/synfig" >> synfigstudio-${VERSION}/debian/postinst
 		
 		pushd synfigstudio-${VERSION} >/dev/null
-		run_native dpkg-buildpackage -rfakeroot -ai386 -d || true
-		if [ ! -e ../synfigstudio_${VERSION}-${REVISION}.${BREED}.${RELEASE}_${RPM_ARCH}.deb ]; then
+		run_native dpkg-buildpackage -rfakeroot -a${SYS_ARCH} -d || true
+		if [ ! -e ../synfigstudio_${VERSION}-${REVISION}.${BREED}.${RELEASE}_${SYS_ARCH}.deb ]; then
 			echo "Failed to generate deb package"
 			exit 1
 		fi
 		popd >/dev/null
 		rm -rf synfigstudio-${VERSION}.orig
 		rm -rf synfigstudio_${VERSION}.orig.tar.gz
-		rm -rf synfigstudio_${VERSION}-${REVISION}.${BREED}.${RELEASE}_${RPM_ARCH}.changes
+		rm -rf synfigstudio_${VERSION}-${REVISION}.${BREED}.${RELEASE}_${SYS_ARCH}.changes
 		rm -rf synfigstudio_${VERSION}-${REVISION}.${BREED}.${RELEASE}.diff.gz
 		rm -rf synfigstudio_${VERSION}-${REVISION}.${BREED}.${RELEASE}.dsc
-	fi
+    #fi
     rm -rf synfigstudio-${VERSION}
 }
 
