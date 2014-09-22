@@ -469,13 +469,15 @@ Widget_RendDesc::create_image_tab()
 	Gtk::Alignment *paddedPanel = manage(new Gtk::Alignment(0, 0, 1, 1));
 	paddedPanel->set_padding(12, 12, 12, 12);
 
-	Gtk::VBox *panelBox = manage(new Gtk::VBox(false, 12));
+	Gtk::Box *panelBox = manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL, 12));
+	panelBox->set_homogeneous(false);
 	paddedPanel->add(*panelBox);
 
 	Gtk::Frame *imageSizeFrame = manage(new Gtk::Frame(_("Image Size")));
 	imageSizeFrame->set_shadow_type(Gtk::SHADOW_NONE);
 	((Gtk::Label *) imageSizeFrame->get_label_widget())->set_markup(_("<b>Image Size</b>"));
-	panelBox->pack_start(*imageSizeFrame, false, false, 0);
+//	panelBox->pack_start(*imageSizeFrame, false, false, 0);
+	panelBox->pack_start(*imageSizeFrame, Gtk::PACK_SHRINK);
 
 	Gtk::Alignment *tableSizePadding = manage(new Gtk::Alignment(0, 0, 1, 1));
 	tableSizePadding->set_padding(6, 0, 24, 0);
@@ -534,7 +536,8 @@ Widget_RendDesc::create_image_tab()
 	Gtk::Frame *imageAreaFrame = manage(new Gtk::Frame(_("Image Area")));
 	imageAreaFrame->set_shadow_type(Gtk::SHADOW_NONE);
 	((Gtk::Label *) imageAreaFrame->get_label_widget())->set_markup(_("<b>Image Area</b>"));
-	panelBox->pack_start(*imageAreaFrame, false, false, 0);
+	//panelBox->pack_start(*imageAreaFrame, false, false, 0);
+	panelBox->pack_start(*imageAreaFrame, Gtk::PACK_SHRINK);
 
 	Gtk::Alignment *imageAreaPadding = manage(new Gtk::Alignment(0, 0, 1, 1));
 	imageAreaPadding->set_padding(6, 0, 24, 0);
@@ -577,13 +580,14 @@ Widget_RendDesc::create_time_tab()
 	Gtk::Alignment *paddedPanel = manage(new Gtk::Alignment(0, 0, 1, 1));
 	paddedPanel->set_padding(12, 12, 12, 12);
 
-	Gtk::VBox *panelBox = manage(new Gtk::VBox(false, 12)); // for future widgets
+	Gtk::Box *panelBox = manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL, 12));  // for future widgets
+	panelBox->set_homogeneous(false);
 	paddedPanel->add(*panelBox);
 
 	time_frame = manage(new Gtk::Frame(_("Time Settings")));
 	time_frame->set_shadow_type(Gtk::SHADOW_NONE);
 	((Gtk::Label *) time_frame->get_label_widget())->set_markup(_("<b>Time Settings</b>"));
-	panelBox->pack_start(*time_frame, false, false, 0);
+	panelBox->pack_start(*time_frame, Gtk::PACK_SHRINK);
 
 	Gtk::Alignment *timeFramePadding = manage(new Gtk::Alignment(0, 0, 1, 1));
 	timeFramePadding->set_padding(6, 0, 24, 0);
@@ -624,13 +628,14 @@ Widget_RendDesc::create_other_tab()
 	Gtk::Alignment *paddedPanel = manage(new Gtk::Alignment(0, 0, 1, 1));
 	paddedPanel->set_padding(12, 12, 12, 12);
 
-	Gtk::VBox *panelBox = manage(new Gtk::VBox(false, 12));
+	Gtk::Box *panelBox = manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL, 12));
+	panelBox->set_homogeneous(false);
 	paddedPanel->add(*panelBox);
 
 	Gtk::Frame *lockFrame = manage(new Gtk::Frame(_("Locks and Links")));
 	lockFrame->set_shadow_type(Gtk::SHADOW_NONE);
 	((Gtk::Label *) lockFrame->get_label_widget())->set_markup(_("<b>Locks and Links</b>"));
-	panelBox->pack_start(*lockFrame, false, false, 0);
+	panelBox->pack_start(*lockFrame, Gtk::PACK_SHRINK);
 
 	Gtk::Alignment *lockPadding = manage(new Gtk::Alignment(0, 0, 1, 1));
 	lockPadding->set_padding(6, 0, 24, 0);
@@ -653,7 +658,7 @@ Widget_RendDesc::create_other_tab()
 	Gtk::Frame *focusFrame = manage(new Gtk::Frame(_("Focus Point")));
 	focusFrame->set_shadow_type(Gtk::SHADOW_NONE);
 	((Gtk::Label *) focusFrame->get_label_widget())->set_markup(_("<b>Focus Point</b>"));
-	panelBox->pack_start(*focusFrame, false, false, 0);
+	panelBox->pack_start(*focusFrame, Gtk::PACK_SHRINK);
 
 	Gtk::Alignment *focusPadding = manage(new Gtk::Alignment(0, 0, 1, 1));
 	focusPadding->set_padding(6, 0, 24, 0);
