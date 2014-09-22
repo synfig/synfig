@@ -72,8 +72,9 @@ class Widget_RendDesc : public Gtk::Notebook
 	Gtk::SpinButton *entry_span;
 
 	Widget_Link *toggle_wh_ratio;
-	//TODO Gtk::ToggleButton *toggle_res_ratio;
-	//TODO Gtk::ToggleButton *toggle_phy_ratio;
+	Widget_Link *toggle_res_ratio;
+
+	Gtk::Label *pixel_ratio_label;
 
 	Gtk::CheckButton *toggle_px_aspect;
 	Gtk::CheckButton *toggle_px_width;
@@ -144,6 +145,7 @@ private:
 	void on_span_changed();
 
 	void on_ratio_wh_toggled();
+	void on_ratio_res_toggled();
 
 	void create_widgets();
 	void connect_signals();

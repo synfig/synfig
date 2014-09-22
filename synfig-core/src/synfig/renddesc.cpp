@@ -287,6 +287,11 @@ RendDesc::get_x_res()const
 RendDesc &
 RendDesc::set_x_res(Real x)
 {
+	if(FLAGS(flags,LINK_RES)) // "Resolution ratio"
+	{
+		y_res = y_res_ratio_*x/x_res_ratio_;
+	}
+
 	x_res=x; return *this;
 }
 
@@ -299,6 +304,11 @@ RendDesc::get_y_res()const
 RendDesc &
 RendDesc::set_y_res(Real y)
 {
+	if(FLAGS(flags,LINK_RES)) // "Resolution ratio"
+	{
+		x_res = x_res_ratio_*y/y_res_ratio_;
+	}
+
 	y_res=y; return *this;
 }
 
@@ -462,6 +472,14 @@ RendDesc::set_pixel_ratio(const int &x, const int &y)
 {
 	w_ratio_ = x;
 	h_ratio_ = y;
+}
+
+//! Affect the resolution ratio for LINK_RES flag
+void
+RendDesc::set_res_ratio(const Real &x, const Real &y)
+{
+	x_res_ratio_ = x;
+	y_res_ratio_ = y;
 }
 
 //! Return the antialias amount

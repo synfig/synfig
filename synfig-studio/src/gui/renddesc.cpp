@@ -149,6 +149,7 @@ Widget_RendDesc::refresh()
 	toggle_im_span->set_active((bool)(rend_desc_.get_flags()&RendDesc::IM_SPAN));
 
 	toggle_wh_ratio->set_active((bool)(rend_desc_.get_flags()&RendDesc::LINK_IM_ASPECT));
+	toggle_res_ratio->set_active((bool)(rend_desc_.get_flags()&RendDesc::LINK_RES));
 }
 
 void Widget_RendDesc::apply_rend_desc(const synfig::RendDesc &rend_desc)
@@ -359,6 +360,23 @@ Widget_RendDesc::on_ratio_wh_toggled()
 }
 
 void
+Widget_RendDesc::on_ratio_res_toggled()
+{
+	if(update_lock)return;
+	UpdateLock lock(update_lock);
+
+	if(toggle_res_ratio->get_active())
+	{
+		rend_desc_.set_res_ratio(adjustment_xres->get_value(), adjustment_yres->get_value());
+		rend_desc_.set_flags(rend_desc_.get_flags()|RendDesc::LINK_RES);
+	}
+	else
+	{
+		rend_desc_.set_flags(rend_desc_.get_flags()&~RendDesc::LINK_RES);
+	}
+}
+
+void
 Widget_RendDesc::create_widgets()
 {
 	entry_width=manage(new Gtk::SpinButton(adjustment_width,1,0));
@@ -400,7 +418,9 @@ Widget_RendDesc::create_widgets()
 	toggle_im_span->set_alignment(0, 0.5);
 
 	toggle_wh_ratio=manage(new Widget_Link(_("Link width and height"), _("Unlink width and height")));
+	toggle_res_ratio=manage(new Widget_Link(_("Link x and y resolution"), _("Unlink x and y resolution")));
 
+	pixel_ratio_label=manage(new Gtk::Label("Pixel ratio", 0, 0.5, false));
 }
 
 void
@@ -429,6 +449,7 @@ Widget_RendDesc::connect_signals()
 	toggle_im_span->signal_toggled().connect(sigc::mem_fun(*this, &studio::Widget_RendDesc::on_lock_changed));
 
 	toggle_wh_ratio->signal_toggled().connect(sigc::mem_fun(*this, &studio::Widget_RendDesc::on_ratio_wh_toggled));
+	toggle_res_ratio->signal_toggled().connect(sigc::mem_fun(*this, &studio::Widget_RendDesc::on_ratio_res_toggled));
 }
 
 Gtk::Widget *
@@ -447,7 +468,7 @@ Widget_RendDesc::create_image_tab()
 
 	Gtk::Alignment *tablePadding = manage(new Gtk::Alignment(0, 0, 1, 1));
 	tablePadding->set_padding(6, 0, 24, 0);
-	Gtk::Table *imageSizeTable = manage(new Gtk::Table(2, 7, false));
+	Gtk::Table *imageSizeTable = manage(new Gtk::Table(3, 8, false));
 	imageSizeTable->set_row_spacings(6);
 	imageSizeTable->set_col_spacings(12);
 	tablePadding->add(*imageSizeTable);
@@ -483,10 +504,14 @@ Widget_RendDesc::create_image_tab()
 	imageSizeTable->attach(*entry_xres, 4, 5, 0, 1, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
 	imageSizeTable->attach(*entry_yres, 4, 5, 1, 2, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
 
-	imageSizeTable->attach(*size_physwidth_label, 5, 6, 0, 1, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	imageSizeTable->attach(*size_physheight_label, 5, 6, 1, 2, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	imageSizeTable->attach(*entry_phy_width, 6, 7, 0, 1, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	imageSizeTable->attach(*entry_phy_height, 6, 7, 1, 2, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
+	imageSizeTable->attach(*toggle_res_ratio, 5, 6, 0, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+
+	imageSizeTable->attach(*size_physwidth_label, 6, 7, 0, 1, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
+	imageSizeTable->attach(*size_physheight_label, 6, 7, 1, 2, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
+	imageSizeTable->attach(*entry_phy_width, 7, 8, 0, 1, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
+	imageSizeTable->attach(*entry_phy_height, 7, 8, 1, 2, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
+
+	imageSizeTable->attach(*pixel_ratio_label, 0, 1, 2, 3, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
 
 	Gtk::Frame *imageAreaFrame = manage(new Gtk::Frame(_("Image Area")));
 	imageAreaFrame->set_shadow_type(Gtk::SHADOW_NONE);

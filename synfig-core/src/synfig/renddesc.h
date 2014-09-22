@@ -73,7 +73,8 @@ public:
 		LINK_PX_AREA=(1<<11),	// not used
 		LINK_IM_ASPECT=(1<<12),	// "Width and Height pixel ratio" in Image Size
 		LINK_IM_SPAN=(1<<13),	// not used
-		LINK_IM_CENTER=(1<<14)	// not used
+		LINK_IM_CENTER=(1<<14),	// not used
+		LINK_RES=(1<<15)		// Resolution ratio in Image Size
 	};
 
 private:
@@ -85,6 +86,10 @@ private:
 	Real x_res;
 	//! Vertical resolution of the composition in pixels per meter
 	Real y_res;
+	//! Horizontal resolution for fixed ratio
+	Real x_res_ratio_;
+	//! Vertical resolution for fixed ratio
+	Real y_res_ratio_;
 	//! The Top Left and the Bottom Right Points of the composition
 	Point tl_, br_;
 	//! The Focus Point of the composition. Used when zooming in
@@ -272,8 +277,11 @@ public:
 	//!	Return the aspect ratio of the entire image
 	Point::value_type get_image_aspect()const;
 
-	//! Affect the pixel ratio for LINK_IM_ASPECT flag
+	//! Set the pixel ratio for LINK_IM_ASPECT flag
 	void set_pixel_ratio(const int &x, const int &y);
+
+	//! Set the resolution ratio for LINK_RES flag
+	void set_res_ratio(const Real &x, const Real &y);
 
 	//! Return the antialias amount
 	const int &get_antialias()const;
