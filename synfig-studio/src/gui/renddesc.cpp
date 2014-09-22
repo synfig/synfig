@@ -36,6 +36,7 @@
 #include <gtkmm/frame.h>
 #include <gtkmm/alignment.h>
 #include <gtkmm/box.h>
+#include <gtkmm/grid.h>
 #include <ETL/misc>
 #include <synfig/general.h>
 //#include <gtkmm/separator.h>
@@ -471,18 +472,17 @@ Widget_RendDesc::create_image_tab()
 	Gtk::VBox *panelBox = manage(new Gtk::VBox(false, 12));
 	paddedPanel->add(*panelBox);
 
-	Gtk::Frame *imageFrame = manage(new Gtk::Frame(_("Image Size")));
-	imageFrame->set_shadow_type(Gtk::SHADOW_NONE);
-	((Gtk::Label *) imageFrame->get_label_widget())->set_markup(_("<b>Image Size</b>"));
-	panelBox->pack_start(*imageFrame, false, false, 0);
+	Gtk::Frame *imageSizeFrame = manage(new Gtk::Frame(_("Image Size")));
+	imageSizeFrame->set_shadow_type(Gtk::SHADOW_NONE);
+	((Gtk::Label *) imageSizeFrame->get_label_widget())->set_markup(_("<b>Image Size</b>"));
+	panelBox->pack_start(*imageSizeFrame, false, false, 0);
 
-	Gtk::Alignment *tablePadding = manage(new Gtk::Alignment(0, 0, 1, 1));
-	tablePadding->set_padding(6, 0, 24, 0);
-	Gtk::Table *imageSizeTable = manage(new Gtk::Table(3, 8, false));
-	imageSizeTable->set_row_spacings(6);
-	imageSizeTable->set_col_spacings(12);
-	tablePadding->add(*imageSizeTable);
-	imageFrame->add(*tablePadding);
+	Gtk::Alignment *tableSizePadding = manage(new Gtk::Alignment(0, 0, 1, 1));
+	tableSizePadding->set_padding(6, 0, 24, 0);
+	Gtk::Grid *imageSizeGrid = manage(new Gtk::Grid());
+
+	tableSizePadding->add(*imageSizeGrid);
+	imageSizeFrame->add(*tableSizePadding);
 
 	Gtk::Label *size_width_label = manage(new Gtk::Label(_("_Width"), 0, 0.5, true));
 	size_width_label->set_mnemonic_widget(*entry_width);
@@ -502,26 +502,34 @@ Widget_RendDesc::create_image_tab()
 	Gtk::Label *size_physheight_label = manage(new Gtk::Label(_("Phy_sical Height"), 0, 0.5, true));
 	size_physheight_label->set_mnemonic_widget(*entry_phy_height);
 
-	imageSizeTable->attach(*size_width_label, 0, 1, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	imageSizeTable->attach(*size_height_label, 0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	imageSizeTable->attach(*entry_width, 1, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	imageSizeTable->attach(*entry_height, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	imageSizeGrid->set_row_spacing(6);
 
-	imageSizeTable->attach(*toggle_wh_ratio, 2, 3, 0, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	imageSizeGrid->attach(*size_width_label, 		0, 0, 1, 1);
+	imageSizeGrid->attach(*size_height_label, 		0, 1, 1, 1);
+	entry_width->set_hexpand(true);
+	entry_height->set_hexpand(true);
+	imageSizeGrid->attach(*entry_width, 			1, 0, 1, 1);
+	imageSizeGrid->attach(*entry_height, 			1, 1, 1, 1);
+	toggle_wh_ratio->set_margin_right(6);
+	imageSizeGrid->attach(*toggle_wh_ratio, 		2, 0, 1, 2);
 
-	imageSizeTable->attach(*size_xres_label, 3, 4, 0, 1, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	imageSizeTable->attach(*size_yres_label, 3, 4, 1, 2, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	imageSizeTable->attach(*entry_xres, 4, 5, 0, 1, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	imageSizeTable->attach(*entry_yres, 4, 5, 1, 2, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
+	imageSizeGrid->attach(*size_xres_label, 		3, 0, 1, 1);
+	imageSizeGrid->attach(*size_yres_label, 		3, 1, 1, 1);
+	entry_xres->set_hexpand(true);
+	entry_yres->set_hexpand(true);
+	imageSizeGrid->attach(*entry_xres, 				4, 0, 1, 1);
+	imageSizeGrid->attach(*entry_yres, 				4, 1, 1, 1);
+	toggle_res_ratio->set_margin_right(6);
+	imageSizeGrid->attach(*toggle_res_ratio,		5, 0, 1, 2);
 
-	imageSizeTable->attach(*toggle_res_ratio, 5, 6, 0, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	imageSizeGrid->attach(*size_physwidth_label,	6, 0, 1, 1);
+	imageSizeGrid->attach(*size_physheight_label,	6, 1, 1, 1);
+	entry_phy_width->set_hexpand(true);
+	entry_phy_height->set_hexpand(true);
+	imageSizeGrid->attach(*entry_phy_width,			7, 0, 1, 1);
+	imageSizeGrid->attach(*entry_phy_height,		7, 1, 1, 1);
 
-	imageSizeTable->attach(*size_physwidth_label, 6, 7, 0, 1, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	imageSizeTable->attach(*size_physheight_label, 6, 7, 1, 2, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	imageSizeTable->attach(*entry_phy_width, 7, 8, 0, 1, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	imageSizeTable->attach(*entry_phy_height, 7, 8, 1, 2, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-
-	imageSizeTable->attach(*pixel_ratio_label, 0, 3, 2, 3, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
+	imageSizeGrid->attach(*pixel_ratio_label,		0, 3, 3, 1);
 
 	Gtk::Frame *imageAreaFrame = manage(new Gtk::Frame(_("Image Area")));
 	imageAreaFrame->set_shadow_type(Gtk::SHADOW_NONE);
