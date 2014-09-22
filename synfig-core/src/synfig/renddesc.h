@@ -280,6 +280,9 @@ public:
 	//! Set the pixel ratio for LINK_IM_ASPECT flag
 	void set_pixel_ratio(const int &x, const int &y);
 
+	//! Get the reduced pixel ratio (based on euclide reduction)
+	void get_pixel_ratio_reduced(int &w_ratio_reduced, int &h_ratio_reduced);
+
 	//! Set the resolution ratio for LINK_RES flag
 	void set_res_ratio(const Real &x, const Real &y);
 

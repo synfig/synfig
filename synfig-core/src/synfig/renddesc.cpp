@@ -474,6 +474,41 @@ RendDesc::set_pixel_ratio(const int &x, const int &y)
 	h_ratio_ = y;
 }
 
+//! Get the reduced pixel ratio (based on euclide reduction)
+void
+RendDesc::get_pixel_ratio_reduced(int &w_ratio_reduced, int &h_ratio_reduced)
+{
+	int w = w_;
+	int h = h_;
+	int last_rem = h_;
+	int bigger_commun_div;
+
+	div_t dv;
+
+	if(!w_ || !h_)
+	{
+		w_ratio_reduced = h_ratio_reduced = 0;
+		return;
+	}
+
+	if(w_ == h_)
+	{
+		w_ratio_reduced = h_ratio_reduced = 1;
+		return;
+	}
+
+	while (last_rem != 0)
+	{
+		dv = div(w, h);
+		w = h;
+		bigger_commun_div = last_rem;
+		last_rem = h = dv.rem;
+	}
+
+	w_ratio_reduced = w_ / bigger_commun_div;
+	h_ratio_reduced = h_ / bigger_commun_div;
+}
+
 //! Affect the resolution ratio for LINK_RES flag
 void
 RendDesc::set_res_ratio(const Real &x, const Real &y)

@@ -120,12 +120,27 @@ void
 Widget_RendDesc::refresh()
 {
 	UpdateLock lock(update_lock);
+	//Image Tab
 	adjustment_width->set_value(rend_desc_.get_w());
 	adjustment_height->set_value(rend_desc_.get_h());
 	adjustment_phy_width->set_value(METERS2INCHES(rend_desc_.get_physical_w()));
 	adjustment_phy_height->set_value(METERS2INCHES(rend_desc_.get_physical_h()));
 	adjustment_xres->set_value(DPM2DPI(rend_desc_.get_x_res()));
 	adjustment_yres->set_value(DPM2DPI(rend_desc_.get_y_res()));
+	toggle_wh_ratio->set_active((bool)(rend_desc_.get_flags()&RendDesc::LINK_IM_ASPECT));
+	toggle_res_ratio->set_active((bool)(rend_desc_.get_flags()&RendDesc::LINK_RES));
+
+	int w_ratio, h_ratio;
+	rend_desc_.get_pixel_ratio_reduced(w_ratio, h_ratio);
+	std::ostringstream px_ratio_str;
+	px_ratio_str << _("Image Size Ratio : ") << w_ratio << '/' << h_ratio;
+	pixel_ratio_label->set_label(px_ratio_str.str());
+
+	entry_tl->set_value(rend_desc_.get_tl());
+	entry_br->set_value(rend_desc_.get_br());
+	adjustment_span->set_value(rend_desc_.get_span());
+
+	//Time Tab
 	entry_start_time->set_fps(rend_desc_.get_frame_rate());
 	entry_start_time->set_value(rend_desc_.get_time_start());
 	entry_end_time->set_fps(rend_desc_.get_frame_rate());
@@ -134,11 +149,8 @@ Widget_RendDesc::refresh()
 	entry_duration->set_value(rend_desc_.get_duration());
 
 	adjustment_fps->set_value(rend_desc_.get_frame_rate());
-	adjustment_span->set_value(rend_desc_.get_span());
-	entry_tl->set_value(rend_desc_.get_tl());
-	entry_br->set_value(rend_desc_.get_br());
-	entry_focus->set_value(rend_desc_.get_focus());
 
+	//Other Tab
 	toggle_px_aspect->set_active((bool)(rend_desc_.get_flags()&RendDesc::PX_ASPECT));
 	toggle_px_width->set_active((bool)(rend_desc_.get_flags()&RendDesc::PX_W));
 	toggle_px_height->set_active((bool)(rend_desc_.get_flags()&RendDesc::PX_H));
@@ -147,9 +159,7 @@ Widget_RendDesc::refresh()
 	toggle_im_width->set_active((bool)(rend_desc_.get_flags()&RendDesc::IM_W));
 	toggle_im_height->set_active((bool)(rend_desc_.get_flags()&RendDesc::IM_H));
 	toggle_im_span->set_active((bool)(rend_desc_.get_flags()&RendDesc::IM_SPAN));
-
-	toggle_wh_ratio->set_active((bool)(rend_desc_.get_flags()&RendDesc::LINK_IM_ASPECT));
-	toggle_res_ratio->set_active((bool)(rend_desc_.get_flags()&RendDesc::LINK_RES));
+	entry_focus->set_value(rend_desc_.get_focus());
 }
 
 void Widget_RendDesc::apply_rend_desc(const synfig::RendDesc &rend_desc)
@@ -420,7 +430,7 @@ Widget_RendDesc::create_widgets()
 	toggle_wh_ratio=manage(new Widget_Link(_("Link width and height"), _("Unlink width and height")));
 	toggle_res_ratio=manage(new Widget_Link(_("Link x and y resolution"), _("Unlink x and y resolution")));
 
-	pixel_ratio_label=manage(new Gtk::Label("Pixel ratio", 0, 0.5, false));
+	pixel_ratio_label=manage(new Gtk::Label("", 0, 0.5, false));
 }
 
 void
@@ -511,7 +521,7 @@ Widget_RendDesc::create_image_tab()
 	imageSizeTable->attach(*entry_phy_width, 7, 8, 0, 1, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
 	imageSizeTable->attach(*entry_phy_height, 7, 8, 1, 2, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
 
-	imageSizeTable->attach(*pixel_ratio_label, 0, 1, 2, 3, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
+	imageSizeTable->attach(*pixel_ratio_label, 0, 3, 2, 3, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
 
 	Gtk::Frame *imageAreaFrame = manage(new Gtk::Frame(_("Image Area")));
 	imageAreaFrame->set_shadow_type(Gtk::SHADOW_NONE);
