@@ -593,30 +593,31 @@ Widget_RendDesc::create_time_tab()
 	timeFramePadding->set_padding(6, 0, 24, 0);
 	time_frame->add(*timeFramePadding);
 
-	Gtk::Table *timeFrameTable = manage(new Gtk::Table(3, 2, false));
-	timeFrameTable->set_row_spacings(6);
-	timeFrameTable->set_col_spacings(12);
-	timeFramePadding->add(*timeFrameTable);
+	Gtk::Grid *timeFrameGrid = manage(new Gtk::Grid());
+	timeFramePadding->add(*timeFrameGrid);
+	timeFrameGrid->set_row_spacing(6);
+	timeFrameGrid->set_column_spacing(250);
 
 	Gtk::Label *timeFPSLabel = manage(new Gtk::Label(_("_Frames per second"), 0, 0.5, true));
 	timeFPSLabel->set_mnemonic_widget(*entry_fps);
-	timeFrameTable->attach(*timeFPSLabel, 0, 1, 0, 1, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	timeFrameTable->attach(*entry_fps, 1, 2, 0, 1, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
+	timeFrameGrid->attach(*timeFPSLabel, 0, 0, 1, 1);
+	entry_fps->set_hexpand(true);
+	timeFrameGrid->attach(*entry_fps, 1, 0, 1, 1);
 
 	Gtk::Label *timeStartLabel = manage(new Gtk::Label(_("_Start Time"), 0, 0.5, true));
 	timeStartLabel->set_mnemonic_widget(*entry_start_time);
-	timeFrameTable->attach(*timeStartLabel, 0, 1, 1, 2, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	timeFrameTable->attach(*entry_start_time, 1, 2, 1, 2, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
+	timeFrameGrid->attach(*timeStartLabel, 0, 1, 1, 1);
+	timeFrameGrid->attach(*entry_start_time, 1, 1, 1, 1);
 
 	Gtk::Label *timeEndLabel = manage(new Gtk::Label(_("_End Time"), 0, 0.5, true));
 	timeEndLabel->set_mnemonic_widget(*entry_end_time);
-	timeFrameTable->attach(*timeEndLabel, 0, 1, 2, 3, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	timeFrameTable->attach(*entry_end_time, 1, 2, 2, 3, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
+	timeFrameGrid->attach(*timeEndLabel, 0, 2, 1, 1);
+	timeFrameGrid->attach(*entry_end_time, 1, 2, 1, 1);
 
 	Gtk::Label *timeDurationLabel = manage(new Gtk::Label(_("_Duration"), 0, 0.5, true));
 	timeDurationLabel->set_mnemonic_widget(*entry_duration);
-	timeFrameTable->attach(*timeDurationLabel, 0, 1, 3, 4, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	timeFrameTable->attach(*entry_duration, 1, 2, 3, 4, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
+	timeFrameGrid->attach(*timeDurationLabel, 0, 3, 1, 1);
+	timeFrameGrid->attach(*entry_duration, 1, 3, 1, 1);
 
 	paddedPanel->show_all();
 	return paddedPanel;
