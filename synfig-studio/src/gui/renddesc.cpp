@@ -642,19 +642,23 @@ Widget_RendDesc::create_other_tab()
 	lockPadding->set_padding(6, 0, 24, 0);
 	lockFrame->add(*lockPadding);
 
-	Gtk::Table *lockTable = manage(new Gtk::Table(2, 4, false));
-	lockTable->set_row_spacings(6);
-	lockTable->set_col_spacings(12);
-	lockPadding->add(*lockTable);
+	Gtk::Grid *lockGrid = manage(new Gtk::Grid());
+	lockGrid->set_row_spacing(6);
+	lockGrid->set_column_spacing(12);
+	lockPadding->add(*lockGrid);
 
-	lockTable->attach(*toggle_im_width, 0, 1, 0, 1, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	lockTable->attach(*toggle_im_height, 1, 2, 0, 1, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	lockTable->attach(*toggle_im_aspect, 2, 3, 0, 1, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	lockTable->attach(*toggle_im_span, 3, 4, 0, 1, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
+	lockGrid->attach(*toggle_im_width,		0, 0, 1, 1);
+	toggle_im_width->set_hexpand(true);
+	lockGrid->attach(*toggle_im_height,		1, 0, 1, 1);
+	toggle_im_height->set_hexpand(true);
+	lockGrid->attach(*toggle_im_aspect,		2, 0, 1, 1);
+	toggle_im_aspect->set_hexpand(true);
+	lockGrid->attach(*toggle_im_span,		3, 0, 1, 1);
+	toggle_im_span->set_hexpand(true);
 
-	lockTable->attach(*toggle_px_width, 0, 1, 1, 2, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	lockTable->attach(*toggle_px_height, 1, 2, 1, 2, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	lockTable->attach(*toggle_px_aspect, 2, 3, 1, 2, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
+	lockGrid->attach(*toggle_px_width,		0, 1, 1, 1);
+	lockGrid->attach(*toggle_px_height,		1, 1, 1, 1);
+	lockGrid->attach(*toggle_px_aspect,		2, 1, 1, 1);
 
 	Gtk::Frame *focusFrame = manage(new Gtk::Frame(_("Focus Point")));
 	focusFrame->set_shadow_type(Gtk::SHADOW_NONE);
@@ -665,13 +669,13 @@ Widget_RendDesc::create_other_tab()
 	focusPadding->set_padding(6, 0, 24, 0);
 	focusFrame->add(*focusPadding);
 
-	Gtk::HBox *focusBox = manage(new Gtk::HBox(false, 12));
+	Gtk::Box *focusBox = manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL, 12));
 	focusPadding->add(*focusBox);
 
 	Gtk::Label *focusLabel = manage(new Gtk::Label(_("_Focus Point"), 0, 0.5, true));
 	focusLabel->set_mnemonic_widget(*entry_focus);
-	focusBox->pack_start(*focusLabel, false, false, 0);
-	focusBox->pack_start(*entry_focus, true, true, 0);
+	focusBox->pack_start(*focusLabel, Gtk::PACK_SHRINK);
+	focusBox->pack_start(*entry_focus, Gtk::PACK_EXPAND_WIDGET);
 
 	paddedPanel->show_all();
 	return paddedPanel;
