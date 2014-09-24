@@ -313,6 +313,7 @@ private:
 	Gtk::TreeRow children_canvas_row;
 	Gtk::TreeRow children_valuenode_row;
 
+	Gtk::Button *closebutton;
 	Gtk::Button *stopbutton;
 	Gtk::ToolButton *refreshbutton;
 	Gtk::Button *treetogglebutton;  // not used

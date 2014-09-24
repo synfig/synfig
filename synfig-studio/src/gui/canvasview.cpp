@@ -2226,6 +2226,9 @@ CanvasView::refresh_rend_desc()
 bool
 CanvasView::close_view()
 {
+	//prevent double click
+	closebutton->set_sensitive(false);
+
 	if(get_instance()->get_visible_canvases()==1)
 		close_instance();
 	else
@@ -2331,16 +2334,16 @@ CanvasView::create_tab_label()
 	}
 	label->show();
 
-	Gtk::Button *close_button = manage(new Gtk::Button());
-	box->pack_end(*close_button, false, false, 0);
-	Gtk::Image* close_button_image(manage(new Gtk::Image(
+	closebutton = manage(new Gtk::Button());
+	box->pack_end(*closebutton, false, false, 0);
+	Gtk::Image* closebutton_image(manage(new Gtk::Image(
 			Gtk::StockID("gtk-close"),
 			Gtk::IconSize::from_name("synfig-small_icon") )));
-	close_button->add(*close_button_image);
-	close_button->signal_clicked().connect(
+	closebutton->add(*closebutton_image);
+	closebutton->signal_clicked().connect(
 		sigc::hide_return(sigc::mem_fun(*this,&studio::CanvasView::close_view)));
-	close_button->set_relief(Gtk::RELIEF_NONE);
-	close_button->show_all();
+	closebutton->set_relief(Gtk::RELIEF_NONE);
+	closebutton->show_all();
 
 	return event_box;
 }
