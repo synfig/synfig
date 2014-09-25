@@ -3543,6 +3543,7 @@ CanvasView::on_waypoint_clicked_canvasview(synfigapp::ValueDesc value_desc,
 				item = manage(new Gtk::ImageMenuItem( \
 					*manage(new Gtk::Image(Gtk::StockID(StockId),Gtk::IconSize::from_name("synfig-small_icon"))), \
 					_(Text) )); \
+				item->set_use_underline(true); \
 				item->signal_activate().connect( \
 					sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())); \
 				item->show_all(); \
@@ -3586,18 +3587,21 @@ CanvasView::on_waypoint_clicked_canvasview(synfigapp::ValueDesc value_desc,
 
 		// ------------------------------------------------------------------------
 		item = manage(new Gtk::MenuItem(_("_Jump To")));
+		item->set_use_underline(true);
 		item->signal_activate().connect(
 			sigc::bind(sigc::mem_fun(*canvas_interface(), &synfigapp::CanvasInterface::set_time), time));
 		item->show();
 		waypoint_menu->append(*item);
 
 		item = manage(new Gtk::MenuItem(_("_Duplicate")));
+		item->set_use_underline(true);
 		item->signal_activate().connect(
 			sigc::bind(sigc::ptr_fun(duplicate_waypoints), waypoint_set, canvas_interface()));
 		item->show();
 		waypoint_menu->append(*item);
 
 		item = manage(new Gtk::MenuItem(size == 1 ? _("_Remove") : strprintf(_("_Remove %d Waypoints"), size)));
+		item->set_use_underline(true);
 		item->signal_activate().connect(
 			sigc::bind(sigc::ptr_fun(remove_waypoints), waypoint_set, canvas_interface()));
 		item->show();
@@ -3606,6 +3610,7 @@ CanvasView::on_waypoint_clicked_canvasview(synfigapp::ValueDesc value_desc,
 		if (size == 1 && value_desc.is_valid())
 		{
 			item = manage(new Gtk::MenuItem(_("_Edit")));
+			item->set_use_underline(true);
 			item->signal_activate().connect(
 					sigc::mem_fun(waypoint_dialog,&Gtk::Widget::show));
 			item->show();
@@ -3619,16 +3624,19 @@ CanvasView::on_waypoint_clicked_canvasview(synfigapp::ValueDesc value_desc,
 
 		// ------------------------------------------------------------------------
 		item = manage(new Gtk::MenuItem(_("_Both")));
+		item->set_use_underline(true);
 		item->set_submenu(*interp_menu_both);
 		item->show();
 		waypoint_menu->append(*item);
 
 		item = manage(new Gtk::MenuItem(_("_In")));
+		item->set_use_underline(true);
 		item->set_submenu(*interp_menu_in);
 		item->show();
 		waypoint_menu->append(*item);
 
 		item = manage(new Gtk::MenuItem(_("_Out")));
+		item->set_use_underline(true);
 		item->set_submenu(*interp_menu_out);
 		item->show();
 		waypoint_menu->append(*item);
