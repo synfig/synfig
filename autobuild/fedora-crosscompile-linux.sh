@@ -1439,7 +1439,7 @@ if ( ! ldconfig -p | grep libjack.so >/dev/null ) || ( ! which jackd >/dev/null 
 	# No JACK, so disable this functionality.
 	# (The bundled libjack won't work correctly anyway).
 	export SYNFIG_DISABLE_JACK=1
-	export LD_LIBRARY_PATH=\$LD_LIBRARY_PATH:\${PREFIX}/lib.extra
+	export LD_LIBRARY_PATH=\$LD_LIBRARY_PATH:\${SYSPREFIX}/lib.extra
 fi
 
 USER_CONFIG_DIR=\$HOME/.config/synfig
