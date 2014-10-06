@@ -326,7 +326,7 @@ for line in `find $1 -print`; do
 	line2=`echo $line | sed "s|\./||g" | sed "s|/|\\\\\|g"`
 	if [ -d $line ]; then
 		echo "RMDir \"\$INSTDIR\\$line2\"" >> $2-uninst.nsh
-	else
+	elif [ ! -L $line ]; then
 		echo "SetOutPath \"\$INSTDIR\\$line1\""  >> $2.nsh
 		echo "File \"$line2\"" >> $2.nsh
 		echo "Delete \"\$INSTDIR\\$line2\"" >> $2-uninst.nsh
