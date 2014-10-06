@@ -3,7 +3,7 @@
 # -- I N I T --------------------------------------------------
 
 AC_INIT([Synfig Studio],[0.64.2-RC1],[http://www.synfig.org/issues/thebuggenie/synfig],[synfigstudio])
-AM_CONDITIONAL(DEVELOPMENT_SNAPSHOT, false)
+AM_CONDITIONAL(DEVELOPMENT_SNAPSHOT, true)
 AC_REVISION
 
 AC_CONFIG_AUX_DIR(config)
