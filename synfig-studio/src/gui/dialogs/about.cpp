@@ -107,7 +107,7 @@ About::About()
 	set_website("http://synfig.org/");
 	set_website_label(_("Visit the Synfig website"));
 
-	set_copyright(_("Copyright 2001-2013\nRobert B. Quattlebaum Jr.,\nAdrian Bentley and Synfig contributors"));
+	set_copyright(_("Copyright 2001-2014\nRobert B. Quattlebaum Jr.,\nAdrian Bentley and Synfig contributors"));
 	Glib::ustring license =
 		"This program is free software; you can redistribute it and/or modify "
 		"it under the terms of the GNU General Public License as published by "
