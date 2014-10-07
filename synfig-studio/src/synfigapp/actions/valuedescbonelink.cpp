@@ -107,7 +107,11 @@ Action::ValueDescBoneLink::is_candidate(const ParamList &x)
 	for (iter = selected_vd_range.first; iter != selected_vd_range.second ; ++iter)
 	{
 		ValueDesc selected_value_desc(iter->second.get_value_desc());
-		if (ValueNode_Bone::Handle::cast_dynamic(selected_value_desc.get_parent_value_node()))
+		//Simple test of bone type
+		//TODO : if bone, reject only if same skeleton
+		if ((selected_value_desc.parent_is_value_node()) &&
+			(ValueNode_Bone::Handle::cast_dynamic(selected_value_desc.get_parent_value_node()))
+			)
 		{
 			selected_value_desc_is_bone = true;
 			break;
