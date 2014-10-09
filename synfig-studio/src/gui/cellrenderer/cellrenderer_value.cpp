@@ -489,6 +489,7 @@ CellRenderer_ValueBase::render_vfunc(
 			aligned_area.get_height(),
 			aligned_area.get_height()
 		);
+		cr->restore();
 		context->context_restore();
 		return;
 	}
