@@ -73,7 +73,6 @@ public:
 	//! Initialization tasks of ffmpeg target.
 	//! @returns true if the initialization has no errors
 	virtual bool init(synfig::ProgressCallback *cb);
-	bool check_ffmpeg_binary(std::string path);
 };
 
 /* === E N D =============================================================== */
