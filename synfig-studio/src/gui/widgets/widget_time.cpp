@@ -61,6 +61,8 @@ Widget_Time::Widget_Time():
 {
 	signal_activate().connect(sigc::mem_fun(*this,&studio::Widget_Time::refresh_value));
 	signal_activate().connect(sigc::mem_fun(*this,&studio::Widget_Time::refresh_text));
+
+	add_events(Gdk::SCROLL_MASK);
 }
 
 Widget_Time::~Widget_Time()
