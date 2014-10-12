@@ -2108,6 +2108,11 @@ CanvasView::refresh_rend_desc()
 	float current_frame_rate = get_canvas()->rend_desc().get_frame_rate();
 	current_time_widget->set_fps(current_frame_rate);
 
+	int current_time_lenght = current_time_widget->get_value().get_string(current_frame_rate, App::get_time_format()).length();
+#define CURRENT_TIME_MIN_LENGHT 6
+	current_time_lenght = current_time_lenght < CURRENT_TIME_MIN_LENGHT ? CURRENT_TIME_MIN_LENGHT : current_time_lenght;
+	current_time_widget->set_width_chars(current_time_lenght);
+#undef CURRENT_TIME_MIN_LENGHT
 	jackdial->set_fps(current_frame_rate);
 	widget_kf_list->set_fps(current_frame_rate);
 
