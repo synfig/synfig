@@ -2105,9 +2105,11 @@ CanvasView::workarea_layer_selected(synfig::Layer::Handle layer)
 void
 CanvasView::refresh_rend_desc()
 {
-	current_time_widget->set_fps(get_canvas()->rend_desc().get_frame_rate());
-	jackdial->set_fps(get_canvas()->rend_desc().get_frame_rate());
-	widget_kf_list->set_fps(get_canvas()->rend_desc().get_frame_rate());
+	float current_frame_rate = get_canvas()->rend_desc().get_frame_rate();
+	current_time_widget->set_fps(current_frame_rate);
+
+	jackdial->set_fps(current_frame_rate);
+	widget_kf_list->set_fps(current_frame_rate);
 
 	//????
 	//synfig::info("Canvasview: Refreshing render desc info");
@@ -2130,7 +2132,7 @@ CanvasView::refresh_rend_desc()
 	}
 
 	//set the FPS of the timeslider
-	timeslider->set_global_fps(get_canvas()->rend_desc().get_frame_rate());
+	timeslider->set_global_fps(current_frame_rate);
 
 	//set the beginning and ending time of the time slider
 	Time begin_time=get_canvas()->rend_desc().get_time_start();
@@ -2139,7 +2141,7 @@ CanvasView::refresh_rend_desc()
 	// Setup the time_window adjustment
 	time_window_adjustment()->set_lower(begin_time);
 	time_window_adjustment()->set_upper(end_time);
-	time_window_adjustment()->set_step_increment(synfig::Time(1.0/get_canvas()->rend_desc().get_frame_rate()));
+	time_window_adjustment()->set_step_increment(synfig::Time(1.0/current_frame_rate));
 
 	//Time length(get_canvas()->rend_desc().get_time_end()-get_canvas()->rend_desc().get_time_start());
 	if(length < time_window_adjustment()->get_page_size())
@@ -2164,7 +2166,7 @@ CanvasView::refresh_rend_desc()
 
 //	time_adjustment()->set_lower(get_canvas()->rend_desc().get_time_start());
 //	time_adjustment()->set_upper(get_canvas()->rend_desc().get_time_end());
-	time_adjustment()->set_step_increment(synfig::Time(1.0/get_canvas()->rend_desc().get_frame_rate()));
+	time_adjustment()->set_step_increment(synfig::Time(1.0/current_frame_rate));
 	time_adjustment()->set_page_increment(synfig::Time(1.0));
 	time_adjustment()->set_page_size(0);
 
