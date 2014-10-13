@@ -995,6 +995,9 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	progresscallback(0),
 	dragging(DRAG_NONE),
 	show_grid(false),
+	background_size(15,15),
+	background_first_color(0.88, 0.88, 0.88),  /* light gray */
+	background_second_color(0.65, 0.65, 0.65),  /* dark gray */
 	jack_offset(0),
 	tile_w(TILE_SIZE),
 	tile_h(TILE_SIZE),
@@ -1152,6 +1155,9 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	get_canvas()->signal_meta_data_changed("guide_color").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("sketch").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("solid_lines").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
+	get_canvas()->signal_meta_data_changed("background_size").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
+	get_canvas()->signal_meta_data_changed("background_first_color").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
+	get_canvas()->signal_meta_data_changed("background_second_color").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 
 	queued=false;
 	meta_data_lock=false;
@@ -1221,6 +1227,12 @@ WorkArea::save_meta_data()
 	canvas_interface->set_meta_data("grid_show",show_grid?"1":"0");
 	canvas_interface->set_meta_data("jack_offset",strprintf("%f", (double)jack_offset));
 	canvas_interface->set_meta_data("onion_skin",onion_skin?"1":"0");
+	s = get_background_size();
+	canvas_interface->set_meta_data("background_size",strprintf("%f %f",s[0],s[1]));
+	c = get_background_first_color();
+	canvas_interface->set_meta_data("background_first_color",strprintf("%f %f %f",c.get_r(),c.get_g(),c.get_b()));
+	c = get_background_second_color();
+	canvas_interface->set_meta_data("background_second_color",strprintf("%f %f %f",c.get_r(),c.get_g(),c.get_b()));
 
 	{
 		String data;
@@ -1443,6 +1455,92 @@ WorkArea::load_meta_data()
 	if (!data.empty())
 		jack_offset = stratof(data);
 
+	data=canvas->get_meta_data("background_size");
+	if(!data.empty())
+	{
+		float gx(get_background_size()[0]),gy(get_background_size()[1]);
+
+		String::iterator iter(find(data.begin(),data.end(),' '));
+		String tmp(data.begin(),iter);
+
+		if(!tmp.empty())
+			gx=stratof(tmp);
+		else
+			synfig::error("WorkArea::load_meta_data(): Unable to parse data for \"background_size\", which was \"%s\"",data.c_str());
+
+		if(iter==data.end())
+			tmp.clear();
+		else
+			tmp=String(iter+1,data.end());
+
+		if(!tmp.empty())
+			gy=stratof(tmp);
+		else
+			synfig::error("WorkArea::load_meta_data(): Unable to parse data for \"background_size\", which was \"%s\"",data.c_str());
+
+		set_background_size(Vector(gx,gy));
+	}
+
+	data=canvas->get_meta_data("background_first_color");
+	if(!data.empty())
+	{
+		float gr(get_background_first_color().get_r()),gg(get_background_first_color().get_g()),gb(get_background_first_color().get_b());
+
+		String tmp;
+		// Insert the string into a stream
+		stringstream ss(data);
+		// Create vector to hold our colors
+		std::vector<String> tokens;
+
+		int imaxcolor = 0;
+		while (ss >> tmp && imaxcolor++ < 3)
+			tokens.push_back(tmp);
+
+		if (tokens.size() != 3 || imaxcolor > 3)
+		{
+			synfig::error("WorkArea::load_meta_data(): Unable to parse data for \"background_first_color\", which was \"%s\". \"red green blue\" in [0,1] was expected",data.c_str());
+			canvas_interface->get_ui_interface()->warning(_("Unable to set \"background_first_color\""));
+		}
+		else
+		{
+			gr=atof(tokens.at(0).data());
+			gg=atof(tokens.at(1).data());
+			gb=atof(tokens.at(2).data());
+		}
+
+		set_background_first_color(synfig::Color(gr,gg,gb));
+	}
+
+	data=canvas->get_meta_data("background_second_color");
+	if(!data.empty())
+	{
+		float gr(get_background_second_color().get_r()),gg(get_background_second_color().get_g()),gb(get_background_second_color().get_b());
+
+		String tmp;
+		// Insert the string into a stream
+		stringstream ss(data);
+		// Create vector to hold our colors
+		std::vector<String> tokens;
+
+		int imaxcolor = 0;
+		while (ss >> tmp && imaxcolor++ < 3)
+			tokens.push_back(tmp);
+
+		if (tokens.size() != 3 || imaxcolor > 3)
+		{
+			synfig::error("WorkArea::load_meta_data(): Unable to parse data for \"background_second_color\", which was \"%s\". \"red green blue\" in [0,1] was expected",data.c_str());
+			canvas_interface->get_ui_interface()->warning(_("Unable to set \"background_second_color\""));
+		}
+		else
+		{
+			gr=atof(tokens.at(0).data());
+			gg=atof(tokens.at(1).data());
+			gb=atof(tokens.at(2).data());
+		}
+
+		set_background_second_color(synfig::Color(gr,gg,gb));
+	}
+
 	meta_data_lock=false;
 	queue_draw();
 	signal_meta_data_changed()();
@@ -1572,6 +1670,39 @@ WorkArea::set_grid_color(const synfig::Color &c)
 {
 	Duckmatic::set_grid_color(c);
 	save_meta_data();
+	queue_draw();
+}
+
+void
+WorkArea::set_background_size(const synfig::Vector &s)
+{
+	if (background_size != s)
+	{
+	   background_size = s;
+       save_meta_data();
+	}
+	queue_draw();
+}
+
+void
+WorkArea::set_background_first_color(const synfig::Color &c)
+{
+	if(background_first_color != c)
+	{
+		background_first_color = c;
+		save_meta_data();
+	}
+	queue_draw();
+}
+
+void
+WorkArea::set_background_second_color(const synfig::Color &c)
+{
+	if(background_second_color != c)
+	{
+		background_second_color = c;
+		save_meta_data();
+	}
 	queue_draw();
 }
 

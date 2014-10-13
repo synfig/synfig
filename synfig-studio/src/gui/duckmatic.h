@@ -252,8 +252,9 @@ protected:
 	//! This vector describes the grid size.
 	/*! \see grid_snap, show_grid */
 	synfig::Vector grid_size;
+	//! Hold the grid color.
 	synfig::Color grid_color;
-
+	//! Hold the guides color.
 	synfig::Color guides_color;
 
 	float zoom;					//!< Zoom factor
@@ -332,7 +333,6 @@ public:
 	const synfig::Vector &get_grid_size()const { return grid_size; }
 	//! Returns the color of the grid
 	const synfig::Color &get_grid_color()const { return grid_color;}
-
 
 	const synfig::Time &get_time()const { return cur_time; }
 

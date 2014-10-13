@@ -232,6 +232,13 @@ private:
 	//! This flag is set if the guides should be drawn
 	bool show_guides;
 
+	//! Checker background size
+	synfig::Vector background_size;
+	//! Checker background first color
+	synfig::Color background_first_color;
+	//! Checker background second color
+	synfig::Color background_second_color;
+
 	synfig::Time jack_offset;
 
 	bool low_resolution;
@@ -464,6 +471,19 @@ public:
 
 	synfig::Time get_jack_offset()const { return jack_offset; }
 	void set_jack_offset(const synfig::Time &x);
+
+	//! Sets the size of the checker background
+	void set_background_size(const synfig::Vector &s);
+	//! Sets the first color of the checker background
+	void set_background_first_color(const synfig::Color &c);
+	//! Sets the second color of the checker background
+	void set_background_second_color(const synfig::Color &c);
+	//! Sets the size of the checker background
+	const synfig::Vector &get_background_size()const { return background_size;}
+	//! Returns the first color of the checker background
+	const synfig::Color &get_background_first_color()const { return background_first_color;}
+	//! Returns the second color of the checker background
+	const synfig::Color &get_background_second_color()const { return background_second_color;}
 
 	bool get_low_resolution_flag()const { return low_resolution; }
 	void set_low_resolution_flag(bool x);
