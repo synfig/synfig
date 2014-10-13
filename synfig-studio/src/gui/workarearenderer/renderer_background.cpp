@@ -86,49 +86,41 @@ Renderer_Background::render_vfunc(
 	x(focus_point[0]/get_pw()+drawable_w/2-w/2),
 	y(focus_point[1]/get_ph()+drawable_h/2-h/2);
 
-	cairo_t* cr=gdk_cairo_create(drawable->gobj());
+	Cairo::RefPtr<Cairo::Context> cr = drawable->create_cairo_context();
+	//TODO allow custom user checker board background size
+	Cairo::RefPtr<Cairo::Surface> surface_background = draw_check_pattern(15, 15);
 	
-	
-    cairo_surface_t *check;
-	
-    check=draw_check(15, 15);
-	
-    cairo_save(cr);
+    cr->save();
 
-    cairo_set_source_surface(cr, check, focus_point[0]/get_pw()+drawable_w/2, focus_point[1]/get_ph()+drawable_h/2);
-    cairo_surface_destroy(check);
+    cr->set_source(surface_background, focus_point[0]/get_pw()+drawable_w/2, focus_point[1]/get_ph()+drawable_h/2);
+
+    Cairo::RefPtr<Cairo::SurfacePattern> sp_ptr = Cairo::SurfacePattern::create(surface_background);
+    sp_ptr->set_filter(Cairo::FILTER_NEAREST);
+    sp_ptr->set_extend(Cairo::EXTEND_REPEAT);
+
+    cr->set_source(sp_ptr);
+
+    cr->rectangle(round_to_int(x), round_to_int(y), w, h);
+    cr->clip();
+    cr->paint();
 	
-    cairo_pattern_set_filter(cairo_get_source(cr), CAIRO_FILTER_NEAREST);
-    cairo_pattern_set_extend(cairo_get_source(cr), CAIRO_EXTEND_REPEAT);
-	cairo_rectangle(cr, round_to_int(x), round_to_int(y), w, h);
-	cairo_clip(cr);
-    cairo_paint (cr);
-	
-    cairo_restore (cr);
-	cairo_destroy(cr);
+    cr->restore();
 }
 
-cairo_surface_t *
-Renderer_Background::draw_check(int width, int height)
+Cairo::RefPtr<Cairo::Surface>
+Renderer_Background::draw_check_pattern(int width, int height)
 {
-    cairo_surface_t *surface;
-    cairo_t *cr;
-		
-    surface = cairo_image_surface_create (CAIRO_FORMAT_RGB24, width*2, height*2);
-    cr = cairo_create (surface);
-    cairo_surface_destroy (surface);
-	
-	//TODO allow custom user colors
-    cairo_set_source_rgb (cr, 0.88, 0.88, 0.88); /* light gray */
-    cairo_paint (cr);
-	
-    cairo_set_source_rgb (cr, 0.65, 0.65, 0.65); /* dark gray */
-    cairo_rectangle (cr, int(width), 0 , width, height);
-    cairo_rectangle (cr, 0, int(height), width , height);
-    cairo_fill (cr);
-	
-    surface = cairo_surface_reference (cairo_get_target (cr));
-    cairo_destroy (cr);
-	
-    return surface;
+	Cairo::RefPtr<Cairo::Surface> surface_ptr =  Cairo::ImageSurface::create (Cairo::FORMAT_RGB24, width*2, height*2);
+	Cairo::RefPtr<Cairo::Context> cr_ptr = Cairo::Context::create (surface_ptr);
+
+	//TODO allow custom user checker board background colors
+	cr_ptr->set_source_rgb(0.88, 0.88, 0.88); /* light gray */
+    cr_ptr->paint();
+
+    cr_ptr->set_source_rgb(0.65, 0.65, 0.65); /* dark gray */
+    cr_ptr->rectangle(int(width), 0 , width, height);
+    cr_ptr->rectangle(0, int(height), width , height);
+    cr_ptr->fill();
+
+    return surface_ptr;
 }

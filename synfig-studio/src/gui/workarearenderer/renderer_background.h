@@ -41,7 +41,7 @@ namespace studio {
 class Renderer_Background : public studio::WorkAreaRenderer
 {
 private:
-	cairo_surface_t* draw_check(int w, int h);
+	Cairo::RefPtr<Cairo::Surface> draw_check_pattern(int width, int height);
 
 public:
 	~Renderer_Background();
