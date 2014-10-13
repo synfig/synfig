@@ -69,27 +69,27 @@ Renderer_Background::render_vfunc(
 							const Gdk::Rectangle& /*expose_area*/
 							)
 {
-	assert(get_work_area());
-	if(!get_work_area())
-		return;
+    assert(get_work_area());
+    if(!get_work_area())
+        return;
 
-	int drawable_w = drawable->get_width();
-	int drawable_h = drawable->get_height();
+    int drawable_w = drawable->get_width();
+    int drawable_h = drawable->get_height();
 	
-	int w=get_w();
-	int h=get_h();
+    int w=get_w();
+    int h=get_h();
 
-	const synfig::Vector focus_point(get_work_area()->get_focus_point());
-	// Calculate the window coordinates of the top-left
-	// corner of the canvas.
-	const float
-	x(focus_point[0]/get_pw()+drawable_w/2-w/2),
-	y(focus_point[1]/get_ph()+drawable_h/2-h/2);
+    const synfig::Vector focus_point(get_work_area()->get_focus_point());
+    // Calculate the window coordinates of the top-left
+    // corner of the canvas.
+    const float
+    x(focus_point[0]/get_pw()+drawable_w/2-w/2),
+    y(focus_point[1]/get_ph()+drawable_h/2-h/2);
 
-	Cairo::RefPtr<Cairo::Context> cr = drawable->create_cairo_context();
-	//TODO allow custom user checker board background size
-	Cairo::RefPtr<Cairo::Surface> surface_background = draw_check_pattern(15, 15);
-	
+    Cairo::RefPtr<Cairo::Context> cr = drawable->create_cairo_context();
+    //TODO allow custom user checker board background size
+    Cairo::RefPtr<Cairo::Surface> surface_background = draw_check_pattern(15, 15);
+
     cr->save();
 
     cr->set_source(surface_background, focus_point[0]/get_pw()+drawable_w/2, focus_point[1]/get_ph()+drawable_h/2);
@@ -103,18 +103,18 @@ Renderer_Background::render_vfunc(
     cr->rectangle(round_to_int(x), round_to_int(y), w, h);
     cr->clip();
     cr->paint();
-	
+
     cr->restore();
 }
 
 Cairo::RefPtr<Cairo::Surface>
 Renderer_Background::draw_check_pattern(int width, int height)
 {
-	Cairo::RefPtr<Cairo::Surface> surface_ptr =  Cairo::ImageSurface::create (Cairo::FORMAT_RGB24, width*2, height*2);
-	Cairo::RefPtr<Cairo::Context> cr_ptr = Cairo::Context::create (surface_ptr);
+    Cairo::RefPtr<Cairo::Surface> surface_ptr =  Cairo::ImageSurface::create (Cairo::FORMAT_RGB24, width*2, height*2);
+    Cairo::RefPtr<Cairo::Context> cr_ptr = Cairo::Context::create (surface_ptr);
 
-	//TODO allow custom user checker board background colors
-	cr_ptr->set_source_rgb(0.88, 0.88, 0.88); /* light gray */
+    //TODO allow custom user checker board background colors
+    cr_ptr->set_source_rgb(0.88, 0.88, 0.88); /* light gray */
     cr_ptr->paint();
 
     cr_ptr->set_source_rgb(0.65, 0.65, 0.65); /* dark gray */
