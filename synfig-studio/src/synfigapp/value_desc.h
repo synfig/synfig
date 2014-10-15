@@ -371,7 +371,7 @@ public:
 		if(parent_is_layer() && layer)
 			return layer->get_param(name);
 		if (parent_is_value_desc())
-			return get_parent_desc().get_value();
+			return get_parent_desc().get_value(time);
 		return synfig::ValueBase();
 	}
 
