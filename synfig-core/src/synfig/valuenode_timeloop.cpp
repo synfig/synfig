@@ -177,7 +177,7 @@ ValueNode_TimeLoop::get_children_vocab_vfunc()const
 
 	ret.push_back(ParamDesc("link_time")
 		.set_local_name(_("Link Time"))
-		.set_description(_("Start time of the loop for the value node timeline"))
+		.set_description(_("Start time of the loop for the value node Timeline"))
 	);
 
 	ret.push_back(ParamDesc("local_time")
@@ -187,7 +187,7 @@ ValueNode_TimeLoop::get_children_vocab_vfunc()const
 
 	ret.push_back(ParamDesc("duration")
 		.set_local_name(_("Duration"))
-		.set_description(_("Lenght of the loop"))
+		.set_description(_("Length of the loop"))
 	);
 	return ret;
 }

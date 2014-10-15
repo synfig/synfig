@@ -250,20 +250,20 @@ ValueNode_Dynamic::get_children_vocab_vfunc()const
 		.set_description(_("External momentum applied at the center of inertia"))
 	);
 	ret.push_back(ParamDesc(ValueBase(),"damping")
-		.set_local_name(_("Damping coeficient"))
-		.set_description(_("Radial damping coeficient of the dynamic sytem"))
+		.set_local_name(_("Damping coefficient"))
+		.set_description(_("Radial damping coefficient of the dynamic system"))
 	);
 	ret.push_back(ParamDesc(ValueBase(),"friction")
-		.set_local_name(_("Friction coeficient"))
-		.set_description(_("Rotational friction coeficient of the dynamic sytem"))
+		.set_local_name(_("Friction coefficient"))
+		.set_description(_("Rotational friction coefficient of the dynamic system"))
 	);
 	ret.push_back(ParamDesc(ValueBase(),"spring")
-		.set_local_name(_("Spring coeficient"))
-		.set_description(_("Radial spring coeficient of the dynamic system"))
+		.set_local_name(_("Spring coefficient"))
+		.set_description(_("Radial spring coefficient of the dynamic system"))
 	);
 	ret.push_back(ParamDesc(ValueBase(),"torsion")
-		.set_local_name(_("Torsion coeficient"))
-		.set_description(_("Torsion coeficient of the dynamic system"))
+		.set_local_name(_("Torsion coefficient"))
+		.set_description(_("Torsion coefficient of the dynamic system"))
 	);
 	ret.push_back(ParamDesc(ValueBase(),"mass")
 		.set_local_name(_("Mass"))

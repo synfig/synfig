@@ -211,7 +211,7 @@ ValueNode_Repeat_Gradient::get_children_vocab_vfunc()const
 
 	ret.push_back(ParamDesc(ValueBase(),"width")
 		.set_local_name(_("Width"))
-		.set_description(_("Specifies how much biased is the source gradeint in the repetition [0,1]"))
+		.set_description(_("Specifies how much biased is the source gradient in the repetition [0,1]"))
 	);
 
 	ret.push_back(ParamDesc(ValueBase(),"specify_start")
