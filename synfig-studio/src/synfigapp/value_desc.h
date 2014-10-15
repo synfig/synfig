@@ -63,7 +63,7 @@ class ValueDesc
 	synfig::Real scalar;
 
 	// Info for sub-value of parent ValueDesc
-	synfig::String sub_name;
+	std::vector<synfig::String> sub_names;
 
 	ValueDesc *parent_desc;
 	int links_count;
@@ -94,7 +94,7 @@ public:
 			return false;
 		if(index!=rhs.index)
 			return false;
-		if(sub_name!=rhs.sub_name)
+		if(sub_names!=rhs.sub_names)
 			return false;
 		return true;
 	}
@@ -113,7 +113,7 @@ public:
 		waypoint_time = other.waypoint_time;
 		canvas = other.canvas;
 		scalar = other.scalar;
-		sub_name = other.sub_name;
+		sub_names = other.sub_names;
 		if (parent_desc != NULL && 0 >= --parent_desc->links_count)
 			delete parent_desc;
 		parent_desc = other.parent_desc;
@@ -189,10 +189,20 @@ public:
 	{ }
 
 	ValueDesc(const ValueDesc &parent, const synfig::String &sub_name):
-		sub_name(sub_name),
+		layer(parent.layer),
+		name(parent.name),
+		parent_value_node(parent.parent_value_node),
+		index(parent.index),
+		waypoint_time(parent.waypoint_time),
+		canvas(parent.canvas),
+		scalar(parent.scalar),
 		parent_desc(init_parent(parent)),
 		links_count(0)
-	{ }
+	{
+		sub_names.reserve(parent.sub_names.size() + 1);
+		sub_names.insert(sub_names.end(), parent.sub_names.begin(), parent.sub_names.end());
+		sub_names.push_back(sub_name);
+	}
 
 	// copy
 	ValueDesc(const ValueDesc &other):
@@ -203,7 +213,7 @@ public:
 		waypoint_time(other.waypoint_time),
 		canvas(other.canvas),
 		scalar(other.scalar),
-		sub_name(other.sub_name),
+		sub_names(other.sub_names),
 		parent_desc(other.parent_desc),
 		links_count(0)
 	{
@@ -223,7 +233,7 @@ public:
 	// Instrocpection members
 	bool
 	is_valid()const
-		{ return layer || parent_value_node || canvas || (!sub_name.empty() && get_parent_desc().is_valid()); }
+		{ return layer || parent_value_node || canvas; }
 
 	operator bool()const { return is_valid(); }
 
@@ -247,21 +257,19 @@ public:
 		{ return (bool)canvas; }
 	bool
 	parent_is_value_desc()const
-		{ return !sub_name.empty() && get_parent_desc().is_valid(); }
+		{ return !sub_names.empty(); }
 
 	bool
 	is_value_node()const
 		{ return parent_is_value_node()
 		      || parent_is_canvas()
-			  || (parent_is_layer() && (bool)layer->dynamic_param_list().count(name))
-			  || (parent_is_value_desc() && get_parent_desc().is_value_node());
+			  || (parent_is_layer() && (bool)layer->dynamic_param_list().count(name));
 		}
 	bool
 	is_const()const
 		{ return (parent_is_layer() && !layer->dynamic_param_list().count(name))
 		      || parent_is_value_node_const()
-		      || (parent_is_linkable_value_node() && synfig::ValueNode_Const::Handle::cast_dynamic(get_value_node()))
-		      || (parent_is_value_desc() && get_parent_desc().is_const());
+		      || (parent_is_linkable_value_node() && synfig::ValueNode_Const::Handle::cast_dynamic(get_value_node()));
 		}
 	
 	bool
@@ -278,8 +286,12 @@ public:
 		{ return parent_desc != NULL; }
 	
 	// Get members
-	const ValueDesc& get_parent_desc()const
+	const ValueDesc& get_sub_parent_desc()const
 		{ return parent_desc == NULL ? blank : *parent_desc; }
+	const ValueDesc& get_origin_desc()const
+		{ return parent_is_value_desc() ? get_sub_parent_desc().get_origin_desc() : *this ; }
+	const ValueDesc& get_parent_desc()const
+		{ return get_origin_desc().get_sub_parent_desc().get_origin_desc(); }
 
 	synfig::Layer::Handle
 	get_layer()const
@@ -317,9 +329,13 @@ public:
 	get_name()const
 		{ assert(parent_is_linkable_value_node()); return (synfig::LinkableValueNode::Handle::cast_reinterpret(parent_value_node))->link_name(index); }
 	
-	synfig::String
+	const std::vector<synfig::String>&
+	get_sub_names()const
+		{ assert(parent_is_value_desc()); return sub_names; }
+
+	const synfig::String&
 	get_sub_name()const
-		{ assert(parent_is_value_desc()); return sub_name; }
+		{ assert(parent_is_value_desc()); return sub_names.front(); }
 
 	synfig::Time
 	get_waypoint_time()const
@@ -355,8 +371,6 @@ public:
 			return parent_value_node;
 		if(parent_is_waypoint())
 			return (synfig::ValueNode_Animated::Handle::cast_reinterpret(parent_value_node))->find(waypoint_time)->get_value_node();
-		if (parent_is_value_desc())
-			return get_parent_desc().get_value_node();
 		return 0;
 	}
 
@@ -370,8 +384,6 @@ public:
 			return (*get_value_node())(time);
 		if(parent_is_layer() && layer)
 			return layer->get_param(name);
-		if (parent_is_value_desc())
-			return get_parent_desc().get_value(time);
 		return synfig::ValueBase();
 	}
 
@@ -413,7 +425,7 @@ public:
 	synfig::GUID get_guid()const
 	{
 		if (parent_is_value_desc())
-			return get_parent_desc().get_guid() % synfig::GUID::hasher(get_sub_name());
+			return get_sub_parent_desc().get_guid() % synfig::GUID::hasher(get_sub_names().back());
 		if (is_value_node())
 			return get_value_node()->get_guid();
 		if (parent_is_layer())
