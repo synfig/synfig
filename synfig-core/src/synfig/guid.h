@@ -67,6 +67,7 @@ public:
 	static GUID zero() { return GUID(0); }
 	static GUID hasher(const String& str);
 	static GUID hasher(int i);
+	static GUID hasher(const GUID &x);
 
 	operator bool()const { return data.u_32.a||data.u_32.b||data.u_32.c||data.u_32.d; }
 
