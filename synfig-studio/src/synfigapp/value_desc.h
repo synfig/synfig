@@ -251,7 +251,11 @@ public:
 
 	bool
 	is_value_node()const
-		{ return parent_is_value_node() || parent_is_canvas() || (parent_is_layer() && (bool)layer->dynamic_param_list().count(name)); }
+		{ return parent_is_value_node()
+		      || parent_is_canvas()
+			  || (parent_is_layer() && (bool)layer->dynamic_param_list().count(name))
+			  || (parent_is_value_desc() && get_parent_desc().is_value_node());
+		}
 	bool
 	is_const()const
 		{ return (parent_is_layer() && !layer->dynamic_param_list().count(name))
@@ -351,6 +355,8 @@ public:
 			return parent_value_node;
 		if(parent_is_waypoint())
 			return (synfig::ValueNode_Animated::Handle::cast_reinterpret(parent_value_node))->find(waypoint_time)->get_value_node();
+		if (parent_is_value_desc())
+			return get_parent_desc().get_value_node();
 		return 0;
 	}
 
@@ -364,6 +370,8 @@ public:
 			return (*get_value_node())(time);
 		if(parent_is_layer() && layer)
 			return layer->get_param(name);
+		if (parent_is_value_desc())
+			return get_parent_desc().get_value();
 		return synfig::ValueBase();
 	}
 
@@ -404,12 +412,12 @@ public:
 
 	synfig::GUID get_guid()const
 	{
+		if (parent_is_value_desc())
+			return get_parent_desc().get_guid() % synfig::GUID::hasher(get_sub_name());
 		if (is_value_node())
 			return get_value_node()->get_guid();
 		if (parent_is_layer())
-			return get_layer()->get_guid() ^ synfig::GUID(get_param_name());
-		if (parent_is_value_desc())
-			return get_parent_desc().get_guid() ^ synfig::GUID(get_sub_name());
+			return get_layer()->get_guid() % synfig::GUID::hasher(get_param_name());
 		assert(!is_valid());
 		return synfig::GUID::zero();
 	}
