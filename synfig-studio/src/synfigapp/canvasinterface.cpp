@@ -538,7 +538,7 @@ CanvasInterface::generate_param_list(const ValueDesc &value_desc)
 			param_list.add("value",value_desc.get_value());
 	}
 
-	if(value_desc.parent_is_layer_param())
+	if(value_desc.parent_is_layer())
 	{
 		param_list.add("parent_layer",value_desc.get_layer());
 		param_list.add("parent_layer_param",value_desc.get_param_name());

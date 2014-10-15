@@ -894,7 +894,7 @@ Action::ValueDescSet::prepare()
 
 	// If we are changing the z_depth range parameters
 	// send a signal to the canvas interface to say that the layer has changed
-	if(value_desc.parent_is_layer_param()
+	if(value_desc.parent_is_layer()
 	   &&
 	   (value_desc.get_param_name() =="z_range"
 		||
@@ -1056,7 +1056,7 @@ Action::ValueDescSet::prepare()
 				throw Error(_("Direct manipulation of this ValueNode type is not yet supported"));
 		}
 		else
-		if(value_desc.parent_is_layer_param() && !value_desc.is_value_node())
+		if(value_desc.parent_is_layer() && !value_desc.is_value_node())
 		{
 			Action::Handle layer_param_set(LayerParamSet::create());
 			layer_param_set->set_param("canvas",get_canvas());

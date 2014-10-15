@@ -114,7 +114,7 @@ Action::ValueDescDisconnect::is_candidate(const ParamList &x)
 	   ValueNode_Bone::Handle::cast_dynamic(value_desc.get_value_node()))
 		return false;
 	// don't allow the Index parameter of the Duplicate layer to be disconnected
-	if(value_desc.parent_is_layer_param() && value_desc.get_layer()->get_name() == "duplicate" && value_desc.get_param_name() == "index")
+	if(value_desc.parent_is_layer() && value_desc.get_layer()->get_name() == "duplicate" && value_desc.get_param_name() == "index")
 		return false;
 	if(!value_desc.parent_is_canvas() && value_desc.is_value_node() && value_desc.get_value_node()->rcount()>1)
 		return true;
@@ -125,7 +125,7 @@ Action::ValueDescDisconnect::is_candidate(const ParamList &x)
 	// don't allow Duplicate ValueNodes in the Children dialog to be disconnected
 	if(value_desc.is_value_node() &&
 	   ValueNode_Duplicate::Handle::cast_dynamic(value_desc.get_value_node()) &&
-	   !value_desc.parent_is_layer_param() &&
+	   !value_desc.parent_is_layer() &&
 	   !value_desc.parent_is_value_node())
 		return false;
 	return true;
@@ -220,7 +220,7 @@ Action::ValueDescDisconnect::prepare()
 		return;
 	}
 	else
-	if(value_desc.parent_is_layer_param())
+	if(value_desc.parent_is_layer())
 	{
 		Action::Handle action(LayerParamDisconnect::create());
 

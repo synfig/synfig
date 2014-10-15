@@ -256,7 +256,7 @@ Action::ValueDescConvert::prepare()
 		return;
 	}
 	else
-	if(value_desc.parent_is_layer_param())
+	if(value_desc.parent_is_layer())
 	{
 		Action::Handle action(LayerParamConnect::create());
 

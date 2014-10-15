@@ -128,7 +128,7 @@ const synfig::Time get_time_offset_from_vdesc(const synfigapp::ValueDesc &v)
 	if(!canvasparam)
 		return synfig::Time::zero();
 
-	if (!v.parent_is_layer_param())
+	if (!v.parent_is_layer())
 		return synfig::Time::zero();
 
 	synfig::Layer::Handle layer = v.get_layer();

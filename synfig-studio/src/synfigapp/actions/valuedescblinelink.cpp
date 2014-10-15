@@ -246,7 +246,7 @@ Action::ValueDescBLineLink::prepare()
 
 			continue;
 		}
-		else if (value_desc.parent_is_layer_param())
+		else if (value_desc.parent_is_layer())
 		{
 			// VECTOR layer parameter
 			if (value_desc.get_value_type() == type_vector)

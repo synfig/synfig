@@ -111,7 +111,7 @@ Action::ValueDescConnect::is_candidate(const ParamList &x)
 		{
 			ValueDesc value_desc=x.find("dest")->second.get_value_desc();
 
-			if (value_desc.parent_is_layer_param() &&
+			if (value_desc.parent_is_layer() &&
 				value_desc.get_layer()->get_name() == "duplicate" &&
 				value_desc.get_param_name() == "index")
 				return false;
@@ -236,7 +236,7 @@ Action::ValueDescConnect::prepare()
 		return;
 	}
 	else
-	if(value_desc.parent_is_layer_param())
+	if(value_desc.parent_is_layer())
 	{
 		Action::Handle action(LayerParamConnect::create());
 

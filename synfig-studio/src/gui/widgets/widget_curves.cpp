@@ -390,7 +390,7 @@ Widget_Curves::set_value_descs(std::list<synfigapp::ValueDesc> value_descs)
 					)
 				);
 			}
-			if(iter->parent_is_layer_param())
+			if(iter->parent_is_layer())
 			{
 				iter->get_layer()->signal_changed().connect(
 					sigc::mem_fun(

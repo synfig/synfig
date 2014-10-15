@@ -978,12 +978,12 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 	//   the 'Index' parameter of a Duplicate layer
 	// or
 	//   a Duplicate ValueNode whose parent is not a (layer or ValueNode)
-	if (!((value_desc.parent_is_layer_param() &&
+	if (!((value_desc.parent_is_layer() &&
 		   value_desc.get_layer()->get_name() == "duplicate" &&
 		   value_desc.get_param_name() == "index") ||
 		  (value_desc.is_value_node() &&
 		   ValueNode_Duplicate::Handle::cast_dynamic(value_desc.get_value_node()) &&
-		   !(value_desc.parent_is_layer_param() ||
+		   !(value_desc.parent_is_layer() ||
 			 value_desc.parent_is_value_node()))))
 	{
 		Gtk::Menu *convert_menu=Gtk::manage(new Gtk::Menu());

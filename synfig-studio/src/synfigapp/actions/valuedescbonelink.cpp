@@ -228,7 +228,7 @@ Action::ValueDescBoneLink::prepare()
 			if (!action->is_ready()) throw Error(Error::TYPE_NOTREADY);
 			add_action_front(action);
 		}
-		else if (value_desc.parent_is_layer_param())
+		else if (value_desc.parent_is_layer())
 		{
 			Action::Handle action = LayerParamConnect::create();
 			action->set_param("layer", value_desc.get_layer());
