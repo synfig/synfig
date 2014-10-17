@@ -2279,7 +2279,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 
 		// add vertex duck
 		duck=new Duck();
-		set_duck_value_desc(*duck, value_desc, "vertex", transform_stack);
+		set_duck_value_desc(*duck, value_desc, "point", transform_stack);
 		duck->set_point(point.get_vertex());
 		duck->set_editable(editable);
 		duck->set_type(Duck::TYPE_VERTEX);
@@ -2291,7 +2291,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 		// add tamgent1 duck
 		duck=new Duck();
 		duck->set_type(Duck::TYPE_TANGENT);
-		set_duck_value_desc(*duck, value_desc, "tangent1", transform_stack);
+		set_duck_value_desc(*duck, value_desc, "t1", transform_stack);
 		duck->set_point(point.get_tangent1());
 		duck->set_editable(editable);
 		duck->set_origin(vertex_duck);
@@ -2301,7 +2301,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 		// add tamgent2 duck
 		duck=new Duck();
 		duck->set_type(Duck::TYPE_TANGENT);
-		set_duck_value_desc(*duck, value_desc, "tangent2", transform_stack);
+		set_duck_value_desc(*duck, value_desc, "t2", transform_stack);
 		duck->set_point(point.get_tangent2());
 		duck->set_editable(editable);
 		duck->set_origin(vertex_duck);
@@ -2352,7 +2352,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				duck=new Duck(bline_point.get_vertex());
 				if(i==first)
 					first_duck=duck;
-				set_duck_value_desc(*duck, sub_value_desc, "vertex", transform_stack);
+				set_duck_value_desc(*duck, sub_value_desc, "point", transform_stack);
 				duck->set_editable(editable);
 				duck->set_type(Duck::TYPE_VERTEX);
 				if(param_desc)
@@ -2420,7 +2420,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				{
 					// Add the tangent1 duck
 					duck=new Duck(bline_point.get_tangent1());
-					set_duck_value_desc(*duck, sub_value_desc, "tangent1", transform_stack);
+					set_duck_value_desc(*duck, sub_value_desc, "t1", transform_stack);
 					duck->set_editable(editable);
 					duck=add_similar_duck(duck);
 
@@ -2459,7 +2459,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				// Add the tangent2 duck
 				Duck::Handle tangent2_duck;
 				duck=new Duck(bline_point.get_tangent2());
-				set_duck_value_desc(*duck, sub_value_desc, "tangent2", transform_stack);
+				set_duck_value_desc(*duck, sub_value_desc, "t2", transform_stack);
 				duck->set_editable(editable);
 
 				duck=add_similar_duck(duck);
@@ -2546,7 +2546,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 
 				// Add the tangent1 duck
 				duck=new Duck(bline_point.get_tangent1());
-				set_duck_value_desc(*duck, sub_value_desc, "tangent1", transform_stack);
+				set_duck_value_desc(*duck, sub_value_desc, "t1", transform_stack);
 				duck->set_editable(editable);
 
 				duck=add_similar_duck(duck);

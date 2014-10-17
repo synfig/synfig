@@ -214,10 +214,26 @@ Action::ValueDescBLineLink::prepare()
 				 value_desc.get_value_type() == type_bline_point &&
 				 ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node()))
 		{
-			calculated_value_node = ValueNode_BLineCalcVertex::create(type_vector);
+			String link_name(value_desc.get_sub_name());
+			int index = ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node())->get_link_index_from_name(link_name);
+			calculated_value_node.reset();
+
+			if (link_name == "t1" || link_name == "t2")
+				calculated_value_node = ValueNode_BLineCalcTangent::create(type_vector);
+			else if (link_name == "width")
+				calculated_value_node = ValueNode_BLineCalcWidth::create(type_real);
+			else if (link_name == "point")
+				calculated_value_node = ValueNode_BLineCalcVertex::create(type_vector);
+
+			if (index < 0 || !calculated_value_node)
+			{
+				synfig::warning("can't link '%s'", link_name.c_str());
+				continue;
+			}
+
 			action = ValueNodeLinkConnect::create();
 			action->set_param("parent_value_node", value_desc.get_value_node());
-			action->set_param("index", 0); // index for 'vertex' in 'composite'
+			action->set_param("index", index);
 		}
 		// exported ValueNode
 		else if (value_desc.parent_is_canvas())
