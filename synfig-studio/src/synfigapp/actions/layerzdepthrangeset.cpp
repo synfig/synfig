@@ -165,7 +165,7 @@ Action::LayerZDepthRangeSet::prepare()
 		etl::handle<Layer_Group>::cast_dynamic(
 			layer->get_parent_paste_canvas_layer() );
 	if(!paste)
-		throw Error(_("Parent Group doesn't found!"));
+		throw Error(_("No Parent Group found!"));
 	// Z ENABLE
 	{
 		ValueBase new_value(true);
