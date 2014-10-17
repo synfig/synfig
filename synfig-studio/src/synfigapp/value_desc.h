@@ -199,6 +199,7 @@ public:
 		parent_desc(init_parent(parent)),
 		links_count(0)
 	{
+		assert(!sub_name.empty());
 		sub_names.reserve(parent.sub_names.size() + 1);
 		sub_names.insert(sub_names.end(), parent.sub_names.begin(), parent.sub_names.end());
 		sub_names.push_back(sub_name);
@@ -434,9 +435,21 @@ public:
 		return synfig::GUID::zero();
 	}
 
+	synfig::String get_guid_string()const
+	{
+		return get_guid().get_string();
+	}
+
+	//! sub_name should be NOT empty
 	ValueDesc create_sub_value(const synfig::String &sub_name)const
 	{
 		return ValueDesc(*this, sub_name);
+	}
+
+	//! @return copy of it self when sum_name is empty string
+	ValueDesc get_sub_value(const synfig::String &sub_name)const
+	{
+		return sub_name.empty() ? *this : ValueDesc(*this, sub_name);
 	}
 }; // END of class ValueDesc
 

@@ -467,7 +467,7 @@ public:
 
 	void add_ducks_layers(synfig::Canvas::Handle canvas, std::set<synfig::Layer::Handle>& selected_layer_set, etl::handle<CanvasView> canvas_view, synfig::TransformStack& transform_stack);
 
-	bool add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<CanvasView> canvas_view, const synfig::TransformStack& transform_stack_, synfig::ParamDesc *param_desc=0, int multiple=0);
+	bool add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<CanvasView> canvas_view, const synfig::TransformStack& transform_stack_, synfig::ParamDesc *param_desc=0);
 
 	//! Set the type mask, which determines what types of ducks are shown
 	void set_type_mask(Type x) { type_mask=x; }
