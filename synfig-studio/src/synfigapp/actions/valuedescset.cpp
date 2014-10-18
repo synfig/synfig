@@ -444,6 +444,11 @@ Action::ValueDescSet::prepare()
 	if(value_desc.is_value_node() && ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node())
 	 && value_desc.get_value_node()->get_type()==type_bline_point)
 	{
+		ValueNode_Composite::Handle composite_value_node = ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node());
+		int index = value_desc.parent_is_value_desc()
+				  ? composite_value_node->get_link_index_from_name(value_desc.get_sub_name())
+				  : -1;
+
 		ValueBase components[8];
 		int n_components(0);
 		int order[8] = { 0,1,2,3,6,7,4,5 };
@@ -458,19 +463,22 @@ Action::ValueDescSet::prepare()
 		n_components=8;
 		for(int i=0;i<n_components;i++)
 		{
-			ValueDesc component_value_desc(ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node()),order[i]);
-			Action::Handle action(Action::create("ValueDescSet"));
-			if(!action)
-				throw Error(_("Unable to find action ValueDescSet (bug)"));
-			action->set_param("canvas",get_canvas());
-			action->set_param("canvas_interface",get_canvas_interface());
-			action->set_param("time",time);
-			action->set_param("new_value",components[order[i]]);
-			action->set_param("value_desc",component_value_desc);
-			action->set_param("recursive", false);
-			if(!action->is_ready())
-				throw Error(Error::TYPE_NOTREADY);
-			add_action(action);
+			if (index < 0 || index == order[i])
+			{
+				ValueDesc component_value_desc(ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node()),order[i]);
+				Action::Handle action(Action::create("ValueDescSet"));
+				if(!action)
+					throw Error(_("Unable to find action ValueDescSet (bug)"));
+				action->set_param("canvas",get_canvas());
+				action->set_param("canvas_interface",get_canvas_interface());
+				action->set_param("time",time);
+				action->set_param("new_value",components[order[i]]);
+				action->set_param("value_desc",component_value_desc);
+				action->set_param("recursive", false);
+				if(!action->is_ready())
+					throw Error(Error::TYPE_NOTREADY);
+				add_action(action);
+			}
 		}
 		return;
 	}
