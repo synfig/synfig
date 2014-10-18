@@ -344,9 +344,11 @@ Action::ValueDescSet::prepare()
 	// we need to distribute the changes to the
 	// individual parts
 	// except if we are TYPE WIDTHPOINT which is handled individually
+	// except if we are TYPE BLINEPOINT which is handled individually
 	if (value_desc.is_value_node()
 	 && ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node())
-	 && value_desc.get_value_node()->get_type()!=type_width_point)
+	 && value_desc.get_value_node()->get_type()!=type_width_point
+	 && value_desc.get_value_node()->get_type()!=type_bline_point)
 	{
 		ValueBase components[8];
 		int n_components(0);
@@ -429,6 +431,43 @@ Action::ValueDescSet::prepare()
 			action->set_param("time",time);
 			action->set_param("new_value",components[i]);
 			action->set_param("value_desc",component_value_desc);
+			if(!action->is_ready())
+				throw Error(Error::TYPE_NOTREADY);
+			add_action(action);
+		}
+		return;
+	}
+
+	// If we are a composite value node type BLINEPOINT, then
+	// we need to distribute the changes to the
+	// individual parts in a proper way
+	if(value_desc.is_value_node() && ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node())
+	 && value_desc.get_value_node()->get_type()==type_bline_point)
+	{
+		ValueBase components[8];
+		int n_components(0);
+		int order[8] = { 0,1,2,3,6,7,4,5 };
+		components[0]=value.get(BLinePoint()).get_vertex();
+		components[1]=value.get(BLinePoint()).get_width();
+		components[2]=value.get(BLinePoint()).get_origin();
+		components[3]=value.get(BLinePoint()).get_split_tangent_both();
+		components[4]=value.get(BLinePoint()).get_tangent1();
+		components[5]=value.get(BLinePoint()).get_tangent2();
+		components[6]=value.get(BLinePoint()).get_split_tangent_radius();
+		components[7]=value.get(BLinePoint()).get_split_tangent_angle();
+		n_components=8;
+		for(int i=0;i<n_components;i++)
+		{
+			ValueDesc component_value_desc(ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node()),order[i]);
+			Action::Handle action(Action::create("ValueDescSet"));
+			if(!action)
+				throw Error(_("Unable to find action ValueDescSet (bug)"));
+			action->set_param("canvas",get_canvas());
+			action->set_param("canvas_interface",get_canvas_interface());
+			action->set_param("time",time);
+			action->set_param("new_value",components[order[i]]);
+			action->set_param("value_desc",component_value_desc);
+			action->set_param("recursive", false);
 			if(!action->is_ready())
 				throw Error(Error::TYPE_NOTREADY);
 			add_action(action);
@@ -689,7 +728,7 @@ Action::ValueDescSet::prepare()
 	// to achieve the desired tangent
 	if (ValueNode_BLineCalcTangent::Handle bline_tangent = ValueNode_BLineCalcTangent::Handle::cast_dynamic(value_desc.get_value_node()))
 	{
-		ValueBase new_scale;
+		ValueBase new_scale(synfig::Real(0));
 		ValueDesc scale_value_desc(bline_tangent,bline_tangent->get_link_index_from_name("scale"));
 		ValueDesc offset_value_desc(bline_tangent,bline_tangent->get_link_index_from_name("offset"));
 		Type &type(value_desc.get_value_type());
@@ -761,7 +800,7 @@ Action::ValueDescSet::prepare()
 			return;
 		}
 
-		if (new_scale.get(bool()))
+		if (new_scale.get(synfig::Real()) != 0)
 		{
 			Action::Handle action(Action::create("ValueDescSet"));
 			if(!action)
