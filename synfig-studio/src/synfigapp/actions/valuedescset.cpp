@@ -350,6 +350,11 @@ Action::ValueDescSet::prepare()
 	 && value_desc.get_value_node()->get_type()!=type_width_point
 	 && value_desc.get_value_node()->get_type()!=type_bline_point)
 	{
+		ValueNode_Composite::Handle composite_value_node = ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node());
+		int index = value_desc.parent_is_value_desc()
+				  ? composite_value_node->get_link_index_from_name(value_desc.get_sub_name())
+				  : -1;
+
 		ValueBase components[8];
 		int n_components(0);
 		Type &type(value.get_type());
@@ -422,18 +427,21 @@ Action::ValueDescSet::prepare()
 
 		for(int i=0;i<n_components;i++)
 		{
-			ValueDesc component_value_desc(ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node()),i);
-			Action::Handle action(Action::create("ValueDescSet"));
-			if(!action)
-				throw Error(_("Unable to find action ValueDescSet (bug)"));
-			action->set_param("canvas",get_canvas());
-			action->set_param("canvas_interface",get_canvas_interface());
-			action->set_param("time",time);
-			action->set_param("new_value",components[i]);
-			action->set_param("value_desc",component_value_desc);
-			if(!action->is_ready())
-				throw Error(Error::TYPE_NOTREADY);
-			add_action(action);
+			if (index < 0 || index == i)
+			{
+				ValueDesc component_value_desc(ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node()),i);
+				Action::Handle action(Action::create("ValueDescSet"));
+				if(!action)
+					throw Error(_("Unable to find action ValueDescSet (bug)"));
+				action->set_param("canvas",get_canvas());
+				action->set_param("canvas_interface",get_canvas_interface());
+				action->set_param("time",time);
+				action->set_param("new_value",components[i]);
+				action->set_param("value_desc",component_value_desc);
+				if(!action->is_ready())
+					throw Error(Error::TYPE_NOTREADY);
+				add_action(action);
+			}
 		}
 		return;
 	}

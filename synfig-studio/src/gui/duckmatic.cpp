@@ -626,64 +626,71 @@ Duckmatic::update_ducks()
 			return;
 		if (duck->get_type() == Duck::TYPE_VERTEX || duck->get_type() == Duck::TYPE_POSITION)
 		{
-			ValueNode_BLineCalcVertex::Handle bline_vertex;
-			ValueNode_Composite::Handle composite;
+			ValueNode_BLineCalcVertex::Handle bline_vertex =
+				ValueNode_BLineCalcVertex::Handle::cast_dynamic(duck->get_value_desc().get_value_node());
+			if (!bline_vertex && duck->get_value_desc().parent_is_value_desc()) {
+				ValueNode_Composite::Handle composite =
+					ValueNode_Composite::Handle::cast_dynamic(duck->get_value_desc().get_value_node());
+				if (composite)
+					bline_vertex =
+						ValueNode_BLineCalcVertex::Handle::cast_dynamic(
+							composite->get_link(
+								duck->get_value_desc().get_sub_name() ));
+			}
 
-			if ((bline_vertex = ValueNode_BLineCalcVertex::Handle::cast_dynamic(duck->get_value_desc().get_value_node())) ||
-				((composite = ValueNode_Composite::Handle::cast_dynamic(duck->get_value_desc().get_value_node())) &&
-				 composite->get_type() == type_bline_point &&
-				 (bline_vertex = ValueNode_BLineCalcVertex::Handle::cast_dynamic(composite->get_link("point")))))
+			if (bline_vertex)
 			{
+				synfig::Real radius = 0.0;
+				synfig::Point point(0.0, 0.0);
+				ValueNode_BLine::Handle bline(ValueNode_BLine::Handle::cast_dynamic(bline_vertex->get_link("bline")));
+				Real amount = synfig::find_closest_point((*bline)(time), duck->get_point(), radius, bline->get_loop(), &point);
+				bool homogeneous((*(bline_vertex->get_link("homogeneous")))(time).get(bool()));
+				if(homogeneous)
+					amount=std_to_hom((*bline)(time), amount, ((*(bline_vertex->get_link("loop")))(time).get(bool())), bline->get_loop() );
+				ValueNode::Handle vertex_amount_value_node(bline_vertex->get_link("amount"));
+				duck->set_point(point);
+
 				DuckList::iterator iter;
 				for (iter=duck_list.begin(); iter!=duck_list.end(); iter++)
 				{
-					if ( (*iter)->get_origin_duck()==duck  /*&& !duck_is_selected(*iter)*/ )
+					if ( (*iter)->get_origin_duck()==duck
+					  && (*iter)->get_value_desc().parent_is_value_desc()
+					  /*&& !duck_is_selected(*iter)*/ )
 					{
-						synfig::Real radius = 0.0;
-						ValueNode_BLine::Handle bline(ValueNode_BLine::Handle::cast_dynamic(bline_vertex->get_link("bline")));
-						Real amount = synfig::find_closest_point((*bline)(time), duck->get_point(), radius, bline->get_loop());
-						bool homogeneous((*(bline_vertex->get_link("homogeneous")))(time).get(bool()));
-						if(homogeneous)
-							amount=std_to_hom((*bline)(time), amount, ((*(bline_vertex->get_link("loop")))(time).get(bool())), bline->get_loop() );
-						ValueNode::Handle vertex_amount_value_node(bline_vertex->get_link("amount"));
-
-						if ((*iter)->get_value_desc().parent_is_value_desc())
+						ValueNode::Handle duck_value_node = (*iter)->get_value_desc().get_value_node();
+						ValueNode_Composite::Handle duck_value_node_composite = ValueNode_Composite::Handle::cast_dynamic(duck_value_node);
+						if (duck_value_node_composite)
 						{
-							ValueNode::Handle duck_value_node = (*iter)->get_value_desc().get_value_node();
-							ValueNode_Composite::Handle duck_value_node_composite = ValueNode_Composite::Handle::cast_dynamic(duck_value_node);
-							if (duck_value_node_composite)
+							ValueNode::Handle sub_duck_value_node = duck_value_node_composite->get_link((*iter)->get_value_desc().get_sub_name());
+							if (sub_duck_value_node)
 							{
-								ValueNode::Handle sub_duck_value_node = duck_value_node_composite->get_link((*iter)->get_value_desc().get_sub_name());
-								if (sub_duck_value_node)
+								ValueNode_BLineCalcTangent::Handle bline_tangent =
+									ValueNode_BLineCalcTangent::Handle::cast_dynamic(sub_duck_value_node);
+								ValueNode_BLineCalcWidth::Handle bline_width =
+									ValueNode_BLineCalcWidth::Handle::cast_dynamic(sub_duck_value_node);
+								if (bline_tangent)
 								{
-									ValueNode_BLineCalcTangent::Handle bline_tangent =
-										ValueNode_BLineCalcTangent::Handle::cast_dynamic(sub_duck_value_node);
-									ValueNode_BLineCalcWidth::Handle bline_width =
-										ValueNode_BLineCalcWidth::Handle::cast_dynamic(sub_duck_value_node);
-									if (bline_tangent)
+									if (bline_tangent->get_link("amount") == vertex_amount_value_node)
 									{
-										if (bline_tangent->get_link("amount") == vertex_amount_value_node)
+										synfig::Type &type(bline_tangent->get_type());
+										if (type == type_angle)
 										{
-											synfig::Type &type(bline_tangent->get_type());
-											if (type == type_angle)
-											{
-												Angle angle((*bline_tangent)(time, amount).get(Angle()));
-												(*iter)->set_point(Point(Angle::cos(angle).get(), Angle::sin(angle).get()));
-												(*iter)->set_rotations(Angle::deg(0)); //hack: rotations are a relative value
-											}
-											else
-											if (type == type_real)
-												(*iter)->set_point(Point((*bline_tangent)(time, amount).get(Real()), 0));
-											else
-											if (type == type_vector)
-												(*iter)->set_point((*bline_tangent)(time, amount).get(Vector()));
+											Angle angle((*bline_tangent)(time, amount).get(Angle()));
+											(*iter)->set_point(Point(Angle::cos(angle).get(), Angle::sin(angle).get()));
+											(*iter)->set_rotations(Angle::deg(0)); //hack: rotations are a relative value
 										}
-									} else
-									if (bline_width)
-									{
-										if (bline_width->get_link("amount") == vertex_amount_value_node)
-											(*iter)->set_point(Point((*bline_width)(time, amount).get(Real()), 0));
+										else
+										if (type == type_real)
+											(*iter)->set_point(Point((*bline_tangent)(time, amount).get(Real()), 0));
+										else
+										if (type == type_vector)
+											(*iter)->set_point((*bline_tangent)(time, amount).get(Vector()));
 									}
+								} else
+								if (bline_width)
+								{
+									if (bline_width->get_link("amount") == vertex_amount_value_node)
+										(*iter)->set_point(Point((*bline_width)(time, amount).get(Real()), 0));
 								}
 							}
 						}
@@ -2110,13 +2117,13 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 
 				// add offset duck
 				duck=new Duck();
-				set_duck_value_desc(*duck, value_desc, transform_stack);
+				set_duck_value_desc(*duck, value_desc, "offset", transform_stack);
 				duck->set_point(transformation.offset);
 				duck->set_editable(editable);
 				duck->set_alternative_editable(alternative_editable);
 				duck->set_type(Duck::TYPE_POSITION);
 				duck->set_alternative_value_desc(alternative_value_desc);
-				connect_signals(duck, value_desc, *canvas_view);
+				connect_signals(duck, duck->get_value_desc(), *canvas_view);
 				add_duck(duck);
 
 				etl::handle<Duck> origin_duck = duck;
@@ -2129,7 +2136,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				duck->set_scalar(scalar_x);
 				duck->set_editable(editable);
 				duck->set_origin(origin_duck);
-				connect_signals(duck, value_desc, *canvas_view);
+				connect_signals(duck, duck->get_value_desc(), *canvas_view);
 				add_duck(duck);
 
 				etl::handle<Duck> angle_duck = duck;
@@ -2137,14 +2144,14 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				// add skew duck
 				duck=new Duck();
 				duck->set_type(Duck::TYPE_SKEW);
-				set_duck_value_desc(*duck, value_desc, "skew", transform_stack);
+				set_duck_value_desc(*duck, value_desc, "skew_angle", transform_stack);
 				duck->set_point(Point(0.9,transformation.skew_angle));
 				duck->set_scalar(scalar_y);
 				duck->set_editable(editable);
 				duck->set_origin(origin_duck);
 				duck->set_axis_x_angle(angle_duck, Angle::deg(90));
 				duck->set_axis_y_angle(angle_duck, Angle::deg(180));
-				connect_signals(duck, value_desc, *canvas_view);
+				connect_signals(duck, duck->get_value_desc(), *canvas_view);
 				add_duck(duck);
 
 				etl::handle<Duck> skew_duck = duck;
@@ -2152,13 +2159,13 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				// add scale-x duck
 				duck=new Duck();
 				duck->set_type(Duck::TYPE_SCALE_X);
-				set_duck_value_desc(*duck, value_desc, "scale_x", transform_stack);
+				set_duck_value_desc(*duck, value_desc.get_sub_value("scale").get_sub_value("x"), transform_stack);
 				duck->set_point(Point(1,0));
 				duck->set_scalar(scalar_x);
 				duck->set_editable(editable);
 				duck->set_origin(origin_duck);
 				duck->set_linear(true, angle_duck);
-				connect_signals(duck, value_desc, *canvas_view);
+				connect_signals(duck, duck->get_value_desc(), *canvas_view);
 				add_duck(duck);
 
 				etl::handle<Duck> scale_x_duck = duck;
@@ -2166,13 +2173,13 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				// add scale-y duck
 				duck=new Duck();
 				duck->set_type(Duck::TYPE_SCALE_Y);
-				set_duck_value_desc(*duck, value_desc, "scale_y", transform_stack);
+				set_duck_value_desc(*duck, value_desc.get_sub_value("scale").get_sub_value("y"), transform_stack);
 				duck->set_point(Point(1,0));
 				duck->set_scalar(scalar_y);
 				duck->set_editable(editable);
 				duck->set_origin(origin_duck);
 				duck->set_linear(true, skew_duck);
-				connect_signals(duck, value_desc, *canvas_view);
+				connect_signals(duck, duck->get_value_desc(), *canvas_view);
 				add_duck(duck);
 
 				etl::handle<Duck> scale_y_duck = duck;
@@ -2190,7 +2197,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				duck->set_axis_y_angle(scale_y_duck);
 				duck->set_axis_y_mag(scale_y_duck);
 				duck->set_track_axes(true);
-				connect_signals(duck, value_desc, *canvas_view);
+				connect_signals(duck, duck->get_value_desc(), *canvas_view);
 				add_duck(duck);
 
 				return true;
