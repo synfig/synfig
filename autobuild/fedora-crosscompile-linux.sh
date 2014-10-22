@@ -10,7 +10,7 @@ export SCRIPTPATH=$(cd `dirname "$0"`; pwd)
 
 RELEASE=8
 
-BUILDROOT_VERSION=2
+BUILDROOT_VERSION=5
 BUILDROOT_LIBRARY_SET_ID=1
 
 if [ -z $ARCH ]; then
@@ -63,7 +63,7 @@ SOURCES_URL="rsync://download.tuxfamily.org/pub/synfig/packages/sources/base"
 LIBSIGCPP_VERSION=2.2.10
 GLEW_VERSION=1.5.1
 CAIROMM_VERSION=1.8.0
-IMAGEMAGICK_VERSION=6.8.6
+IMAGEMAGICK_VERSION=6.8.9
 PANGOMM_VERSION=2.26.3		# required by GTKMM 2.20.3
 GTKMM_VERSION=2.20.3 		# !!! we need Notebook.set_action_widget()
 FTGL_VERSION=2.1.2
@@ -150,10 +150,13 @@ set_environment()
 	export PATH=${PREFIX}/bin:${DEPSPREFIX}/bin:${SYSPREFIX}/bin:${SYSPREFIX}/usr/bin
 	export LDFLAGS="-Wl,-rpath -Wl,\\\$\$ORIGIN/lib -L${PREFIX}/lib -L${DEPSPREFIX}/lib -L${SYSPREFIX}/${LIBDIR} -L${SYSPREFIX}/usr/${LIBDIR}"
 	#export CFLAGS=" -nostdinc  -I${SYSPREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.3.2/include -I${SYSPREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.3.2/include-fixed  -I${PREFIX}/include  -I${DEPSPREFIX}/include -I${SYSPREFIX}/usr/include"
-	export CFLAGS="-I${SYSPREFIX}/usr/include -I${PREFIX}/include"
+	GCC_VER=4.4
+	export CFLAGS="-I${SYSPREFIX}/usr/include -I${PREFIX}/include" 
+	#export CXXFLAGS="-I${SYSPREFIX}/usr/include/linux/  -I${SYSPREFIX}/usr/include/c++/${GCC_VER}/ -I${SYSPREFIX}/usr/include/c++/${GCC_VER}/${GCC_ARCH}-linux-gnu/ -I${SYSPREFIX}/usr/lib/gcc/${GCC_ARCH}-linux-gnu/${GCC_VER}/include/ -I${SYSPREFIX}/usr/lib/gcc/${GCC_ARCH}-linux-gnu/${GCC_VER}/include-fixed/  -I${SYSPREFIX}/usr/${GCC_ARCH}-linux-gnu/include"
+	#export CXXFLAGS="-I${SYSPREFIX}/usr/local/include/x86_64-linux-gnu -I${SYSPREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.4.5/include -I${SYSPREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.4.5/include-fixed -I${SYSPREFIX}/usr/lib/gcc/../../x86_64-linux-gnu/include -I${SYSPREFIX}/usr/include/x86_64-linux-gnu"
 	#export CXXFLAGS=" -nostdinc   -I${SYSPREFIX}/usr/lib/gcc/../../include/c++/4.3  -I${SYSPREFIX}/usr/lib/gcc/../../include/c++/4.3/x86_64-linux-gnu -I${SYSPREFIX}/usr/lib/gcc/../../include/c++/4.3/backward -I${SYSPREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.3.2/include -I${SYSPREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.3.2/include-fixed -I${PREFIX}/include  -I${DEPSPREFIX}/include -I${SYSPREFIX}/usr/include"
-	export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:${DEPSPREFIX}/lib/pkgconfig:${SYSPREFIX}/usr/lib/pkgconfig
-	PERL_VERSION=`perl -v | sed -n '3p' | sed "s|This is perl, v||g" | cut -f 1 -d " "`
+	export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:${DEPSPREFIX}/lib/pkgconfig:${SYSPREFIX}/usr/lib/pkgconfig:${SYSPREFIX}/usr/share/pkgconfig
+	PERL_VERSION=`perl -v | grep "This is perl" | sed "s|This is perl, v||g" | cut -f 1 -d " "`
 	export NM=nm
 	export PERL5LIB="${SYSPREFIX}/etc/perl:${DEPSPREFIX}/lib/perl/${PERL_VERSION}:${DEPSPREFIX}/share/perl/${PERL_VERSION}:${SYSPREFIX}/usr/lib/perl5:${SYSPREFIX}/usr/share/perl5:${SYSPREFIX}/usr/lib/perl/${PERL_VERSION}:${SYSPREFIX}/usr/share/perl/${PERL_VERSION}:${DEPSPREFIX}/lib/site_perl"
 	if [[ $ARCH == "32" ]]; then
@@ -208,14 +211,15 @@ mkprefix()
 	
 	DEB_LIST_MINIMAL="\
 			build-essential \
-			gcc libc6-dev \
 			libpng12-dev \
 			libjpeg62-dev \
 			libfreetype6-dev \
 			libxml2-dev \
 			libtiff4-dev \
 			libjasper-dev \
+			libasound2-dev \
 			x11proto-xext-dev libdirectfb-dev libxfixes-dev libxinerama-dev libxdamage-dev libxcomposite-dev libxcursor-dev libxft-dev libxrender-dev libxt-dev libxrandr-dev libxi-dev libxext-dev libx11-dev \
+			libpthread-stubs0-dev \
 			libxml-parser-perl \
 			libdb-dev uuid-dev \
 			wget mawk cvs \
@@ -234,7 +238,7 @@ mkprefix()
 		fakeroot fakechroot \
 		debootstrap --variant=fakechroot --download-only --keep-debootstrap-dir --arch=$SYS_ARCH \
 		--include=$INCLUDE_LIST \
-		lenny ${SYSPREFIX} http://archive.debian.org/debian
+		squeeze ${SYSPREFIX} http://ftp.ru.debian.org/debian #http://archive.debian.org/debian
 
 	#LD_LIBRARY_PATH=${UBUNTU_LIBDIR}:/${LIBDIR}:${SYSPREFIX}/usr/${LIBDIR} PATH=/usr/local/sbin:/usr/sbin:/sbin:/sbin:/bin:/usr/bin:${SYSPREFIX}/usr/sbin:${SYSPREFIX}/sbin:${SYSPREFIX}/usr/bin:${SYSPREFIX}/bin:$PATH HOME=/ LOGNAME=root fakeroot fakechroot debootstrap --variant=fakechroot --arch=$SYS_ARCH --foreign --keep-debootstrap-dir --include=sudo --include=apt lenny ${SYSPREFIX} http://archive.debian.org/debian
 	
@@ -375,12 +379,12 @@ ${SYSPREFIX}/usr/bin/gcc -nostdinc -I${SYSPREFIX}/usr/lib/gcc/${GCC_ARCH}-linux-
 EOF
 #chmod a+x  ${DEPSPREFIX}/bin/gcc
 
-cat > ${DEPSPREFIX}/bin/g++ <<EOF
+cat > ${DEPSPREFIX}/bin/g++-- <<EOF
 #!/bin/sh
 
 ${SYSPREFIX}/usr/bin/g++ -nostdinc   -I${SYSPREFIX}/usr/lib/gcc/../../include/c++/4.3  -I${SYSPREFIX}/usr/lib/gcc/../../include/c++/4.3/${GCC_ARCH}-linux-gnu -I${SYSPREFIX}/usr/lib/gcc/../../include/c++/4.3/backward -I${SYSPREFIX}/usr/lib/gcc/${GCC_ARCH}-linux-gnu/4.3.2/include -I${SYSPREFIX}/usr/lib/gcc/${GCC_ARCH}-linux-gnu/4.3.2/include-fixed -I${PREFIX}/include  -I${DEPSPREFIX}/include -I${SYSPREFIX}/usr/include "\$@"
 EOF
-chmod a+x  ${DEPSPREFIX}/bin/g++
+#chmod a+x  ${DEPSPREFIX}/bin/g++
 
 cat > ${DEPSPREFIX}/bin/rsync <<EOF
 #!/bin/sh
@@ -483,6 +487,7 @@ if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
 		--enable-warnings 	\
 		--enable-xlib 		\
 		--enable-freetype 	\
+		--enable-pdf		\
 	    --enable-gobject    \
 		--disable-gtk-doc
 	make -j${THREADS}
@@ -502,6 +507,7 @@ if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
 	pushd ${SRCPREFIX}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xjf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
+	[ ! -e config.cache ] || rm config.cache
 	./configure --host=${HOST} --prefix=${DEPSPREFIX}/ \
 		--disable-static --enable-shared \
 		--with-included-modules=yes
@@ -523,8 +529,8 @@ if ! pkg-config ${PKG_NAME}-2.0 --exact-version=${PKG_VERSION}  --print-errors; 
 	pushd ${SRCPREFIX}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xjf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
-	./configure --host=${HOST} --prefix=${DEPSPREFIX}/ \
-		--disable-examples --disable-demos --disable-docs \
+	[ ! -e config.cache ] || rm config.cache
+	./configure --build=${HOST} --prefix=${DEPSPREFIX}/ \
 		--disable-static --enable-shared
 	make -j${THREADS}
 	make install
@@ -616,10 +622,10 @@ fi
 mkimagemagick()
 {
 PKG_NAME=ImageMagick
-PKG_VERSION="${IMAGEMAGICK_VERSION}-10"
+PKG_VERSION="${IMAGEMAGICK_VERSION}-8"
 TAREXT=bz2
 if ! pkg-config ${PKG_NAME} --exact-version=${IMAGEMAGICK_VERSION}  --print-errors; then
-	( cd ${WORKSPACE}/cache/ && wget -c http://www.imagemagick.org/download/legacy/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
+	( cd ${WORKSPACE}/cache/ && wget -c http://www.imagemagick.org/download/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
 	pushd ${SRCPREFIX}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xjf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
