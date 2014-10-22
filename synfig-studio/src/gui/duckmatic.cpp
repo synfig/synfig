@@ -636,6 +636,7 @@ Duckmatic::update_ducks()
 			{
 				DuckList::iterator iter;
 				for (iter=duck_list.begin(); iter!=duck_list.end(); iter++)
+				{
 					if ( (*iter)->get_origin_duck()==duck  /*&& !duck_is_selected(*iter)*/ )
 					{
 						synfig::Real radius = 0.0;
@@ -646,95 +647,117 @@ Duckmatic::update_ducks()
 							amount=std_to_hom((*bline)(time), amount, ((*(bline_vertex->get_link("loop")))(time).get(bool())), bline->get_loop() );
 						ValueNode::Handle vertex_amount_value_node(bline_vertex->get_link("amount"));
 
-
-						ValueNode::Handle duck_value_node((*iter)->get_value_desc().get_value_node());
-						if (ValueNode_BLineCalcTangent::Handle bline_tangent = ValueNode_BLineCalcTangent::Handle::cast_dynamic(duck_value_node))
+						if ((*iter)->get_value_desc().parent_is_value_desc())
 						{
-							if (bline_tangent->get_link("amount") == vertex_amount_value_node)
+							ValueNode::Handle duck_value_node = (*iter)->get_value_desc().get_value_node();
+							ValueNode_Composite::Handle duck_value_node_composite = ValueNode_Composite::Handle::cast_dynamic(duck_value_node);
+							if (duck_value_node_composite)
 							{
-								synfig::Type &type(bline_tangent->get_type());
-								if (type == type_angle)
+								ValueNode::Handle sub_duck_value_node = duck_value_node_composite->get_link((*iter)->get_value_desc().get_sub_name());
+								if (sub_duck_value_node)
 								{
-									Angle angle((*bline_tangent)(time, amount).get(Angle()));
-									(*iter)->set_point(Point(Angle::cos(angle).get(), Angle::sin(angle).get()));
-									(*iter)->set_rotations(Angle::deg(0)); //hack: rotations are a relative value
+									ValueNode_BLineCalcTangent::Handle bline_tangent =
+										ValueNode_BLineCalcTangent::Handle::cast_dynamic(sub_duck_value_node);
+									ValueNode_BLineCalcWidth::Handle bline_width =
+										ValueNode_BLineCalcWidth::Handle::cast_dynamic(sub_duck_value_node);
+									if (bline_tangent)
+									{
+										if (bline_tangent->get_link("amount") == vertex_amount_value_node)
+										{
+											synfig::Type &type(bline_tangent->get_type());
+											if (type == type_angle)
+											{
+												Angle angle((*bline_tangent)(time, amount).get(Angle()));
+												(*iter)->set_point(Point(Angle::cos(angle).get(), Angle::sin(angle).get()));
+												(*iter)->set_rotations(Angle::deg(0)); //hack: rotations are a relative value
+											}
+											else
+											if (type == type_real)
+												(*iter)->set_point(Point((*bline_tangent)(time, amount).get(Real()), 0));
+											else
+											if (type == type_vector)
+												(*iter)->set_point((*bline_tangent)(time, amount).get(Vector()));
+										}
+									} else
+									if (bline_width)
+									{
+										if (bline_width->get_link("amount") == vertex_amount_value_node)
+											(*iter)->set_point(Point((*bline_width)(time, amount).get(Real()), 0));
+									}
 								}
-								else
-								if (type == type_real)
-									(*iter)->set_point(Point((*bline_tangent)(time, amount).get(Real()), 0));
-								else
-								if (type == type_vector)
-									(*iter)->set_point((*bline_tangent)(time, amount).get(Vector()));
 							}
 						}
-						else if (ValueNode_BLineCalcWidth::Handle bline_width = ValueNode_BLineCalcWidth::Handle::cast_dynamic(duck_value_node))
-						{
-							if (bline_width->get_link("amount") == vertex_amount_value_node)
-								(*iter)->set_point(Point((*bline_width)(time, amount).get(Real()), 0));
-						}
 					}
+				}
 			}
 		}
 		// We are moving a tangent handle
-		else if( duck->get_type() == Duck::TYPE_TANGENT)
+		else
+		if(duck->get_type() == Duck::TYPE_TANGENT)
 		{
-			if(duck->get_value_desc().parent_is_linkable_value_node())
+			if (duck->get_value_desc().parent_is_value_desc()
+			 && duck->get_value_desc().is_value_node() )
 			{
-				ValueNode_Composite::Handle composite(ValueNode_Composite::Handle::cast_dynamic(duck->get_value_desc().get_parent_value_node()));
-				LinkableValueNode::Handle duck_value_node(LinkableValueNode::Handle::cast_dynamic(duck->get_value_desc().get_value_node()));
-				// it belongs to a composite and it is a BLinePoint
-				if(composite && composite->get_type() == type_bline_point && duck_value_node)
+				ValueNode_Composite::Handle composite(ValueNode_Composite::Handle::cast_dynamic(duck->get_value_desc().get_value_node()));
+				if (composite && composite->get_type() == type_bline_point)
 				{
-					int index(duck->get_value_desc().get_index());
-					etl::handle<Duck> origin_duck=duck->get_origin_duck();
-					// Search all the rest of ducks
-					DuckList::iterator iter;
-					for (iter=duck_list.begin(); iter!=duck_list.end(); iter++)
-						// if the other duck has the same origin and it is tangent type
-						if ( (*iter)->get_origin_duck()==origin_duck && (*iter)->get_type() == Duck::TYPE_TANGENT)
+					ValueNode::Handle duck_value_node(composite->get_link(duck->get_value_desc().get_sub_name()));
+					// it belongs to a composite and it is a BLinePoint
+					if (duck_value_node)
+					{
+						int index(duck->get_value_desc().get_index());
+						etl::handle<Duck> origin_duck=duck->get_origin_duck();
+						// Search all the rest of ducks
+						DuckList::iterator iter;
+						for (iter=duck_list.begin(); iter!=duck_list.end(); iter++)
 						{
-							ValueNode_Composite::Handle iter_composite;
-							iter_composite=ValueNode_Composite::Handle::cast_dynamic((*iter)->get_value_desc().get_parent_value_node());
-							// and their parent valuenode are the same
-							if(iter_composite.get() == composite.get())
+							// if the other duck has the same origin and it is tangent type
+							if ( (*iter)->get_origin_duck()==origin_duck && (*iter)->get_type() == Duck::TYPE_TANGENT)
 							{
-								// Check if the other tangent is also selected, in that case
-								// it is going to be moved itself so don't update it.
-								bool selected=false;
-								DuckList::const_iterator iter2;
-								for(iter2=selected_ducks.begin(); iter2!=selected_ducks.end(); ++iter2)
-									if(*iter == *iter2)
-										selected=true;
-								if(!selected)
+								ValueNode_Composite::Handle iter_composite;
+								iter_composite=ValueNode_Composite::Handle::cast_dynamic((*iter)->get_value_desc().get_parent_value_node());
+								// and their parent valuenode are the same
+								if(iter_composite.get() == composite.get())
 								{
-									BLinePoint bp=(*composite)(time).get(BLinePoint());
-									int t1_index=composite->get_link_index_from_name("t1");
-									int t2_index=composite->get_link_index_from_name("t2");
-									if(index==t1_index && (*iter)->get_value_desc().get_index()!=t1_index)
+									// Check if the other tangent is also selected, in that case
+									// it is going to be moved itself so don't update it.
+									bool selected=false;
+									DuckList::const_iterator iter2;
+									for(iter2=selected_ducks.begin(); iter2!=selected_ducks.end(); ++iter2)
+										if(*iter == *iter2)
+											selected=true;
+									if(!selected)
 									{
-										bp.set_tangent1(duck->get_point());
-										Vector t2(bp.get_tangent2());
-										(*iter)->set_point(Point(t2));
-									}
-									else if(index==t2_index && (*iter)->get_value_desc().get_index()!=t2_index)
-									{
-										// Create a new BLinePoint
-										BLinePoint nbp;
-										// Terporary set the flags for the new BLinePoint to all split
-										nbp.set_split_tangent_both(true);
-										// Now we can set the tangents. Tangent2 won't be modified by tangent1
-										nbp.set_tangent1(duck->get_point());
-										nbp.set_tangent2(bp.get_tangent1());
-										// Now update the flags
-										nbp.set_split_tangent_radius(bp.get_split_tangent_radius());
-										nbp.set_split_tangent_angle(bp.get_split_tangent_angle());
-										// Now retrieve the updated tangent2 (which will be stored as t1, see below)
-										Vector t1(nbp.get_tangent2());
-										(*iter)->set_point(Point(t1));
+										BLinePoint bp=(*composite)(time).get(BLinePoint());
+										int t1_index=composite->get_link_index_from_name("t1");
+										int t2_index=composite->get_link_index_from_name("t2");
+										if(index==t1_index && (*iter)->get_value_desc().get_index()!=t1_index)
+										{
+											bp.set_tangent1(duck->get_point());
+											Vector t2(bp.get_tangent2());
+											(*iter)->set_point(Point(t2));
+										}
+										else if(index==t2_index && (*iter)->get_value_desc().get_index()!=t2_index)
+										{
+											// Create a new BLinePoint
+											BLinePoint nbp;
+											// Terporary set the flags for the new BLinePoint to all split
+											nbp.set_split_tangent_both(true);
+											// Now we can set the tangents. Tangent2 won't be modified by tangent1
+											nbp.set_tangent1(duck->get_point());
+											nbp.set_tangent2(bp.get_tangent1());
+											// Now update the flags
+											nbp.set_split_tangent_radius(bp.get_split_tangent_radius());
+											nbp.set_split_tangent_angle(bp.get_split_tangent_angle());
+											// Now retrieve the updated tangent2 (which will be stored as t1, see below)
+											Vector t1(nbp.get_tangent2());
+											(*iter)->set_point(Point(t1));
+										}
 									}
 								}
 							}
 						}
+					}
 				}
 			}
 		}
@@ -2283,7 +2306,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 		duck->set_point(point.get_vertex());
 		duck->set_editable(editable);
 		duck->set_type(Duck::TYPE_VERTEX);
-		connect_signals(duck, value_desc, *canvas_view);
+		connect_signals(duck, duck->get_value_desc(), *canvas_view);
 		add_duck(duck);
 
 		etl::handle<Duck> vertex_duck = duck;
@@ -2295,7 +2318,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 		duck->set_point(point.get_tangent1());
 		duck->set_editable(editable);
 		duck->set_origin(vertex_duck);
-		connect_signals(duck, value_desc, *canvas_view);
+		connect_signals(duck, duck->get_value_desc(), *canvas_view);
 		add_duck(duck);
 
 		// add tamgent2 duck
@@ -2306,7 +2329,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 		duck->set_editable(editable);
 		duck->set_origin(vertex_duck);
 		duck->set_scalar(-1);
-		connect_signals(duck, value_desc, *canvas_view);
+		connect_signals(duck, duck->get_value_desc(), *canvas_view);
 		add_duck(duck);
 
 		return true;
@@ -2365,7 +2388,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 					}
 				}
 				duck=add_similar_duck(duck);
-				connect_signals(duck, sub_value_desc, *canvas_view);
+				connect_signals(duck, duck->get_value_desc(), *canvas_view);
 
 				Duck::Handle vertex_duck = duck;
 
@@ -2391,7 +2414,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 					duck->set_editable(editable);
 					duck->set_type(Duck::TYPE_WIDTH);
 					duck->set_origin(vertex_duck);
-					connect_signals(duck, sub_value_desc, *canvas_view);
+					connect_signals(duck, duck->get_value_desc(), *canvas_view);
 
 					// if the bline is a layer's parameter, scale the width duck by the layer's "width" parameter
 					if (param_desc)
@@ -2430,7 +2453,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 					duck->set_shared_point(etl::smart_ptr<Point>());
 					duck->set_shared_angle(etl::smart_ptr<Angle>());
 					duck->set_shared_mag(etl::smart_ptr<Real>());
-					connect_signals(duck, sub_value_desc, *canvas_view);
+					connect_signals(duck, duck->get_value_desc(), *canvas_view);
 
 					// each bezier uses t2 of one point and t1 of the next
 					// we should already have a bezier, so add the t1 of this point to it
@@ -2469,7 +2492,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				duck->set_shared_point(etl::smart_ptr<Point>());
 				duck->set_shared_angle(etl::smart_ptr<Angle>());
 				duck->set_shared_mag(etl::smart_ptr<Real>());
-				connect_signals(duck, sub_value_desc, *canvas_view);
+				connect_signals(duck, duck->get_value_desc(), *canvas_view);
 
 				bezier->p1=vertex_duck;
 				bezier->c1=duck;
@@ -2556,7 +2579,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				duck->set_shared_point(etl::smart_ptr<Point>());
 				duck->set_shared_angle(etl::smart_ptr<Angle>());
 				duck->set_shared_mag(etl::smart_ptr<Real>());
-				connect_signals(duck, sub_value_desc, *canvas_view);
+				connect_signals(duck, duck->get_value_desc(), *canvas_view);
 
 				bezier->p2=vertex_duck;
 				bezier->c2=duck;
