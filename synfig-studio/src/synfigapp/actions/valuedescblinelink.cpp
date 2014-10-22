@@ -34,6 +34,7 @@
 #include "valuenodelinkconnect.h"
 #include "valuenodereplace.h"
 #include "valuedescblinelink.h"
+#include "valuedescset.h"
 
 #include <synfigapp/canvasinterface.h>
 #include <synfig/valuenode_const.h>
@@ -191,13 +192,38 @@ Action::ValueDescBLineLink::prepare()
 			value_desc.get_parent_value_node()->get_type() == type_bline_point &&
 			ValueNode_Composite::Handle::cast_dynamic(value_desc.get_parent_value_node()))
 		{
-			String link_name(synfig::LinkableValueNode::Handle::cast_reinterpret(value_desc.get_parent_value_node())->
-								link_name(value_desc.get_index()));
+			ValueNode_Composite::Handle composite = ValueNode_Composite::Handle::cast_dynamic(value_desc.get_parent_value_node());
+			String link_name(composite->link_name(value_desc.get_index()));
+
 			if (link_name == "t1" || link_name == "t2")
+			{
+				action = ValueDescSet::create();
+				action->set_param("canvas",get_canvas());
+				action->set_param("canvas_interface",get_canvas_interface());
+				action->set_param("value_desc",ValueDesc(composite,composite->get_link_index_from_name("split_radius")));
+				action->set_param("time",time);
+				action->set_param("new_value",synfig::ValueBase(true));
+				assert(action->is_ready());
+				if(!action->is_ready()) throw Error(Error::TYPE_NOTREADY);
+				add_action(action);
+
+				action = ValueDescSet::create();
+				action->set_param("canvas",get_canvas());
+				action->set_param("canvas_interface",get_canvas_interface());
+				action->set_param("value_desc",ValueDesc(composite,composite->get_link_index_from_name("split_angle")));
+				action->set_param("time",time);
+				action->set_param("new_value",synfig::ValueBase(true));
+				assert(action->is_ready());
+				if(!action->is_ready()) throw Error(Error::TYPE_NOTREADY);
+				add_action(action);
+
 				calculated_value_node = ValueNode_BLineCalcTangent::create(type_vector);
-			else if (link_name == "width")
+			}
+			else
+			if (link_name == "width")
 				calculated_value_node = ValueNode_BLineCalcWidth::create(type_real);
-			else if (link_name == "point")
+			else
+			if (link_name == "point")
 				calculated_value_node = ValueNode_BLineCalcVertex::create(type_vector);
 			else
 			{
@@ -214,15 +240,40 @@ Action::ValueDescBLineLink::prepare()
 				 value_desc.get_value_type() == type_bline_point &&
 				 ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node()))
 		{
+			ValueNode_Composite::Handle composite = ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node());
 			String link_name(value_desc.get_sub_name());
-			int index = ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node())->get_link_index_from_name(link_name);
+			int index = composite->get_link_index_from_name(link_name);
 			calculated_value_node.reset();
 
 			if (link_name == "t1" || link_name == "t2")
+			{
+				action = ValueDescSet::create();
+				action->set_param("canvas",get_canvas());
+				action->set_param("canvas_interface",get_canvas_interface());
+				action->set_param("value_desc",ValueDesc(composite,composite->get_link_index_from_name("split_radius")));
+				action->set_param("time",time);
+				action->set_param("new_value",synfig::ValueBase(true));
+				assert(action->is_ready());
+				if(!action->is_ready()) throw Error(Error::TYPE_NOTREADY);
+				add_action(action);
+
+				action = ValueDescSet::create();
+				action->set_param("canvas",get_canvas());
+				action->set_param("canvas_interface",get_canvas_interface());
+				action->set_param("value_desc",ValueDesc(composite,composite->get_link_index_from_name("split_angle")));
+				action->set_param("time",time);
+				action->set_param("new_value",synfig::ValueBase(true));
+				assert(action->is_ready());
+				if(!action->is_ready()) throw Error(Error::TYPE_NOTREADY);
+				add_action(action);
+
 				calculated_value_node = ValueNode_BLineCalcTangent::create(type_vector);
-			else if (link_name == "width")
+			}
+			else
+			if (link_name == "width")
 				calculated_value_node = ValueNode_BLineCalcWidth::create(type_real);
-			else if (link_name == "point")
+			else
+			if (link_name == "point")
 				calculated_value_node = ValueNode_BLineCalcVertex::create(type_vector);
 
 			if (index < 0 || !calculated_value_node)
@@ -326,6 +377,6 @@ Action::ValueDescBLineLink::prepare()
 
 		assert(action->is_ready());
 		if (!action->is_ready()) throw Error(Error::TYPE_NOTREADY);
-		add_action_front(action);
+		add_action(action);
 	}
 }
