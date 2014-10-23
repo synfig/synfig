@@ -191,6 +191,8 @@ public:
 	virtual synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;
 	virtual void set_render_method(Context context, RenderMethod x);
 
+	virtual void fill_sound_processor(SoundProcessor &soundProcessor) const;
+
 protected:
 	//!	Function to be overloaded that fills the Time Point Set with
 	//! all the children Time Points. In this case the children Time Points

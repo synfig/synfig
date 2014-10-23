@@ -10,7 +10,7 @@ export SCRIPTPATH=$(cd `dirname "$0"`; pwd)
 
 RELEASE=8
 
-BUILDROOT_VERSION=2
+BUILDROOT_VERSION=5
 BUILDROOT_LIBRARY_SET_ID=1
 
 if [ -z $ARCH ]; then
@@ -63,7 +63,7 @@ SOURCES_URL="rsync://download.tuxfamily.org/pub/synfig/packages/sources/base"
 LIBSIGCPP_VERSION=2.2.10
 GLEW_VERSION=1.5.1
 CAIROMM_VERSION=1.8.0
-IMAGEMAGICK_VERSION=6.8.6
+IMAGEMAGICK_VERSION=6.8.9
 PANGOMM_VERSION=2.26.3		# required by GTKMM 2.20.3
 GTKMM_VERSION=2.20.3 		# !!! we need Notebook.set_action_widget()
 FTGL_VERSION=2.1.2
@@ -150,10 +150,13 @@ set_environment()
 	export PATH=${PREFIX}/bin:${DEPSPREFIX}/bin:${SYSPREFIX}/bin:${SYSPREFIX}/usr/bin
 	export LDFLAGS="-Wl,-rpath -Wl,\\\$\$ORIGIN/lib -L${PREFIX}/lib -L${DEPSPREFIX}/lib -L${SYSPREFIX}/${LIBDIR} -L${SYSPREFIX}/usr/${LIBDIR}"
 	#export CFLAGS=" -nostdinc  -I${SYSPREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.3.2/include -I${SYSPREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.3.2/include-fixed  -I${PREFIX}/include  -I${DEPSPREFIX}/include -I${SYSPREFIX}/usr/include"
-	export CFLAGS="-I${SYSPREFIX}/usr/include"
+	GCC_VER=4.4
+	export CFLAGS="-I${SYSPREFIX}/usr/include -I${PREFIX}/include" 
+	#export CXXFLAGS="-I${SYSPREFIX}/usr/include/linux/  -I${SYSPREFIX}/usr/include/c++/${GCC_VER}/ -I${SYSPREFIX}/usr/include/c++/${GCC_VER}/${GCC_ARCH}-linux-gnu/ -I${SYSPREFIX}/usr/lib/gcc/${GCC_ARCH}-linux-gnu/${GCC_VER}/include/ -I${SYSPREFIX}/usr/lib/gcc/${GCC_ARCH}-linux-gnu/${GCC_VER}/include-fixed/  -I${SYSPREFIX}/usr/${GCC_ARCH}-linux-gnu/include"
+	#export CXXFLAGS="-I${SYSPREFIX}/usr/local/include/x86_64-linux-gnu -I${SYSPREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.4.5/include -I${SYSPREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.4.5/include-fixed -I${SYSPREFIX}/usr/lib/gcc/../../x86_64-linux-gnu/include -I${SYSPREFIX}/usr/include/x86_64-linux-gnu"
 	#export CXXFLAGS=" -nostdinc   -I${SYSPREFIX}/usr/lib/gcc/../../include/c++/4.3  -I${SYSPREFIX}/usr/lib/gcc/../../include/c++/4.3/x86_64-linux-gnu -I${SYSPREFIX}/usr/lib/gcc/../../include/c++/4.3/backward -I${SYSPREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.3.2/include -I${SYSPREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.3.2/include-fixed -I${PREFIX}/include  -I${DEPSPREFIX}/include -I${SYSPREFIX}/usr/include"
-	export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:${DEPSPREFIX}/lib/pkgconfig:${SYSPREFIX}/usr/lib/pkgconfig
-	PERL_VERSION=`perl -v | sed -n '3p' | sed "s|This is perl, v||g" | cut -f 1 -d " "`
+	export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:${DEPSPREFIX}/lib/pkgconfig:${SYSPREFIX}/usr/lib/pkgconfig:${SYSPREFIX}/usr/share/pkgconfig
+	PERL_VERSION=`perl -v | grep "This is perl" | sed "s|This is perl, v||g" | cut -f 1 -d " "`
 	export NM=nm
 	export PERL5LIB="${SYSPREFIX}/etc/perl:${DEPSPREFIX}/lib/perl/${PERL_VERSION}:${DEPSPREFIX}/share/perl/${PERL_VERSION}:${SYSPREFIX}/usr/lib/perl5:${SYSPREFIX}/usr/share/perl5:${SYSPREFIX}/usr/lib/perl/${PERL_VERSION}:${SYSPREFIX}/usr/share/perl/${PERL_VERSION}:${DEPSPREFIX}/lib/site_perl"
 	if [[ $ARCH == "32" ]]; then
@@ -214,7 +217,9 @@ mkprefix()
 			libxml2-dev \
 			libtiff4-dev \
 			libjasper-dev \
+			libasound2-dev \
 			x11proto-xext-dev libdirectfb-dev libxfixes-dev libxinerama-dev libxdamage-dev libxcomposite-dev libxcursor-dev libxft-dev libxrender-dev libxt-dev libxrandr-dev libxi-dev libxext-dev libx11-dev \
+			libpthread-stubs0-dev \
 			libxml-parser-perl \
 			libdb-dev uuid-dev \
 			wget mawk cvs \
@@ -233,7 +238,7 @@ mkprefix()
 		fakeroot fakechroot \
 		debootstrap --variant=fakechroot --download-only --keep-debootstrap-dir --arch=$SYS_ARCH \
 		--include=$INCLUDE_LIST \
-		lenny ${SYSPREFIX} http://archive.debian.org/debian
+		squeeze ${SYSPREFIX} http://ftp.ru.debian.org/debian #http://archive.debian.org/debian
 
 	#LD_LIBRARY_PATH=${UBUNTU_LIBDIR}:/${LIBDIR}:${SYSPREFIX}/usr/${LIBDIR} PATH=/usr/local/sbin:/usr/sbin:/sbin:/sbin:/bin:/usr/bin:${SYSPREFIX}/usr/sbin:${SYSPREFIX}/sbin:${SYSPREFIX}/usr/bin:${SYSPREFIX}/bin:$PATH HOME=/ LOGNAME=root fakeroot fakechroot debootstrap --variant=fakechroot --arch=$SYS_ARCH --foreign --keep-debootstrap-dir --include=sudo --include=apt lenny ${SYSPREFIX} http://archive.debian.org/debian
 	
@@ -281,7 +286,7 @@ mkprep()
 {
 
 MISSING_PKGS=""
-for PKG in debootstrap dpkg fakeroot fakechroot rpmbuild alien; do
+for PKG in debootstrap dpkg fakeroot fakechroot rpmbuild alien git; do
 	if ! ( which $PKG > /dev/null ) ; then
 		MISSING_PKGS="$MISSING_PKGS $PKG"
 	fi
@@ -350,10 +355,17 @@ for CHECKPATH in ${SYSPREFIX} ${SYSPREFIX}/usr/lib ${SYSPREFIX}/bin; do
 	done
 done
 
+ln -sf ${SYSPREFIX}/usr/bin/gcc ${SYSPREFIX}/usr/bin/cc
+
 [ -e "${PREFIX}/lib" ] || mkdir -p ${PREFIX}/lib
 #cp ${SYSPREFIX}/usr/lib/libltdl* ${PREFIX}/lib/
 cp ${SYSPREFIX}/usr/lib/libpng12* ${PREFIX}/lib/
 cp ${SYSPREFIX}/usr/lib/libdb-4*.so ${PREFIX}/lib/
+cp ${SYSPREFIX}/usr/lib/libdb-4*.so ${PREFIX}/lib/
+# SDL deps
+cp ${SYSPREFIX}/usr/lib/libdirect-*.so* ${PREFIX}/lib/
+cp ${SYSPREFIX}/usr/lib/libdirectfb-*.so* ${PREFIX}/lib/
+cp ${SYSPREFIX}/usr/lib/libfusion*.so* ${PREFIX}/lib/
 
 #RANDOM_SYSPREFIX=`tr -cd '[:alnum:]' < /dev/urandom | fold -w8 | head -n1`
 #DATE=`date +%s`
@@ -372,12 +384,12 @@ ${SYSPREFIX}/usr/bin/gcc -nostdinc -I${SYSPREFIX}/usr/lib/gcc/${GCC_ARCH}-linux-
 EOF
 #chmod a+x  ${DEPSPREFIX}/bin/gcc
 
-cat > ${DEPSPREFIX}/bin/g++ <<EOF
+cat > ${DEPSPREFIX}/bin/g++-- <<EOF
 #!/bin/sh
 
 ${SYSPREFIX}/usr/bin/g++ -nostdinc   -I${SYSPREFIX}/usr/lib/gcc/../../include/c++/4.3  -I${SYSPREFIX}/usr/lib/gcc/../../include/c++/4.3/${GCC_ARCH}-linux-gnu -I${SYSPREFIX}/usr/lib/gcc/../../include/c++/4.3/backward -I${SYSPREFIX}/usr/lib/gcc/${GCC_ARCH}-linux-gnu/4.3.2/include -I${SYSPREFIX}/usr/lib/gcc/${GCC_ARCH}-linux-gnu/4.3.2/include-fixed -I${PREFIX}/include  -I${DEPSPREFIX}/include -I${SYSPREFIX}/usr/include "\$@"
 EOF
-chmod a+x  ${DEPSPREFIX}/bin/g++
+#chmod a+x  ${DEPSPREFIX}/bin/g++
 
 cat > ${DEPSPREFIX}/bin/rsync <<EOF
 #!/bin/sh
@@ -480,6 +492,7 @@ if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
 		--enable-warnings 	\
 		--enable-xlib 		\
 		--enable-freetype 	\
+		--enable-pdf		\
 	    --enable-gobject    \
 		--disable-gtk-doc
 	make -j${THREADS}
@@ -499,6 +512,7 @@ if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
 	pushd ${SRCPREFIX}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xjf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
+	[ ! -e config.cache ] || rm config.cache
 	./configure --host=${HOST} --prefix=${DEPSPREFIX}/ \
 		--disable-static --enable-shared \
 		--with-included-modules=yes
@@ -520,8 +534,8 @@ if ! pkg-config ${PKG_NAME}-2.0 --exact-version=${PKG_VERSION}  --print-errors; 
 	pushd ${SRCPREFIX}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xjf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
-	./configure --host=${HOST} --prefix=${DEPSPREFIX}/ \
-		--disable-examples --disable-demos --disable-docs \
+	[ ! -e config.cache ] || rm config.cache
+	./configure --build=${HOST} --prefix=${DEPSPREFIX}/ \
 		--disable-static --enable-shared
 	make -j${THREADS}
 	make install
@@ -613,10 +627,10 @@ fi
 mkimagemagick()
 {
 PKG_NAME=ImageMagick
-PKG_VERSION="${IMAGEMAGICK_VERSION}-10"
+PKG_VERSION="${IMAGEMAGICK_VERSION}-8"
 TAREXT=bz2
 if ! pkg-config ${PKG_NAME} --exact-version=${IMAGEMAGICK_VERSION}  --print-errors; then
-	( cd ${WORKSPACE}/cache/ && wget -c http://www.imagemagick.org/download/legacy/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
+	( cd ${WORKSPACE}/cache/ && wget -c http://www.imagemagick.org/download/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
 	pushd ${SRCPREFIX}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xjf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
@@ -633,6 +647,367 @@ if ! pkg-config ${PKG_NAME} --exact-version=${IMAGEMAGICK_VERSION}  --print-erro
 	make install
 	cd ..
 	popd
+fi
+}
+
+mklibogg()
+{
+
+PKG_NAME=libogg
+PKG_VERSION=1.3.1
+TAREXT=gz
+
+if ! pkg-config ogg --exact-version=${PKG_VERSION}  --print-errors; then
+	
+    cd $CACHEDIR
+    [ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://downloads.xiph.org/releases/ogg/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    cd $SRCPREFIX
+    if [ ! -d ${PKG_NAME}-${PKG_VERSION} ]; then
+        tar -xzf $CACHEDIR/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    fi
+    cd ${PKG_NAME}-${PKG_VERSION}
+    [ ! -e config.cache ] || rm config.cache
+    ./configure --host=${HOST} --prefix=${PREFIX} --includedir=${PREFIX}/include \
+		--disable-static --enable-shared
+    
+    make all -j$THREADS
+    make install -j$THREADS
+
+fi
+}
+
+mklibvorbis()
+{
+mklibogg
+
+PKG_NAME=libvorbis
+PKG_VERSION=1.3.4
+TAREXT=gz
+
+if ! pkg-config vorbis --exact-version=${PKG_VERSION}  --print-errors; then
+    cd $CACHEDIR
+    [ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://downloads.xiph.org/releases/vorbis/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    cd $SRCPREFIX
+    if [ ! -d ${PKG_NAME}-${PKG_VERSION} ]; then
+        tar -xzf $CACHEDIR/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    fi
+    cd ${PKG_NAME}-${PKG_VERSION}
+    [ ! -e config.cache ] || rm config.cache
+    ./configure --host=${HOST} --prefix=${PREFIX} --includedir=${PREFIX}/include \
+		--disable-static --enable-shared
+
+    make all -j$THREADS
+    make install -j$THREADS
+
+fi
+}
+
+mklibsamplerate()
+{
+PKG_NAME=libsamplerate
+PKG_VERSION=0.1.8
+TAREXT=gz
+
+if ! pkg-config samplerate --exact-version=${PKG_VERSION}  --print-errors; then
+    cd $CACHEDIR
+    [ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://www.mega-nerd.com/SRC/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    cd $SRCPREFIX
+    if [ ! -d ${PKG_NAME}-${PKG_VERSION} ]; then
+        tar -xzf $CACHEDIR/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    fi
+    cd ${PKG_NAME}-${PKG_VERSION}
+    [ ! -e config.cache ] || rm config.cache
+    ./configure \
+        --host=${HOST} --prefix=${PREFIX} --includedir=${PREFIX}/include \
+		--disable-static --enable-shared
+
+    make all -j$THREADS
+    make install -j$THREADS
+
+fi
+}
+
+mksox()
+{
+PKG_NAME=sox
+PKG_VERSION=14.4.1
+TAREXT=gz
+
+if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
+    cd $CACHEDIR
+    [ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://download.tuxfamily.org/synfig/packages/sources/base/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    cd $SRCPREFIX
+    if [ ! -d ${PKG_NAME}-${PKG_VERSION} ]; then
+        tar -xzf $CACHEDIR/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    fi
+    cd ${PKG_NAME}-${PKG_VERSION}
+    [ ! -e config.cache ] || rm config.cache
+    ./configure \
+        --host=${HOST} --prefix=${PREFIX} --includedir=${PREFIX}/include \
+		--disable-static --enable-shared
+
+    make all -j$THREADS
+    make install -j$THREADS
+
+fi
+}
+
+mklame()
+{
+PKG_NAME=lame
+PKG_VERSION=3.99.5
+TAREXT=gz
+
+if [ ! -f ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done ]; then
+    cd $CACHEDIR
+    [ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://sourceforge.net/projects/lame/files/lame/3.99/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    cd $SRCPREFIX
+    if [ ! -d ${PKG_NAME}-${PKG_VERSION} ]; then
+        tar -xzf $CACHEDIR/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    fi
+    cd ${PKG_NAME}-${PKG_VERSION}
+    [ ! -e config.cache ] || rm config.cache
+    ./configure --host=${HOST} --prefix=${PREFIX} --includedir=${PREFIX}/include \
+		--disable-static --enable-shared
+
+    make all -j$THREADS
+    make install -j$THREADS
+    
+    touch ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done
+
+fi
+}
+
+mklibtheora()
+{
+	
+mklibogg
+
+PKG_NAME=libtheora
+PKG_VERSION=1.1.1
+TAREXT=gz
+
+if [ ! -f ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done ]; then
+    cd $CACHEDIR
+    [ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://downloads.xiph.org/releases/theora/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    cd $SRCPREFIX
+    if [ ! -d ${PKG_NAME}-${PKG_VERSION} ]; then
+        tar -xzf $CACHEDIR/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    fi
+    cd ${PKG_NAME}-${PKG_VERSION}
+    [ ! -e config.cache ] || rm config.cache
+    ./configure --host=${HOST} --prefix=${PREFIX} --includedir=${PREFIX}/include \
+		--disable-static --enable-shared
+
+    make all -j$THREADS
+    make install -j$THREADS
+    
+    touch ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done
+
+fi
+}
+
+mkx264()
+{
+PKG_NAME=x264
+PKG_VERSION=3.99.5
+TAREXT=gz
+
+if [ ! -f ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done ]; then
+    if [ -d x264 ]; then
+	   cd x264
+	   /usr/bin/git pull -v
+	   cd ..
+	else
+	   /usr/bin/git clone git://git.videolan.org/x264.git
+	fi
+    cd ${PKG_NAME}
+    [ ! -e config.cache ] || rm config.cache
+    ./configure --host=${HOST} --prefix=${PREFIX} --includedir=${PREFIX}/include \
+		--disable-static --enable-shared
+
+    make all -j$THREADS
+    make install -j$THREADS
+    
+    touch ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done
+
+fi
+}
+
+
+mkfaac()
+{
+PKG_NAME=faac
+PKG_VERSION=1.28
+TAREXT=bz2
+
+if [ ! -f ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done ]; then
+    cd $CACHEDIR
+    [ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://downloads.sourceforge.net/faac/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    cd $SRCPREFIX
+    if [ ! -d ${PKG_NAME}-${PKG_VERSION} ]; then
+        tar -xjf $CACHEDIR/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    fi
+    cd ${PKG_NAME}-${PKG_VERSION}
+    [ ! -e config.cache ] || rm config.cache
+    ./configure --host=${HOST} --prefix=${PREFIX} --includedir=${PREFIX}/include \
+		--disable-static --enable-shared
+		
+	if [ ! -f common/mp4v2/mpeg4ip.h.patch ]; then
+		sed -i '126 s|^|//|' common/mp4v2/mpeg4ip.h
+		touch common/mp4v2/mpeg4ip.h.patch
+	fi
+
+    make all -j$THREADS
+    make install -j$THREADS
+    
+    sed -i '53 s|^|//|' ${PREFIX}/include/faac.h
+    
+    touch ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done
+
+fi
+}
+
+mkyasm()
+{
+PKG_NAME=yasm
+PKG_VERSION=1.2.0
+TAREXT=gz
+if [ ! -f ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done ]; then
+	cd $CACHEDIR
+    [ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://www.tortall.net/projects/yasm/releases/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    cd $SRCPREFIX
+    if [ ! -d ${PKG_NAME}-${PKG_VERSION} ]; then
+        tar -xzf $CACHEDIR/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    fi
+    cd ${PKG_NAME}-${PKG_VERSION}
+    [ ! -e config.cache ] || rm config.cache
+    
+	./configure --host=${HOST} --disable-static --enable-shared --prefix=${DEPSPREFIX}/
+	make -j${THREADS}
+	make install
+	cd ..
+	
+	touch ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done
+fi
+}
+
+mkffmpeg()
+{
+
+#mkfaac
+mkyasm
+mklame
+mklibtheora
+mklibvorbis
+mkx264
+
+PKG_NAME=ffmpeg
+PKG_VERSION=2.4.x
+TAREXT=bz2
+if [ ! -f ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done ]; then
+	
+	pushd ${SRCPREFIX}
+	
+	if [ -d ffmpeg ]; then
+	   cd ffmpeg
+	   /usr/bin/git pull
+	   cd ..
+	else
+		/usr/bin/git clone git://source.ffmpeg.org/ffmpeg.git ffmpeg
+	fi
+
+	#rsync -av ${SOURCES_URL}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	
+	#[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xjf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	#cd ${PKG_NAME}-${PKG_VERSION}
+	
+	cd ${PKG_NAME}
+	
+	./configure --prefix=${PREFIX} \
+		--arch=${SYS_ARCH} \
+		--enable-rpath \
+		--enable-gpl --enable-nonfree \
+		--enable-libx264 --enable-libmp3lame \
+		--enable-libtheora --enable-libvorbis \
+		--disable-static --enable-shared
+		#--enable-libfaac
+	make -j${THREADS}
+	make install
+	cd ..
+	popd
+	
+	touch ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done
+fi
+}
+
+mksdl()
+{
+	
+PKG_NAME=SDL
+PKG_VERSION=1.2.15
+TAREXT=gz
+
+if [ ! -f ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done ]; then
+
+    cd $CACHEDIR
+    [ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://www.libsdl.org/release/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    cd $SRCPREFIX
+    if [ ! -d ${PKG_NAME}-${PKG_VERSION} ]; then
+        tar -xzf $CACHEDIR/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    fi
+    cd ${PKG_NAME}-${PKG_VERSION}
+    [ ! -e config.cache ] || rm config.cache
+    
+	./configure --host=${HOST} --disable-static --enable-shared --prefix=${PREFIX}/
+	make -j${THREADS}
+	make install
+	cd ..
+	
+	touch ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done
+fi
+}
+
+mkmlt()
+{
+mksdl
+mkffmpeg
+mklibsamplerate
+mklibvorbis
+mksox
+	
+PKG_NAME=mlt
+PKG_VERSION=0.9.1
+TAREXT=gz
+
+if [ ! -f ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done ]; then
+
+    #export CPPFLAGS=" -I/usr/${TOOLCHAIN_HOST}/sys-root/mingw/include/SDL $CPPFLAGS"
+    #export LDFLAGS=" $LDFLAGS -lmingw32 -lSDLmain -lSDL -mwindows"
+	
+    cd $SRCPREFIX
+    if [ ! -d ${PKG_NAME} ]; then
+        /usr/bin/git clone https://github.com/morevnaproject/mlt
+    fi
+    cd mlt
+    [ ! -e config.cache ] || rm config.cache
+
+    ./configure \
+        --host=${HOST} --prefix=${PREFIX} --includedir=${PREFIX}/include \
+        --avformat-shared=${PREFIX}/ \
+        --enable-sdl \
+        --enable-gpl --disable-decklink \
+        $DEBUG
+
+    make all -j$THREADS
+    make install -j$THREADS
+    
+    if [ ! -f ${PREFIX}/lib/mlt/libmltsdl.so ]; then
+		echo "ERROR: No SDL module compiled for MLT."
+		exit 1
+    fi
+	
+	touch ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done
 fi
 }
 
@@ -1064,7 +1439,7 @@ if ( ! ldconfig -p | grep libjack.so >/dev/null ) || ( ! which jackd >/dev/null 
 	# No JACK, so disable this functionality.
 	# (The bundled libjack won't work correctly anyway).
 	export SYNFIG_DISABLE_JACK=1
-	export LD_LIBRARY_PATH=\$LD_LIBRARY_PATH:\${PREFIX}/lib.extra
+	export LD_LIBRARY_PATH=\$LD_LIBRARY_PATH:\${SYSPREFIX}/lib.extra
 fi
 
 USER_CONFIG_DIR=\$HOME/.config/synfig
@@ -1357,6 +1732,7 @@ mkall()
 	#if [[ $OPENGL == 1 ]]; then
 	#	mkglew
 	#fi
+	mkmlt
 	mkimagemagick
 	mkboost
 	

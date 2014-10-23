@@ -94,6 +94,7 @@
 #include "adjust_window.h"
 
 #include <synfig/transform.h>
+#include <synfig/soundprocessor.h>
 
 #include "docks/dockable.h"
 
@@ -231,7 +232,10 @@ public:
 	std::auto_ptr<WorkArea> work_area;
 
 	WorkArea* get_work_area() { return work_area.get(); }
+
 private:
+	synfig::SoundProcessor soundProcessor;
+
 	ActivationIndex activation_index_;
 
 	synfig::Rect bbox;
@@ -720,7 +724,7 @@ public:
 
 	void toggle_duck_mask(Duckmatic::Type type);
 
-	bool is_time_equal_to_current_frame(const synfig::Time &time);
+	bool is_time_equal_to_current_frame(const synfig::Time &time, const synfig::Time &range = synfig::Time(0.0));
 
 	/*
  -- ** -- S I G N A L   T E R M I N A L S -------------------------------------

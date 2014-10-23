@@ -62,6 +62,7 @@
 #include <time.h>
 #include "layer.h"
 #include "valuenode.h"
+#include "soundprocessor.h"
 
 #include "main.h"
 #include "loadcanvas.h"
@@ -206,6 +207,10 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 
 	// Init the subsystems
 	if(cb)cb->amount_complete(0, 100);
+
+	if(cb)cb->task(_("Starting Subsystem \"Sound\""));
+	if(!SoundProcessor::subsys_init())
+		throw std::runtime_error(_("Unable to initialize subsystem \"Sound\""));
 
 	if(cb)cb->task(_("Starting Subsystem \"Types\""));
 	if(!Type::subsys_init())

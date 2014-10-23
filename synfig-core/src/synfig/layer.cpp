@@ -49,6 +49,7 @@
 #include "layer_duplicate.h"
 #include "layer_skeleton.h"
 #include "layer_skeletondeformation.h"
+#include "layer_sound.h"
 
 #include "valuenode_const.h"
 
@@ -131,6 +132,7 @@ Layer::subsys_init()
 	INCLUDE_LAYER(Layer_Duplicate);
 	INCLUDE_LAYER(Layer_Skeleton);
 	INCLUDE_LAYER(Layer_SkeletonDeformation);
+	INCLUDE_LAYER(Layer_Sound);
 
 #undef LAYER_ALIAS
 #undef INCLUDE_LAYER
@@ -896,3 +898,7 @@ Layer::get_parent_canvas_grow_value()const
 	}
 	return ret;
 }
+
+void
+Layer::fill_sound_processor(SoundProcessor & /* soundProcessor */) const
+{ }

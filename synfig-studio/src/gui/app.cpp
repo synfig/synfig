@@ -902,7 +902,6 @@ DEFINE_ACTION("cvs-revert", Gtk::StockID("synfig-cvs_revert"));
 DEFINE_ACTION("import", _("Import..."));
 DEFINE_ACTION("render", _("Render..."));
 DEFINE_ACTION("preview", _("Preview..."));
-DEFINE_ACTION("sound", _("Import Sound File..."));
 DEFINE_ACTION("close-document", _("Close Document"));
 DEFINE_ACTION("quit", Gtk::Stock::QUIT);
 
@@ -1036,7 +1035,6 @@ DEFINE_ACTION("keyframe-properties","Properties");
 "		<menuitem action='cvs-revert' />"
 "		<separator name='sep-file3'/>"
 "		<menuitem action='import' />"
-"		<menuitem action='sound' />"
 "		<separator name='sep-file4'/>"
 "		<menuitem action='preview' />"
 "		<menuitem action='render' />"

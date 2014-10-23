@@ -28,6 +28,7 @@
 # * Download Cygwin setup binary (http://www.cygwin.com/) and save it into C:\synfig-build\cygwin-dist\ directory.
 # * Run Cygwin setup and install with the default parameters.
 # * Download and install NSIS >=3.0 (http://nsis.sourceforge.net/). Install into C:\synfig-build\NSIS\ directory.
+# * (64-bit build only!) Download and install 7zip (http://downloads.sourceforge.net/sevenzip/7z920-x64.msi). Install into C:\synfig-build\7zip\ directory.
 # * Open Cygwin console (with administrator previlegies) and run the build script:
 # ** bash /cygdrive/c/synfig-build/synfig/autobuild/synfigstudio-cygwin-mingw-build.sh
 # * Installation bundle will be written to C:\synfig-build\
@@ -68,16 +69,17 @@ SRCPREFIX=$(cd "$SRCPREFIX/.."; pwd)
 if [[ $ARCH == "32" ]]; then
     export TOOLCHAIN_HOST="i686-w64-mingw32"
     export TOOLCHAIN="mingw64-i686" # mingw64-i686 | mingw64-x86_64 | mingw
+    export EXT_ARCH=i386
     export CYGWIN_SETUP="/cygdrive/c/synfig-build/cygwin-dist/setup-x86.exe"
+    export SZIP_BINARY="7z"
 elif [[ $ARCH == "64" ]]; then
     export TOOLCHAIN_HOST="x86_64-w64-mingw32"
     export TOOLCHAIN="mingw64-x86_64"
+    export EXT_ARCH=x86_64
     export CYGWIN_SETUP="/cygdrive/c/synfig-build/cygwin64-dist/setup-x86_64.exe"
+    export SZIP_BINARY="/cygdrive/c/synfig-build/7zip/7z.exe"
 fi
-
 export MINGWPREFIX=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/
-
-
 
 set -e
 
@@ -91,6 +93,16 @@ export VERSION=`cat ${SRCPREFIX}/synfig-core/configure.ac |egrep "AC_INIT\(\[Syn
 pushd "${SRCPREFIX}" > /dev/null
 export REVISION=`git show --pretty=format:%ci HEAD |  head -c 10 | tr -d '-'`
 popd > /dev/null
+
+
+if [ ! -e "$SZIP_BINARY" ]; then
+    echo "7zip not found! Please download and install 7zip (http://downloads.sourceforge.net/sevenzip/7z920-x64.msi). Install into C:\synfig-build\7zip\ directory."
+    exit 1
+fi
+if [ ! -e "$NSIS_BINARY" ]; then
+    echo "NSIS not found! Please download and install NSIS >=3.0 (http://nsis.sourceforge.net/). Install into C:\synfig-build\NSIS\ directory."
+    exit 1
+fi
 
 prepare_mingw_env()
 {
@@ -322,36 +334,266 @@ PKG_NAME=ImageMagick
 PKG_VERSION=6.8.7-10
 TAREXT=bz2
 
-cd $WORKSPACE
-[ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://www.imagemagick.org/download/legacy/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
-if [ ! -d ${PKG_NAME}-${PKG_VERSION} ]; then
-    tar -xjf ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
-    cd ${PKG_NAME}-${PKG_VERSION}
-else
-    cd ${PKG_NAME}-${PKG_VERSION}
-fi
-[ ! -e config.cache ] || rm config.cache
-autoreconf -i --verbose  # does this really required?
-./configure \
---prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
---exec-prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
---bindir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin \
---sbindir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/sbin \
---libexecdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib \
---datadir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share \
---localstatedir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/var \
---sysconfdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/etc \
---datarootdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share \
---docdir=/usr/share/doc/mingw-synfig -C \
---build=i686-pc-cygwin --host=${TOOLCHAIN_HOST} \
---disable-static --enable-shared \
---without-modules \
---without-perl \
---without-x \
---with-threads \
---with-magick_plus_plus
+if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION%-*}  --print-errors; then
+    cd $WORKSPACE
+    [ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://www.imagemagick.org/download/legacy/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    if [ ! -d ${PKG_NAME}-${PKG_VERSION} ]; then
+        tar -xjf ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+        cd ${PKG_NAME}-${PKG_VERSION}
+    else
+        cd ${PKG_NAME}-${PKG_VERSION}
+    fi
+    [ ! -e config.cache ] || rm config.cache
+    autoreconf -i --verbose  # does this really required?
+    ./configure \
+        --prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
+        --exec-prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
+        --bindir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin \
+        --sbindir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/sbin \
+        --libexecdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib \
+        --datadir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share \
+        --localstatedir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/var \
+        --sysconfdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/etc \
+        --datarootdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share \
+        --docdir=/usr/share/doc/mingw-synfig -C \
+        --build=i686-pc-cygwin --host=${TOOLCHAIN_HOST} \
+        --disable-static --enable-shared \
+        --without-modules \
+        --without-perl \
+        --without-x \
+        --with-threads \
+        --with-magick_plus_plus
 
-make install
+    make install
+fi
+}
+
+mklibogg()
+{
+
+PKG_NAME=libogg
+PKG_VERSION=1.3.1
+TAREXT=gz
+
+if ! pkg-config ogg --exact-version=${PKG_VERSION}  --print-errors; then
+    cd $WORKSPACE
+    [ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://downloads.xiph.org/releases/ogg/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    if [ ! -d ${PKG_NAME}-${PKG_VERSION} ]; then
+        tar -xzf ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    fi
+    cd ${PKG_NAME}-${PKG_VERSION}
+    [ ! -e config.cache ] || rm config.cache
+    ./configure \
+        --prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
+        --exec-prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
+        --bindir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin \
+        --sbindir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/sbin \
+        --libexecdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib \
+        --datadir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share \
+        --localstatedir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/var \
+        --sysconfdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/etc \
+        --datarootdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share \
+        --docdir=/usr/share/doc/mingw-synfig -C \
+        --build=i686-pc-cygwin --host=${TOOLCHAIN_HOST}
+
+    make all
+    make install
+
+fi
+}
+
+mklibvorbis()
+{
+mklibogg
+
+PKG_NAME=libvorbis
+PKG_VERSION=1.3.4
+TAREXT=gz
+
+if ! pkg-config vorbis --exact-version=${PKG_VERSION}  --print-errors; then
+    cd $WORKSPACE
+    [ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://downloads.xiph.org/releases/vorbis/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    if [ ! -d ${PKG_NAME}-${PKG_VERSION} ]; then
+        tar -xzf ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    fi
+    cd ${PKG_NAME}-${PKG_VERSION}
+    [ ! -e config.cache ] || rm config.cache
+    ./configure \
+        --prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
+        --exec-prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
+        --bindir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin \
+        --sbindir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/sbin \
+        --libexecdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib \
+        --datadir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share \
+        --localstatedir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/var \
+        --sysconfdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/etc \
+        --datarootdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share \
+        --docdir=/usr/share/doc/mingw-synfig -C \
+        --build=i686-pc-cygwin --host=${TOOLCHAIN_HOST}
+
+    make all
+    make install
+
+fi
+}
+
+mklibsamplerate()
+{
+PKG_NAME=libsamplerate
+PKG_VERSION=0.1.8
+TAREXT=gz
+
+if ! pkg-config samplerate --exact-version=${PKG_VERSION}  --print-errors; then
+    cd $WORKSPACE
+    [ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://www.mega-nerd.com/SRC/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    if [ ! -d ${PKG_NAME}-${PKG_VERSION} ]; then
+        tar -xzf ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    fi
+    cd ${PKG_NAME}-${PKG_VERSION}
+    [ ! -e config.cache ] || rm config.cache
+    ./configure \
+        --prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
+        --exec-prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
+        --bindir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin \
+        --sbindir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/sbin \
+        --libexecdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib \
+        --datadir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share \
+        --localstatedir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/var \
+        --sysconfdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/etc \
+        --datarootdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share \
+        --docdir=/usr/share/doc/mingw-synfig -C \
+        --build=i686-pc-cygwin --host=${TOOLCHAIN_HOST}
+
+    make all
+    make install
+
+fi
+}
+
+mksox()
+{
+PKG_NAME=sox
+PKG_VERSION=14.4.1
+TAREXT=gz
+
+if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
+    cd $WORKSPACE
+    [ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://download.tuxfamily.org/synfig/packages/sources/base/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    if [ ! -d ${PKG_NAME}-${PKG_VERSION} ]; then
+        tar -xzf ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    fi
+    cd ${PKG_NAME}-${PKG_VERSION}
+    [ ! -e config.cache ] || rm config.cache
+    ./configure \
+        --prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
+        --exec-prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
+        --bindir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin \
+        --sbindir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/sbin \
+        --libexecdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib \
+        --datadir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share \
+        --localstatedir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/var \
+        --sysconfdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/etc \
+        --datarootdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share \
+        --docdir=/usr/share/doc/mingw-synfig -C \
+        --build=i686-pc-cygwin --host=${TOOLCHAIN_HOST}
+
+    make all
+    make install
+
+fi
+}
+
+mkmlt()
+{
+PKG_NAME=mlt
+PKG_VERSION=0.9.1
+TAREXT=gz
+
+if ! pkg-config ${PKG_NAME}\+\+ --exact-version=${PKG_VERSION}  --print-errors; then
+    cd $WORKSPACE
+    #[ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://download.tuxfamily.org/synfig/packages/sources/base/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    #if [ ! -d ${PKG_NAME}-${PKG_VERSION} ]; then
+    #    tar -xzf ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    #fi
+    #cd ${PKG_NAME}-${PKG_VERSION}
+    if [ ! -d ${PKG_NAME} ]; then
+        git clone https://github.com/morevnaproject/mlt
+    fi
+    cd mlt
+    [ ! -e config.cache ] || rm config.cache
+    #autoreconf -i --verbose  # does this really required?
+    rm -rf /usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib/libmlt* || true
+    rm -rf /usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin/libmlt* || true
+    ./configure \
+        --prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
+        --exec-prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
+        --bindir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin \
+        --sbindir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/sbin \
+        --libexecdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib \
+        --datadir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share \
+        --localstatedir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/var \
+        --sysconfdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/etc \
+        --datarootdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share \
+        --docdir=/usr/share/doc/mingw-synfig -C \
+        --build=i686-pc-cygwin --host=${TOOLCHAIN_HOST} \
+        --avformat-shared=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/ \
+        --enable-gpl --disable-decklink \
+        --target-os=MinGW --target-arch=$EXT_ARCH \
+        #$DEBUG
+        
+    if [ $ARCH == "64" ]; then
+        touch src/modules/disable-motion_est
+        touch src/modules/disable-xine
+    fi
+
+    make all
+    make install
+
+    mv /usr/${TOOLCHAIN_HOST}/sys-root/mingw/melt.exe /usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin
+    mv /usr/${TOOLCHAIN_HOST}/sys-root/mingw/libmlt*.dll /usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin
+
+    mkdir -p /usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin/lib || true
+    mkdir -p /usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin/share || true
+    cp -rf /usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib/mlt /usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin/lib/
+    cp -rf /usr/${TOOLCHAIN_HOST}/sys-root/mingw/share/mlt /usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin/share/
+
+fi
+}
+
+mkffmpeg()
+{
+    export FFMPEG_VERSION=2.2.2
+    if ! pkg-config libswscale --exact-version=${FFMPEG_VERSION}  --print-errors; then
+        pushd $WORKSPACE
+        [ -e ffmpeg-${FFMPEG_VERSION}-win${ARCH}-dev.7z ] || wget http://ffmpeg.zeranoe.com/builds/win${ARCH}/dev/ffmpeg-${FFMPEG_VERSION}-win${ARCH}-dev.7z
+        [ -e ffmpeg-${FFMPEG_VERSION}-win${ARCH}-shared.7z ] || wget http://ffmpeg.zeranoe.com/builds/win${ARCH}/shared/ffmpeg-${FFMPEG_VERSION}-win${ARCH}-shared.7z
+        [ ! -d ffmpeg ] || rm -rf ffmpeg
+        mkdir -p ffmpeg
+        cd ffmpeg
+        $SZIP_BINARY x ../ffmpeg-${FFMPEG_VERSION}-win${ARCH}-dev.7z
+        cp -rf ffmpeg-${FFMPEG_VERSION}-win${ARCH}-dev/include/* /usr/${TOOLCHAIN_HOST}/sys-root/mingw/include/
+        cp -rf ffmpeg-${FFMPEG_VERSION}-win${ARCH}-dev/lib/* /usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib/
+        $SZIP_BINARY x ../ffmpeg-${FFMPEG_VERSION}-win${ARCH}-shared.7z
+        cp -rf ffmpeg-${FFMPEG_VERSION}-win${ARCH}-shared/bin/ffmpeg.exe /usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin
+        cp -rf ffmpeg-${FFMPEG_VERSION}-win${ARCH}-shared/bin/*.dll /usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin
+        mkdir -p /usr/${TOOLCHAIN_HOST}/sys-root/mingw/share/ffmpeg/presets/ || true
+        cp -rf ffmpeg-${FFMPEG_VERSION}-win${ARCH}-shared/presets/* /usr/${TOOLCHAIN_HOST}/sys-root/mingw/share/ffmpeg/presets/
+
+		for PKG in libswscale libavformat libavdevice; do
+			cat > /usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib/pkgconfig/${PKG}.pc <<EOF
+prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw
+exec_prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw
+libdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib
+includedir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/include
+
+Name: ${PKG}
+Description: FFMpeg
+Version: ${FFMPEG_VERSION}
+
+EOF
+		done
+        popd
+    fi
 }
 
 fedora-mingw-install()
@@ -410,7 +652,7 @@ chmod a+x /usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin/*.dll
 mkprep()
 {
 
-export PREP_VERSION=4
+export PREP_VERSION=5
 
 if [[ `cat /prep-done` != "${PREP_VERSION}" ]]; then
 
@@ -478,6 +720,9 @@ fedora-mingw-install mingw${ARCH}-pango
 fedora-mingw-install mingw${ARCH}-boost
 fedora-mingw-install mingw${ARCH}-libjpeg-turbo
 fedora-mingw-install mingw${ARCH}-gtkmm24
+fedora-mingw-install mingw${ARCH}-dlfcn
+fedora-mingw-install mingw${ARCH}-SDL
+cp /usr/${TOOLCHAIN_HOST}/sys-root/mingw/include/SDL/* /usr/${TOOLCHAIN_HOST}/sys-root/mingw/include/
 
 # Somehow this is required too...
 fedora-mingw-install mingw${ARCH}-pcre
@@ -485,80 +730,6 @@ fedora-mingw-install mingw${ARCH}-pcre
 # Dependencies for magick++
 fedora-mingw-install mingw${ARCH}-libltdl
 fedora-mingw-install mingw${ARCH}-libtiff
-
-prepare_mingw_env
-
-# magick++
-mkimagemagick
-
-if false; then
-
-# cygport stuff
-
-#CYGPORT_MIRROR="-s ftp://ftp.cygwinports.org/pub/cygwinports"
-CYGPORT_MIRROR="-s http://mirrors.kernel.org/sources.redhat.com/cygwinports"
-$CYGWIN_SETUP \
--K http://cygwinports.org/ports.gpg $CYGPORT_MIRROR -s http://www.mirrorservice.org/sites/sourceware.org/pub/cygwin/ \
--P git \
--P make \
--P gcc \
--P gdb \
--P intltool \
--P autoconf \
--P automake \
--P libtool \
--P pkg-config \
--P p7zip \
--P ImageMagick \
--P cygport \
--P mm-common \
--P $TOOLCHAIN-libxml2 \
--P $TOOLCHAIN-gcc  \
--P $TOOLCHAIN-gcc-g++  \
--P $TOOLCHAIN-cairo \
--P $TOOLCHAIN-glibmm2.4 \
--P $TOOLCHAIN-pango1.0 \
--P $TOOLCHAIN-gtkmm2.4 \
--q
-
-#objdump -p hello.exe | grep "DLL Name"
-
-#freetype
-if [[ $TOOLCHAIN == "mingw64-i686" ]]; then
-cd $WORKSPACE
-[ ! -d $WORKSPACE/$TOOLCHAIN-freetype2 ] && git clone git://cygwin-ports.git.sourceforge.net/gitroot/cygwin-ports/mingw64-i686-freetype2
-cd $WORKSPACE/$TOOLCHAIN-freetype2
-for action in fetch prep compile install package; do
-    cygport $TOOLCHAIN-freetype2.cygport $action
-done
-tar -C / -jxf $TOOLCHAIN-freetype2-2.4.11-1.tar.bz2
-[ ! -e $TOOLCHAIN-freetype2-debuginfo-2.4.11-1.tar.bz2 ] || tar -C / -jxf $TOOLCHAIN-freetype2-debuginfo-2.4.11-1.tar.bz2
-cd ..
-fi
-
-# libxml++
-[ ! -d $WORKSPACE/$TOOLCHAIN-libxmlpp2.6 ] && cp -rf $SRCPREFIX/autobuild/$TOOLCHAIN-libxmlpp2.6 $WORKSPACE/$TOOLCHAIN-libxmlpp2.6
-cd $WORKSPACE/$TOOLCHAIN-libxmlpp2.6
-for action in fetch prep compile install package; do
-    cygport $TOOLCHAIN-libxml++2.6.cygport $action
-done
-tar -C / -jxf $TOOLCHAIN-libxml++2.6-2.36.0-1.tar.bz2
-[ ! -e $TOOLCHAIN-libxml++2.6-debuginfo-2.36.0-1.tar.bz2 ] || tar -C / -jxf $TOOLCHAIN-libxml++2.6-debuginfo-2.36.0-1.tar.bz2
-cd ..
-
-# boost
-[ ! -d $WORKSPACE/$TOOLCHAIN-boost ] && cp -rf $SRCPREFIX/autobuild/$TOOLCHAIN-boost $WORKSPACE/$TOOLCHAIN-boost
-cd $WORKSPACE/$TOOLCHAIN-boost
-for action in fetch prep compile install package; do
-    cygport $TOOLCHAIN-boost.cygport $action
-done
-tar -C / -jxf $TOOLCHAIN-boost-1.50.0-1.tar.bz2
-cd ..
-
-# there should be no *.la files
-rm -rf /usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib/*.la || true
-
-fi # if false
 
 echo ${PREP_VERSION} > /prep-done
 
@@ -663,16 +834,6 @@ mkdir -p $DISTPREFIX
 
 cd $WORKSPACE
 
-[ -e ffmpeg-latest-win32-static.7z ] || wget http://ffmpeg.zeranoe.com/builds/win32/static/ffmpeg-latest-win32-static.7z
-[ ! -d ffmpeg ] || rm -rf ffmpeg
-mkdir -p ffmpeg
-cd ffmpeg
-7z e ../ffmpeg-latest-win32-static.7z
-cp ffmpeg.exe $DISTPREFIX/bin
-cp *.txt $DISTPREFIX/licenses
-cd ..
-rm -rf ffmpeg
-
 [ -e portable-python-3.2.5.1.zip ] || wget http://download.tuxfamily.org/synfig/packages/sources/portable-python-3.2.5.1.zip
 [ ! -d python ] || rm -rf python
 unzip portable-python-3.2.5.1.zip
@@ -688,12 +849,15 @@ cp -rf $SRCPREFIX/synfig-studio/COPYING $DISTPREFIX/licenses/synfigstudio.txt
 #cp -rf $MINGWPREFIX/bin/*.dll $DISTPREFIX/bin/
 [ -d ${PREFIX}/bin ] || mkdir -p ${PREFIX}/bin
 for file in \
+   av*.dll \
+   ffmpeg.exe \
    iconv.dll \
    libatk-\*.dll \
    libatkmm-1.6-1.dll \
    libboost_program_options\*.dll \
    libbz2\*.dll \
    libcairo\*.dll \
+   libdl.dll \
    libexpat\*.dll \
    libffi\*.dll \
    libfontconfig\*.dll \
@@ -716,27 +880,38 @@ for file in \
    libltdl*.dll \
    liblzma\*.dll \
    libMagick*.dll \
+   libmlt*.dll \
+   libogg*.dll \
    libpango\*.dll \
    libpixman\*.dll \
    libpng\*.dll \
+   libsamplerate*.dll \
    libsigc\*.dll \
+   libsox*.dll \
    libstdc++\*.dll \
    libsynfig\*.dll \
    libtiff\*.dll \
    libturbojpeg.dll \
+   libvorbis*.dll \
    libwinpthread*.dll \
    libxml2\*.dll \
    libxml++\*.dll \
    libz\*.dll \
+   postproc*.dll \
    pthread\*.dll \
+   SDL.dll \
+   swscale*.dll \
+   swresample*.dll \
    zlib\*.dll \
    convert.exe \
    pango-querymodules.exe \
    synfig.exe \
    synfigstudio.exe \
+   lib \
+   share \
 # this extra line is required!
 do
-	cp $MINGWPREFIX/bin/$file $DISTPREFIX/bin || true
+	cp -rf $MINGWPREFIX/bin/$file $DISTPREFIX/bin || true
 done
 cp -rf $MINGWPREFIX/etc $DISTPREFIX
 #cp -rf $MINGWPREFIX/lib/gdk-pixbuf-2.0 $DISTPREFIX/lib
@@ -782,7 +957,7 @@ cd $DISTPREFIX
 #generate file lists
 
 gen_list_nsh bin bin
-sed -i '/ffmpeg\.exe/d' bin.nsh		# exclude ffmpeg from he list of binaries - it will go into separate group
+sed -i '/ffmpeg\.exe/d' bin.nsh		# exclude ffmpeg from the list of binaries - it will go into separate group
 gen_list_nsh etc etc
 gen_list_nsh examples examples
 gen_list_nsh lib/gtk-2.0 lib-gtk
@@ -815,7 +990,13 @@ echo
 mkall()
 {
 	mkprep
+	mkffmpeg
 	prepare_mingw_env
+	mkimagemagick
+	mklibsamplerate
+	mksox
+	mklibvorbis
+	mkmlt
 	mketl
 	mksynfig
 	mksynfigstudio

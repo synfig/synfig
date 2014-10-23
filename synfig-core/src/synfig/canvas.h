@@ -131,6 +131,7 @@ class ContextParams;
 class Context;
 class GUID;
 class Canvas;
+class SoundProcessor;
 
 typedef        etl::handle<Canvas>     CanvasHandle;
 
@@ -670,6 +671,9 @@ protected:
 	//! stores it in the passed Time Set \set
 	//! \see Node::get_times()
 	virtual void get_times_vfunc(Node::time_set &set) const;
+
+public:
+	void fill_sound_processor(SoundProcessor &soundProcessor) const;
 }; // END of class Canvas
 
 }; // END of namespace synfig
