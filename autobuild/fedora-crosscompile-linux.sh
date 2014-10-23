@@ -361,6 +361,11 @@ ln -sf ${SYSPREFIX}/usr/bin/gcc ${SYSPREFIX}/usr/bin/cc
 #cp ${SYSPREFIX}/usr/lib/libltdl* ${PREFIX}/lib/
 cp ${SYSPREFIX}/usr/lib/libpng12* ${PREFIX}/lib/
 cp ${SYSPREFIX}/usr/lib/libdb-4*.so ${PREFIX}/lib/
+cp ${SYSPREFIX}/usr/lib/libdb-4*.so ${PREFIX}/lib/
+# SDL deps
+cp ${SYSPREFIX}/usr/lib/libdirect-*.so* ${PREFIX}/lib/
+cp ${SYSPREFIX}/usr/lib/libdirectfb-*.so* ${PREFIX}/lib/
+cp ${SYSPREFIX}/usr/lib/libfusion*.so* ${PREFIX}/lib/
 
 #RANDOM_SYSPREFIX=`tr -cd '[:alnum:]' < /dev/urandom | fold -w8 | head -n1`
 #DATE=`date +%s`
@@ -936,8 +941,36 @@ if [ ! -f ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done ]; then
 fi
 }
 
+mksdl()
+{
+	
+PKG_NAME=SDL
+PKG_VERSION=1.2.15
+TAREXT=gz
+
+if [ ! -f ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done ]; then
+
+    cd $CACHEDIR
+    [ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://www.libsdl.org/release/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    cd $SRCPREFIX
+    if [ ! -d ${PKG_NAME}-${PKG_VERSION} ]; then
+        tar -xzf $CACHEDIR/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    fi
+    cd ${PKG_NAME}-${PKG_VERSION}
+    [ ! -e config.cache ] || rm config.cache
+    
+	./configure --host=${HOST} --disable-static --enable-shared --prefix=${PREFIX}/
+	make -j${THREADS}
+	make install
+	cd ..
+	
+	touch ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done
+fi
+}
+
 mkmlt()
 {
+mksdl
 mkffmpeg
 mklibsamplerate
 mklibvorbis
@@ -947,7 +980,7 @@ PKG_NAME=mlt
 PKG_VERSION=0.9.1
 TAREXT=gz
 
-if ! pkg-config ${PKG_NAME}\+\+ --exact-version=${PKG_VERSION}  --print-errors; then
+if [ ! -f ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done ]; then
 
     #export CPPFLAGS=" -I/usr/${TOOLCHAIN_HOST}/sys-root/mingw/include/SDL $CPPFLAGS"
     #export LDFLAGS=" $LDFLAGS -lmingw32 -lSDLmain -lSDL -mwindows"
@@ -962,12 +995,19 @@ if ! pkg-config ${PKG_NAME}\+\+ --exact-version=${PKG_VERSION}  --print-errors; 
     ./configure \
         --host=${HOST} --prefix=${PREFIX} --includedir=${PREFIX}/include \
         --avformat-shared=${PREFIX}/ \
+        --enable-sdl \
         --enable-gpl --disable-decklink \
         $DEBUG
 
     make all -j$THREADS
     make install -j$THREADS
-
+    
+    if [ ! -f ${PREFIX}/lib/mlt/libmltsdl.so ]; then
+		echo "ERROR: No SDL module compiled for MLT."
+		exit 1
+    fi
+	
+	touch ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done
 fi
 }
 
