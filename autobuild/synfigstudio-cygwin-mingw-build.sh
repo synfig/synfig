@@ -338,7 +338,7 @@ TAREXT=bz2
 
 if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION%-*}  --print-errors; then
     cd $WORKSPACE
-    [ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://www.imagemagick.org/download/legacy/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    [ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://www.imagemagick.org/download/releases/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
     if [ ! -d ${PKG_NAME}-${PKG_VERSION} ]; then
         tar -xjf ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
         cd ${PKG_NAME}-${PKG_VERSION}
