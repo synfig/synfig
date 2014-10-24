@@ -453,8 +453,13 @@ Action::ValueDescSet::prepare()
 	 && value_desc.get_value_node()->get_type()==type_bline_point)
 	{
 		ValueNode_Composite::Handle composite_value_node = ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node());
-		int index = value_desc.parent_is_value_desc()
+		int index1 = value_desc.parent_is_value_desc()
 				  ? composite_value_node->get_link_index_from_name(value_desc.get_sub_name())
+				  : -1;
+		int index2 = value_desc.parent_is_value_desc()
+				  && value_desc.get_sub_name() == "t2"
+				  && (!value.get(BLinePoint()).get_split_tangent_radius() || !value.get(BLinePoint()).get_split_tangent_angle())
+				  ? composite_value_node->get_link_index_from_name("t1")
 				  : -1;
 
 		ValueBase components[8];
@@ -471,7 +476,7 @@ Action::ValueDescSet::prepare()
 		n_components=8;
 		for(int i=0;i<n_components;i++)
 		{
-			if (index < 0 || index == order[i])
+			if (index1 < 0 || index1 == order[i] || index2 == order[i])
 			{
 				ValueDesc component_value_desc(ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node()),order[i]);
 				Action::Handle action(Action::create("ValueDescSet"));
