@@ -364,7 +364,7 @@ ln -sf ${SYSPREFIX}/usr/bin/gcc ${SYSPREFIX}/usr/bin/cc
 #cp ${SYSPREFIX}/usr/lib/libltdl* ${PREFIX}/lib/
 cp ${SYSPREFIX}/usr/lib/libpng12* ${PREFIX}/lib/
 cp ${SYSPREFIX}/usr/lib/libdb-4*.so ${PREFIX}/lib/
-cp ${SYSPREFIX}/usr/lib/libdb-4*.so ${PREFIX}/lib/
+cp ${SYSPREFIX}/lib/libpcre.so* ${PREFIX}/lib/
 # SDL deps
 cp ${SYSPREFIX}/usr/lib/libdirect-*.so* ${PREFIX}/lib/
 cp ${SYSPREFIX}/usr/lib/libdirectfb-*.so* ${PREFIX}/lib/
