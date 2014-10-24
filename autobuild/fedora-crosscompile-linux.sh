@@ -1424,6 +1424,8 @@ SYSPREFIX=\`dirname "\$0"\`
 export LD_LIBRARY_PATH=\${SYSPREFIX}/lib:\$LD_LIBRARY_PATH
 export SYNFIG_ROOT=\${SYSPREFIX}/
 export SYNFIG_MODULE_LIST=\${SYSPREFIX}/etc/synfig_modules.cfg
+export MLT_DATA="\${SYSPREFIX}/share/mlt/"
+export MLT_REPOSITORY="\${SYSPREFIX}/lib/mlt/"
 
 \$SYSPREFIX/bin/synfig "\$@"
 EOF
@@ -1449,6 +1451,8 @@ export SYNFIG_ROOT=\${SYSPREFIX}/
 export SYNFIG_MODULE_LIST=\${SYSPREFIX}/etc/synfig_modules.cfg
 #export GDK_PIXBUF_MODULEDIR="\${SYSPREFIX}/lib/gtk-2.0/2.10.0/loaders"
 export FONTCONFIG_PATH="\${SYSPREFIX}/etc/fonts"
+export MLT_DATA="\${SYSPREFIX}/share/mlt/"
+export MLT_REPOSITORY="\${SYSPREFIX}/lib/mlt/"
 
 # Create install-location-dependent config files for Pango and GDK image loaders
 # We have to do this every time because its possible that SYSPREFIX has changed
