@@ -653,22 +653,20 @@ Duckmatic::update_ducks()
 				DuckList::iterator iter;
 				for (iter=duck_list.begin(); iter!=duck_list.end(); iter++)
 				{
-					if ( (*iter)->get_origin_duck()==duck
-					  && (*iter)->get_value_desc().parent_is_value_desc()
-					  /*&& !duck_is_selected(*iter)*/ )
+					if ( (*iter)->get_origin_duck()==duck /*&& !duck_is_selected(*iter)*/ )
 					{
 						ValueNode::Handle duck_value_node = (*iter)->get_value_desc().get_value_node();
-						ValueNode_Composite::Handle duck_value_node_composite = ValueNode_Composite::Handle::cast_dynamic(duck_value_node);
-						if (duck_value_node_composite)
+						if (duck_value_node)
 						{
-							ValueNode::Handle sub_duck_value_node = duck_value_node_composite->get_link((*iter)->get_value_desc().get_sub_name());
+							ValueNode_Composite::Handle duck_value_node_composite = ValueNode_Composite::Handle::cast_dynamic(duck_value_node);
+							ValueNode::Handle sub_duck_value_node =
+									duck_value_node_composite && (*iter)->get_value_desc().parent_is_value_desc()
+								  ? ValueNode::Handle(duck_value_node_composite->get_link( (*iter)->get_value_desc().get_sub_name() ))
+								  : duck_value_node;
 							if (sub_duck_value_node)
 							{
-								ValueNode_BLineCalcTangent::Handle bline_tangent =
-									ValueNode_BLineCalcTangent::Handle::cast_dynamic(sub_duck_value_node);
-								ValueNode_BLineCalcWidth::Handle bline_width =
-									ValueNode_BLineCalcWidth::Handle::cast_dynamic(sub_duck_value_node);
-								if (bline_tangent)
+								if ( ValueNode_BLineCalcTangent::Handle bline_tangent =
+										ValueNode_BLineCalcTangent::Handle::cast_dynamic(sub_duck_value_node) )
 								{
 									if (bline_tangent->get_link("amount") == vertex_amount_value_node)
 									{
@@ -687,7 +685,8 @@ Duckmatic::update_ducks()
 											(*iter)->set_point((*bline_tangent)(time, amount).get(Vector()));
 									}
 								} else
-								if (bline_width)
+								if ( ValueNode_BLineCalcWidth::Handle bline_width =
+										ValueNode_BLineCalcWidth::Handle::cast_dynamic(sub_duck_value_node) )
 								{
 									if (bline_width->get_link("amount") == vertex_amount_value_node)
 										(*iter)->set_point(Point((*bline_width)(time, amount).get(Real()), 0));
