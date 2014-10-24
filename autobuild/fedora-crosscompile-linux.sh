@@ -3,6 +3,9 @@
 # TODO: LD_PRELOAD wrapper
 # TODO: Bundle ALL dependent lib (libpng issue)
 # TODO: GTK theming issues
+# TODO: FFmpeg/libx264 - stick to particular version
+# TODO: FFmpeg/libx264/mlt - cache sources
+# TODO: Debug builds for dependent libraries
 
 set -e
 
