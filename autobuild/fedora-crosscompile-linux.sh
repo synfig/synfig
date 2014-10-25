@@ -998,7 +998,7 @@ if [ ! -f ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done ]; then
     ./configure \
         --host=${HOST} --prefix=${PREFIX} --includedir=${PREFIX}/include \
         --avformat-shared=${PREFIX}/ \
-        --enable-sdl \
+        --target-arch=${RPM_ARCH} \
         --enable-gpl --disable-decklink \
         $DEBUG
 
