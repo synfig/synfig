@@ -211,7 +211,7 @@ magickpp_trgt::set_rend_desc(RendDesc *given_desc)
 }
 
 bool
-magickpp_trgt::init()
+magickpp_trgt::init(synfig::ProgressCallback *cb)
 {
 	width = desc.get_w();
 	height = desc.get_h();

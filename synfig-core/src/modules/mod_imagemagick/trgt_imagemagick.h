@@ -61,7 +61,7 @@ public:
 	virtual ~imagemagick_trgt();
 
 	virtual bool set_rend_desc(synfig::RendDesc *desc);
-	virtual bool init();
+	virtual bool init(synfig::ProgressCallback *cb);
 	virtual bool start_frame(synfig::ProgressCallback *cb);
 	virtual void end_frame();
 	virtual synfig::Color * start_scanline(int scanline);

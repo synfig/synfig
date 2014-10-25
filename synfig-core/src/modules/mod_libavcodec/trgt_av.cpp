@@ -969,7 +969,7 @@ Target_LibAVCodec::end_scanline()
 	return true;
 }
 
-bool Target_LibAVCodec::init()
+bool Target_LibAVCodec::init(synfig::ProgressCallback *cb)
 {
 	//hardcoded test for mpeg
 	if(!data->Initialize(filename.c_str(),NULL))

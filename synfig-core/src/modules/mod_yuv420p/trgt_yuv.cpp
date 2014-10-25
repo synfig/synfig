@@ -75,7 +75,7 @@ yuv::~yuv()
 }
 
 bool
-yuv::init()
+yuv::init(synfig::ProgressCallback *cb)
 {
 	if (!file)
 		return false;
