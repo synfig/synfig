@@ -143,7 +143,7 @@ dv_trgt::set_rend_desc(RendDesc *given_desc)
 }
 
 bool
-dv_trgt::init()
+dv_trgt::init(synfig::ProgressCallback *cb)
 {
 	imagecount=desc.get_frame_start();
 

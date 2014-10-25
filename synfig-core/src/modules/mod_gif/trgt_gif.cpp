@@ -103,7 +103,7 @@ gif::set_rend_desc(RendDesc *given_desc)
 }
 
 bool
-gif::init()
+gif::init(synfig::ProgressCallback *cb)
 {
 	int w=desc.get_w(),h=desc.get_h();
 

@@ -57,7 +57,7 @@ public:
 					  const synfig::TargetParam& /* params */);
 	virtual ~Target_LibAVCodec();
 
-	virtual bool init();
+	virtual bool init(synfig::ProgressCallback *cb);
 
 	virtual bool set_rend_desc(synfig::RendDesc *desc);
 	virtual bool start_frame(synfig::ProgressCallback *cb);

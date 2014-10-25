@@ -119,7 +119,7 @@ imagemagick_trgt::set_rend_desc(RendDesc *given_desc)
 }
 
 bool
-imagemagick_trgt::init()
+imagemagick_trgt::init(synfig::ProgressCallback *cb)
 {
 	imagecount=desc.get_frame_start();
 	if(desc.get_frame_end()-desc.get_frame_start()>0)
