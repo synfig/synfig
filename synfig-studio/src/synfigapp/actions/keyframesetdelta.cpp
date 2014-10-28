@@ -30,11 +30,7 @@
 #endif
 
 #include "keyframesetdelta.h"
-#include <synfigapp/canvasinterface.h>
-#include <synfig/valuenode_dynamiclist.h>
-#include <synfig/valuenode_animated.h>
-#include "activepointsetsmart.h"
-#include "waypointsetsmart.h"
+#include "keyframeset.h"
 
 #include <synfigapp/general.h>
 
@@ -119,146 +115,25 @@ Action::KeyframeSetDelta::is_ready()const
 void
 Action::KeyframeSetDelta::prepare()
 {
-	clear();
-	value_desc_list.clear();
-	get_canvas_interface()->find_important_value_descs(value_desc_list);
+	KeyframeList &list = get_canvas()->keyframe_list();
+	KeyframeList::iterator next = get_canvas()->keyframe_list().find(keyframe);
+	++next;
+	if (next != list.end()) {
+		if (fabs(delta) > 0.00000001) {
+			for(KeyframeList::iterator i = next; i != list.end(); ++i) {
+				Keyframe keyframe(*i);
+				keyframe.set_time( keyframe.get_time() + delta );
 
+				Action::Handle action(KeyframeSet::create());
+				action->set_param("canvas",get_canvas());
+				action->set_param("canvas_interface",get_canvas_interface());
+				action->set_param("keyframe", keyframe);
+				assert(action->is_ready());
+				if(!action->is_ready())
+					throw Error(Error::TYPE_NOTREADY);
 
-	Time time(get_canvas()->keyframe_list().find(keyframe)->get_time());
-
-	std::vector<synfigapp::ValueDesc>::iterator iter;
-	for(iter=value_desc_list.begin();iter!=value_desc_list.end();++iter)
-	{
-		ValueDesc& value_desc(*iter);
-		ValueNode_Animated::Handle value_node(
-			ValueNode_Animated::Handle::cast_dynamic(value_desc.get_value_node())
-		);
-
-		if(!value_node)
-			continue;
-
-		try{
-			value_node->find(time);
-			// if we got to this point, then we know that
-			// a waypoint already exists here and we don't
-			// need to add a new one.
-			continue;
-		}catch(...)
-		{
-			// Make sure there is something previous
-			try{
-				value_node->find_prev(time);
-			}catch(...)
-			{
-				continue;
+				if (delta > 0) add_action(action); else add_action_front(action);
 			}
 		}
-		Action::Handle action(Action::create("WaypointSetSmart"));
-
-		action->set_param("canvas",get_canvas());
-		action->set_param("canvas_interface",get_canvas_interface());
-		action->set_param("value_node",ValueNode::Handle::cast_static(value_node));
-
-		action->set_param("time",time);
-
-		assert(action->is_ready());
-		if(!action->is_ready())
-			throw Error(Error::TYPE_NOTREADY);
-
-		add_action(action);
 	}
-}
-
-void
-Action::KeyframeSetDelta::perform()
-{
-	if(!delta)
-		return;
-	Action::Super::perform();
-
-//	Time location(keyframe.get_time());
-	Time location(get_canvas()->keyframe_list().find(keyframe)->get_time());
-// 	This line sets delta to 0s regardless to any previous value of delta.
-//	I think it was here for symmetry to the undo() operation.
-//	It was causing that the Set delta operation was faulty. Now works!
-//	Time delta(delta);
-
-	get_canvas()->keyframe_list().insert_time(location,delta);
-
-	std::vector<synfigapp::ValueDesc>::iterator iter;
-	for(iter=value_desc_list.begin();iter!=value_desc_list.end();++iter)
-	{
-		ValueDesc& value_desc(*iter);
-		if(!value_desc.is_value_node())
-			continue;
-		ValueNode_Animated::Handle animated(
-			ValueNode_Animated::Handle::cast_dynamic(value_desc.get_value_node())
-		);
-		if(animated)
-		{
-			animated->insert_time(location,delta);
-			continue;
-		}
-		ValueNode_DynamicList::Handle dyn_list(
-			ValueNode_DynamicList::Handle::cast_dynamic(value_desc.get_value_node())
-		);
-		if(dyn_list)
-		{
-			dyn_list->insert_time(location,delta);
-			continue;
-		}
-	}
-
-	// Signal that something has changed
-	if(get_canvas_interface())
-	{
-		get_canvas_interface()->signal_keyframe_changed()(keyframe);
-	}
-	else synfig::warning("CanvasInterface not set on action");
-}
-
-void
-Action::KeyframeSetDelta::undo()
-{
-	if(!delta)
-		return;
-
-//	Time location(keyframe.get_time());
-	Time location(get_canvas()->keyframe_list().find(keyframe)->get_time());
-	Time delta2(-delta);
-
-	get_canvas()->keyframe_list().insert_time(location,delta2);
-
-	std::vector<synfigapp::ValueDesc>::iterator iter;
-	for(iter=value_desc_list.begin();iter!=value_desc_list.end();++iter)
-	{
-		ValueDesc& value_desc(*iter);
-		if(!value_desc.is_value_node())
-			continue;
-		ValueNode_Animated::Handle animated(
-			ValueNode_Animated::Handle::cast_dynamic(value_desc.get_value_node())
-		);
-		if(animated)
-		{
-			animated->insert_time(location,delta2);
-			continue;
-		}
-		ValueNode_DynamicList::Handle dyn_list(
-			ValueNode_DynamicList::Handle::cast_dynamic(value_desc.get_value_node())
-		);
-		if(dyn_list)
-		{
-			dyn_list->insert_time(location,delta2);
-			continue;
-		}
-	}
-
-	Action::Super::undo();
-
-	// Signal that something has changed
-	if(get_canvas_interface())
-	{
-		get_canvas_interface()->signal_keyframe_changed()(keyframe);
-	}
-	else synfig::warning("CanvasInterface not set on action");
 }
