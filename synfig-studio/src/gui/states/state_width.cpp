@@ -583,8 +583,7 @@ StateWidth_Context::event_mouse_handler(const Smach::event& x)
 		{
 			//for each duck modify IT!!!
 			ValueDesc desc = i->first->get_value_desc();
-			if(	desc.get_value_type() == type_real )
-			{
+			if (desc.get_value_type() == type_real) {
 				Action::Handle action(Action::create("ValueDescSet"));
 				assert(action);
 
@@ -593,6 +592,31 @@ StateWidth_Context::event_mouse_handler(const Smach::event& x)
 
 				action->set_param("value_desc",desc);
 				action->set_param("new_value",ValueBase(i->second));
+				action->set_param("time",get_canvas_view()->get_time());
+
+				if(!action->is_ready() || !get_canvas_view()->get_instance()->perform_action(action))
+				{
+					group.cancel();
+					synfig::warning("Changing the width action has failed");
+					return Smach::RESULT_ERROR;
+				}
+			}
+			else
+			if (desc.get_value_type() == type_bline_point
+			 && desc.parent_is_value_desc()
+			 && desc.get_sub_name() == "width")
+			{
+				BLinePoint p;
+				p.set_width(i->second);
+
+				Action::Handle action(Action::create("ValueDescSet"));
+				assert(action);
+
+				action->set_param("canvas",get_canvas());
+				action->set_param("canvas_interface",get_canvas_interface());
+
+				action->set_param("value_desc",desc);
+				action->set_param("new_value",ValueBase(p));
 				action->set_param("time",get_canvas_view()->get_time());
 
 				if(!action->is_ready() || !get_canvas_view()->get_instance()->perform_action(action))
