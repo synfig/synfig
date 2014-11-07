@@ -69,7 +69,7 @@
 #include "workarearenderer/renderer_canvas.h"
 #include "workarearenderer/renderer_grid.h"
 #include "workarearenderer/renderer_guides.h"
-#include "workarearenderer/renderer_timecode.h"
+#include "workarearenderer/renderer_keyframe.h"
 #include "workarearenderer/renderer_bonesetup.h"
 #include "workarearenderer/renderer_ducks.h"
 #include "workarearenderer/renderer_dragbox.h"
@@ -999,8 +999,8 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	jack_offset(0),
 	tile_w(TILE_SIZE),
 	tile_h(TILE_SIZE),
-	timecode_width(0),
-	timecode_height(0),
+	keyframe_width(0),
+	keyframe_height(0),
 	bonesetup_width(0),
 	bonesetup_height(0)
 {
@@ -1037,7 +1037,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	insert_renderer(new Renderer_Ducks,		300);
 	insert_renderer(new Renderer_BBox,		399);
 	insert_renderer(new Renderer_Dragbox,	400);
-	insert_renderer(new Renderer_Timecode,	500);
+	insert_renderer(new Renderer_Keyframe,	500);
 	insert_renderer(new Renderer_BoneSetup,	501);
 
 	signal_duck_selection_changed().connect(sigc::mem_fun(*this,&studio::WorkArea::queue_draw));
@@ -3315,12 +3315,21 @@ WorkArea::queue_scroll()
 
 	draw_area_window->scroll(-dx,-dy);
 
-	if (timecode_width && timecode_height)
+	if (keyframe_width && keyframe_height)
 	{
-		drawing_area->queue_draw_area(timecode_x,    timecode_y,    timecode_x+timecode_width,    timecode_y+timecode_height);
-		drawing_area->queue_draw_area(timecode_x-dx, timecode_y-dy, timecode_x-dx+timecode_width, timecode_y-dy+timecode_height);
+		drawing_area->queue_draw_area(keyframe_x, keyframe_y, keyframe_x+keyframe_width, keyframe_y+keyframe_height);
+		drawing_area->queue_draw_area(keyframe_x-dx, keyframe_y-dy, keyframe_x-dx+keyframe_width, keyframe_y-dy+keyframe_height);
 	}
-
+	if (keyframe_prev_width && keyframe_prev_height)
+	{
+		drawing_area->queue_draw_area(keyframe_prev_x, keyframe_prev_y, keyframe_prev_x+keyframe_prev_width, keyframe_prev_y+keyframe_prev_height);
+		drawing_area->queue_draw_area(keyframe_prev_x-dx, keyframe_prev_y-dy, keyframe_prev_x-dx+keyframe_prev_width, keyframe_prev_y-dy+keyframe_prev_height);
+	}
+	if (keyframe_next_width && keyframe_next_height)
+	{
+		drawing_area->queue_draw_area(keyframe_next_x, keyframe_next_y, keyframe_next_x+keyframe_next_width, keyframe_next_y+keyframe_next_height);
+		drawing_area->queue_draw_area(keyframe_next_x-dx, keyframe_next_y-dy, keyframe_next_x-dx+keyframe_next_width, keyframe_next_y-dy+keyframe_next_height);
+	}
 	if (bonesetup_width && bonesetup_height)
 	{
 		drawing_area->queue_draw_area(bonesetup_x,    bonesetup_y,    bonesetup_x+bonesetup_width,    bonesetup_y+bonesetup_height);

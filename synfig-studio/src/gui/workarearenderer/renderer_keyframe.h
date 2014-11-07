@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file renderer_timecode.h
+/*!	\file renderer_keyframe.h
 **	\brief Template Header
 **
 **	$Id$
@@ -22,8 +22,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_RENDERER_TIMECODE_H
-#define __SYNFIG_RENDERER_TIMECODE_H
+#ifndef __SYNFIG_RENDERER_KEYFRAME_H
+#define __SYNFIG_RENDERER_KEYFRAME_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -32,21 +32,17 @@
 
 /* === M A C R O S ========================================================= */
 
-static const int timecode_x  = 4, timecode_y  =  4;
-
 /* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 namespace studio {
 
-class Renderer_Timecode : public studio::WorkAreaRenderer
+class Renderer_Keyframe : public studio::WorkAreaRenderer
 {
 
 public:
-	~Renderer_Timecode();
-
-	synfig::Vector get_grid_size()const;
+	~Renderer_Keyframe();
 
 	void render_vfunc(const Glib::RefPtr<Gdk::Drawable>& drawable,const Gdk::Rectangle& expose_area	);
 
