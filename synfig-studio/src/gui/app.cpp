@@ -54,6 +54,7 @@
 #include <gtkmm/accelmap.h>
 #include <gtkmm/uimanager.h>
 #include <gtkmm/textview.h>
+#include <gtkmm/filefilter.h>
 
 #include <glibmm/main.h>
 #include <glibmm/thread.h>
@@ -2190,17 +2191,73 @@ App::dialog_open_file(const std::string &title, std::string &filename, std::stri
 
 	prev_path = absolute_path(prev_path);
 
-    Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(*App::main_window, title, Gtk::FILE_CHOOSER_ACTION_OPEN);
+    Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(*App::main_window,
+				title, Gtk::FILE_CHOOSER_ACTION_OPEN);
 
+		dialog->set_transient_for(*App::main_window);
     dialog->set_current_folder(prev_path);
     dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
-    dialog->add_button(Gtk::Stock::OPEN,   Gtk::RESPONSE_ACCEPT);
+    dialog->add_button(Gtk::StockID(_("Import")), Gtk::RESPONSE_ACCEPT);
+
+		// 0 All supported files
+		// 0.1 Synfig documents. sfg is not supported to import
+		Glib::RefPtr<Gtk::FileFilter> filter_supported = Gtk::FileFilter::create();
+		filter_supported->set_name("Valid files");
+		filter_supported->add_mime_type("application/x-sif");
+		filter_supported->add_pattern("*.sif");
+		filter_supported->add_pattern("*.sifz");
+		// 0.2 Image files
+		filter_supported->add_mime_type("image/png");
+		filter_supported->add_mime_type("image/jpeg");
+		filter_supported->add_pattern("*.png");
+		filter_supported->add_pattern("*.jpeg");
+		filter_supported->add_pattern("*.jpg");
+		// 0.3 Sound files
+		filter_supported->add_mime_type("audio/x-vorbis+ogg");
+		filter_supported->add_mime_type("audio/mp3");
+		filter_supported->add_mime_type("audio/wav");
+
+		// Sub fileters
+		// 1 Synfig documents. sfg is not supported to import
+		Glib::RefPtr<Gtk::FileFilter> filter_synfig = Gtk::FileFilter::create();
+		filter_synfig->set_name("Synfig documents");
+		filter_synfig->add_mime_type("application/x-sif");
+		filter_synfig->add_pattern("*.sif");
+		filter_synfig->add_pattern("*.sifz");
+
+		// 2 Image files
+		Glib::RefPtr<Gtk::FileFilter> filter_image = Gtk::FileFilter::create();
+		filter_image->set_name("Images");
+		filter_image->add_mime_type("image/png");
+		filter_image->add_mime_type("image/jpeg");
+		filter_image->add_mime_type("image/jpg");
+		filter_image->add_pattern("*.png");
+		filter_image->add_pattern("*.jpeg");
+		filter_image->add_pattern("*.jpg");
+
+		// 3 Sound files
+		Glib::RefPtr<Gtk::FileFilter> filter_sound = Gtk::FileFilter::create();
+		filter_sound->set_name("Sounds");
+		filter_sound->add_mime_type("audio/x-vorbis+ogg");
+		filter_sound->add_mime_type("audio/mp3");
+		filter_sound->add_mime_type("audio/wav");
+
+		// 4 Any files
+		Glib::RefPtr<Gtk::FileFilter> filter_any = Gtk::FileFilter::create();
+		filter_any->set_name("Any files");
+		filter_any->add_pattern("*");
+
+		dialog->add_filter(filter_supported);
+		dialog->add_filter(filter_synfig);
+		dialog->add_filter(filter_image);
+		dialog->add_filter(filter_sound);
+		dialog->add_filter(filter_any);
 
     if (filename.empty())
 		dialog->set_filename(prev_path);
-	else if (is_absolute_path(filename))
+		else if (is_absolute_path(filename))
 		dialog->set_filename(filename);
-	else
+		else
 		dialog->set_filename(prev_path + ETL_DIRECTORY_SEPARATOR + filename);
 
     if(dialog->run() == GTK_RESPONSE_ACCEPT) {
