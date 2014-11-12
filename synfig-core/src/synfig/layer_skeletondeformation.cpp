@@ -125,10 +125,12 @@ struct Layer_SkeletonDeformation::GridPoint {
 	Vector initial;
 	Vector summary;
 	Real summary_weight;
+	bool used;
+
 	inline GridPoint():
-		summary_weight(0.0) { }
+		summary_weight(0.0), used(false) { }
 	inline explicit GridPoint(const Vector &initial):
-		initial(initial), summary_weight(0.0) { }
+		initial(initial), summary_weight(0.0), used(false) { }
 	Vector get_average()const {
 		static const Real precision = 1e-10;
 		return summary_weight > precision ? summary/summary_weight : initial;
@@ -172,6 +174,7 @@ Layer_SkeletonDeformation::prepare_mesh()
 
 	const Real grid_step_x = (grid_p1[0] - grid_p0[0]) / (Real)(grid_side_count_x - 1);
 	const Real grid_step_y = (grid_p1[1] - grid_p0[1]) / (Real)(grid_side_count_y - 1);
+	const Real grid_step_diagonal = sqrt(grid_step_x*grid_step_x + grid_step_y*grid_step_y);
 
 	// build grid
 	std::vector<GridPoint> grid;
@@ -193,6 +196,9 @@ Layer_SkeletonDeformation::prepare_mesh()
 				const BonePair &bone_pair = i->get(BonePair());
 				Bone::Shape shape0 = bone_pair.first.get_shape();
 				Bone::Shape shape1 = bone_pair.second.get_shape();
+				Bone::Shape expandedShape0 = shape0;
+				expandedShape0.r0 += 2.0*grid_step_diagonal;
+				expandedShape0.r1 += 2.0*grid_step_diagonal;
 
 				Matrix into_bone(
 					shape0.p1[0] - shape0.p0[0], shape0.p1[1] - shape0.p0[1], 0.0,
@@ -209,15 +215,20 @@ Layer_SkeletonDeformation::prepare_mesh()
 
 				for(std::vector<GridPoint>::iterator j = grid.begin(); j != grid.end(); ++j)
 				{
-					Real distance = distance_to_line(shape0.p0, shape0.p1, j->initial);
-					if (distance < epsilon) distance = epsilon;
-					Real weight =
-						// 1.0/distance;
-						1.0/(distance*distance);
-						// 1.0/(distance*distance*distance);
-						//exp(-4.0*distance);
-					j->summary += matrix.get_transformed(j->initial) * weight;
-					j->summary_weight += weight;
+					Real percent = Bone::distance_to_shape_center_percent(expandedShape0, j->initial);
+					if (percent > 0.0) {
+						Real distance = distance_to_line(shape0.p0, shape0.p1, j->initial);
+						if (distance < epsilon) distance = epsilon;
+						Real weight =
+							percent/(distance*distance);
+							// 1.0/distance;
+							// 1.0/(distance*distance);
+							// 1.0/(distance*distance*distance);
+							// exp(-4.0*distance);
+						j->summary += matrix.get_transformed(j->initial) * weight;
+						j->summary_weight += weight;
+						j->used = true;
+					}
 				}
 			}
 		}
@@ -234,14 +245,17 @@ Layer_SkeletonDeformation::prepare_mesh()
 	{
 		for(int i = 1; i < grid_side_count_x; ++i)
 		{
-			mesh.triangles.push_back(Mesh::Triangle(
+			int v[] = {
 				(j-1)*grid_side_count_x + (i-1),
-				(j-1)*grid_side_count_x + i,
-				j*grid_side_count_x + (i-1) ));
-			mesh.triangles.push_back(Mesh::Triangle(
-				j*grid_side_count_x + i,
-				j*grid_side_count_x + (i-1),
-				(j-1)*grid_side_count_x + i ));
+				(j-1)*grid_side_count_x +  i,
+				 j   *grid_side_count_x +  i,
+				 j   *grid_side_count_x + (i-1),
+			};
+			if (grid[v[0]].used && grid[v[1]].used && grid[v[2]].used && grid[v[3]].used)
+			{
+				mesh.triangles.push_back(Mesh::Triangle(v[0], v[1], v[3]));
+				mesh.triangles.push_back(Mesh::Triangle(v[1], v[2], v[3]));
+			}
 		}
 	}
 
