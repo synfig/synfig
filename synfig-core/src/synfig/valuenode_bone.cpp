@@ -259,6 +259,7 @@ ValueNode_Bone::ValueNode_Bone(const ValueBase &value, etl::loose_handle<Canvas>
 		set_link("length",ValueNode_Const::create(bone.get_length()));
 		set_link("width",ValueNode_Const::create(bone.get_width()));
 		set_link("tipwidth",ValueNode_Const::create(bone.get_tipwidth()));
+		set_link("order",ValueNode_Const::create(bone.get_order()));
 #endif
 		ValueNode_Bone::ConstHandle parent(ValueNode_Bone::Handle::cast_const(bone.get_parent()));
 		if (!parent) parent = get_root_bone();
@@ -434,7 +435,8 @@ ValueNode_Bone::operator()(Time t)const
 	Real   bone_scalex			((*scalex_	)(t).get(Real()));
 	Real   bone_length			((*length_	)(t).get(Real()));
 	Real   bone_width			((*width_	)(t).get(Real()));
-	Real   bone_tipwidth			((*tipwidth_)(t).get(Real()));
+	Real   bone_tipwidth		((*tipwidth_)(t).get(Real()));
+	Real   bone_order			((*order_)(t).get(Real()));
 	if (getenv("SYNFIG_DEBUG_ANIMATED_MATRIX_CALCULATION")) printf("\n***\n*** %s:%d get_animated_matrix() for %s\n***\n\n", __FILE__, __LINE__, get_bone_name(t).c_str());
 	Matrix bone_animated_matrix	(get_animated_matrix(t, bone_scalex, 1.0, bone_angle, bone_origin, bone_parent));
 	if (getenv("SYNFIG_DEBUG_ANIMATED_MATRIX_CALCULATION")) printf("\n***\n*** %s:%d get_animated_matrix() for %s done\n***\n\n", __FILE__, __LINE__, get_bone_name(t).c_str());
@@ -452,6 +454,7 @@ ValueNode_Bone::operator()(Time t)const
 	ret.set_length			(bone_length);
 	ret.set_width			(bone_width);
 	ret.set_tipwidth		(bone_tipwidth);
+	ret.set_order			(bone_order);
 	ret.set_animated_matrix	(bone_animated_matrix);
 #endif
 
@@ -543,7 +546,8 @@ ValueNode_Bone::set_link_vfunc(int i,ValueNode::Handle value)
 	case 5: CHECK_TYPE_AND_SET_VALUE(width_,	type_real);
 	case 6: CHECK_TYPE_AND_SET_VALUE(scalex_,	type_real);
 	case 7: CHECK_TYPE_AND_SET_VALUE(tipwidth_,	type_real);
-	case 8: CHECK_TYPE_AND_SET_VALUE(length_,	type_real);
+	case 8: CHECK_TYPE_AND_SET_VALUE(order_,	type_real);
+	case 9: CHECK_TYPE_AND_SET_VALUE(length_,	type_real);
 #endif
 	}
 	return false;
@@ -565,7 +569,8 @@ ValueNode_Bone::get_link_vfunc(int i)const
 	case 5: return width_;
 	case 6: return scalex_;
 	case 7: return tipwidth_;
-	case 8:return length_;
+	case 8: return order_;
+	case 9: return length_;
 #endif
 	}
 
@@ -588,37 +593,42 @@ ValueNode_Bone::get_children_vocab_vfunc() const
 		.set_description(_("The parent bone of the bone"))
 	);
 
-		ret.push_back(ParamDesc(ValueBase(),"origin")
+	ret.push_back(ParamDesc(ValueBase(),"origin")
 		.set_local_name(_("Origin"))
 		.set_description(_("The rotating origin of the bone relative to its parent"))
 	);
 
-		ret.push_back(ParamDesc(ValueBase(),"angle")
+	ret.push_back(ParamDesc(ValueBase(),"angle")
 		.set_local_name(_("Angle"))
 		.set_description(_("The rotating angle of the bone relative to its parent"))
 	);
 
-		ret.push_back(ParamDesc(ValueBase(),"scalelx")
+	ret.push_back(ParamDesc(ValueBase(),"scalelx")
 		.set_local_name(_("Local Length Scale"))
 		.set_description(_("The scale of the bone aligned its length"))
 	);
 
-		ret.push_back(ParamDesc(ValueBase(),"width")
+	ret.push_back(ParamDesc(ValueBase(),"width")
 		.set_local_name(_("Bone Width"))
 		.set_description(_("Bone width at its origin"))
 	);
 
-		ret.push_back(ParamDesc(ValueBase(),"scalex")
+	ret.push_back(ParamDesc(ValueBase(),"scalex")
 		.set_local_name(_("Recursive Length Scale"))
 		.set_description(_("The scale of the bone and its children aligned to its length"))
 	);
 
-		ret.push_back(ParamDesc(ValueBase(),"tipwidth")
+	ret.push_back(ParamDesc(ValueBase(),"tipwidth")
 		.set_local_name(_("Tip Width"))
 		.set_description(_("Bone width at its tip"))
 	);
 
-		ret.push_back(ParamDesc(ValueBase(),"length")
+	ret.push_back(ParamDesc(ValueBase(),"order")
+		.set_local_name(_("Z-Order"))
+		.set_description(_("The z-order of the bone"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"length")
 		.set_local_name(_("Length Setup"))
 		.set_description(_("The length of the bone at setup"))
 	);
