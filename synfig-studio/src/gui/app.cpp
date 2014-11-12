@@ -2202,7 +2202,7 @@ App::dialog_open_file(const std::string &title, std::string &filename, std::stri
 		// 0 All supported files
 		// 0.1 Synfig documents. sfg is not supported to import
 		Glib::RefPtr<Gtk::FileFilter> filter_supported = Gtk::FileFilter::create();
-		filter_supported->set_name("Valid files");
+		filter_supported->set_name("Supported files");
 		filter_supported->add_mime_type("application/x-sif");
 		filter_supported->add_pattern("*.sif");
 		filter_supported->add_pattern("*.sifz");
