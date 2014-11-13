@@ -2338,29 +2338,47 @@ App::dialog_open_file_with_history_button(const std::string &title, std::string 
 
 	prev_path = absolute_path(prev_path);
 
-    Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(*App::main_window, title, Gtk::FILE_CHOOSER_ACTION_OPEN);
+    Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(*App::main_window,
+				title, Gtk::FILE_CHOOSER_ACTION_OPEN);
 
+		dialog->set_transient_for(*App::main_window);
     dialog->set_current_folder(prev_path);
     dialog->add_button(_("Open history"), RESPONSE_ACCEPT_WITH_HISTORY);
     dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
     dialog->add_button(Gtk::Stock::OPEN,   Gtk::RESPONSE_ACCEPT);
 
-    if (filename.empty())
+    // File filters
+    // Synfig Documents
+		Glib::RefPtr<Gtk::FileFilter> filter_supported = Gtk::FileFilter::create();
+		filter_supported->set_name("Synfig documents (*.sif, *.sifz, *.sfg)");
+		filter_supported->add_mime_type("application/x-sif");
+		filter_supported->add_pattern("*.sif");
+		filter_supported->add_pattern("*.sifz");
+		filter_supported->add_pattern("*.sfg");
+		// Any files
+		Glib::RefPtr<Gtk::FileFilter> filter_any = Gtk::FileFilter::create();
+		filter_any->set_name("Any files");
+		filter_any->add_pattern("*");
+
+		dialog->add_filter(filter_supported);
+		dialog->add_filter(filter_any);
+
+  if (filename.empty())
 		dialog->set_filename(prev_path);
 	else if (is_absolute_path(filename))
 		dialog->set_filename(filename);
 	else
 		dialog->set_filename(prev_path + ETL_DIRECTORY_SEPARATOR + filename);
 
-    int response = dialog->run();
-    if (response == Gtk::RESPONSE_ACCEPT || response == RESPONSE_ACCEPT_WITH_HISTORY) {
-        filename = dialog->get_filename();
-        show_history = response == RESPONSE_ACCEPT_WITH_HISTORY;
+  int response = dialog->run();
+  if (response == Gtk::RESPONSE_ACCEPT || response == RESPONSE_ACCEPT_WITH_HISTORY) {
+      filename = dialog->get_filename();
+      show_history = response == RESPONSE_ACCEPT_WITH_HISTORY;
 		// info("Saving preference %s = '%s' in App::dialog_open_file()", preference.c_str(), dirname(filename).c_str());
 		_preferences.set_value(preference, dirname(filename));
-        delete dialog;
-        return true;
-    }
+      delete dialog;
+      return true;
+  }
 
     delete dialog;
     return false;
