@@ -2202,32 +2202,37 @@ App::dialog_open_file(const std::string &title, std::string &filename, std::stri
 		// 0 All supported files
 		// 0.1 Synfig documents. sfg is not supported to import
 		Glib::RefPtr<Gtk::FileFilter> filter_supported = Gtk::FileFilter::create();
-		filter_supported->set_name("Supported files");
+		filter_supported->set_name("All supported files");
 		filter_supported->add_mime_type("application/x-sif");
 		filter_supported->add_pattern("*.sif");
 		filter_supported->add_pattern("*.sifz");
 		// 0.2 Image files
 		filter_supported->add_mime_type("image/png");
 		filter_supported->add_mime_type("image/jpeg");
+		filter_supported->add_mime_type("image/bmp");
 		filter_supported->add_pattern("*.png");
 		filter_supported->add_pattern("*.jpeg");
 		filter_supported->add_pattern("*.jpg");
-		// 0.3 Sound files
+		filter_supported->add_pattern("*.bmp");
+		// 0.3 Audio files
 		filter_supported->add_mime_type("audio/x-vorbis+ogg");
-		filter_supported->add_mime_type("audio/mp3");
-		filter_supported->add_mime_type("audio/wav");
+		filter_supported->add_mime_type("audio/mpeg");
+		filter_supported->add_mime_type("audio/x-wav");
+		filter_supported->add_pattern("*.ogg");
+		filter_supported->add_pattern("*.mp3");
+		filter_supported->add_pattern("*.wav");
 
 		// Sub fileters
 		// 1 Synfig documents. sfg is not supported to import
 		Glib::RefPtr<Gtk::FileFilter> filter_synfig = Gtk::FileFilter::create();
-		filter_synfig->set_name("Synfig documents");
+		filter_synfig->set_name("Synfig documents (*.sif, *.sifz)");
 		filter_synfig->add_mime_type("application/x-sif");
 		filter_synfig->add_pattern("*.sif");
 		filter_synfig->add_pattern("*.sifz");
 
 		// 2 Image files
 		Glib::RefPtr<Gtk::FileFilter> filter_image = Gtk::FileFilter::create();
-		filter_image->set_name("Images");
+		filter_image->set_name("Images (*.png, *.jpeg, *.bmp)");
 		filter_image->add_mime_type("image/png");
 		filter_image->add_mime_type("image/jpeg");
 		filter_image->add_mime_type("image/jpg");
@@ -2235,12 +2240,15 @@ App::dialog_open_file(const std::string &title, std::string &filename, std::stri
 		filter_image->add_pattern("*.jpeg");
 		filter_image->add_pattern("*.jpg");
 
-		// 3 Sound files
-		Glib::RefPtr<Gtk::FileFilter> filter_sound = Gtk::FileFilter::create();
-		filter_sound->set_name("Sounds");
-		filter_sound->add_mime_type("audio/x-vorbis+ogg");
-		filter_sound->add_mime_type("audio/mp3");
-		filter_sound->add_mime_type("audio/wav");
+		// 3 Audio files
+		Glib::RefPtr<Gtk::FileFilter> filter_audio = Gtk::FileFilter::create();
+		filter_audio->set_name("Audio (*.ogg, *.mp3, *.wav)");
+		filter_audio->add_mime_type("audio/x-vorbis+ogg");
+		filter_audio->add_mime_type("audio/mpeg");
+		filter_audio->add_mime_type("audio/x-wav");
+		filter_audio->add_pattern("*.ogg");
+		filter_audio->add_pattern("*.mp3");
+		filter_audio->add_pattern("*.wav");
 
 		// 4 Any files
 		Glib::RefPtr<Gtk::FileFilter> filter_any = Gtk::FileFilter::create();
@@ -2250,7 +2258,7 @@ App::dialog_open_file(const std::string &title, std::string &filename, std::stri
 		dialog->add_filter(filter_supported);
 		dialog->add_filter(filter_synfig);
 		dialog->add_filter(filter_image);
-		dialog->add_filter(filter_sound);
+		dialog->add_filter(filter_audio);
 		dialog->add_filter(filter_any);
 
     if (filename.empty())
