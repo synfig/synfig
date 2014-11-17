@@ -416,11 +416,31 @@ Widget_Curves::on_event(GdkEvent *event)
 		switch(event->scroll.direction)
 		{
 			case GDK_SCROLL_UP:
-				range_adjustment_->set_page_size(range_adjustment_->get_page_size()/1.25);
+			case GDK_SCROLL_RIGHT:
+				if (Gdk::ModifierType(event->scroll.state)&GDK_CONTROL_MASK)
+				{
+					// Ctrl+scroll , perform zoom in
+					range_adjustment_->set_page_size(range_adjustment_->get_page_size()/1.25);
+				}
+				else
+				{
+					// Scroll up
+					range_adjustment_->set_value(range_adjustment_->get_value()-range_adjustment_->get_step_increment ());
+				}
 				range_adjustment_->changed();
 				break;
 			case GDK_SCROLL_DOWN:
-				range_adjustment_->set_page_size(range_adjustment_->get_page_size()*1.25);
+			case GDK_SCROLL_LEFT:
+				if (Gdk::ModifierType(event->scroll.state)&GDK_CONTROL_MASK)
+				{
+					// Ctrl+scroll , perform zoom out
+					range_adjustment_->set_page_size(range_adjustment_->get_page_size()*1.25);
+				}
+				else
+				{
+					// Scroll down
+					range_adjustment_->set_value(range_adjustment_->get_value()+range_adjustment_->get_step_increment ());
+				}
 				range_adjustment_->changed();
 				break;
 			default:
