@@ -501,7 +501,7 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 	Real r_min(100000000);
 
 	std::list<CurveStruct>::iterator curve_iter;
-	//Figure out maximun number of channels
+	//Figure out maximum number of channels
 	for(curve_iter=curve_list_.begin();curve_iter!=curve_list_.end();++curve_iter)
 	{
 		int channels(curve_iter->channels.size());
@@ -519,7 +519,7 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 	cr->rectangle(0, round_to_int((0-r_bottom)/dr), w, 0);
 	cr->stroke();
 
-	// This try to find a valid vanvas to show the keyframes of those
+	// This try to find a valid canvas to show the keyframes of those
 	// valuenodes. If not canvas found then no keyframes marks are shown.
 	synfig::Canvas::Handle canvas=0;
 	for(curve_iter=curve_list_.begin();curve_iter!=curve_list_.end();++curve_iter)
