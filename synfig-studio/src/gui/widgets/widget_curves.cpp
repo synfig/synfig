@@ -315,7 +315,7 @@ Widget_Curves::Widget_Curves():
 	);
 	//set_vadjustment(range_adjustment_);
 
-	add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK);
+	add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK | Gdk::SCROLL_MASK);
 
 }
 
