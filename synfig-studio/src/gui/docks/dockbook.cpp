@@ -259,6 +259,7 @@ DockBook::tab_button_pressed(GdkEventButton* event, Dockable* dockable)
 		sigc::bind(sigc::ptr_fun(&DockManager::remove_widget_by_pointer_recursive), dockable) );
 
 	tabmenu->append(*item);
+	item->show();
 	tabmenu->popup(event->button,gtk_get_current_event_time());
 
 	return true;
