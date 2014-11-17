@@ -593,8 +593,5 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 		range_adjustment_->set_lower(r_min-range_adjustment_->get_page_size()/2);
 	}
 
-	if (get_window())
-		get_window()->get_update_area();
-
 	return true;
 }
