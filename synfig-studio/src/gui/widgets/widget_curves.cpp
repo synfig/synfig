@@ -564,6 +564,8 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 			}
 		}
 
+		// Draw the graph curves with 0.5 width
+		cr->set_line_width(0.5);
 		for(int chan=0;chan<channels;chan++)
 		{
 			// Draw the curve
