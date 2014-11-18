@@ -32,7 +32,7 @@
 #include <gtkmm/dialog.h>
 #include <gtkmm/entry.h>
 #include <gtkmm/grid.h>
-#include <gtkmm/togglebutton.h>
+#include <gtkmm/radiobutton.h>
 #include <glibmm/timeval.h>
 #include <giomm.h>
 
@@ -135,11 +135,12 @@ private:
 	etl::handle<synfigapp::Action::LayerPaint> action;
 	TransformStack transform_stack;
 	BrushConfig selected_brush_config;
-	Gtk::ToggleButton *selected_brush_button;
-	std::map<String, Gtk::ToggleButton*> brush_buttons;
+	Gtk::RadioButton *selected_brush_button;
+	std::map<String, Gtk::RadioButton*> brush_buttons;
+
 
 	bool scan_directory(const String &path, int scan_sub_levels, std::set<String> &out_files);
-	void select_brush(Gtk::ToggleButton *button, String filename);
+	void select_brush(Gtk::RadioButton *button, String filename);
 	void refresh_ducks();
 
 	synfigapp::Settings &settings;
@@ -600,7 +601,8 @@ StateBrush_Context::refresh_tool_options()
 
 	// load files
 	int col = 0; int row = 0;
-	Gtk::ToggleButton *first_button = NULL;
+	Gtk::RadioButton::Group brush_group;
+	Gtk::RadioButton *first_button = NULL;
 	//Gtk::IconSize iconsize = Gtk::ICON_SIZE_LARGE_TOOLBAR;
 	//Warning:unused variable iconsize
 	for(std::set<String>::const_iterator i = files.begin(); i != files.end(); ++i)
@@ -611,8 +613,10 @@ StateBrush_Context::refresh_tool_options()
 			const String icon_file = filename_sans_extension(brush_file) + "_prev.png";
 			if (files.count(icon_file))
 			{
-				// create button
-				Gtk::ToggleButton *button = brush_buttons[*i] = Gtk::manage(new Gtk::ToggleButton());
+				// create radio button without indicator
+				Gtk::RadioButton *button = brush_buttons[*i] = Gtk::manage(new Gtk::RadioButton(brush_group));
+				button->set_mode(false);
+
 				Glib::RefPtr<Gdk::Pixbuf> pixbuf, pixbuf_scaled;
 				pixbuf = Gdk::Pixbuf::create_from_file(icon_file);
 				pixbuf_scaled = pixbuf->scale_simple(48, 48, Gdk::INTERP_BILINEAR);
@@ -635,6 +639,7 @@ StateBrush_Context::refresh_tool_options()
 			}
 		}
 	}
+
 	Gtk::ScrolledWindow *brushes_scroll = Gtk::manage(new Gtk::ScrolledWindow());
 	brushes_scroll->add(*brushes_grid);
 	box->pack_start(*brushes_scroll, Gtk::PACK_EXPAND_WIDGET);
@@ -647,7 +652,8 @@ StateBrush_Context::refresh_tool_options()
 }
 
 void
-StateBrush_Context::select_brush(Gtk::ToggleButton *button, String filename)
+StateBrush_Context::select_brush(Gtk::RadioButton *button, String filename)
+
 {
 	if (button != NULL && button->get_active())
 	{
