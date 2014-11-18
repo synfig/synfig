@@ -745,6 +745,14 @@ StateBrush_Context::event_mouse_down_handler(const Smach::event& x)
 				if (layer_switch) layer = etl::handle<Layer_Bitmap>::cast_dynamic(layer_switch->get_current_layer());
 			}
 
+			// No image found to draw in, add it.
+			if(!layer)
+			{
+				canvas_view_->add_layer("Import");
+				selected_layer = canvas_view_->get_selection_manager()->get_selected_layer();
+				layer = etl::handle<Layer_Bitmap>::cast_dynamic(selected_layer);
+			}
+
 			if (layer)
 			{
 				transform_stack.clear();
