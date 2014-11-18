@@ -31,6 +31,7 @@
 
 #include <gtkmm/dialog.h>
 #include <gtkmm/entry.h>
+#include <gtkmm/grid.h>
 #include <gtkmm/togglebutton.h>
 #include <glibmm/timeval.h>
 #include <giomm.h>
@@ -582,14 +583,14 @@ StateBrush_Context::refresh_tool_options()
 	App::dialog_tool_options->set_name("brush");
 
 	// create container
-	Gtk::Table *table = Gtk::manage(new Gtk::Table(1, 2, false));
+	Gtk::Box *box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
 
-	// create options
-	table->attach(eraser_checkbox, 0, 1, 0, 1, Gtk::FILL, Gtk::SHRINK);
+	// add options
+	box->add(eraser_checkbox);
 
 	// create brushes container widget
 	int cols = 4;
-	Gtk::Table *brushes_table = Gtk::manage(new Gtk::Table(1, cols));
+	Gtk::Grid *brushes_grid = Gtk::manage(new Gtk::Grid());
 
 	// load brushes
 	// scan directories
@@ -626,21 +627,20 @@ StateBrush_Context::refresh_tool_options()
 					// add row
 					col = 0;
 					++row;
-					brushes_table->resize(row + 1, cols);
 				}
 
 				// add button
-				brushes_table->attach(*button, col, col+1, row, row+1);
+				brushes_grid->attach(*button, col, row, 1, 1);
 				++col;
 			}
 		}
 	}
 	Gtk::ScrolledWindow *brushes_scroll = Gtk::manage(new Gtk::ScrolledWindow());
-	brushes_scroll->add(*brushes_table);
-	table->attach(*brushes_scroll, 0, 1, 1, 2);
+	brushes_scroll->add(*brushes_grid);
+	box->pack_start(*brushes_scroll, Gtk::PACK_EXPAND_WIDGET);
 
-	table->show_all();
-	App::dialog_tool_options->add(*table);
+	box->show_all();
+	App::dialog_tool_options->add(*box);
 
 	// select first brush
 	if (first_button != NULL) first_button->set_active(true);
