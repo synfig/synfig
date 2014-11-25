@@ -6,6 +6,7 @@
 **
 **	\legal
 **	......... ... 2014 Ivan Mahonin
+**	......... ... 2014 Jerome Blanchi
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -773,11 +774,11 @@ StateBrush_Context::event_mouse_down_handler(const Smach::event& x)
 					Real diff = max_rgb-min_rgb;
 
 					Real val = max_rgb;
-					Real sat = val > epsilon ? 1.0 - min_rgb/val : 0;
-					Real hue = diff < epsilon   ? 0
-							 : r >= g && r >= b ? 0.0 + 60.0*(g > b ? g - b : b - g)/diff
-							 : g >= b           ? 120.0 + 60.0*(b - r)/diff
-							 :                    240.0 + 60.0*(r - g)/diff;
+					Real sat = max_rgb != 0 ? 1.0 - (min_rgb / max_rgb) : 0;
+					Real hue = max_rgb == min_rgb ? 0
+							: max_rgb == r ? 60.0 * fmod ((g - b)/(diff), 6.0)
+							: max_rgb == g ? hue = 60.0 * (((b - r)/(diff))+2.0)
+							: hue = 60.0 * (((r - g)/(diff))+4.0);
 
 					Real opaque = color.get_a();
 					Real radius = synfigapp::Main::get_bline_width();
