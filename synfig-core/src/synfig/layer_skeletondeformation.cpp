@@ -138,8 +138,8 @@ struct Layer_SkeletonDeformation::GridPoint {
 		initial_position(initial_position), summary_order(0.0), summary_weight(0.0), average_order(0.0), used(false) { }
 	static bool compare_triagles(const std::pair<Real, Mesh::Triangle> &a, const std::pair<Real, Mesh::Triangle> &b)
 	{
-		return a.first < b.first ? true
-			 : b.first < a.first ? false
+		return a.first < b.first ? false
+			 : b.first < a.first ? true
 			 : a.second.vertices[0] < b.second.vertices[0] ? true
 			 : b.second.vertices[0] < a.second.vertices[0] ? false
 			 : a.second.vertices[1] < b.second.vertices[1] ? true
