@@ -35,13 +35,12 @@
 #include "docks/dockbook.h"
 #include "docks/dockmanager.h"
 #include "docks/dockdroparea.h"
+#include "dialogs/dialog_input.h"
 
 #include <synfigapp/main.h>
 
 #include <gtkmm/menubar.h>
 #include <gtkmm/box.h>
-
-#include <gtkmm/inputdialog.h>
 
 #endif
 
@@ -72,7 +71,6 @@ MainWindow::MainWindow()
 {
 	set_default_size(600, 400);
 	toggling_show_menubar = App::enable_mainwin_menubar;
-	toggling_show_toolbar = App::enable_mainwin_toolbar;
 
 	main_dock_book_ = manage(new DockBook());
 	main_dock_book_->allow_empty = true;
@@ -86,11 +84,6 @@ MainWindow::MainWindow()
 			Gtk::Bin::on_size_allocate(allocation);
 			if (get_child() != NULL)
 				get_child()->size_allocate(allocation);
-		}
-		void on_size_request(Gtk::Requisition *requisition) {
-			Gtk::Bin::on_size_request(requisition);
-			if (get_child() != NULL && requisition != NULL)
-				*requisition = get_child()->size_request();
 		}
 	};
 
@@ -106,19 +99,9 @@ MainWindow::MainWindow()
 		vbox->pack_start(*menubar, false, false, 0);
 	}
 
-	Gtk::Widget* toolbar = App::ui_manager()->get_widget("/toolbar-main");
-	if (toolbar != NULL)
-	{
-		Gtk::IconSize iconsize = Gtk::IconSize::from_name("synfig-small_icon_16x16");
-		toolbar->set_property("toolbar-style", Gtk::TOOLBAR_ICONS);
-		toolbar->set_property("icon-size", iconsize);
-		vbox->pack_start(*toolbar, false, false, 0);
-	}
-
 	vbox->pack_end(*bin_, true, true, 0);
 	vbox->show();
 	if(!App::enable_mainwin_menubar) menubar->hide();
-	if(!App::enable_mainwin_toolbar) toolbar->hide();
 
 	add(*vbox);
 
@@ -157,6 +140,7 @@ MainWindow::save_all()
 void
 MainWindow::show_dialog_input()
 {
+	App::dialog_input->reset();
 	App::dialog_input->present();
 }
 
@@ -192,10 +176,6 @@ MainWindow::init_menus()
 	toggle_menubar = Gtk::ToggleAction::create("toggle-mainwin-menubar", _("Show Menubar"));
 	toggle_menubar->set_active(toggling_show_menubar);
 	action_group->add(toggle_menubar, sigc::mem_fun(*this, &studio::MainWindow::toggle_show_menubar));
-
-	toggle_toolbar = Gtk::ToggleAction::create("toggle-mainwin-toolbar", _("Show Toolbar"));
-	toggle_toolbar->set_active(toggling_show_toolbar);
-	action_group->add(toggle_toolbar, sigc::mem_fun(*this, &studio::MainWindow::toggle_show_toolbar));
 
 	// pre defined workspace (window ui layout)
 	action_group->add( Gtk::Action::create("workspace-compositing", _("Compositing")),
@@ -236,25 +216,6 @@ MainWindow::init_menus()
 	//filemenu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Open Recent"),*recent_files_menu));
 
 	App::ui_manager()->insert_action_group(action_group);
-}
-
-
-void
-MainWindow::toggle_show_toolbar()
-{
-	Gtk::Widget* toolbar = App::ui_manager()->get_widget("/toolbar-main");
-
-	if(toggling_show_toolbar)
-	{
-		toolbar->hide();
-		toggling_show_toolbar = false;
-	}
-	else
-	{
-		toolbar->show();
-		toggling_show_toolbar = true;
-	}
-	App::enable_mainwin_toolbar = toggling_show_toolbar;
 }
 
 

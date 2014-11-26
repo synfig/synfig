@@ -194,6 +194,17 @@ synfig::GUID::hasher(int i)
 	return ret;
 }
 
+synfig::GUID
+synfig::GUID::hasher(const GUID &x)
+{
+	GUID ret(0);
+	ret.data.u_32.a=GUID_RNG(x.data.u_32.d)(~(unsigned int)0);
+	ret.data.u_32.b=GUID_RNG(x.data.u_32.a)(~(unsigned int)0);
+	ret.data.u_32.c=GUID_RNG(x.data.u_32.b)(~(unsigned int)0);
+	ret.data.u_32.d=GUID_RNG(x.data.u_32.c)(~(unsigned int)0);
+	return ret;
+}
+
 String
 synfig::GUID::get_string()const
 {

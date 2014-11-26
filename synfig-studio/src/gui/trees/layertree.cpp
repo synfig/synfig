@@ -95,7 +95,7 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 LayerTree::LayerTree():
-	layer_amount_adjustment_(1,0,1,0.01,0.01,0)
+	layer_amount_adjustment_(Gtk::Adjustment::create(1,0,1,0.01,0.01,0))
 {
 	param_tree_view_=new Gtk::TreeView;
 	layer_tree_view_=new Gtk::TreeView;
@@ -120,9 +120,8 @@ LayerTree::LayerTree():
 	layer_amount_hscale->set_digits(2);
 	layer_amount_hscale->set_value_pos(Gtk::POS_LEFT);
 	layer_amount_hscale->set_sensitive(false);
-	layer_amount_hscale->set_update_policy( Gtk::UPDATE_DISCONTINUOUS);
 	attach(*layer_amount_hscale, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK, 1, 1);
-	layer_amount_adjustment_.signal_value_changed().connect(sigc::mem_fun(*this, &studio::LayerTree::on_amount_value_changed));
+	layer_amount_adjustment_->signal_value_changed().connect(sigc::mem_fun(*this, &studio::LayerTree::on_amount_value_changed));
 
 	Gtk::Image *icon;
 	//Gtk::IconSize iconsize(Gtk::IconSize::from_name("synfig-small_icon"));
@@ -242,7 +241,7 @@ LayerTree::create_layer_tree()
 	get_layer_tree_view().set_search_column(layer_model.label);
 	get_layer_tree_view().set_search_equal_func(sigc::ptr_fun(&studio::LayerTreeStore::search_func));
 
-	std::list<Gtk::TargetEntry> listTargets;
+	std::vector<Gtk::TargetEntry> listTargets;
 	listTargets.push_back( Gtk::TargetEntry("LAYER") );
 	get_layer_tree_view().drag_dest_set(listTargets);
 
@@ -257,7 +256,7 @@ LayerTree::create_layer_tree()
 	get_layer_tree_view().show();
 
 	Gtk::ScrolledWindow *scroll = manage(new class Gtk::ScrolledWindow());
-	scroll->set_flags(Gtk::CAN_FOCUS);
+	scroll->set_can_focus(true);
 	scroll->set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
 	//scroll->add(get_layer_tree_view());
 	scroll->set_shadow_type(Gtk::SHADOW_ETCHED_IN);
@@ -310,7 +309,7 @@ LayerTree::create_param_tree()
 		// Set up the value-node icon cell-renderer to be on the far right
 		Gtk::CellRendererPixbuf* valuenode_icon_cellrenderer = Gtk::manage( new Gtk::CellRendererPixbuf() );
 		column->pack_end(*valuenode_icon_cellrenderer,false);
-		valuenode_icon_cellrenderer->property_pixbuf()=Gtk::Button().render_icon(Gtk::StockID("synfig-value_node"),icon_size);
+		valuenode_icon_cellrenderer->property_pixbuf()=Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-value_node"),icon_size);
 		column->add_attribute(valuenode_icon_cellrenderer->property_visible(), param_model.is_shared);
 
 		// Finish setting up the column
@@ -355,7 +354,7 @@ LayerTree::create_param_tree()
 		// Set up the static icon cell-renderer to be on the far right
 		Gtk::CellRendererPixbuf* static_icon_cellrenderer = Gtk::manage( new Gtk::CellRendererPixbuf() );
 		column->pack_end(*static_icon_cellrenderer,false);
-		static_icon_cellrenderer->property_pixbuf()=Gtk::Button().render_icon(Gtk::StockID("synfig-valuenode_forbidanimation"),icon_size);
+		static_icon_cellrenderer->property_pixbuf()=Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-valuenode_forbidanimation"),icon_size);
 		column->add_attribute(static_icon_cellrenderer->property_visible(), param_model.is_static);
 
 		// Finish setting up the column
@@ -415,18 +414,12 @@ LayerTree::create_param_tree()
 	get_param_tree_view().signal_query_tooltip().connect(sigc::mem_fun(*this, &studio::LayerTree::on_param_tree_view_query_tooltip));
 	// Column widget label event used to retrieve column size
 	Gtk::Widget* columnzero_label = get_param_tree_view().get_column(0)->get_widget ();
-	/* GTKMM 3 remplacement for columnzero_label signal_style_changed
-	columnzero_label->signal_style_updated().connect(sigc::mem_fun(*this, &studio::LayerTree::on_param_tree_column_label_style_updated));
-	*/
-	columnzero_label->signal_style_changed().connect(sigc::mem_fun(*this, &studio::LayerTree::on_param_tree_column_label_style_changed));
-	/* GTKMM 3 remplacement for columnzero_label signal_expose_event
-	columnzero_label->signal_draw().connect(sigc::mem_fun(*this, &studio::LayerTree::on_param_tree_column_label_draw));
-	*/
-	columnzero_label->signal_expose_event().connect(sigc::mem_fun(*this, &studio::LayerTree::on_param_tree_column_label_expose_draw));
+	columnzero_label->signal_style_updated().connect(sigc::mem_fun(*this, &studio::LayerTree::on_param_column_label_tree_style_updated));
+	columnzero_label->signal_draw().connect(sigc::mem_fun(*this, &studio::LayerTree::on_param_column_label_tree_draw));
 	get_param_tree_view().show();
 
 	Gtk::ScrolledWindow *scroll = manage(new class Gtk::ScrolledWindow());
-	scroll->set_flags(Gtk::CAN_FOCUS);
+	scroll->set_can_focus(true);
 	scroll->set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
 	//scroll->add(get_param_tree_view());
 	scroll->set_shadow_type(Gtk::SHADOW_ETCHED_IN);
@@ -464,7 +457,7 @@ LayerTree::select_layer(synfig::Layer::Handle layer)
 			iter=sorted_layer_tree_store_->convert_child_iter_to_iter(iter);
 
 		Gtk::TreePath path(iter);
-		for(int i=path.get_depth();i;i--)
+		for(int i=(int)path.size();i;i--)
 		{
 			int j;
 			path=Gtk::TreePath(iter);
@@ -600,13 +593,13 @@ LayerTree::set_model(Glib::RefPtr<LayerTreeStore> layer_tree_store)
 }
 
 void
-LayerTree::set_time_adjustment(Gtk::Adjustment &adjustment)
+LayerTree::set_time_adjustment(const Glib::RefPtr<Gtk::Adjustment> &adjustment)
 {
 #ifdef TIMETRACK_IN_PARAMS_PANEL
 	cellrenderer_time_track->set_adjustment(adjustment);
 #endif	// TIMETRACK_IN_PARAMS_PANEL
-	adjustment.signal_value_changed().connect(sigc::mem_fun(get_param_tree_view(),&Gtk::TreeView::queue_draw));
-	adjustment.signal_changed().connect(sigc::mem_fun(get_param_tree_view(),&Gtk::TreeView::queue_draw));
+	adjustment->signal_value_changed().connect(sigc::mem_fun(get_param_tree_view(),&Gtk::TreeView::queue_draw));
+	adjustment->signal_changed().connect(sigc::mem_fun(get_param_tree_view(),&Gtk::TreeView::queue_draw));
 }
 
 void
@@ -617,7 +610,7 @@ LayerTree::on_dirty_preview()
 	{
 		layer_amount_hscale->set_sensitive(true);
 		disable_amount_changed_signal=true;
-		layer_amount_adjustment_.set_value(quick_layer->get_param("amount").get(Real()));
+		layer_amount_adjustment_->set_value(quick_layer->get_param("amount").get(Real()));
 		disable_amount_changed_signal=false;
 		if(quick_layer->get_param("blend_method").is_valid())
 		{
@@ -687,7 +680,7 @@ LayerTree::on_selection_changed()
 	{
 		layer_amount_hscale->set_sensitive(true);
 		disable_amount_changed_signal=true;
-		layer_amount_adjustment_.set_value(quick_layer->get_param("amount").get(Real()));
+		layer_amount_adjustment_->set_value(quick_layer->get_param("amount").get(Real()));
 		disable_amount_changed_signal=false;
 		if(quick_layer->get_param("blend_method").is_valid())
 		{
@@ -731,7 +724,7 @@ LayerTree::on_amount_value_changed()
 		return;
 
 	disable_amount_changed_signal=true;
-	signal_edited_value()(synfigapp::ValueDesc(quick_layer,"amount"),synfig::ValueBase(layer_amount_adjustment_.get_value()));
+	signal_edited_value()(synfigapp::ValueDesc(quick_layer,"amount"),synfig::ValueBase(layer_amount_adjustment_->get_value()));
 	disable_amount_changed_signal=false;
 }
 
@@ -816,11 +809,11 @@ LayerTree::on_layer_tree_event(GdkEvent *event)
 			const Gtk::TreeRow row = *(get_layer_tree_view().get_model()->get_iter(path));
 
 #ifdef TIMETRACK_IN_PARAMS_PANEL
-			if(column->get_first_cell_renderer()==cellrenderer_time_track)
+			if(column->get_first_cell()==cellrenderer_time_track)
 				return signal_layer_user_click()(event->button.button,row,COLUMNID_TIME_TRACK);
 			else
 #endif	// TIMETRACK_IN_PARAMS_PANEL
-			if(column->get_first_cell_renderer()==cellrenderer_value)
+			if(column->get_first_cell()==cellrenderer_value)
 				return signal_layer_user_click()(event->button.button,row,COLUMNID_VALUE);
 			else
 				return signal_layer_user_click()(event->button.button,row,COLUMNID_NAME);
@@ -847,7 +840,7 @@ LayerTree::on_layer_tree_event(GdkEvent *event)
 			//Gtk::TreeRow row = *(get_layer_tree_view().get_model()->get_iter(path));
 
 #ifdef TIMETRACK_IN_PARAMS_PANEL
-			if(cellrenderer_time_track==column->get_first_cell_renderer())
+			if(cellrenderer_time_track==column->get_first_cell())
 				// Movement on TimeLine
 				return true;
 			//else
@@ -893,7 +886,7 @@ LayerTree::on_param_tree_event(GdkEvent *event)
 			const Gtk::TreeRow row = *(get_param_tree_view().get_model()->get_iter(path));
 
 #ifdef TIMETRACK_IN_PARAMS_PANEL
-			if(column && column->get_first_cell_renderer()==cellrenderer_time_track)
+			if(column && column->get_first_cell()==cellrenderer_time_track)
 			{
 				Gdk::Rectangle rect;
 				get_param_tree_view().get_cell_area(path,*column,rect);
@@ -931,7 +924,7 @@ LayerTree::on_param_tree_event(GdkEvent *event)
 				}
 				else
 				{
-					if(column->get_first_cell_renderer()==cellrenderer_value)
+					if(column->get_first_cell()==cellrenderer_value)
 						return signal_param_user_click()(event->button.button,row,COLUMNID_VALUE);
 					else
 						return signal_param_user_click()(event->button.button,row,COLUMNID_NAME);
@@ -959,8 +952,7 @@ LayerTree::on_param_tree_event(GdkEvent *event)
 			Gtk::TreeRow row = *(get_param_tree_view().get_model()->get_iter(path));
 
 #ifdef TIMETRACK_IN_PARAMS_PANEL
-			if (((event->motion.state&GDK_BUTTON1_MASK) || (event->motion.state&GDK_BUTTON3_MASK))
-			 && column && cellrenderer_time_track==column->get_first_cell_renderer())
+			if(((event->motion.state&GDK_BUTTON1_MASK) || (event->motion.state&GDK_BUTTON3_MASK)) && column && cellrenderer_time_track==column->get_first_cell())
 			{
 				Gdk::Rectangle rect;
 				get_param_tree_view().get_cell_area(path,*column,rect);
@@ -993,7 +985,7 @@ LayerTree::on_param_tree_event(GdkEvent *event)
 			Gtk::TreeRow row = *(get_param_tree_view().get_model()->get_iter(path));
 
 #ifdef TIMETRACK_IN_PARAMS_PANEL
-			if(column && cellrenderer_time_track==column->get_first_cell_renderer())
+			if(column && cellrenderer_time_track==column->get_first_cell())
 			{
 				Gdk::Rectangle rect;
 				get_param_tree_view().get_cell_area(path,*column,rect);
@@ -1303,41 +1295,21 @@ LayerTree::on_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& context, 
 }
 */
 
-// GTKMM 3 remplacement for on_param_tree_column_label_style_changed
-//void
-//LayerTree::on_param_tree_column_label_style_updated ()
-//{
-//	param_tree_style_changed = true;
-//}
-
 void
-LayerTree::on_param_tree_column_label_style_changed (const Glib::RefPtr< Gtk::Style >& /*previous_style*/)
+LayerTree::on_param_column_label_tree_style_updated()
 {
 	param_tree_style_changed = true;
 }
 
-// GTKMM 3 remplacement for on_param_tree_column_label_expose_draw
-//bool
-//LayerTree::on_param_tree_column_label_draw (const ::Cairo::RefPtr< ::Cairo::Context>& /*cr*/)
-//{
-//	if (param_tree_style_changed)
-//	{
-//		if (update_param_tree_header_height())	signal_param_tree_header_height_changed()(param_tree_header_height);
-//		param_tree_style_changed = false;
-//	}
-//	return true;
-//}
-
 bool
-LayerTree::on_param_tree_column_label_expose_draw (GdkEventExpose * /*event*/)
+LayerTree::on_param_column_label_tree_draw(const ::Cairo::RefPtr< ::Cairo::Context>& /*cr*/)
 {
 	if (param_tree_style_changed)
 	{
 		if (update_param_tree_header_height())	signal_param_tree_header_height_changed()(param_tree_header_height);
 		param_tree_style_changed = false;
 	}
-	//tell gtkmm to pass (x window) signal to the next signal handler
-	return false;
+	return true;
 }
 
 bool

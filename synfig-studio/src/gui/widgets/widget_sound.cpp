@@ -136,47 +136,30 @@ void studio::Widget_Sound::clear()
 
 void studio::Widget_Sound::draw()
 {
-	on_expose_event();
+	queue_draw();
 }
 
-bool studio::Widget_Sound::on_expose_event(GdkEventExpose */*heh*/)
+bool studio::Widget_Sound::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 {
-	//!Check if the window we want draw is ready
-	Glib::RefPtr<Gdk::Window> window = get_window();
-	if(!window) return false;
-
-	//clear the background to dark grey
-	Glib::RefPtr<Gdk::GC>	gc = Gdk::GC::create(window);
-
-	if(!gc) return false;
-
-	{
-		Gdk::Rectangle r(0,0,get_width(),get_height());
-		window->begin_paint_rect(r);
-	}
-	Gdk::Color	c("#3f3f3f");
-	gc->set_rgb_fg_color(c);
-	gc->set_background(c);
+	Gdk::RGBA c("#3f3f3f");
 
 	int w = get_width();
 	int baseline = get_height()/2;
-	window->draw_rectangle(gc,true,0,0,w,get_height());
+	cr->set_source_rgb(c.get_red(), c.get_green(), c.get_blue());
+	cr->rectangle(0.0, 0.0, w, get_height());
+	cr->fill();
 
-	//set up the color to be blue
-	c.set_rgb_p(0,0.5,1);
-	gc->set_rgb_fg_color(c);
-
-	//draw the base line
-	window->draw_line(gc,0,baseline,w,baseline);
+	//draw the base line, set up the color to be blue
+	cr->set_source_rgb(0.0, 0.5, 1.0);
+	cr->move_to(0,baseline);
+	cr->line_to(w,baseline);
+	cr->stroke();
 
 	//redraw all the samples from begin to end, but only if we have samples to draw (or there is no space to draw)
 
 	//synfig::warning("Ok rendered everything, now must render actual sound wave");
 	if(!audioprof || !adj_timescale || !w)
-	{
-		window->end_paint();
 		return true;
-	}
 
 	//draw you fool!
 	float framesize = adj_timescale->get_upper() - adj_timescale->get_lower();
@@ -236,16 +219,19 @@ bool studio::Widget_Sound::on_expose_event(GdkEventExpose */*heh*/)
 				int top = maxs * baseline / 64;
 				int bot = mins * baseline / 64;
 
-				window->draw_line(gc,i,baseline+bot,i,baseline+top);
+				cr->set_source_rgb(0.0, 0.5, 1.0);
+				cr->move_to(i,baseline+bot);
+				cr->line_to(i,baseline+top);
+				cr->stroke();
 			}
 		}
 
 		//synfig::warning("Drawing audio line");
-		c.set_rgb_p(1,0,0);
-		gc->set_rgb_fg_color(c);
-		window->draw_line(gc,posi,0,posi,get_height());
+		cr->set_source_rgb(1.0, 0.0, 0.0);
+		cr->move_to(posi,0);
+		cr->line_to(posi,get_height());
+		cr->stroke();
 	}
-	window->end_paint();
 
 	return true;
 }

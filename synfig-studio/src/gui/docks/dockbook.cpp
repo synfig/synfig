@@ -39,6 +39,7 @@
 #include <gtkmm/image.h>
 #include <gtkmm/eventbox.h>
 #include <gtkmm/menu.h>
+#include <gtkmm/imagemenuitem.h>
 
 #include "general.h"
 
@@ -64,12 +65,13 @@ using namespace studio;
 DockBook::DockBook():
 	allow_empty(false)
 {
-	std::list<Gtk::TargetEntry> listTargets;
-	listTargets.push_back( Gtk::TargetEntry("DOCK") );
+	std::vector<Gtk::TargetEntry> listTargets;
+	listTargets.push_back( Gtk::TargetEntry("SYNFIG_DOCK") );
 
 	drag_dest_set(listTargets);
 	//set_sensitive(true);
-	set_flags(get_flags()|Gtk::RECEIVES_DEFAULT|Gtk::HAS_GRAB);
+	set_receives_default(true);
+	set_can_default(true);
 	//add_events(Gdk::ALL_EVENTS_MASK);
 	//set_extension_events(Gdk::EXTENSION_EVENTS_ALL);
 	set_show_tabs(true);
@@ -252,23 +254,22 @@ DockBook::tab_button_pressed(GdkEventButton* event, Dockable* dockable)
 	Gtk::Menu *tabmenu=manage(new class Gtk::Menu());
 	tabmenu->signal_hide().connect(sigc::bind(sigc::ptr_fun(&delete_widget), tabmenu));
 
-	tabmenu->items().push_back(
-		Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("gtk-close"),
-			sigc::bind(sigc::ptr_fun(&DockManager::remove_widget_by_pointer_recursive), dockable)
-		)
-	);
+	Gtk::MenuItem *item = manage(new Gtk::ImageMenuItem(Gtk::StockID("gtk-close")));
+	item->signal_activate().connect(
+		sigc::bind(sigc::ptr_fun(&DockManager::remove_widget_by_pointer_recursive), dockable) );
 
+	tabmenu->append(*item);
+	item->show();
 	tabmenu->popup(event->button,gtk_get_current_event_time());
 
 	return true;
 }
 
 void
-DockBook::on_switch_page(GtkNotebookPage* page, guint page_num)
+DockBook::on_switch_page(Gtk::Widget* page, guint page_num)
 {
-	Gtk::Notebook::PageList::iterator p = pages().find(page_num);
-	if (p != pages().end()) {
-		CanvasView *canvas_view = dynamic_cast<CanvasView*>(p->get_child());
+	if (page != NULL && this->page_num(*page)) {
+		CanvasView *canvas_view = dynamic_cast<CanvasView*>(page);
 		if (canvas_view && canvas_view != App::get_selected_canvas_view())
 			App::set_selected_canvas_view(canvas_view);
 	}

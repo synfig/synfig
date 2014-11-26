@@ -37,7 +37,6 @@
 #include <gtkmm/editable.h>
 #include <gtkmm/entry.h>
 #include <gtkmm/eventbox.h>
-#include <gtk/gtkentry.h> /* see XXX below */
 
 #include "app.h"
 #include "widgets/widget_value.h"
@@ -56,6 +55,8 @@
 #include "dialogs/dialog_gradient.h"
 #include "dialogs/dialog_color.h"
 #include <gtkmm/textview.h>
+
+#include <gdkmm/general.h>
 
 #include "general.h"
 
@@ -102,7 +103,7 @@ public:
 		add(*valuewidget);
 		valuewidget->show();
 
-		//set_flags(Gtk::CAN_FOCUS);
+		//set_can_focus(true);
 		//set_events(Gdk::KEY_PRESS_MASK | Gdk::KEY_RELEASE_MASK);
 
 		/*
@@ -232,9 +233,8 @@ public:
 bool get_paragraph(synfig::String& text)
 {
 	Gtk::Dialog dialog(
-		_("Paragraph"),		// Title
-		true,		// Modal
-		true		// use_separator
+		_("Paragraph"),	// Title
+		true			// Modal
 	);
 	Gtk::Label label(_("Enter Paragraph Text Here:"));
 	label.show();
@@ -325,34 +325,29 @@ CellRenderer_ValueBase::string_edited_(const Glib::ustring&path,const Glib::ustr
 
 void
 CellRenderer_ValueBase::render_vfunc(
-		const Glib::RefPtr<Gdk::Drawable>& window,
-		Gtk::Widget& widget,
-		const Gdk::Rectangle& background_area,
-		const Gdk::Rectangle& ca,
-		const Gdk::Rectangle& expose_area,
-		Gtk::CellRendererState flags)
+	const ::Cairo::RefPtr< ::Cairo::Context>& cr,
+	Gtk::Widget& widget,
+	const Gdk::Rectangle& background_area,
+	const Gdk::Rectangle& cell_area,
+	Gtk::CellRendererState flags)
 {
-	if(!window)
+	if(!cr)
 		return;
-//	const unsigned int cell_xpad = property_xpad();
-//	const unsigned int cell_ypad = property_ypad();
 
-	//int x_offset = 0, y_offset = 0;
-//	int	width = ca.get_width();
-	int	height = ca.get_height();
-//	get_size(widget, ca, x_offset, y_offset, width, height);
+	Gdk::Rectangle aligned_area;
+	get_aligned_area(widget, flags, cell_area, aligned_area);
 
-//	width  -= cell_xpad * 2;
-//	height -= cell_ypad * 2;
+	int	height = cell_area.get_height();
 
-//	if(width <= 0 || height <= 0)
-//		return;
-
+	/*
+	TODO: is widget state equals this state variable?
+	      for checkbox only
 	Gtk::StateType state = Gtk::STATE_INSENSITIVE;
 	if(property_editable())
 		state = Gtk::STATE_NORMAL;
 	if((flags & Gtk::CELL_RENDERER_SELECTED) != 0)
 		state = (widget.has_focus()) ? Gtk::STATE_SELECTED : Gtk::STATE_ACTIVE;
+	*/
 
 	ValueBase data=property_value_.get_value();
 
@@ -443,13 +438,10 @@ CellRenderer_ValueBase::render_vfunc(
 	else
 	if (type == type_string)
 	{
-		if(data.get_type()==type_string)
-		{
-			if(!data.get(synfig::String()).empty())
-				property_text()=static_cast<Glib::ustring>(data.get(synfig::String()));
-			else
-				property_text()=Glib::ustring("<empty>");
-		}
+		if(!data.get(synfig::String()).empty())
+			property_text()=static_cast<Glib::ustring>(data.get(synfig::String()));
+		else
+			property_text()=Glib::ustring("<empty>");
 	}
 	else
 	if (type == type_canvas)
@@ -467,19 +459,38 @@ CellRenderer_ValueBase::render_vfunc(
 	else
 	if (type == type_color)
 	{
-		render_color_to_window(window,ca,data.get(Color()));
+		render_color_to_window(cr,cell_area,data.get(Color()));
 		return;
 	}
 	else
 	if (type == type_bool)
 	{
-		widget.get_style()->paint_check(
-			Glib::RefPtr<Gdk::Window>::cast_static(window), state,
-			data.get(bool())?Gtk::SHADOW_IN:Gtk::SHADOW_OUT,
-			ca, widget, "cellcheck",
-			ca.get_x()/* + x_offset + cell_xpad*/,
-			ca.get_y()/* + y_offset + cell_ypad*/,
-			height-1,height-1);
+		Glib::RefPtr<Gtk::StyleContext> context = widget.get_style_context();
+		context->context_save();
+		Gtk::StateFlags state = get_state(widget, flags);
+		state &= ~(Gtk::STATE_FLAG_INCONSISTENT | Gtk::STATE_FLAG_ACTIVE);
+		if ((flags & Gtk::CELL_RENDERER_SELECTED) != 0 && widget.has_focus())
+			state |= Gtk::STATE_FLAG_SELECTED;
+		if (!property_editable())
+			state |= Gtk::STATE_FLAG_INSENSITIVE;
+		if (data.get(bool()))
+			state |= Gtk::STATE_FLAG_ACTIVE;
+
+		cr->save();
+		Gdk::Cairo::add_rectangle_to_path(cr, cell_area);
+		cr->clip();
+
+		context->add_class("check");
+		context->set_state(state);
+		context->render_check(
+			cr,
+			aligned_area.get_x(),
+			aligned_area.get_y(),
+			aligned_area.get_height(),
+			aligned_area.get_height()
+		);
+		cr->restore();
+		context->context_restore();
 		return;
 	}
 	else
@@ -491,7 +502,7 @@ CellRenderer_ValueBase::render_vfunc(
 	else
 	if (type == type_gradient)
 	{
-		render_gradient_to_window(window,ca,data.get(Gradient()));
+		render_gradient_to_window(cr,cell_area,data.get(Gradient()));
 		return;
 	}
 	else
@@ -524,7 +535,7 @@ CellRenderer_ValueBase::render_vfunc(
 		property_text()=static_cast<Glib::ustring>(type.description.local_name);
 	}
 
-	CellRendererText::render_vfunc(window,widget,background_area,ca,expose_area,flags);
+	CellRendererText::render_vfunc(cr,widget,background_area,cell_area,flags);
 }
 
 

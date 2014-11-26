@@ -57,7 +57,7 @@ class Widget_Sound : public Widget_Timeslider
 	etl::handle<AudioProfile>	audioprof;
 
 	//event override interface
-	virtual bool on_expose_event(GdkEventExpose *heh = 0);
+	virtual bool on_draw(const Cairo::RefPtr<Cairo::Context> &cr);
 
 	//for scrubbing... (click is start, drag is scrub, and release is stop...)
 	virtual bool on_motion_notify_event(GdkEventMotion* event);

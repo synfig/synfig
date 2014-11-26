@@ -39,7 +39,6 @@
 #include <gtkmm/drawingarea.h>
 #include <gtkmm/table.h>
 #include <gtkmm/adjustment.h>
-#include <gtkmm/ruler.h>
 #include <gtkmm/image.h>
 #include <gdkmm/pixbuf.h>
 #include <gdkmm/cursor.h>
@@ -52,6 +51,7 @@
 #include <synfig/canvas.h>
 
 #include "dials/zoomdial.h"
+#include "widgets/widget_ruler.h"
 #include "duckmatic.h"
 #include "instance.h"
 #include "app.h"
@@ -179,10 +179,11 @@ private:
 
 	// Widgets
 	Gtk::DrawingArea *drawing_area;
-	Gtk::Adjustment scrollx_adjustment;
-	Gtk::Adjustment scrolly_adjustment;
-	Gtk::VRuler *vruler;
-	Gtk::HRuler *hruler;
+	Glib::RefPtr<Gtk::Adjustment> scrollx_adjustment;
+	Glib::RefPtr<Gtk::Adjustment> scrolly_adjustment;
+	// TODO: Implement Rulers
+	Widget_Ruler *vruler;
+	Widget_Ruler *hruler;
 	Gtk::Button *menubutton;
 	Gtk::Frame *drawing_frame;
 
@@ -230,6 +231,13 @@ private:
 
 	//! This flag is set if the guides should be drawn
 	bool show_guides;
+
+	//! Checker background size
+	synfig::Vector background_size;
+	//! Checker background first color
+	synfig::Color background_first_color;
+	//! Checker background second color
+	synfig::Color background_second_color;
 
 	synfig::Time jack_offset;
 
@@ -412,15 +420,15 @@ public:
 	WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface);
 	virtual ~WorkArea();
 
-	void set_cursor(const Gdk::Cursor& x);
+	void set_cursor(const Glib::RefPtr<Gdk::Cursor> &x);
 	void set_cursor(Gdk::CursorType x);
 
 	const synfig::Point& get_cursor_pos()const { return curr_point; }
 
-	Gtk::Adjustment *get_scrollx_adjustment() { return &scrollx_adjustment; }
-	Gtk::Adjustment *get_scrolly_adjustment() { return &scrolly_adjustment; }
-	const Gtk::Adjustment *get_scrollx_adjustment()const { return &scrollx_adjustment; }
-	const Gtk::Adjustment *get_scrolly_adjustment()const { return &scrolly_adjustment; }
+	Glib::RefPtr<Gtk::Adjustment> get_scrollx_adjustment() { return scrollx_adjustment; }
+	Glib::RefPtr<Gtk::Adjustment> get_scrolly_adjustment() { return scrolly_adjustment; }
+	Glib::RefPtr<const Gtk::Adjustment> get_scrollx_adjustment() const { return scrollx_adjustment; }
+	Glib::RefPtr<const Gtk::Adjustment> get_scrolly_adjustment() const { return scrolly_adjustment; }
 
 	void set_instance(etl::loose_handle<studio::Instance> x) { instance=x; }
 	void set_canvas(etl::handle<synfig::Canvas> x) { canvas=x; }
@@ -463,6 +471,19 @@ public:
 
 	synfig::Time get_jack_offset()const { return jack_offset; }
 	void set_jack_offset(const synfig::Time &x);
+
+	//! Sets the size of the checker background
+	void set_background_size(const synfig::Vector &s);
+	//! Sets the first color of the checker background
+	void set_background_first_color(const synfig::Color &c);
+	//! Sets the second color of the checker background
+	void set_background_second_color(const synfig::Color &c);
+	//! Sets the size of the checker background
+	const synfig::Vector &get_background_size()const { return background_size;}
+	//! Returns the first color of the checker background
+	const synfig::Color &get_background_first_color()const { return background_first_color;}
+	//! Returns the second color of the checker background
+	const synfig::Color &get_background_second_color()const { return background_second_color;}
 
 	bool get_low_resolution_flag()const { return low_resolution; }
 	void set_low_resolution_flag(bool x);
@@ -541,7 +562,7 @@ public:
 	/* resize bug workaround */
 	void refresh_second_check();
 #endif
-	bool refresh(GdkEventExpose*bleh=NULL);
+	bool refresh(const Cairo::RefPtr<Cairo::Context> &cr);
 
 	void reset_cursor();
 	void refresh_cursor();

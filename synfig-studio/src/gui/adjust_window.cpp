@@ -56,8 +56,8 @@ const double EPSILON = 1.0e-6;
 /* === E N T R Y P O I N T ================================================= */
 
 Adjust_Window::Adjust_Window(double value, double lower, double upper,
-							double stepinc, double pageinc, double pagesize,
-							Gtk::Adjustment *adj)
+							 double stepinc, double pageinc, double pagesize,
+							 const Glib::RefPtr<Gtk::Adjustment> &adj)
 : Adjustment(value,lower,upper,stepinc,pageinc,pagesize),
 	adj_child(0)
 {
@@ -70,17 +70,17 @@ Adjust_Window::~Adjust_Window()
 }
 
 //child interface functions
-Gtk::Adjustment *Adjust_Window::get_child_adjustment()
+Glib::RefPtr<Gtk::Adjustment> Adjust_Window::get_child_adjustment()
 {
 	return adj_child;
 }
 
-const Gtk::Adjustment *Adjust_Window::get_child_adjustment() const
+Glib::RefPtr<const Gtk::Adjustment> Adjust_Window::get_child_adjustment() const
 {
 	return adj_child;
 }
 
-void Adjust_Window::set_child_adjustment(Gtk::Adjustment *child)
+void Adjust_Window::set_child_adjustment(const Glib::RefPtr<Gtk::Adjustment> &child)
 {
 	childchanged.disconnect();
 

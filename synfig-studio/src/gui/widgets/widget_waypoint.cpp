@@ -37,12 +37,11 @@
 #include "dialogs/dialog_waypoint.h"
 #include <gtk/gtk.h>
 #include <gtkmm/spinbutton.h>
-#include <gtkmm/combo.h>
+#include <gtkmm/combobox.h>
 #include <ETL/stringf>
 #include "widgets/widget_value.h"
 #include "app.h"
 #include <gtkmm/menu.h>
-#include <gtkmm/optionmenu.h>
 #include "widgets/widget_time.h"
 #include "widgets/widget_waypoint.h"
 #include "widgets/widget_enum.h"
@@ -67,10 +66,10 @@ using namespace studio;
 Widget_Waypoint::Widget_Waypoint(etl::handle<synfig::Canvas> canvas):
 	Gtk::Alignment(0, 0, 1, 1),
 	waypoint(synfig::ValueBase(),0),
-	adj_tension(0.0,-20,20,0.1,1),
-	adj_continuity(0.0,-20,20,0.1,1),
-	adj_bias(0.0,-20,20,0.1,1),
-	adj_temporal_tension(0.0,-20,20,0.1,1)
+	adj_tension(Gtk::Adjustment::create(0.0,-20,20,0.1,1)),
+	adj_continuity(Gtk::Adjustment::create(0.0,-20,20,0.1,1)),
+	adj_bias(Gtk::Adjustment::create(0.0,-20,20,0.1,1)),
+	adj_temporal_tension(Gtk::Adjustment::create(0.0,-20,20,0.1,1))
 {
 	value_widget=manage(new Widget_ValueBase());
 	value_widget->set_canvas(canvas);
@@ -93,11 +92,11 @@ Widget_Waypoint::Widget_Waypoint(etl::handle<synfig::Canvas> canvas):
 			.add_enum_value(INTERPOLATION_HALT,"ease",_("Ease In/Out"))
 			.add_enum_value(INTERPOLATION_LINEAR,"linear",_("Linear"))
 	);
-	before_options->set_icon(0, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_clamped"),Gtk::ICON_SIZE_MENU));
-	before_options->set_icon(1, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_tcb"),Gtk::ICON_SIZE_MENU));
-	before_options->set_icon(2, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_const"),Gtk::ICON_SIZE_MENU));
-	before_options->set_icon(3, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_ease"),Gtk::ICON_SIZE_MENU));
-	before_options->set_icon(4, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_linear"),Gtk::ICON_SIZE_MENU));
+	before_options->set_icon(0, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_clamped"),Gtk::ICON_SIZE_MENU));
+	before_options->set_icon(1, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_tcb"),Gtk::ICON_SIZE_MENU));
+	before_options->set_icon(2, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_const"),Gtk::ICON_SIZE_MENU));
+	before_options->set_icon(3, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_ease"),Gtk::ICON_SIZE_MENU));
+	before_options->set_icon(4, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_linear"),Gtk::ICON_SIZE_MENU));
 
 	after_options=manage(new class Widget_Enum());
 	after_options->show();
@@ -110,11 +109,11 @@ Widget_Waypoint::Widget_Waypoint(etl::handle<synfig::Canvas> canvas):
 			.add_enum_value(INTERPOLATION_HALT,"ease",_("Ease In/Out"))
 			.add_enum_value(INTERPOLATION_LINEAR,"linear",_("Linear"))
 	);
-	after_options->set_icon(0, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_clamped"),Gtk::ICON_SIZE_MENU));
-	after_options->set_icon(1, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_tcb"),Gtk::ICON_SIZE_MENU));
-	after_options->set_icon(2, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_const"),Gtk::ICON_SIZE_MENU));
-	after_options->set_icon(3, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_ease"),Gtk::ICON_SIZE_MENU));
-	after_options->set_icon(4, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_linear"),Gtk::ICON_SIZE_MENU));
+	after_options->set_icon(0, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_clamped"),Gtk::ICON_SIZE_MENU));
+	after_options->set_icon(1, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_tcb"),Gtk::ICON_SIZE_MENU));
+	after_options->set_icon(2, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_const"),Gtk::ICON_SIZE_MENU));
+	after_options->set_icon(3, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_ease"),Gtk::ICON_SIZE_MENU));
+	after_options->set_icon(4, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_linear"),Gtk::ICON_SIZE_MENU));
 
 	spin_tension=manage(new class Gtk::SpinButton(adj_tension,0.1,3));
 	spin_tension->show();
@@ -266,10 +265,10 @@ Widget_Waypoint::set_waypoint(synfig::Waypoint &x)
 	before_options->set_value((Waypoint::Interpolation)waypoint.get_before());
 	after_options->set_value((Waypoint::Interpolation)waypoint.get_after());
 
-	adj_tension.set_value(waypoint.get_tension());
-	adj_continuity.set_value(waypoint.get_continuity());
-	adj_bias.set_value(waypoint.get_bias());
-	adj_temporal_tension.set_value(waypoint.get_temporal_tension());
+	adj_tension->set_value(waypoint.get_tension());
+	adj_continuity->set_value(waypoint.get_continuity());
+	adj_bias->set_value(waypoint.get_bias());
+	adj_temporal_tension->set_value(waypoint.get_temporal_tension());
 
 }
 const synfig::Waypoint &
@@ -283,10 +282,10 @@ Widget_Waypoint::get_waypoint()const
 	waypoint.set_before((Waypoint::Interpolation)before_options->get_value());
 	waypoint.set_after((Waypoint::Interpolation)after_options->get_value());
 
-	waypoint.set_tension(adj_tension.get_value());
-	waypoint.set_continuity(adj_continuity.get_value());
-	waypoint.set_bias(adj_bias.get_value());
-	waypoint.set_temporal_tension(adj_temporal_tension.get_value());
+	waypoint.set_tension(adj_tension->get_value());
+	waypoint.set_continuity(adj_continuity->get_value());
+	waypoint.set_bias(adj_bias->get_value());
+	waypoint.set_temporal_tension(adj_temporal_tension->get_value());
 	return waypoint;
 }
 

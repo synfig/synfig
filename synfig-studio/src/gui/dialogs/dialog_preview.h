@@ -85,9 +85,9 @@ protected:
 class Dialog_PreviewOptions : public Gtk::Dialog
 {
 	//all the info needed to construct a render description...
-	Gtk::Adjustment	adj_zoom;	// factor at which to resize the window...
+	Glib::RefPtr<Gtk::Adjustment>	adj_zoom;	// factor at which to resize the window...
 
-	Gtk::Adjustment	adj_fps;	// how often to take samples of the animation
+	Glib::RefPtr<Gtk::Adjustment>	adj_fps;	// how often to take samples of the animation
 	
 	Gtk::CheckButton check_use_cairo;
 
@@ -114,11 +114,11 @@ public:
 	Dialog_PreviewOptions();
 	~Dialog_PreviewOptions();
 
-	float get_zoom() const { return adj_zoom.get_value(); }
-	void set_zoom(float z) { adj_zoom.set_value(z); }
+	float get_zoom() const { return adj_zoom->get_value(); }
+	void set_zoom(float z) { adj_zoom->set_value(z); }
 
-	float get_fps() const { return adj_fps.get_value(); }
-	void set_fps(float z) { adj_fps.set_value(z); }
+	float get_fps() const { return adj_fps->get_value(); }
+	void set_fps(float z) { adj_fps->set_value(z); }
 
 	float get_global_fps() const { return globalfps; }
 	void set_global_fps(float f);

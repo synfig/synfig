@@ -58,7 +58,7 @@ ValueDesc::get_description(bool show_exported_name)const
 	if (show_exported_name && !is_exported())
 		show_exported_name = false;
 
-	if (parent_is_layer_param())
+	if (parent_is_layer())
 	{
 		description = strprintf("%s (%s):%s", _("Layer Parameter"),
 								get_layer()->get_non_empty_description().c_str(),

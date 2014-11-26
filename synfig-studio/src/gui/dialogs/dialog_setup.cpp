@@ -67,17 +67,17 @@ static void
 attach_label(Gtk::Table *table, String str, guint col, guint xpadding, guint ypadding)
 {
 	Gtk::Label* label(manage(new Gtk::Label((str + ":").c_str())));
-	label->set_alignment(Gtk::ALIGN_RIGHT, Gtk::ALIGN_CENTER);
+	label->set_alignment(Gtk::ALIGN_END, Gtk::ALIGN_CENTER);
 	table->attach(*label, 0, 1, col, col+1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 }
 
 Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	Dialog(_("Synfig Studio Setup"),parent,true),
-	adj_gamma_r(2.2,0.1,3.0,0.025,0.025,0.025),
-	adj_gamma_g(2.2,0.1,3.0,0.025,0.025,0.025),
-	adj_gamma_b(2.2,0.1,3.0,0.025,0.025,0.025),
-	adj_recent_files(15,1,50,1,1,0),
-	adj_undo_depth(100,10,5000,1,1,1),
+	adj_gamma_r(Gtk::Adjustment::create(2.2,0.1,3.0,0.025,0.025,0.025)),
+	adj_gamma_g(Gtk::Adjustment::create(2.2,0.1,3.0,0.025,0.025,0.025)),
+	adj_gamma_b(Gtk::Adjustment::create(2.2,0.1,3.0,0.025,0.025,0.025)),
+	adj_recent_files(Gtk::Adjustment::create(15,1,50,1,1,0)),
+	adj_undo_depth(Gtk::Adjustment::create(100,10,5000,1,1,1)),
 	toggle_use_colorspace_gamma(_("Visually Linear Color Selection")),
 #ifdef SINGLE_THREADED
 	toggle_single_threaded(_("Use Only a Single Thread")),
@@ -85,10 +85,10 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	toggle_restrict_radius_ducks(_("Restrict Real-Valued Handles to Top Right Quadrant")),
 	toggle_resize_imported_images(_("Scale New Imported Images to Fit Canvas")),
 	toggle_enable_experimental_features(_("Enable experimental features (restart required)")),
-	adj_pref_x_size(480,1,10000,1,10,0),
-	adj_pref_y_size(270,1,10000,1,10,0),
-	adj_pref_fps(24.0,1.0,100,0.1,1,0)
-	{
+	adj_pref_x_size(Gtk::Adjustment::create(480,1,10000,1,10,0)),
+	adj_pref_y_size(Gtk::Adjustment::create(270,1,10000,1,10,0)),
+	adj_pref_fps(Gtk::Adjustment::create(24.0,1.0,100,0.1,1,0))
+{
 	// Setup the buttons
 	Gtk::Button *restore_button(manage(new class Gtk::Button(_("Restore Defaults"))));
 	restore_button->show();
@@ -119,17 +119,17 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	Gtk::HScale* scale_gamma_r(manage(new Gtk::HScale(adj_gamma_r)));
 	gamma_table->attach(*manage(new Gtk::Label(_("Red"))), 0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	gamma_table->attach(*scale_gamma_r, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	adj_gamma_r.signal_value_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Setup::on_gamma_r_change));
+	adj_gamma_r->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Setup::on_gamma_r_change));
 
 	Gtk::HScale* scale_gamma_g(manage(new Gtk::HScale(adj_gamma_g)));
 	gamma_table->attach(*manage(new Gtk::Label(_("Green"))), 0, 1, 2, 3, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	gamma_table->attach(*scale_gamma_g, 1, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	adj_gamma_g.signal_value_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Setup::on_gamma_g_change));
+	adj_gamma_g->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Setup::on_gamma_g_change));
 
 	Gtk::HScale* scale_gamma_b(manage(new Gtk::HScale(adj_gamma_b)));
 	gamma_table->attach(*manage(new Gtk::Label(_("Blue"))), 0, 1, 3, 4, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	gamma_table->attach(*scale_gamma_b, 1, 2, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	adj_gamma_b.signal_value_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Setup::on_gamma_b_change));
+	adj_gamma_b->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Setup::on_gamma_b_change));
 
 	gamma_table->attach(*manage(new Gtk::Label(_("Black Level"))), 0, 1, 4, 5, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	gamma_table->attach(black_level_selector, 1, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
@@ -149,17 +149,14 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	// Misc - Timestamp
 	timestamp_menu=manage(new class Gtk::Menu());
 	attach_label(misc_table, _("Timestamp"), 0, xpadding, ypadding);
-	misc_table->attach(timestamp_optionmenu, 1, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+	misc_table->attach(timestamp_comboboxtext, 1, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 
-#define ADD_TIMESTAMP(desc,x)									\
-	timestamp_menu->items().push_back(							\
-		Gtk::Menu_Helpers::MenuElem(							\
-			desc,												\
-			sigc::bind(											\
-				sigc::mem_fun(									\
-					*this,										\
-					&studio::Dialog_Setup::set_time_format),	\
-				x)));
+
+	#define ADD_TIMESTAMP(desc,x) {				\
+		timestamp_comboboxtext.append(desc);	\
+		time_formats[desc] = x;					\
+	}
+
 	ADD_TIMESTAMP("HH:MM:SS.FF",		Time::FORMAT_VIDEO	);
 	ADD_TIMESTAMP("(HHh MMm SSs) FFf",	Time::FORMAT_NORMAL	);
 	ADD_TIMESTAMP("(HHhMMmSSs)FFf",		Time::FORMAT_NORMAL	| Time::FORMAT_NOSPACES	);
@@ -167,9 +164,10 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	ADD_TIMESTAMP("HHhMMmSSsFFf",		Time::FORMAT_NORMAL	| Time::FORMAT_NOSPACES	| Time::FORMAT_FULL);
 	ADD_TIMESTAMP("FFf",				Time::FORMAT_FRAMES );
 
-	timestamp_optionmenu.set_menu(*timestamp_menu);
+	#undef ADD_TIMESTAMP
 
-#undef ADD_TIMESTAMP
+	timestamp_comboboxtext.signal_changed().connect(
+		sigc::mem_fun(*this, &Dialog_Setup::on_time_format_changed) );
 
 	{
 		ParamDesc param_desc;
@@ -255,36 +253,36 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	};
 
    Glib::ustring lang_codes[] = {
-		"os_LANG",	// System Language
-		"ar",				// Arabick
-		"eu",				// Basque
+		"os_LANG",		// System Language
+		"ar",			// Arabick
+		"eu",			// Basque
 		"eu_ES",		// Basque (Spain)
-		"ca",				// Catalan
+		"ca",			// Catalan
 		"zh_CN",		// Chinese (China)
-		"cs",				// CZech
-		"da",				// Danish
-		"nl",				// Dutch
-		"en",					// English - default of development
+		"cs",			// CZech
+		"da",			// Danish
+		"nl",			// Dutch
+		"en",			// English - default of development
 		"en_GB",		// English (United Kingdom)
 		"fa_IR",		// Farsi (Iran)
-		"fr",				// French
-		"de",				// German
+		"fr",			// French
+		"de",			// German
 		"el_GR",		// Greek (Greece)
-		"he",				// Hebrew
-		"hu",				// Hungarian
-		"it",				// Italian
+		"he",			// Hebrew
+		"hu",			// Hungarian
+		"it",			// Italian
 		"ja_JP",		// Japanese (Japan)
-		"lt",				// Lithuanian
+		"lt",			// Lithuanian
 		"no_NO",		// Norwegian (Norway)
 		"pl_PL",		// Polish (Poland)
 		"pt_BR",		// Portuguese (Brazil)
-		"ro",				// Romanian
-		"ru",				// Russian
-		"es",				// Spanish
-		"si",				// Sinhala
+		"ro",			// Romanian
+		"ru",			// Russian
+		"es",			// Spanish
+		"si",			// Sinhala
 		"sk_SK",		// Slovak (Slovakia)
 		"sv_SE",		// Swedish (Sweden)
-		"tr"				// Turkish
+		"tr"			// Turkish
    };
 
 	int num_items = G_N_ELEMENTS(lang_names);
@@ -294,7 +292,7 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 
 	for (int i =0 ; i < num_items; ++i)
 	{
-		ui_language_combo.append_text(lang_names[i]);
+		ui_language_combo.append(lang_names[i]);
 		_lang_codes.push_back(lang_codes[i]);
 			if (lang_code == _lang_codes[i])
 			row = i;
@@ -331,30 +329,30 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	//Document - Template for predefined sizes of canvases.
 	size_template_combo = Gtk::manage(new Gtk::ComboBoxText());
 	Gtk::Label* label(manage(new Gtk::Label(_("Predefined Resolutions:"))));
-	label->set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	label->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 	document_table->attach(*label, 2, 3, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 	document_table->attach(*size_template_combo, 2, 3, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 	size_template_combo->signal_changed().connect(sigc::mem_fun(*this, &studio::Dialog_Setup::on_size_template_combo_change));
-	size_template_combo->prepend_text(_("4096x3112 Full Aperture 4K"));
-	size_template_combo->prepend_text(_("2048x1556 Full Aperture Native 2K"));
-	size_template_combo->prepend_text(_("1920x1080 HDTV 1080p/i"));
-	size_template_combo->prepend_text(_("1280x720  HDTV 720p"));
-	size_template_combo->prepend_text(_("720x576   DVD PAL"));
-	size_template_combo->prepend_text(_("720x480   DVD NTSC"));
-	size_template_combo->prepend_text(_("720x540   Web 720x"));
-	size_template_combo->prepend_text(_("720x405   Web 720x HD"));
-	size_template_combo->prepend_text(_("640x480   Web 640x"));
-	size_template_combo->prepend_text(_("640x360   Web 640x HD"));
-	size_template_combo->prepend_text(_("480x360   Web 480x"));
-	size_template_combo->prepend_text(_("480x270   Web 480x HD"));
-	size_template_combo->prepend_text(_("360x270   Web 360x"));
-	size_template_combo->prepend_text(_("360x203   Web 360x HD"));
-	size_template_combo->prepend_text(DEFAULT_PREDEFINED_SIZE);
+	size_template_combo->prepend(_("4096x3112 Full Aperture 4K"));
+	size_template_combo->prepend(_("2048x1556 Full Aperture Native 2K"));
+	size_template_combo->prepend(_("1920x1080 HDTV 1080p/i"));
+	size_template_combo->prepend(_("1280x720  HDTV 720p"));
+	size_template_combo->prepend(_("720x576   DVD PAL"));
+	size_template_combo->prepend(_("720x480   DVD NTSC"));
+	size_template_combo->prepend(_("720x540   Web 720x"));
+	size_template_combo->prepend(_("720x405   Web 720x HD"));
+	size_template_combo->prepend(_("640x480   Web 640x"));
+	size_template_combo->prepend(_("640x360   Web 640x HD"));
+	size_template_combo->prepend(_("480x360   Web 480x"));
+	size_template_combo->prepend(_("480x270   Web 480x HD"));
+	size_template_combo->prepend(_("360x270   Web 360x"));
+	size_template_combo->prepend(_("360x203   Web 360x HD"));
+	size_template_combo->prepend(DEFAULT_PREDEFINED_SIZE);
 
 	//Document - Template for predefined fps
 	fps_template_combo = Gtk::manage(new Gtk::ComboBoxText());
 	Gtk::Label* label1(manage(new Gtk::Label(_("Predefined FPS:"))));
-	label1->set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	label1->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 	document_table->attach(*label1, 2, 3, 3, 4, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 	document_table->attach(*fps_template_combo,2, 3, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 	fps_template_combo->signal_changed().connect(sigc::mem_fun(*this, &studio::Dialog_Setup::on_fps_template_combo_change));
@@ -369,9 +367,9 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	f[6] = 15;
 	f[7] = 12;
 	for (int i=0; i<8; i++)
-		fps_template_combo->prepend_text(strprintf("%5.3f", f[i]));
+		fps_template_combo->prepend(strprintf("%5.3f", f[i]));
 
-	fps_template_combo->prepend_text(DEFAULT_PREDEFINED_FPS);
+	fps_template_combo->prepend(DEFAULT_PREDEFINED_FPS);
 
 	// Document - New Document FPS
 	pref_fps_spinbutton = Gtk::manage(new Gtk::SpinButton(adj_pref_fps, 1, 3));
@@ -420,9 +418,14 @@ Dialog_Setup::on_restore_pressed()
 void
 Dialog_Setup::on_apply_pressed()
 {
-	App::gamma.set_all(1.0/adj_gamma_r.get_value(),1.0/adj_gamma_g.get_value(),1.0/adj_gamma_b.get_value(),black_level_selector.get_value(),red_blue_level_selector.get_value());
+	App::gamma.set_all(
+		1.0/adj_gamma_r->get_value(),
+		1.0/adj_gamma_g->get_value(),
+		1.0/adj_gamma_b->get_value(),
+		black_level_selector.get_value(),
+		red_blue_level_selector.get_value());
 
-	App::set_max_recent_files((int)adj_recent_files.get_value());
+	App::set_max_recent_files((int)adj_recent_files->get_value());
 
 	// Set the time format
 	App::set_time_format(get_time_format());
@@ -456,10 +459,10 @@ Dialog_Setup::on_apply_pressed()
 	App::custom_filename_prefix=textbox_custom_filename_prefix.get_text();
 
 	// Set the preferred new Document X dimension
-	App::preferred_x_size=int(adj_pref_x_size.get_value());
+	App::preferred_x_size=int(adj_pref_x_size->get_value());
 
 	// Set the preferred new Document Y dimension
-	App::preferred_y_size=int(adj_pref_y_size.get_value());
+	App::preferred_y_size=int(adj_pref_y_size->get_value());
 
 	// Set the preferred Predefined size
 	App::predefined_size=size_template_combo->get_active_text();
@@ -468,7 +471,7 @@ Dialog_Setup::on_apply_pressed()
 	App::predefined_fps=fps_template_combo->get_active_text();
 
 	// Set the preferred FPS
-	App::preferred_fps=Real(adj_pref_fps.get_value());
+	App::preferred_fps=Real(adj_pref_fps->get_value());
 
 	// Set the preferred image sequence separator
 	App::sequence_separator=image_sequence_separator.get_text();
@@ -491,7 +494,7 @@ Dialog_Setup::on_apply_pressed()
 void
 Dialog_Setup::on_gamma_r_change()
 {
-	gamma_pattern.set_gamma_r(1.0/adj_gamma_r.get_value());
+	gamma_pattern.set_gamma_r(1.0/adj_gamma_r->get_value());
 	gamma_pattern.refresh();
 	gamma_pattern.queue_draw();
 }
@@ -499,7 +502,7 @@ Dialog_Setup::on_gamma_r_change()
 void
 Dialog_Setup::on_gamma_g_change()
 {
-	gamma_pattern.set_gamma_g(1.0/adj_gamma_g.get_value());
+	gamma_pattern.set_gamma_g(1.0/adj_gamma_g->get_value());
 	gamma_pattern.refresh();
 	gamma_pattern.queue_draw();
 }
@@ -507,7 +510,7 @@ Dialog_Setup::on_gamma_g_change()
 void
 Dialog_Setup::on_gamma_b_change()
 {
-	gamma_pattern.set_gamma_b(1.0/adj_gamma_b.get_value());
+	gamma_pattern.set_gamma_b(1.0/adj_gamma_b->get_value());
 	gamma_pattern.refresh();
 	gamma_pattern.queue_draw();
 }
@@ -544,8 +547,8 @@ Dialog_Setup::on_size_template_combo_change()
 	String y_size(selection.substr(locx+1,locspace));
 	int x=atoi(x_size.c_str());
 	int y=atoi(y_size.c_str());
-	adj_pref_x_size.set_value(x);
-	adj_pref_y_size.set_value(y);
+	adj_pref_x_size->set_value(x);
+	adj_pref_y_size->set_value(y);
 	pref_y_size_spinbutton->set_sensitive(false);
 	pref_x_size_spinbutton->set_sensitive(false);
 
@@ -568,9 +571,18 @@ Dialog_Setup::on_fps_template_combo_change()
 		pref_fps_spinbutton->set_sensitive(true);
 		return;
 	}
-	adj_pref_fps.set_value(atof(selection.c_str()));
+	adj_pref_fps->set_value(atof(selection.c_str()));
 	pref_fps_spinbutton->set_sensitive(false);
 	return;
+}
+
+void
+Dialog_Setup::on_time_format_changed()
+{
+	std::map<std::string, synfig::Time::Format>::iterator i =
+		time_formats.find(timestamp_comboboxtext.get_active_text());
+	if (i != time_formats.end())
+		time_format = i->second;
 }
 
 void
@@ -584,15 +596,15 @@ Dialog_Setup::refresh()
 	gamma_pattern.set_black_level(App::gamma.get_black_level());
 	gamma_pattern.set_red_blue_level(App::gamma.get_red_blue_level());
 
-	adj_gamma_r.set_value(1.0/App::gamma.get_gamma_r());
-	adj_gamma_g.set_value(1.0/App::gamma.get_gamma_g());
-	adj_gamma_b.set_value(1.0/App::gamma.get_gamma_b());
+	adj_gamma_r->set_value(1.0/App::gamma.get_gamma_r());
+	adj_gamma_g->set_value(1.0/App::gamma.get_gamma_g());
+	adj_gamma_b->set_value(1.0/App::gamma.get_gamma_b());
 	black_level_selector.set_value(App::gamma.get_black_level());
 	red_blue_level_selector.set_value(App::gamma.get_red_blue_level());
 
 	gamma_pattern.refresh();
 
-	adj_recent_files.set_value(App::get_max_recent_files());
+	adj_recent_files->set_value(App::get_max_recent_files());
 
 	// Refresh the time format
 	set_time_format(App::get_time_format());
@@ -626,16 +638,16 @@ Dialog_Setup::refresh()
 	textbox_custom_filename_prefix.set_text(App::custom_filename_prefix);
 
 	// Refresh the preferred new Document X dimension
-	adj_pref_x_size.set_value(App::preferred_x_size);
+	adj_pref_x_size->set_value(App::preferred_x_size);
 
 	// Refresh the preferred new Document Y dimension
-	adj_pref_y_size.set_value(App::preferred_y_size);
+	adj_pref_y_size->set_value(App::preferred_y_size);
 
 	// Refresh the preferred Predefined size
 	size_template_combo->set_active_text(App::predefined_size);
 
 	//Refresh the preferred FPS
-	adj_pref_fps.set_value(App::preferred_fps);
+	adj_pref_fps->set_value(App::preferred_fps);
 
 	//Refresh the predefined FPS
 	fps_template_combo->set_active_text(App::predefined_fps);
@@ -654,11 +666,15 @@ Dialog_Setup::refresh()
 }
 
 GammaPattern::GammaPattern():
+	gamma_r(),
+	gamma_g(),
+	gamma_b(),
+	black_level(),
+	red_blue_level(),
 	tile_w(80),
 	tile_h(80)
 {
 	set_size_request(tile_w*4,tile_h*3);
-	signal_expose_event().connect(sigc::mem_fun(*this, &studio::GammaPattern::redraw));
 }
 
 GammaPattern::~GammaPattern()
@@ -709,72 +725,70 @@ GammaPattern::refresh()
 }
 
 bool
-GammaPattern::redraw(GdkEventExpose */*bleh*/)
+GammaPattern::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 {
-	//!Check if the window we want draw is ready
-	Glib::RefPtr<Gdk::Window> window = get_window();
-	if(!window) return true;
-
-	static const char hlines[] = { 3, 0 };
-
-	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(window));
-
 	int i;
 	Gdk::Color trueblack("#000000");
+
+	int stride = Cairo::ImageSurface::format_stride_for_width(Cairo::FORMAT_A1, 2);
+	std::vector<unsigned char> hlines(2*stride, 0);
+	hlines[0] = 3;
+	Cairo::RefPtr<Cairo::ImageSurface> stipple_mask_img = Cairo::ImageSurface::create(&hlines.front(), Cairo::FORMAT_A1, 2, 2, stride);
 
 	// 50% Pattern
 	for(i=0;i<4;i++)
 	{
-		gc->set_rgb_fg_color(black[i]);
-		window->draw_rectangle(gc, true, i*tile_w, 0, tile_w, tile_h);
+        cr->set_source_rgb(black[i].get_red_p(), black[i].get_green_p(), black[i].get_blue_p());
+        cr->rectangle(i*tile_w, 0, tile_w, tile_h);
+        cr->fill();
 
-		gc->set_stipple(Gdk::Bitmap::create(hlines,2,2));
-		gc->set_fill(Gdk::STIPPLED);
-		gc->set_rgb_fg_color(white[i]);
-		window->draw_rectangle(gc, true, i*tile_w, 0, tile_w, tile_h);
+        cr->set_source_rgb(white[i].get_red_p(), white[i].get_green_p(), white[i].get_blue_p());
+        cr->mask(stipple_mask_img, 0, 0);
+        cr->rectangle(i*tile_w, 0, tile_w, tile_h);
+        cr->fill();
 
-		gc->set_fill(Gdk::SOLID);
-		gc->set_rgb_fg_color(gray50[i]);
-
-		window->draw_rectangle(gc, true, i*tile_w+tile_w/4, tile_h/4, tile_w-tile_w/2, tile_h-tile_h/2);
+        cr->set_source_rgb(gray50[i].get_red_p(), gray50[i].get_green_p(), gray50[i].get_blue_p());
+        cr->rectangle(i*tile_w+tile_w/4, tile_h/4, tile_w-tile_w/2, tile_h-tile_h/2);
+        cr->fill();
 	}
 
 	// 25% Pattern
 	for(i=0;i<4;i++)
 	{
-		gc->set_rgb_fg_color(black[i]);
-		window->draw_rectangle(gc, true, i*tile_w, tile_h, tile_w, tile_h);
+        cr->set_source_rgb(black[i].get_red_p(), black[i].get_green_p(), black[i].get_blue_p());
+        cr->rectangle(i*tile_w, tile_h, tile_w, tile_h);
+        cr->fill();
 
-		gc->set_stipple(Gdk::Bitmap::create(hlines,2,2));
-		gc->set_fill(Gdk::STIPPLED);
-		gc->set_rgb_fg_color(gray50[i]);
-		window->draw_rectangle(gc, true, i*tile_w, tile_h, tile_w, tile_h);
+        cr->set_source_rgb(gray50[i].get_red_p(), gray50[i].get_green_p(), gray50[i].get_blue_p());
+        cr->mask(stipple_mask_img, 0, 0);
+        cr->rectangle(i*tile_w, tile_h, tile_w, tile_h);
+        cr->fill();
 
-		gc->set_fill(Gdk::SOLID);
-		gc->set_rgb_fg_color(gray25[i]);
-
-		window->draw_rectangle(gc, true, i*tile_w+tile_w/4, tile_h+tile_h/4, tile_w-tile_w/2, tile_h-tile_h/2);
+        cr->set_source_rgb(gray25[i].get_red_p(), gray25[i].get_green_p(), gray25[i].get_blue_p());
+        cr->rectangle(i*tile_w+tile_w/4, tile_h+tile_h/4, tile_w-tile_w/2, tile_h-tile_h/2);
+        cr->fill();
 	}
 
 	// Black-level Pattern
-	gc->set_rgb_fg_color(trueblack);
-	window->draw_rectangle(gc, true, 0, tile_h*2, tile_w*4, tile_h);
-	gc->set_fill(Gdk::SOLID);
+    cr->set_source_rgb(trueblack.get_red_p(), trueblack.get_green_p(), trueblack.get_blue_p());
+	cr->rectangle(0, tile_h*2, tile_w*4, tile_h);
+	cr->fill();
+
 	for(i=0;i<4;i++)
 	{
-		gc->set_rgb_fg_color(black[i]);
-
-		window->draw_rectangle(gc, true, i*tile_w+tile_w/4, tile_h*2+tile_h/4, tile_w-tile_w/2, tile_h-tile_h/2);
+        cr->set_source_rgb(black[i].get_red_p(), black[i].get_green_p(), black[i].get_blue_p());
+        cr->rectangle(i*tile_w+tile_w/4, tile_h*2+tile_h/4, tile_w-tile_w/2, tile_h-tile_h/2);
+        cr->fill();
 	}
 
 	return true;
 }
 
 
-BlackLevelSelector::BlackLevelSelector()
+BlackLevelSelector::BlackLevelSelector():
+	level()
 {
 	set_size_request(-1,24);
-	signal_expose_event().connect(sigc::mem_fun(*this, &studio::BlackLevelSelector::redraw));
 
 	add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK);
 	add_events(Gdk::BUTTON1_MOTION_MASK);
@@ -786,44 +800,41 @@ BlackLevelSelector::~BlackLevelSelector()
 }
 
 bool
-BlackLevelSelector::redraw(GdkEventExpose */*bleh*/)
+BlackLevelSelector::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 {
-	//!Check if the window we want draw is ready
-	Glib::RefPtr<Gdk::Window> window = get_window();
-	if(!window) return true;
-
 	const int w(get_width()),h(get_height());
 
 	Gdk::Color color;
-
-	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(window));
 
 	int i;
 
 	// Draw the gradient
 	for(i=0;i<w;i++)
 	{
-		color.set_rgb(i*65536/w,i*65536/w,i*65536/w);
-
-		gc->set_rgb_fg_color(color);
-		window->draw_rectangle(gc, true, i, 0, 1, h);
+		double c = (double)i/(double)(w-1);
+        cr->set_source_rgb(c,c,c);
+        cr->rectangle(i, 0, 1, h);
+        cr->fill();
 	}
 
 	// Draw a frame
-	gc->set_rgb_fg_color(Gdk::Color("#000000"));
-	window->draw_rectangle(gc, false, 0, 0, w-1, h-1);
+	cr->set_source_rgb(0,0,0);
+	cr->rectangle(0, 0, w-1, h-1);
+	cr->stroke();
 
 	// Draw the position of the current value
 	i=(int)(level*w+0.5);
-	gc->set_rgb_fg_color(Gdk::Color("#ff0000"));
-	window->draw_rectangle(gc, true, i, 1, 1, h-1);
+	cr->set_source_rgb(1,0,0);
+	cr->rectangle(i, 1, 1, h-1);
+	cr->fill();
 
 	// Print out the value
 	Glib::RefPtr<Pango::Layout> layout(Pango::Layout::create(get_pango_context()));
 	layout->set_text(etl::strprintf("%0.01f%%",level*100.0f));
 	layout->set_alignment(Pango::ALIGN_CENTER);
-	gc->set_rgb_fg_color(Gdk::Color("#a00000"));
-	window->draw_layout(gc, w/2, 4, layout);
+	cr->set_source_rgb(0.627,1,0);
+	cr->move_to(w/2, 4);
+	layout->show_in_cairo_context(cr);
 
 	return true;
 }
@@ -871,40 +882,25 @@ Dialog_Setup::set_time_format(synfig::Time::Format x)
 {
 	time_format=x;
 	if (x <= Time::FORMAT_VIDEO)
-		timestamp_optionmenu.set_history(0);
+		timestamp_comboboxtext.set_active(0);
 	else if (x == (Time::FORMAT_NORMAL))
-		timestamp_optionmenu.set_history(1);
+		timestamp_comboboxtext.set_active(1);
 	else if (x == (Time::FORMAT_NORMAL | Time::FORMAT_NOSPACES))
-		timestamp_optionmenu.set_history(2);
+		timestamp_comboboxtext.set_active(2);
 	else if (x == (Time::FORMAT_NORMAL | Time::FORMAT_FULL))
-		timestamp_optionmenu.set_history(3);
+		timestamp_comboboxtext.set_active(3);
 	else if (x == (Time::FORMAT_NORMAL | Time::FORMAT_NOSPACES | Time::FORMAT_FULL))
-		timestamp_optionmenu.set_history(4);
+		timestamp_comboboxtext.set_active(4);
 	else if (x == (Time::FORMAT_FRAMES))
-		timestamp_optionmenu.set_history(5);
+		timestamp_comboboxtext.set_active(5);
 	else
-		timestamp_optionmenu.set_history(1);
+		timestamp_comboboxtext.set_active(1);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-RedBlueLevelSelector::RedBlueLevelSelector()
+RedBlueLevelSelector::RedBlueLevelSelector():
+	level()
 {
 	set_size_request(-1,24);
-	signal_expose_event().connect(sigc::mem_fun(*this, &studio::RedBlueLevelSelector::redraw));
 
 	add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK);
 	add_events(Gdk::BUTTON1_MOTION_MASK);
@@ -916,17 +912,11 @@ RedBlueLevelSelector::~RedBlueLevelSelector()
 }
 
 bool
-RedBlueLevelSelector::redraw(GdkEventExpose */*bleh*/)
+RedBlueLevelSelector::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 {
-	//!Check if the window we want draw is ready
-	Glib::RefPtr<Gdk::Window> window = get_window();
-	if(!window) return true;
-
 	const int w(get_width()),h(get_height());
 
 	Gdk::Color color;
-
-	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(window));
 
 	int i;
 
@@ -938,31 +928,29 @@ RedBlueLevelSelector::redraw(GdkEventExpose */*bleh*/)
 		if(red_blue>1.0f)red_blue=1.0f;
 		if(blue_red>1.0f)blue_red=1.0f;
 
-		color.set_rgb(
-			round_to_int(min(red_blue,1.0f)*65535),
-			round_to_int(sqrt(min(red_blue,blue_red))*65535),
-			round_to_int(min(blue_red,1.0f)*65535)
-		);
-
-		gc->set_rgb_fg_color(color);
-		window->draw_rectangle(gc, true, i, 0, 1, h);
+		cr->set_source_rgb(red_blue, sqrt(min(red_blue,blue_red)), blue_red);
+		cr->rectangle(i, 0, 1, h);
+		cr->fill();
 	}
 
 	// Draw a frame
-	gc->set_rgb_fg_color(Gdk::Color("#000000"));
-	window->draw_rectangle(gc, false, 0, 0, w-1, h-1);
+	cr->set_source_rgb(0,0,0);
+	cr->rectangle(0, 0, w-1, h-1);
+	cr->stroke();
 
 	// Draw the position of the current value
 	i=(int)(((level-1.0f)*2.0f+1.0f-0.5f)*w+0.5);
-	gc->set_rgb_fg_color(Gdk::Color("#00ff00"));
-	window->draw_rectangle(gc, true, i, 1, 1, h-1);
+	cr->set_source_rgb(0,1,0);
+	cr->rectangle(i, 1, 1, h-1);
+	cr->fill();
 
 	// Print out the value
 	Glib::RefPtr<Pango::Layout> layout(Pango::Layout::create(get_pango_context()));
 	layout->set_text(etl::strprintf("%0.02f",level));
 	layout->set_alignment(Pango::ALIGN_CENTER);
-	gc->set_rgb_fg_color(Gdk::Color("#a00000"));
-	window->draw_layout(gc, w/2, 4, layout);
+	cr->set_source_rgb(0.627,1,0);
+	cr->move_to(w/2, 4);
+	layout->show_in_cairo_context(cr);
 
 	return true;
 }

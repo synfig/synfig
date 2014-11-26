@@ -53,7 +53,7 @@
 #define ADD_TOOLBOX_BUTTON(button,stockid,tooltip)	\
 	Gtk::Button *button = manage(new class Gtk::Button());	\
 	button->add(*manage(new Gtk::Image(Gtk::StockID(stockid),Gtk::IconSize(4))));	\
-	tooltips.set_tip(*button,tooltip);	\
+	tooltip.set_tip(*button,tooltip);	\
 	button->show_all()
 
 using namespace std;
@@ -80,8 +80,10 @@ CompView::CompView():
 
 	Gtk::Table *table = manage(new class Gtk::Table(2, 1, false));
 
+	instance_selector.show();
+	instance_selector.signal_changed().connect(sigc::mem_fun(this, &CompView::on_instance_selector_changed));
 
-	table->attach(*create_instance_selector(), 0, 1, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK, 0, 0);
+	table->attach(instance_selector, 0, 1, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK, 0, 0);
 
 	notebook=manage(new class Gtk::Notebook());
 
@@ -102,7 +104,7 @@ CompView::CompView():
 
 	Gtk::Table *image_page = manage(new class Gtk::Table(2, 1, false));
 	Gtk::ScrolledWindow *image_list_scroll = manage(new class Gtk::ScrolledWindow());
-	image_list_scroll->set_flags(Gtk::CAN_FOCUS);
+	image_list_scroll->set_can_focus(true);
 	image_list_scroll->set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
 	image_list_scroll->add(*image_list);
 	image_page->attach(*image_list_scroll, 0, 1, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
@@ -129,7 +131,7 @@ CompView::CompView():
 
 	Gtk::Table *valuenode_page = manage(new class Gtk::Table(2, 1, false));
 	Gtk::ScrolledWindow *valuenode_list_scroll = manage(new class Gtk::ScrolledWindow());
-	valuenode_list_scroll->set_flags(Gtk::CAN_FOCUS);
+	valuenode_list_scroll->set_can_focus(true);
 	valuenode_list_scroll->set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
 	valuenode_list_scroll->add(*valuenode_list);
 	valuenode_page->attach(*valuenode_list_scroll, 0, 1, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
@@ -209,7 +211,7 @@ CompView::create_canvas_tree()
 	canvas_tree->show();
 
 	Gtk::ScrolledWindow *scrolledwindow = manage(new class Gtk::ScrolledWindow());
-	scrolledwindow->set_flags(Gtk::CAN_FOCUS);
+	scrolledwindow->set_can_focus(true);
 	scrolledwindow->set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
 	scrolledwindow->add(*canvas_tree);
 	scrolledwindow->set_shadow_type(Gtk::SHADOW_ETCHED_IN);
@@ -289,7 +291,7 @@ CompView::create_action_tree()
 	action_tree->show();
 
 	Gtk::ScrolledWindow *scrolledwindow = manage(new class Gtk::ScrolledWindow());
-	scrolledwindow->set_flags(Gtk::CAN_FOCUS);
+	scrolledwindow->set_can_focus(true);
 	scrolledwindow->set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
 	scrolledwindow->add(*action_tree);
 	scrolledwindow->set_shadow_type(Gtk::SHADOW_ETCHED_IN);
@@ -309,15 +311,6 @@ CompView::create_action_tree()
 	table->show_all();
 
 	return table;
-}
-
-Gtk::Widget*
-CompView::create_instance_selector()
-{
-	instance_selector=manage(new class Gtk::OptionMenu());
-	instance_selector->show();
-	instance_selector->set_menu(instance_list_menu);
-	return instance_selector;
 }
 
 bool
@@ -348,13 +341,29 @@ CompView::clear_redo()
 void
 CompView::init_menu()
 {
-	menu.items().push_back(Gtk::Menu_Helpers::SeparatorElem());
-	menu.items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("synfig-canvas_new"),
-		sigc::mem_fun(*this,&CompView::menu_new_canvas)));
-	menu.items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("gtk-delete"),
-		sigc::mem_fun(*this,&CompView::menu_delete)));
-	menu.items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("synfig-rename"),
-		sigc::mem_fun(*this,&CompView::menu_rename)));
+	Gtk::MenuItem *item = NULL;
+
+	item = manage(new Gtk::SeparatorMenuItem());
+	item->show();
+	menu.append(*item);
+
+	item = manage(new Gtk::ImageMenuItem(Gtk::StockID("synfig-canvas_new")));
+	item->signal_activate().connect(
+		sigc::mem_fun(*this,&CompView::menu_new_canvas));
+	item->show_all();
+	menu.append(*item);
+
+	item = manage(new Gtk::ImageMenuItem(Gtk::StockID("gtk-delete")));
+	item->signal_activate().connect(
+		sigc::mem_fun(*this,&CompView::menu_delete));
+	item->show_all();
+	menu.append(*item);
+
+	item = manage(new Gtk::ImageMenuItem(Gtk::StockID("synfig-rename")));
+	item->signal_activate().connect(
+		sigc::mem_fun(*this,&CompView::menu_rename));
+	item->show_all();
+	menu.append(*item);
 }
 
 etl::loose_handle<synfig::Canvas>
@@ -421,6 +430,15 @@ CompView::set_selected_instance_(etl::handle<studio::Instance> instance)
 }
 
 void
+CompView::on_instance_selector_changed()
+{
+	int i = instance_selector.get_active_row_number();
+	if (i < 0 || i >= (int)instances.size()) return;
+	if (selected_instance == instances[i]) return;
+	studio::App::set_selected_instance(instances[i]);
+}
+
+void
 CompView::set_selected_instance(etl::loose_handle<studio::Instance> x)
 {
 	if(studio::App::shutdown_in_progress)
@@ -439,10 +457,10 @@ CompView::set_selected_instance(etl::loose_handle<studio::Instance> x)
 
 		assert(*iter==x);
 
-		instance_selector->set_history(i);
+		instance_selector.set_active(i);
 	}
 	else
-		instance_selector->set_history(0);
+		instance_selector.set_active(0);
 
 	set_selected_instance_(x);
 }
@@ -467,9 +485,8 @@ CompView::new_instance(etl::handle<studio::Instance> instance)
 
 	{
 		std::string name=basename(instance->get_file_name());
-
-		instance_list_menu.items().push_back(Gtk::Menu_Helpers::MenuElem(name,
-			sigc::bind<etl::loose_handle<studio::Instance> >(sigc::mem_fun(&studio::App::set_selected_instance),loose_instance)	));
+		instance_selector.append(name);
+		instances.push_back(loose_instance);
 	}
 }
 
@@ -484,7 +501,7 @@ CompView::delete_instance(etl::handle<studio::Instance> instance)
 	if(selected_instance==instance)
 	{
 		set_selected_instance(0);
-		instance_selector->set_history(0);
+		instance_selector.set_active(0);
 	}
 }
 
@@ -494,18 +511,17 @@ CompView::refresh_instances()
 	if(studio::App::shutdown_in_progress)
 		return;
 
-	if(!instance_list_menu.items().empty())
-		instance_list_menu.items().clear();
+	instances.clear();
+	instance_selector.set_active(-1);
+	instance_selector.remove_all();
 
 	std::list<etl::handle<studio::Instance> >::iterator iter;
 	for(iter=studio::App::instance_list.begin();iter!=studio::App::instance_list.end();iter++)
 	{
 		std::string name=basename((*iter)->get_file_name());
-
-		instance_list_menu.items().push_back(Gtk::Menu_Helpers::MenuElem(name,
-			sigc::bind<etl::loose_handle<studio::Instance> >(sigc::mem_fun(&studio::App::set_selected_instance),*iter)	));
+		instance_selector.append(name);
+		instances.push_back( etl::loose_handle<studio::Instance>(*iter) );
 	}
-	instance_selector->set_menu(instance_list_menu);
 }
 
 void
@@ -558,6 +574,7 @@ CompView::on_action_event(GdkEvent *event)
 			}
 			break;
 		}
+		break;
 
 	case GDK_BUTTON_RELEASE:
 		break;
@@ -578,7 +595,9 @@ CompView::on_tree_event(GdkEvent *event)
 		case 3:
 		if(get_selected_canvas())
 		{
-			menu.items().clear();
+			std::vector<Gtk::Widget*> children = menu.get_children();
+			for(std::vector<Gtk::Widget*>::iterator i = children.begin(); i != children.end(); ++i)
+				menu.remove(**i);
 
 			synfigapp::Action::ParamList param_list;
 			param_list.add("canvas",synfig::Canvas::Handle(get_selected_canvas()));
@@ -586,7 +605,6 @@ CompView::on_tree_event(GdkEvent *event)
 			get_selected_instance()->find_canvas_view(get_selected_canvas())->add_actions_to_menu(&menu, param_list,synfigapp::Action::CATEGORY_CANVAS);
 			menu.popup(0,0);
 			menu.show();
-			break;
 		}
 		break;
 		default:

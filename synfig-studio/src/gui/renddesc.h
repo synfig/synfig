@@ -38,6 +38,7 @@
 #include <gtkmm/notebook.h>
 #include "widgets/widget_vector.h"
 #include "widgets/widget_time.h"
+#include "widgets/widget_link.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -52,14 +53,14 @@ class Widget_RendDesc : public Gtk::Notebook
 	synfig::RendDesc rend_desc_;
 	sigc::signal<void> signal_changed_;
 
-	Gtk::Adjustment adjustment_width;
-	Gtk::Adjustment adjustment_height;
-	Gtk::Adjustment adjustment_xres;
-	Gtk::Adjustment adjustment_yres;
-	Gtk::Adjustment adjustment_phy_width;
-	Gtk::Adjustment adjustment_phy_height;
-	Gtk::Adjustment adjustment_fps;
-	Gtk::Adjustment adjustment_span;
+	Glib::RefPtr<Gtk::Adjustment> adjustment_width;
+	Glib::RefPtr<Gtk::Adjustment> adjustment_height;
+	Glib::RefPtr<Gtk::Adjustment> adjustment_xres;
+	Glib::RefPtr<Gtk::Adjustment> adjustment_yres;
+	Glib::RefPtr<Gtk::Adjustment> adjustment_phy_width;
+	Glib::RefPtr<Gtk::Adjustment> adjustment_phy_height;
+	Glib::RefPtr<Gtk::Adjustment> adjustment_fps;
+	Glib::RefPtr<Gtk::Adjustment> adjustment_span;
 
 	Gtk::SpinButton *entry_width;
 	Gtk::SpinButton *entry_height;
@@ -69,6 +70,11 @@ class Widget_RendDesc : public Gtk::Notebook
 	Gtk::SpinButton *entry_phy_height;
 	Gtk::SpinButton *entry_fps;
 	Gtk::SpinButton *entry_span;
+
+	Widget_Link *toggle_wh_ratio;
+	Widget_Link *toggle_res_ratio;
+
+	Gtk::Label *pixel_ratio_label;
 
 	Gtk::CheckButton *toggle_px_aspect;
 	Gtk::CheckButton *toggle_px_width;
@@ -137,6 +143,9 @@ private:
 	void on_lock_changed();
 	void on_focus_changed();
 	void on_span_changed();
+
+	void on_ratio_wh_toggled();
+	void on_ratio_res_toggled();
 
 	void create_widgets();
 	void connect_signals();

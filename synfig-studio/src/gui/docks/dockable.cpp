@@ -79,7 +79,7 @@ Dockable::Dockable(const synfig::String& name,const synfig::String& local_name,G
 	name_(name),
 	local_name_(local_name),
 //	dialog_settings(this,name),
-	title_label_(local_name,Gtk::ALIGN_LEFT),
+	title_label_(local_name,Gtk::ALIGN_START),
 	stock_id_(stock_id_)
 {
 	scrolled_=0;
@@ -145,13 +145,14 @@ Dockable::~Dockable()
 void
 Dockable::attach_dnd_to(Gtk::Widget& widget)
 {
-	std::list<Gtk::TargetEntry> listTargets;
-	listTargets.push_back( Gtk::TargetEntry("DOCK") );
+	std::vector<Gtk::TargetEntry> listTargets;
+	listTargets.push_back( Gtk::TargetEntry("SYNFIG_DOCK") );
+	Gtk::StockItem item;
 
 	widget.drag_source_set(listTargets);
-	widget.drag_source_set_icon(get_stock_id());
+	if(Gtk::Stock::lookup(get_stock_id(),item))
+		widget.drag_source_set_icon(get_stock_id());
 	widget.drag_dest_set(listTargets);
-
 
 	widget.signal_drag_data_get().connect(sigc::mem_fun(*this,&Dockable::on_drag_data_get));
 	widget.signal_drag_end().connect(sigc::mem_fun(*this,&Dockable::on_drag_end));
@@ -164,7 +165,7 @@ Dockable::on_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& context, i
 {
 	if (selection_data.get_length() >= 0
 	 && selection_data.get_format() == 8
-	 && selection_data.get_data_type() == "DOCK")
+	 && selection_data.get_data_type() == "SYNFIG_DOCK")
 	{
 		Dockable& dockable(**reinterpret_cast<Dockable**>(const_cast<guint8*>(selection_data.get_data())));
 

@@ -40,7 +40,7 @@
 #include <gui/canvasview.h>
 #include <gtkmm/tooltip.h>
 #include <gtkmm/alignment.h>
-#include <gtkmm/comboboxentrytext.h>
+#include <gtkmm/comboboxtext.h>
 
 #include <synfig/time.h>
 #include <synfig/vector.h>
@@ -198,8 +198,8 @@ public:
 class Widget_Preview : public Gtk::Table
 {
 	Gtk::DrawingArea	draw_area;
-	Gtk::Adjustment 	adj_time_scrub; //the adjustment for the managed scrollbar
-	Gtk::HScale			scr_time_scrub;
+	Glib::RefPtr<Gtk::Adjustment> adj_time_scrub; //the adjustment for the managed scrollbar
+	Gtk::HScale		scr_time_scrub;
 	Gtk::ToggleButton	b_loop;
 	Gtk::ScrolledWindow	preview_window;
 	//Glib::RefPtr<Gdk::GC>		gc_area;
@@ -221,7 +221,9 @@ class Widget_Preview : public Gtk::Table
 	sigc::connection	prevchanged;
 
 	Widget_Sound		disp_sound;
-	Gtk::Adjustment		adj_sound;
+	Gtk::ToggleButton *jackbutton;
+	Widget_Time *offset_widget;
+	Glib::RefPtr<Gtk::Adjustment> adj_sound;
 
 	Gtk::Label		l_lasttime;
 	Gtk::Label		l_currenttime;
@@ -254,7 +256,7 @@ class Widget_Preview : public Gtk::Table
 	bool scroll_move_event(GdkEvent *);
 	void disconnect_preview(Preview *);
 
-	bool redraw(GdkEventExpose *heh = 0);
+	bool redraw(const Cairo::RefPtr<Cairo::Context> &cr);
 	void preview_draw();
 
 	void hide_toolbar();
@@ -308,7 +310,7 @@ protected:
 
 	ModelColumns factors;
 
-	Gtk::ComboBoxEntry zoom_preview; 
+	Gtk::ComboBoxText zoom_preview;
 	Glib::RefPtr<Gtk::ListStore> factor_refTreeModel;
 	
 private:
@@ -331,7 +333,7 @@ private:
 	void set_jack_enabled(bool value);
 
 #ifdef WITH_JACK
-	void on_toggle_jack_pressed();
+	void toggle_jack_button();
 	void on_jack_offset_changed();
 	Glib::Dispatcher jack_dispatcher;
 	jack_client_t *jack_client;

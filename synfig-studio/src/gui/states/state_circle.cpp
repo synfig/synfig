@@ -155,12 +155,12 @@ class studio::StateCircle_Context : public sigc::trackable
 
 	// spline points
 	Gtk::Label bline_points_label;
-	Gtk::Adjustment	number_of_bline_points_adj;
+	Glib::RefPtr<Gtk::Adjustment> number_of_bline_points_adj;
 	Gtk::SpinButton	number_of_bline_points_spin;
 
 	// spline point angle offset
 	Gtk::Label bline_point_angle_offset_label;
-	Gtk::Adjustment	bline_point_angle_offset_adj;
+	Glib::RefPtr<Gtk::Adjustment> bline_point_angle_offset_adj;
 	Gtk::SpinButton	bline_point_angle_offset_spin;
 	Gtk::HBox bline_point_angle_offset_box;
 
@@ -230,11 +230,11 @@ public:
 	}
 	void set_feather_size(Distance x) { return feather_dist.set_value(x);}
 
-	Real get_number_of_bline_points()const { return number_of_bline_points_adj.get_value(); }
-	void set_number_of_bline_points(Real f) { number_of_bline_points_adj.set_value(f); }
+	Real get_number_of_bline_points()const { return number_of_bline_points_adj->get_value(); }
+	void set_number_of_bline_points(Real f) { number_of_bline_points_adj->set_value(f); }
 
-	Real get_bline_point_angle_offset()const { return bline_point_angle_offset_adj.get_value(); }
-	void set_bline_point_angle_offset(Real f) { bline_point_angle_offset_adj.set_value(f); }
+	Real get_bline_point_angle_offset()const { return bline_point_angle_offset_adj->get_value(); }
+	void set_bline_point_angle_offset(Real f) { bline_point_angle_offset_adj->set_value(f); }
 
 	bool get_invert()const { return invert_checkbutton.get_active(); }
 	void set_invert(bool i) { invert_checkbutton.set_active(i); }
@@ -357,14 +357,14 @@ StateCircle_Context::load_settings()
 			set_opacity(1);
 
 		if(settings.get_value("circle.bline_width",value) && value != "")
-			set_bline_width(Distance(atof(value.c_str()), Distance::SYSTEM_POINTS));
+			set_bline_width(Distance(atof(value.c_str()), App::distance_system));
 		else
-			set_bline_width(Distance(1, Distance::SYSTEM_POINTS)); // default width
+			set_bline_width(Distance(1, App::distance_system)); // default width
 
 		if(settings.get_value("circle.feather",value))
-			set_feather_size(Distance(atof(value.c_str()), Distance::SYSTEM_POINTS));
+			set_feather_size(Distance(atof(value.c_str()), App::distance_system));
 		else
-			set_feather_size(Distance(0, Distance::SYSTEM_POINTS)); // default feather
+			set_feather_size(Distance(0, App::distance_system)); // default feather
 
 		if(settings.get_value("circle.number_of_bline_points",value))
 			set_number_of_bline_points(atof(value.c_str()));
@@ -524,9 +524,9 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	prev_workarea_layer_status_(get_work_area()->get_allow_layer_clicks()),
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
 	opacity_hscl(0.0f, 1.01f, 0.01f),
-	number_of_bline_points_adj(0, 2, 120, 1, 1),
+	number_of_bline_points_adj(Gtk::Adjustment::create(0, 2, 120, 1, 1)),
 	number_of_bline_points_spin(number_of_bline_points_adj, 1, 0),
-	bline_point_angle_offset_adj(0, -360, 360, 0.1, 1),
+	bline_point_angle_offset_adj(Gtk::Adjustment::create(0, -360, 360, 0.1, 1)),
 	bline_point_angle_offset_spin(bline_point_angle_offset_adj, 1, 1)
 {
 	egress_on_selection_change=true;
@@ -540,11 +540,11 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
 	list.insert(attr);
 	title_label.set_attributes(list);
-	title_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	title_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
 	// 1, layer name label and entry
 	id_label.set_label(_("Name:"));
-	id_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	id_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 	SPACING(id_gap, GAP);
 	id_box.pack_start(id_label, Gtk::PACK_SHRINK);
 	id_box.pack_start(*id_gap, Gtk::PACK_SHRINK);
@@ -553,7 +553,7 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 
 	// 2, layer types creation
 	layer_types_label.set_label(_("Create:"));
-	layer_types_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	layer_types_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
 	LAYER_CREATION(layer_circle_togglebutton,
 		("synfig-layer_geometry_circle"), _("Create a circle layer"));
@@ -585,7 +585,7 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 
 	// 3, blend method label and dropdown list
 	blend_label.set_label(_("Blend Method:"));
-	blend_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	blend_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 	SPACING(blend_gap, GAP);
 	blend_box.pack_start(blend_label, Gtk::PACK_SHRINK);
 	blend_box.pack_start(*blend_gap, Gtk::PACK_SHRINK);
@@ -596,7 +596,7 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 
 	// 4, opacity label and slider
 	opacity_label.set_label(_("Opacity:"));
-	opacity_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	opacity_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
 	opacity_hscl.set_digits(2);
 	opacity_hscl.set_value_pos(Gtk::POS_LEFT);
@@ -604,7 +604,7 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 
 	// 5, brush size
 	bline_width_label.set_label(_("Brush Size:"));
-	bline_width_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	bline_width_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 	bline_width_label.set_sensitive(false);
 
 	bline_width_dist.set_digits(2);
@@ -613,13 +613,13 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 
 	// 6, spline points
 	bline_points_label.set_label(_("Spline Points:"));
-	bline_points_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	bline_points_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 	bline_points_label.set_sensitive(false);
 	number_of_bline_points_spin.set_sensitive(false);
 
 	// 7, spline point angle offset
 	bline_point_angle_offset_label.set_label(_("Offset:"));
-	bline_point_angle_offset_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	bline_point_angle_offset_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 	bline_point_angle_offset_label.set_sensitive(false);
 	bline_point_angle_offset_spin.set_sensitive(false);
 
@@ -629,7 +629,7 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 
 	// 8, invert
 	invert_label.set_label(_("Invert"));
-	invert_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	invert_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
 	invert_box.pack_start(invert_label);
 	invert_box.pack_end(invert_checkbutton, Gtk::PACK_SHRINK);
@@ -637,7 +637,7 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 
 	// 9, feather
 	feather_label.set_label(_("Feather:"));
-	feather_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	feather_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 	feather_label.set_sensitive(false);
 
 	feather_dist.set_digits(2);
@@ -646,7 +646,7 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 
 	// 10, feather falloff for circle layer
 	falloff_label.set_label(_("Falloff:"));
-	falloff_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	falloff_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 	falloff_label.set_sensitive(false);
 	SPACING(falloff_indent, INDENTATION);
 	falloff_box.pack_start(*falloff_indent, Gtk::PACK_SHRINK);
@@ -665,7 +665,7 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 
 	// 11, link origins
 	link_origins_label.set_label(_("Link Origins"));
-	link_origins_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	link_origins_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
 	link_origins_box.pack_start(link_origins_label);
 	link_origins_box.pack_end(layer_link_origins_checkbutton, Gtk::PACK_SHRINK);
@@ -673,7 +673,7 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 
 	// 12, spline origins at center
 	origins_at_center_label.set_label(_("Spline Origins at Center"));
-	origins_at_center_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	origins_at_center_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
 	origins_at_center_box.pack_start(origins_at_center_label);
 	origins_at_center_box.pack_end(layer_origins_at_center_checkbutton, Gtk::PACK_SHRINK);

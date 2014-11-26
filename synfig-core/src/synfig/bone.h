@@ -49,6 +49,7 @@
 	cout<<"[length]="<<bone.length_<<endl;         \
 	cout<<"[width]="<<bone.width_<<endl; \
 	cout<<"[tipwidth]="<<bone.tipwidth_<<endl; \
+	cout<<"[order]="<<bone.order_<<endl; \
 	cout<<"[parent]="<<bone.parent_<<endl
 
 /* === T Y P E D E F S ===================================================== */
@@ -101,6 +102,8 @@ private:
 	Real width_;
 	//!This is the width of bone at its tip
 	Real tipwidth_;
+	//!This is the z-order of bone
+	Real order_;
 	//!The parent bone.
 	const ValueNode_Bone* parent_;
 
@@ -144,6 +147,10 @@ public:
 	//!Wrapper for tipwidth
 	const Real& get_tipwidth()const {return tipwidth_;}
 	void set_tipwidth(const Real &x) {tipwidth_=x;}
+
+	//!Wrapper for order
+	const Real& get_order()const {return order_;}
+	void set_order(const Real &x) {order_=x;}
 
 	//!This gets the calculated tip of the bone based on
 	//!tip=origin+[length,0]*Rotate(alpha)*Scalex(scalex*scalelx)

@@ -121,7 +121,7 @@ public:
 			Gtk::CellRendererPixbuf* icon_cellrenderer = Gtk::manage( new Gtk::CellRendererPixbuf() );
 			column->pack_end(*icon_cellrenderer,false);
 			Glib::RefPtr<Gdk::Pixbuf> pixbuf;
-			pixbuf=Gtk::Button().render_icon(Gtk::StockID("synfig-utils_timetrack_align"),Gtk::ICON_SIZE_SMALL_TOOLBAR);
+			pixbuf=Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-utils_timetrack_align"),Gtk::ICON_SIZE_SMALL_TOOLBAR);
 			icon_cellrenderer->property_pixbuf() = pixbuf;
 			icon_cellrenderer->set_fixed_size (0,-1);
 
@@ -190,7 +190,7 @@ public:
 				) break;
 				const Gtk::TreeRow row = *(get_model()->get_iter(path));
 
-				if(column && column->get_first_cell_renderer()==cellrenderer_time_track)
+				if(column && column->get_first_cell()==cellrenderer_time_track)
 				{
 					Gdk::Rectangle rect;
 					get_cell_area(path,*column,rect);
@@ -224,7 +224,7 @@ public:
 
 				if (((event->motion.state&GDK_BUTTON1_MASK) || (event->motion.state&GDK_BUTTON3_MASK)) &&
 					column &&
-					cellrenderer_time_track == column->get_first_cell_renderer())
+					cellrenderer_time_track == column->get_first_cell())
 				{
 					Gdk::Rectangle rect;
 					get_cell_area(path,*column,rect);
@@ -269,7 +269,7 @@ public:
 
 				Gtk::TreeRow row = *(get_model()->get_iter(path));
 
-				if(column && cellrenderer_time_track==column->get_first_cell_renderer())
+				if(column && cellrenderer_time_track==column->get_first_cell())
 				{
 					Gdk::Rectangle rect;
 					get_cell_area(path,*column,rect);
@@ -350,11 +350,11 @@ public:
 	{
 		if(mimic_tree_view)
 		{
-			Gtk::Adjustment &adjustment(*mimic_tree_view->get_vadjustment());
+			Glib::RefPtr<Gtk::Adjustment> adjustment(mimic_tree_view->get_vadjustment());
 			set_vadjustment(adjustment);
 
-			if(adjustment.get_page_size()>get_height())
-				adjustment.set_page_size(get_height());
+			if(adjustment->get_page_size()>get_height())
+				adjustment->set_page_size(get_height());
 /* Commented during Align rows fixing
 // http://www.synfig.org/issues/thebuggenie/synfig/issues/161
 			int row_height = 0;
@@ -406,18 +406,8 @@ Dock_Timetrack::Dock_Timetrack():
 	table_=0;
 	widget_timeslider_= new Widget_Timeslider();
 	widget_kf_list_= new Widget_Keyframe_List();
-
-	int header_height = 0;
-/* Commented during Align rows fixing
-// http://www.synfig.org/issues/thebuggenie/synfig/issues/161
-	if(getenv("SYNFIG_TIMETRACK_HEADER_HEIGHT"))
-		header_height = atoi(getenv("SYNFIG_TIMETRACK_HEADER_HEIGHT"));
-	if (header_height < 3)
-*/
-		header_height = 24;
-
-	widget_timeslider_->set_size_request(-1,header_height-header_height/3+1);
-	widget_kf_list_->set_size_request(-1,header_height/3+1);
+	
+	set_use_scrolled(false);
 
 	hscrollbar_=new Gtk::HScrollbar();
 	vscrollbar_=new Gtk::VScrollbar();
@@ -448,6 +438,7 @@ Dock_Timetrack::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view
 	tree_view->set_model(tree_store);
 	Gtk::TreeView* param_tree_view(dynamic_cast<Gtk::TreeView*>(canvas_view->get_ext_widget("params")));
 	tree_view->mimic(param_tree_view);
+	mimic_tree_view=param_tree_view;
 
 	tree_view->signal_waypoint_clicked_timetrackview.connect(sigc::mem_fun(*canvas_view, &studio::CanvasView::on_waypoint_clicked_canvasview));
 
@@ -458,8 +449,8 @@ Dock_Timetrack::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view
 	*/
 	tree_layer->signal_param_tree_header_height_changed().connect(sigc::mem_fun(*this, &studio::Dock_Timetrack::on_update_header_height));
 
-	canvas_view->time_adjustment().signal_value_changed().connect(sigc::mem_fun(*tree_view,&Gtk::TreeView::queue_draw));
-	canvas_view->time_adjustment().signal_changed().connect(sigc::mem_fun(*tree_view,&Gtk::TreeView::queue_draw));
+	canvas_view->time_adjustment()->signal_value_changed().connect(sigc::mem_fun(*tree_view,&Gtk::TreeView::queue_draw));
+	canvas_view->time_adjustment()->signal_changed().connect(sigc::mem_fun(*tree_view,&Gtk::TreeView::queue_draw));
 
 	canvas_view->set_ext_widget(get_name(),tree_view);
 	// widget_timeslider fps connection to animation render description change
@@ -506,6 +497,8 @@ Dock_Timetrack::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_v
 	if(table_)
 	{
 		table_->hide();
+		remove(*table_);
+		clear_previous();
 		delete table_;
 		hscrollbar_->unset_adjustment();
 		vscrollbar_->unset_adjustment();
@@ -517,25 +510,30 @@ Dock_Timetrack::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_v
 	{
 		TimeTrackView* tree_view(dynamic_cast<TimeTrackView*>(canvas_view->get_ext_widget(get_name())));
 		Gtk::TreeView* param_tree_view(dynamic_cast<Gtk::TreeView*>(canvas_view->get_ext_widget("params")));
-		tree_view->set_vadjustment(*param_tree_view->get_vadjustment());
+		Gtk::ScrolledWindow* scrolled = Gtk::manage(new Gtk::ScrolledWindow);
+		scrolled->get_vscrollbar()->hide();
+		scrolled->add(*tree_view);
+		scrolled->set_policy(Gtk::POLICY_NEVER,Gtk::POLICY_AUTOMATIC);
+		scrolled->set_vadjustment(param_tree_view->get_vadjustment());
+		scrolled->show_all();
 
 		assert(tree_view);
 		// Fixed size drawing areas to align the widget_timeslider and tree_view time cursors
 		// TODO ?: one align_drawingArea.(0, 1, 0, 1) modify_bg KF's color another (0, 1, 1, 2) modify_bg TS's color
 		Gtk::DrawingArea* align_drawingArea1 = Gtk::manage(new Gtk::DrawingArea);
-		align_drawingArea1->set_size_request(2,-1);
+		align_drawingArea1->set_size_request(4,-1);
 		// TODO ?: one align_drawingArea.(2, 3, 0, 1) modify_bg KF's color another (2, 3, 1, 2) modify_bg TS's color
 		Gtk::DrawingArea* align_drawingArea2 = Gtk::manage(new Gtk::DrawingArea);
-		align_drawingArea2->set_size_request(6,-1);
+		align_drawingArea2->set_size_request(9,-1);
 
-		widget_timeslider_->set_time_adjustment(&canvas_view->time_adjustment());
-		widget_timeslider_->set_bounds_adjustment(&canvas_view->time_window_adjustment());
+		widget_timeslider_->set_time_adjustment(canvas_view->time_adjustment());
+		widget_timeslider_->set_bounds_adjustment(canvas_view->time_window_adjustment());
 		widget_timeslider_->set_global_fps(canvas_view->get_canvas()->rend_desc().get_frame_rate());
 
-		widget_kf_list_->set_time_adjustment(&canvas_view->time_adjustment());
+		widget_kf_list_->set_time_adjustment(canvas_view->time_adjustment());
 		widget_kf_list_->set_canvas_interface(canvas_view->canvas_interface());
 
-		vscrollbar_->set_adjustment(*tree_view->get_vadjustment());
+		vscrollbar_->set_adjustment(tree_view->get_vadjustment());
 		hscrollbar_->set_adjustment(canvas_view->time_window_adjustment());
 
 /*
@@ -562,10 +560,13 @@ ALIGN2 = align_drawingArea2
 		table_->attach(*widget_kf_list_, 1, 2, 0, 1, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::SHRINK);
 		table_->attach(*widget_timeslider_, 1, 2, 1, 2, Gtk::FILL|Gtk::SHRINK, Gtk::FILL|Gtk::SHRINK);
 		table_->attach(*align_drawingArea2, 2, 3, 0, 2, Gtk::SHRINK, Gtk::FILL);
-		table_->attach(*tree_view, 0, 3, 2, 3, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::EXPAND);
+		table_->attach(*scrolled, 0, 3, 2, 3, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::EXPAND);
 		table_->attach(*hscrollbar_, 0, 3, 3, 4, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::SHRINK);
 		table_->attach(*vscrollbar_, 3, 4, 0, 3, Gtk::FILL|Gtk::SHRINK, Gtk::FILL|Gtk::EXPAND);
 		add(*table_);
+		
+		// Should be here, after the widget was attached to table
+		tree_view->add_events(Gdk::SCROLL_MASK);
 
 		//add(*last_widget_curves_);
 		table_->show_all();
@@ -580,17 +581,10 @@ ALIGN2 = align_drawingArea2
 void
 Dock_Timetrack::on_update_header_height( int header_height)
 {
-	// FIXME very bad hack (curves dock also contains this)
-	//! Adapt the border size "according" to different windows manager rendering
-#ifdef WIN32
-	header_height-=2;
-#elif defined(__APPLE__)
-	header_height+=6;
-#else
-// *nux and others
-	header_height+=2;
-#endif
-
-	widget_timeslider_->set_size_request(-1,header_height-header_height/3+1);
-	widget_kf_list_->set_size_request(-1,header_height/3+1);
+	int width=0;
+	int height=0;
+	int kf_list_height=10;
+	mimic_tree_view->convert_bin_window_to_widget_coords(0, 0, width, height);
+	widget_timeslider_->set_size_request(-1,height-kf_list_height);
+	widget_kf_list_->set_size_request(-1,kf_list_height);
 }

@@ -45,7 +45,7 @@ class Renderer_Dragbox : public studio::WorkAreaRenderer
 public:
 	~Renderer_Dragbox();
 
-	void render_vfunc(const Glib::RefPtr<Gdk::Drawable>& drawable,const Gdk::Rectangle& expose_area	);
+	void render_vfunc(const Glib::RefPtr<Gdk::Window>& drawable,const Gdk::Rectangle& expose_area	);
 
 	const synfig::Point& get_drag_point()const;
 	const synfig::Point& get_curr_point()const;

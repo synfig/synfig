@@ -46,6 +46,9 @@
 #include <iostream>
 #include "instance.h"
 
+#include <glibmm/miscutils.h>
+#include <glibmm/main.h>
+
 #ifdef HAVE_SYS_STAT_H
 #include <sys/stat.h>
 #endif

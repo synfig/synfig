@@ -32,6 +32,7 @@
 
 #include <gtkmm/dialog.h>
 #include <gtkmm/entry.h>
+#include <gtkmm/radiobutton.h>
 
 #include <synfig/valuenode_dynamiclist.h>
 #include <synfigapp/action_system.h>
@@ -47,7 +48,6 @@
 #include "event_layerclick.h"
 #include "docks/dock_toolbox.h"
 #include "docks/dialog_tooloptions.h"
-#include <gtkmm/optionmenu.h>
 #include "duck.h"
 #include <synfigapp/main.h>
 
@@ -202,7 +202,7 @@ StateMirror_Context::StateMirror_Context(CanvasView* canvas_view):
 bool
 StateMirror_Context::key_press_event(GdkEventKey *event)
 {
-	if (event->keyval==GDK_Shift_L || event->keyval==GDK_Shift_R )
+	if (event->keyval==GDK_KEY_Shift_L || event->keyval==GDK_KEY_Shift_R)
 	{
 		if (shift_is_pressed) return false;
 		shift_is_pressed=true;
@@ -216,7 +216,7 @@ StateMirror_Context::key_press_event(GdkEventKey *event)
 bool
 StateMirror_Context::key_release_event(GdkEventKey *event)
 {
-	if (event->keyval==GDK_Shift_L || event->keyval==GDK_Shift_R )
+	if (event->keyval==GDK_KEY_Shift_L || event->keyval==GDK_KEY_Shift_R )
 	{
 		if (!shift_is_pressed) return false;
 		shift_is_pressed = false;

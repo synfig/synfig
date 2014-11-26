@@ -31,7 +31,7 @@
 #include <sigc++/signal.h>
 #include <sigc++/object.h>
 #include <synfig/vector.h>
-#include <gdkmm/drawable.h>
+#include <gdkmm/window.h>
 #include <gdkmm/rectangle.h>
 
 /* === M A C R O S ========================================================= */
@@ -86,7 +86,7 @@ public:
 	void set_work_area(WorkArea* work_area_);
 
 	virtual void render_vfunc(
-		const Glib::RefPtr<Gdk::Drawable>& window,
+		const Glib::RefPtr<Gdk::Window>& window,
 		const Gdk::Rectangle& expose_area
 	);
 

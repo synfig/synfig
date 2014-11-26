@@ -29,6 +29,7 @@
 
 #include <vector>
 #include <list>
+#include <map>
 #include <synfig/string.h>
 #include <sigc++/signal.h>
 #include <sigc++/object.h>

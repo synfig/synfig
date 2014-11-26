@@ -29,7 +29,6 @@
 /* === H E A D E R S ======================================================= */
 
 #include <gtk/gtk.h>
-#include <gtkmm/ruler.h>
 #include <gtkmm/arrow.h>
 #include <gtkmm/image.h>
 #include <gdkmm/pixbufloader.h>
@@ -43,7 +42,6 @@
 #include <gtkmm/paned.h>
 #include <gtkmm/treeview.h>
 #include <gtkmm/treestore.h>
-#include <gtkmm/adjustment.h>
 #include <gtkmm/box.h>
 #include <gtkmm/scrollbar.h>
 #include <gtkmm/cellrenderer.h>
@@ -51,6 +49,7 @@
 #include <gtkmm/dialog.h>
 #include <gtkmm/menu.h>
 
+#include <glibmm/property.h>
 
 #include <synfigapp/canvasinterface.h>
 #include <synfigapp/value_desc.h>
@@ -82,7 +81,7 @@ class CellRenderer_TimeTrack :
 
 private:
 	//! Time adjustment window
-	Gtk::Adjustment adjustment_;
+	Glib::RefPtr<Gtk::Adjustment> adjustment_;
 
 	//! Signal for when the user clicks on a waypoint
 	sigc::signal<void, const etl::handle<synfig::Node>&, const synfig::Time&, const synfig::Time&, int> signal_waypoint_clicked_cellrenderer_;
@@ -130,7 +129,7 @@ private:
 	Glib::Property<synfig::Canvas::Handle> property_canvas_;
 
 	//! ??? \see adjustment_
-	Glib::Property<Gtk::Adjustment* > property_adjustment_;
+	Glib::Property< Glib::RefPtr<Gtk::Adjustment> > property_adjustment_;
 
 	//! \writeme
 	Glib::Property<bool> property_enable_timing_info_;
@@ -145,7 +144,7 @@ public:
 
 	Glib::PropertyProxy<synfig::Canvas::Handle> property_canvas();
 
-	Glib::PropertyProxy<Gtk::Adjustment* > property_adjustment();
+	Glib::PropertyProxy< Glib::RefPtr<Gtk::Adjustment> > property_adjustment();
 
 	/*
  --	** -- S I G N A L   I N T E R F A C E S -----------------------------------
@@ -168,9 +167,8 @@ public:
 	CellRenderer_TimeTrack();
     ~CellRenderer_TimeTrack();
 
-	void set_adjustment(Gtk::Adjustment &x);
-	Gtk::Adjustment *get_adjustment();
-	const Gtk::Adjustment *get_adjustment()const;
+	void set_adjustment(const Glib::RefPtr<Gtk::Adjustment> &x);
+	Glib::RefPtr<Gtk::Adjustment> get_adjustment()const;
 
 	etl::loose_handle<synfigapp::CanvasInterface>	canvas_interface()const {return canvas_interface_;}
 	void set_canvas_interface(etl::loose_handle<synfigapp::CanvasInterface> h); //this should only be called by smart people
@@ -183,11 +181,10 @@ public:
 
 	virtual void
 	render_vfunc(
-		const Glib::RefPtr<Gdk::Drawable>& window,
+		const ::Cairo::RefPtr< ::Cairo::Context>& cr,
 		Gtk::Widget& widget,
 		const Gdk::Rectangle& background_area,
-		const Gdk::Rectangle& ca,
-		const Gdk::Rectangle& expose_area,
+		const Gdk::Rectangle& cell_area,
 		Gtk::CellRendererState flags);
 
 	virtual bool

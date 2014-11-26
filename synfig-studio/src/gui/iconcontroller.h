@@ -54,8 +54,8 @@ public:
 	IconController(const synfig::String& basepath);
 	~IconController();
 
-	static Gdk::Cursor get_normal_cursor();
-	static Gdk::Cursor get_tool_cursor(const Glib::ustring& name,const Glib::RefPtr<Gdk::Window>& window);
+	static Glib::RefPtr<Gdk::Cursor> get_normal_cursor();
+	static Glib::RefPtr<Gdk::Cursor> get_tool_cursor(const Glib::ustring& name,const Glib::RefPtr<Gdk::Window>& window);
 };
 
 Gtk::StockID layer_icon(const synfig::String &layer);

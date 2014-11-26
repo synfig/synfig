@@ -30,6 +30,8 @@
 #	include <config.h>
 #endif
 
+#include <glibmm/main.h>
+
 #include "layertreestore.h"
 #include "iconcontroller.h"
 #include <gtkmm/button.h>
@@ -42,7 +44,7 @@
 #include <synfigapp/action_system.h>
 #include <synfig/context.h>
 
-#include <gtk/gtkversion.h>
+#include <gtk/gtk.h>
 #include <ETL/clock>
 #include "general.h"
 
@@ -75,7 +77,7 @@ LayerTreeStore::LayerTreeStore(etl::loose_handle<synfigapp::CanvasInterface> can
 	queued					(false),
 	canvas_interface_		(canvas_interface_)
 {
-	layer_icon=Gtk::Button().render_icon(Gtk::StockID("synfig-layer"),Gtk::ICON_SIZE_SMALL_TOOLBAR);
+	layer_icon=Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-layer"),Gtk::ICON_SIZE_SMALL_TOOLBAR);
 
 	// Connect Signals to Terminals
 	canvas_interface()->signal_layer_status_changed().connect(sigc::mem_fun(*this,&studio::LayerTreeStore::on_layer_status_changed));
@@ -529,7 +531,7 @@ LayerTreeStore::row_drop_possible_vfunc (const TreeModel::Path& dest, const Gtk:
 
 		//return true;
 		TreeModel::Path dest_parent(dest);
-		if(!dest_parent.up() || dest.get_depth()==1)
+		if(!dest_parent.up() || dest.size()==1)
 		{
 			//row=(*get_iter(dest));
 			//dest_canvas=(Canvas::Handle)(row[model.canvas]);

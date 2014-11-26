@@ -33,12 +33,11 @@
 #include "dialogs/dialog_waypoint.h"
 #include <gtk/gtk.h>
 #include <gtkmm/spinbutton.h>
-#include <gtkmm/combo.h>
+#include <gtkmm/combobox.h>
 #include <ETL/stringf>
 #include "widgets/widget_value.h"
 #include "app.h"
 #include <gtkmm/menu.h>
-#include <gtkmm/optionmenu.h>
 #include "widgets/widget_time.h"
 #include "widgets/widget_waypoint.h"
 
@@ -60,7 +59,7 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 Dialog_Waypoint::Dialog_Waypoint(Gtk::Window& parent,etl::handle<synfig::Canvas> canvas):
-	Dialog(_("Waypoint Editor"),parent,false,true),
+	Dialog(_("Waypoint Editor"),parent),
 	canvas(canvas)
 {
 	assert(canvas);

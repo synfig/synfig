@@ -28,7 +28,9 @@
 /* === H E A D E R S ======================================================= */
 
 #include <gtk/gtk.h>
-#include <gtkmm/ruler.h>
+
+#include <glibmm/property.h>
+
 #include <gtkmm/arrow.h>
 #include <gtkmm/image.h>
 #include <gdkmm/pixbufloader.h>
@@ -42,14 +44,12 @@
 #include <gtkmm/paned.h>
 #include <gtkmm/treeview.h>
 #include <gtkmm/treestore.h>
-#include <gtkmm/adjustment.h>
 #include <gtkmm/box.h>
 #include <gtkmm/spinbutton.h>
 #include <gtkmm/cellrenderer.h>
 #include <gtkmm/checkbutton.h>
 
 #include <gtkmm/colorselection.h>
-#include <gtkmm/optionmenu.h>
 
 //#include <synfig/synfig.h>
 #include <synfig/paramdesc.h>
@@ -111,11 +111,10 @@ public:
 
 	virtual void
 	render_vfunc(
-		const Glib::RefPtr<Gdk::Drawable>& window,
+		const ::Cairo::RefPtr< ::Cairo::Context>& cr,
 		Gtk::Widget& widget,
 		const Gdk::Rectangle& background_area,
-		const Gdk::Rectangle& ca,
-		const Gdk::Rectangle& expose_area,
+		const Gdk::Rectangle& cell_area,
 		Gtk::CellRendererState flags);
 
 	virtual Gtk::CellEditable* start_editing_vfunc(GdkEvent* event,

@@ -155,7 +155,7 @@ public:
 
 	void set_model(Glib::RefPtr<ChildrenTreeStore> children_tree_store_);
 
-	void set_time_adjustment(Gtk::Adjustment &adjustment);
+	void set_time_adjustment(const Glib::RefPtr<Gtk::Adjustment> &adjustment);
 
 	void set_show_timetrack(bool x=true);
 

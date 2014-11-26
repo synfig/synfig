@@ -122,9 +122,9 @@ void Dialog_Preview::close_window_handler()
 
 //dialog_previewoptions stuff
 Dialog_PreviewOptions::Dialog_PreviewOptions()
-:Dialog(_("Preview Options"),false,true),
-adj_zoom(0.5,0.1,5.0,0.1,0.2),
-adj_fps(15,1,120,1,5),
+:Dialog(_("Preview Options")),
+adj_zoom(Gtk::Adjustment::create(0.5,0.1,5.0,0.1,0.2)),
+adj_fps(Gtk::Adjustment::create(15,1,120,1,5)),
 check_use_cairo(_("Use _Cairo render"), false),
 check_overbegin(_("_Begin time"),false),
 check_overend(_("_End time"),false),
@@ -208,11 +208,13 @@ settings(this,"prevoptions")
 	Gtk::Button *cancelButton = manage(new Gtk::Button(Gtk::StockID("gtk-cancel")));
 	cancelButton->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_PreviewOptions::on_cancel_pressed));
 	add_action_widget(*cancelButton, 1);
+	cancelButton->show();
 
 	Gtk::Button *okbutton = manage(new Gtk::Button(Gtk::StockID("gtk-go-forward")));
 	okbutton->set_label(_("Preview"));
 	okbutton->signal_clicked().connect(sigc::mem_fun(*this,&Dialog_PreviewOptions::on_ok_pressed));
 	add_action_widget(*okbutton, 0);
+	okbutton->show();
 
 	time_begin.set_sensitive(false);
 	time_end.set_sensitive(false);

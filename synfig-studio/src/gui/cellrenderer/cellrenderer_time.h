@@ -27,6 +27,7 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <glibmm/property.h>
 #include <gtkmm/entry.h>
 #include <gtkmm/cellrenderertext.h>
 
@@ -71,11 +72,10 @@ protected:
 
 	virtual void
 	render_vfunc(
-		const Glib::RefPtr<Gdk::Drawable>& window,
+		const ::Cairo::RefPtr< ::Cairo::Context>& cr,
 		Gtk::Widget& widget,
 		const Gdk::Rectangle& background_area,
-		const Gdk::Rectangle& ca,
-		const Gdk::Rectangle& expose_area,
+		const Gdk::Rectangle& cell_area,
 		Gtk::CellRendererState flags);
 
 	virtual Gtk::CellEditable* start_editing_vfunc(GdkEvent* event,

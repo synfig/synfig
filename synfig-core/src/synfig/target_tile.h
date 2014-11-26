@@ -58,6 +58,8 @@ class Target_Tile : public Target
 	//! Determines if the tiles should be clipped to the redener description
 	//! or not
 	bool clipping_;
+
+	struct TileGroup;
 public:
 	typedef etl::handle<Target_Tile> Handle;
 	typedef etl::loose_handle<Target_Tile> LooseHandle;

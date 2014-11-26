@@ -313,14 +313,14 @@ StatePolygon_Context::load_settings()
 			set_opacity(1);
 
 		if(settings.get_value("polygon.bline_width",value) && value != "")
-			set_bline_width(Distance(atof(value.c_str()), Distance::SYSTEM_POINTS));
+			set_bline_width(Distance(atof(value.c_str()), App::distance_system));
 		else
-			set_bline_width(Distance(1, Distance::SYSTEM_POINTS)); // default width
+			set_bline_width(Distance(1, App::distance_system)); // default width
 
 		if(settings.get_value("polygon.feather",value))
-			set_feather_size(Distance(atof(value.c_str()), Distance::SYSTEM_POINTS));
+			set_feather_size(Distance(atof(value.c_str()), App::distance_system));
 		else
-			set_feather_size(Distance(0, Distance::SYSTEM_POINTS)); // default feather
+			set_feather_size(Distance(0, App::distance_system)); // default feather
 
 		if(settings.get_value("polygon.invert",value) && value != "0")
 			set_invert(true);
@@ -474,11 +474,11 @@ StatePolygon_Context::StatePolygon_Context(CanvasView* canvas_view):
 	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
 	list.insert(attr);
 	title_label.set_attributes(list);
-	title_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	title_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
 	// 1, layer name label and entry
 	id_label.set_label(_("Name:"));
-	id_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	id_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 	SPACING(id_gap, GAP);
 	id_box.pack_start(id_label, Gtk::PACK_SHRINK);
 	id_box.pack_start(*id_gap, Gtk::PACK_SHRINK);
@@ -487,7 +487,7 @@ StatePolygon_Context::StatePolygon_Context(CanvasView* canvas_view):
 
 	// 2, layer types creation
 	layer_types_label.set_label(_("Create:"));
-	layer_types_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	layer_types_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
 	LAYER_CREATION(layer_polygon_togglebutton,
 		("synfig-layer_geometry_polygon"), _("Create a polygon layer"));
@@ -519,7 +519,7 @@ StatePolygon_Context::StatePolygon_Context(CanvasView* canvas_view):
 
 	// 3, blend method label and dropdown list
 	blend_label.set_label(_("Blend Method:"));
-	blend_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	blend_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 	SPACING(blend_gap, GAP);
 	blend_box.pack_start(blend_label, Gtk::PACK_SHRINK);
 	blend_box.pack_start(*blend_gap, Gtk::PACK_SHRINK);
@@ -530,7 +530,7 @@ StatePolygon_Context::StatePolygon_Context(CanvasView* canvas_view):
 
 	// 4, opacity label and slider
 	opacity_label.set_label(_("Opacity:"));
-	opacity_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	opacity_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
 	opacity_hscl.set_digits(2);
 	opacity_hscl.set_value_pos(Gtk::POS_LEFT);
@@ -538,7 +538,7 @@ StatePolygon_Context::StatePolygon_Context(CanvasView* canvas_view):
 
 	// 5, brush size
 	bline_width_label.set_label(_("Brush Size:"));
-	bline_width_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	bline_width_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 	bline_width_label.set_sensitive(false);
 
 	bline_width_dist.set_digits(2);
@@ -547,7 +547,7 @@ StatePolygon_Context::StatePolygon_Context(CanvasView* canvas_view):
 
 	// 6, invert
 	invert_label.set_label(_("Invert"));
-	invert_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	invert_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
 	invert_box.pack_start(invert_label);
 	invert_box.pack_end(invert_checkbutton, Gtk::PACK_SHRINK);
@@ -555,7 +555,7 @@ StatePolygon_Context::StatePolygon_Context(CanvasView* canvas_view):
 
 	// 7, feather
 	feather_label.set_label(_("Feather:"));
-	feather_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	feather_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 	feather_label.set_sensitive(false);
 
 	feather_dist.set_digits(2);
@@ -564,7 +564,7 @@ StatePolygon_Context::StatePolygon_Context(CanvasView* canvas_view):
 
 	// 8, link origins
 	link_origins_label.set_label(_("Link Origins"));
-	link_origins_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	link_origins_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
 	link_origins_box.pack_start(link_origins_label);
 	link_origins_box.pack_end(layer_link_origins_checkbutton, Gtk::PACK_SHRINK);

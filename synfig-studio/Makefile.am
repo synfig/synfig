@@ -24,7 +24,9 @@ MAINTAINERCLEANFILES = \
 	.doc_stamp \
 	.DS_Store
 	
-DISTCLEANFILES = synfigstudio.desktop	
+DISTCLEANFILES = \
+	synfigstudio.desktop \
+	$(appdata_DATA)
 
 SUBDIRS = \
 	build_tools \

@@ -29,16 +29,18 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <vector>
+
 #include <gtkmm/window.h>
 #include <gtkmm/image.h>
-#include <gtkmm/tooltips.h>
+#include <gtkmm/tooltip.h>
 #include <gtkmm/table.h>
 #include <gtkmm/button.h>
 #include <gtkmm/menu.h>
-#include <gtkmm/optionmenu.h>
 #include <gtkmm/notebook.h>
 #include <gtkmm/treeview.h>
 #include <gtkmm/box.h>
+#include <gtkmm/comboboxtext.h>
 
 #include <ETL/handle>
 
@@ -61,23 +63,26 @@ class CompView : public Gtk::Window
 {
 	DialogSettings dialog_settings;
 
-	Gtk::Tooltips tooltips;
+	Gtk::Tooltip tooltip;
 
-	Gtk::OptionMenu *instance_selector;
+	Gtk::ComboBoxText instance_selector;
 	Gtk::Notebook *notebook;
 
 	Gtk::TreeView *canvas_tree;
 	Gtk::TreeView *action_tree;
 
-	Gtk::Menu	instance_list_menu;
 	Gtk::Menu	menu;
 
+	std::vector< etl::loose_handle<studio::Instance> > instances;
 	etl::loose_handle<studio::Instance>	selected_instance;
 
 	void set_selected_instance_(etl::handle<studio::Instance> x);
 
 	void clear_history();
 	void clear_redo();
+
+protected:
+	void on_instance_selector_changed();
 
 public:
 	CompView();
@@ -105,7 +110,6 @@ private:
 
 	Gtk::Widget* create_canvas_tree();
 	Gtk::Widget* create_action_tree();
-	Gtk::Widget* create_instance_selector();
 
 	void on_row_activate(const Gtk::TreeModel::Path &path, Gtk::TreeViewColumn *);
 	bool on_tree_event(GdkEvent *event);

@@ -390,11 +390,11 @@ StateText_Context::StateText_Context(CanvasView *canvas_view):
 	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
 	list.insert(attr);
 	title_label.set_attributes(list);
-	title_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	title_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
 	// 1, layer name label and entry
 	id_label.set_label(_("Name:"));
-	id_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	id_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 	SPACING(id_gap, GAP);
 	id_box.pack_start(id_label, Gtk::PACK_SHRINK);
 	id_box.pack_start(*id_gap, Gtk::PACK_SHRINK);
@@ -403,7 +403,7 @@ StateText_Context::StateText_Context(CanvasView *canvas_view):
 
 	// 2, layer types creation
 	layer_types_label.set_label(_("Create:"));
-	layer_types_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	layer_types_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
 	LAYER_CREATION(layer_text_togglebutton,
 		("synfig-layer_other_text"), _("Create a text layer"));
@@ -415,7 +415,7 @@ StateText_Context::StateText_Context(CanvasView *canvas_view):
 
 	// 3, blend method label and dropdown list
 	blend_label.set_label(_("Blend Method:"));
-	blend_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	blend_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 	SPACING(blend_gap, GAP);
 	blend_box.pack_start(blend_label, Gtk::PACK_SHRINK);
 	blend_box.pack_start(*blend_gap, Gtk::PACK_SHRINK);
@@ -426,7 +426,7 @@ StateText_Context::StateText_Context(CanvasView *canvas_view):
 
 	// 4, opacity label and slider
 	opacity_label.set_label(_("Opacity:"));
-	opacity_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	opacity_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
 	opacity_hscl.set_digits(2);
 	opacity_hscl.set_value_pos(Gtk::POS_LEFT);
@@ -434,26 +434,26 @@ StateText_Context::StateText_Context(CanvasView *canvas_view):
 
 	// 5, paragraph
 	paragraph_label.set_label(_("Multiline Text"));
-	paragraph_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	paragraph_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 	paragraph_box.pack_start(paragraph_label, Gtk::PACK_SHRINK);
 	paragraph_box.pack_end(paragraph_checkbutton, Gtk::PACK_SHRINK);
 
 	// 6, size
 	size_label.set_label(_("Size:"));
-	size_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	size_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
 	size_widget.set_digits(2);
 	size_widget.set_canvas(canvas_view->get_canvas());
 
 	// 7, orientation
 	orientation_label.set_label(_("Orientation:"));
-	orientation_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	orientation_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
 	orientation_widget.set_digits(2);
 
 	// 8, family
 	family_label.set_label(_("Family:"));
-	family_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	family_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
 	// pack all options to the options_table
 

@@ -198,7 +198,7 @@ Action::ValueDescSkeletonLink::prepare()
 		ValueDesc& value_desc(*iter);
 
 		// skip region/outline origin
-		if (value_desc.parent_is_layer_param()
+		if (value_desc.parent_is_layer()
 		 && value_desc.get_param_name() == "origin"
 		 && (value_desc.get_layer()->get_name() == "advanced_outline"
 		  || value_desc.get_layer()->get_name() == "outline"
@@ -294,7 +294,7 @@ Action::ValueDescSkeletonLink::prepare()
 			add_action_front(action);
 		}
 		else
-		if (value_desc.parent_is_layer_param())
+		if (value_desc.parent_is_layer())
 		{
 			Action::Handle action = LayerParamConnect::create();
 			action->set_param("layer", value_desc.get_layer());

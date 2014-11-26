@@ -49,7 +49,7 @@ class Widget_Distance : public Gtk::SpinButton
 
 	mutable synfig::Distance distance_;
 
-	Gtk::Adjustment adjustment;
+	Glib::RefPtr<Gtk::Adjustment> adjustment;
 
 protected:
 

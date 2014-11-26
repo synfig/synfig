@@ -33,6 +33,7 @@
 #include <gtkmm/tooltip.h>
 #include <gtkmm/table.h>
 #include <gtkmm/button.h>
+#include <gtkmm/togglebutton.h>
 
 #include "general.h"
 
@@ -49,19 +50,18 @@ namespace studio
 
 class JackDial : public Gtk::Table
 {
-	Gtk::Button *enable_jack;
-	Gtk::Button *disable_jack;
+	Gtk::ToggleButton *toggle_jack;
 	Widget_Time *offset;
 
-	Gtk::Button *create_icon(Gtk::IconSize iconsize, const char * stockid, const char * tooltip);
+	Gtk::ToggleButton *create_icon(Gtk::IconSize iconsize, const char * stockid, const char * tooltip);
 
 public:
 	JackDial();
-	Glib::SignalProxy0<void> signal_enable_jack()    { return enable_jack->signal_clicked(); }
-	Glib::SignalProxy0<void> signal_disable_jack()   { return disable_jack->signal_clicked(); }
-	sigc::signal<void>& signal_offset_changed()      { return offset->signal_value_changed(); }
+	Glib::SignalProxy0<void> signal_toggle_jack()	{ return toggle_jack->signal_toggled(); }
+	Gtk::ToggleButton *get_toggle_jackbutton()	{ return toggle_jack; }
+	Widget_Time *get_offsetwidget()	{ return offset; }
 
-	void toggle_enable_jack(bool jack_is_enabled);
+	sigc::signal<void>& signal_offset_changed()      { return offset->signal_value_changed(); }
 
 	void set_offset(const synfig::Time &value)       { offset->set_value(value); }
 	synfig::Time get_offset() const                  { return offset->get_value(); }

@@ -53,7 +53,6 @@
 #include "docks/dock_toolbox.h"
 #include "docks/dialog_tooloptions.h"
 #include "widgets/widget_distance.h"
-#include <gtkmm/optionmenu.h>
 #include "duck.h"
 
 //#include <synfigapp/value_desc.h>
@@ -108,7 +107,7 @@ class studio::StateWidth_Context : public sigc::trackable
 	//Toolbox display
 	Gtk::Table options_table;
 
-	Gtk::Adjustment	adj_delta;
+	Glib::RefPtr<Gtk::Adjustment> adj_delta;
 	Gtk::SpinButton	spin_delta;
 
 	Widget_Distance *influence_radius;
@@ -119,8 +118,8 @@ class studio::StateWidth_Context : public sigc::trackable
 
 public:
 
-	Real get_delta()const { return adj_delta.get_value(); }
-	void set_delta(Real f) { adj_delta.set_value(f); }
+	Real get_delta()const { return adj_delta->get_value(); }
+	void set_delta(Real f) { adj_delta->set_value(f); }
 
 	Real get_radius()const { return influence_radius->get_value().get(Distance::SYSTEM_UNITS,get_canvas_view()->get_canvas()->rend_desc());}
 	void set_radius(Distance f) { influence_radius->set_value(f); }
@@ -185,9 +184,9 @@ StateWidth_Context::load_settings()
 			set_delta(6);
 
 		if(settings.get_value("width.radius",value))
-			set_radius(Distance(value.c_str()));
+			set_radius(Distance(atof(value.c_str()), App::distance_system));
 		else
-			set_radius(Distance("60pt"));
+			set_radius(Distance(60, App::distance_system));
 
 		//defaults to false
 		if(settings.get_value("width.relative",value) && value == "1")
@@ -231,7 +230,7 @@ StateWidth_Context::StateWidth_Context(CanvasView* canvas_view):
 
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
 
-	adj_delta(6,0,20,0.01,0.1),
+	adj_delta(Gtk::Adjustment::create(6,0,20,0.01,0.1)),
 	spin_delta(adj_delta,0.01,3),
 
 	check_relative(_("Relative Growth"))
@@ -584,8 +583,7 @@ StateWidth_Context::event_mouse_handler(const Smach::event& x)
 		{
 			//for each duck modify IT!!!
 			ValueDesc desc = i->first->get_value_desc();
-			if(	desc.get_value_type() == type_real )
-			{
+			if (desc.get_value_type() == type_real) {
 				Action::Handle action(Action::create("ValueDescSet"));
 				assert(action);
 
@@ -594,6 +592,31 @@ StateWidth_Context::event_mouse_handler(const Smach::event& x)
 
 				action->set_param("value_desc",desc);
 				action->set_param("new_value",ValueBase(i->second));
+				action->set_param("time",get_canvas_view()->get_time());
+
+				if(!action->is_ready() || !get_canvas_view()->get_instance()->perform_action(action))
+				{
+					group.cancel();
+					synfig::warning("Changing the width action has failed");
+					return Smach::RESULT_ERROR;
+				}
+			}
+			else
+			if (desc.get_value_type() == type_bline_point
+			 && desc.parent_is_value_desc()
+			 && desc.get_sub_name() == "width")
+			{
+				BLinePoint p;
+				p.set_width(i->second);
+
+				Action::Handle action(Action::create("ValueDescSet"));
+				assert(action);
+
+				action->set_param("canvas",get_canvas());
+				action->set_param("canvas_interface",get_canvas_interface());
+
+				action->set_param("value_desc",desc);
+				action->set_param("new_value",ValueBase(p));
 				action->set_param("time",get_canvas_view()->get_time());
 
 				if(!action->is_ready() || !get_canvas_view()->get_instance()->perform_action(action))

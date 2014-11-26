@@ -82,9 +82,9 @@ Dialog_ToolOptions::clear()
 void
 Dialog_ToolOptions::set_widget(Gtk::Widget&x)
 {
-	if(!sub_vbox_.children().empty())
-		sub_vbox_.children().clear();
-
+	std::vector<Gtk::Widget*> children = sub_vbox_.get_children();
+	for(std::vector<Gtk::Widget*>::iterator i = children.begin(); i != children.end(); ++i)
+		sub_vbox_.remove(**i);
 	sub_vbox_.show();
 	sub_vbox_.pack_start(x,false,false);
 	x.show();

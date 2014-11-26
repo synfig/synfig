@@ -27,9 +27,11 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <vector>
+
 #include <synfig/canvas.h>
 #include <synfig/valuenode_bone.h>
-#include <gtkmm/optionmenu.h>
+#include <gtkmm/comboboxtext.h>
 #include <synfigapp/value_desc.h>
 
 
@@ -43,14 +45,18 @@ namespace Gtk { class Menu; };
 
 namespace studio {
 
-class Widget_BoneChooser : public Gtk::OptionMenu
+class Widget_BoneChooser : public Gtk::ComboBoxText
 {
-	Gtk::Menu *bone_menu;
 	synfig::Canvas::Handle parent_canvas;
 	synfigapp::ValueDesc value_desc;
+	std::vector<synfig::ValueNode_Bone::Handle> bones;
 
 	synfig::ValueNode_Bone::Handle bone;
 	void set_value_(synfig::ValueNode_Bone::Handle data);
+
+protected:
+	virtual void on_changed();
+
 public:
 
 	Widget_BoneChooser();

@@ -69,7 +69,7 @@ const double log_10_2 = log(2.0);
 /* === E N T R Y P O I N T ================================================= */
 studio::Widget_NavView::Widget_NavView(CanvasView::LooseHandle cv)
 :canvview(cv),
-adj_zoom(0,-4,4,1,2),
+adj_zoom(Gtk::Adjustment::create(0,-4,4,1,2)),
 scrolling(false),
 surface(new synfig::Surface),
 cairo_surface(cairo_image_surface_create(CAIRO_FORMAT_ARGB32, 1, 1))
@@ -90,11 +90,11 @@ cairo_surface(cairo_image_surface_create(CAIRO_FORMAT_ARGB32, 1, 1))
 
 	show_all();
 
-	adj_zoom.signal_value_changed().connect(sigc::mem_fun(*this,&Widget_NavView::on_number_modify));
+	adj_zoom->signal_value_changed().connect(sigc::mem_fun(*this,&Widget_NavView::on_number_modify));
 
 	if(cv)
 	{
-		drawto.signal_expose_event().connect(sigc::mem_fun(*this,&Widget_NavView::on_expose_draw));
+		drawto.signal_draw().connect(sigc::mem_fun(*this,&Widget_NavView::on_drawto_draw));
 		drawto.signal_event().connect(sigc::mem_fun(*this,&Widget_NavView::on_mouse_event));
 
 		drawto.add_events(Gdk::BUTTON_MOTION_MASK|Gdk::BUTTON_PRESS_MASK);
@@ -114,7 +114,7 @@ cairo_surface(cairo_image_surface_create(CAIRO_FORMAT_ARGB32, 1, 1))
 		queue_draw();
 	}
 
-	adj_zoom.set_value(0);
+	adj_zoom->set_value(0);
 }
 
 studio::Widget_NavView::~Widget_NavView()
@@ -266,7 +266,7 @@ static double zoom_to_unit(double f)
 	}else return -999999.0;
 }
 
-bool studio::Widget_NavView::on_expose_draw(GdkEventExpose */*exp*/)
+bool studio::Widget_NavView::on_drawto_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 {
 #ifdef SINGLE_THREADED
 	// don't redraw if the previous redraw is still running single-threaded
@@ -332,9 +332,8 @@ bool studio::Widget_NavView::on_expose_draw(GdkEventExpose */*exp*/)
 
 		//trivial escape
 		if(nw == 0 || nh == 0)return true;
-		//draw to drawing area
-		Cairo::RefPtr<Cairo::Context> cr = drawto.get_window()->create_cairo_context();
 
+		//draw to drawing area
 		if(prev && !studio::App::navigator_uses_cairo)
 		{
 			Glib::RefPtr<Gdk::Pixbuf> scalepx = prev->scale_simple(nw,nh,Gdk::INTERP_NEAREST);
@@ -407,7 +406,7 @@ bool studio::Widget_NavView::on_scroll_event(GdkEvent *event)
 {
 	if(get_canvas_view() && get_canvas_view()->get_work_area())
 	{
-		double z = unit_to_zoom(adj_zoom.get_value());
+		double z = unit_to_zoom(adj_zoom->get_value());
 
 		switch(event->type)
 		{
@@ -443,9 +442,9 @@ bool studio::Widget_NavView::on_scroll_event(GdkEvent *event)
 
 void studio::Widget_NavView::on_number_modify()
 {
-	double z = unit_to_zoom(adj_zoom.get_value());
+	double z = unit_to_zoom(adj_zoom->get_value());
 	zoom_print.set_text(strprintf("%.1f%%",z*100.0));
-	//synfig::warning("Updating zoom to %f",adj_zoom.get_value());
+	//synfig::warning("Updating zoom to %f",adj_zoom->get_value());
 
 	if(get_canvas_view() && z != get_canvas_view()->get_work_area()->get_zoom())
 	{
@@ -461,10 +460,10 @@ void studio::Widget_NavView::on_workarea_view_change()
 	double z = zoom_to_unit(wz);
 
 	//synfig::warning("Updating zoom to %f -> %f",wz,z);
-	if(!scrolling && z != adj_zoom.get_value())
+	if(!scrolling && z != adj_zoom->get_value())
 	{
-		adj_zoom.set_value(z);
-		//adj_zoom.value_changed();
+		adj_zoom->set_value(z);
+		//adj_zoom->value_changed();
 	}
 	queue_draw();
 }

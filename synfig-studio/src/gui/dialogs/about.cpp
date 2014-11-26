@@ -82,16 +82,6 @@ using namespace studio;
 
 /* === G L O B A L S ======================================================= */
 
-#ifdef WIN32
-extern __declspec(dllimport) const guint gtk_major_version;
-extern __declspec(dllimport) const guint gtk_minor_version;
-extern __declspec(dllimport) const guint gtk_micro_version;
-#else
-extern const guint gtk_major_version;
-extern const guint gtk_minor_version;
-extern const guint gtk_micro_version;
-#endif
-
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
@@ -107,7 +97,8 @@ About::About()
 	set_version(VERSION);
 	set_comments(_("2D vector animation studio"));
 
-	set_url_hook(sigc::mem_fun(*this, &About::on_link_clicked));
+	// TODO: set_url_hook bot works in GTK3
+	//set_url_hook(sigc::mem_fun(*this, &About::on_link_clicked));
 	set_website("http://synfig.org/");
 	set_website_label(_("Visit the Synfig website"));
 

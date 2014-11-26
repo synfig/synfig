@@ -36,7 +36,7 @@
 #include <gtkmm/editable.h>
 #include <gtkmm/entry.h>
 #include <gtkmm/eventbox.h>
-#include <gtk/gtkentry.h> /* see XXX below */
+#include <gtk/gtk.h>
 #include "app.h"
 
 
@@ -73,9 +73,9 @@ using namespace studio;
 Widget_ValueBase::Widget_ValueBase():
 	Glib::ObjectBase	(typeid(Widget_ValueBase)),
 	Gtk::HBox(),
-	real_adjustment(0,-2000000000,2000000000,0.05,0.05,0),
-	integer_adjustment(0,-2000000000,2000000000,1,1,0),
-	angle_adjustment(0,-2000000000,2000000000,1,1,0)
+	real_adjustment(Gtk::Adjustment::create(0,-2000000000,2000000000,0.05,0.05,0)),
+	integer_adjustment(Gtk::Adjustment::create(0,-2000000000,2000000000,1,1,0)),
+	angle_adjustment(Gtk::Adjustment::create(0,-2000000000,2000000000,1,1,0))
 {
 	set_no_show_all();
 
@@ -133,8 +133,8 @@ Widget_ValueBase::Widget_ValueBase():
 	integer_widget->signal_activate().connect(sigc::mem_fun(*this,&Widget_ValueBase::activate));
 	angle_widget->signal_activate().connect(sigc::mem_fun(*this,&Widget_ValueBase::activate));
 	string_widget->signal_activate().connect(sigc::mem_fun(*this,&Widget_ValueBase::activate));
-	bone_widget->signal_activate().connect(sigc::mem_fun(*this,&Widget_ValueBase::activate));
-	canvas_widget->signal_activate().connect(sigc::mem_fun(*this,&Widget_ValueBase::activate));
+	bone_widget->signal_changed().connect(sigc::mem_fun(*this,&Widget_ValueBase::activate));
+	canvas_widget->signal_changed().connect(sigc::mem_fun(*this,&Widget_ValueBase::activate));
 	filename_widget->signal_activate().connect(sigc::mem_fun(*this,&Widget_ValueBase::activate));
 	time_widget->signal_activate().connect(sigc::mem_fun(*this,&Widget_ValueBase::activate));
 	distance_widget->signal_activate().connect(sigc::mem_fun(*this,&Widget_ValueBase::activate));
@@ -162,7 +162,8 @@ void
 Widget_ValueBase::inside_cellrenderer()
 {
 	string_widget->set_has_frame(false);
-	string_widget->gobj()->is_cell_renderer = true; // XXX
+	// TODO: what is it?
+	//string_widget->gobj()->is_cell_renderer = true; // XXX
 
 	real_widget->set_has_frame(false);
 	//static_cast<Gtk::Entry*>(real_widget)->gobj()->is_cell_renderer = true; // XXX

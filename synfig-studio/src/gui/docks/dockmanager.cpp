@@ -324,7 +324,7 @@ DockManager::remove_empty_container_recursive(Gtk::Container &container)
 	else
 	if (book)
 	{
-		if (!book->allow_empty && book->pages().empty())
+		if (!book->allow_empty && book->get_n_pages() == 0)
 		{
 			remove_widget_recursive(*book);
 			delete book;
@@ -630,10 +630,9 @@ void DockManager::write_widget(std::string &x, Gtk::Widget* widget)
 	if (book)
 	{
 		write_string(x, "[book");
-		Gtk::Notebook::PageList &pages = book->pages();
-		for(Gtk::Notebook::PageList::iterator i = pages.begin(); i != pages.end(); i++)
+		for(int i = 0; i < book->get_n_pages(); ++i)
 		{
-			Dockable *dockable = dynamic_cast<Dockable*>(i->get_child());
+			Dockable *dockable = dynamic_cast<Dockable*>(book->get_nth_page(i));
 			if (dockable)
 			{
 				write_separator(x);

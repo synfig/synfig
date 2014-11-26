@@ -36,6 +36,7 @@
 #include <gtkmm/frame.h>
 #include <gtkmm/alignment.h>
 #include <gtkmm/box.h>
+#include <gtkmm/grid.h>
 #include <ETL/misc>
 #include <synfig/general.h>
 //#include <gtkmm/separator.h>
@@ -79,14 +80,14 @@ using namespace studio;
 
 Widget_RendDesc::Widget_RendDesc():
 	Gtk::Notebook(),
-	adjustment_width(1,1,SYNFIG_MAX_PIXEL_WIDTH),
-	adjustment_height(1,1,SYNFIG_MAX_PIXEL_HEIGHT),
-	adjustment_xres(0,0.0000000001,10000000),
-	adjustment_yres(0,0.0000000001,10000000),
-	adjustment_phy_width(0,0.0000000001,10000000),
-	adjustment_phy_height(0,0.0000000001,10000000),
-	adjustment_fps(0,0.0000000001,10000000),
-	adjustment_span(0,0.0000000001,10000000)
+	adjustment_width(Gtk::Adjustment::create(1,1,SYNFIG_MAX_PIXEL_WIDTH)),
+	adjustment_height(Gtk::Adjustment::create(1,1,SYNFIG_MAX_PIXEL_HEIGHT)),
+	adjustment_xres(Gtk::Adjustment::create(0,0.0000000001,10000000)),
+	adjustment_yres(Gtk::Adjustment::create(0,0.0000000001,10000000)),
+	adjustment_phy_width(Gtk::Adjustment::create(0,0.0000000001,10000000)),
+	adjustment_phy_height(Gtk::Adjustment::create(0,0.0000000001,10000000)),
+	adjustment_fps(Gtk::Adjustment::create(0,0.0000000001,10000000)),
+	adjustment_span(Gtk::Adjustment::create(0,0.0000000001,10000000))
 {
 	update_lock=0;
 
@@ -120,12 +121,27 @@ void
 Widget_RendDesc::refresh()
 {
 	UpdateLock lock(update_lock);
-	adjustment_width.set_value(rend_desc_.get_w());
-	adjustment_height.set_value(rend_desc_.get_h());
-	adjustment_phy_width.set_value(METERS2INCHES(rend_desc_.get_physical_w()));
-	adjustment_phy_height.set_value(METERS2INCHES(rend_desc_.get_physical_h()));
-	adjustment_xres.set_value(DPM2DPI(rend_desc_.get_x_res()));
-	adjustment_yres.set_value(DPM2DPI(rend_desc_.get_y_res()));
+	//Image Tab
+	adjustment_width->set_value(rend_desc_.get_w());
+	adjustment_height->set_value(rend_desc_.get_h());
+	adjustment_phy_width->set_value(METERS2INCHES(rend_desc_.get_physical_w()));
+	adjustment_phy_height->set_value(METERS2INCHES(rend_desc_.get_physical_h()));
+	adjustment_xres->set_value(DPM2DPI(rend_desc_.get_x_res()));
+	adjustment_yres->set_value(DPM2DPI(rend_desc_.get_y_res()));
+	toggle_wh_ratio->set_active((bool)(rend_desc_.get_flags()&RendDesc::LINK_IM_ASPECT));
+	toggle_res_ratio->set_active((bool)(rend_desc_.get_flags()&RendDesc::LINK_RES));
+
+	int w_ratio, h_ratio;
+	rend_desc_.get_pixel_ratio_reduced(w_ratio, h_ratio);
+	std::ostringstream px_ratio_str;
+	px_ratio_str << _("Image Size Ratio : ") << w_ratio << '/' << h_ratio;
+	pixel_ratio_label->set_label(px_ratio_str.str());
+
+	entry_tl->set_value(rend_desc_.get_tl());
+	entry_br->set_value(rend_desc_.get_br());
+	adjustment_span->set_value(rend_desc_.get_span());
+
+	//Time Tab
 	entry_start_time->set_fps(rend_desc_.get_frame_rate());
 	entry_start_time->set_value(rend_desc_.get_time_start());
 	entry_end_time->set_fps(rend_desc_.get_frame_rate());
@@ -133,12 +149,9 @@ Widget_RendDesc::refresh()
 	entry_duration->set_fps(rend_desc_.get_frame_rate());
 	entry_duration->set_value(rend_desc_.get_duration());
 
-	adjustment_fps.set_value(rend_desc_.get_frame_rate());
-	adjustment_span.set_value(rend_desc_.get_span());
-	entry_tl->set_value(rend_desc_.get_tl());
-	entry_br->set_value(rend_desc_.get_br());
-	entry_focus->set_value(rend_desc_.get_focus());
+	adjustment_fps->set_value(rend_desc_.get_frame_rate());
 
+	//Other Tab
 	toggle_px_aspect->set_active((bool)(rend_desc_.get_flags()&RendDesc::PX_ASPECT));
 	toggle_px_width->set_active((bool)(rend_desc_.get_flags()&RendDesc::PX_W));
 	toggle_px_height->set_active((bool)(rend_desc_.get_flags()&RendDesc::PX_H));
@@ -147,6 +160,7 @@ Widget_RendDesc::refresh()
 	toggle_im_width->set_active((bool)(rend_desc_.get_flags()&RendDesc::IM_W));
 	toggle_im_height->set_active((bool)(rend_desc_.get_flags()&RendDesc::IM_H));
 	toggle_im_span->set_active((bool)(rend_desc_.get_flags()&RendDesc::IM_SPAN));
+	entry_focus->set_value(rend_desc_.get_focus());
 }
 
 void Widget_RendDesc::apply_rend_desc(const synfig::RendDesc &rend_desc)
@@ -165,7 +179,7 @@ Widget_RendDesc::on_width_changed()
 {
 	if(update_lock)return;
 	UpdateLock lock(update_lock);
-	rend_desc_.set_w(round_to_int(adjustment_width.get_value()));
+	rend_desc_.set_w(round_to_int(adjustment_width->get_value()));
 	refresh();
 	signal_changed()();
 }
@@ -201,7 +215,7 @@ Widget_RendDesc::on_height_changed()
 {
 	if(update_lock)return;
 	UpdateLock lock(update_lock);
-	rend_desc_.set_h(round_to_int(adjustment_height.get_value()));
+	rend_desc_.set_h(round_to_int(adjustment_height->get_value()));
 	refresh();
 	signal_changed()();
 }
@@ -211,7 +225,7 @@ Widget_RendDesc::on_phy_width_changed()
 {
 	if(update_lock)return;
 	UpdateLock lock(update_lock);
-	rend_desc_.set_physical_w(INCHES2METERS(adjustment_phy_width.get_value()));
+	rend_desc_.set_physical_w(INCHES2METERS(adjustment_phy_width->get_value()));
 	refresh();
 	signal_changed()();
 }
@@ -221,7 +235,7 @@ Widget_RendDesc::on_phy_height_changed()
 {
 	if(update_lock)return;
 	UpdateLock lock(update_lock);
-	rend_desc_.set_physical_h(INCHES2METERS(adjustment_phy_height.get_value()));
+	rend_desc_.set_physical_h(INCHES2METERS(adjustment_phy_height->get_value()));
 	refresh();
 	signal_changed()();
 }
@@ -231,7 +245,7 @@ Widget_RendDesc::on_xres_changed()
 {
 	if(update_lock)return;
 	UpdateLock lock(update_lock);
-	rend_desc_.set_x_res(DPI2DPM(adjustment_xres.get_value()));
+	rend_desc_.set_x_res(DPI2DPM(adjustment_xres->get_value()));
 	refresh();
 	signal_changed()();
 }
@@ -241,7 +255,7 @@ Widget_RendDesc::on_yres_changed()
 {
 	if(update_lock)return;
 	UpdateLock lock(update_lock);
-	rend_desc_.set_y_res(DPI2DPM(adjustment_yres.get_value()));
+	rend_desc_.set_y_res(DPI2DPM(adjustment_yres->get_value()));
 	refresh();
 	signal_changed()();
 }
@@ -282,7 +296,7 @@ Widget_RendDesc::on_fps_changed()
 {
 	if(update_lock)return;
 	UpdateLock lock(update_lock);
-	rend_desc_.set_frame_rate(adjustment_fps.get_value());
+	rend_desc_.set_frame_rate(adjustment_fps->get_value());
 	refresh();
 	signal_changed()();
 }
@@ -322,7 +336,7 @@ Widget_RendDesc::on_span_changed()
 {
 	if(update_lock)return;
 	UpdateLock lock(update_lock);
-	rend_desc_.set_span(adjustment_span.get_value());
+	rend_desc_.set_span(adjustment_span->get_value());
 	refresh();
 	signal_changed()();
 }
@@ -337,6 +351,40 @@ void
 Widget_RendDesc::enable_time_section()
 {
 	time_frame->set_sensitive(true);
+}
+
+void
+Widget_RendDesc::on_ratio_wh_toggled()
+{
+	if(update_lock)return;
+	UpdateLock lock(update_lock);
+
+	if(toggle_wh_ratio->get_active())
+	{
+		rend_desc_.set_pixel_ratio(adjustment_width->get_value(), adjustment_height->get_value());
+		rend_desc_.set_flags(rend_desc_.get_flags()|RendDesc::LINK_IM_ASPECT);
+	}
+	else
+	{
+		rend_desc_.set_flags(rend_desc_.get_flags()&~RendDesc::LINK_IM_ASPECT);
+	}
+}
+
+void
+Widget_RendDesc::on_ratio_res_toggled()
+{
+	if(update_lock)return;
+	UpdateLock lock(update_lock);
+
+	if(toggle_res_ratio->get_active())
+	{
+		rend_desc_.set_res_ratio(adjustment_xres->get_value(), adjustment_yres->get_value());
+		rend_desc_.set_flags(rend_desc_.get_flags()|RendDesc::LINK_RES);
+	}
+	else
+	{
+		rend_desc_.set_flags(rend_desc_.get_flags()&~RendDesc::LINK_RES);
+	}
 }
 
 void
@@ -357,7 +405,9 @@ Widget_RendDesc::create_widgets()
 	entry_span=manage(new Gtk::SpinButton(adjustment_span,0.1,4));
 	entry_span->set_alignment(1);
 	entry_tl=manage(new Widget_Vector());
+	entry_tl->set_digits(4);
 	entry_br=manage(new Widget_Vector());
+	entry_br->set_digits(4);
 	entry_fps=manage(new Gtk::SpinButton(adjustment_fps,1,5));
 	entry_start_time=manage(new Widget_Time());
 	entry_end_time=manage(new Widget_Time());
@@ -377,6 +427,11 @@ Widget_RendDesc::create_widgets()
 	toggle_im_height->set_alignment(0, 0.5);
 	toggle_im_span=manage(new Gtk::CheckButton(_("Image _Span"), true));
 	toggle_im_span->set_alignment(0, 0.5);
+
+	toggle_wh_ratio=manage(new Widget_Link(_("Link width and height"), _("Unlink width and height")));
+	toggle_res_ratio=manage(new Widget_Link(_("Link x and y resolution"), _("Unlink x and y resolution")));
+
+	pixel_ratio_label=manage(new Gtk::Label("", 0, 0.5, false));
 }
 
 void
@@ -403,6 +458,9 @@ Widget_RendDesc::connect_signals()
 	toggle_im_width->signal_toggled().connect(sigc::mem_fun(*this, &studio::Widget_RendDesc::on_lock_changed));
 	toggle_im_height->signal_toggled().connect(sigc::mem_fun(*this, &studio::Widget_RendDesc::on_lock_changed));
 	toggle_im_span->signal_toggled().connect(sigc::mem_fun(*this, &studio::Widget_RendDesc::on_lock_changed));
+
+	toggle_wh_ratio->signal_toggled().connect(sigc::mem_fun(*this, &studio::Widget_RendDesc::on_ratio_wh_toggled));
+	toggle_res_ratio->signal_toggled().connect(sigc::mem_fun(*this, &studio::Widget_RendDesc::on_ratio_res_toggled));
 }
 
 Gtk::Widget *
@@ -411,21 +469,22 @@ Widget_RendDesc::create_image_tab()
 	Gtk::Alignment *paddedPanel = manage(new Gtk::Alignment(0, 0, 1, 1));
 	paddedPanel->set_padding(12, 12, 12, 12);
 
-	Gtk::VBox *panelBox = manage(new Gtk::VBox(false, 12));
+	Gtk::Box *panelBox = manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL, 12));
+	panelBox->set_homogeneous(false);
 	paddedPanel->add(*panelBox);
 
-	Gtk::Frame *imageFrame = manage(new Gtk::Frame(_("Image Size")));
-	imageFrame->set_shadow_type(Gtk::SHADOW_NONE);
-	((Gtk::Label *) imageFrame->get_label_widget())->set_markup(_("<b>Image Size</b>"));
-	panelBox->pack_start(*imageFrame, false, false, 0);
+	Gtk::Frame *imageSizeFrame = manage(new Gtk::Frame(_("Image Size")));
+	imageSizeFrame->set_shadow_type(Gtk::SHADOW_NONE);
+	((Gtk::Label *) imageSizeFrame->get_label_widget())->set_markup(_("<b>Image Size</b>"));
+//	panelBox->pack_start(*imageSizeFrame, false, false, 0);
+	panelBox->pack_start(*imageSizeFrame, Gtk::PACK_SHRINK);
 
-	Gtk::Alignment *tablePadding = manage(new Gtk::Alignment(0, 0, 1, 1));
-	tablePadding->set_padding(6, 0, 24, 0);
-	Gtk::Table *imageSizeTable = manage(new Gtk::Table(2, 6, false));
-	imageSizeTable->set_row_spacings(6);
-	imageSizeTable->set_col_spacings(12);
-	tablePadding->add(*imageSizeTable);
-	imageFrame->add(*tablePadding);
+	Gtk::Alignment *tableSizePadding = manage(new Gtk::Alignment(0, 0, 1, 1));
+	tableSizePadding->set_padding(6, 0, 24, 0);
+	Gtk::Grid *imageSizeGrid = manage(new Gtk::Grid());
+
+	tableSizePadding->add(*imageSizeGrid);
+	imageSizeFrame->add(*tableSizePadding);
 
 	Gtk::Label *size_width_label = manage(new Gtk::Label(_("_Width"), 0, 0.5, true));
 	size_width_label->set_mnemonic_widget(*entry_width);
@@ -445,40 +504,50 @@ Widget_RendDesc::create_image_tab()
 	Gtk::Label *size_physheight_label = manage(new Gtk::Label(_("Phy_sical Height"), 0, 0.5, true));
 	size_physheight_label->set_mnemonic_widget(*entry_phy_height);
 
-	Gtk::Label *size_span = manage(new Gtk::Label(_("I_mage Span"), 0, 0.5, true));
-	size_span->set_mnemonic_widget(*entry_span);
+	imageSizeGrid->set_row_spacing(6);
 
-	imageSizeTable->attach(*size_width_label, 0, 1, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	imageSizeTable->attach(*size_height_label, 0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	imageSizeTable->attach(*entry_width, 1, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	imageSizeTable->attach(*entry_height, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	imageSizeGrid->attach(*size_width_label, 		0, 0, 1, 1);
+	imageSizeGrid->attach(*size_height_label, 		0, 1, 1, 1);
+	entry_width->set_hexpand(true);
+	entry_height->set_hexpand(true);
+	imageSizeGrid->attach(*entry_width, 			1, 0, 1, 1);
+	imageSizeGrid->attach(*entry_height, 			1, 1, 1, 1);
+	toggle_wh_ratio->set_margin_right(6);
+	imageSizeGrid->attach(*toggle_wh_ratio, 		2, 0, 1, 2);
 
-	imageSizeTable->attach(*size_xres_label, 2, 3, 0, 1, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	imageSizeTable->attach(*size_yres_label, 2, 3, 1, 2, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	imageSizeTable->attach(*entry_xres, 3, 4, 0, 1, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	imageSizeTable->attach(*entry_yres, 3, 4, 1, 2, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
+	imageSizeGrid->attach(*size_xres_label, 		3, 0, 1, 1);
+	imageSizeGrid->attach(*size_yres_label, 		3, 1, 1, 1);
+	entry_xres->set_hexpand(true);
+	entry_yres->set_hexpand(true);
+	imageSizeGrid->attach(*entry_xres, 				4, 0, 1, 1);
+	imageSizeGrid->attach(*entry_yres, 				4, 1, 1, 1);
+	toggle_res_ratio->set_margin_right(6);
+	imageSizeGrid->attach(*toggle_res_ratio,		5, 0, 1, 2);
 
-	imageSizeTable->attach(*size_physwidth_label, 4, 5, 0, 1, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	imageSizeTable->attach(*size_physheight_label, 4, 5, 1, 2, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	imageSizeTable->attach(*entry_phy_width, 5, 6, 0, 1, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	imageSizeTable->attach(*entry_phy_height, 5, 6, 1, 2, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
+	imageSizeGrid->attach(*size_physwidth_label,	6, 0, 1, 1);
+	imageSizeGrid->attach(*size_physheight_label,	6, 1, 1, 1);
+	entry_phy_width->set_hexpand(true);
+	entry_phy_height->set_hexpand(true);
+	imageSizeGrid->attach(*entry_phy_width,			7, 0, 1, 1);
+	imageSizeGrid->attach(*entry_phy_height,		7, 1, 1, 1);
 
-	imageSizeTable->attach(*size_span, 0, 1, 2, 3, Gtk::SHRINK|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	imageSizeTable->attach(*entry_span, 1, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	imageSizeGrid->attach(*pixel_ratio_label,		0, 3, 3, 1);
 
 	Gtk::Frame *imageAreaFrame = manage(new Gtk::Frame(_("Image Area")));
 	imageAreaFrame->set_shadow_type(Gtk::SHADOW_NONE);
 	((Gtk::Label *) imageAreaFrame->get_label_widget())->set_markup(_("<b>Image Area</b>"));
-	panelBox->pack_start(*imageAreaFrame, false, false, 0);
+	//panelBox->pack_start(*imageAreaFrame, false, false, 0);
+	panelBox->pack_start(*imageAreaFrame, Gtk::PACK_SHRINK);
 
 	Gtk::Alignment *imageAreaPadding = manage(new Gtk::Alignment(0, 0, 1, 1));
 	imageAreaPadding->set_padding(6, 0, 24, 0);
 	imageAreaFrame->add(*imageAreaPadding);
 
-	Gtk::Table *imageAreaTable = manage(new Gtk::Table(2, 2, false));
-	imageAreaTable->set_row_spacings(6);
-	imageAreaTable->set_col_spacings(12);
-	imageAreaPadding->add(*imageAreaTable);
+	Gtk::Box *imageAreaBox = manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL,12));
+	Gtk::Box *imageAreaTlbrLabelBox = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL,6));
+	Gtk::Box *imageAreaTlbrBox = manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL,6));
+	Gtk::Box *imageAreaSpanBox = manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL,6));
+	imageAreaPadding->add(*imageAreaBox);
 
 	Gtk::Label *imageAreaTopLeftLabel = manage(new Gtk::Label(_("_Top Left"), 0, 0.5, true));
 	imageAreaTopLeftLabel->set_mnemonic_widget(*entry_tl);
@@ -486,10 +555,20 @@ Widget_RendDesc::create_image_tab()
 	Gtk::Label *imageAreaBottomRightLabel = manage(new Gtk::Label(_("_Bottom Right"), 0, 0.5, true));
 	imageAreaBottomRightLabel->set_mnemonic_widget(*entry_br);
 
-	imageAreaTable->attach(*imageAreaTopLeftLabel, 0, 1, 0, 1, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	imageAreaTable->attach(*imageAreaBottomRightLabel, 0, 1, 1, 2, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	imageAreaTable->attach(*entry_tl, 1, 2, 0, 1, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	imageAreaTable->attach(*entry_br, 1, 2, 1, 2, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
+	Gtk::Label *size_span = manage(new Gtk::Label(_("I_mage Span"), 0, 0.5, true));
+	size_span->set_mnemonic_widget(*entry_span);
+
+	imageAreaTlbrLabelBox->pack_start(*imageAreaTopLeftLabel);
+	imageAreaTlbrLabelBox->pack_start(*imageAreaBottomRightLabel);
+	imageAreaTlbrBox->pack_start(*entry_tl);
+	imageAreaTlbrBox->pack_start(*entry_br);
+
+	imageAreaSpanBox->pack_start(*size_span);
+	imageAreaSpanBox->pack_start(*entry_span);
+
+	imageAreaBox->pack_start(*imageAreaTlbrLabelBox);
+	imageAreaBox->pack_start(*imageAreaTlbrBox);
+	imageAreaBox->pack_start(*imageAreaSpanBox);
 
 	paddedPanel->show_all();
 	return paddedPanel;
@@ -501,42 +580,44 @@ Widget_RendDesc::create_time_tab()
 	Gtk::Alignment *paddedPanel = manage(new Gtk::Alignment(0, 0, 1, 1));
 	paddedPanel->set_padding(12, 12, 12, 12);
 
-	Gtk::VBox *panelBox = manage(new Gtk::VBox(false, 12)); // for future widgets
+	Gtk::Box *panelBox = manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL, 12));  // for future widgets
+	panelBox->set_homogeneous(false);
 	paddedPanel->add(*panelBox);
 
 	time_frame = manage(new Gtk::Frame(_("Time Settings")));
 	time_frame->set_shadow_type(Gtk::SHADOW_NONE);
 	((Gtk::Label *) time_frame->get_label_widget())->set_markup(_("<b>Time Settings</b>"));
-	panelBox->pack_start(*time_frame, false, false, 0);
+	panelBox->pack_start(*time_frame, Gtk::PACK_SHRINK);
 
 	Gtk::Alignment *timeFramePadding = manage(new Gtk::Alignment(0, 0, 1, 1));
 	timeFramePadding->set_padding(6, 0, 24, 0);
 	time_frame->add(*timeFramePadding);
 
-	Gtk::Table *timeFrameTable = manage(new Gtk::Table(3, 2, false));
-	timeFrameTable->set_row_spacings(6);
-	timeFrameTable->set_col_spacings(12);
-	timeFramePadding->add(*timeFrameTable);
+	Gtk::Grid *timeFrameGrid = manage(new Gtk::Grid());
+	timeFramePadding->add(*timeFrameGrid);
+	timeFrameGrid->set_row_spacing(6);
+	timeFrameGrid->set_column_spacing(250);
 
 	Gtk::Label *timeFPSLabel = manage(new Gtk::Label(_("_Frames per second"), 0, 0.5, true));
 	timeFPSLabel->set_mnemonic_widget(*entry_fps);
-	timeFrameTable->attach(*timeFPSLabel, 0, 1, 0, 1, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	timeFrameTable->attach(*entry_fps, 1, 2, 0, 1, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
+	timeFrameGrid->attach(*timeFPSLabel, 0, 0, 1, 1);
+	entry_fps->set_hexpand(true);
+	timeFrameGrid->attach(*entry_fps, 1, 0, 1, 1);
 
 	Gtk::Label *timeStartLabel = manage(new Gtk::Label(_("_Start Time"), 0, 0.5, true));
 	timeStartLabel->set_mnemonic_widget(*entry_start_time);
-	timeFrameTable->attach(*timeStartLabel, 0, 1, 1, 2, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	timeFrameTable->attach(*entry_start_time, 1, 2, 1, 2, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
+	timeFrameGrid->attach(*timeStartLabel, 0, 1, 1, 1);
+	timeFrameGrid->attach(*entry_start_time, 1, 1, 1, 1);
 
 	Gtk::Label *timeEndLabel = manage(new Gtk::Label(_("_End Time"), 0, 0.5, true));
 	timeEndLabel->set_mnemonic_widget(*entry_end_time);
-	timeFrameTable->attach(*timeEndLabel, 0, 1, 2, 3, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	timeFrameTable->attach(*entry_end_time, 1, 2, 2, 3, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
+	timeFrameGrid->attach(*timeEndLabel, 0, 2, 1, 1);
+	timeFrameGrid->attach(*entry_end_time, 1, 2, 1, 1);
 
 	Gtk::Label *timeDurationLabel = manage(new Gtk::Label(_("_Duration"), 0, 0.5, true));
 	timeDurationLabel->set_mnemonic_widget(*entry_duration);
-	timeFrameTable->attach(*timeDurationLabel, 0, 1, 3, 4, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	timeFrameTable->attach(*entry_duration, 1, 2, 3, 4, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
+	timeFrameGrid->attach(*timeDurationLabel, 0, 3, 1, 1);
+	timeFrameGrid->attach(*entry_duration, 1, 3, 1, 1);
 
 	paddedPanel->show_all();
 	return paddedPanel;
@@ -548,48 +629,53 @@ Widget_RendDesc::create_other_tab()
 	Gtk::Alignment *paddedPanel = manage(new Gtk::Alignment(0, 0, 1, 1));
 	paddedPanel->set_padding(12, 12, 12, 12);
 
-	Gtk::VBox *panelBox = manage(new Gtk::VBox(false, 12));
+	Gtk::Box *panelBox = manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL, 12));
+	panelBox->set_homogeneous(false);
 	paddedPanel->add(*panelBox);
 
 	Gtk::Frame *lockFrame = manage(new Gtk::Frame(_("Locks and Links")));
 	lockFrame->set_shadow_type(Gtk::SHADOW_NONE);
 	((Gtk::Label *) lockFrame->get_label_widget())->set_markup(_("<b>Locks and Links</b>"));
-	panelBox->pack_start(*lockFrame, false, false, 0);
+	panelBox->pack_start(*lockFrame, Gtk::PACK_SHRINK);
 
 	Gtk::Alignment *lockPadding = manage(new Gtk::Alignment(0, 0, 1, 1));
 	lockPadding->set_padding(6, 0, 24, 0);
 	lockFrame->add(*lockPadding);
 
-	Gtk::Table *lockTable = manage(new Gtk::Table(2, 4, false));
-	lockTable->set_row_spacings(6);
-	lockTable->set_col_spacings(12);
-	lockPadding->add(*lockTable);
+	Gtk::Grid *lockGrid = manage(new Gtk::Grid());
+	lockGrid->set_row_spacing(6);
+	lockGrid->set_column_spacing(12);
+	lockPadding->add(*lockGrid);
 
-	lockTable->attach(*toggle_im_width, 0, 1, 0, 1, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	lockTable->attach(*toggle_im_height, 1, 2, 0, 1, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	lockTable->attach(*toggle_im_aspect, 2, 3, 0, 1, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	lockTable->attach(*toggle_im_span, 3, 4, 0, 1, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
+	lockGrid->attach(*toggle_im_width,		0, 0, 1, 1);
+	toggle_im_width->set_hexpand(true);
+	lockGrid->attach(*toggle_im_height,		1, 0, 1, 1);
+	toggle_im_height->set_hexpand(true);
+	lockGrid->attach(*toggle_im_aspect,		2, 0, 1, 1);
+	toggle_im_aspect->set_hexpand(true);
+	lockGrid->attach(*toggle_im_span,		3, 0, 1, 1);
+	toggle_im_span->set_hexpand(true);
 
-	lockTable->attach(*toggle_px_width, 0, 1, 1, 2, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	lockTable->attach(*toggle_px_height, 1, 2, 1, 2, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	lockTable->attach(*toggle_px_aspect, 2, 3, 1, 2, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
+	lockGrid->attach(*toggle_px_width,		0, 1, 1, 1);
+	lockGrid->attach(*toggle_px_height,		1, 1, 1, 1);
+	lockGrid->attach(*toggle_px_aspect,		2, 1, 1, 1);
 
 	Gtk::Frame *focusFrame = manage(new Gtk::Frame(_("Focus Point")));
 	focusFrame->set_shadow_type(Gtk::SHADOW_NONE);
 	((Gtk::Label *) focusFrame->get_label_widget())->set_markup(_("<b>Focus Point</b>"));
-	panelBox->pack_start(*focusFrame, false, false, 0);
+	panelBox->pack_start(*focusFrame, Gtk::PACK_SHRINK);
 
 	Gtk::Alignment *focusPadding = manage(new Gtk::Alignment(0, 0, 1, 1));
 	focusPadding->set_padding(6, 0, 24, 0);
 	focusFrame->add(*focusPadding);
 
-	Gtk::HBox *focusBox = manage(new Gtk::HBox(false, 12));
+	Gtk::Box *focusBox = manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL, 12));
 	focusPadding->add(*focusBox);
 
 	Gtk::Label *focusLabel = manage(new Gtk::Label(_("_Focus Point"), 0, 0.5, true));
 	focusLabel->set_mnemonic_widget(*entry_focus);
-	focusBox->pack_start(*focusLabel, false, false, 0);
-	focusBox->pack_start(*entry_focus, true, true, 0);
+	focusBox->pack_start(*focusLabel, Gtk::PACK_SHRINK);
+	focusBox->pack_start(*entry_focus, Gtk::PACK_EXPAND_WIDGET);
 
 	paddedPanel->show_all();
 	return paddedPanel;

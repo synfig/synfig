@@ -53,7 +53,6 @@
 #include "event_keyboard.h"
 #include "docks/dock_toolbox.h"
 #include "docks/dialog_tooloptions.h"
-#include <gtkmm/optionmenu.h>
 #include "duck.h"
 #include <synfig/angle.h>
 #include <synfigapp/main.h>
@@ -238,9 +237,9 @@ StateNormal_Context::StateNormal_Context(CanvasView* canvas_view):
 
 	// Set up the tool options dialog
 	options_table.attach(*manage(new Gtk::Label(_("Transform Tool"))),	0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(*manage(new Gtk::Label(_("Ctrl to rotate"), Gtk::ALIGN_LEFT)),	0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(*manage(new Gtk::Label(_("Alt to scale"), Gtk::ALIGN_LEFT)),	0, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(*manage(new Gtk::Label(_("Shift to constrain"), Gtk::ALIGN_LEFT)),	0, 2, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(*manage(new Gtk::Label(_("Ctrl to rotate"), Gtk::ALIGN_START)),	0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(*manage(new Gtk::Label(_("Alt to scale"), Gtk::ALIGN_START)),	0, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(*manage(new Gtk::Label(_("Shift to constrain"), Gtk::ALIGN_START)),	0, 2, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 	options_table.show_all();
 	refresh_tool_options();

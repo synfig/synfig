@@ -36,7 +36,6 @@
 #include "widgets/widget_value.h"
 #include "app.h"
 #include <gtkmm/menu.h>
-#include <gtkmm/optionmenu.h>
 #include "widgets/widget_time.h"
 #include "widgets/widget_waypointmodel.h"
 #include "general.h"
@@ -58,10 +57,10 @@ using namespace studio;
 
 Widget_WaypointModel::Widget_WaypointModel():
 	Gtk::Table(4,3,false),
-	adj_tension(0.0,-20,20,0.1,1),
-	adj_continuity(0.0,-20,20,0.1,1),
-	adj_bias(0.0,-20,20,0.1,1),
-	adj_temporal_tension(0.0,-20,20,0.1,1),
+	adj_tension(Gtk::Adjustment::create(0.0,-20,20,0.1,1)),
+	adj_continuity(Gtk::Adjustment::create(0.0,-20,20,0.1,1)),
+	adj_bias(Gtk::Adjustment::create(0.0,-20,20,0.1,1)),
+	adj_temporal_tension(Gtk::Adjustment::create(0.0,-20,20,0.1,1)),
 	checkbutton_after(_("Out:")),
 	checkbutton_before(_("In:")),
 	checkbutton_tension(_("Tension:")),
@@ -80,11 +79,11 @@ Widget_WaypointModel::Widget_WaypointModel():
 			.add_enum_value(INTERPOLATION_HALT,"ease",_("Ease In/Out"))
 			.add_enum_value(INTERPOLATION_LINEAR,"linear",_("Linear"))
 	);
-	before_options->set_icon(0, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_clamped"),Gtk::ICON_SIZE_MENU));
-	before_options->set_icon(1, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_tcb"),Gtk::ICON_SIZE_MENU));
-	before_options->set_icon(2, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_const"),Gtk::ICON_SIZE_MENU));
-	before_options->set_icon(3, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_ease"),Gtk::ICON_SIZE_MENU));
-	before_options->set_icon(4, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_linear"),Gtk::ICON_SIZE_MENU));
+	before_options->set_icon(0, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_clamped"),Gtk::ICON_SIZE_MENU));
+	before_options->set_icon(1, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_tcb"),Gtk::ICON_SIZE_MENU));
+	before_options->set_icon(2, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_const"),Gtk::ICON_SIZE_MENU));
+	before_options->set_icon(3, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_ease"),Gtk::ICON_SIZE_MENU));
+	before_options->set_icon(4, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_linear"),Gtk::ICON_SIZE_MENU));
 	before_options->set_active(0);
 
 	after_options=manage(new Widget_Enum());
@@ -98,11 +97,11 @@ Widget_WaypointModel::Widget_WaypointModel():
 			.add_enum_value(INTERPOLATION_HALT,"ease",_("Ease In/Out"))
 			.add_enum_value(INTERPOLATION_LINEAR,"linear",_("Linear"))
 	);
-	after_options->set_icon(0, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_clamped"),Gtk::ICON_SIZE_MENU));
-	after_options->set_icon(1, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_tcb"),Gtk::ICON_SIZE_MENU));
-	after_options->set_icon(2, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_const"),Gtk::ICON_SIZE_MENU));
-	after_options->set_icon(3, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_ease"),Gtk::ICON_SIZE_MENU));
-	after_options->set_icon(4, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_linear"),Gtk::ICON_SIZE_MENU));
+	after_options->set_icon(0, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_clamped"),Gtk::ICON_SIZE_MENU));
+	after_options->set_icon(1, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_tcb"),Gtk::ICON_SIZE_MENU));
+	after_options->set_icon(2, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_const"),Gtk::ICON_SIZE_MENU));
+	after_options->set_icon(3, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_ease"),Gtk::ICON_SIZE_MENU));
+	after_options->set_icon(4, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_linear"),Gtk::ICON_SIZE_MENU));
 	after_options->set_active(0);
 
 	spin_tension=manage(new class Gtk::SpinButton(adj_tension,0.1,3));
@@ -121,10 +120,10 @@ Widget_WaypointModel::Widget_WaypointModel():
 	checkbutton_bias.signal_toggled().connect(sigc::mem_fun(*this,&Widget_WaypointModel::on_change));
 	checkbutton_temporal_tension.signal_toggled().connect(sigc::mem_fun(*this,&Widget_WaypointModel::on_change));
 
-	adj_tension.signal_value_changed().connect(sigc::mem_fun(*this,&Widget_WaypointModel::on_change));
-	adj_continuity.signal_value_changed().connect(sigc::mem_fun(*this,&Widget_WaypointModel::on_change));
-	adj_bias.signal_value_changed().connect(sigc::mem_fun(*this,&Widget_WaypointModel::on_change));
-	adj_temporal_tension.signal_value_changed().connect(sigc::mem_fun(*this,&Widget_WaypointModel::on_change));
+	adj_tension->signal_value_changed().connect(sigc::mem_fun(*this,&Widget_WaypointModel::on_change));
+	adj_continuity->signal_value_changed().connect(sigc::mem_fun(*this,&Widget_WaypointModel::on_change));
+	adj_bias->signal_value_changed().connect(sigc::mem_fun(*this,&Widget_WaypointModel::on_change));
+	adj_temporal_tension->signal_value_changed().connect(sigc::mem_fun(*this,&Widget_WaypointModel::on_change));
 
 	before_options->signal_changed().connect(sigc::mem_fun(*this,&Widget_WaypointModel::on_change));
 	after_options->signal_changed().connect(sigc::mem_fun(*this,&Widget_WaypointModel::on_change));
@@ -158,10 +157,10 @@ Widget_WaypointModel::on_change()
 	waypoint_model.set_before((Waypoint::Interpolation)before_options->get_value());
 	waypoint_model.set_after((Waypoint::Interpolation)after_options->get_value());
 
-	waypoint_model.set_tension(adj_tension.get_value());
-	waypoint_model.set_continuity(adj_continuity.get_value());
-	waypoint_model.set_bias(adj_bias.get_value());
-	waypoint_model.set_temporal_tension(adj_temporal_tension.get_value());
+	waypoint_model.set_tension(adj_tension->get_value());
+	waypoint_model.set_continuity(adj_continuity->get_value());
+	waypoint_model.set_bias(adj_bias->get_value());
+	waypoint_model.set_temporal_tension(adj_temporal_tension->get_value());
 
 	waypoint_model.set_before_flag(checkbutton_before.get_active());
 	waypoint_model.set_after_flag(checkbutton_after.get_active());

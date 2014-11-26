@@ -287,7 +287,7 @@ Action::ValueDescExport::prepare()
 
 		add_action_front(action);
 
-		if(value_desc.parent_is_layer_param() && !value_desc.is_value_node())
+		if(value_desc.parent_is_layer() && !value_desc.is_value_node())
 		{
 			// action: LayerParamSet
 			Action::Handle action(LayerParamSet::create());
@@ -318,7 +318,7 @@ Action::ValueDescExport::prepare()
 	else
 	{
 		// action: LayerParamConnect
-		if(!value_desc.parent_is_layer_param())
+		if(!value_desc.parent_is_layer())
 			throw Error(_("Unable to export parameter. (Bug?)"));
 
 		value_node=ValueNode_Const::create(value_desc.get_value());

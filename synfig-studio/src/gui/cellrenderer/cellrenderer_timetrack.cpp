@@ -34,12 +34,11 @@
 #include "cellrenderer_timetrack.h"
 #include <gtk/gtk.h>
 #include <gtkmm/spinbutton.h>
-#include <gtkmm/combo.h>
+#include <gtkmm/combobox.h>
 #include <ETL/stringf>
 #include "widgets/widget_value.h"
 #include "app.h"
 #include <gtkmm/menu.h>
-#include <gtkmm/optionmenu.h>
 #include "widgets/widget_time.h"
 #include "widgets/widget_timeslider.h"
 
@@ -61,8 +60,6 @@ using namespace studio;
 
 /* === G L O B A L S ======================================================= */
 
-static char stipple_xpm[] = { 2, 0 };
-
 //mode for modifier keys
 enum MODMODE
 {
@@ -79,13 +76,13 @@ enum MODMODE
 CellRenderer_TimeTrack::CellRenderer_TimeTrack():
 	Glib::ObjectBase	(typeid(CellRenderer_TimeTrack)),
 	Gtk::CellRenderer	(),
-	adjustment_			(10,10,20,0,0,0),
+	adjustment_			(Gtk::Adjustment::create(10,10,20,0,0,0)),
 	mode				(),
 	selection			(false),
 	dragging			(false),
 	property_valuedesc_	(*this,"value_desc",synfigapp::ValueDesc()),
 	property_canvas_	(*this,"canvas",synfig::Canvas::Handle()),
-	property_adjustment_(*this,"adjustment",&adjustment_),
+	property_adjustment_(*this,"adjustment",adjustment_),
 	property_enable_timing_info_(*this,"enable-timing-info", false)
 { }
 
@@ -96,9 +93,9 @@ CellRenderer_TimeTrack::~CellRenderer_TimeTrack()
 }
 
 void
-CellRenderer_TimeTrack::set_adjustment(Gtk::Adjustment &x)
+CellRenderer_TimeTrack::set_adjustment(const Glib::RefPtr<Gtk::Adjustment> &x)
 {
-	property_adjustment_=&x;
+	property_adjustment_=x;
 //	x.signal_value_changed().connect(sigc::mem_fun(*this,&Gtk::Widget::queue_draw));
 }
 
@@ -108,16 +105,10 @@ CellRenderer_TimeTrack::get_canvas()const
 	return const_cast<CellRenderer_TimeTrack*>(this)->property_canvas().get_value();
 }
 
-Gtk::Adjustment *
-CellRenderer_TimeTrack::get_adjustment()
+Glib::RefPtr<Gtk::Adjustment>
+CellRenderer_TimeTrack::get_adjustment() const
 {
-	return (Gtk::Adjustment*)property_adjustment_;
-}
-
-const Gtk::Adjustment *
-CellRenderer_TimeTrack::get_adjustment()const
-{
-	return (const Gtk::Adjustment*)property_adjustment_;
+	return (Glib::RefPtr<Gtk::Adjustment>)property_adjustment_;
 }
 
 bool
@@ -137,7 +128,7 @@ const synfig::Time get_time_offset_from_vdesc(const synfigapp::ValueDesc &v)
 	if(!canvasparam)
 		return synfig::Time::zero();
 
-	if (!v.parent_is_layer_param())
+	if (!v.parent_is_layer())
 		return synfig::Time::zero();
 
 	synfig::Layer::Handle layer = v.get_layer();
@@ -224,19 +215,16 @@ bool get_closest_time(const synfig::Node::time_set &tset, const Time &t, const T
 
 void
 CellRenderer_TimeTrack::render_vfunc(
-		const Glib::RefPtr<Gdk::Drawable>& window,
-		Gtk::Widget& widget,
-		const Gdk::Rectangle& /*background_area*/,
-		const Gdk::Rectangle& area_,
-		const Gdk::Rectangle& /*expose_area*/,
-		Gtk::CellRendererState /*flags*/)
+	const ::Cairo::RefPtr< ::Cairo::Context>& cr,
+	Gtk::Widget& /* widget */,
+	const Gdk::Rectangle& /* background_area */,
+	const Gdk::Rectangle& cell_area,
+	Gtk::CellRendererState /* flags */)
 {
-	if(!window)
+	if(!cr)
 		return;
 
-	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(window));
-	Glib::RefPtr<Gdk::GC> inactive_gc(Gdk::GC::create(window));
-	Gtk::Adjustment *adjustment=get_adjustment();
+	Glib::RefPtr<Gtk::Adjustment> adjustment=get_adjustment();
 	// Gtk::StateType state = Gtk::STATE_ACTIVE;
 	// Gtk::ShadowType shadow;
 
@@ -249,9 +237,10 @@ CellRenderer_TimeTrack::render_vfunc(
 	activepoint_color[0]=Gdk::Color("#ff0000");
 	activepoint_color[1]=Gdk::Color("#00ff00");
 
-	inactive_gc->set_rgb_fg_color(inactive_color);
-	inactive_gc->set_stipple(Gdk::Bitmap::create(stipple_xpm,2,2));
-	inactive_gc->set_fill(Gdk::STIPPLED);
+	int stride = Cairo::ImageSurface::format_stride_for_width(Cairo::FORMAT_A1, 2);
+	std::vector<unsigned char> stipple_xpm(2*stride, 0);
+	stipple_xpm[0] = 2;
+	Cairo::RefPtr<Cairo::ImageSurface> inactive_mask_img = Cairo::ImageSurface::create(&stipple_xpm.front(), Cairo::FORMAT_A1, 2, 2, stride);
 
 	synfig::Canvas::Handle canvas(property_canvas().get_value());
 
@@ -274,11 +263,12 @@ CellRenderer_TimeTrack::render_vfunc(
 			if(!iter->get_time().is_valid())
 				continue;
 
-			const int x((int)((float)area_.get_width()/(adjustment->get_upper()-adjustment->get_lower())*(iter->get_time()-adjustment->get_lower())));
+			const int x((int)((float)cell_area.get_width()/(adjustment->get_upper()-adjustment->get_lower())*(iter->get_time()-adjustment->get_lower())));
 			if(iter->get_time()>=adjustment->get_lower() && iter->get_time()<adjustment->get_upper())
 			{
-				gc->set_rgb_fg_color(keyframe_color);
-				window->draw_rectangle(gc, true, area_.get_x()+x, area_.get_y(), 1, area_.get_height()+1);
+				cr->set_source_rgb(keyframe_color.get_red_p(), keyframe_color.get_green_p(), keyframe_color.get_blue_p());
+				cr->rectangle(cell_area.get_x()+x, cell_area.get_y(), 1, cell_area.get_height()+1);
+				cr->fill();
 			}
 		}
 	}
@@ -295,11 +285,7 @@ CellRenderer_TimeTrack::render_vfunc(
 			float 	lower = adjustment->get_lower(),
 					upper = adjustment->get_upper();
 
-			Glib::RefPtr<Gdk::GC>	gc = Gdk::GC::create(widget.get_window());
-
-			Gdk::Rectangle area(area_);
-			gc->set_clip_rectangle(area);
-			gc->set_line_attributes(1,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
+			Gdk::Rectangle area(cell_area);
 
 			bool valselected = sel_value.get_value_node() == base_value && !sel_times.empty();
 
@@ -331,10 +317,8 @@ CellRenderer_TimeTrack::render_vfunc(
 						if(mode & COPY_MASK) // draw both blue and red moved
 						{
 							drawredafter.push_back(t + diff.round(cfps));
-							gc->set_rgb_fg_color(Gdk::Color("#00EEEE"));
 						}else if(mode & DELETE_MASK) //it's just red...
 						{
-							gc->set_rgb_fg_color(Gdk::Color("#EE0000"));
 							selected=true;
 						}else //move - draw the red on top of the others...
 						{
@@ -343,12 +327,8 @@ CellRenderer_TimeTrack::render_vfunc(
 						}
 					}else
 					{
-						gc->set_rgb_fg_color(Gdk::Color("#EE0000"));
 						selected=true;
 					}
-				}else
-				{
-					gc->set_rgb_fg_color(Gdk::Color("#00EEEE"));
 				}
 
 				//synfig::info("Displaying time: %.3f s",(float)t);
@@ -361,19 +341,7 @@ CellRenderer_TimeTrack::render_vfunc(
 					area.get_height()-2,
 					area.get_height()-2
 				);
-				render_time_point_to_window(window,area2,*i - time_offset,selected);
-
-				/*window->draw_arc(gc,true,
-				area.get_x() + x - area.get_height()/4,	area.get_y() + area.get_height()/8,
-				area.get_height()/2, area.get_height()*3/4,
-				0, 64*360);
-
-				gc->set_rgb_fg_color(Gdk::Color("#000000"));
-				window->draw_arc(gc,false,
-				area.get_x() + x - area.get_height()/4,	area.get_y() + area.get_height()/8,
-				area.get_height()/2, area.get_height()*3/4,
-				0, 64*360);
-				*/
+				render_time_point_to_window(cr,area2,*i - time_offset,selected);
 			}
 
 			{
@@ -397,76 +365,13 @@ CellRenderer_TimeTrack::render_vfunc(
 						area.get_height()-2,
 						area.get_height()-2
 					);
-					render_time_point_to_window(window,area2,*i,true);
-/*					gc->set_rgb_fg_color(Gdk::Color("#EE0000"));
-					window->draw_arc(gc,true,
-					area.get_x() + x - area.get_height()/4,	area.get_y() + area.get_height()/8,
-					area.get_height()/2, area.get_height()*3/4,
-					0, 64*360);
-
-					gc->set_rgb_fg_color(Gdk::Color("#000000"));
-					window->draw_arc(gc,false,
-					area.get_x() + x - area.get_height()/4,	area.get_y() + area.get_height()/8,
-					area.get_height()/2, area.get_height()*3/4,
-					0, 64*360);
-*/
+					render_time_point_to_window(cr,area2,*i,true);
 				}
 			}
 		}
 	}
 
-	/* THIS IS NOW HANDLED ENTIRELY BY THE TIMEPOINT SYSTEM
-	// This this is an animated value node, then render the waypoints
-	if(value_node)
-	{
-		//now render the actual waypoints
-		synfig::ValueNode_Animated::WaypointList::iterator iter;
-		for(
-			iter=value_node->waypoint_list().begin();
-			iter!=value_node->waypoint_list().end();
-			iter++
-		)
-		{
-			if(!iter->get_time().is_valid())
-				continue;
-			int x;
-			bool selected=false;
-			if(is_selected(*iter))
-			{
-				Time t(iter->get_time());
-
-
-				if(dragging)
-					t=(t+selected_time-drag_time).round(get_canvas()->rend_desc().get_frame_rate());
-
-				x=(int)((float)area.get_width()/(adjustment->get_upper()-adjustment->get_lower())*(t-adjustment->get_lower()));
-				shadow=Gtk::SHADOW_IN;
-				selected=true;
-			}
-			else
-			{
-				x=(int)((float)area.get_width()/(adjustment->get_upper()-adjustment->get_lower())*(iter->get_time()-adjustment->get_lower()));
-				shadow=Gtk::SHADOW_OUT;
-				selected=false;
-			}
-
-
-			widget.get_style()->paint_diamond(
-				Glib::RefPtr<Gdk::Window>::cast_static(window),
-				state,
-				shadow,
-				area,
-				widget,
-				"solid",
-				area.get_x()+x-area.get_height()/4,
-				area.get_y()+area.get_height()/4,
-				area.get_height()/2,
-				area.get_height()/2
-			);
-		}
-	}
-	*/
-		Gdk::Rectangle area(area_);
+	Gdk::Rectangle area(cell_area);
 	// If the parent of this value node is a dynamic list, then
 	// render the on and off times
 	if(parent_value_node)
@@ -505,54 +410,50 @@ CellRenderer_TimeTrack::render_vfunc(
 			else
 			if(is_off && !status_at_time)
 			{
-				window->draw_rectangle(inactive_gc, true, area.get_x()+xstart, area.get_y(), x-xstart, area.get_height());
+				cr->set_source_rgb( inactive_color.get_red_p(),
+									inactive_color.get_green_p(),
+									inactive_color.get_red_p() );
+				cr->mask(inactive_mask_img, 0, 0);
+				cr->rectangle(area.get_x()+xstart, area.get_y(), x-xstart, area.get_height());
+				cr->fill();
 				is_off=false;
 			}
-
-			/*
-			if(!is_off && iter!=activepoint_list.end() && next->state==false && iter->state==false)
-			{
-				xstart=x;
-				is_off=true;
-			}
-			else if(is_off && next!=activepoint_list.end() && iter->state==false && next->state==true)
-			{
-				window->draw_rectangle(inactive_gc, true, area.get_x()+xstart, area.get_y(), x-xstart, area.get_height());
-				is_off=false;
-			}
-			else if(is_off && iter!=activepoint_list.end() && iter->state==true)
-			{
-				window->draw_rectangle(inactive_gc, true, area.get_x()+xstart, area.get_y(), prevx-xstart, area.get_height());
-				is_off=false;
-			}
-			*/
-
-
 
 			if(iter->time>=adjustment->get_lower() && iter->time<adjustment->get_upper())
 			{
 				int w(1);
 				if(selected==*iter)
 					w=3;
-				gc->set_rgb_fg_color(activepoint_color[iter->state]);
-				window->draw_rectangle(gc, true, area.get_x()+x-w/2, area.get_y(), w, area.get_height());
+				cr->set_source_rgb( activepoint_color[iter->state].get_red_p(),
+									activepoint_color[iter->state].get_green_p(),
+									activepoint_color[iter->state].get_red_p() );
+				cr->rectangle(area.get_x()+x-w/2, area.get_y(), w, area.get_height());
+				cr->fill();
 			}
 			//prevx=x;
 		}
 		if(is_off)
 		{
-			window->draw_rectangle(inactive_gc, true, area.get_x()+xstart, area.get_y(), area.get_width()-xstart, area.get_height());
+			cr->set_source_rgb( inactive_color.get_red_p(),
+								inactive_color.get_green_p(),
+								inactive_color.get_red_p() );
+			cr->mask(inactive_mask_img, 0, 0);
+			cr->rectangle(area.get_x()+xstart, area.get_y(), area.get_width()-xstart, area.get_height());
+			cr->fill();
 		}
 	}
 
 	// Render a line that defines the current tick in time
 	{
-		gc->set_rgb_fg_color(curr_time_color);
-
 		const int x((int)((float)area.get_width()/(adjustment->get_upper()-adjustment->get_lower())*(adjustment->get_value()-adjustment->get_lower())));
-
 		if(adjustment->get_value()>=adjustment->get_lower() && adjustment->get_value()<adjustment->get_upper())
-			window->draw_rectangle(gc, true, area.get_x()+x, area.get_y(), 1, area.get_height());
+		{
+			cr->set_source_rgb( curr_time_color.get_red_p(),
+								curr_time_color.get_green_p(),
+								curr_time_color.get_red_p() );
+			cr->rectangle(area.get_x()+x, area.get_y(), 1, area.get_height());
+			cr->fill();
+		}
 	}
 }
 
@@ -606,7 +507,7 @@ CellRenderer_TimeTrack::activate_vfunc(
 
 	path=treepath;
 	synfig::ValueNode_Animated::WaypointList::iterator iter;
-	Gtk::Adjustment *adjustment=get_adjustment();
+	Glib::RefPtr<Gtk::Adjustment> adjustment=get_adjustment();
 
 	// synfig::ValueNode_Animated *value_node=dynamic_cast<synfig::ValueNode_Animated*>(property_value_desc().get_value().get_value_node().get());
 
@@ -895,10 +796,10 @@ CellRenderer_TimeTrack::property_canvas()
 	return Glib::PropertyProxy<synfig::Canvas::Handle>(this,"canvas");
 }
 
-Glib::PropertyProxy<Gtk::Adjustment* >
+Glib::PropertyProxy< Glib::RefPtr<Gtk::Adjustment> >
 CellRenderer_TimeTrack::property_adjustment()
 {
-	return Glib::PropertyProxy<Gtk::Adjustment* >(this,"adjustment");
+	return Glib::PropertyProxy< Glib::RefPtr<Gtk::Adjustment> >(this,"adjustment");
 }
 
 void

@@ -141,7 +141,7 @@ Action::ValueDescSetInterpolation::perform()
 		value_node->set_interpolation(value);
 		value_node->changed();
 	}
-	else if (value_desc.parent_is_layer_param())
+	else if (value_desc.parent_is_layer())
 	{
 		old_value = value_desc.get_value().get_interpolation();
 		synfig::Layer::Handle layer;
@@ -170,7 +170,7 @@ Action::ValueDescSetInterpolation::undo()
 		value_node->set_interpolation(old_value);
 		value_node->changed();
 	} 
-	else if (value_desc.parent_is_layer_param())
+	else if (value_desc.parent_is_layer())
 	{
 		synfig::Layer::Handle layer;
 		layer = value_desc.get_layer();

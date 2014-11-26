@@ -34,11 +34,6 @@
 #	include <config.h>
 #endif
 
-#ifdef WIN32
-#define WINVER 0x0500
-#include <windows.h>
-#endif
-
 #include <fstream>
 #include <iostream>
 #include <locale>
@@ -49,21 +44,30 @@
 #elif defined(HAVE_SYS_ERRNO_H)
 #include <sys/errno.h>
 #endif
-#include <gtkmm/fileselection.h>
+#include <gtkmm/filechooserdialog.h>
 #include <gtkmm/dialog.h>
 #include <gtkmm/messagedialog.h>
 #include <gtkmm/label.h>
 #include <gtkmm/stock.h>
 #include <gtkmm/stockitem.h>
 #include <gtkmm/iconsource.h>
-#include <gtkmm/inputdialog.h>
 #include <gtkmm/accelmap.h>
 #include <gtkmm/uimanager.h>
 #include <gtkmm/textview.h>
 
+#include <glibmm/main.h>
+#include <glibmm/thread.h>
+#include <glibmm/miscutils.h>
+#include <glibmm/spawn.h>
+
 #include <gtk/gtk.h>
 
 #include <gdkmm/general.h>
+
+#ifdef WIN32
+#define WINVER 0x0500
+#include <windows.h>
+#endif
 
 #include <synfig/loadcanvas.h>
 #include <synfig/savecanvas.h>
@@ -79,6 +83,7 @@
 #include "canvasview.h"
 #include "dialogs/dialog_setup.h"
 #include "dialogs/dialog_gradient.h"
+#include "dialogs/dialog_input.h"
 #include "dialogs/dialog_color.h"
 #include "mainwindow.h"
 #include "docks/dock_toolbox.h"
@@ -258,7 +263,7 @@ studio::Dialog_Gradient* studio::App::dialog_gradient;
 
 studio::Dialog_Color* studio::App::dialog_color;
 
-Gtk::InputDialog* studio::App::dialog_input;
+studio::Dialog_Input* studio::App::dialog_input;
 
 studio::Dialog_ToolOptions* studio::App::dialog_tool_options;
 
@@ -305,7 +310,6 @@ bool studio::App::navigator_uses_cairo=false;
 bool studio::App::workarea_uses_cairo=false;
 
 bool studio::App::enable_mainwin_menubar = true;
-bool studio::App::enable_mainwin_toolbar = true;
 String studio::App::ui_language ("os_LANG");
 
 static int max_recent_files_=25;
@@ -376,8 +380,7 @@ public:
 	{
 		Gtk::Dialog dialog(
 			title,		// Title
-			true,		// Modal
-			true		// use_separator
+			true		// Modal
 		);
 		Gtk::Label label(message);
 		label.show();
@@ -394,8 +397,7 @@ public:
 	{
 		Gtk::Dialog dialog(
 			title,		// Title
-			true,		// Modal
-			true		// use_separator
+			true		// Modal
 		);
 		Gtk::Label label(message);
 		label.show();
@@ -413,8 +415,7 @@ public:
 	{
 		Gtk::Dialog dialog(
 			title,		// Title
-			true,		// Modal
-			true		// use_separator
+			true		// Modal
 		);
 		Gtk::Label label(message);
 		label.show();
@@ -630,11 +631,6 @@ public:
 				value=strprintf("%i", (int)App::enable_mainwin_menubar);
 				return true;
 			}
-			if(key=="enable_mainwin_toolbar")
-			{
-				value=strprintf("%i", (int)App::enable_mainwin_toolbar);
-				return true;
-			}
 			if(key == "ui_language")
 			{
 				value = strprintf ("%s", App::ui_language.c_str());
@@ -784,12 +780,6 @@ public:
 				App::enable_mainwin_menubar = i;
 				return true;
 			}
-			if(key=="enable_mainwin_toolbar")
-			{
-				int i(atoi(value.c_str()));
-				App::enable_mainwin_toolbar = i;
-				return true;
-			}
 			if(key == "ui_language")
 			{
 				App::ui_language = value;
@@ -830,7 +820,6 @@ public:
 		ret.push_back("navigator_uses_cairo");
 		ret.push_back("workarea_uses_cairo");
 		ret.push_back("enable_mainwin_menubar");
-		ret.push_back("enable_mainwin_toolbar");
 
 		return ret;
 	}
@@ -842,8 +831,6 @@ void
 init_ui_manager()
 {
 	Glib::RefPtr<Gtk::ActionGroup> menus_action_group = Gtk::ActionGroup::create("menus");
-
-	Glib::RefPtr<Gtk::ActionGroup> toolbox_action_group = Gtk::ActionGroup::create("toolbox");
 
 	Glib::RefPtr<Gtk::ActionGroup> actions_action_group = Gtk::ActionGroup::create("actions");
 
@@ -1277,7 +1264,7 @@ DEFINE_ACTION("keyframe-properties","Properties");
 	ACCEL("F8",															"<Actions>/canvasview/properties"						);
 	ACCEL("F12",														"<Actions>/canvasview/options"						);
 	ACCEL("<control>i",													"<Actions>/canvasview/import"							);
-	ACCEL2(Gtk::AccelKey(GDK_Escape,static_cast<Gdk::ModifierType>(0),	"<Actions>/canvasview/stop"							));
+	ACCEL2(Gtk::AccelKey(GDK_KEY_Escape,static_cast<Gdk::ModifierType>(0), "<Actions>/canvasview/stop"							));
 	ACCEL("<Control>g",													"<Actions>/canvasview/toggle-grid-show"				);
 	ACCEL("<Control>l",													"<Actions>/canvasview/toggle-grid-snap"				);
 	ACCEL2(Gtk::AccelKey('`',Gdk::CONTROL_MASK,							"<Actions>/canvasview/toggle-low-res"					));
@@ -1291,8 +1278,8 @@ DEFINE_ACTION("keyframe-properties","Properties");
 	ACCEL("<Mod1>8",													"<Actions>/canvasview/mask-bone-recursive-ducks"		);
 	ACCEL("<Mod1>9",													"<Actions>/canvasview/mask-bone-ducks"				);
 	ACCEL("<Mod1>5",													"<Actions>/canvasview/mask-widthpoint-position-ducks"				);
-	ACCEL2(Gtk::AccelKey(GDK_Page_Up,Gdk::SHIFT_MASK,					"<Actions>/action_group_layer_action_manager/action-LayerRaise"				));
-	ACCEL2(Gtk::AccelKey(GDK_Page_Down,Gdk::SHIFT_MASK,					"<Actions>/action_group_layer_action_manager/action-LayerLower"				));
+	ACCEL2(Gtk::AccelKey(GDK_KEY_Page_Up,Gdk::SHIFT_MASK,				"<Actions>/action_group_layer_action_manager/action-LayerRaise"				));
+	ACCEL2(Gtk::AccelKey(GDK_KEY_Page_Down,Gdk::SHIFT_MASK,				"<Actions>/action_group_layer_action_manager/action-LayerLower"				));
 	ACCEL("<Control>1",													"<Actions>/canvasview/quality-01"						);
 	ACCEL("<Control>2",													"<Actions>/canvasview/quality-02"						);
 	ACCEL("<Control>3",													"<Actions>/canvasview/quality-03"						);
@@ -1305,7 +1292,7 @@ DEFINE_ACTION("keyframe-properties","Properties");
 	ACCEL("<Control>0",													"<Actions>/canvasview/quality-10"						);
 	ACCEL("<Control>z",													"<Actions>/action_group_dock_history/undo"							);
 	ACCEL("<Control>r",													"<Actions>/action_group_dock_history/redo"							);
-	ACCEL2(Gtk::AccelKey(GDK_Delete,Gdk::CONTROL_MASK,					"<Actions>/action_group_layer_action_manager/action-LayerRemove"				));
+	ACCEL2(Gtk::AccelKey(GDK_KEY_Delete,Gdk::CONTROL_MASK,				"<Actions>/action_group_layer_action_manager/action-LayerRemove"				));
 	ACCEL2(Gtk::AccelKey('(',Gdk::CONTROL_MASK,							"<Actions>/canvasview/decrease-low-res-pixel-size"	));
 	ACCEL2(Gtk::AccelKey(')',Gdk::CONTROL_MASK,							"<Actions>/canvasview/increase-low-res-pixel-size"	));
 	ACCEL2(Gtk::AccelKey('(',Gdk::MOD1_MASK|Gdk::CONTROL_MASK,			"<Actions>/action_group_layer_action_manager/amount-dec"						));
@@ -1345,8 +1332,6 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 	app_base_path_=etl::dirname(basepath);
 
 	ui_interface_=new GlobalUIInterface();
-
-	gdk_rgb_init();
 
 	// don't call thread_init() if threads are already initialized
 	// on some machines bonobo_init() initialized threads before we get here
@@ -1423,7 +1408,6 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 
 		// Set main window menu and toolbar
 		load_settings("pref.enable_mainwin_menubar");
-		load_settings("pref.enable_mainwin_toolbar");
 
 		studio_init_cb.task(_("Loading Plugins..."));
 		
@@ -1543,9 +1527,8 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		dialog_setup=new studio::Dialog_Setup(*App::main_window);
 
 		studio_init_cb.task(_("Init Input Dialog..."));
-		dialog_input=new Gtk::InputDialog();
-		dialog_input->get_close_button()->signal_clicked().connect( sigc::mem_fun( *dialog_input, &Gtk::InputDialog::hide ) );
-		dialog_input->get_save_button()->signal_clicked().connect( sigc::mem_fun( *device_tracker, &DeviceTracker::save_preferences) );
+		dialog_input=new studio::Dialog_Input(*App::main_window);
+		dialog_input->signal_apply().connect( sigc::mem_fun( *device_tracker, &DeviceTracker::save_preferences) );
 		
 		studio_init_cb.task(_("Init auto recovery..."));
 		auto_recover=new AutoRecover();
@@ -2043,8 +2026,6 @@ App::restore_default_settings()
 	synfigapp::Main::settings().set_value("navigator_uses_cairo", "0");
 	synfigapp::Main::settings().set_value("workarea_uses_cairo", "0");
 	synfigapp::Main::settings().set_value("pref.enable_mainwin_menubar", "1");
-	synfigapp::Main::settings().set_value("pref.enable_mainwin_toolbar", "1");
-
 }
 
 bool

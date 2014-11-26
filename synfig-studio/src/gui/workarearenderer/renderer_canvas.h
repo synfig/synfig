@@ -55,7 +55,7 @@ public:
 	bool get_queued()const;
 	bool get_rendering()const;
 
-	void render_vfunc(const Glib::RefPtr<Gdk::Drawable>& drawable,const Gdk::Rectangle& expose_area	);
+	void render_vfunc(const Glib::RefPtr<Gdk::Window>& drawable,const Gdk::Rectangle& expose_area	);
 };
 
 }; // END of namespace studio

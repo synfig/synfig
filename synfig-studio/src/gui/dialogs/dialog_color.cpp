@@ -56,7 +56,7 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 Dialog_Color::Dialog_Color():
-	Dialog(_("Colors"), false, true),
+	Dialog(_("Colors")),
 	dialog_settings(this, "color"),
 	busy_(false)
 {

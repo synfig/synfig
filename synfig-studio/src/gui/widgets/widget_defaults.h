@@ -27,7 +27,9 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <gtkmm/button.h>
 #include <gtkmm/drawingarea.h>
+#include <gtkmm/entry.h>
 #include <gtkmm/table.h>
 #include <gtkmm/box.h>
 #include <gtkmm/alignment.h>
@@ -48,7 +50,7 @@ namespace studio {
 class Widget_Brush;
 class Widget_Color;
 class Widget_Distance;
-class Widget_Enum;
+//class Widget_Enum;
 
 class Widget_Defaults : public Gtk::VBox
 {
@@ -64,40 +66,42 @@ class Widget_Defaults : public Gtk::VBox
 	Widget_Gradient	*_widget_gradient;
 	Gtk::Alignment	*widget_gradient;
 
-	Gtk::HBox 	*widget_colors_gradient;
+	Gtk::VBox 	*widget_colors_gradient;
 
 	Widget_Brush 	*_widget_brush;
+	Gtk::Entry	*brush_entry;
+	Gtk::Button	*brush_increase;
+	Gtk::Button	*brush_decrease;
 	Gtk::Alignment 	*widget_brush;
 
 	Widget_Distance *widget_bline_width;
 
-	Gtk::HBox 	*widget_brush_bline_width;
+	Gtk::VBox 	*widget_brush_bline_width;
 
-	Widget_Enum	*widget_blend_method;
+	//Widget_Enum	*widget_blend_method;
 
-	Widget_Enum	*widget_interpolation;
-
-	Gtk::HScale 	*widget_opacity;
+	//Gtk::HScale 	*widget_opacity;
 
 	void otln_color_refresh();
 	void fill_color_refresh();
 	void gradient_refresh();
 	void bline_width_refresh();
-	void interpolation_refresh();
 
 	void on_bline_width_changed();
+	void on_brush_entry_changed();
+	void on_brush_increase_clicked();
+	void on_brush_decrease_clicked();
 	void on_otln_color_clicked();
 	void on_fill_color_clicked();
 	void on_swap_color_clicked();
 	void on_reset_color_clicked();
 	void on_gradient_clicked();
-	void on_interpolation_changed();
 
-	void blend_method_refresh();
-	void on_blend_method_changed();
+	//void blend_method_refresh();
+	//void on_blend_method_changed();
 
-	void opacity_refresh();
-	void on_opacity_changed();
+	//void opacity_refresh();
+	//void on_opacity_changed();
 
 public:
 

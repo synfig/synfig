@@ -40,7 +40,6 @@
 #include <gtkmm/window.h>
 #include <gtkmm/image.h>
 #include <gtkmm/drawingarea.h>
-#include <gtkmm/ruler.h>
 #include <gtkmm/arrow.h>
 #include <gtkmm/image.h>
 #include <gtkmm/scrollbar.h>
@@ -988,14 +987,17 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	Duckmatic(canvas_interface),
 	canvas_interface(canvas_interface),
 	canvas(canvas_interface->get_canvas()),
-	scrollx_adjustment(0,-4,4,0.01,0.1),
-	scrolly_adjustment(0,-4,4,0.01,0.1),
+	scrollx_adjustment(Gtk::Adjustment::create(0,-4,4,0.01,0.1)),
+	scrolly_adjustment(Gtk::Adjustment::create(0,-4,4,0.01,0.1)),
 	w(TILE_SIZE),
 	h(TILE_SIZE),
 	last_event_time(0),
 	progresscallback(0),
 	dragging(DRAG_NONE),
 	show_grid(false),
+	background_size(15,15),
+	background_first_color(0.88, 0.88, 0.88),  /* light gray */
+	background_second_color(0.65, 0.65, 0.65),  /* dark gray */
 	jack_offset(0),
 	tile_w(TILE_SIZE),
 	tile_h(TILE_SIZE),
@@ -1050,8 +1052,8 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	refreshes=0;
 
   	drawing_area=manage(new class Gtk::DrawingArea());
+  	drawing_area->add_events(Gdk::SCROLL_MASK | Gdk::BUTTON3_MOTION_MASK);
 	drawing_area->show();
-	drawing_area->set_extension_events(Gdk::EXTENSION_EVENTS_ALL);
 
 	drawing_frame=manage(new Gtk::Frame);
 	drawing_frame->add(*drawing_area);
@@ -1077,16 +1079,9 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 
 	Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon");
 
-
 	// Create the vertical and horizontal rulers
-	vruler = manage(new class Gtk::VRuler());
-	hruler = manage(new class Gtk::HRuler());
-	vruler->set_metric(Gtk::PIXELS);
-	hruler->set_metric(Gtk::PIXELS);
-	Pango::FontDescription fd(hruler->get_style()->get_font());
-	fd.set_size(Pango::SCALE*8);
-	vruler->modify_font(fd);
-	hruler->modify_font(fd);
+	vruler = manage(new Widget_Ruler(true));
+	hruler = manage(new Widget_Ruler(false));
 	vruler->show();
 	hruler->show();
 	attach(*vruler, 0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
@@ -1098,17 +1093,18 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 
 	// Create the menu button
 	menubutton=manage(new class Gtk::Button());
-	Gtk::Arrow *arrow1 = manage(new class Gtk::Arrow(Gtk::ARROW_RIGHT, Gtk::SHADOW_OUT));
-	arrow1->set_size_request(6,7);
-	menubutton->add(*arrow1);
+	//Gtk::Arrow *arrow1 = manage(new class Gtk::Arrow(Gtk::ARROW_RIGHT, Gtk::SHADOW_OUT));
+	//arrow1->set_size_request(3,3);
+	//menubutton->add(*arrow1);
 	menubutton->show_all();
+	menubutton->set_size_request(18, 18);
 	menubutton->signal_pressed().connect(sigc::mem_fun(*this, &WorkArea::popup_menu));
 	attach(*menubutton, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 
 	Gtk::HBox *hbox = manage(new class Gtk::HBox(false, 0));
 
-	Gtk::VScrollbar *vscrollbar1 = manage(new class Gtk::VScrollbar(*get_scrolly_adjustment()));
-	Gtk::HScrollbar *hscrollbar1 = manage(new class Gtk::HScrollbar(*get_scrollx_adjustment()));
+	Gtk::VScrollbar *vscrollbar1 = manage(new class Gtk::VScrollbar(get_scrolly_adjustment()));
+	Gtk::HScrollbar *hscrollbar1 = manage(new class Gtk::HScrollbar(get_scrollx_adjustment()));
 	vscrollbar1->show();
 	attach(*vscrollbar1, 2, 3, 1, 2, Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
@@ -1126,14 +1122,15 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	attach(*hbox, 0, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	hbox->show();
 
-	drawing_area->add_events(Gdk::KEY_PRESS_MASK | Gdk::KEY_RELEASE_MASK);
 	add_events(Gdk::KEY_PRESS_MASK);
+	drawing_area->add_events(Gdk::KEY_PRESS_MASK | Gdk::KEY_RELEASE_MASK);
 	drawing_area->add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK);
-	drawing_area->add_events(Gdk::BUTTON1_MOTION_MASK | Gdk::BUTTON2_MOTION_MASK |Gdk::POINTER_MOTION_MASK);
+	drawing_area->add_events(Gdk::BUTTON1_MOTION_MASK | Gdk::BUTTON2_MOTION_MASK | Gdk::BUTTON3_MOTION_MASK | Gdk::POINTER_MOTION_MASK);
+	drawing_area->add_events(Gdk::SCROLL_MASK);
 
 	// ----------------- Attach signals
 
-	drawing_area->signal_expose_event().connect(sigc::mem_fun(*this, &WorkArea::refresh));
+	drawing_area->signal_draw().connect(sigc::mem_fun(*this, &WorkArea::refresh));
 	drawing_area->signal_event().connect(sigc::mem_fun(*this, &WorkArea::on_drawing_area_event));
 	drawing_area->signal_size_allocate().connect(sigc::hide(sigc::mem_fun(*this, &WorkArea::refresh_dimension_info)));
 
@@ -1158,6 +1155,9 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	get_canvas()->signal_meta_data_changed("guide_color").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("sketch").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("solid_lines").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
+	get_canvas()->signal_meta_data_changed("background_size").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
+	get_canvas()->signal_meta_data_changed("background_first_color").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
+	get_canvas()->signal_meta_data_changed("background_second_color").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 
 	queued=false;
 	meta_data_lock=false;
@@ -1178,10 +1178,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 		}
 	}
 
-	hruler->property_max_size()=double(10.0);
-	vruler->property_max_size()=double(10.0);
-
-	drawing_area->set_flags(drawing_area->get_flags()|Gtk::CAN_FOCUS);
+	drawing_area->set_can_focus(true);
 }
 
 WorkArea::~WorkArea()
@@ -1230,6 +1227,12 @@ WorkArea::save_meta_data()
 	canvas_interface->set_meta_data("grid_show",show_grid?"1":"0");
 	canvas_interface->set_meta_data("jack_offset",strprintf("%f", (double)jack_offset));
 	canvas_interface->set_meta_data("onion_skin",onion_skin?"1":"0");
+	s = get_background_size();
+	canvas_interface->set_meta_data("background_size",strprintf("%f %f",s[0],s[1]));
+	c = get_background_first_color();
+	canvas_interface->set_meta_data("background_first_color",strprintf("%f %f %f",c.get_r(),c.get_g(),c.get_b()));
+	c = get_background_second_color();
+	canvas_interface->set_meta_data("background_second_color",strprintf("%f %f %f",c.get_r(),c.get_g(),c.get_b()));
 
 	{
 		String data;
@@ -1452,6 +1455,92 @@ WorkArea::load_meta_data()
 	if (!data.empty())
 		jack_offset = stratof(data);
 
+	data=canvas->get_meta_data("background_size");
+	if(!data.empty())
+	{
+		float gx(get_background_size()[0]),gy(get_background_size()[1]);
+
+		String::iterator iter(find(data.begin(),data.end(),' '));
+		String tmp(data.begin(),iter);
+
+		if(!tmp.empty())
+			gx=stratof(tmp);
+		else
+			synfig::error("WorkArea::load_meta_data(): Unable to parse data for \"background_size\", which was \"%s\"",data.c_str());
+
+		if(iter==data.end())
+			tmp.clear();
+		else
+			tmp=String(iter+1,data.end());
+
+		if(!tmp.empty())
+			gy=stratof(tmp);
+		else
+			synfig::error("WorkArea::load_meta_data(): Unable to parse data for \"background_size\", which was \"%s\"",data.c_str());
+
+		set_background_size(Vector(gx,gy));
+	}
+
+	data=canvas->get_meta_data("background_first_color");
+	if(!data.empty())
+	{
+		float gr(get_background_first_color().get_r()),gg(get_background_first_color().get_g()),gb(get_background_first_color().get_b());
+
+		String tmp;
+		// Insert the string into a stream
+		stringstream ss(data);
+		// Create vector to hold our colors
+		std::vector<String> tokens;
+
+		int imaxcolor = 0;
+		while (ss >> tmp && imaxcolor++ < 3)
+			tokens.push_back(tmp);
+
+		if (tokens.size() != 3 || imaxcolor > 3)
+		{
+			synfig::error("WorkArea::load_meta_data(): Unable to parse data for \"background_first_color\", which was \"%s\". \"red green blue\" in [0,1] was expected",data.c_str());
+			canvas_interface->get_ui_interface()->warning(_("Unable to set \"background_first_color\""));
+		}
+		else
+		{
+			gr=atof(tokens.at(0).data());
+			gg=atof(tokens.at(1).data());
+			gb=atof(tokens.at(2).data());
+		}
+
+		set_background_first_color(synfig::Color(gr,gg,gb));
+	}
+
+	data=canvas->get_meta_data("background_second_color");
+	if(!data.empty())
+	{
+		float gr(get_background_second_color().get_r()),gg(get_background_second_color().get_g()),gb(get_background_second_color().get_b());
+
+		String tmp;
+		// Insert the string into a stream
+		stringstream ss(data);
+		// Create vector to hold our colors
+		std::vector<String> tokens;
+
+		int imaxcolor = 0;
+		while (ss >> tmp && imaxcolor++ < 3)
+			tokens.push_back(tmp);
+
+		if (tokens.size() != 3 || imaxcolor > 3)
+		{
+			synfig::error("WorkArea::load_meta_data(): Unable to parse data for \"background_second_color\", which was \"%s\". \"red green blue\" in [0,1] was expected",data.c_str());
+			canvas_interface->get_ui_interface()->warning(_("Unable to set \"background_second_color\""));
+		}
+		else
+		{
+			gr=atof(tokens.at(0).data());
+			gg=atof(tokens.at(1).data());
+			gb=atof(tokens.at(2).data());
+		}
+
+		set_background_second_color(synfig::Color(gr,gg,gb));
+	}
+
 	meta_data_lock=false;
 	queue_draw();
 	signal_meta_data_changed()();
@@ -1585,6 +1674,39 @@ WorkArea::set_grid_color(const synfig::Color &c)
 }
 
 void
+WorkArea::set_background_size(const synfig::Vector &s)
+{
+	if (background_size != s)
+	{
+	   background_size = s;
+       save_meta_data();
+	}
+	queue_draw();
+}
+
+void
+WorkArea::set_background_first_color(const synfig::Color &c)
+{
+	if(background_first_color != c)
+	{
+		background_first_color = c;
+		save_meta_data();
+	}
+	queue_draw();
+}
+
+void
+WorkArea::set_background_second_color(const synfig::Color &c)
+{
+	if(background_second_color != c)
+	{
+		background_second_color = c;
+		save_meta_data();
+	}
+	queue_draw();
+}
+
+void
 WorkArea::set_focus_point(const synfig::Point &point)
 {
 	// These next three lines try to ensure that we place the
@@ -1659,16 +1781,16 @@ WorkArea::on_key_press_event(GdkEventKey* event)
 	Vector nudge;
 	switch(event->keyval)
 	{
-		case GDK_Left:
+		case GDK_KEY_Left:
 			nudge=Vector(-pw,0);
 			break;
-		case GDK_Right:
+		case GDK_KEY_Right:
 			nudge=Vector(pw,0);
 			break;
-		case GDK_Up:
+		case GDK_KEY_Up:
 			nudge=Vector(0,-ph);
 			break;
-		case GDK_Down:
+		case GDK_KEY_Down:
 			nudge=Vector(0,ph);
 			break;
 		default:
@@ -1715,30 +1837,13 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 	const float radius((abs(pw)+abs(ph))*4);
 	int button_pressed(0);
 	float pressure(0);
-	bool is_mouse(false);
 	Gdk::ModifierType modifier(Gdk::ModifierType(0));
 
 	// Handle input stuff
-	if(
-		event->any.type==GDK_MOTION_NOTIFY ||
-		event->any.type==GDK_BUTTON_PRESS ||
-		event->any.type==GDK_2BUTTON_PRESS ||
-		event->any.type==GDK_3BUTTON_PRESS ||
-		event->any.type==GDK_BUTTON_RELEASE
-	)
+	if (event->any.type==GDK_MOTION_NOTIFY)
 	{
-		GdkDevice *device;
-		if(event->any.type==GDK_MOTION_NOTIFY)
-		{
-			device=event->motion.device;
-			modifier=Gdk::ModifierType(event->motion.state);
-		}
-		else
-		{
-			device=event->button.device;
-			modifier=Gdk::ModifierType(event->button.state);
-			drawing_area->grab_focus();
-		}
+		GdkDevice *device = event->motion.device;
+		modifier = Gdk::ModifierType(event->motion.state);
 
 		// Make sure we recognize the device
 		if(curr_input_device)
@@ -1750,7 +1855,58 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				signal_input_device_changed()(curr_input_device);
 			}
 		}
-		else if(device)
+		else
+		if(device)
+		{
+			curr_input_device=device;
+			signal_input_device_changed()(curr_input_device);
+		}
+
+		assert(curr_input_device);
+
+		// Calculate the position of the
+		// input device in canvas coordinates
+
+		double x = 0.0, y = 0.0, p = 0.0;
+
+		if (!gdk_device_get_axis(device, event->motion.axes, GDK_AXIS_X, &x))
+			x = event->motion.x;
+		if (!gdk_device_get_axis(device, event->motion.axes, GDK_AXIS_Y, &y))
+			y = event->motion.y;
+
+		if (gdk_device_get_axis(device, event->motion.axes, GDK_AXIS_PRESSURE, &p))
+			p = std::max(0.0, (p - 0.04)/(1.0 - 0.04));
+		else
+			p = 1.0;
+
+		if(isnan(x) || isnan(y) || isnan(p))
+			return false;
+
+		mouse_pos=synfig::Point(screen_to_comp_coords(synfig::Point(x, y)));
+		pressure = (float)p;
+	}
+	else
+	if(	event->any.type==GDK_BUTTON_PRESS  ||
+		event->any.type==GDK_2BUTTON_PRESS ||
+		event->any.type==GDK_3BUTTON_PRESS ||
+		event->any.type==GDK_BUTTON_RELEASE )
+	{
+		GdkDevice *device = event->button.device;
+		modifier = Gdk::ModifierType(event->button.state);
+		drawing_area->grab_focus();
+
+		// Make sure we recognize the device
+		if(curr_input_device)
+		{
+			if(curr_input_device!=device)
+			{
+				assert(device);
+				curr_input_device=device;
+				signal_input_device_changed()(curr_input_device);
+			}
+		}
+		else
+		if(device)
 		{
 			curr_input_device=device;
 			signal_input_device_changed()(curr_input_device);
@@ -1761,50 +1917,31 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 		// Calculate the position of the
 		// input device in canvas coordinates
 		// and the buttons
-		if(!event->button.axes)
-		{
-			mouse_pos=synfig::Point(screen_to_comp_coords(synfig::Point(event->button.x,event->button.y)));
-			button_pressed=event->button.button;
-			pressure=1.0f;
-			is_mouse=true;
-			if(isnan(event->button.x) || isnan(event->button.y))
-				return false;
-		}
+
+		double x = 0.0, y = 0.0, p = 0.0;
+
+		if (!gdk_device_get_axis(device, event->button.axes, GDK_AXIS_X, &x))
+			x = event->button.x;
+		if (!gdk_device_get_axis(device, event->button.axes, GDK_AXIS_Y, &y))
+			y = event->button.y;
+
+		if (gdk_device_get_axis(device, event->button.axes, GDK_AXIS_PRESSURE, &p))
+			p = std::max(0.0, (p - 0.04)/(1.0 - 0.04));
 		else
-		{
-			double x(event->button.axes[0]);
-			double y(event->button.axes[1]);
-			if(isnan(x) || isnan(y))
-				return false;
+			p = 1.0;
 
-			pressure=event->button.axes[2];
-			//synfig::info("pressure=%f",pressure);
-			pressure-=0.04f;
-			pressure/=1.0f-0.04f;
+		if(isnan(x) || isnan(y) || isnan(p))
+			return false;
 
-
-			assert(!isnan(pressure));
-
-			mouse_pos=synfig::Point(screen_to_comp_coords(synfig::Point(x,y)));
-
-			button_pressed=event->button.button;
-
-			if(button_pressed==1 && pressure<0 && (event->any.type!=GDK_BUTTON_RELEASE && event->any.type!=GDK_BUTTON_PRESS))
-				button_pressed=0;
-			if(pressure<0)
-				pressure=0;
-
-			//if(event->any.type==GDK_BUTTON_PRESS && button_pressed)
-			//	synfig::info("Button pressed on input device = %d",event->button.button);
-
-			//if(event->button.axes[2]>0.1)
-			//	button_pressed=1;
-			//else
-			//	button_pressed=0;
-		}
+		mouse_pos=synfig::Point(screen_to_comp_coords(synfig::Point(x, y)));
+		pressure = (float)p;
+		button_pressed=event->button.button;
+		if(button_pressed==1 && pressure<=0.f && (event->any.type!=GDK_BUTTON_RELEASE && event->any.type!=GDK_BUTTON_PRESS))
+			button_pressed=0;
 	}
+	else
 	// GDK mouse scrolling events
-	else if(event->any.type==GDK_SCROLL)
+	if(event->any.type==GDK_SCROLL)
 	{
 		// GDK information needed to properly interpret mouse
 		// scrolling events are: scroll.state, scroll.x/scroll.y, and
@@ -1881,7 +2018,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				//if(clicked_duck)clicked_duck->signal_user_click(0)();
 
 				// if the user is holding shift while clicking on a tangent duck, consider splitting the tangent
-				if ((event->motion.state&GDK_SHIFT_MASK) && duck->get_type() == Duck::TYPE_TANGENT)
+				if ((event->button.state&GDK_SHIFT_MASK) && duck->get_type() == Duck::TYPE_TANGENT)
 				{
 					synfigapp::ValueDesc value_desc = duck->get_value_desc();
 
@@ -1999,12 +2136,11 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				bezier->signal_user_click(1)(bezier_click_pos);
 
 			if(canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MOUSE_BUTTON_DOWN,BUTTON_MIDDLE,mouse_pos,pressure,modifier))==Smach::RESULT_OK)
-			if(is_mouse)
-			{
-				dragging=DRAG_WINDOW;
-				drag_point=mouse_pos;
-				signal_user_click(1)(mouse_pos);
-			}
+
+			dragging=DRAG_WINDOW;
+			drag_point=mouse_pos;
+			signal_user_click(1)(mouse_pos);
+
 			break;
 		}
 		case 3:	// Attempt to either get info on a duck, or open the menu
@@ -2147,8 +2283,8 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 		if(dragging!=DRAG_WINDOW)
 		{	// Update those triangle things on the rulers
 			const synfig::Point point(mouse_pos);
-			hruler->property_position()=Distance(point[0],Distance::SYSTEM_UNITS).get(App::distance_system,get_canvas()->rend_desc());
-			vruler->property_position()=Distance(point[1],Distance::SYSTEM_UNITS).get(App::distance_system,get_canvas()->rend_desc());
+			hruler->set_position( Distance(point[0],Distance::SYSTEM_UNITS).get(App::distance_system,get_canvas()->rend_desc()) );
+			vruler->set_position( Distance(point[1],Distance::SYSTEM_UNITS).get(App::distance_system,get_canvas()->rend_desc()) );
 		}
 
 		if(dragging == DRAG_WINDOW)
@@ -2469,34 +2605,14 @@ WorkArea::on_hruler_event(GdkEvent *event)
 		// Guide movement
 		if(dragging==DRAG_GUIDE && curr_guide_is_x==false)
 		{
-			double y,x;
-			if(event->button.axes)
-			{
-				x=(event->button.axes[0]);
-				y=(event->button.axes[1]);
-			}
-			else
-			{
-				x=event->button.x;
-				y=event->button.y;
-			}
-
-			if(isnan(y) || isnan(x))
-				return false;
-
 			// Event is in the hruler, which has a slightly different
 			// coordinate system from the canvas.
-			y -= 2*hruler->property_max_size();
+			gint exes_count = gdk_device_get_n_axes(event->motion.device);
+			for(gint i = 0; i < exes_count; ++i)
+				if (gdk_device_get_axis_use(event->motion.device, i) == GDK_AXIS_Y)
+					event->motion.axes[i] -= hruler->get_height()+2;
+			event->motion.y -= hruler->get_height()+2;
 
-			// place the recalculated y coordinate back on the event
-			if(event->button.axes)
-			{
-				event->button.axes[1]=y;
-			}
-			else
-			{
-				event->button.y=y;
-			}
 			// call the on drawing area event to refresh eveything.
 			on_drawing_area_event(event);
 		}
@@ -2537,35 +2653,15 @@ WorkArea::on_vruler_event(GdkEvent *event)
 		// Guide movement
 		if(dragging==DRAG_GUIDE && curr_guide_is_x==true)
 		{
-			double y,x;
-			if(event->button.axes)
-			{
-				x=(event->button.axes[0]);
-				y=(event->button.axes[1]);
-			}
-			else
-			{
-				x=event->button.x;
-				y=event->button.y;
-			}
-
-			if(isnan(y) || isnan(x))
-				return false;
-
 			// Event is in the vruler, which has a slightly different
 			// coordinate system from the canvas.
-			x -= 2*vruler->property_max_size();
+			gint exes_count = gdk_device_get_n_axes(event->motion.device);
+			for(gint i = 0; i < exes_count; ++i)
+				if (gdk_device_get_axis_use(event->motion.device, i) == GDK_AXIS_X)
+					event->motion.axes[i] -= vruler->get_width()+2;
+			event->motion.x -= vruler->get_width()+2;
 
-			// place the recalculated x coordinate back on the event
-			if(event->button.axes)
-			{
-				event->button.axes[0]=x;
-			}
-			else
-			{
-				event->button.x=x;
-			}
-			// call the on drawing area event to refresh everything.
+			// call the on drawing area event to refresh eveything.
 			on_drawing_area_event(event);
 		}
 		return true;
@@ -2598,16 +2694,14 @@ WorkArea::refresh_dimension_info()
 	pw=canvaswidth/w;
 	ph=canvasheight/h;
 
-	scrollx_adjustment.set_page_increment(abs(get_grid_size()[0]));
-	scrollx_adjustment.set_step_increment(abs(pw));
-	scrollx_adjustment.set_lower(-abs(canvaswidth));
-	scrollx_adjustment.set_upper(abs(canvaswidth));
-	scrolly_adjustment.set_lower(-abs(canvasheight));
-	scrolly_adjustment.set_upper(abs(canvasheight));
-	scrolly_adjustment.set_step_increment(abs(ph));
-	scrolly_adjustment.set_page_increment(abs(get_grid_size()[1]));
-
-
+	scrollx_adjustment->set_page_increment(abs(get_grid_size()[0]));
+	scrollx_adjustment->set_step_increment(abs(pw));
+	scrollx_adjustment->set_lower(-abs(canvaswidth));
+	scrollx_adjustment->set_upper(abs(canvaswidth));
+	scrolly_adjustment->set_lower(-abs(canvasheight));
+	scrolly_adjustment->set_upper(abs(canvasheight));
+	scrolly_adjustment->set_step_increment(abs(ph));
+	scrolly_adjustment->set_page_increment(abs(get_grid_size()[1]));
 
 	if(drawing_area->get_width()<=0 || drawing_area->get_height()<=0 || w==0 || h==0)
 		return;
@@ -2622,10 +2716,10 @@ WorkArea::refresh_dimension_info()
 	window_tl[1]=rend_desc.get_tl()[1]-ph*y;
 	window_br[1]=rend_desc.get_br()[1]+ph*(drawing_area->get_height()-y-h);
 
-	hruler->property_lower()=Distance(window_tl[0],Distance::SYSTEM_UNITS).get(App::distance_system,rend_desc);
-	hruler->property_upper()=Distance(window_br[0],Distance::SYSTEM_UNITS).get(App::distance_system,rend_desc);
-	vruler->property_lower()=Distance(window_tl[1],Distance::SYSTEM_UNITS).get(App::distance_system,rend_desc);
-	vruler->property_upper()=Distance(window_br[1],Distance::SYSTEM_UNITS).get(App::distance_system,rend_desc);
+	hruler->set_min( Distance(window_tl[0],Distance::SYSTEM_UNITS).get(App::distance_system,rend_desc) );
+	hruler->set_max( Distance(window_br[0],Distance::SYSTEM_UNITS).get(App::distance_system,rend_desc) );
+	vruler->set_min( Distance(window_tl[1],Distance::SYSTEM_UNITS).get(App::distance_system,rend_desc) );
+	vruler->set_max( Distance(window_br[1],Distance::SYSTEM_UNITS).get(App::distance_system,rend_desc) );
 
 	view_window_changed();
 }
@@ -2770,14 +2864,15 @@ WorkArea::refresh_second_check()
 	int width = canvas_view->get_width();
 	int height = canvas_view->get_height();
 	if (width==old_window_width && height==old_window_height ) {
-		GdkEventExpose event;
-		refresh(&event);
+		queue_draw();
+		//GdkEventExpose event;
+		//refresh(&event);
 	}
 }
 #endif
 
 bool
-WorkArea::refresh(GdkEventExpose*event)
+WorkArea::refresh(const Cairo::RefPtr<Cairo::Context> &cr)
 {
 #ifdef SINGLE_THREADED
 	/* resize bug workaround */
@@ -2820,8 +2915,6 @@ WorkArea::refresh(GdkEventExpose*event)
 	Glib::RefPtr<Gdk::Window> draw_area_window = drawing_area->get_window();
 	if(!draw_area_window) return false;
 
-	draw_area_window->clear();
-
 	//const synfig::RendDesc &rend_desc(get_canvas()->rend_desc());
 
 	const synfig::Vector focus_point(get_focus_point());
@@ -2837,7 +2930,7 @@ WorkArea::refresh(GdkEventExpose*event)
 			if((*iter)->get_enabled())
 				(*iter)->render_vfunc(
 					draw_area_window,
-					Gdk::Rectangle(&event->area)
+					Gdk::Rectangle(0, 0, draw_area_window->get_width(), draw_area_window->get_height())
 				);
 		}
 	}
@@ -2993,7 +3086,7 @@ studio::WorkArea::async_update_preview()
 	//WorkAreaProgress callback(this,get_canvas_view()->get_ui_interface().get());
 	//synfig::ProgressCallback *cb=&callback;
 
-	if(!is_visible())return false;
+	if(!get_visible())return false;
 
 	/*
 	// If we are queued to render the scene at the next idle
@@ -3156,7 +3249,7 @@ again:
 		return false;
 	}
 
-	if(!is_visible())return false;
+	if(!get_visible())return false;
 	get_canvas()->set_time(get_time());
 	get_canvas_view()->get_smach().process_event(EVENT_REFRESH_DUCKS);
 	signal_rendering()();
@@ -3250,7 +3343,7 @@ studio::WorkArea::async_render_preview(synfig::Time time)
 	//tile_book.clear();
 
 	refreshes+=5;
-	if(!is_visible())return;
+	if(!get_visible())return;
 
 	get_canvas()->set_time(get_time());
 	get_canvas_view()->get_smach().process_event(EVENT_REFRESH_DUCKS);
@@ -3270,7 +3363,7 @@ studio::WorkArea::sync_render_preview(synfig::Time time)
 	cur_time=time;
 	//tile_book.clear();
 	refreshes+=5;
-	if(!is_visible())return false;
+	if(!get_visible())return false;
 	return sync_update_preview();
 }
 
@@ -3480,7 +3573,7 @@ studio::WorkArea::queue_draw_preview()
 }
 
 void
-studio::WorkArea::set_cursor(const Gdk::Cursor& x)
+studio::WorkArea::set_cursor(const Glib::RefPtr<Gdk::Cursor> &x)
 {
 	//!Check if the window we want draw is ready
 	Glib::RefPtr<Gdk::Window> draw_area_window = drawing_area->get_window();
@@ -3495,7 +3588,7 @@ studio::WorkArea::set_cursor(Gdk::CursorType x)
 	Glib::RefPtr<Gdk::Window> draw_area_window = drawing_area->get_window();
 	if(!draw_area_window) return;
 	
-	draw_area_window->set_cursor(Gdk::Cursor(x));
+	draw_area_window->set_cursor(Gdk::Cursor::create(x));
 }
 
 //#include "iconcontroller.h"
@@ -3512,7 +3605,7 @@ studio::WorkArea::reset_cursor()
 	Glib::RefPtr<Gdk::Window> draw_area_window = drawing_area->get_window();
 	if(!draw_area_window) return;
 	
-	draw_area_window->set_cursor(Gdk::Cursor(Gdk::TOP_LEFT_ARROW));
+	draw_area_window->set_cursor(Gdk::Cursor::create(Gdk::TOP_LEFT_ARROW));
 //	set_cursor(Gdk::TOP_LEFT_ARROW);
 }
 

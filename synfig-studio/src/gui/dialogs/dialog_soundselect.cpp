@@ -57,7 +57,7 @@ using namespace synfig;
 /* === E N T R Y P O I N T ================================================= */
 
 studio::Dialog_SoundSelect::Dialog_SoundSelect(Gtk::Window &parent, etl::handle<synfigapp::CanvasInterface> ci)
-:Dialog(_("Sound Select"), parent, false, true),
+:Dialog(_("Sound Select"), parent),
 canvas_interface(ci)
 {
 	Gtk::Alignment *dialogPadding = manage(new Gtk::Alignment(0, 0, 1, 1));

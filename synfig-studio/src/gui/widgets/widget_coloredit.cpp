@@ -66,7 +66,6 @@ using namespace studio;
 ColorSlider::ColorSlider(const ColorSlider::Type &x):
 	type(x)
 {
-	signal_expose_event().connect(sigc::mem_fun(*this, &ColorSlider::redraw));
 	set_size_request(-1,12);
 	add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK);
 	add_events(Gdk::BUTTON1_MOTION_MASK);
@@ -116,12 +115,8 @@ ColorSlider::adjust_color(Type type, synfig::Color &color, float amount)
 }
 
 bool
-ColorSlider::redraw(GdkEventExpose */*bleh*/)
+ColorSlider::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 {
-	//!Check if the window we want draw is ready
-	Glib::RefPtr<Gdk::Window> window = get_window();
-	if(!window) return false;
-
 	Color color(color_);
 
 	static const slider_color_func jump_table[int(TYPE_END)] =
@@ -161,7 +156,6 @@ ColorSlider::redraw(GdkEventExpose */*bleh*/)
 
 	Gdk::Rectangle ca(0,0,width,height);
 
-	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(window));
 	const Color bg1(0.75, 0.75, 0.75);
 	const Color bg2(0.5, 0.5, 0.5);
 	int i;
@@ -178,42 +172,41 @@ ColorSlider::redraw(GdkEventExpose */*bleh*/)
 
 		if((i*2/height)&1)
 		{
-			gc->set_rgb_fg_color(colorconv_synfig2gdk(c1));
-			window->draw_rectangle(gc, true, ca.get_x()+i, ca.get_y(), 1, height/2);
+	        cr->set_source_rgb(c1.get_r(), c1.get_g(), c1.get_b());
+	        cr->rectangle(ca.get_x()+i, ca.get_y(), 1, height/2);
+	        cr->fill();
 
-			gc->set_rgb_fg_color(colorconv_synfig2gdk(c2));
-			window->draw_rectangle(gc, true, ca.get_x()+i, ca.get_y()+height/2, 1, height/2);
+	        cr->set_source_rgb(c2.get_r(), c2.get_g(), c2.get_b());
+	        cr->rectangle(ca.get_x()+i, ca.get_y()+height/2, 1, height/2);
+	        cr->fill();
 		}
 		else
 		{
-			gc->set_rgb_fg_color(colorconv_synfig2gdk(c2));
-			window->draw_rectangle(gc, true, ca.get_x()+i, ca.get_y(), 1, height/2);
+	        cr->set_source_rgb(c2.get_r(), c2.get_g(), c2.get_b());
+	        cr->rectangle(ca.get_x()+i, ca.get_y(), 1, height/2);
+	        cr->fill();
 
-			gc->set_rgb_fg_color(colorconv_synfig2gdk(c1));
-			window->draw_rectangle(gc, true, ca.get_x()+i, ca.get_y()+height/2, 1, height/2);
+	        cr->set_source_rgb(c1.get_r(), c1.get_g(), c1.get_b());
+	        cr->rectangle(ca.get_x()+i, ca.get_y()+height/2, 1, height/2);
+	        cr->fill();
 		}
 	}
 
-	get_style()->paint_arrow(
-		window,
-		(orig_color.get_y()<ARROW_NEGATIVE_THRESHOLD)?Gtk::STATE_SELECTED:Gtk::STATE_ACTIVE,
-		//use light arrow on dark color, and dark arrow on light color , TODO: detect from style which is darkest from SELECTED or ACTIVE
-		Gtk::SHADOW_OUT,
-		ca,
-		*this,
-		" ",
-		Gtk::ARROW_UP,
-		1,
-		int(amount*width)-height/2,
+	get_style_context()->render_arrow(
+		cr,
+		1.5*M_PI,
+		(int(amount*width)-height/2),
 		0,
-		height,
 		height
 	);
 
-	gc->set_rgb_fg_color(Gdk::Color("#ffffff"));
-	window->draw_rectangle(gc, false, ca.get_x()+1, ca.get_y()+1, width-3, height-3);
-	gc->set_rgb_fg_color(Gdk::Color("#000000"));
-	window->draw_rectangle(gc, false, ca.get_x(), ca.get_y(), width-1, height-1);
+    cr->set_source_rgb(1, 1, 1);
+    cr->rectangle(ca.get_x()+1, ca.get_y()+1, width-3, height-3);
+    cr->stroke();
+
+    cr->set_source_rgb(0, 0, 0);
+    cr->rectangle(ca.get_x(), ca.get_y(), width-1, height-1);
+    cr->stroke();
 	return true;
 }
 
@@ -292,10 +285,10 @@ ColorSlider::on_event(GdkEvent *event)
 /* === M E T H O D S ======================================================= */
 
 Widget_ColorEdit::Widget_ColorEdit():
-	R_adjustment(0,-10000000,10000000,1,10,0),
-	G_adjustment(0,-10000000,10000000,1,10,0),
-	B_adjustment(0,-10000000,10000000,1,10,0),
-	A_adjustment(0,-10000000,10000000,1,10,0)
+	R_adjustment(Gtk::Adjustment::create(0,-10000000,10000000,1,10,0)),
+	G_adjustment(Gtk::Adjustment::create(0,-10000000,10000000,1,10,0)),
+	B_adjustment(Gtk::Adjustment::create(0,-10000000,10000000,1,10,0)),
+	A_adjustment(Gtk::Adjustment::create(0,-10000000,10000000,1,10,0))
 {
 	notebook=manage(new Gtk::Notebook);
 
@@ -319,10 +312,10 @@ Widget_ColorEdit::Widget_ColorEdit():
 
 	Gtk::Label *label;
 
-	R_adjustment.set_lower(-10000000);
-	G_adjustment.set_lower(-10000000);
-	B_adjustment.set_lower(-10000000);
-	A_adjustment.set_lower(-10000000);
+	R_adjustment->set_lower(-10000000);
+	G_adjustment->set_lower(-10000000);
+	B_adjustment->set_lower(-10000000);
+	A_adjustment->set_lower(-10000000);
 
 	clamp_=true;
 
@@ -398,10 +391,10 @@ Widget_ColorEdit::Widget_ColorEdit():
 	spinbutton_B->signal_activate().connect(sigc::mem_fun(*spinbutton_A,&Gtk::SpinButton::grab_focus));
 	spinbutton_A->signal_activate().connect(sigc::mem_fun(*spinbutton_R,&Gtk::SpinButton::grab_focus));
 
-	R_adjustment.signal_value_changed().connect(sigc::mem_fun(*this,&studio::Widget_ColorEdit::on_value_changed));
-	G_adjustment.signal_value_changed().connect(sigc::mem_fun(*this,&studio::Widget_ColorEdit::on_value_changed));
-	B_adjustment.signal_value_changed().connect(sigc::mem_fun(*this,&studio::Widget_ColorEdit::on_value_changed));
-	A_adjustment.signal_value_changed().connect(sigc::mem_fun(*this,&studio::Widget_ColorEdit::on_value_changed));
+	R_adjustment->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Widget_ColorEdit::on_value_changed));
+	G_adjustment->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Widget_ColorEdit::on_value_changed));
+	B_adjustment->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Widget_ColorEdit::on_value_changed));
+	A_adjustment->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Widget_ColorEdit::on_value_changed));
 
 	show_all_children();
 
@@ -518,17 +511,17 @@ Widget_ColorEdit::set_value(const synfig::Color &data)
 
 	if(use_colorspace_gamma())
 	{
-		R_adjustment.set_value(gamma_in(color.get_r())*100);
-		G_adjustment.set_value(gamma_in(color.get_g())*100);
-		B_adjustment.set_value(gamma_in(color.get_b())*100);
+		R_adjustment->set_value(gamma_in(color.get_r())*100);
+		G_adjustment->set_value(gamma_in(color.get_g())*100);
+		B_adjustment->set_value(gamma_in(color.get_b())*100);
 	}
 	else
 	{
-		R_adjustment.set_value(color.get_r()*100);
-		G_adjustment.set_value(color.get_g()*100);
-		B_adjustment.set_value(color.get_b()*100);
+		R_adjustment->set_value(color.get_r()*100);
+		G_adjustment->set_value(color.get_g()*100);
+		B_adjustment->set_value(color.get_b()*100);
 	}
-	A_adjustment.set_value(color.get_a()*100);
+	A_adjustment->set_value(color.get_a()*100);
 
 	slider_R->set_color(color);
 	slider_G->set_color(color);
@@ -551,17 +544,17 @@ Widget_ColorEdit::get_value_raw()
 	Color color;
 	if(use_colorspace_gamma())
 	{
-		color.set_r(gamma_out(R_adjustment.get_value()/100.0f));
-		color.set_g(gamma_out(G_adjustment.get_value()/100.0f));
-		color.set_b(gamma_out(B_adjustment.get_value()/100.0f));
+		color.set_r(gamma_out(R_adjustment->get_value()/100.0f));
+		color.set_g(gamma_out(G_adjustment->get_value()/100.0f));
+		color.set_b(gamma_out(B_adjustment->get_value()/100.0f));
 	}
 	else
 	{
-		color.set_r(R_adjustment.get_value()/100);
-		color.set_g(G_adjustment.get_value()/100);
-		color.set_b(B_adjustment.get_value()/100);
+		color.set_r(R_adjustment->get_value()/100);
+		color.set_g(G_adjustment->get_value()/100);
+		color.set_b(B_adjustment->get_value()/100);
 	}
-	color.set_a(A_adjustment.get_value()/100);
+	color.set_a(A_adjustment->get_value()/100);
 	assert(color.is_valid());
 
 	return color;
@@ -572,19 +565,19 @@ Widget_ColorEdit::get_value()
 {
 	if(use_colorspace_gamma())
 	{
-		color.set_r(gamma_out(R_adjustment.get_value()/100.0f));
-		color.set_g(gamma_out(G_adjustment.get_value()/100.0f));
-		color.set_b(gamma_out(B_adjustment.get_value()/100.0f));
+		color.set_r(gamma_out(R_adjustment->get_value()/100.0f));
+		color.set_g(gamma_out(G_adjustment->get_value()/100.0f));
+		color.set_b(gamma_out(B_adjustment->get_value()/100.0f));
 		assert(color.is_valid());
 	}
 	else
 	{
-		color.set_r(R_adjustment.get_value()/100);
-		color.set_g(G_adjustment.get_value()/100);
-		color.set_b(B_adjustment.get_value()/100);
+		color.set_r(R_adjustment->get_value()/100);
+		color.set_g(G_adjustment->get_value()/100);
+		color.set_b(B_adjustment->get_value()/100);
 		assert(color.is_valid());
 	}
-	color.set_a(A_adjustment.get_value()/100);
+	color.set_a(A_adjustment->get_value()/100);
 	assert(color.is_valid());
 
 	if(notebook->get_current_page()!=0)

@@ -57,70 +57,7 @@ using namespace studio;
 
 /* === P R O C E D U R E S ================================================= */
 
-/*
-void
-studio::render_color_to_window(const Glib::RefPtr<Gdk::Drawable>& window,const Gdk::Rectangle& ca,const synfig::Color &color)
-{
-	const int height(ca.get_height());
-	const int width(ca.get_width());
-
-	const int square_size(height/2);
-
-	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(window));
-
-	if(color.get_alpha()!=1.0)
-	{
-		// In this case we need to render the alpha squares
-
-		const Color bg1(Color::blend(color,Color(0.75, 0.75, 0.75),1.0).clamped());
-		const Color bg2(Color::blend(color,Color(0.5, 0.5, 0.5),1.0).clamped());
-
-		Gdk::Color gdk_c1(colorconv_synfig2gdk(bg1));
-		Gdk::Color gdk_c2(colorconv_synfig2gdk(bg2));
-
-		bool toggle(false);
-		for(int i=0;i<width;i+=square_size)
-		{
-			const int square_width(min(square_size,width-i));
-
-			if(toggle)
-			{
-				gc->set_rgb_fg_color(gdk_c1);
-				window->draw_rectangle(gc, true, ca.get_x()+i, ca.get_y(), square_width, square_size);
-
-				gc->set_rgb_fg_color(gdk_c2);
-				window->draw_rectangle(gc, true, ca.get_x()+i, ca.get_y()+square_size, square_width, square_size);
-				toggle=false;
-			}
-			else
-			{
-				gc->set_rgb_fg_color(gdk_c2);
-				window->draw_rectangle(gc, true, ca.get_x()+i, ca.get_y(), square_width, square_size);
-
-				gc->set_rgb_fg_color(gdk_c1);
-				window->draw_rectangle(gc, true, ca.get_x()+i, ca.get_y()+square_size, square_width, square_size);
-				toggle=true;
-			}
-		}
-	}
-	else
-	{
-		// In this case we have a solid color to use
-		Gdk::Color gdk_c1(colorconv_synfig2gdk(color));
-
-		gc->set_rgb_fg_color(gdk_c1);
-		window->draw_rectangle(gc, true, ca.get_x(), ca.get_y(), width-1, height-1);
-	}
-	gc->set_rgb_fg_color(Gdk::Color("#ffffff"));
-	window->draw_rectangle(gc, false, ca.get_x()+1, ca.get_y()+1, width-3, height-3);
-	gc->set_rgb_fg_color(Gdk::Color("#000000"));
-	window->draw_rectangle(gc, false, ca.get_x(), ca.get_y(), width-1, height-1);
-}
-*/
-
 /* === C L A S S E S ======================================================= */
-
-
 
 struct studio::Widget_Curves::Channel
 {
@@ -360,7 +297,7 @@ struct studio::Widget_Curves::CurveStruct : sigc::trackable
 /* === M E T H O D S ======================================================= */
 
 Widget_Curves::Widget_Curves():
-	range_adjustment_(new Gtk::Adjustment(-1,-2,2,0.1,0.1,2))
+	range_adjustment_(Gtk::Adjustment::create(-1,-2,2,0.1,0.1,2))
 {
 	set_size_request(64,64);
 
@@ -376,10 +313,9 @@ Widget_Curves::Widget_Curves():
 			&Widget_Curves::queue_draw
 		)
 	);
-	//set_vadjustment(*range_adjustment_);
+	//set_vadjustment(range_adjustment_);
 
-	signal_expose_event().connect(sigc::mem_fun(*this, &studio::Widget_Curves::redraw));
-	add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK);
+	add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK | Gdk::SCROLL_MASK);
 
 }
 
@@ -388,9 +324,9 @@ Widget_Curves::~Widget_Curves()
 }
 
 void
-Widget_Curves::set_time_adjustment(Gtk::Adjustment&x)
+Widget_Curves::set_time_adjustment(const Glib::RefPtr<Gtk::Adjustment> &x)
 {
-	time_adjustment_=&x;
+	time_adjustment_=x;
 	time_adjustment_->signal_changed().connect(
 		sigc::mem_fun(
 			*this,
@@ -454,7 +390,7 @@ Widget_Curves::set_value_descs(std::list<synfigapp::ValueDesc> value_descs)
 					)
 				);
 			}
-			if(iter->parent_is_layer_param())
+			if(iter->parent_is_layer())
 			{
 				iter->get_layer()->signal_changed().connect(
 					sigc::mem_fun(
@@ -480,11 +416,31 @@ Widget_Curves::on_event(GdkEvent *event)
 		switch(event->scroll.direction)
 		{
 			case GDK_SCROLL_UP:
-				range_adjustment_->set_page_size(range_adjustment_->get_page_size()/1.25);
+			case GDK_SCROLL_RIGHT:
+				if (Gdk::ModifierType(event->scroll.state)&GDK_CONTROL_MASK)
+				{
+					// Ctrl+scroll , perform zoom in
+					range_adjustment_->set_page_size(range_adjustment_->get_page_size()/1.25);
+				}
+				else
+				{
+					// Scroll up
+					range_adjustment_->set_value(range_adjustment_->get_value()-range_adjustment_->get_step_increment ());
+				}
 				range_adjustment_->changed();
 				break;
 			case GDK_SCROLL_DOWN:
-				range_adjustment_->set_page_size(range_adjustment_->get_page_size()*1.25);
+			case GDK_SCROLL_LEFT:
+				if (Gdk::ModifierType(event->scroll.state)&GDK_CONTROL_MASK)
+				{
+					// Ctrl+scroll , perform zoom out
+					range_adjustment_->set_page_size(range_adjustment_->get_page_size()*1.25);
+				}
+				else
+				{
+					// Scroll down
+					range_adjustment_->set_value(range_adjustment_->get_value()+range_adjustment_->get_step_increment ());
+				}
 				range_adjustment_->changed();
 				break;
 			default:
@@ -521,23 +477,18 @@ Widget_Curves::on_event(GdkEvent *event)
 }
 
 bool
-Widget_Curves::redraw(GdkEventExpose */*bleh*/)
+Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 {
-	//!Check if the window we want draw is ready
-	Glib::RefPtr<Gdk::Window> window = get_window();
-	if(!window) return true;
-
 	const int h(get_height());
 	const int w(get_width());
-	window->clear();
+
+	get_style_context()->render_background(cr, 0, 0, w, h);
 
 	if(!time_adjustment_ || !range_adjustment_ || !h || !w)
 		return false;
 
 	if(!curve_list_.size())
 		return false;
-
-	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(window));
 
 	const Real t_begin(time_adjustment_->get_lower());
 	const Real t_end(time_adjustment_->get_upper());
@@ -550,7 +501,7 @@ Widget_Curves::redraw(GdkEventExpose */*bleh*/)
 	Real r_min(100000000);
 
 	std::list<CurveStruct>::iterator curve_iter;
-	//Figure out maximun number of channels
+	//Figure out maximum number of channels
 	for(curve_iter=curve_list_.begin();curve_iter!=curve_list_.end();++curve_iter)
 	{
 		int channels(curve_iter->channels.size());
@@ -563,14 +514,12 @@ Widget_Curves::redraw(GdkEventExpose */*bleh*/)
 	// and use it when sizing the points
 	vector<Gdk::Point> points[MAX_CHANNELS];
 
-	gc->set_function(Gdk::COPY);
-	gc->set_line_attributes(1,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
-
 	// Draw zero mark
-	gc->set_rgb_fg_color(Gdk::Color("#4f4f4f"));
-	window->draw_rectangle(gc, false, 0, round_to_int((0-r_bottom)/dr), w, 0);
+	cr->set_source_rgb(0.31, 0.31, 0.31);
+	cr->rectangle(0, round_to_int((0-r_bottom)/dr), w, 0);
+	cr->stroke();
 
-	// This try to find a valid vanvas to show the keyframes of those
+	// This try to find a valid canvas to show the keyframes of those
 	// valuenodes. If not canvas found then no keyframes marks are shown.
 	synfig::Canvas::Handle canvas=0;
 	for(curve_iter=curve_list_.begin();curve_iter!=curve_list_.end();++curve_iter)
@@ -594,15 +543,17 @@ Widget_Curves::redraw(GdkEventExpose */*bleh*/)
 			const int x((int)((float)w/(t_end-t_begin)*(iter->get_time()-t_begin)));
 			if(iter->get_time()>=t_begin && iter->get_time()<t_end)
 			{
-				gc->set_rgb_fg_color(Gdk::Color("#a07f7f")); // It should be user selectable
-				window->draw_rectangle(gc, true, x, 0, 1, h);
+				cr->set_source_rgb(0.63, 0.5, 0.5);
+				cr->rectangle(x, 0, 1, h);
+				cr->fill();
 			}
 		}
 	}
 
 	// Draw current time
-	gc->set_rgb_fg_color(Gdk::Color("#0000ff")); // It should be user selectable
-	window->draw_rectangle(gc, false, round_to_int((time_adjustment_->get_value()-t_begin)/dt), 0, 0, h);
+	cr->set_source_rgb(0, 0, 1);
+	cr->rectangle(round_to_int((time_adjustment_->get_value()-t_begin)/dt), 0, 0, h);
+	cr->stroke();
 
 	// Draw curves for the valuenodes stored in the curve list
 	for(curve_iter=curve_list_.begin();curve_iter!=curve_list_.end();++curve_iter)
@@ -633,17 +584,28 @@ Widget_Curves::redraw(GdkEventExpose */*bleh*/)
 			}
 		}
 
+		// Draw the graph curves with 0.5 width
+		cr->set_line_width(0.5);
 		for(int chan=0;chan<channels;chan++)
 		{
-			gc->set_rgb_fg_color(curve_iter->channels[chan].color);
-
 			// Draw the curve
-			window->draw_lines(gc, Glib::ArrayHandle<Gdk::Point>(points[chan]));
+			std::vector<Gdk::Point> &p = points[chan];
+			for(std::vector<Gdk::Point>::iterator i = p.begin(); i != p.end(); ++i)
+			{
+				if (i == p.begin())
+					cr->move_to(i->get_x(), i->get_y());
+				else
+					cr->line_to(i->get_x(), i->get_y());
+			}
+			const Gdk::Color &color = curve_iter->channels[chan].color;
+			cr->set_source_rgb(color.get_red_p(), color.get_green_p(), color.get_blue_p());
+			cr->stroke();
 
 			Glib::RefPtr<Pango::Layout> layout(Pango::Layout::create(get_pango_context()));
-
 			layout->set_text(curve_iter->channels[chan].name);
-			window->draw_layout(gc, 1, points[chan][0].get_y()+1, layout);
+
+			cr->move_to(1, points[chan][0].get_y()+1);
+			layout->show_in_cairo_context(cr);
 		}
 	}
 
@@ -652,7 +614,6 @@ Widget_Curves::redraw(GdkEventExpose */*bleh*/)
 		range_adjustment_->set_upper(r_max+range_adjustment_->get_page_size()/2);
 		range_adjustment_->set_lower(r_min-range_adjustment_->get_page_size()/2);
 	}
-	window->get_update_area();
 
 	return true;
 }

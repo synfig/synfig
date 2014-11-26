@@ -35,7 +35,7 @@
 #include <gtkmm/button.h>
 #include <gtkmm/dialog.h>
 #include <gtkmm/drawingarea.h>
-#include <gtkmm/optionmenu.h>
+#include <gtkmm/comboboxtext.h>
 #include <gtkmm/checkbutton.h>
 #include <gui/widgets/widget_time.h>
 #include <gtkmm/tooltip.h>
@@ -100,7 +100,7 @@ public:
 
 	~GammaPattern();
 
-	bool redraw(GdkEventExpose*bleh=NULL);
+	virtual bool on_draw(const Cairo::RefPtr<Cairo::Context> &cr);
 }; // END of class GammaPattern
 
 class BlackLevelSelector : public Gtk::DrawingArea
@@ -121,7 +121,7 @@ public:
 
 	const float &get_value()const { return level; }
 
-	bool redraw(GdkEventExpose*bleh=NULL);
+	virtual bool on_draw(const Cairo::RefPtr<Cairo::Context> &cr);
 
 	bool on_event(GdkEvent *event);
 }; // END of class BlackLevelSelector
@@ -144,7 +144,7 @@ public:
 
 	const float &get_value()const { return level; }
 
-	bool redraw(GdkEventExpose*bleh=NULL);
+	virtual bool on_draw(const Cairo::RefPtr<Cairo::Context> &cr);
 
 	bool on_event(GdkEvent *event);
 }; // END of class RedBlueSelector
@@ -166,18 +166,20 @@ class Dialog_Setup : public Gtk::Dialog
 	void on_size_template_combo_change();
 	void on_fps_template_combo_change();
 	void on_ui_language_combo_change();
+	void on_time_format_changed();
 
 	GammaPattern gamma_pattern;
 	BlackLevelSelector black_level_selector;
 	RedBlueLevelSelector red_blue_level_selector;
-	Gtk::OptionMenu timestamp_optionmenu;
+	Gtk::ComboBoxText timestamp_comboboxtext;
+	std::map<std::string, synfig::Time::Format> time_formats;
 
-	Gtk::Adjustment adj_gamma_r;
-	Gtk::Adjustment adj_gamma_g;
-	Gtk::Adjustment adj_gamma_b;
+	Glib::RefPtr<Gtk::Adjustment> adj_gamma_r;
+	Glib::RefPtr<Gtk::Adjustment> adj_gamma_g;
+	Glib::RefPtr<Gtk::Adjustment> adj_gamma_b;
 
-	Gtk::Adjustment adj_recent_files;
-	Gtk::Adjustment adj_undo_depth;
+	Glib::RefPtr<Gtk::Adjustment> adj_recent_files;
+	Glib::RefPtr<Gtk::Adjustment> adj_undo_depth;
 
 	Gtk::CheckButton toggle_use_colorspace_gamma;
 #ifdef SINGLE_THREADED
@@ -204,9 +206,9 @@ class Dialog_Setup : public Gtk::Dialog
 
 
 	Gtk::Entry textbox_custom_filename_prefix;
-	Gtk::Adjustment adj_pref_x_size;
-	Gtk::Adjustment adj_pref_y_size;
-	Gtk::Adjustment adj_pref_fps;
+	Glib::RefPtr<Gtk::Adjustment> adj_pref_x_size;
+	Glib::RefPtr<Gtk::Adjustment> adj_pref_y_size;
+	Glib::RefPtr<Gtk::Adjustment> adj_pref_fps;
 	Gtk::SpinButton* pref_fps_spinbutton;
 	Gtk::SpinButton* pref_y_size_spinbutton;
 	Gtk::SpinButton* pref_x_size_spinbutton;

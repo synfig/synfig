@@ -252,8 +252,9 @@ protected:
 	//! This vector describes the grid size.
 	/*! \see grid_snap, show_grid */
 	synfig::Vector grid_size;
+	//! Hold the grid color.
 	synfig::Color grid_color;
-
+	//! Hold the guides color.
 	synfig::Color guides_color;
 
 	float zoom;					//!< Zoom factor
@@ -332,7 +333,6 @@ public:
 	const synfig::Vector &get_grid_size()const { return grid_size; }
 	//! Returns the color of the grid
 	const synfig::Color &get_grid_color()const { return grid_color;}
-
 
 	const synfig::Time &get_time()const { return cur_time; }
 
@@ -467,7 +467,7 @@ public:
 
 	void add_ducks_layers(synfig::Canvas::Handle canvas, std::set<synfig::Layer::Handle>& selected_layer_set, etl::handle<CanvasView> canvas_view, synfig::TransformStack& transform_stack);
 
-	bool add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<CanvasView> canvas_view, const synfig::TransformStack& transform_stack_, synfig::ParamDesc *param_desc=0, int multiple=0);
+	bool add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<CanvasView> canvas_view, const synfig::TransformStack& transform_stack_, synfig::ParamDesc *param_desc=0);
 
 	//! Set the type mask, which determines what types of ducks are shown
 	void set_type_mask(Type x) { type_mask=x; }

@@ -232,12 +232,6 @@ CanvasInterface::apply_layer_param_defaults(synfig::Layer::Handle layer)
 	p.set(synfigapp::Main::get_gradient());
 	layer->set_param("gradient",p);
 	
-	if(name!="zoom" && name!="skeleton")
-	{
-		p=layer->get_param("amount");
-		p.set(synfigapp::Main::get_opacity());
-		layer->set_param("amount",p);
-	}
 	if(synfigapp::Main::get_blend_method() != Color::BLEND_BY_LAYER)
 	{
 		p=layer->get_param("blend_method");
@@ -392,10 +386,10 @@ CanvasInterface::add_layer_to(synfig::String name, synfig::Canvas::Handle canvas
 		}
 
 	layer->set_canvas(canvas);
-
+	
 	// Apply some defaults
 	apply_layer_param_defaults(layer);
-
+	
 	// Action to add the layer
 	Action::Handle 	action(Action::LayerAdd::create());
 
@@ -544,7 +538,7 @@ CanvasInterface::generate_param_list(const ValueDesc &value_desc)
 			param_list.add("value",value_desc.get_value());
 	}
 
-	if(value_desc.parent_is_layer_param())
+	if(value_desc.parent_is_layer())
 	{
 		param_list.add("parent_layer",value_desc.get_layer());
 		param_list.add("parent_layer_param",value_desc.get_param_name());

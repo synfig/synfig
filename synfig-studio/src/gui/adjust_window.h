@@ -59,7 +59,7 @@ namespace studio {
 */
 class Adjust_Window : public Gtk::Adjustment
 {
-	Gtk::Adjustment	*adj_child;
+	Glib::RefPtr<Gtk::Adjustment> adj_child;
 
 	sigc::connection childchanged; //we only care about the non-value parts of the child
 
@@ -72,15 +72,15 @@ protected: //update interface
 
 public: //structors
 	Adjust_Window(double value, double lower, double upper,
-					double step_increment=1, double page_increment=10, double page_size=0,
-					Gtk::Adjustment *adj = 0);
+				  double step_increment=1, double page_increment=10, double page_size=0,
+				  const Glib::RefPtr<Gtk::Adjustment> &adj = Glib::RefPtr<Gtk::Adjustment>());
 
 	virtual ~Adjust_Window();
 
 public: //child interface
-	Gtk::Adjustment *get_child_adjustment();
-	const Gtk::Adjustment *get_child_adjustment() const;
-	void set_child_adjustment(Gtk::Adjustment *child);
+	Glib::RefPtr<Gtk::Adjustment> get_child_adjustment();
+	Glib::RefPtr<const Gtk::Adjustment> get_child_adjustment() const;
+	void set_child_adjustment(const Glib::RefPtr<Gtk::Adjustment> &child);
 
 public: //Sub value interface
 	double get_sub_lower() const;

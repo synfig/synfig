@@ -37,6 +37,10 @@
 
 #include "general.h"
 
+#ifdef WIN32
+#include <glibmm/convert.h>
+#endif
+
 #endif
 
 /* === U S I N G =========================================================== */

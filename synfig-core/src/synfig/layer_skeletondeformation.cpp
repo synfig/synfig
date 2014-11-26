@@ -38,6 +38,9 @@
 #include "valuenode.h"
 #include "canvas.h"
 
+#include <vector>
+#include <map>
+#include <algorithm>
 
 #endif
 
@@ -62,7 +65,11 @@ SYNFIG_LAYER_SET_CVS_ID(Layer_SkeletonDeformation,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 
-Layer_SkeletonDeformation::Layer_SkeletonDeformation()
+Layer_SkeletonDeformation::Layer_SkeletonDeformation():
+	param_point1(ValueBase(Point(-4,4))),
+	param_point2(ValueBase(Point(4,-4))),
+	param_x_subdivisions(32),
+	param_y_subdivisions(32)
 {
 	max_texture_scale = 1.f;
 	param_bones.set_list_of(std::vector<BonePair>(1));
@@ -93,20 +100,51 @@ Layer_SkeletonDeformation::get_param_vocab()const
 		.set_static(true)
 	);
 
+	ret.push_back(ParamDesc("point1")
+		.set_local_name(_("Point 1"))
+		.set_box("point2")
+		.set_description(_("First corner of the bounds rectangle"))
+	);
+
+	ret.push_back(ParamDesc("point2")
+		.set_local_name(_("Point 2"))
+		.set_description(_("Second corner of the bounds rectangle"))
+	);
+
+	ret.push_back(ParamDesc("x_subdivisions")
+		.set_local_name(_("Horizontal subdivisions"))
+		.set_description(_("Count of horizontal subdivisions of the transformation grid"))
+	);
+
+	ret.push_back(ParamDesc("y_subdivisions")
+		.set_local_name(_("Vertical subdivisions"))
+		.set_description(_("Count of vertical subdivisions of the transformation grid"))
+	);
+
 	return ret;
 }
 
 struct Layer_SkeletonDeformation::GridPoint {
-	Vector initial;
-	Vector summary;
+	Vector initial_position;
+	Vector summary_position;
+	Real summary_order;
 	Real summary_weight;
+	Real average_order;
+	bool used;
+
 	inline GridPoint():
-		summary_weight(0.0) { }
-	inline explicit GridPoint(const Vector &initial):
-		initial(initial), summary_weight(0.0) { }
-	Vector get_average()const {
-		static const Real precision = 1e-10;
-		return summary_weight > precision ? summary/summary_weight : initial;
+		summary_order(0.0), summary_weight(0.0), average_order(0.0), used(false) { }
+	inline explicit GridPoint(const Vector &initial_position):
+		initial_position(initial_position), summary_order(0.0), summary_weight(0.0), average_order(0.0), used(false) { }
+	static bool compare_triagles(const std::pair<Real, Mesh::Triangle> &a, const std::pair<Real, Mesh::Triangle> &b)
+	{
+		return a.first < b.first ? true
+			 : b.first < a.first ? false
+			 : a.second.vertices[0] < b.second.vertices[0] ? true
+			 : b.second.vertices[0] < a.second.vertices[0] ? false
+			 : a.second.vertices[1] < b.second.vertices[1] ? true
+			 : b.second.vertices[1] < a.second.vertices[1] ? false
+			 : a.second.vertices[2] < b.second.vertices[2];
 	}
 };
 
@@ -134,27 +172,29 @@ Real Layer_SkeletonDeformation::distance_to_line(const Vector &p0, const Vector 
 void
 Layer_SkeletonDeformation::prepare_mesh()
 {
-	const Real epsilon = 1e-10;
+	static const Real precision = 1e-10;
 
 	mesh.clear();
 
-	// TODO: custom grid step
-	// TODO: custom grid size
 	// TODO: build grid with dynamic size
 
-	const Real recommended_grid_step = 0.25;
-	const Real grid_size = 8.0;
-	const int grid_side_count = (int)roundf(grid_size / recommended_grid_step) + 1;
-	const Real grid_step = grid_size / (Real)(grid_side_count - 1);
+	const Point grid_p0 = param_point1.get(Point());
+	const Point grid_p1 = param_point2.get(Point());
+	const int grid_side_count_x = std::max(1, param_x_subdivisions.get(int())) + 1;
+	const int grid_side_count_y = std::max(1, param_y_subdivisions.get(int())) + 1;
+
+	const Real grid_step_x = (grid_p1[0] - grid_p0[0]) / (Real)(grid_side_count_x - 1);
+	const Real grid_step_y = (grid_p1[1] - grid_p0[1]) / (Real)(grid_side_count_y - 1);
+	const Real grid_step_diagonal = sqrt(grid_step_x*grid_step_x + grid_step_y*grid_step_y);
 
 	// build grid
 	std::vector<GridPoint> grid;
-	grid.reserve(grid_side_count * grid_side_count);
-	for(int i = 0; i < grid_side_count; ++i)
-		for(int j = 0; j < grid_side_count; ++j)
+	grid.reserve(grid_side_count_x * grid_side_count_y);
+	for(int j = 0; j < grid_side_count_y; ++j)
+		for(int i = 0; i < grid_side_count_x; ++i)
 			grid.push_back(GridPoint(Vector(
-				i*grid_step - 0.5f*grid_size,
-				j*grid_step - 0.5f*grid_size )));
+				grid_p0[0] + i*grid_step_x,
+				grid_p0[1] + j*grid_step_y )));
 
 	// apply deformation
 	if (param_bones.can_get(ValueBase::List()))
@@ -167,6 +207,10 @@ Layer_SkeletonDeformation::prepare_mesh()
 				const BonePair &bone_pair = i->get(BonePair());
 				Bone::Shape shape0 = bone_pair.first.get_shape();
 				Bone::Shape shape1 = bone_pair.second.get_shape();
+				Bone::Shape expandedShape0 = shape0;
+				expandedShape0.r0 += 2.0*grid_step_diagonal;
+				expandedShape0.r1 += 2.0*grid_step_diagonal;
+				Real order = bone_pair.second.get_order();
 
 				Matrix into_bone(
 					shape0.p1[0] - shape0.p0[0], shape0.p1[1] - shape0.p0[1], 0.0,
@@ -183,15 +227,21 @@ Layer_SkeletonDeformation::prepare_mesh()
 
 				for(std::vector<GridPoint>::iterator j = grid.begin(); j != grid.end(); ++j)
 				{
-					Real distance = distance_to_line(shape0.p0, shape0.p1, j->initial);
-					if (distance < epsilon) distance = epsilon;
-					Real weight =
-						// 1.0/distance;
-						1.0/(distance*distance);
-						// 1.0/(distance*distance*distance);
-						//exp(-4.0*distance);
-					j->summary += matrix.get_transformed(j->initial) * weight;
-					j->summary_weight += weight;
+					Real percent = Bone::distance_to_shape_center_percent(expandedShape0, j->initial_position);
+					if (percent > precision) {
+						Real distance = distance_to_line(shape0.p0, shape0.p1, j->initial_position);
+						if (distance < precision) distance = precision;
+						Real weight =
+							percent/(distance*distance);
+							// 1.0/distance;
+							// 1.0/(distance*distance);
+							// 1.0/(distance*distance*distance);
+							// exp(-4.0*distance);
+						j->summary_position += matrix.get_transformed(j->initial_position) * weight;
+						j->summary_order += order * weight;
+						j->summary_weight += weight;
+						j->used = true;
+					}
 				}
 			}
 		}
@@ -199,25 +249,42 @@ Layer_SkeletonDeformation::prepare_mesh()
 
 	// build vertices
 	mesh.vertices.reserve(grid.size());
-	for(std::vector<GridPoint>::iterator i = grid.begin(); i != grid.end(); ++i)
-		mesh.vertices.push_back(Mesh::Vertex(i->get_average(), i->initial));
+	for(std::vector<GridPoint>::iterator i = grid.begin(); i != grid.end(); ++i) {
+		Vector average_position = i->summary_weight > precision ? i->summary_position/i->summary_weight : i->initial_position;
+		i->average_order = i->summary_weight > precision ? i->summary_order/i->summary_weight : 0.0;
+		mesh.vertices.push_back(Mesh::Vertex(average_position, i->initial_position));
+	}
 
 	// build triangles
-	mesh.triangles.reserve(2*(grid_side_count-1)*(grid_side_count-1));
-	for(int i = 1; i < grid_side_count; ++i)
+	std::vector< std::pair<Real, Mesh::Triangle> > triangles;
+	triangles.reserve(2*(grid_side_count_x-1)*(grid_side_count_y-1));
+	for(int j = 1; j < grid_side_count_y; ++j)
 	{
-		for(int j = 1; j < grid_side_count; ++j)
+		for(int i = 1; i < grid_side_count_x; ++i)
 		{
-			mesh.triangles.push_back(Mesh::Triangle(
-				(j-1)*grid_side_count + (i-1),
-				(j-1)*grid_side_count + i,
-				j*grid_side_count + (i-1) ));
-			mesh.triangles.push_back(Mesh::Triangle(
-				j*grid_side_count + i,
-				j*grid_side_count + (i-1),
-				(j-1)*grid_side_count + i ));
+			int v[] = {
+				(j-1)*grid_side_count_x + (i-1),
+				(j-1)*grid_side_count_x +  i,
+				 j   *grid_side_count_x +  i,
+				 j   *grid_side_count_x + (i-1),
+			};
+			if (grid[v[0]].used && grid[v[1]].used && grid[v[2]].used && grid[v[3]].used)
+			{
+				Real order = 0.25*(grid[v[0]].average_order
+						         + grid[v[1]].average_order
+								 + grid[v[2]].average_order
+								 + grid[v[3]].average_order);
+				triangles.push_back(std::make_pair(order, Mesh::Triangle(v[0], v[1], v[3])));
+				triangles.push_back(std::make_pair(order, Mesh::Triangle(v[1], v[2], v[3])));
+			}
 		}
 	}
+
+	// sort triangles
+	std::sort(triangles.begin(), triangles.end(), GridPoint::compare_triagles);
+	mesh.triangles.reserve(triangles.size());
+	for(std::vector< std::pair<Real, Mesh::Triangle> >::iterator i = triangles.begin(); i != triangles.end(); ++i)
+		mesh.triangles.push_back(i->second);
 
 	update_mesh();
 }
@@ -226,6 +293,10 @@ bool
 Layer_SkeletonDeformation::set_param(const String & param, const ValueBase &value)
 {
     IMPORT_VALUE_PLUS(param_bones, prepare_mesh());
+	IMPORT_VALUE_PLUS(param_point1, prepare_mesh());
+	IMPORT_VALUE_PLUS(param_point2, prepare_mesh());
+	IMPORT_VALUE_PLUS(param_x_subdivisions, prepare_mesh());
+	IMPORT_VALUE_PLUS(param_y_subdivisions, prepare_mesh());
     return Layer_MeshTransform::set_param(param,value);
 }
 
@@ -233,6 +304,10 @@ ValueBase
 Layer_SkeletonDeformation::get_param(const String& param)const
 {
 	EXPORT_VALUE(param_bones);
+	EXPORT_VALUE(param_point1);
+	EXPORT_VALUE(param_point2);
+	EXPORT_VALUE(param_x_subdivisions);
+	EXPORT_VALUE(param_y_subdivisions);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();

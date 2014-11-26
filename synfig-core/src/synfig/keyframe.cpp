@@ -246,7 +246,8 @@ KeyframeList::insert_time(const Time& location, const Time& delta)
 		return;
 	try
 	{
-		iterator iter(find_next(location));
+		// find next from time (location) including deactivated kf
+		iterator iter(find_next(location, false));
 		for(;iter!=end();++iter)
 		{
 			iter->set_time(iter->get_time()+delta);

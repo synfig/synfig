@@ -40,7 +40,7 @@
 
 namespace studio {
 
-void render_time_point_to_window(const Glib::RefPtr<Gdk::Drawable>& window,const Gdk::Rectangle& ca,const synfig::TimePoint &tp,bool selected=false);
+void render_time_point_to_window(const Cairo::RefPtr<Cairo::Context> &cr,const Gdk::Rectangle& ca,const synfig::TimePoint &tp,bool selected=false);
 
 
 /* Design for the timeslider...
@@ -56,11 +56,11 @@ class Widget_Timeslider : public Gtk::DrawingArea
 protected: //implementation that other interfaces can see
 	Glib::RefPtr<Pango::Layout> layout; //implementation awesomeness for text drawing
 
-	Gtk::Adjustment adj_default;
-	Gtk::Adjustment *adj_timescale;
+	Glib::RefPtr<Gtk::Adjustment> adj_default;
+	Glib::RefPtr<Gtk::Adjustment> adj_timescale;
 
 	//HACK - I should not have to see this...
-	Gtk::Adjustment *adj_bounds;
+	Glib::RefPtr<Gtk::Adjustment> adj_bounds;
 	double time_per_tickmark;
 
 	//Statistics used for drawing stuff (and making sure we don't if we don't need to)
@@ -85,9 +85,7 @@ protected: //implementation that other interfaces can see
 	virtual bool on_button_press_event(GdkEventButton *event); //for clicking
 	virtual bool on_button_release_event(GdkEventButton *event); //for clicking
 
-	virtual bool on_expose_event(GdkEventExpose */*event*/) {redraw(); return true;}//for drawing
-
-	virtual bool redraw(bool doublebuffer = false);
+	virtual bool on_draw(const Cairo::RefPtr<Cairo::Context> &cr);
 
 	//void update_times();
 
@@ -108,7 +106,7 @@ public: //structors
 
 public: //Normal Interface
 
-	void draw() {redraw();}
+	void draw() {queue_draw();}
 	virtual void refresh(); //reget bluepills, time values and queue_draw if need be
 
 public: //Time Interface
@@ -118,12 +116,12 @@ public: //Time Interface
 	void set_global_fps(float d);
 
 	//accessors for the time adjustment
-	Gtk::Adjustment &get_time_adjustment() const {return *adj_timescale;}
-	void set_time_adjustment(Gtk::Adjustment *x);
+	Glib::RefPtr<Gtk::Adjustment> get_time_adjustment() const { return adj_timescale; }
+	void set_time_adjustment(const Glib::RefPtr<Gtk::Adjustment> &x);
 
 	//HACK - I should not have to see these bounds (should be boundless)
-	Gtk::Adjustment &get_bounds_adjustment() const {return *adj_bounds;}
-	void set_bounds_adjustment(Gtk::Adjustment *x) {adj_bounds = x;}
+	Glib::RefPtr<Gtk::Adjustment> get_bounds_adjustment() const { return adj_bounds; }
+	void set_bounds_adjustment(const Glib::RefPtr<Gtk::Adjustment> &x) { adj_bounds = x; }
 };
 
 }; // END of namespace studio

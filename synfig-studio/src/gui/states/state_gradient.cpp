@@ -396,7 +396,7 @@ StateGradient_Context::StateGradient_Context(CanvasView* canvas_view):
 	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
 	list.insert(attr);
 	title_label.set_attributes(list);
-	title_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	title_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
 	// layer name
 	id_label.set_label(_("Name:"));
@@ -407,7 +407,7 @@ StateGradient_Context::StateGradient_Context(CanvasView* canvas_view):
 
 	// layer (gradient) creation label
 	layer_types_label.set_label(_("Create:"));
-	layer_types_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	layer_types_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 	// layer creation buttons
 	LAYER_CREATION(layer_linear_gradient_togglebutton, toggle_layer_linear_gradient,
 		("synfig-layer_gradient_linear"), _("Create a linear gradient"));
@@ -427,7 +427,7 @@ StateGradient_Context::StateGradient_Context(CanvasView* canvas_view):
 
 	// blend method label
 	blend_label.set_label(_("Blend Method:"));
-	blend_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	blend_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 	SPACING(blend_gap, GAP);
 	blend_box.pack_start(blend_label, Gtk::PACK_SHRINK);
 	blend_box.pack_start(*blend_gap, Gtk::PACK_SHRINK);
@@ -438,7 +438,7 @@ StateGradient_Context::StateGradient_Context(CanvasView* canvas_view):
 
 	// opacity label
 	opacity_label.set_label(_("Opacity:"));
-	opacity_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	opacity_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 	// opacity
 	opacity_hscl.set_digits(2);
 	opacity_hscl.set_value_pos(Gtk::POS_LEFT);

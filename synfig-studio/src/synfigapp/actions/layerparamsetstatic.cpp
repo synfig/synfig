@@ -84,7 +84,7 @@ Action::LayerParamSetStatic::is_candidate(const ParamList &x)
 
 	ValueDesc value_desc(x.find("value_desc")->second.get_value_desc());
 
-	if(!value_desc.parent_is_layer_param())
+	if(!value_desc.parent_is_layer())
 		return false;
 
 	synfig::ValueBase parameter;
@@ -120,7 +120,7 @@ Action::LayerParamSetStatic::set_param(const synfig::String& name, const Action:
 	if(!layer && name=="value_desc" && param.get_type()==Param::TYPE_VALUEDESC)
 	{
 		ValueDesc value_desc(param.get_value_desc());
-		if(!value_desc.parent_is_layer_param())
+		if(!value_desc.parent_is_layer())
 			return false;
 
 		layer=Layer::Handle::cast_dynamic(value_desc.get_layer());
@@ -133,7 +133,7 @@ Action::LayerParamSetStatic::set_param(const synfig::String& name, const Action:
 	if(param_name.empty() && name=="value_desc" && param.get_type()==Param::TYPE_VALUEDESC)
 	{
 		ValueDesc value_desc(param.get_value_desc());
-		if(!value_desc.parent_is_layer_param())
+		if(!value_desc.parent_is_layer())
 			return false;
 
 		param_name=value_desc.get_param_name();

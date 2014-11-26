@@ -6,6 +6,7 @@
 **
 **	\legal
 **	......... ... 2013 Ivan Mahonin
+**	......... ... 2014 Jerome Blanchi
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -96,15 +97,33 @@ Action::ValueDescBoneLink::get_param_vocab()
 bool
 Action::ValueDescBoneLink::is_candidate(const ParamList &x)
 {
-	ParamList::const_iterator i;
+	ParamList::const_iterator iter;
 
 	ValueDesc value_desc(x.find("value_desc")->second.get_value_desc());
+
+	bool selected_value_desc_is_bone = false;
+	pair<ParamList::const_iterator, ParamList::const_iterator> selected_vd_range = x.equal_range("selected_value_desc");
+	//get the range of selected value desc to check if at least one is a bone
+	for (iter = selected_vd_range.first; iter != selected_vd_range.second ; ++iter)
+	{
+		ValueDesc selected_value_desc(iter->second.get_value_desc());
+		//Simple test of bone type
+		//TODO : if bone, reject only if same skeleton
+		if ((selected_value_desc.parent_is_value_node()) &&
+			(ValueNode_Bone::Handle::cast_dynamic(selected_value_desc.get_parent_value_node()))
+			)
+		{
+			selected_value_desc_is_bone = true;
+			break;
+		}
+	}
 
 	if (!candidate_check(get_param_vocab(),x))
 		return false;
 
 	return value_desc.parent_is_value_node()
-		&& ValueNode_Bone::Handle::cast_dynamic(value_desc.get_parent_value_node());
+		&& ValueNode_Bone::Handle::cast_dynamic(value_desc.get_parent_value_node())
+		&& !selected_value_desc_is_bone;
 }
 
 bool
@@ -209,7 +228,7 @@ Action::ValueDescBoneLink::prepare()
 			if (!action->is_ready()) throw Error(Error::TYPE_NOTREADY);
 			add_action_front(action);
 		}
-		else if (value_desc.parent_is_layer_param())
+		else if (value_desc.parent_is_layer())
 		{
 			Action::Handle action = LayerParamConnect::create();
 			action->set_param("layer", value_desc.get_layer());

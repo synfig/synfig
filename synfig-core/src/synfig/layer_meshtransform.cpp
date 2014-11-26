@@ -251,7 +251,7 @@ Layer_MeshTransform::accelerated_render(Context context,Surface *surface,int qua
 		world_to_pixels_matrix,
 		texture_to_texels_matrix,
 		1.0,
-		Color::BLEND_STRAIGHT
+		Color::BLEND_COMPOSITE
 	);
 
 	return true;

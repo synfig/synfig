@@ -2137,7 +2137,8 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 				 value_node->link_name(i) == "scalelx" ||
 				 value_node->link_name(i) == "scalely" ||
 				 value_node->link_name(i) == "width" ||
-				 value_node->link_name(i) == "tipwidth" ))
+				 value_node->link_name(i) == "tipwidth" ||
+				 value_node->link_name(i) == "order"))
 				continue;
 
 			// 'homogeneous' was added while canvas version 0.7 was in use and the BLineCalcVertex,

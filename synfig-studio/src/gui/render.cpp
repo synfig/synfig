@@ -62,11 +62,11 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 RenderSettings::RenderSettings(Gtk::Window& parent, etl::handle<synfigapp::CanvasInterface> canvas_interface):
-	Gtk::Dialog(_("Render Settings"),parent,false,true),
+	Gtk::Dialog(_("Render Settings"),parent),
 	canvas_interface_(canvas_interface),
-	adjustment_quality(3,0,9),
+	adjustment_quality(Gtk::Adjustment::create(3,0,9)),
 	entry_quality(adjustment_quality,1,0),
-	adjustment_antialias(1,1,31),
+	adjustment_antialias(Gtk::Adjustment::create(1,1,31)),
 	entry_antialias(adjustment_antialias,1,0),
 	toggle_single_frame(_("Render _current frame only"), true),
 	toggle_extract_alpha(_("Extract alpha"), true),
@@ -79,24 +79,17 @@ RenderSettings::RenderSettings(Gtk::Window& parent, etl::handle<synfigapp::Canva
 
 	canvas_interface->signal_rend_desc_changed().connect(sigc::mem_fun(*this,&RenderSettings::on_rend_desc_changed));
 
-	menu_target=manage(new class Gtk::Menu());
-
-	menu_target->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Auto"),
-			sigc::bind(sigc::mem_fun(*this,&RenderSettings::set_target),String())
-		));
-
+	comboboxtext_target.append(_("Auto"));
+	target_names.push_back(String());
 	synfig::Target::Book::iterator iter;
 	synfig::Target::Book book(synfig::Target::book());
-
 	for(iter=book.begin();iter!=book.end();iter++)
 	{
-		menu_target->items().push_back(Gtk::Menu_Helpers::MenuElem(iter->first,
-			sigc::bind(sigc::mem_fun(*this,&RenderSettings::set_target),iter->first)
-		));
+		comboboxtext_target.append(iter->first);
+		target_names.push_back(iter->first);
 	}
-	optionmenu_target.set_menu(*menu_target);
-
-	optionmenu_target.set_history(0);
+	comboboxtext_target.set_active(0);
+	comboboxtext_target.signal_changed().connect(sigc::mem_fun(this, &RenderSettings::on_comboboxtext_target_changed));
 
 	Gtk::Alignment *dialogPadding = manage(new Gtk::Alignment(0, 0, 1, 1));
 	dialogPadding->set_padding(12, 12, 12, 12);
@@ -136,9 +129,9 @@ RenderSettings::RenderSettings(Gtk::Window& parent, etl::handle<synfigapp::Canva
 
 	Gtk::Label *targetLabel = manage(new Gtk::Label(_("_Target"), true));
 	targetLabel->set_alignment(0, 0.5);
-	targetLabel->set_mnemonic_widget(optionmenu_target);
+	targetLabel->set_mnemonic_widget(comboboxtext_target);
 	target_table->attach(*targetLabel, 0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	target_table->attach(optionmenu_target, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	target_table->attach(comboboxtext_target, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	target_table->attach(*tparam_button, 2, 3, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 
 	toggle_single_frame.signal_toggled().connect(sigc::mem_fun(*this, &studio::RenderSettings::on_single_frame_toggle));
@@ -231,6 +224,15 @@ RenderSettings::set_entry_filename()
 		synfig::warning("Averted crash!");
 		entry_filename.set_text("output.png");
 	}
+}
+
+void
+RenderSettings::on_comboboxtext_target_changed()
+{
+	int i = comboboxtext_target.get_active_row_number();
+	if (i < 0 || i >= (int)target_names.size()) return;
+	if (target_name == target_names[i]) return;
+	set_target(target_names[i]);
 }
 
 void
@@ -353,15 +355,15 @@ RenderSettings::submit_next_render_pass()
 
 		target->set_canvas(canvas_interface_->get_canvas());
 		RendDesc rend_desc(widget_rend_desc.get_rend_desc());
-		rend_desc.set_antialias((int)adjustment_antialias.get_value());
+		rend_desc.set_antialias((int)adjustment_antialias->get_value());
 		rend_desc.set_render_excluded_contexts(false);
 
 		// If we are to only render the current frame
 		if(toggle_single_frame.get_active())
 			rend_desc.set_time(canvas_interface_->get_time());
-
+	
 		target->set_rend_desc(&rend_desc);
-		target->set_quality((int)adjustment_quality.get_value());
+		target->set_quality((int)adjustment_quality->get_value());
 		if( !target->init(canvas_interface_->get_ui_interface().get()) ){
 			canvas_interface_->get_ui_interface()->error(_("Target initialization failure"));
 			return;
@@ -370,7 +372,7 @@ RenderSettings::submit_next_render_pass()
 			target->set_alpha_mode(pass_alpha_mode);
 
 		canvas_interface_->get_ui_interface()->task(_("Rendering ")+pass_filename);
-
+	
 		/*
 		if(async_renderer)
 		{

@@ -69,7 +69,6 @@
 
 namespace Gtk
 {
-	class InputDialog;
 	class UIManager;
 	class ActionGroup;
 };
@@ -92,6 +91,7 @@ class Instance;
 class CanvasView;
 class Dialog_Setup;
 class Dialog_Gradient;
+class Dialog_Input;
 class Dialog_Color;
 class Dialog_ToolOptions;
 class DeviceTracker;
@@ -180,7 +180,7 @@ private:
 	*/
 
 public:
-	static Gtk::InputDialog* dialog_input;
+	static Dialog_Input* dialog_input;
 
 	static DeviceTracker*	device_tracker;
 	static AutoRecover*	auto_recover;
@@ -229,7 +229,6 @@ public:
 	static bool navigator_uses_cairo;
 	static bool workarea_uses_cairo;
 	static bool enable_mainwin_menubar;
-	static bool enable_mainwin_toolbar;
 	static synfig::String ui_language;
 
 	/*

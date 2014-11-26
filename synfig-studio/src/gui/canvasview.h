@@ -29,6 +29,8 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <glibmm/dispatcher.h>
+
 #include <gtkmm/window.h>
 #include <gtkmm/image.h>
 #include <gtkmm/tooltip.h>
@@ -44,6 +46,12 @@
 #include <gdkmm/device.h>
 #include <gtkmm/spinbutton.h>
 #include <gtkmm/alignment.h>
+#include <gtkmm/toolbar.h>
+#include <gtkmm/toolitem.h>
+#include <gtkmm/toolbutton.h>
+#include <gtkmm/toggletoolbutton.h>
+#include <gtkmm/separatortoolitem.h>
+
 
 #include <synfigapp/canvasinterface.h>
 #include <synfigapp/selectionmanager.h>
@@ -132,6 +140,8 @@ class UniversalScrubber;
 class WorkArea;
 
 class Duckmatic;
+
+class Widget_Enum;
 
 class Preview;
 struct PreviewInfo;
@@ -283,11 +293,11 @@ private:
 	std::map<synfig::String,Gtk::Widget*> ext_widget_book_;
 
 	//! The time adjustment's scope is defined by the time_window adjustment
-	Gtk::Adjustment time_adjustment_;
+	Glib::RefPtr<Gtk::Adjustment> time_adjustment_;
 
 	//! The time_window adjustment governs the position of the time window on the whole time line
-	//Gtk::Adjustment time_window_adjustment_;
-	studio::Adjust_Window time_window_adjustment_;
+	//Glib::RefPtr<Gtk::Adjustment> time_window_adjustment_;
+	Glib::RefPtr<studio::Adjust_Window> time_window_adjustment_;
 
 	LayerTree *layer_tree;
 
@@ -303,35 +313,42 @@ private:
 	Gtk::TreeRow children_canvas_row;
 	Gtk::TreeRow children_valuenode_row;
 
+	Gtk::Button *closebutton;
 	Gtk::Button *stopbutton;
-	Gtk::Button *refreshbutton;
+	Gtk::ToolButton *refreshbutton;
 	Gtk::Button *treetogglebutton;  // not used
 	Gtk::Notebook *notebook; // not used
 	Gtk::Table *timebar;
-	Gtk::Table *displaybar;
+	Gtk::Toolbar *displaybar;
+	Widget_Enum *widget_interpolation;
+	Gtk::ScrolledWindow *widget_interpolation_scroll;
 	Gtk::ToggleButton *animatebutton;
+	Gtk::ToggleButton *timetrackbutton;
+	Gtk::VBox *timetrack;
 	Gtk::Button *keyframebutton;
 	Gtk::ToggleButton *pastkeyframebutton;
 	Gtk::ToggleButton *futurekeyframebutton;
 	bool toggling_animate_mode_;
 	FrameDial *framedial;
 	JackDial *jackdial;
-	ToggleDucksDial *toggleducksdial;
+	Gtk::ToggleButton *jackbutton;
+	Widget_Time *offset_widget;
+	ToggleDucksDial toggleducksdial;
 	bool toggling_ducks_;
-	ResolutionDial *resolutiondial;
+	ResolutionDial resolutiondial;
 	bool changing_resolution_;
-	Gtk::Adjustment quality_adjustment_;
+	Glib::RefPtr<Gtk::Adjustment> quality_adjustment_;
 	Gtk::SpinButton *quality_spin;
-	Gtk::Adjustment future_onion_adjustment_;
-	Gtk::Adjustment past_onion_adjustment_;
+	Glib::RefPtr<Gtk::Adjustment> future_onion_adjustment_;
+	Glib::RefPtr<Gtk::Adjustment> past_onion_adjustment_;
 	Gtk::SpinButton *past_onion_spin;
 	Gtk::SpinButton *future_onion_spin;
 	bool updating_quality_;
-	Gtk::ToggleButton *show_grid;
-	Gtk::ToggleButton *snap_grid;
-	Gtk::ToggleButton *onion_skin;
-	Gtk::Button *render_options_button;
-	Gtk::Button *preview_options_button;
+	Gtk::ToggleToolButton *show_grid;
+	Gtk::ToggleToolButton *snap_grid;
+	Gtk::ToggleToolButton *onion_skin;
+	Gtk::ToolButton *render_options_button;
+	Gtk::ToolButton *preview_options_button;
 	bool toggling_show_grid;
 	bool toggling_snap_grid;
 	bool toggling_onion_skin;
@@ -474,9 +491,6 @@ private:
 	//! Constructor Helper
 	// Gtk::Widget* create_keyframe_tree();
 
-	//! Constructor Helper
-	Gtk::Widget* create_status_bar();
-
 	//! Constructor Helper - Initializes all of the menus
 	void init_menus();
 
@@ -496,7 +510,9 @@ private:
 
 	Gtk::Widget *create_time_bar();
 
-	Gtk::Widget *create_display_bar();
+	Gtk::ToolButton* create_action_toolbutton(const Glib::RefPtr<Gtk::Action> &action);
+	Gtk::SeparatorToolItem* create_tool_separator();
+	Gtk::Widget* create_display_bar();
 
 	//! Pop up menu for the bezier (bline, draw) tool (?)
 	void popup_param_menu_bezier(float location, synfigapp::ValueDesc value_desc)
@@ -524,8 +540,13 @@ private:
 	void toggle_onion_skin();
 
 	void toggle_animatebutton();
+	void toggle_timetrackbutton();
 
 	void on_play_timeout();
+	
+	void interpolation_refresh();
+	void on_interpolation_changed();
+	void on_interpolation_event(GdkEvent *event);
 
 
 	/*
@@ -588,13 +609,11 @@ public:
 
 	Mode get_mode()const { return canvas_interface()->get_mode(); }
 
-	Gtk::Adjustment &time_adjustment() { return time_adjustment_; }
+	Glib::RefPtr<Gtk::Adjustment> time_adjustment() { return time_adjustment_; }
+	Glib::RefPtr<const Gtk::Adjustment> time_adjustment()const { return time_adjustment_; }
 
-	const Gtk::Adjustment &time_adjustment()const { return time_adjustment_; }
-
-	studio::Adjust_Window &time_window_adjustment() { return time_window_adjustment_; }
-
-	const studio::Adjust_Window &time_window_adjustment()const { return time_window_adjustment_; }
+	Glib::RefPtr<studio::Adjust_Window> time_window_adjustment() { return time_window_adjustment_; }
+	Glib::RefPtr<const studio::Adjust_Window> time_window_adjustment()const { return time_window_adjustment_; }
 
 	etl::handle<synfigapp::UIInterface> get_ui_interface() { return ui_interface_;}
 
@@ -708,6 +727,8 @@ public:
 	void add_layer(synfig::String x);
 
 	void show_keyframe_dialog();
+	void on_keyframe_toggle();
+	void on_keyframe_description_set();
 
 	void play_audio(float t);
 	void stop_audio();
@@ -814,8 +835,9 @@ private:
 	void on_play_pause_pressed();
 
 #ifdef WITH_JACK
-	void on_toggle_jack_pressed();
 	void on_jack_offset_changed();
+	void toggle_jack_button();
+
 	synfig::Time get_jack_offset()const;
 	void set_jack_offset(const synfig::Time &value);
 #endif

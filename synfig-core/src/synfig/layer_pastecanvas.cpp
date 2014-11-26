@@ -418,14 +418,15 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 	SuperCallback stagetwo(cb,4500,9000,10000);
 	SuperCallback stagethree(cb,9000,9999,10000);
 
-	if (is_solid_color() || context->empty())
+	if (is_solid_color())
 	{
 		RendDesc intermediate_desc(renddesc);
 		intermediate_desc.clear_flags();
 		intermediate_desc.set_transformation_matrix(transformation.get_matrix());
 		return canvas->get_context(context).accelerated_render(surface,quality,intermediate_desc,&stagetwo);
 	}
-	else if (!context.accelerated_render(surface,quality,renddesc,&stageone))
+	else
+	if (!context.accelerated_render(surface,quality,renddesc,&stageone))
 		return false;
 
 	Real grow_value(get_parent_canvas_grow_value());

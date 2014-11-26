@@ -35,10 +35,15 @@
 
 #include "instance.h"
 #include <cassert>
+
 #include <gtkmm/stock.h>
 #include <gtkmm/image.h>
-#include <iostream>
+#include <gtkmm/menuitem.h>
+#include <gtkmm/imagemenuitem.h>
+#include <gtkmm/separatormenuitem.h>
 #include <gtkmm/button.h>
+
+#include <iostream>
 #include "canvasview.h"
 #include "app.h"
 #include <sigc++/signal.h>
@@ -117,7 +122,7 @@ Instance::get_visible_canvases()const
 	int count(0);
 	CanvasViewList::const_iterator iter;
 	for(iter=canvas_view_list_.begin();iter!=canvas_view_list_.end();++iter)
-		if((*iter)->is_visible())
+		if((*iter)->get_visible())
 			count++;
 	return count;
 }
@@ -469,7 +474,7 @@ Instance::insert_canvas(Gtk::TreeRow row, synfig::Canvas::Handle canvas)
 	CanvasTreeModel canvas_tree_model;
 	assert(canvas);
 
-	row[canvas_tree_model.icon] = Gtk::Button().render_icon(Gtk::StockID("synfig-canvas"),Gtk::ICON_SIZE_SMALL_TOOLBAR);
+	row[canvas_tree_model.icon] = Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-canvas"),Gtk::ICON_SIZE_SMALL_TOOLBAR);
 	row[canvas_tree_model.id] = canvas->get_id();
 	row[canvas_tree_model.name] = canvas->get_name();
 	if(canvas->is_root())
@@ -781,25 +786,19 @@ Instance::add_actions_to_menu(Gtk::Menu *menu, const synfigapp::Action::ParamLis
 	{
 		if(!(iter->category&synfigapp::Action::CATEGORY_HIDDEN))
 		{
-			Gtk::Image* image(manage(new Gtk::Image()));
-			Gtk::Stock::lookup(get_action_stock_id(*iter),Gtk::ICON_SIZE_MENU,*image);
-
-			menu->items().push_back(
-				Gtk::Menu_Helpers::ImageMenuElem(
-					iter->local_name,
-					*image,
+			Gtk::MenuItem *item = Gtk::manage(new Gtk::ImageMenuItem(
+				*Gtk::manage(new Gtk::Image(get_action_stock_id(*iter),Gtk::ICON_SIZE_MENU)),
+				iter->local_name ));
+			item->signal_activate().connect(
+				sigc::bind(
 					sigc::bind(
-						sigc::bind(
-							sigc::mem_fun(
-								*const_cast<studio::Instance*>(this),
-								&studio::Instance::process_action
-							),
-							param_list
-						),
-						iter->name
-					)
-				)
-			);
+						sigc::mem_fun(
+							*const_cast<studio::Instance*>(this),
+							&studio::Instance::process_action ),
+						param_list ),
+					iter->name ));
+			item->show_all();
+			menu->append(*item);
 		}
 	}
 }
@@ -834,25 +833,19 @@ Instance::add_actions_to_menu(Gtk::Menu *menu, const synfigapp::Action::ParamLis
 	{
 		if(!(iter->category&synfigapp::Action::CATEGORY_HIDDEN))
 		{
-			Gtk::Image* image(manage(new Gtk::Image()));
-			Gtk::Stock::lookup(get_action_stock_id(*iter),Gtk::ICON_SIZE_MENU,*image);
-
-			menu->items().push_back(
-				Gtk::Menu_Helpers::ImageMenuElem(
-					iter->local_name,
-					*image,
+			Gtk::MenuItem *item = Gtk::manage(new Gtk::ImageMenuItem(
+				*Gtk::manage(new Gtk::Image(get_action_stock_id(*iter),Gtk::ICON_SIZE_MENU)),
+				iter->local_name ));
+			item->signal_activate().connect(
+				sigc::bind(
 					sigc::bind(
-						sigc::bind(
-							sigc::mem_fun(
-								*const_cast<studio::Instance*>(this),
-								&studio::Instance::process_action
-							),
-							param_list2
-						),
-						iter->name
-					)
-				)
-			);
+						sigc::mem_fun(
+							*const_cast<studio::Instance*>(this),
+							&studio::Instance::process_action ),
+						param_list2 ),
+					iter->name ));
+			item->show_all();
+			menu->append(*item);
 		}
 	}
 
@@ -860,25 +853,19 @@ Instance::add_actions_to_menu(Gtk::Menu *menu, const synfigapp::Action::ParamLis
 	{
 		if(!(iter->category&synfigapp::Action::CATEGORY_HIDDEN))
 		{
-			Gtk::Image* image(manage(new Gtk::Image()));
-			Gtk::Stock::lookup(get_action_stock_id(*iter),Gtk::ICON_SIZE_MENU,*image);
-
-			menu->items().push_back(
-				Gtk::Menu_Helpers::ImageMenuElem(
-					iter->local_name,
-					*image,
+			Gtk::MenuItem *item = Gtk::manage(new Gtk::ImageMenuItem(
+				*Gtk::manage(new Gtk::Image(get_action_stock_id(*iter),Gtk::ICON_SIZE_MENU)),
+				iter->local_name ));
+			item->signal_activate().connect(
+				sigc::bind(
 					sigc::bind(
-						sigc::bind(
-							sigc::mem_fun(
-								*const_cast<studio::Instance*>(this),
-								&studio::Instance::process_action
-							),
-							param_list
-						),
-						iter->name
-					)
-				)
-			);
+						sigc::mem_fun(
+							*const_cast<studio::Instance*>(this),
+							&studio::Instance::process_action ),
+						param_list ),
+					iter->name ));
+			item->show_all();
+			menu->append(*item);
 		}
 	}
 }
@@ -963,6 +950,8 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 	if(!canvas_interface)
 		return;
 
+	Gtk::MenuItem *item = NULL;
+
 	synfigapp::Action::ParamList param_list,param_list2;
 	param_list=canvas_interface->generate_param_list(value_desc);
 	param_list.add("origin",location);
@@ -989,35 +978,37 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 	//   the 'Index' parameter of a Duplicate layer
 	// or
 	//   a Duplicate ValueNode whose parent is not a (layer or ValueNode)
-	if (!((value_desc.parent_is_layer_param() &&
+	if (!((value_desc.parent_is_layer() &&
 		   value_desc.get_layer()->get_name() == "duplicate" &&
 		   value_desc.get_param_name() == "index") ||
 		  (value_desc.is_value_node() &&
 		   ValueNode_Duplicate::Handle::cast_dynamic(value_desc.get_value_node()) &&
-		   !(value_desc.parent_is_layer_param() ||
+		   !(value_desc.parent_is_layer() ||
 			 value_desc.parent_is_value_node()))))
 	{
-		Gtk::Menu *convert_menu=manage(new Gtk::Menu());
+		Gtk::Menu *convert_menu=Gtk::manage(new Gtk::Menu());
 		LinkableValueNode::Book::const_iterator iter;
 		for(iter=LinkableValueNode::book().begin();iter!=LinkableValueNode::book().end();++iter)
 		{
 			if(iter->second.check_type(value_desc.get_value_type()))
 			{
-				convert_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(iter->second.local_name,
+				item = Gtk::manage(new Gtk::MenuItem(iter->second.local_name));
+				item->signal_activate().connect(
 					sigc::hide_return(
 						sigc::bind(
 							sigc::bind(
 								sigc::mem_fun(*canvas_interface.get(),&synfigapp::CanvasInterface::convert),
-								iter->first
-							),
-							value_desc
-						)
-					)
-				));
+								iter->first ),
+							value_desc )));
+				item->show();
+				convert_menu->append(*item);
 			}
 		}
 
-		parammenu.items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::Stock::CONVERT,*convert_menu));
+		item = Gtk::manage(new Gtk::ImageMenuItem(Gtk::Stock::CONVERT));
+		item->set_submenu(*convert_menu);
+		item->show();
+		parammenu.append(*item);
 	}
 	
 	// Interpolation menu: Show it only if
@@ -1028,117 +1019,53 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 		value_desc.get_value_type()!= type_canvas
 		)
 	{
-		Gtk::Menu *param_interpolation_menu=manage(new Gtk::Menu());
+		Gtk::Menu *param_interpolation_menu=Gtk::manage(new Gtk::Menu());
 		synfigapp::Action::ParamList param_list;
 		param_list.add("canvas", get_canvas());
 		param_list.add("value_desc", value_desc);
 		param_list.add("canvas_interface",canvas_interface);
+
 		/////// Default
 		param_list.add("new_value", INTERPOLATION_UNDEFINED);
-		param_interpolation_menu->items().push_back(
-			Gtk::Menu_Helpers::MenuElem(
-				_("Default"),
+		item = Gtk::manage(new Gtk::MenuItem(_("Default")));
+		item->signal_activate().connect(
+			sigc::bind(
 				sigc::bind(
-					sigc::bind(
-						sigc::mem_fun(*const_cast<studio::Instance*>(this),&studio::Instance::process_action),
-						param_list
-					),
-					"ValueDescSetInterpolation"
-				)
-			)
-		);
+					sigc::mem_fun(*const_cast<studio::Instance*>(this),&studio::Instance::process_action),
+					param_list ),
+				"ValueDescSetInterpolation" ));
+		item->show();
+		param_interpolation_menu->append(*item);
 		param_list.erase("new_value");
-		/////// TCB
-		param_list.add("new_value", INTERPOLATION_TCB);
-		Gtk::Image *image=new Gtk::Image(Gtk::StockID("synfig-interpolation_type_tcb"),Gtk::IconSize::from_name("synfig-small_icon"));
-		param_interpolation_menu->items().push_back(
-			Gtk::Menu_Helpers::ImageMenuElem(
-				_("TCB"),
-				*image,
-				sigc::bind(
-					sigc::bind(
-						sigc::mem_fun(*const_cast<studio::Instance*>(this),&studio::Instance::process_action),
-						param_list
-					),
-					"ValueDescSetInterpolation"
-				)
-			)
-		);
+
+		#define ADD_IMAGE_MENU_ITEM(Interpolation, StockId, Text) \
+		param_list.add("new_value", Interpolation); \
+		item = Gtk::manage(new Gtk::ImageMenuItem( \
+			*Gtk::manage(new Gtk::Image(Gtk::StockID(StockId), Gtk::IconSize::from_name("synfig-small_icon"))), \
+			_(Text) )); \
+		item->signal_activate().connect( \
+			sigc::bind( \
+				sigc::bind( \
+					sigc::mem_fun(*const_cast<studio::Instance*>(this),&studio::Instance::process_action), \
+					param_list ), \
+				"ValueDescSetInterpolation" )); \
+		item->show_all(); \
+		param_interpolation_menu->append(*item); \
 		param_list.erase("new_value");
 		
-		/////// Linear
-		param_list.add("new_value", INTERPOLATION_LINEAR);
-		image=new Gtk::Image(Gtk::StockID("synfig-interpolation_type_linear"),Gtk::IconSize::from_name("synfig-small_icon"));
-		param_interpolation_menu->items().push_back(
-			Gtk::Menu_Helpers::ImageMenuElem(
-				_("Linear"),
-				*image,
-				sigc::bind(
-					sigc::bind(
-						sigc::mem_fun(*const_cast<studio::Instance*>(this),&studio::Instance::process_action),
-						param_list
-					),
-					"ValueDescSetInterpolation"
-				)
-			)
-		);
-		param_list.erase("new_value");
 		
-		/////// Ease
-		param_list.add("new_value", INTERPOLATION_HALT);
-		image=new Gtk::Image(Gtk::StockID("synfig-interpolation_type_ease"),Gtk::IconSize::from_name("synfig-small_icon"));
-		param_interpolation_menu->items().push_back(
-			Gtk::Menu_Helpers::ImageMenuElem(
-				_("Ease"),
-				*image,
-				sigc::bind(
-					sigc::bind(
-						sigc::mem_fun(*const_cast<studio::Instance*>(this),&studio::Instance::process_action),
-						param_list
-					),
-					"ValueDescSetInterpolation"
-				)
-			)
-		);
-		param_list.erase("new_value");
+		ADD_IMAGE_MENU_ITEM(INTERPOLATION_TCB, "synfig-interpolation_type_tcb", _("TCB"));
+		ADD_IMAGE_MENU_ITEM(INTERPOLATION_LINEAR, "synfig-interpolation_type_linear", _("Linear"));
+		ADD_IMAGE_MENU_ITEM(INTERPOLATION_HALT, "synfig-interpolation_type_ease", _("Ease"));
+		ADD_IMAGE_MENU_ITEM(INTERPOLATION_CONSTANT, "synfig-interpolation_type_const", _("Constant"));
+		ADD_IMAGE_MENU_ITEM(INTERPOLATION_CLAMPED, "synfig-interpolation_type_clamped", _("Clamped"));
 		
-		/////// Constant
-		param_list.add("new_value", INTERPOLATION_CONSTANT);
-		image=new Gtk::Image(Gtk::StockID("synfig-interpolation_type_const"),Gtk::IconSize::from_name("synfig-small_icon"));
-		param_interpolation_menu->items().push_back(
-			Gtk::Menu_Helpers::ImageMenuElem(
-				_("Constant"),
-				*image,
-				sigc::bind(
-					sigc::bind(
-						sigc::mem_fun(*const_cast<studio::Instance*>(this),&studio::Instance::process_action),
-						param_list
-					),
-					"ValueDescSetInterpolation"
-				)
-			)
-		);
-		param_list.erase("new_value");
-		
-		/////// Ease
-		param_list.add("new_value", INTERPOLATION_CLAMPED);
-		image=new Gtk::Image(Gtk::StockID("synfig-interpolation_type_clamped"),Gtk::IconSize::from_name("synfig-small_icon"));
-		param_interpolation_menu->items().push_back(
-			Gtk::Menu_Helpers::ImageMenuElem(
-				_("Clamped"),
-				*image,
-				sigc::bind(
-					sigc::bind(
-						sigc::mem_fun(*const_cast<studio::Instance*>(this),&studio::Instance::process_action),
-						param_list
-					),
-					"ValueDescSetInterpolation"
-				)
-			)
-		);
-		param_list.erase("new_value");
-		
-		parammenu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Interpolation"), *param_interpolation_menu));
+		#undef ADD_IMAGE_MENU_ITEM
+
+		item = Gtk::manage(new Gtk::MenuItem(_("Interpolation")));
+		item->set_submenu(*param_interpolation_menu);
+		item->show();
+		parammenu.append(*item);
 	}
 
 	synfigapp::Action::Category categories = synfigapp::Action::CATEGORY_VALUEDESC|synfigapp::Action::CATEGORY_VALUENODE;
@@ -1177,22 +1104,20 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 			std::set<synfig::Waypoint, std::less<UniqueID> > waypoint_set;
 			waypoint_set.insert(*iter);
 
-			parammenu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Edit Waypoint"),
+			item = Gtk::manage(new Gtk::MenuItem(_("Edit Waypoint")));
+			item->signal_activate().connect(
 				sigc::bind(
 					sigc::bind(
 						sigc::bind(
 							sigc::mem_fun(*find_canvas_view(canvas),&studio::CanvasView::on_waypoint_clicked_canvasview),
-							-1
-						),
-						waypoint_set
-					),
-					value_desc2
-				)
-			));
+							-1 ),
+						waypoint_set ),
+					value_desc2 ));
+			item->show();
+			parammenu.append(*item);
 		}
 		catch(...)
-		{
-		}
+		{ }
 	}
 	//// Add here the rest of actions here for specific single value descriptions
 	//
@@ -1201,223 +1126,81 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 	{
 		ValueNode_Composite::Handle wpoint_composite(ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node()));
 		synfigapp::Action::ParamList param_list;
-		Gtk::Menu *before_menu=manage(new Gtk::Menu());
-		Gtk::Menu *after_menu=manage(new Gtk::Menu());
 		param_list.add("canvas",canvas);
 		param_list.add("canvas_interface",canvas_interface);
 		param_list.add("time",canvas_interface->get_time());
-		parammenu.items().push_back(Gtk::Menu_Helpers::SeparatorElem());
+		item = Gtk::manage(new Gtk::SeparatorMenuItem());
+		item->show();
+		parammenu.append(*item);
+
+
+		#define ADD_IMAGE_MENU_ITEM(Type, StockId, Text) \
+			param_list.add("new_value", ValueBase((int)WidthPoint::Type)); \
+			item = Gtk::manage(new Gtk::ImageMenuItem( \
+				*Gtk::manage(new Gtk::Image(Gtk::StockID(StockId),Gtk::IconSize::from_name("synfig-small_icon"))), \
+				_(Text) )); \
+			item->signal_activate().connect( \
+				sigc::bind( \
+					sigc::bind( \
+						sigc::mem_fun(*const_cast<studio::Instance*>(this),&studio::Instance::process_action), \
+						param_list ), \
+					"ValueDescSet" )); \
+			item->show_all(); \
+			parammenu.append(*item); \
+			param_list.erase("new_value");
+
 		////// Before //////////////////
 		param_list.add("value_desc",synfigapp::ValueDesc(wpoint_composite, wpoint_composite->get_link_index_from_name("side_before")));
-		///////////////// Interpolate
-		param_list.add("new_value", ValueBase((int)WidthPoint::TYPE_INTERPOLATE));
-		Gtk::Image *image=new Gtk::Image(Gtk::StockID("synfig-interpolate_interpolation"),Gtk::IconSize::from_name("synfig-small_icon"));
-		before_menu->items().push_back(
-			Gtk::Menu_Helpers::ImageMenuElem(
-				_("Interpolate"),
-				*image,
-				sigc::bind(
-					sigc::bind(
-						sigc::mem_fun(*const_cast<studio::Instance*>(this),&studio::Instance::process_action),
-						param_list
-					),
-					"ValueDescSet"
-				)
-			)
-		);
-		param_list.erase("new_value");
-		///////////////// Rounded
-		param_list.add("new_value", ValueBase((int)WidthPoint::TYPE_ROUNDED));
-		image=new Gtk::Image(Gtk::StockID("synfig-rounded_interpolation"),Gtk::IconSize::from_name("synfig-small_icon"));
-		before_menu->items().push_back(
-			Gtk::Menu_Helpers::ImageMenuElem(
-				_("Rounded"),
-				*image,
-				sigc::bind(
-					sigc::bind(
-						sigc::mem_fun(*const_cast<studio::Instance*>(this),&studio::Instance::process_action),
-						param_list
-					),
-					"ValueDescSet"
-				)
-			)
-		);
-		param_list.erase("new_value");
-		///////////////// Squared
-		param_list.add("new_value", ValueBase((int)WidthPoint::TYPE_SQUARED));
-		image=new Gtk::Image(Gtk::StockID("synfig-squared_interpolation"),Gtk::IconSize::from_name("synfig-small_icon"));
-		before_menu->items().push_back(
-			Gtk::Menu_Helpers::ImageMenuElem(
-				_("Squared"),
-				*image,
-				sigc::bind(
-					sigc::bind(
-						sigc::mem_fun(*const_cast<studio::Instance*>(this),&studio::Instance::process_action),
-						param_list
-					),
-					"ValueDescSet"
-				)
-			)
-		);
-		param_list.erase("new_value");
-		///////////////// Peak
-		param_list.add("new_value", ValueBase((int)WidthPoint::TYPE_PEAK));
-		image=new Gtk::Image(Gtk::StockID("synfig-peak_interpolation"),Gtk::IconSize::from_name("synfig-small_icon"));
-		before_menu->items().push_back(
-			Gtk::Menu_Helpers::ImageMenuElem(
-				_("Peak"),
-				*image,
-				sigc::bind(
-					sigc::bind(
-						sigc::mem_fun(*const_cast<studio::Instance*>(this),&studio::Instance::process_action),
-						param_list
-					),
-					"ValueDescSet"
-				)
-			)
-		);
-		param_list.erase("new_value");
-		///////////////// Flat
-		param_list.add("new_value", ValueBase((int)WidthPoint::TYPE_FLAT));
-		image=new Gtk::Image(Gtk::StockID("synfig-flat_interpolation"),Gtk::IconSize::from_name("synfig-small_icon"));
-		before_menu->items().push_back(
-			Gtk::Menu_Helpers::ImageMenuElem(
-				_("Flat"),
-				*image,
-				sigc::bind(
-					sigc::bind(
-						sigc::mem_fun(*const_cast<studio::Instance*>(this),&studio::Instance::process_action),
-						param_list
-					),
-					"ValueDescSet"
-				)
-			)
-		);
-		parammenu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Set Side Before"), *before_menu));
+
+		ADD_IMAGE_MENU_ITEM(TYPE_INTERPOLATE, "synfig-interpolate_interpolation", "Interpolate")
+		ADD_IMAGE_MENU_ITEM(TYPE_ROUNDED, "synfig-rounded_interpolation", "Rounded")
+		ADD_IMAGE_MENU_ITEM(TYPE_SQUARED, "synfig-squared_interpolation", "Squared")
+		ADD_IMAGE_MENU_ITEM(TYPE_PEAK, "synfig-peak_interpolation", "Peak")
+		ADD_IMAGE_MENU_ITEM(TYPE_FLAT, "synfig-flat_interpolation", "Flat")
+
 		////// After ///////////////////////
 		param_list.erase("value_desc");
-		param_list.erase("new_value");
 		param_list.add("value_desc",synfigapp::ValueDesc(wpoint_composite, wpoint_composite->get_link_index_from_name("side_after")));
-		///////////////// Interpolate
-		param_list.add("new_value", ValueBase((int)WidthPoint::TYPE_INTERPOLATE));
-		image=new Gtk::Image(Gtk::StockID("synfig-interpolate_interpolation"),Gtk::IconSize::from_name("synfig-small_icon"));
-		after_menu->items().push_back(
-			Gtk::Menu_Helpers::ImageMenuElem(
-				_("Interpolate"),
-				*image,
-				sigc::bind(
-					sigc::bind(
-						sigc::mem_fun(*const_cast<studio::Instance*>(this),&studio::Instance::process_action),
-						param_list
-					),
-					"ValueDescSet"
-				)
-			)
-		);
-		param_list.erase("new_value");
-		///////////////// Rounded
-		param_list.add("new_value", ValueBase((int)WidthPoint::TYPE_ROUNDED));
-		image=new Gtk::Image(Gtk::StockID("synfig-rounded_interpolation"),Gtk::IconSize::from_name("synfig-small_icon"));
-		after_menu->items().push_back(
-			Gtk::Menu_Helpers::ImageMenuElem(
-				_("Rounded"),
-				*image,
-				sigc::bind(
-					sigc::bind(
-						sigc::mem_fun(*const_cast<studio::Instance*>(this),&studio::Instance::process_action),
-						param_list
-					),
-					"ValueDescSet"
-				)
-			)
-		);
-		param_list.erase("new_value");
-		///////////////// Squared
-		param_list.add("new_value", ValueBase((int)WidthPoint::TYPE_SQUARED));
-		image=new Gtk::Image(Gtk::StockID("synfig-squared_interpolation"),Gtk::IconSize::from_name("synfig-small_icon"));
-		after_menu->items().push_back(
-			Gtk::Menu_Helpers::ImageMenuElem(
-				_("Squared"),
-				*image,
-				sigc::bind(
-					sigc::bind(
-						sigc::mem_fun(*const_cast<studio::Instance*>(this),&studio::Instance::process_action),
-						param_list
-					),
-					"ValueDescSet"
-				)
-			)
-		);
-		param_list.erase("new_value");
-		///////////////// Peak
-		param_list.add("new_value", ValueBase((int)WidthPoint::TYPE_PEAK));
-		image=new Gtk::Image(Gtk::StockID("synfig-peak_interpolation"),Gtk::IconSize::from_name("synfig-small_icon"));
-		after_menu->items().push_back(
-			Gtk::Menu_Helpers::ImageMenuElem(
-				_("Peak"),
-				*image,
-				sigc::bind(
-					sigc::bind(
-						sigc::mem_fun(*const_cast<studio::Instance*>(this),&studio::Instance::process_action),
-						param_list
-					),
-					"ValueDescSet"
-				)
-			)
-		);
-		param_list.erase("new_value");
-		///////////////// Flat
-		param_list.add("new_value", ValueBase((int)WidthPoint::TYPE_FLAT));
-		image=new Gtk::Image(Gtk::StockID("synfig-flat_interpolation"),Gtk::IconSize::from_name("synfig-small_icon"));
-		after_menu->items().push_back(
-			Gtk::Menu_Helpers::ImageMenuElem(
-				_("Flat"),
-				*image,
-				sigc::bind(
-					sigc::bind(
-						sigc::mem_fun(*const_cast<studio::Instance*>(this),&studio::Instance::process_action),
-						param_list
-					),
-					"ValueDescSet"
-				)
-			)
-		);
-		parammenu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Set Side After"), *after_menu));
+
+		ADD_IMAGE_MENU_ITEM(TYPE_INTERPOLATE, "synfig-interpolate_interpolation", "Interpolate")
+		ADD_IMAGE_MENU_ITEM(TYPE_ROUNDED, "synfig-rounded_interpolation", "Rounded")
+		ADD_IMAGE_MENU_ITEM(TYPE_SQUARED, "synfig-squared_interpolation", "Squared")
+		ADD_IMAGE_MENU_ITEM(TYPE_PEAK, "synfig-peak_interpolation", "Peak")
+		ADD_IMAGE_MENU_ITEM(TYPE_FLAT, "synfig-flat_interpolation", "Flat")
+
 		///////
-		parammenu.items().push_back(Gtk::Menu_Helpers::SeparatorElem());
+		item = Gtk::manage(new Gtk::SeparatorMenuItem());
+		item->show();
+		parammenu.append(*item);
+
 		/////// Set WIDTH to ZERO
 		param_list.erase("value_desc");
 		param_list.erase("new_value");
 		param_list.add("value_desc",synfigapp::ValueDesc(wpoint_composite, wpoint_composite->get_link_index_from_name("width")));
 		param_list.add("new_value", ValueBase(Real(0.0)));
-		parammenu.items().push_back(
-			Gtk::Menu_Helpers::MenuElem(
-				_("Set width to zero"),
+		item = Gtk::manage(new Gtk::MenuItem(_("Set width to zero")));
+		item->signal_activate().connect(
+			sigc::bind(
 				sigc::bind(
-					sigc::bind(
-						sigc::mem_fun(*const_cast<studio::Instance*>(this),&studio::Instance::process_action),
-						param_list
-					),
-					"ValueDescSet"
-				)
-			)
-		);
+					sigc::mem_fun(*const_cast<studio::Instance*>(this),&studio::Instance::process_action),
+					param_list ),
+				"ValueDescSet" ));
+		item->show();
+		parammenu.append(*item);
+
 		/////// Set WIDTH to DEFAULT
 		param_list.erase("new_value");
 		param_list.add("value_desc",synfigapp::ValueDesc(wpoint_composite, wpoint_composite->get_link_index_from_name("width")));
 		param_list.add("new_value", ValueBase(Real(1.0)));
-		parammenu.items().push_back(
-			Gtk::Menu_Helpers::MenuElem(
-				_("Set width to default"),
+		item = Gtk::manage(new Gtk::MenuItem(_("Set width to default")));
+		item->signal_activate().connect(
+			sigc::bind(
 				sigc::bind(
-					sigc::bind(
-						sigc::mem_fun(*const_cast<studio::Instance*>(this),&studio::Instance::process_action),
-						param_list
-					),
-					"ValueDescSet"
-				)
-			)
-		);
+					sigc::mem_fun(*const_cast<studio::Instance*>(this),&studio::Instance::process_action),
+					param_list ),
+				"ValueDescSet" ));
+		item->show();
+		parammenu.append(*item);
 	}
 }
 
@@ -1428,8 +1211,7 @@ edit_several_waypoints(etl::handle<CanvasView> canvas_view, std::list<synfigapp:
 
 	Gtk::Dialog dialog(
 		"Edit Multiple Waypoints",		// Title
-		true,		// Modal
-		true		// use_separator
+		true		// Modal
 	);
 
 	Widget_WaypointModel widget_waypoint_model;
@@ -1563,17 +1345,15 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas,const st
 	// Add the edit waypoints option if that might be useful
 	if(canvas->rend_desc().get_time_end()-Time::epsilon()>canvas->rend_desc().get_time_start())
 	{
-		menu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Edit Waypoints"),
+		Gtk::MenuItem *item = Gtk::manage(new Gtk::MenuItem(_("Edit Waypoints")));
+		item->signal_activate().connect(
 			sigc::bind(
 				sigc::bind(
-					sigc::ptr_fun(
-						&edit_several_waypoints
-					),
-					value_desc_list
-				),
-				find_canvas_view(canvas)
-			)
-		));
+					sigc::ptr_fun(&edit_several_waypoints),
+					value_desc_list ),
+				find_canvas_view(canvas) ));
+		item->show();
+		menu->append(*item);
 	}
 	// add here the rest of specific actions for multiple selected value_descs
 	if (value_desc.is_valid())

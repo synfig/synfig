@@ -41,6 +41,8 @@
 #include <synfigapp/action.h>
 #include <synfig/interpolation.h>
 
+#include <gdkmm.h>
+
 #include "general.h"
 
 #endif
@@ -116,16 +118,16 @@ IconController::IconController(const synfig::String& /*basepath*/)
 #define INIT_STOCK_ICON(name,iconfile,desc){							\
 	Gtk::StockItem stockitem(Gtk::StockID("synfig-" #name),desc); \
 	Gtk::Stock::add(stockitem);								\
-	Gtk::IconSet icon_set;									\
+	Glib::RefPtr<Gtk::IconSet> icon_set = Gtk::IconSet::create(); \
 	icon_source.set_filename(path_to_icons+iconfile);							\
-	icon_set.add_source(icon_source);						\
+	icon_set->add_source(icon_source);						\
 	icon_factory->add(stockitem.get_stock_id(),icon_set); \
 	}
 
 #define INIT_STOCK_ICON_CLONE(name,stockid,desc){							\
 	Gtk::StockItem stockitem(Gtk::StockID("synfig-" #name),desc); \
 	Gtk::Stock::add(stockitem);								\
-	Gtk::IconSet icon_set;									\
+	Glib::RefPtr<Gtk::IconSet> icon_set = Gtk::IconSet::create(); \
 	if(Gtk::Stock::lookup(stockitem.get_stock_id(),icon_set))	\
 	icon_factory->add(stockitem.get_stock_id(),icon_set); \
 	}
@@ -331,6 +333,8 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(interpolation_type_linear,"interpolation_type_linear_icon."IMAGE_EXT,_("Linear interpolation"));
 	INIT_STOCK_ICON(interpolation_type_clamped,"interpolation_type_clamped_icon."IMAGE_EXT,_("Clamped interpolation"));
 
+	INIT_STOCK_ICON(utils_chain_link_on,"utils_chain_link_on_icon."IMAGE_EXT,_("Linked"));
+	INIT_STOCK_ICON(utils_chain_link_off,"utils_chain_link_off_icon."IMAGE_EXT,_("Unlinked"));
 	INIT_STOCK_ICON(utils_timetrack_align,"utils_timetrack_align_icon."IMAGE_EXT,"Utils Timetrack align");
 
 	INIT_STOCK_ICON_CLONE(cvs_add,"gtk-add",_("CVS Add"));
@@ -348,10 +352,10 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	Gtk::IconSize::register_new("synfig-small_icon_16x16",16,16);
 
 	for(Type *type = Type::get_first(); type != NULL; type = type->get_next())
-		_tree_pixbuf_table_value_type[type->identifier]=Gtk::Button().render_icon(value_icon(*type),Gtk::ICON_SIZE_SMALL_TOOLBAR);
+		_tree_pixbuf_table_value_type[type->identifier]=Gtk::Button().render_icon_pixbuf(value_icon(*type),Gtk::ICON_SIZE_SMALL_TOOLBAR);
 
 	for(int i(0);i<((int)INTERPOLATION_CLAMPED+1);i++)
-		_tree_pixbuf_table_interpolation[i]=Gtk::Button().render_icon(interpolation_icon(Interpolation(i)),Gtk::ICON_SIZE_SMALL_TOOLBAR);
+		_tree_pixbuf_table_interpolation[i]=Gtk::Button().render_icon_pixbuf(interpolation_icon(Interpolation(i)),Gtk::ICON_SIZE_SMALL_TOOLBAR);
 }
 
 IconController::~IconController()
@@ -363,13 +367,13 @@ IconController::~IconController()
 	icon_factory->remove_default();
 }
 
-Gdk::Cursor
+Glib::RefPtr<Gdk::Cursor>
 IconController::get_normal_cursor()
 {
-	return Gdk::Cursor(Gdk::TOP_LEFT_ARROW);
+	return Gdk::Cursor::create(Gdk::TOP_LEFT_ARROW);
 }
 
-Gdk::Cursor
+Glib::RefPtr<Gdk::Cursor>
 IconController::get_tool_cursor(const Glib::ustring& name,const Glib::RefPtr<Gdk::Window>& window)
 {
 	//this function is never called
@@ -377,39 +381,9 @@ IconController::get_tool_cursor(const Glib::ustring& name,const Glib::RefPtr<Gdk
 	assert(0);
 	// \todo Do we still need it?
 
-	Glib::RefPtr<Gdk::Pixmap> pixmap;
-	pixmap=Gdk::Pixmap::create(window, 64, 64, 8);
-	pixmap->set_colormap(window->get_colormap());
-	//pixmap->set_colormap(Gdk::Colormap::create(pixmap->get_visual(),false));
-	Glib::RefPtr<Gdk::Pixbuf> pixbuf;
-	pixbuf=Gtk::Button().render_icon(Gtk::StockID("synfig-"+name),Gtk::ICON_SIZE_SMALL_TOOLBAR);
-
-	pixbuf->render_to_drawable_alpha(
-		pixmap,
-		0,0,	// SOURCE X,Y
-		0,0,	// DEST X Y
-		-1,-1,	// WIDTH HEIGHT
-		Gdk::PIXBUF_ALPHA_FULL,	// (ignored)
-		64,		//int alpha_threshold,
-		Gdk::RGB_DITHER_MAX,		//RgbDither dither,
-		2,2	//int x_dither, int y_dither
-	);
-/*
-	pixmap->draw_pixbuf(
-		Glib::RefPtr<const Gdk::GC>(0),	// GC
-		pixbuf,
-		0, 0, // Source X,Y
-		0, 0, // Dest X,Y
-		-1, -1, // Width, Height
-		Gdk::RGB_DITHER_MAX, // Dither
-		0,0 // Dither X,Y
-	);
-*/
-
-	Gdk::Color FG("#000000");
-	Gdk::Color BG("#FF00FF");
-
-  	return Gdk::Cursor(pixmap, pixmap, FG, BG, 0, 0);
+	Glib::RefPtr<Gdk::Pixbuf> pixbuf =
+		Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-"+name),Gtk::ICON_SIZE_SMALL_TOOLBAR);
+  	return Gdk::Cursor::create(window->get_display(), pixbuf, 0, 0);
 }
 
 Gtk::StockID
@@ -486,7 +460,7 @@ studio::valuenode_icon(etl::handle<synfig::ValueNode> value_node)
 Glib::RefPtr<Gdk::Pixbuf>
 studio::get_tree_pixbuf(Type &type)
 {
-	//return Gtk::Button().render_icon(value_icon(type),Gtk::ICON_SIZE_SMALL_TOOLBAR);
+	//return Gtk::Button().render_icon_pixbuf(value_icon(type),Gtk::ICON_SIZE_SMALL_TOOLBAR);
 	return _tree_pixbuf_table_value_type[type.identifier];
 }
 
@@ -650,6 +624,6 @@ studio::layer_icon(const synfig::String &layer)
 Glib::RefPtr<Gdk::Pixbuf>
 studio::get_tree_pixbuf_layer(const synfig::String &layer)
 {
-	return Gtk::Button().render_icon(layer_icon(layer),Gtk::ICON_SIZE_SMALL_TOOLBAR);
+	return Gtk::Button().render_icon_pixbuf(layer_icon(layer),Gtk::ICON_SIZE_SMALL_TOOLBAR);
 }
 

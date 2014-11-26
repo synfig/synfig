@@ -62,7 +62,7 @@ class Widget_NavView : public Gtk::Table
 	Gtk::DrawingArea drawto;
 
 	//The input stuff
-	Gtk::Adjustment adj_zoom;
+	Glib::RefPtr<Gtk::Adjustment> adj_zoom;
 	Gtk::Label zoom_print;
 
 	//zoom window stuff
@@ -93,7 +93,7 @@ class Widget_NavView : public Gtk::Table
 	bool on_mouse_event(GdkEvent * e);
 
 	//draws the gotten bitmap on the draw area
-	bool on_expose_draw(GdkEventExpose *exp=0);
+	bool on_drawto_draw(const Cairo::RefPtr<Cairo::Context> &cr);
 
 	//for when the canvasview view changes (boolean value scrolling solves cyclic problems)
 	void on_workarea_view_change();

@@ -105,6 +105,31 @@ RendDesc::get_w()const
 RendDesc &
 RendDesc::set_w(int x)
 {
+	if(FLAGS(flags,LINK_IM_ASPECT)) // "Width and Height ratio"
+	{
+		double new_h = h_ratio_*x/w_ratio_;
+		if(FLAGS(flags,PX_ASPECT))
+		{
+			br_[1]-=focus[1];
+			br_[1]=br_[1]/h_*new_h;
+			br_[1]+=focus[1];
+			tl_[1]-=focus[1];
+			tl_[1]=tl_[1]/h_*new_h;
+			tl_[1]+=focus[1];
+
+			br_[0]-=focus[0];
+			br_[0]=br_[0]/w_*x;
+			br_[0]+=focus[0];
+			tl_[0]-=focus[0];
+			tl_[0]=tl_[0]/w_*x;
+			tl_[0]+=focus[0];
+		}
+		h_=new_h;
+		w_=x;
+
+		return *this;
+	}
+
 	if(FLAGS(flags,LINK_PX_ASPECT)) // never set
 	{
 		h_=h_*x/w_;
@@ -166,6 +191,31 @@ RendDesc::get_h()const
 RendDesc &
 RendDesc::set_h(int y)
 {
+	if(FLAGS(flags,LINK_IM_ASPECT)) // "Width and Height ratio"
+	{
+		double new_w = w_ratio_*y/h_ratio_;
+		if(FLAGS(flags,PX_ASPECT))
+		{
+			br_[0]-=focus[0];
+			br_[0]=br_[0]/w_*new_w;
+			br_[0]+=focus[0];
+			tl_[0]-=focus[0];
+			tl_[0]=tl_[0]/w_*new_w;
+			tl_[0]+=focus[0];
+
+			br_[1]-=focus[1];
+			br_[1]=br_[1]/h_*y;
+			br_[1]+=focus[1];
+			tl_[1]-=focus[1];
+			tl_[1]=tl_[1]/h_*y;
+			tl_[1]+=focus[1];
+		}
+		w_=new_w;
+		h_=y;
+
+		return *this;
+	}
+
 	if(FLAGS(flags,LINK_PX_ASPECT)) // never set
 	{
 		w_=w_*y/h_;
@@ -237,6 +287,11 @@ RendDesc::get_x_res()const
 RendDesc &
 RendDesc::set_x_res(Real x)
 {
+	if(FLAGS(flags,LINK_RES)) // "Resolution ratio"
+	{
+		y_res = y_res_ratio_*x/x_res_ratio_;
+	}
+
 	x_res=x; return *this;
 }
 
@@ -249,6 +304,11 @@ RendDesc::get_y_res()const
 RendDesc &
 RendDesc::set_y_res(Real y)
 {
+	if(FLAGS(flags,LINK_RES)) // "Resolution ratio"
+	{
+		x_res = x_res_ratio_*y/y_res_ratio_;
+	}
+
 	y_res=y; return *this;
 }
 
@@ -405,6 +465,57 @@ RendDesc::get_image_aspect()const
 	return tmp[0];
 }
 
+
+//! Affect the pixel ratio for LINK_IM_ASPECT flag
+void
+RendDesc::set_pixel_ratio(const int &x, const int &y)
+{
+	w_ratio_ = x;
+	h_ratio_ = y;
+}
+
+//! Get the reduced pixel ratio (based on euclide reduction)
+void
+RendDesc::get_pixel_ratio_reduced(int &w_ratio_reduced, int &h_ratio_reduced)
+{
+	int w = w_;
+	int h = h_;
+	int last_rem = h_;
+	int bigger_commun_div;
+
+	div_t dv;
+
+	if(!w_ || !h_)
+	{
+		w_ratio_reduced = h_ratio_reduced = 0;
+		return;
+	}
+
+	if(w_ == h_)
+	{
+		w_ratio_reduced = h_ratio_reduced = 1;
+		return;
+	}
+
+	while (last_rem != 0)
+	{
+		dv = div(w, h);
+		w = h;
+		bigger_commun_div = last_rem;
+		last_rem = h = dv.rem;
+	}
+
+	w_ratio_reduced = w_ / bigger_commun_div;
+	h_ratio_reduced = h_ / bigger_commun_div;
+}
+
+//! Affect the resolution ratio for LINK_RES flag
+void
+RendDesc::set_res_ratio(const Real &x, const Real &y)
+{
+	x_res_ratio_ = x;
+	y_res_ratio_ = y;
+}
 
 //! Return the antialias amount
 const int &

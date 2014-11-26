@@ -78,7 +78,7 @@ Renderer_Dragbox::get_enabled_vfunc()const
 
 void
 Renderer_Dragbox::render_vfunc(
-	const Glib::RefPtr<Gdk::Drawable>& drawable,
+	const Glib::RefPtr<Gdk::Window>& drawable,
 	const Gdk::Rectangle& /*expose_area*/
 )
 {
@@ -88,8 +88,8 @@ Renderer_Dragbox::render_vfunc(
 
 	// const synfig::Vector focus_point(get_work_area()->get_focus_point());
 	// Warning : Unused focus_point
-	int drawable_w,drawable_h;
-	drawable->get_size(drawable_w,drawable_h);
+	int drawable_w = drawable->get_width();
+	int drawable_h = drawable->get_height();
 
 	Cairo::RefPtr<Cairo::Context> cr = drawable->create_cairo_context();
 

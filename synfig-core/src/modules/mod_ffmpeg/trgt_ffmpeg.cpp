@@ -122,29 +122,6 @@ ffmpeg_trgt::~ffmpeg_trgt()
 }
 
 bool
-ffmpeg_trgt::check_ffmpeg_binary(String path)
-{
-	String command;
-	String result;
-	command = path + " -version 2>&1";
-	FILE* pipe = popen(command.c_str(), "r");
-	if (!pipe) {
-		return false;
-	}
-	char buffer[128];
-	while(!feof(pipe)) {
-		if(fgets(buffer, 128, pipe) != NULL)
-				result += buffer;
-	}
-	pclose(pipe);
-	// Output is like: "ffmpeg version ..."
-	if (result.substr(0,6) != "ffmpeg" && result.substr(0,6) != "avconv"){
-		return false;
-	}
-	return true;
-}
-
-bool
 ffmpeg_trgt::set_rend_desc(RendDesc *given_desc)
 {
 	//given_desc->set_pixel_format(PF_RGB);
@@ -197,15 +174,32 @@ ffmpeg_trgt::init(ProgressCallback *cb=NULL)
 		if (binary_path != "")
 			binary_path = etl::dirname(binary_path)+ETL_DIRECTORY_SEPARATOR;
 		binary_path += *iter+".exe";
-		binary_path = "\"" + binary_path + "\"";
-#else
-		binary_path = *iter;
-#endif
-		if (check_ffmpeg_binary(binary_path))
-		{
+		if( access( binary_path.c_str(), F_OK ) != -1 ) {
+			binary_path = "\"" + binary_path + "\"";
 			ffmpeg_binary_path = binary_path;
 			break;
 		}
+#else
+		binary_path = *iter;
+		
+		String command;
+		String result;
+		command = "which "+binary_path;
+		FILE* pipe = popen(command.c_str(), "r");
+		if (!pipe) {
+			continue;
+		}
+		char buffer[128];
+		while(!feof(pipe)) {
+			if(fgets(buffer, 128, pipe) != NULL)
+					result += buffer;
+		}
+		pclose(pipe);
+		if (result.substr(0,1) == "/"){
+			ffmpeg_binary_path = binary_path;
+			break;
+		}
+#endif
 
 	}
 	if (ffmpeg_binary_path == "")

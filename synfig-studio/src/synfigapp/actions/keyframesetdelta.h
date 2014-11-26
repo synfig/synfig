@@ -30,8 +30,6 @@
 #include <synfigapp/action.h>
 #include <synfig/keyframe.h>
 #include <synfig/time.h>
-#include <synfig/guid.h>
-#include <set>
 
 /* === M A C R O S ========================================================= */
 
@@ -52,15 +50,7 @@ private:
 	synfig::Keyframe keyframe;
 	synfig::Time delta;
 
-	std::vector<synfigapp::ValueDesc> value_desc_list;
-
-	void process_value_desc(const synfigapp::ValueDesc& value_desc);
-
-	int scale_activepoints(const synfigapp::ValueDesc& value_desc,const synfig::Time& old_begin,const synfig::Time& old_end,const synfig::Time& new_begin,const synfig::Time& new_end);
-	int scale_waypoints(const synfigapp::ValueDesc& value_desc,const synfig::Time& old_begin,const synfig::Time& old_end,const synfig::Time& new_begin,const synfig::Time& new_end);
-
 public:
-
 	KeyframeSetDelta();
 
 	static ParamVocab get_param_vocab();
@@ -70,8 +60,6 @@ public:
 	virtual bool is_ready()const;
 
 	virtual void prepare();
-	virtual void perform();
-	virtual void undo();
 
 	ACTION_MODULE_EXT
 };

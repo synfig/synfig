@@ -155,7 +155,25 @@ KeyframeActionManager::on_keyframe_properties()
 	signal_show_keyframe_properties_();
 }
 
-/*! \fn KeyframeActionManager::on_keyframe_properties()
+/*! \fn KeyframeActionManager::on_keyframe_toggle()
+**	\brief Signal handler for selected keyframe toogle
+*/
+void
+KeyframeActionManager::on_keyframe_toggle()
+{
+	signal_keyframe_toggle_();
+}
+
+/*! \fn KeyframeActionManager::on_keyframe_description_set()
+**	\brief Signal handler for selected keyframe description change
+*/
+void
+KeyframeActionManager::on_keyframe_description_set()
+{
+	signal_keyframe_description_set_();
+}
+
+/*! \fn KeyframeActionManager::on_add_keyframe()
 **	\brief Signal handler for add keyframe
 */
 void
@@ -219,57 +237,78 @@ KeyframeActionManager::refresh()
 			synfigapp::Action::CATEGORY_KEYFRAME
 		);
 	}
-	if(action_group_->get_action("action-KeyframeAdd"))
+
+	Glib::RefPtr<Gtk::Action> action_kf_add = action_group_->get_action("action-KeyframeAdd");
+	if(action_kf_add)
 	{
-		action_group_->remove(action_group_->get_action("action-KeyframeAdd"));
+		action_group_->remove(action_kf_add);
 	}
 
-		action_group_->add(Gtk::Action::create(
-			"action-KeyframeAdd",
-			Gtk::StockID("gtk-add"),
-			_("Add New Keyframe"),_("Add New Keyframe")
-		),
-			sigc::mem_fun(*this,&KeyframeActionManager::on_add_keyframe)
-		);
+	action_kf_add = Gtk::Action::create("action-KeyframeAdd",Gtk::StockID("gtk-add"),
+										_("Add New Keyframe"),_("Add New Keyframe"));
+	action_group_->add(action_kf_add, sigc::mem_fun(*this,&KeyframeActionManager::on_add_keyframe));
 
-	try
-	{
-		canvas_interface_->get_canvas()->keyframe_list().find(canvas_interface_->get_time());
-		action_group_->get_action("action-KeyframeAdd")->set_sensitive(false);
-		if(action_group_->get_action("action-KeyframeDuplicate"))
-			action_group_->get_action("action-KeyframeDuplicate")->set_sensitive(false);
-	}
-	catch(...)
-	{
-	}
+	//Keyframe properties definition
+	Glib::RefPtr<Gtk::Action> action_kf_properties(Gtk::Action::create("keyframe-properties", Gtk::StockID("gtk-properties"),
+														 _("Keyframe Properties"), _("Keyframe Properties")));
+	action_group_->add(action_kf_properties,sigc::mem_fun(*this,&KeyframeActionManager::on_keyframe_properties));
 
+	// Keyframe activate status definition
+	Glib::RefPtr<Gtk::Action> action_kf_toggle(Gtk::Action::create("keyframe-toggle", _("Keyframe Toggle"), _("Keyframe Toggle")));
+	action_group_->add(action_kf_toggle,sigc::mem_fun(*this,&KeyframeActionManager::on_keyframe_toggle));
+
+	// Keyframe description defintion
+	Glib::RefPtr<Gtk::Action> action_kf_description(Gtk::Action::create("keyframe-description-set", _("Keyframe Set Description"), _("Keyframe Set Description")));
+	action_group_->add(action_kf_description,sigc::mem_fun(*this,&KeyframeActionManager::on_keyframe_description_set));
+
+	//activate actions depending on context
 	{
-		Glib::RefPtr<Gtk::Action> action(Gtk::Action::create("keyframe-properties", Gtk::StockID("gtk-properties"),
-															 _("Keyframe Properties"), _("Keyframe Properties")));
-		action_group_->add(action,sigc::mem_fun(*this,&KeyframeActionManager::on_keyframe_properties));
+		//get the keyframe at current time
+		bool kf_at_current_time = true;
+		try
+		{
+			canvas_interface_->get_canvas()->keyframe_list().find(canvas_interface_->get_time());
+			if(action_group_->get_action("action-KeyframeDuplicate"))
+				action_group_->get_action("action-KeyframeDuplicate")->set_sensitive(false);
+		}
+		catch(synfig::Exception::NotFound)
+		{
+			kf_at_current_time = false;
+		}
+		//get the beginning and ending time of the time slider
+		Time begin_time=canvas_interface_->get_canvas()->rend_desc().get_time_start();
+		Time end_time=canvas_interface_->get_canvas()->rend_desc().get_time_end();
+		//enable add key frame action if animation duration != 0
+		if(kf_at_current_time||(begin_time==end_time))
+		{
+			action_kf_add->set_sensitive(false);
+		}
+		else
+		{
+			action_kf_add->set_sensitive(true);
+		}
+
 		if(keyframe_tree_->get_selection()->count_selected_rows()==0)
-			action->set_sensitive(false);
+		{
+			action_kf_properties->set_sensitive(false);
+			action_kf_toggle->set_sensitive(false);
+			action_kf_description->set_sensitive(false);
+		}
 	}
 
-	//get the beginning and ending time of the time slider
-	Time begin_time=canvas_interface_->get_canvas()->rend_desc().get_time_start();
-	Time end_time=canvas_interface_->get_canvas()->rend_desc().get_time_end();
-	//enable add key frame action if animation duration != 0
-	if(begin_time==end_time)
-	{
-		action_group_->get_action("action-KeyframeAdd")->set_sensitive(false);
-	}
-	else
-	{
-		action_group_->get_action("action-KeyframeAdd")->set_sensitive(true);
-	}
-
-	// this popup menu should be removed since we don't provide a keyframe menu
-	// but the removing will effect the toolbar buttons on keyframe panel, to have
-	// a quick solution, I just remove the menu items and let it here before someone
-	// figure out how this String ui_info works.
+	// this popup menu is used from widget_keyframe_list
 	String full_ui_info;
-	full_ui_info="<ui><popup action=''><menu action='menu-keyframe'>"+ui_info+"</menu></popup></ui>";
+	full_ui_info=
+			"<ui>"
+				"<popup action='menu-keyframe'>"
+						"<menuitem action='action-KeyframeAdd' />"
+						"<menuitem action='action-KeyframeDuplicate' />"
+						"<menuitem action='action-KeyframeRemove' />"
+						"<menuitem action='keyframe-properties' />"
+						"<menuitem action='keyframe-toggle' />"
+						"<menuitem action='keyframe-description-set' />"
+				"</popup>"
+			"</ui>";
 	popup_id_=get_ui_manager()->add_ui_from_string(full_ui_info);
 
 #ifdef ONE_ACTION_GROUP

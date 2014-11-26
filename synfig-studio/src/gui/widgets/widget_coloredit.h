@@ -108,9 +108,7 @@ private:
 	static void slider_color_TYPE_SAT(synfig::Color &color, float amount);
 	static void slider_color_TYPE_A(synfig::Color &color, float amount);
 
-
-	bool
-	redraw(GdkEventExpose*bleh);
+	bool on_draw(const Cairo::RefPtr<Cairo::Context> &cr);
 	bool on_event(GdkEvent *event);
 }; // END of class ColorSlider
 
@@ -144,10 +142,10 @@ class Widget_ColorEdit : public Gtk::Table
 	Gtk::SpinButton *spinbutton_B;
 	Gtk::SpinButton *spinbutton_A;
 
-	Gtk::Adjustment R_adjustment;
-	Gtk::Adjustment G_adjustment;
-	Gtk::Adjustment B_adjustment;
-	Gtk::Adjustment A_adjustment;
+	Glib::RefPtr<Gtk::Adjustment> R_adjustment;
+	Glib::RefPtr<Gtk::Adjustment> G_adjustment;
+	Glib::RefPtr<Gtk::Adjustment> B_adjustment;
+	Glib::RefPtr<Gtk::Adjustment> A_adjustment;
 
 	synfig::Color color;
 
