@@ -2444,9 +2444,27 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 
     Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(*App::main_window, title, Gtk::FILE_CHOOSER_ACTION_SAVE);
 
+    // file type filters
+		Glib::RefPtr<Gtk::FileFilter> filter_sif = Gtk::FileFilter::create();
+		filter_sif->set_name("Unpressed Synfig document (*.sif)");
+		filter_sif->add_mime_type("application/x-sif");
+		filter_sif->add_pattern("*.sif");
+
+		Glib::RefPtr<Gtk::FileFilter> filter_sifz = Gtk::FileFilter::create();
+		filter_sifz->set_name("Compressed Synfig document (*.sifz)");
+		filter_sifz->add_pattern("*.sifz");
+
+		Glib::RefPtr<Gtk::FileFilter> filter_sfg = Gtk::FileFilter::create();
+		filter_sfg->set_name("Container Synfig document (*.sfg)");
+		filter_sfg->add_pattern("*.sfg");
+
     dialog->set_current_folder(prev_path);
     dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
     dialog->add_button(Gtk::Stock::SAVE,   Gtk::RESPONSE_ACCEPT);
+
+    dialog->add_filter(filter_sifz);
+    dialog->add_filter(filter_sif);
+    dialog->add_filter(filter_sfg);
 
 	Widget_Enum *file_type_enum = 0;
 	if (preference == ANIMATION_DIR_PREFERENCE)
@@ -2480,7 +2498,8 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 	}
 
     if (filename.empty())
-		dialog->set_filename(prev_path);
+	  dialog->set_filename(prev_path);
+
     else
 	{
 		std::string full_path;
@@ -2498,10 +2517,23 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 			dialog->set_current_name(basename(filename));
 	}
 
+		dialog->unselect_filename(prev_path);
+
     if(dialog->run() == GTK_RESPONSE_ACCEPT) {
-		if (preference == ANIMATION_DIR_PREFERENCE)
-			set_file_version(synfig::ReleaseVersion(file_type_enum->get_value()));
-        filename = dialog->get_filename();
+
+			if (preference == ANIMATION_DIR_PREFERENCE)
+				set_file_version(synfig::ReleaseVersion(file_type_enum->get_value()));
+
+			// add file extension according to file filter selected by user
+			if (dialog->get_filter() == filter_sif)
+				filename = dialog->get_filename() + ".sif";
+			else if (dialog->get_filter() == filter_sifz)
+				filename = dialog->get_filename() + ".sifz";
+			else if (dialog->get_filter() == filter_sfg)
+				filename = dialog->get_filename() + ".sfg";
+			else filename = dialog->get_filename();
+		}
+
 		// info("Saving preference %s = '%s' in App::dialog_save_file()", preference.c_str(), dirname(filename).c_str());
 		_preferences.set_value(preference, dirname(filename));
         delete dialog;
@@ -2981,7 +3013,6 @@ App::new_instance()
 
 	String file_name(strprintf("%s%d", App::custom_filename_prefix.c_str(), Instance::get_count()+1));
 	canvas->set_name(file_name);
-	file_name += ".sifz";
 
 	canvas->rend_desc().set_frame_rate(preferred_fps);
 	canvas->rend_desc().set_time_start(0.0);
