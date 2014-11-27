@@ -2225,7 +2225,7 @@ App::dialog_open_file(const std::string &title, std::string &filename, std::stri
 		// Sub fileters
 		// 1 Synfig documents. sfg is not supported to import
 		Glib::RefPtr<Gtk::FileFilter> filter_synfig = Gtk::FileFilter::create();
-		filter_synfig->set_name("Synfig documents (*.sif, *.sifz)");
+		filter_synfig->set_name("Synfig files (*.sif, *.sifz)");
 		filter_synfig->add_mime_type("application/x-sif");
 		filter_synfig->add_pattern("*.sif");
 		filter_synfig->add_pattern("*.sifz");
@@ -2351,7 +2351,7 @@ App::dialog_open_file_with_history_button(const std::string &title, std::string 
     // File filters
     // Synfig Documents
 		Glib::RefPtr<Gtk::FileFilter> filter_supported = Gtk::FileFilter::create();
-		filter_supported->set_name("Synfig documents (*.sif, *.sifz, *.sfg)");
+		filter_supported->set_name("Synfig files (*.sif, *.sifz, *.sfg)");
 		filter_supported->add_mime_type("application/x-sif");
 		filter_supported->add_pattern("*.sif");
 		filter_supported->add_pattern("*.sifz");
