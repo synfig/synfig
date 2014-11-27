@@ -2446,16 +2446,16 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 
     // file type filters
 		Glib::RefPtr<Gtk::FileFilter> filter_sif = Gtk::FileFilter::create();
-		filter_sif->set_name("Unpressed Synfig document (*.sif)");
+		filter_sif->set_name("Uncompressed Synfig file(*.sif)");
 		filter_sif->add_mime_type("application/x-sif");
 		filter_sif->add_pattern("*.sif");
 
 		Glib::RefPtr<Gtk::FileFilter> filter_sifz = Gtk::FileFilter::create();
-		filter_sifz->set_name("Compressed Synfig document (*.sifz)");
+		filter_sifz->set_name("Compressed Synfig file(*.sifz)");
 		filter_sifz->add_pattern("*.sifz");
 
 		Glib::RefPtr<Gtk::FileFilter> filter_sfg = Gtk::FileFilter::create();
-		filter_sfg->set_name("Container Synfig document (*.sfg)");
+		filter_sfg->set_name("Container format file(*.sfg)");
 		filter_sfg->add_pattern("*.sfg");
 
     dialog->set_current_folder(prev_path);
@@ -2497,9 +2497,7 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 		dialog->set_extra_widget(*hbox);
 	}
 
-    if (filename.empty())
-	  dialog->set_filename(prev_path);
-
+    if (filename.empty()) dialog->set_filename(prev_path);
     else
 	{
 		std::string full_path;
@@ -2517,13 +2515,11 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 			dialog->set_current_name(basename(filename));
 	}
 
-		dialog->unselect_filename(prev_path);
-
     if(dialog->run() == GTK_RESPONSE_ACCEPT) {
 
 			if (preference == ANIMATION_DIR_PREFERENCE)
 				set_file_version(synfig::ReleaseVersion(file_type_enum->get_value()));
-
+		{
 			// add file extension according to file filter selected by user
 			if (dialog->get_filter() == filter_sif)
 				filename = dialog->get_filename() + ".sif";
