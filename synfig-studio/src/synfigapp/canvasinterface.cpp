@@ -680,13 +680,13 @@ CanvasInterface::jump_to_prev_keyframe()
 bool
 CanvasInterface::import(const synfig::String &filename, synfig::String &errors, synfig::String &warnings, bool resize_image)
 {
-	Action::PassiveGrouper group(get_instance().get(),_("Import Image"));
+	Action::PassiveGrouper group(get_instance().get(),_("Import"));
 
 	synfig::info("Attempting to import "+filename);
 
 	if (filename_extension(filename) == "")
 	{
-		get_ui_interface()->error(_("Filename must have an extension!"));
+		get_ui_interface()->error(_("File name must have an extension!"));
 		return false;
 	}
 
