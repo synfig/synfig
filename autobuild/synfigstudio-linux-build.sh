@@ -863,7 +863,6 @@ initialize()
 		libtool \
 		intltool \
 		gettext \
-		cvs \
 		libpng12-dev \
 		fontconfig \
 		libfreetype6-dev \
@@ -906,7 +905,6 @@ initialize()
 				libtool-ltdl-devel \
 				boost-devel \
 				boost-program-options \
-				cvs \
 				shared-mime-info \
 				OpenEXR-devel \
 				libmng-devel \
@@ -929,7 +927,7 @@ initialize()
 				debootstrap \
 				rsync"
 		else
-			PKG_LIST="${PKG_LIST} libpng-devel libjpeg-devel freetype-devel fontconfig-devel atk-devel pango-devel cairo-devel gtk3-devel gettext-devel libxml2-devel libxml++-devel gcc-c++ autoconf automake libtool libtool-ltdl-devel cvs boost-devel boost-program-options shared-mime-info"
+			PKG_LIST="${PKG_LIST} libpng-devel libjpeg-devel freetype-devel fontconfig-devel atk-devel pango-devel cairo-devel gtk3-devel gettext-devel libxml2-devel libxml++-devel gcc-c++ autoconf automake libtool libtool-ltdl-devel boost-devel boost-program-options shared-mime-info"
 			PKG_LIST="${PKG_LIST} OpenEXR-devel libmng-devel ImageMagick-c++-devel gtkmm3-devel glibmm2-devel"
 		fi
 		if ! ( rpm -qv $PKG_LIST ); then
@@ -958,7 +956,6 @@ initialize()
 					libltdl3-devel \
 					intltool \
 					gettext \
-					cvs \
 					libpng12-devel \
 					libjpeg-devel \
 					fontconfig \
@@ -1018,7 +1015,7 @@ initialize()
 			fi
 		else
 			echo "WARNING: This build script does not works with package mangement systems other than yum, zypper or apt! You should install dependent packages manually."
-			echo "REQUIRED PACKAGES: libpng-devel libjpeg-devel freetype-devel fontconfig-devel atk-devel pango-devel cairo-devel gtk3-devel gettext-devel libxml2-devel libxml++-devel gcc-c++ autoconf automake libtool libtool-ltdl-devel cvs shared-mime-info OpenEXR-devel libmng-devel ImageMagick-c++-devel gtkmm30-devel glibmm24-devel"
+			echo "REQUIRED PACKAGES: libpng-devel libjpeg-devel freetype-devel fontconfig-devel atk-devel pango-devel cairo-devel gtk3-devel gettext-devel libxml2-devel libxml++-devel gcc-c++ autoconf automake libtool libtool-ltdl-devel shared-mime-info OpenEXR-devel libmng-devel ImageMagick-c++-devel gtkmm30-devel glibmm24-devel"
 			echo ""
 			read
 		fi
@@ -1175,7 +1172,7 @@ mkpackage()
 		mkpack
 	else
 		[ -d $HOME/synfig-packages ] || mkdir -p $HOME/synfig-packages
-		#DEB_LIST="build-essential,autoconf,automake,libltdl3-dev,libtool,gettext,cvs,libpng12-dev,libjpeg62-dev,libfreetype6-dev,libfontconfig1-dev,libgtk3.0-dev,libxml2-dev,bzip2,rpm,alien,xsltproc"
+		#DEB_LIST="build-essential,autoconf,automake,libltdl3-dev,libtool,gettext,libpng12-dev,libjpeg62-dev,libfreetype6-dev,libfontconfig1-dev,libgtk3.0-dev,libxml2-dev,bzip2,rpm,alien,xsltproc"
 		for ARCH in i386 amd64; do
 		if [[ $ARCH == 'i386' ]];then
 			SETARCH='linux32'
