@@ -225,7 +225,7 @@ mkprefix()
 			libpthread-stubs0-dev \
 			libxml-parser-perl \
 			libdb-dev uuid-dev \
-			wget mawk cvs \
+			wget mawk \
 			bzip2"
 	
 	INCLUDE_LIST=""
@@ -270,7 +270,7 @@ mkprefix_deps()
 			libtiff4-dev \
 			libjasper-dev \
 			x11proto-xext-dev libdirectfb-dev libxfixes-dev libxinerama-dev libxdamage-dev libxcomposite-dev libxcursor-dev libxft-dev libxrender-dev libxt-dev libxrandr-dev libxi-dev libxext-dev libx11-dev \
-			libxml-parser-perl m4 cvs \
+			libxml-parser-perl m4 \
 			libdb-dev uuid-dev \
 			bzip2"
 
