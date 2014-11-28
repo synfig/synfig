@@ -1034,7 +1034,7 @@ void CanvasView::set_jack_enabled(bool value)
 
 	if (jackbutton->get_active())
 	{
-		icon = manage(new Gtk::Image(Gtk::StockID("synfig-jack_mode_on"),iconsize));
+		icon = manage(new Gtk::Image(Gtk::StockID("synfig-jack"),iconsize));
 		jackbutton->remove();
 		jackbutton->add(*icon);
 		jackbutton->set_tooltip_text(_("Disable JACK"));
@@ -1045,7 +1045,7 @@ void CanvasView::set_jack_enabled(bool value)
 	}
 	else
 	{
-		icon = manage(new Gtk::Image(Gtk::StockID("synfig-jack_mode_off"),iconsize));
+		icon = manage(new Gtk::Image(Gtk::StockID("synfig-jack"),iconsize));
 		jackbutton->remove();
 		jackbutton->add(*icon);
 		jackbutton->set_tooltip_text(_("Enable JACK"));

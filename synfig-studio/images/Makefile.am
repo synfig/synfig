@@ -32,7 +32,7 @@ EXTRA_DIST = \
 	graphs_icon.sif \
 	duplicate_icon.sif \
 	group_icon.sif \
-	jack_mode_icons.sif \
+	jack_icon.sif \
 	keyframe_lock_icons.sif \
 	framedial_icons.sif \
 	logo.sif \
@@ -194,6 +194,7 @@ IMAGES = \
 	valuenode_icon.$(EXT) \
 	duplicate_icon.$(EXT) \
 	group_icon.$(EXT) \
+	jack_icon.$(EXT) \
 	\
 	keyframe_lock_past_on_icon.$(EXT) \
 	keyframe_lock_past_off_icon.$(EXT) \
@@ -212,9 +213,6 @@ IMAGES = \
 	animate_loop_icon.$(EXT) \
 	animate_mode_off_icon.$(EXT) \
 	animate_mode_on_icon.$(EXT) \
-	\
-	jack_mode_off_icon.$(EXT) \
-	jack_mode_on_icon.$(EXT) \
 	\
 	rename_icon.$(EXT) \
 	set_fill_color.$(EXT) \
@@ -500,16 +498,6 @@ animate_mode_off_icon.$(EXT): $(srcdir)/animate_mode_icons.sif
 	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
 animate_mode_on_icon.$(EXT): $(srcdir)/animate_mode_icons.sif
-	$(SYNFIG) -q $< -o $@ --time 1
-	echo " File \"images\\$@\"" >>./images.nsh
-	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
-	
-jack_mode_off_icon.$(EXT): $(srcdir)/jack_mode_icons.sif
-	$(SYNFIG) -q $< -o $@ --time 0
-	echo " File \"images\\$@\"" >>./images.nsh
-	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
-
-jack_mode_on_icon.$(EXT): $(srcdir)/jack_mode_icons.sif
 	$(SYNFIG) -q $< -o $@ --time 1
 	echo " File \"images\\$@\"" >>./images.nsh
 	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh

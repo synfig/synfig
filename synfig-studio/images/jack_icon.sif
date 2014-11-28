@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<canvas version="0.9" width="128" height="128" xres="2834.645752" yres="2834.645752" view-box="-1.000000 1.000000 1.000000 -1.000000" antialias="2" fps="24.000" begin-time="0f" end-time="0f" bgcolor="0.500000 0.500000 0.500000 1.000000">
+<canvas version="1.0" width="128" height="128" xres="2834.645752" yres="2834.645752" view-box="-1.000000 1.000000 1.000000 -1.000000" antialias="2" fps="24.000" begin-time="0f" end-time="0f" bgcolor="0.500000 0.500000 0.500000 1.000000">
   <name>Synfig Studio: Jack Icon</name>
   <desc>Placed in the Public Domain in 2014 by Yu Chen (jcome)</desc>
   <meta name="grid_show" content="0"/>
@@ -35,7 +35,366 @@
       </color>
     </param>
   </layer>
-  <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="outline">
+  <layer type="region" active="true" exclude_from_rendering="false" version="0.1" desc="NewSpline Region">
+    <param name="z_depth">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="amount">
+      <real value="0.4000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="0"/>
+    </param>
+    <param name="color">
+      <color>
+        <r>0.019608</r>
+        <g>0.027451</g>
+        <b>0.031373</b>
+        <a>1.000000</a>
+      </color>
+    </param>
+    <param name="origin">
+      <vector>
+        <x>0.0000000000</x>
+        <y>0.0000000000</y>
+      </vector>
+    </param>
+    <param name="invert">
+      <bool value="false"/>
+    </param>
+    <param name="antialias">
+      <bool value="true"/>
+    </param>
+    <param name="feather">
+      <real value="0.0799999982"/>
+    </param>
+    <param name="blurtype">
+      <integer value="1"/>
+    </param>
+    <param name="winding_style">
+      <integer value="0"/>
+    </param>
+    <param name="bline">
+      <bline type="bline_point" loop="true">
+        <entry>
+          <composite type="bline_point">
+            <point>
+              <vector>
+                <x>0.5097686648</x>
+                <y>0.5304417610</y>
+              </vector>
+            </point>
+            <width>
+              <real value="1.0000000000"/>
+            </width>
+            <origin>
+              <real value="0.5000000000"/>
+            </origin>
+            <split>
+              <bool value="false"/>
+            </split>
+            <t1>
+              <radial_composite type="vector">
+                <radius>
+                  <real value="0.2264062364"/>
+                </radius>
+                <theta>
+                  <angle value="128.662338"/>
+                </theta>
+              </radial_composite>
+            </t1>
+            <t2>
+              <radial_composite type="vector">
+                <radius>
+                  <real value="0.2264062364"/>
+                </radius>
+                <theta>
+                  <angle value="128.662338"/>
+                </theta>
+              </radial_composite>
+            </t2>
+            <split_radius>
+              <bool value="false"/>
+            </split_radius>
+            <split_angle>
+              <bool value="false"/>
+            </split_angle>
+          </composite>
+        </entry>
+        <entry>
+          <composite type="bline_point">
+            <point>
+              <vector>
+                <x>0.5148194432</x>
+                <y>0.6466093063</y>
+              </vector>
+            </point>
+            <width>
+              <real value="1.0000000000"/>
+            </width>
+            <origin>
+              <real value="0.5000000000"/>
+            </origin>
+            <split>
+              <bool value="false"/>
+            </split>
+            <t1>
+              <radial_composite type="vector">
+                <radius>
+                  <real value="0.1692679689"/>
+                </radius>
+                <theta>
+                  <angle value="107.395721"/>
+                </theta>
+              </radial_composite>
+            </t1>
+            <t2>
+              <radial_composite type="vector">
+                <radius>
+                  <real value="0.1692679689"/>
+                </radius>
+                <theta>
+                  <angle value="107.395721"/>
+                </theta>
+              </radial_composite>
+            </t2>
+            <split_radius>
+              <bool value="false"/>
+            </split_radius>
+            <split_angle>
+              <bool value="false"/>
+            </split_angle>
+          </composite>
+        </entry>
+        <entry>
+          <composite type="bline_point">
+            <point>
+              <vector>
+                <x>-0.2528964579</x>
+                <y>1.0001627207</y>
+              </vector>
+            </point>
+            <width>
+              <real value="1.0000000000"/>
+            </width>
+            <origin>
+              <real value="0.5000000000"/>
+            </origin>
+            <split>
+              <bool value="false"/>
+            </split>
+            <t1>
+              <radial_composite type="vector">
+                <radius>
+                  <real value="0.3112474509"/>
+                </radius>
+                <theta>
+                  <angle value="169.822540"/>
+                </theta>
+              </radial_composite>
+            </t1>
+            <t2>
+              <radial_composite type="vector">
+                <radius>
+                  <real value="0.3112474509"/>
+                </radius>
+                <theta>
+                  <angle value="169.822540"/>
+                </theta>
+              </radial_composite>
+            </t2>
+            <split_radius>
+              <bool value="false"/>
+            </split_radius>
+            <split_angle>
+              <bool value="false"/>
+            </split_angle>
+          </composite>
+        </entry>
+        <entry>
+          <composite type="bline_point">
+            <point>
+              <vector>
+                <x>-0.4296731651</x>
+                <y>0.5708478689</y>
+              </vector>
+            </point>
+            <width>
+              <real value="1.0000000000"/>
+            </width>
+            <origin>
+              <real value="0.5000000000"/>
+            </origin>
+            <split>
+              <bool value="false"/>
+            </split>
+            <t1>
+              <radial_composite type="vector">
+                <radius>
+                  <real value="0.2869368408"/>
+                </radius>
+                <theta>
+                  <angle value="-64.742004"/>
+                </theta>
+              </radial_composite>
+            </t1>
+            <t2>
+              <radial_composite type="vector">
+                <radius>
+                  <real value="0.2869368408"/>
+                </radius>
+                <theta>
+                  <angle value="-64.742004"/>
+                </theta>
+              </radial_composite>
+            </t2>
+            <split_radius>
+              <bool value="false"/>
+            </split_radius>
+            <split_angle>
+              <bool value="false"/>
+            </split_angle>
+          </composite>
+        </entry>
+        <entry>
+          <composite type="bline_point">
+            <point>
+              <vector>
+                <x>0.3178396821</x>
+                <y>0.2475990504</y>
+              </vector>
+            </point>
+            <width>
+              <real value="1.0000000000"/>
+            </width>
+            <origin>
+              <real value="0.5000000000"/>
+            </origin>
+            <split>
+              <bool value="false"/>
+            </split>
+            <t1>
+              <radial_composite type="vector">
+                <radius>
+                  <real value="0.2549880731"/>
+                </radius>
+                <theta>
+                  <angle value="18.400467"/>
+                </theta>
+              </radial_composite>
+            </t1>
+            <t2>
+              <radial_composite type="vector">
+                <radius>
+                  <real value="0.2549880731"/>
+                </radius>
+                <theta>
+                  <angle value="18.400467"/>
+                </theta>
+              </radial_composite>
+            </t2>
+            <split_radius>
+              <bool value="false"/>
+            </split_radius>
+            <split_angle>
+              <bool value="false"/>
+            </split_angle>
+          </composite>
+        </entry>
+        <entry>
+          <composite type="bline_point">
+            <point>
+              <vector>
+                <x>0.3936011195</x>
+                <y>0.3334619999</y>
+              </vector>
+            </point>
+            <width>
+              <real value="1.0000000000"/>
+            </width>
+            <origin>
+              <real value="0.5000000000"/>
+            </origin>
+            <split>
+              <bool value="false"/>
+            </split>
+            <t1>
+              <radial_composite type="vector">
+                <radius>
+                  <real value="0.1545237024"/>
+                </radius>
+                <theta>
+                  <angle value="-11.309913"/>
+                </theta>
+              </radial_composite>
+            </t1>
+            <t2>
+              <radial_composite type="vector">
+                <radius>
+                  <real value="0.1545237024"/>
+                </radius>
+                <theta>
+                  <angle value="-11.309913"/>
+                </theta>
+              </radial_composite>
+            </t2>
+            <split_radius>
+              <bool value="false"/>
+            </split_radius>
+            <split_angle>
+              <bool value="false"/>
+            </split_angle>
+          </composite>
+        </entry>
+        <entry>
+          <composite type="bline_point">
+            <point>
+              <vector>
+                <x>1.1461647749</x>
+                <y>0.0253654867</y>
+              </vector>
+            </point>
+            <width>
+              <real value="1.0000000000"/>
+            </width>
+            <origin>
+              <real value="0.5000000000"/>
+            </origin>
+            <split>
+              <bool value="false"/>
+            </split>
+            <t1>
+              <radial_composite type="vector">
+                <radius>
+                  <real value="0.5763797865"/>
+                </radius>
+                <theta>
+                  <angle value="50.805290"/>
+                </theta>
+              </radial_composite>
+            </t1>
+            <t2>
+              <radial_composite type="vector">
+                <radius>
+                  <real value="0.5763797865"/>
+                </radius>
+                <theta>
+                  <angle value="50.805290"/>
+                </theta>
+              </radial_composite>
+            </t2>
+            <split_radius>
+              <bool value="false"/>
+            </split_radius>
+            <split_angle>
+              <bool value="false"/>
+            </split_angle>
+          </composite>
+        </entry>
+      </bline>
+    </param>
+  </layer>
+  <layer type="group" active="true" exclude_from_rendering="false" version="0.2" desc="outline">
     <param name="z_depth">
       <real value="0.0000000000"/>
     </param>
@@ -50,6 +409,31 @@
         <x>0.0000000000</x>
         <y>0.0000000000</y>
       </vector>
+    </param>
+    <param name="transformation">
+      <composite type="transformation">
+        <offset>
+          <vector>
+            <x>0.0000000000</x>
+            <y>0.0000000000</y>
+          </vector>
+        </offset>
+        <angle>
+          <angle value="0.000000"/>
+        </angle>
+        <skew_angle>
+          <angle value="0.000000"/>
+        </skew_angle>
+        <scale>
+          <vector>
+            <x>1.0000000000</x>
+            <y>1.0000000000</y>
+          </vector>
+        </scale>
+      </composite>
+    </param>
+    <param name="enable_transformation">
+      <bool value="true"/>
     </param>
     <param name="canvas">
       <canvas>
@@ -131,6 +515,12 @@
                       </theta>
                     </radial_composite>
                   </t2>
+                  <split_radius>
+                    <bool value="true"/>
+                  </split_radius>
+                  <split_angle>
+                    <bool value="true"/>
+                  </split_angle>
                 </composite>
               </entry>
               <entry>
@@ -170,6 +560,12 @@
                       </theta>
                     </radial_composite>
                   </t2>
+                  <split_radius>
+                    <bool value="true"/>
+                  </split_radius>
+                  <split_angle>
+                    <bool value="true"/>
+                  </split_angle>
                 </composite>
               </entry>
               <entry>
@@ -209,6 +605,12 @@
                       </theta>
                     </radial_composite>
                   </t2>
+                  <split_radius>
+                    <bool value="true"/>
+                  </split_radius>
+                  <split_angle>
+                    <bool value="true"/>
+                  </split_angle>
                 </composite>
               </entry>
               <entry>
@@ -248,6 +650,12 @@
                       </theta>
                     </radial_composite>
                   </t2>
+                  <split_radius>
+                    <bool value="true"/>
+                  </split_radius>
+                  <split_angle>
+                    <bool value="true"/>
+                  </split_angle>
                 </composite>
               </entry>
               <entry>
@@ -287,6 +695,12 @@
                       </theta>
                     </radial_composite>
                   </t2>
+                  <split_radius>
+                    <bool value="true"/>
+                  </split_radius>
+                  <split_angle>
+                    <bool value="true"/>
+                  </split_angle>
                 </composite>
               </entry>
             </bline>
@@ -391,6 +805,12 @@
                       </theta>
                     </radial_composite>
                   </t2>
+                  <split_radius>
+                    <bool value="true"/>
+                  </split_radius>
+                  <split_angle>
+                    <bool value="true"/>
+                  </split_angle>
                 </composite>
               </entry>
               <entry>
@@ -430,6 +850,12 @@
                       </theta>
                     </radial_composite>
                   </t2>
+                  <split_radius>
+                    <bool value="true"/>
+                  </split_radius>
+                  <split_angle>
+                    <bool value="true"/>
+                  </split_angle>
                 </composite>
               </entry>
               <entry>
@@ -469,6 +895,12 @@
                       </theta>
                     </radial_composite>
                   </t2>
+                  <split_radius>
+                    <bool value="true"/>
+                  </split_radius>
+                  <split_angle>
+                    <bool value="true"/>
+                  </split_angle>
                 </composite>
               </entry>
               <entry>
@@ -508,6 +940,12 @@
                       </theta>
                     </radial_composite>
                   </t2>
+                  <split_radius>
+                    <bool value="true"/>
+                  </split_radius>
+                  <split_angle>
+                    <bool value="true"/>
+                  </split_angle>
                 </composite>
               </entry>
               <entry>
@@ -547,6 +985,12 @@
                       </theta>
                     </radial_composite>
                   </t2>
+                  <split_radius>
+                    <bool value="true"/>
+                  </split_radius>
+                  <split_angle>
+                    <bool value="true"/>
+                  </split_angle>
                 </composite>
               </entry>
               <entry>
@@ -586,6 +1030,12 @@
                       </theta>
                     </radial_composite>
                   </t2>
+                  <split_radius>
+                    <bool value="true"/>
+                  </split_radius>
+                  <split_angle>
+                    <bool value="true"/>
+                  </split_angle>
                 </composite>
               </entry>
               <entry>
@@ -625,6 +1075,12 @@
                       </theta>
                     </radial_composite>
                   </t2>
+                  <split_radius>
+                    <bool value="true"/>
+                  </split_radius>
+                  <split_angle>
+                    <bool value="true"/>
+                  </split_angle>
                 </composite>
               </entry>
               <entry>
@@ -664,6 +1120,12 @@
                       </theta>
                     </radial_composite>
                   </t2>
+                  <split_radius>
+                    <bool value="true"/>
+                  </split_radius>
+                  <split_angle>
+                    <bool value="true"/>
+                  </split_angle>
                 </composite>
               </entry>
               <entry>
@@ -703,6 +1165,12 @@
                       </theta>
                     </radial_composite>
                   </t2>
+                  <split_radius>
+                    <bool value="true"/>
+                  </split_radius>
+                  <split_angle>
+                    <bool value="true"/>
+                  </split_angle>
                 </composite>
               </entry>
               <entry>
@@ -742,6 +1210,12 @@
                       </theta>
                     </radial_composite>
                   </t2>
+                  <split_radius>
+                    <bool value="true"/>
+                  </split_radius>
+                  <split_angle>
+                    <bool value="true"/>
+                  </split_angle>
                 </composite>
               </entry>
               <entry>
@@ -781,6 +1255,12 @@
                       </theta>
                     </radial_composite>
                   </t2>
+                  <split_radius>
+                    <bool value="true"/>
+                  </split_radius>
+                  <split_angle>
+                    <bool value="true"/>
+                  </split_angle>
                 </composite>
               </entry>
             </bline>
@@ -885,6 +1365,12 @@
                       </theta>
                     </radial_composite>
                   </t2>
+                  <split_radius>
+                    <bool value="true"/>
+                  </split_radius>
+                  <split_angle>
+                    <bool value="true"/>
+                  </split_angle>
                 </composite>
               </entry>
               <entry>
@@ -924,6 +1410,12 @@
                       </theta>
                     </radial_composite>
                   </t2>
+                  <split_radius>
+                    <bool value="true"/>
+                  </split_radius>
+                  <split_angle>
+                    <bool value="true"/>
+                  </split_angle>
                 </composite>
               </entry>
               <entry>
@@ -963,6 +1455,12 @@
                       </theta>
                     </radial_composite>
                   </t2>
+                  <split_radius>
+                    <bool value="true"/>
+                  </split_radius>
+                  <split_angle>
+                    <bool value="true"/>
+                  </split_angle>
                 </composite>
               </entry>
             </bline>
@@ -1067,6 +1565,12 @@
                       </theta>
                     </radial_composite>
                   </t2>
+                  <split_radius>
+                    <bool value="true"/>
+                  </split_radius>
+                  <split_angle>
+                    <bool value="true"/>
+                  </split_angle>
                 </composite>
               </entry>
               <entry>
@@ -1106,6 +1610,12 @@
                       </theta>
                     </radial_composite>
                   </t2>
+                  <split_radius>
+                    <bool value="true"/>
+                  </split_radius>
+                  <split_angle>
+                    <bool value="true"/>
+                  </split_angle>
                 </composite>
               </entry>
               <entry>
@@ -1145,6 +1655,12 @@
                       </theta>
                     </radial_composite>
                   </t2>
+                  <split_radius>
+                    <bool value="true"/>
+                  </split_radius>
+                  <split_angle>
+                    <bool value="true"/>
+                  </split_angle>
                 </composite>
               </entry>
               <entry>
@@ -1184,6 +1700,12 @@
                       </theta>
                     </radial_composite>
                   </t2>
+                  <split_radius>
+                    <bool value="true"/>
+                  </split_radius>
+                  <split_angle>
+                    <bool value="true"/>
+                  </split_angle>
                 </composite>
               </entry>
               <entry>
@@ -1223,6 +1745,12 @@
                       </theta>
                     </radial_composite>
                   </t2>
+                  <split_radius>
+                    <bool value="true"/>
+                  </split_radius>
+                  <split_angle>
+                    <bool value="true"/>
+                  </split_angle>
                 </composite>
               </entry>
               <entry>
@@ -1262,6 +1790,12 @@
                       </theta>
                     </radial_composite>
                   </t2>
+                  <split_radius>
+                    <bool value="true"/>
+                  </split_radius>
+                  <split_angle>
+                    <bool value="true"/>
+                  </split_angle>
                 </composite>
               </entry>
               <entry>
@@ -1301,6 +1835,12 @@
                       </theta>
                     </radial_composite>
                   </t2>
+                  <split_radius>
+                    <bool value="true"/>
+                  </split_radius>
+                  <split_angle>
+                    <bool value="true"/>
+                  </split_angle>
                 </composite>
               </entry>
             </bline>
@@ -1329,26 +1869,29 @@
         </layer>
       </canvas>
     </param>
-    <param name="zoom">
-      <real value="0.0000000000"/>
-    </param>
     <param name="time_offset">
       <time value="0s"/>
     </param>
     <param name="children_lock">
       <bool value="false" static="true"/>
     </param>
-    <param name="focus">
-      <vector>
-        <x>0.0000000000</x>
-        <y>0.0000000000</y>
-      </vector>
-    </param>
     <param name="outline_grow">
       <real value="0.0000000000"/>
     </param>
+    <param name="z_range">
+      <bool value="false" static="true"/>
+    </param>
+    <param name="z_range_position">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="z_range_depth">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="z_range_blur">
+      <real value="0.0000000000"/>
+    </param>
   </layer>
-  <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="Audo Jack">
+  <layer type="group" active="true" exclude_from_rendering="false" version="0.2" desc="Audo Jack">
     <param name="z_depth">
       <real value="0.0000000000"/>
     </param>
@@ -1364,9 +1907,34 @@
         <y>0.0000000000</y>
       </vector>
     </param>
+    <param name="transformation">
+      <composite type="transformation">
+        <offset>
+          <vector>
+            <x>0.0000000000</x>
+            <y>0.0000000000</y>
+          </vector>
+        </offset>
+        <angle>
+          <angle value="0.000000"/>
+        </angle>
+        <skew_angle>
+          <angle value="0.000000"/>
+        </skew_angle>
+        <scale>
+          <vector>
+            <x>1.0000000000</x>
+            <y>1.0000000000</y>
+          </vector>
+        </scale>
+      </composite>
+    </param>
+    <param name="enable_transformation">
+      <bool value="true"/>
+    </param>
     <param name="canvas">
       <canvas width="167" height="52" xres="10.000000" yres="10.000000" view-box="-1.399926 0.433333 1.399926 -0.433333">
-        <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1">
+        <layer type="group" active="true" exclude_from_rendering="false" version="0.2">
           <param name="z_depth">
             <real value="0.0000000000"/>
           </param>
@@ -1382,9 +1950,34 @@
               <y>0.0000000000</y>
             </vector>
           </param>
+          <param name="transformation">
+            <composite type="transformation">
+              <offset>
+                <vector>
+                  <x>0.0000000000</x>
+                  <y>0.0000000000</y>
+                </vector>
+              </offset>
+              <angle>
+                <angle value="0.000000"/>
+              </angle>
+              <skew_angle>
+                <angle value="0.000000"/>
+              </skew_angle>
+              <scale>
+                <vector>
+                  <x>1.0000000000</x>
+                  <y>1.0000000000</y>
+                </vector>
+              </scale>
+            </composite>
+          </param>
+          <param name="enable_transformation">
+            <bool value="true"/>
+          </param>
           <param name="canvas">
             <canvas>
-              <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="head">
+              <layer type="group" active="true" exclude_from_rendering="false" version="0.2" desc="head">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -1399,6 +1992,31 @@
                     <x>0.0000000000</x>
                     <y>0.0000000000</y>
                   </vector>
+                </param>
+                <param name="transformation">
+                  <composite type="transformation">
+                    <offset>
+                      <vector>
+                        <x>0.0000000000</x>
+                        <y>0.0000000000</y>
+                      </vector>
+                    </offset>
+                    <angle>
+                      <angle value="0.000000"/>
+                    </angle>
+                    <skew_angle>
+                      <angle value="0.000000"/>
+                    </skew_angle>
+                    <scale>
+                      <vector>
+                        <x>1.0000000000</x>
+                        <y>1.0000000000</y>
+                      </vector>
+                    </scale>
+                  </composite>
+                </param>
+                <param name="enable_transformation">
+                  <bool value="true"/>
                 </param>
                 <param name="canvas">
                   <canvas>
@@ -1480,6 +2098,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="true"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="true"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -1519,6 +2143,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="true"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="true"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -1558,6 +2188,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="true"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="true"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -1597,6 +2233,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="true"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="true"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -1636,6 +2278,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="true"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="true"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -1675,6 +2323,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="true"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="true"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -1714,6 +2368,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="true"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="true"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -1753,6 +2413,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="true"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="true"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -1792,6 +2458,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="true"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="true"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -1831,6 +2503,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="true"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="true"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -1870,6 +2548,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="true"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="true"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -1909,6 +2593,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="true"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="true"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -1948,6 +2638,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="true"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="true"/>
+                              </split_angle>
                             </composite>
                           </entry>
                         </bline>
@@ -2011,6 +2707,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="true"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="true"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -2050,6 +2752,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="false"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="false"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -2089,6 +2797,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="false"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="false"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -2128,6 +2842,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="false"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="false"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -2167,6 +2887,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="true"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="true"/>
+                              </split_angle>
                             </composite>
                           </entry>
                         </bline>
@@ -2308,6 +3034,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="false"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="false"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -2347,6 +3079,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="false"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="false"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -2386,6 +3124,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="false"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="false"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -2425,6 +3169,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="false"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="false"/>
+                              </split_angle>
                             </composite>
                           </entry>
                         </bline>
@@ -2508,6 +3258,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="false"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="false"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -2547,6 +3303,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="false"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="false"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -2586,6 +3348,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="false"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="false"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -2625,6 +3393,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="true"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="true"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -2664,6 +3438,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="true"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="true"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -2703,6 +3483,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="false"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="false"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -2742,6 +3528,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="false"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="false"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -2781,6 +3573,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="true"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="true"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -2820,6 +3618,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="true"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="true"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -2859,6 +3663,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="false"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="false"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -2898,6 +3708,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="false"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="false"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -2937,6 +3753,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="true"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="true"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -2976,6 +3798,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="true"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="true"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -3015,6 +3843,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="false"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="false"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -3054,6 +3888,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="false"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="false"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -3093,6 +3933,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="true"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="true"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -3132,6 +3978,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="true"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="true"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -3171,6 +4023,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="false"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="false"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -3210,6 +4068,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="false"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="false"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -3249,12 +4113,18 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="false"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="false"/>
+                              </split_angle>
                             </composite>
                           </entry>
                         </bline>
                       </param>
                     </layer>
-                    <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1">
+                    <layer type="group" active="true" exclude_from_rendering="false" version="0.2">
                       <param name="z_depth">
                         <real value="0.0000000000"/>
                       </param>
@@ -3269,6 +4139,31 @@
                           <x>0.0000000000</x>
                           <y>0.0000000000</y>
                         </vector>
+                      </param>
+                      <param name="transformation">
+                        <composite type="transformation">
+                          <offset>
+                            <vector>
+                              <x>0.0000000000</x>
+                              <y>0.0000000000</y>
+                            </vector>
+                          </offset>
+                          <angle>
+                            <angle value="0.000000"/>
+                          </angle>
+                          <skew_angle>
+                            <angle value="0.000000"/>
+                          </skew_angle>
+                          <scale>
+                            <vector>
+                              <x>1.0000000000</x>
+                              <y>1.0000000000</y>
+                            </vector>
+                          </scale>
+                        </composite>
+                      </param>
+                      <param name="enable_transformation">
+                        <bool value="true"/>
                       </param>
                       <param name="canvas">
                         <canvas>
@@ -3350,6 +4245,12 @@
                                         </theta>
                                       </radial_composite>
                                     </t2>
+                                    <split_radius>
+                                      <bool value="true"/>
+                                    </split_radius>
+                                    <split_angle>
+                                      <bool value="true"/>
+                                    </split_angle>
                                   </composite>
                                 </entry>
                                 <entry>
@@ -3389,6 +4290,12 @@
                                         </theta>
                                       </radial_composite>
                                     </t2>
+                                    <split_radius>
+                                      <bool value="true"/>
+                                    </split_radius>
+                                    <split_angle>
+                                      <bool value="true"/>
+                                    </split_angle>
                                   </composite>
                                 </entry>
                                 <entry>
@@ -3428,6 +4335,12 @@
                                         </theta>
                                       </radial_composite>
                                     </t2>
+                                    <split_radius>
+                                      <bool value="true"/>
+                                    </split_radius>
+                                    <split_angle>
+                                      <bool value="true"/>
+                                    </split_angle>
                                   </composite>
                                 </entry>
                                 <entry>
@@ -3467,6 +4380,12 @@
                                         </theta>
                                       </radial_composite>
                                     </t2>
+                                    <split_radius>
+                                      <bool value="true"/>
+                                    </split_radius>
+                                    <split_angle>
+                                      <bool value="true"/>
+                                    </split_angle>
                                   </composite>
                                 </entry>
                                 <entry>
@@ -3506,6 +4425,12 @@
                                         </theta>
                                       </radial_composite>
                                     </t2>
+                                    <split_radius>
+                                      <bool value="true"/>
+                                    </split_radius>
+                                    <split_angle>
+                                      <bool value="true"/>
+                                    </split_angle>
                                   </composite>
                                 </entry>
                                 <entry>
@@ -3545,6 +4470,12 @@
                                         </theta>
                                       </radial_composite>
                                     </t2>
+                                    <split_radius>
+                                      <bool value="true"/>
+                                    </split_radius>
+                                    <split_angle>
+                                      <bool value="true"/>
+                                    </split_angle>
                                   </composite>
                                 </entry>
                                 <entry>
@@ -3584,6 +4515,12 @@
                                         </theta>
                                       </radial_composite>
                                     </t2>
+                                    <split_radius>
+                                      <bool value="true"/>
+                                    </split_radius>
+                                    <split_angle>
+                                      <bool value="true"/>
+                                    </split_angle>
                                   </composite>
                                 </entry>
                                 <entry>
@@ -3623,6 +4560,12 @@
                                         </theta>
                                       </radial_composite>
                                     </t2>
+                                    <split_radius>
+                                      <bool value="true"/>
+                                    </split_radius>
+                                    <split_angle>
+                                      <bool value="true"/>
+                                    </split_angle>
                                   </composite>
                                 </entry>
                                 <entry>
@@ -3662,6 +4605,12 @@
                                         </theta>
                                       </radial_composite>
                                     </t2>
+                                    <split_radius>
+                                      <bool value="true"/>
+                                    </split_radius>
+                                    <split_angle>
+                                      <bool value="true"/>
+                                    </split_angle>
                                   </composite>
                                 </entry>
                                 <entry>
@@ -3701,6 +4650,12 @@
                                         </theta>
                                       </radial_composite>
                                     </t2>
+                                    <split_radius>
+                                      <bool value="true"/>
+                                    </split_radius>
+                                    <split_angle>
+                                      <bool value="true"/>
+                                    </split_angle>
                                   </composite>
                                 </entry>
                                 <entry>
@@ -3740,6 +4695,12 @@
                                         </theta>
                                       </radial_composite>
                                     </t2>
+                                    <split_radius>
+                                      <bool value="true"/>
+                                    </split_radius>
+                                    <split_angle>
+                                      <bool value="true"/>
+                                    </split_angle>
                                   </composite>
                                 </entry>
                                 <entry>
@@ -3779,6 +4740,12 @@
                                         </theta>
                                       </radial_composite>
                                     </t2>
+                                    <split_radius>
+                                      <bool value="true"/>
+                                    </split_radius>
+                                    <split_angle>
+                                      <bool value="true"/>
+                                    </split_angle>
                                   </composite>
                                 </entry>
                               </bline>
@@ -3862,6 +4829,12 @@
                                         </theta>
                                       </radial_composite>
                                     </t2>
+                                    <split_radius>
+                                      <bool value="true"/>
+                                    </split_radius>
+                                    <split_angle>
+                                      <bool value="true"/>
+                                    </split_angle>
                                   </composite>
                                 </entry>
                                 <entry>
@@ -3901,6 +4874,12 @@
                                         </theta>
                                       </radial_composite>
                                     </t2>
+                                    <split_radius>
+                                      <bool value="true"/>
+                                    </split_radius>
+                                    <split_angle>
+                                      <bool value="true"/>
+                                    </split_angle>
                                   </composite>
                                 </entry>
                                 <entry>
@@ -3940,6 +4919,12 @@
                                         </theta>
                                       </radial_composite>
                                     </t2>
+                                    <split_radius>
+                                      <bool value="true"/>
+                                    </split_radius>
+                                    <split_angle>
+                                      <bool value="true"/>
+                                    </split_angle>
                                   </composite>
                                 </entry>
                                 <entry>
@@ -3979,6 +4964,12 @@
                                         </theta>
                                       </radial_composite>
                                     </t2>
+                                    <split_radius>
+                                      <bool value="true"/>
+                                    </split_radius>
+                                    <split_angle>
+                                      <bool value="true"/>
+                                    </split_angle>
                                   </composite>
                                 </entry>
                                 <entry>
@@ -4018,6 +5009,12 @@
                                         </theta>
                                       </radial_composite>
                                     </t2>
+                                    <split_radius>
+                                      <bool value="true"/>
+                                    </split_radius>
+                                    <split_angle>
+                                      <bool value="true"/>
+                                    </split_angle>
                                   </composite>
                                 </entry>
                                 <entry>
@@ -4057,6 +5054,12 @@
                                         </theta>
                                       </radial_composite>
                                     </t2>
+                                    <split_radius>
+                                      <bool value="true"/>
+                                    </split_radius>
+                                    <split_angle>
+                                      <bool value="true"/>
+                                    </split_angle>
                                   </composite>
                                 </entry>
                                 <entry>
@@ -4096,6 +5099,12 @@
                                         </theta>
                                       </radial_composite>
                                     </t2>
+                                    <split_radius>
+                                      <bool value="true"/>
+                                    </split_radius>
+                                    <split_angle>
+                                      <bool value="true"/>
+                                    </split_angle>
                                   </composite>
                                 </entry>
                                 <entry>
@@ -4135,6 +5144,12 @@
                                         </theta>
                                       </radial_composite>
                                     </t2>
+                                    <split_radius>
+                                      <bool value="true"/>
+                                    </split_radius>
+                                    <split_angle>
+                                      <bool value="true"/>
+                                    </split_angle>
                                   </composite>
                                 </entry>
                                 <entry>
@@ -4174,6 +5189,12 @@
                                         </theta>
                                       </radial_composite>
                                     </t2>
+                                    <split_radius>
+                                      <bool value="true"/>
+                                    </split_radius>
+                                    <split_angle>
+                                      <bool value="true"/>
+                                    </split_angle>
                                   </composite>
                                 </entry>
                                 <entry>
@@ -4213,6 +5234,12 @@
                                         </theta>
                                       </radial_composite>
                                     </t2>
+                                    <split_radius>
+                                      <bool value="true"/>
+                                    </split_radius>
+                                    <split_angle>
+                                      <bool value="true"/>
+                                    </split_angle>
                                   </composite>
                                 </entry>
                                 <entry>
@@ -4252,6 +5279,12 @@
                                         </theta>
                                       </radial_composite>
                                     </t2>
+                                    <split_radius>
+                                      <bool value="true"/>
+                                    </split_radius>
+                                    <split_angle>
+                                      <bool value="true"/>
+                                    </split_angle>
                                   </composite>
                                 </entry>
                                 <entry>
@@ -4291,6 +5324,12 @@
                                         </theta>
                                       </radial_composite>
                                     </t2>
+                                    <split_radius>
+                                      <bool value="true"/>
+                                    </split_radius>
+                                    <split_angle>
+                                      <bool value="true"/>
+                                    </split_angle>
                                   </composite>
                                 </entry>
                               </bline>
@@ -4298,22 +5337,25 @@
                           </layer>
                         </canvas>
                       </param>
-                      <param name="zoom">
-                        <real value="0.0000000000"/>
-                      </param>
                       <param name="time_offset">
                         <time value="0s"/>
                       </param>
                       <param name="children_lock">
                         <bool value="false" static="true"/>
                       </param>
-                      <param name="focus">
-                        <vector>
-                          <x>0.0000000000</x>
-                          <y>0.0000000000</y>
-                        </vector>
-                      </param>
                       <param name="outline_grow">
+                        <real value="0.0000000000"/>
+                      </param>
+                      <param name="z_range">
+                        <bool value="false" static="true"/>
+                      </param>
+                      <param name="z_range_position">
+                        <real value="0.0000000000"/>
+                      </param>
+                      <param name="z_range_depth">
+                        <real value="0.0000000000"/>
+                      </param>
+                      <param name="z_range_blur">
                         <real value="0.0000000000"/>
                       </param>
                     </layer>
@@ -4395,6 +5437,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="true"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="true"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -4434,6 +5482,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="true"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="true"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -4473,6 +5527,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="true"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="true"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -4512,6 +5572,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="true"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="true"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -4551,6 +5617,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="true"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="true"/>
+                              </split_angle>
                             </composite>
                           </entry>
                         </bline>
@@ -4655,6 +5727,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="true"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="true"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -4694,6 +5772,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="true"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="true"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -4733,6 +5817,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="true"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="true"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -4772,6 +5862,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="true"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="true"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -4811,6 +5907,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="true"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="true"/>
+                              </split_angle>
                             </composite>
                           </entry>
                         </bline>
@@ -4915,6 +6017,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="true"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="true"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -4954,6 +6062,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="true"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="true"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -4993,6 +6107,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="true"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="true"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -5032,6 +6152,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="true"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="true"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -5071,6 +6197,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="true"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="true"/>
+                              </split_angle>
                             </composite>
                           </entry>
                         </bline>
@@ -5175,6 +6307,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="true"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="true"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -5214,6 +6352,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="true"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="true"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -5253,6 +6397,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="true"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="true"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -5292,6 +6442,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="true"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="true"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -5331,6 +6487,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="true"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="true"/>
+                              </split_angle>
                             </composite>
                           </entry>
                         </bline>
@@ -5359,26 +6521,29 @@
                     </layer>
                   </canvas>
                 </param>
-                <param name="zoom">
-                  <real value="0.0000000000"/>
-                </param>
                 <param name="time_offset">
                   <time value="0s"/>
                 </param>
                 <param name="children_lock">
                   <bool value="false" static="true"/>
                 </param>
-                <param name="focus">
-                  <vector>
-                    <x>0.0000000000</x>
-                    <y>0.0000000000</y>
-                  </vector>
-                </param>
                 <param name="outline_grow">
                   <real value="0.0000000000"/>
                 </param>
+                <param name="z_range">
+                  <bool value="false" static="true"/>
+                </param>
+                <param name="z_range_position">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="z_range_depth">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="z_range_blur">
+                  <real value="0.0000000000"/>
+                </param>
               </layer>
-              <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="base">
+              <layer type="group" active="true" exclude_from_rendering="false" version="0.2" desc="base">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -5394,9 +6559,34 @@
                     <y>0.0000000000</y>
                   </vector>
                 </param>
+                <param name="transformation">
+                  <composite type="transformation">
+                    <offset>
+                      <vector>
+                        <x>0.0000000000</x>
+                        <y>0.0000000000</y>
+                      </vector>
+                    </offset>
+                    <angle>
+                      <angle value="0.000000"/>
+                    </angle>
+                    <skew_angle>
+                      <angle value="0.000000"/>
+                    </skew_angle>
+                    <scale>
+                      <vector>
+                        <x>1.0000000000</x>
+                        <y>1.0000000000</y>
+                      </vector>
+                    </scale>
+                  </composite>
+                </param>
+                <param name="enable_transformation">
+                  <bool value="true"/>
+                </param>
                 <param name="canvas">
                   <canvas>
-                    <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="main">
+                    <layer type="group" active="true" exclude_from_rendering="false" version="0.2" desc="main">
                       <param name="z_depth">
                         <real value="0.0000000000"/>
                       </param>
@@ -5411,6 +6601,31 @@
                           <x>0.0000000000</x>
                           <y>0.0000000000</y>
                         </vector>
+                      </param>
+                      <param name="transformation">
+                        <composite type="transformation">
+                          <offset>
+                            <vector>
+                              <x>0.0000000000</x>
+                              <y>0.0000000000</y>
+                            </vector>
+                          </offset>
+                          <angle>
+                            <angle value="0.000000"/>
+                          </angle>
+                          <skew_angle>
+                            <angle value="0.000000"/>
+                          </skew_angle>
+                          <scale>
+                            <vector>
+                              <x>1.0000000000</x>
+                              <y>1.0000000000</y>
+                            </vector>
+                          </scale>
+                        </composite>
+                      </param>
+                      <param name="enable_transformation">
+                        <bool value="true"/>
                       </param>
                       <param name="canvas">
                         <canvas>
@@ -5492,6 +6707,12 @@
                                         </theta>
                                       </radial_composite>
                                     </t2>
+                                    <split_radius>
+                                      <bool value="true"/>
+                                    </split_radius>
+                                    <split_angle>
+                                      <bool value="true"/>
+                                    </split_angle>
                                   </composite>
                                 </entry>
                                 <entry>
@@ -5531,6 +6752,12 @@
                                         </theta>
                                       </radial_composite>
                                     </t2>
+                                    <split_radius>
+                                      <bool value="true"/>
+                                    </split_radius>
+                                    <split_angle>
+                                      <bool value="true"/>
+                                    </split_angle>
                                   </composite>
                                 </entry>
                                 <entry>
@@ -5570,6 +6797,12 @@
                                         </theta>
                                       </radial_composite>
                                     </t2>
+                                    <split_radius>
+                                      <bool value="true"/>
+                                    </split_radius>
+                                    <split_angle>
+                                      <bool value="true"/>
+                                    </split_angle>
                                   </composite>
                                 </entry>
                                 <entry>
@@ -5609,6 +6842,12 @@
                                         </theta>
                                       </radial_composite>
                                     </t2>
+                                    <split_radius>
+                                      <bool value="true"/>
+                                    </split_radius>
+                                    <split_angle>
+                                      <bool value="true"/>
+                                    </split_angle>
                                   </composite>
                                 </entry>
                                 <entry>
@@ -5648,6 +6887,12 @@
                                         </theta>
                                       </radial_composite>
                                     </t2>
+                                    <split_radius>
+                                      <bool value="true"/>
+                                    </split_radius>
+                                    <split_angle>
+                                      <bool value="true"/>
+                                    </split_angle>
                                   </composite>
                                 </entry>
                               </bline>
@@ -5731,6 +6976,12 @@
                                         </theta>
                                       </radial_composite>
                                     </t2>
+                                    <split_radius>
+                                      <bool value="true"/>
+                                    </split_radius>
+                                    <split_angle>
+                                      <bool value="true"/>
+                                    </split_angle>
                                   </composite>
                                 </entry>
                                 <entry>
@@ -5770,6 +7021,12 @@
                                         </theta>
                                       </radial_composite>
                                     </t2>
+                                    <split_radius>
+                                      <bool value="true"/>
+                                    </split_radius>
+                                    <split_angle>
+                                      <bool value="true"/>
+                                    </split_angle>
                                   </composite>
                                 </entry>
                                 <entry>
@@ -5809,6 +7066,12 @@
                                         </theta>
                                       </radial_composite>
                                     </t2>
+                                    <split_radius>
+                                      <bool value="true"/>
+                                    </split_radius>
+                                    <split_angle>
+                                      <bool value="true"/>
+                                    </split_angle>
                                   </composite>
                                 </entry>
                                 <entry>
@@ -5848,6 +7111,12 @@
                                         </theta>
                                       </radial_composite>
                                     </t2>
+                                    <split_radius>
+                                      <bool value="true"/>
+                                    </split_radius>
+                                    <split_angle>
+                                      <bool value="true"/>
+                                    </split_angle>
                                   </composite>
                                 </entry>
                                 <entry>
@@ -5887,6 +7156,12 @@
                                         </theta>
                                       </radial_composite>
                                     </t2>
+                                    <split_radius>
+                                      <bool value="true"/>
+                                    </split_radius>
+                                    <split_angle>
+                                      <bool value="true"/>
+                                    </split_angle>
                                   </composite>
                                 </entry>
                                 <entry>
@@ -5926,6 +7201,12 @@
                                         </theta>
                                       </radial_composite>
                                     </t2>
+                                    <split_radius>
+                                      <bool value="true"/>
+                                    </split_radius>
+                                    <split_angle>
+                                      <bool value="true"/>
+                                    </split_angle>
                                   </composite>
                                 </entry>
                               </bline>
@@ -5996,26 +7277,29 @@
                           </layer>
                         </canvas>
                       </param>
-                      <param name="zoom">
-                        <real value="0.0000000000"/>
-                      </param>
                       <param name="time_offset">
                         <time value="0s"/>
                       </param>
                       <param name="children_lock">
                         <bool value="false" static="true"/>
                       </param>
-                      <param name="focus">
-                        <vector>
-                          <x>0.0000000000</x>
-                          <y>0.0000000000</y>
-                        </vector>
-                      </param>
                       <param name="outline_grow">
                         <real value="0.0000000000"/>
                       </param>
+                      <param name="z_range">
+                        <bool value="false" static="true"/>
+                      </param>
+                      <param name="z_range_position">
+                        <real value="0.0000000000"/>
+                      </param>
+                      <param name="z_range_depth">
+                        <real value="0.0000000000"/>
+                      </param>
+                      <param name="z_range_blur">
+                        <real value="0.0000000000"/>
+                      </param>
                     </layer>
-                    <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1">
+                    <layer type="group" active="true" exclude_from_rendering="false" version="0.2">
                       <param name="z_depth">
                         <real value="0.0000000000"/>
                       </param>
@@ -6030,6 +7314,31 @@
                           <x>0.0000000000</x>
                           <y>0.0000000000</y>
                         </vector>
+                      </param>
+                      <param name="transformation">
+                        <composite type="transformation">
+                          <offset>
+                            <vector>
+                              <x>0.0000000000</x>
+                              <y>0.0000000000</y>
+                            </vector>
+                          </offset>
+                          <angle>
+                            <angle value="0.000000"/>
+                          </angle>
+                          <skew_angle>
+                            <angle value="0.000000"/>
+                          </skew_angle>
+                          <scale>
+                            <vector>
+                              <x>1.0000000000</x>
+                              <y>1.0000000000</y>
+                            </vector>
+                          </scale>
+                        </composite>
+                      </param>
+                      <param name="enable_transformation">
+                        <bool value="true"/>
                       </param>
                       <param name="canvas">
                         <canvas>
@@ -6111,6 +7420,12 @@
                                         </theta>
                                       </radial_composite>
                                     </t2>
+                                    <split_radius>
+                                      <bool value="true"/>
+                                    </split_radius>
+                                    <split_angle>
+                                      <bool value="true"/>
+                                    </split_angle>
                                   </composite>
                                 </entry>
                                 <entry>
@@ -6150,6 +7465,12 @@
                                         </theta>
                                       </radial_composite>
                                     </t2>
+                                    <split_radius>
+                                      <bool value="true"/>
+                                    </split_radius>
+                                    <split_angle>
+                                      <bool value="true"/>
+                                    </split_angle>
                                   </composite>
                                 </entry>
                                 <entry>
@@ -6189,6 +7510,12 @@
                                         </theta>
                                       </radial_composite>
                                     </t2>
+                                    <split_radius>
+                                      <bool value="true"/>
+                                    </split_radius>
+                                    <split_angle>
+                                      <bool value="true"/>
+                                    </split_angle>
                                   </composite>
                                 </entry>
                                 <entry>
@@ -6228,6 +7555,12 @@
                                         </theta>
                                       </radial_composite>
                                     </t2>
+                                    <split_radius>
+                                      <bool value="true"/>
+                                    </split_radius>
+                                    <split_angle>
+                                      <bool value="true"/>
+                                    </split_angle>
                                   </composite>
                                 </entry>
                               </bline>
@@ -6298,22 +7631,25 @@
                           </layer>
                         </canvas>
                       </param>
-                      <param name="zoom">
-                        <real value="0.0000000000"/>
-                      </param>
                       <param name="time_offset">
                         <time value="0s"/>
                       </param>
                       <param name="children_lock">
                         <bool value="false" static="true"/>
                       </param>
-                      <param name="focus">
-                        <vector>
-                          <x>0.0000000000</x>
-                          <y>0.0000000000</y>
-                        </vector>
-                      </param>
                       <param name="outline_grow">
+                        <real value="0.0000000000"/>
+                      </param>
+                      <param name="z_range">
+                        <bool value="false" static="true"/>
+                      </param>
+                      <param name="z_range_position">
+                        <real value="0.0000000000"/>
+                      </param>
+                      <param name="z_range_depth">
+                        <real value="0.0000000000"/>
+                      </param>
+                      <param name="z_range_blur">
                         <real value="0.0000000000"/>
                       </param>
                     </layer>
@@ -6395,6 +7731,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="true"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="true"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -6434,6 +7776,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="true"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="true"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -6473,6 +7821,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="true"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="true"/>
+                              </split_angle>
                             </composite>
                           </entry>
                         </bline>
@@ -6499,7 +7853,7 @@
                         <bool value="true"/>
                       </param>
                     </layer>
-                    <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="top0">
+                    <layer type="group" active="true" exclude_from_rendering="false" version="0.2" desc="top0">
                       <param name="z_depth">
                         <real value="0.0000000000"/>
                       </param>
@@ -6514,6 +7868,31 @@
                           <x>0.0000000000</x>
                           <y>0.0000000000</y>
                         </vector>
+                      </param>
+                      <param name="transformation">
+                        <composite type="transformation">
+                          <offset>
+                            <vector>
+                              <x>0.0000000000</x>
+                              <y>0.0000000000</y>
+                            </vector>
+                          </offset>
+                          <angle>
+                            <angle value="0.000000"/>
+                          </angle>
+                          <skew_angle>
+                            <angle value="0.000000"/>
+                          </skew_angle>
+                          <scale>
+                            <vector>
+                              <x>1.0000000000</x>
+                              <y>1.0000000000</y>
+                            </vector>
+                          </scale>
+                        </composite>
+                      </param>
+                      <param name="enable_transformation">
+                        <bool value="true"/>
                       </param>
                       <param name="canvas">
                         <canvas>
@@ -6595,6 +7974,12 @@
                                         </theta>
                                       </radial_composite>
                                     </t2>
+                                    <split_radius>
+                                      <bool value="true"/>
+                                    </split_radius>
+                                    <split_angle>
+                                      <bool value="true"/>
+                                    </split_angle>
                                   </composite>
                                 </entry>
                                 <entry>
@@ -6634,6 +8019,12 @@
                                         </theta>
                                       </radial_composite>
                                     </t2>
+                                    <split_radius>
+                                      <bool value="true"/>
+                                    </split_radius>
+                                    <split_angle>
+                                      <bool value="true"/>
+                                    </split_angle>
                                   </composite>
                                 </entry>
                                 <entry>
@@ -6673,6 +8064,12 @@
                                         </theta>
                                       </radial_composite>
                                     </t2>
+                                    <split_radius>
+                                      <bool value="true"/>
+                                    </split_radius>
+                                    <split_angle>
+                                      <bool value="true"/>
+                                    </split_angle>
                                   </composite>
                                 </entry>
                                 <entry>
@@ -6712,6 +8109,12 @@
                                         </theta>
                                       </radial_composite>
                                     </t2>
+                                    <split_radius>
+                                      <bool value="true"/>
+                                    </split_radius>
+                                    <split_angle>
+                                      <bool value="true"/>
+                                    </split_angle>
                                   </composite>
                                 </entry>
                                 <entry>
@@ -6751,6 +8154,12 @@
                                         </theta>
                                       </radial_composite>
                                     </t2>
+                                    <split_radius>
+                                      <bool value="true"/>
+                                    </split_radius>
+                                    <split_angle>
+                                      <bool value="true"/>
+                                    </split_angle>
                                   </composite>
                                 </entry>
                                 <entry>
@@ -6790,6 +8199,12 @@
                                         </theta>
                                       </radial_composite>
                                     </t2>
+                                    <split_radius>
+                                      <bool value="true"/>
+                                    </split_radius>
+                                    <split_angle>
+                                      <bool value="true"/>
+                                    </split_angle>
                                   </composite>
                                 </entry>
                                 <entry>
@@ -6829,6 +8244,12 @@
                                         </theta>
                                       </radial_composite>
                                     </t2>
+                                    <split_radius>
+                                      <bool value="true"/>
+                                    </split_radius>
+                                    <split_angle>
+                                      <bool value="true"/>
+                                    </split_angle>
                                   </composite>
                                 </entry>
                               </bline>
@@ -6954,6 +8375,12 @@
                                         </theta>
                                       </radial_composite>
                                     </t2>
+                                    <split_radius>
+                                      <bool value="true"/>
+                                    </split_radius>
+                                    <split_angle>
+                                      <bool value="true"/>
+                                    </split_angle>
                                   </composite>
                                 </entry>
                                 <entry>
@@ -6993,6 +8420,12 @@
                                         </theta>
                                       </radial_composite>
                                     </t2>
+                                    <split_radius>
+                                      <bool value="true"/>
+                                    </split_radius>
+                                    <split_angle>
+                                      <bool value="true"/>
+                                    </split_angle>
                                   </composite>
                                 </entry>
                                 <entry>
@@ -7032,6 +8465,12 @@
                                         </theta>
                                       </radial_composite>
                                     </t2>
+                                    <split_radius>
+                                      <bool value="true"/>
+                                    </split_radius>
+                                    <split_angle>
+                                      <bool value="true"/>
+                                    </split_angle>
                                   </composite>
                                 </entry>
                               </bline>
@@ -7060,29 +8499,29 @@
                           </layer>
                         </canvas>
                       </param>
-                      <param name="zoom">
-                        <real value="0.0000000000"/>
-                      </param>
                       <param name="time_offset">
                         <time value="0s"/>
                       </param>
                       <param name="children_lock">
                         <bool value="false" static="true"/>
                       </param>
-                      <param name="focus">
-                        <vector>
-                          <x>0.0000000000</x>
-                          <y>0.0000000000</y>
-                        </vector>
-                      </param>
                       <param name="outline_grow">
+                        <real value="0.0000000000"/>
+                      </param>
+                      <param name="z_range">
+                        <bool value="false" static="true"/>
+                      </param>
+                      <param name="z_range_position">
+                        <real value="0.0000000000"/>
+                      </param>
+                      <param name="z_range_depth">
+                        <real value="0.0000000000"/>
+                      </param>
+                      <param name="z_range_blur">
                         <real value="0.0000000000"/>
                       </param>
                     </layer>
                   </canvas>
-                </param>
-                <param name="zoom">
-                  <real value="0.0000000000"/>
                 </param>
                 <param name="time_offset">
                   <time value="0s"/>
@@ -7090,17 +8529,23 @@
                 <param name="children_lock">
                   <bool value="false" static="true"/>
                 </param>
-                <param name="focus">
-                  <vector>
-                    <x>0.0000000000</x>
-                    <y>0.0000000000</y>
-                  </vector>
-                </param>
                 <param name="outline_grow">
                   <real value="0.0000000000"/>
                 </param>
+                <param name="z_range">
+                  <bool value="false" static="true"/>
+                </param>
+                <param name="z_range_position">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="z_range_depth">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="z_range_blur">
+                  <real value="0.0000000000"/>
+                </param>
               </layer>
-              <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="cable">
+              <layer type="group" active="true" exclude_from_rendering="false" version="0.2" desc="cable">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -7115,6 +8560,31 @@
                     <x>0.0000000000</x>
                     <y>0.0000000000</y>
                   </vector>
+                </param>
+                <param name="transformation">
+                  <composite type="transformation">
+                    <offset>
+                      <vector>
+                        <x>0.0000000000</x>
+                        <y>0.0000000000</y>
+                      </vector>
+                    </offset>
+                    <angle>
+                      <angle value="0.000000"/>
+                    </angle>
+                    <skew_angle>
+                      <angle value="0.000000"/>
+                    </skew_angle>
+                    <scale>
+                      <vector>
+                        <x>1.0000000000</x>
+                        <y>1.0000000000</y>
+                      </vector>
+                    </scale>
+                  </composite>
+                </param>
+                <param name="enable_transformation">
+                  <bool value="true"/>
                 </param>
                 <param name="canvas">
                   <canvas>
@@ -7196,6 +8666,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="true"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="true"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -7235,6 +8711,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="true"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="true"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -7274,6 +8756,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="true"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="true"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -7313,6 +8801,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="true"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="true"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -7352,6 +8846,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="true"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="true"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -7391,6 +8891,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="true"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="true"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -7430,6 +8936,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="true"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="true"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -7469,6 +8981,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="true"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="true"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -7508,6 +9026,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="true"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="true"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -7547,6 +9071,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="true"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="true"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -7586,6 +9116,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="true"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="true"/>
+                              </split_angle>
                             </composite>
                           </entry>
                         </bline>
@@ -7649,6 +9185,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="true"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="true"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -7688,6 +9230,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="true"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="true"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -7727,6 +9275,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="true"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="true"/>
+                              </split_angle>
                             </composite>
                           </entry>
                         </bline>
@@ -7780,29 +9334,29 @@
                     </layer>
                   </canvas>
                 </param>
-                <param name="zoom">
-                  <real value="0.0000000000"/>
-                </param>
                 <param name="time_offset">
                   <time value="0s"/>
                 </param>
                 <param name="children_lock">
                   <bool value="false" static="true"/>
                 </param>
-                <param name="focus">
-                  <vector>
-                    <x>0.0000000000</x>
-                    <y>0.0000000000</y>
-                  </vector>
-                </param>
                 <param name="outline_grow">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="z_range">
+                  <bool value="false" static="true"/>
+                </param>
+                <param name="z_range_position">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="z_range_depth">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="z_range_blur">
                   <real value="0.0000000000"/>
                 </param>
               </layer>
             </canvas>
-          </param>
-          <param name="zoom">
-            <real value="0.0000000000"/>
           </param>
           <param name="time_offset">
             <time value="0s"/>
@@ -7810,20 +9364,23 @@
           <param name="children_lock">
             <bool value="false" static="true"/>
           </param>
-          <param name="focus">
-            <vector>
-              <x>0.0000000000</x>
-              <y>0.0000000000</y>
-            </vector>
-          </param>
           <param name="outline_grow">
+            <real value="0.0000000000"/>
+          </param>
+          <param name="z_range">
+            <bool value="false" static="true"/>
+          </param>
+          <param name="z_range_position">
+            <real value="0.0000000000"/>
+          </param>
+          <param name="z_range_depth">
+            <real value="0.0000000000"/>
+          </param>
+          <param name="z_range_blur">
             <real value="0.0000000000"/>
           </param>
         </layer>
       </canvas>
-    </param>
-    <param name="zoom">
-      <real value="0.0000000000"/>
     </param>
     <param name="time_offset">
       <time value="0s"/>
@@ -7831,13 +9388,19 @@
     <param name="children_lock">
       <bool value="false"/>
     </param>
-    <param name="focus">
-      <vector>
-        <x>0.0000000000</x>
-        <y>0.0000000000</y>
-      </vector>
-    </param>
     <param name="outline_grow">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="z_range">
+      <bool value="false" static="true"/>
+    </param>
+    <param name="z_range_position">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="z_range_depth">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="z_range_blur">
       <real value="0.0000000000"/>
     </param>
   </layer>
