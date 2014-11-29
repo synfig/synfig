@@ -138,7 +138,7 @@ Layer_SkeletonDeformation::prepare_mask()
  	{
 		if (!i->same_type_as(BonePair())) continue;
  		const BonePair &bonePair = i->get(BonePair());
- 		const Bone &bone = bonePair.second;
+ 		const Bone &bone = bonePair.first;
  		Matrix matrix = bone.get_animated_matrix();
  		Vector origin = matrix.get_transformed(Vector(0.0, 0.0));
  		Vector direction = matrix.get_transformed(Vector(1.0, 0.0), false).norm();
@@ -354,7 +354,7 @@ Layer_SkeletonDeformation::prepare_mesh()
 		mesh.triangles.push_back(i->second);
 
 	prepare_mask();
-	update_mesh_and_mask()();
+	update_mesh_and_mask();
 }
 
 bool

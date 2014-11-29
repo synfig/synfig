@@ -29,6 +29,7 @@
 
 #include "layer_composite.h"
 #include "mesh.h"
+#include "polygon.h"
 
 /* === M A C R O S ========================================================= */
 

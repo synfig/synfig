@@ -94,7 +94,7 @@ Layer_MeshTransform::~Layer_MeshTransform()
 }
 
 void
-Layer_MeshTransform::update_mesh()
+Layer_MeshTransform::update_mesh_and_mask()
 {
 	// TODO: check mask to calculate bounds
 
@@ -244,12 +244,30 @@ Layer_MeshTransform::accelerated_render(Context context,Surface *surface,int qua
 		Surface maskSurface;
 		maskSurface.set_wh(texture.get_w(), texture.get_h());
 		maskSurface.fill(Color::alpha());
-		RendererSoftware::render_polygon(maskSurface, mask, texture_renddesc.get_transformation_matrix(), Color::white(), Color::BLEND_COMPOSITE);
+		RendererSoftware::render_polygon(
+			maskSurface,
+			mask,
+			texture_renddesc.get_transformation_matrix()
+		  * texture_renddesc.get_world_to_pixels_matrix(),
+			Color::white(),
+			Color::BLEND_COMPOSITE );
 
 		// apply mask
-		Surface::alpha_pen maskPen(texture.get_pen(0, 0));
-		maskPen.set_blend_method(Color::BLEND_MULTIPLY);
-		maskSurface.blit_to(maskPen, 0, 0, texture.get_w(), texture.get_h())
+		Surface::pen a(texture.get_pen(0, 0));
+		Surface::pen b(maskSurface.get_pen(0, 0));
+		for(int i = 0; i < texture.get_h(); ++i)
+		{
+			for(int j = 0; j < texture.get_w(); ++j)
+			{
+				a.put_value(a.get_value()*b.get_value().get_a());
+				a.inc_x();
+				b.inc_x();
+			}
+			a.dec_x(texture.get_w());
+			b.dec_x(texture.get_w());
+			a.inc_y();
+			b.inc_y();
+		}
 	}
 
 	// prepare transformation matrices
