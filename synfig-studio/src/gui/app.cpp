@@ -2282,6 +2282,50 @@ App::dialog_open_file(const std::string &title, std::string &filename, std::stri
 }
 
 bool
+App::dialog_open_file_spal(const std::string &title, std::string &filename, std::string preference)
+{
+	synfig::String prev_path;
+
+	if(!_preferences.get_value(preference, prev_path))
+		prev_path = ".";
+
+	prev_path = absolute_path(prev_path);
+
+	Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(*App::main_window,
+				title, Gtk::FILE_CHOOSER_ACTION_OPEN);
+
+	dialog->set_transient_for(*App::main_window);
+	dialog->set_current_folder(prev_path);
+	dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
+	dialog->add_button(Gtk::StockID(_("Open")), Gtk::RESPONSE_ACCEPT);
+
+	// show only Synfig color palette file (*.spal)
+	Glib::RefPtr<Gtk::FileFilter> filter_spal = Gtk::FileFilter::create();
+	filter_spal->set_name("Synfig palette file");
+	filter_spal->add_pattern("*.spal");
+	dialog->add_filter(filter_spal);
+
+	if (filename.empty())
+	dialog->set_filename(prev_path);
+	else if (is_absolute_path(filename))
+	dialog->set_filename(filename);
+	else
+	dialog->set_filename(prev_path + ETL_DIRECTORY_SEPARATOR + filename);
+
+	if(dialog->run() == GTK_RESPONSE_ACCEPT) {
+		filename = dialog->get_filename();
+		_preferences.set_value(preference, dirname(filename));
+		delete dialog;
+		return true;
+	}
+
+	delete dialog;
+	return false;
+}
+
+
+
+bool
 App::dialog_open_file_with_history_button(const std::string &title, std::string &filename, bool &show_history, std::string preference)
 {
 	// info("App::dialog_open_file('%s', '%s', '%s')", title.c_str(), filename.c_str(), preference.c_str());
@@ -2447,7 +2491,10 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
     // file type filters
 		Glib::RefPtr<Gtk::FileFilter> filter_sif = Gtk::FileFilter::create();
 		filter_sif->set_name("Uncompressed Synfig file(*.sif)");
-		filter_sif->add_mime_type("application/x-sif");
+
+		// sif share same mime type "application/x-sif" with sifz, so it will mixed .sif and .sifz files. Use only
+		// pattern ("*.sif") for sif file format should be oK.
+		//filter_sif->add_mime_type("application/x-sif");
 		filter_sif->add_pattern("*.sif");
 
 		Glib::RefPtr<Gtk::FileFilter> filter_sifz = Gtk::FileFilter::create();
@@ -2497,9 +2544,10 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 		dialog->set_extra_widget(*hbox);
 	}
 
-    if (filename.empty()) dialog->set_filename(prev_path);
-    else
-	{
+	if (filename.empty()) {
+		dialog->set_filename(prev_path);
+
+	}else{
 		std::string full_path;
 		if (is_absolute_path(filename))
 			full_path = filename;
@@ -2513,7 +2561,16 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 		struct stat s;
 		if(stat(full_path.c_str(),&s) == -1 && errno == ENOENT)
 			dialog->set_current_name(basename(filename));
+
 	}
+	// set file filter according to previous file format
+	if (filename_extension(filename) == ".sif" ) dialog->set_filter(filter_sif);
+	if (filename_extension(filename)== ".sifz" ) dialog->set_filter(filter_sifz);
+	if (filename_extension(filename) == ".sfg" ) dialog->set_filter(filter_sfg);
+
+	// set focus to the file name entry(box) of dialog instead to avoid the name
+	// we are going to save changes while changing file filter each time.
+	dialog->set_current_name(basename(filename));
 
     if(dialog->run() == GTK_RESPONSE_ACCEPT) {
 
@@ -2521,12 +2578,18 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 				set_file_version(synfig::ReleaseVersion(file_type_enum->get_value()));
 		{
 			// add file extension according to file filter selected by user
-			if (dialog->get_filter() == filter_sif)
-				filename = dialog->get_filename() + ".sif";
-			else if (dialog->get_filter() == filter_sifz)
-				filename = dialog->get_filename() + ".sifz";
-			else if (dialog->get_filter() == filter_sfg)
-				filename = dialog->get_filename() + ".sfg";
+			filename = dialog->get_filename();
+			if (filename_extension(filename) != ".sif" &&
+				filename_extension(filename) != ".sifz" &&
+				filename_extension(filename) != ".sfg")
+			{
+				if (dialog->get_filter() == filter_sif)
+					filename = dialog->get_filename() + ".sif";
+				else if (dialog->get_filter() == filter_sifz)
+					filename = dialog->get_filename() + ".sifz";
+				else if (dialog->get_filter() == filter_sfg)
+					filename = dialog->get_filename() + ".sfg";
+			}
 			else filename = dialog->get_filename();
 		}
 
@@ -2540,6 +2603,70 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
     return false;
 #endif
 }
+
+
+bool
+App::dialog_save_file_spal(const std::string &title, std::string &filename, std::string preference)
+{
+	synfig::String prev_path;
+	if(!_preferences.get_value(preference, prev_path))
+		prev_path=".";
+	prev_path = absolute_path(prev_path);
+
+	Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(*App::main_window, title, Gtk::FILE_CHOOSER_ACTION_SAVE);
+
+	// file type filters
+	Glib::RefPtr<Gtk::FileFilter> filter_spal = Gtk::FileFilter::create();
+	filter_spal->set_name("Synfig palette file(*.spal)");
+	filter_spal->add_pattern("*.spal");
+
+	dialog->set_current_folder(prev_path);
+	dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
+	dialog->add_button(Gtk::Stock::SAVE,   Gtk::RESPONSE_ACCEPT);
+
+	dialog->add_filter(filter_spal);
+
+	if (filename.empty()) {
+		dialog->set_filename(prev_path);
+
+	}else{
+		std::string full_path;
+		if (is_absolute_path(filename))
+			full_path = filename;
+		else
+			full_path = prev_path + ETL_DIRECTORY_SEPARATOR + filename;
+
+		// select the file if it exists
+		dialog->set_filename(full_path);
+
+		// if the file doesn't exist, put its name into the filename box
+		struct stat s;
+		if(stat(full_path.c_str(),&s) == -1 && errno == ENOENT)
+			dialog->set_current_name(basename(filename));
+
+	}
+
+	dialog->set_filter(filter_spal);
+
+	// set focus to the file name entry(box) of dialog instead to avoid the name
+	// we are going to save changes while changing file filter each time.
+	dialog->set_current_name(basename(filename));
+
+	if(dialog->run() == GTK_RESPONSE_ACCEPT) {
+
+		// add file extension according to file filter selected by user
+		filename = dialog->get_filename();
+		if (filename_extension(filename) != ".spal")
+			filename = dialog->get_filename() + ".spal";
+
+		delete dialog;
+		return true;
+	}
+
+	delete dialog;
+	return false;
+}
+
 
 bool
 App::dialog_select_list_item(const std::string &title, const std::string &message, const std::list<std::string> &list, int &item_index)
@@ -3053,7 +3180,7 @@ App::dialog_open(string filename)
 		filename="*.sif";
 
 	bool show_history = false;
-	while(dialog_open_file_with_history_button(_("Open"), filename, show_history, ANIMATION_DIR_PREFERENCE))
+	while(dialog_open_file_with_history_button(_("Please select a file"), filename, show_history, ANIMATION_DIR_PREFERENCE))
 	{
 		// If the filename still has wildcards, then we should
 		// continue looking for the file we want
@@ -3077,7 +3204,7 @@ App::dialog_open(string filename)
 
 			// show dialog
 			index=0;
-			if (!dialog_select_list_item(_("Open"), _("Select one of previous versions of file"), list, index))
+			if (!dialog_select_list_item(_("Please select a file"), _("Select one of previous versions of file"), list, index))
 				continue;
 
 			// find selected entry in list (descending)
