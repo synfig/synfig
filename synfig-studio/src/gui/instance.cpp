@@ -335,10 +335,10 @@ studio::Instance::dialog_save_as()
 		filename = absolute_path(filename);
 
 	// show the canvas' name if it has one, else its ID
-	while (App::dialog_save_file((_("Choose a Filename to Save As") +
+	while (App::dialog_save_file((_("Please choose a file name") +
 								  String(" (") +
 								  (canvas->get_name().empty() ? canvas->get_id() : canvas->get_name()) +
-								  ") ..."),
+								  ")"),
 								 filename, ANIMATION_DIR_PREFERENCE))
 	{
 		// If the filename still has wildcards, then we should
