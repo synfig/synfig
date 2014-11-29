@@ -31,6 +31,7 @@
 #include "surface.h"
 #include "vector.h"
 #include "mesh.h"
+#include "polygon.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -67,6 +68,14 @@ public:
 	static void render_triangle(
 		synfig::Surface &target_surface,
 		const Vector &p0,
+		const Vector &p1,
+		const Vector &p2,
+		const Color &color,
+		Color::BlendMethod blend_method );
+
+	static void render_triangle(
+		synfig::Surface &target_surface,
+		const Vector &p0,
 		const Vector &t0,
 		const Vector &p1,
 		const Vector &t1,
@@ -74,6 +83,13 @@ public:
 		const Vector &t2,
 		const synfig::Surface &texture,
 		Real alpha,
+		Color::BlendMethod blend_method );
+
+	static void render_polygon(
+		synfig::Surface &target_surface,
+		const synfig::Polygon &polygon,
+		const Matrix &transform_matrix,
+		const Color &color,
 		Color::BlendMethod blend_method );
 
 	static void render_mesh(
