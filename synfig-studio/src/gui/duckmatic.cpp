@@ -2379,8 +2379,6 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				// ----Vertex Duck
 
 				duck=new Duck(bline_point.get_vertex());
-				if(i==first)
-					first_duck=duck;
 				set_duck_value_desc(*duck, sub_value_desc, "point", transform_stack);
 				duck->set_editable(editable);
 				duck->set_type(Duck::TYPE_VERTEX);
@@ -2394,6 +2392,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 					}
 				}
 				duck=add_similar_duck(duck);
+				if(i==first) first_duck=duck;
 				connect_signals(duck, duck->get_value_desc(), *canvas_view);
 
 				Duck::Handle vertex_duck = duck;
@@ -2503,8 +2502,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				bezier->p1=vertex_duck;
 				bezier->c1=duck;
 				tangent2_duck = duck;
-				if (i == first)
-					first_tangent2_duck = tangent2_duck;
+				if (i == first) first_tangent2_duck = tangent2_duck;
 
 				// link tangents
 				if (tangent1_duck && tangent2_duck && !bline_point.get_split_tangent_both()) {
@@ -2571,7 +2569,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				Duck::Handle duck;
 				Duck::Handle vertex_duck(first_duck);
 				Duck::Handle tangent2_duck(first_tangent2_duck);
-				synfigapp::ValueDesc sub_value_desc(value_node,first);
+				synfigapp::ValueDesc sub_value_desc(value_node,first,value_desc);
 
 				// Add the tangent1 duck
 				duck=new Duck(bline_point.get_tangent1());
@@ -2912,8 +2910,10 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 //							last_duck()->set_origin(synfigapp::ValueDesc(value_desc.get_layer(),param_desc->get_origin()).get_value(get_time()).get(synfig::Point()));
 					}
 					duck->set_type(Duck::TYPE_VERTEX);
-					bezier.p1=bezier.p2;bezier.c1=bezier.c2;
-					bezier.p2=bezier.c2=duck;
+					bezier.p1 = bezier.p2;
+					bezier.c1 = bezier.c2;
+					bezier.p2 = duck;
+					bezier.c2 = duck;
 
 					if (first != i)
 					{
@@ -2936,14 +2936,16 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				{
 					duck = first_duck;
 
-					bezier.p1=bezier.p2;bezier.c1=bezier.c2;
-					bezier.p2=bezier.c2=duck;
+					bezier.p1 = bezier.p2;
+					bezier.c1 = bezier.c2;
+					bezier.p2 = duck;
+					bezier.c2 = duck;
 
 					handle<Bezier> bezier_(new Bezier());
-					bezier_->p1=bezier.p1;
-					bezier_->c1=bezier.c1;
-					bezier_->p2=bezier.p2;
-					bezier_->c2=bezier.c2;
+					bezier_->p1 = bezier.p1;
+					bezier_->c1 = bezier.c1;
+					bezier_->p2 = bezier.p2;
+					bezier_->c2 = bezier.c2;
 					add_bezier(bezier_);
 					last_bezier()->signal_user_click(2).connect(
 						sigc::bind(
