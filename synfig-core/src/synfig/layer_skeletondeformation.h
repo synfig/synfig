@@ -58,8 +58,6 @@ private:
 	//! Parameter: (Integer)
 	synfig::ValueBase param_y_subdivisions;
 
-	Polygon maskPolygon;
-
 	struct GridPoint;
 	static Real distance_to_line(const Vector &p0, const Vector &p1, const Vector &x);
 	void prepare_mask();

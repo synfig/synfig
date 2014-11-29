@@ -133,7 +133,7 @@ Layer_SkeletonDeformation::prepare_mask()
 	int segments_count = 64;
 	Real segment_angle = 2*PI/(Real)segments_count;
 
-	maskPolygon.clear();
+	mask.clear();
 	for(std::vector<ValueBase>::const_iterator i = list.begin(); i != list.end(); ++i)
  	{
 		if (!i->same_type_as(BonePair())) continue;
@@ -168,26 +168,26 @@ Layer_SkeletonDeformation::prepare_mask()
  		Real segment_angle1 = 2*angle0_base / (Real)segments_count1;
 
  		// add vertices
- 		int first = (int)maskPolygon.vertices.size();
- 		maskPolygon.vertices.reserve(first + segments_count0 + segments_count1 + 2);
+ 		int first = (int)mask.vertices.size();
+ 		mask.vertices.reserve(first + segments_count0 + segments_count1 + 2);
 
  		int j = 0;
 		Real angle = direction_angle + angle0_base;
 		while(true)
 		{
-			maskPolygon.vertices.push_back( Point(r0*cos(angle) + p0[0], r0*sin(angle) + p0[1]) );
+			mask.vertices.push_back( Point(r0*cos(angle) + p0[0], r0*sin(angle) + p0[1]) );
 			if (j++ >= segments_count0) break; else angle += segment_angle0;
 		}
 		j = 0;
 		while(true)
 		{
-			maskPolygon.vertices.push_back( Point(r1*cos(angle) + p1[0], r1*sin(angle) + p1[1]) );
+			mask.vertices.push_back( Point(r1*cos(angle) + p1[0], r1*sin(angle) + p1[1]) );
 			if (j++ >= segments_count1) break; else angle += segment_angle1;
 		}
 
 		// add triangles
-		for(int i = first+2; i < (int)maskPolygon.vertices.size(); ++i)
-			maskPolygon.triangles.push_back(Polygon::Triangle(first, i-1, i));
+		for(int i = first+2; i < (int)mask.vertices.size(); ++i)
+			mask.triangles.push_back(Polygon::Triangle(first, i-1, i));
  	}
 }
 
@@ -354,7 +354,7 @@ Layer_SkeletonDeformation::prepare_mesh()
 		mesh.triangles.push_back(i->second);
 
 	prepare_mask();
-	update_mesh();
+	update_mesh_and_mask()();
 }
 
 bool

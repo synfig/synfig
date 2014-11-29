@@ -96,6 +96,8 @@ Layer_MeshTransform::~Layer_MeshTransform()
 void
 Layer_MeshTransform::update_mesh()
 {
+	// TODO: check mask to calculate bounds
+
 	texture_scale_dependency_from_x = Vector::zero();
 	texture_scale_dependency_from_y = Vector::zero();
 
@@ -162,6 +164,7 @@ Layer_MeshTransform::update_mesh()
 Layer::Handle
 Layer_MeshTransform::hit_check(synfig::Context context, const synfig::Point &point)const
 {
+	// TODO: check mask
 	Vector v;
 	return mesh.transform_coord_world_to_texture(point, v)
 		 ? context.hit_check(v)
@@ -171,6 +174,7 @@ Layer_MeshTransform::hit_check(synfig::Context context, const synfig::Point &poi
 Color
 Layer_MeshTransform::get_color(Context context, const Point &pos)const
 {
+	// TODO: check mask
 	Vector v;
 	return mesh.transform_coord_world_to_texture(pos, v)
 		 ? context.get_color(v)
@@ -234,6 +238,18 @@ Layer_MeshTransform::accelerated_render(Context context,Surface *surface,int qua
 	{
 		if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Renderer Failure",__LINE__));
 		return false;
+	}
+
+	{ // render mask
+		Surface maskSurface;
+		maskSurface.set_wh(texture.get_w(), texture.get_h());
+		maskSurface.fill(Color::alpha());
+		RendererSoftware::render_polygon(maskSurface, mask, texture_renddesc.get_transformation_matrix(), Color::white(), Color::BLEND_COMPOSITE);
+
+		// apply mask
+		Surface::alpha_pen maskPen(texture.get_pen(0, 0));
+		maskPen.set_blend_method(Color::BLEND_MULTIPLY);
+		maskSurface.blit_to(maskPen, 0, 0, texture.get_w(), texture.get_h())
 	}
 
 	// prepare transformation matrices
