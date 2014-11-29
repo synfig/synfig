@@ -78,7 +78,7 @@ class Dock_PalEdit : public Dockable
 
 	void on_save_pressed();
 
-	void on_load_pressed();
+	void on_open_pressed();
 
 	void show_menu(int i);
 

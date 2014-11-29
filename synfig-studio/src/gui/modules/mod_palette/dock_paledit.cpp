@@ -151,12 +151,12 @@ Dock_PalEdit::Dock_PalEdit():
 	action_group->add(Gtk::Action::create(
 		"palette-load",
 		Gtk::StockID("gtk-open"),
-		_("Load a palette"),
-		_("Load a saved palette")
+		_("Open a palette"),
+		_("Open a saved palette")
 	),
 		sigc::mem_fun(
 			*this,
-			&Dock_PalEdit::on_load_pressed
+			&Dock_PalEdit::on_open_pressed
 		)
 	);
 	action_group->add(Gtk::Action::create(
@@ -230,30 +230,17 @@ Dock_PalEdit::on_add_pressed()
 void
 Dock_PalEdit::on_save_pressed()
 {
-	synfig::String filename = "";
-	while (App::dialog_save_file(_("Choose a Filename to Save As"),
-								 filename, ANIMATION_DIR_PREFERENCE))
+	// it would be nice to have initial spal file name same as current canvas name, 
+	// use "My Palette" as temporary spal file name as a hack.
+	//synfig::String filename = selected_instance->get_file_name();
+	synfig::String filename = "My Palette";
+	while (App::dialog_save_file_spal(_("Please choose a file name"), filename, ANIMATION_DIR_PREFERENCE))
 	{
 		// If the filename still has wildcards, then we should
 		// continue looking for the file we want
 		string base_filename = basename(filename);
 		if (find(base_filename.begin(),base_filename.end(),'*')!=base_filename.end())
 			continue;
-
-		if (filename_extension(filename) == "")
-			filename+=".spal";
-
-		try
-		{
-			String ext(filename_extension(filename));
-			if(ext!=".spal" && !App::dialog_yes_no(_("Unknown extension"),
-				_("You have given the file name an extension\nwhich I do not recognize. Are you sure this is what you want?")))
-				continue;
-		}
-		catch(...)
-		{
-			continue;
-		}
 
 		{
 			struct stat	s;
@@ -282,10 +269,10 @@ Dock_PalEdit::on_save_pressed()
 }
 
 void
-Dock_PalEdit::on_load_pressed()
+Dock_PalEdit::on_open_pressed()
 {
 	synfig::String filename = "*.spal";
-	while(App::dialog_open_file(_("Choose a Palette to load"), filename, ANIMATION_DIR_PREFERENCE))
+	while(App::dialog_open_file_spal(_("Please select a palette file"), filename, ANIMATION_DIR_PREFERENCE))
 	{
 		// If the filename still has wildcards, then we should
 		// continue looking for the file we want
