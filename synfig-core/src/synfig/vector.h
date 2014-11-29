@@ -85,6 +85,7 @@ public:
 	{ };
 
 	bool is_valid()const { return !(isnan(_x) || isnan(_y)); }
+	bool is_nan_or_inf()const { return isnan(_x) || isnan(_y) || isinf(_x) || isinf(_y); }
 
 	value_type &
 	operator[](const int& i)

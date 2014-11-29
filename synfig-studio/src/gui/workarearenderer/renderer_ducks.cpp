@@ -121,12 +121,10 @@ Renderer_Ducks::render_vfunc(
 
 		std::list<synfig::Point>::iterator iter2;
 		for(iter2=(*iter)->stroke_data->begin();iter2!=(*iter)->stroke_data->end();++iter2)
-		{
-			cr->line_to(
-				((*iter2)[0]-window_start[0])/pw,
-				((*iter2)[1]-window_start[1])/ph
-				);
-		}
+			if (!iter2->is_nan_or_inf())
+				cr->line_to(
+					((*iter2)[0]-window_start[0])/pw,
+					((*iter2)[1]-window_start[1])/ph );
 
 		cr->set_line_width(1.0);
 		cr->set_source_rgb(
@@ -148,6 +146,12 @@ Renderer_Ducks::render_vfunc(
 		Point p2((*iter)->p2->get_trans_point()-window_start);
 		Point c1((*iter)->c1->get_trans_point()-window_start);
 		Point c2((*iter)->c2->get_trans_point()-window_start);
+		if (p1.is_nan_or_inf()
+		 || p2.is_nan_or_inf()
+		 || c1.is_nan_or_inf()
+		 || c2.is_nan_or_inf() )
+			continue;
+
 		p1[0]/=pw;p1[1]/=ph;
 		p2[0]/=pw;p2[1]/=ph;
 		c1[0]/=pw;c1[1]/=ph;
@@ -206,6 +210,8 @@ Renderer_Ducks::render_vfunc(
 
 		Point sub_trans_point((*iter)->get_sub_trans_point());
 		Point sub_trans_origin((*iter)->get_sub_trans_origin());
+		if (sub_trans_point.is_nan_or_inf() || sub_trans_origin.is_nan_or_inf())
+			continue;
 
 		if (App::restrict_radius_ducks &&
 			(*iter)->is_radius())
@@ -235,6 +241,9 @@ Renderer_Ducks::render_vfunc(
 
 		origin[0]=(origin[0]-window_start[0])/pw;
 		origin[1]=(origin[1]-window_start[1])/ph;
+
+		if (point.is_nan_or_inf() || origin.is_nan_or_inf())
+			continue;
 
 		bool selected(get_work_area()->duck_is_selected(*iter));
 		bool hover(*iter==hover_duck || (*iter)->get_hover());
@@ -271,29 +280,32 @@ Renderer_Ducks::render_vfunc(
 			boxpoint[1]=(boxpoint[1]-window_start[1])/ph;
 			Point tl(min(point[0],boxpoint[0]),min(point[1],boxpoint[1]));
 
-			cr->save();
+			if (!boxpoint.is_nan_or_inf() && !tl.is_nan_or_inf())
+			{
+				cr->save();
 
-			cr->rectangle(
-				round_to_int(tl[0]),
-				round_to_int(tl[1]),
-				round_to_int(abs(boxpoint[0]-point[0])),
-				round_to_int(abs(boxpoint[1]-point[1]))
-				);
+				cr->rectangle(
+					round_to_int(tl[0]),
+					round_to_int(tl[1]),
+					round_to_int(abs(boxpoint[0]-point[0])),
+					round_to_int(abs(boxpoint[1]-point[1]))
+					);
 
-			// Solid white box
-			cr->set_line_width(1.0);
-			cr->set_source_rgb(1,1,1); //DUCK_COLOR_BOX_1
-			cr->stroke_preserve();
+				// Solid white box
+				cr->set_line_width(1.0);
+				cr->set_source_rgb(1,1,1); //DUCK_COLOR_BOX_1
+				cr->stroke_preserve();
 
-			// Dashes
-			cr->set_source_rgb(0,0,0); //DUCK_COLOR_BOX_2
-			std::valarray<double> dashes(2);
-			dashes[0]=5.0;
-			dashes[1]=5.0;
-			cr->set_dash(dashes, 0);
-			cr->stroke();
+				// Dashes
+				cr->set_source_rgb(0,0,0); //DUCK_COLOR_BOX_2
+				std::valarray<double> dashes(2);
+				dashes[0]=5.0;
+				dashes[1]=5.0;
+				cr->set_dash(dashes, 0);
+				cr->stroke();
 
-			cr->restore();
+				cr->restore();
+			}
 		}
 
 		if((*iter)->is_axes_tracks())
@@ -309,11 +321,17 @@ Renderer_Ducks::render_vfunc(
 
 			cr->save();
 
+			bool first = true;
 			for(int i = 0; i < 5; i++) {
 				Point p((*iter)->get_transform_stack().perform(points[i]));
-				Real x = (p[0]-window_start[0])/pw;
-				Real y = (p[1]-window_start[1])/ph;
-				if (i == 0) cr->move_to(x, y); else cr->line_to(x, y);
+				p[0] = (p[0]-window_start[0])/pw;
+				p[1] = (p[1]-window_start[1])/ph;
+				if (p.is_nan_or_inf()) {
+					if (first)
+						{ first = false; cr->move_to(p[0], p[1]); }
+					else
+						cr->line_to(p[0], p[1]);
+				}
 			}
 
 			// Solid white box
