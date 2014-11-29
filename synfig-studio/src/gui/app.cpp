@@ -2574,23 +2574,26 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 
     if(dialog->run() == GTK_RESPONSE_ACCEPT) {
 
-			if (preference == ANIMATION_DIR_PREFERENCE)
-				set_file_version(synfig::ReleaseVersion(file_type_enum->get_value()));
+		if (preference == ANIMATION_DIR_PREFERENCE)
+			set_file_version(synfig::ReleaseVersion(file_type_enum->get_value()));
+
+		// add file extension according to file filter selected by user if he doesn't type file extension in
+		// file name entry. Right now it still detetes file extension from file name entry, if extension is one
+		// of .sif, sifz and sfg, it will be used otherwise, saved file format will depend on selected file filter.
+		// It should be improved by changing file extension according to selted file type filter, such as:
+		// dialog->property_filter().signal_changed().connect(sigc::mem_fun(*this, &App::on_save_dialog_filter_changed));
+		filename = dialog->get_filename();
+
+		if (filename_extension(filename) != ".sif" &&
+			filename_extension(filename) != ".sifz" &&
+			filename_extension(filename) != ".sfg")
 		{
-			// add file extension according to file filter selected by user
-			filename = dialog->get_filename();
-			if (filename_extension(filename) != ".sif" &&
-				filename_extension(filename) != ".sifz" &&
-				filename_extension(filename) != ".sfg")
-			{
-				if (dialog->get_filter() == filter_sif)
-					filename = dialog->get_filename() + ".sif";
-				else if (dialog->get_filter() == filter_sifz)
-					filename = dialog->get_filename() + ".sifz";
-				else if (dialog->get_filter() == filter_sfg)
-					filename = dialog->get_filename() + ".sfg";
-			}
-			else filename = dialog->get_filename();
+			if (dialog->get_filter() == filter_sif)
+				filename = dialog->get_filename() + ".sif";
+			else if (dialog->get_filter() == filter_sifz)
+				filename = dialog->get_filename() + ".sifz";
+			else if (dialog->get_filter() == filter_sfg)
+				filename = dialog->get_filename() + ".sfg";
 		}
 
 		// info("Saving preference %s = '%s' in App::dialog_save_file()", preference.c_str(), dirname(filename).c_str());
