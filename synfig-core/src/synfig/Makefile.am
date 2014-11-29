@@ -301,7 +301,8 @@ SYNFIGHEADERS = \
 	mesh.h \
 	renderer.h \
 	renderersoftware.h \
-	soundprocessor.h
+	soundprocessor.h \
+	polygon.h
 
 SYNFIGSOURCES = \
 	activepoint.cpp \
