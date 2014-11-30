@@ -2214,6 +2214,7 @@ App::dialog_open_file(const std::string &title, std::string &filename, std::stri
 		filter_supported->add_pattern("*.jpeg");
 		filter_supported->add_pattern("*.jpg");
 		filter_supported->add_pattern("*.bmp");
+		filter_supported->add_pattern("*.lst");
 		// 0.3 Audio files
 		filter_supported->add_mime_type("audio/x-vorbis+ogg");
 		filter_supported->add_mime_type("audio/mpeg");
@@ -2230,7 +2231,7 @@ App::dialog_open_file(const std::string &title, std::string &filename, std::stri
 		filter_synfig->add_pattern("*.sif");
 		filter_synfig->add_pattern("*.sifz");
 
-		// 2 Image files
+		// 2.1 Image files
 		Glib::RefPtr<Gtk::FileFilter> filter_image = Gtk::FileFilter::create();
 		filter_image->set_name("Images (*.png, *.jpeg, *.bmp)");
 		filter_image->add_mime_type("image/png");
@@ -2239,6 +2240,11 @@ App::dialog_open_file(const std::string &title, std::string &filename, std::stri
 		filter_image->add_pattern("*.png");
 		filter_image->add_pattern("*.jpeg");
 		filter_image->add_pattern("*.jpg");
+
+		// 2.2 Image sequence/list files
+		Glib::RefPtr<Gtk::FileFilter> filter_image_list = Gtk::FileFilter::create();
+		filter_image_list->set_name("Image sequence files(*.lst)");
+		filter_image_list->add_pattern("*.lst");
 
 		// 3 Audio files
 		Glib::RefPtr<Gtk::FileFilter> filter_audio = Gtk::FileFilter::create();
@@ -2258,6 +2264,7 @@ App::dialog_open_file(const std::string &title, std::string &filename, std::stri
 		dialog->add_filter(filter_supported);
 		dialog->add_filter(filter_synfig);
 		dialog->add_filter(filter_image);
+		dialog->add_filter(filter_image_list);
 		dialog->add_filter(filter_audio);
 		dialog->add_filter(filter_any);
 
@@ -2344,10 +2351,12 @@ App::dialog_open_file_image(const std::string &title, std::string &filename, std
 
 	// show only Synfig color palette file (*.spal)
 	Glib::RefPtr<Gtk::FileFilter> filter_image = Gtk::FileFilter::create();
-	filter_image->set_name("Images (*.png, *.jpeg, *.bmp)");
+	filter_image->set_name("Images and sequence files (*.png, *.jpeg, *.bmp *.list)");
 	filter_image->add_pattern("*.png");
-	filter_image->add_pattern("*.jpeg");
+	filter_image->add_pattern("*.peg");
+	filter_image->add_pattern("*.jpg");
 	filter_image->add_pattern("*.bmp");
+	filter_image->add_pattern("*.lst");
 	dialog->add_filter(filter_image);
 
 	if (filename.empty())
