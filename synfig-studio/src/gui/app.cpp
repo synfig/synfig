@@ -2301,7 +2301,7 @@ App::dialog_open_file_spal(const std::string &title, std::string &filename, std:
 
 	// show only Synfig color palette file (*.spal)
 	Glib::RefPtr<Gtk::FileFilter> filter_spal = Gtk::FileFilter::create();
-	filter_spal->set_name("Synfig palette file (*.spal)");
+	filter_spal->set_name("Synfig palette files (*.spal)");
 	filter_spal->add_pattern("*.spal");
 	dialog->add_filter(filter_spal);
 
