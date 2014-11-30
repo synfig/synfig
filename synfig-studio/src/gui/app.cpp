@@ -2723,7 +2723,7 @@ App::dialog_save_file_spal(const std::string &title, std::string &filename, std:
 
 	// file type filters
 	Glib::RefPtr<Gtk::FileFilter> filter_spal = Gtk::FileFilter::create();
-	filter_spal->set_name("Synfig palette file(*.spal)");
+	filter_spal->set_name("Synfig palette files(*.spal)");
 	filter_spal->add_pattern("*.spal");
 
 	dialog->set_current_folder(prev_path);
