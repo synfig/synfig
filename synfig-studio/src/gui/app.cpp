@@ -2491,9 +2491,10 @@ App::dialog_open_file_with_history_button(const std::string &title, std::string 
 		dialog->set_transient_for(*App::main_window);
     dialog->set_current_folder(prev_path);
     dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
-    dialog->add_button(_("Open history"), RESPONSE_ACCEPT_WITH_HISTORY);
-    dialog->set_response_sensitive(RESPONSE_ACCEPT_WITH_HISTORY, true);
     dialog->add_button(Gtk::Stock::OPEN,   Gtk::RESPONSE_ACCEPT);
+    dialog->add_button(_("Open history"), RESPONSE_ACCEPT_WITH_HISTORY);
+	// TODO the Open history button should be file type sensitive one.
+    dialog->set_response_sensitive(RESPONSE_ACCEPT_WITH_HISTORY, true);
 
     // File filters
     // Synfig Documents
