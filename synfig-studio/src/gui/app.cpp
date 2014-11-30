@@ -2324,6 +2324,100 @@ App::dialog_open_file_spal(const std::string &title, std::string &filename, std:
 }
 
 
+bool
+App::dialog_open_file_image(const std::string &title, std::string &filename, std::string preference)
+{
+	synfig::String prev_path;
+
+	if(!_preferences.get_value(preference, prev_path))
+		prev_path = ".";
+
+	prev_path = absolute_path(prev_path);
+
+	Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(*App::main_window,
+				title, Gtk::FILE_CHOOSER_ACTION_OPEN);
+
+	dialog->set_transient_for(*App::main_window);
+	dialog->set_current_folder(prev_path);
+	dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
+	dialog->add_button(Gtk::StockID(_("Load")), Gtk::RESPONSE_ACCEPT);
+
+	// show only Synfig color palette file (*.spal)
+	Glib::RefPtr<Gtk::FileFilter> filter_image = Gtk::FileFilter::create();
+	filter_image->set_name("Images (*.png, *.jpeg, *.bmp)");
+	filter_image->add_pattern("*.png");
+	filter_image->add_pattern("*.jpeg");
+	filter_image->add_pattern("*.bmp");
+	dialog->add_filter(filter_image);
+
+	if (filename.empty())
+	dialog->set_filename(prev_path);
+	else if (is_absolute_path(filename))
+	dialog->set_filename(filename);
+	else
+	dialog->set_filename(prev_path + ETL_DIRECTORY_SEPARATOR + filename);
+
+	if(dialog->run() == GTK_RESPONSE_ACCEPT) {
+		filename = dialog->get_filename();
+		_preferences.set_value(preference, dirname(filename));
+		delete dialog;
+		return true;
+	}
+
+	delete dialog;
+	return false;
+}
+
+
+bool
+App::dialog_open_file_audio(const std::string &title, std::string &filename, std::string preference)
+{
+	synfig::String prev_path;
+
+	if(!_preferences.get_value(preference, prev_path))
+		prev_path = ".";
+
+	prev_path = absolute_path(prev_path);
+
+	Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(*App::main_window,
+				title, Gtk::FILE_CHOOSER_ACTION_OPEN);
+
+	dialog->set_transient_for(*App::main_window);
+	dialog->set_current_folder(prev_path);
+	dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
+	dialog->add_button(Gtk::StockID(_("Load")), Gtk::RESPONSE_ACCEPT);
+
+	// 3 Audio files
+	Glib::RefPtr<Gtk::FileFilter> filter_audio = Gtk::FileFilter::create();
+	filter_audio->set_name("Audio (*.ogg, *.mp3, *.wav)");
+	filter_audio->add_mime_type("audio/x-vorbis+ogg");
+	filter_audio->add_mime_type("audio/mpeg");
+	filter_audio->add_mime_type("audio/x-wav");
+	filter_audio->add_pattern("*.ogg");
+	filter_audio->add_pattern("*.mp3");
+	filter_audio->add_pattern("*.wav");
+	dialog->add_filter(filter_audio);
+
+
+	if (filename.empty())
+	dialog->set_filename(prev_path);
+	else if (is_absolute_path(filename))
+	dialog->set_filename(filename);
+	else
+	dialog->set_filename(prev_path + ETL_DIRECTORY_SEPARATOR + filename);
+
+	if(dialog->run() == GTK_RESPONSE_ACCEPT) {
+		filename = dialog->get_filename();
+		_preferences.set_value(preference, dirname(filename));
+		delete dialog;
+		return true;
+	}
+
+	delete dialog;
+	return false;
+}
+
+
 
 bool
 App::dialog_open_file_with_history_button(const std::string &title, std::string &filename, bool &show_history, std::string preference)

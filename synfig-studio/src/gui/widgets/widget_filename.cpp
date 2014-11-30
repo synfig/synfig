@@ -129,6 +129,27 @@ Widget_Filename::on_button_choose_pressed()
 			etl::dirname(App::get_selected_canvas_view()->get_canvas()->get_file_name()) +
 			ETL_DIRECTORY_SEPARATOR +
 			filename);
-	if(App::dialog_open_file(_("Choose File"), filename, MISC_DIR_PREFERENCE))
-		entry_filename->set_text(filename);
+
+	synfig::Layer::Handle layer;
+
+	// Sound layer
+	if (layer->get_name() == "sound")
+	{
+		if(App::dialog_open_file_audio(_("Please choose an audio file"), filename, MISC_DIR_PREFERENCE))
+			entry_filename->set_text((filename));
+	}
+
+	// Import Image layer
+	else if (layer->get_name() == "import")
+	{
+		if(App::dialog_open_file_image(_("Please choose an image file"), filename, MISC_DIR_PREFERENCE))
+			entry_filename->set_text((filename));
+	}
+
+	else
+	{
+		if(App::dialog_open_file(_("Please choose a file"), filename, MISC_DIR_PREFERENCE))
+			entry_filename->set_text(filename);
+	}
 }
+
