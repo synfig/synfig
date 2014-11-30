@@ -2191,102 +2191,103 @@ App::dialog_open_file(const std::string &title, std::string &filename, std::stri
 
 	prev_path = absolute_path(prev_path);
 
-    Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(*App::main_window,
+	Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(*App::main_window,
 				title, Gtk::FILE_CHOOSER_ACTION_OPEN);
 
-		dialog->set_transient_for(*App::main_window);
-    dialog->set_current_folder(prev_path);
-    dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
-    dialog->add_button(Gtk::StockID(_("Import")), Gtk::RESPONSE_ACCEPT);
+	dialog->set_transient_for(*App::main_window);
+	dialog->set_current_folder(prev_path);
+	dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
+	dialog->add_button(Gtk::StockID(_("Import")), Gtk::RESPONSE_ACCEPT);
 
-		// 0 All supported files
-		// 0.1 Synfig documents. sfg is not supported to import
-		Glib::RefPtr<Gtk::FileFilter> filter_supported = Gtk::FileFilter::create();
-		filter_supported->set_name("All supported files");
-		filter_supported->add_mime_type("application/x-sif");
-		filter_supported->add_pattern("*.sif");
-		filter_supported->add_pattern("*.sifz");
-		// 0.2 Image files
-		filter_supported->add_mime_type("image/png");
-		filter_supported->add_mime_type("image/jpeg");
-		filter_supported->add_mime_type("image/bmp");
-		filter_supported->add_pattern("*.png");
-		filter_supported->add_pattern("*.jpeg");
-		filter_supported->add_pattern("*.jpg");
-		filter_supported->add_pattern("*.bmp");
-		filter_supported->add_pattern("*.lst");
-		// 0.3 Audio files
-		filter_supported->add_mime_type("audio/x-vorbis+ogg");
-		filter_supported->add_mime_type("audio/mpeg");
-		filter_supported->add_mime_type("audio/x-wav");
-		filter_supported->add_pattern("*.ogg");
-		filter_supported->add_pattern("*.mp3");
-		filter_supported->add_pattern("*.wav");
+	// 0 All supported files
+	// 0.1 Synfig documents. sfg is not supported to import
+	Glib::RefPtr<Gtk::FileFilter> filter_supported = Gtk::FileFilter::create();
+	filter_supported->set_name("All supported files");
+	filter_supported->add_mime_type("application/x-sif");
+	filter_supported->add_pattern("*.sif");
+	filter_supported->add_pattern("*.sifz");
+	// 0.2 Image files
+	filter_supported->add_mime_type("image/png");
+	filter_supported->add_mime_type("image/jpeg");
+	filter_supported->add_mime_type("image/bmp");
+	filter_supported->add_pattern("*.png");
+	filter_supported->add_pattern("*.jpeg");
+	filter_supported->add_pattern("*.jpg");
+	filter_supported->add_pattern("*.bmp");
+	filter_supported->add_pattern("*.lst");
+	// 0.3 Audio files
+	filter_supported->add_mime_type("audio/x-vorbis+ogg");
+	filter_supported->add_mime_type("audio/mpeg");
+	filter_supported->add_mime_type("audio/x-wav");
+	filter_supported->add_pattern("*.ogg");
+	filter_supported->add_pattern("*.mp3");
+	filter_supported->add_pattern("*.wav");
 
-		// Sub fileters
-		// 1 Synfig documents. sfg is not supported to import
-		Glib::RefPtr<Gtk::FileFilter> filter_synfig = Gtk::FileFilter::create();
-		filter_synfig->set_name("Synfig files (*.sif, *.sifz)");
-		filter_synfig->add_mime_type("application/x-sif");
-		filter_synfig->add_pattern("*.sif");
-		filter_synfig->add_pattern("*.sifz");
+	// Sub fileters
+	// 1 Synfig documents. sfg is not supported to import
+	Glib::RefPtr<Gtk::FileFilter> filter_synfig = Gtk::FileFilter::create();
+	filter_synfig->set_name("Synfig files (*.sif, *.sifz)");
+	filter_synfig->add_mime_type("application/x-sif");
+	filter_synfig->add_pattern("*.sif");
+	filter_synfig->add_pattern("*.sifz");
 
-		// 2.1 Image files
-		Glib::RefPtr<Gtk::FileFilter> filter_image = Gtk::FileFilter::create();
-		filter_image->set_name("Images (*.png, *.jpeg, *.bmp)");
-		filter_image->add_mime_type("image/png");
-		filter_image->add_mime_type("image/jpeg");
-		filter_image->add_mime_type("image/jpg");
-		filter_image->add_pattern("*.png");
-		filter_image->add_pattern("*.jpeg");
-		filter_image->add_pattern("*.jpg");
+	// 2.1 Image files
+	Glib::RefPtr<Gtk::FileFilter> filter_image = Gtk::FileFilter::create();
+	filter_image->set_name("Images (*.png, *.jpeg, *.bmp)");
+	filter_image->add_mime_type("image/png");
+	filter_image->add_mime_type("image/jpeg");
+	filter_image->add_mime_type("image/jpg");
+	filter_image->add_pattern("*.png");
+	filter_image->add_pattern("*.jpeg");
+	filter_image->add_pattern("*.jpg");
 
-		// 2.2 Image sequence/list files
-		Glib::RefPtr<Gtk::FileFilter> filter_image_list = Gtk::FileFilter::create();
-		filter_image_list->set_name("Image sequence files(*.lst)");
-		filter_image_list->add_pattern("*.lst");
+	// 2.2 Image sequence/list files
+	Glib::RefPtr<Gtk::FileFilter> filter_image_list = Gtk::FileFilter::create();
+	filter_image_list->set_name("Image sequence files(*.lst)");
+	filter_image_list->add_pattern("*.lst");
 
-		// 3 Audio files
-		Glib::RefPtr<Gtk::FileFilter> filter_audio = Gtk::FileFilter::create();
-		filter_audio->set_name("Audio (*.ogg, *.mp3, *.wav)");
-		filter_audio->add_mime_type("audio/x-vorbis+ogg");
-		filter_audio->add_mime_type("audio/mpeg");
-		filter_audio->add_mime_type("audio/x-wav");
-		filter_audio->add_pattern("*.ogg");
-		filter_audio->add_pattern("*.mp3");
-		filter_audio->add_pattern("*.wav");
+	// 3 Audio files
+	Glib::RefPtr<Gtk::FileFilter> filter_audio = Gtk::FileFilter::create();
+	filter_audio->set_name("Audio (*.ogg, *.mp3, *.wav)");
+	filter_audio->add_mime_type("audio/x-vorbis+ogg");
+	filter_audio->add_mime_type("audio/mpeg");
+	filter_audio->add_mime_type("audio/x-wav");
+	filter_audio->add_pattern("*.ogg");
+	filter_audio->add_pattern("*.mp3");
+	filter_audio->add_pattern("*.wav");
 
-		// 4 Any files
-		Glib::RefPtr<Gtk::FileFilter> filter_any = Gtk::FileFilter::create();
-		filter_any->set_name("Any files");
-		filter_any->add_pattern("*");
+	// 4 Any files
+	Glib::RefPtr<Gtk::FileFilter> filter_any = Gtk::FileFilter::create();
+	filter_any->set_name("Any files");
+	filter_any->add_pattern("*");
 
-		dialog->add_filter(filter_supported);
-		dialog->add_filter(filter_synfig);
-		dialog->add_filter(filter_image);
-		dialog->add_filter(filter_image_list);
-		dialog->add_filter(filter_audio);
-		dialog->add_filter(filter_any);
+	dialog->add_filter(filter_supported);
+	dialog->add_filter(filter_synfig);
+	dialog->add_filter(filter_image);
+	dialog->add_filter(filter_image_list);
+	dialog->add_filter(filter_audio);
+	dialog->add_filter(filter_any);
 
-    if (filename.empty())
+	if (filename.empty())
 		dialog->set_filename(prev_path);
-		else if (is_absolute_path(filename))
+	else if (is_absolute_path(filename))
 		dialog->set_filename(filename);
-		else
+	else
 		dialog->set_filename(prev_path + ETL_DIRECTORY_SEPARATOR + filename);
 
-    if(dialog->run() == GTK_RESPONSE_ACCEPT) {
-        filename = dialog->get_filename();
+	if(dialog->run() == GTK_RESPONSE_ACCEPT) {
+		filename = dialog->get_filename();
 		// info("Saving preference %s = '%s' in App::dialog_open_file()", preference.c_str(), dirname(filename).c_str());
 		_preferences.set_value(preference, dirname(filename));
-        delete dialog;
-        return true;
-    }
+		delete dialog;
+		return true;
+	}
 
-    delete dialog;
-    return false;
+	delete dialog;
+	return false;
 #endif   // not USE_WIN32_FILE_DIALOGS
 }
+
 
 bool
 App::dialog_open_file_spal(const std::string &title, std::string &filename, std::string preference)
@@ -2360,11 +2361,11 @@ App::dialog_open_file_image(const std::string &title, std::string &filename, std
 	dialog->add_filter(filter_image);
 
 	if (filename.empty())
-	dialog->set_filename(prev_path);
+		dialog->set_filename(prev_path);
 	else if (is_absolute_path(filename))
-	dialog->set_filename(filename);
+		dialog->set_filename(filename);
 	else
-	dialog->set_filename(prev_path + ETL_DIRECTORY_SEPARATOR + filename);
+		dialog->set_filename(prev_path + ETL_DIRECTORY_SEPARATOR + filename);
 
 	if(dialog->run() == GTK_RESPONSE_ACCEPT) {
 		filename = dialog->get_filename();
@@ -2407,7 +2408,6 @@ App::dialog_open_file_audio(const std::string &title, std::string &filename, std
 	filter_audio->add_pattern("*.wav");
 	dialog->add_filter(filter_audio);
 
-
 	if (filename.empty())
 	dialog->set_filename(prev_path);
 	else if (is_absolute_path(filename))
@@ -2425,7 +2425,6 @@ App::dialog_open_file_audio(const std::string &title, std::string &filename, std
 	delete dialog;
 	return false;
 }
-
 
 
 bool
@@ -2485,52 +2484,52 @@ App::dialog_open_file_with_history_button(const std::string &title, std::string 
 
 	prev_path = absolute_path(prev_path);
 
-    Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(*App::main_window,
+	Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(*App::main_window,
 				title, Gtk::FILE_CHOOSER_ACTION_OPEN);
 
 		dialog->set_transient_for(*App::main_window);
-    dialog->set_current_folder(prev_path);
-    dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
-    dialog->add_button(Gtk::Stock::OPEN,   Gtk::RESPONSE_ACCEPT);
-    dialog->add_button(_("Open history"), RESPONSE_ACCEPT_WITH_HISTORY);
-	// TODO the Open history button should be file type sensitive one.
-    dialog->set_response_sensitive(RESPONSE_ACCEPT_WITH_HISTORY, true);
+	dialog->set_current_folder(prev_path);
+	dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
+	dialog->add_button(Gtk::Stock::OPEN,   Gtk::RESPONSE_ACCEPT);
+	dialog->add_button(_("Open history"), RESPONSE_ACCEPT_WITH_HISTORY);
+	// TODO: the Open history button should be file type sensitive one.
+	dialog->set_response_sensitive(RESPONSE_ACCEPT_WITH_HISTORY, true);
 
-    // File filters
-    // Synfig Documents
-		Glib::RefPtr<Gtk::FileFilter> filter_supported = Gtk::FileFilter::create();
-		filter_supported->set_name("Synfig files (*.sif, *.sifz, *.sfg)");
-		filter_supported->add_mime_type("application/x-sif");
-		filter_supported->add_pattern("*.sif");
-		filter_supported->add_pattern("*.sifz");
-		filter_supported->add_pattern("*.sfg");
-		// Any files
-		Glib::RefPtr<Gtk::FileFilter> filter_any = Gtk::FileFilter::create();
-		filter_any->set_name("Any files");
-		filter_any->add_pattern("*");
+	// File filters
+	// Synfig Documents
+	Glib::RefPtr<Gtk::FileFilter> filter_supported = Gtk::FileFilter::create();
+	filter_supported->set_name("Synfig files (*.sif, *.sifz, *.sfg)");
+	filter_supported->add_mime_type("application/x-sif");
+	filter_supported->add_pattern("*.sif");
+	filter_supported->add_pattern("*.sifz");
+	filter_supported->add_pattern("*.sfg");
+	// Any files
+	Glib::RefPtr<Gtk::FileFilter> filter_any = Gtk::FileFilter::create();
+	filter_any->set_name("Any files");
+	filter_any->add_pattern("*");
 
-		dialog->add_filter(filter_supported);
-		dialog->add_filter(filter_any);
+	dialog->add_filter(filter_supported);
+	dialog->add_filter(filter_any);
 
-  if (filename.empty())
+	if (filename.empty())
 		dialog->set_filename(prev_path);
 	else if (is_absolute_path(filename))
 		dialog->set_filename(filename);
 	else
 		dialog->set_filename(prev_path + ETL_DIRECTORY_SEPARATOR + filename);
 
-  int response = dialog->run();
-  if (response == Gtk::RESPONSE_ACCEPT || response == RESPONSE_ACCEPT_WITH_HISTORY) {
-      filename = dialog->get_filename();
-      show_history = response == RESPONSE_ACCEPT_WITH_HISTORY;
+	int response = dialog->run();
+	if (response == Gtk::RESPONSE_ACCEPT || response == RESPONSE_ACCEPT_WITH_HISTORY) {
+		filename = dialog->get_filename();
+		show_history = response == RESPONSE_ACCEPT_WITH_HISTORY;
 		// info("Saving preference %s = '%s' in App::dialog_open_file()", preference.c_str(), dirname(filename).c_str());
 		_preferences.set_value(preference, dirname(filename));
-      delete dialog;
-      return true;
-  }
+		delete dialog;
+		return true;
+	}
 
-    delete dialog;
-    return false;
+	delete dialog;
+	return false;
 #endif   // not USE_WIN32_FILE_DIALOGS
 }
 
@@ -2590,32 +2589,32 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 
 	prev_path = absolute_path(prev_path);
 
-    Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(*App::main_window, title, Gtk::FILE_CHOOSER_ACTION_SAVE);
+	Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(*App::main_window, title, Gtk::FILE_CHOOSER_ACTION_SAVE);
 
-    // file type filters
-		Glib::RefPtr<Gtk::FileFilter> filter_sif = Gtk::FileFilter::create();
-		filter_sif->set_name("Uncompressed Synfig file(*.sif)");
+	// file type filters
+	Glib::RefPtr<Gtk::FileFilter> filter_sif = Gtk::FileFilter::create();
+	filter_sif->set_name("Uncompressed Synfig file(*.sif)");
 
-		// sif share same mime type "application/x-sif" with sifz, so it will mixed .sif and .sifz files. Use only
-		// pattern ("*.sif") for sif file format should be oK.
-		//filter_sif->add_mime_type("application/x-sif");
-		filter_sif->add_pattern("*.sif");
+	// sif share same mime type "application/x-sif" with sifz, so it will mixed .sif and .sifz files. Use only
+	// pattern ("*.sif") for sif file format should be oK.
+	//filter_sif->add_mime_type("application/x-sif");
+	filter_sif->add_pattern("*.sif");
 
-		Glib::RefPtr<Gtk::FileFilter> filter_sifz = Gtk::FileFilter::create();
-		filter_sifz->set_name("Compressed Synfig file(*.sifz)");
-		filter_sifz->add_pattern("*.sifz");
+	Glib::RefPtr<Gtk::FileFilter> filter_sifz = Gtk::FileFilter::create();
+	filter_sifz->set_name("Compressed Synfig file(*.sifz)");
+	filter_sifz->add_pattern("*.sifz");
 
-		Glib::RefPtr<Gtk::FileFilter> filter_sfg = Gtk::FileFilter::create();
-		filter_sfg->set_name("Container format file(*.sfg)");
-		filter_sfg->add_pattern("*.sfg");
+	Glib::RefPtr<Gtk::FileFilter> filter_sfg = Gtk::FileFilter::create();
+	filter_sfg->set_name("Container format file(*.sfg)");
+	filter_sfg->add_pattern("*.sfg");
 
-    dialog->set_current_folder(prev_path);
-    dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
-    dialog->add_button(Gtk::Stock::SAVE,   Gtk::RESPONSE_ACCEPT);
+	dialog->set_current_folder(prev_path);
+	dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
+	dialog->add_button(Gtk::Stock::SAVE,   Gtk::RESPONSE_ACCEPT);
 
-    dialog->add_filter(filter_sifz);
-    dialog->add_filter(filter_sif);
-    dialog->add_filter(filter_sfg);
+	dialog->add_filter(filter_sifz);
+	dialog->add_filter(filter_sif);
+	dialog->add_filter(filter_sfg);
 
 	Widget_Enum *file_type_enum = 0;
 	if (preference == ANIMATION_DIR_PREFERENCE)
@@ -2676,7 +2675,7 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 	// we are going to save changes while changing file filter each time.
 	dialog->set_current_name(basename(filename));
 
-    if(dialog->run() == GTK_RESPONSE_ACCEPT) {
+	if(dialog->run() == GTK_RESPONSE_ACCEPT) {
 
 		if (preference == ANIMATION_DIR_PREFERENCE)
 			set_file_version(synfig::ReleaseVersion(file_type_enum->get_value()));
@@ -2700,10 +2699,10 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 				filename = dialog->get_filename() + ".sfg";
 		}
 
-		// info("Saving preference %s = '%s' in App::dialog_save_file()", preference.c_str(), dirname(filename).c_str());
-		_preferences.set_value(preference, dirname(filename));
-        delete dialog;
-        return true;
+	// info("Saving preference %s = '%s' in App::dialog_save_file()", preference.c_str(), dirname(filename).c_str());
+	_preferences.set_value(preference, dirname(filename));
+	delete dialog;
+	return true;
     }
 
     delete dialog;
@@ -2766,8 +2765,8 @@ App::dialog_save_file_spal(const std::string &title, std::string &filename, std:
 		if (filename_extension(filename) != ".spal")
 			filename = dialog->get_filename() + ".spal";
 
-		delete dialog;
-		return true;
+	delete dialog;
+	return true;
 	}
 
 	delete dialog;
@@ -2816,8 +2815,8 @@ App::dialog_select_list_item(const std::string &title, const std::string &messag
 	table.attach(tree, 0, 1, 1, 2);
 
 	dialog.get_vbox()->pack_start(table);
-    dialog.add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
-    dialog.add_button(Gtk::Stock::OPEN,   Gtk::RESPONSE_ACCEPT);
+	dialog.add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
+	dialog.add_button(Gtk::Stock::OPEN,   Gtk::RESPONSE_ACCEPT);
 	dialog.set_default_size(300, 450);
 	dialog.show_all();
 
