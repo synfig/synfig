@@ -130,7 +130,7 @@ Widget_Filename::on_button_choose_pressed()
 			ETL_DIRECTORY_SEPARATOR +
 			filename);
 
-	synfig::Layer::Handle layer;
+        synfig::Layer::Handle layer(App::get_selected_canvas_view()->get_selection_manager()->get_selected_layer());
 
 	// Sound layer
 	if (layer->get_name() == "sound")
