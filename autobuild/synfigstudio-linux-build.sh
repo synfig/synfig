@@ -62,7 +62,7 @@ PACKAGES_BUILDROOT=`cd $PACKAGES_BUILDROOT; pwd`	# canonify buildroot path
 fi
 
 BUILDROOT_VERSION=9
-BUILDROOT_LIBRARY_SET_ID=4
+BUILDROOT_LIBRARY_SET_ID=5
 MAKE_THREADS=2					#count of threads for make
 
 # full = clean, configure, make
@@ -89,12 +89,12 @@ GTKGLEXT=1.2.0
 GTKGLEXTMM=1.2.0
 LIBXMLPP=2.22.0
 GLIBMM=2.24.2		# required by GTKMM 2.20.3
+GLIB=2.37.5 		# required change because of this - https://bugzilla.gnome.org/show_bug.cgi?id=697229#c29
 CAIRO=1.12.0		# required by the cairo render engine 2013-04-01
 BOOST=1_53_0
 
 # System libraries
-ATK=1.29.4			# required by GTK 2.20.1
-GLIB=2.24.2			# required by GLIBMM 2.24.2
+ATK=2.8.0			# required by GLIB 2.37.5
 GTK=2.20.1			# !!! we need Notebook.set_action_widget()
 PIXMAN=0.22.0		# required by CAIRO 1.12.0
 PANGO=1.24.5
@@ -143,7 +143,7 @@ if ! pkg-config glib-2.0 --exact-version=${GLIB}  --print-errors; then
 	[ ! -d glib-${GLIB} ] && tar -xjf glib-${GLIB}.tar.bz2
 	cd glib-${GLIB}
 	#[[ $DOCLEAN == 1 ]] && make clean || true
-	./configure --disable-static --enable-shared
+	./configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared
 	make -j$MAKE_THREADS
 	make install
 	cd ..
@@ -575,6 +575,9 @@ mkpack()
 	# bundle libltdl
 	rm -f ${PREFIX}/lib/libltdl* || true
 	cp -av /usr/lib/libltdl*.so* ${PREFIX}/lib
+	# bundle libffi
+	rm -f ${PREFIX}/lib/libffi* || true
+	cp -av /usr/lib/libffi*.so* ${PREFIX}/lib
 
 	cat > $PREFIX/synfig <<EOF
 #!/bin/sh
@@ -821,6 +824,7 @@ initialize()
 		cvs \
 		libpng12-dev \
 		fontconfig \
+		libffi-dev \
 		libfreetype6-dev \
 		libfontconfig1-dev \
 		libxml2-dev \
