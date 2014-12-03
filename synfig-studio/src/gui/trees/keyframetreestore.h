@@ -47,13 +47,19 @@
 namespace studio {
 
 class KeyframeTreeStore_Class;
-
-
+#if GLIB_CHECK_VERSION(2, 37, 5)
+class KeyframeTreeStore :
+	public Gtk::TreeModel,
+	public Gtk::TreeDragSource,
+	public Gtk::TreeDragDest,
+	public Glib::Object
+#else
 class KeyframeTreeStore :
 	public Glib::Object,
 	public Gtk::TreeModel,
 	public Gtk::TreeDragSource,
 	public Gtk::TreeDragDest
+#endif
 {
 	/*
  -- ** -- P U B L I C   T Y P E S ---------------------------------------------
