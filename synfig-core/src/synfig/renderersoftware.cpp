@@ -123,6 +123,115 @@ void
 RendererSoftware::render_triangle(
 	synfig::Surface &target_surface,
 	const Vector &p0,
+	const Vector &p1,
+	const Vector &p2,
+	const Color &color,
+	Color::BlendMethod blend_method )
+{
+	// convert points to int
+	IntVector ip0(p0), ip1(p1), ip2(p2);
+	if (ip0 == ip1 || ip0 == ip2 || ip1 == ip2) return;
+
+	if (ip0.x < 0 && ip1.x < 0 && ip2.x < 0) return;
+	if (ip0.y < 0 && ip1.y < 0 && ip2.y < 0) return;
+
+	int width = target_surface.get_w();
+	int height = target_surface.get_h();
+	if (width == 0 || height == 0) return;
+
+	if (ip0.x >= width && ip1.x >= width && ip2.x >= width) return;
+	if (ip0.y >= height && ip1.y >= height && ip2.y >= height) return;
+
+	Surface::alpha_pen apen(target_surface.get_pen(0, 0));
+	apen.set_alpha(1.0);
+	apen.set_blend_method(blend_method);
+
+    // sort points
+    if (ip0.y > ip1.y) swap(ip0, ip1);
+    if (ip0.y > ip2.y) swap(ip0, ip2);
+    if (ip1.y > ip2.y) swap(ip1, ip2);
+
+    // increments
+    long long dx02 = (ip2-ip0).get_fixed_x_div_y();
+    long long dx01 = (ip1-ip0).get_fixed_x_div_y();
+    long long dx12 = (ip2-ip1).get_fixed_x_div_y();
+
+    // work points
+    // initially at top point (p0)
+    long long wx0 = Helper::int_to_fixed(ip0.x);
+    long long wx1 = wx0;
+
+    // process top part of triangle
+
+    // make copy of dx02
+    long long dx02_copy = dx02;
+    // sort increments
+    if (dx01 < dx02) swap(dx02, dx01);
+    // rasterize
+    for (int y = ip0.y; y < ip1.y; ++y)
+    {
+		// draw horizontal line (this code has a copy below)
+    	if (y >= 0 && y < height)
+    	{
+			int x0 = Helper::fixed_to_int(wx0);
+			int x1 = Helper::fixed_to_int(wx1);
+			if (x0 < 0) x0 = 0;
+			if (x1 >= width) x1 = width-1;
+			if (x1 >= x0)
+			{
+				apen.move_to(x0, y);
+				for(int x = x0; x <= x1; ++x)
+				{
+					apen.put_value(color);
+					apen.inc_x();
+				}
+			}
+    	}
+
+		wx0 += dx02;
+		wx1 += dx01;
+    }
+
+    if (ip0.y == ip1.y) {
+		wx0 = Helper::int_to_fixed(ip0.x);
+		wx1 = Helper::int_to_fixed(ip1.x);
+		if (wx0 > wx1) swap(wx0, wx1);
+    }
+
+    // process bottom part of triangle
+
+    // sort increments
+    if (dx02_copy < dx12) swap(dx02_copy, dx12);
+
+    // rasterize
+    for (int y = ip1.y; y <= ip2.y; ++y){
+		// draw horizontal line (this code has a copy above)
+    	if (y >= 0 && y < height)
+    	{
+			int x0 = Helper::fixed_to_int(wx0);
+			int x1 = Helper::fixed_to_int(wx1);
+			if (x0 < 0) x0 = 0;
+			if (x1 >= width) x1 = width-1;
+			if (x1 >= x0)
+			{
+				apen.move_to(x0, y);
+				for(int x = x0; x <= x1; ++x)
+				{
+					apen.put_value(color);
+					apen.inc_x();
+				}
+			}
+    	}
+
+		wx0 += dx02_copy;
+		wx1 += dx12;
+    }
+}
+
+void
+RendererSoftware::render_triangle(
+	synfig::Surface &target_surface,
+	const Vector &p0,
 	const Vector &t0,
 	const Vector &p1,
 	const Vector &t1,
@@ -281,6 +390,27 @@ RendererSoftware::render_triangle(
 		wx1 += dx12;
     }
 }
+
+void
+RendererSoftware::render_polygon(
+	synfig::Surface &target_surface,
+	const synfig::Polygon &polygon,
+	const Matrix &transform_matrix,
+	const Color &color,
+	Color::BlendMethod blend_method )
+{
+	if (!target_surface.is_valid()) return;
+
+	for(synfig::Polygon::TriangleList::const_iterator i = polygon.triangles.begin(); i != polygon.triangles.end(); ++i)
+		render_triangle(
+			target_surface,
+			transform_matrix.get_transformed(polygon.vertices[i->vertices[0]]),
+			transform_matrix.get_transformed(polygon.vertices[i->vertices[1]]),
+			transform_matrix.get_transformed(polygon.vertices[i->vertices[2]]),
+			color,
+			blend_method );
+}
+
 
 void
 RendererSoftware::render_mesh(

@@ -29,6 +29,7 @@
 
 #include "layer_composite.h"
 #include "mesh.h"
+#include "polygon.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -43,6 +44,7 @@ class Layer_MeshTransform : public Layer_Composite
 protected:
 	friend class Mesh_Trans;
 	Mesh mesh;
+	Polygon mask;
 
 	int max_texture_size;
 	Real max_texture_scale;
@@ -54,7 +56,7 @@ private:
 	Rect texture_bounds;
 
 protected:
-	void update_mesh();
+	void update_mesh_and_mask();
 
 public:
 	//! Default constructor

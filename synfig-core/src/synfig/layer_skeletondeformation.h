@@ -30,6 +30,7 @@
 #include "layer_meshtransform.h"
 #include "pair.h"
 #include "bone.h"
+#include "polygon.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -59,6 +60,7 @@ private:
 
 	struct GridPoint;
 	static Real distance_to_line(const Vector &p0, const Vector &p1, const Vector &x);
+	void prepare_mask();
 
 public:
 	typedef std::pair<Bone, Bone> BonePair;

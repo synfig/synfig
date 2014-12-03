@@ -124,6 +124,73 @@ Layer_SkeletonDeformation::get_param_vocab()const
 	return ret;
 }
 
+void
+Layer_SkeletonDeformation::prepare_mask()
+{
+ 	const std::vector<ValueBase> &list = param_bones.get_list();
+
+	static const Real precision = 0.000000001;
+	int segments_count = 64;
+	Real segment_angle = 2*PI/(Real)segments_count;
+
+	mask.clear();
+	for(std::vector<ValueBase>::const_iterator i = list.begin(); i != list.end(); ++i)
+ 	{
+		if (!i->same_type_as(BonePair())) continue;
+ 		const BonePair &bonePair = i->get(BonePair());
+ 		const Bone &bone = bonePair.first;
+ 		Matrix matrix = bone.get_animated_matrix();
+ 		Vector origin = matrix.get_transformed(Vector(0.0, 0.0));
+ 		Vector direction = matrix.get_transformed(Vector(1.0, 0.0), false).norm();
+ 		Real length = bone.get_length() * bone.get_scalelx();
+
+ 		if (length < 0) {
+ 			length *= -1;
+ 			direction *= -1;
+ 		}
+
+ 		const Vector &p0 = origin;
+ 		const Vector p1 = origin + direction * length;
+
+ 		Real r0 = fabs(bone.get_width());
+ 		Real r1 = fabs(bone.get_tipwidth());
+ 		Real direction_angle = atan2(direction[1], direction[0]);
+
+ 		Real angle0_base = length - precision > fabs(r1 - r0)
+ 				         ? acos((r0 - r1)/length)
+ 				         : (r0 > r1 ? 0.0 : PI);
+ 		Real angle1_base = PI - angle0_base;
+
+ 		int segments_count0 = (int)round(2*angle1_base / segment_angle);
+ 		Real segment_angle0 = 2*angle1_base / (Real)segments_count0;
+
+ 		int segments_count1 = (int)round(2*angle0_base / segment_angle);
+ 		Real segment_angle1 = 2*angle0_base / (Real)segments_count1;
+
+ 		// add vertices
+ 		int first = (int)mask.vertices.size();
+ 		mask.vertices.reserve(first + segments_count0 + segments_count1 + 2);
+
+ 		int j = 0;
+		Real angle = direction_angle + angle0_base;
+		while(true)
+		{
+			mask.vertices.push_back( Point(r0*cos(angle) + p0[0], r0*sin(angle) + p0[1]) );
+			if (j++ >= segments_count0) break; else angle += segment_angle0;
+		}
+		j = 0;
+		while(true)
+		{
+			mask.vertices.push_back( Point(r1*cos(angle) + p1[0], r1*sin(angle) + p1[1]) );
+			if (j++ >= segments_count1) break; else angle += segment_angle1;
+		}
+
+		// add triangles
+		for(int i = first+2; i < (int)mask.vertices.size(); ++i)
+			mask.triangles.push_back(Polygon::Triangle(first, i-1, i));
+ 	}
+}
+
 struct Layer_SkeletonDeformation::GridPoint {
 	Vector initial_position;
 	Vector summary_position;
@@ -286,7 +353,8 @@ Layer_SkeletonDeformation::prepare_mesh()
 	for(std::vector< std::pair<Real, Mesh::Triangle> >::iterator i = triangles.begin(); i != triangles.end(); ++i)
 		mesh.triangles.push_back(i->second);
 
-	update_mesh();
+	prepare_mask();
+	update_mesh_and_mask();
 }
 
 bool
