@@ -73,7 +73,7 @@ using namespace studio;
 
 /* === G L O B A L S ======================================================= */
 
-#if GLIB_CHECK_VERSION(2, 42, 0)
+#if GLIB_CHECK_VERSION(2, 37, 5)
 class studio::ValueBase_Entry : public Gtk::CellEditable, public Gtk::EventBox
 #else
 class studio::ValueBase_Entry : public Gtk::EventBox, public Gtk::CellEditable
@@ -84,7 +84,7 @@ class studio::ValueBase_Entry : public Gtk::EventBox, public Gtk::CellEditable
 	bool edit_done_called;
 	Gtk::Widget *parent;
 public:
-#if GLIB_CHECK_VERSION(2, 42, 0)
+#if GLIB_CHECK_VERSION(2, 37, 5)
 	ValueBase_Entry():
 		Gtk::CellEditable (),
 		Gtk::EventBox     (),
@@ -285,7 +285,7 @@ bool get_paragraph(synfig::String& text)
 
 /* === M E T H O D S ======================================================= */
 
-#if GLIB_CHECK_VERSION(2, 42, 0)
+#if GLIB_CHECK_VERSION(2, 37, 5)
 CellRenderer_ValueBase::CellRenderer_ValueBase():
 	Gtk::CellRendererText	(),
 	property_value_	(*this,"value",synfig::ValueBase()),
