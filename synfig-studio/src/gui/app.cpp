@@ -2775,6 +2775,53 @@ App::dialog_save_file_spal(const std::string &title, std::string &filename, std:
 
 
 bool
+App::dialog_save_file_render(const std::string &title, std::string &filename, std::string preference)
+{
+	synfig::String prev_path;
+	if(!_preferences.get_value(preference, prev_path))
+		prev_path=".";
+	prev_path = absolute_path(prev_path);
+
+	Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(*App::main_window, title, Gtk::FILE_CHOOSER_ACTION_SAVE);
+
+	dialog->set_current_folder(prev_path);
+	dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
+	dialog->add_button(Gtk::Stock::OK,   Gtk::RESPONSE_ACCEPT);
+
+	if (filename.empty()) {
+		dialog->set_filename(prev_path);
+
+	}else{
+		std::string full_path;
+		if (is_absolute_path(filename))
+			full_path = filename;
+		else
+			full_path = prev_path + ETL_DIRECTORY_SEPARATOR + filename;
+
+		// select the file if it exists
+		dialog->set_filename(full_path);
+
+		// if the file doesn't exist, put its name into the filename box
+		struct stat s;
+		if(stat(full_path.c_str(),&s) == -1 && errno == ENOENT)
+			dialog->set_current_name(basename(filename));
+
+	}
+
+	if(dialog->run() == GTK_RESPONSE_ACCEPT)
+	{
+		filename = dialog->get_filename();
+
+		delete dialog;
+		return true;
+	}
+
+	delete dialog;
+	return false;
+}
+
+
+bool
 App::dialog_select_list_item(const std::string &title, const std::string &message, const std::list<std::string> &list, int &item_index)
 {
 	Gtk::Dialog dialog(title, *App::main_window, true);

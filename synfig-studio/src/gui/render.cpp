@@ -252,7 +252,7 @@ void
 RenderSettings::on_choose_pressed()
 {
 	String filename=entry_filename.get_text();
-	if(App::dialog_save_file("Save Render As", filename, RENDER_DIR_PREFERENCE))
+	if(App::dialog_save_file_render("Save Render As", filename, RENDER_DIR_PREFERENCE))
 		entry_filename.set_text(filename);
 }
 
