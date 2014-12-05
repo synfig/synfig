@@ -368,6 +368,7 @@ public:
 	static bool dialog_open_file_with_history_button(const std::string &title, std::string &filename, bool &show_history, std::string preference);
 	static bool dialog_save_file(const std::string &title, std::string &filename, std::string preference);
 	static bool dialog_save_file_spal(const std::string &title, std::string &filename, std::string preference);
+	static bool dialog_save_file_render(const std::string &title, std::string &filename, std::string preference);
 
 	static bool dialog_select_list_item(const std::string &title, const std::string &message, const std::list<std::string> &list, int &item_index);
 
