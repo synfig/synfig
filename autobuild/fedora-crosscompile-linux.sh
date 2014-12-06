@@ -44,6 +44,8 @@ fi
 
 if [ ! -z $SUBSET ]; then
 	export SUFFIX="-$SUBSET"
+else
+	export SUFFIX="-0.64.x"
 fi
 
 export WORKSPACE=$HOME/synfig-buildroot
@@ -74,17 +76,17 @@ FREEGLUT_VERSION=2.4.0
 GTKGLEXT_VERSION=1.2.0
 GTKGLEXTMM_VERSION=1.2.0
 LIBXMLPP_VERSION=2.22.0
-GLIBMM_VERSION=2.24.2		# required by GTKMM 2.20.3
+GLIBMM_VERSION=2.38.2
 CAIRO_VERSION=1.12.0		# required by the cairo render engine 2013-04-01
 BOOST_VERSION=1_53_0
-
-# System libraries
-ATK_VERSION=1.29.4			# required by GTK 2.20.1
-GLIB_VERSION=2.24.2			# required by GLIBMM 2.24.2
+ATK_VERSION=2.10.0
+GLIB_VERSION=2.38.2			# required by GLIBMM 2.24.2
 GTK_VERSION=2.20.1			# !!! we need Notebook.set_action_widget()
 GTKENGINES_VERSION=2.20.2
 PIXMAN_VERSION=0.22.0		# required by CAIRO 1.12.0
 PANGO_VERSION=1.24.5
+
+# System libraries
 FONTCONFIG_VERSION=2.5.0
 JACK_VERSION=0.124.1
 
@@ -154,7 +156,7 @@ set_environment()
 	export LDFLAGS="-Wl,-rpath -Wl,\\\$\$ORIGIN/lib -L${PREFIX}/lib -L${DEPSPREFIX}/lib -L${SYSPREFIX}/${LIBDIR} -L${SYSPREFIX}/usr/${LIBDIR}"
 	#export CFLAGS=" -nostdinc  -I${SYSPREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.3.2/include -I${SYSPREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.3.2/include-fixed  -I${PREFIX}/include  -I${DEPSPREFIX}/include -I${SYSPREFIX}/usr/include"
 	GCC_VER=4.4
-	export CFLAGS="-I${SYSPREFIX}/usr/include -I${PREFIX}/include" 
+	export CFLAGS="-I${SYSPREFIX}/usr/include -I${PREFIX}/include -I${SYSPREFIX}/usr/include/${GCC_ARCH}-linux-gnu" 
 	#export CXXFLAGS="-I${SYSPREFIX}/usr/include/linux/  -I${SYSPREFIX}/usr/include/c++/${GCC_VER}/ -I${SYSPREFIX}/usr/include/c++/${GCC_VER}/${GCC_ARCH}-linux-gnu/ -I${SYSPREFIX}/usr/lib/gcc/${GCC_ARCH}-linux-gnu/${GCC_VER}/include/ -I${SYSPREFIX}/usr/lib/gcc/${GCC_ARCH}-linux-gnu/${GCC_VER}/include-fixed/  -I${SYSPREFIX}/usr/${GCC_ARCH}-linux-gnu/include"
 	#export CXXFLAGS="-I${SYSPREFIX}/usr/local/include/x86_64-linux-gnu -I${SYSPREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.4.5/include -I${SYSPREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.4.5/include-fixed -I${SYSPREFIX}/usr/lib/gcc/../../x86_64-linux-gnu/include -I${SYSPREFIX}/usr/include/x86_64-linux-gnu"
 	#export CXXFLAGS=" -nostdinc   -I${SYSPREFIX}/usr/lib/gcc/../../include/c++/4.3  -I${SYSPREFIX}/usr/lib/gcc/../../include/c++/4.3/x86_64-linux-gnu -I${SYSPREFIX}/usr/lib/gcc/../../include/c++/4.3/backward -I${SYSPREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.3.2/include -I${SYSPREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.3.2/include-fixed -I${PREFIX}/include  -I${DEPSPREFIX}/include -I${SYSPREFIX}/usr/include"
@@ -221,11 +223,13 @@ mkprefix()
 			libtiff4-dev \
 			libjasper-dev \
 			libasound2-dev \
+			libffi-dev \
 			x11proto-xext-dev libdirectfb-dev libxfixes-dev libxinerama-dev libxdamage-dev libxcomposite-dev libxcursor-dev libxft-dev libxrender-dev libxt-dev libxrandr-dev libxi-dev libxext-dev libx11-dev \
 			libpthread-stubs0-dev \
 			libxml-parser-perl \
 			libdb-dev uuid-dev \
 			wget mawk \
+			cvs \
 			bzip2"
 	
 	INCLUDE_LIST=""
@@ -269,6 +273,7 @@ mkprefix_deps()
 			libxml2-dev \
 			libtiff4-dev \
 			libjasper-dev \
+			libffi-dev \
 			x11proto-xext-dev libdirectfb-dev libxfixes-dev libxinerama-dev libxdamage-dev libxcomposite-dev libxcursor-dev libxft-dev libxrender-dev libxt-dev libxrandr-dev libxi-dev libxext-dev libx11-dev \
 			libxml-parser-perl m4 \
 			libdb-dev uuid-dev \
@@ -365,10 +370,11 @@ ln -sf ${SYSPREFIX}/usr/bin/gcc ${SYSPREFIX}/usr/bin/cc
 cp ${SYSPREFIX}/usr/lib/libpng12* ${PREFIX}/lib/
 cp ${SYSPREFIX}/usr/lib/libdb-4*.so ${PREFIX}/lib/
 cp ${SYSPREFIX}/lib/libpcre.so* ${PREFIX}/lib/
+cp ${SYSPREFIX}/usr/lib/libffi*.so* ${PREFIX}/lib
 # SDL deps
-cp ${SYSPREFIX}/usr/lib/libdirect-*.so* ${PREFIX}/lib/
-cp ${SYSPREFIX}/usr/lib/libdirectfb-*.so* ${PREFIX}/lib/
-cp ${SYSPREFIX}/usr/lib/libfusion*.so* ${PREFIX}/lib/
+#cp ${SYSPREFIX}/usr/lib/libdirect-*.so* ${PREFIX}/lib/
+#cp ${SYSPREFIX}/usr/lib/libdirectfb-*.so* ${PREFIX}/lib/
+#cp ${SYSPREFIX}/usr/lib/libfusion*.so* ${PREFIX}/lib/
 
 #RANDOM_SYSPREFIX=`tr -cd '[:alnum:]' < /dev/urandom | fold -w8 | head -n1`
 #DATE=`date +%s`
@@ -401,6 +407,13 @@ cat > ${DEPSPREFIX}/bin/rsync <<EOF
 EOF
 chmod a+x  ${DEPSPREFIX}/bin/rsync
 
+cat > ${DEPSPREFIX}/bin/python <<EOF
+#!/bin/sh
+
+/usr/bin/python "\$@"
+EOF
+chmod a+x  ${DEPSPREFIX}/bin/python
+
 #for binary in bzip2; do
 #	ln -sf /usr/bin/$binary  ${DEPSPREFIX}/bin/$binary
 #done
@@ -411,17 +424,17 @@ mkglib()
 {
 PKG_NAME=glib
 PKG_VERSION="${GLIB_VERSION}"
-TAREXT=bz2
+TAREXT=xz
 if ! pkg-config ${PKG_NAME}-2.0 --exact-version=${PKG_VERSION}  --print-errors; then
-	rsync -av ${SOURCES_URL}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
-	pushd ${SRCPREFIX}
-	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xjf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	cd ${CACHEDIR}
+    [ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://ftp.gnome.org/pub/gnome/sources/glib/2.38/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	cd ${SRCPREFIX}
+	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
-	./configure --host=${HOST} --disable-static --enable-shared --prefix=${DEPSPREFIX}/
+	./configure --host=${HOST} --disable-static --enable-shared --prefix=${PREFIX}/
 	make -j${THREADS}
 	make install
 	cd ..
-	popd
 fi
 }
 
@@ -448,13 +461,14 @@ mkatk()
 {
 PKG_NAME=atk
 PKG_VERSION="${ATK_VERSION}"
-TAREXT=bz2
+TAREXT=xz
 if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
-	rsync -av ${SOURCES_URL}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	cd ${CACHEDIR}
+    [ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://ftp.gnome.org/pub/gnome/sources/atk/2.10/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	pushd ${SRCPREFIX}
-	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xjf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
-	./configure --host=${HOST} --disable-static --enable-shared --prefix=${DEPSPREFIX}/
+	./configure --host=${HOST} --disable-static --enable-shared --prefix=${PREFIX}/
 	make -j${THREADS}
 	make install
 	cd ..
@@ -472,7 +486,7 @@ if ! pkg-config ${PKG_NAME}-1 --exact-version=${PKG_VERSION}  --print-errors; th
 	pushd ${SRCPREFIX}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xzf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
-	./configure --host=${HOST} --disable-static --enable-shared --prefix=${DEPSPREFIX}/
+	./configure --host=${HOST} --disable-static --enable-shared --prefix=${PREFIX}/
 	make -j${THREADS}
 	make install
 	cd ..
@@ -516,7 +530,7 @@ if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xjf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
 	[ ! -e config.cache ] || rm config.cache
-	./configure --host=${HOST} --prefix=${DEPSPREFIX}/ \
+	./configure --host=${HOST} --prefix=${PREFIX}/ \
 		--disable-static --enable-shared \
 		--with-included-modules=yes
 	make -j${THREADS}
@@ -538,7 +552,7 @@ if ! pkg-config ${PKG_NAME}-2.0 --exact-version=${PKG_VERSION}  --print-errors; 
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xjf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
 	[ ! -e config.cache ] || rm config.cache
-	./configure --build=${HOST} --prefix=${DEPSPREFIX}/ \
+	./configure --build=${HOST} --prefix=${PREFIX}/ \
 		--disable-static --enable-shared
 	make -j${THREADS}
 	make install
@@ -558,7 +572,7 @@ if ! pkg-config ${PKG_NAME}-2.0 --exact-version=${PKG_VERSION}  --print-errors; 
 	pushd ${SRCPREFIX}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xjf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
-	./configure --host=${HOST} --prefix=${DEPSPREFIX}/ \
+	./configure --host=${HOST} --prefix=${PREFIX}/ \
 		--disable-static --enable-shared
 	make -j${THREADS}
 	make install
@@ -592,11 +606,12 @@ mkglibmm()
 {
 PKG_NAME=glibmm
 PKG_VERSION="${GLIBMM_VERSION}"
-TAREXT=bz2
+TAREXT=xz
 if ! pkg-config ${PKG_NAME}-2.4 --exact-version=${PKG_VERSION}  --print-errors; then
-	rsync -av ${SOURCES_URL}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
-	pushd ${SRCPREFIX}
-	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xjf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	cd ${CACHEDIR}
+    [ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://ftp.gnome.org/pub/GNOME/sources/glibmm/2.38/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	cd ${SRCPREFIX}
+	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
 	./configure --host=${HOST} --prefix=${PREFIX} --includedir=${PREFIX}/include \
 		--disable-fulldocs \
@@ -604,7 +619,6 @@ if ! pkg-config ${PKG_NAME}-2.4 --exact-version=${PKG_VERSION}  --print-errors; 
 	make -j${THREADS}
 	make install
 	cd ..
-	popd
 fi
 }
 
@@ -633,7 +647,7 @@ PKG_NAME=ImageMagick
 PKG_VERSION="${IMAGEMAGICK_VERSION}-8"
 TAREXT=bz2
 if ! pkg-config ${PKG_NAME} --exact-version=${IMAGEMAGICK_VERSION}  --print-errors; then
-	( cd ${WORKSPACE}/cache/ && wget -c http://www.imagemagick.org/download/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
+	( cd ${WORKSPACE}/cache/ && wget -c http://www.imagemagick.org/download/releases/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
 	pushd ${SRCPREFIX}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xjf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
@@ -1408,7 +1422,7 @@ make install
 mkconfig()
 {
 	
-if [ ${PREFIX} == ${DEPSPREFIX} ]; then
+#if [ ${PREFIX} == ${DEPSPREFIX} ]; then
 	#if [ ! -e "${PREFIX}/etc/pango/pango.modules.in" ]; then
 	#	sed "s?${PREFIX}/lib/pango/1.6.0/modules?@ROOTDIR@/modules?" < ${PREFIX}/etc/pango/pango.modules > ${PREFIX}/etc/pango/pango.modules.in
 	#fi
@@ -1417,7 +1431,9 @@ if [ ${PREFIX} == ${DEPSPREFIX} ]; then
 	if [ ! -e "${PREFIX}/etc/gtk-2.0/gdk-pixbuf.loaders.in" ]; then
 		sed "s?${PREFIX}/lib/gtk-2.0/2.10.0/loaders?@ROOTDIR@/loaders?" < ${PREFIX}/etc/gtk-2.0/gdk-pixbuf.loaders > ${PREFIX}/etc/gtk-2.0/gdk-pixbuf.loaders.in
 	fi
-fi
+#fi
+
+cp ${SCRIPTPATH}/gtkrc-linux ${PREFIX}/gtkrc
 
 cat > ${PREFIX}/synfig <<EOF
 #!/bin/sh
@@ -1452,8 +1468,8 @@ export ETC_DIR=\${SYSPREFIX}/etc
 export LD_LIBRARY_PATH=\${SYSPREFIX}/lib:\$LD_LIBRARY_PATH
 export SYNFIG_ROOT=\${SYSPREFIX}/
 export SYNFIG_MODULE_LIST=\${SYSPREFIX}/etc/synfig_modules.cfg
-#export GDK_PIXBUF_MODULEDIR="\${SYSPREFIX}/lib/gtk-2.0/2.10.0/loaders"
-export FONTCONFIG_PATH="\${SYSPREFIX}/etc/fonts"
+export GDK_PIXBUF_MODULEDIR="\${SYSPREFIX}/lib/gtk-2.0/2.10.0/loaders"
+#export FONTCONFIG_PATH="\${SYSPREFIX}/etc/fonts"
 export MLT_DATA="\${SYSPREFIX}/share/mlt/"
 export MLT_REPOSITORY="\${SYSPREFIX}/lib/mlt/"
 
@@ -1464,11 +1480,13 @@ export MLT_REPOSITORY="\${SYSPREFIX}/lib/mlt/"
 
 #sed "s?@ROOTDIR@/modules?\${SYSPREFIX}/lib/pango/1.6.0/modules?" < \$ETC_DIR/pango/pango.modules.in > \$USER_CONFIG_DIR/pango/pango.modules
 if [ -e \$ETC_DIR/gtk-2.0/gdk-pixbuf.loaders.in ]; then
-	sed "s?@ROOTDIR@/loaders?\${SYSPREFIX}/lib/gtk-2.0/2.10.0/loaders?" < \$ETC_DIR/gtk-2.0/gdk-pixbuf.loaders.in > \$GDK_PIXBUF_MODULE_FILE
+	sed "s?@ROOTDIR@/loaders?\${SYSPREFIX}/lib/gtk-2.0/2.10.0/loaders?" < \$ETC_DIR/gtk-2.0/gdk-pixbuf.loaders.in > "\${USER_CONFIG_DIR}/gdk-pixbuf.loaders"
 	export GDK_PIXBUF_MODULE_FILE="\${USER_CONFIG_DIR}/gdk-pixbuf.loaders"
 fi
 
-\${SYSPREFIX}/bin/synfigstudio "\$@"
+#\${SYSPREFIX}/bin/synfigstudio "\$@"
+
+GTK2_RC_FILES=\${SYSPREFIX}/gtkrc:\$GTK2_RC_FILES \${SYSPREFIX}/bin/synfigstudio "\$@"
 
 exit 0
 
@@ -1532,9 +1550,10 @@ mkpackage()
 	mkdir -p ${DISTPREFIX}
 	cp -r  ${PREFIX}/etc ${DISTPREFIX}
 	cp -r  ${PREFIX}/lib ${DISTPREFIX}
-	cp -r  ${PREFIX}/lib.extra ${DISTPREFIX}
+	#cp -r  ${PREFIX}/lib.extra ${DISTPREFIX}
 	cp -r  ${PREFIX}/share ${DISTPREFIX}
 	
+	cp -r  ${PREFIX}/gtkrc ${DISTPREFIX}
 	cp -r  ${PREFIX}/synfig ${DISTPREFIX}
 	cp -r  ${PREFIX}/synfigstudio ${DISTPREFIX}
 	
@@ -1723,27 +1742,29 @@ mkall()
 	mkgettext
 	
 	# system libraries
-	mkglib
 	mkfontconfig
-	mkatk
-	mkpixman
-	mkcairo # bundled library
-	mkpango
-	mkgtk
-	mkjack
+	#mkjack
 	
 	# synfig-core deps
+	mkglib
 	mklibsigcpp
 	mkglibmm
 	mklibxmlpp
 	#if [[ $OPENGL == 1 ]]; then
 	#	mkglew
 	#fi
-	mkmlt
+	#mkmlt
 	mkimagemagick
 	mkboost
 	
 	# synfig-studio deps
+	mkatk
+	mkpixman
+	mkcairo
+	mkpango
+	mkgtk
+	mkgtkengines
+	
 	mkcairomm
 	mkpangomm
 	mkgtkmm
