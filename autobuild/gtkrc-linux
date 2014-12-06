@@ -80,7 +80,7 @@ style "default" {
 #	base[ACTIVE]      = shade (0.9, @selected_bg_color)
 
 	engine "clearlooks" {
-		colorize_scrollbar = TRUE
+		colorize_scrollbar = FALSE
 		reliefstyle = 1
 		menubarstyle = 2
 		toolbarstyle = 1

@@ -1486,7 +1486,7 @@ fi
 
 #\${SYSPREFIX}/bin/synfigstudio "\$@"
 
-GTK2_RC_FILES=\${SYSPREFIX}/gtkrc:\$GTK2_RC_FILES \${SYSPREFIX}/bin/synfigstudio "\$@"
+GTK_PATH=\${SYSPREFIX}/lib/gtk-2.0/2.10.0/ GTK2_RC_FILES=\${SYSPREFIX}/gtkrc:\$GTK2_RC_FILES \${SYSPREFIX}/bin/synfigstudio "\$@"
 
 exit 0
 
@@ -1710,6 +1710,7 @@ mkpackage_deb()
 		# Workaround permissions problem
 		echo >> synfigstudio-${VERSION}/debian/postinst
 		echo "chmod a+rX -R /opt/synfig" >> synfigstudio-${VERSION}/debian/postinst
+		echo "chmod a+rX /opt" >> synfigstudio-${VERSION}/debian/postinst
 		
 		pushd synfigstudio-${VERSION} >/dev/null
 		run_native dpkg-buildpackage -rfakeroot -a${SYS_ARCH} -d || true
