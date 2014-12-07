@@ -387,6 +387,24 @@ public:
 
 	static void dialog_help();
 
+	static void dialog_1(const std::string &message,
+			const std::string &detials,
+			const Gtk::MessageType &type,
+			const std::string &button1);
+
+	static bool dialog_2(const std::string &message,
+			const std::string &details,
+			const Gtk::MessageType &type,
+			const std::string &button1,
+			const std::string &button2);
+
+	static int dialog_3(const std::string &message,
+			const std::string &details,
+			const Gtk::MessageType &type,
+			const std::string &button1,
+			const std::string &button2,
+			const std::string &button3);
+
 	static void open_url(const std::string &url);
 
 	static synfig::String get_config_file(const synfig::String& file);

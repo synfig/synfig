@@ -323,19 +323,31 @@ CompView::close()
 void
 CompView::clear_history()
 {
-	if(selected_instance && App::dialog_yes_no(_("Clear History"), _("You will not be able to undo any changes that you have made!\nAre you sure you want to clear the undo stack?")))
-	{
+
+	if (selected_instance && App::dialog_2(
+			_("Clear History"),
+			_("You will not be able to undo any changes that you have made! "
+			"Are you sure you want to clear the undo stack?")
+			Gtk::MESSAGE_QUESTION,
+			_("Cancel"),
+			_("Clear"))
+	)
 		selected_instance->clear_undo_stack();
-	}
 }
+
 
 void
 CompView::clear_redo()
 {
-	if(selected_instance && App::dialog_yes_no(_("Clear History"), _("You will not be able to redo any changes that you have made!\nAre you sure you want to clear the redo stack?")))
-	{
+	if (selected_instance && App::dialog_2(
+			_("Clear History"),
+			_("You will not be able to redo any changes that you have made! "
+			"Are you sure you want to clear the redo stack?")
+			Gtk::MESSAGE_QUESTION,
+			_("Cancel"),
+			_("Clear"))
+	)
 		selected_instance->clear_redo_stack();
-	}
 }
 
 void

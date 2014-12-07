@@ -347,15 +347,23 @@ studio::Instance::dialog_save_as()
 		if (find(base_filename.begin(),base_filename.end(),'*')!=base_filename.end())
 			continue;
 
+		// if file extension is not recognized, then forced to .sifz
 		if (filename_extension(filename) == "")
 			filename+=".sifz";
 
+		// forced to .sifz, the below code is not need anymore
 		try
 		{
 			String ext(filename_extension(filename));
 			// todo: ".sfg" literal and others
-			if(ext!=".sif" && ext!=".sifz" && ext!=".sfg" && !App::dialog_yes_no(_("Unknown extension"),
-				_("You have given the file name an extension\nwhich I do not recognize. Are you sure this is what you want?")))
+			if (ext != ".sif" && ext != ".sifz" && ext != ".sfg" && !App::dialog_2(
+				_("Unknown extension"),
+				_("You have given the file name an extension which I do not recognize. "
+					"Are you sure this is what you want?"),
+				Gtk::MESSAGE_QUESTION,
+				_("Cancel"),
+				_("Sure"))
+			)
 				continue;
 		}
 		catch(...)
@@ -378,10 +386,15 @@ studio::Instance::dialog_save_as()
 			}
 
 			// if the file exists and the user doesn't want to overwrite it, keep prompting for a filename
-			string msg(strprintf(_("A file named '%s' already exists.\n\n"
-									"Do you want to replace it with the file you are saving?"), filename.c_str()));
-			if ((stat_return == 0) &&
-				!App::dialog_yes_no(_("File exists"),msg.c_str()))
+			string msg(strprintf(_("A file named '%s' already exists. "
+					"Do you want to replace it with the file you are saving?"), filename.c_str()));
+			if ((stat_return == 0) && !App::dialog_2(
+				_("File exists"),
+				msg.c_str(),
+				Gtk::MESSAGE_QUESTION,
+				_("Rename"),
+				_("Overwrite"))
+			)
 				continue;
 		}
 
@@ -524,8 +537,15 @@ Instance::dialog_cvs_commit()
 
 		if(synfigapp::Instance::get_action_count())
 		{
-			if(!App::dialog_yes_no(_("CVS Commit"), _("This will save any changes you have made. Are you sure?")))
+			if (!App::dialog_2(
+				_("CVS Commit"),
+				_("This will save any changes you have made. Are you sure?"),
+				Gtk::MESSAGE_QUESTION,
+				_("Cancel"),
+				_("Commit"))
+			)
 				return;
+
 			save();
 		}
 
@@ -593,8 +613,15 @@ Instance::dialog_cvs_update()
 		String filename(get_file_name());
 		if(synfigapp::Instance::get_action_count())
 		{
-			if(!App::dialog_yes_no(_("CVS Update"), _("This will save any changes you have made. Are you sure?")))
+			if (!App::dialog_2(
+				_("CVS Update"),
+				_("This will save any changes you have made. Are you sure?"),
+				Gtk::MESSAGE_QUESTION,
+				_("Cancel"),
+				_("Update"))
+			)
 				return;
+
 			save();
 		}
 		OneMoment one_moment;
@@ -626,9 +653,16 @@ Instance::dialog_cvs_revert()
 	try
 	{
 		String filename(get_file_name());
-		if(!App::dialog_yes_no(_("CVS Revert"),
-			_("This will abandon all changes you have made\nsince the last time you performed a commit\noperation. This cannot be undone! Are you sure\nyou want to do this?")
-		))
+
+		if (!App::dialog_2(
+			_("CVS Revert"),
+			_("This will abandon all changes you have made since the last time you "
+				"performed a commit operation. This cannot be undone! "
+				"Are you sure you want to do this?"),
+			Gtk::MESSAGE_QUESTION,
+			_("Cancel"),
+			_("Revert"))
+		)
 			return;
 
 		OneMoment one_moment;
@@ -676,8 +710,18 @@ bool
 Instance::safe_revert()
 {
 	if(synfigapp::Instance::get_action_count())
-		if(!App::dialog_yes_no(_("Revert to saved"), _("You will lose any changes you have made since your last save.\nAre you sure?")))
+	{
+		if (!App::dialog_2(
+			_("Revert to saved"),
+			_("You will lose any changes you have made since your last save."
+				"Are you sure?"),
+			Gtk::MESSAGE_QUESTION,
+			_("Cancel"),
+			_("Revert"))
+		)
 			return false;
+	}
+
 	revert();
 	return true;
 }
