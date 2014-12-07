@@ -128,7 +128,7 @@ Importer::open(const FileSystem::Identifier &identifier)
 }
 
 Importer::Importer(const FileSystem::Identifier &identifier):
-	gamma_(2.2),
+	gamma_(1.0),
 	identifier(identifier)
 {
 }
