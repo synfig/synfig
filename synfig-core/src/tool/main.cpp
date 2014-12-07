@@ -32,15 +32,15 @@
 #endif
 
 #include <iostream>
-#include <ETL/stringf>
+#include <string>
 #include <list>
-#include <cstring>
 
 #include <boost/program_options/options_description.hpp>
 #include <boost/program_options/parsers.hpp>
 #include <boost/program_options/variables_map.hpp>
 #include <boost/tokenizer.hpp>
 #include <boost/token_functions.hpp>
+#include <boost/filesystem.hpp>
 
 #include <glibmm.h>
 
@@ -67,14 +67,12 @@
 #endif
 
 using namespace std;
-using namespace etl;
 using namespace synfig;
-using namespace boost;
 namespace po=boost::program_options;
 
 /* === G L O B A L S ================================================ */
 
-String binary_path;
+std::string binary_path;
 int verbosity = 0;
 bool be_quiet = false;
 bool print_benchmarks = false;
@@ -119,19 +117,20 @@ const char* allowed_video_codecs_description[] =
 
 /* === M E T H O D S ================================================ */
 
-int main(int ac, char* av[])
+int main(int argc, char* argv[])
 {
 	setlocale(LC_ALL, "");
-	
-	binary_path = synfig::get_binary_path(String(av[0]));
+
+	binary_path = synfig::get_binary_path(String(argv[0]));
 
 #ifdef ENABLE_NLS
-	String locale_dir;
-	locale_dir = etl::dirname(etl::dirname(binary_path))+ETL_DIRECTORY_SEPARATOR+"share"+ETL_DIRECTORY_SEPARATOR+"locale";
+	boost::filesystem::path locale_path (binary_path);
+	locale_path = locale_path.parent_path().parent_path();
+	locale_path = locale_path/"share"/"locale";
 #ifdef WIN32
-	locale_dir = Glib::locale_from_utf8(locale_dir);
+	locale_dir = Glib::locale_from_utf8(locale_path.string());
 #endif
-	bindtextdomain("synfig", locale_dir.c_str() );
+	bindtextdomain("synfig", locale_path.string().c_str() );
 	bind_textdomain_codeset("synfig", "UTF-8");
 	textdomain("synfig");
 #endif
@@ -143,7 +142,7 @@ int main(int ac, char* av[])
 	}
 
 	try {
-		if(ac==1)
+		if(argc==1)
 			throw (SynfigToolException(SYNFIGTOOL_MISSINGARGUMENT));
 
 
@@ -272,7 +271,7 @@ int main(int ac, char* av[])
 		po_visible.add(po_info);
 
         po::variables_map vm;
-        po::store(po::command_line_parser(ac, av).options(po_all).
+        po::store(po::command_line_parser(argc, argv).options(po_all).
 				  positional(po_positional).run(), vm);
 
         OptionsProcessor op(vm, po_visible);
