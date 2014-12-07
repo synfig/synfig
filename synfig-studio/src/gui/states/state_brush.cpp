@@ -6,6 +6,7 @@
 **
 **	\legal
 **	......... ... 2014 Ivan Mahonin
+**	......... ... 2014 Jerome Blanchi
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -31,7 +32,8 @@
 
 #include <gtkmm/dialog.h>
 #include <gtkmm/entry.h>
-#include <gtkmm/togglebutton.h>
+#include <gtkmm/grid.h>
+#include <gtkmm/radiobutton.h>
 #include <glibmm/timeval.h>
 #include <giomm.h>
 
@@ -134,11 +136,12 @@ private:
 	etl::handle<synfigapp::Action::LayerPaint> action;
 	TransformStack transform_stack;
 	BrushConfig selected_brush_config;
-	Gtk::ToggleButton *selected_brush_button;
-	std::map<String, Gtk::ToggleButton*> brush_buttons;
+	Gtk::RadioButton *selected_brush_button;
+	std::map<String, Gtk::RadioButton*> brush_buttons;
+
 
 	bool scan_directory(const String &path, int scan_sub_levels, std::set<String> &out_files);
-	void select_brush(Gtk::ToggleButton *button, String filename);
+	void select_brush(Gtk::RadioButton *button, String filename);
 	void refresh_ducks();
 
 	synfigapp::Settings &settings;
@@ -582,14 +585,14 @@ StateBrush_Context::refresh_tool_options()
 	App::dialog_tool_options->set_name("brush");
 
 	// create container
-	Gtk::Table *table = Gtk::manage(new Gtk::Table(1, 2, false));
+	Gtk::Box *box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
 
-	// create options
-	table->attach(eraser_checkbox, 0, 1, 0, 1, Gtk::FILL, Gtk::SHRINK);
+	// add options
+	box->add(eraser_checkbox);
 
 	// create brushes container widget
 	int cols = 4;
-	Gtk::Table *brushes_table = Gtk::manage(new Gtk::Table(1, cols));
+	Gtk::Grid *brushes_grid = Gtk::manage(new Gtk::Grid());
 
 	// load brushes
 	// scan directories
@@ -599,7 +602,8 @@ StateBrush_Context::refresh_tool_options()
 
 	// load files
 	int col = 0; int row = 0;
-	Gtk::ToggleButton *first_button = NULL;
+	Gtk::RadioButton::Group brush_group;
+	Gtk::RadioButton *first_button = NULL;
 	//Gtk::IconSize iconsize = Gtk::ICON_SIZE_LARGE_TOOLBAR;
 	//Warning:unused variable iconsize
 	for(std::set<String>::const_iterator i = files.begin(); i != files.end(); ++i)
@@ -610,8 +614,10 @@ StateBrush_Context::refresh_tool_options()
 			const String icon_file = filename_sans_extension(brush_file) + "_prev.png";
 			if (files.count(icon_file))
 			{
-				// create button
-				Gtk::ToggleButton *button = brush_buttons[*i] = Gtk::manage(new Gtk::ToggleButton());
+				// create radio button without indicator
+				Gtk::RadioButton *button = brush_buttons[*i] = Gtk::manage(new Gtk::RadioButton(brush_group));
+				button->set_mode(false);
+
 				Glib::RefPtr<Gdk::Pixbuf> pixbuf, pixbuf_scaled;
 				pixbuf = Gdk::Pixbuf::create_from_file(icon_file);
 				pixbuf_scaled = pixbuf->scale_simple(48, 48, Gdk::INTERP_BILINEAR);
@@ -626,28 +632,29 @@ StateBrush_Context::refresh_tool_options()
 					// add row
 					col = 0;
 					++row;
-					brushes_table->resize(row + 1, cols);
 				}
 
 				// add button
-				brushes_table->attach(*button, col, col+1, row, row+1);
+				brushes_grid->attach(*button, col, row, 1, 1);
 				++col;
 			}
 		}
 	}
-	Gtk::ScrolledWindow *brushes_scroll = Gtk::manage(new Gtk::ScrolledWindow());
-	brushes_scroll->add(*brushes_table);
-	table->attach(*brushes_scroll, 0, 1, 1, 2);
 
-	table->show_all();
-	App::dialog_tool_options->add(*table);
+	Gtk::ScrolledWindow *brushes_scroll = Gtk::manage(new Gtk::ScrolledWindow());
+	brushes_scroll->add(*brushes_grid);
+	box->pack_start(*brushes_scroll, Gtk::PACK_EXPAND_WIDGET);
+
+	box->show_all();
+	App::dialog_tool_options->add(*box);
 
 	// select first brush
 	if (first_button != NULL) first_button->set_active(true);
 }
 
 void
-StateBrush_Context::select_brush(Gtk::ToggleButton *button, String filename)
+StateBrush_Context::select_brush(Gtk::RadioButton *button, String filename)
+
 {
 	if (button != NULL && button->get_active())
 	{
@@ -739,6 +746,14 @@ StateBrush_Context::event_mouse_down_handler(const Smach::event& x)
 				if (layer_switch) layer = etl::handle<Layer_Bitmap>::cast_dynamic(layer_switch->get_current_layer());
 			}
 
+			// No image found to draw in, add it.
+			if(!layer)
+			{
+				canvas_view_->add_layer("Import");
+				selected_layer = canvas_view_->get_selection_manager()->get_selected_layer();
+				layer = etl::handle<Layer_Bitmap>::cast_dynamic(selected_layer);
+			}
+
 			if (layer)
 			{
 				transform_stack.clear();
@@ -759,11 +774,11 @@ StateBrush_Context::event_mouse_down_handler(const Smach::event& x)
 					Real diff = max_rgb-min_rgb;
 
 					Real val = max_rgb;
-					Real sat = val > epsilon ? 1.0 - min_rgb/val : 0;
-					Real hue = diff < epsilon   ? 0
-							 : r >= g && r >= b ? 0.0 + 60.0*(g > b ? g - b : b - g)/diff
-							 : g >= b           ? 120.0 + 60.0*(b - r)/diff
-							 :                    240.0 + 60.0*(r - g)/diff;
+					Real sat = max_rgb != 0 ? 1.0 - (min_rgb / max_rgb) : 0;
+					Real hue = max_rgb == min_rgb ? 0
+							: max_rgb == r ? 60.0 * fmod ((g - b)/(diff), 6.0)
+							: max_rgb == g ? hue = 60.0 * (((b - r)/(diff))+2.0)
+							: hue = 60.0 * (((r - g)/(diff))+4.0);
 
 					Real opaque = color.get_a();
 					Real radius = synfigapp::Main::get_bline_width();

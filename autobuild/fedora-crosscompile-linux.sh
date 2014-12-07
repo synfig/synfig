@@ -1691,6 +1691,7 @@ mkpackage_deb()
 		# Workaround permissions problem
 		echo >> synfigstudio-${VERSION}/debian/postinst
 		echo "chmod a+rX -R /opt/synfig" >> synfigstudio-${VERSION}/debian/postinst
+		echo "chmod a+rX /opt" >> synfigstudio-${VERSION}/debian/postinst
 		
 		pushd synfigstudio-${VERSION} >/dev/null
 		run_native dpkg-buildpackage -rfakeroot -a${SYS_ARCH} -d || true
