@@ -868,8 +868,8 @@ initialize()
 		libfreetype6-dev \
 		libfontconfig1-dev \
 		libxml2-dev \
-		libtiff4-dev \
-		libmlt++-dev \
+		libtiff-dev \
+		libmlt-dev libmlt++-dev \
 		libjasper-dev \
 		x11proto-xext-dev libdirectfb-dev libxfixes-dev libxinerama-dev libxdamage-dev libxcomposite-dev libxcursor-dev libxft-dev libxrender-dev libxt-dev libxrandr-dev libxi-dev libxext-dev libx11-dev \
 		libatk1.0-dev \
@@ -1102,7 +1102,7 @@ initialize()
 	fi
 
 	#export PREFIX=/opt/synfig
-	export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:${PREFIX}/lib64/pkgconfig:/usr/local/lib/pkgconfig
+	export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:${PREFIX}/lib64/pkgconfig:/usr/local/lib/pkgconfig:/usr/lib/`uname -i`-linux-gnu/pkgconfig/:$PKG_CONFIG_PATH
 	export PATH=${PREFIX}/bin:$PATH
 	export LD_LIBRARY_PATH=${PREFIX}/lib:${PREFIX}/lib64:/usr/local/lib:$LD_LIBRARY_PATH
 	export LDFLAGS="-Wl,-rpath -Wl,\\\$\$ORIGIN/lib"
