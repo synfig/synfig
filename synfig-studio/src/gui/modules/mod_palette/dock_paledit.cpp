@@ -257,10 +257,16 @@ Dock_PalEdit::on_save_pressed()
 			}
 
 			// if the file exists and the user doesn't want to overwrite it, keep prompting for a filename
-			string msg(strprintf(_("A file named '%s' already exists.\n\n"
-									"Do you want to replace it with the file you are saving?"), filename.c_str()));
-			if ((stat_return == 0) &&
-				!App::dialog_yes_no(_("File exists"),msg.c_str()))
+			string msg(strprintf(_("A file named '%s' already exists. "
+				"Do you want to replace it with the file you are saving?"), filename.c_str()));
+
+			if ((stat_return == 0) && !App::dialog_2(
+				_("File exists"),
+				msg.c_str(),
+				Gtk::MESSAGE_QUESTION,
+				_("Rename"),
+				_("Overwrite"))
+			)
 				continue;
 		}
 		palette_.save_to_file(filename);

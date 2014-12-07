@@ -2949,6 +2949,73 @@ App::dialog_not_implemented()
 	dialog.run();
 }
 
+
+// message dialog with 1 button.
+void
+App::dialog_1(const std::string &message,
+	const std::string &details,
+	const Gtk::MessageType &type,
+		//MESSAGE_INFO - Informational message.
+		//MESSAGE_WARNING - Non-fatal warning message.
+		//MESSAGE_QUESTION - Question requiring a choice.
+		//MESSAGE_ERROR - Fatal error message.
+		//MESSAGE_OTHER - None of the above, doesn’t get an icon.
+	const std::string &button1)
+{
+	Gtk::MessageDialog dialog(*App::main_window, message, false, type, Gtk::BUTTONS_NONE, true);
+	dialog.set_secondary_text(details);
+	dialog.add_button(button1, 0);
+
+	dialog.run();
+}
+
+
+// message dialog with 2 buttons.
+bool
+App::dialog_2(const std::string &message,
+	const std::string &details,
+	const Gtk::MessageType &type,
+		//MESSAGE_INFO - Informational message.
+		//MESSAGE_WARNING - Non-fatal warning message.
+		//MESSAGE_QUESTION - Question requiring a choice.
+		//MESSAGE_ERROR - Fatal error message.
+		//MESSAGE_OTHER - None of the above, doesn’t get an icon.
+	const std::string &button1,
+	const std::string &button2)
+{
+	Gtk::MessageDialog dialog(*App::main_window, message, false, type, Gtk::BUTTONS_NONE, true);
+	dialog.set_secondary_text(details);
+	dialog.add_button(button1, 0);
+	dialog.add_button(button2, 1);
+
+	return	dialog.run();
+}
+
+
+// message dialog with 3 buttons.
+int
+App::dialog_3(const std::string &message,
+	const std::string &detials,
+	const Gtk::MessageType &type,
+		//MESSAGE_INFO - Informational message.
+		//MESSAGE_WARNING - Non-fatal warning message.
+		//MESSAGE_QUESTION - Question requiring a choice.
+		//MESSAGE_ERROR - Fatal error message.
+		//MESSAGE_OTHER - None of the above, doesn’t get an icon.
+	const std::string &button1,
+	const std::string &button2,
+	const std::string &button3)
+{
+	Gtk::MessageDialog dialog(*App::main_window, message, false, type, Gtk::BUTTONS_NONE, true);
+	dialog.set_secondary_text(detials);
+	dialog.add_button(button1, 0);
+	dialog.add_button(button2, 1);
+	dialog.add_button(button3, 2);
+
+	return dialog.run();
+}
+
+
 static bool
 try_open_url(const std::string &url)
 {
@@ -3190,7 +3257,13 @@ App::open_as(std::string filename,std::string as,synfig::FileContainerZip::file_
 
 			one_moment.hide();
 
-			if(instance->is_updated() && App::dialog_yes_no(_("CVS Update"), _("There appears to be a newer version of this file available on the CVS repository.\nWould you like to update now? (It would probably be a good idea)")))
+			if(instance->is_updated() && App::dialog_2(
+				_("Newer version of this file availabel on the CVS repository!"),
+				_("repository. Would you like to update now? (It would probably be a good idea)"),
+				Gtk::MESSAGE_QUESTION,
+				_("Cancel"),
+				_("Update Anyway"))
+			)
 				instance->dialog_cvs_update();
 		}
 	}
@@ -3258,7 +3331,13 @@ App::open_from_temporary_container_as(std::string container_filename_base,std::s
 
 			one_moment.hide();
 
-			if(instance->is_updated() && App::dialog_yes_no(_("CVS Update"), _("There appears to be a newer version of this file available on the CVS repository.\nWould you like to update now? (It would probably be a good idea)")))
+			if(instance->is_updated() && App::dialog_2(
+				_("Newer version of this file avaliable on the CVS repository!"),
+				_("Would you like to update now (It would probably be a good idea)"),
+				Gtk::MESSAGE_QUESTION,
+				_("Cancel"),
+				_("Update Anyway"))
+			)
 				instance->dialog_cvs_update();
 		}
 	}
