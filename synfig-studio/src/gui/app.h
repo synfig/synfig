@@ -387,18 +387,18 @@ public:
 
 	static void dialog_help();
 
-	static void dialog_1(const std::string &message,
+	static void dialog_message_1b(const std::string &message,
 			const std::string &detials,
 			const Gtk::MessageType &type,
 			const std::string &button1);
 
-	static bool dialog_2(const std::string &message,
+	static bool dialog_message_2b(const std::string &message,
 			const std::string &details,
 			const Gtk::MessageType &type,
 			const std::string &button1,
 			const std::string &button2);
 
-	static int dialog_3(const std::string &message,
+	static int dialog_message_3b(const std::string &message,
 			const std::string &details,
 			const Gtk::MessageType &type,
 			const std::string &button1,

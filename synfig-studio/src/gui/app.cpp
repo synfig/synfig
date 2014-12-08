@@ -2952,7 +2952,7 @@ App::dialog_not_implemented()
 
 // message dialog with 1 button.
 void
-App::dialog_1(const std::string &message,
+App::dialog_message_1b(const std::string &message,
 	const std::string &details,
 	const Gtk::MessageType &type,
 		//MESSAGE_INFO - Informational message.
@@ -2972,7 +2972,7 @@ App::dialog_1(const std::string &message,
 
 // message dialog with 2 buttons.
 bool
-App::dialog_2(const std::string &message,
+App::dialog_message_2b(const std::string &message,
 	const std::string &details,
 	const Gtk::MessageType &type,
 		//MESSAGE_INFO - Informational message.
@@ -2994,7 +2994,7 @@ App::dialog_2(const std::string &message,
 
 // message dialog with 3 buttons.
 int
-App::dialog_3(const std::string &message,
+App::dialog_message_3b(const std::string &message,
 	const std::string &detials,
 	const Gtk::MessageType &type,
 		//MESSAGE_INFO - Informational message.
@@ -3257,7 +3257,7 @@ App::open_as(std::string filename,std::string as,synfig::FileContainerZip::file_
 
 			one_moment.hide();
 
-			if(instance->is_updated() && App::dialog_2(
+			if(instance->is_updated() && App::dialog_message_2b(
 				_("Newer version of this file availabel on the CVS repository!"),
 				_("repository. Would you like to update now? (It would probably be a good idea)"),
 				Gtk::MESSAGE_QUESTION,
@@ -3331,7 +3331,7 @@ App::open_from_temporary_container_as(std::string container_filename_base,std::s
 
 			one_moment.hide();
 
-			if(instance->is_updated() && App::dialog_2(
+			if(instance->is_updated() && App::dialog_message_2b(
 				_("Newer version of this file avaliable on the CVS repository!"),
 				_("Would you like to update now (It would probably be a good idea)"),
 				Gtk::MESSAGE_QUESTION,
