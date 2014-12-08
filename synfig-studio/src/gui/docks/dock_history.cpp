@@ -251,7 +251,7 @@ Dock_History::create_action_tree()
 void
 Dock_History::clear_undo()
 {
-	if (selected_instance && App::dialog_2(
+	if (selected_instance && App::dialog_message_2b(
 		_("Clear History"),
 		_("You will not be able to undo any changes that you have made! "
 			"Are you sure you want to clear the undo stack?"),
@@ -265,7 +265,7 @@ Dock_History::clear_undo()
 void
 Dock_History::clear_redo()
 {
-	if(selected_instance && App::dialog_2(
+	if(selected_instance && App::dialog_message_2b(
 		_("Clear History"),
 		_("You will not be able to redo any changes that you have made! "
 			"Are you sure you want to clear the redo stack?"),
@@ -279,7 +279,7 @@ Dock_History::clear_redo()
 void
 Dock_History::clear_undo_and_redo()
 {
-	if(selected_instance && App::dialog_2(
+	if(selected_instance && App::dialog_message_2b(
 		_("Clear History"),
 		_("You will not be able to undo or redo any changes that you have made! "
 			"Are you sure you want to clear the undo and redo stacks?"),

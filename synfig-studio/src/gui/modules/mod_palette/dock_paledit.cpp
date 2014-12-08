@@ -260,7 +260,7 @@ Dock_PalEdit::on_save_pressed()
 			string msg(strprintf(_("A file named '%s' already exists. "
 				"Do you want to replace it with the file you are saving?"), filename.c_str()));
 
-			if ((stat_return == 0) && !App::dialog_2(
+			if ((stat_return == 0) && !App::dialog_message_2b(
 				_("File exists"),
 				msg.c_str(),
 				Gtk::MESSAGE_QUESTION,

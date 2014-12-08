@@ -356,7 +356,7 @@ studio::Instance::dialog_save_as()
 		{
 			String ext(filename_extension(filename));
 			// todo: ".sfg" literal and others
-			if (ext != ".sif" && ext != ".sifz" && ext != ".sfg" && !App::dialog_2(
+			if (ext != ".sif" && ext != ".sifz" && ext != ".sfg" && !App::dialog_message_2b(
 				_("Unknown extension"),
 				_("You have given the file name an extension which I do not recognize. "
 					"Are you sure this is what you want?"),
@@ -388,7 +388,7 @@ studio::Instance::dialog_save_as()
 			// if the file exists and the user doesn't want to overwrite it, keep prompting for a filename
 			string msg(strprintf(_("A file named '%s' already exists. "
 					"Do you want to replace it with the file you are saving?"), filename.c_str()));
-			if ((stat_return == 0) && !App::dialog_2(
+			if ((stat_return == 0) && !App::dialog_message_2b(
 				_("File exists"),
 				msg.c_str(),
 				Gtk::MESSAGE_QUESTION,
@@ -537,7 +537,7 @@ Instance::dialog_cvs_commit()
 
 		if(synfigapp::Instance::get_action_count())
 		{
-			if (!App::dialog_2(
+			if (!App::dialog_message_2b(
 				_("CVS Commit"),
 				_("This will save any changes you have made. Are you sure?"),
 				Gtk::MESSAGE_QUESTION,
@@ -613,7 +613,7 @@ Instance::dialog_cvs_update()
 		String filename(get_file_name());
 		if(synfigapp::Instance::get_action_count())
 		{
-			if (!App::dialog_2(
+			if (!App::dialog_message_2b(
 				_("CVS Update"),
 				_("This will save any changes you have made. Are you sure?"),
 				Gtk::MESSAGE_QUESTION,
@@ -654,7 +654,7 @@ Instance::dialog_cvs_revert()
 	{
 		String filename(get_file_name());
 
-		if (!App::dialog_2(
+		if (!App::dialog_message_2b(
 			_("CVS Revert"),
 			_("This will abandon all changes you have made since the last time you "
 				"performed a commit operation. This cannot be undone! "
@@ -711,7 +711,7 @@ Instance::safe_revert()
 {
 	if(synfigapp::Instance::get_action_count())
 	{
-		if (!App::dialog_2(
+		if (!App::dialog_message_2b(
 			_("Revert to saved"),
 			_("You will lose any changes you have made since your last save."
 				"Are you sure?"),
