@@ -6,15 +6,16 @@
 # TODO: FFmpeg/libx264 - stick to particular version
 # TODO: FFmpeg/libx264/mlt - cache sources
 # TODO: Debug builds for dependent libraries
+# TODO: Use BUILDROOT_LIBRARY_SET_ID
 
 set -e
 
 export SCRIPTPATH=$(cd `dirname "$0"`; pwd)
 
-RELEASE=8
+RELEASE=9
 
 BUILDROOT_VERSION=5
-BUILDROOT_LIBRARY_SET_ID=1
+BUILDROOT_LIBRARY_SET_ID=2
 
 if [ -z $ARCH ]; then
 	if [[ `uname -i` == "x86_64" ]]; then
@@ -65,27 +66,31 @@ SOURCES_URL="rsync://download.tuxfamily.org/pub/synfig/packages/sources/base"
 # Bundled libraries
 LIBSIGCPP_VERSION=2.2.10
 GLEW_VERSION=1.5.1
-CAIROMM_VERSION=1.8.0
+CAIROMM_VERSION=1.10.0
 IMAGEMAGICK_VERSION=6.8.9
-PANGOMM_VERSION=2.26.3		# required by GTKMM 2.20.3
-GTKMM_VERSION=2.20.3 		# !!! we need Notebook.set_action_widget()
+PANGOMM_VERSION=2.34.0		# required by GTKMM 2.20.3
+GTKMM_VERSION=3.10.1
 FTGL_VERSION=2.1.2
 FREEGLUT_VERSION=2.4.0
 GTKGLEXT_VERSION=1.2.0
 GTKGLEXTMM_VERSION=1.2.0
 LIBXMLPP_VERSION=2.22.0
-GLIBMM_VERSION=2.24.2		# required by GTKMM 2.20.3
-CAIRO_VERSION=1.12.0		# required by the cairo render engine 2013-04-01
+GLIBMM_VERSION=2.38.1		# required by GTKMM 3.10.1
+CAIRO_VERSION=1.12.18
 BOOST_VERSION=1_53_0
+ATK_VERSION=2.10.0
+AT_SPI2_VERSION=2.10.2
+AT_SPI2_ATK_VERSION=2.10.2
+GLIB_VERSION=2.38.2
+GDK_PIXBUF_VERSION=2.30.3
+GTK_VERSION=3.10.9
+PIXMAN_VERSION=0.30.0		# required by CAIRO 1.12.0
+HARFBUZZ_VERSION=0.9.24
+PANGO_VERSION=1.36.1
+ATKMM_VERSION=2.22.7
 
 # System libraries
-ATK_VERSION=1.29.4			# required by GTK 2.20.1
-GLIB_VERSION=2.24.2			# required by GLIBMM 2.24.2
-GTK_VERSION=2.20.1			# !!! we need Notebook.set_action_widget()
-GTKENGINES_VERSION=2.20.2
-PIXMAN_VERSION=0.22.0		# required by CAIRO 1.12.0
-PANGO_VERSION=1.24.5
-FONTCONFIG_VERSION=2.5.0
+FONTCONFIG_VERSION=2.11.0
 JACK_VERSION=0.124.1
 
 if [[ $ARCH == "32" ]]; then
@@ -154,7 +159,7 @@ set_environment()
 	export LDFLAGS="-Wl,-rpath -Wl,\\\$\$ORIGIN/lib -L${PREFIX}/lib -L${DEPSPREFIX}/lib -L${SYSPREFIX}/${LIBDIR} -L${SYSPREFIX}/usr/${LIBDIR}"
 	#export CFLAGS=" -nostdinc  -I${SYSPREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.3.2/include -I${SYSPREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.3.2/include-fixed  -I${PREFIX}/include  -I${DEPSPREFIX}/include -I${SYSPREFIX}/usr/include"
 	GCC_VER=4.4
-	export CFLAGS="-I${SYSPREFIX}/usr/include -I${PREFIX}/include" 
+	export CFLAGS="-I${SYSPREFIX}/usr/include -I${PREFIX}/include -I${SYSPREFIX}/usr/include/${GCC_ARCH}-linux-gnu" 
 	#export CXXFLAGS="-I${SYSPREFIX}/usr/include/linux/  -I${SYSPREFIX}/usr/include/c++/${GCC_VER}/ -I${SYSPREFIX}/usr/include/c++/${GCC_VER}/${GCC_ARCH}-linux-gnu/ -I${SYSPREFIX}/usr/lib/gcc/${GCC_ARCH}-linux-gnu/${GCC_VER}/include/ -I${SYSPREFIX}/usr/lib/gcc/${GCC_ARCH}-linux-gnu/${GCC_VER}/include-fixed/  -I${SYSPREFIX}/usr/${GCC_ARCH}-linux-gnu/include"
 	#export CXXFLAGS="-I${SYSPREFIX}/usr/local/include/x86_64-linux-gnu -I${SYSPREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.4.5/include -I${SYSPREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.4.5/include-fixed -I${SYSPREFIX}/usr/lib/gcc/../../x86_64-linux-gnu/include -I${SYSPREFIX}/usr/include/x86_64-linux-gnu"
 	#export CXXFLAGS=" -nostdinc   -I${SYSPREFIX}/usr/lib/gcc/../../include/c++/4.3  -I${SYSPREFIX}/usr/lib/gcc/../../include/c++/4.3/x86_64-linux-gnu -I${SYSPREFIX}/usr/lib/gcc/../../include/c++/4.3/backward -I${SYSPREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.3.2/include -I${SYSPREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.3.2/include-fixed -I${PREFIX}/include  -I${DEPSPREFIX}/include -I${SYSPREFIX}/usr/include"
@@ -220,11 +225,14 @@ mkprefix()
 			libxml2-dev \
 			libtiff4-dev \
 			libjasper-dev \
+			libffi-dev \
 			libasound2-dev \
 			x11proto-xext-dev libdirectfb-dev libxfixes-dev libxinerama-dev libxdamage-dev libxcomposite-dev libxcursor-dev libxft-dev libxrender-dev libxt-dev libxrandr-dev libxi-dev libxext-dev libx11-dev \
+			libxtst-dev \
 			libpthread-stubs0-dev \
 			libxml-parser-perl \
 			libdb-dev uuid-dev \
+			libdbus-1-dev \
 			wget mawk \
 			bzip2"
 	
@@ -253,36 +261,6 @@ mkprefix()
 	done
 	
 	echo "Synfig Buildroot v${BUILDROOT_VERSION}" > ${SYSPREFIX}/etc/chroot.id
-}
-
-# Not used
-mkprefix_deps()
-{
-	
-	
-	
-	DEB_LIST_MINIMAL="\
-			build-essential \
-			libpng12-dev \
-			libjpeg62-dev \
-			libfreetype6-dev \
-			libxml2-dev \
-			libtiff4-dev \
-			libjasper-dev \
-			x11proto-xext-dev libdirectfb-dev libxfixes-dev libxinerama-dev libxdamage-dev libxcomposite-dev libxcursor-dev libxft-dev libxrender-dev libxt-dev libxrandr-dev libxi-dev libxext-dev libx11-dev \
-			libxml-parser-perl m4 \
-			libdb-dev uuid-dev \
-			bzip2"
-
-	LD_LIBRARY_PATH=${UBUNTU_LIBDIR}:/${LIBDIR}:${SYSPREFIX}/usr/${LIBDIR} \
-		PATH=/usr/local/sbin:/usr/sbin:/sbin:/sbin:/bin:/usr/bin:${SYSPREFIX}/usr/sbin:${SYSPREFIX}/sbin:${SYSPREFIX}/usr/bin:${SYSPREFIX}/bin:$PATH HOME=/ LOGNAME=root \
-		$WORKSPACE/linux$ARCH$SUFFIX/tools/bin/fakeroot \
-		$WORKSPACE/linux$ARCH$SUFFIX/tools/bin/fakechroot \
-		chroot ${SYSPREFIX} \
-		aptitude install -o Aptitude::Cmdline::ignore-trust-violations=true -y ${DEB_LIST_MINIMAL}
-		
-	
-
 }
 
 mkprep()
@@ -365,6 +343,7 @@ ln -sf ${SYSPREFIX}/usr/bin/gcc ${SYSPREFIX}/usr/bin/cc
 cp ${SYSPREFIX}/usr/lib/libpng12* ${PREFIX}/lib/
 cp ${SYSPREFIX}/usr/lib/libdb-4*.so ${PREFIX}/lib/
 cp ${SYSPREFIX}/lib/libpcre.so* ${PREFIX}/lib/
+cp ${SYSPREFIX}/usr/lib/libffi*.so* ${PREFIX}/lib
 # SDL deps
 cp ${SYSPREFIX}/usr/lib/libdirect-*.so* ${PREFIX}/lib/
 cp ${SYSPREFIX}/usr/lib/libdirectfb-*.so* ${PREFIX}/lib/
@@ -401,6 +380,13 @@ cat > ${DEPSPREFIX}/bin/rsync <<EOF
 EOF
 chmod a+x  ${DEPSPREFIX}/bin/rsync
 
+cat > ${DEPSPREFIX}/bin/python <<EOF
+#!/bin/sh
+
+/usr/bin/python "\$@"
+EOF
+chmod a+x  ${DEPSPREFIX}/bin/python
+
 #for binary in bzip2; do
 #	ln -sf /usr/bin/$binary  ${DEPSPREFIX}/bin/$binary
 #done
@@ -411,17 +397,17 @@ mkglib()
 {
 PKG_NAME=glib
 PKG_VERSION="${GLIB_VERSION}"
-TAREXT=bz2
+TAREXT=xz
 if ! pkg-config ${PKG_NAME}-2.0 --exact-version=${PKG_VERSION}  --print-errors; then
-	rsync -av ${SOURCES_URL}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
-	pushd ${SRCPREFIX}
-	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xjf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	cd ${CACHEDIR}
+    [ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://ftp.gnome.org/pub/gnome/sources/glib/2.38/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	cd ${SRCPREFIX}
+	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
-	./configure --host=${HOST} --disable-static --enable-shared --prefix=${DEPSPREFIX}/
+	./configure --host=${HOST} --disable-static --enable-shared --prefix=${PREFIX}/
 	make -j${THREADS}
 	make install
 	cd ..
-	popd
 fi
 }
 
@@ -429,11 +415,11 @@ mkfontconfig()
 {
 PKG_NAME=fontconfig
 PKG_VERSION="${FONTCONFIG_VERSION}"
-TAREXT=gz
+TAREXT=bz2
 if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
-	rsync -av ${SOURCES_URL}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	( cd ${WORKSPACE}/cache/ && wget -c --no-check-certificate http://www.freedesktop.org/software/fontconfig/release/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
 	pushd ${SRCPREFIX}
-	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xzf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
 	./configure --host=${HOST} --disable-static --enable-shared --prefix=${DEPSPREFIX}/
 	make -j${THREADS}
@@ -448,13 +434,14 @@ mkatk()
 {
 PKG_NAME=atk
 PKG_VERSION="${ATK_VERSION}"
-TAREXT=bz2
+TAREXT=xz
 if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
-	rsync -av ${SOURCES_URL}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	cd ${CACHEDIR}
+    [ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://ftp.gnome.org/pub/gnome/sources/atk/${PKG_VERSION%.*}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	pushd ${SRCPREFIX}
-	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xjf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
-	./configure --host=${HOST} --disable-static --enable-shared --prefix=${DEPSPREFIX}/
+	./configure --host=${HOST} --disable-static --enable-shared --prefix=${PREFIX}/
 	make -j${THREADS}
 	make install
 	cd ..
@@ -462,17 +449,99 @@ if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
 fi
 }
 
+mkatkmm()
+{
+PKG_NAME=atkmm
+PKG_VERSION="${ATKMM_VERSION}"
+TAREXT=xz
+if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
+	cd ${CACHEDIR}
+    [ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://ftp.gnome.org/pub/gnome/sources/${PKG_NAME}/${PKG_VERSION%.*}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	pushd ${SRCPREFIX}
+	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	cd ${PKG_NAME}-${PKG_VERSION}
+	./configure --host=${HOST} --disable-static --enable-shared --prefix=${PREFIX}/
+	make -j${THREADS}
+	make install
+	cd ..
+	popd
+fi
+}
+
+mkatspi2()
+{
+PKG_NAME=at-spi2-core
+PKG_VERSION="${AT_SPI2_VERSION}"
+TAREXT=xz
+if ! pkg-config at-spi2 --exact-version=${PKG_VERSION}  --print-errors; then
+	( cd ${WORKSPACE}/cache/ && wget -c --no-check-certificate http://ftp.gnome.org/pub/gnome/sources/${PKG_NAME}/${PKG_VERSION%.*}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
+	pushd ${SRCPREFIX}
+	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	cd ${PKG_NAME}-${PKG_VERSION}
+	[ ! -e config.cache ] || rm config.cache
+	./configure --build=${HOST} --prefix=${PREFIX}/ \
+		--disable-static --enable-shared
+	make -j${THREADS}
+	make install
+	cd ..
+	popd
+fi
+}
+
+mkatspi2atk()
+{
+mkatspi2
+PKG_NAME=at-spi2-atk
+PKG_VERSION="${AT_SPI2_ATK_VERSION}"
+TAREXT=xz	
+if ! pkg-config atk-bridge-2.0 --exact-version=${PKG_VERSION}  --print-errors; then
+	( cd ${WORKSPACE}/cache/ && wget -c --no-check-certificate http://ftp.gnome.org/pub/gnome/sources/${PKG_NAME}/${PKG_VERSION%.*}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
+	pushd ${SRCPREFIX}
+	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	cd ${PKG_NAME}-${PKG_VERSION}
+	[ ! -e config.cache ] || rm config.cache
+	./configure --build=${HOST} --prefix=${PREFIX}/ \
+		--disable-static --enable-shared
+	make -j${THREADS}
+	make install
+	cd ..
+	popd
+fi
+}
+
+
+
+
+
 mkpixman()
 {
 PKG_NAME=pixman
 PKG_VERSION="${PIXMAN_VERSION}"
 TAREXT=gz
 if ! pkg-config ${PKG_NAME}-1 --exact-version=${PKG_VERSION}  --print-errors; then
-	rsync -av ${SOURCES_URL}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	( cd ${WORKSPACE}/cache/ && wget -c --no-check-certificate http://cairographics.org/releases/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
 	pushd ${SRCPREFIX}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xzf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
-	./configure --host=${HOST} --disable-static --enable-shared --prefix=${DEPSPREFIX}/
+	./configure --host=${HOST} --disable-static --enable-shared --prefix=${PREFIX}/
+	make -j${THREADS}
+	make install
+	cd ..
+	popd
+fi
+}
+
+mkharfbuzz()
+{
+PKG_NAME=harfbuzz
+PKG_VERSION="${HARFBUZZ_VERSION}"
+TAREXT=bz2
+if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
+	( cd ${WORKSPACE}/cache/ && wget -c --no-check-certificate http://www.freedesktop.org/software/harfbuzz/release/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
+	pushd ${SRCPREFIX}
+	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	cd ${PKG_NAME}-${PKG_VERSION}
+	./configure --host=${HOST} --prefix=${PREFIX}
 	make -j${THREADS}
 	make install
 	cd ..
@@ -484,11 +553,11 @@ mkcairo()
 {
 PKG_NAME=cairo
 PKG_VERSION="${CAIRO_VERSION}"
-TAREXT=gz
+TAREXT=xz
 if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
-	rsync -av ${SOURCES_URL}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	( cd ${WORKSPACE}/cache/ && wget -c --no-check-certificate http://cairographics.org/releases/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
 	pushd ${SRCPREFIX}
-	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xzf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
 	./configure --host=${HOST} --prefix=${PREFIX} \
 		--disable-static 	\
@@ -505,18 +574,38 @@ if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
 fi
 }
 
+mkgdkpixbuf()
+{
+PKG_NAME=gdk-pixbuf
+PKG_VERSION="${GDK_PIXBUF_VERSION}"
+TAREXT=xz
+if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
+	( cd ${WORKSPACE}/cache/ && wget -c --no-check-certificate http://ftp.gnome.org/pub/gnome/sources/gdk-pixbuf/${PKG_VERSION%.*}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
+	pushd ${SRCPREFIX}
+	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	cd ${PKG_NAME}-${PKG_VERSION}
+	[ ! -e config.cache ] || rm config.cache
+	./configure --host=${HOST} --prefix=${PREFIX}/ \
+		--disable-static --enable-shared
+	make -j${THREADS}
+	make install
+	cd ..
+	popd
+fi
+}
+
 mkpango()
 {
 PKG_NAME=pango
 PKG_VERSION="${PANGO_VERSION}"
-TAREXT=bz2
+TAREXT=xz
 if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
-	rsync -av ${SOURCES_URL}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	( cd ${WORKSPACE}/cache/ && wget -c --no-check-certificate http://ftp.gnome.org/pub/gnome/sources/pango/${PKG_VERSION%.*}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
 	pushd ${SRCPREFIX}
-	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xjf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
 	[ ! -e config.cache ] || rm config.cache
-	./configure --host=${HOST} --prefix=${DEPSPREFIX}/ \
+	./configure --host=${HOST} --prefix=${PREFIX}/ \
 		--disable-static --enable-shared \
 		--with-included-modules=yes
 	make -j${THREADS}
@@ -530,15 +619,14 @@ mkgtk()
 {
 PKG_NAME=gtk\+
 PKG_VERSION="${GTK_VERSION}"
-TAREXT=bz2
-if ! pkg-config ${PKG_NAME}-2.0 --exact-version=${PKG_VERSION}  --print-errors; then
-	#rsync -av ${SOURCES_URL}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+TAREXT=xz
+if ! pkg-config ${PKG_NAME}-3.0 --exact-version=${PKG_VERSION}  --print-errors; then
 	( cd ${WORKSPACE}/cache/ && wget -c --no-check-certificate http://ftp.gnome.org/pub/gnome/sources/gtk+/${PKG_VERSION%.*}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
 	pushd ${SRCPREFIX}
-	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xjf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
 	[ ! -e config.cache ] || rm config.cache
-	./configure --build=${HOST} --prefix=${DEPSPREFIX}/ \
+	./configure --build=${HOST} --prefix=${PREFIX}/ \
 		--disable-static --enable-shared
 	make -j${THREADS}
 	make install
@@ -592,11 +680,11 @@ mkglibmm()
 {
 PKG_NAME=glibmm
 PKG_VERSION="${GLIBMM_VERSION}"
-TAREXT=bz2
+TAREXT=xz
 if ! pkg-config ${PKG_NAME}-2.4 --exact-version=${PKG_VERSION}  --print-errors; then
-	rsync -av ${SOURCES_URL}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	( cd ${WORKSPACE}/cache/ && wget -c --no-check-certificate http://ftp.gnome.org/pub/GNOME/sources/${PKG_NAME}/${PKG_VERSION%.*}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
 	pushd ${SRCPREFIX}
-	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xjf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
 	./configure --host=${HOST} --prefix=${PREFIX} --includedir=${PREFIX}/include \
 		--disable-fulldocs \
@@ -633,7 +721,7 @@ PKG_NAME=ImageMagick
 PKG_VERSION="${IMAGEMAGICK_VERSION}-8"
 TAREXT=bz2
 if ! pkg-config ${PKG_NAME} --exact-version=${IMAGEMAGICK_VERSION}  --print-errors; then
-	( cd ${WORKSPACE}/cache/ && wget -c http://www.imagemagick.org/download/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
+	( cd ${WORKSPACE}/cache/ && wget -c http://www.imagemagick.org/download/releases/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
 	pushd ${SRCPREFIX}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xjf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
@@ -1001,6 +1089,8 @@ if [ ! -f ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done ]; then
         --target-arch=${RPM_ARCH} \
         --enable-gpl --disable-decklink \
         $DEBUG
+        
+     touch src/modules/disable-gtk2
 
     make all -j$THREADS
     make install -j$THREADS
@@ -1047,7 +1137,7 @@ PKG_NAME=cairomm
 PKG_VERSION="${CAIROMM_VERSION}"
 TAREXT=gz
 if ! pkg-config ${PKG_NAME}-1.0 --exact-version=${PKG_VERSION}  --print-errors; then
-	rsync -av ${SOURCES_URL}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	( cd ${WORKSPACE}/cache/ && wget -c --no-check-certificate http://cairographics.org/releases/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
 	pushd ${SRCPREFIX}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xzf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
@@ -1065,11 +1155,11 @@ mkpangomm()
 {
 PKG_NAME=pangomm
 PKG_VERSION="${PANGOMM_VERSION}"
-TAREXT=bz2
+TAREXT=xz
 if ! pkg-config ${PKG_NAME}-1.4 --exact-version=${PKG_VERSION}  --print-errors; then
-	rsync -av ${SOURCES_URL}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	( cd ${WORKSPACE}/cache/ && wget -c --no-check-certificate http://ftp.gnome.org/pub/GNOME/sources/${PKG_NAME}/${PKG_VERSION%.*}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
 	pushd ${SRCPREFIX}
-	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xjf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
 	./configure --host=${HOST} --prefix=${PREFIX} --includedir=${PREFIX}/include \
 		--disable-docs \
@@ -1083,14 +1173,15 @@ fi
 
 mkgtkmm()
 {
+mkatkmm
 PKG_NAME=gtkmm
 PKG_VERSION="${GTKMM_VERSION}"
-TAREXT=bz2
-if ! pkg-config ${PKG_NAME}-2.4 --exact-version=${PKG_VERSION}  --print-errors; then
-	( cd ${WORKSPACE}/cache/ && wget -c --no-check-certificate http://ftp.gnome.org/pub/GNOME/sources/gtkmm/${PKG_VERSION%.*}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
+TAREXT=xz
+if ! pkg-config ${PKG_NAME}-3.0 --exact-version=${PKG_VERSION}  --print-errors; then
+	( cd ${WORKSPACE}/cache/ && wget -c --no-check-certificate http://ftp.gnome.org/pub/GNOME/sources/${PKG_NAME}/${PKG_VERSION%.*}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
 	#rsync -av ${SOURCES_URL}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	pushd ${SRCPREFIX}
-	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xjf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
 	./configure --host=${HOST} --prefix=${PREFIX} --includedir=${PREFIX}/include \
 		--disable-examples --disable-demos --disable-docs \
@@ -1725,11 +1816,14 @@ mkall()
 	
 	# system libraries
 	mkglib
+	mkharfbuzz
 	mkfontconfig
 	mkatk
+	mkatspi2atk
 	mkpixman
 	mkcairo # bundled library
 	mkpango
+	mkgdkpixbuf
 	mkgtk
 	mkjack
 	
