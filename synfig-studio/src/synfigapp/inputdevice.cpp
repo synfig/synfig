@@ -79,11 +79,6 @@ public:
 				value=strprintf("%f",(float)input_device->get_opacity());
 				return true;
 			}
-			if(key=="blend_method")
-			{
-				value=strprintf("%i",(int)input_device->get_blend_method());
-				return true;
-			}
 			if(key=="outline_color")
 			{
 				Color c(input_device->get_outline_color());
@@ -167,11 +162,6 @@ public:
 			if(key=="opacity")
 			{
 				input_device->set_opacity(atof(value.c_str()));
-				return true;
-			}
-			if(key=="blend_method")
-			{
-				input_device->set_blend_method(Color::BlendMethod(atoi(value.c_str())));
 				return true;
 			}
 			if(key=="outline_color")
@@ -274,7 +264,6 @@ public:
 		ret.push_back("fill_color");
 		ret.push_back("state");
 		ret.push_back("bline_width");
-		ret.push_back("blend_method");
 		ret.push_back("opacity");
 		ret.push_back("mode");
 		ret.push_back("axes");
