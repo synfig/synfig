@@ -24,16 +24,12 @@
 #ifndef __SYNFIG_RENDERPROGRESS_H
 #define __SYNFIG_RENDERPROGRESS_H
 
-using namespace std;
-using namespace etl;
-using namespace synfig;
-
 #include <synfig/string.h>
 #include "definitions.h"
 
 class RenderProgress : public synfig::ProgressCallback
 {
-	string taskname;
+	std::string taskname;
 
 	etl::clock clk;
 	int clk_scanline; // The scanline at which the clock was reset
@@ -45,21 +41,21 @@ public:
 	RenderProgress():clk_scanline(0), last_time(0) { }
 
 	virtual bool
-	task(const String &thetask)
+	task(const synfig::String &thetask)
 	{
 		taskname=thetask;
 		return true;
 	}
 
 	virtual bool
-	error(const String &task)
+	error(const synfig::String &task)
 	{
 		std::cout<<_("error")<<": "<<task.c_str()<<std::endl;
 		return true;
 	}
 
 	virtual bool
-	warning(const String &task)
+	warning(const synfig::String &task)
 	{
 		std::cout<<_("warning")<<": "<<task.c_str()<<std::endl;
 		return true;
@@ -68,7 +64,10 @@ public:
 	virtual bool
 	amount_complete(int scanline, int h)
 	{
-		if(be_quiet)return true;
+		if(SynfigToolGeneralOptions::instance()->should_be_quiet())
+		{
+			return true;
+		}
 		if(scanline!=h)
 		{
 			const float time(clk()*(float)(h-scanline)/(float)(scanline-clk_scanline));
@@ -106,7 +105,7 @@ public:
 			while(days>=7)
 				weeks++,days-=7;
 
-			cerr<<taskname.c_str()<<": "<<_("Line")<<" "<<scanline<<_(" of ")<<h<<" -- ";
+			std::cerr<<taskname.c_str()<<": "<<_("Line")<<" "<<scanline<<_(" of ")<<h<<" -- ";
 			//cerr<<time/(h-clk_scanline)<<" ";
 			/*
 			if(delta>=-time/(h-clk_scanline)  )
@@ -121,24 +120,24 @@ public:
 
 			if(weeks)
 				/// TRANSLATORS This "w" stands for weeks
-				cerr<<weeks<<_("w ");
+				std::cerr<<weeks<<_("w ");
 			if(days)
 				/// TRANSLATORS This "d" stands for days
-				cerr<<days<<_("d ");
+				std::cerr<<days<<_("d ");
 			if(hours)
 				/// TRANSLATORS This "h" stands for hours
-				cerr<<hours<<_("h ");
+				std::cerr<<hours<<_("h ");
 			if(minutes)
 				/// TRANSLATORS This "m" stands for minutes
-				cerr<<minutes<<_("m ");
+				std::cerr<<minutes<<_("m ");
 			if(seconds)
 				/// TRANSLATORS This "s" stands for seconds
-				cerr<<seconds<<_("s ");
+				std::cerr<<seconds<<_("s ");
 
-			cerr<<"           \r";
+			std::cerr<<"           \r";
 		}
 		else
-			cerr<<taskname.c_str()<<": "<<_("DONE")<<"                        "<<endl;;
+			std::cerr<<taskname.c_str()<<": "<<_("DONE")<<"                        "<<std::endl;
 		return true;
 	}
 };

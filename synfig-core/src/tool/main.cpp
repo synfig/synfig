@@ -66,54 +66,8 @@
 #include "named_type.h"
 #endif
 
-using namespace std;
 using namespace synfig;
 namespace po=boost::program_options;
-
-/* === G L O B A L S ================================================ */
-
-std::string binary_path;
-int verbosity = 0;
-bool be_quiet = false;
-bool print_benchmarks = false;
-int threads = 1;
-
-//! Allowed video codecs
-/*! \warning This variable is linked to allowed_video_codecs_description,
- *  if you change this you must change the other acordingly.
- *  \warning These codecs are linked to the filename extensions for
- *  mod_ffmpeg. If you change this you must change the others acordingly.
- */
-const char* allowed_video_codecs[] =
-{
-	"flv", "h263p", "huffyuv", "libtheora", "libx264", "libx264-lossless",
-	"mjpeg", "mpeg1video", "mpeg2video", "mpeg4", "msmpeg4",
-	"msmpeg4v1", "msmpeg4v2", "wmv1", "wmv2", NULL
-};
-
-//! Allowed video codecs description.
-/*! \warning This variable is linked to allowed_video_codecs,
- *  if you change this you must change the other acordingly.
- */
-const char* allowed_video_codecs_description[] =
-{
-	"Flash Video (FLV) / Sorenson Spark / Sorenson H.263.",
-	"H.263+ / H.263-1998 / H.263 version 2.",
-	"Huffyuv / HuffYUV.",
-	"libtheora Theora.",
-	"H.264 / AVC / MPEG-4 AVC.",
-	"H.264 / AVC / MPEG-4 AVC (LossLess).",
-	"MJPEG (Motion JPEG).",
-	"raw MPEG-1 video.",
-	"raw MPEG-2 video.",
-	"MPEG-4 part 2. (XviD/DivX)",
-	"MPEG-4 part 2 Microsoft variant version 3.",
-	"MPEG-4 part 2 Microsoft variant version 1.",
-	"MPEG-4 part 2 Microsoft variant version 2.",
-	"Windows Media Video 7.",
-	"Windows Media Video 8.",
-	NULL
-};
 
 /* === M E T H O D S ================================================ */
 
@@ -121,11 +75,14 @@ int main(int argc, char* argv[])
 {
 	setlocale(LC_ALL, "");
 
-	binary_path = synfig::get_binary_path(String(argv[0]));
+	SynfigToolGeneralOptions::create_singleton_instance(argv[0]);
+
+	boost::filesystem::path binary_path =
+		SynfigToolGeneralOptions::instance()->get_binary_path();
 
 #ifdef ENABLE_NLS
-	boost::filesystem::path locale_path (binary_path);
-	locale_path = locale_path.parent_path().parent_path();
+	boost::filesystem::path locale_path =
+		binary_path.parent_path().parent_path();
 	locale_path = locale_path/"share"/"locale";
 #ifdef WIN32
 	locale_dir = Glib::locale_from_utf8(locale_path.string());
@@ -137,13 +94,16 @@ int main(int argc, char* argv[])
 
 	if(!SYNFIG_CHECK_VERSION())
 	{
-		cerr << _("FATAL: Synfig Version Mismatch") << endl;
+		std::cerr << _("FATAL: Synfig Version Mismatch") << std::endl;
 		return SYNFIGTOOL_BADVERSION;
 	}
 
-	try {
-		if(argc==1)
+	try
+	{
+		if(argc == 1)
+		{
 			throw (SynfigToolException(SYNFIGTOOL_MISSINGARGUMENT));
+		}
 
 
 		named_type<string>* target_arg_desc = new named_type<string>("module");
@@ -287,13 +247,13 @@ int main(int argc, char* argv[])
 		// TODO: Optional load of main only if needed. i.e. not needed to display help
 		// Synfig Main initialization needs to be after verbose and
 		// before any other where it's used
-		Progress p(binary_path.c_str());
-		synfig::Main synfig_main(etl::dirname(binary_path), &p);
+		Progress p(binary_path.string().c_str());
+		synfig::Main synfig_main(binary_path.parent_path().string(), &p);
 
         // Info options -----------------------------------------------
         op.process_info_options();
 
-		list<Job> job_list;
+		std::list<Job> job_list;
 
 		// Processing --------------------------------------------------
 		Job job;
@@ -304,7 +264,7 @@ int main(int argc, char* argv[])
 			job.alpha_mode = TARGET_ALPHA_MODE_REDUCE;
 			job_list.push_front(job);
 			job.alpha_mode = TARGET_ALPHA_MODE_EXTRACT;
-			job.outfilename = filename_sans_extension(job.outfilename)+"-alpha"+filename_extension(job.outfilename);
+			job.outfilename = etl::filename_sans_extension(job.outfilename)+"-alpha"+etl::filename_extension(job.outfilename);
 			job_list.push_front(job);
 		} else {
 			job_list.push_front(job);
@@ -318,13 +278,13 @@ int main(int argc, char* argv[])
     catch (SynfigToolException& e) {
     	exit_code code = e.get_exit_code();
     	if (code != SYNFIGTOOL_HELP && code != SYNFIGTOOL_OK)
-    		cerr << e.get_message().c_str() << endl;
+    		std::cerr << e.get_message().c_str() << std::endl;
     	if (code == SYNFIGTOOL_MISSINGARGUMENT)
     		print_usage();
 
     	return code;
     }
     catch(std::exception& e) {
-        cout << e.what() << "\n";
+        std::cout << e.what() << std::endl;
     }
 }

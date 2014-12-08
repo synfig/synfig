@@ -28,6 +28,7 @@ synfig_SOURCES = \
 	optionsprocessor.cpp \
 	joblistprocessor.h \
 	joblistprocessor.cpp \
+	definitions.cpp \
 	main.cpp
 
 synfig_LDADD = \

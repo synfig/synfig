@@ -31,9 +31,6 @@
 
 #include <iostream>
 
-#include <boost/program_options/options_description.hpp>
-#include <boost/program_options/variables_map.hpp>
-
 #include <ETL/stringf>
 #include <autorevision.h>
 #include <synfig/general.h>
@@ -42,6 +39,7 @@
 #include <synfig/target.h>
 #include <synfig/layer.h>
 #include <synfig/module.h>
+#include <synfig/main.h>
 #include <synfig/importer.h>
 #include <synfig/loadcanvas.h>
 #include <synfig/guid.h>
@@ -59,7 +57,29 @@
 
 using namespace std;
 using namespace synfig;
-using namespace etl;
+
+
+OptionsProcessor::OptionsProcessor(
+	boost::program_options::variables_map& vm,
+	const boost::program_options::options_description& po_visible)
+		: _vm(vm), _po_visible(po_visible)
+{
+	_allowed_video_codecs.push_back(VideoCodec("flv", "Flash Video (FLV) / Sorenson Spark / Sorenson H.263."));
+	_allowed_video_codecs.push_back(VideoCodec("h263p", "H.263+ / H.263-1998 / H.263 version 2."));
+	_allowed_video_codecs.push_back(VideoCodec("huffyuv", "Huffyuv / HuffYUV."));
+	_allowed_video_codecs.push_back(VideoCodec("libtheora", "libtheora Theora."));
+	_allowed_video_codecs.push_back(VideoCodec("libx264", "H.264 / AVC / MPEG-4 AVC."));
+	_allowed_video_codecs.push_back(VideoCodec("libx264-lossless", "H.264 / AVC / MPEG-4 AVC (LossLess)."));
+	_allowed_video_codecs.push_back(VideoCodec("mjpeg", "MJPEG (Motion JPEG)."));
+	_allowed_video_codecs.push_back(VideoCodec("mpeg1video", "Raw MPEG-1 video."));
+	_allowed_video_codecs.push_back(VideoCodec("mpeg2video", "Raw MPEG-2 video."));
+	_allowed_video_codecs.push_back(VideoCodec("mpeg4", "MPEG-4 part 2 (XviD/DivX)."));
+	_allowed_video_codecs.push_back(VideoCodec("msmpeg4", "MPEG-4 part 2 Microsoft variant version 3."));
+	_allowed_video_codecs.push_back(VideoCodec("msmpeg4v1", "MPEG-4 part 2 Microsoft variant version 1."));
+	_allowed_video_codecs.push_back(VideoCodec("msmpeg4v2", "MPEG-4 part 2 Microsoft variant version 2."));
+	_allowed_video_codecs.push_back(VideoCodec("wmv1", "Windows Media Video 7."));
+	_allowed_video_codecs.push_back(VideoCodec("wmv2", "Windows Media Video 8."));
+}
 
 void OptionsProcessor::extract_canvas_info(Job& job)
 {
@@ -131,26 +151,32 @@ void OptionsProcessor::process_settings_options()
 {
 	if (_vm.count("verbose"))
 	{
-		verbosity = _vm["verbose"].as<int>();
-		VERBOSE_OUT(1) << _("verbosity set to ") << verbosity
-					   << endl;
+		SynfigToolGeneralOptions::instance()->set_verbosity(_vm["verbose"].as<int>());
+		VERBOSE_OUT(1) << _("verbosity set to ")
+					   << SynfigToolGeneralOptions::instance()->get_verbosity()
+					   << std::endl;
 	}
 
 	if (_vm.count("benchmarks"))
-		print_benchmarks=true;
+	{
+		SynfigToolGeneralOptions::instance()->set_should_print_benchmarks(true);
+	}
 
 	if (_vm.count("quiet"))
-		be_quiet=true;
+	{
+		SynfigToolGeneralOptions::instance()->set_should_be_quiet(true);
+	}
 
 	if (_vm.count("threads"))
-		threads = _vm["threads"].as<int>();
-	else
-		threads = 1;
+	{
+		SynfigToolGeneralOptions::instance()->set_threads(_vm["threads"].as<size_t>());
+	}
 
-	VERBOSE_OUT(1) << _("Threads set to ") << threads << endl;
+	VERBOSE_OUT(1) << _("Threads set to ")
+				   << SynfigToolGeneralOptions::instance()->get_threads() << std::endl;
 }
 
-void OptionsProcessor::process_info_options() throw (SynfigToolException&)
+void OptionsProcessor::process_info_options()
 {
 	if (_vm.count("help"))
 	{
@@ -310,14 +336,14 @@ RendDesc OptionsProcessor::extract_renddesc(const RendDesc& renddesc)
 		int a;
 		a = _vm["antialias"].as<int>();
 		desc.set_antialias(a);
-		VERBOSE_OUT(1) << strprintf(_("Antialiasing set to %d, "
-									  "(%d samples per pixel)"), a, a*a).c_str()
+		VERBOSE_OUT(1) << etl::strprintf(_("Antialiasing set to %d, "
+										   "(%d samples per pixel)"), a, a*a).c_str()
 						<< endl;
 	}
 	if (_vm.count("span"))
 	{
 		span = _vm["span"].as<int>();
-		VERBOSE_OUT(1) << strprintf(_("Span set to %d units"), span).c_str()
+		VERBOSE_OUT(1) << etl::strprintf(_("Span set to %d units"), span).c_str()
 						<< endl;
 	}
 	if (_vm.count("fps"))
@@ -325,8 +351,8 @@ RendDesc OptionsProcessor::extract_renddesc(const RendDesc& renddesc)
 		float fps;
 		fps = _vm["fps"].as<float>();
 		desc.set_frame_rate(fps);
-		VERBOSE_OUT(1) << strprintf(_("Frame rate set to %d frames per "
-									  "second"), fps).c_str() << endl;
+		VERBOSE_OUT(1) << etl::strprintf(_("Frame rate set to %d frames per "
+										   "second"), fps).c_str() << endl;
 	}
 	if (_vm.count("dpi"))
 	{
@@ -335,8 +361,8 @@ RendDesc OptionsProcessor::extract_renddesc(const RendDesc& renddesc)
 		dots_per_meter = dpi * 39.3700787402;
 		desc.set_x_res(dots_per_meter);
 		desc.set_y_res(dots_per_meter);
-		VERBOSE_OUT(1) << strprintf(_("Physical resolution set to %f "
-									  "dpi"), dpi).c_str() << endl;
+		VERBOSE_OUT(1) << etl::strprintf(_("Physical resolution set to %f "
+										   "dpi"), dpi).c_str() << endl;
 	}
 	if (_vm.count("dpi-x"))
 	{
@@ -344,8 +370,8 @@ RendDesc OptionsProcessor::extract_renddesc(const RendDesc& renddesc)
 		dpi = _vm["dpi-x"].as<float>();
 		dots_per_meter = dpi * 39.3700787402;
 		desc.set_x_res(dots_per_meter);
-		VERBOSE_OUT(1) << strprintf(_("Physical X resolution set to %f "
-									  "dpi"), dpi).c_str() << endl;
+		VERBOSE_OUT(1) << etl::strprintf(_("Physical X resolution set to %f "
+										   "dpi"), dpi).c_str() << endl;
 	}
 	if (_vm.count("dpi-y"))
 	{
@@ -353,8 +379,8 @@ RendDesc OptionsProcessor::extract_renddesc(const RendDesc& renddesc)
 		dpi = _vm["dpi-y"].as<float>();
 		dots_per_meter = dpi * 39.3700787402;
 		desc.set_y_res(dots_per_meter);
-		VERBOSE_OUT(1) << strprintf(_("Physical Y resolution set to %f "
-									  "dpi"), dpi).c_str() << endl;
+		VERBOSE_OUT(1) << etl::strprintf(_("Physical Y resolution set to %f "
+										   "dpi"), dpi).c_str() << endl;
 	}
 	if (_vm.count("start-time"))
 	{
@@ -401,7 +427,7 @@ RendDesc OptionsProcessor::extract_renddesc(const RendDesc& renddesc)
 			h = desc.get_h() * w / desc.get_w();
 
 		desc.set_wh(w,h);
-		VERBOSE_OUT(1) << strprintf(_("Resolution set to %dx%d"), w, h).c_str()
+		VERBOSE_OUT(1) << etl::strprintf(_("Resolution set to %dx%d"), w, h).c_str()
 						<< endl;
 	}
 
@@ -411,7 +437,7 @@ RendDesc OptionsProcessor::extract_renddesc(const RendDesc& renddesc)
 	return desc;
 }
 
-TargetParam OptionsProcessor::extract_targetparam() throw (SynfigToolException&)
+TargetParam OptionsProcessor::extract_targetparam()
 {
 	TargetParam params;
 
@@ -432,36 +458,43 @@ TargetParam OptionsProcessor::extract_targetparam() throw (SynfigToolException&)
 
 		bool found = false;
 		// Check if the given video codec is allowed.
-		for (int i = 0; !found && allowed_video_codecs[i] != NULL; i++)
-			if (params.video_codec == allowed_video_codecs[i])
+		for (std::vector<VideoCodec>::const_iterator itr = _allowed_video_codecs.begin();
+		 itr != _allowed_video_codecs.end(); ++itr)
+		{
+			if (params.video_codec == itr->name)
+			{
 				found = true;
+			}
+		}
 
 		if (!found)
+		{
 			throw(SynfigToolException(SYNFIGTOOL_UNKNOWNARGUMENT,
-									   strprintf(_("Video codec \"%s\" is not supported."),
-											   	 params.video_codec.c_str())));
+									   etl::strprintf(_("Video codec \"%s\" is not supported."),
+														params.video_codec.c_str())));
+		}
 
-		VERBOSE_OUT(1) << strprintf(_("Target video codec set to %s"), params.video_codec.c_str()).c_str()
+		VERBOSE_OUT(1) << etl::strprintf(_("Target video codec set to %s"), params.video_codec.c_str()).c_str()
 						<< endl;
 	}
 	if(_vm.count("video-bitrate"))
 	{
 		params.bitrate = _vm["video-bitrate"].as<int>();
-		VERBOSE_OUT(1) << strprintf(_("Target bitrate set to %dk"),params.bitrate).c_str()
+		VERBOSE_OUT(1) << etl::strprintf(_("Target bitrate set to %dk"),params.bitrate).c_str()
 					   << endl;
 	}
 	if(_vm.count("sequence-separator"))
 	{
 		params.sequence_separator = _vm["sequence-separator"].as<string>();
-		VERBOSE_OUT(1) << strprintf(_("Output file sequence separator set to %s"),
-									params.sequence_separator.c_str()).c_str()
+		VERBOSE_OUT(1) << etl::strprintf(_("Output file sequence separator set to %s"),
+											params.sequence_separator.c_str()).c_str()
 					   << endl;
 	}
 
 	return params;
 }
 
-Job OptionsProcessor::extract_job() throw (SynfigToolException&)
+Job OptionsProcessor::extract_job()
 {
 	Job job;
 
@@ -475,7 +508,7 @@ Job OptionsProcessor::extract_job() throw (SynfigToolException&)
 		try
 		{
 			// todo: literals ".sfg", "container:", "project.sifz"
-			if (filename_extension(job.filename) == ".sfg")
+			if (etl::filename_extension(job.filename) == ".sfg")
 			{
 				etl::handle< FileContainerZip > container = new FileContainerZip();
 				if (container->open(job.filename))
@@ -504,7 +537,7 @@ Job OptionsProcessor::extract_job() throw (SynfigToolException&)
 		if(!job.canvas)
 		{
 			throw (SynfigToolException(SYNFIGTOOL_FILENOTFOUND,
-					strprintf(_("Unable to load '%s'."), job.filename.c_str())));
+					etl::strprintf(_("Unable to load '%s'."), job.filename.c_str())));
 		}
 
 		job.root->set_time(0);
@@ -524,7 +557,7 @@ Job OptionsProcessor::extract_job() throw (SynfigToolException&)
 	{
 		job.outfilename = _vm["output-file"].as<string>();
 	}
-	
+
 	if (_vm.count("extract-alpha"))
 	{
 		job.extract_alpha = true;
@@ -554,14 +587,14 @@ Job OptionsProcessor::extract_job() throw (SynfigToolException&)
 		catch(Exception::IDNotFound&)
 		{
 			throw (SynfigToolException(SYNFIGTOOL_INVALIDJOB,
-					strprintf(_("Unable to find canvas with ID \"%s\" in %s.\n"
-								"Throwing out job..."), canvasid.c_str(), job.filename.c_str())));
+					etl::strprintf(_("Unable to find canvas with ID \"%s\" in %s.\n"
+									 "Throwing out job..."), canvasid.c_str(), job.filename.c_str())));
 		}
 		catch(Exception::BadLinkName&)
 		{
 			throw (SynfigToolException(SYNFIGTOOL_INVALIDJOB,
-					strprintf(_("Invalid canvas name \"%s\" in %s.\n"
-								"Throwing out job..."), canvasid.c_str(), job.filename.c_str())));
+				     etl::strprintf(_("Invalid canvas name \"%s\" in %s.\n"
+									  "Throwing out job..."), canvasid.c_str(), job.filename.c_str())));
 		}
 
 		// Later we need to set the other parameters for the jobs
@@ -578,7 +611,7 @@ Job OptionsProcessor::extract_job() throw (SynfigToolException&)
 		string errors, warnings;
 		Canvas::Handle composite;
 		// todo: literals ".sfg", "container:", "project.sifz"
-		if (filename_extension(composite_file) == ".sfg")
+		if (etl::filename_extension(composite_file) == ".sfg")
 		{
 			etl::handle< FileContainerZip > container = new FileContainerZip();
 			if (container->open(job.filename))
@@ -613,8 +646,8 @@ Job OptionsProcessor::extract_job() throw (SynfigToolException&)
 
 		VERBOSE_OUT(2) << _("Appended contents of ") << composite_file.c_str() << endl;
 	}
-	/*=== This is a code that comes from bones branch 
-	      possibly it is the solution for multi-appending mentioned before ====	
+	/*=== This is a code that comes from bones branch
+	      possibly it is the solution for multi-appending mentioned before ====
 	// Extract composite
 	do{
 		string composite_file;
@@ -638,7 +671,7 @@ Job OptionsProcessor::extract_job() throw (SynfigToolException&)
 			VERBOSE_OUT(2)<<_("Appended contents of ")<<composite_file<<endl;
 		}
 	} while(false);
-	
+
 	VERBOSE_OUT(4)<<_("Attempting to determine target/outfile...")<<endl;
 	>>>>>>> genete_bones
 	 */
@@ -661,34 +694,44 @@ Job OptionsProcessor::extract_job() throw (SynfigToolException&)
 	return job;
 }
 
+void OptionsProcessor::print_target_video_codecs_help() const
+{
+	for (std::vector<VideoCodec>::const_iterator itr = _allowed_video_codecs.begin();
+		 itr != _allowed_video_codecs.end(); ++itr)
+	{
+		std::cout << " " << itr->name << ":   \t" << itr->description
+				  << std::endl;
+	}
+}
+
 #ifdef _DEBUG
 
 // DEBUG auxiliar functions
 void guid_test()
 {
-	cout << "GUID Test" << endl;
+	std::cout << "GUID Test" << std::endl;
 	for(int i = 20; i; i--)
-		cout << synfig::GUID().get_string() << ' '
-			 << synfig::GUID().get_string() << endl;
+		std::cout << synfig::GUID().get_string() << ' '
+				  << synfig::GUID().get_string() << std::endl;
 }
 
 void signal_test_func()
 {
-	cout << "**SIGNAL CALLED**" << endl;
+	std::cout << "**SIGNAL CALLED**" << std::endl;
 }
 
 void signal_test()
 {
 	sigc::signal<void> sig;
 	sigc::connection conn;
-	cout << "Signal Test" << endl;
+	std::cout << "Signal Test" << std::endl;
 	conn = sig.connect(sigc::ptr_fun(signal_test_func));
-	cout << "Next line should exclaim signal called." << endl;
+	std::cout << "Next line should exclaim signal called." << std::endl;
 	sig();
 	conn.disconnect();
-	cout << "Next line should NOT exclaim signal called." << endl;
+	std::cout << "Next line should NOT exclaim signal called." << std::endl;
 	sig();
-	cout << "done."<<endl;
+	std::cout << "done." << std::endl;
 }
 
 // DEBUG options ----------------------------------------------

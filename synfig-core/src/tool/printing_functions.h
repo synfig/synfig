@@ -25,12 +25,11 @@
 #ifndef __SYNFIG_PRINTING_FUNCTIONS_H
 #define __SYNFIG_PRINTING_FUNCTIONS_H
 
-void print_usage ();
-
-void print_target_video_codecs_help ();
+void print_usage();
 
 /// Print canvases' children IDs in cascade
-void print_child_canvases(const std::string& prefix, const synfig::Canvas::Handle& canvas);
+void print_child_canvases(const std::string& prefix,
+						  const synfig::Canvas::Handle& canvas);
 
 void print_canvas_info(const Job& job);
 
