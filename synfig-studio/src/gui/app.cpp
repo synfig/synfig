@@ -1756,7 +1756,7 @@ App::add_recent_file(const std::string &file_name, const std::string &window_siz
 	return;
 }
 
-static Time::Format _App_time_format(Time::FORMAT_NORMAL);
+static Time::Format _App_time_format(Time::FORMAT_FRAMES);
 
 Time::Format
 App::get_time_format()
