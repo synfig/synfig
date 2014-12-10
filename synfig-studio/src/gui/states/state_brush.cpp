@@ -33,7 +33,7 @@
 #include <gtkmm/dialog.h>
 #include <gtkmm/entry.h>
 #include <gtkmm/grid.h>
-#include <gtkmm/radiotoolbutton.h>
+#include <gtkmm/toggletoolbutton.h>
 #include <glibmm/timeval.h>
 #include <giomm.h>
 
@@ -139,12 +139,12 @@ private:
 	etl::handle<synfigapp::Action::LayerPaint> action;
 	TransformStack transform_stack;
 	BrushConfig selected_brush_config;
-	Gtk::RadioToolButton *selected_brush_button;
-	std::map<String, Gtk::RadioToolButton*> brush_buttons;
+	Gtk::ToggleToolButton *selected_brush_button;
+	std::map<String, Gtk::ToggleToolButton*> brush_buttons;
 
 
 	bool scan_directory(const String &path, int scan_sub_levels, std::set<String> &out_files);
-	void select_brush(Gtk::RadioToolButton *button, String filename);
+	void select_brush(Gtk::ToggleToolButton *button, String filename);
 	void refresh_ducks();
 
 	synfigapp::Settings &settings;
@@ -619,8 +619,7 @@ StateBrush_Context::refresh_tool_options()
 		scan_directory(*i, 1, files);
 
 	// run through brush definition and assign a button
-	Gtk::RadioToolButton::Group brush_group;
-	Gtk::RadioToolButton *first_button = NULL;
+	Gtk::ToggleToolButton *first_button = NULL;
 	for(std::set<String>::const_iterator i = files.begin(); i != files.end(); ++i)
 	{
 		if (!brush_buttons.count(*i) && filename_extension(*i) == ".myb")
@@ -630,8 +629,7 @@ StateBrush_Context::refresh_tool_options()
 			if (files.count(icon_file))
 			{
 				// create a single brush button
-				Gtk::RadioToolButton *brush_button = brush_buttons[*i] = (new class Gtk::RadioToolButton());
-				brush_button->set_group(brush_group);
+				Gtk::ToggleToolButton *brush_button = brush_buttons[*i] = (new class Gtk::ToggleToolButton());
 
 				Glib::RefPtr<Gdk::Pixbuf> pixbuf, pixbuf_scaled;
 				pixbuf = Gdk::Pixbuf::create_from_file(icon_file);
@@ -659,18 +657,22 @@ StateBrush_Context::refresh_tool_options()
 	App::dialog_tool_options->add(*brush_option_grid);
 
 	// select first brush
-	if (first_button != NULL) first_button->set_active(true);
+	if (first_button != NULL)
+		{
+		first_button->set_active(true);
+		selected_brush_button = first_button;
+		}
 }
 
 void
-StateBrush_Context::select_brush(Gtk::RadioToolButton *button, String filename)
-
+StateBrush_Context::select_brush(Gtk::ToggleToolButton *button, String filename)
 {
 	if (button != NULL && button->get_active())
 	{
 		if (selected_brush_button != NULL) selected_brush_button->set_active(false);
 		selected_brush_config.load(filename);
 		eraser_checkbox.set_active(selected_brush_config.settings[BRUSH_ERASER].base > 0.0);
+		selected_brush_button = button;
 	}
 }
 
