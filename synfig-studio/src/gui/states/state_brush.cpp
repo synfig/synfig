@@ -33,7 +33,7 @@
 #include <gtkmm/dialog.h>
 #include <gtkmm/entry.h>
 #include <gtkmm/grid.h>
-#include <gtkmm/radiobutton.h>
+#include <gtkmm/radiotoolbutton.h>
 #include <glibmm/timeval.h>
 #include <giomm.h>
 
@@ -73,6 +73,9 @@ using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
+#ifndef BRUSH_ICON_SIZE
+#	define BRUSH_ICON_SIZE 48
+#endif
 
 /* === G L O B A L S ======================================================= */
 
@@ -136,12 +139,12 @@ private:
 	etl::handle<synfigapp::Action::LayerPaint> action;
 	TransformStack transform_stack;
 	BrushConfig selected_brush_config;
-	Gtk::RadioButton *selected_brush_button;
-	std::map<String, Gtk::RadioButton*> brush_buttons;
+	Gtk::RadioToolButton *selected_brush_button;
+	std::map<String, Gtk::RadioToolButton*> brush_buttons;
 
 
 	bool scan_directory(const String &path, int scan_sub_levels, std::set<String> &out_files);
-	void select_brush(Gtk::RadioButton *button, String filename);
+	void select_brush(Gtk::RadioToolButton *button, String filename);
 	void refresh_ducks();
 
 	synfigapp::Settings &settings;
@@ -584,28 +587,40 @@ StateBrush_Context::refresh_tool_options()
 	App::dialog_tool_options->set_local_name(_("Brush Tool"));
 	App::dialog_tool_options->set_name("brush");
 
-	// create container
-	Gtk::Box *box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
+	// create the brush options container
+	Gtk::Grid *brush_option_grid= Gtk::manage(new Gtk::Grid());
+
+	brush_option_grid->set_orientation(Gtk::ORIENTATION_VERTICAL);
 
 	// add options
-	box->add(eraser_checkbox);
+	brush_option_grid->add(eraser_checkbox);
 
-	// create brushes container widget
-	int cols = 4;
-	Gtk::Grid *brushes_grid = Gtk::manage(new Gtk::Grid());
+	// create brushes scrollable palette
+	Gtk::ToolItemGroup *tool_item_group = manage(new class Gtk::ToolItemGroup());
+	gtk_tool_item_group_set_label(tool_item_group->gobj(), NULL);
 
-	// load brushes
+	Gtk::ToolPalette *palette = manage(new Gtk::ToolPalette());
+	palette->add(*tool_item_group);
+	palette->set_expand(*tool_item_group);
+	palette->set_exclusive(*tool_item_group, true);
+	palette->set_icon_size(Gtk::IconSize(BRUSH_ICON_SIZE));
+	// let the palette propagate the scroll events
+	palette->add_events(Gdk::SCROLL_MASK);
+
+	Gtk::ScrolledWindow *brushes_scroll = manage(new Gtk::ScrolledWindow());
+	brushes_scroll->set_hexpand(true);
+	brushes_scroll->set_vexpand(true);
+	brushes_scroll->add(*palette);
+
+	// load brushes files definition
 	// scan directories
 	std::set<String> files;
 	for(std::set<String>::const_iterator i = paths.begin(); i != paths.end(); ++i)
 		scan_directory(*i, 1, files);
 
-	// load files
-	int col = 0; int row = 0;
-	Gtk::RadioButton::Group brush_group;
-	Gtk::RadioButton *first_button = NULL;
-	//Gtk::IconSize iconsize = Gtk::ICON_SIZE_LARGE_TOOLBAR;
-	//Warning:unused variable iconsize
+	// run through brush definition and assign a button
+	Gtk::RadioToolButton::Group brush_group;
+	Gtk::RadioToolButton *first_button = NULL;
 	for(std::set<String>::const_iterator i = files.begin(); i != files.end(); ++i)
 	{
 		if (!brush_buttons.count(*i) && filename_extension(*i) == ".myb")
@@ -614,46 +629,41 @@ StateBrush_Context::refresh_tool_options()
 			const String icon_file = filename_sans_extension(brush_file) + "_prev.png";
 			if (files.count(icon_file))
 			{
-				// create radio button without indicator
-				Gtk::RadioButton *button = brush_buttons[*i] = Gtk::manage(new Gtk::RadioButton(brush_group));
-				button->set_mode(false);
+				// create a single brush button
+				Gtk::RadioToolButton *brush_button = brush_buttons[*i] = (new class Gtk::RadioToolButton());
+				brush_button->set_group(brush_group);
 
 				Glib::RefPtr<Gdk::Pixbuf> pixbuf, pixbuf_scaled;
 				pixbuf = Gdk::Pixbuf::create_from_file(icon_file);
-				pixbuf_scaled = pixbuf->scale_simple(48, 48, Gdk::INTERP_BILINEAR);
-				button->set_image(*Gtk::manage(new Gtk::Image(pixbuf_scaled)));
-				button->set_relief(Gtk::RELIEF_NONE);
-				button->signal_toggled().connect(
-					sigc::bind(sigc::mem_fun(*this, &StateBrush_Context::select_brush), button, brush_file) );
-				if (first_button == NULL) first_button = button;
+				pixbuf_scaled = pixbuf->scale_simple(BRUSH_ICON_SIZE, BRUSH_ICON_SIZE, Gdk::INTERP_BILINEAR);
 
-				if (col >= cols)
-				{
-					// add row
-					col = 0;
-					++row;
-				}
+				brush_button->set_icon_widget(*Gtk::manage(new Gtk::Image(pixbuf_scaled)));
+				brush_button->set_halign(Gtk::ALIGN_CENTER);
 
-				// add button
-				brushes_grid->attach(*button, col, row, 1, 1);
-				++col;
+				// connect the button click event and brush file definition
+				brush_button->signal_clicked().connect(
+					sigc::bind(sigc::mem_fun(*this, &StateBrush_Context::select_brush), brush_button, brush_file) );
+
+				// add the button to the palette
+				tool_item_group->insert(*brush_button);
+
+				// keep the first brush
+				if (first_button == NULL) first_button = brush_button;
 			}
 		}
 	}
 
-	Gtk::ScrolledWindow *brushes_scroll = Gtk::manage(new Gtk::ScrolledWindow());
-	brushes_scroll->add(*brushes_grid);
-	box->pack_start(*brushes_scroll, Gtk::PACK_EXPAND_WIDGET);
+	brush_option_grid->add(*brushes_scroll);
+	brush_option_grid->show_all();
 
-	box->show_all();
-	App::dialog_tool_options->add(*box);
+	App::dialog_tool_options->add(*brush_option_grid);
 
 	// select first brush
 	if (first_button != NULL) first_button->set_active(true);
 }
 
 void
-StateBrush_Context::select_brush(Gtk::RadioButton *button, String filename)
+StateBrush_Context::select_brush(Gtk::RadioToolButton *button, String filename)
 
 {
 	if (button != NULL && button->get_active())
@@ -749,7 +759,7 @@ StateBrush_Context::event_mouse_down_handler(const Smach::event& x)
 			// No image found to draw in, add it.
 			if(!layer)
 			{
-				canvas_view_->add_layer("Import");
+				canvas_view_->add_layer("import");
 				selected_layer = canvas_view_->get_selection_manager()->get_selected_layer();
 				layer = etl::handle<Layer_Bitmap>::cast_dynamic(selected_layer);
 			}
