@@ -47,7 +47,7 @@ using namespace Action;
 #define ACTION_LAYERSETEXCLUDEFROMRENDERING_IMPLEMENT(class_name, local_name, task, ...) \
 	ACTION_INIT(Action::class_name); \
 	ACTION_SET_NAME(Action::class_name, #class_name); \
-	ACTION_SET_LOCAL_NAME(Action::class_name,N_(local_name)); \
+	ACTION_SET_LOCAL_NAME(Action::class_name, local_name); \
 	ACTION_SET_TASK(Action::class_name,"setexcludefromrendering_" #task); \
 	ACTION_SET_CATEGORY(Action::class_name,Action::CATEGORY_LAYER); \
 	ACTION_SET_PRIORITY(Action::class_name,0); \
@@ -57,10 +57,10 @@ using namespace Action;
 		{ return is_candidate_for_exclude(x,task); }
 
 ACTION_LAYERSETEXCLUDEFROMRENDERING_IMPLEMENT(
-		LayerSetExcludeFromRenderingOn, "Disable Layer Rendering", true);
+		LayerSetExcludeFromRenderingOn, N_("Disable Layer Rendering"), true);
 
 ACTION_LAYERSETEXCLUDEFROMRENDERING_IMPLEMENT(
-		LayerSetExcludeFromRenderingOff, "Enable Layer Rendering", false);
+		LayerSetExcludeFromRenderingOff, N_("Enable Layer Rendering"), false);
 
 /* === G L O B A L S ======================================================= */
 
