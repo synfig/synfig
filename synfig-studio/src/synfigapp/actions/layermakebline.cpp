@@ -51,7 +51,7 @@ using namespace Action;
 #define ACTION_LAYERMAKEBLINE_IMPLEMENT(class_name, local_name, bline_layer_name, put_new_layer_behind, ...) \
 	ACTION_INIT(Action::class_name); \
 	ACTION_SET_NAME(Action::class_name, #class_name); \
-	ACTION_SET_LOCAL_NAME(Action::class_name,N_(local_name)); \
+	ACTION_SET_LOCAL_NAME(Action::class_name, local_name); \
 	ACTION_SET_TASK(Action::class_name,"make_" bline_layer_name); \
 	ACTION_SET_CATEGORY(Action::class_name,Action::CATEGORY_LAYER); \
 	ACTION_SET_PRIORITY(Action::class_name,0); \
@@ -63,15 +63,15 @@ using namespace Action;
 	void Action::class_name::prepare() { prepare_make_bline(bline_layer_name, put_new_layer_behind); }
 
 ACTION_LAYERMAKEBLINE_IMPLEMENT(
-		LayerMakeOutline, "Make Outline", "outline", false,
+		LayerMakeOutline, N_("Make Outline"), "outline", false,
 		"advanced_outline", "region");
 
 ACTION_LAYERMAKEBLINE_IMPLEMENT(
-		LayerMakeAdvancedOutline, "Make Advanced Outline", "advanced_outline", false,
+		LayerMakeAdvancedOutline, N_("Make Advanced Outline"), "advanced_outline", false,
 		"outline", "region");
 
 ACTION_LAYERMAKEBLINE_IMPLEMENT(
-		LayerMakeRegion, "Make Region", "region", true,
+		LayerMakeRegion, N_("Make Region"), "region", true,
 		"outline", "advanced_outline");
 
 /* === G L O B A L S ======================================================= */
