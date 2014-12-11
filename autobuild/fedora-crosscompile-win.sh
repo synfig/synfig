@@ -79,7 +79,7 @@ if [ -z $NOSU ]; then
 		${TOOLCHAIN}-pango \
 		${TOOLCHAIN}-boost \
 		${TOOLCHAIN}-libjpeg-turbo \
-		${TOOLCHAIN}-gtkmm24 \
+		${TOOLCHAIN}-gtkmm30 \
 		${TOOLCHAIN}-glibmm24 \
 		${TOOLCHAIN}-libltdl \
 		${TOOLCHAIN}-dlfcn \
