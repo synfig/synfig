@@ -145,7 +145,7 @@ public:
 
 	bool save_as(const synfig::String &filename);
 
-	//! create unique file name for embed image layer
+	//! create unique file name for an embedded image layer (if image filename is empty, description layer is used)
 	bool generate_new_name(
 			synfig::Layer::Handle layer,
 			synfig::Canvas::Handle canvas,

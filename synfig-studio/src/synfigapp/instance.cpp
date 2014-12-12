@@ -524,14 +524,15 @@ Instance::generate_new_name(
 			filename = basename(value.get(String()));
 	}
 
-	// extract name
+	// extract name from filename or from description
 	String name = filename.empty() ? description : filename_sans_extension(filename);
 	String ext = filename_extension(name);
 	if (ext.find_first_not_of(".0123456789") == String::npos)
 		name = filename_sans_extension(name);
 	for(size_t i = name.find("#", 0); i != String::npos; i = name.find("#", i))
 		name.erase(i, 1);
-	ext = filename_extension(filename);
+	// if name based on description add extension
+	ext = filename.empty() ? ".png" : filename_extension(filename);
 
 	// generate new names
 	for(int i = 0; i < 10000; i++) {
