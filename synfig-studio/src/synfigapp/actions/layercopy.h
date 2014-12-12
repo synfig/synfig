@@ -57,14 +57,6 @@ public:
 	static ParamVocab get_param_vocab();
 	static bool is_candidate(const ParamList &x);
 
-	static void generateNewName(
-		synfig::Layer::Handle layer,
-		synfig::Canvas::Handle canvas,
-		synfig::FileSystem::Handle file_system,
-		synfig::String &out_description,
-		synfig::String &out_filename,
-		synfig::String &out_filename_param );
-
 	virtual bool set_param(const synfig::String& name, const Param &);
 	virtual bool is_ready()const;
 
