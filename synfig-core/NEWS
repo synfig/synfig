@@ -4,6 +4,10 @@ More detailed notes are available on the news page:
 
 http://synfig.org/cms/en/news/
 
+ 0.64.3 (git tag "0.64.3") - December 18, 2014 - Bug fixes.
+ 
+  * Fix crash for Magick++, Gif and other targets.
+  
  0.64.2 (git tag "0.64.2") - October 18, 2014 - Minor features, bug fixes.
   
   * Rendering: Allow to set mode of alpha handling.

@@ -4,11 +4,18 @@ More detailed notes are available on the news page:
 
 http://synfig.org/cms/en/news/
 
+ 0.64.3 (git tag "0.64.3") - December 18, 2014 - Bug fixes.
+ 
+  * Use frames as default time format.
+  * Use pixels as default unit of measurement (closes #710).
+  * Always use "By Layer Default" blend method on startup.
+  * Fix glib 2.42 compatibility issues.
+
  0.64.2 (git tag "0.64.2") - October 18, 2014 - Minor features, bug fixes.
   
   * Rendering: "Extract Alpha" mode.
   * Rendering: Lossles H.264 encoding profile.
-  * Align rows of Params Panel and Timetrack Panel (bug #161)
+  * Align rows of Params Panel and Timetrack Panel (bug #161).
   * Fix file saving in Windows (bug #572).
   * Show rendering time in status bar (benchmark).
   * Fix compatibility issues for OSX 10.9.
