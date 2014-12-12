@@ -765,23 +765,35 @@ StateBrush_Context::event_mouse_down_handler(const Smach::event& x)
 				selected_layer = canvas_view_->get_selection_manager()->get_selected_layer();
 				layer = etl::handle<Layer_Bitmap>::cast_dynamic(selected_layer);
 
+				// Set temporary description to generate the name
+				String temp_description(_("brush image"));
+				layer->set_description(temp_description);
+
 				if (selected_layer->get_param_list().count("filename") != 0)
 				{
-					// TODO: generate unique name
-					String description(_("brush image"));
-					String filename(description + ".png");
-
 					// TODO: "images" and "container:" literals
 					get_canvas_interface()
 						->get_instance()
 						->get_file_system()
 						->directory_create("#images");
 
+					// generate name based on description
+					String description, filename, filename_param;
 					get_canvas_interface()
 						->get_instance()
-						->save_surface(layer->surface, String("#images") + String("/") + filename);
+						->generate_new_name(
+								layer,
+								NULL,
+								get_canvas_interface()->get_instance()->get_file_system(),
+								description,
+								filename,
+								filename_param );
 
-					selected_layer->set_param("filename", ValueBase("#" + filename));
+					get_canvas_interface()
+						->get_instance()
+						->save_surface(layer->surface, filename);
+
+					selected_layer->set_param("filename", filename_param);
 					selected_layer->set_description(description);
 				}
 			}
