@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file trgt_png.cpp
-**	\brief png_trgt Target Module
+/*!	\file trgt_cairo_png.cpp
+**	\brief png_cairo_trgt Target Png Cairo Module
 **
 **	$Id$
 **
@@ -53,7 +53,7 @@ using namespace etl;
 SYNFIG_TARGET_INIT(cairo_png_trgt);
 SYNFIG_TARGET_SET_NAME(cairo_png_trgt,"cairo_png");
 SYNFIG_TARGET_SET_EXT(cairo_png_trgt,"png");
-SYNFIG_TARGET_SET_VERSION(cairo_png_trgt,"0.1");
+SYNFIG_TARGET_SET_VERSION(cairo_png_trgt,"0.2");
 SYNFIG_TARGET_SET_CVS_ID(cairo_png_trgt,"$Id$");
 
 /* === M E T H O D S ======================================================= */
@@ -117,8 +117,25 @@ cairo_png_trgt::put_surface(cairo_surface_t *surface, synfig::ProgressCallback *
 		if(cb) cb->error(_("Cairo Surface bad status"));
 		return false;
 	}
-	cairo_status_t status = cairo_surface_write_to_png(surface, filename.c_str());
+
+	cairo_status_t status;
+	if (get_alpha_mode()==TARGET_ALPHA_MODE_EXTRACT)
+	{
+		cairo_t *cr = cairo_create(surface);
+		cairo_push_group_with_content(cr, CAIRO_CONTENT_COLOR_ALPHA);
+		cairo_set_source_rgb(cr, 0, 0, 0);
+		cairo_paint(cr);
+		cairo_set_source_rgb(cr, 1, 1, 1);
+		cairo_mask_surface(cr, cairo_get_target(cr), 0, 0);
+
+		status = cairo_surface_write_to_png(cairo_get_group_target(cr), filename.c_str());
+
+		cairo_destroy(cr);
+	}
+	else
+		status = cairo_surface_write_to_png(surface, filename.c_str());
 	if(status!=CAIRO_STATUS_SUCCESS) synfig::warning(cairo_status_to_string(status));
+
 	imagecount++;
 
 	cairo_surface_destroy(surface);
