@@ -522,7 +522,8 @@ ValueNode_BLine::create(const ValueBase &value, Canvas::LooseHandle canvas)
 #define CURR_POINT	curr->get_value().get(BLinePoint())
 				if(iter==segments.begin())
 				{
-					prev=ValueNode_Const::Handle::cast_dynamic(create(type_bline_point, canvas));
+					prev = ValueNode_Const::Handle::cast_dynamic(
+							ValueNode_Const::create(type_bline_point, canvas) );
 					{
 						BLinePoint prev_point(PREV_POINT);
 						prev_point.set_vertex(iter->p1);
@@ -534,8 +535,8 @@ ValueNode_BLine::create(const ValueBase &value, Canvas::LooseHandle canvas)
 					}
 					first=prev;
 					value_node->add(ValueNode::Handle(prev));
-
 				}
+
 				if(iter==last && iter->p2.is_equal_to(FIRST_POINT.get_vertex()))
 				{
 					value_node->set_loop(true);
@@ -548,7 +549,9 @@ ValueNode_BLine::create(const ValueBase &value, Canvas::LooseHandle canvas)
 					continue;
 				}
 
-				ValueNode_Const::Handle curr(ValueNode_Const::Handle::cast_dynamic(create(type_bline_point, canvas)));
+				ValueNode_Const::Handle curr =
+					ValueNode_Const::Handle::cast_dynamic(
+						ValueNode_Const::create(type_bline_point, canvas) );
 				{
 					BLinePoint curr_point(CURR_POINT);
 					curr_point.set_vertex(iter->p2);
