@@ -11,7 +11,7 @@ set -e
 
 export SCRIPTPATH=$(cd `dirname "$0"`; pwd)
 
-RELEASE=8
+RELEASE=10
 
 BUILDROOT_VERSION=5
 BUILDROOT_LIBRARY_SET_ID=1
@@ -1445,6 +1445,10 @@ export SYNFIG_ROOT=\${SYSPREFIX}/
 export SYNFIG_MODULE_LIST=\${SYSPREFIX}/etc/synfig_modules.cfg
 export MLT_DATA="\${SYSPREFIX}/share/mlt/"
 export MLT_REPOSITORY="\${SYSPREFIX}/lib/mlt/"
+export MAGICK_CODER_FILTER_PATH="\${SYSPREFIX}/lib/ImageMagick-${IMAGEMAGICK_VERSION}/config-Q16/"
+export MAGICK_CODER_MODULE_PATH="\${SYSPREFIX}/lib/ImageMagick-${IMAGEMAGICK_VERSION}/modules-Q16/coders/"
+export MAGICK_CONFIGURE_PATH="\${SYSPREFIX}/lib/ImageMagick-${IMAGEMAGICK_VERSION}/modules-Q16/filters/"
+
 
 \$SYSPREFIX/bin/synfig "\$@"
 EOF
@@ -1472,6 +1476,9 @@ export GDK_PIXBUF_MODULEDIR="\${SYSPREFIX}/lib/gtk-2.0/2.10.0/loaders"
 #export FONTCONFIG_PATH="\${SYSPREFIX}/etc/fonts"
 export MLT_DATA="\${SYSPREFIX}/share/mlt/"
 export MLT_REPOSITORY="\${SYSPREFIX}/lib/mlt/"
+export MAGICK_CODER_FILTER_PATH="\${SYSPREFIX}/lib/ImageMagick-${IMAGEMAGICK_VERSION}/config-Q16/"
+export MAGICK_CODER_MODULE_PATH="\${SYSPREFIX}/lib/ImageMagick-${IMAGEMAGICK_VERSION}/modules-Q16/coders/"
+export MAGICK_CONFIGURE_PATH="\${SYSPREFIX}/lib/ImageMagick-${IMAGEMAGICK_VERSION}/modules-Q16/filters/"
 
 # Create install-location-dependent config files for Pango and GDK image loaders
 # We have to do this every time because its possible that SYSPREFIX has changed
@@ -1559,6 +1566,7 @@ mkpackage()
 	
 	mkdir -p ${DISTPREFIX}/bin
 	BINARIES="\
+		identify
 		synfig
 		synfigstudio"
 	for FILE in $BINARIES; do
