@@ -226,11 +226,11 @@ ffmpeg_trgt::init(ProgressCallback *cb=NULL)
 	vargs.push_back("image2pipe");
 	vargs.push_back("-vcodec");
 	vargs.push_back("ppm");
-	vargs.push_back("-an");
 	vargs.push_back("-r");
 	vargs.push_back(strprintf("%f", desc.get_frame_rate()));
 	vargs.push_back("-i");
 	vargs.push_back("pipe:");
+	vargs.push_back("-an");
 	vargs.push_back("-metadata");
 	vargs.push_back(strprintf("title=\"%s\"", get_canvas()->get_name().c_str()));
 	vargs.push_back("-vcodec");
