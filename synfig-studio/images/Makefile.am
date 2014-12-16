@@ -8,7 +8,7 @@ EXTRA_DIST = \
 	installer_logo_osx.sif \
 	splash_screen-rc.sif \
 	splash_screen-0.64.3.sif \
-	splash_screen-0.64.3-RC1.sif \
+	splash_screen-0.64.3-RC2.sif \
 	splash_screen-0.64.2.sif \
 	splash_screen-0.64.1.sif \
 	splash_screen-0.64.0.sif \

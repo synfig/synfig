@@ -4,7 +4,7 @@ More detailed notes are available on the news page:
 
 http://synfig.org/cms/en/news/
 
- 0.64.3 (git tag "0.64.3") - December 18, 2014 - Bug fixes.
+ 0.64.3 (git tag "0.64.3") - December 24, 2014 - Bug fixes.
  
   * Use frames as default time format.
   * Use pixels as default unit of measurement (closes #710).

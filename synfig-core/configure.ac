@@ -2,7 +2,7 @@
 
 # -- I N I T --------------------------------------------------
 
-AC_INIT([Synfig Core],[0.64.3-RC1],[http://www.synfig.org/issues/thebuggenie/synfig],[synfig])
+AC_INIT([Synfig Core],[0.64.3-RC2],[http://www.synfig.org/issues/thebuggenie/synfig],[synfig])
 AC_REVISION
 
 AC_CONFIG_AUX_DIR(config)
