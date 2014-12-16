@@ -841,6 +841,9 @@ KeyframeTreeStore::add_keyframe(synfig::Keyframe keyframe)
 	{
 		g_warning("%s", x.what());
 	}
+
+	// inform that something change around time to update the canvasview time widget color
+	canvas_interface()->signal_time_changed()();
 }
 
 void
@@ -875,6 +878,9 @@ KeyframeTreeStore::remove_keyframe(synfig::Keyframe keyframe)
 	{
 		g_warning("%s", x.what());
 	}
+
+	// inform that something change around time to update the canvasview time widget color
+	canvas_interface()->signal_time_changed()();
 }
 
 void
@@ -937,4 +943,7 @@ KeyframeTreeStore::change_keyframe(synfig::Keyframe keyframe)
 	{
 		g_warning("%s", x.what());
 	}
+
+	// inform that something change around time to update the canvasview time widget color
+	canvas_interface()->signal_time_changed()();
 }
