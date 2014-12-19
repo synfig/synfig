@@ -382,8 +382,6 @@ public:
 
 	static bool dialog_yes_no(const std::string &title, const std::string &message);
 
-	static int dialog_yes_no_cancel(const std::string &title, const std::string &message);
-
 	static void dialog_not_implemented();
 
 	static void dialog_help();
