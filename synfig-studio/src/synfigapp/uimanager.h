@@ -55,7 +55,7 @@ public:
 					const std::string &secondaryText, const std::string &confirmPhrase,
 					const std::string &cancelPhrase, Response dflt=RESPONSE_OK)=0;
 	virtual Response yes_no(const std::string &title, const std::string &message,Response dflt=RESPONSE_YES)=0;
-	virtual Response yes_no_cancel(const std::string &title, const std::string &message,Response dflt=RESPONSE_YES)=0;
+	virtual Response yes_no_cancel(const std::string &message, const std::string &details, Response dflt=RESPONSE_YES)=0;
 	virtual Response ok_cancel(const std::string &title, const std::string &message,Response dflt=RESPONSE_OK)=0;
 };
 
@@ -68,7 +68,7 @@ public:
 		{ return dflt; }
 	Response yes_no(const std::string &/*title*/, const std::string &/*message*/,Response dflt)
 		{ return dflt; }
-	Response yes_no_cancel(const std::string &/*title*/, const std::string &/*message*/,Response dflt)
+	Response yes_no_cancel(const std::string &/*message*/, const std::string &/*details*/,Response dflt)
 		{ return dflt; }
 	Response ok_cancel(const std::string &/*title*/, const std::string &/*message*/,Response dflt)
 		{ return dflt; }
@@ -92,7 +92,7 @@ public:
 		{ return RESPONSE_OK; }
 	Response yes_no(const std::string &/*title*/, const std::string &/*message*/,Response /*dflt*/)
 		{ return RESPONSE_YES; }
-	Response yes_no_cancel(const std::string &/*title*/, const std::string &/*message*/,Response /*dflt*/)
+	Response yes_no_cancel(const std::string &/*message*/, const std::string &/*details*/,Response /*dflt*/)
 		{ return RESPONSE_YES; }
 	Response ok_cancel(const std::string &/*title*/, const std::string &/*message*/,Response /*dflt*/)
 		{ return RESPONSE_OK; }
@@ -114,7 +114,7 @@ public:
 				const std::string &secondaryText, const std::string &confirmPhrase,
 				const std::string &cancelPhrase, Response dflt);
 	Response yes_no(const std::string &title, const std::string &message,Response dflt);
-	Response yes_no_cancel(const std::string &title, const std::string &message,Response dflt);
+	Response yes_no_cancel(const std::string &message, const std::string &details,Response dflt);
 	Response ok_cancel(const std::string &title, const std::string &message,Response dflt);
 
 	bool task(const std::string &task);
