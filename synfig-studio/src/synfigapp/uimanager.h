@@ -45,37 +45,79 @@ class UIInterface : public etl::shared_object, public synfig::ProgressCallback, 
 public:
 	enum Response
 	{
-		RESPONSE_CANCEL=-1,
-		RESPONSE_NO=0,
-		RESPONSE_YES=1,
-		RESPONSE_OK=2
+		RESPONSE_CANCEL = -1,
+		RESPONSE_NO = 0,
+		RESPONSE_YES = 1,
+		RESPONSE_OK = 2
 	};
 	virtual ~UIInterface() { }
-	virtual Response confirmation(const std::string &title, const std::string &primaryText,
-					const std::string &secondaryText, const std::string &confirmPhrase,
-					const std::string &cancelPhrase, Response dflt=RESPONSE_OK)=0;
-	virtual Response yes_no(const std::string &title, const std::string &message,Response dflt=RESPONSE_YES)=0;
-	virtual Response yes_no_cancel(const std::string &message, const std::string &details,
-					const std::string &button1, const std::string &button2,
-					const std::string &button3, Response dflt=RESPONSE_YES)=0;
-	virtual Response ok_cancel(const std::string &title, const std::string &message,Response dflt=RESPONSE_OK)=0;
+	virtual Response confirmation(
+				const std::string &title,
+				const std::string &primaryText,
+				const std::string &secondaryText,
+				const std::string &confirmPhrase,
+				const std::string &cancelPhrase,
+				Response dflt=RESPONSE_OK
+	) = 0;
+
+	virtual Response yes_no(
+				const std::string &title,
+				const std::string &message,
+				Response dflt=RESPONSE_YES
+	) = 0;
+
+	virtual Response yes_no_cancel(
+				const std::string &message,
+				const std::string &details,
+				const std::string &button1,
+				const std::string &button2,
+				const std::string &button3,
+				Response dflt=RESPONSE_YES
+	) = 0;
+
+	virtual Response ok_cancel(
+				const std::string &title,
+				const std::string &message,
+				Response dflt=RESPONSE_OK
+	) = 0;
 };
 
 class DefaultUIInterface : public UIInterface
 {
 public:
-	Response confirmation(const std::string &/*title*/, const std::string &/*primaryText*/,
-				const std::string &/*secondaryText*/, const std::string &/*confirmPhrase*/,
-				const std::string &/*cancelPhrase*/, Response dflt)
-		{ return dflt; }
-	Response yes_no(const std::string &/*title*/, const std::string &/*message*/,Response dflt)
-		{ return dflt; }
-	Response yes_no_cancel(const std::string &/*message*/, const std::string &/*details*/,
-				const std::string &/*button1*/, const std::string &/*button2*/,
-				const std::string &/*button3*/, Response dflt)
-		{ return dflt; }
-	Response ok_cancel(const std::string &/*title*/, const std::string &/*message*/,Response dflt)
-		{ return dflt; }
+	Response confirmation(
+			const std::string &/*title*/,
+			const std::string &/*primaryText*/,
+			const std::string &/*secondaryText*/,
+			const std::string &/*confirmPhrase*/,
+			const std::string &/*cancelPhrase*/,
+			Response dflt
+	)
+	{ return dflt; }
+
+	Response yes_no(
+			const std::string &/*title*/,
+			const std::string &/*message*/,
+			Response dflt
+	)
+	{ return dflt; }
+
+	Response yes_no_cancel(
+			const std::string &/*message*/,
+			const std::string &/*details*/,
+			const std::string &/*button1*/,
+			const std::string &/*button2*/,
+			const std::string &/*button3*/,
+			Response dflt
+	)
+	{ return dflt; }
+
+	Response ok_cancel(
+			const std::string &/*title*/,
+			const std::string &/*message*/,
+			Response dflt
+	)
+	{ return dflt; }
 
 	bool task(const std::string &/*task*/)
 		{ return true; }
@@ -90,18 +132,39 @@ public:
 class ConfidentUIInterface : public UIInterface
 {
 public:
-	Response confirmation(const std::string &/*title*/, const std::string &/*primaryText*/,
-				const std::string &/*secondaryText*/, const std::string &/*confirmPhrase*/,
-				const std::string &/*cancelPhrase*/, Response /*dflt*/)
-		{ return RESPONSE_OK; }
-	Response yes_no(const std::string &/*title*/, const std::string &/*message*/,Response /*dflt*/)
-		{ return RESPONSE_YES; }
-	Response yes_no_cancel(const std::string &/*message*/, const std::string &/*details*/,
-				const std::string &/*button1*/, const std::string &/*button2*/,
-				const std::string &/*button3*/, Response /*dflt*/)
-		{ return RESPONSE_YES; }
-	Response ok_cancel(const std::string &/*title*/, const std::string &/*message*/,Response /*dflt*/)
-		{ return RESPONSE_OK; }
+	Response confirmation(
+			const std::string &/*title*/,
+			const std::string &/*primaryText*/,
+			const std::string &/*secondaryText*/,
+			const std::string &/*confirmPhrase*/,
+			const std::string &/*cancelPhrase*/,
+			Response /*dflt*/
+	)
+	{ return RESPONSE_OK; }
+
+	Response yes_no(
+			const std::string &/*title*/,
+			const std::string &/*message*/,
+			Response /*dflt*/
+	)
+	{ return RESPONSE_YES; }
+
+	Response yes_no_cancel(
+			const std::string &/*message*/,
+			const std::string &/*details*/,
+			const std::string &/*button1*/,
+			const std::string &/*button2*/,
+			const std::string &/*button3*/,
+			Response /*dflt*/
+	)
+	{ return RESPONSE_YES; }
+
+	Response ok_cancel(
+			const std::string &/*title*/,
+			const std::string &/*message*/,
+			Response /*dflt*/
+	)
+	{ return RESPONSE_OK; }
 
 	bool task(const std::string &/*task*/)
 		{ return true; }
@@ -116,14 +179,34 @@ public:
 class ConsoleUIInterface : public UIInterface
 {
 public:
-	Response confirmation(const std::string &title, const std::string &primaryText,
-				const std::string &secondaryText, const std::string &confirmPhrase,
-				const std::string &cancelPhrase, Response dflt);
-	Response yes_no(const std::string &title, const std::string &message,Response dflt);
-	Response yes_no_cancel(const std::string &message, const std::string &details,
-				const std::string &button1, const std::string &button2,
-				const std::string &button3, Response dflt);
-	Response ok_cancel(const std::string &title, const std::string &message,Response dflt);
+	Response confirmation(
+			const std::string &title,
+			const std::string &primaryText,
+			const std::string &secondaryText,
+			const std::string &confirmPhrase,
+			const std::string &cancelPhrase,
+			Response dflt
+	);
+
+	Response yes_no(const std::string &title,
+			const std::string &message,
+			Response dflt
+	);
+
+	Response yes_no_cancel(
+			const std::string &message,
+			const std::string &details,
+			const std::string &button1,
+			const std::string &button2,
+			const std::string &button3,
+			Response dflt
+	);
+
+	Response ok_cancel(
+			const std::string &title,
+			const std::string &message,
+			Response dflt
+	);
 
 	bool task(const std::string &task);
 	bool error(const std::string &task);

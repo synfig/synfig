@@ -49,9 +49,14 @@ using namespace synfigapp;
 /* === M E T H O D S ======================================================= */
 
 UIInterface::Response
-ConsoleUIInterface::confirmation(const std::string &title, const std::string &primaryText,
-		const std::string &secondaryText, const std::string &confirmPhrase,
-		const std::string &cancelPhrase, Response dflt)
+ConsoleUIInterface::confirmation(
+			const std::string &title,
+			const std::string &primaryText,
+			const std::string &secondaryText,
+			const std::string &confirmPhrase,
+			const std::string &cancelPhrase,
+			Response dflt
+)
 {
 	cout << title.c_str() << ": " << primaryText.c_str() << endl;
 	cout << secondaryText.c_str();
@@ -75,8 +80,12 @@ ConsoleUIInterface::confirmation(const std::string &title, const std::string &pr
 	return RESPONSE_CANCEL;
 }
 
+
 UIInterface::Response
-ConsoleUIInterface::yes_no(const std::string &title, const std::string &message,Response dflt)
+ConsoleUIInterface::yes_no(
+			const std::string &title,
+			const std::string &message,
+			Response dflt)
 {
 	cout<<title.c_str()<<": "<<message.c_str()<<' ';
 	if(dflt==RESPONSE_NO)
@@ -102,14 +111,15 @@ ConsoleUIInterface::yes_no(const std::string &title, const std::string &message,
 	}
 }
 
+
 UIInterface::Response
 ConsoleUIInterface::yes_no_cancel(
-		const std::string &message,
-		const std::string &details,
-		const std::string &button1,
-		const std::string &button2,
-		const std::string &button3,
-		Response dflt
+			const std::string &message,
+			const std::string &details,
+			const std::string &button1,
+			const std::string &button2,
+			const std::string &button3,
+			Response dflt
 )
 {
 	cout<<message.c_str()<<": "<<details.c_str()<<' ';
@@ -136,8 +146,13 @@ ConsoleUIInterface::yes_no_cancel(
 	}
 }
 
+
 UIInterface::Response
-ConsoleUIInterface::ok_cancel(const std::string &title, const std::string &message,Response dflt)
+ConsoleUIInterface::ok_cancel(
+			const std::string &title,
+			const std::string &message,
+			Response dflt
+)
 {
 	cout<<title.c_str()<<": "<<message.c_str()<<' ';
 	if(dflt==RESPONSE_CANCEL)
@@ -163,12 +178,14 @@ ConsoleUIInterface::ok_cancel(const std::string &title, const std::string &messa
 	}
 }
 
+
 bool
 ConsoleUIInterface::task(const std::string &task)
 {
 	cout<<task.c_str()<<endl;
 	return true;
 }
+
 
 bool
 ConsoleUIInterface::error(const std::string &task)
@@ -177,6 +194,7 @@ ConsoleUIInterface::error(const std::string &task)
 	return true;
 }
 
+
 bool
 ConsoleUIInterface::warning(const std::string &task)
 {
@@ -184,11 +202,10 @@ ConsoleUIInterface::warning(const std::string &task)
 	return true;
 }
 
+
 bool
 ConsoleUIInterface::amount_complete(int /*current*/, int /*total*/)
 {
 	return true;
 }
-
-
 
