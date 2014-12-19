@@ -264,7 +264,7 @@ Dock_PalEdit::on_save_pressed()
 				_("File exists"),
 				msg.c_str(),
 				Gtk::MESSAGE_QUESTION,
-				_("Rename"),
+				_("Use Another Name"),
 				_("Overwrite"))
 			)
 				continue;
