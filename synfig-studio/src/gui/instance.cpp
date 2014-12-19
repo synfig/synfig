@@ -749,7 +749,15 @@ Instance::safe_close()
 		do
 		{
 			string str=strprintf(_("Would you like to save your changes to %s?"),basename(get_file_name()).c_str() );
-			int answer=uim->yes_no_cancel(get_canvas()->get_name(),str,synfigapp::UIInterface::RESPONSE_YES);
+			int answer=uim->yes_no_cancel(
+						get_canvas()->get_name(),
+						str,
+						_("No"),
+						_("Cancel"),
+						_("Yes"),
+						synfigapp::UIInterface::RESPONSE_YES
+			);
+
 			if(answer==synfigapp::UIInterface::RESPONSE_YES)
 			{
 				enum Status status = save();
@@ -765,7 +773,14 @@ Instance::safe_close()
 	if(is_modified())
 	{
 		string str=strprintf(_("%s has changes not yet on the CVS repository.\nWould you like to commit these changes?"),basename(get_file_name()).c_str());
-		int answer=uim->yes_no_cancel(get_canvas()->get_name(),str,synfigapp::UIInterface::RESPONSE_YES);
+		int answer=uim->yes_no_cancel(
+					get_canvas()->get_name(),
+					str,
+					_("No"),
+					_("Cancel"),
+					_("Yes"),
+					synfigapp::UIInterface::RESPONSE_YES
+		);
 
 		if(answer==synfigapp::UIInterface::RESPONSE_YES)
 			dialog_cvs_commit();
