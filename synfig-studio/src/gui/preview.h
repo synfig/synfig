@@ -58,6 +58,7 @@
 #include <jack/transport.h>
 #endif
 
+#include <synfig/soundprocessor.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -210,17 +211,10 @@ class Widget_Preview : public Gtk::Table
 	double				timedisp;
 	double				audiotime;
 
-	//sound stuff
-	etl::handle<AudioContainer>	audio;
-	sigc::connection	scrstartcon;
-	sigc::connection	scrstopcon;
-	sigc::connection	scrubcon;
-
 	//preview encapsulation
 	etl::handle<Preview>	preview;
 	sigc::connection	prevchanged;
 
-	Widget_Sound		disp_sound;
 	Gtk::ToggleButton *jackbutton;
 	Widget_Time *offset_widget;
 	Glib::RefPtr<Gtk::Adjustment> adj_sound;
@@ -238,6 +232,8 @@ class Widget_Preview : public Gtk::Table
 
 	//int		curindex; //for later
 	sigc::connection	timecon;
+
+	synfig::SoundProcessor soundProcessor;
 
 	void slider_move(); //later to be a time_slider that's cooler
 	bool play_update();
@@ -269,8 +265,6 @@ public:
 
 	//sets a signal to identify disconnection (so we don't hold onto it)...
 	void set_preview(etl::handle<Preview> prev);
-	void set_audioprofile(etl::handle<AudioProfile> p);
-	void set_audio(etl::handle<AudioContainer> a);
 
 	void clear();
 

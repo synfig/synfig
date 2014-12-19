@@ -4191,19 +4191,6 @@ CanvasView::on_audio_file_notify()
 		//save in canvasview
 		synfig::warning("Getting the profile of the music stuff");
 
-		//profile specific stuff for the preview widget
-		//similar for other attachments
-		Dialog_Preview *pd = preview_dialog.get();
-		pd->get_widget().set_audio(audio);
-
-		handle<AudioProfile>	prof = audio->get_profile();
-
-		if(!prof)
-		{
-			synfig::warning("Agh, I couldn't build the profile captain!");
-		}
-		pd->get_widget().set_audioprofile(prof);
-
 		disp_audio->set_profile(audio->get_profile());
 		disp_audio->show();
 
