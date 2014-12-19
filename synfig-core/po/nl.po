@@ -1,7 +1,7 @@
 # Translation file for Synfig Core package.
 # Copyright (C) 2013 Synfig Contributors
 # This file is distributed under the same license as the Synfig Core package.
-# 
+#
 # Translators:
 # darkspace65 <studio.diba@gmail.com>, 2013
 # Ruud van Eeghem <r.van.eeghem@gmail.com>, 2011
@@ -10,14 +10,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Synfig\n"
 "Report-Msgid-Bugs-To: http://www.synfig.org/issues/thebuggenie/synfig\n"
-"POT-Creation-Date: 2013-10-10 22:47+0700\n"
+"POT-Creation-Date: 2014-12-12 11:58+0600\n"
 "PO-Revision-Date: 2013-10-11 06:53+0000\n"
 "Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
-"Language-Team: Dutch (http://www.transifex.com/projects/p/synfig/language/nl/)\n"
+"Language-Team: Dutch (http://www.transifex.com/projects/p/synfig/language/"
+"nl/)\n"
+"Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: nl\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: src/modules/mod_example/filledrect.cpp:59
@@ -347,7 +348,8 @@ msgstr "Kan afmetingen van het vlak niet zetten"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:807
 msgid "Invalid multibyte sequence - is the locale set?\n"
-msgstr "Ongeldige reeks multibyte karakters - is de instelling van de regio goed?\n"
+msgstr ""
+"Ongeldige reeks multibyte karakters - is de instelling van de regio goed?\n"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:814
 msgid "Can't parse multibyte character.\n"
@@ -1081,20 +1083,44 @@ msgstr "Kan bestandsheader niet schrijven naar bestand"
 msgid "Unable to write info header"
 msgstr "Kan infoheader niet schrijven naar bestand"
 
-#: src/modules/mod_dv/trgt_dv.cpp:165 src/modules/mod_dv/trgt_dv.cpp:174
-#: src/modules/mod_dv/trgt_dv.cpp:181 src/modules/mod_dv/trgt_dv.cpp:191
-#: src/modules/mod_dv/trgt_dv.cpp:199 src/modules/mod_dv/trgt_dv.cpp:204
-#: src/modules/mod_dv/trgt_dv.cpp:208 src/modules/mod_dv/trgt_dv.cpp:217
-#: src/modules/mod_dv/trgt_dv.cpp:226
+#: src/modules/mod_dv/trgt_dv.cpp:164 src/modules/mod_dv/trgt_dv.cpp:173
+#: src/modules/mod_dv/trgt_dv.cpp:180 src/modules/mod_dv/trgt_dv.cpp:190
+#: src/modules/mod_dv/trgt_dv.cpp:198 src/modules/mod_dv/trgt_dv.cpp:203
+#: src/modules/mod_dv/trgt_dv.cpp:207 src/modules/mod_dv/trgt_dv.cpp:216
+#: src/modules/mod_dv/trgt_dv.cpp:225
 msgid "Unable to open pipe to encodedv"
 msgstr "Kan data bus naar apparaat encodedv niet openen"
 
-#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:212
-#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:219
-#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:229
-#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:283
-#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:301
-msgid "Unable to open pipe to ffmpeg"
+#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:206
+msgid ""
+"Error: No FFmpeg binary found.\n"
+"\n"
+"Please install \"ffmpeg\" or \"avconv\" (libav-tools package)."
+msgstr ""
+
+#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:273
+#, fuzzy
+msgid "Unable to open pipe to ffmpeg (no pipe)"
+msgstr "Kan data bus naar apparaat ffmpeg niet openen"
+
+#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:280
+#, fuzzy
+msgid "Unable to open pipe to ffmpeg (pid == -1)"
+msgstr "Kan data bus naar apparaat ffmpeg niet openen"
+
+#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:290
+#, fuzzy
+msgid "Unable to open pipe to ffmpeg (dup2( p[0], STDIN_FILENO ) == -1)"
+msgstr "Kan data bus naar apparaat ffmpeg niet openen"
+
+#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:312
+#, fuzzy
+msgid "Unable to open pipe to ffmpeg (exec failed)"
+msgstr "Kan data bus naar apparaat ffmpeg niet openen"
+
+#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:330
+#, fuzzy
+msgid "Unable to open pipe to ffmpeg (no file)"
 msgstr "Kan data bus naar apparaat ffmpeg niet openen"
 
 #: src/modules/mod_filter/blur.cpp:69
@@ -1387,7 +1413,8 @@ msgstr "Soort uiteinde aan het eind"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:1159
 msgid "Defines the Tip type of the last spline point when spline is unlooped"
-msgstr "Bepaalt puntsoort van de laatste spline-punt als de spline ontknoopt is"
+msgstr ""
+"Bepaalt puntsoort van de laatste spline-punt als de spline ontknoopt is"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:1167
 msgid "Cusps Type"
@@ -1424,7 +1451,8 @@ msgstr "Homogeen"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:1180
 msgid "When true, widthpoints positions are spline length based"
-msgstr "Breedtepunten posities zijn gebaseerd op de lengte van de spline indien waar"
+msgstr ""
+"Breedtepunten posities zijn gebaseerd op de lengte van de spline indien waar"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:1183
 msgid "Width Point List"
@@ -1436,7 +1464,8 @@ msgstr "Lijst met punten met een variabele breedte"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:1190
 msgid "When checked outline renders faster, but less accurate"
-msgstr "Buitenlijnen worden sneller maar inaccurater weergegeven indien aangevinkt"
+msgstr ""
+"Buitenlijnen worden sneller maar inaccurater weergegeven indien aangevinkt"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:1193
 msgid "Dashed Outline"
@@ -1452,7 +1481,8 @@ msgstr "Streep Lijst"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:1201
 msgid "List of dash items that defines the dashed outline"
-msgstr "Lijst met strepen die gebruikt worden bij het bepalen van de gestreepte rand"
+msgstr ""
+"Lijst met strepen die gebruikt worden bij het bepalen van de gestreepte rand"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:1204
 msgid "Dash Items Offset"
@@ -1497,7 +1527,9 @@ msgstr "(Momenteel ongebruikt)"
 
 #: src/modules/mod_geometry/outline.cpp:870
 msgid "When checked the width takes the length of the spline to interpolate"
-msgstr "Indien aangevinkt, maakt de breedte gelijk aan de lengte van de te interpoleren kromme"
+msgstr ""
+"Indien aangevinkt, maakt de breedte gelijk aan de lengte van de te "
+"interpoleren kromme"
 
 #: src/modules/mod_geometry/rectangle.cpp:59
 msgid "Rectangle"
@@ -1877,14 +1909,16 @@ msgid "Speed"
 msgstr "Snelheid"
 
 #: src/modules/mod_noise/valuenode_random.cpp:281
-msgid ""
-"Defines how often a new random value is chosen (in choices per second) "
-msgstr "Geeft aan hoe vaak een nieuwe willekeurige waarde gekozen wordt (in keuzes per seconde)"
+msgid "Defines how often a new random value is chosen (in choices per second) "
+msgstr ""
+"Geeft aan hoe vaak een nieuwe willekeurige waarde gekozen wordt (in keuzes "
+"per seconde)"
 
 #: src/modules/mod_noise/valuenode_random.cpp:286
 msgid ""
 "Determines how the value is interpolated from one random choice to the next"
-msgstr "Geeft aan hoe tussen twee willekeurige waarden geinterpoleerd moet worden"
+msgstr ""
+"Geeft aan hoe tussen twee willekeurige waarden geinterpoleerd moet worden"
 
 #: src/modules/mod_noise/valuenode_random.cpp:288
 msgid "No interpolation"
@@ -1896,7 +1930,8 @@ msgstr "Herhaal tijd"
 
 #: src/modules/mod_noise/valuenode_random.cpp:298
 msgid "Makes the random value repeat after the given time"
-msgstr "Zorgt ervoor dat een willekeurige waarde na de opgegeven tijd herhaald wordt"
+msgstr ""
+"Zorgt ervoor dat een willekeurige waarde na de opgegeven tijd herhaald wordt"
 
 #: src/modules/mod_particle/plant.cpp:70
 msgid "Plant"
@@ -1928,7 +1963,9 @@ msgstr "Tangentiële snelheid"
 
 #: src/modules/mod_particle/plant.cpp:453
 msgid "Amount to which shoots tend to grow along the tangent to the spline"
-msgstr "Hoeveelheid waarnaar scheuten neigen te groeien langs de raaklijn van de spline"
+msgstr ""
+"Hoeveelheid waarnaar scheuten neigen te groeien langs de raaklijn van de "
+"spline"
 
 #: src/modules/mod_particle/plant.cpp:457
 msgid "Perpendicular Velocity"
@@ -1938,7 +1975,9 @@ msgstr "Loodrechte snelheid"
 msgid ""
 "Amount to which shoots tend to grow perpendicular to the tangent to the "
 "spline"
-msgstr "Hoeveelheid waarnaar scheuten neigen te groeien haaks op de raaklijn van de spline"
+msgstr ""
+"Hoeveelheid waarnaar scheuten neigen te groeien haaks op de raaklijn van de "
+"spline"
 
 #: src/modules/mod_particle/plant.cpp:462
 msgid "Stem Size"
@@ -1956,7 +1995,9 @@ msgstr "Grootte als alfa"
 msgid ""
 "If enabled, the alpha channel from the gradient is multiplied by the stem "
 "size, and an alpha of 1.0 is used when rendering"
-msgstr "Indien actief wordt het alfa kanaal van de gradient vermenigvuldigt met de stam grootte en wordt de afbeelding met een alfa waarde 1.0 gemaakt"
+msgstr ""
+"Indien actief wordt het alfa kanaal van de gradient vermenigvuldigt met de "
+"stam grootte en wordt de afbeelding met een alfa waarde 1.0 gemaakt"
 
 #: src/modules/mod_particle/plant.cpp:473
 msgid "Reverse"
@@ -2002,7 +2043,9 @@ msgstr "Toevalswaarde"
 #: src/modules/mod_particle/plant.cpp:499
 msgid ""
 "Used to scale down all random effects.  Set to zero to disable randomness"
-msgstr "Wordt gebruikt om willekeurige effecten te schalen. Bij nul worden alle willekeurige effecten uitgeschakeld."
+msgstr ""
+"Wordt gebruikt om willekeurige effecten te schalen. Bij nul worden alle "
+"willekeurige effecten uitgeschakeld."
 
 #: src/modules/mod_particle/plant.cpp:503
 msgid "Drag"
@@ -2351,7 +2394,9 @@ msgstr "<waypoint> mist het attribuut \"time\""
 msgid ""
 "Found \"use\" attribute for <waypoint>, but it wasn't empty. Ignoring "
 "contents..."
-msgstr "Niet leeg attribuut \"use\" gevonden voor <waypoint>. Inhoud wordt genegeerd..."
+msgstr ""
+"Niet leeg attribuut \"use\" gevonden voor <waypoint>. Inhoud wordt "
+"genegeerd..."
 
 #: src/synfig/loadcanvas.cpp:1404
 #, c-format
@@ -2405,7 +2450,8 @@ msgstr "'%s' attribuut in <%s> verwijst naar onbekende ID '%s'"
 #: src/synfig/loadcanvas.cpp:1634
 #, c-format
 msgid "Unable to set link '\"%s\" to ValueNode \"%s\" (link #%d in \"%s\")"
-msgstr "Kan verwijzing \"%s\" in ValueNode \"%s\" niet maken (link #%d in \"%s\")"
+msgstr ""
+"Kan verwijzing \"%s\" in ValueNode \"%s\" niet maken (link #%d in \"%s\")"
 
 #: src/synfig/loadcanvas.cpp:1658
 #, c-format
@@ -2425,7 +2471,9 @@ msgstr "Het verwerken van '%s' is niet gelukt"
 #: src/synfig/loadcanvas.cpp:1714
 #, c-format
 msgid "Unable to connect value node ('%s' of type '%s') to link %d (%s)"
-msgstr "Kan waarde element ('%s' van het type '%s') niet koppelen met verwijzing %d (%s)"
+msgstr ""
+"Kan waarde element ('%s' van het type '%s') niet koppelen met verwijzing %d "
+"(%s)"
 
 #: src/synfig/loadcanvas.cpp:1732
 #, c-format
@@ -2480,7 +2528,9 @@ msgstr "Attribuut \"type\" niet gevonden in \"layer\" element"
 
 #: src/synfig/loadcanvas.cpp:2392
 msgid "Installed layer version is smaller than layer version in file"
-msgstr "De versie informatie van de laag in het bestand is hoger dan geinstalleerde toepassing aankan"
+msgstr ""
+"De versie informatie van de laag in het bestand is hoger dan geinstalleerde "
+"toepassing aankan"
 
 #: src/synfig/loadcanvas.cpp:2415
 msgid "<name> entry for <layer> is not yet supported. Ignoring..."
@@ -2498,7 +2548,9 @@ msgstr "Het attribuut \"name\" ontbreekt voor <param>"
 msgid ""
 "Found \"use\" attribute for <param>, but it wasn't empty. Ignoring "
 "contents..."
-msgstr "Het attribuut \"use\" werd gevonden voor <param>, maar het was niet leeg. Inhoud wordt genegeerd..."
+msgstr ""
+"Het attribuut \"use\" werd gevonden voor <param>, maar het was niet leeg. "
+"Inhoud wordt genegeerd..."
 
 #: src/synfig/loadcanvas.cpp:2448
 msgid "Empty use=\"\" value in <param>"
@@ -2858,18 +2910,18 @@ msgstr "Alfa verduisteren"
 msgid "Target panic"
 msgstr "Doel paniek"
 
-#: src/synfig/savecanvas.cpp:359
+#: src/synfig/savecanvas.cpp:360
 #, c-format
 msgid "Unknown value(%s), cannot create XML representation!"
 msgstr "Onbekende waarde (%s), kan XML representatie niet genereren"
 
-#: src/synfig/savecanvas.cpp:674 src/synfig/savecanvas.cpp:699
+#: src/synfig/savecanvas.cpp:675 src/synfig/savecanvas.cpp:700
 #, c-format
 msgid "Unknown ValueNode Type (%s), cannot create an XML representation"
 msgstr "Onbekend type ValueNode (%s), kan XML representatie niet genereren"
 
 #: src/synfig/target_cairo.cpp:92 src/synfig/target_cairo_tile.cpp:194
-#: src/synfig/target_scanline.cpp:98 src/synfig/target_tile.cpp:281
+#: src/synfig/target_scanline.cpp:98 src/synfig/target_tile.cpp:311
 msgid "Target initialization failure"
 msgstr "Fout bij initialisatie doel"
 
@@ -2877,8 +2929,8 @@ msgstr "Fout bij initialisatie doel"
 msgid "Frame Renderer Failure"
 msgstr ""
 
-#: src/synfig/target_cairo.cpp:165 src/synfig/target_scanline.cpp:260
-#: src/synfig/target_scanline.cpp:407
+#: src/synfig/target_cairo.cpp:165 src/synfig/target_scanline.cpp:274
+#: src/synfig/target_scanline.cpp:435
 msgid "Unable to put surface on target"
 msgstr "Kan grafisch vlak niet op doel plaatsen"
 
@@ -2887,17 +2939,17 @@ msgid "Not supported render method"
 msgstr ""
 
 #: src/synfig/target_cairo.cpp:180 src/synfig/target_cairo_tile.cpp:259
-#: src/synfig/target_scanline.cpp:420 src/synfig/target_tile.cpp:398
+#: src/synfig/target_scanline.cpp:448 src/synfig/target_tile.cpp:428
 msgid "Caught string :"
 msgstr "Exceptie tekenreeks gevangen:"
 
 #: src/synfig/target_cairo.cpp:185 src/synfig/target_cairo_tile.cpp:264
-#: src/synfig/target_scanline.cpp:425 src/synfig/target_tile.cpp:403
+#: src/synfig/target_scanline.cpp:453 src/synfig/target_tile.cpp:433
 msgid "Ran out of memory (Probably a bug)"
 msgstr "Onvoldoende geheugen beschikbaar (waarschijnlijk een bug)"
 
 #: src/synfig/target_cairo.cpp:190 src/synfig/target_cairo_tile.cpp:269
-#: src/synfig/target_scanline.cpp:430 src/synfig/target_tile.cpp:408
+#: src/synfig/target_scanline.cpp:458 src/synfig/target_tile.cpp:438
 msgid "Caught unknown error, rethrowing..."
 msgstr "Onbekende exceptie fout gevangen, opnieuw gooien..."
 
@@ -2910,9 +2962,9 @@ msgid "Bad Tile Size"
 msgstr "Ongeldige tegel grootte"
 
 #: src/synfig/target_cairo_tile.cpp:148 src/synfig/target_cairo_tile.cpp:251
-#: src/synfig/target_scanline.cpp:205 src/synfig/target_scanline.cpp:251
-#: src/synfig/target_scanline.cpp:350 src/synfig/target_scanline.cpp:398
-#: src/synfig/target_tile.cpp:225
+#: src/synfig/target_scanline.cpp:205 src/synfig/target_scanline.cpp:265
+#: src/synfig/target_scanline.cpp:364 src/synfig/target_scanline.cpp:426
+#: src/synfig/target_tile.cpp:240
 msgid "Accelerated Renderer Failure"
 msgstr "Versnelde weergave mislukt"
 
@@ -2921,8 +2973,8 @@ msgstr "Versnelde weergave mislukt"
 msgid "Bad surface: %s"
 msgstr ""
 
-#: src/synfig/target_cairo_tile.cpp:164 src/synfig/target_tile.cpp:179
-#: src/synfig/target_tile.cpp:245
+#: src/synfig/target_cairo_tile.cpp:164 src/synfig/target_tile.cpp:194
+#: src/synfig/target_tile.cpp:275
 msgid "add_tile():Unable to put surface on target"
 msgstr "add_tile(): Kan grafisch vlak niet op doel plaatsen"
 
@@ -2934,7 +2986,7 @@ msgstr ""
 msgid "Parametric Renderer Failure"
 msgstr "Parametrische weergave mislukt"
 
-#: src/synfig/target_tile.cpp:169 src/synfig/target_tile.cpp:233
+#: src/synfig/target_tile.cpp:169 src/synfig/target_tile.cpp:248
 msgid "Bad surface"
 msgstr "Ongeldig grafisch vlak"
 
@@ -2947,129 +2999,111 @@ msgstr "Time(): Tijdcode zonder eenheid, FRAMES (\"%s\") wordt gebruikt"
 msgid ""
 "Time(): No unit provided in time code and frame rate is unknown! Assuming "
 "SECONDS"
-msgstr "Time(): Tijdcode zonder eenheid en frame snelheid onbekend! SECONDEN wordt gebruikt"
+msgstr ""
+"Time(): Tijdcode zonder eenheid en frame snelheid onbekend! SECONDEN wordt "
+"gebruikt"
 
-#. TRANSLATORS: this is the name of a type -- see
-#. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:340 src/synfig/value.cpp:376 src/synfig/value.cpp:437
+#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:370 src/synfig/value.cpp:406 src/synfig/value.cpp:467
 msgid "bool"
 msgstr "boolean"
 
-#. TRANSLATORS: this is the name of a type -- see
-#. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:341 src/synfig/value.cpp:378 src/synfig/value.cpp:435
+#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:371 src/synfig/value.cpp:408 src/synfig/value.cpp:465
 msgid "integer"
 msgstr "geheel getal"
 
-#. TRANSLATORS: this is the name of a type -- see
-#. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:342 src/synfig/value.cpp:380
+#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:372 src/synfig/value.cpp:410
 msgid "angle"
 msgstr "hoek"
 
-#. TRANSLATORS: this is the name of a type -- see
-#. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:343 src/synfig/value.cpp:382 src/synfig/value.cpp:429
+#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:373 src/synfig/value.cpp:412 src/synfig/value.cpp:459
 msgid "time"
 msgstr "tijd"
 
-#. TRANSLATORS: this is the name of a type -- see
-#. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:344 src/synfig/value.cpp:384 src/synfig/value.cpp:432
+#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:374 src/synfig/value.cpp:414 src/synfig/value.cpp:462
 msgid "real"
 msgstr "real"
 
-#. TRANSLATORS: this is the name of a type -- see
-#. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:345 src/synfig/value.cpp:386
+#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:375 src/synfig/value.cpp:416
 msgid "vector"
 msgstr "vector"
 
-#. TRANSLATORS: this is the name of a type -- see
-#. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:346 src/synfig/value.cpp:388
+#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:376 src/synfig/value.cpp:418
 msgid "color"
 msgstr "color"
 
-#. TRANSLATORS: this is the name of a type -- see
-#. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:347 src/synfig/value.cpp:390
+#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:377 src/synfig/value.cpp:420
 msgid "segment"
 msgstr "segment"
 
-#: src/synfig/value.cpp:348
+#: src/synfig/value.cpp:378
 msgid "bline_point"
 msgstr "bline_point"
 
-#. TRANSLATORS: this is the name of a type -- see
-#. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:349 src/synfig/value.cpp:394
+#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:379 src/synfig/value.cpp:424
 msgid "matrix"
 msgstr ""
 
-#. TRANSLATORS: this is the name of a type -- see
-#. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:350 src/synfig/value.cpp:396
+#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:380 src/synfig/value.cpp:426
 msgid "bone_weight_pair"
 msgstr ""
 
-#. TRANSLATORS: this is the name of a type -- see
-#. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:351 src/synfig/value.cpp:398
+#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:381 src/synfig/value.cpp:428
 msgid "width_point"
 msgstr "width_point"
 
-#. TRANSLATORS: this is the name of a type -- see
-#. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:352 src/synfig/value.cpp:400
+#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:382 src/synfig/value.cpp:430
 msgid "dash_item"
 msgstr "dash_item"
 
-#. TRANSLATORS: this is the name of a type -- see
-#. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:353 src/synfig/value.cpp:402
+#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:383 src/synfig/value.cpp:432
 msgid "list"
 msgstr "list"
 
-#. TRANSLATORS: this is the name of a type -- see
-#. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:354 src/synfig/value.cpp:404
+#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:384 src/synfig/value.cpp:434
 msgid "canvas"
 msgstr "canvas"
 
-#. TRANSLATORS: this is the name of a type -- see
-#. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:355 src/synfig/value.cpp:406
+#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:385 src/synfig/value.cpp:436
 msgid "string"
 msgstr "string"
 
-#. TRANSLATORS: this is the name of a type -- see
-#. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:356 src/synfig/value.cpp:408
+#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:386 src/synfig/value.cpp:438
 msgid "gradient"
 msgstr "gradient"
 
-#. TRANSLATORS: this is the name of a type -- see
-#. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:357 src/synfig/value.cpp:410
+#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:387 src/synfig/value.cpp:440
 msgid "bone_object"
 msgstr ""
 
-#. TRANSLATORS: this is the name of a type -- see
-#. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:358 src/synfig/value.cpp:412
+#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:388 src/synfig/value.cpp:442
 msgid "bone_valuenode"
 msgstr ""
 
-#. TRANSLATORS: this is the name of a type -- see
-#. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:359 src/synfig/value.cpp:414
+#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:389 src/synfig/value.cpp:444
 msgid "nil"
 msgstr "nil"
 
-#. TRANSLATORS: this is the name of a type -- see
-#. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:392
+#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:422
 msgid "spline_point"
 msgstr "spline_punt"
 
@@ -3356,7 +3390,8 @@ msgstr "Er is al een tussen punt gedefinieerd op dit tijdstip"
 #: src/synfig/valuenode_animated.cpp:1173
 #, c-format
 msgid "%s: You cannot use a %s in an animated ValueNode"
-msgstr "%s: Het is niet mogelijk om %s te gebruiken in een geanimeerde ValueNode"
+msgstr ""
+"%s: Het is niet mogelijk om %s te gebruiken in een geanimeerde ValueNode"
 
 #: src/synfig/valuenode_animated.cpp:1208
 msgid "Animated"
@@ -3640,7 +3675,9 @@ msgstr "Groter"
 
 #: src/synfig/valuenode_compare.cpp:178
 msgid "When checked, returns true if LHS > RHS"
-msgstr "Indien aangevinkt, levert waar op als de linkerzijde groter is dan de rechterzijde"
+msgstr ""
+"Indien aangevinkt, levert waar op als de linkerzijde groter is dan de "
+"rechterzijde"
 
 #: src/synfig/valuenode_compare.cpp:182
 msgid "Equal"
@@ -3648,7 +3685,9 @@ msgstr "Gelijk aan"
 
 #: src/synfig/valuenode_compare.cpp:183
 msgid "When checked, returns true if LHS = RHS"
-msgstr "Indien aangevinkt, levert waar op als de linkerzijde gelijk is aan de rechterzijde"
+msgstr ""
+"Indien aangevinkt, levert waar op als de linkerzijde gelijk is aan de "
+"rechterzijde"
 
 #: src/synfig/valuenode_compare.cpp:187
 msgid "Less"
@@ -3656,7 +3695,9 @@ msgstr "Minder dan"
 
 #: src/synfig/valuenode_compare.cpp:188
 msgid "When checked, returns true if LHS < RHS"
-msgstr "Indien aangevinkt, levert waar op als de linkerzijde kleiner is dan de rechterzijde"
+msgstr ""
+"Indien aangevinkt, levert waar op als de linkerzijde kleiner is dan de "
+"rechterzijde"
 
 #: src/synfig/valuenode_cos.cpp:156
 msgid "Value to calculate the cosine"
@@ -3806,7 +3847,9 @@ msgstr "Epsilon"
 
 #: src/synfig/valuenode_pow.cpp:191
 msgid "Value used to compare base or power with zero "
-msgstr "Waarde die wordt gebruikt om het grondgetal of de macht met nul te vergelijken"
+msgstr ""
+"Waarde die wordt gebruikt om het grondgetal of de macht met nul te "
+"vergelijken"
 
 #: src/synfig/valuenode_pow.cpp:195 src/synfig/valuenode_reciprocal.cpp:175
 msgid "Infinite"
@@ -3886,17 +3929,21 @@ msgstr "Voorloop nullen"
 
 #: src/synfig/valuenode_realstring.cpp:191
 msgid "When checked, the string is left filled with zeros to match the width"
-msgstr "Indien aangevinkt, vult het begin van de tekenreeks aan met nullen tot de gewenste grootte"
+msgstr ""
+"Indien aangevinkt, vult het begin van de tekenreeks aan met nullen tot de "
+"gewenste grootte"
 
 #: src/synfig/valuenode_reciprocal.cpp:166
 msgid "The value node used to calculate its reciprocal"
-msgstr "The waarde knoop die gebruikt wordt voor berekening van de reciproque waarde "
+msgstr ""
+"The waarde knoop die gebruikt wordt voor berekening van de reciproque waarde "
 
 #: src/synfig/valuenode_reciprocal.cpp:171
 msgid ""
-"The value used to decide whether 'Link' is too small to obtain its "
-"reciprocal"
-msgstr "De waarde die gebruikt wordt om te bepalen of 'Link' te klein is om een reciproque te berekenen"
+"The value used to decide whether 'Link' is too small to obtain its reciprocal"
+msgstr ""
+"De waarde die gebruikt wordt om te bepalen of 'Link' te klein is om een "
+"reciproque te berekenen"
 
 #: src/synfig/valuenode_reciprocal.cpp:176
 msgid "The resulting value when 'Link' < 'Epsilon'"
@@ -3921,7 +3968,9 @@ msgstr "Het aantal keren dat de gradient herhaald moet worden"
 #: src/synfig/valuenode_repeat_gradient.cpp:214
 msgid ""
 "Specifies how much biased is the source gradeint in the repetition [0,1]"
-msgstr "Geeft aan hoeveel die bron gradiënt de voorkeursrichting volgt in de herhaling [0,1]"
+msgstr ""
+"Geeft aan hoeveel die bron gradiënt de voorkeursrichting volgt in de "
+"herhaling [0,1]"
 
 #: src/synfig/valuenode_repeat_gradient.cpp:218
 msgid "Specify Start"
@@ -3930,7 +3979,9 @@ msgstr "Specificeer Start"
 #: src/synfig/valuenode_repeat_gradient.cpp:219
 msgid ""
 "When checked, 'Start Color' is used as the start of the resulting gradient"
-msgstr "Indien aangevinkt, gebruikt de start kleur voor het begin van de totale gradient"
+msgstr ""
+"Indien aangevinkt, gebruikt de start kleur voor het begin van de totale "
+"gradient"
 
 #: src/synfig/valuenode_repeat_gradient.cpp:223
 msgid "Specify End"
@@ -3939,7 +3990,9 @@ msgstr "Specificeer Einde"
 #: src/synfig/valuenode_repeat_gradient.cpp:224
 msgid ""
 "When checked, 'End Color' is used as the start of the resulting gradient"
-msgstr "Indien aangevinkt, gebruikt de eind kleur voor het begin van de totale gradient"
+msgstr ""
+"Indien aangevinkt, gebruikt de eind kleur voor het begin van de totale "
+"gradient"
 
 #: src/synfig/valuenode_repeat_gradient.cpp:228
 msgid "Start Color"
@@ -3960,7 +4013,8 @@ msgstr "Wordt gebruikt als einde van de totale gradient"
 #: src/synfig/valuenode_scale.cpp:152 src/synfig/valuenode_scale.cpp:173
 #: src/synfig/valuenode_scale.cpp:190
 msgid "Attempting to get the inverse of a non invertible Valuenode"
-msgstr "Bezig met het bepalen van de inverse van een niet-omkeerbare waarde knoop"
+msgstr ""
+"Bezig met het bepalen van de inverse van een niet-omkeerbare waarde knoop"
 
 #: src/synfig/valuenode_scale.cpp:268
 msgid "The value node used to scale"
@@ -4081,15 +4135,20 @@ msgstr "De waarde knoop die terug gegeven wordt als de schakelaar aan is"
 
 #: src/synfig/valuenode_switch.cpp:164
 msgid "When checked, returns 'Link On', otherwise returns 'Link Off'"
-msgstr "Indien aangevinkt, levert de 'Koppeling Aan', anders de 'Koppeling Uit'"
+msgstr ""
+"Indien aangevinkt, levert de 'Koppeling Aan', anders de 'Koppeling Uit'"
 
 #: src/synfig/valuenode_timedswap.cpp:246
 msgid "The value node returned when current time is before 'time' - 'length'"
-msgstr "De waarde knoop die wordt teruggegeven als de huidige tijd ligt voor de waarde 'tijd' - 'lengte'"
+msgstr ""
+"De waarde knoop die wordt teruggegeven als de huidige tijd ligt voor de "
+"waarde 'tijd' - 'lengte'"
 
 #: src/synfig/valuenode_timedswap.cpp:251
 msgid "The value node returned when current time is after 'time'"
-msgstr "De waarde knoop teruggegeven als de huidige tijd voorbij de waarde 'tijd' ligt"
+msgstr ""
+"De waarde knoop teruggegeven als de huidige tijd voorbij de waarde 'tijd' "
+"ligt"
 
 #: src/synfig/valuenode_timedswap.cpp:255
 #: src/synfig/valuenode_timestring.cpp:163
@@ -4104,7 +4163,9 @@ msgstr "De tijd waarop de lineaire interpolatie moet stoppen"
 msgid ""
 "The length of time when the linear interpolation between 'Before' and "
 "'After' is made"
-msgstr "De lengte van de tijd bij het uitvoeren van de lineaire interpolatie tussen 'Voor' en 'Na'"
+msgstr ""
+"De lengte van de tijd bij het uitvoeren van de lineaire interpolatie tussen "
+"'Voor' en 'Na'"
 
 #: src/synfig/valuenode_timeloop.cpp:175
 msgid "The value node to time loop"
@@ -4153,195 +4214,206 @@ msgstr "De vector waar de y coordinaat van wordt gebruikt"
 msgid "WidthPoint %03d"
 msgstr "Afwijkend Breedte Punt %03d"
 
-#: src/tool/main.cpp:140
+#: src/tool/main.cpp:141
 msgid "FATAL: Synfig Version Mismatch"
 msgstr "FATAAL: Synfig versie incorrect"
 
-#: src/tool/main.cpp:176
+#: src/tool/main.cpp:177
 msgid "Settings"
 msgstr ""
 
-#: src/tool/main.cpp:178
+#: src/tool/main.cpp:179
 msgid "Specify output target (Default: PNG)"
 msgstr ""
 
-#: src/tool/main.cpp:179
-msgid "Set the image width in pixels (Use zero for file default)"
-msgstr "Stel de breedte van de afbeelding in in pixels (gebruik 0 voor de standaard waarde)"
-
 #: src/tool/main.cpp:180
-msgid "Set the image height in pixels (Use zero for file default)"
-msgstr "Stel de hoogte van de afbeelding in in pixels (gebruik 0 voor de standaard waarde)"
+msgid "Set the image width in pixels (Use zero for file default)"
+msgstr ""
+"Stel de breedte van de afbeelding in in pixels (gebruik 0 voor de standaard "
+"waarde)"
 
 #: src/tool/main.cpp:181
+msgid "Set the image height in pixels (Use zero for file default)"
+msgstr ""
+"Stel de hoogte van de afbeelding in in pixels (gebruik 0 voor de standaard "
+"waarde)"
+
+#: src/tool/main.cpp:182
 msgid "Set the diagonal size of image window (Span)"
 msgstr "Stel de diagonale afmeting van het afbeeldingsvenster in (spanbreedte)"
 
-#: src/tool/main.cpp:182
+#: src/tool/main.cpp:183
 msgid "Set antialias amount for parametric renderer."
 msgstr "Stel de waarde voor anti-alias in voor de geparameteriseerde generator"
 
-#: src/tool/main.cpp:183
+#: src/tool/main.cpp:184
 #, c-format
 msgid "Specify image quality for accelerated renderer (Default: %d)"
-msgstr "Stel de kwaliteit van de afbeelding in voor versneld genereren van afbeeldingen (standaard=%d)"
+msgstr ""
+"Stel de kwaliteit van de afbeelding in voor versneld genereren van "
+"afbeeldingen (standaard=%d)"
 
-#: src/tool/main.cpp:184
+#: src/tool/main.cpp:185
 msgid "Gamma"
 msgstr "Gamma"
 
-#: src/tool/main.cpp:185
+#: src/tool/main.cpp:186
 msgid "Enable multithreaded renderer using the specified number of threads"
 msgstr ""
 
-#: src/tool/main.cpp:186
+#: src/tool/main.cpp:187
 msgid "Specify input filename"
 msgstr "Specifieer het invoer bestand"
 
-#: src/tool/main.cpp:187
+#: src/tool/main.cpp:188
 msgid "Specify output filename"
 msgstr "Specificeer het uitvoer bestand"
 
-#: src/tool/main.cpp:188
+#: src/tool/main.cpp:189
 msgid ""
 "Output file sequence separator string (Use double quotes if you want to use "
 "spaces)"
 msgstr ""
 
-#: src/tool/main.cpp:189
-msgid "Render the canvas with the given id instead of the root."
-msgstr "Genereer het tekenvenster met de opgegeven id in plaats vanaf het begin"
-
 #: src/tool/main.cpp:190
+msgid "Render the canvas with the given id instead of the root."
+msgstr ""
+"Genereer het tekenvenster met de opgegeven id in plaats vanaf het begin"
+
+#: src/tool/main.cpp:191
 msgid "Set the frame rate"
 msgstr "Stel het aantal beelden per seconde in"
 
-#: src/tool/main.cpp:191
+#: src/tool/main.cpp:192
 msgid "Render a single frame at <seconds>"
 msgstr "Genereer een enkel beeld op <seconden>"
 
-#: src/tool/main.cpp:192 src/tool/main.cpp:193
+#: src/tool/main.cpp:193 src/tool/main.cpp:194
 msgid "Set the starting time"
 msgstr "Stel de starttijd in"
 
-#: src/tool/main.cpp:194
+#: src/tool/main.cpp:195
 msgid "Set the ending time"
 msgstr "Stel de eindtijd in"
 
-#: src/tool/main.cpp:195
+#: src/tool/main.cpp:196
 msgid "Set the physical resolution (Dots-per-inch)"
 msgstr "Stel de fysieke resolutie in (dots-per-inch)"
 
-#: src/tool/main.cpp:196
+#: src/tool/main.cpp:197
 msgid "Set the physical X resolution (Dots-per-inch)"
 msgstr "Stel de fysieke x resolutie in (dots-per-inch)"
 
-#: src/tool/main.cpp:197
+#: src/tool/main.cpp:198
 msgid "Set the physical Y resolution (Dots-per-inch)"
 msgstr "Stel de fysieke y resolutie in (Dots-per-inch)"
 
-#: src/tool/main.cpp:200
+#: src/tool/main.cpp:201
 msgid "Switch options"
 msgstr "Wissel opties"
 
-#: src/tool/main.cpp:202
+#: src/tool/main.cpp:203
 msgid "Output verbosity level"
 msgstr ""
 
-#: src/tool/main.cpp:203
+#: src/tool/main.cpp:204
 msgid "Quiet mode (No progress/time-remaining display)"
 msgstr "Stille modus (geen weergave voortgang en resterende tijd)"
 
-#: src/tool/main.cpp:204
+#: src/tool/main.cpp:205
 msgid "Print benchmarks"
 msgstr ""
 
-#: src/tool/main.cpp:207
-msgid "Misc options"
+#: src/tool/main.cpp:206
+msgid "Extract alpha"
 msgstr ""
 
 #: src/tool/main.cpp:209
+msgid "Misc options"
+msgstr ""
+
+#: src/tool/main.cpp:211
 msgid "Append layers in <filename> to composition"
 msgstr "Voeg de lagen in <bestand> aan de compositie toe"
 
-#: src/tool/main.cpp:210
+#: src/tool/main.cpp:212
 msgid "Print out specified details of the root canvas"
 msgstr "Druk de details af van het eerste tekenvenster"
 
-#: src/tool/main.cpp:211 src/tool/main.cpp:237
+#: src/tool/main.cpp:213 src/tool/main.cpp:239
 msgid "Print out the list of exported canvases in the composition"
 msgstr "Druk een lijst af van te exporteren tekenvensters in de compositie "
 
-#: src/tool/main.cpp:214
+#: src/tool/main.cpp:216
 msgid "FFMPEG target options"
 msgstr "FFMPEG doel opties"
 
-#: src/tool/main.cpp:216
+#: src/tool/main.cpp:218
 msgid "Set the codec for the video. See --ffmpeg-video-codecs"
 msgstr "Stel de codec voor video in. zie --ffmpeg-video-codecs"
 
-#: src/tool/main.cpp:217
+#: src/tool/main.cpp:219
 msgid "Set the bitrate for the output video"
 msgstr "Stel de bitrate in voor de video uitvoer"
 
-#: src/tool/main.cpp:220
+#: src/tool/main.cpp:222
 msgid "Synfig info options"
 msgstr "Synfig info opties"
 
-#: src/tool/main.cpp:222
+#: src/tool/main.cpp:224
 msgid "Produce this help message"
 msgstr ""
 
-#: src/tool/main.cpp:223
+#: src/tool/main.cpp:225
 msgid "Print out the list of available importers"
 msgstr "Druk een lijst af van de beschikbare import filters"
 
-#: src/tool/main.cpp:224
+#: src/tool/main.cpp:226
 msgid "Print out misc build information"
 msgstr "Druk bouw informatie af van de toepassing"
 
-#: src/tool/main.cpp:225
+#: src/tool/main.cpp:227
 msgid "Print out the list of available layers"
 msgstr "Druk een lijst af van de beschikbare lagen"
 
-#: src/tool/main.cpp:226
+#: src/tool/main.cpp:228
 msgid "Print out layer's description, parameter info, etc."
 msgstr "Druk de beschrijving af van lagen, parameters etc."
 
-#: src/tool/main.cpp:227
+#: src/tool/main.cpp:229
 msgid "Print out license information"
 msgstr "Druk licentie informatie af"
 
-#: src/tool/main.cpp:228
+#: src/tool/main.cpp:230
 msgid "Print out the list of loaded modules"
 msgstr "Druk een lijst af van de geladen modules"
 
-#: src/tool/main.cpp:229
+#: src/tool/main.cpp:231
 msgid "Print out the list of available targets"
 msgstr "Druk een lijst af van de beschikbare doelen"
 
-#: src/tool/main.cpp:230
+#: src/tool/main.cpp:232
 msgid ""
 "Print out the list of available video codecs when encoding through FFMPEG"
 msgstr ""
 
-#: src/tool/main.cpp:231
+#: src/tool/main.cpp:233
 msgid "Print out the list of available ValueNodes"
 msgstr "Druk een lijst af van de beschikbare ValueNodes"
 
-#: src/tool/main.cpp:232
+#: src/tool/main.cpp:234
 msgid "Print out version information"
 msgstr "Druk versie informatie af"
 
-#: src/tool/main.cpp:241
+#: src/tool/main.cpp:243
 msgid "Synfig debug flags"
 msgstr ""
 
-#: src/tool/main.cpp:243
+#: src/tool/main.cpp:245
 msgid "Test GUID generation"
 msgstr "Test GUID generatie"
 
-#: src/tool/main.cpp:244
+#: src/tool/main.cpp:246
 msgid "Test signal implementation"
 msgstr "Test signaal implementatie"
 
@@ -4385,23 +4457,27 @@ msgstr ""
 msgid "Setting the quality of the target..."
 msgstr ""
 
-#: src/tool/joblistprocessor.cpp:225 src/tool/joblistprocessor.cpp:235
+#: src/tool/joblistprocessor.cpp:185
+msgid "Setting the alpha mode of the target..."
+msgstr ""
+
+#: src/tool/joblistprocessor.cpp:230 src/tool/joblistprocessor.cpp:240
 msgid "Render Failure."
 msgstr ""
 
-#: src/tool/joblistprocessor.cpp:229
+#: src/tool/joblistprocessor.cpp:234
 msgid "Rendering..."
 msgstr ""
 
-#: src/tool/joblistprocessor.cpp:239
+#: src/tool/joblistprocessor.cpp:244
 msgid ": Rendered in "
 msgstr ""
 
-#: src/tool/joblistprocessor.cpp:240
+#: src/tool/joblistprocessor.cpp:245
 msgid " seconds."
 msgstr ""
 
-#: src/tool/joblistprocessor.cpp:243
+#: src/tool/joblistprocessor.cpp:248
 msgid "Done."
 msgstr ""
 
@@ -4533,29 +4609,29 @@ msgstr ""
 msgid "Target set to "
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:514
+#: src/tool/optionsprocessor.cpp:519
 msgid "Quality set to "
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:533
+#: src/tool/optionsprocessor.cpp:538
 #, c-format
 msgid ""
 "Unable to find canvas with ID \"%s\" in %s.\n"
 "Throwing out job..."
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:539
+#: src/tool/optionsprocessor.cpp:544
 #, c-format
 msgid ""
 "Invalid canvas name \"%s\" in %s.\n"
 "Throwing out job..."
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:558
+#: src/tool/optionsprocessor.cpp:563
 msgid "Unable to append '"
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:572
+#: src/tool/optionsprocessor.cpp:577
 msgid "Appended contents of "
 msgstr ""
 

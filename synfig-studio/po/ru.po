@@ -610,7 +610,7 @@ msgstr "Другой размер"
 
 #: ../src/gui/dialogs/dialog_setup.h:56
 msgid "Custom fps"
-msgstr "Другоая частота кадров"
+msgstr "Другая частота кадров"
 
 #: ../src/gui/dialogs/dialog_soundselect.cpp:60
 msgid "Sound Select"

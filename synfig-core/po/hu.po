@@ -1,21 +1,22 @@
 # Translation file for Synfig Core package.
 # Copyright (C) 2013 Synfig Contributors
 # This file is distributed under the same license as the Synfig Core package.
-# 
+#
 # Translators:
 # Viktória S. <viktoria.s@freemail.hu>, 2012
 msgid ""
 msgstr ""
 "Project-Id-Version: Synfig\n"
 "Report-Msgid-Bugs-To: http://www.synfig.org/issues/thebuggenie/synfig\n"
-"POT-Creation-Date: 2013-10-10 22:47+0700\n"
+"POT-Creation-Date: 2014-12-12 11:58+0600\n"
 "PO-Revision-Date: 2013-10-11 06:53+0000\n"
 "Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
-"Language-Team: Hungarian (http://www.transifex.com/projects/p/synfig/language/hu/)\n"
+"Language-Team: Hungarian (http://www.transifex.com/projects/p/synfig/"
+"language/hu/)\n"
+"Language: hu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: hu\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: src/modules/mod_example/filledrect.cpp:59
@@ -315,7 +316,9 @@ msgstr "Alávágás"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:641
 msgid "Enables/Disables font kerning (If the font supports it)"
-msgstr "Engedélyezi/tiltja az alávágást (azaz az egymásba lógó betűk kezelését). (Ha a betűtípus támogatja azt.)"
+msgstr ""
+"Engedélyezi/tiltja az alávágást (azaz az egymásba lógó betűk kezelését). (Ha "
+"a betűtípus támogatja azt.)"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:645
 msgid "Sharpen Edges"
@@ -850,7 +853,8 @@ msgstr "Csak pozitív időtartam"
 
 #: src/modules/lyr_std/timeloop.cpp:149
 msgid "When checked will loop only positive durations"
-msgstr "Ha bekapcsolt, akkor az ismétlődés csak pozitív időtartamok esetén indul el"
+msgstr ""
+"Ha bekapcsolt, akkor az ismétlődés csak pozitív időtartamok esetén indul el"
 
 #: src/modules/lyr_std/timeloop.cpp:153
 msgid "Symmetrical"
@@ -858,7 +862,9 @@ msgstr "Szimmetrikus"
 
 #: src/modules/lyr_std/timeloop.cpp:154
 msgid "When checked, loops are mirrored centered at Local Time"
-msgstr "Ha bekapcsolt, akkor az ismétlődések a helyi dőre nézve középpontosan tükrözöttek"
+msgstr ""
+"Ha bekapcsolt, akkor az ismétlődések a helyi dőre nézve középpontosan "
+"tükrözöttek"
 
 #: src/modules/lyr_std/translate.cpp:55
 msgid "Translate"
@@ -954,7 +960,8 @@ msgstr ""
 
 #: src/modules/lyr_std/curvewarp.cpp:404
 msgid "How much is expanded the result perpendicular to the source line"
-msgstr "Az eredményül kapott alakzat milyen mértékben legyen függőleges az ívre"
+msgstr ""
+"Az eredményül kapott alakzat milyen mértékben legyen függőleges az ívre"
 
 #: src/modules/lyr_std/curvewarp.cpp:407
 msgid "Start Point"
@@ -1079,20 +1086,44 @@ msgstr "A fájl fejrészét nem lehet a fájlban írni"
 msgid "Unable to write info header"
 msgstr "Az információs fejrészt nem lehet a fájlba írni"
 
-#: src/modules/mod_dv/trgt_dv.cpp:165 src/modules/mod_dv/trgt_dv.cpp:174
-#: src/modules/mod_dv/trgt_dv.cpp:181 src/modules/mod_dv/trgt_dv.cpp:191
-#: src/modules/mod_dv/trgt_dv.cpp:199 src/modules/mod_dv/trgt_dv.cpp:204
-#: src/modules/mod_dv/trgt_dv.cpp:208 src/modules/mod_dv/trgt_dv.cpp:217
-#: src/modules/mod_dv/trgt_dv.cpp:226
+#: src/modules/mod_dv/trgt_dv.cpp:164 src/modules/mod_dv/trgt_dv.cpp:173
+#: src/modules/mod_dv/trgt_dv.cpp:180 src/modules/mod_dv/trgt_dv.cpp:190
+#: src/modules/mod_dv/trgt_dv.cpp:198 src/modules/mod_dv/trgt_dv.cpp:203
+#: src/modules/mod_dv/trgt_dv.cpp:207 src/modules/mod_dv/trgt_dv.cpp:216
+#: src/modules/mod_dv/trgt_dv.cpp:225
 msgid "Unable to open pipe to encodedv"
 msgstr "Nem lehet csatlakozni az encodedv-hez"
 
-#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:212
-#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:219
-#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:229
-#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:283
-#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:301
-msgid "Unable to open pipe to ffmpeg"
+#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:206
+msgid ""
+"Error: No FFmpeg binary found.\n"
+"\n"
+"Please install \"ffmpeg\" or \"avconv\" (libav-tools package)."
+msgstr ""
+
+#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:273
+#, fuzzy
+msgid "Unable to open pipe to ffmpeg (no pipe)"
+msgstr "Nem lehet csatlakozni az ffmpeg-hez"
+
+#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:280
+#, fuzzy
+msgid "Unable to open pipe to ffmpeg (pid == -1)"
+msgstr "Nem lehet csatlakozni az ffmpeg-hez"
+
+#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:290
+#, fuzzy
+msgid "Unable to open pipe to ffmpeg (dup2( p[0], STDIN_FILENO ) == -1)"
+msgstr "Nem lehet csatlakozni az ffmpeg-hez"
+
+#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:312
+#, fuzzy
+msgid "Unable to open pipe to ffmpeg (exec failed)"
+msgstr "Nem lehet csatlakozni az ffmpeg-hez"
+
+#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:330
+#, fuzzy
+msgid "Unable to open pipe to ffmpeg (no file)"
 msgstr "Nem lehet csatlakozni az ffmpeg-hez"
 
 #: src/modules/mod_filter/blur.cpp:69
@@ -1430,7 +1461,8 @@ msgstr "Szélesség pont lista"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:1186
 msgid "List of width Points that defines the variable width"
-msgstr "A szélességi pontok listája, amelyek a változó szélességet határozzák meg"
+msgstr ""
+"A szélességi pontok listája, amelyek a változó szélességet határozzák meg"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:1190
 msgid "When checked outline renders faster, but less accurate"
@@ -1495,7 +1527,9 @@ msgstr ""
 
 #: src/modules/mod_geometry/outline.cpp:870
 msgid "When checked the width takes the length of the spline to interpolate"
-msgstr "Ha bejelölt, akkor a kontúr szélességét az egész bvonalat figyelembe véve interpoláljuk"
+msgstr ""
+"Ha bejelölt, akkor a kontúr szélességét az egész bvonalat figyelembe véve "
+"interpoláljuk"
 
 #: src/modules/mod_geometry/rectangle.cpp:59
 msgid "Rectangle"
@@ -1758,7 +1792,9 @@ msgstr "Véletlen zaj kezdőérték"
 
 #: src/modules/mod_noise/distort.cpp:232 src/modules/mod_noise/noise.cpp:273
 msgid "Change to modify the random seed of the noise"
-msgstr "Az érték megváltoztatásával, megváltozik a véletlen zaj generálásához használt kezdőérték"
+msgstr ""
+"Az érték megváltoztatásával, megváltozik a véletlen zaj generálásához "
+"használt kezdőérték"
 
 #: src/modules/mod_noise/distort.cpp:235 src/modules/mod_noise/noise.cpp:280
 #: src/modules/mod_noise/valuenode_random.cpp:285
@@ -1875,14 +1911,17 @@ msgid "Speed"
 msgstr "Sebesség"
 
 #: src/modules/mod_noise/valuenode_random.cpp:281
-msgid ""
-"Defines how often a new random value is chosen (in choices per second) "
-msgstr "Meghatározza, hogy milyen gyakran választunk új véletlen értéket (választások száma per másodperc)"
+msgid "Defines how often a new random value is chosen (in choices per second) "
+msgstr ""
+"Meghatározza, hogy milyen gyakran választunk új véletlen értéket "
+"(választások száma per másodperc)"
 
 #: src/modules/mod_noise/valuenode_random.cpp:286
 msgid ""
 "Determines how the value is interpolated from one random choice to the next"
-msgstr "Meghatározza, hogyan interpolálódik az érték az egyik véletlen választástól a következőig"
+msgstr ""
+"Meghatározza, hogyan interpolálódik az érték az egyik véletlen választástól "
+"a következőig"
 
 #: src/modules/mod_noise/valuenode_random.cpp:288
 msgid "No interpolation"
@@ -1954,7 +1993,9 @@ msgstr "Átlátszóság mint méret"
 msgid ""
 "If enabled, the alpha channel from the gradient is multiplied by the stem "
 "size, and an alpha of 1.0 is used when rendering"
-msgstr "Ha bejelölt, akkor a hajtás mérete szorzódik a színátmenet átlátszósági értékével, és a megjelenítéskor 1.0 átlátszósági érték használatos"
+msgstr ""
+"Ha bejelölt, akkor a hajtás mérete szorzódik a színátmenet átlátszósági "
+"értékével, és a megjelenítéskor 1.0 átlátszósági érték használatos"
 
 #: src/modules/mod_particle/plant.cpp:473
 msgid "Reverse"
@@ -2000,7 +2041,9 @@ msgstr "Véletlenszerűség mértéke"
 #: src/modules/mod_particle/plant.cpp:499
 msgid ""
 "Used to scale down all random effects.  Set to zero to disable randomness"
-msgstr "Minden véletlenszerű hatás gyengítésére szolgál. Ha 0 akkor semmilyen véletlenszerű hatás nincs"
+msgstr ""
+"Minden véletlenszerű hatás gyengítésére szolgál. Ha 0 akkor semmilyen "
+"véletlenszerű hatás nincs"
 
 #: src/modules/mod_particle/plant.cpp:503
 msgid "Drag"
@@ -2349,7 +2392,9 @@ msgstr "<waypoint> hiányzó attribútum: \"time\""
 msgid ""
 "Found \"use\" attribute for <waypoint>, but it wasn't empty. Ignoring "
 "contents..."
-msgstr "\"use\" attribútumot találtam a <waypoint> számára, amely nem volt üres. A tartalom figyelmen kívül marad..."
+msgstr ""
+"\"use\" attribútumot találtam a <waypoint> számára, amely nem volt üres. A "
+"tartalom figyelmen kívül marad..."
 
 #: src/synfig/loadcanvas.cpp:1404
 #, c-format
@@ -2368,7 +2413,8 @@ msgstr "<waypoint> hibás adatokat tartalmaz"
 #: src/synfig/loadcanvas.cpp:1455
 #, c-format
 msgid "Unexpected element <%s> after <waypoint> data, ignoring..."
-msgstr "Nem várt elem <%s> <waypoint> adatok után, figyelmen kívül lesz hagyva..."
+msgstr ""
+"Nem várt elem <%s> <waypoint> adatok után, figyelmen kívül lesz hagyva..."
 
 #: src/synfig/loadcanvas.cpp:1556
 #, c-format
@@ -2403,7 +2449,9 @@ msgstr "'%s' attribútum itt: <%s> '%s' ismeretlen azonosítóra hivatkozik"
 #: src/synfig/loadcanvas.cpp:1634
 #, c-format
 msgid "Unable to set link '\"%s\" to ValueNode \"%s\" (link #%d in \"%s\")"
-msgstr "Nem lehet beállítani a kapcsolódást '\"%s\" az érték csomópont \"%s\"-hoz (kapcsolat #%d itt: \"%s\")"
+msgstr ""
+"Nem lehet beállítani a kapcsolódást '\"%s\" az érték csomópont \"%s\"-hoz "
+"(kapcsolat #%d itt: \"%s\")"
 
 #: src/synfig/loadcanvas.cpp:1658
 #, c-format
@@ -2423,7 +2471,9 @@ msgstr "A '%s' feldolgozása sikertelen"
 #: src/synfig/loadcanvas.cpp:1714
 #, c-format
 msgid "Unable to connect value node ('%s' of type '%s') to link %d (%s)"
-msgstr "Nem lehet hozzákapcsolódni az értékcsomóponthoz ('%s' típusa '%s') kapcsolat létrehozásához ehhez: %d (%s)"
+msgstr ""
+"Nem lehet hozzákapcsolódni az értékcsomóponthoz ('%s' típusa '%s') kapcsolat "
+"létrehozásához ehhez: %d (%s)"
 
 #: src/synfig/loadcanvas.cpp:1732
 #, c-format
@@ -2478,7 +2528,9 @@ msgstr "Hiányzó \"type\" attribútum a \"layer\" elemben"
 
 #: src/synfig/loadcanvas.cpp:2392
 msgid "Installed layer version is smaller than layer version in file"
-msgstr "A telepített réteg verzió száma kisebb, mint az állományban lévő réteg verziószáma"
+msgstr ""
+"A telepített réteg verzió száma kisebb, mint az állományban lévő réteg "
+"verziószáma"
 
 #: src/synfig/loadcanvas.cpp:2415
 msgid "<name> entry for <layer> is not yet supported. Ignoring..."
@@ -2496,7 +2548,9 @@ msgstr "Hiányzó \"name\" attribútum a <param> számára."
 msgid ""
 "Found \"use\" attribute for <param>, but it wasn't empty. Ignoring "
 "contents..."
-msgstr "\"use\" attribútumot találtunk a <param> számára, ami nem volt üres. A tartalma mellőzve lesz..."
+msgstr ""
+"\"use\" attribútumot találtunk a <param> számára, ami nem volt üres. A "
+"tartalma mellőzve lesz..."
 
 #: src/synfig/loadcanvas.cpp:2448
 msgid "Empty use=\"\" value in <param>"
@@ -2856,18 +2910,20 @@ msgstr "Átlátszóság sötétítés"
 msgid "Target panic"
 msgstr "Cél pánik"
 
-#: src/synfig/savecanvas.cpp:359
+#: src/synfig/savecanvas.cpp:360
 #, c-format
 msgid "Unknown value(%s), cannot create XML representation!"
 msgstr "Ismeretlen érték (%s), nem lehet létrehozni az XML reprezentációt!"
 
-#: src/synfig/savecanvas.cpp:674 src/synfig/savecanvas.cpp:699
+#: src/synfig/savecanvas.cpp:675 src/synfig/savecanvas.cpp:700
 #, c-format
 msgid "Unknown ValueNode Type (%s), cannot create an XML representation"
-msgstr "Ismeretlen érték csomópont típus (%s), nem lehet létrehozni az XML reprezentációt!"
+msgstr ""
+"Ismeretlen érték csomópont típus (%s), nem lehet létrehozni az XML "
+"reprezentációt!"
 
 #: src/synfig/target_cairo.cpp:92 src/synfig/target_cairo_tile.cpp:194
-#: src/synfig/target_scanline.cpp:98 src/synfig/target_tile.cpp:281
+#: src/synfig/target_scanline.cpp:98 src/synfig/target_tile.cpp:311
 msgid "Target initialization failure"
 msgstr "Cél inicializációs hiba"
 
@@ -2875,8 +2931,8 @@ msgstr "Cél inicializációs hiba"
 msgid "Frame Renderer Failure"
 msgstr ""
 
-#: src/synfig/target_cairo.cpp:165 src/synfig/target_scanline.cpp:260
-#: src/synfig/target_scanline.cpp:407
+#: src/synfig/target_cairo.cpp:165 src/synfig/target_scanline.cpp:274
+#: src/synfig/target_scanline.cpp:435
 msgid "Unable to put surface on target"
 msgstr "Nem lehet felületet létrehozni a célon"
 
@@ -2885,17 +2941,17 @@ msgid "Not supported render method"
 msgstr ""
 
 #: src/synfig/target_cairo.cpp:180 src/synfig/target_cairo_tile.cpp:259
-#: src/synfig/target_scanline.cpp:420 src/synfig/target_tile.cpp:398
+#: src/synfig/target_scanline.cpp:448 src/synfig/target_tile.cpp:428
 msgid "Caught string :"
 msgstr "Az elkapott szöveg: "
 
 #: src/synfig/target_cairo.cpp:185 src/synfig/target_cairo_tile.cpp:264
-#: src/synfig/target_scanline.cpp:425 src/synfig/target_tile.cpp:403
+#: src/synfig/target_scanline.cpp:453 src/synfig/target_tile.cpp:433
 msgid "Ran out of memory (Probably a bug)"
 msgstr "Elfogyott a memória (Valószínűleg programhiba)"
 
 #: src/synfig/target_cairo.cpp:190 src/synfig/target_cairo_tile.cpp:269
-#: src/synfig/target_scanline.cpp:430 src/synfig/target_tile.cpp:408
+#: src/synfig/target_scanline.cpp:458 src/synfig/target_tile.cpp:438
 msgid "Caught unknown error, rethrowing..."
 msgstr "Elkapott ismeretlen hiba, újradobás..."
 
@@ -2908,9 +2964,9 @@ msgid "Bad Tile Size"
 msgstr "Rossz lapméret"
 
 #: src/synfig/target_cairo_tile.cpp:148 src/synfig/target_cairo_tile.cpp:251
-#: src/synfig/target_scanline.cpp:205 src/synfig/target_scanline.cpp:251
-#: src/synfig/target_scanline.cpp:350 src/synfig/target_scanline.cpp:398
-#: src/synfig/target_tile.cpp:225
+#: src/synfig/target_scanline.cpp:205 src/synfig/target_scanline.cpp:265
+#: src/synfig/target_scanline.cpp:364 src/synfig/target_scanline.cpp:426
+#: src/synfig/target_tile.cpp:240
 msgid "Accelerated Renderer Failure"
 msgstr "Gyorsított megjelenítő hiba"
 
@@ -2919,8 +2975,8 @@ msgstr "Gyorsított megjelenítő hiba"
 msgid "Bad surface: %s"
 msgstr ""
 
-#: src/synfig/target_cairo_tile.cpp:164 src/synfig/target_tile.cpp:179
-#: src/synfig/target_tile.cpp:245
+#: src/synfig/target_cairo_tile.cpp:164 src/synfig/target_tile.cpp:194
+#: src/synfig/target_tile.cpp:275
 msgid "add_tile():Unable to put surface on target"
 msgstr "add_tile(): Nem lehet felületet illeszteni a célra"
 
@@ -2932,142 +2988,125 @@ msgstr ""
 msgid "Parametric Renderer Failure"
 msgstr "Hiba a parametrikus megjelenítőben"
 
-#: src/synfig/target_tile.cpp:169 src/synfig/target_tile.cpp:233
+#: src/synfig/target_tile.cpp:169 src/synfig/target_tile.cpp:248
 msgid "Bad surface"
 msgstr "Rossz felület"
 
 #: src/synfig/time.cpp:119
 #, c-format
 msgid "Time(): No unit provided in time code, assuming FRAMES (\"%s\")"
-msgstr "Time(): Az idő kódjában nem volt mértékegység, KOCKÁKKAL számolunk (\"%s\")"
+msgstr ""
+"Time(): Az idő kódjában nem volt mértékegység, KOCKÁKKAL számolunk (\"%s\")"
 
 #: src/synfig/time.cpp:124
 msgid ""
 "Time(): No unit provided in time code and frame rate is unknown! Assuming "
 "SECONDS"
-msgstr "Time(): Az időkódban nincsen mértékegység megadva, képváltási frekvencia ismeretlen! Másodperc lesz az idő mértékegysége (\"%s\")"
+msgstr ""
+"Time(): Az időkódban nincsen mértékegység megadva, képváltási frekvencia "
+"ismeretlen! Másodperc lesz az idő mértékegysége (\"%s\")"
 
-#. TRANSLATORS: this is the name of a type -- see
-#. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:340 src/synfig/value.cpp:376 src/synfig/value.cpp:437
+#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:370 src/synfig/value.cpp:406 src/synfig/value.cpp:467
 msgid "bool"
 msgstr "logikai"
 
-#. TRANSLATORS: this is the name of a type -- see
-#. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:341 src/synfig/value.cpp:378 src/synfig/value.cpp:435
+#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:371 src/synfig/value.cpp:408 src/synfig/value.cpp:465
 msgid "integer"
 msgstr "egész"
 
-#. TRANSLATORS: this is the name of a type -- see
-#. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:342 src/synfig/value.cpp:380
+#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:372 src/synfig/value.cpp:410
 msgid "angle"
 msgstr "szög"
 
-#. TRANSLATORS: this is the name of a type -- see
-#. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:343 src/synfig/value.cpp:382 src/synfig/value.cpp:429
+#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:373 src/synfig/value.cpp:412 src/synfig/value.cpp:459
 msgid "time"
 msgstr "idő"
 
-#. TRANSLATORS: this is the name of a type -- see
-#. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:344 src/synfig/value.cpp:384 src/synfig/value.cpp:432
+#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:374 src/synfig/value.cpp:414 src/synfig/value.cpp:462
 msgid "real"
 msgstr "valós"
 
-#. TRANSLATORS: this is the name of a type -- see
-#. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:345 src/synfig/value.cpp:386
+#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:375 src/synfig/value.cpp:416
 msgid "vector"
 msgstr "vektor"
 
-#. TRANSLATORS: this is the name of a type -- see
-#. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:346 src/synfig/value.cpp:388
+#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:376 src/synfig/value.cpp:418
 msgid "color"
 msgstr "szín"
 
-#. TRANSLATORS: this is the name of a type -- see
-#. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:347 src/synfig/value.cpp:390
+#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:377 src/synfig/value.cpp:420
 msgid "segment"
 msgstr "szegmens"
 
-#: src/synfig/value.cpp:348
+#: src/synfig/value.cpp:378
 msgid "bline_point"
 msgstr "bvonal pont"
 
-#. TRANSLATORS: this is the name of a type -- see
-#. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:349 src/synfig/value.cpp:394
+#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:379 src/synfig/value.cpp:424
 msgid "matrix"
 msgstr ""
 
-#. TRANSLATORS: this is the name of a type -- see
-#. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:350 src/synfig/value.cpp:396
+#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:380 src/synfig/value.cpp:426
 msgid "bone_weight_pair"
 msgstr ""
 
-#. TRANSLATORS: this is the name of a type -- see
-#. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:351 src/synfig/value.cpp:398
+#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:381 src/synfig/value.cpp:428
 msgid "width_point"
 msgstr "szélességi pont"
 
-#. TRANSLATORS: this is the name of a type -- see
-#. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:352 src/synfig/value.cpp:400
+#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:382 src/synfig/value.cpp:430
 msgid "dash_item"
 msgstr "vonalkázott elem"
 
-#. TRANSLATORS: this is the name of a type -- see
-#. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:353 src/synfig/value.cpp:402
+#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:383 src/synfig/value.cpp:432
 msgid "list"
 msgstr "lista"
 
-#. TRANSLATORS: this is the name of a type -- see
-#. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:354 src/synfig/value.cpp:404
+#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:384 src/synfig/value.cpp:434
 msgid "canvas"
 msgstr "vászon"
 
-#. TRANSLATORS: this is the name of a type -- see
-#. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:355 src/synfig/value.cpp:406
+#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:385 src/synfig/value.cpp:436
 msgid "string"
 msgstr "szöveg"
 
-#. TRANSLATORS: this is the name of a type -- see
-#. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:356 src/synfig/value.cpp:408
+#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:386 src/synfig/value.cpp:438
 msgid "gradient"
 msgstr "színátmenet"
 
-#. TRANSLATORS: this is the name of a type -- see
-#. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:357 src/synfig/value.cpp:410
+#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:387 src/synfig/value.cpp:440
 msgid "bone_object"
 msgstr ""
 
-#. TRANSLATORS: this is the name of a type -- see
-#. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:358 src/synfig/value.cpp:412
+#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:388 src/synfig/value.cpp:442
 msgid "bone_valuenode"
 msgstr ""
 
-#. TRANSLATORS: this is the name of a type -- see
-#. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:359 src/synfig/value.cpp:414
+#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:389 src/synfig/value.cpp:444
 msgid "nil"
 msgstr "üres"
 
-#. TRANSLATORS: this is the name of a type -- see
-#. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:392
+#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:422
 msgid "spline_point"
 msgstr ""
 
@@ -3804,7 +3843,9 @@ msgstr "Epszilon"
 
 #: src/synfig/valuenode_pow.cpp:191
 msgid "Value used to compare base or power with zero "
-msgstr "Az az érték, amelyet az alap vagy a kitevő nullával történő összehasonlításánál használunk"
+msgstr ""
+"Az az érték, amelyet az alap vagy a kitevő nullával történő "
+"összehasonlításánál használunk"
 
 #: src/synfig/valuenode_pow.cpp:195 src/synfig/valuenode_reciprocal.cpp:175
 msgid "Infinite"
@@ -3884,7 +3925,9 @@ msgstr "Nullákkal kitöltött"
 
 #: src/synfig/valuenode_realstring.cpp:191
 msgid "When checked, the string is left filled with zeros to match the width"
-msgstr "Ha bejelölt, a szöveg balról nullákkal lesz kitöltve, hogy a szöveg a megfelelő szélességű legyen"
+msgstr ""
+"Ha bejelölt, a szöveg balról nullákkal lesz kitöltve, hogy a szöveg a "
+"megfelelő szélességű legyen"
 
 #: src/synfig/valuenode_reciprocal.cpp:166
 msgid "The value node used to calculate its reciprocal"
@@ -3892,9 +3935,10 @@ msgstr "Az értékcsomópont, amelyet a reciprok érték kiszámításához hasz
 
 #: src/synfig/valuenode_reciprocal.cpp:171
 msgid ""
-"The value used to decide whether 'Link' is too small to obtain its "
-"reciprocal"
-msgstr "Az az érték, amelyet annak eldöntésére használunk, hogy kapcsolat túl kicsi-e a reciprok számításhoz"
+"The value used to decide whether 'Link' is too small to obtain its reciprocal"
+msgstr ""
+"Az az érték, amelyet annak eldöntésére használunk, hogy kapcsolat túl kicsi-"
+"e a reciprok számításhoz"
 
 #: src/synfig/valuenode_reciprocal.cpp:176
 msgid "The resulting value when 'Link' < 'Epsilon'"
@@ -3919,7 +3963,9 @@ msgstr "A színátmenet ismétléseinek száma"
 #: src/synfig/valuenode_repeat_gradient.cpp:214
 msgid ""
 "Specifies how much biased is the source gradeint in the repetition [0,1]"
-msgstr "Meghatározza, hogy mennyire kiegyensúlyozott a forrás színátmenet az ismétlődésben [0,1]"
+msgstr ""
+"Meghatározza, hogy mennyire kiegyensúlyozott a forrás színátmenet az "
+"ismétlődésben [0,1]"
 
 #: src/synfig/valuenode_repeat_gradient.cpp:218
 msgid "Specify Start"
@@ -3928,7 +3974,9 @@ msgstr "Kezdő szín használata"
 #: src/synfig/valuenode_repeat_gradient.cpp:219
 msgid ""
 "When checked, 'Start Color' is used as the start of the resulting gradient"
-msgstr "Ha bejelölt, a 'Kezdő szín' értéket használjuk az eredmény színátmenet kezdő értékeként"
+msgstr ""
+"Ha bejelölt, a 'Kezdő szín' értéket használjuk az eredmény színátmenet kezdő "
+"értékeként"
 
 #: src/synfig/valuenode_repeat_gradient.cpp:223
 msgid "Specify End"
@@ -3937,7 +3985,9 @@ msgstr "Befejező szín használata"
 #: src/synfig/valuenode_repeat_gradient.cpp:224
 msgid ""
 "When checked, 'End Color' is used as the start of the resulting gradient"
-msgstr "Ha bejelölt, a 'Befejező szín' értéket használjuk az eredmény színátmenet végső értékeként"
+msgstr ""
+"Ha bejelölt, a 'Befejező szín' értéket használjuk az eredmény színátmenet "
+"végső értékeként"
 
 #: src/synfig/valuenode_repeat_gradient.cpp:228
 msgid "Start Color"
@@ -4079,11 +4129,15 @@ msgstr "Az érték csomópont, ha a kapcsolat bekapcsolt"
 
 #: src/synfig/valuenode_switch.cpp:164
 msgid "When checked, returns 'Link On', otherwise returns 'Link Off'"
-msgstr "Ha bejelölt, 'Kapcsolat bekapcsolt' értékével, egyébként a 'Kapcsolat kikapcsolt' tér vissza"
+msgstr ""
+"Ha bejelölt, 'Kapcsolat bekapcsolt' értékével, egyébként a 'Kapcsolat "
+"kikapcsolt' tér vissza"
 
 #: src/synfig/valuenode_timedswap.cpp:246
 msgid "The value node returned when current time is before 'time' - 'length'"
-msgstr "A visszatérési értékcsomópont, ha az aktuális idő az 'idő' - 'hossz' előtt van"
+msgstr ""
+"A visszatérési értékcsomópont, ha az aktuális idő az 'idő' - 'hossz' előtt "
+"van"
 
 #: src/synfig/valuenode_timedswap.cpp:251
 msgid "The value node returned when current time is after 'time'"
@@ -4102,7 +4156,9 @@ msgstr "Az időpont, ha a lineáris interpoláció véget ér"
 msgid ""
 "The length of time when the linear interpolation between 'Before' and "
 "'After' is made"
-msgstr "Az idő hossza, ha az 'Előtte' és 'Utána' értékek között lineáris interpoláció van"
+msgstr ""
+"Az idő hossza, ha az 'Előtte' és 'Utána' értékek között lineáris "
+"interpoláció van"
 
 #: src/synfig/valuenode_timeloop.cpp:175
 msgid "The value node to time loop"
@@ -4151,195 +4207,200 @@ msgstr "A vektor, amelyből az Y koordinátát számítjuk"
 msgid "WidthPoint %03d"
 msgstr "Szélességi pont %03d"
 
-#: src/tool/main.cpp:140
+#: src/tool/main.cpp:141
 msgid "FATAL: Synfig Version Mismatch"
 msgstr "VÉGZETES: Synfig verzióeltérés"
 
-#: src/tool/main.cpp:176
+#: src/tool/main.cpp:177
 msgid "Settings"
 msgstr ""
 
-#: src/tool/main.cpp:178
+#: src/tool/main.cpp:179
 msgid "Specify output target (Default: PNG)"
 msgstr ""
 
-#: src/tool/main.cpp:179
+#: src/tool/main.cpp:180
 msgid "Set the image width in pixels (Use zero for file default)"
 msgstr ""
 
-#: src/tool/main.cpp:180
+#: src/tool/main.cpp:181
 msgid "Set the image height in pixels (Use zero for file default)"
 msgstr ""
 
-#: src/tool/main.cpp:181
+#: src/tool/main.cpp:182
 msgid "Set the diagonal size of image window (Span)"
 msgstr "Kép ablak átlója méretének beállítása (fesztáv)"
 
-#: src/tool/main.cpp:182
+#: src/tool/main.cpp:183
 msgid "Set antialias amount for parametric renderer."
 msgstr "Élsimítás mennyiségének beállítása a paraméteres megjelenítő számára"
 
-#: src/tool/main.cpp:183
+#: src/tool/main.cpp:184
 #, c-format
 msgid "Specify image quality for accelerated renderer (Default: %d)"
 msgstr ""
 
-#: src/tool/main.cpp:184
+#: src/tool/main.cpp:185
 msgid "Gamma"
 msgstr ""
 
-#: src/tool/main.cpp:185
+#: src/tool/main.cpp:186
 msgid "Enable multithreaded renderer using the specified number of threads"
 msgstr ""
 
-#: src/tool/main.cpp:186
+#: src/tool/main.cpp:187
 msgid "Specify input filename"
 msgstr ""
 
-#: src/tool/main.cpp:187
+#: src/tool/main.cpp:188
 msgid "Specify output filename"
 msgstr "Kimeneti fájlnév mehatározása"
 
-#: src/tool/main.cpp:188
+#: src/tool/main.cpp:189
 msgid ""
 "Output file sequence separator string (Use double quotes if you want to use "
 "spaces)"
 msgstr ""
 
-#: src/tool/main.cpp:189
+#: src/tool/main.cpp:190
 msgid "Render the canvas with the given id instead of the root."
 msgstr "A vászon megjelenítése a megadott azonosítóval, a gyökér helyett"
 
-#: src/tool/main.cpp:190
+#: src/tool/main.cpp:191
 msgid "Set the frame rate"
 msgstr "Kocka sebesség beállítása"
 
-#: src/tool/main.cpp:191
+#: src/tool/main.cpp:192
 msgid "Render a single frame at <seconds>"
 msgstr "Egyetlen kocka megjelenítése <seconds> időpontban"
 
-#: src/tool/main.cpp:192 src/tool/main.cpp:193
+#: src/tool/main.cpp:193 src/tool/main.cpp:194
 msgid "Set the starting time"
 msgstr "Kezdő időpont beállítása"
 
-#: src/tool/main.cpp:194
+#: src/tool/main.cpp:195
 msgid "Set the ending time"
 msgstr "Befejező időpont beállítása"
 
-#: src/tool/main.cpp:195
+#: src/tool/main.cpp:196
 msgid "Set the physical resolution (Dots-per-inch)"
 msgstr ""
 
-#: src/tool/main.cpp:196
+#: src/tool/main.cpp:197
 msgid "Set the physical X resolution (Dots-per-inch)"
 msgstr ""
 
-#: src/tool/main.cpp:197
+#: src/tool/main.cpp:198
 msgid "Set the physical Y resolution (Dots-per-inch)"
 msgstr ""
 
-#: src/tool/main.cpp:200
+#: src/tool/main.cpp:201
 msgid "Switch options"
 msgstr ""
 
-#: src/tool/main.cpp:202
+#: src/tool/main.cpp:203
 msgid "Output verbosity level"
 msgstr ""
 
-#: src/tool/main.cpp:203
+#: src/tool/main.cpp:204
 msgid "Quiet mode (No progress/time-remaining display)"
 msgstr "Csendes mód (Nincs előhaladás/hátralévő idő kijelzés)"
 
-#: src/tool/main.cpp:204
+#: src/tool/main.cpp:205
 msgid "Print benchmarks"
 msgstr ""
 
-#: src/tool/main.cpp:207
-msgid "Misc options"
+#: src/tool/main.cpp:206
+msgid "Extract alpha"
 msgstr ""
 
 #: src/tool/main.cpp:209
+msgid "Misc options"
+msgstr ""
+
+#: src/tool/main.cpp:211
 msgid "Append layers in <filename> to composition"
 msgstr "A <filename>-ban lévő rétegek hozzáfűzése a kompozícióhoz"
 
-#: src/tool/main.cpp:210
+#: src/tool/main.cpp:212
 msgid "Print out specified details of the root canvas"
 msgstr "A gyökér vászon meghatározott részleteinek kinyomtatása"
 
-#: src/tool/main.cpp:211 src/tool/main.cpp:237
+#: src/tool/main.cpp:213 src/tool/main.cpp:239
 msgid "Print out the list of exported canvases in the composition"
 msgstr ""
 
-#: src/tool/main.cpp:214
+#: src/tool/main.cpp:216
 msgid "FFMPEG target options"
 msgstr ""
 
-#: src/tool/main.cpp:216
+#: src/tool/main.cpp:218
 msgid "Set the codec for the video. See --ffmpeg-video-codecs"
 msgstr ""
 
-#: src/tool/main.cpp:217
+#: src/tool/main.cpp:219
 msgid "Set the bitrate for the output video"
 msgstr ""
 
-#: src/tool/main.cpp:220
+#: src/tool/main.cpp:222
 msgid "Synfig info options"
 msgstr ""
 
-#: src/tool/main.cpp:222
+#: src/tool/main.cpp:224
 msgid "Produce this help message"
 msgstr ""
 
-#: src/tool/main.cpp:223
+#: src/tool/main.cpp:225
 msgid "Print out the list of available importers"
 msgstr "Az elérhető importálók kinyomtatása"
 
-#: src/tool/main.cpp:224
+#: src/tool/main.cpp:226
 msgid "Print out misc build information"
 msgstr "Vegyes fordítási információk kinyomtatása"
 
-#: src/tool/main.cpp:225
+#: src/tool/main.cpp:227
 msgid "Print out the list of available layers"
 msgstr "Az elérhető rétegek kinyomtatása"
 
-#: src/tool/main.cpp:226
+#: src/tool/main.cpp:228
 msgid "Print out layer's description, parameter info, etc."
-msgstr "A réteg leírásának, paraméter információinak és egyebeknek kinyomtatása"
+msgstr ""
+"A réteg leírásának, paraméter információinak és egyebeknek kinyomtatása"
 
-#: src/tool/main.cpp:227
+#: src/tool/main.cpp:229
 msgid "Print out license information"
 msgstr "Licenc információk kinyomtatása"
 
-#: src/tool/main.cpp:228
+#: src/tool/main.cpp:230
 msgid "Print out the list of loaded modules"
 msgstr "A betöltött modulok  kinyomtatása"
 
-#: src/tool/main.cpp:229
+#: src/tool/main.cpp:231
 msgid "Print out the list of available targets"
 msgstr "Az elérhető célformátumok kinyomtatása"
 
-#: src/tool/main.cpp:230
+#: src/tool/main.cpp:232
 msgid ""
 "Print out the list of available video codecs when encoding through FFMPEG"
 msgstr ""
 
-#: src/tool/main.cpp:231
+#: src/tool/main.cpp:233
 msgid "Print out the list of available ValueNodes"
 msgstr "Az elérhető értékcsomópontok kinyomtatása"
 
-#: src/tool/main.cpp:232
+#: src/tool/main.cpp:234
 msgid "Print out version information"
 msgstr "Verzió információ kinyomtatása"
 
-#: src/tool/main.cpp:241
+#: src/tool/main.cpp:243
 msgid "Synfig debug flags"
 msgstr ""
 
-#: src/tool/main.cpp:243
+#: src/tool/main.cpp:245
 msgid "Test GUID generation"
 msgstr "Teszt GUID generálása"
 
-#: src/tool/main.cpp:244
+#: src/tool/main.cpp:246
 msgid "Test signal implementation"
 msgstr "Teszt szignál implementáció"
 
@@ -4383,23 +4444,27 @@ msgstr ""
 msgid "Setting the quality of the target..."
 msgstr ""
 
-#: src/tool/joblistprocessor.cpp:225 src/tool/joblistprocessor.cpp:235
+#: src/tool/joblistprocessor.cpp:185
+msgid "Setting the alpha mode of the target..."
+msgstr ""
+
+#: src/tool/joblistprocessor.cpp:230 src/tool/joblistprocessor.cpp:240
 msgid "Render Failure."
 msgstr ""
 
-#: src/tool/joblistprocessor.cpp:229
+#: src/tool/joblistprocessor.cpp:234
 msgid "Rendering..."
 msgstr ""
 
-#: src/tool/joblistprocessor.cpp:239
+#: src/tool/joblistprocessor.cpp:244
 msgid ": Rendered in "
 msgstr ""
 
-#: src/tool/joblistprocessor.cpp:240
+#: src/tool/joblistprocessor.cpp:245
 msgid " seconds."
 msgstr ""
 
-#: src/tool/joblistprocessor.cpp:243
+#: src/tool/joblistprocessor.cpp:248
 msgid "Done."
 msgstr ""
 
@@ -4531,29 +4596,29 @@ msgstr ""
 msgid "Target set to "
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:514
+#: src/tool/optionsprocessor.cpp:519
 msgid "Quality set to "
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:533
+#: src/tool/optionsprocessor.cpp:538
 #, c-format
 msgid ""
 "Unable to find canvas with ID \"%s\" in %s.\n"
 "Throwing out job..."
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:539
+#: src/tool/optionsprocessor.cpp:544
 #, c-format
 msgid ""
 "Invalid canvas name \"%s\" in %s.\n"
 "Throwing out job..."
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:558
+#: src/tool/optionsprocessor.cpp:563
 msgid "Unable to append '"
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:572
+#: src/tool/optionsprocessor.cpp:577
 msgid "Appended contents of "
 msgstr ""
 
