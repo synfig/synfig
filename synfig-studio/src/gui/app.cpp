@@ -396,14 +396,15 @@ public:
 	}
 	virtual Response yes_no_cancel(const std::string &title, const std::string &message,Response dflt=RESPONSE_YES)
 	{
-		Gtk::Dialog dialog(
+		Gtk::MessageDialog dialog(
 			title,		// Title
-			true		// Modal
+			true,		// Modal
+			Gtk::MESSAGE_QUESTION,
+			Gtk::BUTTONS_NONE,
+			true
 		);
-		Gtk::Label label(message);
-		label.show();
 
-		dialog.get_vbox()->pack_start(label);
+		dialog.set_secondary_text(message);
 		dialog.add_button(Gtk::StockID("gtk-yes"),RESPONSE_YES);
 		dialog.add_button(Gtk::StockID("gtk-no"),RESPONSE_NO);
 		dialog.add_button(Gtk::StockID("gtk-cancel"),RESPONSE_CANCEL);
@@ -2882,6 +2883,7 @@ App::dialog_error_blocking(const std::string &title, const std::string &message)
 	dialog_warning_blocking(title, message, Gtk::Stock::DIALOG_ERROR);
 }
 
+
 void
 App::dialog_warning_blocking(const std::string &title, const std::string &message, const Gtk::StockID &stock_id)
 {
@@ -2904,42 +2906,6 @@ App::dialog_warning_blocking(const std::string &title, const std::string &messag
 	dialog.run();
 }
 
-bool
-App::dialog_yes_no(const std::string &title, const std::string &message)
-{
-	Gtk::Dialog dialog(
-		title,			// Title
-		*App::main_window,	// Parent
-		true			// Modal
-	);
-	Gtk::Label label(message);
-	label.show();
-
-	dialog.get_vbox()->pack_start(label);
-	dialog.add_button(Gtk::StockID("gtk-yes"),1);
-	dialog.add_button(Gtk::StockID("gtk-no"),0);
-	dialog.show();
-	return dialog.run();
-}
-
-int
-App::dialog_yes_no_cancel(const std::string &title, const std::string &message)
-{
-	Gtk::Dialog dialog(
-		title,			// Title
-		*App::main_window,	// Parent
-		true			// Modal
-	);
-	Gtk::Label label(message);
-	label.show();
-
-	dialog.get_vbox()->pack_start(label);
-	dialog.add_button(Gtk::StockID("gtk-yes"),1);
-	dialog.add_button(Gtk::StockID("gtk-no"),0);
-	dialog.add_button(Gtk::StockID("gtk-cancel"),2);
-	dialog.show();
-	return dialog.run();
-}
 
 void
 App::dialog_not_implemented()
