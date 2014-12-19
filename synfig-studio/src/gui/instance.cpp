@@ -555,7 +555,12 @@ Instance::dialog_cvs_commit()
 			return;
 		}
 
-		if(!App::dialog_entry(_("CVS Commit"),_("Enter a log message describing the changes you have made"), message))
+		if(!App::dialog_entry(_("CVS Commit"),
+				_("Log Message: "),
+				message,
+				_("Cancel"),
+				_("Commit"))
+		)
 			return;
 
 		OneMoment one_moment;
@@ -962,7 +967,15 @@ Instance::process_action(synfig::String name, synfigapp::Action::ParamList param
 							str = param.get_string();
 					}
 				}
-				if(!studio::App::dialog_entry(entry.local_name, iter->get_local_name()+": "+iter->get_desc(),str))
+				String button2 = _("Export");
+				if (entry.local_name == "Rename ValueNode") button2 = _("Rename");
+
+				if(!studio::App::dialog_entry(entry.local_name,
+							_("Value Name: "),
+							//iter->get_local_name()+": "+iter->get_desc(),
+							str,
+							_("Cancel"),
+							button2))
 					return;
 				action->set_param(iter->get_name(),str);
 				break;
