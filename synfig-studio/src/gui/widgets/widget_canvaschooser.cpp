@@ -132,7 +132,12 @@ Widget_CanvasChooser::chooser_menu()
 {
 	String canvas_name;
 
-	if (!App::dialog_entry(_("Choose Canvas"),_("Enter the relative name of the canvas that you want"),canvas_name))
+	if (!App::dialog_entry(_("Choose canvas"),
+			_("Canvas Name: "),
+			canvas_name,
+			_("Cancel"),
+			_("Choose"))
+	)
 	{
 		// the user hit 'cancel', so set the parameter back to its previous value
 		set_value_(canvas);

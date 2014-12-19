@@ -3116,40 +3116,57 @@ App::open_url(const std::string &url)
 	}
 }
 
+
 bool
-App::dialog_entry(const std::string &title, const std::string &message,std::string &text)
+App::dialog_entry(const std::string &action, const std::string &content, std::string &text, const std::string &button1, const std::string &button2)
 {
-	Gtk::Dialog dialog(
-		title,			// Title
-		*App::main_window,	// Parent
-		true			// Modal
+	Gtk::MessageDialog dialog(
+		*App::main_window,
+		action,
+		false,
+		Gtk::MESSAGE_INFO,
+		Gtk::BUTTONS_NONE,
+		true
 	);
 
-	Gtk::Label label(message);
+	Gtk::Label label(content);
 	label.show();
-	dialog.get_vbox()->pack_start(label);
 
 	Gtk::Entry entry;
 	entry.set_text(text);
 	entry.show();
 	entry.set_activates_default(true);
 
+	Gtk::Alignment space1;
+	space1.set_size_request(18, 0);
+
+	Gtk::Alignment space2;
+	space2.set_size_request(18, 0);
+
+	Gtk::Table table(3, 1);
+	table.attach(space1, 0, 1, 0, 1, Gtk::FILL | Gtk::FILL, Gtk::FILL);
+	table.attach(label, 1, 2, 0, 1, Gtk::FILL | Gtk::SHRINK, Gtk::FILL);
+	table.attach(entry, 2, 3, 0, 1, Gtk::FILL | Gtk::EXPAND, Gtk::FILL);
+	table.attach(space2, 3, 4, 0, 1, Gtk::FILL | Gtk::FILL, Gtk::FILL);
+	table.show_all();
+
 	dialog.get_vbox()->pack_start(entry);
+	dialog.get_vbox()->pack_start(table);
+	dialog.add_button(button1, Gtk::RESPONSE_CANCEL);
+	dialog.add_button(button2, Gtk::RESPONSE_OK);
 
-	dialog.add_button(Gtk::StockID("gtk-ok"),Gtk::RESPONSE_OK);
-	dialog.add_button(Gtk::StockID("gtk-cancel"),Gtk::RESPONSE_CANCEL);
 	dialog.set_default_response(Gtk::RESPONSE_OK);
-
 	entry.signal_activate().connect(sigc::bind(sigc::mem_fun(dialog,&Gtk::Dialog::response),Gtk::RESPONSE_OK));
 	dialog.show();
 
 	if(dialog.run()!=Gtk::RESPONSE_OK)
 		return false;
 
-	text=entry.get_text();
+	text = entry.get_text();
 
 	return true;
 }
+
 
 bool
 App::dialog_paragraph(const std::string &title, const std::string &message,std::string &text)

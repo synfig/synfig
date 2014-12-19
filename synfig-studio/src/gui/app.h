@@ -376,7 +376,8 @@ public:
 
 	static void dialog_warning_blocking(const std::string &title, const std::string &message, const Gtk::StockID &stock_id=Gtk::Stock::DIALOG_WARNING);
 
-	static bool dialog_entry(const std::string &title, const std::string &message,std::string &text);
+	static bool dialog_entry(const std::string &action, const std::string &content, std::string &text, const std::string &button1, const std::string &button2);
+
 	static bool dialog_paragraph(const std::string &title, const std::string &message,std::string &text);
 
 	static bool dialog_yes_no(const std::string &title, const std::string &message);
