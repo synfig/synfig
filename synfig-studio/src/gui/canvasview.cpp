@@ -324,22 +324,23 @@ public:
 		dialog.show();
 		return (Response)dialog.run();
 	}
-	virtual Response yes_no_cancel(const std::string &title, const std::string &message,Response dflt=RESPONSE_YES)
+	virtual Response yes_no_cancel(const std::string &message, const std::string &details, Response dflt=RESPONSE_YES)
 	{
 		view->present();
 		//while(studio::App::events_pending())studio::App::iteration(false);
-		Gtk::Dialog dialog(
-			title,		// Title
-			*App::main_window, // Parent
-			true		// Modal
+		Gtk::MessageDialog dialog(
+			*App::main_window,
+			message,
+			false,
+			Gtk::MESSAGE_QUESTION,
+			Gtk::BUTTONS_NONE,
+			true
 		);
-		Gtk::Label label(message);
-		label.show();
 
-		dialog.get_vbox()->pack_start(label);
-		dialog.add_button(Gtk::StockID("gtk-yes"),RESPONSE_YES);
-		dialog.add_button(Gtk::StockID("gtk-no"),RESPONSE_NO);
-		dialog.add_button(Gtk::StockID("gtk-cancel"),RESPONSE_CANCEL);
+		dialog.set_secondary_text(details);
+		dialog.add_button(_("Save As..."), RESPONSE_YES);
+		dialog.add_button(_("No"), RESPONSE_NO);
+		dialog.add_button(_("Cancel"), RESPONSE_CANCEL);
 
 		dialog.set_default_response(dflt);
 		dialog.show();
