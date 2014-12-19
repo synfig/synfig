@@ -165,8 +165,12 @@ ColorSlider::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 				   (use_colorspace_gamma() && type<TYPE_U)
 				   ? gamma_out(float(i)/float(width))
 				   :		  (float(i)/float(width)));
-		const Color c1(Color::blend(color,bg1,1.0).clamped());
-		const Color c2(Color::blend(color,bg2,1.0).clamped());
+		const Color c1(
+			colorconv_apply_gamma(
+				Color::blend(color,bg1,1.0).clamped() ));
+		const Color c2(
+			colorconv_apply_gamma(
+				Color::blend(color,bg2,1.0).clamped() ));
 		assert(c1.is_valid());
 		assert(c2.is_valid());
 

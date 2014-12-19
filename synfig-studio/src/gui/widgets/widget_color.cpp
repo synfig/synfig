@@ -58,7 +58,8 @@ studio::colorconv_apply_gamma(const synfig::Color &c_)
 	return synfig::Color(
 		App::gamma.r_F32_to_U8(c.get_r()),
 		App::gamma.g_F32_to_U8(c.get_g()),
-		App::gamma.b_F32_to_U8(c.get_b()) );
+		App::gamma.b_F32_to_U8(c.get_b()),
+		c.get_a() );
 }
 
 void
@@ -75,10 +76,10 @@ studio::render_color_to_window(const Cairo::RefPtr<Cairo::Context> &cr, const Gd
 
 		const Color bg1(
 			colorconv_apply_gamma(
-				Color::blend(color,Color(0.75, 0.75, 0.75),1.0) ));
+				Color::blend(color,Color(0.75, 0.75, 0.75),1.0).clamped() ));
 		const Color bg2(
 			colorconv_apply_gamma(
-				Color::blend(color,Color(0.5, 0.5, 0.5),1.0) ));
+				Color::blend(color,Color(0.5, 0.5, 0.5),1.0).clamped() ));
 
 		bool toggle(false);
 		for(int i=0;i<width;i+=square_size)
@@ -111,7 +112,8 @@ studio::render_color_to_window(const Cairo::RefPtr<Cairo::Context> &cr, const Gd
 	}
 	else
 	{
-        cr->set_source_rgb(color.get_r(), color.get_g(), color.get_b());
+		synfig::Color c = colorconv_apply_gamma(color);
+        cr->set_source_rgb(c.get_r(), c.get_g(), c.get_b());
         cr->rectangle(ca.get_x(), ca.get_y(), width-1, height-1);
         cr->fill();
 	}
