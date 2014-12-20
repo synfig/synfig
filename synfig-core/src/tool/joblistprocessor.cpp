@@ -35,6 +35,7 @@
 #include <errno.h>
 #include <cstring>
 
+#include <boost/filesystem.hpp>
 #include <boost/program_options/options_description.hpp>
 #include <boost/program_options/variables_map.hpp>
 
@@ -64,6 +65,7 @@
 #endif
 
 using namespace synfig;
+namespace bfs=boost::filesystem;
 
 void process_job_list(std::list<Job>& job_list, const TargetParam& target_params)
 {
@@ -124,7 +126,8 @@ bool setup_job(Job& job, const TargetParam& target_parameters)
 	// (ie: change the extension)
 	if(job.outfilename.empty())
 	{
-		job.outfilename = etl::filename_sans_extension(job.filename) + '.';
+	    const bfs::path filename = bfs::path(job.filename);
+		job.outfilename = (filename.parent_path() / filename.stem()).string() + '.';
 
 		if(Target::book().count(job.target_name))
 			job.outfilename += Target::book()[job.target_name].filename;
