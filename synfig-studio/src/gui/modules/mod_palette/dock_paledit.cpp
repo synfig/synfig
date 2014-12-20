@@ -263,7 +263,7 @@ Dock_PalEdit::on_save_pressed()
 
 			string details = strprintf(_("The file already exists in \"%s\". "
 							"Replacing it will overwrite its contents."),
-						dirname(filename).c_str());
+						basename(dirname(filename)).c_str());
 
 			if ((stat_return == 0) && !App::dialog_message_2b(
 				message,
