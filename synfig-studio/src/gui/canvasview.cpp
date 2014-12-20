@@ -273,29 +273,30 @@ public:
 	}
 
 	virtual Response confirmation(
-			const std::string &primaryText,
-			const std::string &secondaryText,
-			const std::string &confirmPhrase,
-			const std::string &cancelPhrase,
-			Response defaultResponse=RESPONSE_OK)
+			const std::string &message,
+			const std::string &details,
+			const std::string &cancel,
+			const std::string &confirm,
+			Response dflt = RESPONSE_OK
+	)
 	{
 		view->present();
 		//while(studio::App::events_pending())studio::App::iteration(false);
 		Gtk::MessageDialog dialog(
-			*App::main_window, // Parent
-			primaryText,	   // Message
-			false,			   // Markup
-			Gtk::MESSAGE_WARNING, // Type
-			Gtk::BUTTONS_NONE, // Buttons
-			true			   // Modal
+			*App::main_window,
+			message,
+			false,
+			Gtk::MESSAGE_WARNING,
+			Gtk::BUTTONS_NONE,
+			true
 		);
 
-		if (! secondaryText.empty())
-			dialog.set_secondary_text(secondaryText);
+		if (! details.empty())
+			dialog.set_secondary_text(details);
 
-		dialog.add_button(cancelPhrase, RESPONSE_CANCEL);
-		dialog.add_button(confirmPhrase, RESPONSE_OK);
-		dialog.set_default_response(defaultResponse);
+		dialog.add_button(cancel, RESPONSE_CANCEL);
+		dialog.add_button(confirm, RESPONSE_OK);
+		dialog.set_default_response(dflt);
 
 		dialog.show_all();
 		return (Response) dialog.run();

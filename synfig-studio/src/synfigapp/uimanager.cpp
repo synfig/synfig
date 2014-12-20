@@ -50,31 +50,31 @@ using namespace synfigapp;
 
 UIInterface::Response
 ConsoleUIInterface::confirmation(
-			const std::string &primaryText,
-			const std::string &secondaryText,
-			const std::string &confirmPhrase,
-			const std::string &cancelPhrase,
+			const std::string &message,
+			const std::string &details,
+			const std::string &confirm,
+			const std::string &cancel,
 			Response dflt
 )
 {
-	cout << ": " << primaryText.c_str() << endl;
-	cout << secondaryText.c_str();
+	cout << message.c_str() << endl;
+	cout << details.c_str();
 
 	if (dflt == RESPONSE_OK)
-		cout << "(" << confirmPhrase.c_str() << "/" << cancelPhrase.c_str() << ")" << endl;
+		cout << "(" << confirm.c_str() << "/" << cancel.c_str() << ")" << endl;
 	else
-		cout << "(" << cancelPhrase.c_str() << "/" << confirmPhrase.c_str() << ")" << endl;
+		cout << "(" << cancel.c_str() << "/" << confirm.c_str() << ")" << endl;
 
 	string resp;
 	cin >> resp;
 
 	if (dflt == RESPONSE_OK)
 	{
-		if (resp == cancelPhrase)
+		if (resp == cancel)
 			return RESPONSE_CANCEL;
 		return RESPONSE_OK;
 	}
-	if (resp == confirmPhrase)
+	if (resp == confirm)
 		return RESPONSE_OK;
 	return RESPONSE_CANCEL;
 }

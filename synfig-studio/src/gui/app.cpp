@@ -350,30 +350,32 @@ class GlobalUIInterface : public synfigapp::UIInterface
 public:
 
 	virtual Response confirmation(
-			const std::string &primaryText,
-			const std::string &secondaryText,
-			const std::string &confirmPhrase,
-			const std::string &cancelPhrase,
-			Response defaultResponse)
+			const std::string &message,
+			const std::string &details,
+			const std::string &cancel,
+			const std::string &confirm,
+			Response dflt
+	)
 	{
 		Gtk::MessageDialog dialog(
-			primaryText,		// Message
-			false,			// Markup
-			Gtk::MESSAGE_WARNING,	// Type
-			Gtk::BUTTONS_NONE,	// Buttons
-			true			// Modal
+			message,
+			false,
+			Gtk::MESSAGE_WARNING,
+			Gtk::BUTTONS_NONE,
+			true
 		);
 
-		if (! secondaryText.empty())
-			dialog.set_secondary_text(secondaryText);
+		if (! details.empty())
+			dialog.set_secondary_text(details);
 
-		dialog.add_button(cancelPhrase, RESPONSE_CANCEL);
-		dialog.add_button(confirmPhrase, RESPONSE_OK);
-		dialog.set_default_response(defaultResponse);
+		dialog.add_button(cancel, RESPONSE_CANCEL);
+		dialog.add_button(confirm, RESPONSE_OK);
+		dialog.set_default_response(dflt);
 
 		dialog.show_all();
 		return (Response) dialog.run();
 	}
+
 
 	virtual Response yes_no(const std::string &title, const std::string &message,Response dflt=RESPONSE_YES)
 	{
@@ -1603,11 +1605,11 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		{
 			splash_screen.hide();
 			if (get_ui_interface()->confirmation(
-					_("Auto recovery file found"),
-					_("Synfig Studio seems to have crashed before you could save all your files. "
-					  "Recover unsaved changes?"),
-					_("Recover"), _("Ignore"))
-				== synfigapp::UIInterface::RESPONSE_OK)
+					_("Auto recovery file(s) found. Do you want to recover unsaved changes?"),
+					_("Synfig Studio seems to have crashed before you could save all your files."),
+					_("Ignore"),
+					_("Recover")
+				) == synfigapp::UIInterface::RESPONSE_OK)
 			{
 				int number_recovered;
 				if(!auto_recover->recover(number_recovered))
