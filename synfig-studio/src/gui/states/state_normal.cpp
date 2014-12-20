@@ -567,7 +567,7 @@ StateNormal_Context::event_mouse_motion_handler(const Smach::event& x)
 
 	const EventMouse& event(*reinterpret_cast<const EventMouse*>(&x));
 
-	set_rotate_flag(event.modifier&GDK_CONTROL_MASK);
+	set_rotate_flag(!get_canvas_view()->get_work_area()->get_alternative_mode() && (event.modifier&GDK_CONTROL_MASK));
 	set_scale_flag(event.modifier&GDK_MOD1_MASK);
 	set_constrain_flag(event.modifier&GDK_SHIFT_MASK);
 
@@ -586,13 +586,20 @@ StateNormal_Context::event_key_down_handler(const Smach::event& x)
 	const EventKeyboard& event(*reinterpret_cast<const EventKeyboard*>(&x));
 	switch(event.keyval)
 	{
-	case GDK_KEY_space:
-		get_canvas_view()->get_work_area()->set_alternative_mode(true);
-		get_canvas_view()->get_work_area()->queue_draw();
-		break;
 	case GDK_KEY_Control_L:
 	case GDK_KEY_Control_R:
-		set_rotate_flag(true);
+		{
+			if (get_canvas_view()->get_work_area()->get_selected_ducks().size() <= 1
+			 /* && get_canvas_view()->get_work_area()->get_selected_duck()->get_value_desc().get_value_type() == synfig::type_transformation */ )
+			{
+				get_canvas_view()->get_work_area()->set_alternative_mode(true);
+				get_canvas_view()->get_work_area()->queue_draw();
+			}
+			else
+			{
+				set_rotate_flag(true);
+			}
+		}
 		break;
 	case GDK_KEY_Alt_L:
 	case GDK_KEY_Alt_R:
@@ -619,13 +626,14 @@ StateNormal_Context::event_key_up_handler(const Smach::event& x)
 	const EventKeyboard& event(*reinterpret_cast<const EventKeyboard*>(&x));
 	switch(event.keyval)
 	{
-	case GDK_KEY_space:
-		get_canvas_view()->get_work_area()->set_alternative_mode(false);
-		get_canvas_view()->get_work_area()->queue_draw();
-		break;
 	case GDK_KEY_Control_L:
 	case GDK_KEY_Control_R:
-		set_rotate_flag(false);
+		if (get_canvas_view()->get_work_area()->get_alternative_mode())
+		{
+			get_canvas_view()->get_work_area()->set_alternative_mode(false);
+			get_canvas_view()->get_work_area()->queue_draw();
+		}
+		if (get_rotate_flag()) set_rotate_flag(false);
 		break;
 	case GDK_KEY_Alt_L:
 	case GDK_KEY_Alt_R:
