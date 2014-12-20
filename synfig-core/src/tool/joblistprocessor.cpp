@@ -126,8 +126,8 @@ bool setup_job(Job& job, const TargetParam& target_parameters)
 	// (ie: change the extension)
 	if(job.outfilename.empty())
 	{
-	    const bfs::path filename = bfs::path(job.filename);
-		job.outfilename = (filename.parent_path() / filename.stem()).string() + '.';
+        const bfs::path filename = bfs::path(job.filename);
+        job.outfilename = (filename.parent_path() / filename.stem()).string() + '.';
 
 		if(Target::book().count(job.target_name))
 			job.outfilename += Target::book()[job.target_name].filename;
@@ -139,7 +139,7 @@ bool setup_job(Job& job, const TargetParam& target_parameters)
 	VERBOSE_OUT(4) << "Outfilename = " << job.outfilename.c_str() << std::endl;
 
 	// Check permissions
-	if (access(etl::dirname(job.outfilename).c_str(), W_OK) == -1)
+	if (access(bfs::path(job.outfilename).string().c_str(), W_OK) == -1)
 	{
 		synfig::error(strprintf(_("Unable to create output for \"%s\": %s"), job.filename.c_str(), strerror(errno)));
 		synfig::error(_("Throwing out job..."));
