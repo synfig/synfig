@@ -126,13 +126,13 @@ bool setup_job(Job& job, const TargetParam& target_parameters)
 	// (ie: change the extension)
 	if(job.outfilename.empty())
 	{
-        const bfs::path filename = bfs::path(job.filename);
-        job.outfilename = (filename.parent_path() / filename.stem()).string() + '.';
-
+        std::string new_extension;
 		if(Target::book().count(job.target_name))
-			job.outfilename += Target::book()[job.target_name].filename;
+			new_extension += Target::book()[job.target_name].filename;
 		else
-			job.outfilename += job.target_name;
+			new_extension += job.target_name;
+
+        job.outfilename = bfs::path(job.filename).replace_extension(new_extension).string();
 	}
 
 	VERBOSE_OUT(4) << "Target name = " << job.target_name.c_str() << std::endl;
