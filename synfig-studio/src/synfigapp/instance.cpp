@@ -496,3 +496,67 @@ Instance::save_as(const synfig::String &file_name)
 
 	return ret;
 }
+
+bool
+Instance::generate_new_name(
+		synfig::Layer::Handle layer,
+		synfig::Canvas::Handle canvas,
+		synfig::FileSystem::Handle file_system,
+		synfig::String &out_description,
+		synfig::String &out_filename,
+		synfig::String &out_filename_param)
+{
+	out_description.clear();
+	out_filename.clear();
+	out_filename_param.clear();
+
+	String description = layer->get_description();
+	String filename;
+
+	etl::handle<Layer_Bitmap> layer_bitmap = etl::handle<Layer_Bitmap>::cast_dynamic(layer);
+	if (layer_bitmap
+	 && layer_bitmap->surface.get_w() > 0
+	 && layer_bitmap->surface.get_h() > 0
+	 && layer_bitmap->get_param_list().count("filename"))
+	{
+		ValueBase value = layer_bitmap->get_param("filename");
+		if (value.same_type_as(String()) && filename_extension(value.get(String())) == ".png")
+			filename = basename(value.get(String()));
+	}
+
+	// extract name from filename or from description
+	String name = filename.empty() ? description : filename_sans_extension(filename);
+	String ext = filename_extension(name);
+	if (ext.find_first_not_of(".0123456789") == String::npos)
+		name = filename_sans_extension(name);
+	for(size_t i = name.find("#", 0); i != String::npos; i = name.find("#", i))
+		name.erase(i, 1);
+	// if name based on description add extension
+	ext = filename.empty() ? ".png" : filename_extension(filename);
+
+	// generate new names
+	for(int i = 0; i < 10000; i++) {
+		bool valid = true;
+		String number = strprintf("%04d", i);
+		// TODO: literal '#'
+		String current_description = name + "." + number;
+		String current_filename = "#images/" + name + "." + number + ext;
+		String current_filename_param = "#" + name + "." + number + ext;
+		if (current_description == description || current_filename == filename)
+			valid = false;
+		if (valid && canvas)
+			for(IndependentContext ic = canvas->get_independent_context(); *ic; ic++)
+				if ((*ic)->get_description() == current_description)
+					{ valid = false; break; }
+		if (valid && file_system && file_system->is_exists(current_filename))
+			valid = false;
+		if (valid) {
+			out_description = current_description;
+			out_filename = current_filename;
+			out_filename_param = current_filename_param;
+			break;
+		}
+	}
+
+	return true;
+}

@@ -79,7 +79,7 @@ if [ -z $NOSU ]; then
 		${TOOLCHAIN}-pango \
 		${TOOLCHAIN}-boost \
 		${TOOLCHAIN}-libjpeg-turbo \
-		${TOOLCHAIN}-gtkmm24 \
+		${TOOLCHAIN}-gtkmm30 \
 		${TOOLCHAIN}-glibmm24 \
 		${TOOLCHAIN}-libltdl \
 		${TOOLCHAIN}-dlfcn \
@@ -504,7 +504,19 @@ autoreconf --install --force
 cp ./configure ./configure.real
 echo -e "#/bin/sh \n export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib/pkgconfig/:$PKG_CONFIG_PATH \n ./configure.real \$@  \n " > ./configure
 chmod +x ./configure
-${TOOLCHAIN}-configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared --with-magickpp --without-libavcodec --libdir=${PREFIX}/lib --bindir=${PREFIX}/bin --sysconfdir=${PREFIX}/etc --with-boost=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/ --enable-warnings=minimum $DEBUG
+${TOOLCHAIN}-configure \
+--prefix=${PREFIX} \
+--exec-prefix=${PREFIX} \
+--bindir=${PREFIX}/bin \
+--sbindir=${PREFIX}/sbin \
+--includedir=${PREFIX}/include \
+--libexecdir=${PREFIX}/lib \
+--libdir=${PREFIX}/lib \
+--datadir=${PREFIX}/share \
+--localstatedir=${PREFIX}/var \
+--sysconfdir=${PREFIX}/etc \
+--datarootdir=${PREFIX}/share \
+--disable-static --enable-shared --with-magickpp --without-libavcodec --with-boost=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/ --enable-warnings=minimum $DEBUG
 make install -j$THREADS
 }
 
@@ -518,7 +530,19 @@ make clean || true
 cp ./configure ./configure.real
 echo -e "#/bin/sh \n export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib/pkgconfig/:$PKG_CONFIG_PATH \n ./configure.real \$@  \n " > ./configure
 chmod +x ./configure
-${TOOLCHAIN}-configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared --libdir=${PREFIX}/lib --bindir=${PREFIX}/bin --sysconfdir=${PREFIX}/etc --datadir=${PREFIX}/share  $DEBUG
+${TOOLCHAIN}-configure \
+--prefix=${PREFIX} \
+--exec-prefix=${PREFIX} \
+--bindir=${PREFIX}/bin \
+--sbindir=${PREFIX}/sbin \
+--includedir=${PREFIX}/include \
+--libexecdir=${PREFIX}/lib \
+--libdir=${PREFIX}/lib \
+--datadir=${PREFIX}/share \
+--localstatedir=${PREFIX}/var \
+--sysconfdir=${PREFIX}/etc \
+--datarootdir=${PREFIX}/share \
+--disable-static --enable-shared $DEBUG
 make install -j$THREADS
 cp -rf ${PREFIX}/share/pixmaps/synfigstudio/* ${PREFIX}/share/pixmaps/ && rm -rf ${PREFIX}/share/pixmaps/synfigstudio
 

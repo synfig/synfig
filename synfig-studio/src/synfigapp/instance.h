@@ -145,6 +145,15 @@ public:
 
 	bool save_as(const synfig::String &filename);
 
+	//! create unique file name for an embedded image layer (if image filename is empty, description layer is used)
+	bool generate_new_name(
+			synfig::Layer::Handle layer,
+			synfig::Canvas::Handle canvas,
+			synfig::FileSystem::Handle file_system,
+			synfig::String &out_description,
+			synfig::String &out_filename,
+			synfig::String &out_filename_param);
+
 public:	// Interfaces to internal information
 	sigc::signal<void>& signal_filename_changed() { return signal_filename_changed_; }
 	sigc::signal<void>& signal_saved() { return signal_saved_; }

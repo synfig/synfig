@@ -90,6 +90,8 @@ Dock_Toolbox::Dock_Toolbox():
 	palette->set_expand(*tool_item_group);
 	palette->set_exclusive(*tool_item_group, true);
 	palette->set_icon_size(Gtk::IconSize::from_name("synfig-small_icon_16x16"));
+	// let the palette propagate the scroll events
+	palette->add_events(Gdk::SCROLL_MASK);
 	palette->show();
 
 	Gtk::ScrolledWindow *scrolled_window = manage(new Gtk::ScrolledWindow());
