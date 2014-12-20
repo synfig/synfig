@@ -145,9 +145,9 @@ bool setup_job(Job& job, const TargetParam& target_parameters)
 	// Check permissions
 	if (access(dirname(job.outfilename).c_str(), W_OK) == -1)
 	{
-		VERBOSE_OUT(1) << _("Unable to create ouput for \"") << job.filename.c_str()
-						<< "\": " << strerror(errno) << endl
-					   << _("Throwing out job...") << endl;
+		std::cerr << _("Unable to create ouput for \"") << job.filename
+                  << "\": " << strerror(errno) << endl
+				  << _("Throwing out job...") << endl;
 		return false;
 	}
 
@@ -163,9 +163,9 @@ bool setup_job(Job& job, const TargetParam& target_parameters)
 	{
 		if(!job.target)
 		{
-			VERBOSE_OUT(1) << _("Unknown target for \"") << job.filename.c_str()
-						   << "\": " << strerror(errno) << endl
-						   << _("Throwing out job...") << endl;
+		    std::cerr << _("Unknown target for \"") << job.filename
+                      << "\": " << strerror(errno) << std::endl
+                      << _("Throwing out job...") << std::endl;
 			return false;
 		}
 
@@ -180,7 +180,7 @@ bool setup_job(Job& job, const TargetParam& target_parameters)
 
 		VERBOSE_OUT(4) << _("Setting the quality of the target...") << endl;
 		job.target->set_quality(job.quality);
-		
+
 		if (job.alpha_mode!=TARGET_ALPHA_MODE_KEEP)
 		{
 			VERBOSE_OUT(4) << _("Setting the alpha mode of the target...") << endl;
