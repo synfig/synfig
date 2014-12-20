@@ -2221,11 +2221,14 @@ App::dialog_open_file(const std::string &title, std::string &filename, std::stri
 	// 0.2 Image files
 	filter_supported->add_mime_type("image/png");
 	filter_supported->add_mime_type("image/jpeg");
+	filter_supported->add_mime_type("image/jpg");
 	filter_supported->add_mime_type("image/bmp");
+	filter_supported->add_mime_type("image/svg");
 	filter_supported->add_pattern("*.png");
 	filter_supported->add_pattern("*.jpeg");
 	filter_supported->add_pattern("*.jpg");
 	filter_supported->add_pattern("*.bmp");
+	filter_supported->add_pattern("*.svg");
 	filter_supported->add_pattern("*.lst");
 	// 0.3 Audio files
 	filter_supported->add_mime_type("audio/x-vorbis+ogg");
@@ -2245,13 +2248,16 @@ App::dialog_open_file(const std::string &title, std::string &filename, std::stri
 
 	// 2.1 Image files
 	Glib::RefPtr<Gtk::FileFilter> filter_image = Gtk::FileFilter::create();
-	filter_image->set_name("Images (*.png, *.jpeg, *.bmp)");
+	filter_image->set_name("Images (*.png, *.jpeg, *.bmp, *.svg)");
 	filter_image->add_mime_type("image/png");
 	filter_image->add_mime_type("image/jpeg");
 	filter_image->add_mime_type("image/jpg");
+	filter_image->add_mime_type("image/bmp");
 	filter_image->add_pattern("*.png");
 	filter_image->add_pattern("*.jpeg");
 	filter_image->add_pattern("*.jpg");
+	filter_image->add_pattern("*.bmp");
+	filter_image->add_pattern("*.svg");
 
 	// 2.2 Image sequence/list files
 	Glib::RefPtr<Gtk::FileFilter> filter_image_list = Gtk::FileFilter::create();
