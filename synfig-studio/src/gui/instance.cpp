@@ -385,12 +385,18 @@ studio::Instance::dialog_save_as()
 				continue;
 			}
 
-			// if the file exists and the user doesn't want to overwrite it, keep prompting for a filename
-			string msg(strprintf(_("A file named '%s' already exists. "
-					"Do you want to replace it with the file you are saving?"), filename.c_str()));
+			// If the file exists and the user doesn't want to overwrite it, keep prompting for a filename
+			string message = strprintf(_("A file named \"%s\" already exists. "
+							"Do you want to replace it?"),
+						basename(filename).c_str());
+
+			string details = strprintf(_("The file already exists in \"%s\". "
+							"Replacing it will overwrite its contents."),
+						dirname(filename).c_str());
+
 			if ((stat_return == 0) && !App::dialog_message_2b(
-				_("File exists"),
-				msg.c_str(),
+				message,
+				details,
 				Gtk::MESSAGE_QUESTION,
 				_("Use Another Name…"),
 				_("Overwrite"))
