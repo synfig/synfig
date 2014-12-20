@@ -349,7 +349,7 @@ class GlobalUIInterface : public synfigapp::UIInterface
 {
 public:
 
-	virtual Response confirmation(const std::string &title,
+	virtual Response confirmation(
 			const std::string &primaryText,
 			const std::string &secondaryText,
 			const std::string &confirmPhrase,
@@ -364,8 +364,6 @@ public:
 			true			// Modal
 		);
 
-		if (! title.empty())
-			dialog.set_title(title);
 		if (! secondaryText.empty())
 			dialog.set_secondary_text(secondaryText);
 
@@ -1604,7 +1602,7 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		if (!getenv("SYNFIG_DISABLE_AUTO_RECOVERY") && auto_recover->recovery_needed())
 		{
 			splash_screen.hide();
-			if (get_ui_interface()->confirmation(_("Crash Recovery"),
+			if (get_ui_interface()->confirmation(
 					_("Auto recovery file found"),
 					_("Synfig Studio seems to have crashed before you could save all your files. "
 					  "Recover unsaved changes?"),

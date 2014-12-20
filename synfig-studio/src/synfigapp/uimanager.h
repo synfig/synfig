@@ -52,7 +52,6 @@ public:
 	};
 	virtual ~UIInterface() { }
 	virtual Response confirmation(
-				const std::string &title,
 				const std::string &primaryText,
 				const std::string &secondaryText,
 				const std::string &confirmPhrase,
@@ -86,7 +85,6 @@ class DefaultUIInterface : public UIInterface
 {
 public:
 	Response confirmation(
-			const std::string &/*title*/,
 			const std::string &/*primaryText*/,
 			const std::string &/*secondaryText*/,
 			const std::string &/*confirmPhrase*/,
@@ -133,7 +131,6 @@ class ConfidentUIInterface : public UIInterface
 {
 public:
 	Response confirmation(
-			const std::string &/*title*/,
 			const std::string &/*primaryText*/,
 			const std::string &/*secondaryText*/,
 			const std::string &/*confirmPhrase*/,
@@ -180,7 +177,6 @@ class ConsoleUIInterface : public UIInterface
 {
 public:
 	Response confirmation(
-			const std::string &title,
 			const std::string &primaryText,
 			const std::string &secondaryText,
 			const std::string &confirmPhrase,

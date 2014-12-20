@@ -272,7 +272,7 @@ public:
 		//view->progressbar->set_fraction(0);
 	}
 
-	virtual Response confirmation(const std::string &title,
+	virtual Response confirmation(
 			const std::string &primaryText,
 			const std::string &secondaryText,
 			const std::string &confirmPhrase,
@@ -290,8 +290,6 @@ public:
 			true			   // Modal
 		);
 
-		if (! title.empty())
-			dialog.set_title(title);
 		if (! secondaryText.empty())
 			dialog.set_secondary_text(secondaryText);
 
