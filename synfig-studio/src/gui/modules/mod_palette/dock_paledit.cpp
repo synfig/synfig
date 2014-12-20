@@ -270,7 +270,7 @@ Dock_PalEdit::on_save_pressed()
 				details,
 				Gtk::MESSAGE_QUESTION,
 				_("Use Another Name…"),
-				_("Overwrite"))
+				_("Replace"))
 			)
 				continue;
 		}

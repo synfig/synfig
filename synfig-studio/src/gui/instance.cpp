@@ -399,7 +399,7 @@ studio::Instance::dialog_save_as()
 				details,
 				Gtk::MESSAGE_QUESTION,
 				_("Use Another Name…"),
-				_("Overwrite"))
+				_("Replace"))
 			)
 				continue;
 		}
