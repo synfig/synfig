@@ -24,6 +24,7 @@
 #ifndef __SYNFIG_RENDERPROGRESS_H
 #define __SYNFIG_RENDERPROGRESS_H
 
+#include <ETL/clock>
 #include <synfig/string.h>
 #include "definitions.h"
 
