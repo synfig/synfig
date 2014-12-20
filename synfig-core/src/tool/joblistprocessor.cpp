@@ -128,9 +128,9 @@ bool setup_job(Job& job, const TargetParam& target_parameters)
 	{
         std::string new_extension;
 		if(Target::book().count(job.target_name))
-			new_extension += Target::book()[job.target_name].filename;
+			new_extension = Target::book()[job.target_name].filename;
 		else
-			new_extension += job.target_name;
+			new_extension = job.target_name;
 
         job.outfilename = bfs::path(job.filename).replace_extension(new_extension).string();
 	}
