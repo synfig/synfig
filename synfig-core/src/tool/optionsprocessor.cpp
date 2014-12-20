@@ -30,6 +30,7 @@
 #endif
 
 #include <iostream>
+#include <boost/filesystem.hpp>
 
 #include <ETL/stringf>
 #include <autorevision.h>
@@ -57,7 +58,7 @@
 
 using namespace std;
 using namespace synfig;
-
+namespace bfs=boost::filesystem;
 
 OptionsProcessor::OptionsProcessor(
 	boost::program_options::variables_map& vm,
@@ -508,7 +509,7 @@ Job OptionsProcessor::extract_job()
 		try
 		{
 			// todo: literals ".sfg", "container:", "project.sifz"
-			if (etl::filename_extension(job.filename) == ".sfg")
+			if (bfs::path(job.filename).extension().string() == ".sfg")
 			{
 				etl::handle< FileContainerZip > container = new FileContainerZip();
 				if (container->open(job.filename))
@@ -611,7 +612,7 @@ Job OptionsProcessor::extract_job()
 		string errors, warnings;
 		Canvas::Handle composite;
 		// todo: literals ".sfg", "container:", "project.sifz"
-		if (etl::filename_extension(composite_file) == ".sfg")
+		if (bfs::path(composite_file).extension() == ".sfg")
 		{
 			etl::handle< FileContainerZip > container = new FileContainerZip();
 			if (container->open(job.filename))
