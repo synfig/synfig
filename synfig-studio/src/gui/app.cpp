@@ -1339,7 +1339,7 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 	if (!g_thread_supported())
 		Glib::thread_init();
 
-	distance_system=Distance::SYSTEM_UNITS;
+	distance_system=Distance::SYSTEM_PIXELS;
 
 	if(mkdir(synfigapp::Main::get_user_app_directory().c_str(),ACCESSPERMS)<0)
 	{
@@ -1782,7 +1782,7 @@ App::add_recent_file(const std::string &file_name)
 	return;
 }
 
-static Time::Format _App_time_format(Time::FORMAT_NORMAL);
+static Time::Format _App_time_format(Time::FORMAT_FRAMES);
 
 Time::Format
 App::get_time_format()

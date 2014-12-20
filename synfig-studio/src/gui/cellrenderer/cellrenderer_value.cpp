@@ -73,17 +73,28 @@ using namespace studio;
 
 /* === G L O B A L S ======================================================= */
 
+#if GLIB_CHECK_VERSION(2, 37, 5)
+class studio::ValueBase_Entry : public Gtk::CellEditable, public Gtk::EventBox
+#else
 class studio::ValueBase_Entry : public Gtk::EventBox, public Gtk::CellEditable
+#endif
 {
 	Glib::ustring path;
 	Widget_ValueBase *valuewidget;
 	bool edit_done_called;
 	Gtk::Widget *parent;
 public:
+#if GLIB_CHECK_VERSION(2, 37, 5)
+	ValueBase_Entry():
+		Gtk::CellEditable (),
+		Gtk::EventBox     (),
+		Glib::ObjectBase  (typeid(ValueBase_Entry))
+#else
 	ValueBase_Entry():
 		Glib::ObjectBase  (typeid(ValueBase_Entry)),
-		Gtk::EventBox     (),
-		Gtk::CellEditable ()
+		Gtk::CellEditable (),
+		Gtk::EventBox     ()
+#endif
 	{
 		parent=0;
 		edit_done_called=false;
@@ -274,6 +285,16 @@ bool get_paragraph(synfig::String& text)
 
 /* === M E T H O D S ======================================================= */
 
+#if GLIB_CHECK_VERSION(2, 37, 5)
+CellRenderer_ValueBase::CellRenderer_ValueBase():
+	Gtk::CellRendererText	(),
+	property_value_	(*this,"value",synfig::ValueBase()),
+	property_canvas_(*this,"canvas",etl::handle<synfig::Canvas>()),
+	property_param_desc_(*this,"param_desc",synfig::ParamDesc()),
+	property_value_desc_(*this,"value_desc",synfigapp::ValueDesc()),
+	property_child_param_desc_(*this,"child_param_desc", synfig::ParamDesc()),
+	Glib::ObjectBase	(typeid(CellRenderer_ValueBase))
+#else
 CellRenderer_ValueBase::CellRenderer_ValueBase():
 	Glib::ObjectBase	(typeid(CellRenderer_ValueBase)),
 	Gtk::CellRendererText	(),
@@ -282,6 +303,7 @@ CellRenderer_ValueBase::CellRenderer_ValueBase():
 	property_param_desc_(*this,"param_desc",synfig::ParamDesc()),
 	property_value_desc_(*this,"value_desc",synfigapp::ValueDesc()),
 	property_child_param_desc_(*this,"child_param_desc", synfig::ParamDesc())
+#endif
 {
 	CellRendererText::signal_edited().connect(sigc::mem_fun(*this,&CellRenderer_ValueBase::string_edited_));
 	value_entry=new ValueBase_Entry();

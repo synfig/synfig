@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file trgt_cairo_png.h
-**	\brief Template Header
+**	\brief Template Header Target Png Cairo Module
 **
 **	$Id$
 **
