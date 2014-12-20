@@ -80,36 +80,6 @@ ConsoleUIInterface::confirmation(
 }
 
 
-UIInterface::Response
-ConsoleUIInterface::yes_no(
-			const std::string &title,
-			const std::string &message,
-			Response dflt)
-{
-	cout<<title.c_str()<<": "<<message.c_str()<<' ';
-	if(dflt==RESPONSE_NO)
-		cout<<_("(no/yes)")<<endl;
-	else
-		cout<<_("(yes/no)")<<endl;
-	string resp;
-	cin>>resp;
-
-	if(dflt==RESPONSE_NO)
-	{
-		if(resp=="yes")
-			return RESPONSE_YES;
-		else
-			return RESPONSE_NO;
-	}
-	else
-	{
-		if(resp=="no")
-			return RESPONSE_NO;
-		else
-			return RESPONSE_YES;
-	}
-}
-
 
 UIInterface::Response
 ConsoleUIInterface::yes_no_cancel(

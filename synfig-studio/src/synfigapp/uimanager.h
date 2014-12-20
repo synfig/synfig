@@ -59,11 +59,6 @@ public:
 				Response dflt = RESPONSE_OK
 	) = 0;
 
-	virtual Response yes_no(
-				const std::string &title,
-				const std::string &message,
-				Response dflt=RESPONSE_YES
-	) = 0;
 
 	virtual Response yes_no_cancel(
 				const std::string &message,
@@ -93,12 +88,6 @@ public:
 	)
 	{ return dflt; }
 
-	Response yes_no(
-			const std::string &/*title*/,
-			const std::string &/*message*/,
-			Response dflt
-	)
-	{ return dflt; }
 
 	Response yes_no_cancel(
 			const std::string &/*message*/,
@@ -139,12 +128,6 @@ public:
 	)
 	{ return RESPONSE_OK; }
 
-	Response yes_no(
-			const std::string &/*title*/,
-			const std::string &/*message*/,
-			Response /*dflt*/
-	)
-	{ return RESPONSE_YES; }
 
 	Response yes_no_cancel(
 			const std::string &/*message*/,
@@ -184,10 +167,6 @@ public:
 			Response dflt
 	);
 
-	Response yes_no(const std::string &title,
-			const std::string &message,
-			Response dflt
-	);
 
 	Response yes_no_cancel(
 			const std::string &message,

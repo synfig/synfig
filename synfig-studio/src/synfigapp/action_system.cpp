@@ -107,11 +107,16 @@ Action::System::perform_action(etl::handle<Action::Base> action)
 	// that the user knows this.
 	if(!undoable_action)
 	{
-		if(uim->yes_no(
-			action->get_local_name(),
-			_("This action cannot be undone! Are you sure you want to continue?"),
-			UIInterface::RESPONSE_NO
-			) == UIInterface::RESPONSE_NO
+		string message = strprintf(_("Do you want to do action \"%s\"?"), action->get_local_name().c_str());
+		string details = _("This action cannot be undone.");
+
+		if(uim->confirmation(
+			message,
+			details,
+			_("Cancel"),
+			_("Continue"),
+			UIInterface::RESPONSE_CANCEL
+			) == UIInterface::RESPONSE_CANCEL
 		)
 			return false;
 		else

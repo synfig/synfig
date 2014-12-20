@@ -377,25 +377,6 @@ public:
 	}
 
 
-	virtual Response yes_no(const std::string &title, const std::string &message,Response dflt=RESPONSE_YES)
-	{
-		Gtk::Dialog dialog(
-			title,		// Title
-			true		// Modal
-		);
-		Gtk::Label label(message);
-		label.show();
-
-		dialog.get_vbox()->pack_start(label);
-		dialog.add_button(Gtk::StockID("gtk-yes"),RESPONSE_YES);
-		dialog.add_button(Gtk::StockID("gtk-no"),RESPONSE_NO);
-
-		dialog.set_default_response(dflt);
-		dialog.show();
-		return (Response)dialog.run();
-	}
-
-
 	virtual Response yes_no_cancel(
 				const std::string &message,
 				const std::string &details,

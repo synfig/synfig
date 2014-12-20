@@ -196,10 +196,21 @@ Instance::set_redo_status(bool x)
 void
 studio::Instance::run_plugin(std::string plugin_path)
 {
-	handle<synfigapp::UIInterface> uim=this->find_canvas_view(this->get_canvas())->get_ui_interface();
-	string str=strprintf(_("This operation cannot be undone and all undo history will be cleared.\nDo you really want to proceed?"));
-	int answer=uim->yes_no(this->get_canvas()->get_name(),str,synfigapp::UIInterface::RESPONSE_YES);
-	if(answer==synfigapp::UIInterface::RESPONSE_YES){
+	handle<synfigapp::UIInterface> uim = this->find_canvas_view(this->get_canvas())->get_ui_interface();
+
+	string message = strprintf(_("Do you realy want to add skeleton to document \"%s\"?" ),
+				this->get_canvas()->get_name().c_str());
+
+	string details = strprintf(_("This operation cannot be undone and all undo history will be cleared."));
+
+	int answer = uim->confirmation(
+				message,
+				details,
+				_("Cancel"),
+				_("Proceed"),
+				synfigapp::UIInterface::RESPONSE_YES);
+
+	if(answer == synfigapp::UIInterface::RESPONSE_YES){
 	
 		OneMoment one_moment;
 
