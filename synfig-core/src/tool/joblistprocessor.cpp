@@ -38,6 +38,7 @@
 #include <boost/filesystem.hpp>
 #include <boost/program_options/options_description.hpp>
 #include <boost/program_options/variables_map.hpp>
+#include <boost/format.hpp>
 
 #include <ETL/stringf>
 #include <ETL/clock>
@@ -193,28 +194,24 @@ void process_job (Job& job)
 {
 	VERBOSE_OUT(3) << job.filename.c_str() << " -- " << std::endl;
 	VERBOSE_OUT(3) << '\t'
-				   <<
-		etl::strprintf("w:%d, h:%d, a:%d, pxaspect:%f, imaspect:%f, span:%f",
-			job.desc.get_w(),
-			job.desc.get_h(),
-			job.desc.get_antialias(),
-			job.desc.get_pixel_aspect(),
-			job.desc.get_image_aspect(),
-			job.desc.get_span()
-			).c_str()
-		<< std::endl;
+				   << boost::format("w:%d, h:%d, a:%d, pxaspect:%f, imaspect:%f, span:%f")
+                                    % job.desc.get_w()
+                                    % job.desc.get_h()
+                                    % job.desc.get_antialias()
+                                    % job.desc.get_pixel_aspect()
+                                    % job.desc.get_image_aspect()
+                                    % job.desc.get_span()
+                    << std::endl;
 
 	VERBOSE_OUT(3) << '\t'
-				   <<
-		etl::strprintf("tl:[%f,%f], br:[%f,%f], focus:[%f,%f]",
-			job.desc.get_tl()[0],
-			job.desc.get_tl()[1],
-			job.desc.get_br()[0],
-			job.desc.get_br()[1],
-			job.desc.get_focus()[0],
-			job.desc.get_focus()[1]
-			).c_str()
-			<< std::endl;
+				   << boost::format("tl:[%f,%f], br:[%f,%f], focus:[%f,%f]")
+                                    % job.desc.get_tl()[0]
+                                    % job.desc.get_tl()[1]
+                                    % job.desc.get_br()[0]
+                                    % job.desc.get_br()[1]
+                                    % job.desc.get_focus()[0]
+                                    % job.desc.get_focus()[1]
+                    << std::endl;
 
 	RenderProgress p;
 	p.task(job.filename + " ==> " + job.outfilename);

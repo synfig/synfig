@@ -41,6 +41,7 @@
 #include <boost/tokenizer.hpp>
 #include <boost/token_functions.hpp>
 #include <boost/filesystem.hpp>
+#include <boost/format.hpp>
 
 #include <glibmm.h>
 
@@ -146,7 +147,7 @@ int main(int argc, char* argv[])
             ("height,h", height_arg_desc, _("Set the image height in pixels (Use zero for file default)"))
             ("span,s", span_arg_desc, _("Set the diagonal size of image window (Span)"))
             ("antialias,a", antialias_arg_desc, _("Set antialias amount for parametric renderer."))
-            ("quality,Q", quality_arg_desc->default_value(DEFAULT_QUALITY), strprintf(_("Specify image quality for accelerated renderer (Default: %d)"), DEFAULT_QUALITY).c_str())
+            ("quality,Q", quality_arg_desc->default_value(DEFAULT_QUALITY), (boost::format(_("Specify image quality for accelerated renderer (Default: %d)")) % DEFAULT_QUALITY).str().c_str())
             ("gamma,g", gamma_arg_desc, _("Gamma"))
             ("threads,T", threads_arg_desc, _("Enable multithreaded renderer using the specified number of threads"))
             ("input-file,i", input_file_arg_desc, _("Specify input filename"))

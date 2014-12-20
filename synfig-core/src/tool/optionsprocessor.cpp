@@ -31,6 +31,7 @@
 
 #include <iostream>
 #include <boost/filesystem.hpp>
+#include <boost/format.hpp>
 
 #include <ETL/stringf>
 #include <autorevision.h>
@@ -252,10 +253,10 @@ void OptionsProcessor::process_info_options()
 		Layer::Handle layer =
 			synfig::Layer::create(_vm["layer-info"].as<string>());
 
-		cout << _("Layer Name: ") << (layer->get_name()).c_str() << endl;
+		cout << _("Layer Name: ") << layer->get_name() << endl;
 		cout << _("Localized Layer Name: ")
-			 << (layer->get_local_name()).c_str() << endl;
-		cout << _("Version: ") << (layer->get_version()).c_str() << endl;
+			 << layer->get_local_name() << endl;
+		cout << _("Version: ") << layer->get_version() << endl;
 
 		Layer::Vocab vocab = layer->get_param_vocab();
 		for(; !vocab.empty(); vocab.pop_front())
@@ -337,23 +338,23 @@ RendDesc OptionsProcessor::extract_renddesc(const RendDesc& renddesc)
 		int a;
 		a = _vm["antialias"].as<int>();
 		desc.set_antialias(a);
-		VERBOSE_OUT(1) << etl::strprintf(_("Antialiasing set to %d, "
-										   "(%d samples per pixel)"), a, a*a).c_str()
-						<< endl;
+		VERBOSE_OUT(1) << boost::format(_("Antialiasing set to %d, "
+										  "(%d samples per pixel)")) % a % (a*a)
+						<< std::endl;
 	}
 	if (_vm.count("span"))
 	{
-		span = _vm["span"].as<int>();
-		VERBOSE_OUT(1) << etl::strprintf(_("Span set to %d units"), span).c_str()
-						<< endl;
+	    span = _vm["span"].as<int>();
+		VERBOSE_OUT(1) << boost::format(_("Span set to %d units")) % span
+                       << std::endl;
 	}
 	if (_vm.count("fps"))
 	{
 		float fps;
 		fps = _vm["fps"].as<float>();
 		desc.set_frame_rate(fps);
-		VERBOSE_OUT(1) << etl::strprintf(_("Frame rate set to %d frames per "
-										   "second"), fps).c_str() << endl;
+		VERBOSE_OUT(1) << boost::format(_("Frame rate set to %d frames per "
+										   "second")) % fps << std::endl;
 	}
 	if (_vm.count("dpi"))
 	{
@@ -362,8 +363,8 @@ RendDesc OptionsProcessor::extract_renddesc(const RendDesc& renddesc)
 		dots_per_meter = dpi * 39.3700787402;
 		desc.set_x_res(dots_per_meter);
 		desc.set_y_res(dots_per_meter);
-		VERBOSE_OUT(1) << etl::strprintf(_("Physical resolution set to %f "
-										   "dpi"), dpi).c_str() << endl;
+		VERBOSE_OUT(1) << boost::format(_("Physical resolution set to %f "
+                                          "dpi")) % dpi << std::endl;
 	}
 	if (_vm.count("dpi-x"))
 	{
@@ -371,8 +372,8 @@ RendDesc OptionsProcessor::extract_renddesc(const RendDesc& renddesc)
 		dpi = _vm["dpi-x"].as<float>();
 		dots_per_meter = dpi * 39.3700787402;
 		desc.set_x_res(dots_per_meter);
-		VERBOSE_OUT(1) << etl::strprintf(_("Physical X resolution set to %f "
-										   "dpi"), dpi).c_str() << endl;
+		VERBOSE_OUT(1) << boost::format(_("Physical X resolution set to %f "
+										  "dpi")) % dpi << std::endl;
 	}
 	if (_vm.count("dpi-y"))
 	{
@@ -380,35 +381,31 @@ RendDesc OptionsProcessor::extract_renddesc(const RendDesc& renddesc)
 		dpi = _vm["dpi-y"].as<float>();
 		dots_per_meter = dpi * 39.3700787402;
 		desc.set_y_res(dots_per_meter);
-		VERBOSE_OUT(1) << etl::strprintf(_("Physical Y resolution set to %f "
-										   "dpi"), dpi).c_str() << endl;
+		VERBOSE_OUT(1) << boost::format(_("Physical Y resolution set to %f "
+                                          "dpi")) % dpi << std::endl;
 	}
 	if (_vm.count("start-time"))
 	{
-		string seconds;
-		seconds = _vm["start-time"].as<string>();
+		std::string seconds = _vm["start-time"].as<std::string>();
 		desc.set_time_start(Time(seconds.c_str(), desc.get_frame_rate()));
 	}
 	if (_vm.count("begin-time"))
 	{
-		string seconds;
-		seconds = _vm["begin-time"].as<string>();
+		std::string seconds = _vm["begin-time"].as<std::string>();
 		desc.set_time_start(Time(seconds.c_str(), desc.get_frame_rate()));
 	}
 	if (_vm.count("end-time"))
 	{
-		string seconds;
-		seconds = _vm["end-time"].as<string>();
+		std::string seconds = _vm["end-time"].as<std::string>();
 		desc.set_time_end(Time(seconds.c_str(), desc.get_frame_rate()));
 	}
 	if (_vm.count("time"))
 	{
-		string seconds;
-		seconds = _vm["time"].as<string>();
+		std::string seconds = _vm["time"].as<std::string>();
 		desc.set_time(Time(seconds.c_str(), desc.get_frame_rate()));
 
 		VERBOSE_OUT(1) << _("Rendering frame at ")
-					   << desc.get_time_start().get_string(desc.get_frame_rate()).c_str()
+					   << desc.get_time_start().get_string(desc.get_frame_rate())
 					   << endl;
 	}
 	if (_vm.count("gamma"))
@@ -419,7 +416,7 @@ RendDesc OptionsProcessor::extract_renddesc(const RendDesc& renddesc)
 		//desc.set_gamma(Gamma(gamma));
 	}
 
-	if (w||h)
+	if (w || h)
 	{
 		// scale properly
 		if (!w)
@@ -427,9 +424,9 @@ RendDesc OptionsProcessor::extract_renddesc(const RendDesc& renddesc)
 		else if (!h)
 			h = desc.get_h() * w / desc.get_w();
 
-		desc.set_wh(w,h);
-		VERBOSE_OUT(1) << etl::strprintf(_("Resolution set to %dx%d"), w, h).c_str()
-						<< endl;
+		desc.set_wh(w, h);
+		VERBOSE_OUT(1) << boost::format(_("Resolution set to %dx%d.")) % w % h
+                       << std::endl;
 	}
 
 	if(span)
@@ -449,7 +446,7 @@ TargetParam OptionsProcessor::extract_targetparam()
 
 	if (_vm.count("video-codec"))
 	{
-		params.video_codec = _vm["video-codec"].as<string>();
+		params.video_codec = _vm["video-codec"].as<std::string>();
 
 		// video_codec string to lowercase
 		transform (params.video_codec.begin(),
@@ -470,26 +467,27 @@ TargetParam OptionsProcessor::extract_targetparam()
 
 		if (!found)
 		{
-			throw(SynfigToolException(SYNFIGTOOL_UNKNOWNARGUMENT,
-									   etl::strprintf(_("Video codec \"%s\" is not supported."),
-														params.video_codec.c_str())));
+		    throw SynfigToolException(SYNFIGTOOL_UNKNOWNARGUMENT,
+                                      (boost::format(_("Video codec \"%s\" is not supported."))
+                                                      % params.video_codec).str());
 		}
 
-		VERBOSE_OUT(1) << etl::strprintf(_("Target video codec set to %s"), params.video_codec.c_str()).c_str()
-						<< endl;
+		VERBOSE_OUT(1) << _("Target video codec set to: ") << params.video_codec
+                       << std::endl;
 	}
 	if(_vm.count("video-bitrate"))
 	{
 		params.bitrate = _vm["video-bitrate"].as<int>();
-		VERBOSE_OUT(1) << etl::strprintf(_("Target bitrate set to %dk"),params.bitrate).c_str()
-					   << endl;
+		VERBOSE_OUT(1) << _("Target bitrate set to: ") << params.bitrate << "k."
+					   << std::endl;
 	}
 	if(_vm.count("sequence-separator"))
 	{
-		params.sequence_separator = _vm["sequence-separator"].as<string>();
-		VERBOSE_OUT(1) << etl::strprintf(_("Output file sequence separator set to %s"),
-											params.sequence_separator.c_str()).c_str()
-					   << endl;
+		params.sequence_separator = _vm["sequence-separator"].as<std::string>();
+		VERBOSE_OUT(1) << _("Output file sequence separator set to: '")
+                       << params.sequence_separator
+                       << "'."
+					   << std::endl;
 	}
 
 	return params;
@@ -537,26 +535,28 @@ Job OptionsProcessor::extract_job()
 
 		if(!job.canvas)
 		{
-			throw (SynfigToolException(SYNFIGTOOL_FILENOTFOUND,
-					etl::strprintf(_("Unable to load '%s'."), job.filename.c_str())));
+		    throw SynfigToolException(SYNFIGTOOL_FILENOTFOUND,
+                                      (boost::format(_("Unable to load file '%s'.")) % job.filename).str());
 		}
 
 		job.root->set_time(0);
 	}
 	else
-		throw (SynfigToolException(SYNFIGTOOL_MISSINGARGUMENT,
-									_("No input file provided.")));
+	{
+	    throw SynfigToolException(SYNFIGTOOL_MISSINGARGUMENT,
+                                  _("No input file provided."));
+	}
 
 	if (_vm.count("target"))
 	{
-		job.target_name = _vm["target"].as<string>();
-		VERBOSE_OUT(1) << _("Target set to ") << job.target_name.c_str() << endl;
+		job.target_name = _vm["target"].as<std::string>();
+		VERBOSE_OUT(1) << _("Target set to ") << job.target_name << std::endl;
 	}
 
 	// Determine output
 	if (_vm.count("output-file"))
 	{
-		job.outfilename = _vm["output-file"].as<string>();
+		job.outfilename = _vm["output-file"].as<std::string>();
 	}
 
 	if (_vm.count("extract-alpha"))
@@ -569,33 +569,35 @@ Job OptionsProcessor::extract_job()
 	else
 		job.quality = DEFAULT_QUALITY;
 
-	VERBOSE_OUT(1) << _("Quality set to ") << job.quality << endl;
+	VERBOSE_OUT(1) << _("Quality set to ") << job.quality << std::endl;
 
 	// WARNING: canvas must be before append
 
 	if (_vm.count("canvas"))
 	{
-		string canvasid;
-		canvasid = _vm["canvas"].as<string>();
+		std::string canvasid;
+		canvasid = _vm["canvas"].as<std::string>();
 
 		try
 		{
-			string warnings;
+			std::string warnings;
 			job.canvas = job.root->find_canvas(canvasid, warnings);
 			// TODO: This exceptions should not terminate the program if multi-job
 			// processing is available.
 		}
 		catch(Exception::IDNotFound&)
 		{
-			throw (SynfigToolException(SYNFIGTOOL_INVALIDJOB,
-					etl::strprintf(_("Unable to find canvas with ID \"%s\" in %s.\n"
-									 "Throwing out job..."), canvasid.c_str(), job.filename.c_str())));
+			throw SynfigToolException(SYNFIGTOOL_INVALIDJOB,
+                    (boost::format(_("Unable to find canvas with ID \"%s\" in %s.\n"
+                                     "Throwing out job..."))
+                                   % canvasid % job.filename).str());
 		}
 		catch(Exception::BadLinkName&)
 		{
-			throw (SynfigToolException(SYNFIGTOOL_INVALIDJOB,
-				     etl::strprintf(_("Invalid canvas name \"%s\" in %s.\n"
-									  "Throwing out job..."), canvasid.c_str(), job.filename.c_str())));
+		    throw SynfigToolException(SYNFIGTOOL_INVALIDJOB,
+                    (boost::format(_("Invalid canvas name \"%s\" in %s.\n"
+                                     "Throwing out job..."))
+                                   % canvasid % job.filename).str());
 		}
 
 		// Later we need to set the other parameters for the jobs
@@ -606,10 +608,9 @@ Job OptionsProcessor::extract_job()
 	if (_vm.count("append"))
 	{
 		// TODO: Enable multi-appending. Disabled in the previous CLI version
-		string composite_file;
-		composite_file = _vm["append"].as<string>();
+		std::string composite_file = _vm["append"].as<std::string>();
 
-		string errors, warnings;
+		std::string errors, warnings;
 		Canvas::Handle composite;
 		// todo: literals ".sfg", "container:", "project.sifz"
 		if (bfs::path(composite_file).extension() == ".sfg")
@@ -645,7 +646,7 @@ Job OptionsProcessor::extract_job()
 			}
 		}
 
-		VERBOSE_OUT(2) << _("Appended contents of ") << composite_file.c_str() << endl;
+		VERBOSE_OUT(2) << _("Appended contents of ") << composite_file << endl;
 	}
 	/*=== This is a code that comes from bones branch
 	      possibly it is the solution for multi-appending mentioned before ====
@@ -679,9 +680,9 @@ Job OptionsProcessor::extract_job()
 	if (_vm.count("list-canvases") || _vm.count("canvases"))
 	{
 		print_child_canvases(job.filename + "#", job.root);
-		cerr << endl;
+		std::cerr << std::endl;
 
-		throw (SynfigToolException(SYNFIGTOOL_OK));
+		throw SynfigToolException(SYNFIGTOOL_OK);
 	}
 
 	if (_vm.count("canvas-info"))
@@ -689,7 +690,7 @@ Job OptionsProcessor::extract_job()
 		extract_canvas_info(job);
 		print_canvas_info(job);
 
-		throw (SynfigToolException(SYNFIGTOOL_OK));
+		throw SynfigToolException(SYNFIGTOOL_OK);
 	}
 
 	return job;
