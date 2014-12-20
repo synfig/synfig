@@ -63,11 +63,9 @@
 
 #endif
 
-using namespace std;
 using namespace synfig;
-using namespace etl;
 
-void process_job_list(list<Job>& job_list, const TargetParam& target_params)
+void process_job_list(std::list<Job>& job_list, const TargetParam& target_params)
 {
 	if(!job_list.size())
 		throw (SynfigToolException(SYNFIGTOOL_BORED, _("Nothing to do!")));
@@ -81,15 +79,15 @@ void process_job_list(list<Job>& job_list, const TargetParam& target_params)
 
 bool setup_job(Job& job, const TargetParam& target_parameters)
 {
-	VERBOSE_OUT(4) << _("Attempting to determine target/outfile...") << endl;
+	VERBOSE_OUT(4) << _("Attempting to determine target/outfile...") << std::endl;
 
 	// If the target type is not yet defined,
 	// try to figure it out from the outfile.
 	if(job.target_name.empty() && !job.outfilename.empty())
 	{
 		VERBOSE_OUT(3) << _("Target name undefined, attempting to figure it out")
-					   << endl;
-		string ext = filename_extension(job.outfilename);
+					   << std::endl;
+		std::string ext = etl::filename_extension(job.outfilename);
 		if (ext.length())
 			ext = ext.substr(1);
 
@@ -100,7 +98,7 @@ bool setup_job(Job& job, const TargetParam& target_parameters)
 		}
 		else
 		{
-			string lower_ext(ext);
+			std::string lower_ext(ext);
 
 			for(unsigned int i = 0; i < ext.length(); i++)
 				lower_ext[i] = tolower(ext[i]);
@@ -119,7 +117,7 @@ bool setup_job(Job& job, const TargetParam& target_parameters)
 	// set it to a some sort of default
 	if(job.target_name.empty())
 	{
-		VERBOSE_OUT(2) << _("Defaulting to PNG target...") << endl;
+		VERBOSE_OUT(2) << _("Defaulting to PNG target...") << std::endl;
 		job.target_name = "png";
 	}
 
@@ -128,34 +126,26 @@ bool setup_job(Job& job, const TargetParam& target_parameters)
 	// (ie: change the extension)
 	if(job.outfilename.empty())
 	{
-		job.outfilename =
-			filename_sans_extension(job.filename) + '.';
+		job.outfilename = etl::filename_sans_extension(job.filename) + '.';
 
 		if(Target::book().count(job.target_name))
-			job.outfilename +=
-				Target::book()[job.target_name].filename;
+			job.outfilename += Target::book()[job.target_name].filename;
 		else
 			job.outfilename += job.target_name;
 	}
 
-	VERBOSE_OUT(4) << "Target name = " << job.target_name.c_str() << endl;
-	VERBOSE_OUT(4) << "Outfilename = " << job.outfilename.c_str() << endl;
+	VERBOSE_OUT(4) << "Target name = " << job.target_name.c_str() << std::endl;
+	VERBOSE_OUT(4) << "Outfilename = " << job.outfilename.c_str() << std::endl;
 
 	// Check permissions
-	if (access(dirname(job.outfilename).c_str(), W_OK) == -1)
+	if (access(etl::dirname(job.outfilename).c_str(), W_OK) == -1)
 	{
-<<<<<<< HEAD
 		synfig::error(strprintf(_("Unable to create output for \"%s\": %s"), job.filename.c_str(), strerror(errno)));
 		synfig::error(_("Throwing out job..."));
-=======
-		std::cerr << _("Unable to create ouput for \"") << job.filename
-                  << "\": " << strerror(errno) << endl
-				  << _("Throwing out job...") << endl;
->>>>>>> Print jobs thrown out to standard error output
 		return false;
 	}
 
-	VERBOSE_OUT(4) << _("Creating the target...") << endl;
+	VERBOSE_OUT(4) << _("Creating the target...") << std::endl;
 	job.target =
 		synfig::Target::create(job.target_name,
 							   job.outfilename,
@@ -167,15 +157,9 @@ bool setup_job(Job& job, const TargetParam& target_parameters)
 	{
 		if(!job.target)
 		{
-<<<<<<< HEAD
 		    synfig::error(strprintf(_("Unknown target for \"%s\": %s"), job.filename.c_str(), strerror(errno)));
-            synfig::error(_("Throwing out job..."));
-=======
-		    std::cerr << _("Unknown target for \"") << job.filename
-                      << "\": " << strerror(errno) << std::endl
-                      << _("Throwing out job...") << std::endl;
->>>>>>> Print jobs thrown out to standard error output
-			return false;
+                    synfig::error(_("Throwing out job..."));
+                    return false;
 		}
 
 		job.sifout=false;
@@ -184,15 +168,15 @@ bool setup_job(Job& job, const TargetParam& target_parameters)
 	// Set the Canvas on the Target
 	if(job.target)
 	{
-		VERBOSE_OUT(4) << _("Setting the canvas on the target...") << endl;
+		VERBOSE_OUT(4) << _("Setting the canvas on the target...") << std::endl;
 		job.target->set_canvas(job.canvas);
 
-		VERBOSE_OUT(4) << _("Setting the quality of the target...") << endl;
+		VERBOSE_OUT(4) << _("Setting the quality of the target...") << std::endl;
 		job.target->set_quality(job.quality);
 
 		if (job.alpha_mode!=TARGET_ALPHA_MODE_KEEP)
 		{
-			VERBOSE_OUT(4) << _("Setting the alpha mode of the target...") << endl;
+			VERBOSE_OUT(4) << _("Setting the alpha mode of the target...") << std::endl;
 			job.target->set_alpha_mode(job.alpha_mode);
 		}
 	}
@@ -206,10 +190,10 @@ bool setup_job(Job& job, const TargetParam& target_parameters)
 
 void process_job (Job& job)
 {
-	VERBOSE_OUT(3) << job.filename.c_str() << " -- " << endl;
+	VERBOSE_OUT(3) << job.filename.c_str() << " -- " << std::endl;
 	VERBOSE_OUT(3) << '\t'
 				   <<
-		strprintf("w:%d, h:%d, a:%d, pxaspect:%f, imaspect:%f, span:%f",
+		etl::strprintf("w:%d, h:%d, a:%d, pxaspect:%f, imaspect:%f, span:%f",
 			job.desc.get_w(),
 			job.desc.get_h(),
 			job.desc.get_antialias(),
@@ -217,11 +201,11 @@ void process_job (Job& job)
 			job.desc.get_image_aspect(),
 			job.desc.get_span()
 			).c_str()
-		<< endl;
+		<< std::endl;
 
 	VERBOSE_OUT(3) << '\t'
 				   <<
-		strprintf("tl:[%f,%f], br:[%f,%f], focus:[%f,%f]",
+		etl::strprintf("tl:[%f,%f], br:[%f,%f], focus:[%f,%f]",
 			job.desc.get_tl()[0],
 			job.desc.get_tl()[1],
 			job.desc.get_br()[0],
@@ -229,7 +213,7 @@ void process_job (Job& job)
 			job.desc.get_focus()[0],
 			job.desc.get_focus()[1]
 			).c_str()
-			<< endl;
+			<< std::endl;
 
 	RenderProgress p;
 	p.task(job.filename + " ==> " + job.outfilename);
@@ -242,7 +226,7 @@ void process_job (Job& job)
 	}
 	else
 	{
-		VERBOSE_OUT(1) << _("Rendering...") << endl;
+		VERBOSE_OUT(1) << _("Rendering...") << std::endl;
 		etl::clock timer;
 		timer.reset();
 
@@ -251,11 +235,13 @@ void process_job (Job& job)
 			throw (SynfigToolException(SYNFIGTOOL_RENDERFAILURE, _("Render Failure.")));
 
 		if(SynfigToolGeneralOptions::instance()->should_print_benchmarks())
-			cout << job.filename.c_str()
-				 << _(": Rendered in ") << timer()
-				 << _(" seconds.") << endl;
+        {
+            std::cout << job.filename.c_str()
+                      << _(": Rendered in ") << timer()
+                      << _(" seconds.") << std::endl;
+        }
 	}
 
-	VERBOSE_OUT(1) << _("Done.") << endl;
+	VERBOSE_OUT(1) << _("Done.") << std::endl;
 }
 
