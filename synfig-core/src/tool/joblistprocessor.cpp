@@ -139,7 +139,7 @@ bool setup_job(Job& job, const TargetParam& target_parameters)
 	VERBOSE_OUT(4) << "Outfilename = " << job.outfilename.c_str() << std::endl;
 
 	// Check permissions
-	if (access(bfs::path(job.outfilename).string().c_str(), W_OK) == -1)
+	if (access(bfs::path(job.outfilename).parent_path().string().c_str(), W_OK) == -1)
 	{
 		synfig::error(strprintf(_("Unable to create output for \"%s\": %s"), job.filename.c_str(), strerror(errno)));
 		synfig::error(_("Throwing out job..."));
