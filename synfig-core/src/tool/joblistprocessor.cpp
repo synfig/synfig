@@ -89,7 +89,7 @@ bool setup_job(Job& job, const TargetParam& target_parameters)
 	{
 		VERBOSE_OUT(3) << _("Target name undefined, attempting to figure it out")
 					   << std::endl;
-		std::string ext = etl::filename_extension(job.outfilename);
+		std::string ext = bfs::path(job.outfilename).extension().string();
 		if (ext.length())
 			ext = ext.substr(1);
 
