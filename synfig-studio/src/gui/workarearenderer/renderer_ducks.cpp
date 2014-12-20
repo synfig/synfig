@@ -323,7 +323,7 @@ Renderer_Ducks::render_vfunc(
 				Point p((*iter)->get_transform_stack().perform(points[i]));
 				p[0] = (p[0]-window_start[0])/pw;
 				p[1] = (p[1]-window_start[1])/ph;
-				if (p.is_nan_or_inf()) {
+				if (!p.is_nan_or_inf()) {
 					if (first)
 						{ first = false; cr->move_to(p[0], p[1]); }
 					else
