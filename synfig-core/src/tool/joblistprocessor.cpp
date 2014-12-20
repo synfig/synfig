@@ -145,8 +145,14 @@ bool setup_job(Job& job, const TargetParam& target_parameters)
 	// Check permissions
 	if (access(dirname(job.outfilename).c_str(), W_OK) == -1)
 	{
+<<<<<<< HEAD
 		synfig::error(strprintf(_("Unable to create output for \"%s\": %s"), job.filename.c_str(), strerror(errno)));
 		synfig::error(_("Throwing out job..."));
+=======
+		std::cerr << _("Unable to create ouput for \"") << job.filename
+                  << "\": " << strerror(errno) << endl
+				  << _("Throwing out job...") << endl;
+>>>>>>> Print jobs thrown out to standard error output
 		return false;
 	}
 
@@ -162,8 +168,14 @@ bool setup_job(Job& job, const TargetParam& target_parameters)
 	{
 		if(!job.target)
 		{
+<<<<<<< HEAD
 		    synfig::error(strprintf(_("Unknown target for \"%s\": %s"), job.filename.c_str(), strerror(errno)));
             synfig::error(_("Throwing out job..."));
+=======
+		    std::cerr << _("Unknown target for \"") << job.filename
+                      << "\": " << strerror(errno) << std::endl
+                      << _("Throwing out job...") << std::endl;
+>>>>>>> Print jobs thrown out to standard error output
 			return false;
 		}
 
