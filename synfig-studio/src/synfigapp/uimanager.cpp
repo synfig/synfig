@@ -50,7 +50,6 @@ using namespace synfigapp;
 
 UIInterface::Response
 ConsoleUIInterface::confirmation(
-			const std::string &title,
 			const std::string &primaryText,
 			const std::string &secondaryText,
 			const std::string &confirmPhrase,
@@ -58,7 +57,7 @@ ConsoleUIInterface::confirmation(
 			Response dflt
 )
 {
-	cout << title.c_str() << ": " << primaryText.c_str() << endl;
+	cout << ": " << primaryText.c_str() << endl;
 	cout << secondaryText.c_str();
 
 	if (dflt == RESPONSE_OK)
