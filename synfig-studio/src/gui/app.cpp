@@ -394,6 +394,8 @@ public:
 		dialog.show();
 		return (Response)dialog.run();
 	}
+
+
 	virtual Response yes_no_cancel(
 				const std::string &message,
 				const std::string &details,
@@ -412,9 +414,9 @@ public:
 		);
 
 		dialog.set_secondary_text(details);
-		dialog.add_button(button1, RESPONSE_YES);
-		dialog.add_button(button2, RESPONSE_NO);
-		dialog.add_button(button3, RESPONSE_CANCEL);
+		dialog.add_button(button1, RESPONSE_NO);
+		dialog.add_button(button2, RESPONSE_CANCEL);
+		dialog.add_button(button3, RESPONSE_YES);
 
 		dialog.set_default_response(dflt);
 		dialog.show();

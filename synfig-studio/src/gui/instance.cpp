@@ -748,18 +748,22 @@ Instance::safe_close()
 	if(get_action_count())
 		do
 		{
-			string str=strprintf(_("Would you like to save your changes to %s?"),basename(get_file_name()).c_str() );
+			string message = strprintf(_("Save changes to document \“%s\” before closing?"),
+					basename(get_file_name()).c_str() );
+
+			string details = (_("If you don't save, changes from the last time you saved "
+					"will be permanently lost."));
+
 			int answer=uim->yes_no_cancel(
-						get_canvas()->get_name(),
-						str,
-						_("No"),
+						message,
+						details,
+						_("Close without Saving"),
 						_("Cancel"),
-						_("Yes"),
+						_("Save As…"),
 						synfigapp::UIInterface::RESPONSE_YES
 			);
 
-			if(answer==synfigapp::UIInterface::RESPONSE_YES)
-			{
+			if(answer == synfigapp::UIInterface::RESPONSE_YES){
 				enum Status status = save();
 				if (status == STATUS_OK) break;
 				else if (status == STATUS_CANCEL) return false;
@@ -772,13 +776,18 @@ Instance::safe_close()
 
 	if(is_modified())
 	{
-		string str=strprintf(_("%s has changes not yet on the CVS repository.\nWould you like to commit these changes?"),basename(get_file_name()).c_str());
+		string message = strprintf(_("Commit changes of \"%s\" to  the CVS repository?"),
+				basename(get_file_name()).c_str());
+
+		string details = (_("If you don't commit, changes not yet on the CVS repository will "
+				"be permanently lost."));
+
 		int answer=uim->yes_no_cancel(
-					get_canvas()->get_name(),
-					str,
-					_("No"),
+					message,
+					details,
+					_("Close without Committing"),
 					_("Cancel"),
-					_("Yes"),
+					_("Commit…"),
 					synfigapp::UIInterface::RESPONSE_YES
 		);
 
