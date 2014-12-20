@@ -52,11 +52,11 @@ public:
 	};
 	virtual ~UIInterface() { }
 	virtual Response confirmation(
-				const std::string &primaryText,
-				const std::string &secondaryText,
-				const std::string &confirmPhrase,
-				const std::string &cancelPhrase,
-				Response dflt=RESPONSE_OK
+				const std::string &message,
+				const std::string &details,
+				const std::string &confirm,
+				const std::string &cancel,
+				Response dflt = RESPONSE_OK
 	) = 0;
 
 	virtual Response yes_no(
@@ -85,10 +85,10 @@ class DefaultUIInterface : public UIInterface
 {
 public:
 	Response confirmation(
-			const std::string &/*primaryText*/,
-			const std::string &/*secondaryText*/,
-			const std::string &/*confirmPhrase*/,
-			const std::string &/*cancelPhrase*/,
+			const std::string &/*message*/,
+			const std::string &/*details*/,
+			const std::string &/*confirm*/,
+			const std::string &/*cancel*/,
 			Response dflt
 	)
 	{ return dflt; }
@@ -131,10 +131,10 @@ class ConfidentUIInterface : public UIInterface
 {
 public:
 	Response confirmation(
-			const std::string &/*primaryText*/,
-			const std::string &/*secondaryText*/,
-			const std::string &/*confirmPhrase*/,
-			const std::string &/*cancelPhrase*/,
+			const std::string &/*message*/,
+			const std::string &/*details*/,
+			const std::string &/*confirm*/,
+			const std::string &/*cancel*/,
 			Response /*dflt*/
 	)
 	{ return RESPONSE_OK; }
@@ -177,10 +177,10 @@ class ConsoleUIInterface : public UIInterface
 {
 public:
 	Response confirmation(
-			const std::string &primaryText,
-			const std::string &secondaryText,
-			const std::string &confirmPhrase,
-			const std::string &cancelPhrase,
+			const std::string &message,
+			const std::string &details,
+			const std::string &confirm,
+			const std::string &cancel,
 			Response dflt
 	);
 
