@@ -66,10 +66,16 @@
 #include "named_type.h"
 #endif
 
-using namespace synfig;
 namespace po=boost::program_options;
+namespace bfs=boost::filesystem;
 
-/* === M E T H O D S ================================================ */
+std::string _appendAlphaToFilename(std::string input_filename)
+{
+    bfs::path filename(input_filename);
+    bfs::path alpha_filename(filename.stem().string() + "-alpha" +
+        filename.extension().string());
+    return bfs::path(filename.parent_path() / alpha_filename).string();
+}
 
 int main(int argc, char* argv[])
 {
@@ -77,7 +83,7 @@ int main(int argc, char* argv[])
 
 	SynfigToolGeneralOptions::create_singleton_instance(argv[0]);
 
-	boost::filesystem::path binary_path =
+	bfs::path binary_path =
 		SynfigToolGeneralOptions::instance()->get_binary_path();
 
 #ifdef ENABLE_NLS
@@ -264,7 +270,7 @@ int main(int argc, char* argv[])
 			job.alpha_mode = TARGET_ALPHA_MODE_REDUCE;
 			job_list.push_front(job);
 			job.alpha_mode = TARGET_ALPHA_MODE_EXTRACT;
-			job.outfilename = etl::filename_sans_extension(job.outfilename)+"-alpha"+etl::filename_extension(job.outfilename);
+			job.outfilename = _appendAlphaToFilename(job.outfilename);
 			job_list.push_front(job);
 		} else {
 			job_list.push_front(job);
