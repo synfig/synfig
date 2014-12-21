@@ -2884,35 +2884,6 @@ App::dialog_blocking(const std::string &title, const std::string &message)
 		dialog_message_1b(message, title, Gtk::MESSAGE_WARNING, _("Close"));
 }
 
-void
-App::dialog_error_blocking(const std::string &title, const std::string &message)
-{
-	dialog_warning_blocking(title, message, Gtk::Stock::DIALOG_ERROR);
-}
-
-
-void
-App::dialog_warning_blocking(const std::string &title, const std::string &message, const Gtk::StockID &stock_id)
-{
-	Gtk::Dialog dialog(title, *App::main_window, false);
-	Gtk::ScrolledWindow scrolled;
-	Gtk::Label label(message, 0, 0);
-	label.set_line_wrap();
-	scrolled.add(label);
-	scrolled.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
-	scrolled.set_shadow_type(Gtk::SHADOW_NONE);
-	Gtk::Table table(2, 2);
-	table.set_col_spacings(10);
-	Gtk::Image image(stock_id, Gtk::IconSize(Gtk::ICON_SIZE_DIALOG));
-	table.attach(image, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 1, 1);
-	table.attach(scrolled, 1, 2, 0, 2, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::EXPAND);
-	dialog.get_vbox()->pack_start(table);
-	dialog.add_button(Gtk::StockID("gtk-close"),1);
-	dialog.set_default_size(450, 200);
-	dialog.show_all();
-	dialog.run();
-}
-
 
 void
 App::dialog_not_implemented()
