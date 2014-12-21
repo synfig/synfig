@@ -2356,7 +2356,7 @@ App::dialog_open_file_image(const std::string &title, std::string &filename, std
 	dialog->add_filter(filter_image);
 
 	// Any files
-	Glib::RefPtr<Gtk::FileFilter> filter_ayn = Gtk::FileFilter::create();
+	Glib::RefPtr<Gtk::FileFilter> filter_any = Gtk::FileFilter::create();
 	filter_any->set_name("Any files");
 	filter_any->add_pattern("*");
 	dialog->add_filter(filter_any);
@@ -2410,7 +2410,7 @@ App::dialog_open_file_audio(const std::string &title, std::string &filename, std
 	dialog->add_filter(filter_audio);
 
 	// Any files
-	Glib::RefPtr<Gtk::FileFilter> filter_ayn = Gtk::FileFilter::create();
+	Glib::RefPtr<Gtk::FileFilter> filter_any = Gtk::FileFilter::create();
 	filter_any->set_name("Any files");
 	filter_any->add_pattern("*");
 	dialog->add_filter(filter_any);
