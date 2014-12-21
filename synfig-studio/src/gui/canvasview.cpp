@@ -3778,7 +3778,7 @@ CanvasView::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& con
 					if(canvas_interface()->import(filename, errors, warnings, App::resize_imported_images))
 						success=true;
 					if (warnings != "")
-						App::dialog_warning_blocking(_("Warnings"), strprintf("%s:\n\n%s", _("Warnings"), warnings.c_str()));
+						App::dialog_blocking(_("Warning"), strprintf("%s:\n\n%s", _("Warning"), warnings.c_str()));
 				}
 			}
 		} // END of "text/uri-list"
@@ -4042,7 +4042,7 @@ CanvasView::image_import()
 	{
 		canvas_interface()->import(filename, errors, warnings, App::resize_imported_images);
 		if (warnings != "")
-			App::dialog_warning_blocking(_("Warnings"), strprintf("%s:\n\n%s", _("Warnings"), warnings.c_str()));
+			App::dialog_blocking(_("Warning"), strprintf("%s:\n\n%s", _("Warning"), warnings.c_str()));
 	}
 }
 

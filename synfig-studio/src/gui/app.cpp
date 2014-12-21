@@ -1350,7 +1350,7 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 	if(!SYNFIG_CHECK_VERSION())
 	{
 		cerr<<"FATAL: Synfig Version Mismatch"<<endl;
-		dialog_error_blocking("Synfig Studio",
+		dialog_blocking("Error",
 			"This copy of Synfig Studio was compiled against a\n"
 			"different version of libsynfig than what is currently\n"
 			"installed. Synfig Studio will now abort. Try downloading\n"
@@ -1599,7 +1599,7 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 					else
 						get_ui_interface()->error(_("Unable to recover from previous crash"));
 				else
-					dialog_warning_blocking(_("Warning"),
+					dialog_blocking(_("Warning"),
 						_("Synfig Studio has attempted to recover from a previous crash. "
 						"The files that it has recovered are NOT YET SAVED. It would be a "
 						"good idea to review them and save them now."));
@@ -1667,7 +1667,7 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		warnings += _("Please accept our apologies for inconvenience, we hope to get this issue resolved in the future versions.");
 #endif
 		if (warnings!="")
-			dialog_warning_blocking(_("Warning"), warnings);
+			dialog_blocking(_("Warning"), warnings);
 	}
 	catch(String x)
 	{
@@ -2038,7 +2038,7 @@ App::quit()
 	get_ui_interface()->task(_("Quit Request"));
 	if(Busy::count)
 	{
-		dialog_error_blocking(_("Cannot quit!"),_("Tasks are currently running.\nPlease cancel the current tasks and try again"));
+		dialog_blocking(_("Error"),_("Tasks are currently running.\nPlease cancel the current tasks and try again"));
 		return;
 	}
 
@@ -2876,6 +2876,15 @@ App::dialog_select_list_item(const std::string &title, const std::string &messag
 
 
 void
+App::dialog_blocking(const std::string &title, const std::string &message)
+{
+	if (title == "Error")
+		dialog_message_1b(message, title, Gtk::MESSAGE_ERROR, _("Close"));
+	if (title == "Warning")
+		dialog_message_1b(message, title, Gtk::MESSAGE_WARNING, _("Close"));
+}
+
+void
 App::dialog_error_blocking(const std::string &title, const std::string &message)
 {
 	dialog_warning_blocking(title, message, Gtk::Stock::DIALOG_ERROR);
@@ -3226,7 +3235,7 @@ App::open_as(std::string filename,std::string as,synfig::FileContainerZip::file_
 				throw (String)strprintf(_("Unable to load \"%s\":\n\n"),filename.c_str()) + errors;
 
 			if (warnings != "")
-				dialog_warning_blocking(_("Warnings"), strprintf("%s:\n\n%s", _("Warnings"), warnings.c_str()));
+				dialog_blocking(_("Warning"), strprintf("%s:\n\n%s", _("Warning"), warnings.c_str()));
 
 			if (as.find(custom_filename_prefix.c_str()) != 0)
 				add_recent_file(as);
@@ -3250,17 +3259,17 @@ App::open_as(std::string filename,std::string as,synfig::FileContainerZip::file_
 	}
 	catch(String x)
 	{
-		dialog_error_blocking(_("Error"), x);
+		dialog_blocking(_("Error"), x);
 		return false;
 	}
 	catch(runtime_error x)
 	{
-		dialog_error_blocking(_("Error"), x.what());
+		dialog_blocking(_("Error"), x.what());
 		return false;
 	}
 	catch(...)
 	{
-		dialog_error_blocking(_("Error"), _("Uncaught error on file open (BUG)"));
+		dialog_blocking(_("Error"), _("Uncaught error on file open (BUG)"));
 		return false;
 	}
 
@@ -3300,7 +3309,7 @@ App::open_from_temporary_container_as(std::string container_filename_base,std::s
 				throw (String)strprintf(_("Unable to load \"%s\":\n\n"),container_filename_base.c_str()) + errors;
 
 			if (warnings != "")
-				dialog_warning_blocking(_("Warnings"), strprintf("%s:\n\n%s", _("Warnings"), warnings.c_str()));
+				dialog_blocking(_("Warning"), strprintf("%s:\n\n%s", _("Warning"), warnings.c_str()));
 
 			if (as.find(custom_filename_prefix.c_str()) != 0)
 				add_recent_file(as);
@@ -3324,17 +3333,17 @@ App::open_from_temporary_container_as(std::string container_filename_base,std::s
 	}
 	catch(String x)
 	{
-		dialog_error_blocking(_("Error"), x);
+		dialog_blocking(_("Error"), x);
 		return false;
 	}
 	catch(runtime_error x)
 	{
-		dialog_error_blocking(_("Error"), x.what());
+		dialog_blocking(_("Error"), x.what());
 		return false;
 	}
 	catch(...)
 	{
-		dialog_error_blocking(_("Error"), _("Uncaught error on file open (BUG)"));
+		dialog_blocking(_("Error"), _("Uncaught error on file open (BUG)"));
 		return false;
 	}
 

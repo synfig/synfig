@@ -372,6 +372,8 @@ public:
 
 	static bool dialog_select_list_item(const std::string &title, const std::string &message, const std::list<std::string> &list, int &item_index);
 
+	static void dialog_blocking(const std::string &title, const std::string &message);
+
 	static void dialog_error_blocking(const std::string &title, const std::string &message);
 
 	static void dialog_warning_blocking(const std::string &title, const std::string &message, const Gtk::StockID &stock_id=Gtk::Stock::DIALOG_WARNING);
