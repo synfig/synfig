@@ -1350,13 +1350,16 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 	if(!SYNFIG_CHECK_VERSION())
 	{
 		cerr<<"FATAL: Synfig Version Mismatch"<<endl;
-		dialog_blocking("Error",
-			"This copy of Synfig Studio was compiled against a\n"
-			"different version of libsynfig than what is currently\n"
-			"installed. Synfig Studio will now abort. Try downloading\n"
-			"the latest version from the Synfig website at\n"
-			"http://synfig.org/en/current-release"
-		);
+		dialog_message_1b(
+			"ERROR",
+			_("Synfig version mismatched!"),
+			_("This copy of Synfig Studio was compiled against a "
+			"different version of libsynfig than what is currently "
+			"installed. Synfig Studio will now abort. Try downloading "
+			"the latest version from the Synfig website at "
+			"http://synfig.org/en/current-release"),
+			_("Close"));
+
 		throw 40;
 	}
 	Glib::set_application_name(_("Synfig Studio"));
@@ -1599,10 +1602,12 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 					else
 						get_ui_interface()->error(_("Unable to recover from previous crash"));
 				else
-					dialog_blocking(_("Warning"),
+					dialog_message_1b(
+						"WARNING",
+						_("It would be a good idea to review and save recovered files now."),
 						_("Synfig Studio has attempted to recover from a previous crash. "
-						"The files that it has recovered are NOT YET SAVED. It would be a "
-						"good idea to review them and save them now."));
+						"The files just recovered are NOT YET SAVED."),
+						_("Thanks"));
 
 				if (number_recovered)
 					opened_any = true;
@@ -1667,7 +1672,10 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		warnings += _("Please accept our apologies for inconvenience, we hope to get this issue resolved in the future versions.");
 #endif
 		if (warnings!="")
-			dialog_blocking(_("Warning"), warnings);
+			dialog_message_1b("WARNING",
+					warnings,
+					"details",
+					_("Close"));
 	}
 	catch(String x)
 	{
@@ -2038,7 +2046,12 @@ App::quit()
 	get_ui_interface()->task(_("Quit Request"));
 	if(Busy::count)
 	{
-		dialog_blocking(_("Error"),_("Tasks are currently running.\nPlease cancel the current tasks and try again"));
+		dialog_message_1b(
+			"ERROR",
+			_("Tasks are currently running. Please cancel the current tasks and try again"),
+			"details",
+			_("Close"));
+
 		return;
 	}
 
@@ -2877,16 +2890,6 @@ App::dialog_select_list_item(const std::string &title, const std::string &messag
 
 
 void
-App::dialog_blocking(const std::string &title, const std::string &message)
-{
-	if (title == "Error")
-		dialog_message_1b(message, title, Gtk::MESSAGE_ERROR, _("Close"));
-	if (title == "Warning")
-		dialog_message_1b(message, title, Gtk::MESSAGE_WARNING, _("Close"));
-}
-
-
-void
 App::dialog_not_implemented()
 {
 	Gtk::MessageDialog dialog(*App::main_window, _("Feature not available"), false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_CLOSE, true);
@@ -2897,18 +2900,34 @@ App::dialog_not_implemented()
 
 // message dialog with 1 button.
 void
-App::dialog_message_1b(const std::string &message,
+App::dialog_message_1b(
+	const std::string &type,
+		//INFO:		Gtk::MESSAGE_INFO - Informational message.
+		//WARNING:	Gtk::MESSAGE_WARNING - Non-fatal warning message.
+		//QUESTION:	Gtk::MESSAGE_QUESTION - Question requiring a choice.
+		//ERROR:	Gtk::MESSAGE_ERROR - Fatal error message.
+		//OTHER:	Gtk::MESSAGE_OTHER - None of the above, doesn’t get an icon.
+	const std::string &message,
 	const std::string &details,
-	const Gtk::MessageType &type,
-		//MESSAGE_INFO - Informational message.
-		//MESSAGE_WARNING - Non-fatal warning message.
-		//MESSAGE_QUESTION - Question requiring a choice.
-		//MESSAGE_ERROR - Fatal error message.
-		//MESSAGE_OTHER - None of the above, doesn’t get an icon.
 	const std::string &button1)
 {
-	Gtk::MessageDialog dialog(*App::main_window, message, false, type, Gtk::BUTTONS_NONE, true);
-	dialog.set_secondary_text(details);
+	Gtk::MessageType _type;
+	if (type == "INFO")
+		_type = Gtk::MESSAGE_INFO;
+	if (type == "WARNING")
+		_type = Gtk::MESSAGE_WARNING;
+	if (type == "QUESTION")
+		_type = Gtk::MESSAGE_QUESTION;
+	if (type == "ERROR")
+		_type = Gtk::MESSAGE_ERROR;
+	if (type == "OTHER")
+		_type = Gtk::MESSAGE_OTHER;
+
+	Gtk::MessageDialog dialog(*App::main_window, message, false, _type, Gtk::BUTTONS_NONE, true);
+
+	if (details != "details")
+		dialog.set_secondary_text(details);
+
 	dialog.add_button(button1, 0);
 
 	dialog.run();
@@ -3207,7 +3226,11 @@ App::open_as(std::string filename,std::string as,synfig::FileContainerZip::file_
 				throw (String)strprintf(_("Unable to load \"%s\":\n\n"),filename.c_str()) + errors;
 
 			if (warnings != "")
-				dialog_blocking(_("Warning"), strprintf("%s:\n\n%s", _("Warning"), warnings.c_str()));
+				dialog_message_1b(
+					"WARNING",
+					strprintf("%s:\n\n%s", _("Warning"), warnings.c_str()),
+					"details",
+					_("Close"));
 
 			if (as.find(custom_filename_prefix.c_str()) != 0)
 				add_recent_file(as);
@@ -3231,17 +3254,32 @@ App::open_as(std::string filename,std::string as,synfig::FileContainerZip::file_
 	}
 	catch(String x)
 	{
-		dialog_blocking(_("Error"), x);
+		dialog_message_1b(
+			"ERROR",
+			x,
+			"details",
+			_("Close"));
+
 		return false;
 	}
 	catch(runtime_error x)
 	{
-		dialog_blocking(_("Error"), x.what());
+		dialog_message_1b(
+			"ERROR",
+			x.what(),
+			"details",
+			_("Close"));
+
 		return false;
 	}
 	catch(...)
 	{
-		dialog_blocking(_("Error"), _("Uncaught error on file open (BUG)"));
+		dialog_message_1b(
+			"ERROR",
+			_("Uncaught error on file open (BUG)"),
+			"details",
+			_("Close"));
+
 		return false;
 	}
 
@@ -3281,7 +3319,11 @@ App::open_from_temporary_container_as(std::string container_filename_base,std::s
 				throw (String)strprintf(_("Unable to load \"%s\":\n\n"),container_filename_base.c_str()) + errors;
 
 			if (warnings != "")
-				dialog_blocking(_("Warning"), strprintf("%s:\n\n%s", _("Warning"), warnings.c_str()));
+				dialog_message_1b(
+						"WARNING",
+						strprintf("%s:\n\n%s", _("Warning"), warnings.c_str()),
+						"details",
+						_("Close"));
 
 			if (as.find(custom_filename_prefix.c_str()) != 0)
 				add_recent_file(as);
@@ -3305,17 +3347,32 @@ App::open_from_temporary_container_as(std::string container_filename_base,std::s
 	}
 	catch(String x)
 	{
-		dialog_blocking(_("Error"), x);
+		dialog_message_1b(
+				"ERROR",
+				 x,
+				"details",
+				_("Close"));
+
 		return false;
 	}
 	catch(runtime_error x)
 	{
-		dialog_blocking(_("Error"), x.what());
+		dialog_message_1b(
+				"ERROR",
+				x.what(),
+				"details",
+				_("Close"));
+
 		return false;
 	}
 	catch(...)
 	{
-		dialog_blocking(_("Error"), _("Uncaught error on file open (BUG)"));
+		dialog_message_1b(
+				"ERROR",
+				_("Uncaught error on file open (BUG)"),
+				"details",
+				_("Close"));
+
 		return false;
 	}
 

@@ -252,7 +252,12 @@ Dock_PalEdit::on_save_pressed()
 			{
 				perror(filename.c_str());
 				string msg(strprintf(_("Unable to check whether '%s' exists."), filename.c_str()));
-				App::dialog_blocking(_("Error"),msg.c_str());
+				App::dialog_message_1b(
+						"ERROR",
+						msg.c_str(),
+						"detaisl",
+						_("Close"));
+
 				continue;
 			}
 

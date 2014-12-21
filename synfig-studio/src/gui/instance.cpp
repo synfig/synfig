@@ -226,14 +226,29 @@ studio::Instance::run_plugin(std::string plugin_path)
 		if(canvas->count()!=1)
 		{
 			one_moment.hide();
-			App::dialog_blocking(_("Error"),_("The plugin operation has failed. This can be due to current file being\nreferenced by another composition that is already open, or\nbecause of an internal error in Synfig Studio. Try closing any\ncompositions that might reference this file and try\nagain, or restart Synfig Studio."));
+			App::dialog_message_1b(
+					"ERROR",
+					_("The plugin operation has failed."),
+					_("This can be due to current file "
+						"being referenced by another composition that is already open, "
+						"or because of an internal error in Synfig Studio. Try closing "
+						"any compositions that might reference this file and try again, "
+						"or restart Synfig Studio."),
+					_("Close"));
+
 			one_moment.show();
+
 		} else {
 			bool result;
 			result = launcher.execute( plugin_path, App::get_base_path() );
 			if (!result){
 				one_moment.hide();
-				App::dialog_blocking(_("Error"), launcher.get_output());
+				App::dialog_message_1b(
+						"Error",
+						launcher.get_output(),
+						"details",
+						_("Close"));
+
 				one_moment.show();
 				
 			}
@@ -297,7 +312,12 @@ studio::Instance::save()
 		return STATUS_OK;
 	}
 	string msg(strprintf(_("Unable to save to '%s'"), get_file_name().c_str()));
-	App::dialog_blocking(_("Error"), msg.c_str());
+	App::dialog_message_1b(
+			"ERROR",
+			msg.c_str(),
+			"details",
+			_("Close"));
+
 	return STATUS_ERROR;
 }
 
@@ -332,7 +352,11 @@ studio::Instance::dialog_save_as()
 						"on a composition that is being referenced by other\n"
 						"files that are currently open. Close these\n"
 						"other files first before trying to use \"SaveAs\".")));
-					App::dialog_blocking(_("Error"), msg.c_str());
+					App::dialog_message_1b(
+							"ERROR",
+							msg.c_str(),
+							"details",
+							_("Close"));
 
 					return false;
 				}
@@ -392,7 +416,12 @@ studio::Instance::dialog_save_as()
 			{
 				perror(filename.c_str());
 				string msg(strprintf(_("Unable to check whether '%s' exists."), filename.c_str()));
-				App::dialog_blocking(_("Error"),msg.c_str());
+				App::dialog_message_1b(
+						"ERROR",
+						msg.c_str(),
+						"details",
+						_("Close"));
+
 				continue;
 			}
 
@@ -421,7 +450,11 @@ studio::Instance::dialog_save_as()
 			return true;
 		}
 		string msg(strprintf(_("Unable to save to '%s'"), filename.c_str()));
-		App::dialog_blocking(_("Error"),msg.c_str());
+		App::dialog_message_1b(
+				"ERROR",
+				msg.c_str(),
+				"details",
+				_("Close"));
 	}
 
 	return false;
@@ -545,7 +578,12 @@ Instance::dialog_cvs_commit()
 	calc_repository_info();
 	if(!in_repository())
 	{
-		App::dialog_blocking(_("Error"),_("You must first add this composition to the repository"));
+		App::dialog_message_1b(
+				"ERROR",
+				_("You must first add this composition to the repository"),
+				"details",
+				_("Close"));
+
 		return;
 	}
 	try
@@ -568,7 +606,12 @@ Instance::dialog_cvs_commit()
 
 		if(!is_modified())
 		{
-			App::dialog_blocking(_("Error"),_("The local copy of the file hasn't been changed since the last update.\nNothing to commit!"));
+			App::dialog_message_1b(
+					"ERROR",
+					_("The local copy of the file hasn't been changed since the last update. Nothing to commit!"),
+					"details",
+					_("Close"));
+
 			return;
 		}
 
@@ -585,7 +628,11 @@ Instance::dialog_cvs_commit()
 	}
 	catch(...)
 	{
-		App::dialog_blocking(_("Error"),_("An error has occurred when trying to COMMIT"));
+		App::dialog_message_1b(
+				"ERROR",
+				_("An error has occurred when trying to COMMIT"),
+				"details",
+				_("Close"));
 	}
 	update_all_titles();
 }
@@ -596,7 +643,11 @@ Instance::dialog_cvs_add()
 	calc_repository_info();
 	if(in_repository())
 	{
-		App::dialog_blocking(_("Error"),_("This composition has already been added to the repository"));
+		App::dialog_message_1b(
+				"ERROR",
+				_("This composition has already been added to the repository"),
+				"details",
+				_("Close"));
 		return;
 	}
 	try
@@ -610,7 +661,11 @@ Instance::dialog_cvs_add()
 	}
 	catch(...)
 	{
-		App::dialog_blocking(_("Error"),_("An error has occurred when trying to ADD"));
+		App::dialog_message_1b(
+				"ERROR",
+				_("An error has occurred when trying to ADD"),
+				"details",
+				_("Close"));
 	}
 	update_all_titles();
 }
@@ -621,12 +676,22 @@ Instance::dialog_cvs_update()
 	calc_repository_info();
 	if(!in_repository())
 	{
-		App::dialog_blocking(_("Error"),_("This file is not under version control, so there is nothing to update from!"));
+		App::dialog_message_1b(
+				"ERROR",
+				_("This file is not under version control, so there is nothing to update from!"),
+				"details",
+				_("Close"));
+
 		return;
 	}
 	if(!is_updated())
 	{
-		App::dialog_blocking(_("Info"),_("This file is up-to-date"));
+		App::dialog_message_1b(
+				"INFO",
+				_("This file is up-to-date"),
+				"details",
+				_("Close"));
+
 		return;
 	}
 
@@ -658,7 +723,11 @@ Instance::dialog_cvs_update()
 	}
 	catch(...)
 	{
-		App::dialog_blocking(_("Error"),_("An error has occurred when trying to UPDATE"));
+		App::dialog_message_1b(
+				"ERROR",
+				_("An error has occurred when trying to UPDATE"),
+				"details",
+				_("Close"));
 	}
 	//update_all_titles();
 }
@@ -668,8 +737,12 @@ Instance::dialog_cvs_revert()
 {
 	calc_repository_info();
 	if(!in_repository())
-	{
-		App::dialog_blocking(_("Error"),_("This file is not under version control, so there is nothing to revert to!"));
+{
+		App::dialog_message_1b(
+				"ERROR",
+				_("This file is not under version control, so there is nothing to revert to!"),
+				"details",
+				_("Close"));
 		return;
 	}
 	try
@@ -692,7 +765,12 @@ Instance::dialog_cvs_revert()
 		// Remove the old file
 		if(remove(get_file_name().c_str())!=0)
 		{
-			App::dialog_blocking(_("Error"),_("Unable to remove previous version"));
+			App::dialog_message_1b(
+					"ERROR",
+					_("Unable to remove previous version"),
+					"details",
+					_("Close"));
+
 			return;
 		}
 
@@ -701,7 +779,11 @@ Instance::dialog_cvs_revert()
 	}
 	catch(...)
 	{
-		App::dialog_blocking(_("Error"),_("An error has occurred when trying to UPDATE"));
+		App::dialog_message_1b(
+				"ERROR",
+				_("An error has occurred when trying to UPDATE"),
+				"details",
+				_("Close"));
 	}
 	//update_all_titles();
 }
@@ -720,7 +802,16 @@ Instance::revert()
 	if(canvas->count()!=1)
 	{
 		one_moment.hide();
-		App::dialog_blocking(_("Error"),_("The revert operation has failed. This can be due to it being\nreferenced by another composition that is already open, or\nbecause of an internal error in Synfig Studio. Try closing any\ncompositions that might reference this composition and try\nagain, or restart Synfig Studio."));
+		App::dialog_message_1b(
+				"ERROR",
+				_("The revert operation has failed."),
+				_("This can be due to it being referenced by another composition"
+					" that is already open, or because of an internal error "
+					"in Synfig Studio. Try closing any compositions that "
+					"might reference this composition and try again, or "
+					"restart Synfig Studio."),
+				_("Close"));
+
 		one_moment.show();
 	}
 	canvas=0;
@@ -759,7 +850,12 @@ Instance::safe_close()
 	if (canvas_view->is_playing())
 	{
 		canvas_view->present();
-		App::dialog_blocking("Error", "The animation is currently playing so the window cannot be closed.");
+		App::dialog_message_1b(
+				"ERROR",
+				_("The animation is currently playing so the window cannot be closed."),
+				"details",
+				_("Thanks!"));
+
 		return false;
 	}
 	if(get_action_count())

@@ -146,7 +146,12 @@ Widget_CanvasChooser::chooser_menu()
 
 	if (canvas_name == "")
 	{
-		App::dialog_blocking(_("Error"),_("No canvas name was specified"));
+		App::dialog_message_1b(
+				"ERROR",
+				_("No canvas name was specified"),
+				"details",
+				_("Close"));
+
 		set_value_(canvas);
 		return;
 	}
@@ -160,12 +165,22 @@ Widget_CanvasChooser::chooser_menu()
 	}
 	catch(std::runtime_error x)
 	{
-		App::dialog_blocking(_("Error"),String(_("(Exception Thrown) Error selecting canvas:\n\n")) + x.what());
+		App::dialog_message_1b(
+				"ERROR",
+				String(_("(Exception Thrown) Error selecting canvas:\n\n")) + x.what(),
+				"details",
+				_("Close"));
+
 		set_value_(canvas);
 	}
 	catch(...)
 	{
-		App::dialog_blocking(_("Error"),_("Unknown Exception"));
+		App::dialog_message_1b(
+				"ERROR",
+				_("Unknown Exception"),
+				"details",
+				_("Close"));
+
 		set_value_(canvas);
 	}
 }
