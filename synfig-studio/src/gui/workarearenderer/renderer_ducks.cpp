@@ -127,11 +127,8 @@ Renderer_Ducks::render_vfunc(
 					((*iter2)[1]-window_start[1])/ph );
 
 		cr->set_line_width(1.0);
-		cr->set_source_rgb(
-			colorconv_synfig2gdk((*iter)->color).get_red_p(),
-			colorconv_synfig2gdk((*iter)->color).get_green_p(),
-			colorconv_synfig2gdk((*iter)->color).get_blue_p()
-			);
+		synfig::Color c = colorconv_apply_gamma((*iter)->color);
+		cr->set_source_rgb(c.get_r(), c.get_g(), c.get_b());
 		cr->stroke();
 
 		cr->restore();
@@ -326,7 +323,7 @@ Renderer_Ducks::render_vfunc(
 				Point p((*iter)->get_transform_stack().perform(points[i]));
 				p[0] = (p[0]-window_start[0])/pw;
 				p[1] = (p[1]-window_start[1])/ph;
-				if (p.is_nan_or_inf()) {
+				if (!p.is_nan_or_inf()) {
 					if (first)
 						{ first = false; cr->move_to(p[0], p[1]); }
 					else

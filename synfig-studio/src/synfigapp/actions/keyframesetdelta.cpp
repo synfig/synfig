@@ -116,24 +116,23 @@ void
 Action::KeyframeSetDelta::prepare()
 {
 	KeyframeList &list = get_canvas()->keyframe_list();
-	KeyframeList::iterator next = get_canvas()->keyframe_list().find(keyframe);
+	KeyframeList::iterator next = list.find(keyframe);
 	++next;
-	if (next != list.end()) {
-		if (fabs(delta) > 0.00000001) {
-			for(KeyframeList::iterator i = next; i != list.end(); ++i) {
-				Keyframe keyframe(*i);
-				keyframe.set_time( keyframe.get_time() + delta );
+	if (next != list.end() && fabs(delta) > 0.00000001)
+	{
+		for(KeyframeList::iterator i = next; i != list.end(); ++i) {
+			Keyframe keyframe(*i);
+			keyframe.set_time( keyframe.get_time() + delta );
 
-				Action::Handle action(KeyframeSet::create());
-				action->set_param("canvas",get_canvas());
-				action->set_param("canvas_interface",get_canvas_interface());
-				action->set_param("keyframe", keyframe);
-				assert(action->is_ready());
-				if(!action->is_ready())
-					throw Error(Error::TYPE_NOTREADY);
+			Action::Handle action(KeyframeSet::create());
+			action->set_param("canvas",get_canvas());
+			action->set_param("canvas_interface",get_canvas_interface());
+			action->set_param("keyframe", keyframe);
+			assert(action->is_ready());
+			if(!action->is_ready())
+				throw Error(Error::TYPE_NOTREADY);
 
-				if (delta > 0) add_action(action); else add_action_front(action);
-			}
+			if (delta > 0) add_action_front(action); else add_action(action);
 		}
 	}
 }

@@ -420,13 +420,7 @@ Widget_Preview::Widget_Preview():
 	
 	scr_time_scrub.set_draw_value(0);
 
-	disp_sound.set_time_adjustment(adj_sound);
 	timedisp = -1;
-
-	//Set up signals to modify time value as it should be...
-	disp_sound.signal_start_scrubbing().connect(sigc::mem_fun(*this,&Widget_Preview::scrub_updated));
-	disp_sound.signal_scrub().connect(sigc::mem_fun(*this,&Widget_Preview::scrub_updated));
-
 
 	Gtk::Button *button = 0;
 	Gtk::Image *icon = 0;
@@ -599,15 +593,11 @@ Widget_Preview::Widget_Preview():
 
 	status->show_all();
 
-	//5th row: sound track
-	disp_sound.set_size_request(-1,32);
-
 	// attach all widgets	
 	attach(preview_window, 0, 1, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0);
 	attach(scr_time_scrub, 0, 1, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
 	attach(*toolbar, 0, 1, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL);
 	attach(*status, 0, 1, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
-//	attach(disp_sound,0,1,4,5,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
 	preview_window.show_all();
 	scr_time_scrub.show_all();
 
@@ -635,6 +625,9 @@ void studio::Widget_Preview::update()
 			jack_transport_locate(jack_client, nframes);
 		}
 		#endif
+
+		if (!is_time_equal_to_current_frame(soundProcessor.get_position()))
+			soundProcessor.set_position(time);
 
 		//synfig::warning("Updating at %.3f s",time);
 
@@ -713,16 +706,6 @@ void studio::Widget_Preview::update()
 				}
 			}
 		}
-	}
-
-	if(disp_sound.get_profile() && adj_sound->get_value() != time)
-	{
-		//timeupdate = time;
-
-		//Set the position of the sound (short circuited for sound modifying the time)
-
-		disp_sound.set_position(time);
-		disp_sound.queue_draw();
 	}
 
 	//current frame in previewing
@@ -897,17 +880,9 @@ bool studio::Widget_Preview::play_update()
 			stop_on_end = false;
 #endif
 		}
-
-		//adjust it to be synced with the audio if it can...
+		else
 		{
-			double newtime = audiotime;
-			if(audio && audio->is_playing()) audio->get_current_time(newtime);
-
-			if(newtime != audiotime)
-			{
-				//synfig::info("Adjusted time from %.3lf to %.3lf", time,newtime);
-				time = audiotime = newtime;
-			}
+			time = soundProcessor.get_position();
 		}
 
 		//Looping conditions...
@@ -954,16 +929,6 @@ void studio::Widget_Preview::scrub_updated(double t)
 {
 	if (playing) on_play_pause_pressed();
 
-	//Attempt at being more accurate... the time is adjusted to be exactly where the sound says it is
-	//double oldt = t;
-	if(audio)
-	{
-		if(!audio->isPaused())
-		{
-			audio->get_current_time(t);
-		}
-	}
-
 	//synfig::info("Scrubbing to %.3f, setting adj to %.3f",oldt,t);
 
 	if(adj_time_scrub->get_value() != t)
@@ -984,6 +949,8 @@ void studio::Widget_Preview::disconnect_preview(Preview *prev)
 
 void studio::Widget_Preview::set_preview(etl::handle<Preview>	prev)
 {
+	soundProcessor.clear();
+
 	preview = prev;
 
 	synfig::info("Setting preview");
@@ -1023,6 +990,8 @@ void studio::Widget_Preview::set_preview(etl::handle<Preview>	prev)
 			singleframe = true;
 		}
 
+		preview->get_canvas()->fill_sound_processor(soundProcessor);
+
 		//connect so future information will be found...
 		prevchanged = prev->signal_changed().connect(sigc::mem_fun(*this,&Widget_Preview::whenupdated));
 		prev->signal_destroyed().connect(sigc::mem_fun(*this,&Widget_Preview::disconnect_preview));
@@ -1044,6 +1013,7 @@ void studio::Widget_Preview::clear()
 {
 	preview = 0;
 	prevchanged.disconnect();
+	soundProcessor.clear();
 }
 
 void studio::Widget_Preview::play()
@@ -1052,6 +1022,7 @@ void studio::Widget_Preview::play()
 	if(preview)
 	{
 		if (!jack_enabled && get_position() == get_time_end()) seek(get_time_start());
+		soundProcessor.set_playing(true);
 
 		//synfig::info("Playing at %lf",adj_time_scrub->get_value());
 		//audiotime = adj_time_scrub->get_value();
@@ -1071,9 +1042,6 @@ void studio::Widget_Preview::play()
 
 		//signal_play_(adj_time_scrub->get_value());
 
-		//play the audio...
-		if(audio) audio->play(adj_time_scrub->get_value());
-
 		timecon = Glib::signal_timeout().connect(sigc::mem_fun(*this,&Widget_Preview::play_update),timeout);
 		timer.reset();
 	}
@@ -1086,7 +1054,7 @@ void studio::Widget_Preview::pause()
 	playing = false;
 	pause_button->hide();
 	play_button->show();
-	if(audio) audio->stop(); //!< stop the audio
+	soundProcessor.set_playing(false);
 }
 
 void studio::Widget_Preview::on_play_pause_pressed()
@@ -1146,24 +1114,6 @@ bool studio::Widget_Preview::scroll_move_event(GdkEvent *event)
 	}
 
 	return false;
-}
-
-void studio::Widget_Preview::set_audioprofile(etl::handle<AudioProfile> p)
-{
-	disp_sound.set_profile(p);
-}
-
-void studio::Widget_Preview::set_audio(etl::handle<AudioContainer> a)
-{
-	audio = a;
-
-	//disconnect any previous signals
-	scrstartcon.disconnect(); scrstopcon.disconnect(); scrubcon.disconnect();
-
-	//connect the new signals
-	scrstartcon = disp_sound.signal_start_scrubbing().connect(sigc::mem_fun(*a,&AudioContainer::start_scrubbing));
-	scrstopcon = disp_sound.signal_stop_scrubbing().connect(sigc::mem_fun(*a,&AudioContainer::stop_scrubbing));
-	scrubcon = disp_sound.signal_scrub().connect(sigc::mem_fun(*a,&AudioContainer::scrub));
 }
 
 synfig::Time studio::Widget_Preview::get_position() const

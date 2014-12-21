@@ -43,7 +43,7 @@
 namespace studio {
 
 
-Gdk::Color colorconv_synfig2gdk(const synfig::Color &c);
+synfig::Color colorconv_apply_gamma(const synfig::Color &c);
 
 void render_color_to_window(const Cairo::RefPtr<Cairo::Context> &cr, const Gdk::Rectangle &ca, const synfig::Color &color);
 

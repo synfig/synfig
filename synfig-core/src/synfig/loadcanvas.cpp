@@ -2899,7 +2899,36 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 										layer->get_name().c_str());
 						param_name = "bline";
 					}
-					layer->connect_dynamic_param(param_name,value_node);
+
+					// NB: this part of code has copy below
+					bool processed = false;
+					if (old_pastecanvas)
+					{
+						processed = true;
+						if (param_name == "origin")
+						{
+							origin_const = false;
+							offset_node->set_link("lhs", value_node);
+						}
+						else
+						if (param_name == "focus")
+						{
+							focus_const = false;
+							origin_node = value_node;
+							layer->connect_dynamic_param("origin_node", ValueNode::Handle(origin_node));
+							offset_node->set_link("rhs", value_node);
+						}
+						else
+						if (param_name == "zoom")
+						{
+							zoom_const = false;
+							scale_node->set_link("exp", value_node);
+						}
+						else
+							processed = false;
+					}
+
+					if (!processed) layer->connect_dynamic_param(param_name,value_node);
     			}
 				catch(Exception::IDNotFound)
 				{
@@ -2949,6 +2978,7 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 				}
 			}
 
+			// NB: this part of code has copy above
 			bool processed = false;
 			if (old_pastecanvas)
 			{

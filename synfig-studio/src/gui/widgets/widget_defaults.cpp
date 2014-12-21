@@ -101,12 +101,8 @@ public:
 		render_color_to_window(cr,Gdk::Rectangle(0,0,w,h),synfigapp::Main::get_fill_color());
 
 		// Draw in the circle
-		Color brush=synfigapp::Main::get_outline_color();
-		double a(brush.get_a());
-		double r  =App::gamma.r_F32_to_F32  (brush.get_r());
-		double g  =App::gamma.g_F32_to_F32  (brush.get_g());
-		double b  =App::gamma.b_F32_to_F32  (brush.get_b());
-		cr->set_source_rgba(r, g, b, a);
+		Color brush = colorconv_apply_gamma( synfigapp::Main::get_outline_color() );
+		cr->set_source_rgba(brush.get_r(), brush.get_g(), brush.get_b(), brush.get_a());
 		cr->arc(w/2.0, h/2.0, pixelsize, 0.0, 360*M_PI/180.0);
 		cr->fill();
 		return true;
