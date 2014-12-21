@@ -116,38 +116,6 @@ ConsoleUIInterface::yes_no_cancel(
 }
 
 
-UIInterface::Response
-ConsoleUIInterface::ok_cancel(
-			const std::string &title,
-			const std::string &message,
-			Response dflt
-)
-{
-	cout<<title.c_str()<<": "<<message.c_str()<<' ';
-	if(dflt==RESPONSE_CANCEL)
-		cout<<_("(cancel/ok)")<<endl;
-	else
-		cout<<_("(ok/cancel)")<<endl;
-	string resp;
-	cin>>resp;
-
-	if(dflt==RESPONSE_CANCEL)
-	{
-		if(resp=="ok")
-			return RESPONSE_OK;
-		else
-			return RESPONSE_CANCEL;
-	}
-	else
-	{
-		if(resp=="cancel")
-			return RESPONSE_CANCEL;
-		else
-			return RESPONSE_OK;
-	}
-}
-
-
 bool
 ConsoleUIInterface::task(const std::string &task)
 {
