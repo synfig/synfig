@@ -2373,6 +2373,12 @@ App::dialog_open_file_image(const std::string &title, std::string &filename, std
 	filter_image->add_pattern("*.lst");
 	dialog->add_filter(filter_image);
 
+	// Any files
+	Glib::RefPtr<Gtk::FileFilter> filter_ayn = Gtk::FileFilter::create();
+	filter_any->set_name("Any files");
+	filter_any->add_pattern("*");
+	dialog->add_filter(filter_any);
+
 	if (filename.empty())
 		dialog->set_filename(prev_path);
 	else if (is_absolute_path(filename))
@@ -2410,7 +2416,7 @@ App::dialog_open_file_audio(const std::string &title, std::string &filename, std
 	dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
 	dialog->add_button(Gtk::StockID(_("Load")), Gtk::RESPONSE_ACCEPT);
 
-	// 3 Audio files
+	// Audio files
 	Glib::RefPtr<Gtk::FileFilter> filter_audio = Gtk::FileFilter::create();
 	filter_audio->set_name("Audio (*.ogg, *.mp3, *.wav)");
 	filter_audio->add_mime_type("audio/x-vorbis+ogg");
@@ -2420,6 +2426,12 @@ App::dialog_open_file_audio(const std::string &title, std::string &filename, std
 	filter_audio->add_pattern("*.mp3");
 	filter_audio->add_pattern("*.wav");
 	dialog->add_filter(filter_audio);
+
+	// Any files
+	Glib::RefPtr<Gtk::FileFilter> filter_ayn = Gtk::FileFilter::create();
+	filter_any->set_name("Any files");
+	filter_any->add_pattern("*");
+	dialog->add_filter(filter_any);
 
 	if (filename.empty())
 	dialog->set_filename(prev_path);
