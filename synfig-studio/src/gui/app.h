@@ -372,8 +372,6 @@ public:
 
 	static bool dialog_select_list_item(const std::string &title, const std::string &message, const std::list<std::string> &list, int &item_index);
 
-	static void dialog_blocking(const std::string &title, const std::string &message);
-
 	static bool dialog_entry(const std::string &action, const std::string &content, std::string &text, const std::string &button1, const std::string &button2);
 
 	static bool dialog_paragraph(const std::string &title, const std::string &message,std::string &text);
@@ -382,9 +380,10 @@ public:
 
 	static void dialog_help();
 
-	static void dialog_message_1b(const std::string &message,
+	static void dialog_message_1b(
+			const std::string &type,
+			const std::string &message,
 			const std::string &detials,
-			const Gtk::MessageType &type,
 			const std::string &button1);
 
 	static bool dialog_message_2b(const std::string &message,

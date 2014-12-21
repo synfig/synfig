@@ -252,7 +252,11 @@ LayerParamTreeStore::set_value_impl(const Gtk::TreeModel::iterator& iter, int co
 					{
 						// ERROR!
 						group.cancel();
-						App::dialog_blocking(_("Error"),_("Unable to set all layer parameters."));
+						App::dialog_message_1b(
+								"ERROR",
+								_("Unable to set all layer parameters."),
+								"details",
+								_("Close"));
 
 						return;
 					}
