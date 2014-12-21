@@ -2351,11 +2351,12 @@ App::dialog_open_file_image(const std::string &title, std::string &filename, std
 
 	// show only Synfig color palette file (*.spal)
 	Glib::RefPtr<Gtk::FileFilter> filter_image = Gtk::FileFilter::create();
-	filter_image->set_name("Images and sequence files (*.png, *.jpeg, *.bmp *.list)");
+	filter_image->set_name("Images and sequence files (*.png, *.jpeg, *.bmp, *.svg, *.list)");
 	filter_image->add_pattern("*.png");
 	filter_image->add_pattern("*.peg");
 	filter_image->add_pattern("*.jpg");
 	filter_image->add_pattern("*.bmp");
+	filter_image->add_pattern("*.svg");
 	filter_image->add_pattern("*.lst");
 	dialog->add_filter(filter_image);
 
