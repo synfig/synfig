@@ -68,12 +68,6 @@ public:
 				const std::string &button3,
 				Response dflt=RESPONSE_YES
 	) = 0;
-
-	virtual Response ok_cancel(
-				const std::string &title,
-				const std::string &message,
-				Response dflt=RESPONSE_OK
-	) = 0;
 };
 
 class DefaultUIInterface : public UIInterface
@@ -99,12 +93,6 @@ public:
 	)
 	{ return dflt; }
 
-	Response ok_cancel(
-			const std::string &/*title*/,
-			const std::string &/*message*/,
-			Response dflt
-	)
-	{ return dflt; }
 
 	bool task(const std::string &/*task*/)
 		{ return true; }
@@ -139,12 +127,6 @@ public:
 	)
 	{ return RESPONSE_YES; }
 
-	Response ok_cancel(
-			const std::string &/*title*/,
-			const std::string &/*message*/,
-			Response /*dflt*/
-	)
-	{ return RESPONSE_OK; }
 
 	bool task(const std::string &/*task*/)
 		{ return true; }
@@ -177,11 +159,6 @@ public:
 			Response dflt
 	);
 
-	Response ok_cancel(
-			const std::string &title,
-			const std::string &message,
-			Response dflt
-	);
 
 	bool task(const std::string &task);
 	bool error(const std::string &task);

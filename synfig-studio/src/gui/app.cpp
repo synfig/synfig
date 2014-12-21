@@ -405,24 +405,6 @@ public:
 	}
 
 
-	virtual Response ok_cancel(const std::string &title, const std::string &message,Response dflt=RESPONSE_OK)
-	{
-		Gtk::Dialog dialog(
-			title,		// Title
-			true		// Modal
-		);
-		Gtk::Label label(message);
-		label.show();
-
-		dialog.get_vbox()->pack_start(label);
-		dialog.add_button(Gtk::StockID("gtk-ok"),RESPONSE_OK);
-		dialog.add_button(Gtk::StockID("gtk-cancel"),RESPONSE_CANCEL);
-
-		dialog.set_default_response(dflt);
-		dialog.show();
-		return (Response)dialog.run();
-	}
-
 	virtual bool
 	task(const std::string &task)
 	{
