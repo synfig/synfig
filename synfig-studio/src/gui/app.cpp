@@ -1653,7 +1653,7 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 					"hope to get this issue resolved in the future versions.");
 		}
 #endif
-		if (warnings!="")
+		if (message!="")
 			dialog_message_1b("WARNING",
 					message,
 					details,
