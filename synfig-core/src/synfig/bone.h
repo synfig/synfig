@@ -49,7 +49,7 @@
 	cout<<"[length]="<<bone.length_<<endl;         \
 	cout<<"[width]="<<bone.width_<<endl; \
 	cout<<"[tipwidth]="<<bone.tipwidth_<<endl; \
-	cout<<"[order]="<<bone.order_<<endl; \
+	cout<<"[depth]="<<bone.depth_<<endl; \
 	cout<<"[parent]="<<bone.parent_<<endl
 
 /* === T Y P E D E F S ===================================================== */
@@ -102,8 +102,8 @@ private:
 	Real width_;
 	//!This is the width of bone at its tip
 	Real tipwidth_;
-	//!This is the z-order of bone
-	Real order_;
+	//!This is the z-depth of bone
+	Real depth_;
 	//!The parent bone.
 	const ValueNode_Bone* parent_;
 
@@ -148,9 +148,9 @@ public:
 	const Real& get_tipwidth()const {return tipwidth_;}
 	void set_tipwidth(const Real &x) {tipwidth_=x;}
 
-	//!Wrapper for order
-	const Real& get_order()const {return order_;}
-	void set_order(const Real &x) {order_=x;}
+	//!Wrapper for depth
+	const Real& get_depth()const {return depth_;}
+	void set_depth(const Real &x) {depth_=x;}
 
 	//!This gets the calculated tip of the bone based on
 	//!tip=origin+[length,0]*Rotate(alpha)*Scalex(scalex*scalelx)
@@ -257,7 +257,7 @@ public:
  * list of bones by its UniqueID value. For example to calcualte the setup matrix it should
  * reconstruct the bone hierarchy from the current bone to the root parent. Due to that now,
  * it is only stored the UniqueID of the parent (and not a pointer), it is the skeletons veluenode
- * who have to perform all the job: find all the parents and multiply in the correct order its
+ * who have to perform all the job: find all the parents and multiply in the correct order (depth) its
  * matrixes. The same happen for the animated matrix.
  * For reparent it is the same. It is just a modification of the parent UniqueID.
  * Remove a bone from the list would imply remove all its children from the list. A warning should be triggered.

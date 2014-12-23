@@ -515,7 +515,7 @@ Action::ValueDescSet::prepare()
 			KeyValue("width",    bone.get_width()),
 			KeyValue("scalex",   bone.get_scalex()),
 			KeyValue("tipwidth", bone.get_tipwidth()),
-			KeyValue("order",    bone.get_order()),
+			KeyValue("bone_depth",    bone.get_depth()),
 			KeyValue("length",   bone.get_length())
 		};
 
