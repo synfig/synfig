@@ -1377,7 +1377,7 @@ CanvasView::create_display_bar()
 	// Separator
 	displaybar->append( *create_tool_separator() );
 
-	/*
+	/* QUALITY_SPIN_DISABLED see also CanvasView::set_quality
 	{ // Set up quality spin button
 		quality_spin=Gtk::manage(new class Gtk::SpinButton(quality_adjustment_));
 		quality_spin->signal_value_changed().connect(
@@ -3113,8 +3113,10 @@ CanvasView::set_quality(int x)
 	if(updating_quality_)
 		return;
 	work_area->set_quality(x);
+
+	// quality_spin creation is commented at QUALITY_SPIN_DISABLED in CanvasView::create_display_bar
 	// Update the quality spin button
-	quality_spin->set_value(x);
+	// quality_spin->set_value(x);
 }
 
 void
