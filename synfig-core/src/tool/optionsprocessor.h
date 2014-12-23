@@ -40,7 +40,7 @@ public:
 					 const boost::program_options::options_description& po_visible);
 
 #ifdef _DEBUG
-	void process_debug_options();
+	void process_debug_options() throw (SynfigToolException&);
 #endif
 
 	/// Settings options
