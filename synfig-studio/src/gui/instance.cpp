@@ -1105,10 +1105,19 @@ Instance::process_action(synfig::String name, synfigapp::Action::ParamList param
 					}
 				}
 				String button2 = _("Export");
-				if (entry.local_name == "Rename ValueNode") button2 = _("Rename");
+				String label = _("Name: ");
+
+				// export and rename value dialog
+				if (entry.local_name == _("Rename ValueNode")) button2 = _("Rename");
+				// set layer description dialog
+				if (entry.local_name == _("Set Layer Description"))
+				{
+					button2 = _("Set");
+					label = _("Description: ");
+				}
 
 				if(!studio::App::dialog_entry(entry.local_name,
-							_("Name: "),
+							label,
 							//iter->get_local_name()+": "+iter->get_desc(),
 							str,
 							_("Cancel"),
