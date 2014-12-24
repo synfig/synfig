@@ -1108,7 +1108,7 @@ Instance::process_action(synfig::String name, synfigapp::Action::ParamList param
 				if (entry.local_name == "Rename ValueNode") button2 = _("Rename");
 
 				if(!studio::App::dialog_entry(entry.local_name,
-							_("Value Name: "),
+							_("Name: "),
 							//iter->get_local_name()+": "+iter->get_desc(),
 							str,
 							_("Cancel"),

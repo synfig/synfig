@@ -3906,7 +3906,7 @@ CanvasView::on_keyframe_description_set()
 
 		String str(keyframe.get_description ());
 		if(!studio::App::dialog_entry(action->get_name(),
-					_("Value Name: "),
+					_("Name: "),
 					//action->get_local_name(),
 					str,
 					_("Cancel"),
