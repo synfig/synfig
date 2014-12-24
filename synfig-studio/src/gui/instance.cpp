@@ -1108,9 +1108,9 @@ Instance::process_action(synfig::String name, synfigapp::Action::ParamList param
 				String label = _("Name: ");
 
 				// export and rename value dialog
-				if (entry.local_name == _("Rename ValueNode")) button2 = _("Rename");
+				if (entry.name == "ValueNodeRename") button2 = _("Rename");
 				// set layer description dialog
-				if (entry.local_name == _("Set Layer Description"))
+				if (entry.name == "LayerSetDesc")
 				{
 					button2 = _("Set");
 					label = _("Description: ");
