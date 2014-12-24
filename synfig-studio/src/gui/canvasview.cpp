@@ -3905,12 +3905,12 @@ CanvasView::on_keyframe_description_set()
 			return;
 
 		String str(keyframe.get_description ());
-		if(!studio::App::dialog_entry(action->get_name(),
-					_("Name: "),
+		if(!studio::App::dialog_entry((action->get_local_name() + _(" Description")),
+					_("Description: "),
 					//action->get_local_name(),
 					str,
 					_("Cancel"),
-					_("Export")))
+					_("Set")))
 			return;
 
 		keyframe.set_description(str);
