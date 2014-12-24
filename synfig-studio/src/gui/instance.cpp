@@ -1404,8 +1404,8 @@ edit_several_waypoints(etl::handle<CanvasView> canvas_view, std::list<synfigapp:
 	etl::handle<synfigapp::CanvasInterface> canvas_interface(canvas_view->canvas_interface());
 
 	Gtk::Dialog dialog(
-		"Edit Multiple Waypoints",		// Title
-		true		// Modal
+		"Edit Multiple Waypoints",
+		true
 	);
 
 	Widget_WaypointModel widget_waypoint_model;
@@ -1413,8 +1413,8 @@ edit_several_waypoints(etl::handle<CanvasView> canvas_view, std::list<synfigapp:
 
 	dialog.get_vbox()->pack_start(widget_waypoint_model);
 
-	dialog.add_button(Gtk::StockID("gtk-apply"),1);
-	dialog.add_button(Gtk::StockID("gtk-cancel"),0);
+	dialog.add_button(_("Cancel"), 0);
+	dialog.add_button(_("Apply"), 1);
 	dialog.show();
 
 	if(dialog.run()==0 || widget_waypoint_model.get_waypoint_model().is_trivial())

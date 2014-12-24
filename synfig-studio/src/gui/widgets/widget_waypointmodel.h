@@ -27,7 +27,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/table.h>
+#include <gtkmm/grid.h>
 #include <gtkmm/button.h>
 #include <gtkmm/adjustment.h>
 #include <gtkmm/box.h>
@@ -54,7 +54,7 @@ namespace studio {
 class Widget_Time;
 class Widget_WaypointModel;
 
-class Widget_WaypointModel : public Gtk::Table
+class Widget_WaypointModel : public Gtk::Grid
 {
 	synfig::Waypoint::Model waypoint_model;
 

@@ -56,7 +56,7 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 Widget_WaypointModel::Widget_WaypointModel():
-	Gtk::Table(4,3,false),
+	Gtk::Grid(),
 	adj_tension(Gtk::Adjustment::create(0.0,-20,20,0.1,1)),
 	adj_continuity(Gtk::Adjustment::create(0.0,-20,20,0.1,1)),
 	adj_bias(Gtk::Adjustment::create(0.0,-20,20,0.1,1)),
@@ -128,19 +128,29 @@ Widget_WaypointModel::Widget_WaypointModel():
 	before_options->signal_changed().connect(sigc::mem_fun(*this,&Widget_WaypointModel::on_change));
 	after_options->signal_changed().connect(sigc::mem_fun(*this,&Widget_WaypointModel::on_change));
 
-	attach(checkbutton_before, 0, 1, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	attach(*before_options, 1, 2, 0,1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	attach(checkbutton_after, 2, 3, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	attach(*after_options, 3, 4, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	set_row_spacing(6);
+	set_column_spacing(12);
+	set_border_width(18);
 
-	attach(checkbutton_tension, 0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	attach(*spin_tension, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	attach(checkbutton_continuity, 2, 3, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	attach(*spin_continuity, 3, 4, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	attach(checkbutton_bias, 0, 1, 2, 3, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	attach(*spin_bias, 1, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	attach(checkbutton_temporal_tension, 2, 3, 2, 3, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	attach(*spin_temporal_tension, 3, 4, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	// interpolation in
+	attach(checkbutton_before, 0, 0, 1, 1);
+	attach(*before_options, 1, 0, 1,1);
+	// interpolation out
+	attach(checkbutton_after, 2, 0, 1, 1);
+	attach(*after_options, 3, 0, 1, 1);
+
+	// tcb options - tension
+	attach(checkbutton_tension, 0, 1, 1, 1);
+	attach(*spin_tension, 1, 1, 1, 1);
+	// tcb options - continuity
+	attach(checkbutton_continuity, 2, 1, 1, 1);
+	attach(*spin_continuity, 3, 1, 1, 1);
+	// tcb options - bias
+	attach(checkbutton_bias, 0, 2, 1, 1);
+	attach(*spin_bias, 1, 2, 1, 1);
+	// tcb options - temporal tension
+	attach(checkbutton_temporal_tension, 2, 2, 1, 1);
+	attach(*spin_temporal_tension, 3, 2, 1, 1);
 
 	show_all();
 	hide();
