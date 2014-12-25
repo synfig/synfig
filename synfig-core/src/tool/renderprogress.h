@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
+**  Copyright (c) 2014 Diego Barrios Romero
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -24,123 +25,134 @@
 #ifndef __SYNFIG_RENDERPROGRESS_H
 #define __SYNFIG_RENDERPROGRESS_H
 
-#include <ETL/clock>
-#include <synfig/string.h>
+#include <string>
+#include <boost/chrono.hpp>
+#include <synfig/general.h>
 #include "definitions.h"
 
+
+//! Prints the progress and estimated time left to the console
+// TODO: add percentage completed
 class RenderProgress : public synfig::ProgressCallback
 {
-	std::string taskname;
-
-	etl::clock clk;
-	int clk_scanline; // The scanline at which the clock was reset
-	etl::clock clk2;
-
-	float last_time;
 public:
 
-	RenderProgress():clk_scanline(0), last_time(0) { }
+    RenderProgress()
+        : last_scanline_(0),
+          start_timepoint_(Clock::now()), last_timepoint_(Clock::now())
+    { }
 
-	virtual bool
-	task(const synfig::String &thetask)
-	{
-		taskname=thetask;
-		return true;
-	}
+    virtual bool task(const std::string& taskname)
+    {
+        taskname_ = taskname;
+        return true;
+    }
 
-	virtual bool
-	error(const synfig::String &task)
-	{
-		std::cout<<_("error")<<": "<<task.c_str()<<std::endl;
-		return true;
-	}
+    virtual bool error(const std::string& task)
+    {
+        std::cout << _("error") << ": " << task << std::endl;
+        return true;
+    }
 
-	virtual bool
-	warning(const synfig::String &task)
-	{
-		std::cout<<_("warning")<<": "<<task.c_str()<<std::endl;
-		return true;
-	}
+    virtual bool warning(const std::string& task)
+    {
+        std::cout << _("warning") << ": " << task << std::endl;
+        return true;
+    }
 
-	virtual bool
-	amount_complete(int scanline, int h)
-	{
-		if(SynfigToolGeneralOptions::instance()->should_be_quiet())
-		{
-			return true;
-		}
-		if(scanline!=h)
-		{
-			const float time(clk()*(float)(h-scanline)/(float)(scanline-clk_scanline));
-			const float delta(time-last_time);
+    virtual bool amount_complete(int scanline, int height)
+    {
+        if(SynfigToolGeneralOptions::instance()->should_be_quiet())
+        {
+            return true;
+        }
 
-			int weeks=0,days=0,hours=0,minutes=0,seconds=0;
+        if(scanline != height)
+        {
+            // avoid reporting the progress too often
+            Duration time_since_last_call(Clock::now() - last_timepoint_);
+            if (time_since_last_call.count() < 0.2)
+            {
+                return true;
+            }
+            last_timepoint_ = Clock::now();
 
-			last_time=time;
+            std::cerr << taskname_ << ": " << _("Line") << " "
+                      << scanline << _(" of ") << height << ". "
+                      << _("Remaining time: ");
 
-			if(clk2()<0.2)
-				return true;
-			clk2.reset();
+            if (scanline != last_scanline_)
+            {
+                remaining_rendered_proportion_ =
+                    double(height-scanline)/(scanline-last_scanline_);
+            }
+            Duration time_since_start(Clock::now() - start_timepoint_);
+            double remaining_seconds =
+                time_since_start.count() * remaining_rendered_proportion_;
 
-			if(scanline)
-				seconds=(int)time+1;
-			else
-			{
-				//cerr<<"reset"<<endl;
-				clk.reset();
-				clk_scanline=scanline;
-			}
+            _printRemainingTime(remaining_seconds);
 
-			if(seconds<0)
-			{
-				clk.reset();
-				clk_scanline=scanline;
-				seconds=0;
-			}
-			while(seconds>=60)
-				minutes++,seconds-=60;
-			while(minutes>=60)
-				hours++,minutes-=60;
-			while(hours>=24)
-				days++,hours-=24;
-			while(days>=7)
-				weeks++,days-=7;
+            std::cerr << "\r";
+        }
+        else
+            std::cerr << "\r" << taskname_ << ": " << _("DONE")
+                      << std::endl;
+        return true;
+    }
 
-			std::cerr<<taskname.c_str()<<": "<<_("Line")<<" "<<scanline<<_(" of ")<<h<<" -- ";
-			//cerr<<time/(h-clk_scanline)<<" ";
-			/*
-			if(delta>=-time/(h-clk_scanline)  )
-				cerr<<">";
-			*/
-			if(delta>=0 && clk()>4.0 && scanline>clk_scanline+200)
-			{
-				//cerr<<"reset"<<endl;
-				clk.reset();
-				clk_scanline=scanline;
-			}
+    void _printRemainingTime(double remaining_seconds)
+    {
+        int weeks=0,days=0,hours=0,minutes=0,seconds=0;
 
-			if(weeks)
-				/// TRANSLATORS This "w" stands for weeks
-				std::cerr<<weeks<<_("w ");
-			if(days)
-				/// TRANSLATORS This "d" stands for days
-				std::cerr<<days<<_("d ");
-			if(hours)
-				/// TRANSLATORS This "h" stands for hours
-				std::cerr<<hours<<_("h ");
-			if(minutes)
-				/// TRANSLATORS This "m" stands for minutes
-				std::cerr<<minutes<<_("m ");
-			if(seconds)
-				/// TRANSLATORS This "s" stands for seconds
-				std::cerr<<seconds<<_("s ");
+        seconds = remaining_seconds;
 
-			std::cerr<<"           \r";
-		}
-		else
-			std::cerr<<taskname.c_str()<<": "<<_("DONE")<<"                        "<<std::endl;
-		return true;
-	}
+        while(seconds>=60)
+            minutes++,seconds-=60;
+        while(minutes>=60)
+            hours++,minutes-=60;
+        while(hours>=24)
+            days++,hours-=24;
+        while(days>=7)
+            weeks++,days-=7;
+
+        _printRemainingTime(seconds, minutes, hours, days, weeks);
+    }
+
+    void _printRemainingTime(const int seconds, const int minutes,
+                             const int hours, const int days, const int weeks)
+    {
+        if(weeks != 0)
+        {
+            /// TRANSLATORS This "w" stands for weeks
+            std::cerr << weeks << _("w ");
+        }
+        if(days != 0)
+        {
+            /// TRANSLATORS This "d" stands for days
+            std::cerr << days << _("d ");
+        }
+        if(hours != 0)
+        {
+            /// TRANSLATORS This "h" stands for hours
+            std::cerr << hours << _("h ");
+        }
+        if(minutes != 0)
+        {
+            /// TRANSLATORS This "m" stands for minutes
+            std::cerr << minutes << _("m ");
+        }
+        /// TRANSLATORS This "s" stands for seconds
+        std::cerr << seconds << _("s ");
+    }
+private:
+    std::string taskname_;
+    int last_scanline_;
+
+    typedef boost::chrono::system_clock Clock;
+    typedef boost::chrono::duration<double> Duration;
+    Clock::time_point start_timepoint_;
+    Clock::time_point last_timepoint_;
+    double remaining_rendered_proportion_;
 };
 
 #endif
