@@ -60,7 +60,7 @@ bool RenderProgress::amount_complete(int scanline, int height)
         }
         last_timepoint_ = Clock::now();
 
-        std::cerr << "\r";
+        std::cerr << "\r"
                   << taskname_ << ": " << _("Line") << " "
                   << scanline << _(" of ") << height << ". "
                   << _("Remaining time: ");
