@@ -19,7 +19,8 @@ synfig_SOURCES = \
 	named_type.h \
 	definitions.h \
 	progress.h \
-	renderprogress.h \
+	renderprogress.h   \
+	renderprogress.cpp \
 	job.h \
 	synfigtoolexception.h \
 	printing_functions.h \
