@@ -82,8 +82,10 @@ bool RenderProgress::amount_complete(int scanline, int height)
         printRemainingTime(outputStream, remaining_seconds);
     }
     else
+    {
         outputStream << "\r" << taskname_ << ": " << _("DONE")
                      << std::endl;
+    }
 
     std::cerr << outputStream.str();
 
