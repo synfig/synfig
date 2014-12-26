@@ -349,86 +349,61 @@ class GlobalUIInterface : public synfigapp::UIInterface
 {
 public:
 
-	virtual Response confirmation(const std::string &title,
-			const std::string &primaryText,
-			const std::string &secondaryText,
-			const std::string &confirmPhrase,
-			const std::string &cancelPhrase,
-			Response defaultResponse)
+	virtual Response confirmation(
+			const std::string &message,
+			const std::string &details,
+			const std::string &cancel,
+			const std::string &confirm,
+			Response dflt
+	)
 	{
 		Gtk::MessageDialog dialog(
-			primaryText,		// Message
-			false,			// Markup
-			Gtk::MESSAGE_WARNING,	// Type
-			Gtk::BUTTONS_NONE,	// Buttons
-			true			// Modal
+			message,
+			false,
+			Gtk::MESSAGE_WARNING,
+			Gtk::BUTTONS_NONE,
+			true
 		);
 
-		if (! title.empty())
-			dialog.set_title(title);
-		if (! secondaryText.empty())
-			dialog.set_secondary_text(secondaryText);
+		if (! details.empty())
+			dialog.set_secondary_text(details);
 
-		dialog.add_button(cancelPhrase, RESPONSE_CANCEL);
-		dialog.add_button(confirmPhrase, RESPONSE_OK);
-		dialog.set_default_response(defaultResponse);
+		dialog.add_button(cancel, RESPONSE_CANCEL);
+		dialog.add_button(confirm, RESPONSE_OK);
+		dialog.set_default_response(dflt);
 
 		dialog.show_all();
 		return (Response) dialog.run();
 	}
 
-	virtual Response yes_no(const std::string &title, const std::string &message,Response dflt=RESPONSE_YES)
-	{
-		Gtk::Dialog dialog(
-			title,		// Title
-			true		// Modal
-		);
-		Gtk::Label label(message);
-		label.show();
 
-		dialog.get_vbox()->pack_start(label);
-		dialog.add_button(Gtk::StockID("gtk-yes"),RESPONSE_YES);
-		dialog.add_button(Gtk::StockID("gtk-no"),RESPONSE_NO);
+	virtual Response yes_no_cancel(
+				const std::string &message,
+				const std::string &details,
+				const std::string &button1,
+				const std::string &button2,
+				const std::string &button3,
+				Response dflt=RESPONSE_YES
+	)
+	{
+		Gtk::MessageDialog dialog(
+			message,
+			false,
+			Gtk::MESSAGE_QUESTION,
+			Gtk::BUTTONS_NONE,
+			true
+		);
+
+		dialog.set_secondary_text(details);
+		dialog.add_button(button1, RESPONSE_NO);
+		dialog.add_button(button2, RESPONSE_CANCEL);
+		dialog.add_button(button3, RESPONSE_YES);
 
 		dialog.set_default_response(dflt);
 		dialog.show();
 		return (Response)dialog.run();
 	}
-	virtual Response yes_no_cancel(const std::string &title, const std::string &message,Response dflt=RESPONSE_YES)
-	{
-		Gtk::Dialog dialog(
-			title,		// Title
-			true		// Modal
-		);
-		Gtk::Label label(message);
-		label.show();
 
-		dialog.get_vbox()->pack_start(label);
-		dialog.add_button(Gtk::StockID("gtk-yes"),RESPONSE_YES);
-		dialog.add_button(Gtk::StockID("gtk-no"),RESPONSE_NO);
-		dialog.add_button(Gtk::StockID("gtk-cancel"),RESPONSE_CANCEL);
-
-		dialog.set_default_response(dflt);
-		dialog.show();
-		return (Response)dialog.run();
-	}
-	virtual Response ok_cancel(const std::string &title, const std::string &message,Response dflt=RESPONSE_OK)
-	{
-		Gtk::Dialog dialog(
-			title,		// Title
-			true		// Modal
-		);
-		Gtk::Label label(message);
-		label.show();
-
-		dialog.get_vbox()->pack_start(label);
-		dialog.add_button(Gtk::StockID("gtk-ok"),RESPONSE_OK);
-		dialog.add_button(Gtk::StockID("gtk-cancel"),RESPONSE_CANCEL);
-
-		dialog.set_default_response(dflt);
-		dialog.show();
-		return (Response)dialog.run();
-	}
 
 	virtual bool
 	task(const std::string &task)
@@ -1357,13 +1332,16 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 	if(!SYNFIG_CHECK_VERSION())
 	{
 		cerr<<"FATAL: Synfig Version Mismatch"<<endl;
-		dialog_error_blocking("Synfig Studio",
-			"This copy of Synfig Studio was compiled against a\n"
-			"different version of libsynfig than what is currently\n"
-			"installed. Synfig Studio will now abort. Try downloading\n"
-			"the latest version from the Synfig website at\n"
-			"http://synfig.org/en/current-release"
-		);
+		dialog_message_1b(
+			"ERROR",
+			_("Synfig version mismatched!"),
+			_("This copy of Synfig Studio was compiled against a "
+			"different version of libsynfig than what is currently "
+			"installed. Synfig Studio will now abort. Try downloading "
+			"the latest version from the Synfig website at "
+			"http://synfig.org/en/current-release"),
+			_("Close"));
+
 		throw 40;
 	}
 	Glib::set_application_name(_("Synfig Studio"));
@@ -1592,12 +1570,12 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		if (!getenv("SYNFIG_DISABLE_AUTO_RECOVERY") && auto_recover->recovery_needed())
 		{
 			splash_screen.hide();
-			if (get_ui_interface()->confirmation(_("Crash Recovery"),
-					_("Auto recovery file found"),
-					_("Synfig Studio seems to have crashed before you could save all your files. "
-					  "Recover unsaved changes?"),
-					_("Recover"), _("Ignore"))
-				== synfigapp::UIInterface::RESPONSE_OK)
+			if (get_ui_interface()->confirmation(
+					_("Auto recovery file(s) found. Do you want to recover unsaved changes?"),
+					_("Synfig Studio seems to have crashed before you could save all your files."),
+					_("Ignore"),
+					_("Recover")
+				) == synfigapp::UIInterface::RESPONSE_OK)
 			{
 				int number_recovered;
 				if(!auto_recover->recover(number_recovered))
@@ -1606,10 +1584,12 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 					else
 						get_ui_interface()->error(_("Unable to recover from previous crash"));
 				else
-					dialog_warning_blocking(_("Warning"),
+					dialog_message_1b(
+						"WARNING",
+						_("It would be a good idea to review and save recovered files now."),
 						_("Synfig Studio has attempted to recover from a previous crash. "
-						"The files that it has recovered are NOT YET SAVED. It would be a "
-						"good idea to review them and save them now."));
+						"The files just recovered are NOT YET SAVED."),
+						_("Thanks"));
 
 				if (number_recovered)
 					opened_any = true;
@@ -1650,31 +1630,34 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 
 		splash_screen.hide();
 
-		String warnings;
+		String message;
+		String details;
 		/*
 		if (App::enable_experimental_features) {
-			warnings += _("EXPERIMENTAL FEATURES:");
-			warnings += "\n\n";
-			warnings += _("This version have following experimental features enabled:");
-			warnings += "\n";
-			warnings += String("   * ")+_("Skeleton Layer");
-			warnings += "\n\n";
-			warnings += _("The experimental features are NOT intended for production use. It is quite posiible their functionality will change in the future versions, which can break compatibility for your files. Use for testing purposes only.");
-			warnings += "\n\n";
-			warnings += _("You can disable experimental features on the \"Misc\" tab of Setup dialog.");
+			message = _("Following experimental features are enabled: ");
+			message += ("Skeleton Layer");
+			detials = _("The experimental features are NOT intended for production use. "
+					"It is quite posiible their functionality will change in the "
+					"future versions, which can break compatibility for your "
+					"files. Use for testing purposes only. You can disable "
+					"experimental features on the \"Misc\" tab of Setup dialog.");
 		}
 		*/
 #ifdef WIN32
-		if (warnings!="")
-			warnings += "\n\n";
-		warnings += _("BUG WARNING:");
-		warnings += "\n\n";
-		warnings += _("This version of Synfig Studio have a bug, which can cause computer to hang/freeze when you resize the canvas window. If you got affected by this issue, consider pressing ALT+TAB to unfreeze your system and get it back to the working state.");
-		warnings += "\n\n";
-		warnings += _("Please accept our apologies for inconvenience, we hope to get this issue resolved in the future versions.");
+		if (message!=""){
+			message = _("There is a bug, which can cause computer to hang/freeze when "
+					"resizing the canvas window.");
+			details = _("If you got affected by this issue, consider pressing ALT+TAB "
+					"to unfreeze your system and get it back to the working "
+					"state. Please accept our apologies for inconvenience, we "
+					"hope to get this issue resolved in the future versions.");
+		}
 #endif
-		if (warnings!="")
-			dialog_warning_blocking(_("Warning"), warnings);
+		if (message!="")
+			dialog_message_1b("WARNING",
+					message,
+					details,
+					_("Got it"));
 	}
 	catch(String x)
 	{
@@ -2045,7 +2028,12 @@ App::quit()
 	get_ui_interface()->task(_("Quit Request"));
 	if(Busy::count)
 	{
-		dialog_error_blocking(_("Cannot quit!"),_("Tasks are currently running.\nPlease cancel the current tasks and try again"));
+		dialog_message_1b(
+			"ERROR",
+			_("Tasks are currently running. Please cancel the current tasks and try again"),
+			"details",
+			_("Close"));
+
 		return;
 	}
 
@@ -2191,95 +2179,109 @@ App::dialog_open_file(const std::string &title, std::string &filename, std::stri
 
 	prev_path = absolute_path(prev_path);
 
-    Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(*App::main_window,
+	Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(*App::main_window,
 				title, Gtk::FILE_CHOOSER_ACTION_OPEN);
 
-		dialog->set_transient_for(*App::main_window);
-    dialog->set_current_folder(prev_path);
-    dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
-    dialog->add_button(Gtk::StockID(_("Import")), Gtk::RESPONSE_ACCEPT);
+	dialog->set_transient_for(*App::main_window);
+	dialog->set_current_folder(prev_path);
+	dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
+	dialog->add_button(Gtk::StockID(_("Import")), Gtk::RESPONSE_ACCEPT);
 
-		// 0 All supported files
-		// 0.1 Synfig documents. sfg is not supported to import
-		Glib::RefPtr<Gtk::FileFilter> filter_supported = Gtk::FileFilter::create();
-		filter_supported->set_name("All supported files");
-		filter_supported->add_mime_type("application/x-sif");
-		filter_supported->add_pattern("*.sif");
-		filter_supported->add_pattern("*.sifz");
-		// 0.2 Image files
-		filter_supported->add_mime_type("image/png");
-		filter_supported->add_mime_type("image/jpeg");
-		filter_supported->add_mime_type("image/bmp");
-		filter_supported->add_pattern("*.png");
-		filter_supported->add_pattern("*.jpeg");
-		filter_supported->add_pattern("*.jpg");
-		filter_supported->add_pattern("*.bmp");
-		// 0.3 Audio files
-		filter_supported->add_mime_type("audio/x-vorbis+ogg");
-		filter_supported->add_mime_type("audio/mpeg");
-		filter_supported->add_mime_type("audio/x-wav");
-		filter_supported->add_pattern("*.ogg");
-		filter_supported->add_pattern("*.mp3");
-		filter_supported->add_pattern("*.wav");
+	// 0 All supported files
+	// 0.1 Synfig documents. sfg is not supported to import
+	Glib::RefPtr<Gtk::FileFilter> filter_supported = Gtk::FileFilter::create();
+	filter_supported->set_name("All supported files");
+	filter_supported->add_mime_type("application/x-sif");
+	filter_supported->add_pattern("*.sif");
+	filter_supported->add_pattern("*.sifz");
+	// 0.2 Image files
+	filter_supported->add_mime_type("image/png");
+	filter_supported->add_mime_type("image/jpeg");
+	filter_supported->add_mime_type("image/jpg");
+	filter_supported->add_mime_type("image/bmp");
+	filter_supported->add_mime_type("image/svg");
+	filter_supported->add_pattern("*.png");
+	filter_supported->add_pattern("*.jpeg");
+	filter_supported->add_pattern("*.jpg");
+	filter_supported->add_pattern("*.bmp");
+	filter_supported->add_pattern("*.svg");
+	filter_supported->add_pattern("*.lst");
+	// 0.3 Audio files
+	filter_supported->add_mime_type("audio/x-vorbis+ogg");
+	filter_supported->add_mime_type("audio/mpeg");
+	filter_supported->add_mime_type("audio/x-wav");
+	filter_supported->add_pattern("*.ogg");
+	filter_supported->add_pattern("*.mp3");
+	filter_supported->add_pattern("*.wav");
 
-		// Sub fileters
-		// 1 Synfig documents. sfg is not supported to import
-		Glib::RefPtr<Gtk::FileFilter> filter_synfig = Gtk::FileFilter::create();
-		filter_synfig->set_name("Synfig files (*.sif, *.sifz)");
-		filter_synfig->add_mime_type("application/x-sif");
-		filter_synfig->add_pattern("*.sif");
-		filter_synfig->add_pattern("*.sifz");
+	// Sub fileters
+	// 1 Synfig documents. sfg is not supported to import
+	Glib::RefPtr<Gtk::FileFilter> filter_synfig = Gtk::FileFilter::create();
+	filter_synfig->set_name("Synfig files (*.sif, *.sifz)");
+	filter_synfig->add_mime_type("application/x-sif");
+	filter_synfig->add_pattern("*.sif");
+	filter_synfig->add_pattern("*.sifz");
 
-		// 2 Image files
-		Glib::RefPtr<Gtk::FileFilter> filter_image = Gtk::FileFilter::create();
-		filter_image->set_name("Images (*.png, *.jpeg, *.bmp)");
-		filter_image->add_mime_type("image/png");
-		filter_image->add_mime_type("image/jpeg");
-		filter_image->add_mime_type("image/jpg");
-		filter_image->add_pattern("*.png");
-		filter_image->add_pattern("*.jpeg");
-		filter_image->add_pattern("*.jpg");
+	// 2.1 Image files
+	Glib::RefPtr<Gtk::FileFilter> filter_image = Gtk::FileFilter::create();
+	filter_image->set_name("Images (*.png, *.jpeg, *.bmp, *.svg)");
+	filter_image->add_mime_type("image/png");
+	filter_image->add_mime_type("image/jpeg");
+	filter_image->add_mime_type("image/jpg");
+	filter_image->add_mime_type("image/bmp");
+	filter_image->add_pattern("*.png");
+	filter_image->add_pattern("*.jpeg");
+	filter_image->add_pattern("*.jpg");
+	filter_image->add_pattern("*.bmp");
+	filter_image->add_pattern("*.svg");
 
-		// 3 Audio files
-		Glib::RefPtr<Gtk::FileFilter> filter_audio = Gtk::FileFilter::create();
-		filter_audio->set_name("Audio (*.ogg, *.mp3, *.wav)");
-		filter_audio->add_mime_type("audio/x-vorbis+ogg");
-		filter_audio->add_mime_type("audio/mpeg");
-		filter_audio->add_mime_type("audio/x-wav");
-		filter_audio->add_pattern("*.ogg");
-		filter_audio->add_pattern("*.mp3");
-		filter_audio->add_pattern("*.wav");
+	// 2.2 Image sequence/list files
+	Glib::RefPtr<Gtk::FileFilter> filter_image_list = Gtk::FileFilter::create();
+	filter_image_list->set_name("Image sequence files(*.lst)");
+	filter_image_list->add_pattern("*.lst");
 
-		// 4 Any files
-		Glib::RefPtr<Gtk::FileFilter> filter_any = Gtk::FileFilter::create();
-		filter_any->set_name("Any files");
-		filter_any->add_pattern("*");
+	// 3 Audio files
+	Glib::RefPtr<Gtk::FileFilter> filter_audio = Gtk::FileFilter::create();
+	filter_audio->set_name("Audio (*.ogg, *.mp3, *.wav)");
+	filter_audio->add_mime_type("audio/x-vorbis+ogg");
+	filter_audio->add_mime_type("audio/mpeg");
+	filter_audio->add_mime_type("audio/x-wav");
+	filter_audio->add_pattern("*.ogg");
+	filter_audio->add_pattern("*.mp3");
+	filter_audio->add_pattern("*.wav");
 
-		dialog->add_filter(filter_supported);
-		dialog->add_filter(filter_synfig);
-		dialog->add_filter(filter_image);
-		dialog->add_filter(filter_audio);
-		dialog->add_filter(filter_any);
+	// 4 Any files
+	Glib::RefPtr<Gtk::FileFilter> filter_any = Gtk::FileFilter::create();
+	filter_any->set_name("Any files");
+	filter_any->add_pattern("*");
 
-    if (filename.empty())
+	dialog->add_filter(filter_supported);
+	dialog->add_filter(filter_synfig);
+	dialog->add_filter(filter_image);
+	dialog->add_filter(filter_image_list);
+	dialog->add_filter(filter_audio);
+	dialog->add_filter(filter_any);
+
+	if (filename.empty())
 		dialog->set_filename(prev_path);
-		else if (is_absolute_path(filename))
+	else if (is_absolute_path(filename))
 		dialog->set_filename(filename);
-		else
+	else
 		dialog->set_filename(prev_path + ETL_DIRECTORY_SEPARATOR + filename);
 
-    if(dialog->run() == GTK_RESPONSE_ACCEPT) {
-        filename = dialog->get_filename();
+	if(dialog->run() == GTK_RESPONSE_ACCEPT) {
+		filename = dialog->get_filename();
 		// info("Saving preference %s = '%s' in App::dialog_open_file()", preference.c_str(), dirname(filename).c_str());
 		_preferences.set_value(preference, dirname(filename));
-        delete dialog;
-        return true;
-    }
+		delete dialog;
+		return true;
+	}
 
-    delete dialog;
-    return false;
+	delete dialog;
+	return false;
 #endif   // not USE_WIN32_FILE_DIALOGS
 }
+
 
 bool
 App::dialog_open_file_spal(const std::string &title, std::string &filename, std::string preference)
@@ -2301,7 +2303,7 @@ App::dialog_open_file_spal(const std::string &title, std::string &filename, std:
 
 	// show only Synfig color palette file (*.spal)
 	Glib::RefPtr<Gtk::FileFilter> filter_spal = Gtk::FileFilter::create();
-	filter_spal->set_name("Synfig palette file (*.spal)");
+	filter_spal->set_name("Synfig palette files (*.spal)");
 	filter_spal->add_pattern("*.spal");
 	dialog->add_filter(filter_spal);
 
@@ -2323,6 +2325,113 @@ App::dialog_open_file_spal(const std::string &title, std::string &filename, std:
 	return false;
 }
 
+
+bool
+App::dialog_open_file_image(const std::string &title, std::string &filename, std::string preference)
+{
+	synfig::String prev_path;
+
+	if(!_preferences.get_value(preference, prev_path))
+		prev_path = ".";
+
+	prev_path = absolute_path(prev_path);
+
+	Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(*App::main_window,
+				title, Gtk::FILE_CHOOSER_ACTION_OPEN);
+
+	dialog->set_transient_for(*App::main_window);
+	dialog->set_current_folder(prev_path);
+	dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
+	dialog->add_button(Gtk::StockID(_("Load")), Gtk::RESPONSE_ACCEPT);
+
+	// show only images
+	Glib::RefPtr<Gtk::FileFilter> filter_image = Gtk::FileFilter::create();
+	filter_image->set_name("Images and sequence files (*.png, *.jpeg, *.bmp, *.svg, *.list)");
+	filter_image->add_pattern("*.png");
+	filter_image->add_pattern("*.peg");
+	filter_image->add_pattern("*.jpg");
+	filter_image->add_pattern("*.bmp");
+	filter_image->add_pattern("*.svg");
+	filter_image->add_pattern("*.lst");
+	dialog->add_filter(filter_image);
+
+	// Any files
+	Glib::RefPtr<Gtk::FileFilter> filter_any = Gtk::FileFilter::create();
+	filter_any->set_name("Any files");
+	filter_any->add_pattern("*");
+	dialog->add_filter(filter_any);
+
+	if (filename.empty())
+		dialog->set_filename(prev_path);
+	else if (is_absolute_path(filename))
+		dialog->set_filename(filename);
+	else
+		dialog->set_filename(prev_path + ETL_DIRECTORY_SEPARATOR + filename);
+
+	if(dialog->run() == GTK_RESPONSE_ACCEPT) {
+		filename = dialog->get_filename();
+		_preferences.set_value(preference, dirname(filename));
+		delete dialog;
+		return true;
+	}
+
+	delete dialog;
+	return false;
+}
+
+
+bool
+App::dialog_open_file_audio(const std::string &title, std::string &filename, std::string preference)
+{
+	synfig::String prev_path;
+
+	if(!_preferences.get_value(preference, prev_path))
+		prev_path = ".";
+
+	prev_path = absolute_path(prev_path);
+
+	Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(*App::main_window,
+				title, Gtk::FILE_CHOOSER_ACTION_OPEN);
+
+	dialog->set_transient_for(*App::main_window);
+	dialog->set_current_folder(prev_path);
+	dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
+	dialog->add_button(Gtk::StockID(_("Load")), Gtk::RESPONSE_ACCEPT);
+
+	// Audio files
+	Glib::RefPtr<Gtk::FileFilter> filter_audio = Gtk::FileFilter::create();
+	filter_audio->set_name("Audio (*.ogg, *.mp3, *.wav)");
+	filter_audio->add_mime_type("audio/x-vorbis+ogg");
+	filter_audio->add_mime_type("audio/mpeg");
+	filter_audio->add_mime_type("audio/x-wav");
+	filter_audio->add_pattern("*.ogg");
+	filter_audio->add_pattern("*.mp3");
+	filter_audio->add_pattern("*.wav");
+	dialog->add_filter(filter_audio);
+
+	// Any files
+	Glib::RefPtr<Gtk::FileFilter> filter_any = Gtk::FileFilter::create();
+	filter_any->set_name("Any files");
+	filter_any->add_pattern("*");
+	dialog->add_filter(filter_any);
+
+	if (filename.empty())
+	dialog->set_filename(prev_path);
+	else if (is_absolute_path(filename))
+	dialog->set_filename(filename);
+	else
+	dialog->set_filename(prev_path + ETL_DIRECTORY_SEPARATOR + filename);
+
+	if(dialog->run() == GTK_RESPONSE_ACCEPT) {
+		filename = dialog->get_filename();
+		_preferences.set_value(preference, dirname(filename));
+		delete dialog;
+		return true;
+	}
+
+	delete dialog;
+	return false;
+}
 
 
 bool
@@ -2382,51 +2491,52 @@ App::dialog_open_file_with_history_button(const std::string &title, std::string 
 
 	prev_path = absolute_path(prev_path);
 
-    Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(*App::main_window,
+	Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(*App::main_window,
 				title, Gtk::FILE_CHOOSER_ACTION_OPEN);
 
 		dialog->set_transient_for(*App::main_window);
-    dialog->set_current_folder(prev_path);
-    dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
-    dialog->add_button(_("Open history"), RESPONSE_ACCEPT_WITH_HISTORY);
-    dialog->set_response_sensitive(RESPONSE_ACCEPT_WITH_HISTORY, true);
-    dialog->add_button(Gtk::Stock::OPEN,   Gtk::RESPONSE_ACCEPT);
+	dialog->set_current_folder(prev_path);
+	dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
+	dialog->add_button(Gtk::Stock::OPEN,   Gtk::RESPONSE_ACCEPT);
+	dialog->add_button(_("Open history"), RESPONSE_ACCEPT_WITH_HISTORY);
+	// TODO: the Open history button should be file type sensitive one.
+	dialog->set_response_sensitive(RESPONSE_ACCEPT_WITH_HISTORY, true);
 
-    // File filters
-    // Synfig Documents
-		Glib::RefPtr<Gtk::FileFilter> filter_supported = Gtk::FileFilter::create();
-		filter_supported->set_name("Synfig files (*.sif, *.sifz, *.sfg)");
-		filter_supported->add_mime_type("application/x-sif");
-		filter_supported->add_pattern("*.sif");
-		filter_supported->add_pattern("*.sifz");
-		filter_supported->add_pattern("*.sfg");
-		// Any files
-		Glib::RefPtr<Gtk::FileFilter> filter_any = Gtk::FileFilter::create();
-		filter_any->set_name("Any files");
-		filter_any->add_pattern("*");
+	// File filters
+	// Synfig Documents
+	Glib::RefPtr<Gtk::FileFilter> filter_supported = Gtk::FileFilter::create();
+	filter_supported->set_name("Synfig files (*.sif, *.sifz, *.sfg)");
+	filter_supported->add_mime_type("application/x-sif");
+	filter_supported->add_pattern("*.sif");
+	filter_supported->add_pattern("*.sifz");
+	filter_supported->add_pattern("*.sfg");
+	// Any files
+	Glib::RefPtr<Gtk::FileFilter> filter_any = Gtk::FileFilter::create();
+	filter_any->set_name("Any files");
+	filter_any->add_pattern("*");
 
-		dialog->add_filter(filter_supported);
-		dialog->add_filter(filter_any);
+	dialog->add_filter(filter_supported);
+	dialog->add_filter(filter_any);
 
-  if (filename.empty())
+	if (filename.empty())
 		dialog->set_filename(prev_path);
 	else if (is_absolute_path(filename))
 		dialog->set_filename(filename);
 	else
 		dialog->set_filename(prev_path + ETL_DIRECTORY_SEPARATOR + filename);
 
-  int response = dialog->run();
-  if (response == Gtk::RESPONSE_ACCEPT || response == RESPONSE_ACCEPT_WITH_HISTORY) {
-      filename = dialog->get_filename();
-      show_history = response == RESPONSE_ACCEPT_WITH_HISTORY;
+	int response = dialog->run();
+	if (response == Gtk::RESPONSE_ACCEPT || response == RESPONSE_ACCEPT_WITH_HISTORY) {
+		filename = dialog->get_filename();
+		show_history = response == RESPONSE_ACCEPT_WITH_HISTORY;
 		// info("Saving preference %s = '%s' in App::dialog_open_file()", preference.c_str(), dirname(filename).c_str());
 		_preferences.set_value(preference, dirname(filename));
-      delete dialog;
-      return true;
-  }
+		delete dialog;
+		return true;
+	}
 
-    delete dialog;
-    return false;
+	delete dialog;
+	return false;
 #endif   // not USE_WIN32_FILE_DIALOGS
 }
 
@@ -2486,32 +2596,32 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 
 	prev_path = absolute_path(prev_path);
 
-    Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(*App::main_window, title, Gtk::FILE_CHOOSER_ACTION_SAVE);
+	Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(*App::main_window, title, Gtk::FILE_CHOOSER_ACTION_SAVE);
 
-    // file type filters
-		Glib::RefPtr<Gtk::FileFilter> filter_sif = Gtk::FileFilter::create();
-		filter_sif->set_name("Uncompressed Synfig file(*.sif)");
+	// file type filters
+	Glib::RefPtr<Gtk::FileFilter> filter_sif = Gtk::FileFilter::create();
+	filter_sif->set_name("Uncompressed Synfig file(*.sif)");
 
-		// sif share same mime type "application/x-sif" with sifz, so it will mixed .sif and .sifz files. Use only
-		// pattern ("*.sif") for sif file format should be oK.
-		//filter_sif->add_mime_type("application/x-sif");
-		filter_sif->add_pattern("*.sif");
+	// sif share same mime type "application/x-sif" with sifz, so it will mixed .sif and .sifz files. Use only
+	// pattern ("*.sif") for sif file format should be oK.
+	//filter_sif->add_mime_type("application/x-sif");
+	filter_sif->add_pattern("*.sif");
 
-		Glib::RefPtr<Gtk::FileFilter> filter_sifz = Gtk::FileFilter::create();
-		filter_sifz->set_name("Compressed Synfig file(*.sifz)");
-		filter_sifz->add_pattern("*.sifz");
+	Glib::RefPtr<Gtk::FileFilter> filter_sifz = Gtk::FileFilter::create();
+	filter_sifz->set_name("Compressed Synfig file(*.sifz)");
+	filter_sifz->add_pattern("*.sifz");
 
-		Glib::RefPtr<Gtk::FileFilter> filter_sfg = Gtk::FileFilter::create();
-		filter_sfg->set_name("Container format file(*.sfg)");
-		filter_sfg->add_pattern("*.sfg");
+	Glib::RefPtr<Gtk::FileFilter> filter_sfg = Gtk::FileFilter::create();
+	filter_sfg->set_name("Container format file(*.sfg)");
+	filter_sfg->add_pattern("*.sfg");
 
-    dialog->set_current_folder(prev_path);
-    dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
-    dialog->add_button(Gtk::Stock::SAVE,   Gtk::RESPONSE_ACCEPT);
+	dialog->set_current_folder(prev_path);
+	dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
+	dialog->add_button(Gtk::Stock::SAVE,   Gtk::RESPONSE_ACCEPT);
 
-    dialog->add_filter(filter_sifz);
-    dialog->add_filter(filter_sif);
-    dialog->add_filter(filter_sfg);
+	dialog->add_filter(filter_sifz);
+	dialog->add_filter(filter_sif);
+	dialog->add_filter(filter_sfg);
 
 	Widget_Enum *file_type_enum = 0;
 	if (preference == ANIMATION_DIR_PREFERENCE)
@@ -2572,7 +2682,7 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 	// we are going to save changes while changing file filter each time.
 	dialog->set_current_name(basename(filename));
 
-    if(dialog->run() == GTK_RESPONSE_ACCEPT) {
+	if(dialog->run() == GTK_RESPONSE_ACCEPT) {
 
 		if (preference == ANIMATION_DIR_PREFERENCE)
 			set_file_version(synfig::ReleaseVersion(file_type_enum->get_value()));
@@ -2596,10 +2706,10 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 				filename = dialog->get_filename() + ".sfg";
 		}
 
-		// info("Saving preference %s = '%s' in App::dialog_save_file()", preference.c_str(), dirname(filename).c_str());
-		_preferences.set_value(preference, dirname(filename));
-        delete dialog;
-        return true;
+	// info("Saving preference %s = '%s' in App::dialog_save_file()", preference.c_str(), dirname(filename).c_str());
+	_preferences.set_value(preference, dirname(filename));
+	delete dialog;
+	return true;
     }
 
     delete dialog;
@@ -2620,7 +2730,7 @@ App::dialog_save_file_spal(const std::string &title, std::string &filename, std:
 
 	// file type filters
 	Glib::RefPtr<Gtk::FileFilter> filter_spal = Gtk::FileFilter::create();
-	filter_spal->set_name("Synfig palette file(*.spal)");
+	filter_spal->set_name("Synfig palette files(*.spal)");
 	filter_spal->add_pattern("*.spal");
 
 	dialog->set_current_folder(prev_path);
@@ -2661,6 +2771,53 @@ App::dialog_save_file_spal(const std::string &title, std::string &filename, std:
 		filename = dialog->get_filename();
 		if (filename_extension(filename) != ".spal")
 			filename = dialog->get_filename() + ".spal";
+
+	delete dialog;
+	return true;
+	}
+
+	delete dialog;
+	return false;
+}
+
+
+bool
+App::dialog_save_file_render(const std::string &title, std::string &filename, std::string preference)
+{
+	synfig::String prev_path;
+	if(!_preferences.get_value(preference, prev_path))
+		prev_path=".";
+	prev_path = absolute_path(prev_path);
+
+	Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(*App::main_window, title, Gtk::FILE_CHOOSER_ACTION_SAVE);
+
+	dialog->set_current_folder(prev_path);
+	dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
+	dialog->add_button(Gtk::Stock::OK,   Gtk::RESPONSE_ACCEPT);
+
+	if (filename.empty()) {
+		dialog->set_filename(prev_path);
+
+	}else{
+		std::string full_path;
+		if (is_absolute_path(filename))
+			full_path = filename;
+		else
+			full_path = prev_path + ETL_DIRECTORY_SEPARATOR + filename;
+
+		// select the file if it exists
+		dialog->set_filename(full_path);
+
+		// if the file doesn't exist, put its name into the filename box
+		struct stat s;
+		if(stat(full_path.c_str(),&s) == -1 && errno == ENOENT)
+			dialog->set_current_name(basename(filename));
+
+	}
+
+	if(dialog->run() == GTK_RESPONSE_ACCEPT)
+	{
+		filename = dialog->get_filename();
 
 		delete dialog;
 		return true;
@@ -2712,8 +2869,8 @@ App::dialog_select_list_item(const std::string &title, const std::string &messag
 	table.attach(tree, 0, 1, 1, 2);
 
 	dialog.get_vbox()->pack_start(table);
-    dialog.add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
-    dialog.add_button(Gtk::Stock::OPEN,   Gtk::RESPONSE_ACCEPT);
+	dialog.add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
+	dialog.add_button(Gtk::Stock::OPEN,   Gtk::RESPONSE_ACCEPT);
 	dialog.set_default_size(300, 450);
 	dialog.show_all();
 
@@ -2727,77 +2884,95 @@ App::dialog_select_list_item(const std::string &title, const std::string &messag
 
 
 void
-App::dialog_error_blocking(const std::string &title, const std::string &message)
-{
-	dialog_warning_blocking(title, message, Gtk::Stock::DIALOG_ERROR);
-}
-
-void
-App::dialog_warning_blocking(const std::string &title, const std::string &message, const Gtk::StockID &stock_id)
-{
-	Gtk::Dialog dialog(title, *App::main_window, false);
-	Gtk::ScrolledWindow scrolled;
-	Gtk::Label label(message, 0, 0);
-	label.set_line_wrap();
-	scrolled.add(label);
-	scrolled.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
-	scrolled.set_shadow_type(Gtk::SHADOW_NONE);
-	Gtk::Table table(2, 2);
-	table.set_col_spacings(10);
-	Gtk::Image image(stock_id, Gtk::IconSize(Gtk::ICON_SIZE_DIALOG));
-	table.attach(image, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 1, 1);
-	table.attach(scrolled, 1, 2, 0, 2, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::EXPAND);
-	dialog.get_vbox()->pack_start(table);
-	dialog.add_button(Gtk::StockID("gtk-close"),1);
-	dialog.set_default_size(450, 200);
-	dialog.show_all();
-	dialog.run();
-}
-
-bool
-App::dialog_yes_no(const std::string &title, const std::string &message)
-{
-	Gtk::Dialog dialog(
-		title,			// Title
-		*App::main_window,	// Parent
-		true			// Modal
-	);
-	Gtk::Label label(message);
-	label.show();
-
-	dialog.get_vbox()->pack_start(label);
-	dialog.add_button(Gtk::StockID("gtk-yes"),1);
-	dialog.add_button(Gtk::StockID("gtk-no"),0);
-	dialog.show();
-	return dialog.run();
-}
-
-int
-App::dialog_yes_no_cancel(const std::string &title, const std::string &message)
-{
-	Gtk::Dialog dialog(
-		title,			// Title
-		*App::main_window,	// Parent
-		true			// Modal
-	);
-	Gtk::Label label(message);
-	label.show();
-
-	dialog.get_vbox()->pack_start(label);
-	dialog.add_button(Gtk::StockID("gtk-yes"),1);
-	dialog.add_button(Gtk::StockID("gtk-no"),0);
-	dialog.add_button(Gtk::StockID("gtk-cancel"),2);
-	dialog.show();
-	return dialog.run();
-}
-
-void
 App::dialog_not_implemented()
 {
 	Gtk::MessageDialog dialog(*App::main_window, _("Feature not available"), false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_CLOSE, true);
 	dialog.set_secondary_text(_("Sorry, this feature has not yet been implemented."));
 	dialog.run();
 }
+
+
+// message dialog with 1 button.
+void
+App::dialog_message_1b(
+	const std::string &type,
+		//INFO:		Gtk::MESSAGE_INFO - Informational message.
+		//WARNING:	Gtk::MESSAGE_WARNING - Non-fatal warning message.
+		//QUESTION:	Gtk::MESSAGE_QUESTION - Question requiring a choice.
+		//ERROR:	Gtk::MESSAGE_ERROR - Fatal error message.
+		//OTHER:	Gtk::MESSAGE_OTHER - None of the above, doesn’t get an icon.
+	const std::string &message,
+	const std::string &details,
+	const std::string &button1)
+{
+	Gtk::MessageType _type;
+	if (type == "INFO")
+		_type = Gtk::MESSAGE_INFO;
+	if (type == "WARNING")
+		_type = Gtk::MESSAGE_WARNING;
+	if (type == "QUESTION")
+		_type = Gtk::MESSAGE_QUESTION;
+	if (type == "ERROR")
+		_type = Gtk::MESSAGE_ERROR;
+	if (type == "OTHER")
+		_type = Gtk::MESSAGE_OTHER;
+
+	Gtk::MessageDialog dialog(*App::main_window, message, false, _type, Gtk::BUTTONS_NONE, true);
+
+	if (details != "details")
+		dialog.set_secondary_text(details);
+
+	dialog.add_button(button1, 0);
+
+	dialog.run();
+}
+
+
+// message dialog with 2 buttons.
+bool
+App::dialog_message_2b(const std::string &message,
+	const std::string &details,
+	const Gtk::MessageType &type,
+		//MESSAGE_INFO - Informational message.
+		//MESSAGE_WARNING - Non-fatal warning message.
+		//MESSAGE_QUESTION - Question requiring a choice.
+		//MESSAGE_ERROR - Fatal error message.
+		//MESSAGE_OTHER - None of the above, doesn’t get an icon.
+	const std::string &button1,
+	const std::string &button2)
+{
+	Gtk::MessageDialog dialog(*App::main_window, message, false, type, Gtk::BUTTONS_NONE, true);
+	dialog.set_secondary_text(details);
+	dialog.add_button(button1, 0);
+	dialog.add_button(button2, 1);
+
+	return	dialog.run();
+}
+
+
+// message dialog with 3 buttons.
+int
+App::dialog_message_3b(const std::string &message,
+	const std::string &detials,
+	const Gtk::MessageType &type,
+		//MESSAGE_INFO - Informational message.
+		//MESSAGE_WARNING - Non-fatal warning message.
+		//MESSAGE_QUESTION - Question requiring a choice.
+		//MESSAGE_ERROR - Fatal error message.
+		//MESSAGE_OTHER - None of the above, doesn’t get an icon.
+	const std::string &button1,
+	const std::string &button2,
+	const std::string &button3)
+{
+	Gtk::MessageDialog dialog(*App::main_window, message, false, type, Gtk::BUTTONS_NONE, true);
+	dialog.set_secondary_text(detials);
+	dialog.add_button(button1, 0);
+	dialog.add_button(button2, 1);
+	dialog.add_button(button3, 2);
+
+	return dialog.run();
+}
+
 
 static bool
 try_open_url(const std::string &url)
@@ -2899,40 +3074,57 @@ App::open_url(const std::string &url)
 	}
 }
 
+
 bool
-App::dialog_entry(const std::string &title, const std::string &message,std::string &text)
+App::dialog_entry(const std::string &action, const std::string &content, std::string &text, const std::string &button1, const std::string &button2)
 {
-	Gtk::Dialog dialog(
-		title,			// Title
-		*App::main_window,	// Parent
-		true			// Modal
+	Gtk::MessageDialog dialog(
+		*App::main_window,
+		action,
+		false,
+		Gtk::MESSAGE_INFO,
+		Gtk::BUTTONS_NONE,
+		true
 	);
 
-	Gtk::Label label(message);
+	Gtk::Label label(content);
 	label.show();
-	dialog.get_vbox()->pack_start(label);
 
 	Gtk::Entry entry;
 	entry.set_text(text);
 	entry.show();
 	entry.set_activates_default(true);
 
+	Gtk::Alignment space1;
+	space1.set_size_request(18, 0);
+
+	Gtk::Alignment space2;
+	space2.set_size_request(18, 0);
+
+	Gtk::Table table(3, 1);
+	table.attach(space1, 0, 1, 0, 1, Gtk::FILL | Gtk::FILL, Gtk::FILL);
+	table.attach(label, 1, 2, 0, 1, Gtk::FILL | Gtk::SHRINK, Gtk::FILL);
+	table.attach(entry, 2, 3, 0, 1, Gtk::FILL | Gtk::EXPAND, Gtk::FILL);
+	table.attach(space2, 3, 4, 0, 1, Gtk::FILL | Gtk::FILL, Gtk::FILL);
+	table.show_all();
+
 	dialog.get_vbox()->pack_start(entry);
+	dialog.get_vbox()->pack_start(table);
+	dialog.add_button(button1, Gtk::RESPONSE_CANCEL);
+	dialog.add_button(button2, Gtk::RESPONSE_OK);
 
-	dialog.add_button(Gtk::StockID("gtk-ok"),Gtk::RESPONSE_OK);
-	dialog.add_button(Gtk::StockID("gtk-cancel"),Gtk::RESPONSE_CANCEL);
 	dialog.set_default_response(Gtk::RESPONSE_OK);
-
 	entry.signal_activate().connect(sigc::bind(sigc::mem_fun(dialog,&Gtk::Dialog::response),Gtk::RESPONSE_OK));
 	dialog.show();
 
 	if(dialog.run()!=Gtk::RESPONSE_OK)
 		return false;
 
-	text=entry.get_text();
+	text = entry.get_text();
 
 	return true;
 }
+
 
 bool
 App::dialog_paragraph(const std::string &title, const std::string &message,std::string &text)
@@ -3028,7 +3220,11 @@ App::open_as(std::string filename,std::string as,synfig::FileContainerZip::file_
 				throw (String)strprintf(_("Unable to load \"%s\":\n\n"),filename.c_str()) + errors;
 
 			if (warnings != "")
-				dialog_warning_blocking(_("Warnings"), strprintf("%s:\n\n%s", _("Warnings"), warnings.c_str()));
+				dialog_message_1b(
+					"WARNING",
+					strprintf("%s:\n\n%s", _("Warning"), warnings.c_str()),
+					"details",
+					_("Close"));
 
 			if (as.find(custom_filename_prefix.c_str()) != 0)
 				add_recent_file(as);
@@ -3040,23 +3236,44 @@ App::open_as(std::string filename,std::string as,synfig::FileContainerZip::file_
 
 			one_moment.hide();
 
-			if(instance->is_updated() && App::dialog_yes_no(_("CVS Update"), _("There appears to be a newer version of this file available on the CVS repository.\nWould you like to update now? (It would probably be a good idea)")))
+			if(instance->is_updated() && App::dialog_message_2b(
+				_("Newer version of this file availabel on the CVS repository!"),
+				_("repository. Would you like to update now? (It would probably be a good idea)"),
+				Gtk::MESSAGE_QUESTION,
+				_("Cancel"),
+				_("Update Anyway"))
+			)
 				instance->dialog_cvs_update();
 		}
 	}
 	catch(String x)
 	{
-		dialog_error_blocking(_("Error"), x);
+		dialog_message_1b(
+			"ERROR",
+			x,
+			"details",
+			_("Close"));
+
 		return false;
 	}
 	catch(runtime_error x)
 	{
-		dialog_error_blocking(_("Error"), x.what());
+		dialog_message_1b(
+			"ERROR",
+			x.what(),
+			"details",
+			_("Close"));
+
 		return false;
 	}
 	catch(...)
 	{
-		dialog_error_blocking(_("Error"), _("Uncaught error on file open (BUG)"));
+		dialog_message_1b(
+			"ERROR",
+			_("Uncaught error on file open (BUG)"),
+			"details",
+			_("Close"));
+
 		return false;
 	}
 
@@ -3096,7 +3313,11 @@ App::open_from_temporary_container_as(std::string container_filename_base,std::s
 				throw (String)strprintf(_("Unable to load \"%s\":\n\n"),container_filename_base.c_str()) + errors;
 
 			if (warnings != "")
-				dialog_warning_blocking(_("Warnings"), strprintf("%s:\n\n%s", _("Warnings"), warnings.c_str()));
+				dialog_message_1b(
+						"WARNING",
+						strprintf("%s:\n\n%s", _("Warning"), warnings.c_str()),
+						"details",
+						_("Close"));
 
 			if (as.find(custom_filename_prefix.c_str()) != 0)
 				add_recent_file(as);
@@ -3108,23 +3329,44 @@ App::open_from_temporary_container_as(std::string container_filename_base,std::s
 
 			one_moment.hide();
 
-			if(instance->is_updated() && App::dialog_yes_no(_("CVS Update"), _("There appears to be a newer version of this file available on the CVS repository.\nWould you like to update now? (It would probably be a good idea)")))
+			if(instance->is_updated() && App::dialog_message_2b(
+				_("Newer version of this file avaliable on the CVS repository!"),
+				_("Would you like to update now (It would probably be a good idea)"),
+				Gtk::MESSAGE_QUESTION,
+				_("Cancel"),
+				_("Update Anyway"))
+			)
 				instance->dialog_cvs_update();
 		}
 	}
 	catch(String x)
 	{
-		dialog_error_blocking(_("Error"), x);
+		dialog_message_1b(
+				"ERROR",
+				 x,
+				"details",
+				_("Close"));
+
 		return false;
 	}
 	catch(runtime_error x)
 	{
-		dialog_error_blocking(_("Error"), x.what());
+		dialog_message_1b(
+				"ERROR",
+				x.what(),
+				"details",
+				_("Close"));
+
 		return false;
 	}
 	catch(...)
 	{
-		dialog_error_blocking(_("Error"), _("Uncaught error on file open (BUG)"));
+		dialog_message_1b(
+				"ERROR",
+				_("Uncaught error on file open (BUG)"),
+				"details",
+				_("Close"));
+
 		return false;
 	}
 

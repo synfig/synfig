@@ -49,36 +49,49 @@ using namespace synfigapp;
 /* === M E T H O D S ======================================================= */
 
 UIInterface::Response
-ConsoleUIInterface::confirmation(const std::string &title, const std::string &primaryText,
-		const std::string &secondaryText, const std::string &confirmPhrase,
-		const std::string &cancelPhrase, Response dflt)
+ConsoleUIInterface::confirmation(
+			const std::string &message,
+			const std::string &details,
+			const std::string &confirm,
+			const std::string &cancel,
+			Response dflt
+)
 {
-	cout << title.c_str() << ": " << primaryText.c_str() << endl;
-	cout << secondaryText.c_str();
+	cout << message.c_str() << endl;
+	cout << details.c_str();
 
 	if (dflt == RESPONSE_OK)
-		cout << "(" << confirmPhrase.c_str() << "/" << cancelPhrase.c_str() << ")" << endl;
+		cout << "(" << confirm.c_str() << "/" << cancel.c_str() << ")" << endl;
 	else
-		cout << "(" << cancelPhrase.c_str() << "/" << confirmPhrase.c_str() << ")" << endl;
+		cout << "(" << cancel.c_str() << "/" << confirm.c_str() << ")" << endl;
 
 	string resp;
 	cin >> resp;
 
 	if (dflt == RESPONSE_OK)
 	{
-		if (resp == cancelPhrase)
+		if (resp == cancel)
 			return RESPONSE_CANCEL;
 		return RESPONSE_OK;
 	}
-	if (resp == confirmPhrase)
+	if (resp == confirm)
 		return RESPONSE_OK;
 	return RESPONSE_CANCEL;
 }
 
+
+
 UIInterface::Response
-ConsoleUIInterface::yes_no(const std::string &title, const std::string &message,Response dflt)
+ConsoleUIInterface::yes_no_cancel(
+			const std::string &message,
+			const std::string &details,
+			const std::string &button1,
+			const std::string &button2,
+			const std::string &button3,
+			Response dflt
+)
 {
-	cout<<title.c_str()<<": "<<message.c_str()<<' ';
+	cout<<message.c_str()<<": "<<details.c_str()<<' ';
 	if(dflt==RESPONSE_NO)
 		cout<<_("(no/yes)")<<endl;
 	else
@@ -102,59 +115,6 @@ ConsoleUIInterface::yes_no(const std::string &title, const std::string &message,
 	}
 }
 
-UIInterface::Response
-ConsoleUIInterface::yes_no_cancel(const std::string &title, const std::string &message, Response dflt)
-{
-	cout<<title.c_str()<<": "<<message.c_str()<<' ';
-	if(dflt==RESPONSE_NO)
-		cout<<_("(no/yes)")<<endl;
-	else
-		cout<<_("(yes/no)")<<endl;
-	string resp;
-	cin>>resp;
-
-	if(dflt==RESPONSE_NO)
-	{
-		if(resp=="yes")
-			return RESPONSE_YES;
-		else
-			return RESPONSE_NO;
-	}
-	else
-	{
-		if(resp=="no")
-			return RESPONSE_NO;
-		else
-			return RESPONSE_YES;
-	}
-}
-
-UIInterface::Response
-ConsoleUIInterface::ok_cancel(const std::string &title, const std::string &message,Response dflt)
-{
-	cout<<title.c_str()<<": "<<message.c_str()<<' ';
-	if(dflt==RESPONSE_CANCEL)
-		cout<<_("(cancel/ok)")<<endl;
-	else
-		cout<<_("(ok/cancel)")<<endl;
-	string resp;
-	cin>>resp;
-
-	if(dflt==RESPONSE_CANCEL)
-	{
-		if(resp=="ok")
-			return RESPONSE_OK;
-		else
-			return RESPONSE_CANCEL;
-	}
-	else
-	{
-		if(resp=="cancel")
-			return RESPONSE_CANCEL;
-		else
-			return RESPONSE_OK;
-	}
-}
 
 bool
 ConsoleUIInterface::task(const std::string &task)
@@ -163,12 +123,14 @@ ConsoleUIInterface::task(const std::string &task)
 	return true;
 }
 
+
 bool
 ConsoleUIInterface::error(const std::string &task)
 {
 	cout<<_("error: ")<<task.c_str()<<endl;
 	return true;
 }
+
 
 bool
 ConsoleUIInterface::warning(const std::string &task)
@@ -177,11 +139,10 @@ ConsoleUIInterface::warning(const std::string &task)
 	return true;
 }
 
+
 bool
 ConsoleUIInterface::amount_complete(int /*current*/, int /*total*/)
 {
 	return true;
 }
-
-
 

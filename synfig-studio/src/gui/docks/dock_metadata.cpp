@@ -149,7 +149,7 @@ Dock_MetaData::on_add_pressed()
 	if(get_canvas_interface())
 	{
 		synfig::String key;
-		if(App::dialog_entry(_("New MetaData Entry"), _("Please enter the name of the key"),key) && !key.empty())
+		if(App::dialog_entry(_("New Metadata entry"), _("Key Name: "), key, _("Cancel"), _("Ok")) && !key.empty())
 		{
 			get_canvas_interface()->set_meta_data(key," ");
 		}

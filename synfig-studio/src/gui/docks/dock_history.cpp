@@ -251,24 +251,42 @@ Dock_History::create_action_tree()
 void
 Dock_History::clear_undo()
 {
-	if(selected_instance && App::dialog_yes_no(_("Clear History"),
-			_("You will not be able to undo any changes that you have made!\nAre you sure you want to clear the undo stack?")))
+	if (selected_instance && App::dialog_message_2b(
+		_("Clear History"),
+		_("You will not be able to undo any changes that you have made! "
+			"Are you sure you want to clear the undo stack?"),
+		Gtk::MESSAGE_QUESTION,
+		_("Cancel"),
+		_("Clear"))
+	)
 		selected_instance->clear_undo_stack();
 }
 
 void
 Dock_History::clear_redo()
 {
-	if(selected_instance && App::dialog_yes_no(_("Clear History"),
-			_("You will not be able to redo any changes that you have made!\nAre you sure you want to clear the redo stack?")))
+	if(selected_instance && App::dialog_message_2b(
+		_("Clear History"),
+		_("You will not be able to redo any changes that you have made! "
+			"Are you sure you want to clear the redo stack?"),
+		Gtk::MESSAGE_QUESTION,
+		_("Cancle"),
+		_("Clear"))
+	)
 		selected_instance->clear_redo_stack();
 }
 
 void
 Dock_History::clear_undo_and_redo()
 {
-	if(selected_instance && App::dialog_yes_no(_("Clear History"),
-			_("You will not be able to undo or redo any changes that you have made!\nAre you sure you want to clear the undo and redo stacks?")))
+	if(selected_instance && App::dialog_message_2b(
+		_("Clear History"),
+		_("You will not be able to undo or redo any changes that you have made! "
+			"Are you sure you want to clear the undo and redo stacks?"),
+		Gtk::MESSAGE_QUESTION,
+		_("Cancle"),
+		_("Clear"))
+	)
 	{
 		selected_instance->clear_undo_stack();
 		selected_instance->clear_redo_stack();
