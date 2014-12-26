@@ -18,6 +18,7 @@
 **	\endlegal
 */
 
+#include <cmath>
 #include "renderprogress.h"
 
 RenderProgress::RenderProgress()
@@ -84,25 +85,28 @@ bool RenderProgress::amount_complete(int scanline, int height)
 
 void RenderProgress::printRemainingTime(double remaining_seconds)
 {
-    int weeks=0,days=0,hours=0,minutes=0,seconds=0;
+    int weeks, days, hours, minutes, seconds;
 
     seconds = remaining_seconds;
 
-    while(seconds>=60)
-        minutes++,seconds-=60;
-    while(minutes>=60)
-        hours++,minutes-=60;
-    while(hours>=24)
-        days++,hours-=24;
-    while(days>=7)
-        weeks++,days-=7;
+    minutes = floor(seconds/60);
+    seconds %= 60;
+
+    hours = floor(minutes/60);
+    minutes %= 60;
+
+    days = floor(hours/24);
+    hours %= 24;
+
+    weeks = floor(days/7);
+    days %= 7;
 
     printRemainingTime(seconds, minutes, hours, days, weeks);
 }
 
 void RenderProgress::printRemainingTime(const int seconds, const int minutes,
-                                         const int hours, const int days,
-                                         const int weeks)
+                                        const int hours, const int days,
+                                        const int weeks)
 {
     if(weeks != 0)
     {
