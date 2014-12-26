@@ -33,7 +33,6 @@
 #include <boost/filesystem.hpp>
 #include <boost/format.hpp>
 
-#include <ETL/stringf>
 #include <autorevision.h>
 #include <synfig/general.h>
 #include <synfig/canvas.h>
