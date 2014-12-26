@@ -20,7 +20,6 @@
 
 #include <cmath>
 #include <iostream>
-#include <iomanip>
 #include "renderprogress.h"
 
 RenderProgress::RenderProgress()
