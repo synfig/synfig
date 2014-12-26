@@ -20,10 +20,11 @@
 
 #include <cmath>
 #include <iostream>
+#include <iomanip>
 #include "renderprogress.h"
 
 RenderProgress::RenderProgress()
-    : last_scanline_(0),
+    : last_scanline_(0), last_printed_line_length_(0),
       start_timepoint_(Clock::now()), last_timepoint_(Clock::now())
 { }
 
@@ -54,7 +55,8 @@ bool RenderProgress::amount_complete(int scanline, int height)
 
     std::ostringstream outputStream;
 
-    if(scanline != height)
+    const bool isFinished = (scanline == height);
+    if (!isFinished)
     {
         // avoid reporting the progress too often
         Duration time_since_last_call(Clock::now() - last_timepoint_);
@@ -83,11 +85,19 @@ bool RenderProgress::amount_complete(int scanline, int height)
     }
     else
     {
-        outputStream << "\r" << taskname_ << ": " << _("DONE")
-                     << std::endl;
+        outputStream << "\r" << taskname_ << ": " << _("DONE");
     }
 
-    std::cerr << outputStream.str();
+    const std::string line = outputStream.str();
+    const std::string extendedLine =
+        extendLineToClearRest(line, last_printed_line_length_);
+    last_printed_line_length_ = line.size();
+
+    std::cerr << extendedLine;
+    if (isFinished)
+    {
+        std::cerr << std::endl;
+    }
 
     return true;
 }
@@ -141,4 +151,15 @@ void RenderProgress::printRemainingTime(std::ostream& os,
     }
     /// TRANSLATORS This "s" stands for seconds
     os << seconds << _("s ");
+}
+
+std::string RenderProgress::extendLineToClearRest(std::string line,
+                                                  size_t last_line_length) const
+{
+    if (line.size() < last_line_length)
+    {
+        line.append(last_line_length - line.size(), ' ');
+    }
+
+    return line;
 }

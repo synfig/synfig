@@ -50,6 +50,7 @@ public:
 private:
     std::string taskname_;
     int last_scanline_;
+    size_t last_printed_line_length_;
 
     typedef boost::chrono::system_clock Clock;
     typedef boost::chrono::duration<double> Duration;
@@ -63,6 +64,8 @@ private:
                             const int seconds, const int minutes,
                             const int hours, const int days,
                             const int weeks) const;
+    std::string extendLineToClearRest(std::string line,
+                                      size_t last_line_length) const;
 };
 
 #endif
