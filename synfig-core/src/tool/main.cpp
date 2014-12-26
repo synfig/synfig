@@ -113,7 +113,7 @@ int main(int argc, char* argv[])
 		}
 
 
-		named_type<string>* target_arg_desc = new named_type<string>("module");
+		named_type<std::string>* target_arg_desc = new named_type<std::string>("module");
 		named_type<int>* width_arg_desc = new named_type<int>("NUM");
 		named_type<int>* height_arg_desc = new named_type<int>("NUM");
 		named_type<int>* span_arg_desc = new named_type<int>("NUM");
@@ -122,22 +122,22 @@ int main(int argc, char* argv[])
 		named_type<float>* gamma_arg_desc = new named_type<float>("NUM (=2.2)");
 		named_type<int>* threads_arg_desc = new named_type<int>("NUM");
 		named_type<int>* verbosity_arg_desc = new named_type<int>("NUM");
-		named_type<string>* canvas_arg_desc = new named_type<string>("canvas-id");
-		named_type<string>* output_file_arg_desc = new named_type<string>("filename");
-		named_type<string>* input_file_arg_desc = new named_type<string>("filename");
+		named_type<std::string>* canvas_arg_desc = new named_type<std::string>("canvas-id");
+		named_type<std::string>* output_file_arg_desc = new named_type<std::string>("filename");
+		named_type<std::string>* input_file_arg_desc = new named_type<std::string>("filename");
 		named_type<float>* fps_arg_desc = new named_type<float>("NUM");
-		named_type<string>* time_arg_desc = new named_type<string>("seconds");
-		named_type<string>* begin_time_arg_desc = new named_type<string>("seconds");
-		named_type<string>* start_time_arg_desc = new named_type<string>("seconds");
-		named_type<string>* end_time_arg_desc = new named_type<string>("seconds");
+		named_type<std::string>* time_arg_desc = new named_type<std::string>("seconds");
+		named_type<std::string>* begin_time_arg_desc = new named_type<std::string>("seconds");
+		named_type<std::string>* start_time_arg_desc = new named_type<std::string>("seconds");
+		named_type<std::string>* end_time_arg_desc = new named_type<std::string>("seconds");
 		named_type<int>* dpi_arg_desc = new named_type<int>("NUM");
 		named_type<int>* dpi_x_arg_desc = new named_type<int>("NUM");
 		named_type<int>* dpi_y_arg_desc = new named_type<int>("NUM");
-		named_type<string>* append_filename_arg_desc = new named_type<string>("filename");
-		named_type<string>* sequence_separator_arg_desc = new named_type<string>("string");
-		named_type<string>* canvas_info_fields_arg_desc = new named_type<string>("fields");
-		named_type<string>* layer_info_field_arg_desc = new named_type<string>("layer-name");
-		named_type<string>* video_codec_arg_desc = new named_type<string>("codec");
+		named_type<std::string>* append_filename_arg_desc = new named_type<std::string>("filename");
+		named_type<std::string>* sequence_separator_arg_desc = new named_type<std::string>("string");
+		named_type<std::string>* canvas_info_fields_arg_desc = new named_type<std::string>("fields");
+		named_type<std::string>* layer_info_field_arg_desc = new named_type<std::string>("layer-name");
+		named_type<std::string>* video_codec_arg_desc = new named_type<std::string>("codec");
 		named_type<int>* video_bitrate_arg_desc = new named_type<int>("bitrate");
 
         po::options_description po_settings(_("Settings"));
@@ -268,9 +268,9 @@ int main(int argc, char* argv[])
 		job.desc = job.canvas->rend_desc() = op.extract_renddesc(job.canvas->rend_desc());
 
 		if (job.extract_alpha) {
-			job.alpha_mode = TARGET_ALPHA_MODE_REDUCE;
+			job.alpha_mode = synfig::TARGET_ALPHA_MODE_REDUCE;
 			job_list.push_front(job);
-			job.alpha_mode = TARGET_ALPHA_MODE_EXTRACT;
+			job.alpha_mode = synfig::TARGET_ALPHA_MODE_EXTRACT;
 			job.outfilename = _appendAlphaToFilename(job.outfilename);
 			job_list.push_front(job);
 		} else {

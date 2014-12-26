@@ -24,10 +24,6 @@
 #ifndef __SYNFIG_PROGRESS_H
 #define __SYNFIG_PROGRESS_H
 
-using namespace std;
-using namespace etl;
-using namespace synfig;
-
 #include <synfig/string.h>
 #include "definitions.h"
 
@@ -40,23 +36,23 @@ public:
 	Progress(const char *name):program(name) { }
 
 	virtual bool
-	task(const String &task)
+	task(const std::string& task)
 	{
-		VERBOSE_OUT(1)<<program<<": "<<task.c_str()<<std::endl;
+		VERBOSE_OUT(1)<<program<<": "<<task<<std::endl;
 		return true;
 	}
 
 	virtual bool
-	error(const String &task)
+	error(const std::string& task)
 	{
-		std::cerr<<program<<": "<<_("error")<<": "<<task.c_str()<<std::endl;
+		std::cerr<<program<<": "<<_("error")<<": "<<task<<std::endl;
 		return true;
 	}
 
 	virtual bool
-	warning(const String &task)
+	warning(const std::string& task)
 	{
-		std::cerr<<program<<": "<<_("warning")<<": "<<task.c_str()<<std::endl;
+		std::cerr<<program<<": "<<_("warning")<<": "<<task<<std::endl;
 		return true;
 	}
 
