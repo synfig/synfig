@@ -26,6 +26,7 @@
 #define __SYNFIG_RENDERPROGRESS_H
 
 #include <string>
+#include <iosfwd>
 #include <boost/chrono.hpp>
 #include <synfig/general.h>
 #include "definitions.h"
@@ -56,10 +57,12 @@ private:
     Clock::time_point last_timepoint_;
     double remaining_rendered_proportion_;
 
-    void printRemainingTime(double remaining_seconds);
+    void printRemainingTime(std::ostream& os, double remaining_seconds) const;
 
-    void printRemainingTime(const int seconds, const int minutes,
-                            const int hours, const int days, const int weeks);
+    void printRemainingTime(std::ostream& os,
+                            const int seconds, const int minutes,
+                            const int hours, const int days,
+                            const int weeks) const;
 };
 
 #endif

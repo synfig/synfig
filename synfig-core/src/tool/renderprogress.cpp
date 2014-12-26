@@ -19,6 +19,7 @@
 */
 
 #include <cmath>
+#include <iostream>
 #include "renderprogress.h"
 
 RenderProgress::RenderProgress()
@@ -51,6 +52,8 @@ bool RenderProgress::amount_complete(int scanline, int height)
         return true;
     }
 
+    std::ostringstream outputStream;
+
     if(scanline != height)
     {
         // avoid reporting the progress too often
@@ -61,10 +64,11 @@ bool RenderProgress::amount_complete(int scanline, int height)
         }
         last_timepoint_ = Clock::now();
 
-        std::cerr << "\r"
-                  << taskname_ << ": " << _("Line") << " "
-                  << scanline << _(" of ") << height << ". "
-                  << _("Remaining time: ");
+
+        outputStream << "\r"
+                     << taskname_ << ": " << _("Line") << " "
+                     << scanline << _(" of ") << height << ". "
+                     << _("Remaining time: ");
 
         if (scanline != last_scanline_)
         {
@@ -75,15 +79,19 @@ bool RenderProgress::amount_complete(int scanline, int height)
         double remaining_seconds =
             time_since_start.count() * remaining_rendered_proportion_;
 
-        printRemainingTime(remaining_seconds);
+        printRemainingTime(outputStream, remaining_seconds);
     }
     else
-        std::cerr << "\r" << taskname_ << ": " << _("DONE")
-                  << std::endl;
+        outputStream << "\r" << taskname_ << ": " << _("DONE")
+                     << std::endl;
+
+    std::cerr << outputStream.str();
+
     return true;
 }
 
-void RenderProgress::printRemainingTime(double remaining_seconds)
+void RenderProgress::printRemainingTime(std::ostream& os,
+                                        double remaining_seconds) const
 {
     int weeks, days, hours, minutes, seconds;
 
@@ -101,33 +109,34 @@ void RenderProgress::printRemainingTime(double remaining_seconds)
     weeks = floor(days/7);
     days %= 7;
 
-    printRemainingTime(seconds, minutes, hours, days, weeks);
+    printRemainingTime(os, seconds, minutes, hours, days, weeks);
 }
 
-void RenderProgress::printRemainingTime(const int seconds, const int minutes,
+void RenderProgress::printRemainingTime(std::ostream& os,
+                                        const int seconds, const int minutes,
                                         const int hours, const int days,
-                                        const int weeks)
+                                        const int weeks) const
 {
     if(weeks != 0)
     {
         /// TRANSLATORS This "w" stands for weeks
-        std::cerr << weeks << _("w ");
+        os << weeks << _("w ");
     }
     if(days != 0)
     {
         /// TRANSLATORS This "d" stands for days
-        std::cerr << days << _("d ");
+        os << days << _("d ");
     }
     if(hours != 0)
     {
         /// TRANSLATORS This "h" stands for hours
-        std::cerr << hours << _("h ");
+        os << hours << _("h ");
     }
     if(minutes != 0)
     {
         /// TRANSLATORS This "m" stands for minutes
-        std::cerr << minutes << _("m ");
+        os << minutes << _("m ");
     }
     /// TRANSLATORS This "s" stands for seconds
-    std::cerr << seconds << _("s ");
+    os << seconds << _("s ");
 }
