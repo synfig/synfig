@@ -272,99 +272,67 @@ public:
 		//view->progressbar->set_fraction(0);
 	}
 
-	virtual Response confirmation(const std::string &title,
-			const std::string &primaryText,
-			const std::string &secondaryText,
-			const std::string &confirmPhrase,
-			const std::string &cancelPhrase,
-			Response defaultResponse=RESPONSE_OK)
+	virtual Response confirmation(
+			const std::string &message,
+			const std::string &details,
+			const std::string &cancel,
+			const std::string &confirm,
+			Response dflt = RESPONSE_OK
+	)
 	{
 		view->present();
 		//while(studio::App::events_pending())studio::App::iteration(false);
 		Gtk::MessageDialog dialog(
-			*App::main_window, // Parent
-			primaryText,	   // Message
-			false,			   // Markup
-			Gtk::MESSAGE_WARNING, // Type
-			Gtk::BUTTONS_NONE, // Buttons
-			true			   // Modal
+			*App::main_window,
+			message,
+			false,
+			Gtk::MESSAGE_WARNING,
+			Gtk::BUTTONS_NONE,
+			true
 		);
 
-		if (! title.empty())
-			dialog.set_title(title);
-		if (! secondaryText.empty())
-			dialog.set_secondary_text(secondaryText);
+		if (! details.empty())
+			dialog.set_secondary_text(details);
 
-		dialog.add_button(cancelPhrase, RESPONSE_CANCEL);
-		dialog.add_button(confirmPhrase, RESPONSE_OK);
-		dialog.set_default_response(defaultResponse);
+		dialog.add_button(cancel, RESPONSE_CANCEL);
+		dialog.add_button(confirm, RESPONSE_OK);
+		dialog.set_default_response(dflt);
 
 		dialog.show_all();
 		return (Response) dialog.run();
 	}
 
-	virtual Response yes_no(const std::string &title, const std::string &message,Response dflt=RESPONSE_YES)
+
+	virtual Response yes_no_cancel(
+				const std::string &message,
+				const std::string &details,
+				const std::string &button1,
+				const std::string &button2,
+				const std::string &button3,
+				Response dflt=RESPONSE_YES
+	)
 	{
 		view->present();
 		//while(studio::App::events_pending())studio::App::iteration(false);
-		;
-		Gtk::Dialog dialog(
-			title,		// Title
-			*App::main_window, // Parent
-			true		// Modal
+		Gtk::MessageDialog dialog(
+			*App::main_window,
+			message,
+			false,
+			Gtk::MESSAGE_QUESTION,
+			Gtk::BUTTONS_NONE,
+			true
 		);
-		Gtk::Label label(message);
-		label.show();
 
-		dialog.get_vbox()->pack_start(label);
-		dialog.add_button(Gtk::StockID("gtk-yes"),RESPONSE_YES);
-		dialog.add_button(Gtk::StockID("gtk-no"),RESPONSE_NO);
+		dialog.set_secondary_text(details);
+		dialog.add_button(button1, RESPONSE_NO);
+		dialog.add_button(button2, RESPONSE_CANCEL);
+		dialog.add_button(button3, RESPONSE_YES);
 
 		dialog.set_default_response(dflt);
 		dialog.show();
 		return (Response)dialog.run();
 	}
-	virtual Response yes_no_cancel(const std::string &title, const std::string &message,Response dflt=RESPONSE_YES)
-	{
-		view->present();
-		//while(studio::App::events_pending())studio::App::iteration(false);
-		Gtk::Dialog dialog(
-			title,		// Title
-			*App::main_window, // Parent
-			true		// Modal
-		);
-		Gtk::Label label(message);
-		label.show();
 
-		dialog.get_vbox()->pack_start(label);
-		dialog.add_button(Gtk::StockID("gtk-yes"),RESPONSE_YES);
-		dialog.add_button(Gtk::StockID("gtk-no"),RESPONSE_NO);
-		dialog.add_button(Gtk::StockID("gtk-cancel"),RESPONSE_CANCEL);
-
-		dialog.set_default_response(dflt);
-		dialog.show();
-		return (Response)dialog.run();
-	}
-	virtual Response ok_cancel(const std::string &title, const std::string &message,Response dflt=RESPONSE_OK)
-	{
-		view->present();
-		//while(studio::App::events_pending())studio::App::iteration(false);
-		Gtk::Dialog dialog(
-			title,		// Title
-			*App::main_window, // Parent
-			true		// Modal
-		);
-		Gtk::Label label(message);
-		label.show();
-
-		dialog.get_vbox()->pack_start(label);
-		dialog.add_button(Gtk::StockID("gtk-ok"),RESPONSE_OK);
-		dialog.add_button(Gtk::StockID("gtk-cancel"),RESPONSE_CANCEL);
-
-		dialog.set_default_response(dflt);
-		dialog.show();
-		return (Response)dialog.run();
-	}
 
 	virtual bool
 	task(const std::string &task)
@@ -1377,7 +1345,7 @@ CanvasView::create_display_bar()
 	// Separator
 	displaybar->append( *create_tool_separator() );
 
-	/*
+	/* QUALITY_SPIN_DISABLED see also CanvasView::set_quality
 	{ // Set up quality spin button
 		quality_spin=Gtk::manage(new class Gtk::SpinButton(quality_adjustment_));
 		quality_spin->signal_value_changed().connect(
@@ -3113,8 +3081,10 @@ CanvasView::set_quality(int x)
 	if(updating_quality_)
 		return;
 	work_area->set_quality(x);
+
+	// quality_spin creation is commented at QUALITY_SPIN_DISABLED in CanvasView::create_display_bar
 	// Update the quality spin button
-	quality_spin->set_value(x);
+	// quality_spin->set_value(x);
 }
 
 void
@@ -3789,7 +3759,11 @@ CanvasView::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& con
 					if(canvas_interface()->import(filename, errors, warnings, App::resize_imported_images))
 						success=true;
 					if (warnings != "")
-						App::dialog_warning_blocking(_("Warnings"), strprintf("%s:\n\n%s", _("Warnings"), warnings.c_str()));
+						App::dialog_message_1b(
+								"WARNING",
+								strprintf("%s:\n\n%s",_("Warning"),warnings.c_str()),
+								"details",
+								_("Close"));
 				}
 			}
 		} // END of "text/uri-list"
@@ -3931,7 +3905,12 @@ CanvasView::on_keyframe_description_set()
 			return;
 
 		String str(keyframe.get_description ());
-		if(!studio::App::dialog_entry(action->get_name(), action->get_local_name(),str))
+		if(!studio::App::dialog_entry((action->get_local_name() + _(" Description")),
+					_("Description: "),
+					//action->get_local_name(),
+					str,
+					_("Cancel"),
+					_("Set")))
 			return;
 
 		keyframe.set_description(str);
@@ -4048,7 +4027,11 @@ CanvasView::image_import()
 	{
 		canvas_interface()->import(filename, errors, warnings, App::resize_imported_images);
 		if (warnings != "")
-			App::dialog_warning_blocking(_("Warnings"), strprintf("%s:\n\n%s", _("Warnings"), warnings.c_str()));
+			App::dialog_message_1b(
+					"WARNING",
+					strprintf("%s:\n\n%s", _("Warning"), warnings.c_str()),
+					"details",
+					_("Close"));
 	}
 }
 

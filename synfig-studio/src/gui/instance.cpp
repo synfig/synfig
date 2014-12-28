@@ -196,10 +196,21 @@ Instance::set_redo_status(bool x)
 void
 studio::Instance::run_plugin(std::string plugin_path)
 {
-	handle<synfigapp::UIInterface> uim=this->find_canvas_view(this->get_canvas())->get_ui_interface();
-	string str=strprintf(_("This operation cannot be undone and all undo history will be cleared.\nDo you really want to proceed?"));
-	int answer=uim->yes_no(this->get_canvas()->get_name(),str,synfigapp::UIInterface::RESPONSE_YES);
-	if(answer==synfigapp::UIInterface::RESPONSE_YES){
+	handle<synfigapp::UIInterface> uim = this->find_canvas_view(this->get_canvas())->get_ui_interface();
+
+	string message = strprintf(_("Do you realy want to add skeleton to document \"%s\"?" ),
+				this->get_canvas()->get_name().c_str());
+
+	string details = strprintf(_("This operation cannot be undone and all undo history will be cleared."));
+
+	int answer = uim->confirmation(
+				message,
+				details,
+				_("Cancel"),
+				_("Proceed"),
+				synfigapp::UIInterface::RESPONSE_YES);
+
+	if(answer == synfigapp::UIInterface::RESPONSE_YES){
 	
 		OneMoment one_moment;
 
@@ -215,14 +226,29 @@ studio::Instance::run_plugin(std::string plugin_path)
 		if(canvas->count()!=1)
 		{
 			one_moment.hide();
-			App::dialog_error_blocking(_("Error: Plugin Operation Failed"),_("The plugin operation has failed. This can be due to current file being\nreferenced by another composition that is already open, or\nbecause of an internal error in Synfig Studio. Try closing any\ncompositions that might reference this file and try\nagain, or restart Synfig Studio."));
+			App::dialog_message_1b(
+					"ERROR",
+					_("The plugin operation has failed."),
+					_("This can be due to current file "
+						"being referenced by another composition that is already open, "
+						"or because of an internal error in Synfig Studio. Try closing "
+						"any compositions that might reference this file and try again, "
+						"or restart Synfig Studio."),
+					_("Close"));
+
 			one_moment.show();
+
 		} else {
 			bool result;
 			result = launcher.execute( plugin_path, App::get_base_path() );
 			if (!result){
 				one_moment.hide();
-				App::dialog_error_blocking(_("Plugin Error"), launcher.get_output());
+				App::dialog_message_1b(
+						"Error",
+						launcher.get_output(),
+						"details",
+						_("Close"));
+
 				one_moment.show();
 				
 			}
@@ -286,7 +312,12 @@ studio::Instance::save()
 		return STATUS_OK;
 	}
 	string msg(strprintf(_("Unable to save to '%s'"), get_file_name().c_str()));
-	App::dialog_error_blocking(_("Save - Error"), msg.c_str());
+	App::dialog_message_1b(
+			"ERROR",
+			msg.c_str(),
+			"details",
+			_("Close"));
+
 	return STATUS_ERROR;
 }
 
@@ -321,7 +352,11 @@ studio::Instance::dialog_save_as()
 						"on a composition that is being referenced by other\n"
 						"files that are currently open. Close these\n"
 						"other files first before trying to use \"SaveAs\".")));
-					App::dialog_error_blocking(_("SaveAs - Error"), msg.c_str());
+					App::dialog_message_1b(
+							"ERROR",
+							msg.c_str(),
+							"details",
+							_("Close"));
 
 					return false;
 				}
@@ -347,15 +382,23 @@ studio::Instance::dialog_save_as()
 		if (find(base_filename.begin(),base_filename.end(),'*')!=base_filename.end())
 			continue;
 
+		// if file extension is not recognized, then forced to .sifz
 		if (filename_extension(filename) == "")
 			filename+=".sifz";
 
+		// forced to .sifz, the below code is not need anymore
 		try
 		{
 			String ext(filename_extension(filename));
 			// todo: ".sfg" literal and others
-			if(ext!=".sif" && ext!=".sifz" && ext!=".sfg" && !App::dialog_yes_no(_("Unknown extension"),
-				_("You have given the file name an extension\nwhich I do not recognize. Are you sure this is what you want?")))
+			if (ext != ".sif" && ext != ".sifz" && ext != ".sfg" && !App::dialog_message_2b(
+				_("Unknown extension"),
+				_("You have given the file name an extension which I do not recognize. "
+					"Are you sure this is what you want?"),
+				Gtk::MESSAGE_QUESTION,
+				_("Cancel"),
+				_("Sure"))
+			)
 				continue;
 		}
 		catch(...)
@@ -373,15 +416,31 @@ studio::Instance::dialog_save_as()
 			{
 				perror(filename.c_str());
 				string msg(strprintf(_("Unable to check whether '%s' exists."), filename.c_str()));
-				App::dialog_error_blocking(_("SaveAs - Error"),msg.c_str());
+				App::dialog_message_1b(
+						"ERROR",
+						msg.c_str(),
+						"details",
+						_("Close"));
+
 				continue;
 			}
 
-			// if the file exists and the user doesn't want to overwrite it, keep prompting for a filename
-			string msg(strprintf(_("A file named '%s' already exists.\n\n"
-									"Do you want to replace it with the file you are saving?"), filename.c_str()));
-			if ((stat_return == 0) &&
-				!App::dialog_yes_no(_("File exists"),msg.c_str()))
+			// If the file exists and the user doesn't want to overwrite it, keep prompting for a filename
+			string message = strprintf(_("A file named \"%s\" already exists. "
+							"Do you want to replace it?"),
+						basename(filename).c_str());
+
+			string details = strprintf(_("The file already exists in \"%s\". "
+							"Replacing it will overwrite its contents."),
+						basename(dirname(filename)).c_str());
+
+			if ((stat_return == 0) && !App::dialog_message_2b(
+				message,
+				details,
+				Gtk::MESSAGE_QUESTION,
+				_("Use Another Name…"),
+				_("Replace"))
+			)
 				continue;
 		}
 
@@ -391,7 +450,11 @@ studio::Instance::dialog_save_as()
 			return true;
 		}
 		string msg(strprintf(_("Unable to save to '%s'"), filename.c_str()));
-		App::dialog_error_blocking(_("SaveAs - Error"),msg.c_str());
+		App::dialog_message_1b(
+				"ERROR",
+				msg.c_str(),
+				"details",
+				_("Close"));
 	}
 
 	return false;
@@ -515,7 +578,12 @@ Instance::dialog_cvs_commit()
 	calc_repository_info();
 	if(!in_repository())
 	{
-		App::dialog_error_blocking(_("Error"),_("You must first add this composition to the repository"));
+		App::dialog_message_1b(
+				"ERROR",
+				_("You must first add this composition to the repository"),
+				"details",
+				_("Close"));
+
 		return;
 	}
 	try
@@ -524,18 +592,35 @@ Instance::dialog_cvs_commit()
 
 		if(synfigapp::Instance::get_action_count())
 		{
-			if(!App::dialog_yes_no(_("CVS Commit"), _("This will save any changes you have made. Are you sure?")))
+			if (!App::dialog_message_2b(
+				_("CVS Commit"),
+				_("This will save any changes you have made. Are you sure?"),
+				Gtk::MESSAGE_QUESTION,
+				_("Cancel"),
+				_("Commit"))
+			)
 				return;
+
 			save();
 		}
 
 		if(!is_modified())
 		{
-			App::dialog_error_blocking(_("Error"),_("The local copy of the file hasn't been changed since the last update.\nNothing to commit!"));
+			App::dialog_message_1b(
+					"ERROR",
+					_("The local copy of the file hasn't been changed since the last update. Nothing to commit!"),
+					"details",
+					_("Close"));
+
 			return;
 		}
 
-		if(!App::dialog_entry(_("CVS Commit"),_("Enter a log message describing the changes you have made"), message))
+		if(!App::dialog_entry(_("CVS Commit"),
+				_("Log Message: "),
+				message,
+				_("Cancel"),
+				_("Commit"))
+		)
 			return;
 
 		OneMoment one_moment;
@@ -543,7 +628,11 @@ Instance::dialog_cvs_commit()
 	}
 	catch(...)
 	{
-		App::dialog_error_blocking(_("Error"),_("An error has occurred when trying to COMMIT"));
+		App::dialog_message_1b(
+				"ERROR",
+				_("An error has occurred when trying to COMMIT"),
+				"details",
+				_("Close"));
 	}
 	update_all_titles();
 }
@@ -554,7 +643,11 @@ Instance::dialog_cvs_add()
 	calc_repository_info();
 	if(in_repository())
 	{
-		App::dialog_error_blocking(_("Error"),_("This composition has already been added to the repository"));
+		App::dialog_message_1b(
+				"ERROR",
+				_("This composition has already been added to the repository"),
+				"details",
+				_("Close"));
 		return;
 	}
 	try
@@ -568,7 +661,11 @@ Instance::dialog_cvs_add()
 	}
 	catch(...)
 	{
-		App::dialog_error_blocking(_("Error"),_("An error has occurred when trying to ADD"));
+		App::dialog_message_1b(
+				"ERROR",
+				_("An error has occurred when trying to ADD"),
+				"details",
+				_("Close"));
 	}
 	update_all_titles();
 }
@@ -579,12 +676,22 @@ Instance::dialog_cvs_update()
 	calc_repository_info();
 	if(!in_repository())
 	{
-		App::dialog_error_blocking(_("Error"),_("This file is not under version control, so there is nothing to update from!"));
+		App::dialog_message_1b(
+				"ERROR",
+				_("This file is not under version control, so there is nothing to update from!"),
+				"details",
+				_("Close"));
+
 		return;
 	}
 	if(!is_updated())
 	{
-		App::dialog_error_blocking(_("Info"),_("This file is up-to-date"));
+		App::dialog_message_1b(
+				"INFO",
+				_("This file is up-to-date"),
+				"details",
+				_("Close"));
+
 		return;
 	}
 
@@ -593,8 +700,15 @@ Instance::dialog_cvs_update()
 		String filename(get_file_name());
 		if(synfigapp::Instance::get_action_count())
 		{
-			if(!App::dialog_yes_no(_("CVS Update"), _("This will save any changes you have made. Are you sure?")))
+			if (!App::dialog_message_2b(
+				_("CVS Update"),
+				_("This will save any changes you have made. Are you sure?"),
+				Gtk::MESSAGE_QUESTION,
+				_("Cancel"),
+				_("Update"))
+			)
 				return;
+
 			save();
 		}
 		OneMoment one_moment;
@@ -609,7 +723,11 @@ Instance::dialog_cvs_update()
 	}
 	catch(...)
 	{
-		App::dialog_error_blocking(_("Error"),_("An error has occurred when trying to UPDATE"));
+		App::dialog_message_1b(
+				"ERROR",
+				_("An error has occurred when trying to UPDATE"),
+				"details",
+				_("Close"));
 	}
 	//update_all_titles();
 }
@@ -619,16 +737,27 @@ Instance::dialog_cvs_revert()
 {
 	calc_repository_info();
 	if(!in_repository())
-	{
-		App::dialog_error_blocking(_("Error"),_("This file is not under version control, so there is nothing to revert to!"));
+{
+		App::dialog_message_1b(
+				"ERROR",
+				_("This file is not under version control, so there is nothing to revert to!"),
+				"details",
+				_("Close"));
 		return;
 	}
 	try
 	{
 		String filename(get_file_name());
-		if(!App::dialog_yes_no(_("CVS Revert"),
-			_("This will abandon all changes you have made\nsince the last time you performed a commit\noperation. This cannot be undone! Are you sure\nyou want to do this?")
-		))
+
+		if (!App::dialog_message_2b(
+			_("CVS Revert"),
+			_("This will abandon all changes you have made since the last time you "
+				"performed a commit operation. This cannot be undone! "
+				"Are you sure you want to do this?"),
+			Gtk::MESSAGE_QUESTION,
+			_("Cancel"),
+			_("Revert"))
+		)
 			return;
 
 		OneMoment one_moment;
@@ -636,7 +765,12 @@ Instance::dialog_cvs_revert()
 		// Remove the old file
 		if(remove(get_file_name().c_str())!=0)
 		{
-			App::dialog_error_blocking(_("Error"),_("Unable to remove previous version"));
+			App::dialog_message_1b(
+					"ERROR",
+					_("Unable to remove previous version"),
+					"details",
+					_("Close"));
+
 			return;
 		}
 
@@ -645,7 +779,11 @@ Instance::dialog_cvs_revert()
 	}
 	catch(...)
 	{
-		App::dialog_error_blocking(_("Error"),_("An error has occurred when trying to UPDATE"));
+		App::dialog_message_1b(
+				"ERROR",
+				_("An error has occurred when trying to UPDATE"),
+				"details",
+				_("Close"));
 	}
 	//update_all_titles();
 }
@@ -664,7 +802,16 @@ Instance::revert()
 	if(canvas->count()!=1)
 	{
 		one_moment.hide();
-		App::dialog_error_blocking(_("Error: Revert Failed"),_("The revert operation has failed. This can be due to it being\nreferenced by another composition that is already open, or\nbecause of an internal error in Synfig Studio. Try closing any\ncompositions that might reference this composition and try\nagain, or restart Synfig Studio."));
+		App::dialog_message_1b(
+				"ERROR",
+				_("The revert operation has failed."),
+				_("This can be due to it being referenced by another composition"
+					" that is already open, or because of an internal error "
+					"in Synfig Studio. Try closing any compositions that "
+					"might reference this composition and try again, or "
+					"restart Synfig Studio."),
+				_("Close"));
+
 		one_moment.show();
 	}
 	canvas=0;
@@ -676,8 +823,18 @@ bool
 Instance::safe_revert()
 {
 	if(synfigapp::Instance::get_action_count())
-		if(!App::dialog_yes_no(_("Revert to saved"), _("You will lose any changes you have made since your last save.\nAre you sure?")))
+	{
+		if (!App::dialog_message_2b(
+			_("Revert to saved"),
+			_("You will lose any changes you have made since your last save."
+				"Are you sure?"),
+			Gtk::MESSAGE_QUESTION,
+			_("Cancel"),
+			_("Revert"))
+		)
 			return false;
+	}
+
 	revert();
 	return true;
 }
@@ -693,16 +850,33 @@ Instance::safe_close()
 	if (canvas_view->is_playing())
 	{
 		canvas_view->present();
-		App::dialog_error_blocking("Close Error", "The animation is currently playing so the window cannot be closed.");
+		App::dialog_message_1b(
+				"ERROR",
+				_("The animation is currently playing so the window cannot be closed."),
+				"details",
+				_("Thanks!"));
+
 		return false;
 	}
 	if(get_action_count())
 		do
 		{
-			string str=strprintf(_("Would you like to save your changes to %s?"),basename(get_file_name()).c_str() );
-			int answer=uim->yes_no_cancel(get_canvas()->get_name(),str,synfigapp::UIInterface::RESPONSE_YES);
-			if(answer==synfigapp::UIInterface::RESPONSE_YES)
-			{
+			string message = strprintf(_("Save changes to document \“%s\” before closing?"),
+					basename(get_file_name()).c_str() );
+
+			string details = (_("If you don't save, changes from the last time you saved "
+					"will be permanently lost."));
+
+			int answer=uim->yes_no_cancel(
+						message,
+						details,
+						_("Close without Saving"),
+						_("Cancel"),
+						_("Save As…"),
+						synfigapp::UIInterface::RESPONSE_YES
+			);
+
+			if(answer == synfigapp::UIInterface::RESPONSE_YES){
 				enum Status status = save();
 				if (status == STATUS_OK) break;
 				else if (status == STATUS_CANCEL) return false;
@@ -715,8 +889,20 @@ Instance::safe_close()
 
 	if(is_modified())
 	{
-		string str=strprintf(_("%s has changes not yet on the CVS repository.\nWould you like to commit these changes?"),basename(get_file_name()).c_str());
-		int answer=uim->yes_no_cancel(get_canvas()->get_name(),str,synfigapp::UIInterface::RESPONSE_YES);
+		string message = strprintf(_("Commit changes of \"%s\" to  the CVS repository?"),
+				basename(get_file_name()).c_str());
+
+		string details = (_("If you don't commit, changes not yet on the CVS repository will "
+				"be permanently lost."));
+
+		int answer=uim->yes_no_cancel(
+					message,
+					details,
+					_("Close without Committing"),
+					_("Cancel"),
+					_("Commit…"),
+					synfigapp::UIInterface::RESPONSE_YES
+		);
 
 		if(answer==synfigapp::UIInterface::RESPONSE_YES)
 			dialog_cvs_commit();
@@ -918,7 +1104,24 @@ Instance::process_action(synfig::String name, synfigapp::Action::ParamList param
 							str = param.get_string();
 					}
 				}
-				if(!studio::App::dialog_entry(entry.local_name, iter->get_local_name()+": "+iter->get_desc(),str))
+				String button2 = _("Export");
+				String label = _("Name: ");
+
+				// export and rename value dialog
+				if (entry.name == "ValueNodeRename") button2 = _("Rename");
+				// set layer description dialog
+				if (entry.name == "LayerSetDesc")
+				{
+					button2 = _("Set");
+					label = _("Description: ");
+				}
+
+				if(!studio::App::dialog_entry(entry.local_name,
+							label,
+							//iter->get_local_name()+": "+iter->get_desc(),
+							str,
+							_("Cancel"),
+							button2))
 					return;
 				action->set_param(iter->get_name(),str);
 				break;
@@ -1210,8 +1413,8 @@ edit_several_waypoints(etl::handle<CanvasView> canvas_view, std::list<synfigapp:
 	etl::handle<synfigapp::CanvasInterface> canvas_interface(canvas_view->canvas_interface());
 
 	Gtk::Dialog dialog(
-		"Edit Multiple Waypoints",		// Title
-		true		// Modal
+		"Edit Multiple Waypoints",
+		true
 	);
 
 	Widget_WaypointModel widget_waypoint_model;
@@ -1219,8 +1422,8 @@ edit_several_waypoints(etl::handle<CanvasView> canvas_view, std::list<synfigapp:
 
 	dialog.get_vbox()->pack_start(widget_waypoint_model);
 
-	dialog.add_button(Gtk::StockID("gtk-apply"),1);
-	dialog.add_button(Gtk::StockID("gtk-cancel"),0);
+	dialog.add_button(_("Cancel"), 0);
+	dialog.add_button(_("Apply"), 1);
 	dialog.show();
 
 	if(dialog.run()==0 || widget_waypoint_model.get_waypoint_model().is_trivial())

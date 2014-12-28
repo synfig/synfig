@@ -46,7 +46,7 @@ class ValueNode_Bone : public LinkableValueNode
 	ValueNode::RHandle length_;
         ValueNode::RHandle width_;
 	ValueNode::RHandle tipwidth_;
-	ValueNode::RHandle order_;
+	ValueNode::RHandle depth_;
 	ValueNode::RHandle parent_;
 
 protected:

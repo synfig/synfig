@@ -120,11 +120,11 @@ ValueNode_StaticList::create_list_entry(int index, Time time, Real origin) // li
 
 			Real length(next.get(Bone()).get_length());
 			Real width(next.get(Bone()).get_tipwidth());
-			Real order(next.get(Bone()).get_order());
+			Real depth(next.get(Bone()).get_depth());
 			new_bone.set_origin(Point(1.1*length,0));
 			new_bone.set_width(width);
 			new_bone.set_tipwidth(width);
-			new_bone.set_order(order);
+			new_bone.set_depth(depth);
 
 			ret=ValueNode_Const::create(new_bone, get_parent_canvas());
 		}
@@ -156,11 +156,11 @@ ValueNode_StaticList::create_list_entry(int index, Time time, Real origin) // li
 					new_bone.set_parent(value_node_bone.get());
 					Real length(bone.get_length());
 					Real width(bone.get_tipwidth());
-					Real order(bone.get_order());
+					Real depth(bone.get_depth());
 					new_bone.set_origin(Point(1.1*length,0));
 					new_bone.set_width(width);
 					new_bone.set_tipwidth(width);
-					new_bone.set_order(order);
+					new_bone.set_depth(depth);
 				}
 
 				{ // second
@@ -171,11 +171,11 @@ ValueNode_StaticList::create_list_entry(int index, Time time, Real origin) // li
 					new_bone.set_parent(value_node_bone.get());
 					Real length(bone.get_length());
 					Real width(bone.get_tipwidth());
-					Real order(bone.get_order());
+					Real depth(bone.get_depth());
 					new_bone.set_origin(Point(1.1*length,0));
 					new_bone.set_width(width);
 					new_bone.set_tipwidth(width);
-					new_bone.set_order(order);
+					new_bone.set_depth(depth);
 				}
 
 				ret=ValueNode_Const::create(new_pair, get_parent_canvas());

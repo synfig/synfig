@@ -194,15 +194,15 @@ Layer_SkeletonDeformation::prepare_mask()
 struct Layer_SkeletonDeformation::GridPoint {
 	Vector initial_position;
 	Vector summary_position;
-	Real summary_order;
+	Real summary_depth;
 	Real summary_weight;
-	Real average_order;
+	Real average_depth;
 	bool used;
 
 	inline GridPoint():
-		summary_order(0.0), summary_weight(0.0), average_order(0.0), used(false) { }
+		summary_depth(0.0), summary_weight(0.0), average_depth(0.0), used(false) { }
 	inline explicit GridPoint(const Vector &initial_position):
-		initial_position(initial_position), summary_order(0.0), summary_weight(0.0), average_order(0.0), used(false) { }
+		initial_position(initial_position), summary_depth(0.0), summary_weight(0.0), average_depth(0.0), used(false) { }
 	static bool compare_triagles(const std::pair<Real, Mesh::Triangle> &a, const std::pair<Real, Mesh::Triangle> &b)
 	{
 		return a.first < b.first ? false
@@ -277,7 +277,7 @@ Layer_SkeletonDeformation::prepare_mesh()
 				Bone::Shape expandedShape0 = shape0;
 				expandedShape0.r0 += 2.0*grid_step_diagonal;
 				expandedShape0.r1 += 2.0*grid_step_diagonal;
-				Real order = bone_pair.second.get_order();
+				Real depth = bone_pair.second.get_depth();
 
 				Matrix into_bone(
 					shape0.p1[0] - shape0.p0[0], shape0.p1[1] - shape0.p0[1], 0.0,
@@ -305,7 +305,7 @@ Layer_SkeletonDeformation::prepare_mesh()
 							// 1.0/(distance*distance*distance);
 							// exp(-4.0*distance);
 						j->summary_position += matrix.get_transformed(j->initial_position) * weight;
-						j->summary_order += order * weight;
+						j->summary_depth += depth * weight;
 						j->summary_weight += weight;
 						j->used = true;
 					}
@@ -318,7 +318,7 @@ Layer_SkeletonDeformation::prepare_mesh()
 	mesh.vertices.reserve(grid.size());
 	for(std::vector<GridPoint>::iterator i = grid.begin(); i != grid.end(); ++i) {
 		Vector average_position = i->summary_weight > precision ? i->summary_position/i->summary_weight : i->initial_position;
-		i->average_order = i->summary_weight > precision ? i->summary_order/i->summary_weight : 0.0;
+		i->average_depth = i->summary_weight > precision ? i->summary_depth/i->summary_weight : 0.0;
 		mesh.vertices.push_back(Mesh::Vertex(average_position, i->initial_position));
 	}
 
@@ -337,12 +337,12 @@ Layer_SkeletonDeformation::prepare_mesh()
 			};
 			if (grid[v[0]].used && grid[v[1]].used && grid[v[2]].used && grid[v[3]].used)
 			{
-				Real order = 0.25*(grid[v[0]].average_order
-						         + grid[v[1]].average_order
-								 + grid[v[2]].average_order
-								 + grid[v[3]].average_order);
-				triangles.push_back(std::make_pair(order, Mesh::Triangle(v[0], v[1], v[3])));
-				triangles.push_back(std::make_pair(order, Mesh::Triangle(v[1], v[2], v[3])));
+				Real depth = 0.25*(grid[v[0]].average_depth
+						         + grid[v[1]].average_depth
+								 + grid[v[2]].average_depth
+								 + grid[v[3]].average_depth);
+				triangles.push_back(std::make_pair(depth, Mesh::Triangle(v[0], v[1], v[3])));
+				triangles.push_back(std::make_pair(depth, Mesh::Triangle(v[1], v[2], v[3])));
 			}
 		}
 	}
