@@ -270,7 +270,7 @@ Dock_History::clear_redo()
 		_("You will not be able to redo any changes that you have made! "
 			"Are you sure you want to clear the redo stack?"),
 		Gtk::MESSAGE_QUESTION,
-		_("Cancle"),
+		_("Cancel"),
 		_("Clear"))
 	)
 		selected_instance->clear_redo_stack();
@@ -284,7 +284,7 @@ Dock_History::clear_undo_and_redo()
 		_("You will not be able to undo or redo any changes that you have made! "
 			"Are you sure you want to clear the undo and redo stacks?"),
 		Gtk::MESSAGE_QUESTION,
-		_("Cancle"),
+		_("Cancel"),
 		_("Clear"))
 	)
 	{
