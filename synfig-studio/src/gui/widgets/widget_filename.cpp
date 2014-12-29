@@ -71,6 +71,9 @@ Widget_Filename::Widget_Filename()
 	label_find->set_ellipsize(Pango::ELLIPSIZE_END);
 	button_choose->add(*label_find);
 
+	set_hexpand(true);
+	entry_filename->set_hexpand(true);
+
 	add(*button_choose);
 	add(*entry_filename);
 
