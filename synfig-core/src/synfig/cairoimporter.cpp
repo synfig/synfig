@@ -141,6 +141,6 @@ CairoImporter::~CairoImporter()
 	for(iter=__open_cairoimporters->begin();iter!=__open_cairoimporters->end();++iter)
 		if(iter->second==this)
 		{
-			__open_cairoimporters->erase(iter);
+			iter = __open_cairoimporters->erase(iter);
 		}
 }

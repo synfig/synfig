@@ -141,6 +141,6 @@ Importer::~Importer()
 	for(iter=__open_importers->begin();iter!=__open_importers->end();++iter)
 		if(iter->second==this)
 		{
-			__open_importers->erase(iter);
+			iter = __open_importers->erase(iter);
 		}
 }
