@@ -590,7 +590,7 @@ mkgdkpixbuf()
 PKG_NAME=gdk-pixbuf
 PKG_VERSION="${GDK_PIXBUF_VERSION}"
 TAREXT=xz
-if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
+if [ ! -f ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done ]; then
 	( cd ${WORKSPACE}/cache/ && wget -c --no-check-certificate http://ftp.gnome.org/pub/gnome/sources/gdk-pixbuf/${PKG_VERSION%.*}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
 	pushd ${SRCPREFIX}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
@@ -602,6 +602,9 @@ if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
 	make install
 	cd ..
 	popd
+	
+	touch ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done
+	
 fi
 }
 
