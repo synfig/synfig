@@ -78,15 +78,15 @@ LIBXMLPP_VERSION=2.22.0
 GLIBMM_VERSION=2.38.1		# required by GTKMM 3.10.1
 CAIRO_VERSION=1.12.18
 BOOST_VERSION=1_53_0
-ATK_VERSION=2.10.0
+ATK_VERSION=2.14.0
 AT_SPI2_VERSION=2.10.2
 AT_SPI2_ATK_VERSION=2.10.2
-GLIB_VERSION=2.38.2
+GLIB_VERSION=2.42.1
 GDK_PIXBUF_VERSION=2.30.3
-GTK_VERSION=3.10.9
+GTK_VERSION=3.14.6
 PIXMAN_VERSION=0.30.0		# required by CAIRO 1.12.0
 HARFBUZZ_VERSION=0.9.24
-PANGO_VERSION=1.36.1
+PANGO_VERSION=1.36.8
 ATKMM_VERSION=2.22.7
 
 # System libraries
@@ -387,6 +387,13 @@ cat > ${DEPSPREFIX}/bin/python <<EOF
 EOF
 chmod a+x  ${DEPSPREFIX}/bin/python
 
+cat > ${DEPSPREFIX}/bin/python-config <<EOF
+#!/bin/sh
+
+/usr/bin/python-config "\$@"
+EOF
+chmod a+x  ${DEPSPREFIX}/bin/python-config
+
 #for binary in bzip2; do
 #	ln -sf /usr/bin/$binary  ${DEPSPREFIX}/bin/$binary
 #done
@@ -400,7 +407,7 @@ PKG_VERSION="${GLIB_VERSION}"
 TAREXT=xz
 if ! pkg-config ${PKG_NAME}-2.0 --exact-version=${PKG_VERSION}  --print-errors; then
 	cd ${CACHEDIR}
-    [ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://ftp.gnome.org/pub/gnome/sources/glib/2.38/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    [ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://ftp.gnome.org/pub/gnome/sources/glib/${PKG_VERSION%.*}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${SRCPREFIX}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
@@ -454,7 +461,7 @@ mkatkmm()
 PKG_NAME=atkmm
 PKG_VERSION="${ATKMM_VERSION}"
 TAREXT=xz
-if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
+if [ ! -f ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done ]; then
 	cd ${CACHEDIR}
     [ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://ftp.gnome.org/pub/gnome/sources/${PKG_NAME}/${PKG_VERSION%.*}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	pushd ${SRCPREFIX}
@@ -465,6 +472,8 @@ if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
 	make install
 	cd ..
 	popd
+	
+	touch ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done
 fi
 }
 
@@ -473,7 +482,7 @@ mkatspi2()
 PKG_NAME=at-spi2-core
 PKG_VERSION="${AT_SPI2_VERSION}"
 TAREXT=xz
-if ! pkg-config at-spi2 --exact-version=${PKG_VERSION}  --print-errors; then
+if [ ! -f ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done ]; then
 	( cd ${WORKSPACE}/cache/ && wget -c --no-check-certificate http://ftp.gnome.org/pub/gnome/sources/${PKG_NAME}/${PKG_VERSION%.*}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
 	pushd ${SRCPREFIX}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
@@ -485,6 +494,8 @@ if ! pkg-config at-spi2 --exact-version=${PKG_VERSION}  --print-errors; then
 	make install
 	cd ..
 	popd
+	
+	touch ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done
 fi
 }
 
@@ -627,6 +638,95 @@ if ! pkg-config ${PKG_NAME}-3.0 --exact-version=${PKG_VERSION}  --print-errors; 
 	cd ${PKG_NAME}-${PKG_VERSION}
 	[ ! -e config.cache ] || rm config.cache
 	./configure --build=${HOST} --prefix=${PREFIX}/ \
+		--disable-static --enable-shared
+	make -j${THREADS}
+	make install
+	cd ..
+	popd
+fi
+}
+
+mklibcroco()
+{
+PKG_NAME=libcroco
+PKG_VERSION=0.6.8
+TAREXT=xz
+if ! pkg-config ${PKG_NAME}-0.6 --exact-version=${PKG_VERSION}  --print-errors; then
+	( cd ${WORKSPACE}/cache/ && wget -c --no-check-certificate http://ftp.gnome.org/pub/gnome/sources/${PKG_NAME}/${PKG_VERSION%.*}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
+	pushd ${SRCPREFIX}
+	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	cd ${PKG_NAME}-${PKG_VERSION}
+	[ ! -e config.cache ] || rm config.cache
+	./configure --build=${HOST} --prefix=${PREFIX}/ \
+		--disable-static --enable-shared
+	make -j${THREADS}
+	make install
+	cd ..
+	popd
+fi
+}
+
+mkgobjectintrospection()
+{
+PKG_NAME=gobject-introspection
+PKG_VERSION=1.42.0
+TAREXT=xz
+if ! pkg-config ${PKG_NAME}-1.0 --exact-version=${PKG_VERSION}  --print-errors; then
+	( cd ${WORKSPACE}/cache/ && wget -c --no-check-certificate http://ftp.gnome.org/pub/gnome/sources/${PKG_NAME}/${PKG_VERSION%.*}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
+	pushd ${SRCPREFIX}
+	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	cd ${PKG_NAME}-${PKG_VERSION}
+	[ ! -e config.cache ] || rm config.cache
+	./configure --build=${HOST} --prefix=${PREFIX}/ \
+		--disable-static --enable-shared
+	make -j${THREADS}
+	make install
+	cd ..
+	popd
+fi
+}
+
+
+mklibrsvg()
+{
+	
+	mklibcroco
+	mkgobjectintrospection
+	
+PKG_NAME=librsvg
+PKG_VERSION=2.40.6
+TAREXT=xz
+if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
+	( cd ${WORKSPACE}/cache/ && wget -c --no-check-certificate http://ftp.gnome.org/pub/gnome/sources/${PKG_NAME}/${PKG_VERSION%.*}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
+	pushd ${SRCPREFIX}
+	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	cd ${PKG_NAME}-${PKG_VERSION}
+	[ ! -e config.cache ] || rm config.cache
+	./configure --build=${HOST} --prefix=${PREFIX}/ \
+		--disable-static --enable-shared
+	make -j${THREADS}
+	make install
+	cd ..
+	popd
+fi
+}
+
+mkgnomethemes()
+{
+	
+mklibrsvg
+
+PKG_NAME=gnome-themes-standard
+PKG_VERSION=3.15.2
+TAREXT=xz
+if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
+	( cd ${WORKSPACE}/cache/ && wget -c --no-check-certificate http://ftp.gnome.org/pub/gnome/sources/${PKG_NAME}/${PKG_VERSION%.*}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
+	pushd ${SRCPREFIX}
+	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	cd ${PKG_NAME}-${PKG_VERSION}
+	[ ! -e config.cache ] || rm config.cache
+	./configure --build=${HOST} --prefix=${PREFIX}/ \
+		--disable-gtk2-engine \
 		--disable-static --enable-shared
 	make -j${THREADS}
 	make install
@@ -1548,6 +1648,7 @@ export LD_LIBRARY_PATH=\${SYSPREFIX}/lib:\$LD_LIBRARY_PATH
 export SYNFIG_ROOT=\${SYSPREFIX}/
 export SYNFIG_MODULE_LIST=\${SYSPREFIX}/etc/synfig_modules.cfg
 #export GDK_PIXBUF_MODULEDIR="\${SYSPREFIX}/lib/gtk-2.0/2.10.0/loaders"
+export GTK_THEME=Adwaita:dark
 export FONTCONFIG_PATH="\${SYSPREFIX}/etc/fonts"
 export MLT_DATA="\${SYSPREFIX}/share/mlt/"
 export MLT_REPOSITORY="\${SYSPREFIX}/lib/mlt/"
@@ -1567,19 +1668,6 @@ if [ -e \$ETC_DIR/gtk-2.0/gdk-pixbuf.loaders.in ]; then
 fi
 
 \${SYSPREFIX}/bin/synfigstudio "\$@"
-
-exit 0
-
-# 1 check if test application starts without warnings
-LANG=C GTK_PATH=/usr/lib64/gtk-2.0/2.10.0/ /home/zelgadis/synfig-buildroot/linux64/bundle/bin/gtk-test --g-fatal-warnings | egrep "Gtk+ version too old (micro mismatch)"
-
-# If everything is fine then start with GTK_PATH
-
-GTK_PATH=/usr/lib64/gtk-2.0/2.10.0/ /home/zelgadis/synfig-buildroot/linux64/bundle/bin/synfigstudio
-
-# otherwise start with custom GTKRC
-
-GTK2_RC_FILES=/home/zelgadis/synfig-buildroot/linux64/bundle/gtkrc:$GTK2_RC_FILES /home/zelgadis/synfig-buildroot/linux64/bundle/bin/synfigstudio
 
 EOF
 
