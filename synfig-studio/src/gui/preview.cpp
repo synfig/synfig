@@ -882,7 +882,7 @@ bool studio::Widget_Preview::play_update()
 		}
 		else
 		{
-			time = soundProcessor.get_position();
+			//time = soundProcessor.get_position();
 		}
 
 		//Looping conditions...
