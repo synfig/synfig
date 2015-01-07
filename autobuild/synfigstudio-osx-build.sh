@@ -229,7 +229,7 @@ mkdeps()
 		cairo \
 		libtool"
 	STUDIO_DEPS=" \
-		gtkmm \
+		gtkmm3 \
 		python33 \
 		gnome-themes-standard \
 		intltool"
