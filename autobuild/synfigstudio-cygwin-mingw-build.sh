@@ -921,6 +921,9 @@ cp -rf $MINGWPREFIX/lib/gdk-pixbuf-2.0 $DISTPREFIX/lib
 cp -rf $MINGWPREFIX/lib/gtk-3.0 $DISTPREFIX/lib
 cp -rf $MINGWPREFIX/lib/pango $DISTPREFIX/lib
 cp -rf $MINGWPREFIX/lib/synfig $DISTPREFIX/lib
+cp -rf $MINGWPREFIX/share/fontconfig $DISTPREFIX/share
+cp -rf $MINGWPREFIX/share/glib-2.0 $DISTPREFIX/share
+cp -rf $MINGWPREFIX/share/gtk-3.0 $DISTPREFIX/share
 cp -rf $MINGWPREFIX/share/locale $DISTPREFIX/share
 cp -rf $MINGWPREFIX/share/pixmaps $DISTPREFIX/share
 if [ -d $DISTPREFIX/share/pixmaps/synfigstudio ]; then
@@ -929,6 +932,7 @@ if [ -d $DISTPREFIX/share/pixmaps/synfigstudio ]; then
 fi
 cp -rf $MINGWPREFIX/share/synfig $DISTPREFIX/share
 cp -rf $MINGWPREFIX/share/themes $DISTPREFIX/share
+cp -rf $MINGWPREFIX/share/xml $DISTPREFIX/share
 
 #cleanup
 
