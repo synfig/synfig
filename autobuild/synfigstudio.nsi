@@ -66,6 +66,7 @@ Section "Synfig Studio"
   SetOutPath "$INSTDIR\lib"
   !include "lib-gdk-pixbuf.nsh"
   !include "lib-gtk.nsh"
+  !include "lib-pango.nsh"
   !include "lib-synfig.nsh"
   
   SetOutPath "$INSTDIR\licenses"

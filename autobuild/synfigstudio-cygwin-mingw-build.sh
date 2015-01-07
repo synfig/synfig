@@ -917,9 +917,9 @@ do
 	cp -rf $MINGWPREFIX/bin/$file $DISTPREFIX/bin || true
 done
 cp -rf $MINGWPREFIX/etc $DISTPREFIX
-#cp -rf $MINGWPREFIX/lib/gdk-pixbuf-2.0 $DISTPREFIX/lib
+cp -rf $MINGWPREFIX/lib/gdk-pixbuf-2.0 $DISTPREFIX/lib
 cp -rf $MINGWPREFIX/lib/gtk-3.0 $DISTPREFIX/lib
-#cp -rf $MINGWPREFIX/lib/pango $DISTPREFIX/lib
+cp -rf $MINGWPREFIX/lib/pango $DISTPREFIX/lib
 cp -rf $MINGWPREFIX/lib/synfig $DISTPREFIX/lib
 cp -rf $MINGWPREFIX/share/locale $DISTPREFIX/share
 cp -rf $MINGWPREFIX/share/pixmaps $DISTPREFIX/share
@@ -965,6 +965,7 @@ gen_list_nsh etc etc
 gen_list_nsh examples examples
 gen_list_nsh lib/gdk-pixbuf-2.0 lib-gdk-pixbuf
 gen_list_nsh lib/gtk-3.0 lib-gtk
+gen_list_nsh lib/pango lib-pango
 gen_list_nsh lib/synfig lib-synfig
 gen_list_nsh licenses licenses
 #gen_list_nsh python python # -- takes too long
