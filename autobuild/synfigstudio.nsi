@@ -130,10 +130,6 @@ Section "Examples"
 	!include "examples.nsh"
 SectionEnd
 
-Section "Interface Languages"
-	!include "share-locale.nsh"
-SectionEnd
-
 ; Optional section (can be disabled by the user)
 Section "Start Menu Shortcuts"
 
@@ -174,10 +170,7 @@ Section "Uninstall"
   !include "licenses-uninst.nsh"
   ;!include "python-uninst.nsh"
   RMDir /r "$INSTDIR\python"
-  !include "share-locale-uninst.nsh"
-  !include "share-pixmaps-uninst.nsh"
-  !include "share-synfig-uninst.nsh"
-  !include "share-themes-uninst.nsh"
+  !include "share-uninst.nsh"
   RMDir "$INSTDIR\share"
 
   ; Remove shortcuts, if any
