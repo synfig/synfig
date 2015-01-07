@@ -64,20 +64,20 @@ Section "Synfig Studio"
   !include "etc.nsh"
 
   SetOutPath "$INSTDIR\lib"
+  !include "lib-gdk-pixbuf.nsh"
   !include "lib-gtk.nsh"
   !include "lib-synfig.nsh"
   
   SetOutPath "$INSTDIR\licenses"
   !include "licenses.nsh"
+  
+  SetOutPath "$INSTDIR\share"
+  !include "share.nsh"
 
   ;SetOutPath "$INSTDIR\python"
   ;!include "python.nsh"
   SetOutPath "$INSTDIR"
   File /r /x .* python
-  
-  !include "share-pixmaps.nsh"
-  !include "share-synfig.nsh"
-  !include "share-themes.nsh"
 
 IfFileExists $PROFILE\.gtkrc-2.0 GtkrcExists PastGtkrcCheck
 GtkrcExists:

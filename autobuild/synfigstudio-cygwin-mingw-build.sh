@@ -963,14 +963,12 @@ gen_list_nsh bin bin
 sed -i '/ffmpeg\.exe/d' bin.nsh		# exclude ffmpeg from the list of binaries - it will go into separate group
 gen_list_nsh etc etc
 gen_list_nsh examples examples
+gen_list_nsh lib/gdk-pixbuf-2.0 lib-gdk-pixbuf
 gen_list_nsh lib/gtk-3.0 lib-gtk
 gen_list_nsh lib/synfig lib-synfig
 gen_list_nsh licenses licenses
 #gen_list_nsh python python # -- takes too long
-gen_list_nsh share/locale share-locale
-gen_list_nsh share/pixmaps share-pixmaps
-gen_list_nsh share/synfig share-synfig
-gen_list_nsh share/themes share-themes
+gen_list_nsh share share
 
 
 #make installer
