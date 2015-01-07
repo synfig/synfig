@@ -1,8 +1,6 @@
 #!/bin/bash
 
-# TODO: LD_PRELOAD wrapper
 # TODO: Bundle ALL dependent lib (libpng issue)
-# TODO: GTK theming issues
 # TODO: FFmpeg/libx264 - stick to particular version
 # TODO: FFmpeg/libx264/mlt - cache sources
 # TODO: Debug builds for dependent libraries
@@ -1602,16 +1600,16 @@ make install
 mkconfig()
 {
 	
-if [ ${PREFIX} == ${DEPSPREFIX} ]; then
+#if [ ${PREFIX} == ${DEPSPREFIX} ]; then
 	#if [ ! -e "${PREFIX}/etc/pango/pango.modules.in" ]; then
 	#	sed "s?${PREFIX}/lib/pango/1.6.0/modules?@ROOTDIR@/modules?" < ${PREFIX}/etc/pango/pango.modules > ${PREFIX}/etc/pango/pango.modules.in
 	#fi
 
 
-	if [ ! -e "${PREFIX}/etc/gtk-2.0/gdk-pixbuf.loaders.in" ]; then
-		sed "s?${PREFIX}/lib/gtk-2.0/2.10.0/loaders?@ROOTDIR@/loaders?" < ${PREFIX}/etc/gtk-2.0/gdk-pixbuf.loaders > ${PREFIX}/etc/gtk-2.0/gdk-pixbuf.loaders.in
+	if [ ! -e "${PREFIX}/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache.in" ]; then
+		sed "s?${PREFIX}/lib/gdk-pixbuf-2.0/2.10.0/loaders?@ROOTDIR@/loaders?" < ${PREFIX}/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache > ${PREFIX}/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache.in
 	fi
-fi
+#fi
 
 cat > ${PREFIX}/synfig <<EOF
 #!/bin/sh
@@ -1665,9 +1663,9 @@ export MAGICK_CONFIGURE_PATH="\${SYSPREFIX}/lib/ImageMagick-${IMAGEMAGICK_VERSIO
 [ -e "\$USER_CONFIG_DIR" ] || mkdir -p "\$USER_CONFIG_DIR"
 
 #sed "s?@ROOTDIR@/modules?\${SYSPREFIX}/lib/pango/1.6.0/modules?" < \$ETC_DIR/pango/pango.modules.in > \$USER_CONFIG_DIR/pango/pango.modules
-if [ -e \$ETC_DIR/gtk-2.0/gdk-pixbuf.loaders.in ]; then
-	sed "s?@ROOTDIR@/loaders?\${SYSPREFIX}/lib/gtk-2.0/2.10.0/loaders?" < \$ETC_DIR/gtk-2.0/gdk-pixbuf.loaders.in > \$GDK_PIXBUF_MODULE_FILE
+if [ -e \${SYSPREFIX}/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache.in ]; then
 	export GDK_PIXBUF_MODULE_FILE="\${USER_CONFIG_DIR}/gdk-pixbuf.loaders"
+	sed "s?@ROOTDIR@/loaders?\${SYSPREFIX}/lib/gdk-pixbuf-2.0/2.10.0/loaders?" < \${SYSPREFIX}/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache.in > \$GDK_PIXBUF_MODULE_FILE
 fi
 
 \${SYSPREFIX}/bin/synfigstudio "\$@"
@@ -1812,9 +1810,10 @@ rm -rf \$RPM_BUILD_ROOT
 mkdir -p \$RPM_BUILD_ROOT/opt/synfig
 cp -r  ${DISTPREFIX}/* \$RPM_BUILD_ROOT/opt/synfig
 mkdir -p \$RPM_BUILD_ROOT/usr/share
+mkdir -p \$RPM_BUILD_ROOT/usr/share/icons
 mv \$RPM_BUILD_ROOT/opt/synfig/share/applications \$RPM_BUILD_ROOT/usr/share
 mv \$RPM_BUILD_ROOT/opt/synfig/share/appdata \$RPM_BUILD_ROOT/usr/share
-mv \$RPM_BUILD_ROOT/opt/synfig/share/icons \$RPM_BUILD_ROOT/usr/share
+mv \$RPM_BUILD_ROOT/opt/synfig/share/icons/hicolor \$RPM_BUILD_ROOT/usr/share/icons
 mv \$RPM_BUILD_ROOT/opt/synfig/share/mime \$RPM_BUILD_ROOT/usr/share
 mv \$RPM_BUILD_ROOT/opt/synfig/share/mime-info \$RPM_BUILD_ROOT/usr/share
 mkdir -p \$RPM_BUILD_ROOT/usr/share/pixmaps
