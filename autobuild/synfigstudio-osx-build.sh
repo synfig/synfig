@@ -231,7 +231,7 @@ mkdeps()
 	STUDIO_DEPS=" \
 		gtkmm \
 		python33 \
-		gtk-engines2 \
+		gnome-themes-standard \
 		intltool"
 	port install -f $CORE_DEPS $STUDIO_DEPS
 	
