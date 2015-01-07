@@ -159,7 +159,7 @@ done
 [ -d ${PREFIX}/etc ] || mkdir -p ${PREFIX}/etc
 for file in \
    fonts \
-   gtk-2.0 \
+   gtk-3.0 \
    pango \
 # this extra line is required!
 do
@@ -168,7 +168,7 @@ done
 
 [ -d ${PREFIX}/lib ] || mkdir -p ${PREFIX}/lib
 for file in \
-   gtk-2.0 \
+   gtk-3.0 \
    gdk-pixbuf-2.0 \
    pango \
    pkgconfig \
