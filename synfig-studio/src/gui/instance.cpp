@@ -861,7 +861,7 @@ Instance::safe_close()
 	if(get_action_count())
 		do
 		{
-			string message = strprintf(_("Save changes to document \“%s\” before closing?"),
+			string message = strprintf(_("Save changes to document \"%s\" before closing?"),
 					basename(get_file_name()).c_str() );
 
 			string details = (_("If you don't save, changes from the last time you saved "
@@ -872,7 +872,7 @@ Instance::safe_close()
 						details,
 						_("Close without Saving"),
 						_("Cancel"),
-						_("Save As…"),
+						_("Save"),
 						synfigapp::UIInterface::RESPONSE_YES
 			);
 
