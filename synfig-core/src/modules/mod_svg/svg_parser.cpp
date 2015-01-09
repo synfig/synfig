@@ -1132,6 +1132,9 @@ Svg_parser::parser_linearGradient(const xmlpp::Node* node){
 		Glib::ustring link	=nodeElement->get_attribute_value("href");
 		Glib::ustring transform	=nodeElement->get_attribute_value("gradientTransform");
 
+		if(link.empty())
+			link = nodeElement->get_attribute_value("href","xlink");			
+
 		//resolve transformations
 		SVGMatrix* mtx=NULL;
 		if(!transform.empty())
@@ -1181,6 +1184,9 @@ Svg_parser::parser_radialGradient(const xmlpp::Node* node){
 		float r				=atof(nodeElement->get_attribute_value("r").data());
 		Glib::ustring link	=nodeElement->get_attribute_value("href");//basic
 		Glib::ustring transform	=nodeElement->get_attribute_value("gradientTransform");
+
+		if(link.empty())
+			link = nodeElement->get_attribute_value("href","xlink");
 
 		if (cx!=fx || cy!=fy)
 			std::cout<<"SVG Parser: ignoring focus attributes for radial gradient";
