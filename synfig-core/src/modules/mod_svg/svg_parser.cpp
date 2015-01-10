@@ -98,7 +98,8 @@ Svg_parser::Svg_parser():
 	kux(60),
 	set_canvas(0), //we must run parser_canvas method
 	ox(0),
-	oy(0)
+	oy(0),
+	locale(LC_NUMERIC, "C")
 {
 	// 0.5 in gamma parameter of color correct layer is 1/0.5 = 2 (thinking) it must be 2.2!!!!
 	gamma.set_gamma(2.2);
