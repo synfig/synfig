@@ -128,6 +128,8 @@ public:
 		//void set_id(String source);
 
 private:
+		ChangeLocale locale;
+	
 		/* === PARSERS ==================================== */
 		void parser_node(const xmlpp::Node* node);
 		//parser headers

@@ -8,6 +8,7 @@
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007 Chris Moore
 **  Copyright (c) 2008 Paul Wise
+**  Copyright (c) 2015 Denis Zdorovtsov
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -40,6 +41,12 @@
 #include <algorithm>
 #include <gtkmm/notebook.h>
 #include <gtkmm/box.h>
+#include <gtkmm/widget.h>
+#include <gtkmm/colorselection.h>
+#include <gtk/gtk.h>
+#include <gdk/gdk.h>
+#include <gdkmm/color.h>
+#include <climits>
 
 #include "general.h"
 
@@ -287,34 +294,61 @@ ColorSlider::on_event(GdkEvent *event)
 }
 
 /* === M E T H O D S ======================================================= */
+void 
+Widget_ColorEdit::SliderRow(int i,ColorSlider * n, char * l, Pango::AttrList & attr_list, Gtk::Table* table)
+{
+	Gtk::Label *label;
+	n->signal_slider_moved().connect(sigc::mem_fun(*this,&studio::Widget_ColorEdit::on_slider_moved));
+	//n->signal_activated().connect(sigc::mem_fun(*this,&studio::Widget_ColorEdit::activated));
+	n->signal_activated().connect(sigc::mem_fun(*this,&studio::Widget_ColorEdit::on_value_changed));
+	label=manage(new class Gtk::Label(l,0.0,0.5));
+	label->set_use_markup(false);
+	label->set_use_underline(false);
+	label->set_attributes(attr_list);
+	table->attach(*label, 0, 1, 1+2*i, 2+2*i, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	table->attach(*n, 0, 1, 2+2*i, 3+2*i, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+}
+
+void
+Widget_ColorEdit::AttachSpinButton(int i, Gtk::SpinButton * n, Gtk::Table * table)
+{
+	n->set_update_policy(Gtk::UPDATE_ALWAYS);
+	n->set_size_request(SPINBUTTON_WIDTH,-1);
+	n->set_range(0.0,100.0);
+	n->show();
+	table->attach(*n, 1, 2, 1+2*i, 3+2*i, Gtk::SHRINK, Gtk::EXPAND, 2, 0);
+}
 
 Widget_ColorEdit::Widget_ColorEdit():
 	R_adjustment(Gtk::Adjustment::create(0,-10000000,10000000,1,10,0)),
 	G_adjustment(Gtk::Adjustment::create(0,-10000000,10000000,1,10,0)),
 	B_adjustment(Gtk::Adjustment::create(0,-10000000,10000000,1,10,0)),
-	A_adjustment(Gtk::Adjustment::create(0,-10000000,10000000,1,10,0))
+	A_adjustment(Gtk::Adjustment::create(0,-10000000,10000000,1,10,0)),
+	colorHVSChanged(false)
 {
 	notebook=manage(new Gtk::Notebook);
 
 	Gtk::Table* rgb_table(manage(new Gtk::Table()));
 	Gtk::Table* yuv_table(manage(new Gtk::Table()));
+	Gtk::Table* hvs_table(manage(new Gtk::Table()));
 	Gtk::Table* main_table(this);
 
 	{
 		Gtk::VBox* rgb_box(manage(new Gtk::VBox()));
 		Gtk::VBox* yuv_box(manage(new Gtk::VBox()));
+		Gtk::VBox* hvs_box(manage(new Gtk::VBox()));
 		rgb_box->pack_start(*rgb_table,false,false);
 		yuv_box->pack_start(*yuv_table,false,false);
+		hvs_box->pack_start(*hvs_table,false,false);
 		notebook->append_page(*rgb_box,_("RGB"));
 		notebook->append_page(*yuv_box,_("YUV"));
+		notebook->append_page(*hvs_box,_("HSV"));
 	}
 
 	color=Color(0,0,0,0);
 
 	set_size_request(200,-1);
 	hold_signals=true;
-
-	Gtk::Label *label;
 
 	R_adjustment->set_lower(-10000000);
 	G_adjustment->set_lower(-10000000);
@@ -333,26 +367,13 @@ Widget_ColorEdit::Widget_ColorEdit():
 	attach(widget_color, 0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	attach(*notebook, 0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
-#define SLIDER_ROW(i,n,l) \
-	slider_##n=manage(new ColorSlider(ColorSlider::TYPE_##n));	\
-	slider_##n->signal_slider_moved().connect(sigc::mem_fun(*this,&studio::Widget_ColorEdit::on_slider_moved)); \
-	/*slider_##n->signal_activated().connect(sigc::mem_fun(*this,&studio::Widget_ColorEdit::activated));*/ \
-	slider_##n->signal_activated().connect(sigc::mem_fun(*this,&studio::Widget_ColorEdit::on_value_changed)); \
-	label=manage(new class Gtk::Label(l,0.0,0.5)); \
-	label->set_use_markup(false); \
-	label->set_use_underline(false); \
-	label->set_attributes(attr_list); \
-	table->attach(*label, 0, 1, 1+2*i, 2+2*i, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);	\
-	table->attach(*slider_##n, 0, 1, 2+2*i, 3+2*i, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0)
+	Gtk::Label *label;
 
-#define ATTACH_SPIN_BUTTON(i,n) \
-	spinbutton_##n=manage(new class Gtk::SpinButton(n##_adjustment,1,0)); \
-	spinbutton_##n->set_update_policy(Gtk::UPDATE_ALWAYS); \
-	spinbutton_##n->set_size_request(SPINBUTTON_WIDTH,-1); \
-	spinbutton_##n->show(); \
-	table->attach(*spinbutton_##n, 1, 2, 1+2*i, 3+2*i, Gtk::SHRINK, Gtk::EXPAND, 2, 0)
-
-	{
+	//This defines are used for code below simplification.
+	#define SLIDER_ROW(i,n,l) SliderRow(i, slider_##n = manage(new ColorSlider(ColorSlider::TYPE_##n)), l,attr_list,table);
+	#define ATTACH_SPIN_BUTTON(i,n) AttachSpinButton(i, spinbutton_##n = manage(new class Gtk::SpinButton(n##_adjustment, 1, 0)),table);
+	
+	{ //RGB frame
 		Gtk::Table* table(rgb_table);
 		SLIDER_ROW(0,R,_("Red"));
 		ATTACH_SPIN_BUTTON(0,R);
@@ -365,21 +386,29 @@ Widget_ColorEdit::Widget_ColorEdit():
 		hex_color_label->set_use_markup(false);
 		hex_color_label->set_use_underline(false);
 		hex_color_label->set_attributes(attr_list);
-		table->attach(*hex_color_label, 0, 1, 7, 8, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+		rgb_table->attach(*hex_color_label, 0, 1, 7, 8, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 
 		hex_color = manage(new Gtk::Entry());
 		hex_color->set_width_chars(8);
 		hex_color->signal_activate().connect(sigc::mem_fun(*this,&studio::Widget_ColorEdit::on_hex_edited));
 		hex_color->signal_focus_out_event().connect(sigc::mem_fun(*this, &studio::Widget_ColorEdit::on_hex_focus_out));
-		table->attach(*hex_color, 0, 1, 8, 9, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+		rgb_table->attach(*hex_color, 0, 1, 8, 9, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 	}
-	{
+	{ //YUM frame
 		Gtk::Table* table(yuv_table);
 		SLIDER_ROW(0,Y,_("Luma"));
 		SLIDER_ROW(1,HUE,_("Hue"));
 		SLIDER_ROW(2,SAT,_("Saturation"));
 		SLIDER_ROW(3,U,_("U"));
 		SLIDER_ROW(4,V,_("V"));
+	}
+	{ //HVS frame
+		//I use Gtk::ColorSelection widget here.
+		hvsColorWidget = manage(new Gtk::ColorSelection());
+		setHVSColor(get_value());
+		hvsColorWidget->signal_color_changed().connect(sigc::mem_fun(*this, &studio::Widget_ColorEdit::on_color_changed));
+		//TODO: Anybody knows how to set min size for this widget? I've tried use set_size_request(..). But it doesn't works.
+		hvs_table->attach(*(hvsColorWidget), 0, 1, 0, 1, Gtk::FILL, Gtk::FILL, 2, 2);
 	}
 	{
 		Gtk::Table* table(main_table);
@@ -410,6 +439,34 @@ Widget_ColorEdit::Widget_ColorEdit():
 
 Widget_ColorEdit::~Widget_ColorEdit()
 {
+}
+
+void Widget_ColorEdit::setHVSColor(synfig::Color color)
+{
+	Gdk::Color gtkColor;
+	gtkColor.set_red((unsigned short)(color.get_r() * 255 * 255));
+	gtkColor.set_green((unsigned short)(color.get_g() * 255 * 255));
+	gtkColor.set_blue((unsigned short)(color.get_b() * 255 * 255));
+	hvsColorWidget->set_previous_color (gtkColor); //We can't use it there, cause color changes in realtime.
+	hvsColorWidget->set_current_color (gtkColor);
+	colorHVSChanged = false;
+}
+
+void
+Widget_ColorEdit::on_color_changed()
+{ 
+	//Spike! Gtk::ColorSelection emits this signal when I use 
+	//set_current_color(...). It calls recursion. Used a flag to fix it.
+	if (!colorHVSChanged)
+	{
+		Gdk::Color newColor = hvsColorWidget->get_current_color();
+		const synfig::Color synfigColor((float)newColor.get_red() / USHRT_MAX,
+			                      (float)newColor.get_green() / USHRT_MAX,
+			                      (float)newColor.get_blue() / USHRT_MAX);
+		set_value(synfigColor);
+		colorHVSChanged = true; //I reset the flag in setHVSColor(..)
+		on_value_changed();
+	}
 }
 
 void
@@ -462,6 +519,7 @@ Widget_ColorEdit::on_value_changed()
 
 	const Color color(get_value_raw());
 	assert(color.is_valid());
+	setHVSColor(color);
 	slider_R->set_color(color);
 	slider_G->set_color(color);
 	slider_B->set_color(color);
@@ -512,7 +570,7 @@ Widget_ColorEdit::set_value(const synfig::Color &data)
 	clamp_=false;
 
 	color=data;
-
+	
 	if(use_colorspace_gamma())
 	{
 		R_adjustment->set_value(gamma_in(color.get_r())*100);
