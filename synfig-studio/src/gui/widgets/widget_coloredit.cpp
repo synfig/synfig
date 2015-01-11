@@ -342,7 +342,7 @@ Widget_ColorEdit::Widget_ColorEdit():
 		hvs_box->pack_start(*hvs_table,false,false);
 		notebook->append_page(*rgb_box,_("RGB"));
 		notebook->append_page(*yuv_box,_("YUV"));
-		notebook->append_page(*hvs_box,_("HVS"));
+		notebook->append_page(*hvs_box,_("HSV"));
 	}
 
 	color=Color(0,0,0,0);
