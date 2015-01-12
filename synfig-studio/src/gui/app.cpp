@@ -1339,7 +1339,7 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 			"different version of libsynfig than what is currently "
 			"installed. Synfig Studio will now abort. Try downloading "
 			"the latest version from the Synfig website at "
-			"http://synfig.org/en/current-release"),
+			"http://www.synfig.org/cms/en/download/"),
 			_("Close"));
 
 		throw 40;
