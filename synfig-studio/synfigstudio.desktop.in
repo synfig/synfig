@@ -1,5 +1,6 @@
 [Desktop Entry]
 Name=Synfig Studio
+_GenericName=2D vector animation studio
 _Comment=Create and edit 2D animations and compositions
 Exec=synfigstudio %F
 Terminal=false
