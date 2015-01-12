@@ -1,12 +1,13 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file trgt_png_spritesheet.h
-**	\brief Template Header
+**	\brief Sprite sheet render target.
 **
 **	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **  Copyright (c) 2013		Moritz Grosch (LittleFox) <littlefox@fsfe.org>
+**  Copyright (c) 2015		Denis Zdorovtsov (mrtrizer) <mrtrizer@gmail.com>
 **
 **  Based on trgt_png.h
 **
@@ -48,18 +49,38 @@ class png_trgt_spritesheet : public synfig::Target_Scanline
 {
 	SYNFIG_TARGET_MODULE_EXT
 private:
-	FILE *file;
-	png_structp png_ptr;
-	png_infop info_ptr;
+	struct PngImage
+	{
+		PngImage():
+			width(0),
+			height(0),
+			color_type(0),
+			bit_depth(0){}
+		unsigned int width;
+		unsigned int height;
+		png_byte color_type;
+		png_byte bit_depth;
+		png_structp png_ptr;
+		png_infop info_ptr;
+	};
 
 	static void png_out_error(png_struct *png,const char *msg);
 	static void png_out_warning(png_struct *png,const char *msg);
 	bool ready;
 	bool initialized;
-	int imagecount, lastimage, numimages;
+	int imagecount;
+	int lastimage;
+	int numimages;
+	unsigned int cur_y;
+	const synfig::TargetParam &params;
+	synfig::Color ** color_data;
+	unsigned int sheet_width;
+	unsigned int sheet_height;
+	static const unsigned int x_offset = 0;
+	static const unsigned int y_offset = 200;
+	FILE * in_file_pointer;
+	PngImage in_image;
 	synfig::String filename;
-	unsigned char *buffer;
-	synfig::Color *color_buffer;
 	synfig::String sequence_separator;
 public:
 	png_trgt_spritesheet(const char *filename, const synfig::TargetParam& /* params */);
@@ -71,6 +92,9 @@ public:
 
 	virtual synfig::Color * start_scanline(int scanline);
 	virtual bool end_scanline();
+	bool read_png_file();
+	bool write_png_file();
+	bool load_png_file();
 };
 
 /* === E N D =============================================================== */
