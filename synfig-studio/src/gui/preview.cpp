@@ -885,6 +885,9 @@ bool studio::Widget_Preview::play_update()
 			//time = soundProcessor.get_position();
 		}
 
+		if (!is_time_equal_to_current_frame(soundProcessor.get_position()))
+			soundProcessor.set_position(time);
+
 		//Looping conditions...
 		if(time >= adj_time_scrub->get_upper())
 		{
