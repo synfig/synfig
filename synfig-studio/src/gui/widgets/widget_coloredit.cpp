@@ -314,7 +314,6 @@ Widget_ColorEdit::AttachSpinButton(int i, Gtk::SpinButton * n, Gtk::Table * tabl
 {
 	n->set_update_policy(Gtk::UPDATE_ALWAYS);
 	n->set_size_request(SPINBUTTON_WIDTH,-1);
-	n->set_range(0.0,100.0);
 	n->show();
 	table->attach(*n, 1, 2, 1+2*i, 3+2*i, Gtk::SHRINK, Gtk::EXPAND, 2, 0);
 }
@@ -441,12 +440,15 @@ Widget_ColorEdit::~Widget_ColorEdit()
 {
 }
 
+#define CLIP_VALUE(value, min, max) (value <= min ? min : (value > max ? max : value))
+
 void Widget_ColorEdit::setHVSColor(synfig::Color color)
 {
 	Gdk::Color gtkColor;
-	gtkColor.set_red((unsigned short)(color.get_r() * 255 * 255));
-	gtkColor.set_green((unsigned short)(color.get_g() * 255 * 255));
-	gtkColor.set_blue((unsigned short)(color.get_b() * 255 * 255));
+	gtkColor.set_red((unsigned short)(CLIP_VALUE(color.get_r(),0.0,1.0) * USHRT_MAX));
+	gtkColor.set_green((unsigned short)(CLIP_VALUE(color.get_g(),0.0,1.0) * USHRT_MAX));
+	gtkColor.set_blue((unsigned short)(CLIP_VALUE(color.get_b(),0.0,1.0) * USHRT_MAX));
+	colorHVSChanged = true;
 	hvsColorWidget->set_previous_color (gtkColor); //We can't use it there, cause color changes in realtime.
 	hvsColorWidget->set_current_color (gtkColor);
 	colorHVSChanged = false;
