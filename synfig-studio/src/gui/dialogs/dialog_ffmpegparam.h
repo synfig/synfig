@@ -22,8 +22,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_STUDIO_DIALOG_TARGETPARAM_H
-#define __SYNFIG_STUDIO_DIALOG_TARGETPARAM_H
+#ifndef __SYNFIG_STUDIO_DIALOG_FFMPEGPARAM_H
+#define __SYNFIG_STUDIO_DIALOG_FFMPEGPARAM_H
 
 /* === H E A D E R S ======================================================= */
 #include <gtkmm/dialog.h>
@@ -32,6 +32,7 @@
 #include <gtkmm/spinbutton.h>
 
 #include <synfig/targetparam.h>
+#include "dialogs/dialog_targetparam.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -41,21 +42,30 @@
 
 namespace studio {
 
-//Interface for extra target parameters dialogs. 	
-class Dialog_TargetParam
+class Dialog_FFmpegParam : public Dialog_TargetParam, public Gtk::Dialog
 {
-public:
-	virtual synfig::TargetParam get_tparam() const = 0;
-	virtual void set_tparam(const synfig::TargetParam &tp) = 0;
-	virtual int run_dialog() = 0;
+	synfig::TargetParam tparam_;
+	Gtk::Button *ok_button;
+	Gtk::Button *cancel_button;
+	Gtk::SpinButton *bitrate;
+	Gtk::ComboBoxText *vcodec;
+	Gtk::Entry *customvcodec;
 
+	void on_ok();
+	void on_cancel();
+	void on_vcodec_change();
+
+public:
+	Dialog_FFmpegParam(Gtk::Window &parent, synfig::TargetParam &tparam);
+	~Dialog_FFmpegParam();
+
+	synfig::TargetParam get_tparam() const;
+	void set_tparam(const synfig::TargetParam &tp);
+	int run_dialog();
 };
 
 }; // END of namespace studio
 
 /* === E N D =============================================================== */
 
-#endif
-
-
-
+#endif //__SYNFIG_STUDIO_DIALOG_FFMPEGPARAM_H

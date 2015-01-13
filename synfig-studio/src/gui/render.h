@@ -47,6 +47,8 @@
 
 #include "renddesc.h"
 
+#include <dialogs/dialog_targetparam.h>
+
 /* === M A C R O S ========================================================= */
 
 /* === T Y P E D E F S ===================================================== */
@@ -87,13 +89,18 @@ class RenderSettings : public Gtk::Dialog
 
 	synfig::TargetParam tparam;
 
+	static std::map<synfig::String, Dialog_TargetParam *> dialog_book;
+
 public:
 	RenderSettings(Gtk::Window& parent,etl::handle<synfigapp::CanvasInterface> canvas_interface);
 	~RenderSettings();
 	void set_entry_filename();
 
-private:
+	//Use to add new param dialog.
+	static void register_dialog(synfig::String target_name, Dialog_TargetParam * dialog) 
+	{dialog_book[target_name] = dialog;}
 
+private:
 	void on_rend_desc_changed();
 	void on_single_frame_toggle();
 	void on_choose_pressed();
