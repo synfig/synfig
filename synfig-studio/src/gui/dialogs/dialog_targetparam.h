@@ -6,6 +6,7 @@
 **
 **	\legal
 **	Copyright (c) 2010 Carlos López González
+**	Copyright (c) 2015 Denis Zdorovtsov
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -41,15 +42,28 @@
 
 namespace studio {
 
-//Interface for extra target parameters dialogs. 	
-class Dialog_TargetParam
+///@brief Abstract parrent for extra target parameters dialogs. 	
+class Dialog_TargetParam: public Gtk::Dialog
 {
 public:
+	Dialog_TargetParam(Gtk::Window &parent, const char* title);
 	virtual ~Dialog_TargetParam(){};
-	virtual synfig::TargetParam get_tparam() const = 0;
-	virtual void set_tparam(const synfig::TargetParam &tp) = 0;
-	virtual int run_dialog() = 0;
 
+	synfig::TargetParam get_tparam() const { return tparam_;}
+	void set_tparam(const synfig::TargetParam &tp) {tparam_=tp; }
+	int run();
+	
+protected:
+	virtual void init() = 0;
+	virtual void write_tparam(synfig::TargetParam & tparam_) = 0;
+	
+private:
+	synfig::TargetParam tparam_;
+	Gtk::Button *ok_button;
+	Gtk::Button *cancel_button;
+	
+	void on_ok();
+	void on_cancel();
 };
 
 }; // END of namespace studio
