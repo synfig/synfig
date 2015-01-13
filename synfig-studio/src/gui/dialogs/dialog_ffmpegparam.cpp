@@ -1,11 +1,12 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file dialog_targetparam.cpp
-**	\brief Implementation for the TargetParam Dialog
+**	\brief Implementation for the FFmpegParam Dialog
 **
 **	$Id$
 **
 **	\legal
 **	Copyright (c) 2010 Carlos López González
+**	Copyright (c) 2015 Denis Zdorovtsov
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -29,6 +30,7 @@
 #	include <config.h>
 #endif
 
+#include <iostream>
 #include "dialogs/dialog_ffmpegparam.h"
 
 #include "general.h"
@@ -87,12 +89,9 @@ const char* allowed_video_codecs_description[] =
 
 /* === M E T H O D S ======================================================= */
 
-/* === E N T R Y P O I N T ================================================= */
-
-Dialog_FFmpegParam::Dialog_FFmpegParam(Gtk::Window &parent, synfig::TargetParam &tparam):
-	Gtk::Dialog(_("Target Parameters"), parent)
+Dialog_FFmpegParam::Dialog_FFmpegParam(Gtk::Window &parent):
+	Dialog_TargetParam(parent, _("FFmpeg parameters"))
 {
-	set_tparam(tparam);
 	// Custom Video Codec Entry
 	Gtk::Label* custom_label(manage(new Gtk::Label(std::string(CUSTOM_VCODEC_DESCRIPTION)+":")));
 	custom_label->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
@@ -113,6 +112,22 @@ Dialog_FFmpegParam::Dialog_FFmpegParam(Gtk::Window &parent, synfig::TargetParam 
 
 	// Connect the signal change to the handler
 	vcodec->signal_changed().connect(sigc::mem_fun(*this, &Dialog_FFmpegParam::on_vcodec_change));
+
+	//Bitrate Spin Button
+	bitrate = Gtk::manage(new Gtk::SpinButton());
+	Gtk::Label* label2(manage(new Gtk::Label(_("Video Bit Rate:"))));
+	label2->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	get_vbox()->pack_start(*label2, true, true, 0);
+	get_vbox()->pack_start(*bitrate,true, true, 0);
+
+	get_vbox()->show_all();
+}
+
+
+
+void
+Dialog_FFmpegParam::init()
+{
 	// By defaut, set the active text to the Custom Video Codec
 	vcodec->set_active_text(CUSTOM_VCODEC_DESCRIPTION);
 	customvcodec->set_text(CUSTOM_VCODEC);
@@ -124,48 +139,16 @@ Dialog_FFmpegParam::Dialog_FFmpegParam(Gtk::Window &parent, synfig::TargetParam 
 			vcodec->set_active_text(allowed_video_codecs_description[i]);
 			customvcodec->set_text(allowed_video_codecs[i]);
 		}
-
-	//Bitrate Spin Button
-	bitrate = Gtk::manage(
-		new Gtk::SpinButton(
-			Gtk::Adjustment::create(double(tparam.bitrate), 10.0,100000.0) ));
-	Gtk::Label* label2(manage(new Gtk::Label(_("Video Bit Rate:"))));
-	label2->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
-	get_vbox()->pack_start(*label2, true, true, 0);
-	get_vbox()->pack_start(*bitrate,true, true, 0);
-
-	get_vbox()->show_all();
-
-	ok_button = manage(new class Gtk::Button(Gtk::StockID("gtk-ok")));
-	ok_button->show();
-	add_action_widget(*ok_button,Gtk::RESPONSE_OK);
-	ok_button->signal_clicked().connect(sigc::mem_fun(*this,&Dialog_FFmpegParam::on_ok));
-
-	cancel_button = manage(new class Gtk::Button(Gtk::StockID("gtk-cancel")));
-	cancel_button->show();
-	add_action_widget(*cancel_button,Gtk::RESPONSE_CANCEL);
-	cancel_button->signal_clicked().connect(sigc::mem_fun(*this,&Dialog_FFmpegParam::on_cancel));
-
-}
-
-int
-Dialog_FFmpegParam::run_dialog()
-{
-	return this->run();
+	//Bitrate
+	bitrate->set_adjustment (Gtk::Adjustment::create(0.0, 10.0,100000.0));
+	bitrate->set_value(double(get_tparam().bitrate));
 }
 
 void
-Dialog_FFmpegParam::on_ok()
+Dialog_FFmpegParam::write_tparam(synfig::TargetParam & tparam_)
 {
-	tparam_.video_codec=customvcodec->get_text().c_str();
-	tparam_.bitrate=bitrate->get_value();
-	hide();
-}
-
-void
-Dialog_FFmpegParam::on_cancel()
-{
-	hide();
+	tparam_.video_codec = customvcodec->get_text().c_str();
+	tparam_.bitrate = bitrate->get_value();
 }
 
 void
@@ -187,14 +170,3 @@ Dialog_FFmpegParam::on_vcodec_change()
 Dialog_FFmpegParam::~Dialog_FFmpegParam()
 {
 }
-
-synfig::TargetParam Dialog_FFmpegParam::get_tparam() const 
-{ 
-	return tparam_;
-}
-
-void Dialog_FFmpegParam::set_tparam(const synfig::TargetParam &tp) 
-{
-	tparam_=tp; 
-}
-

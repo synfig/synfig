@@ -27,6 +27,8 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include "dialogs/dialog_targetparam.h"
+
 /* === M A C R O S ========================================================= */
 
 /* === T Y P E D E F S ===================================================== */
@@ -34,15 +36,17 @@
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 namespace studio {
-class Dialog_SpriteSheetParam
+class Dialog_SpriteSheetParam: public Dialog_TargetParam
 {
 	public:
-		Dialog_SpriteSheetParam();
+		Dialog_SpriteSheetParam(Gtk::Window &parent);
 		~Dialog_SpriteSheetParam();
 
-	protected:
+protected:
+	virtual void init();
+	virtual void write_tparam(synfig::TargetParam & tparam); 
 
-	private:
+private:
 
 };
 

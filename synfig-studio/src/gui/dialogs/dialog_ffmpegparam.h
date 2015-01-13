@@ -1,11 +1,12 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file dialogs/dialog_targetparam.h
-**	\brief Targetparam Dialog Header
+/*!	\file dialogs/dialog_ffmpegparam.h
+**	\brief FFmpegParam Dialog header
 **
 **	$Id$
 **
 **	\legal
 **	Copyright (c) 2010 Carlos López González
+**	Copyright (c) 2015 Denis Zdorovtsov
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -42,26 +43,22 @@
 
 namespace studio {
 
-class Dialog_FFmpegParam : public Dialog_TargetParam, public Gtk::Dialog
+class Dialog_FFmpegParam : public Dialog_TargetParam
 {
-	synfig::TargetParam tparam_;
-	Gtk::Button *ok_button;
-	Gtk::Button *cancel_button;
+public:
+	Dialog_FFmpegParam(Gtk::Window &parent);
+	~Dialog_FFmpegParam();
+
+protected:
+	virtual void init();
+	virtual void write_tparam(synfig::TargetParam & tparam); 
+
+private:
 	Gtk::SpinButton *bitrate;
 	Gtk::ComboBoxText *vcodec;
 	Gtk::Entry *customvcodec;
 
-	void on_ok();
-	void on_cancel();
 	void on_vcodec_change();
-
-public:
-	Dialog_FFmpegParam(Gtk::Window &parent, synfig::TargetParam &tparam);
-	~Dialog_FFmpegParam();
-
-	synfig::TargetParam get_tparam() const;
-	void set_tparam(const synfig::TargetParam &tp);
-	int run_dialog();
 };
 
 }; // END of namespace studio

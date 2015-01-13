@@ -10,7 +10,8 @@ DIALOGS_HH = \
 	dialogs/dialog_setup.h \
 	dialogs/dialog_soundselect.h \
 	dialogs/dialog_targetparam.h \
-	dialogs/dialog_ffmpegparam.h \ 
+	dialogs/dialog_ffmpegparam.h \
+	dialogs/dialog_spritesheetparam.h \ 
 	dialogs/dialog_waypoint.h
 
 DIALOGS_CC = \
@@ -24,7 +25,9 @@ DIALOGS_CC = \
 	dialogs/dialog_preview.cpp \
 	dialogs/dialog_setup.cpp \
 	dialogs/dialog_soundselect.cpp \
+	dialogs/dialog_targetparam.cpp \
 	dialogs/dialog_ffmpegparam.cpp \
+	dialogs/dialog_spritesheetparam.cpp \ 
 	dialogs/dialog_waypoint.cpp
 
 synfigstudio_src += \
