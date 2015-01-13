@@ -259,18 +259,15 @@ RenderSettings::on_choose_pressed()
 void
 RenderSettings::on_targetparam_pressed()
 {
-	Dialog_TargetParam *dialogtp = new Dialog_FFmpegParam(*this, tparam);
+	Dialog_FFmpegParam dialogtp (*this, tparam);
 	std::cout << "0" << std::endl;
-	if(dialogtp->run_dialog()==Gtk::RESPONSE_OK)
+	if(dialogtp.run_dialog() == Gtk::RESPONSE_OK)
 	{
-		tparam=dialogtp->get_tparam();
+		tparam = dialogtp.get_tparam();
 		std::cout << "1" << std::endl;
 	}
 
 	std::cout << "2" << std::endl;
-	
-	delete dialogtp;
-	std::cout << "3" << std::endl;
 }
 
 void

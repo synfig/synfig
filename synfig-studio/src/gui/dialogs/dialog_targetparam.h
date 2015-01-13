@@ -45,6 +45,7 @@ namespace studio {
 class Dialog_TargetParam
 {
 public:
+	virtual ~Dialog_TargetParam(){};
 	virtual synfig::TargetParam get_tparam() const = 0;
 	virtual void set_tparam(const synfig::TargetParam &tp) = 0;
 	virtual int run_dialog() = 0;
