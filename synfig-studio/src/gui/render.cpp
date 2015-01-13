@@ -37,7 +37,7 @@
 #include <synfig/target_scanline.h>
 #include <synfig/canvas.h>
 #include "asyncrenderer.h"
-#include "dialogs/dialog_targetparam.h"
+#include "dialogs/dialog_ffmpegparam.h"
 
 #include "general.h"
 
@@ -259,11 +259,18 @@ RenderSettings::on_choose_pressed()
 void
 RenderSettings::on_targetparam_pressed()
 {
-	Dialog_TargetParam *dialogtp = new Dialog_TargetParam(*this, tparam);
-	if(dialogtp->run()==Gtk::RESPONSE_OK)
+	Dialog_TargetParam *dialogtp = new Dialog_FFmpegParam(*this, tparam);
+	std::cout << "0" << std::endl;
+	if(dialogtp->run_dialog()==Gtk::RESPONSE_OK)
+	{
 		tparam=dialogtp->get_tparam();
+		std::cout << "1" << std::endl;
+	}
 
+	std::cout << "2" << std::endl;
+	
 	delete dialogtp;
+	std::cout << "3" << std::endl;
 }
 
 void
