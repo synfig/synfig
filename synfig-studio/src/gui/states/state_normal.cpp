@@ -132,6 +132,14 @@ class studio::StateNormal_Context : public sigc::trackable
 
 	Gtk::Table options_table;
 
+	bool ctrl_pressed;
+	bool alt_pressed;
+	bool shift_pressed;
+
+	void set_ctrl_pressed(bool value);
+	void set_alt_pressed(bool value);
+	void set_shift_pressed(bool value);
+
 public:
 
 	void refresh_cursor();
@@ -231,7 +239,10 @@ void StateNormal_Context::refresh_cursor()
 
 StateNormal_Context::StateNormal_Context(CanvasView* canvas_view):
 	canvas_view_(canvas_view),
-	duck_dragger_(new DuckDrag_Combo())
+	duck_dragger_(new DuckDrag_Combo()),
+	ctrl_pressed(),
+	alt_pressed(),
+	shift_pressed()
 {
 	duck_dragger_->canvas_view_=get_canvas_view();
 
@@ -567,11 +578,57 @@ StateNormal_Context::event_mouse_motion_handler(const Smach::event& x)
 
 	const EventMouse& event(*reinterpret_cast<const EventMouse*>(&x));
 
-	set_rotate_flag(!get_canvas_view()->get_work_area()->get_alternative_mode() && (event.modifier&GDK_CONTROL_MASK));
-	set_scale_flag(event.modifier&GDK_MOD1_MASK);
-	set_constrain_flag(event.modifier&GDK_SHIFT_MASK);
+	set_ctrl_pressed(event.modifier&GDK_CONTROL_MASK);
+	set_alt_pressed(event.modifier&GDK_MOD1_MASK);
+	set_shift_pressed(event.modifier&GDK_SHIFT_MASK);
 
 	return Smach::RESULT_OK;
+}
+
+void
+StateNormal_Context::set_ctrl_pressed(bool value)
+{
+	if (ctrl_pressed == value) return;
+	ctrl_pressed = value;
+
+	if (ctrl_pressed)
+	{
+		if (get_canvas_view()->get_work_area()->get_selected_ducks().size() <= 1
+		 /* && get_canvas_view()->get_work_area()->get_selected_duck()->get_value_desc().get_value_type() == synfig::type_transformation */ )
+		{
+			get_canvas_view()->get_work_area()->set_alternative_mode(true);
+			get_canvas_view()->get_work_area()->queue_draw();
+		}
+		else
+		{
+			set_rotate_flag(true);
+		}
+	}
+	else
+	{
+		if (get_canvas_view()->get_work_area()->get_alternative_mode())
+		{
+			get_canvas_view()->get_work_area()->set_alternative_mode(false);
+			get_canvas_view()->get_work_area()->queue_draw();
+		}
+		if (get_rotate_flag()) set_rotate_flag(false);
+	}
+}
+
+void
+StateNormal_Context::set_alt_pressed(bool value)
+{
+	if (alt_pressed == value) return;
+	alt_pressed = value;
+	set_scale_flag(alt_pressed);
+}
+
+void
+StateNormal_Context::set_shift_pressed(bool value)
+{
+	if (shift_pressed == value) return;
+	shift_pressed = value;
+	set_constrain_flag(shift_pressed);
 }
 
 Smach::event_result
@@ -588,32 +645,21 @@ StateNormal_Context::event_key_down_handler(const Smach::event& x)
 	{
 	case GDK_KEY_Control_L:
 	case GDK_KEY_Control_R:
-		{
-			if (get_canvas_view()->get_work_area()->get_selected_ducks().size() <= 1
-			 /* && get_canvas_view()->get_work_area()->get_selected_duck()->get_value_desc().get_value_type() == synfig::type_transformation */ )
-			{
-				get_canvas_view()->get_work_area()->set_alternative_mode(true);
-				get_canvas_view()->get_work_area()->queue_draw();
-			}
-			else
-			{
-				set_rotate_flag(true);
-			}
-		}
+		set_ctrl_pressed(true);
 		break;
 	case GDK_KEY_Alt_L:
 	case GDK_KEY_Alt_R:
 	case GDK_KEY_Meta_L:
-		set_scale_flag(true);
+		set_alt_pressed(true);
 		break;
 	case GDK_KEY_Shift_L:
 	case GDK_KEY_Shift_R:
-		set_constrain_flag(true);
+		set_shift_pressed(true);
 		break;
 	default:
-		set_rotate_flag(event.modifier&GDK_CONTROL_MASK);
-		set_scale_flag(event.modifier&GDK_MOD1_MASK);
-		set_constrain_flag(event.modifier&GDK_SHIFT_MASK);
+		set_ctrl_pressed(event.modifier&GDK_CONTROL_MASK);
+		set_alt_pressed(event.modifier&GDK_MOD1_MASK);
+		set_shift_pressed(event.modifier&GDK_SHIFT_MASK);
 		break;
 	}
 	return Smach::RESULT_REJECT;
@@ -628,21 +674,16 @@ StateNormal_Context::event_key_up_handler(const Smach::event& x)
 	{
 	case GDK_KEY_Control_L:
 	case GDK_KEY_Control_R:
-		if (get_canvas_view()->get_work_area()->get_alternative_mode())
-		{
-			get_canvas_view()->get_work_area()->set_alternative_mode(false);
-			get_canvas_view()->get_work_area()->queue_draw();
-		}
-		if (get_rotate_flag()) set_rotate_flag(false);
+		set_ctrl_pressed(false);
 		break;
 	case GDK_KEY_Alt_L:
 	case GDK_KEY_Alt_R:
 	case GDK_KEY_Meta_L:
-		set_scale_flag(false);
+		set_alt_pressed(false);
 		break;
 	case GDK_KEY_Shift_L:
 	case GDK_KEY_Shift_R:
-		set_constrain_flag(false);
+		set_shift_pressed(false);
 		break;
 	}
 	return Smach::RESULT_REJECT;
