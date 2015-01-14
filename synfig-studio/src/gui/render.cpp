@@ -38,6 +38,7 @@
 #include <synfig/canvas.h>
 #include "asyncrenderer.h"
 #include "dialogs/dialog_ffmpegparam.h"
+#include "dialogs/dialog_spritesheetparam.h"
 
 #include "general.h"
 
@@ -245,7 +246,8 @@ void
 RenderSettings::set_target(synfig::String name)
 {
 	target_name=name;
-	tparam_button->set_sensitive(target_name.compare("ffmpeg")?false:true);
+	//TODO: Replace this condition
+	tparam_button->set_sensitive(target_name.compare("ffmpeg") && target_name.compare("png-spritesheet")?false:true);
 }
 
 void
@@ -259,15 +261,18 @@ RenderSettings::on_choose_pressed()
 void
 RenderSettings::on_targetparam_pressed()
 {
-	Dialog_FFmpegParam dialogtp (*this, tparam);
-	std::cout << "0" << std::endl;
-	if(dialogtp.run_dialog() == Gtk::RESPONSE_OK)
-	{
-		tparam = dialogtp.get_tparam();
-		std::cout << "1" << std::endl;
-	}
-
-	std::cout << "2" << std::endl;
+	Dialog_TargetParam * dialogtp;
+	//TODO: Replace this conditions too
+	if (target_name.compare("ffmpeg") == 0)
+		dialogtp = new Dialog_FFmpegParam (*this);
+	else if (target_name.compare("png-spritesheet") == 0)
+		dialogtp = new Dialog_SpriteSheetParam (*this);
+	else
+		return;
+	dialogtp->set_tparam(tparam);
+	if(dialogtp->run() == Gtk::RESPONSE_OK)
+		tparam = dialogtp->get_tparam();
+	delete dialogtp;
 }
 
 void
