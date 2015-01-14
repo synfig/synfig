@@ -325,6 +325,7 @@ png_trgt_spritesheet::write_png_file()
 	cout << "write_png_file()" << endl;
 	png_structp png_ptr;
 	png_infop info_ptr;
+	FILE* file;
 	unsigned char buffer [4 * sheet_width];
 
 	
