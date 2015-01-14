@@ -38,7 +38,7 @@ struct TargetParam
 	 *  passing them to the target module, it would override them with
 	 *  its own valid default settings.
 	 */
-	TargetParam (): video_codec("none"), bitrate(-1), sequence_separator(".") { }
+	TargetParam (): video_codec("none"), bitrate(-1), sequence_separator("."), offset_x(0), offset_y(0) { }
 
 	TargetParam (const std::string& Video_codec, int Bitrate):
 		video_codec(Video_codec), bitrate(Bitrate)
@@ -47,6 +47,9 @@ struct TargetParam
 	std::string video_codec;
 	int bitrate;
 	std::string sequence_separator;
+	//TODO: It is a spike. Need to separate this class.
+	int offset_x;
+	int offset_y;
 };
 
 }; // END of namespace synfig
