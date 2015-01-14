@@ -232,6 +232,7 @@ mkprefix()
 			libdb-dev uuid-dev \
 			libdbus-1-dev \
 			wget mawk \
+			python-dev \
 			bzip2"
 	
 	INCLUDE_LIST=""
@@ -265,7 +266,16 @@ mkprep()
 {
 
 MISSING_PKGS=""
-for PKG in debootstrap dpkg fakeroot fakechroot rpmbuild alien git; do
+for PKG in \
+		debootstrap \
+		dpkg \
+		fakeroot \
+		fakechroot \
+		rpmbuild \
+		alien \
+		git \
+		flex \
+		bison; do
 	if ! ( which $PKG > /dev/null ) ; then
 		MISSING_PKGS="$MISSING_PKGS $PKG"
 	fi
@@ -313,6 +323,8 @@ for file in `find ${SYSPREFIX}/usr/lib/ -type f -name "*.la"`; do
 	sed -i "s|libdir='/usr/lib'|libdir='${SYSPREFIX}/usr/lib'|g" ${file}
 	sed -i "s| /usr/lib| ${SYSPREFIX}/usr/lib|g" ${file}
 done
+
+sed -i "s|#! /usr/bin/python2.6|#!${SYSPREFIX}/usr/bin/python2.6|g" ${SYSPREFIX}/usr/bin/python2.6-config
 
 # Fixing symlinks
 if [[ $ARCH == 64 ]]; then
@@ -378,19 +390,19 @@ cat > ${DEPSPREFIX}/bin/rsync <<EOF
 EOF
 chmod a+x  ${DEPSPREFIX}/bin/rsync
 
-cat > ${DEPSPREFIX}/bin/python <<EOF
+cat > ${DEPSPREFIX}/bin/flex <<EOF
 #!/bin/sh
 
-/usr/bin/python "\$@"
+/usr/bin/flex "\$@"
 EOF
-chmod a+x  ${DEPSPREFIX}/bin/python
+chmod a+x  ${DEPSPREFIX}/bin/flex
 
-cat > ${DEPSPREFIX}/bin/python-config <<EOF
+cat > ${DEPSPREFIX}/bin/bison <<EOF
 #!/bin/sh
 
-/usr/bin/python-config "\$@"
+/usr/bin/bison "\$@"
 EOF
-chmod a+x  ${DEPSPREFIX}/bin/python-config
+chmod a+x  ${DEPSPREFIX}/bin/bison
 
 #for binary in bzip2; do
 #	ln -sf /usr/bin/$binary  ${DEPSPREFIX}/bin/$binary
@@ -519,9 +531,6 @@ fi
 }
 
 
-
-
-
 mkpixman()
 {
 PKG_NAME=pixman
@@ -585,6 +594,7 @@ fi
 
 mkgdkpixbuf()
 {
+	
 PKG_NAME=gdk-pixbuf
 PKG_VERSION="${GDK_PIXBUF_VERSION}"
 TAREXT=xz
@@ -691,6 +701,7 @@ fi
 mklibrsvg()
 {
 	
+	mkgdkpixbuf
 	mklibcroco
 	mkgobjectintrospection
 	
@@ -712,6 +723,7 @@ if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
 fi
 }
 
+# Not used
 mkgnomethemes()
 {
 	
@@ -736,6 +748,31 @@ if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
 fi
 }
 
+mkadwaitaicons()
+{
+	
+mklibrsvg
+
+PKG_NAME=adwaita-icon-theme
+PKG_VERSION=3.15.1
+TAREXT=xz
+if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
+	( cd ${WORKSPACE}/cache/ && wget -c --no-check-certificate http://ftp.gnome.org/pub/gnome/sources/${PKG_NAME}/${PKG_VERSION%.*}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
+	pushd ${SRCPREFIX}
+	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	cd ${PKG_NAME}-${PKG_VERSION}
+	[ ! -e config.cache ] || rm config.cache
+	./configure --build=${HOST} --prefix=${PREFIX}/ \
+		--disable-gtk2-engine \
+		--disable-static --enable-shared
+	make -j${THREADS}
+	make install
+	cd ..
+	popd
+fi
+}
+
+# Not used
 mkgtkengines()
 {
 PKG_NAME=gtk-engines
@@ -1648,6 +1685,8 @@ export ETC_DIR=\${SYSPREFIX}/etc
 export LD_LIBRARY_PATH=\${SYSPREFIX}/lib:\$LD_LIBRARY_PATH
 export SYNFIG_ROOT=\${SYSPREFIX}/
 export SYNFIG_MODULE_LIST=\${SYSPREFIX}/etc/synfig_modules.cfg
+export XDG_DATA_DIRS="\${SYSPREFIX}/share/:\$XDG_DATA_DIRS"
+export XDG_CONFIG_DIRS="\$HOME/.config/synfig:\$XDG_CONFIG_DIRS"
 #export GDK_PIXBUF_MODULEDIR="\${SYSPREFIX}/lib/gtk-2.0/2.10.0/loaders"
 export GTK_THEME=Adwaita
 export GSETTINGS_SCHEMA_DIR="\${SYSPREFIX}/share/glib-2.0/schemas/"
@@ -1924,6 +1963,7 @@ mkall()
 	mkpango
 	mkgdkpixbuf
 	mkgtk
+	mkadwaitaicons
 	mkjack
 	
 	# synfig-core deps
