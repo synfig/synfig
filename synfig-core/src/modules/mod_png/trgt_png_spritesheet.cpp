@@ -97,7 +97,7 @@ png_trgt_spritesheet::png_trgt_spritesheet(const char *Filename, const synfig::T
 	filename(Filename),
 	sequence_separator(params.sequence_separator)
 {
-	cout << "png_trgt_spritesheet()" << endl;
+	cout << "png_trgt_spritesheet() " << params.offset_x << " " << params.offset_y << endl;
 }
 
 png_trgt_spritesheet::~png_trgt_spritesheet()
@@ -138,8 +138,8 @@ png_trgt_spritesheet::set_rend_desc(RendDesc *given_desc)
 	}
 		
 	//I select such size which appropriate to contain whole sprite sheet.
-	unsigned int target_width = numimages * desc.get_w() + x_offset;
-	unsigned int target_height = desc.get_h() + y_offset;
+	unsigned int target_width = numimages * desc.get_w() + params.offset_x;
+	unsigned int target_height = desc.get_h() + params.offset_y;
 	sheet_width = in_image.width > target_width? in_image.width : target_width;
 	sheet_height = in_image.height > target_height? in_image.height : target_height;
 
@@ -189,8 +189,7 @@ png_trgt_spritesheet::start_frame(synfig::ProgressCallback *callback)
 Color *
 png_trgt_spritesheet::start_scanline(int /*scanline*/)
 {
-	//TODO: Replace x_offset and y_offset with values from params variable.
-    return &color_data[cur_y + y_offset][imagecount * desc.get_w() + x_offset];
+    return &color_data[cur_y + params.offset_y][imagecount * desc.get_w() + params.offset_x];
 }
 
 bool
@@ -209,8 +208,8 @@ png_trgt_spritesheet::load_png_file()
     char header[8];    // 8 is the maximum size that can be checked
 
 	//Reads header for next checking.
-    fread(header, 1, 8, in_file_pointer);
-    if (png_sig_cmp((unsigned char *)header, 0, 8))
+    int length = fread(header, 1, 8, in_file_pointer);
+    if ((length < 16) || png_sig_cmp((unsigned char *)header, 0, 8))
 	{
 		synfig::error(strprintf("[read_png_file] File %s is not recognized as a PNG file", filename.c_str()));
 		return false;
@@ -326,14 +325,15 @@ png_trgt_spritesheet::write_png_file()
 	cout << "write_png_file()" << endl;
 	png_structp png_ptr;
 	png_infop info_ptr;
-	FILE *file;
 	unsigned char buffer [4 * sheet_width];
+
 	
     if (filename == "-")
     	file=stdout;
     else
     	file=fopen(filename.c_str(), POPEN_BINARY_WRITE_TYPE);
 
+	
     png_ptr=png_create_write_struct(PNG_LIBPNG_VER_STRING, (png_voidp)this,png_out_error, png_out_warning);
     if (!png_ptr)
     {
@@ -342,6 +342,7 @@ png_trgt_spritesheet::write_png_file()
         return false;
     }
 
+	
     info_ptr= png_create_info_struct(png_ptr);
     if (!info_ptr)
     {
@@ -351,6 +352,7 @@ png_trgt_spritesheet::write_png_file()
         return false;
     }
 
+	
     if (setjmp(png_jmpbuf(png_ptr)))
     {
         synfig::error("Unable to setup longjump");
@@ -361,6 +363,7 @@ png_trgt_spritesheet::write_png_file()
     png_init_io(png_ptr,file);
     png_set_filter(png_ptr,0,PNG_FILTER_NONE);
 
+	
     setjmp(png_jmpbuf(png_ptr));
 
 	png_set_IHDR(png_ptr,info_ptr,
@@ -371,7 +374,6 @@ png_trgt_spritesheet::write_png_file()
 	             PNG_INTERLACE_NONE,
 	             PNG_COMPRESSION_TYPE_DEFAULT,
 	             PNG_FILTER_TYPE_DEFAULT);
-	
     // Write the gamma
     //png_set_gAMA(png_ptr, info_ptr,1.0/gamma().get_gamma());
     png_set_gAMA(png_ptr, info_ptr,gamma().get_gamma());
@@ -383,7 +385,6 @@ png_trgt_spritesheet::write_png_file()
     char description[] = "Description";
     char software   [] = "Software";
     char synfig     [] = "SYNFIG";
-
     // Output any text info along with the file
     png_text comments[]=
     {
@@ -399,7 +400,6 @@ png_trgt_spritesheet::write_png_file()
 
     png_write_info_before_PLTE(png_ptr, info_ptr);
     png_write_info(png_ptr, info_ptr);
-
 	//Writing spritesheet into png image
 	for (unsigned int y = 0; y < sheet_height; y++)
 	{
@@ -412,7 +412,6 @@ png_trgt_spritesheet::write_png_file()
 		setjmp(png_jmpbuf(png_ptr));
 		png_write_row(png_ptr,buffer);
 	}
-	
     if(file)
     {
         png_write_end(png_ptr,info_ptr);

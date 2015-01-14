@@ -72,12 +72,10 @@ private:
 	int lastimage;
 	int numimages;
 	unsigned int cur_y;
-	const synfig::TargetParam &params;
+	const synfig::TargetParam params;
 	synfig::Color ** color_data;
 	unsigned int sheet_width;
 	unsigned int sheet_height;
-	static const unsigned int x_offset = 0;
-	static const unsigned int y_offset = 200;
 	FILE * in_file_pointer;
 	PngImage in_image;
 	synfig::String filename;
