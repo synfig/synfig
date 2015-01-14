@@ -114,7 +114,7 @@ Dialog_FFmpegParam::Dialog_FFmpegParam(Gtk::Window &parent):
 	vcodec->signal_changed().connect(sigc::mem_fun(*this, &Dialog_FFmpegParam::on_vcodec_change));
 
 	//Bitrate Spin Button
-	bitrate = Gtk::manage(new Gtk::SpinButton());
+	bitrate = Gtk::manage(new Gtk::SpinButton(Gtk::Adjustment::create(0.0, 10.0,100000.0)));
 	Gtk::Label* label2(manage(new Gtk::Label(_("Video Bit Rate:"))));
 	label2->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 	get_vbox()->pack_start(*label2, true, true, 0);
@@ -140,7 +140,6 @@ Dialog_FFmpegParam::init()
 			customvcodec->set_text(allowed_video_codecs[i]);
 		}
 	//Bitrate
-	bitrate->set_adjustment (Gtk::Adjustment::create(0.0, 10.0,100000.0));
 	bitrate->set_value(double(get_tparam().bitrate));
 }
 

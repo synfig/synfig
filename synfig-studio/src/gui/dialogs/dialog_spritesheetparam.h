@@ -27,6 +27,9 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <gtkmm/comboboxtext.h>
+#include <gtkmm/spinbutton.h>
+
 #include "dialogs/dialog_targetparam.h"
 
 /* === M A C R O S ========================================================= */
@@ -47,7 +50,8 @@ protected:
 	virtual void write_tparam(synfig::TargetParam & tparam); 
 
 private:
-
+	Gtk::SpinButton * offset_x_box;
+	Gtk::SpinButton * offset_y_box;
 };
 
 }; //studio

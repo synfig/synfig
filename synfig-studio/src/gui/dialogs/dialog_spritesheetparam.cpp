@@ -21,7 +21,7 @@
 /* ========================================================================= */
 
 /* === H E A D E R S ======================================================= */
-#include "dialog_spritesheetparam.h"
+#include "dialogs/dialog_spritesheetparam.h"
 #include "general.h"
 
 namespace studio
@@ -30,7 +30,17 @@ namespace studio
 Dialog_SpriteSheetParam::Dialog_SpriteSheetParam(Gtk::Window &parent):
 	Dialog_TargetParam(parent, _("Sprite sheet parameters"))
 {
-
+	Gtk::Label* offset_x_label(manage(new Gtk::Label(_("Offset X:"))));
+	offset_x_label->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	offset_x_box = Gtk::manage(new Gtk::SpinButton(Gtk::Adjustment::create(0.0, 0.0,10000.0)));
+	Gtk::Label* offset_y_label(manage(new Gtk::Label(_("Offset Y:"))));
+	offset_y_label->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	offset_y_box = Gtk::manage(new Gtk::SpinButton(Gtk::Adjustment::create(0.0, 0.0,10000.0)));
+	get_vbox()->pack_start(*offset_x_label, true, true, 0);
+	get_vbox()->pack_start(*offset_x_box, true, true, 0);
+	get_vbox()->pack_start(*offset_y_label, true, true, 0);
+	get_vbox()->pack_start(*offset_y_box, true, true, 0);
+	get_vbox()->show_all();
 }
 
 Dialog_SpriteSheetParam::~Dialog_SpriteSheetParam()
@@ -40,13 +50,15 @@ Dialog_SpriteSheetParam::~Dialog_SpriteSheetParam()
 void
 Dialog_SpriteSheetParam::init()
 {
-
+	offset_x_box->set_value(get_tparam().offset_x);
+	offset_y_box->set_value(get_tparam().offset_y);
 }
 
 void
 Dialog_SpriteSheetParam::write_tparam(synfig::TargetParam & tparam_)
 {
-
+	tparam_.offset_x = offset_x_box->get_value();
+	tparam_.offset_y = offset_y_box->get_value();
 }
 
 }
