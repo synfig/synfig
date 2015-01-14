@@ -36,10 +36,20 @@ Dialog_SpriteSheetParam::Dialog_SpriteSheetParam(Gtk::Window &parent):
 	Gtk::Label* offset_y_label(manage(new Gtk::Label(_("Offset Y:"))));
 	offset_y_label->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 	offset_y_box = Gtk::manage(new Gtk::SpinButton(Gtk::Adjustment::create(0.0, 0.0,10000.0)));
+	Gtk::Label* rows_label(manage(new Gtk::Label(_("Rows:"))));
+	rows_label->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	rows_box = Gtk::manage(new Gtk::SpinButton(Gtk::Adjustment::create(0.0, 0.0,1000.0)));
+	Gtk::Label* columns_label(manage(new Gtk::Label(_("Columns:"))));
+	columns_label->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	columns_box = Gtk::manage(new Gtk::SpinButton(Gtk::Adjustment::create(0.0, 0.0,1000.0)));	
 	get_vbox()->pack_start(*offset_x_label, true, true, 0);
 	get_vbox()->pack_start(*offset_x_box, true, true, 0);
 	get_vbox()->pack_start(*offset_y_label, true, true, 0);
 	get_vbox()->pack_start(*offset_y_box, true, true, 0);
+	get_vbox()->pack_start(*rows_label, true, true, 0);
+	get_vbox()->pack_start(*rows_box, true, true, 0);
+	get_vbox()->pack_start(*columns_label, true, true, 0);
+	get_vbox()->pack_start(*columns_box, true, true, 0);
 	get_vbox()->show_all();
 }
 
@@ -52,6 +62,8 @@ Dialog_SpriteSheetParam::init()
 {
 	offset_x_box->set_value(get_tparam().offset_x);
 	offset_y_box->set_value(get_tparam().offset_y);
+	rows_box->set_value(get_tparam().rows);
+	columns_box->set_value(get_tparam().columns);
 }
 
 void
@@ -59,6 +71,8 @@ Dialog_SpriteSheetParam::write_tparam(synfig::TargetParam & tparam_)
 {
 	tparam_.offset_x = offset_x_box->get_value();
 	tparam_.offset_y = offset_y_box->get_value();
+	tparam_.rows = rows_box->get_value();
+	tparam_.columns = columns_box->get_value();
 }
 
 }
