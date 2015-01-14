@@ -72,7 +72,9 @@ private:
 	int lastimage;
 	int numimages;
 	unsigned int cur_y;
-	const synfig::TargetParam params;
+	unsigned int cur_row;
+	unsigned int cur_col;
+	synfig::TargetParam params;
 	synfig::Color ** color_data;
 	unsigned int sheet_width;
 	unsigned int sheet_height;

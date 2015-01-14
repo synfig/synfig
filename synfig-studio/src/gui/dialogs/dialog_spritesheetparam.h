@@ -52,6 +52,8 @@ protected:
 private:
 	Gtk::SpinButton * offset_x_box;
 	Gtk::SpinButton * offset_y_box;
+	Gtk::SpinButton * rows_box;
+	Gtk::SpinButton * columns_box;
 };
 
 }; //studio

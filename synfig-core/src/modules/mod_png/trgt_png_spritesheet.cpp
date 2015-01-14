@@ -89,6 +89,8 @@ png_trgt_spritesheet::png_trgt_spritesheet(const char *Filename, const synfig::T
 	lastimage(),
 	numimages(),
 	cur_y(0),
+	cur_row(0),
+	cur_col(0),
 	params(params),
 	color_data(0),
 	sheet_width(0),
@@ -123,6 +125,12 @@ png_trgt_spritesheet::set_rend_desc(RendDesc *given_desc)
     lastimage=desc.get_frame_end();
     numimages = (lastimage - imagecount) + 1;
 
+	if (params.columns == 0)
+		params.columns = numimages;
+	int rows_tmp = numimages / params.columns;
+	params.rows = rows_tmp > params.rows? rows_tmp: params.rows;
+		
+	
 	cout << "Frame count" << numimages << endl;
 
 	bool is_loaded = false;
@@ -138,8 +146,8 @@ png_trgt_spritesheet::set_rend_desc(RendDesc *given_desc)
 	}
 		
 	//I select such size which appropriate to contain whole sprite sheet.
-	unsigned int target_width = numimages * desc.get_w() + params.offset_x;
-	unsigned int target_height = desc.get_h() + params.offset_y;
+	unsigned int target_width = params.columns * desc.get_w() + params.offset_x;
+	unsigned int target_height = params.rows * desc.get_h() + params.offset_y;
 	sheet_width = in_image.width > target_width? in_image.width : target_width;
 	sheet_height = in_image.height > target_height? in_image.height : target_height;
 
@@ -173,6 +181,12 @@ png_trgt_spritesheet::end_frame()
 		
     imagecount++;
 	cur_y = 0;
+	cur_col++;
+	if (cur_col >= params.columns)
+	{
+		cur_row++;
+		cur_col = 0;
+	}
 }
 
 bool
@@ -189,7 +203,7 @@ png_trgt_spritesheet::start_frame(synfig::ProgressCallback *callback)
 Color *
 png_trgt_spritesheet::start_scanline(int /*scanline*/)
 {
-    return &color_data[cur_y + params.offset_y][imagecount * desc.get_w() + params.offset_x];
+    return &color_data[cur_y + params.offset_y + cur_row * desc.get_h()][cur_col * desc.get_w() + params.offset_x];
 }
 
 bool
@@ -209,7 +223,7 @@ png_trgt_spritesheet::load_png_file()
 
 	//Reads header for next checking.
     int length = fread(header, 1, 8, in_file_pointer);
-    if ((length < 16) || png_sig_cmp((unsigned char *)header, 0, 8))
+    if ((length != 8) || png_sig_cmp((unsigned char *)header, 0, 8))
 	{
 		synfig::error(strprintf("[read_png_file] File %s is not recognized as a PNG file", filename.c_str()));
 		return false;
