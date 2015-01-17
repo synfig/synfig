@@ -1,11 +1,10 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file dialogs/dialog_targetparam.h
-**	\brief Targetparam Dialog Header
+/*!	\file dialogs/dialog_spritesheetparam.h
+**	\brief SpriteSheetParam
 **
 **	$Id$
 **
 **	\legal
-**	Copyright (c) 2010 Carlos López González
 **	Copyright (c) 2015 Denis Zdorovtsov
 **
 **	This package is free software; you can redistribute it and/or
@@ -23,17 +22,17 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_STUDIO_DIALOG_TARGETPARAM_H
-#define __SYNFIG_STUDIO_DIALOG_TARGETPARAM_H
+#ifndef __SYNFIG_STUDIO_DIALOG_SPRITESHEETPARAM_H
+#define __SYNFIG_STUDIO_DIALOG_SPRITESHEETPARAM_H
 
 /* === H E A D E R S ======================================================= */
-#include <gtkmm/dialog.h>
-#include <gtkmm/button.h>
+
 #include <gtkmm/comboboxtext.h>
 #include <gtkmm/spinbutton.h>
+#include <gtkmm/checkbutton.h>
+#include <gtkmm/comboboxtext.h>
 
-#include <synfig/targetparam.h>
-#include <synfig/renddesc.h>
+#include "dialogs/dialog_targetparam.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -42,39 +41,33 @@
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 namespace studio {
-
-///@brief Abstract parrent for extra target parameters dialogs. 	
-class Dialog_TargetParam: public Gtk::Dialog
+class Dialog_SpriteSheetParam: public Dialog_TargetParam
 {
-public:
-	Dialog_TargetParam(Gtk::Window &parent, const char* title);
-	virtual ~Dialog_TargetParam(){};
+	public:
+		Dialog_SpriteSheetParam(Gtk::Window &parent);
+		~Dialog_SpriteSheetParam();
 
-	synfig::TargetParam get_tparam() const { return tparam_;}
-	void set_tparam(const synfig::TargetParam &tp) {this->tparam_=tp; }
-	void set_desc(const synfig::RendDesc & desc) {this->desc = desc;}
-	int run();
-	
 protected:
-	virtual void init() = 0;
-	virtual void write_tparam(synfig::TargetParam & tparam_) = 0;
-	const synfig::RendDesc & get_desc() {return desc;}
-	
+	virtual void init();
+	virtual void write_tparam(synfig::TargetParam & tparam); 
+
 private:
-	synfig::TargetParam tparam_;
-	synfig::RendDesc desc;
-	Gtk::Button *ok_button;
-	Gtk::Button *cancel_button;
+	Gtk::SpinButton * offset_x_box;
+	Gtk::SpinButton * offset_y_box;
+	Gtk::SpinButton * rows_box;
+	Gtk::SpinButton * columns_box;
+	Gtk::CheckButton * check_button;
+	Gtk::ComboBoxText * direction_box;
+
+	int frame_count;
 	
-	void on_ok();
-	void on_cancel();
+	void on_dir_change();
+	void on_rows_change();
+	void on_cols_change();
 };
 
-}; // END of namespace studio
+}; //studio
 
 /* === E N D =============================================================== */
 
-#endif
-
-
-
+#endif 
