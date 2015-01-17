@@ -33,6 +33,7 @@
 #include <gtkmm/spinbutton.h>
 
 #include <synfig/targetparam.h>
+#include <synfig/renddesc.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -50,15 +51,18 @@ public:
 	virtual ~Dialog_TargetParam(){};
 
 	synfig::TargetParam get_tparam() const { return tparam_;}
-	void set_tparam(const synfig::TargetParam &tp) {tparam_=tp; }
+	void set_tparam(const synfig::TargetParam &tp) {this->tparam_=tp; }
+	void set_desc(const synfig::RendDesc & desc) {this->desc = desc;}
 	int run();
 	
 protected:
 	virtual void init() = 0;
 	virtual void write_tparam(synfig::TargetParam & tparam_) = 0;
+	const synfig::RendDesc & get_desc() {return desc;}
 	
 private:
 	synfig::TargetParam tparam_;
+	synfig::RendDesc desc;
 	Gtk::Button *ok_button;
 	Gtk::Button *cancel_button;
 	

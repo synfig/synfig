@@ -269,6 +269,9 @@ RenderSettings::on_targetparam_pressed()
 		dialogtp = new Dialog_SpriteSheetParam (*this);
 	else
 		return;
+
+	RendDesc rend_desc(widget_rend_desc.get_rend_desc());
+	dialogtp->set_desc(rend_desc);
 	dialogtp->set_tparam(tparam);
 	if(dialogtp->run() == Gtk::RESPONSE_OK)
 		tparam = dialogtp->get_tparam();

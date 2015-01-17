@@ -29,6 +29,8 @@
 
 #include <gtkmm/comboboxtext.h>
 #include <gtkmm/spinbutton.h>
+#include <gtkmm/checkbutton.h>
+#include <gtkmm/comboboxtext.h>
 
 #include "dialogs/dialog_targetparam.h"
 
@@ -54,6 +56,14 @@ private:
 	Gtk::SpinButton * offset_y_box;
 	Gtk::SpinButton * rows_box;
 	Gtk::SpinButton * columns_box;
+	Gtk::CheckButton * check_button;
+	Gtk::ComboBoxText * direction_box;
+
+	int frame_count;
+	
+	void on_dir_change();
+	void on_rows_change();
+	void on_cols_change();
 };
 
 }; //studio

@@ -33,13 +33,19 @@ namespace synfig {
 
 struct TargetParam
 {
+	//Spritesheet render direction
+	enum Direction {
+		HR = 0, //Horisontal 
+		VR = 1  //Vertical
+	};
+	
 	//! Constructor
 	/*! Not valid default values, if they are not modified before
 	 *  passing them to the target module, it would override them with
 	 *  its own valid default settings.
 	 */
 	TargetParam (const std::string& Video_codec = "none", int Bitrate = -1):
-		video_codec(Video_codec), bitrate(Bitrate), offset_x(0), offset_y(0),rows(0),columns(0)
+		video_codec(Video_codec), bitrate(Bitrate), offset_x(0), offset_y(0),rows(0),columns(0),append(true),dir(HR)
 	{ }
 
 	std::string video_codec;
@@ -50,6 +56,8 @@ struct TargetParam
 	int offset_y;
 	int rows;
 	int columns;
+	bool append;
+	Direction dir;
 };
 
 }; // END of namespace synfig
