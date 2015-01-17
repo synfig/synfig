@@ -314,8 +314,12 @@ LayerTree::create_param_tree()
 
 		// Finish setting up the column
 		column->set_reorderable();
+		column->set_sizing(Gtk::TREE_VIEW_COLUMN_FIXED);
+		column->set_fixed_width(150);
+		column->set_min_width(75);
 		column->set_resizable();
 		column->set_clickable();
+		column->set_sort_column(param_model.name);
 
 		get_param_tree_view().append_column(*column);
 	}
@@ -335,9 +339,10 @@ LayerTree::create_param_tree()
 
 		// Finish setting up the column
 		get_param_tree_view().append_column(*column);
-		column->set_sizing(Gtk::TREE_VIEW_COLUMN_AUTOSIZE);
+		column->set_sizing(Gtk::TREE_VIEW_COLUMN_FIXED);
+		column->set_fixed_width(150);
+		column->set_min_width(75);
 		column->set_clickable();
-		column->set_min_width(120);
 		column->set_reorderable();
 		column->set_resizable();
 	}
@@ -359,9 +364,10 @@ LayerTree::create_param_tree()
 
 		// Finish setting up the column
 		get_param_tree_view().append_column(*column);
-		column->set_sizing(Gtk::TREE_VIEW_COLUMN_AUTOSIZE);
-		column->set_clickable();
+		column->set_sizing(Gtk::TREE_VIEW_COLUMN_FIXED);
+		column->set_fixed_width(26);
 		column->set_min_width(26);
+		column->set_clickable();
 		column->set_reorderable();
 		column->set_resizable();
 	}
@@ -377,6 +383,9 @@ LayerTree::create_param_tree()
 		column->set_resizable();
 		column->set_clickable();
 		column->set_sort_column(param_model.type);
+		column->set_sizing(Gtk::TREE_VIEW_COLUMN_FIXED);
+		column->set_fixed_width(75);
+		column->set_min_width(50);
 	}
 #ifdef TIMETRACK_IN_PARAMS_PANEL
 	{	// --- T I M E   T R A C K --------------------------------------------
@@ -394,10 +403,10 @@ LayerTree::create_param_tree()
 
 		// Finish setting up the column
 		column->set_reorderable();
-		column->set_sizing(Gtk::TREE_VIEW_COLUMN_AUTOSIZE);
+		column->set_sizing(Gtk::TREE_VIEW_COLUMN_FIXED);
+		column->set_fixed_width(200);
+		column->set_min_width(100);
 		column->set_resizable();
-// Commented during Align attempt
-//		column->set_min_width(200);
 
 		if (!getenv("SYNFIG_DISABLE_PARAMS_PANEL_TIMETRACK"))
 			get_param_tree_view().append_column(*column);
