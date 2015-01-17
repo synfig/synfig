@@ -772,27 +772,6 @@ if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
 fi
 }
 
-# Not used
-mkgtkengines()
-{
-PKG_NAME=gtk-engines
-PKG_VERSION="${GTKENGINES_VERSION}"
-TAREXT=bz2
-if ! pkg-config ${PKG_NAME}-2.0 --exact-version=${PKG_VERSION}  --print-errors; then
-	#rsync -av ${SOURCES_URL}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
-	( cd ${WORKSPACE}/cache/ && wget -c --no-check-certificate http://ftp.gnome.org/pub/gnome/sources/gtk-engines/${PKG_VERSION%.*}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
-	pushd ${SRCPREFIX}
-	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xjf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
-	cd ${PKG_NAME}-${PKG_VERSION}
-	./configure --host=${HOST} --prefix=${DEPSPREFIX}/ \
-		--disable-static --enable-shared
-	make -j${THREADS}
-	make install
-	cd ..
-	popd
-fi
-}
-
 mklibsigcpp()
 {
 PKG_NAME=libsigc++
@@ -1526,57 +1505,6 @@ if [ ! -e ${DEPSPREFIX}/bin/gettext ]; then
 fi
 
 PATH="$PATH_BAK"
-}
-
-
-# Not used
-mkfakeroot()
-{
-	run_native mkfakeroot_
-}
-
-# Not used
-mkfakeroot_()
-{
-PKG_NAME=fakeroot
-PKG_VERSION="1.18.4"
-TAREXT=bz2
-if [ ! -e ${TOOLSPREFIX}/bin/fakeroot ]; then
-	( cd ${WORKSPACE}/cache/ && wget -c http://ftp.de.debian.org/debian/pool/main/f/${PKG_NAME}/${PKG_NAME}_${PKG_VERSION}.orig.tar.${TAREXT} )
-	pushd ${SRCPREFIX}
-	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xjf ${WORKSPACE}/cache/${PKG_NAME}_${PKG_VERSION}.orig.tar.${TAREXT}
-	cd ${PKG_NAME}-${PKG_VERSION}
-	./configure --host=${HOST} --prefix=${TOOLSPREFIX}/
-	make -j${THREADS}
-	make install
-	cd ..
-	popd
-fi
-}
-
-# Not used
-mkfakechroot()
-{
-	run_native mkfakechroot_
-}
-
-# Not used
-mkfakechroot_()
-{
-PKG_NAME=fakechroot
-PKG_VERSION="2.16"
-TAREXT=gz
-if [ ! -e ${DEPSPREFIX}/bin/automake ]; then
-	( cd ${WORKSPACE}/cache/ && wget -c http://ftp.de.debian.org/debian/pool/main/f/${PKG_NAME}/${PKG_NAME}_${PKG_VERSION}.orig.tar.${TAREXT} )
-	pushd ${SRCPREFIX}
-	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xzf ${WORKSPACE}/cache/${PKG_NAME}_${PKG_VERSION}.orig.tar.${TAREXT}
-	cd ${PKG_NAME}-${PKG_VERSION}
-	./configure --host=${HOST} --prefix=$WORKSPACE/linux$ARCH$SUFFIX/tools/
-	make -j${THREADS}
-	make install
-	cd ..
-	popd
-fi
 }
 
 #ETL
