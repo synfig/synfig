@@ -34,6 +34,7 @@
 #include <gtkmm/drawingarea.h>
 #include <gtkmm/colorselection.h>
 #include <synfig/color.h>
+#include <synfig/gamma.h>
 #include "widgets/widget_color.h"
 
 /* === M A C R O S ========================================================= */
@@ -153,6 +154,9 @@ class Widget_ColorEdit : public Gtk::Table
 	synfig::Color color;
 
 	Gtk::Notebook* notebook;
+
+	static synfig::Gamma hvs_gamma;
+	static synfig::Gamma hvs_gamma_in;
 
 protected:
 

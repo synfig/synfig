@@ -65,6 +65,8 @@ using namespace studio;
 #define ARROW_NEGATIVE_THRESHOLD 0.4
 
 /* === G L O B A L S ======================================================= */
+synfig::Gamma Widget_ColorEdit::hvs_gamma = synfig::Gamma(1.0/2.2);
+synfig::Gamma Widget_ColorEdit::hvs_gamma_in = synfig::Gamma(2.2);
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -445,9 +447,12 @@ Widget_ColorEdit::~Widget_ColorEdit()
 void Widget_ColorEdit::setHVSColor(synfig::Color color)
 {
 	Gdk::Color gtkColor;
-	gtkColor.set_red((unsigned short)(CLIP_VALUE(color.get_r(),0.0,1.0) * USHRT_MAX));
-	gtkColor.set_green((unsigned short)(CLIP_VALUE(color.get_g(),0.0,1.0) * USHRT_MAX));
-	gtkColor.set_blue((unsigned short)(CLIP_VALUE(color.get_b(),0.0,1.0) * USHRT_MAX));
+	float r = hvs_gamma.r_F32_to_F32(CLIP_VALUE(color.get_r(),0.0,1.0));
+	float g = hvs_gamma.g_F32_to_F32(CLIP_VALUE(color.get_g(),0.0,1.0));
+	float b = hvs_gamma.b_F32_to_F32(CLIP_VALUE(color.get_b(),0.0,1.0));
+	gtkColor.set_red((unsigned short)(r * USHRT_MAX));
+	gtkColor.set_green((unsigned short)(g * USHRT_MAX));
+	gtkColor.set_blue((unsigned short)(b * USHRT_MAX));
 	colorHVSChanged = true;
 	hvsColorWidget->set_previous_color (gtkColor); //We can't use it there, cause color changes in realtime.
 	hvsColorWidget->set_current_color (gtkColor);
@@ -462,9 +467,10 @@ Widget_ColorEdit::on_color_changed()
 	if (!colorHVSChanged)
 	{
 		Gdk::Color newColor = hvsColorWidget->get_current_color();
-		const synfig::Color synfigColor((float)newColor.get_red() / USHRT_MAX,
-			                      (float)newColor.get_green() / USHRT_MAX,
-			                      (float)newColor.get_blue() / USHRT_MAX);
+		float r = hvs_gamma_in.r_F32_to_F32((float)newColor.get_red() / USHRT_MAX);
+		float g = hvs_gamma_in.g_F32_to_F32((float)newColor.get_green() / USHRT_MAX);
+		float b = hvs_gamma_in.b_F32_to_F32((float)newColor.get_blue() / USHRT_MAX);
+		const synfig::Color synfigColor(r, g, b);
 		set_value(synfigColor);
 		colorHVSChanged = true; //I reset the flag in setHVSColor(..)
 		on_value_changed();
