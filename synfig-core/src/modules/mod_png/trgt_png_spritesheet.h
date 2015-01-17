@@ -82,6 +82,7 @@ private:
 	PngImage in_image;
 	synfig::String filename;
 	synfig::String sequence_separator;
+	synfig::Color * overflow_buff;
 public:
 	png_trgt_spritesheet(const char *filename, const synfig::TargetParam& /* params */);
 	virtual ~png_trgt_spritesheet();

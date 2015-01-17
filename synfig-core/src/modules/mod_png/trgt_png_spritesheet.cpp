@@ -97,7 +97,8 @@ png_trgt_spritesheet::png_trgt_spritesheet(const char *Filename, const synfig::T
 	sheet_height(0),
 	in_file_pointer(0),
 	filename(Filename),
-	sequence_separator(params.sequence_separator)
+	sequence_separator(params.sequence_separator),
+	overflow_buff(0)
 {
 	cout << "png_trgt_spritesheet() " << params.offset_x << " " << params.offset_y << endl;
 }
@@ -113,6 +114,8 @@ png_trgt_spritesheet::~png_trgt_spritesheet()
 			delete []color_data[i];
 		delete []color_data;
 	}
+	if (overflow_buff)
+		delete []overflow_buff;
 }
 
 bool
@@ -123,26 +126,43 @@ png_trgt_spritesheet::set_rend_desc(RendDesc *given_desc)
     desc=*given_desc;
     imagecount=desc.get_frame_start();
     lastimage=desc.get_frame_end();
-    numimages = (lastimage - imagecount) + 1;
+    numimages = (lastimage - imagecount) + 1;		
 
-	if (params.columns == 0)
+	overflow_buff = new Color[desc.get_w()];
+	
+	//Reset on uninitialized values
+	if ((params.columns == 0) || (params.rows == 0))
+	{
+		cout << "Uninitialized sheet parameteras. Reset parameters." << endl;
 		params.columns = numimages;
-	int rows_tmp = numimages / params.columns;
-	params.rows = rows_tmp > params.rows? rows_tmp: params.rows;
-		
+		params.rows = 1;
+		params.append = true;
+		params.dir = TargetParam::HR;
+	}
+
+	//Break on overflow
+	if (params.columns * params.rows < numimages)
+	{
+		cout << "Sheet overflow. Break." << endl;
+		synfig::error("Bad sheet parameters. Sheet overflow.");
+		return false;
+	}
 	
 	cout << "Frame count" << numimages << endl;
 
 	bool is_loaded = false;
-	
-    in_file_pointer = fopen(filename.c_str(), "rb");
-    if (!in_file_pointer)
-		synfig::error(strprintf("[read_png_file] File %s could not be opened for reading", filename.c_str()));
-	else
+
+	if (params.append)
 	{
-		is_loaded = load_png_file();
-		if (!is_loaded)
-			fclose(in_file_pointer);
+		in_file_pointer = fopen(filename.c_str(), "rb");
+		if (!in_file_pointer)
+			synfig::error(strprintf("[read_png_file] File %s could not be opened for reading", filename.c_str()));
+		else
+		{
+			is_loaded = load_png_file();
+			if (!is_loaded)
+				fclose(in_file_pointer);
+		}
 	}
 		
 	//I select such size which appropriate to contain whole sprite sheet.
@@ -181,11 +201,25 @@ png_trgt_spritesheet::end_frame()
 		
     imagecount++;
 	cur_y = 0;
-	cur_col++;
-	if (cur_col >= params.columns)
+	if (params.dir == TargetParam::HR)
 	{
+		//Horisontal render. Columns increment
+		cur_col++;
+		if (cur_col >= (unsigned int)params.columns)
+		{
+			cur_row++;
+			cur_col = 0;
+		}
+	}
+	else
+	{
+		//Vertical render. Rows increment.
 		cur_row++;
-		cur_col = 0;
+		if (cur_row >= (unsigned int) params.rows)
+		{
+			cur_col++;
+			cur_row = 0;
+		}
 	}
 }
 
@@ -203,7 +237,15 @@ png_trgt_spritesheet::start_frame(synfig::ProgressCallback *callback)
 Color *
 png_trgt_spritesheet::start_scanline(int /*scanline*/)
 {
-    return &color_data[cur_y + params.offset_y + cur_row * desc.get_h()][cur_col * desc.get_w() + params.offset_x];
+	unsigned int y = cur_y + params.offset_y + cur_row * desc.get_h();
+	unsigned int x = cur_col * desc.get_w() + params.offset_x;
+	if ((x + desc.get_w() > sheet_width) || (y > sheet_height))
+	{
+		cout << "Buffer overflow. x: " << x << " y: " << y << endl; 
+		//TODO: Fix exception processing outside the module.
+		return overflow_buff; //Spike. Bad exception processing
+	}
+    return &color_data[y][x];
 }
 
 bool
