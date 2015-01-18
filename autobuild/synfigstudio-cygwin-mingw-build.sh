@@ -234,6 +234,27 @@ python setup.py build
 python setup.py install
 }
 
+mkpyliblzma()
+{
+PKG_NAME=pyliblzma
+PKG_VERSION=0.5.3
+TAREXT=bz2
+
+cd $WORKSPACE
+[ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget https://pypi.python.org/packages/source/p/pyliblzma/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+if [ ! -d ${PKG_NAME}-${PKG_VERSION} ]; then
+    tar -xf ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    cd ${PKG_NAME}-${PKG_VERSION}
+else
+    cd ${PKG_NAME}-${PKG_VERSION}
+fi
+
+export PKG_CONFIG_PATH="/usr/lib/pkgconfig:/usr/local/lib/pkgconfig"
+
+python setup.py build
+python setup.py install
+}
+
 mkpycurl()
 {
 PKG_NAME=pycurl
@@ -329,6 +350,138 @@ if [ ! -e /usr/bin/yumdownloader ]; then
 fi
 }
 
+mklibcroco()
+{
+PKG_NAME=libcroco
+PKG_VERSION=0.6.8
+TAREXT=xz
+if ! pkg-config ${PKG_NAME}-0.6 --exact-version=${PKG_VERSION}  --print-errors; then
+	cd ${WORKSPACE}
+	wget -c --no-check-certificate http://ftp.gnome.org/pub/gnome/sources/${PKG_NAME}/${PKG_VERSION%.*}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xf ${WORKSPACE}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	cd ${PKG_NAME}-${PKG_VERSION}
+	[ ! -e config.cache ] || rm config.cache
+	./configure \
+		--prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
+		--exec-prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
+		--bindir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin \
+		--sbindir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/sbin \
+		--libexecdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib \
+		--datadir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share \
+		--localstatedir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/var \
+		--sysconfdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/etc \
+		--datarootdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share \
+		--docdir=/usr/share/doc/mingw-synfig -C \
+		--build=i686-pc-cygwin --host=${TOOLCHAIN_HOST} \
+		--disable-static --enable-shared
+	make -j${THREADS}
+	make install
+fi
+}
+
+mkgobjectintrospection()
+{
+
+#mkflex
+
+PKG_NAME=gobject-introspection
+PKG_VERSION=1.42.0
+TAREXT=xz
+if ! pkg-config ${PKG_NAME}-1.0 --exact-version=${PKG_VERSION}  --print-errors; then
+	cd ${WORKSPACE}
+	wget -c --no-check-certificate http://ftp.gnome.org/pub/gnome/sources/${PKG_NAME}/${PKG_VERSION%.*}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xf ${WORKSPACE}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	cd ${PKG_NAME}-${PKG_VERSION}
+	[ ! -e config.cache ] || rm config.cache
+	./configure \
+		--prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
+		--exec-prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
+		--bindir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin \
+		--sbindir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/sbin \
+		--libexecdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib \
+		--datadir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share \
+		--localstatedir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/var \
+		--sysconfdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/etc \
+		--datarootdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share \
+		--docdir=/usr/share/doc/mingw-synfig -C \
+		--build=i686-pc-cygwin --host=${TOOLCHAIN_HOST} \
+		--disable-static --enable-shared
+	make -j${THREADS}
+	make install
+fi
+}
+
+
+mklibrsvg()
+{
+	
+	mklibcroco
+	mkgobjectintrospection
+	
+PKG_NAME=librsvg
+PKG_VERSION=2.40.6
+TAREXT=xz
+if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
+	cd ${WORKSPACE}
+	wget -c --no-check-certificate http://ftp.gnome.org/pub/gnome/sources/${PKG_NAME}/${PKG_VERSION%.*}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xf ${WORKSPACE}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	cd ${PKG_NAME}-${PKG_VERSION}
+	[ ! -e config.cache ] || rm config.cache
+	./configure \
+		--prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
+		--exec-prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
+		--bindir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin \
+		--sbindir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/sbin \
+		--libexecdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib \
+		--datadir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share \
+		--localstatedir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/var \
+		--sysconfdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/etc \
+		--datarootdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share \
+		--docdir=/usr/share/doc/mingw-synfig -C \
+		--build=i686-pc-cygwin --host=${TOOLCHAIN_HOST} \
+		--disable-static --enable-shared
+	make -j${THREADS}
+	make install
+	cd ..
+	popd
+fi
+}
+
+mkgnomethemes()
+{
+	
+mklibrsvg
+
+PKG_NAME=gnome-themes-standard
+PKG_VERSION=3.15.2
+TAREXT=xz
+if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
+	cd ${WORKSPACE}
+	wget -c --no-check-certificate http://ftp.gnome.org/pub/gnome/sources/${PKG_NAME}/${PKG_VERSION%.*}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xf ${WORKSPACE}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	cd ${PKG_NAME}-${PKG_VERSION}
+	[ ! -e config.cache ] || rm config.cache
+	./configure \
+		--prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
+		--exec-prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
+		--bindir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin \
+		--sbindir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/sbin \
+		--libexecdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib \
+		--datadir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share \
+		--localstatedir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/var \
+		--sysconfdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/etc \
+		--datarootdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share \
+		--docdir=/usr/share/doc/mingw-synfig -C \
+		--build=i686-pc-cygwin --host=${TOOLCHAIN_HOST} \
+		--disable-static --enable-shared \
+		--disable-gtk2-engine
+	make -j${THREADS}
+	make install
+	cd ..
+	popd
+fi
+}
+
 mkimagemagick()
 {
 PKG_NAME=ImageMagick
@@ -366,6 +519,7 @@ if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION%-*}  --print-errors; t
         --with-threads \
         --with-magick_plus_plus
 
+    make -j${THREADS}
     make install
 fi
 }
@@ -621,7 +775,7 @@ installonly_limit=3
 name=Fedora \$releasever - \$basearch
 failovermethod=priority
 #mirrorlist=http://mirrors.fedoraproject.org/metalink?repo=fedora-\$releasever&arch=\$basearch
-baseurl=http://download.fedoraproject.org/pub/fedora/linux/releases/20/Everything/i386/os/
+baseurl=http://download.fedoraproject.org/pub/fedora/linux/releases/21/Everything/i386/os/
 enabled=1
 metadata_expire=7d
 
@@ -629,11 +783,11 @@ metadata_expire=7d
 name=Fedora \$releasever - \$basearch - Updates
 failovermethod=priority
 #mirrorlist=http://mirrors.fedoraproject.org/metalink?repo=updates-released-f\$releasever&arch=\$basearch
-baseurl=http://download.fedoraproject.org/pub/fedora/linux/updates/20/i386/
+baseurl=http://download.fedoraproject.org/pub/fedora/linux/updates/21/i386/
 enabled=1
 EOF
 
-URLS=`yumdownloader --urls --resolve -c $WORKSPACE/mingw-rpms/yum.conf --releasever=20 --installroot="$WORKSPACE/mingw-rpms" $1`
+URLS=`yumdownloader --urls --resolve -c $WORKSPACE/mingw-rpms/yum.conf --releasever=21 --installroot="$WORKSPACE/mingw-rpms" $1`
 for URL in $URLS; do
 if ( echo "$URL" | egrep "^http:" > /dev/null ); then
     PKG=`basename $URL`
@@ -686,6 +840,9 @@ $CYGWIN_SETUP \
 -P file-devel \
 -P zlib-devel \
 -P libdb-devel \
+-P flex \
+-P bison \
+-P python-setuptools \
 -q
 
 # yum dependencies
@@ -703,6 +860,7 @@ $CYGWIN_SETUP \
 #-P libcurl-devel \ # pycurl req
 
 mknative mkpopt
+mknative mkpyliblzma
 mknative mkrpm
 #mknative mkurlgrabber
 mknative mkyum-metadata-parser
@@ -712,10 +870,10 @@ mknative mkyum-metadata-parser
 #mknative mkyum-utils
 
 cd $WORKSPACE
-wget -c http://fedora.inode.at/fedora/linux/releases/20/Everything/i386/os/Packages/y/yum-3.4.3-106.fc20.noarch.rpm
-rpm -Uhv --force --ignoreos --nodeps yum-3.4.3-106.fc20.noarch.rpm
-wget -c http://fedora.inode.at/fedora/linux/releases/20/Everything/i386/os/Packages/y/yum-utils-1.1.31-18.fc20.noarch.rpm
-rpm -Uhv --force --ignoreos --nodeps yum-utils-1.1.31-18.fc20.noarch.rpm
+wget -c http://fedora.inode.at/fedora/linux/releases/21/Everything/i386/os/Packages/y/yum-3.4.3-153.fc21.noarch.rpm
+rpm -Uhv --force --ignoreos --nodeps yum-3.4.3-153.fc21.noarch.rpm
+wget -c http://fedora.inode.at/fedora/linux/releases/21/Everything/i386/os/Packages/y/yum-utils-1.1.31-24.fc21.noarch.rpm
+rpm -Uhv --force --ignoreos --nodeps yum-utils-1.1.31-24.fc21.noarch.rpm
 
 fedora-mingw-install mingw${ARCH}-libxml++
 fedora-mingw-install mingw${ARCH}-cairo
