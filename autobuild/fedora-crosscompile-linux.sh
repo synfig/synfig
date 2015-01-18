@@ -272,7 +272,6 @@ for PKG in \
 		fakeroot \
 		fakechroot \
 		rpmbuild \
-		alien \
 		git \
 		flex \
 		bison; do
@@ -1837,36 +1836,180 @@ EOF
 }
 
 mkpackage_deb()
-{    
-    cd ${WORKSPACE}
-    #if [[ $ARCH == '64' ]]; then
-	#	run_native fakeroot alien -k --scripts synfigstudio-${VERSION}-${REVISION}.${BREED}.$RELEASE.${RPM_ARCH}.rpm
-    #else
-		rm -rf synfigstudio-${VERSION} || true
-		rm -rf synfigstudio_${VERSION}-${REVISION}.${BREED}.${RELEASE}_${RPM_ARCH}.deb || true
-		run_native fakeroot alien -g -k --scripts synfigstudio-${VERSION}-${REVISION}.${BREED}.$RELEASE.${RPM_ARCH}.rpm
+{
+    rm -rf ${WORKSPACE}/linux$ARCH$SUFFIX/dist-deb || true
+    mkdir ${WORKSPACE}/linux$ARCH$SUFFIX/dist-deb
+    cd ${WORKSPACE}/linux$ARCH$SUFFIX/dist-deb
+    mkdir synfigstudio-${VERSION}
+    DEB_DIST=${WORKSPACE}/linux$ARCH$SUFFIX/dist-deb/synfigstudio-${VERSION}
+	
+	
+	mkdir -p ${DEB_DIST}/opt/synfig
+	cp -r  ${DISTPREFIX}/* ${DEB_DIST}/opt/synfig
+	mkdir -p ${DEB_DIST}/usr/share
+	mkdir -p ${DEB_DIST}/usr/share/icons
+	mv ${DEB_DIST}/opt/synfig/share/applications ${DEB_DIST}/usr/share
+	mv ${DEB_DIST}/opt/synfig/share/appdata ${DEB_DIST}/usr/share
+	mv ${DEB_DIST}/opt/synfig/share/icons/hicolor ${DEB_DIST}/usr/share/icons
+	mv ${DEB_DIST}/opt/synfig/share/mime ${DEB_DIST}/usr/share
+	mv ${DEB_DIST}/opt/synfig/share/mime-info ${DEB_DIST}/usr/share
+	mkdir -p ${DEB_DIST}/usr/share/pixmaps
+	ln -sf /opt/synfig/share/pixmaps/sif_icon.png ${DEB_DIST}/usr/share/pixmaps/sif_icon.png
+	ln -sf /opt/synfig/share/pixmaps/synfig_icon.png ${DEB_DIST}/usr/share/pixmaps/synfig_icon.png
+	mkdir -p ${DEB_DIST}/usr/bin
+	cp ${DEB_DIST}/opt/synfig/synfig ${DEB_DIST}/usr/bin/
+	cp ${DEB_DIST}/opt/synfig/synfigstudio ${DEB_DIST}/usr/bin/
+	sed -i 's|^SYSPREFIX=.*|SYSPREFIX=/opt/synfig|' ${DEB_DIST}/usr/bin/synfig
+	sed -i 's|^SYSPREFIX=.*|SYSPREFIX=/opt/synfig|' ${DEB_DIST}/usr/bin/synfigstudio
+	
+	mkdir -p ${DEB_DIST}/debian
+	echo "9" > ${DEB_DIST}/debian/compat
+	
+	cat > ${DEB_DIST}/debian/control << EOF
+Source: synfigstudio
+Section: graphics
+Priority: extra
+Maintainer: Konstantin Dmitiev <root@synfig.org>
+
+Package: synfigstudio
+Provides: synfig
+Recommends: synfig-examples
+Architecture: any
+Depends: \${shlibs:Depends}
+Description: Film-Quality 2D Vector Animation package
+ Synfig Animation Studio is a powerful, industrial-strength vector-based
+ 2D animation software, designed from the ground-up for producing
+ feature-film quality animation with fewer people and resources.
+ It eliminates the need for tweening, preventing the need to hand-draw
+ each frame. Synfig features spatial and temporal resolution independence
+ (sharp and smooth at any resolution or framerate), high dynamic range
+ images, and a flexible plugin system.
+EOF
+	
+	cat > ${DEB_DIST}/debian/copyright << EOF
+Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: synfig
+Source: http://sourceforge.net/projects/synfig/files/synfigstudio/
+
+Files: *
+Copyright: 2002-2005      Adrian Bentley
+           2009           Carlos A. Sosa Navarro
+           2008-2013      Carlos López
+           2010-2011      Carlos López González
+           2007-2008      Chris Moore
+           2008           David Roden
+           2008           Gerald Young
+           2008-2009      Gerco Ballintijn
+           2013           Ivan Mahonin
+           2009,2012-2013 Konstantin Dmitriev <ksee.zelgadis@gmail.com>
+           2009-2011      Nikita Kitaev
+           2007-2008      Paul Wise
+           2001-2014      Robert B. Quattlebaum Jr.
+           2006           Yue Shi Lai
+License: GPL-2+
+Comment: see list of all contributors in file README
+EOF
+	
+	cat > ${DEB_DIST}/debian/changelog << EOF
+synfigstudio (${VERSION}-${REVISION}.${BREED}.${RELEASE}) unstable; urgency=medium
+
+  * Custom Debian package form synfig.org.
+
+ -- Konstantin Dmitriev <ksee.zelgadis@gmail.com>  Sun, 18 Jan 2015 16:22:23 +1100
+
+EOF
+	
+	cat > ${DEB_DIST}/debian/postinst << EOF
+#!/bin/bash
+if [ -x /usr/bin/update-mime-database ]; then
+  update-mime-database /usr/share/mime
+fi
+if [ -x /usr/bin/update-desktop-database ]; then
+  update-desktop-database
+fi
+chmod a+rX -R /opt/synfig
+chmod a+rX /opt
+EOF
+	chmod +x ${DEB_DIST}/debian/postinst
+	
+	cat > ${DEB_DIST}/debian/postrm << EOF
+#!/bin/bash
+if [ -x /usr/bin/update-mime-database ]; then
+  update-mime-database /usr/share/mime
+fi
+if [ -x /usr/bin/update-desktop-database ]; then
+  update-desktop-database
+fi
+EOF
+
+	cat > ${DEB_DIST}/debian/rules << EOF
+#!/usr/bin/make -f
+# debian/rules for alien
+
+PACKAGE=\$(shell dh_listpackages)
+
+build:
+	dh_testdir
+
+clean:
+	dh_testdir
+	dh_testroot
+	dh_clean -d
+
+binary-indep: build
+
+binary-arch: build
+	dh_testdir
+	dh_testroot
+	dh_prep
+	dh_installdirs
+
+	dh_installdocs
+	dh_installchangelogs
+
+# Copy the packages's files.
+	find . -maxdepth 1 -mindepth 1 -not -name debian -print0 | \
+		xargs -0 -r -i cp -a {} debian/\$(PACKAGE)
+
+#
+# If you need to move files around in debian/\$(PACKAGE) or do some
+# binary patching, do it here
+#
+
+
+# This has been known to break on some wacky binaries.
+#	dh_strip
+	dh_compress
+#	dh_fixperms
+	dh_makeshlibs
+	dh_installdeb
+	-dh_shlibdeps
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+binary: binary-indep binary-arch
+.PHONY: build clean binary-indep binary-arch binary
+EOF
 		
-		# Allow to build i386 on x86_64 host
-		run_native sed -i "s|Architecture: .*|Architecture: any|g" synfigstudio-${VERSION}/debian/control
-		# Workaround permissions problem
-		echo >> synfigstudio-${VERSION}/debian/postinst
-		echo "chmod a+rX -R /opt/synfig" >> synfigstudio-${VERSION}/debian/postinst
-		echo "chmod a+rX /opt" >> synfigstudio-${VERSION}/debian/postinst
 		
-		pushd synfigstudio-${VERSION} >/dev/null
-		run_native dpkg-buildpackage -rfakeroot -a${SYS_ARCH} -d || true
-		if [ ! -e ../synfigstudio_${VERSION}-${REVISION}.${BREED}.${RELEASE}_${SYS_ARCH}.deb ]; then
-			echo "Failed to generate deb package"
-			exit 1
-		fi
-		popd >/dev/null
-		rm -rf synfigstudio-${VERSION}.orig
-		rm -rf synfigstudio_${VERSION}.orig.tar.gz
-		rm -rf synfigstudio_${VERSION}-${REVISION}.${BREED}.${RELEASE}_${SYS_ARCH}.changes
-		rm -rf synfigstudio_${VERSION}-${REVISION}.${BREED}.${RELEASE}.diff.gz
-		rm -rf synfigstudio_${VERSION}-${REVISION}.${BREED}.${RELEASE}.dsc
-    #fi
-    rm -rf synfigstudio-${VERSION}
+	#run_native fakeroot alien -g -k --scripts synfigstudio-${VERSION}-${REVISION}.${BREED}.$RELEASE.${RPM_ARCH}.rpm
+		
+	cd synfigstudio-${VERSION}
+	run_native dpkg-buildpackage -rfakeroot -a${SYS_ARCH} -d || true
+	#run_native fakeroot dpkg-deb --build synfigstudio
+	if [ ! -e ../synfigstudio_${VERSION}-${REVISION}.${BREED}.${RELEASE}_${SYS_ARCH}.deb ]; then
+		echo "Failed to generate deb package"
+		exit 1
+	fi
+	mv ../synfigstudio_${VERSION}-${REVISION}.${BREED}.${RELEASE}_${SYS_ARCH}.deb ${WORKSPACE}
+	rm -rf synfigstudio-${VERSION}.orig
+	rm -rf synfigstudio_${VERSION}.orig.tar.gz
+	rm -rf synfigstudio_${VERSION}-${REVISION}.${BREED}.${RELEASE}_${SYS_ARCH}.changes
+	rm -rf synfigstudio_${VERSION}-${REVISION}.${BREED}.${RELEASE}.diff.gz
+	rm -rf synfigstudio_${VERSION}-${REVISION}.${BREED}.${RELEASE}.dsc
+	rm -rf synfigstudio-${VERSION}
+	rm -rf ${WORKSPACE}/linux$ARCH$SUFFIX/dist-deb
 }
 
 mkall()
