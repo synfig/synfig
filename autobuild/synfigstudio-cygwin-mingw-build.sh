@@ -787,16 +787,30 @@ baseurl=http://download.fedoraproject.org/pub/fedora/linux/updates/21/i386/
 enabled=1
 EOF
 
+if [ -z $2 ]; then
+RPMROOT=/
+else
+RPMROOT=$2
+fi
+
 URLS=`yumdownloader --urls --resolve -c $WORKSPACE/mingw-rpms/yum.conf --releasever=21 --installroot="$WORKSPACE/mingw-rpms" $1`
 for URL in $URLS; do
 if ( echo "$URL" | egrep "^http:" > /dev/null ); then
     PKG=`basename $URL`
     if ( echo "$PKG" | egrep "^mingw" > /dev/null ); then
-        if ! ( echo $PKG | egrep "^mingw..-headers|^mingw..-gcc|^mingw-|^mingw..-filesystem|^mingw..-binutils|^mingw..-crt|^mingw..-cpp" > /dev/null); then
-            echo $PKG
-            wget -c "$URL"
-            rpm -Uhv --ignoreos --nodeps --force "$PKG"
-        fi
+        if [ -z $3 ]; then
+            if ! ( echo $PKG | egrep "^mingw..-headers|^mingw..-gcc|^mingw-|^mingw..-filesystem|^mingw..-binutils|^mingw..-crt|^mingw..-cpp" > /dev/null); then
+                echo $PKG
+                wget -c "$URL"
+                rpm -Uhv --ignoreos --nodeps --force --root "$RPMROOT" "$PKG"
+            fi
+        else
+			if ( echo $PKG | egrep "$1" > /dev/null); then
+				echo $PKG
+                wget -c "$URL"
+                rpm -Uhv --ignoreos --nodeps --force --root "$RPMROOT" "$PKG"
+			fi
+		fi
     fi
 fi
 done
@@ -874,6 +888,11 @@ wget -c http://fedora.inode.at/fedora/linux/releases/21/Everything/i386/os/Packa
 rpm -Uhv --force --ignoreos --nodeps yum-3.4.3-153.fc21.noarch.rpm
 wget -c http://fedora.inode.at/fedora/linux/releases/21/Everything/i386/os/Packages/y/yum-utils-1.1.31-24.fc21.noarch.rpm
 rpm -Uhv --force --ignoreos --nodeps yum-utils-1.1.31-24.fc21.noarch.rpm
+
+[ ! -e /cygdrive/c/synfig-build/mingw-rpms/tmp ] || rm -rf /cygdrive/c/synfig-build/mingw-rpms/tmp
+mkdir -p /cygdrive/c/synfig-build/mingw-rpms/tmp
+fedora-mingw-install mingw${ARCH}-gcc-c++ /cygdrive/c/synfig-build/mingw-rpms/tmp 1
+cp /cygdrive/c/synfig-build/mingw-rpms/tmp/usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin/libstdc++-6.dll  /usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin/
 
 fedora-mingw-install mingw${ARCH}-libxml++
 fedora-mingw-install mingw${ARCH}-cairo
