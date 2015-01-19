@@ -894,6 +894,8 @@ mkdir -p /cygdrive/c/synfig-build/mingw-rpms/tmp
 fedora-mingw-install mingw${ARCH}-gcc-c++ /cygdrive/c/synfig-build/mingw-rpms/tmp 1
 cp /cygdrive/c/synfig-build/mingw-rpms/tmp/usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin/libstdc++-6.dll  /usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin/
 
+fedora-mingw-install mingw${ARCH}-adwaita-icon-theme
+fedora-mingw-install mingw${ARCH}-hicolor-icon-theme
 fedora-mingw-install mingw${ARCH}-libxml++
 fedora-mingw-install mingw${ARCH}-cairo
 fedora-mingw-install mingw${ARCH}-pango
@@ -1101,6 +1103,7 @@ cp -rf $MINGWPREFIX/lib/synfig $DISTPREFIX/lib
 cp -rf $MINGWPREFIX/share/fontconfig $DISTPREFIX/share
 cp -rf $MINGWPREFIX/share/glib-2.0 $DISTPREFIX/share
 cp -rf $MINGWPREFIX/share/gtk-3.0 $DISTPREFIX/share
+cp -rf $MINGWPREFIX/share/icons $DISTPREFIX/share
 cp -rf $MINGWPREFIX/share/locale $DISTPREFIX/share
 cp -rf $MINGWPREFIX/share/pixmaps $DISTPREFIX/share
 if [ -d $DISTPREFIX/share/pixmaps/synfigstudio ]; then
