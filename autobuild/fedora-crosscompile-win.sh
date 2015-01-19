@@ -73,6 +73,8 @@ if [ -z $NOSU ]; then
 		automake \
 		libtool \
 		libtool-ltdl-devel \
+		${TOOLCHAIN}-adwaita-icon-theme \
+		${TOOLCHAIN}-hicolor-icon-theme \
 		${TOOLCHAIN}-gcc-c++ \
 		${TOOLCHAIN}-cpp \
 		${TOOLCHAIN}-libxml++ \
@@ -183,6 +185,7 @@ for file in \
    fontconfig \
    glib-2.0 \
    gtk-3.0 \
+   icons \
    themes \
    xml \
 # this extra line is required!
