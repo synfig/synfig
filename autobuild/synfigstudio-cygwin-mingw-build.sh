@@ -81,7 +81,7 @@ elif [[ $ARCH == "64" ]]; then
     export CYGWIN_SETUP="C:/synfig-build/cygwin64-dist/setup-x86_64.exe"
     export SZIP_BINARY="C:/synfig-build/7zip/7z.exe"
 fi
-export MINGWPREFIX="C:/cygwin/usr/${TOOLCHAIN_HOST}/sys-root/mingw"
+export MINGWPREFIX="/usr/${TOOLCHAIN_HOST}/sys-root/mingw"
 set -e
 
 if [[ $DEBUG == 1 ]]; then
@@ -107,6 +107,8 @@ if [ ! -e "$NSIS_BINARY" ]; then
     exit 1
 fi
 
+chmod a+x ${MINGWPREFIX}/bin/*.dll || true
+
 prepare_mingw_env()
 {
 export CBUILD=i686-pc-cygwin
@@ -120,13 +122,14 @@ export GCJ=${TOOLCHAIN_HOST}-gcj
 export GOC=${TOOLCHAIN_HOST}-gccgo
 export OBJC=${TOOLCHAIN_HOST}-gcc
 export OBJCXX=${TOOLCHAIN_HOST}-g++
-export AR=${TOOLCHAIN_HOST}-gcc-ar
+export AR=${TOOLCHAIN_HOST}-ar
 export OBJDUMP=${TOOLCHAIN_HOST}-objdump
-export RANLIB=${TOOLCHAIN_HOST}-gcc-ranlib
-export STRIP=strip
-export RC=windres
+export RANLIB=${TOOLCHAIN_HOST}-ranlib
+export STRIP=${TOOLCHAIN_HOST}-strip
+export RC=${TOOLCHAIN_HOST}-windres
 export CFLAGS=' -O2 -pipe -mms-bitfields'
-export CXXFLAGS=" -O2 -pipe -mms-bitfields  -I${MINGWPREFIX}/include/c++ -I${MINGWPREFIX}/include/c++/${TOOLCHAIN_HOST}"
+export CXXFLAGS=" -O2 -pipe -mms-bitfields"
+#export CXXFLAGS=" -O2 -pipe -mms-bitfields  -I${MINGWPREFIX}/include/c++ -I${MINGWPREFIX}/include/c++/${TOOLCHAIN_HOST}"
 export F77FLAGS=' -mms-bitfields'
 export FCFLAGS=' -O2 -pipe -mms-bitfields'
 export GCJFLAGS=' -O2 -pipe -mms-bitfields'
@@ -138,11 +141,9 @@ export PKG_CONFIG_PATH="${MINGWPREFIX}/lib/pkgconfig"
 export PKG_CONFIG_LIBDIR="${MINGWPREFIX}/lib/pkgconfig:${MINGWPREFIX}/share/pkgconfig:/usr/share/pkgconfig"
 export PKG_CONFIG_SYSTEM_INCLUDE_PATH=${MINGWPREFIX}/include
 export PKG_CONFIG_SYSTEM_LIBRARY_PATH=${MINGWPREFIX}/lib
-export CPPFLAGS=" -I${MINGWPREFIX}/include -I${WORKSPACE}/mingw${ARCH}/include "
+export CPPFLAGS=" -I${MINGWPREFIX}/include "
 export LDFLAGS=" -L${MINGWPREFIX}/lib "
-export LIBRARY_PATH=${MINGWPREFIX}/lib
-#export PATH="/usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin/:$PATH"
-export PATH="${WORKSPACE}/mingw${ARCH}/${TOOLCHAIN_HOST}/bin/:${WORKSPACE}/mingw${ARCH}/bin/:$PATH"
+export PATH="${MINGWPREFIX}/bin/:$PATH"
 alias convert="${MINGWPREFIX}/bin/convert"
 }
 
@@ -205,9 +206,6 @@ fi
 
 mkrpm()
 {
-echo
-echo Building rpm...
-echo
 PKG_NAME=rpm
 #PKG_VERSION=4.11.1
 PKG_VERSION=4.10.3.1
@@ -396,7 +394,7 @@ if ! pkg-config ${PKG_NAME}-1.0 --exact-version=${PKG_VERSION}  --print-errors; 
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xf ${WORKSPACE}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
 	[ ! -e config.cache ] || rm config.cache
-	./configure \
+	CPPFLAGS="$CPPFLAGS -I/usr/include" ./configure \
 		--prefix=${MINGWPREFIX} \
 		--exec-prefix=${MINGWPREFIX} \
 		--bindir=${MINGWPREFIX}/bin \
@@ -720,20 +718,20 @@ if ! pkg-config ${PKG_NAME}\+\+ --exact-version=${PKG_VERSION}  --print-errors; 
 fi
 }
 
-mktoolchain()
-{
-	cd ${WORKSPACE}
-	if [ ! -e mingw${ARCH}/done ]; then
-		[ ! -e ${WORKSPACE}/mingw32 ] || rm -rf ${WORKSPACE}/mingw32
-		TOOLCHAIN_ARCHIVE=${EXT_ARCH2}-4.9.2-release-posix-sjlj-rt_v3-rev1.7z
-		[ -e ${TOOLCHAIN_ARCHIVE} ] || wget http://downloads.sourceforge.net/project/mingw-w64/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/4.9.2/threads-posix/sjlj/${TOOLCHAIN_ARCHIVE}
-		$SZIP_BINARY x ${TOOLCHAIN_ARCHIVE}
-		mkdir -p ${MINGWPREFIX} | true
-		mv mingw32/${TOOLCHAIN_HOST}/*  ${MINGWPREFIX}
-		cp ${MINGWPREFIX}/lib/*.dll ${MINGWPREFIX}/bin
-		touch mingw${ARCH}/done
-	fi
-}
+#mktoolchain()
+#{
+#	cd ${WORKSPACE}
+#	if [ ! -e mingw${ARCH}/done ]; then
+#		[ ! -e ${WORKSPACE}/mingw32 ] || rm -rf ${WORKSPACE}/mingw32
+#		TOOLCHAIN_ARCHIVE=${EXT_ARCH2}-4.9.2-release-posix-sjlj-rt_v3-rev1.7z
+#		[ -e ${TOOLCHAIN_ARCHIVE} ] || wget http://downloads.sourceforge.net/project/mingw-w64/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/4.9.2/threads-posix/sjlj/${TOOLCHAIN_ARCHIVE}
+#		$SZIP_BINARY x ${TOOLCHAIN_ARCHIVE}
+#		mkdir -p ${MINGWPREFIX} | true
+#		mv mingw32/${TOOLCHAIN_HOST}/*  ${MINGWPREFIX}
+#		cp ${MINGWPREFIX}/lib/*.dll ${MINGWPREFIX}/bin
+#		touch mingw${ARCH}/done
+#	fi
+#}
 mkffmpeg()
 {
     export FFMPEG_VERSION=2.2.2
@@ -793,7 +791,7 @@ installonly_limit=3
 name=Fedora \$releasever - \$basearch
 failovermethod=priority
 #mirrorlist=http://mirrors.fedoraproject.org/metalink?repo=fedora-\$releasever&arch=\$basearch
-baseurl=http://download.fedoraproject.org/pub/fedora/linux/releases/21/Everything/i386/os/
+baseurl=http://download.fedoraproject.org/pub/fedora/linux/releases/20/Everything/i386/os/
 enabled=1
 metadata_expire=7d
 
@@ -801,7 +799,7 @@ metadata_expire=7d
 name=Fedora \$releasever - \$basearch - Updates
 failovermethod=priority
 #mirrorlist=http://mirrors.fedoraproject.org/metalink?repo=updates-released-f\$releasever&arch=\$basearch
-baseurl=http://download.fedoraproject.org/pub/fedora/linux/updates/21/i386/
+baseurl=http://download.fedoraproject.org/pub/fedora/linux/updates/20/i386/
 enabled=1
 EOF
 
@@ -811,7 +809,7 @@ else
 RPMROOT=$2
 fi
 
-URLS=`yumdownloader --urls --resolve -c $WORKSPACE/mingw-rpms/yum.conf --releasever=21 --installroot="$WORKSPACE/mingw-rpms" $1`
+URLS=`yumdownloader --urls --resolve -c $WORKSPACE/mingw-rpms/yum.conf --releasever=20 --installroot="$WORKSPACE/mingw-rpms" $1`
 for URL in $URLS; do
 if ( echo "$URL" | egrep "^http:" > /dev/null ); then
     PKG=`basename $URL`
@@ -851,6 +849,8 @@ $CYGWIN_SETUP \
 -P make \
 -P gcc-core \
 -P gcc-g++ \
+-P $TOOLCHAIN-gcc  \
+-P $TOOLCHAIN-gcc-g++  \
 -P gdb \
 -P intltool \
 -P autoconf \
@@ -884,15 +884,13 @@ $CYGWIN_SETUP \
 -P libsqlite3-devel \
 -q
 
-#-P $TOOLCHAIN-gcc  \
-#-P $TOOLCHAIN-gcc-g++  \
 
 #-P libglib2.0-devel \ # yum req
 #-P libsqlite3-devel \ # yum req
 #-P libxml2-devel \ # yum req
 #-P libcurl-devel \ # pycurl req
 
-mktoolchain
+#mktoolchain
 
 echo "Building popt..."
 mknative mkpopt
@@ -918,18 +916,22 @@ fi
 install_fedora_env()
 {
 cd $WORKSPACE
-wget -c http://fedora.inode.at/fedora/linux/releases/21/Everything/i386/os/Packages/y/yum-3.4.3-153.fc21.noarch.rpm
-rpm -Uhv --force --ignoreos --nodeps yum-3.4.3-153.fc21.noarch.rpm
-wget -c http://fedora.inode.at/fedora/linux/releases/21/Everything/i386/os/Packages/y/yum-utils-1.1.31-24.fc21.noarch.rpm
-rpm -Uhv --force --ignoreos --nodeps yum-utils-1.1.31-24.fc21.noarch.rpm
+wget -c http://fedora.inode.at/fedora/linux/releases/20/Everything/i386/os/Packages/y/yum-3.4.3-106.fc20.noarch.rpm
+rpm -Uhv --force --ignoreos --nodeps yum-3.4.3-106.fc20.noarch.rpm
+wget -c http://fedora.inode.at/fedora/linux/releases/20/Everything/i386/os/Packages/y/yum-utils-1.1.31-18.fc20.noarch.rpm
+rpm -Uhv --force --ignoreos --nodeps yum-utils-1.1.31-18.fc20.noarch.rpm
+#wget -c http://fedora.inode.at/fedora/linux/releases/21/Everything/i386/os/Packages/y/yum-3.4.3-153.fc21.noarch.rpm
+#rpm -Uhv --force --ignoreos --nodeps yum-3.4.3-153.fc21.noarch.rpm
+#wget -c http://fedora.inode.at/fedora/linux/releases/21/Everything/i386/os/Packages/y/yum-utils-1.1.31-24.fc21.noarch.rpm
+#rpm -Uhv --force --ignoreos --nodeps yum-utils-1.1.31-24.fc21.noarch.rpm
 
 #[ ! -e C:/synfig-build/mingw-rpms/tmp ] || rm -rf C:/synfig-build/mingw-rpms/tmp
 #mkdir -p C:/synfig-build/mingw-rpms/tmp
 #fedora-mingw-install mingw${ARCH}-gcc-c++ C:/synfig-build/mingw-rpms/tmp 1
 #cp C:/synfig-build/mingw-rpms/tmp${MINGWPREFIX}/bin/libstdc++-6.dll  ${MINGWPREFIX}/bin/
 
-fedora-mingw-install mingw${ARCH}-adwaita-icon-theme
-fedora-mingw-install mingw${ARCH}-hicolor-icon-theme
+#fedora-mingw-install mingw${ARCH}-adwaita-icon-theme
+#fedora-mingw-install mingw${ARCH}-hicolor-icon-theme
 fedora-mingw-install mingw${ARCH}-libxml++
 fedora-mingw-install mingw${ARCH}-cairo
 fedora-mingw-install mingw${ARCH}-pango
@@ -1133,7 +1135,7 @@ cp -rf $MINGWPREFIX/lib/synfig $DISTPREFIX/lib
 cp -rf $MINGWPREFIX/share/fontconfig $DISTPREFIX/share
 cp -rf $MINGWPREFIX/share/glib-2.0 $DISTPREFIX/share
 cp -rf $MINGWPREFIX/share/gtk-3.0 $DISTPREFIX/share
-cp -rf $MINGWPREFIX/share/icons $DISTPREFIX/share
+cp -rf $MINGWPREFIX/share/icons $DISTPREFIX/share || true
 cp -rf $MINGWPREFIX/share/locale $DISTPREFIX/share
 cp -rf $MINGWPREFIX/share/pixmaps $DISTPREFIX/share
 if [ -d $DISTPREFIX/share/pixmaps/synfigstudio ]; then
