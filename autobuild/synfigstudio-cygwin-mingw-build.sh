@@ -30,7 +30,7 @@
 # * Download and install NSIS >=3.0 (http://nsis.sourceforge.net/). Install into C:\synfig-build\NSIS\ directory.
 # * (64-bit build only!) Download and install 7zip (http://downloads.sourceforge.net/sevenzip/7z920-x64.msi). Install into C:\synfig-build\7zip\ directory.
 # * Open Cygwin console (with administrator previlegies) and run the build script:
-# ** bash /cygdrive/c/synfig-build/synfig/autobuild/synfigstudio-cygwin-mingw-build.sh
+# ** bash C:/synfig-build/synfig/autobuild/synfigstudio-cygwin-mingw-build.sh
 # * Installation bundle will be written to C:\synfig-build\
 #
 #
@@ -49,8 +49,8 @@
 
 #================= EDIT THOSE VARIABLES BEFORE FIRST RUN! ======================
 
-export NSIS_BINARY="/cygdrive/c/synfig-build/NSIS/makensis.exe"
-export WORKSPACE="/cygdrive/c/synfig-build/"
+export NSIS_BINARY="C:/synfig-build/NSIS/makensis.exe"
+export WORKSPACE="/cygdrive/c/synfig-build"
 if [ -z $ARCH ]; then
     export ARCH="32"
 fi
@@ -70,17 +70,18 @@ if [[ $ARCH == "32" ]]; then
     export TOOLCHAIN_HOST="i686-w64-mingw32"
     export TOOLCHAIN="mingw64-i686" # mingw64-i686 | mingw64-x86_64 | mingw
     export EXT_ARCH=i386
-    export CYGWIN_SETUP="/cygdrive/c/synfig-build/cygwin-dist/setup-x86.exe"
+    export EXT_ARCH2=i686
+    export CYGWIN_SETUP="C:/synfig-build/cygwin-dist/setup-x86.exe"
     export SZIP_BINARY="7z"
 elif [[ $ARCH == "64" ]]; then
     export TOOLCHAIN_HOST="x86_64-w64-mingw32"
     export TOOLCHAIN="mingw64-x86_64"
     export EXT_ARCH=x86_64
-    export CYGWIN_SETUP="/cygdrive/c/synfig-build/cygwin64-dist/setup-x86_64.exe"
-    export SZIP_BINARY="/cygdrive/c/synfig-build/7zip/7z.exe"
+    export EXT_ARCH2=x86_64
+    export CYGWIN_SETUP="C:/synfig-build/cygwin64-dist/setup-x86_64.exe"
+    export SZIP_BINARY="C:/synfig-build/7zip/7z.exe"
 fi
-export MINGWPREFIX=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/
-
+export MINGWPREFIX="C:/cygwin/usr/${TOOLCHAIN_HOST}/sys-root/mingw"
 set -e
 
 if [[ $DEBUG == 1 ]]; then
@@ -119,13 +120,13 @@ export GCJ=${TOOLCHAIN_HOST}-gcj
 export GOC=${TOOLCHAIN_HOST}-gccgo
 export OBJC=${TOOLCHAIN_HOST}-gcc
 export OBJCXX=${TOOLCHAIN_HOST}-g++
-export AR=${TOOLCHAIN_HOST}-ar
+export AR=${TOOLCHAIN_HOST}-gcc-ar
 export OBJDUMP=${TOOLCHAIN_HOST}-objdump
-export RANLIB=${TOOLCHAIN_HOST}-ranlib
-export STRIP=${TOOLCHAIN_HOST}-strip
-export RC=${TOOLCHAIN_HOST}-windres
+export RANLIB=${TOOLCHAIN_HOST}-gcc-ranlib
+export STRIP=strip
+export RC=windres
 export CFLAGS=' -O2 -pipe -mms-bitfields'
-export CXXFLAGS=' -O2 -pipe -mms-bitfields'
+export CXXFLAGS=" -O2 -pipe -mms-bitfields  -I${MINGWPREFIX}/include/c++ -I${MINGWPREFIX}/include/c++/${TOOLCHAIN_HOST}"
 export F77FLAGS=' -mms-bitfields'
 export FCFLAGS=' -O2 -pipe -mms-bitfields'
 export GCJFLAGS=' -O2 -pipe -mms-bitfields'
@@ -133,14 +134,16 @@ export GOCFLAGS=' -mms-bitfields'
 export OBJCFLAGS=' -O2 -pipe -mms-bitfields'
 export OBJCXXFLAGS=' -O2 -pipe -mms-bitfields'
 export PKG_CONFIG=/usr/bin/pkg-config
-export PKG_CONFIG_PATH="/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib/pkgconfig"
-export PKG_CONFIG_LIBDIR="/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib/pkgconfig:/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share/pkgconfig:/usr/share/pkgconfig"
-export PKG_CONFIG_SYSTEM_INCLUDE_PATH=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/include
-export PKG_CONFIG_SYSTEM_LIBRARY_PATH=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib
-export CPPFLAGS=" -I/usr/${TOOLCHAIN_HOST}/sys-root/mingw/include "
-export LDFLAGS=" -L/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib "
-export PATH="/usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin/:$PATH"
-alias convert="/usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin/convert"
+export PKG_CONFIG_PATH="${MINGWPREFIX}/lib/pkgconfig"
+export PKG_CONFIG_LIBDIR="${MINGWPREFIX}/lib/pkgconfig:${MINGWPREFIX}/share/pkgconfig:/usr/share/pkgconfig"
+export PKG_CONFIG_SYSTEM_INCLUDE_PATH=${MINGWPREFIX}/include
+export PKG_CONFIG_SYSTEM_LIBRARY_PATH=${MINGWPREFIX}/lib
+export CPPFLAGS=" -I${MINGWPREFIX}/include -I${WORKSPACE}/mingw${ARCH}/include "
+export LDFLAGS=" -L${MINGWPREFIX}/lib "
+export LIBRARY_PATH=${MINGWPREFIX}/lib
+#export PATH="/usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin/:$PATH"
+export PATH="${WORKSPACE}/mingw${ARCH}/${TOOLCHAIN_HOST}/bin/:${WORKSPACE}/mingw${ARCH}/bin/:$PATH"
+alias convert="${MINGWPREFIX}/bin/convert"
 }
 
 mknative()
@@ -362,15 +365,15 @@ if ! pkg-config ${PKG_NAME}-0.6 --exact-version=${PKG_VERSION}  --print-errors; 
 	cd ${PKG_NAME}-${PKG_VERSION}
 	[ ! -e config.cache ] || rm config.cache
 	./configure \
-		--prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
-		--exec-prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
-		--bindir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin \
-		--sbindir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/sbin \
-		--libexecdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib \
-		--datadir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share \
-		--localstatedir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/var \
-		--sysconfdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/etc \
-		--datarootdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share \
+		--prefix=${MINGWPREFIX} \
+		--exec-prefix=${MINGWPREFIX} \
+		--bindir=${MINGWPREFIX}/bin \
+		--sbindir=${MINGWPREFIX}/sbin \
+		--libexecdir=${MINGWPREFIX}/lib \
+		--datadir=${MINGWPREFIX}/share \
+		--localstatedir=${MINGWPREFIX}/var \
+		--sysconfdir=${MINGWPREFIX}/etc \
+		--datarootdir=${MINGWPREFIX}/share \
 		--docdir=/usr/share/doc/mingw-synfig -C \
 		--build=i686-pc-cygwin --host=${TOOLCHAIN_HOST} \
 		--disable-static --enable-shared
@@ -394,15 +397,15 @@ if ! pkg-config ${PKG_NAME}-1.0 --exact-version=${PKG_VERSION}  --print-errors; 
 	cd ${PKG_NAME}-${PKG_VERSION}
 	[ ! -e config.cache ] || rm config.cache
 	./configure \
-		--prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
-		--exec-prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
-		--bindir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin \
-		--sbindir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/sbin \
-		--libexecdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib \
-		--datadir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share \
-		--localstatedir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/var \
-		--sysconfdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/etc \
-		--datarootdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share \
+		--prefix=${MINGWPREFIX} \
+		--exec-prefix=${MINGWPREFIX} \
+		--bindir=${MINGWPREFIX}/bin \
+		--sbindir=${MINGWPREFIX}/sbin \
+		--libexecdir=${MINGWPREFIX}/lib \
+		--datadir=${MINGWPREFIX}/share \
+		--localstatedir=${MINGWPREFIX}/var \
+		--sysconfdir=${MINGWPREFIX}/etc \
+		--datarootdir=${MINGWPREFIX}/share \
 		--docdir=/usr/share/doc/mingw-synfig -C \
 		--build=i686-pc-cygwin --host=${TOOLCHAIN_HOST} \
 		--disable-static --enable-shared
@@ -428,15 +431,15 @@ if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
 	cd ${PKG_NAME}-${PKG_VERSION}
 	[ ! -e config.cache ] || rm config.cache
 	./configure \
-		--prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
-		--exec-prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
-		--bindir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin \
-		--sbindir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/sbin \
-		--libexecdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib \
-		--datadir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share \
-		--localstatedir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/var \
-		--sysconfdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/etc \
-		--datarootdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share \
+		--prefix=${MINGWPREFIX} \
+		--exec-prefix=${MINGWPREFIX} \
+		--bindir=${MINGWPREFIX}/bin \
+		--sbindir=${MINGWPREFIX}/sbin \
+		--libexecdir=${MINGWPREFIX}/lib \
+		--datadir=${MINGWPREFIX}/share \
+		--localstatedir=${MINGWPREFIX}/var \
+		--sysconfdir=${MINGWPREFIX}/etc \
+		--datarootdir=${MINGWPREFIX}/share \
 		--docdir=/usr/share/doc/mingw-synfig -C \
 		--build=i686-pc-cygwin --host=${TOOLCHAIN_HOST} \
 		--disable-static --enable-shared
@@ -462,15 +465,15 @@ if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
 	cd ${PKG_NAME}-${PKG_VERSION}
 	[ ! -e config.cache ] || rm config.cache
 	./configure \
-		--prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
-		--exec-prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
-		--bindir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin \
-		--sbindir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/sbin \
-		--libexecdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib \
-		--datadir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share \
-		--localstatedir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/var \
-		--sysconfdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/etc \
-		--datarootdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share \
+		--prefix=${MINGWPREFIX} \
+		--exec-prefix=${MINGWPREFIX} \
+		--bindir=${MINGWPREFIX}/bin \
+		--sbindir=${MINGWPREFIX}/sbin \
+		--libexecdir=${MINGWPREFIX}/lib \
+		--datadir=${MINGWPREFIX}/share \
+		--localstatedir=${MINGWPREFIX}/var \
+		--sysconfdir=${MINGWPREFIX}/etc \
+		--datarootdir=${MINGWPREFIX}/share \
 		--docdir=/usr/share/doc/mingw-synfig -C \
 		--build=i686-pc-cygwin --host=${TOOLCHAIN_HOST} \
 		--disable-static --enable-shared \
@@ -501,15 +504,15 @@ if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION%-*}  --print-errors; t
     [ ! -e config.cache ] || rm config.cache
     autoreconf -i --verbose  # does this really required?
     ./configure \
-        --prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
-        --exec-prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
-        --bindir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin \
-        --sbindir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/sbin \
-        --libexecdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib \
-        --datadir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share \
-        --localstatedir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/var \
-        --sysconfdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/etc \
-        --datarootdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share \
+        --prefix=${MINGWPREFIX} \
+        --exec-prefix=${MINGWPREFIX} \
+        --bindir=${MINGWPREFIX}/bin \
+        --sbindir=${MINGWPREFIX}/sbin \
+        --libexecdir=${MINGWPREFIX}/lib \
+        --datadir=${MINGWPREFIX}/share \
+        --localstatedir=${MINGWPREFIX}/var \
+        --sysconfdir=${MINGWPREFIX}/etc \
+        --datarootdir=${MINGWPREFIX}/share \
         --docdir=/usr/share/doc/mingw-synfig -C \
         --build=i686-pc-cygwin --host=${TOOLCHAIN_HOST} \
         --disable-static --enable-shared \
@@ -540,15 +543,15 @@ if ! pkg-config ogg --exact-version=${PKG_VERSION}  --print-errors; then
     cd ${PKG_NAME}-${PKG_VERSION}
     [ ! -e config.cache ] || rm config.cache
     ./configure \
-        --prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
-        --exec-prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
-        --bindir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin \
-        --sbindir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/sbin \
-        --libexecdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib \
-        --datadir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share \
-        --localstatedir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/var \
-        --sysconfdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/etc \
-        --datarootdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share \
+        --prefix=${MINGWPREFIX} \
+        --exec-prefix=${MINGWPREFIX} \
+        --bindir=${MINGWPREFIX}/bin \
+        --sbindir=${MINGWPREFIX}/sbin \
+        --libexecdir=${MINGWPREFIX}/lib \
+        --datadir=${MINGWPREFIX}/share \
+        --localstatedir=${MINGWPREFIX}/var \
+        --sysconfdir=${MINGWPREFIX}/etc \
+        --datarootdir=${MINGWPREFIX}/share \
         --docdir=/usr/share/doc/mingw-synfig -C \
         --build=i686-pc-cygwin --host=${TOOLCHAIN_HOST}
 
@@ -575,15 +578,15 @@ if ! pkg-config vorbis --exact-version=${PKG_VERSION}  --print-errors; then
     cd ${PKG_NAME}-${PKG_VERSION}
     [ ! -e config.cache ] || rm config.cache
     ./configure \
-        --prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
-        --exec-prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
-        --bindir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin \
-        --sbindir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/sbin \
-        --libexecdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib \
-        --datadir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share \
-        --localstatedir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/var \
-        --sysconfdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/etc \
-        --datarootdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share \
+        --prefix=${MINGWPREFIX} \
+        --exec-prefix=${MINGWPREFIX} \
+        --bindir=${MINGWPREFIX}/bin \
+        --sbindir=${MINGWPREFIX}/sbin \
+        --libexecdir=${MINGWPREFIX}/lib \
+        --datadir=${MINGWPREFIX}/share \
+        --localstatedir=${MINGWPREFIX}/var \
+        --sysconfdir=${MINGWPREFIX}/etc \
+        --datarootdir=${MINGWPREFIX}/share \
         --docdir=/usr/share/doc/mingw-synfig -C \
         --build=i686-pc-cygwin --host=${TOOLCHAIN_HOST}
 
@@ -608,15 +611,15 @@ if ! pkg-config samplerate --exact-version=${PKG_VERSION}  --print-errors; then
     cd ${PKG_NAME}-${PKG_VERSION}
     [ ! -e config.cache ] || rm config.cache
     ./configure \
-        --prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
-        --exec-prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
-        --bindir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin \
-        --sbindir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/sbin \
-        --libexecdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib \
-        --datadir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share \
-        --localstatedir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/var \
-        --sysconfdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/etc \
-        --datarootdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share \
+        --prefix=${MINGWPREFIX} \
+        --exec-prefix=${MINGWPREFIX} \
+        --bindir=${MINGWPREFIX}/bin \
+        --sbindir=${MINGWPREFIX}/sbin \
+        --libexecdir=${MINGWPREFIX}/lib \
+        --datadir=${MINGWPREFIX}/share \
+        --localstatedir=${MINGWPREFIX}/var \
+        --sysconfdir=${MINGWPREFIX}/etc \
+        --datarootdir=${MINGWPREFIX}/share \
         --docdir=/usr/share/doc/mingw-synfig -C \
         --build=i686-pc-cygwin --host=${TOOLCHAIN_HOST}
 
@@ -641,15 +644,15 @@ if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
     cd ${PKG_NAME}-${PKG_VERSION}
     [ ! -e config.cache ] || rm config.cache
     ./configure \
-        --prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
-        --exec-prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
-        --bindir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin \
-        --sbindir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/sbin \
-        --libexecdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib \
-        --datadir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share \
-        --localstatedir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/var \
-        --sysconfdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/etc \
-        --datarootdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share \
+        --prefix=${MINGWPREFIX} \
+        --exec-prefix=${MINGWPREFIX} \
+        --bindir=${MINGWPREFIX}/bin \
+        --sbindir=${MINGWPREFIX}/sbin \
+        --libexecdir=${MINGWPREFIX}/lib \
+        --datadir=${MINGWPREFIX}/share \
+        --localstatedir=${MINGWPREFIX}/var \
+        --sysconfdir=${MINGWPREFIX}/etc \
+        --datarootdir=${MINGWPREFIX}/share \
         --docdir=/usr/share/doc/mingw-synfig -C \
         --build=i686-pc-cygwin --host=${TOOLCHAIN_HOST}
 
@@ -678,21 +681,21 @@ if ! pkg-config ${PKG_NAME}\+\+ --exact-version=${PKG_VERSION}  --print-errors; 
     cd mlt
     [ ! -e config.cache ] || rm config.cache
     #autoreconf -i --verbose  # does this really required?
-    rm -rf /usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib/libmlt* || true
-    rm -rf /usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin/libmlt* || true
+    rm -rf ${MINGWPREFIX}/lib/libmlt* || true
+    rm -rf ${MINGWPREFIX}/bin/libmlt* || true
     ./configure \
-        --prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
-        --exec-prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
-        --bindir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin \
-        --sbindir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/sbin \
-        --libexecdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib \
-        --datadir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share \
-        --localstatedir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/var \
-        --sysconfdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/etc \
-        --datarootdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share \
+        --prefix=${MINGWPREFIX} \
+        --exec-prefix=${MINGWPREFIX} \
+        --bindir=${MINGWPREFIX}/bin \
+        --sbindir=${MINGWPREFIX}/sbin \
+        --libexecdir=${MINGWPREFIX}/lib \
+        --datadir=${MINGWPREFIX}/share \
+        --localstatedir=${MINGWPREFIX}/var \
+        --sysconfdir=${MINGWPREFIX}/etc \
+        --datarootdir=${MINGWPREFIX}/share \
         --docdir=/usr/share/doc/mingw-synfig -C \
         --build=i686-pc-cygwin --host=${TOOLCHAIN_HOST} \
-        --avformat-shared=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/ \
+        --avformat-shared=${MINGWPREFIX}/ \
         --enable-gpl --disable-decklink \
         --target-os=MinGW --target-arch=$EXT_ARCH \
         #$DEBUG
@@ -706,17 +709,31 @@ if ! pkg-config ${PKG_NAME}\+\+ --exact-version=${PKG_VERSION}  --print-errors; 
     make all
     make install
 
-    mv /usr/${TOOLCHAIN_HOST}/sys-root/mingw/melt.exe /usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin
-    mv /usr/${TOOLCHAIN_HOST}/sys-root/mingw/libmlt*.dll /usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin
+    mv ${MINGWPREFIX}/melt.exe ${MINGWPREFIX}/bin
+    mv ${MINGWPREFIX}/libmlt*.dll ${MINGWPREFIX}/bin
 
-    mkdir -p /usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin/lib || true
-    mkdir -p /usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin/share || true
-    cp -rf /usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib/mlt /usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin/lib/
-    cp -rf /usr/${TOOLCHAIN_HOST}/sys-root/mingw/share/mlt /usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin/share/
+    mkdir -p ${MINGWPREFIX}/bin/lib || true
+    mkdir -p ${MINGWPREFIX}/bin/share || true
+    cp -rf ${MINGWPREFIX}/lib/mlt ${MINGWPREFIX}/bin/lib/
+    cp -rf ${MINGWPREFIX}/share/mlt ${MINGWPREFIX}/bin/share/
 
 fi
 }
 
+mktoolchain()
+{
+	cd ${WORKSPACE}
+	if [ ! -e mingw${ARCH}/done ]; then
+		[ ! -e ${WORKSPACE}/mingw32 ] || rm -rf ${WORKSPACE}/mingw32
+		TOOLCHAIN_ARCHIVE=${EXT_ARCH2}-4.9.2-release-posix-sjlj-rt_v3-rev1.7z
+		[ -e ${TOOLCHAIN_ARCHIVE} ] || wget http://downloads.sourceforge.net/project/mingw-w64/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/4.9.2/threads-posix/sjlj/${TOOLCHAIN_ARCHIVE}
+		$SZIP_BINARY x ${TOOLCHAIN_ARCHIVE}
+		mkdir -p ${MINGWPREFIX} | true
+		mv mingw32/${TOOLCHAIN_HOST}/*  ${MINGWPREFIX}
+		cp ${MINGWPREFIX}/lib/*.dll ${MINGWPREFIX}/bin
+		touch mingw${ARCH}/done
+	fi
+}
 mkffmpeg()
 {
     export FFMPEG_VERSION=2.2.2
@@ -728,20 +745,21 @@ mkffmpeg()
         mkdir -p ffmpeg
         cd ffmpeg
         $SZIP_BINARY x ../ffmpeg-${FFMPEG_VERSION}-win${ARCH}-dev.7z
-        cp -rf ffmpeg-${FFMPEG_VERSION}-win${ARCH}-dev/include/* /usr/${TOOLCHAIN_HOST}/sys-root/mingw/include/
-        cp -rf ffmpeg-${FFMPEG_VERSION}-win${ARCH}-dev/lib/* /usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib/
+        cp -rf ffmpeg-${FFMPEG_VERSION}-win${ARCH}-dev/include/* ${MINGWPREFIX}/include/
+        cp -rf ffmpeg-${FFMPEG_VERSION}-win${ARCH}-dev/lib/* ${MINGWPREFIX}/lib/
         $SZIP_BINARY x ../ffmpeg-${FFMPEG_VERSION}-win${ARCH}-shared.7z
-        cp -rf ffmpeg-${FFMPEG_VERSION}-win${ARCH}-shared/bin/ffmpeg.exe /usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin
-        cp -rf ffmpeg-${FFMPEG_VERSION}-win${ARCH}-shared/bin/*.dll /usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin
-        mkdir -p /usr/${TOOLCHAIN_HOST}/sys-root/mingw/share/ffmpeg/presets/ || true
-        cp -rf ffmpeg-${FFMPEG_VERSION}-win${ARCH}-shared/presets/* /usr/${TOOLCHAIN_HOST}/sys-root/mingw/share/ffmpeg/presets/
+        cp -rf ffmpeg-${FFMPEG_VERSION}-win${ARCH}-shared/bin/ffmpeg.exe ${MINGWPREFIX}/bin
+        cp -rf ffmpeg-${FFMPEG_VERSION}-win${ARCH}-shared/bin/*.dll ${MINGWPREFIX}/bin
+        mkdir -p ${MINGWPREFIX}/share/ffmpeg/presets/ || true
+        cp -rf ffmpeg-${FFMPEG_VERSION}-win${ARCH}-shared/presets/* ${MINGWPREFIX}/share/ffmpeg/presets/
 
+		mkdir -p ${MINGWPREFIX}/lib/pkgconfig/ || true
 		for PKG in libswscale libavformat libavdevice; do
-			cat > /usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib/pkgconfig/${PKG}.pc <<EOF
-prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw
-exec_prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw
-libdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib
-includedir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/include
+			cat > ${MINGWPREFIX}/lib/pkgconfig/${PKG}.pc <<EOF
+prefix=${MINGWPREFIX}
+exec_prefix=${MINGWPREFIX}
+libdir=${MINGWPREFIX}/lib
+includedir=${MINGWPREFIX}/include
 
 Name: ${PKG}
 Description: FFMpeg
@@ -816,7 +834,7 @@ fi
 done
 
 # Ensure all dlls have executable flag, otherwise the compiled binaries won't run
-chmod a+x /usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin/*.dll
+chmod a+x ${MINGWPREFIX}/bin/*.dll
 }
 
 # Install dependencies
@@ -842,8 +860,6 @@ $CYGWIN_SETUP \
 -P p7zip \
 -P ImageMagick \
 -P cygport \
--P $TOOLCHAIN-gcc  \
--P $TOOLCHAIN-gcc-g++  \
 -P zlib-devel \
 -P libnspr-devel \
 -P liblzma-devel \
@@ -868,31 +884,49 @@ $CYGWIN_SETUP \
 -P libsqlite3-devel \
 -q
 
+#-P $TOOLCHAIN-gcc  \
+#-P $TOOLCHAIN-gcc-g++  \
+
 #-P libglib2.0-devel \ # yum req
 #-P libsqlite3-devel \ # yum req
 #-P libxml2-devel \ # yum req
 #-P libcurl-devel \ # pycurl req
 
+mktoolchain
+
+echo "Building popt..."
 mknative mkpopt
+echo "Building pyliblzma..."
 mknative mkpyliblzma
+echo "Building rpm..."
 mknative mkrpm
 #mknative mkurlgrabber
+echo "Building yum-metadata-parser..."
 mknative mkyum-metadata-parser
 
 
 #mknative mkyum
 #mknative mkyum-utils
 
+install_fedora_env
+
+echo ${PREP_VERSION} > /prep-done
+
+fi
+}
+
+install_fedora_env()
+{
 cd $WORKSPACE
 wget -c http://fedora.inode.at/fedora/linux/releases/21/Everything/i386/os/Packages/y/yum-3.4.3-153.fc21.noarch.rpm
 rpm -Uhv --force --ignoreos --nodeps yum-3.4.3-153.fc21.noarch.rpm
 wget -c http://fedora.inode.at/fedora/linux/releases/21/Everything/i386/os/Packages/y/yum-utils-1.1.31-24.fc21.noarch.rpm
 rpm -Uhv --force --ignoreos --nodeps yum-utils-1.1.31-24.fc21.noarch.rpm
 
-[ ! -e /cygdrive/c/synfig-build/mingw-rpms/tmp ] || rm -rf /cygdrive/c/synfig-build/mingw-rpms/tmp
-mkdir -p /cygdrive/c/synfig-build/mingw-rpms/tmp
-fedora-mingw-install mingw${ARCH}-gcc-c++ /cygdrive/c/synfig-build/mingw-rpms/tmp 1
-cp /cygdrive/c/synfig-build/mingw-rpms/tmp/usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin/libstdc++-6.dll  /usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin/
+#[ ! -e C:/synfig-build/mingw-rpms/tmp ] || rm -rf C:/synfig-build/mingw-rpms/tmp
+#mkdir -p C:/synfig-build/mingw-rpms/tmp
+#fedora-mingw-install mingw${ARCH}-gcc-c++ C:/synfig-build/mingw-rpms/tmp 1
+#cp C:/synfig-build/mingw-rpms/tmp${MINGWPREFIX}/bin/libstdc++-6.dll  ${MINGWPREFIX}/bin/
 
 fedora-mingw-install mingw${ARCH}-adwaita-icon-theme
 fedora-mingw-install mingw${ARCH}-hicolor-icon-theme
@@ -904,7 +938,7 @@ fedora-mingw-install mingw${ARCH}-libjpeg-turbo
 fedora-mingw-install mingw${ARCH}-gtkmm30
 fedora-mingw-install mingw${ARCH}-dlfcn
 fedora-mingw-install mingw${ARCH}-SDL
-cp /usr/${TOOLCHAIN_HOST}/sys-root/mingw/include/SDL/* /usr/${TOOLCHAIN_HOST}/sys-root/mingw/include/
+cp ${MINGWPREFIX}/include/SDL/* ${MINGWPREFIX}/include/
 
 # Somehow this is required too...
 fedora-mingw-install mingw${ARCH}-pcre
@@ -912,10 +946,6 @@ fedora-mingw-install mingw${ARCH}-pcre
 # Dependencies for magick++
 fedora-mingw-install mingw${ARCH}-libltdl
 fedora-mingw-install mingw${ARCH}-libtiff
-
-echo ${PREP_VERSION} > /prep-done
-
-fi
 }
 
 mketl()
@@ -923,15 +953,15 @@ mketl()
 cd $SRCPREFIX/ETL
 autoreconf --install --force
 ./configure \
---prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
---exec-prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
---bindir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin \
---sbindir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/sbin \
---libexecdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib \
---datadir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share \
---localstatedir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/var \
---sysconfdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/etc \
---datarootdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share \
+--prefix=${MINGWPREFIX} \
+--exec-prefix=${MINGWPREFIX} \
+--bindir=${MINGWPREFIX}/bin \
+--sbindir=${MINGWPREFIX}/sbin \
+--libexecdir=${MINGWPREFIX}/lib \
+--datadir=${MINGWPREFIX}/share \
+--localstatedir=${MINGWPREFIX}/var \
+--sysconfdir=${MINGWPREFIX}/etc \
+--datarootdir=${MINGWPREFIX}/share \
 --docdir=/usr/share/doc/mingw-synfig -C \
 --build=i686-pc-cygwin --host=${TOOLCHAIN_HOST} \
 --enable-shared --disable-static \
@@ -947,20 +977,20 @@ cd $SRCPREFIX/synfig-core
 libtoolize --copy --force
 autoreconf --install --force
 ./configure \
---prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
---exec-prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
---bindir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin \
---sbindir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/sbin \
---libexecdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib \
---datadir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share \
---localstatedir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/var \
---sysconfdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/etc \
---datarootdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share \
+--prefix=${MINGWPREFIX} \
+--exec-prefix=${MINGWPREFIX} \
+--bindir=${MINGWPREFIX}/bin \
+--sbindir=${MINGWPREFIX}/sbin \
+--libexecdir=${MINGWPREFIX}/lib \
+--datadir=${MINGWPREFIX}/share \
+--localstatedir=${MINGWPREFIX}/var \
+--sysconfdir=${MINGWPREFIX}/etc \
+--datarootdir=${MINGWPREFIX}/share \
 --docdir=/usr/share/doc/mingw-synfig -C \
 --build=i686-pc-cygwin --host=${TOOLCHAIN_HOST} \
 --enable-shared --disable-static \
 --with-libiconv-prefix=no --with-libintl-prefix=no \
---with-magickpp=yes --with-boost=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/ \
+--with-magickpp=yes --with-boost=${MINGWPREFIX} \
 --enable-maintainer-mode $DEBUG
 make -j$THREADS
 make install
@@ -972,15 +1002,15 @@ cd $SRCPREFIX/synfig-studio
 [ ! -e config.cache ] || rm config.cache
 ./bootstrap.sh
 ./configure \
---prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
---exec-prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
---bindir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin \
---sbindir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/sbin \
---libexecdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib \
---datadir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share \
---localstatedir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/var \
---sysconfdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/etc \
---datarootdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share \
+--prefix=${MINGWPREFIX} \
+--exec-prefix=${MINGWPREFIX} \
+--bindir=${MINGWPREFIX}/bin \
+--sbindir=${MINGWPREFIX}/sbin \
+--libexecdir=${MINGWPREFIX}/lib \
+--datadir=${MINGWPREFIX}/share \
+--localstatedir=${MINGWPREFIX}/var \
+--sysconfdir=${MINGWPREFIX}/etc \
+--datarootdir=${MINGWPREFIX}/share \
 --docdir=/usr/share/doc/mingw-synfig -C \
 --build=i686-pc-cygwin --host=${TOOLCHAIN_HOST} \
 --enable-shared --disable-static \
@@ -988,8 +1018,8 @@ cd $SRCPREFIX/synfig-studio
 --enable-maintainer-mode $DEBUG
 make -j$THREADS
 make install 
-cp -rf /usr/${TOOLCHAIN_HOST}/sys-root/mingw/share/pixmaps/synfigstudio/*  /usr/${TOOLCHAIN_HOST}/sys-root/mingw/share/pixmaps
-rm -rf /usr/${TOOLCHAIN_HOST}/sys-root/mingw/share/pixmaps/synfigstudio
+cp -rf ${MINGWPREFIX}/share/pixmaps/synfigstudio/*  ${MINGWPREFIX}/share/pixmaps
+rm -rf ${MINGWPREFIX}/share/pixmaps/synfigstudio
 mkdir -p $MINGWPREFIX/licenses
 cp -rf COPYING $MINGWPREFIX/licenses/synfigstudio.txt
 
