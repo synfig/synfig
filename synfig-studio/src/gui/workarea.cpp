@@ -1868,16 +1868,16 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 		// input device in canvas coordinates
 
 		double x = 0.0, y = 0.0, p = 0.0;
+		int ox = 0, oy = 0;
+		Gtk::Container *toplevel = drawing_frame->get_toplevel();
+		if (toplevel) drawing_frame->translate_coordinates(*toplevel, 0, 0, ox, oy);
 
-		if (!gdk_device_get_axis(device, event->motion.axes, GDK_AXIS_X, &x))
-			x = event->motion.x;
-		if (!gdk_device_get_axis(device, event->motion.axes, GDK_AXIS_Y, &y))
-			y = event->motion.y;
-
+		if (gdk_device_get_axis(device, event->motion.axes, GDK_AXIS_X, &x))
+			x -= ox; else x = event->motion.x;
+		if (gdk_device_get_axis(device, event->motion.axes, GDK_AXIS_Y, &y))
+			y -= oy; else y = event->motion.y;
 		if (gdk_device_get_axis(device, event->motion.axes, GDK_AXIS_PRESSURE, &p))
-			p = std::max(0.0, (p - 0.04)/(1.0 - 0.04));
-		else
-			p = 1.0;
+			p = std::max(0.0, (p - 0.04)/(1.0 - 0.04)); else p = 1.0;
 
 		if(isnan(x) || isnan(y) || isnan(p))
 			return false;
@@ -1919,16 +1919,16 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 		// and the buttons
 
 		double x = 0.0, y = 0.0, p = 0.0;
+		int ox = 0, oy = 0;
+		Gtk::Container *toplevel = drawing_frame->get_toplevel();
+		drawing_frame->translate_coordinates(*toplevel, 0, 0, ox, oy);
 
-		if (!gdk_device_get_axis(device, event->button.axes, GDK_AXIS_X, &x))
-			x = event->button.x;
-		if (!gdk_device_get_axis(device, event->button.axes, GDK_AXIS_Y, &y))
-			y = event->button.y;
-
-		if (gdk_device_get_axis(device, event->button.axes, GDK_AXIS_PRESSURE, &p))
-			p = std::max(0.0, (p - 0.04)/(1.0 - 0.04));
-		else
-			p = 1.0;
+		if (gdk_device_get_axis(device, event->motion.axes, GDK_AXIS_X, &x))
+			x -= ox; else x = event->motion.x;
+		if (gdk_device_get_axis(device, event->motion.axes, GDK_AXIS_Y, &y))
+			y -= oy; else y = event->motion.y;
+		if (gdk_device_get_axis(device, event->motion.axes, GDK_AXIS_PRESSURE, &p))
+			p = std::max(0.0, (p - 0.04)/(1.0 - 0.04)); else p = 1.0;
 
 		if(isnan(x) || isnan(y) || isnan(p))
 			return false;

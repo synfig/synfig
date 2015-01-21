@@ -98,7 +98,8 @@ Svg_parser::Svg_parser():
 	kux(60),
 	set_canvas(0), //we must run parser_canvas method
 	ox(0),
-	oy(0)
+	oy(0),
+	locale(LC_NUMERIC, "C")
 {
 	// 0.5 in gamma parameter of color correct layer is 1/0.5 = 2 (thinking) it must be 2.2!!!!
 	gamma.set_gamma(2.2);
@@ -1132,6 +1133,9 @@ Svg_parser::parser_linearGradient(const xmlpp::Node* node){
 		Glib::ustring link	=nodeElement->get_attribute_value("href");
 		Glib::ustring transform	=nodeElement->get_attribute_value("gradientTransform");
 
+		if(link.empty())
+			link = nodeElement->get_attribute_value("href","xlink");			
+
 		//resolve transformations
 		SVGMatrix* mtx=NULL;
 		if(!transform.empty())
@@ -1181,6 +1185,9 @@ Svg_parser::parser_radialGradient(const xmlpp::Node* node){
 		float r				=atof(nodeElement->get_attribute_value("r").data());
 		Glib::ustring link	=nodeElement->get_attribute_value("href");//basic
 		Glib::ustring transform	=nodeElement->get_attribute_value("gradientTransform");
+
+		if(link.empty())
+			link = nodeElement->get_attribute_value("href","xlink");
 
 		if (cx!=fx || cy!=fy)
 			std::cout<<"SVG Parser: ignoring focus attributes for radial gradient";

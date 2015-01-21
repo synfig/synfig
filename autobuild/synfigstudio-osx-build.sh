@@ -40,7 +40,7 @@ export RELEASE=1
 export BUILDROOT_VERSION=1
 
 BUILDDIR=~/src/macports/SynfigStudio-app
-LNKDIR=/tmp/skl/SynfigStudio.app
+LNKDIR=/tmp/skl/SynfigStudio
 MACPORTS=$LNKDIR/Contents/Resources
 MPSRC=MacPorts-2.2.1
 
@@ -229,9 +229,9 @@ mkdeps()
 		cairo \
 		libtool"
 	STUDIO_DEPS=" \
-		gtkmm \
+		gtkmm3 \
 		python33 \
-		gtk-engines2 \
+		gnome-themes-standard \
 		intltool"
 	port install -f $CORE_DEPS $STUDIO_DEPS
 	
@@ -242,17 +242,6 @@ mkdeps()
 	pushd $MACPORTS/bin/ > /dev/null
 	ln -sf python3.3 python3
 	popd > /dev/null
-	
-	# Gtk theme
-	cat > ${MACPORTS}/etc/gtk-2.0/gtkrc <<EOF
-
-# Enable native look
-gtk-theme-name = "Clearlooks"
-
-# Use small toolbar buttons
-gtk-toolbar-style = 0
-
-EOF
 
 }
 
@@ -291,6 +280,7 @@ mksynfig()
 mksynfigstudio()
 {
 	# Copy launch script, so we can test synfigstudio without building an app package
+	[ ! -e "${MACPORTS}/../MacOS" ] || rm -rf "${MACPORTS}/../MacOS"
 	cp -rf $SCRIPTPATH/app-template/Contents/MacOS ${MACPORTS}/../MacOS
 	
 	# building synfig-studio

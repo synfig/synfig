@@ -910,6 +910,7 @@ initialize()
 				libmng-devel \
 				ImageMagick-c++-devel \
 				jack-audio-connection-kit-devel \
+				mlt-devel \
 				gtkmm30-devel \
 				glibmm24-devel"
 		fi

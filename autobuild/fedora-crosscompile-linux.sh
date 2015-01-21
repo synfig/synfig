@@ -1,8 +1,6 @@
 #!/bin/bash
 
-# TODO: LD_PRELOAD wrapper
 # TODO: Bundle ALL dependent lib (libpng issue)
-# TODO: GTK theming issues
 # TODO: FFmpeg/libx264 - stick to particular version
 # TODO: FFmpeg/libx264/mlt - cache sources
 # TODO: Debug builds for dependent libraries
@@ -68,25 +66,25 @@ LIBSIGCPP_VERSION=2.2.10
 GLEW_VERSION=1.5.1
 CAIROMM_VERSION=1.10.0
 IMAGEMAGICK_VERSION=6.8.9
-PANGOMM_VERSION=2.34.0		# required by GTKMM 2.20.3
-GTKMM_VERSION=3.10.1
+PANGOMM_VERSION=2.34.0
+GTKMM_VERSION=3.14.0
 FTGL_VERSION=2.1.2
 FREEGLUT_VERSION=2.4.0
 GTKGLEXT_VERSION=1.2.0
 GTKGLEXTMM_VERSION=1.2.0
 LIBXMLPP_VERSION=2.22.0
-GLIBMM_VERSION=2.38.1		# required by GTKMM 3.10.1
+GLIBMM_VERSION=2.42.0
 CAIRO_VERSION=1.12.18
 BOOST_VERSION=1_53_0
-ATK_VERSION=2.10.0
+ATK_VERSION=2.14.0
 AT_SPI2_VERSION=2.10.2
 AT_SPI2_ATK_VERSION=2.10.2
-GLIB_VERSION=2.38.2
+GLIB_VERSION=2.42.1
 GDK_PIXBUF_VERSION=2.30.3
-GTK_VERSION=3.10.9
+GTK_VERSION=3.14.6
 PIXMAN_VERSION=0.30.0		# required by CAIRO 1.12.0
 HARFBUZZ_VERSION=0.9.24
-PANGO_VERSION=1.36.1
+PANGO_VERSION=1.36.8
 ATKMM_VERSION=2.22.7
 
 # System libraries
@@ -234,6 +232,7 @@ mkprefix()
 			libdb-dev uuid-dev \
 			libdbus-1-dev \
 			wget mawk \
+			python-dev \
 			bzip2"
 	
 	INCLUDE_LIST=""
@@ -267,7 +266,15 @@ mkprep()
 {
 
 MISSING_PKGS=""
-for PKG in debootstrap dpkg fakeroot fakechroot rpmbuild alien git; do
+for PKG in \
+		debootstrap \
+		dpkg \
+		fakeroot \
+		fakechroot \
+		rpmbuild \
+		git \
+		flex \
+		bison; do
 	if ! ( which $PKG > /dev/null ) ; then
 		MISSING_PKGS="$MISSING_PKGS $PKG"
 	fi
@@ -315,6 +322,8 @@ for file in `find ${SYSPREFIX}/usr/lib/ -type f -name "*.la"`; do
 	sed -i "s|libdir='/usr/lib'|libdir='${SYSPREFIX}/usr/lib'|g" ${file}
 	sed -i "s| /usr/lib| ${SYSPREFIX}/usr/lib|g" ${file}
 done
+
+sed -i "s|#! /usr/bin/python2.6|#!${SYSPREFIX}/usr/bin/python2.6|g" ${SYSPREFIX}/usr/bin/python2.6-config
 
 # Fixing symlinks
 if [[ $ARCH == 64 ]]; then
@@ -380,12 +389,19 @@ cat > ${DEPSPREFIX}/bin/rsync <<EOF
 EOF
 chmod a+x  ${DEPSPREFIX}/bin/rsync
 
-cat > ${DEPSPREFIX}/bin/python <<EOF
+cat > ${DEPSPREFIX}/bin/flex <<EOF
 #!/bin/sh
 
-/usr/bin/python "\$@"
+/usr/bin/flex "\$@"
 EOF
-chmod a+x  ${DEPSPREFIX}/bin/python
+chmod a+x  ${DEPSPREFIX}/bin/flex
+
+cat > ${DEPSPREFIX}/bin/bison <<EOF
+#!/bin/sh
+
+/usr/bin/bison "\$@"
+EOF
+chmod a+x  ${DEPSPREFIX}/bin/bison
 
 #for binary in bzip2; do
 #	ln -sf /usr/bin/$binary  ${DEPSPREFIX}/bin/$binary
@@ -400,7 +416,7 @@ PKG_VERSION="${GLIB_VERSION}"
 TAREXT=xz
 if ! pkg-config ${PKG_NAME}-2.0 --exact-version=${PKG_VERSION}  --print-errors; then
 	cd ${CACHEDIR}
-    [ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://ftp.gnome.org/pub/gnome/sources/glib/2.38/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    [ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://ftp.gnome.org/pub/gnome/sources/glib/${PKG_VERSION%.*}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${SRCPREFIX}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
@@ -454,7 +470,7 @@ mkatkmm()
 PKG_NAME=atkmm
 PKG_VERSION="${ATKMM_VERSION}"
 TAREXT=xz
-if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
+if [ ! -f ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done ]; then
 	cd ${CACHEDIR}
     [ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://ftp.gnome.org/pub/gnome/sources/${PKG_NAME}/${PKG_VERSION%.*}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	pushd ${SRCPREFIX}
@@ -465,6 +481,8 @@ if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
 	make install
 	cd ..
 	popd
+	
+	touch ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done
 fi
 }
 
@@ -473,7 +491,7 @@ mkatspi2()
 PKG_NAME=at-spi2-core
 PKG_VERSION="${AT_SPI2_VERSION}"
 TAREXT=xz
-if ! pkg-config at-spi2 --exact-version=${PKG_VERSION}  --print-errors; then
+if [ ! -f ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done ]; then
 	( cd ${WORKSPACE}/cache/ && wget -c --no-check-certificate http://ftp.gnome.org/pub/gnome/sources/${PKG_NAME}/${PKG_VERSION%.*}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
 	pushd ${SRCPREFIX}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
@@ -485,6 +503,8 @@ if ! pkg-config at-spi2 --exact-version=${PKG_VERSION}  --print-errors; then
 	make install
 	cd ..
 	popd
+	
+	touch ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done
 fi
 }
 
@@ -508,9 +528,6 @@ if ! pkg-config atk-bridge-2.0 --exact-version=${PKG_VERSION}  --print-errors; t
 	popd
 fi
 }
-
-
-
 
 
 mkpixman()
@@ -576,10 +593,11 @@ fi
 
 mkgdkpixbuf()
 {
+	
 PKG_NAME=gdk-pixbuf
 PKG_VERSION="${GDK_PIXBUF_VERSION}"
 TAREXT=xz
-if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
+if [ ! -f ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done ]; then
 	( cd ${WORKSPACE}/cache/ && wget -c --no-check-certificate http://ftp.gnome.org/pub/gnome/sources/gdk-pixbuf/${PKG_VERSION%.*}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
 	pushd ${SRCPREFIX}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
@@ -591,6 +609,9 @@ if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
 	make install
 	cd ..
 	popd
+	
+	touch ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done
+	
 fi
 }
 
@@ -635,23 +656,121 @@ if ! pkg-config ${PKG_NAME}-3.0 --exact-version=${PKG_VERSION}  --print-errors; 
 fi
 }
 
-mkgtkengines()
+mklibcroco()
 {
-PKG_NAME=gtk-engines
-PKG_VERSION="${GTKENGINES_VERSION}"
-TAREXT=bz2
-if ! pkg-config ${PKG_NAME}-2.0 --exact-version=${PKG_VERSION}  --print-errors; then
-	#rsync -av ${SOURCES_URL}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
-	( cd ${WORKSPACE}/cache/ && wget -c --no-check-certificate http://ftp.gnome.org/pub/gnome/sources/gtk-engines/${PKG_VERSION%.*}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
+PKG_NAME=libcroco
+PKG_VERSION=0.6.8
+TAREXT=xz
+if ! pkg-config ${PKG_NAME}-0.6 --exact-version=${PKG_VERSION}  --print-errors; then
+	( cd ${WORKSPACE}/cache/ && wget -c --no-check-certificate http://ftp.gnome.org/pub/gnome/sources/${PKG_NAME}/${PKG_VERSION%.*}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
 	pushd ${SRCPREFIX}
-	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xjf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
-	./configure --host=${HOST} --prefix=${DEPSPREFIX}/ \
+	[ ! -e config.cache ] || rm config.cache
+	./configure --build=${HOST} --prefix=${PREFIX}/ \
 		--disable-static --enable-shared
 	make -j${THREADS}
 	make install
 	cd ..
 	popd
+fi
+}
+
+mkgobjectintrospection()
+{
+PKG_NAME=gobject-introspection
+PKG_VERSION=1.42.0
+TAREXT=xz
+if ! pkg-config ${PKG_NAME}-1.0 --exact-version=${PKG_VERSION}  --print-errors; then
+	( cd ${WORKSPACE}/cache/ && wget -c --no-check-certificate http://ftp.gnome.org/pub/gnome/sources/${PKG_NAME}/${PKG_VERSION%.*}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
+	pushd ${SRCPREFIX}
+	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	cd ${PKG_NAME}-${PKG_VERSION}
+	[ ! -e config.cache ] || rm config.cache
+	./configure --build=${HOST} --prefix=${PREFIX}/ \
+		--disable-static --enable-shared
+	make -j${THREADS}
+	make install
+	cd ..
+	popd
+fi
+}
+
+
+mklibrsvg()
+{
+	
+	mkgdkpixbuf
+	mklibcroco
+	mkgobjectintrospection
+	
+PKG_NAME=librsvg
+PKG_VERSION=2.40.6
+TAREXT=xz
+if ! pkg-config ${PKG_NAME}-2.0 --exact-version=${PKG_VERSION}  --print-errors; then
+	( cd ${WORKSPACE}/cache/ && wget -c --no-check-certificate http://ftp.gnome.org/pub/gnome/sources/${PKG_NAME}/${PKG_VERSION%.*}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
+	pushd ${SRCPREFIX}
+	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	cd ${PKG_NAME}-${PKG_VERSION}
+	[ ! -e config.cache ] || rm config.cache
+	./configure --build=${HOST} --prefix=${PREFIX}/ \
+		--disable-static --enable-shared
+	make -j${THREADS}
+	make install
+	cd ..
+	popd
+fi
+}
+
+# Not used
+mkgnomethemes()
+{
+	
+mklibrsvg
+
+PKG_NAME=gnome-themes-standard
+PKG_VERSION=3.15.2
+TAREXT=xz
+if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
+	( cd ${WORKSPACE}/cache/ && wget -c --no-check-certificate http://ftp.gnome.org/pub/gnome/sources/${PKG_NAME}/${PKG_VERSION%.*}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
+	pushd ${SRCPREFIX}
+	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	cd ${PKG_NAME}-${PKG_VERSION}
+	[ ! -e config.cache ] || rm config.cache
+	./configure --build=${HOST} --prefix=${PREFIX}/ \
+		--disable-gtk2-engine \
+		--disable-static --enable-shared
+	make -j${THREADS}
+	make install
+	cd ..
+	popd
+fi
+}
+
+mkadwaitaicons()
+{
+	
+mklibrsvg
+
+PKG_NAME=adwaita-icon-theme
+PKG_VERSION=3.15.1
+TAREXT=xz
+if [ ! -f ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done ]; then
+	( cd ${WORKSPACE}/cache/ && wget -c --no-check-certificate http://ftp.gnome.org/pub/gnome/sources/${PKG_NAME}/${PKG_VERSION%.*}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
+	pushd ${SRCPREFIX}
+	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	cd ${PKG_NAME}-${PKG_VERSION}
+	[ ! -e config.cache ] || rm config.cache
+	./configure --build=${HOST} --prefix=${PREFIX}/ \
+		--disable-gtk2-engine \
+		--disable-static --enable-shared
+	make -j${THREADS}
+	make install
+	cd ..
+	popd
+	
+	touch ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done
+	
 fi
 }
 
@@ -1390,57 +1509,6 @@ fi
 PATH="$PATH_BAK"
 }
 
-
-# Not used
-mkfakeroot()
-{
-	run_native mkfakeroot_
-}
-
-# Not used
-mkfakeroot_()
-{
-PKG_NAME=fakeroot
-PKG_VERSION="1.18.4"
-TAREXT=bz2
-if [ ! -e ${TOOLSPREFIX}/bin/fakeroot ]; then
-	( cd ${WORKSPACE}/cache/ && wget -c http://ftp.de.debian.org/debian/pool/main/f/${PKG_NAME}/${PKG_NAME}_${PKG_VERSION}.orig.tar.${TAREXT} )
-	pushd ${SRCPREFIX}
-	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xjf ${WORKSPACE}/cache/${PKG_NAME}_${PKG_VERSION}.orig.tar.${TAREXT}
-	cd ${PKG_NAME}-${PKG_VERSION}
-	./configure --host=${HOST} --prefix=${TOOLSPREFIX}/
-	make -j${THREADS}
-	make install
-	cd ..
-	popd
-fi
-}
-
-# Not used
-mkfakechroot()
-{
-	run_native mkfakechroot_
-}
-
-# Not used
-mkfakechroot_()
-{
-PKG_NAME=fakechroot
-PKG_VERSION="2.16"
-TAREXT=gz
-if [ ! -e ${DEPSPREFIX}/bin/automake ]; then
-	( cd ${WORKSPACE}/cache/ && wget -c http://ftp.de.debian.org/debian/pool/main/f/${PKG_NAME}/${PKG_NAME}_${PKG_VERSION}.orig.tar.${TAREXT} )
-	pushd ${SRCPREFIX}
-	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xzf ${WORKSPACE}/cache/${PKG_NAME}_${PKG_VERSION}.orig.tar.${TAREXT}
-	cd ${PKG_NAME}-${PKG_VERSION}
-	./configure --host=${HOST} --prefix=$WORKSPACE/linux$ARCH$SUFFIX/tools/
-	make -j${THREADS}
-	make install
-	cd ..
-	popd
-fi
-}
-
 #ETL
 mketl()
 {
@@ -1499,16 +1567,16 @@ make install
 mkconfig()
 {
 	
-if [ ${PREFIX} == ${DEPSPREFIX} ]; then
+#if [ ${PREFIX} == ${DEPSPREFIX} ]; then
 	#if [ ! -e "${PREFIX}/etc/pango/pango.modules.in" ]; then
 	#	sed "s?${PREFIX}/lib/pango/1.6.0/modules?@ROOTDIR@/modules?" < ${PREFIX}/etc/pango/pango.modules > ${PREFIX}/etc/pango/pango.modules.in
 	#fi
 
 
-	if [ ! -e "${PREFIX}/etc/gtk-2.0/gdk-pixbuf.loaders.in" ]; then
-		sed "s?${PREFIX}/lib/gtk-2.0/2.10.0/loaders?@ROOTDIR@/loaders?" < ${PREFIX}/etc/gtk-2.0/gdk-pixbuf.loaders > ${PREFIX}/etc/gtk-2.0/gdk-pixbuf.loaders.in
+	if [ ! -e "${PREFIX}/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache.in" ]; then
+		sed "s?${PREFIX}/lib/gdk-pixbuf-2.0/2.10.0/loaders?@ROOTDIR@/loaders?" < ${PREFIX}/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache > ${PREFIX}/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache.in
 	fi
-fi
+#fi
 
 cat > ${PREFIX}/synfig <<EOF
 #!/bin/sh
@@ -1547,7 +1615,11 @@ export ETC_DIR=\${SYSPREFIX}/etc
 export LD_LIBRARY_PATH=\${SYSPREFIX}/lib:\$LD_LIBRARY_PATH
 export SYNFIG_ROOT=\${SYSPREFIX}/
 export SYNFIG_MODULE_LIST=\${SYSPREFIX}/etc/synfig_modules.cfg
+export XDG_DATA_DIRS="\${SYSPREFIX}/share/:\$XDG_DATA_DIRS"
+export XDG_CONFIG_DIRS="\$HOME/.config/synfig:\$XDG_CONFIG_DIRS"
 #export GDK_PIXBUF_MODULEDIR="\${SYSPREFIX}/lib/gtk-2.0/2.10.0/loaders"
+export GTK_THEME=Adwaita
+export GSETTINGS_SCHEMA_DIR="\${SYSPREFIX}/share/glib-2.0/schemas/"
 export FONTCONFIG_PATH="\${SYSPREFIX}/etc/fonts"
 export MLT_DATA="\${SYSPREFIX}/share/mlt/"
 export MLT_REPOSITORY="\${SYSPREFIX}/lib/mlt/"
@@ -1561,25 +1633,12 @@ export MAGICK_CONFIGURE_PATH="\${SYSPREFIX}/lib/ImageMagick-${IMAGEMAGICK_VERSIO
 [ -e "\$USER_CONFIG_DIR" ] || mkdir -p "\$USER_CONFIG_DIR"
 
 #sed "s?@ROOTDIR@/modules?\${SYSPREFIX}/lib/pango/1.6.0/modules?" < \$ETC_DIR/pango/pango.modules.in > \$USER_CONFIG_DIR/pango/pango.modules
-if [ -e \$ETC_DIR/gtk-2.0/gdk-pixbuf.loaders.in ]; then
-	sed "s?@ROOTDIR@/loaders?\${SYSPREFIX}/lib/gtk-2.0/2.10.0/loaders?" < \$ETC_DIR/gtk-2.0/gdk-pixbuf.loaders.in > \$GDK_PIXBUF_MODULE_FILE
+if [ -e \${SYSPREFIX}/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache.in ]; then
 	export GDK_PIXBUF_MODULE_FILE="\${USER_CONFIG_DIR}/gdk-pixbuf.loaders"
+	sed "s?@ROOTDIR@/loaders?\${SYSPREFIX}/lib/gdk-pixbuf-2.0/2.10.0/loaders?" < \${SYSPREFIX}/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache.in > \$GDK_PIXBUF_MODULE_FILE
 fi
 
 \${SYSPREFIX}/bin/synfigstudio "\$@"
-
-exit 0
-
-# 1 check if test application starts without warnings
-LANG=C GTK_PATH=/usr/lib64/gtk-2.0/2.10.0/ /home/zelgadis/synfig-buildroot/linux64/bundle/bin/gtk-test --g-fatal-warnings | egrep "Gtk+ version too old (micro mismatch)"
-
-# If everything is fine then start with GTK_PATH
-
-GTK_PATH=/usr/lib64/gtk-2.0/2.10.0/ /home/zelgadis/synfig-buildroot/linux64/bundle/bin/synfigstudio
-
-# otherwise start with custom GTKRC
-
-GTK2_RC_FILES=/home/zelgadis/synfig-buildroot/linux64/bundle/gtkrc:$GTK2_RC_FILES /home/zelgadis/synfig-buildroot/linux64/bundle/bin/synfigstudio
 
 EOF
 
@@ -1721,9 +1780,10 @@ rm -rf \$RPM_BUILD_ROOT
 mkdir -p \$RPM_BUILD_ROOT/opt/synfig
 cp -r  ${DISTPREFIX}/* \$RPM_BUILD_ROOT/opt/synfig
 mkdir -p \$RPM_BUILD_ROOT/usr/share
+mkdir -p \$RPM_BUILD_ROOT/usr/share/icons
 mv \$RPM_BUILD_ROOT/opt/synfig/share/applications \$RPM_BUILD_ROOT/usr/share
 mv \$RPM_BUILD_ROOT/opt/synfig/share/appdata \$RPM_BUILD_ROOT/usr/share
-mv \$RPM_BUILD_ROOT/opt/synfig/share/icons \$RPM_BUILD_ROOT/usr/share
+mv \$RPM_BUILD_ROOT/opt/synfig/share/icons/hicolor \$RPM_BUILD_ROOT/usr/share/icons
 mv \$RPM_BUILD_ROOT/opt/synfig/share/mime \$RPM_BUILD_ROOT/usr/share
 mv \$RPM_BUILD_ROOT/opt/synfig/share/mime-info \$RPM_BUILD_ROOT/usr/share
 mkdir -p \$RPM_BUILD_ROOT/usr/share/pixmaps
@@ -1776,36 +1836,180 @@ EOF
 }
 
 mkpackage_deb()
-{    
-    cd ${WORKSPACE}
-    #if [[ $ARCH == '64' ]]; then
-	#	run_native fakeroot alien -k --scripts synfigstudio-${VERSION}-${REVISION}.${BREED}.$RELEASE.${RPM_ARCH}.rpm
-    #else
-		rm -rf synfigstudio-${VERSION} || true
-		rm -rf synfigstudio_${VERSION}-${REVISION}.${BREED}.${RELEASE}_${RPM_ARCH}.deb || true
-		run_native fakeroot alien -g -k --scripts synfigstudio-${VERSION}-${REVISION}.${BREED}.$RELEASE.${RPM_ARCH}.rpm
+{
+    rm -rf ${WORKSPACE}/linux$ARCH$SUFFIX/dist-deb || true
+    mkdir ${WORKSPACE}/linux$ARCH$SUFFIX/dist-deb
+    cd ${WORKSPACE}/linux$ARCH$SUFFIX/dist-deb
+    mkdir synfigstudio-${VERSION}
+    DEB_DIST=${WORKSPACE}/linux$ARCH$SUFFIX/dist-deb/synfigstudio-${VERSION}
+	
+	
+	mkdir -p ${DEB_DIST}/opt/synfig
+	cp -r  ${DISTPREFIX}/* ${DEB_DIST}/opt/synfig
+	mkdir -p ${DEB_DIST}/usr/share
+	mkdir -p ${DEB_DIST}/usr/share/icons
+	mv ${DEB_DIST}/opt/synfig/share/applications ${DEB_DIST}/usr/share
+	mv ${DEB_DIST}/opt/synfig/share/appdata ${DEB_DIST}/usr/share
+	mv ${DEB_DIST}/opt/synfig/share/icons/hicolor ${DEB_DIST}/usr/share/icons
+	mv ${DEB_DIST}/opt/synfig/share/mime ${DEB_DIST}/usr/share
+	mv ${DEB_DIST}/opt/synfig/share/mime-info ${DEB_DIST}/usr/share
+	mkdir -p ${DEB_DIST}/usr/share/pixmaps
+	ln -sf /opt/synfig/share/pixmaps/sif_icon.png ${DEB_DIST}/usr/share/pixmaps/sif_icon.png
+	ln -sf /opt/synfig/share/pixmaps/synfig_icon.png ${DEB_DIST}/usr/share/pixmaps/synfig_icon.png
+	mkdir -p ${DEB_DIST}/usr/bin
+	cp ${DEB_DIST}/opt/synfig/synfig ${DEB_DIST}/usr/bin/
+	cp ${DEB_DIST}/opt/synfig/synfigstudio ${DEB_DIST}/usr/bin/
+	sed -i 's|^SYSPREFIX=.*|SYSPREFIX=/opt/synfig|' ${DEB_DIST}/usr/bin/synfig
+	sed -i 's|^SYSPREFIX=.*|SYSPREFIX=/opt/synfig|' ${DEB_DIST}/usr/bin/synfigstudio
+	
+	mkdir -p ${DEB_DIST}/debian
+	echo "9" > ${DEB_DIST}/debian/compat
+	
+	cat > ${DEB_DIST}/debian/control << EOF
+Source: synfigstudio
+Section: graphics
+Priority: extra
+Maintainer: Konstantin Dmitiev <root@synfig.org>
+
+Package: synfigstudio
+Provides: synfig
+Recommends: synfig-examples
+Architecture: any
+Depends: \${shlibs:Depends}
+Description: Film-Quality 2D Vector Animation package
+ Synfig Animation Studio is a powerful, industrial-strength vector-based
+ 2D animation software, designed from the ground-up for producing
+ feature-film quality animation with fewer people and resources.
+ It eliminates the need for tweening, preventing the need to hand-draw
+ each frame. Synfig features spatial and temporal resolution independence
+ (sharp and smooth at any resolution or framerate), high dynamic range
+ images, and a flexible plugin system.
+EOF
+	
+	cat > ${DEB_DIST}/debian/copyright << EOF
+Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: synfig
+Source: http://sourceforge.net/projects/synfig/files/synfigstudio/
+
+Files: *
+Copyright: 2002-2005      Adrian Bentley
+           2009           Carlos A. Sosa Navarro
+           2008-2013      Carlos López
+           2010-2011      Carlos López González
+           2007-2008      Chris Moore
+           2008           David Roden
+           2008           Gerald Young
+           2008-2009      Gerco Ballintijn
+           2013           Ivan Mahonin
+           2009,2012-2013 Konstantin Dmitriev <ksee.zelgadis@gmail.com>
+           2009-2011      Nikita Kitaev
+           2007-2008      Paul Wise
+           2001-2014      Robert B. Quattlebaum Jr.
+           2006           Yue Shi Lai
+License: GPL-2+
+Comment: see list of all contributors in file README
+EOF
+	
+	cat > ${DEB_DIST}/debian/changelog << EOF
+synfigstudio (${VERSION}-${REVISION}.${BREED}.${RELEASE}) unstable; urgency=medium
+
+  * Custom Debian package form synfig.org.
+
+ -- Konstantin Dmitriev <ksee.zelgadis@gmail.com>  Sun, 18 Jan 2015 16:22:23 +1100
+
+EOF
+	
+	cat > ${DEB_DIST}/debian/postinst << EOF
+#!/bin/bash
+if [ -x /usr/bin/update-mime-database ]; then
+  update-mime-database /usr/share/mime
+fi
+if [ -x /usr/bin/update-desktop-database ]; then
+  update-desktop-database
+fi
+chmod a+rX -R /opt/synfig
+chmod a+rX /opt
+EOF
+	chmod +x ${DEB_DIST}/debian/postinst
+	
+	cat > ${DEB_DIST}/debian/postrm << EOF
+#!/bin/bash
+if [ -x /usr/bin/update-mime-database ]; then
+  update-mime-database /usr/share/mime
+fi
+if [ -x /usr/bin/update-desktop-database ]; then
+  update-desktop-database
+fi
+EOF
+
+	cat > ${DEB_DIST}/debian/rules << EOF
+#!/usr/bin/make -f
+# debian/rules for alien
+
+PACKAGE=\$(shell dh_listpackages)
+
+build:
+	dh_testdir
+
+clean:
+	dh_testdir
+	dh_testroot
+	dh_clean -d
+
+binary-indep: build
+
+binary-arch: build
+	dh_testdir
+	dh_testroot
+	dh_prep
+	dh_installdirs
+
+	dh_installdocs
+	dh_installchangelogs
+
+# Copy the packages's files.
+	find . -maxdepth 1 -mindepth 1 -not -name debian -print0 | \
+		xargs -0 -r -i cp -a {} debian/\$(PACKAGE)
+
+#
+# If you need to move files around in debian/\$(PACKAGE) or do some
+# binary patching, do it here
+#
+
+
+# This has been known to break on some wacky binaries.
+#	dh_strip
+	dh_compress
+#	dh_fixperms
+	dh_makeshlibs
+	dh_installdeb
+	-dh_shlibdeps
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+binary: binary-indep binary-arch
+.PHONY: build clean binary-indep binary-arch binary
+EOF
 		
-		# Allow to build i386 on x86_64 host
-		run_native sed -i "s|Architecture: .*|Architecture: any|g" synfigstudio-${VERSION}/debian/control
-		# Workaround permissions problem
-		echo >> synfigstudio-${VERSION}/debian/postinst
-		echo "chmod a+rX -R /opt/synfig" >> synfigstudio-${VERSION}/debian/postinst
-		echo "chmod a+rX /opt" >> synfigstudio-${VERSION}/debian/postinst
 		
-		pushd synfigstudio-${VERSION} >/dev/null
-		run_native dpkg-buildpackage -rfakeroot -a${SYS_ARCH} -d || true
-		if [ ! -e ../synfigstudio_${VERSION}-${REVISION}.${BREED}.${RELEASE}_${SYS_ARCH}.deb ]; then
-			echo "Failed to generate deb package"
-			exit 1
-		fi
-		popd >/dev/null
-		rm -rf synfigstudio-${VERSION}.orig
-		rm -rf synfigstudio_${VERSION}.orig.tar.gz
-		rm -rf synfigstudio_${VERSION}-${REVISION}.${BREED}.${RELEASE}_${SYS_ARCH}.changes
-		rm -rf synfigstudio_${VERSION}-${REVISION}.${BREED}.${RELEASE}.diff.gz
-		rm -rf synfigstudio_${VERSION}-${REVISION}.${BREED}.${RELEASE}.dsc
-    #fi
-    rm -rf synfigstudio-${VERSION}
+	#run_native fakeroot alien -g -k --scripts synfigstudio-${VERSION}-${REVISION}.${BREED}.$RELEASE.${RPM_ARCH}.rpm
+		
+	cd synfigstudio-${VERSION}
+	run_native dpkg-buildpackage -rfakeroot -a${SYS_ARCH} -d || true
+	#run_native fakeroot dpkg-deb --build synfigstudio
+	if [ ! -e ../synfigstudio_${VERSION}-${REVISION}.${BREED}.${RELEASE}_${SYS_ARCH}.deb ]; then
+		echo "Failed to generate deb package"
+		exit 1
+	fi
+	mv ../synfigstudio_${VERSION}-${REVISION}.${BREED}.${RELEASE}_${SYS_ARCH}.deb ${WORKSPACE}
+	rm -rf synfigstudio-${VERSION}.orig
+	rm -rf synfigstudio_${VERSION}.orig.tar.gz
+	rm -rf synfigstudio_${VERSION}-${REVISION}.${BREED}.${RELEASE}_${SYS_ARCH}.changes
+	rm -rf synfigstudio_${VERSION}-${REVISION}.${BREED}.${RELEASE}.diff.gz
+	rm -rf synfigstudio_${VERSION}-${REVISION}.${BREED}.${RELEASE}.dsc
+	rm -rf synfigstudio-${VERSION}
+	rm -rf ${WORKSPACE}/linux$ARCH$SUFFIX/dist-deb
 }
 
 mkall()
@@ -1833,6 +2037,7 @@ mkall()
 	mkpango
 	mkgdkpixbuf
 	mkgtk
+	mkadwaitaicons
 	mkjack
 	
 	# synfig-core deps

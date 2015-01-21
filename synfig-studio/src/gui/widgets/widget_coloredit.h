@@ -32,7 +32,9 @@
 #include <gtkmm/spinbutton.h>
 #include <gtkmm/adjustment.h>
 #include <gtkmm/drawingarea.h>
+#include <gtkmm/colorselection.h>
 #include <synfig/color.h>
+#include <synfig/gamma.h>
 #include "widgets/widget_color.h"
 
 /* === M A C R O S ========================================================= */
@@ -142,6 +144,8 @@ class Widget_ColorEdit : public Gtk::Table
 	Gtk::SpinButton *spinbutton_B;
 	Gtk::SpinButton *spinbutton_A;
 
+	Gtk::ColorSelection * hvsColorWidget;
+
 	Glib::RefPtr<Gtk::Adjustment> R_adjustment;
 	Glib::RefPtr<Gtk::Adjustment> G_adjustment;
 	Glib::RefPtr<Gtk::Adjustment> B_adjustment;
@@ -150,6 +154,9 @@ class Widget_ColorEdit : public Gtk::Table
 	synfig::Color color;
 
 	Gtk::Notebook* notebook;
+
+	static synfig::Gamma hvs_gamma;
+	static synfig::Gamma hvs_gamma_in;
 
 protected:
 
@@ -168,6 +175,8 @@ public:
 	//Glib::SignalProxy0<void> signal_activate() { return spinbutton_A->signal_activate(); }
 
 	sigc::signal<void>& signal_value_changed() { return signal_value_changed_; }
+	
+	void on_color_changed();
 
 	void activated() { signal_activated_(); }
 	void activate() { signal_activated_(); }
@@ -178,6 +187,16 @@ public:
 	void set_digits(int x);
 	Widget_ColorEdit();
 	~Widget_ColorEdit();
+
+private:
+	bool colorHVSChanged; //Spike. Look more in the code.
+	///@brief Sets color to the widget
+	void setHVSColor(synfig::Color color);
+	///@brief The function adds slider into the row table with label. 
+	void SliderRow(int i,ColorSlider * n, char * l, Pango::AttrList & attr_list, Gtk::Table* table);
+	///@brief The function adds spin button into the table.
+	void AttachSpinButton(int i, Gtk::SpinButton * n, Gtk::Table * table);
+
 }; // END of class Widget_ColorEdit
 
 }; // END of namespace studio

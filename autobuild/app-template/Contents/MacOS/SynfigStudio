@@ -12,7 +12,7 @@ APPDIR=`pwd`
 cd - > /dev/null
 # edit the next line to match version file
 VERSION=_VERSION_
-LNDIR=/tmp/skl/SynfigStudio.app
+LNDIR=/tmp/skl/SynfigStudio
 
 rm -f "$LNDIR" || true
 mkdir -p /tmp/skl
@@ -24,6 +24,7 @@ CWD="$LNDIR/Contents/Resources"
 export PATH="$CWD/bin:$CWD/sbin:$CWD/synfig/bin:$PATH"
 export SYNFIG_ROOT="$CWD/synfig/"
 export SYNFIG_MODULE_LIST="$CWD/synfig/etc/synfig_modules.cfg"
+export GTK_THEME="Adwaita"
 
 echo launch
 

@@ -1,4 +1,5 @@
 SYNFIG = synfig
+export PATH := ${prefix}/bin:$(PATH)
 
 EXT = @imageext@
 
