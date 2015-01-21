@@ -1039,6 +1039,8 @@ EOF
 mkpackage()
 {
 
+cp -rf ${SRCPREFIX}/autobuild/gtk-3.0/settings.ini $MINGWPREFIX/share/gtk-3.0
+
 [ ! -d $DISTPREFIX ] || rm -rf $DISTPREFIX
 mkdir -p $DISTPREFIX
 [ -d $DISTPREFIX/bin ] || mkdir -p $DISTPREFIX/bin
@@ -1061,7 +1063,7 @@ cp -rf $SRCPREFIX/synfig-studio/COPYING $DISTPREFIX/licenses/synfigstudio.txt
 #cp -rf $MINGWPREFIX/bin/*.exe $DISTPREFIX/bin/
 #TODO: strip binaries?
 #cp -rf $MINGWPREFIX/bin/*.dll $DISTPREFIX/bin/
-[ -d ${PREFIX}/bin ] || mkdir -p ${PREFIX}/bin
+[ -d ${DISTPREFIX}/bin ] || mkdir -p ${DISTPREFIX}/bin
 for file in \
    av*.dll \
    ffmpeg.exe \

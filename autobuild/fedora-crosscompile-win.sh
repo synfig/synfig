@@ -577,6 +577,7 @@ mkpackage()
 #cp -rf ${PREFIX}/share/pixmaps $DISTPREFIX/share
 #cp -rf ${PREFIX}/share/synfig $DISTPREFIX/share
 cp -rf $SCRIPTPATH/../synfig-core/examples $PREFIX/
+cp -rf $SCRIPTPATH/gtk-3.0/settings.ini $PREFIX/share/gtk-3.0
 mkdir -p $PREFIX/licenses
 cp -rf $SCRIPTPATH/../synfig-studio/COPYING $PREFIX/licenses/synfigstudio.txt
 cp -rf $SCRIPTPATH/../synfig-studio/images/installer_logo.bmp $PREFIX/
