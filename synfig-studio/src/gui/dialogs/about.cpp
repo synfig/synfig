@@ -141,6 +141,7 @@ About::About()
 	authors.push_back("Daniel Fort");
 	authors.push_back("Daniel Hornung (rubikcube)");
 	authors.push_back("David Roden (Bombe)");
+	authors.push_back("Denis Zdorovtsov (trizer)");
 	authors.push_back("Dmitriy Pomerantsev (Atrus)");
 	authors.push_back("Douglas Lau");
 	authors.push_back("Gerald Young (Yoyobuae)");
