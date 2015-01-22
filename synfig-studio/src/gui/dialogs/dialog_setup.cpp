@@ -217,6 +217,10 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	// Misc - browser_command
 	attach_label(misc_table, _("Browser Command"), 4, xpadding, ypadding);
 	misc_table->attach(textbox_browser_command, 1, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+	
+	// Misc - brushes path
+	attach_label(misc_table, _("Brush Presets Path"), 5, xpadding, ypadding);
+	misc_table->attach(textbox_brushes_path, 1, 2, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 
 	// Misc - UI Language
 	Glib::ustring lang_names[] = {
@@ -301,8 +305,8 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	ui_language_combo.set_active(row);
 	ui_language_combo.signal_changed().connect(sigc::mem_fun(*this, &studio::Dialog_Setup::on_ui_language_combo_change));
 
-	attach_label(misc_table, _("Interface Language"), 5, xpadding, ypadding);
-	misc_table->attach(ui_language_combo, 1, 2, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+	attach_label(misc_table, _("Interface Language"), 6, xpadding, ypadding);
+	misc_table->attach(ui_language_combo, 1, 2, 6, 7, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 
 
 	// Document
@@ -454,6 +458,11 @@ Dialog_Setup::on_apply_pressed()
 
 	// Set the browser_command textbox
 	App::browser_command=textbox_browser_command.get_text();
+	
+	if ( textbox_brushes_path.get_text() == App::get_base_path()+ETL_DIRECTORY_SEPARATOR+"share"+ETL_DIRECTORY_SEPARATOR+"synfig"+ETL_DIRECTORY_SEPARATOR+"brushes" )
+		App::brushes_path="";
+	else
+		App::brushes_path=textbox_brushes_path.get_text();
 
 	// Set the preferred file name prefix
 	App::custom_filename_prefix=textbox_custom_filename_prefix.get_text();
@@ -633,6 +642,11 @@ Dialog_Setup::refresh()
 
 	// Refresh the browser_command textbox
 	textbox_browser_command.set_text(App::browser_command);
+	
+	if (App::brushes_path == "")
+		textbox_brushes_path.set_text(App::get_base_path()+ETL_DIRECTORY_SEPARATOR+"share"+ETL_DIRECTORY_SEPARATOR+"synfig"+ETL_DIRECTORY_SEPARATOR+"brushes");
+	else
+		textbox_brushes_path.set_text(App::brushes_path);
 
 	// Refresh the preferred filename prefix
 	textbox_custom_filename_prefix.set_text(App::custom_filename_prefix);

@@ -198,6 +198,7 @@ class Dialog_Setup : public Gtk::Dialog
 	Gtk::CheckButton toggle_enable_experimental_features;
 
 	Gtk::Entry textbox_browser_command;
+	Gtk::Entry textbox_brushes_path;
 
 	Gtk::ComboBoxText* size_template_combo;
 	Gtk::ComboBoxText* fps_template_combo;

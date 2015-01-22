@@ -306,6 +306,7 @@ String studio::App::browser_command("open"); // MacOS only
 #else
 String studio::App::browser_command("xdg-open"); // Linux XDG standard
 #endif
+String studio::App::brushes_path("");
 String studio::App::sequence_separator(".");
 bool studio::App::navigator_uses_cairo=false;
 bool studio::App::workarea_uses_cairo=false;
@@ -557,6 +558,11 @@ public:
 				value=App::browser_command;
 				return true;
 			}
+			if(key=="brushes_path")
+			{
+				value=App::brushes_path;
+				return true;
+			}
 			if(key=="custom_filename_prefix")
 			{
 				value=App::custom_filename_prefix;
@@ -700,6 +706,11 @@ public:
 				App::browser_command=value;
 				return true;
 			}
+			if(key=="brushes_path")
+			{
+				App::brushes_path=value;
+				return true;
+			}
 			if(key=="custom_filename_prefix")
 			{
 				App::custom_filename_prefix=value;
@@ -785,6 +796,7 @@ public:
 		ret.push_back("resize_imported_images");
 		ret.push_back("enable_experimental_features");
 		ret.push_back("browser_command");
+		ret.push_back("brushes_path");
 		ret.push_back("custom_filename_prefix");
 		ret.push_back("ui_language");
 		ret.push_back("preferred_x_size");

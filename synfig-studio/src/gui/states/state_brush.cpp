@@ -448,8 +448,9 @@ StateBrush_Context::load_settings()
 	try
 	{
 		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
+		
 		String value;
-		if(settings.get_value("brush.path_count",value))
+		/*if(settings.get_value("brush.path_count",value))
 		{
 			paths.clear();
 			int count = atoi(value.c_str());
@@ -457,15 +458,13 @@ StateBrush_Context::load_settings()
 				if(settings.get_value(strprintf("brush.path_%d", i),value))
 					paths.insert(value);
 		}
-		// TODO: remove following code
 		else
-		{
-			// force add Ubuntu path to mypaint brushes
-			paths.insert("/usr/share/mypaint/brushes");
-#ifdef WIN32
-			paths.insert(App::get_base_path()+ETL_DIRECTORY_SEPARATOR+"brushes");
-#endif
-		}
+		{*/
+			if (App::brushes_path=="")
+				paths.insert(App::get_base_path()+ETL_DIRECTORY_SEPARATOR+"share"+ETL_DIRECTORY_SEPARATOR+"synfig"+ETL_DIRECTORY_SEPARATOR+"brushes");
+			else
+				paths.insert(App::brushes_path);
+		//}
 		refresh_tool_options();
 
 		if (settings.get_value("brush.selected_brush_filename",value))
