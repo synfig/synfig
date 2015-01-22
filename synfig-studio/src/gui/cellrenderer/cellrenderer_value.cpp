@@ -306,8 +306,6 @@ CellRenderer_ValueBase::CellRenderer_ValueBase():
 #endif
 {
 	CellRendererText::signal_edited().connect(sigc::mem_fun(*this,&CellRenderer_ValueBase::string_edited_));
-	value_entry=new ValueBase_Entry();
-	value_entry->hide();
 
 	Pango::AttrList attr_list;
 	{
