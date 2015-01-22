@@ -291,7 +291,7 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 	{
 		locations.push_back("./"MODULE_LIST_FILENAME);
 		if(getenv("HOME"))
-			locations.push_back(strprintf("%s/.synfig/%s", getenv("HOME"), MODULE_LIST_FILENAME));
+			locations.push_back(strprintf("%s/.local/share/synfig/%s", getenv("HOME"), MODULE_LIST_FILENAME));
 	#ifdef SYSCONFDIR
 		locations.push_back(SYSCONFDIR"/"MODULE_LIST_FILENAME);
 	#endif

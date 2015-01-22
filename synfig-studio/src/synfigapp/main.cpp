@@ -63,7 +63,7 @@ using namespace synfigapp;
 #elif defined(_WIN32)
 #define SYNFIG_USER_APP_DIR	"Synfig"
 #else
-#define SYNFIG_USER_APP_DIR	".synfig"
+#define SYNFIG_USER_APP_DIR	".config/synfig"
 #endif
 #endif
 

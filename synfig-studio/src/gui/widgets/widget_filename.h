@@ -29,7 +29,7 @@
 
 #include <sigc++/signal.h>
 #include <sigc++/slot.h>
-#include <gtkmm/box.h>
+#include <gtkmm/grid.h>
 #include <gtkmm/entry.h>
 #include <gtkmm/button.h>
 
@@ -43,7 +43,7 @@ namespace Gtk { class Entry; class Button; };
 
 namespace studio {
 
-class Widget_Filename : public Gtk::HBox
+class Widget_Filename : public Gtk::Grid
 {
 	Gtk::Entry *entry_filename;
 	Gtk::Button *button_choose;

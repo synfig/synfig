@@ -141,6 +141,7 @@ About::About()
 	authors.push_back("Daniel Fort");
 	authors.push_back("Daniel Hornung (rubikcube)");
 	authors.push_back("David Roden (Bombe)");
+	authors.push_back("Denis Zdorovtsov (trizer)");
 	authors.push_back("Dmitriy Pomerantsev (Atrus)");
 	authors.push_back("Douglas Lau");
 	authors.push_back("Gerald Young (Yoyobuae)");
@@ -155,6 +156,7 @@ About::About()
 	authors.push_back("Miguel Gea Milvaques (xerakko)");
 	authors.push_back("Paul Wise (pabs)");
 	authors.push_back("Ralf Corsepius");
+	authors.push_back("Ramon Miranda");
 	authors.push_back("Ray Frederikson");
 	authors.push_back("Timo Paulssen (timonator)");
 	authors.push_back("Yu Chen (jcome)");

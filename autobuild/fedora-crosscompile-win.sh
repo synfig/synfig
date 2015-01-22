@@ -73,6 +73,8 @@ if [ -z $NOSU ]; then
 		automake \
 		libtool \
 		libtool-ltdl-devel \
+		${TOOLCHAIN}-adwaita-icon-theme \
+		${TOOLCHAIN}-hicolor-icon-theme \
 		${TOOLCHAIN}-gcc-c++ \
 		${TOOLCHAIN}-cpp \
 		${TOOLCHAIN}-libxml++ \
@@ -183,6 +185,7 @@ for file in \
    fontconfig \
    glib-2.0 \
    gtk-3.0 \
+   icons \
    themes \
    xml \
 # this extra line is required!
@@ -574,6 +577,7 @@ mkpackage()
 #cp -rf ${PREFIX}/share/pixmaps $DISTPREFIX/share
 #cp -rf ${PREFIX}/share/synfig $DISTPREFIX/share
 cp -rf $SCRIPTPATH/../synfig-core/examples $PREFIX/
+cp -rf $SCRIPTPATH/gtk-3.0/settings.ini $PREFIX/share/gtk-3.0
 mkdir -p $PREFIX/licenses
 cp -rf $SCRIPTPATH/../synfig-studio/COPYING $PREFIX/licenses/synfigstudio.txt
 cp -rf $SCRIPTPATH/../synfig-studio/images/installer_logo.bmp $PREFIX/

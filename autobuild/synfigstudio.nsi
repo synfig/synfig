@@ -80,19 +80,6 @@ Section "Synfig Studio"
   SetOutPath "$INSTDIR"
   File /r /x .* python
 
-IfFileExists $PROFILE\.gtkrc-2.0 GtkrcExists PastGtkrcCheck
-GtkrcExists:
-  FileOpen $0 $PROFILE\.gtkrc-2.0 a
-  FileSeek $0 0 END
-  FileWrite $0 "gtk-toolbar-style = 0"
-  FileWriteByte $0 "13"
-  FileWriteByte $0 "10"
-  FileWrite $0 'gtk-theme-name = "MS-Windows"'
-  FileWriteByte $0 "13"
-  FileWriteByte $0 "10"	
-  FileClose $0
-
-PastGtkrcCheck:
   WriteRegStr HKLM "${PRODUCT_REG_KEY}" "Path" "$INSTDIR"
   WriteRegStr HKLM "${PRODUCT_REG_KEY}" "Version" "@VERSION@"
   
