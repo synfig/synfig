@@ -156,6 +156,7 @@ About::About()
 	authors.push_back("Miguel Gea Milvaques (xerakko)");
 	authors.push_back("Paul Wise (pabs)");
 	authors.push_back("Ralf Corsepius");
+	authors.push_back("Ramon Miranda");
 	authors.push_back("Ray Frederikson");
 	authors.push_back("Timo Paulssen (timonator)");
 	authors.push_back("Yu Chen (jcome)");

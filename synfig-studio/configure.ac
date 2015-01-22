@@ -350,6 +350,7 @@ synfigstudio.mime
 synfigstudio.keys
 synfigstudio.xml
 synfigstudio-thumbnailer.schemas
+brushes/Makefile
 src/Makefile
 src/gui/Makefile
 src/synfigapp/Makefile

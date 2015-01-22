@@ -30,6 +30,7 @@ DISTCLEANFILES = \
 
 SUBDIRS = \
 	build_tools \
+	brushes \
 	src \
 	images \
 	plugins \
