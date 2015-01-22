@@ -351,6 +351,7 @@ synfigstudio.keys
 synfigstudio.xml
 synfigstudio-thumbnailer.schemas
 brushes/Makefile
+brushes/CD_concept/Makefile
 src/Makefile
 src/gui/Makefile
 src/synfigapp/Makefile
