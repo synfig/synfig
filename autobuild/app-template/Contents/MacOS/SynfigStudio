@@ -24,7 +24,7 @@ CWD="$LNDIR/Contents/Resources"
 export PATH="$CWD/bin:$CWD/sbin:$CWD/synfig/bin:$PATH"
 export SYNFIG_ROOT="$CWD/synfig/"
 export SYNFIG_MODULE_LIST="$CWD/synfig/etc/synfig_modules.cfg"
-export GTK_THEME="Adwaita"
+export GTK_THEME="Adwaita:dark"
 
 echo launch
 
