@@ -2354,7 +2354,7 @@ App::dialog_open_file_image(const std::string &title, std::string &filename, std
 
 	// show only images
 	Glib::RefPtr<Gtk::FileFilter> filter_image = Gtk::FileFilter::create();
-	filter_image->set_name("Images and sequence files (*.png, *.jpeg, *.bmp, *.svg, *.lst)");
+	filter_image->set_name("Images and sequence files (*.png, *.jpg, *.jpeg, *.bmp, *.svg, *.lst)");
 	filter_image->add_pattern("*.png");
 	filter_image->add_pattern("*.jpeg");
 	filter_image->add_pattern("*.jpg");
