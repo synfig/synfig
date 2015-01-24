@@ -107,7 +107,7 @@ jpeg_mptr::jpeg_mptr(const synfig::FileSystem::Identifier &identifier):
 	FileSystem::ReadStreamHandle stream = identifier.get_read_stream();
 	if (!stream)
 	{
-		throw String("error on jpeg importer construction, unable to open "+identifier.filename);
+		throw String("Error on jpeg importer, unable to physically open "+identifier.filename);
 		return;
 	}
 
@@ -123,7 +123,7 @@ jpeg_mptr::jpeg_mptr(const synfig::FileSystem::Identifier &identifier):
 		 */
 		jpeg_destroy_decompress(&cinfo);
 		stream.reset();
-		throw String("error on importer construction, *WRITEME*2");
+		throw String("Error on jpeg importer, unable to connect to jpeg library");
 	}
 	/* Now we can initialize the JPEG decompression object. */
 	jpeg_create_decompress(&cinfo);
@@ -167,8 +167,8 @@ jpeg_mptr::jpeg_mptr(const synfig::FileSystem::Identifier &identifier):
 
 	if(!buffer)
 	{
-		synfig::error("jpeg_mptr: error: alloc of \"buffer\" failed (bug?)");
-		throw String("alloc of \"buffer\" failed (bug?)");
+		synfig::error("Error on jpeg importer, alloc of \"buffer\" failed (bug?)");
+		throw String("Error on jpeg importer, alloc of \"buffer\" failed (bug?)");
 	}
 
 	int x;
@@ -224,9 +224,9 @@ jpeg_mptr::jpeg_mptr(const synfig::FileSystem::Identifier &identifier):
 		break;
 
 	default:
-		synfig::error("jpeg_mptr: error: Unsupported color type");
+		synfig::error("Error on jpeg importer, Unsupported color type");
         //! \todo THROW SOMETHING
-		throw String("error on importer construction, *WRITEME*6");
+		throw String("Error on jpeg importer, Unsupported color type");
 		return;
 	}
 
