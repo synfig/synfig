@@ -1930,7 +1930,7 @@ fi
 chmod a+rX -R /opt/synfig
 chmod a+rX /opt
 EOF
-	chmod +x ${DEB_DIST}/debian/postinst
+	chmod a+x ${DEB_DIST}/debian/postinst
 	
 	cat > ${DEB_DIST}/debian/postrm << EOF
 #!/bin/bash
@@ -1941,6 +1941,7 @@ if [ -x /usr/bin/update-desktop-database ]; then
   update-desktop-database
 fi
 EOF
+	chmod a+x ${DEB_DIST}/debian/postrm
 
 	cat > ${DEB_DIST}/debian/rules << EOF
 #!/usr/bin/make -f
