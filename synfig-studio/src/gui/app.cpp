@@ -2138,7 +2138,7 @@ App::dialog_open_file(const std::string &title, std::string &filename, std::stri
 	// info("App::dialog_open_file('%s', '%s', '%s')", title.c_str(), filename.c_str(), preference.c_str());
 	// TODO: Win32 native dialod not ready yet
 #ifdef USE_WIN32_FILE_DIALOGS
-	static TCHAR szFilter[] = TEXT ("All Files (*.*)\0*.*\0\0") ;
+	static TCHAR szFilter[] = TEXT (_("All Files (*.*)\0*.*\0\0")) ;
 
 	GdkWindow *gdkWinPtr=toolbox->get_window()->gobj();
 	HINSTANCE hInstance=static_cast<HINSTANCE>(GetModuleHandle(NULL));
@@ -2198,7 +2198,7 @@ App::dialog_open_file(const std::string &title, std::string &filename, std::stri
 	// 0 All supported files
 	// 0.1 Synfig documents. sfg is not supported to import
 	Glib::RefPtr<Gtk::FileFilter> filter_supported = Gtk::FileFilter::create();
-	filter_supported->set_name("All supported files");
+	filter_supported->set_name(_("All supported files"));
 	filter_supported->add_mime_type("application/x-sif");
 	filter_supported->add_pattern("*.sif");
 	filter_supported->add_pattern("*.sifz");
@@ -2225,14 +2225,14 @@ App::dialog_open_file(const std::string &title, std::string &filename, std::stri
 	// Sub fileters
 	// 1 Synfig documents. sfg is not supported to import
 	Glib::RefPtr<Gtk::FileFilter> filter_synfig = Gtk::FileFilter::create();
-	filter_synfig->set_name("Synfig files (*.sif, *.sifz)");
+	filter_synfig->set_name(_("Synfig files (*.sif, *.sifz)"));
 	filter_synfig->add_mime_type("application/x-sif");
 	filter_synfig->add_pattern("*.sif");
 	filter_synfig->add_pattern("*.sifz");
 
 	// 2.1 Image files
 	Glib::RefPtr<Gtk::FileFilter> filter_image = Gtk::FileFilter::create();
-	filter_image->set_name("Images (*.png, *.jpeg, *.bmp, *.svg)");
+	filter_image->set_name(_("Images (*.png, *.jpeg, *.bmp, *.svg)"));
 	filter_image->add_mime_type("image/png");
 	filter_image->add_mime_type("image/jpeg");
 	filter_image->add_mime_type("image/jpg");
@@ -2246,12 +2246,12 @@ App::dialog_open_file(const std::string &title, std::string &filename, std::stri
 
 	// 2.2 Image sequence/list files
 	Glib::RefPtr<Gtk::FileFilter> filter_image_list = Gtk::FileFilter::create();
-	filter_image_list->set_name("Image sequence files(*.lst)");
+	filter_image_list->set_name(_("Image sequence files(*.lst)"));
 	filter_image_list->add_pattern("*.lst");
 
 	// 3 Audio files
 	Glib::RefPtr<Gtk::FileFilter> filter_audio = Gtk::FileFilter::create();
-	filter_audio->set_name("Audio (*.ogg, *.mp3, *.wav)");
+	filter_audio->set_name(_("Audio (*.ogg, *.mp3, *.wav)"));
 	filter_audio->add_mime_type("audio/x-vorbis+ogg");
 	filter_audio->add_mime_type("audio/mpeg");
 	filter_audio->add_mime_type("audio/x-wav");
@@ -2261,7 +2261,7 @@ App::dialog_open_file(const std::string &title, std::string &filename, std::stri
 
 	// 4 Any files
 	Glib::RefPtr<Gtk::FileFilter> filter_any = Gtk::FileFilter::create();
-	filter_any->set_name("Any files");
+	filter_any->set_name(_("Any files"));
 	filter_any->add_pattern("*");
 
 	dialog->add_filter(filter_supported);
@@ -2312,7 +2312,7 @@ App::dialog_open_file_spal(const std::string &title, std::string &filename, std:
 
 	// show only Synfig color palette file (*.spal)
 	Glib::RefPtr<Gtk::FileFilter> filter_spal = Gtk::FileFilter::create();
-	filter_spal->set_name("Synfig palette files (*.spal)");
+	filter_spal->set_name(_("Synfig palette files (*.spal)"));
 	filter_spal->add_pattern("*.spal");
 	dialog->add_filter(filter_spal);
 
@@ -2355,7 +2355,7 @@ App::dialog_open_file_image(const std::string &title, std::string &filename, std
 
 	// show only images
 	Glib::RefPtr<Gtk::FileFilter> filter_image = Gtk::FileFilter::create();
-	filter_image->set_name("Images and sequence files (*.png, *.jpg, *.jpeg, *.bmp, *.svg, *.lst)");
+	filter_image->set_name(_("Images and sequence files (*.png, *.jpg, *.jpeg, *.bmp, *.svg, *.lst)"));
 	filter_image->add_mime_type("image/png");
 	filter_image->add_mime_type("image/jpeg");
 	filter_image->add_mime_type("image/jpg");
@@ -2371,7 +2371,7 @@ App::dialog_open_file_image(const std::string &title, std::string &filename, std
 
 	// Any files
 	Glib::RefPtr<Gtk::FileFilter> filter_any = Gtk::FileFilter::create();
-	filter_any->set_name("Any files");
+	filter_any->set_name(_("Any files"));
 	filter_any->add_pattern("*");
 	dialog->add_filter(filter_any);
 
@@ -2414,7 +2414,7 @@ App::dialog_open_file_audio(const std::string &title, std::string &filename, std
 
 	// Audio files
 	Glib::RefPtr<Gtk::FileFilter> filter_audio = Gtk::FileFilter::create();
-	filter_audio->set_name("Audio (*.ogg, *.mp3, *.wav)");
+	filter_audio->set_name(_("Audio (*.ogg, *.mp3, *.wav)"));
 	filter_audio->add_mime_type("audio/x-vorbis+ogg");
 	filter_audio->add_mime_type("audio/mpeg");
 	filter_audio->add_mime_type("audio/x-wav");
@@ -2425,7 +2425,7 @@ App::dialog_open_file_audio(const std::string &title, std::string &filename, std
 
 	// Any files
 	Glib::RefPtr<Gtk::FileFilter> filter_any = Gtk::FileFilter::create();
-	filter_any->set_name("Any files");
+	filter_any->set_name(_("Any files"));
 	filter_any->add_pattern("*");
 	dialog->add_filter(filter_any);
 
@@ -2456,7 +2456,7 @@ App::dialog_open_file_with_history_button(const std::string &title, std::string 
 // TODO: Win32 native dialog not ready yet
 //#ifdef USE_WIN32_FILE_DIALOGS
 #if 0
-	static TCHAR szFilter[] = TEXT ("All Files (*.*)\0*.*\0\0") ;
+	static TCHAR szFilter[] = TEXT (_("All Files (*.*)\0*.*\0\0")) ;
 
 	GdkWindow *gdkWinPtr=toolbox->get_window()->gobj();
 	HINSTANCE hInstance=static_cast<HINSTANCE>(GetModuleHandle(NULL));
@@ -2519,14 +2519,14 @@ App::dialog_open_file_with_history_button(const std::string &title, std::string 
 	// File filters
 	// Synfig Documents
 	Glib::RefPtr<Gtk::FileFilter> filter_supported = Gtk::FileFilter::create();
-	filter_supported->set_name("Synfig files (*.sif, *.sifz, *.sfg)");
+	filter_supported->set_name(_("Synfig files (*.sif, *.sifz, *.sfg)"));
 	filter_supported->add_mime_type("application/x-sif");
 	filter_supported->add_pattern("*.sif");
 	filter_supported->add_pattern("*.sifz");
 	filter_supported->add_pattern("*.sfg");
 	// Any files
 	Glib::RefPtr<Gtk::FileFilter> filter_any = Gtk::FileFilter::create();
-	filter_any->set_name("Any files");
+	filter_any->set_name(_("Any files"));
 	filter_any->add_pattern("*");
 
 	dialog->add_filter(filter_supported);
@@ -2561,7 +2561,7 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 	// info("App::dialog_save_file('%s', '%s', '%s')", title.c_str(), filename.c_str(), preference.c_str());
 
 #if USE_WIN32_FILE_DIALOGS
-	static TCHAR szFilter[] = TEXT ("All Files (*.*)\0*.*\0\0") ;
+	static TCHAR szFilter[] = TEXT (_("All Files (*.*)\0*.*\0\0")) ;
 
 	GdkWindow *gdkWinPtr=toolbox->get_window()->gobj();
 	HINSTANCE hInstance=static_cast<HINSTANCE>(GetModuleHandle(NULL));
@@ -2614,7 +2614,7 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 
 	// file type filters
 	Glib::RefPtr<Gtk::FileFilter> filter_sif = Gtk::FileFilter::create();
-	filter_sif->set_name("Uncompressed Synfig file(*.sif)");
+	filter_sif->set_name(_("Uncompressed Synfig file(*.sif)"));
 
 	// sif share same mime type "application/x-sif" with sifz, so it will mixed .sif and .sifz files. Use only
 	// pattern ("*.sif") for sif file format should be oK.
@@ -2622,11 +2622,11 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 	filter_sif->add_pattern("*.sif");
 
 	Glib::RefPtr<Gtk::FileFilter> filter_sifz = Gtk::FileFilter::create();
-	filter_sifz->set_name("Compressed Synfig file(*.sifz)");
+	filter_sifz->set_name(_("Compressed Synfig file(*.sifz)"));
 	filter_sifz->add_pattern("*.sifz");
 
 	Glib::RefPtr<Gtk::FileFilter> filter_sfg = Gtk::FileFilter::create();
-	filter_sfg->set_name("Container format file(*.sfg)");
+	filter_sfg->set_name(_("Container format file(*.sfg)"));
 	filter_sfg->add_pattern("*.sfg");
 
 	dialog->set_current_folder(prev_path);
@@ -2744,7 +2744,7 @@ App::dialog_save_file_spal(const std::string &title, std::string &filename, std:
 
 	// file type filters
 	Glib::RefPtr<Gtk::FileFilter> filter_spal = Gtk::FileFilter::create();
-	filter_spal->set_name("Synfig palette files(*.spal)");
+	filter_spal->set_name(_("Synfig palette files(*.spal)"));
 	filter_spal->add_pattern("*.spal");
 
 	dialog->set_current_folder(prev_path);
