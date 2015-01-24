@@ -2207,7 +2207,7 @@ App::dialog_open_file(const std::string &title, std::string &filename, std::stri
 	filter_supported->add_mime_type("image/jpeg");
 	filter_supported->add_mime_type("image/jpg");
 	filter_supported->add_mime_type("image/bmp");
-	filter_supported->add_mime_type("image/svg");
+	filter_supported->add_mime_type("image/svg+xml");
 	filter_supported->add_pattern("*.png");
 	filter_supported->add_pattern("*.jpeg");
 	filter_supported->add_pattern("*.jpg");
