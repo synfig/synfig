@@ -6,6 +6,7 @@
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**	Copyright (c) 2015 Jérôme Blanchi
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -42,10 +43,10 @@
 #include <synfig/time.h>
 #include <synfig/general.h>
 
-
 #include <cstdio>
 #include <algorithm>
 #include <functional>
+#include <sstream>
 #endif
 
 /* === M A C R O S ========================================================= */
@@ -100,16 +101,15 @@ jpeg_mptr::my_error_exit (j_common_ptr cinfo)
 jpeg_mptr::jpeg_mptr(const synfig::FileSystem::Identifier &identifier):
 	Importer(identifier)
 {
-  	struct my_error_mgr jerr;
+	struct my_error_mgr jerr;
 
 	/* Open the file pointer */
-    FILE *file = fopen(identifier.filename.c_str(), "rb");
-    if (!file)
-    {
-        //! \todo THROW SOMETHING
-		throw String("error on importer construction, *WRITEME*1");
+	FileSystem::ReadStreamHandle stream = identifier.get_read_stream();
+	if (!stream)
+	{
+		throw String("error on jpeg importer construction, unable to open "+identifier.filename);
 		return;
-    }
+	}
 
 	/* Step 1: allocate and initialize JPEG decompression object */
 
@@ -122,15 +122,20 @@ jpeg_mptr::jpeg_mptr(const synfig::FileSystem::Identifier &identifier):
 		 * We need to clean up the JPEG object, close the input file, and return.
 		 */
 		jpeg_destroy_decompress(&cinfo);
-		fclose(file);
+		stream.reset();
 		throw String("error on importer construction, *WRITEME*2");
 	}
 	/* Now we can initialize the JPEG decompression object. */
 	jpeg_create_decompress(&cinfo);
 
-	/* Step 2: specify data source (eg, a file) */
+	/* Step 2: specify data source (eg, from memory thrue a String) */
 
-	jpeg_stdio_src(&cinfo, file);
+	std::ostringstream tmp;
+	tmp << stream->rdbuf();
+	String streamString = tmp.str();
+	stream.reset();
+
+	jpeg_mem_src(&cinfo, (unsigned char*)streamString.c_str(), streamString.size());
 
 	/* Step 3: read file parameters with jpeg_read_header() */
 
@@ -242,7 +247,7 @@ jpeg_mptr::jpeg_mptr(const synfig::FileSystem::Identifier &identifier):
 	* so as to simplify the setjmp error logic above.  (Actually, I don't
 	* think that jpeg_destroy can do an error exit, but why assume anything...)
 	*/
-	fclose(file);
+//	fclose(file);
 }
 
 jpeg_mptr::~jpeg_mptr()
