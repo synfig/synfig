@@ -2237,6 +2237,7 @@ App::dialog_open_file(const std::string &title, std::string &filename, std::stri
 	filter_image->add_mime_type("image/jpeg");
 	filter_image->add_mime_type("image/jpg");
 	filter_image->add_mime_type("image/bmp");
+	filter_image->add_mime_type("image/svg+xml");
 	filter_image->add_pattern("*.png");
 	filter_image->add_pattern("*.jpeg");
 	filter_image->add_pattern("*.jpg");
