@@ -377,7 +377,7 @@ public:
 /* === M E T H O D S ======================================================= */
 
 StateLasso::StateLasso():
-	Smach::state<StateLasso_Context>("draw")
+	Smach::state<StateLasso_Context>("lasso")
 {
 	insert(event_def(EVENT_STOP,&StateLasso_Context::event_stop_handler));
 	insert(event_def(EVENT_REFRESH,&StateLasso_Context::event_refresh_handler));
@@ -399,102 +399,102 @@ StateLasso_Context::load_settings()
 		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		String value;
 
-		if(settings.get_value("draw.id",value))
+		if(settings.get_value("lasso.id",value))
 			set_id(value);
 		else
 			set_id("NewDrawing");
 
-		if(settings.get_value("draw.blend",value) && value != "")
+		if(settings.get_value("lasso.blend",value) && value != "")
 			set_blend(atoi(value.c_str()));
 		else
 			set_blend(0);//(int)Color::BLEND_COMPOSITE); //0 should be blend composites value
 
-		if(settings.get_value("draw.opacity",value))
+		if(settings.get_value("lasso.opacity",value))
 			set_opacity(atof(value.c_str()));
 		else
 			set_opacity(1);
 
-		if(settings.get_value("draw.bline_width",value) && value != "")
+		if(settings.get_value("lasso.bline_width",value) && value != "")
 			set_bline_width(Distance(atof(value.c_str()), App::distance_system));
 		else
 			set_bline_width(Distance(1, App::distance_system)); // default width
 
-		if(settings.get_value("draw.pressure_width",value) && value=="0")
+		if(settings.get_value("lasso.pressure_width",value) && value=="0")
 			set_pressure_width_flag(false);
 		else
 			set_pressure_width_flag(true);
 
-		if(settings.get_value("draw.auto_loop",value) && value=="0")
+		if(settings.get_value("lasso.auto_loop",value) && value=="0")
 			set_auto_loop_flag(false);
 		else
 			set_auto_loop_flag(true);
 
-		if(settings.get_value("draw.auto_extend",value) && value=="0")
+		if(settings.get_value("lasso.auto_extend",value) && value=="0")
 			set_auto_extend_flag(false);
 		else
 			set_auto_extend_flag(true);
 
-		if(settings.get_value("draw.auto_link",value) && value=="0")
+		if(settings.get_value("lasso.auto_link",value) && value=="0")
 			set_auto_link_flag(false);
 		else
 			set_auto_link_flag(true);
 
-		if(settings.get_value("draw.region",value) && value=="0")
+		if(settings.get_value("lasso.region",value) && value=="0")
 			set_layer_region_flag(false);
 		else
 			set_layer_region_flag(true);
 
-		if(settings.get_value("draw.outline",value) && value=="0")
+		if(settings.get_value("lasso.outline",value) && value=="0")
 			set_layer_outline_flag(false);
 		else
 			set_layer_outline_flag(true);
 
-		if(settings.get_value("draw.advanced_outline",value) && value=="0")
+		if(settings.get_value("lasso.advanced_outline",value) && value=="0")
 			set_layer_advanced_outline_flag(false);
 		else
 			set_layer_advanced_outline_flag(true);
 
-		if(settings.get_value("draw.auto_export",value) && value=="1")
+		if(settings.get_value("lasso.auto_export",value) && value=="1")
 			set_auto_export_flag(true);
 		else
 			set_auto_export_flag(false);
 
-		if(settings.get_value("draw.min_pressure_on",value) && value=="0")
+		if(settings.get_value("lasso.min_pressure_on",value) && value=="0")
 			set_min_pressure_flag(false);
 		else
 			set_min_pressure_flag(true);
 
-		if(settings.get_value("draw.min_pressure",value))
+		if(settings.get_value("lasso.min_pressure",value))
 		{
 			Real n = atof(value.c_str());
 			set_min_pressure(n);
 		}else
 			set_min_pressure(0);
 
-		if(settings.get_value("draw.feather",value))
+		if(settings.get_value("lasso.feather",value))
 			set_feather_size(Distance(atof(value.c_str()), App::distance_system));
 		else
 			set_feather_size(Distance(0, App::distance_system));
 
-		if(settings.get_value("draw.gthreshold",value))
+		if(settings.get_value("lasso.gthreshold",value))
 		{
 			Real n = atof(value.c_str());
 			set_gthres(n);
 		}
 
-		if(settings.get_value("draw.widthmaxerror",value))
+		if(settings.get_value("lasso.widthmaxerror",value))
 		{
 			Real n = atof(value.c_str());
 			set_width_max_error(n);
 		}
 
-		if(settings.get_value("draw.lthreshold",value))
+		if(settings.get_value("lasso.lthreshold",value))
 		{
 			Real n = atof(value.c_str());
 			set_lthres(n);
 		}
 
-		if(settings.get_value("draw.localize",value) && value == "1")
+		if(settings.get_value("lasso.localize",value) && value == "1")
 			//set_local_error_flag(true);
 			set_local_threshold_flag(true);
 		else
@@ -502,7 +502,7 @@ StateLasso_Context::load_settings()
 			//set_local_threshold_flag(false);
 			set_global_threshold_flag(true);
 
-		if(settings.get_value("draw.round_ends", value) && value == "1")
+		if(settings.get_value("lasso.round_ends", value) && value == "1")
 			set_round_ends_flag(true);
 		else
 			set_round_ends_flag(false);
@@ -514,7 +514,7 @@ StateLasso_Context::load_settings()
 	}
 	catch(...)
 	{
-		synfig::warning("State Draw: Caught exception when attempting to load settings.");
+		synfig::warning("State lasso: Caught exception when attempting to load settings.");
 	}
 }
 
@@ -524,30 +524,30 @@ StateLasso_Context::save_settings()
 	try
 	{
 		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
-		settings.set_value("draw.id",get_id().c_str());
-		settings.set_value("draw.blend",strprintf("%d",get_blend()));
-		settings.set_value("draw.opacity",strprintf("%f",(float)get_opacity()));
-		settings.set_value("draw.bline_width", bline_width_dist.get_value().get_string());
-		settings.set_value("draw.pressure_width",get_pressure_width_flag()?"1":"0");
-		settings.set_value("draw.auto_loop",get_auto_loop_flag()?"1":"0");
-		settings.set_value("draw.auto_extend",get_auto_extend_flag()?"1":"0");
-		settings.set_value("draw.auto_link",get_auto_link_flag()?"1":"0");
-		settings.set_value("draw.region",get_layer_region_flag()?"1":"0");
-		settings.set_value("draw.outline",get_layer_outline_flag()?"1":"0");
-		settings.set_value("draw.advanced_outline",get_layer_advanced_outline_flag()?"1":"0");
-		settings.set_value("draw.auto_export",get_auto_export_flag()?"1":"0");
-		settings.set_value("draw.min_pressure",strprintf("%f",get_min_pressure()));
-		settings.set_value("draw.feather",feather_dist.get_value().get_string());
-		settings.set_value("draw.min_pressure_on",get_min_pressure_flag()?"1":"0");
-		settings.set_value("draw.gthreshold",strprintf("%f",get_gthres()));
-		settings.set_value("draw.widthmaxerror",strprintf("%f",get_width_max_error()));
-		settings.set_value("draw.lthreshold",strprintf("%f",get_lthres()));
-		settings.set_value("draw.localize",get_local_threshold_flag()?"1":"0");
-		settings.set_value("draw.round_ends", get_round_ends_flag()?"1":"0");
+		settings.set_value("lasso.id",get_id().c_str());
+		settings.set_value("lasso.blend",strprintf("%d",get_blend()));
+		settings.set_value("lasso.opacity",strprintf("%f",(float)get_opacity()));
+		settings.set_value("lasso.bline_width", bline_width_dist.get_value().get_string());
+		settings.set_value("lasso.pressure_width",get_pressure_width_flag()?"1":"0");
+		settings.set_value("lasso.auto_loop",get_auto_loop_flag()?"1":"0");
+		settings.set_value("lasso.auto_extend",get_auto_extend_flag()?"1":"0");
+		settings.set_value("lasso.auto_link",get_auto_link_flag()?"1":"0");
+		settings.set_value("lasso.region",get_layer_region_flag()?"1":"0");
+		settings.set_value("lasso.outline",get_layer_outline_flag()?"1":"0");
+		settings.set_value("lasso.advanced_outline",get_layer_advanced_outline_flag()?"1":"0");
+		settings.set_value("lasso.auto_export",get_auto_export_flag()?"1":"0");
+		settings.set_value("lasso.min_pressure",strprintf("%f",get_min_pressure()));
+		settings.set_value("lasso.feather",feather_dist.get_value().get_string());
+		settings.set_value("lasso.min_pressure_on",get_min_pressure_flag()?"1":"0");
+		settings.set_value("lasso.gthreshold",strprintf("%f",get_gthres()));
+		settings.set_value("lasso.widthmaxerror",strprintf("%f",get_width_max_error()));
+		settings.set_value("lasso.lthreshold",strprintf("%f",get_lthres()));
+		settings.set_value("lasso.localize",get_local_threshold_flag()?"1":"0");
+		settings.set_value("lasso.round_ends", get_round_ends_flag()?"1":"0");
 	}
 	catch(...)
 	{
-		synfig::warning("State Draw: Caught exception when attempting to save settings.");
+		synfig::warning("State lasso: Caught exception when attempting to save settings.");
 	}
 }
 
@@ -559,7 +559,7 @@ StateLasso_Context::increment_id()
 	int digits=0;
 
 	if(id.empty())
-		id="Drawing";
+		id="Lasso";
 
 	// If there is a number
 	// already at the end of the
@@ -617,7 +617,7 @@ StateLasso_Context::StateLasso_Context(CanvasView* canvas_view):
 	/* Set up the tool options dialog */
 
 	// 0, title
-	title_label.set_label(_("Drawing"));
+	title_label.set_label(_("Lasso"));
 	Pango::AttrList list;
 	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
 	list.insert(attr);
@@ -658,7 +658,7 @@ StateLasso_Context::StateLasso_Context(CanvasView* canvas_view):
 
 	blend_enum.set_param_desc(ParamDesc(Color::BLEND_COMPOSITE,"blend_method")
 		.set_local_name(_("Blend Method"))
-		.set_description(_("Defines the blend method to be used for draws")));
+		.set_description(_("Defines the blend method to be used for lassos")));
 
 	// 4, opacity label and slider
 	opacity_label.set_label(_("Opacity:"));
@@ -956,8 +956,8 @@ StateLasso_Context::refresh_tool_options()
 {
 	App::dialog_tool_options->clear();
 	App::dialog_tool_options->set_widget(options_table);
-	App::dialog_tool_options->set_local_name(_("Draw Tool"));
-	App::dialog_tool_options->set_name("draw");
+	App::dialog_tool_options->set_local_name(_("Lasso Tool"));
+	App::dialog_tool_options->set_name("lasso");
 
 	App::dialog_tool_options->add_button(
 		Gtk::StockID("synfig-fill"),
