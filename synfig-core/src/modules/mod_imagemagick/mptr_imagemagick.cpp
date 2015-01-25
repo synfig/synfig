@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007 Chris Moore
+**	Copyright (c) 2015 Jérôme Blanchi
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -106,6 +107,22 @@ imagemagick_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &re
 		return false;
 	}
 	string temp_file="/tmp/deleteme.png";
+	string temp_container_file="";
+
+	// todo: "container:" and "images" literals
+	if (identifier.filename.substr(0, String("#images/").size())=="#images/")
+	{
+		temp_container_file = "/tmp/synfigtmp.png";
+		// try to copy file to a temp file
+		if (!FileSystem::copy(identifier.file_system, identifier.filename, identifier.file_system, temp_container_file))
+		{
+			if(cb)cb->error(_("Cannot create temporary file of ")+ identifier.filename);
+			else synfig::error(_("Cannot create temporary file of ")+ identifier.filename);
+			return false;
+		}
+	}
+
+	string filename = temp_container_file.size() == 0 ? identifier.filename : temp_container_file;
 
 #if defined(WIN32_PIPE_TO_PROCESSES)
 
@@ -115,9 +132,9 @@ imagemagick_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &re
 	string command;
 
 	if(identifier.filename.find("psd")!=String::npos)
-		command=strprintf("convert \"%s\" -flatten \"png32:%s\"\n",identifier.filename.c_str(),temp_file.c_str());
+		command=strprintf("convert \"%s\" -flatten \"png32:%s\"\n",filename.c_str(),temp_file.c_str());
 	else
-		command=strprintf("convert \"%s\" \"png32:%s\"\n",identifier.filename.c_str(),temp_file.c_str());
+		command=strprintf("convert \"%s\" \"png32:%s\"\n",filename.c_str(),temp_file.c_str());
 
 	if(system(command.c_str())!=0)
 		return false;
@@ -135,9 +152,9 @@ imagemagick_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &re
 	if (pid == 0){
 		// Child process
 		if(identifier.filename.find("psd")!=String::npos)
-			execlp("convert", "convert", identifier.filename.c_str(), "-flatten", output.c_str(), (const char *)NULL);
+			execlp("convert", "convert", filename.c_str(), "-flatten", output.c_str(), (const char *)NULL);
 		else
-			execlp("convert", "convert", identifier.filename.c_str(), output.c_str(), (const char *)NULL);
+			execlp("convert", "convert", filename.c_str(), output.c_str(), (const char *)NULL);
 		// We should never reach here unless the exec failed
 		return false;
 	}
@@ -150,6 +167,10 @@ imagemagick_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &re
 #else
 	#error There are no known APIs for creating child processes
 #endif
+
+	//if any delete container tmp file
+	if(temp_container_file.size())
+		identifier.file_system->file_remove(temp_container_file);
 
 	Importer::Handle importer(Importer::open(synfig::FileSystem::Identifier(synfig::FileSystemNative::instance(), temp_file)));
 
