@@ -66,6 +66,7 @@
 #include <gtkmm/radiobuttongroup.h>
 
 #include "general.h"
+#include "modules/lyr_std/bevel.h"
 
 #endif
 
@@ -165,14 +166,14 @@ class studio::StateLasso_Context : public sigc::trackable
 	// layer types to create:
 	Gtk::Label layer_types_label;
 	Gtk::ToggleButton layer_region_togglebutton;
-	Gtk::ToggleButton layer_outline_togglebutton;
-	Gtk::ToggleButton layer_advanced_outline_togglebutton;
+	//Gtk::ToggleButton layer_outline_togglebutton;
+	//Gtk::ToggleButton layer_advanced_outline_togglebutton;
 	Gtk::HBox layer_types_box;
 
 	// blend method
-	Gtk::Label blend_label;
-	Gtk::HBox blend_box;
-	Widget_Enum blend_enum;
+	//Gtk::Label blend_label;
+	///Gtk::HBox blend_box;
+	//Widget_Enum blend_enum;
 
 	// opacity
 	Gtk::Label opacity_label;
@@ -264,8 +265,7 @@ public:
 	synfig::String get_id()const { return id_entry.get_text(); }
 	void set_id(const synfig::String& x) { return id_entry.set_text(x); }
 
-	int get_blend()const { return blend_enum.get_value(); }
-	void set_blend(int x) { return blend_enum.set_value(x); }
+	
 
 	Real get_opacity()const { return opacity_hscl.get_value(); }
 	void set_opacity(Real x) { opacity_hscl.set_value(x); }
@@ -293,11 +293,11 @@ public:
 	bool get_layer_region_flag()const { return layer_region_togglebutton.get_active(); }
 	void set_layer_region_flag(bool x) { return layer_region_togglebutton.set_active(x); }
 
-	bool get_layer_outline_flag()const { return layer_outline_togglebutton.get_active(); }
-	void set_layer_outline_flag(bool x) { return layer_outline_togglebutton.set_active(x); }
+	bool get_layer_outline_flag()const { return false; }
+	//void set_layer_outline_flag(bool x) { return layer_outline_togglebutton.set_active(x); }
 
-	bool get_layer_advanced_outline_flag()const { return layer_advanced_outline_togglebutton.get_active(); }
-	void set_layer_advanced_outline_flag(bool x) { return layer_advanced_outline_togglebutton.set_active(x); }
+	bool get_layer_advanced_outline_flag()const { return false; }
+	//void set_layer_advanced_outline_flag(bool x) { return layer_advanced_outline_togglebutton.set_active(x); }
 
 	bool get_auto_export_flag()const { return auto_export_checkbutton.get_active(); }
 	void set_auto_export_flag(bool x) { return auto_export_checkbutton.set_active(x); }
@@ -404,10 +404,6 @@ StateLasso_Context::load_settings()
 		else
 			set_id("NewDrawing");
 
-		if(settings.get_value("lasso.blend",value) && value != "")
-			set_blend(atoi(value.c_str()));
-		else
-			set_blend(0);//(int)Color::BLEND_COMPOSITE); //0 should be blend composites value
 
 		if(settings.get_value("lasso.opacity",value))
 			set_opacity(atof(value.c_str()));
@@ -444,15 +440,15 @@ StateLasso_Context::load_settings()
 		else
 			set_layer_region_flag(true);
 
-		if(settings.get_value("lasso.outline",value) && value=="0")
-			set_layer_outline_flag(false);
-		else
-			set_layer_outline_flag(true);
+		//if(settings.get_value("lasso.outline",value) && value=="0")
+		//	set_layer_outline_flag(false);
+		//else
+		//	set_layer_outline_flag(true);
 
-		if(settings.get_value("lasso.advanced_outline",value) && value=="0")
-			set_layer_advanced_outline_flag(false);
-		else
-			set_layer_advanced_outline_flag(true);
+		//if(settings.get_value("lasso.advanced_outline",value) && value=="0")
+		//	set_layer_advanced_outline_flag(false);
+		///else
+		//	set_layer_advanced_outline_flag(true);
 
 		if(settings.get_value("lasso.auto_export",value) && value=="1")
 			set_auto_export_flag(true);
@@ -525,7 +521,7 @@ StateLasso_Context::save_settings()
 	{
 		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		settings.set_value("lasso.id",get_id().c_str());
-		settings.set_value("lasso.blend",strprintf("%d",get_blend()));
+		settings.set_value("lasso.blend",strprintf("%d",19));
 		settings.set_value("lasso.opacity",strprintf("%f",(float)get_opacity()));
 		settings.set_value("lasso.bline_width", bline_width_dist.get_value().get_string());
 		settings.set_value("lasso.pressure_width",get_pressure_width_flag()?"1":"0");
@@ -646,20 +642,12 @@ StateLasso_Context::StateLasso_Context(CanvasView* canvas_view):
 
 	layer_types_box.pack_start(*layer_types_indent, Gtk::PACK_SHRINK);
 	layer_types_box.pack_start(layer_region_togglebutton, Gtk::PACK_SHRINK);
-	layer_types_box.pack_start(layer_outline_togglebutton, Gtk::PACK_SHRINK);
-	layer_types_box.pack_start(layer_advanced_outline_togglebutton, Gtk::PACK_SHRINK);
+//	layer_types_box.pack_start(layer_outline_togglebutton, Gtk::PACK_SHRINK);
+	//layer_types_box.pack_start(layer_advanced_outline_togglebutton, Gtk::PACK_SHRINK);
 
 	// 3, blend method label and dropdown list
-	blend_label.set_label(_("Blend Method:"));
-	blend_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 	SPACING(blend_gap, GAP);
-	blend_box.pack_start(blend_label, Gtk::PACK_SHRINK);
-	blend_box.pack_start(*blend_gap, Gtk::PACK_SHRINK);
-
-	blend_enum.set_param_desc(ParamDesc(Color::BLEND_COMPOSITE,"blend_method")
-		.set_local_name(_("Blend Method"))
-		.set_description(_("Defines the blend method to be used for lassos")));
-
+	
 	// 4, opacity label and slider
 	opacity_label.set_label(_("Opacity:"));
 	opacity_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
@@ -789,12 +777,7 @@ StateLasso_Context::StateLasso_Context(CanvasView* canvas_view):
 		0, 2, 3, 4, Gtk::FILL, Gtk::FILL, 0, 0
 		);
 	// 3, blend method
-	options_table.attach(blend_box,
-		0, 1, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(blend_enum,
-		1, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
+	
 	// 4, opacity
 	options_table.attach(opacity_label,
 		0, 1, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
@@ -887,8 +870,8 @@ StateLasso_Context::StateLasso_Context(CanvasView* canvas_view):
 		sigc::mem_fun(*this, &StateLasso_Context::fill_last_stroke));
 	pressure_width_checkbutton.signal_toggled().connect(
 		sigc::mem_fun(*this, &StateLasso_Context::UpdateUsePressure));
-	layer_advanced_outline_togglebutton.signal_toggled().connect(
-		sigc::mem_fun(*this, &StateLasso_Context::UpdateCreateAdvancedOutline));
+//	layer_advanced_outline_togglebutton.signal_toggled().connect(
+	//	sigc::mem_fun(*this, &StateLasso_Context::UpdateCreateAdvancedOutline));
 	localthres_spin.signal_value_changed().connect(sigc::mem_fun(*this,
 		&StateLasso_Context::UpdateSmoothness));
 	globalthres_spin.signal_value_changed().connect(sigc::mem_fun(*this,
@@ -1537,7 +1520,7 @@ StateLasso_Context::new_bline(std::list<synfig::BLinePoint> bline,std::list<synf
 				}
 				layer->set_description(get_id()+_(" Outline"));
 
-				layer->set_param("blend_method",get_blend());
+				layer->set_param("blend_method",19);
 				get_canvas_interface()->signal_layer_param_changed()(layer,"blend_method");
 
 				layer->set_param("amount",get_opacity());
@@ -1564,7 +1547,7 @@ StateLasso_Context::new_bline(std::list<synfig::BLinePoint> bline,std::list<synf
 				}
 				layer2->set_description(get_id()+_(" Advanced Outline"));
 
-				layer2->set_param("blend_method",get_blend());
+				layer2->set_param("blend_method",19);
 				get_canvas_interface()->signal_layer_param_changed()(layer2,"blend_method");
 
 				layer2->set_param("amount",get_opacity());
@@ -1604,8 +1587,11 @@ StateLasso_Context::new_bline(std::list<synfig::BLinePoint> bline,std::list<synf
 			}
 			layer->set_description(get_id()+_(" Region"));
 
-			layer->set_param("blend_method",get_blend());
+			layer->set_param("blend_method",19);
 			get_canvas_interface()->signal_layer_param_changed()(layer,"blend_method");
+                        
+                        //layer->set_param("invert",get_invert());
+                        //get_canvas_interface()->signal_layer_param_changed()(layer,"invert");
 
 			layer->set_param("amount",get_opacity());
 			get_canvas_interface()->signal_layer_param_changed()(layer,"amount");
@@ -2873,7 +2859,7 @@ StateLasso_Context::fill_last_stroke_and_unselect_other_layers()
 	if (!layer) return Smach::RESULT_ERROR;
 	layer->set_description(last_stroke_id + _(" Region"));
 
-	layer->set_param("blend_method",get_blend());
+	layer->set_param("blend_method",19);
 	get_canvas_interface()->signal_layer_param_changed()(layer,"blend_method");
 
 	layer->set_param("amount",get_opacity());
@@ -2921,8 +2907,8 @@ StateLasso_Context::toggle_layer_creation()
      get_layer_advanced_outline_flag() == 0)
   {
     if(layer_region_flag) set_layer_region_flag(true);
-    else if(layer_outline_flag) set_layer_outline_flag(true);
-    else if(layer_advanced_outline_flag) set_layer_advanced_outline_flag(true);
+  //  else if(layer_outline_flag) set_layer_outline_flag(true);
+//    else if(layer_advanced_outline_flag) set_layer_advanced_outline_flag(true);
   }
 
 	// update layer flags
