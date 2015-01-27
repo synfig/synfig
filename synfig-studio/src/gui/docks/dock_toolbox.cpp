@@ -77,7 +77,7 @@ using namespace sigc;
 
 
 Dock_Toolbox::Dock_Toolbox():
-	Dockable("toolbox",_("Toolbox"),Gtk::StockID("synfig-toolbox"))
+	Dockable("toolbox",_("Toolbox"),Gtk::StockID("synfig-about"))
 {
 	set_use_scrolled(false);
 	set_size_request(-1,-1);
