@@ -1585,13 +1585,13 @@ StateLasso_Context::new_bline(std::list<synfig::BLinePoint> bline,std::list<synf
 				group.cancel();
 				return Smach::RESULT_ERROR;
 			}
-			layer->set_description(get_id()+_(" Region"));
+			layer->set_description(_("Mask"));
 
 			layer->set_param("blend_method",19);
 			get_canvas_interface()->signal_layer_param_changed()(layer,"blend_method");
                         
-                        //layer->set_param("invert",get_invert());
-                        //get_canvas_interface()->signal_layer_param_changed()(layer,"invert");
+                        layer->set_param("invert",true);
+                        get_canvas_interface()->signal_layer_param_changed()(layer,"invert");
 
 			layer->set_param("amount",get_opacity());
 			get_canvas_interface()->signal_layer_param_changed()(layer,"amount");
