@@ -1958,6 +1958,126 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 		}
 	}
 	else
+	if (type == type_vector)
+	{
+		etl::handle<Layer_PasteCanvas> layer;
+		if (value_desc.parent_is_layer())
+			layer = etl::handle<Layer_PasteCanvas>::cast_dynamic(value_desc.get_layer());
+		if (!layer) {
+			etl::handle<Duck> duck=new Duck();
+			set_duck_value_desc(*duck, value_desc, transform_stack);
+			ValueNode_Composite::Handle blinepoint_value_node;
+			int index;
+			bool done(false);
+			if(value_desc.parent_is_linkable_value_node()
+			   &&
+			   value_desc.get_parent_value_node()->get_type() == type_bline_point)
+			{
+				blinepoint_value_node=ValueNode_Composite::Handle::cast_dynamic(value_desc.get_parent_value_node());
+				if(blinepoint_value_node)
+				{
+					index=blinepoint_value_node->get_link_index_from_name("t2");
+					if(index==value_desc.get_index())
+					{
+						BLinePoint bp=(*blinepoint_value_node)(get_time()).get(BLinePoint());
+						Vector t2=bp.get_tangent2();
+						duck->set_point(t2);
+						done=true;
+					}
+				}
+			}
+			if(!done)
+				duck->set_point(value_desc.get_value(get_time()).get(Point()));
+
+			if(value_desc.is_value_node())
+			{
+				// if the vertex is converted to 'bone influence', add the bones' ducks
+				if (ValueNode_BoneInfluence::Handle bone_influence_vertex_value_node =
+					ValueNode_BoneInfluence::Handle::cast_dynamic(value_desc.get_value_node()))
+					add_to_ducks(synfigapp::ValueDesc(bone_influence_vertex_value_node,
+													  bone_influence_vertex_value_node->get_link_index_from_name("bone_weight_list")),
+								 canvas_view, transform_stack);
+
+				// If the ValueNode can be directly manipulated,
+				// then set it as so.
+				duck->set_editable(synfigapp::is_editable(value_desc.get_value_node()));
+			}
+			else
+			{
+				//duck->set_point(value_desc.get_value().get(Point()));
+				//duck->set_name(strprintf("%x",value_desc.get_layer().get())+value_desc.get_param_name());
+				duck->set_editable(true);
+			}
+
+			// If we were passed a parameter description
+			if(param_desc)
+			{
+				if(!param_desc->get_connect().empty())
+				{
+					synfigapp::ValueDesc value_desc_origin(value_desc.get_layer(),param_desc->get_connect());
+					Duck::Handle connect_duck;
+					if(duck_map.find(calc_duck_guid(value_desc_origin, transform_stack))!=duck_map.end())
+					{
+						connect_duck=duck_map[calc_duck_guid(value_desc_origin, transform_stack)];
+					}
+					else
+					{
+						add_to_ducks(value_desc_origin,canvas_view, transform_stack);
+						connect_duck=last_duck();
+					}
+					duck->set_connect_duck(connect_duck);
+				}
+				if(!param_desc->get_box().empty())
+				{
+					synfigapp::ValueDesc value_desc_origin(value_desc.get_layer(),param_desc->get_box());
+					add_to_ducks(value_desc_origin,canvas_view, transform_stack);
+					duck->set_box_duck(last_duck());
+				}
+
+				// If we have an origin
+				if(!param_desc->get_origin().empty())
+				{
+					synfigapp::ValueDesc value_desc_origin(value_desc.get_layer(),param_desc->get_origin());
+					/*
+					duck->set_origin(value_desc_origin.get_value(get_time()).get(synfig::Point()));
+					*/
+					add_to_ducks(value_desc_origin,canvas_view, transform_stack);
+					duck->set_origin(last_duck());
+					duck->set_type(Duck::TYPE_VERTEX);
+				}
+				else
+					duck->set_type(Duck::TYPE_POSITION);
+
+				duck->set_scalar(param_desc->get_scalar());
+			}
+			else
+				duck->set_type(Duck::TYPE_POSITION);
+
+			duck->signal_edited().clear(); // value_desc.get_value_type() == type_vector:
+			duck->signal_edited().connect(
+				sigc::bind(
+					sigc::mem_fun(
+						*this,
+						&studio::Duckmatic::on_duck_changed),
+					value_desc));
+
+			duck->signal_user_click(2).connect(
+				sigc::bind(
+					sigc::bind(
+						sigc::bind(
+							sigc::mem_fun(
+								*canvas_view,
+								&studio::CanvasView::popup_param_menu),
+							false),
+						1.0f),
+					value_desc));
+
+			add_duck(duck);
+
+			return true;
+		}
+	}
+	else
 	if (type == type_transformation)
 	{
 		if (value_desc.parent_is_layer() && param_desc != NULL)
