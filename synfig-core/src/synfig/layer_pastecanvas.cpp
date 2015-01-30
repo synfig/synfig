@@ -81,7 +81,6 @@ public:
 Layer_PasteCanvas::Layer_PasteCanvas():
 	param_origin(Point()),
 	param_transformation(Transformation()),
-	param_enable_transformation(ValueBase(true)),
 	param_time_offset (Time(0)),
 	depth(0),
 	extra_reference(false)
@@ -134,11 +133,6 @@ Layer_PasteCanvas::get_param_vocab()const
 		.set_description(_("Position, rotation, skew and scale"))
 	);
 
-	ret.push_back(ParamDesc("enable_transformation")
-		.set_local_name(_("Enable Transformation"))
-		.set_description(_("Enables or disables transformation"))
-	);
-
 	ret.push_back(ParamDesc("canvas")
 		.set_local_name(_("Canvas"))
 		.set_description(_("Group content"))
@@ -184,7 +178,6 @@ Layer_PasteCanvas::set_param(const String & param, const ValueBase &value)
 {
 	IMPORT_VALUE(param_origin);
 	IMPORT_VALUE(param_transformation);
-	IMPORT_VALUE(param_enable_transformation);
 
 	// IMPORT(canvas);
 	if(param=="canvas" && value.can_get(Canvas::Handle()))
@@ -293,7 +286,6 @@ Layer_PasteCanvas::get_param(const String& param)const
 {
 	EXPORT_VALUE(param_origin);
 	EXPORT_VALUE(param_transformation);
-	EXPORT_VALUE(param_enable_transformation);
 	if (param=="canvas")
 	{
 		synfig::ValueBase ret(canvas);
