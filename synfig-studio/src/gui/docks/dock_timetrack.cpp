@@ -521,10 +521,10 @@ Dock_Timetrack::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_v
 		// Fixed size drawing areas to align the widget_timeslider and tree_view time cursors
 		// TODO ?: one align_drawingArea.(0, 1, 0, 1) modify_bg KF's color another (0, 1, 1, 2) modify_bg TS's color
 		Gtk::DrawingArea* align_drawingArea1 = Gtk::manage(new Gtk::DrawingArea);
-		align_drawingArea1->set_size_request(4,-1);
+		align_drawingArea1->set_size_request(2,-1);
 		// TODO ?: one align_drawingArea.(2, 3, 0, 1) modify_bg KF's color another (2, 3, 1, 2) modify_bg TS's color
 		Gtk::DrawingArea* align_drawingArea2 = Gtk::manage(new Gtk::DrawingArea);
-		align_drawingArea2->set_size_request(9,-1);
+		align_drawingArea2->set_size_request(4,-1);
 
 		widget_timeslider_->set_time_adjustment(canvas_view->time_adjustment());
 		widget_timeslider_->set_bounds_adjustment(canvas_view->time_window_adjustment());
@@ -558,7 +558,7 @@ ALIGN2 = align_drawingArea2
 		table_=new Gtk::Table(3,4);
 		table_->attach(*align_drawingArea1, 0, 1, 0, 2, Gtk::SHRINK, Gtk::FILL);
 		table_->attach(*widget_kf_list_, 1, 2, 0, 1, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::SHRINK);
-		table_->attach(*widget_timeslider_, 1, 2, 1, 2, Gtk::FILL|Gtk::SHRINK, Gtk::FILL|Gtk::SHRINK);
+		table_->attach(*widget_timeslider_, 1, 2, 1, 2, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::SHRINK);
 		table_->attach(*align_drawingArea2, 2, 3, 0, 2, Gtk::SHRINK, Gtk::FILL);
 		table_->attach(*scrolled, 0, 3, 2, 3, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::EXPAND);
 		table_->attach(*hscrollbar_, 0, 3, 3, 4, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::SHRINK);
