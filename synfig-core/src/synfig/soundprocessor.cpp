@@ -162,8 +162,10 @@ Time SoundProcessor::get_position() const
 
 void SoundProcessor::set_position(Time value)
 {
-	if (internal->last_track != NULL)
+	if (internal->last_track != NULL) {
 		internal->last_track->seek( (int)round(value*internal->profile.fps()) );
+		internal->last_track->set_speed(1.0);
+	}
 }
 
 bool SoundProcessor::get_playing() const
