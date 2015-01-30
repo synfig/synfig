@@ -110,6 +110,7 @@ private:
 	void update_references_in_canvas(synfig::Canvas::Handle canvas);
 	bool import_external_canvas(synfig::Canvas::Handle canvas, std::map<synfig::Canvas*, synfig::Canvas::Handle> &imported);
 	void import_external_canvases();
+	void embed_all(synfig::Canvas::Handle canvas, bool &success, bool &restart);
 
 protected:
 	Instance(etl::handle<synfig::Canvas>, etl::handle< synfig::FileContainerTemporary > container);
@@ -139,6 +140,8 @@ public:
 	etl::handle<CanvasInterface> find_canvas_interface(synfig::Canvas::Handle canvas);
 
 	synfig::Canvas::Handle get_canvas()const { return canvas_; }
+
+	bool embed_all();
 
 	//! Saves the instance to filename_
 	bool save();

@@ -59,6 +59,7 @@
 #include <synfig/target_scanline.h>
 #include "actions/valuedescexport.h"
 #include "actions/layerparamset.h"
+#include "actions/layerembed.h"
 #include <map>
 
 #include "general.h"
@@ -407,6 +408,57 @@ void Instance::save_surface(const synfig::Surface &surface, const synfig::String
 	FileSystemNative::instance()->file_remove(tmpfile);
 }
 
+void
+Instance::embed_all(synfig::Canvas::Handle canvas, bool &success, bool &restart) {
+	etl::handle<CanvasInterface> canvas_interface = find_canvas_interface(canvas);
+
+	Action::ParamList paramList;
+	paramList.add("canvas",canvas);
+	paramList.add("canvas_interface",canvas_interface);
+
+	for(synfig::Canvas::iterator i = canvas->begin(); i != canvas->end(); ++i) {
+		// process layer
+		paramList.remove_all("layer").add("layer",*i);
+		if (Action::LayerEmbed::is_candidate(paramList)) {
+			Action::Handle action(Action::LayerEmbed::create());
+			if (action) {
+				action->set_param_list(paramList);
+				if(action->is_ready()) {
+					if(perform_action(action)) {
+						restart = true;
+						return;
+					}
+				}
+			}
+			success = false;
+		}
+
+		// process sub-canvas
+		etl::handle<Layer_PasteCanvas> layer_pastecanvas =
+			etl::handle<Layer_PasteCanvas>::cast_dynamic(*i);
+		if (layer_pastecanvas) {
+			synfig::Canvas::Handle sub_canvas = layer_pastecanvas->get_sub_canvas();
+			if (sub_canvas) {
+				embed_all(sub_canvas, success, restart);
+				if (restart) return;
+			}
+		}
+	}
+}
+
+
+bool
+Instance::embed_all() {
+	bool success = true;
+	bool restart = true;
+	while(restart) {
+		restart = false;
+		embed_all(get_canvas(), success, restart);
+	}
+	return success;
+}
+
+
 bool
 Instance::save()
 {
@@ -416,6 +468,8 @@ Instance::save()
 bool
 Instance::save_as(const synfig::String &file_name)
 {
+	if (filename_extension(file_name) == ".sfg") embed_all();
+
 	save_canvas_into_container_ = false;
 	bool embed_data = false;
 	bool extract_data = false;
