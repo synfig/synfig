@@ -122,6 +122,11 @@ protected:
 public:
 	~Instance();
 
+	bool is_layer_registered_to_save(synfig::Layer::Handle layer) {
+		for(std::list<synfig::Layer::Handle>::iterator i = layers_to_save.begin(); i != layers_to_save.end(); i++)
+			if (*i == layer) return true;
+		return false;
+	}
 	void register_layer_to_save(synfig::Layer::Handle layer) { layers_to_save.push_back(layer); }
 	void unregister_layer_to_save(synfig::Layer::Handle layer)
 	{

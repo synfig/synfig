@@ -475,7 +475,7 @@ Instance::save_as(const synfig::String &file_name)
 	bool extract_data = false;
 	std::string canvas_filename = file_name;
 
-	// save all layers
+	// save bitmaps
 	std::set<Layer::Handle> layers_to_save_set;
 	for(std::list<Layer::Handle>::iterator i = layers_to_save.begin(); i != layers_to_save.end(); i++)
 		layers_to_save_set.insert(*i);

@@ -30,9 +30,13 @@
 #endif
 
 #include "layerembed.h"
-#include <synfigapp/canvasinterface.h>
 
+#include <synfig/layer_bitmap.h>
+
+#include <synfigapp/canvasinterface.h>
 #include <synfigapp/general.h>
+#include <synfigapp/instance.h>
+
 
 #endif
 
@@ -225,9 +229,18 @@ Action::LayerEmbed::prepare()
 					     + filename_extension(filename);
 		}
 
-		// try to copy file
-		if (!FileSystem::copy(file_system, absolute_filename, file_system, dir + new_filename))
-			throw Error(_("Cannot copy file into container"));
+		etl::loose_handle<synfigapp::Instance> instance =
+			get_canvas_interface()->get_instance();
+		etl::handle<Layer_Bitmap> layer_bitmap =
+			etl::handle<Layer_Bitmap>::cast_dynamic(layer_import);
+		if (layer_bitmap && instance->is_layer_registered_to_save(layer_bitmap)) {
+			// save surface
+			get_canvas_interface()->get_instance()->save_surface(layer_bitmap->surface, dir + new_filename);
+		} else {
+			// try to copy file
+			if (!FileSystem::copy(file_system, absolute_filename, file_system, dir + new_filename))
+				throw Error(_("Cannot copy file into container"));
+		}
 
 		// create action to change layer param
 		ValueBase value;
