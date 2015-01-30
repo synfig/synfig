@@ -193,7 +193,7 @@ case "$host" in
 		with_userdir="Library/Synfig"
 	;;
 	*)
-		with_userdir=".synfig"
+		with_userdir=".config/synfig"
 	;;
 esac
 ])
