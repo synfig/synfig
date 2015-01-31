@@ -3272,8 +3272,6 @@ CanvasParser::parse_canvas(xmlpp::Element *element,Canvas::Handle parent,bool in
 					continue;
 				}
 
-				String name,content;
-
 				if(!child->get_attribute("name"))
 				{
 					warning(child,_("<meta> must have a name"));
@@ -3285,8 +3283,36 @@ CanvasParser::parse_canvas(xmlpp::Element *element,Canvas::Handle parent,bool in
 					warning(child,_("<meta> must have content"));
 					continue;
 				}
+				
+				// In Synfig prior to version 1.0 we have messed decimal separator:
+				// some files use ".", but other ones use ","/
+				// Let's try to put a workaround for that.
+				std::vector<String> replacelist;
+				replacelist.push_back("background_first_color");
+				replacelist.push_back("background_second_color");
+				replacelist.push_back("background_size");
+				replacelist.push_back("grid_color");
+				replacelist.push_back("grid_size");
+				replacelist.push_back("jack_offset");
+				String content;
+				content=child->get_attribute("content")->get_value();
+				if(std::find(replacelist.begin(), replacelist.end(), child->get_attribute("name")->get_value()) != replacelist.end()) 
+				{
+					size_t index = 0;
+					while (true) {
+					     /* Locate the substring to replace. */
+					     index = content.find(",", index);
+					     if (index == string::npos) break;
 
-				canvas->set_meta_data(child->get_attribute("name")->get_value(),child->get_attribute("content")->get_value());
+					     /* Make the replacement. */
+					     content.replace(index, 1, ".");
+
+					     /* Advance index forward so the next iteration doesn't pick it up as well. */
+					     index += 1;
+					}
+					
+				}
+				canvas->set_meta_data(child->get_attribute("name")->get_value(),content);
 			}
 			else if(child->get_name()=="name")
 			{
