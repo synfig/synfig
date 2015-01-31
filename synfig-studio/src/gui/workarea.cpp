@@ -1211,7 +1211,9 @@ WorkArea::stop_updating(bool cancel)
 void
 WorkArea::save_meta_data()
 {
-	if(meta_data_lock)
+    ChangeLocale change_locale(LC_NUMERIC, "C");
+
+    if(meta_data_lock)
 		return;
 	meta_data_lock=true;
 
@@ -1289,7 +1291,11 @@ WorkArea::have_meta_data()
 void
 WorkArea::load_meta_data()
 {
-	if(meta_data_lock)
+	// we need to set locale careful, without calling functions and signals,
+	// otherwise it can affect strings in GUI
+    // ChangeLocale change_locale(LC_NUMERIC, "C");
+
+    if(meta_data_lock)
 		return;
 	meta_data_lock=true;
 
@@ -1303,20 +1309,23 @@ WorkArea::load_meta_data()
 		String::iterator iter(find(data.begin(),data.end(),' '));
 		String tmp(data.begin(),iter);
 
-		if(!tmp.empty())
-			gx=stratof(tmp);
-		else
-			synfig::error("WorkArea::load_meta_data(): Unable to parse data for \"grid_size\", which was \"%s\"",data.c_str());
+		{
+		    ChangeLocale change_locale(LC_NUMERIC, "C");
+			if(!tmp.empty())
+				gx=stratof(tmp);
+			else
+				synfig::error("WorkArea::load_meta_data(): Unable to parse data for \"grid_size\", which was \"%s\"",data.c_str());
 
-		if(iter==data.end())
-			tmp.clear();
-		else
-			tmp=String(iter+1,data.end());
+			if(iter==data.end())
+				tmp.clear();
+			else
+				tmp=String(iter+1,data.end());
 
-		if(!tmp.empty())
-			gy=stratof(tmp);
-		else
-			synfig::error("WorkArea::load_meta_data(): Unable to parse data for \"grid_size\", which was \"%s\"",data.c_str());
+			if(!tmp.empty())
+				gy=stratof(tmp);
+			else
+				synfig::error("WorkArea::load_meta_data(): Unable to parse data for \"grid_size\", which was \"%s\"",data.c_str());
+		}
 
 		set_grid_size(Vector(gx,gy));
 	}
@@ -1343,6 +1352,7 @@ WorkArea::load_meta_data()
 		}
 		else
 		{
+		    ChangeLocale change_locale(LC_NUMERIC, "C");
 			gr=atof(tokens.at(0).data());
 			gg=atof(tokens.at(1).data());
 			gb=atof(tokens.at(2).data());
@@ -1373,6 +1383,7 @@ WorkArea::load_meta_data()
 		}
 		else
 		{
+		    ChangeLocale change_locale(LC_NUMERIC, "C");
 			gr=atof(tokens.at(0).data());
 			gg=atof(tokens.at(1).data());
 			gb=atof(tokens.at(2).data());
@@ -1423,6 +1434,7 @@ WorkArea::load_meta_data()
 	{
 		String::iterator iter(find(data.begin(),data.end(),' '));
 		String guide(data.begin(),iter);
+	    ChangeLocale change_locale(LC_NUMERIC, "C");
 
 		if(!guide.empty())
 			get_guide_list_x().push_back(stratof(guide));
@@ -1440,6 +1452,7 @@ WorkArea::load_meta_data()
 	{
 		String::iterator iter(find(data.begin(),data.end(),' '));
 		String guide(data.begin(),iter);
+	    ChangeLocale change_locale(LC_NUMERIC, "C");
 
 		if(!guide.empty())
 			get_guide_list_y().push_back(stratof(guide));
@@ -1463,20 +1476,23 @@ WorkArea::load_meta_data()
 		String::iterator iter(find(data.begin(),data.end(),' '));
 		String tmp(data.begin(),iter);
 
-		if(!tmp.empty())
-			gx=stratof(tmp);
-		else
-			synfig::error("WorkArea::load_meta_data(): Unable to parse data for \"background_size\", which was \"%s\"",data.c_str());
+		{
+		    ChangeLocale change_locale(LC_NUMERIC, "C");
+			if(!tmp.empty())
+				gx=stratof(tmp);
+			else
+				synfig::error("WorkArea::load_meta_data(): Unable to parse data for \"background_size\", which was \"%s\"",data.c_str());
 
-		if(iter==data.end())
-			tmp.clear();
-		else
-			tmp=String(iter+1,data.end());
+			if(iter==data.end())
+				tmp.clear();
+			else
+				tmp=String(iter+1,data.end());
 
-		if(!tmp.empty())
-			gy=stratof(tmp);
-		else
-			synfig::error("WorkArea::load_meta_data(): Unable to parse data for \"background_size\", which was \"%s\"",data.c_str());
+			if(!tmp.empty())
+				gy=stratof(tmp);
+			else
+				synfig::error("WorkArea::load_meta_data(): Unable to parse data for \"background_size\", which was \"%s\"",data.c_str());
+		}
 
 		set_background_size(Vector(gx,gy));
 	}
@@ -1503,6 +1519,7 @@ WorkArea::load_meta_data()
 		}
 		else
 		{
+		    ChangeLocale change_locale(LC_NUMERIC, "C");
 			gr=atof(tokens.at(0).data());
 			gg=atof(tokens.at(1).data());
 			gb=atof(tokens.at(2).data());
@@ -1533,6 +1550,7 @@ WorkArea::load_meta_data()
 		}
 		else
 		{
+		    ChangeLocale change_locale(LC_NUMERIC, "C");
 			gr=atof(tokens.at(0).data());
 			gg=atof(tokens.at(1).data());
 			gb=atof(tokens.at(2).data());

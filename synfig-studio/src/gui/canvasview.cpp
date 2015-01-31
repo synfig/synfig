@@ -4154,7 +4154,12 @@ CanvasView::on_audio_file_change(const std::string &f)
 void
 CanvasView::on_audio_offset_change(const synfig::Time &t)
 {
-	canvas_interface()->set_meta_data("audiooffset",t.get_string());
+    String s;
+    {
+    	ChangeLocale change_locale(LC_NUMERIC, "C");
+    	s = t.get_string();
+    }
+	canvas_interface()->set_meta_data("audiooffset",s);
 }
 
 void
@@ -4185,7 +4190,11 @@ CanvasView::on_audio_file_notify()
 void
 CanvasView::on_audio_offset_notify()
 {
-	Time t(get_canvas()->get_meta_data("audiooffset"),get_canvas()->rend_desc().get_frame_rate());
+	Time t;
+	{
+		ChangeLocale change_locale(LC_NUMERIC, "C");
+		t = Time(get_canvas()->get_meta_data("audiooffset"),get_canvas()->rend_desc().get_frame_rate());
+	}
 	audio->set_offset(t);
 	sound_dialog->set_offset(t);
 	disp_audio->queue_draw();
