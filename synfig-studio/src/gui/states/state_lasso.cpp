@@ -59,6 +59,8 @@
 #include "workarea.h"
 #include "app.h"
 
+#include "../synfigapp/actions/layerencapsulate.h"
+
 #include <utility>
 #include <sigc++/connection.h>
 
@@ -1687,6 +1689,22 @@ StateLasso_Context::new_bline(std::list<synfig::BLinePoint> bline,std::list<synf
 			layer_list.push_back(layer2);
 		}
 		get_canvas_view()->get_selection_manager()->set_selected_layers(layer_list);
+                
+                synfigapp::Action::Handle action(synfigapp::Action::create("LayerEncapsulate"));
+               
+                action->set_param("layer",*(layer_list.rbegin()));
+                layer_list.pop_back();
+                
+                std::list<synfig::Layer::Handle>::iterator iter;
+                for (iter=layer_list.begin();iter!=layer_list.end();++iter)
+                    action->set_param("layer",*iter);
+                
+                action->set_param("description","mask");
+                action->set_param("canvas_interface",get_canvas_interface());
+                action->set_param("canvas",get_canvas_interface()->get_canvas());
+                get_canvas_interface()->get_instance()->perform_action(action);
+                
+                
 	}
 	increment_id();
 	return Smach::RESULT_ACCEPT;
