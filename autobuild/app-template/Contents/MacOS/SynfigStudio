@@ -14,7 +14,7 @@ cd - > /dev/null
 VERSION=_VERSION_
 LNDIR=/tmp/skl/SynfigStudio
 
-rm -f "$LNDIR" || true
+rm -rf "$LNDIR" || true
 mkdir -p /tmp/skl
 chmod a+w /tmp/skl
 ln -s "$APPDIR" "$LNDIR"

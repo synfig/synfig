@@ -39,7 +39,7 @@ set -e
 export RELEASE=1
 export BUILDROOT_VERSION=1
 
-BUILDDIR=~/src/macports/SynfigStudio-app
+BUILDDIR=~/SynfigStudio-build
 LNKDIR=/tmp/skl/SynfigStudio
 MACPORTS=$LNKDIR/Contents/Resources
 MPSRC=MacPorts-2.2.1
@@ -58,7 +58,10 @@ export LD_LIBRARY_PATH=${MACPORTS}/lib:${SYNFIG_PREFIX}/lib:${SYNFIG_PREFIX}/lib
 #export ACLOCAL_FLAGS="-I ${SYNFIG_PREFIX}/share/aclocal -I ${MACPORTS}/share/aclocal"
 #export CPPFLAGS="-fpermissive -I${MACPORTS}/include -I${SYNFIG_PREFIX}/include"
 export CPPFLAGS="-I${MACPORTS}/include -I${SYNFIG_PREFIX}/include"
+export CFLAGS="-arch i386 -arch x86_64"
+export CXXFLAGS="-arch i386 -arch x86_64"
 export LDFLAGS="-L${MACPORTS}/lib -L${SYNFIG_PREFIX}/lib"
+export LDFLAGS="$LDFLAGS -arch i386 -arch x86_64"
 
 if [ `whoami` != "root" ]; then
 	echo "Please use sudo to run this script. Aborting."
@@ -106,8 +109,10 @@ prepare()
 	test -d /tmp/skl || mkdir -p /tmp/skl
 	chmod a+w /tmp/skl
 	test -L $LNKDIR && rm $LNKDIR
-	ln -s "$BUILDDIR" $LNKDIR
-	chmod a+w $LNKDIR
+	test -L $MACPORTS && rm $MACPORTS
+	mkdir -p `dirname $MACPORTS`
+	ln -s "$BUILDDIR" $MACPORTS
+	chmod a+w $MACPORTS
 	echo
 }
 
@@ -191,7 +196,7 @@ mkdeps()
 	sed -i "" -e "s|/Applications/MacPorts|$MACPORTS/tmp/app|g" "$MACPORTS/etc/macports/macports.conf" || true
 	
 	#echo "+universal +no_x11 +quartz" > $MACPORTS/etc/macports/variants.conf
-	echo "+no_x11 +quartz -x11 +nonfree" > $MACPORTS/etc/macports/variants.conf
+	echo "+universal +no_x11 +quartz -x11 +nonfree" > $MACPORTS/etc/macports/variants.conf
 	
 	pushd ${SCRIPTPATH}/macports
 	portindex
@@ -248,6 +253,8 @@ mkdeps()
 mketl()
 {
 	# building ETL
+	export CFLAGS="-arch i386 -arch x86_64"
+	export CXXFLAGS="-arch i386 -arch x86_64"
 	pushd ${SYNFIG_REPO_DIR}/ETL
 	rm -f aclocal.m4
 	autoreconf --install --force
@@ -266,13 +273,13 @@ mksynfig()
 {
 	# building synfig-core
 	pushd ${SYNFIG_REPO_DIR}/synfig-core
-	export CXXFLAGS=-I${SYNFIG_PREFIX}/include/ImageMagick
+	export CXXFLAGS="$CXXFLAGS -I${SYNFIG_PREFIX}/include/ImageMagick"
 	make clean || true
 	libtoolize --ltdl --copy --force
 	sed -i 's/^AC_CONFIG_SUBDIRS(libltdl)$/m4_ifdef([_AC_SEEN_TAG(libltdl)], [], [AC_CONFIG_SUBDIRS(libltdl)])/' configure.ac || true
 	sed -i 's/^# AC_CONFIG_SUBDIRS(libltdl)$/m4_ifdef([_AC_SEEN_TAG(libltdl)], [], [AC_CONFIG_SUBDIRS(libltdl)])/' configure.ac || true
 	autoreconf --install --force
-	/bin/sh ./configure --prefix=${SYNFIG_PREFIX} --includedir=${SYNFIG_PREFIX}/include --disable-static --enable-shared --with-magickpp --without-libavcodec --with-boost=${MACPORTS} ${DEBUG}
+	/bin/sh ./configure --disable-dependency-tracking --prefix=${SYNFIG_PREFIX} --includedir=${SYNFIG_PREFIX}/include --disable-static --enable-shared --with-magickpp --without-libavcodec --with-boost=${MACPORTS} ${DEBUG}
 	make -j$JOBS install
 	popd
 }
@@ -289,7 +296,7 @@ mksynfigstudio()
 	make clean || true
 	CONFIGURE_PACKAGE_OPTIONS='--disable-update-mimedb'
 	/bin/sh ./bootstrap.sh
-	/bin/sh ./configure --prefix=${SYNFIG_PREFIX} --includedir=${SYNFIG_PREFIX}/include --disable-static --enable-shared $DEBUG $CONFIGURE_PACKAGE_OPTIONS
+	/bin/sh ./configure --disable-dependency-tracking --prefix=${SYNFIG_PREFIX} --includedir=${SYNFIG_PREFIX}/include --disable-static --enable-shared $DEBUG $CONFIGURE_PACKAGE_OPTIONS
 	make -j$JOBS install
 
 	for n in AUTHORS COPYING NEWS README
@@ -411,12 +418,8 @@ mkdmg()
 	#echo Synfig version is: $VERSION
 
 	ARCH=`uname -m`
-	#if [ $OSXVER -lt 9 ]; then
-	#  FINAL_FILENAME=synfigstudio_"$VERSION"_tiger_"$ARCH"
-	#else
-	#  FINAL_FILENAME=synfigstudio_"$VERSION"_leopard_"$ARCH"
-	#fi
 	FINAL_FILENAME=synfigstudio-"$VERSION"."$ARCH"
+	FINAL_FILENAME=synfigstudio-"$VERSION"
 
 	VOLNAME="SynfigStudio"
 	TRANSITORY_FILENAME="synfig-wla.sparseimage"
@@ -427,7 +430,7 @@ mkdmg()
 
 	echo "Creating and attaching disk image..."
 	[ ! -e "$TRANSITORY_FILENAME" ] || rm -rf "$TRANSITORY_FILENAME"
-	/usr/bin/hdiutil create -type SPARSE -size 2048m -fs HFS+ -volname "$VOLNAME" -attach "$TRANSITORY_FILENAME"
+	/usr/bin/hdiutil create -type SPARSE -size 3072m -fs HFS+ -volname "$VOLNAME" -attach "$TRANSITORY_FILENAME"
 
 	echo "Copying files to disk image..."
 	cp -R $APPDIR /Volumes/"$VOLNAME"/SynfigStudio.app
