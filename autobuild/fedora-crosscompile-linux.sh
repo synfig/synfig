@@ -62,6 +62,7 @@ export EMAIL='root@synfig.org'
 SOURCES_URL="rsync://download.tuxfamily.org/pub/synfig/packages/sources/base"
 
 # Bundled libraries
+LIBJPEG_VERSION=1.3.1
 LIBSIGCPP_VERSION=2.2.10
 GLEW_VERSION=1.5.1
 CAIROMM_VERSION=1.10.0
@@ -218,7 +219,6 @@ mkprefix()
 	DEB_LIST_MINIMAL="\
 			build-essential \
 			libpng12-dev \
-			libjpeg62-dev \
 			libfreetype6-dev \
 			libxml2-dev \
 			libtiff4-dev \
@@ -812,6 +812,35 @@ if ! pkg-config ${PKG_NAME}-2.4 --exact-version=${PKG_VERSION}  --print-errors; 
 	make install
 	cd ..
 	popd
+fi
+}
+
+mklibjpeg()
+{
+PKG_NAME=libjpeg-turbo
+PKG_VERSION=${LIBJPEG_VERSION}
+TAREXT=gz
+
+if [ ! -f ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done ]; then
+    cd $CACHEDIR
+    [ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://sourceforge.net/projects/libjpeg-turbo/files/${PKG_VERSION}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    cd $SRCPREFIX
+    if [ ! -d ${PKG_NAME}-${PKG_VERSION} ]; then
+        tar -xzf $CACHEDIR/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    fi
+    cd ${PKG_NAME}-${PKG_VERSION}
+    [ ! -e config.cache ] || rm config.cache
+    ./configure \
+		--host=${HOST} \
+		--prefix=${PREFIX} \
+		--includedir=${PREFIX}/include \
+		--disable-static --enable-shared
+
+    make -j$THREADS
+    make install -j$THREADS
+    
+    touch ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done
+
 fi
 }
 
@@ -2028,6 +2057,7 @@ mkall()
 	mkgettext
 	
 	# system libraries
+	mklibjpeg
 	mkglib
 	mkharfbuzz
 	mkfontconfig
