@@ -255,6 +255,8 @@ mkdeps()
 	pushd $MACPORTS/bin/ > /dev/null
 	ln -sf python3.3 python3
 	popd > /dev/null
+	
+	cp ${SCRIPTPATH}/gtk-3.0/settings.ini ${MACPORTS}/etc/gtk-3.0/
 
 }
 
