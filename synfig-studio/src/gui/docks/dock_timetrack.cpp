@@ -97,14 +97,15 @@ public:
 
 		{	// --- T I M E   T R A C K --------------------------------------------
 			Gtk::TreeView::Column* column = Gtk::manage( new Gtk::TreeView::Column(_("Time Track")) );
+			Gtk::TreeView::Column* column2 = Gtk::manage( new Gtk::TreeView::Column("Align") );
 
 			// Set up the value-node cell-renderer
 			cellrenderer_time_track=LayerParamTreeStore::add_cell_renderer_value_node(column);
 			cellrenderer_time_track->property_mode()=Gtk::CELL_RENDERER_MODE_ACTIVATABLE;
 			cellrenderer_time_track->signal_waypoint_clicked_cellrenderer().connect(sigc::mem_fun(*this, &TimeTrackView::on_waypoint_clicked_timetrackview));
 			cellrenderer_time_track->signal_waypoint_changed().connect(sigc::mem_fun(*this, &TimeTrackView::on_waypoint_changed) );
-			column->add_attribute(cellrenderer_time_track->property_value_desc(), model.value_desc);
-			column->add_attribute(cellrenderer_time_track->property_canvas(), model.canvas);
+			//column->add_attribute(cellrenderer_time_track->property_value_desc(), model.value_desc);
+			//column->add_attribute(cellrenderer_time_track->property_canvas(), model.canvas);
 			//column->add_attribute(cellrenderer_time_track->property_visible(), model.is_value_node);
 
 			//column->pack_start(*cellrenderer_time_track);
@@ -113,27 +114,32 @@ public:
 			// to align the rows with params dock when the text is taller than value_type icons height
 			Gtk::CellRendererText* text_cellrenderer = Gtk::manage( new Gtk::CellRendererText() );
 			text_cellrenderer->property_attributes()=attr_list;
-			column->pack_end(*text_cellrenderer,false);
-			text_cellrenderer->set_fixed_size (0,-1);
+			column2->pack_end(*text_cellrenderer,false);
+			text_cellrenderer->set_fixed_size (1,-1);
 
 			// Add a fixed size (1pixel widht, same height than value_type icon) empty (alpha) icon
 			// to align the rows with params dock when the text is smaller than value_type icons height
 			Gtk::CellRendererPixbuf* icon_cellrenderer = Gtk::manage( new Gtk::CellRendererPixbuf() );
-			column->pack_end(*icon_cellrenderer,false);
 			Glib::RefPtr<Gdk::Pixbuf> pixbuf;
 			pixbuf=Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-utils_timetrack_align"),Gtk::ICON_SIZE_SMALL_TOOLBAR);
 			icon_cellrenderer->property_pixbuf() = pixbuf;
-			icon_cellrenderer->set_fixed_size (0,-1);
+			column2->pack_end(*icon_cellrenderer,false);
+			icon_cellrenderer->set_fixed_size(1,-1);
 
-			// Finish setting up the column
+			// Finish setting up the columns
 			column->set_reorderable();
 			column->set_sizing(Gtk::TREE_VIEW_COLUMN_AUTOSIZE);
 			column->set_resizable();
+			column->set_expand(true);
 // Commented during Align rows fixing
 // http://www.synfig.org/issues/thebuggenie/synfig/issues/161
 // 			column->set_min_width(200);
+			
+			column2->set_resizable();
+			column2->set_fixed_width(1);
 
 			append_column(*column);
+			append_column(*column2);
 		}
 		set_rules_hint();
 
