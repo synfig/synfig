@@ -205,6 +205,7 @@ mkdeps()
 		echo "+universal +no_x11 +quartz -x11 +nonfree" > $MACPORTS/etc/macports/variants.conf
 	else
 		echo "+no_x11 +quartz -x11 +nonfree" > $MACPORTS/etc/macports/variants.conf
+	fi
 	
 	pushd ${SCRIPTPATH}/macports
 	portindex
@@ -335,6 +336,7 @@ mkapp()
 	[ ! -e $DIR/SynfigStudio.app ] || rm -rf $DIR/SynfigStudio.app
 
 	cp -R "$SCRIPTPATH/app-template" "$DIR/SynfigStudio-new-app"
+	mv $DIR/SynfigStudio-new-app/Contents/MacOS/synfigstudio $DIR/SynfigStudio-new-app/Contents/MacOS/SynfigStudio || true
 
 	#cd "$SCRIPTPATH"/LauncherCode
 	#xcodebuild -configuration Deployment
@@ -384,23 +386,6 @@ mkapp()
 	echo cleaning up locales ...
 	find locale \( \! -name "gtk*" -and \! -name "synfig*" \! -name "gutenprint*" \) -delete
 
-	if [ $OS -eq 9 -o $OS -eq 10 ]; then
-		cat << EOF >> "$SYNFIGAPP/etc/gtk-2.0/gtkrc"
-# This is the formula to calculate the font size for GIMP's menus
-# font_size = (72 / X11_dpi) * 13
-#
-# X11_dpi is the dpi value your X11 is set to. Since 10.5.7 this is by default: 96 dpi
-# to change the dpi setting open Terminal.app and type
-#     defaults write org.x.X11 dpi -int <new-dpi-value>
-# BTW, the default font size for Mac OS X is 13 pixel.
-#
-# X11 set to 96 dpi
-# gtk-font-name="Lucida Grande 9.8"
-# X11 set to 113 dpi 
-# gtk-font-name = "Lucida Grande 8.3"
-
-EOF
-	fi
 
 	# app bundle files
 	echo "*** Please do _NOT_ delete this file. The file script depends on it. ***" > "$SYNFIGAPP/v$VERSION"
@@ -494,8 +479,10 @@ get_version_release_string()
 		#fi
 		VERSION=${VERSION%%-*}
 	fi
-	BREED=`echo $BREED | tr _ . | tr - .`	# No "-" or "_" characters, becuse RPM and DEB complain
-	BREED=.$BREED
+	if [ ! -z $BREED ]; then 
+		BREED=`echo $BREED | tr _ . | tr - .`	# No "-" or "_" characters, becuse RPM and DEB complain
+		BREED=.$BREED
+	fi
 	REVISION=`git show --pretty=format:%ci HEAD |  head -c 10 | tr -d '-'`
 	echo "$VERSION-$REVISION$BREED.$RELEASE"
 	popd >/dev/null
