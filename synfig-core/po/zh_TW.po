@@ -8,19 +8,19 @@ msgstr ""
 "Project-Id-Version: Synfig\n"
 "Report-Msgid-Bugs-To: http://www.synfig.org/issues/thebuggenie/synfig\n"
 "POT-Creation-Date: 2015-02-03 14:00+0700\n"
-"PO-Revision-Date: 2015-01-30 14:06+0000\n"
-"Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
-"Language-Team: Catalan (http://www.transifex.com/projects/p/synfig/language/ca/)\n"
+"PO-Revision-Date: 2015-01-31 18:21+0000\n"
+"Last-Translator: Loren Li <loren.tw@gmail.com>\n"
+"Language-Team: Chinese (Taiwan) (http://www.transifex.com/projects/p/synfig/language/zh_TW/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ca\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: zh_TW\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:66
 #: src/modules/lyr_freetype/lyr_freetype.cpp:569
 msgid "Text"
-msgstr ""
+msgstr "文字"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:67
 #: src/modules/lyr_std/import.cpp:61 src/modules/lyr_std/stroboscope.cpp:61
@@ -29,11 +29,11 @@ msgstr ""
 #: src/synfig/layer_duplicate.cpp:57 src/synfig/layer_skeleton.cpp:55
 #: src/synfig/layer_switch.cpp:59
 msgid "Other"
-msgstr "Un altre"
+msgstr "其他"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:97
 msgid "Text Layer"
-msgstr ""
+msgstr "文字圖層"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:398
 msgid "unable to initialize"
@@ -56,70 +56,70 @@ msgstr ""
 #: src/modules/mod_geometry/rectangle.cpp:138 src/synfig/layer_shape.cpp:1225
 #: src/synfig/layer_solidcolor.cpp:114 src/synfig/paramdesc.cpp:83
 msgid "Color"
-msgstr "Color"
+msgstr "色彩"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:576
 msgid "Color of the text"
-msgstr ""
+msgstr "文字顏色"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:580
 msgid "Font Family"
-msgstr ""
+msgstr "字型"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:585
 msgid "Style"
-msgstr ""
+msgstr "樣式"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:587
 #: src/modules/lyr_freetype/lyr_freetype.cpp:597
 #: src/synfig/valuenode_derivative.cpp:379
 msgid "Normal"
-msgstr ""
+msgstr "一般"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:588
 msgid "Oblique"
-msgstr ""
+msgstr "Oblique"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:589
 msgid "Italic"
-msgstr ""
+msgstr "斜體字"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:593
 #: src/synfig/valuenode_composite.cpp:817
 msgid "Weight"
-msgstr ""
+msgstr "Weight"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:595
 msgid "Ultralight"
-msgstr ""
+msgstr "Ultralight"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:596
 msgid "light"
-msgstr ""
+msgstr "light"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:598
 msgid "Bold"
-msgstr ""
+msgstr "粗體字"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:599
 msgid "Ultrabold"
-msgstr ""
+msgstr "Ultrabold"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:600
 msgid "Heavy"
-msgstr ""
+msgstr "Heavy"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:603
 msgid "Horizontal Spacing"
-msgstr ""
+msgstr "Horizontal Spacing"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:604
 msgid "Describes how close glyphs are horizontally"
-msgstr ""
+msgstr "Describes how close glyphs are horizontally"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:608
 msgid "Vertical Spacing"
-msgstr ""
+msgstr "Vertical Spacing"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:609
 msgid "Describes how close lines of text are vertically"
@@ -132,19 +132,19 @@ msgstr ""
 #: src/modules/mod_geometry/checkerboard.cpp:154
 #: src/modules/mod_noise/distort.cpp:227 src/modules/mod_noise/noise.cpp:276
 msgid "Size"
-msgstr ""
+msgstr "大小"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:614
 msgid "Size of the text"
-msgstr ""
+msgstr "文字大小"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:621
 msgid "Orientation"
-msgstr ""
+msgstr "方向"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:622
 msgid "Text Orientation"
-msgstr ""
+msgstr "文字方向"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:627
 #: src/modules/lyr_std/curvewarp.cpp:398 src/modules/lyr_std/insideout.cpp:162
@@ -159,19 +159,19 @@ msgstr ""
 #: src/synfig/layer_shape.cpp:1229 src/synfig/valuenode_bone.cpp:597
 #: src/synfig/valuenode_composite.cpp:692 src/synfig/valuenode_dynamic.cpp:241
 msgid "Origin"
-msgstr "Origen"
+msgstr "原點"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:628
 msgid "Text Position"
-msgstr ""
+msgstr "文字位置"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:632
 msgid "Font"
-msgstr ""
+msgstr "字型"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:633
 msgid "Filename of the font to use"
-msgstr ""
+msgstr "要使用的字型檔案名稱"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:640
 msgid "Kerning"
@@ -193,7 +193,7 @@ msgstr ""
 #: src/modules/lyr_std/shade.cpp:645 src/modules/mod_geometry/circle.cpp:165
 #: src/synfig/layer_shape.cpp:1232
 msgid "Invert"
-msgstr "Inverteix"
+msgstr "反轉"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:716
 msgid "No face loaded, no text will be rendered."
@@ -218,98 +218,98 @@ msgstr ""
 #: src/modules/lyr_std/bevel.cpp:69 src/modules/mod_example/filledrect.cpp:157
 #: src/modules/mod_geometry/advanced_outline.cpp:1172
 msgid "Bevel"
-msgstr ""
+msgstr "斜邊"
 
 #: src/modules/lyr_std/bevel.cpp:70 src/modules/lyr_std/shade.cpp:69
 msgid "Stylize"
-msgstr ""
+msgstr "風格化"
 
 #: src/modules/lyr_std/bevel.cpp:626 src/modules/lyr_std/shade.cpp:634
 #: src/modules/mod_filter/blur.cpp:419
 #: src/modules/mod_filter/halftone2.cpp:174
 msgid "Type"
-msgstr "Tipus"
+msgstr "類型"
 
 #: src/modules/lyr_std/bevel.cpp:627 src/modules/lyr_std/shade.cpp:635
 #: src/modules/mod_filter/blur.cpp:420
 msgid "Type of blur to use"
-msgstr ""
+msgstr "使用的模糊類型"
 
 #: src/modules/lyr_std/bevel.cpp:629 src/modules/lyr_std/shade.cpp:637
 #: src/modules/mod_filter/blur.cpp:422 src/synfig/layer_shape.cpp:1245
 msgid "Box Blur"
-msgstr ""
+msgstr "箱型模糊"
 
 #: src/modules/lyr_std/bevel.cpp:630 src/modules/lyr_std/shade.cpp:638
 #: src/modules/mod_filter/blur.cpp:423 src/synfig/layer_shape.cpp:1246
 msgid "Fast Gaussian Blur"
-msgstr ""
+msgstr "快速高斯模糊"
 
 #: src/modules/lyr_std/bevel.cpp:631 src/modules/lyr_std/shade.cpp:639
 #: src/modules/mod_filter/blur.cpp:424 src/synfig/layer_shape.cpp:1247
 msgid "Cross-Hatch Blur"
-msgstr ""
+msgstr "交叉模糊"
 
 #: src/modules/lyr_std/bevel.cpp:632 src/modules/lyr_std/shade.cpp:640
 #: src/modules/mod_filter/blur.cpp:425 src/synfig/layer_shape.cpp:1248
 msgid "Gaussian Blur"
-msgstr ""
+msgstr "高斯模糊"
 
 #: src/modules/lyr_std/bevel.cpp:633 src/modules/lyr_std/shade.cpp:641
 #: src/modules/mod_filter/blur.cpp:426 src/synfig/layer_shape.cpp:1249
 msgid "Disc Blur"
-msgstr ""
+msgstr "圓盤模糊r"
 
 #: src/modules/lyr_std/bevel.cpp:637
 msgid "Hi-Color"
-msgstr ""
+msgstr "高彩"
 
 #: src/modules/lyr_std/bevel.cpp:640
 msgid "Lo-Color"
-msgstr ""
+msgstr "低彩"
 
 #: src/modules/lyr_std/bevel.cpp:643
 msgid "Light Angle"
-msgstr ""
+msgstr "燈光角度"
 
 #: src/modules/lyr_std/bevel.cpp:647
 msgid "Depth of Bevel"
-msgstr ""
+msgstr "斜邊深度"
 
 #: src/modules/lyr_std/bevel.cpp:651
 msgid "Softness"
-msgstr ""
+msgstr "柔和"
 
 #: src/modules/lyr_std/bevel.cpp:654
 msgid "Use Luma"
-msgstr "Luma"
+msgstr "使用亮度"
 
 #: src/modules/lyr_std/bevel.cpp:657
 msgid "Solid"
-msgstr ""
+msgstr "實體"
 
 #: src/modules/lyr_std/booleancurve.cpp:107
 msgid "Region Set"
-msgstr ""
+msgstr "區域集合"
 
 #: src/modules/lyr_std/booleancurve.cpp:108
 msgid "Set of regions to combine"
-msgstr ""
+msgstr "區域結合的集合"
 
 #: src/modules/lyr_std/clamp.cpp:55 src/tool/printing_functions.cpp:226
 msgid "Clamp"
-msgstr ""
+msgstr "鉗"
 
 #: src/modules/lyr_std/clamp.cpp:56 src/modules/mod_filter/colorcorrect.cpp:57
 #: src/modules/mod_filter/halftone2.cpp:60
 #: src/modules/mod_filter/halftone3.cpp:60
 #: src/modules/mod_filter/lumakey.cpp:60
 msgid "Filters"
-msgstr ""
+msgstr "濾鏡"
 
 #: src/modules/lyr_std/clamp.cpp:162
 msgid "Invert Negative"
-msgstr ""
+msgstr "負片反轉"
 
 #: src/modules/lyr_std/clamp.cpp:166
 msgid "Clamp Ceiling"
@@ -337,14 +337,14 @@ msgstr ""
 
 #: src/modules/lyr_std/curvewarp.cpp:56
 msgid "Curve Warp"
-msgstr ""
+msgstr "曲線彎曲"
 
 #: src/modules/lyr_std/curvewarp.cpp:57 src/modules/lyr_std/insideout.cpp:56
 #: src/modules/lyr_std/sphere_distort.cpp:75
 #: src/modules/lyr_std/stretch.cpp:58 src/modules/lyr_std/twirl.cpp:57
 #: src/modules/lyr_std/warp.cpp:58 src/modules/mod_noise/distort.cpp:59
 msgid "Distortions"
-msgstr ""
+msgstr "扭曲"
 
 #: src/modules/lyr_std/curvewarp.cpp:399
 msgid "Position of the destiny Spline line"
@@ -361,7 +361,7 @@ msgstr ""
 #: src/synfig/valuenode_repeat_gradient.cpp:213
 #: src/synfig/valuenode_stripes.cpp:204 src/tool/printing_functions.cpp:117
 msgid "Width"
-msgstr ""
+msgstr "寬度"
 
 #: src/modules/lyr_std/curvewarp.cpp:404
 msgid "How much is expanded the result perpendicular to the source line"
@@ -369,7 +369,7 @@ msgstr ""
 
 #: src/modules/lyr_std/curvewarp.cpp:407
 msgid "Start Point"
-msgstr ""
+msgstr "起始點"
 
 #: src/modules/lyr_std/curvewarp.cpp:409
 msgid "First point of the source line"
@@ -377,7 +377,7 @@ msgstr ""
 
 #: src/modules/lyr_std/curvewarp.cpp:412
 msgid "End Point"
-msgstr ""
+msgstr "結束點"
 
 #: src/modules/lyr_std/curvewarp.cpp:413
 msgid "Final point of the source line"
@@ -390,7 +390,7 @@ msgstr ""
 #: src/modules/mod_gradient/curvegradient.cpp:559
 #: src/modules/mod_particle/plant.cpp:424
 msgid "Vertices"
-msgstr ""
+msgstr "頂點"
 
 #: src/modules/lyr_std/curvewarp.cpp:419
 msgid "List of Spline Points where the source line is curved to"
@@ -400,7 +400,7 @@ msgstr ""
 #: src/modules/mod_geometry/advanced_outline.cpp:1189
 #: src/modules/mod_gradient/curvegradient.cpp:580
 msgid "Fast"
-msgstr ""
+msgstr "快速"
 
 #: src/modules/lyr_std/curvewarp.cpp:423
 #: src/modules/mod_gradient/curvegradient.cpp:581
@@ -409,7 +409,7 @@ msgstr ""
 
 #: src/modules/lyr_std/import.cpp:60
 msgid "Import Image"
-msgstr "Importa la imatge"
+msgstr "匯入影像"
 
 #: src/modules/lyr_std/import.cpp:161 src/modules/lyr_std/import.cpp:218
 #, c-format
@@ -418,15 +418,15 @@ msgstr ""
 
 #: src/modules/lyr_std/import.cpp:317 src/modules/mod_svg/layer_svg.cpp:107
 msgid "Filename"
-msgstr ""
+msgstr "檔案名稱"
 
 #: src/modules/lyr_std/import.cpp:318
 msgid "File to import"
-msgstr ""
+msgstr "用來匯入的檔案"
 
 #: src/modules/lyr_std/import.cpp:322 src/synfig/layer_pastecanvas.cpp:142
 msgid "Time Offset"
-msgstr ""
+msgstr "時間位移"
 
 #: src/modules/lyr_std/import.cpp:323
 msgid "Time Offset to apply to the imported file"
@@ -434,7 +434,7 @@ msgstr ""
 
 #: src/modules/lyr_std/insideout.cpp:55
 msgid "Inside Out"
-msgstr ""
+msgstr "裡外翻轉"
 
 #: src/modules/lyr_std/insideout.cpp:163
 msgid "Defines the where the center will be"
@@ -442,93 +442,93 @@ msgstr ""
 
 #: src/modules/lyr_std/julia.cpp:56
 msgid "Julia Set"
-msgstr ""
+msgstr "Julia 集合"
 
 #: src/modules/lyr_std/julia.cpp:57 src/modules/lyr_std/mandelbrot.cpp:57
 msgid "Fractals"
-msgstr ""
+msgstr "分解圖形"
 
 #: src/modules/lyr_std/julia.cpp:335
 msgid "Inside Color"
-msgstr ""
+msgstr "裡外翻轉"
 
 #: src/modules/lyr_std/julia.cpp:336
 msgid "Color of the Set"
-msgstr ""
+msgstr "色彩集合"
 
 #: src/modules/lyr_std/julia.cpp:339
 msgid "Outside Color"
-msgstr ""
+msgstr "外框顏色"
 
 #: src/modules/lyr_std/julia.cpp:340
 msgid "Color outside the Set"
-msgstr ""
+msgstr "外框顏色集合"
 
 #: src/modules/lyr_std/julia.cpp:343
 msgid "Color Shift"
-msgstr ""
+msgstr "色彩位移"
 
 #: src/modules/lyr_std/julia.cpp:346 src/modules/lyr_std/mandelbrot.cpp:219
 msgid "Iterations"
-msgstr ""
+msgstr "迭代"
 
 #: src/modules/lyr_std/julia.cpp:349
 msgid "Seed Point"
-msgstr ""
+msgstr "種子點"
 
 #: src/modules/lyr_std/julia.cpp:352 src/modules/lyr_std/mandelbrot.cpp:222
 msgid "Bailout ValueBase"
-msgstr ""
+msgstr "緊急基礎值"
 
 #: src/modules/lyr_std/julia.cpp:356 src/modules/lyr_std/mandelbrot.cpp:232
 #: src/modules/lyr_std/twirl.cpp:130
 msgid "Distort Inside"
-msgstr ""
+msgstr "內部歪曲"
 
 #: src/modules/lyr_std/julia.cpp:359 src/modules/lyr_std/mandelbrot.cpp:236
 msgid "Shade Inside"
-msgstr ""
+msgstr "內部陰影"
 
 #: src/modules/lyr_std/julia.cpp:362 src/modules/lyr_std/mandelbrot.cpp:240
 msgid "Solid Inside"
-msgstr ""
+msgstr "內部實體"
 
 #: src/modules/lyr_std/julia.cpp:365 src/modules/lyr_std/mandelbrot.cpp:244
 msgid "Invert Inside"
-msgstr ""
+msgstr "反轉內部"
 
 #: src/modules/lyr_std/julia.cpp:368
 msgid "Color Inside"
-msgstr ""
+msgstr "內部顏色"
 
 #: src/modules/lyr_std/julia.cpp:371 src/modules/lyr_std/mandelbrot.cpp:261
 #: src/modules/lyr_std/twirl.cpp:135
 msgid "Distort Outside"
-msgstr ""
+msgstr "外部歪曲"
 
 #: src/modules/lyr_std/julia.cpp:374 src/modules/lyr_std/mandelbrot.cpp:265
 msgid "Shade Outside"
-msgstr ""
+msgstr "外部陰影"
 
 #: src/modules/lyr_std/julia.cpp:377 src/modules/lyr_std/mandelbrot.cpp:269
 msgid "Solid Outside"
-msgstr ""
+msgstr "外部實體"
 
 #: src/modules/lyr_std/julia.cpp:380 src/modules/lyr_std/mandelbrot.cpp:273
 msgid "Invert Outside"
-msgstr ""
+msgstr "外部反轉"
 
 #: src/modules/lyr_std/julia.cpp:383
 msgid "Color Outside"
-msgstr ""
+msgstr "外框顏色"
 
 #: src/modules/lyr_std/julia.cpp:387
 msgid "Color Cycle"
-msgstr ""
+msgstr "色彩周期"
 
 #: src/modules/lyr_std/julia.cpp:390 src/modules/lyr_std/mandelbrot.cpp:281
 msgid "Smooth Outside"
-msgstr ""
+msgstr "快框平滑化"
 
 #: src/modules/lyr_std/julia.cpp:391 src/modules/lyr_std/mandelbrot.cpp:282
 msgid "Smooth the coloration outside the set"
@@ -536,7 +536,7 @@ msgstr ""
 
 #: src/modules/lyr_std/julia.cpp:394 src/modules/lyr_std/mandelbrot.cpp:226
 msgid "Break Set"
-msgstr ""
+msgstr "打破集合"
 
 #: src/modules/lyr_std/julia.cpp:395 src/modules/lyr_std/mandelbrot.cpp:227
 msgid "Modify equation to achieve interesting results"
@@ -544,7 +544,7 @@ msgstr ""
 
 #: src/modules/lyr_std/mandelbrot.cpp:56
 msgid "Mandelbrot Set"
-msgstr ""
+msgstr "Mandelbrot 集合"
 
 #: src/modules/lyr_std/mandelbrot.cpp:233
 #: src/modules/lyr_std/mandelbrot.cpp:237
@@ -554,19 +554,19 @@ msgstr ""
 #: src/modules/lyr_std/mandelbrot.cpp:253
 #: src/modules/lyr_std/mandelbrot.cpp:257
 msgid "Inside"
-msgstr ""
+msgstr "內部"
 
 #: src/modules/lyr_std/mandelbrot.cpp:248
 msgid "Gradient Inside"
-msgstr ""
+msgstr "內部漸層"
 
 #: src/modules/lyr_std/mandelbrot.cpp:252
 msgid "Offset Inside"
-msgstr ""
+msgstr "內部位移"
 
 #: src/modules/lyr_std/mandelbrot.cpp:256
 msgid "Loop Inside"
-msgstr ""
+msgstr "內部循環"
 
 #: src/modules/lyr_std/mandelbrot.cpp:262
 #: src/modules/lyr_std/mandelbrot.cpp:266
@@ -577,28 +577,28 @@ msgstr ""
 #: src/modules/lyr_std/mandelbrot.cpp:287
 #: src/modules/lyr_std/mandelbrot.cpp:291
 msgid "Outside"
-msgstr ""
+msgstr "外部"
 
 #: src/modules/lyr_std/mandelbrot.cpp:277
 msgid "Gradient outside"
-msgstr ""
+msgstr "外部漸層"
 
 #: src/modules/lyr_std/mandelbrot.cpp:286
 msgid "Offset Outside"
-msgstr ""
+msgstr "外部位移"
 
 #: src/modules/lyr_std/mandelbrot.cpp:290
 msgid "Scale Outside"
-msgstr ""
+msgstr "外部縮放"
 
 #: src/modules/lyr_std/rotate.cpp:56 src/synfig/valuenode_bonelink.cpp:223
 msgid "Rotate"
-msgstr ""
+msgstr "旋轉"
 
 #: src/modules/lyr_std/rotate.cpp:57 src/modules/lyr_std/translate.cpp:56
 #: src/modules/lyr_std/zoom.cpp:53
 msgid "Transform"
-msgstr ""
+msgstr "變形"
 
 #: src/modules/lyr_std/rotate.cpp:118 src/modules/lyr_std/translate.cpp:101
 #: src/modules/mod_filter/radialblur.cpp:111
@@ -615,29 +615,29 @@ msgstr ""
 #: src/synfig/valuenode_segcalctangent.cpp:161
 #: src/synfig/valuenode_segcalcvertex.cpp:159
 msgid "Amount"
-msgstr "Quantitat"
+msgstr "總量"
 
 #: src/modules/lyr_std/rotate.cpp:123
 msgid "Amount of rotation"
-msgstr ""
+msgstr "旋轉總量"
 
 #: src/modules/lyr_std/shade.cpp:68
 msgid "Shade"
-msgstr ""
+msgstr "陰影"
 
 #: src/modules/lyr_std/shade.cpp:629
 msgid "Size of Shade"
-msgstr ""
+msgstr "陰影大小"
 
 #: src/modules/lyr_std/sphere_distort.cpp:74
 #: src/modules/lyr_std/sphere_distort.cpp:167
 msgid "Spherize"
-msgstr ""
+msgstr "球面"
 
 #: src/modules/lyr_std/sphere_distort.cpp:141
 #: src/synfig/valuenode_composite.cpp:722
 msgid "Position"
-msgstr ""
+msgstr "位置"
 
 #: src/modules/lyr_std/sphere_distort.cpp:142
 msgid "Where the sphere distortion is centered"
@@ -652,7 +652,7 @@ msgstr ""
 #: src/modules/mod_noise/valuenode_random.cpp:255
 #: src/synfig/valuenode_radialcomposite.cpp:272
 msgid "Radius"
-msgstr "Ràdio"
+msgstr "半徑"
 
 #: src/modules/lyr_std/sphere_distort.cpp:149
 msgid "The size of the sphere distortion"
@@ -672,23 +672,23 @@ msgstr ""
 
 #: src/modules/lyr_std/sphere_distort.cpp:164
 msgid "Distort Type"
-msgstr ""
+msgstr "歪曲類型"
 
 #: src/modules/lyr_std/sphere_distort.cpp:165
 msgid "The direction of the distortion"
-msgstr ""
+msgstr "歪曲方向"
 
 #: src/modules/lyr_std/sphere_distort.cpp:168
 msgid "Vertical Bar"
-msgstr ""
+msgstr "垂直列"
 
 #: src/modules/lyr_std/sphere_distort.cpp:169
 msgid "Horizontal Bar"
-msgstr ""
+msgstr "水平列"
 
 #: src/modules/lyr_std/stretch.cpp:57
 msgid "Stretch"
-msgstr ""
+msgstr "伸展"
 
 #: src/modules/lyr_std/stretch.cpp:106
 msgid "Size of the stretch relative to its Center"
@@ -700,7 +700,7 @@ msgstr ""
 #: src/modules/mod_gradient/radialgradient.cpp:118
 #: src/modules/mod_gradient/spiralgradient.cpp:118
 msgid "Center"
-msgstr ""
+msgstr "中間"
 
 #: src/modules/lyr_std/stretch.cpp:111
 msgid "Where the stretch distortion is centered"
@@ -712,7 +712,7 @@ msgstr ""
 
 #: src/modules/lyr_std/stroboscope.cpp:104
 msgid "Frequency"
-msgstr ""
+msgstr "頻率"
 
 #: src/modules/lyr_std/stroboscope.cpp:105
 msgid "Frequency of the Strobe in times per second"
@@ -720,7 +720,7 @@ msgstr ""
 
 #: src/modules/lyr_std/supersample.cpp:57
 msgid "Super Sample"
-msgstr ""
+msgstr "超級樣本"
 
 #: src/modules/lyr_std/supersample.cpp:148
 msgid "Unable to create SurfaceTarget"
@@ -732,15 +732,15 @@ msgstr ""
 
 #: src/modules/lyr_std/supersample.cpp:343 src/tool/printing_functions.cpp:123
 msgid "Height"
-msgstr ""
+msgstr "高度"
 
 #: src/modules/lyr_std/supersample.cpp:344
 msgid "Height of sample area (In pixels)"
-msgstr ""
+msgstr "樣本區域高度 (像素)"
 
 #: src/modules/lyr_std/supersample.cpp:347
 msgid "Use Parametric"
-msgstr ""
+msgstr "使用參數"
 
 #: src/modules/lyr_std/supersample.cpp:348
 msgid "Use the Parametric Renderer"
@@ -757,11 +757,11 @@ msgstr ""
 #: src/modules/lyr_std/timeloop.cpp:59 src/synfig/valuenode.cpp:177
 #: src/synfig/valuenode_timeloop.cpp:153
 msgid "Time Loop"
-msgstr ""
+msgstr "時間循環"
 
 #: src/modules/lyr_std/timeloop.cpp:133 src/synfig/valuenode_timeloop.cpp:179
 msgid "Link Time"
-msgstr ""
+msgstr "連結時間"
 
 #: src/modules/lyr_std/timeloop.cpp:134
 msgid "Start time of the loop for the cycled context"
@@ -769,7 +769,7 @@ msgstr ""
 
 #: src/modules/lyr_std/timeloop.cpp:139 src/synfig/valuenode_timeloop.cpp:184
 msgid "Local Time"
-msgstr ""
+msgstr "本地時間"
 
 #: src/modules/lyr_std/timeloop.cpp:140 src/synfig/valuenode_timeloop.cpp:185
 msgid "The time when the resulted loop starts"
@@ -778,7 +778,7 @@ msgstr ""
 #: src/modules/lyr_std/timeloop.cpp:145 src/synfig/valuenode_step.cpp:197
 #: src/synfig/valuenode_timeloop.cpp:189
 msgid "Duration"
-msgstr ""
+msgstr "持續時間"
 
 #: src/modules/lyr_std/timeloop.cpp:146
 msgid "Lenght of the loop"
@@ -802,11 +802,11 @@ msgstr ""
 
 #: src/modules/lyr_std/translate.cpp:55 src/synfig/valuenode_bonelink.cpp:218
 msgid "Translate"
-msgstr ""
+msgstr "移動"
 
 #: src/modules/lyr_std/twirl.cpp:56
 msgid "Twirl"
-msgstr ""
+msgstr "扭轉"
 
 #: src/modules/lyr_std/twirl.cpp:113
 #: src/modules/mod_example/simplecircle.cpp:113
@@ -915,26 +915,26 @@ msgstr ""
 #: src/synfig/valuenode_composite.cpp:808 src/synfig/valuenode_exp.cpp:155
 #: src/synfig/valuenode_scale.cpp:225
 msgid "Scale"
-msgstr ""
+msgstr "縮放"
 
 #: src/modules/lyr_std/zoom.cpp:100
 msgid "Amount to scale to"
-msgstr ""
+msgstr "縮放總量"
 
 #: src/modules/lyr_std/zoom.cpp:107
 msgid "Point to scale from"
-msgstr ""
+msgstr "從哪個點開始縮放"
 
 #: src/modules/mod_bmp/mptr_bmp.cpp:132 src/modules/mod_bmp/mptr_bmp.cpp:133
 #: src/modules/mod_ppm/mptr_ppm.cpp:70
 #, c-format
 msgid "Unable to open %s"
-msgstr ""
+msgstr "無法開啟 %s"
 
 #: src/modules/mod_bmp/mptr_bmp.cpp:144 src/modules/mod_bmp/mptr_bmp.cpp:145
 #, c-format
 msgid "%s is not in BMP format"
-msgstr ""
+msgstr "%s 不是 BMP 格式"
 
 #: src/modules/mod_bmp/mptr_bmp.cpp:151
 #, c-format
@@ -971,7 +971,7 @@ msgstr ""
 
 #: src/modules/mod_bmp/trgt_bmp.cpp:197 src/modules/mod_bmp/trgt_bmp.cpp:198
 msgid "Unable to open file"
-msgstr "Ha estat impossible d'obrir el fitxer"
+msgstr "無法開啟檔案"
 
 #: src/modules/mod_bmp/trgt_bmp.cpp:228 src/modules/mod_bmp/trgt_bmp.cpp:229
 msgid "Unable to write file header to file"
@@ -991,13 +991,13 @@ msgstr ""
 
 #: src/modules/mod_example/filledrect.cpp:59
 msgid "Filled Rectangle"
-msgstr ""
+msgstr "矩型填滿"
 
 #: src/modules/mod_example/filledrect.cpp:60
 #: src/modules/mod_example/metaballs.cpp:58
 #: src/modules/mod_example/simplecircle.cpp:58
 msgid "Example"
-msgstr ""
+msgstr "取樣"
 
 #: src/modules/mod_example/filledrect.cpp:132
 #: src/modules/mod_example/simplecircle.cpp:108
@@ -1005,37 +1005,37 @@ msgstr ""
 #: src/modules/mod_geometry/rectangle.cpp:139
 #: src/synfig/layer_solidcolor.cpp:115
 msgid "Fill color of the layer"
-msgstr ""
+msgstr "填滿顏色的圖層"
 
 #: src/modules/mod_example/filledrect.cpp:136
 #: src/modules/mod_geometry/rectangle.cpp:143
 #: src/modules/mod_gradient/lineargradient.cpp:190
 msgid "Point 1"
-msgstr ""
+msgstr "點 1"
 
 #: src/modules/mod_example/filledrect.cpp:137
 #: src/modules/mod_geometry/rectangle.cpp:145
 msgid "First corner of the rectangle"
-msgstr ""
+msgstr "矩型第一個座標"
 
 #: src/modules/mod_example/filledrect.cpp:142
 #: src/modules/mod_geometry/rectangle.cpp:149
 #: src/modules/mod_gradient/lineargradient.cpp:195
 msgid "Point 2"
-msgstr ""
+msgstr "點 2"
 
 #: src/modules/mod_example/filledrect.cpp:143
 #: src/modules/mod_geometry/rectangle.cpp:150
 msgid "Second corner of the rectangle"
-msgstr ""
+msgstr "矩型第二個座標"
 
 #: src/modules/mod_example/filledrect.cpp:147
 msgid "Feather X"
-msgstr ""
+msgstr "邊緣模糊 X"
 
 #: src/modules/mod_example/filledrect.cpp:152
 msgid "Feather Y"
-msgstr ""
+msgstr "邊緣模糊 Y"
 
 #: src/modules/mod_example/filledrect.cpp:158
 msgid "Use Bevel for the corners"
@@ -1051,7 +1051,7 @@ msgstr ""
 
 #: src/modules/mod_example/metaballs.cpp:57
 msgid "Metaballs"
-msgstr ""
+msgstr "金屬球"
 
 #: src/modules/mod_example/metaballs.cpp:129
 #: src/modules/mod_gradient/conicalgradient.cpp:109
@@ -1064,7 +1064,7 @@ msgstr ""
 #: src/synfig/valuenode_gradientrotate.cpp:164
 #: src/synfig/valuenode_repeat_gradient.cpp:203
 msgid "Gradient"
-msgstr ""
+msgstr "漸層"
 
 #: src/modules/mod_example/metaballs.cpp:133
 msgid "Balls"
@@ -1092,7 +1092,7 @@ msgstr ""
 
 #: src/modules/mod_example/simplecircle.cpp:57
 msgid "Simple Circle"
-msgstr ""
+msgstr "簡單圓形"
 
 #: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:207
 msgid ""
@@ -1123,20 +1123,20 @@ msgstr ""
 
 #: src/modules/mod_filter/blur.cpp:69
 msgid "Blur"
-msgstr ""
+msgstr "模糊"
 
 #: src/modules/mod_filter/blur.cpp:70 src/modules/mod_filter/radialblur.cpp:57
 #: src/synfig/layer_motionblur.cpp:57
 msgid "Blurs"
-msgstr ""
+msgstr "模糊"
 
 #: src/modules/mod_filter/blur.cpp:416
 msgid "Size of Blur"
-msgstr ""
+msgstr "模糊大小"
 
 #: src/modules/mod_filter/colorcorrect.cpp:56
 msgid "Color Correct"
-msgstr ""
+msgstr "顏色正確"
 
 #: src/modules/mod_filter/colorcorrect.cpp:217
 msgid "Hue Adjust"
@@ -1160,93 +1160,93 @@ msgstr ""
 
 #: src/modules/mod_filter/halftone2.cpp:59
 msgid "Halftone 2"
-msgstr ""
+msgstr "半色調 2"
 
 #: src/modules/mod_filter/halftone2.cpp:155
 msgid "Mask Origin"
-msgstr ""
+msgstr "遮罩原點"
 
 #: src/modules/mod_filter/halftone2.cpp:159
 msgid "Mask Angle"
-msgstr ""
+msgstr "遮罩角度"
 
 #: src/modules/mod_filter/halftone2.cpp:163
 #: src/modules/mod_filter/halftone3.cpp:328
 msgid "Mask Size"
-msgstr ""
+msgstr "遮罩大小"
 
 #: src/modules/mod_filter/halftone2.cpp:168
 msgid "Light Color"
-msgstr ""
+msgstr "燈光顏色"
 
 #: src/modules/mod_filter/halftone2.cpp:171
 msgid "Dark Color"
-msgstr ""
+msgstr "暗部顏色"
 
 #: src/modules/mod_filter/halftone2.cpp:176
 #: src/modules/mod_filter/halftone3.cpp:333
 #: src/modules/mod_gradient/conicalgradient.cpp:125
 msgid "Symmetric"
-msgstr ""
+msgstr "對稱"
 
 #: src/modules/mod_filter/halftone2.cpp:177
 #: src/modules/mod_filter/halftone3.cpp:334
 msgid "Light On Dark"
-msgstr ""
+msgstr "暗部燈光"
 
 #: src/modules/mod_filter/halftone2.cpp:179
 #: src/modules/mod_filter/halftone3.cpp:336
 msgid "Diamond"
-msgstr ""
+msgstr "鑽石"
 
 #: src/modules/mod_filter/halftone2.cpp:180
 #: src/modules/mod_filter/halftone3.cpp:337
 msgid "Stripe"
-msgstr ""
+msgstr "條紋"
 
 #: src/modules/mod_filter/halftone3.cpp:59
 msgid "Halftone 3"
-msgstr ""
+msgstr "半色調 3"
 
 #: src/modules/mod_filter/halftone3.cpp:331
 msgid " Type"
-msgstr "Tipus"
+msgstr " 類型"
 
 #: src/modules/mod_filter/halftone3.cpp:340
 msgid "Subtractive Flag"
-msgstr ""
+msgstr "減法旗標"
 
 #: src/modules/mod_filter/halftone3.cpp:348
 msgid " Color"
-msgstr "Color"
+msgstr " 色彩"
 
 #: src/modules/mod_filter/halftone3.cpp:352
 msgid " Mask Origin"
-msgstr ""
+msgstr " 遮罩原點"
 
 #: src/modules/mod_filter/halftone3.cpp:356
 msgid " Mask Angle"
-msgstr ""
+msgstr " 遮罩角度"
 
 #: src/modules/mod_filter/lumakey.cpp:59
 msgid "Luma Key"
-msgstr ""
+msgstr "亮度關鍵"
 
 #: src/modules/mod_filter/radialblur.cpp:56
 msgid "Radial Blur"
-msgstr ""
+msgstr "徑向模糊"
 
 #: src/modules/mod_filter/radialblur.cpp:116
 msgid "Size of blur"
-msgstr ""
+msgstr "模糊大小"
 
 #: src/modules/mod_filter/radialblur.cpp:121
 msgid "Fade Out"
-msgstr ""
+msgstr "淡出"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:67
 msgid "Advanced Outline"
-msgstr ""
+msgstr "進階的外框"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:68
 #: src/modules/mod_geometry/checkerboard.cpp:59
@@ -1256,11 +1256,11 @@ msgstr ""
 #: src/modules/mod_geometry/region.cpp:65 src/modules/mod_geometry/star.cpp:64
 #: src/synfig/layer_polygon.cpp:61 src/synfig/layer_solidcolor.cpp:57
 msgid "Geometry"
-msgstr ""
+msgstr "幾何"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:152
 msgid "No vertices in spline "
-msgstr ""
+msgstr "曲線沒有頂點 "
 
 #: src/modules/mod_geometry/advanced_outline.cpp:1136
 #: src/modules/mod_geometry/outline.cpp:826
@@ -1268,22 +1268,22 @@ msgstr ""
 #: src/modules/mod_gradient/curvegradient.cpp:562
 #: src/modules/mod_particle/plant.cpp:425
 msgid "A list of spline points"
-msgstr ""
+msgstr "曲線頂點清單"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:1140
 #: src/modules/mod_geometry/outline.cpp:840
 msgid "Outline Width"
-msgstr ""
+msgstr "外框的寬度"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:1141
 #: src/modules/mod_geometry/outline.cpp:841
 msgid "Global width of the outline"
-msgstr ""
+msgstr "全域外框寬度"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:1145
 #: src/modules/mod_geometry/outline.cpp:846
 msgid "Expand"
-msgstr ""
+msgstr "擴大"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:1146
 #: src/modules/mod_geometry/outline.cpp:847
@@ -1361,7 +1361,7 @@ msgstr ""
 
 #: src/modules/mod_geometry/advanced_outline.cpp:1175
 msgid "Smoothness"
-msgstr ""
+msgstr "平滑度"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:1176
 msgid "Determines the interpolation between withpoints. (0) Linear (1) Smooth"
@@ -1373,7 +1373,7 @@ msgstr ""
 #: src/synfig/valuenode_blinecalcvertex.cpp:216
 #: src/synfig/valuenode_blinecalcwidth.cpp:226
 msgid "Homogeneous"
-msgstr ""
+msgstr "同質"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:1180
 msgid "When true, widthpoints positions are spline length based"
@@ -1381,7 +1381,7 @@ msgstr ""
 
 #: src/modules/mod_geometry/advanced_outline.cpp:1183
 msgid "Width Point List"
-msgstr ""
+msgstr "寬度點清單"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:1186
 msgid "List of width Points that defines the variable width"
@@ -1417,47 +1417,47 @@ msgstr ""
 
 #: src/modules/mod_geometry/checkerboard.cpp:58
 msgid "Checkerboard"
-msgstr ""
+msgstr "棋盤"
 
 #: src/modules/mod_geometry/checkerboard.cpp:147
 msgid "Color of checkers"
-msgstr ""
+msgstr "棋盤顏色"
 
 #: src/modules/mod_geometry/checkerboard.cpp:151
 msgid "Center of the checkers"
-msgstr ""
+msgstr "棋盤中心點"
 
 #: src/modules/mod_geometry/checkerboard.cpp:155
 msgid "Size of checkers"
-msgstr ""
+msgstr "棋盤大小"
 
 #: src/modules/mod_geometry/circle.cpp:56
 msgid "Circle"
-msgstr ""
+msgstr "圓"
 
 #: src/modules/mod_geometry/circle.cpp:152
 msgid "Radius of the circle"
-msgstr ""
+msgstr "圓的半徑"
 
 #: src/modules/mod_geometry/circle.cpp:156 src/synfig/layer_shape.cpp:1238
 msgid "Feather"
-msgstr "Esvaïment"
+msgstr "邊緣模糊"
 
 #: src/modules/mod_geometry/circle.cpp:158
 msgid "Amount of feather of the circle"
-msgstr ""
+msgstr "圓的邊緣模糊總量"
 
 #: src/modules/mod_geometry/circle.cpp:166
 msgid "Invert the circle"
-msgstr ""
+msgstr "反轉圓形範圍"
 
 #: src/modules/mod_geometry/circle.cpp:170
 msgid "Falloff"
-msgstr "Caiguda"
+msgstr "衰減"
 
 #: src/modules/mod_geometry/circle.cpp:171
 msgid "Determines the falloff function for the feather"
-msgstr "Determina la funció de caiguda de l'esvaïment"
+msgstr ""
 
 #: src/modules/mod_geometry/circle.cpp:173
 #: src/modules/mod_noise/distort.cpp:239 src/modules/mod_noise/noise.cpp:284
@@ -1465,30 +1465,30 @@ msgstr "Determina la funció de caiguda de l'esvaïment"
 #: src/synfig/layer_bitmap.cpp:169 src/synfig/layer_motionblur.cpp:149
 #: src/synfig/valuenode.cpp:150 src/synfig/valuenode_linear.cpp:154
 msgid "Linear"
-msgstr "Lineal"
+msgstr "線性"
 
 #: src/modules/mod_geometry/circle.cpp:174
 msgid "Squared"
-msgstr "Proporcional"
+msgstr "平方"
 
 #: src/modules/mod_geometry/circle.cpp:175
 msgid "Square Root"
-msgstr "Arrel quadrada"
+msgstr "平方根"
 
 #: src/modules/mod_geometry/circle.cpp:176
 msgid "Sigmond"
-msgstr "Sigmoidea"
+msgstr ""
 
 #: src/modules/mod_geometry/circle.cpp:177
 #: src/modules/mod_noise/distort.cpp:240 src/modules/mod_noise/noise.cpp:285
 #: src/modules/mod_noise/valuenode_random.cpp:275
 #: src/synfig/layer_bitmap.cpp:170
 msgid "Cosine"
-msgstr "Cossinus"
+msgstr "餘弦"
 
 #: src/modules/mod_geometry/outline.cpp:72
 msgid "Outline"
-msgstr ""
+msgstr "外框"
 
 #: src/modules/mod_geometry/outline.cpp:192
 msgid "No vertices in outline "
@@ -1496,11 +1496,11 @@ msgstr ""
 
 #: src/modules/mod_geometry/outline.cpp:851
 msgid "Sharp Cusps"
-msgstr ""
+msgstr "尖端形狀"
 
 #: src/modules/mod_geometry/outline.cpp:856
 msgid "Rounded Begin"
-msgstr ""
+msgstr "圓角開始"
 
 #: src/modules/mod_geometry/outline.cpp:857
 #: src/modules/mod_geometry/outline.cpp:862
@@ -1509,7 +1509,7 @@ msgstr ""
 
 #: src/modules/mod_geometry/outline.cpp:861
 msgid "Rounded End"
-msgstr ""
+msgstr "圓角結束"
 
 #: src/modules/mod_geometry/outline.cpp:865
 msgid "Loopyness"
@@ -1525,27 +1525,27 @@ msgstr ""
 
 #: src/modules/mod_geometry/rectangle.cpp:59
 msgid "Rectangle"
-msgstr ""
+msgstr "矩型"
 
 #: src/modules/mod_geometry/rectangle.cpp:155
 msgid "Expand amount"
-msgstr ""
+msgstr "擴大總量"
 
 #: src/modules/mod_geometry/rectangle.cpp:159
 msgid "Invert the rectangle"
-msgstr ""
+msgstr "反轉矩型範圍"
 
 #: src/modules/mod_geometry/region.cpp:64
 msgid "Region"
-msgstr ""
+msgstr "範圍"
 
 #: src/modules/mod_geometry/star.cpp:63
 msgid "Star"
-msgstr ""
+msgstr "開始"
 
 #: src/modules/mod_geometry/star.cpp:170
 msgid "Outer Radius"
-msgstr ""
+msgstr "外半徑"
 
 #: src/modules/mod_geometry/star.cpp:171
 msgid "The radius of the outer points in the star"
@@ -1553,7 +1553,7 @@ msgstr ""
 
 #: src/modules/mod_geometry/star.cpp:177
 msgid "Inner Radius"
-msgstr ""
+msgstr "內半徑"
 
 #: src/modules/mod_geometry/star.cpp:178
 msgid "The radius of the inner points in the star"
@@ -1566,7 +1566,7 @@ msgstr ""
 #: src/synfig/valuenode_composite.cpp:800 src/synfig/valuenode_cos.cpp:155
 #: src/synfig/valuenode_sine.cpp:154
 msgid "Angle"
-msgstr "Angle"
+msgstr "角度"
 
 #: src/modules/mod_geometry/star.cpp:185
 msgid "The orientation of the star"
@@ -1574,7 +1574,7 @@ msgstr ""
 
 #: src/modules/mod_geometry/star.cpp:190 src/synfig/distance.cpp:253
 msgid "Points"
-msgstr "Punts"
+msgstr "點"
 
 #: src/modules/mod_geometry/star.cpp:191
 msgid "The number of points in the star"
@@ -1582,7 +1582,7 @@ msgstr ""
 
 #: src/modules/mod_geometry/star.cpp:195
 msgid "Regular Polygon"
-msgstr ""
+msgstr "範圍的多邊形"
 
 #: src/modules/mod_geometry/star.cpp:196
 msgid "Whether to draw a star or a regular polygon"
@@ -1599,7 +1599,7 @@ msgstr ""
 
 #: src/modules/mod_gradient/conicalgradient.cpp:57
 msgid "Conical Gradient"
-msgstr ""
+msgstr "錐型漸層"
 
 #: src/modules/mod_gradient/conicalgradient.cpp:58
 #: src/modules/mod_gradient/curvegradient.cpp:62
@@ -1608,7 +1608,7 @@ msgstr ""
 #: src/modules/mod_gradient/spiralgradient.cpp:58
 #: src/modules/mod_noise/noise.cpp:59
 msgid "Gradients"
-msgstr ""
+msgstr "漸層"
 
 #: src/modules/mod_gradient/conicalgradient.cpp:110
 #: src/modules/mod_gradient/curvegradient.cpp:566
@@ -1617,7 +1617,7 @@ msgstr ""
 #: src/modules/mod_gradient/spiralgradient.cpp:114
 #: src/modules/mod_noise/noise.cpp:269
 msgid "Gradient to apply"
-msgstr ""
+msgstr "套用漸層"
 
 #: src/modules/mod_gradient/conicalgradient.cpp:115
 msgid "Center of the cone"
@@ -1636,7 +1636,7 @@ msgstr ""
 
 #: src/modules/mod_gradient/curvegradient.cpp:61
 msgid "Curve Gradient"
-msgstr ""
+msgstr "曲線漸層"
 
 #: src/modules/mod_gradient/curvegradient.cpp:551
 #: src/modules/mod_particle/plant.cpp:432
@@ -1655,7 +1655,7 @@ msgstr ""
 #: src/synfig/valuenode_blinecalcwidth.cpp:211
 #: src/synfig/valuenode_gradientcolor.cpp:168
 msgid "Loop"
-msgstr "Bucle"
+msgstr "封閉"
 
 #: src/modules/mod_gradient/curvegradient.cpp:573
 #: src/modules/mod_gradient/lineargradient.cpp:207
@@ -1671,23 +1671,23 @@ msgstr ""
 
 #: src/modules/mod_gradient/curvegradient.cpp:577
 msgid "Perpendicular"
-msgstr ""
+msgstr "垂直"
 
 #: src/modules/mod_gradient/lineargradient.cpp:54
 msgid "Linear Gradient"
-msgstr ""
+msgstr "線性漸層"
 
 #: src/modules/mod_gradient/lineargradient.cpp:192
 msgid "Start point of the gradient"
-msgstr ""
+msgstr "漸層開始點"
 
 #: src/modules/mod_gradient/lineargradient.cpp:196
 msgid "End point of the gradient"
-msgstr ""
+msgstr "漸層結束點"
 
 #: src/modules/mod_gradient/radialgradient.cpp:57
 msgid "Radial Gradient"
-msgstr ""
+msgstr "徑向漸層"
 
 #: src/modules/mod_gradient/radialgradient.cpp:119
 #: src/modules/mod_gradient/spiralgradient.cpp:119
@@ -1696,15 +1696,15 @@ msgstr ""
 
 #: src/modules/mod_gradient/spiralgradient.cpp:57
 msgid "Spiral Gradient"
-msgstr ""
+msgstr "螺旋漸層"
 
 #: src/modules/mod_gradient/spiralgradient.cpp:131
 msgid "Rotation of the spiral"
-msgstr ""
+msgstr "螺旋的迴轉"
 
 #: src/modules/mod_gradient/spiralgradient.cpp:136
 msgid "Clockwise"
-msgstr ""
+msgstr "順時針"
 
 #: src/modules/mod_gradient/spiralgradient.cpp:137
 msgid "When checked the spiral turns clockwise"
@@ -1715,7 +1715,7 @@ msgstr ""
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:238
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:239
 msgid "No file to load"
-msgstr ""
+msgstr "沒有載入濾鏡"
 
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:119
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:120
@@ -1727,7 +1727,7 @@ msgstr ""
 #: src/synfig/cairolistimporter.cpp:193 src/synfig/cairolistimporter.cpp:194
 #: src/synfig/listimporter.cpp:188 src/synfig/listimporter.cpp:189
 msgid "Unable to open "
-msgstr ""
+msgstr "無法開啟 "
 
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:186
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:187
@@ -1772,11 +1772,11 @@ msgstr ""
 
 #: src/modules/mod_noise/distort.cpp:58
 msgid "Noise Distort"
-msgstr ""
+msgstr "雜訊歪曲"
 
 #: src/modules/mod_noise/distort.cpp:222
 msgid "Displacement"
-msgstr ""
+msgstr "置換"
 
 #: src/modules/mod_noise/distort.cpp:223
 msgid "How big the distortion displaces the context"
@@ -1798,7 +1798,7 @@ msgstr ""
 #: src/modules/mod_noise/valuenode_random.cpp:270
 #: src/synfig/layer_bitmap.cpp:165
 msgid "Interpolation"
-msgstr "Interpolació"
+msgstr "內插模式"
 
 #: src/modules/mod_noise/distort.cpp:236 src/modules/mod_noise/noise.cpp:281
 #: src/synfig/layer_bitmap.cpp:166
@@ -1817,17 +1817,17 @@ msgstr ""
 #: src/synfig/valuenode_blinecalcvertex.cpp:201
 #: src/synfig/valuenode_blinecalcwidth.cpp:206
 msgid "Spline"
-msgstr ""
+msgstr "曲線"
 
 #: src/modules/mod_noise/distort.cpp:242 src/modules/mod_noise/noise.cpp:287
 #: src/modules/mod_noise/valuenode_random.cpp:277
 #: src/synfig/layer_bitmap.cpp:171
 msgid "Cubic"
-msgstr ""
+msgstr "立方體"
 
 #: src/modules/mod_noise/distort.cpp:245 src/modules/mod_noise/noise.cpp:290
 msgid "Detail"
-msgstr ""
+msgstr "詳情"
 
 #: src/modules/mod_noise/distort.cpp:246 src/modules/mod_noise/noise.cpp:291
 msgid "Increase to obtain fine details of the noise"
@@ -1835,11 +1835,11 @@ msgstr ""
 
 #: src/modules/mod_noise/distort.cpp:249 src/modules/mod_noise/noise.cpp:294
 msgid "Animation Speed"
-msgstr ""
+msgstr "動畫速度"
 
 #: src/modules/mod_noise/distort.cpp:250 src/modules/mod_noise/noise.cpp:295
 msgid "In cycles per second"
-msgstr ""
+msgstr "每秒周期"
 
 #: src/modules/mod_noise/distort.cpp:253 src/modules/mod_noise/noise.cpp:298
 msgid "Turbulent"
@@ -1852,15 +1852,15 @@ msgstr ""
 #: src/modules/mod_noise/main.cpp:66
 #: src/modules/mod_noise/valuenode_random.cpp:169
 msgid "Random"
-msgstr ""
+msgstr "隨機"
 
 #: src/modules/mod_noise/noise.cpp:58
 msgid "Noise Gradient"
-msgstr ""
+msgstr "雜訊漸層"
 
 #: src/modules/mod_noise/noise.cpp:277
 msgid "Size of the noise"
-msgstr ""
+msgstr "雜訊大小"
 
 #: src/modules/mod_noise/noise.cpp:302
 msgid "Do Alpha"
@@ -1887,7 +1887,7 @@ msgstr ""
 #: src/synfig/valuenode_reference.cpp:143 src/synfig/valuenode_scale.cpp:249
 #: src/synfig/valuenode_step.cpp:192 src/synfig/valuenode_timeloop.cpp:174
 msgid "Link"
-msgstr "Enllaça"
+msgstr "連結"
 
 #: src/modules/mod_noise/valuenode_random.cpp:251
 msgid "The value node source that provides the central value"
@@ -1934,7 +1934,7 @@ msgstr ""
 
 #: src/modules/mod_particle/plant.cpp:70
 msgid "Plant"
-msgstr ""
+msgstr "安置"
 
 #: src/modules/mod_particle/plant.cpp:437
 msgid "Gradient to be used for coloring the plant"
@@ -1942,7 +1942,7 @@ msgstr ""
 
 #: src/modules/mod_particle/plant.cpp:441
 msgid "Split Angle"
-msgstr ""
+msgstr "分離角度"
 
 #: src/modules/mod_particle/plant.cpp:442
 msgid "Angle by which each split deviates from its parent"
@@ -2004,7 +2004,7 @@ msgstr ""
 #: src/modules/mod_particle/plant.cpp:478 src/synfig/valuenode.cpp:181
 #: src/synfig/valuenode_duplicate.cpp:204 src/synfig/valuenode_step.cpp:137
 msgid "Step"
-msgstr ""
+msgstr "步進"
 
 #: src/modules/mod_particle/plant.cpp:479
 msgid "Measure of the distance between points when rendering"
@@ -2016,7 +2016,7 @@ msgstr ""
 
 #: src/modules/mod_particle/plant.cpp:488
 msgid "Splits"
-msgstr ""
+msgstr "分離"
 
 #: src/modules/mod_particle/plant.cpp:489
 msgid "Maximum number of times that each sprout can sprout recursively"
@@ -2073,47 +2073,47 @@ msgstr ""
 
 #: src/modules/mod_svg/layer_svg.cpp:53
 msgid "Import Svg"
-msgstr ""
+msgstr "匯入 Svg"
 
 #: src/synfig/base_types.cpp:78 src/synfig/base_types.cpp:79
 msgid "bool"
-msgstr ""
+msgstr "布林"
 
 #: src/synfig/base_types.cpp:99 src/synfig/base_types.cpp:100
 msgid "integer"
-msgstr ""
+msgstr "整數"
 
 #: src/synfig/base_types.cpp:122
 msgid "angle"
-msgstr ""
+msgstr "角度"
 
 #: src/synfig/base_types.cpp:166 src/synfig/base_types.cpp:167
 msgid "real"
-msgstr "Real"
+msgstr "浮點"
 
 #: src/synfig/base_types.cpp:194 src/synfig/base_types.cpp:195
 msgid "time"
-msgstr ""
+msgstr "時間"
 
 #: src/synfig/base_types.cpp:220
 msgid "vector"
-msgstr "Vector"
+msgstr "向量"
 
 #: src/synfig/base_types.cpp:239
 msgid "color"
-msgstr "Color"
+msgstr "顏色"
 
 #: src/synfig/base_types.cpp:258
 msgid "segment"
-msgstr "Segment"
+msgstr "線段"
 
 #: src/synfig/base_types.cpp:278
 msgid "spline_point"
-msgstr ""
+msgstr "曲線點(_p)"
 
 #: src/synfig/base_types.cpp:297
 msgid "matrix"
-msgstr ""
+msgstr "矩陣"
 
 #: src/synfig/base_types.cpp:316
 msgid "bone_weight_pair"
@@ -2129,31 +2129,31 @@ msgstr ""
 
 #: src/synfig/base_types.cpp:375
 msgid "list"
-msgstr ""
+msgstr "清單"
 
 #: src/synfig/base_types.cpp:434
 msgid "canvas"
-msgstr "Llenç"
+msgstr "畫布"
 
 #: src/synfig/base_types.cpp:465
 msgid "string"
-msgstr ""
+msgstr "字串"
 
 #: src/synfig/base_types.cpp:486
 msgid "gradient"
-msgstr ""
+msgstr "漸層"
 
 #: src/synfig/base_types.cpp:505
 msgid "bone_object"
-msgstr ""
+msgstr "骨架物件(_o)"
 
 #: src/synfig/base_types.cpp:540
 msgid "bone_valuenode"
-msgstr ""
+msgstr "骨架數值點(_v)"
 
 #: src/synfig/base_types.cpp:563
 msgid "transformation"
-msgstr ""
+msgstr "變形"
 
 #: src/synfig/cairoimporter.cpp:88
 msgid "CairoImporter::open(): Cannot open empty filename"
@@ -2179,27 +2179,27 @@ msgstr ""
 
 #: src/synfig/distance.cpp:251
 msgid "Units"
-msgstr "Unitats"
+msgstr "單位"
 
 #: src/synfig/distance.cpp:252
 msgid "Pixels"
-msgstr "Píxels"
+msgstr "像素"
 
 #: src/synfig/distance.cpp:254
 msgid "Inches"
-msgstr "Polzades"
+msgstr "英吋"
 
 #: src/synfig/distance.cpp:255
 msgid "Meters"
-msgstr "Metres"
+msgstr "公尺"
 
 #: src/synfig/distance.cpp:256
 msgid "Millimeters"
-msgstr "Mil·límetres"
+msgstr "毫米"
 
 #: src/synfig/distance.cpp:257
 msgid "Centimeters"
-msgstr "Centímetres"
+msgstr "公分"
 
 #: src/synfig/importer.cpp:88
 msgid "Importer::open(): Cannot open empty filename"
@@ -2219,7 +2219,7 @@ msgstr ""
 
 #: src/synfig/layer.cpp:788
 msgid "Z Depth"
-msgstr ""
+msgstr "Z 深度"
 
 #: src/synfig/layer.cpp:790
 msgid "Modifies the position of the layer in the layer stack"
@@ -2247,7 +2247,7 @@ msgstr ""
 
 #: src/synfig/layer_composite.cpp:255 src/synfig/paramdesc.cpp:66
 msgid "Blend Method"
-msgstr "Mètode de barreja"
+msgstr "混合方式"
 
 #: src/synfig/layer_composite.cpp:256
 msgid "The blending method used to composite on the layers below"
@@ -2256,16 +2256,16 @@ msgstr ""
 #: src/synfig/layer_duplicate.cpp:56 src/synfig/valuenode.cpp:179
 #: src/synfig/valuenode_duplicate.cpp:175
 msgid "Duplicate"
-msgstr "Duplica"
+msgstr "重製"
 
 #: src/synfig/layer_duplicate.cpp:151
 #: src/synfig/valuenode_gradientcolor.cpp:163
 msgid "Index"
-msgstr "Índex"
+msgstr "索引"
 
 #: src/synfig/layer_duplicate.cpp:152
 msgid "Copy Index"
-msgstr ""
+msgstr "複製索引"
 
 #: src/synfig/layer_mime.cpp:86
 msgid "[MIME]"
@@ -2273,7 +2273,7 @@ msgstr ""
 
 #: src/synfig/layer_motionblur.cpp:56
 msgid "Motion Blur"
-msgstr ""
+msgstr "動態模糊"
 
 #: src/synfig/layer_motionblur.cpp:135
 msgid "Aperture"
@@ -2281,7 +2281,7 @@ msgstr ""
 
 #: src/synfig/layer_motionblur.cpp:136
 msgid "Shutter Time"
-msgstr ""
+msgstr "快門時間"
 
 #: src/synfig/layer_motionblur.cpp:140
 msgid "Subsamples Factor"
@@ -2301,7 +2301,7 @@ msgstr ""
 
 #: src/synfig/layer_motionblur.cpp:148 src/synfig/valuenode_const.cpp:169
 msgid "Constant"
-msgstr ""
+msgstr "固定"
 
 #: src/synfig/layer_motionblur.cpp:150
 msgid "Hyperbolic"
@@ -2329,7 +2329,7 @@ msgstr ""
 
 #: src/synfig/layer_pastecanvas.cpp:132
 msgid "Transformation"
-msgstr ""
+msgstr "變形"
 
 #: src/synfig/layer_pastecanvas.cpp:133
 msgid "Position, rotation, skew and scale"
@@ -2337,11 +2337,11 @@ msgstr ""
 
 #: src/synfig/layer_pastecanvas.cpp:137
 msgid "Canvas"
-msgstr "Llenç"
+msgstr "畫布"
 
 #: src/synfig/layer_pastecanvas.cpp:138
 msgid "Group content"
-msgstr ""
+msgstr "群組內容"
 
 #: src/synfig/layer_pastecanvas.cpp:143
 msgid "Time Offset to apply to the context"
@@ -2349,7 +2349,7 @@ msgstr ""
 
 #: src/synfig/layer_pastecanvas.cpp:147
 msgid "Children Lock"
-msgstr ""
+msgstr "子項目鎖定"
 
 #: src/synfig/layer_pastecanvas.cpp:148
 msgid "When checked prevents to select the children using the mouse click"
@@ -2357,7 +2357,7 @@ msgstr ""
 
 #: src/synfig/layer_pastecanvas.cpp:153
 msgid "Outline Grow"
-msgstr ""
+msgstr "外光暈"
 
 #: src/synfig/layer_pastecanvas.cpp:154
 msgid "Exponential value to grow children Outline layers width"
@@ -2365,15 +2365,15 @@ msgstr ""
 
 #: src/synfig/layer_pastecanvas.cpp:168
 msgid "Current Time"
-msgstr ""
+msgstr "目前時間"
 
 #: src/synfig/layer_polygon.cpp:60
 msgid "Polygon"
-msgstr ""
+msgstr "多邊形"
 
 #: src/synfig/layer_polygon.cpp:187
 msgid "Vertices List"
-msgstr ""
+msgstr "頂點清單"
 
 #: src/synfig/layer_polygon.cpp:188
 msgid "Define the corners of the polygon"
@@ -2381,11 +2381,11 @@ msgstr ""
 
 #: src/synfig/layer_shape.cpp:66
 msgid "Shape"
-msgstr ""
+msgstr "造型"
 
 #: src/synfig/layer_shape.cpp:67
 msgid "Internal"
-msgstr ""
+msgstr "內部"
 
 #: src/synfig/layer_shape.cpp:1226
 msgid "Layer_Shape Color"
@@ -2393,57 +2393,57 @@ msgstr ""
 
 #: src/synfig/layer_shape.cpp:1235
 msgid "Antialiasing"
-msgstr ""
+msgstr "反鋸齒"
 
 #: src/synfig/layer_shape.cpp:1242
 msgid "Type of Feather"
-msgstr ""
+msgstr "邊緣模糊類型"
 
 #: src/synfig/layer_shape.cpp:1243
 msgid "Type of feathering to use"
-msgstr ""
+msgstr "使用的邊緣模糊類型"
 
 #: src/synfig/layer_shape.cpp:1252
 msgid "Winding Style"
-msgstr ""
+msgstr "區折樣式"
 
 #: src/synfig/layer_shape.cpp:1253
 msgid "Winding style to use"
-msgstr ""
+msgstr "使用的區折樣式"
 
 #: src/synfig/layer_shape.cpp:1255
 msgid "Non Zero"
-msgstr ""
+msgstr "非零"
 
 #: src/synfig/layer_shape.cpp:1256
 msgid "Even/Odd"
-msgstr ""
+msgstr "奇/偶"
 
 #: src/synfig/layer_skeleton.cpp:54
 msgid "Skeleton"
-msgstr ""
+msgstr "骨架"
 
 #: src/synfig/layer_skeleton.cpp:142 src/synfig/valuenode_bone.cpp:587
 msgid "Name"
-msgstr "Nom"
+msgstr "名稱"
 
 #: src/synfig/layer_skeleton.cpp:145
 msgid "Bones"
-msgstr ""
+msgstr "骨架"
 
 #: src/synfig/layer_solidcolor.cpp:56
 msgid "Solid Color"
-msgstr ""
+msgstr "實體顏色"
 
 #: src/synfig/layer_switch.cpp:58 src/synfig/layer_switch.cpp:82
 #: src/synfig/valuenode.cpp:173 src/synfig/valuenode_switch.cpp:133
 #: src/synfig/valuenode_switch.cpp:163
 msgid "Switch"
-msgstr ""
+msgstr "交換器"
 
 #: src/synfig/layer_switch.cpp:91
 msgid "Active Layer Name"
-msgstr ""
+msgstr "激活圖層名稱"
 
 #: src/synfig/layer_switch.cpp:92
 msgid "Only layer with specified name are visible"
@@ -2466,7 +2466,7 @@ msgstr ""
 
 #: src/synfig/loadcanvas.cpp:212
 msgid "Too many warnings"
-msgstr ""
+msgstr "太多警告"
 
 #: src/synfig/loadcanvas.cpp:243
 #, c-format
@@ -2743,7 +2743,7 @@ msgstr ""
 
 #: src/synfig/loadcanvas.cpp:3390 src/synfig/valuenode.cpp:386
 msgid "ValueNode"
-msgstr "Valor del node"
+msgstr ""
 
 #: src/synfig/loadcanvas.cpp:3390
 msgid "ValueNodes"
@@ -2866,11 +2866,11 @@ msgstr ""
 
 #: src/synfig/main.cpp:424 src/tool/progress.h:59 src/tool/renderprogress.h:64
 msgid "warning"
-msgstr ""
+msgstr "警告"
 
 #: src/synfig/main.cpp:439
 msgid "info"
-msgstr ""
+msgstr "資訊"
 
 #: src/synfig/module.cpp:65
 msgid "Errors on lt_dlinit()"
@@ -2946,90 +2946,90 @@ msgstr ""
 #: src/synfig/paramdesc.cpp:68 src/synfig/valuenode.cpp:151
 #: src/synfig/valuenode_composite.cpp:600
 msgid "Composite"
-msgstr ""
+msgstr "合成"
 
 #: src/synfig/paramdesc.cpp:69
 msgid "Straight"
-msgstr ""
+msgstr "直接"
 
 #: src/synfig/paramdesc.cpp:70
 msgid "Onto"
-msgstr ""
+msgstr "在上方"
 
 #: src/synfig/paramdesc.cpp:71
 msgid "Straight Onto"
-msgstr ""
+msgstr "直接在上方"
 
 #: src/synfig/paramdesc.cpp:72
 msgid "Behind"
-msgstr ""
+msgstr "正片疊底"
 
 #: src/synfig/paramdesc.cpp:73
 msgid "Screen"
-msgstr ""
+msgstr "螢幕"
 
 #: src/synfig/paramdesc.cpp:74
 msgid "Overlay"
-msgstr ""
+msgstr "覆蓋"
 
 #: src/synfig/paramdesc.cpp:75
 msgid "Hard Light"
-msgstr ""
+msgstr "高亮"
 
 #: src/synfig/paramdesc.cpp:76
 msgid "Multiply"
-msgstr ""
+msgstr "相乘"
 
 #: src/synfig/paramdesc.cpp:77
 msgid "Divide"
-msgstr ""
+msgstr "相除"
 
 #: src/synfig/paramdesc.cpp:78 src/synfig/valuenode.cpp:168
 #: src/synfig/valuenode_add.cpp:199
 msgid "Add"
-msgstr ""
+msgstr "增加"
 
 #: src/synfig/paramdesc.cpp:79 src/synfig/valuenode.cpp:158
 #: src/synfig/valuenode_subtract.cpp:203
 msgid "Subtract"
-msgstr ""
+msgstr "減去"
 
 #: src/synfig/paramdesc.cpp:80
 msgid "Difference"
-msgstr ""
+msgstr "差異化"
 
 #: src/synfig/paramdesc.cpp:81
 msgid "Brighten"
-msgstr ""
+msgstr "變亮"
 
 #: src/synfig/paramdesc.cpp:82
 msgid "Darken"
-msgstr ""
+msgstr "變暗"
 
 #: src/synfig/paramdesc.cpp:84 src/synfig/valuenode_radialcomposite.cpp:261
 msgid "Hue"
-msgstr "Matís"
+msgstr "色調"
 
 #: src/synfig/paramdesc.cpp:85 src/synfig/valuenode_radialcomposite.cpp:258
 #: src/synfig/valuenode_radialcomposite.cpp:264
 msgid "Saturation"
-msgstr "Saturació"
+msgstr "飽和度"
 
 #: src/synfig/paramdesc.cpp:86
 msgid "Luminance"
-msgstr ""
+msgstr "亮度"
 
 #: src/synfig/paramdesc.cpp:87
 msgid "Alpha Over"
-msgstr ""
+msgstr "透明度覆蓋"
 
 #: src/synfig/paramdesc.cpp:88
 msgid "Alpha Brighten"
-msgstr ""
+msgstr "透明度變亮"
 
 #: src/synfig/paramdesc.cpp:89
 msgid "Alpha Darken"
-msgstr ""
+msgstr "透明度變暗"
 
 #: src/synfig/render.cpp:248 src/synfig/render.cpp:249
 #: src/synfig/render.cpp:303 src/synfig/render.cpp:304
@@ -3051,7 +3051,7 @@ msgstr ""
 #: src/synfig/target_cairo.cpp:92 src/synfig/target_cairo_tile.cpp:194
 #: src/synfig/target_scanline.cpp:98 src/synfig/target_tile.cpp:411
 msgid "Target initialization failure"
-msgstr "Fallada d'inicialización d'objectiu"
+msgstr ""
 
 #: src/synfig/target_cairo.cpp:155
 msgid "Frame Renderer Failure"
@@ -3133,15 +3133,15 @@ msgstr ""
 #: src/synfig/valuenode_blinereversetangent.cpp:164
 #: src/synfig/valuenode_reference.cpp:123
 msgid "Reference"
-msgstr ""
+msgstr "參考手冊"
 
 #: src/synfig/valuenode.cpp:155 src/synfig/valuenode_segcalctangent.cpp:106
 msgid "Segment Tangent"
-msgstr ""
+msgstr "線段切線"
 
 #: src/synfig/valuenode.cpp:156 src/synfig/valuenode_segcalcvertex.cpp:104
 msgid "Segment Vertex"
-msgstr ""
+msgstr "線段頂點"
 
 #: src/synfig/valuenode.cpp:157 src/synfig/valuenode_stripes.cpp:81
 #: src/synfig/valuenode_stripes.cpp:171
@@ -3154,45 +3154,45 @@ msgstr ""
 
 #: src/synfig/valuenode.cpp:161 src/synfig/valuenode_dynamiclist.cpp:770
 msgid "Dynamic List"
-msgstr ""
+msgstr "動態清單"
 
 #: src/synfig/valuenode.cpp:162 src/synfig/valuenode_gradientrotate.cpp:78
 #: src/synfig/valuenode_gradientrotate.cpp:146
 msgid "Gradient Rotate"
-msgstr ""
+msgstr "漸層旋轉"
 
 #: src/synfig/valuenode.cpp:163 src/synfig/valuenode_sine.cpp:110
 msgid "Sine"
-msgstr ""
+msgstr "正弦"
 
 #: src/synfig/valuenode.cpp:165 src/synfig/valuenode_timedswap.cpp:233
 msgid "Timed Swap"
-msgstr ""
+msgstr "定時交換"
 
 #: src/synfig/valuenode.cpp:166 src/synfig/valuenode_repeat_gradient.cpp:84
 #: src/synfig/valuenode_repeat_gradient.cpp:185
 msgid "Repeat Gradient"
-msgstr ""
+msgstr "重複漸層"
 
 #: src/synfig/valuenode.cpp:167 src/synfig/valuenode_exp.cpp:106
 msgid "Exponential"
-msgstr ""
+msgstr "指數"
 
 #: src/synfig/valuenode.cpp:169 src/synfig/valuenode_blinecalctangent.cpp:186
 msgid "Spline Tangent"
-msgstr ""
+msgstr "曲線切線"
 
 #: src/synfig/valuenode.cpp:170 src/synfig/valuenode_blinecalcvertex.cpp:152
 msgid "Spline Vertex"
-msgstr ""
+msgstr "曲線頂點"
 
 #: src/synfig/valuenode.cpp:171 src/synfig/valuenode_range.cpp:258
 msgid "Range"
-msgstr ""
+msgstr "範圍"
 
 #: src/synfig/valuenode.cpp:174 src/synfig/valuenode_cos.cpp:109
 msgid "Cos"
-msgstr ""
+msgstr "餘弦"
 
 #: src/synfig/valuenode.cpp:175 src/synfig/valuenode_atan2.cpp:107
 msgid "aTan2"
@@ -3201,76 +3201,76 @@ msgstr ""
 #: src/synfig/valuenode.cpp:176
 #: src/synfig/valuenode_blinereversetangent.cpp:119
 msgid "Reverse Tangent"
-msgstr ""
+msgstr "反轉切線"
 
 #: src/synfig/valuenode.cpp:178 src/synfig/valuenode_reciprocal.cpp:147
 msgid "Reciprocal"
-msgstr ""
+msgstr "倒數"
 
 #: src/synfig/valuenode.cpp:180 src/synfig/valuenode_integer.cpp:169
 msgid "Integer"
-msgstr "Sencer"
+msgstr "整數"
 
 #: src/synfig/valuenode.cpp:182 src/synfig/valuenode_blinecalcwidth.cpp:155
 msgid "Spline Width"
-msgstr ""
+msgstr "曲線寬度"
 
 #: src/synfig/valuenode.cpp:184 src/synfig/valuenode_vectorangle.cpp:124
 msgid "Vector Angle"
-msgstr ""
+msgstr "向量角度"
 
 #: src/synfig/valuenode.cpp:185 src/synfig/valuenode_vectorlength.cpp:123
 msgid "Vector Length"
-msgstr ""
+msgstr "向量長度"
 
 #: src/synfig/valuenode.cpp:186 src/synfig/valuenode_vectorx.cpp:123
 msgid "Vector X"
-msgstr ""
+msgstr "向量 X"
 
 #: src/synfig/valuenode.cpp:187 src/synfig/valuenode_vectory.cpp:123
 msgid "Vector Y"
-msgstr ""
+msgstr "向量 Y"
 
 #: src/synfig/valuenode.cpp:188 src/synfig/valuenode_gradientcolor.cpp:140
 msgid "Gradient Color"
-msgstr ""
+msgstr "漸層顏色"
 
 #: src/synfig/valuenode.cpp:189 src/synfig/valuenode_dotproduct.cpp:120
 msgid "Dot Product"
-msgstr ""
+msgstr "點乘積"
 
 #: src/synfig/valuenode.cpp:190 src/synfig/valuenode_timestring.cpp:112
 msgid "Time String"
-msgstr ""
+msgstr "時間字串"
 
 #: src/synfig/valuenode.cpp:191 src/synfig/valuenode_real.cpp:158
 #: src/synfig/valuenode_realstring.cpp:170
 msgid "Real"
-msgstr "Real"
+msgstr "浮點"
 
 #: src/synfig/valuenode.cpp:192 src/synfig/valuenode_realstring.cpp:120
 msgid "Real String"
-msgstr ""
+msgstr "浮點字串"
 
 #: src/synfig/valuenode.cpp:193 src/synfig/valuenode_join.cpp:137
 msgid "Joined List"
-msgstr ""
+msgstr "Joined 清單"
 
 #: src/synfig/valuenode.cpp:194 src/synfig/valuenode_anglestring.cpp:122
 msgid "Angle String"
-msgstr ""
+msgstr "角度字串"
 
 #: src/synfig/valuenode.cpp:195 src/synfig/valuenode_intstring.cpp:117
 msgid "Int String"
-msgstr ""
+msgstr "整數字串"
 
 #: src/synfig/valuenode.cpp:196 src/synfig/valuenode_log.cpp:141
 msgid "Logarithm"
-msgstr ""
+msgstr "對數"
 
 #: src/synfig/valuenode.cpp:197 src/synfig/valuenode_greyed.cpp:84
 msgid "Greyed"
-msgstr ""
+msgstr "灰階"
 
 #: src/synfig/valuenode.cpp:198 src/synfig/valuenode_pow.cpp:162
 #: src/synfig/valuenode_pow.cpp:185
@@ -3279,37 +3279,37 @@ msgstr ""
 
 #: src/synfig/valuenode.cpp:199 src/synfig/valuenode_compare.cpp:149
 msgid "Compare"
-msgstr ""
+msgstr "比較"
 
 #: src/synfig/valuenode.cpp:200
 msgid "Not"
-msgstr ""
+msgstr "不是"
 
 #: src/synfig/valuenode.cpp:201
 msgid "And"
-msgstr ""
+msgstr "和"
 
 #: src/synfig/valuenode.cpp:202
 msgid "Or"
-msgstr ""
+msgstr "或"
 
 #: src/synfig/valuenode.cpp:204 src/synfig/valuenode_boneinfluence.cpp:178
 msgid "Bone Influence"
-msgstr ""
+msgstr "骨架影響"
 
 #: src/synfig/valuenode.cpp:205 src/synfig/valuenode_bone.cpp:505
 #: src/synfig/valuenode_bonelink.cpp:208
 #: src/synfig/valuenode_boneweightpair.cpp:162
 msgid "Bone"
-msgstr ""
+msgstr "骨架"
 
 #: src/synfig/valuenode.cpp:206
 msgid "Root Bone"
-msgstr ""
+msgstr "跟骨架"
 
 #: src/synfig/valuenode.cpp:207 src/synfig/valuenode_staticlist.cpp:443
 msgid "Static List"
-msgstr ""
+msgstr "靜態清單"
 
 #: src/synfig/valuenode.cpp:208 src/synfig/valuenode_boneweightpair.cpp:119
 msgid "Bone Weight Pair"
@@ -3317,7 +3317,7 @@ msgstr ""
 
 #: src/synfig/valuenode.cpp:209 src/synfig/valuenode_bonelink.cpp:190
 msgid "Bone Link"
-msgstr ""
+msgstr "骨架連結"
 
 #: src/synfig/valuenode.cpp:211 src/synfig/valuenode_wplist.cpp:357
 msgid "WPList"
@@ -3329,7 +3329,7 @@ msgstr ""
 
 #: src/synfig/valuenode.cpp:214 src/synfig/valuenode_average.cpp:97
 msgid "Average"
-msgstr ""
+msgstr "平均"
 
 #: src/synfig/valuenode.cpp:215
 msgid "Weighted Average"
@@ -3337,11 +3337,11 @@ msgstr ""
 
 #: src/synfig/valuenode.cpp:217 src/synfig/valuenode_dynamic.cpp:171
 msgid "Dynamic"
-msgstr ""
+msgstr "動態"
 
 #: src/synfig/valuenode.cpp:218 src/synfig/valuenode_derivative.cpp:315
 msgid "Derivative"
-msgstr ""
+msgstr "衍生"
 
 #: src/synfig/valuenode.cpp:253
 #, c-format
@@ -3350,7 +3350,7 @@ msgstr ""
 
 #: src/synfig/valuenode.cpp:552
 msgid "Placeholder"
-msgstr ""
+msgstr "佔位符號"
 
 #: src/synfig/valuenode.h:62
 #, c-format
@@ -3472,15 +3472,15 @@ msgstr ""
 
 #: src/synfig/valuenode_animated.cpp:1203
 msgid "Animated"
-msgstr ""
+msgstr "熱烈"
 
 #: src/synfig/valuenode_atan2.cpp:148
 msgid "X"
-msgstr "X"
+msgstr ""
 
 #: src/synfig/valuenode_atan2.cpp:149
 msgid "Cosine of the angle"
-msgstr ""
+msgstr "角度的餘弦"
 
 #: src/synfig/valuenode_atan2.cpp:153
 msgid "Y"
@@ -3488,7 +3488,7 @@ msgstr ""
 
 #: src/synfig/valuenode_atan2.cpp:154
 msgid "Sine of the angle"
-msgstr ""
+msgstr "角度的正弦"
 
 #: src/synfig/valuenode_bline.cpp:986 src/synfig/valuenode_dilist.cpp:154
 #: src/synfig/valuenode_dynamiclist.cpp:675
@@ -3539,7 +3539,7 @@ msgstr ""
 
 #: src/synfig/valuenode_blinecalctangent.cpp:268
 msgid "Fixed Length"
-msgstr ""
+msgstr "固定長度"
 
 #: src/synfig/valuenode_blinecalctangent.cpp:269
 msgid "When checked, the tangent's length is fixed"
@@ -3764,7 +3764,7 @@ msgstr ""
 
 #: src/synfig/valuenode_composite.cpp:629
 msgid "Red"
-msgstr "Roig"
+msgstr "紅"
 
 #: src/synfig/valuenode_composite.cpp:630
 msgid "The red component of the color"
@@ -3772,7 +3772,7 @@ msgstr ""
 
 #: src/synfig/valuenode_composite.cpp:633
 msgid "Green"
-msgstr "Verd"
+msgstr "綠"
 
 #: src/synfig/valuenode_composite.cpp:634
 msgid "The green component of the color"
@@ -3780,7 +3780,7 @@ msgstr ""
 
 #: src/synfig/valuenode_composite.cpp:637
 msgid "Blue"
-msgstr "Blau"
+msgstr "藍"
 
 #: src/synfig/valuenode_composite.cpp:638
 msgid "The blue component of the color"
@@ -3788,7 +3788,7 @@ msgstr ""
 
 #: src/synfig/valuenode_composite.cpp:641
 msgid "Alpha"
-msgstr "Transparència"
+msgstr "透明度"
 
 #: src/synfig/valuenode_composite.cpp:642
 msgid "The alpha of the color"
@@ -3862,7 +3862,7 @@ msgstr ""
 
 #: src/synfig/valuenode_composite.cpp:696
 msgid "Split"
-msgstr ""
+msgstr "分離"
 
 #: src/synfig/valuenode_composite.cpp:697
 msgid "When checked, tangents are independent"
@@ -3878,7 +3878,7 @@ msgstr ""
 
 #: src/synfig/valuenode_composite.cpp:709
 msgid "Radius Split"
-msgstr ""
+msgstr "半徑分離"
 
 #: src/synfig/valuenode_composite.cpp:710
 msgid "When checked, tangent's radius are independent"
@@ -3886,7 +3886,7 @@ msgstr ""
 
 #: src/synfig/valuenode_composite.cpp:713
 msgid "Angle Split"
-msgstr ""
+msgstr "角度分離"
 
 #: src/synfig/valuenode_composite.cpp:714
 msgid "When checked, tangent's angles are independent"
@@ -3913,7 +3913,7 @@ msgstr ""
 #: src/synfig/valuenode_composite.cpp:733
 #: src/synfig/valuenode_composite.cpp:743
 msgid "Interpolate"
-msgstr ""
+msgstr "內插模式"
 
 #: src/synfig/valuenode_composite.cpp:740
 #: src/synfig/valuenode_composite.cpp:782
@@ -3943,7 +3943,7 @@ msgstr ""
 #: src/synfig/valuenode_composite.cpp:768
 #: src/synfig/valuenode_timedswap.cpp:272
 msgid "Length"
-msgstr "Longitud"
+msgstr "長度"
 
 #: src/synfig/valuenode_composite.cpp:769
 msgid "The length of the Dash Item"
@@ -3964,7 +3964,7 @@ msgstr ""
 
 #: src/synfig/valuenode_composite.cpp:804
 msgid "Skew Angle"
-msgstr ""
+msgstr "歪斜角度"
 
 #: src/synfig/valuenode_composite.cpp:805
 msgid "The Skew Angle component of the transformation"
@@ -3980,7 +3980,7 @@ msgstr ""
 
 #: src/synfig/valuenode_composite.cpp:821
 msgid "Value"
-msgstr "Valor"
+msgstr "值"
 
 #: src/synfig/valuenode_composite.cpp:822
 msgid "The Value"
@@ -3988,23 +3988,23 @@ msgstr ""
 
 #: src/synfig/valuenode_composite.cpp:830
 msgid "First"
-msgstr ""
+msgstr "第一"
 
 #: src/synfig/valuenode_composite.cpp:831
 msgid "The First Value"
-msgstr ""
+msgstr "第一個值"
 
 #: src/synfig/valuenode_composite.cpp:834
 msgid "Second"
-msgstr ""
+msgstr "第二"
 
 #: src/synfig/valuenode_composite.cpp:835
 msgid "The Second Value"
-msgstr ""
+msgstr "第二個值"
 
 #: src/synfig/valuenode_cos.cpp:156
 msgid "Value to calculate the cosine"
-msgstr ""
+msgstr "計算餘弦的值"
 
 #: src/synfig/valuenode_cos.cpp:160 src/synfig/valuenode_sine.cpp:159
 msgid "Amplitude"
@@ -4206,11 +4206,11 @@ msgstr ""
 #: src/synfig/valuenode_staticlist.cpp:459
 #, c-format
 msgid "Item %03d"
-msgstr ""
+msgstr "項目 %03d"
 
 #: src/synfig/valuenode_exp.cpp:150
 msgid "Exponent"
-msgstr ""
+msgstr "指數"
 
 #: src/synfig/valuenode_exp.cpp:151
 msgid "The value to raise the constant 'e'"
@@ -4242,7 +4242,7 @@ msgstr ""
 
 #: src/synfig/valuenode_greyed.cpp:97
 msgid "The greyed value"
-msgstr ""
+msgstr "灰階值"
 
 #: src/synfig/valuenode_integer.cpp:192
 msgid "The integer value to be converted"
@@ -4250,11 +4250,11 @@ msgstr ""
 
 #: src/synfig/valuenode_intstring.cpp:165
 msgid "Int"
-msgstr ""
+msgstr "整數"
 
 #: src/synfig/valuenode_join.cpp:187
 msgid "Strings"
-msgstr ""
+msgstr "字串"
 
 #: src/synfig/valuenode_join.cpp:188
 msgid "The List of strings to join"
@@ -4262,7 +4262,7 @@ msgstr ""
 
 #: src/synfig/valuenode_join.cpp:192 src/synfig/valuenode_timedswap.cpp:257
 msgid "Before"
-msgstr ""
+msgstr "之前"
 
 #: src/synfig/valuenode_join.cpp:193
 msgid "The string to place before the joined strings"
@@ -4278,7 +4278,7 @@ msgstr ""
 
 #: src/synfig/valuenode_join.cpp:202 src/synfig/valuenode_timedswap.cpp:262
 msgid "After"
-msgstr ""
+msgstr "之後"
 
 #: src/synfig/valuenode_join.cpp:203
 msgid "The string to place after the joined strings"
@@ -4360,7 +4360,7 @@ msgstr ""
 
 #: src/synfig/valuenode_radialcomposite.cpp:255
 msgid "Luma"
-msgstr "Luma"
+msgstr "亮度"
 
 #: src/synfig/valuenode_radialcomposite.cpp:273
 msgid "The length of the vector"
@@ -4487,7 +4487,7 @@ msgstr ""
 #: src/synfig/valuenode_segcalctangent.cpp:156
 #: src/synfig/valuenode_segcalcvertex.cpp:154
 msgid "Segment"
-msgstr "Segment"
+msgstr "線段"
 
 #: src/synfig/valuenode_segcalctangent.cpp:157
 msgid "The Segment where the tangent is linked to"
@@ -4608,7 +4608,7 @@ msgstr ""
 #: src/synfig/valuenode_timedswap.cpp:267
 #: src/synfig/valuenode_timestring.cpp:156
 msgid "Time"
-msgstr "Temps"
+msgstr "時間"
 
 #: src/synfig/valuenode_timedswap.cpp:268
 msgid "The time when the linear interpolation ends"
@@ -4648,7 +4648,7 @@ msgstr ""
 #: src/synfig/valuenode_vectorlength.cpp:141
 #: src/synfig/valuenode_vectorx.cpp:141 src/synfig/valuenode_vectory.cpp:141
 msgid "Vector"
-msgstr "Vector"
+msgstr "向量"
 
 #: src/synfig/valuenode_vectorangle.cpp:144
 msgid "The vector where the angle is calculated from"
@@ -4685,7 +4685,7 @@ msgstr ""
 
 #: src/tool/main.cpp:177
 msgid "Settings"
-msgstr "Atributs"
+msgstr "設定"
 
 #: src/tool/main.cpp:179
 msgid "Specify output target (Default: PNG)"
@@ -4714,7 +4714,7 @@ msgstr ""
 
 #: src/tool/main.cpp:185
 msgid "Gamma"
-msgstr "Gamma"
+msgstr ""
 
 #: src/tool/main.cpp:186
 msgid "Enable multithreaded renderer using the specified number of threads"
@@ -4768,7 +4768,7 @@ msgstr ""
 
 #: src/tool/main.cpp:201
 msgid "Switch options"
-msgstr ""
+msgstr "交換器選項"
 
 #: src/tool/main.cpp:203
 msgid "Output verbosity level"
@@ -4784,7 +4784,7 @@ msgstr ""
 
 #: src/tool/main.cpp:206
 msgid "Extract alpha"
-msgstr ""
+msgstr "擷取透明度"
 
 #: src/tool/main.cpp:209
 msgid "Misc options"
@@ -4889,7 +4889,7 @@ msgstr ""
 
 #: src/tool/joblistprocessor.cpp:123
 msgid "Defaulting to PNG target..."
-msgstr ""
+msgstr "預設為 PNG..."
 
 #: src/tool/joblistprocessor.cpp:148
 #, c-format
@@ -4927,7 +4927,7 @@ msgstr ""
 
 #: src/tool/joblistprocessor.cpp:234
 msgid "Rendering..."
-msgstr "Renderitzant..."
+msgstr "繪製中..."
 
 #: src/tool/joblistprocessor.cpp:244
 msgid ": Rendered in "
@@ -4939,7 +4939,7 @@ msgstr ""
 
 #: src/tool/joblistprocessor.cpp:248
 msgid "Done."
-msgstr "Fet."
+msgstr "完成."
 
 #: src/tool/optionsprocessor.cpp:117
 msgid "Unrecognised canvas variable: "
@@ -4983,7 +4983,7 @@ msgstr ""
 
 #: src/tool/optionsprocessor.cpp:243
 msgid "\tDescription: "
-msgstr ""
+msgstr "\t描述: "
 
 #: src/tool/optionsprocessor.cpp:247
 msgid "\tHint: "
@@ -5169,19 +5169,19 @@ msgstr ""
 
 #: src/tool/printing_functions.cpp:240
 msgid "Focus"
-msgstr ""
+msgstr "焦點"
 
 #: src/tool/printing_functions.cpp:247
 msgid "Background Color"
-msgstr ""
+msgstr "背景顏色"
 
 #: src/tool/printing_functions.cpp:258
 msgid "Metadata"
-msgstr ""
+msgstr "元資料"
 
 #: src/tool/renderprogress.h:109
 msgid "Line"
-msgstr ""
+msgstr "線"
 
 #: src/tool/renderprogress.h:109
 msgid " of "
@@ -5205,4 +5205,4 @@ msgstr ""
 
 #: src/tool/renderprogress.h:136
 msgid "s "
-msgstr "s "
+msgstr ""

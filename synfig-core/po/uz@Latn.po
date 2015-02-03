@@ -3,6 +3,7 @@
 # This file is distributed under the same license as the Synfig Core package.
 # 
 # Translators:
+# Umid Almasov <u.almasov@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Synfig\n"
@@ -10,17 +11,17 @@ msgstr ""
 "POT-Creation-Date: 2015-02-03 14:00+0700\n"
 "PO-Revision-Date: 2015-01-30 14:06+0000\n"
 "Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
-"Language-Team: Catalan (http://www.transifex.com/projects/p/synfig/language/ca/)\n"
+"Language-Team: Uzbek (Latin) (http://www.transifex.com/projects/p/synfig/language/uz@Latn/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ca\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: uz@Latn\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:66
 #: src/modules/lyr_freetype/lyr_freetype.cpp:569
 msgid "Text"
-msgstr ""
+msgstr "Matn"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:67
 #: src/modules/lyr_std/import.cpp:61 src/modules/lyr_std/stroboscope.cpp:61
@@ -29,15 +30,15 @@ msgstr ""
 #: src/synfig/layer_duplicate.cpp:57 src/synfig/layer_skeleton.cpp:55
 #: src/synfig/layer_switch.cpp:59
 msgid "Other"
-msgstr "Un altre"
+msgstr "Boshqa"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:97
 msgid "Text Layer"
-msgstr ""
+msgstr "Matn qatlami"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:398
 msgid "unable to initialize"
-msgstr ""
+msgstr "initsializatsiya qilib bo'lmadi"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:417
 msgid "empty font set"
@@ -56,33 +57,33 @@ msgstr ""
 #: src/modules/mod_geometry/rectangle.cpp:138 src/synfig/layer_shape.cpp:1225
 #: src/synfig/layer_solidcolor.cpp:114 src/synfig/paramdesc.cpp:83
 msgid "Color"
-msgstr "Color"
+msgstr "Rang"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:576
 msgid "Color of the text"
-msgstr ""
+msgstr "Matnning rangi"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:580
 msgid "Font Family"
-msgstr ""
+msgstr "Shriftlar oilasi"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:585
 msgid "Style"
-msgstr ""
+msgstr "Uslub"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:587
 #: src/modules/lyr_freetype/lyr_freetype.cpp:597
 #: src/synfig/valuenode_derivative.cpp:379
 msgid "Normal"
-msgstr ""
+msgstr "Normal"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:588
 msgid "Oblique"
-msgstr ""
+msgstr "Qiyalik"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:589
 msgid "Italic"
-msgstr ""
+msgstr "Kursiv"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:593
 #: src/synfig/valuenode_composite.cpp:817
@@ -159,7 +160,7 @@ msgstr ""
 #: src/synfig/layer_shape.cpp:1229 src/synfig/valuenode_bone.cpp:597
 #: src/synfig/valuenode_composite.cpp:692 src/synfig/valuenode_dynamic.cpp:241
 msgid "Origin"
-msgstr "Origen"
+msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:628
 msgid "Text Position"
@@ -193,7 +194,7 @@ msgstr ""
 #: src/modules/lyr_std/shade.cpp:645 src/modules/mod_geometry/circle.cpp:165
 #: src/synfig/layer_shape.cpp:1232
 msgid "Invert"
-msgstr "Inverteix"
+msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:716
 msgid "No face loaded, no text will be rendered."
@@ -218,7 +219,7 @@ msgstr ""
 #: src/modules/lyr_std/bevel.cpp:69 src/modules/mod_example/filledrect.cpp:157
 #: src/modules/mod_geometry/advanced_outline.cpp:1172
 msgid "Bevel"
-msgstr ""
+msgstr "Relyef"
 
 #: src/modules/lyr_std/bevel.cpp:70 src/modules/lyr_std/shade.cpp:69
 msgid "Stylize"
@@ -228,7 +229,7 @@ msgstr ""
 #: src/modules/mod_filter/blur.cpp:419
 #: src/modules/mod_filter/halftone2.cpp:174
 msgid "Type"
-msgstr "Tipus"
+msgstr ""
 
 #: src/modules/lyr_std/bevel.cpp:627 src/modules/lyr_std/shade.cpp:635
 #: src/modules/mod_filter/blur.cpp:420
@@ -282,7 +283,7 @@ msgstr ""
 
 #: src/modules/lyr_std/bevel.cpp:654
 msgid "Use Luma"
-msgstr "Luma"
+msgstr ""
 
 #: src/modules/lyr_std/bevel.cpp:657
 msgid "Solid"
@@ -409,7 +410,7 @@ msgstr ""
 
 #: src/modules/lyr_std/import.cpp:60
 msgid "Import Image"
-msgstr "Importa la imatge"
+msgstr ""
 
 #: src/modules/lyr_std/import.cpp:161 src/modules/lyr_std/import.cpp:218
 #, c-format
@@ -615,7 +616,7 @@ msgstr ""
 #: src/synfig/valuenode_segcalctangent.cpp:161
 #: src/synfig/valuenode_segcalcvertex.cpp:159
 msgid "Amount"
-msgstr "Quantitat"
+msgstr ""
 
 #: src/modules/lyr_std/rotate.cpp:123
 msgid "Amount of rotation"
@@ -652,7 +653,7 @@ msgstr ""
 #: src/modules/mod_noise/valuenode_random.cpp:255
 #: src/synfig/valuenode_radialcomposite.cpp:272
 msgid "Radius"
-msgstr "Ràdio"
+msgstr "Radius"
 
 #: src/modules/lyr_std/sphere_distort.cpp:149
 msgid "The size of the sphere distortion"
@@ -700,7 +701,7 @@ msgstr ""
 #: src/modules/mod_gradient/radialgradient.cpp:118
 #: src/modules/mod_gradient/spiralgradient.cpp:118
 msgid "Center"
-msgstr ""
+msgstr "Markaz"
 
 #: src/modules/lyr_std/stretch.cpp:111
 msgid "Where the stretch distortion is centered"
@@ -812,14 +813,14 @@ msgstr ""
 #: src/modules/mod_example/simplecircle.cpp:113
 #: src/modules/mod_geometry/circle.cpp:162
 msgid "Center of the circle"
-msgstr ""
+msgstr "Aylana markazi"
 
 #: src/modules/lyr_std/twirl.cpp:118
 #: src/modules/mod_example/simplecircle.cpp:118
 #: src/modules/mod_gradient/radialgradient.cpp:124
 #: src/modules/mod_gradient/spiralgradient.cpp:124
 msgid "This is the radius of the circle"
-msgstr ""
+msgstr "Bu aylananing radiusi"
 
 #: src/modules/lyr_std/twirl.cpp:124
 msgid "Rotations"
@@ -971,7 +972,7 @@ msgstr ""
 
 #: src/modules/mod_bmp/trgt_bmp.cpp:197 src/modules/mod_bmp/trgt_bmp.cpp:198
 msgid "Unable to open file"
-msgstr "Ha estat impossible d'obrir el fitxer"
+msgstr ""
 
 #: src/modules/mod_bmp/trgt_bmp.cpp:228 src/modules/mod_bmp/trgt_bmp.cpp:229
 msgid "Unable to write file header to file"
@@ -991,13 +992,13 @@ msgstr ""
 
 #: src/modules/mod_example/filledrect.cpp:59
 msgid "Filled Rectangle"
-msgstr ""
+msgstr "Bo'yalgan to'g'riburchak"
 
 #: src/modules/mod_example/filledrect.cpp:60
 #: src/modules/mod_example/metaballs.cpp:58
 #: src/modules/mod_example/simplecircle.cpp:58
 msgid "Example"
-msgstr ""
+msgstr "Misol"
 
 #: src/modules/mod_example/filledrect.cpp:132
 #: src/modules/mod_example/simplecircle.cpp:108
@@ -1005,29 +1006,29 @@ msgstr ""
 #: src/modules/mod_geometry/rectangle.cpp:139
 #: src/synfig/layer_solidcolor.cpp:115
 msgid "Fill color of the layer"
-msgstr ""
+msgstr "Qatlamning bo'yash rangi"
 
 #: src/modules/mod_example/filledrect.cpp:136
 #: src/modules/mod_geometry/rectangle.cpp:143
 #: src/modules/mod_gradient/lineargradient.cpp:190
 msgid "Point 1"
-msgstr ""
+msgstr "Nuqta 1"
 
 #: src/modules/mod_example/filledrect.cpp:137
 #: src/modules/mod_geometry/rectangle.cpp:145
 msgid "First corner of the rectangle"
-msgstr ""
+msgstr "To'g'riburchakning birinchi burchagi"
 
 #: src/modules/mod_example/filledrect.cpp:142
 #: src/modules/mod_geometry/rectangle.cpp:149
 #: src/modules/mod_gradient/lineargradient.cpp:195
 msgid "Point 2"
-msgstr ""
+msgstr "Nuqta 2"
 
 #: src/modules/mod_example/filledrect.cpp:143
 #: src/modules/mod_geometry/rectangle.cpp:150
 msgid "Second corner of the rectangle"
-msgstr ""
+msgstr "To'g'riburchakning ikkinchi burchagi"
 
 #: src/modules/mod_example/filledrect.cpp:147
 msgid "Feather X"
@@ -1039,15 +1040,15 @@ msgstr ""
 
 #: src/modules/mod_example/filledrect.cpp:158
 msgid "Use Bevel for the corners"
-msgstr ""
+msgstr "Burchaklar uchun relyefdan foydalanish"
 
 #: src/modules/mod_example/filledrect.cpp:163
 msgid "Keep Bevel Circular"
-msgstr ""
+msgstr "Relyefni aylanma saqlash"
 
 #: src/modules/mod_example/filledrect.cpp:164
 msgid "When checked the bevel is circular"
-msgstr ""
+msgstr "Belgilanganda relyef aylanma"
 
 #: src/modules/mod_example/metaballs.cpp:57
 msgid "Metaballs"
@@ -1064,7 +1065,7 @@ msgstr ""
 #: src/synfig/valuenode_gradientrotate.cpp:164
 #: src/synfig/valuenode_repeat_gradient.cpp:203
 msgid "Gradient"
-msgstr ""
+msgstr "Gradiyent"
 
 #: src/modules/mod_example/metaballs.cpp:133
 msgid "Balls"
@@ -1092,7 +1093,7 @@ msgstr ""
 
 #: src/modules/mod_example/simplecircle.cpp:57
 msgid "Simple Circle"
-msgstr ""
+msgstr "Oddiy aylana"
 
 #: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:207
 msgid ""
@@ -1210,7 +1211,7 @@ msgstr ""
 
 #: src/modules/mod_filter/halftone3.cpp:331
 msgid " Type"
-msgstr "Tipus"
+msgstr ""
 
 #: src/modules/mod_filter/halftone3.cpp:340
 msgid "Subtractive Flag"
@@ -1218,7 +1219,7 @@ msgstr ""
 
 #: src/modules/mod_filter/halftone3.cpp:348
 msgid " Color"
-msgstr "Color"
+msgstr "Rang"
 
 #: src/modules/mod_filter/halftone3.cpp:352
 msgid " Mask Origin"
@@ -1441,7 +1442,7 @@ msgstr ""
 
 #: src/modules/mod_geometry/circle.cpp:156 src/synfig/layer_shape.cpp:1238
 msgid "Feather"
-msgstr "Esvaïment"
+msgstr ""
 
 #: src/modules/mod_geometry/circle.cpp:158
 msgid "Amount of feather of the circle"
@@ -1453,11 +1454,11 @@ msgstr ""
 
 #: src/modules/mod_geometry/circle.cpp:170
 msgid "Falloff"
-msgstr "Caiguda"
+msgstr ""
 
 #: src/modules/mod_geometry/circle.cpp:171
 msgid "Determines the falloff function for the feather"
-msgstr "Determina la funció de caiguda de l'esvaïment"
+msgstr ""
 
 #: src/modules/mod_geometry/circle.cpp:173
 #: src/modules/mod_noise/distort.cpp:239 src/modules/mod_noise/noise.cpp:284
@@ -1465,26 +1466,26 @@ msgstr "Determina la funció de caiguda de l'esvaïment"
 #: src/synfig/layer_bitmap.cpp:169 src/synfig/layer_motionblur.cpp:149
 #: src/synfig/valuenode.cpp:150 src/synfig/valuenode_linear.cpp:154
 msgid "Linear"
-msgstr "Lineal"
+msgstr ""
 
 #: src/modules/mod_geometry/circle.cpp:174
 msgid "Squared"
-msgstr "Proporcional"
+msgstr ""
 
 #: src/modules/mod_geometry/circle.cpp:175
 msgid "Square Root"
-msgstr "Arrel quadrada"
+msgstr ""
 
 #: src/modules/mod_geometry/circle.cpp:176
 msgid "Sigmond"
-msgstr "Sigmoidea"
+msgstr ""
 
 #: src/modules/mod_geometry/circle.cpp:177
 #: src/modules/mod_noise/distort.cpp:240 src/modules/mod_noise/noise.cpp:285
 #: src/modules/mod_noise/valuenode_random.cpp:275
 #: src/synfig/layer_bitmap.cpp:170
 msgid "Cosine"
-msgstr "Cossinus"
+msgstr ""
 
 #: src/modules/mod_geometry/outline.cpp:72
 msgid "Outline"
@@ -1566,7 +1567,7 @@ msgstr ""
 #: src/synfig/valuenode_composite.cpp:800 src/synfig/valuenode_cos.cpp:155
 #: src/synfig/valuenode_sine.cpp:154
 msgid "Angle"
-msgstr "Angle"
+msgstr ""
 
 #: src/modules/mod_geometry/star.cpp:185
 msgid "The orientation of the star"
@@ -1574,7 +1575,7 @@ msgstr ""
 
 #: src/modules/mod_geometry/star.cpp:190 src/synfig/distance.cpp:253
 msgid "Points"
-msgstr "Punts"
+msgstr ""
 
 #: src/modules/mod_geometry/star.cpp:191
 msgid "The number of points in the star"
@@ -1655,7 +1656,7 @@ msgstr ""
 #: src/synfig/valuenode_blinecalcwidth.cpp:211
 #: src/synfig/valuenode_gradientcolor.cpp:168
 msgid "Loop"
-msgstr "Bucle"
+msgstr ""
 
 #: src/modules/mod_gradient/curvegradient.cpp:573
 #: src/modules/mod_gradient/lineargradient.cpp:207
@@ -1798,7 +1799,7 @@ msgstr ""
 #: src/modules/mod_noise/valuenode_random.cpp:270
 #: src/synfig/layer_bitmap.cpp:165
 msgid "Interpolation"
-msgstr "Interpolació"
+msgstr ""
 
 #: src/modules/mod_noise/distort.cpp:236 src/modules/mod_noise/noise.cpp:281
 #: src/synfig/layer_bitmap.cpp:166
@@ -1887,7 +1888,7 @@ msgstr ""
 #: src/synfig/valuenode_reference.cpp:143 src/synfig/valuenode_scale.cpp:249
 #: src/synfig/valuenode_step.cpp:192 src/synfig/valuenode_timeloop.cpp:174
 msgid "Link"
-msgstr "Enllaça"
+msgstr ""
 
 #: src/modules/mod_noise/valuenode_random.cpp:251
 msgid "The value node source that provides the central value"
@@ -2089,7 +2090,7 @@ msgstr ""
 
 #: src/synfig/base_types.cpp:166 src/synfig/base_types.cpp:167
 msgid "real"
-msgstr "Real"
+msgstr ""
 
 #: src/synfig/base_types.cpp:194 src/synfig/base_types.cpp:195
 msgid "time"
@@ -2097,15 +2098,15 @@ msgstr ""
 
 #: src/synfig/base_types.cpp:220
 msgid "vector"
-msgstr "Vector"
+msgstr ""
 
 #: src/synfig/base_types.cpp:239
 msgid "color"
-msgstr "Color"
+msgstr "Rang"
 
 #: src/synfig/base_types.cpp:258
 msgid "segment"
-msgstr "Segment"
+msgstr ""
 
 #: src/synfig/base_types.cpp:278
 msgid "spline_point"
@@ -2133,7 +2134,7 @@ msgstr ""
 
 #: src/synfig/base_types.cpp:434
 msgid "canvas"
-msgstr "Llenç"
+msgstr ""
 
 #: src/synfig/base_types.cpp:465
 msgid "string"
@@ -2179,27 +2180,27 @@ msgstr ""
 
 #: src/synfig/distance.cpp:251
 msgid "Units"
-msgstr "Unitats"
+msgstr ""
 
 #: src/synfig/distance.cpp:252
 msgid "Pixels"
-msgstr "Píxels"
+msgstr ""
 
 #: src/synfig/distance.cpp:254
 msgid "Inches"
-msgstr "Polzades"
+msgstr ""
 
 #: src/synfig/distance.cpp:255
 msgid "Meters"
-msgstr "Metres"
+msgstr ""
 
 #: src/synfig/distance.cpp:256
 msgid "Millimeters"
-msgstr "Mil·límetres"
+msgstr ""
 
 #: src/synfig/distance.cpp:257
 msgid "Centimeters"
-msgstr "Centímetres"
+msgstr ""
 
 #: src/synfig/importer.cpp:88
 msgid "Importer::open(): Cannot open empty filename"
@@ -2247,7 +2248,7 @@ msgstr ""
 
 #: src/synfig/layer_composite.cpp:255 src/synfig/paramdesc.cpp:66
 msgid "Blend Method"
-msgstr "Mètode de barreja"
+msgstr ""
 
 #: src/synfig/layer_composite.cpp:256
 msgid "The blending method used to composite on the layers below"
@@ -2256,12 +2257,12 @@ msgstr ""
 #: src/synfig/layer_duplicate.cpp:56 src/synfig/valuenode.cpp:179
 #: src/synfig/valuenode_duplicate.cpp:175
 msgid "Duplicate"
-msgstr "Duplica"
+msgstr ""
 
 #: src/synfig/layer_duplicate.cpp:151
 #: src/synfig/valuenode_gradientcolor.cpp:163
 msgid "Index"
-msgstr "Índex"
+msgstr ""
 
 #: src/synfig/layer_duplicate.cpp:152
 msgid "Copy Index"
@@ -2337,7 +2338,7 @@ msgstr ""
 
 #: src/synfig/layer_pastecanvas.cpp:137
 msgid "Canvas"
-msgstr "Llenç"
+msgstr ""
 
 #: src/synfig/layer_pastecanvas.cpp:138
 msgid "Group content"
@@ -2425,7 +2426,7 @@ msgstr ""
 
 #: src/synfig/layer_skeleton.cpp:142 src/synfig/valuenode_bone.cpp:587
 msgid "Name"
-msgstr "Nom"
+msgstr ""
 
 #: src/synfig/layer_skeleton.cpp:145
 msgid "Bones"
@@ -2743,7 +2744,7 @@ msgstr ""
 
 #: src/synfig/loadcanvas.cpp:3390 src/synfig/valuenode.cpp:386
 msgid "ValueNode"
-msgstr "Valor del node"
+msgstr ""
 
 #: src/synfig/loadcanvas.cpp:3390
 msgid "ValueNodes"
@@ -3008,12 +3009,12 @@ msgstr ""
 
 #: src/synfig/paramdesc.cpp:84 src/synfig/valuenode_radialcomposite.cpp:261
 msgid "Hue"
-msgstr "Matís"
+msgstr ""
 
 #: src/synfig/paramdesc.cpp:85 src/synfig/valuenode_radialcomposite.cpp:258
 #: src/synfig/valuenode_radialcomposite.cpp:264
 msgid "Saturation"
-msgstr "Saturació"
+msgstr ""
 
 #: src/synfig/paramdesc.cpp:86
 msgid "Luminance"
@@ -3051,7 +3052,7 @@ msgstr ""
 #: src/synfig/target_cairo.cpp:92 src/synfig/target_cairo_tile.cpp:194
 #: src/synfig/target_scanline.cpp:98 src/synfig/target_tile.cpp:411
 msgid "Target initialization failure"
-msgstr "Fallada d'inicialización d'objectiu"
+msgstr ""
 
 #: src/synfig/target_cairo.cpp:155
 msgid "Frame Renderer Failure"
@@ -3209,7 +3210,7 @@ msgstr ""
 
 #: src/synfig/valuenode.cpp:180 src/synfig/valuenode_integer.cpp:169
 msgid "Integer"
-msgstr "Sencer"
+msgstr ""
 
 #: src/synfig/valuenode.cpp:182 src/synfig/valuenode_blinecalcwidth.cpp:155
 msgid "Spline Width"
@@ -3246,7 +3247,7 @@ msgstr ""
 #: src/synfig/valuenode.cpp:191 src/synfig/valuenode_real.cpp:158
 #: src/synfig/valuenode_realstring.cpp:170
 msgid "Real"
-msgstr "Real"
+msgstr ""
 
 #: src/synfig/valuenode.cpp:192 src/synfig/valuenode_realstring.cpp:120
 msgid "Real String"
@@ -3476,7 +3477,7 @@ msgstr ""
 
 #: src/synfig/valuenode_atan2.cpp:148
 msgid "X"
-msgstr "X"
+msgstr ""
 
 #: src/synfig/valuenode_atan2.cpp:149
 msgid "Cosine of the angle"
@@ -3764,7 +3765,7 @@ msgstr ""
 
 #: src/synfig/valuenode_composite.cpp:629
 msgid "Red"
-msgstr "Roig"
+msgstr ""
 
 #: src/synfig/valuenode_composite.cpp:630
 msgid "The red component of the color"
@@ -3772,7 +3773,7 @@ msgstr ""
 
 #: src/synfig/valuenode_composite.cpp:633
 msgid "Green"
-msgstr "Verd"
+msgstr ""
 
 #: src/synfig/valuenode_composite.cpp:634
 msgid "The green component of the color"
@@ -3780,7 +3781,7 @@ msgstr ""
 
 #: src/synfig/valuenode_composite.cpp:637
 msgid "Blue"
-msgstr "Blau"
+msgstr ""
 
 #: src/synfig/valuenode_composite.cpp:638
 msgid "The blue component of the color"
@@ -3788,7 +3789,7 @@ msgstr ""
 
 #: src/synfig/valuenode_composite.cpp:641
 msgid "Alpha"
-msgstr "Transparència"
+msgstr ""
 
 #: src/synfig/valuenode_composite.cpp:642
 msgid "The alpha of the color"
@@ -3943,7 +3944,7 @@ msgstr ""
 #: src/synfig/valuenode_composite.cpp:768
 #: src/synfig/valuenode_timedswap.cpp:272
 msgid "Length"
-msgstr "Longitud"
+msgstr ""
 
 #: src/synfig/valuenode_composite.cpp:769
 msgid "The length of the Dash Item"
@@ -3980,7 +3981,7 @@ msgstr ""
 
 #: src/synfig/valuenode_composite.cpp:821
 msgid "Value"
-msgstr "Valor"
+msgstr ""
 
 #: src/synfig/valuenode_composite.cpp:822
 msgid "The Value"
@@ -4360,7 +4361,7 @@ msgstr ""
 
 #: src/synfig/valuenode_radialcomposite.cpp:255
 msgid "Luma"
-msgstr "Luma"
+msgstr ""
 
 #: src/synfig/valuenode_radialcomposite.cpp:273
 msgid "The length of the vector"
@@ -4487,7 +4488,7 @@ msgstr ""
 #: src/synfig/valuenode_segcalctangent.cpp:156
 #: src/synfig/valuenode_segcalcvertex.cpp:154
 msgid "Segment"
-msgstr "Segment"
+msgstr ""
 
 #: src/synfig/valuenode_segcalctangent.cpp:157
 msgid "The Segment where the tangent is linked to"
@@ -4608,7 +4609,7 @@ msgstr ""
 #: src/synfig/valuenode_timedswap.cpp:267
 #: src/synfig/valuenode_timestring.cpp:156
 msgid "Time"
-msgstr "Temps"
+msgstr ""
 
 #: src/synfig/valuenode_timedswap.cpp:268
 msgid "The time when the linear interpolation ends"
@@ -4648,7 +4649,7 @@ msgstr ""
 #: src/synfig/valuenode_vectorlength.cpp:141
 #: src/synfig/valuenode_vectorx.cpp:141 src/synfig/valuenode_vectory.cpp:141
 msgid "Vector"
-msgstr "Vector"
+msgstr ""
 
 #: src/synfig/valuenode_vectorangle.cpp:144
 msgid "The vector where the angle is calculated from"
@@ -4685,7 +4686,7 @@ msgstr ""
 
 #: src/tool/main.cpp:177
 msgid "Settings"
-msgstr "Atributs"
+msgstr ""
 
 #: src/tool/main.cpp:179
 msgid "Specify output target (Default: PNG)"
@@ -4714,7 +4715,7 @@ msgstr ""
 
 #: src/tool/main.cpp:185
 msgid "Gamma"
-msgstr "Gamma"
+msgstr ""
 
 #: src/tool/main.cpp:186
 msgid "Enable multithreaded renderer using the specified number of threads"
@@ -4927,7 +4928,7 @@ msgstr ""
 
 #: src/tool/joblistprocessor.cpp:234
 msgid "Rendering..."
-msgstr "Renderitzant..."
+msgstr ""
 
 #: src/tool/joblistprocessor.cpp:244
 msgid ": Rendered in "
@@ -4939,7 +4940,7 @@ msgstr ""
 
 #: src/tool/joblistprocessor.cpp:248
 msgid "Done."
-msgstr "Fet."
+msgstr ""
 
 #: src/tool/optionsprocessor.cpp:117
 msgid "Unrecognised canvas variable: "
@@ -5205,4 +5206,4 @@ msgstr ""
 
 #: src/tool/renderprogress.h:136
 msgid "s "
-msgstr "s "
+msgstr ""

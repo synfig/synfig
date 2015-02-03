@@ -336,7 +336,7 @@ AM_CONDITIONAL(WITH_JPEG, test $with_jpeg = yes)
 AC_LIB_LTDL
 
 # Languages list (alphabetical order, please!)
-ALL_LINGUAS="ar ca cs da de el_GR en_GB es eu eu_ES fa_IR fr he hu it ja_JP lt nl no_NO pl_PL pt_BR ro ru si sk_SK sv_SE tr zh_CN"
+ALL_LINGUAS="ar ca cs da de el_GR en_GB es eu eu_ES fa_IR fr he hu it ja_JP lt nl no_NO pl_PL pt_BR ro ru si sk_SK sv_SE tr uz@Latn zh_CN zh_TW"
 
 AM_GNU_GETTEXT([external])
 # This is here so autoreconf will run autopoint
