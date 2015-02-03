@@ -39,7 +39,11 @@ set -e
 export RELEASE=1
 export BUILDROOT_VERSION=1
 
-BUILDDIR=~/SynfigStudio-build
+if [ ! -z $UNIVERSAL ]; then
+export BUILDDIR=~/SynfigStudio-build.universal
+else
+export BUILDDIR=~/SynfigStudio-build
+fi
 LNKDIR=/tmp/skl/SynfigStudio
 MACPORTS=$LNKDIR/Contents/Resources
 MPSRC=MacPorts-2.2.1
@@ -58,10 +62,12 @@ export LD_LIBRARY_PATH=${MACPORTS}/lib:${SYNFIG_PREFIX}/lib:${SYNFIG_PREFIX}/lib
 #export ACLOCAL_FLAGS="-I ${SYNFIG_PREFIX}/share/aclocal -I ${MACPORTS}/share/aclocal"
 #export CPPFLAGS="-fpermissive -I${MACPORTS}/include -I${SYNFIG_PREFIX}/include"
 export CPPFLAGS="-I${MACPORTS}/include -I${SYNFIG_PREFIX}/include"
+export LDFLAGS="-L${MACPORTS}/lib -L${SYNFIG_PREFIX}/lib"
+if [ ! -z $UNIVERSAL ]; then
 export CFLAGS="-arch i386 -arch x86_64"
 export CXXFLAGS="-arch i386 -arch x86_64"
-export LDFLAGS="-L${MACPORTS}/lib -L${SYNFIG_PREFIX}/lib"
 export LDFLAGS="$LDFLAGS -arch i386 -arch x86_64"
+fi
 
 if [ `whoami` != "root" ]; then
 	echo "Please use sudo to run this script. Aborting."
@@ -195,8 +201,10 @@ mkdeps()
 	[ -d $MACPORTS/tmp/app ] || mkdir -p $MACPORTS/tmp/app
 	sed -i "" -e "s|/Applications/MacPorts|$MACPORTS/tmp/app|g" "$MACPORTS/etc/macports/macports.conf" || true
 	
-	#echo "+universal +no_x11 +quartz" > $MACPORTS/etc/macports/variants.conf
-	echo "+universal +no_x11 +quartz -x11 +nonfree" > $MACPORTS/etc/macports/variants.conf
+	if [ ! -z $UNIVERSAL ]; then
+		echo "+universal +no_x11 +quartz -x11 +nonfree" > $MACPORTS/etc/macports/variants.conf
+	else
+		echo "+no_x11 +quartz -x11 +nonfree" > $MACPORTS/etc/macports/variants.conf
 	
 	pushd ${SCRIPTPATH}/macports
 	portindex
@@ -253,8 +261,6 @@ mkdeps()
 mketl()
 {
 	# building ETL
-	export CFLAGS="-arch i386 -arch x86_64"
-	export CXXFLAGS="-arch i386 -arch x86_64"
 	pushd ${SYNFIG_REPO_DIR}/ETL
 	rm -f aclocal.m4
 	autoreconf --install --force
@@ -279,7 +285,10 @@ mksynfig()
 	sed -i 's/^AC_CONFIG_SUBDIRS(libltdl)$/m4_ifdef([_AC_SEEN_TAG(libltdl)], [], [AC_CONFIG_SUBDIRS(libltdl)])/' configure.ac || true
 	sed -i 's/^# AC_CONFIG_SUBDIRS(libltdl)$/m4_ifdef([_AC_SEEN_TAG(libltdl)], [], [AC_CONFIG_SUBDIRS(libltdl)])/' configure.ac || true
 	autoreconf --install --force
-	/bin/sh ./configure --disable-dependency-tracking --prefix=${SYNFIG_PREFIX} --includedir=${SYNFIG_PREFIX}/include --disable-static --enable-shared --with-magickpp --without-libavcodec --with-boost=${MACPORTS} ${DEBUG}
+	if [ ! -z $UNIVERSAL ]; then
+	export DEPTRACK="--disable-dependency-tracking"
+	fi
+	/bin/sh ./configure ${DEPTRACK} --prefix=${SYNFIG_PREFIX} --includedir=${SYNFIG_PREFIX}/include --disable-static --enable-shared --with-magickpp --without-libavcodec --with-boost=${MACPORTS} ${DEBUG}
 	make -j$JOBS install
 	popd
 }
@@ -296,7 +305,10 @@ mksynfigstudio()
 	make clean || true
 	CONFIGURE_PACKAGE_OPTIONS='--disable-update-mimedb'
 	/bin/sh ./bootstrap.sh
-	/bin/sh ./configure --disable-dependency-tracking --prefix=${SYNFIG_PREFIX} --includedir=${SYNFIG_PREFIX}/include --disable-static --enable-shared $DEBUG $CONFIGURE_PACKAGE_OPTIONS
+	if [ ! -z $UNIVERSAL ]; then
+	export DEPTRACK="--disable-dependency-tracking"
+	fi
+	/bin/sh ./configure ${DEPTRACK}  --prefix=${SYNFIG_PREFIX} --includedir=${SYNFIG_PREFIX}/include --disable-static --enable-shared $DEBUG $CONFIGURE_PACKAGE_OPTIONS
 	make -j$JOBS install
 
 	for n in AUTHORS COPYING NEWS README
@@ -418,8 +430,12 @@ mkdmg()
 	#echo Synfig version is: $VERSION
 
 	ARCH=`uname -m`
-	FINAL_FILENAME=synfigstudio-"$VERSION"."$ARCH"
-	FINAL_FILENAME=synfigstudio-"$VERSION"
+	if [ ! -z $UNIVERSAL ]; then
+	export FINAL_FILENAME=synfigstudio-"$VERSION"
+	else
+	export FINAL_FILENAME=synfigstudio-"$VERSION"."$ARCH"
+	fi
+	
 
 	VOLNAME="SynfigStudio"
 	TRANSITORY_FILENAME="synfig-wla.sparseimage"
@@ -457,17 +473,17 @@ get_version_release_string()
 {
 	pushd "$SYNFIG_REPO_DIR" > /dev/null
 	VERSION=`cat synfig-core/configure.ac |egrep "AC_INIT\(\[Synfig Core\],"| sed "s|.*Core\],\[||" | sed "s|\],\[.*||"`
-	if [ -z $BREED ]; then
-		BREED="`git branch -a --no-color --contains HEAD | sed -e s/\*\ // | sed -e s/\(no\ branch\)// | tr '\n' ' ' | tr -s ' ' | sed s/^' '//`"
-		if ( echo $BREED | egrep origin/master > /dev/null ); then
-			#give a priority to master branch
-			BREED='master'
-		else
-			BREED=`echo $BREED | cut -d ' ' -f 1`
-			BREED=${BREED##*/}
-		fi
-		BREED=${BREED%_master}
-	fi
+	#if [ -z $BREED ]; then
+	#	BREED="`git branch -a --no-color --contains HEAD | sed -e s/\*\ // | sed -e s/\(no\ branch\)// | tr '\n' ' ' | tr -s ' ' | sed s/^' '//`"
+	#	if ( echo $BREED | egrep origin/master > /dev/null ); then
+	#		#give a priority to master branch
+	#		BREED='master'
+	#	else
+	#		BREED=`echo $BREED | cut -d ' ' -f 1`
+	#		BREED=${BREED##*/}
+	#	fi
+	#	BREED=${BREED%_master}
+	#fi
 	if [[ ${VERSION##*-RC} != ${VERSION} ]]; then
 		#if [[ $BREED == 'master' ]]; then
 			BREED=rc${VERSION##*-RC}
@@ -477,8 +493,9 @@ get_version_release_string()
 		VERSION=${VERSION%%-*}
 	fi
 	BREED=`echo $BREED | tr _ . | tr - .`	# No "-" or "_" characters, becuse RPM and DEB complain
+	BREED=.$BREED
 	REVISION=`git show --pretty=format:%ci HEAD |  head -c 10 | tr -d '-'`
-	echo "$VERSION-$REVISION.$BREED.$RELEASE"
+	echo "$VERSION-$REVISION$BREED.$RELEASE"
 	popd >/dev/null
 }
 
