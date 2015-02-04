@@ -46,7 +46,7 @@ export BUILDDIR=~/SynfigStudio-build
 fi
 LNKDIR=/tmp/skl/SynfigStudio
 MACPORTS=$LNKDIR/Contents/Resources
-MPSRC=MacPorts-2.2.1
+MPSRC=MacPorts-2.3.3
 
 SYNFIG_REPO_DIR=~/src/synfig
 SCRIPTDIR_IS_REPO=0
@@ -126,14 +126,13 @@ mkmacports()
 {
 
 # cleanup previous installation
-if [ -e "$MACPORTS/" ]; then
-  rm -rf "$MACPORTS/"
+if [ -e "$BUILDDIR/" ]; then
+  rm -rf "$BUILDDIR/"
 fi
 
-mkdir -p "$MACPORTS/"
+mkdir -p "$BUILDDIR/"
 
-cd "$BUILDDIR"
-cd ..
+cd ~/src
 
 # compile MacPorts and do a selfupdate
 if [ ! -d "$MPSRC" ]; then
