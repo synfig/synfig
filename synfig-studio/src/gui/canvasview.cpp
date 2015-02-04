@@ -699,6 +699,7 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	jack_synchronizing		(true),
 	jack_is_playing			(false),
 	jack_time				(0),
+	toggling_jack			(false),
 #endif
 
 	working_depth			(0),
@@ -4383,7 +4384,33 @@ CanvasView::is_time_equal_to_current_frame(const synfig::Time &time, const synfi
 void
 CanvasView::toggle_jack_button()
 {
-	set_jack_enabled(!get_jack_enabled());
+	if (!toggling_jack)
+	{
+		string message;
+		string details;
+		if (get_jack_enabled())
+		{
+			message = strprintf(_("Are you sure you want to disable JACK synchronization?" ));
+			details = strprintf(_("The JACK server will remain running."));
+		} else {
+			message = strprintf(_("Are you sure you want to enable JACK synchronization?" ));
+			details = strprintf(_("This operation will launch a JACK server, if it isn't started yet."));
+		}
+		int answer = get_ui_interface()->confirmation(
+					message,
+					details,
+					_("No"),
+					_("Yes"),
+					synfigapp::UIInterface::RESPONSE_OK);
+
+		if(answer == synfigapp::UIInterface::RESPONSE_OK)
+			set_jack_enabled(!get_jack_enabled());
+		
+		// Update button state
+		toggling_jack = true;
+		jackdial->get_toggle_jackbutton()->set_active(get_jack_enabled());
+		toggling_jack = false;
+	}
 }
 
 void
