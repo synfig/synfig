@@ -4,6 +4,7 @@ synfigstudio-thumbnailer.schemas.in
 synfigstudio.keys.in
 plugins/add-skeleton-simple/plugin.xml.in
 plugins/view-unhide-all-layers/plugin.xml.in
+src/brushlib/brushsettings.py
 src/gui/actionmanagers/groupactionmanager.cpp
 src/gui/actionmanagers/groupactionmanager.h
 src/gui/actionmanagers/keyframeactionmanager.cpp
@@ -26,8 +27,10 @@ src/gui/dialogs/canvasproperties.cpp
 src/gui/dialogs/canvasproperties.h
 src/gui/dialogs/dialog_color.cpp
 src/gui/dialogs/dialog_color.h
+src/gui/dialogs/dialog_ffmpegparam.cpp
 src/gui/dialogs/dialog_gradient.cpp
 src/gui/dialogs/dialog_gradient.h
+src/gui/dialogs/dialog_input.cpp
 src/gui/dialogs/dialog_keyframe.cpp
 src/gui/dialogs/dialog_keyframe.h
 src/gui/dialogs/dialog_preview.cpp
@@ -36,12 +39,14 @@ src/gui/dialogs/dialog_setup.cpp
 src/gui/dialogs/dialog_setup.h
 src/gui/dialogs/dialog_soundselect.cpp
 src/gui/dialogs/dialog_soundselect.h
+src/gui/dialogs/dialog_spritesheetparam.cpp
 src/gui/dialogs/dialog_targetparam.cpp
 src/gui/dialogs/dialog_targetparam.h
 src/gui/dialogs/dialog_waypoint.cpp
 src/gui/dialogs/dialog_waypoint.h
 src/gui/dials/framedial.cpp
 src/gui/dials/framedial.h
+src/gui/dials/jackdial.cpp
 src/gui/dials/keyframedial.cpp
 src/gui/dials/keyframedial.h
 src/gui/dials/resolutiondial.cpp
@@ -186,6 +191,7 @@ src/gui/widgets/widget_gradient.cpp
 src/gui/widgets/widget_gradient.h
 src/gui/widgets/widget_keyframe_list.cpp
 src/gui/widgets/widget_keyframe_list.h
+src/gui/widgets/widget_link.h
 src/gui/widgets/widget_sound.cpp
 src/gui/widgets/widget_sound.h
 src/gui/widgets/widget_time.cpp
@@ -386,6 +392,7 @@ src/synfigapp/actions/layerraise.cpp
 src/synfigapp/actions/layerraise.h
 src/synfigapp/actions/layerremove.cpp
 src/synfigapp/actions/layerremove.h
+src/synfigapp/actions/layerresetpose.cpp
 src/synfigapp/actions/layersetdesc.cpp
 src/synfigapp/actions/layersetdesc.h
 src/synfigapp/actions/layersetexcludefromrendering.cpp
@@ -412,6 +419,7 @@ src/synfigapp/actions/valuedesclink.cpp
 src/synfigapp/actions/valuedesclink.h
 src/synfigapp/actions/valuedescremovesmart.cpp
 src/synfigapp/actions/valuedescremovesmart.h
+src/synfigapp/actions/valuedescresetpose.cpp
 src/synfigapp/actions/valuedescset.cpp
 src/synfigapp/actions/valuedescset.h
 src/synfigapp/actions/valuedescsetinterpolation.cpp
