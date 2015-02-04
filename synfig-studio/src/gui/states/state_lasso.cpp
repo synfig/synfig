@@ -764,47 +764,47 @@ StateLasso_Context::StateLasso_Context(CanvasView* canvas_view):
 	// pack all options to the options_table
 
 	// 0, title
-	options_table.attach(title_label,
-		0, 2, 0, 1, Gtk::FILL, Gtk::FILL, 0, 0
-		);
+	//options_table.attach(title_label,
+	//	0, 2, 0, 1, Gtk::FILL, Gtk::FILL, 0, 0
+	//	);
 	// 1, name
-	options_table.attach(id_box,
-		0, 2, 1, 2, Gtk::FILL, Gtk::FILL, 0, 0
-		);
+	//options_table.attach(id_box,
+	////	0, 2, 1, 2, Gtk::FILL, Gtk::FILL, 0, 0
+	//	);
 	// 2, layer types creation
-	options_table.attach(layer_types_label,
-		0, 2, 2, 3, Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(layer_types_box,
-		0, 2, 3, 4, Gtk::FILL, Gtk::FILL, 0, 0
-		);
+	//options_table.attach(layer_types_label,
+	////	0, 2, 2, 3, Gtk::FILL, Gtk::FILL, 0, 0
+	//	);
+	//options_table.attach(layer_types_box,
+	//	0, 2, 3, 4, Gtk::FILL, Gtk::FILL, 0, 0
+	//	);
 	// 3, blend method
 	
 	// 4, opacity
-	options_table.attach(opacity_label,
-		0, 1, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(opacity_hscl,
-		1, 2, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
+	//options_table.attach(opacity_label,
+	//	0, 1, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+	//	);
+	//options_table.attach(opacity_hscl,
+	//	1, 2, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+	//	);
 	// 5, brush size
-	options_table.attach(bline_width_label,
-		0, 1, 6, 7, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(bline_width_dist,
-		1, 2, 6, 7, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
+	//options_table.attach(bline_width_label,
+	//	0, 1, 6, 7, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+	//	);
+	//options_table.attach(bline_width_dist,
+	//	1, 2, 6, 7, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+	//	);
 	// 6, pressure width
-	options_table.attach(pressure_width_box,
-		0, 2, 7, 8, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
+	//options_table.attach(pressure_width_box,
+	///	0, 2, 7, 8, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+	//	);
 	// 7, min pressure, sub-option of pressure width
-	options_table.attach(min_pressure_label_box,
-		0, 1, 8, 9, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(min_pressure_box,
-		1, 2, 8, 9, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
+	//options_table.attach(min_pressure_label_box,
+	//	0, 1, 8, 9, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+	//	);
+	//options_table.attach(min_pressure_box,
+	//	1, 2, 8, 9, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+	//	);
 	// 8, smoothness
 	options_table.attach(smoothness_label,
 		0, 2, 9, 10, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
@@ -824,28 +824,28 @@ StateLasso_Context::StateLasso_Context(CanvasView* canvas_view):
 		1, 2, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 		);
 	// 11, width max error of advanced outline layer
-	options_table.attach(width_max_error_box,
-		0, 1, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(width_max_error_spin,
-		1, 2, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
+	//options_table.attach(width_max_error_box,
+	//	0, 1, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+	//	);
+	//options_table.attach(width_max_error_spin,
+	//	1, 2, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+	//	);
 	// 12, round ends
-	options_table.attach(round_ends_box,
-		0, 2, 13, 14, Gtk::FILL, Gtk::FILL, 0, 0
-		);
+	//options_table.attach(round_ends_box,
+	///	0, 2, 13, 14, Gtk::FILL, Gtk::FILL, 0, 0
+	//	);
 	// 13, auto loop
-	options_table.attach(auto_loop_box,
-		0, 2, 14, 15, Gtk::FILL, Gtk::FILL, 0, 0
-		);
+	//options_table.attach(auto_loop_box,
+	//	0, 2, 14, 15, Gtk::FILL, Gtk::FILL, 0, 0
+	//	);
 	// 14, auto extend
-	options_table.attach(auto_extend_box,
-		0, 2, 15, 16, Gtk::FILL, Gtk::FILL, 0, 0
-		);
+	//options_table.attach(auto_extend_box,
+	//	0, 2, 15, 16, Gtk::FILL, Gtk::FILL, 0, 0
+	//	);
 	// 15, auto link
-	options_table.attach(auto_link_box,
-		0, 2, 16, 17, Gtk::FILL, Gtk::FILL, 0, 0
-		);
+	//options_table.attach(auto_link_box,
+	//	0, 2, 16, 17, Gtk::FILL, Gtk::FILL, 0, 0
+	//	);
 	// 16, feather
 	options_table.attach(feather_label,
 		0, 1, 17, 18, Gtk::FILL, Gtk::FILL, 0, 0
@@ -854,9 +854,9 @@ StateLasso_Context::StateLasso_Context(CanvasView* canvas_view):
 		1, 2, 17, 18, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 		);
 	// 17, auto export
-	options_table.attach(auto_export_box,
-		0, 2, 18, 19, Gtk::FILL, Gtk::FILL, 0, 0
-		);
+	//options_table.attach(auto_export_box,
+	//	0, 2, 18, 19, Gtk::FILL, Gtk::FILL, 0, 0
+	//	);
 
 	// fine-tune options layout
 	options_table.set_border_width(GAP*2); // border width
@@ -1692,16 +1692,22 @@ StateLasso_Context::new_bline(std::list<synfig::BLinePoint> bline,std::list<synf
                 
                 synfigapp::Action::Handle action(synfigapp::Action::create("LayerEncapsulate"));
                
+                etl::handle<synfig::Canvas> cv( layer_list.back()->get_canvas() );
+                        
                 action->set_param("layer",*(layer_list.rbegin()));
                 layer_list.pop_back();
                 
                 std::list<synfig::Layer::Handle>::iterator iter;
-                for (iter=layer_list.begin();iter!=layer_list.end();++iter)
-                    action->set_param("layer",*iter);
+                
+                for (iter=layer_list.begin();iter!=layer_list.end();++iter) 
+                    if (cv == (*iter)->get_canvas())
+                        action->set_param("layer",*iter);
+                
                 
                 action->set_param("description","mask");
                 action->set_param("canvas_interface",get_canvas_interface());
-                action->set_param("canvas",get_canvas_interface()->get_canvas());
+                //action->set_param("canvas",get_canvas_interface()->get_canvas());
+                action->set_param("canvas",cv);
                 get_canvas_interface()->get_instance()->perform_action(action);
                 
                 
