@@ -5,7 +5,7 @@ PortSystem          1.0
 name                mlt
 epoch               3
 version             0.9.2
-revision            6
+revision            7
 categories          multimedia
 maintainers         dennedy.org:dan
 license             GPL-2+
@@ -44,7 +44,7 @@ configure.args      --enable-gpl \
                     --disable-gtk2 \
                     --disable-dependency-tracking \
                     --disable-swfdec
-platform darwin 10 {
+platform darwin x86_64 {
     if {${build_arch} eq "x86_64"} {
         configure.args-delete --disable-mmx
     }
