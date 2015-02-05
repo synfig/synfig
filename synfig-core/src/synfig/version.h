@@ -40,14 +40,14 @@
 **	revision release.
 */
 #ifndef SYNFIG_VERSION
-#define SYNFIG_VERSION (006000)
+#define SYNFIG_VERSION (010000)
 #endif
 
 /*!	Increment this value whenever
 **	the library changes in a way
 **	that breaks library compatibility
 */
-#define SYNFIG_LIBRARY_VERSION	47
+#define SYNFIG_LIBRARY_VERSION	48
 
 /*! \writeme */
 #define SYNFIG_CHECK_VERSION()	synfig::check_version_(SYNFIG_LIBRARY_VERSION,sizeof(synfig::Vector),sizeof(synfig::Color),sizeof(synfig::Canvas),sizeof(synfig::Layer))

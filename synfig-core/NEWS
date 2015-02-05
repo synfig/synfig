@@ -4,6 +4,20 @@ More detailed notes are available on the news page:
 
 http://synfig.org/cms/en/news/
 
+ 1.0 (git tag "1.0") - March 4, 2015 - Major release.
+ 
+  * Introduce new file format (SFG) which can store embed data.
+  * Group Layer now supports all basic transformations: Translate, Rotate, Scale, Stretch, Skew.
+  * Improved Spline Tangents: Now it is possible to split angle or radius independently.
+  * New ValueNode: Dynamic.
+  * New ValueNode: Average.
+  * New ValueNode: Weighted Average.
+  * New Layer: Skeleton Distortion.
+  * Sound: Integrate MLT framework for sound Playback.
+  * New layer: Sound Layer.
+  * Z-Range feature for Groups: Hides all child layers with Z-Depth values outside of specified range.
+  * Reworked software rendering engine.
+
  0.64.3 (git tag "0.64.3") - December 24, 2014 - Bug fixes.
  
   * Fix crash for Magick++, Gif and other targets.

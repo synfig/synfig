@@ -4,6 +4,34 @@ More detailed notes are available on the news page:
 
 http://synfig.org/cms/en/news/
 
+ 1.0 (git tag "1.0") - March 4, 2015 - Major release.
+ 
+  * Single-Window UI.
+  * UI migrated from Gtk2 to Gtk3.
+  * Reworked Toolbox and Tool Options Panel.
+  * Allow to select interface language via preferences.
+  * New transformation widget for Group Layer.
+  * "Link to Bone" action: Allows to link Group Layers to Bones.
+  * "Link to Skeleton" action: Allows automatically to link Spline vertices to the Skeleton (based on the bone Widths).
+  * New Layer: Skeleton Distortion.
+  * Z-Range feature for Group Layer: Hides all child layers with Z-Depth values outside of specified range.
+  * New file format (SFG) which can store embed data.
+  * All linked images are packed into single file when saving as SFG.
+  * Allow to embed/extract images.
+  * New Switch Group layer.
+  * Brush Tool: Allows to paint on bitmaps with MyPaint brushes.
+  * "Add New Frame" action.
+  * Sound: Timeline can be synchronized with global JACK transport.
+  * Sound: Integrate MLT framework for sound Playback.
+  * New layer: Sound Layer.
+  * Allow to modify animated parameters when Animation Mode is off (shift operation applied).
+  * Improved Spline Tangents: Now it is possible to split angle or radius independently.
+  * Now it is possible to insert new vertex into spline without distorting its shape.
+  * Keyframe widget improvements: tooltips, context menus, selection synchronized with Keyframes Panel.
+  * MetaData Panel improvements: Allow to change Guides and Grid colors.
+  * HSV color wheel in the color selection dialog.
+  * Improved spritesheet export.
+
  0.64.3 (git tag "0.64.3") - December 24, 2014 - Bug fixes.
  
   * Use frames as default time format.
