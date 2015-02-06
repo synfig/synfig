@@ -437,6 +437,7 @@ mkdmg()
 	echo "Copying files to disk image..."
 	cp -R $APPDIR /Volumes/"$VOLNAME"/SynfigStudio.app
 	cp -R ${SYNFIG_REPO_DIR}/synfig-studio/COPYING /Volumes/"$VOLNAME"/LICENSE.txt
+	mv /Volumes/"$VOLNAME"/SynfigStudio.app/Contents/MacOS/synfigstudio /Volumes/"$VOLNAME"/SynfigStudio.app/Contents/MacOS/SynfigStudio || true
 
 	# open the window so that the icon database is generated
 	open /Volumes/"$VOLNAME" || true
