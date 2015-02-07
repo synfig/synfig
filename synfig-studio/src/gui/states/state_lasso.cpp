@@ -941,7 +941,7 @@ StateLasso_Context::refresh_tool_options()
 {
 	App::dialog_tool_options->clear();
 	App::dialog_tool_options->set_widget(options_table);
-	App::dialog_tool_options->set_local_name(_("Lasso Tool"));
+	App::dialog_tool_options->set_local_name(_("Cutout Tool"));
 	App::dialog_tool_options->set_name("lasso");
 
 	App::dialog_tool_options->add_button(
@@ -1703,11 +1703,11 @@ StateLasso_Context::new_bline(std::list<synfig::BLinePoint> bline,std::list<synf
                     if (cv == (*iter)->get_canvas())
                         action->set_param("layer",*iter);
                 
-                
                 action->set_param("description","mask");
                 action->set_param("canvas_interface",get_canvas_interface());
                 //action->set_param("canvas",get_canvas_interface()->get_canvas());
                 action->set_param("canvas",cv);
+                action->set_param("children_lock",true);
                 get_canvas_interface()->get_instance()->perform_action(action);
                 
                 

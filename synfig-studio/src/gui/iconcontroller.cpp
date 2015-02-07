@@ -158,7 +158,7 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(eyedrop,"tool_eyedrop_icon."IMAGE_EXT,_("Eyedrop Tool"));
 	INIT_STOCK_ICON(fill,"tool_fill_icon."IMAGE_EXT,_("Fill Tool"));
 	INIT_STOCK_ICON(draw,"tool_draw_icon."IMAGE_EXT,_("Draw Tool"));
-	INIT_STOCK_ICON(lasso,"tool_draw_icon."IMAGE_EXT,_("Lasso Tool"));
+	INIT_STOCK_ICON(lasso,"tool_draw_icon."IMAGE_EXT,_("Cutout Tool"));
 	INIT_STOCK_ICON(brush,"tool_brush_icon."IMAGE_EXT,_("Brush Tool"));
 	INIT_STOCK_ICON(sketch,"tool_sketch_icon."IMAGE_EXT,_("Sketch Tool"));
 	INIT_STOCK_ICON(circle,"tool_circle_icon."IMAGE_EXT,_("Circle Tool"));

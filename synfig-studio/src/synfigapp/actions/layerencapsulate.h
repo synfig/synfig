@@ -49,6 +49,7 @@ private:
 	synfig::Canvas::Handle child_canvas;
 	synfig::String description;
 	std::list<synfig::Layer::Handle> layers;
+        bool children_lock;
 
 	int lowest_depth()const;
 
