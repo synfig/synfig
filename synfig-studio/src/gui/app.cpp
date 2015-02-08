@@ -2447,6 +2447,12 @@ App::dialog_open_file_audio(const std::string &title, std::string &filename, std
 	return false;
 }
 
+void
+on_open_dialog_with_history_selection_changed(Gtk::FileChooserDialog *dialog, Gtk::Button* history_button)
+{
+	// activate the history button when something is selected
+	history_button->set_sensitive(!dialog->get_filename().empty());
+}
 
 bool
 App::dialog_open_file_with_history_button(const std::string &title, std::string &filename, bool &show_history, std::string preference)
@@ -2512,7 +2518,7 @@ App::dialog_open_file_with_history_button(const std::string &title, std::string 
 	dialog->set_current_folder(prev_path);
 	dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
 	dialog->add_button(Gtk::Stock::OPEN,   Gtk::RESPONSE_ACCEPT);
-	dialog->add_button(_("Open history"), RESPONSE_ACCEPT_WITH_HISTORY);
+	Gtk::Button* history_button = dialog->add_button(_("Open history"), RESPONSE_ACCEPT_WITH_HISTORY);
 	// TODO: the Open history button should be file type sensitive one.
 	dialog->set_response_sensitive(RESPONSE_ACCEPT_WITH_HISTORY, true);
 
@@ -2539,6 +2545,9 @@ App::dialog_open_file_with_history_button(const std::string &title, std::string 
 	else
 		dialog->set_filename(prev_path + ETL_DIRECTORY_SEPARATOR + filename);
 
+	// this ptr is't available to a static member fnc, connect to global function.
+	sigc::connection connection_sc = dialog->signal_selection_changed().connect(sigc::bind(sigc::ptr_fun(on_open_dialog_with_history_selection_changed), dialog, history_button));
+
 	int response = dialog->run();
 	if (response == Gtk::RESPONSE_ACCEPT || response == RESPONSE_ACCEPT_WITH_HISTORY) {
 		filename = dialog->get_filename();
@@ -2549,6 +2558,7 @@ App::dialog_open_file_with_history_button(const std::string &title, std::string 
 		return true;
 	}
 
+	connection_sc.disconnect();
 	delete dialog;
 	return false;
 #endif   // not USE_WIN32_FILE_DIALOGS
