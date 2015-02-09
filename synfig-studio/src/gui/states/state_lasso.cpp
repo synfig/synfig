@@ -860,9 +860,10 @@ StateLasso_Context::StateLasso_Context(CanvasView* canvas_view):
 
 	// fine-tune options layout
 	options_table.set_border_width(GAP*2); // border width
-	options_table.set_row_spacings(GAP); // row gap
-	options_table.set_row_spacing(0, GAP*2); // the gap between first and second row.
-	options_table.set_row_spacing(2, 1); // row gap between label and icon of layer type
+	//options_table.set_row_spacings(GAP); // row gap
+	//options_table.set_row_spacing(0, GAP*2); // the gap between first and second row.
+	//options_table.set_row_spacing(2, 1); // row gap between label and icon of layer type
+	options_table.set_row_spacing(16, GAP*2);
 	options_table.set_row_spacing(19, 0); // the final row using border width of table
 
 	options_table.show_all();
@@ -944,13 +945,13 @@ StateLasso_Context::refresh_tool_options()
 	App::dialog_tool_options->set_local_name(_("Cutout Tool"));
 	App::dialog_tool_options->set_name("lasso");
 
-	App::dialog_tool_options->add_button(
-		Gtk::StockID("synfig-fill"),
-		_("Fill Last Stroke")
-	)->signal_clicked().connect(
-		sigc::mem_fun(
-			*this,
-			&StateLasso_Context::fill_last_stroke));
+	//App::dialog_tool_options->add_button(
+	//	Gtk::StockID("synfig-fill"),
+	//	_("Fill Last Stroke")
+	//)->signal_clicked().connect(
+	//	sigc::mem_fun(
+	//		*this,
+	//		&StateLasso_Context::fill_last_stroke));
 }
 
 Smach::event_result
