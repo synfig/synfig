@@ -31,6 +31,7 @@ http://synfig.org/cms/en/news/
   * MetaData Panel improvements: Allow to change Guides and Grid colors.
   * HSV color wheel in the color selection dialog.
   * Improved spritesheet export.
+  * New tool: Cutout.
 
  0.64.3 (git tag "0.64.3") - December 24, 2014 - Bug fixes.
  
