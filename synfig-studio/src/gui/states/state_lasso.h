@@ -22,8 +22,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_STUDIO_STATE_LASSO_H
-#define __SYNFIG_STUDIO_STATE_LASSO_H
+#ifndef __SYNFIG_STUDIO_STATE_CUTOUT_H
+#define __SYNFIG_STUDIO_STATE_CUTOUT_H
 
 /* === H E A D E R S ======================================================= */
 
