@@ -1704,7 +1704,14 @@ StateLasso_Context::new_bline(std::list<synfig::BLinePoint> bline,std::list<synf
                     if (cv == (*iter)->get_canvas())
                         action->set_param("layer",*iter);
                 
-                action->set_param("description","mask");
+		String description;
+		if (layer_list.size()>0)
+		{
+			std::list<synfig::Layer::Handle>::iterator first_layer = layer_list.begin();
+			description = (*first_layer)->get_description()+ " ";
+		}
+		
+                action->set_param("description",description+"Cut");
                 action->set_param("canvas_interface",get_canvas_interface());
                 //action->set_param("canvas",get_canvas_interface()->get_canvas());
                 action->set_param("canvas",cv);
