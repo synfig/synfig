@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file layerencapsulate.h
-**	\brief Template File
+/*!	\file state_lasso.h
+**	\brief Template Header
 **
 **	$Id$
 **
@@ -22,15 +22,13 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_APP_ACTION_LAYERENCAPSULATE_H
-#define __SYNFIG_APP_ACTION_LAYERENCAPSULATE_H
+#ifndef __SYNFIG_STUDIO_STATE_CUTOUT_H
+#define __SYNFIG_STUDIO_STATE_CUTOUT_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/layer.h>
-#include <synfigapp/action.h>
-#include <list>
-#include <synfig/canvas.h>
+#include "smach.h"
+
 
 /* === M A C R O S ========================================================= */
 
@@ -38,37 +36,19 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace synfigapp {
+namespace studio {
 
-namespace Action {
+class StateLasso_Context;
 
-class LayerEncapsulate :
-	public Super
+class StateLasso : public Smach::state<StateLasso_Context>
 {
-private:
-	synfig::Canvas::Handle child_canvas;
-	synfig::String description;
-	std::list<synfig::Layer::Handle> layers;
-        bool children_lock;
-
-	int lowest_depth()const;
-
 public:
+	StateLasso();
+	~StateLasso();
+}; // END of class StateDraw
 
-	LayerEncapsulate();
+extern StateLasso state_lasso;
 
-	static ParamVocab get_param_vocab();
-	static bool is_candidate(const ParamList &x);
-
-	virtual bool set_param(const synfig::String& name, const Param &);
-	virtual bool is_ready()const;
-
-	virtual void prepare();
-
-	ACTION_MODULE_EXT
-};
-
-}; // END of namespace action
 }; // END of namespace studio
 
 /* === E N D =============================================================== */

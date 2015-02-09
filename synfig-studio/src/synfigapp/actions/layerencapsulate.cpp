@@ -64,6 +64,7 @@ ACTION_SET_CVS_ID(Action::LayerEncapsulate,"$Id$");
 
 Action::LayerEncapsulate::LayerEncapsulate()
 {
+    children_lock=false;
 }
 
 synfig::String
@@ -108,6 +109,11 @@ Action::LayerEncapsulate::set_param(const synfig::String& name, const Action::Pa
 	if(name=="description" && param.get_type()==Param::TYPE_STRING)
 	{
 		description = param.get_string();
+		return true;
+	}
+        if(name=="children_lock" && param.get_type()==Param::TYPE_BOOL)
+	{
+		children_lock = param.get_bool();
 		return true;
 	}
 
@@ -157,6 +163,8 @@ Action::LayerEncapsulate::prepare()
 
 	if (!description.empty()) new_layer->set_description(description);
 	new_layer->set_param("canvas",child_canvas);
+        
+        new_layer->set_param("children_lock",children_lock);
 
 	int target_depth(lowest_depth());
 

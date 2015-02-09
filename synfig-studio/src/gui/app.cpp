@@ -96,6 +96,7 @@
 #include "states/state_normal.h"
 #include "states/state_mirror.h"
 #include "states/state_draw.h"
+#include "states/state_lasso.h"
 #include "states/state_fill.h"
 #include "states/state_bline.h"
 #include "states/state_brush.h"
@@ -1549,7 +1550,8 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 
 		/* bline tools */
 		state_manager->add_state(&state_bline);
-		if(!getenv("SYNFIG_DISABLE_DRAW"   )) state_manager->add_state(&state_draw); // Enabled for now.  Let's see whether they're good enough yet.
+		if(!getenv("SYNFIG_DISABLE_DRAW"   )) state_manager->add_state(&state_draw ); // Enabled for now.  Let's see whether they're good enough yet.
+                state_manager->add_state(&state_lasso); // Enabled for now.  Let's see whether they're good enough yet.
 		if(!getenv("SYNFIG_DISABLE_WIDTH"  )) state_manager->add_state(&state_width); // Enabled since 0.61.09
 		state_manager->add_state(&state_fill);
 		state_manager->add_state(&state_eyedrop);
