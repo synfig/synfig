@@ -59,7 +59,7 @@
 #include "workarea.h"
 #include "app.h"
 
-#include "../synfigapp/actions/layerencapsulate.h"
+#include "synfigapp/actions/layerencapsulate.h"
 
 #include <utility>
 #include <sigc++/connection.h>
@@ -68,7 +68,6 @@
 #include <gtkmm/radiobuttongroup.h>
 
 #include "general.h"
-#include "modules/lyr_std/bevel.h"
 
 #endif
 
