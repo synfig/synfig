@@ -144,6 +144,7 @@ About::About()
 	authors.push_back("Denis Zdorovtsov (trizer)");
 	authors.push_back("Dmitriy Pomerantsev (Atrus)");
 	authors.push_back("Douglas Lau");
+	authors.push_back("Evgenij Katunov");
 	authors.push_back("Gerald Young (Yoyobuae)");
 	authors.push_back("Gerco Ballintijn");
 	authors.push_back("IL'dar AKHmetgaleev (AkhIL)");
