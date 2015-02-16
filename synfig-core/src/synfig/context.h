@@ -211,7 +211,7 @@ public:
 	}
 
 	//! Returns \c true if layer is visible in z_depth range in this context
-	inline bool z_depth_visibility()const {
+	inline bool in_z_range()const {
 		return !(operator*()).empty()
 			 && z_depth_visibility(params, *(operator*()));
 	}

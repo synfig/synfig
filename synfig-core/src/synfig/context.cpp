@@ -201,7 +201,7 @@ Context::get_color(const Point &pos)const
 	{
 		// If this layer is active, then go
 		// ahead and break out of the loop
-		if(context.active() && context.z_depth_visibility()!=0.0)
+		if(context.active() && context.in_z_range())
 			break;
 
 		// Otherwise, we want to keep searching
@@ -227,7 +227,7 @@ Context::get_cairocolor(const Point &pos)const
 	{
 		// If this layer is active, then go
 		// ahead and break out of the loop
-		if(context.active() && context.z_depth_visibility()!=0.0)
+		if(context.active() && context.in_z_range())
 			break;
 		
 		// Otherwise, we want to keep searching
@@ -254,7 +254,7 @@ Context::get_full_bounding_rect()const
 	{
 		// If this layer is active and visible in z_depth range,
 		// then go ahead and break out of the loop
-		if(context.active() && context.z_depth_visibility()!=0.0)
+		if(context.active() && context.in_z_range())
 			break;
 
 		// Otherwise, we want to keep searching
@@ -313,7 +313,7 @@ Context::hit_check(const Point &pos)const
 {
 	Context context(*this);
 
-	while(!context->empty() && context.z_depth_visibility()!=0.0)
+	while(!context->empty() && context.in_z_range())
 	{
 		// If this layer is active, then go
 		// ahead and break out of the loop

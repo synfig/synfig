@@ -410,12 +410,14 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 	SuperCallback stagetwo(cb,4500,9000,10000);
 	SuperCallback stagethree(cb,9000,9999,10000);
 
+	Context canvasContext = canvas->get_context(context);
+
 	if (is_solid_color())
 	{
 		RendDesc intermediate_desc(renddesc);
 		intermediate_desc.clear_flags();
 		intermediate_desc.set_transformation_matrix(transformation.get_matrix());
-		return canvas->get_context(context).accelerated_render(surface,quality,intermediate_desc,&stagetwo);
+		return canvasContext.accelerated_render(surface,quality,intermediate_desc,&stagetwo);
 	}
 	else
 	if (!context.accelerated_render(surface,quality,renddesc,&stageone))
@@ -428,7 +430,7 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 		canvas->set_time(curr_time+time_offset);
 
 	Color::BlendMethod blend_method(get_blend_method());
-	const Rect full_bounding_rect(canvas->get_context(context).get_full_bounding_rect());
+	const Rect full_bounding_rect(canvasContext.get_full_bounding_rect());
 
 	Rect inner_bounds(
 	    full_bounding_rect.get_min(),
@@ -521,7 +523,7 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 		intermediate_desc.set_tl(pixel_aligned_tl);
 		intermediate_desc.set_br(pixel_aligned_br);
 		Surface intermediate_surface;
-		if(!canvas->get_context(context).accelerated_render(&intermediate_surface,quality,intermediate_desc,&stagetwo))
+		if(!canvasContext.accelerated_render(&intermediate_surface,quality,intermediate_desc,&stagetwo))
 			return false;
 		Surface::alpha_pen apen(surface->get_pen(x0, y0));
 		apen.set_alpha(get_amount());

@@ -1297,8 +1297,10 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 				{ }
 #endif	// SYNFIG_OPTIMIZE_PASTE_CANVAS
 
-			Layer::Handle new_layer(Layer::create("group"));
-			dynamic_cast<Layer_PasteCanvas*>(new_layer.get())->set_muck_with_time(false);
+			etl::handle<Layer_PasteCanvas> new_layer =
+				etl::handle<Layer_PasteCanvas>::cast_dynamic( Layer::create(paste_canvas->get_name()) );
+			new_layer->set_optimized(true);
+			new_layer->set_muck_with_time(false);
 			if (motion_blurred)
 			{
 				Layer::DynamicParamList dynamic_param_list(paste_canvas->dynamic_param_list());
@@ -1308,8 +1310,8 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 			Layer::ParamList param_list(paste_canvas->get_param_list());
 			//param_list.erase("canvas");
 			new_layer->set_param_list(param_list);
-			dynamic_cast<Layer_PasteCanvas*>(new_layer.get())->set_sub_canvas(sub_canvas);
-			dynamic_cast<Layer_PasteCanvas*>(new_layer.get())->set_muck_with_time(true);
+			new_layer->set_sub_canvas(sub_canvas);
+			new_layer->set_muck_with_time(true);
 			layer=new_layer;
 		}
 		else					// not a PasteCanvas - does it use blend method 'Straight'?
@@ -1333,6 +1335,8 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 			 * returns true for layers which need to be able to see
 			 * their context.  we can't encapsulate those.
 			 */
+
+			/*
 			if (composite &&
 				Color::is_straight(composite->get_blend_method()) &&
 				!composite->reads_context())
@@ -1351,6 +1355,7 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 				composite->set_amount(1.0f); // after set_time()
 				paste_canvas->set_sub_canvas(sub_canvas);
 			}
+			*/
 		}
 		// Alright, the layer is included in the sorted list
 		// let's look if it is a composite and if it is partially visible
@@ -1359,7 +1364,8 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 		{
 			// Let's clone the composite layer if it is not a Paste Canvas
 			// (because paste will be always new layer)
-			if(dynamic_cast<Layer_PasteCanvas*>(layer.get()) != NULL)
+			// Oops... not always...
+			//if(dynamic_cast<Layer_PasteCanvas*>(layer.get()) != NULL)
 				composite = composite->simple_clone();
 			// Let's scale the amount parameter by the z depth visibility
 			ValueNode::Handle amount;
