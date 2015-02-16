@@ -54,7 +54,8 @@ using namespace etl;
 
 /* === M E T H O D S ======================================================= */
 
-class SoundProcessor::Internal {
+class SoundProcessor::Internal
+{
 public:
 	static bool initialized;
 	std::vector<PlayOptions> stack;
@@ -63,7 +64,8 @@ public:
 	Mlt::Consumer *consumer;
 	Time position;
 
-	void clear() {
+	void clear()
+	{
 		if (last_track != NULL) { delete last_track; last_track = NULL; }
 		if (consumer != NULL) { consumer->stop(); delete consumer; consumer = NULL; }
 		stack.clear();
@@ -76,8 +78,10 @@ public:
 
 bool SoundProcessor::Internal::initialized = false;
 
-SoundProcessor::SoundProcessor() {
-	if (!Internal::initialized) {
+SoundProcessor::SoundProcessor()
+{
+	if (!Internal::initialized)
+	{
 		Mlt::Factory::init();
 		Internal::initialized = true;
 	}
@@ -162,7 +166,8 @@ Time SoundProcessor::get_position() const
 
 void SoundProcessor::set_position(Time value)
 {
-	if (internal->last_track != NULL) {
+	if (internal->last_track != NULL)
+	{
 		internal->last_track->seek( (int)round(value*internal->profile.fps()) );
 		internal->last_track->set_speed(1.0);
 	}
@@ -175,16 +180,22 @@ bool SoundProcessor::get_playing() const
 
 void SoundProcessor::set_playing(bool value)
 {
-	if (value) {
-		if (internal->consumer == NULL) {
+	if (value)
+	{
+		if (internal->consumer == NULL)
+		{
 			internal->consumer = new Mlt::Consumer(internal->profile, "sdl_audio");
-			if (internal->last_track != NULL) {
+			if (internal->last_track != NULL)
+			{
 				internal->consumer->connect(*internal->last_track);
 				internal->consumer->start();
 			}
 		}
-	} else {
-		if (internal->consumer != NULL) {
+	}
+	else
+	{
+		if (internal->consumer != NULL)
+		{
 			internal->consumer->stop();
 			delete internal->consumer;
 			internal->consumer = NULL;

@@ -626,7 +626,7 @@ void studio::Widget_Preview::update()
 		}
 		#endif
 
-		if (!is_time_equal_to_current_frame(soundProcessor.get_position()))
+		if (fabs(soundProcessor.get_position() - time) > 0.5)
 			soundProcessor.set_position(time);
 
 		//synfig::warning("Updating at %.3f s",time);
@@ -885,7 +885,7 @@ bool studio::Widget_Preview::play_update()
 			//time = soundProcessor.get_position();
 		}
 
-		if (!is_time_equal_to_current_frame(soundProcessor.get_position()))
+		if (fabs(soundProcessor.get_position() - time) > 0.5)
 			soundProcessor.set_position(time);
 
 		//Looping conditions...
@@ -1025,6 +1025,7 @@ void studio::Widget_Preview::play()
 	if(preview)
 	{
 		if (!jack_enabled && get_position() == get_time_end()) seek(get_time_start());
+		soundProcessor.set_position(get_position());
 		soundProcessor.set_playing(true);
 
 		//synfig::info("Playing at %lf",adj_time_scrub->get_value());
