@@ -597,7 +597,9 @@ StateGradient_Context::make_gradient(const Point& _p1, const Point& _p2)
 
 	if (get_layer_linear_gradient_flag())
 	{
+		egress_on_selection_change=false;
 		layer=get_canvas_interface()->add_layer_to("linear_gradient",canvas,depth);
+		egress_on_selection_change=true;
 		if (!layer)
 		{
 			get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
@@ -612,7 +614,9 @@ StateGradient_Context::make_gradient(const Point& _p1, const Point& _p2)
 
 	else if (get_layer_radial_gradient_flag())
 	{
+		egress_on_selection_change=false;
 		layer=get_canvas_interface()->add_layer_to("radial_gradient",canvas,depth);
+		egress_on_selection_change=true;
 		if (!layer)
 		{
 			get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
@@ -627,7 +631,9 @@ StateGradient_Context::make_gradient(const Point& _p1, const Point& _p2)
 
 	else if (get_layer_conical_gradient_flag())
 	{
+		egress_on_selection_change=false;
 		layer=get_canvas_interface()->add_layer_to("conical_gradient",canvas,depth);
+		egress_on_selection_change=true;
 		if (!layer)
 		{
 			get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
@@ -645,8 +651,9 @@ StateGradient_Context::make_gradient(const Point& _p1, const Point& _p2)
 
 	else if (get_layer_spiral_gradient_flag())
 	{
-
+		egress_on_selection_change=false;
 		layer=get_canvas_interface()->add_layer_to("spiral_gradient",canvas,depth);
+		egress_on_selection_change=true;
 		if (!layer)
 		{
 			get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
@@ -663,7 +670,6 @@ StateGradient_Context::make_gradient(const Point& _p1, const Point& _p2)
 			get_canvas_interface()->signal_layer_param_changed()(layer,"angle");
 		}
 	}
-
 	else return;
 
 	layer->set_param("blend_method", get_blend());
