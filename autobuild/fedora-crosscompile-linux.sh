@@ -221,7 +221,6 @@ mkprefix()
 			libpng12-dev \
 			libfreetype6-dev \
 			libxml2-dev \
-			libtiff4-dev \
 			libjasper-dev \
 			libffi-dev \
 			libasound2-dev \
@@ -815,8 +814,40 @@ if ! pkg-config ${PKG_NAME}-2.4 --exact-version=${PKG_VERSION}  --print-errors; 
 fi
 }
 
+mklibtiff()
+{
+PKG_NAME=tiff
+PKG_VERSION=4.0.3
+TAREXT=gz
+
+if [ ! -f ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done ]; then
+    cd $CACHEDIR
+    [ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://download.osgeo.org/lib${PKG_NAME}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    cd $SRCPREFIX
+    if [ ! -d ${PKG_NAME}-${PKG_VERSION} ]; then
+        tar -xzf $CACHEDIR/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    fi
+    cd ${PKG_NAME}-${PKG_VERSION}
+    [ ! -e config.cache ] || rm config.cache
+    ./configure \
+		--host=${HOST} \
+		--prefix=${PREFIX} \
+		--includedir=${PREFIX}/include \
+		--disable-static --enable-shared
+
+    make -j$THREADS
+    make install -j$THREADS
+    
+    touch ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done
+
+fi
+}
+
 mklibjpeg()
 {
+
+mkyasm
+
 PKG_NAME=libjpeg-turbo
 PKG_VERSION=${LIBJPEG_VERSION}
 TAREXT=gz
@@ -2058,6 +2089,7 @@ mkall()
 	
 	# system libraries
 	mklibjpeg
+	mklibtiff
 	mkglib
 	mkharfbuzz
 	mkfontconfig
