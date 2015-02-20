@@ -131,7 +131,7 @@ if [ -e "$BUILDDIR/" ]; then
 fi
 
 mkdir -p "$BUILDDIR/"
-
+mkdir -p ~/src
 cd ~/src
 
 # compile MacPorts and do a selfupdate
