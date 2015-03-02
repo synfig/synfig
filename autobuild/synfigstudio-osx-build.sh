@@ -50,7 +50,10 @@ else
 export BUILDDIR=~/SynfigStudio-build
 fi
 
-if [ ! -z $X11 ]; then
+if [ -z $X11 ]; then
+	export X11=1
+fi
+if [[ $X11 == 1 ]]; then
 	export BUILDDIR=${BUILDDIR}.x11
 fi
 
@@ -203,13 +206,13 @@ mkdeps()
 	sed -i "" -e "s|/Applications/MacPorts|$MACPORTS/tmp/app|g" "$MACPORTS/etc/macports/macports.conf" || true
 	
 	if [ ! -z $UNIVERSAL ]; then
-		if [ ! -z $X11 ]; then
+		if [[ X11 == 1 ]]; then
 			echo "+universal +x11 +nonfree" > $MACPORTS/etc/macports/variants.conf
 		else
 			echo "+universal +no_x11 +quartz -x11 +nonfree" > $MACPORTS/etc/macports/variants.conf
 		fi
 	else
-		if [ ! -z $X11 ]; then
+		if [[ X11 == 1 ]]; then
 			echo "+x11 +nonfree" > $MACPORTS/etc/macports/variants.conf
 		else
 			echo "+no_x11 +quartz -x11 +nonfree" > $MACPORTS/etc/macports/variants.conf
