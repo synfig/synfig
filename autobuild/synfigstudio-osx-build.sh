@@ -39,11 +39,31 @@ set -e
 export RELEASE=1
 export BUILDROOT_VERSION=1
 
+if [ `whoami` != "root" ]; then
+	echo "Please use sudo to run this script. Aborting."
+	exit 1
+fi
+
 if [ ! -z $UNIVERSAL ]; then
 export BUILDDIR=~/SynfigStudio-build.universal
 else
 export BUILDDIR=~/SynfigStudio-build
 fi
+
+if [ ! -z $X11 ]; then
+	export BUILDDIR=${BUILDDIR}.x11
+fi
+
+if [ ! -z $DEBUG ]; then
+	echo
+	echo "Debug mode: enabled"
+	echo
+	DEBUG='--enable-debug --enable-optimization=0'
+	export BUILDDIR=${BUILDDIR}.debug
+else
+	DEBUG=''
+fi
+
 LNKDIR=/tmp/skl/SynfigStudio
 MACPORTS=$LNKDIR/Contents/Resources
 MPSRC=MacPorts-2.3.3
@@ -67,24 +87,6 @@ if [ ! -z $UNIVERSAL ]; then
 export CFLAGS="-arch i386 -arch x86_64"
 export CXXFLAGS="-arch i386 -arch x86_64"
 export LDFLAGS="$LDFLAGS -arch i386 -arch x86_64"
-fi
-
-if [ `whoami` != "root" ]; then
-	echo "Please use sudo to run this script. Aborting."
-	exit 1
-fi
-
-if [ -z $DEBUG ]; then
-	export DEBUG=0
-fi
-
-if [[ $DEBUG == 1 ]]; then
-	echo
-	echo "Debug mode: enabled"
-	echo
-	DEBUG='--enable-debug --enable-optimization=0'
-else
-	DEBUG=''
 fi
 
 #======= HEADER END ===========
@@ -201,9 +203,17 @@ mkdeps()
 	sed -i "" -e "s|/Applications/MacPorts|$MACPORTS/tmp/app|g" "$MACPORTS/etc/macports/macports.conf" || true
 	
 	if [ ! -z $UNIVERSAL ]; then
-		echo "+universal +no_x11 +quartz -x11 +nonfree" > $MACPORTS/etc/macports/variants.conf
+		if [ ! -z $X11 ]; then
+			echo "+universal +x11 +nonfree" > $MACPORTS/etc/macports/variants.conf
+		else
+			echo "+universal +no_x11 +quartz -x11 +nonfree" > $MACPORTS/etc/macports/variants.conf
+		fi
 	else
-		echo "+no_x11 +quartz -x11 +nonfree" > $MACPORTS/etc/macports/variants.conf
+		if [ ! -z $X11 ]; then
+			echo "+x11 +nonfree" > $MACPORTS/etc/macports/variants.conf
+		else
+			echo "+no_x11 +quartz -x11 +nonfree" > $MACPORTS/etc/macports/variants.conf
+		fi
 	fi
 	
 	pushd ${SCRIPTPATH}/macports
