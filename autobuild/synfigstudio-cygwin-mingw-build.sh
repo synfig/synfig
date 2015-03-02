@@ -663,7 +663,7 @@ fi
 mkmlt()
 {
 PKG_NAME=mlt
-PKG_VERSION=0.9.1
+PKG_VERSION=0.9.2
 TAREXT=gz
 
 if ! pkg-config ${PKG_NAME}\+\+ --exact-version=${PKG_VERSION}  --print-errors; then
@@ -677,6 +677,11 @@ if ! pkg-config ${PKG_NAME}\+\+ --exact-version=${PKG_VERSION}  --print-errors; 
         git clone https://github.com/morevnaproject/mlt
     fi
     cd mlt
+    git reset --hard
+    git checkout master
+    git reset --hard
+    git pull
+    git clean -f -d
     [ ! -e config.cache ] || rm config.cache
     #autoreconf -i --verbose  # does this really required?
     rm -rf ${MINGWPREFIX}/lib/libmlt* || true
