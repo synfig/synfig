@@ -1247,7 +1247,7 @@ mklibvorbis
 mksox
 	
 PKG_NAME=mlt
-PKG_VERSION=0.9.1
+PKG_VERSION=0.9.2
 TAREXT=gz
 
 if [ ! -f ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done ]; then
@@ -1260,6 +1260,11 @@ if [ ! -f ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done ]; then
         /usr/bin/git clone https://github.com/morevnaproject/mlt
     fi
     cd mlt
+    /usr/bin/git reset --hard
+    /usr/bin/git checkout master
+    /usr/bin/git reset --hard
+    /usr/bin/git pull
+    /usr/bin/git clean -f -d
     [ ! -e config.cache ] || rm config.cache
 
     ./configure \
