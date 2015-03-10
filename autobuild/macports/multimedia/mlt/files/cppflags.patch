@@ -1,6 +1,6 @@
-diff -Naurp configure configure
---- configure	2015-02-01 14:51:27.000000000 +0200
-+++ configure	2015-02-01 16:08:35.000000000 +0200
+diff --git a/configure b/configure
+--- a/configure
++++ b/configure
 @@ -94,6 +94,7 @@ build_config()
  		case $targetos in
  		Darwin)
@@ -9,9 +9,9 @@ diff -Naurp configure configure
  		echo "SHFLAGS=-dynamiclib"
  		echo "LDFLAGS+=`sdl-config --libs`"
  		;;
-diff -Naurp src/framework/Makefile src/framework/Makefile
---- src/framework/Makefile	2015-02-01 14:51:27.000000000 +0200
-+++ src/framework/Makefile	2015-02-01 14:52:46.000000000 +0200
+diff --git a/src/framework/Makefile b/src/framework/Makefile
+--- a/src/framework/Makefile
++++ b/src/framework/Makefile
 @@ -100,7 +100,7 @@ $(TARGET): $(OBJS)
  		fi
  
@@ -21,9 +21,9 @@ diff -Naurp src/framework/Makefile src/framework/Makefile
  
  distclean:	clean
  		rm -f .depend
-diff -Naurp src/melt/Makefile src/melt/Makefile
---- src/melt/Makefile	2015-02-01 14:51:27.000000000 +0200
-+++ src/melt/Makefile	2015-02-01 15:04:09.000000000 +0200
+diff --git a/src/melt/Makefile b/src/melt/Makefile
+--- a/src/melt/Makefile
++++ b/src/melt/Makefile
 @@ -5,6 +5,8 @@ OBJS = melt.o \
  
  CFLAGS += -I.. $(RDYNAMIC) -DVERSION=\"$(version)\"
@@ -42,9 +42,9 @@ diff -Naurp src/melt/Makefile src/melt/Makefile
  
  distclean:	clean
  		rm -f .depend
-diff -Naurp src/mlt++/Makefile src/mlt++/Makefile
---- src/mlt++/Makefile	2015-02-01 14:51:27.000000000 +0200
-+++ src/mlt++/Makefile	2015-02-01 15:03:38.000000000 +0200
+diff --git a/src/mlt++/Makefile b/src/mlt++/Makefile
+--- a/src/mlt++/Makefile
++++ b/src/mlt++/Makefile
 @@ -20,6 +20,7 @@ LIBFLAGS += -Wl,-soname,$(SONAME)
  endif
  
@@ -62,16 +62,16 @@ diff -Naurp src/mlt++/Makefile src/mlt++/Makefile
  
  clean:
  	$(RM) $(OBJS) $(TARGET) $(NAME) $(SONAME)
-diff -Naurp src/modules/avformat/Makefile src/modules/avformat/Makefile
---- src/modules/avformat/Makefile	2015-02-01 14:51:27.000000000 +0200
-+++ src/modules/avformat/Makefile	2015-02-01 15:04:39.000000000 +0200
+diff --git a/src/modules/avformat/Makefile b/src/modules/avformat/Makefile
+--- a/src/modules/avformat/Makefile
++++ b/src/modules/avformat/Makefile
 @@ -1,4 +1,5 @@
  CFLAGS += -I../..
 +CPPFLAGS += -I../..
- LDFLAGS += -L../../framework -lmlt -lpthread
+ LDFLAGS += -L../../framework -lmlt -lpthread -lm
  
  include ../../../config.mak
-@@ -50,7 +51,7 @@ $(TARGET): $(OBJS)
+@@ -45,7 +46,7 @@ $(TARGET): $(OBJS)
  	$(CC) $(SHFLAGS) -o $@ $(OBJS) $(LDFLAGS)
  
  depend:	$(SRCS)
@@ -80,9 +80,9 @@ diff -Naurp src/modules/avformat/Makefile src/modules/avformat/Makefile
  
  distclean:	clean
  	rm -f .depend
-diff -Naurp src/modules/core/Makefile src/modules/core/Makefile
---- src/modules/core/Makefile	2015-02-01 14:51:27.000000000 +0200
-+++ src/modules/core/Makefile	2015-02-01 15:07:37.000000000 +0200
+diff --git a/src/modules/core/Makefile b/src/modules/core/Makefile
+--- a/src/modules/core/Makefile
++++ b/src/modules/core/Makefile
 @@ -1,5 +1,7 @@
  CFLAGS += -I../..
  
@@ -91,7 +91,7 @@ diff -Naurp src/modules/core/Makefile src/modules/core/Makefile
  LDFLAGS += -L../../framework -lmlt -lm -lpthread
  
  include ../../../config.mak
-@@ -68,7 +70,7 @@ composite_line_yuv_mmx.o: composite_line
+@@ -69,7 +71,7 @@ composite_line_yuv_mmx.o: composite_line_yuv_mmx.S
  	$(CC) -o $@ -c composite_line_yuv_mmx.S
  
  depend:	$(SRCS)
@@ -100,9 +100,9 @@ diff -Naurp src/modules/core/Makefile src/modules/core/Makefile
  
  distclean:	clean
  		rm -f .depend
-diff -Naurp src/modules/decklink/Makefile src/modules/decklink/Makefile
---- src/modules/decklink/Makefile	2015-02-01 14:51:27.000000000 +0200
-+++ src/modules/decklink/Makefile	2015-02-01 15:39:38.000000000 +0200
+diff --git a/src/modules/decklink/Makefile b/src/modules/decklink/Makefile
+--- a/src/modules/decklink/Makefile
++++ b/src/modules/decklink/Makefile
 @@ -1,5 +1,7 @@
  CFLAGS += -I../..
  
@@ -138,9 +138,9 @@ diff -Naurp src/modules/decklink/Makefile src/modules/decklink/Makefile
  
  distclean:	clean
  		rm -f .depend
-diff -Naurp src/modules/kdenlive/Makefile src/modules/kdenlive/Makefile
---- src/modules/kdenlive/Makefile	2015-02-01 14:51:27.000000000 +0200
-+++ src/modules/kdenlive/Makefile	2015-02-01 15:40:08.000000000 +0200
+diff --git a/src/modules/kdenlive/Makefile b/src/modules/kdenlive/Makefile
+--- a/src/modules/kdenlive/Makefile
++++ b/src/modules/kdenlive/Makefile
 @@ -1,5 +1,7 @@
  CFLAGS += -I../..
  
@@ -158,9 +158,9 @@ diff -Naurp src/modules/kdenlive/Makefile src/modules/kdenlive/Makefile
  
  distclean:	clean
  		rm -f .depend
-diff -Naurp src/modules/motion_est/Makefile src/modules/motion_est/Makefile
---- src/modules/motion_est/Makefile	2015-02-01 14:51:27.000000000 +0200
-+++ src/modules/motion_est/Makefile	2015-02-01 15:40:41.000000000 +0200
+diff --git a/src/modules/motion_est/Makefile b/src/modules/motion_est/Makefile
+--- a/src/modules/motion_est/Makefile
++++ b/src/modules/motion_est/Makefile
 @@ -1,5 +1,7 @@
  CFLAGS += -I../.. 
  
@@ -178,9 +178,9 @@ diff -Naurp src/modules/motion_est/Makefile src/modules/motion_est/Makefile
  
  distclean:	clean
  		rm -f .depend
-diff -Naurp src/modules/normalize/Makefile src/modules/normalize/Makefile
---- src/modules/normalize/Makefile	2015-02-01 14:51:27.000000000 +0200
-+++ src/modules/normalize/Makefile	2015-02-01 15:41:07.000000000 +0200
+diff --git a/src/modules/normalize/Makefile b/src/modules/normalize/Makefile
+--- a/src/modules/normalize/Makefile
++++ b/src/modules/normalize/Makefile
 @@ -1,5 +1,7 @@
  CFLAGS += -I../..
  
@@ -198,9 +198,9 @@ diff -Naurp src/modules/normalize/Makefile src/modules/normalize/Makefile
  
  distclean:	clean
  		rm -f .depend
-diff -Naurp src/modules/oldfilm/Makefile src/modules/oldfilm/Makefile
---- src/modules/oldfilm/Makefile	2015-02-01 14:51:27.000000000 +0200
-+++ src/modules/oldfilm/Makefile	2015-02-01 15:41:29.000000000 +0200
+diff --git a/src/modules/oldfilm/Makefile b/src/modules/oldfilm/Makefile
+--- a/src/modules/oldfilm/Makefile
++++ b/src/modules/oldfilm/Makefile
 @@ -1,5 +1,7 @@
  CFLAGS += -I../..
  
@@ -218,9 +218,9 @@ diff -Naurp src/modules/oldfilm/Makefile src/modules/oldfilm/Makefile
  
  distclean:	clean
  		rm -f .depend
-diff -Naurp src/modules/plus/Makefile src/modules/plus/Makefile
---- src/modules/plus/Makefile	2015-02-01 14:51:27.000000000 +0200
-+++ src/modules/plus/Makefile	2015-02-01 15:45:00.000000000 +0200
+diff --git a/src/modules/plus/Makefile b/src/modules/plus/Makefile
+--- a/src/modules/plus/Makefile
++++ b/src/modules/plus/Makefile
 @@ -1,5 +1,7 @@
  CFLAGS += -I../..
  
@@ -229,7 +229,7 @@ diff -Naurp src/modules/plus/Makefile src/modules/plus/Makefile
  LDFLAGS += -L../../framework -lmlt -lm -lpthread
  
  include ../../../config.mak
-@@ -29,7 +31,7 @@ $(TARGET): $(OBJS)
+@@ -30,7 +32,7 @@ $(TARGET): $(OBJS)
  		$(CC) $(SHFLAGS) -o $@ $(OBJS) $(LDFLAGS)
  
  depend:	$(SRCS)
@@ -238,9 +238,9 @@ diff -Naurp src/modules/plus/Makefile src/modules/plus/Makefile
  
  distclean:	clean
  		rm -f .depend
-diff -Naurp src/modules/plusgpl/Makefile src/modules/plusgpl/Makefile
---- src/modules/plusgpl/Makefile	2015-02-01 14:51:27.000000000 +0200
-+++ src/modules/plusgpl/Makefile	2015-02-01 15:45:24.000000000 +0200
+diff --git a/src/modules/plusgpl/Makefile b/src/modules/plusgpl/Makefile
+--- a/src/modules/plusgpl/Makefile
++++ b/src/modules/plusgpl/Makefile
 @@ -1,5 +1,7 @@
  CFLAGS += -I../..
  
@@ -258,9 +258,9 @@ diff -Naurp src/modules/plusgpl/Makefile src/modules/plusgpl/Makefile
  
  distclean:	clean
  		rm -f .depend
-diff -Naurp src/modules/resample/Makefile src/modules/resample/Makefile
---- src/modules/resample/Makefile	2015-02-01 14:51:27.000000000 +0200
-+++ src/modules/resample/Makefile	2015-02-01 15:46:54.000000000 +0200
+diff --git a/src/modules/resample/Makefile b/src/modules/resample/Makefile
+--- a/src/modules/resample/Makefile
++++ b/src/modules/resample/Makefile
 @@ -1,5 +1,7 @@
  CFLAGS += -I../..
  
@@ -278,9 +278,9 @@ diff -Naurp src/modules/resample/Makefile src/modules/resample/Makefile
  
  distclean:	clean
  		rm -f .depend
-diff -Naurp src/modules/rtaudio/Makefile src/modules/rtaudio/Makefile
---- src/modules/rtaudio/Makefile	2015-02-01 14:51:27.000000000 +0200
-+++ src/modules/rtaudio/Makefile	2015-02-01 15:47:19.000000000 +0200
+diff --git a/src/modules/rtaudio/Makefile b/src/modules/rtaudio/Makefile
+--- a/src/modules/rtaudio/Makefile
++++ b/src/modules/rtaudio/Makefile
 @@ -1,5 +1,7 @@
  CFLAGS += -I../..
  
@@ -298,9 +298,9 @@ diff -Naurp src/modules/rtaudio/Makefile src/modules/rtaudio/Makefile
  
  distclean:	clean
  		rm -f .depend
-diff -Naurp src/modules/sdl/Makefile src/modules/sdl/Makefile
---- src/modules/sdl/Makefile	2015-02-01 14:51:27.000000000 +0200
-+++ src/modules/sdl/Makefile	2015-02-01 15:48:13.000000000 +0200
+diff --git a/src/modules/sdl/Makefile b/src/modules/sdl/Makefile
+--- a/src/modules/sdl/Makefile
++++ b/src/modules/sdl/Makefile
 @@ -1,5 +1,7 @@
  CFLAGS += -I../..
  
@@ -326,9 +326,9 @@ diff -Naurp src/modules/sdl/Makefile src/modules/sdl/Makefile
  
  distclean:	clean
  		rm -f .depend
-diff -Naurp src/modules/sox/Makefile src/modules/sox/Makefile
---- src/modules/sox/Makefile	2015-02-01 14:51:27.000000000 +0200
-+++ src/modules/sox/Makefile	2015-02-01 15:48:41.000000000 +0200
+diff --git a/src/modules/sox/Makefile b/src/modules/sox/Makefile
+--- a/src/modules/sox/Makefile
++++ b/src/modules/sox/Makefile
 @@ -1,5 +1,7 @@
  CFLAGS += -I../..
  
@@ -346,21 +346,23 @@ diff -Naurp src/modules/sox/Makefile src/modules/sox/Makefile
  
  distclean:	clean
  		rm -f .depend
-diff -Naurp src/modules/sox/configure src/modules/sox/configure
---- src/modules/sox/configure	2015-02-01 14:51:27.000000000 +0200
-+++ src/modules/sox/configure	2015-02-01 16:00:09.000000000 +0200
-@@ -21,7 +21,7 @@ then
+diff --git a/src/modules/sox/configure b/src/modules/sox/configure
+--- a/src/modules/sox/configure
++++ b/src/modules/sox/configure
+@@ -20,8 +20,9 @@ then
+ 	then
  		disable_sox=0
  		echo "CFLAGS += $(pkg-config --cflags sox)" > config.mak
++		echo "CPPFLAGS += $(pkg-config --cflags sox)" >> config.mak
  		echo "LDFLAGS += $(pkg-config --libs sox)" >> config.mak
 -		[ $(pkg-config --modversion sox | cut -d. -f1) -gt 13 ] && echo "CFLAGS += -DSOX14" >> config.mak
 +		[ $(pkg-config --modversion sox | cut -d. -f1) -gt 13 ] && echo "CFLAGS += -DSOX14" >> config.mak && echo "CPPFLAGS += -DSOX14" >> config.mak
  	else
  		which libst-config > /dev/null 2>&1
  		if [ $? -eq 0 ]
-diff -Naurp src/modules/videostab/Makefile src/modules/videostab/Makefile
---- src/modules/videostab/Makefile	2015-02-01 14:51:27.000000000 +0200
-+++ src/modules/videostab/Makefile	2015-02-01 16:02:38.000000000 +0200
+diff --git a/src/modules/videostab/Makefile b/src/modules/videostab/Makefile
+--- a/src/modules/videostab/Makefile
++++ b/src/modules/videostab/Makefile
 @@ -1,8 +1,10 @@
  include ../../../config.mak
  
@@ -381,9 +383,9 @@ diff -Naurp src/modules/videostab/Makefile src/modules/videostab/Makefile
  
  distclean:	clean
  		rm -f .depend
-diff -Naurp src/modules/vmfx/Makefile src/modules/vmfx/Makefile
---- src/modules/vmfx/Makefile	2015-02-01 14:51:27.000000000 +0200
-+++ src/modules/vmfx/Makefile	2015-02-01 16:10:03.000000000 +0200
+diff --git a/src/modules/vmfx/Makefile b/src/modules/vmfx/Makefile
+--- a/src/modules/vmfx/Makefile
++++ b/src/modules/vmfx/Makefile
 @@ -1,5 +1,7 @@
  CFLAGS += -I../..
  
@@ -401,9 +403,9 @@ diff -Naurp src/modules/vmfx/Makefile src/modules/vmfx/Makefile
  
  distclean:	clean
  		rm -f .depend
-diff -Naurp src/modules/xine/Makefile src/modules/xine/Makefile
---- src/modules/xine/Makefile	2015-02-01 14:51:27.000000000 +0200
-+++ src/modules/xine/Makefile	2015-02-01 16:10:30.000000000 +0200
+diff --git a/src/modules/xine/Makefile b/src/modules/xine/Makefile
+--- a/src/modules/xine/Makefile
++++ b/src/modules/xine/Makefile
 @@ -1,5 +1,7 @@
  CFLAGS += -I../../
  
@@ -421,9 +423,9 @@ diff -Naurp src/modules/xine/Makefile src/modules/xine/Makefile
  
  distclean:	clean
  		rm -f .depend
-diff -Naurp src/modules/xml/Makefile src/modules/xml/Makefile
---- src/modules/xml/Makefile	2015-02-01 14:51:27.000000000 +0200
-+++ src/modules/xml/Makefile	2015-02-01 16:11:12.000000000 +0200
+diff --git a/src/modules/xml/Makefile b/src/modules/xml/Makefile
+--- a/src/modules/xml/Makefile
++++ b/src/modules/xml/Makefile
 @@ -1,5 +1,7 @@
  CFLAGS += -I../..
  

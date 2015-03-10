@@ -431,7 +431,7 @@ mklibvorbis
 mksox
 	
 PKG_NAME=mlt
-PKG_VERSION=0.9.2
+PKG_VERSION=0.9.6
 TAREXT=gz
 
 if ! pkg-config ${PKG_NAME}\+\+ --exact-version=${PKG_VERSION}  --print-errors; then
