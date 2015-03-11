@@ -739,7 +739,7 @@ fi
 #}
 mkffmpeg()
 {
-    export FFMPEG_VERSION=2.2.2
+    export FFMPEG_VERSION=2.5.2
     if ! pkg-config libswscale --exact-version=${FFMPEG_VERSION}  --print-errors; then
         pushd $WORKSPACE
         [ -e ffmpeg-${FFMPEG_VERSION}-win${ARCH}-dev.7z ] || wget http://ffmpeg.zeranoe.com/builds/win${ARCH}/dev/ffmpeg-${FFMPEG_VERSION}-win${ARCH}-dev.7z
@@ -757,16 +757,18 @@ mkffmpeg()
         cp -rf ffmpeg-${FFMPEG_VERSION}-win${ARCH}-shared/presets/* ${MINGWPREFIX}/share/ffmpeg/presets/
 
 		mkdir -p ${MINGWPREFIX}/lib/pkgconfig/ || true
-		for PKG in libswscale libavformat libavdevice; do
-			cat > ${MINGWPREFIX}/lib/pkgconfig/${PKG}.pc <<EOF
+		for PKG in avcodec avutil avformat swscale avdevice; do
+			cat > ${MINGWPREFIX}/lib/pkgconfig/lib${PKG}.pc <<EOF
 prefix=${MINGWPREFIX}
 exec_prefix=${MINGWPREFIX}
 libdir=${MINGWPREFIX}/lib
 includedir=${MINGWPREFIX}/include
 
-Name: ${PKG}
+Name: lib${PKG}
 Description: FFMpeg
 Version: ${FFMPEG_VERSION}
+
+Libs: -l${PKG}
 
 EOF
 		done
