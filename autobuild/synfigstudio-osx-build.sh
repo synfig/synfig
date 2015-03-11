@@ -206,13 +206,13 @@ mkdeps()
 	sed -i "" -e "s|/Applications/MacPorts|$MACPORTS/tmp/app|g" "$MACPORTS/etc/macports/macports.conf" || true
 	
 	if [ ! -z $UNIVERSAL ]; then
-		if [[ X11 == 1 ]]; then
+		if [[ $X11 == 1 ]]; then
 			echo "+universal +x11 +nonfree" > $MACPORTS/etc/macports/variants.conf
 		else
 			echo "+universal +no_x11 +quartz -x11 +nonfree" > $MACPORTS/etc/macports/variants.conf
 		fi
 	else
-		if [[ X11 == 1 ]]; then
+		if [[ $X11 == 1 ]]; then
 			echo "+x11 +nonfree" > $MACPORTS/etc/macports/variants.conf
 		else
 			echo "+no_x11 +quartz -x11 +nonfree" > $MACPORTS/etc/macports/variants.conf
