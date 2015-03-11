@@ -886,6 +886,7 @@ $CYGWIN_SETUP \
 $CYGWIN_SETUP \
 -s http://www.mirrorservice.org/sites/sourceware.org/pub/cygwin/ \
 -P urlgrabber \
+-P rpm-devel \
 -P libglib2.0-devel \
 -P libxml2-devel \
 -P libsqlite3-devel \
@@ -899,12 +900,12 @@ $CYGWIN_SETUP \
 
 #mktoolchain
 
-echo "Building popt..."
-mknative mkpopt
+#echo "Building popt..."
+#mknative mkpopt
 echo "Building pyliblzma..."
 mknative mkpyliblzma
-echo "Building rpm..."
-mknative mkrpm
+#echo "Building rpm..."
+#mknative mkrpm
 #mknative mkurlgrabber
 echo "Building yum-metadata-parser..."
 mknative mkyum-metadata-parser
