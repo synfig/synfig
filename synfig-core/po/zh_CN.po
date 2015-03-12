@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Synfig\n"
 "Report-Msgid-Bugs-To: http://www.synfig.org/issues/thebuggenie/synfig\n"
-"POT-Creation-Date: 2015-02-03 14:00+0700\n"
-"PO-Revision-Date: 2015-01-30 14:06+0000\n"
+"POT-Creation-Date: 2015-03-11 18:00+0700\n"
+"PO-Revision-Date: 2015-02-04 15:34+0000\n"
 "Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
 "Language-Team: Chinese (China) (http://www.transifex.com/projects/p/synfig/language/zh_CN/)\n"
 "MIME-Version: 1.0\n"
@@ -2215,15 +2215,15 @@ msgstr "输入::打开():不能找到扩展名"
 msgid "Importer::open(): Unknown file type -- "
 msgstr "输入::打开():未知文件类型——"
 
-#: src/synfig/layer.cpp:733 src/synfig/layer_composite.cpp:132
+#: src/synfig/layer.cpp:736 src/synfig/layer_composite.cpp:132
 msgid "Unable to create surface target"
 msgstr "未能创建面目标"
 
-#: src/synfig/layer.cpp:788
+#: src/synfig/layer.cpp:791
 msgid "Z Depth"
 msgstr "Z 深度"
 
-#: src/synfig/layer.cpp:790
+#: src/synfig/layer.cpp:793
 msgid "Modifies the position of the layer in the layer stack"
 msgstr ""
 

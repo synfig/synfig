@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Synfig\n"
 "Report-Msgid-Bugs-To: http://www.synfig.org/issues/thebuggenie/synfig\n"
-"POT-Creation-Date: 2015-02-03 14:00+0700\n"
-"PO-Revision-Date: 2015-01-30 14:06+0000\n"
+"POT-Creation-Date: 2015-03-11 18:00+0700\n"
+"PO-Revision-Date: 2015-03-10 20:11+0000\n"
 "Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
 "Language-Team: Danish (http://www.transifex.com/projects/p/synfig/language/da/)\n"
 "MIME-Version: 1.0\n"
@@ -228,7 +228,7 @@ msgstr ""
 #: src/modules/mod_filter/blur.cpp:419
 #: src/modules/mod_filter/halftone2.cpp:174
 msgid "Type"
-msgstr ""
+msgstr "Type"
 
 #: src/modules/lyr_std/bevel.cpp:627 src/modules/lyr_std/shade.cpp:635
 #: src/modules/mod_filter/blur.cpp:420
@@ -1582,7 +1582,7 @@ msgstr ""
 
 #: src/modules/mod_geometry/star.cpp:195
 msgid "Regular Polygon"
-msgstr ""
+msgstr "Regulær polygon"
 
 #: src/modules/mod_geometry/star.cpp:196
 msgid "Whether to draw a star or a regular polygon"
@@ -1852,7 +1852,7 @@ msgstr ""
 #: src/modules/mod_noise/main.cpp:66
 #: src/modules/mod_noise/valuenode_random.cpp:169
 msgid "Random"
-msgstr ""
+msgstr "Vilkårlig"
 
 #: src/modules/mod_noise/noise.cpp:58
 msgid "Noise Gradient"
@@ -2213,15 +2213,15 @@ msgstr ""
 msgid "Importer::open(): Unknown file type -- "
 msgstr ""
 
-#: src/synfig/layer.cpp:733 src/synfig/layer_composite.cpp:132
+#: src/synfig/layer.cpp:736 src/synfig/layer_composite.cpp:132
 msgid "Unable to create surface target"
 msgstr ""
 
-#: src/synfig/layer.cpp:788
+#: src/synfig/layer.cpp:791
 msgid "Z Depth"
-msgstr ""
+msgstr "Z-dybde"
 
-#: src/synfig/layer.cpp:790
+#: src/synfig/layer.cpp:793
 msgid "Modifies the position of the layer in the layer stack"
 msgstr ""
 
@@ -2337,7 +2337,7 @@ msgstr ""
 
 #: src/synfig/layer_pastecanvas.cpp:137
 msgid "Canvas"
-msgstr ""
+msgstr "Lærred"
 
 #: src/synfig/layer_pastecanvas.cpp:138
 msgid "Group content"
@@ -3943,7 +3943,7 @@ msgstr ""
 #: src/synfig/valuenode_composite.cpp:768
 #: src/synfig/valuenode_timedswap.cpp:272
 msgid "Length"
-msgstr ""
+msgstr "Længde"
 
 #: src/synfig/valuenode_composite.cpp:769
 msgid "The length of the Dash Item"
@@ -3980,7 +3980,7 @@ msgstr ""
 
 #: src/synfig/valuenode_composite.cpp:821
 msgid "Value"
-msgstr ""
+msgstr "Værdi"
 
 #: src/synfig/valuenode_composite.cpp:822
 msgid "The Value"
@@ -4360,7 +4360,7 @@ msgstr ""
 
 #: src/synfig/valuenode_radialcomposite.cpp:255
 msgid "Luma"
-msgstr ""
+msgstr "Luma"
 
 #: src/synfig/valuenode_radialcomposite.cpp:273
 msgid "The length of the vector"
@@ -4939,7 +4939,7 @@ msgstr ""
 
 #: src/tool/joblistprocessor.cpp:248
 msgid "Done."
-msgstr ""
+msgstr "Færdig."
 
 #: src/tool/optionsprocessor.cpp:117
 msgid "Unrecognised canvas variable: "

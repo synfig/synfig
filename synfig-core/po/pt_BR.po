@@ -12,16 +12,16 @@
 # gamont <gamontbr@gmail.com>, 2011
 # hbarone <henrique.blender@gmail.com>, 2011
 # hbarone <henrique.blender@gmail.com>, 2011
-# Ricardo Graça <ricolandia@gmail.com>, 2011
+# Ricardo Graça <ricolandia@gmail.com>, 2011,2015
 # rodolforg <rodolforg@gmail.com>, 2013
 # rodolforg <rodolforg@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: Synfig\n"
 "Report-Msgid-Bugs-To: http://www.synfig.org/issues/thebuggenie/synfig\n"
-"POT-Creation-Date: 2015-02-03 14:00+0700\n"
-"PO-Revision-Date: 2015-01-30 14:06+0000\n"
-"Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
+"POT-Creation-Date: 2015-03-11 18:00+0700\n"
+"PO-Revision-Date: 2015-03-06 18:45+0000\n"
+"Last-Translator: Adriano Araújo Duarte <dhryko@hotmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/synfig/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -814,7 +814,7 @@ msgstr "Quando marcado, os laços são espelhados, centralizados no Tempo Local"
 
 #: src/modules/lyr_std/translate.cpp:55 src/synfig/valuenode_bonelink.cpp:218
 msgid "Translate"
-msgstr "Traduzir"
+msgstr "Mover"
 
 #: src/modules/lyr_std/twirl.cpp:56
 msgid "Twirl"
@@ -1732,7 +1732,7 @@ msgstr "Nenhum arquivo a carregar"
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:119
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:120
 msgid "Cannot create temporary file of "
-msgstr ""
+msgstr "Não é possível criar arquivo temporário de"
 
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:179
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:180
@@ -2076,7 +2076,7 @@ msgstr "Estado inválido da Superfície Cairo"
 msgid ""
 "The image is too large. It's size must be not more than 5000*2000=10000000 "
 "px. Now is %d*%d=%d px."
-msgstr ""
+msgstr "A imagem é muito grande. Seu tamanho não deve ser maior que 5000*2000=10000000 px. Agora é %d*%d=%d px."
 
 #: src/modules/mod_ppm/mptr_ppm.cpp:78
 #, c-format
@@ -2225,15 +2225,15 @@ msgstr "Importer::open(): Não é possível encontrar a extensão"
 msgid "Importer::open(): Unknown file type -- "
 msgstr "Importer::open(): Tipo de arquivo desconhecido --"
 
-#: src/synfig/layer.cpp:733 src/synfig/layer_composite.cpp:132
+#: src/synfig/layer.cpp:736 src/synfig/layer_composite.cpp:132
 msgid "Unable to create surface target"
 msgstr "Não é possível criar destino da superfície"
 
-#: src/synfig/layer.cpp:788
+#: src/synfig/layer.cpp:791
 msgid "Z Depth"
 msgstr "Profundidade Z"
 
-#: src/synfig/layer.cpp:790
+#: src/synfig/layer.cpp:793
 msgid "Modifies the position of the layer in the layer stack"
 msgstr "Modifica a posição da camada na pilha de camadas"
 
@@ -2962,15 +2962,15 @@ msgstr "Composição"
 
 #: src/synfig/paramdesc.cpp:69
 msgid "Straight"
-msgstr "Linha Reta"
+msgstr "Direto"
 
 #: src/synfig/paramdesc.cpp:70
 msgid "Onto"
-msgstr "Em direção a"
+msgstr "Para cima"
 
 #: src/synfig/paramdesc.cpp:71
 msgid "Straight Onto"
-msgstr "Em Linha Reta Para"
+msgstr "Direto para cima"
 
 #: src/synfig/paramdesc.cpp:72
 msgid "Behind"
@@ -2978,7 +2978,7 @@ msgstr "Atrás"
 
 #: src/synfig/paramdesc.cpp:73
 msgid "Screen"
-msgstr "Tela"
+msgstr "Quebra-luz"
 
 #: src/synfig/paramdesc.cpp:74
 msgid "Overlay"

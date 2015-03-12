@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Synfig\n"
 "Report-Msgid-Bugs-To: http://www.synfig.org/issues/thebuggenie/synfig\n"
-"POT-Creation-Date: 2015-02-03 14:00+0700\n"
-"PO-Revision-Date: 2015-01-30 14:06+0000\n"
+"POT-Creation-Date: 2015-03-11 18:00+0700\n"
+"PO-Revision-Date: 2015-02-04 15:34+0000\n"
 "Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
 "Language-Team: Spanish (http://www.transifex.com/projects/p/synfig/language/es/)\n"
 "MIME-Version: 1.0\n"
@@ -2219,15 +2219,15 @@ msgstr "Importer::open(): No puede econtrar la extensión"
 msgid "Importer::open(): Unknown file type -- "
 msgstr "Importer::open(): Tipo de archivo desconocido -- "
 
-#: src/synfig/layer.cpp:733 src/synfig/layer_composite.cpp:132
+#: src/synfig/layer.cpp:736 src/synfig/layer_composite.cpp:132
 msgid "Unable to create surface target"
 msgstr "Imposible crear superficie objetivo"
 
-#: src/synfig/layer.cpp:788
+#: src/synfig/layer.cpp:791
 msgid "Z Depth"
 msgstr "Profundidad Z"
 
-#: src/synfig/layer.cpp:790
+#: src/synfig/layer.cpp:793
 msgid "Modifies the position of the layer in the layer stack"
 msgstr "Modifica la posición de la capa en la pila de capas"
 

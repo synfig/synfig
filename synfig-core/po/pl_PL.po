@@ -3,7 +3,7 @@
 # This file is distributed under the same license as the Synfig Core package.
 # 
 # Translators:
-# Adam Humienny <adam.humienny@gmail.com>, 2014
+# Adam Humienny <adam.humienny@gmail.com>, 2014-2015
 # Adam Humienny <adam.humienny@gmail.com>, 2014
 # darkhog <rave002@o2.pl>, 2011
 # szamanx01 <szamanx01@gmail.com>, 2012-2013
@@ -16,9 +16,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Synfig\n"
 "Report-Msgid-Bugs-To: http://www.synfig.org/issues/thebuggenie/synfig\n"
-"POT-Creation-Date: 2015-02-03 14:00+0700\n"
-"PO-Revision-Date: 2015-01-30 14:06+0000\n"
-"Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
+"POT-Creation-Date: 2015-03-11 18:00+0700\n"
+"PO-Revision-Date: 2015-02-10 12:21+0000\n"
+"Last-Translator: Adam Humienny <adam.humienny@gmail.com>\n"
 "Language-Team: Polish (Poland) (http://www.transifex.com/projects/p/synfig/language/pl_PL/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1729,7 +1729,7 @@ msgstr "Brak pliku do załadowania"
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:119
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:120
 msgid "Cannot create temporary file of "
-msgstr ""
+msgstr "Nie można utworzyć pliku tymczasowego z"
 
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:179
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:180
@@ -2222,15 +2222,15 @@ msgstr "Importer::open(); Nie znaleziono wyrażenia"
 msgid "Importer::open(): Unknown file type -- "
 msgstr "Importer::open(); Nieznany typ pliku --"
 
-#: src/synfig/layer.cpp:733 src/synfig/layer_composite.cpp:132
+#: src/synfig/layer.cpp:736 src/synfig/layer_composite.cpp:132
 msgid "Unable to create surface target"
 msgstr "Nie można utworzyć powierzchni celu"
 
-#: src/synfig/layer.cpp:788
+#: src/synfig/layer.cpp:791
 msgid "Z Depth"
 msgstr "Głębia Z"
 
-#: src/synfig/layer.cpp:790
+#: src/synfig/layer.cpp:793
 msgid "Modifies the position of the layer in the layer stack"
 msgstr "Zmienia pozycję warstwy na stosie warstw"
 
@@ -2793,11 +2793,11 @@ msgstr "Niedopasowana wielkość warstwy (app:%d, lib:%d)"
 
 #: src/synfig/main.cpp:215
 msgid "Starting Subsystem \"Sound\""
-msgstr ""
+msgstr "Startuję podsystem \"dzwięk\""
 
 #: src/synfig/main.cpp:217
 msgid "Unable to initialize subsystem \"Sound\""
-msgstr ""
+msgstr "Inicjalizacja podsystemu \"dzwięk\" nie powiodła się "
 
 #: src/synfig/main.cpp:219
 msgid "Starting Subsystem \"Types\""
