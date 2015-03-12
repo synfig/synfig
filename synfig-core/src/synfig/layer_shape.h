@@ -124,8 +124,15 @@ public:
 
 private:
 	class 		PolySpan;
-	bool render_polyspan(Surface *surface,PolySpan &polyspan,
-						Color::BlendMethod method,Color::value_type amount)const;
+	bool render_polyspan(
+		Surface *surface,
+		PolySpan &polyspan,
+		Color::value_type amount,
+		Color::BlendMethod blend_method,
+		const Color &color,
+		bool invert,
+		bool antialias,
+		WindingStyle winding_style) const;
 	bool render_polyspan(etl::surface<float> *surface,PolySpan &polyspan)const;
 	virtual bool render_shape(Surface *surface,bool useblend,int quality,const RendDesc &renddesc, ProgressCallback *cb)const;
 	virtual bool render_shape(etl::surface<float> *surface,int quality,const RendDesc &renddesc, ProgressCallback *cb)const;
