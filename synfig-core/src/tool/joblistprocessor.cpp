@@ -141,7 +141,10 @@ bool setup_job(Job& job, const TargetParam& target_parameters)
 	// Check permissions
 	if (access(bfs::path(job.outfilename).parent_path().string().c_str(), W_OK) == -1)
 	{
-		synfig::error(strprintf(_("Unable to create output for \"%s\": %s"), job.filename.c_str(), strerror(errno)));
+	    const std::string message =
+            (boost::format(_("Unable to create output for \"%s\": %s"))
+                           % job.filename % strerror(errno)).str();
+		synfig::error(message.c_str());
 		synfig::error(_("Throwing out job..."));
 		return false;
 	}
@@ -158,7 +161,10 @@ bool setup_job(Job& job, const TargetParam& target_parameters)
 	{
 		if(!job.target)
 		{
-		    synfig::error(strprintf(_("Unknown target for \"%s\": %s"), job.filename.c_str(), strerror(errno)));
+		    const std::string message =
+                (boost::format(_("Unknown target for \"%s\": %s"))
+                               % job.filename % strerror(errno)).str();
+		    synfig::error(message.c_str());
                     synfig::error(_("Throwing out job..."));
                     return false;
 		}
