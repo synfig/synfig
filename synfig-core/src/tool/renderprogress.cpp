@@ -21,6 +21,7 @@
 #include <cmath>
 #include <iostream>
 #include "renderprogress.h"
+#include <boost/format.hpp>
 
 RenderProgress::RenderProgress()
     : last_frame_(0), last_printed_line_length_(0),
@@ -65,11 +66,15 @@ bool RenderProgress::amount_complete(int current_frame, int frames_count)
         }
         last_timepoint_ = Clock::now();
 
+        int percentage_completed = 100;
+        if (frames_count > 0)
+        {
+            percentage_completed = 100 * current_frame / frames_count;
+        }
 
         outputStream << "\r"
-                     << taskname_ << ": " << _("Frame") << " "
-                     << current_frame << _(" of ") << frames_count << ". "
-                     << _("Remaining time: ");
+                     << boost::format(_("%1%: Frame %2% of %3% (%4%%%). Remaining time: "))
+                        % taskname_ % current_frame % frames_count % percentage_completed;
 
         if (current_frame != last_frame_)
         {
