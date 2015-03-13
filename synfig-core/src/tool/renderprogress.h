@@ -49,7 +49,7 @@ public:
     virtual bool amount_complete(int scanline, int height);
 private:
     std::string taskname_;
-    int last_scanline_;
+    int last_frame_;
     size_t last_printed_line_length_;
 
     typedef boost::chrono::system_clock Clock;

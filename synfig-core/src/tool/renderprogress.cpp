@@ -23,7 +23,7 @@
 #include "renderprogress.h"
 
 RenderProgress::RenderProgress()
-    : last_scanline_(0), last_printed_line_length_(0),
+    : last_frame_(0), last_printed_line_length_(0),
       start_timepoint_(Clock::now()), last_timepoint_(Clock::now())
 { }
 
@@ -45,7 +45,7 @@ bool RenderProgress::warning(const std::string& task)
     return true;
 }
 
-bool RenderProgress::amount_complete(int scanline, int height)
+bool RenderProgress::amount_complete(int current_frame, int frames_count)
 {
     if(SynfigToolGeneralOptions::instance()->should_be_quiet())
     {
@@ -54,7 +54,7 @@ bool RenderProgress::amount_complete(int scanline, int height)
 
     std::ostringstream outputStream;
 
-    const bool isFinished = (scanline == height);
+    const bool isFinished = (current_frame == frames_count);
     if (!isFinished)
     {
         // avoid reporting the progress too often
@@ -67,14 +67,14 @@ bool RenderProgress::amount_complete(int scanline, int height)
 
 
         outputStream << "\r"
-                     << taskname_ << ": " << _("Line") << " "
-                     << scanline << _(" of ") << height << ". "
+                     << taskname_ << ": " << _("Frame") << " "
+                     << current_frame << _(" of ") << frames_count << ". "
                      << _("Remaining time: ");
 
-        if (scanline != last_scanline_)
+        if (current_frame != last_frame_)
         {
             remaining_rendered_proportion_ =
-                double(height-scanline)/(scanline-last_scanline_);
+                double(frames_count-current_frame)/(current_frame-last_frame_);
         }
         Duration time_since_start(Clock::now() - start_timepoint_);
         double remaining_seconds =
