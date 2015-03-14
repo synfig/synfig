@@ -32,20 +32,20 @@
 #endif
 
 #include "layer_shape.h"
-#include "string.h"
-#include "time.h"
-#include "context.h"
-#include "paramdesc.h"
-#include "renddesc.h"
-#include "surface.h"
-#include "value.h"
-#include "valuenode.h"
-#include "float.h"
-#include "blur.h"
-#include "cairo_renddesc.h"
+#include <synfig/string.h>
+#include <synfig/time.h>
+#include <synfig/context.h>
+#include <synfig/paramdesc.h>
+#include <synfig/renddesc.h>
+#include <synfig/surface.h>
+#include <synfig/value.h>
+#include <synfig/valuenode.h>
+#include <float.h>
+#include <synfig/blur.h>
+#include <synfig/cairo_renddesc.h>
 
 
-#include "curve_helper.h"
+#include <synfig/curve_helper.h>
 
 #include <vector>
 

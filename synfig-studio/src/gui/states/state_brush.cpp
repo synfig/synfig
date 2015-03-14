@@ -37,7 +37,7 @@
 #include <glibmm/timeval.h>
 #include <giomm.h>
 
-#include <synfig/layer_switch.h>
+#include <synfig/layers/layer_switch.h>
 
 #include "state_brush.h"
 #include "state_normal.h"

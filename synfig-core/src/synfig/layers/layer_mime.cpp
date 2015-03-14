@@ -31,20 +31,20 @@
 
 #include "layer_mime.h"
 
-#include "layer.h"
-#include "time.h"
-#include "string.h"
-#include "vector.h"
+#include <synfig/layer.h>
+#include <synfig/time.h>
+#include <synfig/string.h>
+#include <synfig/vector.h>
 
-#include "context.h"
-#include "time.h"
-#include "color.h"
-#include "surface.h"
-#include "renddesc.h"
-#include "target.h"
+#include <synfig/context.h>
+#include <synfig/time.h>
+#include <synfig/color.h>
+#include <synfig/surface.h>
+#include <synfig/renddesc.h>
+#include <synfig/target.h>
 
-#include "general.h"
-#include "paramdesc.h"
+#include <synfig/general.h>
+#include <synfig/paramdesc.h>
 
 #endif
 

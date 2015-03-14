@@ -35,21 +35,21 @@
 #include "layer.h"
 #include "render.h"
 #include "value.h"
-#include "layer_bitmap.h"
-#include "layer_mime.h"
+#include <synfig/layers/layer_bitmap.h>
+#include <synfig/layers/layer_mime.h>
 #include "context.h"
 #include "paramdesc.h"
 #include "surface.h"
 
-#include "layer_solidcolor.h"
-#include "layer_polygon.h"
-#include "layer_group.h"
-#include "layer_switch.h"
-#include "layer_motionblur.h"
-#include "layer_duplicate.h"
-#include "layer_skeleton.h"
-#include "layer_skeletondeformation.h"
-#include "layer_sound.h"
+#include <synfig/layers/layer_solidcolor.h>
+#include <synfig/layers/layer_polygon.h>
+#include <synfig/layers/layer_group.h>
+#include <synfig/layers/layer_switch.h>
+#include <synfig/layers/layer_motionblur.h>
+#include <synfig/layers/layer_duplicate.h>
+#include <synfig/layers/layer_skeleton.h>
+#include <synfig/layers/layer_skeletondeformation.h>
+#include <synfig/layers/layer_sound.h>
 
 #include "valuenodes/valuenode_const.h"
 

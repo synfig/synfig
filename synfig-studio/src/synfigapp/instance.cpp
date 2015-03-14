@@ -54,8 +54,8 @@
 #include <synfig/valuenodes/valuenode_bonelink.h>
 #include <synfig/valuenodes/valuenode_average.h>
 #include <synfig/valuenodes/valuenode_weightedaverage.h>
-#include <synfig/layer_pastecanvas.h>
-#include <synfig/layer_bitmap.h>
+#include <synfig/layers/layer_pastecanvas.h>
+#include <synfig/layers/layer_bitmap.h>
 #include <synfig/target_scanline.h>
 #include "actions/valuedescexport.h"
 #include "actions/layerparamset.h"

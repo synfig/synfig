@@ -33,7 +33,7 @@
 #include "layeradd.h"
 #include <synfigapp/canvasinterface.h>
 #include <synfigapp/general.h>
-#include <synfig/layer_pastecanvas.h>
+#include <synfig/layers/layer_pastecanvas.h>
 #include <synfig/valuenodes/valuenode_composite.h>
 
 #endif

@@ -43,7 +43,7 @@
 #include <stdexcept>
 #include <iostream>
 
-#include "layer_group.h"
+#include <synfig/layers/layer_group.h>
 #include "loadcanvas.h"
 #include "valuenode.h"
 #include "boneweightpair.h"

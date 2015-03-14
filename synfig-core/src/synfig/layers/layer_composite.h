@@ -28,9 +28,9 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include "layer.h"
-#include "color.h"
-#include "cairo_operators.h"
+#include <synfig/layer.h>
+#include <synfig/color.h>
+#include <synfig/cairo_operators.h>
 
 /* === M A C R O S ========================================================= */
 

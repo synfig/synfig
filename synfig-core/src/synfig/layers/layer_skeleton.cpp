@@ -29,15 +29,15 @@
 #	include <config.h>
 #endif
 
-#include "string.h"
+#include <synfig/string.h>
 #include "layer_skeleton.h"
-#include "time.h"
-#include "context.h"
-#include "paramdesc.h"
-#include "renddesc.h"
-#include "surface.h"
-#include "value.h"
-#include "valuenodes/valuenode_bone.h"
+#include <synfig/time.h>
+#include <synfig/context.h>
+#include <synfig/paramdesc.h>
+#include <synfig/renddesc.h>
+#include <synfig/surface.h>
+#include <synfig/value.h>
+#include <synfig/valuenodes/valuenode_bone.h>
 
 #endif
 

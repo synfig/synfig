@@ -1,11 +1,11 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file layer_meshtransform.h
-**	\brief Header file for implementation of the "MeshTransform" layer
+/*!	\file layer_skeleton.h
+**	\brief Header file for implementation of the "Layer_Skeleton" layer
 **
 **	$Id$
 **
 **	\legal
-**	......... ... 2014 Ivan Mahonin
+**	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -22,14 +22,15 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_LAYER_MESHTRANSFORM_H
-#define __SYNFIG_LAYER_MESHTRANSFORM_H
+#ifndef __SYNFIG_LAYER_SKELETON_H
+#define __SYNFIG_LAYER_SKELETON_H
 
 /* === H E A D E R S ======================================================= */
 
-#include "layer_composite.h"
-#include "mesh.h"
-#include "polygon.h"
+#include <synfig/bone.h>
+#include "layer_polygon.h"
+// #include <synfig/value.h>
+// #include <vector>
 
 /* === M A C R O S ========================================================= */
 
@@ -38,38 +39,36 @@
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 namespace synfig {
-class Mesh_Trans;
-class Layer_MeshTransform : public Layer_Composite
+
+class Layer_Skeleton : public Layer_Polygon
 {
-protected:
-	friend class Mesh_Trans;
-	Mesh mesh;
-	Polygon mask;
-
-	int max_texture_size;
-	Real max_texture_scale;
-
+	SYNFIG_LAYER_MODULE_EXT
 private:
-	Vector texture_scale_dependency_from_x;
-	Vector texture_scale_dependency_from_y;
-	Rect world_bounds;
-	Rect texture_bounds;
 
-protected:
-	void update_mesh_and_mask();
+	//!Parameter: (std::vector<synfig::Bone>) Bones list of the skeleton
+	ValueBase param_bones;
+	//!Parameter: (synfig::String) Name of the skeleton
+	ValueBase param_name;
 
 public:
-	//! Default constructor
-	Layer_MeshTransform();
-	//! Destructor
-	virtual ~Layer_MeshTransform();
 
-	synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;
-	virtual Color get_color(Context context, const Point &pos)const;
-	virtual Rect get_full_bounding_rect(Context context)const;
-	virtual etl::handle<synfig::Transform> get_transform()const;
-	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
-}; // END of class Layer_MeshTransform
+	Layer_Skeleton();
+
+#ifdef _DEBUG
+	~Layer_Skeleton();
+#endif
+
+	virtual bool set_param(const synfig::String & param, const synfig::ValueBase &value);
+
+	virtual synfig::ValueBase get_param(const synfig::String & param)const;
+
+	virtual Vocab get_param_vocab()const;
+
+	//! Updates the polygon data to match the parameters.
+	virtual void sync();
+	virtual void set_time(IndependentContext context, Time time)const;
+	virtual void set_time(IndependentContext context, Time time, const Point &pos)const;
+}; // END of class Layer_Skeleton
 
 }; // END of namespace synfig
 

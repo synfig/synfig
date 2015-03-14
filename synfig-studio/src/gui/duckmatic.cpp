@@ -64,7 +64,7 @@
 #include <synfig/curve_helper.h>
 
 #include <synfig/context.h>
-#include <synfig/layer_pastecanvas.h>
+#include <synfig/layers/layer_pastecanvas.h>
 
 #include <sigc++/retype_return.h>
 #include <sigc++/retype.h>

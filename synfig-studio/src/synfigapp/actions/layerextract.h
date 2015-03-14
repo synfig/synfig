@@ -28,7 +28,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include <synfig/layer.h>
-#include <synfig/layer_pastecanvas.h>
+#include <synfig/layers/layer_pastecanvas.h>
 #include <synfigapp/action.h>
 
 /* === M A C R O S ========================================================= */

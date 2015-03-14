@@ -32,14 +32,14 @@
 #endif
 
 #include "layer_polygon.h"
-#include "string.h"
-#include "time.h"
-#include "context.h"
-#include "paramdesc.h"
-#include "renddesc.h"
-#include "surface.h"
-#include "value.h"
-#include "valuenode.h"
+#include <synfig/string.h>
+#include <synfig/time.h>
+#include <synfig/context.h>
+#include <synfig/paramdesc.h>
+#include <synfig/renddesc.h>
+#include <synfig/surface.h>
+#include <synfig/value.h>
+#include <synfig/valuenode.h>
 #include <vector>
 
 #include <deque>

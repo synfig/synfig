@@ -33,19 +33,19 @@
 
 #include "layer_composite.h"
 #include "layer_pastecanvas.h"
-#include "context.h"
-#include "time.h"
-#include "color.h"
-#include "surface.h"
-#include "renddesc.h"
-#include "target.h"
+#include <synfig/context.h>
+#include <synfig/time.h>
+#include <synfig/color.h>
+#include <synfig/surface.h>
+#include <synfig/renddesc.h>
+#include <synfig/target.h>
 
 #include "layer_bitmap.h"
 
-#include "general.h"
-#include "render.h"
-#include "paramdesc.h"
-#include "cairo_renddesc.h"
+#include <synfig/general.h>
+#include <synfig/render.h>
+#include <synfig/paramdesc.h>
+#include <synfig/cairo_renddesc.h>
 
 
 #endif

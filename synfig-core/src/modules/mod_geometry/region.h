@@ -30,7 +30,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/layer_polygon.h>
+#include <synfig/layers/layer_polygon.h>
 #include <list>
 #include <vector>
 #include <synfig/value.h>

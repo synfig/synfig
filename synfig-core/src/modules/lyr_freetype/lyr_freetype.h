@@ -35,7 +35,7 @@
 //#define USE_MAC_FT_FUNCS	(1)
 //#endif
 
-#include <synfig/layer_composite.h>
+#include <synfig/layers/layer_composite.h>
 #include <synfig/vector.h>
 #include <synfig/color.h>
 #include <synfig/string.h>
