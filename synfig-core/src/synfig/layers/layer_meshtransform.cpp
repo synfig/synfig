@@ -30,12 +30,12 @@
 #endif
 
 #include "layer_meshtransform.h"
-#include "renderersoftware.h"
+#include <synfig/renderersoftware.h>
 #include <algorithm>
 #include <cmath>
 #include <climits>
-#include "transform.h"
-#include "context.h"
+#include <synfig/transform.h>
+#include <synfig/context.h>
 
 #endif
 

@@ -28,9 +28,9 @@
 /* === H E A D E R S ======================================================= */
 
 #include "layer_meshtransform.h"
-#include "pair.h"
-#include "bone.h"
-#include "polygon.h"
+#include <synfig/pair.h>
+#include <synfig/bone.h>
+#include <synfig/polygon.h>
 
 /* === M A C R O S ========================================================= */
 

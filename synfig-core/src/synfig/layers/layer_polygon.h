@@ -29,8 +29,8 @@
 /* === H E A D E R S ======================================================= */
 
 #include "layer_shape.h"
-#include "color.h"
-#include "vector.h"
+#include <synfig/color.h>
+#include <synfig/vector.h>
 #include <list>
 #include <vector>
 

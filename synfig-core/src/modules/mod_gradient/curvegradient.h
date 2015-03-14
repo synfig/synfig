@@ -31,7 +31,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include <synfig/vector.h>
-#include <synfig/layer_composite.h>
+#include <synfig/layers/layer_composite.h>
 #include <synfig/gradient.h>
 #include <synfig/blinepoint.h>
 

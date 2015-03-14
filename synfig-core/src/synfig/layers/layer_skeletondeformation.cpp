@@ -30,13 +30,13 @@
 #endif
 
 #include "layer_skeletondeformation.h"
-#include "string.h"
-#include "time.h"
-#include "context.h"
-#include "paramdesc.h"
-#include "value.h"
-#include "valuenode.h"
-#include "canvas.h"
+#include <synfig/string.h>
+#include <synfig/time.h>
+#include <synfig/context.h>
+#include <synfig/paramdesc.h>
+#include <synfig/value.h>
+#include <synfig/valuenode.h>
+#include <synfig/canvas.h>
 
 #include <vector>
 #include <map>

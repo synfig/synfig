@@ -30,7 +30,7 @@
 #endif
 
 #include "timepointscopy.h"
-#include <synfig/layer_pastecanvas.h>
+#include <synfig/layers/layer_pastecanvas.h>
 #include <synfigapp/canvasinterface.h>
 #include <synfig/valuenodes/valuenode_dynamiclist.h>
 #include <synfig/valuenodes/valuenode_animated.h>

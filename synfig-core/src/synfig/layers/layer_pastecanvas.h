@@ -30,14 +30,14 @@
 /* === H E A D E R S ======================================================= */
 
 #include "layer_composite.h"
-#include "color.h"
-#include "vector.h"
-#include "real.h"
-#include "time.h"
-#include "canvasbase.h"
-#include "canvas.h"
-#include "rect.h"
-#include "transformation.h"
+#include <synfig/color.h>
+#include <synfig/vector.h>
+#include <synfig/real.h>
+#include <synfig/time.h>
+#include <synfig/canvasbase.h>
+#include <synfig/canvas.h>
+#include <synfig/rect.h>
+#include <synfig/transformation.h>
 
 /* === M A C R O S ========================================================= */
 

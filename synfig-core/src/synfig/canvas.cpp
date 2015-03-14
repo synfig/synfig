@@ -36,9 +36,9 @@
 #include "exception.h"
 #include "time.h"
 #include "context.h"
-#include "layer_pastecanvas.h"
-#include "valuenodes/valuenode_const.h"
-#include "valuenodes/valuenode_scale.h"
+#include <synfig/layers/layer_pastecanvas.h>
+#include <synfig/valuenodes/valuenode_const.h>
+#include <synfig/valuenodes/valuenode_scale.h>
 #include "loadcanvas.h"
 #include "filesystemnative.h"
 #include <sigc++/bind.h>

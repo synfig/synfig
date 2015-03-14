@@ -15,41 +15,6 @@ EXTRA_DIST = \
 	nodebase.h
 
 
-LAYERHEADERS = \
-	layer_bitmap.h \
-	layer_composite.h \
-	layer_duplicate.h \
-	layer_group.h \
-	layer_meshtransform.h \
-	layer_mime.h \
-	layer_motionblur.h \
-	layer_pastecanvas.h \
-	layer_polygon.h \
-	layer_shape.h \
-	layer_solidcolor.h \
-	layer_sound.h \
-	layer_skeleton.h \
-	layer_skeletondeformation.h \
-	layer_switch.h
-
-LAYERSOURCES = \
-	layer_bitmap.cpp \
-	layer_composite.cpp \
-	layer_duplicate.cpp \
-	layer_group.cpp \
-	layer_meshtransform.cpp \
-	layer_mime.cpp \
-	layer_motionblur.cpp \
-	layer_pastecanvas.cpp \
-	layer_polygon.cpp \
-	layer_shape.cpp \
-	layer_solidcolor.cpp \
-	layer_sound.cpp \
-	layer_skeleton.cpp \
-	layer_skeletondeformation.cpp \
-	layer_switch.cpp
-
-
 TARGETHEADERS = \
 	target_multi.h \
 	target_null.h \
@@ -231,8 +196,6 @@ SYNFIGSOURCES = \
 libsynfig_src = \
 	$(VALUEHEADERS) \
 	$(VALUESOURCES) \
-	$(LAYERSOURCES) \
-	$(LAYERHEADERS) \
 	$(TARGETHEADERS) \
 	$(TARGETSOURCES) \
 	$(SYNFIGHEADERS) \
@@ -242,11 +205,11 @@ libsynfig_src = \
 
 libsynfig_include_HH = \
 	$(SYNFIGHEADERS) \
-	$(LAYERHEADERS) \
 	$(TARGETHEADERS) \
 	$(IMPORTERHEADERS) \
 	$(VALUEHEADERS)
 
+include layers/Makefile_insert
 include valuenodes/Makefile_insert
 
 lib_LTLIBRARIES = libsynfig.la

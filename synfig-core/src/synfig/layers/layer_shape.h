@@ -30,9 +30,9 @@
 /* === H E A D E R S ======================================================= */
 
 #include "layer_composite.h"
-#include "color.h"
-#include "vector.h"
-#include "blur.h"
+#include <synfig/color.h>
+#include <synfig/vector.h>
+#include <synfig/blur.h>
 
 #include <vector>
 

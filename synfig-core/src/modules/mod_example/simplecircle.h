@@ -27,10 +27,10 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/layer_composite.h>
+#include <synfig/layers/layer_composite.h>
 #include <synfig/color.h>
 #include <synfig/vector.h>
-#include <synfig/layer_composite.h>
+#include <synfig/layers/layer_composite.h>
 #include <synfig/value.h>
 
 /* === M A C R O S ========================================================= */

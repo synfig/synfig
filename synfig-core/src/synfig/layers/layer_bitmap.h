@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file layer_solidcolor.h
-**	\brief Header file for implementation of the "Solid Color" layer
+/*!	\file layer_bitmap.h
+**	\brief Template Header
 **
 **	$Id$
 **
@@ -23,13 +23,14 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_LAYER_SOLIDCOLOR_H
-#define __SYNFIG_LAYER_SOLIDCOLOR_H
+#ifndef __SYNFIG_LAYER_BITMAP_H
+#define __SYNFIG_LAYER_BITMAP_H
 
 /* === H E A D E R S ======================================================= */
 
 #include "layer_composite.h"
-#include "color.h"
+#include <synfig/surface.h>
+#include <synfig/target.h> // for RenderMethod
 
 /* === M A C R O S ========================================================= */
 
@@ -39,32 +40,56 @@
 
 namespace synfig {
 
-class Layer_SolidColor : public Layer_Composite, public Layer_NoDeform
+/*!	\class Layer_Bitmap
+**	\todo writeme
+*/
+class Layer_Bitmap : public Layer_Composite, public Layer_NoDeform
 {
-	SYNFIG_LAYER_MODULE_EXT
-
-private:
-
-	//!Parameter: (Color) color of the solid
-	ValueBase param_color;
-
+	const Color& filter(Color& c)const;
+	const CairoColor& filter(CairoColor& c)const;
+	RenderMethod method;
 public:
+	typedef etl::handle<Layer_Bitmap> Handle;
 
-	Layer_SolidColor();
+	ValueBase param_tl;
+	ValueBase param_br;
+	ValueBase param_c;
+	ValueBase param_gamma_adjust;
 
-	virtual bool set_param(const String & param, const synfig::ValueBase &value);
+	mutable synfig::Mutex mutex;
+	mutable Surface surface;
+	mutable CairoSurface csurface;
+	mutable bool trimmed;
+	mutable unsigned int width, height, top, left;
+
+
+	Layer_Bitmap();
+	~Layer_Bitmap()	{ 
+	if(csurface.is_mapped()) csurface.unmap_cairo_image(); }
+
+	virtual bool set_param(const String & param, const ValueBase & value);
 
 	virtual ValueBase get_param(const String & param)const;
 
 	virtual Color get_color(Context context, const Point &pos)const;
+	virtual CairoColor get_cairocolor(Context context, const Point &pos)const;
+
+	virtual Vocab get_param_vocab()const;
+
+	virtual Rect get_bounding_rect()const;
 
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 	virtual bool accelerated_cairorender(Context context, cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
-	virtual Vocab get_param_vocab()const;
 
 	virtual synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;
+	
+	virtual void set_render_method(Context context, RenderMethod x);
+	void set_method(RenderMethod x) { method=x;}
+	RenderMethod get_method()const { return method;}
+	
+	void set_cairo_surface(cairo_surface_t* cs);
 
-}; // END of class Layer_SolidColor
+}; // END of class Layer_Bitmap
 
 }; // END of namespace synfig
 

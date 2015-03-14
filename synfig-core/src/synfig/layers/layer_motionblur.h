@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file radialblur.h
-**	\brief Header file for implementation of the "Radial Blur" layer
+/*!	\file layer_motionblur.h
+**	\brief Header file for implementation of the "Motion Blur" layer
 **
 **	$Id$
 **
@@ -18,56 +18,58 @@
 **	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 **	General Public License for more details.
 **	\endlegal
-**
-** === N O T E S ===========================================================
-**
-** ========================================================================= */
+*/
+/* ========================================================================= */
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_RADIALBLUR_H
-#define __SYNFIG_RADIALBLUR_H
+#ifndef __SYNFIG_LAYER_MOTIONBLUR_H__
+#define __SYNFIG_LAYER_MOTIONBLUR_H__
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/vector.h>
-#include <synfig/angle.h>
-#include <synfig/layers/layer_composite.h>
+#include "layer_composite.h"
+#include <synfig/time.h>
 
-/* === M A C R O S ========================================================= */
+/* === S T R U C T S & C L A S S E S ======================================= */
 
-/* === T Y P E D E F S ===================================================== */
+namespace synfig {
 
-/* === C L A S S E S & S T R U C T S ======================================= */
-
-using namespace synfig;
-using namespace std;
-using namespace etl;
-
-class RadialBlur : public Layer_Composite
+class Layer_MotionBlur : public synfig::Layer_Composite
 {
 	SYNFIG_LAYER_MODULE_EXT
-	friend class RadialBlur_Trans;
+
+	enum SubsamplingType
+	{
+	    SUBSAMPLING_CONSTANT=0,		//!< weight each subsample equally
+	    SUBSAMPLING_LINEAR=1,		//!< fade in subsamples linearly
+	    SUBSAMPLING_HYPERBOLIC=2,	//!< fade in subsamples by a hyperbolic curve (default style of 0.62 and previous)
+
+	    SUBSAMPLING_END=2				//!< \internal
+	};
+
 private:
-	//! Parameter: (Vector)
-	ValueBase param_origin;
-	//! Parameter: (Real)
-	ValueBase param_size;
-	//! Parameter: (bool)
-	ValueBase param_fade_out;
+	ValueBase param_aperture;
+	ValueBase param_subsamples_factor;
+	ValueBase param_subsampling_type;
+	ValueBase param_subsample_start;
+	ValueBase param_subsample_end;
+	mutable Time time_cur;
 
 public:
-	RadialBlur();
-	~RadialBlur();
-
-	virtual bool set_param(const synfig::String & param, const synfig::ValueBase &value);
-	virtual ValueBase get_param(const synfig::String & param)const;
+	Layer_MotionBlur();
+	virtual bool set_param(const String & param, const synfig::ValueBase &value);
+	virtual ValueBase get_param(const String & param)const;
 	virtual Color get_color(Context context, const Point &pos)const;
+	virtual void set_time(IndependentContext context, Time time)const;
+	virtual void set_time(IndependentContext context, Time time, const Point &point)const;
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 	virtual bool accelerated_cairorender(Context context, cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 	virtual Vocab get_param_vocab()const;
 	virtual bool reads_context()const { return true; }
-}; // END of class RadialBlur
+}; // END of class Layer_MotionBlur
+
+}; // END of namespace synfig
 
 /* === E N D =============================================================== */
 

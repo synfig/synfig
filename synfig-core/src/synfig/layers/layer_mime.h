@@ -1,11 +1,11 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file layer_sound.h
-**	\brief Header file for implementation of the "Sound" layer
+/*!	\file layer_mime.h
+**	\brief Template Header
 **
 **	$Id$
 **
 **	\legal
-**	......... ... 2014 Ivan Mahonin
+**	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -22,13 +22,14 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_LAYER_SOUND_H
-#define __SYNFIG_LAYER_SOUND_H
+#ifndef __SYNFIG_LAYER_MIME_H
+#define __SYNFIG_LAYER_MIME_H
 
 /* === H E A D E R S ======================================================= */
 
-#include "layer_composite.h"
-#include "color.h"
+#include <synfig/layer.h>
+#include <synfig/string.h>
+#include <map>
 
 /* === M A C R O S ========================================================= */
 
@@ -38,21 +39,34 @@
 
 namespace synfig {
 
-class Layer_Sound : public Layer_Composite, public Layer_NoDeform
+/*!	\class Layer_Mime
+**	The mime layer is a layer that is used when an unknown
+**	layer type is requested. This allows people without
+**	all of the correct layers installed to still work with
+**	that composition.
+*/
+class Layer_Mime : public Layer
 {
-	SYNFIG_LAYER_MODULE_EXT
-private:
-	ValueBase param_filename;
-	ValueBase param_delay;
-	ValueBase param_volume;
-
+	std::map<String,ValueBase> param_list;
+	String name;
 public:
-	Layer_Sound();
-	virtual bool set_param(const String & param, const synfig::ValueBase &value);
-	virtual ValueBase get_param(const String & param)const;
+	Layer_Mime(String name);
+
+	virtual String get_version()const;
+
+	virtual bool set_version(const String &ver);
+
+	virtual bool set_param(const String &param, const ValueBase &value);
+
+	virtual ValueBase get_param(const String &param)const;
+
+	virtual Color get_color(Context context, const Point &pos)const;
+	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
+
 	virtual Vocab get_param_vocab()const;
-	virtual void fill_sound_processor(SoundProcessor &soundProcessor) const;
-}; // END of class Layer_SolidColor
+	virtual String get_local_name()const;
+
+};
 
 }; // END of namespace synfig
 

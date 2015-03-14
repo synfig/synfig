@@ -82,7 +82,7 @@
 #include <synfig/valuenodes/valuenode_bline.h>
 #include <synfig/valuenodes/valuenode_bone.h>
 #include <synfig/layer.h>
-#include <synfig/layer_pastecanvas.h>
+#include <synfig/layers/layer_pastecanvas.h>
 #include <synfig/context.h>
 
 #include <synfigapp/uimanager.h>
