@@ -31,7 +31,7 @@
 #	include <config.h>
 #endif
 
-#include <synfig/valuenode_dynamiclist.h>
+#include <synfig/valuenodes/valuenode_dynamiclist.h>
 #include <synfigapp/action_system.h>
 
 #include "state_gradient.h"

@@ -39,7 +39,7 @@
 #include "valuedescconnect.h"
 
 #include <synfigapp/canvasinterface.h>
-#include <synfig/valuenode_const.h>
+#include <synfig/valuenodes/valuenode_const.h>
 #include <synfig/context.h>
 
 #include <synfigapp/general.h>

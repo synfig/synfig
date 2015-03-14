@@ -28,7 +28,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include "valuenode_duplicate.h"
+#include "valuenodes/valuenode_duplicate.h"
 #include "layer_composite.h"
 #include "time.h"
 

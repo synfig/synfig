@@ -31,7 +31,7 @@
 
 #include "valuenodelinkdisconnect.h"
 #include <synfigapp/canvasinterface.h>
-#include <synfig/valuenode_const.h>
+#include <synfig/valuenodes/valuenode_const.h>
 
 #include <synfigapp/general.h>
 

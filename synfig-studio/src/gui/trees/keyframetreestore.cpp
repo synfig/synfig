@@ -34,7 +34,7 @@
 #include "trees/keyframetreestore.h"
 #include <synfig/valuenode.h>
 #include "iconcontroller.h"
-#include <synfig/valuenode_timedswap.h>
+#include <synfig/valuenodes/valuenode_timedswap.h>
 #include <gtkmm/button.h>
 #include <gtkmm/treerowreference.h>
 #include <synfig/canvas.h>

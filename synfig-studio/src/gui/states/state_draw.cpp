@@ -36,10 +36,10 @@
 #include <ETL/calculus>
 #include <ETL/gaussian>
 
-#include <synfig/valuenode_bline.h>
-#include <synfig/valuenode_wplist.h>
-#include <synfig/valuenode_composite.h>
-#include <synfig/valuenode_dynamiclist.h>
+#include <synfig/valuenodes/valuenode_bline.h>
+#include <synfig/valuenodes/valuenode_wplist.h>
+#include <synfig/valuenodes/valuenode_composite.h>
+#include <synfig/valuenodes/valuenode_dynamiclist.h>
 
 #include <synfigapp/blineconvert.h>
 #include <synfigapp/wplistconverter.h>

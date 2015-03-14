@@ -41,7 +41,7 @@
 #include <synfigapp/value_desc.h>
 #include "layertreestore.h"
 #include "layerparamtreestore.h"
-#include <synfig/valuenode_animated.h>
+#include <synfig/valuenodes/valuenode_animated.h>
 
 #include "widgets/widget_value.h"
 

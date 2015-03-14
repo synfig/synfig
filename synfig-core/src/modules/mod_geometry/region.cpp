@@ -47,7 +47,7 @@
 #include <synfig/value.h>
 #include <synfig/valuenode.h>
 #include <synfig/segment.h>
-#include <synfig/valuenode_bline.h>
+#include <synfig/valuenodes/valuenode_bline.h>
 
 #endif
 

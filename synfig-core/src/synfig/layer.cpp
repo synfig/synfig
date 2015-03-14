@@ -51,7 +51,7 @@
 #include "layer_skeletondeformation.h"
 #include "layer_sound.h"
 
-#include "valuenode_const.h"
+#include "valuenodes/valuenode_const.h"
 
 #include "transform.h"
 #include "rect.h"
