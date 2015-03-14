@@ -146,7 +146,6 @@ SYNFIGSOURCES = \
 	cairo_operators.cpp \
 	cairo_renddesc.cpp \
 	canvas.cpp \
-	color.cpp \
 	context.cpp \
 	curve_helper.cpp \
 	curveset.cpp \
@@ -209,6 +208,7 @@ libsynfig_include_HH = \
 	$(IMPORTERHEADERS) \
 	$(VALUEHEADERS)
 
+include color/Makefile_insert
 include layers/Makefile_insert
 include valuenodes/Makefile_insert
 
