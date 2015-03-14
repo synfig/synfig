@@ -35,11 +35,11 @@
 #include <gtkmm/entry.h>
 #include <gdk/gdkkeysyms.h>
 
-#include <synfig/valuenode_animated.h>
-#include <synfig/valuenode_blinecalcvertex.h>
-#include <synfig/valuenode_composite.h>
-#include <synfig/valuenode_const.h>
-#include <synfig/valuenode_dynamiclist.h>
+#include <synfig/valuenodes/valuenode_animated.h>
+#include <synfig/valuenodes/valuenode_blinecalcvertex.h>
+#include <synfig/valuenodes/valuenode_composite.h>
+#include <synfig/valuenodes/valuenode_const.h>
+#include <synfig/valuenodes/valuenode_dynamiclist.h>
 #include <synfigapp/action_system.h>
 
 #include "state_normal.h"

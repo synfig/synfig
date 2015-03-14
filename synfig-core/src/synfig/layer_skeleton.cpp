@@ -37,7 +37,7 @@
 #include "renddesc.h"
 #include "surface.h"
 #include "value.h"
-#include "valuenode_bone.h"
+#include "valuenodes/valuenode_bone.h"
 
 #endif
 

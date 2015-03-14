@@ -30,9 +30,9 @@
 #	include <config.h>
 #endif
 
-#include <synfig/valuenode_dynamiclist.h>
+#include <synfig/valuenodes/valuenode_dynamiclist.h>
 #include <synfigapp/action_system.h>
-#include <synfig/valuenode_bline.h>
+#include <synfig/valuenodes/valuenode_bline.h>
 
 #include "state_circle.h"
 #include "state_normal.h"

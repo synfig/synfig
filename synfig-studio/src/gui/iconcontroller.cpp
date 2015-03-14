@@ -35,7 +35,7 @@
 #endif
 
 #include "iconcontroller.h"
-#include <synfig/valuenode_const.h>
+#include <synfig/valuenodes/valuenode_const.h>
 #include <gtkmm/button.h>
 #include <gtkmm/window.h>
 #include <synfigapp/action.h>

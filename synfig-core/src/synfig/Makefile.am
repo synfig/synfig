@@ -79,136 +79,6 @@ IMPORTERSOURCES = \
 	cairolistimporter.cpp
 
 
-VALUENODEHEADERS = \
-	valuenode_add.h \
-	valuenode_and.h \
-	valuenode_anglestring.h \
-	valuenode_animated.h \
-	valuenode_atan2.h \
-	valuenode_bline.h \
-	valuenode_blinecalctangent.h \
-	valuenode_blinecalcvertex.h \
-	valuenode_blinecalcwidth.h \
-	valuenode_blinereversetangent.h \
-	valuenode_compare.h \
-	valuenode_composite.h \
-	valuenode_const.h \
-	valuenode_cos.h \
-	valuenode_dilist.h \
-	valuenode_dotproduct.h \
-	valuenode_duplicate.h \
-	valuenode_dynamiclist.h \
-	valuenode_exp.h \
-	valuenode_gradientcolor.h \
-	valuenode_gradientrotate.h \
-	valuenode_greyed.h \
-	valuenode_integer.h \
-	valuenode_intstring.h \
-	valuenode_join.h \
-	valuenode_linear.h \
-	valuenode_log.h \
-	valuenode_not.h \
-	valuenode_or.h \
-	valuenode_pow.h \
-	valuenode_radialcomposite.h \
-	valuenode_range.h \
-	valuenode_real.h \
-	valuenode_realstring.h \
-	valuenode_reciprocal.h \
-	valuenode_reference.h \
-	valuenode_repeat_gradient.h \
-	valuenode_scale.h \
-	valuenode_segcalctangent.h \
-	valuenode_segcalcvertex.h \
-	valuenode_sine.h \
-	valuenode_step.h \
-	valuenode_stripes.h \
-	valuenode_subtract.h \
-	valuenode_switch.h \
-	valuenode_timedswap.h \
-	valuenode_timeloop.h \
-	valuenode_timestring.h \
-	valuenode_twotone.h \
-	valuenode_vectorangle.h \
-	valuenode_vectorlength.h \
-	valuenode_vectorx.h \
-	valuenode_vectory.h \
-	valuenode_boneinfluence.h \
-	valuenode_staticlist.h \
-	valuenode_bone.h \
-	valuenode_boneweightpair.h\
-	valuenode_wplist.h \
-	valuenode_bonelink.h \
-	valuenode_average.h \
-	valuenode_dynamic.h \
-	valuenode_derivative.h \
-	valuenode_weightedaverage.h
-
-VALUENODESOURCES = \
-	valuenode_add.cpp \
-	valuenode_and.cpp \
-	valuenode_anglestring.cpp \
-	valuenode_animated.cpp \
-	valuenode_atan2.cpp \
-	valuenode_bline.cpp \
-	valuenode_blinecalctangent.cpp \
-	valuenode_blinecalcvertex.cpp \
-	valuenode_blinecalcwidth.cpp \
-	valuenode_blinereversetangent.cpp \
-	valuenode_compare.cpp \
-	valuenode_composite.cpp \
-	valuenode_const.cpp \
-	valuenode_cos.cpp \
-	valuenode_dilist.cpp \
-	valuenode_dotproduct.cpp \
-	valuenode_duplicate.cpp \
-	valuenode_dynamiclist.cpp \
-	valuenode_exp.cpp \
-	valuenode_gradientcolor.cpp \
-	valuenode_gradientrotate.cpp \
-	valuenode_greyed.cpp \
-	valuenode_integer.cpp \
-	valuenode_intstring.cpp \
-	valuenode_join.cpp \
-	valuenode_linear.cpp \
-	valuenode_log.cpp \
-	valuenode_not.cpp \
-	valuenode_or.cpp \
-	valuenode_pow.cpp \
-	valuenode_radialcomposite.cpp \
-	valuenode_range.cpp \
-	valuenode_real.cpp \
-	valuenode_realstring.cpp \
-	valuenode_reciprocal.cpp \
-	valuenode_reference.cpp \
-	valuenode_repeat_gradient.cpp \
-	valuenode_scale.cpp \
-	valuenode_segcalctangent.cpp \
-	valuenode_segcalcvertex.cpp \
-	valuenode_sine.cpp \
-	valuenode_step.cpp \
-	valuenode_stripes.cpp \
-	valuenode_subtract.cpp \
-	valuenode_switch.cpp \
-	valuenode_timedswap.cpp \
-	valuenode_timeloop.cpp \
-	valuenode_timestring.cpp \
-	valuenode_twotone.cpp \
-	valuenode_vectorangle.cpp \
-	valuenode_vectorlength.cpp \
-	valuenode_vectorx.cpp \
-	valuenode_vectory.cpp \
-	valuenode_boneinfluence.cpp \
-	valuenode_staticlist.cpp \
-	valuenode_bone.cpp \
-	valuenode_boneweightpair.cpp\
-	valuenode_wplist.cpp \
-	valuenode_bonelink.cpp \
-	valuenode_average.cpp\
-	valuenode_dynamic.cpp \
-	valuenode_derivative.cpp \
-	valuenode_weightedaverage.cpp
-
 VALUEHEADERS = \
 	blinepoint.h \
 	widthpoint.h \
@@ -358,21 +228,35 @@ SYNFIGSOURCES = \
 	soundprocessor.cpp
 
 
-lib_LTLIBRARIES = libsynfig.la
-
-libsynfig_la_SOURCES = \
+libsynfig_src = \
 	$(VALUEHEADERS) \
 	$(VALUESOURCES) \
 	$(LAYERSOURCES) \
 	$(LAYERHEADERS) \
 	$(TARGETHEADERS) \
 	$(TARGETSOURCES) \
-	$(VALUENODEHEADERS) \
-	$(VALUENODESOURCES) \
 	$(SYNFIGHEADERS) \
 	$(SYNFIGSOURCES) \
 	$(IMPORTERHEADERS) \
 	$(IMPORTERSOURCES)
+
+libsynfig_include_HH = \
+	$(SYNFIGHEADERS) \
+	$(LAYERHEADERS) \
+	$(TARGETHEADERS) \
+	$(IMPORTERHEADERS) \
+	$(VALUEHEADERS)
+
+include valuenodes/Makefile_insert
+
+lib_LTLIBRARIES = libsynfig.la
+
+libsynfig_la_SOURCES = \
+	$(libsynfig_src)
+
+nobase_include_synfig_HEADERS = \
+	$(libsynfig_include_HH)
+
 
 libsynfig_la_LIBADD = \
 	@LIBLTDL@ \
@@ -392,10 +276,3 @@ libsynfig_la_LDFLAGS = \
 
 include_synfigdir = @synfigincludedir@/synfig
 
-include_synfig_HEADERS = \
-	$(SYNFIGHEADERS) \
-	$(LAYERHEADERS) \
-	$(TARGETHEADERS) \
-	$(VALUENODEHEADERS) \
-	$(IMPORTERHEADERS) \
-	$(VALUEHEADERS)

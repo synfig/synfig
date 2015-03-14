@@ -49,7 +49,7 @@
 
 #include "cellrenderer_gradient.h"
 #include "cellrenderer_value.h"
-#include <synfig/valuenode_bone.h>
+#include <synfig/valuenodes/valuenode_bone.h>
 
 #include "widgets/widget_gradient.h"
 #include "dialogs/dialog_gradient.h"
