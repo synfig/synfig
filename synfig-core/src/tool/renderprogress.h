@@ -7,7 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
-**  Copyright (c) 2014 Diego Barrios Romero
+**  Copyright (c) 2014, 2015 Diego Barrios Romero
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -33,7 +33,6 @@
 
 
 //! Prints the progress and estimated time left to the console
-// TODO: add percentage completed
 class RenderProgress : public synfig::ProgressCallback
 {
 public:
