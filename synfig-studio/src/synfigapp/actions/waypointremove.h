@@ -29,8 +29,8 @@
 
 #include <synfigapp/action.h>
 #include <synfig/waypoint.h>
-#include <synfig/valuenode_animated.h>
-#include <synfig/valuenode_reference.h>
+#include <synfig/valuenodes/valuenode_animated.h>
+#include <synfig/valuenodes/valuenode_reference.h>
 
 /* === M A C R O S ========================================================= */
 

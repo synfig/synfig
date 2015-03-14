@@ -37,9 +37,9 @@
 
 #include "valuedescdisconnect.h"
 #include <synfigapp/canvasinterface.h>
-#include <synfig/valuenode_const.h>
-#include <synfig/valuenode_duplicate.h>
-#include <synfig/valuenode_bone.h>
+#include <synfig/valuenodes/valuenode_const.h>
+#include <synfig/valuenodes/valuenode_duplicate.h>
+#include <synfig/valuenodes/valuenode_bone.h>
 
 #include <synfigapp/general.h>
 

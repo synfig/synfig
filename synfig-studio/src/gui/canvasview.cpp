@@ -67,20 +67,20 @@
 
 #include <gdk/gdk.h>
 
-#include <synfig/valuenode_reference.h>
-#include <synfig/valuenode_subtract.h>
-#include <synfig/valuenode_linear.h>
-#include <synfig/valuenode_timedswap.h>
-#include <synfig/valuenode_scale.h>
-#include <synfig/valuenode_range.h>
-#include <synfig/valuenode_dynamiclist.h>
-#include <synfig/valuenode_twotone.h>
-#include <synfig/valuenode_stripes.h>
-#include <synfig/valuenode_blinecalctangent.h>
-#include <synfig/valuenode_blinecalcvertex.h>
-#include <synfig/valuenode_blinecalcwidth.h>
-#include <synfig/valuenode_bline.h>
-#include <synfig/valuenode_bone.h>
+#include <synfig/valuenodes/valuenode_reference.h>
+#include <synfig/valuenodes/valuenode_subtract.h>
+#include <synfig/valuenodes/valuenode_linear.h>
+#include <synfig/valuenodes/valuenode_timedswap.h>
+#include <synfig/valuenodes/valuenode_scale.h>
+#include <synfig/valuenodes/valuenode_range.h>
+#include <synfig/valuenodes/valuenode_dynamiclist.h>
+#include <synfig/valuenodes/valuenode_twotone.h>
+#include <synfig/valuenodes/valuenode_stripes.h>
+#include <synfig/valuenodes/valuenode_blinecalctangent.h>
+#include <synfig/valuenodes/valuenode_blinecalcvertex.h>
+#include <synfig/valuenodes/valuenode_blinecalcwidth.h>
+#include <synfig/valuenodes/valuenode_bline.h>
+#include <synfig/valuenodes/valuenode_bone.h>
 #include <synfig/layer.h>
 #include <synfig/layer_pastecanvas.h>
 #include <synfig/context.h>

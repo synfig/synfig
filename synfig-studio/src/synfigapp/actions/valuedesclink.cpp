@@ -34,9 +34,9 @@
 #include "valuedesclink.h"
 
 #include <synfigapp/canvasinterface.h>
-#include <synfig/valuenode_const.h>
-#include <synfig/valuenode_scale.h>
-#include <synfig/valuenode_composite.h>
+#include <synfig/valuenodes/valuenode_const.h>
+#include <synfig/valuenodes/valuenode_scale.h>
+#include <synfig/valuenodes/valuenode_composite.h>
 
 #include <synfigapp/general.h>
 #include <zconf.h>

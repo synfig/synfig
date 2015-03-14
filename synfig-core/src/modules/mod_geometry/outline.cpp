@@ -49,7 +49,7 @@
 #include <ETL/hermite>
 #include <vector>
 
-#include <synfig/valuenode_bline.h>
+#include <synfig/valuenodes/valuenode_bline.h>
 
 #endif
 

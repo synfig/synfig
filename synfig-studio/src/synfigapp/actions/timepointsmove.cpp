@@ -32,8 +32,8 @@
 #include "timepointsmove.h"
 #include <synfig/layer_pastecanvas.h>
 #include <synfigapp/canvasinterface.h>
-#include <synfig/valuenode_dynamiclist.h>
-#include <synfig/valuenode_animated.h>
+#include <synfig/valuenodes/valuenode_dynamiclist.h>
+#include <synfig/valuenodes/valuenode_animated.h>
 
 #include "activepointset.h"
 #include "waypointset.h"

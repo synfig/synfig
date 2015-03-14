@@ -36,9 +36,9 @@
 
 #include <ETL/bezier>
 
-#include <synfig/valuenode_dynamiclist.h>
-#include <synfig/valuenode_wplist.h>
-#include <synfig/valuenode_composite.h>
+#include <synfig/valuenodes/valuenode_dynamiclist.h>
+#include <synfig/valuenodes/valuenode_wplist.h>
+#include <synfig/valuenodes/valuenode_composite.h>
 #include <synfigapp/action_system.h>
 
 #include "state_width.h"

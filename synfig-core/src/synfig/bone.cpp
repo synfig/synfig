@@ -32,7 +32,7 @@
 
 #include "bone.h"
 #include "guid.h"
-#include "valuenode_bone.h"
+#include "valuenodes/valuenode_bone.h"
 #include <ETL/stringf>
 #include <algorithm>
 #include <cmath>

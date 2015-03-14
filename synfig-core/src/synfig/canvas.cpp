@@ -37,8 +37,8 @@
 #include "time.h"
 #include "context.h"
 #include "layer_pastecanvas.h"
-#include "valuenode_const.h"
-#include "valuenode_scale.h"
+#include "valuenodes/valuenode_const.h"
+#include "valuenodes/valuenode_scale.h"
 #include "loadcanvas.h"
 #include "filesystemnative.h"
 #include <sigc++/bind.h>

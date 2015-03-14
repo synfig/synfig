@@ -34,10 +34,10 @@
 #include "trees/canvastreestore.h"
 #include <synfig/valuenode.h>
 #include "iconcontroller.h"
-#include <synfig/valuenode_timedswap.h>
-#include <synfig/valuenode_bone.h>
+#include <synfig/valuenodes/valuenode_timedswap.h>
+#include <synfig/valuenodes/valuenode_bone.h>
 #include <synfig/boneweightpair.h>
-#include <synfig/valuenode_animated.h>
+#include <synfig/valuenodes/valuenode_animated.h>
 #include <gtkmm/button.h>
 #include <synfigapp/instance.h>
 #include "cellrenderer/cellrenderer_value.h"

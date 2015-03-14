@@ -37,13 +37,13 @@
 
 #include <synfigapp/canvasinterface.h>
 #include <synfig/boneweightpair.h>
-#include <synfig/valuenode_const.h>
-#include <synfig/valuenode_composite.h>
-#include <synfig/valuenode_bone.h>
-#include <synfig/valuenode_bonelink.h>
-#include <synfig/valuenode_boneweightpair.h>
-#include <synfig/valuenode_staticlist.h>
-#include <synfig/valuenode_weightedaverage.h>
+#include <synfig/valuenodes/valuenode_const.h>
+#include <synfig/valuenodes/valuenode_composite.h>
+#include <synfig/valuenodes/valuenode_bone.h>
+#include <synfig/valuenodes/valuenode_bonelink.h>
+#include <synfig/valuenodes/valuenode_boneweightpair.h>
+#include <synfig/valuenodes/valuenode_staticlist.h>
+#include <synfig/valuenodes/valuenode_weightedaverage.h>
 #include <synfig/valueoperations.h>
 #include <synfig/weightedvalue.h>
 

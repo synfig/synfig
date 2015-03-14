@@ -33,13 +33,13 @@
 #include <gtkmm/dialog.h>
 #include <gtkmm/entry.h>
 
-#include <synfig/valuenode_dynamiclist.h>
+#include <synfig/valuenodes/valuenode_dynamiclist.h>
 
 #include "state_stroke.h"
 #include "canvasview.h"
 #include "workarea.h"
 #include "app.h"
-#include <synfig/valuenode_bline.h>
+#include <synfig/valuenodes/valuenode_bline.h>
 #include <ETL/hermite>
 #include <ETL/calculus>
 #include <utility>

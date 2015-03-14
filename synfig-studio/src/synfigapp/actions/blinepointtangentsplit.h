@@ -30,7 +30,7 @@
 #include <synfigapp/action.h>
 #include <synfigapp/value_desc.h>
 #include <synfig/blinepoint.h>
-#include <synfig/valuenode_composite.h>
+#include <synfig/valuenodes/valuenode_composite.h>
 
 /* === M A C R O S ========================================================= */
 

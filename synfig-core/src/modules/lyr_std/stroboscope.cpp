@@ -36,8 +36,8 @@
 
 #include "stroboscope.h"
 #include <synfig/valuenode.h>
-#include <synfig/valuenode_const.h>
-#include <synfig/valuenode_subtract.h>
+#include <synfig/valuenodes/valuenode_const.h>
+#include <synfig/valuenodes/valuenode_subtract.h>
 #include <synfig/time.h>
 #include <synfig/context.h>
 #include <synfig/paramdesc.h>

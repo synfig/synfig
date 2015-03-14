@@ -34,7 +34,7 @@
 #include <synfigapp/general.h>
 #include <synfigapp/instance.h>
 #include <synfig/layer_pastecanvas.h>
-#include <synfig/valuenode_composite.h>
+#include <synfig/valuenodes/valuenode_composite.h>
 
 #endif
 
