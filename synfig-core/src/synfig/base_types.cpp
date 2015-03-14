@@ -35,7 +35,7 @@
 #include "value.h"
 #include "general.h"
 #include "canvas.h"
-#include "valuenode_bone.h"
+#include "valuenodes/valuenode_bone.h"
 #include "gradient.h"
 #include "bone.h"
 #include "matrix.h"

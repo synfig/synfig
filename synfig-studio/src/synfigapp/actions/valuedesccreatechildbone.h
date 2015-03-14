@@ -29,7 +29,7 @@
 
 #include <synfigapp/action.h>
 #include <synfigapp/value_desc.h>
-#include <synfig/valuenode_dynamiclist.h>
+#include <synfig/valuenodes/valuenode_dynamiclist.h>
 #include <synfig/layer_skeleton.h>
 #include <synfig/canvas.h>
 #include <list>

@@ -31,7 +31,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include <synfigapp/action.h>
-#include <synfig/valuenode_dynamiclist.h>
+#include <synfig/valuenodes/valuenode_dynamiclist.h>
 
 /* === M A C R O S ========================================================= */
 

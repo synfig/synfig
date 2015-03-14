@@ -48,7 +48,7 @@
 #include <vector>
 #include <time.h>
 
-#include <synfig/valuenode_bline.h>
+#include <synfig/valuenodes/valuenode_bline.h>
 
 #endif
 

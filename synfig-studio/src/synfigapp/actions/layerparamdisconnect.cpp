@@ -31,7 +31,7 @@
 
 #include "layerparamdisconnect.h"
 #include <synfigapp/canvasinterface.h>
-#include <synfig/valuenode_dynamiclist.h>
+#include <synfig/valuenodes/valuenode_dynamiclist.h>
 
 #include <synfigapp/general.h>
 
