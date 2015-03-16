@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
+**  Copyright (c) 2014, 2015 Diego Barrios Romero
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -24,123 +25,46 @@
 #ifndef __SYNFIG_RENDERPROGRESS_H
 #define __SYNFIG_RENDERPROGRESS_H
 
-using namespace std;
-using namespace etl;
-using namespace synfig;
-
-#include <synfig/string.h>
+#include <string>
+#include <iosfwd>
+#include <boost/chrono.hpp>
+#include <synfig/general.h>
 #include "definitions.h"
 
+
+//! Prints the progress and estimated time left to the console
 class RenderProgress : public synfig::ProgressCallback
 {
-	string taskname;
-
-	etl::clock clk;
-	int clk_scanline; // The scanline at which the clock was reset
-	etl::clock clk2;
-
-	float last_time;
 public:
 
-	RenderProgress():clk_scanline(0), last_time(0) { }
+    RenderProgress();
 
-	virtual bool
-	task(const String &thetask)
-	{
-		taskname=thetask;
-		return true;
-	}
+    virtual bool task(const std::string& taskname);
 
-	virtual bool
-	error(const String &task)
-	{
-		std::cout<<_("error")<<": "<<task.c_str()<<std::endl;
-		return true;
-	}
+    virtual bool error(const std::string& task);
 
-	virtual bool
-	warning(const String &task)
-	{
-		std::cout<<_("warning")<<": "<<task.c_str()<<std::endl;
-		return true;
-	}
+    virtual bool warning(const std::string& task);
 
-	virtual bool
-	amount_complete(int scanline, int h)
-	{
-		if(be_quiet)return true;
-		if(scanline!=h)
-		{
-			const float time(clk()*(float)(h-scanline)/(float)(scanline-clk_scanline));
-			const float delta(time-last_time);
+    virtual bool amount_complete(int scanline, int height);
+private:
+    std::string taskname_;
+    int last_frame_;
+    size_t last_printed_line_length_;
 
-			int weeks=0,days=0,hours=0,minutes=0,seconds=0;
+    typedef boost::chrono::system_clock Clock;
+    typedef boost::chrono::duration<double> Duration;
+    Clock::time_point start_timepoint_;
+    Clock::time_point last_timepoint_;
+    double remaining_rendered_proportion_;
 
-			last_time=time;
+    void printRemainingTime(std::ostream& os, double remaining_seconds) const;
 
-			if(clk2()<0.2)
-				return true;
-			clk2.reset();
-
-			if(scanline)
-				seconds=(int)time+1;
-			else
-			{
-				//cerr<<"reset"<<endl;
-				clk.reset();
-				clk_scanline=scanline;
-			}
-
-			if(seconds<0)
-			{
-				clk.reset();
-				clk_scanline=scanline;
-				seconds=0;
-			}
-			while(seconds>=60)
-				minutes++,seconds-=60;
-			while(minutes>=60)
-				hours++,minutes-=60;
-			while(hours>=24)
-				days++,hours-=24;
-			while(days>=7)
-				weeks++,days-=7;
-
-			cerr<<taskname.c_str()<<": "<<_("Line")<<" "<<scanline<<_(" of ")<<h<<" -- ";
-			//cerr<<time/(h-clk_scanline)<<" ";
-			/*
-			if(delta>=-time/(h-clk_scanline)  )
-				cerr<<">";
-			*/
-			if(delta>=0 && clk()>4.0 && scanline>clk_scanline+200)
-			{
-				//cerr<<"reset"<<endl;
-				clk.reset();
-				clk_scanline=scanline;
-			}
-
-			if(weeks)
-				/// TRANSLATORS This "w" stands for weeks
-				cerr<<weeks<<_("w ");
-			if(days)
-				/// TRANSLATORS This "d" stands for days
-				cerr<<days<<_("d ");
-			if(hours)
-				/// TRANSLATORS This "h" stands for hours
-				cerr<<hours<<_("h ");
-			if(minutes)
-				/// TRANSLATORS This "m" stands for minutes
-				cerr<<minutes<<_("m ");
-			if(seconds)
-				/// TRANSLATORS This "s" stands for seconds
-				cerr<<seconds<<_("s ");
-
-			cerr<<"           \r";
-		}
-		else
-			cerr<<taskname.c_str()<<": "<<_("DONE")<<"                        "<<endl;;
-		return true;
-	}
+    void printRemainingTime(std::ostream& os,
+                            const int seconds, const int minutes,
+                            const int hours, const int days,
+                            const int weeks) const;
+    std::string extendLineToClearRest(std::string line,
+                                      size_t last_line_length) const;
 };
 
 #endif

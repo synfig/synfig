@@ -143,6 +143,7 @@ export PKG_CONFIG_SYSTEM_INCLUDE_PATH=${MINGWPREFIX}/include
 export PKG_CONFIG_SYSTEM_LIBRARY_PATH=${MINGWPREFIX}/lib
 export CPPFLAGS=" -I${MINGWPREFIX}/include "
 export LDFLAGS=" -L${MINGWPREFIX}/lib "
+export LIBS=""
 export PATH="${MINGWPREFIX}/bin/:$PATH"
 alias convert="${MINGWPREFIX}/bin/convert"
 }
@@ -1078,7 +1079,10 @@ for file in \
    iconv.dll \
    libatk-\*.dll \
    libatkmm-1.6-1.dll \
+   libboost_chrono\*.dll \
+   libboost_filesystem\*.dll \
    libboost_program_options\*.dll \
+   libboost_system\*.dll \
    libbz2\*.dll \
    libcairo\*.dll \
    libdl.dll \

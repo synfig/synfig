@@ -25,15 +25,19 @@
 #ifndef __SYNFIG_JOBLISTPROCESSOR_H
 #define __SYNFIG_JOBLISTPROCESSOR_H
 
+#include <list>
+#include <synfig/targetparam.h>
+#include "job.h"
+
 /// Process a Job list setting up and processing each job
 void process_job_list(std::list<Job>& job_list,
-						const TargetParam& target_parameters) throw (SynfigToolException&);
+						const synfig::TargetParam& target_parameters);
 
 /// Prepare a job to be processed
 /// \return whether the preparation was OK or not
-bool setup_job(Job& job, const TargetParam& target_parameters);
+bool setup_job(Job& job, const synfig::TargetParam& target_parameters);
 
 /// Process an individual job
-void process_job(Job& job) throw (SynfigToolException&);
+void process_job(Job& job);
 
 #endif // __SYNFIG_JOBLISTPROCESSOR_H

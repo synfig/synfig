@@ -405,7 +405,20 @@ AX_BOOST_PROGRAM_OPTIONS
 if test "x$ax_cv_boost_program_options" = "xno" ; then
 	AC_MSG_ERROR([ ** You need to install Boost program-options library])
 fi
-# Boost Program Options is just a dependency of the synfig cli and so,
+AX_BOOST_SYSTEM
+if test "x$ax_cv_boost_system" = "xno" ; then
+	AC_MSG_ERROR([ ** You need to install Boost system library])
+fi
+AX_BOOST_FILESYSTEM
+if test "x$ax_cv_boost_filesystem" = "xno" ; then
+	AC_MSG_ERROR([ ** You need to install Boost filesystem library])
+fi
+AX_BOOST_CHRONO
+if test "x$ax_cv_boost_chrono" = "xno" ; then
+	AC_MSG_ERROR([ ** You need to install Boost chrono library])
+fi
+# Boost program options, system and filesystem libraries are just dependencies
+# of the synfig cli and therefore
 # not required to link against the synfig library.
 
 
@@ -758,5 +771,8 @@ Using OpenEXR's \"half\" type ------> $use_openexr_half
 "'$'"BOOST_CPPFLAGS ------------------> '$BOOST_CPPFLAGS'
 "'$'"BOOST_LDFLAGS -------------------> '$BOOST_LDFLAGS'
 "'$'"BOOST_PROGRAM_OPTIONS_LIB -------> '$BOOST_PROGRAM_OPTIONS_LIB'
+"'$'"BOOST_SYSTEM_LIB ----------------> '$BOOST_SYSTEM_LIB'
+"'$'"BOOST_FILESYSTEM_LIB ------------> '$BOOST_FILESYSTEM_LIB'
+"'$'"BOOST_CHRONO_LIB ----------------> '$BOOST_CHRONO_LIB'
 "'$'"LIBADD_DL -----------------------> '$LIBADD_DL'
 "

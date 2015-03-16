@@ -7,7 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
-**  Copyright (c) 2012 Diego Barrios Romero
+**  Copyright (c) 2012, 2014 Diego Barrios Romero
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -35,6 +35,26 @@
 #define _(x) (x)
 #endif
 
+#ifndef VERSION
+#define VERSION "unknown"
+#define PACKAGE "synfig-tool"
+#endif
+
+#ifdef DEFAULT_QUALITY
+#undef DEFAULT_QUALITY
+#endif
+
+#define DEFAULT_QUALITY		2
+#define VERBOSE_OUT(x) if (SynfigToolGeneralOptions::instance()->get_verbosity() >= (x)) std::cerr
+
+#define SYNFIG_LICENSE "\
+**	This package is free software; you can redistribute it and/or\n\
+**	modify it under the terms of the GNU General Public License as\n\
+**	published by the Free Software Foundation; either version 2 of\n\
+**	the License, or (at your option) any later version.\n\
+**\n\
+**	"
+
 enum exit_code
 {
 	SYNFIGTOOL_OK				= 0,
@@ -52,34 +72,46 @@ enum exit_code
 	SYNFIGTOOL_INVALIDOUTPUT    =12
 };
 
-#ifndef VERSION
-#define VERSION "unknown"
-#define PACKAGE "synfig-tool"
-#endif
+#include <string>
+#include <boost/smart_ptr.hpp>
+#include <boost/filesystem.hpp>
 
-#ifdef DEFAULT_QUALITY
-#undef DEFAULT_QUALITY
-#endif
+class SynfigToolGeneralOptions
+{
+public:
+	//! \throw exception in case the instance already existed
+	static void create_singleton_instance(const char* argv0);
 
-#define DEFAULT_QUALITY		2
-#define VERBOSE_OUT(x) if (verbosity >= (x)) std::cerr
+	static SynfigToolGeneralOptions* instance();
 
-#define SYNFIG_LICENSE "\
-**	This package is free software; you can redistribute it and/or\n\
-**	modify it under the terms of the GNU General Public License as\n\
-**	published by the Free Software Foundation; either version 2 of\n\
-**	the License, or (at your option) any later version.\n\
-**\n\
-**	"
+	boost::filesystem::path get_binary_path() const;
 
-/* === G L O B A L S ======================================================= */
+	size_t get_threads() const;
 
-extern std::string binary_path;
-extern int verbosity;
-extern int threads;
-extern bool be_quiet;
-extern bool print_benchmarks;
-extern const char* allowed_video_codecs[];
-extern const char* allowed_video_codecs_description[];
+	void set_threads(size_t threads);
+
+	int get_verbosity() const;
+
+	void set_verbosity(int verbosity);
+
+	bool should_be_quiet() const;
+
+	void set_should_be_quiet(bool be_quiet);
+
+	bool should_print_benchmarks() const;
+
+	void set_should_print_benchmarks(bool print_benchmarks);
+
+private:
+	SynfigToolGeneralOptions(const char* argv0);
+
+	boost::filesystem::path _binary_path;
+	int _verbosity;
+	size_t _threads;
+	bool _should_be_quiet,
+		 _should_print_benchmarks;
+
+	static boost::shared_ptr<SynfigToolGeneralOptions> _instance;
+};
 
 #endif

@@ -7,7 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
-**	Copyright (c) 2009-2012 Diego Barrios Romero
+**	Copyright (c) 2009-2014 Diego Barrios Romero
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -41,31 +41,23 @@
 using namespace std;
 using namespace synfig;
 
-void print_usage ()
+void print_usage()
 {
-	cout << "Synfig " << VERSION << endl
-		 << "Usage: " << binary_path.c_str()
-		 << " [options] ([sif file] [specific options])" << endl;
+	std::cout << "Synfig " << VERSION << std::endl
+			  << "Usage: " << SynfigToolGeneralOptions::instance()->get_binary_path()
+			  << " [options] ([sif file] [specific options])" << std::endl;
 }
 
-void print_target_video_codecs_help ()
+void print_child_canvases(const std::string& prefix,
+						  const synfig::Canvas::Handle& canvas)
 {
-	for (int i = 0; allowed_video_codecs[i] != NULL &&
-					allowed_video_codecs_description[i] != NULL; i++)
-		cout << " " << allowed_video_codecs[i] << ":   \t"
-			 << allowed_video_codecs_description[i]
-			 << endl;
-}
-
-void print_child_canvases(const string& prefix, const Canvas::Handle& canvas)
-{
-	const Canvas::Children& children(canvas->children());
-	for (Canvas::Children::const_iterator child_canvas = children.begin();
+	const synfig::Canvas::Children& children(canvas->children());
+	for (synfig::Canvas::Children::const_iterator child_canvas = children.begin();
 		 child_canvas != children.end(); child_canvas++)
 	{
-		cout << prefix.c_str() << ":" << (*child_canvas)->get_id().c_str() << endl;
-		print_child_canvases(prefix + ":" + (*child_canvas)->get_id(),
-							*child_canvas);
+		std::string new_prefix = prefix + ":" + (*child_canvas)->get_id();
+		std::cout << new_prefix << std::endl;
+		print_child_canvases(new_prefix, *child_canvas);
 	}
 }
 
