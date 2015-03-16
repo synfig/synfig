@@ -101,7 +101,10 @@ for file in \
    iconv.dll \
    libatk-\*.dll \
    libatkmm-1.6-1.dll \
+   libboost_chrono\*.dll \
+   libboost_filesystem\*.dll \
    libboost_program_options\*.dll \
+   libboost_system\*.dll \
    libbz2\*.dll \
    libcairo\*.dll \
    libdl.dll \
