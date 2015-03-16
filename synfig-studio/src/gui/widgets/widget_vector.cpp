@@ -181,8 +181,8 @@ Widget_Vector::set_value(const synfig::Vector &data)
 		disty.convert(App::distance_system,canvas_->rend_desc());
 		distance_x->set_value(distx);
 		distance_y->set_value(disty);
-		entry_x->set_text(distance_x->get_value().get_string(5));
-		entry_y->set_text(distance_y->get_value().get_string(5));
+		entry_x->set_text(distance_x->get_value().get_string(4));
+		entry_y->set_text(distance_y->get_value().get_string(4));
 		//spinbutton_x->hide();
 		//spinbutton_y->hide();
 	}catch(...) { synfig::error("Widget_Vector::set_value(): Caught something that was thrown"); }}
@@ -191,12 +191,19 @@ Widget_Vector::set_value(const synfig::Vector &data)
 		spinbutton_x->set_value(vector[0]);
 		spinbutton_y->set_value(vector[1]);
 		
+		String str;
 		std::ostringstream sstream_x;
 		sstream_x << spinbutton_x->get_value();
-		entry_x->set_text(sstream_x.str());
+		str=sstream_x.str();
+		while (*str.rbegin() == '0' && str.length() > 1)
+			str=str.substr(0, str.size()-1);
+		entry_x->set_text(str);
 		std::ostringstream sstream_y;
 		sstream_y << spinbutton_y->get_value();
-		entry_y->set_text(sstream_y.str());
+		str=sstream_y.str();
+		while (*str.rbegin() == '0' && str.length() > 1)
+			str=str.substr(0, str.size()-1);
+		entry_y->set_text(str);
 		
 		//distance_x->hide();
 		//distance_y->hide();
