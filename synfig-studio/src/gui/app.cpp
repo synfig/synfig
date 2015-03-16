@@ -1374,6 +1374,11 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		get_ui_interface()->error(_("Failed to initialize synfig!"));
 		throw;
 	}
+	
+	// enable menu icons
+	GtkSettings *gtk_settings;
+	gtk_settings = gtk_settings_get_default ();
+	g_object_set (G_OBJECT (gtk_settings), "gtk-menu-images", TRUE, NULL);
 
 	// add the preferences to the settings
 	synfigapp::Main::settings().add_domain(&_preferences,"pref");
