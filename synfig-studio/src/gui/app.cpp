@@ -291,6 +291,7 @@ bool studio::App::use_colorspace_gamma=true;
 bool studio::App::restrict_radius_ducks=true;
 bool studio::App::resize_imported_images=false;
 bool studio::App::enable_experimental_features=false;
+bool studio::App::use_dark_theme=false;
 String studio::App::custom_filename_prefix(DEFAULT_FILENAME_PREFIX);
 int studio::App::preferred_x_size=480;
 int studio::App::preferred_y_size=270;
@@ -550,6 +551,11 @@ public:
 				value=strprintf("%i",(int)App::enable_experimental_features);
 				return true;
 			}
+			if(key=="use_dark_theme")
+			{
+				value=strprintf("%i",(int)App::use_dark_theme);
+				return true;
+			}
 			if(key=="browser_command")
 			{
 				value=App::browser_command;
@@ -698,6 +704,12 @@ public:
 				App::enable_experimental_features=i;
 				return true;
 			}
+			if(key=="use_dark_theme")
+			{
+				int i(atoi(value.c_str()));
+				App::use_dark_theme=i;
+				return true;
+			}
 			if(key=="browser_command")
 			{
 				App::browser_command=value;
@@ -792,6 +804,7 @@ public:
 		ret.push_back("restrict_radius_ducks");
 		ret.push_back("resize_imported_images");
 		ret.push_back("enable_experimental_features");
+		ret.push_back("use_dark_theme");
 		ret.push_back("browser_command");
 		ret.push_back("brushes_path");
 		ret.push_back("custom_filename_prefix");
@@ -1576,6 +1589,8 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		// setting the default bline width to 1 unit.
 		// This line fixes that.
 		synfigapp::Main::set_bline_width(synfigapp::Main::get_selected_input_device()->get_bline_width());
+		
+		App::set_use_dark_theme(App::use_dark_theme);
 
 		studio_init_cb.task(_("Checking auto-recover..."));
 
@@ -2025,6 +2040,14 @@ App::restore_default_settings()
 	synfigapp::Main::settings().set_value("navigator_uses_cairo", "0");
 	synfigapp::Main::settings().set_value("workarea_uses_cairo", "0");
 	synfigapp::Main::settings().set_value("pref.enable_mainwin_menubar", "1");
+}
+
+void
+App::set_use_dark_theme(bool value)
+{
+	GtkSettings *gtk_settings;
+	gtk_settings = gtk_settings_get_default ();
+	g_object_set (G_OBJECT (gtk_settings), "gtk-application-prefer-dark-theme", value, NULL);
 }
 
 bool
