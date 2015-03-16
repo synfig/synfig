@@ -36,6 +36,7 @@ if [[ $DEBUG == 1 ]]; then
 	echo "Debug mode: enabled"
 	echo
 	DEBUG_OPT='--enable-debug --enable-optimization=0'
+	DEBUG_OPT2='--enable-debug=yes'
 	export SUFFIX="-debug"
 else
 	DEBUG_OPT=''
@@ -81,8 +82,8 @@ ATK_VERSION=2.14.0
 AT_SPI2_VERSION=2.10.2
 AT_SPI2_ATK_VERSION=2.10.2
 GLIB_VERSION=2.42.1
-GDK_PIXBUF_VERSION=2.30.8
-GTK_VERSION=3.14.8
+GDK_PIXBUF_VERSION=2.31.3
+GTK_VERSION=3.14.9
 PIXMAN_VERSION=0.30.0		# required by CAIRO 1.12.0
 HARFBUZZ_VERSION=0.9.24
 PANGO_VERSION=1.36.8
@@ -593,6 +594,8 @@ fi
 mkgdkpixbuf()
 {
 	
+	mkgobjectintrospection
+	
 PKG_NAME=gdk-pixbuf
 PKG_VERSION="${GDK_PIXBUF_VERSION}"
 TAREXT=xz
@@ -602,7 +605,10 @@ if [ ! -f ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done ]; then
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
 	[ ! -e config.cache ] || rm config.cache
+	sed -i 's|^enable_relocations=no|enable_relocations=yes|g' configure
 	./configure --host=${HOST} --prefix=${PREFIX}/ \
+		--enable-introspection=yes \
+		${DEBUG_OPT2} \
 		--disable-static --enable-shared
 	make -j${THREADS}
 	make install
@@ -647,6 +653,7 @@ if ! pkg-config ${PKG_NAME}-3.0 --exact-version=${PKG_VERSION}  --print-errors; 
 	cd ${PKG_NAME}-${PKG_VERSION}
 	[ ! -e config.cache ] || rm config.cache
 	./configure --build=${HOST} --prefix=${PREFIX}/ \
+		${DEBUG_OPT2} \
 		--disable-static --enable-shared
 	make -j${THREADS}
 	make install
@@ -699,9 +706,9 @@ fi
 mklibrsvg()
 {
 	
+	mkgobjectintrospection
 	mkgdkpixbuf
 	mklibcroco
-	mkgobjectintrospection
 	
 PKG_NAME=librsvg
 PKG_VERSION=2.40.6
