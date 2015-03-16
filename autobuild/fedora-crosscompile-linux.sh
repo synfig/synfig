@@ -1690,7 +1690,6 @@ export SYNFIG_MODULE_LIST=\${SYSPREFIX}/etc/synfig_modules.cfg
 export XDG_DATA_DIRS="\${SYSPREFIX}/share/:\$XDG_DATA_DIRS:/usr/local/share/:/usr/share/"
 export XDG_CONFIG_DIRS="\$HOME/.config/synfig:\$XDG_CONFIG_DIRS"
 #export GDK_PIXBUF_MODULEDIR="\${SYSPREFIX}/lib/gtk-2.0/2.10.0/loaders"
-export GTK_THEME=Adwaita:dark
 export GSETTINGS_SCHEMA_DIR="\${SYSPREFIX}/share/glib-2.0/schemas/"
 export FONTCONFIG_PATH="\${SYSPREFIX}/etc/fonts"
 export MLT_DATA="\${SYSPREFIX}/share/mlt/"
