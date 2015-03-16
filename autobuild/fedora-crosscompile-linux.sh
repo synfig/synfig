@@ -1305,7 +1305,7 @@ if ! cat ${PREFIX}/include/boost/version.hpp |egrep "BOOST_LIB_VERSION \"${PKG_V
 	./bootstrap.sh --prefix=${PREFIX} \
 		--libdir=${PREFIX}/lib \
 		--exec-prefix=${PREFIX} \
-		--with-libraries=program_options
+		--with-libraries=program_options,filesystem,system,chrono
 	./b2
 	./b2 install || true
 	cd ..
