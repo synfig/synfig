@@ -143,6 +143,7 @@ export PKG_CONFIG_SYSTEM_INCLUDE_PATH=${MINGWPREFIX}/include
 export PKG_CONFIG_SYSTEM_LIBRARY_PATH=${MINGWPREFIX}/lib
 export CPPFLAGS=" -I${MINGWPREFIX}/include "
 export LDFLAGS=" -L${MINGWPREFIX}/lib "
+export LIBS=""
 export PATH="${MINGWPREFIX}/bin/:$PATH"
 alias convert="${MINGWPREFIX}/bin/convert"
 }
