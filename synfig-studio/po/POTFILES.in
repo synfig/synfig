@@ -117,6 +117,8 @@ src/gui/states/state_fill.cpp
 src/gui/states/state_fill.h
 src/gui/states/state_gradient.cpp
 src/gui/states/state_gradient.h
+src/gui/states/state_lasso.cpp
+src/gui/states/state_lasso.h
 src/gui/states/state_mirror.cpp
 src/gui/states/state_mirror.h
 src/gui/states/state_normal.cpp
