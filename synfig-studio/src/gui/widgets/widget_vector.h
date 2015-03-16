@@ -47,6 +47,9 @@ class Widget_Distance;
 
 class Widget_Vector : public Gtk::HBox
 {
+	Gtk::Entry* entry_x;
+	Gtk::Entry* entry_y;
+    
 	Gtk::SpinButton* spinbutton_x;
 	Gtk::SpinButton* spinbutton_y;
 
@@ -76,6 +79,8 @@ public:
 	sigc::signal<void>& signal_activate() { return signal_activate_; }
 
 	void on_value_changed();
+	void on_entry_x_changed();
+	void on_entry_y_changed();
 	void on_grab_focus();
 
 	void set_value(const synfig::Vector &data);
