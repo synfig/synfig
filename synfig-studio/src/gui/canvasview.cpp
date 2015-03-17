@@ -1508,7 +1508,7 @@ CanvasView::create_display_bar()
 	
 	Gtk::HBox *hbox = manage(new class Gtk::HBox(false, 0));
 	hbox->pack_start(*displaybar, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0);
-	hbox->pack_start(*progressbar, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0);
+	//hbox->pack_start(*progressbar, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0);
 	hbox->pack_start(*stopbutton, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0);
 	hbox->show();
 	
