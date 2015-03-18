@@ -962,6 +962,7 @@ fedora-mingw-install mingw${ARCH}-libtiff
 mketl()
 {
 cd $SRCPREFIX/ETL
+[ ! -e config.cache ] || rm config.cache
 autoreconf --install --force
 ./configure \
 --prefix=${MINGWPREFIX} \
