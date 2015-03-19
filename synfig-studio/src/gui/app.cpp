@@ -2061,30 +2061,6 @@ App::apply_gtk_settings(bool use_dark)
 		data = "GtkPaned { margin: 2px; }";
 		//Fix #810: Insetsetive context menus on OSX
 		data += ".window-frame, .window-frame:backdrop { margin: 0; }";
-		if (App::use_dark_theme)
-			data += "\
-GtkTreeView.view.check, \
-GtkTreeView.view.check row:selected, \
-GtkTreeView.view.check row:selected:focus { \
--gtk-icon-source: -gtk-scaled(url(\"resource:///org/gtk/libgtk/theme/Adwaita/assets/checkbox-unchecked-dark.png\"),url(\"resource:///org/gtk/libgtk/theme/Adwaita/assets/checkbox-unchecked-dark@2.png\")); \
-} \
-GtkTreeView.view.check:active, \
-GtkTreeView.view.check row:selected:active, \
-GtkTreeView.view.check row:selected:focus:active { \
--gtk-icon-source: -gtk-scaled(url(\"resource:///org/gtk/libgtk/theme/Adwaita/assets/checkbox-checked-dark.png\"),url(\"resource:///org/gtk/libgtk/theme/Adwaita/assets/checkbox-checked-dark@2.png\")); \
-}";
-		else
-			data += "\
-GtkTreeView.view.check, \
-GtkTreeView.view.check row:selected, \
-GtkTreeView.view.check row:selected:focus { \
--gtk-icon-source: -gtk-scaled(url(\"resource:///org/gtk/libgtk/theme/Adwaita/assets/checkbox-unchecked.png\"),url(\"resource:///org/gtk/libgtk/theme/Adwaita/assets/checkbox-unchecked@2.png\")); \
-} \
-GtkTreeView.view.check:active, \
-GtkTreeView.view.check row:selected:active, \
-GtkTreeView.view.check row:selected:focus:active { \
--gtk-icon-source: -gtk-scaled(url(\"resource:///org/gtk/libgtk/theme/Adwaita/assets/checkbox-checked.png\"),url(\"resource:///org/gtk/libgtk/theme/Adwaita/assets/checkbox-checked@2.png\")); \
-}";
 		Glib::RefPtr<Gtk::CssProvider> css = Gtk::CssProvider::create();
 		if(not css->load_from_data(data)) {
 			synfig::info("Failed to load css rules.");
