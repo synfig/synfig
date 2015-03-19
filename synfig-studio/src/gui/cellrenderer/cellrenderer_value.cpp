@@ -494,7 +494,7 @@ CellRenderer_ValueBase::render_vfunc(
 		if (!property_editable())
 			state |= Gtk::STATE_FLAG_INSENSITIVE;
 		if (data.get(bool()))
-			state |= Gtk::STATE_FLAG_ACTIVE;
+			state |= Gtk::STATE_FLAG_CHECKED;
 
 		cr->save();
 		Gdk::Cairo::add_rectangle_to_path(cr, cell_area);
