@@ -462,7 +462,7 @@ Dialog_Setup::on_apply_pressed()
 	
 	// Set the dark theme flag
 	App::use_dark_theme=toggle_use_dark_theme.get_active();
-	App::set_use_dark_theme(App::use_dark_theme);
+	App::apply_gtk_settings(App::use_dark_theme);
 
 	// Set the browser_command textbox
 	App::browser_command=textbox_browser_command.get_text();

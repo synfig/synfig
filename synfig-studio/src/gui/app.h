@@ -319,7 +319,7 @@ public:
 	static void set_workspace_compositing();
 	static void set_workspace_animating();
 	static void restore_default_settings();
-	static void set_use_dark_theme(bool);
+	static void apply_gtk_settings(bool);
 
 	static const std::list<std::string>& get_recent_files();
 

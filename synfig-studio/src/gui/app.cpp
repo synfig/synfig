@@ -1407,7 +1407,7 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		}
 		
 		load_settings("pref.use_dark_theme");
-		App::set_use_dark_theme(App::use_dark_theme);
+		App::apply_gtk_settings(App::use_dark_theme);
 
 		// Set experimental features
 		load_settings("pref.enable_experimental_features");
@@ -2041,13 +2041,13 @@ App::restore_default_settings()
 }
 
 void
-App::set_use_dark_theme(bool value)
+App::apply_gtk_settings(bool use_dark)
 {
 	GtkSettings *gtk_settings;
 	gtk_settings = gtk_settings_get_default ();
 	
 	// dark theme
-	g_object_set (G_OBJECT (gtk_settings), "gtk-application-prefer-dark-theme", value, NULL);
+	g_object_set (G_OBJECT (gtk_settings), "gtk-application-prefer-dark-theme", use_dark, NULL);
 	
 	// enable menu icons
 	g_object_set (G_OBJECT (gtk_settings), "gtk-menu-images", TRUE, NULL);
