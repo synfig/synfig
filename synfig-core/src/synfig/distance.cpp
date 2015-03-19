@@ -117,7 +117,7 @@ Distance::get_string(int digits)const
 	String str(strprintf(fmt.c_str(),value_));
 	while (*str.rbegin() == '0' && str.length() > 1)
 		str=str.substr(0, str.size()-1);
-	if (*str.rbegin() == ',')
+	if (*str.rbegin() == ',' or *str.rbegin() == '.')
 		str=str.substr(0, str.size()-1);
 	if (str.length()==0)
 		str='0';
