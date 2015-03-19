@@ -2057,8 +2057,9 @@ App::set_use_dark_theme(bool value)
 	g_object_get (G_OBJECT (gtk_settings), "gtk-theme-name", &theme_name);
 	if ( String(theme_name) == "Adwaita" ){
 		Glib::ustring data;
+		data = "GtkPaned { margin: 2px; }";
 		if (App::use_dark_theme)
-			data = "\
+			data += "\
 GtkTreeView.view.check, \
 GtkTreeView.view.check row:selected, \
 GtkTreeView.view.check row:selected:focus { \
@@ -2070,7 +2071,7 @@ GtkTreeView.view.check row:selected:focus:active { \
 -gtk-icon-source: -gtk-scaled(url(\"resource:///org/gtk/libgtk/theme/Adwaita/assets/checkbox-checked-dark.png\"),url(\"resource:///org/gtk/libgtk/theme/Adwaita/assets/checkbox-checked-dark@2.png\")); \
 }";
 		else
-			data = "\
+			data += "\
 GtkTreeView.view.check, \
 GtkTreeView.view.check row:selected, \
 GtkTreeView.view.check row:selected:focus { \
