@@ -55,6 +55,7 @@
 #include <gtkmm/uimanager.h>
 #include <gtkmm/textview.h>
 #include <gtkmm/filefilter.h>
+#include <gtkmm/cssprovider.h>
 
 #include <glibmm/main.h>
 #include <glibmm/thread.h>
@@ -1388,11 +1389,7 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		throw;
 	}
 	
-	// enable menu icons
-	GtkSettings *gtk_settings;
-	gtk_settings = gtk_settings_get_default ();
-	g_object_set (G_OBJECT (gtk_settings), "gtk-menu-images", TRUE, NULL);
-
+	
 	// add the preferences to the settings
 	synfigapp::Main::settings().add_domain(&_preferences,"pref");
 
@@ -1408,6 +1405,9 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		{
 			Glib::setenv ("LANGUAGE",  App::ui_language.c_str(), 1);
 		}
+		
+		load_settings("pref.use_dark_theme");
+		App::set_use_dark_theme(App::use_dark_theme);
 
 		// Set experimental features
 		load_settings("pref.enable_experimental_features");
@@ -1589,8 +1589,6 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		// setting the default bline width to 1 unit.
 		// This line fixes that.
 		synfigapp::Main::set_bline_width(synfigapp::Main::get_selected_input_device()->get_bline_width());
-		
-		App::set_use_dark_theme(App::use_dark_theme);
 
 		studio_init_cb.task(_("Checking auto-recover..."));
 
@@ -2047,7 +2045,49 @@ App::set_use_dark_theme(bool value)
 {
 	GtkSettings *gtk_settings;
 	gtk_settings = gtk_settings_get_default ();
+	
+	// dark theme
 	g_object_set (G_OBJECT (gtk_settings), "gtk-application-prefer-dark-theme", value, NULL);
+	
+	// enable menu icons
+	g_object_set (G_OBJECT (gtk_settings), "gtk-menu-images", TRUE, NULL);
+	
+	// fix checkboxes for Adwaita theme
+	gchar *theme_name;
+	g_object_get (G_OBJECT (gtk_settings), "gtk-theme-name", &theme_name);
+	if ( String(theme_name) == "Adwaita" ){
+		Glib::ustring data;
+		if (App::use_dark_theme)
+			data = "\
+GtkTreeView.view.check, \
+GtkTreeView.view.check row:selected, \
+GtkTreeView.view.check row:selected:focus { \
+-gtk-icon-source: -gtk-scaled(url(\"resource:///org/gtk/libgtk/theme/Adwaita/assets/checkbox-unchecked-dark.png\"),url(\"resource:///org/gtk/libgtk/theme/Adwaita/assets/checkbox-unchecked-dark@2.png\")); \
+} \
+GtkTreeView.view.check:active, \
+GtkTreeView.view.check row:selected:active, \
+GtkTreeView.view.check row:selected:focus:active { \
+-gtk-icon-source: -gtk-scaled(url(\"resource:///org/gtk/libgtk/theme/Adwaita/assets/checkbox-checked-dark.png\"),url(\"resource:///org/gtk/libgtk/theme/Adwaita/assets/checkbox-checked-dark@2.png\")); \
+}";
+		else
+			data = "\
+GtkTreeView.view.check, \
+GtkTreeView.view.check row:selected, \
+GtkTreeView.view.check row:selected:focus { \
+-gtk-icon-source: -gtk-scaled(url(\"resource:///org/gtk/libgtk/theme/Adwaita/assets/checkbox-unchecked.png\"),url(\"resource:///org/gtk/libgtk/theme/Adwaita/assets/checkbox-unchecked@2.png\")); \
+} \
+GtkTreeView.view.check:active, \
+GtkTreeView.view.check row:selected:active, \
+GtkTreeView.view.check row:selected:focus:active { \
+-gtk-icon-source: -gtk-scaled(url(\"resource:///org/gtk/libgtk/theme/Adwaita/assets/checkbox-checked.png\"),url(\"resource:///org/gtk/libgtk/theme/Adwaita/assets/checkbox-checked@2.png\")); \
+}";
+		Glib::RefPtr<Gtk::CssProvider> css = Gtk::CssProvider::create();
+		if(not css->load_from_data(data)) {
+			synfig::info("Failed to load css rules.");
+		}
+		Glib::RefPtr<Gdk::Screen> screen = Gdk::Screen::get_default();
+		Gtk::StyleContext::add_provider_for_screen(screen,css, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+	}
 }
 
 bool
