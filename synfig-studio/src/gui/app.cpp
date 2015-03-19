@@ -2057,7 +2057,10 @@ App::apply_gtk_settings(bool use_dark)
 	g_object_get (G_OBJECT (gtk_settings), "gtk-theme-name", &theme_name);
 	if ( String(theme_name) == "Adwaita" ){
 		Glib::ustring data;
+		// Fix GtkPaned (big margin makes it hard to grab first keyframe))
 		data = "GtkPaned { margin: 2px; }";
+		//Fix #810: Insetsetive context menus on OSX
+		data += ".window-frame, .window-frame:backdrop { margin: 0; }";
 		if (App::use_dark_theme)
 			data += "\
 GtkTreeView.view.check, \
