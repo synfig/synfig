@@ -1173,7 +1173,7 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 
 			if(layer->get_name()=="MotionBlur" || layer->get_name()=="duplicate")
 			{
-				float z_depth(layer->get_true_z_depth());
+				float z_depth(layer->get_true_z_depth(time));
 
 				// If we've seen a motion blur before in this context...
 				if (seen_motion_blur_locally)
@@ -1199,7 +1199,7 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 	for(iter=context,i=0;*iter;iter++,i++)
 	{
 		Layer::Handle layer=*iter;
-		float z_depth(layer->get_true_z_depth());
+		float z_depth(layer->get_true_z_depth(time));
 		const float layer_visibility=context.z_depth_visibility(*layer);
 		//synfig::info("Visibility of %s called %s = %f", layer->get_name().c_str(), layer->get_description().c_str(), layer_visibility);
 
