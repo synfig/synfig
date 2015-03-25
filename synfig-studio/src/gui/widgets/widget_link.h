@@ -45,6 +45,9 @@ class Widget_Link: public Gtk::ToggleButton
 	synfig::String tooltip_inactive_;
 	synfig::String tooltip_active_;
 
+	Gtk::Image *icon_off_;
+	Gtk::Image *icon_on_;
+
 protected:
 	void on_toggled();
 
