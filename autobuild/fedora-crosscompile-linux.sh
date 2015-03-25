@@ -1655,7 +1655,7 @@ mkconfig()
 cat > ${PREFIX}/synfig <<EOF
 #!/bin/sh
 
-SYSPREFIX=\`dirname "\$0"\`
+SYSPREFIX=\$(cd \`dirname "\$0"\`; pwd)
 
 export LD_LIBRARY_PATH=\${SYSPREFIX}/lib:\$LD_LIBRARY_PATH
 export SYNFIG_ROOT=\${SYSPREFIX}/
@@ -1674,7 +1674,7 @@ EOF
 cat > ${PREFIX}/synfigstudio <<EOF
 #!/bin/sh
 
-SYSPREFIX=\`dirname "\$0"\`
+SYSPREFIX=\$(cd \`dirname "\$0"\`; pwd)
 
 # Check if this system have JACK installed
 if ( ! ldconfig -p | grep libjack.so >/dev/null ) || ( ! which jackd >/dev/null ) ; then
