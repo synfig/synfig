@@ -96,6 +96,7 @@ Dock_Toolbox::Dock_Toolbox():
 
 	Gtk::ScrolledWindow *scrolled_window = manage(new Gtk::ScrolledWindow());
 	scrolled_window->add(*palette);
+	scrolled_window->set_border_width(2);
 	scrolled_window->show();
 
 	separator = manage(new class Gtk::HSeparator());
