@@ -112,6 +112,14 @@ private:
 
 	bool on_draw(const Cairo::RefPtr<Cairo::Context> &cr);
 	bool on_event(GdkEvent *event);
+
+    ///@brief Draw face to face contrasted arrows
+	void draw_arrow(
+		const Cairo::RefPtr<Cairo::Context> &cr,
+		double x, double y,
+		double width, double height,
+		int size,
+		bool fill);
 }; // END of class ColorSlider
 
 
