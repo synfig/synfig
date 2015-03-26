@@ -7,12 +7,13 @@
 # Rodolfo_Jadon, 2014
 # Ruud van Eeghem <r.van.eeghem@gmail.com>, 2011
 # darkspace65 <studio.diba@gmail.com>, 2013
+# wst <wst@outlook.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: Synfig\n"
 "Report-Msgid-Bugs-To: http://www.synfig.org/issues/thebuggenie/synfig\n"
-"POT-Creation-Date: 2015-03-11 18:00+0700\n"
-"PO-Revision-Date: 2015-02-04 15:34+0000\n"
+"POT-Creation-Date: 2015-03-25 18:00+0700\n"
+"PO-Revision-Date: 2015-03-22 16:07+0000\n"
 "Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
 "Language-Team: Dutch (http://www.transifex.com/projects/p/synfig/language/nl/)\n"
 "MIME-Version: 1.0\n"
@@ -300,7 +301,7 @@ msgstr "Verzameling gebieden"
 msgid "Set of regions to combine"
 msgstr "Verzameling te combineren gebieden"
 
-#: src/modules/lyr_std/clamp.cpp:55 src/tool/printing_functions.cpp:226
+#: src/modules/lyr_std/clamp.cpp:55 src/tool/printing_functions.cpp:218
 msgid "Clamp"
 msgstr "Begrenzen"
 
@@ -363,7 +364,7 @@ msgstr "Positie van de spline-doellijn"
 #: src/synfig/valuenode_intstring.cpp:170
 #: src/synfig/valuenode_realstring.cpp:175
 #: src/synfig/valuenode_repeat_gradient.cpp:213
-#: src/synfig/valuenode_stripes.cpp:204 src/tool/printing_functions.cpp:117
+#: src/synfig/valuenode_stripes.cpp:204 src/tool/printing_functions.cpp:109
 msgid "Width"
 msgstr "Breedte"
 
@@ -441,8 +442,8 @@ msgid "Inside Out"
 msgstr "Binnen naar buiten"
 
 #: src/modules/lyr_std/insideout.cpp:163
-msgid "Defines the where the center will be"
-msgstr "Definieert de positie van het centrum"
+msgid "Defines where the center will be"
+msgstr ""
 
 #: src/modules/lyr_std/julia.cpp:56
 msgid "Julia Set"
@@ -734,7 +735,7 @@ msgstr "Kan 'SurfaceTarget' niet maken"
 msgid "Width of sample area (In pixels)"
 msgstr "Breedte van het voorbeeld (in pixels)"
 
-#: src/modules/lyr_std/supersample.cpp:343 src/tool/printing_functions.cpp:123
+#: src/modules/lyr_std/supersample.cpp:343 src/tool/printing_functions.cpp:115
 msgid "Height"
 msgstr "Hoogte"
 
@@ -1576,7 +1577,7 @@ msgstr "Hoek"
 msgid "The orientation of the star"
 msgstr "De orientatie van de ster"
 
-#: src/modules/mod_geometry/star.cpp:190 src/synfig/distance.cpp:253
+#: src/modules/mod_geometry/star.cpp:190 src/synfig/distance.cpp:260
 msgid "Points"
 msgstr "Punten"
 
@@ -2077,7 +2078,7 @@ msgstr "%s is niet in het formaat PPM"
 
 #: src/modules/mod_svg/layer_svg.cpp:53
 msgid "Import Svg"
-msgstr ""
+msgstr "Importeer Svg"
 
 #: src/synfig/base_types.cpp:78 src/synfig/base_types.cpp:79
 msgid "bool"
@@ -2181,27 +2182,27 @@ msgstr "Geen afbeeldingen in de lijst"
 msgid "in line"
 msgstr "vergelijkbaar met"
 
-#: src/synfig/distance.cpp:251
+#: src/synfig/distance.cpp:258
 msgid "Units"
 msgstr "Eenheden"
 
-#: src/synfig/distance.cpp:252
+#: src/synfig/distance.cpp:259
 msgid "Pixels"
 msgstr "Pixels"
 
-#: src/synfig/distance.cpp:254
+#: src/synfig/distance.cpp:261
 msgid "Inches"
 msgstr "Inches"
 
-#: src/synfig/distance.cpp:255
+#: src/synfig/distance.cpp:262
 msgid "Meters"
 msgstr "Meters"
 
-#: src/synfig/distance.cpp:256
+#: src/synfig/distance.cpp:263
 msgid "Millimeters"
 msgstr "Millimeters"
 
-#: src/synfig/distance.cpp:257
+#: src/synfig/distance.cpp:264
 msgid "Centimeters"
 msgstr "Centimeters"
 
@@ -2860,15 +2861,15 @@ msgstr "Modules worden geladen van %s"
 msgid "Unable to open module list file '%s'"
 msgstr "Kan module bestand '%s' niet openen"
 
-#: src/synfig/main.cpp:341 src/tool/renderprogress.h:141
+#: src/synfig/main.cpp:341
 msgid "DONE"
 msgstr "KLAAR"
 
-#: src/synfig/main.cpp:409 src/tool/progress.h:52 src/tool/renderprogress.h:57
+#: src/synfig/main.cpp:409 src/tool/progress.h:48
 msgid "error"
 msgstr "fout"
 
-#: src/synfig/main.cpp:424 src/tool/progress.h:59 src/tool/renderprogress.h:64
+#: src/synfig/main.cpp:424 src/tool/progress.h:55
 msgid "warning"
 msgstr "waarschuwing"
 
@@ -3885,7 +3886,7 @@ msgid "Radius Split"
 msgstr ""
 
 #: src/synfig/valuenode_composite.cpp:710
-msgid "When checked, tangent's radius are independent"
+msgid "When checked, tangent's radii are independent"
 msgstr ""
 
 #: src/synfig/valuenode_composite.cpp:713
@@ -4525,7 +4526,7 @@ msgstr "De waarde knoop die gebruikt wordt voor de stap"
 msgid "The duration of the step"
 msgstr "De lengte van de stap"
 
-#: src/synfig/valuenode_step.cpp:202 src/tool/printing_functions.cpp:79
+#: src/synfig/valuenode_step.cpp:202 src/tool/printing_functions.cpp:71
 msgid "Start Time"
 msgstr "Start tijd"
 
@@ -4683,228 +4684,228 @@ msgstr "Afwijkend Breedte Punt %03d"
 msgid "weighted"
 msgstr ""
 
-#: src/tool/main.cpp:141
+#: src/tool/main.cpp:104
 msgid "FATAL: Synfig Version Mismatch"
 msgstr "FATAAL: Synfig versie incorrect"
 
-#: src/tool/main.cpp:177
+#: src/tool/main.cpp:143
 msgid "Settings"
 msgstr "Instellingen"
 
-#: src/tool/main.cpp:179
+#: src/tool/main.cpp:145
 msgid "Specify output target (Default: PNG)"
 msgstr ""
 
-#: src/tool/main.cpp:180
+#: src/tool/main.cpp:146
 msgid "Set the image width in pixels (Use zero for file default)"
 msgstr "Stel de breedte van de afbeelding in in pixels (gebruik 0 voor de standaard waarde)"
 
-#: src/tool/main.cpp:181
+#: src/tool/main.cpp:147
 msgid "Set the image height in pixels (Use zero for file default)"
 msgstr "Stel de hoogte van de afbeelding in in pixels (gebruik 0 voor de standaard waarde)"
 
-#: src/tool/main.cpp:182
+#: src/tool/main.cpp:148
 msgid "Set the diagonal size of image window (Span)"
 msgstr "Stel de diagonale afmeting van het afbeeldingsvenster in (spanbreedte)"
 
-#: src/tool/main.cpp:183
+#: src/tool/main.cpp:149
 msgid "Set antialias amount for parametric renderer."
 msgstr "Stel de waarde voor anti-alias in voor de geparameteriseerde generator"
 
-#: src/tool/main.cpp:184
+#: src/tool/main.cpp:150
 #, c-format
 msgid "Specify image quality for accelerated renderer (Default: %d)"
 msgstr "Stel de kwaliteit van de afbeelding in voor versneld genereren van afbeeldingen (standaard=%d)"
 
-#: src/tool/main.cpp:185
+#: src/tool/main.cpp:151
 msgid "Gamma"
 msgstr "Gamma"
 
-#: src/tool/main.cpp:186
+#: src/tool/main.cpp:152
 msgid "Enable multithreaded renderer using the specified number of threads"
 msgstr ""
 
-#: src/tool/main.cpp:187
+#: src/tool/main.cpp:153
 msgid "Specify input filename"
 msgstr "Specifieer het invoer bestand"
 
-#: src/tool/main.cpp:188
+#: src/tool/main.cpp:154
 msgid "Specify output filename"
 msgstr "Specificeer het uitvoer bestand"
 
-#: src/tool/main.cpp:189
+#: src/tool/main.cpp:155
 msgid ""
 "Output file sequence separator string (Use double quotes if you want to use "
 "spaces)"
 msgstr ""
 
-#: src/tool/main.cpp:190
+#: src/tool/main.cpp:156
 msgid "Render the canvas with the given id instead of the root."
 msgstr "Genereer het tekenvenster met de opgegeven id in plaats vanaf het begin"
 
-#: src/tool/main.cpp:191
+#: src/tool/main.cpp:157
 msgid "Set the frame rate"
 msgstr "Stel het aantal beelden per seconde in"
 
-#: src/tool/main.cpp:192
+#: src/tool/main.cpp:158
 msgid "Render a single frame at <seconds>"
 msgstr "Genereer een enkel beeld op <seconden>"
 
-#: src/tool/main.cpp:193 src/tool/main.cpp:194
+#: src/tool/main.cpp:159 src/tool/main.cpp:160
 msgid "Set the starting time"
 msgstr "Stel de starttijd in"
 
-#: src/tool/main.cpp:195
+#: src/tool/main.cpp:161
 msgid "Set the ending time"
 msgstr "Stel de eindtijd in"
 
-#: src/tool/main.cpp:196
+#: src/tool/main.cpp:162
 msgid "Set the physical resolution (Dots-per-inch)"
 msgstr "Stel de fysieke resolutie in (dots-per-inch)"
 
-#: src/tool/main.cpp:197
+#: src/tool/main.cpp:163
 msgid "Set the physical X resolution (Dots-per-inch)"
 msgstr "Stel de fysieke x resolutie in (dots-per-inch)"
 
-#: src/tool/main.cpp:198
+#: src/tool/main.cpp:164
 msgid "Set the physical Y resolution (Dots-per-inch)"
 msgstr "Stel de fysieke y resolutie in (Dots-per-inch)"
 
-#: src/tool/main.cpp:201
+#: src/tool/main.cpp:167
 msgid "Switch options"
 msgstr "Wissel opties"
 
-#: src/tool/main.cpp:203
+#: src/tool/main.cpp:169
 msgid "Output verbosity level"
 msgstr ""
 
-#: src/tool/main.cpp:204
+#: src/tool/main.cpp:170
 msgid "Quiet mode (No progress/time-remaining display)"
 msgstr "Stille modus (geen weergave voortgang en resterende tijd)"
 
-#: src/tool/main.cpp:205
+#: src/tool/main.cpp:171
 msgid "Print benchmarks"
 msgstr ""
 
-#: src/tool/main.cpp:206
+#: src/tool/main.cpp:172
 msgid "Extract alpha"
 msgstr ""
 
-#: src/tool/main.cpp:209
+#: src/tool/main.cpp:175
 msgid "Misc options"
 msgstr ""
 
-#: src/tool/main.cpp:211
+#: src/tool/main.cpp:177
 msgid "Append layers in <filename> to composition"
 msgstr "Voeg de lagen in <bestand> aan de compositie toe"
 
-#: src/tool/main.cpp:212
+#: src/tool/main.cpp:178
 msgid "Print out specified details of the root canvas"
 msgstr "Druk de details af van het eerste tekenvenster"
 
-#: src/tool/main.cpp:213 src/tool/main.cpp:239
+#: src/tool/main.cpp:179 src/tool/main.cpp:205
 msgid "Print out the list of exported canvases in the composition"
 msgstr "Druk een lijst af van te exporteren tekenvensters in de compositie "
 
-#: src/tool/main.cpp:216
+#: src/tool/main.cpp:182
 msgid "FFMPEG target options"
 msgstr "FFMPEG doel opties"
 
-#: src/tool/main.cpp:218
+#: src/tool/main.cpp:184
 msgid "Set the codec for the video. See --ffmpeg-video-codecs"
 msgstr "Stel de codec voor video in. zie --ffmpeg-video-codecs"
 
-#: src/tool/main.cpp:219
+#: src/tool/main.cpp:185
 msgid "Set the bitrate for the output video"
 msgstr "Stel de bitrate in voor de video uitvoer"
 
-#: src/tool/main.cpp:222
+#: src/tool/main.cpp:188
 msgid "Synfig info options"
 msgstr "Synfig info opties"
 
-#: src/tool/main.cpp:224
+#: src/tool/main.cpp:190
 msgid "Produce this help message"
 msgstr ""
 
-#: src/tool/main.cpp:225
+#: src/tool/main.cpp:191
 msgid "Print out the list of available importers"
 msgstr "Druk een lijst af van de beschikbare import filters"
 
-#: src/tool/main.cpp:226
+#: src/tool/main.cpp:192
 msgid "Print out misc build information"
 msgstr "Druk bouw informatie af van de toepassing"
 
-#: src/tool/main.cpp:227
+#: src/tool/main.cpp:193
 msgid "Print out the list of available layers"
 msgstr "Druk een lijst af van de beschikbare lagen"
 
-#: src/tool/main.cpp:228
+#: src/tool/main.cpp:194
 msgid "Print out layer's description, parameter info, etc."
 msgstr "Druk de beschrijving af van lagen, parameters etc."
 
-#: src/tool/main.cpp:229
+#: src/tool/main.cpp:195
 msgid "Print out license information"
 msgstr "Druk licentie informatie af"
 
-#: src/tool/main.cpp:230
+#: src/tool/main.cpp:196
 msgid "Print out the list of loaded modules"
 msgstr "Druk een lijst af van de geladen modules"
 
-#: src/tool/main.cpp:231
+#: src/tool/main.cpp:197
 msgid "Print out the list of available targets"
 msgstr "Druk een lijst af van de beschikbare doelen"
 
-#: src/tool/main.cpp:232
+#: src/tool/main.cpp:198
 msgid ""
 "Print out the list of available video codecs when encoding through FFMPEG"
 msgstr ""
 
-#: src/tool/main.cpp:233
+#: src/tool/main.cpp:199
 msgid "Print out the list of available ValueNodes"
 msgstr "Druk een lijst af van de beschikbare ValueNodes"
 
-#: src/tool/main.cpp:234
+#: src/tool/main.cpp:200
 msgid "Print out version information"
 msgstr "Druk versie informatie af"
 
-#: src/tool/main.cpp:243
+#: src/tool/main.cpp:209
 msgid "Synfig debug flags"
 msgstr ""
 
-#: src/tool/main.cpp:245
+#: src/tool/main.cpp:211
 msgid "Test GUID generation"
 msgstr "Test GUID generatie"
 
-#: src/tool/main.cpp:246
+#: src/tool/main.cpp:212
 msgid "Test signal implementation"
 msgstr "Test signaal implementatie"
 
-#: src/tool/joblistprocessor.cpp:74
+#: src/tool/joblistprocessor.cpp:73
 msgid "Nothing to do!"
 msgstr "Niets te doen!"
 
-#: src/tool/joblistprocessor.cpp:85
+#: src/tool/joblistprocessor.cpp:84
 msgid "Attempting to determine target/outfile..."
 msgstr "Bezig met vaststellen doel/uitvoerbestand..."
 
-#: src/tool/joblistprocessor.cpp:91
+#: src/tool/joblistprocessor.cpp:90
 msgid "Target name undefined, attempting to figure it out"
 msgstr "Doel naam niet bekend, bezig met bepalen"
 
-#: src/tool/joblistprocessor.cpp:123
+#: src/tool/joblistprocessor.cpp:120
 msgid "Defaulting to PNG target..."
 msgstr "Standaard doel waarde PNG gebruiken..."
 
-#: src/tool/joblistprocessor.cpp:148
+#: src/tool/joblistprocessor.cpp:145
 #, c-format
 msgid "Unable to create output for \"%s\": %s"
 msgstr ""
 
-#: src/tool/joblistprocessor.cpp:149 src/tool/joblistprocessor.cpp:166
+#: src/tool/joblistprocessor.cpp:148 src/tool/joblistprocessor.cpp:168
 msgid "Throwing out job..."
 msgstr "Opdracht wordt afgebroken..."
 
-#: src/tool/joblistprocessor.cpp:153
+#: src/tool/joblistprocessor.cpp:152
 msgid "Creating the target..."
 msgstr "Doel wordt aangemaakt..."
 
@@ -4913,300 +4914,269 @@ msgstr "Doel wordt aangemaakt..."
 msgid "Unknown target for \"%s\": %s"
 msgstr ""
 
-#: src/tool/joblistprocessor.cpp:176
+#: src/tool/joblistprocessor.cpp:178
 msgid "Setting the canvas on the target..."
 msgstr "Tekenvenster wordt ingesteld op doel..."
 
-#: src/tool/joblistprocessor.cpp:179
+#: src/tool/joblistprocessor.cpp:181
 msgid "Setting the quality of the target..."
 msgstr "Kwaliteit wordt ingesteld voor doel..."
 
-#: src/tool/joblistprocessor.cpp:184
+#: src/tool/joblistprocessor.cpp:186
 msgid "Setting the alpha mode of the target..."
 msgstr ""
 
-#: src/tool/joblistprocessor.cpp:230 src/tool/joblistprocessor.cpp:240
+#: src/tool/joblistprocessor.cpp:228 src/tool/joblistprocessor.cpp:238
 msgid "Render Failure."
 msgstr ""
 
-#: src/tool/joblistprocessor.cpp:234
+#: src/tool/joblistprocessor.cpp:232
 msgid "Rendering..."
 msgstr "Bezig met renderen..."
 
-#: src/tool/joblistprocessor.cpp:244
+#: src/tool/joblistprocessor.cpp:246
 msgid ": Rendered in "
 msgstr ""
 
-#: src/tool/joblistprocessor.cpp:245
+#: src/tool/joblistprocessor.cpp:248
 msgid " seconds."
 msgstr "seconden"
 
-#: src/tool/joblistprocessor.cpp:248
+#: src/tool/joblistprocessor.cpp:252
 msgid "Done."
 msgstr "Klaar."
 
-#: src/tool/optionsprocessor.cpp:117
+#: src/tool/optionsprocessor.cpp:138
 msgid "Unrecognised canvas variable: "
 msgstr "Onbekende tekenvenster variabele:"
 
-#: src/tool/optionsprocessor.cpp:118
+#: src/tool/optionsprocessor.cpp:139
 msgid "Recognized variables are:"
 msgstr "Bekende variabelen zijn:"
 
-#: src/tool/optionsprocessor.cpp:135
+#: src/tool/optionsprocessor.cpp:156
 msgid "verbosity set to "
 msgstr "informatie weergave ingesteld op"
 
-#: src/tool/optionsprocessor.cpp:150
+#: src/tool/optionsprocessor.cpp:176
 msgid "Threads set to "
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:228
+#: src/tool/optionsprocessor.cpp:255
 msgid "Layer Name: "
 msgstr "Laagnaam:"
 
-#: src/tool/optionsprocessor.cpp:229
+#: src/tool/optionsprocessor.cpp:256
 msgid "Localized Layer Name: "
 msgstr "Gelokaliseerde laagnaam:"
 
-#: src/tool/optionsprocessor.cpp:231
+#: src/tool/optionsprocessor.cpp:258
 msgid "Version: "
 msgstr "Versie:"
 
-#: src/tool/optionsprocessor.cpp:236
+#: src/tool/optionsprocessor.cpp:263
 msgid "param - "
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:238
+#: src/tool/optionsprocessor.cpp:265
 msgid " (not critical)"
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:239
+#: src/tool/optionsprocessor.cpp:266
 msgid "\tLocalized Name: "
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:243
+#: src/tool/optionsprocessor.cpp:270
 msgid "\tDescription: "
 msgstr "\tBeschrijving:"
 
-#: src/tool/optionsprocessor.cpp:247
+#: src/tool/optionsprocessor.cpp:274
 msgid "\tHint: "
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:313
+#: src/tool/optionsprocessor.cpp:340
 #, c-format
 msgid "Antialiasing set to %d, (%d samples per pixel)"
 msgstr "Anti-alias ingesteld op %d (%d monsters per pixel)"
 
-#: src/tool/optionsprocessor.cpp:320
+#: src/tool/optionsprocessor.cpp:347
 #, c-format
 msgid "Span set to %d units"
 msgstr "Breedte ingesteld op %d eenheden"
 
-#: src/tool/optionsprocessor.cpp:328
+#: src/tool/optionsprocessor.cpp:355
 #, c-format
 msgid "Frame rate set to %d frames per second"
 msgstr "Verversingssnelheid ingesteld op %d beelden per seconde"
 
-#: src/tool/optionsprocessor.cpp:338
+#: src/tool/optionsprocessor.cpp:365
 #, c-format
 msgid "Physical resolution set to %f dpi"
 msgstr "Fysieke resolutie ingesteld op %f dpi"
 
-#: src/tool/optionsprocessor.cpp:347
+#: src/tool/optionsprocessor.cpp:374
 #, c-format
 msgid "Physical X resolution set to %f dpi"
 msgstr "Fysieke x resolutie ingesteld op %f dpi"
 
-#: src/tool/optionsprocessor.cpp:356
+#: src/tool/optionsprocessor.cpp:383
 #, c-format
 msgid "Physical Y resolution set to %f dpi"
 msgstr "Fysieke y resolutie ingesteld op %f dpi"
 
-#: src/tool/optionsprocessor.cpp:383
+#: src/tool/optionsprocessor.cpp:406
 msgid "Rendering frame at "
 msgstr "Genereren beeld op"
 
-#: src/tool/optionsprocessor.cpp:389
+#: src/tool/optionsprocessor.cpp:412
 msgid "Gamma argument is currently ignored"
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:404
+#: src/tool/optionsprocessor.cpp:427
 #, c-format
-msgid "Resolution set to %dx%d"
-msgstr "Resolutie ingesteld op %dx%d"
+msgid "Resolution set to %dx%d."
+msgstr ""
 
-#: src/tool/optionsprocessor.cpp:421
+#: src/tool/optionsprocessor.cpp:444
 msgid "Both video codec and bitrate parameters are necessary."
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:441
+#: src/tool/optionsprocessor.cpp:470
 #, c-format
 msgid "Video codec \"%s\" is not supported."
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:444
-#, c-format
-msgid "Target video codec set to %s"
-msgstr "Doel video codering ingesteld op %s"
-
-#: src/tool/optionsprocessor.cpp:450
-#, c-format
-msgid "Target bitrate set to %dk"
-msgstr "Doel bit-diepte ingesteld op %dk"
-
-#: src/tool/optionsprocessor.cpp:456
-#, c-format
-msgid "Output file sequence separator set to %s"
+#: src/tool/optionsprocessor.cpp:474
+msgid "Target video codec set to: "
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:507
-#, c-format
-msgid "Unable to load '%s'."
+#: src/tool/optionsprocessor.cpp:480
+msgid "Target bitrate set to: "
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:514
-msgid "No input file provided."
-msgstr "Geen invoerbestand opgegeven."
-
-#: src/tool/optionsprocessor.cpp:519
-msgid "Target set to "
+#: src/tool/optionsprocessor.cpp:486
+msgid "Output file sequence separator set to: '"
 msgstr ""
 
 #: src/tool/optionsprocessor.cpp:538
+#, c-format
+msgid "Unable to load file '%s'."
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:546
+msgid "No input file provided."
+msgstr "Geen invoerbestand opgegeven."
+
+#: src/tool/optionsprocessor.cpp:552
+msgid "Target set to "
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:571
 msgid "Quality set to "
 msgstr "Kwaliteit ingesteld op"
 
-#: src/tool/optionsprocessor.cpp:557
+#: src/tool/optionsprocessor.cpp:590
 #, c-format
 msgid ""
 "Unable to find canvas with ID \"%s\" in %s.\n"
 "Throwing out job..."
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:563
+#: src/tool/optionsprocessor.cpp:597
 #, c-format
 msgid ""
 "Invalid canvas name \"%s\" in %s.\n"
 "Throwing out job..."
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:600
+#: src/tool/optionsprocessor.cpp:634
 msgid "Unable to append '"
 msgstr "Kan niet samenvoegen met '"
 
-#: src/tool/optionsprocessor.cpp:614
+#: src/tool/optionsprocessor.cpp:648
 msgid "Appended contents of "
 msgstr "Samengevoegde inhoud"
 
-#: src/tool/printing_functions.cpp:86
+#: src/tool/printing_functions.cpp:78
 msgid "End Time"
 msgstr "Eindtijd"
 
-#: src/tool/printing_functions.cpp:93
+#: src/tool/printing_functions.cpp:85
 msgid "Frame Rate"
 msgstr "Verversingssnelheid"
 
-#: src/tool/printing_functions.cpp:100
+#: src/tool/printing_functions.cpp:92
 msgid "Start Frame"
 msgstr "Beginraam"
 
-#: src/tool/printing_functions.cpp:107
+#: src/tool/printing_functions.cpp:99
 msgid "End Frame"
 msgstr "Eindraam"
 
-#: src/tool/printing_functions.cpp:129
+#: src/tool/printing_functions.cpp:121
 msgid "Image Aspect Ratio"
 msgstr "Beeldverhouding"
 
-#: src/tool/printing_functions.cpp:139
+#: src/tool/printing_functions.cpp:131
 msgid "Pixel Width"
 msgstr "Pixelbreedte"
 
-#: src/tool/printing_functions.cpp:146
+#: src/tool/printing_functions.cpp:138
 msgid "Pixel Height"
 msgstr "Pixelhoogte"
 
-#: src/tool/printing_functions.cpp:153
+#: src/tool/printing_functions.cpp:145
 msgid "Pixel Aspect Ratio"
 msgstr "Pixelverhouding"
 
-#: src/tool/printing_functions.cpp:163
+#: src/tool/printing_functions.cpp:155
 msgid "Top Left"
 msgstr "Linksboven"
 
-#: src/tool/printing_functions.cpp:170
+#: src/tool/printing_functions.cpp:162
 msgid "Bottom Right"
 msgstr "Rechtsonder"
 
-#: src/tool/printing_functions.cpp:177
+#: src/tool/printing_functions.cpp:169
 msgid "Physical Width"
 msgstr "Fysieke breedte"
 
-#: src/tool/printing_functions.cpp:184
+#: src/tool/printing_functions.cpp:176
 msgid "Physical Height"
 msgstr "Fysieke hoogte"
 
-#: src/tool/printing_functions.cpp:191
+#: src/tool/printing_functions.cpp:183
 msgid "X Resolution"
 msgstr "X-resolutie"
 
-#: src/tool/printing_functions.cpp:197
+#: src/tool/printing_functions.cpp:189
 msgid "Y Resolution"
 msgstr "Y-resolutie"
 
-#: src/tool/printing_functions.cpp:203
+#: src/tool/printing_functions.cpp:195
 msgid "Diagonal Image Span"
 msgstr "Diagonale beeld afmetingen"
 
-#: src/tool/printing_functions.cpp:212
+#: src/tool/printing_functions.cpp:204
 msgid "Interlaced"
 msgstr "Interlaced"
 
-#: src/tool/printing_functions.cpp:219
+#: src/tool/printing_functions.cpp:211
 msgid "Antialias"
 msgstr "Antialias"
 
-#: src/tool/printing_functions.cpp:233
+#: src/tool/printing_functions.cpp:225
 msgid "Flags"
 msgstr "Vlaggen"
 
-#: src/tool/printing_functions.cpp:240
+#: src/tool/printing_functions.cpp:232
 msgid "Focus"
 msgstr "Focus"
 
-#: src/tool/printing_functions.cpp:247
+#: src/tool/printing_functions.cpp:239
 msgid "Background Color"
 msgstr "Achtergrondkleur"
 
-#: src/tool/printing_functions.cpp:258
+#: src/tool/printing_functions.cpp:250
 msgid "Metadata"
 msgstr "Meta"
-
-#: src/tool/renderprogress.h:109
-msgid "Line"
-msgstr "Lijn"
-
-#: src/tool/renderprogress.h:109
-msgid " of "
-msgstr "van"
-
-#: src/tool/renderprogress.h:124
-msgid "w "
-msgstr "w"
-
-#: src/tool/renderprogress.h:127
-msgid "d "
-msgstr "d"
-
-#: src/tool/renderprogress.h:130
-msgid "h "
-msgstr "h"
-
-#: src/tool/renderprogress.h:133
-msgid "m "
-msgstr "m"
-
-#: src/tool/renderprogress.h:136
-msgid "s "
-msgstr "s"
