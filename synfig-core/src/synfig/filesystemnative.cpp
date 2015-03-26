@@ -117,17 +117,17 @@ bool FileSystemNative::file_rename(const std::string &from_filename, const std::
 	do {
 		synfig::GUID guid;
 		old_file = to_filename+"."+guid.get_string().substr(0,8);
-	} while (stat(old_file.c_str(), &buf) != -1);
+	} while (stat(Glib::locale_from_utf8(old_file).c_str(), &buf) != -1);
 	
-	rename(to_filename.c_str(),old_file.c_str());
+	rename(Glib::locale_from_utf8(to_filename).c_str(),Glib::locale_from_utf8(old_file).c_str());
 	
-	if(rename(from_filename.c_str(),to_filename.c_str())!=0)
+	if(rename(Glib::locale_from_utf8(from_filename).c_str(),Glib::locale_from_utf8(to_filename).c_str())!=0)
 	{
-		rename(old_file.c_str(),to_filename.c_str());
+		rename(Glib::locale_from_utf8(old_file).c_str(),Glib::locale_from_utf8(to_filename).c_str());
 		synfig::error("synfig::save_canvas(): Unable to rename file to correct filename, errno=%d",errno);
 		return false;
 	}
-	remove(old_file.c_str());
+	remove(Glib::locale_from_utf8(old_file).c_str());
 	
 	return true;
 #else
