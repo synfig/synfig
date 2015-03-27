@@ -33,6 +33,7 @@
 
 #include "time.h"
 #include "real.h"
+#include "filesystem.h"
 
 
 /* === M A C R O S ========================================================= */
@@ -59,7 +60,7 @@ public:
 	public:
 		String filename;
 		Sound(): filename() { }
-		explicit Sound(const String &filename): filename(filename) { }
+		explicit Sound(const String &filename): filename(FileSystem::fix_slashes(filename)) { }
 	};
 
 private:

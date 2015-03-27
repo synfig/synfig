@@ -388,14 +388,14 @@ std::list<FileContainerZip::HistoryRecord> FileContainerZip::read_history(const 
 bool FileContainerZip::create(const std::string &container_filename)
 {
 	if (is_opened()) return false;
-	storage_file_ = fopen(container_filename.c_str(), "w+b");
+	storage_file_ = fopen(fix_slashes(container_filename).c_str(), "w+b");
 	if (is_opened()) changed_ = true;
 	return is_opened();
 }
 
 bool FileContainerZip::open_from_history(const std::string &container_filename, file_size_t truncate_storage_size) {
 	if (is_opened()) return false;
-	FILE *f = fopen(container_filename.c_str(), "r+b");
+	FILE *f = fopen(fix_slashes(container_filename).c_str(), "r+b");
 	if (f == NULL) return false;
 
 	// check size of file
@@ -618,7 +618,7 @@ bool FileContainerZip::is_opened()
 bool FileContainerZip::is_file(const std::string &filename)
 {
 	if (!is_opened()) return false;
-	FileMap::const_iterator i = files_.find(filename);
+	FileMap::const_iterator i = files_.find(fix_slashes(filename));
 	return i != files_.end() && !i->second.is_directory;
 }
 
@@ -626,7 +626,7 @@ bool FileContainerZip::is_directory(const std::string &filename)
 {
 	if (!is_opened()) return false;
 	if (filename.empty()) return true;
-	FileMap::const_iterator i = files_.find(filename);
+	FileMap::const_iterator i = files_.find(fix_slashes(filename));
 	return i != files_.end() && i->second.is_directory;
 }
 
@@ -643,7 +643,7 @@ bool FileContainerZip::directory_create(const std::string &dirname)
 	if (!directory_check_name(dirname)) return false;
 
 	FileInfo info;
-	info.name = dirname;
+	info.name = fix_slashes(dirname);
 	info.split_name();
 	info.is_directory = true;
 	info.time = time(NULL);
@@ -660,7 +660,7 @@ bool FileContainerZip::directory_scan(const std::string &dirname, std::list< std
 	out_files.clear();
 	if (!is_directory(dirname)) return false;
 	for(FileMap::iterator i = files_.begin(); i != files_.end(); i++)
-		if (i->second.name_part_directory == dirname)
+		if (i->second.name_part_directory == fix_slashes(dirname))
 			out_files.push_back(i->second.name_part_localname);
 	return true;
 }
@@ -673,15 +673,15 @@ bool FileContainerZip::file_remove(const std::string &filename)
 		directory_scan(filename, files);
 		if (!files.empty()) return false;
 		changed_ = true;
-		files_.erase(filename);
+		files_.erase(fix_slashes(filename));
 	}
 	else
 	if (is_file(filename))
 	{
-		if (file_is_opened() && file_->first == filename)
+		if (file_is_opened() && file_->first == fix_slashes(filename))
 			return false;
 		changed_ = true;
-		files_.erase(filename);
+		files_.erase(fix_slashes(filename));
 	}
 	return true;
 }
@@ -703,7 +703,7 @@ bool FileContainerZip::file_open_read_whole_container()
 bool FileContainerZip::file_open_read(const std::string &filename)
 {
 	if (!is_opened() || file_is_opened()) return false;
-	file_ = files_.find(filename);
+	file_ = files_.find(fix_slashes(filename));
 	if (file_ == files_.end() || file_->second.is_directory)
 		return false;
 
@@ -727,13 +727,13 @@ bool FileContainerZip::file_open_write(const std::string &filename)
 	if (!is_opened() || file_is_opened()) return false;
 	if (!file_check_name(filename)) return false;
 
-	file_ = files_.find(filename);
+	file_ = files_.find(fix_slashes(filename));
 
 	FileInfo new_info;
 	if (file_ == files_.end())
 	{
 		// create new file
-		new_info.name = filename;
+		new_info.name = fix_slashes(filename);
 		new_info.split_name();
 		if (new_info.name_part_localname.empty()
 		 || !is_directory(new_info.name_part_directory)) return false;
@@ -769,7 +769,7 @@ bool FileContainerZip::file_open_write(const std::string &filename)
 	if (file_ == files_.end())
 	{
 		files_[new_info.name] = new_info;
-		file_ = files_.find(filename);
+		file_ = files_.find(fix_slashes(filename));
 	}
 	file_writing_ = true;
 	file_processed_size_ = 0;

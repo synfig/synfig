@@ -113,6 +113,15 @@ bool FileSystem::copy(Handle from_file_system, const std::string &from_filename,
 	return write_stream->write_whole_stream(read_stream);
 }
 
+std::string FileSystem::fix_slashes(const std::string &filename)
+{
+	std::string fixed = filename;
+	for(size_t i = 0; i < filename.size(); ++i)
+		if (fixed[i] == '\\') fixed[i] = '/';
+	return fixed;
+}
+
+
 /* === E N T R Y P O I N T ================================================= */
 
 

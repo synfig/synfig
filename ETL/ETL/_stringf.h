@@ -173,27 +173,32 @@ strscanf(const std::string &data, const char*format, ...)
 #define stratof(X) (atof((X).c_str()))
 #define stratoi(X) (atoi((X).c_str()))
 
+inline bool is_separator(char c)
+{
+	return c == ETL_DIRECTORY_SEPARATOR0 || c == ETL_DIRECTORY_SEPARATOR1;
+}
+
 inline std::string
 basename(const std::string &str)
 {
 	std::string::const_iterator iter;
 
-	if(str.size() == 1 && str[0] == ETL_DIRECTORY_SEPARATOR)
+	if(str.size() == 1 && is_separator(str[0]))
 		return str;
 
-	if(str.end()[-1]==ETL_DIRECTORY_SEPARATOR)
+	if(is_separator((&*str.end())[-1]))
 		iter=str.end()-2;
 	else
 		iter=str.end()-1;
 
 	for(;iter!=str.begin();iter--)
-		if(*iter==ETL_DIRECTORY_SEPARATOR)
+		if(is_separator(*iter))
 			break;
 
-	if (*iter==ETL_DIRECTORY_SEPARATOR)
+	if (is_separator(*iter))
 		iter++;
 
-	if(str.end()[-1]==ETL_DIRECTORY_SEPARATOR)
+	if(is_separator((&*str.end())[-1]))
 		return std::string(iter,str.end()-1);
 
 	return std::string(iter,str.end());
@@ -204,22 +209,22 @@ dirname(const std::string &str)
 {
 	std::string::const_iterator iter;
 
-	if(str.size() == 1 && str[0] == ETL_DIRECTORY_SEPARATOR)
+	if(str.size() == 1 && is_separator(str[0]))
 		return str;
 
-	if(str.end()[-1]==ETL_DIRECTORY_SEPARATOR)
+	if(is_separator((&*str.end())[-1]))
 		iter=str.end()-2;
 	else
 		iter=str.end()-1;
 
 	for(;iter!=str.begin();iter--)
-		if(*iter==ETL_DIRECTORY_SEPARATOR)
+		if(is_separator(*iter))
 			break;
 
 	if(iter==str.begin())
 	{
-	   if (*iter==ETL_DIRECTORY_SEPARATOR)
-		   return "/";
+	   if (is_separator(*iter))
+		   return std::string() + ETL_DIRECTORY_SEPARATOR;
 	   else
 		   return ".";
 	}
@@ -253,10 +258,10 @@ inline bool
 is_absolute_path(const std::string &path)
 {
 #ifdef WIN32
-	if(path.size()>=3 && path[1]==':' && (path[2]=='\\' || path[2]=='/'))
+	if(path.size()>=3 && path[1]==':' && is_separator(path[2]))
 		return true;
 #endif
-	if(!path.empty() && path[0]==ETL_DIRECTORY_SEPARATOR)
+	if(!path.empty() && is_separator(path[0]))
 		return true;
 	return false;
 }
@@ -267,11 +272,11 @@ unix_to_local_path(const std::string &path)
 	std::string ret;
 	std::string::const_iterator iter;
 	for(iter=path.begin();iter!=path.end();iter++)
+		if (is_separator(*iter))
+			ret+=ETL_DIRECTORY_SEPARATOR;
+		else
 		switch(*iter)
 		{
-		case '/':
-			ret+=ETL_DIRECTORY_SEPARATOR;
-			break;
 		case '~':
 			ret+='~';
 			break;
@@ -298,7 +303,7 @@ get_root_from_path(std::string path)
 
 	for(iter=path.begin();iter!=path.end();++iter)
 	{
-		if(*iter==ETL_DIRECTORY_SEPARATOR)
+		if(is_separator(*iter))
 			break;
 		ret+=*iter;
 	}
@@ -312,7 +317,7 @@ remove_root_from_path(std::string path)
 {
 	while(!path.empty())
 	{
-		if(path[0]==ETL_DIRECTORY_SEPARATOR)
+		if(is_separator(path[0]))
 		{
 			path.erase(path.begin());
 			return path;
@@ -332,10 +337,10 @@ cleanup_path(std::string path)
 	while(!path.empty())
 	{
 		std::string dir(get_root_from_path(path));
-		if((dir=="../" || dir=="..\\") && ret.size())
+		if((dir.size() == 3 && dir[0] == '.' && dir[1] == '.' && is_separator(dir[2])) && ret.size())
 		{
 			ret=dirname(ret);
-			if (*(ret.end()-1)!=ETL_DIRECTORY_SEPARATOR)
+			if (!is_separator(*(ret.end()-1)))
 				ret+=ETL_DIRECTORY_SEPARATOR;
 		}
 		else if((dir!="./" && dir!=".\\") && dir!=".")
@@ -345,7 +350,7 @@ cleanup_path(std::string path)
 	if (ret.size()==0)ret+='.';
 
 	// Remove any trailing directory separators
-	if(ret.size() && ret[ret.size()-1]==ETL_DIRECTORY_SEPARATOR)
+	if(ret.size() && is_separator(ret[ret.size()-1]))
 		ret.erase(ret.begin()+ret.size()-1);
 	return ret;
 }

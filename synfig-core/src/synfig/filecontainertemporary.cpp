@@ -106,10 +106,10 @@ bool FileContainerTemporary::create(const std::string &container_filename)
 	bool res
 		 = !is_opened()
 		&& (container_filename.empty() || container_->create(container_filename))
-		&& ((container_filename_ = container_filename).empty() || true)
+		&& ((container_filename_ = fix_slashes(container_filename)).empty() || true)
 		&& (is_opened_ = true);
-	if (res && !container_filename_.empty() && !is_absolute_path(container_filename_))
-		container_filename_ = absolute_path(container_filename_);
+	if (res && !container_filename_.empty() && !is_absolute_path(fix_slashes(container_filename_)))
+		container_filename_ = absolute_path(fix_slashes(container_filename_));
 	return res;
 }
 
@@ -118,10 +118,10 @@ bool FileContainerTemporary::open(const std::string &container_filename)
 	bool res
 	     = !is_opened()
 		&& container_->open(container_filename)
-		&& ((container_filename_ = container_filename).empty() || true)
+		&& ((container_filename_ = fix_slashes(container_filename)).empty() || true)
 		&& (is_opened_ = true);
-	if (res && !container_filename_.empty() && !is_absolute_path(container_filename_))
-		container_filename_ = absolute_path(container_filename_);
+	if (res && !container_filename_.empty() && !is_absolute_path(fix_slashes(container_filename_)))
+		container_filename_ = absolute_path(fix_slashes(container_filename_));
 	return res;
 }
 
@@ -130,10 +130,10 @@ bool FileContainerTemporary::open_from_history(const std::string &container_file
 	bool res
 	     = !is_opened()
 		&& container_->open_from_history(container_filename, truncate_storage_size)
-		&& ((container_filename_ = container_filename).empty() || true)
+		&& ((container_filename_ = fix_slashes(container_filename)).empty() || true)
 		&& (is_opened_ = true);
-	if (res && !container_filename_.empty() && !is_absolute_path(container_filename_))
-		container_filename_ = absolute_path(container_filename_);
+	if (res && !container_filename_.empty() && !is_absolute_path(fix_slashes(container_filename_)))
+		container_filename_ = absolute_path(fix_slashes(container_filename_));
 	return res;
 }
 
@@ -157,7 +157,7 @@ bool FileContainerTemporary::is_opened()
 bool FileContainerTemporary::is_file(const std::string &filename)
 {
 	if (!is_opened()) return false;
-	FileMap::const_iterator i = files_.find(filename);
+	FileMap::const_iterator i = files_.find(fix_slashes(filename));
 	return i == files_.end()
 		 ? container_->is_file(filename)
 		 : !i->second.is_removed && !i->second.is_directory;
@@ -167,7 +167,7 @@ bool FileContainerTemporary::is_directory(const std::string &filename)
 {
 	if (!is_opened()) return false;
 	if (filename.empty()) return true;
-	FileMap::const_iterator i = files_.find(filename);
+	FileMap::const_iterator i = files_.find(fix_slashes(filename));
 	return i == files_.end()
 		 ? container_->is_directory(filename)
 		 : !i->second.is_removed && i->second.is_directory;
@@ -181,7 +181,7 @@ bool FileContainerTemporary::directory_create(const std::string &dirname)
 	if (!container_->directory_check_name(dirname)) return false;
 
 	FileInfo info;
-	info.name = dirname;
+	info.name = fix_slashes(dirname);
 	info.split_name();
 	info.is_directory = true;
 	if (info.name_part_localname.empty()
@@ -200,7 +200,7 @@ bool FileContainerTemporary::directory_scan(const std::string &dirname, std::lis
 
 	for(FileMap::iterator i = files_.begin(); i != files_.end(); i++)
 	{
-		if (i->second.name_part_directory == dirname)
+		if (i->second.name_part_directory == fix_slashes(dirname))
 		{
 			if (i->second.is_removed)
 			{
@@ -232,18 +232,18 @@ bool FileContainerTemporary::file_remove(const std::string &filename)
 		directory_scan(filename, files);
 		if (!files.empty()) return false;
 
-		FileMap::iterator i = files_.find(filename);
+		FileMap::iterator i = files_.find(fix_slashes(filename));
 		if (i == files_.end())
 		{
-			FileInfo &info = files_[filename];
-			info.name = filename;
+			FileInfo &info = files_[fix_slashes(filename)];
+			info.name = fix_slashes(filename);
 			info.is_directory = true;
 			info.is_removed = true;
 			info.split_name();
 		}
 		else
 		{
-			FileInfo &info = files_[filename];
+			FileInfo &info = files_[fix_slashes(filename)];
 			info.is_removed = true;
 		}
 	}
@@ -251,21 +251,21 @@ bool FileContainerTemporary::file_remove(const std::string &filename)
 	// remove file
 	if (is_file(filename))
 	{
-		if (file_is_opened() && file_ == filename)
+		if (file_is_opened() && file_ == fix_slashes(filename))
 			return false;
 
-		FileMap::iterator i = files_.find(filename);
+		FileMap::iterator i = files_.find(fix_slashes(filename));
 		if (i == files_.end())
 		{
-			FileInfo &info = files_[filename];
-			info.name = filename;
+			FileInfo &info = files_[fix_slashes(filename)];
+			info.name = fix_slashes(filename);
 			info.is_directory = false;
 			info.is_removed = true;
 			info.split_name();
 		}
 		else
 		{
-			FileInfo &info = files_[filename];
+			FileInfo &info = files_[fix_slashes(filename)];
 			info.is_removed = true;
 			if (!info.tmp_filename.empty())
 			{
@@ -280,7 +280,7 @@ bool FileContainerTemporary::file_remove(const std::string &filename)
 bool FileContainerTemporary::file_open_read(const std::string &filename)
 {
 	if (!is_opened() || file_is_opened()) return false;
-	FileMap::const_iterator i = files_.find(filename);
+	FileMap::const_iterator i = files_.find(fix_slashes(filename));
 
 	if (i == files_.end())
 		file_read_stream_ = container_->get_read_stream(filename);
@@ -289,7 +289,7 @@ bool FileContainerTemporary::file_open_read(const std::string &filename)
 		file_read_stream_ = file_system_->get_read_stream(i->second.tmp_filename);
 
 	if (!file_read_stream_) return false;
-	file_ = filename;
+	file_ = fix_slashes(filename);
 	return true;
 }
 
@@ -298,14 +298,14 @@ bool FileContainerTemporary::file_open_write(const std::string &filename)
 	if (!is_opened() || file_is_opened()) return false;
 	if (!container_->file_check_name(filename)) return false;
 
-	FileMap::iterator i = files_.find(filename);
+	FileMap::iterator i = files_.find(fix_slashes(filename));
 	std::string tmp_filename;
 
 	FileInfo new_info;
 	if (i == files_.end())
 	{
 		// create new file
-		new_info.name = filename;
+		new_info.name = fix_slashes(filename);
 		new_info.split_name();
 		if (new_info.name_part_localname.empty()
 		 || !is_directory(new_info.name_part_directory)) return false;
@@ -321,7 +321,7 @@ bool FileContainerTemporary::file_open_write(const std::string &filename)
 	}
 
 	if (!file_write_stream_) return false;
-	file_ = filename;
+	file_ = fix_slashes(filename);
 	file_tmp_name_ = tmp_filename;
 	return true;
 }
@@ -371,7 +371,7 @@ bool FileContainerTemporary::save_changes(const std::string &filename, bool as_c
 
 	etl::handle< FileContainerZip > container;
 
-	std::string fname_abs = filename;
+	std::string fname_abs = fix_slashes(filename);
 	if (!is_absolute_path(fname_abs)) fname_abs = absolute_path(fname_abs);
 
 	bool save_at_place = filename.empty() || fname_abs == container_filename_;
