@@ -148,6 +148,8 @@ public:
 
 	bool embed_all();
 
+	void convert_animated_filenames(const synfig::Canvas::Handle &canvas, const synfig::String &old_path, const synfig::String &new_path);
+
 	//! Saves the instance to filename_
 	bool save();
 
