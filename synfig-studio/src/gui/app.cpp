@@ -2054,7 +2054,7 @@ App::apply_gtk_settings(bool use_dark)
 	
 	// fix checkboxes for Adwaita theme
 	gchar *theme_name;
-	g_object_get (G_OBJECT (gtk_settings), "gtk-theme-name", &theme_name);
+	g_object_get (G_OBJECT (gtk_settings), "gtk-theme-name", &theme_name, NULL);
 	if ( String(theme_name) == "Adwaita" ){
 		Glib::ustring data;
 		// Fix GtkPaned (big margin makes it hard to grab first keyframe))
