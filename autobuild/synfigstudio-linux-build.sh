@@ -1000,6 +1000,9 @@ initialize()
 					libsigc++-2.0-dev \
 					libxml++2.6-dev \
 					libboost-program-options-dev \
+					libboost-system-dev \
+					libboost-filesystem-dev \
+					libboost-chrono-dev \
 				"
 			fi
 		fi
