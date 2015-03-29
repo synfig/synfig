@@ -266,7 +266,7 @@ GroupActionManager::on_action_add()
 			group_name=(Glib::ustring)(*selected_iter->parent())[model.group_name]+'.';
 	}
 
-	group_name+=_("UnnamedSet");
+	group_name+=_("Unnamed Set");
 
 	Gtk::TreePath path(group_tree_->get_model()->on_group_added(group_name));
 
