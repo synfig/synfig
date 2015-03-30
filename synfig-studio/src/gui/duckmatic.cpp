@@ -1080,7 +1080,7 @@ Duckmatic::signal_edited_selected_ducks(bool moving)
 
 	// If we have more than 20 things to move, then display
 	// something to explain that it may take a moment
-	smart_ptr<OneMoment> wait; if(ducks.size()>20)wait.spawn();
+	//smart_ptr<OneMoment> wait; if(ducks.size()>20)wait.spawn();
 	for(iter=ducks.begin();iter!=ducks.end();++iter)
 	{
 		try
