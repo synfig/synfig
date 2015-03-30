@@ -8,7 +8,7 @@
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007 Chris Moore
 **  Copyright (c) 2008 Paul Wise
-**  Copyright (c) 2015 Denis Zdorovtsov
+**  Copyright (c) 2015 Denis Zdorovtsov, Jerome Blanchi
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -123,6 +123,53 @@ ColorSlider::adjust_color(Type type, synfig::Color &color, float amount)
 	jump_table[int(type)](color,amount);
 }
 
+void
+ColorSlider::draw_arrow(
+	const Cairo::RefPtr<Cairo::Context> &cr,
+	double x, double y,
+	double width, double height,
+	int size,
+	bool fill)
+{
+	//TODO hardcoded colors
+	Color dark(0, 0, 0);
+	Color light(1, 1, 1);
+
+	//! Upper black pointing down arrow
+	cr->set_source_rgb(dark.get_r(), dark.get_g(), dark.get_b());
+	cr->set_line_width(1.0);
+	cr->move_to(x, y);
+	cr->line_to(x - 0.5*width, y - height);
+	cr->line_to(x + 0.5*width, y - height);
+	cr->close_path();
+	if (fill)
+	{
+/*		//! Draw on outline
+		cr->fill_preserve();
+		cr->set_source_rgb(light.get_r(), light.get_g(), light.get_b());
+		cr->stroke();
+*/
+		cr->fill();
+	}else cr->stroke();
+
+	//! Bottom light pointing up arrow
+	cr->set_source_rgb(light.get_r(), light.get_g(), light.get_b());
+	cr->set_line_width(1.0);
+	cr->move_to(x, size - height);
+	cr->line_to(x - 0.5*width, size);
+	cr->line_to(x + 0.5*width, size);
+	cr->close_path();
+	if (fill)
+	{
+/*		//! Draw on outline
+		cr->fill_preserve();
+		cr->set_source_rgb(dark.get_r(), dark.get_g(), dark.get_b());
+		cr->stroke();
+*/
+		cr->fill();
+	}else cr->stroke();
+}
+
 bool
 ColorSlider::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 {
@@ -205,14 +252,6 @@ ColorSlider::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 		}
 	}
 
-	get_style_context()->render_arrow(
-		cr,
-		1.5*M_PI,
-		(int(amount*width)-height/2),
-		0,
-		height
-	);
-
     cr->set_source_rgb(1, 1, 1);
     cr->rectangle(ca.get_x()+1, ca.get_y()+1, width-3, height-3);
     cr->stroke();
@@ -220,6 +259,10 @@ ColorSlider::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
     cr->set_source_rgb(0, 0, 0);
     cr->rectangle(ca.get_x(), ca.get_y(), width-1, height-1);
     cr->stroke();
+
+    //! Draw face to face contrasted arrows
+    draw_arrow(cr, (int(amount*width)), height/2, height/2, height/2, height, 1);
+
 	return true;
 }
 

@@ -2199,15 +2199,17 @@ void Layer_Shape::curve_to_smooth(Real x2, Real y2, Real x, Real y)		//x1,y1 der
 
 // ACCELERATED RENDER FUNCTION - TRANSLATE BYTE CODE INTO FUNCTION CALLS
 
-bool Layer_Shape::render_polyspan(Surface *surface, PolySpan &polyspan,
-								Color::BlendMethod got_blend_method, Color::value_type got_amount) const
+bool Layer_Shape::render_polyspan(
+	Surface *surface,
+	PolySpan &polyspan,
+	Color::value_type amount,
+	Color::BlendMethod blend_method,
+	const Color &color,
+	bool invert,
+	bool antialias,
+	WindingStyle winding_style ) const
 {
-	Color color=param_color.get(Color());
-	bool invert =param_invert.get(bool(true));
-	bool antialias =param_antialias.get(bool(true));
-	WindingStyle winding_style=(WindingStyle)param_winding_style.get(int());
-
-	Surface::alpha_pen p(surface->begin(),got_amount,got_blend_method);
+	Surface::alpha_pen p(surface->begin(), amount, blend_method);
 	PolySpan::cover_array::iterator cur_mark = polyspan.covers.begin();
 	PolySpan::cover_array::iterator end_mark = polyspan.covers.end();
 
@@ -3301,9 +3303,43 @@ Layer_Shape::render_shape(Surface *surface,bool useblend,int /*quality*/,
 	//sort the bastards so we can render everything
 	span.sort_marks();
 
-	return render_polyspan(surface, span,
-			useblend?get_blend_method():Color::BLEND_STRAIGHT,
-			useblend?get_amount():1.0);
+	Color::value_type amount = useblend ? get_amount() : 1.0;
+	Color::BlendMethod blend_method = useblend ? get_blend_method() : Color::BLEND_STRAIGHT;
+	Color color = param_color.get(Color());
+	bool invert = param_invert.get(bool(true));
+	bool antialias = param_antialias.get(bool(true));
+	WindingStyle winding_style = (WindingStyle)param_winding_style.get(int());
+
+	if (useblend && get_blend_method() == Color::BLEND_STRAIGHT_ONTO)
+	{
+		Surface s;
+		s.set_wh(surface->get_w(), surface->get_h());
+		s.clear();
+		bool result = render_polyspan(
+			&s,
+			span,
+			1.0,
+			Color::BLEND_STRAIGHT,
+			color,
+			invert,
+			antialias,
+			winding_style );
+
+		Surface::alpha_pen p(surface->begin(), amount, Color::BLEND_STRAIGHT_ONTO);
+		s.blit_to(p, 0, 0, surface->get_w(), surface->get_h());
+
+		return result;
+	}
+
+	return render_polyspan(
+		surface,
+		span,
+		amount,
+		blend_method,
+		color,
+		invert,
+		antialias,
+		winding_style );
 }
 
 bool

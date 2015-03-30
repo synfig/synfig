@@ -208,9 +208,9 @@ studio::Instance::run_plugin(std::string plugin_path)
 				details,
 				_("Cancel"),
 				_("Proceed"),
-				synfigapp::UIInterface::RESPONSE_YES);
+				synfigapp::UIInterface::RESPONSE_OK);
 
-	if(answer == synfigapp::UIInterface::RESPONSE_YES){
+	if(answer == synfigapp::UIInterface::RESPONSE_OK){
 	
 		OneMoment one_moment;
 

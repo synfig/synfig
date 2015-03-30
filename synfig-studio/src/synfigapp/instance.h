@@ -110,6 +110,7 @@ private:
 	void update_references_in_canvas(synfig::Canvas::Handle canvas);
 	bool import_external_canvas(synfig::Canvas::Handle canvas, std::map<synfig::Canvas*, synfig::Canvas::Handle> &imported);
 	void import_external_canvases();
+	void embed_all(synfig::Canvas::Handle canvas, bool &success, bool &restart);
 
 protected:
 	Instance(etl::handle<synfig::Canvas>, etl::handle< synfig::FileContainerTemporary > container);
@@ -121,6 +122,11 @@ protected:
 public:
 	~Instance();
 
+	bool is_layer_registered_to_save(synfig::Layer::Handle layer) {
+		for(std::list<synfig::Layer::Handle>::iterator i = layers_to_save.begin(); i != layers_to_save.end(); i++)
+			if (*i == layer) return true;
+		return false;
+	}
 	void register_layer_to_save(synfig::Layer::Handle layer) { layers_to_save.push_back(layer); }
 	void unregister_layer_to_save(synfig::Layer::Handle layer)
 	{
@@ -139,6 +145,10 @@ public:
 	etl::handle<CanvasInterface> find_canvas_interface(synfig::Canvas::Handle canvas);
 
 	synfig::Canvas::Handle get_canvas()const { return canvas_; }
+
+	bool embed_all();
+
+	void convert_animated_filenames(const synfig::Canvas::Handle &canvas, const synfig::String &old_path, const synfig::String &new_path);
 
 	//! Saves the instance to filename_
 	bool save();

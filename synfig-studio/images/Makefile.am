@@ -130,6 +130,7 @@ EXTRA_DIST = \
 	layer_transform_translate_icon.sif \
 	\
 	tool_brush_icon.sif \
+	tool_cutout_icon.sif \
 	tool_spline_icon.sif \
 	tool_circle_icon.sif \
 	tool_draw_icon.sif \
@@ -305,6 +306,7 @@ IMAGES = \
 	layer_transform_translate_icon.$(EXT) \
 	\
 	tool_brush_icon.$(EXT) \
+	tool_cutout_icon.$(EXT) \
 	tool_spline_icon.$(EXT) \
 	tool_circle_icon.$(EXT) \
 	tool_draw_icon.$(EXT) \

@@ -143,6 +143,7 @@ export PKG_CONFIG_SYSTEM_INCLUDE_PATH=${MINGWPREFIX}/include
 export PKG_CONFIG_SYSTEM_LIBRARY_PATH=${MINGWPREFIX}/lib
 export CPPFLAGS=" -I${MINGWPREFIX}/include "
 export LDFLAGS=" -L${MINGWPREFIX}/lib "
+export LIBS=""
 export PATH="${MINGWPREFIX}/bin/:$PATH"
 alias convert="${MINGWPREFIX}/bin/convert"
 }
@@ -663,7 +664,7 @@ fi
 mkmlt()
 {
 PKG_NAME=mlt
-PKG_VERSION=0.9.1
+PKG_VERSION=0.9.6
 TAREXT=gz
 
 if ! pkg-config ${PKG_NAME}\+\+ --exact-version=${PKG_VERSION}  --print-errors; then
@@ -677,6 +678,11 @@ if ! pkg-config ${PKG_NAME}\+\+ --exact-version=${PKG_VERSION}  --print-errors; 
         git clone https://github.com/morevnaproject/mlt
     fi
     cd mlt
+    git reset --hard
+    git checkout master
+    git reset --hard
+    git pull
+    git clean -f -d
     [ ! -e config.cache ] || rm config.cache
     #autoreconf -i --verbose  # does this really required?
     rm -rf ${MINGWPREFIX}/lib/libmlt* || true
@@ -734,7 +740,7 @@ fi
 #}
 mkffmpeg()
 {
-    export FFMPEG_VERSION=2.2.2
+    export FFMPEG_VERSION=2.5.2
     if ! pkg-config libswscale --exact-version=${FFMPEG_VERSION}  --print-errors; then
         pushd $WORKSPACE
         [ -e ffmpeg-${FFMPEG_VERSION}-win${ARCH}-dev.7z ] || wget http://ffmpeg.zeranoe.com/builds/win${ARCH}/dev/ffmpeg-${FFMPEG_VERSION}-win${ARCH}-dev.7z
@@ -752,16 +758,18 @@ mkffmpeg()
         cp -rf ffmpeg-${FFMPEG_VERSION}-win${ARCH}-shared/presets/* ${MINGWPREFIX}/share/ffmpeg/presets/
 
 		mkdir -p ${MINGWPREFIX}/lib/pkgconfig/ || true
-		for PKG in libswscale libavformat libavdevice; do
-			cat > ${MINGWPREFIX}/lib/pkgconfig/${PKG}.pc <<EOF
+		for PKG in avcodec avutil avformat swscale avdevice; do
+			cat > ${MINGWPREFIX}/lib/pkgconfig/lib${PKG}.pc <<EOF
 prefix=${MINGWPREFIX}
 exec_prefix=${MINGWPREFIX}
 libdir=${MINGWPREFIX}/lib
 includedir=${MINGWPREFIX}/include
 
-Name: ${PKG}
+Name: lib${PKG}
 Description: FFMpeg
 Version: ${FFMPEG_VERSION}
+
+Libs: -l${PKG}
 
 EOF
 		done
@@ -879,6 +887,7 @@ $CYGWIN_SETUP \
 $CYGWIN_SETUP \
 -s http://www.mirrorservice.org/sites/sourceware.org/pub/cygwin/ \
 -P urlgrabber \
+-P rpm-devel \
 -P libglib2.0-devel \
 -P libxml2-devel \
 -P libsqlite3-devel \
@@ -892,12 +901,12 @@ $CYGWIN_SETUP \
 
 #mktoolchain
 
-echo "Building popt..."
-mknative mkpopt
+#echo "Building popt..."
+#mknative mkpopt
 echo "Building pyliblzma..."
 mknative mkpyliblzma
-echo "Building rpm..."
-mknative mkrpm
+#echo "Building rpm..."
+#mknative mkrpm
 #mknative mkurlgrabber
 echo "Building yum-metadata-parser..."
 mknative mkyum-metadata-parser
@@ -953,6 +962,7 @@ fedora-mingw-install mingw${ARCH}-libtiff
 mketl()
 {
 cd $SRCPREFIX/ETL
+[ ! -e config.cache ] || rm config.cache
 autoreconf --install --force
 ./configure \
 --prefix=${MINGWPREFIX} \
@@ -1070,7 +1080,10 @@ for file in \
    iconv.dll \
    libatk-\*.dll \
    libatkmm-1.6-1.dll \
+   libboost_chrono\*.dll \
+   libboost_filesystem\*.dll \
    libboost_program_options\*.dll \
+   libboost_system\*.dll \
    libbz2\*.dll \
    libcairo\*.dll \
    libdl.dll \

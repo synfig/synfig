@@ -699,6 +699,7 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	jack_synchronizing		(true),
 	jack_is_playing			(false),
 	jack_time				(0),
+	toggling_jack			(false),
 #endif
 
 	working_depth			(0),
@@ -1507,7 +1508,7 @@ CanvasView::create_display_bar()
 	
 	Gtk::HBox *hbox = manage(new class Gtk::HBox(false, 0));
 	hbox->pack_start(*displaybar, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0);
-	hbox->pack_start(*progressbar, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0);
+	//hbox->pack_start(*progressbar, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0);
 	hbox->pack_start(*stopbutton, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0);
 	hbox->show();
 	
@@ -4154,7 +4155,12 @@ CanvasView::on_audio_file_change(const std::string &f)
 void
 CanvasView::on_audio_offset_change(const synfig::Time &t)
 {
-	canvas_interface()->set_meta_data("audiooffset",t.get_string());
+    String s;
+    {
+    	ChangeLocale change_locale(LC_NUMERIC, "C");
+    	s = t.get_string();
+    }
+	canvas_interface()->set_meta_data("audiooffset",s);
 }
 
 void
@@ -4185,7 +4191,11 @@ CanvasView::on_audio_file_notify()
 void
 CanvasView::on_audio_offset_notify()
 {
-	Time t(get_canvas()->get_meta_data("audiooffset"),get_canvas()->rend_desc().get_frame_rate());
+	Time t;
+	{
+		ChangeLocale change_locale(LC_NUMERIC, "C");
+		t = Time(get_canvas()->get_meta_data("audiooffset"),get_canvas()->rend_desc().get_frame_rate());
+	}
 	audio->set_offset(t);
 	sound_dialog->set_offset(t);
 	disp_audio->queue_draw();
@@ -4374,7 +4384,33 @@ CanvasView::is_time_equal_to_current_frame(const synfig::Time &time, const synfi
 void
 CanvasView::toggle_jack_button()
 {
-	set_jack_enabled(!get_jack_enabled());
+	if (!toggling_jack)
+	{
+		string message;
+		string details;
+		if (get_jack_enabled())
+		{
+			message = strprintf(_("Are you sure you want to disable JACK synchronization?" ));
+			details = strprintf(_("The JACK server will remain running."));
+		} else {
+			message = strprintf(_("Are you sure you want to enable JACK synchronization?" ));
+			details = strprintf(_("This operation will launch a JACK server, if it isn't started yet."));
+		}
+		int answer = get_ui_interface()->confirmation(
+					message,
+					details,
+					_("No"),
+					_("Yes"),
+					synfigapp::UIInterface::RESPONSE_OK);
+
+		if(answer == synfigapp::UIInterface::RESPONSE_OK)
+			set_jack_enabled(!get_jack_enabled());
+		
+		// Update button state
+		toggling_jack = true;
+		jackdial->get_toggle_jackbutton()->set_active(get_jack_enabled());
+		toggling_jack = false;
+	}
 }
 
 void

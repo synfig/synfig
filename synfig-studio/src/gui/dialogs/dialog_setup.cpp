@@ -85,6 +85,7 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	toggle_restrict_radius_ducks(_("Restrict Real-Valued Handles to Top Right Quadrant")),
 	toggle_resize_imported_images(_("Scale New Imported Images to Fit Canvas")),
 	toggle_enable_experimental_features(_("Enable experimental features (restart required)")),
+	toggle_use_dark_theme(_("Use dark theme (if available)")),
 	adj_pref_x_size(Gtk::Adjustment::create(480,1,10000,1,10,0)),
 	adj_pref_y_size(Gtk::Adjustment::create(270,1,10000,1,10,0)),
 	adj_pref_fps(Gtk::Adjustment::create(24.0,1.0,100,0.1,1,0))
@@ -213,6 +214,9 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	// Misc - single_threaded
 	misc_table->attach(toggle_single_threaded, 0, 2, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 #endif
+	
+	// Misc - use dark theme
+	misc_table->attach(toggle_use_dark_theme, 0, 2, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 
 	// Misc - browser_command
 	attach_label(misc_table, _("Browser Command"), 4, xpadding, ypadding);
@@ -453,8 +457,12 @@ Dialog_Setup::on_apply_pressed()
 	// Set the resize_imported_images flag
 	App::resize_imported_images=toggle_resize_imported_images.get_active();
 	
-	// Set the resize_imported_images flag
+	// Set the experimental features flag
 	App::enable_experimental_features=toggle_enable_experimental_features.get_active();
+	
+	// Set the dark theme flag
+	App::use_dark_theme=toggle_use_dark_theme.get_active();
+	App::apply_gtk_settings(App::use_dark_theme);
 
 	// Set the browser_command textbox
 	App::browser_command=textbox_browser_command.get_text();
@@ -637,8 +645,11 @@ Dialog_Setup::refresh()
 	// Refresh the status of the resize_imported_images flag
 	toggle_resize_imported_images.set_active(App::resize_imported_images);
 	
-	// Refresh the status of the resize_imported_images flag
+	// Refresh the status of the experimental features flag
 	toggle_enable_experimental_features.set_active(App::enable_experimental_features);
+	
+	// Refresh the status of the theme flag
+	toggle_use_dark_theme.set_active(App::use_dark_theme);
 
 	// Refresh the browser_command textbox
 	textbox_browser_command.set_text(App::browser_command);

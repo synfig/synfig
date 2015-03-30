@@ -52,12 +52,23 @@ namespace studio {
 
 Widget_Link::Widget_Link(const std::string &tlt_inactive, const std::string &tlt_active)
 {
-	Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon");
-	Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-utils_chain_link_off"), iconsize));
+	const Glib::RefPtr<Gtk::StyleContext> context = get_style_context();
 
-	icon->set_padding(0,0);
-	icon->show();
-	add(*icon);
+	// hardfixed icon size. chain icon is not a square but a rectangle.
+	Glib::RefPtr<Gtk::IconSet> chain_icon = Gtk::IconSet::lookup_default(Gtk::StockID("synfig-utils_chain_link_off"));
+	Glib::RefPtr<Gdk::Pixbuf> chain_icon_pixbuff = chain_icon->render_icon_pixbuf(context, (Gtk::IconSize)-1);
+	Glib::RefPtr<Gdk::Pixbuf> chain_icon_pixbuff_scaled = chain_icon_pixbuff->scale_simple(16, 32, Gdk::INTERP_BILINEAR);
+	icon_off_ = manage(new Gtk::Image(chain_icon_pixbuff_scaled));
+
+	chain_icon = Gtk::IconSet::lookup_default(Gtk::StockID("synfig-utils_chain_link_on"));
+	chain_icon_pixbuff_scaled = chain_icon->render_icon_pixbuf(context, (Gtk::IconSize)-1)->scale_simple(16, 32, Gdk::INTERP_BILINEAR);
+	icon_on_ = manage(new Gtk::Image(chain_icon_pixbuff_scaled));
+
+	icon_off_->set_padding(0,0);
+	icon_on_->set_padding(0,0);
+
+	icon_off_->show();
+	add(*icon_off_);
 	set_relief(Gtk::RELIEF_NONE);
 
 	tooltip_inactive_ = tlt_inactive;
@@ -73,22 +84,20 @@ Widget_Link::~Widget_Link() {
 
 void Widget_Link::on_toggled()
 {
-	Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon");
 	Gtk::Image *icon;
 
 	if(get_active())
 	{
-		icon=manage(new Gtk::Image(Gtk::StockID("synfig-utils_chain_link_on"),iconsize));
+		icon= icon_on_;
 		set_tooltip_text(tooltip_active_);
 	}
 	else
 	{
-		icon=manage(new Gtk::Image(Gtk::StockID("synfig-utils_chain_link_off"),iconsize));
+		icon=icon_off_;
 		set_tooltip_text(tooltip_inactive_);
 	}
 
 	remove();
 	add(*icon);
-	icon->set_padding(0,0);
 	icon->show();
 }

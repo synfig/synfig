@@ -19,7 +19,8 @@ synfig_SOURCES = \
 	named_type.h \
 	definitions.h \
 	progress.h \
-	renderprogress.h \
+	renderprogress.h   \
+	renderprogress.cpp \
 	job.h \
 	synfigtoolexception.h \
 	printing_functions.h \
@@ -28,6 +29,7 @@ synfig_SOURCES = \
 	optionsprocessor.cpp \
 	joblistprocessor.h \
 	joblistprocessor.cpp \
+	definitions.cpp \
 	main.cpp
 
 synfig_LDADD = \
@@ -35,7 +37,10 @@ synfig_LDADD = \
 	@SYNFIG_LIBS@ \
 	@OPENEXR_HALF_LIBS@ \
 	@BOOST_LDFLAGS@ \
-	@BOOST_PROGRAM_OPTIONS_LIB@
+	@BOOST_PROGRAM_OPTIONS_LIB@ \
+	@BOOST_SYSTEM_LIB@ \
+	@BOOST_FILESYSTEM_LIB@ \
+	@BOOST_CHRONO_LIB@
 
 synfig_CXXFLAGS = \
 	@SYNFIG_CFLAGS@

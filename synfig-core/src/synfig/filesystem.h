@@ -158,8 +158,10 @@ namespace synfig
 
 		inline bool is_exists(const std::string filename) { return is_file(filename) || is_directory(filename); }
 
-		Identifier get_identifier(const std::string filename) { return Identifier(this, filename); }
+		Identifier get_identifier(const std::string &filename) { return Identifier(this, filename); }
 		static bool copy(Handle from_file_system, const std::string &from_filename, Handle to_file_system, const std::string &to_filename);
+
+		static std::string fix_slashes(const std::string &filename);
 	};
 
 }

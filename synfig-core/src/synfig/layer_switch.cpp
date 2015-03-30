@@ -129,6 +129,8 @@ Layer_Switch::get_current_layer()const
 void
 Layer_Switch::apply_z_range_to_params(ContextParams &cp)const
 {
+	if (optimized()) return; // z_range already applied while optimizxation
+
 	Layer::Handle layer = get_current_layer();
 	if (layer) {
 		cp.z_range=true;

@@ -39,6 +39,7 @@
 #include <synfig/valuenode_composite.h>
 
 #include <synfigapp/general.h>
+#include <zconf.h>
 
 #endif
 
@@ -117,15 +118,35 @@ Action::ValueDescLink::set_param(const synfig::String& name, const Action::Param
 		if(value_desc.is_value_node() && value_desc.parent_is_linkable_value_node())
 		{
 			synfig::ValueNode_Composite::Handle compo(synfig::ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node()));
-			if(compo && compo->get_type() == type_width_point)
+			if(compo)
 			{
-				synfigapp::Action::Param param(synfigapp::ValueDesc(compo, compo->get_link_index_from_name("position")));
-				return set_param("value_desc", param);
-			}
-			if(compo && compo->get_type() == type_bline_point)
-			{
-				synfigapp::Action::Param param(synfigapp::ValueDesc(compo, compo->get_link_index_from_name("point")));
-				return set_param("value_desc", param);
+				String param_name;
+				if (!value_desc.get_sub_name().empty())
+				{
+					LinkableValueNode::Vocab vocab = compo->get_children_vocab();
+					for(LinkableValueNode::Vocab::const_iterator i = vocab.begin(); i != vocab.end(); ++i)
+						if (i->get_name() == value_desc.get_sub_name())
+							param_name = value_desc.get_sub_name();
+				}
+				
+				//! \todo these check may be unused 
+				if (param_name.empty() && compo->get_type() == type_width_point)
+					param_name = "position";
+				if (param_name.empty() && compo->get_type() == type_bline_point)
+					param_name = "point";
+				
+				if ( compo->get_type() == type_bline_point
+				  && param_name == "t2"
+				  && (*compo)(time).get(BLinePoint()).get_merge_tangent_both())
+				{
+					param_name = "t1";
+				}
+				
+				if (!param_name.empty())
+				{
+					synfigapp::Action::Param param(synfigapp::ValueDesc(compo, compo->get_link_index_from_name(param_name)));
+					return set_param("value_desc", param);
+				}
 			}
 		}
 

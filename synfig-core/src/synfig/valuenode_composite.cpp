@@ -707,7 +707,7 @@ ValueNode_Composite::get_children_vocab_vfunc()const
 		);
 		ret.push_back(ParamDesc(ValueBase(),"split_radius")
 			.set_local_name(_("Radius Split"))
-			.set_description(_("When checked, tangent's radius are independent"))
+			.set_description(_("When checked, tangent's radii are independent"))
 		);
 		ret.push_back(ParamDesc(ValueBase(),"split_angle")
 			.set_local_name(_("Angle Split"))

@@ -805,7 +805,9 @@ StatePolygon_Context::run()
 
 	if (get_layer_polygon_flag())
 	{
+		egress_on_selection_change=false;
 		layer=get_canvas_interface()->add_layer_to("polygon",canvas,depth);
+		egress_on_selection_change=true;
 		if (!layer)
 		{
 			get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
@@ -882,7 +884,9 @@ StatePolygon_Context::run()
 	{
 		synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
 
+		egress_on_selection_change=false;
 		Layer::Handle layer(get_canvas_interface()->add_layer_to("curve_gradient",canvas,depth));
+		egress_on_selection_change=true;
 		if (!layer)
 		{
 			get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
@@ -953,7 +957,9 @@ StatePolygon_Context::run()
 	{
 		synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
 
+		egress_on_selection_change=false;
 		Layer::Handle layer(get_canvas_interface()->add_layer_to("plant",canvas,depth));
+		egress_on_selection_change=true;
 		if (!layer)
 		{
 			get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
@@ -1021,7 +1027,9 @@ StatePolygon_Context::run()
 	{
 		synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
 
+		egress_on_selection_change=false;
 		Layer::Handle layer(get_canvas_interface()->add_layer_to("region",canvas,depth));
+		egress_on_selection_change=true;
 		if (!layer)
 		{
 			get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
@@ -1097,7 +1105,9 @@ StatePolygon_Context::run()
 	{
 		synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
 
+		egress_on_selection_change=false;
 		Layer::Handle layer(get_canvas_interface()->add_layer_to("outline",canvas,depth));
+		egress_on_selection_change=true;
 		if (!layer)
 		{
 			get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
@@ -1174,7 +1184,9 @@ StatePolygon_Context::run()
 	{
 		synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
 
+		egress_on_selection_change=false;
 		Layer::Handle layer(get_canvas_interface()->add_layer_to("advanced_outline",canvas,depth));
+		egress_on_selection_change=true;
 		if (!layer)
 		{
 			get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));

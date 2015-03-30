@@ -59,6 +59,7 @@
 #include <synfig/target_scanline.h>
 #include "actions/valuedescexport.h"
 #include "actions/layerparamset.h"
+#include "actions/layerembed.h"
 #include <map>
 
 #include "general.h"
@@ -407,6 +408,95 @@ void Instance::save_surface(const synfig::Surface &surface, const synfig::String
 	FileSystemNative::instance()->file_remove(tmpfile);
 }
 
+void
+Instance::embed_all(synfig::Canvas::Handle canvas, bool &success, bool &restart) {
+	etl::handle<CanvasInterface> canvas_interface = find_canvas_interface(canvas);
+
+	Action::ParamList paramList;
+	paramList.add("canvas",canvas);
+	paramList.add("canvas_interface",canvas_interface);
+
+	for(synfig::Canvas::iterator i = canvas->begin(); i != canvas->end(); ++i) {
+		// process layer
+		paramList.remove_all("layer").add("layer",*i);
+		if (Action::LayerEmbed::is_candidate(paramList)) {
+			Action::Handle action(Action::LayerEmbed::create());
+			if (action) {
+				action->set_param_list(paramList);
+				if(action->is_ready()) {
+					if(perform_action(action)) {
+						restart = true;
+						return;
+					}
+				}
+			}
+			success = false;
+		}
+
+		// process sub-canvas
+		etl::handle<Layer_PasteCanvas> layer_pastecanvas =
+			etl::handle<Layer_PasteCanvas>::cast_dynamic(*i);
+		if (layer_pastecanvas) {
+			synfig::Canvas::Handle sub_canvas = layer_pastecanvas->get_sub_canvas();
+			if (sub_canvas) {
+				embed_all(sub_canvas, success, restart);
+				if (restart) return;
+			}
+		}
+	}
+}
+
+
+bool
+Instance::embed_all() {
+	bool success = true;
+	bool restart = true;
+	while(restart) {
+		restart = false;
+		embed_all(get_canvas(), success, restart);
+	}
+	return success;
+}
+
+//! make relative filenames from animated valuenodes
+void Instance::convert_animated_filenames(const Canvas::Handle &canvas, const synfig::String &old_path, const synfig::String &new_path)
+{
+	for(Canvas::iterator i = canvas->begin(); i != canvas->end(); ++i)
+	{
+		const Layer::DynamicParamList &dynamic_param_list = (*i)->dynamic_param_list();
+		Layer::DynamicParamList::const_iterator j = dynamic_param_list.find("filename");
+		if (j != dynamic_param_list.end())
+		{
+			ValueNode_Animated::Handle valuenode_animated = ValueNode_Animated::Handle::cast_dynamic(j->second);
+			if (valuenode_animated)
+			{
+				WaypointList &waypoint_list = valuenode_animated->editable_waypoint_list();
+				for(WaypointList::iterator k = waypoint_list.begin(); k != waypoint_list.end(); ++k)
+				{
+					ValueNode_Const::Handle valuenode_const = ValueNode_Const::Handle::cast_dynamic(k->get_value_node());
+					if (valuenode_const && valuenode_const->get_type() == type_string)
+					{
+						String s = valuenode_const->get_value().get(String());
+						if (!s.empty() && s[0] != '#')
+						{
+							warning(old_path);
+							warning(new_path);
+							if (!is_absolute_path(s) && !old_path.empty()) s = old_path + ETL_DIRECTORY_SEPARATOR + s;
+							s = relative_path(new_path, s);
+							valuenode_const->set_value(s);
+						}
+					}
+				}
+			}
+		}
+
+		etl::handle<Layer_PasteCanvas> layer_paste_canvas = etl::handle<Layer_PasteCanvas>::cast_dynamic(*i);
+		if (layer_paste_canvas && layer_paste_canvas->get_sub_canvas() && !layer_paste_canvas->get_sub_canvas()->is_root())
+			convert_animated_filenames(Canvas::Handle(layer_paste_canvas->get_sub_canvas()), old_path, new_path);
+	}
+
+}
+
 bool
 Instance::save()
 {
@@ -416,12 +506,16 @@ Instance::save()
 bool
 Instance::save_as(const synfig::String &file_name)
 {
+	if (filename_extension(file_name) == ".sfg") embed_all();
+
 	save_canvas_into_container_ = false;
 	bool embed_data = false;
 	bool extract_data = false;
 	std::string canvas_filename = file_name;
 
-	// save all layers
+	convert_animated_filenames(get_canvas(), absolute_path(get_canvas()->get_file_path()), absolute_path(dirname(file_name)));
+
+	// save bitmaps
 	std::set<Layer::Handle> layers_to_save_set;
 	for(std::list<Layer::Handle>::iterator i = layers_to_save.begin(); i != layers_to_save.end(); i++)
 		layers_to_save_set.insert(*i);

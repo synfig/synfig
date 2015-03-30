@@ -55,6 +55,7 @@
 #include <gtkmm/uimanager.h>
 #include <gtkmm/textview.h>
 #include <gtkmm/filefilter.h>
+#include <gtkmm/cssprovider.h>
 
 #include <glibmm/main.h>
 #include <glibmm/thread.h>
@@ -96,6 +97,7 @@
 #include "states/state_normal.h"
 #include "states/state_mirror.h"
 #include "states/state_draw.h"
+#include "states/state_lasso.h"
 #include "states/state_fill.h"
 #include "states/state_bline.h"
 #include "states/state_brush.h"
@@ -290,6 +292,7 @@ bool studio::App::use_colorspace_gamma=true;
 bool studio::App::restrict_radius_ducks=true;
 bool studio::App::resize_imported_images=false;
 bool studio::App::enable_experimental_features=false;
+bool studio::App::use_dark_theme=false;
 String studio::App::custom_filename_prefix(DEFAULT_FILENAME_PREFIX);
 int studio::App::preferred_x_size=480;
 int studio::App::preferred_y_size=270;
@@ -549,6 +552,11 @@ public:
 				value=strprintf("%i",(int)App::enable_experimental_features);
 				return true;
 			}
+			if(key=="use_dark_theme")
+			{
+				value=strprintf("%i",(int)App::use_dark_theme);
+				return true;
+			}
 			if(key=="browser_command")
 			{
 				value=App::browser_command;
@@ -697,6 +705,12 @@ public:
 				App::enable_experimental_features=i;
 				return true;
 			}
+			if(key=="use_dark_theme")
+			{
+				int i(atoi(value.c_str()));
+				App::use_dark_theme=i;
+				return true;
+			}
 			if(key=="browser_command")
 			{
 				App::browser_command=value;
@@ -791,6 +805,7 @@ public:
 		ret.push_back("restrict_radius_ducks");
 		ret.push_back("resize_imported_images");
 		ret.push_back("enable_experimental_features");
+		ret.push_back("use_dark_theme");
 		ret.push_back("browser_command");
 		ret.push_back("brushes_path");
 		ret.push_back("custom_filename_prefix");
@@ -1373,7 +1388,8 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		get_ui_interface()->error(_("Failed to initialize synfig!"));
 		throw;
 	}
-
+	
+	
 	// add the preferences to the settings
 	synfigapp::Main::settings().add_domain(&_preferences,"pref");
 
@@ -1389,6 +1405,9 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		{
 			Glib::setenv ("LANGUAGE",  App::ui_language.c_str(), 1);
 		}
+		
+		load_settings("pref.use_dark_theme");
+		App::apply_gtk_settings(App::use_dark_theme);
 
 		// Set experimental features
 		load_settings("pref.enable_experimental_features");
@@ -1549,7 +1568,8 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 
 		/* bline tools */
 		state_manager->add_state(&state_bline);
-		if(!getenv("SYNFIG_DISABLE_DRAW"   )) state_manager->add_state(&state_draw); // Enabled for now.  Let's see whether they're good enough yet.
+		if(!getenv("SYNFIG_DISABLE_DRAW"   )) state_manager->add_state(&state_draw ); // Enabled for now.  Let's see whether they're good enough yet.
+                state_manager->add_state(&state_lasso); // Enabled for now.  Let's see whether they're good enough yet.
 		if(!getenv("SYNFIG_DISABLE_WIDTH"  )) state_manager->add_state(&state_width); // Enabled since 0.61.09
 		state_manager->add_state(&state_fill);
 		state_manager->add_state(&state_eyedrop);
@@ -2020,6 +2040,36 @@ App::restore_default_settings()
 	synfigapp::Main::settings().set_value("pref.enable_mainwin_menubar", "1");
 }
 
+void
+App::apply_gtk_settings(bool use_dark)
+{
+	GtkSettings *gtk_settings;
+	gtk_settings = gtk_settings_get_default ();
+	
+	// dark theme
+	g_object_set (G_OBJECT (gtk_settings), "gtk-application-prefer-dark-theme", use_dark, NULL);
+	
+	// enable menu icons
+	g_object_set (G_OBJECT (gtk_settings), "gtk-menu-images", TRUE, NULL);
+	
+	// fix checkboxes for Adwaita theme
+	gchar *theme_name;
+	g_object_get (G_OBJECT (gtk_settings), "gtk-theme-name", &theme_name, NULL);
+	if ( String(theme_name) == "Adwaita" ){
+		Glib::ustring data;
+		// Fix GtkPaned (big margin makes it hard to grab first keyframe))
+		data = "GtkPaned { margin: 2px; }";
+		//Fix #810: Insetsetive context menus on OSX
+		data += ".window-frame, .window-frame:backdrop { margin: 0; }";
+		Glib::RefPtr<Gtk::CssProvider> css = Gtk::CssProvider::create();
+		if(not css->load_from_data(data)) {
+			synfig::info("Failed to load css rules.");
+		}
+		Glib::RefPtr<Gdk::Screen> screen = Gdk::Screen::get_default();
+		Gtk::StyleContext::add_provider_for_screen(screen,css, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+	}
+}
+
 bool
 App::shutdown_request(GdkEventAny*)
 {
@@ -2138,7 +2188,7 @@ App::dialog_open_file(const std::string &title, std::string &filename, std::stri
 	// info("App::dialog_open_file('%s', '%s', '%s')", title.c_str(), filename.c_str(), preference.c_str());
 	// TODO: Win32 native dialod not ready yet
 #ifdef USE_WIN32_FILE_DIALOGS
-	static TCHAR szFilter[] = TEXT ("All Files (*.*)\0*.*\0\0") ;
+	static TCHAR szFilter[] = TEXT (_("All Files (*.*)\0*.*\0\0")) ;
 
 	GdkWindow *gdkWinPtr=toolbox->get_window()->gobj();
 	HINSTANCE hInstance=static_cast<HINSTANCE>(GetModuleHandle(NULL));
@@ -2198,7 +2248,7 @@ App::dialog_open_file(const std::string &title, std::string &filename, std::stri
 	// 0 All supported files
 	// 0.1 Synfig documents. sfg is not supported to import
 	Glib::RefPtr<Gtk::FileFilter> filter_supported = Gtk::FileFilter::create();
-	filter_supported->set_name("All supported files");
+	filter_supported->set_name(_("All supported files"));
 	filter_supported->add_mime_type("application/x-sif");
 	filter_supported->add_pattern("*.sif");
 	filter_supported->add_pattern("*.sifz");
@@ -2207,7 +2257,7 @@ App::dialog_open_file(const std::string &title, std::string &filename, std::stri
 	filter_supported->add_mime_type("image/jpeg");
 	filter_supported->add_mime_type("image/jpg");
 	filter_supported->add_mime_type("image/bmp");
-	filter_supported->add_mime_type("image/svg");
+	filter_supported->add_mime_type("image/svg+xml");
 	filter_supported->add_pattern("*.png");
 	filter_supported->add_pattern("*.jpeg");
 	filter_supported->add_pattern("*.jpg");
@@ -2225,18 +2275,19 @@ App::dialog_open_file(const std::string &title, std::string &filename, std::stri
 	// Sub fileters
 	// 1 Synfig documents. sfg is not supported to import
 	Glib::RefPtr<Gtk::FileFilter> filter_synfig = Gtk::FileFilter::create();
-	filter_synfig->set_name("Synfig files (*.sif, *.sifz)");
+	filter_synfig->set_name(_("Synfig files (*.sif, *.sifz)"));
 	filter_synfig->add_mime_type("application/x-sif");
 	filter_synfig->add_pattern("*.sif");
 	filter_synfig->add_pattern("*.sifz");
 
 	// 2.1 Image files
 	Glib::RefPtr<Gtk::FileFilter> filter_image = Gtk::FileFilter::create();
-	filter_image->set_name("Images (*.png, *.jpeg, *.bmp, *.svg)");
+	filter_image->set_name(_("Images (*.png, *.jpeg, *.bmp, *.svg)"));
 	filter_image->add_mime_type("image/png");
 	filter_image->add_mime_type("image/jpeg");
 	filter_image->add_mime_type("image/jpg");
 	filter_image->add_mime_type("image/bmp");
+	filter_image->add_mime_type("image/svg+xml");
 	filter_image->add_pattern("*.png");
 	filter_image->add_pattern("*.jpeg");
 	filter_image->add_pattern("*.jpg");
@@ -2245,12 +2296,12 @@ App::dialog_open_file(const std::string &title, std::string &filename, std::stri
 
 	// 2.2 Image sequence/list files
 	Glib::RefPtr<Gtk::FileFilter> filter_image_list = Gtk::FileFilter::create();
-	filter_image_list->set_name("Image sequence files(*.lst)");
+	filter_image_list->set_name(_("Image sequence files(*.lst)"));
 	filter_image_list->add_pattern("*.lst");
 
 	// 3 Audio files
 	Glib::RefPtr<Gtk::FileFilter> filter_audio = Gtk::FileFilter::create();
-	filter_audio->set_name("Audio (*.ogg, *.mp3, *.wav)");
+	filter_audio->set_name(_("Audio (*.ogg, *.mp3, *.wav)"));
 	filter_audio->add_mime_type("audio/x-vorbis+ogg");
 	filter_audio->add_mime_type("audio/mpeg");
 	filter_audio->add_mime_type("audio/x-wav");
@@ -2260,7 +2311,7 @@ App::dialog_open_file(const std::string &title, std::string &filename, std::stri
 
 	// 4 Any files
 	Glib::RefPtr<Gtk::FileFilter> filter_any = Gtk::FileFilter::create();
-	filter_any->set_name("Any files");
+	filter_any->set_name(_("Any files"));
 	filter_any->add_pattern("*");
 
 	dialog->add_filter(filter_supported);
@@ -2311,7 +2362,7 @@ App::dialog_open_file_spal(const std::string &title, std::string &filename, std:
 
 	// show only Synfig color palette file (*.spal)
 	Glib::RefPtr<Gtk::FileFilter> filter_spal = Gtk::FileFilter::create();
-	filter_spal->set_name("Synfig palette files (*.spal)");
+	filter_spal->set_name(_("Synfig palette files (*.spal)"));
 	filter_spal->add_pattern("*.spal");
 	dialog->add_filter(filter_spal);
 
@@ -2354,9 +2405,14 @@ App::dialog_open_file_image(const std::string &title, std::string &filename, std
 
 	// show only images
 	Glib::RefPtr<Gtk::FileFilter> filter_image = Gtk::FileFilter::create();
-	filter_image->set_name("Images and sequence files (*.png, *.jpeg, *.bmp, *.svg, *.list)");
+	filter_image->set_name(_("Images and sequence files (*.png, *.jpg, *.jpeg, *.bmp, *.svg, *.lst)"));
+	filter_image->add_mime_type("image/png");
+	filter_image->add_mime_type("image/jpeg");
+	filter_image->add_mime_type("image/jpg");
+	filter_image->add_mime_type("image/bmp");
+	filter_image->add_mime_type("image/svg+xml");
 	filter_image->add_pattern("*.png");
-	filter_image->add_pattern("*.peg");
+	filter_image->add_pattern("*.jpeg");
 	filter_image->add_pattern("*.jpg");
 	filter_image->add_pattern("*.bmp");
 	filter_image->add_pattern("*.svg");
@@ -2365,7 +2421,7 @@ App::dialog_open_file_image(const std::string &title, std::string &filename, std
 
 	// Any files
 	Glib::RefPtr<Gtk::FileFilter> filter_any = Gtk::FileFilter::create();
-	filter_any->set_name("Any files");
+	filter_any->set_name(_("Any files"));
 	filter_any->add_pattern("*");
 	dialog->add_filter(filter_any);
 
@@ -2408,7 +2464,7 @@ App::dialog_open_file_audio(const std::string &title, std::string &filename, std
 
 	// Audio files
 	Glib::RefPtr<Gtk::FileFilter> filter_audio = Gtk::FileFilter::create();
-	filter_audio->set_name("Audio (*.ogg, *.mp3, *.wav)");
+	filter_audio->set_name(_("Audio (*.ogg, *.mp3, *.wav)"));
 	filter_audio->add_mime_type("audio/x-vorbis+ogg");
 	filter_audio->add_mime_type("audio/mpeg");
 	filter_audio->add_mime_type("audio/x-wav");
@@ -2419,7 +2475,7 @@ App::dialog_open_file_audio(const std::string &title, std::string &filename, std
 
 	// Any files
 	Glib::RefPtr<Gtk::FileFilter> filter_any = Gtk::FileFilter::create();
-	filter_any->set_name("Any files");
+	filter_any->set_name(_("Any files"));
 	filter_any->add_pattern("*");
 	dialog->add_filter(filter_any);
 
@@ -2441,6 +2497,12 @@ App::dialog_open_file_audio(const std::string &title, std::string &filename, std
 	return false;
 }
 
+void
+on_open_dialog_with_history_selection_changed(Gtk::FileChooserDialog *dialog, Gtk::Button* history_button)
+{
+	// activate the history button when something is selected
+	history_button->set_sensitive(!dialog->get_filename().empty());
+}
 
 bool
 App::dialog_open_file_with_history_button(const std::string &title, std::string &filename, bool &show_history, std::string preference)
@@ -2450,7 +2512,7 @@ App::dialog_open_file_with_history_button(const std::string &title, std::string 
 // TODO: Win32 native dialog not ready yet
 //#ifdef USE_WIN32_FILE_DIALOGS
 #if 0
-	static TCHAR szFilter[] = TEXT ("All Files (*.*)\0*.*\0\0") ;
+	static TCHAR szFilter[] = TEXT (_("All Files (*.*)\0*.*\0\0")) ;
 
 	GdkWindow *gdkWinPtr=toolbox->get_window()->gobj();
 	HINSTANCE hInstance=static_cast<HINSTANCE>(GetModuleHandle(NULL));
@@ -2506,21 +2568,21 @@ App::dialog_open_file_with_history_button(const std::string &title, std::string 
 	dialog->set_current_folder(prev_path);
 	dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
 	dialog->add_button(Gtk::Stock::OPEN,   Gtk::RESPONSE_ACCEPT);
-	dialog->add_button(_("Open history"), RESPONSE_ACCEPT_WITH_HISTORY);
+	Gtk::Button* history_button = dialog->add_button(_("Open history"), RESPONSE_ACCEPT_WITH_HISTORY);
 	// TODO: the Open history button should be file type sensitive one.
 	dialog->set_response_sensitive(RESPONSE_ACCEPT_WITH_HISTORY, true);
 
 	// File filters
 	// Synfig Documents
 	Glib::RefPtr<Gtk::FileFilter> filter_supported = Gtk::FileFilter::create();
-	filter_supported->set_name("Synfig files (*.sif, *.sifz, *.sfg)");
+	filter_supported->set_name(_("Synfig files (*.sif, *.sifz, *.sfg)"));
 	filter_supported->add_mime_type("application/x-sif");
 	filter_supported->add_pattern("*.sif");
 	filter_supported->add_pattern("*.sifz");
 	filter_supported->add_pattern("*.sfg");
 	// Any files
 	Glib::RefPtr<Gtk::FileFilter> filter_any = Gtk::FileFilter::create();
-	filter_any->set_name("Any files");
+	filter_any->set_name(_("Any files"));
 	filter_any->add_pattern("*");
 
 	dialog->add_filter(filter_supported);
@@ -2533,6 +2595,9 @@ App::dialog_open_file_with_history_button(const std::string &title, std::string 
 	else
 		dialog->set_filename(prev_path + ETL_DIRECTORY_SEPARATOR + filename);
 
+	// this ptr is't available to a static member fnc, connect to global function.
+	sigc::connection connection_sc = dialog->signal_selection_changed().connect(sigc::bind(sigc::ptr_fun(on_open_dialog_with_history_selection_changed), dialog, history_button));
+
 	int response = dialog->run();
 	if (response == Gtk::RESPONSE_ACCEPT || response == RESPONSE_ACCEPT_WITH_HISTORY) {
 		filename = dialog->get_filename();
@@ -2543,6 +2608,7 @@ App::dialog_open_file_with_history_button(const std::string &title, std::string 
 		return true;
 	}
 
+	connection_sc.disconnect();
 	delete dialog;
 	return false;
 #endif   // not USE_WIN32_FILE_DIALOGS
@@ -2555,7 +2621,7 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 	// info("App::dialog_save_file('%s', '%s', '%s')", title.c_str(), filename.c_str(), preference.c_str());
 
 #if USE_WIN32_FILE_DIALOGS
-	static TCHAR szFilter[] = TEXT ("All Files (*.*)\0*.*\0\0") ;
+	static TCHAR szFilter[] = TEXT (_("All Files (*.*)\0*.*\0\0")) ;
 
 	GdkWindow *gdkWinPtr=toolbox->get_window()->gobj();
 	HINSTANCE hInstance=static_cast<HINSTANCE>(GetModuleHandle(NULL));
@@ -2608,7 +2674,7 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 
 	// file type filters
 	Glib::RefPtr<Gtk::FileFilter> filter_sif = Gtk::FileFilter::create();
-	filter_sif->set_name("Uncompressed Synfig file(*.sif)");
+	filter_sif->set_name(_("Uncompressed Synfig file(*.sif)"));
 
 	// sif share same mime type "application/x-sif" with sifz, so it will mixed .sif and .sifz files. Use only
 	// pattern ("*.sif") for sif file format should be oK.
@@ -2616,11 +2682,11 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 	filter_sif->add_pattern("*.sif");
 
 	Glib::RefPtr<Gtk::FileFilter> filter_sifz = Gtk::FileFilter::create();
-	filter_sifz->set_name("Compressed Synfig file(*.sifz)");
+	filter_sifz->set_name(_("Compressed Synfig file(*.sifz)"));
 	filter_sifz->add_pattern("*.sifz");
 
 	Glib::RefPtr<Gtk::FileFilter> filter_sfg = Gtk::FileFilter::create();
-	filter_sfg->set_name("Container format file(*.sfg)");
+	filter_sfg->set_name(_("Container format file(*.sfg)"));
 	filter_sfg->add_pattern("*.sfg");
 
 	dialog->set_current_folder(prev_path);
@@ -2636,7 +2702,9 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 	{
 		file_type_enum = manage(new Widget_Enum());
 		file_type_enum->set_param_desc(ParamDesc().set_hint("enum")
-				.add_enum_value(synfig::RELEASE_VERSION_0_65_0, "0.65.0", strprintf("0.65.0 (%s)", _("current")))
+				.add_enum_value(synfig::RELEASE_VERSION_1_0, "1.0", strprintf("1.0 (%s)", _("current")))
+				.add_enum_value(synfig::RELEASE_VERSION_0_64_3, "0.64.3", "0.64.3")
+				.add_enum_value(synfig::RELEASE_VERSION_0_64_2, "0.64.2", "0.64.2")
 				.add_enum_value(synfig::RELEASE_VERSION_0_64_1, "0.64.1", "0.64.1")
 				.add_enum_value(synfig::RELEASE_VERSION_0_64_0, "0.64.0", "0.64.0")
 				.add_enum_value(synfig::RELEASE_VERSION_0_63_04, "0.63.05", "0.63.05")
@@ -2738,7 +2806,7 @@ App::dialog_save_file_spal(const std::string &title, std::string &filename, std:
 
 	// file type filters
 	Glib::RefPtr<Gtk::FileFilter> filter_spal = Gtk::FileFilter::create();
-	filter_spal->set_name("Synfig palette files(*.spal)");
+	filter_spal->set_name(_("Synfig palette files(*.spal)"));
 	filter_spal->add_pattern("*.spal");
 
 	dialog->set_current_folder(prev_path);

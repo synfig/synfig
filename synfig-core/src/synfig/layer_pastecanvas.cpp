@@ -81,7 +81,6 @@ public:
 Layer_PasteCanvas::Layer_PasteCanvas():
 	param_origin(Point()),
 	param_transformation(Transformation()),
-	param_enable_transformation(ValueBase(true)),
 	param_time_offset (Time(0)),
 	depth(0),
 	extra_reference(false)
@@ -134,11 +133,6 @@ Layer_PasteCanvas::get_param_vocab()const
 		.set_description(_("Position, rotation, skew and scale"))
 	);
 
-	ret.push_back(ParamDesc("enable_transformation")
-		.set_local_name(_("Enable Transformation"))
-		.set_description(_("Enables or disables transformation"))
-	);
-
 	ret.push_back(ParamDesc("canvas")
 		.set_local_name(_("Canvas"))
 		.set_description(_("Group content"))
@@ -184,7 +178,6 @@ Layer_PasteCanvas::set_param(const String & param, const ValueBase &value)
 {
 	IMPORT_VALUE(param_origin);
 	IMPORT_VALUE(param_transformation);
-	IMPORT_VALUE(param_enable_transformation);
 
 	// IMPORT(canvas);
 	if(param=="canvas" && value.can_get(Canvas::Handle()))
@@ -293,7 +286,6 @@ Layer_PasteCanvas::get_param(const String& param)const
 {
 	EXPORT_VALUE(param_origin);
 	EXPORT_VALUE(param_transformation);
-	EXPORT_VALUE(param_enable_transformation);
 	if (param=="canvas")
 	{
 		synfig::ValueBase ret(canvas);
@@ -418,12 +410,14 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 	SuperCallback stagetwo(cb,4500,9000,10000);
 	SuperCallback stagethree(cb,9000,9999,10000);
 
+	Context canvasContext = canvas->get_context(context);
+
 	if (is_solid_color())
 	{
 		RendDesc intermediate_desc(renddesc);
 		intermediate_desc.clear_flags();
 		intermediate_desc.set_transformation_matrix(transformation.get_matrix());
-		return canvas->get_context(context).accelerated_render(surface,quality,intermediate_desc,&stagetwo);
+		return canvasContext.accelerated_render(surface,quality,intermediate_desc,&stagetwo);
 	}
 	else
 	if (!context.accelerated_render(surface,quality,renddesc,&stageone))
@@ -436,7 +430,7 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 		canvas->set_time(curr_time+time_offset);
 
 	Color::BlendMethod blend_method(get_blend_method());
-	const Rect full_bounding_rect(canvas->get_context(context).get_full_bounding_rect());
+	const Rect full_bounding_rect(canvasContext.get_full_bounding_rect());
 
 	Rect inner_bounds(
 	    full_bounding_rect.get_min(),
@@ -529,7 +523,7 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 		intermediate_desc.set_tl(pixel_aligned_tl);
 		intermediate_desc.set_br(pixel_aligned_br);
 		Surface intermediate_surface;
-		if(!canvas->get_context(context).accelerated_render(&intermediate_surface,quality,intermediate_desc,&stagetwo))
+		if(!canvasContext.accelerated_render(&intermediate_surface,quality,intermediate_desc,&stagetwo))
 			return false;
 		Surface::alpha_pen apen(surface->get_pen(x0, y0));
 		apen.set_alpha(get_amount());

@@ -635,7 +635,9 @@ StateText_Context::make_text(const Point& _point)
 				_("Cancel"),
 				_("Ok"));
 
+	egress_on_selection_change=false;
 	layer=get_canvas_interface()->add_layer_to("text",canvas,depth);
+	egress_on_selection_change=true;
 	if (!layer)
 	{
 		get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));

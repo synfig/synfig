@@ -151,6 +151,7 @@ Layer::subsys_stop()
 
 Layer::Layer():
 	active_(true),
+	optimized_(false),
 	exclude_from_rendering_(false),
 	param_z_depth(Real(0.0f)),
 	dirty_time_(Time::end())
@@ -360,6 +361,7 @@ Layer::simple_clone()const
 	//ret->set_canvas(get_canvas());
 	ret->set_description(get_description());
 	ret->set_active(active());
+	ret->set_optimized(optimized());
 	ret->set_exclude_from_rendering(get_exclude_from_rendering());
 	ret->set_param_list(get_param_list());
 	for(DynamicParamList::const_iterator iter=dynamic_param_list().begin();iter!=dynamic_param_list().end();++iter)
@@ -379,6 +381,7 @@ Layer::clone(Canvas::LooseHandle canvas, const GUID& deriv_guid) const
 	//ret->set_canvas(get_canvas());
 	ret->set_description(get_description());
 	ret->set_active(active());
+	ret->set_optimized(optimized());
 	ret->set_exclude_from_rendering(get_exclude_from_rendering());
 	ret->set_guid(get_guid()^deriv_guid);
 

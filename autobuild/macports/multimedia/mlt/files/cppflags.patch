@@ -1,0 +1,454 @@
+diff --git a/configure b/configure
+--- a/configure
++++ b/configure
+@@ -94,6 +94,7 @@ build_config()
+ 		case $targetos in
+ 		Darwin)
+ 		echo "CFLAGS+=-fPIC -D__DARWIN__ `sdl-config --cflags`"
++		echo "CPPFLAGS+=-fPIC -D__DARWIN__ `sdl-config --cflags`"
+ 		echo "SHFLAGS=-dynamiclib"
+ 		echo "LDFLAGS+=`sdl-config --libs`"
+ 		;;
+diff --git a/src/framework/Makefile b/src/framework/Makefile
+--- a/src/framework/Makefile
++++ b/src/framework/Makefile
+@@ -100,7 +100,7 @@ $(TARGET): $(OBJS)
+ 		fi
+ 
+ depend:	$(SRCS)
+-	$(CC) -MM $(CFLAGS) $^ 1>.depend
++	$(CC) -MM $(CPPFLAGS) $^ 1>.depend
+ 
+ distclean:	clean
+ 		rm -f .depend
+diff --git a/src/melt/Makefile b/src/melt/Makefile
+--- a/src/melt/Makefile
++++ b/src/melt/Makefile
+@@ -5,6 +5,8 @@ OBJS = melt.o \
+ 
+ CFLAGS += -I.. $(RDYNAMIC) -DVERSION=\"$(version)\"
+ 
++CPPFLAGS += -I..
++
+ LDFLAGS += -L../framework -lmlt -lpthread
+ 
+ SRCS := $(OBJS:.o=.c)
+@@ -23,7 +25,7 @@ $(meltname): $(OBJS)
+ 		$(CC) -o $@ $(OBJS) $(LDFLAGS)
+ 
+ depend:	$(SRCS)
+-		$(CC) -MM $(CFLAGS) $^ 1>.depend
++		$(CC) -MM $(CPPFLAGS) $^ 1>.depend
+ 
+ distclean:	clean
+ 		rm -f .depend
+diff --git a/src/mlt++/Makefile b/src/mlt++/Makefile
+--- a/src/mlt++/Makefile
++++ b/src/mlt++/Makefile
+@@ -20,6 +20,7 @@ LIBFLAGS += -Wl,-soname,$(SONAME)
+ endif
+ 
+ CXXFLAGS += -I.. $(RDYNAMIC) -DVERSION=\"$(version)\" -fvisibility=hidden
++CPPFLAGS += -I..
+ 
+ LDFLAGS += -L../framework -lmlt
+ ifeq ($(targetos), Linux)
+@@ -62,7 +63,7 @@ $(TARGET):	$(OBJS)
+ 	fi
+ 
+ depend:	$(SRCS)
+-	$(CXX) -MM $(CXXFLAGS) $^ 1>.depend
++	$(CXX) -MM $(CPPFLAGS) $^ 1>.depend
+ 
+ clean:
+ 	$(RM) $(OBJS) $(TARGET) $(NAME) $(SONAME)
+diff --git a/src/modules/avformat/Makefile b/src/modules/avformat/Makefile
+--- a/src/modules/avformat/Makefile
++++ b/src/modules/avformat/Makefile
+@@ -1,4 +1,5 @@
+ CFLAGS += -I../..
++CPPFLAGS += -I../..
+ LDFLAGS += -L../../framework -lmlt -lpthread -lm
+ 
+ include ../../../config.mak
+@@ -45,7 +46,7 @@ $(TARGET): $(OBJS)
+ 	$(CC) $(SHFLAGS) -o $@ $(OBJS) $(LDFLAGS)
+ 
+ depend:	$(SRCS)
+-	$(CC) -MM $(CFLAGS) $^ 1>.depend
++	$(CC) -MM $(CPPFLAGS) $^ 1>.depend
+ 
+ distclean:	clean
+ 	rm -f .depend
+diff --git a/src/modules/core/Makefile b/src/modules/core/Makefile
+--- a/src/modules/core/Makefile
++++ b/src/modules/core/Makefile
+@@ -1,5 +1,7 @@
+ CFLAGS += -I../..
+ 
++CPPFLAGS += -I../..
++
+ LDFLAGS += -L../../framework -lmlt -lm -lpthread
+ 
+ include ../../../config.mak
+@@ -69,7 +71,7 @@ composite_line_yuv_mmx.o: composite_line_yuv_mmx.S
+ 	$(CC) -o $@ -c composite_line_yuv_mmx.S
+ 
+ depend:	$(SRCS)
+-		$(CC) -MM $(CFLAGS) $^ 1>.depend
++		$(CC) -MM $(CPPFLAGS) $^ 1>.depend
+ 
+ distclean:	clean
+ 		rm -f .depend
+diff --git a/src/modules/decklink/Makefile b/src/modules/decklink/Makefile
+--- a/src/modules/decklink/Makefile
++++ b/src/modules/decklink/Makefile
+@@ -1,5 +1,7 @@
+ CFLAGS += -I../..
+ 
++CPPFLAGS += -I../..
++
+ LDFLAGS += -L../../framework -lmlt -lpthread
+ 
+ include ../../../config.mak
+@@ -12,14 +14,17 @@ OBJS = consumer_decklink.o \
+ 
+ ifeq ($(targetos), MinGW)
+ CFLAGS += -Iwin
++CPPFLAGS += -Iwin
+ OBJS += win/DeckLinkAPI_i.o
+ LDFLAGS += -lole32
+ else
+ ifeq ($(targetos), Darwin)
+ CFLAGS += -Idarwin
++CPPFLAGS += -Idarwin
+ OBJS += darwin/DeckLinkAPIDispatch.o
+ else
+ CFLAGS += -Ilinux
++CPPFLAGS += -Ilinux
+ OBJS += linux/DeckLinkAPIDispatch.o
+ endif
+ endif
+@@ -36,7 +41,7 @@ $(TARGET): $(OBJS)
+ 		$(CXX) $(SHFLAGS) -o $@ $(OBJS) $(LDFLAGS)
+ 
+ depend:	$(SRCS)
+-		$(CXX) -MM $(CFLAGS) $^ 1>.depend
++		$(CXX) -MM $(CPPFLAGS) $^ 1>.depend
+ 
+ distclean:	clean
+ 		rm -f .depend
+diff --git a/src/modules/kdenlive/Makefile b/src/modules/kdenlive/Makefile
+--- a/src/modules/kdenlive/Makefile
++++ b/src/modules/kdenlive/Makefile
+@@ -1,5 +1,7 @@
+ CFLAGS += -I../..
+ 
++CPPFLAGS += -I../..
++
+ LDFLAGS += -L../../framework -lmlt
+ 
+ include ../../../config.mak
+@@ -23,7 +25,7 @@ $(TARGET): $(OBJS)
+ 		$(CC) $(SHFLAGS) -o $@ $(OBJS) $(LDFLAGS)
+ 
+ depend:	$(SRCS)
+-		$(CC) -MM $(CFLAGS) $^ 1>.depend
++		$(CC) -MM $(CPPFLAGS) $^ 1>.depend
+ 
+ distclean:	clean
+ 		rm -f .depend
+diff --git a/src/modules/motion_est/Makefile b/src/modules/motion_est/Makefile
+--- a/src/modules/motion_est/Makefile
++++ b/src/modules/motion_est/Makefile
+@@ -1,5 +1,7 @@
+ CFLAGS += -I../.. 
+ 
++CPPFLAGS += -I../.. 
++
+ LDFLAGS += -L../../framework -lmlt -lm
+ 
+ include ../../../config.mak
+@@ -22,7 +24,7 @@ $(TARGET): $(OBJS)
+ 		$(CC) $(SHFLAGS) -o $@ $(OBJS) $(LDFLAGS)
+ 
+ depend:	$(SRCS)
+-		$(CC) -MM $(CFLAGS) $^ 1>.depend
++		$(CC) -MM $(CPPFLAGS) $^ 1>.depend
+ 
+ distclean:	clean
+ 		rm -f .depend
+diff --git a/src/modules/normalize/Makefile b/src/modules/normalize/Makefile
+--- a/src/modules/normalize/Makefile
++++ b/src/modules/normalize/Makefile
+@@ -1,5 +1,7 @@
+ CFLAGS += -I../..
+ 
++CPPFLAGS += -I../.. 
++
+ LDFLAGS += -L../../framework -lmlt -lm
+ 
+ include ../../../config.mak
+@@ -18,7 +20,7 @@ $(TARGET): $(OBJS)
+ 		$(CC) $(SHFLAGS) -o $@ $(OBJS) $(LDFLAGS)
+ 
+ depend:	$(SRCS)
+-		$(CC) -MM $(CFLAGS) $^ 1>.depend
++		$(CC) -MM $(CPPFLAGS) $^ 1>.depend
+ 
+ distclean:	clean
+ 		rm -f .depend
+diff --git a/src/modules/oldfilm/Makefile b/src/modules/oldfilm/Makefile
+--- a/src/modules/oldfilm/Makefile
++++ b/src/modules/oldfilm/Makefile
+@@ -1,5 +1,7 @@
+ CFLAGS += -I../..
+ 
++CPPFLAGS += -I../.. 
++
+ LDFLAGS += -L../../framework -lmlt -lm
+ 
+ include ../../../config.mak
+@@ -22,7 +24,7 @@ $(TARGET): $(OBJS)
+ 		$(CC) $(SHFLAGS) -o $@ $(OBJS) $(LDFLAGS)
+ 
+ depend:	$(SRCS)
+-		$(CC) -MM $(CFLAGS) $^ 1>.depend
++		$(CC) -MM $(CPPFLAGS) $^ 1>.depend
+ 
+ distclean:	clean
+ 		rm -f .depend
+diff --git a/src/modules/plus/Makefile b/src/modules/plus/Makefile
+--- a/src/modules/plus/Makefile
++++ b/src/modules/plus/Makefile
+@@ -1,5 +1,7 @@
+ CFLAGS += -I../..
+ 
++CPPFLAGS += -I../.. 
++
+ LDFLAGS += -L../../framework -lmlt -lm -lpthread
+ 
+ include ../../../config.mak
+@@ -30,7 +32,7 @@ $(TARGET): $(OBJS)
+ 		$(CC) $(SHFLAGS) -o $@ $(OBJS) $(LDFLAGS)
+ 
+ depend:	$(SRCS)
+-		$(CC) -MM $(CFLAGS) $^ 1>.depend
++		$(CC) -MM $(CPPFLAGS) $^ 1>.depend
+ 
+ distclean:	clean
+ 		rm -f .depend
+diff --git a/src/modules/plusgpl/Makefile b/src/modules/plusgpl/Makefile
+--- a/src/modules/plusgpl/Makefile
++++ b/src/modules/plusgpl/Makefile
+@@ -1,5 +1,7 @@
+ CFLAGS += -I../..
+ 
++CPPFLAGS += -I../.. 
++
+ LDFLAGS += -L../../framework -lmlt -lm -lpthread
+ 
+ include ../../../config.mak
+@@ -28,7 +30,7 @@ $(TARGET): $(OBJS)
+ 		$(CC) $(SHFLAGS) -o $@ $(OBJS) $(LDFLAGS)
+ 
+ depend:	$(SRCS)
+-		$(CC) -MM $(CFLAGS) $^ 1>.depend
++		$(CC) -MM $(CPPFLAGS) $^ 1>.depend
+ 
+ distclean:	clean
+ 		rm -f .depend
+diff --git a/src/modules/resample/Makefile b/src/modules/resample/Makefile
+--- a/src/modules/resample/Makefile
++++ b/src/modules/resample/Makefile
+@@ -1,5 +1,7 @@
+ CFLAGS += -I../..
+ 
++CPPFLAGS += -I../.. 
++
+ LDFLAGS += -L../../framework -lmlt
+ 
+ include ../../../config.mak
+@@ -21,7 +23,7 @@ $(TARGET): $(OBJS)
+ 		$(CC) $(SHFLAGS) -o $@ $(OBJS) $(LDFLAGS)
+ 
+ depend:	$(SRCS)
+-		$(CC) -MM $(CFLAGS) $^ 1>.depend
++		$(CC) -MM $(CPPFLAGS) $^ 1>.depend
+ 
+ distclean:	clean
+ 		rm -f .depend
+diff --git a/src/modules/rtaudio/Makefile b/src/modules/rtaudio/Makefile
+--- a/src/modules/rtaudio/Makefile
++++ b/src/modules/rtaudio/Makefile
+@@ -1,5 +1,7 @@
+ CFLAGS += -I../..
+ 
++CPPFLAGS += -I../.. 
++
+ LDFLAGS += -L../../framework -lmlt -lpthread
+ 
+ include ../../../config.mak
+@@ -39,7 +41,7 @@ $(TARGET): $(OBJS)
+ 		$(CXX) $(SHFLAGS) -o $@ $(OBJS) $(LDFLAGS)
+ 
+ depend:	$(SRCS)
+-		$(CXX) -MM $(CFLAGS) $^ 1>.depend
++		$(CXX) -MM $(CPPFLAGS) $^ 1>.depend
+ 
+ distclean:	clean
+ 		rm -f .depend
+diff --git a/src/modules/sdl/Makefile b/src/modules/sdl/Makefile
+--- a/src/modules/sdl/Makefile
++++ b/src/modules/sdl/Makefile
+@@ -1,5 +1,7 @@
+ CFLAGS += -I../..
+ 
++CPPFLAGS += -I../.. 
++
+ LDFLAGS += -L../../framework -lmlt -lpthread -lm
+ 
+ include ../../../config.mak
+@@ -22,6 +24,7 @@ LDFLAGS += -lX11
+ endif
+ 
+ CFLAGS += $(shell sdl-config --cflags)
++CPPFLAGS += $(shell sdl-config --cflags)
+ 
+ LDFLAGS += $(shell sdl-config --libs)
+ 
+@@ -43,7 +46,7 @@ $(TARGET): $(OBJS)
+ 		$(CC) $(SHFLAGS) -o $@ $(OBJS) $(LDFLAGS)
+ 
+ depend:	$(SRCS)
+-		$(CC) -MM $(CFLAGS) $^ 1>.depend
++		$(CC) -MM $(CPPFLAGS) $^ 1>.depend
+ 
+ distclean:	clean
+ 		rm -f .depend
+diff --git a/src/modules/sox/Makefile b/src/modules/sox/Makefile
+--- a/src/modules/sox/Makefile
++++ b/src/modules/sox/Makefile
+@@ -1,5 +1,7 @@
+ CFLAGS += -I../..
+ 
++CPPFLAGS += -I../..
++
+ LDFLAGS += -L../../framework -lmlt -lm
+ 
+ include ../../../config.mak
+@@ -19,7 +21,7 @@ $(TARGET): $(OBJS)
+ 		$(CC) $(SHFLAGS) -o $@ $(OBJS) $(LDFLAGS)
+ 
+ depend:	$(SRCS)
+-		$(CC) -MM $(CFLAGS) $^ 1>.depend
++		$(CC) -MM $(CPPFLAGS) $^ 1>.depend
+ 
+ distclean:	clean
+ 		rm -f .depend
+diff --git a/src/modules/sox/configure b/src/modules/sox/configure
+--- a/src/modules/sox/configure
++++ b/src/modules/sox/configure
+@@ -20,8 +20,9 @@ then
+ 	then
+ 		disable_sox=0
+ 		echo "CFLAGS += $(pkg-config --cflags sox)" > config.mak
++		echo "CPPFLAGS += $(pkg-config --cflags sox)" >> config.mak
+ 		echo "LDFLAGS += $(pkg-config --libs sox)" >> config.mak
+-		[ $(pkg-config --modversion sox | cut -d. -f1) -gt 13 ] && echo "CFLAGS += -DSOX14" >> config.mak
++		[ $(pkg-config --modversion sox | cut -d. -f1) -gt 13 ] && echo "CFLAGS += -DSOX14" >> config.mak && echo "CPPFLAGS += -DSOX14" >> config.mak
+ 	else
+ 		which libst-config > /dev/null 2>&1
+ 		if [ $? -eq 0 ]
+diff --git a/src/modules/videostab/Makefile b/src/modules/videostab/Makefile
+--- a/src/modules/videostab/Makefile
++++ b/src/modules/videostab/Makefile
+@@ -1,8 +1,10 @@
+ include ../../../config.mak
+ 
+ CFLAGS += -I../..
++CPPFLAGS += -I../..
+ ifdef SSE2_FLAGS
+ CFLAGS += -msse2
++CPPFLAGS += -msse2
+ endif
+ 
+ LDFLAGS += -L../../framework -lmlt -lm
+@@ -25,7 +27,7 @@ $(TARGET): $(OBJS)
+ 		$(CC) $(SHFLAGS) -o $@ $(OBJS) $(LDFLAGS)
+ 
+ depend:	$(SRCS)
+-		$(CC) -MM $(CFLAGS) $^ 1>.depend
++		$(CC) -MM $(CPPFLAGS) $^ 1>.depend
+ 
+ distclean:	clean
+ 		rm -f .depend
+diff --git a/src/modules/vmfx/Makefile b/src/modules/vmfx/Makefile
+--- a/src/modules/vmfx/Makefile
++++ b/src/modules/vmfx/Makefile
+@@ -1,5 +1,7 @@
+ CFLAGS += -I../..
+ 
++CPPFLAGS += -I../..
++
+ LDFLAGS += -L../../framework -lmlt
+ 
+ include ../../../config.mak
+@@ -21,7 +23,7 @@ $(TARGET): $(OBJS)
+ 		$(CC) $(SHFLAGS) -o $@ $(OBJS) $(LDFLAGS)
+ 
+ depend:	$(SRCS)
+-		$(CC) -MM $(CFLAGS) $^ 1>.depend
++		$(CC) -MM $(CPPFLAGS) $^ 1>.depend
+ 
+ distclean:	clean
+ 		rm -f .depend
+diff --git a/src/modules/xine/Makefile b/src/modules/xine/Makefile
+--- a/src/modules/xine/Makefile
++++ b/src/modules/xine/Makefile
+@@ -1,5 +1,7 @@
+ CFLAGS += -I../../
+ 
++CPPFLAGS += -I../../
++
+ LDFLAGS += -L../../framework -lmlt
+ 
+ include ../../../config.mak
+@@ -24,7 +26,7 @@ $(TARGET): $(OBJS)
+ 		$(CC) $(SHFLAGS) -o $@ $(OBJS) $(LDFLAGS)
+ 
+ depend:	$(SRCS)
+-		$(CC) -MM $(CFLAGS) $^ 1>.depend
++		$(CC) -MM $(CPPFLAGS) $^ 1>.depend
+ 
+ distclean:	clean
+ 		rm -f .depend
+diff --git a/src/modules/xml/Makefile b/src/modules/xml/Makefile
+--- a/src/modules/xml/Makefile
++++ b/src/modules/xml/Makefile
+@@ -1,5 +1,7 @@
+ CFLAGS += -I../..
+ 
++CPPFLAGS += -I../../
++
+ LDFLAGS += -L../../framework -lmlt -lpthread
+ 
+ include ../../../config.mak
+@@ -12,6 +14,8 @@ OBJS = factory.o \
+ 
+ CFLAGS += $(shell pkg-config libxml-2.0 --cflags)
+ 
++CPPFLAGS += $(shell pkg-config libxml-2.0 --cflags)
++
+ LDFLAGS += $(shell pkg-config libxml-2.0 --libs)
+ 
+ SRCS := $(OBJS:.o=.c)
+@@ -22,7 +26,7 @@ $(TARGET): $(OBJS)
+ 		$(CC) $(SHFLAGS) -o $@ $(OBJS) $(LDFLAGS)
+ 
+ depend:	$(SRCS)
+-		$(CC) -MM $(CFLAGS) $^ 1>.depend
++		$(CC) -MM $(CPPFLAGS) $^ 1>.depend
+ 
+ distclean:	clean
+ 		rm -f .depend

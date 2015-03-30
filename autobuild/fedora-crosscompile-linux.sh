@@ -36,6 +36,7 @@ if [[ $DEBUG == 1 ]]; then
 	echo "Debug mode: enabled"
 	echo
 	DEBUG_OPT='--enable-debug --enable-optimization=0'
+	DEBUG_OPT2='--enable-debug=yes'
 	export SUFFIX="-debug"
 else
 	DEBUG_OPT=''
@@ -62,6 +63,7 @@ export EMAIL='root@synfig.org'
 SOURCES_URL="rsync://download.tuxfamily.org/pub/synfig/packages/sources/base"
 
 # Bundled libraries
+LIBJPEG_VERSION=1.3.1
 LIBSIGCPP_VERSION=2.2.10
 GLEW_VERSION=1.5.1
 CAIROMM_VERSION=1.10.0
@@ -80,8 +82,8 @@ ATK_VERSION=2.14.0
 AT_SPI2_VERSION=2.10.2
 AT_SPI2_ATK_VERSION=2.10.2
 GLIB_VERSION=2.42.1
-GDK_PIXBUF_VERSION=2.30.3
-GTK_VERSION=3.14.6
+GDK_PIXBUF_VERSION=2.31.3
+GTK_VERSION=3.14.9
 PIXMAN_VERSION=0.30.0		# required by CAIRO 1.12.0
 HARFBUZZ_VERSION=0.9.24
 PANGO_VERSION=1.36.8
@@ -218,10 +220,8 @@ mkprefix()
 	DEB_LIST_MINIMAL="\
 			build-essential \
 			libpng12-dev \
-			libjpeg62-dev \
 			libfreetype6-dev \
 			libxml2-dev \
-			libtiff4-dev \
 			libjasper-dev \
 			libffi-dev \
 			libasound2-dev \
@@ -594,6 +594,8 @@ fi
 mkgdkpixbuf()
 {
 	
+	mkgobjectintrospection
+	
 PKG_NAME=gdk-pixbuf
 PKG_VERSION="${GDK_PIXBUF_VERSION}"
 TAREXT=xz
@@ -603,7 +605,10 @@ if [ ! -f ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done ]; then
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
 	[ ! -e config.cache ] || rm config.cache
+	sed -i 's|^enable_relocations=no|enable_relocations=yes|g' configure
 	./configure --host=${HOST} --prefix=${PREFIX}/ \
+		--enable-introspection=yes \
+		${DEBUG_OPT2} \
 		--disable-static --enable-shared
 	make -j${THREADS}
 	make install
@@ -648,6 +653,7 @@ if ! pkg-config ${PKG_NAME}-3.0 --exact-version=${PKG_VERSION}  --print-errors; 
 	cd ${PKG_NAME}-${PKG_VERSION}
 	[ ! -e config.cache ] || rm config.cache
 	./configure --build=${HOST} --prefix=${PREFIX}/ \
+		${DEBUG_OPT2} \
 		--disable-static --enable-shared
 	make -j${THREADS}
 	make install
@@ -700,9 +706,9 @@ fi
 mklibrsvg()
 {
 	
+	mkgobjectintrospection
 	mkgdkpixbuf
 	mklibcroco
-	mkgobjectintrospection
 	
 PKG_NAME=librsvg
 PKG_VERSION=2.40.6
@@ -731,7 +737,7 @@ mklibrsvg
 PKG_NAME=gnome-themes-standard
 PKG_VERSION=3.15.2
 TAREXT=xz
-if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
+if [ ! -f ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done ]; then
 	( cd ${WORKSPACE}/cache/ && wget -c --no-check-certificate http://ftp.gnome.org/pub/gnome/sources/${PKG_NAME}/${PKG_VERSION%.*}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
 	pushd ${SRCPREFIX}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
@@ -744,6 +750,8 @@ if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
 	make install
 	cd ..
 	popd
+	
+	touch ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done
 fi
 }
 
@@ -815,6 +823,67 @@ if ! pkg-config ${PKG_NAME}-2.4 --exact-version=${PKG_VERSION}  --print-errors; 
 fi
 }
 
+mklibtiff()
+{
+PKG_NAME=tiff
+PKG_VERSION=4.0.3
+TAREXT=gz
+
+if [ ! -f ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done ]; then
+    cd $CACHEDIR
+    [ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://download.osgeo.org/lib${PKG_NAME}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    cd $SRCPREFIX
+    if [ ! -d ${PKG_NAME}-${PKG_VERSION} ]; then
+        tar -xzf $CACHEDIR/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    fi
+    cd ${PKG_NAME}-${PKG_VERSION}
+    [ ! -e config.cache ] || rm config.cache
+    ./configure \
+		--host=${HOST} \
+		--prefix=${PREFIX} \
+		--includedir=${PREFIX}/include \
+		--disable-static --enable-shared
+
+    make -j$THREADS
+    make install -j$THREADS
+    
+    touch ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done
+
+fi
+}
+
+mklibjpeg()
+{
+
+mkyasm
+
+PKG_NAME=libjpeg-turbo
+PKG_VERSION=${LIBJPEG_VERSION}
+TAREXT=gz
+
+if [ ! -f ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done ]; then
+    cd $CACHEDIR
+    [ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://sourceforge.net/projects/libjpeg-turbo/files/${PKG_VERSION}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    cd $SRCPREFIX
+    if [ ! -d ${PKG_NAME}-${PKG_VERSION} ]; then
+        tar -xzf $CACHEDIR/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    fi
+    cd ${PKG_NAME}-${PKG_VERSION}
+    [ ! -e config.cache ] || rm config.cache
+    ./configure \
+		--host=${HOST} \
+		--prefix=${PREFIX} \
+		--includedir=${PREFIX}/include \
+		--disable-static --enable-shared
+
+    make -j$THREADS
+    make install -j$THREADS
+    
+    touch ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done
+
+fi
+}
+
 mklibxmlpp()
 {
 PKG_NAME=libxml++
@@ -837,7 +906,7 @@ fi
 mkimagemagick()
 {
 PKG_NAME=ImageMagick
-PKG_VERSION="${IMAGEMAGICK_VERSION}-8"
+PKG_VERSION="${IMAGEMAGICK_VERSION}-10"
 TAREXT=bz2
 if ! pkg-config ${PKG_NAME} --exact-version=${IMAGEMAGICK_VERSION}  --print-errors; then
 	( cd ${WORKSPACE}/cache/ && wget -c http://www.imagemagick.org/download/releases/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
@@ -1187,7 +1256,7 @@ mklibvorbis
 mksox
 	
 PKG_NAME=mlt
-PKG_VERSION=0.9.1
+PKG_VERSION=0.9.6
 TAREXT=gz
 
 if [ ! -f ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done ]; then
@@ -1200,6 +1269,11 @@ if [ ! -f ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done ]; then
         /usr/bin/git clone https://github.com/morevnaproject/mlt
     fi
     cd mlt
+    /usr/bin/git reset --hard
+    /usr/bin/git checkout master
+    /usr/bin/git reset --hard
+    /usr/bin/git pull
+    /usr/bin/git clean -f -d
     [ ! -e config.cache ] || rm config.cache
 
     ./configure \
@@ -1240,7 +1314,7 @@ if ! cat ${PREFIX}/include/boost/version.hpp |egrep "BOOST_LIB_VERSION \"${PKG_V
 	./bootstrap.sh --prefix=${PREFIX} \
 		--libdir=${PREFIX}/lib \
 		--exec-prefix=${PREFIX} \
-		--with-libraries=program_options
+		--with-libraries=program_options,filesystem,system,chrono
 	./b2
 	./b2 install || true
 	cd ..
@@ -1581,7 +1655,7 @@ mkconfig()
 cat > ${PREFIX}/synfig <<EOF
 #!/bin/sh
 
-SYSPREFIX=\`dirname "\$0"\`
+SYSPREFIX=\$(cd \`dirname "\$0"\`; pwd)
 
 export LD_LIBRARY_PATH=\${SYSPREFIX}/lib:\$LD_LIBRARY_PATH
 export SYNFIG_ROOT=\${SYSPREFIX}/
@@ -1600,7 +1674,7 @@ EOF
 cat > ${PREFIX}/synfigstudio <<EOF
 #!/bin/sh
 
-SYSPREFIX=\`dirname "\$0"\`
+SYSPREFIX=\$(cd \`dirname "\$0"\`; pwd)
 
 # Check if this system have JACK installed
 if ( ! ldconfig -p | grep libjack.so >/dev/null ) || ( ! which jackd >/dev/null ) ; then
@@ -1615,10 +1689,9 @@ export ETC_DIR=\${SYSPREFIX}/etc
 export LD_LIBRARY_PATH=\${SYSPREFIX}/lib:\$LD_LIBRARY_PATH
 export SYNFIG_ROOT=\${SYSPREFIX}/
 export SYNFIG_MODULE_LIST=\${SYSPREFIX}/etc/synfig_modules.cfg
-export XDG_DATA_DIRS="\${SYSPREFIX}/share/:\$XDG_DATA_DIRS"
+export XDG_DATA_DIRS="\${SYSPREFIX}/share/:\$XDG_DATA_DIRS:/usr/local/share/:/usr/share/"
 export XDG_CONFIG_DIRS="\$HOME/.config/synfig:\$XDG_CONFIG_DIRS"
 #export GDK_PIXBUF_MODULEDIR="\${SYSPREFIX}/lib/gtk-2.0/2.10.0/loaders"
-export GTK_THEME=Adwaita:dark
 export GSETTINGS_SCHEMA_DIR="\${SYSPREFIX}/share/glib-2.0/schemas/"
 export FONTCONFIG_PATH="\${SYSPREFIX}/etc/fonts"
 export MLT_DATA="\${SYSPREFIX}/share/mlt/"
@@ -1930,7 +2003,7 @@ fi
 chmod a+rX -R /opt/synfig
 chmod a+rX /opt
 EOF
-	chmod +x ${DEB_DIST}/debian/postinst
+	chmod a+x ${DEB_DIST}/debian/postinst
 	
 	cat > ${DEB_DIST}/debian/postrm << EOF
 #!/bin/bash
@@ -1941,6 +2014,7 @@ if [ -x /usr/bin/update-desktop-database ]; then
   update-desktop-database
 fi
 EOF
+	chmod a+x ${DEB_DIST}/debian/postrm
 
 	cat > ${DEB_DIST}/debian/rules << EOF
 #!/usr/bin/make -f
@@ -2027,6 +2101,8 @@ mkall()
 	mkgettext
 	
 	# system libraries
+	mklibjpeg
+	mklibtiff
 	mkglib
 	mkharfbuzz
 	mkfontconfig
@@ -2038,6 +2114,7 @@ mkall()
 	mkgdkpixbuf
 	mkgtk
 	mkadwaitaicons
+	mkgnomethemes
 	mkjack
 	
 	# synfig-core deps

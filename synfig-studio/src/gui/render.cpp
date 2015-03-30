@@ -34,6 +34,7 @@
 #include "app.h"
 #include <gtkmm/frame.h>
 #include <gtkmm/alignment.h>
+#include <glibmm.h>
 #include <synfig/target_scanline.h>
 #include <synfig/canvas.h>
 #include "asyncrenderer.h"
@@ -350,7 +351,11 @@ RenderSettings::submit_next_render_pass()
 		render_passes.pop_back();
 		
 		TargetAlphaMode pass_alpha_mode = pass_info.first;
+#ifdef WIN32
+		String pass_filename = Glib::locale_from_utf8(pass_info.second);
+#else
 		String pass_filename = pass_info.second;
+#endif
 		
 		Target::Handle target=Target::create(calculated_target_name,pass_filename, tparam);
 		if(!target)

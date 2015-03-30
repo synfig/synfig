@@ -4,6 +4,10 @@ More detailed notes are available on the releases page:
 
 http://synfig.org/en/news/releases
 
+0.04.18 (git tag "1.0") - April 16, 2015
+
+ * Fix compiler warnings.
+
 0.04.17 (git tag "0.64.1") - November 4, 2013
 
  * Bones implementation-related changes

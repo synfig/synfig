@@ -32,4 +32,4 @@ libmod_ppm_la_LIBADD = \
 	@SYNFIG_LIBS@
 
 
-EXTRA_DIST= mod_ppm.nsh unmod_ppm.nsh trgt_mpg.cpp trgt_mpg.h
+EXTRA_DIST= mod_ppm.nsh unmod_ppm.nsh

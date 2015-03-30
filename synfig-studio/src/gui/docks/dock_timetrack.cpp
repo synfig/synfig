@@ -97,14 +97,15 @@ public:
 
 		{	// --- T I M E   T R A C K --------------------------------------------
 			Gtk::TreeView::Column* column = Gtk::manage( new Gtk::TreeView::Column(_("Time Track")) );
+			Gtk::TreeView::Column* column2 = Gtk::manage( new Gtk::TreeView::Column("Align") );
 
 			// Set up the value-node cell-renderer
 			cellrenderer_time_track=LayerParamTreeStore::add_cell_renderer_value_node(column);
 			cellrenderer_time_track->property_mode()=Gtk::CELL_RENDERER_MODE_ACTIVATABLE;
 			cellrenderer_time_track->signal_waypoint_clicked_cellrenderer().connect(sigc::mem_fun(*this, &TimeTrackView::on_waypoint_clicked_timetrackview));
 			cellrenderer_time_track->signal_waypoint_changed().connect(sigc::mem_fun(*this, &TimeTrackView::on_waypoint_changed) );
-			column->add_attribute(cellrenderer_time_track->property_value_desc(), model.value_desc);
-			column->add_attribute(cellrenderer_time_track->property_canvas(), model.canvas);
+			//column->add_attribute(cellrenderer_time_track->property_value_desc(), model.value_desc);
+			//column->add_attribute(cellrenderer_time_track->property_canvas(), model.canvas);
 			//column->add_attribute(cellrenderer_time_track->property_visible(), model.is_value_node);
 
 			//column->pack_start(*cellrenderer_time_track);
@@ -113,27 +114,32 @@ public:
 			// to align the rows with params dock when the text is taller than value_type icons height
 			Gtk::CellRendererText* text_cellrenderer = Gtk::manage( new Gtk::CellRendererText() );
 			text_cellrenderer->property_attributes()=attr_list;
-			column->pack_end(*text_cellrenderer,false);
-			text_cellrenderer->set_fixed_size (0,-1);
+			column2->pack_end(*text_cellrenderer,false);
+			text_cellrenderer->set_fixed_size (1,-1);
 
 			// Add a fixed size (1pixel widht, same height than value_type icon) empty (alpha) icon
 			// to align the rows with params dock when the text is smaller than value_type icons height
 			Gtk::CellRendererPixbuf* icon_cellrenderer = Gtk::manage( new Gtk::CellRendererPixbuf() );
-			column->pack_end(*icon_cellrenderer,false);
 			Glib::RefPtr<Gdk::Pixbuf> pixbuf;
 			pixbuf=Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-utils_timetrack_align"),Gtk::ICON_SIZE_SMALL_TOOLBAR);
 			icon_cellrenderer->property_pixbuf() = pixbuf;
-			icon_cellrenderer->set_fixed_size (0,-1);
+			column2->pack_end(*icon_cellrenderer,false);
+			icon_cellrenderer->set_fixed_size(1,-1);
 
-			// Finish setting up the column
+			// Finish setting up the columns
 			column->set_reorderable();
 			column->set_sizing(Gtk::TREE_VIEW_COLUMN_AUTOSIZE);
 			column->set_resizable();
+			column->set_expand(true);
 // Commented during Align rows fixing
 // http://www.synfig.org/issues/thebuggenie/synfig/issues/161
 // 			column->set_min_width(200);
+			
+			column2->set_resizable();
+			column2->set_fixed_width(1);
 
 			append_column(*column);
+			append_column(*column2);
 		}
 		set_rules_hint();
 
@@ -521,11 +527,15 @@ Dock_Timetrack::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_v
 		// Fixed size drawing areas to align the widget_timeslider and tree_view time cursors
 		// TODO ?: one align_drawingArea.(0, 1, 0, 1) modify_bg KF's color another (0, 1, 1, 2) modify_bg TS's color
 		Gtk::DrawingArea* align_drawingArea1 = Gtk::manage(new Gtk::DrawingArea);
-		align_drawingArea1->set_size_request(4,-1);
 		// TODO ?: one align_drawingArea.(2, 3, 0, 1) modify_bg KF's color another (2, 3, 1, 2) modify_bg TS's color
 		Gtk::DrawingArea* align_drawingArea2 = Gtk::manage(new Gtk::DrawingArea);
+#if (GTKMM_MAJOR_VERSION == 3 && GTKMM_MINOR_VERSION >= 14)
+		align_drawingArea1->set_size_request(2,-1);
+		align_drawingArea2->set_size_request(4,-1);
+#else
+		align_drawingArea1->set_size_request(4,-1);
 		align_drawingArea2->set_size_request(9,-1);
-
+#endif
 		widget_timeslider_->set_time_adjustment(canvas_view->time_adjustment());
 		widget_timeslider_->set_bounds_adjustment(canvas_view->time_window_adjustment());
 		widget_timeslider_->set_global_fps(canvas_view->get_canvas()->rend_desc().get_frame_rate());
@@ -558,7 +568,7 @@ ALIGN2 = align_drawingArea2
 		table_=new Gtk::Table(3,4);
 		table_->attach(*align_drawingArea1, 0, 1, 0, 2, Gtk::SHRINK, Gtk::FILL);
 		table_->attach(*widget_kf_list_, 1, 2, 0, 1, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::SHRINK);
-		table_->attach(*widget_timeslider_, 1, 2, 1, 2, Gtk::FILL|Gtk::SHRINK, Gtk::FILL|Gtk::SHRINK);
+		table_->attach(*widget_timeslider_, 1, 2, 1, 2, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::SHRINK);
 		table_->attach(*align_drawingArea2, 2, 3, 0, 2, Gtk::SHRINK, Gtk::FILL);
 		table_->attach(*scrolled, 0, 3, 2, 3, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::EXPAND);
 		table_->attach(*hscrollbar_, 0, 3, 3, 4, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::SHRINK);

@@ -1963,8 +1963,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 		etl::handle<Layer_PasteCanvas> layer;
 		if (value_desc.parent_is_layer())
 			layer = etl::handle<Layer_PasteCanvas>::cast_dynamic(value_desc.get_layer());
-		bool enable = !layer || !layer->get_enable_transformation();
-		if (enable) {
+		if (!layer) {
 			etl::handle<Duck> duck=new Duck();
 			set_duck_value_desc(*duck, value_desc, transform_stack);
 			ValueNode_Composite::Handle blinepoint_value_node;
@@ -2084,8 +2083,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 		if (value_desc.parent_is_layer() && param_desc != NULL)
 		{
 			etl::handle<Layer_PasteCanvas> layer = etl::handle<Layer_PasteCanvas>::cast_dynamic(value_desc.get_layer());
-			bool enable_transformation = layer && layer->get_enable_transformation();
-			if (enable_transformation)
+			if (layer)
 			{
 				synfigapp::ValueDesc alternative_value_desc(value_desc.get_layer(), "origin");
 				Transformation transformation = value_desc.get_value(get_time()).get(Transformation());

@@ -2,7 +2,7 @@
 
 # -- I N I T --------------------------------------------------
 
-AC_INIT([Synfig Core],[0.65.0],[http://www.synfig.org/issues/thebuggenie/synfig],[synfig])
+AC_INIT([Synfig Core],[1.0-RC3],[http://www.synfig.org/issues/thebuggenie/synfig],[synfig])
 AC_REVISION
 
 AC_CONFIG_AUX_DIR(config)
@@ -336,15 +336,15 @@ AM_CONDITIONAL(WITH_JPEG, test $with_jpeg = yes)
 AC_LIB_LTDL
 
 # Languages list (alphabetical order, please!)
-ALL_LINGUAS="ar ca cs da de el_GR en_GB es eu eu_ES fa_IR fr he hu it ja_JP lt nl no_NO pl_PL pt_BR ro ru si sk_SK sv_SE tr zh_CN"
+ALL_LINGUAS="ar bs ca cs da de el_GR en_GB es eu eu_ES fa_IR fr gl he hu it ja_JP lt nl no_NO pl_PL pt_BR ro ru si sk_SK sr_RS sv_SE tr uz@Latn zh-Hant zh_CN zh_TW"
 
 AM_GNU_GETTEXT([external])
 # This is here so autoreconf will run autopoint
 AM_GNU_GETTEXT_VERSION([0.15])
 localedir="$datadir/locale"
 
-PKG_CHECK_MODULES(ETL, [ETL >= 0.04.18],,[
-	AC_MSG_ERROR([ ** You need to install the ETL (version 0.04.18 or greater).])
+PKG_CHECK_MODULES(ETL, [ETL >= 0.04.18-RC3],,[
+	AC_MSG_ERROR([ ** You need to install the ETL (version 0.04.18-RC3 or greater).])
 ])
 CONFIG_DEPS="$CONFIG_DEPS ETL"
 
@@ -402,10 +402,23 @@ CONFIG_DEPS="$CONFIG_DEPS mlt++"
 
 AX_BOOST_BASE([1.53.0],,AC_MSG_ERROR([ ** You need to install Boost >= 1.53.0]))
 AX_BOOST_PROGRAM_OPTIONS
-if test "x$ax_cv_boost_program_options" = "xno" ; then
+if test "x$ax_cv_boost_program_options" != "xyes" ; then
 	AC_MSG_ERROR([ ** You need to install Boost program-options library])
 fi
-# Boost Program Options is just a dependency of the synfig cli and so,
+AX_BOOST_SYSTEM
+if test "x$ax_cv_boost_system" != "xyes" ; then
+	AC_MSG_ERROR([ ** You need to install Boost system library])
+fi
+AX_BOOST_FILESYSTEM
+if test "x$ax_cv_boost_filesystem" != "xyes" ; then
+	AC_MSG_ERROR([ ** You need to install Boost filesystem library])
+fi
+AX_BOOST_CHRONO
+if test "x$ax_cv_boost_chrono" != "xyes" ; then
+	AC_MSG_ERROR([ ** You need to install Boost chrono library])
+fi
+# Boost program options, system and filesystem libraries are just dependencies
+# of the synfig cli and therefore
 # not required to link against the synfig library.
 
 
@@ -758,5 +771,8 @@ Using OpenEXR's \"half\" type ------> $use_openexr_half
 "'$'"BOOST_CPPFLAGS ------------------> '$BOOST_CPPFLAGS'
 "'$'"BOOST_LDFLAGS -------------------> '$BOOST_LDFLAGS'
 "'$'"BOOST_PROGRAM_OPTIONS_LIB -------> '$BOOST_PROGRAM_OPTIONS_LIB'
+"'$'"BOOST_SYSTEM_LIB ----------------> '$BOOST_SYSTEM_LIB'
+"'$'"BOOST_FILESYSTEM_LIB ------------> '$BOOST_FILESYSTEM_LIB'
+"'$'"BOOST_CHRONO_LIB ----------------> '$BOOST_CHRONO_LIB'
 "'$'"LIBADD_DL -----------------------> '$LIBADD_DL'
 "

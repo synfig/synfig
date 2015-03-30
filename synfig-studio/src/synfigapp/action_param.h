@@ -184,6 +184,7 @@ class ParamList : public std::multimap<synfig::String,Param>
 public:
 	ParamList& add(const synfig::String& name, const Param &x) { insert(std::pair<synfig::String,Param>(name,x)); return *this; }
 	ParamList& add(const ParamList& x) { insert(x.begin(),x.end()); return *this; }
+	ParamList& remove_all(const synfig::String& name) { erase(name); return *this; }
 }; // END of class ParamList
 
 class ParamDesc

@@ -39,10 +39,37 @@ set -e
 export RELEASE=1
 export BUILDROOT_VERSION=1
 
-BUILDDIR=~/src/macports/SynfigStudio-app
+if [ `whoami` != "root" ]; then
+	echo "Please use sudo to run this script. Aborting."
+	exit 1
+fi
+
+if [ ! -z $UNIVERSAL ]; then
+export BUILDDIR=~/SynfigStudio-build.universal
+else
+export BUILDDIR=~/SynfigStudio-build
+fi
+
+if [ -z $X11 ]; then
+	export X11=1
+fi
+if [[ $X11 == 1 ]]; then
+	export BUILDDIR=${BUILDDIR}.x11
+fi
+
+if [ ! -z $DEBUG ]; then
+	echo
+	echo "Debug mode: enabled"
+	echo
+	DEBUG='--enable-debug --enable-optimization=0'
+	export BUILDDIR=${BUILDDIR}.debug
+else
+	DEBUG=''
+fi
+
 LNKDIR=/tmp/skl/SynfigStudio
 MACPORTS=$LNKDIR/Contents/Resources
-MPSRC=MacPorts-2.2.1
+MPSRC=MacPorts-2.3.3
 
 SYNFIG_REPO_DIR=~/src/synfig
 SCRIPTDIR_IS_REPO=0
@@ -59,23 +86,10 @@ export LD_LIBRARY_PATH=${MACPORTS}/lib:${SYNFIG_PREFIX}/lib:${SYNFIG_PREFIX}/lib
 #export CPPFLAGS="-fpermissive -I${MACPORTS}/include -I${SYNFIG_PREFIX}/include"
 export CPPFLAGS="-I${MACPORTS}/include -I${SYNFIG_PREFIX}/include"
 export LDFLAGS="-L${MACPORTS}/lib -L${SYNFIG_PREFIX}/lib"
-
-if [ `whoami` != "root" ]; then
-	echo "Please use sudo to run this script. Aborting."
-	exit 1
-fi
-
-if [ -z $DEBUG ]; then
-	export DEBUG=0
-fi
-
-if [[ $DEBUG == 1 ]]; then
-	echo
-	echo "Debug mode: enabled"
-	echo
-	DEBUG='--enable-debug --enable-optimization=0'
-else
-	DEBUG=''
+if [ ! -z $UNIVERSAL ]; then
+export CFLAGS="-arch i386 -arch x86_64"
+export CXXFLAGS="-arch i386 -arch x86_64"
+export LDFLAGS="$LDFLAGS -arch i386 -arch x86_64"
 fi
 
 #======= HEADER END ===========
@@ -106,8 +120,10 @@ prepare()
 	test -d /tmp/skl || mkdir -p /tmp/skl
 	chmod a+w /tmp/skl
 	test -L $LNKDIR && rm $LNKDIR
-	ln -s "$BUILDDIR" $LNKDIR
-	chmod a+w $LNKDIR
+	test -L $MACPORTS && rm $MACPORTS
+	mkdir -p `dirname $MACPORTS`
+	ln -s "$BUILDDIR" $MACPORTS
+	chmod a+w $MACPORTS
 	echo
 }
 
@@ -115,14 +131,13 @@ mkmacports()
 {
 
 # cleanup previous installation
-if [ -e "$MACPORTS/" ]; then
-  rm -rf "$MACPORTS/"
+if [ -e "$BUILDDIR/" ]; then
+  rm -rf "$BUILDDIR/"
 fi
 
-mkdir -p "$MACPORTS/"
-
-cd "$BUILDDIR"
-cd ..
+mkdir -p "$BUILDDIR/"
+mkdir -p ~/src
+cd ~/src
 
 # compile MacPorts and do a selfupdate
 if [ ! -d "$MPSRC" ]; then
@@ -190,8 +205,19 @@ mkdeps()
 	[ -d $MACPORTS/tmp/app ] || mkdir -p $MACPORTS/tmp/app
 	sed -i "" -e "s|/Applications/MacPorts|$MACPORTS/tmp/app|g" "$MACPORTS/etc/macports/macports.conf" || true
 	
-	#echo "+universal +no_x11 +quartz" > $MACPORTS/etc/macports/variants.conf
-	echo "+no_x11 +quartz -x11 +nonfree" > $MACPORTS/etc/macports/variants.conf
+	if [ ! -z $UNIVERSAL ]; then
+		if [[ $X11 == 1 ]]; then
+			echo "+universal +x11 +nonfree" > $MACPORTS/etc/macports/variants.conf
+		else
+			echo "+universal +no_x11 +quartz -x11 +nonfree" > $MACPORTS/etc/macports/variants.conf
+		fi
+	else
+		if [[ $X11 == 1 ]]; then
+			echo "+x11 +nonfree" > $MACPORTS/etc/macports/variants.conf
+		else
+			echo "+no_x11 +quartz -x11 +nonfree" > $MACPORTS/etc/macports/variants.conf
+		fi
+	fi
 	
 	pushd ${SCRIPTPATH}/macports
 	portindex
@@ -242,6 +268,8 @@ mkdeps()
 	pushd $MACPORTS/bin/ > /dev/null
 	ln -sf python3.3 python3
 	popd > /dev/null
+	
+	cp ${SCRIPTPATH}/gtk-3.0/settings.ini ${MACPORTS}/etc/gtk-3.0/
 
 }
 
@@ -266,13 +294,16 @@ mksynfig()
 {
 	# building synfig-core
 	pushd ${SYNFIG_REPO_DIR}/synfig-core
-	export CXXFLAGS=-I${SYNFIG_PREFIX}/include/ImageMagick
+	export CXXFLAGS="$CXXFLAGS -I${SYNFIG_PREFIX}/include/ImageMagick"
 	make clean || true
 	libtoolize --ltdl --copy --force
 	sed -i 's/^AC_CONFIG_SUBDIRS(libltdl)$/m4_ifdef([_AC_SEEN_TAG(libltdl)], [], [AC_CONFIG_SUBDIRS(libltdl)])/' configure.ac || true
 	sed -i 's/^# AC_CONFIG_SUBDIRS(libltdl)$/m4_ifdef([_AC_SEEN_TAG(libltdl)], [], [AC_CONFIG_SUBDIRS(libltdl)])/' configure.ac || true
 	autoreconf --install --force
-	/bin/sh ./configure --prefix=${SYNFIG_PREFIX} --includedir=${SYNFIG_PREFIX}/include --disable-static --enable-shared --with-magickpp --without-libavcodec --with-boost=${MACPORTS} ${DEBUG}
+	if [ ! -z $UNIVERSAL ]; then
+	export DEPTRACK="--disable-dependency-tracking"
+	fi
+	/bin/sh ./configure ${DEPTRACK} --prefix=${SYNFIG_PREFIX} --includedir=${SYNFIG_PREFIX}/include --disable-static --enable-shared --with-magickpp --without-libavcodec --with-boost=${MACPORTS} ${DEBUG}
 	make -j$JOBS install
 	popd
 }
@@ -289,7 +320,10 @@ mksynfigstudio()
 	make clean || true
 	CONFIGURE_PACKAGE_OPTIONS='--disable-update-mimedb'
 	/bin/sh ./bootstrap.sh
-	/bin/sh ./configure --prefix=${SYNFIG_PREFIX} --includedir=${SYNFIG_PREFIX}/include --disable-static --enable-shared $DEBUG $CONFIGURE_PACKAGE_OPTIONS
+	if [ ! -z $UNIVERSAL ]; then
+	export DEPTRACK="--disable-dependency-tracking"
+	fi
+	/bin/sh ./configure ${DEPTRACK}  --prefix=${SYNFIG_PREFIX} --includedir=${SYNFIG_PREFIX}/include --disable-static --enable-shared $DEBUG $CONFIGURE_PACKAGE_OPTIONS
 	make -j$JOBS install
 
 	for n in AUTHORS COPYING NEWS README
@@ -314,6 +348,7 @@ mkapp()
 	[ ! -e $DIR/SynfigStudio.app ] || rm -rf $DIR/SynfigStudio.app
 
 	cp -R "$SCRIPTPATH/app-template" "$DIR/SynfigStudio-new-app"
+	mv $DIR/SynfigStudio-new-app/Contents/MacOS/synfigstudio $DIR/SynfigStudio-new-app/Contents/MacOS/SynfigStudio || true
 
 	#cd "$SCRIPTPATH"/LauncherCode
 	#xcodebuild -configuration Deployment
@@ -363,23 +398,6 @@ mkapp()
 	echo cleaning up locales ...
 	find locale \( \! -name "gtk*" -and \! -name "synfig*" \! -name "gutenprint*" \) -delete
 
-	if [ $OS -eq 9 -o $OS -eq 10 ]; then
-		cat << EOF >> "$SYNFIGAPP/etc/gtk-2.0/gtkrc"
-# This is the formula to calculate the font size for GIMP's menus
-# font_size = (72 / X11_dpi) * 13
-#
-# X11_dpi is the dpi value your X11 is set to. Since 10.5.7 this is by default: 96 dpi
-# to change the dpi setting open Terminal.app and type
-#     defaults write org.x.X11 dpi -int <new-dpi-value>
-# BTW, the default font size for Mac OS X is 13 pixel.
-#
-# X11 set to 96 dpi
-# gtk-font-name="Lucida Grande 9.8"
-# X11 set to 113 dpi 
-# gtk-font-name = "Lucida Grande 8.3"
-
-EOF
-	fi
 
 	# app bundle files
 	echo "*** Please do _NOT_ delete this file. The file script depends on it. ***" > "$SYNFIGAPP/v$VERSION"
@@ -411,12 +429,12 @@ mkdmg()
 	#echo Synfig version is: $VERSION
 
 	ARCH=`uname -m`
-	#if [ $OSXVER -lt 9 ]; then
-	#  FINAL_FILENAME=synfigstudio_"$VERSION"_tiger_"$ARCH"
-	#else
-	#  FINAL_FILENAME=synfigstudio_"$VERSION"_leopard_"$ARCH"
-	#fi
-	FINAL_FILENAME=synfigstudio-"$VERSION"."$ARCH"
+	if [ ! -z $UNIVERSAL ]; then
+	export FINAL_FILENAME=synfigstudio-"$VERSION"
+	else
+	export FINAL_FILENAME=synfigstudio-"$VERSION"."$ARCH"
+	fi
+	
 
 	VOLNAME="SynfigStudio"
 	TRANSITORY_FILENAME="synfig-wla.sparseimage"
@@ -427,11 +445,12 @@ mkdmg()
 
 	echo "Creating and attaching disk image..."
 	[ ! -e "$TRANSITORY_FILENAME" ] || rm -rf "$TRANSITORY_FILENAME"
-	/usr/bin/hdiutil create -type SPARSE -size 2048m -fs HFS+ -volname "$VOLNAME" -attach "$TRANSITORY_FILENAME"
+	/usr/bin/hdiutil create -type SPARSE -size 3072m -fs "Case-sensitive HFS+" -volname "$VOLNAME" -attach "$TRANSITORY_FILENAME"
 
 	echo "Copying files to disk image..."
 	cp -R $APPDIR /Volumes/"$VOLNAME"/SynfigStudio.app
 	cp -R ${SYNFIG_REPO_DIR}/synfig-studio/COPYING /Volumes/"$VOLNAME"/LICENSE.txt
+	mv /Volumes/"$VOLNAME"/SynfigStudio.app/Contents/MacOS/synfigstudio /Volumes/"$VOLNAME"/SynfigStudio.app/Contents/MacOS/SynfigStudio || true
 
 	# open the window so that the icon database is generated
 	open /Volumes/"$VOLNAME" || true
@@ -454,17 +473,17 @@ get_version_release_string()
 {
 	pushd "$SYNFIG_REPO_DIR" > /dev/null
 	VERSION=`cat synfig-core/configure.ac |egrep "AC_INIT\(\[Synfig Core\],"| sed "s|.*Core\],\[||" | sed "s|\],\[.*||"`
-	if [ -z $BREED ]; then
-		BREED="`git branch -a --no-color --contains HEAD | sed -e s/\*\ // | sed -e s/\(no\ branch\)// | tr '\n' ' ' | tr -s ' ' | sed s/^' '//`"
-		if ( echo $BREED | egrep origin/master > /dev/null ); then
-			#give a priority to master branch
-			BREED='master'
-		else
-			BREED=`echo $BREED | cut -d ' ' -f 1`
-			BREED=${BREED##*/}
-		fi
-		BREED=${BREED%_master}
-	fi
+	#if [ -z $BREED ]; then
+	#	BREED="`git branch -a --no-color --contains HEAD | sed -e s/\*\ // | sed -e s/\(no\ branch\)// | tr '\n' ' ' | tr -s ' ' | sed s/^' '//`"
+	#	if ( echo $BREED | egrep origin/master > /dev/null ); then
+	#		#give a priority to master branch
+	#		BREED='master'
+	#	else
+	#		BREED=`echo $BREED | cut -d ' ' -f 1`
+	#		BREED=${BREED##*/}
+	#	fi
+	#	BREED=${BREED%_master}
+	#fi
 	if [[ ${VERSION##*-RC} != ${VERSION} ]]; then
 		#if [[ $BREED == 'master' ]]; then
 			BREED=rc${VERSION##*-RC}
@@ -473,9 +492,12 @@ get_version_release_string()
 		#fi
 		VERSION=${VERSION%%-*}
 	fi
-	BREED=`echo $BREED | tr _ . | tr - .`	# No "-" or "_" characters, becuse RPM and DEB complain
+	if [ ! -z $BREED ]; then 
+		BREED=`echo $BREED | tr _ . | tr - .`	# No "-" or "_" characters, becuse RPM and DEB complain
+		BREED=.$BREED
+	fi
 	REVISION=`git show --pretty=format:%ci HEAD |  head -c 10 | tr -d '-'`
-	echo "$VERSION-$REVISION.$BREED.$RELEASE"
+	echo "$VERSION-$REVISION$BREED.$RELEASE"
 	popd >/dev/null
 }
 

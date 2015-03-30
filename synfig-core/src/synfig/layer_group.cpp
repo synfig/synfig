@@ -141,6 +141,8 @@ Layer_Group::get_param(const String& param)const
 void
 Layer_Group::apply_z_range_to_params(ContextParams &cp)const
 {
+	if (optimized()) return; // z_range already applied while optimizxation
+
 	cp.z_range=param_z_range.get(bool());
 	cp.z_range_position=param_z_range_position.get(Real());
 	cp.z_range_depth=param_z_range_depth.get(Real());

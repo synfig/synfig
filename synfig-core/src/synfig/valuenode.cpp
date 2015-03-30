@@ -206,16 +206,16 @@ ValueNode::subsys_init()
 	ADD_VALUENODE(ValueNode_Bone_Root,		  "bone_root",		  _("Root Bone"),		 RELEASE_VERSION_0_62_00); 
 	ADD_VALUENODE2(ValueNode_StaticList,	  "static_list",	  _("Static List"),		 RELEASE_VERSION_0_62_00); 
 	ADD_VALUENODE(ValueNode_BoneWeightPair,	  "boneweightpair",	  _("Bone Weight Pair"), RELEASE_VERSION_0_62_00); 
-	ADD_VALUENODE(ValueNode_BoneLink,		  "bone_link",		  _("Bone Link"),		 RELEASE_VERSION_0_65_0);
+	ADD_VALUENODE(ValueNode_BoneLink,		  "bone_link",		  _("Bone Link"),		 RELEASE_VERSION_1_0);
 
 	ADD_VALUENODE(ValueNode_WPList,           "wplist",           _("WPList"),           RELEASE_VERSION_0_63_00);
 	ADD_VALUENODE(ValueNode_DIList,           "dilist",           _("DIList"),           RELEASE_VERSION_0_63_01);
 
-	ADD_VALUENODE(ValueNode_Average,		  "average",		  _("Average"),			 RELEASE_VERSION_0_65_0);
-	ADD_VALUENODE(ValueNode_WeightedAverage,  "weighted_average", _("Weighted Average"), RELEASE_VERSION_0_65_0);
+	ADD_VALUENODE(ValueNode_Average,		  "average",		  _("Average"),			 RELEASE_VERSION_1_0);
+	ADD_VALUENODE(ValueNode_WeightedAverage,  "weighted_average", _("Weighted Average"), RELEASE_VERSION_1_0);
 	
-	ADD_VALUENODE(ValueNode_Dynamic,           "dynamic",         _("Dynamic"),          RELEASE_VERSION_0_65_0);
-	ADD_VALUENODE(ValueNode_Derivative,        "derivative",      _("Derivative"),       RELEASE_VERSION_0_65_0);
+	ADD_VALUENODE(ValueNode_Dynamic,           "dynamic",         _("Dynamic"),          RELEASE_VERSION_1_0);
+	ADD_VALUENODE(ValueNode_Derivative,        "derivative",      _("Derivative"),       RELEASE_VERSION_1_0);
 
 #undef ADD_VALUENODE_CREATE
 #undef ADD_VALUENODE

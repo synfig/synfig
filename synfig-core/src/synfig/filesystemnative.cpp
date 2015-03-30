@@ -84,25 +84,25 @@ FileSystemNative::~FileSystemNative() { }
 
 bool FileSystemNative::is_file(const std::string &filename)
 {
-	return Gio::File::create_for_path(filename)->query_file_type()
+	return Gio::File::create_for_path(fix_slashes(filename))->query_file_type()
 	    == Gio::FILE_TYPE_REGULAR;
 }
 
 bool FileSystemNative::is_directory(const std::string &filename)
 {
-	return Gio::File::create_for_path(filename)->query_file_type()
+	return Gio::File::create_for_path(fix_slashes(filename))->query_file_type()
 	    == Gio::FILE_TYPE_DIRECTORY;
 }
 
 bool FileSystemNative::directory_create(const std::string &dirname)
 {
 	return is_directory(dirname)
-	    || Gio::File::create_for_path(dirname)->make_directory();
+	    || Gio::File::create_for_path(fix_slashes(dirname))->make_directory();
 }
 
 bool FileSystemNative::file_remove(const std::string &filename)
 {
-	return 0 == remove(filename.c_str());
+	return 0 == remove(fix_slashes(filename).c_str());
 }
 
 bool FileSystemNative::file_rename(const std::string &from_filename, const std::string &to_filename)
@@ -117,17 +117,17 @@ bool FileSystemNative::file_rename(const std::string &from_filename, const std::
 	do {
 		synfig::GUID guid;
 		old_file = to_filename+"."+guid.get_string().substr(0,8);
-	} while (stat(old_file.c_str(), &buf) != -1);
+	} while (stat(Glib::locale_from_utf8(old_file).c_str(), &buf) != -1);
 	
-	rename(to_filename.c_str(),old_file.c_str());
+	rename(Glib::locale_from_utf8(to_filename).c_str(),Glib::locale_from_utf8(old_file).c_str());
 	
-	if(rename(from_filename.c_str(),to_filename.c_str())!=0)
+	if(rename(Glib::locale_from_utf8(from_filename).c_str(),Glib::locale_from_utf8(to_filename).c_str())!=0)
 	{
-		rename(old_file.c_str(),to_filename.c_str());
+		rename(Glib::locale_from_utf8(old_file).c_str(),Glib::locale_from_utf8(to_filename).c_str());
 		synfig::error("synfig::save_canvas(): Unable to rename file to correct filename, errno=%d",errno);
 		return false;
 	}
-	remove(old_file.c_str());
+	remove(Glib::locale_from_utf8(old_file).c_str());
 	
 	return true;
 #else
@@ -139,9 +139,9 @@ bool FileSystemNative::file_rename(const std::string &from_filename, const std::
 FileSystem::ReadStreamHandle FileSystemNative::get_read_stream(const std::string &filename)
 {
 #ifdef WIN32
-	FILE *f = fopen(Glib::locale_from_utf8(filename).c_str(), "rb");
+	FILE *f = fopen(Glib::locale_from_utf8(fix_slashes(filename)).c_str(), "rb");
 #else
-	FILE *f = fopen(filename.c_str(), "rb");
+	FILE *f = fopen(fix_slashes(filename).c_str(), "rb");
 #endif
 	return f == NULL
 	     ? ReadStreamHandle()
@@ -151,9 +151,9 @@ FileSystem::ReadStreamHandle FileSystemNative::get_read_stream(const std::string
 FileSystem::WriteStreamHandle FileSystemNative::get_write_stream(const std::string &filename)
 {
 #ifdef WIN32
-	FILE *f = fopen(Glib::locale_from_utf8(filename).c_str(), "wb");
+	FILE *f = fopen(Glib::locale_from_utf8(fix_slashes(filename)).c_str(), "wb");
 #else
-	FILE *f = fopen(filename.c_str(), "wb");
+	FILE *f = fopen(fix_slashes(filename).c_str(), "wb");
 #endif
 	return f == NULL
 	     ? WriteStreamHandle()

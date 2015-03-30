@@ -4,6 +4,35 @@ More detailed notes are available on the news page:
 
 http://synfig.org/cms/en/news/
 
+ 1.0 (git tag "1.0") - April 16, 2015 - Major release.
+ 
+  * Introduce new file format (SFG) which can store embed data.
+  * Group Layer now supports all basic transformations: Translate, Rotate, Scale, Stretch, Skew.
+  * Improved Spline Tangents: Now it is possible to split angle or radius independently.
+  * New ValueNode: Dynamic.
+  * New ValueNode: Average.
+  * New ValueNode: Weighted Average.
+  * New Layer: Skeleton Distortion.
+  * Sound: Integrate MLT framework for sound Playback.
+  * New layer: Sound Layer.
+  * Z-Range feature for Groups: Hides all child layers with Z-Depth values outside of specified range.
+  * Reworked software rendering engine.
+
+ 0.64.3 (git tag "0.64.3") - December 24, 2014 - Bug fixes.
+ 
+  * Fix crash for Magick++, Gif and other targets.
+  * Fix FFmpeg target for Ubuntu 14.10 (bug #729).
+  * Fix Extract Alpha option for CairoPng target (bug #730).
+  
+ 0.64.2 (git tag "0.64.2") - October 18, 2014 - Minor features, bug fixes.
+  
+  * Rendering: Allow to set mode of alpha handling.
+  * Rendering: "Extract Alpha" mode ("--extract-alpha" or "-x" CLI option).
+  * Rendering: Lossles H.264 encoding profile.
+  * Fix ffmpeg target for Ubuntu (bug #118).
+  * Fix file saving in Windows (bug #572).
+  * Fix compatibility issues for OSX 10.9.
+
  0.64.1 (git tag "0.64.1") - November 4, 2013 - Features, bug fixes.
   
   * Parameters are stored as ValueBase now.

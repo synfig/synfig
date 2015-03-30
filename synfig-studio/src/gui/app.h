@@ -215,6 +215,7 @@ public:
 	static bool restrict_radius_ducks;
 	static bool resize_imported_images;
 	static bool enable_experimental_features;
+	static bool use_dark_theme;
 
 	static synfigapp::PluginManager plugin_manager;
 	
@@ -318,6 +319,7 @@ public:
 	static void set_workspace_compositing();
 	static void set_workspace_animating();
 	static void restore_default_settings();
+	static void apply_gtk_settings(bool);
 
 	static const std::list<std::string>& get_recent_files();
 

@@ -282,6 +282,9 @@ private:
 	*/
 	bool active_;
 
+	//! flag to prevent re-apply optimization features
+	bool optimized_;
+
 	/*! When \c true, layer will skipped while final rendering
 	**	but will still present onto work view.
 	**	\see set_exclude_from_rendering(), get_exclude_from_rendering()
@@ -406,6 +409,12 @@ public:
 
 	//! Returns that status of the 'active' flag
 	bool active()const { return active_; }
+
+	//! flag to prevent re-apply optimization features
+	bool optimized()const { return optimized_; }
+
+	//! set flag to prevent re-apply optimization features
+	void set_optimized(bool x) { optimized_ = x; }
 
 	//! Sets the 'exclude_from_rendering' flag for the Layer
 	/*! When set, layer will skipped while final rendering

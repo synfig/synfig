@@ -7,7 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
-**	Copyright (c) 2009-2012 Diego Barrios Romero
+**	Copyright (c) 2009-2015 Diego Barrios Romero
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -32,15 +32,16 @@
 #endif
 
 #include <iostream>
-#include <ETL/stringf>
+#include <string>
 #include <list>
-#include <cstring>
 
 #include <boost/program_options/options_description.hpp>
 #include <boost/program_options/parsers.hpp>
 #include <boost/program_options/variables_map.hpp>
 #include <boost/tokenizer.hpp>
 #include <boost/token_functions.hpp>
+#include <boost/filesystem.hpp>
+#include <boost/format.hpp>
 
 #include <glibmm.h>
 
@@ -66,88 +67,53 @@
 #include "named_type.h"
 #endif
 
-using namespace std;
-using namespace etl;
-using namespace synfig;
-using namespace boost;
 namespace po=boost::program_options;
+namespace bfs=boost::filesystem;
 
-/* === G L O B A L S ================================================ */
-
-String binary_path;
-int verbosity = 0;
-bool be_quiet = false;
-bool print_benchmarks = false;
-int threads = 1;
-
-//! Allowed video codecs
-/*! \warning This variable is linked to allowed_video_codecs_description,
- *  if you change this you must change the other acordingly.
- *  \warning These codecs are linked to the filename extensions for
- *  mod_ffmpeg. If you change this you must change the others acordingly.
- */
-const char* allowed_video_codecs[] =
+std::string _appendAlphaToFilename(std::string input_filename)
 {
-	"flv", "h263p", "huffyuv", "libtheora", "libx264", "libx264-lossless",
-	"mjpeg", "mpeg1video", "mpeg2video", "mpeg4", "msmpeg4",
-	"msmpeg4v1", "msmpeg4v2", "wmv1", "wmv2", NULL
-};
+    bfs::path filename(input_filename);
+    bfs::path alpha_filename(filename.stem().string() + "-alpha" +
+        filename.extension().string());
+    return bfs::path(filename.parent_path() / alpha_filename).string();
+}
 
-//! Allowed video codecs description.
-/*! \warning This variable is linked to allowed_video_codecs,
- *  if you change this you must change the other acordingly.
- */
-const char* allowed_video_codecs_description[] =
-{
-	"Flash Video (FLV) / Sorenson Spark / Sorenson H.263.",
-	"H.263+ / H.263-1998 / H.263 version 2.",
-	"Huffyuv / HuffYUV.",
-	"libtheora Theora.",
-	"H.264 / AVC / MPEG-4 AVC.",
-	"H.264 / AVC / MPEG-4 AVC (LossLess).",
-	"MJPEG (Motion JPEG).",
-	"raw MPEG-1 video.",
-	"raw MPEG-2 video.",
-	"MPEG-4 part 2. (XviD/DivX)",
-	"MPEG-4 part 2 Microsoft variant version 3.",
-	"MPEG-4 part 2 Microsoft variant version 1.",
-	"MPEG-4 part 2 Microsoft variant version 2.",
-	"Windows Media Video 7.",
-	"Windows Media Video 8.",
-	NULL
-};
-
-/* === M E T H O D S ================================================ */
-
-int main(int ac, char* av[])
+int main(int argc, char* argv[])
 {
 	setlocale(LC_ALL, "");
-	
-	binary_path = synfig::get_binary_path(String(av[0]));
+
+	SynfigToolGeneralOptions::create_singleton_instance(argv[0]);
+
+	bfs::path binary_path =
+		SynfigToolGeneralOptions::instance()->get_binary_path();
 
 #ifdef ENABLE_NLS
-	String locale_dir;
-	locale_dir = etl::dirname(etl::dirname(binary_path))+ETL_DIRECTORY_SEPARATOR+"share"+ETL_DIRECTORY_SEPARATOR+"locale";
+	boost::filesystem::path locale_path =
+		binary_path.parent_path().parent_path();
+	locale_path = locale_path/"share"/"locale";
 #ifdef WIN32
-	locale_dir = Glib::locale_from_utf8(locale_dir);
+	locale_path = Glib::locale_from_utf8(locale_path.string());
 #endif
-	bindtextdomain("synfig", locale_dir.c_str() );
+	bindtextdomain("synfig", locale_path.string().c_str() );
 	bind_textdomain_codeset("synfig", "UTF-8");
 	textdomain("synfig");
 #endif
 
 	if(!SYNFIG_CHECK_VERSION())
 	{
-		cerr << _("FATAL: Synfig Version Mismatch") << endl;
+		std::cerr << _("FATAL: Synfig Version Mismatch") << std::endl;
 		return SYNFIGTOOL_BADVERSION;
 	}
 
-	try {
-		if(ac==1)
+	try
+	{
+		if(argc == 1)
+		{
 			throw (SynfigToolException(SYNFIGTOOL_MISSINGARGUMENT));
+		}
 
 
-		named_type<string>* target_arg_desc = new named_type<string>("module");
+		named_type<std::string>* target_arg_desc = new named_type<std::string>("module");
 		named_type<int>* width_arg_desc = new named_type<int>("NUM");
 		named_type<int>* height_arg_desc = new named_type<int>("NUM");
 		named_type<int>* span_arg_desc = new named_type<int>("NUM");
@@ -156,22 +122,22 @@ int main(int ac, char* av[])
 		named_type<float>* gamma_arg_desc = new named_type<float>("NUM (=2.2)");
 		named_type<int>* threads_arg_desc = new named_type<int>("NUM");
 		named_type<int>* verbosity_arg_desc = new named_type<int>("NUM");
-		named_type<string>* canvas_arg_desc = new named_type<string>("canvas-id");
-		named_type<string>* output_file_arg_desc = new named_type<string>("filename");
-		named_type<string>* input_file_arg_desc = new named_type<string>("filename");
+		named_type<std::string>* canvas_arg_desc = new named_type<std::string>("canvas-id");
+		named_type<std::string>* output_file_arg_desc = new named_type<std::string>("filename");
+		named_type<std::string>* input_file_arg_desc = new named_type<std::string>("filename");
 		named_type<float>* fps_arg_desc = new named_type<float>("NUM");
-		named_type<string>* time_arg_desc = new named_type<string>("seconds");
-		named_type<string>* begin_time_arg_desc = new named_type<string>("seconds");
-		named_type<string>* start_time_arg_desc = new named_type<string>("seconds");
-		named_type<string>* end_time_arg_desc = new named_type<string>("seconds");
+		named_type<std::string>* time_arg_desc = new named_type<std::string>("seconds");
+		named_type<std::string>* begin_time_arg_desc = new named_type<std::string>("seconds");
+		named_type<std::string>* start_time_arg_desc = new named_type<std::string>("seconds");
+		named_type<std::string>* end_time_arg_desc = new named_type<std::string>("seconds");
 		named_type<int>* dpi_arg_desc = new named_type<int>("NUM");
 		named_type<int>* dpi_x_arg_desc = new named_type<int>("NUM");
 		named_type<int>* dpi_y_arg_desc = new named_type<int>("NUM");
-		named_type<string>* append_filename_arg_desc = new named_type<string>("filename");
-		named_type<string>* sequence_separator_arg_desc = new named_type<string>("string");
-		named_type<string>* canvas_info_fields_arg_desc = new named_type<string>("fields");
-		named_type<string>* layer_info_field_arg_desc = new named_type<string>("layer-name");
-		named_type<string>* video_codec_arg_desc = new named_type<string>("codec");
+		named_type<std::string>* append_filename_arg_desc = new named_type<std::string>("filename");
+		named_type<std::string>* sequence_separator_arg_desc = new named_type<std::string>("string");
+		named_type<std::string>* canvas_info_fields_arg_desc = new named_type<std::string>("fields");
+		named_type<std::string>* layer_info_field_arg_desc = new named_type<std::string>("layer-name");
+		named_type<std::string>* video_codec_arg_desc = new named_type<std::string>("codec");
 		named_type<int>* video_bitrate_arg_desc = new named_type<int>("bitrate");
 
         po::options_description po_settings(_("Settings"));
@@ -181,7 +147,7 @@ int main(int ac, char* av[])
             ("height,h", height_arg_desc, _("Set the image height in pixels (Use zero for file default)"))
             ("span,s", span_arg_desc, _("Set the diagonal size of image window (Span)"))
             ("antialias,a", antialias_arg_desc, _("Set antialias amount for parametric renderer."))
-            ("quality,Q", quality_arg_desc->default_value(DEFAULT_QUALITY), strprintf(_("Specify image quality for accelerated renderer (Default: %d)"), DEFAULT_QUALITY).c_str())
+            ("quality,Q", quality_arg_desc->default_value(DEFAULT_QUALITY), (boost::format(_("Specify image quality for accelerated renderer (Default: %d)")) % DEFAULT_QUALITY).str().c_str())
             ("gamma,g", gamma_arg_desc, _("Gamma"))
             ("threads,T", threads_arg_desc, _("Enable multithreaded renderer using the specified number of threads"))
             ("input-file,i", input_file_arg_desc, _("Specify input filename"))
@@ -272,7 +238,7 @@ int main(int ac, char* av[])
 		po_visible.add(po_info);
 
         po::variables_map vm;
-        po::store(po::command_line_parser(ac, av).options(po_all).
+        po::store(po::command_line_parser(argc, argv).options(po_all).
 				  positional(po_positional).run(), vm);
 
         OptionsProcessor op(vm, po_visible);
@@ -288,13 +254,13 @@ int main(int ac, char* av[])
 		// TODO: Optional load of main only if needed. i.e. not needed to display help
 		// Synfig Main initialization needs to be after verbose and
 		// before any other where it's used
-		Progress p(binary_path.c_str());
-		synfig::Main synfig_main(etl::dirname(binary_path), &p);
+		Progress p(binary_path.string().c_str());
+		synfig::Main synfig_main(binary_path.parent_path().string(), &p);
 
         // Info options -----------------------------------------------
         op.process_info_options();
 
-		list<Job> job_list;
+		std::list<Job> job_list;
 
 		// Processing --------------------------------------------------
 		Job job;
@@ -302,10 +268,10 @@ int main(int ac, char* av[])
 		job.desc = job.canvas->rend_desc() = op.extract_renddesc(job.canvas->rend_desc());
 
 		if (job.extract_alpha) {
-			job.alpha_mode = TARGET_ALPHA_MODE_REDUCE;
+			job.alpha_mode = synfig::TARGET_ALPHA_MODE_REDUCE;
 			job_list.push_front(job);
-			job.alpha_mode = TARGET_ALPHA_MODE_EXTRACT;
-			job.outfilename = filename_sans_extension(job.outfilename)+"-alpha"+filename_extension(job.outfilename);
+			job.alpha_mode = synfig::TARGET_ALPHA_MODE_EXTRACT;
+			job.outfilename = _appendAlphaToFilename(job.outfilename);
 			job_list.push_front(job);
 		} else {
 			job_list.push_front(job);
@@ -319,13 +285,13 @@ int main(int ac, char* av[])
     catch (SynfigToolException& e) {
     	exit_code code = e.get_exit_code();
     	if (code != SYNFIGTOOL_HELP && code != SYNFIGTOOL_OK)
-    		cerr << e.get_message().c_str() << endl;
+    		std::cerr << e.get_message().c_str() << std::endl;
     	if (code == SYNFIGTOOL_MISSINGARGUMENT)
     		print_usage();
 
     	return code;
     }
     catch(std::exception& e) {
-        cout << e.what() << "\n";
+        std::cout << e.what() << std::endl;
     }
 }

@@ -45,7 +45,7 @@ struct TargetParam
 	 *  its own valid default settings.
 	 */
 	TargetParam (const std::string& Video_codec = "none", int Bitrate = -1):
-		video_codec(Video_codec), bitrate(Bitrate), offset_x(0), offset_y(0),rows(0),columns(0),append(true),dir(HR)
+		video_codec(Video_codec), bitrate(Bitrate), sequence_separator("."), offset_x(0), offset_y(0),rows(0),columns(0),append(true),dir(HR)
 	{ }
 
 	std::string video_codec;
