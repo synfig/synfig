@@ -386,6 +386,7 @@ Widget_Preview::Widget_Preview():
 	jack_enabled(false),
 	jack_is_playing(false),
 	jack_time(0),
+	jack_initial_time(0),
 	jack_offset(0),
 #ifdef WITH_JACK
 	jack_client(NULL),
@@ -607,6 +608,7 @@ Widget_Preview::Widget_Preview():
 
 studio::Widget_Preview::~Widget_Preview()
 {
+	set_jack_enabled(false);
 }
 
 void studio::Widget_Preview::update()
@@ -1353,6 +1355,9 @@ void Widget_Preview::set_jack_enabled(bool value) {
 	jack_enabled = value;
 	if (jack_enabled)
 	{
+		// lock jack in canvas views
+		App::jack_lock();
+
 		// initialize jack
 		jack_client = jack_client_open("synfigstudiopreview", JackNullOption, 0);
 		jack_set_sync_callback(jack_client, jack_sync_callback, this);
@@ -1361,14 +1366,27 @@ void Widget_Preview::set_jack_enabled(bool value) {
 			jack_client_close(jack_client);
 			jack_client = NULL;
 			jack_enabled = false;
+			App::jack_unlock();
+		} else {
+			// remember time
+			on_jack_sync();
+			jack_initial_time = jack_time;
 		}
 	}
 	else
 	{
+		// restore time
+		jack_nframes_t sr = jack_get_sample_rate(jack_client);
+		jack_nframes_t nframes = ((double)sr * (jack_initial_time));
+		jack_transport_locate(jack_client, nframes);
+
 		// deinitialize jack
 		jack_deactivate(jack_client);
 		jack_client_close(jack_client);
 		jack_client = NULL;
+
+		// unlock jack in canvas views
+		App::jack_unlock();
 	}
 
 	//jackdial->toggle_enable_jack(jack_enabled);
