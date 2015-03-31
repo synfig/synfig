@@ -696,6 +696,7 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	jack_enabled			(false),
 	jack_actual_enabled		(false),
 	jack_locks				(0),
+	jack_enabled_in_preview	(false),
 #ifdef WITH_JACK
 	jack_client				(NULL),
 	jack_synchronizing		(true),

@@ -431,6 +431,7 @@ private:
 	bool jack_enabled;
 	bool jack_actual_enabled;
 	int jack_locks;
+	bool jack_enabled_in_preview;
 #ifdef WITH_JACK
 	Glib::Dispatcher jack_dispatcher;
 	jack_client_t *jack_client;
@@ -566,6 +567,8 @@ public:
 	bool jack_is_locked() const { return jack_locks > 0; }
 	void jack_lock();
 	void jack_unlock();
+	bool get_jack_enabled_in_preview() const { return jack_enabled_in_preview; }
+	void set_jack_enabled_in_preview(bool x) { jack_enabled_in_preview = x; }
 #ifdef WITH_JACK
 	bool get_jack_enabled() const { return jack_enabled; }
 	bool get_jack_actual_enabled() const { return jack_actual_enabled; }

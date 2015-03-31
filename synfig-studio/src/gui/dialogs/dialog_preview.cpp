@@ -87,11 +87,16 @@ void Dialog_Preview::set_preview(etl::handle<Preview> prev)
 	//preview.update();
 }
 
+void Dialog_Preview::on_show()
+{
+	Window::on_show();
+	preview.on_show();
+}
+
 void Dialog_Preview::on_hide()
 {
 	Window::on_hide();
-	preview.pause();
-	preview.stoprender();
+	preview.on_hide();
 }
 
 //press escape key to close window
