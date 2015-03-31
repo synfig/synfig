@@ -694,6 +694,8 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	is_playing_				(false),
 
 	jack_enabled			(false),
+	jack_actual_enabled		(false),
+	jack_locks				(0),
 #ifdef WITH_JACK
 	jack_client				(NULL),
 	jack_synchronizing		(true),
@@ -899,6 +901,9 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	instance->signal_canvas_view_created()(this);
 	//synfig::info("Canvasview: Constructor Done");
 
+	if (App::jack_is_locked())
+		jack_lock();
+
 #ifdef WITH_JACK
 	jack_dispatcher.connect(sigc::mem_fun(*this, &CanvasView::on_jack_sync));
 #endif
@@ -971,57 +976,89 @@ void CanvasView::present()
 	update_title();
 }
 
+void CanvasView::jack_lock()
+{
+	++jack_locks;
+#ifdef WITH_JACK
+	if (jack_locks == 1)
+		set_jack_enabled(get_jack_enabled());
+#endif
+}
+
+void CanvasView::jack_unlock()
+{
+	--jack_locks;
+	assert(jack_locks >= 0);
+#ifdef WITH_JACK
+	if (jack_locks == 0)
+		set_jack_enabled(get_jack_enabled());
+#endif
+}
+
 #ifdef WITH_JACK
 void CanvasView::set_jack_enabled(bool value)
 {
-	if (jack_enabled == value) return;
-	jack_enabled = value;
-	if (jack_enabled)
-	{
-		// initialize jack
-		stop();
-		jack_client = jack_client_open("synfigstudiocanvas", JackNullOption, 0);
-		jack_set_sync_callback(jack_client, jack_sync_callback, this);
-		if (jack_activate(jack_client) != 0)
+	bool actual_value = value && !jack_is_locked();
+	if (jack_actual_enabled != actual_value) {
+		jack_actual_enabled = actual_value;
+		if (jack_actual_enabled)
 		{
+			// initialize jack
+			stop();
+			jack_client = jack_client_open("synfigstudiocanvas", JackNullOption, 0);
+			jack_set_sync_callback(jack_client, jack_sync_callback, this);
+			if (jack_activate(jack_client) != 0)
+			{
+				jack_client_close(jack_client);
+				jack_client = NULL;
+				jack_actual_enabled = false;
+				// make conditions to update button
+				jack_enabled = true;
+				value = false;
+			}
+		}
+		else
+		{
+			// deinitialize jack
+			jack_deactivate(jack_client);
 			jack_client_close(jack_client);
 			jack_client = NULL;
-			jack_enabled = false;
 		}
-	}
-	else
-	{
-		// deinitialize jack
-		jack_deactivate(jack_client);
-		jack_client_close(jack_client);
-		jack_client = NULL;
+
+		jackbutton->set_sensitive(!jack_is_locked());
 	}
 
-	Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon_16x16");
-	Gtk::Image *icon;
-	offset_widget = jackdial->get_offsetwidget();
-
-	if (jackbutton->get_active())
+	if (jack_enabled != value)
 	{
-		icon = manage(new Gtk::Image(Gtk::StockID("synfig-jack"),iconsize));
-		jackbutton->remove();
-		jackbutton->add(*icon);
-		jackbutton->set_tooltip_text(_("Disable JACK"));
-		icon->set_padding(0,0);
-		icon->show();
+		jack_enabled = value;
 
-		offset_widget->show();
-	}
-	else
-	{
-		icon = manage(new Gtk::Image(Gtk::StockID("synfig-jack"),iconsize));
-		jackbutton->remove();
-		jackbutton->add(*icon);
-		jackbutton->set_tooltip_text(_("Enable JACK"));
-		icon->set_padding(0,0);
-		icon->show();
+		Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon_16x16");
+		Gtk::Image *icon;
+		offset_widget = jackdial->get_offsetwidget();
 
-		offset_widget->hide();
+		if (jackbutton->get_active() != jack_enabled)
+			jackbutton->set_active(jack_enabled);
+
+		if (jack_enabled)
+		{
+			icon = manage(new Gtk::Image(Gtk::StockID("synfig-jack"),iconsize));
+			jackbutton->remove();
+			jackbutton->add(*icon);
+			jackbutton->set_tooltip_text(_("Disable JACK"));
+			icon->set_padding(0,0);
+			icon->show();
+			offset_widget->show();
+		}
+		else
+		{
+			icon = manage(new Gtk::Image(Gtk::StockID("synfig-jack"),iconsize));
+			jackbutton->remove();
+			jackbutton->add(*icon);
+			jackbutton->set_tooltip_text(_("Enable JACK"));
+			icon->set_padding(0,0);
+			icon->show();
+			offset_widget->hide();
+		}
 	}
 }
 #endif

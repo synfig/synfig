@@ -233,6 +233,8 @@ synfig::Gamma App::gamma;
 
 Glib::RefPtr<studio::UIManager>	App::ui_manager_;
 
+int App::jack_locks_=0;
+
 synfig::Distance::System App::distance_system;
 
 studio::Dialog_Setup* App::dialog_setup;
@@ -1794,6 +1796,43 @@ App::add_recent_file(const std::string &file_name)
 }
 
 static Time::Format _App_time_format(Time::FORMAT_FRAMES);
+
+bool App::jack_is_locked()
+{
+	return jack_locks_ > 0;
+}
+
+void App::jack_lock()
+{
+	++jack_locks_;
+	if (jack_locks_ == 1)
+	{
+		// lock jack in instances
+		for(std::list< etl::handle<Instance> >::const_iterator i = instance_list.begin(); i != instance_list.end(); ++i)
+		{
+			const Instance::CanvasViewList &views = (*i)->canvas_view_list();
+			for(Instance::CanvasViewList::const_iterator j = views.begin(); j != views.end(); ++j)
+				(*j)->jack_lock();
+		}
+	}
+}
+
+void App::jack_unlock()
+{
+	--jack_locks_;
+	assert(jack_locks_ >= 0);
+	if (jack_locks_ == 0)
+	{
+		// unlock jack in instances
+		for(std::list< etl::handle<Instance> >::const_iterator i = instance_list.begin(); i != instance_list.end(); ++i)
+		{
+			const Instance::CanvasViewList &views = (*i)->canvas_view_list();
+			for(Instance::CanvasViewList::const_iterator j = views.begin(); j != views.end(); ++j)
+				(*j)->jack_unlock();
+		}
+	}
+}
+
 
 Time::Format
 App::get_time_format()

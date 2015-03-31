@@ -173,6 +173,8 @@ private:
 
 	static Glib::RefPtr<UIManager>	ui_manager_;
 
+	static int jack_locks_;
+
 //	static std::list< etl::handle< Module > > module_list_;
 
 	/*
@@ -356,6 +358,9 @@ public:
 	static int get_max_recent_files();
 	static void set_max_recent_files(int x);
 
+	static bool jack_is_locked();
+	static void jack_lock();
+	static void jack_unlock();
 
 	static synfig::Time::Format get_time_format();
 	static void set_time_format(synfig::Time::Format x);
