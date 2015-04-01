@@ -162,6 +162,9 @@ namespace synfig
 		static bool copy(Handle from_file_system, const std::string &from_filename, Handle to_file_system, const std::string &to_filename);
 
 		static std::string fix_slashes(const std::string &filename);
+
+		///!@brief Read a stream line by line even '\r\n' ended
+		static std::istream& safeGetline(std::istream& is, std::string& t);
 	};
 
 }
