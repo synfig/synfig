@@ -1078,6 +1078,18 @@ Action::ValueDescSet::prepare()
 					|| type == type_vector)
 					)
 				{
+					if ( !get_canvas_interface()
+					  || !get_canvas_interface()->get_ui_interface()
+					  || UIInterface::RESPONSE_OK != get_canvas_interface()->get_ui_interface()->confirmation(
+							 _("Are you sure to change all waypoints of animated value?" ),
+							 _("Animation mode is disabled"),
+							 _("No"),
+							 _("Yes"),
+							 synfigapp::UIInterface::RESPONSE_OK ))
+					{
+						throw Error(_("Cancelled by user"));
+					}
+
 					synfig::ValueNode_Animated::WaypointList::const_iterator iter;
 					for(iter=animated->waypoint_list().begin(); iter<animated->waypoint_list().end(); iter++)
 					{
