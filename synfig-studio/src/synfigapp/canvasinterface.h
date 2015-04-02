@@ -299,7 +299,7 @@ public:
 	void waypoint_remove(synfigapp::ValueDesc value_desc,synfig::Waypoint waypoint);
 	void waypoint_remove(synfig::ValueNode::Handle value_node,synfig::Waypoint waypoint);
 
-	bool change_value(synfigapp::ValueDesc value_desc,synfig::ValueBase new_value);
+	bool change_value(synfigapp::ValueDesc value_desc,synfig::ValueBase new_value,bool lock_animation = false);
 
 
 	int find_important_value_descs(std::vector<synfigapp::ValueDesc>& out);

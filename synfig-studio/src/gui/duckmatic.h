@@ -231,6 +231,7 @@ private:
 	std::list<sigc::connection> duck_changed_connections;
 
 	bool alternative_mode_;
+	bool lock_animation_mode_;
 
 	/*
  -- ** -- P R O T E C T E D   D A T A -----------------------------------------
@@ -288,6 +289,9 @@ public:
 
 	void set_alternative_mode(bool x) { alternative_mode_=x; }
 	bool get_alternative_mode()const { return alternative_mode_; }
+
+	void set_lock_animation_mode(bool x) { lock_animation_mode_=x; }
+	bool get_lock_animation_mode()const { return lock_animation_mode_; }
 
 	sigc::signal<void>& signal_duck_selection_changed() { return signal_duck_selection_changed_; }
 	sigc::signal<void>& signal_strokes_changed() { return signal_strokes_changed_; }
