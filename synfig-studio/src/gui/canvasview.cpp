@@ -683,8 +683,8 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	toggleducksdial         (Gtk::IconSize::from_name("synfig-small_icon_16x16")),
 	resolutiondial         	(Gtk::IconSize::from_name("synfig-small_icon_16x16")),
 	quality_adjustment_		(Gtk::Adjustment::create(8,1,10,1,1,0)),
-	future_onion_adjustment_(Gtk::Adjustment::create(0,0,2,1,1,0)),
-	past_onion_adjustment_  (Gtk::Adjustment::create(0,0,2,1,1,0)),
+	future_onion_adjustment_(Gtk::Adjustment::create(0,0,ONION_SKIN_FUTURE,1,1,0)),
+	past_onion_adjustment_  (Gtk::Adjustment::create(0,0,ONION_SKIN_PAST,1,1,0)),
 
 	timeslider				(new Widget_Timeslider),
 	widget_kf_list			(new Widget_Keyframe_List),
@@ -1441,6 +1441,21 @@ CanvasView::create_display_bar()
 	// Separator
 	displaybar->append( *create_tool_separator() );
 
+	{ // Set up past onion skin spin button
+		past_onion_spin=Gtk::manage(new class Gtk::SpinButton(past_onion_adjustment_));
+		past_onion_spin->signal_value_changed().connect(
+			sigc::mem_fun(*this, &studio::CanvasView::set_onion_skins));
+		past_onion_spin->set_tooltip_text( _("Past onion skins"));
+		past_onion_spin->show();
+
+		Gtk::ToolItem *toolitem = Gtk::manage(new Gtk::ToolItem());
+		toolitem->add(*past_onion_spin);
+		toolitem->set_is_important(true);
+		toolitem->show();
+
+		displaybar->append(*toolitem);
+	}
+
 	{ // Set up the onion skin toggle button
 		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-toggle_onion_skin"), iconsize));
 		icon->set_padding(0, 0);
@@ -1456,22 +1471,6 @@ CanvasView::create_display_bar()
 		onion_skin->show();
 
 		displaybar->append(*onion_skin);
-	}
-
-/*
-	{ // Set up past onion skin spin button
-		past_onion_spin=Gtk::manage(new class Gtk::SpinButton(past_onion_adjustment_));
-		past_onion_spin->signal_value_changed().connect(
-			sigc::mem_fun(*this, &studio::CanvasView::set_onion_skins));
-		past_onion_spin->set_tooltip_text( _("Past onion skins"));
-		past_onion_spin->show();
-
-		Gtk::ToolItem *toolitem = Gtk::manage(new Gtk::ToolItem());
-		toolitem->add(*past_onion_spin);
-		toolitem->set_is_important(true);
-		toolitem->show();
-
-		displaybar->append(*toolitem);
 	}
 
 	{ // Set up future onion skin spin button
@@ -1491,7 +1490,6 @@ CanvasView::create_display_bar()
 
 	// Separator
 	displaybar->append( *create_tool_separator() );
-	*/
 	
 	{ // Setup refresh button
 		Gtk::Image *icon = Gtk::manage(new Gtk::Image(Gtk::StockID("gtk-refresh"), iconsize));
@@ -4044,6 +4042,9 @@ CanvasView::on_meta_data_changed()
 		onion_skin->set_active(work_area->get_onion_skin());
 		snap_grid->set_active(work_area->get_grid_snap());
 		show_grid->set_active(work_area->grid_status());
+		// Update the onion skin spins
+		past_onion_spin->set_value(work_area->get_onion_skins()[0]);
+		future_onion_spin->set_value(work_area->get_onion_skins()[1]);
 	}
 	catch(...)
 	{

@@ -111,6 +111,14 @@
 #include <jack/transport.h>
 #endif
 
+#ifndef ONION_SKIN_PAST
+	#define ONION_SKIN_PAST 2
+#endif
+
+#ifndef ONION_SKIN_FUTURE
+	#define ONION_SKIN_FUTURE 2
+#endif
+
 /* === M A C R O S ========================================================= */
 
 #ifndef DEBUGPOINT_CLASS
