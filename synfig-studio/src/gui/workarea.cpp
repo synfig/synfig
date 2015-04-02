@@ -1151,6 +1151,8 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	get_canvas()->signal_meta_data_changed("guide_x").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("guide_y").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("onion_skin").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
+	get_canvas()->signal_meta_data_changed("onion_skin_past").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
+	get_canvas()->signal_meta_data_changed("onion_skin_future").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("guide_snap").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("guide_color").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("sketch").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
@@ -1229,6 +1231,9 @@ WorkArea::save_meta_data()
 	canvas_interface->set_meta_data("grid_show",show_grid?"1":"0");
 	canvas_interface->set_meta_data("jack_offset",strprintf("%f", (double)jack_offset));
 	canvas_interface->set_meta_data("onion_skin",onion_skin?"1":"0");
+	canvas_interface->set_meta_data("onion_skin_past", strprintf("%d", onion_skins[0]));
+	canvas_interface->set_meta_data("onion_skin_future", strprintf("%d", onion_skins[1]));
+
 	s = get_background_size();
 	canvas_interface->set_meta_data("background_size",strprintf("%f %f",s[0],s[1]));
 	c = get_background_first_color();
@@ -1428,6 +1433,36 @@ WorkArea::load_meta_data()
 	if(data.size() && (data=="0" || data[0]=='f' || data[0]=='F'))
 		set_onion_skin(false);
 
+	bool queue_render = false;
+	data=canvas->get_meta_data("onion_skin_past");
+	if(data.size())
+	{
+		int past_kf = stratoi(data);
+		if (past_kf > ONION_SKIN_PAST) past_kf = ONION_SKIN_PAST;
+		else if (past_kf < 0) past_kf =  0;
+
+		if (past_kf != onion_skins[0])
+		{
+			onion_skins[0] = past_kf;
+			queue_render = true;
+		}
+	}
+	data=canvas->get_meta_data("onion_skin_future");
+	if(data.size())
+	{
+		int future_kf = stratoi(data);
+		if (future_kf > ONION_SKIN_FUTURE) future_kf = ONION_SKIN_FUTURE;
+		else if (future_kf < 0) future_kf =  0;
+
+		if (future_kf != onion_skins[1])
+		{
+			onion_skins[1] = future_kf;
+			queue_render = true;
+		}
+	}
+	// Update the canvas
+	if(onion_skin && queue_render)	queue_render_preview();
+
 	data=canvas->get_meta_data("guide_x");
 	get_guide_list_x().clear();
 	while(!data.empty())
@@ -1586,6 +1621,13 @@ void WorkArea::set_onion_skins(int *onions)
 	onion_skins[1]=onions[1];
 	if(onion_skin)
 		queue_render_preview();
+	save_meta_data();
+}
+
+int const *
+WorkArea::get_onion_skins()const
+{
+	return onion_skins;
 }
 
 void
