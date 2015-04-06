@@ -619,11 +619,6 @@ public:
 				value=strprintf("%i", (int)App::enable_mainwin_menubar);
 				return true;
 			}
-			if(key == "ui_language")
-			{
-				value = strprintf ("%s", App::ui_language.c_str());
-				return true;
-			}
 		}
 		catch(...)
 		{
@@ -777,11 +772,6 @@ public:
 			{
 				int i(atoi(value.c_str()));
 				App::enable_mainwin_menubar = i;
-				return true;
-			}
-			if(key == "ui_language")
-			{
-				App::ui_language = value;
 				return true;
 			}
 		}
@@ -1332,6 +1322,32 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 
 	app_base_path_=etl::dirname(basepath);
 
+	// Set ui language
+	load_language_settings();
+	if (ui_language != "os_LANG")
+	{
+		Glib::setenv ("LANGUAGE",  App::ui_language.c_str(), 1);
+	}
+	
+	std::string path_to_icons;
+#ifdef WIN32
+	path_to_icons=basepath+ETL_DIRECTORY_SEPARATOR+".."+ETL_DIRECTORY_SEPARATOR+IMAGE_DIR;
+#else
+	path_to_icons=IMAGE_DIR;
+#endif
+	char* synfig_root=getenv("SYNFIG_ROOT");
+	if(synfig_root) {
+		path_to_icons=synfig_root;
+		path_to_icons+=ETL_DIRECTORY_SEPARATOR;
+		path_to_icons+="share";
+		path_to_icons+=ETL_DIRECTORY_SEPARATOR;
+		path_to_icons+="pixmaps";
+		path_to_icons+=ETL_DIRECTORY_SEPARATOR;
+		path_to_icons+="synfigstudio";
+	}
+	path_to_icons+=ETL_DIRECTORY_SEPARATOR;
+	init_icons(path_to_icons);
+	
 	ui_interface_=new GlobalUIInterface();
 
 	// don't call thread_init() if threads are already initialized
@@ -1377,7 +1393,7 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 	shutdown_in_progress=false;
 	SuperCallback synfig_init_cb(splash_screen.get_callback(),0,9000,10000);
 	SuperCallback studio_init_cb(splash_screen.get_callback(),9000,10000,10000);
-
+		
 	// Initialize the Synfig library
 	try { synfigapp_main=etl::smart_ptr<synfigapp::Main>(new synfigapp::Main(basepath,&synfig_init_cb)); }
 	catch(std::runtime_error x)
@@ -1390,7 +1406,7 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		get_ui_interface()->error(_("Failed to initialize synfig!"));
 		throw;
 	}
-	
+
 	
 	// add the preferences to the settings
 	synfigapp::Main::settings().add_domain(&_preferences,"pref");
@@ -1400,13 +1416,6 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		// Try to load settings early to get access to some important
 		// values, like "enable_experimental_features".
 		studio_init_cb.task(_("Loading Basic Settings..."));
-
-		// Set ui language
-		load_settings("pref.ui_language");
-		if (ui_language != "os_LANG")
-		{
-			Glib::setenv ("LANGUAGE",  App::ui_language.c_str(), 1);
-		}
 		
 		load_settings("pref.use_dark_theme");
 		App::apply_gtk_settings(App::use_dark_theme);
@@ -1857,6 +1866,18 @@ App::save_settings()
 			std::string filename=get_config_file("accelrc");
 			Gtk::AccelMap::save(filename);
 		}
+		{
+			std::string filename=get_config_file("language");
+
+			std::ofstream file(filename.c_str());
+
+			if(!file)
+			{
+				synfig::warning("Unable to save %s",filename.c_str());
+			} else {
+				file<<App::ui_language.c_str()<<endl;
+			}
+		}
 		do{
 			std::string filename=get_config_file("recentfiles");
 
@@ -1941,6 +1962,32 @@ App::load_file_window_size()
 	catch(...)
 	{
 		synfig::warning("Caught exception when attempting to load window settings.");
+	}
+}
+
+void
+App::load_language_settings()
+{
+	try
+	{
+		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
+		{
+			std::string filename=get_config_file("language");
+			std::ifstream file(filename.c_str());
+
+			while(file)
+			{
+				std::string language;
+				getline(file,language);
+				if(!language.empty())
+					App::ui_language=language;
+			}
+		}
+
+	}
+	catch(...)
+	{
+		synfig::warning("Caught exception when attempting to loading language settings.");
 	}
 }
 

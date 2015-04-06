@@ -83,31 +83,28 @@ IconController::IconController(const synfig::String& basepath)
 IconController::IconController(const synfig::String& /*basepath*/)
 #endif
 {
+	
+	icon_factory=Gtk::IconFactory::create();
+}
+
+IconController::~IconController()
+{
+	_tree_pixbuf_table_value_type.clear();
+	for(int i(0);i<((int)INTERPOLATION_CLAMPED+1);i++)
+		_tree_pixbuf_table_interpolation[i]=Glib::RefPtr<Gdk::Pixbuf>();
+
+	icon_factory->remove_default();
+}
+
+void
+IconController::init_icons(const synfig::String& path_to_icons)
+{
+	
 	Gtk::IconSource icon_source;
 	icon_source.set_direction_wildcarded();
 	icon_source.set_state_wildcarded();
 	icon_source.set_size_wildcarded();
-	icon_factory=Gtk::IconFactory::create();
-
-	std::string path_to_icons;
-#ifdef WIN32
-	path_to_icons=basepath+ETL_DIRECTORY_SEPARATOR+".."+ETL_DIRECTORY_SEPARATOR+IMAGE_DIR;
-#else
-	path_to_icons=IMAGE_DIR;
-#endif
-
-	char* synfig_root=getenv("SYNFIG_ROOT");
-	if(synfig_root) {
-		path_to_icons=synfig_root;
-		path_to_icons+=ETL_DIRECTORY_SEPARATOR;
-		path_to_icons+="share";
-		path_to_icons+=ETL_DIRECTORY_SEPARATOR;
-		path_to_icons+="pixmaps";
-		path_to_icons+=ETL_DIRECTORY_SEPARATOR;
-		path_to_icons+="synfigstudio";
-	}
-	path_to_icons+=ETL_DIRECTORY_SEPARATOR;
-
+	
 	try{
 	Gtk::Window::set_default_icon_from_file(path_to_icons+"synfig_icon."+IMAGE_EXT);
 	} catch(...)
@@ -356,15 +353,6 @@ IconController::IconController(const synfig::String& /*basepath*/)
 
 	for(int i(0);i<((int)INTERPOLATION_CLAMPED+1);i++)
 		_tree_pixbuf_table_interpolation[i]=Gtk::Button().render_icon_pixbuf(interpolation_icon(Interpolation(i)),Gtk::ICON_SIZE_SMALL_TOOLBAR);
-}
-
-IconController::~IconController()
-{
-	_tree_pixbuf_table_value_type.clear();
-	for(int i(0);i<((int)INTERPOLATION_CLAMPED+1);i++)
-		_tree_pixbuf_table_interpolation[i]=Glib::RefPtr<Gdk::Pixbuf>();
-
-	icon_factory->remove_default();
 }
 
 Glib::RefPtr<Gdk::Cursor>

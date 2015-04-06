@@ -317,6 +317,7 @@ public:
 	static bool load_settings(const synfig::String& key_filter = "");
 	static void load_accel_map();
 	static void load_file_window_size();
+	static void load_language_settings();
 	static void set_workspace_default();
 	static void set_workspace_compositing();
 	static void set_workspace_animating();

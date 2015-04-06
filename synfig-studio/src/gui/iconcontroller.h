@@ -54,6 +54,7 @@ public:
 	IconController(const synfig::String& basepath);
 	~IconController();
 
+	void init_icons(const synfig::String& path_to_icons);
 	static Glib::RefPtr<Gdk::Cursor> get_normal_cursor();
 	static Glib::RefPtr<Gdk::Cursor> get_tool_cursor(const Glib::ustring& name,const Glib::RefPtr<Gdk::Window>& window);
 };
