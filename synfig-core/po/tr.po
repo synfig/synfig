@@ -3,13 +3,14 @@
 # This file is distributed under the same license as the Synfig Core package.
 # 
 # Translators:
+# Erkan Kocaman <erkank_83@hotmail.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: Synfig\n"
 "Report-Msgid-Bugs-To: http://www.synfig.org/issues/thebuggenie/synfig\n"
-"POT-Creation-Date: 2015-03-25 18:00+0700\n"
-"PO-Revision-Date: 2015-03-22 16:07+0000\n"
-"Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
+"POT-Creation-Date: 2015-04-06 16:00+0700\n"
+"PO-Revision-Date: 2015-04-05 15:12+0000\n"
+"Last-Translator: Erkan Kocaman <erkank_83@hotmail.com>\n"
 "Language-Team: Turkish (http://www.transifex.com/projects/p/synfig/language/tr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,7 +21,7 @@ msgstr ""
 #: src/modules/lyr_freetype/lyr_freetype.cpp:66
 #: src/modules/lyr_freetype/lyr_freetype.cpp:569
 msgid "Text"
-msgstr ""
+msgstr "Metin"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:67
 #: src/modules/lyr_std/import.cpp:61 src/modules/lyr_std/stroboscope.cpp:61
@@ -29,19 +30,19 @@ msgstr ""
 #: src/synfig/layer_duplicate.cpp:57 src/synfig/layer_skeleton.cpp:55
 #: src/synfig/layer_switch.cpp:59
 msgid "Other"
-msgstr ""
+msgstr "Diğer"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:97
 msgid "Text Layer"
-msgstr ""
+msgstr "Metin Katmanı"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:398
 msgid "unable to initialize"
-msgstr ""
+msgstr "Başlatılamıyor"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:417
 msgid "empty font set"
-msgstr ""
+msgstr "Karakter setini temizle"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:570
 msgid "Text to Render"
@@ -56,25 +57,25 @@ msgstr ""
 #: src/modules/mod_geometry/rectangle.cpp:138 src/synfig/layer_shape.cpp:1225
 #: src/synfig/layer_solidcolor.cpp:114 src/synfig/paramdesc.cpp:83
 msgid "Color"
-msgstr ""
+msgstr "Renk"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:576
 msgid "Color of the text"
-msgstr ""
+msgstr "Metnin rengi"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:580
 msgid "Font Family"
-msgstr ""
+msgstr "Yazı Tipi"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:585
 msgid "Style"
-msgstr ""
+msgstr "Biçem"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:587
 #: src/modules/lyr_freetype/lyr_freetype.cpp:597
 #: src/synfig/valuenode_derivative.cpp:379
 msgid "Normal"
-msgstr ""
+msgstr "Normal"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:588
 msgid "Oblique"
@@ -82,28 +83,28 @@ msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:589
 msgid "Italic"
-msgstr ""
+msgstr "İtalik"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:593
 #: src/synfig/valuenode_composite.cpp:817
 msgid "Weight"
-msgstr ""
+msgstr "Genişlik"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:595
 msgid "Ultralight"
-msgstr ""
+msgstr "Çok parlak"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:596
 msgid "light"
-msgstr ""
+msgstr "Parlak"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:598
 msgid "Bold"
-msgstr ""
+msgstr "Kalın"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:599
 msgid "Ultrabold"
-msgstr ""
+msgstr "Çok kalın"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:600
 msgid "Heavy"
@@ -111,7 +112,7 @@ msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:603
 msgid "Horizontal Spacing"
-msgstr ""
+msgstr "Yatay boşluk"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:604
 msgid "Describes how close glyphs are horizontally"
@@ -119,7 +120,7 @@ msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:608
 msgid "Vertical Spacing"
-msgstr ""
+msgstr "Dikey boşluk"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:609
 msgid "Describes how close lines of text are vertically"
@@ -132,19 +133,19 @@ msgstr ""
 #: src/modules/mod_geometry/checkerboard.cpp:154
 #: src/modules/mod_noise/distort.cpp:227 src/modules/mod_noise/noise.cpp:276
 msgid "Size"
-msgstr ""
+msgstr "Boyut"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:614
 msgid "Size of the text"
-msgstr ""
+msgstr "Metin boyutu"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:621
 msgid "Orientation"
-msgstr ""
+msgstr "Yönlendirme"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:622
 msgid "Text Orientation"
-msgstr ""
+msgstr "Metin Yönü"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:627
 #: src/modules/lyr_std/curvewarp.cpp:398 src/modules/lyr_std/insideout.cpp:162
@@ -163,15 +164,15 @@ msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:628
 msgid "Text Position"
-msgstr ""
+msgstr "Metin Posizyonu"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:632
 msgid "Font"
-msgstr ""
+msgstr "Yazı"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:633
 msgid "Filename of the font to use"
-msgstr ""
+msgstr "Kullanılacak Yazı adı"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:640
 msgid "Kerning"
@@ -228,7 +229,7 @@ msgstr ""
 #: src/modules/mod_filter/blur.cpp:419
 #: src/modules/mod_filter/halftone2.cpp:174
 msgid "Type"
-msgstr ""
+msgstr "Tip"
 
 #: src/modules/lyr_std/bevel.cpp:627 src/modules/lyr_std/shade.cpp:635
 #: src/modules/mod_filter/blur.cpp:420
@@ -361,7 +362,7 @@ msgstr ""
 #: src/synfig/valuenode_repeat_gradient.cpp:213
 #: src/synfig/valuenode_stripes.cpp:204 src/tool/printing_functions.cpp:109
 msgid "Width"
-msgstr ""
+msgstr "Genişlik"
 
 #: src/modules/lyr_std/curvewarp.cpp:404
 msgid "How much is expanded the result perpendicular to the source line"
@@ -369,15 +370,15 @@ msgstr ""
 
 #: src/modules/lyr_std/curvewarp.cpp:407
 msgid "Start Point"
-msgstr ""
+msgstr "Başlangıç noktası"
 
 #: src/modules/lyr_std/curvewarp.cpp:409
 msgid "First point of the source line"
-msgstr ""
+msgstr "Kaynak çizginin ilk noktası"
 
 #: src/modules/lyr_std/curvewarp.cpp:412
 msgid "End Point"
-msgstr ""
+msgstr "Sonuç noktası"
 
 #: src/modules/lyr_std/curvewarp.cpp:413
 msgid "Final point of the source line"
@@ -400,7 +401,7 @@ msgstr ""
 #: src/modules/mod_geometry/advanced_outline.cpp:1189
 #: src/modules/mod_gradient/curvegradient.cpp:580
 msgid "Fast"
-msgstr ""
+msgstr "Hızlı"
 
 #: src/modules/lyr_std/curvewarp.cpp:423
 #: src/modules/mod_gradient/curvegradient.cpp:581
@@ -409,7 +410,7 @@ msgstr ""
 
 #: src/modules/lyr_std/import.cpp:60
 msgid "Import Image"
-msgstr ""
+msgstr "Resmi İçe Aktar"
 
 #: src/modules/lyr_std/import.cpp:161 src/modules/lyr_std/import.cpp:218
 #, c-format
@@ -418,11 +419,11 @@ msgstr ""
 
 #: src/modules/lyr_std/import.cpp:317 src/modules/mod_svg/layer_svg.cpp:107
 msgid "Filename"
-msgstr ""
+msgstr "Dosya adı"
 
 #: src/modules/lyr_std/import.cpp:318
 msgid "File to import"
-msgstr ""
+msgstr "İçe aktarılacak dosya"
 
 #: src/modules/lyr_std/import.cpp:322 src/synfig/layer_pastecanvas.cpp:142
 msgid "Time Offset"
@@ -1064,7 +1065,7 @@ msgstr ""
 #: src/synfig/valuenode_gradientrotate.cpp:164
 #: src/synfig/valuenode_repeat_gradient.cpp:203
 msgid "Gradient"
-msgstr ""
+msgstr "Renk Geçişi"
 
 #: src/modules/mod_example/metaballs.cpp:133
 msgid "Balls"
@@ -1566,7 +1567,7 @@ msgstr ""
 #: src/synfig/valuenode_composite.cpp:800 src/synfig/valuenode_cos.cpp:155
 #: src/synfig/valuenode_sine.cpp:154
 msgid "Angle"
-msgstr ""
+msgstr "Açı"
 
 #: src/modules/mod_geometry/star.cpp:185
 msgid "The orientation of the star"
@@ -1582,7 +1583,7 @@ msgstr ""
 
 #: src/modules/mod_geometry/star.cpp:195
 msgid "Regular Polygon"
-msgstr ""
+msgstr "Düzgün Çokgen"
 
 #: src/modules/mod_geometry/star.cpp:196
 msgid "Whether to draw a star or a regular polygon"
@@ -1655,7 +1656,7 @@ msgstr ""
 #: src/synfig/valuenode_blinecalcwidth.cpp:211
 #: src/synfig/valuenode_gradientcolor.cpp:168
 msgid "Loop"
-msgstr ""
+msgstr "Döngü"
 
 #: src/modules/mod_gradient/curvegradient.cpp:573
 #: src/modules/mod_gradient/lineargradient.cpp:207
@@ -1724,15 +1725,15 @@ msgstr ""
 
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:179
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:180
-#: src/synfig/cairolistimporter.cpp:193 src/synfig/cairolistimporter.cpp:194
-#: src/synfig/listimporter.cpp:188 src/synfig/listimporter.cpp:189
+#: src/synfig/cairolistimporter.cpp:194 src/synfig/cairolistimporter.cpp:195
+#: src/synfig/listimporter.cpp:189 src/synfig/listimporter.cpp:190
 msgid "Unable to open "
 msgstr ""
 
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:186
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:187
-#: src/synfig/cairolistimporter.cpp:200 src/synfig/cairolistimporter.cpp:201
-#: src/synfig/listimporter.cpp:195 src/synfig/listimporter.cpp:196
+#: src/synfig/cairolistimporter.cpp:201 src/synfig/cairolistimporter.cpp:202
+#: src/synfig/listimporter.cpp:196 src/synfig/listimporter.cpp:197
 msgid "Unable to get frame from "
 msgstr ""
 
@@ -1852,7 +1853,7 @@ msgstr ""
 #: src/modules/mod_noise/main.cpp:66
 #: src/modules/mod_noise/valuenode_random.cpp:169
 msgid "Random"
-msgstr ""
+msgstr "Rastgele"
 
 #: src/modules/mod_noise/noise.cpp:58
 msgid "Noise Gradient"
@@ -2167,8 +2168,8 @@ msgstr ""
 msgid "CairoImporter::open(): Unknown file type -- "
 msgstr ""
 
-#: src/synfig/cairolistimporter.cpp:165 src/synfig/cairolistimporter.cpp:166
-#: src/synfig/listimporter.cpp:165 src/synfig/listimporter.cpp:166
+#: src/synfig/cairolistimporter.cpp:166 src/synfig/cairolistimporter.cpp:167
+#: src/synfig/listimporter.cpp:166 src/synfig/listimporter.cpp:167
 msgid "No images in list"
 msgstr ""
 
@@ -2219,7 +2220,7 @@ msgstr ""
 
 #: src/synfig/layer.cpp:791
 msgid "Z Depth"
-msgstr ""
+msgstr "Z Derinlik"
 
 #: src/synfig/layer.cpp:793
 msgid "Modifies the position of the layer in the layer stack"
@@ -2256,7 +2257,7 @@ msgstr ""
 #: src/synfig/layer_duplicate.cpp:56 src/synfig/valuenode.cpp:179
 #: src/synfig/valuenode_duplicate.cpp:175
 msgid "Duplicate"
-msgstr ""
+msgstr "Çoğalt"
 
 #: src/synfig/layer_duplicate.cpp:151
 #: src/synfig/valuenode_gradientcolor.cpp:163
@@ -2301,7 +2302,7 @@ msgstr ""
 
 #: src/synfig/layer_motionblur.cpp:148 src/synfig/valuenode_const.cpp:169
 msgid "Constant"
-msgstr ""
+msgstr "Sabit"
 
 #: src/synfig/layer_motionblur.cpp:150
 msgid "Hyperbolic"
@@ -2337,7 +2338,7 @@ msgstr ""
 
 #: src/synfig/layer_pastecanvas.cpp:137
 msgid "Canvas"
-msgstr ""
+msgstr "Tuval"
 
 #: src/synfig/layer_pastecanvas.cpp:138
 msgid "Group content"
@@ -2743,7 +2744,7 @@ msgstr ""
 
 #: src/synfig/loadcanvas.cpp:3390 src/synfig/valuenode.cpp:386
 msgid "ValueNode"
-msgstr ""
+msgstr "DeğerKökü"
 
 #: src/synfig/loadcanvas.cpp:3390
 msgid "ValueNodes"
@@ -2966,7 +2967,7 @@ msgstr ""
 
 #: src/synfig/paramdesc.cpp:73
 msgid "Screen"
-msgstr ""
+msgstr "Ekran"
 
 #: src/synfig/paramdesc.cpp:74
 msgid "Overlay"
@@ -3133,7 +3134,7 @@ msgstr ""
 #: src/synfig/valuenode_blinereversetangent.cpp:164
 #: src/synfig/valuenode_reference.cpp:123
 msgid "Reference"
-msgstr ""
+msgstr "Referans"
 
 #: src/synfig/valuenode.cpp:155 src/synfig/valuenode_segcalctangent.cpp:106
 msgid "Segment Tangent"
@@ -3209,7 +3210,7 @@ msgstr ""
 
 #: src/synfig/valuenode.cpp:180 src/synfig/valuenode_integer.cpp:169
 msgid "Integer"
-msgstr ""
+msgstr "Tamsayı"
 
 #: src/synfig/valuenode.cpp:182 src/synfig/valuenode_blinecalcwidth.cpp:155
 msgid "Spline Width"
@@ -3246,7 +3247,7 @@ msgstr ""
 #: src/synfig/valuenode.cpp:191 src/synfig/valuenode_real.cpp:158
 #: src/synfig/valuenode_realstring.cpp:170
 msgid "Real"
-msgstr ""
+msgstr "Gerçel"
 
 #: src/synfig/valuenode.cpp:192 src/synfig/valuenode_realstring.cpp:120
 msgid "Real String"
@@ -3788,7 +3789,7 @@ msgstr ""
 
 #: src/synfig/valuenode_composite.cpp:641
 msgid "Alpha"
-msgstr ""
+msgstr "Alfa"
 
 #: src/synfig/valuenode_composite.cpp:642
 msgid "The alpha of the color"
@@ -3943,7 +3944,7 @@ msgstr ""
 #: src/synfig/valuenode_composite.cpp:768
 #: src/synfig/valuenode_timedswap.cpp:272
 msgid "Length"
-msgstr ""
+msgstr "Genişlik"
 
 #: src/synfig/valuenode_composite.cpp:769
 msgid "The length of the Dash Item"
@@ -3980,7 +3981,7 @@ msgstr ""
 
 #: src/synfig/valuenode_composite.cpp:821
 msgid "Value"
-msgstr ""
+msgstr "Değer"
 
 #: src/synfig/valuenode_composite.cpp:822
 msgid "The Value"
@@ -4648,7 +4649,7 @@ msgstr ""
 #: src/synfig/valuenode_vectorlength.cpp:141
 #: src/synfig/valuenode_vectorx.cpp:141 src/synfig/valuenode_vectory.cpp:141
 msgid "Vector"
-msgstr ""
+msgstr "Vektör"
 
 #: src/synfig/valuenode_vectorangle.cpp:144
 msgid "The vector where the angle is calculated from"
@@ -4685,7 +4686,7 @@ msgstr ""
 
 #: src/tool/main.cpp:143
 msgid "Settings"
-msgstr ""
+msgstr "Ayarlar"
 
 #: src/tool/main.cpp:145
 msgid "Specify output target (Default: PNG)"
@@ -4939,7 +4940,7 @@ msgstr ""
 
 #: src/tool/joblistprocessor.cpp:252
 msgid "Done."
-msgstr ""
+msgstr "Bitti..."
 
 #: src/tool/optionsprocessor.cpp:138
 msgid "Unrecognised canvas variable: "

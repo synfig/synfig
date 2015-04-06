@@ -7,12 +7,12 @@
 # Rodolfo_Jadon, 2014
 # Ruud van Eeghem <r.van.eeghem@gmail.com>, 2011
 # darkspace65 <studio.diba@gmail.com>, 2013
-# wst <wst@outlook.com>, 2015
+# Wouter Staelens, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: Synfig\n"
 "Report-Msgid-Bugs-To: http://www.synfig.org/issues/thebuggenie/synfig\n"
-"POT-Creation-Date: 2015-03-25 18:00+0700\n"
+"POT-Creation-Date: 2015-04-06 16:00+0700\n"
 "PO-Revision-Date: 2015-03-22 16:07+0000\n"
 "Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
 "Language-Team: Dutch (http://www.transifex.com/projects/p/synfig/language/nl/)\n"
@@ -1729,15 +1729,15 @@ msgstr ""
 
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:179
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:180
-#: src/synfig/cairolistimporter.cpp:193 src/synfig/cairolistimporter.cpp:194
-#: src/synfig/listimporter.cpp:188 src/synfig/listimporter.cpp:189
+#: src/synfig/cairolistimporter.cpp:194 src/synfig/cairolistimporter.cpp:195
+#: src/synfig/listimporter.cpp:189 src/synfig/listimporter.cpp:190
 msgid "Unable to open "
 msgstr "Fout bij openen van"
 
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:186
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:187
-#: src/synfig/cairolistimporter.cpp:200 src/synfig/cairolistimporter.cpp:201
-#: src/synfig/listimporter.cpp:195 src/synfig/listimporter.cpp:196
+#: src/synfig/cairolistimporter.cpp:201 src/synfig/cairolistimporter.cpp:202
+#: src/synfig/listimporter.cpp:196 src/synfig/listimporter.cpp:197
 msgid "Unable to get frame from "
 msgstr "Kan frame niet lezen van"
 
@@ -2172,8 +2172,8 @@ msgstr ""
 msgid "CairoImporter::open(): Unknown file type -- "
 msgstr ""
 
-#: src/synfig/cairolistimporter.cpp:165 src/synfig/cairolistimporter.cpp:166
-#: src/synfig/listimporter.cpp:165 src/synfig/listimporter.cpp:166
+#: src/synfig/cairolistimporter.cpp:166 src/synfig/cairolistimporter.cpp:167
+#: src/synfig/listimporter.cpp:166 src/synfig/listimporter.cpp:167
 msgid "No images in list"
 msgstr "Geen afbeeldingen in de lijst"
 
