@@ -35,17 +35,17 @@
 //#include <iostream>
 
 #include <ETL/clock>
-#include <synfig/valuenode_scale.h>
-#include <synfig/valuenode_timedswap.h>
-#include <synfig/valuenode_composite.h>
-#include <synfig/valuenode_subtract.h>
-#include <synfig/valuenode_linear.h>
-#include <synfig/valuenode_reference.h>
-#include <synfig/valuenode_twotone.h>
-#include <synfig/valuenode_stripes.h>
-#include <synfig/valuenode_bline.h>
-#include <synfig/valuenode_wplist.h>
-#include <synfig/valuenode_dilist.h>
+#include <synfig/valuenodes/valuenode_scale.h>
+#include <synfig/valuenodes/valuenode_timedswap.h>
+#include <synfig/valuenodes/valuenode_composite.h>
+#include <synfig/valuenodes/valuenode_subtract.h>
+#include <synfig/valuenodes/valuenode_linear.h>
+#include <synfig/valuenodes/valuenode_reference.h>
+#include <synfig/valuenodes/valuenode_twotone.h>
+#include <synfig/valuenodes/valuenode_stripes.h>
+#include <synfig/valuenodes/valuenode_bline.h>
+#include <synfig/valuenodes/valuenode_wplist.h>
+#include <synfig/valuenodes/valuenode_dilist.h>
 #include <synfig/pair.h>
 
 #include <synfig/waypoint.h>

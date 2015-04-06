@@ -27,7 +27,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/layer_bitmap.h>
+#include <synfig/layers/layer_bitmap.h>
 #include <synfigapp/action.h>
 #include <brushlib.h>
 

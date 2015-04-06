@@ -115,13 +115,13 @@
 #endif
 
 #include "valuenode.h"
-#include "valuenode_subtract.h"
-//#include "valuenode_animated.h"
-#include "valuenode_composite.h"
-#include "valuenode_const.h"
-#include "valuenode_linear.h"
-#include "valuenode_dynamiclist.h"
-#include "valuenode_reference.h"
+#include "valuenodes/valuenode_subtract.h"
+//#include "valuenodes/valuenode_animated.h"
+#include "valuenodes/valuenode_composite.h"
+#include "valuenodes/valuenode_const.h"
+#include "valuenodes/valuenode_linear.h"
+#include "valuenodes/valuenode_dynamiclist.h"
+#include "valuenodes/valuenode_reference.h"
 
 #ifndef SYNFIG_NO_LOADSAVE
 # include "savecanvas.h"

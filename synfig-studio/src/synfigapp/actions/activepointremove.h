@@ -29,7 +29,7 @@
 
 #include <synfigapp/action.h>
 #include <synfig/activepoint.h>
-#include <synfig/valuenode_dynamiclist.h>
+#include <synfig/valuenodes/valuenode_dynamiclist.h>
 
 /* === M A C R O S ========================================================= */
 

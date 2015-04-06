@@ -28,7 +28,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include <synfig/layer.h>
-#include <synfig/layer_switch.h>
+#include <synfig/layers/layer_switch.h>
 #include <synfigapp/action.h>
 #include <list>
 #include <synfig/guid.h>

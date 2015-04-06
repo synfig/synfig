@@ -29,7 +29,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include <synfigapp/action.h>
-#include <synfig/valuenode_const.h>
+#include <synfig/valuenodes/valuenode_const.h>
 
 /* === M A C R O S ========================================================= */
 

@@ -1,3 +1,4 @@
+
 /* === S Y N F I G ========================================================= */
 /*!	\file waypoint.cpp
 **	\brief Template File
@@ -30,8 +31,8 @@
 #endif
 
 #include "waypoint.h"
-#include "valuenode_const.h"
-#include "valuenode_animated.h"
+#include "valuenodes/valuenode_const.h"
+#include "valuenodes/valuenode_animated.h"
 
 #endif
 

@@ -36,10 +36,10 @@
 #include "valuedescbonelink.h"
 
 #include <synfigapp/canvasinterface.h>
-#include <synfig/valuenode_const.h>
-#include <synfig/valuenode_composite.h>
-#include <synfig/valuenode_bone.h>
-#include <synfig/valuenode_bonelink.h>
+#include <synfig/valuenodes/valuenode_const.h>
+#include <synfig/valuenodes/valuenode_composite.h>
+#include <synfig/valuenodes/valuenode_bone.h>
+#include <synfig/valuenodes/valuenode_bonelink.h>
 #include <synfig/valuetransformation.h>
 
 #include <synfigapp/general.h>

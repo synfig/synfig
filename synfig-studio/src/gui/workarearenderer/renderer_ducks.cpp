@@ -40,9 +40,9 @@
 #include <ETL/misc>
 #include "widgets/widget_color.h"
 #include <synfig/distance.h>
-#include <synfig/valuenode_wplist.h>
-#include <synfig/valuenode_bline.h>
-#include <synfig/valuenode_composite.h>
+#include <synfig/valuenodes/valuenode_wplist.h>
+#include <synfig/valuenodes/valuenode_bline.h>
+#include <synfig/valuenodes/valuenode_composite.h>
 #include "app.h"
 
 #include "general.h"

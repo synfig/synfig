@@ -30,7 +30,7 @@
 
 #include <list>
 #include <vector>
-#include <synfig/layer_composite.h>
+#include <synfig/layers/layer_composite.h>
 #include <synfig/segment.h>
 #include <synfig/blinepoint.h>
 #include <synfig/value.h>

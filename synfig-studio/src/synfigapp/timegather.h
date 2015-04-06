@@ -27,8 +27,8 @@
 #define __SYNFIG_TIMEGATHER_H
 
 /* === H E A D E R S ======================================================= */
-#include <synfig/valuenode_animated.h>
-#include <synfig/valuenode_dynamiclist.h>
+#include <synfig/valuenodes/valuenode_animated.h>
+#include <synfig/valuenodes/valuenode_dynamiclist.h>
 #include <synfig/time.h>
 #include "value_desc.h"
 

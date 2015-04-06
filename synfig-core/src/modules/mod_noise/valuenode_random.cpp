@@ -32,7 +32,7 @@
 #endif
 
 #include "valuenode_random.h"
-#include "synfig/valuenode_const.h"
+#include "synfig/valuenodes/valuenode_const.h"
 #include "synfig/general.h"
 #include "synfig/color.h"
 #include <ETL/misc>

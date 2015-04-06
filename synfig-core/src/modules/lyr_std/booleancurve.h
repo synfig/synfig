@@ -26,7 +26,7 @@
 #define __SYNFIG_BOOLEAN_CURVE_H
 
 /* === H E A D E R S ======================================================= */
-#include <synfig/layer_shape.h>
+#include <synfig/layers/layer_shape.h>
 #include <synfig/blinepoint.h>
 
 #include <vector>

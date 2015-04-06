@@ -34,7 +34,7 @@
 #include <gtkmm/dialog.h>
 #include <gtkmm/entry.h>
 
-#include <synfig/valuenode_dynamiclist.h>
+#include <synfig/valuenodes/valuenode_dynamiclist.h>
 #include <synfigapp/action_system.h>
 
 #include "state_rotate.h"
