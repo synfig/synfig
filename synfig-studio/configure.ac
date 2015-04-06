@@ -14,7 +14,7 @@ dnl AC_CANONICAL_TARGET
 AM_INIT_AUTOMAKE([subdir-objects])
 AM_MAINTAINER_MODE
 
-API_VERSION=0.0
+API_VERSION=1.0
 
 # -- V A R I A B L E S ----------------------------------------
 
