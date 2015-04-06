@@ -141,7 +141,7 @@ Action::LayerMakeBLine::prepare_make_bline(const synfig::String &bline_layer_nam
 	if (!layer)
 		return;
 	if(!layer->dynamic_param_list().count("bline"))
-		throw Error(_("This layer doesn't contain linked \"bline\" parameter."));
+		throw Error(_("This layer doesn't contain linked \"spline\" parameter."));
 
 	Canvas::Handle subcanvas(layer->get_canvas());
 
