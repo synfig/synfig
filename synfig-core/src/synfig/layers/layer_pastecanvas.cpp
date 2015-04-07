@@ -35,14 +35,14 @@
 #include "layer_pastecanvas.h"
 #include "string.h"
 #include "time.h"
-#include "context.h"
-#include "paramdesc.h"
-#include "renddesc.h"
-#include "surface.h"
-#include "value.h"
-#include "valuenode.h"
-#include "canvas.h"
-#include "cairo_renddesc.h"
+#include "../context.h"
+#include "../paramdesc.h"
+#include "../renddesc.h"
+#include "../surface.h"
+#include "../value.h"
+#include "../valuenode.h"
+#include "../canvas.h"
+#include "../cairo_renddesc.h"
 
 
 #endif
