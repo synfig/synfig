@@ -646,11 +646,16 @@ mkgtk()
 PKG_NAME=gtk\+
 PKG_VERSION="${GTK_VERSION}"
 TAREXT=xz
-if ! pkg-config ${PKG_NAME}-3.0 --exact-version=${PKG_VERSION}  --print-errors; then
+if [ ! -f ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done ]; then
 	( cd ${WORKSPACE}/cache/ && wget -c --no-check-certificate http://ftp.gnome.org/pub/gnome/sources/gtk+/${PKG_VERSION%.*}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
 	pushd ${SRCPREFIX}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
+	
+	# Special fix that prevents retrieving some options from XSettings daemon
+	sed -i '/Net\/ThemeName/d' ./gdk/x11/gdksettings.c
+	sed -i '/Gtk\/MenuImages/d' ./gdk/x11/gdksettings.c
+	
 	[ ! -e config.cache ] || rm config.cache
 	./configure --build=${HOST} --prefix=${PREFIX}/ \
 		${DEBUG_OPT2} \
@@ -659,6 +664,8 @@ if ! pkg-config ${PKG_NAME}-3.0 --exact-version=${PKG_VERSION}  --print-errors; 
 	make install
 	cd ..
 	popd
+	
+	touch ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done
 fi
 }
 
