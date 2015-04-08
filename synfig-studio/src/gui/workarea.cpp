@@ -3025,6 +3025,7 @@ WorkArea::refresh(const Cairo::RefPtr<Cairo::Context> &cr)
 		cr->set_line_cap(Cairo::LINE_CAP_BUTT);
 		cr->set_line_join(Cairo::LINE_JOIN_MITER);
 		cr->set_antialias(Cairo::ANTIALIAS_NONE);
+		cr->set_line_width(10);
 
 		cr->rectangle(
 			0,0, // x,y
