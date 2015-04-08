@@ -1093,8 +1093,8 @@ Action::ValueDescSet::prepare()
 						if ( !get_canvas_interface()
 						  || !get_canvas_interface()->get_ui_interface()
 						  || UIInterface::RESPONSE_OK != get_canvas_interface()->get_ui_interface()->confirmation(
-								 _("Are you sure to change all waypoints of animated value?" ),
-								 _("Animation mode is disabled"),
+								 _("You are trying to edit animated parameter while Animation Mode is off.\n\nDo you want to apply offset to this animation?" ),
+								 _("Hint: You can hold Spacebar key while editing parameter to avoid this confirmation dialog."),
 								 _("No"),
 								 _("Yes"),
 								 synfigapp::UIInterface::RESPONSE_OK ))
