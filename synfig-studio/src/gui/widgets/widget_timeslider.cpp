@@ -582,6 +582,7 @@ bool Widget_Timeslider::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 	//Draw the time line afer all
 	Gdk::RGBA c("#ffaf00");
 	cr->set_source_rgb(c.get_red(), c.get_green(), c.get_blue());
+	cr->set_line_width(3);
 	tpx = (current-start)*dpdt;
 	cr->move_to(round_to_int(tpx),0);
 	cr->line_to(round_to_int(tpx),fullheight);
