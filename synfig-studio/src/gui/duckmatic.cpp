@@ -2132,7 +2132,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				duck=new Duck();
 				duck->set_type(Duck::TYPE_ANGLE);
 				set_duck_value_desc(*duck, value_desc, "angle", transform_stack);
-				duck->set_point(Point(0.9,transformation.angle));
+				duck->set_point(Point(0.8,transformation.angle));
 				duck->set_scalar(scalar_x);
 				duck->set_editable(editable);
 				duck->set_origin(origin_duck);
@@ -2145,7 +2145,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				duck=new Duck();
 				duck->set_type(Duck::TYPE_SKEW);
 				set_duck_value_desc(*duck, value_desc, "skew_angle", transform_stack);
-				duck->set_point(Point(0.9,transformation.skew_angle));
+				duck->set_point(Point(0.8,transformation.skew_angle));
 				duck->set_scalar(scalar_y);
 				duck->set_editable(editable);
 				duck->set_origin(origin_duck);
