@@ -157,7 +157,7 @@ StateSketch_Context::save_sketch()
 {
 	synfig::String filename(basename(get_canvas()->get_file_name())+".sketch");
 
-	while(App::dialog_save_file(_("Save Sketch"), filename, SKETCH_DIR_PREFERENCE))
+	while(App::dialog_save_file_sketch(_("Save Sketch"), filename, SKETCH_DIR_PREFERENCE))
 	{
 		// If the filename still has wildcards, then we should
 		// continue looking for the file we want
@@ -176,7 +176,7 @@ StateSketch_Context::load_sketch()
 {
 	synfig::String filename(basename(get_canvas()->get_file_name())+".sketch");
 
-	while(App::dialog_open_file(_("Load Sketch"), filename, SKETCH_DIR_PREFERENCE))
+	while(App::dialog_open_file_sketch(_("Load Sketch"), filename, SKETCH_DIR_PREFERENCE))
 	{
 		// If the filename still has wildcards, then we should
 		// continue looking for the file we want
