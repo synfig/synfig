@@ -1,0 +1,35 @@
+RENDERING_HH = \
+	rendering/blending.h \
+	rendering/blendingsimple.h \
+	rendering/mesh.h \
+	rendering/primitive.h \
+	rendering/renderer.h \
+	rendering/renderersoftware.h \
+	rendering/renderingtask.h \
+	rendering/surface.h \
+	rendering/surfacesoftware.h \
+	rendering/transformationaffine.h \
+	rendering/transformation.h \
+	rendering/transformationstack.h
+
+RENDERING_CC = \
+	rendering/blending.cpp \
+	rendering/blendingsimple.cpp \
+	rendering/mesh.cpp \
+	rendering/primitive.cpp \
+	rendering/renderer.cpp \
+	rendering/renderersoftware.cpp \
+	rendering/renderingtask.cpp \
+	rendering/surface.cpp \
+	rendering/surfacesoftware.cpp \
+	rendering/transformationaffine.cpp \
+	rendering/transformation.cpp \
+	rendering/transformationstack.cpp
+
+libsynfig_include_HH += \
+    $(RENDERING_HH)
+
+libsynfig_src += \
+    $(RENDERING_HH) \
+    $(RENDERING_CC)
+
