@@ -389,7 +389,6 @@ ValueNode_DynamicList::ListEntry::find(const Time& begin,const Time& end,std::ve
 float
 ValueNode_DynamicList::ListEntry::amount_at_time(const Time &t,bool *rising)const
 {
-	typedef synfig::ValueNode_DynamicList::ListEntry::Activepoint Activepoint;
 	typedef synfig::ValueNode_DynamicList::ListEntry::ActivepointList ActivepointList;
 
 	if(timing_info.empty())
