@@ -86,7 +86,7 @@ public:
 		m00(m00), m01(m01), m10(m10), m11(m11) { }
 
 	Matrix2(const Vector &axis_x, const Vector &axis_y):
-		m00(axis_x[0]), m01(axis_x[1]), m10(axis_y[0]), m11(axis_y[1]), m20(offset[0]), m21(offset[1]) { }
+		m00(axis_x[0]), m01(axis_x[1]), m10(axis_y[0]), m11(axis_y[1]) { }
 
 	Vector get_axis_x()const { return Vector(m00, m01); }
 	Vector get_axis_y()const { return Vector(m10, m11); }
@@ -130,6 +130,8 @@ public:
 		{ Vector vv; get_transformed(vv[0], vv[1], v[0], v[1]); return vv; }
 
 	bool operator==(const Matrix2 &rhs) const;
+	bool operator!=(const Matrix2 &rhs) const
+		{ return !(*this == rhs); }
 
 	//! operator*=. Multiplication and assignment of one matrix by another
 	//! @param rhs the right hand side of the multiplication operation
@@ -283,6 +285,8 @@ public:
 		{ Vector vv; get_transformed(vv[0], vv[1], v[0], v[1], translate); return vv; }
 
 	bool operator==(const Matrix3 &rhs) const;
+	bool operator!=(const Matrix3 &rhs) const
+		{ return !(*this == rhs); }
 
 	//! operator*=. Multiplication and assignment of one matrix by another
 	//! @param rhs the right hand side of the multiplication operation

@@ -62,13 +62,6 @@ using namespace synfig;
 
 // Matrix2
 
-bool
-Matrix2::is_identity() const
-{
-	return fabs(m00 - 1.0) < epsilon && fabs(m01) < epsilon
-		&& fabs(m10) < epsilon && fabs(m11 - 1.0) < epsilon;
-}
-
 Matrix2 &
 Matrix2::set_scale(const value_type &sx, const value_type &sy)
 {
