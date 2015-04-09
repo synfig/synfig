@@ -52,17 +52,20 @@ using namespace etl;
 /* === M E T H O D S ======================================================= */
 
 bool
-rendering::RenderingTask::draw(const Renderer::Handle &renderer, const Surface::Handle &surface) const
+rendering::RenderingTask::draw(
+	const Renderer::Handle &renderer,
+	const Renderer::Params &params,
+	const Surface::Handle &surface ) const
 {
 	if (!renderer) return false; // TODO: warning
 	if (!surface) return false; // TODO: warning
 
 	bool success = true;
-	if (!renderer->draw(surface, get_transformation(), get_blending(), get_primitive()))
+	if (!renderer->draw(params, surface, get_transformation(), get_blending(), get_primitive()))
 		success = false;
-	if (get_next_first() && !get_next_first()->draw(renderer, surface))
+	if (get_next_first() && !get_next_first()->draw(renderer, params, surface))
 		success = false;
-	if (get_next_second() && !get_next_second()->draw(renderer, surface))
+	if (get_next_second() && !get_next_second()->draw(renderer, params, surface))
 		success = false;
 
 	return success;

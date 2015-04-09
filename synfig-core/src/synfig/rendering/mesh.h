@@ -27,6 +27,7 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <cstring>
 #include "primitive.h"
 #include "surface.h"
 #include "renderingtask.h"
@@ -52,7 +53,7 @@ private:
 	Color color;
 	Surface::Handle surface;
 	RenderingTask::Handle task;
-	Matrix resolution_transfrom;
+	Matrix2 resolution_transfrom;
 
 public:
 	Color get_color() const { return color; }
@@ -64,8 +65,8 @@ public:
 	RenderingTask::Handle get_task() const { return task; }
 	void set_task(const RenderingTask::Handle &x);
 
-	const Matrix& get_resolution_transfrom() const { return resolution_transfrom; }
-	void set_resolution_transfrom(const Matrix &x);
+	const Matrix2& get_resolution_transfrom() const { return resolution_transfrom; }
+	void set_resolution_transfrom(const Matrix2 &x);
 
 	void apply_common_data(const MeshBase &data);
 	void changed_common_data();
@@ -76,24 +77,28 @@ class Mesh: public MeshBase
 public:
 	typedef etl::handle<Mesh> Handle;
 
-	enum Fields {
-		FIELD_COLOR          = 1 << 0,
-		FIELD_TEXCOORDS      = 1 << 1,
-		FIELD_SIDE           = 1 << 2
+	enum Field {
+		FIELD_POSITION       = 0,
+		FIELD_TEXCOORDS      = 1,
+		FIELD_COLOR          = 2
 	};
 
 	enum {
-		FIELD_COUNT          = 1 << 3
+		FIELD_COUNT          = 3
 	};
 
-	struct Vertex { Point position; };
-	struct VertexC { Point position; Color color; };
-	struct VertexT { Point position; Point tex_coords; };
-	struct VertexTC { Point position; Point tex_coords; Color color; };
-	struct VertexS { Point position; bool side; VertexS(): side() { } };
-	struct VertexCS { Point position; Color color; bool side; VertexCS(): side() { } };
-	struct VertexTS { Point position; Point tex_coords; bool side; VertexTS(): side() { } };
-	struct VertexTCS { Point position; Point tex_coords; Color color; bool side; VertexTCS(): side() { } };
+	enum Mask {
+		MASK_POSITION        = 1 << FIELD_POSITION,
+		MASK_TEXCOORDS       = 1 << FIELD_TEXCOORDS,
+		MASK_COLOR           = 1 << FIELD_COLOR,
+	};
+
+	#pragma pack(push, 1)
+	struct Vertex    { Vector position; };
+	struct VertexT   { Vector position; Vector tex_coords; };
+	struct VertexC   { Vector position; Color color; };
+	struct VertexTC  { Vector position; Vector tex_coords; Color color; };
+	#pragma pack(pop)
 
 	struct Triangle
 	{
@@ -109,26 +114,33 @@ private:
 	std::vector<Triangle> triangles;
 
 public:
-	Mesh();
-	~Mesh();
+	Mesh(): vertex_fields(1 << FIELD_POSITION) { }
 
 	// vertices
 
-	int get_vertex_fields() const { return vertex_fields; }
+	int get_vertex_fields() const
+		{ return vertex_fields; }
+	bool check_vertex_field(Field field) const
+		{ return get_vertex_fields() & (1 << field); }
 	void set_vertex_fields(int x);
 
 	int get_vertices_count() const
 		{ return vertices.size()/get_vertex_size(); }
 	void set_vertices_count(int x);
 
-	size_t get_vertex_size() const
-		{ return sizes[get_vertex_fields()]; }
+	size_t get_vertex_size() const;
+	size_t get_vertex_field_offset(Field field) const;
 	size_t get_all_vertices_size() const
 		{ return get_vertices_count()*get_vertex_size(); }
 
 	const void* get_vertex_pointer() const
 		{ return vertices.empty() ? NULL : &vertices.front(); }
+	void* get_vertex_pointer(Field field) const
+		{ return (void*)((char*)get_vertex_pointer() + get_vertex_field_offset(field)); }
+
 	void* get_editable_vertex_pointer();
+	void* get_editable_vertex_pointer(Field field)
+		{ return (void*)((char*)get_editable_vertex_pointer() + get_vertex_field_offset(field)); }
 
 	template<typename T>
 	T* get_vertices() const
@@ -152,7 +164,7 @@ public:
 	}
 
 	template<typename T>
-	const T& get_editable_vertex(int index)
+	T& get_editable_vertex(int index)
 	{
 		assert(index >= 0 && index < get_vertices_count());
 		return get_editable_vertices<T>()[index];
@@ -187,7 +199,7 @@ public:
 		return get_triangles()[index];
 	}
 
-	const Triangle& get_editable_triangle(int index)
+	Triangle& get_editable_triangle(int index)
 	{
 		assert(index >= 0 && index < get_triangles_count());
 		return get_editable_triangles()[index];

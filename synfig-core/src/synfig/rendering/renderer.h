@@ -29,6 +29,8 @@
 
 #include <ETL/handle>
 #include <vector>
+#include <climits>
+#include "../color.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -67,7 +69,7 @@ public:
 		bool check_renderer_ptr(const Renderer *x) const
 		{
 			for(RendererList::const_iterator i = renderers.begin(); i != renderers.end(); ++i)
-				if (i == x) return true;
+				if (*i == x) return true;
 			return false;
 		}
 
@@ -81,16 +83,30 @@ public:
 		bool check_alternative_ptr(const DependentObject *x) const
 		{
 			for(AlternativeList::const_iterator i = get_alternatives().begin(); i != get_alternatives().end(); ++i)
-				if (i == x) return true;
+				if (*i == x) return true;
 			return false;
 		}
 		bool check_alternative(const Handle &x) const
 			{ return check_alternative_ptr(x.get()); }
 		void add_alternative(const Handle &x)
 			{ if (x && !check_alternative(x)) alternatives.push_back(x); }
+		void remove_alternative(const Handle &x)
+		{
+			Handle xx = x;
+			for(AlternativeList::iterator i = alternatives.begin(); i != alternatives.end();)
+				if (*i == xx) i = alternatives.erase(i); else ++i;
+		}
 
 		void changed()
 			{ renderers.clear(); alternatives.clear(); }
+	};
+
+	struct Params
+	{
+		Handle root_renderer;
+		int max_surface_width;
+		int max_surface_height;
+		Params(): max_surface_width(INT_MAX), max_surface_height(INT_MAX) { }
 	};
 
 private:
@@ -99,9 +115,10 @@ private:
 	DependentObject::Handle convert_obj(const DependentObject::Handle &obj);
 
 protected:
-	virtual bool is_supported_vfunc(const etl::handle<DependentObject> &obj) const;
-	virtual etl::handle<DependentObject> convert_vfunc(const etl::handle<DependentObject> &obj);
+	virtual bool is_supported_vfunc(const DependentObject::Handle &obj) const;
+	virtual DependentObject::Handle convert_vfunc(const DependentObject::Handle &obj);
 	virtual bool draw_vfunc(
+			const Params &params,
 			const etl::handle<Surface> &target_surface,
 			const etl::handle<Transformation> &transformation,
 			const etl::handle<Blending> &blending,
@@ -116,16 +133,13 @@ public:
 	etl::handle<Blending> convert_blending(const etl::handle<Blending> &blending);
 	etl::handle<Primitive> convert_primtive(const etl::handle<Primitive> &primitive);
 
-	etl::handle<Surface> convert(const etl::handle<Surface> &surface)
-		{ return convert_surface(surface); }
-	etl::handle<Transformation> convert(const etl::handle<Transformation> &transformation)
-		{ return convert_transformation(transformation); }
-	etl::handle<Blending> convert(const etl::handle<Blending> &blending)
-		{ return convert_blending(blending); }
-	etl::handle<Primitive> convert(const etl::handle<Primitive> &primitive)
-		{ return convert_primtive(primitive); }
+	etl::handle<Surface> convert(const etl::handle<Surface> &surface);
+	etl::handle<Transformation> convert(const etl::handle<Transformation> &transformation);
+	etl::handle<Blending> convert(const etl::handle<Blending> &blending);
+	etl::handle<Primitive> convert(const etl::handle<Primitive> &primitive);
 
 	bool draw(
+			const Params &params,
 			const etl::handle<Surface> &target_surface,
 			const etl::handle<Transformation> &transformation,
 			const etl::handle<Blending> &blending,

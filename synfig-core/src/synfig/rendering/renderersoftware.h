@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/renderersoftware.h
-**	\brief Template Header
+/*!	\file synfig/rendering/renderersoftware.h
+**	\brief RendererSoftware Header
 **
 **	$Id$
 **
@@ -22,16 +22,20 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_RENDERERSOFTWARE_H
-#define __SYNFIG_RENDERERSOFTWARE_H
+#ifndef __SYNFIG_RENDERING_RENDERERSOFTWARE_H
+#define __SYNFIG_RENDERING_RENDERERSOFTWARE_H
 
 /* === H E A D E R S ======================================================= */
 
+#include "../vector.h"
+#include "../matrix.h"
+#include "../surface.h"
+
 #include "renderer.h"
 #include "surface.h"
-#include "vector.h"
-#include "mesh.h"
-#include "polygon.h"
+#include "transformation.h"
+#include "blending.h"
+#include "primitive.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -41,30 +45,18 @@
 
 namespace synfig
 {
+namespace rendering
+{
 
-class RendererSoftware;
-
-template<>
-class Renderer::TypesTemplate<RendererSoftware, Renderer::PrimitiveTypeSurface>:
-	public Renderer::TypesTemplateBase<synfig::Surface> { };
-
-template<>
-class Renderer::TypesTemplate<RendererSoftware, Renderer::PrimitiveTypeMesh>:
-	public Renderer::TypesTemplateBase<synfig::Mesh> { };
-
-class RendererSoftware: public Renderer {
-private:
-	static RendererId id;
-	struct Helper;
-	struct IntVector;
+class RendererSoftware: public Renderer
+{
 public:
-	typedef RendererSoftware RendererType;
-	typedef Renderer::TypesBase<RendererType> Types;
+	typedef etl::handle<RendererSoftware> Handle;
 
-	static RendererId get_id();
-	static void initialize();
-	static void deinitialize();
+private:
+	class Internal;
 
+public:
 	static void render_triangle(
 		synfig::Surface &target_surface,
 		const Vector &p0,
@@ -87,27 +79,42 @@ public:
 
 	static void render_polygon(
 		synfig::Surface &target_surface,
-		const synfig::Polygon &polygon,
+		const Vector *vertices,
+		int vertices_strip,
+		const int *triangles,
+		int triangles_strip,
+		int triangles_count,
 		const Matrix &transform_matrix,
 		const Color &color,
 		Color::BlendMethod blend_method );
 
 	static void render_mesh(
 		synfig::Surface &target_surface,
-		const synfig::Mesh &mesh,
+		const Vector *vertices,
+		int vertices_strip,
+		const Vector *tex_coords,
+		int tex_coords_strip,
+		const int *triangles,
+		int triangles_strip,
+		int triangles_count,
 		const synfig::Surface &texture,
 		const Matrix &transform_matrix,
 		const Matrix &texture_matrix,
 		Real alpha,
 		Color::BlendMethod blend_method );
 
-	RendererSoftware();
-	virtual Result render_surface(const Params &params, const Primitive<PrimitiveTypeSurface> &primitive);
-	virtual Result render_polygon(const Params &params, const Primitive<PrimitiveTypePolygon> &primitive);
-	virtual Result render_colored_polygon(const Params &params, const Primitive<PrimitiveTypeColoredPolygon> &primitive);
-	virtual Result render_mesh(const Params &params, const Primitive<PrimitiveTypeMesh> &primitive);
+protected:
+	virtual bool is_supported_vfunc(const DependentObject::Handle &obj) const;
+	virtual DependentObject::Handle convert_vfunc(const DependentObject::Handle &obj);
+	virtual bool draw_vfunc(
+		const Params &params,
+		const Surface::Handle &target_surface,
+		const Transformation::Handle &transformation,
+		const Blending::Handle &blending,
+		const Primitive::Handle &primitive );
 };
 
+}; /* end namespace rendering */
 }; /* end namespace synfig */
 
 /* -- E N D ----------------------------------------------------------------- */

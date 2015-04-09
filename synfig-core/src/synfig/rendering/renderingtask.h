@@ -87,7 +87,10 @@ public:
 	void set_next_second(const Handle &x)
 		{ next_second = x; }
 
-	bool draw(const Renderer::Handle &renderer, const Surface::Handle &surface) const;
+	bool draw(
+		const Renderer::Handle &renderer,
+		const Renderer::Params &params,
+		const Surface::Handle &surface ) const;
 };
 
 } /* end namespace rendering */

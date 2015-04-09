@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/renderersoftware.cpp
-**	\brief Template Header
+/*!	\file synfig/rendering/renderersoftware.cpp
+**	\brief RendererSoftware
 **
 **	$Id$
 **
@@ -36,6 +36,10 @@
 #endif
 
 #include "renderersoftware.h"
+#include "surfacesoftware.h"
+#include "transformationaffine.h"
+#include "blendingsimple.h"
+#include "mesh.h"
 
 #endif
 
@@ -51,38 +55,31 @@ using namespace etl;
 
 /* === M E T H O D S ======================================================= */
 
-Renderer::RendererId RendererSoftware::id = 0;
-
-Renderer::RendererId RendererSoftware::get_id() { return id; }
-
-void RendererSoftware::initialize()
+class rendering::RendererSoftware::Internal
 {
-	if (id != 0) return;
-	register_renderer(id);
-	// TODO:
-}
+public:
+	struct IntVector
+	{
+		union
+		{
+			struct { int x, y; };
+			int coords[2];
+		};
 
-void RendererSoftware::deinitialize()
-{
-	unregister_renderer(id);
-}
+		inline IntVector(): x(0), y(0) { }
+		inline IntVector(int x, int y): x(x), y(y) { }
+		inline IntVector(const Vector &v): x((int)roundf(v[0])), y((int)roundf(v[1])) { }
+		inline int& operator[] (int index) { return coords[index]; }
+		inline const int& operator[] (int index) const { return coords[index]; }
+		inline bool operator == (const IntVector &other) const { return x == other.x && y == other.y; }
+		inline bool operator != (const IntVector &other) const { return !(*this == other); }
+		inline IntVector operator+ (const IntVector &other) const { return IntVector(x+other.x, y+other.y); }
+		inline IntVector operator- (const IntVector &other) const { return IntVector(x-other.x, y-other.y); }
 
-RendererSoftware::RendererSoftware()
-{
-	// TODO:
-}
+		inline Vector to_real() const { return Vector(Real(x), Real(y)); }
+		inline long long get_fixed_x_div_y() { return y == 0 ? 0 : int_to_fixed(x)/y; }
+	};
 
-Renderer::Result RendererSoftware::render_surface(const Params &/* params */, const Primitive<PrimitiveTypeSurface> &/* primitive */)
-	{ return ResultNotSupported; }
-Renderer::Result RendererSoftware::render_polygon(const Params &/* params */, const Primitive<PrimitiveTypePolygon> &/* primitive */)
-	{ return ResultNotSupported; }
-Renderer::Result RendererSoftware::render_colored_polygon(const Params &/* params */, const Primitive<PrimitiveTypeColoredPolygon> &/* primitive */)
-	{ return ResultNotSupported; }
-Renderer::Result RendererSoftware::render_mesh(const Params &/* params */, const Primitive<PrimitiveTypeMesh> &/* primitive */)
-	{ return ResultNotSupported; }
-
-
-struct RendererSoftware::Helper {
 	enum { FIXED_SHIFT = sizeof(int)*8 };
 
 	inline static long long int_to_fixed(int i)
@@ -99,28 +96,8 @@ struct RendererSoftware::Helper {
 	}
 };
 
-struct RendererSoftware::IntVector {
-	union {
-		struct { int x, y; };
-		int coords[2];
-	};
-
-	inline IntVector(): x(0), y(0) { }
-	inline IntVector(int x, int y): x(x), y(y) { }
-	inline IntVector(const Vector &v): x((int)roundf(v[0])), y((int)roundf(v[1])) { }
-	inline int& operator[] (int index) { return coords[index]; }
-	inline const int& operator[] (int index) const { return coords[index]; }
-	inline bool operator == (const IntVector &other) const { return x == other.x && y == other.y; }
-	inline bool operator != (const IntVector &other) const { return !(*this == other); }
-	inline IntVector operator+ (const IntVector &other) const { return IntVector(x+other.x, y+other.y); }
-	inline IntVector operator- (const IntVector &other) const { return IntVector(x-other.x, y-other.y); }
-
-	inline Vector to_real() const { return Vector(Real(x), Real(y)); }
-	inline long long get_fixed_x_div_y() { return y == 0 ? 0 : Helper::int_to_fixed(x)/y; }
-};
-
 void
-RendererSoftware::render_triangle(
+rendering::RendererSoftware::render_triangle(
 	synfig::Surface &target_surface,
 	const Vector &p0,
 	const Vector &p1,
@@ -129,7 +106,7 @@ RendererSoftware::render_triangle(
 	Color::BlendMethod blend_method )
 {
 	// convert points to int
-	IntVector ip0(p0), ip1(p1), ip2(p2);
+	Internal::IntVector ip0(p0), ip1(p1), ip2(p2);
 	if (ip0 == ip1 || ip0 == ip2 || ip1 == ip2) return;
 
 	if (ip0.x < 0 && ip1.x < 0 && ip2.x < 0) return;
@@ -142,7 +119,7 @@ RendererSoftware::render_triangle(
 	if (ip0.x >= width && ip1.x >= width && ip2.x >= width) return;
 	if (ip0.y >= height && ip1.y >= height && ip2.y >= height) return;
 
-	Surface::alpha_pen apen(target_surface.get_pen(0, 0));
+	synfig::Surface::alpha_pen apen(target_surface.get_pen(0, 0));
 	apen.set_alpha(1.0);
 	apen.set_blend_method(blend_method);
 
@@ -158,7 +135,7 @@ RendererSoftware::render_triangle(
 
     // work points
     // initially at top point (p0)
-    long long wx0 = Helper::int_to_fixed(ip0.x);
+    long long wx0 = Internal::int_to_fixed(ip0.x);
     long long wx1 = wx0;
 
     // process top part of triangle
@@ -173,8 +150,8 @@ RendererSoftware::render_triangle(
 		// draw horizontal line (this code has a copy below)
     	if (y >= 0 && y < height)
     	{
-			int x0 = Helper::fixed_to_int(wx0);
-			int x1 = Helper::fixed_to_int(wx1);
+			int x0 = Internal::fixed_to_int(wx0);
+			int x1 = Internal::fixed_to_int(wx1);
 			if (x0 < 0) x0 = 0;
 			if (x1 >= width) x1 = width-1;
 			if (x1 >= x0)
@@ -193,8 +170,8 @@ RendererSoftware::render_triangle(
     }
 
     if (ip0.y == ip1.y) {
-		wx0 = Helper::int_to_fixed(ip0.x);
-		wx1 = Helper::int_to_fixed(ip1.x);
+		wx0 = Internal::int_to_fixed(ip0.x);
+		wx1 = Internal::int_to_fixed(ip1.x);
 		if (wx0 > wx1) swap(wx0, wx1);
     }
 
@@ -208,8 +185,8 @@ RendererSoftware::render_triangle(
 		// draw horizontal line (this code has a copy above)
     	if (y >= 0 && y < height)
     	{
-			int x0 = Helper::fixed_to_int(wx0);
-			int x1 = Helper::fixed_to_int(wx1);
+			int x0 = Internal::fixed_to_int(wx0);
+			int x1 = Internal::fixed_to_int(wx1);
 			if (x0 < 0) x0 = 0;
 			if (x1 >= width) x1 = width-1;
 			if (x1 >= x0)
@@ -229,7 +206,7 @@ RendererSoftware::render_triangle(
 }
 
 void
-RendererSoftware::render_triangle(
+rendering::RendererSoftware::render_triangle(
 	synfig::Surface &target_surface,
 	const Vector &p0,
 	const Vector &t0,
@@ -245,7 +222,7 @@ RendererSoftware::render_triangle(
 	if (t0[1] < 0.0 && t1[1] < 0.0 && t2[1] < 0.0) return;
 
 	// convert points to int
-	IntVector ip0(p0), ip1(p1), ip2(p2);
+	Internal::IntVector ip0(p0), ip1(p1), ip2(p2);
 	if (ip0 == ip1 || ip0 == ip2 || ip1 == ip2) return;
 
 	if (ip0.x < 0 && ip1.x < 0 && ip2.x < 0) return;
@@ -281,7 +258,7 @@ RendererSoftware::render_triangle(
 	Vector tdx = matrix.get_transformed(Vector(1.0, 0.0), false);
 	//Vector tdy = matrix.get_transformed(Vector(0.0, 1.0), false);
 
-	Surface::alpha_pen apen(target_surface.get_pen(0, 0));
+	synfig::Surface::alpha_pen apen(target_surface.get_pen(0, 0));
 	apen.set_alpha(alpha);
 	apen.set_blend_method(blend_method);
 
@@ -297,7 +274,7 @@ RendererSoftware::render_triangle(
 
     // work points
     // initially at top point (p0)
-    long long wx0 = Helper::int_to_fixed(ip0.x);
+    long long wx0 = Internal::int_to_fixed(ip0.x);
     long long wx1 = wx0;
 
     // process top part of triangle
@@ -312,8 +289,8 @@ RendererSoftware::render_triangle(
 		// draw horizontal line (this code has a copy below)
     	if (y >= 0 && y < height)
     	{
-			int x0 = Helper::fixed_to_int(wx0);
-			int x1 = Helper::fixed_to_int(wx1);
+			int x0 = Internal::fixed_to_int(wx0);
+			int x1 = Internal::fixed_to_int(wx1);
 			if (x0 < 0) x0 = 0;
 			if (x1 >= width) x1 = width-1;
 			if (x1 >= x0)
@@ -344,8 +321,8 @@ RendererSoftware::render_triangle(
     }
 
     if (ip0.y == ip1.y) {
-		wx0 = Helper::int_to_fixed(ip0.x);
-		wx1 = Helper::int_to_fixed(ip1.x);
+		wx0 = Internal::int_to_fixed(ip0.x);
+		wx1 = Internal::int_to_fixed(ip1.x);
 		if (wx0 > wx1) swap(wx0, wx1);
     }
 
@@ -359,8 +336,8 @@ RendererSoftware::render_triangle(
 		// draw horizontal line (this code has a copy above)
     	if (y >= 0 && y < height)
     	{
-			int x0 = Helper::fixed_to_int(wx0);
-			int x1 = Helper::fixed_to_int(wx1);
+			int x0 = Internal::fixed_to_int(wx0);
+			int x1 = Internal::fixed_to_int(wx1);
 			if (x0 < 0) x0 = 0;
 			if (x1 >= width) x1 = width-1;
 			if (x1 >= x0)
@@ -392,30 +369,45 @@ RendererSoftware::render_triangle(
 }
 
 void
-RendererSoftware::render_polygon(
+rendering::RendererSoftware::render_polygon(
 	synfig::Surface &target_surface,
-	const synfig::Polygon &polygon,
+	const Vector *vertices,
+	int vertices_strip,
+	const int *triangles,
+	int triangles_strip,
+	int triangles_count,
 	const Matrix &transform_matrix,
 	const Color &color,
 	Color::BlendMethod blend_method )
 {
 	if (!target_surface.is_valid()) return;
 
-	for(synfig::Polygon::TriangleList::const_iterator i = polygon.triangles.begin(); i != polygon.triangles.end(); ++i)
+	if (vertices_strip <= 0) vertices_strip = sizeof(Vector);
+	if (triangles_strip <= 0) triangles_strip = sizeof(int[3]);
+
+	for(int i = 0; i < triangles_count; ++i)
+	{
+		int *triangle = (int*)((char*)triangles + i*triangles_strip);
 		render_triangle(
 			target_surface,
-			transform_matrix.get_transformed(polygon.vertices[i->vertices[0]]),
-			transform_matrix.get_transformed(polygon.vertices[i->vertices[1]]),
-			transform_matrix.get_transformed(polygon.vertices[i->vertices[2]]),
+			transform_matrix.get_transformed(*(Vector*)((char*)vertices + triangle[0]*vertices_strip)),
+			transform_matrix.get_transformed(*(Vector*)((char*)vertices + triangle[1]*vertices_strip)),
+			transform_matrix.get_transformed(*(Vector*)((char*)vertices + triangle[2]*vertices_strip)),
 			color,
 			blend_method );
+	}
 }
 
-
 void
-RendererSoftware::render_mesh(
+rendering::RendererSoftware::render_mesh(
 	synfig::Surface &target_surface,
-	const synfig::Mesh &mesh,
+	const Vector *vertices,
+	int vertices_strip,
+	const Vector *tex_coords,
+	int tex_coords_strip,
+	const int *triangles,
+	int triangles_strip,
+	int triangles_count,
 	const synfig::Surface &texture,
 	const Matrix &transform_matrix,
 	const Matrix &texture_matrix,
@@ -425,19 +417,146 @@ RendererSoftware::render_mesh(
 	if (!target_surface.is_valid()) return;
 	if (!texture.is_valid()) return;
 
-	for(synfig::Mesh::TriangleList::const_iterator i = mesh.triangles.begin(); i != mesh.triangles.end(); ++i)
+	if (vertices_strip <= 0) vertices_strip = sizeof(Vector);
+	if (tex_coords_strip <= 0) tex_coords_strip = sizeof(Vector);
+	if (triangles_strip <= 0) triangles_strip = sizeof(int[3]);
+
+	for(int i = 0; i < triangles_count; ++i)
+	{
+		int *triangle = (int*)((char*)triangles + i*triangles_strip);
 		render_triangle(
 			target_surface,
-			transform_matrix.get_transformed(mesh.vertices[i->vertices[0]].position),
-			texture_matrix.get_transformed(mesh.vertices[i->vertices[0]].tex_coords),
-			transform_matrix.get_transformed(mesh.vertices[i->vertices[1]].position),
-			texture_matrix.get_transformed(mesh.vertices[i->vertices[1]].tex_coords),
-			transform_matrix.get_transformed(mesh.vertices[i->vertices[2]].position),
-			texture_matrix.get_transformed(mesh.vertices[i->vertices[2]].tex_coords),
+			transform_matrix.get_transformed(*(Vector*)((char*)vertices + triangle[0]*vertices_strip)),
+			texture_matrix.get_transformed(*(Vector*)((char*)tex_coords + triangle[0]*tex_coords_strip)),
+			transform_matrix.get_transformed(*(Vector*)((char*)vertices + triangle[1]*vertices_strip)),
+			texture_matrix.get_transformed(*(Vector*)((char*)tex_coords + triangle[1]*tex_coords_strip)),
+			transform_matrix.get_transformed(*(Vector*)((char*)vertices + triangle[2]*vertices_strip)),
+			texture_matrix.get_transformed(*(Vector*)((char*)tex_coords + triangle[2]*tex_coords_strip)),
 			texture,
 			alpha,
 			blend_method );
+	}
 }
+
+bool
+rendering::RendererSoftware::is_supported_vfunc(const DependentObject::Handle &obj) const
+{
+	if (TransformationAffine::Handle::cast_dynamic(obj))
+	{
+		return true;
+	}
+	else
+	if (BlendingSimple::Handle simple = BlendingSimple::Handle::cast_dynamic(obj))
+	{
+		return !Color::is_straight(simple->get_method());
+	}
+	else
+	if (Mesh::Handle mesh = Mesh::Handle::cast_dynamic(obj))
+	{
+		if (mesh->get_vertex_fields() == Mesh::MASK_POSITION)
+			return true;
+		if ( mesh->get_vertex_fields() == (Mesh::MASK_POSITION | Mesh::MASK_TEXCOORDS)
+		  && (mesh->get_task() || mesh->get_surface()) )
+			return true;
+		return false;
+	}
+	return false;
+}
+
+rendering::Renderer::DependentObject::Handle
+rendering::RendererSoftware::convert_vfunc(const DependentObject::Handle &obj)
+{
+	if (rendering::Surface::Handle surface = Surface::Handle::cast_dynamic(obj))
+	{
+		SurfaceSoftware::Handle surface_software(new SurfaceSoftware());
+		surface_software->assign(surface);
+		return surface_software;
+	}
+	return Renderer::convert_vfunc(obj);
+}
+
+bool
+rendering::RendererSoftware::draw_vfunc(
+	const Params &params,
+	const Surface::Handle &target_surface,
+	const Transformation::Handle &transformation,
+	const Blending::Handle &blending,
+	const Primitive::Handle &primitive )
+{
+	SurfaceSoftware::Handle surface_software = SurfaceSoftware::Handle::cast_dynamic(target_surface);
+	if (!surface_software) return false;
+
+	TransformationAffine::Handle transformation_affine = TransformationAffine::Handle::cast_dynamic(transformation);
+	if (!transformation_affine) return false;
+
+	BlendingSimple::Handle blending_simple = BlendingSimple::Handle::cast_dynamic(blending);
+	if (!blending_simple) return false;
+
+	Mesh::Handle mesh = Mesh::Handle::cast_dynamic(primitive);
+	if (!mesh) return false;
+
+	if (mesh->check_vertex_field(Mesh::FIELD_TEXCOORDS))
+	{
+		Surface::Handle texture;
+		if (mesh->get_task())
+		{
+			Vector size((Real)(surface_software->get_width()), (Real)(surface_software->get_height()));
+			size = mesh->get_resolution_transfrom().get_transformed(size);
+			int w = (int)round(size[0]);
+			int h = (int)round(size[0]);
+			if (w <= 0) w = 1;
+			if (h <= 0) h = 1;
+			if (w > params.max_surface_width) w = params.max_surface_width;
+			if (h > params.max_surface_height) h = params.max_surface_height;
+
+			texture = new SurfaceSoftware();
+			texture->assign(w, h);
+			mesh->get_task()->draw(params.root_renderer, params, texture);
+		}
+
+		if (!texture)
+			texture = mesh->get_surface();
+
+		SurfaceSoftware::Handle texture_software = convert(texture);
+		if (!texture_software)
+			return false;
+
+		render_mesh(
+			*surface_software,
+			(const Vector*)mesh->get_vertex_pointer(Mesh::FIELD_POSITION),
+			mesh->get_vertex_size(),
+			(const Vector*)mesh->get_vertex_pointer(Mesh::FIELD_TEXCOORDS),
+			mesh->get_vertex_size(),
+			((const Mesh::Triangle*)mesh->get_triangles_pointer())->vertices,
+			sizeof(Mesh::Triangle),
+			mesh->get_triangles_count(),
+			*texture_software,
+			transformation_affine->get_matrix(),
+			Matrix(),
+			mesh->get_color().get_a(),
+			blending_simple->get_method() );
+
+		return true;
+	}
+	else
+	{
+		render_polygon(
+			*surface_software,
+			(const Vector*)mesh->get_vertex_pointer(Mesh::FIELD_POSITION),
+			mesh->get_vertex_size(),
+			((const Mesh::Triangle*)mesh->get_triangles_pointer())->vertices,
+			sizeof(Mesh::Triangle),
+			mesh->get_triangles_count(),
+			transformation_affine->get_matrix(),
+			mesh->get_color(),
+			blending_simple->get_method() );
+
+		return true;
+	}
+
+	return false;
+}
+
 
 
 /* === E N T R Y P O I N T ================================================= */

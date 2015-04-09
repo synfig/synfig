@@ -51,16 +51,16 @@ public:
 	typedef etl::handle<Surface> Handle;
 
 protected:
-	virtual void assign_vfunc(int width, int height) = 0;
-	virtual void assign_vfunc(const etl::handle<Surface> &surface) = 0;
-	virtual int get_width_vfunc() const = 0;
-	virtual int get_height_vfunc() const = 0;
+	virtual void assign_size_vfunc(int width, int height) = 0;
+	virtual void assign_surface_vfunc(const Handle &surface) = 0;
+	virtual void get_size_vfunc(int &out_width, int &out_height) const = 0;
 	virtual void get_pixels_vfunc(Color *buffer) const = 0;
 
 public:
 	void assign(int width, int height);
-	void assign(const etl::handle<Surface> &surface);
+	void assign(const Handle &surface);
 
+	bool empty() const;
 	int get_width() const;
 	int get_height() const;
 	void get_pixels(Color *buffer) const;

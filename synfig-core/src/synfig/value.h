@@ -74,7 +74,6 @@ class DashItem;
 class Color;
 class Bone;
 class ValueNode_Bone;
-class Matrix;
 class BoneWeightPair;
 
 /*!	\class ValueBase

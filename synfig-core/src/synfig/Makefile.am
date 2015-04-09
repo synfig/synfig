@@ -134,8 +134,6 @@ SYNFIGHEADERS = \
 	valueoperations.h \
 	valuetransformation.h \
 	mesh.h \
-	renderer.h \
-	renderersoftware.h \
 	soundprocessor.h \
 	polygon.h
 
@@ -187,8 +185,6 @@ SYNFIGSOURCES = \
 	zstreambuf.cpp \
 	valueoperations.cpp \
 	mesh.cpp \
-	renderer.cpp \
-	renderersoftware.cpp \
 	soundprocessor.cpp
 
 
@@ -210,6 +206,7 @@ libsynfig_include_HH = \
 
 include color/Makefile_insert
 include layers/Makefile_insert
+include rendering/Makefile_insert
 include valuenodes/Makefile_insert
 
 lib_LTLIBRARIES = libsynfig.la

@@ -36,7 +36,6 @@
 #endif
 
 #include "surface.h"
-#include "renderer.h"
 
 #endif
 
@@ -54,19 +53,50 @@ using namespace etl;
 
 void
 rendering::Surface::assign(int width, int height)
-	{ assign_vfunc(width, height); changed(); }
+{
+	if (width <= 0 || height <= 0) { width = 0; height = 0; }
+	assign_size_vfunc(width, height);
+	changed();
+}
 
 void
-rendering::Surface::assign(const etl::handle<Surface> &surface)
-	{ assign_vfunc(surface); changed(); }
+rendering::Surface::assign(const Handle &surface)
+{
+	if (!surface || surface->empty())
+	{
+		if (empty()) return;
+		assign_size_vfunc(0, 0);
+	}
+	else
+	{
+		assign_surface_vfunc(surface);
+	}
+	changed();
+}
+
+bool
+rendering::Surface::empty() const
+{
+	int width = 0, height = 0;
+	get_size_vfunc(width, height);
+	return width <= 0 || height <= 0;
+}
 
 int
 rendering::Surface::get_width() const
-	{ return get_width_vfunc(); }
+{
+	int width = 0, height = 0;
+	get_size_vfunc(width, height);
+	return width <= 0 || height <= 0 ? 0 : width;
+}
 
 int
 rendering::Surface::get_height() const
-	{ return get_height_vfunc(); }
+{
+	int width = 0, height = 0;
+	get_size_vfunc(width, height);
+	return width <= 0 || height <= 0 ? 0 : height;
+}
 
 void
 rendering::Surface::get_pixels(Color *buffer) const

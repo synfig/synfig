@@ -58,7 +58,7 @@ rendering::Transformation::transform_vfunc(const Point &x) const
 }
 
 Point
-rendering::Transformation::get_derivation_vfunc(int level, const Point &x, Real epsilon = 1e-6) const
+rendering::Transformation::get_derivation_vfunc(int level, const Point &x, Real epsilon) const
 {
 	if (level <= 0) return transform_vfunc(x).p;
 	return Point(
@@ -73,7 +73,7 @@ rendering::Transformation::transform(const Point &x) const
 	{ return transform_vfunc(x); }
 
 Point
-rendering::Transformation::get_derivation(int level, const Point &x, Real epsilon = 1e-6) const
+rendering::Transformation::get_derivation(int level, const Point &x, Real epsilon) const
 	{ return get_derivation_vfunc(level, x, epsilon); }
 
 /* === E N T R Y P O I N T ================================================= */

@@ -81,19 +81,20 @@ rendering::Renderer::convert_obj(const DependentObject::Handle &obj)
 }
 
 bool
-rendering::Renderer::is_supported_vfunc(const etl::handle<DependentObject>&) const
+rendering::Renderer::is_supported_vfunc(const DependentObject::Handle&) const
 	{ return false; }
 
-etl::handle<rendering::Renderer::DependentObject>
-rendering::Renderer::convert_vfunc(const etl::handle<DependentObject>&)
+rendering::Renderer::DependentObject::Handle
+rendering::Renderer::convert_vfunc(const DependentObject::Handle&)
 	{ return NULL; }
 
 bool
 rendering::Renderer::draw_vfunc(
-		const etl::handle<Surface>&,
-		const etl::handle<Transformation>&,
-		const etl::handle<Blending>&,
-		const etl::handle<Primitive>& )
+	const Params &,
+	const etl::handle<Surface>&,
+	const etl::handle<Transformation>&,
+	const etl::handle<Blending>&,
+	const etl::handle<Primitive>& )
 {
 	return false;
 }
@@ -114,16 +115,57 @@ etl::handle<rendering::Primitive>
 rendering::Renderer::convert_primtive(const etl::handle<Primitive> &primitive)
 	{ return etl::handle<Primitive>::cast_dynamic(convert_obj(primitive)); }
 
+etl::handle<rendering::Surface>
+rendering::Renderer::convert(const etl::handle<rendering::Surface> &surface)
+	{ return convert_surface(surface); }
+
+etl::handle<rendering::Transformation>
+rendering::Renderer::convert(const etl::handle<rendering::Transformation> &transformation)
+	{ return convert_transformation(transformation); }
+
+etl::handle<rendering::Blending>
+rendering::Renderer::convert(const etl::handle<rendering::Blending> &blending)
+	{ return convert_blending(blending); }
+
+etl::handle<rendering::Primitive>
+rendering::Renderer::convert(const etl::handle<rendering::Primitive> &primitive)
+	{ return convert_primtive(primitive); }
+
+
 bool
 rendering::Renderer::draw(
+		const Params &params,
 		const etl::handle<Surface> &target_surface,
 		const etl::handle<Transformation> &transformation,
 		const etl::handle<Blending> &blending,
 		const etl::handle<Primitive> &primitive )
 {
 	if (!target_surface) return false; // TODO: warning
+	if (target_surface->empty()) return false; // TODO: warning
 	if (!blending) return false; // TODO: warning
 	if (!primitive) return false; // TODO: warning
+
+	Params sub_params = params;
+	if (!sub_params.root_renderer)
+		sub_params.root_renderer = this;
+	if (sub_params.max_surface_width <= 0)
+		sub_params.max_surface_width = INT_MAX;
+	if (sub_params.max_surface_height <= 0)
+		sub_params.max_surface_height = INT_MAX;
+
+	int sw = sub_params.max_surface_width > target_surface->get_width()
+		   ? sub_params.max_surface_width
+		   : target_surface->get_width();
+	int sh = sub_params.max_surface_height > target_surface->get_height()
+		   ? sub_params.max_surface_height
+		   : target_surface->get_height();
+
+	if ( target_surface->get_width() != sw
+	  || target_surface->get_height() != sh )
+	{
+		// TODO: warning surface too large, removed
+		target_surface->assign(sw, sh);
+	}
 
 	etl::handle<Surface> converted_surface = convert(target_surface);
 	etl::handle<Transformation> converted_transformation = convert(transformation);
@@ -134,7 +176,7 @@ rendering::Renderer::draw(
 	  && (bool)converted_transformation == (bool)transformation
 	  && (bool)converted_blending       == (bool)blending
 	  && (bool)converted_primitive      == (bool)primitive
-	  && draw_vfunc(converted_surface, converted_transformation, converted_blending, converted_primitive) )
+	  && draw_vfunc(sub_params, converted_surface, converted_transformation, converted_blending, converted_primitive) )
 	{
 		// TODO: warning surface conversion
 		if (target_surface != converted_surface)
@@ -145,7 +187,7 @@ rendering::Renderer::draw(
 	if (get_alternative())
 	{
 		// TODO: warning call alternative
-		return get_alternative()->draw(target_surface, transformation, blending, primitive);
+		return get_alternative()->draw(sub_params, target_surface, transformation, blending, primitive);
 	}
 
 	// TODO: warning no more alternative rendering to call

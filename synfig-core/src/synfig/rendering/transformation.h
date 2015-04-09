@@ -28,6 +28,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include "renderer.h"
+#include "../vector.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -58,7 +59,7 @@ public:
 
 protected:
 	virtual TransformedPoint transform_vfunc(const Point &x) const;
-	virtual Point get_derivation_vfunc(int level, const Point &x, Real epsilon = 1e-6) const;
+	virtual Point get_derivation_vfunc(int level, const Point &x, Real epsilon) const;
 
 public:
 	TransformedPoint transform(const Point &x) const;
