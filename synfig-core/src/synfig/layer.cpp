@@ -768,6 +768,18 @@ Layer::accelerated_cairorender(Context context, cairo_t *cr, int /*quality*/, co
 	return cairorender(context,cr,renddesc,cb);
 }
 
+rendering::Task::Handle
+Layer::build_rendering_task_vfunc(Context context)const
+{
+	warning("Rendering of %s not implemented yet", get_name());
+	return rendering::Task::Handle();
+}
+
+rendering::Task::Handle
+Layer::build_rendering_task(Context context)const
+{
+	return build_rendering_task_vfunc(context);
+}
 
 String
 Layer::get_name()const

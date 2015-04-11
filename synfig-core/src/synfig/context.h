@@ -34,6 +34,7 @@
 #include "surface.h"
 #include <synfig/layers/layer_composite.h>
 #include "general.h"
+#include "rendering/task.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -152,6 +153,9 @@ public:
 	//! blend result into the painting \surface */
 	bool accelerated_render(Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb) const;
 	bool accelerated_cairorender(cairo_t *cr,int quality, const RendDesc &renddesc, ProgressCallback *cb) const;
+
+	//!	Make rendering task
+	rendering::Task::Handle build_rendering_task() const;
 
 	//! Returns the bounding rectangle of all the context.
 	//! It is the union of all the layers's bounding rectangle.
