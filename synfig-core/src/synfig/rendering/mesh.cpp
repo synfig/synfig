@@ -67,7 +67,7 @@ void rendering::MeshBase::set_color(const Color &x)
 void rendering::MeshBase::set_surface(const Surface::Handle &x)
 	{ if (get_surface() != x) { surface = x; changed_common_data(); } }
 
-void rendering::MeshBase::set_task(const RenderingTask::Handle &x)
+void rendering::MeshBase::set_task(const Task::Handle &x)
 	{ if (get_task() != x) { task = x; changed_common_data(); } }
 
 void rendering::MeshBase::set_resolution_transfrom(const Matrix2 &x)

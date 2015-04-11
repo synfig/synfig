@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/renderingtask.cpp
-**	\brief RenderingTask
+/*!	\file synfig/rendering/task.cpp
+**	\brief Task
 **
 **	$Id$
 **
@@ -35,7 +35,7 @@
 #include <signal.h>
 #endif
 
-#include "renderingtask.h"
+#include <synfig/rendering/task.h>
 
 #endif
 
@@ -52,7 +52,7 @@ using namespace etl;
 /* === M E T H O D S ======================================================= */
 
 bool
-rendering::RenderingTask::draw(
+rendering::Task::draw(
 	const Renderer::Handle &renderer,
 	const Renderer::Params &params,
 	const Surface::Handle &surface ) const
@@ -63,9 +63,9 @@ rendering::RenderingTask::draw(
 	bool success = true;
 	if (!renderer->draw(params, surface, get_transformation(), get_blending(), get_primitive()))
 		success = false;
-	if (get_next_first() && !get_next_first()->draw(renderer, params, surface))
+	if (get_branch() && !get_branch()->draw(renderer, params, surface))
 		success = false;
-	if (get_next_second() && !get_next_second()->draw(renderer, params, surface))
+	if (get_next() && !get_next()->draw(renderer, params, surface))
 		success = false;
 
 	return success;

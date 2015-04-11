@@ -5,9 +5,9 @@ RENDERING_HH = \
 	rendering/primitive.h \
 	rendering/renderer.h \
 	rendering/renderersoftware.h \
-	rendering/renderingtask.h \
 	rendering/surface.h \
 	rendering/surfacesoftware.h \
+	rendering/task.h \
 	rendering/transformationaffine.h \
 	rendering/transformation.h \
 	rendering/transformationstack.h
@@ -19,9 +19,9 @@ RENDERING_CC = \
 	rendering/primitive.cpp \
 	rendering/renderer.cpp \
 	rendering/renderersoftware.cpp \
-	rendering/renderingtask.cpp \
 	rendering/surface.cpp \
 	rendering/surfacesoftware.cpp \
+	rendering/task.cpp \
 	rendering/transformationaffine.cpp \
 	rendering/transformation.cpp \
 	rendering/transformationstack.cpp

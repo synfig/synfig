@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/renderingtask.h
-**	\brief RenderingTask Header
+/*!	\file synfig/rendering/task.h
+**	\brief Task Header
 **
 **	$Id$
 **
@@ -22,8 +22,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_RENDERING_RENDERINGTASK_H
-#define __SYNFIG_RENDERING_RENDERINGTASK_H
+#ifndef __SYNFIG_RENDERING_TASK_H
+#define __SYNFIG_RENDERING_TASK_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -46,21 +46,21 @@ namespace rendering
 
 class Surface;
 
-class RenderingTask: public etl::shared_object
+class Task: public etl::shared_object
 {
 public:
-	typedef etl::handle<RenderingTask> Handle;
+	typedef etl::handle<Task> Handle;
 
 private:
 	Transformation::Handle transformation;
 	Blending::Handle blending;
 	Primitive::Handle primitive;
 
-	Handle next_first;
-	Handle next_second;
+	Handle branch;
+	Handle next;
 
 public:
-	RenderingTask();
+	Task();
 
 	const Transformation::Handle& get_transformation() const
 		{ return transformation; }
@@ -77,15 +77,15 @@ public:
 	void set_primitive(const Primitive::Handle &x)
 		{ primitive = x; }
 
-	const Handle& get_next_first() const
-		{ return next_first; }
-	void set_next_first(const Handle &x)
-		{ next_first = x; }
+	const Handle& get_branch() const
+		{ return branch; }
+	void set_branch(const Handle &x)
+		{ branch = x; }
 
-	const Handle& get_next_second() const
-		{ return next_second; }
-	void set_next_second(const Handle &x)
-		{ next_second = x; }
+	const Handle& get_next() const
+		{ return next; }
+	void set_next(const Handle &x)
+		{ next = x; }
 
 	bool draw(
 		const Renderer::Handle &renderer,

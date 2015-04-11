@@ -27,10 +27,10 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <synfig/rendering/task.h>
 #include <cstring>
 #include "primitive.h"
 #include "surface.h"
-#include "renderingtask.h"
 #include "../matrix.h"
 
 /* === M A C R O S ========================================================= */
@@ -52,7 +52,7 @@ public:
 private:
 	Color color;
 	Surface::Handle surface;
-	RenderingTask::Handle task;
+	Task::Handle task;
 	Matrix2 resolution_transfrom;
 
 public:
@@ -62,8 +62,8 @@ public:
 	Surface::Handle get_surface() const { return surface; }
 	void set_surface(const Surface::Handle &x);
 
-	RenderingTask::Handle get_task() const { return task; }
-	void set_task(const RenderingTask::Handle &x);
+	Task::Handle get_task() const { return task; }
+	void set_task(const Task::Handle &x);
 
 	const Matrix2& get_resolution_transfrom() const { return resolution_transfrom; }
 	void set_resolution_transfrom(const Matrix2 &x);
