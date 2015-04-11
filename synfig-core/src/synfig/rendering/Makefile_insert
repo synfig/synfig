@@ -3,6 +3,7 @@ RENDERING_HH = \
 	rendering/blendingsimple.h \
 	rendering/mesh.h \
 	rendering/primitive.h \
+	rendering/primitivetask.h \
 	rendering/renderer.h \
 	rendering/renderersoftware.h \
 	rendering/surface.h \
@@ -17,6 +18,7 @@ RENDERING_CC = \
 	rendering/blendingsimple.cpp \
 	rendering/mesh.cpp \
 	rendering/primitive.cpp \
+	rendering/primitivetask.cpp \
 	rendering/renderer.cpp \
 	rendering/renderersoftware.cpp \
 	rendering/surface.cpp \
