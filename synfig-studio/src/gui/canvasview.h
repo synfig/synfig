@@ -112,11 +112,11 @@
 #endif
 
 #ifndef ONION_SKIN_PAST
-	#define ONION_SKIN_PAST 2
+	#define ONION_SKIN_PAST 10
 #endif
 
 #ifndef ONION_SKIN_FUTURE
-	#define ONION_SKIN_FUTURE 2
+	#define ONION_SKIN_FUTURE 10
 #endif
 
 /* === M A C R O S ========================================================= */
