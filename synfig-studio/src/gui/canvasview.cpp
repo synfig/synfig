@@ -684,7 +684,7 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	resolutiondial         	(Gtk::IconSize::from_name("synfig-small_icon_16x16")),
 	quality_adjustment_		(Gtk::Adjustment::create(8,1,10,1,1,0)),
 	future_onion_adjustment_(Gtk::Adjustment::create(0,0,ONION_SKIN_FUTURE,1,1,0)),
-	past_onion_adjustment_  (Gtk::Adjustment::create(0,0,ONION_SKIN_PAST,1,1,0)),
+	past_onion_adjustment_  (Gtk::Adjustment::create(1,0,ONION_SKIN_PAST,1,1,0)),
 
 	timeslider				(new Widget_Timeslider),
 	widget_kf_list			(new Widget_Keyframe_List),

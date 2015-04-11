@@ -1022,7 +1022,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	ph=0.001;
 	last_focus_point=Point(0,0);
 	onion_skin=false;
-	onion_skins[0]=0;
+	onion_skins[0]=1;
 	onion_skins[1]=0;
 	queued=false;
 	dirty_trap_enabled=false;
