@@ -2132,6 +2132,11 @@ App::apply_gtk_settings(bool use_dark)
 	GtkSettings *gtk_settings;
 	gtk_settings = gtk_settings_get_default ();
 	
+	gchar *theme_name=getenv("SYNFIG_GTK_THEME");
+	if(theme_name) {
+		g_object_set (G_OBJECT (gtk_settings), "gtk-theme-name", theme_name, NULL);
+	}
+	
 	// dark theme
 	g_object_set (G_OBJECT (gtk_settings), "gtk-application-prefer-dark-theme", use_dark, NULL);
 	
@@ -2139,7 +2144,6 @@ App::apply_gtk_settings(bool use_dark)
 	g_object_set (G_OBJECT (gtk_settings), "gtk-menu-images", TRUE, NULL);
 	
 	// fix checkboxes for Adwaita theme
-	gchar *theme_name;
 	g_object_get (G_OBJECT (gtk_settings), "gtk-theme-name", &theme_name, NULL);
 	if ( String(theme_name) == "Adwaita" ){
 		Glib::ustring data;

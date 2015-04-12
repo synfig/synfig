@@ -653,8 +653,8 @@ if [ ! -f ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done ]; then
 	cd ${PKG_NAME}-${PKG_VERSION}
 	
 	# Special fix that prevents retrieving some options from XSettings daemon
-	sed -i '/Net\/ThemeName/d' ./gdk/x11/gdksettings.c
-	sed -i '/Gtk\/MenuImages/d' ./gdk/x11/gdksettings.c
+	#sed -i '/Net\/ThemeName/d' ./gdk/x11/gdksettings.c
+	#sed -i '/Gtk\/MenuImages/d' ./gdk/x11/gdksettings.c
 	
 	[ ! -e config.cache ] || rm config.cache
 	./configure --build=${HOST} --prefix=${PREFIX}/ \
@@ -1695,6 +1695,7 @@ USER_CONFIG_DIR=\$HOME/.config/synfig
 export ETC_DIR=\${SYSPREFIX}/etc
 export LD_LIBRARY_PATH=\${SYSPREFIX}/lib:\$LD_LIBRARY_PATH
 export SYNFIG_ROOT=\${SYSPREFIX}/
+export SYNFIG_GTK_THEME="Adwaita"
 export SYNFIG_MODULE_LIST=\${SYSPREFIX}/etc/synfig_modules.cfg
 export XDG_DATA_DIRS="\${SYSPREFIX}/share/:\$XDG_DATA_DIRS:/usr/local/share/:/usr/share/"
 export XDG_CONFIG_DIRS="\$HOME/.config/synfig:\$XDG_CONFIG_DIRS"
