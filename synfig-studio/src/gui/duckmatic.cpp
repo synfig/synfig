@@ -3127,7 +3127,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			synfigapp::ValueDesc value_desc(bone_value_node, bone_value_node->get_link_index_from_name(recursive ? "scalex" : "scalelx"), orig_value_desc);
 
 			etl::handle<Duck> duck=new Duck();
-			duck->set_type(Duck::TYPE_POSITION);
+			duck->set_type(Duck::TYPE_VERTEX);
 			set_duck_value_desc(*duck, value_desc, bone_transform_stack);
 			//Real length = bone.get_length()*bone.get_scalex()*bone.get_scalelx();
 			Real length = value_desc.get_value(time).get(Real());
