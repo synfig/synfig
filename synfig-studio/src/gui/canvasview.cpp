@@ -1441,21 +1441,6 @@ CanvasView::create_display_bar()
 	// Separator
 	displaybar->append( *create_tool_separator() );
 
-	{ // Set up past onion skin spin button
-		past_onion_spin=Gtk::manage(new class Gtk::SpinButton(past_onion_adjustment_));
-		past_onion_spin->signal_value_changed().connect(
-			sigc::mem_fun(*this, &studio::CanvasView::set_onion_skins));
-		past_onion_spin->set_tooltip_text( _("Past onion skins"));
-		past_onion_spin->show();
-
-		Gtk::ToolItem *toolitem = Gtk::manage(new Gtk::ToolItem());
-		toolitem->add(*past_onion_spin);
-		toolitem->set_is_important(true);
-		toolitem->show();
-
-		displaybar->append(*toolitem);
-	}
-
 	{ // Set up the onion skin toggle button
 		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-toggle_onion_skin"), iconsize));
 		icon->set_padding(0, 0);
@@ -1471,6 +1456,21 @@ CanvasView::create_display_bar()
 		onion_skin->show();
 
 		displaybar->append(*onion_skin);
+	}
+	
+	{ // Set up past onion skin spin button
+		past_onion_spin=Gtk::manage(new class Gtk::SpinButton(past_onion_adjustment_));
+		past_onion_spin->signal_value_changed().connect(
+			sigc::mem_fun(*this, &studio::CanvasView::set_onion_skins));
+		past_onion_spin->set_tooltip_text( _("Past onion skins"));
+		past_onion_spin->show();
+
+		Gtk::ToolItem *toolitem = Gtk::manage(new Gtk::ToolItem());
+		toolitem->add(*past_onion_spin);
+		toolitem->set_is_important(true);
+		toolitem->show();
+
+		displaybar->append(*toolitem);
 	}
 
 	{ // Set up future onion skin spin button
