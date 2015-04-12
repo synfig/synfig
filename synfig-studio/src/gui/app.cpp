@@ -10,7 +10,7 @@
 **	Copyright (c) 2008 Gerald Young
 **	Copyright (c) 2008, 2010-2013 Carlos López
 **	Copyright (c) 2009, 2011 Nikita Kitaev
-**	Copyright (c) 2012 Konstantin Dmitriev
+**	Copyright (c) 2012-2015 Konstantin Dmitriev
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -3173,7 +3173,8 @@ App::dialog_message_1b(
 		//OTHER:	Gtk::MESSAGE_OTHER - None of the above, doesn’t get an icon.
 	const std::string &message,
 	const std::string &details,
-	const std::string &button1)
+	const std::string &button1,
+	const std::string &long_details)
 {
 	Gtk::MessageType _type;
 	if (type == "INFO")
@@ -3191,6 +3192,19 @@ App::dialog_message_1b(
 
 	if (details != "details")
 		dialog.set_secondary_text(details);
+	
+	Gtk::Label label;
+	Gtk::ScrolledWindow sw;
+	if (long_details != "long_details")
+	{
+		label.set_text(long_details);
+		label.show();
+		sw.add(label);
+		sw.set_size_request(400,300);
+		sw.show();
+		dialog.get_content_area()->pack_end(sw);
+		dialog.set_resizable(true);
+	}
 
 	dialog.add_button(button1, 0);
 
@@ -3492,9 +3506,10 @@ App::open_as(std::string filename,std::string as,synfig::FileContainerZip::file_
 			if (warnings != "")
 				dialog_message_1b(
 					"WARNING",
-					strprintf("%s:\n\n%s", _("Warning"), warnings.c_str()),
+					_("Warning"),
 					"details",
-					_("Close"));
+					_("Close"),
+					warnings);
 
 			if (as.find(custom_filename_prefix.c_str()) != 0)
 				add_recent_file(as);

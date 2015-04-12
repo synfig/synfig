@@ -395,7 +395,8 @@ public:
 			const std::string &type,
 			const std::string &message,
 			const std::string &detials,
-			const std::string &button1);
+			const std::string &button1,
+			const std::string &long_details = "long_details");
 
 	static bool dialog_message_2b(const std::string &message,
 			const std::string &details,
