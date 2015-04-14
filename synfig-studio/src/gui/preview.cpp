@@ -386,6 +386,7 @@ Widget_Preview::Widget_Preview():
 	jack_enabled(false),
 	jack_is_playing(false),
 	jack_time(0),
+	jack_initial_time(0),
 	jack_offset(0),
 #ifdef WITH_JACK
 	jack_client(NULL),
@@ -607,6 +608,7 @@ Widget_Preview::Widget_Preview():
 
 studio::Widget_Preview::~Widget_Preview()
 {
+	clear();
 }
 
 void studio::Widget_Preview::update()
@@ -947,12 +949,13 @@ void studio::Widget_Preview::disconnect_preview(Preview *prev)
 	{
 		preview = 0;
 		prevchanged.disconnect();
+		soundProcessor.clear();
 	}
 }
 
 void studio::Widget_Preview::set_preview(etl::handle<Preview>	prev)
 {
-	soundProcessor.clear();
+	disconnect_preview(preview.get());
 
 	preview = prev;
 
@@ -994,6 +997,7 @@ void studio::Widget_Preview::set_preview(etl::handle<Preview>	prev)
 		}
 
 		preview->get_canvas()->fill_sound_processor(soundProcessor);
+		set_jack_enabled( preview && preview->get_canvasview()->get_jack_enabled_in_preview() );
 
 		//connect so future information will be found...
 		prevchanged = prev->signal_changed().connect(sigc::mem_fun(*this,&Widget_Preview::whenupdated));
@@ -1014,9 +1018,8 @@ void studio::Widget_Preview::whenupdated()
 
 void studio::Widget_Preview::clear()
 {
-	preview = 0;
-	prevchanged.disconnect();
-	soundProcessor.clear();
+	disconnect_preview(preview.get());
+	set_jack_enabled(false);
 }
 
 void studio::Widget_Preview::play()
@@ -1346,13 +1349,36 @@ Widget_Preview::is_time_equal_to_current_frame(const synfig::Time &time)
 	return t0.is_equal(t1);
 }
 
+void Widget_Preview::on_show()
+{
+	Table::on_show();
+	set_jack_enabled( preview && preview->get_canvasview()->get_jack_enabled_in_preview() );
+}
+
+void Widget_Preview::on_hide()
+{
+	Table::on_hide();
+	if (preview)
+	{
+		bool enabled = get_jack_enabled();
+		set_jack_enabled(false);
+		preview->get_canvasview()->set_jack_enabled_in_preview(enabled);
+	}
+	pause();
+	stoprender();
+}
+
 void Widget_Preview::set_jack_enabled(bool value) {
 	if (jack_enabled == value) return;
+
 #ifdef WITH_JACK
 	if (playing) pause();
 	jack_enabled = value;
 	if (jack_enabled)
 	{
+		// lock jack in canvas views
+		App::jack_lock();
+
 		// initialize jack
 		jack_client = jack_client_open("synfigstudiopreview", JackNullOption, 0);
 		jack_set_sync_callback(jack_client, jack_sync_callback, this);
@@ -1361,14 +1387,27 @@ void Widget_Preview::set_jack_enabled(bool value) {
 			jack_client_close(jack_client);
 			jack_client = NULL;
 			jack_enabled = false;
+			App::jack_unlock();
+		} else {
+			// remember time
+			on_jack_sync();
+			jack_initial_time = jack_time;
 		}
 	}
 	else
 	{
+		// restore time
+		jack_nframes_t sr = jack_get_sample_rate(jack_client);
+		jack_nframes_t nframes = ((double)sr * (jack_initial_time));
+		jack_transport_locate(jack_client, nframes);
+
 		// deinitialize jack
 		jack_deactivate(jack_client);
 		jack_client_close(jack_client);
 		jack_client = NULL;
+
+		// unlock jack in canvas views
+		App::jack_unlock();
 	}
 
 	//jackdial->toggle_enable_jack(jack_enabled);
@@ -1400,6 +1439,8 @@ void Widget_Preview::set_jack_enabled(bool value) {
 		offset_widget->hide();
 	}
 #endif
+
+	if (preview) preview->get_canvasview()->set_jack_enabled_in_preview( get_jack_enabled() );
 }
 
 

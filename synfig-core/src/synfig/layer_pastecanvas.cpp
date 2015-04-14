@@ -144,7 +144,7 @@ Layer_PasteCanvas::get_param_vocab()const
 	);
 
 	ret.push_back(ParamDesc("children_lock")
-		.set_local_name(_("Children Lock"))
+		.set_local_name(_("Lock Selection"))
 		.set_description(_("When checked prevents to select the children using the mouse click"))
 		.set_static(true)
 	);

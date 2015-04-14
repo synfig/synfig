@@ -68,6 +68,7 @@ public:
 	Widget_Preview &get_widget() {return preview;}
 	const Widget_Preview &get_widget() const {return preview;}
 
+	virtual void on_show();
 	virtual void on_hide();
 	//other forwarding functions...
 

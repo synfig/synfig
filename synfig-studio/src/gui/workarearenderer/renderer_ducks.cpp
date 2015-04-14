@@ -389,10 +389,16 @@ Renderer_Ducks::render_vfunc(
 				// All tangents are the same color
 				screen_duck.color=((*iter)->get_scalar()<0 ? DUCK_COLOR_TANGENT_1 : DUCK_COLOR_TANGENT_1);
 			}
+		else if((*iter)->get_type()&Duck::TYPE_SKEW)
+			screen_duck.color=DUCK_COLOR_TANGENT_2;
 		else if((*iter)->get_type()&Duck::TYPE_VERTEX)
+			screen_duck.color=DUCK_COLOR_VERTEX;
+		else if((*iter)->get_type()&Duck::TYPE_SCALE)
 			screen_duck.color=DUCK_COLOR_VERTEX;
 		else if((*iter)->get_type()&Duck::TYPE_RADIUS)
 			screen_duck.color=((*iter)->is_linear() ? DUCK_COLOR_LINEAR : DUCK_COLOR_RADIUS);
+		else if((*iter)->get_type()&Duck::TYPE_SCALE_X || (*iter)->get_type()&Duck::TYPE_SCALE_Y)
+			screen_duck.color=DUCK_COLOR_TANGENT_1;
 		else if((*iter)->get_type()&Duck::TYPE_WIDTH)
 			screen_duck.color=DUCK_COLOR_WIDTH;
 		else if((*iter)->get_type()&Duck::TYPE_ANGLE)

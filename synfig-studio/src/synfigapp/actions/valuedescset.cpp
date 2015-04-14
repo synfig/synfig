@@ -92,7 +92,8 @@ ACTION_SET_CVS_ID(Action::ValueDescSet,"$Id$");
 Action::ValueDescSet::ValueDescSet():
 	time(0),
 	recursive(true),
-	animate(false)
+	animate(false),
+	lock_animation(false)
 {
 }
 
@@ -128,6 +129,10 @@ Action::ValueDescSet::get_param_vocab()
 	);
 	ret.push_back(ParamDesc("animate", Param::TYPE_BOOL)
 		.set_local_name(_("Animate"))
+		.set_optional()
+	);
+	ret.push_back(ParamDesc("lock_animation", Param::TYPE_BOOL)
+		.set_local_name(_("Lock animation"))
 		.set_optional()
 	);
 
@@ -166,6 +171,11 @@ Action::ValueDescSet::set_param(const synfig::String& name, const Action::Param 
 	if(name=="animate" && param.get_type()==Param::TYPE_BOOL)
 	{
 		animate=param.get_bool();
+		return true;
+	}
+	if(name=="lock_animation" && param.get_type()==Param::TYPE_BOOL)
+	{
+		lock_animation=param.get_bool();
 		return true;
 	}
 
@@ -1078,6 +1088,21 @@ Action::ValueDescSet::prepare()
 					|| type == type_vector)
 					)
 				{
+					if (!lock_animation)
+					{
+						if ( !get_canvas_interface()
+						  || !get_canvas_interface()->get_ui_interface()
+						  || UIInterface::RESPONSE_OK != get_canvas_interface()->get_ui_interface()->confirmation(
+								 _("You are trying to edit animated parameter while Animation Mode is off.\n\nDo you want to apply offset to this animation?" ),
+								 _("Hint: You can hold Spacebar key while editing parameter to avoid this confirmation dialog."),
+								 _("No"),
+								 _("Yes"),
+								 synfigapp::UIInterface::RESPONSE_OK ))
+						{
+							throw Error(_("Cancelled by user"));
+						}
+					}
+
 					synfig::ValueNode_Animated::WaypointList::const_iterator iter;
 					for(iter=animated->waypoint_list().begin(); iter<animated->waypoint_list().end(); iter++)
 					{

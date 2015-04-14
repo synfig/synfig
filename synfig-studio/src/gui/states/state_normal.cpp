@@ -135,10 +135,12 @@ class studio::StateNormal_Context : public sigc::trackable
 	bool ctrl_pressed;
 	bool alt_pressed;
 	bool shift_pressed;
+	bool space_pressed;
 
 	void set_ctrl_pressed(bool value);
 	void set_alt_pressed(bool value);
 	void set_shift_pressed(bool value);
+	void set_space_pressed(bool value);
 
 public:
 
@@ -155,6 +157,42 @@ public:
 	bool get_constrain_flag()const { if(duck_dragger_) return duck_dragger_->constrain; else return false; }
 	void set_constrain_flag(bool x) { if(duck_dragger_ && x!=duck_dragger_->constrain)
 		                                  {duck_dragger_->constrain=x; refresh_cursor();} }
+
+	bool get_alternative_flag()const
+	{
+		return get_canvas_view()
+			&& get_canvas_view()->get_work_area()
+			&& get_canvas_view()->get_work_area()->get_alternative_mode();
+	}
+	void set_alternative_flag(bool x)
+	{
+		if ( get_canvas_view()
+		  && get_canvas_view()->get_work_area()
+		  && get_canvas_view()->get_work_area()->get_alternative_mode() != x )
+		{
+			get_canvas_view()->get_work_area()->set_alternative_mode(x);
+			get_canvas_view()->get_work_area()->queue_draw();
+			refresh_cursor();
+		}
+	}
+
+	bool get_lock_animation_flag()const
+	{
+		return get_canvas_view()
+			&& get_canvas_view()->get_work_area()
+			&& get_canvas_view()->get_work_area()->get_lock_animation_mode();
+	}
+	void set_lock_animation_flag(bool x)
+	{
+		if ( get_canvas_view()
+		  && get_canvas_view()->get_work_area()
+		  && get_canvas_view()->get_work_area()->get_lock_animation_mode() != x )
+		{
+			get_canvas_view()->get_work_area()->set_lock_animation_mode(x);
+			get_canvas_view()->get_work_area()->queue_draw();
+			refresh_cursor();
+		}
+	}
 
 	StateNormal_Context(CanvasView* canvas_view);
 
@@ -229,6 +267,11 @@ void StateNormal_Context::refresh_cursor()
 	if(get_rotate_flag() && get_scale_flag())
 	{
 		get_work_area()->set_cursor(Gdk::CROSSHAIR);
+		return;
+	}
+	if(get_lock_animation_flag())
+	{
+		get_work_area()->set_cursor(Gdk::DRAFT_LARGE);
 		return;
 	}
 
@@ -596,22 +639,19 @@ StateNormal_Context::set_ctrl_pressed(bool value)
 		if (get_canvas_view()->get_work_area()->get_selected_ducks().size() <= 1
 		 /* && get_canvas_view()->get_work_area()->get_selected_duck()->get_value_desc().get_value_type() == synfig::type_transformation */ )
 		{
-			get_canvas_view()->get_work_area()->set_alternative_mode(true);
-			get_canvas_view()->get_work_area()->queue_draw();
+			set_rotate_flag(false);
+			set_alternative_flag(true);
 		}
 		else
 		{
 			set_rotate_flag(true);
+			set_alternative_flag(false);
 		}
 	}
 	else
 	{
-		if (get_canvas_view()->get_work_area()->get_alternative_mode())
-		{
-			get_canvas_view()->get_work_area()->set_alternative_mode(false);
-			get_canvas_view()->get_work_area()->queue_draw();
-		}
-		if (get_rotate_flag()) set_rotate_flag(false);
+		set_alternative_flag(false);
+		set_rotate_flag(false);
 	}
 }
 
@@ -629,6 +669,14 @@ StateNormal_Context::set_shift_pressed(bool value)
 	if (shift_pressed == value) return;
 	shift_pressed = value;
 	set_constrain_flag(shift_pressed);
+}
+
+void
+StateNormal_Context::set_space_pressed(bool value)
+{
+	if (space_pressed == value) return;
+	space_pressed = value;
+	set_lock_animation_flag(space_pressed);
 }
 
 Smach::event_result
@@ -655,6 +703,9 @@ StateNormal_Context::event_key_down_handler(const Smach::event& x)
 	case GDK_KEY_Shift_L:
 	case GDK_KEY_Shift_R:
 		set_shift_pressed(true);
+		break;
+	case GDK_KEY_space:
+		set_space_pressed(true);
 		break;
 	default:
 		set_ctrl_pressed(event.modifier&GDK_CONTROL_MASK);
@@ -684,6 +735,11 @@ StateNormal_Context::event_key_up_handler(const Smach::event& x)
 	case GDK_KEY_Shift_L:
 	case GDK_KEY_Shift_R:
 		set_shift_pressed(false);
+		break;
+	case GDK_KEY_space:
+		set_space_pressed(false);
+		break;
+	default:
 		break;
 	}
 	return Smach::RESULT_REJECT;

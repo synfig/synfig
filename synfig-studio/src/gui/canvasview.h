@@ -111,6 +111,14 @@
 #include <jack/transport.h>
 #endif
 
+#ifndef ONION_SKIN_PAST
+	#define ONION_SKIN_PAST 10
+#endif
+
+#ifndef ONION_SKIN_FUTURE
+	#define ONION_SKIN_FUTURE 10
+#endif
+
 /* === M A C R O S ========================================================= */
 
 #ifndef DEBUGPOINT_CLASS
@@ -429,6 +437,9 @@ private:
 	sigc::connection queue_rebuild_ducks_connection;
 
 	bool jack_enabled;
+	bool jack_actual_enabled;
+	int jack_locks;
+	bool jack_enabled_in_preview;
 #ifdef WITH_JACK
 	Glib::Dispatcher jack_dispatcher;
 	jack_client_t *jack_client;
@@ -561,8 +572,14 @@ public:
 	void deactivate();
 	void present();
 
+	bool jack_is_locked() const { return jack_locks > 0; }
+	void jack_lock();
+	void jack_unlock();
+	bool get_jack_enabled_in_preview() const { return jack_enabled_in_preview; }
+	void set_jack_enabled_in_preview(bool x) { jack_enabled_in_preview = x; }
 #ifdef WITH_JACK
-	bool get_jack_enabled() { return jack_enabled; }
+	bool get_jack_enabled() const { return jack_enabled; }
+	bool get_jack_actual_enabled() const { return jack_actual_enabled; }
 	void set_jack_enabled(bool value);
 #endif
 

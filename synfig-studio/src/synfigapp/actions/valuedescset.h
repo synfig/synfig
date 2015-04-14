@@ -52,6 +52,7 @@ private:
 	synfig::Time time;
 	bool recursive;
 	bool animate;
+	bool lock_animation;
 	synfig::ValueNode_Animated::Handle value_node_animated;
 
 public:

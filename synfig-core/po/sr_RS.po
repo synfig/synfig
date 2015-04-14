@@ -3,13 +3,14 @@
 # This file is distributed under the same license as the Synfig Core package.
 # 
 # Translators:
+# Jay Alexander Fleming <tito.nehru.naser@gmail.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: Synfig\n"
 "Report-Msgid-Bugs-To: http://www.synfig.org/issues/thebuggenie/synfig\n"
-"POT-Creation-Date: 2015-03-25 18:00+0700\n"
-"PO-Revision-Date: 2015-03-22 16:07+0000\n"
-"Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
+"POT-Creation-Date: 2015-04-06 16:00+0700\n"
+"PO-Revision-Date: 2015-03-31 10:44+0000\n"
+"Last-Translator: Jay Alexander Fleming <tito.nehru.naser@gmail.com>\n"
 "Language-Team: Serbian (Serbia) (http://www.transifex.com/projects/p/synfig/language/sr_RS/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,7 +21,7 @@ msgstr ""
 #: src/modules/lyr_freetype/lyr_freetype.cpp:66
 #: src/modules/lyr_freetype/lyr_freetype.cpp:569
 msgid "Text"
-msgstr ""
+msgstr "Текст"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:67
 #: src/modules/lyr_std/import.cpp:61 src/modules/lyr_std/stroboscope.cpp:61
@@ -29,23 +30,23 @@ msgstr ""
 #: src/synfig/layer_duplicate.cpp:57 src/synfig/layer_skeleton.cpp:55
 #: src/synfig/layer_switch.cpp:59
 msgid "Other"
-msgstr ""
+msgstr "Остало"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:97
 msgid "Text Layer"
-msgstr ""
+msgstr "Текстуални слој"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:398
 msgid "unable to initialize"
-msgstr ""
+msgstr "не могу да покренем"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:417
 msgid "empty font set"
-msgstr ""
+msgstr "празан скуп словолика"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:570
 msgid "Text to Render"
-msgstr ""
+msgstr "Текст за стварање"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:575
 #: src/modules/lyr_std/shade.cpp:622
@@ -56,74 +57,74 @@ msgstr ""
 #: src/modules/mod_geometry/rectangle.cpp:138 src/synfig/layer_shape.cpp:1225
 #: src/synfig/layer_solidcolor.cpp:114 src/synfig/paramdesc.cpp:83
 msgid "Color"
-msgstr ""
+msgstr "Боја"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:576
 msgid "Color of the text"
-msgstr ""
+msgstr "Боја текста"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:580
 msgid "Font Family"
-msgstr ""
+msgstr "Породица словолика"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:585
 msgid "Style"
-msgstr ""
+msgstr "Облик"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:587
 #: src/modules/lyr_freetype/lyr_freetype.cpp:597
 #: src/synfig/valuenode_derivative.cpp:379
 msgid "Normal"
-msgstr ""
+msgstr "Обично"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:588
 msgid "Oblique"
-msgstr ""
+msgstr "Накошено"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:589
 msgid "Italic"
-msgstr ""
+msgstr "Косо"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:593
 #: src/synfig/valuenode_composite.cpp:817
 msgid "Weight"
-msgstr ""
+msgstr "Дебљина"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:595
 msgid "Ultralight"
-msgstr ""
+msgstr "Баш танко"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:596
 msgid "light"
-msgstr ""
+msgstr "Танко"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:598
 msgid "Bold"
-msgstr ""
+msgstr "Задебљано"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:599
 msgid "Ultrabold"
-msgstr ""
+msgstr "Баш задебљано"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:600
 msgid "Heavy"
-msgstr ""
+msgstr "Предебело"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:603
 msgid "Horizontal Spacing"
-msgstr ""
+msgstr "Међусловни размак"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:604
 msgid "Describes how close glyphs are horizontally"
-msgstr ""
+msgstr "Одређује хоразинтални размак између знакова словолика"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:608
 msgid "Vertical Spacing"
-msgstr ""
+msgstr "Међуредни размак"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:609
 msgid "Describes how close lines of text are vertically"
-msgstr ""
+msgstr "Одређује проред између редова текста"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:613
 #: src/modules/lyr_std/shade.cpp:628 src/modules/lyr_std/xorpattern.cpp:133
@@ -132,19 +133,19 @@ msgstr ""
 #: src/modules/mod_geometry/checkerboard.cpp:154
 #: src/modules/mod_noise/distort.cpp:227 src/modules/mod_noise/noise.cpp:276
 msgid "Size"
-msgstr ""
+msgstr "Величина"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:614
 msgid "Size of the text"
-msgstr ""
+msgstr "Величина текста"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:621
 msgid "Orientation"
-msgstr ""
+msgstr "Усмереност"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:622
 msgid "Text Orientation"
-msgstr ""
+msgstr "Усмерење текста"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:627
 #: src/modules/lyr_std/curvewarp.cpp:398 src/modules/lyr_std/insideout.cpp:162
@@ -159,192 +160,192 @@ msgstr ""
 #: src/synfig/layer_shape.cpp:1229 src/synfig/valuenode_bone.cpp:597
 #: src/synfig/valuenode_composite.cpp:692 src/synfig/valuenode_dynamic.cpp:241
 msgid "Origin"
-msgstr ""
+msgstr "Координате"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:628
 msgid "Text Position"
-msgstr ""
+msgstr "Положај текста"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:632
 msgid "Font"
-msgstr ""
+msgstr "Словолик"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:633
 msgid "Filename of the font to use"
-msgstr ""
+msgstr "Назив датотеке употребљеног словолика"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:640
 msgid "Kerning"
-msgstr ""
+msgstr "Уклапање слова"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:641
 msgid "Enables/Disables font kerning (If the font supports it)"
-msgstr ""
+msgstr "Омогућава или не уклапање слова (уколико га словолик подржава)"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:645
 msgid "Sharpen Edges"
-msgstr ""
+msgstr "Наговештавање ивица"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:646
 msgid "Turn this off if you are going to be animating the text"
-msgstr ""
+msgstr "Онемогућите ово уколико желите да анимирате текст"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:649
 #: src/modules/lyr_std/shade.cpp:645 src/modules/mod_geometry/circle.cpp:165
 #: src/synfig/layer_shape.cpp:1232
 msgid "Invert"
-msgstr ""
+msgstr "Преокрени"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:716
 msgid "No face loaded, no text will be rendered."
-msgstr ""
+msgstr "Нећу стварати текст јер нисам учитао словолик."
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:742
 msgid "Text too small, no text will be rendered."
-msgstr ""
+msgstr "Нећу стварати текст јер је премали."
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:766
 msgid "Unable to set face size."
-msgstr ""
+msgstr "Не могу да поставим величину словолика."
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:809
 msgid "Invalid multibyte sequence - is the locale set?\n"
-msgstr ""
+msgstr "Низ бајтова није ваљан! Да ли сте подесили „locale“ на систему?\n"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:816
 msgid "Can't parse multibyte character.\n"
-msgstr ""
+msgstr "Не могу да обрадим низ бајтова карактера.\n"
 
 #: src/modules/lyr_std/bevel.cpp:69 src/modules/mod_example/filledrect.cpp:157
 #: src/modules/mod_geometry/advanced_outline.cpp:1172
 msgid "Bevel"
-msgstr ""
+msgstr "Искоси"
 
 #: src/modules/lyr_std/bevel.cpp:70 src/modules/lyr_std/shade.cpp:69
 msgid "Stylize"
-msgstr ""
+msgstr "Уобличи"
 
 #: src/modules/lyr_std/bevel.cpp:626 src/modules/lyr_std/shade.cpp:634
 #: src/modules/mod_filter/blur.cpp:419
 #: src/modules/mod_filter/halftone2.cpp:174
 msgid "Type"
-msgstr ""
+msgstr "Врста"
 
 #: src/modules/lyr_std/bevel.cpp:627 src/modules/lyr_std/shade.cpp:635
 #: src/modules/mod_filter/blur.cpp:420
 msgid "Type of blur to use"
-msgstr ""
+msgstr "Врста употребљеног замућења"
 
 #: src/modules/lyr_std/bevel.cpp:629 src/modules/lyr_std/shade.cpp:637
 #: src/modules/mod_filter/blur.cpp:422 src/synfig/layer_shape.cpp:1245
 msgid "Box Blur"
-msgstr ""
+msgstr "Бокс замућење"
 
 #: src/modules/lyr_std/bevel.cpp:630 src/modules/lyr_std/shade.cpp:638
 #: src/modules/mod_filter/blur.cpp:423 src/synfig/layer_shape.cpp:1246
 msgid "Fast Gaussian Blur"
-msgstr ""
+msgstr "Брзо гаусово замућење"
 
 #: src/modules/lyr_std/bevel.cpp:631 src/modules/lyr_std/shade.cpp:639
 #: src/modules/mod_filter/blur.cpp:424 src/synfig/layer_shape.cpp:1247
 msgid "Cross-Hatch Blur"
-msgstr ""
+msgstr "Укрштеним линијама замућење"
 
 #: src/modules/lyr_std/bevel.cpp:632 src/modules/lyr_std/shade.cpp:640
 #: src/modules/mod_filter/blur.cpp:425 src/synfig/layer_shape.cpp:1248
 msgid "Gaussian Blur"
-msgstr ""
+msgstr "Гаусово замућење"
 
 #: src/modules/lyr_std/bevel.cpp:633 src/modules/lyr_std/shade.cpp:641
 #: src/modules/mod_filter/blur.cpp:426 src/synfig/layer_shape.cpp:1249
 msgid "Disc Blur"
-msgstr ""
+msgstr "Диск замућење"
 
 #: src/modules/lyr_std/bevel.cpp:637
 msgid "Hi-Color"
-msgstr ""
+msgstr "Боја "
 
 #: src/modules/lyr_std/bevel.cpp:640
 msgid "Lo-Color"
-msgstr ""
+msgstr "Боја сенке"
 
 #: src/modules/lyr_std/bevel.cpp:643
 msgid "Light Angle"
-msgstr ""
+msgstr "Угао светла"
 
 #: src/modules/lyr_std/bevel.cpp:647
 msgid "Depth of Bevel"
-msgstr ""
+msgstr "Ниво искошења"
 
 #: src/modules/lyr_std/bevel.cpp:651
 msgid "Softness"
-msgstr ""
+msgstr "Мекоћа"
 
 #: src/modules/lyr_std/bevel.cpp:654
 msgid "Use Luma"
-msgstr ""
+msgstr "Употреби светлину"
 
 #: src/modules/lyr_std/bevel.cpp:657
 msgid "Solid"
-msgstr ""
+msgstr "Испуна"
 
 #: src/modules/lyr_std/booleancurve.cpp:107
 msgid "Region Set"
-msgstr ""
+msgstr "Скуп многоугла"
 
 #: src/modules/lyr_std/booleancurve.cpp:108
 msgid "Set of regions to combine"
-msgstr ""
+msgstr "Скуп многоуглова за спајање"
 
 #: src/modules/lyr_std/clamp.cpp:55 src/tool/printing_functions.cpp:218
 msgid "Clamp"
-msgstr ""
+msgstr "Споји"
 
 #: src/modules/lyr_std/clamp.cpp:56 src/modules/mod_filter/colorcorrect.cpp:57
 #: src/modules/mod_filter/halftone2.cpp:60
 #: src/modules/mod_filter/halftone3.cpp:60
 #: src/modules/mod_filter/lumakey.cpp:60
 msgid "Filters"
-msgstr ""
+msgstr "Пречистачи"
 
 #: src/modules/lyr_std/clamp.cpp:162
 msgid "Invert Negative"
-msgstr ""
+msgstr "Преокрени негативно"
 
 #: src/modules/lyr_std/clamp.cpp:166
 msgid "Clamp Ceiling"
-msgstr ""
+msgstr "Вршно спајање"
 
 #: src/modules/lyr_std/clamp.cpp:167
 msgid "When checked the Ceiling value is used"
-msgstr ""
+msgstr "Ако је означено употребићу вршну вредност"
 
 #: src/modules/lyr_std/clamp.cpp:171
 msgid "Ceiling"
-msgstr ""
+msgstr "Врх"
 
 #: src/modules/lyr_std/clamp.cpp:172
 msgid "Upper boundary of the clamping"
-msgstr ""
+msgstr "Горња граница спајања"
 
 #: src/modules/lyr_std/clamp.cpp:176
 msgid "Floor"
-msgstr ""
+msgstr "Дно"
 
 #: src/modules/lyr_std/clamp.cpp:177
 msgid "Lower boundary of the clamping"
-msgstr ""
+msgstr "Доња граница спајања"
 
 #: src/modules/lyr_std/curvewarp.cpp:56
 msgid "Curve Warp"
-msgstr ""
+msgstr "Изобличење кривом"
 
 #: src/modules/lyr_std/curvewarp.cpp:57 src/modules/lyr_std/insideout.cpp:56
 #: src/modules/lyr_std/sphere_distort.cpp:75
 #: src/modules/lyr_std/stretch.cpp:58 src/modules/lyr_std/twirl.cpp:57
 #: src/modules/lyr_std/warp.cpp:58 src/modules/mod_noise/distort.cpp:59
 msgid "Distortions"
-msgstr ""
+msgstr "Изобличавања"
 
 #: src/modules/lyr_std/curvewarp.cpp:399
 msgid "Position of the destiny Spline line"
@@ -361,7 +362,7 @@ msgstr ""
 #: src/synfig/valuenode_repeat_gradient.cpp:213
 #: src/synfig/valuenode_stripes.cpp:204 src/tool/printing_functions.cpp:109
 msgid "Width"
-msgstr ""
+msgstr "Ширина"
 
 #: src/modules/lyr_std/curvewarp.cpp:404
 msgid "How much is expanded the result perpendicular to the source line"
@@ -369,19 +370,19 @@ msgstr ""
 
 #: src/modules/lyr_std/curvewarp.cpp:407
 msgid "Start Point"
-msgstr ""
+msgstr "Почетна тачка"
 
 #: src/modules/lyr_std/curvewarp.cpp:409
 msgid "First point of the source line"
-msgstr ""
+msgstr "Почетна тачка дате линије"
 
 #: src/modules/lyr_std/curvewarp.cpp:412
 msgid "End Point"
-msgstr ""
+msgstr "Крајња тачка"
 
 #: src/modules/lyr_std/curvewarp.cpp:413
 msgid "Final point of the source line"
-msgstr ""
+msgstr "Завршна тачка дате линије"
 
 #: src/modules/lyr_std/curvewarp.cpp:416
 #: src/modules/mod_geometry/advanced_outline.cpp:1134
@@ -390,51 +391,51 @@ msgstr ""
 #: src/modules/mod_gradient/curvegradient.cpp:559
 #: src/modules/mod_particle/plant.cpp:424
 msgid "Vertices"
-msgstr ""
+msgstr "Везице"
 
 #: src/modules/lyr_std/curvewarp.cpp:419
 msgid "List of Spline Points where the source line is curved to"
-msgstr ""
+msgstr "Попис тачака СП-криве у којима се уређује дата линија"
 
 #: src/modules/lyr_std/curvewarp.cpp:422
 #: src/modules/mod_geometry/advanced_outline.cpp:1189
 #: src/modules/mod_gradient/curvegradient.cpp:580
 msgid "Fast"
-msgstr ""
+msgstr "Брзо"
 
 #: src/modules/lyr_std/curvewarp.cpp:423
 #: src/modules/mod_gradient/curvegradient.cpp:581
 msgid "When checked, renders quickly but with artifacts"
-msgstr ""
+msgstr "Ако је означено, стварање је брже али приказ лошији"
 
 #: src/modules/lyr_std/import.cpp:60
 msgid "Import Image"
-msgstr ""
+msgstr "Увези слику"
 
 #: src/modules/lyr_std/import.cpp:161 src/modules/lyr_std/import.cpp:218
 #, c-format
 msgid "Filename seems to already be set to \"%s\" (%s)"
-msgstr ""
+msgstr "Датотека је већ названа као „%s“ (%s)"
 
 #: src/modules/lyr_std/import.cpp:317 src/modules/mod_svg/layer_svg.cpp:107
 msgid "Filename"
-msgstr ""
+msgstr "Назив датотеке"
 
 #: src/modules/lyr_std/import.cpp:318
 msgid "File to import"
-msgstr ""
+msgstr "Датотека за увоз"
 
 #: src/modules/lyr_std/import.cpp:322 src/synfig/layer_pastecanvas.cpp:142
 msgid "Time Offset"
-msgstr ""
+msgstr "Временски померај"
 
 #: src/modules/lyr_std/import.cpp:323
 msgid "Time Offset to apply to the imported file"
-msgstr ""
+msgstr "Временски померај примењен на увежену датотеке"
 
 #: src/modules/lyr_std/insideout.cpp:55
 msgid "Inside Out"
-msgstr ""
+msgstr "У-Из"
 
 #: src/modules/lyr_std/insideout.cpp:163
 msgid "Defines where the center will be"
@@ -442,35 +443,35 @@ msgstr ""
 
 #: src/modules/lyr_std/julia.cpp:56
 msgid "Julia Set"
-msgstr ""
+msgstr "Јулија скуп"
 
 #: src/modules/lyr_std/julia.cpp:57 src/modules/lyr_std/mandelbrot.cpp:57
 msgid "Fractals"
-msgstr ""
+msgstr "Фрактали"
 
 #: src/modules/lyr_std/julia.cpp:335
 msgid "Inside Color"
-msgstr ""
+msgstr "Унутрашња боја"
 
 #: src/modules/lyr_std/julia.cpp:336
 msgid "Color of the Set"
-msgstr ""
+msgstr "Боја овог скупа"
 
 #: src/modules/lyr_std/julia.cpp:339
 msgid "Outside Color"
-msgstr ""
+msgstr "Спољна боја"
 
 #: src/modules/lyr_std/julia.cpp:340
 msgid "Color outside the Set"
-msgstr ""
+msgstr "Боја изван овог скупа"
 
 #: src/modules/lyr_std/julia.cpp:343
 msgid "Color Shift"
-msgstr ""
+msgstr "Померај боје"
 
 #: src/modules/lyr_std/julia.cpp:346 src/modules/lyr_std/mandelbrot.cpp:219
 msgid "Iterations"
-msgstr ""
+msgstr "Понављања"
 
 #: src/modules/lyr_std/julia.cpp:349
 msgid "Seed Point"
@@ -483,44 +484,44 @@ msgstr ""
 #: src/modules/lyr_std/julia.cpp:356 src/modules/lyr_std/mandelbrot.cpp:232
 #: src/modules/lyr_std/twirl.cpp:130
 msgid "Distort Inside"
-msgstr ""
+msgstr "Изобличи унутар"
 
 #: src/modules/lyr_std/julia.cpp:359 src/modules/lyr_std/mandelbrot.cpp:236
 msgid "Shade Inside"
-msgstr ""
+msgstr "Сенка унутар"
 
 #: src/modules/lyr_std/julia.cpp:362 src/modules/lyr_std/mandelbrot.cpp:240
 msgid "Solid Inside"
-msgstr ""
+msgstr "Испуни унутар"
 
 #: src/modules/lyr_std/julia.cpp:365 src/modules/lyr_std/mandelbrot.cpp:244
 msgid "Invert Inside"
-msgstr ""
+msgstr "Преокрени унутар"
 
 #: src/modules/lyr_std/julia.cpp:368
 msgid "Color Inside"
-msgstr ""
+msgstr "Боја унутар"
 
 #: src/modules/lyr_std/julia.cpp:371 src/modules/lyr_std/mandelbrot.cpp:261
 #: src/modules/lyr_std/twirl.cpp:135
 msgid "Distort Outside"
-msgstr ""
+msgstr "Изобличи споља"
 
 #: src/modules/lyr_std/julia.cpp:374 src/modules/lyr_std/mandelbrot.cpp:265
 msgid "Shade Outside"
-msgstr ""
+msgstr "Сенка споља"
 
 #: src/modules/lyr_std/julia.cpp:377 src/modules/lyr_std/mandelbrot.cpp:269
 msgid "Solid Outside"
-msgstr ""
+msgstr "Испуни споља"
 
 #: src/modules/lyr_std/julia.cpp:380 src/modules/lyr_std/mandelbrot.cpp:273
 msgid "Invert Outside"
-msgstr ""
+msgstr "Преокрени споља"
 
 #: src/modules/lyr_std/julia.cpp:383
 msgid "Color Outside"
-msgstr ""
+msgstr "Боја споља"
 
 #: src/modules/lyr_std/julia.cpp:387
 msgid "Color Cycle"
@@ -544,7 +545,7 @@ msgstr ""
 
 #: src/modules/lyr_std/mandelbrot.cpp:56
 msgid "Mandelbrot Set"
-msgstr ""
+msgstr "Манделброт скуп"
 
 #: src/modules/lyr_std/mandelbrot.cpp:233
 #: src/modules/lyr_std/mandelbrot.cpp:237
@@ -554,19 +555,19 @@ msgstr ""
 #: src/modules/lyr_std/mandelbrot.cpp:253
 #: src/modules/lyr_std/mandelbrot.cpp:257
 msgid "Inside"
-msgstr ""
+msgstr "Унутар"
 
 #: src/modules/lyr_std/mandelbrot.cpp:248
 msgid "Gradient Inside"
-msgstr ""
+msgstr "Прелив унутар"
 
 #: src/modules/lyr_std/mandelbrot.cpp:252
 msgid "Offset Inside"
-msgstr ""
+msgstr "Гранање унутар"
 
 #: src/modules/lyr_std/mandelbrot.cpp:256
 msgid "Loop Inside"
-msgstr ""
+msgstr "Понављање унутар"
 
 #: src/modules/lyr_std/mandelbrot.cpp:262
 #: src/modules/lyr_std/mandelbrot.cpp:266
@@ -577,33 +578,33 @@ msgstr ""
 #: src/modules/lyr_std/mandelbrot.cpp:287
 #: src/modules/lyr_std/mandelbrot.cpp:291
 msgid "Outside"
-msgstr ""
+msgstr "Споља"
 
 #: src/modules/lyr_std/mandelbrot.cpp:277
 msgid "Gradient outside"
-msgstr ""
+msgstr "Прелив споља"
 
 #: src/modules/lyr_std/mandelbrot.cpp:286
 msgid "Offset Outside"
-msgstr ""
+msgstr "Гранање споља"
 
 #: src/modules/lyr_std/mandelbrot.cpp:290
 msgid "Scale Outside"
-msgstr ""
+msgstr "Величање споља"
 
 #: src/modules/lyr_std/rotate.cpp:56 src/synfig/valuenode_bonelink.cpp:223
 msgid "Rotate"
-msgstr ""
+msgstr "Врти"
 
 #: src/modules/lyr_std/rotate.cpp:57 src/modules/lyr_std/translate.cpp:56
 #: src/modules/lyr_std/zoom.cpp:53
 msgid "Transform"
-msgstr ""
+msgstr "Претвори"
 
 #: src/modules/lyr_std/rotate.cpp:118 src/modules/lyr_std/translate.cpp:101
 #: src/modules/mod_filter/radialblur.cpp:111
 msgid "Point where you want the origin to be"
-msgstr ""
+msgstr "Одређује где ће координате да буду"
 
 #: src/modules/lyr_std/rotate.cpp:122
 #: src/modules/lyr_std/sphere_distort.cpp:153
@@ -615,33 +616,33 @@ msgstr ""
 #: src/synfig/valuenode_segcalctangent.cpp:161
 #: src/synfig/valuenode_segcalcvertex.cpp:159
 msgid "Amount"
-msgstr ""
+msgstr "Количина"
 
 #: src/modules/lyr_std/rotate.cpp:123
 msgid "Amount of rotation"
-msgstr ""
+msgstr "Износ вртње"
 
 #: src/modules/lyr_std/shade.cpp:68
 msgid "Shade"
-msgstr ""
+msgstr "Сенка"
 
 #: src/modules/lyr_std/shade.cpp:629
 msgid "Size of Shade"
-msgstr ""
+msgstr "Величина сенке"
 
 #: src/modules/lyr_std/sphere_distort.cpp:74
 #: src/modules/lyr_std/sphere_distort.cpp:167
 msgid "Spherize"
-msgstr ""
+msgstr "Испупчи"
 
 #: src/modules/lyr_std/sphere_distort.cpp:141
 #: src/synfig/valuenode_composite.cpp:722
 msgid "Position"
-msgstr ""
+msgstr "Положај"
 
 #: src/modules/lyr_std/sphere_distort.cpp:142
 msgid "Where the sphere distortion is centered"
-msgstr ""
+msgstr "Одређује где ће координате средишта испупчења да буду"
 
 #: src/modules/lyr_std/sphere_distort.cpp:146
 #: src/modules/lyr_std/twirl.cpp:117
@@ -652,47 +653,47 @@ msgstr ""
 #: src/modules/mod_noise/valuenode_random.cpp:255
 #: src/synfig/valuenode_radialcomposite.cpp:272
 msgid "Radius"
-msgstr ""
+msgstr "Пречник"
 
 #: src/modules/lyr_std/sphere_distort.cpp:149
 msgid "The size of the sphere distortion"
-msgstr ""
+msgstr "Величина изобличавања испупчењем"
 
 #: src/modules/lyr_std/sphere_distort.cpp:155
 msgid "The distortion intensity (negative values inverts effect)"
-msgstr ""
+msgstr "Јачина изобличења (негативна вредност — обрнуто дејство)"
 
 #: src/modules/lyr_std/sphere_distort.cpp:159 src/modules/lyr_std/warp.cpp:415
 msgid "Clip"
-msgstr ""
+msgstr "Скреши"
 
 #: src/modules/lyr_std/sphere_distort.cpp:160
 msgid "When cheked, the area outside the Radius are not distorted"
-msgstr ""
+msgstr "Ако је омогућено, делови изван круга се не изобличавају"
 
 #: src/modules/lyr_std/sphere_distort.cpp:164
 msgid "Distort Type"
-msgstr ""
+msgstr "Врста изобличавања"
 
 #: src/modules/lyr_std/sphere_distort.cpp:165
 msgid "The direction of the distortion"
-msgstr ""
+msgstr "Усмереност изобличења"
 
 #: src/modules/lyr_std/sphere_distort.cpp:168
 msgid "Vertical Bar"
-msgstr ""
+msgstr "Усправна трака"
 
 #: src/modules/lyr_std/sphere_distort.cpp:169
 msgid "Horizontal Bar"
-msgstr ""
+msgstr "Хоризонтална трака"
 
 #: src/modules/lyr_std/stretch.cpp:57
 msgid "Stretch"
-msgstr ""
+msgstr "Истезање"
 
 #: src/modules/lyr_std/stretch.cpp:106
 msgid "Size of the stretch relative to its Center"
-msgstr ""
+msgstr "Релативна величина истезања у односу на средиште"
 
 #: src/modules/lyr_std/stretch.cpp:110 src/modules/lyr_std/twirl.cpp:112
 #: src/modules/mod_example/simplecircle.cpp:112
@@ -700,27 +701,27 @@ msgstr ""
 #: src/modules/mod_gradient/radialgradient.cpp:118
 #: src/modules/mod_gradient/spiralgradient.cpp:118
 msgid "Center"
-msgstr ""
+msgstr "Средиште"
 
 #: src/modules/lyr_std/stretch.cpp:111
 msgid "Where the stretch distortion is centered"
-msgstr ""
+msgstr "Одређује где ће координате средишта истезања да буду"
 
 #: src/modules/lyr_std/stroboscope.cpp:60
 msgid "Stroboscope"
-msgstr ""
+msgstr "Трептало"
 
 #: src/modules/lyr_std/stroboscope.cpp:104
 msgid "Frequency"
-msgstr ""
+msgstr "Учестаност"
 
 #: src/modules/lyr_std/stroboscope.cpp:105
 msgid "Frequency of the Strobe in times per second"
-msgstr ""
+msgstr "Бтој трептаја трептача по секунди"
 
 #: src/modules/lyr_std/supersample.cpp:57
 msgid "Super Sample"
-msgstr ""
+msgstr "Најједноставније"
 
 #: src/modules/lyr_std/supersample.cpp:148
 msgid "Unable to create SurfaceTarget"
@@ -728,15 +729,15 @@ msgstr ""
 
 #: src/modules/lyr_std/supersample.cpp:340
 msgid "Width of sample area (In pixels)"
-msgstr ""
+msgstr "Ширина показног поља (у пикселима)"
 
 #: src/modules/lyr_std/supersample.cpp:343 src/tool/printing_functions.cpp:115
 msgid "Height"
-msgstr ""
+msgstr "Висина"
 
 #: src/modules/lyr_std/supersample.cpp:344
 msgid "Height of sample area (In pixels)"
-msgstr ""
+msgstr "Висина показног поља (у пикселима)"
 
 #: src/modules/lyr_std/supersample.cpp:347
 msgid "Use Parametric"
@@ -744,7 +745,7 @@ msgstr ""
 
 #: src/modules/lyr_std/supersample.cpp:348
 msgid "Use the Parametric Renderer"
-msgstr ""
+msgstr "Употреби параметарског ствараоца"
 
 #: src/modules/lyr_std/supersample.cpp:351
 msgid "Be Alpha Safe"
@@ -757,7 +758,7 @@ msgstr ""
 #: src/modules/lyr_std/timeloop.cpp:59 src/synfig/valuenode.cpp:177
 #: src/synfig/valuenode_timeloop.cpp:153
 msgid "Time Loop"
-msgstr ""
+msgstr "Врем. понављање"
 
 #: src/modules/lyr_std/timeloop.cpp:133 src/synfig/valuenode_timeloop.cpp:179
 msgid "Link Time"
@@ -778,7 +779,7 @@ msgstr ""
 #: src/modules/lyr_std/timeloop.cpp:145 src/synfig/valuenode_step.cpp:197
 #: src/synfig/valuenode_timeloop.cpp:189
 msgid "Duration"
-msgstr ""
+msgstr "Трајање"
 
 #: src/modules/lyr_std/timeloop.cpp:146
 msgid "Lenght of the loop"
@@ -802,32 +803,32 @@ msgstr ""
 
 #: src/modules/lyr_std/translate.cpp:55 src/synfig/valuenode_bonelink.cpp:218
 msgid "Translate"
-msgstr ""
+msgstr "Преводи"
 
 #: src/modules/lyr_std/twirl.cpp:56
 msgid "Twirl"
-msgstr ""
+msgstr "Вртлог"
 
 #: src/modules/lyr_std/twirl.cpp:113
 #: src/modules/mod_example/simplecircle.cpp:113
 #: src/modules/mod_geometry/circle.cpp:162
 msgid "Center of the circle"
-msgstr ""
+msgstr "Средиште круга"
 
 #: src/modules/lyr_std/twirl.cpp:118
 #: src/modules/mod_example/simplecircle.cpp:118
 #: src/modules/mod_gradient/radialgradient.cpp:124
 #: src/modules/mod_gradient/spiralgradient.cpp:124
 msgid "This is the radius of the circle"
-msgstr ""
+msgstr "Ово је пречник круга"
 
 #: src/modules/lyr_std/twirl.cpp:124
 msgid "Rotations"
-msgstr ""
+msgstr "Вртња"
 
 #: src/modules/lyr_std/twirl.cpp:125
 msgid "The number of rotations of the twirl effect"
-msgstr ""
+msgstr "Број пуних окретаја вртлога"
 
 #: src/modules/lyr_std/twirl.cpp:131
 msgid "When checked, distorts inside the circle"
@@ -839,55 +840,55 @@ msgstr ""
 
 #: src/modules/lyr_std/warp.cpp:57
 msgid "Warp"
-msgstr ""
+msgstr "Перспектива"
 
 #: src/modules/lyr_std/warp.cpp:380
 msgid "Source TL"
-msgstr ""
+msgstr "Дати Г-Л"
 
 #: src/modules/lyr_std/warp.cpp:382
 msgid "Top Left corner of the source to warp"
-msgstr ""
+msgstr "Горње, лево теме датог објекта"
 
 #: src/modules/lyr_std/warp.cpp:386
 msgid "Source BR"
-msgstr ""
+msgstr "Дати Д-Д"
 
 #: src/modules/lyr_std/warp.cpp:387
 msgid "Bottom Right corner of the source to warp"
-msgstr ""
+msgstr "Доње, десно теме датог објекта"
 
 #: src/modules/lyr_std/warp.cpp:391
 msgid "Dest TL"
-msgstr ""
+msgstr "Исход: Г-Л тачка"
 
 #: src/modules/lyr_std/warp.cpp:393
 msgid "Top Left corner of the destination"
-msgstr ""
+msgstr "Горње, лево теме исходишта"
 
 #: src/modules/lyr_std/warp.cpp:397
 msgid "Dest TR"
-msgstr ""
+msgstr "Исход: Г-Д тачка"
 
 #: src/modules/lyr_std/warp.cpp:399
 msgid "Top Right corner of the destination"
-msgstr ""
+msgstr "Горње, десно теме исходишта"
 
 #: src/modules/lyr_std/warp.cpp:403
 msgid "Dest BR"
-msgstr ""
+msgstr "Исход: Д-Д тачка"
 
 #: src/modules/lyr_std/warp.cpp:405
 msgid "Bottom Right corner of the destination"
-msgstr ""
+msgstr "Доње, десно теме исходишта"
 
 #: src/modules/lyr_std/warp.cpp:409
 msgid "Dest BL"
-msgstr ""
+msgstr "Исход: Д-Л тачка"
 
 #: src/modules/lyr_std/warp.cpp:411
 msgid "Bottom Left corner of the destination"
-msgstr ""
+msgstr "Доње, лево теме исходишта"
 
 #: src/modules/lyr_std/warp.cpp:419
 msgid "Horizon"
@@ -899,15 +900,15 @@ msgstr ""
 
 #: src/modules/lyr_std/xorpattern.cpp:55
 msgid "XOR Pattern"
-msgstr ""
+msgstr "ЕКС-ИЛИ шаблон"
 
 #: src/modules/lyr_std/xorpattern.cpp:130
 msgid "Center of the pattern"
-msgstr ""
+msgstr "Средиште шаблона"
 
 #: src/modules/lyr_std/xorpattern.cpp:134
 msgid "Size of the pattern"
-msgstr ""
+msgstr "Величина шаблона"
 
 #: src/modules/lyr_std/zoom.cpp:52 src/synfig/valuenode.cpp:154
 #: src/synfig/valuenode_blinecalctangent.cpp:263
@@ -915,7 +916,7 @@ msgstr ""
 #: src/synfig/valuenode_composite.cpp:808 src/synfig/valuenode_exp.cpp:155
 #: src/synfig/valuenode_scale.cpp:225
 msgid "Scale"
-msgstr ""
+msgstr "Промени димензије"
 
 #: src/modules/lyr_std/zoom.cpp:100
 msgid "Amount to scale to"
@@ -929,7 +930,7 @@ msgstr ""
 #: src/modules/mod_ppm/mptr_ppm.cpp:70
 #, c-format
 msgid "Unable to open %s"
-msgstr ""
+msgstr "Не могу да отворим %s"
 
 #: src/modules/mod_bmp/mptr_bmp.cpp:144 src/modules/mod_bmp/mptr_bmp.cpp:145
 #, c-format
@@ -963,15 +964,15 @@ msgstr ""
 #: src/modules/mod_bmp/mptr_bmp.cpp:202 src/modules/mod_bmp/mptr_bmp.cpp:203
 #, c-format
 msgid "Unsupported bit depth (bit_count=%d, should be 24 or 32)"
-msgstr ""
+msgstr "Битска дубина није подржана (bit_count=%d, дозвољено 24 or 32)"
 
 #: src/modules/mod_bmp/trgt_bmp.cpp:187
 msgid " (animated)"
-msgstr ""
+msgstr " (анимирано)"
 
 #: src/modules/mod_bmp/trgt_bmp.cpp:197 src/modules/mod_bmp/trgt_bmp.cpp:198
 msgid "Unable to open file"
-msgstr ""
+msgstr "Не могу да отворим датотеку"
 
 #: src/modules/mod_bmp/trgt_bmp.cpp:228 src/modules/mod_bmp/trgt_bmp.cpp:229
 msgid "Unable to write file header to file"
@@ -987,17 +988,17 @@ msgstr ""
 #: src/modules/mod_dv/trgt_dv.cpp:207 src/modules/mod_dv/trgt_dv.cpp:216
 #: src/modules/mod_dv/trgt_dv.cpp:225
 msgid "Unable to open pipe to encodedv"
-msgstr ""
+msgstr "Не могу да отворим цев за „encodedv“"
 
 #: src/modules/mod_example/filledrect.cpp:59
 msgid "Filled Rectangle"
-msgstr ""
+msgstr "Испуњен правоугаоник"
 
 #: src/modules/mod_example/filledrect.cpp:60
 #: src/modules/mod_example/metaballs.cpp:58
 #: src/modules/mod_example/simplecircle.cpp:58
 msgid "Example"
-msgstr ""
+msgstr "Пример"
 
 #: src/modules/mod_example/filledrect.cpp:132
 #: src/modules/mod_example/simplecircle.cpp:108
@@ -1005,53 +1006,53 @@ msgstr ""
 #: src/modules/mod_geometry/rectangle.cpp:139
 #: src/synfig/layer_solidcolor.cpp:115
 msgid "Fill color of the layer"
-msgstr ""
+msgstr "Боја испуне слоја"
 
 #: src/modules/mod_example/filledrect.cpp:136
 #: src/modules/mod_geometry/rectangle.cpp:143
 #: src/modules/mod_gradient/lineargradient.cpp:190
 msgid "Point 1"
-msgstr ""
+msgstr "1. тачка"
 
 #: src/modules/mod_example/filledrect.cpp:137
 #: src/modules/mod_geometry/rectangle.cpp:145
 msgid "First corner of the rectangle"
-msgstr ""
+msgstr "Горња-Лева тачка правоугаоника"
 
 #: src/modules/mod_example/filledrect.cpp:142
 #: src/modules/mod_geometry/rectangle.cpp:149
 #: src/modules/mod_gradient/lineargradient.cpp:195
 msgid "Point 2"
-msgstr ""
+msgstr "2. тачка"
 
 #: src/modules/mod_example/filledrect.cpp:143
 #: src/modules/mod_geometry/rectangle.cpp:150
 msgid "Second corner of the rectangle"
-msgstr ""
+msgstr "Доња-Десна тачка правоугаоника"
 
 #: src/modules/mod_example/filledrect.cpp:147
 msgid "Feather X"
-msgstr ""
+msgstr "Ш—Изблеђивање"
 
 #: src/modules/mod_example/filledrect.cpp:152
 msgid "Feather Y"
-msgstr ""
+msgstr "В—Изблеђивање"
 
 #: src/modules/mod_example/filledrect.cpp:158
 msgid "Use Bevel for the corners"
-msgstr ""
+msgstr "Искоси ивице"
 
 #: src/modules/mod_example/filledrect.cpp:163
 msgid "Keep Bevel Circular"
-msgstr ""
+msgstr "Одржи кружно искошење"
 
 #: src/modules/mod_example/filledrect.cpp:164
 msgid "When checked the bevel is circular"
-msgstr ""
+msgstr "Уколико је означено искошење је кружно"
 
 #: src/modules/mod_example/metaballs.cpp:57
 msgid "Metaballs"
-msgstr ""
+msgstr "Повезанe лопте"
 
 #: src/modules/mod_example/metaballs.cpp:129
 #: src/modules/mod_gradient/conicalgradient.cpp:109
@@ -1064,11 +1065,11 @@ msgstr ""
 #: src/synfig/valuenode_gradientrotate.cpp:164
 #: src/synfig/valuenode_repeat_gradient.cpp:203
 msgid "Gradient"
-msgstr ""
+msgstr "Прелив"
 
 #: src/modules/mod_example/metaballs.cpp:133
 msgid "Balls"
-msgstr ""
+msgstr "Лопте"
 
 #: src/modules/mod_example/metaballs.cpp:137
 msgid "Radii"
@@ -1092,7 +1093,7 @@ msgstr ""
 
 #: src/modules/mod_example/simplecircle.cpp:57
 msgid "Simple Circle"
-msgstr ""
+msgstr "Прост круг"
 
 #: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:207
 msgid ""
@@ -1103,52 +1104,52 @@ msgstr ""
 
 #: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:274
 msgid "Unable to open pipe to ffmpeg (no pipe)"
-msgstr ""
+msgstr "Не могу да отворим цев за ФФМпег (нема цеви)"
 
 #: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:281
 msgid "Unable to open pipe to ffmpeg (pid == -1)"
-msgstr ""
+msgstr "Не могу да отворим цев за ФФМпег (pid == -1)"
 
 #: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:291
 msgid "Unable to open pipe to ffmpeg (dup2( p[0], STDIN_FILENO ) == -1)"
-msgstr ""
+msgstr "Не могу да отворим цев за ФФМпег (dup2( p[0], STDIN_FILENO ) == -1)"
 
 #: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:313
 msgid "Unable to open pipe to ffmpeg (exec failed)"
-msgstr ""
+msgstr "Не могу да отворим цев за ФФМпег (неизвршено)"
 
 #: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:331
 msgid "Unable to open pipe to ffmpeg (no file)"
-msgstr ""
+msgstr "Не могу да отворим цев за ФФМпег (нема датотеке)"
 
 #: src/modules/mod_filter/blur.cpp:69
 msgid "Blur"
-msgstr ""
+msgstr "Замућење"
 
 #: src/modules/mod_filter/blur.cpp:70 src/modules/mod_filter/radialblur.cpp:57
 #: src/synfig/layer_motionblur.cpp:57
 msgid "Blurs"
-msgstr ""
+msgstr "Замућења"
 
 #: src/modules/mod_filter/blur.cpp:416
 msgid "Size of Blur"
-msgstr ""
+msgstr "Величина замућења"
 
 #: src/modules/mod_filter/colorcorrect.cpp:56
 msgid "Color Correct"
-msgstr ""
+msgstr "Исправка боје"
 
 #: src/modules/mod_filter/colorcorrect.cpp:217
 msgid "Hue Adjust"
-msgstr ""
+msgstr "Нијансирање"
 
 #: src/modules/mod_filter/colorcorrect.cpp:221
 msgid "Brightness"
-msgstr ""
+msgstr "Светлина"
 
 #: src/modules/mod_filter/colorcorrect.cpp:225
 msgid "Contrast"
-msgstr ""
+msgstr "Изражајност"
 
 #: src/modules/mod_filter/colorcorrect.cpp:229
 msgid "Exposure Adjust"
@@ -1156,11 +1157,11 @@ msgstr ""
 
 #: src/modules/mod_filter/colorcorrect.cpp:233 src/synfig/layer_bitmap.cpp:176
 msgid "Gamma Adjustment"
-msgstr ""
+msgstr "Прилагођење гамута"
 
 #: src/modules/mod_filter/halftone2.cpp:59
 msgid "Halftone 2"
-msgstr ""
+msgstr "Полутон 2"
 
 #: src/modules/mod_filter/halftone2.cpp:155
 msgid "Mask Origin"
@@ -1177,40 +1178,40 @@ msgstr ""
 
 #: src/modules/mod_filter/halftone2.cpp:168
 msgid "Light Color"
-msgstr ""
+msgstr "Светлија боја"
 
 #: src/modules/mod_filter/halftone2.cpp:171
 msgid "Dark Color"
-msgstr ""
+msgstr "Тамнија боја"
 
 #: src/modules/mod_filter/halftone2.cpp:176
 #: src/modules/mod_filter/halftone3.cpp:333
 #: src/modules/mod_gradient/conicalgradient.cpp:125
 msgid "Symmetric"
-msgstr ""
+msgstr "Симетрично"
 
 #: src/modules/mod_filter/halftone2.cpp:177
 #: src/modules/mod_filter/halftone3.cpp:334
 msgid "Light On Dark"
-msgstr ""
+msgstr "Светло на тамном"
 
 #: src/modules/mod_filter/halftone2.cpp:179
 #: src/modules/mod_filter/halftone3.cpp:336
 msgid "Diamond"
-msgstr ""
+msgstr "Дијамант"
 
 #: src/modules/mod_filter/halftone2.cpp:180
 #: src/modules/mod_filter/halftone3.cpp:337
 msgid "Stripe"
-msgstr ""
+msgstr "Пругасто"
 
 #: src/modules/mod_filter/halftone3.cpp:59
 msgid "Halftone 3"
-msgstr ""
+msgstr "Полутон 3"
 
 #: src/modules/mod_filter/halftone3.cpp:331
 msgid " Type"
-msgstr ""
+msgstr " Врста"
 
 #: src/modules/mod_filter/halftone3.cpp:340
 msgid "Subtractive Flag"
@@ -1218,7 +1219,7 @@ msgstr ""
 
 #: src/modules/mod_filter/halftone3.cpp:348
 msgid " Color"
-msgstr ""
+msgstr " Боја"
 
 #: src/modules/mod_filter/halftone3.cpp:352
 msgid " Mask Origin"
@@ -1234,19 +1235,19 @@ msgstr ""
 
 #: src/modules/mod_filter/radialblur.cpp:56
 msgid "Radial Blur"
-msgstr ""
+msgstr "Кружно замућење"
 
 #: src/modules/mod_filter/radialblur.cpp:116
 msgid "Size of blur"
-msgstr ""
+msgstr "Величина замућења"
 
 #: src/modules/mod_filter/radialblur.cpp:121
 msgid "Fade Out"
-msgstr ""
+msgstr "Ишчезни"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:67
 msgid "Advanced Outline"
-msgstr ""
+msgstr "Прецизна контура"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:68
 #: src/modules/mod_geometry/checkerboard.cpp:59
@@ -1256,7 +1257,7 @@ msgstr ""
 #: src/modules/mod_geometry/region.cpp:65 src/modules/mod_geometry/star.cpp:64
 #: src/synfig/layer_polygon.cpp:61 src/synfig/layer_solidcolor.cpp:57
 msgid "Geometry"
-msgstr ""
+msgstr "Геометријски облици"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:152
 msgid "No vertices in spline "
@@ -1273,7 +1274,7 @@ msgstr ""
 #: src/modules/mod_geometry/advanced_outline.cpp:1140
 #: src/modules/mod_geometry/outline.cpp:840
 msgid "Outline Width"
-msgstr ""
+msgstr "Ширина контуре"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:1141
 #: src/modules/mod_geometry/outline.cpp:841
@@ -1283,7 +1284,7 @@ msgstr ""
 #: src/modules/mod_geometry/advanced_outline.cpp:1145
 #: src/modules/mod_geometry/outline.cpp:846
 msgid "Expand"
-msgstr ""
+msgstr "Прошири"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:1146
 #: src/modules/mod_geometry/outline.cpp:847
@@ -1357,11 +1358,11 @@ msgstr ""
 
 #: src/modules/mod_geometry/advanced_outline.cpp:1171
 msgid "Rounded"
-msgstr ""
+msgstr "Заобљено"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:1175
 msgid "Smoothness"
-msgstr ""
+msgstr "Течност стила"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:1176
 msgid "Determines the interpolation between withpoints. (0) Linear (1) Smooth"
@@ -1433,31 +1434,31 @@ msgstr ""
 
 #: src/modules/mod_geometry/circle.cpp:56
 msgid "Circle"
-msgstr ""
+msgstr "Круг"
 
 #: src/modules/mod_geometry/circle.cpp:152
 msgid "Radius of the circle"
-msgstr ""
+msgstr "Пречник круга"
 
 #: src/modules/mod_geometry/circle.cpp:156 src/synfig/layer_shape.cpp:1238
 msgid "Feather"
-msgstr ""
+msgstr "Изблеђивање"
 
 #: src/modules/mod_geometry/circle.cpp:158
 msgid "Amount of feather of the circle"
-msgstr ""
+msgstr "Вредност изблеђивања круга"
 
 #: src/modules/mod_geometry/circle.cpp:166
 msgid "Invert the circle"
-msgstr ""
+msgstr "Преокрени круг"
 
 #: src/modules/mod_geometry/circle.cpp:170
 msgid "Falloff"
-msgstr ""
+msgstr "Опадање"
 
 #: src/modules/mod_geometry/circle.cpp:171
 msgid "Determines the falloff function for the feather"
-msgstr ""
+msgstr "Утврђује функцију опадања употребљену за изблеђивање"
 
 #: src/modules/mod_geometry/circle.cpp:173
 #: src/modules/mod_noise/distort.cpp:239 src/modules/mod_noise/noise.cpp:284
@@ -1465,34 +1466,34 @@ msgstr ""
 #: src/synfig/layer_bitmap.cpp:169 src/synfig/layer_motionblur.cpp:149
 #: src/synfig/valuenode.cpp:150 src/synfig/valuenode_linear.cpp:154
 msgid "Linear"
-msgstr ""
+msgstr "Равномерно"
 
 #: src/modules/mod_geometry/circle.cpp:174
 msgid "Squared"
-msgstr ""
+msgstr "Квадрирано"
 
 #: src/modules/mod_geometry/circle.cpp:175
 msgid "Square Root"
-msgstr ""
+msgstr "Кореновано"
 
 #: src/modules/mod_geometry/circle.cpp:176
 msgid "Sigmond"
-msgstr ""
+msgstr "Зигмонд"
 
 #: src/modules/mod_geometry/circle.cpp:177
 #: src/modules/mod_noise/distort.cpp:240 src/modules/mod_noise/noise.cpp:285
 #: src/modules/mod_noise/valuenode_random.cpp:275
 #: src/synfig/layer_bitmap.cpp:170
 msgid "Cosine"
-msgstr ""
+msgstr "Косинусно"
 
 #: src/modules/mod_geometry/outline.cpp:72
 msgid "Outline"
-msgstr ""
+msgstr "Контура"
 
 #: src/modules/mod_geometry/outline.cpp:192
 msgid "No vertices in outline "
-msgstr ""
+msgstr "Нема везица у контури"
 
 #: src/modules/mod_geometry/outline.cpp:851
 msgid "Sharp Cusps"
@@ -1529,23 +1530,23 @@ msgstr ""
 
 #: src/modules/mod_geometry/rectangle.cpp:155
 msgid "Expand amount"
-msgstr ""
+msgstr "Прошири за"
 
 #: src/modules/mod_geometry/rectangle.cpp:159
 msgid "Invert the rectangle"
-msgstr ""
+msgstr "Преокрени"
 
 #: src/modules/mod_geometry/region.cpp:64
 msgid "Region"
-msgstr ""
+msgstr "Област"
 
 #: src/modules/mod_geometry/star.cpp:63
 msgid "Star"
-msgstr ""
+msgstr "Звезда"
 
 #: src/modules/mod_geometry/star.cpp:170
 msgid "Outer Radius"
-msgstr ""
+msgstr "Спољњи пречник"
 
 #: src/modules/mod_geometry/star.cpp:171
 msgid "The radius of the outer points in the star"
@@ -1553,7 +1554,7 @@ msgstr ""
 
 #: src/modules/mod_geometry/star.cpp:177
 msgid "Inner Radius"
-msgstr ""
+msgstr "Унутрашњи пречник"
 
 #: src/modules/mod_geometry/star.cpp:178
 msgid "The radius of the inner points in the star"
@@ -1566,40 +1567,40 @@ msgstr ""
 #: src/synfig/valuenode_composite.cpp:800 src/synfig/valuenode_cos.cpp:155
 #: src/synfig/valuenode_sine.cpp:154
 msgid "Angle"
-msgstr ""
+msgstr "Угао"
 
 #: src/modules/mod_geometry/star.cpp:185
 msgid "The orientation of the star"
-msgstr ""
+msgstr "Усмереност кракова звезде"
 
 #: src/modules/mod_geometry/star.cpp:190 src/synfig/distance.cpp:260
 msgid "Points"
-msgstr ""
+msgstr "Тачака"
 
 #: src/modules/mod_geometry/star.cpp:191
 msgid "The number of points in the star"
-msgstr ""
+msgstr "Број тачака темена звезде"
 
 #: src/modules/mod_geometry/star.cpp:195
 msgid "Regular Polygon"
-msgstr ""
+msgstr "Правилан многоугао"
 
 #: src/modules/mod_geometry/star.cpp:196
 msgid "Whether to draw a star or a regular polygon"
-msgstr ""
+msgstr "Избор између цртања правилног многоугла или звезде"
 
 #: src/modules/mod_gif/trgt_gif.cpp:112
 #, c-format
 msgid "Unable to open \"%s\" for write access!"
-msgstr ""
+msgstr "Не могу да отворим „%s“ да приступим упису!"
 
 #: src/modules/mod_gif/trgt_gif.cpp:200
 msgid "Description not set!"
-msgstr ""
+msgstr "Без описа!"
 
 #: src/modules/mod_gradient/conicalgradient.cpp:57
 msgid "Conical Gradient"
-msgstr ""
+msgstr "Конични прелив"
 
 #: src/modules/mod_gradient/conicalgradient.cpp:58
 #: src/modules/mod_gradient/curvegradient.cpp:62
@@ -1608,7 +1609,7 @@ msgstr ""
 #: src/modules/mod_gradient/spiralgradient.cpp:58
 #: src/modules/mod_noise/noise.cpp:59
 msgid "Gradients"
-msgstr ""
+msgstr "Преливи"
 
 #: src/modules/mod_gradient/conicalgradient.cpp:110
 #: src/modules/mod_gradient/curvegradient.cpp:566
@@ -1655,13 +1656,13 @@ msgstr ""
 #: src/synfig/valuenode_blinecalcwidth.cpp:211
 #: src/synfig/valuenode_gradientcolor.cpp:168
 msgid "Loop"
-msgstr ""
+msgstr "Понављање"
 
 #: src/modules/mod_gradient/curvegradient.cpp:573
 #: src/modules/mod_gradient/lineargradient.cpp:207
 #: src/modules/mod_gradient/radialgradient.cpp:135
 msgid "ZigZag"
-msgstr ""
+msgstr "Цик-цак"
 
 #: src/modules/mod_gradient/curvegradient.cpp:574
 #: src/modules/mod_gradient/lineargradient.cpp:208
@@ -1675,7 +1676,7 @@ msgstr ""
 
 #: src/modules/mod_gradient/lineargradient.cpp:54
 msgid "Linear Gradient"
-msgstr ""
+msgstr "Равномерни прелив"
 
 #: src/modules/mod_gradient/lineargradient.cpp:192
 msgid "Start point of the gradient"
@@ -1687,7 +1688,7 @@ msgstr ""
 
 #: src/modules/mod_gradient/radialgradient.cpp:57
 msgid "Radial Gradient"
-msgstr ""
+msgstr "Кружни прелив"
 
 #: src/modules/mod_gradient/radialgradient.cpp:119
 #: src/modules/mod_gradient/spiralgradient.cpp:119
@@ -1696,7 +1697,7 @@ msgstr ""
 
 #: src/modules/mod_gradient/spiralgradient.cpp:57
 msgid "Spiral Gradient"
-msgstr ""
+msgstr "Завијени прелив"
 
 #: src/modules/mod_gradient/spiralgradient.cpp:131
 msgid "Rotation of the spiral"
@@ -1715,7 +1716,7 @@ msgstr ""
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:238
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:239
 msgid "No file to load"
-msgstr ""
+msgstr "Нема датотеке коју бих учитао"
 
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:119
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:120
@@ -1724,17 +1725,17 @@ msgstr ""
 
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:179
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:180
-#: src/synfig/cairolistimporter.cpp:193 src/synfig/cairolistimporter.cpp:194
-#: src/synfig/listimporter.cpp:188 src/synfig/listimporter.cpp:189
+#: src/synfig/cairolistimporter.cpp:194 src/synfig/cairolistimporter.cpp:195
+#: src/synfig/listimporter.cpp:189 src/synfig/listimporter.cpp:190
 msgid "Unable to open "
-msgstr ""
+msgstr "Не могу да отворим "
 
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:186
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:187
-#: src/synfig/cairolistimporter.cpp:200 src/synfig/cairolistimporter.cpp:201
-#: src/synfig/listimporter.cpp:195 src/synfig/listimporter.cpp:196
+#: src/synfig/cairolistimporter.cpp:201 src/synfig/cairolistimporter.cpp:202
+#: src/synfig/listimporter.cpp:196 src/synfig/listimporter.cpp:197
 msgid "Unable to get frame from "
-msgstr ""
+msgstr "Не могу да узмем кадар из "
 
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:193
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:194
@@ -1744,7 +1745,7 @@ msgstr ""
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:249
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:250
 msgid "Unable to open pipe to imagemagick"
-msgstr ""
+msgstr "Не могу да отворим цев за ИмиџМеџик"
 
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:261
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:262
@@ -1768,11 +1769,11 @@ msgstr ""
 
 #: src/modules/mod_imagemagick/trgt_imagemagick.cpp:157
 msgid "Unable to open pipe to imagemagick's convert utility"
-msgstr ""
+msgstr "Не могу да отворим цев за ИмиџМеџиков „convert“ програмчић"
 
 #: src/modules/mod_noise/distort.cpp:58
 msgid "Noise Distort"
-msgstr ""
+msgstr "Изобличење мрљама"
 
 #: src/modules/mod_noise/distort.cpp:222
 msgid "Displacement"
@@ -1798,7 +1799,7 @@ msgstr ""
 #: src/modules/mod_noise/valuenode_random.cpp:270
 #: src/synfig/layer_bitmap.cpp:165
 msgid "Interpolation"
-msgstr ""
+msgstr "Уметање"
 
 #: src/modules/mod_noise/distort.cpp:236 src/modules/mod_noise/noise.cpp:281
 #: src/synfig/layer_bitmap.cpp:166
@@ -1817,17 +1818,17 @@ msgstr ""
 #: src/synfig/valuenode_blinecalcvertex.cpp:201
 #: src/synfig/valuenode_blinecalcwidth.cpp:206
 msgid "Spline"
-msgstr ""
+msgstr "СП-крива"
 
 #: src/modules/mod_noise/distort.cpp:242 src/modules/mod_noise/noise.cpp:287
 #: src/modules/mod_noise/valuenode_random.cpp:277
 #: src/synfig/layer_bitmap.cpp:171
 msgid "Cubic"
-msgstr ""
+msgstr "Кубно"
 
 #: src/modules/mod_noise/distort.cpp:245 src/modules/mod_noise/noise.cpp:290
 msgid "Detail"
-msgstr ""
+msgstr "Детаљи"
 
 #: src/modules/mod_noise/distort.cpp:246 src/modules/mod_noise/noise.cpp:291
 msgid "Increase to obtain fine details of the noise"
@@ -1835,11 +1836,11 @@ msgstr ""
 
 #: src/modules/mod_noise/distort.cpp:249 src/modules/mod_noise/noise.cpp:294
 msgid "Animation Speed"
-msgstr ""
+msgstr "Брзина анимације"
 
 #: src/modules/mod_noise/distort.cpp:250 src/modules/mod_noise/noise.cpp:295
 msgid "In cycles per second"
-msgstr ""
+msgstr "У кругова по секунди"
 
 #: src/modules/mod_noise/distort.cpp:253 src/modules/mod_noise/noise.cpp:298
 msgid "Turbulent"
@@ -1852,11 +1853,11 @@ msgstr ""
 #: src/modules/mod_noise/main.cpp:66
 #: src/modules/mod_noise/valuenode_random.cpp:169
 msgid "Random"
-msgstr ""
+msgstr "Случајно"
 
 #: src/modules/mod_noise/noise.cpp:58
 msgid "Noise Gradient"
-msgstr ""
+msgstr "Прелив шумом"
 
 #: src/modules/mod_noise/noise.cpp:277
 msgid "Size of the noise"
@@ -1887,7 +1888,7 @@ msgstr ""
 #: src/synfig/valuenode_reference.cpp:143 src/synfig/valuenode_scale.cpp:249
 #: src/synfig/valuenode_step.cpp:192 src/synfig/valuenode_timeloop.cpp:174
 msgid "Link"
-msgstr ""
+msgstr "Повежи"
 
 #: src/modules/mod_noise/valuenode_random.cpp:251
 msgid "The value node source that provides the central value"
@@ -1908,7 +1909,7 @@ msgstr ""
 
 #: src/modules/mod_noise/valuenode_random.cpp:265
 msgid "Speed"
-msgstr ""
+msgstr "Брзина"
 
 #: src/modules/mod_noise/valuenode_random.cpp:266
 msgid ""
@@ -1934,7 +1935,7 @@ msgstr ""
 
 #: src/modules/mod_particle/plant.cpp:70
 msgid "Plant"
-msgstr ""
+msgstr "лишће"
 
 #: src/modules/mod_particle/plant.cpp:437
 msgid "Gradient to be used for coloring the plant"
@@ -2004,7 +2005,7 @@ msgstr ""
 #: src/modules/mod_particle/plant.cpp:478 src/synfig/valuenode.cpp:181
 #: src/synfig/valuenode_duplicate.cpp:204 src/synfig/valuenode_step.cpp:137
 msgid "Step"
-msgstr ""
+msgstr "Корак"
 
 #: src/modules/mod_particle/plant.cpp:479
 msgid "Measure of the distance between points when rendering"
@@ -2041,7 +2042,7 @@ msgstr ""
 
 #: src/modules/mod_particle/plant.cpp:503
 msgid "Drag"
-msgstr ""
+msgstr "Превуци"
 
 #: src/modules/mod_particle/plant.cpp:504
 msgid "Drag slows the growth"
@@ -2077,39 +2078,39 @@ msgstr ""
 
 #: src/synfig/base_types.cpp:78 src/synfig/base_types.cpp:79
 msgid "bool"
-msgstr ""
+msgstr "логичко"
 
 #: src/synfig/base_types.cpp:99 src/synfig/base_types.cpp:100
 msgid "integer"
-msgstr ""
+msgstr "цео број"
 
 #: src/synfig/base_types.cpp:122
 msgid "angle"
-msgstr ""
+msgstr "угао"
 
 #: src/synfig/base_types.cpp:166 src/synfig/base_types.cpp:167
 msgid "real"
-msgstr ""
+msgstr "реалан број"
 
 #: src/synfig/base_types.cpp:194 src/synfig/base_types.cpp:195
 msgid "time"
-msgstr ""
+msgstr "време"
 
 #: src/synfig/base_types.cpp:220
 msgid "vector"
-msgstr ""
+msgstr "вектор"
 
 #: src/synfig/base_types.cpp:239
 msgid "color"
-msgstr ""
+msgstr "боја"
 
 #: src/synfig/base_types.cpp:258
 msgid "segment"
-msgstr ""
+msgstr "делић"
 
 #: src/synfig/base_types.cpp:278
 msgid "spline_point"
-msgstr ""
+msgstr "тачка СП-криве"
 
 #: src/synfig/base_types.cpp:297
 msgid "matrix"
@@ -2129,19 +2130,19 @@ msgstr ""
 
 #: src/synfig/base_types.cpp:375
 msgid "list"
-msgstr ""
+msgstr "листа"
 
 #: src/synfig/base_types.cpp:434
 msgid "canvas"
-msgstr ""
+msgstr "Платно"
 
 #: src/synfig/base_types.cpp:465
 msgid "string"
-msgstr ""
+msgstr "ниска"
 
 #: src/synfig/base_types.cpp:486
 msgid "gradient"
-msgstr ""
+msgstr "прелив"
 
 #: src/synfig/base_types.cpp:505
 msgid "bone_object"
@@ -2167,39 +2168,39 @@ msgstr ""
 msgid "CairoImporter::open(): Unknown file type -- "
 msgstr ""
 
-#: src/synfig/cairolistimporter.cpp:165 src/synfig/cairolistimporter.cpp:166
-#: src/synfig/listimporter.cpp:165 src/synfig/listimporter.cpp:166
+#: src/synfig/cairolistimporter.cpp:166 src/synfig/cairolistimporter.cpp:167
+#: src/synfig/listimporter.cpp:166 src/synfig/listimporter.cpp:167
 msgid "No images in list"
-msgstr ""
+msgstr "Нема слика у списку"
 
 #: src/synfig/canvas.cpp:838 src/synfig/canvas.cpp:909
 #: src/synfig/canvas.cpp:934
 msgid "in line"
-msgstr ""
+msgstr "у линији"
 
 #: src/synfig/distance.cpp:258
 msgid "Units"
-msgstr ""
+msgstr "Јединице мере"
 
 #: src/synfig/distance.cpp:259
 msgid "Pixels"
-msgstr ""
+msgstr "Пиксела"
 
 #: src/synfig/distance.cpp:261
 msgid "Inches"
-msgstr ""
+msgstr "Инча"
 
 #: src/synfig/distance.cpp:262
 msgid "Meters"
-msgstr ""
+msgstr "Метара"
 
 #: src/synfig/distance.cpp:263
 msgid "Millimeters"
-msgstr ""
+msgstr "Милиметара"
 
 #: src/synfig/distance.cpp:264
 msgid "Centimeters"
-msgstr ""
+msgstr "Центиметара"
 
 #: src/synfig/importer.cpp:88
 msgid "Importer::open(): Cannot open empty filename"
@@ -2219,7 +2220,7 @@ msgstr ""
 
 #: src/synfig/layer.cpp:791
 msgid "Z Depth"
-msgstr ""
+msgstr "Дубина слоја"
 
 #: src/synfig/layer.cpp:793
 msgid "Modifies the position of the layer in the layer stack"
@@ -2227,7 +2228,7 @@ msgstr ""
 
 #: src/synfig/layer_bitmap.cpp:155
 msgid "Top-Left"
-msgstr ""
+msgstr "Горе лево"
 
 #: src/synfig/layer_bitmap.cpp:156
 msgid "Upper left-hand Corner of image"
@@ -2235,7 +2236,7 @@ msgstr ""
 
 #: src/synfig/layer_bitmap.cpp:160
 msgid "Bottom-Right"
-msgstr ""
+msgstr "Доле десно"
 
 #: src/synfig/layer_bitmap.cpp:161
 msgid "Lower right-hand Corner of image"
@@ -2243,11 +2244,11 @@ msgstr ""
 
 #: src/synfig/layer_composite.cpp:252 src/synfig/layer_skeleton.cpp:137
 msgid "Alpha channel of the layer"
-msgstr ""
+msgstr "Провидност слоја (алфа канал)"
 
 #: src/synfig/layer_composite.cpp:255 src/synfig/paramdesc.cpp:66
 msgid "Blend Method"
-msgstr ""
+msgstr "Начин спајања"
 
 #: src/synfig/layer_composite.cpp:256
 msgid "The blending method used to composite on the layers below"
@@ -2256,12 +2257,12 @@ msgstr ""
 #: src/synfig/layer_duplicate.cpp:56 src/synfig/valuenode.cpp:179
 #: src/synfig/valuenode_duplicate.cpp:175
 msgid "Duplicate"
-msgstr ""
+msgstr "Удвостручи"
 
 #: src/synfig/layer_duplicate.cpp:151
 #: src/synfig/valuenode_gradientcolor.cpp:163
 msgid "Index"
-msgstr ""
+msgstr "Попис"
 
 #: src/synfig/layer_duplicate.cpp:152
 msgid "Copy Index"
@@ -2273,7 +2274,7 @@ msgstr ""
 
 #: src/synfig/layer_motionblur.cpp:56
 msgid "Motion Blur"
-msgstr ""
+msgstr "Замућење покрета"
 
 #: src/synfig/layer_motionblur.cpp:135
 msgid "Aperture"
@@ -2301,7 +2302,7 @@ msgstr ""
 
 #: src/synfig/layer_motionblur.cpp:148 src/synfig/valuenode_const.cpp:169
 msgid "Constant"
-msgstr ""
+msgstr "Константно"
 
 #: src/synfig/layer_motionblur.cpp:150
 msgid "Hyperbolic"
@@ -2329,19 +2330,19 @@ msgstr ""
 
 #: src/synfig/layer_pastecanvas.cpp:132
 msgid "Transformation"
-msgstr ""
+msgstr "Претварање"
 
 #: src/synfig/layer_pastecanvas.cpp:133
 msgid "Position, rotation, skew and scale"
-msgstr ""
+msgstr "Положај, вртња, нагиб и димензије"
 
 #: src/synfig/layer_pastecanvas.cpp:137
 msgid "Canvas"
-msgstr ""
+msgstr "Платно"
 
 #: src/synfig/layer_pastecanvas.cpp:138
 msgid "Group content"
-msgstr ""
+msgstr "Садржај у свежњу"
 
 #: src/synfig/layer_pastecanvas.cpp:143
 msgid "Time Offset to apply to the context"
@@ -2349,43 +2350,43 @@ msgstr ""
 
 #: src/synfig/layer_pastecanvas.cpp:147
 msgid "Children Lock"
-msgstr ""
+msgstr "Забрави подређене"
 
 #: src/synfig/layer_pastecanvas.cpp:148
 msgid "When checked prevents to select the children using the mouse click"
-msgstr ""
+msgstr "Ако је означено, спречава одабир подређених објеката кликом"
 
 #: src/synfig/layer_pastecanvas.cpp:153
 msgid "Outline Grow"
-msgstr ""
+msgstr "Прираст контуре"
 
 #: src/synfig/layer_pastecanvas.cpp:154
 msgid "Exponential value to grow children Outline layers width"
-msgstr ""
+msgstr "Експоненцијална вредност прираста ширине подређеног слоја контуре"
 
 #: src/synfig/layer_pastecanvas.cpp:168
 msgid "Current Time"
-msgstr ""
+msgstr "Тренутно време"
 
 #: src/synfig/layer_polygon.cpp:60
 msgid "Polygon"
-msgstr ""
+msgstr "Многоугао"
 
 #: src/synfig/layer_polygon.cpp:187
 msgid "Vertices List"
-msgstr ""
+msgstr "Списак везица"
 
 #: src/synfig/layer_polygon.cpp:188
 msgid "Define the corners of the polygon"
-msgstr ""
+msgstr "Одређује темена многоугла"
 
 #: src/synfig/layer_shape.cpp:66
 msgid "Shape"
-msgstr ""
+msgstr "Облик"
 
 #: src/synfig/layer_shape.cpp:67
 msgid "Internal"
-msgstr ""
+msgstr "Унутрашњи"
 
 #: src/synfig/layer_shape.cpp:1226
 msgid "Layer_Shape Color"
@@ -2393,23 +2394,23 @@ msgstr ""
 
 #: src/synfig/layer_shape.cpp:1235
 msgid "Antialiasing"
-msgstr ""
+msgstr "Умекшај ивице"
 
 #: src/synfig/layer_shape.cpp:1242
 msgid "Type of Feather"
-msgstr ""
+msgstr "Врста изблеђивања"
 
 #: src/synfig/layer_shape.cpp:1243
 msgid "Type of feathering to use"
-msgstr ""
+msgstr "Употреби врсту изблеђивања"
 
 #: src/synfig/layer_shape.cpp:1252
 msgid "Winding Style"
-msgstr ""
+msgstr "Облик завијања"
 
 #: src/synfig/layer_shape.cpp:1253
 msgid "Winding style to use"
-msgstr ""
+msgstr "Употребљавани облик завијања"
 
 #: src/synfig/layer_shape.cpp:1255
 msgid "Non Zero"
@@ -2421,38 +2422,38 @@ msgstr ""
 
 #: src/synfig/layer_skeleton.cpp:54
 msgid "Skeleton"
-msgstr ""
+msgstr "Скелет"
 
 #: src/synfig/layer_skeleton.cpp:142 src/synfig/valuenode_bone.cpp:587
 msgid "Name"
-msgstr ""
+msgstr "Назив"
 
 #: src/synfig/layer_skeleton.cpp:145
 msgid "Bones"
-msgstr ""
+msgstr "Коске"
 
 #: src/synfig/layer_solidcolor.cpp:56
 msgid "Solid Color"
-msgstr ""
+msgstr "Једнобојно"
 
 #: src/synfig/layer_switch.cpp:58 src/synfig/layer_switch.cpp:82
 #: src/synfig/valuenode.cpp:173 src/synfig/valuenode_switch.cpp:133
 #: src/synfig/valuenode_switch.cpp:163
 msgid "Switch"
-msgstr ""
+msgstr "Скретница"
 
 #: src/synfig/layer_switch.cpp:91
 msgid "Active Layer Name"
-msgstr ""
+msgstr "Назив радног слоја"
 
 #: src/synfig/layer_switch.cpp:92
 msgid "Only layer with specified name are visible"
-msgstr ""
+msgstr "Видљиви су само слојеви са одређеним називом"
 
 #: src/synfig/loadcanvas.cpp:148
 #, c-format
 msgid "cannot load '%s' recursively"
-msgstr ""
+msgstr "не могу да рекурзивно учитам „%s“"
 
 #: src/synfig/loadcanvas.cpp:192
 #, c-format
@@ -2501,7 +2502,7 @@ msgstr ""
 #: src/synfig/loadcanvas.cpp:1679
 #, c-format
 msgid "Unable to create <animated> with type \"%s\""
-msgstr ""
+msgstr "Не могу да створим <анимирано> врсте „%s“"
 
 #: src/synfig/loadcanvas.cpp:1701
 msgid "<waypoint> is missing attribute \"time\""
@@ -2535,12 +2536,12 @@ msgstr ""
 #: src/synfig/loadcanvas.cpp:1882
 #, c-format
 msgid "Missing attribute \"type\" in <%s>"
-msgstr ""
+msgstr "Недостајућа особина „врста“ у <%s>"
 
 #: src/synfig/loadcanvas.cpp:1891
 #, c-format
 msgid "Bad type in <%s>"
-msgstr ""
+msgstr "Лоша врста у <%s>"
 
 #: src/synfig/loadcanvas.cpp:1903
 #, c-format
@@ -2702,60 +2703,60 @@ msgstr ""
 
 #: src/synfig/loadcanvas.cpp:3244
 msgid "Group canvases cannot have a <defs> section"
-msgstr ""
+msgstr "Групна платна не могу да садрже <defs> одељак"
 
 #: src/synfig/loadcanvas.cpp:3251
 msgid "Inline canvas cannot have a <bones> section"
-msgstr ""
+msgstr "Платно у линији не може да садржи <bones> одељак"
 
 #: src/synfig/loadcanvas.cpp:3259
 msgid "Group canvases cannot have keyframes"
-msgstr ""
+msgstr "Групна платна не могу да садрже кључне кадрове"
 
 #: src/synfig/loadcanvas.cpp:3271
 msgid "Group canvases cannot have metadata"
-msgstr ""
+msgstr "Групна платна не могу да садрже допунске податке (metadata)"
 
 #: src/synfig/loadcanvas.cpp:3277
 msgid "<meta> must have a name"
-msgstr ""
+msgstr "<meta> мора да има назив"
 
 #: src/synfig/loadcanvas.cpp:3283
 msgid "<meta> must have content"
-msgstr ""
+msgstr "<meta> мора да има садржај"
 
 #: src/synfig/loadcanvas.cpp:3323
 msgid "blank \"name\" entity"
-msgstr ""
+msgstr "Ентитет „назив“ је празан"
 
 #: src/synfig/loadcanvas.cpp:3338
 msgid "blank \"desc\" entity"
-msgstr ""
+msgstr "Ентитет „опис“ је празан"
 
 #: src/synfig/loadcanvas.cpp:3353
 msgid "blank \"author\" entity"
-msgstr ""
+msgstr "Ентитет „творац“ је празан"
 
 #: src/synfig/loadcanvas.cpp:3388
 #, c-format
 msgid "Canvas '%s' has undefined %s: %s"
-msgstr ""
+msgstr "Платно „%s“ нема одређено %s: %s"
 
 #: src/synfig/loadcanvas.cpp:3390 src/synfig/valuenode.cpp:386
 msgid "ValueNode"
-msgstr ""
+msgstr "Чвор-вредности"
 
 #: src/synfig/loadcanvas.cpp:3390
 msgid "ValueNodes"
-msgstr ""
+msgstr "Чворови-вредности"
 
 #: src/synfig/loadcanvas.cpp:3470
 msgid "Can't find linked file"
-msgstr ""
+msgstr "Не могу да пронађем повезану датотеку"
 
 #: src/synfig/loadcanvas.cpp:3481 src/synfig/loadcanvas.cpp:3537
 msgid "Can't open file"
-msgstr ""
+msgstr "Не могу да отворим датотеку"
 
 #: src/synfig/main.cpp:123
 #, c-format
@@ -2849,28 +2850,28 @@ msgstr ""
 #: src/synfig/main.cpp:314 src/synfig/main.cpp:315
 #, c-format
 msgid "Loading modules from %s"
-msgstr ""
+msgstr "Учитавам додатке из %s"
 
 #: src/synfig/main.cpp:327
 #, c-format
 msgid "Unable to open module list file '%s'"
-msgstr ""
+msgstr "Не могу да отворим датотеку са списком додатака „%s“"
 
 #: src/synfig/main.cpp:341
 msgid "DONE"
-msgstr ""
+msgstr "Готово"
 
 #: src/synfig/main.cpp:409 src/tool/progress.h:48
 msgid "error"
-msgstr ""
+msgstr "ГРЕШКА"
 
 #: src/synfig/main.cpp:424 src/tool/progress.h:55
 msgid "warning"
-msgstr ""
+msgstr "Упозорење"
 
 #: src/synfig/main.cpp:439
 msgid "info"
-msgstr ""
+msgstr "Подаци"
 
 #: src/synfig/module.cpp:65
 msgid "Errors on lt_dlinit()"
@@ -2879,7 +2880,7 @@ msgstr ""
 #: src/synfig/module.cpp:102
 #, c-format
 msgid "Unable to load module '%s'"
-msgstr ""
+msgstr "Не могу да учитам додатак „%s“"
 
 #: src/synfig/module.cpp:127
 #, c-format
@@ -2912,7 +2913,7 @@ msgstr ""
 
 #: src/synfig/palette.cpp:79
 msgid "Unnamed"
-msgstr ""
+msgstr "Неименован"
 
 #: src/synfig/palette.cpp:96
 msgid "Surface Palette"
@@ -2926,12 +2927,12 @@ msgstr ""
 #: src/synfig/palette.cpp:306
 #, c-format
 msgid "Unable to open %s for write"
-msgstr ""
+msgstr "Не могу да отворим %s за упис"
 
 #: src/synfig/palette.cpp:328
 #, c-format
 msgid "Unable to open %s for read"
-msgstr ""
+msgstr "Не могу да отворим %s за читање"
 
 #: src/synfig/palette.cpp:340 src/synfig/palette.cpp:382
 #, c-format
@@ -2946,78 +2947,78 @@ msgstr ""
 #: src/synfig/paramdesc.cpp:68 src/synfig/valuenode.cpp:151
 #: src/synfig/valuenode_composite.cpp:600
 msgid "Composite"
-msgstr ""
+msgstr "Мешањем"
 
 #: src/synfig/paramdesc.cpp:69
 msgid "Straight"
-msgstr ""
+msgstr "Непосредно"
 
 #: src/synfig/paramdesc.cpp:70
 msgid "Onto"
-msgstr ""
+msgstr "На"
 
 #: src/synfig/paramdesc.cpp:71
 msgid "Straight Onto"
-msgstr ""
+msgstr "Непосредно-На"
 
 #: src/synfig/paramdesc.cpp:72
 msgid "Behind"
-msgstr ""
+msgstr "Заклоњено"
 
 #: src/synfig/paramdesc.cpp:73
 msgid "Screen"
-msgstr ""
+msgstr "Осветљено"
 
 #: src/synfig/paramdesc.cpp:74
 msgid "Overlay"
-msgstr ""
+msgstr "Преклопљено"
 
 #: src/synfig/paramdesc.cpp:75
 msgid "Hard Light"
-msgstr ""
+msgstr "Тешке боје"
 
 #: src/synfig/paramdesc.cpp:76
 msgid "Multiply"
-msgstr ""
+msgstr "РГБ-Множено"
 
 #: src/synfig/paramdesc.cpp:77
 msgid "Divide"
-msgstr ""
+msgstr "Дељено"
 
 #: src/synfig/paramdesc.cpp:78 src/synfig/valuenode.cpp:168
 #: src/synfig/valuenode_add.cpp:199
 msgid "Add"
-msgstr ""
+msgstr "РГБ-Збрајано"
 
 #: src/synfig/paramdesc.cpp:79 src/synfig/valuenode.cpp:158
 #: src/synfig/valuenode_subtract.cpp:203
 msgid "Subtract"
-msgstr ""
+msgstr "РГБ-Разликовано"
 
 #: src/synfig/paramdesc.cpp:80
 msgid "Difference"
-msgstr ""
+msgstr "РГБ-Апс.разликовано"
 
 #: src/synfig/paramdesc.cpp:81
 msgid "Brighten"
-msgstr ""
+msgstr "ПоредиРГБ-Осветљено"
 
 #: src/synfig/paramdesc.cpp:82
 msgid "Darken"
-msgstr ""
+msgstr "ПоредиРГБ-Затамњено"
 
 #: src/synfig/paramdesc.cpp:84 src/synfig/valuenode_radialcomposite.cpp:261
 msgid "Hue"
-msgstr ""
+msgstr "Нијанса"
 
 #: src/synfig/paramdesc.cpp:85 src/synfig/valuenode_radialcomposite.cpp:258
 #: src/synfig/valuenode_radialcomposite.cpp:264
 msgid "Saturation"
-msgstr ""
+msgstr "Засићеност"
 
 #: src/synfig/paramdesc.cpp:86
 msgid "Luminance"
-msgstr ""
+msgstr "ИзмениУВ-Осветљено"
 
 #: src/synfig/paramdesc.cpp:87
 msgid "Alpha Over"
@@ -3133,7 +3134,7 @@ msgstr ""
 #: src/synfig/valuenode_blinereversetangent.cpp:164
 #: src/synfig/valuenode_reference.cpp:123
 msgid "Reference"
-msgstr ""
+msgstr "Референце"
 
 #: src/synfig/valuenode.cpp:155 src/synfig/valuenode_segcalctangent.cpp:106
 msgid "Segment Tangent"
@@ -3209,7 +3210,7 @@ msgstr ""
 
 #: src/synfig/valuenode.cpp:180 src/synfig/valuenode_integer.cpp:169
 msgid "Integer"
-msgstr ""
+msgstr "Цео број"
 
 #: src/synfig/valuenode.cpp:182 src/synfig/valuenode_blinecalcwidth.cpp:155
 msgid "Spline Width"
@@ -3225,11 +3226,11 @@ msgstr ""
 
 #: src/synfig/valuenode.cpp:186 src/synfig/valuenode_vectorx.cpp:123
 msgid "Vector X"
-msgstr ""
+msgstr "Вектор Ш"
 
 #: src/synfig/valuenode.cpp:187 src/synfig/valuenode_vectory.cpp:123
 msgid "Vector Y"
-msgstr ""
+msgstr "Вектор В"
 
 #: src/synfig/valuenode.cpp:188 src/synfig/valuenode_gradientcolor.cpp:140
 msgid "Gradient Color"
@@ -3246,7 +3247,7 @@ msgstr ""
 #: src/synfig/valuenode.cpp:191 src/synfig/valuenode_real.cpp:158
 #: src/synfig/valuenode_realstring.cpp:170
 msgid "Real"
-msgstr ""
+msgstr "Реалан број"
 
 #: src/synfig/valuenode.cpp:192 src/synfig/valuenode_realstring.cpp:120
 msgid "Real String"
@@ -3287,7 +3288,7 @@ msgstr ""
 
 #: src/synfig/valuenode.cpp:201
 msgid "And"
-msgstr ""
+msgstr "и"
 
 #: src/synfig/valuenode.cpp:202
 msgid "Or"
@@ -3407,7 +3408,7 @@ msgstr ""
 
 #: src/synfig/valuenode_and.cpp:129
 msgid "AND"
-msgstr ""
+msgstr "И"
 
 #: src/synfig/valuenode_and.cpp:147 src/synfig/valuenode_or.cpp:147
 msgid "Link1"
@@ -3463,16 +3464,16 @@ msgstr ""
 #: src/synfig/valuenode_animated.cpp:709 src/synfig/valuenode_animated.cpp:727
 #: src/synfig/valuenode_animated.cpp:811 src/synfig/valuenode_animated.cpp:830
 msgid "A waypoint already exists at this point in time"
-msgstr ""
+msgstr "Реф.Тачка већ постоји на овој временској тачки"
 
 #: src/synfig/valuenode_animated.cpp:1170
 #, c-format
 msgid "%s: You cannot use a %s in an animated ValueNode"
-msgstr ""
+msgstr "%s: Не можете да употребљавате %s у анимираном Чвору-вредности"
 
 #: src/synfig/valuenode_animated.cpp:1203
 msgid "Animated"
-msgstr ""
+msgstr "Анимирано"
 
 #: src/synfig/valuenode_atan2.cpp:148
 msgid "X"
@@ -3527,7 +3528,7 @@ msgstr ""
 #: src/synfig/valuenode_gradientrotate.cpp:169
 #: src/synfig/valuenode_linear.cpp:221
 msgid "Offset"
-msgstr ""
+msgstr "Померај"
 
 #: src/synfig/valuenode_blinecalctangent.cpp:259
 msgid "Angle offset of the tangent"
@@ -3644,7 +3645,7 @@ msgstr ""
 
 #: src/synfig/valuenode_bone.cpp:627
 msgid "Z-Depth"
-msgstr ""
+msgstr "Дубина слоја"
 
 #: src/synfig/valuenode_bone.cpp:628
 msgid "The z-depth of the bone"
@@ -3760,11 +3761,11 @@ msgstr ""
 
 #: src/synfig/valuenode_composite.cpp:296
 msgid "Bad type for composite"
-msgstr ""
+msgstr "Лоша врста за мешање"
 
 #: src/synfig/valuenode_composite.cpp:629
 msgid "Red"
-msgstr ""
+msgstr "Црвена"
 
 #: src/synfig/valuenode_composite.cpp:630
 msgid "The red component of the color"
@@ -3772,7 +3773,7 @@ msgstr ""
 
 #: src/synfig/valuenode_composite.cpp:633
 msgid "Green"
-msgstr ""
+msgstr "Зелена"
 
 #: src/synfig/valuenode_composite.cpp:634
 msgid "The green component of the color"
@@ -3780,7 +3781,7 @@ msgstr ""
 
 #: src/synfig/valuenode_composite.cpp:637
 msgid "Blue"
-msgstr ""
+msgstr "Плава"
 
 #: src/synfig/valuenode_composite.cpp:638
 msgid "The blue component of the color"
@@ -3788,7 +3789,7 @@ msgstr ""
 
 #: src/synfig/valuenode_composite.cpp:641
 msgid "Alpha"
-msgstr ""
+msgstr "Провидност"
 
 #: src/synfig/valuenode_composite.cpp:642
 msgid "The alpha of the color"
@@ -3943,7 +3944,7 @@ msgstr ""
 #: src/synfig/valuenode_composite.cpp:768
 #: src/synfig/valuenode_timedswap.cpp:272
 msgid "Length"
-msgstr ""
+msgstr "Трајање"
 
 #: src/synfig/valuenode_composite.cpp:769
 msgid "The length of the Dash Item"
@@ -3980,11 +3981,11 @@ msgstr ""
 
 #: src/synfig/valuenode_composite.cpp:821
 msgid "Value"
-msgstr ""
+msgstr "Вредност"
 
 #: src/synfig/valuenode_composite.cpp:822
 msgid "The Value"
-msgstr ""
+msgstr "Вредност"
 
 #: src/synfig/valuenode_composite.cpp:830
 msgid "First"
@@ -4077,19 +4078,19 @@ msgstr ""
 
 #: src/synfig/valuenode_duplicate.cpp:194
 msgid "From"
-msgstr ""
+msgstr "Од"
 
 #: src/synfig/valuenode_duplicate.cpp:195
 msgid "Initial value of the index "
-msgstr ""
+msgstr "Почетна вредност пописа"
 
 #: src/synfig/valuenode_duplicate.cpp:199
 msgid "To"
-msgstr ""
+msgstr "До"
 
 #: src/synfig/valuenode_duplicate.cpp:200
 msgid "Final value of the index"
-msgstr ""
+msgstr "Завршна вредност пописа"
 
 #: src/synfig/valuenode_duplicate.cpp:205
 msgid "Amount increment of the index"
@@ -4360,7 +4361,7 @@ msgstr ""
 
 #: src/synfig/valuenode_radialcomposite.cpp:255
 msgid "Luma"
-msgstr ""
+msgstr "Осветљеност"
 
 #: src/synfig/valuenode_radialcomposite.cpp:273
 msgid "The length of the vector"
@@ -4487,7 +4488,7 @@ msgstr ""
 #: src/synfig/valuenode_segcalctangent.cpp:156
 #: src/synfig/valuenode_segcalcvertex.cpp:154
 msgid "Segment"
-msgstr ""
+msgstr "Делић"
 
 #: src/synfig/valuenode_segcalctangent.cpp:157
 msgid "The Segment where the tangent is linked to"
@@ -4523,7 +4524,7 @@ msgstr ""
 
 #: src/synfig/valuenode_step.cpp:202 src/tool/printing_functions.cpp:71
 msgid "Start Time"
-msgstr ""
+msgstr "Почетак"
 
 #: src/synfig/valuenode_step.cpp:203
 msgid "The time when the step conversion starts"
@@ -4539,7 +4540,7 @@ msgstr ""
 
 #: src/synfig/valuenode_stripes.cpp:189 src/synfig/valuenode_twotone.cpp:153
 msgid "Color 1"
-msgstr ""
+msgstr "1. боја"
 
 #: src/synfig/valuenode_stripes.cpp:190
 msgid "One color of the gradient stripes"
@@ -4547,7 +4548,7 @@ msgstr ""
 
 #: src/synfig/valuenode_stripes.cpp:194 src/synfig/valuenode_twotone.cpp:158
 msgid "Color 2"
-msgstr ""
+msgstr "2. боја"
 
 #: src/synfig/valuenode_stripes.cpp:195
 msgid "Other color of the gradient stripes"
@@ -4579,23 +4580,23 @@ msgstr ""
 
 #: src/synfig/valuenode_switch.cpp:153
 msgid "Link Off"
-msgstr ""
+msgstr "У прекиду"
 
 #: src/synfig/valuenode_switch.cpp:154
 msgid "The value node returned when the switch is off"
-msgstr ""
+msgstr "Враћена вредност скретнице када не ради"
 
 #: src/synfig/valuenode_switch.cpp:158
 msgid "Link On"
-msgstr ""
+msgstr "Повезано"
 
 #: src/synfig/valuenode_switch.cpp:159
 msgid "The value node returned when the switch is on"
-msgstr ""
+msgstr "Враћена вредност скретнице када ради"
 
 #: src/synfig/valuenode_switch.cpp:164
 msgid "When checked, returns 'Link On', otherwise returns 'Link Off'"
-msgstr ""
+msgstr "Ако је означено, враћа „Повезано“, у супротном „У прекиду“"
 
 #: src/synfig/valuenode_timedswap.cpp:258
 msgid "The value node returned when current time is before 'time' - 'length'"
@@ -4608,7 +4609,7 @@ msgstr ""
 #: src/synfig/valuenode_timedswap.cpp:267
 #: src/synfig/valuenode_timestring.cpp:156
 msgid "Time"
-msgstr ""
+msgstr "Време"
 
 #: src/synfig/valuenode_timedswap.cpp:268
 msgid "The time when the linear interpolation ends"
@@ -4648,7 +4649,7 @@ msgstr ""
 #: src/synfig/valuenode_vectorlength.cpp:141
 #: src/synfig/valuenode_vectorx.cpp:141 src/synfig/valuenode_vectory.cpp:141
 msgid "Vector"
-msgstr ""
+msgstr "Вектор"
 
 #: src/synfig/valuenode_vectorangle.cpp:144
 msgid "The vector where the angle is calculated from"
@@ -4681,11 +4682,11 @@ msgstr ""
 
 #: src/tool/main.cpp:104
 msgid "FATAL: Synfig Version Mismatch"
-msgstr ""
+msgstr "Кобна грешка: Неподударно издање програма"
 
 #: src/tool/main.cpp:143
 msgid "Settings"
-msgstr ""
+msgstr "Подешавања"
 
 #: src/tool/main.cpp:145
 msgid "Specify output target (Default: PNG)"
@@ -4714,7 +4715,7 @@ msgstr ""
 
 #: src/tool/main.cpp:151
 msgid "Gamma"
-msgstr ""
+msgstr "Гамут"
 
 #: src/tool/main.cpp:152
 msgid "Enable multithreaded renderer using the specified number of threads"
@@ -4722,11 +4723,11 @@ msgstr ""
 
 #: src/tool/main.cpp:153
 msgid "Specify input filename"
-msgstr ""
+msgstr "Поставите назив улазне датотеке"
 
 #: src/tool/main.cpp:154
 msgid "Specify output filename"
-msgstr ""
+msgstr "Поставите назив исходишне датотеке"
 
 #: src/tool/main.cpp:155
 msgid ""
@@ -4740,7 +4741,7 @@ msgstr ""
 
 #: src/tool/main.cpp:157
 msgid "Set the frame rate"
-msgstr ""
+msgstr "Поставите број КпС"
 
 #: src/tool/main.cpp:158
 msgid "Render a single frame at <seconds>"
@@ -4748,23 +4749,23 @@ msgstr ""
 
 #: src/tool/main.cpp:159 src/tool/main.cpp:160
 msgid "Set the starting time"
-msgstr ""
+msgstr "Постави време почетка"
 
 #: src/tool/main.cpp:161
 msgid "Set the ending time"
-msgstr ""
+msgstr "Постави време свршетка"
 
 #: src/tool/main.cpp:162
 msgid "Set the physical resolution (Dots-per-inch)"
-msgstr ""
+msgstr "Постави стварну резолуцију (тачака по инчу)"
 
 #: src/tool/main.cpp:163
 msgid "Set the physical X resolution (Dots-per-inch)"
-msgstr ""
+msgstr "Постави стварну ширину (тачака по инчу)"
 
 #: src/tool/main.cpp:164
 msgid "Set the physical Y resolution (Dots-per-inch)"
-msgstr ""
+msgstr "Постави стварну висину (тачака по инчу)"
 
 #: src/tool/main.cpp:167
 msgid "Switch options"
@@ -4784,11 +4785,11 @@ msgstr ""
 
 #: src/tool/main.cpp:172
 msgid "Extract alpha"
-msgstr ""
+msgstr "Извези провидност"
 
 #: src/tool/main.cpp:175
 msgid "Misc options"
-msgstr ""
+msgstr "Разне поставке"
 
 #: src/tool/main.cpp:177
 msgid "Append layers in <filename> to composition"
@@ -4816,7 +4817,7 @@ msgstr ""
 
 #: src/tool/main.cpp:188
 msgid "Synfig info options"
-msgstr ""
+msgstr "Поставке података о Синфигу"
 
 #: src/tool/main.cpp:190
 msgid "Produce this help message"
@@ -4877,7 +4878,7 @@ msgstr ""
 
 #: src/tool/joblistprocessor.cpp:73
 msgid "Nothing to do!"
-msgstr ""
+msgstr "Немам шта да радим!"
 
 #: src/tool/joblistprocessor.cpp:84
 msgid "Attempting to determine target/outfile..."
@@ -4923,31 +4924,31 @@ msgstr ""
 
 #: src/tool/joblistprocessor.cpp:228 src/tool/joblistprocessor.cpp:238
 msgid "Render Failure."
-msgstr ""
+msgstr "Неуспех при стварању."
 
 #: src/tool/joblistprocessor.cpp:232
 msgid "Rendering..."
-msgstr ""
+msgstr "Стварам..."
 
 #: src/tool/joblistprocessor.cpp:246
 msgid ": Rendered in "
-msgstr ""
+msgstr ": Створено за "
 
 #: src/tool/joblistprocessor.cpp:248
 msgid " seconds."
-msgstr ""
+msgstr " секунд(и/е/у)."
 
 #: src/tool/joblistprocessor.cpp:252
 msgid "Done."
-msgstr ""
+msgstr "Готово."
 
 #: src/tool/optionsprocessor.cpp:138
 msgid "Unrecognised canvas variable: "
-msgstr ""
+msgstr "Непозната променљива платна: "
 
 #: src/tool/optionsprocessor.cpp:139
 msgid "Recognized variables are:"
-msgstr ""
+msgstr "Познате променљиве су: "
 
 #: src/tool/optionsprocessor.cpp:156
 msgid "verbosity set to "
@@ -4959,35 +4960,35 @@ msgstr ""
 
 #: src/tool/optionsprocessor.cpp:255
 msgid "Layer Name: "
-msgstr ""
+msgstr "Назив слоја: "
 
 #: src/tool/optionsprocessor.cpp:256
 msgid "Localized Layer Name: "
-msgstr ""
+msgstr "Локални назив слоја: "
 
 #: src/tool/optionsprocessor.cpp:258
 msgid "Version: "
-msgstr ""
+msgstr "Издање: "
 
 #: src/tool/optionsprocessor.cpp:263
 msgid "param - "
-msgstr ""
+msgstr "парам - "
 
 #: src/tool/optionsprocessor.cpp:265
 msgid " (not critical)"
-msgstr ""
+msgstr " (није опасно)"
 
 #: src/tool/optionsprocessor.cpp:266
 msgid "\tLocalized Name: "
-msgstr ""
+msgstr "\tЛокални назив: "
 
 #: src/tool/optionsprocessor.cpp:270
 msgid "\tDescription: "
-msgstr ""
+msgstr "\tОпис: "
 
 #: src/tool/optionsprocessor.cpp:274
 msgid "\tHint: "
-msgstr ""
+msgstr "\tНапомена: "
 
 #: src/tool/optionsprocessor.cpp:340
 #, c-format
@@ -5068,7 +5069,7 @@ msgstr ""
 
 #: src/tool/optionsprocessor.cpp:571
 msgid "Quality set to "
-msgstr ""
+msgstr "Постави квалитет на "
 
 #: src/tool/optionsprocessor.cpp:590
 #, c-format
@@ -5094,63 +5095,63 @@ msgstr ""
 
 #: src/tool/printing_functions.cpp:78
 msgid "End Time"
-msgstr ""
+msgstr "Свршетак"
 
 #: src/tool/printing_functions.cpp:85
 msgid "Frame Rate"
-msgstr ""
+msgstr "Број кадрова по секунди"
 
 #: src/tool/printing_functions.cpp:92
 msgid "Start Frame"
-msgstr ""
+msgstr "Почетни кадар"
 
 #: src/tool/printing_functions.cpp:99
 msgid "End Frame"
-msgstr ""
+msgstr "Завршни кадар"
 
 #: src/tool/printing_functions.cpp:121
 msgid "Image Aspect Ratio"
-msgstr ""
+msgstr "Однос дим. слике"
 
 #: src/tool/printing_functions.cpp:131
 msgid "Pixel Width"
-msgstr ""
+msgstr "Ширина пиксела"
 
 #: src/tool/printing_functions.cpp:138
 msgid "Pixel Height"
-msgstr ""
+msgstr "Висина пиксела"
 
 #: src/tool/printing_functions.cpp:145
 msgid "Pixel Aspect Ratio"
-msgstr ""
+msgstr "Однос дим. пиксела"
 
 #: src/tool/printing_functions.cpp:155
 msgid "Top Left"
-msgstr ""
+msgstr "Горе лево"
 
 #: src/tool/printing_functions.cpp:162
 msgid "Bottom Right"
-msgstr ""
+msgstr "Доле десно"
 
 #: src/tool/printing_functions.cpp:169
 msgid "Physical Width"
-msgstr ""
+msgstr "Стварна ширина"
 
 #: src/tool/printing_functions.cpp:176
 msgid "Physical Height"
-msgstr ""
+msgstr "Стварна висина"
 
 #: src/tool/printing_functions.cpp:183
 msgid "X Resolution"
-msgstr ""
+msgstr "Ш—резолуција"
 
 #: src/tool/printing_functions.cpp:189
 msgid "Y Resolution"
-msgstr ""
+msgstr "В—резолуција"
 
 #: src/tool/printing_functions.cpp:195
 msgid "Diagonal Image Span"
-msgstr ""
+msgstr "Премери дијагонално слику"
 
 #: src/tool/printing_functions.cpp:204
 msgid "Interlaced"
@@ -5158,7 +5159,7 @@ msgstr ""
 
 #: src/tool/printing_functions.cpp:211
 msgid "Antialias"
-msgstr ""
+msgstr "Умекшавај ивице"
 
 #: src/tool/printing_functions.cpp:225
 msgid "Flags"
@@ -5166,12 +5167,12 @@ msgstr ""
 
 #: src/tool/printing_functions.cpp:232
 msgid "Focus"
-msgstr ""
+msgstr "Жижа"
 
 #: src/tool/printing_functions.cpp:239
 msgid "Background Color"
-msgstr ""
+msgstr "Боја позадине"
 
 #: src/tool/printing_functions.cpp:250
 msgid "Metadata"
-msgstr ""
+msgstr "Допунски подаци"

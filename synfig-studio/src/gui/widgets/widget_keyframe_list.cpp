@@ -133,7 +133,7 @@ Widget_Keyframe_List::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 
 	//TODO hardcoded colors
 	//! Colors
-	Color background(0.62, 0.62, 0.62, 1.0);
+	Color background(0.46, 0.55, 0.70, 1.0);
 	Color normal(0.0, 0.0, 0.0, 1.0);
 	Color selected(1.0, 1.0, 1.0, 1.0);
 	Color drag_old_position(1.0, 1.0, 1.0, 0.6);

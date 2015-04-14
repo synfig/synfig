@@ -285,6 +285,9 @@ public:
 	bool get_loop_flag() const {return b_loop.get_active();}
 	void set_loop_flag(bool b) {return b_loop.set_active(b);}
 
+	virtual void on_show();
+	virtual void on_hide();
+
 protected:
 
 	class ModelColumns : public Gtk::TreeModel::ColumnRecord
@@ -322,6 +325,7 @@ private:
 	bool jack_is_playing;
 	synfig::Time jack_time;
 	synfig::Time jack_offset;
+	synfig::Time jack_initial_time;
 
 	bool get_jack_enabled() { return jack_enabled; }
 	void set_jack_enabled(bool value);

@@ -238,8 +238,15 @@ int main(int argc, char* argv[])
 		po_visible.add(po_info);
 
         po::variables_map vm;
-        po::store(po::command_line_parser(argc, argv).options(po_all).
-				  positional(po_positional).run(), vm);
+        try{
+            po::store(po::command_line_parser(argc, argv).options(po_all).
+                    positional(po_positional).run(), vm);
+        }catch(std::exception &e)
+        {
+            std::cout << std::endl << e.what() << std::endl;
+            std::cout << _("Try 'synfig --help' for more information") << std::endl;
+            return SYNFIGTOOL_UNKNOWNARGUMENT;
+        }
 
         OptionsProcessor op(vm, po_visible);
 

@@ -683,8 +683,8 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	toggleducksdial         (Gtk::IconSize::from_name("synfig-small_icon_16x16")),
 	resolutiondial         	(Gtk::IconSize::from_name("synfig-small_icon_16x16")),
 	quality_adjustment_		(Gtk::Adjustment::create(8,1,10,1,1,0)),
-	future_onion_adjustment_(Gtk::Adjustment::create(0,0,2,1,1,0)),
-	past_onion_adjustment_  (Gtk::Adjustment::create(0,0,2,1,1,0)),
+	future_onion_adjustment_(Gtk::Adjustment::create(0,0,ONION_SKIN_FUTURE,1,1,0)),
+	past_onion_adjustment_  (Gtk::Adjustment::create(1,0,ONION_SKIN_PAST,1,1,0)),
 
 	timeslider				(new Widget_Timeslider),
 	widget_kf_list			(new Widget_Keyframe_List),
@@ -694,6 +694,9 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	is_playing_				(false),
 
 	jack_enabled			(false),
+	jack_actual_enabled		(false),
+	jack_locks				(0),
+	jack_enabled_in_preview	(false),
 #ifdef WITH_JACK
 	jack_client				(NULL),
 	jack_synchronizing		(true),
@@ -899,6 +902,9 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	instance->signal_canvas_view_created()(this);
 	//synfig::info("Canvasview: Constructor Done");
 
+	if (App::jack_is_locked())
+		jack_lock();
+
 #ifdef WITH_JACK
 	jack_dispatcher.connect(sigc::mem_fun(*this, &CanvasView::on_jack_sync));
 #endif
@@ -971,57 +977,89 @@ void CanvasView::present()
 	update_title();
 }
 
+void CanvasView::jack_lock()
+{
+	++jack_locks;
+#ifdef WITH_JACK
+	if (jack_locks == 1)
+		set_jack_enabled(get_jack_enabled());
+#endif
+}
+
+void CanvasView::jack_unlock()
+{
+	--jack_locks;
+	assert(jack_locks >= 0);
+#ifdef WITH_JACK
+	if (jack_locks == 0)
+		set_jack_enabled(get_jack_enabled());
+#endif
+}
+
 #ifdef WITH_JACK
 void CanvasView::set_jack_enabled(bool value)
 {
-	if (jack_enabled == value) return;
-	jack_enabled = value;
-	if (jack_enabled)
-	{
-		// initialize jack
-		stop();
-		jack_client = jack_client_open("synfigstudiocanvas", JackNullOption, 0);
-		jack_set_sync_callback(jack_client, jack_sync_callback, this);
-		if (jack_activate(jack_client) != 0)
+	bool actual_value = value && !jack_is_locked();
+	if (jack_actual_enabled != actual_value) {
+		jack_actual_enabled = actual_value;
+		if (jack_actual_enabled)
 		{
+			// initialize jack
+			stop();
+			jack_client = jack_client_open("synfigstudiocanvas", JackNullOption, 0);
+			jack_set_sync_callback(jack_client, jack_sync_callback, this);
+			if (jack_activate(jack_client) != 0)
+			{
+				jack_client_close(jack_client);
+				jack_client = NULL;
+				jack_actual_enabled = false;
+				// make conditions to update button
+				jack_enabled = true;
+				value = false;
+			}
+		}
+		else
+		{
+			// deinitialize jack
+			jack_deactivate(jack_client);
 			jack_client_close(jack_client);
 			jack_client = NULL;
-			jack_enabled = false;
 		}
-	}
-	else
-	{
-		// deinitialize jack
-		jack_deactivate(jack_client);
-		jack_client_close(jack_client);
-		jack_client = NULL;
+
+		jackbutton->set_sensitive(!jack_is_locked());
 	}
 
-	Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon_16x16");
-	Gtk::Image *icon;
-	offset_widget = jackdial->get_offsetwidget();
-
-	if (jackbutton->get_active())
+	if (jack_enabled != value)
 	{
-		icon = manage(new Gtk::Image(Gtk::StockID("synfig-jack"),iconsize));
-		jackbutton->remove();
-		jackbutton->add(*icon);
-		jackbutton->set_tooltip_text(_("Disable JACK"));
-		icon->set_padding(0,0);
-		icon->show();
+		jack_enabled = value;
 
-		offset_widget->show();
-	}
-	else
-	{
-		icon = manage(new Gtk::Image(Gtk::StockID("synfig-jack"),iconsize));
-		jackbutton->remove();
-		jackbutton->add(*icon);
-		jackbutton->set_tooltip_text(_("Enable JACK"));
-		icon->set_padding(0,0);
-		icon->show();
+		Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon_16x16");
+		Gtk::Image *icon;
+		offset_widget = jackdial->get_offsetwidget();
 
-		offset_widget->hide();
+		if (jackbutton->get_active() != jack_enabled)
+			jackbutton->set_active(jack_enabled);
+
+		if (jack_enabled)
+		{
+			icon = manage(new Gtk::Image(Gtk::StockID("synfig-jack"),iconsize));
+			jackbutton->remove();
+			jackbutton->add(*icon);
+			jackbutton->set_tooltip_text(_("Disable JACK"));
+			icon->set_padding(0,0);
+			icon->show();
+			offset_widget->show();
+		}
+		else
+		{
+			icon = manage(new Gtk::Image(Gtk::StockID("synfig-jack"),iconsize));
+			jackbutton->remove();
+			jackbutton->add(*icon);
+			jackbutton->set_tooltip_text(_("Enable JACK"));
+			icon->set_padding(0,0);
+			icon->show();
+			offset_widget->hide();
+		}
 	}
 }
 #endif
@@ -1419,8 +1457,7 @@ CanvasView::create_display_bar()
 
 		displaybar->append(*onion_skin);
 	}
-
-/*
+	
 	{ // Set up past onion skin spin button
 		past_onion_spin=Gtk::manage(new class Gtk::SpinButton(past_onion_adjustment_));
 		past_onion_spin->signal_value_changed().connect(
@@ -1453,7 +1490,6 @@ CanvasView::create_display_bar()
 
 	// Separator
 	displaybar->append( *create_tool_separator() );
-	*/
 	
 	{ // Setup refresh button
 		Gtk::Image *icon = Gtk::manage(new Gtk::Image(Gtk::StockID("gtk-refresh"), iconsize));
@@ -4006,6 +4042,9 @@ CanvasView::on_meta_data_changed()
 		onion_skin->set_active(work_area->get_onion_skin());
 		snap_grid->set_active(work_area->get_grid_snap());
 		show_grid->set_active(work_area->grid_status());
+		// Update the onion skin spins
+		past_onion_spin->set_value(work_area->get_onion_skins()[0]);
+		future_onion_spin->set_value(work_area->get_onion_skins()[1]);
 	}
 	catch(...)
 	{

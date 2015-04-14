@@ -956,7 +956,7 @@ CanvasInterface::auto_export(const ValueDesc& /*value_desc*/)
 }
 
 bool
-CanvasInterface::change_value(synfigapp::ValueDesc value_desc,synfig::ValueBase new_value)
+CanvasInterface::change_value(synfigapp::ValueDesc value_desc,synfig::ValueBase new_value,bool lock_animation)
 {
 	ValueBase old_value;
 	old_value = value_desc.get_value(get_time());
@@ -1001,6 +1001,7 @@ CanvasInterface::change_value(synfigapp::ValueDesc value_desc,synfig::ValueBase 
 	action->set_param("time",get_time());
 	action->set_param("value_desc",value_desc);
 	action->set_param("new_value",new_value);
+	if (lock_animation) action->set_param("lock_animation", lock_animation);
 
 	return get_instance()->perform_action(action);
 }

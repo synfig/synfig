@@ -19,9 +19,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Synfig\n"
 "Report-Msgid-Bugs-To: http://www.synfig.org/issues/thebuggenie/synfig\n"
-"POT-Creation-Date: 2015-03-25 18:00+0700\n"
-"PO-Revision-Date: 2015-03-22 16:07+0000\n"
-"Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
+"POT-Creation-Date: 2015-04-06 16:00+0700\n"
+"PO-Revision-Date: 2015-03-27 17:54+0000\n"
+"Last-Translator: Adriano Araújo Duarte <dhryko@hotmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/synfig/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -450,7 +450,7 @@ msgstr "De Dentro para Fora"
 
 #: src/modules/lyr_std/insideout.cpp:163
 msgid "Defines where the center will be"
-msgstr ""
+msgstr "Define onde o centro estará"
 
 #: src/modules/lyr_std/julia.cpp:56
 msgid "Julia Set"
@@ -1736,15 +1736,15 @@ msgstr "Não é possível criar arquivo temporário de"
 
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:179
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:180
-#: src/synfig/cairolistimporter.cpp:193 src/synfig/cairolistimporter.cpp:194
-#: src/synfig/listimporter.cpp:188 src/synfig/listimporter.cpp:189
+#: src/synfig/cairolistimporter.cpp:194 src/synfig/cairolistimporter.cpp:195
+#: src/synfig/listimporter.cpp:189 src/synfig/listimporter.cpp:190
 msgid "Unable to open "
 msgstr "Não é possível abrir"
 
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:186
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:187
-#: src/synfig/cairolistimporter.cpp:200 src/synfig/cairolistimporter.cpp:201
-#: src/synfig/listimporter.cpp:195 src/synfig/listimporter.cpp:196
+#: src/synfig/cairolistimporter.cpp:201 src/synfig/cairolistimporter.cpp:202
+#: src/synfig/listimporter.cpp:196 src/synfig/listimporter.cpp:197
 msgid "Unable to get frame from "
 msgstr "Não é possível obter quadro de"
 
@@ -2179,8 +2179,8 @@ msgstr "CairoImporter::open(): Não é possível encontrar extensão"
 msgid "CairoImporter::open(): Unknown file type -- "
 msgstr "CairoImporter::open(): Tipo de arquivo desconhecido -- "
 
-#: src/synfig/cairolistimporter.cpp:165 src/synfig/cairolistimporter.cpp:166
-#: src/synfig/listimporter.cpp:165 src/synfig/listimporter.cpp:166
+#: src/synfig/cairolistimporter.cpp:166 src/synfig/cairolistimporter.cpp:167
+#: src/synfig/listimporter.cpp:166 src/synfig/listimporter.cpp:167
 msgid "No images in list"
 msgstr "Nenhuma imagem na lista"
 
@@ -3894,7 +3894,7 @@ msgstr "Divisão do Raio"
 
 #: src/synfig/valuenode_composite.cpp:710
 msgid "When checked, tangent's radii are independent"
-msgstr ""
+msgstr "Quando marcada, os raios da tangente são independentes"
 
 #: src/synfig/valuenode_composite.cpp:713
 msgid "Angle Split"
@@ -5042,7 +5042,7 @@ msgstr "Argumento do Gama é atualmente ignorado"
 #: src/tool/optionsprocessor.cpp:427
 #, c-format
 msgid "Resolution set to %dx%d."
-msgstr ""
+msgstr "Resolução definida para %dx%d."
 
 #: src/tool/optionsprocessor.cpp:444
 msgid "Both video codec and bitrate parameters are necessary."
@@ -5055,20 +5055,20 @@ msgstr "Codec de vídeo \"%s\" não é suportado."
 
 #: src/tool/optionsprocessor.cpp:474
 msgid "Target video codec set to: "
-msgstr ""
+msgstr "Codec de vídeo do destino definido para:"
 
 #: src/tool/optionsprocessor.cpp:480
 msgid "Target bitrate set to: "
-msgstr ""
+msgstr "Taxa de bits do destino definida para:"
 
 #: src/tool/optionsprocessor.cpp:486
 msgid "Output file sequence separator set to: '"
-msgstr ""
+msgstr "Separador de sequência do arquivo de saída definido para: '"
 
 #: src/tool/optionsprocessor.cpp:538
 #, c-format
 msgid "Unable to load file '%s'."
-msgstr ""
+msgstr "Não é possível carregar o arquivo '%s'."
 
 #: src/tool/optionsprocessor.cpp:546
 msgid "No input file provided."

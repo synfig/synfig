@@ -558,7 +558,7 @@ StateBLine_Context::StateBLine_Context(CanvasView* canvas_view):
 
 	blend_enum.set_param_desc(ParamDesc(Color::BLEND_COMPOSITE,"blend_method")
 		.set_local_name(_("Blend Method"))
-		.set_description(_("Defines the blend method to be used for blines")));
+		.set_description(_("Defines the blend method to be used for splines")));
 
 	// 4, opacity label and slider
 	opacity_label.set_label(_("Opacity:"));

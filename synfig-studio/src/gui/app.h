@@ -173,6 +173,8 @@ private:
 
 	static Glib::RefPtr<UIManager>	ui_manager_;
 
+	static int jack_locks_;
+
 //	static std::list< etl::handle< Module > > module_list_;
 
 	/*
@@ -315,6 +317,7 @@ public:
 	static bool load_settings(const synfig::String& key_filter = "");
 	static void load_accel_map();
 	static void load_file_window_size();
+	static void load_language_settings();
 	static void set_workspace_default();
 	static void set_workspace_compositing();
 	static void set_workspace_animating();
@@ -356,6 +359,9 @@ public:
 	static int get_max_recent_files();
 	static void set_max_recent_files(int x);
 
+	static bool jack_is_locked();
+	static void jack_lock();
+	static void jack_unlock();
 
 	static synfig::Time::Format get_time_format();
 	static void set_time_format(synfig::Time::Format x);
@@ -366,11 +372,13 @@ public:
 
 	static bool dialog_open_file(const std::string &title, std::string &filename, std::string preference);
 	static bool dialog_open_file_spal(const std::string &title, std::string &filename, std::string preference);
+	static bool dialog_open_file_sketch(const std::string &title, std::string &filename, std::string preference);
 	static bool dialog_open_file_image(const std::string &title, std::string &filename, std::string preference);
 	static bool dialog_open_file_audio(const std::string &title, std::string &filename, std::string preference);
 	static bool dialog_open_file_with_history_button(const std::string &title, std::string &filename, bool &show_history, std::string preference);
 	static bool dialog_save_file(const std::string &title, std::string &filename, std::string preference);
 	static bool dialog_save_file_spal(const std::string &title, std::string &filename, std::string preference);
+	static bool dialog_save_file_sketch(const std::string &title, std::string &filename, std::string preference);
 	static bool dialog_save_file_render(const std::string &title, std::string &filename, std::string preference);
 
 	static bool dialog_select_list_item(const std::string &title, const std::string &message, const std::list<std::string> &list, int &item_index);
@@ -387,7 +395,8 @@ public:
 			const std::string &type,
 			const std::string &message,
 			const std::string &detials,
-			const std::string &button1);
+			const std::string &button1,
+			const std::string &long_details = "long_details");
 
 	static bool dialog_message_2b(const std::string &message,
 			const std::string &details,

@@ -60,6 +60,7 @@ SYNFIG_IMPORTER_SET_SUPPORTS_FILE_SYSTEM_WRAPPER(ListImporter, false);
 
 /* === M E T H O D S ======================================================= */
 
+//TODO factorize code with cairolistimporter.cpp
 ListImporter::ListImporter(const FileSystem::Identifier &identifier):
 Importer(identifier)
 {
@@ -72,19 +73,20 @@ Importer(identifier)
 		synfig::error("Unable to open "+identifier.filename);
 		return;
 	}
+
 	String line;
 	String prefix=etl::dirname(identifier.filename)+ETL_DIRECTORY_SEPARATOR;
-	getline(stream,line);		// read first line and check whether it is a Papagayo lip sync file
 
-	if (line == "MohoSwitch1")	// it is a Papagayo lipsync file
+	///! read first line and check whether it is a Papagayo lip sync file
+	if(!FileSystem::safeGetline(stream, line).eof())
+	if (line == "MohoSwitch1")
 	{
+		//! it is a Papagayo lipsync file
 		String phoneme, prevphoneme, prevext, ext(".jpg"); // default image format
 		int frame, prevframe = -1; // it means that the previous phoneme is not known
 
-		while(!stream.eof())
+		while(!FileSystem::safeGetline(stream, line).eof())
 		{
-			getline(stream,line);
-
 			if(line.find(String("FPS ")) == 0)
 			{
 				float f = atof(String(line.begin()+4,line.end()).c_str());
@@ -102,8 +104,8 @@ Importer(identifier)
 				ext = String(".") + line;
 				continue;
 			}
-
-			size_t pos = line.find(String(" ")); // find space position. The format is "frame phoneme-name".
+			//! find space position. The format is "frame phoneme-name".
+			size_t pos = line.find(String(" "));
 			if(pos != String::npos)
 			{
 				frame = atoi(String(line.begin(),line.begin()+pos).c_str());
@@ -130,12 +132,11 @@ Importer(identifier)
 	}
 
 	stream.seekg(ios_base::beg);
-	while(!stream.eof())
+	while(!FileSystem::safeGetline(stream, line).eof())
 	{
-		getline(stream,line);
 		if(line.empty())
 			continue;
-		// If we have a framerate, then use it
+		//! If we have a framerate, then use it
 		if(line.find(String("FPS "))==0)
 		{
 			fps=atof(String(line.begin()+4,line.end()).c_str());

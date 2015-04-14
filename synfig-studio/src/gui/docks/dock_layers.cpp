@@ -239,7 +239,7 @@ Dock_Layers::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
 
 	layer_tree->signal_edited_value().connect(
 		sigc::hide_return(
-			sigc::mem_fun(*canvas_view->canvas_interface(), &synfigapp::CanvasInterface::change_value)
+			sigc::bind(sigc::mem_fun(*canvas_view->canvas_interface(), &synfigapp::CanvasInterface::change_value), false)
 		)
 	);
 

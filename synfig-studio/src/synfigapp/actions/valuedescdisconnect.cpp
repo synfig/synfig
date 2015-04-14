@@ -38,6 +38,7 @@
 #include "valuedescdisconnect.h"
 #include <synfigapp/canvasinterface.h>
 #include <synfig/valuenode_const.h>
+#include <synfig/valuenode_composite.h>
 #include <synfig/valuenode_duplicate.h>
 #include <synfig/valuenode_bone.h>
 
@@ -164,6 +165,26 @@ Action::ValueDescDisconnect::prepare()
 {
 	clear();
 
+	if(value_desc.get_value_type() == type_transformation)
+	{
+		ValueNode::Handle src_value_node;
+		src_value_node=ValueNode_Composite::create((*value_desc.get_value_node())(time));
+
+		Action::Handle action(ValueNodeReplace::create());
+
+		action->set_param("canvas",get_canvas());
+		action->set_param("canvas_interface",get_canvas_interface());
+		action->set_param("src",src_value_node);
+		action->set_param("dest",value_desc.get_value_node());
+
+		assert(action->is_ready());
+		if(!action->is_ready())
+			throw Error(Error::TYPE_NOTREADY);
+
+		add_action_front(action);
+		return;
+	}
+	else
 	if(value_desc.parent_is_canvas())
 	{
 		ValueNode::Handle src_value_node;

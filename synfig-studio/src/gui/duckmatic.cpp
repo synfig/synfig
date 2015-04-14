@@ -111,19 +111,21 @@ using namespace studio;
 Duckmatic::Duckmatic(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface):
 	canvas_interface(canvas_interface),
 	type_mask(Duck::TYPE_ALL-Duck::TYPE_WIDTH-Duck::TYPE_BONE_RECURSIVE-Duck::TYPE_WIDTHPOINT_POSITION),
+	alternative_mode_(false),
+	lock_animation_mode_(false),
 	grid_snap(false),
 	guide_snap(false),
 	grid_size(1.0/4.0,1.0/4.0),
 	grid_color(synfig::Color(159.0/255.0,159.0/255.0,159.0/255.0)),
 	guides_color(synfig::Color(111.0/255.0,111.0/255.0,1.0)),
-	show_persistent_strokes(true)
+	zoom(1.0),
+	prev_zoom(1.0),
+	show_persistent_strokes(true),
+	axis_lock(false),
+	drag_offset_(0, 0)
 {
-	alternative_mode_ = false;
-	axis_lock=false;
-	drag_offset_=Point(0,0);
 	clear_duck_dragger();
 	clear_bezier_dragger();
-	zoom=prev_zoom=1.0;
 }
 
 Duckmatic::~Duckmatic()
@@ -1080,7 +1082,7 @@ Duckmatic::signal_edited_selected_ducks(bool moving)
 
 	// If we have more than 20 things to move, then display
 	// something to explain that it may take a moment
-	smart_ptr<OneMoment> wait; if(ducks.size()>20)wait.spawn();
+	//smart_ptr<OneMoment> wait; if(ducks.size()>20)wait.spawn();
 	for(iter=ducks.begin();iter!=ducks.end();++iter)
 	{
 		try
@@ -1100,6 +1102,7 @@ Duckmatic::signal_edited_selected_ducks(bool moving)
 bool
 Duckmatic::on_duck_changed(const studio::Duck &duck,const synfigapp::ValueDesc& value_desc)
 {
+	bool lock_animation = get_lock_animation_mode();
 	synfig::Point value=duck.get_point();
 	synfig::Type &type(value_desc.get_value_type());
 	if (type == type_real)
@@ -1127,8 +1130,8 @@ Duckmatic::on_duck_changed(const studio::Duck &duck,const synfigapp::ValueDesc& 
 					Real new_length = duck.get_point().mag();
 					Angle angle = (*bone_node->get_link(angleIndex))(get_time()).get(Angle());
 					angle += duck.get_rotations();
-					return canvas_interface->change_value(synfigapp::ValueDesc(bone_node, angleIndex, value_desc.get_parent_desc()), angle)
-						&& canvas_interface->change_value(value_desc, new_length);
+					return canvas_interface->change_value(synfigapp::ValueDesc(bone_node, angleIndex, value_desc.get_parent_desc()), angle, lock_animation)
+						&& canvas_interface->change_value(value_desc, new_length, lock_animation);
 				}
 			}
 		}
@@ -1136,15 +1139,15 @@ Duckmatic::on_duck_changed(const studio::Duck &duck,const synfigapp::ValueDesc& 
 		// Zoom duck value (PasteCanvas and Zoom layers) should be
 		// converted back from exponent to normal
 		if( duck.get_exponential() ) {
-			return canvas_interface->change_value(value_desc,log(value.mag()));
+			return canvas_interface->change_value(value_desc,log(value.mag()),lock_animation);
 		} else {
-			return canvas_interface->change_value(value_desc,value.mag());
+			return canvas_interface->change_value(value_desc,value.mag(),lock_animation);
 		}
 	}
 	else
 	if (type == type_angle)
-		//return canvas_interface->change_value(value_desc,Angle::tan(value[1],value[0]));
-		return canvas_interface->change_value(value_desc, value_desc.get_value(get_time()).get(Angle()) + duck.get_rotations());
+		//return canvas_interface->change_value(value_desc,Angle::tan(value[1],value[0]),lock_animation);
+		return canvas_interface->change_value(value_desc, value_desc.get_value(get_time()).get(Angle()) + duck.get_rotations(),lock_animation);
 	else
 	if (type == type_transformation)
 	{
@@ -1161,8 +1164,8 @@ Duckmatic::on_duck_changed(const studio::Duck &duck,const synfigapp::ValueDesc& 
 			Point delta_origin = transformation.back_transform(delta_offset, false);
 			transformation.offset += delta_offset;
 			origin += delta_origin;
-			return canvas_interface->change_value(duck.get_alternative_value_desc(), origin)
-			    && canvas_interface->change_value(duck.get_value_desc(), transformation);
+			return canvas_interface->change_value(duck.get_alternative_value_desc(), origin, lock_animation)
+			    && canvas_interface->change_value(duck.get_value_desc(), transformation, lock_animation);
 		}
 		else
 		{
@@ -1193,7 +1196,7 @@ Duckmatic::on_duck_changed(const studio::Duck &duck,const synfigapp::ValueDesc& 
 				break;
 			}
 
-			return canvas_interface->change_value(value_desc, transformation);
+			return canvas_interface->change_value(value_desc, transformation, lock_animation);
 		}
 		return false;
 	}
@@ -1233,10 +1236,10 @@ Duckmatic::on_duck_changed(const studio::Duck &duck,const synfigapp::ValueDesc& 
 			break;
 		}
 
-		return canvas_interface->change_value(value_desc, point);
+		return canvas_interface->change_value(value_desc, point, lock_animation);
 	}
 
-	return canvas_interface->change_value(value_desc,value);
+	return canvas_interface->change_value(value_desc,value,lock_animation);
 }
 
 void
@@ -2129,7 +2132,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				duck=new Duck();
 				duck->set_type(Duck::TYPE_ANGLE);
 				set_duck_value_desc(*duck, value_desc, "angle", transform_stack);
-				duck->set_point(Point(0.9,transformation.angle));
+				duck->set_point(Point(0.8,transformation.angle));
 				duck->set_scalar(scalar_x);
 				duck->set_editable(editable);
 				duck->set_origin(origin_duck);
@@ -2142,7 +2145,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				duck=new Duck();
 				duck->set_type(Duck::TYPE_SKEW);
 				set_duck_value_desc(*duck, value_desc, "skew_angle", transform_stack);
-				duck->set_point(Point(0.9,transformation.skew_angle));
+				duck->set_point(Point(0.8,transformation.skew_angle));
 				duck->set_scalar(scalar_y);
 				duck->set_editable(editable);
 				duck->set_origin(origin_duck);
@@ -3124,7 +3127,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			synfigapp::ValueDesc value_desc(bone_value_node, bone_value_node->get_link_index_from_name(recursive ? "scalex" : "scalelx"), orig_value_desc);
 
 			etl::handle<Duck> duck=new Duck();
-			duck->set_type(Duck::TYPE_POSITION);
+			duck->set_type(Duck::TYPE_VERTEX);
 			set_duck_value_desc(*duck, value_desc, bone_transform_stack);
 			//Real length = bone.get_length()*bone.get_scalex()*bone.get_scalelx();
 			Real length = value_desc.get_value(time).get(Real());
