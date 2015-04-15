@@ -25,6 +25,8 @@ for which a new license (GPL+exception) is in place.
 *                                                                         *
 ***************************************************************************/
 
+#ifdef WIN32
+
 #include <iostream>
 #include <signal.h>
 #include <stdio.h>
@@ -88,3 +90,5 @@ void redirectIOToConsole()
 	// point to console as well
 	ios::sync_with_stdio();
 }
+
+#endif /* WIN32 */
