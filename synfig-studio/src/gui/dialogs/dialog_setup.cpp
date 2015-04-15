@@ -113,39 +113,42 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 
 	// Gamma
 	Gtk::Table *gamma_table=manage(new Gtk::Table(2,2,false));
+	gamma_table->set_border_width(8);
+	gamma_table->set_row_spacings(6);
+	gamma_table->set_col_spacings(6);
 	notebook->append_page(*gamma_table,_("Gamma"));
 
-	gamma_table->attach(gamma_pattern, 0, 2, 0, 1, Gtk::EXPAND, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	gamma_table->attach(gamma_pattern, 0, 2, 0, 1, Gtk::EXPAND, Gtk::SHRINK|Gtk::FILL, 0, 1);
 
 	Gtk::HScale* scale_gamma_r(manage(new Gtk::HScale(adj_gamma_r)));
-	gamma_table->attach(*manage(new Gtk::Label(_("Red"))), 0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	gamma_table->attach(*scale_gamma_r, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	gamma_table->attach(*manage(new Gtk::Label(_("Red"), Gtk::ALIGN_END, Gtk::ALIGN_END)), 0, 1, 1, 2, Gtk::FILL, Gtk::FILL, 0, 0);
+	gamma_table->attach(*scale_gamma_r, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0.5);
 	adj_gamma_r->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Setup::on_gamma_r_change));
 
 	Gtk::HScale* scale_gamma_g(manage(new Gtk::HScale(adj_gamma_g)));
-	gamma_table->attach(*manage(new Gtk::Label(_("Green"))), 0, 1, 2, 3, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	gamma_table->attach(*scale_gamma_g, 1, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	gamma_table->attach(*manage(new Gtk::Label(_("Green"), Gtk::ALIGN_END, Gtk::ALIGN_END)), 0, 1, 2, 3, Gtk::FILL, Gtk::FILL, 0, 0);
+	gamma_table->attach(*scale_gamma_g, 1, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0.5);
 	adj_gamma_g->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Setup::on_gamma_g_change));
 
 	Gtk::HScale* scale_gamma_b(manage(new Gtk::HScale(adj_gamma_b)));
-	gamma_table->attach(*manage(new Gtk::Label(_("Blue"))), 0, 1, 3, 4, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	gamma_table->attach(*scale_gamma_b, 1, 2, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	gamma_table->attach(*manage(new Gtk::Label(_("Blue"), Gtk::ALIGN_END, Gtk::ALIGN_END)), 0, 1, 3, 4, Gtk::FILL, Gtk::FILL, 0, 0);
+	gamma_table->attach(*scale_gamma_b, 1, 2, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0.5);
 	adj_gamma_b->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Setup::on_gamma_b_change));
 
-	gamma_table->attach(*manage(new Gtk::Label(_("Black Level"))), 0, 1, 4, 5, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	gamma_table->attach(black_level_selector, 1, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	gamma_table->attach(*manage(new Gtk::Label(_("Black Level"), Gtk::ALIGN_END, Gtk::ALIGN_END)), 0, 1, 4, 5, Gtk::FILL, Gtk::FILL, 0, 0);
+	gamma_table->attach(black_level_selector, 1, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0.5);
 	black_level_selector.signal_value_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Setup::on_black_level_change));
 
 	//gamma_table->attach(*manage(new Gtk::Label(_("Red-Blue Level"))), 0, 1, 5, 6, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	//gamma_table->attach(red_blue_level_selector, 1, 2, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	//red_blue_level_selector.signal_value_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Setup::on_red_blue_level_change));
 
-
 	// Misc
 	Gtk::Table *misc_table=manage(new Gtk::Table(2,2,false));
+	misc_table->set_border_width(8);
 	notebook->append_page(*misc_table,_("Misc."));
 
-	int xpadding(8), ypadding(8);
+	int xpadding(6), ypadding(6);
 
 	// Misc - 0 Timestamp
 	timestamp_menu=manage(new class Gtk::Menu());
@@ -323,6 +326,7 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 
 	// Document
 	Gtk::Table *document_table = manage(new Gtk::Table(2, 4, false));
+	document_table->set_border_width(8);
 	notebook->append_page(*document_table, _("Document"));
 
 	// Document - Preferred file name prefix
@@ -396,6 +400,7 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 
 	// Render - Table
 	Gtk::Table *render_table = manage(new Gtk::Table(2, 4, false));
+	render_table->set_border_width(8);
 	notebook->append_page(*render_table, _("Render"));
 
 	// Render - Image sequence separator
