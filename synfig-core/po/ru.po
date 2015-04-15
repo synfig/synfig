@@ -6,7 +6,7 @@
 # Artem Krosheninnikov <feeblehamster@gmail.com>, 2011
 # genete <genetita@gmail.com>, 2011
 # morevnaproject <ksee.zelgadis@gmail.com>, 2011, 2012
-# morevnaproject <ksee.zelgadis@gmail.com>, 2014
+# morevnaproject <ksee.zelgadis@gmail.com>, 2014-2015
 # morevnaproject <ksee.zelgadis@gmail.com>, 2012
 # morevnaproject <ksee.zelgadis@gmail.com>, 2011-2012
 # Oleg Gordeev <Retro47@Yandex.ru>, 2011
@@ -17,8 +17,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Synfig\n"
 "Report-Msgid-Bugs-To: http://www.synfig.org/issues/thebuggenie/synfig\n"
-"POT-Creation-Date: 2015-04-06 16:00+0700\n"
-"PO-Revision-Date: 2015-03-22 16:07+0000\n"
+"POT-Creation-Date: 2015-04-14 18:00+0700\n"
+"PO-Revision-Date: 2015-04-13 05:35+0000\n"
 "Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
 "Language-Team: Russian (http://www.transifex.com/projects/p/synfig/language/ru/)\n"
 "MIME-Version: 1.0\n"
@@ -2358,8 +2358,8 @@ msgid "Time Offset to apply to the context"
 msgstr ""
 
 #: src/synfig/layer_pastecanvas.cpp:147
-msgid "Children Lock"
-msgstr "Запереть потомков"
+msgid "Lock Selection"
+msgstr "Заблокировать выделение"
 
 #: src/synfig/layer_pastecanvas.cpp:148
 msgid "When checked prevents to select the children using the mouse click"
@@ -2431,7 +2431,7 @@ msgstr "Чёт/Нечет"
 
 #: src/synfig/layer_skeleton.cpp:54
 msgid "Skeleton"
-msgstr ""
+msgstr "Скелет"
 
 #: src/synfig/layer_skeleton.cpp:142 src/synfig/valuenode_bone.cpp:587
 msgid "Name"
@@ -2439,7 +2439,7 @@ msgstr "Name"
 
 #: src/synfig/layer_skeleton.cpp:145
 msgid "Bones"
-msgstr ""
+msgstr "Кости"
 
 #: src/synfig/layer_solidcolor.cpp:56
 msgid "Solid Color"
@@ -2453,7 +2453,7 @@ msgstr "Переключатель"
 
 #: src/synfig/layer_switch.cpp:91
 msgid "Active Layer Name"
-msgstr ""
+msgstr "Имя активного слоя"
 
 #: src/synfig/layer_switch.cpp:92
 msgid "Only layer with specified name are visible"
@@ -3311,7 +3311,7 @@ msgstr ""
 #: src/synfig/valuenode_bonelink.cpp:208
 #: src/synfig/valuenode_boneweightpair.cpp:162
 msgid "Bone"
-msgstr ""
+msgstr "Кость"
 
 #: src/synfig/valuenode.cpp:206
 msgid "Root Bone"
@@ -4883,6 +4883,10 @@ msgstr ""
 
 #: src/tool/main.cpp:212
 msgid "Test signal implementation"
+msgstr ""
+
+#: src/tool/main.cpp:247
+msgid "Try 'synfig --help' for more information"
 msgstr ""
 
 #: src/tool/joblistprocessor.cpp:73

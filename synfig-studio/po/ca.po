@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Synfig\n"
 "Report-Msgid-Bugs-To: http://www.synfig.org/issues/thebuggenie/synfig\n"
-"POT-Creation-Date: 2015-04-06 16:00+0700\n"
-"PO-Revision-Date: 2015-04-04 14:07+0000\n"
+"POT-Creation-Date: 2015-04-14 18:00+0700\n"
+"PO-Revision-Date: 2015-04-10 16:07+0000\n"
 "Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
 "Language-Team: Catalan (http://www.transifex.com/projects/p/synfig/language/ca/)\n"
 "MIME-Version: 1.0\n"
@@ -469,7 +469,7 @@ msgid ""
 "Change the color value (brightness, intensity) using the HSV color model. HSV changes are applied before HSL.\n"
 "-1.0 darker\n"
 " 0.0 disable\n"
-" 1.0 brigher"
+" 1.0 brighter"
 msgstr ""
 
 #: ../src/brushlib/brushsettings.py:73
@@ -830,7 +830,7 @@ msgstr "_Grandària de la reixa"
 #: ../src/synfigapp/actions/valuedescbonelink.cpp:90
 #: ../src/synfigapp/actions/valuedescconvert.cpp:102
 #: ../src/synfigapp/actions/valuedesccreatechildbone.cpp:77
-#: ../src/synfigapp/actions/valuedescdisconnect.cpp:96
+#: ../src/synfigapp/actions/valuedescdisconnect.cpp:97
 #: ../src/synfigapp/actions/valuedescremovesmart.cpp:81
 #: ../src/synfigapp/actions/valuedescresetpose.cpp:78
 #: ../src/synfigapp/actions/valuedescset.cpp:123
@@ -1009,8 +1009,8 @@ msgstr ""
 #: ../src/gui/docks/dock_history.cpp:259 ../src/gui/docks/dock_history.cpp:273
 #: ../src/gui/docks/dock_history.cpp:287
 #: ../src/gui/docks/dock_metadata.cpp:152 ../src/gui/states/state_text.cpp:635
-#: ../src/gui/widgets/widget_canvaschooser.cpp:138 ../src/gui/app.cpp:3405
-#: ../src/gui/app.cpp:3498 ../src/gui/canvasview.cpp:3949
+#: ../src/gui/widgets/widget_canvaschooser.cpp:138 ../src/gui/app.cpp:3528
+#: ../src/gui/app.cpp:3621 ../src/gui/canvasview.cpp:3949
 #: ../src/gui/compview.cpp:332 ../src/gui/compview.cpp:347
 #: ../src/gui/instance.cpp:209 ../src/gui/instance.cpp:399
 #: ../src/gui/instance.cpp:599 ../src/gui/instance.cpp:621
@@ -1941,9 +1941,9 @@ msgstr ""
 #: ../src/gui/widgets/widget_canvaschooser.cpp:153
 #: ../src/gui/widgets/widget_canvaschooser.cpp:172
 #: ../src/gui/widgets/widget_canvaschooser.cpp:182 ../src/gui/app.cpp:1384
-#: ../src/gui/app.cpp:2179 ../src/gui/app.cpp:3389 ../src/gui/app.cpp:3417
-#: ../src/gui/app.cpp:3427 ../src/gui/app.cpp:3437 ../src/gui/app.cpp:3482
-#: ../src/gui/app.cpp:3510 ../src/gui/app.cpp:3520 ../src/gui/app.cpp:3530
+#: ../src/gui/app.cpp:2183 ../src/gui/app.cpp:3511 ../src/gui/app.cpp:3540
+#: ../src/gui/app.cpp:3550 ../src/gui/app.cpp:3560 ../src/gui/app.cpp:3605
+#: ../src/gui/app.cpp:3633 ../src/gui/app.cpp:3643 ../src/gui/app.cpp:3653
 #: ../src/gui/canvasview.cpp:3803 ../src/gui/canvasview.cpp:4074
 #: ../src/gui/instance.cpp:237 ../src/gui/instance.cpp:250
 #: ../src/gui/instance.cpp:319 ../src/gui/instance.cpp:359
@@ -1984,7 +1984,7 @@ msgstr ""
 msgid "Please select a palette file"
 msgstr ""
 
-#: ../src/gui/modules/mod_palette/dock_paledit.cpp:304 ../src/gui/app.cpp:3626
+#: ../src/gui/modules/mod_palette/dock_paledit.cpp:304 ../src/gui/app.cpp:3749
 msgid "Unable to open file"
 msgstr "Ha estat impossible d'obrir el fitxer"
 
@@ -2081,7 +2081,7 @@ msgid "Blend Method"
 msgstr "Mètode de barreja"
 
 #: ../src/gui/states/state_bline.cpp:561
-msgid "Defines the blend method to be used for blines"
+msgid "Defines the blend method to be used for splines"
 msgstr ""
 
 #: ../src/gui/states/state_bline.cpp:564
@@ -3812,212 +3812,220 @@ msgid ""
 "This software may be unstable."
 msgstr "S'ha capturat una excepció desconeguda en la construcció de l'aplicatiu.\nAquest programa pot ser inestable."
 
-#: ../src/gui/app.cpp:2172
+#: ../src/gui/app.cpp:2176
 msgid "Quit Request"
 msgstr "Requeriment de Sortida"
 
-#: ../src/gui/app.cpp:2177
+#: ../src/gui/app.cpp:2181
 msgid ""
 "Tasks are currently running. Please cancel the current tasks and try again"
 msgstr ""
 
-#: ../src/gui/app.cpp:2246
+#: ../src/gui/app.cpp:2250
 msgid "Quit Request sent"
 msgstr "Requeriment de Sortida enviat"
 
-#: ../src/gui/app.cpp:2277 ../src/gui/app.cpp:2601 ../src/gui/app.cpp:2710
+#: ../src/gui/app.cpp:2281 ../src/gui/app.cpp:2647 ../src/gui/app.cpp:2756
 msgid "All Files (*.*)"
 msgstr ""
 
-#: ../src/gui/app.cpp:2332 ../src/synfigapp/canvasinterface.cpp:683
+#: ../src/gui/app.cpp:2336 ../src/synfigapp/canvasinterface.cpp:683
 msgid "Import"
 msgstr "Importa"
 
-#: ../src/gui/app.cpp:2337
+#: ../src/gui/app.cpp:2341
 msgid "All supported files"
 msgstr ""
 
-#: ../src/gui/app.cpp:2364
+#: ../src/gui/app.cpp:2368
 msgid "Synfig files (*.sif, *.sifz)"
 msgstr ""
 
-#: ../src/gui/app.cpp:2371
+#: ../src/gui/app.cpp:2375
 msgid "Images (*.png, *.jpeg, *.bmp, *.svg)"
 msgstr ""
 
-#: ../src/gui/app.cpp:2385
+#: ../src/gui/app.cpp:2389
 msgid "Image sequence files(*.lst)"
 msgstr ""
 
-#: ../src/gui/app.cpp:2390 ../src/gui/app.cpp:2553
+#: ../src/gui/app.cpp:2394 ../src/gui/app.cpp:2599
 msgid "Audio (*.ogg, *.mp3, *.wav)"
 msgstr ""
 
-#: ../src/gui/app.cpp:2400 ../src/gui/app.cpp:2510 ../src/gui/app.cpp:2564
-#: ../src/gui/app.cpp:2671
+#: ../src/gui/app.cpp:2404 ../src/gui/app.cpp:2556 ../src/gui/app.cpp:2610
+#: ../src/gui/app.cpp:2717
 msgid "Any files"
 msgstr ""
 
-#: ../src/gui/app.cpp:2447
+#: ../src/gui/app.cpp:2451 ../src/gui/app.cpp:2493
 msgid "Open"
 msgstr ""
 
-#: ../src/gui/app.cpp:2451
+#: ../src/gui/app.cpp:2455
 msgid "Synfig palette files (*.spal)"
 msgstr ""
 
-#: ../src/gui/app.cpp:2490 ../src/gui/app.cpp:2549
+#: ../src/gui/app.cpp:2497
+msgid "Synfig sketch files (*.sketch)"
+msgstr ""
+
+#: ../src/gui/app.cpp:2536 ../src/gui/app.cpp:2595
 msgid "Load"
 msgstr ""
 
-#: ../src/gui/app.cpp:2494
+#: ../src/gui/app.cpp:2540
 msgid "Images and sequence files (*.png, *.jpg, *.jpeg, *.bmp, *.svg, *.lst)"
 msgstr ""
 
-#: ../src/gui/app.cpp:2657
+#: ../src/gui/app.cpp:2703
 msgid "Open history"
 msgstr ""
 
-#: ../src/gui/app.cpp:2664
+#: ../src/gui/app.cpp:2710
 msgid "Synfig files (*.sif, *.sifz, *.sfg)"
 msgstr ""
 
-#: ../src/gui/app.cpp:2763
+#: ../src/gui/app.cpp:2809
 msgid "Uncompressed Synfig file(*.sif)"
 msgstr ""
 
-#: ../src/gui/app.cpp:2771
+#: ../src/gui/app.cpp:2817
 msgid "Compressed Synfig file(*.sifz)"
 msgstr ""
 
-#: ../src/gui/app.cpp:2775
+#: ../src/gui/app.cpp:2821
 msgid "Container format file(*.sfg)"
 msgstr ""
 
-#: ../src/gui/app.cpp:2791
+#: ../src/gui/app.cpp:2837
 msgid "current"
 msgstr "actual"
 
-#: ../src/gui/app.cpp:2808
+#: ../src/gui/app.cpp:2854
 msgid "and older"
 msgstr "i més antic"
 
-#: ../src/gui/app.cpp:2812
+#: ../src/gui/app.cpp:2858
 msgid "File Format Version: "
 msgstr "Versió del Format d'Arxiu: "
 
-#: ../src/gui/app.cpp:2895
+#: ../src/gui/app.cpp:2941
 msgid "Synfig palette files(*.spal)"
 msgstr ""
 
-#: ../src/gui/app.cpp:3051
+#: ../src/gui/app.cpp:3003
+msgid "Synfig sketch files(*.sketch)"
+msgstr ""
+
+#: ../src/gui/app.cpp:3159
 msgid "Feature not available"
 msgstr "Característica no disponible"
 
-#: ../src/gui/app.cpp:3052
+#: ../src/gui/app.cpp:3160
 msgid "Sorry, this feature has not yet been implemented."
 msgstr "Ho sento, aquesta característica no ha estat encara implementada"
 
-#: ../src/gui/app.cpp:3220
+#: ../src/gui/app.cpp:3342
 msgid "Documentation"
 msgstr "Documentació"
 
-#: ../src/gui/app.cpp:3221
+#: ../src/gui/app.cpp:3343
 msgid ""
 "Documentation for Synfig Studio is available on the website:\n"
 "\n"
 "http://synfig.org/wiki/Category:Manual"
 msgstr ""
 
-#: ../src/gui/app.cpp:3222
+#: ../src/gui/app.cpp:3344
 msgid "Help"
 msgstr "_Ajuda"
 
-#: ../src/gui/app.cpp:3232
+#: ../src/gui/app.cpp:3354
 msgid "No browser was found. Please load this website manually:"
 msgstr "No s'ha trobat cap navegador. Per favor carregueu aquesta pàgina web manualment:"
 
-#: ../src/gui/app.cpp:3234
+#: ../src/gui/app.cpp:3356
 msgid "No browser found"
 msgstr "No s'ha trobat cap navegador"
 
-#: ../src/gui/app.cpp:3362
+#: ../src/gui/app.cpp:3484
 #, c-format
 msgid ""
 "Unable to open container \"%s\"\n"
 "\n"
 msgstr ""
 
-#: ../src/gui/app.cpp:3369
+#: ../src/gui/app.cpp:3491
 msgid ""
 "Unable to create container\n"
 "\n"
 msgstr ""
 
-#: ../src/gui/app.cpp:3382 ../src/gui/app.cpp:3475
+#: ../src/gui/app.cpp:3504 ../src/gui/app.cpp:3598
 #, c-format
 msgid ""
 "Unable to load \"%s\":\n"
 "\n"
 msgstr ""
 
-#: ../src/gui/app.cpp:3387 ../src/gui/app.cpp:3480
+#: ../src/gui/app.cpp:3509 ../src/gui/app.cpp:3603
 #: ../src/gui/canvasview.cpp:3801 ../src/gui/canvasview.cpp:4072
 msgid "Warning"
 msgstr ""
 
-#: ../src/gui/app.cpp:3397 ../src/gui/app.cpp:3490
+#: ../src/gui/app.cpp:3520 ../src/gui/app.cpp:3613
 #, c-format
 msgid "Unable to create instance for \"%s\""
 msgstr "Ha estat impossible crear una instància per «%s»"
 
-#: ../src/gui/app.cpp:3402
+#: ../src/gui/app.cpp:3525
 msgid "Newer version of this file availabel on the CVS repository!"
 msgstr ""
 
-#: ../src/gui/app.cpp:3403
+#: ../src/gui/app.cpp:3526
 msgid ""
 "repository. Would you like to update now? (It would probably be a good idea)"
 msgstr ""
 
-#: ../src/gui/app.cpp:3406 ../src/gui/app.cpp:3499
+#: ../src/gui/app.cpp:3529 ../src/gui/app.cpp:3622
 msgid "Update Anyway"
 msgstr ""
 
-#: ../src/gui/app.cpp:3435 ../src/gui/app.cpp:3528
+#: ../src/gui/app.cpp:3558 ../src/gui/app.cpp:3651
 msgid "Uncaught error on file open (BUG)"
 msgstr "Error no capturat a l'obrir fitxer (BUG)"
 
-#: ../src/gui/app.cpp:3463
+#: ../src/gui/app.cpp:3586
 #, c-format
 msgid ""
 "Unable to open temporary container \"%s\"\n"
 "\n"
 msgstr ""
 
-#: ../src/gui/app.cpp:3495
+#: ../src/gui/app.cpp:3618
 msgid "Newer version of this file avaliable on the CVS repository!"
 msgstr ""
 
-#: ../src/gui/app.cpp:3496
+#: ../src/gui/app.cpp:3619
 msgid "Would you like to update now (It would probably be a good idea)"
 msgstr ""
 
-#: ../src/gui/app.cpp:3590 ../src/gui/app.cpp:3614
+#: ../src/gui/app.cpp:3713 ../src/gui/app.cpp:3737
 #: ../src/gui/canvasview.cpp:4066
 msgid "Please select a file"
 msgstr ""
 
-#: ../src/gui/app.cpp:3610
+#: ../src/gui/app.cpp:3733
 msgid "History entry #"
 msgstr ""
 
-#: ../src/gui/app.cpp:3614
+#: ../src/gui/app.cpp:3737
 msgid "Select one of previous versions of file"
 msgstr ""
 
-#: ../src/gui/canvasview.cpp:266 ../src/gui/workarea.cpp:3267
-#: ../src/gui/workarea.cpp:3274 ../src/gui/workarea.cpp:3375
+#: ../src/gui/canvasview.cpp:266 ../src/gui/workarea.cpp:3268
+#: ../src/gui/workarea.cpp:3275 ../src/gui/workarea.cpp:3376
 msgid "Idle"
 msgstr "Inactiu"
 
@@ -4085,16 +4093,16 @@ msgstr ""
 msgid "Snap to grid when enabled"
 msgstr ""
 
-#: ../src/gui/canvasview.cpp:1448
-msgid "Past onion skins"
-msgstr ""
-
-#: ../src/gui/canvasview.cpp:1469
+#: ../src/gui/canvasview.cpp:1454
 msgid "Onion skin"
 msgstr ""
 
-#: ../src/gui/canvasview.cpp:1470
+#: ../src/gui/canvasview.cpp:1455
 msgid "Shows onion skin when enabled"
+msgstr ""
+
+#: ../src/gui/canvasview.cpp:1465
+msgid "Past onion skins"
 msgstr ""
 
 #: ../src/gui/canvasview.cpp:1480
@@ -5400,7 +5408,7 @@ msgstr "Renderitzant "
 msgid "File rendered successfully"
 msgstr "Arxiu renderitzat correctament"
 
-#: ../src/gui/render.cpp:424 ../src/gui/workarea.cpp:3270
+#: ../src/gui/render.cpp:424 ../src/gui/workarea.cpp:3271
 msgid "sec"
 msgstr ""
 
@@ -5436,19 +5444,19 @@ msgstr ""
 msgid "Move"
 msgstr "Mou"
 
-#: ../src/gui/workarea.cpp:3243
+#: ../src/gui/workarea.cpp:3244
 msgid "Rendering..."
 msgstr "Renderitzant..."
 
-#: ../src/gui/workarea.cpp:3268
+#: ../src/gui/workarea.cpp:3269
 msgid "Last rendering time"
 msgstr ""
 
-#: ../src/gui/workarea.cpp:3281 ../src/gui/workarea.cpp:3377
+#: ../src/gui/workarea.cpp:3282 ../src/gui/workarea.cpp:3378
 msgid "Render Failed"
 msgstr "Ha fallat el renderitzat"
 
-#: ../src/gui/workarea.cpp:3359
+#: ../src/gui/workarea.cpp:3360
 #, c-format
 msgid "Rendering canvas %s..."
 msgstr "Renderitza els llenços %s..."
@@ -5474,8 +5482,8 @@ msgstr "Afegeix el punt actiu"
 #: ../src/synfigapp/actions/colorset.cpp:88
 #: ../src/synfigapp/actions/gradientset.cpp:79
 #: ../src/synfigapp/actions/valuedescconvert.cpp:93
-#: ../src/synfigapp/actions/valuedescdisconnect.cpp:83
-#: ../src/synfigapp/actions/valuedescdisconnect.cpp:92
+#: ../src/synfigapp/actions/valuedescdisconnect.cpp:84
+#: ../src/synfigapp/actions/valuedescdisconnect.cpp:93
 #: ../src/synfigapp/actions/valuedescexport.cpp:91
 #: ../src/synfigapp/actions/valuedescremovesmart.cpp:77
 #: ../src/synfigapp/actions/valuedescset.cpp:106
@@ -6148,7 +6156,7 @@ msgid "Base layer"
 msgstr ""
 
 #: ../src/synfigapp/actions/layermakebline.cpp:144
-msgid "This layer doesn't contain linked \"bline\" parameter."
+msgid "This layer doesn't contain linked \"spline\" parameter."
 msgstr ""
 
 #: ../src/synfigapp/actions/layermove.cpp:50
@@ -6508,7 +6516,7 @@ msgid "Source ValueNode Name"
 msgstr "Nom del valor de node d'origen"
 
 #: ../src/synfigapp/actions/valuedescconnect.cpp:257
-#: ../src/synfigapp/actions/valuedescdisconnect.cpp:241
+#: ../src/synfigapp/actions/valuedescdisconnect.cpp:262
 msgid "ValueDesc is not recognized or supported."
 msgstr "Descripció del valor no reconegut o suportat"
 
@@ -6545,13 +6553,13 @@ msgstr ""
 msgid "ValueDesc on parent Bone"
 msgstr ""
 
-#: ../src/synfigapp/actions/valuedescdisconnect.cpp:58
+#: ../src/synfigapp/actions/valuedescdisconnect.cpp:59
 msgid "Disconnect"
 msgstr "Desconnecta"
 
 #. TRANSLATORS: This is used in the History dialog when a ValueNode is
 #. disconnected.
-#: ../src/synfigapp/actions/valuedescdisconnect.cpp:80
+#: ../src/synfigapp/actions/valuedescdisconnect.cpp:81
 #, c-format
 msgid "Disconnect %s"
 msgstr "Desconnecta %s"
@@ -6741,11 +6749,16 @@ msgid "Direct manipulation of this ValueNode type is not yet supported"
 msgstr "La manipulació directa d'aquest tipus de balor de node no està suportat encara"
 
 #: ../src/synfigapp/actions/valuedescset.cpp:1096
-msgid "Are you sure to change all waypoints of animated value?"
+msgid ""
+"You are trying to edit animated parameter while Animation Mode is off.\n"
+"\n"
+"Do you want to apply offset to this animation?"
 msgstr ""
 
 #: ../src/synfigapp/actions/valuedescset.cpp:1097
-msgid "Animation mode is disabled"
+msgid ""
+"Hint: You can hold Spacebar key while editing parameter to avoid this "
+"confirmation dialog."
 msgstr ""
 
 #: ../src/synfigapp/actions/valuedescset.cpp:1102

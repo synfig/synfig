@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Synfig\n"
 "Report-Msgid-Bugs-To: http://www.synfig.org/issues/thebuggenie/synfig\n"
-"POT-Creation-Date: 2015-04-06 16:00+0700\n"
-"PO-Revision-Date: 2015-03-22 16:07+0000\n"
+"POT-Creation-Date: 2015-04-14 18:00+0700\n"
+"PO-Revision-Date: 2015-04-08 16:07+0000\n"
 "Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
 "Language-Team: Basque (Spain) (http://www.transifex.com/projects/p/synfig/language/eu_ES/)\n"
 "MIME-Version: 1.0\n"
@@ -2349,7 +2349,7 @@ msgid "Time Offset to apply to the context"
 msgstr ""
 
 #: src/synfig/layer_pastecanvas.cpp:147
-msgid "Children Lock"
+msgid "Lock Selection"
 msgstr ""
 
 #: src/synfig/layer_pastecanvas.cpp:148
@@ -4874,6 +4874,10 @@ msgstr ""
 
 #: src/tool/main.cpp:212
 msgid "Test signal implementation"
+msgstr ""
+
+#: src/tool/main.cpp:247
+msgid "Try 'synfig --help' for more information"
 msgstr ""
 
 #: src/tool/joblistprocessor.cpp:73
