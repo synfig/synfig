@@ -78,14 +78,14 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	adj_gamma_b(Gtk::Adjustment::create(2.2,0.1,3.0,0.025,0.025,0.025)),
 	adj_recent_files(Gtk::Adjustment::create(15,1,50,1,1,0)),
 	adj_undo_depth(Gtk::Adjustment::create(100,10,5000,1,1,1)),
-	toggle_use_colorspace_gamma(_("Visually Linear Color Selection")),
+	toggle_use_colorspace_gamma(),
 #ifdef SINGLE_THREADED
-	toggle_single_threaded(_("Use Only a Single Thread")),
+	toggle_single_threaded(),
 #endif
-	toggle_restrict_radius_ducks(_("Restrict Real-Valued Handles to Top Right Quadrant")),
-	toggle_resize_imported_images(_("Scale New Imported Images to Fit Canvas")),
-	toggle_enable_experimental_features(_("Enable experimental features (restart required)")),
-	toggle_use_dark_theme(_("Use dark theme (if available)")),
+	toggle_restrict_radius_ducks(),
+	toggle_resize_imported_images(),
+	toggle_enable_experimental_features(),
+	toggle_use_dark_theme(),
 	adj_pref_x_size(Gtk::Adjustment::create(480,1,10000,1,10,0)),
 	adj_pref_y_size(Gtk::Adjustment::create(270,1,10000,1,10,0)),
 	adj_pref_fps(Gtk::Adjustment::create(24.0,1.0,100,0.1,1,0))
@@ -147,7 +147,7 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 
 	int xpadding(8), ypadding(8);
 
-	// Misc - Timestamp
+	// Misc - 0 Timestamp
 	timestamp_menu=manage(new class Gtk::Menu());
 	attach_label(misc_table, _("Timestamp"), 0, xpadding, ypadding);
 	misc_table->attach(timestamp_comboboxtext, 1, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
@@ -170,6 +170,8 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	timestamp_comboboxtext.signal_changed().connect(
 		sigc::mem_fun(*this, &Dialog_Setup::on_time_format_changed) );
 
+
+	// Misc - 1 Unit system
 	{
 		ParamDesc param_desc;
 		param_desc
@@ -189,44 +191,24 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 		misc_table->attach(*widget_enum, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 	}
 
-	// Misc - recent files
+	// Misc - 2 Recent files
 	Gtk::SpinButton* recent_files_spinbutton(manage(new Gtk::SpinButton(adj_recent_files,1,0)));
 	attach_label(misc_table, _("Recent Files"), 2, xpadding, ypadding);
 	misc_table->attach(*recent_files_spinbutton, 1, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 
-	// Misc - use_colorspace_gamma
-	misc_table->attach(toggle_use_colorspace_gamma, 0, 2, 7, 8, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
-
-	// Misc - auto backup interval
+	// Misc - 3 Auto backup interval
 	attach_label(misc_table, _("Auto Backup Interval (0 to disable)"), 3, xpadding, ypadding);
 	misc_table->attach(auto_backup_interval, 1, 2, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 
-	// Misc - restrict_radius_ducks
-	misc_table->attach(toggle_restrict_radius_ducks, 0, 2, 8, 9, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
-
-	// Misc - resize_imported_images
-	misc_table->attach(toggle_resize_imported_images, 0, 2, 9, 10, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
-	
-	// Misc - enable_experimental_features
-	//misc_table->attach(toggle_enable_experimental_features, 0, 2, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
-	
-#ifdef SINGLE_THREADED
-	// Misc - single_threaded
-	misc_table->attach(toggle_single_threaded, 0, 2, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
-#endif
-	
-	// Misc - use dark theme
-	misc_table->attach(toggle_use_dark_theme, 0, 2, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
-
-	// Misc - browser_command
+	// Misc - 4 Browser_command
 	attach_label(misc_table, _("Browser Command"), 4, xpadding, ypadding);
 	misc_table->attach(textbox_browser_command, 1, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
-	
-	// Misc - brushes path
+
+	// Misc - 5 Brushes path
 	attach_label(misc_table, _("Brush Presets Path"), 5, xpadding, ypadding);
 	misc_table->attach(textbox_brushes_path, 1, 2, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 
-	// Misc - UI Language
+	// Misc - 6 UI Language
 	Glib::ustring lang_names[] = {
 		_("System Language"),
 		_("Arabic"),
@@ -311,6 +293,32 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 
 	attach_label(misc_table, _("Interface Language"), 6, xpadding, ypadding);
 	misc_table->attach(ui_language_combo, 1, 2, 6, 7, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+
+	// Misc - 7 Visually Linear Color Selection
+	attach_label(misc_table, _("Visually linear color selection"), 7, xpadding, ypadding);
+	misc_table->attach(toggle_use_colorspace_gamma, 1, 2, 7, 8, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+
+	// Misc - 8 Restrict Really-valued Handles to Top Right Quadrant
+	attach_label(misc_table, _("Restrict really-valued handles to top right quadrant"), 8, xpadding, ypadding);
+	misc_table->attach(toggle_restrict_radius_ducks, 1, 2, 8, 9, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+
+	// Misc - 9 Scaling New Imported Images to Fit Canvas
+	attach_label(misc_table, _("Scaling new imported image to fix canvas"), 9, xpadding, ypadding);
+	misc_table->attach(toggle_resize_imported_images, 1, 2, 9, 10, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+
+	// Misc - 10 Dark UI theme
+	attach_label(misc_table, _("Dark UI theme (if available)"), 10, xpadding, ypadding);
+	misc_table->attach(toggle_use_dark_theme, 1, 2, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+
+	// Misc - 11 enable_experimental_features
+	//attach_label(misc_table, _("Experimental features (restart needed)"), 11, xpadding, ypadding);
+	//misc_table->attach(toggle_enable_experimental_features, 0, 2, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+
+#ifdef SINGLE_THREADED
+	// Misc - 12 single_threaded
+	attach_label(misc_table, _("Single thread only (CPUs)"), 12, xpadding, ypadding);
+	misc_table->attach(toggle_single_threaded, 1, 2, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+#endif
 
 
 	// Document
