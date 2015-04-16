@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file cellrenderer_timetrack.h
-**	\brief Template Header
+**	\brief Cell renderer for the timetrack. Render all time points (waypoints / keyframes and current time line ...)
 **
 **	$Id$
 **
