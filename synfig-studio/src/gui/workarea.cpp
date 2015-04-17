@@ -2374,7 +2374,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 		if(dragging==DRAG_GUIDE)
 		{
 			double y,x;
-			if(event->button.axes)
+			if(*(event->button.axes))
 			{
 				x=(event->button.axes[0]);
 				y=(event->button.axes[1]);
