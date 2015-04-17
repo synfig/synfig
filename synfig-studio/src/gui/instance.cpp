@@ -1208,7 +1208,11 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 			}
 		}
 
-		item = Gtk::manage(new Gtk::ImageMenuItem(Gtk::Stock::CONVERT));
+		item = Gtk::manage(new Gtk::ImageMenuItem(
+			*manage(new Gtk::Image(
+				Gtk::StockID("gtk-convert"),
+				Gtk::ICON_SIZE_MENU )),
+			_("Convert") ));
 		item->set_submenu(*convert_menu);
 		item->show();
 		parammenu.append(*item);
