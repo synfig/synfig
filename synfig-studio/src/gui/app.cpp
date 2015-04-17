@@ -3851,7 +3851,7 @@ studio::App::redo()
 synfig::String
 studio::App::get_base_path()
 {
-	return app_base_path_;
+	return FileSystem::fix_slashes(app_base_path_);
 }
 
 void
