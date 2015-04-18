@@ -1623,37 +1623,6 @@ StateBLine_Context::popup_vertex_menu(synfig::ValueNode_Const::Handle value_node
 	Gtk::MenuItem *item = NULL;
 	Gtk::ImageMenuItem *item2 = NULL;
 
-	if(loop_)
-	{
-		item = manage(new Gtk::MenuItem(_("Unloop Spline")));
-		item->signal_activate().connect(
-			sigc::mem_fun(*this,&studio::StateBLine_Context::unloop_bline) );
-		item->show();
-		menu.append(*item);
-	} else {
-		item = manage(new Gtk::MenuItem(_("Loop Spline")));
-		item->signal_activate().connect(
-			sigc::mem_fun(*this,&studio::StateBLine_Context::loop_bline) );
-		item->show();
-		menu.append(*item);
-	}
-
-	item = manage(new Gtk::SeparatorMenuItem());
-	item->show();
-	menu.append(*item);
-
-	item = manage(new Gtk::MenuItem(_("Delete Vertex")));
-	item->signal_activate().connect(
-		sigc::bind(
-				sigc::mem_fun(*this,&studio::StateBLine_Context::bline_delete_vertex),
-				value_node ));
-	item->show();
-	menu.append(*item);
-
-	item = manage(new Gtk::SeparatorMenuItem());
-	item->show();
-	menu.append(*item);
-
 	BLinePoint bline_point(value_node->get_value().get(BLinePoint()));
 	#define STATE_BLINE_ADD_MENU_ITEM(title, split_angle, split_radius, icon) \
 	do {                                                                \
@@ -1703,6 +1672,37 @@ StateBLine_Context::popup_vertex_menu(synfig::ValueNode_Const::Handle value_node
 		STATE_BLINE_ADD_MENU_ITEM("Split Tangents's Radius", split_angle, true, "synfig-type_vector");
 
 	#undef STATE_BLINE_ADD_MENU_ITEM
+	
+	item = manage(new Gtk::SeparatorMenuItem());
+	item->show();
+	menu.append(*item);
+	
+	if(loop_)
+	{
+		item = manage(new Gtk::MenuItem(_("Unloop Spline")));
+		item->signal_activate().connect(
+			sigc::mem_fun(*this,&studio::StateBLine_Context::unloop_bline) );
+		item->show();
+		menu.append(*item);
+	} else {
+		item = manage(new Gtk::MenuItem(_("Loop Spline")));
+		item->signal_activate().connect(
+			sigc::mem_fun(*this,&studio::StateBLine_Context::loop_bline) );
+		item->show();
+		menu.append(*item);
+	}
+
+	item = manage(new Gtk::SeparatorMenuItem());
+	item->show();
+	menu.append(*item);
+
+	item = manage(new Gtk::MenuItem(_("Delete Vertex")));
+	item->signal_activate().connect(
+		sigc::bind(
+				sigc::mem_fun(*this,&studio::StateBLine_Context::bline_delete_vertex),
+				value_node ));
+	item->show();
+	menu.append(*item);
 
 	menu.popup(0,0);
 }
