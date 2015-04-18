@@ -150,7 +150,7 @@ Action::BLinePointTangentMerge::is_candidate(const ParamList &x)
 		synfig::Time time(x.find("time")->second.get_time());
 		bool split_radius=(*value_node->get_link("split_radius"))(time).get(bool());
 		bool split_angle=(*value_node->get_link("split_angle"))(time).get(bool());
-		if(split_radius==false || split_angle==false)
+		if(split_radius==false && split_angle==false)
 			return false;
 		return true;
 	}
