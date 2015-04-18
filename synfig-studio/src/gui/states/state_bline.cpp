@@ -54,7 +54,7 @@
 #include "general.h"
 
 #include <gtkmm/separatormenuitem.h>
-
+#include <gtkmm/imagemenuitem.h>
 #endif
 
 /* === U S I N G =========================================================== */
@@ -1621,7 +1621,62 @@ StateBLine_Context::popup_vertex_menu(synfig::ValueNode_Const::Handle value_node
 		menu.remove(**i);
 
 	Gtk::MenuItem *item = NULL;
+	Gtk::ImageMenuItem *item2 = NULL;
 
+	BLinePoint bline_point(value_node->get_value().get(BLinePoint()));
+	#define STATE_BLINE_ADD_MENU_ITEM(title, split_angle, split_radius, icon) \
+	do {                                                                \
+		item2 = manage(new Gtk::ImageMenuItem(                       \
+				*manage(new Gtk::Image(			    \
+					Gtk::StockID(icon),		\
+					Gtk::ICON_SIZE_MENU )),			\
+				_(title)));                     \
+		item2->signal_activate().connect(                                \
+				sigc::bind(                                             \
+					sigc::mem_fun(*this,&studio::StateBLine_Context::bline_set_split_handle), \
+					value_node, split_angle, split_radius ));           \
+		item2->show();                                                   \
+		menu.append(*item2);                                             \
+	} while (false)
+
+	bool split_angle = bline_point.get_split_tangent_angle();
+	bool split_radius = bline_point.get_split_tangent_radius();
+	
+	if (split_angle && split_radius)
+		STATE_BLINE_ADD_MENU_ITEM("Merge Tangents", false, false, "gtk-connect");
+	else if (!split_angle && !split_radius)
+		STATE_BLINE_ADD_MENU_ITEM("Split Tangents", true, true, "gtk-disconnect");
+	else if (!split_angle && split_radius)
+	{
+		STATE_BLINE_ADD_MENU_ITEM("Split Tangents", true, true, "gtk-disconnect");
+		STATE_BLINE_ADD_MENU_ITEM("Merge Tangents", false, false, "gtk-connect");
+	}
+	else if (split_angle && !split_radius)
+	{
+		STATE_BLINE_ADD_MENU_ITEM("Merge Tangents", false, false, "gtk-connect");
+		STATE_BLINE_ADD_MENU_ITEM("Split Tangents", true, true, "gtk-disconnect");
+	}
+	
+	item = manage(new Gtk::SeparatorMenuItem());
+	item->show();
+	menu.append(*item);
+
+	if (split_angle)
+		STATE_BLINE_ADD_MENU_ITEM("Merge Tangents's Angle", false, split_radius, "synfig-type_angle");
+	else
+		STATE_BLINE_ADD_MENU_ITEM("Split Tangents's Angle", true, split_radius, "synfig-type_angle");
+
+	if (split_radius)
+		STATE_BLINE_ADD_MENU_ITEM("Merge Tangents's Radius", split_angle, false, "synfig-type_vector");
+	else
+		STATE_BLINE_ADD_MENU_ITEM("Split Tangents's Radius", split_angle, true, "synfig-type_vector");
+
+	#undef STATE_BLINE_ADD_MENU_ITEM
+	
+	item = manage(new Gtk::SeparatorMenuItem());
+	item->show();
+	menu.append(*item);
+	
 	if(loop_)
 	{
 		item = manage(new Gtk::MenuItem(_("Unloop Spline")));
@@ -1648,42 +1703,6 @@ StateBLine_Context::popup_vertex_menu(synfig::ValueNode_Const::Handle value_node
 				value_node ));
 	item->show();
 	menu.append(*item);
-
-	item = manage(new Gtk::SeparatorMenuItem());
-	item->show();
-	menu.append(*item);
-
-	BLinePoint bline_point(value_node->get_value().get(BLinePoint()));
-	#define STATE_BLINE_ADD_MENU_ITEM(title, split_angle, split_radius) \
-	do {                                                                \
-		item = manage(new Gtk::MenuItem(_(title)));                     \
-		item->signal_activate().connect(                                \
-				sigc::bind(                                             \
-					sigc::mem_fun(*this,&studio::StateBLine_Context::bline_set_split_handle), \
-					value_node, split_angle, split_radius ));           \
-		item->show();                                                   \
-		menu.append(*item);                                             \
-	} while (false)
-
-	bool split_angle = bline_point.get_split_tangent_angle();
-	bool split_radius = bline_point.get_split_tangent_radius();
-
-	if (split_angle)
-		STATE_BLINE_ADD_MENU_ITEM("Merge Tangents's Angle", false, split_radius);
-	else
-		STATE_BLINE_ADD_MENU_ITEM("Split Tangents's Angle", true, split_radius);
-
-	if (split_radius)
-		STATE_BLINE_ADD_MENU_ITEM("Merge Tangents's Radius", split_angle, false);
-	else
-		STATE_BLINE_ADD_MENU_ITEM("Split Tangents's Radius", split_angle, true);
-
-	if (split_angle || split_radius)
-		STATE_BLINE_ADD_MENU_ITEM("Merge Tangents", false, false);
-	if (!split_angle && !split_radius)
-		STATE_BLINE_ADD_MENU_ITEM("Split Tangents", true, true);
-
-	#undef STATE_BLINE_ADD_MENU_ITEM
 
 	menu.popup(0,0);
 }
@@ -1804,34 +1823,53 @@ StateBLine_Context::popup_handle_menu(synfig::ValueNode_Const::Handle value_node
 	BLinePoint bline_point(value_node->get_value().get(BLinePoint()));
 
 	Gtk::MenuItem *item = NULL;
-	#define STATE_BLINE_ADD_MENU_ITEM(title, split_angle, split_radius)	\
+	Gtk::ImageMenuItem *item2 = NULL;
+	#define STATE_BLINE_ADD_MENU_ITEM(title, split_angle, split_radius, icon)	\
 	do {                                                                \
-		item = manage(new Gtk::MenuItem(_(title)));                     \
-		item->signal_activate().connect(                                \
+		item2 = manage(new Gtk::ImageMenuItem(                       \
+				*Gtk::manage(new Gtk::Image(			    \
+					Gtk::StockID(icon),		\
+					Gtk::ICON_SIZE_MENU )),			\
+				_(title)));                     \
+		item2->signal_activate().connect(                                \
 			sigc::bind(													\
 				sigc::mem_fun(*this,&studio::StateBLine_Context::bline_set_split_handle), \
 				value_node, split_angle, split_radius ));               \
-		item->show();                                                   \
-		menu.append(*item);                                             \
+		item2->show();                                                   \
+		menu.append(*item2);                                             \
 	} while(false)
 
 	bool split_angle = bline_point.get_split_tangent_angle();
 	bool split_radius = bline_point.get_split_tangent_radius();
+	
+	if (split_angle && split_radius)
+		STATE_BLINE_ADD_MENU_ITEM("Merge Tangents", false, false, "gtk-connect");
+	else if (!split_angle && !split_radius)
+		STATE_BLINE_ADD_MENU_ITEM("Split Tangents", true, true, "gtk-disconnect");
+	else if (!split_angle && split_radius)
+	{
+		STATE_BLINE_ADD_MENU_ITEM("Split Tangents", true, true, "gtk-disconnect");
+		STATE_BLINE_ADD_MENU_ITEM("Merge Tangents", false, false, "gtk-connect");
+	}
+	else if (split_angle && !split_radius)
+	{
+		STATE_BLINE_ADD_MENU_ITEM("Merge Tangents", false, false, "gtk-connect");
+		STATE_BLINE_ADD_MENU_ITEM("Split Tangents", true, true, "gtk-disconnect");
+	}
+	
+	item = manage(new Gtk::SeparatorMenuItem());
+	item->show();
+	menu.append(*item);
 
 	if (split_angle)
-		STATE_BLINE_ADD_MENU_ITEM("Merge Tangents's Angle", false, split_radius);
+		STATE_BLINE_ADD_MENU_ITEM("Merge Tangents's Angle", false, split_radius, "synfig-type_angle");
 	else
-		STATE_BLINE_ADD_MENU_ITEM("Split Tangents's Angle", true, split_radius);
+		STATE_BLINE_ADD_MENU_ITEM("Split Tangents's Angle", true, split_radius, "synfig-type_angle");
 
 	if (split_radius)
-		STATE_BLINE_ADD_MENU_ITEM("Merge Tangents's Radius", split_angle, false);
+		STATE_BLINE_ADD_MENU_ITEM("Merge Tangents's Radius", split_angle, false, "synfig-type_vector");
 	else
-		STATE_BLINE_ADD_MENU_ITEM("Split Tangents's Radius", split_angle, true);
-
-	if (split_angle || split_radius)
-		STATE_BLINE_ADD_MENU_ITEM("Merge Tangents", false, false);
-	if (!split_angle && !split_radius)
-		STATE_BLINE_ADD_MENU_ITEM("Split Tangents", true, true);
+		STATE_BLINE_ADD_MENU_ITEM("Split Tangents's Radius", split_angle, true, "synfig-type_vector");
 
 	#undef STATE_BLINE_ADD_MENU_ITEM
 

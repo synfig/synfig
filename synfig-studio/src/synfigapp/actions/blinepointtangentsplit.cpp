@@ -57,7 +57,7 @@ using namespace Action;
 ACTION_INIT_NO_GET_LOCAL_NAME(Action::BLinePointTangentSplit);
 ACTION_SET_NAME(Action::BLinePointTangentSplit,"BLinePointTangentSplit");
 ACTION_SET_LOCAL_NAME(Action::BLinePointTangentSplit,N_("Split Tangents"));
-ACTION_SET_TASK(Action::BLinePointTangentSplit,"split");
+ACTION_SET_TASK(Action::BLinePointTangentSplit,"disconnect");
 ACTION_SET_CATEGORY(Action::BLinePointTangentSplit,Action::CATEGORY_VALUENODE);
 ACTION_SET_PRIORITY(Action::BLinePointTangentSplit,0);
 ACTION_SET_VERSION(Action::BLinePointTangentSplit,"0.1");
@@ -66,7 +66,7 @@ ACTION_SET_CVS_ID(Action::BLinePointTangentSplit,"$Id$");
 ACTION_INIT_NO_GET_LOCAL_NAME(Action::BLinePointTangentSplitRadius);
 ACTION_SET_NAME(Action::BLinePointTangentSplitRadius,"BLinePointTangentSplitRadius");
 ACTION_SET_LOCAL_NAME(Action::BLinePointTangentSplitRadius,N_("Split Tangents's Radius"));
-ACTION_SET_TASK(Action::BLinePointTangentSplitRadius,"split");
+ACTION_SET_TASK(Action::BLinePointTangentSplitRadius,"type_vector");
 ACTION_SET_CATEGORY(Action::BLinePointTangentSplitRadius,Action::CATEGORY_VALUENODE);
 ACTION_SET_PRIORITY(Action::BLinePointTangentSplitRadius,0);
 ACTION_SET_VERSION(Action::BLinePointTangentSplitRadius,"0.0");
@@ -75,7 +75,7 @@ ACTION_SET_CVS_ID(Action::BLinePointTangentSplitRadius,"$Id$");
 ACTION_INIT_NO_GET_LOCAL_NAME(Action::BLinePointTangentSplitAngle);
 ACTION_SET_NAME(Action::BLinePointTangentSplitAngle,"BLinePointTangentSplitAngle");
 ACTION_SET_LOCAL_NAME(Action::BLinePointTangentSplitAngle,N_("Split Tangents's Angle"));
-ACTION_SET_TASK(Action::BLinePointTangentSplitAngle,"split");
+ACTION_SET_TASK(Action::BLinePointTangentSplitAngle,"type_angle");
 ACTION_SET_CATEGORY(Action::BLinePointTangentSplitAngle,Action::CATEGORY_VALUENODE);
 ACTION_SET_PRIORITY(Action::BLinePointTangentSplitAngle,0);
 ACTION_SET_VERSION(Action::BLinePointTangentSplitAngle,"0.0");
@@ -150,7 +150,7 @@ Action::BLinePointTangentSplit::is_candidate(const ParamList &x)
 		synfig::Time time(x.find("time")->second.get_time());
 		bool split_radius=(*value_node->get_link("split_radius"))(time).get(bool());
 		bool split_angle=(*value_node->get_link("split_angle"))(time).get(bool());
-		if(split_radius==true || split_angle==true)
+		if(split_radius==true && split_angle==true)
 			return false;
 		return true;
 	}
