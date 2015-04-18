@@ -1438,7 +1438,8 @@ StateCircle_Context::event_mouse_click_handler(const Smach::event& x)
 			if ((point[1] - point_holder[1]) < 0) point[1] = point_holder[1];
 		}
 
-		make_circle(point_holder, point);
+		if (point_holder != point)
+			make_circle(point_holder, point);
 		get_work_area()->clear_ducks();
 		return Smach::RESULT_ACCEPT;
 	}
