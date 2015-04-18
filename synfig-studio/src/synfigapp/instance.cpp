@@ -560,7 +560,7 @@ Instance::save_as(const synfig::String &file_name)
 
 	String old_file_name(get_file_name());
 
-	set_file_name(FileSystem::fix_slashes(file_name));
+	set_file_name(file_name);
 	get_canvas()->set_identifier(file_system_->get_identifier(canvas_filename));
 
 	if (embed_data || extract_data)
