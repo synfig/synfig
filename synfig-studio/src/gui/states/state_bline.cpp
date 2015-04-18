@@ -1668,10 +1668,20 @@ StateBLine_Context::popup_vertex_menu(synfig::ValueNode_Const::Handle value_node
 	bool split_angle = bline_point.get_split_tangent_angle();
 	bool split_radius = bline_point.get_split_tangent_radius();
 	
-	if (split_angle || split_radius)
+	if (split_angle && split_radius)
 		STATE_BLINE_ADD_MENU_ITEM("Merge Tangents", false, false);
-	if (!split_angle || !split_radius)
+	else if (!split_angle && !split_radius)
 		STATE_BLINE_ADD_MENU_ITEM("Split Tangents", true, true);
+	else if (!split_angle && split_radius)
+	{
+		STATE_BLINE_ADD_MENU_ITEM("Split Tangents", true, true);
+		STATE_BLINE_ADD_MENU_ITEM("Merge Tangents", false, false);
+	}
+	else if (split_angle && !split_radius)
+	{
+		STATE_BLINE_ADD_MENU_ITEM("Merge Tangents", false, false);
+		STATE_BLINE_ADD_MENU_ITEM("Split Tangents", true, true);
+	}
 	
 	item = manage(new Gtk::SeparatorMenuItem());
 	item->show();
@@ -1822,10 +1832,20 @@ StateBLine_Context::popup_handle_menu(synfig::ValueNode_Const::Handle value_node
 	bool split_angle = bline_point.get_split_tangent_angle();
 	bool split_radius = bline_point.get_split_tangent_radius();
 	
-	if (split_angle || split_radius)
+	if (split_angle && split_radius)
 		STATE_BLINE_ADD_MENU_ITEM("Merge Tangents", false, false);
-	if (!split_angle || !split_radius)
+	else if (!split_angle && !split_radius)
 		STATE_BLINE_ADD_MENU_ITEM("Split Tangents", true, true);
+	else if (!split_angle && split_radius)
+	{
+		STATE_BLINE_ADD_MENU_ITEM("Split Tangents", true, true);
+		STATE_BLINE_ADD_MENU_ITEM("Merge Tangents", false, false);
+	}
+	else if (split_angle && !split_radius)
+	{
+		STATE_BLINE_ADD_MENU_ITEM("Merge Tangents", false, false);
+		STATE_BLINE_ADD_MENU_ITEM("Split Tangents", true, true);
+	}
 	
 	item = manage(new Gtk::SeparatorMenuItem());
 	item->show();
