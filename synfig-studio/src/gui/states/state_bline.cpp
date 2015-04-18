@@ -1680,7 +1680,7 @@ StateBLine_Context::popup_vertex_menu(synfig::ValueNode_Const::Handle value_node
 
 	if (split_angle || split_radius)
 		STATE_BLINE_ADD_MENU_ITEM("Merge Tangents", false, false);
-	if (!split_angle && !split_radius)
+	if (!split_angle || !split_radius)
 		STATE_BLINE_ADD_MENU_ITEM("Split Tangents", true, true);
 
 	#undef STATE_BLINE_ADD_MENU_ITEM
@@ -1830,7 +1830,7 @@ StateBLine_Context::popup_handle_menu(synfig::ValueNode_Const::Handle value_node
 
 	if (split_angle || split_radius)
 		STATE_BLINE_ADD_MENU_ITEM("Merge Tangents", false, false);
-	if (!split_angle && !split_radius)
+	if (!split_angle || !split_radius)
 		STATE_BLINE_ADD_MENU_ITEM("Split Tangents", true, true);
 
 	#undef STATE_BLINE_ADD_MENU_ITEM
