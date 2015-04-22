@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file dialog_keyframe.cpp
-**	\brief Template File
+**	\brief Keyframe properties dialog implementation
 **
 **	$Id$
 **

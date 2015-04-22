@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file dialogs/dialog_keyframe.h
-**	\brief Template Header
+**	\brief Keyframe properties dialog Header
 **
 **	$Id$
 **

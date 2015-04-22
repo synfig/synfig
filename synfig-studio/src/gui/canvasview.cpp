@@ -830,6 +830,8 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 		)
 	);
 
+	canvas_interface()->signal_keyframe_properties().connect(sigc::mem_fun(*this,&studio::CanvasView::show_keyframe_dialog));
+
 	//MUCH TIME STUFF TAKES PLACE IN HERE
 	refresh_rend_desc();
 	refresh_time_window();
