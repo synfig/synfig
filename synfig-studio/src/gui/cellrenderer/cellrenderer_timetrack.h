@@ -135,6 +135,21 @@ private:
 	Glib::Property<bool> property_enable_timing_info_;
 
 	/*
+ -- ** -- P R I V A T E   M E T H O D S --------------------------------------
+	*/
+
+private:
+	//! Render the inactive waypoint line ( active point off )
+	void draw_activepoint_off(
+			const ::Cairo::RefPtr< ::Cairo::Context>& cr,
+			Gdk::Color inactive_color,
+			int line_width,
+			int from_x,
+			int from_y,
+			int to_x,
+			int to_y);
+
+	/*
  --	** -- P R O P E R T Y   I N T E R F A C E S -------------------------------
 	*/
 
