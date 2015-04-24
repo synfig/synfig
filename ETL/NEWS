@@ -4,7 +4,7 @@ More detailed notes are available on the releases page:
 
 http://synfig.org/en/news/releases
 
-0.04.18 (git tag "1.0") - May 1, 2015
+0.04.18 (git tag "1.0") - April 27, 2015
 
  * Fix compiler warnings.
  * Change handling of directory separators
