@@ -1683,10 +1683,10 @@ CanvasView::init_menus()
 	*/
 	action_group = Gtk::ActionGroup::create("canvasview");
 
-	action_group->add( Gtk::Action::create("save", Gtk::Stock::SAVE),
+	action_group->add( Gtk::Action::create("save", Gtk::StockID("synfig-save")),
 		hide_return(sigc::mem_fun(*get_instance().get(), &studio::Instance::save))
 	);
-	action_group->add( Gtk::Action::create("save-as", Gtk::Stock::SAVE_AS, _("Save As...")),
+	action_group->add( Gtk::Action::create("save-as", Gtk::StockID("synfig-save_as"), _("Save As...")),
 		sigc::hide_return(sigc::mem_fun(*get_instance().get(), &studio::Instance::dialog_save_as))
 	);
 	action_group->add( Gtk::Action::create("revert", Gtk::Stock::REVERT_TO_SAVED),

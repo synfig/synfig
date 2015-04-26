@@ -150,13 +150,13 @@ MainWindow::init_menus()
 	Glib::RefPtr<Gtk::ActionGroup> action_group = Gtk::ActionGroup::create("mainwindow");
 
 	// file
-	action_group->add( Gtk::Action::create("new", Gtk::Stock::NEW),
+	action_group->add( Gtk::Action::create("new", Gtk::StockID("synfig-new_doc"), _("New"), _("Create a new document")),
 		sigc::hide_return(sigc::ptr_fun(&studio::App::new_instance))
 	);
-	action_group->add( Gtk::Action::create("open", Gtk::Stock::OPEN, _("Open...")),
+	action_group->add( Gtk::Action::create("open", Gtk::StockID("synfig-open"), _("Open"), _("Open an existed document")),
 		sigc::hide_return(sigc::bind(sigc::ptr_fun(&studio::App::dialog_open), ""))
 	);
-	action_group->add( Gtk::Action::create("save-all", Gtk::StockID("synfig-saveall")),
+	action_group->add( Gtk::Action::create("save-all", Gtk::StockID("synfig-save_all"), _("Save All"), _("Save all opened documents")),
 		sigc::ptr_fun(save_all)
 	);
 	action_group->add( Gtk::Action::create("quit", Gtk::StockID("gtk-quit"), _("Quit")),
