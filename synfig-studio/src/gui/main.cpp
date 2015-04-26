@@ -39,6 +39,7 @@
 
 #ifdef WIN32
 #include <glibmm/convert.h>
+#include "main_win32.h"
 #endif
 
 #endif
@@ -62,6 +63,13 @@ using namespace studio;
 
 int main(int argc, char **argv)
 {
+	
+#ifdef WIN32
+	if (consoleOptionEnabled(argc, argv))
+	{
+		redirectIOToConsole();
+	}
+#endif
 
 	String binary_path = synfig::get_binary_path(String(argv[0]));
 	

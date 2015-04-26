@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Synfig\n"
 "Report-Msgid-Bugs-To: http://www.synfig.org/issues/thebuggenie/synfig\n"
-"POT-Creation-Date: 2015-04-06 16:00+0700\n"
-"PO-Revision-Date: 2015-03-22 16:07+0000\n"
+"POT-Creation-Date: 2015-04-14 18:00+0700\n"
+"PO-Revision-Date: 2015-04-08 16:07+0000\n"
 "Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
 "Language-Team: Hungarian (http://www.transifex.com/projects/p/synfig/language/hu/)\n"
 "MIME-Version: 1.0\n"
@@ -2349,8 +2349,8 @@ msgid "Time Offset to apply to the context"
 msgstr "A környezetre alkalmazandó időeltolás"
 
 #: src/synfig/layer_pastecanvas.cpp:147
-msgid "Children Lock"
-msgstr "Gyermekzár"
+msgid "Lock Selection"
+msgstr ""
 
 #: src/synfig/layer_pastecanvas.cpp:148
 msgid "When checked prevents to select the children using the mouse click"
@@ -4875,6 +4875,10 @@ msgstr "Teszt GUID generálása"
 #: src/tool/main.cpp:212
 msgid "Test signal implementation"
 msgstr "Teszt szignál implementáció"
+
+#: src/tool/main.cpp:247
+msgid "Try 'synfig --help' for more information"
+msgstr ""
 
 #: src/tool/joblistprocessor.cpp:73
 msgid "Nothing to do!"

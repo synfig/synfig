@@ -249,7 +249,12 @@ ffmpeg_trgt::init(ProgressCallback *cb=NULL)
 	// We need "--" to separate filename from arguments (for the case when filename starts with "-")
 	if ( filename.substr(0,1) == "-" )
 		vargs.push_back("--"); 
+
+#if defined(WIN32_PIPE_TO_PROCESSES)
+	vargs.push_back("\"" + filename + "\"");
+#else
 	vargs.push_back(filename);
+#endif
 
 #if defined(WIN32_PIPE_TO_PROCESSES)
 

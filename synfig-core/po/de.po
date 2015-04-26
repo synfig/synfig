@@ -14,9 +14,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Synfig\n"
 "Report-Msgid-Bugs-To: http://www.synfig.org/issues/thebuggenie/synfig\n"
-"POT-Creation-Date: 2015-04-06 16:00+0700\n"
-"PO-Revision-Date: 2015-03-22 16:07+0000\n"
-"Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
+"POT-Creation-Date: 2015-04-14 18:00+0700\n"
+"PO-Revision-Date: 2015-04-09 22:01+0000\n"
+"Last-Translator: Nils Mäser <unsinn10@gmx.de>\n"
 "Language-Team: German (http://www.transifex.com/projects/p/synfig/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2355,8 +2355,8 @@ msgid "Time Offset to apply to the context"
 msgstr "Zeitversatz der auf den Kontext angewendet wird"
 
 #: src/synfig/layer_pastecanvas.cpp:147
-msgid "Children Lock"
-msgstr "Sperre für Untergeordnete"
+msgid "Lock Selection"
+msgstr "Auswahl sperren"
 
 #: src/synfig/layer_pastecanvas.cpp:148
 msgid "When checked prevents to select the children using the mouse click"
@@ -3873,7 +3873,7 @@ msgstr "Aufspaltung"
 
 #: src/synfig/valuenode_composite.cpp:697
 msgid "When checked, tangents are independent"
-msgstr "Tangenten unabhängig?"
+msgstr "Tangenten aufteilen"
 
 #: src/synfig/valuenode_composite.cpp:702
 msgid "The first tangent of the Spline Point"
@@ -3889,7 +3889,7 @@ msgstr "Radius aufgeteilt"
 
 #: src/synfig/valuenode_composite.cpp:710
 msgid "When checked, tangent's radii are independent"
-msgstr ""
+msgstr "Radien der Tangenten aufteilen"
 
 #: src/synfig/valuenode_composite.cpp:713
 msgid "Angle Split"
@@ -3897,7 +3897,7 @@ msgstr "Winkel aufgeteilt"
 
 #: src/synfig/valuenode_composite.cpp:714
 msgid "When checked, tangent's angles are independent"
-msgstr "Winkel der Tangenten unabhängig?"
+msgstr "Winkel der Tangenten aufteilen"
 
 #: src/synfig/valuenode_composite.cpp:723
 msgid "The [0,1] position of the Width Point over the Spline"
@@ -4882,6 +4882,10 @@ msgstr "Test GUID Generierung"
 msgid "Test signal implementation"
 msgstr "Test Signal Implementierung"
 
+#: src/tool/main.cpp:247
+msgid "Try 'synfig --help' for more information"
+msgstr "Gib 'synfig --help' ein, um weitere Informationen zu erhalten."
+
 #: src/tool/joblistprocessor.cpp:73
 msgid "Nothing to do!"
 msgstr "Nichts zu tun!"
@@ -5063,7 +5067,7 @@ msgstr ""
 #: src/tool/optionsprocessor.cpp:538
 #, c-format
 msgid "Unable to load file '%s'."
-msgstr ""
+msgstr "Die Datei '%s' konnte nicht geladen werden."
 
 #: src/tool/optionsprocessor.cpp:546
 msgid "No input file provided."

@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file cellrenderer_timetrack.cpp
-**	\brief Template Header
+**	\brief Cell renderer for the timetrack. Render all time points (waypoints / keyframes and current time line ...)
 **
 **	$Id$
 **
@@ -237,10 +237,9 @@ CellRenderer_TimeTrack::render_vfunc(
 	activepoint_color[0]=Gdk::Color("#ff0000");
 	activepoint_color[1]=Gdk::Color("#00ff00");
 
-	int stride = Cairo::ImageSurface::format_stride_for_width(Cairo::FORMAT_A1, 2);
-	std::vector<unsigned char> stipple_xpm(2*stride, 0);
-	stipple_xpm[0] = 2;
-	Cairo::RefPtr<Cairo::ImageSurface> inactive_mask_img = Cairo::ImageSurface::create(&stipple_xpm.front(), Cairo::FORMAT_A1, 2, 2, stride);
+	std::valarray< double > activepoint_off_dashes(2);
+	activepoint_off_dashes[0] = 1.0;
+	activepoint_off_dashes[1] = 2.0;
 
 	synfig::Canvas::Handle canvas(property_canvas().get_value());
 
@@ -410,12 +409,17 @@ CellRenderer_TimeTrack::render_vfunc(
 			else
 			if(is_off && !status_at_time)
 			{
+				// render the off time has a dashed line
+				cr->set_dash (activepoint_off_dashes, 0.0);
 				cr->set_source_rgb( inactive_color.get_red_p(),
 									inactive_color.get_green_p(),
 									inactive_color.get_red_p() );
-				cr->mask(inactive_mask_img, 0, 0);
-				cr->rectangle(area.get_x()+xstart, area.get_y(), x-xstart, area.get_height());
-				cr->fill();
+
+				cr->set_line_width(area.get_height()*2);
+				cr->move_to(area.get_x()+xstart, area.get_y());
+				cr->line_to(x-xstart, area.get_y());
+				cr->stroke();
+
 				is_off=false;
 			}
 
@@ -434,12 +438,16 @@ CellRenderer_TimeTrack::render_vfunc(
 		}
 		if(is_off)
 		{
+			// render the off time has a dashed line
+			cr->set_dash (activepoint_off_dashes, 0.0);
 			cr->set_source_rgb( inactive_color.get_red_p(),
 								inactive_color.get_green_p(),
 								inactive_color.get_red_p() );
-			cr->mask(inactive_mask_img, 0, 0);
-			cr->rectangle(area.get_x()+xstart, area.get_y(), area.get_width()-xstart, area.get_height());
-			cr->fill();
+
+			cr->set_line_width(area.get_height()*2);
+			cr->move_to(area.get_x()+xstart, area.get_y());
+			cr->line_to(area.get_width()-xstart, area.get_y());
+			cr->stroke();
 		}
 	}
 

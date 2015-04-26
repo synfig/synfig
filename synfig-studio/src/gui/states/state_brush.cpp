@@ -570,7 +570,7 @@ StateBrush_Context::scan_directory(const String &path, int scan_sub_levels, std:
 	Glib::RefPtr<Gio::FileInfo> info;
 	while((bool)(info = e->next_file()))
 	{
-		String filepath = directory->get_child(info->get_name())->get_path();
+		String filepath = FileSystem::fix_slashes(directory->get_child(info->get_name())->get_path());
 		if (!scan_directory(filepath, scan_sub_levels-1, out_files))
 			out_files.insert(filepath);
 	}

@@ -63,6 +63,7 @@ OTHER_HH = \
 	statemanager.h \
 	valuelink.h \
 	workarea.h \
+	main_win32.h \
 	mainwindow.h
 
 OTHER_CC = \
@@ -87,6 +88,7 @@ OTHER_CC = \
 	statemanager.cpp \
 	valuelink.cpp \
 	workarea.cpp \
+	main_win32.cpp \
 	mainwindow.cpp
 
 AM_CPPFLAGS = \

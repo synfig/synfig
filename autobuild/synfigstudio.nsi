@@ -126,6 +126,7 @@ Section "Start Menu Shortcuts"
   CreateDirectory "$SMPROGRAMS\Synfig"
   CreateShortCut "$SMPROGRAMS\Synfig\Uninstall Synfig Studio.lnk" "$INSTDIR\uninstall-synfigstudio.exe" "" "$INSTDIR\uninstall-synfigstudio.exe" 0
   CreateShortCut "$SMPROGRAMS\Synfig\Synfig Studio.lnk" "$INSTDIR\bin\synfigstudio.exe" "" "$INSTDIR\share\pixmaps\synfig_icon.ico" 0
+  CreateShortCut "$SMPROGRAMS\Synfig\Synfig Studio (Debug Console).lnk" "$INSTDIR\bin\synfigstudio.exe" "--console" "$INSTDIR\share\pixmaps\synfig_icon.ico" 0
   
 SectionEnd
 

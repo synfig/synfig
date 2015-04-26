@@ -256,6 +256,8 @@ src/synfig/layer_skeleton.cpp
 src/synfig/layer_skeleton.h
 src/synfig/layer_solidcolor.cpp
 src/synfig/layer_solidcolor.h
+src/synfig/layer_sound.cpp
+src/synfig/layer_sound.h
 src/synfig/layer_switch.cpp
 src/synfig/layer_switch.h
 src/synfig/listimporter.cpp

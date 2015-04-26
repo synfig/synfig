@@ -1028,8 +1028,9 @@ Canvas::remove_child_canvas(Canvas::Handle child_canvas)
 }
 
 void
-Canvas::set_file_name(const String &file_name)
+Canvas::set_file_name(const String &file_name_orig)
 {
+	String file_name = FileSystem::fix_slashes(file_name_orig);
 	if(parent())
 		parent()->set_file_name(file_name);
 	else

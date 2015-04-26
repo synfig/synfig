@@ -289,7 +289,11 @@ std::list< etl::handle< studio::Module > > module_list_;
 
 bool studio::App::use_colorspace_gamma=true;
 #ifdef SINGLE_THREADED
+	#ifdef	WIN32
+	bool studio::App::single_threaded=true;
+	#else
 	bool studio::App::single_threaded=false;
+	#endif // WIN32
 #endif  // SINGLE THREADED
 bool studio::App::restrict_radius_ducks=true;
 bool studio::App::resize_imported_images=false;
@@ -528,7 +532,7 @@ public:
 				return true;
 			}
 #ifdef SINGLE_THREADED
-			if(key=="single_threaded")
+			if(key=="use_single_threaded")
 			{
 				value=strprintf("%i",(int)App::single_threaded);
 				return true;
@@ -677,7 +681,7 @@ public:
 				return true;
 			}
 #ifdef SINGLE_THREADED
-			if(key=="single_threaded")
+			if(key=="use_single_threaded")
 			{
 				int i(atoi(value.c_str()));
 				App::single_threaded=i;
@@ -791,7 +795,7 @@ public:
 		ret.push_back("file_history.size");
 		ret.push_back("use_colorspace_gamma");
 #ifdef SINGLE_THREADED
-		ret.push_back("single_threaded");
+		ret.push_back("use_single_threaded");
 #endif
 		ret.push_back("auto_recover_backup_interval");
 		ret.push_back("restrict_radius_ducks");
@@ -2108,7 +2112,7 @@ App::restore_default_settings()
 	synfigapp::Main::settings().set_value("pref.distance_system","pt");
 	synfigapp::Main::settings().set_value("pref.use_colorspace_gamma","1");
 #ifdef SINGLE_THREADED
-	synfigapp::Main::settings().set_value("pref.single_threaded","1");
+	synfigapp::Main::settings().set_value("pref.use_single_threaded","1");
 #endif
 	synfigapp::Main::settings().set_value("pref.restrict_radius_ducks","1");
 	synfigapp::Main::settings().set_value("pref.resize_imported_images","0");
@@ -3847,7 +3851,7 @@ studio::App::redo()
 synfig::String
 studio::App::get_base_path()
 {
-	return app_base_path_;
+	return FileSystem::fix_slashes(app_base_path_);
 }
 
 void

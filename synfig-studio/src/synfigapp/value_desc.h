@@ -36,6 +36,7 @@
 #include <synfig/valuenode_animated.h>
 #include <synfig/valuenode_const.h>
 #include <synfig/canvas.h>
+#include <synfig/interpolation.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -412,7 +413,13 @@ public:
 		if(parent_is_layer() && is_const())
 			return get_value().get_interpolation();
 		else
-			return get_value_node()->get_interpolation();
+		{
+		    synfig::ValueNode::Handle value=get_value_node();
+		    if (value)
+			return value->get_interpolation();
+		    else
+			return synfig::Interpolation(5);
+		}
 	}
 
 	bool

@@ -198,7 +198,7 @@ studio::Instance::run_plugin(std::string plugin_path)
 {
 	handle<synfigapp::UIInterface> uim = this->find_canvas_view(this->get_canvas())->get_ui_interface();
 
-	string message = strprintf(_("Do you realy want to add skeleton to document \"%s\"?" ),
+	string message = strprintf(_("Do you realy want to run plugin for file \"%s\"?" ),
 				this->get_canvas()->get_name().c_str());
 
 	string details = strprintf(_("This operation cannot be undone and all undo history will be cleared."));
@@ -1208,7 +1208,11 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 			}
 		}
 
-		item = Gtk::manage(new Gtk::ImageMenuItem(Gtk::Stock::CONVERT));
+		item = Gtk::manage(new Gtk::ImageMenuItem(
+			*manage(new Gtk::Image(
+				Gtk::StockID("gtk-convert"),
+				Gtk::ICON_SIZE_MENU )),
+			_("Convert") ));
 		item->set_submenu(*convert_menu);
 		item->show();
 		parammenu.append(*item);
@@ -1355,21 +1359,26 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 		////// Before //////////////////
 		param_list.add("value_desc",synfigapp::ValueDesc(wpoint_composite, wpoint_composite->get_link_index_from_name("side_before")));
 
-		ADD_IMAGE_MENU_ITEM(TYPE_INTERPOLATE, "synfig-interpolate_interpolation", "Interpolate")
-		ADD_IMAGE_MENU_ITEM(TYPE_ROUNDED, "synfig-rounded_interpolation", "Rounded")
-		ADD_IMAGE_MENU_ITEM(TYPE_SQUARED, "synfig-squared_interpolation", "Squared")
-		ADD_IMAGE_MENU_ITEM(TYPE_PEAK, "synfig-peak_interpolation", "Peak")
-		ADD_IMAGE_MENU_ITEM(TYPE_FLAT, "synfig-flat_interpolation", "Flat")
+		ADD_IMAGE_MENU_ITEM(TYPE_INTERPOLATE, "synfig-interpolate_interpolation", "Cusp Before: Interpolate")
+		ADD_IMAGE_MENU_ITEM(TYPE_ROUNDED, "synfig-rounded_interpolation", "Cusp Before: Rounded")
+		ADD_IMAGE_MENU_ITEM(TYPE_SQUARED, "synfig-squared_interpolation", "Cusp Before: Squared")
+		ADD_IMAGE_MENU_ITEM(TYPE_PEAK, "synfig-peak_interpolation", "Cusp Before: Peak")
+		ADD_IMAGE_MENU_ITEM(TYPE_FLAT, "synfig-flat_interpolation", "Cusp Before: Flat")
 
+		///////
+		item = Gtk::manage(new Gtk::SeparatorMenuItem());
+		item->show();
+		parammenu.append(*item);
+		
 		////// After ///////////////////////
 		param_list.erase("value_desc");
 		param_list.add("value_desc",synfigapp::ValueDesc(wpoint_composite, wpoint_composite->get_link_index_from_name("side_after")));
 
-		ADD_IMAGE_MENU_ITEM(TYPE_INTERPOLATE, "synfig-interpolate_interpolation", "Interpolate")
-		ADD_IMAGE_MENU_ITEM(TYPE_ROUNDED, "synfig-rounded_interpolation", "Rounded")
-		ADD_IMAGE_MENU_ITEM(TYPE_SQUARED, "synfig-squared_interpolation", "Squared")
-		ADD_IMAGE_MENU_ITEM(TYPE_PEAK, "synfig-peak_interpolation", "Peak")
-		ADD_IMAGE_MENU_ITEM(TYPE_FLAT, "synfig-flat_interpolation", "Flat")
+		ADD_IMAGE_MENU_ITEM(TYPE_INTERPOLATE, "synfig-interpolate_interpolation", "Cusp After: Interpolate")
+		ADD_IMAGE_MENU_ITEM(TYPE_ROUNDED, "synfig-rounded_interpolation", "Cusp After: Rounded")
+		ADD_IMAGE_MENU_ITEM(TYPE_SQUARED, "synfig-squared_interpolation", "Cusp After: Squared")
+		ADD_IMAGE_MENU_ITEM(TYPE_PEAK, "synfig-peak_interpolation", "Cusp After: Peak")
+		ADD_IMAGE_MENU_ITEM(TYPE_FLAT, "synfig-flat_interpolation", "Cusp After: Flat")
 
 		///////
 		item = Gtk::manage(new Gtk::SeparatorMenuItem());
