@@ -107,7 +107,7 @@ Dock_History::Dock_History():
 	);
 	action_group->add(Gtk::Action::create(
 		"undo",
-		Gtk::StockID("gtk-undo"),
+		Gtk::StockID("synfig-undo"),
 		_("Undo"),
 		_("Undo the previous action")
 	),
@@ -115,7 +115,7 @@ Dock_History::Dock_History():
 	);
 	action_group->add(Gtk::Action::create(
 		"redo",
-		Gtk::StockID("gtk-redo"),
+		Gtk::StockID("synfig-redo"),
 		_("Redo"),
 		_("Redo the previously undone action")
 	),

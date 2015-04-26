@@ -169,16 +169,24 @@ IconController::init_icons(const synfig::String& path_to_icons)
 	INIT_STOCK_ICON(text,"tool_text_icon."IMAGE_EXT,"Text Tool");
 	INIT_STOCK_ICON(gradient,"tool_gradient_icon."IMAGE_EXT,_("Gradient Tool"));
 	INIT_STOCK_ICON(star,"tool_star_icon."IMAGE_EXT,_("Star Tool"));
-	//ToolBox Others
+	// ToolBox Others
 	INIT_STOCK_ICON(reset_colors,"reset_colors_icon."IMAGE_EXT,_("Reset Colors"));
 	INIT_STOCK_ICON(swap_colors,"swap_colors_icon."IMAGE_EXT,_("Swap Colors"));
 	INIT_STOCK_ICON(value_node,"valuenode_icon."IMAGE_EXT,_("ValueNode"));
 	INIT_STOCK_ICON(valuenode_forbidanimation,"valuenode_forbidanimation_icon."IMAGE_EXT,_("ValueNode Forbid Animation"));
-	INIT_STOCK_ICON(about,"about_icon."IMAGE_EXT,_("About"));
 	INIT_STOCK_ICON(rename,"rename_icon."IMAGE_EXT,_("Rename"));
 	INIT_STOCK_ICON(canvas,"canvas_icon."IMAGE_EXT,_("Canvas"));
 	INIT_STOCK_ICON(canvas_new,"canvas_icon."IMAGE_EXT,_("New Canvas"));
-	INIT_STOCK_ICON(saveall,"saveall_icon."IMAGE_EXT,_("Save All"));
+
+	// Document Related Actions
+	INIT_STOCK_ICON(about,"about_icon."IMAGE_EXT,_("About"));
+	INIT_STOCK_ICON(new_doc,"action_doc_new_icon."IMAGE_EXT,_("New"));
+	INIT_STOCK_ICON(open,"action_doc_open_icon."IMAGE_EXT,_("Open"));
+	INIT_STOCK_ICON(save,"action_doc_save_icon."IMAGE_EXT,_("Save"));
+	INIT_STOCK_ICON(save_as,"action_doc_saveas_icon."IMAGE_EXT,_("Save As"));
+	INIT_STOCK_ICON(save_all,"action_doc_saveall_icon."IMAGE_EXT,_("Save All"));
+	INIT_STOCK_ICON(redo,"action_doc_redo_icon."IMAGE_EXT,_("Redo"));
+	INIT_STOCK_ICON(undo,"action_doc_undo_icon."IMAGE_EXT,_("Undo"));
 
 	// Layers
 	INIT_STOCK_ICON(layer,"layer_icon."IMAGE_EXT,_("Layer"));

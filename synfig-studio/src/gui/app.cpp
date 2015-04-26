@@ -871,11 +871,11 @@ init_ui_manager()
 #define DEFINE_ACTION(x,stock) { Glib::RefPtr<Gtk::Action> action( Gtk::Action::create(x, stock) ); actions_action_group->add(action); }
 
 // actions in File menu
-DEFINE_ACTION("new", Gtk::Stock::NEW);
-DEFINE_ACTION("open", Gtk::Stock::OPEN);
-DEFINE_ACTION("save", Gtk::Stock::SAVE);
-DEFINE_ACTION("save-as", _("Save As..."));
-DEFINE_ACTION("save-all", Gtk::StockID("synfig-saveall"));
+DEFINE_ACTION("new", Gtk::StockID("synfig-new_doc"));
+DEFINE_ACTION("open", Gtk::StockID("synfig-open"));
+DEFINE_ACTION("save", Gtk::StockID("synfig-save"));
+DEFINE_ACTION("save-as", Gtk::StockID("synfig-save_as"));
+DEFINE_ACTION("save-all", Gtk::StockID("synfig-save_all"));
 DEFINE_ACTION("revert", Gtk::Stock::REVERT_TO_SAVED);
 DEFINE_ACTION("cvs-add", Gtk::StockID("synfig-cvs_add"));
 DEFINE_ACTION("cvs-update", Gtk::StockID("synfig-cvs_update"));
@@ -888,8 +888,8 @@ DEFINE_ACTION("close-document", _("Close Document"));
 DEFINE_ACTION("quit", Gtk::Stock::QUIT);
 
 // actions in Edit menu
-DEFINE_ACTION("undo", Gtk::Stock::UNDO);
-DEFINE_ACTION("redo", Gtk::Stock::REDO);
+DEFINE_ACTION("undo", Gtk::StockID("synfig-undo"));
+DEFINE_ACTION("redo", Gtk::StockID("synfig-redo"));
 DEFINE_ACTION("copy", Gtk::Stock::COPY);
 DEFINE_ACTION("cut", Gtk::Stock::CUT);
 DEFINE_ACTION("paste", Gtk::Stock::PASTE);
