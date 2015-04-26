@@ -39,7 +39,6 @@ EXTRA_DIST = \
 	keyframe_lock_icons.sif \
 	framedial_icons.sif \
 	logo.sif \
-	saveall_icon.sif \
 	select_all_child_layers_icon.sif \
 	sif_icon.sif \
 	reset_colors_icon.sif \
@@ -194,7 +193,6 @@ IMAGES = \
 	select_all_child_layers_icon.$(EXT) \
 	sif_icon.$(EXT) \
 	synfig_icon.$(EXT) \
-	saveall_icon.$(EXT) \
 	about_icon.$(EXT) \
 	splash_screen.$(EXT) \
 	valuenode_icon.$(EXT) \
