@@ -86,13 +86,10 @@ Dialog_Keyframe::Dialog_Keyframe(Gtk::Window& parent, etl::handle<synfigapp::Can
 
 	get_vbox()->pack_start(*table);
 
-/*  // \todo Allow setting descriptions for keyframes
-
-	entry_description.set_text(_("Not yet implemented"));
-
+  // Allow setting descriptions for keyframes
+	entry_description.set_text("");
 	table->attach(*manage(new Gtk::Label(_("Description"))), 0, 1, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	table->attach(entry_description, 1, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-*/
 
 	table->show_all();
 
@@ -116,6 +113,7 @@ void
 Dialog_Keyframe::set_keyframe(const synfig::Keyframe& x)
 {
 	keyframe_=x;
+	entry_description.set_text(keyframe_.get_description());
 }
 
 void
