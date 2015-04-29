@@ -146,6 +146,23 @@ Dialog_Keyframe::on_delete_pressed()
 void
 Dialog_Keyframe::on_apply_pressed()
 {
+	//! Set the new description if needed
+	if(entry_description.get_text() != keyframe_.get_description())
+	{
+		keyframe_.set_description(entry_description.get_text());
+
+		synfigapp::Action::Handle action(synfigapp::Action::create("KeyframeSet"));
+		assert(action);
+
+		action->set_param("canvas",canvas_interface->get_canvas());
+		action->set_param("canvas_interface",canvas_interface);
+		action->set_param("keyframe",keyframe_);
+
+		if(!canvas_interface->get_instance()->perform_action(action))
+		{
+		}
+	}
+
 	if(widget_waypoint_model->get_waypoint_model().is_trivial())
 		return;
 
