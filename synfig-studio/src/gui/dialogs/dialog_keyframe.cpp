@@ -168,6 +168,24 @@ Dialog_Keyframe::on_apply_pressed()
 		}
 	}
 
+	//! Update the active status if needed
+	if(entry_toogle.get_active() != keyframe_.active())
+	{
+		keyframe_.set_active(entry_toogle.get_active());
+
+		synfigapp::Action::Handle action(synfigapp::Action::create("KeyframeToggl"));
+		assert(action);
+
+		action->set_param("canvas",canvas_interface->get_canvas());
+		action->set_param("canvas_interface",canvas_interface);
+		action->set_param("keyframe",keyframe_);
+		action->set_param("new_status",keyframe_.active ());
+
+		if(!canvas_interface->get_instance()->perform_action(action))
+		{
+		}
+	}
+
 	if(widget_waypoint_model->get_waypoint_model().is_trivial())
 		return;
 
