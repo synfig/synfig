@@ -32,6 +32,7 @@
 #include <gtkmm/tooltip.h>
 #include <gtkmm/table.h>
 #include <gtkmm/entry.h>
+#include <gtkmm/checkbutton.h>
 
 #include <synfigapp/canvasinterface.h>
 
@@ -53,6 +54,7 @@ class Dialog_Keyframe : public Gtk::Dialog
 	synfig::Keyframe keyframe_;
 
 	Gtk::Entry entry_description;
+	Gtk::CheckButton entry_toogle;
 
 	Widget_WaypointModel* widget_waypoint_model;
 

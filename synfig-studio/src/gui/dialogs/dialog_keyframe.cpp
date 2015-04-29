@@ -82,20 +82,24 @@ Dialog_Keyframe::Dialog_Keyframe(Gtk::Window& parent, etl::handle<synfigapp::Can
 		cancel_button->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_Keyframe::hide));
 	}
 
-	Gtk::Table *table=manage(new Gtk::Table(2,2,false));
+	Gtk::Table *table=manage(new Gtk::Table(4,2,false));
 
 	get_vbox()->pack_start(*table);
 
-  // Allow setting descriptions for keyframes
+	// Allow setting descriptions for keyframes
 	entry_description.set_text("");
 	table->attach(*manage(new Gtk::Label(_("Description"))), 0, 1, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	table->attach(entry_description, 1, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+
+	// Allow toggling active status for keyframes
+	table->attach(*manage(new Gtk::Label(_("Active"))), 2, 3, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	table->attach(entry_toogle, 3, 4, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 
 	table->show_all();
 
 	widget_waypoint_model=Gtk::manage(new Widget_WaypointModel());
 	widget_waypoint_model->show();
-	table->attach(*widget_waypoint_model, 0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	table->attach(*widget_waypoint_model, 0, 4, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 
 }
 
@@ -114,6 +118,7 @@ Dialog_Keyframe::set_keyframe(const synfig::Keyframe& x)
 {
 	keyframe_=x;
 	entry_description.set_text(keyframe_.get_description());
+	entry_toogle.set_active(keyframe_.active());
 }
 
 void
