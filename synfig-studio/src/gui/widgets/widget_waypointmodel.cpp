@@ -135,22 +135,28 @@ Widget_WaypointModel::Widget_WaypointModel():
 	// interpolation in
 	attach(checkbutton_before, 0, 0, 1, 1);
 	attach(*before_options, 1, 0, 1,1);
+	before_options->set_hexpand(true);
 	// interpolation out
 	attach(checkbutton_after, 2, 0, 1, 1);
 	attach(*after_options, 3, 0, 1, 1);
+	after_options->set_hexpand(true);
 
 	// tcb options - tension
 	attach(checkbutton_tension, 0, 1, 1, 1);
 	attach(*spin_tension, 1, 1, 1, 1);
+	spin_tension->set_hexpand(true);
 	// tcb options - continuity
 	attach(checkbutton_continuity, 2, 1, 1, 1);
 	attach(*spin_continuity, 3, 1, 1, 1);
+	spin_continuity->set_hexpand(true);
 	// tcb options - bias
 	attach(checkbutton_bias, 0, 2, 1, 1);
 	attach(*spin_bias, 1, 2, 1, 1);
+	spin_bias->set_hexpand(true);
 	// tcb options - temporal tension
 	attach(checkbutton_temporal_tension, 2, 2, 1, 1);
 	attach(*spin_temporal_tension, 3, 2, 1, 1);
+	spin_temporal_tension->set_hexpand(true);
 
 	show_all();
 	hide();
