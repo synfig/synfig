@@ -30,7 +30,7 @@
 #include <gtkmm/dialog.h>
 #include <gtkmm/window.h>
 #include <gtkmm/tooltip.h>
-#include <gtkmm/table.h>
+#include <gtkmm/grid.h>
 #include <gtkmm/entry.h>
 #include <gtkmm/checkbutton.h>
 
