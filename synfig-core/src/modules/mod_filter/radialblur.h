@@ -32,7 +32,7 @@
 
 #include <synfig/vector.h>
 #include <synfig/angle.h>
-#include <synfig/layer_composite.h>
+#include <synfig/layers/layer_composite.h>
 
 /* === M A C R O S ========================================================= */
 

@@ -43,7 +43,7 @@
 #include <synfigapp/value_desc.h>
 #include <synfig/value.h>
 #include <synfig/activepoint.h>
-#include <synfig/valuenode_animated.h>
+#include <synfig/valuenodes/valuenode_animated.h>
 #include <synfig/string.h>
 #include <synfig/keyframe.h>
 

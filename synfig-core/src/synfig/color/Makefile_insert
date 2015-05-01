@@ -1,0 +1,21 @@
+COLOR_HH = \
+	color/color.h \
+	color/color.hpp \
+	color/coloraccumulator.h \
+	color/cairocolor.h \
+	color/cairocoloraccumulator.h \
+	color/pixelformat.h \
+	color/common.h
+
+COLOR_CC = \
+	color/color.cpp \
+	color/cairocolor.cpp
+
+libsynfig_include_HH += \
+    $(COLOR_HH)
+
+libsynfig_src += \
+    $(COLOR_HH) \
+	color/colorblendingfunctions.h \
+	color/cairocolorblendingfunctions.h \
+    $(COLOR_CC)

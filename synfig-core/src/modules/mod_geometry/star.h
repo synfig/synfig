@@ -31,7 +31,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/layer_polygon.h>
+#include <synfig/layers/layer_polygon.h>
 #include <synfig/value.h>
 #include <list>
 #include <vector>

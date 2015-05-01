@@ -35,12 +35,12 @@
 #include "duck.h"
 #include <ETL/misc>
 
-#include <synfig/valuenode_bline.h>
-#include <synfig/valuenode_wplist.h>
-#include <synfig/valuenode_blinecalctangent.h>
-#include <synfig/valuenode_blinecalcvertex.h>
-#include <synfig/valuenode_blinecalcwidth.h>
-#include <synfig/valuenode_composite.h>
+#include <synfig/valuenodes/valuenode_bline.h>
+#include <synfig/valuenodes/valuenode_wplist.h>
+#include <synfig/valuenodes/valuenode_blinecalctangent.h>
+#include <synfig/valuenodes/valuenode_blinecalcvertex.h>
+#include <synfig/valuenodes/valuenode_blinecalcwidth.h>
+#include <synfig/valuenodes/valuenode_composite.h>
 
 #include "general.h"
 #endif

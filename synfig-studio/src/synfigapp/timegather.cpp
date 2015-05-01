@@ -33,7 +33,7 @@
 #include "timegather.h"
 #include "value_desc.h"
 
-#include <synfig/layer_pastecanvas.h>
+#include <synfig/layers/layer_pastecanvas.h>
 
 #include "general.h"
 

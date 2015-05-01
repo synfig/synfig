@@ -33,7 +33,7 @@
 
 #include "context.h"
 #include "layer.h"
-#include "layer_pastecanvas.h"
+#include <synfig/layers/layer_pastecanvas.h>
 #include "string.h"
 #include "vector.h"
 #include "color.h"

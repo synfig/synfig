@@ -31,7 +31,7 @@
 
 #include <synfig/vector.h>
 #include <synfig/valuenode.h>
-#include <synfig/layer_composite.h>
+#include <synfig/layers/layer_composite.h>
 #include <synfig/time.h>
 #include <synfig/angle.h>
 #include "halftone.h"

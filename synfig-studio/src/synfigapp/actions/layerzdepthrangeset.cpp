@@ -37,7 +37,7 @@
 
 #include <synfigapp/general.h>
 
-#include <synfig/layer_group.h>
+#include <synfig/layers/layer_group.h>
 
 #endif
 

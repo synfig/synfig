@@ -32,7 +32,7 @@
 #endif
 
 #include "wplistconverter.h"
-#include <synfig/valuenode_wplist.h>
+#include <synfig/valuenodes/valuenode_wplist.h>
 
 #endif
 

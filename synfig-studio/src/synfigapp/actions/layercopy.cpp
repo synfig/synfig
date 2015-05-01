@@ -35,7 +35,7 @@
 #include <synfigapp/canvasinterface.h>
 #include <synfigapp/instance.h>
 #include <synfigapp/general.h>
-#include <synfig/layer_bitmap.h>
+#include <synfig/layers/layer_bitmap.h>
 
 #endif
 

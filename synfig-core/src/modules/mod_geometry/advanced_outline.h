@@ -30,7 +30,7 @@
 
 #include <list>
 #include <vector>
-#include <synfig/layer_polygon.h>
+#include <synfig/layers/layer_polygon.h>
 #include <synfig/segment.h>
 #include <synfig/value.h>
 
