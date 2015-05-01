@@ -34,6 +34,7 @@
 #include "time.h"
 #include "uniqueid.h"
 #include "guid.h"
+#include "waypoint.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -43,7 +44,13 @@
 
 namespace synfig {
 
-//! \writeme
+/*! \class Keyframe
+**  \brief Keyframe is used to record the state of the animation at that point (time_)
+*
+* A Keyframe can be described, actived or disabled and have an associated Waypoint::Model.
+* Common comparison operators can be used for Keyframes operation ==, <, != .
+* \see Keyframe::set_description(String x), Keyframe::get_description(), Keyframe::enable(), Keyframe::disable ()
+*/
 class Keyframe :  public UniqueID
 {
 private:
@@ -56,6 +63,12 @@ private:
 	**	\see set_active(), enable(), disable, active()
 	*/
 	bool active_;
+
+	Waypoint::Model waypoint_model_;
+    /*! \c true a waypoint model has been affected, \c false when created
+    **  \see apply_model(const Waypoint::Model &x)
+    */
+	bool has_waypoint_model_;
 
 public:
 
@@ -103,6 +116,9 @@ public:
 
 //	bool operator!=(const Keyframe &rhs)const { return id_!=rhs.id_; }
 	bool operator!=(const Time &rhs)const { return time_!=rhs; }
+
+	//! Keep a trace of the associated waypoint Model.
+	void apply_model(const Waypoint::Model &x);
 }; // END of class Keyframe
 
 class KeyframeList : public std::vector<Keyframe>
