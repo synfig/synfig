@@ -121,6 +121,14 @@ Dialog_Keyframe::set_keyframe(const synfig::Keyframe& x)
 	keyframe_=x;
 	entry_description.set_text(keyframe_.get_description());
 	entry_toogle.set_active(keyframe_.active());
+
+	widget_waypoint_model->reset_waypoint_model();
+
+	if (keyframe_.has_model())
+	{
+	    // TODO operator = for wp::model ?
+	    widget_waypoint_model->set_waypoint_model(keyframe_.get_waypoint_model());
+	}
 }
 
 void
