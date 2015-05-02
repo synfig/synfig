@@ -90,6 +90,14 @@ Keyframe::apply_model(const Waypoint::Model &x)
     waypoint_model_.set_bias(x.get_bias());
     waypoint_model_.set_temporal_tension(x.get_temporal_tension());
 
+    waypoint_model_.set_priority_flag(x.get_priority_flag());
+    waypoint_model_.set_before_flag(x.get_before_flag());
+    waypoint_model_.set_after_flag(x.get_after_flag());
+    waypoint_model_.set_tension_flag(x.get_tension_flag());
+    waypoint_model_.set_continuity_flag(x.get_continuity_flag());
+    waypoint_model_.set_bias_flag(x.get_bias_flag());
+    waypoint_model_.set_temporal_tension_flag(x.get_temporal_tension_flag());
+
     has_waypoint_model_ = true;
 }
 
