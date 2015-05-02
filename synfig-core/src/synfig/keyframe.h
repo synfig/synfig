@@ -117,8 +117,11 @@ public:
 //	bool operator!=(const Keyframe &rhs)const { return id_!=rhs.id_; }
 	bool operator!=(const Time &rhs)const { return time_!=rhs; }
 
+	const Waypoint::Model &get_waypoint_model()const { return waypoint_model_; }
 	//! Keep a trace of the associated waypoint Model.
 	void apply_model(const Waypoint::Model &x);
+    //! Returns the status of the 'waypoint model' flag
+	bool has_model() const {return has_waypoint_model_; }
 }; // END of class Keyframe
 
 class KeyframeList : public std::vector<Keyframe>
