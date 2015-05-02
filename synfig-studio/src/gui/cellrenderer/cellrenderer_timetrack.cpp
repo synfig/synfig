@@ -237,10 +237,6 @@ CellRenderer_TimeTrack::render_vfunc(
 	activepoint_color[0]=Gdk::Color("#ff0000");
 	activepoint_color[1]=Gdk::Color("#00ff00");
 
-	std::valarray< double > activepoint_off_dashes(2);
-	activepoint_off_dashes[0] = 1.0;
-	activepoint_off_dashes[1] = 2.0;
-
 	synfig::Canvas::Handle canvas(property_canvas().get_value());
 
 	synfigapp::ValueDesc value_desc = property_value_desc().get_value();
@@ -410,15 +406,11 @@ CellRenderer_TimeTrack::render_vfunc(
 			if(is_off && !status_at_time)
 			{
 				// render the off time has a dashed line
-				cr->set_dash (activepoint_off_dashes, 0.0);
-				cr->set_source_rgb( inactive_color.get_red_p(),
-									inactive_color.get_green_p(),
-									inactive_color.get_red_p() );
-
-				cr->set_line_width(area.get_height()*2);
-				cr->move_to(area.get_x()+xstart, area.get_y());
-				cr->line_to(x-xstart, area.get_y());
-				cr->stroke();
+				draw_activepoint_off(cr, inactive_color, area.get_height()*2,
+														area.get_x()+xstart,
+														area.get_y(),
+														x-xstart,
+														area.get_y());
 
 				is_off=false;
 			}
@@ -439,15 +431,11 @@ CellRenderer_TimeTrack::render_vfunc(
 		if(is_off)
 		{
 			// render the off time has a dashed line
-			cr->set_dash (activepoint_off_dashes, 0.0);
-			cr->set_source_rgb( inactive_color.get_red_p(),
-								inactive_color.get_green_p(),
-								inactive_color.get_red_p() );
-
-			cr->set_line_width(area.get_height()*2);
-			cr->move_to(area.get_x()+xstart, area.get_y());
-			cr->line_to(area.get_width()-xstart, area.get_y());
-			cr->stroke();
+			draw_activepoint_off(cr, inactive_color, area.get_height()*2,
+													area.get_x()+xstart,
+													area.get_y(),
+													area.get_width()-xstart,
+													area.get_y());
 		}
 	}
 
@@ -463,6 +451,31 @@ CellRenderer_TimeTrack::render_vfunc(
 			cr->fill();
 		}
 	}
+}
+
+void CellRenderer_TimeTrack::draw_activepoint_off(
+		const ::Cairo::RefPtr< ::Cairo::Context>& cr,
+		Gdk::Color inactive_color,
+		int line_width,
+		int from_x,
+		int from_y,
+		int to_x,
+		int to_y)
+{
+	std::valarray< double > activepoint_off_dashes(2);
+	activepoint_off_dashes[0] = 1.0;
+	activepoint_off_dashes[1] = 2.0;
+
+	cr->set_dash (activepoint_off_dashes, 0.0);
+	cr->set_source_rgb( inactive_color.get_red_p(),
+						inactive_color.get_green_p(),
+						inactive_color.get_red_p() );
+
+	cr->set_line_width(line_width);
+	cr->move_to(from_x, from_y);
+	cr->line_to(to_y, to_y);
+	cr->stroke();
+
 }
 
 synfig::ValueNode_Animated::WaypointList::iterator

@@ -165,6 +165,10 @@ Action::KeyframeWaypointSet::process_value_desc(const synfigapp::ValueDesc& valu
 				waypoint.set_time(keyframe.get_time());
 				waypoint.set_value((*value_node)(keyframe.get_time()));
 			}
+
+			keyframe.apply_model(waypoint_model);
+			*get_canvas()->keyframe_list().find(keyframe)=keyframe;
+
 			waypoint.apply_model(waypoint_model);
 
 			action->set_param("waypoint",waypoint);

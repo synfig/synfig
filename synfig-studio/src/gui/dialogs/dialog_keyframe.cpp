@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file dialog_keyframe.cpp
-**	\brief Template File
+**	\brief Keyframe properties dialog implementation
 **
 **	$Id$
 **
@@ -82,24 +82,27 @@ Dialog_Keyframe::Dialog_Keyframe(Gtk::Window& parent, etl::handle<synfigapp::Can
 		cancel_button->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_Keyframe::hide));
 	}
 
-	Gtk::Table *table=manage(new Gtk::Table(2,2,false));
+	Gtk::Grid *grid=manage(new Gtk::Grid());
+	grid->set_row_spacing(6);
+	grid->set_column_spacing(12);
 
-	get_vbox()->pack_start(*table);
+	get_content_area()->add(*grid);
 
-/*  // \todo Allow setting descriptions for keyframes
+	// Allow setting descriptions for keyframes
+	entry_description.set_text("");
+	grid->attach(*manage(new Gtk::Label(_("Description :"))),   0, 0, 1, 1);
+	grid->attach(entry_description,                             1, 0, 3, 1);
+	entry_description.set_hexpand(true);
 
-	entry_description.set_text(_("Not yet implemented"));
-
-	table->attach(*manage(new Gtk::Label(_("Description"))), 0, 1, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	table->attach(entry_description, 1, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-*/
-
-	table->show_all();
+	// Allow toggling active status for keyframes
+	grid->attach(*manage(new Gtk::Label(_("Active :"))),        4, 0, 1, 1);
+	grid->attach(entry_toogle,                                  5, 0, 1, 1);
 
 	widget_waypoint_model=Gtk::manage(new Widget_WaypointModel());
 	widget_waypoint_model->show();
-	table->attach(*widget_waypoint_model, 0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	grid->attach(*widget_waypoint_model,                        0, 1, 6, 2);
 
+	grid->show_all();
 }
 
 Dialog_Keyframe::~Dialog_Keyframe()
@@ -116,6 +119,16 @@ void
 Dialog_Keyframe::set_keyframe(const synfig::Keyframe& x)
 {
 	keyframe_=x;
+	entry_description.set_text(keyframe_.get_description());
+	entry_toogle.set_active(keyframe_.active());
+
+	widget_waypoint_model->reset_waypoint_model();
+
+	if (keyframe_.has_model())
+	{
+	    // TODO operator = for wp::model ?
+	    widget_waypoint_model->set_waypoint_model(keyframe_.get_waypoint_model());
+	}
 }
 
 void
@@ -148,6 +161,41 @@ Dialog_Keyframe::on_delete_pressed()
 void
 Dialog_Keyframe::on_apply_pressed()
 {
+	//! Set the new description if needed
+	if(entry_description.get_text() != keyframe_.get_description())
+	{
+		keyframe_.set_description(entry_description.get_text());
+
+		synfigapp::Action::Handle action(synfigapp::Action::create("KeyframeSet"));
+		assert(action);
+
+		action->set_param("canvas",canvas_interface->get_canvas());
+		action->set_param("canvas_interface",canvas_interface);
+		action->set_param("keyframe",keyframe_);
+
+		if(!canvas_interface->get_instance()->perform_action(action))
+		{
+		}
+	}
+
+	//! Update the active status if needed
+	if(entry_toogle.get_active() != keyframe_.active())
+	{
+		keyframe_.set_active(entry_toogle.get_active());
+
+		synfigapp::Action::Handle action(synfigapp::Action::create("KeyframeToggl"));
+		assert(action);
+
+		action->set_param("canvas",canvas_interface->get_canvas());
+		action->set_param("canvas_interface",canvas_interface);
+		action->set_param("keyframe",keyframe_);
+		action->set_param("new_status",keyframe_.active ());
+
+		if(!canvas_interface->get_instance()->perform_action(action))
+		{
+		}
+	}
+
 	if(widget_waypoint_model->get_waypoint_model().is_trivial())
 		return;
 
