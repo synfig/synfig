@@ -2,7 +2,7 @@
 
 # -- I N I T --------------------------------------------------
 
-AC_INIT([Synfig Studio],[1.1],[http://www.synfig.org/issues/thebuggenie/synfig],[synfigstudio])
+AC_INIT([Synfig Studio],[1.0.1],[http://www.synfig.org/issues/thebuggenie/synfig],[synfigstudio])
 AM_CONDITIONAL(DEVELOPMENT_SNAPSHOT, true)
 AC_REVISION
 
@@ -144,8 +144,8 @@ PKG_CHECK_MODULES(GTKMM, gtkmm-3.0,[
 AC_SUBST(GTKMM_CFLAGS)
 AC_SUBST(GTKMM_LIBS)
 
-PKG_CHECK_MODULES(SYNFIG, [synfig >= 1.1] [ETL >= 0.04.18] sigc++-2.0,,[
-	AC_MSG_ERROR([ ** Unable to set up dependent libraries (synfig >= 1.1, ETL >= 0.04.18
+PKG_CHECK_MODULES(SYNFIG, [synfig >= 1.0.1] [ETL >= 0.04.18] sigc++-2.0,,[
+	AC_MSG_ERROR([ ** Unable to set up dependent libraries (synfig >= 1.0.1, ETL >= 0.04.18
 	)])
 ])
 AC_SUBST(SYNFIG_CFLAGS)
