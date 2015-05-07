@@ -31,7 +31,7 @@
 #	include <config.h>
 #endif
 
-#include <synfig/valuenode_dynamiclist.h>
+#include <synfig/valuenodes/valuenode_dynamiclist.h>
 #include <synfigapp/action_system.h>
 
 #include "state_gradient.h"
@@ -434,7 +434,7 @@ StateGradient_Context::StateGradient_Context(CanvasView* canvas_view):
 	// blend method
 	blend_enum.set_param_desc(ParamDesc(Color::BLEND_COMPOSITE,"blend_method")
 		.set_local_name(_("Blend Method"))
-		.set_description(_("Defines the blend method to be used for grdients")));
+		.set_description(_("Defines the blend method to be used for gradients")));
 
 	// opacity label
 	opacity_label.set_label(_("Opacity:"));

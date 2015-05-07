@@ -28,7 +28,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/layer_bitmap.h>
+#include <synfig/layers/layer_bitmap.h>
 #include <synfig/color.h>
 #include <synfig/vector.h>
 #include <synfig/importer.h>

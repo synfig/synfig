@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file dialogs/dialog_keyframe.h
-**	\brief Template Header
+**	\brief Keyframe properties dialog Header
 **
 **	$Id$
 **
@@ -30,8 +30,9 @@
 #include <gtkmm/dialog.h>
 #include <gtkmm/window.h>
 #include <gtkmm/tooltip.h>
-#include <gtkmm/table.h>
+#include <gtkmm/grid.h>
 #include <gtkmm/entry.h>
+#include <gtkmm/checkbutton.h>
 
 #include <synfigapp/canvasinterface.h>
 
@@ -53,6 +54,7 @@ class Dialog_Keyframe : public Gtk::Dialog
 	synfig::Keyframe keyframe_;
 
 	Gtk::Entry entry_description;
+	Gtk::CheckButton entry_toogle;
 
 	Widget_WaypointModel* widget_waypoint_model;
 

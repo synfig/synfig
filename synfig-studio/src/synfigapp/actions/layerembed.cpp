@@ -31,7 +31,7 @@
 
 #include "layerembed.h"
 
-#include <synfig/layer_bitmap.h>
+#include <synfig/layers/layer_bitmap.h>
 
 #include <synfigapp/canvasinterface.h>
 #include <synfigapp/general.h>

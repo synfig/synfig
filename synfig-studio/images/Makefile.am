@@ -39,7 +39,6 @@ EXTRA_DIST = \
 	keyframe_lock_icons.sif \
 	framedial_icons.sif \
 	logo.sif \
-	saveall_icon.sif \
 	select_all_child_layers_icon.sif \
 	sif_icon.sif \
 	reset_colors_icon.sif \
@@ -76,6 +75,8 @@ EXTRA_DIST = \
 	action_peak_interpolation_icon.sif \
 	action_rounded_interpolation_icon.sif \
 	action_squared_interpolation_icon.sif \
+	\
+	action_doc_icons.sif \
 	\
 	interpolation_type_icons.sif\
 	\
@@ -192,7 +193,6 @@ IMAGES = \
 	select_all_child_layers_icon.$(EXT) \
 	sif_icon.$(EXT) \
 	synfig_icon.$(EXT) \
-	saveall_icon.$(EXT) \
 	about_icon.$(EXT) \
 	splash_screen.$(EXT) \
 	valuenode_icon.$(EXT) \
@@ -246,6 +246,14 @@ IMAGES = \
 	action_peak_interpolation_icon.$(EXT) \
 	action_rounded_interpolation_icon.$(EXT) \
 	action_squared_interpolation_icon.$(EXT) \
+	\
+	action_doc_new_icon.$(EXT) \
+	action_doc_open_icon.$(EXT) \
+	action_doc_save_icon.$(EXT) \
+	action_doc_saveas_icon.$(EXT) \
+	action_doc_saveall_icon.$(EXT) \
+	action_doc_redo_icon.$(EXT) \
+	action_doc_undo_icon.$(EXT) \
 	\
 	interpolation_type_tcb_icon.$(EXT)\
 	interpolation_type_ease_icon.$(EXT)\
@@ -554,6 +562,41 @@ utils_chain_link_on_icon.$(EXT): $(srcdir)/utils_chain_link_icons.sif
 
 utils_chain_link_off_icon.$(EXT): $(srcdir)/utils_chain_link_icons.sif
 	$(SYNFIG) -q $< -o $@ --time 1
+	echo " File \"images\\$@\"" >>./images.nsh
+	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
+
+action_doc_new_icon.$(EXT): $(srcdir)/action_doc_icons.sif
+	$(SYNFIG) -q $< -o $@ --time 1
+	echo " File \"images\\$@\"" >>./images.nsh
+	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
+
+action_doc_open_icon.$(EXT): $(srcdir)/action_doc_icons.sif
+	$(SYNFIG) -q $< -o $@ --time 2
+	echo " File \"images\\$@\"" >>./images.nsh
+	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
+
+action_doc_save_icon.$(EXT): $(srcdir)/action_doc_icons.sif
+	$(SYNFIG) -q $< -o $@ --time 3
+	echo " File \"images\\$@\"" >>./images.nsh
+	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
+
+action_doc_saveas_icon.$(EXT): $(srcdir)/action_doc_icons.sif
+	$(SYNFIG) -q $< -o $@ --time 4
+	echo " File \"images\\$@\"" >>./images.nsh
+	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
+
+action_doc_saveall_icon.$(EXT): $(srcdir)/action_doc_icons.sif
+	$(SYNFIG) -q $< -o $@ --time 5
+	echo " File \"images\\$@\"" >>./images.nsh
+	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
+
+action_doc_undo_icon.$(EXT): $(srcdir)/action_doc_icons.sif
+	$(SYNFIG) -q $< -o $@ --time 6
+	echo " File \"images\\$@\"" >>./images.nsh
+	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
+
+action_doc_redo_icon.$(EXT): $(srcdir)/action_doc_icons.sif
+	$(SYNFIG) -q $< -o $@ --time 7
 	echo " File \"images\\$@\"" >>./images.nsh
 	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 

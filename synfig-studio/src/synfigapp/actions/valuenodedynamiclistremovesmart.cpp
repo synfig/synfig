@@ -36,7 +36,7 @@
 #include <synfigapp/canvasinterface.h>
 
 #include <synfigapp/general.h>
-#include <synfig/valuenode_composite.h>
+#include <synfig/valuenodes/valuenode_composite.h>
 
 #endif
 

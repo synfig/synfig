@@ -1814,12 +1814,12 @@ mkpackage()
 mkpackage_tar()
 {
 	#== tar.bz2 ==
-	rm -f ${WORKSPACE}/synfigstudio-${VERSION}-${REVISION}.$BREED.$RELEASE.${RPM_ARCH}.tar.bz2 || true
+	rm -f ${WORKSPACE}/synfigstudio-${VERSION}-${REVISION}.$BREED.${RPM_ARCH}.tar.bz2 || true
 	pushd ${DISTPREFIX}/..
-	[ ! -d synfigstudio-${VERSION}-${REVISION}.$BREED.$RELEASE.${RPM_ARCH} ] || rm -rf synfigstudio-${VERSION}-${REVISION}.$BREED.$RELEASE.${RPM_ARCH}
-	cp -rf dist synfigstudio-${VERSION}-${REVISION}.$BREED.$RELEASE.${RPM_ARCH}
-	tar cjf ${WORKSPACE}/synfigstudio-${VERSION}-${REVISION}.$BREED.$RELEASE.${RPM_ARCH}.tar.bz2 synfigstudio-${VERSION}-${REVISION}.$BREED.$RELEASE.${RPM_ARCH}
-	rm -rf synfigstudio-${VERSION}-${REVISION}.$BREED.$RELEASE.${RPM_ARCH}
+	[ ! -d synfigstudio-${VERSION}-${REVISION}.${RPM_ARCH} ] || rm -rf synfigstudio-${VERSION}-${REVISION}${RPM_ARCH}
+	cp -rf dist synfigstudio-${VERSION}-${REVISION}.${RPM_ARCH}
+	tar cjf ${WORKSPACE}/synfigstudio-${VERSION}-${REVISION}.${RPM_ARCH}.tar.bz2 synfigstudio-${VERSION}-${REVISION}.${RPM_ARCH}
+	rm -rf synfigstudio-${VERSION}-${REVISION}.${RPM_ARCH}
 	popd
 }
 
@@ -1831,7 +1831,7 @@ mkpackage_rpm()
 
 Name:           synfigstudio
 Version:        ${VERSION}
-Release:        ${REVISION}.${BREED}.${RELEASE}
+Release:        ${REVISION}
 Summary:        Film-Quality 2D Vector Animation package
 Group:          Applications/Graphics
 License:        GPL
@@ -1913,7 +1913,7 @@ fi
 EOF
     run_native linux${ARCH} rpmbuild -bb --target ${RPM_ARCH} ${WORKSPACE}/linux$ARCH$SUFFIX/synfigstudio.spec
     
-    cp $HOME/rpmbuild/RPMS/${RPM_ARCH}/synfigstudio-${VERSION}-${REVISION}.${BREED}.$RELEASE.${RPM_ARCH}.rpm ${WORKSPACE}
+    cp $HOME/rpmbuild/RPMS/${RPM_ARCH}/synfigstudio-${VERSION}-${REVISION}.${RPM_ARCH}.rpm ${WORKSPACE}
 }
 
 mkpackage_deb()
@@ -1992,7 +1992,7 @@ Comment: see list of all contributors in file README
 EOF
 	
 	cat > ${DEB_DIST}/debian/changelog << EOF
-synfigstudio (${VERSION}-${REVISION}.${BREED}.${RELEASE}) unstable; urgency=medium
+synfigstudio (${VERSION}-${REVISION}) unstable; urgency=medium
 
   * Custom Debian package form synfig.org.
 
@@ -2075,21 +2075,21 @@ binary: binary-indep binary-arch
 EOF
 		
 		
-	#run_native fakeroot alien -g -k --scripts synfigstudio-${VERSION}-${REVISION}.${BREED}.$RELEASE.${RPM_ARCH}.rpm
+	#run_native fakeroot alien -g -k --scripts synfigstudio-${VERSION}-${REVISION}.${RPM_ARCH}.rpm
 		
 	cd synfigstudio-${VERSION}
 	run_native dpkg-buildpackage -rfakeroot -a${SYS_ARCH} -d || true
 	#run_native fakeroot dpkg-deb --build synfigstudio
-	if [ ! -e ../synfigstudio_${VERSION}-${REVISION}.${BREED}.${RELEASE}_${SYS_ARCH}.deb ]; then
+	if [ ! -e ../synfigstudio_${VERSION}-${REVISION}_${SYS_ARCH}.deb ]; then
 		echo "Failed to generate deb package"
 		exit 1
 	fi
-	mv ../synfigstudio_${VERSION}-${REVISION}.${BREED}.${RELEASE}_${SYS_ARCH}.deb ${WORKSPACE}
+	mv ../synfigstudio_${VERSION}-${REVISION}_${SYS_ARCH}.deb ${WORKSPACE}
 	rm -rf synfigstudio-${VERSION}.orig
 	rm -rf synfigstudio_${VERSION}.orig.tar.gz
-	rm -rf synfigstudio_${VERSION}-${REVISION}.${BREED}.${RELEASE}_${SYS_ARCH}.changes
-	rm -rf synfigstudio_${VERSION}-${REVISION}.${BREED}.${RELEASE}.diff.gz
-	rm -rf synfigstudio_${VERSION}-${REVISION}.${BREED}.${RELEASE}.dsc
+	rm -rf synfigstudio_${VERSION}-${REVISION}_${SYS_ARCH}.changes
+	rm -rf synfigstudio_${VERSION}-${REVISION}.diff.gz
+	rm -rf synfigstudio_${VERSION}-${REVISION}.dsc
 	rm -rf synfigstudio-${VERSION}
 	rm -rf ${WORKSPACE}/linux$ARCH$SUFFIX/dist-deb
 }

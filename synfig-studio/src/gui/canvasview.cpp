@@ -67,22 +67,22 @@
 
 #include <gdk/gdk.h>
 
-#include <synfig/valuenode_reference.h>
-#include <synfig/valuenode_subtract.h>
-#include <synfig/valuenode_linear.h>
-#include <synfig/valuenode_timedswap.h>
-#include <synfig/valuenode_scale.h>
-#include <synfig/valuenode_range.h>
-#include <synfig/valuenode_dynamiclist.h>
-#include <synfig/valuenode_twotone.h>
-#include <synfig/valuenode_stripes.h>
-#include <synfig/valuenode_blinecalctangent.h>
-#include <synfig/valuenode_blinecalcvertex.h>
-#include <synfig/valuenode_blinecalcwidth.h>
-#include <synfig/valuenode_bline.h>
-#include <synfig/valuenode_bone.h>
+#include <synfig/valuenodes/valuenode_reference.h>
+#include <synfig/valuenodes/valuenode_subtract.h>
+#include <synfig/valuenodes/valuenode_linear.h>
+#include <synfig/valuenodes/valuenode_timedswap.h>
+#include <synfig/valuenodes/valuenode_scale.h>
+#include <synfig/valuenodes/valuenode_range.h>
+#include <synfig/valuenodes/valuenode_dynamiclist.h>
+#include <synfig/valuenodes/valuenode_twotone.h>
+#include <synfig/valuenodes/valuenode_stripes.h>
+#include <synfig/valuenodes/valuenode_blinecalctangent.h>
+#include <synfig/valuenodes/valuenode_blinecalcvertex.h>
+#include <synfig/valuenodes/valuenode_blinecalcwidth.h>
+#include <synfig/valuenodes/valuenode_bline.h>
+#include <synfig/valuenodes/valuenode_bone.h>
 #include <synfig/layer.h>
-#include <synfig/layer_pastecanvas.h>
+#include <synfig/layers/layer_pastecanvas.h>
 #include <synfig/context.h>
 
 #include <synfigapp/uimanager.h>
@@ -829,6 +829,8 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 			)
 		)
 	);
+
+	canvas_interface()->signal_keyframe_properties().connect(sigc::mem_fun(*this,&studio::CanvasView::show_keyframe_dialog));
 
 	//MUCH TIME STUFF TAKES PLACE IN HERE
 	refresh_rend_desc();
@@ -1683,10 +1685,10 @@ CanvasView::init_menus()
 	*/
 	action_group = Gtk::ActionGroup::create("canvasview");
 
-	action_group->add( Gtk::Action::create("save", Gtk::Stock::SAVE),
+	action_group->add( Gtk::Action::create("save", Gtk::StockID("synfig-save")),
 		hide_return(sigc::mem_fun(*get_instance().get(), &studio::Instance::save))
 	);
-	action_group->add( Gtk::Action::create("save-as", Gtk::Stock::SAVE_AS, _("Save As...")),
+	action_group->add( Gtk::Action::create("save-as", Gtk::StockID("synfig-save_as"), _("Save As...")),
 		sigc::hide_return(sigc::mem_fun(*get_instance().get(), &studio::Instance::dialog_save_as))
 	);
 	action_group->add( Gtk::Action::create("revert", Gtk::Stock::REVERT_TO_SAVED),

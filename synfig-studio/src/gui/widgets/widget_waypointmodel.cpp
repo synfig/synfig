@@ -135,22 +135,28 @@ Widget_WaypointModel::Widget_WaypointModel():
 	// interpolation in
 	attach(checkbutton_before, 0, 0, 1, 1);
 	attach(*before_options, 1, 0, 1,1);
+	before_options->set_hexpand(true);
 	// interpolation out
 	attach(checkbutton_after, 2, 0, 1, 1);
 	attach(*after_options, 3, 0, 1, 1);
+	after_options->set_hexpand(true);
 
 	// tcb options - tension
 	attach(checkbutton_tension, 0, 1, 1, 1);
 	attach(*spin_tension, 1, 1, 1, 1);
+	spin_tension->set_hexpand(true);
 	// tcb options - continuity
 	attach(checkbutton_continuity, 2, 1, 1, 1);
 	attach(*spin_continuity, 3, 1, 1, 1);
+	spin_continuity->set_hexpand(true);
 	// tcb options - bias
 	attach(checkbutton_bias, 0, 2, 1, 1);
 	attach(*spin_bias, 1, 2, 1, 1);
+	spin_bias->set_hexpand(true);
 	// tcb options - temporal tension
 	attach(checkbutton_temporal_tension, 2, 2, 1, 1);
 	attach(*spin_temporal_tension, 3, 2, 1, 1);
+	spin_temporal_tension->set_hexpand(true);
 
 	show_all();
 	hide();
@@ -187,3 +193,52 @@ Widget_WaypointModel::on_change()
 	spin_temporal_tension->set_sensitive(checkbutton_temporal_tension.get_active());
 }
 
+
+void
+Widget_WaypointModel::set_waypoint_model (const synfig::Waypoint::Model &x)
+{
+    updating=true;
+    before_options->set_value((int)x.get_before());
+    after_options->set_value((int)x.get_after());
+
+    adj_tension->set_value(x.get_tension());
+    adj_continuity->set_value(x.get_continuity());
+    adj_bias->set_value(x.get_bias());
+    adj_temporal_tension->set_value(x.get_temporal_tension());
+
+    checkbutton_before.set_active(x.get_before_flag());
+    checkbutton_after.set_active(x.get_after_flag());
+    checkbutton_tension.set_active(x.get_tension_flag());
+    checkbutton_continuity.set_active(x.get_continuity_flag());
+    checkbutton_bias.set_active(x.get_bias_flag());
+    checkbutton_temporal_tension.set_active(x.get_temporal_tension_flag());
+    updating=false;
+    on_change();
+}
+
+
+void
+Widget_WaypointModel::reset_waypoint_model()
+{
+    updating=true;
+    waypoint_model.reset();
+
+    before_options->set_value(0);
+    before_options->set_active(0);
+    after_options->set_value(0);
+    after_options->set_active(0);
+
+    adj_tension->set_value(0);
+    adj_continuity->set_value(0);
+    adj_bias->set_value(0);
+    adj_temporal_tension->set_value(0);
+
+    checkbutton_before.set_active(false);
+    checkbutton_after.set_active(false);
+    checkbutton_tension.set_active(false);
+    checkbutton_continuity.set_active(false);
+    checkbutton_bias.set_active(false);
+    checkbutton_temporal_tension.set_active(false);
+    updating=false;
+    on_change();
+}

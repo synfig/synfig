@@ -37,12 +37,12 @@
 #include "valuedescset.h"
 
 #include <synfigapp/canvasinterface.h>
-#include <synfig/valuenode_const.h>
-#include <synfig/valuenode_composite.h>
-#include <synfig/valuenode_blinecalctangent.h>
-#include <synfig/valuenode_blinecalcvertex.h>
-#include <synfig/valuenode_blinecalcwidth.h>
-#include <synfig/valuenode_bline.h>
+#include <synfig/valuenodes/valuenode_const.h>
+#include <synfig/valuenodes/valuenode_composite.h>
+#include <synfig/valuenodes/valuenode_blinecalctangent.h>
+#include <synfig/valuenodes/valuenode_blinecalcvertex.h>
+#include <synfig/valuenodes/valuenode_blinecalcwidth.h>
+#include <synfig/valuenodes/valuenode_bline.h>
 
 #include <synfigapp/general.h>
 

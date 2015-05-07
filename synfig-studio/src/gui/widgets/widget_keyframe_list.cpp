@@ -492,6 +492,15 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 		}
 
 		break;
+	case GDK_2BUTTON_PRESS:
+		if(event->button.button==1)
+		{
+			if(selected_ && editable_ && canvas_interface_)
+			{
+				canvas_interface_->signal_keyframe_properties()();
+			}
+		}
+		break;
 	case GDK_BUTTON_RELEASE:
 		if(editable_ && (event->button.button==1 /*|| event->button.button==3*/))
 		{

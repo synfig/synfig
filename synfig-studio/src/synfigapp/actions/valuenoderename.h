@@ -27,7 +27,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/valuenode_const.h>
+#include <synfig/valuenodes/valuenode_const.h>
 #include <synfigapp/action.h>
 
 /* === M A C R O S ========================================================= */

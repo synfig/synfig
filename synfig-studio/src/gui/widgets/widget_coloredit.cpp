@@ -135,6 +135,7 @@ ColorSlider::draw_arrow(
 	Color dark(0, 0, 0);
 	Color light(1, 1, 1);
 
+	//!TODO FActorize ! (Duplicate code with "Widget_Keyframe_List::draw_arrow")
 	//! Upper black pointing down arrow
 	cr->set_source_rgb(dark.get_r(), dark.get_g(), dark.get_b());
 	cr->set_line_width(1.0);

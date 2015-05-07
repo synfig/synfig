@@ -31,8 +31,8 @@
 
 #include "keyframeduplicate.h"
 #include <synfigapp/canvasinterface.h>
-#include <synfig/valuenode_dynamiclist.h>
-#include <synfig/valuenode_animated.h>
+#include <synfig/valuenodes/valuenode_dynamiclist.h>
+#include <synfig/valuenodes/valuenode_animated.h>
 #include "activepointsetsmart.h"
 #include "waypointsetsmart.h"
 
@@ -100,6 +100,14 @@ Action::KeyframeDuplicate::set_param(const synfig::String& name, const Action::P
 	{
 		keyframe=param.get_keyframe();
 		new_keyframe.set_description(keyframe.get_description()+_(" (Duplicate)"));
+
+		//! TODO add and use keyframe::operator=
+
+		//! Copy the kf's Waypoint::model is exist
+		if(keyframe.has_model())
+		    new_keyframe.apply_model(keyframe.get_waypoint_model());
+		//! Copy the active status
+		new_keyframe.set_active(keyframe.active());
 
 		return true;
 	}

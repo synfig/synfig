@@ -1,0 +1,41 @@
+LAYERS_HH = \
+	layers/layer_bitmap.h \
+	layers/layer_composite.h \
+	layers/layer_duplicate.h \
+	layers/layer_group.h \
+	layers/layer_meshtransform.h \
+	layers/layer_mime.h \
+	layers/layer_motionblur.h \
+	layers/layer_pastecanvas.h \
+	layers/layer_polygon.h \
+	layers/layer_shape.h \
+	layers/layer_solidcolor.h \
+	layers/layer_sound.h \
+	layers/layer_skeleton.h \
+	layers/layer_skeletondeformation.h \
+	layers/layer_switch.h
+
+LAYERS_CC = \
+	layers/layer_bitmap.cpp \
+	layers/layer_composite.cpp \
+	layers/layer_duplicate.cpp \
+	layers/layer_group.cpp \
+	layers/layer_meshtransform.cpp \
+	layers/layer_mime.cpp \
+	layers/layer_motionblur.cpp \
+	layers/layer_pastecanvas.cpp \
+	layers/layer_polygon.cpp \
+	layers/layer_shape.cpp \
+	layers/layer_solidcolor.cpp \
+	layers/layer_sound.cpp \
+	layers/layer_skeleton.cpp \
+	layers/layer_skeletondeformation.cpp \
+	layers/layer_switch.cpp
+
+libsynfig_include_HH += \
+    $(LAYERS_HH)
+
+libsynfig_src += \
+    $(LAYERS_HH) \
+    $(LAYERS_CC)
+

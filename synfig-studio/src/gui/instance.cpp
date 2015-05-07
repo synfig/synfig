@@ -56,8 +56,8 @@
 #include <sigc++/retype_return.h>
 #include <sigc++/retype.h>
 //#include <sigc++/hide.h>
-#include <synfig/valuenode_composite.h>
-#include <synfig/valuenode_duplicate.h>
+#include <synfig/valuenodes/valuenode_composite.h>
+#include <synfig/valuenodes/valuenode_duplicate.h>
 #include "widgets/widget_waypointmodel.h"
 #include <gtkmm/actiongroup.h>
 #include "iconcontroller.h"

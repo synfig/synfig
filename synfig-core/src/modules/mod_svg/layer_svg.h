@@ -30,7 +30,7 @@
 
 #include <synfig/color.h>
 #include <synfig/vector.h>
-#include <synfig/layer_group.h>
+#include <synfig/layers/layer_group.h>
 #include <synfig/value.h>
 
 #include "svg_parser.h"

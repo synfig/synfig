@@ -76,7 +76,10 @@ class Widget_WaypointModel : public Gtk::Grid
 
 public:
 	Widget_WaypointModel();
+
 	const synfig::Waypoint::Model &get_waypoint_model()const { return waypoint_model; }
+	void set_waypoint_model(const synfig::Waypoint::Model &x);
+	void reset_waypoint_model();
 }; // END of class Widget_WaypointModel
 
 }; // END of namespace studio

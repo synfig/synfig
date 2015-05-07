@@ -32,7 +32,7 @@
 #include "rect.h"
 #include "renddesc.h"
 #include "surface.h"
-#include "layer_composite.h"
+#include <synfig/layers/layer_composite.h>
 #include "general.h"
 
 /* === M A C R O S ========================================================= */

@@ -53,8 +53,8 @@
 
 #include <synfigapp/canvasinterface.h>
 #include <synfigapp/value_desc.h>
-#include <synfig/valuenode_animated.h>
-#include <synfig/valuenode_dynamiclist.h>
+#include <synfig/valuenodes/valuenode_animated.h>
+#include <synfig/valuenodes/valuenode_dynamiclist.h>
 #include <synfig/string.h>
 #include <synfig/time.h>
 
@@ -133,6 +133,21 @@ private:
 
 	//! \writeme
 	Glib::Property<bool> property_enable_timing_info_;
+
+	/*
+ -- ** -- P R I V A T E   M E T H O D S --------------------------------------
+	*/
+
+private:
+	//! Render the inactive waypoint line ( active point off )
+	void draw_activepoint_off(
+			const ::Cairo::RefPtr< ::Cairo::Context>& cr,
+			Gdk::Color inactive_color,
+			int line_width,
+			int from_x,
+			int from_y,
+			int to_x,
+			int to_y);
 
 	/*
  --	** -- P R O P E R T Y   I N T E R F A C E S -------------------------------

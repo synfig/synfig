@@ -30,7 +30,7 @@
 #include <vector>
 
 #include <synfig/canvas.h>
-#include <synfig/valuenode_bone.h>
+#include <synfig/valuenodes/valuenode_bone.h>
 #include <gtkmm/comboboxtext.h>
 #include <synfigapp/value_desc.h>
 
