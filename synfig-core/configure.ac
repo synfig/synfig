@@ -342,8 +342,8 @@ AM_GNU_GETTEXT([external])
 AM_GNU_GETTEXT_VERSION([0.15])
 localedir="$datadir/locale"
 
-PKG_CHECK_MODULES(ETL, [ETL >= 0.04.18],,[
-	AC_MSG_ERROR([ ** You need to install the ETL (version 0.04.18 or greater).])
+PKG_CHECK_MODULES(ETL, [ETL >= 0.04.19],,[
+	AC_MSG_ERROR([ ** You need to install the ETL (version 0.04.19 or greater).])
 ])
 CONFIG_DEPS="$CONFIG_DEPS ETL"
 
