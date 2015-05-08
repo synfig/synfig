@@ -76,19 +76,16 @@ AC_DEFUN([AC_ARG_DEBUG],
 
 	case "$debug" in
 		yes)
-			debug_flags="-D_DEBUG -g"
-		;;
-		half)
-			debug_flags="-DNDEBUG -g"
+			debug_flags="-D_DEBUG -g -O0"
+			CXXFLAGS="`echo $CXXFLAGS | sed s:-O.::` $debug_flags -fno-inline"
+			CFLAGS="`echo $CFLAGS | sed s:-O.::` $debug_flags"
 		;;
 		no|*)
 			debug_flags="-DNDEBUG"
+			CXXFLAGS="`echo $CXXFLAGS | sed s:-g.*::` $debug_flags"
+			CFLAGS="`echo $CFLAGS | sed s:-g.*::` $debug_flags"
 		;;
 	esac
-
-
-	CXXFLAGS="`echo $CXXFLAGS | sed s:-g::` $debug_flags"
-	CFLAGS="`echo $CFLAGS | sed s:-g::` $debug_flags"
 
 	AC_MSG_RESULT([$debug_flags])
 ])
