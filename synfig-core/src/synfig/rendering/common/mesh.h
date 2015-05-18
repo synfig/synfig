@@ -56,7 +56,7 @@ private:
 	Matrix2 resolution_transfrom;
 
 public:
-	Color get_color() const { return color; }
+	const Color& get_color() const { return color; }
 	void set_color(const Color &x);
 
 	Surface::Handle get_surface() const { return surface; }

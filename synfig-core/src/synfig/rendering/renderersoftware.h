@@ -36,6 +36,8 @@
 #include "transformation.h"
 #include "blending.h"
 #include "primitive.h"
+#include "polyspan.h"
+#include "contour.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -63,6 +65,7 @@ public:
 		const Vector &p1,
 		const Vector &p2,
 		const Color &color,
+		Color::value_type opacity,
 		Color::BlendMethod blend_method );
 
 	static void render_triangle(
@@ -74,7 +77,7 @@ public:
 		const Vector &p2,
 		const Vector &t2,
 		const synfig::Surface &texture,
-		Real alpha,
+		Color::value_type opacity,
 		Color::BlendMethod blend_method );
 
 	static void render_polygon(
@@ -86,6 +89,7 @@ public:
 		int triangles_count,
 		const Matrix &transform_matrix,
 		const Color &color,
+		Color::value_type opacity,
 		Color::BlendMethod blend_method );
 
 	static void render_mesh(
@@ -100,7 +104,28 @@ public:
 		const synfig::Surface &texture,
 		const Matrix &transform_matrix,
 		const Matrix &texture_matrix,
-		Real alpha,
+		Color::value_type opacity,
+		Color::BlendMethod blend_method );
+
+	static void render_polyspan(
+		synfig::Surface &target_surface,
+		const Polyspan &polyspan,
+		bool invert,
+		bool antialias,
+		Polyspan::WindingStyle winding_style,
+		const Color &color,
+		Color::value_type opacity,
+		Color::BlendMethod blend_method );
+
+	static void render_contour(
+		synfig::Surface &target_surface,
+		const Contour::ChunkList &chunks,
+		bool invert,
+		bool antialias,
+		Polyspan::WindingStyle winding_style,
+		const Matrix &transform_matrix,
+		const Color &color,
+		Color::value_type opacity,
 		Color::BlendMethod blend_method );
 
 protected:

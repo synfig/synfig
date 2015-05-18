@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/surfacesoftware.cpp
-**	\brief Surface
+/*!	\file synfig/rendering/blur.cpp
+**	\brief Blur
 **
 **	$Id$
 **
@@ -35,8 +35,7 @@
 #include <signal.h>
 #endif
 
-#include "surfacesoftware.h"
-#include "renderer.h"
+#include "blur.h"
 
 #endif
 
@@ -52,29 +51,47 @@ using namespace etl;
 
 /* === M E T H O D S ======================================================= */
 
+// BlurBase
+
 void
-rendering::SurfaceSoftware::assign_size_vfunc(int width, int height)
+rendering::BlurBase::set_type(Type x)
+	{ if (get_type() != x) { type = x; changed_common_data(); } }
+
+void
+rendering::BlurBase::set_size(const Vector &x)
+	{ if (get_size() != x) { size = x; changed_common_data(); } }
+
+void
+rendering::BlurBase::set_surface(const Surface::Handle &x)
+	{ if (get_surface() != x) { surface = x; changed_common_data(); } }
+
+void
+rendering::BlurBase::set_task(const Task::Handle &x)
+	{ if (get_task() != x) { task = x; changed_common_data(); } }
+
+void
+rendering::BlurBase::apply_common_data(const BlurBase &data)
 {
-	set_wh(width, height);
+	set_type(data.get_type());
+	set_size(data.get_size());
+	set_surface(data.get_surface());
+	set_task(data.get_task());
 }
 
 void
-rendering::SurfaceSoftware::assign_surface_vfunc(const rendering::Surface::Handle &surface)
+rendering::BlurBase::changed_common_data()
 {
-	assert(get_pitch() == (int)(sizeof(Color)*get_w()));
-	set_wh(surface->get_width(), surface->get_height(), 0);
-	surface->get_pixels(&(*this)[0][0]);
-}
+	bool repeat = true;
+	while(repeat)
+	{
+		repeat = false;
+		for(DependentObject::AlternativeList::const_iterator i = get_alternatives().begin(); i != get_alternatives().end(); ++i)
+			if (!Handle::cast_dynamic(*i))
+				{ remove_alternative(*i); repeat = true; break; }
+	}
 
-void
-rendering::SurfaceSoftware::get_size_vfunc(int &out_width, int &out_height) const
-	{ out_width = get_w(); out_height = get_h(); }
-
-void
-rendering::SurfaceSoftware::get_pixels_vfunc(Color *buffer) const
-{
-	assert(get_pitch() == sizeof(Color)*get_width());
-	memcpy(buffer, &(*this)[0][0], sizeof(Color)*get_w()*get_h());
+	for(DependentObject::AlternativeList::const_iterator i = get_alternatives().begin(); i != get_alternatives().end(); ++i)
+		Handle::cast_dynamic(*i)->apply_common_data(*this);
 }
 
 /* === E N T R Y P O I N T ================================================= */

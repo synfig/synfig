@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/task.h
-**	\brief Task Header
+/*!	\file synfig/rendering/blur.h
+**	\brief Blur Header
 **
 **	$Id$
 **
@@ -22,16 +22,17 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_RENDERING_TASK_H
-#define __SYNFIG_RENDERING_TASK_H
+#ifndef __SYNFIG_RENDERING_BLUR_H
+#define __SYNFIG_RENDERING_BLUR_H
 
 /* === H E A D E R S ======================================================= */
 
-#include "renderer.h"
-#include "surface.h"
-#include "transformation.h"
-#include "blending.h"
+#include <cstring>
+#include "task.h"
 #include "primitive.h"
+#include "surface.h"
+#include "../matrix.h"
+#include "../blur.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -44,27 +45,40 @@ namespace synfig
 namespace rendering
 {
 
-class Task: public etl::shared_object
+class BlurBase: public Primitive
 {
 public:
-	typedef etl::handle<Task> Handle;
-	typedef std::vector<const Renderer::DependentObject::Handle *> ParamList;
+	typedef etl::handle<BlurBase> Handle;
 
 private:
-	ParamList params;
-	Surface::Handle target_surface;
-
-protected:
-	void register_param(const Renderer::DependentObject::Handle &param);
-	void unregister_param(const Renderer::DependentObject::Handle &param);
+	::Blur::Type type;
+	Vector size;
+	Surface::Handle surface;
+	Task::Handle task;
 
 public:
-	//! List of sub-tasks and primitives, uses for optimization
-	const ParamList& get_params() const { return params; }
+	BlurBase(): type(::Blur::BOX) { }
 
-	const Surface::Handle& get_target_surface() const { return target_surface; }
+	Type get_type() const { return type; }
+	void set_type(Type x);
 
-	virtual bool run(Renderer &renderer) const;
+	const Vector& get_size() const { return size; }
+	void set_size(const Vector &x);
+
+	Surface::Handle get_surface() const { return surface; }
+	void set_surface(const Surface::Handle &x);
+
+	Task::Handle get_task() const { return task; }
+	void set_task(const Task::Handle &x);
+
+	void apply_common_data(const BlurBase &data);
+	void changed_common_data();
+};
+
+class Blur: public BlurBase
+{
+public:
+	typedef etl::handle<Blur> Handle;
 };
 
 } /* end namespace rendering */

@@ -40,6 +40,7 @@
 #include "transformationaffine.h"
 #include "blendingsimple.h"
 #include "mesh.h"
+#include "blur.h"
 
 #endif
 
@@ -103,6 +104,7 @@ rendering::RendererSoftware::render_triangle(
 	const Vector &p1,
 	const Vector &p2,
 	const Color &color,
+	Color::value_type opacity,
 	Color::BlendMethod blend_method )
 {
 	// convert points to int
@@ -120,7 +122,7 @@ rendering::RendererSoftware::render_triangle(
 	if (ip0.y >= height && ip1.y >= height && ip2.y >= height) return;
 
 	synfig::Surface::alpha_pen apen(target_surface.get_pen(0, 0));
-	apen.set_alpha(1.0);
+	apen.set_alpha(opacity);
 	apen.set_blend_method(blend_method);
 
     // sort points
@@ -215,7 +217,7 @@ rendering::RendererSoftware::render_triangle(
 	const Vector &p2,
 	const Vector &t2,
 	const synfig::Surface &texture,
-	Real alpha,
+	Color::value_type opacity,
 	Color::BlendMethod blend_method )
 {
 	if (t0[0] < 0.0 && t1[0] < 0.0 && t2[0] < 0.0) return;
@@ -259,7 +261,7 @@ rendering::RendererSoftware::render_triangle(
 	//Vector tdy = matrix.get_transformed(Vector(0.0, 1.0), false);
 
 	synfig::Surface::alpha_pen apen(target_surface.get_pen(0, 0));
-	apen.set_alpha(alpha);
+	apen.set_alpha(opacity);
 	apen.set_blend_method(blend_method);
 
     // sort points
@@ -307,7 +309,7 @@ rendering::RendererSoftware::render_triangle(
 					}
 					else
 					{
-						apen.set_alpha(alpha);
+						apen.set_alpha(opacity);
 						apen.put_value(texture.cubic_sample(tex_point[0], tex_point[1]));
 					}
 					apen.inc_x();
@@ -354,7 +356,7 @@ rendering::RendererSoftware::render_triangle(
 					}
 					else
 					{
-						apen.set_alpha(alpha);
+						apen.set_alpha(opacity);
 						apen.put_value(texture.cubic_sample(tex_point[0], tex_point[1]));
 					}
 					apen.inc_x();
@@ -378,6 +380,7 @@ rendering::RendererSoftware::render_polygon(
 	int triangles_count,
 	const Matrix &transform_matrix,
 	const Color &color,
+	Color::value_type opacity,
 	Color::BlendMethod blend_method )
 {
 	if (!target_surface.is_valid()) return;
@@ -394,6 +397,7 @@ rendering::RendererSoftware::render_polygon(
 			transform_matrix.get_transformed(*(Vector*)((char*)vertices + triangle[1]*vertices_strip)),
 			transform_matrix.get_transformed(*(Vector*)((char*)vertices + triangle[2]*vertices_strip)),
 			color,
+			opacity,
 			blend_method );
 	}
 }
@@ -411,7 +415,7 @@ rendering::RendererSoftware::render_mesh(
 	const synfig::Surface &texture,
 	const Matrix &transform_matrix,
 	const Matrix &texture_matrix,
-	Real alpha,
+	Color::value_type opacity,
 	Color::BlendMethod blend_method )
 {
 	if (!target_surface.is_valid()) return;
@@ -433,10 +437,210 @@ rendering::RendererSoftware::render_mesh(
 			transform_matrix.get_transformed(*(Vector*)((char*)vertices + triangle[2]*vertices_strip)),
 			texture_matrix.get_transformed(*(Vector*)((char*)tex_coords + triangle[2]*tex_coords_strip)),
 			texture,
-			alpha,
+			opacity,
 			blend_method );
 	}
 }
+
+void
+rendering::RendererSoftware::render_polyspan(
+	synfig::Surface &target_surface,
+	const Polyspan &polyspan,
+	bool invert,
+	bool antialias,
+	Polyspan::WindingStyle winding_style,
+	const Color &color,
+	Color::value_type opacity,
+	Color::BlendMethod blend_method )
+{
+	synfig::Surface::alpha_pen p(target_surface.begin(), opacity, blend_method);
+	const Polyspan::ContextRect &window = polyspan.get_window();
+	const Polyspan::cover_array &covers = polyspan.get_covers();
+
+	Polyspan::cover_array::iterator cur_mark = covers.begin();
+	Polyspan::cover_array::iterator end_mark = covers.end();
+
+	Real cover = 0, area = 0, alpha = 0;
+	int	y = 0, x = 0;
+
+	p.set_value(color);
+	cover = 0;
+
+	if (cur_mark == end_mark)
+	{
+		// no marks at all
+		if (invert)
+		{
+			p.move_to(window.minx, window.miny);
+			p.put_block(window.maxy - window.miny, window.maxx - window.minx);
+		}
+		return;
+	}
+
+	// fill initial rect / line
+	if (invert)
+	{
+		// fill all the area above the first vertex
+		p.move_to(window.minx, window.miny);
+		y = window.miny;
+		int l = window.maxx - window.minx;
+
+		p.put_block(cur_mark->y - window.miny, l);
+
+		// fill the area to the left of the first vertex on that line
+		l = cur_mark->x - window.minx;
+		p.move_to(window.minx, cur_mark->y);
+		if (l) p.put_hline(l);
+	}
+
+	while(true)
+	{
+		y = cur_mark->y;
+		x = cur_mark->x;
+
+		p.move_to(x,y);
+
+		area = cur_mark->area;
+		cover += cur_mark->cover;
+
+		// accumulate for the current pixel
+		while(++cur_mark != covers.end())
+		{
+			if (y != cur_mark->y || x != cur_mark->x)
+				break;
+
+			area += cur_mark->area;
+			cover += cur_mark->cover;
+		}
+
+		// draw pixel - based on covered area
+		if (area) // if we're ok, draw the current pixel
+		{
+			alpha = polyspan.extract_alpha(cover - area, winding_style);
+			if (invert) alpha = 1 - alpha;
+
+			if (antialias)
+			{
+				if (alpha) p.put_value_alpha(alpha);
+			}
+			else
+			{
+				if (alpha >= .5) p.put_value();
+			}
+
+			p.inc_x();
+			x++;
+		}
+
+		// if we're done, don't use iterator and exit
+		if (cur_mark == end_mark) break;
+
+		// if there is no more live pixels on this line, goto next
+		if (y != cur_mark->y)
+		{
+			if (invert)
+			{
+				// fill the area at the end of the line
+				p.put_hline(window.maxx - x);
+
+				// fill area at the beginning of the next line
+				p.move_to(window.minx, cur_mark->y);
+				p.put_hline(cur_mark->x - window.minx);
+			}
+
+			cover = 0;
+			continue;
+		}
+
+		// draw span to next pixel - based on total amount of pixel cover
+		if (x < cur_mark->x)
+		{
+			alpha = polyspan.extract_alpha(cover, winding_style);
+			if (invert) alpha = 1 - alpha;
+
+			if (antialias)
+			{
+				if (alpha) p.put_hline(cur_mark->x - x, alpha);
+			}
+			else
+			{
+				if (alpha >= .5) p.put_hline(cur_mark->x - x);
+			}
+		}
+	}
+
+	// fill the after stuff
+	if (invert)
+	{
+		//fill the area at the end of the line
+		p.put_hline(window.maxx - x);
+
+		//fill area at the beginning of the next line
+		p.move_to(window.minx, y+1);
+		p.put_block(window.maxy - y - 1, window.maxx - window.minx);
+	}
+}
+
+void
+rendering::RendererSoftware::render_contour(
+	synfig::Surface &target_surface,
+	const Contour::ChunkList &chunks,
+	bool invert,
+	bool antialias,
+	Polyspan::WindingStyle winding_style,
+	const Matrix &transform_matrix,
+	const Color &color,
+	Color::value_type opacity,
+	Color::BlendMethod blend_method )
+{
+	Polyspan span;
+	span.init(0, 0, target_surface.get_w(), target_surface.get_h());
+	Vector p1, t0, t1;
+	p1 = transform_matrix.get_transformed(Vector::zero());
+	span.move_to(p1[0], p1[1]);
+	for(Contour::ChunkList::const_iterator i = chunks.begin(); i != chunks.end(); ++i)
+	{
+		switch(i->type)
+		{
+			case Contour::ChunkType::CLOSE:
+				span.close();
+				break;
+			case Contour::ChunkType::MOVE:
+				p1 = transform_matrix.get_transformed(i->p1);
+				span.move_to(p1[0], p1[0]);
+				break;
+			case Contour::ChunkType::LINE:
+				p1 = transform_matrix.get_transformed(i->p1);
+				span.line_to(p1[0], p1[1]);
+				break;
+			case Contour::ChunkType::CONIC:
+				p1 = transform_matrix.get_transformed(i->p1);
+				t0 = transform_matrix.get_transformed(i->t0, false);
+				span.conic_to(t0[0], t0[1], p1[0], p1[1]);
+				break;
+			case Contour::ChunkType::CUBIC:
+				p1 = transform_matrix.get_transformed(i->p1);
+				t0 = transform_matrix.get_transformed(i->t0, false);
+				t1 = transform_matrix.get_transformed(i->t1, false);
+				span.cubic_to(t0[0], t0[1], t1[0], t1[1], p1[0], p1[1]);
+				break;
+			default:
+				break;
+		}
+	}
+	span.sort_marks();
+
+	return render_polyspan(
+		target_surface,
+		span,
+		invert,
+		antialias,
+		winding_style,
+		color,
+		opacity,
+		blend_method );
+}
+
 
 bool
 rendering::RendererSoftware::is_supported_vfunc(const DependentObject::Handle &obj) const
@@ -459,6 +663,14 @@ rendering::RendererSoftware::is_supported_vfunc(const DependentObject::Handle &o
 		  && (mesh->get_task() || mesh->get_surface()) )
 			return true;
 		return false;
+	} else
+	if (Contour::Handle::cast_dynamic(obj))
+	{
+		return true;
+	} else
+	if (Blur::Handle::cast_dynamic(obj))
+	{
+		return true;
 	}
 	return false;
 }
@@ -492,66 +704,127 @@ rendering::RendererSoftware::draw_vfunc(
 	BlendingSimple::Handle blending_simple = BlendingSimple::Handle::cast_dynamic(blending);
 	if (!blending_simple) return false;
 
-	Mesh::Handle mesh = Mesh::Handle::cast_dynamic(primitive);
-	if (!mesh) return false;
-
-	if (mesh->check_vertex_field(Mesh::FIELD_TEXCOORDS))
+	if (Mesh::Handle mesh = Mesh::Handle::cast_dynamic(primitive))
 	{
-		Surface::Handle texture;
-		if (mesh->get_task())
+		if (mesh->check_vertex_field(Mesh::FIELD_TEXCOORDS))
 		{
-			Vector size((Real)(surface_software->get_width()), (Real)(surface_software->get_height()));
-			size = mesh->get_resolution_transfrom().get_transformed(size);
-			int w = (int)round(size[0]);
-			int h = (int)round(size[0]);
-			if (w <= 0) w = 1;
-			if (h <= 0) h = 1;
+			Surface::Handle texture;
+			if (mesh->get_task())
+			{
+				Vector size((Real)(surface_software->get_width()), (Real)(surface_software->get_height()));
+				size = mesh->get_resolution_transfrom().get_transformed(size);
+				int w = (int)round(size[0]);
+				int h = (int)round(size[0]);
+				if (w <= 0) w = 1;
+				if (h <= 0) h = 1;
+				if (w > params.max_surface_width) w = params.max_surface_width;
+				if (h > params.max_surface_height) h = params.max_surface_height;
+
+				texture = new SurfaceSoftware();
+				texture->assign(w, h);
+				mesh->get_task()->draw(params.root_renderer, params, texture);
+			}
+
+			if (!texture)
+				texture = mesh->get_surface();
+
+			SurfaceSoftware::Handle texture_software = convert(texture);
+			if (!texture_software)
+				return false;
+
+			render_mesh(
+				*surface_software,
+				(const Vector*)mesh->get_vertex_pointer(Mesh::FIELD_POSITION),
+				mesh->get_vertex_size(),
+				(const Vector*)mesh->get_vertex_pointer(Mesh::FIELD_TEXCOORDS),
+				mesh->get_vertex_size(),
+				((const Mesh::Triangle*)mesh->get_triangles_pointer())->vertices,
+				sizeof(Mesh::Triangle),
+				mesh->get_triangles_count(),
+				*texture_software,
+				transformation_affine->get_matrix(),
+				Matrix(),
+				mesh->get_color().get_a(),
+				blending_simple->get_method() );
+
+			return true;
+		}
+		else
+		{
+			render_polygon(
+				*surface_software,
+				(const Vector*)mesh->get_vertex_pointer(Mesh::FIELD_POSITION),
+				mesh->get_vertex_size(),
+				((const Mesh::Triangle*)mesh->get_triangles_pointer())->vertices,
+				sizeof(Mesh::Triangle),
+				mesh->get_triangles_count(),
+				transformation_affine->get_matrix(),
+				mesh->get_color(),
+				mesh->get_color().get_a(),
+				blending_simple->get_method() );
+
+			return true;
+		}
+	} else
+	if (Contour::Handle contour = Contour::Handle::cast_dynamic(primitive))
+	{
+-		render_contour(
+-			*surface_software,
+			contour->get_chunks(),
+			contour->get_invert(),
+			contour->get_antialias(),
+			contour->get_winding_style(),
+			transformation_affine->get_matrix(),
+			contour->get_color(),
+			contour->get_color().get_a(),
+			blending_simple->get_method() );
+
+		return true;
+	} else
+	if (Blur::Handle blur = Blur::Handle::cast_dynamic(primitive))
+	{
+		assert(transformation_affine->get_matrix().is_identity());
+		::Blur b(blur->get_size(), blur->get_type());
+		int ex = 0, ey = 0;
+		b.get_surface_extra_size(0.5*surface_software->get_w(), 0.5*surface_software->get_h(), ex, ey);
+
+		Surface::Handle texture;
+		if (blur->get_task())
+		{
+			int w = surface_software->get_w() + ex;
+			int h = surface_software->get_h() + ey;
 			if (w > params.max_surface_width) w = params.max_surface_width;
 			if (h > params.max_surface_height) h = params.max_surface_height;
 
 			texture = new SurfaceSoftware();
 			texture->assign(w, h);
-			mesh->get_task()->draw(params.root_renderer, params, texture);
+			blur->get_task()->draw(params.root_renderer, params, texture);
 		}
 
 		if (!texture)
-			texture = mesh->get_surface();
+			texture = blur->get_surface();
 
 		SurfaceSoftware::Handle texture_software = convert(texture);
 		if (!texture_software)
 			return false;
 
-		render_mesh(
-			*surface_software,
-			(const Vector*)mesh->get_vertex_pointer(Mesh::FIELD_POSITION),
-			mesh->get_vertex_size(),
-			(const Vector*)mesh->get_vertex_pointer(Mesh::FIELD_TEXCOORDS),
-			mesh->get_vertex_size(),
-			((const Mesh::Triangle*)mesh->get_triangles_pointer())->vertices,
-			sizeof(Mesh::Triangle),
-			mesh->get_triangles_count(),
-			*texture_software,
-			transformation_affine->get_matrix(),
-			Matrix(),
-			mesh->get_color().get_a(),
-			blending_simple->get_method() );
+			render_mesh(
+				*surface_software,
+				(const Vector*)mesh->get_vertex_pointer(Mesh::FIELD_POSITION),
+				mesh->get_vertex_size(),
+				(const Vector*)mesh->get_vertex_pointer(Mesh::FIELD_TEXCOORDS),
+				mesh->get_vertex_size(),
+				((const Mesh::Triangle*)mesh->get_triangles_pointer())->vertices,
+				sizeof(Mesh::Triangle),
+				mesh->get_triangles_count(),
+				*texture_software,
+				transformation_affine->get_matrix(),
+				Matrix(),
+				mesh->get_color().get_a(),
+				blending_simple->get_method() );
 
-		return true;
-	}
-	else
-	{
-		render_polygon(
-			*surface_software,
-			(const Vector*)mesh->get_vertex_pointer(Mesh::FIELD_POSITION),
-			mesh->get_vertex_size(),
-			((const Mesh::Triangle*)mesh->get_triangles_pointer())->vertices,
-			sizeof(Mesh::Triangle),
-			mesh->get_triangles_count(),
-			transformation_affine->get_matrix(),
-			mesh->get_color(),
-			blending_simple->get_method() );
-
-		return true;
+			return true;
+		}
 	}
 
 	return false;
