@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/transformation.h
-**	\brief Transformation Header
+/*!	\file synfig/rendering/common/task/taskblur.h
+**	\brief TaskBlur Header
 **
 **	$Id$
 **
@@ -22,13 +22,13 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_RENDERING_TRANSFORMATION_H
-#define __SYNFIG_RENDERING_TRANSFORMATION_H
+#ifndef __SYNFIG_RENDERING_TASKBLUR_H
+#define __SYNFIG_RENDERING_TASKBLUR_H
 
 /* === H E A D E R S ======================================================= */
 
-#include "renderer.h"
-#include "../vector.h"
+#include "../../task.h"
+#include "../../primitive/blur.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -41,29 +41,16 @@ namespace synfig
 namespace rendering
 {
 
-class Transformation: public Renderer::DependentObject
+class TaskBlur: public Task
 {
 public:
-	typedef etl::handle<Transformation> Handle;
+	bool sub_task_resized;
+	Blur blur;
 
-	struct TransformedPoint
-	{
-		Point p;
-		Real depth;
-		bool visible;
+	TaskBlur(): sub_task_resized(false) { }
 
-		TransformedPoint(): depth(0.0), visible(true) { }
-		explicit TransformedPoint(const Point &p, Real depth = 0.0, bool visible = true):
-			p(p), depth(depth), visible(visible) { }
-	};
-
-protected:
-	virtual TransformedPoint transform_vfunc(const Point &x) const;
-	virtual Point get_derivation_vfunc(int level, const Point &x, Real epsilon) const;
-
-public:
-	TransformedPoint transform(const Point &x) const;
-	Point get_derivation(int level, const Point &x, Real epsilon = 1e-6) const;
+	const Task::Handle& sub_task() const { return Task::sub_task(0); }
+	Task::Handle& sub_task() { return Task::sub_task(0); }
 };
 
 } /* end namespace rendering */

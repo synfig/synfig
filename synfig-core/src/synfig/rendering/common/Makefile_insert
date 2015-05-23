@@ -1,0 +1,13 @@
+RENDERING_COMMON_HH =
+
+RENDERING_COMMON_CC =
+
+include optimizer/Makefile_insert
+include task/Makefile_insert
+
+RENDERING_HH += \
+    $(RENDERING_COMMON_HH)
+
+RENDERING_CC += \
+    $(RENDERING_COMMON_CC)
+

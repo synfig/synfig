@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/contour.h
+/*!	\file synfig/rendering/common/contour.h
 **	\brief Contour Header
 **
 **	$Id$
@@ -29,10 +29,6 @@
 
 #include <synfig/rendering/task.h>
 #include <cstring>
-#include "primitive.h"
-#include "surface.h"
-#include "polyspan.h"
-#include "../matrix.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -45,7 +41,7 @@ namespace synfig
 namespace rendering
 {
 
-class ContourBase: public Primitive
+class ContourBase: public etl::shared_object
 {
 public:
 	typedef etl::handle<ContourBase> Handle;
