@@ -50,6 +50,7 @@ public:
 
 	virtual ~Renderer();
 
+	const Optimizer::List& get_optimizers() const { return optimizers; }
 	bool is_optimizer_registered(const Optimizer::Handle &optimizer) const;
 	void register_optimizer(const Optimizer::Handle &optimizer);
 	void unregister_optimizer(const Optimizer::Handle &optimizer);
