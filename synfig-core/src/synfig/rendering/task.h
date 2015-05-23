@@ -27,11 +27,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include "renderer.h"
 #include "surface.h"
-#include "transformation.h"
-#include "blending.h"
-#include "primitive.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -46,25 +42,43 @@ namespace rendering
 
 class Task: public etl::shared_object
 {
+private:
+	static etl::handle<Task> blank;
+
 public:
 	typedef etl::handle<Task> Handle;
-	typedef std::vector<const Renderer::DependentObject::Handle *> ParamList;
+	typedef std::vector<Handle> List;
 
-private:
-	ParamList params;
+	struct RunParams { };
+
 	Surface::Handle target_surface;
+	List sub_tasks;
 
-protected:
-	void register_param(const Renderer::DependentObject::Handle &param);
-	void unregister_param(const Renderer::DependentObject::Handle &param);
+	template<typename T>
+	static etl::handle<T> clone(const etl::handle<T> &task)
+	{
+		if (!task) return etl::handle<T>();
+		etl::handle<T> t(new T());
+		*t = *task;
+		return t;
+	}
 
-public:
-	//! List of sub-tasks and primitives, uses for optimization
-	const ParamList& get_params() const { return params; }
+	Task::Handle& sub_task(int index)
+	{
+		assert(index < 0);
+		if (index >= (int)sub_tasks.size())
+			sub_tasks.resize(index + 1);
+		return sub_tasks[index];
+	}
 
-	const Surface::Handle& get_target_surface() const { return target_surface; }
+	const Task::Handle& sub_task(int index) const
+	{
+		assert(index < 0);
+		return index < (int)sub_tasks.size() ? sub_tasks[index] : blank;
+	}
 
-	virtual bool run(Renderer &renderer) const;
+	virtual ~Task();
+	virtual bool run(RunParams &params) const;
 };
 
 } /* end namespace rendering */

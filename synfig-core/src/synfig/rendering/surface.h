@@ -27,7 +27,9 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include "renderer.h"
+#include <ETL/handle>
+
+#include <synfig/color.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -40,30 +42,38 @@ namespace synfig
 namespace rendering
 {
 
-class Renderer;
-class Transformation;
-class Blending;
-class Primitive;
-
-class Surface: public Renderer::DependentObject
+class Surface: public etl::shared_object
 {
 public:
 	typedef etl::handle<Surface> Handle;
 
+private:
+	int width;
+	int height;
+	bool created;
+
 protected:
-	virtual void assign_size_vfunc(int width, int height) = 0;
-	virtual void assign_surface_vfunc(const Handle &surface) = 0;
-	virtual void get_size_vfunc(int &out_width, int &out_height) const = 0;
-	virtual void get_pixels_vfunc(Color *buffer) const = 0;
+	virtual bool create_vfunc() = 0;
+	virtual bool assign_vfunc(const Surface &surface) = 0;
+	virtual void destroy_vfunc() = 0;
+	virtual bool get_pixels_vfunc(Color *buffer) const = 0;
 
 public:
-	void assign(int width, int height);
-	void assign(const Handle &surface);
+	bool is_temporary;
+
+	Surface();
+	virtual ~Surface();
+
+	void set_size(int width, int height);
+	bool create();
+	bool assign(const Handle &surface);
+	void destroy();
 
 	bool empty() const;
-	int get_width() const;
-	int get_height() const;
-	void get_pixels(Color *buffer) const;
+	int get_width() const { return width; }
+	int get_height() const { return height; }
+	bool is_created() const { return created; }
+	bool get_pixels(Color *buffer) const;
 };
 
 } /* end namespace rendering */

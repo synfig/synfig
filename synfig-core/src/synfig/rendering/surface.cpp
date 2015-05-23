@@ -39,9 +39,8 @@
 
 #endif
 
-using namespace std;
 using namespace synfig;
-using namespace etl;
+using namespace rendering;
 
 /* === M A C R O S ========================================================= */
 
@@ -51,55 +50,62 @@ using namespace etl;
 
 /* === M E T H O D S ======================================================= */
 
+rendering::Surface::Surface():
+	width(0),
+	height(0),
+	created(false),
+	is_temporary(false)
+{ }
+
+rendering::Surface::~Surface() { }
+
 void
-rendering::Surface::assign(int width, int height)
+rendering::Surface::set_size(int width, int height)
 {
-	if (width <= 0 || height <= 0) { width = 0; height = 0; }
-	assign_size_vfunc(width, height);
-	changed();
+	assert(!is_created());
+	this->width = width > 0 ? width : 0;
+	this->height = height > 0 ? height : 0;
+}
+
+bool
+rendering::Surface::create()
+{
+	if (!is_created() && !empty())
+		created = create_vfunc();
+	return is_created();
+}
+
+
+bool
+rendering::Surface::assign(const Handle &surface)
+{
+	destroy();
+	if (surface) {
+		set_size(surface->get_width(), surface->get_height());
+		created = assign_vfunc(*surface);
+	} else {
+		set_size(0, 0);
+	}
+	return is_created();
 }
 
 void
-rendering::Surface::assign(const Handle &surface)
+rendering::Surface::destroy()
 {
-	if (!surface || surface->empty())
-	{
-		if (empty()) return;
-		assign_size_vfunc(0, 0);
-	}
-	else
-	{
-		assign_surface_vfunc(surface);
-	}
-	changed();
+	if (is_created())
+		destroy_vfunc();
 }
 
 bool
 rendering::Surface::empty() const
 {
-	int width = 0, height = 0;
-	get_size_vfunc(width, height);
-	return width <= 0 || height <= 0;
+	return width > 0 && height > 0;
 }
 
-int
-rendering::Surface::get_width() const
-{
-	int width = 0, height = 0;
-	get_size_vfunc(width, height);
-	return width <= 0 || height <= 0 ? 0 : width;
-}
-
-int
-rendering::Surface::get_height() const
-{
-	int width = 0, height = 0;
-	get_size_vfunc(width, height);
-	return width <= 0 || height <= 0 ? 0 : height;
-}
-
-void
+bool
 rendering::Surface::get_pixels(Color *buffer) const
-	{ get_pixels_vfunc(buffer); }
+{
+	return is_created() && get_pixels_vfunc(buffer);
+}
 
 /* === E N T R Y P O I N T ================================================= */

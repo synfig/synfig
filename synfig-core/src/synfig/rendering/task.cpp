@@ -35,13 +35,12 @@
 #include <signal.h>
 #endif
 
-#include <synfig/rendering/task.h>
+#include "task.h"
 
 #endif
 
-using namespace std;
 using namespace synfig;
-using namespace etl;
+using namespace rendering;
 
 /* === M A C R O S ========================================================= */
 
@@ -51,25 +50,10 @@ using namespace etl;
 
 /* === M E T H O D S ======================================================= */
 
+Task::~Task() { }
+
 bool
-rendering::Task::draw(
-	const Renderer::Handle &renderer,
-	const Renderer::Params &params,
-	const Surface::Handle &surface ) const
-{
-	if (!renderer) return false; // TODO: warning
-	if (!surface) return false; // TODO: warning
-
-	bool success = true;
-	if (!renderer->draw(params, surface, get_transformation(), get_blending(), get_primitive()))
-		success = false;
-	if (get_branch() && !get_branch()->draw(renderer, params, surface))
-		success = false;
-	if (get_next() && !get_next()->draw(renderer, params, surface))
-		success = false;
-
-	return success;
-}
-
+Task::run(RunParams & /* params */) const
+	{ return false; }
 
 /* === E N T R Y P O I N T ================================================= */

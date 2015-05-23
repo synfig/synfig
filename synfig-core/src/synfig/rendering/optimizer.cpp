@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/primitive.cpp
-**	\brief Primitive
+/*!	\file synfig/rendering/optimizer.cpp
+**	\brief Optimizer
 **
 **	$Id$
 **
@@ -35,13 +35,12 @@
 #include <signal.h>
 #endif
 
-#include "primitive.h"
+#include "optimizer.h"
 
 #endif
 
-using namespace std;
 using namespace synfig;
-using namespace etl;
+using namespace rendering;
 
 /* === M A C R O S ========================================================= */
 
@@ -51,6 +50,6 @@ using namespace etl;
 
 /* === M E T H O D S ======================================================= */
 
-
+Optimizer::~Optimizer() { }
 
 /* === E N T R Y P O I N T ================================================= */
