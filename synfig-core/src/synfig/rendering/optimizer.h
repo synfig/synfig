@@ -43,7 +43,7 @@ class Renderer;
 class Optimizer: public etl::shared_object
 {
 public:
-	etl::handle<Optimizer> Handle;
+	typedef etl::handle<Optimizer> Handle;
 	typedef std::vector<Handle> List;
 
 	struct RunParams {

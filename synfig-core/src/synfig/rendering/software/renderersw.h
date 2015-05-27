@@ -43,6 +43,8 @@ namespace rendering
 class RendererSW: public Renderer
 {
 public:
+	typedef etl::handle<RendererSW> Handle;
+
 	RendererSW();
 	~RendererSW();
 };

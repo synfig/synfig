@@ -44,6 +44,8 @@ namespace rendering
 class TaskBlurPreparedSW: public TaskSW
 {
 public:
+	typedef etl::handle<TaskBlurPreparedSW> Handle;
+
 	Blur blur;
 
 	TaskBlurPreparedSW() { }

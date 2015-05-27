@@ -43,6 +43,8 @@ namespace rendering
 class TaskSurfaceCreate: public Task
 {
 public:
+	typedef etl::handle<TaskSurfaceCreate> Handle;
+
 	virtual bool run(RunParams &params) const;
 };
 

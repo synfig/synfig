@@ -44,6 +44,8 @@ namespace rendering
 class TaskTransformation: public Task
 {
 public:
+	typedef etl::handle<TaskTransformation> Handle;
+
 	Transformation::Handle transformation;
 
 	const Task::Handle& sub_task() const { return Task::sub_task(0); }

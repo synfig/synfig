@@ -43,6 +43,8 @@ namespace rendering
 class TaskSurfaceDestroy: public Task
 {
 public:
+	typedef etl::handle<TaskSurfaceDestroy> Handle;
+
 	virtual bool run(RunParams &params) const;
 };
 

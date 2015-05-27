@@ -43,6 +43,8 @@ namespace rendering
 class RendererGL: public Renderer
 {
 public:
+	typedef etl::handle<RendererGL> Handle;
+
 	RendererGL();
 	~RendererGL();
 };

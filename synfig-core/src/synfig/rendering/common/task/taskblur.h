@@ -44,6 +44,8 @@ namespace rendering
 class TaskBlur: public Task
 {
 public:
+	typedef etl::handle<TaskBlur> Handle;
+
 	bool sub_task_resized;
 	Blur blur;
 

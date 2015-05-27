@@ -44,6 +44,8 @@ namespace rendering
 class TaskMesh: public Task
 {
 public:
+	typedef etl::handle<TaskMesh> Handle;
+
 	Mesh::Handle mesh;
 
 	const Task::Handle& sub_task() const { return Task::sub_task(0); }

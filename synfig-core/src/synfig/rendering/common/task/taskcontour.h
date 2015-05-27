@@ -44,6 +44,8 @@ namespace rendering
 class TaskContour: public Task
 {
 public:
+	typedef etl::handle<TaskContour> Handle;
+
 	Color color;
 	Contour::Handle contour;
 };

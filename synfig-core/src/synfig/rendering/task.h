@@ -43,7 +43,7 @@ namespace rendering
 class Task: public etl::shared_object
 {
 private:
-	static etl::handle<Task> blank;
+	static const etl::handle<Task> blank;
 
 public:
 	typedef etl::handle<Task> Handle;

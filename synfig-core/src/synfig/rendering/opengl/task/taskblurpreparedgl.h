@@ -44,6 +44,8 @@ namespace rendering
 class TaskBlurPreparedGL: public TaskGL
 {
 public:
+	typedef etl::handle<TaskBlurPreparedGL> Handle;
+
 	Blur blur;
 
 	TaskBlurPreparedGL() { }

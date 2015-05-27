@@ -40,7 +40,11 @@ namespace synfig
 namespace rendering
 {
 
-class TaskGL: public Task { };
+class TaskGL: public Task
+{
+public:
+	typedef etl::handle<TaskGL> Handle;
+};
 
 } /* end namespace rendering */
 } /* end namespace synfig */

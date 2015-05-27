@@ -47,6 +47,8 @@ private:
 	class Internal;
 
 public:
+	typedef etl::handle<TaskMeshSW> Handle;
+
 	Mesh::Handle mesh;
 
 	const Task::Handle& sub_task() const { return Task::sub_task(0); }

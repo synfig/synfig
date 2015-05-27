@@ -43,6 +43,8 @@ namespace rendering
 class TaskSurfaceConvert: public Task
 {
 public:
+	typedef etl::handle<TaskSurfaceConvert> Handle;
+
 	const Task::Handle& sub_task() const { return Task::sub_task(0); }
 	Task::Handle& sub_task() { return Task::sub_task(0); }
 

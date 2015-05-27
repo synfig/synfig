@@ -50,6 +50,8 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
+const etl::handle<Task> Task::blank;
+
 Task::~Task() { }
 
 bool

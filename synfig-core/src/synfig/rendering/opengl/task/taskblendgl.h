@@ -43,6 +43,8 @@ namespace rendering
 class TaskBlendGL: public TaskGL
 {
 public:
+	typedef etl::handle<TaskBlendGL> Handle;
+
 	Color::BlendMethod blend_method;
 
 	TaskBlendGL(): blend_method(Color::BLEND_COMPOSITE) { }

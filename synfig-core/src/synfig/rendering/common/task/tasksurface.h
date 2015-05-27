@@ -43,6 +43,7 @@ namespace rendering
 class TaskSurface: public Task
 {
 public:
+	typedef etl::handle<TaskSurface> Handle;
 };
 
 } /* end namespace rendering */
