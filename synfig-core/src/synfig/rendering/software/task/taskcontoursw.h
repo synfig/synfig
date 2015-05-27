@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/software/surfacesw.h
-**	\brief SurfaceSW Header
+/*!	\file synfig/rendering/software/task/taskcontoursw.h
+**	\brief TaskContourSW Header
 **
 **	$Id$
 **
@@ -22,13 +22,13 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_RENDERING_SURFACESW_H
-#define __SYNFIG_RENDERING_SURFACESW_H
+#ifndef __SYNFIG_RENDERING_TASKCONTOURSW_H
+#define __SYNFIG_RENDERING_TASKCONTOURSW_H
 
 /* === H E A D E R S ======================================================= */
 
-#include "../surface.h"
-#include <synfig/surface.h>
+#include "tasksw.h"
+#include "../../primitive/contour.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -41,22 +41,36 @@ namespace synfig
 namespace rendering
 {
 
-class SurfaceSW: public Surface
+class TaskContourSW: public TaskSW
 {
 public:
-	typedef etl::handle<SurfaceSW> Handle;
+	Color color;
+	Contour::Handle contour;
 
-private:
-	synfig::Surface surface;
+	virtual bool run(RunParams &params) const;
 
-protected:
-	virtual bool create_vfunc();
-	virtual bool assign_vfunc(const Surface &surface);
-	virtual void destroy_vfunc();
-	virtual bool get_pixels_vfunc(Color *buffer) const;
+	// static
 
-public:
-	const synfig::Surface& get_surface() const { return surface; }
+	static void render_polyspan(
+		synfig::Surface &target_surface,
+		const Polyspan &polyspan,
+		bool invert,
+		bool antialias,
+		Polyspan::WindingStyle winding_style,
+		const Color &color,
+		Color::value_type opacity,
+		Color::BlendMethod blend_method );
+
+	static void render_contour(
+		synfig::Surface &target_surface,
+		const Contour::ChunkList &chunks,
+		bool invert,
+		bool antialias,
+		Polyspan::WindingStyle winding_style,
+		const Matrix &transform_matrix,
+		const Color &color,
+		Color::value_type opacity,
+		Color::BlendMethod blend_method );
 };
 
 } /* end namespace rendering */

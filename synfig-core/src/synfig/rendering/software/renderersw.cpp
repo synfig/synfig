@@ -1,11 +1,11 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/software/surfacesw.cpp
-**	\brief SurfaceSW
+/*!	\file synfig/rendering/software/renderersw.cpp
+**	\brief RendererSW
 **
 **	$Id$
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2014 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -35,7 +35,7 @@
 #include <signal.h>
 #endif
 
-#include <synfig/rendering/software/surfacesw.h>
+#include "renderersw.h"
 
 #endif
 
@@ -50,33 +50,11 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
-bool
-SurfaceSW::create_vfunc()
+RendererSW::RendererSW()
 {
-	surface.set_wh(get_width(), get_height());
-	return true;
+	// TODO: register optimizers
 }
 
-bool
-SurfaceSW::assign_vfunc(const rendering::Surface &surface)
-{
-	this->surface.set_wh(get_width(), get_height());
-	if (surface.get_pixels(&this->surface[0][0]))
-		return true;
-	this->surface.set_wh(0, 0);
-	return false;
-}
-
-void
-SurfaceSW::destroy_vfunc()
-{
-	this->surface.set_wh(0, 0);
-}
-
-bool
-SurfaceSW::get_pixels_vfunc(Color *buffer) const
-{
-	memcpy(buffer, &this->surface[0][0], get_buffer_size());
-}
+RendererSW::~RendererSW() { }
 
 /* === E N T R Y P O I N T ================================================= */

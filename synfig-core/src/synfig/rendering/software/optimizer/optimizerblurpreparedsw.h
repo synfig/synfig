@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/software/surfacesw.h
-**	\brief SurfaceSW Header
+/*!	\file synfig/rendering/software/optimizer/optimizerblurpreparedsw.h
+**	\brief OptimizerBlurPreparedSW Header
 **
 **	$Id$
 **
@@ -22,13 +22,12 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_RENDERING_SURFACESW_H
-#define __SYNFIG_RENDERING_SURFACESW_H
+#ifndef __SYNFIG_RENDERING_OPTIMIZERBLURPREPAREDSW_H
+#define __SYNFIG_RENDERING_OPTIMIZERBLURPREPAREDSW_H
 
 /* === H E A D E R S ======================================================= */
 
-#include "../surface.h"
-#include <synfig/surface.h>
+#include "../../optimizer.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -41,22 +40,10 @@ namespace synfig
 namespace rendering
 {
 
-class SurfaceSW: public Surface
+class OptimizerBlurPreparedSW: public Optimizer
 {
 public:
-	typedef etl::handle<SurfaceSW> Handle;
-
-private:
-	synfig::Surface surface;
-
-protected:
-	virtual bool create_vfunc();
-	virtual bool assign_vfunc(const Surface &surface);
-	virtual void destroy_vfunc();
-	virtual bool get_pixels_vfunc(Color *buffer) const;
-
-public:
-	const synfig::Surface& get_surface() const { return surface; }
+	virtual bool run(const RunParams &params) const;
 };
 
 } /* end namespace rendering */

@@ -1,11 +1,11 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/software/surfacesw.h
-**	\brief SurfaceSW Header
+/*!	\file synfig/rendering/software/renderersw.h
+**	\brief RendererSW Header
 **
 **	$Id$
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2014 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -22,13 +22,12 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_RENDERING_SURFACESW_H
-#define __SYNFIG_RENDERING_SURFACESW_H
+#ifndef __SYNFIG_RENDERING_RENDERERSW_H
+#define __SYNFIG_RENDERING_RENDERERSW_H
 
 /* === H E A D E R S ======================================================= */
 
-#include "../surface.h"
-#include <synfig/surface.h>
+#include "../renderer.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -41,26 +40,15 @@ namespace synfig
 namespace rendering
 {
 
-class SurfaceSW: public Surface
+class RendererSW: public Renderer
 {
 public:
-	typedef etl::handle<SurfaceSW> Handle;
-
-private:
-	synfig::Surface surface;
-
-protected:
-	virtual bool create_vfunc();
-	virtual bool assign_vfunc(const Surface &surface);
-	virtual void destroy_vfunc();
-	virtual bool get_pixels_vfunc(Color *buffer) const;
-
-public:
-	const synfig::Surface& get_surface() const { return surface; }
+	RendererSW();
+	~RendererSW();
 };
 
-} /* end namespace rendering */
-} /* end namespace synfig */
+}; /* end namespace rendering */
+}; /* end namespace synfig */
 
 /* -- E N D ----------------------------------------------------------------- */
 

@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/software/surfacesw.h
-**	\brief SurfaceSW Header
+/*!	\file synfig/rendering/software/task/taskblendsw.h
+**	\brief TaskBlendSW Header
 **
 **	$Id$
 **
@@ -22,13 +22,12 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_RENDERING_SURFACESW_H
-#define __SYNFIG_RENDERING_SURFACESW_H
+#ifndef __SYNFIG_RENDERING_TASKBLENDSW_H
+#define __SYNFIG_RENDERING_TASKBLENDSW_H
 
 /* === H E A D E R S ======================================================= */
 
-#include "../surface.h"
-#include <synfig/surface.h>
+#include "tasksw.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -41,22 +40,20 @@ namespace synfig
 namespace rendering
 {
 
-class SurfaceSW: public Surface
+class TaskBlendSW: public TaskSW
 {
 public:
-	typedef etl::handle<SurfaceSW> Handle;
+	Color::BlendMethod blend_method;
 
-private:
-	synfig::Surface surface;
+	TaskBlendSW(): blend_method(Color::BLEND_COMPOSITE) { }
 
-protected:
-	virtual bool create_vfunc();
-	virtual bool assign_vfunc(const Surface &surface);
-	virtual void destroy_vfunc();
-	virtual bool get_pixels_vfunc(Color *buffer) const;
+	const Task::Handle& sub_task_a() const { return sub_task(0); }
+	Task::Handle& sub_task_a() { return sub_task(0); }
 
-public:
-	const synfig::Surface& get_surface() const { return surface; }
+	const Task::Handle& sub_task_b() const { return sub_task(1); }
+	Task::Handle& sub_task_b() { return sub_task(1); }
+
+	virtual bool run(RunParams &params) const;
 };
 
 } /* end namespace rendering */

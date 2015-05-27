@@ -1,0 +1,18 @@
+RENDERING_SOFTWARE_OPTIMIZER_HH = \
+	rendering/software/optimizer/optimizerblendsw.h \
+	rendering/software/optimizer/optimizerblurpreparedsw.h \
+	rendering/software/optimizer/optimizercontoursw.h \
+	rendering/software/optimizer/optimizermeshsw.h
+
+RENDERING_SOFTWARE_OPTIMIZER_CC = \
+	rendering/software/optimizer/optimizerblendsw.cpp \
+	rendering/software/optimizer/optimizerblurpreparedsw.cpp \
+	rendering/software/optimizer/optimizercontoursw.cpp \
+	rendering/software/optimizer/optimizermeshsw.cpp
+
+RENDERING_SOFTWARE_HH += \
+    $(RENDERING_SOFTWARE_OPTIMIZER_HH)
+
+RENDERING_SOFTWARE_CC += \
+    $(RENDERING_SOFTWARE_OPTIMIZER_CC)
+

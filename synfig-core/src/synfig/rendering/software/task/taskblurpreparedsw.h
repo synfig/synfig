@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/software/surfacesw.h
-**	\brief SurfaceSW Header
+/*!	\file synfig/rendering/software/task/taskblurpreparedsw.h
+**	\brief TaskBlurPreparedSW Header
 **
 **	$Id$
 **
@@ -22,13 +22,13 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_RENDERING_SURFACESW_H
-#define __SYNFIG_RENDERING_SURFACESW_H
+#ifndef __SYNFIG_RENDERING_TASKBLURPREPAREDSW_H
+#define __SYNFIG_RENDERING_TASKBLURPREPAREDSW_H
 
 /* === H E A D E R S ======================================================= */
 
-#include "../surface.h"
-#include <synfig/surface.h>
+#include "tasksw.h"
+#include "../../primitive/blur.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -41,22 +41,17 @@ namespace synfig
 namespace rendering
 {
 
-class SurfaceSW: public Surface
+class TaskBlurPreparedSW: public TaskSW
 {
 public:
-	typedef etl::handle<SurfaceSW> Handle;
+	Blur blur;
 
-private:
-	synfig::Surface surface;
+	TaskBlurPreparedSW() { }
 
-protected:
-	virtual bool create_vfunc();
-	virtual bool assign_vfunc(const Surface &surface);
-	virtual void destroy_vfunc();
-	virtual bool get_pixels_vfunc(Color *buffer) const;
+	const Task::Handle& sub_task() const { return Task::sub_task(0); }
+	Task::Handle& sub_task() { return Task::sub_task(0); }
 
-public:
-	const synfig::Surface& get_surface() const { return surface; }
+	virtual bool run(RunParams &params) const;
 };
 
 } /* end namespace rendering */

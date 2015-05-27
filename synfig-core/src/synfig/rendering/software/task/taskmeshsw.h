@@ -1,11 +1,11 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/renderersoftware.h
-**	\brief RendererSoftware Header
+/*!	\file synfig/rendering/software/task/taskmeshsw.h
+**	\brief TaskMeshSW Header
 **
 **	$Id$
 **
 **	\legal
-**	......... ... 2014 Ivan Mahonin
+**	......... ... 2015 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -22,22 +22,13 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_RENDERING_RENDERERSOFTWARE_H
-#define __SYNFIG_RENDERING_RENDERERSOFTWARE_H
+#ifndef __SYNFIG_RENDERING_TASKMESHSW_H
+#define __SYNFIG_RENDERING_TASKMESHSW_H
 
 /* === H E A D E R S ======================================================= */
 
-#include "../vector.h"
-#include "../matrix.h"
-#include "../surface.h"
-
-#include "renderer.h"
-#include "surface.h"
-#include "transformation.h"
-#include "blending.h"
-#include "primitive.h"
-#include "polyspan.h"
-#include "contour.h"
+#include "tasksw.h"
+#include "../../primitive/mesh.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -50,15 +41,21 @@ namespace synfig
 namespace rendering
 {
 
-class RendererSoftware: public Renderer
+class TaskMeshSW: public TaskSW
 {
-public:
-	typedef etl::handle<RendererSoftware> Handle;
-
 private:
 	class Internal;
 
 public:
+	Mesh::Handle mesh;
+
+	const Task::Handle& sub_task() const { return Task::sub_task(0); }
+	Task::Handle& sub_task() { return Task::sub_task(0); }
+
+	virtual bool run(RunParams &params) const;
+
+	// static
+
 	static void render_triangle(
 		synfig::Surface &target_surface,
 		const Vector &p0,
@@ -106,41 +103,10 @@ public:
 		const Matrix &texture_matrix,
 		Color::value_type opacity,
 		Color::BlendMethod blend_method );
-
-	static void render_polyspan(
-		synfig::Surface &target_surface,
-		const Polyspan &polyspan,
-		bool invert,
-		bool antialias,
-		Polyspan::WindingStyle winding_style,
-		const Color &color,
-		Color::value_type opacity,
-		Color::BlendMethod blend_method );
-
-	static void render_contour(
-		synfig::Surface &target_surface,
-		const Contour::ChunkList &chunks,
-		bool invert,
-		bool antialias,
-		Polyspan::WindingStyle winding_style,
-		const Matrix &transform_matrix,
-		const Color &color,
-		Color::value_type opacity,
-		Color::BlendMethod blend_method );
-
-protected:
-	virtual bool is_supported_vfunc(const DependentObject::Handle &obj) const;
-	virtual DependentObject::Handle convert_vfunc(const DependentObject::Handle &obj);
-	virtual bool draw_vfunc(
-		const Params &params,
-		const Surface::Handle &target_surface,
-		const Transformation::Handle &transformation,
-		const Blending::Handle &blending,
-		const Primitive::Handle &primitive );
 };
 
-}; /* end namespace rendering */
-}; /* end namespace synfig */
+} /* end namespace rendering */
+} /* end namespace synfig */
 
 /* -- E N D ----------------------------------------------------------------- */
 
