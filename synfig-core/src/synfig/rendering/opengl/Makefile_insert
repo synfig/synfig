@@ -1,23 +1,17 @@
-RENDERING_HH = \
-	rendering/optimizer.h \
-	rendering/renderer.h \
-	rendering/surface.h \
-	rendering/task.h
+RENDERING_OPENGL_HH = \
+	rendering/opengl/renderergl.h \
+	rendering/opengl/surfacegl.h
 
-RENDERING_CC = \
-	rendering/optimizer.cpp \
-	rendering/renderer.cpp \
-	rendering/surface.cpp \
-	rendering/task.cpp
+RENDERING_OPENGL_CC = \
+	rendering/opengl/renderergl.cpp \
+	rendering/opengl/surfacegl.cpp
 
-include rendering/common/Makefile_insert
-include rendering/opengl/Makefile_insert
-include rendering/software/Makefile_insert
+include rendering/opengl/optimizer/Makefile_insert
+include rendering/opengl/task/Makefile_insert
 
-libsynfig_include_HH += \
-    $(RENDERING_HH)
+RENDERING_HH += \
+    $(RENDERING_OPENGL_HH)
 
-libsynfig_src += \
-    $(RENDERING_HH) \
-    $(RENDERING_CC)
+RENDERING_CC += \
+    $(RENDERING_OPENGL_CC)
 
