@@ -2,8 +2,8 @@ RENDERING_COMMON_HH =
 
 RENDERING_COMMON_CC =
 
-include optimizer/Makefile_insert
-include task/Makefile_insert
+include rendering/common/optimizer/Makefile_insert
+include rendering/common/task/Makefile_insert
 
 RENDERING_HH += \
     $(RENDERING_COMMON_HH)
