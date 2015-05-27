@@ -12,6 +12,7 @@ RENDERING_CC = \
 
 include rendering/common/Makefile_insert
 include rendering/opengl/Makefile_insert
+include rendering/primitive/Makefile_insert
 include rendering/software/Makefile_insert
 
 libsynfig_include_HH += \

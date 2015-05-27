@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/polyspan.cpp
+/*!	\file synfig/rendering/primitive/polyspan.cpp
 **	\brief Polyspan
 **
 **	$Id$
@@ -43,9 +43,8 @@
 
 #endif
 
-using namespace std;
 using namespace synfig;
-using namespace etl;
+using namespace rendering;
 
 /* === M A C R O S ========================================================= */
 
@@ -56,7 +55,7 @@ using namespace etl;
 /* === M E T H O D S ======================================================= */
 
 //default constructor - 0 everything
-rendering::Polyspan::Polyspan():
+Polyspan::Polyspan():
 	open_index(0),
 	cur_x(0.0),
 	cur_y(0.0),
@@ -67,7 +66,7 @@ rendering::Polyspan::Polyspan():
 
 //0 out all the variables involved in processing
 void
-rendering::Polyspan::clear()
+Polyspan::clear()
 {
 	covers.clear();
 	cur_x = cur_y = close_x = close_y = 0;
@@ -78,7 +77,7 @@ rendering::Polyspan::clear()
 
 //add the current cell, but only if there is information to add
 void
-rendering::Polyspan::addcurrent()
+Polyspan::addcurrent()
 {
 	if(current.cover || current.area)
 	{
@@ -90,7 +89,7 @@ rendering::Polyspan::addcurrent()
 
 //move to the next cell (cover values 0 initially), keeping the current if necessary
 void
-rendering::Polyspan::move_pen(int x, int y)
+Polyspan::move_pen(int x, int y)
 {
 	if(y != current.y || x != current.x)
 	{
@@ -101,7 +100,7 @@ rendering::Polyspan::move_pen(int x, int y)
 
 //close the primitives with a line (or rendering will not work as expected)
 void
-rendering::Polyspan::close()
+Polyspan::close()
 {
 	if(flags & NotClosed)
 	{
@@ -117,7 +116,7 @@ rendering::Polyspan::close()
 
 // Not recommended - destroys any separation of spans currently held
 void
-rendering::Polyspan::merge_all()
+Polyspan::merge_all()
 {
 	sort(covers.begin(),covers.end());
 	open_index = 0;
@@ -125,7 +124,7 @@ rendering::Polyspan::merge_all()
 
 //will sort the marks if they are not sorted
 void
-rendering::Polyspan::sort_marks()
+Polyspan::sort_marks()
 {
 	if(flags & NotSorted)
 	{
@@ -140,7 +139,7 @@ rendering::Polyspan::sort_marks()
 
 //encapsulate the current sublist of marks (used for drawing)
 void
-rendering::Polyspan::encapsulate_current()
+Polyspan::encapsulate_current()
 {
 	//sort the current list then reposition the open list section
 	sort_marks();
@@ -149,7 +148,7 @@ rendering::Polyspan::encapsulate_current()
 
 //move to start a new primitive list (enclose the last primitive if need be)
 void
-rendering::Polyspan::move_to(Real x, Real y)
+Polyspan::move_to(Real x, Real y)
 {
 	close();
 	if(isnan(x))x=0;
@@ -161,7 +160,7 @@ rendering::Polyspan::move_to(Real x, Real y)
 
 //primitive_to functions
 void
-rendering::Polyspan::line_to(Real x, Real y)
+Polyspan::line_to(Real x, Real y)
 {
 	Real n[4] = {0,0,0,0};
 	bool afterx = false;
@@ -238,12 +237,12 @@ rendering::Polyspan::line_to(Real x, Real y)
 			||(cur_x <  window.minx && x <  window.minx) )
 		{
 			//clip both vertices - but only needed in the x direction
-			cur_x = max(cur_x,	(Real)window.minx);
-			cur_x = min(cur_x,	(Real)window.maxx);
+			cur_x = std::max(cur_x,	(Real)window.minx);
+			cur_x = std::min(cur_x,	(Real)window.maxx);
 
 			//clip the dest values - y is already clipped
-			x = max(x,(Real)window.minx);
-			x = min(x,(Real)window.maxx);
+			x = std::max(x,(Real)window.minx);
+			x = std::min(x,(Real)window.maxx);
 
 			//must start at new point...
 			move_pen((int)floor(cur_x),(int)floor(cur_y));
@@ -335,12 +334,12 @@ rendering::Polyspan::line_to(Real x, Real y)
 }
 
 bool
-rendering::Polyspan::clip_conic(const Point *const p, const ContextRect &r)
+Polyspan::clip_conic(const Point *const p, const ContextRect &r)
 {
-	const Real minx = min(min(p[0][0],p[1][0]),p[2][0]);
-	const Real miny = min(min(p[0][1],p[1][1]),p[2][1]);
-	const Real maxx = max(max(p[0][0],p[1][0]),p[2][0]);
-	const Real maxy = max(max(p[0][1],p[1][1]),p[2][1]);
+	const Real minx = std::min(std::min(p[0][0],p[1][0]),p[2][0]);
+	const Real miny = std::min(std::min(p[0][1],p[1][1]),p[2][1]);
+	const Real maxx = std::max(std::max(p[0][0],p[1][0]),p[2][0]);
+	const Real maxy = std::max(std::max(p[0][1],p[1][1]),p[2][1]);
 
 	return 	(minx > r.maxx) ||
 			(maxx < r.minx) ||
@@ -349,7 +348,7 @@ rendering::Polyspan::clip_conic(const Point *const p, const ContextRect &r)
 }
 
 Real
-rendering::Polyspan::max_edges_conic(const Point *const p)
+Polyspan::max_edges_conic(const Point *const p)
 {
 	const Real x1 = p[1][0] - p[0][0];
 	const Real y1 = p[1][1] - p[0][1];
@@ -360,11 +359,11 @@ rendering::Polyspan::max_edges_conic(const Point *const p)
 	const Real d1 = x1*x1 + y1*y1;
 	const Real d2 = x2*x2 + y2*y2;
 
-	return max(d1,d2);
+	return std::max(d1,d2);
 }
 
 void
-rendering::Polyspan::subd_conic_stack(Point *arc)
+Polyspan::subd_conic_stack(Point *arc)
 {
 	/*
 
@@ -412,7 +411,7 @@ rendering::Polyspan::subd_conic_stack(Point *arc)
 }
 
 void
-rendering::Polyspan::conic_to(Real x1, Real y1, Real x, Real y)
+Polyspan::conic_to(Real x1, Real y1, Real x, Real y)
 {
 	Point *current = arc;
 	int		level = 0;
@@ -485,7 +484,7 @@ rendering::Polyspan::conic_to(Real x1, Real y1, Real x, Real y)
 }
 
 bool
-rendering::Polyspan::clip_cubic(const Point *const p, const ContextRect &r)
+Polyspan::clip_cubic(const Point *const p, const ContextRect &r)
 {
 	return 	((p[0][0] > r.maxx) && (p[1][0] > r.maxx) && (p[2][0] > r.maxx) && (p[3][0] > r.maxx)) ||
 			((p[0][0] < r.minx) && (p[1][0] < r.minx) && (p[2][0] < r.minx) && (p[3][0] < r.minx)) ||
@@ -494,7 +493,7 @@ rendering::Polyspan::clip_cubic(const Point *const p, const ContextRect &r)
 }
 
 Real
-rendering::Polyspan::max_edges_cubic(const Point *const p)
+Polyspan::max_edges_cubic(const Point *const p)
 {
 	const Real x1 = p[1][0] - p[0][0];
 	const Real y1 = p[1][1] - p[0][1];
@@ -509,11 +508,11 @@ rendering::Polyspan::max_edges_cubic(const Point *const p)
 	const Real d2 = x2*x2 + y2*y2;
 	const Real d3 = x3*x3 + y3*y3;
 
-	return max(max(d1,d2),d3);
+	return std::max(std::max(d1,d2),d3);
 }
 
 void
-rendering::Polyspan::subd_cubic_stack(Point *arc)
+Polyspan::subd_cubic_stack(Point *arc)
 {
 	Real a,b,c;
 
@@ -564,7 +563,7 @@ rendering::Polyspan::subd_cubic_stack(Point *arc)
 
 
 void
-rendering::Polyspan::cubic_to(Real x1, Real y1, Real x2, Real y2, Real x, Real y)
+Polyspan::cubic_to(Real x1, Real y1, Real x2, Real y2, Real x, Real y)
 {
 	Point *current = arc;
 	int		num = 0;
@@ -642,7 +641,7 @@ rendering::Polyspan::cubic_to(Real x1, Real y1, Real x2, Real y2, Real x, Real y
 
 
 void
-rendering::Polyspan::draw_scanline(int y, Real x1, Real y1, Real x2, Real y2)
+Polyspan::draw_scanline(int y, Real x1, Real y1, Real x2, Real y2)
 {
 	int	ix1 = (int)floor(x1);
 	int	ix2 = (int)floor(x2);
@@ -742,7 +741,7 @@ rendering::Polyspan::draw_scanline(int y, Real x1, Real y1, Real x2, Real y2)
 }
 
 void
-rendering::Polyspan::draw_line(Real x1, Real y1, Real x2, Real y2)
+Polyspan::draw_line(Real x1, Real y1, Real x2, Real y2)
 {
 	int iy1 = (int)floor(y1);
 	int iy2 = (int)floor(y2);
@@ -897,18 +896,18 @@ rendering::Polyspan::draw_line(Real x1, Real y1, Real x2, Real y2)
 }
 
 Real
-rendering::Polyspan::extract_alpha(Real area, WindingStyle winding_style) const
+Polyspan::extract_alpha(Real area, Contour::WindingStyle winding_style) const
 {
 	if (area < 0)
 		area = -area;
 
-	if (winding_style == WINDING_NON_ZERO)
+	if (winding_style == Contour::WINDING_NON_ZERO)
 	{
 		// non-zero winding style
 		if (area > 1)
 			return 1;
 	}
-	else // if (winding_style == WINDING_EVEN_ODD)
+	else // if (winding_style == Contour::WINDING_EVEN_ODD)
 	{
 		// even-odd winding style
 		while (area > 1)

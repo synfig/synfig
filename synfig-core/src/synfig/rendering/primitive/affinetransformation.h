@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/primitive/transformation.h
-**	\brief Transformation Header
+/*!	\file synfig/rendering/primitive/affinetransformation.h
+**	\brief AffineTransformation Header
 **
 **	$Id$
 **
@@ -22,14 +22,14 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_RENDERING_TRANSFORMATION_H
-#define __SYNFIG_RENDERING_TRANSFORMATION_H
+#ifndef __SYNFIG_RENDERING_AFFINETRANSFORMATION_H
+#define __SYNFIG_RENDERING_AFFINETRANSFORMATION_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <ETL/handle>
+#include <synfig/matrix.h>
 
-#include <synfig/vector.h>
+#include "transformation.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -42,29 +42,15 @@ namespace synfig
 namespace rendering
 {
 
-class Transformation: public etl::shared_object
+class AffineTransformation: public Transformation
 {
 public:
-	typedef etl::handle<Transformation> Handle;
+	typedef etl::handle<AffineTransformation> Handle;
 
-	struct TransformedPoint
-	{
-		Point p;
-		Real depth;
-		bool visible;
-
-		TransformedPoint(): depth(0.0), visible(true) { }
-		explicit TransformedPoint(const Point &p, Real depth = 0.0, bool visible = true):
-			p(p), depth(depth), visible(visible) { }
-	};
+	Matrix matrix;
 
 protected:
 	virtual TransformedPoint transform_vfunc(const Point &x) const;
-	virtual Point get_derivation_vfunc(int level, const Point &x, Real epsilon) const;
-
-public:
-	TransformedPoint transform(const Point &x) const;
-	Point get_derivation(int level, const Point &x, Real epsilon = 1e-6) const;
 };
 
 } /* end namespace rendering */

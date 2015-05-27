@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/primitive/transformation.cpp
-**	\brief Transformation
+/*!	\file synfig/rendering/primitive/affinetransformation.cpp
+**	\brief AffineTransformation
 **
 **	$Id$
 **
@@ -35,7 +35,7 @@
 #include <signal.h>
 #endif
 
-#include "transformation.h"
+#include "affinetransformation.h"
 
 #endif
 
@@ -51,28 +51,9 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 Transformation::TransformedPoint
-Transformation::transform_vfunc(const Point &x) const
+AffineTransformation::transform_vfunc(const Point &x) const
 {
-	return TransformedPoint(x);
+	return TransformedPoint(matrix.get_transformed(x));
 }
-
-Point
-Transformation::get_derivation_vfunc(int level, const Point &x, Real epsilon) const
-{
-	if (level <= 0) return transform_vfunc(x).p;
-	return Point(
-		( get_derivation_vfunc(level-1, Point(x[0] + epsilon, x[1]), epsilon)[0]
-		- get_derivation_vfunc(level-1, Point(x[0] - epsilon, x[1]), epsilon)[0] ) / (2.0*epsilon),
-		( get_derivation_vfunc(level-1, Point(x[0], x[1] + epsilon), epsilon)[1]
-		- get_derivation_vfunc(level-1, Point(x[0], x[1] - epsilon), epsilon)[1] ) / (2.0*epsilon) );
-}
-
-Transformation::TransformedPoint
-Transformation::transform(const Point &x) const
-	{ return transform_vfunc(x); }
-
-Point
-Transformation::get_derivation(int level, const Point &x, Real epsilon) const
-	{ return get_derivation_vfunc(level, x, epsilon); }
 
 /* === E N T R Y P O I N T ================================================= */

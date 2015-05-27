@@ -1,0 +1,21 @@
+RENDERING_PRIMITIVE_HH = \
+	rendering/primitive/affinetransformation.h \
+	rendering/primitive/blur.h \
+	rendering/primitive/contour.h \
+	rendering/primitive/mesh.h \
+	rendering/primitive/polyspan.h \
+	rendering/primitive/transformation.h
+
+RENDERING_PRIMITIVE_CC = \
+	rendering/primitive/affinetransformation.cpp \
+	rendering/primitive/contour.cpp \
+	rendering/primitive/mesh.cpp \
+	rendering/primitive/polyspan.cpp \
+	rendering/primitive/transformation.cpp
+
+RENDERING_HH += \
+    $(RENDERING_PRIMITIVE_HH)
+
+RENDERING_CC += \
+    $(RENDERING_PRIMITIVE_CC)
+

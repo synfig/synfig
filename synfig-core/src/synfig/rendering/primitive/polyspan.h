@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/polyspan.h
+/*!	\file synfig/rendering/primitive/polyspan.h
 **	\brief Polyspan Header
 **
 **	$Id$
@@ -31,8 +31,10 @@
 /* === H E A D E R S ======================================================= */
 
 #include <vector>
-#include "../rect.h"
 
+#include <ETL/rect>
+
+#include "contour.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -48,16 +50,6 @@ namespace rendering
 class Polyspan
 {
 public:
-	enum WindingStyle
-	{
-	    WINDING_NON_ZERO=0,			//!< less than -1 --> 1;  -1 --> 1;   0 --> 0;   1 --> 1;  greater than 1 --> 1
-	    WINDING_EVEN_ODD=1,			//!< add or subtract multiples of 2 to get into range -1:1, then as above
-	};
-
-	enum {
-	    WINDING_END=2				//!< \internal
-	};
-
 	typedef etl::rect<int> ContextRect;
 
 	struct PenMark
@@ -170,7 +162,7 @@ public:
 	void draw_scanline(int y, Real x1, Real y1, Real x2, Real y2);
 	void draw_line(Real x1, Real y1, Real x2, Real y2);
 
-	Real extract_alpha(Real area, WindingStyle winding_style) const;
+	Real extract_alpha(Real area, Contour::WindingStyle winding_style) const;
 };
 
 } /* end namespace rendering */

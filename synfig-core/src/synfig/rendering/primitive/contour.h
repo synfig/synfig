@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/common/contour.h
+/*!	\file synfig/rendering/primitive/contour.h
 **	\brief Contour Header
 **
 **	$Id$
@@ -27,8 +27,9 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/rendering/task.h>
-#include <cstring>
+#include <vector>
+
+#include <ETL/handle>
 
 /* === M A C R O S ========================================================= */
 
@@ -41,40 +42,20 @@ namespace synfig
 namespace rendering
 {
 
-class ContourBase: public etl::shared_object
-{
-public:
-	typedef etl::handle<ContourBase> Handle;
-
-private:
-	bool invert;
-	bool antialias;
-	Polyspan::WindingStyle winding_style;
-	Color color;
-
-public:
-	ContourBase(): invert(), antialias(), winding_style(Polyspan::WINDING_NON_ZERO) { }
-
-	bool get_invert() const { return invert; }
-	void set_invert(bool x);
-
-	bool get_antialias() const { return antialias; }
-	void set_antialias(bool x);
-
-	Polyspan::WindingStyle get_winding_style() const { return winding_style; }
-	void set_winding_style(Polyspan::WindingStyle x);
-
-	const Color& get_color() const { return color; }
-	void set_color(const Color &x);
-
-	void apply_common_data(const ContourBase &data);
-	void changed_common_data();
-};
-
-class Contour: public ContourBase
+class Contour: public etl::shared_object
 {
 public:
 	typedef etl::handle<Contour> Handle;
+
+	enum WindingStyle
+	{
+	    WINDING_NON_ZERO=0,			//!< less than -1 --> 1;  -1 --> 1;   0 --> 0;   1 --> 1;  greater than 1 --> 1
+	    WINDING_EVEN_ODD=1,			//!< add or subtract multiples of 2 to get into range -1:1, then as above
+	};
+
+	enum {
+	    WINDING_END=2				//!< \internal
+	};
 
 	enum ChunkType {
 		CLOSE,
@@ -99,7 +80,15 @@ private:
 	size_t first;
 
 public:
-	Contour(): first(0) { }
+	bool invert;
+	bool antialias;
+	Polyspan::WindingStyle winding_style;
+	Color color;
+
+	Contour():
+		first(0), invert(false), antialias(false),
+		winding_style(Polyspan::WINDING_NON_ZERO)
+		{ }
 
 	void clear();
 	void move_to(const Vector &v);
