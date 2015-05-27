@@ -102,6 +102,13 @@ rendering::Surface::empty() const
 	return width > 0 && height > 0;
 }
 
+size_t
+rendering::Surface::get_buffer_size() const
+{
+	// TODO: check limits
+	return empty() ? 0 : get_width() * get_height() * sizeof(Color);
+}
+
 bool
 rendering::Surface::get_pixels(Color *buffer) const
 {
