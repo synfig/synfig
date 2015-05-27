@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/software/surfacesw.cpp
-**	\brief SurfaceSW
+/*!	\file synfig/rendering/software/surfacegl.cpp
+**	\brief SurfaceGL
 **
 **	$Id$
 **
@@ -35,7 +35,7 @@
 #include <signal.h>
 #endif
 
-#include <synfig/rendering/software/surfacesw.h>
+#include "surfacegl.h"
 
 #endif
 
@@ -51,32 +51,30 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 bool
-SurfaceSW::create_vfunc()
+SurfaceGL::create_vfunc()
 {
-	surface.set_wh(get_width(), get_height());
-	return true;
+	// TODO:
+	return false;
 }
 
 bool
-SurfaceSW::assign_vfunc(const rendering::Surface &surface)
+SurfaceGL::assign_vfunc(const rendering::Surface &surface)
 {
-	this->surface.set_wh(get_width(), get_height());
-	if (surface.get_pixels(&this->surface[0][0]))
-		return true;
-	this->surface.set_wh(0, 0);
+	// TODO:
 	return false;
 }
 
 void
-SurfaceSW::destroy_vfunc()
+SurfaceGL::destroy_vfunc()
 {
-	this->surface.set_wh(0, 0);
+	// TODO:
 }
 
 bool
-SurfaceSW::get_pixels_vfunc(Color *buffer) const
+SurfaceGL::get_pixels_vfunc(Color *buffer) const
 {
-	memcpy(buffer, &this->surface[0][0], get_buffer_size());
+	// TODO:
+	return false;
 }
 
 /* === E N T R Y P O I N T ================================================= */

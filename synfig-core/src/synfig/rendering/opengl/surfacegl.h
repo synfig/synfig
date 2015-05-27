@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/software/surfacesw.h
-**	\brief SurfaceSW Header
+/*!	\file synfig/rendering/software/surfacegl.h
+**	\brief SurfaceGL Header
 **
 **	$Id$
 **
@@ -22,8 +22,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_RENDERING_SURFACESW_H
-#define __SYNFIG_RENDERING_SURFACESW_H
+#ifndef __SYNFIG_RENDERING_SURFACEGL_H
+#define __SYNFIG_RENDERING_SURFACEGL_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -41,10 +41,10 @@ namespace synfig
 namespace rendering
 {
 
-class SurfaceSW: public Surface
+class SurfaceGL: public Surface
 {
 public:
-	typedef etl::handle<SurfaceSW> Handle;
+	typedef etl::handle<SurfaceGL> Handle;
 
 private:
 	synfig::Surface surface;

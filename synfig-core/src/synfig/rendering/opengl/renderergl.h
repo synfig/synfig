@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/software/renderersw.h
-**	\brief RendererSW Header
+/*!	\file synfig/rendering/software/renderergl.h
+**	\brief RendererGL Header
 **
 **	$Id$
 **
@@ -22,8 +22,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_RENDERING_RENDERERSW_H
-#define __SYNFIG_RENDERING_RENDERERSW_H
+#ifndef __SYNFIG_RENDERING_RENDERERGL_H
+#define __SYNFIG_RENDERING_RENDERERGL_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -40,11 +40,11 @@ namespace synfig
 namespace rendering
 {
 
-class RendererSW: public Renderer
+class RendererGL: public Renderer
 {
 public:
-	RendererSW();
-	~RendererSW();
+	RendererGL();
+	~RendererGL();
 };
 
 }; /* end namespace rendering */

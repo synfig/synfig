@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/software/renderersw.cpp
-**	\brief RendererSW
+/*!	\file synfig/rendering/software/renderergl.cpp
+**	\brief RendererGL
 **
 **	$Id$
 **
@@ -35,7 +35,7 @@
 #include <signal.h>
 #endif
 
-#include <synfig/rendering/opengl/renderergl.h>
+#include "renderergl.h"
 
 #endif
 
@@ -50,11 +50,11 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
-RendererSW::RendererSW()
+RendererGL::RendererGL()
 {
 	// TODO: register optimizers
 }
 
-RendererSW::~RendererSW() { }
+RendererGL::~RendererGL() { }
 
 /* === E N T R Y P O I N T ================================================= */
