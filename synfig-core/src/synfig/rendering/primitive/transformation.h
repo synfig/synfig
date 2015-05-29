@@ -27,9 +27,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <ETL/handle>
-
-#include <synfig/vector.h>
+#include "mesh.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -60,11 +58,13 @@ public:
 
 protected:
 	virtual TransformedPoint transform_vfunc(const Point &x) const;
-	virtual Point get_derivation_vfunc(int level, const Point &x, Real epsilon) const;
+	virtual TransformedPoint back_transform_vfunc(const Point &x) const;
+	virtual Mesh::Handle build_mesh_vfunc(const Rect &target_rect, const Vector &precision) const;
 
 public:
 	TransformedPoint transform(const Point &x) const;
 	Point get_derivation(int level, const Point &x, Real epsilon = 1e-6) const;
+	Mesh::Handle build_mesh(const Rect &target_rect, const Vector &precision) const;
 };
 
 } /* end namespace rendering */

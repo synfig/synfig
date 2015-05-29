@@ -50,14 +50,19 @@ public:
 	{
 		Vector position;
 		Vector tex_coords;
-		Color color;
+		Vertex() { }
+		Vertex(const Vector &position, const Vector &tex_coords):
+			position(position), tex_coords(tex_coords) { }
 	};
 	#pragma pack(pop)
 
 	struct Triangle
 	{
 		int vertices[3];
-		Triangle() { memset(vertices, 0, sizeof(vertices)); }
+		Triangle()
+			{ memset(vertices, 0, sizeof(vertices)); }
+		Triangle(int v0, int v1, int v2)
+			{ vertices[0] = v0; vertices[1] = v1; vertices[2] = v2; }
 	};
 
 	std::vector<Vertex> vertices;
