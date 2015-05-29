@@ -55,6 +55,11 @@ public:
 	void register_optimizer(const Optimizer::Handle &optimizer);
 	void unregister_optimizer(const Optimizer::Handle &optimizer);
 
+private:
+	bool optimize_recursive(const Optimizer &optimizer, const Optimizer::RunParams& params) const;
+	bool optimize_recursive(const Optimizer &optimizer, Task::List &list) const;
+
+public:
 	void optimize(Task::List &list) const;
 	bool run(const Task::List &list) const;
 };

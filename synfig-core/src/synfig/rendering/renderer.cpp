@@ -70,16 +70,67 @@ Renderer::register_optimizer(const Optimizer::Handle &optimizer)
 void
 Renderer::unregister_optimizer(const Optimizer::Handle &optimizer)
 {
-	for(Optimizer::List::const_iterator i = optimizers.begin(); i != optimizers.end();)
+	for(Optimizer::List::iterator i = optimizers.begin(); i != optimizers.end();)
 		if (*i == optimizer) i = optimizers.erase(i); else ++i;
+}
+
+bool
+Renderer::optimize_recursive(const Optimizer &optimizer, const Optimizer::RunParams& params) const
+{
+	if (params.task) {
+		for(Task::List::const_iterator i = params.task->sub_tasks.begin(); i != params.task->sub_tasks.end(); ++i)
+		{
+			if (*i)
+			{
+				Optimizer::RunParams sub_params(params);
+				sub_params.task = *i;
+				sub_params.out_task.reset();
+
+				if ( optimizer.run(sub_params)
+				  || optimize_recursive(optimizer, sub_params) )
+				{
+					Task::Handle new_task = params.task->clone();
+					new_task->sub_tasks[ i - params.task->sub_tasks.begin() ]
+						= sub_params.out_task;
+					return true;
+				}
+			}
+		}
+	}
+	return false;
+}
+
+bool
+Renderer::optimize_recursive(const Optimizer &optimizer, Task::List &list) const
+{
+	Optimizer::RunParams params(*this, list);
+	for(Task::List::iterator i = list.begin(); i != list.end(); ++i)
+	{
+		params.task = *i;
+		params.out_task.reset();
+		if (optimize_recursive(optimizer, params))
+		{
+			if (params.out_task) *i = params.out_task; else list.erase(i);
+			return true;
+		}
+	}
+	return false;
 }
 
 void
 Renderer::optimize(Task::List &list) const
 {
-	 for(Optimizer::List::const_iterator i = optimizers.begin(); i != optimizers.end();)
-		 if ((*i)->run(Optimizer::RunParams(*this, list)))
-			 i = optimizers.begin(); else ++i;
+	// remove nulls
+	for(Task::List::iterator i = list.begin(); i != list.end();)
+		if (*i) ++i; else i = list.erase(i);
+
+	// optimize
+	for(Optimizer::List::const_iterator i = optimizers.begin(); i != optimizers.end();) {
+		Optimizer::RunParams params(*this, list);
+		if ( (*i)->run(params)
+		  || optimize_recursive(**i, list) )
+			{ i = optimizers.begin(); continue; }
+	 }
 }
 
 bool

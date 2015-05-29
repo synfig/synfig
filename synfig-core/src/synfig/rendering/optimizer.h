@@ -50,6 +50,9 @@ public:
 		const Renderer &renderer;
 		Task::List &list;
 		Task::Handle task;
+
+		mutable Task::Handle out_task;
+
 		RunParams(
 			const Renderer &renderer,
 			Task::List &list,
