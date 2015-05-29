@@ -163,6 +163,11 @@ Transformation::TransformedPoint
 Transformation::transform(const Point &x) const
 	{ return transform_vfunc(x); }
 
+Transformation::TransformedPoint
+Transformation::back_transform(const Point &x) const
+	{ return back_transform_vfunc(x); }
+
+
 Mesh::Handle
 Transformation::build_mesh(const Rect &target_rect, const Vector &precision) const
 {
