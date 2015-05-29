@@ -55,13 +55,17 @@ public:
 	List sub_tasks;
 
 	template<typename T>
-	static etl::handle<T> clone(const etl::handle<T> &task)
+	static T* clone_pointer(const T *task)
 	{
-		if (!task) return etl::handle<T>();
-		etl::handle<T> t(new T());
+		if (!task) return NULL;
+		T *t(new T());
 		*t = *task;
 		return t;
 	}
+
+	template<typename T>
+	static etl::handle<T> clone(const etl::handle<T> &task)
+		{ return clone_pointer(task.get()); }
 
 	Task::Handle& sub_task(int index)
 	{
@@ -79,6 +83,7 @@ public:
 
 	virtual ~Task();
 	virtual bool run(RunParams &params) const;
+	virtual Task::Handle clone() const;
 };
 
 } /* end namespace rendering */

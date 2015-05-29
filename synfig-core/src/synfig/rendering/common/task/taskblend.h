@@ -48,6 +48,7 @@ public:
 	Color::BlendMethod blend_method;
 
 	TaskBlend(): blend_method(Color::BLEND_COMPOSITE) { }
+	Task::Handle clone() const { return clone_pointer(this); }
 
 	const Task::Handle& sub_task_a() const { return sub_task(0); }
 	Task::Handle& sub_task_a() { return sub_task(0); }

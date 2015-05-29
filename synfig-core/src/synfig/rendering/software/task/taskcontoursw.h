@@ -49,6 +49,8 @@ public:
 	Color color;
 	Contour::Handle contour;
 
+	Task::Handle clone() const { return clone_pointer(this); }
+
 	virtual bool run(RunParams &params) const;
 
 	// static

@@ -45,6 +45,8 @@ class TaskSurfaceCreate: public Task
 public:
 	typedef etl::handle<TaskSurfaceCreate> Handle;
 
+	Task::Handle clone() const { return clone_pointer(this); }
+
 	virtual bool run(RunParams &params) const;
 };
 

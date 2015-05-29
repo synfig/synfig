@@ -48,6 +48,8 @@ public:
 
 	Transformation::Handle transformation;
 
+	Task::Handle clone() const { return clone_pointer(this); }
+
 	const Task::Handle& sub_task() const { return Task::sub_task(0); }
 	Task::Handle sub_task() { return Task::sub_task(0); }
 };

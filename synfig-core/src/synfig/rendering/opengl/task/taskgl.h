@@ -44,6 +44,7 @@ class TaskGL: public Task
 {
 public:
 	typedef etl::handle<TaskGL> Handle;
+	Task::Handle clone() const { return clone_pointer(this); }
 };
 
 } /* end namespace rendering */

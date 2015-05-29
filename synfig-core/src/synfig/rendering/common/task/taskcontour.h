@@ -48,6 +48,8 @@ public:
 
 	Color color;
 	Contour::Handle contour;
+
+	Task::Handle clone() const { return clone_pointer(this); }
 };
 
 } /* end namespace rendering */

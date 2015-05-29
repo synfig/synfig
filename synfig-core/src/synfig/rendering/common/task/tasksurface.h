@@ -44,6 +44,7 @@ class TaskSurface: public Task
 {
 public:
 	typedef etl::handle<TaskSurface> Handle;
+	Task::Handle clone() const { return clone_pointer(this); }
 };
 
 } /* end namespace rendering */
