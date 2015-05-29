@@ -37,6 +37,10 @@
 
 #include "optimizerblendsw.h"
 
+#include "../../common/task/taskblend.h"
+#include "../task/taskblendsw.h"
+#include "../surfacesw.h"
+
 #endif
 
 using namespace synfig;
@@ -53,7 +57,18 @@ using namespace rendering;
 bool
 OptimizerBlendSW::run(const RunParams& params) const
 {
-	// TODO:
+	TaskBlend::Handle blend = TaskBlend::Handle::cast_dynamic(params.task);
+	if (blend && params.task->target_surface) {
+		TaskBlendSW::Handle blend_sw(new TaskBlendSW());
+		blend_sw->target_surface = blend->target_surface;
+		blend_sw->blend_method = blend->blend_method;
+		blend_sw->alpha_a = blend->alpha_a;
+		blend_sw->alpha_b = blend->alpha_b;
+		blend_sw->sub_task_a() = blend->sub_task_a();
+		blend_sw->sub_task_b() = blend->sub_task_b();
+		assign_surface<SurfaceSW>(blend_sw->sub_task_a());
+		assign_surface<SurfaceSW>(blend_sw->sub_task_b());
+	}
 	return false;
 }
 

@@ -75,6 +75,11 @@ public:
 	size_t get_buffer_size() const;
 	bool is_created() const { return created; }
 	bool get_pixels(Color *buffer) const;
+
+	void set_size(const std::pair<int, int> &x)
+		{ set_size(x.first, x.second); }
+	std::pair<int, int> get_size() const
+		{ return std::pair<int, int>(get_width(), get_height()); }
 };
 
 } /* end namespace rendering */

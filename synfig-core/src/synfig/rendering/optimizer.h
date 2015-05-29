@@ -62,6 +62,28 @@ public:
 
 	virtual ~Optimizer();
 	virtual bool run(const RunParams &params) const = 0;
+
+	template<typename T>
+	static void assign_surface(Task::Handle &task, int width, int height)
+	{
+		if (task && !task->target_surface)
+		{
+			task = task->clone();
+			task->target_surface = new T();
+			task->target_surface->set_size(width, height);
+		}
+	}
+
+	template<typename T>
+	static void assign_surface(Task::Handle &task, const std::pair<int, int> &size)
+		{ assign_surface<T>(task, size.first, size.second); }
+
+	template<typename T>
+	static void assign_surface(Task::Handle &task)
+	{
+		if (task && task->target_surface)
+			assign_surface<T>(task, task->target_surface->get_size());
+	}
 };
 
 } /* end namespace rendering */
