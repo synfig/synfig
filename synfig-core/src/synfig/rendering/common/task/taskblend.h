@@ -46,8 +46,11 @@ public:
 	typedef etl::handle<TaskBlend> Handle;
 
 	Color::BlendMethod blend_method;
+	Color::value_type alpha_a;
+	Color::value_type alpha_b;
 
-	TaskBlend(): blend_method(Color::BLEND_COMPOSITE) { }
+	TaskBlend():
+		blend_method(Color::BLEND_COMPOSITE), alpha_a(1.0), alpha_b(1.0) { }
 	Task::Handle clone() const { return clone_pointer(this); }
 
 	const Task::Handle& sub_task_a() const { return sub_task(0); }
