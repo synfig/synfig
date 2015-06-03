@@ -2390,7 +2390,7 @@ App::dialog_open_file(const std::string &title, std::string &filename, std::stri
 
 	// 2.2 Image sequence/list files
 	Glib::RefPtr<Gtk::FileFilter> filter_image_list = Gtk::FileFilter::create();
-	filter_image_list->set_name(_("Image sequence files(*.lst)"));
+	filter_image_list->set_name(_("Image sequence files (*.lst)"));
 	filter_image_list->add_pattern("*.lst");
 
 	// 3 Audio files
@@ -2810,7 +2810,7 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 
 	// file type filters
 	Glib::RefPtr<Gtk::FileFilter> filter_sif = Gtk::FileFilter::create();
-	filter_sif->set_name(_("Uncompressed Synfig file(*.sif)"));
+	filter_sif->set_name(_("Uncompressed Synfig file (*.sif)"));
 
 	// sif share same mime type "application/x-sif" with sifz, so it will mixed .sif and .sifz files. Use only
 	// pattern ("*.sif") for sif file format should be oK.
@@ -2818,11 +2818,11 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 	filter_sif->add_pattern("*.sif");
 
 	Glib::RefPtr<Gtk::FileFilter> filter_sifz = Gtk::FileFilter::create();
-	filter_sifz->set_name(_("Compressed Synfig file(*.sifz)"));
+	filter_sifz->set_name(_("Compressed Synfig file (*.sifz)"));
 	filter_sifz->add_pattern("*.sifz");
 
 	Glib::RefPtr<Gtk::FileFilter> filter_sfg = Gtk::FileFilter::create();
-	filter_sfg->set_name(_("Container format file(*.sfg)"));
+	filter_sfg->set_name(_("Container format file (*.sfg)"));
 	filter_sfg->add_pattern("*.sfg");
 
 	dialog->set_current_folder(prev_path);
@@ -2942,7 +2942,7 @@ App::dialog_save_file_spal(const std::string &title, std::string &filename, std:
 
 	// file type filters
 	Glib::RefPtr<Gtk::FileFilter> filter_spal = Gtk::FileFilter::create();
-	filter_spal->set_name(_("Synfig palette files(*.spal)"));
+	filter_spal->set_name(_("Synfig palette files (*.spal)"));
 	filter_spal->add_pattern("*.spal");
 
 	dialog->set_current_folder(prev_path);
@@ -3004,7 +3004,7 @@ App::dialog_save_file_sketch(const std::string &title, std::string &filename, st
 
 	// file type filters
 	Glib::RefPtr<Gtk::FileFilter> filter_sketch = Gtk::FileFilter::create();
-	filter_sketch->set_name(_("Synfig sketch files(*.sketch)"));
+	filter_sketch->set_name(_("Synfig sketch files (*.sketch)"));
 	filter_sketch->add_pattern("*.sketch");
 
 	dialog->set_current_folder(prev_path);
