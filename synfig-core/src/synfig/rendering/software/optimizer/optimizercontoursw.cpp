@@ -37,6 +37,9 @@
 
 #include "optimizercontoursw.h"
 
+#include "../../common/task/taskcontour.h"
+#include "../task/taskcontoursw.h"
+
 #endif
 
 using namespace synfig;
@@ -53,7 +56,14 @@ using namespace rendering;
 bool
 OptimizerContourSW::run(const RunParams& params) const
 {
-	// TODO:
+	TaskContour::Handle contour = TaskContour::Handle::cast_dynamic(params.task);
+	if (contour && contour->target_surface) {
+		TaskContourSW::Handle contour_sw(new TaskContourSW());
+		contour_sw->target_surface = contour->target_surface;
+		contour_sw->color = contour->color;
+		contour_sw->contour = contour->contour;
+		return true;
+	}
 	return false;
 }
 
