@@ -37,6 +37,9 @@
 
 #include "optimizerblurpreparedsw.h"
 
+#include "../../common/task/taskblur.h"
+#include "../task/taskblurpreparedsw.h"
+
 #endif
 
 using namespace synfig;
@@ -53,7 +56,20 @@ using namespace rendering;
 bool
 OptimizerBlurPreparedSW::run(const RunParams& params) const
 {
-	// TODO:
+	TaskBlur::Handle blur = TaskBlur::Handle::cast_dynamic(params.task);
+	if ( blur
+	  && blur->target_surface
+	  && blur->sub_task_resized
+	  && blur->sub_task()
+	  && blur->sub_task()->target_surface )
+	{
+		TaskBlurPreparedSW::Handle blur_prepared_sw(new TaskBlurPreparedSW());
+		blur_prepared_sw->target_surface = blur->target_surface;
+		blur_prepared_sw->blur = blur->blur;
+		blur_prepared_sw->sub_task() = blur->sub_task();
+		params.out_task = blur_prepared_sw;
+		return true;
+	}
 	return false;
 }
 
