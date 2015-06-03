@@ -36,6 +36,7 @@
 #endif
 
 #include "optimizersurfaceconvert.h"
+
 #include "../task/tasksurfaceconvert.h"
 #include "../../software/surfacesw.h"
 #include "../../software/task/tasksw.h"
