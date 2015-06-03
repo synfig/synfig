@@ -37,6 +37,9 @@
 
 #include "optimizersurfacedestroy.h"
 
+#include "../task/tasksurfacedestroy.h"
+
+
 #endif
 
 using namespace synfig;
@@ -53,8 +56,47 @@ using namespace rendering;
 bool
 OptimizerSurfaceDestroy::run(const RunParams& params) const
 {
-	// TODO: Insert TaskSurfaceDestroy when target_surface user last time
-	// TODO: Remove unneeded TaskSurfaceDesroy
+	if (params.task == NULL)
+	{
+		for(Task::List::iterator i = params.list.begin(); i != params.list.end();)
+		{
+			if (*i && (*i)->target_surface)
+			{
+				bool destroyed = false;
+				if (!destroyed)
+					for(Task::List::const_iterator j = i+1; j != params.list.end(); ++j)
+						if ( TaskSurfaceDestroy::Handle::cast_dynamic(*j)
+						  && (*j)->target_surface == (*i)->target_surface )
+							{ destroyed = true; break; }
+
+				if (TaskSurfaceDestroy::Handle::cast_dynamic(*i))
+				{
+					// Remove unneeded TaskSurfaceDestroy
+					if (destroyed)
+					{
+						i = params.list.erase(i);
+						continue;
+					}
+				}
+				else
+				{
+					// Insert TaskSurfaceDestroy when target_surface used last time
+					if (!destroyed && (*i)->target_surface->is_temporary)
+					{
+						TaskSurfaceDestroy::Handle surface_destroy(new TaskSurfaceDestroy());
+						surface_destroy->target_surface = (*i)->target_surface;
+						++i;
+						i = params.list.insert(i, surface_destroy);
+						++i;
+						continue;
+					}
+				}
+
+			}
+			++i;
+		}
+
+	}
 	return false;
 }
 
