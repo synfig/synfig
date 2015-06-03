@@ -36,6 +36,11 @@
 #endif
 
 #include "optimizersurfaceconvert.h"
+#include "../task/tasksurfaceconvert.h"
+#include "../../software/surfacesw.h"
+#include "../../software/task/tasksw.h"
+#include "../../opengl/surfacegl.h"
+#include "../../opengl/task/taskgl.h"
 
 #endif
 
@@ -53,8 +58,55 @@ using namespace rendering;
 bool
 OptimizerSurfaceConvert::run(const RunParams& params) const
 {
-	// TODO: Insert TaskSurfaceConvert when surfaces in task not native
-	// TODO: Remove unneeded TaskSurfaceConvert
+	if (params.task)
+	{
+		bool sw = (bool)TaskGL::Handle::cast_dynamic(params.task);
+		bool gl = (bool)TaskSW::Handle::cast_dynamic(params.task);
+		if (sw || gl)
+		{
+			// Insert TaskSurfaceConvert when surfaces in task not native
+			Task::Handle task = params.task;
+			for(Task::List::const_iterator i = task->sub_tasks.begin(); i != task->sub_tasks.end(); ++i)
+			{
+				if (*i && (*i)->target_surface
+				 && ( (sw && !SurfaceSW::Handle::cast_dynamic((*i)->target_surface))
+				   || (gl && !SurfaceGL::Handle::cast_dynamic((*i)->target_surface)) ))
+				{
+					if (task == params.task) {
+						task == params.task->clone();
+						i = task->sub_tasks.begin() + (i - params.task->sub_tasks.begin());
+					}
+					TaskSurfaceConvert::Handle surface_convert(new TaskSurfaceConvert());
+					surface_convert->sub_task() = (*i)->clone();
+					if (sw) surface_convert->target_surface = new SurfaceSW();
+					if (gl) surface_convert->target_surface = new SurfaceGL();
+					surface_convert->target_surface->set_size( surface_convert->sub_task()->target_surface->get_size() );
+					*i = surface_convert;
+				}
+			}
+			if (task != params.task)
+			{
+				params.out_task = task;
+				return true;
+			}
+		}
+		else
+		if (TaskSurfaceConvert::Handle surface_convert = TaskSurfaceConvert::Handle::cast_dynamic(params.task))
+		{
+			// Remove unneeded TaskSurfaceConvert
+			if ( !surface_convert->target_surface
+			  || !surface_convert->sub_task()
+			  || !surface_convert->sub_task()->target_surface
+			  || ( SurfaceSW::Handle::cast_dynamic(surface_convert->target_surface)
+			    && SurfaceSW::Handle::cast_dynamic(surface_convert->sub_task()->target_surface))
+			  || ( SurfaceGL::Handle::cast_dynamic(surface_convert->target_surface)
+			    && SurfaceGL::Handle::cast_dynamic(surface_convert->sub_task()->target_surface)) )
+			{
+				params.out_task = surface_convert->sub_task();
+				return true;
+			}
+		}
+	}
 	return false;
 }
 
