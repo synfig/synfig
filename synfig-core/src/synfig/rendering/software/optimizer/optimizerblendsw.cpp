@@ -68,6 +68,8 @@ OptimizerBlendSW::run(const RunParams& params) const
 		blend_sw->sub_task_b() = blend->sub_task_b();
 		assign_surface<SurfaceSW>(blend_sw->sub_task_a());
 		assign_surface<SurfaceSW>(blend_sw->sub_task_b());
+		params.out_task = blend_sw;
+		re
 	}
 	return false;
 }
