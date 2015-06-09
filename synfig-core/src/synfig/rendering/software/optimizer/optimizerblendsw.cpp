@@ -58,7 +58,7 @@ bool
 OptimizerBlendSW::run(const RunParams& params) const
 {
 	TaskBlend::Handle blend = TaskBlend::Handle::cast_dynamic(params.task);
-	if (blend && params.task->target_surface) {
+	if (blend && blend->target_surface) {
 		TaskBlendSW::Handle blend_sw(new TaskBlendSW());
 		blend_sw->target_surface = blend->target_surface;
 		blend_sw->blend_method = blend->blend_method;
