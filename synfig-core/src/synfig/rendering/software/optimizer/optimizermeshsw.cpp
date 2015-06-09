@@ -37,6 +37,10 @@
 
 #include "optimizermeshsw.h"
 
+#include "../surfacesw.h"
+#include "../../common/task/taskmesh.h"
+#include "../task/taskmeshsw.h"
+
 #endif
 
 using namespace synfig;
@@ -53,7 +57,45 @@ using namespace rendering;
 bool
 OptimizerMeshSW::run(const RunParams& params) const
 {
-	// TODO:
+	TaskMesh::Handle mesh = TaskMesh::Handle::cast_dynamic(params.task);
+	if ( mesh
+	  && mesh->target_surface
+	  && mesh->sub_task()
+	  && mesh->mesh )
+	{
+		TaskMeshSW::Handle mesh_sw(new TaskMeshSW());
+		mesh_sw->target_surface = mesh->target_surface;
+		mesh_sw->mesh = mesh->mesh;
+
+		if ( mesh_sw->sub_task()->target_surface )
+		{
+			mesh_sw->sub_task() = mesh->sub_task();
+		}
+		else
+		{
+			Vector resolution = mesh->mesh->get_resolution_transfrom()
+				.get_transformed(
+					Vector(
+						(Real)mesh->target_surface->get_width(),
+						(Real)mesh->target_surface->get_height() ));
+			int width, height;
+			if (resolution.is_valid())
+			{
+				width = std::max(1, (int)round(fabs(resolution[0])));
+				height = std::max(1, (int)round(fabs(resolution[0])));
+			}
+			else
+			{
+				width = 1;
+				height = 1;
+			}
+
+			mesh_sw->sub_task() = mesh->sub_task()->clone();
+			assign_surface<SurfaceSW>(mesh_sw->sub_task(), width, height);
+		}
+
+		return true;
+	}
 	return false;
 }
 
