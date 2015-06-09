@@ -99,7 +99,7 @@ rendering::Surface::destroy()
 bool
 rendering::Surface::empty() const
 {
-	return width > 0 && height > 0;
+	return width <= 0 || height <= 0;
 }
 
 size_t

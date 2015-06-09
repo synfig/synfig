@@ -55,19 +55,48 @@ public:
 	};
 
 private:
-	Point	size;
-	int				type;
-
+	Point size;
+	int type;
 	ProgressCallback *cb;
 
 public:
-	Point & set_size(const Point &v) { return (size = v); }
-	const Point & get_size() const { return size; }
-	Point & get_size() { return size; }
+	void set_size(const Point &x) { size = x; }
+	const Point& get_size() const { return size; }
 
-	int & set_type(const int &t) { return (type = t); }
-	const int & get_type() const { return type; }
-	int & get_type() { return type; }
+	void set_type(int x) { type = x; }
+	int get_type() const { return type; }
+
+	static Real get_surface_extra_size_amplifier(int type) {
+		static const Real gauss_max_deviation = 1.0 / 512.0;
+		static const Real gauss_size_amplifier = 0.5*sqrt(-2.0*log(gauss_max_deviation));
+
+		switch(type)
+		{
+			case Blur::DISC:
+			case Blur::BOX:
+			case Blur::CROSS:
+				return 0.5;
+			case Blur::FASTGAUSSIAN:
+				return 1.0;
+			case Blur::GAUSSIAN:
+				return gauss_size_amplifier;
+			default:
+				break;
+		}
+		return 0.0;
+	}
+
+	Real get_surface_extra_size_amplifier() const
+		{ return get_surface_extra_size_amplifier(get_type()); }
+
+	Point get_surface_extra_size() const
+		{ return get_size() * get_surface_extra_size_amplifier(); }
+
+	void get_surface_extra_size(Real pixels_per_width_unit, Real pixels_per_height_unit, int &out_dx, int &out_dy) const {
+		Point es = get_surface_extra_size();
+		out_dx = (int)ceil(fabs(es[0]*pixels_per_width_unit));
+		out_dy = (int)ceil(fabs(es[1]*pixels_per_height_unit));
+	}
 
 	Blur(): type(), cb() {}
 	Blur(const Point &s, int t, ProgressCallback *callb=0):size(s), type(t), cb(callb) {}

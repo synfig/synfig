@@ -36,6 +36,9 @@
 #endif
 
 #include "optimizerblur.h"
+#include "../task/taskblur.h"
+#include "../task/tasktransformation.h"
+#include "../../primitive/affinetransformation.h"
 
 #endif
 
@@ -53,20 +56,45 @@ using namespace rendering;
 bool
 OptimizerBlur::run(const RunParams& params) const
 {
-	// TODO: Create transformation
-		// if task is Blur
-		//    and not sub_task_resized
-	    //    and surface is set
-		// then do following:
-		// create transformation
-		// create TaskTransformation
-		// assign subtask
-		// clone Blur
-		// assign TaskTransformation to new Blur
-		// set sub_task_resized
-		// return new Blur
-	// TODO: Optimize scale transformation
-	// TODO: Optimize blur to blur
+	if (TaskBlur::Handle blur = TaskBlur::Handle::cast_dynamic(params.task))
+	{
+		if (!blur->sub_task_resized
+		 && blur->target_surface)
+		{
+			if (blur->target_surface->empty())
+			{
+				params.out_task.reset();
+				return true;
+			}
+			else
+			{
+				int width = 1;
+				int height = 1;
+				blur->blur.get_surface_extra_size(
+					0.5 * (Real)blur->target_surface->get_width(),
+					0.5 * (Real)blur->target_surface->get_height(),
+					width, height );
+				if (width < 1) width = 1;
+				if (height < 1) height = 1;
+
+				AffineTransformation::Handle affine_transfromation(new AffineTransformation());
+				affine_transfromation->matrix.set_scale(
+					(Real)blur->target_surface->get_width()/(Real)width,
+					(Real)blur->target_surface->get_height()/(Real)height );
+
+				TaskTransformation::Handle transfromation(new TaskTransformation());
+				transfromation->transformation = affine_transfromation;
+				transfromation->sub_task() = blur->sub_task();
+
+				TaskBlur::Handle blur_prepared(Task::clone(blur));
+				blur_prepared->sub_task() = transfromation;
+				blur_prepared->sub_task_resized = true;
+
+				params.out_task = blur_prepared;
+				return true;
+			}
+		}
+	}
 	return false;
 }
 
