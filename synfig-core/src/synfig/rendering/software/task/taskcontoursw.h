@@ -60,7 +60,7 @@ public:
 		const Polyspan &polyspan,
 		bool invert,
 		bool antialias,
-		Polyspan::WindingStyle winding_style,
+		Contour::WindingStyle winding_style,
 		const Color &color,
 		Color::value_type opacity,
 		Color::BlendMethod blend_method );
@@ -70,7 +70,7 @@ public:
 		const Contour::ChunkList &chunks,
 		bool invert,
 		bool antialias,
-		Polyspan::WindingStyle winding_style,
+		Contour::WindingStyle winding_style,
 		const Matrix &transform_matrix,
 		const Color &color,
 		Color::value_type opacity,
