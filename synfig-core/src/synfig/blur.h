@@ -98,6 +98,12 @@ public:
 		out_dy = (int)ceil(fabs(es[1]*pixels_per_height_unit));
 	}
 
+	void get_surface_expanded_size(Real pixels_per_width_unit, Real pixels_per_height_unit, int &width, int &height) const {
+		int dw, dh;
+		width = width > 0 ? width + 2*dw : 2*dw;
+		height = height > 0 ? height + 2*dh : 2*dh;
+	}
+
 	Blur(): type(), cb() {}
 	Blur(const Point &s, int t, ProgressCallback *callb=0):size(s), type(t), cb(callb) {}
 	Blur(Real sx, Real sy, int t, ProgressCallback *callb = 0): size(sx,sy), type(t), cb(callb) {}

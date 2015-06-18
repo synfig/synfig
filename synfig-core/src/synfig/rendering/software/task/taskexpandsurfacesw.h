@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/common/optimizer/optimizerblur.h
-**	\brief OptimizerBlur Header
+/*!	\file synfig/rendering/software/task/taskexpandsurfacesw.h
+**	\brief TaskExpandSurfaceSW Header
 **
 **	$Id$
 **
@@ -22,12 +22,12 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_RENDERING_OPTIMIZERBLUR_H
-#define __SYNFIG_RENDERING_OPTIMIZERBLUR_H
+#ifndef __SYNFIG_RENDERING_TASKEXPANDSURFACESW_H
+#define __SYNFIG_RENDERING_TASKEXPANDSURFACESW_H
 
 /* === H E A D E R S ======================================================= */
 
-#include "../../optimizer.h"
+#include "tasksw.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -40,10 +40,18 @@ namespace synfig
 namespace rendering
 {
 
-class OptimizerBlur: public Optimizer
+class TaskExpandSurfaceSW: public TaskSW
 {
 public:
-	virtual bool run(const RunParams &params) const;
+	typedef etl::handle<TaskExpandSurfaceSW> Handle;
+
+	TaskExpandSurfaceSW() { }
+	Task::Handle clone() const { return clone_pointer(this); }
+
+	const Task::Handle& sub_task() const { return Task::sub_task(0); }
+	Task::Handle& sub_task() { return Task::sub_task(0); }
+
+	virtual bool run(RunParams &params) const;
 };
 
 } /* end namespace rendering */
