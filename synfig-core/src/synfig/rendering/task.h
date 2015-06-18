@@ -52,6 +52,8 @@ public:
 	struct RunParams { };
 
 	Surface::Handle target_surface;
+	synfig::Point rect_lt;
+	synfig::Point rect_rb;
 	List sub_tasks;
 
 	template<typename T>
@@ -79,6 +81,31 @@ public:
 	{
 		assert(index < 0);
 		return index < (int)sub_tasks.size() ? sub_tasks[index] : blank;
+	}
+
+	Vector get_pixels_per_unit() const
+	{
+		if (!target_surface || target_surface->empty())
+			return Vector();
+		return Vector(
+			fabs(rect_rb[0] - rect_lt[0]) < 1e-10 ? 0.0 :
+				(Real)(target_surface->get_width())/(rect_rb[0] - rect_lt[0]),
+			fabs(rect_rb[1] - rect_lt[1]) < 1e-10 ? 0.0 :
+				(Real)(target_surface->get_height())/(rect_rb[1] - rect_rb[1]) );
+	}
+
+	Vector get_utits_per_pixel() const
+	{
+		if ( !target_surface
+		  || target_surface->empty()
+		  || fabs(rect_rb[0] - rect_lt[0]) < 1e-10
+		  || fabs(rect_rb[1] - rect_lt[1]) < 1e-10 )
+			return Vector();
+		return Vector(
+			fabs(rect_rb[0] - rect_lt[0]) < 1e-10 ? 0.0 :
+				(rect_rb[0] - rect_lt[0])/(Real)(target_surface->get_width()),
+			fabs(rect_rb[1] - rect_lt[1]) < 1e-10 ? 0.0 :
+				(rect_rb[1] - rect_rb[1])/(Real)(target_surface->get_height()) );
 	}
 
 	virtual ~Task();

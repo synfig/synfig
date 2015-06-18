@@ -59,9 +59,10 @@ OptimizerContourSW::run(const RunParams& params) const
 	TaskContour::Handle contour = TaskContour::Handle::cast_dynamic(params.task);
 	if (contour && contour->target_surface) {
 		TaskContourSW::Handle contour_sw(new TaskContourSW());
-		contour_sw->target_surface = contour->target_surface;
+		*((Task*)(contour_sw)) = *((Task*)(contour));
 		contour_sw->color = contour->color;
 		contour_sw->contour = contour->contour;
+		params.out_task = contour_sw;
 		return true;
 	}
 	return false;
