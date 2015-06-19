@@ -66,6 +66,7 @@ public:
 	TransformedPoint back_transform(const Point &x) const;
 	Point get_derivation(int level, const Point &x, Real epsilon = 1e-6) const;
 	Mesh::Handle build_mesh(const Rect &target_rect, const Vector &precision) const;
+	Mesh::Handle build_mesh(const Point &target_rect_lt, const Point &target_rect_rb, const Vector &precision) const;
 };
 
 } /* end namespace rendering */

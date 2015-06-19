@@ -37,6 +37,9 @@
 
 #include "optimizertransformation.h"
 
+#include "../task/tasktransformation.h"
+#include "../task/taskmesh.h"
+
 #endif
 
 using namespace synfig;
@@ -53,15 +56,27 @@ using namespace rendering;
 bool
 OptimizerTransformation::run(const RunParams& params) const
 {
-	// TODO: Create mesh
-		// if current task is Transformation then do following:
-		// create Mesh
-		// create TaskMesh
-		// calculate surface scale
-		// assign subtask
-		// return MeshTask
 	// TODO: Optimize affine transformation
 	// TODO: Optimize transformation to transformation
+	if (TaskTransformation::Handle transformation = TaskTransformation::Handle::cast_dynamic(params.task))
+	{
+		if ( transformation->target_surface
+		  && !transformation->target_surface->empty() )
+		{
+			// TODO: custom parameter
+			Real precision_pixels = 5.0;
+
+			TaskMesh::Handle mesh(new TaskMesh());
+			*((Task*)(mesh)) = *((Task*)(transformation));
+			mesh->mesh = transformation->transformation->build_mesh(
+				transformation->rect_lt,
+				transformation->rect_rb,
+				transformation->get_utits_per_pixel() * precision_pixels );
+
+			params.out_task = mesh;
+			return true;
+		}
+	}
 	return false;
 }
 

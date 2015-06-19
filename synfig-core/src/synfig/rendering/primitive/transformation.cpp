@@ -198,4 +198,11 @@ Transformation::build_mesh(const Rect &target_rect, const Vector &precision) con
 	return build_mesh_vfunc(valid_target_rect, valid_precision);
 }
 
+Mesh::Handle
+Transformation::build_mesh(const Point &target_rect_lt, const Point &target_rect_rb, const Vector &precision) const
+{
+	return build_mesh(Rect(target_rect_lt, target_rect_rb), precision);
+}
+
+
 /* === E N T R Y P O I N T ================================================= */
