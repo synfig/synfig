@@ -64,14 +64,10 @@ OptimizerMeshSW::run(const RunParams& params) const
 	  && mesh->mesh )
 	{
 		TaskMeshSW::Handle mesh_sw(new TaskMeshSW());
-		mesh_sw->target_surface = mesh->target_surface;
+		*((Task*)(mesh_sw)) = *((Task*)(mesh));
 		mesh_sw->mesh = mesh->mesh;
 
-		if ( mesh_sw->sub_task()->target_surface )
-		{
-			mesh_sw->sub_task() = mesh->sub_task();
-		}
-		else
+		if ( !mesh_sw->sub_task()->target_surface )
 		{
 			Vector resolution = mesh->mesh->get_resolution_transfrom()
 				.get_transformed(
@@ -91,7 +87,10 @@ OptimizerMeshSW::run(const RunParams& params) const
 			}
 
 			mesh_sw->sub_task() = mesh->sub_task()->clone();
-			assign_surface<SurfaceSW>(mesh_sw->sub_task(), width, height);
+			mesh_sw->sub_task()->target_surface = new SurfaceSW();
+			mesh_sw->sub_task()->target_surface->set_size(width, height);
+			mesh_sw->sub_task()->rect_lt = mesh->mesh->get_source_rectangle().get_min();
+			mesh_sw->sub_task()->rect_rb = mesh->mesh->get_source_rectangle().get_max();
 		}
 
 		return true;

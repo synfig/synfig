@@ -53,7 +53,7 @@ using namespace rendering;
 void
 Mesh::calculate_resolution_transfrom() const
 {
-
+	// TODO:
 }
 
 /* === E N T R Y P O I N T ================================================= */

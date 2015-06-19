@@ -69,6 +69,7 @@ public:
 	std::vector<Triangle> triangles;
 
 private:
+	mutable Rect source_rectangle;
 	mutable Matrix2 resolution_transfrom;
 	mutable bool resolution_transfrom_calculated;
 
@@ -91,6 +92,13 @@ public:
 		if (!resolution_transfrom_calculated)
 			calculate_resolution_transfrom();
 		return resolution_transfrom;
+	}
+
+	const Rect& get_source_rectangle() const
+	{
+		if (!resolution_transfrom_calculated)
+			calculate_resolution_transfrom();
+		return source_rectangle;
 	}
 };
 
