@@ -408,7 +408,7 @@ Layer_Freetype::new_face(const String &newfont)
 				FcFontSetAdd(fs, match);
 			if (pat)
 				FcPatternDestroy(pat);
-			if(fs){
+			if(fs && fs->nfont){
 				FcChar8* file;
 				if( FcPatternGetString (fs->fonts[0], FC_FILE, 0, &file) == FcResultMatch )
 					error=FT_New_Face(ft_library,(const char*)file,face_index,&face);
