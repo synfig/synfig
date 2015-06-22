@@ -132,6 +132,7 @@ if test $with_magickpp = "yes" ; then {
 	PKG_CHECK_MODULES(MAGICKPP, Magick++ >= 6.4.2,[
 		with_magickpp="yes"
 		AM_CONDITIONAL(HAVE_LIBMAGICKPP,true)
+		CONFIG_DEPS="$CONFIG_DEPS Magick++"
 	],[
 		with_magickpp="no"
 		AC_MSG_RESULT([ *** Magick++ Output target disabled])
@@ -222,6 +223,7 @@ if test $with_libavcodec = "yes" ; then {
 
 	if test $with_libswscale = "yes" ; then {
 		AC_DEFINE(WITH_LIBSWSCALE, [], [enable libswscale support])
+		CONFIG_DEPS="$CONFIG_DEPS libswscale"
 
 		# Need to check both the new and old locations for the swscale header
 		# Need to save flags, add swscale flags, check headers and restore flags
@@ -254,6 +256,7 @@ AC_ARG_WITH(freetype,
 if test $with_freetype != "no" ; then {
 	PKG_CHECK_MODULES(FREETYPE, freetype2,[
 		with_freetype="yes"
+		CONFIG_DEPS="$CONFIG_DEPS freetype2"
 	],[
 		PKG_CHECK_MODULES(FREETYPE, xft,[
 			with_freetype="yes"
@@ -276,6 +279,7 @@ AC_ARG_WITH(fontconfig,
 if test $with_fontconfig != "no" ; then {
 	PKG_CHECK_MODULES(FONTCONFIG, fontconfig,[
 		with_fontconfig="yes"
+		CONFIG_DEPS="$CONFIG_DEPS fontconfig"
 	],[
 		with_fontconfig="no"
 	])
@@ -299,6 +303,7 @@ if test $with_openexr = "yes" ; then {
 	PKG_CHECK_MODULES(OPENEXR, OpenEXR,[
 		AC_DEFINE(HAVE_OPENEXR,[], [ Define if OpenEXR is available ] )
 		AM_CONDITIONAL(WITH_OPENEXR,true)
+		CONFIG_DEPS="$CONFIG_DEPS OpenEXR"
 	],
 	[
 		with_openexr="no"
@@ -310,7 +315,6 @@ if test $with_openexr = "no" ; then {
 } ; fi
 if test $use_openexr_half = yes ; then {
 	AC_MSG_RESULT([ ** Using OpenEXR Half.])
-	CONFIG_DEPS="$CONFIG_DEPS OpenEXR"
 	CONFIG_CFLAGS="$CONFIG_CFLAGS -DUSE_HALF_TYPE"
 	OPENEXR_HALF_LIBS="-lHalf"
 } else {
