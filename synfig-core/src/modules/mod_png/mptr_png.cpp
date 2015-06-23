@@ -302,14 +302,19 @@ png_mptr::png_mptr(const synfig::FileSystem::Identifier &identifier):
 				float g=gamma().g_U8_to_F32((unsigned char)palette[row_pointers[y][x]].green);
 				float b=gamma().b_U8_to_F32((unsigned char)palette[row_pointers[y][x]].blue);
 				float a=1.0;
-				if(png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS))
+
 				{
-					png_bytep trans_alpha;
-					int num_trans;
-					png_color_16p trans_color;
-					png_get_tRNS(png_ptr, info_ptr, &trans_alpha, &num_trans, &trans_color);
-					a = (float)(unsigned char)trans_alpha[row_pointers[y][x]]*(1.0/255.0);
+				    png_bytep trans_alpha = NULL;
+				    int num_trans = 0;
+				    if ((png_get_tRNS(png_ptr, info_ptr, &trans_alpha, &num_trans,
+				            NULL) & PNG_INFO_tRNS) && num_trans > 0 &&
+				            trans_alpha != NULL)
+				    {
+				        a = row_pointers[y][x] < num_trans ?
+				                (trans_alpha[row_pointers[y][x]]*(1.0/255.0)) : 1.0;
+				    }
 				}
+
 				surface_buffer[y][x]=Color(
 					r,
 					g,
