@@ -521,7 +521,7 @@ StateWidth_Context::event_mouse_handler(const Smach::event& x)
 		//if we're dragging get the difference in time between now and then
 		if(event.key == EVENT_WORKAREA_MOUSE_BUTTON_DRAG)
 		{
-			dtime = min((float)(1/15.0),clocktime());
+			dtime = min((float)(1/15.0),(float)(clocktime()));
 		}
 		clocktime.reset();
 
