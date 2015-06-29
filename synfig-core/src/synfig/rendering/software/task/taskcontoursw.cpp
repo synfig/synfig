@@ -37,6 +37,8 @@
 
 #include "taskcontoursw.h"
 
+#include "../surfacesw.h"
+
 #endif
 
 using namespace synfig;
@@ -56,7 +58,7 @@ TaskContourSW::render_polyspan(
 	const Polyspan &polyspan,
 	bool invert,
 	bool antialias,
-	Polyspan::WindingStyle winding_style,
+	Contour::WindingStyle winding_style,
 	const Color &color,
 	Color::value_type opacity,
 	Color::BlendMethod blend_method )
@@ -195,7 +197,7 @@ TaskContourSW::render_contour(
 	const Contour::ChunkList &chunks,
 	bool invert,
 	bool antialias,
-	Polyspan::WindingStyle winding_style,
+	Contour::WindingStyle winding_style,
 	const Matrix &transform_matrix,
 	const Color &color,
 	Color::value_type opacity,
@@ -252,7 +254,26 @@ TaskContourSW::render_contour(
 bool
 TaskContourSW::run(RunParams &params) const
 {
-	// TODO:
+	synfig::Surface &a =
+		SurfaceSW::Handle::cast_dynamic( target_surface )->surface;
+
+	Matrix3 transfromation_matrix;
+	transfromation_matrix.m00 = get_units_per_pixel()[0];
+	transfromation_matrix.m11 = get_units_per_pixel()[1];
+	transfromation_matrix.m20 = rect_lt[0];
+	transfromation_matrix.m21 = rect_lt[1];
+
+	render_contour(
+		a,
+		contour->chunks,
+		contour->invert,
+		contour->antialias,
+		contour->winding_style,
+		transfromation_matrix,
+		color,
+		1.0,
+		Color::BLEND_COMPOSITE );
+
 	return false;
 }
 
