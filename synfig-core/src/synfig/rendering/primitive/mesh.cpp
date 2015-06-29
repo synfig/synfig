@@ -53,7 +53,22 @@ using namespace rendering;
 void
 Mesh::calculate_resolution_transfrom() const
 {
+	if (resolution_transfrom_calculated) return;
+	resolution_transfrom_calculated = true;
+
 	// TODO:
+	resolution_transfrom.set_identity();
+
+	if (vertices.empty())
+	{
+		source_rectangle = Rect::zero();
+	}
+	else
+	{
+		source_rectangle = Rect(vertices[0].tex_coords);
+		for(std::vector<Vertex>::const_iterator i = vertices.begin(); i != vertices.end(); ++i)
+			source_rectangle.expand(i->tex_coords);
+	}
 }
 
 /* === E N T R Y P O I N T ================================================= */
