@@ -64,7 +64,7 @@ OptimizerBlurPreparedSW::run(const RunParams& params) const
 	  && blur->sub_task() )
 	{
 		Vector pixels_per_unit = blur->get_pixels_per_unit();
-		Vector units_per_pixel = blur->get_pixels_per_unit();
+		Vector units_per_pixel = blur->get_units_per_pixel();
 		int dw = 0;
 		int dh = 0;
 		blur->blur.get_surface_extra_size(
