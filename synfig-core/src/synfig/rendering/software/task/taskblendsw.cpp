@@ -68,7 +68,7 @@ TaskBlendSW::run(RunParams &params) const
 	ap.set_alpha(alpha);
 	b.blit_to(ap);
 
-	return false;
+	return true;
 }
 
 /* === E N T R Y P O I N T ================================================= */

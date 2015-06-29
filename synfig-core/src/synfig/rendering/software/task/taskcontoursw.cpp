@@ -274,7 +274,7 @@ TaskContourSW::run(RunParams &params) const
 		1.0,
 		Color::BLEND_COMPOSITE );
 
-	return false;
+	return true;
 }
 
 /* === E N T R Y P O I N T ================================================= */

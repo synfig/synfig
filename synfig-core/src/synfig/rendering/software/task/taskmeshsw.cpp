@@ -37,6 +37,8 @@
 
 #include "taskmeshsw.h"
 
+#include "../surfacesw.h"
+
 #endif
 
 using namespace synfig;
@@ -120,9 +122,9 @@ TaskMeshSW::render_triangle(
 	apen.set_blend_method(blend_method);
 
     // sort points
-    if (ip0.y > ip1.y) swap(ip0, ip1);
-    if (ip0.y > ip2.y) swap(ip0, ip2);
-    if (ip1.y > ip2.y) swap(ip1, ip2);
+    if (ip0.y > ip1.y) std::swap(ip0, ip1);
+    if (ip0.y > ip2.y) std::swap(ip0, ip2);
+    if (ip1.y > ip2.y) std::swap(ip1, ip2);
 
     // increments
     long long dx02 = (ip2-ip0).get_fixed_x_div_y();
@@ -139,7 +141,7 @@ TaskMeshSW::render_triangle(
     // make copy of dx02
     long long dx02_copy = dx02;
     // sort increments
-    if (dx01 < dx02) swap(dx02, dx01);
+    if (dx01 < dx02) std::swap(dx02, dx01);
     // rasterize
     for (int y = ip0.y; y < ip1.y; ++y)
     {
@@ -168,13 +170,13 @@ TaskMeshSW::render_triangle(
     if (ip0.y == ip1.y) {
 		wx0 = Internal::int_to_fixed(ip0.x);
 		wx1 = Internal::int_to_fixed(ip1.x);
-		if (wx0 > wx1) swap(wx0, wx1);
+		if (wx0 > wx1) std::swap(wx0, wx1);
     }
 
     // process bottom part of triangle
 
     // sort increments
-    if (dx02_copy < dx12) swap(dx02_copy, dx12);
+    if (dx02_copy < dx12) std::swap(dx02_copy, dx12);
 
     // rasterize
     for (int y = ip1.y; y <= ip2.y; ++y){
@@ -259,9 +261,9 @@ TaskMeshSW::render_triangle(
 	apen.set_blend_method(blend_method);
 
     // sort points
-    if (ip0.y > ip1.y) swap(ip0, ip1);
-    if (ip0.y > ip2.y) swap(ip0, ip2);
-    if (ip1.y > ip2.y) swap(ip1, ip2);
+    if (ip0.y > ip1.y) std::swap(ip0, ip1);
+    if (ip0.y > ip2.y) std::swap(ip0, ip2);
+    if (ip1.y > ip2.y) std::swap(ip1, ip2);
 
     // increments
     long long dx02 = (ip2-ip0).get_fixed_x_div_y();
@@ -278,7 +280,7 @@ TaskMeshSW::render_triangle(
     // make copy of dx02
     long long dx02_copy = dx02;
     // sort increments
-    if (dx01 < dx02) swap(dx02, dx01);
+    if (dx01 < dx02) std::swap(dx02, dx01);
     // rasterize
     for (int y = ip0.y; y < ip1.y; ++y)
     {
@@ -319,13 +321,13 @@ TaskMeshSW::render_triangle(
     if (ip0.y == ip1.y) {
 		wx0 = Internal::int_to_fixed(ip0.x);
 		wx1 = Internal::int_to_fixed(ip1.x);
-		if (wx0 > wx1) swap(wx0, wx1);
+		if (wx0 > wx1) std::swap(wx0, wx1);
     }
 
     // process bottom part of triangle
 
     // sort increments
-    if (dx02_copy < dx12) swap(dx02_copy, dx12);
+    if (dx02_copy < dx12) std::swap(dx02_copy, dx12);
 
     // rasterize
     for (int y = ip1.y; y <= ip2.y; ++y){
@@ -440,8 +442,39 @@ TaskMeshSW::render_mesh(
 bool
 TaskMeshSW::run(RunParams &params) const
 {
-	// TODO:
-	return false;
+	synfig::Surface &a =
+		SurfaceSW::Handle::cast_dynamic( target_surface )->surface;
+	const synfig::Surface &b =
+		SurfaceSW::Handle::cast_dynamic( sub_task()->target_surface )->surface;
+
+	Matrix3 transfromation_matrix;
+	transfromation_matrix.m00 = get_units_per_pixel()[0];
+	transfromation_matrix.m11 = get_units_per_pixel()[1];
+	transfromation_matrix.m20 = rect_lt[0];
+	transfromation_matrix.m21 = rect_lt[1];
+
+	Matrix3 texture_transfromation_matrix;
+	texture_transfromation_matrix.m00 = sub_task()->get_units_per_pixel()[0];
+	texture_transfromation_matrix.m11 = sub_task()->get_units_per_pixel()[1];
+	texture_transfromation_matrix.m20 = sub_task()->rect_lt[0];
+	texture_transfromation_matrix.m21 = sub_task()->rect_lt[1];
+
+	render_mesh(
+		a,
+		&mesh->vertices.front().position,
+		sizeof(mesh->vertices.front()),
+		&mesh->vertices.front().tex_coords,
+		sizeof(mesh->vertices.front()),
+		&mesh->triangles.front().vertices,
+		sizeof(mesh->triangles.front()),
+		mesh->triangles.size(),
+		b,
+		transfromation_matrix,
+		texture_transfromation_matrix,
+		1.0,
+		Color::BLEND_COMPOSITE );
+
+	return true;
 }
 
 /* === E N T R Y P O I N T ================================================= */
