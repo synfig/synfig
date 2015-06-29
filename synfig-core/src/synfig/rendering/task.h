@@ -94,7 +94,7 @@ public:
 				(Real)(target_surface->get_height())/(rect_rb[1] - rect_rb[1]) );
 	}
 
-	Vector get_utits_per_pixel() const
+	Vector get_units_per_pixel() const
 	{
 		if ( !target_surface
 		  || target_surface->empty()
