@@ -36,6 +36,7 @@
 #endif
 
 #include "taskblendsw.h"
+#include "../surfacesw.h"
 
 #endif
 
@@ -53,7 +54,20 @@ using namespace rendering;
 bool
 TaskBlendSW::run(RunParams &params) const
 {
-	// TODO:
+	const synfig::Surface &a =
+		SurfaceSW::Handle::cast_dynamic( sub_task_a()->target_surface )->surface;
+	const synfig::Surface &b =
+		SurfaceSW::Handle::cast_dynamic( sub_task_b()->target_surface )->surface;
+	synfig::Surface &c =
+		SurfaceSW::Handle::cast_dynamic( target_surface )->surface;
+
+	synfig::Surface::pen p = c.get_pen(0, 0);
+	a.blit_to(p);
+	synfig::Surface::alpha_pen ap(c.get_pen(0, 0));
+	ap.set_blend_method(blend_method);
+	ap.set_alpha(alpha);
+	b.blit_to(ap);
+
 	return false;
 }
 
