@@ -37,6 +37,11 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
+namespace synfig
+{
+namespace rendering
+{
+
 struct Blur
 {
 public:
@@ -55,6 +60,9 @@ public:
 	Blur(): type(BOX) { }
 	Blur(Type type, const synfig::Vector& size): type(type), size(size) { }
 };
+
+} /* end namespace rendering */
+} /* end namespace synfig */
 
 /* === E N D =============================================================== */
 

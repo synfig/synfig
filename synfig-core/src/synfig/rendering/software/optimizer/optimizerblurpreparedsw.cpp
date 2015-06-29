@@ -42,6 +42,8 @@
 #include "../task/taskblurpreparedsw.h"
 #include "../task/taskexpandsurfacesw.h"
 
+#include <synfig/blur.h>
+
 #endif
 
 using namespace synfig;
@@ -67,10 +69,12 @@ OptimizerBlurPreparedSW::run(const RunParams& params) const
 		Vector units_per_pixel = blur->get_units_per_pixel();
 		int dw = 0;
 		int dh = 0;
-		blur->blur.get_surface_extra_size(
-			blur->get_pixels_per_unit()[0],
-			blur->get_pixels_per_unit()[1],
-			dw, dh );
+
+		::Blur b;
+		b.type = blur->blur.type;
+		b.size = blur->blur.size;
+		b.get_surface_extra_size(
+			pixels_per_unit[0], pixels_per_unit[1], dw, dh );
 		Vector d((Real)dw*units_per_pixel[0], (Real)dh*units_per_pixel[1]);
 		int width = blur->target_surface->get_width() + 2*dw;
 		int height = blur->target_surface->get_height() + 2*dh;
