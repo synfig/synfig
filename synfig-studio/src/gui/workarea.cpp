@@ -2346,6 +2346,10 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 			drawing_area->queue_draw();
 		}
         break;
+		default:
+		{
+
+		}
 		}//end switch dragging
 
 		if(dragging!=DRAG_WINDOW)
@@ -2537,6 +2541,9 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 			}
 		}
 		break;
+		default:
+		{
+		}
 		} //end switch dragging
 
 		dragging=DRAG_NONE;
