@@ -28,6 +28,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include "workarearenderer.h"
+#include "duckmatic.h"
 #include <vector>
 #include <synfig/vector.h>
 
@@ -50,6 +51,11 @@ public:
 
 	const synfig::Point& get_drag_point()const;
 	const synfig::Point& get_curr_point()const;
+
+private:
+	DuckList selected_handles_;
+	//! drag_paused if used to catch the begin of the drag (event button pressed not received?)
+	bool drag_paused;
 
 protected:
 	bool get_enabled_vfunc()const;
