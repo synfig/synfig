@@ -228,6 +228,7 @@ Renderer_Guides::render_vfunc(
 		{
 			const float x((*iter-window_startx)/pw);
 
+			//!TODO Remove hardcoded hightlight/selected guide color
 			if(iter==get_work_area()->curr_guide)
 				cr->set_source_rgb(1.0,111.0/255.0,111.0/255.0);
 			else
@@ -247,7 +248,7 @@ Renderer_Guides::render_vfunc(
 		for(iter=get_guide_list_y().begin();iter!=get_guide_list_y().end();++iter)
 		{
 			const float y((*iter-window_starty)/ph);
-
+            //!TODO Remove hardcoded hightlight/selected guide color
 			if(iter==get_work_area()->curr_guide)
 				cr->set_source_rgb(1.0,111.0/255.0,111.0/255.0);
 			else
