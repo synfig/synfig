@@ -75,6 +75,52 @@ Renderer_Dragbox::get_enabled_vfunc()const
 	return get_work_area()->get_dragging_mode()==WorkArea::DRAG_BOX;
 }
 
+bool
+Renderer_Dragbox::event_vfunc(GdkEvent* event)
+{
+    switch(event->type)
+    {
+    case GDK_BUTTON_PRESS:
+        {
+
+        }
+        break;
+    case GDK_MOTION_NOTIFY:
+    {
+        if(get_work_area()->get_dragmode() == WorkArea::DRAG_BOX)
+        {
+            const synfig::Point& curr_point(get_curr_point());
+            const synfig::Point& drag_point(get_drag_point());
+            Gdk::ModifierType modifier(Gdk::ModifierType(0));
+
+            modifier = Gdk::ModifierType(event->button.state);
+            // when dragging a box around some ducks:
+            // SHIFT selects; CTRL toggles; SHIFT+CTRL unselects; <none> clears all then selects
+            if(modifier&GDK_SHIFT_MASK)
+                get_work_area()->select_ducks_in_box(drag_point,curr_point);
+
+            if(modifier&GDK_CONTROL_MASK)
+                get_work_area()->toggle_select_ducks_in_box(drag_point,curr_point);
+            else if(!(modifier&GDK_SHIFT_MASK))
+            {
+                get_work_area()->clear_selected_ducks();
+                get_work_area()->select_ducks_in_box(drag_point,curr_point);
+            }
+        }
+    }
+    break;
+    case GDK_BUTTON_RELEASE:
+    {
+
+    }
+        break;
+
+    default:
+        break;
+    }
+
+    return false;
+}
 
 void
 Renderer_Dragbox::render_vfunc(
