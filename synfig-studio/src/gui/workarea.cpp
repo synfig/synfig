@@ -2261,31 +2261,33 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 		signal_cursor_moved_();
 
 		// Guide/Duck highlights on hover
-		if(dragging==DRAG_NONE)
+		switch(dragging)
 		{
-			GuideList::iterator iter;
+		case DRAG_NONE:
+		   {
+            GuideList::iterator iter;
 
-			iter=find_guide_x(mouse_pos,radius);
-			if(iter==get_guide_list_x().end())
-				iter=find_guide_y(mouse_pos,radius);
+            iter=find_guide_x(mouse_pos,radius);
+            if(iter==get_guide_list_x().end())
+                iter=find_guide_y(mouse_pos,radius);
 
-			if(iter!=curr_guide)
-			{
-				curr_guide=iter;
-				drawing_area->queue_draw();
-			}
+            if(iter!=curr_guide)
+            {
+                curr_guide=iter;
+                drawing_area->queue_draw();
+            }
 
-			etl::handle<Duck> duck;
-			duck=find_duck(mouse_pos,radius);
-			if(duck!=hover_duck)
-			{
-				hover_duck=duck;
-				drawing_area->queue_draw();
-			}
-		}
+            etl::handle<Duck> duck;
+            duck=find_duck(mouse_pos,radius);
+            if(duck!=hover_duck)
+            {
+                hover_duck=duck;
+                drawing_area->queue_draw();
+            }
+		   }
+		break;
 
-
-		if(dragging==DRAG_DUCK)
+		case DRAG_DUCK :
 		{
 			if(canvas_view->get_cancel_status())
 			{
@@ -2311,7 +2313,9 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 
 			drawing_area->queue_draw();
 		}
-		if(dragging==DRAG_BEZIER)
+		break;
+
+		case DRAG_BEZIER :
 		{
 			if(canvas_view->get_cancel_status())
 			{
@@ -2324,14 +2328,16 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 
 			drawing_area->queue_draw();
 		}
+        break;
 
-		if(dragging==DRAG_BOX)
+		case DRAG_BOX:
 		{
 			curr_point=mouse_pos;
 			drawing_area->queue_draw();
 		}
+        break;
 
-		if(dragging==DRAG_GUIDE)
+		case DRAG_GUIDE :
 		{
 			if(curr_guide_is_x)
 				*curr_guide=mouse_pos[0];
@@ -2339,6 +2345,8 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				*curr_guide=mouse_pos[1];
 			drawing_area->queue_draw();
 		}
+        break;
+		}//end switch dragging
 
 		if(dragging!=DRAG_WINDOW)
 		{	// Update those triangle things on the rulers
@@ -2371,7 +2379,9 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 	{
 		bool ret(false);
 
-		if(dragging==DRAG_GUIDE)
+		switch(dragging)
+		{
+		case DRAG_GUIDE :
 		{
 			double y,x;
 			if(*(event->button.axes))
@@ -2401,8 +2411,8 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 			save_meta_data();
 			return true;
 		}
-		else
-		if(dragging==DRAG_DUCK)
+		break;
+		case DRAG_DUCK :
 		{
 			synfigapp::Action::PassiveGrouper grouper(instance.get(),_("Move"));
 			dragging=DRAG_NONE;
@@ -2448,8 +2458,8 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 
 			ret=true;
 		}
-		else
-		if(dragging==DRAG_BEZIER)
+		break;
+		case DRAG_BEZIER :
 		{
 			synfigapp::Action::PassiveGrouper grouper(instance.get(),_("Move"));
 			dragging=DRAG_NONE;
@@ -2484,9 +2494,9 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 
 			ret=true;
 		}
-		else
+		break;
 
-		if(dragging==DRAG_BOX)
+		case DRAG_BOX:
 		{
 			dragging=DRAG_NONE;
 			if((drag_point-mouse_pos).mag()>radius/2.0f)
@@ -2526,6 +2536,8 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				}
 			}
 		}
+		break;
+		} //end switch dragging
 
 		dragging=DRAG_NONE;
 
