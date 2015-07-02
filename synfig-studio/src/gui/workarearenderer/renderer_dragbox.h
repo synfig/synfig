@@ -46,6 +46,7 @@ public:
 	~Renderer_Dragbox();
 
 	void render_vfunc(const Glib::RefPtr<Gdk::Window>& drawable,const Gdk::Rectangle& expose_area	);
+	bool event_vfunc(GdkEvent* event);
 
 	const synfig::Point& get_drag_point()const;
 	const synfig::Point& get_curr_point()const;
