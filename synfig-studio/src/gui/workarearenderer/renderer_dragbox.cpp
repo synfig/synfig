@@ -82,13 +82,18 @@ Renderer_Dragbox::event_vfunc(GdkEvent* event)
     {
     case GDK_BUTTON_PRESS:
         {
-
+// Seems to be not received ! event_mask ?
         }
         break;
     case GDK_MOTION_NOTIFY:
     {
         if(get_work_area()->get_dragmode() == WorkArea::DRAG_BOX)
         {
+            if (drag_paused)
+            {
+                selected_handles_= get_work_area()->get_selected_ducks();
+                drag_paused = false;
+            }
             const synfig::Point& curr_point(get_curr_point());
             const synfig::Point& drag_point(get_drag_point());
             Gdk::ModifierType modifier(Gdk::ModifierType(0));
@@ -97,7 +102,18 @@ Renderer_Dragbox::event_vfunc(GdkEvent* event)
             // when dragging a box around some ducks:
             // SHIFT selects; CTRL toggles; SHIFT+CTRL unselects; <none> clears all then selects
             if(modifier&GDK_SHIFT_MASK)
+            {
+
+                DuckList::const_iterator iter;
+                get_work_area()->clear_selected_ducks();
+                for(iter=selected_handles_.begin();iter!=selected_handles_.end();++iter)
+                {
+                    get_work_area()->select_duck((*iter));
+                }
+
                 get_work_area()->select_ducks_in_box(drag_point,curr_point);
+
+            }
 
             if(modifier&GDK_CONTROL_MASK)
                 get_work_area()->toggle_select_ducks_in_box(drag_point,curr_point);
@@ -111,7 +127,7 @@ Renderer_Dragbox::event_vfunc(GdkEvent* event)
     break;
     case GDK_BUTTON_RELEASE:
     {
-
+        drag_paused = true;
     }
         break;
 
