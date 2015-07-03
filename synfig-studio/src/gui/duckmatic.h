@@ -377,7 +377,7 @@ public:
 
 	void select_duck(const etl::handle<Duck> &duck);
 
-	void toggle_select_ducks_in_box(const synfig::Vector& tl,const synfig::Vector& br);
+	void toggle_select_ducks_in_box(const synfig::Vector& tl,const synfig::Vector& br, bool duck_list_isvalid=false, const DuckList duck_list=DuckList());
 
 	void select_ducks_in_box(const synfig::Vector& tl,const synfig::Vector& br);
 

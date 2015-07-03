@@ -91,7 +91,8 @@ Renderer_Dragbox::event_vfunc(GdkEvent* event)
         {
             if (drag_paused)
             {
-                selected_handles_= get_work_area()->get_selected_ducks();
+                handles_selected_= get_work_area()->get_selected_ducks();
+                handles_all_ = get_work_area()->get_duck_list();
                 drag_paused = false;
             }
             const synfig::Point& curr_point(get_curr_point());
@@ -106,7 +107,7 @@ Renderer_Dragbox::event_vfunc(GdkEvent* event)
 
                 DuckList::const_iterator iter;
                 get_work_area()->clear_selected_ducks();
-                for(iter=selected_handles_.begin();iter!=selected_handles_.end();++iter)
+                for(iter=handles_selected_.begin();iter!=handles_selected_.end();++iter)
                 {
                     get_work_area()->select_duck((*iter));
                 }
@@ -116,7 +117,9 @@ Renderer_Dragbox::event_vfunc(GdkEvent* event)
             }
 
             if(modifier&GDK_CONTROL_MASK)
-                get_work_area()->toggle_select_ducks_in_box(drag_point,curr_point);
+            {
+                get_work_area()->toggle_select_ducks_in_box(drag_point,curr_point, true, handles_selected_);
+            }
             else if(!(modifier&GDK_SHIFT_MASK))
             {
                 get_work_area()->clear_selected_ducks();
