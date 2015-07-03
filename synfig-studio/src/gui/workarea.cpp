@@ -2042,6 +2042,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 			{
 				duck=find_duck(mouse_pos,radius);
 
+				// Single click duck selection on WorkArea [Part I] (Part II lower in code)
 				if(duck)
 				{
 					// make a note of whether the duck we click on was selected or not
@@ -2050,8 +2051,8 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 					else
 					{
 						clicked_duck=0;
-						// if CTRL isn't pressed, clicking an unselected duck will unselect all other ducks
-						if(!(modifier&GDK_CONTROL_MASK))
+						// if CTRL or SHIFT isn't pressed, clicking an unselected duck will unselect all other ducks
+						if(!(modifier&(GDK_CONTROL_MASK|GDK_SHIFT_MASK)))
 							clear_selected_ducks();
 						select_duck(duck);
 					}
@@ -2430,14 +2431,16 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 			get_canvas_view()->duck_refresh_flag=true;
 			if(!drag_did_anything)
 			{
+                // Single click duck selection on WorkArea [Part II]
 				// if we originally clicked on a selected duck ...
 				if(clicked_duck)
 				{
 					// ... and CTRL is pressed, then just toggle the clicked duck
-					//     otherwise make the clicked duck the only selected duck
+					//     or not SHIFT is pressed, make the clicked duck the
+				    //     only selected duck. (Nota : SHIFT just add to the selection)
 					if(modifier&GDK_CONTROL_MASK)
 						unselect_duck(clicked_duck);
-					else
+					else if (!(modifier&GDK_SHIFT_MASK))
 					{
 						clear_selected_ducks();
 						select_duck(clicked_duck);
