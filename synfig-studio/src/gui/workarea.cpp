@@ -2513,6 +2513,10 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 
 				// when dragging a box around some ducks:
 				// SHIFT selects; CTRL toggles; SHIFT+CTRL unselects; <none> clears all then selects
+				/*
+				 * Commented out because now the work is
+				 * mostly done in Renderer_Dragbox class
+				 *
 				if(modifier&GDK_SHIFT_MASK)
 					select_ducks_in_box(drag_point,mouse_pos);
 
@@ -2523,6 +2527,8 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 					clear_selected_ducks();
 					select_ducks_in_box(drag_point,mouse_pos);
 				}
+				*
+				*/
 				ret=true;
 			}
 			else

@@ -53,7 +53,8 @@ public:
 	const synfig::Point& get_curr_point()const;
 
 private:
-	DuckList selected_handles_;
+	DuckList handles_selected_;
+    DuckList handles_all_;
 	//! drag_paused if used to catch the begin of the drag (event button pressed not received?)
 	bool drag_paused;
 

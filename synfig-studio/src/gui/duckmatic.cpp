@@ -378,9 +378,9 @@ Duckmatic::unselect_all_ducks()
 	for(iter=duck_map.begin();iter!=duck_map.end();++iter)
 		unselect_duck(iter->second);
 }
-
+// TODO : remove bool param
 void
-Duckmatic::toggle_select_ducks_in_box(const synfig::Vector& tl,const synfig::Vector& br)
+Duckmatic::toggle_select_ducks_in_box(const synfig::Vector& tl,const synfig::Vector& br, bool duck_list_isvalid, const DuckList duck_list)
 {
 	Vector vmin, vmax;
 	vmin[0]=std::min(tl[0],br[0]);
@@ -388,13 +388,39 @@ Duckmatic::toggle_select_ducks_in_box(const synfig::Vector& tl,const synfig::Vec
 	vmax[0]=std::max(tl[0],br[0]);
 	vmax[1]=std::max(tl[1],br[1]);
 
-	DuckMap::const_iterator iter;
-	for(iter=duck_map.begin();iter!=duck_map.end();++iter)
+	if(duck_list_isvalid)
 	{
-		Point p(iter->second->get_trans_point());
-		if(p[0]<=vmax[0] && p[0]>=vmin[0] && p[1]<=vmax[1] && p[1]>=vmin[1] &&
-		   is_duck_group_selectable(iter->second))
-			toggle_select_duck(iter->second);
+        DuckList::const_iterator iterDuckSelected;
+        DuckMap::const_iterator iterDucks;
+
+        for(iterDucks=duck_map.begin();iterDucks!=duck_map.end();++iterDucks)
+        {
+            Point p(iterDucks->second->get_trans_point());
+            if(p[0]<=vmax[0] && p[0]>=vmin[0] && p[1]<=vmax[1] && p[1]>=vmin[1] &&
+               is_duck_group_selectable(iterDucks->second))
+            {
+                // TODO : Fix duck selection (and reverse unselect by adding new selected to local list?)
+                if((std::find(duck_list.begin(), duck_list.end(), iterDucks->second->get_guid())) !=  duck_list.end())
+                {
+                        unselect_duck (iterDucks->second);
+                }else
+                {
+                        select_duck (iterDucks->second);
+                }
+            }
+        }
+
+	}
+	else
+	{
+	    DuckMap::const_iterator iter;
+        for(iter=duck_map.begin();iter!=duck_map.end();++iter)
+        {
+            Point p(iter->second->get_trans_point());
+            if(p[0]<=vmax[0] && p[0]>=vmin[0] && p[1]<=vmax[1] && p[1]>=vmin[1] &&
+               is_duck_group_selectable(iter->second))
+                toggle_select_duck(iter->second);
+        }
 	}
 }
 
