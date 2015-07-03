@@ -3236,6 +3236,7 @@ void
 CanvasView::on_play_timeout()
 {
 	Time time;
+	// Used ifdef WITH_JACK
 	Time starttime = get_canvas()->rend_desc().get_time_start();
 	Time endtime = get_canvas()->rend_desc().get_time_end();
 
@@ -4521,7 +4522,7 @@ CanvasView::on_interpolation_changed()
 }
 
 void
-CanvasView::on_interpolation_event(GdkEvent *event)
+CanvasView::on_interpolation_event(GdkEvent * /* event */)
 {
 	widget_interpolation_scroll->get_hscrollbar()->get_adjustment()->set_value(0);
 }
