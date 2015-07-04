@@ -1,11 +1,14 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file renderer_dragbox.h
-**	\brief Template Header
+**	\brief Renderer_Dragbox classe is used to display in the workarea
+**  the interactive selection box, and select workarea objects (actually handles)
+**  accordingly to the shift/control keys.
 **
 **	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**  Copyright (c) 2015 Blanchi Jérôme
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -31,6 +34,8 @@
 #include "duckmatic.h"
 #include <vector>
 #include <synfig/vector.h>
+#include <synfig/guidset.h>
+
 
 /* === M A C R O S ========================================================= */
 
@@ -55,6 +60,7 @@ public:
 private:
 	DuckList handles_selected_;
     DuckList handles_all_;
+    synfig::GUIDSet handles_selected_guid_;
 	//! drag_paused if used to catch the begin of the drag (event button pressed not received?)
 	bool drag_paused;
 
