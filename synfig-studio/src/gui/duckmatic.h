@@ -359,9 +359,13 @@ public:
 	std::list<etl::handle<Stroke> >& persistent_stroke_list() { return persistent_stroke_list_; }
 
 	//! \todo We should modify this to support multiple selections
+	/// MODIF MODIF MODIF / !
 	etl::handle<Duck> get_selected_duck()const;
 
+	//! Comment
 	DuckList get_selected_ducks()const;
+    //! Comment
+    DuckList get_ducks_in_box(const synfig::Vector& tl,const synfig::Vector& br)const;
 
 	//! Returns \a true if the given duck is currently selected
 	bool duck_is_selected(const etl::handle<Duck> &duck)const;

@@ -9,6 +9,7 @@
 **	Copyright (c) 2007, 2008 Chris Moore
 **	Copyright (c) 2009, 2011 Nikita Kitaev
 **  Copyright (c) 2011 Carlos López
+**  Copyright (c) 2015 Blanchi Jérôme
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -378,6 +379,9 @@ Duckmatic::unselect_all_ducks()
 	for(iter=duck_map.begin();iter!=duck_map.end();++iter)
 		unselect_duck(iter->second);
 }
+
+
+
 // TODO : remove bool param
 void
 Duckmatic::toggle_select_ducks_in_box(const synfig::Vector& tl,const synfig::Vector& br, bool duck_list_isvalid, const DuckList duck_list)
@@ -393,6 +397,34 @@ Duckmatic::toggle_select_ducks_in_box(const synfig::Vector& tl,const synfig::Vec
         DuckList::const_iterator iterDuckSelected;
         DuckMap::const_iterator iterDucks;
 
+//        const DuckMap::const_iterator d_iter(duck_map.find(*iter));
+
+        /*
+         *
+         *
+         *  DuckList ret;
+    GUIDSet::const_iterator iter;
+    const Type type(get_type_mask());
+
+    for(iter=selected_ducks.begin();iter!=selected_ducks.end();++iter)
+    {
+        const DuckMap::const_iterator d_iter(duck_map.find(*iter));
+
+        if(d_iter==duck_map.end())
+            continue;
+
+        if(( d_iter->second->get_type() && (!(type & d_iter->second->get_type())) ) )
+            continue;
+
+        ret.push_back(d_iter->second);
+    }
+    return ret;
+
+         */
+
+
+        info("lenght duck: %d - selected duck; %d", duck_map.size(), duck_list.size());
+
         for(iterDucks=duck_map.begin();iterDucks!=duck_map.end();++iterDucks)
         {
             Point p(iterDucks->second->get_trans_point());
@@ -400,12 +432,17 @@ Duckmatic::toggle_select_ducks_in_box(const synfig::Vector& tl,const synfig::Vec
                is_duck_group_selectable(iterDucks->second))
             {
                 // TODO : Fix duck selection (and reverse unselect by adding new selected to local list?)
-                if((std::find(duck_list.begin(), duck_list.end(), iterDucks->second->get_guid())) !=  duck_list.end())
+
+            //    const DuckMap::const_iterator d_iter(duck_map.find(*iter));
+                if((std::find(duck_list.begin(), duck_list.end(), iterDucks->second->get_guid())) !=  duck_list.end() && duck_is_selected(iterDucks->second))
                 {
+                    info("unselect_duck");
                         unselect_duck (iterDucks->second);
                 }else
                 {
+                    info("select_duck");
                         select_duck (iterDucks->second);
+                 //       duck_list.push_back(iterDucks->second);
                 }
             }
         }
@@ -483,6 +520,33 @@ Duckmatic::get_selected_ducks()const
 		ret.push_back(d_iter->second);
 	}
 	return ret;
+}
+
+
+DuckList
+Duckmatic::get_ducks_in_box(const synfig::Vector& tl,const synfig::Vector& br)const
+{
+    Vector vmin, vmax;
+    vmin[0]=std::min(tl[0],br[0]);
+    vmin[1]=std::min(tl[1],br[1]);
+    vmax[0]=std::max(tl[0],br[0]);
+    vmax[1]=std::max(tl[1],br[1]);
+
+    DuckList ret;
+
+//  Type type(get_type_mask());
+
+    DuckMap::const_iterator iter;
+    for(iter=duck_map.begin();iter!=duck_map.end();++iter)
+    {
+        Point p(iter->second->get_trans_point());
+        if(p[0]<=vmax[0] && p[0]>=vmin[0] && p[1]<=vmax[1] && p[1]>=vmin[1])
+        {
+          //  if(is_duck_group_selectable(iter->second))
+            ret.push_back(iter->second);
+        }
+    }
+    return ret;
 }
 
 DuckList
