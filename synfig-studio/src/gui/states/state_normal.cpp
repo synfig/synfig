@@ -256,6 +256,8 @@ void StateNormal_Context::refresh_cursor()
 	// Change the cursor based on key flags
 	if(get_rotate_flag() && !get_scale_flag())
 	{
+	    //!TODO Do not change the cursor in WorkArea::DragMode mode, but actually not stable enough to catch
+	    //! real DRAGBOX mode (go to DRAGNONE too quick)
 		get_work_area()->set_cursor(Gdk::EXCHANGE);
 		return;
 	}
