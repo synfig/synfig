@@ -2,7 +2,7 @@
 /*!	\file renderer_dragbox.h
 **	\brief Renderer_Dragbox classe is used to display in the workarea
 **  the interactive selection box, and select workarea objects (actually handles)
-**  accordingly to the shift/control keys.
+**  accordingly to the shift/control modifier keys.
 **
 **	$Id$
 **
@@ -51,17 +51,21 @@ class Renderer_Dragbox : public studio::WorkAreaRenderer
 public:
 	~Renderer_Dragbox();
 
+    //! Redraw the drag box
 	void render_vfunc(const Glib::RefPtr<Gdk::Window>& drawable,const Gdk::Rectangle& expose_area	);
+	//! Catch some mouse events to select objects (handles) in the workarea
 	bool event_vfunc(GdkEvent* event);
 
 	const synfig::Point& get_drag_point()const;
 	const synfig::Point& get_curr_point()const;
 
 private:
+	//! Context of workarea objects for selection process
 	DuckList handles_selected_;
     DuckList handles_all_;
     synfig::GUIDSet handles_selected_guid_;
-	//! drag_paused if used to catch the begin of the drag (event button pressed not received?)
+
+	//! Used to catch a new drag box sequence
 	bool drag_paused;
 
 protected:
