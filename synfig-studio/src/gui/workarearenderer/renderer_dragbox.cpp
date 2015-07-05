@@ -91,7 +91,6 @@ Renderer_Dragbox::event_vfunc(GdkEvent* event)
     case GDK_MOTION_NOTIFY:
     {
         //!TODO : Make HARDCODED shortcut key access configure ready.
-        //!TODO : Simplify the duplicate code
         if(get_work_area()->get_dragmode() == WorkArea::DRAG_BOX)
         {
             if (drag_paused)
@@ -106,55 +105,49 @@ Renderer_Dragbox::event_vfunc(GdkEvent* event)
                     handles_selected_guid_.insert((*iter)->get_guid());
 
                 drag_paused = false;
+                //! Do nothing this time.
+                break;
             }
             const synfig::Point& curr_point(get_curr_point());
             const synfig::Point& drag_point(get_drag_point());
             Gdk::ModifierType modifier(Gdk::ModifierType(0));
-
             modifier = Gdk::ModifierType(event->button.state);
-            // when dragging a box around some handles (ducks):
+
+            // UI SPECIFICATION : When dragging a box around some handles (ducks):
             // SHIFT selects; CTRL toggles; SHIFT+CTRL unselects; <none> clears all then selects
-            if(modifier&GDK_SHIFT_MASK)
+            // CTRL Has priority under SHIFT
+
+            //! Start by cleaning the field
+            get_work_area()->clear_selected_ducks();
+            if(modifier&(GDK_SHIFT_MASK|GDK_CONTROL_MASK))
             {
 
                 DuckList::const_iterator iter;
-                get_work_area()->clear_selected_ducks();
                 for(iter=handles_selected_.begin();iter!=handles_selected_.end();++iter)
                 {
                     get_work_area()->select_duck((*iter));
                 }
 
-                get_work_area()->select_ducks_in_box(drag_point,curr_point);
-
-            }
-
-            if(modifier&GDK_CONTROL_MASK)
-            {
-                //! Start by cleaning the field
-                get_work_area()->clear_selected_ducks();
-                //! Then restore the selection context
-                DuckList::const_iterator iter;
-                for(iter=handles_selected_.begin();iter!=handles_selected_.end();++iter)
+                if (modifier&GDK_CONTROL_MASK)
                 {
-                    get_work_area()->select_duck((*iter));
-                }
-               //! Treat what's in the box accordingly to the selection context
-                DuckList handles_in_box = get_work_area()->get_ducks_in_box(drag_point,curr_point);
-                for(iter=handles_in_box.begin();iter!=handles_in_box.end();++iter)
-                {
-                    //! Do the job only on selectable handles (not origin handle)
-                    if(get_work_area()->is_duck_group_selectable(*iter))
+                   //! Treat what's in the box accordingly to the selection context
+                    DuckList handles_in_box = get_work_area()->get_ducks_in_box(drag_point,curr_point);
+                    for(iter=handles_in_box.begin();iter!=handles_in_box.end();++iter)
                     {
-                        if(!handles_selected_guid_.count((*iter)->get_guid()))
-                            get_work_area()->select_duck((*iter));
-                        else
-                            get_work_area()->unselect_duck((*iter));
+                        //! Do the job only on selectable handles (not origin handle)
+                        if(get_work_area()->is_duck_group_selectable(*iter))
+                        {
+                            if(!handles_selected_guid_.count((*iter)->get_guid()))
+                                get_work_area()->select_duck((*iter));
+                            else
+                                get_work_area()->unselect_duck((*iter));
+                        }
                     }
                 }
             }
-            else if(!(modifier&GDK_SHIFT_MASK))
+
+            if (!(modifier&GDK_CONTROL_MASK))
             {
-                get_work_area()->clear_selected_ducks();
                 get_work_area()->select_ducks_in_box(drag_point,curr_point);
             }
         }
