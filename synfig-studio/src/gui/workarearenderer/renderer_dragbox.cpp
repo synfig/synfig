@@ -91,7 +91,7 @@ Renderer_Dragbox::event_vfunc(GdkEvent* event)
     case GDK_MOTION_NOTIFY:
     {
         //!TODO : Make HARDCODED shortcut key access configure ready.
-        if(get_work_area()->get_dragmode() == WorkArea::DRAG_BOX)
+        if(get_work_area()->get_dragging_mode() == WorkArea::DRAG_BOX)
         {
             if (drag_paused)
             {
