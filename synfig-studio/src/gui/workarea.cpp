@@ -2042,6 +2042,8 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 			{
 				duck=find_duck(mouse_pos,radius);
 
+				//!TODO Remove HARDCODE Ui Specification, make it config ready
+
 				// Single click duck selection on WorkArea [Part I] (Part II lower in code)
 				if(duck)
 				{
@@ -2431,6 +2433,8 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 			get_canvas_view()->duck_refresh_flag=true;
 			if(!drag_did_anything)
 			{
+		        //!TODO Remove HARDCODED UI SPECIFICATION, make it config ready
+
                 // Single click duck selection on WorkArea [Part II]
 				// if we originally clicked on a selected duck ...
 				if(clicked_duck)
@@ -2569,6 +2573,8 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 	{
 		// Handle a mouse scrolling event like Xara Xtreme and
 		// Inkscape:
+
+	    //!TODO Remove HARDCODED UI SPECIFICATION, make it config ready
 
 		// Scroll up/down: scroll up/down
 		// Shift + scroll up/down: scroll left/right
