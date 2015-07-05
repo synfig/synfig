@@ -2,7 +2,7 @@
 /*!	\file renderer_dragbox.cpp
 **  \brief Renderer_Dragbox classe is used to display in the workarea
 **  the interactive selection box, and select workarea objects (actually handles)
-**  accordingly to the shift/control keys.
+**  accordingly to the shift/control modifier keys.
 **
 **	$Id$
 **
@@ -91,21 +91,19 @@ Renderer_Dragbox::event_vfunc(GdkEvent* event)
     case GDK_MOTION_NOTIFY:
     {
         //!TODO : Make HARDCODED shortcut key access configure ready.
+        //!TODO : Simplify the duplicate code
         if(get_work_area()->get_dragmode() == WorkArea::DRAG_BOX)
         {
             if (drag_paused)
             {
-                handles_selected_= get_work_area()->get_selected_ducks(); //to remove
-                DuckList handles_selected= get_work_area()->get_selected_ducks();
-                DuckList::const_iterator iter;
-                handles_selected_guid_.clear();
-                for(iter=handles_selected.begin();iter!=handles_selected.end();++iter)
-                    handles_selected_guid_.insert((*iter)->get_guid());
-
+                //! Save the handles (ducks) selection and global context
                 handles_all_ = get_work_area()->get_duck_list();
-
-                info("drag_paused : begin lenght duck: %d - selected duck; %d", handles_all_.size(), handles_selected_.size());
-
+                handles_selected_= get_work_area()->get_selected_ducks();
+                DuckList::const_iterator iter;
+                //! The selection context guid set is used for quicker lookup
+                handles_selected_guid_.clear();
+                for(iter=handles_selected_.begin();iter!=handles_selected_.end();++iter)
+                    handles_selected_guid_.insert((*iter)->get_guid());
 
                 drag_paused = false;
             }
@@ -114,7 +112,7 @@ Renderer_Dragbox::event_vfunc(GdkEvent* event)
             Gdk::ModifierType modifier(Gdk::ModifierType(0));
 
             modifier = Gdk::ModifierType(event->button.state);
-            // when dragging a box around some ducks:
+            // when dragging a box around some handles (ducks):
             // SHIFT selects; CTRL toggles; SHIFT+CTRL unselects; <none> clears all then selects
             if(modifier&GDK_SHIFT_MASK)
             {
@@ -132,15 +130,15 @@ Renderer_Dragbox::event_vfunc(GdkEvent* event)
 
             if(modifier&GDK_CONTROL_MASK)
             {
-                info("CTRL MASK : before clear: lenght duck: %d - selected duck; %d", handles_all_.size(), handles_selected_.size());
+                //! Start by cleaning the field
                 get_work_area()->clear_selected_ducks();
-                info("CTRL MASK : after clear: lenght duck: %d - selected duck; %d", handles_all_.size(), handles_selected_.size());
+                //! Then restore the selection context
                 DuckList::const_iterator iter;
                 for(iter=handles_selected_.begin();iter!=handles_selected_.end();++iter)
                 {
                     get_work_area()->select_duck((*iter));
                 }
-                info("CTRL MASK : after select: lenght duck: %d - selected duck; %d", handles_all_.size(), handles_selected_.size());
+               //! Treat what's in the box accordingly to the selection context
                 DuckList handles_in_box = get_work_area()->get_ducks_in_box(drag_point,curr_point);
                 for(iter=handles_in_box.begin();iter!=handles_in_box.end();++iter)
                 {
@@ -153,11 +151,6 @@ Renderer_Dragbox::event_vfunc(GdkEvent* event)
                             get_work_area()->unselect_duck((*iter));
                     }
                 }
-                info("CTRL MASK : t: handles_in_box : %d ", handles_in_box.size());
-//                get_work_area()->toggle_select_ducks_in_box(drag_point,curr_point, true, handles_selected_);
-
-
-//                get_work_area()->select_ducks_in_box(drag_point,curr_point);
             }
             else if(!(modifier&GDK_SHIFT_MASK))
             {
