@@ -868,7 +868,9 @@ bool studio::Widget_Preview::play_update()
 	{
 		//we go to the next one...
 		double time = adj_time_scrub->get_value() + diff;
+#ifdef WITH_JACK
 		bool stop_on_end = true;
+#endif
 
 		if (jack_enabled)
 		{
