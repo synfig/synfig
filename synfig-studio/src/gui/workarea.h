@@ -333,8 +333,6 @@ public:
 	bool get_allow_bezier_clicks() { return allow_bezier_clicks; }
 	void set_allow_bezier_clicks(bool value) { allow_bezier_clicks=value; }
 
-	DragMode get_dragmode() { return dragging;}
-
 	// used in renderer_ducks.cpp
 	bool solid_lines;
 
