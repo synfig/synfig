@@ -1067,10 +1067,11 @@ void studio::Widget_Preview::pause()
 void studio::Widget_Preview::on_play_pause_pressed()
 {
 	bool play_flag;
-	float begin = preview->get_begintime();
-	float end = preview->get_endtime();
-	float current = adj_time_scrub->get_value();
-	Gtk::Image *icon;
+	//! Commented out , build warnings
+//	float begin = preview->get_begintime();
+//	float end = preview->get_endtime();
+//	float current = adj_time_scrub->get_value();
+//	Gtk::Image *icon;
 
 	play_flag = !playing;
 	
