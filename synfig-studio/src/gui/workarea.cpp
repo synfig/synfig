@@ -2511,12 +2511,14 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				if(canvas_view->get_smach().process_event(EventBox(drag_point,mouse_pos,MouseButton(event->button.button),modifier))==Smach::RESULT_ACCEPT)
 					return true;
 
+                /*
+                 * Commented out because now the work is
+                 * done in Renderer_Dragbox::event_vfunc
+                 *
+
 				// when dragging a box around some ducks:
 				// SHIFT selects; CTRL toggles; SHIFT+CTRL unselects; <none> clears all then selects
-				/*
-				 * Commented out because now the work is
-				 * mostly done in Renderer_Dragbox class
-				 *
+
 				if(modifier&GDK_SHIFT_MASK)
 					select_ducks_in_box(drag_point,mouse_pos);
 
