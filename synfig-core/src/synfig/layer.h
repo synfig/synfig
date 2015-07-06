@@ -40,10 +40,11 @@
 #include "guid.h"
 #include "interpolation.h"
 #include "target.h" // for RenderMethod. TODO: put RenderMethod apart
-#include "rendering/task.h"
 
 #include "cairo.h"
 #include "rendermethod.h"
+
+#include "rendering/task.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -570,12 +571,15 @@ public:
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 	virtual bool accelerated_cairorender(Context context, cairo_t* cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 
+protected:
+	virtual rendering::Task::Handle build_rendering_task_vfunc(Context context)const;
+
+public:
 	//! Returns rendering task for context
 	/*!	\param context		Context iterator referring to next Layer.
 	**	\return \c null on failure
 	**	\see Context::build_rendering_task()
 	*/
-	virtual rendering::Task::Handle build_rendering_task_vfunc(Context context)const;
 	rendering::Task::Handle build_rendering_task(Context context)const;
 
 	//! Checks to see if a part of the layer is directly under \a point

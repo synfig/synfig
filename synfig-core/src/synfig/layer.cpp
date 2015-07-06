@@ -769,9 +769,9 @@ Layer::accelerated_cairorender(Context context, cairo_t *cr, int /*quality*/, co
 }
 
 rendering::Task::Handle
-Layer::build_rendering_task_vfunc(Context context)const
+Layer::build_rendering_task_vfunc(Context /* context */)const
 {
-	warning("Rendering of %s not implemented yet", get_name());
+	warning("Rendering of %s not implemented yet", get_name().c_str());
 	return rendering::Task::Handle();
 }
 

@@ -40,6 +40,8 @@
 #include "valuenode.h"
 #include "transformation.h"
 
+#include "rendering/task.h"
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -565,8 +567,8 @@ Context::accelerated_cairorender(cairo_t *cr,int quality, const RendDesc &rendde
 rendering::Task::Handle
 Context::build_rendering_task() const
 {
-	Context &context = *this;
-	while ( context
+	Context context = *this;
+	while ( *context
 		 && ( !context.active()
 		   || ( !get_params().render_excluded_contexts
 			 && (*context)->get_exclude_from_rendering() )))
@@ -574,7 +576,7 @@ Context::build_rendering_task() const
 
 	// TODO: apply z_range and z_blur (now applies in Canvas::optimize_layers)
 
-	return context
+	return *context
 		 ? (*context)->build_rendering_task(context.get_next())
 		 : rendering::Task::Handle();
 }
