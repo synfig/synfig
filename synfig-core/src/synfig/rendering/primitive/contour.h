@@ -82,12 +82,12 @@ private:
 public:
 	bool invert;
 	bool antialias;
-	Polyspan::WindingStyle winding_style;
+	WindingStyle winding_style;
 	Color color;
 
 	Contour():
 		first(0), invert(false), antialias(false),
-		winding_style(Polyspan::WINDING_NON_ZERO)
+		winding_style(WINDING_NON_ZERO)
 		{ }
 
 	void clear();

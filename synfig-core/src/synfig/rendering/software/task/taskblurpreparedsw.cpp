@@ -36,6 +36,9 @@
 #endif
 
 #include "taskblurpreparedsw.h"
+#include "../surfacesw.h"
+
+#include <synfig/blur.h>
 
 #endif
 
@@ -53,7 +56,17 @@ using namespace rendering;
 bool
 TaskBlurPreparedSW::run(RunParams &params) const
 {
+	synfig::Surface &a =
+		SurfaceSW::Handle::cast_dynamic( target_surface )->surface;
+	const synfig::Surface &b =
+		SurfaceSW::Handle::cast_dynamic( sub_task()->target_surface )->surface;
+
+	::Blur bl;
+	bl.type = blur.type;
+	bl.size = blur.size;
+
 	// TODO:
+
 	return false;
 }
 

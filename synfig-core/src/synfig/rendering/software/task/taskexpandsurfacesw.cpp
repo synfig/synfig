@@ -37,6 +37,8 @@
 
 #include "taskexpandsurfacesw.h"
 
+#include "../surfacesw.h"
+
 #endif
 
 using namespace synfig;
@@ -53,6 +55,11 @@ using namespace rendering;
 bool
 TaskExpandSurfaceSW::run(RunParams &params) const
 {
+	synfig::Surface &a =
+		SurfaceSW::Handle::cast_dynamic( target_surface )->surface;
+	const synfig::Surface &b =
+		SurfaceSW::Handle::cast_dynamic( sub_task()->target_surface )->surface;
+
 	// TODO:
 	return false;
 }

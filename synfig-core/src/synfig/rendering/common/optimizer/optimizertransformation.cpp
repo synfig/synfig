@@ -71,7 +71,7 @@ OptimizerTransformation::run(const RunParams& params) const
 			mesh->mesh = transformation->transformation->build_mesh(
 				transformation->rect_lt,
 				transformation->rect_rb,
-				transformation->get_utits_per_pixel() * precision_pixels );
+				transformation->get_units_per_pixel() * precision_pixels );
 
 			params.out_task = mesh;
 			return true;
