@@ -67,7 +67,6 @@ LIBJPEG_VERSION=1.3.1
 LIBSIGCPP_VERSION=2.2.10
 GLEW_VERSION=1.5.1
 CAIROMM_VERSION=1.10.0
-IMAGEMAGICK_VERSION=6.8.9
 PANGOMM_VERSION=2.34.0
 GTKMM_VERSION=3.14.0
 FTGL_VERSION=2.1.2
@@ -913,7 +912,7 @@ fi
 mkimagemagick()
 {
 PKG_NAME=ImageMagick
-PKG_VERSION="${IMAGEMAGICK_VERSION}-10"
+PKG_VERSION="6.9.1-7"
 TAREXT=bz2
 if ! pkg-config ${PKG_NAME} --exact-version=${IMAGEMAGICK_VERSION}  --print-errors; then
 	( cd ${WORKSPACE}/cache/ && wget -c http://www.imagemagick.org/download/releases/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
