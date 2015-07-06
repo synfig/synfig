@@ -50,6 +50,8 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
+Renderer::~Renderer() { }
+
 bool
 Renderer::is_optimizer_registered(const Optimizer::Handle &optimizer) const
 {
@@ -141,7 +143,7 @@ Renderer::run(const Task::List &list) const
 
 	bool success = true;
 
-	Task::RunParams params(*this);
+	Task::RunParams params;
 	for(Task::List::const_iterator i = optimized_list.begin(); i != optimized_list.end(); ++i)
 		if (!(*i)->run(params)) success = false;
 

@@ -440,12 +440,12 @@ TaskMeshSW::render_mesh(
 
 
 bool
-TaskMeshSW::run(RunParams &params) const
+TaskMeshSW::run(RunParams & /* params */) const
 {
 	synfig::Surface &a =
-		SurfaceSW::Handle::cast_dynamic( target_surface )->surface;
+		SurfaceSW::Handle::cast_dynamic( target_surface )->get_surface();
 	const synfig::Surface &b =
-		SurfaceSW::Handle::cast_dynamic( sub_task()->target_surface )->surface;
+		SurfaceSW::Handle::cast_dynamic( sub_task()->target_surface )->get_surface();
 
 	Matrix3 transfromation_matrix;
 	transfromation_matrix.m00 = get_units_per_pixel()[0];
@@ -465,7 +465,7 @@ TaskMeshSW::run(RunParams &params) const
 		sizeof(mesh->vertices.front()),
 		&mesh->vertices.front().tex_coords,
 		sizeof(mesh->vertices.front()),
-		&mesh->triangles.front().vertices,
+		mesh->triangles.front().vertices,
 		sizeof(mesh->triangles.front()),
 		mesh->triangles.size(),
 		b,

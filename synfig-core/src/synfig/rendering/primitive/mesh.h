@@ -27,6 +27,13 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <cstring>
+
+#include <vector>
+
+#include <ETL/handle>
+
+#include <synfig/rect.h>
 #include <synfig/matrix.h>
 
 /* === M A C R O S ========================================================= */

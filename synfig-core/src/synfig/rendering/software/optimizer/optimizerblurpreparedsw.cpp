@@ -71,8 +71,8 @@ OptimizerBlurPreparedSW::run(const RunParams& params) const
 		int dh = 0;
 
 		::Blur b;
-		b.type = blur->blur.type;
-		b.size = blur->blur.size;
+		b.set_type(blur->blur.type);
+		b.set_size(blur->blur.size);
 		b.get_surface_extra_size(
 			pixels_per_unit[0], pixels_per_unit[1], dw, dh );
 		Vector d((Real)dw*units_per_pixel[0], (Real)dh*units_per_pixel[1]);
@@ -80,7 +80,7 @@ OptimizerBlurPreparedSW::run(const RunParams& params) const
 		int height = blur->target_surface->get_height() + 2*dh;
 
 		TaskBlurPreparedSW::Handle blur_prepared_sw(new TaskBlurPreparedSW());
-		*((Task*)(blur_prepared_sw)) = *((Task*)(blur));
+		*((Task*)(blur_prepared_sw.get())) = *((Task*)(blur.get()));
 		blur_prepared_sw->blur = blur->blur;
 		blur_prepared_sw->rect_lt -= d;
 		blur_prepared_sw->rect_rb += d;
@@ -89,7 +89,7 @@ OptimizerBlurPreparedSW::run(const RunParams& params) const
 		{
 			// task to expand surface
 			TaskExpandSurfaceSW::Handle expand(new TaskExpandSurfaceSW());
-			*((Task*)(expand)) = *((Task*)(blur));
+			*((Task*)(expand.get())) = *((Task*)(blur.get()));
 			expand->target_surface = new SurfaceSW();
 			expand->target_surface->set_size(width, height);
 			expand->rect_lt -= d;

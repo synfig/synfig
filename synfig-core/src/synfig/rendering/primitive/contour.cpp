@@ -64,8 +64,8 @@ Contour::move_to(const Vector &v)
 {
 	if (chunks.empty()) {
 		if (v.is_equal_to(Vector::zero())) {
-			chunks.push_back(Chunk(MOVE, v));
 			first = chunks.size();
+			chunks.push_back(Chunk(MOVE, v));
 		}
 	} else {
 		if (!v.is_equal_to(chunks.back().p1)) {
@@ -80,7 +80,7 @@ Contour::move_to(const Vector &v)
 			}
 			else
 			{
-				chunks.push_back(Chunk(CLOSE, first));
+				chunks.push_back(Chunk(CLOSE, chunks[first].p1));
 				chunks.push_back(Chunk(MOVE, v));
 			}
 			first = chunks.size();

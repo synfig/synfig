@@ -27,6 +27,10 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <vector>
+
+#include <synfig/vector.h>
+
 #include "surface.h"
 
 /* === M A C R O S ========================================================= */
@@ -110,7 +114,7 @@ public:
 
 	virtual ~Task();
 	virtual bool run(RunParams &params) const;
-	virtual Task::Handle clone() const;
+	virtual Task::Handle clone() const { return clone_pointer(this); }
 };
 
 } /* end namespace rendering */

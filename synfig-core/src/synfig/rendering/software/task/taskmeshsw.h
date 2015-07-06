@@ -27,6 +27,8 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <synfig/surface.h>
+
 #include "tasksw.h"
 #include "../../primitive/mesh.h"
 

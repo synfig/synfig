@@ -39,7 +39,10 @@
 #endif
 
 #include "polyspan.h"
+
 #include <cassert>
+
+#include <synfig/general.h>
 
 #endif
 
@@ -392,7 +395,7 @@ Polyspan::subd_conic_stack(Point *arc)
 	arc[4][1] = arc[2][1];
 	b = arc[1][1];
 
-	a = arc[1][1] = (arc[0][1] + b)/2;	Contour::ChunkType type = Contour::ChunkType::;
+	a = arc[1][1] = (arc[0][1] + b)/2;
 
 	b = arc[3][1] = (arc[4][1] + b)/2;
 	arc[2][1] = (a + b)/2;

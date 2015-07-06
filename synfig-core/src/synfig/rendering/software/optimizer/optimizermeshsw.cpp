@@ -64,7 +64,7 @@ OptimizerMeshSW::run(const RunParams& params) const
 	  && mesh->mesh )
 	{
 		TaskMeshSW::Handle mesh_sw(new TaskMeshSW());
-		*((Task*)(mesh_sw)) = *((Task*)(mesh));
+		*((Task*)(mesh_sw.get())) = *((Task*)(mesh.get()));
 		mesh_sw->mesh = mesh->mesh;
 
 		if ( !mesh_sw->sub_task()->target_surface )

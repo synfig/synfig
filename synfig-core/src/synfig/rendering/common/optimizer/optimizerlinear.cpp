@@ -66,7 +66,7 @@ OptimizerLinear::run(const RunParams& params) const
 				int index = i - params.list.begin();
 				bool found = false;
 
-				for(Task::List::const_iterator j = (*i)->sub_tasks.begin(); j != (*i)->sub_tasks.end(); ++j)
+				for(Task::List::iterator j = (*i)->sub_tasks.begin(); j != (*i)->sub_tasks.end(); ++j)
 				{
 					if (*j && !TaskSurface::Handle::cast_dynamic(*j))
 					{

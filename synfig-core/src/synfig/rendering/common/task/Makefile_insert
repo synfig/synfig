@@ -7,7 +7,7 @@ RENDERING_COMMON_TASK_HH = \
 	rendering/common/task/tasksurfaceconvert.h \
 	rendering/common/task/tasksurfacecreate.h \
 	rendering/common/task/tasksurfacedestroy.h \
-	rendering/common/task/tasksurfacetransformation.h
+	rendering/common/task/tasktransformation.h
 
 RENDERING_COMMON_TASK_CC = \
 	rendering/common/task/tasksurfaceconvert.cpp \

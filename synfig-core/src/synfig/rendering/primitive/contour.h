@@ -31,6 +31,9 @@
 
 #include <ETL/handle>
 
+#include <synfig/vector.h>
+#include <synfig/color.h>
+
 /* === M A C R O S ========================================================= */
 
 /* === T Y P E D E F S ===================================================== */

@@ -51,7 +51,7 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 bool
-TaskContourGL::run(RunParams &params) const
+TaskContourGL::run(RunParams & /* params */) const
 {
 	// TODO:
 	return false;

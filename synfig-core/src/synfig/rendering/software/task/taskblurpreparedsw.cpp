@@ -35,10 +35,11 @@
 #include <signal.h>
 #endif
 
-#include "taskblurpreparedsw.h"
-#include "../surfacesw.h"
-
 #include <synfig/blur.h>
+
+#include "taskblurpreparedsw.h"
+
+#include "../surfacesw.h"
 
 #endif
 
@@ -54,16 +55,16 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 bool
-TaskBlurPreparedSW::run(RunParams &params) const
+TaskBlurPreparedSW::run(RunParams & /* params */) const
 {
 	synfig::Surface &a =
-		SurfaceSW::Handle::cast_dynamic( target_surface )->surface;
+		SurfaceSW::Handle::cast_dynamic( target_surface )->get_surface();
 	const synfig::Surface &b =
-		SurfaceSW::Handle::cast_dynamic( sub_task()->target_surface )->surface;
+		SurfaceSW::Handle::cast_dynamic( sub_task()->target_surface )->get_surface();
 
 	::Blur bl;
-	bl.type = blur.type;
-	bl.size = blur.size;
+	bl.set_type(blur.type);
+	bl.set_size(blur.size);
 
 	// TODO:
 

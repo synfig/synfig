@@ -81,6 +81,11 @@ public:
 		NotClosed =	0x4000
 	};
 
+	enum {
+		MAX_SUBDIVISION_SIZE = 64,
+		MIN_SUBDIVISION_DRAW_LEVELS = 4
+	};
+
 private:
 	Point			arc[3*MAX_SUBDIVISION_SIZE + 1];
 

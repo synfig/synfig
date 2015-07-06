@@ -1632,7 +1632,7 @@ CanvasParser::parse_value(xmlpp::Element *element,Canvas::Handle canvas)
 
 		{ // pair
 			types_namespace::TypePairBase *type_pair =
-				dynamic_cast<types_namespace::TypePairBase*>(type_pair);
+				dynamic_cast<types_namespace::TypePairBase*>(type);
 			if (type_pair != NULL)
 			{
 				ValueBase ret = parse_pair(element, *type_pair, canvas);

@@ -67,7 +67,7 @@ OptimizerSurfaceConvert::run(const RunParams& params) const
 		{
 			// Insert TaskSurfaceConvert when surfaces in task not native
 			Task::Handle task = params.task;
-			for(Task::List::const_iterator i = task->sub_tasks.begin(); i != task->sub_tasks.end(); ++i)
+			for(Task::List::iterator i = task->sub_tasks.begin(); i != task->sub_tasks.end(); ++i)
 			{
 				if (*i && (*i)->target_surface
 				 && ( (sw && !SurfaceSW::Handle::cast_dynamic((*i)->target_surface))

@@ -67,8 +67,8 @@ TaskContourSW::render_polyspan(
 	const Polyspan::ContextRect &window = polyspan.get_window();
 	const Polyspan::cover_array &covers = polyspan.get_covers();
 
-	Polyspan::cover_array::iterator cur_mark = covers.begin();
-	Polyspan::cover_array::iterator end_mark = covers.end();
+	Polyspan::cover_array::const_iterator cur_mark = covers.begin();
+	Polyspan::cover_array::const_iterator end_mark = covers.end();
 
 	Real cover = 0, area = 0, alpha = 0;
 	int	y = 0, x = 0;
@@ -212,23 +212,23 @@ TaskContourSW::render_contour(
 	{
 		switch(i->type)
 		{
-			case Contour::ChunkType::CLOSE:
+			case Contour::CLOSE:
 				span.close();
 				break;
-			case Contour::ChunkType::MOVE:
+			case Contour::MOVE:
 				p1 = transform_matrix.get_transformed(i->p1);
 				span.move_to(p1[0], p1[0]);
 				break;
-			case Contour::ChunkType::LINE:
+			case Contour::LINE:
 				p1 = transform_matrix.get_transformed(i->p1);
 				span.line_to(p1[0], p1[1]);
 				break;
-			case Contour::ChunkType::CONIC:
+			case Contour::CONIC:
 				p1 = transform_matrix.get_transformed(i->p1);
 				t0 = transform_matrix.get_transformed(i->t0, false);
 				span.conic_to(t0[0], t0[1], p1[0], p1[1]);
 				break;
-			case Contour::ChunkType::CUBIC:
+			case Contour::CUBIC:
 				p1 = transform_matrix.get_transformed(i->p1);
 				t0 = transform_matrix.get_transformed(i->t0, false);
 				t1 = transform_matrix.get_transformed(i->t1, false);
@@ -252,10 +252,10 @@ TaskContourSW::render_contour(
 }
 
 bool
-TaskContourSW::run(RunParams &params) const
+TaskContourSW::run(RunParams & /* params */) const
 {
 	synfig::Surface &a =
-		SurfaceSW::Handle::cast_dynamic( target_surface )->surface;
+		SurfaceSW::Handle::cast_dynamic( target_surface )->get_surface();
 
 	Matrix3 transfromation_matrix;
 	transfromation_matrix.m00 = get_units_per_pixel()[0];
@@ -265,7 +265,7 @@ TaskContourSW::run(RunParams &params) const
 
 	render_contour(
 		a,
-		contour->chunks,
+		contour->get_chunks(),
 		contour->invert,
 		contour->antialias,
 		contour->winding_style,

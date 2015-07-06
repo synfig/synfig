@@ -76,7 +76,7 @@ Transformation::build_mesh_vfunc(const Rect &target_rect, const Vector &precisio
 	const Vector grid_step(
 		grid_size[0]/(Real)(grid_side_count_x - 1),
 		grid_size[1]/(Real)(grid_side_count_y - 1) );
-	const Real grid_step_diagonal = grid_step.mag();
+	//const Real grid_step_diagonal = grid_step.mag();
 
 	// build grid
 	int visible_vertex_count = 0;

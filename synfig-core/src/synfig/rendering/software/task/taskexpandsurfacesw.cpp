@@ -53,12 +53,12 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 bool
-TaskExpandSurfaceSW::run(RunParams &params) const
+TaskExpandSurfaceSW::run(RunParams & /* params */) const
 {
 	synfig::Surface &a =
-		SurfaceSW::Handle::cast_dynamic( target_surface )->surface;
+		SurfaceSW::Handle::cast_dynamic( target_surface )->get_surface();
 	const synfig::Surface &b =
-		SurfaceSW::Handle::cast_dynamic( sub_task()->target_surface )->surface;
+		SurfaceSW::Handle::cast_dynamic( sub_task()->target_surface )->get_surface();
 
 	// TODO:
 	return false;

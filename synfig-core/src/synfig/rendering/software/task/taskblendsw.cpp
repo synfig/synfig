@@ -52,21 +52,21 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 bool
-TaskBlendSW::run(RunParams &params) const
+TaskBlendSW::run(RunParams & /* params */) const
 {
 	const synfig::Surface &a =
-		SurfaceSW::Handle::cast_dynamic( sub_task_a()->target_surface )->surface;
+		SurfaceSW::Handle::cast_dynamic( sub_task_a()->target_surface )->get_surface();
 	const synfig::Surface &b =
-		SurfaceSW::Handle::cast_dynamic( sub_task_b()->target_surface )->surface;
+		SurfaceSW::Handle::cast_dynamic( sub_task_b()->target_surface )->get_surface();
 	synfig::Surface &c =
-		SurfaceSW::Handle::cast_dynamic( target_surface )->surface;
+		SurfaceSW::Handle::cast_dynamic( target_surface )->get_surface();
 
 	synfig::Surface::pen p = c.get_pen(0, 0);
-	a.blit_to(p);
+	const_cast<synfig::Surface*>(&a)->blit_to(p);
 	synfig::Surface::alpha_pen ap(c.get_pen(0, 0));
 	ap.set_blend_method(blend_method);
 	ap.set_alpha(alpha);
-	b.blit_to(ap);
+	const_cast<synfig::Surface*>(&b)->blit_to(ap);
 
 	return true;
 }

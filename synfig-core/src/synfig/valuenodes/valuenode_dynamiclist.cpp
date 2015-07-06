@@ -436,7 +436,7 @@ ValueNode_DynamicList::ListEntry::new_activepoint_at_time(const Time& time)const
 bool
 ValueNode_DynamicList::ListEntry::status_at_time(const Time &t)const
 {
-	typedef synfig::ValueNode_DynamicList::ListEntry::Activepoint Activepoint;
+	//typedef synfig::ValueNode_DynamicList::ListEntry::Activepoint Activepoint;
 	typedef synfig::ValueNode_DynamicList::ListEntry::ActivepointList ActivepointList;
 
 	ActivepointList::const_iterator entry_iter;

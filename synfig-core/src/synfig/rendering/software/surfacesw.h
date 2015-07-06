@@ -27,8 +27,9 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include "../surface.h"
 #include <synfig/surface.h>
+
+#include "../surface.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -57,6 +58,7 @@ protected:
 
 public:
 	const synfig::Surface& get_surface() const { return surface; }
+	synfig::Surface& get_surface() { return surface; }
 };
 
 } /* end namespace rendering */

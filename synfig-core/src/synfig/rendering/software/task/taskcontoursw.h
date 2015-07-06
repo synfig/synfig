@@ -27,8 +27,12 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <synfig/surface.h>
+
 #include "tasksw.h"
+
 #include "../../primitive/contour.h"
+#include "../../primitive/polyspan.h"
 
 /* === M A C R O S ========================================================= */
 
