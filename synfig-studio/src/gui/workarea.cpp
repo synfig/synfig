@@ -2554,6 +2554,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 					signal_user_click(0)(mouse_pos);
 				}
 			}
+			drawing_area->queue_draw();
 		}
 		break;
 		default:
