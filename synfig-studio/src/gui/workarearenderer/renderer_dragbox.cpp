@@ -173,7 +173,7 @@ Renderer_Dragbox::render_vfunc(
 )
 {
 	assert(get_work_area());
-	if(!get_work_area())
+	if(!get_work_area() || drag_paused)
 		return;
 
 	// const synfig::Vector focus_point(get_work_area()->get_focus_point());
