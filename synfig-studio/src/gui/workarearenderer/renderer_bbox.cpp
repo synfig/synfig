@@ -1,6 +1,7 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file renderer_bbox.cpp
-**	\brief Template File
+**  \brief Renderer_BBox classe is used to render in the workarea the bouding box
+** of the selected layer(s)
 **
 **	$Id$
 **
