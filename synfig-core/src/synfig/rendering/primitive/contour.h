@@ -83,6 +83,7 @@ private:
 	size_t first;
 
 public:
+	// TODO: is it valid place for these fields
 	bool invert;
 	bool antialias;
 	WindingStyle winding_style;
@@ -99,6 +100,8 @@ public:
 	void cubic_to(const Vector &v, const Vector &t0, const Vector &t1);
 	void conic_to(const Vector &v, const Vector &t);
 	void close();
+
+	void assign(const Contour &other);
 
 	const ChunkList& get_chunks() const { return chunks; }
 };

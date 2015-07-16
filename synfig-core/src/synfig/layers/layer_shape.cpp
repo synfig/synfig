@@ -36,6 +36,7 @@
 #include <cfloat>
 
 #include "layer_shape.h"
+
 #include <synfig/string.h>
 #include <synfig/time.h>
 #include <synfig/context.h>
@@ -47,6 +48,9 @@
 #include <synfig/blur.h>
 
 #include <synfig/curve_helper.h>
+
+#include <synfig/rendering/common/task/taskcontour.h>
+#include <synfig/rendering/common/task/taskblend.h>
 
 #endif
 
@@ -1213,17 +1217,52 @@ Layer_Shape::render_shape(Surface *surface, bool useblend, const RendDesc &rendd
 }
 
 rendering::Task::Handle
-Layer_Shape::build_rendering_task_vfunc(Context /* context */)const
+Layer_Shape::build_rendering_task_vfunc(Context context)const
 {
-	/* TODO:
-	Color color=param_color.get(Color());
-	Point origin=param_origin.get(Point());
-	bool invert =param_invert.get(bool(true));
-	int blurtype=param_blurtype.get(int());
-	Real feather=param_feather.get(Real());
-	*/
+	Real amount = param_amount.get(Real());
+	Color::BlendMethod blend_method = param_blend_method.get(Real());
 
-	return rendering::Task::Handle();
+	Color color = param_color.get(Color());
+	Point origin = param_origin.get(Point());
+	bool invert = param_invert.get(bool());
+	bool antialias = param_antialias.get(bool());
+	rendering::Contour::WindingStyle winding_style =
+		(rendering::Contour::WindingStyle)param_winding_style.get(int());
+	int blurtype = param_blurtype.get(int());
+	Real feather = param_feather.get(Real());
+
+	// TODO: origin
+	// TODO: blurtype
+	// TODO: feather
+
+	rendering::TaskContour::Handle task_contour(new rendering::TaskContour());
+	rendering::Task::Handle task = task_contour;
+
+	// TODO: multithreading without this copying
+	task_contour->contour = new rendering::Contour();
+	task_contour->contour->assign(*contour);
+	task_contour->contour->color = color;
+	task_contour->contour->invert = invert;
+	task_contour->contour->antialias = antialias;
+	task_contour->contour->winding_style = winding_style;
+
+	rendering::TaskBlend::Handle sub_task = context.build_rendering_task();
+	if (sub_task)
+	{
+		rendering::TaskBlend::Handle task_blend(new rendering::TaskBlend());
+		task_blend->alpha = amount;
+		task_blend->sub_task_a() = task_contour;
+		task_blend->sub_task_b() = sub_task;
+		task = task_blend;
+	}
+	else
+	{
+		// TODO: use some kind of 'dummy' task instead of this optimization
+		task_contour->contour->color.set_a(
+			amount * task_contour->contour->color.get_a() );
+	}
+
+	return task;
 }
 
 Rect

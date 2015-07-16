@@ -46,7 +46,6 @@ class TaskContour: public Task
 public:
 	typedef etl::handle<TaskContour> Handle;
 
-	Color color;
 	Contour::Handle contour;
 
 	Task::Handle clone() const { return clone_pointer(this); }

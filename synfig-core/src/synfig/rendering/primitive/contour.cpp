@@ -124,4 +124,16 @@ Contour::close()
 	}
 }
 
+void
+Contour::assign(const Contour &other)
+{
+	chunks = other.chunks;
+	first = other.first;
+	invert = other.invert;
+	antialias = other.antialias;
+	winding_style = other.winding_style;
+	color = other.color;
+}
+
+
 /* === E N T R Y P O I N T ================================================= */
