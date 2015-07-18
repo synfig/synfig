@@ -280,11 +280,9 @@ for PKG in \
 	fi
 done
 
-for PKG in dpkg-dev; do
-	if ! ( rpm -qv $PKG > /dev/null ); then
-		MISSING_PKGS="$MISSING_PKGS $PKG"
-	fi
-done
+if ! ( which dpkg-buildpackage > /dev/null ); then
+	MISSING_PKGS="$MISSING_PKGS dpkg-dev"
+fi
 
 if [ ! -z "$MISSING_PKGS" ]; then
 	echo "ERROR: Please install following packages:"
