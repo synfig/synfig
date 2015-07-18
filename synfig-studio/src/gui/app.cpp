@@ -875,10 +875,6 @@ DEFINE_ACTION("save", Gtk::StockID("synfig-save"));
 DEFINE_ACTION("save-as", Gtk::StockID("synfig-save_as"));
 DEFINE_ACTION("save-all", Gtk::StockID("synfig-save_all"));
 DEFINE_ACTION("revert", Gtk::Stock::REVERT_TO_SAVED);
-DEFINE_ACTION("cvs-add", Gtk::StockID("synfig-cvs_add"));
-DEFINE_ACTION("cvs-update", Gtk::StockID("synfig-cvs_update"));
-DEFINE_ACTION("cvs-commit", Gtk::StockID("synfig-cvs_commit"));
-DEFINE_ACTION("cvs-revert", Gtk::StockID("synfig-cvs_revert"));
 DEFINE_ACTION("import", _("Import..."));
 DEFINE_ACTION("render", _("Render..."));
 DEFINE_ACTION("preview", _("Preview..."));
@@ -1009,11 +1005,6 @@ DEFINE_ACTION("keyframe-properties","Properties");
 "		<menuitem action='save-all' />"
 "		<menuitem action='revert' />"
 "		<separator name='sep-file2'/>"
-"		<menuitem action='cvs-add' />"
-"		<menuitem action='cvs-update' />"
-"		<menuitem action='cvs-commit' />"
-"		<menuitem action='cvs-revert' />"
-"		<separator name='sep-file3'/>"
 "		<menuitem action='import' />"
 "		<separator name='sep-file4'/>"
 "		<menuitem action='preview' />"
