@@ -83,8 +83,8 @@ AC_DEFUN([AC_ARG_DEBUG],
 		;;
 		no|*)
 			debug_flags="-DNDEBUG"
-			CXXFLAGS="`echo $CXXFLAGS | sed 's:-g[a-z-]*\s::g' | sed 's:-g[a-z-]*$::'` $debug_flags"
-			CFLAGS="`echo $CFLAGS | sed 's:-g[a-z-]*\s::g' | sed 's:-g[a-z-]*$::'` $debug_flags"
+			CXXFLAGS="`echo $CXXFLAGS | sed 's:-g[[a-z-]]*\s::g' | sed 's:-g[[a-z-]]*$::'` $debug_flags"
+			CFLAGS="`echo $CFLAGS | sed 's:-g[[a-z-]]*\s::g' | sed 's:-g[[a-z-]]*$::'` $debug_flags"
 		;;
 	esac
 
