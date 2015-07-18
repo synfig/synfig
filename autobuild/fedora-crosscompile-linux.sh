@@ -87,6 +87,7 @@ PIXMAN_VERSION=0.30.0		# required by CAIRO 1.12.0
 HARFBUZZ_VERSION=0.9.24
 PANGO_VERSION=1.36.8
 ATKMM_VERSION=2.22.7
+IMAGEMAGICK_VERSION=6.9.1
 
 # System libraries
 FONTCONFIG_VERSION=2.11.0
@@ -912,9 +913,9 @@ fi
 mkimagemagick()
 {
 PKG_NAME=ImageMagick
-PKG_VERSION="6.9.1-8"
+PKG_VERSION="${IMAGEMAGICK_VERSION}-8"
 TAREXT=bz2
-if ! pkg-config ${PKG_NAME} --exact-version=${IMAGEMAGICK_VERSION}  --print-errors; then
+if [ ! -f ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done ]; then
 	( cd ${WORKSPACE}/cache/ && wget -c http://www.imagemagick.org/download/releases/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
 	pushd ${SRCPREFIX}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xjf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
@@ -932,6 +933,9 @@ if ! pkg-config ${PKG_NAME} --exact-version=${IMAGEMAGICK_VERSION}  --print-erro
 	make install
 	cd ..
 	popd
+	
+	touch ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done
+	
 fi
 }
 
