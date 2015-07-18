@@ -403,6 +403,13 @@ cat > ${DEPSPREFIX}/bin/bison <<EOF
 EOF
 chmod a+x  ${DEPSPREFIX}/bin/bison
 
+cat > ${DEPSPREFIX}/bin/git <<EOF
+#!/bin/sh
+
+/usr/bin/git "\$@"
+EOF
+chmod a+x  ${DEPSPREFIX}/bin/git
+
 #for binary in bzip2; do
 #	ln -sf /usr/bin/$binary  ${DEPSPREFIX}/bin/$binary
 #done
