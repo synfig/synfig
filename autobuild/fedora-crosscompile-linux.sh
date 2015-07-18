@@ -82,7 +82,7 @@ AT_SPI2_VERSION=2.10.2
 AT_SPI2_ATK_VERSION=2.10.2
 GLIB_VERSION=2.42.1
 GDK_PIXBUF_VERSION=2.31.3
-GTK_VERSION=3.14.9
+GTK_VERSION=3.14.14
 PIXMAN_VERSION=0.30.0		# required by CAIRO 1.12.0
 HARFBUZZ_VERSION=0.9.24
 PANGO_VERSION=1.36.8
@@ -912,7 +912,7 @@ fi
 mkimagemagick()
 {
 PKG_NAME=ImageMagick
-PKG_VERSION="6.9.1-7"
+PKG_VERSION="6.9.1-8"
 TAREXT=bz2
 if ! pkg-config ${PKG_NAME} --exact-version=${IMAGEMAGICK_VERSION}  --print-errors; then
 	( cd ${WORKSPACE}/cache/ && wget -c http://www.imagemagick.org/download/releases/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
