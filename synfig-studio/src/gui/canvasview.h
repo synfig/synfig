@@ -559,7 +559,8 @@ private:
 	void interpolation_refresh();
 	void on_interpolation_changed();
 	void on_interpolation_event(GdkEvent *event);
-
+	
+	static void save_all();
 
 	/*
  -- ** -- P U B L I C   M E T H O D S -----------------------------------------
