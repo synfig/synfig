@@ -6,12 +6,12 @@
 # Jay Alexander Fleming <tito.nehru.naser@gmail.com>, 2015
 msgid ""
 msgstr ""
-"Project-Id-Version: Synfig\n"
+"Project-Id-Version: Synfig UI\n"
 "Report-Msgid-Bugs-To: http://www.synfig.org/issues/thebuggenie/synfig\n"
-"POT-Creation-Date: 2015-04-14 18:00+0700\n"
-"PO-Revision-Date: 2015-04-10 16:07+0000\n"
+"POT-Creation-Date: 2015-07-18 18:00+0700\n"
+"PO-Revision-Date: 2015-06-08 16:12+0000\n"
 "Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
-"Language-Team: Serbian (Serbia) (http://www.transifex.com/projects/p/synfig/language/sr_RS/)\n"
+"Language-Team: Serbian (Serbia) (http://www.transifex.com/p/synfig/language/sr_RS/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -667,7 +667,7 @@ msgid "Amount"
 msgstr "Вредност"
 
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:136
-#: ../src/gui/iconcontroller.cpp:257
+#: ../src/gui/iconcontroller.cpp:265
 msgid "Select All Child Layers"
 msgstr "Изабери све подређене слојеве"
 
@@ -847,7 +847,7 @@ msgid "Time"
 msgstr "Време"
 
 #: ../src/gui/dialogs/canvasoptions.cpp:113
-#: ../src/gui/dialogs/dialog_setup.cpp:177
+#: ../src/gui/dialogs/dialog_setup.cpp:182
 msgid "Units"
 msgstr "Јединице мере"
 
@@ -899,11 +899,11 @@ msgstr "Уредите особине платна"
 msgid "Colors"
 msgstr "Боје"
 
-#: ../src/gui/dialogs/dialog_color.cpp:66 ../src/gui/iconcontroller.cpp:282
+#: ../src/gui/dialogs/dialog_color.cpp:66 ../src/gui/iconcontroller.cpp:290
 msgid "Set as Outline"
 msgstr "Постави као боју контуре"
 
-#: ../src/gui/dialogs/dialog_color.cpp:68 ../src/gui/iconcontroller.cpp:283
+#: ../src/gui/dialogs/dialog_color.cpp:68 ../src/gui/iconcontroller.cpp:291
 msgid "Set as Fill"
 msgstr "Постави као боју испуне"
 
@@ -1007,15 +1007,15 @@ msgstr ""
 #: ../src/gui/docks/dock_history.cpp:259 ../src/gui/docks/dock_history.cpp:273
 #: ../src/gui/docks/dock_history.cpp:287
 #: ../src/gui/docks/dock_metadata.cpp:152 ../src/gui/states/state_text.cpp:635
-#: ../src/gui/widgets/widget_canvaschooser.cpp:138 ../src/gui/app.cpp:3528
-#: ../src/gui/app.cpp:3621 ../src/gui/canvasview.cpp:3949
+#: ../src/gui/widgets/widget_canvaschooser.cpp:138 ../src/gui/app.cpp:3525
+#: ../src/gui/app.cpp:3618 ../src/gui/canvasview.cpp:3964
 #: ../src/gui/compview.cpp:332 ../src/gui/compview.cpp:347
 #: ../src/gui/instance.cpp:209 ../src/gui/instance.cpp:399
 #: ../src/gui/instance.cpp:599 ../src/gui/instance.cpp:621
 #: ../src/gui/instance.cpp:707 ../src/gui/instance.cpp:758
 #: ../src/gui/instance.cpp:832 ../src/gui/instance.cpp:874
 #: ../src/gui/instance.cpp:902 ../src/gui/instance.cpp:1123
-#: ../src/gui/instance.cpp:1425 ../src/synfigapp/action_system.cpp:116
+#: ../src/gui/instance.cpp:1434 ../src/synfigapp/action_system.cpp:116
 msgid "Cancel"
 msgstr "Поништи"
 
@@ -1035,7 +1035,15 @@ msgstr ""
 msgid "Keyframe Dialog"
 msgstr "Прозорче кључног кадра"
 
-#: ../src/gui/dialogs/dialog_preview.cpp:65 ../src/gui/canvasview.cpp:1837
+#: ../src/gui/dialogs/dialog_keyframe.cpp:93
+msgid "Description :"
+msgstr ""
+
+#: ../src/gui/dialogs/dialog_keyframe.cpp:98
+msgid "Active :"
+msgstr ""
+
+#: ../src/gui/dialogs/dialog_preview.cpp:65 ../src/gui/canvasview.cpp:1851
 msgid "Preview Window"
 msgstr "Прозор за претпреглед"
 
@@ -1079,7 +1087,7 @@ msgstr "Подешавања времена"
 msgid "<b>Time settings</b>"
 msgstr "<b>Подешавања времена</b>"
 
-#: ../src/gui/dialogs/dialog_preview.cpp:219 ../src/gui/canvasview.cpp:1357
+#: ../src/gui/dialogs/dialog_preview.cpp:219 ../src/gui/canvasview.cpp:1366
 msgid "Preview"
 msgstr "Претпреглед"
 
@@ -1087,347 +1095,343 @@ msgstr "Претпреглед"
 msgid "Synfig Studio Setup"
 msgstr "Поставка Синфиговог студија"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:81
-msgid "Visually Linear Color Selection"
-msgstr "Наоко равномеран избор боје"
-
-#: ../src/gui/dialogs/dialog_setup.cpp:83
-msgid "Use Only a Single Thread"
-msgstr "Користи само једну програмерску нит"
-
-#: ../src/gui/dialogs/dialog_setup.cpp:85
-msgid "Restrict Real-Valued Handles to Top Right Quadrant"
-msgstr ""
-
-#: ../src/gui/dialogs/dialog_setup.cpp:86
-msgid "Scale New Imported Images to Fit Canvas"
-msgstr "Прилагоди новоувежене слике величини платна"
-
-#: ../src/gui/dialogs/dialog_setup.cpp:87
-msgid "Enable experimental features (restart required)"
-msgstr "Омогући недовољно испитане алате (неопходно ново покретање програма)"
-
-#: ../src/gui/dialogs/dialog_setup.cpp:88
-msgid "Use dark theme (if available)"
-msgstr ""
-
-#: ../src/gui/dialogs/dialog_setup.cpp:94 ../src/gui/app.cpp:898
+#: ../src/gui/dialogs/dialog_setup.cpp:94 ../src/gui/app.cpp:896
 msgid "Restore Defaults"
 msgstr "Поврати основно"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:116
+#: ../src/gui/dialogs/dialog_setup.cpp:119
 msgid "Gamma"
 msgstr "Гамут"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:121
-#: ../src/gui/widgets/widget_coloredit.cpp:422
+#: ../src/gui/dialogs/dialog_setup.cpp:124
+#: ../src/gui/widgets/widget_coloredit.cpp:423
 msgid "Red"
 msgstr "Црвена"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:126
-#: ../src/gui/widgets/widget_coloredit.cpp:424
+#: ../src/gui/dialogs/dialog_setup.cpp:129
+#: ../src/gui/widgets/widget_coloredit.cpp:425
 msgid "Green"
 msgstr "Зелена"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:131
-#: ../src/gui/widgets/widget_coloredit.cpp:426
+#: ../src/gui/dialogs/dialog_setup.cpp:134
+#: ../src/gui/widgets/widget_coloredit.cpp:427
 msgid "Blue"
 msgstr "Плава"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:135
+#: ../src/gui/dialogs/dialog_setup.cpp:138
 msgid "Black Level"
 msgstr "Ниво црне"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:146
+#: ../src/gui/dialogs/dialog_setup.cpp:149
 msgid "Misc."
 msgstr "Разно"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:152
+#: ../src/gui/dialogs/dialog_setup.cpp:155
 msgid "Timestamp"
 msgstr "Врем.ознака"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:178
+#: ../src/gui/dialogs/dialog_setup.cpp:183
 msgid "Pixels"
 msgstr "Пиксела"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:179
+#: ../src/gui/dialogs/dialog_setup.cpp:184
 msgid "Points"
 msgstr "Тачака"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:180
+#: ../src/gui/dialogs/dialog_setup.cpp:185
 msgid "Inches"
 msgstr "Инча"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:181
+#: ../src/gui/dialogs/dialog_setup.cpp:186
 msgid "Meters"
 msgstr "Метара"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:182
+#: ../src/gui/dialogs/dialog_setup.cpp:187
 msgid "Centimeters"
 msgstr "Центиметара"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:183
+#: ../src/gui/dialogs/dialog_setup.cpp:188
 msgid "Millimeters"
 msgstr "Милиметара"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:188
+#: ../src/gui/dialogs/dialog_setup.cpp:193
 msgid "Unit System"
 msgstr "Систем јединица мере"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:194
+#: ../src/gui/dialogs/dialog_setup.cpp:199
 msgid "Recent Files"
 msgstr "Скоро коришћено"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:201
+#: ../src/gui/dialogs/dialog_setup.cpp:203
 msgid "Auto Backup Interval (0 to disable)"
 msgstr "Повремено самочување (0 — онемогућено)"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:222
+#: ../src/gui/dialogs/dialog_setup.cpp:207
 msgid "Browser Command"
 msgstr "Наредба веб-прегледника"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:226
+#: ../src/gui/dialogs/dialog_setup.cpp:211
 msgid "Brush Presets Path"
 msgstr "Путања до поставки четкице"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:231
+#: ../src/gui/dialogs/dialog_setup.cpp:216
 msgid "System Language"
 msgstr "Подразумевани језик на систему"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:232
+#: ../src/gui/dialogs/dialog_setup.cpp:217
 msgid "Arabic"
 msgstr "Арапски"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:233
+#: ../src/gui/dialogs/dialog_setup.cpp:218
 msgid "Basque"
 msgstr "Баскијски"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:234
+#: ../src/gui/dialogs/dialog_setup.cpp:219
 msgid "Basque (Spain)"
 msgstr "Баскијски"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:235
+#: ../src/gui/dialogs/dialog_setup.cpp:220
 msgid "Catalan"
 msgstr "Каталонски"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:236
+#: ../src/gui/dialogs/dialog_setup.cpp:221
 msgid "Chinese (China)"
 msgstr "Кинески"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:237
+#: ../src/gui/dialogs/dialog_setup.cpp:222
 msgid "Czech"
 msgstr "Чешки"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:238
+#: ../src/gui/dialogs/dialog_setup.cpp:223
 msgid "Danish"
 msgstr "Дански"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:239
+#: ../src/gui/dialogs/dialog_setup.cpp:224
 msgid "Dutch "
 msgstr "Холандски"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:240
+#: ../src/gui/dialogs/dialog_setup.cpp:225
 msgid "English"
 msgstr "Енглески"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:241
+#: ../src/gui/dialogs/dialog_setup.cpp:226
 msgid "English (United Kingdom)"
 msgstr "Енглески (ВБ)"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:242
+#: ../src/gui/dialogs/dialog_setup.cpp:227
 msgid "Farsi (Iran)"
 msgstr "Персијски"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:243
+#: ../src/gui/dialogs/dialog_setup.cpp:228
 msgid "French "
 msgstr "Француски"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:244
+#: ../src/gui/dialogs/dialog_setup.cpp:229
 msgid "German"
 msgstr "Немачки"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:245
+#: ../src/gui/dialogs/dialog_setup.cpp:230
 msgid "Greek (Greece)"
 msgstr "Грчки"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:246
+#: ../src/gui/dialogs/dialog_setup.cpp:231
 msgid "Hebrew "
 msgstr "Јеврејски"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:247
+#: ../src/gui/dialogs/dialog_setup.cpp:232
 msgid "Hungarian "
 msgstr "Мађарски"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:248
+#: ../src/gui/dialogs/dialog_setup.cpp:233
 msgid "Italian "
 msgstr "Италијански"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:249
+#: ../src/gui/dialogs/dialog_setup.cpp:234
 msgid "Japanese (Japan)"
 msgstr "Јапански"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:250
+#: ../src/gui/dialogs/dialog_setup.cpp:235
 msgid "Lithuanian "
 msgstr "Литвански"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:251
+#: ../src/gui/dialogs/dialog_setup.cpp:236
 msgid "Norwegian (Norway)"
 msgstr "Норвешки"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:252
+#: ../src/gui/dialogs/dialog_setup.cpp:237
 msgid "Polish (Poland)"
 msgstr "Пољски"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:253
+#: ../src/gui/dialogs/dialog_setup.cpp:238
 msgid "Portuguese (Brazil)"
 msgstr "Португалски (Бразил)"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:254
+#: ../src/gui/dialogs/dialog_setup.cpp:239
 msgid "Romanian"
 msgstr "Румунски"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:255
+#: ../src/gui/dialogs/dialog_setup.cpp:240
 msgid "Russian"
 msgstr "Руски"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:256
+#: ../src/gui/dialogs/dialog_setup.cpp:241
 msgid "Spanish"
 msgstr "Шпански"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:257
+#: ../src/gui/dialogs/dialog_setup.cpp:242
 msgid "Sinhala"
 msgstr "Синхала"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:258
+#: ../src/gui/dialogs/dialog_setup.cpp:243
 msgid "Slovak (Slovakia)"
 msgstr "Словачки"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:259
+#: ../src/gui/dialogs/dialog_setup.cpp:244
 msgid "Swedish (Sweden)"
 msgstr "Шведски"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:260
+#: ../src/gui/dialogs/dialog_setup.cpp:245
 msgid "Turkish"
 msgstr "Турски"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:312
+#: ../src/gui/dialogs/dialog_setup.cpp:297
 msgid "Interface Language"
 msgstr "Језик сучеља"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:318
+#: ../src/gui/dialogs/dialog_setup.cpp:301
+msgid "Visually linear color selection"
+msgstr ""
+
+#: ../src/gui/dialogs/dialog_setup.cpp:305
+msgid "Restrict really-valued handles to top right quadrant"
+msgstr ""
+
+#: ../src/gui/dialogs/dialog_setup.cpp:309
+msgid "Scaling new imported image to fix canvas"
+msgstr ""
+
+#: ../src/gui/dialogs/dialog_setup.cpp:313
+msgid "Dark UI theme (if available)"
+msgstr ""
+
+#: ../src/gui/dialogs/dialog_setup.cpp:322
+msgid "Single thread only (CPUs)"
+msgstr ""
+
+#: ../src/gui/dialogs/dialog_setup.cpp:330
 msgid "Document"
 msgstr "Докуменат"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:321
+#: ../src/gui/dialogs/dialog_setup.cpp:333
 msgid "New Document filename prefix"
 msgstr "Предметак назива нових датотека"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:323
+#: ../src/gui/dialogs/dialog_setup.cpp:335
 msgid "File name prefix for the new created document"
 msgstr "Преметак назива будућих новоствараних датотека"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:327
+#: ../src/gui/dialogs/dialog_setup.cpp:339
 msgid "New Document X size"
 msgstr "Ширина слика"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:329
+#: ../src/gui/dialogs/dialog_setup.cpp:341
 msgid "Width in pixels of the new created document"
 msgstr "Ширина новостворених покретних слика у пикселима"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:333
+#: ../src/gui/dialogs/dialog_setup.cpp:345
 msgid "New Document Y size"
 msgstr "Висина слика"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:335
+#: ../src/gui/dialogs/dialog_setup.cpp:347
 msgid "High in pixels of the new created document"
 msgstr "Висина новостворених покретних слика у пикселима"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:339
+#: ../src/gui/dialogs/dialog_setup.cpp:351
 msgid "Predefined Resolutions:"
 msgstr "Предодређене величине:"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:344
+#: ../src/gui/dialogs/dialog_setup.cpp:356
 msgid "4096x3112 Full Aperture 4K"
 msgstr "4096×3112 — Пун распон 4К"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:345
+#: ../src/gui/dialogs/dialog_setup.cpp:357
 msgid "2048x1556 Full Aperture Native 2K"
 msgstr "2048×1556 — Пун распон са чистих 2К"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:346
+#: ../src/gui/dialogs/dialog_setup.cpp:358
 msgid "1920x1080 HDTV 1080p/i"
 msgstr "1920×1080 ХДТВ 1080п/и"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:347
+#: ../src/gui/dialogs/dialog_setup.cpp:359
 msgid "1280x720  HDTV 720p"
 msgstr "1280×720   ХДТВ 720п"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:348
+#: ../src/gui/dialogs/dialog_setup.cpp:360
 msgid "720x576   DVD PAL"
 msgstr "720×576   ДВД ПАЛ"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:349
+#: ../src/gui/dialogs/dialog_setup.cpp:361
 msgid "720x480   DVD NTSC"
 msgstr "720×480   ДВД НТСЦ"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:350
+#: ../src/gui/dialogs/dialog_setup.cpp:362
 msgid "720x540   Web 720x"
 msgstr "720×540   Веб 720×"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:351
+#: ../src/gui/dialogs/dialog_setup.cpp:363
 msgid "720x405   Web 720x HD"
 msgstr "720×405   Веб 720× ХД"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:352
+#: ../src/gui/dialogs/dialog_setup.cpp:364
 msgid "640x480   Web 640x"
 msgstr "640×480   Веб 640×"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:353
+#: ../src/gui/dialogs/dialog_setup.cpp:365
 msgid "640x360   Web 640x HD"
 msgstr "640×360   Веб 640× ХД"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:354
+#: ../src/gui/dialogs/dialog_setup.cpp:366
 msgid "480x360   Web 480x"
 msgstr "480×360   Веб 480×"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:355
+#: ../src/gui/dialogs/dialog_setup.cpp:367
 msgid "480x270   Web 480x HD"
 msgstr "480×270   Веб 480× ХД"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:356
+#: ../src/gui/dialogs/dialog_setup.cpp:368
 msgid "360x270   Web 360x"
 msgstr "360×270   Веб 360×"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:357
+#: ../src/gui/dialogs/dialog_setup.cpp:369
 msgid "360x203   Web 360x HD"
 msgstr "360×203   Веб 360× ХД"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:362
+#: ../src/gui/dialogs/dialog_setup.cpp:374
 msgid "Predefined FPS:"
 msgstr "КпС — предодређено:"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:384
+#: ../src/gui/dialogs/dialog_setup.cpp:396
 msgid "New Document FPS"
 msgstr "Број КпС у новом документу"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:386
+#: ../src/gui/dialogs/dialog_setup.cpp:398
 msgid "Frames per second of the new created document"
 msgstr "Број кадрова по секунди (КпС) у новим покретним сликама (видео запису)"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:391 ../src/gui/canvasview.cpp:1341
+#: ../src/gui/dialogs/dialog_setup.cpp:404 ../src/gui/canvasview.cpp:1350
 #: ../src/gui/render.cpp:178
 msgid "Render"
 msgstr "Стварање слика"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:394
+#: ../src/gui/dialogs/dialog_setup.cpp:407
 msgid "Image Sequence Separator String"
 msgstr "Раздвајач назива у листама поређаних слика"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:397
+#: ../src/gui/dialogs/dialog_setup.cpp:410
 msgid "Use Cairo render on Navigator"
 msgstr "У навигатору се користи Каиро-творац"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:400
+#: ../src/gui/dialogs/dialog_setup.cpp:413
 msgid "Use Cairo render on WorkArea"
 msgstr "У радној области се користи Каиро-творац"
 
@@ -1507,13 +1511,13 @@ msgstr "На претходни кључни кадар"
 msgid "Seek to previous frame"
 msgstr "На претходни кадар"
 
-#: ../src/gui/dials/framedial.cpp:59 ../src/gui/app.cpp:929
-#: ../src/gui/iconcontroller.cpp:288 ../src/gui/preview.cpp:451
+#: ../src/gui/dials/framedial.cpp:59 ../src/gui/app.cpp:927
+#: ../src/gui/iconcontroller.cpp:296 ../src/gui/preview.cpp:451
 msgid "Play"
 msgstr "Пусти"
 
-#: ../src/gui/dials/framedial.cpp:60 ../src/gui/app.cpp:932
-#: ../src/gui/iconcontroller.cpp:290 ../src/gui/preview.cpp:464
+#: ../src/gui/dials/framedial.cpp:60 ../src/gui/app.cpp:930
+#: ../src/gui/iconcontroller.cpp:298 ../src/gui/preview.cpp:464
 msgid "Pause"
 msgstr "Паузирај"
 
@@ -1529,8 +1533,8 @@ msgstr "На наредни кључни кадар"
 msgid "Seek to end"
 msgstr "На крај"
 
-#: ../src/gui/dials/jackdial.cpp:58 ../src/gui/canvasview.cpp:1048
-#: ../src/gui/preview.cpp:1424
+#: ../src/gui/dials/jackdial.cpp:58 ../src/gui/canvasview.cpp:1057
+#: ../src/gui/preview.cpp:1427
 msgid "Disable JACK"
 msgstr "Онемогући Џек-зв. посредник"
 
@@ -1574,7 +1578,7 @@ msgstr "Ако је омогућено употребљава се лошија 
 msgid "Position handles"
 msgstr "Ручке положаја"
 
-#: ../src/gui/dials/toggleducksdial.cpp:55 ../src/gui/iconcontroller.cpp:307
+#: ../src/gui/dials/toggleducksdial.cpp:55 ../src/gui/iconcontroller.cpp:315
 msgid "Toggle position handles"
 msgstr "Укљ/Искљ. ручке положаја"
 
@@ -1582,7 +1586,7 @@ msgstr "Укљ/Искљ. ручке положаја"
 msgid "Vertex handles"
 msgstr "Ручке везице"
 
-#: ../src/gui/dials/toggleducksdial.cpp:56 ../src/gui/iconcontroller.cpp:308
+#: ../src/gui/dials/toggleducksdial.cpp:56 ../src/gui/iconcontroller.cpp:316
 msgid "Toggle vertex handles"
 msgstr "Укљ/Искљ. ручке везице"
 
@@ -1590,7 +1594,7 @@ msgstr "Укљ/Искљ. ручке везице"
 msgid "Tangent handles"
 msgstr "Ручке тангенте"
 
-#: ../src/gui/dials/toggleducksdial.cpp:57 ../src/gui/iconcontroller.cpp:309
+#: ../src/gui/dials/toggleducksdial.cpp:57 ../src/gui/iconcontroller.cpp:317
 msgid "Toggle tangent handles"
 msgstr "Укљ/Искљ. ручке тангенте"
 
@@ -1598,7 +1602,7 @@ msgstr "Укљ/Искљ. ручке тангенте"
 msgid "Radius handles"
 msgstr "Ручке пречника"
 
-#: ../src/gui/dials/toggleducksdial.cpp:58 ../src/gui/iconcontroller.cpp:310
+#: ../src/gui/dials/toggleducksdial.cpp:58 ../src/gui/iconcontroller.cpp:318
 msgid "Toggle radius handles"
 msgstr "Укљ/Искљ. ручке пречника"
 
@@ -1606,7 +1610,7 @@ msgstr "Укљ/Искљ. ручке пречника"
 msgid "Width handles"
 msgstr "Ручке ширине"
 
-#: ../src/gui/dials/toggleducksdial.cpp:59 ../src/gui/iconcontroller.cpp:311
+#: ../src/gui/dials/toggleducksdial.cpp:59 ../src/gui/iconcontroller.cpp:319
 msgid "Toggle width handles"
 msgstr "Укљ/Искљ. ручке ширине"
 
@@ -1614,7 +1618,7 @@ msgstr "Укљ/Искљ. ручке ширине"
 msgid "Angle handles"
 msgstr "Ручке угла"
 
-#: ../src/gui/dials/toggleducksdial.cpp:60 ../src/gui/iconcontroller.cpp:312
+#: ../src/gui/dials/toggleducksdial.cpp:60 ../src/gui/iconcontroller.cpp:320
 msgid "Toggle angle handles"
 msgstr "Укљ/Искљ. ручке угла"
 
@@ -1635,7 +1639,7 @@ msgid "Zoom to 100%"
 msgstr "Пуна величина"
 
 #: ../src/gui/docks/dialog_tooloptions.cpp:57
-#: ../src/gui/docks/dialog_tooloptions.cpp:74 ../src/gui/app.cpp:971
+#: ../src/gui/docks/dialog_tooloptions.cpp:74 ../src/gui/app.cpp:969
 msgid "Tool Options"
 msgstr "Поставке алатке"
 
@@ -1643,7 +1647,7 @@ msgstr "Поставке алатке"
 msgid "This tool has no options"
 msgstr "Нема поставки за ову алатку"
 
-#: ../src/gui/docks/dock_canvases.cpp:55 ../src/gui/app.cpp:973
+#: ../src/gui/docks/dock_canvases.cpp:55 ../src/gui/app.cpp:971
 #: ../src/gui/compview.cpp:170
 msgid "Canvas Browser"
 msgstr "Прегледник платна"
@@ -1653,22 +1657,22 @@ msgstr "Прегледник платна"
 msgid "ID"
 msgstr "ИБ"
 
-#: ../src/gui/docks/dock_children.cpp:67 ../src/gui/app.cpp:978
-#: ../src/gui/iconcontroller.cpp:262
+#: ../src/gui/docks/dock_children.cpp:67 ../src/gui/app.cpp:976
+#: ../src/gui/iconcontroller.cpp:270
 msgid "Library"
 msgstr "Библиотека"
 
-#: ../src/gui/docks/dock_curves.cpp:69 ../src/gui/app.cpp:982
-#: ../src/gui/iconcontroller.cpp:263
+#: ../src/gui/docks/dock_curves.cpp:69 ../src/gui/app.cpp:980
+#: ../src/gui/iconcontroller.cpp:271
 msgid "Graphs"
 msgstr "Графикони"
 
 #: ../src/gui/docks/dock_history.cpp:69 ../src/gui/docks/dock_history.cpp:125
-#: ../src/gui/compview.cpp:93 ../src/gui/iconcontroller.cpp:268
+#: ../src/gui/compview.cpp:93 ../src/gui/iconcontroller.cpp:276
 msgid "History"
 msgstr "Историјат"
 
-#: ../src/gui/docks/dock_history.cpp:78 ../src/gui/iconcontroller.cpp:259
+#: ../src/gui/docks/dock_history.cpp:78 ../src/gui/iconcontroller.cpp:267
 msgid "Clear Undo Stack"
 msgstr "Очисти историјат опозива"
 
@@ -1676,7 +1680,7 @@ msgstr "Очисти историјат опозива"
 msgid "Clear the undo stack"
 msgstr "Очисти овај историјат опозива"
 
-#: ../src/gui/docks/dock_history.cpp:89 ../src/gui/iconcontroller.cpp:260
+#: ../src/gui/docks/dock_history.cpp:89 ../src/gui/iconcontroller.cpp:268
 msgid "Clear Redo Stack"
 msgstr "doEffect проба стекаОчисти историјат понављања"
 
@@ -1692,7 +1696,7 @@ msgstr "Очисти историјат опозива/понављања"
 msgid "Clear the undo and redo stacks"
 msgstr "Очисти овај историјат опозива/понављања"
 
-#: ../src/gui/docks/dock_history.cpp:111
+#: ../src/gui/docks/dock_history.cpp:111 ../src/gui/iconcontroller.cpp:189
 msgid "Undo"
 msgstr "Опозови"
 
@@ -1700,7 +1704,7 @@ msgstr "Опозови"
 msgid "Undo the previous action"
 msgstr "Опозива претходну радњу"
 
-#: ../src/gui/docks/dock_history.cpp:119
+#: ../src/gui/docks/dock_history.cpp:119 ../src/gui/iconcontroller.cpp:188
 msgid "Redo"
 msgstr "Понови"
 
@@ -1752,7 +1756,7 @@ msgid ""
 " sure you want to clear the undo and redo stacks?"
 msgstr "После овога нећете бити у могућности да опозивате и понављате опозване радње! Желите ли да очистите досадашњи историјат опозива/понављања?"
 
-#: ../src/gui/docks/dock_info.cpp:107 ../src/gui/app.cpp:979
+#: ../src/gui/docks/dock_info.cpp:107 ../src/gui/app.cpp:977
 msgid "Info"
 msgstr "Информације"
 
@@ -1780,12 +1784,12 @@ msgstr "Б: "
 msgid "A: "
 msgstr "A: "
 
-#: ../src/gui/docks/dock_keyframes.cpp:66 ../src/gui/app.cpp:974
-#: ../src/gui/iconcontroller.cpp:264
+#: ../src/gui/docks/dock_keyframes.cpp:66 ../src/gui/app.cpp:972
+#: ../src/gui/iconcontroller.cpp:272
 msgid "Keyframes"
 msgstr "Кључни кадрови"
 
-#: ../src/gui/docks/dock_layergroups.cpp:68 ../src/gui/app.cpp:983
+#: ../src/gui/docks/dock_layergroups.cpp:68 ../src/gui/app.cpp:981
 msgid "Sets"
 msgstr "Банде"
 
@@ -1793,7 +1797,7 @@ msgstr "Банде"
 msgid "Set Ops"
 msgstr ""
 
-#: ../src/gui/docks/dock_layers.cpp:76 ../src/gui/app.cpp:975
+#: ../src/gui/docks/dock_layers.cpp:76 ../src/gui/app.cpp:973
 msgid "Layers"
 msgstr "Слојеви"
 
@@ -1802,7 +1806,7 @@ msgid "Layer Ops"
 msgstr ""
 
 #: ../src/gui/docks/dock_metadata.cpp:66 ../src/gui/docks/dock_metadata.cpp:93
-#: ../src/gui/app.cpp:977
+#: ../src/gui/app.cpp:975
 msgid "Canvas MetaData"
 msgstr "Допунски подаци платна"
 
@@ -1834,13 +1838,13 @@ msgstr "Назив кључа: "
 msgid "Ok"
 msgstr "У реду"
 
-#: ../src/gui/docks/dock_navigator.cpp:531 ../src/gui/app.cpp:980
-#: ../src/gui/iconcontroller.cpp:266
+#: ../src/gui/docks/dock_navigator.cpp:531 ../src/gui/app.cpp:978
+#: ../src/gui/iconcontroller.cpp:274
 msgid "Navigator"
 msgstr "Навигатор"
 
-#: ../src/gui/docks/dock_params.cpp:65 ../src/gui/app.cpp:976
-#: ../src/gui/iconcontroller.cpp:270
+#: ../src/gui/docks/dock_params.cpp:65 ../src/gui/app.cpp:974
+#: ../src/gui/iconcontroller.cpp:278
 msgid "Parameters"
 msgstr "Параметри"
 
@@ -1856,15 +1860,15 @@ msgstr "Назив"
 
 #: ../src/gui/docks/dock_timetrack.cpp:99
 #: ../src/gui/trees/childrentree.cpp:140 ../src/gui/trees/layertree.cpp:392
-#: ../src/gui/iconcontroller.cpp:267
+#: ../src/gui/iconcontroller.cpp:275
 msgid "Time Track"
 msgstr "Трака времена"
 
-#: ../src/gui/docks/dock_timetrack.cpp:410 ../src/gui/app.cpp:981
+#: ../src/gui/docks/dock_timetrack.cpp:410 ../src/gui/app.cpp:979
 msgid "Timetrack"
 msgstr "Трака времена"
 
-#: ../src/gui/docks/dock_toolbox.cpp:80 ../src/gui/app.cpp:842
+#: ../src/gui/docks/dock_toolbox.cpp:80 ../src/gui/app.cpp:846
 msgid "Toolbox"
 msgstr "Алатница"
 
@@ -1877,7 +1881,7 @@ msgid "Dock Panel"
 msgstr "Усидри пано"
 
 #: ../src/gui/docks/dockmanager.cpp:722 ../src/gui/docks/dockmanager.cpp:732
-#: ../src/gui/app.cpp:1388
+#: ../src/gui/app.cpp:1385
 msgid "Synfig Studio"
 msgstr "Синфиг студијо"
 
@@ -1885,7 +1889,7 @@ msgstr "Синфиг студијо"
 msgid "Palette Browser"
 msgstr "Прегледник палете"
 
-#: ../src/gui/modules/mod_palette/dock_paledit.cpp:124 ../src/gui/app.cpp:984
+#: ../src/gui/modules/mod_palette/dock_paledit.cpp:124 ../src/gui/app.cpp:982
 msgid "Palette Editor"
 msgstr "Уређивач палете"
 
@@ -1938,11 +1942,11 @@ msgstr "Не могу да проверим да ли „%s“ постоји."
 #: ../src/gui/trees/layerparamtreestore.cpp:259
 #: ../src/gui/widgets/widget_canvaschooser.cpp:153
 #: ../src/gui/widgets/widget_canvaschooser.cpp:172
-#: ../src/gui/widgets/widget_canvaschooser.cpp:182 ../src/gui/app.cpp:1384
-#: ../src/gui/app.cpp:2183 ../src/gui/app.cpp:3511 ../src/gui/app.cpp:3540
-#: ../src/gui/app.cpp:3550 ../src/gui/app.cpp:3560 ../src/gui/app.cpp:3605
-#: ../src/gui/app.cpp:3633 ../src/gui/app.cpp:3643 ../src/gui/app.cpp:3653
-#: ../src/gui/canvasview.cpp:3803 ../src/gui/canvasview.cpp:4074
+#: ../src/gui/widgets/widget_canvaschooser.cpp:182 ../src/gui/app.cpp:1381
+#: ../src/gui/app.cpp:2180 ../src/gui/app.cpp:3508 ../src/gui/app.cpp:3537
+#: ../src/gui/app.cpp:3547 ../src/gui/app.cpp:3557 ../src/gui/app.cpp:3602
+#: ../src/gui/app.cpp:3630 ../src/gui/app.cpp:3640 ../src/gui/app.cpp:3650
+#: ../src/gui/canvasview.cpp:3818 ../src/gui/canvasview.cpp:4089
 #: ../src/gui/instance.cpp:237 ../src/gui/instance.cpp:250
 #: ../src/gui/instance.cpp:319 ../src/gui/instance.cpp:359
 #: ../src/gui/instance.cpp:423 ../src/gui/instance.cpp:457
@@ -1982,7 +1986,7 @@ msgstr "Замени"
 msgid "Please select a palette file"
 msgstr "Изаберите датотеку са палетом"
 
-#: ../src/gui/modules/mod_palette/dock_paledit.cpp:304 ../src/gui/app.cpp:3749
+#: ../src/gui/modules/mod_palette/dock_paledit.cpp:304 ../src/gui/app.cpp:3746
 msgid "Unable to open file"
 msgstr "Не могу да отворим датотеку"
 
@@ -2300,34 +2304,34 @@ msgstr " Прецизна контура"
 msgid "Unable to create Advanced Outline layer"
 msgstr "Не могу да створим слој прецизне контуре"
 
-#: ../src/gui/states/state_bline.cpp:1627
-#: ../src/gui/states/state_bline.cpp:1715
-#: ../src/gui/states/state_bline.cpp:1843
+#: ../src/gui/states/state_bline.cpp:1682
+#: ../src/gui/states/state_bline.cpp:1734
+#: ../src/gui/states/state_bline.cpp:1881
 msgid "Unloop Spline"
 msgstr "Раздвој СП-криву"
 
-#: ../src/gui/states/state_bline.cpp:1633
-#: ../src/gui/states/state_bline.cpp:1721
-#: ../src/gui/states/state_bline.cpp:1849
+#: ../src/gui/states/state_bline.cpp:1688
+#: ../src/gui/states/state_bline.cpp:1740
+#: ../src/gui/states/state_bline.cpp:1887
 msgid "Loop Spline"
 msgstr "Споји СП-криву"
 
-#: ../src/gui/states/state_bline.cpp:1644
-#: ../src/gui/states/state_bline.cpp:1859
+#: ../src/gui/states/state_bline.cpp:1699
+#: ../src/gui/states/state_bline.cpp:1897
 msgid "Delete Vertex"
 msgstr "Обриши везицу"
 
-#: ../src/gui/states/state_bline.cpp:1699
+#: ../src/gui/states/state_bline.cpp:1718
 msgid "Insert Vertex"
 msgstr "Уметни везицу"
 
-#: ../src/gui/states/state_bline.cpp:1772
+#: ../src/gui/states/state_bline.cpp:1791
 msgid ""
 "Unable to find where to insert vertex, internal error, please report this "
 "bug"
 msgstr "Не могу пронађем место за уметање везице (интерна грешка — известите нас о овој грешки)"
 
-#: ../src/gui/states/state_bline.cpp:1791
+#: ../src/gui/states/state_bline.cpp:1810
 msgid "Unable to remove vertex, internal error, please report this bug"
 msgstr "Не могу да уклоним везицу (интерна грешка — известите нас о овој грешки)"
 
@@ -2383,7 +2387,7 @@ msgstr "Утврђује „falloff“ функцију употребљену �
 #: ../src/gui/widgets/widget_waypoint.cpp:110
 #: ../src/gui/widgets/widget_waypointmodel.cpp:80
 #: ../src/gui/widgets/widget_waypointmodel.cpp:98
-#: ../src/gui/canvasview.cpp:1117 ../src/gui/instance.cpp:1261
+#: ../src/gui/canvasview.cpp:1126 ../src/gui/instance.cpp:1265
 msgid "Linear"
 msgstr "Равномерно"
 
@@ -2543,8 +2547,8 @@ msgid "Create a spiral gradient"
 msgstr "Прави завијени прелив"
 
 #: ../src/gui/states/state_gradient.cpp:437
-msgid "Defines the blend method to be used for grdients"
-msgstr "Одређује употребљени начин спајања за преливе"
+msgid "Defines the blend method to be used for gradients"
+msgstr ""
 
 #: ../src/gui/states/state_gradient.cpp:521 ../src/gui/iconcontroller.cpp:170
 msgid "Gradient Tool"
@@ -2583,20 +2587,20 @@ msgstr "Огледало"
 msgid "(Shift key toggles axis)"
 msgstr "(„Шифт“ — мења осу огледања)"
 
-#: ../src/gui/states/state_normal.cpp:293
-#: ../src/gui/states/state_normal.cpp:318 ../src/gui/iconcontroller.cpp:152
+#: ../src/gui/states/state_normal.cpp:295
+#: ../src/gui/states/state_normal.cpp:320 ../src/gui/iconcontroller.cpp:152
 msgid "Transform Tool"
 msgstr "Мењачница"
 
-#: ../src/gui/states/state_normal.cpp:294
+#: ../src/gui/states/state_normal.cpp:296
 msgid "Ctrl to rotate"
 msgstr "Притисните „Ктрл“ за окретање"
 
-#: ../src/gui/states/state_normal.cpp:295
+#: ../src/gui/states/state_normal.cpp:297
 msgid "Alt to scale"
 msgstr "Притисните „Алт“ за промену величине"
 
-#: ../src/gui/states/state_normal.cpp:296
+#: ../src/gui/states/state_normal.cpp:298
 msgid "Shift to constrain"
 msgstr "Притисните „Шифт“ за ограничавање"
 
@@ -2877,7 +2881,7 @@ msgstr "Ширина нацрта"
 #: ../src/gui/trees/canvastreestore.cpp:250
 #: ../src/gui/trees/canvastreestore.cpp:283
 #: ../src/gui/trees/childrentreestore.cpp:206
-#: ../src/gui/iconcontroller.cpp:148 ../src/gui/iconcontroller.cpp:179
+#: ../src/gui/iconcontroller.cpp:148 ../src/gui/iconcontroller.cpp:178
 #: ../src/synfigapp/action.cpp:553
 msgid "Canvas"
 msgstr "Платно"
@@ -2946,7 +2950,7 @@ msgid "Reset"
 msgstr "Ресетуј"
 
 #: ../src/gui/trees/layergrouptreestore.cpp:919
-#: ../src/gui/trees/layertreestore.cpp:1089 ../src/gui/iconcontroller.cpp:184
+#: ../src/gui/trees/layertreestore.cpp:1089 ../src/gui/iconcontroller.cpp:192
 #: ../src/synfigapp/actions/groupaddlayers.cpp:72
 #: ../src/synfigapp/actions/groupremovelayers.cpp:73
 #: ../src/synfigapp/actions/layeractivate.cpp:87
@@ -3043,43 +3047,43 @@ msgstr "(Exception Thrown) Грешка при избору платна:\n\n"
 msgid "Unknown Exception"
 msgstr "Непознат изузетак"
 
-#: ../src/gui/widgets/widget_coloredit.cpp:387
+#: ../src/gui/widgets/widget_coloredit.cpp:388
 msgid "RGB"
 msgstr "РГБ"
 
-#: ../src/gui/widgets/widget_coloredit.cpp:388
+#: ../src/gui/widgets/widget_coloredit.cpp:389
 msgid "YUV"
 msgstr "ЈУВ"
 
-#: ../src/gui/widgets/widget_coloredit.cpp:389
+#: ../src/gui/widgets/widget_coloredit.cpp:390
 msgid "HSV"
 msgstr "ХСВ"
 
-#: ../src/gui/widgets/widget_coloredit.cpp:429
+#: ../src/gui/widgets/widget_coloredit.cpp:430
 msgid "HTML code"
 msgstr "ХТМЛ запис"
 
-#: ../src/gui/widgets/widget_coloredit.cpp:443
+#: ../src/gui/widgets/widget_coloredit.cpp:444
 msgid "Luma"
 msgstr "Осветљеност"
 
-#: ../src/gui/widgets/widget_coloredit.cpp:444
+#: ../src/gui/widgets/widget_coloredit.cpp:445
 msgid "Hue"
 msgstr "Нијанса"
 
-#: ../src/gui/widgets/widget_coloredit.cpp:445
+#: ../src/gui/widgets/widget_coloredit.cpp:446
 msgid "Saturation"
 msgstr "Засићеност"
 
-#: ../src/gui/widgets/widget_coloredit.cpp:446
+#: ../src/gui/widgets/widget_coloredit.cpp:447
 msgid "U"
 msgstr "У"
 
-#: ../src/gui/widgets/widget_coloredit.cpp:447
+#: ../src/gui/widgets/widget_coloredit.cpp:448
 msgid "V"
 msgstr "В"
 
-#: ../src/gui/widgets/widget_coloredit.cpp:459
+#: ../src/gui/widgets/widget_coloredit.cpp:460
 msgid "Alpha"
 msgstr "Провидност"
 
@@ -3183,7 +3187,7 @@ msgstr "(не-статична вредност)"
 #: ../src/gui/widgets/widget_waypoint.cpp:106
 #: ../src/gui/widgets/widget_waypointmodel.cpp:76
 #: ../src/gui/widgets/widget_waypointmodel.cpp:94
-#: ../src/gui/canvasview.cpp:1113 ../src/gui/instance.cpp:1264
+#: ../src/gui/canvasview.cpp:1122 ../src/gui/instance.cpp:1268
 msgid "Clamped"
 msgstr "Спојено"
 
@@ -3191,7 +3195,7 @@ msgstr "Спојено"
 #: ../src/gui/widgets/widget_waypoint.cpp:107
 #: ../src/gui/widgets/widget_waypointmodel.cpp:77
 #: ../src/gui/widgets/widget_waypointmodel.cpp:95
-#: ../src/gui/canvasview.cpp:1114 ../src/gui/instance.cpp:1260
+#: ../src/gui/canvasview.cpp:1123 ../src/gui/instance.cpp:1264
 msgid "TCB"
 msgstr "ТКБ"
 
@@ -3199,7 +3203,7 @@ msgstr "ТКБ"
 #: ../src/gui/widgets/widget_waypoint.cpp:108
 #: ../src/gui/widgets/widget_waypointmodel.cpp:78
 #: ../src/gui/widgets/widget_waypointmodel.cpp:96
-#: ../src/gui/canvasview.cpp:1115 ../src/gui/instance.cpp:1263
+#: ../src/gui/canvasview.cpp:1124 ../src/gui/instance.cpp:1267
 msgid "Constant"
 msgstr "Константно"
 
@@ -3207,7 +3211,7 @@ msgstr "Константно"
 #: ../src/gui/widgets/widget_waypoint.cpp:109
 #: ../src/gui/widgets/widget_waypointmodel.cpp:79
 #: ../src/gui/widgets/widget_waypointmodel.cpp:97
-#: ../src/gui/canvasview.cpp:1116
+#: ../src/gui/canvasview.cpp:1125
 msgid "Ease In/Out"
 msgstr "Појављивање/Ишчезнуће"
 
@@ -3231,7 +3235,7 @@ msgstr "Вредност"
 msgid "_Time"
 msgstr "_Време"
 
-#: ../src/gui/widgets/widget_waypoint.cpp:159 ../src/gui/instance.cpp:1268
+#: ../src/gui/widgets/widget_waypoint.cpp:159 ../src/gui/instance.cpp:1272
 #: ../src/synfigapp/actions/valuedescsetinterpolation.cpp:90
 msgid "Interpolation"
 msgstr "Уметање"
@@ -3300,310 +3304,306 @@ msgstr "Привремени притисак:"
 msgid "Bone Recursive Scale Mode"
 msgstr ""
 
-#: ../src/gui/app.cpp:828
+#: ../src/gui/app.cpp:832
 msgid "_File"
 msgstr "_Датотека"
 
-#: ../src/gui/app.cpp:829
+#: ../src/gui/app.cpp:833
 msgid "Open Recent"
 msgstr "Отвори скорашње"
 
-#: ../src/gui/app.cpp:831 ../src/gui/canvasview.cpp:3628
+#: ../src/gui/app.cpp:835 ../src/gui/canvasview.cpp:3643
 msgid "_Edit"
 msgstr "_Уређивање"
 
-#: ../src/gui/app.cpp:833
+#: ../src/gui/app.cpp:837
 msgid "_View"
 msgstr "П_реглед"
 
-#: ../src/gui/app.cpp:834
+#: ../src/gui/app.cpp:838
 msgid "Show/Hide Handles"
 msgstr "Прикажи/Сакриј ручке"
 
-#: ../src/gui/app.cpp:835
+#: ../src/gui/app.cpp:839
 msgid "Preview Quality"
 msgstr "Квалитет претпрегледа"
 
-#: ../src/gui/app.cpp:836
+#: ../src/gui/app.cpp:840
 msgid "Low-Res Pixel Size"
 msgstr "Величина лошијег приказа"
 
-#: ../src/gui/app.cpp:838
+#: ../src/gui/app.cpp:842
 msgid "_Canvas"
 msgstr "_Платно"
 
-#: ../src/gui/app.cpp:840
+#: ../src/gui/app.cpp:844
 msgid "_Layer"
 msgstr "С_лој"
 
-#: ../src/gui/app.cpp:841 ../src/gui/canvasview.cpp:2524
+#: ../src/gui/app.cpp:845 ../src/gui/canvasview.cpp:2538
 #: ../src/synfigapp/actions/layeradd.cpp:83
 msgid "New Layer"
 msgstr "Нови слој"
 
-#: ../src/gui/app.cpp:843
+#: ../src/gui/app.cpp:847
 msgid "Plug-Ins"
 msgstr "Проширења"
 
-#: ../src/gui/app.cpp:845
+#: ../src/gui/app.cpp:849
 msgid "_Window"
 msgstr "Про_зор"
 
-#: ../src/gui/app.cpp:846
+#: ../src/gui/app.cpp:850
 msgid "_Arrange"
 msgstr "Орг_анизуј"
 
-#: ../src/gui/app.cpp:847
+#: ../src/gui/app.cpp:851
 msgid "Work_space"
 msgstr "Радни про_стор"
 
-#: ../src/gui/app.cpp:849
+#: ../src/gui/app.cpp:853
 msgid "_Help"
 msgstr "По_моћ"
 
-#: ../src/gui/app.cpp:873 ../src/gui/canvasview.cpp:1689
-msgid "Save As..."
-msgstr "Сачувај као..."
-
-#: ../src/gui/app.cpp:880 ../src/gui/canvasview.cpp:1707
+#: ../src/gui/app.cpp:878 ../src/gui/canvasview.cpp:1721
 msgid "Import..."
 msgstr "Увези..."
 
-#: ../src/gui/app.cpp:881 ../src/gui/canvasview.cpp:1710
+#: ../src/gui/app.cpp:879 ../src/gui/canvasview.cpp:1724
 msgid "Render..."
 msgstr "Стварање..."
 
-#: ../src/gui/app.cpp:882 ../src/gui/canvasview.cpp:1713
+#: ../src/gui/app.cpp:880 ../src/gui/canvasview.cpp:1727
 msgid "Preview..."
 msgstr "Претпреглед..."
 
-#: ../src/gui/app.cpp:883 ../src/gui/canvasview.cpp:1722
+#: ../src/gui/app.cpp:881 ../src/gui/canvasview.cpp:1736
 msgid "Close Document"
 msgstr "Затвори"
 
-#: ../src/gui/app.cpp:892 ../src/gui/canvasview.cpp:1729
+#: ../src/gui/app.cpp:890 ../src/gui/canvasview.cpp:1743
 msgid "Select All Handles"
 msgstr "Изабери све ручке"
 
-#: ../src/gui/app.cpp:893 ../src/gui/canvasview.cpp:1733
+#: ../src/gui/app.cpp:891 ../src/gui/canvasview.cpp:1747
 msgid "Unselect All Handles"
 msgstr "Одзначи све ручке"
 
-#: ../src/gui/app.cpp:894 ../src/gui/canvasview.cpp:1737
+#: ../src/gui/app.cpp:892 ../src/gui/canvasview.cpp:1751
 msgid "Select All Layers"
 msgstr "Изабери све слојеве"
 
-#: ../src/gui/app.cpp:895 ../src/gui/canvasview.cpp:1741
+#: ../src/gui/app.cpp:893 ../src/gui/canvasview.cpp:1755
 msgid "Unselect All Layers"
 msgstr "Одзначи све слојеве"
 
-#: ../src/gui/app.cpp:896 ../src/gui/mainwindow.cpp:167
+#: ../src/gui/app.cpp:894 ../src/gui/mainwindow.cpp:155
 msgid "Input Devices..."
 msgstr "Улазни уређаји..."
 
-#: ../src/gui/app.cpp:897 ../src/gui/mainwindow.cpp:170
+#: ../src/gui/app.cpp:895 ../src/gui/mainwindow.cpp:158
 msgid "Preferences..."
 msgstr "Поставке..."
 
-#: ../src/gui/app.cpp:901
+#: ../src/gui/app.cpp:899
 msgid "Menubar"
 msgstr "Мени"
 
-#: ../src/gui/app.cpp:902
+#: ../src/gui/app.cpp:900
 msgid "Toolbar"
 msgstr "Алатница"
 
-#: ../src/gui/app.cpp:904 ../src/gui/canvasview.cpp:1932
+#: ../src/gui/app.cpp:902 ../src/gui/canvasview.cpp:1946
 msgid "Show Position Handles"
 msgstr "Прикажи ручке локације"
 
-#: ../src/gui/app.cpp:905 ../src/gui/canvasview.cpp:1934
+#: ../src/gui/app.cpp:903 ../src/gui/canvasview.cpp:1948
 msgid "Show Vertex Handles"
 msgstr "Прикажи ручке везице"
 
-#: ../src/gui/app.cpp:906 ../src/gui/canvasview.cpp:1933
+#: ../src/gui/app.cpp:904 ../src/gui/canvasview.cpp:1947
 msgid "Show Tangent Handles"
 msgstr "Прикажи ручке тангенти"
 
-#: ../src/gui/app.cpp:907 ../src/gui/canvasview.cpp:1935
+#: ../src/gui/app.cpp:905 ../src/gui/canvasview.cpp:1949
 msgid "Show Radius Handles"
 msgstr "Прикажи ручке пречника"
 
-#: ../src/gui/app.cpp:908 ../src/gui/canvasview.cpp:1936
+#: ../src/gui/app.cpp:906 ../src/gui/canvasview.cpp:1950
 msgid "Show Width Handles"
 msgstr "Прикажи ручке ширине"
 
-#: ../src/gui/app.cpp:909 ../src/gui/canvasview.cpp:1937
+#: ../src/gui/app.cpp:907 ../src/gui/canvasview.cpp:1951
 msgid "Show Angle Handles"
 msgstr "Прикажи ручке углова"
 
-#: ../src/gui/app.cpp:910
+#: ../src/gui/app.cpp:908
 msgid "Show Bone Setup Handles"
 msgstr "Прикажи ручке за поставке коски"
 
-#: ../src/gui/app.cpp:911 ../src/gui/canvasview.cpp:1939
+#: ../src/gui/app.cpp:909 ../src/gui/canvasview.cpp:1953
 msgid "Show Recursive Scale Bone Handles"
 msgstr ""
 
-#: ../src/gui/app.cpp:912 ../src/gui/canvasview.cpp:1945
+#: ../src/gui/app.cpp:910 ../src/gui/canvasview.cpp:1959
 msgid "Next Bone Handles"
 msgstr "Наредне ручке коске"
 
-#: ../src/gui/app.cpp:913 ../src/gui/canvasview.cpp:1941
+#: ../src/gui/app.cpp:911 ../src/gui/canvasview.cpp:1955
 msgid "Show WidthPoints Position Handles"
 msgstr ""
 
-#: ../src/gui/app.cpp:914 ../src/gui/canvasview.cpp:1775
+#: ../src/gui/app.cpp:912 ../src/gui/canvasview.cpp:1789
 msgid "Use Parametric Renderer"
 msgstr "Употреби параметарског ствараоца"
 
-#: ../src/gui/app.cpp:915
+#: ../src/gui/app.cpp:913
 msgid "Use Quality Level 1"
 msgstr "Квалитет, вредности 1"
 
-#: ../src/gui/app.cpp:916
+#: ../src/gui/app.cpp:914
 msgid "Use Quality Level 2"
 msgstr "Квалитет, вредности 2"
 
-#: ../src/gui/app.cpp:917
+#: ../src/gui/app.cpp:915
 msgid "Use Quality Level 3"
 msgstr "Квалитет, вредности 3"
 
-#: ../src/gui/app.cpp:918
+#: ../src/gui/app.cpp:916
 msgid "Use Quality Level 4"
 msgstr "Квалитет, вредности 4"
 
-#: ../src/gui/app.cpp:919
+#: ../src/gui/app.cpp:917
 msgid "Use Quality Level 5"
 msgstr "Квалитет, вредности 5"
 
-#: ../src/gui/app.cpp:920
+#: ../src/gui/app.cpp:918
 msgid "Use Quality Level 6"
 msgstr "Квалитет, вредности 6"
 
-#: ../src/gui/app.cpp:921
+#: ../src/gui/app.cpp:919
 msgid "Use Quality Level 7"
 msgstr "Квалитет, вредности 7"
 
-#: ../src/gui/app.cpp:922
+#: ../src/gui/app.cpp:920
 msgid "Use Quality Level 8"
 msgstr "Квалитет, вредности 8"
 
-#: ../src/gui/app.cpp:923
+#: ../src/gui/app.cpp:921
 msgid "Use Quality Level 9"
 msgstr "Квалитет, вредности 9"
 
-#: ../src/gui/app.cpp:924
+#: ../src/gui/app.cpp:922
 msgid "Use Quality Level 10"
 msgstr "Квалитет, вредности 10"
 
-#: ../src/gui/app.cpp:927 ../src/gui/canvasview.cpp:1809
+#: ../src/gui/app.cpp:925 ../src/gui/canvasview.cpp:1823
 #, c-format
 msgid "Set Low-Res pixel size to %d"
 msgstr "Подеси вел. пиксела за „лош приказ“ на %d"
 
-#: ../src/gui/app.cpp:934
+#: ../src/gui/app.cpp:932
 msgid "Toggle Grid Show"
 msgstr "Укљ/Искљ. приказ мреже"
 
-#: ../src/gui/app.cpp:935
+#: ../src/gui/app.cpp:933
 msgid "Toggle Grid Snap"
 msgstr "Укљ/Искљ. лепљење за тачке мреже"
 
-#: ../src/gui/app.cpp:936
+#: ../src/gui/app.cpp:934
 msgid "Toggle Guide Show"
 msgstr "Укљ/Искљ. приказ вођице"
 
-#: ../src/gui/app.cpp:937
+#: ../src/gui/app.cpp:935
 msgid "Toggle Guide Snap"
 msgstr "Укљ/Искљ. лепљење за вођицу"
 
-#: ../src/gui/app.cpp:938
+#: ../src/gui/app.cpp:936
 msgid "Toggle Low-Res"
 msgstr "Укљ/Искљ. лош приказ"
 
-#: ../src/gui/app.cpp:939 ../src/gui/canvasview.cpp:1825
+#: ../src/gui/app.cpp:937 ../src/gui/canvasview.cpp:1839
 msgid "Decrease Low-Res Pixel Size"
 msgstr "Умањи вел. пиксела за „лош приказ“"
 
-#: ../src/gui/app.cpp:940 ../src/gui/canvasview.cpp:1828
+#: ../src/gui/app.cpp:938 ../src/gui/canvasview.cpp:1842
 msgid "Increase Low-Res Pixel Size"
 msgstr "Увећај вел. пиксела за „лош приказ“"
 
-#: ../src/gui/app.cpp:941
+#: ../src/gui/app.cpp:939
 msgid "Toggle Onion Skin"
 msgstr "Укљ/Искљ. Онион-скин"
 
-#: ../src/gui/app.cpp:948 ../src/gui/iconcontroller.cpp:292
+#: ../src/gui/app.cpp:946 ../src/gui/iconcontroller.cpp:300
 msgid "Seek to Next Keyframe"
 msgstr "На наредни кључни кадар"
 
-#: ../src/gui/app.cpp:949
+#: ../src/gui/app.cpp:947
 msgid "Seek to previous Keyframe"
 msgstr "На претходни кључни кадар"
 
-#: ../src/gui/app.cpp:950
+#: ../src/gui/app.cpp:948
 msgid "Seek to Next Frame"
 msgstr "На наредни кадар"
 
-#: ../src/gui/app.cpp:951 ../src/gui/iconcontroller.cpp:287
+#: ../src/gui/app.cpp:949 ../src/gui/iconcontroller.cpp:295
 msgid "Seek to Previous Frame"
 msgstr "На претходни кадар"
 
-#: ../src/gui/app.cpp:952 ../src/gui/canvasview.cpp:1890
+#: ../src/gui/app.cpp:950 ../src/gui/canvasview.cpp:1904
 msgid "Seek Forward"
 msgstr "Унапред"
 
-#: ../src/gui/app.cpp:953 ../src/gui/canvasview.cpp:1892
+#: ../src/gui/app.cpp:951 ../src/gui/canvasview.cpp:1906
 msgid "Seek Backward"
 msgstr "Уназад"
 
-#: ../src/gui/app.cpp:954 ../src/gui/iconcontroller.cpp:285
+#: ../src/gui/app.cpp:952 ../src/gui/iconcontroller.cpp:293
 msgid "Seek to Begin"
 msgstr "На почетак"
 
-#: ../src/gui/app.cpp:955 ../src/gui/iconcontroller.cpp:293
+#: ../src/gui/app.cpp:953 ../src/gui/iconcontroller.cpp:301
 msgid "Seek to End"
 msgstr "На крај"
 
-#: ../src/gui/app.cpp:958 ../src/gui/canvasview.cpp:1755
+#: ../src/gui/app.cpp:956 ../src/gui/canvasview.cpp:1769
 msgid "Properties..."
 msgstr "Поставке..."
 
-#: ../src/gui/app.cpp:959 ../src/gui/canvasview.cpp:1719
+#: ../src/gui/app.cpp:957 ../src/gui/canvasview.cpp:1733
 msgid "Options..."
 msgstr "Опције..."
 
-#: ../src/gui/app.cpp:962
+#: ../src/gui/app.cpp:960
 msgid "Increase Layer Amount"
 msgstr "Увећај видљивост слоја"
 
-#: ../src/gui/app.cpp:963
+#: ../src/gui/app.cpp:961
 msgid "Decrease Layer Amount"
 msgstr "Умањи видљивост слоја"
 
-#: ../src/gui/app.cpp:966 ../src/gui/mainwindow.cpp:181
+#: ../src/gui/app.cpp:964 ../src/gui/mainwindow.cpp:169
 msgid "Compositing"
 msgstr "Компоновање"
 
-#: ../src/gui/app.cpp:967 ../src/gui/instance.cpp:1233
-#: ../src/gui/mainwindow.cpp:187
+#: ../src/gui/app.cpp:965 ../src/gui/instance.cpp:1237
+#: ../src/gui/mainwindow.cpp:175
 msgid "Default"
 msgstr "Подразумевано"
 
-#: ../src/gui/app.cpp:968 ../src/gui/mainwindow.cpp:184
+#: ../src/gui/app.cpp:966 ../src/gui/mainwindow.cpp:172
 msgid "Animating"
 msgstr "Покретање слика"
 
-#: ../src/gui/app.cpp:969
+#: ../src/gui/app.cpp:967
 msgid "Preview Dialog"
 msgstr "Прозор претпрегледа"
 
-#: ../src/gui/app.cpp:1378
+#: ../src/gui/app.cpp:1375
 msgid "Synfig version mismatched!"
 msgstr "Неодговарајуће Синфиг-издање!"
 
-#: ../src/gui/app.cpp:1379
+#: ../src/gui/app.cpp:1376
 msgid ""
 "This copy of Synfig Studio was compiled against a different version of "
 "libsynfig than what is currently installed. Synfig Studio will now abort. "
@@ -3611,188 +3611,188 @@ msgid ""
 "http://www.synfig.org/cms/en/download/"
 msgstr "Овај Синфиг-студијо је преведен уз „libsynfig“ библиотеке које се разликују од оних овде постављених, због чега програм неће наставити са радом. Покушајте да поставите последње издање ових библиотека са Синфиг-адресе: http://www.synfig.org/cms/en/download/"
 
-#: ../src/gui/app.cpp:1401 ../src/gui/app.cpp:1406
+#: ../src/gui/app.cpp:1398 ../src/gui/app.cpp:1403
 msgid "Failed to initialize synfig!"
 msgstr "Не могу да покренем Синфиг!"
 
-#: ../src/gui/app.cpp:1418
+#: ../src/gui/app.cpp:1415
 msgid "Loading Basic Settings..."
 msgstr "Учитавам основна подешавања..."
 
-#: ../src/gui/app.cpp:1429
+#: ../src/gui/app.cpp:1426
 msgid "Loading Plugins..."
 msgstr "Учитавам додатке..."
 
-#: ../src/gui/app.cpp:1452
+#: ../src/gui/app.cpp:1449
 msgid "Init UI Manager..."
 msgstr "Покрећем управника сучеља..."
 
-#: ../src/gui/app.cpp:1456
+#: ../src/gui/app.cpp:1453
 msgid "Init Dock Manager..."
 msgstr "Покрећем управника панела..."
 
-#: ../src/gui/app.cpp:1459
+#: ../src/gui/app.cpp:1456
 msgid "Init State Manager..."
 msgstr "Покрећем управника стањима..."
 
-#: ../src/gui/app.cpp:1462
+#: ../src/gui/app.cpp:1459
 msgid "Init Main Window..."
 msgstr "Стварање главног прозора..."
 
-#: ../src/gui/app.cpp:1466
+#: ../src/gui/app.cpp:1463
 msgid "Init Toolbox..."
 msgstr "Стварање алатнице..."
 
-#: ../src/gui/app.cpp:1470
+#: ../src/gui/app.cpp:1467
 msgid "Init About Dialog..."
 msgstr "Покрећем прозорче „О програму“..."
 
-#: ../src/gui/app.cpp:1473
+#: ../src/gui/app.cpp:1470
 msgid "Init Tool Options..."
 msgstr "Покрећем поставке алатки..."
 
-#: ../src/gui/app.cpp:1477
+#: ../src/gui/app.cpp:1474
 msgid "Init History..."
 msgstr "Покрећем историјат..."
 
-#: ../src/gui/app.cpp:1481
+#: ../src/gui/app.cpp:1478
 msgid "Init Canvases..."
 msgstr "Покрећем платна..."
 
-#: ../src/gui/app.cpp:1485
+#: ../src/gui/app.cpp:1482
 msgid "Init Keyframes..."
 msgstr "Покрећем кључне кадрове..."
 
-#: ../src/gui/app.cpp:1492
+#: ../src/gui/app.cpp:1489
 msgid "Init Layers..."
 msgstr "Покрећем слојеве..."
 
-#: ../src/gui/app.cpp:1496
+#: ../src/gui/app.cpp:1493
 msgid "Init Parameters..."
 msgstr "Покрећем параметре..."
 
-#: ../src/gui/app.cpp:1500
+#: ../src/gui/app.cpp:1497
 msgid "Init MetaData..."
 msgstr "Покрећем допунске податке..."
 
-#: ../src/gui/app.cpp:1504
+#: ../src/gui/app.cpp:1501
 msgid "Init Library..."
 msgstr "Покрећем библиотеку... "
 
-#: ../src/gui/app.cpp:1508
+#: ../src/gui/app.cpp:1505
 msgid "Init Info..."
 msgstr "Покрећем инфо..."
 
-#: ../src/gui/app.cpp:1512
+#: ../src/gui/app.cpp:1509
 msgid "Init Navigator..."
 msgstr "Покрећем прегледача..."
 
-#: ../src/gui/app.cpp:1516
+#: ../src/gui/app.cpp:1513
 msgid "Init Timetrack..."
 msgstr "Покрећем временску траку..."
 
-#: ../src/gui/app.cpp:1520
+#: ../src/gui/app.cpp:1517
 msgid "Init Curve Editor..."
 msgstr "Покрећем уредника кривуље..."
 
-#: ../src/gui/app.cpp:1524
+#: ../src/gui/app.cpp:1521
 msgid "Init Layer Sets..."
 msgstr "Покрећем банде слоја..."
 
-#: ../src/gui/app.cpp:1529
+#: ../src/gui/app.cpp:1526
 msgid "Init Color Dialog..."
 msgstr "Покрећем прозорче боја..."
 
-#: ../src/gui/app.cpp:1532
+#: ../src/gui/app.cpp:1529
 msgid "Init Gradient Dialog..."
 msgstr "Покрећем прозорче прелива..."
 
-#: ../src/gui/app.cpp:1535
+#: ../src/gui/app.cpp:1532
 msgid "Init DeviceTracker..."
 msgstr "Покрећем пратиоца уређаја..."
 
-#: ../src/gui/app.cpp:1540
+#: ../src/gui/app.cpp:1537
 msgid "Init ModPalette..."
 msgstr ""
 
-#: ../src/gui/app.cpp:1543
+#: ../src/gui/app.cpp:1540
 msgid "Init Setup Dialog..."
 msgstr "Покрећем прозорче програмске поставке..."
 
-#: ../src/gui/app.cpp:1546
+#: ../src/gui/app.cpp:1543
 msgid "Init Input Dialog..."
 msgstr "Покрећем прозорче улаза..."
 
-#: ../src/gui/app.cpp:1550
+#: ../src/gui/app.cpp:1547
 msgid "Init auto recovery..."
 msgstr "Покрећем само-опорављање..."
 
-#: ../src/gui/app.cpp:1554
+#: ../src/gui/app.cpp:1551
 msgid "Loading Settings..."
 msgstr "Учитавање поставки..."
 
-#: ../src/gui/app.cpp:1565
+#: ../src/gui/app.cpp:1562
 msgid "Init Tools..."
 msgstr "Покрећем алатке..."
 
-#: ../src/gui/app.cpp:1604
+#: ../src/gui/app.cpp:1601
 msgid "Checking auto-recover..."
 msgstr "Проверавање самоопоравка..."
 
-#: ../src/gui/app.cpp:1613
+#: ../src/gui/app.cpp:1610
 msgid "Auto recovery file(s) found. Do you want to recover unsaved changes?"
 msgstr "Пронађена је датотека(е) изгубљена падом програма. Желите ли њен опоравак?"
 
-#: ../src/gui/app.cpp:1614
+#: ../src/gui/app.cpp:1611
 msgid ""
 "Synfig Studio seems to have crashed before you could save all your files."
 msgstr "Изгледа да је програм пао пре но сте могли да сачувате све датотеке."
 
-#: ../src/gui/app.cpp:1615
+#: ../src/gui/app.cpp:1612
 msgid "Ignore"
 msgstr "Занемари"
 
-#: ../src/gui/app.cpp:1616
+#: ../src/gui/app.cpp:1613
 msgid "Recover"
 msgstr "Опорави"
 
-#: ../src/gui/app.cpp:1622
+#: ../src/gui/app.cpp:1619
 msgid "Unable to fully recover from previous crash"
 msgstr "Непотпун опоравак после пада програма"
 
-#: ../src/gui/app.cpp:1624
+#: ../src/gui/app.cpp:1621
 msgid "Unable to recover from previous crash"
 msgstr "Неуспешан опоравак после пада програма"
 
-#: ../src/gui/app.cpp:1628
+#: ../src/gui/app.cpp:1625
 msgid "It would be a good idea to review and save recovered files now."
 msgstr "Сада би било добро да прегледате и сачувате опорављене датотеке."
 
-#: ../src/gui/app.cpp:1629
+#: ../src/gui/app.cpp:1626
 msgid ""
 "Synfig Studio has attempted to recover from a previous crash. The files just"
 " recovered are NOT YET SAVED."
 msgstr "Програм је покренуо опоравак датотека после пада програма али су оне још увек несачуване!"
 
-#: ../src/gui/app.cpp:1631
+#: ../src/gui/app.cpp:1628
 msgid "Thanks"
 msgstr "Захвалнице"
 
-#: ../src/gui/app.cpp:1644
+#: ../src/gui/app.cpp:1641
 msgid "Loading files..."
 msgstr "Учитавам датотеке..."
 
-#: ../src/gui/app.cpp:1655
+#: ../src/gui/app.cpp:1652
 msgid "Done."
 msgstr "Готово."
 
-#: ../src/gui/app.cpp:1687
+#: ../src/gui/app.cpp:1684
 msgid ""
 "There is a bug, which can cause computer to hang/freeze when resizing the "
 "canvas window."
 msgstr "Постоји грешка при промени димензија прозора платна која може довести до пада/кочења система."
 
-#: ../src/gui/app.cpp:1689
+#: ../src/gui/app.cpp:1686
 msgid ""
 "If you got affected by this issue, consider pressing ALT+TAB to unfreeze "
 "your system and get it back to the working state. Please accept our "
@@ -3800,230 +3800,223 @@ msgid ""
 "future versions."
 msgstr "Уколико је Ваш систем погођен овим пропустом, пробајте да га вратите у радно стање истовременим притиском на Алт+Таб дугмад. Извињавамо се због могућих проблема и надамо се да ћемо овај проблем ускоро отклонити."
 
-#: ../src/gui/app.cpp:1699
+#: ../src/gui/app.cpp:1696
 msgid "Got it"
 msgstr "Ухваћен је"
 
-#: ../src/gui/app.cpp:1703 ../src/gui/app.cpp:1707
+#: ../src/gui/app.cpp:1700 ../src/gui/app.cpp:1704
 msgid ""
 "Unknown exception caught when constructing App.\n"
 "This software may be unstable."
 msgstr "Ухваћен непознат изузетак при изградњи програма\nОвај програм ће можда несигурно да ради."
 
-#: ../src/gui/app.cpp:2176
+#: ../src/gui/app.cpp:2173
 msgid "Quit Request"
 msgstr "Захтев за излазак"
 
-#: ../src/gui/app.cpp:2181
+#: ../src/gui/app.cpp:2178
 msgid ""
 "Tasks are currently running. Please cancel the current tasks and try again"
 msgstr "Неке радње се управо извршавају. Зауставите их и покушајте поново"
 
-#: ../src/gui/app.cpp:2250
+#: ../src/gui/app.cpp:2247
 msgid "Quit Request sent"
 msgstr "Захтев за излазак је послат"
 
-#: ../src/gui/app.cpp:2281 ../src/gui/app.cpp:2647 ../src/gui/app.cpp:2756
+#: ../src/gui/app.cpp:2278 ../src/gui/app.cpp:2644 ../src/gui/app.cpp:2753
 msgid "All Files (*.*)"
 msgstr "Све датотеке (*.*)"
 
-#: ../src/gui/app.cpp:2336 ../src/synfigapp/canvasinterface.cpp:683
+#: ../src/gui/app.cpp:2333 ../src/synfigapp/canvasinterface.cpp:683
 msgid "Import"
 msgstr "Увези"
 
-#: ../src/gui/app.cpp:2341
+#: ../src/gui/app.cpp:2338
 msgid "All supported files"
 msgstr "Све подржане датотеке"
 
-#: ../src/gui/app.cpp:2368
+#: ../src/gui/app.cpp:2365
 msgid "Synfig files (*.sif, *.sifz)"
 msgstr "Синфигове датотеке (*.sif, *.sifz)"
 
-#: ../src/gui/app.cpp:2375
+#: ../src/gui/app.cpp:2372
 msgid "Images (*.png, *.jpeg, *.bmp, *.svg)"
 msgstr "Слике (*.png, *.jpeg, *.bmp, *.svg)"
 
-#: ../src/gui/app.cpp:2389
-msgid "Image sequence files(*.lst)"
-msgstr "Листе поређаних слика (*.lst)"
+#: ../src/gui/app.cpp:2386
+msgid "Image sequence files (*.lst)"
+msgstr ""
 
-#: ../src/gui/app.cpp:2394 ../src/gui/app.cpp:2599
+#: ../src/gui/app.cpp:2391 ../src/gui/app.cpp:2596
 msgid "Audio (*.ogg, *.mp3, *.wav)"
 msgstr "Звук (*.ogg, *.mp3, *.wav)"
 
-#: ../src/gui/app.cpp:2404 ../src/gui/app.cpp:2556 ../src/gui/app.cpp:2610
-#: ../src/gui/app.cpp:2717
+#: ../src/gui/app.cpp:2401 ../src/gui/app.cpp:2553 ../src/gui/app.cpp:2607
+#: ../src/gui/app.cpp:2714
 msgid "Any files"
 msgstr "Све датотеке"
 
-#: ../src/gui/app.cpp:2451 ../src/gui/app.cpp:2493
+#: ../src/gui/app.cpp:2448 ../src/gui/app.cpp:2490
+#: ../src/gui/iconcontroller.cpp:184 ../src/gui/mainwindow.cpp:147
 msgid "Open"
 msgstr "Отвори"
 
-#: ../src/gui/app.cpp:2455
+#: ../src/gui/app.cpp:2452 ../src/gui/app.cpp:2938
 msgid "Synfig palette files (*.spal)"
 msgstr "Датотеке Синфиг-палета (*.spal)"
 
-#: ../src/gui/app.cpp:2497
+#: ../src/gui/app.cpp:2494 ../src/gui/app.cpp:3000
 msgid "Synfig sketch files (*.sketch)"
 msgstr ""
 
-#: ../src/gui/app.cpp:2536 ../src/gui/app.cpp:2595
+#: ../src/gui/app.cpp:2533 ../src/gui/app.cpp:2592
 msgid "Load"
 msgstr " Учитај"
 
-#: ../src/gui/app.cpp:2540
+#: ../src/gui/app.cpp:2537
 msgid "Images and sequence files (*.png, *.jpg, *.jpeg, *.bmp, *.svg, *.lst)"
 msgstr "Слике и датотеке са листом поређаних слика (*.png, *.jpg, *.jpeg, *.bmp, *.svg, *.lst)"
 
-#: ../src/gui/app.cpp:2703
+#: ../src/gui/app.cpp:2700
 msgid "Open history"
 msgstr "Преглед историјата"
 
-#: ../src/gui/app.cpp:2710
+#: ../src/gui/app.cpp:2707
 msgid "Synfig files (*.sif, *.sifz, *.sfg)"
 msgstr "Синфигове датотеке (*.sif, *.sifz, *.sfg)"
 
-#: ../src/gui/app.cpp:2809
-msgid "Uncompressed Synfig file(*.sif)"
-msgstr "Синфигова датотека (*.sif)"
+#: ../src/gui/app.cpp:2806
+msgid "Uncompressed Synfig file (*.sif)"
+msgstr ""
 
-#: ../src/gui/app.cpp:2817
-msgid "Compressed Synfig file(*.sifz)"
-msgstr "Компресована Синфигова датотека (*.sifz)"
+#: ../src/gui/app.cpp:2814
+msgid "Compressed Synfig file (*.sifz)"
+msgstr ""
 
-#: ../src/gui/app.cpp:2821
-msgid "Container format file(*.sfg)"
-msgstr "Контејнер врста датотека (*.sfg)"
+#: ../src/gui/app.cpp:2818
+msgid "Container format file (*.sfg)"
+msgstr ""
 
-#: ../src/gui/app.cpp:2837
+#: ../src/gui/app.cpp:2834
 msgid "current"
 msgstr "текући"
 
-#: ../src/gui/app.cpp:2854
+#: ../src/gui/app.cpp:2851
 msgid "and older"
 msgstr "и старије"
 
-#: ../src/gui/app.cpp:2858
+#: ../src/gui/app.cpp:2855
 msgid "File Format Version: "
 msgstr "Издање врсте датотеке: "
 
-#: ../src/gui/app.cpp:2941
-msgid "Synfig palette files(*.spal)"
-msgstr "Датотеке Синфиг-палета (*.spal)"
-
-#: ../src/gui/app.cpp:3003
-msgid "Synfig sketch files(*.sketch)"
-msgstr ""
-
-#: ../src/gui/app.cpp:3159
+#: ../src/gui/app.cpp:3156
 msgid "Feature not available"
 msgstr "Могућност није доступна"
 
-#: ../src/gui/app.cpp:3160
+#: ../src/gui/app.cpp:3157
 msgid "Sorry, this feature has not yet been implemented."
 msgstr "На жалост, ова могућност није доступна."
 
-#: ../src/gui/app.cpp:3342
+#: ../src/gui/app.cpp:3339
 msgid "Documentation"
 msgstr "Документација"
 
-#: ../src/gui/app.cpp:3343
+#: ../src/gui/app.cpp:3340
 msgid ""
 "Documentation for Synfig Studio is available on the website:\n"
 "\n"
 "http://synfig.org/wiki/Category:Manual"
 msgstr "Синфигова документација је доступна на интернет адреси:\n\nhttp://synfig.org/wiki/Category:Manual"
 
-#: ../src/gui/app.cpp:3344
+#: ../src/gui/app.cpp:3341
 msgid "Help"
 msgstr "Помоћ"
 
-#: ../src/gui/app.cpp:3354
+#: ../src/gui/app.cpp:3351
 msgid "No browser was found. Please load this website manually:"
 msgstr "Нисам пронашао веб-прегледник. Учитајте сами адресу:"
 
-#: ../src/gui/app.cpp:3356
+#: ../src/gui/app.cpp:3353
 msgid "No browser found"
 msgstr "Нисам пронашао веб-прегледник"
 
-#: ../src/gui/app.cpp:3484
+#: ../src/gui/app.cpp:3481
 #, c-format
 msgid ""
 "Unable to open container \"%s\"\n"
 "\n"
 msgstr "Не могу да отворим контејнер „%s“\n\n"
 
-#: ../src/gui/app.cpp:3491
+#: ../src/gui/app.cpp:3488
 msgid ""
 "Unable to create container\n"
 "\n"
 msgstr "Не могу да створим контејнер\n\n"
 
-#: ../src/gui/app.cpp:3504 ../src/gui/app.cpp:3598
+#: ../src/gui/app.cpp:3501 ../src/gui/app.cpp:3595
 #, c-format
 msgid ""
 "Unable to load \"%s\":\n"
 "\n"
 msgstr "Не могу да учитам „%s“:\n\n"
 
-#: ../src/gui/app.cpp:3509 ../src/gui/app.cpp:3603
-#: ../src/gui/canvasview.cpp:3801 ../src/gui/canvasview.cpp:4072
+#: ../src/gui/app.cpp:3506 ../src/gui/app.cpp:3600
+#: ../src/gui/canvasview.cpp:3816 ../src/gui/canvasview.cpp:4087
 msgid "Warning"
 msgstr "Упозорење"
 
-#: ../src/gui/app.cpp:3520 ../src/gui/app.cpp:3613
+#: ../src/gui/app.cpp:3517 ../src/gui/app.cpp:3610
 #, c-format
 msgid "Unable to create instance for \"%s\""
 msgstr "Не могу да направим „%s“ инстанцу"
 
-#: ../src/gui/app.cpp:3525
+#: ../src/gui/app.cpp:3522
 msgid "Newer version of this file availabel on the CVS repository!"
 msgstr ""
 
-#: ../src/gui/app.cpp:3526
+#: ../src/gui/app.cpp:3523
 msgid ""
 "repository. Would you like to update now? (It would probably be a good idea)"
 msgstr ""
 
-#: ../src/gui/app.cpp:3529 ../src/gui/app.cpp:3622
+#: ../src/gui/app.cpp:3526 ../src/gui/app.cpp:3619
 msgid "Update Anyway"
 msgstr "Освежи упркос свему"
 
-#: ../src/gui/app.cpp:3558 ../src/gui/app.cpp:3651
+#: ../src/gui/app.cpp:3555 ../src/gui/app.cpp:3648
 msgid "Uncaught error on file open (BUG)"
 msgstr "Догодила се неухватљива грешка при отварању датотеке (грешка програма)"
 
-#: ../src/gui/app.cpp:3586
+#: ../src/gui/app.cpp:3583
 #, c-format
 msgid ""
 "Unable to open temporary container \"%s\"\n"
 "\n"
 msgstr "Не могу да отворим  привремени контејнер „%s“\n\n"
 
-#: ../src/gui/app.cpp:3618
+#: ../src/gui/app.cpp:3615
 msgid "Newer version of this file avaliable on the CVS repository!"
 msgstr ""
 
-#: ../src/gui/app.cpp:3619
+#: ../src/gui/app.cpp:3616
 msgid "Would you like to update now (It would probably be a good idea)"
 msgstr ""
 
-#: ../src/gui/app.cpp:3713 ../src/gui/app.cpp:3737
-#: ../src/gui/canvasview.cpp:4066
+#: ../src/gui/app.cpp:3710 ../src/gui/app.cpp:3734
+#: ../src/gui/canvasview.cpp:4081
 msgid "Please select a file"
 msgstr "Изаберите датотеку"
 
-#: ../src/gui/app.cpp:3733
+#: ../src/gui/app.cpp:3730
 msgid "History entry #"
 msgstr "Унос у историјату #"
 
-#: ../src/gui/app.cpp:3737
+#: ../src/gui/app.cpp:3734
 msgid "Select one of previous versions of file"
 msgstr ""
 
-#: ../src/gui/canvasview.cpp:266 ../src/gui/workarea.cpp:3268
-#: ../src/gui/workarea.cpp:3275 ../src/gui/workarea.cpp:3376
+#: ../src/gui/canvasview.cpp:266 ../src/gui/workarea.cpp:3305
+#: ../src/gui/workarea.cpp:3312 ../src/gui/workarea.cpp:3413
 msgid "Idle"
 msgstr "Неупослен"
 
@@ -4039,272 +4032,284 @@ msgstr "Могућност још увек није примењена"
 msgid "Canvas View"
 msgstr "Преглед платна"
 
-#: ../src/gui/canvasview.cpp:1058 ../src/gui/preview.cpp:1435
+#: ../src/gui/canvasview.cpp:1067 ../src/gui/preview.cpp:1438
 msgid "Enable JACK"
 msgstr "Омогући Џек-зв. посредник"
 
-#: ../src/gui/canvasview.cpp:1093
+#: ../src/gui/canvasview.cpp:1102
 msgid "Moves the time window"
 msgstr "Помера временски прозор"
 
-#: ../src/gui/canvasview.cpp:1094
+#: ../src/gui/canvasview.cpp:1103
 msgid "Changes the current time"
 msgstr "Измене тренутног времена"
 
-#: ../src/gui/canvasview.cpp:1124
+#: ../src/gui/canvasview.cpp:1133
 msgid "Default Interpolation"
 msgstr "Подразумевано уметање"
 
-#: ../src/gui/canvasview.cpp:1153 ../src/gui/canvasview.cpp:2797
+#: ../src/gui/canvasview.cpp:1162 ../src/gui/canvasview.cpp:2811
 msgid "Turn on animate editing mode"
 msgstr "Укључи режим уређења анимације"
 
-#: ../src/gui/canvasview.cpp:1166
+#: ../src/gui/canvasview.cpp:1175
 msgid "Toggle timebar"
 msgstr "Укљ/Искљ. временске траке"
 
-#: ../src/gui/canvasview.cpp:1196
+#: ../src/gui/canvasview.cpp:1205
 msgid "Current time"
 msgstr "Тренутно време"
 
-#: ../src/gui/canvasview.cpp:1342
+#: ../src/gui/canvasview.cpp:1351
 msgid "Shows the Render Settings Dialog"
 msgstr "Приказује прозорче поставки Творца"
 
-#: ../src/gui/canvasview.cpp:1358
+#: ../src/gui/canvasview.cpp:1367
 msgid "Shows the Preview Settings Dialog"
 msgstr "Приказује прозорче поставки претпрегледача"
 
-#: ../src/gui/canvasview.cpp:1417
+#: ../src/gui/canvasview.cpp:1426
 msgid "Show grid"
 msgstr "Прикажи мрежу"
 
-#: ../src/gui/canvasview.cpp:1418
+#: ../src/gui/canvasview.cpp:1427
 msgid "Show grid when enabled"
 msgstr "Ако је означено приказује мрежу"
 
-#: ../src/gui/canvasview.cpp:1434
+#: ../src/gui/canvasview.cpp:1443
 msgid "Snap to grid"
 msgstr "Лепи за тачке мреже"
 
-#: ../src/gui/canvasview.cpp:1435
+#: ../src/gui/canvasview.cpp:1444
 msgid "Snap to grid when enabled"
 msgstr "Уколико је означено омогућава пријањање на тачке мреже"
 
-#: ../src/gui/canvasview.cpp:1454
+#: ../src/gui/canvasview.cpp:1463
 msgid "Onion skin"
 msgstr "Онион-скин"
 
-#: ../src/gui/canvasview.cpp:1455
+#: ../src/gui/canvasview.cpp:1464
 msgid "Shows onion skin when enabled"
 msgstr "Ако је омогућено користи Онион-скин начин исцртавања"
 
-#: ../src/gui/canvasview.cpp:1465
+#: ../src/gui/canvasview.cpp:1474
 msgid "Past onion skins"
 msgstr ""
 
-#: ../src/gui/canvasview.cpp:1480
+#: ../src/gui/canvasview.cpp:1489
 msgid "Future onion skins"
 msgstr ""
 
-#: ../src/gui/canvasview.cpp:1502
+#: ../src/gui/canvasview.cpp:1511
 msgid "Refresh"
 msgstr "Освежи"
 
-#: ../src/gui/canvasview.cpp:1503
+#: ../src/gui/canvasview.cpp:1512
 msgid "Refresh workarea"
 msgstr "Освежи радни простор"
 
-#: ../src/gui/canvasview.cpp:1540
+#: ../src/gui/canvasview.cpp:1549
 msgid "Stop current operation"
 msgstr "Заустави текућу радњу"
 
-#: ../src/gui/canvasview.cpp:1725 ../src/gui/mainwindow.cpp:162
+#: ../src/gui/canvasview.cpp:1698
+msgid "Save As..."
+msgstr "Сачувај као..."
+
+#: ../src/gui/canvasview.cpp:1701 ../src/gui/iconcontroller.cpp:187
+msgid "Save All"
+msgstr "Сачувај све"
+
+#: ../src/gui/canvasview.cpp:1701
+msgid "Save all opened documents"
+msgstr ""
+
+#: ../src/gui/canvasview.cpp:1739 ../src/gui/mainwindow.cpp:150
 msgid "Quit"
 msgstr "Изађи"
 
-#: ../src/gui/canvasview.cpp:1784
+#: ../src/gui/canvasview.cpp:1798
 msgid " (best)"
 msgstr " (најбоље)"
 
-#: ../src/gui/canvasview.cpp:1785
+#: ../src/gui/canvasview.cpp:1799
 msgid " (fastest)"
 msgstr " (најбрже)"
 
-#: ../src/gui/canvasview.cpp:1787
+#: ../src/gui/canvasview.cpp:1801
 #, c-format
 msgid "Set Quality to %d"
 msgstr "Постави квалитет на %d"
 
-#: ../src/gui/canvasview.cpp:1849 ../src/gui/iconcontroller.cpp:251
+#: ../src/gui/canvasview.cpp:1863 ../src/gui/iconcontroller.cpp:259
 msgid "Show Grid"
 msgstr "Прикажи мрежу"
 
-#: ../src/gui/canvasview.cpp:1853
+#: ../src/gui/canvasview.cpp:1867
 msgid "Snap to Grid"
 msgstr "Лепи на тачке мреже"
 
-#: ../src/gui/canvasview.cpp:1857
+#: ../src/gui/canvasview.cpp:1871
 msgid "Show Guides"
 msgstr "Прикжи вођице"
 
-#: ../src/gui/canvasview.cpp:1861
+#: ../src/gui/canvasview.cpp:1875
 msgid "Snap to Guides"
 msgstr "Лепи на вођице"
 
-#: ../src/gui/canvasview.cpp:1866
+#: ../src/gui/canvasview.cpp:1880
 msgid "Use Low-Res"
 msgstr "Употребљавај „лош приказ“"
 
-#: ../src/gui/canvasview.cpp:1870
+#: ../src/gui/canvasview.cpp:1884
 msgid "Show Onion Skin"
 msgstr "Прикажи Онион-скин"
 
-#: ../src/gui/canvasview.cpp:1913
+#: ../src/gui/canvasview.cpp:1927
 msgid "Zoom In on Timeline"
 msgstr "Увећај временску траку"
 
-#: ../src/gui/canvasview.cpp:1916
+#: ../src/gui/canvasview.cpp:1930
 msgid "Zoom Out on Timeline"
 msgstr "Умањи временску траку"
 
-#: ../src/gui/canvasview.cpp:2017 ../src/gui/canvasview.cpp:2527
+#: ../src/gui/canvasview.cpp:2031 ../src/gui/canvasview.cpp:2541
 msgid "Select All Children"
 msgstr "Изабери све подређене"
 
-#: ../src/gui/canvasview.cpp:2310
+#: ../src/gui/canvasview.cpp:2324
 msgid "-MODIFIED"
 msgstr "-(измењен)"
 
-#: ../src/gui/canvasview.cpp:2312
+#: ../src/gui/canvasview.cpp:2326
 msgid "-UPDATED"
 msgstr "-(зановљен)"
 
-#: ../src/gui/canvasview.cpp:2786
+#: ../src/gui/canvasview.cpp:2800
 msgid "Turn off animate editing mode"
 msgstr "Искључи режим уређења анимације"
 
-#: ../src/gui/canvasview.cpp:2809
+#: ../src/gui/canvasview.cpp:2823
 msgid "Unlock future keyframes"
 msgstr "Откључај наредне кључне кадрове"
 
-#: ../src/gui/canvasview.cpp:2820
+#: ../src/gui/canvasview.cpp:2834
 msgid "Lock future keyframes"
 msgstr "Закључај наредне кључне кадрове"
 
-#: ../src/gui/canvasview.cpp:2831
+#: ../src/gui/canvasview.cpp:2845
 msgid "Unlock past keyframes"
 msgstr "Откључај пређашње кључне кадрове"
 
-#: ../src/gui/canvasview.cpp:2842
+#: ../src/gui/canvasview.cpp:2856
 msgid "Lock past  keyframes"
 msgstr "Закључај пређашње кључне кадрове"
 
-#: ../src/gui/canvasview.cpp:3466
+#: ../src/gui/canvasview.cpp:3481
 msgid "Change Waypoint Group"
 msgstr "Уреди скуп Реф.Тачака"
 
-#: ../src/gui/canvasview.cpp:3497
+#: ../src/gui/canvasview.cpp:3512
 msgid "Duplicate Waypoints"
 msgstr "Удвостручи Реф.Тачке"
 
-#: ../src/gui/canvasview.cpp:3513
+#: ../src/gui/canvasview.cpp:3528
 msgid "Remove Waypoints"
 msgstr "Уклони Реф.Тачке"
 
-#: ../src/gui/canvasview.cpp:3581
+#: ../src/gui/canvasview.cpp:3596
 msgid "_TCB"
 msgstr "_ТКБ"
 
-#: ../src/gui/canvasview.cpp:3582
+#: ../src/gui/canvasview.cpp:3597
 msgid "_Linear"
 msgstr "_Равномерно"
 
-#: ../src/gui/canvasview.cpp:3583
+#: ../src/gui/canvasview.cpp:3598
 msgid "_Ease In"
 msgstr "_Појави се"
 
-#: ../src/gui/canvasview.cpp:3583
+#: ../src/gui/canvasview.cpp:3598
 msgid "_Ease Out"
 msgstr "_Ишчезни"
 
-#: ../src/gui/canvasview.cpp:3583
+#: ../src/gui/canvasview.cpp:3598
 msgid "_Ease In/Out"
 msgstr "По_јави се/Ишчезни"
 
-#: ../src/gui/canvasview.cpp:3584
+#: ../src/gui/canvasview.cpp:3599
 msgid "_Constant"
 msgstr "_Константно"
 
-#: ../src/gui/canvasview.cpp:3585
+#: ../src/gui/canvasview.cpp:3600
 msgid "_Clamped"
 msgstr "_Спојено"
 
-#: ../src/gui/canvasview.cpp:3605
+#: ../src/gui/canvasview.cpp:3620
 msgid "_Jump To"
 msgstr "Иди на"
 
-#: ../src/gui/canvasview.cpp:3612
+#: ../src/gui/canvasview.cpp:3627
 msgid "_Duplicate"
 msgstr "_Удвостручи"
 
-#: ../src/gui/canvasview.cpp:3619
+#: ../src/gui/canvasview.cpp:3634
 msgid "_Remove"
 msgstr "_Уклони"
 
-#: ../src/gui/canvasview.cpp:3619
+#: ../src/gui/canvasview.cpp:3634
 #, c-format
 msgid "_Remove %d Waypoints"
 msgstr "_Уклони %d Реф.Тачака"
 
-#: ../src/gui/canvasview.cpp:3642
+#: ../src/gui/canvasview.cpp:3657
 msgid "_Both"
 msgstr "_Обострано"
 
-#: ../src/gui/canvasview.cpp:3648
+#: ../src/gui/canvasview.cpp:3663
 msgid "_In"
 msgstr "_Улаз"
 
-#: ../src/gui/canvasview.cpp:3654
+#: ../src/gui/canvasview.cpp:3669
 msgid "_Out"
 msgstr "_Излаз"
 
-#: ../src/gui/canvasview.cpp:3945
+#: ../src/gui/canvasview.cpp:3960
 msgid " Description"
 msgstr " Опис"
 
-#: ../src/gui/canvasview.cpp:3946 ../src/gui/instance.cpp:1116
+#: ../src/gui/canvasview.cpp:3961 ../src/gui/instance.cpp:1116
 msgid "Description: "
 msgstr "Опис: "
 
-#: ../src/gui/canvasview.cpp:3950 ../src/gui/iconcontroller.cpp:249
+#: ../src/gui/canvasview.cpp:3965 ../src/gui/iconcontroller.cpp:257
 #: ../src/gui/instance.cpp:1115 ../src/synfigapp/actions/groupaddlayers.cpp:78
 #: ../src/synfigapp/actions/groupremove.cpp:72
 msgid "Set"
 msgstr "Постави"
 
-#: ../src/gui/canvasview.cpp:4432
+#: ../src/gui/canvasview.cpp:4447
 msgid "Are you sure you want to disable JACK synchronization?"
 msgstr ""
 
-#: ../src/gui/canvasview.cpp:4433
+#: ../src/gui/canvasview.cpp:4448
 msgid "The JACK server will remain running."
 msgstr ""
 
-#: ../src/gui/canvasview.cpp:4435
+#: ../src/gui/canvasview.cpp:4450
 msgid "Are you sure you want to enable JACK synchronization?"
 msgstr ""
 
-#: ../src/gui/canvasview.cpp:4436
+#: ../src/gui/canvasview.cpp:4451
 msgid "This operation will launch a JACK server, if it isn't started yet."
 msgstr ""
 
-#: ../src/gui/canvasview.cpp:4441
+#: ../src/gui/canvasview.cpp:4456
 #: ../src/synfigapp/actions/valuedescset.cpp:1098
 msgid "No"
 msgstr ""
 
-#: ../src/gui/canvasview.cpp:4442
+#: ../src/gui/canvasview.cpp:4457
 #: ../src/synfigapp/actions/valuedescset.cpp:1099
 msgid "Yes"
 msgstr ""
@@ -4398,437 +4403,445 @@ msgstr "Чвор-вредности"
 msgid "ValueNode Forbid Animation"
 msgstr "Чвор-вредности не дозвољава покретање"
 
-#: ../src/gui/iconcontroller.cpp:177
-msgid "About"
-msgstr "О програму"
-
-#: ../src/gui/iconcontroller.cpp:178 ../src/gui/instance.cpp:1111
+#: ../src/gui/iconcontroller.cpp:177 ../src/gui/instance.cpp:1111
 msgid "Rename"
 msgstr "Преименуј"
 
-#: ../src/gui/iconcontroller.cpp:180 ../src/synfigapp/actions/canvasadd.cpp:73
+#: ../src/gui/iconcontroller.cpp:179 ../src/synfigapp/actions/canvasadd.cpp:73
 msgid "New Canvas"
 msgstr "Ново платно"
 
-#: ../src/gui/iconcontroller.cpp:181
-msgid "Save All"
-msgstr "Сачувај све"
+#: ../src/gui/iconcontroller.cpp:182
+msgid "About"
+msgstr "О програму"
+
+#: ../src/gui/iconcontroller.cpp:183 ../src/gui/mainwindow.cpp:144
+msgid "New"
+msgstr ""
+
+#: ../src/gui/iconcontroller.cpp:185 ../src/gui/instance.cpp:875
+msgid "Save"
+msgstr "Сачувај"
 
 #: ../src/gui/iconcontroller.cpp:186
+msgid "Save As"
+msgstr ""
+
+#: ../src/gui/iconcontroller.cpp:194
 msgid "Blur Layer"
 msgstr "Слој замућења"
 
-#: ../src/gui/iconcontroller.cpp:187
+#: ../src/gui/iconcontroller.cpp:195
 msgid "Motion Blur Layer"
 msgstr "Слој замућења покрета"
 
-#: ../src/gui/iconcontroller.cpp:188
+#: ../src/gui/iconcontroller.cpp:196
 msgid "Radial Blur Layer"
 msgstr "Слој кружног замућења"
 
-#: ../src/gui/iconcontroller.cpp:190
+#: ../src/gui/iconcontroller.cpp:198
 msgid "Curve Warp Layer"
 msgstr "Слој изобличења кривом"
 
-#: ../src/gui/iconcontroller.cpp:191
+#: ../src/gui/iconcontroller.cpp:199
 msgid "Inside Out Layer"
 msgstr "У-Из слој"
 
-#: ../src/gui/iconcontroller.cpp:192
+#: ../src/gui/iconcontroller.cpp:200
 msgid "Noise Distort Layer"
 msgstr "Мрљама изобличен слој"
 
-#: ../src/gui/iconcontroller.cpp:193
+#: ../src/gui/iconcontroller.cpp:201
 msgid "Spherize Layer"
 msgstr "Слој испупчења"
 
-#: ../src/gui/iconcontroller.cpp:194
+#: ../src/gui/iconcontroller.cpp:202
 msgid "Stretch Layer"
 msgstr "Слој растезања"
 
-#: ../src/gui/iconcontroller.cpp:195
+#: ../src/gui/iconcontroller.cpp:203
 msgid "Twirl Layer"
 msgstr "Слој ковитлања"
 
-#: ../src/gui/iconcontroller.cpp:196
+#: ../src/gui/iconcontroller.cpp:204
 msgid "Warp Layer"
 msgstr "Слој изобличења"
 
-#: ../src/gui/iconcontroller.cpp:198
+#: ../src/gui/iconcontroller.cpp:206
 msgid "Filled Rectangle Layer"
 msgstr "Слој са испуњеним правоугаоником"
 
-#: ../src/gui/iconcontroller.cpp:199
+#: ../src/gui/iconcontroller.cpp:207
 msgid "Metallballs Layer"
 msgstr "Слој са повезаним лоптама"
 
-#: ../src/gui/iconcontroller.cpp:200
+#: ../src/gui/iconcontroller.cpp:208
 msgid "Simple Circle Layer"
 msgstr "Слој са кругом"
 
-#: ../src/gui/iconcontroller.cpp:202
+#: ../src/gui/iconcontroller.cpp:210
 msgid "Clamp Layer"
 msgstr "Слој спојница"
 
-#: ../src/gui/iconcontroller.cpp:203
+#: ../src/gui/iconcontroller.cpp:211
 msgid "Color Correct Layer"
 msgstr "Слој за исправке боје"
 
-#: ../src/gui/iconcontroller.cpp:204
+#: ../src/gui/iconcontroller.cpp:212
 msgid "Halftone 2 Layer"
 msgstr "Halftone 2 слој"
 
-#: ../src/gui/iconcontroller.cpp:205
+#: ../src/gui/iconcontroller.cpp:213
 msgid "Halftone 3 Layer"
 msgstr "Halftone 3 слој"
 
-#: ../src/gui/iconcontroller.cpp:206
+#: ../src/gui/iconcontroller.cpp:214
 msgid "Luma Key Layer"
 msgstr "Слој вредности осветљења"
 
-#: ../src/gui/iconcontroller.cpp:208
+#: ../src/gui/iconcontroller.cpp:216
 msgid "Julia Set Layer"
 msgstr "Julia Set слој"
 
-#: ../src/gui/iconcontroller.cpp:209
+#: ../src/gui/iconcontroller.cpp:217
 msgid "Mandelbrot Set Layer"
 msgstr "Mandelbrot Set слој"
 
-#: ../src/gui/iconcontroller.cpp:211
+#: ../src/gui/iconcontroller.cpp:219
 msgid "Checker Board Layer"
 msgstr "Checker Board слој"
 
-#: ../src/gui/iconcontroller.cpp:212
+#: ../src/gui/iconcontroller.cpp:220
 msgid "Circle Layer"
 msgstr "Слој круга"
 
-#: ../src/gui/iconcontroller.cpp:213
+#: ../src/gui/iconcontroller.cpp:221
 msgid "Outline Layer"
 msgstr "Слој контуре"
 
-#: ../src/gui/iconcontroller.cpp:214
+#: ../src/gui/iconcontroller.cpp:222
 msgid "Advanced Outline Layer"
 msgstr "Слој прецизне контуре"
 
-#: ../src/gui/iconcontroller.cpp:215
+#: ../src/gui/iconcontroller.cpp:223
 msgid "Polygon Layer"
 msgstr "Слој са многоуглом"
 
-#: ../src/gui/iconcontroller.cpp:216
+#: ../src/gui/iconcontroller.cpp:224
 msgid "Rectangle Layer"
 msgstr "Слој правоугаоника"
 
-#: ../src/gui/iconcontroller.cpp:217
+#: ../src/gui/iconcontroller.cpp:225
 msgid "Region Layer"
 msgstr "Слој области"
 
-#: ../src/gui/iconcontroller.cpp:218
+#: ../src/gui/iconcontroller.cpp:226
 msgid "Solid Color Layer"
 msgstr "Једнобојан слој"
 
-#: ../src/gui/iconcontroller.cpp:219
+#: ../src/gui/iconcontroller.cpp:227
 msgid "Star Layer"
 msgstr "Звездани слој"
 
-#: ../src/gui/iconcontroller.cpp:221
+#: ../src/gui/iconcontroller.cpp:229
 msgid "Conical Gradient Layer"
 msgstr "Слој конусног прелива"
 
-#: ../src/gui/iconcontroller.cpp:222
+#: ../src/gui/iconcontroller.cpp:230
 msgid "Curve Gradient Layer"
 msgstr "Слој кривудавог прелива"
 
-#: ../src/gui/iconcontroller.cpp:223
+#: ../src/gui/iconcontroller.cpp:231
 msgid "Noise Gradient Layer"
 msgstr "Слој замрљаног прелива"
 
-#: ../src/gui/iconcontroller.cpp:224
+#: ../src/gui/iconcontroller.cpp:232
 msgid "Linear Gradient Layer"
 msgstr "Слој равномерног прелива"
 
-#: ../src/gui/iconcontroller.cpp:225
+#: ../src/gui/iconcontroller.cpp:233
 msgid "Radial Gradient Layer"
 msgstr "Слој кружног прелива"
 
-#: ../src/gui/iconcontroller.cpp:226
+#: ../src/gui/iconcontroller.cpp:234
 msgid "Spiral Gradient Layer"
 msgstr "Слој завијеног прелива"
 
-#: ../src/gui/iconcontroller.cpp:228
+#: ../src/gui/iconcontroller.cpp:236
 #: ../src/synfigapp/actions/layerduplicate.cpp:52
 #: ../src/synfigapp/actions/layerduplicate.cpp:72
 msgid "Duplicate Layer"
 msgstr "Удвостручи слој"
 
-#: ../src/gui/iconcontroller.cpp:229
+#: ../src/gui/iconcontroller.cpp:237
 msgid "Import Image Layer"
 msgstr "Увези слој са сликом"
 
-#: ../src/gui/iconcontroller.cpp:230
+#: ../src/gui/iconcontroller.cpp:238
 #: ../src/synfigapp/actions/layerencapsulate.cpp:52
 #: ../src/synfigapp/actions/layerencapsulate.cpp:73
 msgid "Group Layer"
 msgstr "Свежи слој"
 
-#: ../src/gui/iconcontroller.cpp:231
+#: ../src/gui/iconcontroller.cpp:239
 msgid "Plant Layer"
 msgstr "Листолики слој"
 
-#: ../src/gui/iconcontroller.cpp:232
+#: ../src/gui/iconcontroller.cpp:240
 msgid "Stroboscope Layer"
 msgstr "Треперави слој"
 
-#: ../src/gui/iconcontroller.cpp:233
+#: ../src/gui/iconcontroller.cpp:241
 msgid "Super Sample Layer"
 msgstr "Најједноставнији слој"
 
-#: ../src/gui/iconcontroller.cpp:234
+#: ../src/gui/iconcontroller.cpp:242
 msgid "Sound Layer"
 msgstr "Озвучени слој"
 
-#: ../src/gui/iconcontroller.cpp:235
+#: ../src/gui/iconcontroller.cpp:243
 msgid "Switch Layer"
 msgstr "Слој Скретница"
 
-#: ../src/gui/iconcontroller.cpp:236
+#: ../src/gui/iconcontroller.cpp:244
 msgid "Skeleton Layer"
 msgstr "Скелетни слој"
 
-#: ../src/gui/iconcontroller.cpp:237
+#: ../src/gui/iconcontroller.cpp:245
 msgid "Text Layer"
 msgstr "Текстуални слој"
 
-#: ../src/gui/iconcontroller.cpp:238
+#: ../src/gui/iconcontroller.cpp:246
 msgid "Time Loop Layer"
 msgstr "Слој понављања"
 
-#: ../src/gui/iconcontroller.cpp:239
+#: ../src/gui/iconcontroller.cpp:247
 msgid "XOR Pattern Layer"
 msgstr "Слој — ЕКС-ИЛИ шаблон"
 
-#: ../src/gui/iconcontroller.cpp:241
+#: ../src/gui/iconcontroller.cpp:249
 msgid "Bevel Layer"
 msgstr "Слој искошења ивица"
 
-#: ../src/gui/iconcontroller.cpp:242
+#: ../src/gui/iconcontroller.cpp:250
 msgid "Shade Layer"
 msgstr "Слој осенчавања"
 
-#: ../src/gui/iconcontroller.cpp:244
+#: ../src/gui/iconcontroller.cpp:252
 msgid "Rotate Layer"
 msgstr "Слој — Вртешка"
 
-#: ../src/gui/iconcontroller.cpp:245
+#: ../src/gui/iconcontroller.cpp:253
 msgid "Translate Layer"
 msgstr "Слој — Преводилац"
 
-#: ../src/gui/iconcontroller.cpp:246
+#: ../src/gui/iconcontroller.cpp:254
 msgid "Scale Layer"
 msgstr "Слој промене величине"
 
-#: ../src/gui/iconcontroller.cpp:248
+#: ../src/gui/iconcontroller.cpp:256
 msgid "Info Tool"
 msgstr "Информације"
 
-#: ../src/gui/iconcontroller.cpp:252
+#: ../src/gui/iconcontroller.cpp:260
 msgid "Hide Grid"
 msgstr "Сакриј мрежу"
 
-#: ../src/gui/iconcontroller.cpp:253
+#: ../src/gui/iconcontroller.cpp:261
 msgid "Enable Grid Snap"
 msgstr "Омогући лепљење за тачке мреже"
 
-#: ../src/gui/iconcontroller.cpp:254
+#: ../src/gui/iconcontroller.cpp:262
 msgid "Disable Grid Snap"
 msgstr "Онемогући лепљење за тачке мреже"
 
-#: ../src/gui/iconcontroller.cpp:255
+#: ../src/gui/iconcontroller.cpp:263
 msgid "Duplicate"
 msgstr "Удвостручи"
 
-#: ../src/gui/iconcontroller.cpp:256
+#: ../src/gui/iconcontroller.cpp:264
 msgid "Group"
 msgstr "Свежањ"
 
-#: ../src/gui/iconcontroller.cpp:265
+#: ../src/gui/iconcontroller.cpp:273
 msgid "MetaData"
 msgstr "Допунски подаци"
 
-#: ../src/gui/iconcontroller.cpp:269
+#: ../src/gui/iconcontroller.cpp:277
 msgid "Palette"
 msgstr "Палета боја"
 
-#: ../src/gui/iconcontroller.cpp:272
+#: ../src/gui/iconcontroller.cpp:280
 msgid "Past keyframes unlocked"
 msgstr "Откључани пређашњи кључни кадрови"
 
-#: ../src/gui/iconcontroller.cpp:273
+#: ../src/gui/iconcontroller.cpp:281
 msgid "Past keyframes locked"
 msgstr "Закључани пређашњи кључни кадрови"
 
-#: ../src/gui/iconcontroller.cpp:274
+#: ../src/gui/iconcontroller.cpp:282
 msgid "Future keyframes unlocked"
 msgstr "Откључани наредни кључни кадрови"
 
-#: ../src/gui/iconcontroller.cpp:275
+#: ../src/gui/iconcontroller.cpp:283
 msgid "Future keyframes locked"
 msgstr "Закључани наредни кључни кадрови"
 
-#: ../src/gui/iconcontroller.cpp:277
+#: ../src/gui/iconcontroller.cpp:285
 msgid "Animate Mode Off"
 msgstr "Искључи режим анимације"
 
-#: ../src/gui/iconcontroller.cpp:278
+#: ../src/gui/iconcontroller.cpp:286
 msgid "Animate Mode On"
 msgstr "Укључи режим анимације"
 
-#: ../src/gui/iconcontroller.cpp:280
+#: ../src/gui/iconcontroller.cpp:288
 msgid "JACK"
 msgstr "Џек — зв.посредник"
 
-#: ../src/gui/iconcontroller.cpp:286
+#: ../src/gui/iconcontroller.cpp:294
 msgid "Seek to Previous Keyframe"
 msgstr "На претходни кључни кадар"
 
-#: ../src/gui/iconcontroller.cpp:289
+#: ../src/gui/iconcontroller.cpp:297
 msgid "Stop"
 msgstr "Заустави"
 
-#: ../src/gui/iconcontroller.cpp:291
+#: ../src/gui/iconcontroller.cpp:299
 msgid "Seek to Next frame"
 msgstr "На наредни кадар"
 
-#: ../src/gui/iconcontroller.cpp:294
+#: ../src/gui/iconcontroller.cpp:302
 msgid "Animate Loop"
 msgstr "Анимирај вртњу"
 
-#: ../src/gui/iconcontroller.cpp:296
+#: ../src/gui/iconcontroller.cpp:304
 msgid "Add Layer to Set"
 msgstr "Додај слој у банду"
 
-#: ../src/gui/iconcontroller.cpp:297
+#: ../src/gui/iconcontroller.cpp:305
 msgid "Remove Layer from Set"
 msgstr "Уклони слој из банде"
 
-#: ../src/gui/iconcontroller.cpp:298
+#: ../src/gui/iconcontroller.cpp:306
 #: ../src/synfigapp/actions/layersetdesc.cpp:50
 #: ../src/synfigapp/actions/layersetdesc.cpp:73
 msgid "Set Layer Description"
 msgstr "Постави опис слоја"
 
-#: ../src/gui/iconcontroller.cpp:299
+#: ../src/gui/iconcontroller.cpp:307
 msgid "Export Value Node"
 msgstr "Извези чвор вредности"
 
-#: ../src/gui/iconcontroller.cpp:300
+#: ../src/gui/iconcontroller.cpp:308
 msgid "Unexport Value Node"
 msgstr "Опозови извоз чвора вредности"
 
-#: ../src/gui/iconcontroller.cpp:301
+#: ../src/gui/iconcontroller.cpp:309
 msgid "Set Interpolation to Flat"
 msgstr "Постави уметање на равно"
 
-#: ../src/gui/iconcontroller.cpp:302
+#: ../src/gui/iconcontroller.cpp:310
 msgid "Set Interpolation to Interpolate"
 msgstr "Постави уметање на уметнуто"
 
-#: ../src/gui/iconcontroller.cpp:303
+#: ../src/gui/iconcontroller.cpp:311
 msgid "Set Interpolation to Peak"
 msgstr "Постави уметање на вршно"
 
-#: ../src/gui/iconcontroller.cpp:304
+#: ../src/gui/iconcontroller.cpp:312
 msgid "Set Interpolation to Rounded"
 msgstr "Постави уметање на заобљено"
 
-#: ../src/gui/iconcontroller.cpp:305
+#: ../src/gui/iconcontroller.cpp:313
 msgid "Set Interpolation to Squared"
 msgstr "Постави уметање на квадратно"
 
-#: ../src/gui/iconcontroller.cpp:314
+#: ../src/gui/iconcontroller.cpp:322
 msgid "Toggle show grid"
 msgstr "Укљ/Искљ. приказ мреже"
 
-#: ../src/gui/iconcontroller.cpp:315
+#: ../src/gui/iconcontroller.cpp:323
 msgid "Toggle snap grid"
 msgstr "Укљ/Искљ. лепљење за тачке мреже"
 
-#: ../src/gui/iconcontroller.cpp:316
+#: ../src/gui/iconcontroller.cpp:324
 msgid "Toggle show guide"
 msgstr "Укљ/Искљ. приказ вођице"
 
-#: ../src/gui/iconcontroller.cpp:317
+#: ../src/gui/iconcontroller.cpp:325
 msgid "Toggle snap guide"
 msgstr "Укљ/Искљ. лепљење за вођицу"
 
-#: ../src/gui/iconcontroller.cpp:319
+#: ../src/gui/iconcontroller.cpp:327
 msgid "Toggle onion skin"
 msgstr "Укљ/Искљ. Онион-скин"
 
-#: ../src/gui/iconcontroller.cpp:321
+#: ../src/gui/iconcontroller.cpp:329
 msgid "Increase resolution"
 msgstr "Повећај"
 
-#: ../src/gui/iconcontroller.cpp:322
+#: ../src/gui/iconcontroller.cpp:330
 msgid "Decrease resolution"
 msgstr "Смањи"
 
-#: ../src/gui/iconcontroller.cpp:324
+#: ../src/gui/iconcontroller.cpp:332
 msgid "Preview Options Dialog"
 msgstr "Прозорче поставки претпрегледа"
 
-#: ../src/gui/iconcontroller.cpp:325
+#: ../src/gui/iconcontroller.cpp:333
 msgid "Render Options Dialog"
 msgstr "Прозорче поставки Творца"
 
-#: ../src/gui/iconcontroller.cpp:327
+#: ../src/gui/iconcontroller.cpp:335
 msgid "TCB interpolation"
 msgstr "ТКБ уметање"
 
-#: ../src/gui/iconcontroller.cpp:328
+#: ../src/gui/iconcontroller.cpp:336
 msgid "Ease In/Out interpolation"
 msgstr "Појави се/Ишчезни уметање"
 
-#: ../src/gui/iconcontroller.cpp:329
+#: ../src/gui/iconcontroller.cpp:337
 msgid "Const interpolation"
 msgstr "Константно уметање"
 
-#: ../src/gui/iconcontroller.cpp:330
+#: ../src/gui/iconcontroller.cpp:338
 msgid "Linear interpolation"
 msgstr "Равномерно уметање"
 
-#: ../src/gui/iconcontroller.cpp:331
+#: ../src/gui/iconcontroller.cpp:339
 msgid "Clamped interpolation"
 msgstr "Спојено уметање"
 
-#: ../src/gui/iconcontroller.cpp:333
+#: ../src/gui/iconcontroller.cpp:341
 msgid "Linked"
 msgstr "Повезано"
 
-#: ../src/gui/iconcontroller.cpp:334
+#: ../src/gui/iconcontroller.cpp:342
 msgid "Unlinked"
 msgstr "Одвезано"
 
-#: ../src/gui/iconcontroller.cpp:337
+#: ../src/gui/iconcontroller.cpp:345
 msgid "CVS Add"
 msgstr "ЦВС додавање"
 
-#: ../src/gui/iconcontroller.cpp:338 ../src/gui/instance.cpp:704
+#: ../src/gui/iconcontroller.cpp:346 ../src/gui/instance.cpp:704
 msgid "CVS Update"
 msgstr "ЦВС освежавање"
 
-#: ../src/gui/iconcontroller.cpp:339 ../src/gui/instance.cpp:596
+#: ../src/gui/iconcontroller.cpp:347 ../src/gui/instance.cpp:596
 #: ../src/gui/instance.cpp:618
 msgid "CVS Commit"
 msgstr "ЦВС прослеђивање"
 
-#: ../src/gui/iconcontroller.cpp:340 ../src/gui/instance.cpp:753
+#: ../src/gui/iconcontroller.cpp:348 ../src/gui/instance.cpp:753
 msgid "CVS Revert"
 msgstr "ЦВС поврат"
 
 #: ../src/gui/instance.cpp:201
 #, c-format
-msgid "Do you realy want to add skeleton to document \"%s\"?"
-msgstr "Желите ли да додате скелет у докуменат „%s“?"
+msgid "Do you realy want to run plugin for file \"%s\"?"
+msgstr ""
 
 #: ../src/gui/instance.cpp:204
 msgid "This operation cannot be undone and all undo history will be cleared."
@@ -4992,10 +5005,6 @@ msgstr "Уколико не сачувате докуменат учињене �
 msgid "Close without Saving"
 msgstr "Затвори без чувања"
 
-#: ../src/gui/instance.cpp:875
-msgid "Save"
-msgstr "Сачувај"
-
 #: ../src/gui/instance.cpp:892
 #, c-format
 msgid "Commit changes of \"%s\" to  the CVS repository?"
@@ -5023,43 +5032,48 @@ msgstr "Извези"
 msgid "Name: "
 msgstr "Назив: "
 
-#: ../src/gui/instance.cpp:1262
+#: ../src/gui/instance.cpp:1215
+#: ../src/synfigapp/actions/valuedescconvert.cpp:60
+msgid "Convert"
+msgstr "Претвори"
+
+#: ../src/gui/instance.cpp:1266
 msgid "Ease"
 msgstr "Појављивање/Ишчезнуће"
 
-#: ../src/gui/instance.cpp:1310
+#: ../src/gui/instance.cpp:1314
 msgid "Edit Waypoint"
 msgstr "Уреди Реф.Тачку"
 
-#: ../src/gui/instance.cpp:1384
+#: ../src/gui/instance.cpp:1393
 msgid "Set width to zero"
 msgstr "Постави ширину на нулу"
 
-#: ../src/gui/instance.cpp:1398
+#: ../src/gui/instance.cpp:1407
 msgid "Set width to default"
 msgstr "Постави ширину на подразумевану вредност"
 
-#: ../src/gui/instance.cpp:1426
+#: ../src/gui/instance.cpp:1435
 msgid "Apply"
 msgstr "Примени"
 
-#: ../src/gui/instance.cpp:1431
+#: ../src/gui/instance.cpp:1440
 msgid "Set Waypoints"
 msgstr "Постави Реф.Тачке"
 
-#: ../src/gui/instance.cpp:1493
+#: ../src/gui/instance.cpp:1502
 msgid "Unable to convert to animated waypoint"
 msgstr "Не могу да претворим у анимирану Реф.Тачку"
 
-#: ../src/gui/instance.cpp:1510
+#: ../src/gui/instance.cpp:1519
 msgid "Unable to find WaypointSetSmart action"
 msgstr "Не могу да пронађем радњу „WaypointSetSmart“"
 
-#: ../src/gui/instance.cpp:1523
+#: ../src/gui/instance.cpp:1532
 msgid "Unable to set a specific waypoint"
 msgstr "Не могу да поставим одређену Реф.Тачку"
 
-#: ../src/gui/instance.cpp:1551
+#: ../src/gui/instance.cpp:1560
 msgid "Edit Waypoints"
 msgstr "Уреди Реф.Тачке"
 
@@ -5067,61 +5081,65 @@ msgstr "Уреди Реф.Тачке"
 msgid "Synfig Animation "
 msgstr "Синфиг-цртаћ "
 
-#: ../src/gui/main.cpp:86
+#: ../src/gui/main.cpp:94
 msgid "synfig studio is already running"
 msgstr "синфигов студио је већ покренут"
 
-#: ../src/gui/main.cpp:87
+#: ../src/gui/main.cpp:95
 msgid "the existing process will be used"
 msgstr "употребићу овај постојећи процес"
 
-#: ../src/gui/main.cpp:106
+#: ../src/gui/main.cpp:114
 msgid "synfig studio -- starting up application..."
 msgstr "синфигов студијо -- покрећем програм..."
 
-#: ../src/gui/mainwindow.cpp:156
-msgid "Open..."
-msgstr "Отвори..."
+#: ../src/gui/mainwindow.cpp:144
+msgid "Create a new document"
+msgstr ""
 
-#: ../src/gui/mainwindow.cpp:176
+#: ../src/gui/mainwindow.cpp:147
+msgid "Open an existing document"
+msgstr ""
+
+#: ../src/gui/mainwindow.cpp:164
 msgid "Show Menubar"
 msgstr "Прикажи мени"
 
 #. TRANSLATORS:         | Help menu entry:              | A wiki page:
 #. |
-#: ../src/gui/mainwindow.cpp:205
+#: ../src/gui/mainwindow.cpp:193
 msgid "Tutorials"
 msgstr "Вежбе (интернет)"
 
-#: ../src/gui/mainwindow.cpp:205
+#: ../src/gui/mainwindow.cpp:193
 msgid "/Category:Tutorials"
 msgstr "/Категорија:Вежбе"
 
-#: ../src/gui/mainwindow.cpp:206
+#: ../src/gui/mainwindow.cpp:194
 msgid "Reference"
 msgstr "Референце"
 
-#: ../src/gui/mainwindow.cpp:206
+#: ../src/gui/mainwindow.cpp:194
 msgid "/Category:Reference"
 msgstr "/Категорија:Референце"
 
-#: ../src/gui/mainwindow.cpp:207
+#: ../src/gui/mainwindow.cpp:195
 msgid "Frequently Asked Questions"
 msgstr "Често постављана питања (интернет)"
 
-#: ../src/gui/mainwindow.cpp:207
+#: ../src/gui/mainwindow.cpp:195
 msgid "/FAQ"
 msgstr "/ЧПП"
 
-#: ../src/gui/mainwindow.cpp:208
+#: ../src/gui/mainwindow.cpp:196
 msgid "Get Support"
 msgstr "Затражите савет од других"
 
-#: ../src/gui/mainwindow.cpp:208
+#: ../src/gui/mainwindow.cpp:196
 msgid "/en/support"
 msgstr "/en/support"
 
-#: ../src/gui/mainwindow.cpp:211
+#: ../src/gui/mainwindow.cpp:199
 msgid "About Synfig Studio"
 msgstr "О Синфиговом студију"
 
@@ -5164,9 +5182,9 @@ msgid "Erase all rendered frame(s)"
 msgstr "Обриши све створене кадрове"
 
 #: ../src/gui/preview.cpp:572 ../src/gui/preview.cpp:772
-#: ../src/gui/preview.cpp:810 ../src/gui/preview.cpp:1194
-#: ../src/gui/preview.cpp:1211 ../src/gui/preview.cpp:1321
-#: ../src/gui/preview.cpp:1323
+#: ../src/gui/preview.cpp:810 ../src/gui/preview.cpp:1197
+#: ../src/gui/preview.cpp:1214 ../src/gui/preview.cpp:1324
+#: ../src/gui/preview.cpp:1326
 msgid "Fit"
 msgstr "Уклопи"
 
@@ -5406,7 +5424,7 @@ msgstr "Стварање "
 msgid "File rendered successfully"
 msgstr "Датотека је створена"
 
-#: ../src/gui/render.cpp:424 ../src/gui/workarea.cpp:3271
+#: ../src/gui/render.cpp:424 ../src/gui/workarea.cpp:3308
 msgid "sec"
 msgstr "сек."
 
@@ -5438,23 +5456,23 @@ msgstr "Не могу да поставим „background_second_color“"
 msgid "Nudge"
 msgstr ""
 
-#: ../src/gui/workarea.cpp:2407 ../src/gui/workarea.cpp:2454
+#: ../src/gui/workarea.cpp:2424 ../src/gui/workarea.cpp:2475
 msgid "Move"
 msgstr "Премести"
 
-#: ../src/gui/workarea.cpp:3244
+#: ../src/gui/workarea.cpp:3281
 msgid "Rendering..."
 msgstr "Стварање..."
 
-#: ../src/gui/workarea.cpp:3269
+#: ../src/gui/workarea.cpp:3306
 msgid "Last rendering time"
 msgstr "Време последњег стварања"
 
-#: ../src/gui/workarea.cpp:3282 ../src/gui/workarea.cpp:3378
+#: ../src/gui/workarea.cpp:3319 ../src/gui/workarea.cpp:3415
 msgid "Render Failed"
 msgstr "Стварање није успело"
 
-#: ../src/gui/workarea.cpp:3360
+#: ../src/gui/workarea.cpp:3397
 #, c-format
 msgid "Rendering canvas %s..."
 msgstr "Стварање платна %s..."
@@ -5837,15 +5855,15 @@ msgid "Keyframe to be added"
 msgstr "Биће додат кључни кадар"
 
 #: ../src/synfigapp/actions/keyframeadd.cpp:114
-#: ../src/synfigapp/actions/keyframeduplicate.cpp:138
-#: ../src/synfigapp/actions/keyframeduplicate.cpp:217
+#: ../src/synfigapp/actions/keyframeduplicate.cpp:146
+#: ../src/synfigapp/actions/keyframeduplicate.cpp:225
 #: ../src/synfigapp/actions/keyframeremove.cpp:222
 #: ../src/synfigapp/actions/keyframeset.cpp:130
 msgid "A Keyframe already exists at this point in time"
 msgstr "Кључни кадар већ постоји на овој временској тачки"
 
 #: ../src/synfigapp/actions/keyframeadd.cpp:117
-#: ../src/synfigapp/actions/keyframeduplicate.cpp:220
+#: ../src/synfigapp/actions/keyframeduplicate.cpp:228
 #: ../src/synfigapp/actions/keyframeremove.cpp:225
 msgid "This keyframe is already in the ValueNode"
 msgstr "Овај кључни кадар је већ у овом чвору-вредности"
@@ -5870,7 +5888,7 @@ msgstr "Удвостручиће се кључни кадар"
 msgid " (Duplicate)"
 msgstr " (Удвостручи)"
 
-#: ../src/synfigapp/actions/keyframeduplicate.cpp:135
+#: ../src/synfigapp/actions/keyframeduplicate.cpp:143
 #: ../src/synfigapp/actions/keyframeremove.cpp:123
 #: ../src/synfigapp/actions/keyframeset.cpp:381
 #: ../src/synfigapp/actions/keyframetoggl.cpp:147
@@ -6517,10 +6535,6 @@ msgstr "Назив изворног чвора-вредности"
 #: ../src/synfigapp/actions/valuedescdisconnect.cpp:262
 msgid "ValueDesc is not recognized or supported."
 msgstr "Непознат/Неподржан опис-вредности."
-
-#: ../src/synfigapp/actions/valuedescconvert.cpp:60
-msgid "Convert"
-msgstr "Претвори"
 
 #. TRANSLATORS: This is used in the 'history' dialog when a ValueNode is
 #. converted.  The first %s is what is converted, the 2nd is the local name of

@@ -3,26 +3,24 @@
 # This file is distributed under the same license as the Synfig Core package.
 # 
 # Translators:
-# Γιάννης Κασκαμανίδης <kiolalis@gmail.com>, 2011
-# Γιάννης Κασκαμανίδης <kiolalis@gmail.com>, 2011-2012
 msgid ""
 msgstr ""
 "Project-Id-Version: Synfig UI\n"
 "Report-Msgid-Bugs-To: http://www.synfig.org/issues/thebuggenie/synfig\n"
 "POT-Creation-Date: 2015-07-18 18:00+0700\n"
-"PO-Revision-Date: 2015-04-23 18:07+0000\n"
-"Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
-"Language-Team: Greek (Greece) (http://www.transifex.com/p/synfig/language/el_GR/)\n"
+"PO-Revision-Date: 2011-04-15 07:43+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Urdu (http://www.transifex.com/p/synfig/language/ur/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: el_GR\n"
+"Language: ur\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:66
 #: src/modules/lyr_freetype/lyr_freetype.cpp:569
 msgid "Text"
-msgstr "Κείμενο"
+msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:67
 #: src/modules/lyr_std/import.cpp:61 src/modules/lyr_std/stroboscope.cpp:61
@@ -32,15 +30,15 @@ msgstr "Κείμενο"
 #: src/synfig/layers/layer_skeleton.cpp:55
 #: src/synfig/layers/layer_sound.cpp:52 src/synfig/layers/layer_switch.cpp:59
 msgid "Other"
-msgstr "Άλλο"
+msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:97
 msgid "Text Layer"
-msgstr "Στρώση κειμένου"
+msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:398
 msgid "unable to initialize"
-msgstr "αδυναμία αρχικοποίησης"
+msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:417
 msgid "empty font set"
@@ -60,7 +58,7 @@ msgstr ""
 #: src/synfig/layers/layer_shape.cpp:1225
 #: src/synfig/layers/layer_solidcolor.cpp:114 src/synfig/paramdesc.cpp:83
 msgid "Color"
-msgstr "Χρώμα"
+msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:576
 msgid "Color of the text"
@@ -72,7 +70,7 @@ msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:585
 msgid "Style"
-msgstr "Στυλ"
+msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:587
 #: src/modules/lyr_freetype/lyr_freetype.cpp:597
@@ -664,7 +662,7 @@ msgstr ""
 #: src/modules/mod_noise/valuenode_random.cpp:255
 #: src/synfig/valuenodes/valuenode_radialcomposite.cpp:272
 msgid "Radius"
-msgstr "Ακτίνα"
+msgstr ""
 
 #: src/modules/lyr_std/sphere_distort.cpp:149
 msgid "The size of the sphere distortion"
@@ -712,7 +710,7 @@ msgstr ""
 #: src/modules/mod_gradient/radialgradient.cpp:118
 #: src/modules/mod_gradient/spiralgradient.cpp:118
 msgid "Center"
-msgstr "Κέντρο"
+msgstr ""
 
 #: src/modules/lyr_std/stretch.cpp:111
 msgid "Where the stretch distortion is centered"
@@ -829,14 +827,14 @@ msgstr ""
 #: src/modules/mod_example/simplecircle.cpp:113
 #: src/modules/mod_geometry/circle.cpp:162
 msgid "Center of the circle"
-msgstr "Κέντρο του κύκλου"
+msgstr ""
 
 #: src/modules/lyr_std/twirl.cpp:118
 #: src/modules/mod_example/simplecircle.cpp:118
 #: src/modules/mod_gradient/radialgradient.cpp:124
 #: src/modules/mod_gradient/spiralgradient.cpp:124
 msgid "This is the radius of the circle"
-msgstr "Αυτή είναι η ακτίνα του κύκλου"
+msgstr ""
 
 #: src/modules/lyr_std/twirl.cpp:124
 msgid "Rotations"
@@ -1015,7 +1013,7 @@ msgstr ""
 #: src/modules/mod_example/metaballs.cpp:58
 #: src/modules/mod_example/simplecircle.cpp:58
 msgid "Example"
-msgstr "Παράδειγμα"
+msgstr ""
 
 #: src/modules/mod_example/filledrect.cpp:132
 #: src/modules/mod_example/simplecircle.cpp:108
@@ -1023,13 +1021,13 @@ msgstr "Παράδειγμα"
 #: src/modules/mod_geometry/rectangle.cpp:139
 #: src/synfig/layers/layer_solidcolor.cpp:115
 msgid "Fill color of the layer"
-msgstr "Χρώμα γεμίσματος της στρώσης"
+msgstr ""
 
 #: src/modules/mod_example/filledrect.cpp:136
 #: src/modules/mod_geometry/rectangle.cpp:143
 #: src/modules/mod_gradient/lineargradient.cpp:190
 msgid "Point 1"
-msgstr "Σημείο 1"
+msgstr ""
 
 #: src/modules/mod_example/filledrect.cpp:137
 #: src/modules/mod_geometry/rectangle.cpp:145
@@ -1040,7 +1038,7 @@ msgstr ""
 #: src/modules/mod_geometry/rectangle.cpp:149
 #: src/modules/mod_gradient/lineargradient.cpp:195
 msgid "Point 2"
-msgstr "Σημείο 2"
+msgstr ""
 
 #: src/modules/mod_example/filledrect.cpp:143
 #: src/modules/mod_geometry/rectangle.cpp:150
@@ -1237,7 +1235,7 @@ msgstr ""
 
 #: src/modules/mod_filter/halftone3.cpp:348
 msgid " Color"
-msgstr "Χρώμα"
+msgstr ""
 
 #: src/modules/mod_filter/halftone3.cpp:352
 msgid " Mask Origin"
@@ -2132,7 +2130,7 @@ msgstr ""
 
 #: src/synfig/base_types.cpp:239
 msgid "color"
-msgstr "Χρώμα"
+msgstr ""
 
 #: src/synfig/base_types.cpp:258
 msgid "segment"
