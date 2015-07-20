@@ -63,6 +63,7 @@
 #include "layer.h"
 #include "valuenode.h"
 #include "soundprocessor.h"
+#include "rendering/renderer.h"
 
 #include "main.h"
 #include "loadcanvas.h"
@@ -218,12 +219,25 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 
 	if(cb)cb->task(_("Starting Subsystem \"Types\""));
 	if(!Type::subsys_init())
+	{
+		SoundProcessor::subsys_stop();
 		throw std::runtime_error(_("Unable to initialize subsystem \"Types\""));
+	}
+
+	if(cb)cb->task(_("Starting Subsystem \"Rendering\""));
+	if(!rendering::Renderer::subsys_init())
+	{
+		Type::subsys_stop();
+		SoundProcessor::subsys_stop();
+		throw std::runtime_error(_("Unable to initialize subsystem \"Rendering\""));
+	}
 
 	if(cb)cb->task(_("Starting Subsystem \"Modules\""));
 	if(!Module::subsys_init(prefix))
 	{
+		rendering::Renderer::subsys_stop();
 		Type::subsys_stop();
+		SoundProcessor::subsys_stop();
 		throw std::runtime_error(_("Unable to initialize subsystem \"Modules\""));
 	}
 
@@ -231,7 +245,9 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 	if(!Layer::subsys_init())
 	{
 		Module::subsys_stop();
+		rendering::Renderer::subsys_stop();
 		Type::subsys_stop();
+		SoundProcessor::subsys_stop();
 		throw std::runtime_error(_("Unable to initialize subsystem \"Layers\""));
 	}
 
@@ -240,7 +256,9 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 	{
 		Layer::subsys_stop();
 		Module::subsys_stop();
+		rendering::Renderer::subsys_stop();
 		Type::subsys_stop();
+		SoundProcessor::subsys_stop();
 		throw std::runtime_error(_("Unable to initialize subsystem \"Targets\""));
 	}
 
@@ -250,7 +268,9 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 		Target::subsys_stop();
 		Layer::subsys_stop();
 		Module::subsys_stop();
+		rendering::Renderer::subsys_stop();
 		Type::subsys_stop();
+		SoundProcessor::subsys_stop();
 		throw std::runtime_error(_("Unable to initialize subsystem \"Importers\""));
 	}
 
@@ -261,7 +281,9 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 		Target::subsys_stop();
 		Layer::subsys_stop();
 		Module::subsys_stop();
+		rendering::Renderer::subsys_stop();
 		Type::subsys_stop();
+		SoundProcessor::subsys_stop();
 		throw std::runtime_error(_("Unable to initialize subsystem \"Cairo Importers\""));
 	}
 
@@ -273,7 +295,9 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 		Target::subsys_stop();
 		Layer::subsys_stop();
 		Module::subsys_stop();
+		rendering::Renderer::subsys_stop();
 		Type::subsys_stop();
+		SoundProcessor::subsys_stop();
 		throw std::runtime_error(_("Unable to initialize subsystem \"ValueNodes\""));
 	}
 
@@ -318,12 +342,15 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 
 	if (i == locations.size())
 	{
-		Importer::subsys_stop();
+		ValueNode::subsys_stop();
 		CairoImporter::subsys_stop();
+		Importer::subsys_stop();
 		Target::subsys_stop();
 		Layer::subsys_stop();
 		Module::subsys_stop();
+		rendering::Renderer::subsys_stop();
 		Type::subsys_stop();
+		SoundProcessor::subsys_stop();
 		throw std::runtime_error(strprintf(_("Unable to open module list file '%s'"), MODULE_LIST_FILENAME));
 	}
 
@@ -374,7 +401,9 @@ synfig::Main::~Main()
  	// synfig::info("Module::subsys_stop()");
 	// Module::subsys_stop();
 	// synfig::info("Exiting");
+	rendering::Renderer::subsys_stop();
 	Type::subsys_stop();
+	SoundProcessor::subsys_stop();
 
 #if defined(HAVE_SIGNAL_H) && defined(SIGPIPE)
 	signal(SIGPIPE, SIG_DFL);
