@@ -58,7 +58,7 @@ SurfaceGL::create_vfunc()
 }
 
 bool
-SurfaceGL::assign_vfunc(const rendering::Surface &surface)
+SurfaceGL::assign_vfunc(const rendering::Surface & /* surface */)
 {
 	// TODO:
 	return false;
@@ -71,7 +71,7 @@ SurfaceGL::destroy_vfunc()
 }
 
 bool
-SurfaceGL::get_pixels_vfunc(Color *buffer) const
+SurfaceGL::get_pixels_vfunc(Color * /* buffer */) const
 {
 	// TODO:
 	return false;

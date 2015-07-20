@@ -51,7 +51,7 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 bool
-OptimizerBlurPreparedGL::run(const RunParams& params) const
+OptimizerBlurPreparedGL::run(const RunParams& /* params */) const
 {
 	// TODO:
 	return false;

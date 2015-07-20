@@ -51,7 +51,7 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 bool
-TaskMeshGL::run(RunParams &params) const
+TaskMeshGL::run(RunParams & /* params */) const
 {
 	// TODO:
 	return false;

@@ -51,7 +51,7 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 bool
-TaskSurfaceDestroy::run(RunParams &params) const
+TaskSurfaceDestroy::run(RunParams & /* params */) const
 {
 	if (!target_surface) return false;
 	target_surface->destroy();

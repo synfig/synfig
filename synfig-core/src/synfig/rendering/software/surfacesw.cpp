@@ -77,6 +77,7 @@ bool
 SurfaceSW::get_pixels_vfunc(Color *buffer) const
 {
 	memcpy(buffer, &this->surface[0][0], get_buffer_size());
+	return true;
 }
 
 /* === E N T R Y P O I N T ================================================= */

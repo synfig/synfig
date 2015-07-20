@@ -51,7 +51,7 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 bool
-OptimizerMeshGL::run(const RunParams& params) const
+OptimizerMeshGL::run(const RunParams& /* params */) const
 {
 	// TODO:
 	return false;

@@ -51,7 +51,7 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 bool
-TaskSurfaceConvert::run(RunParams &params) const
+TaskSurfaceConvert::run(RunParams & /* params */) const
 {
 	return target_surface
 	    && sub_task()

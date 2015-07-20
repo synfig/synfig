@@ -51,7 +51,7 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 bool
-OptimizerContourGL::run(const RunParams& params) const
+OptimizerContourGL::run(const RunParams& /* params */) const
 {
 	// TODO:
 	return false;

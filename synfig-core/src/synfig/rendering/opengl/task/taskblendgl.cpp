@@ -51,7 +51,7 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 bool
-TaskBlendGL::run(RunParams &params) const
+TaskBlendGL::run(RunParams & /* params */) const
 {
 	// TODO:
 	return false;

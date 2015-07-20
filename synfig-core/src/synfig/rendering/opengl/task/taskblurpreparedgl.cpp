@@ -51,7 +51,7 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 bool
-TaskBlurPreparedGL::run(RunParams &params) const
+TaskBlurPreparedGL::run(RunParams & /* params */) const
 {
 	// TODO:
 	return false;

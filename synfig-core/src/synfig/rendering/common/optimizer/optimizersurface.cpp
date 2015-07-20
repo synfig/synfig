@@ -51,7 +51,7 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 bool
-OptimizerSurface::run(const RunParams& params) const
+OptimizerSurface::run(const RunParams& /* params */) const
 {
 	// TODO: remove all TaskSurface from top-level of task-tree
 	return false;
