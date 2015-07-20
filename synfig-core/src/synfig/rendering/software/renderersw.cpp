@@ -37,6 +37,18 @@
 
 #include "renderersw.h"
 
+#include "../common/optimizer/optimizerlinear.h"
+#include "../common/optimizer/optimizersurface.h"
+#include "../common/optimizer/optimizersurfaceconvert.h"
+#include "../common/optimizer/optimizersurfacecreate.h"
+#include "../common/optimizer/optimizersurfacedestroy.h"
+#include "../common/optimizer/optimizertransformation.h"
+
+#include "optimizer/optimizerblendsw.h"
+#include "optimizer/optimizerblurpreparedsw.h"
+#include "optimizer/optimizercontoursw.h"
+#include "optimizer/optimizermeshsw.h"
+
 #endif
 
 using namespace synfig;
@@ -52,7 +64,19 @@ using namespace rendering;
 
 RendererSW::RendererSW()
 {
-	// TODO: register optimizers
+	// register optimizers
+	register_optimizer(new OptimizerSurfaceCreate());
+	register_optimizer(new OptimizerSurfaceConvert());
+	register_optimizer(new OptimizerSurfaceDestroy());
+	register_optimizer(new OptimizerTransformation());
+
+	register_optimizer(new OptimizerBlendSW());
+	register_optimizer(new OptimizerBlurPreparedSW());
+	register_optimizer(new OptimizerContourSW());
+	register_optimizer(new OptimizerMeshSW());
+
+	register_optimizer(new OptimizerLinear());
+	register_optimizer(new OptimizerSurface());
 }
 
 RendererSW::~RendererSW() { }
