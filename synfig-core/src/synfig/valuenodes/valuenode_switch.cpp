@@ -56,20 +56,20 @@ ValueNode_Switch::ValueNode_Switch(Type &x):
 {
 }
 
-ValueNode_Switch::ValueNode_Switch(const ValueNode::Handle &x):
-	LinkableValueNode(x->get_type())
+ValueNode_Switch::ValueNode_Switch(const ValueBase &x):
+	LinkableValueNode(x.get_type())
 {
 	Vocab ret(get_children_vocab());
 	set_children_vocab(ret);
-	set_link("link_off",x);
-	set_link("link_on",x);
+	set_link("link_off",ValueNode_Const::create(x));
+	set_link("link_on",ValueNode_Const::create(x));
 	set_link("switch",ValueNode_Const::create(bool(false)));
 }
 
 ValueNode_Switch*
 ValueNode_Switch::create(const ValueBase &x)
 {
-	return new ValueNode_Switch(ValueNode_Const::create(x));
+	return new ValueNode_Switch(x);
 }
 
 LinkableValueNode*
