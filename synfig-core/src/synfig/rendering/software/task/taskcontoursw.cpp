@@ -270,7 +270,7 @@ TaskContourSW::run(RunParams & /* params */) const
 		contour->antialias,
 		contour->winding_style,
 		transfromation_matrix,
-		color,
+		contour->color,
 		1.0,
 		Color::BLEND_COMPOSITE );
 

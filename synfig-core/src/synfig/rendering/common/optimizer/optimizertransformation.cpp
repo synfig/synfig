@@ -67,7 +67,7 @@ OptimizerTransformation::run(const RunParams& params) const
 			Real precision_pixels = 5.0;
 
 			TaskMesh::Handle mesh(new TaskMesh());
-			*((Task*)(mesh)) = *((Task*)(transformation));
+			*((Task*)(mesh.get())) = *((Task*)(transformation.get()));
 			mesh->mesh = transformation->transformation->build_mesh(
 				transformation->rect_lt,
 				transformation->rect_rb,

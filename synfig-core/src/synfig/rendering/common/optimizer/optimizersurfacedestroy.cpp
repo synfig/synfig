@@ -56,7 +56,7 @@ using namespace rendering;
 bool
 OptimizerSurfaceDestroy::run(const RunParams& params) const
 {
-	if (params.task == NULL)
+	if (!params.task)
 	{
 		for(Task::List::iterator i = params.list.begin(); i != params.list.end();)
 		{

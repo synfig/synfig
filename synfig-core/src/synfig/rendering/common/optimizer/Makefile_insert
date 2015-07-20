@@ -1,16 +1,18 @@
 RENDERING_COMMON_OPTIMIZER_HH = \
 	rendering/common/optimizer/optimizerlinear.h \
+	rendering/common/optimizer/optimizersurface.h \
 	rendering/common/optimizer/optimizersurfaceconvert.h \
 	rendering/common/optimizer/optimizersurfacecreate.h \
 	rendering/common/optimizer/optimizersurfacedestroy.h \
-	rendering/common/optimizer/optimizersurface.h
+	rendering/common/optimizer/optimizertransformation.h
 
 RENDERING_COMMON_OPTIMIZER_CC = \
 	rendering/common/optimizer/optimizerlinear.cpp \
+	rendering/common/optimizer/optimizersurface.cpp \
 	rendering/common/optimizer/optimizersurfaceconvert.cpp \
 	rendering/common/optimizer/optimizersurfacecreate.cpp \
 	rendering/common/optimizer/optimizersurfacedestroy.cpp \
-	rendering/common/optimizer/optimizersurface.cpp
+	rendering/common/optimizer/optimizertransformation.cpp
 
 RENDERING_COMMON_HH += \
     $(RENDERING_COMMON_OPTIMIZER_HH)
