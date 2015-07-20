@@ -1219,17 +1219,17 @@ Layer_Shape::render_shape(Surface *surface, bool useblend, const RendDesc &rendd
 rendering::Task::Handle
 Layer_Shape::build_rendering_task_vfunc(Context context)const
 {
-	Real amount = param_amount.get(Real());
-	Color::BlendMethod blend_method = param_blend_method.get(Real());
+	Real amount = get_amount();
+	//TODO: Color::BlendMethod blend_method = get_blend_method();
 
 	Color color = param_color.get(Color());
-	Point origin = param_origin.get(Point());
+	//TODO: Point origin = param_origin.get(Point());
 	bool invert = param_invert.get(bool());
 	bool antialias = param_antialias.get(bool());
 	rendering::Contour::WindingStyle winding_style =
 		(rendering::Contour::WindingStyle)param_winding_style.get(int());
-	int blurtype = param_blurtype.get(int());
-	Real feather = param_feather.get(Real());
+	//TODO: int blurtype = param_blurtype.get(int());
+	//TODO: Real feather = param_feather.get(Real());
 
 	// TODO: origin
 	// TODO: blurtype
