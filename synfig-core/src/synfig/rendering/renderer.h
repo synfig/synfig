@@ -27,6 +27,8 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <map>
+
 #include "optimizer.h"
 
 /* === M A C R O S ========================================================= */
@@ -42,11 +44,16 @@ namespace rendering
 
 class Renderer: public etl::shared_object
 {
+public:
+	typedef etl::handle<Renderer> Handle;
+
 private:
+	static Handle blank;
+	static std::map<String, Handle> *renderers;
+
 	Optimizer::List optimizers;
 
 public:
-	typedef etl::handle<Renderer> Handle;
 
 	virtual ~Renderer();
 
@@ -62,6 +69,25 @@ private:
 public:
 	void optimize(Task::List &list) const;
 	bool run(const Task::List &list) const;
+
+	static void initialize();
+	static void deinitialize();
+	static void register_renderer(const String &name, const Renderer::Handle &renderer);
+	static void unregister_renderer(const String &name);
+	static const Renderer::Handle& get_renderer(const String &name);
+	static const std::map<String, Handle>& get_renderers();
+
+	static bool subsys_init()
+	{
+		initialize();
+		return true;
+	}
+
+	static bool subsys_stop()
+	{
+		deinitialize();
+		return false;
+	}
 };
 
 } /* end namespace rendering */

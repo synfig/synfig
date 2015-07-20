@@ -37,6 +37,11 @@
 
 #include "renderer.h"
 
+#include "../general.h"
+
+#include "software/renderersw.h"
+#include "opengl/renderergl.h"
+
 #endif
 
 using namespace synfig;
@@ -49,6 +54,9 @@ using namespace rendering;
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
+
+Renderer::Handle Renderer::blank;
+std::map<String, Renderer::Handle> *Renderer::renderers;
 
 Renderer::~Renderer() { }
 
@@ -148,6 +156,58 @@ Renderer::run(const Task::List &list) const
 		if (!(*i)->run(params)) success = false;
 
 	return success;
+}
+
+void
+Renderer::initialize()
+{
+	if (renderers != NULL)
+		synfig::error("rendering::Renderer already initialized");
+	renderers = new std::map<String, Handle>();
+
+	// initialize renderers
+	register_renderer("software", new RendererSW());
+	register_renderer("gl", new RendererGL());
+}
+
+void
+Renderer::deinitialize()
+{
+	while(!get_renderers().empty())
+		unregister_renderer(get_renderers().begin()->first);
+	delete renderers;
+}
+
+void
+Renderer::register_renderer(const String &name, const Renderer::Handle &renderer)
+{
+	if (get_renderer(name))
+		synfig::error("rendering::Renderer renderer '%s' already registered", name.c_str());
+	(*renderers)[name] = renderer;
+}
+
+void
+Renderer::unregister_renderer(const String &name)
+{
+	if (!get_renderer(name))
+		synfig::error("rendering::Renderer renderer '%s' not registered", name.c_str());
+	renderers->erase(name);
+}
+
+const Renderer::Handle&
+Renderer::get_renderer(const String &name)
+{
+	return get_renderers().count(name) > 0
+		 ? get_renderers().find(name)->second
+		 : blank;
+}
+
+const std::map<String, Renderer::Handle>&
+Renderer::get_renderers()
+{
+	if (renderers == NULL)
+		synfig::error("rendering::Renderer not initialized");
+	return *renderers;
 }
 
 /* === E N T R Y P O I N T ================================================= */
