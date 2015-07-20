@@ -4,6 +4,12 @@ More detailed notes are available on the news page:
 
 http://synfig.org/cms/en/news/
 
+ 1.0.1 (git tag "1.0.1") - July 25, 2015 - Bugfix release.
+ 
+  * Fix reading alpha for images with indexed palette (bug #110).
+  * Fix crash if no fonts found.
+  * Internals: Reorganize layers and valuenodes into separate folders.
+
  1.0 (git tag "1.0") - April 27, 2015 - Major release.
  
   * Introduce new file format (SFG) which can store embed data.
