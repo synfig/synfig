@@ -2076,7 +2076,7 @@ binary-arch: build
 	-dh_shlibdeps
 	dh_gencontrol
 	dh_md5sums
-	dh_builddeb
+#	dh_builddeb
 
 binary: binary-indep binary-arch
 .PHONY: build clean binary-indep binary-arch binary
@@ -2086,12 +2086,17 @@ EOF
 	#run_native fakeroot alien -g -k --scripts synfigstudio-${VERSION}-${REVISION}.${RPM_ARCH}.rpm
 		
 	cd synfigstudio-${VERSION}
+	
 	run_native dpkg-buildpackage -rfakeroot -a${SYS_ARCH} -d || true
+	# We have to use "dpkg-deb" command from chroot, 
+	# because recent dpkg-deb seems broken on Fedora
+	/usr/bin/fakeroot dpkg-deb -b debian/synfigstudio
 	#run_native fakeroot dpkg-deb --build synfigstudio
-	if [ ! -e ../synfigstudio_${VERSION}-${REVISION}_${SYS_ARCH}.deb ]; then
+	if [ ! -e debian/synfigstudio.deb ]; then
 		echo "Failed to generate deb package"
 		exit 1
 	fi
+	mv debian/synfigstudio.deb ../synfigstudio_${VERSION}-${REVISION}_${SYS_ARCH}.deb
 	mv ../synfigstudio_${VERSION}-${REVISION}_${SYS_ARCH}.deb ${WORKSPACE}
 	rm -rf synfigstudio-${VERSION}.orig
 	rm -rf synfigstudio_${VERSION}.orig.tar.gz
