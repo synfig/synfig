@@ -152,7 +152,7 @@ mng_trgt::set_rend_desc(RendDesc *given_desc)
 
 
 bool
-mng_trgt::init(synfig::ProgressCallback *cb)
+mng_trgt::init(synfig::ProgressCallback * /* cb */)
 {
 	// synfig::info("%s:%d mng_trgt::init()", __FILE__, __LINE__);
 

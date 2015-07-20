@@ -955,8 +955,8 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 
 				bit = (FT_BitmapGlyph)image;
 
-				for(v=0;v<bit->bitmap.rows;v++)
-					for(u=0;u<bit->bitmap.width;u++)
+				for(v=0;v<(int)bit->bitmap.rows;v++)
+					for(u=0;u<(int)bit->bitmap.width;u++)
 					{
 						int x=u+((pen.x+32)>>6)+ bit->left;
 						int y=((pen.y+32)>>6) + (bit->top - v) * ((ph<0) ? -1 : 1);
