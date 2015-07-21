@@ -497,7 +497,8 @@ get_version_release_string()
 		BREED=.$BREED
 	fi
 	REVISION=`git show --pretty=format:%ci HEAD |  head -c 10 | tr -d '-'`
-	echo "$VERSION-$REVISION$BREED.$RELEASE"
+	echo "$VERSION-$REVISION$BREED"
+	#echo "$VERSION-$REVISION$BREED.$RELEASE"
 	popd >/dev/null
 }
 
