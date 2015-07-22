@@ -574,12 +574,6 @@ Layer_PasteCanvas::accelerated_cairorender(Context context,cairo_t *cr, int qual
 	SuperCallback stagethree(cb,9000,9999,10000);
 
 
-	Real grow_value(get_parent_canvas_grow_value());
-	canvas->set_grow_value(outline_grow+grow_value);
-
-	if(muck_with_time_ && curr_time!=Time::begin() /*&& canvas->get_time()!=curr_time+time_offset*/)
-		canvas->set_time(curr_time*time_dilation+time_offset);
-
 	bool ret;
 	RendDesc workdesc(renddesc);
 
@@ -587,6 +581,12 @@ Layer_PasteCanvas::accelerated_cairorender(Context context,cairo_t *cr, int qual
 	ret=context.accelerated_cairorender(cr, quality, renddesc, &stagethree);
 	if(!ret)
 		return false;
+
+	Real grow_value(get_parent_canvas_grow_value());
+	canvas->set_grow_value(outline_grow+grow_value);
+
+	if(muck_with_time_ && curr_time!=Time::begin() /*&& canvas->get_time()!=curr_time+time_offset*/)
+		canvas->set_time(curr_time*time_dilation+time_offset);
 
 
 	// render the canvas to be pasted onto pastesurface
