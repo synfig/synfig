@@ -140,7 +140,7 @@ Layer_PasteCanvas::get_param_vocab()const
 	);
 
 	ret.push_back(ParamDesc("time_dilation")
-		.set_local_name(_("Time Dilation"))
+		.set_local_name(_("Speed"))
 		.set_description(_("Multiplier to speed up, slow down, freeze, or reverse time"))
 	);
 
