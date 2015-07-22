@@ -532,6 +532,7 @@ ${TOOLCHAIN}-configure \
 --localstatedir=${PREFIX}/var \
 --sysconfdir=${PREFIX}/etc \
 --datarootdir=${PREFIX}/share \
+--enable-optimization=3 \
 --disable-static --enable-shared --with-magickpp --without-libavcodec --with-boost=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/ --enable-warnings=minimum $DEBUG
 make install -j$THREADS
 }
@@ -558,6 +559,7 @@ ${TOOLCHAIN}-configure \
 --localstatedir=${PREFIX}/var \
 --sysconfdir=${PREFIX}/etc \
 --datarootdir=${PREFIX}/share \
+--enable-optimization=3 \
 --disable-static --enable-shared $DEBUG
 make install -j$THREADS
 cp -rf ${PREFIX}/share/pixmaps/synfigstudio/* ${PREFIX}/share/pixmaps/ && rm -rf ${PREFIX}/share/pixmaps/synfigstudio
