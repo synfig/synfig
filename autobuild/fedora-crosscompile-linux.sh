@@ -2016,8 +2016,8 @@ fi
 if [ -x /usr/bin/update-desktop-database ]; then
   update-desktop-database
 fi
-chmod a+rX -R /opt/synfig
-chmod a+rX /opt
+#chmod a+rX -R /opt/synfig
+#chmod a+rX /opt
 EOF
 	chmod a+x ${DEB_DIST}/debian/postinst
 	
@@ -2090,6 +2090,7 @@ EOF
 	run_native dpkg-buildpackage -rfakeroot -a${SYS_ARCH} -d || true
 	# We have to use "dpkg-deb" command from chroot, 
 	# because recent dpkg-deb seems broken on Fedora
+	chmod -R a+rX debian/synfigstudio
 	/usr/bin/fakeroot dpkg-deb -b debian/synfigstudio
 	#run_native fakeroot dpkg-deb --build synfigstudio
 	if [ ! -e debian/synfigstudio.deb ]; then
