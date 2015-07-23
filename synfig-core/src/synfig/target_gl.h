@@ -50,6 +50,7 @@ namespace synfig {
 class Target_GL : public Target
 {
 private:
+	// TODO: reorganize work with surfaces, it's quickhack
 	std::map<int, rendering::Surface::Handle> surfaces;
 
 public:
@@ -68,6 +69,11 @@ public:
 	virtual int next_frame(Time& time);
 
 	rendering::Surface::Handle get_surface(int frame) const;
+	const std::map<int, rendering::Surface::Handle>& get_surfaces() const
+		{ return surfaces; }
+
+	// TODO: reorganize work with surfaces
+	void clear_surfaces() { surfaces.clear(); }
 }; // END of class Target_Cairo
 
 }; // END of namespace synfig
