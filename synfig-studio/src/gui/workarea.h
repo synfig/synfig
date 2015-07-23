@@ -88,6 +88,7 @@ class WorkAreaTarget;
 class WorkAreaTarget_Full;
 class WorkAreaTarget_Cairo;
 class WorkAreaTarget_Cairo_Tile;
+class WorkAreaTarget_GL;
 
 class Instance;
 class CanvasView;
@@ -110,6 +111,7 @@ class WorkArea : public Gtk::Table, public Duckmatic
 	friend class WorkAreaTarget_Full;
 	friend class WorkAreaTarget_Cairo;
 	friend class WorkAreaTarget_Cairo_Tile;
+	friend class WorkAreaTarget_GL;
 	friend class DirtyTrap;
 	friend class WorkAreaRenderer;
 	friend class WorkAreaProgress;
@@ -181,7 +183,6 @@ private:
 	Gtk::DrawingArea *drawing_area;
 	Glib::RefPtr<Gtk::Adjustment> scrollx_adjustment;
 	Glib::RefPtr<Gtk::Adjustment> scrolly_adjustment;
-	// TODO: Implement Rulers
 	Widget_Ruler *vruler;
 	Widget_Ruler *hruler;
 	Gtk::Button *menubutton;

@@ -53,6 +53,7 @@
 #include <synfig/target_tile.h>
 #include <synfig/target_cairo.h>
 #include <synfig/target_cairo_tile.h>
+#include <synfig/target_gl.h>
 #include <synfig/surface.h>
 #include <synfig/valuenodes/valuenode_composite.h>
 #include <synfigapp/canvasinterface.h>
@@ -976,6 +977,228 @@ public:
 	}
 };
 
+class studio::WorkAreaTarget_GL : public synfig::Target_GL
+{
+public:
+	WorkArea *workarea;
+	bool low_res;
+	int w,h;
+	int real_tile_w,real_tile_h;
+
+	int refresh_id;
+
+	bool onionskin;
+	bool onion_first_tile;
+	int onion_layers;
+
+	//TODO: #GL Surface surface;
+
+	std::list<synfig::Time> onion_skin_queue;
+
+	void set_onion_skin(bool x, int *onions)
+	{
+		onionskin=x;
+
+		Time time(rend_desc().get_time_start());
+
+		if(!onionskin)
+			return;
+		onion_skin_queue.push_back(time);
+		//onion_skin_queue.push_back(time-1);
+		//onion_skin_queue.push_back(time+1);
+		try
+		{
+		Time thistime=time;
+		for(int i=0; i<onions[0]; i++)
+			{
+				Time keytime=get_canvas()->keyframe_list().find_prev(thistime)->get_time();
+				onion_skin_queue.push_back(keytime);
+				thistime=keytime;
+			}
+		}
+		catch(...)
+		{  }
+
+		try
+		{
+		Time thistime=time;
+		for(int i=0; i<onions[1]; i++)
+			{
+				Time keytime=get_canvas()->keyframe_list().find_next(thistime)->get_time();
+				onion_skin_queue.push_back(keytime);
+				thistime=keytime;
+			}
+		}
+		catch(...)
+		{  }
+
+		onion_layers=onion_skin_queue.size();
+
+		onion_first_tile=false;
+	}
+public:
+
+	WorkAreaTarget_GL(WorkArea *workarea,int w, int h):
+		workarea(workarea),
+		low_res(workarea->get_low_resolution_flag()),
+		w(w),
+		h(h),
+		real_tile_w(),
+		real_tile_h(),
+		refresh_id(workarea->refreshes),
+		onionskin(false),
+		onion_first_tile(),
+		onion_layers(0)
+	{
+		set_canvas(workarea->get_canvas());
+		set_quality(workarea->get_quality());
+	}
+
+	~WorkAreaTarget_GL()
+	{ }
+
+	virtual bool set_rend_desc(synfig::RendDesc *newdesc)
+	{
+		assert(workarea);
+		newdesc->set_flags(RendDesc::PX_ASPECT|RendDesc::IM_SPAN);
+		if(low_res)
+		{
+			int div = workarea->get_low_res_pixel_size();
+			newdesc->set_wh(w/div,h/div);
+		}
+		else
+			newdesc->set_wh(w,h);
+
+		if(
+			 	workarea->get_w()!=w
+			|| 	workarea->get_h()!=h
+		) workarea->set_wh(w,h,4);
+
+		//TODO: #GL surface.set_wh(newdesc->get_w(),newdesc->get_h());
+
+		desc=*newdesc;
+		workarea->full_frame=true;
+		workarea->tile_book.resize(1);
+		return true;
+	}
+
+	virtual int next_frame(Time& time)
+	{
+		// Mark this tile as "up-to-date"
+		if(onionskin)
+			workarea->tile_book[0].second=refresh_id-onion_skin_queue.size();
+		else
+			workarea->tile_book[0].second=refresh_id;
+
+		if(!onionskin)
+			return synfig::Target_GL::next_frame(time);
+
+		onion_first_tile=(onion_layers==(signed)onion_skin_queue.size());
+
+		if(!onion_skin_queue.empty())
+		{
+			time=onion_skin_queue.front();
+			onion_skin_queue.pop_front();
+		}
+		else
+			return 0;
+		return onion_skin_queue.size()+1;
+	}
+
+
+	virtual bool start_frame(synfig::ProgressCallback */*cb*/)
+	{
+		return true;
+	}
+
+	static void free_buff(const guint8 *x) { free(const_cast<guint8*>(x)); }
+
+	virtual void end_frame()
+	{
+		//TODO: #GL
+
+		const std::map<int, rendering::Surface::Handle> &surfaces = get_surfaces();
+		assert(!surfaces.empty());
+
+		rendering::Surface::Handle surface = surfaces.begin()->second;
+		assert(surface);
+		assert(surface->is_created());
+
+		clear_surfaces();
+
+		Color *pre_buffer = (Color*)malloc(surface->get_buffer_size());
+		if (!pre_buffer) return;
+		assert(surface->get_pixels(pre_buffer));
+
+		PixelFormat pf(PF_RGB|PF_A);
+
+		size_t stride = surface->get_width() * synfig::channels(pf);
+		size_t total_bytes = surface->get_height() * stride;
+		unsigned char *buffer = (unsigned char*)malloc(total_bytes);
+		if (!buffer) { free(pre_buffer); return; }
+
+		unsigned char *dest(buffer);
+		const Color *src(pre_buffer);
+		int w(surface->get_width());
+		int x(w*surface->get_height());
+		for(int i=0;i<x;i++)
+			dest = Color2PixelFormat(
+					   (*(src++)).clamped(),
+					   pf,
+					   dest,
+					   App::gamma );
+
+		free(pre_buffer);
+
+		Glib::RefPtr<Gdk::Pixbuf> pixbuf;
+		pixbuf = Gdk::Pixbuf::create_from_data(
+					buffer,	// pointer to the data
+					Gdk::COLORSPACE_RGB, // the colorspace
+					(pf & PF_A) == PF_A, // has alpha?
+					8, // bits per sample
+					surface->get_width(),	// width
+					surface->get_height(),	// height
+					stride, // stride (pitch)
+					sigc::ptr_fun(&WorkAreaTarget::free_buff) );
+
+		if(low_res)
+		{
+			// We need to scale up
+			int div = workarea->get_low_res_pixel_size();
+			pixbuf=pixbuf->scale_simple(
+				surface->get_width()*div,
+				surface->get_height()*div,
+				Gdk::INTERP_NEAREST
+			);
+		}
+
+		int index=0;
+
+		if(!onionskin || onion_first_tile || !workarea->tile_book[index].first)
+		{
+			workarea->tile_book[index].first=pixbuf;
+		}
+		else
+		{
+			pixbuf->composite(
+				workarea->tile_book[index].first, // Dest
+				0,//int dest_x
+				0,//int dest_y
+				pixbuf->get_width(), // dest width
+				pixbuf->get_height(), // dest_height,
+				0, // double offset_x
+				0, // double offset_y
+				1, // double scale_x
+				1, // double scale_y
+				Gdk::INTERP_NEAREST, // interp
+				255/(onion_layers-onion_skin_queue.size()+1) //int overall_alpha
+			);
+		}
+
+		workarea->queue_draw();
+		assert(workarea->tile_book[index].first);
+	}
+};
 
 
 
@@ -3224,7 +3447,14 @@ studio::WorkArea::async_update_preview()
 	// if we have lots of pixels to render and the tile renderer isn't disabled, use it
 	int div;
 	div = low_resolution ? low_res_pixel_size : 1;
-	if(studio::App::workarea_uses_cairo)
+	if(getenv("SYNFIG_FORCE_GL_RENDER"))
+	{
+			handle<WorkAreaTarget_GL> trgt(new class WorkAreaTarget_GL(this,w,h));
+			trgt->set_rend_desc(&desc);
+			trgt->set_onion_skin(get_onion_skin(), onion_skins);
+			target=trgt;
+	}
+	else if(studio::App::workarea_uses_cairo)
 	{
 		if ((w*h > 240*div*135*div && !getenv("SYNFIG_DISABLE_TILE_RENDER")) || getenv("SYNFIG_FORCE_TILE_RENDER"))
 		{
