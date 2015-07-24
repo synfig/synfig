@@ -133,7 +133,7 @@ const synfig::Time get_time_offset_from_vdesc(const synfigapp::ValueDesc &v)
 
 	synfig::Layer::Handle layer = v.get_layer();
 
-	if (etl::handle<Layer_PasteCanvas>::cast_dynamic(layer))
+	if (!etl::handle<Layer_PasteCanvas>::cast_dynamic(layer))
 		return synfig::Time::zero();
 
 	return layer->get_param("time_offset").get(Time());
