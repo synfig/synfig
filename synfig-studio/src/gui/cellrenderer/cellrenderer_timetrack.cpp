@@ -117,6 +117,31 @@ CellRenderer_TimeTrack::is_selected(const Waypoint& waypoint)const
 	return selected==waypoint;
 }
 
+const synfig::Time get_time_dilation_from_vdesc(const synfigapp::ValueDesc &v)
+{
+#ifdef ADJUST_WAYPOINTS_FOR_TIME_OFFSET
+	if(getenv("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS") ||
+	   v.get_value_type() != synfig::type_canvas)
+		return synfig::Time::zero();
+
+	synfig::Canvas::Handle canvasparam = v.get_value().get(Canvas::Handle());
+	if(!canvasparam)
+		return synfig::Time::zero();
+
+	if (!v.parent_is_layer())
+		return synfig::Time::zero();
+
+	synfig::Layer::Handle layer = v.get_layer();
+
+	if (!etl::handle<Layer_PasteCanvas>::cast_dynamic(layer))
+		return synfig::Time::zero();
+
+	return layer->get_param("time_dilation").get(Time());
+#else // ADJUST_WAYPOINTS_FOR_TIME_OFFSET
+	return synfig::Time::zero();
+#endif
+}
+
 const synfig::Time get_time_offset_from_vdesc(const synfigapp::ValueDesc &v)
 {
 #ifdef ADJUST_WAYPOINTS_FOR_TIME_OFFSET
@@ -275,6 +300,7 @@ CellRenderer_TimeTrack::render_vfunc(
 		if(tset)
 		{
 			const synfig::Time time_offset = get_time_offset_from_vdesc(value_desc);
+			const synfig::Time time_dilation = get_time_dilation_from_vdesc(value_desc);
 			synfig::Node::time_set::const_iterator	i = tset->begin(), end = tset->end();
 
 			float 	lower = adjustment->get_lower(),
@@ -295,6 +321,9 @@ CellRenderer_TimeTrack::render_vfunc(
 				Time t_orig = i->get_time();
 				if(!t_orig.is_valid()) continue;
 				Time t = t_orig - time_offset;
+				if (time_dilation!=0)
+					t = t / time_dilation;
+				// todo: What if time_dilation == 0?
 				if(t<adjustment->get_lower() || t>adjustment->get_upper()) continue;
 
 				//if it found it... (might want to change comparison, and optimize
@@ -336,7 +365,15 @@ CellRenderer_TimeTrack::render_vfunc(
 					area.get_height()-2,
 					area.get_height()-2
 				);
-				render_time_point_to_window(cr,area2,*i - time_offset,selected);
+				if (time_dilation!=0)
+				{
+					TimePoint tp = *i;
+					tp.set_time((tp.get_time() - time_offset) / time_dilation);
+					render_time_point_to_window(cr,area2,tp,selected);
+				} else {
+					// todo: What if time_dilation == 0?
+					render_time_point_to_window(cr,area2,*i - time_offset,selected);
+				}
 			}
 
 			{
@@ -592,8 +629,9 @@ CellRenderer_TimeTrack::activate_vfunc(
 			synfigapp::ValueDesc valdesc = property_value_desc().get_value();
 			const Node::time_set *tset = get_times_from_vdesc(valdesc);
 			const synfig::Time time_offset = get_time_offset_from_vdesc(valdesc);
+			const synfig::Time time_dilation = get_time_dilation_from_vdesc(valdesc);
 
-			bool clickfound = tset && get_closest_time(*tset,actual_time+time_offset,pixel_width*cell_area.get_height(),stime);
+			bool clickfound = tset && get_closest_time(*tset,actual_time * time_dilation+time_offset,pixel_width*cell_area.get_height(),stime);
 			bool selectmode = mode & SELECT_MASK;
 
 			//NOTE LATER ON WE SHOULD MAKE IT SO MULTIPLE VALUENODES CAN BE SELECTED AT ONCE
@@ -675,8 +713,9 @@ CellRenderer_TimeTrack::activate_vfunc(
 				synfigapp::ValueDesc valdesc = property_value_desc().get_value();
 				const Node::time_set *tset = get_times_from_vdesc(valdesc);
 				synfig::Time time_offset = get_time_offset_from_vdesc(valdesc);
+				const synfig::Time time_dilation = get_time_dilation_from_vdesc(valdesc);
 
-				bool clickfound = tset && get_closest_time(*tset,actual_time+time_offset,pixel_width*cell_area.get_height(),stime);
+				bool clickfound = tset && get_closest_time(*tset,actual_time * time_dilation +time_offset,pixel_width*cell_area.get_height(),stime);
 
 				etl::handle<synfig::Node> node;
 				if(!getenv("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS") &&
@@ -690,7 +729,7 @@ CellRenderer_TimeTrack::activate_vfunc(
 				}
 
 				if(clickfound && node)
-					signal_waypoint_clicked_cellrenderer()(node, stime, time_offset, 2);
+					signal_waypoint_clicked_cellrenderer()(node, stime, time_offset, time_dilation, 2);
 			}
 
 		break;
