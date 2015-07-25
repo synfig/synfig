@@ -660,9 +660,12 @@ void Layer_PasteCanvas::get_times_vfunc(Node::time_set &set) const
 	//		   (recursing down the tree needs to take this into account too...)
 	for(; i != end; ++i) {
 #ifdef ADJUST_WAYPOINTS_FOR_TIME_OFFSET // see node.h
-		TimePoint tp = *i;
-		tp.set_time((tp.get_time() - time_offset) / time_dilation);
-		set.insert(tp);
+		if (time_dilation!=0)
+		{
+			TimePoint tp = *i;
+			tp.set_time((tp.get_time() - time_offset) / time_dilation);
+			set.insert(tp);
+		}
 #else
 		set.insert(*i);
 #endif

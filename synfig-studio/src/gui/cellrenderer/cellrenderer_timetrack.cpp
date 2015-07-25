@@ -370,9 +370,6 @@ CellRenderer_TimeTrack::render_vfunc(
 					TimePoint tp = *i;
 					tp.set_time((tp.get_time() - time_offset) / time_dilation);
 					render_time_point_to_window(cr,area2,tp,selected);
-				} else {
-					// todo: What if time_dilation == 0?
-					render_time_point_to_window(cr,area2,*i - time_offset,selected);
 				}
 			}
 
