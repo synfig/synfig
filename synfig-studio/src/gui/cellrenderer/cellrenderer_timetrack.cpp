@@ -122,19 +122,19 @@ const synfig::Time get_time_dilation_from_vdesc(const synfigapp::ValueDesc &v)
 #ifdef ADJUST_WAYPOINTS_FOR_TIME_OFFSET
 	if(getenv("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS") ||
 	   v.get_value_type() != synfig::type_canvas)
-		return synfig::Time::zero();
+		return synfig::Time(1.0);
 
 	synfig::Canvas::Handle canvasparam = v.get_value().get(Canvas::Handle());
 	if(!canvasparam)
-		return synfig::Time::zero();
+		return synfig::Time(1.0);
 
 	if (!v.parent_is_layer())
-		return synfig::Time::zero();
+		return synfig::Time(1.0);
 
 	synfig::Layer::Handle layer = v.get_layer();
 
 	if (!etl::handle<Layer_PasteCanvas>::cast_dynamic(layer))
-		return synfig::Time::zero();
+		return synfig::Time(1.0);
 
 	return layer->get_param("time_dilation").get(Time());
 #else // ADJUST_WAYPOINTS_FOR_TIME_OFFSET
