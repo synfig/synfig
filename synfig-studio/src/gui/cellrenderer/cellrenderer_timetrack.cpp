@@ -323,7 +323,6 @@ CellRenderer_TimeTrack::render_vfunc(
 				Time t = t_orig - time_offset;
 				if (time_dilation!=0)
 					t = t / time_dilation;
-				// todo: What if time_dilation == 0?
 				if(t<adjustment->get_lower() || t>adjustment->get_upper()) continue;
 
 				//if it found it... (might want to change comparison, and optimize
@@ -753,7 +752,6 @@ CellRenderer_TimeTrack::activate_vfunc(
 			{
 				bool delmode = (mode & DELETE_MASK) && !(mode & COPY_MASK);
 				const synfig::Time time_dilation = get_time_dilation_from_vdesc(sel_value);
-				// todo: What if time_dilation == 0?
 				deltatime = (actual_time - actual_dragtime) * time_dilation;
 				if(sel_times.size() != 0 && (delmode || !deltatime.is_equal(Time(0))))
 				{
