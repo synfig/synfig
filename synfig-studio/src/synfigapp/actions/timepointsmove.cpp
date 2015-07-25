@@ -267,6 +267,8 @@ Action::TimepointsMove::prepare()
 			action->set_param("canvas_interface",get_canvas_interface());
 			action->set_param("value_node",ValueNode::Handle(i->val));
 
+			synfig::Time dilated_timemove(timemove * i->time_dilation);
+
 			//iterate through each waypoint for this specific valuenode
 			std::set<synfig::Waypoint>::const_iterator 	j = i->waypoints.begin(),
 														end = i->waypoints.end();
@@ -275,7 +277,7 @@ Action::TimepointsMove::prepare()
 				//synfig::info("add waypoint mod...");
 				//NOTE: We may want to store the old time for undoing the action...
 				Waypoint w = *j;
-				w.set_time((w.get_time() + timemove).round(fps));
+				w.set_time((w.get_time() + dilated_timemove).round(fps));
 				action->set_param("waypoint",w);
 			}
 
@@ -299,6 +301,8 @@ Action::TimepointsMove::prepare()
 			action->set_param("canvas_interface",get_canvas_interface());
 			action->set_param("value_desc",i->val);
 
+			synfig::Time dilated_timemove(timemove * i->time_dilation);
+
 			//iterate through each activepoint for this specific valuenode
 			std::set<synfig::Activepoint>::const_iterator 	j = i->activepoints.begin(),
 															jend = i->activepoints.end();
@@ -308,7 +312,7 @@ Action::TimepointsMove::prepare()
 
 				//NOTE: We may want to store the old time for undoing the action...
 				Activepoint a = *j;
-				a.set_time((a.get_time() + timemove).round(fps));
+				a.set_time((a.get_time() + dilated_timemove).round(fps));
 				action->set_param("activepoint",a);
 			}
 
