@@ -132,9 +132,15 @@ void synfigapp::recurse_layer(synfig::Layer::Handle h, const std::set<Time> &tli
 		//recurse into the canvas
 		const synfig::Node::time_set &tset = p->get_sub_canvas()->get_times();
 		synfig::Time subcanvas_time_offset(time_offset + p->get_time_offset());
+		synfig::Real subcanvas_time_dilation(p->get_time_dilation());
 
-		if(check_intersect(tset.begin(),tset.end(),tlist.begin(),tlist.end(),subcanvas_time_offset))
-			recurse_canvas(p->get_sub_canvas(),tlist,vals,subcanvas_time_offset);
+		std::set<Time> transformed_tlist;
+		for(std::set<Time>::iterator i = tlist.begin(), end = tlist.end(); i != end; ++i) {
+			transformed_tlist.insert(*i * subcanvas_time_dilation + subcanvas_time_offset);
+		}
+
+		if(check_intersect(tset.begin(),tset.end(),transformed_tlist.begin(),transformed_tlist.end()))
+			recurse_canvas(p->get_sub_canvas(),transformed_tlist,vals);
 	}
 
 	//check all the valuenodes regardless...
