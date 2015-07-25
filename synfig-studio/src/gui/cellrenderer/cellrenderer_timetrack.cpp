@@ -755,7 +755,9 @@ CellRenderer_TimeTrack::activate_vfunc(
 			if(event->button.button == 1)
 			{
 				bool delmode = (mode & DELETE_MASK) && !(mode & COPY_MASK);
-				deltatime = actual_time - actual_dragtime;
+				const synfig::Time time_dilation = get_time_dilation_from_vdesc(sel_value);
+				// todo: What if time_dilation == 0?
+				deltatime = (actual_time - actual_dragtime) * time_dilation;
 				if(sel_times.size() != 0 && (delmode || !deltatime.is_equal(Time(0))))
 				{
 					synfigapp::Action::ParamList param_list;
