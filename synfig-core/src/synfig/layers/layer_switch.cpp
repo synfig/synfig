@@ -90,6 +90,7 @@ Layer_Switch::get_param_vocab()const
 	ret.push_back(ParamDesc("layer_name")
 		.set_local_name(_("Active Layer Name"))
 		.set_description(_("Only layer with specified name are visible"))
+		.set_hint("sublayer_name")
 	);
 
 	return ret;
