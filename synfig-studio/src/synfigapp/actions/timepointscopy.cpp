@@ -252,6 +252,7 @@ Action::TimepointsCopy::prepare()
 													end = match.waypointbiglist.end();
 		for(; i != end; ++i)
 		{
+			synfig::Time dilated_timedelta(timedelta * i->time_dilation);
 			//iterate through each waypoint for this specific valuenode
 			std::set<synfig::Waypoint>::const_iterator 	j = i->waypoints.begin(),
 														end = i->waypoints.end();
@@ -267,7 +268,7 @@ Action::TimepointsCopy::prepare()
 				//NOTE: We may want to store the old time for undoing the action...
 				Waypoint neww;
 				Waypoint w = *j;
-				w.set_time((w.get_time() + timedelta).round(fps));
+				w.set_time((w.get_time() + dilated_timedelta).round(fps));
 				w.mimic(neww); //make sure the new waypoint has a new id
 
 				action->set_param("waypoint",w);
@@ -287,6 +288,7 @@ Action::TimepointsCopy::prepare()
 													end = match.actpointbiglist.end();
 		for(; i != end; ++i)
 		{
+			synfig::Time dilated_timedelta(timedelta * i->time_dilation);
 			//iterate through each activepoint for this specific valuenode
 			std::set<synfig::Activepoint>::const_iterator 	j = i->activepoints.begin(),
 															jend = i->activepoints.end();
@@ -301,7 +303,7 @@ Action::TimepointsCopy::prepare()
 				//NOTE: We may want to store the old time for undoing the action...
 				Activepoint newa;
 				Activepoint a = *j;
-				a.set_time((a.get_time() + timedelta).round(fps));
+				a.set_time((a.get_time() + dilated_timedelta).round(fps));
 				a.mimic(newa); //make sure the new activepoint has a new id
 
 				action->set_param("activepoint",a);
