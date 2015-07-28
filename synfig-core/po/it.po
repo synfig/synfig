@@ -11,10 +11,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Synfig UI\n"
 "Report-Msgid-Bugs-To: http://www.synfig.org/issues/thebuggenie/synfig\n"
-"POT-Creation-Date: 2015-07-18 18:00+0700\n"
-"PO-Revision-Date: 2015-04-23 18:07+0000\n"
+"POT-Creation-Date: 2015-07-27 18:00+0700\n"
+"PO-Revision-Date: 2015-07-22 14:12+0000\n"
 "Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
-"Language-Team: Italian (http://www.transifex.com/p/synfig/language/it/)\n"
+"Language-Team: Italian (http://www.transifex.com/projects/p/synfig/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -162,7 +162,7 @@ msgstr "Orientamento del testo"
 #: src/modules/mod_geometry/circle.cpp:161
 #: src/modules/mod_gradient/curvegradient.cpp:550
 #: src/modules/mod_particle/plant.cpp:431
-#: src/synfig/layers/layer_pastecanvas.cpp:127
+#: src/synfig/layers/layer_pastecanvas.cpp:128
 #: src/synfig/layers/layer_shape.cpp:1229
 #: src/synfig/valuenodes/valuenode_bone.cpp:597
 #: src/synfig/valuenodes/valuenode_composite.cpp:692
@@ -436,7 +436,7 @@ msgid "File to import"
 msgstr "File da importare"
 
 #: src/modules/lyr_std/import.cpp:322
-#: src/synfig/layers/layer_pastecanvas.cpp:142
+#: src/synfig/layers/layer_pastecanvas.cpp:148
 msgid "Time Offset"
 msgstr "Sfalsamento Tiemporale"
 
@@ -1912,7 +1912,7 @@ msgstr "Se selezionato, il gradiente viene sovracampionato"
 #: src/synfig/valuenodes/valuenode_log.cpp:159
 #: src/synfig/valuenodes/valuenode_not.cpp:141
 #: src/synfig/valuenodes/valuenode_range.cpp:289
-#: src/synfig/valuenodes/valuenode_real.cpp:179
+#: src/synfig/valuenodes/valuenode_real.cpp:185
 #: src/synfig/valuenodes/valuenode_reciprocal.cpp:165
 #: src/synfig/valuenodes/valuenode_reference.cpp:143
 #: src/synfig/valuenodes/valuenode_scale.cpp:249
@@ -1939,6 +1939,7 @@ msgid "Seeds the random number generator"
 msgstr "Omposta il valore iniziale del generatore di numeri casuali"
 
 #: src/modules/mod_noise/valuenode_random.cpp:265
+#: src/synfig/layers/layer_pastecanvas.cpp:143
 msgid "Speed"
 msgstr "Velocità"
 
@@ -2358,47 +2359,51 @@ msgstr "Valore finale del sottocampionamento"
 msgid "Relative Amount Of The Last Subsample, For Linear Weighting"
 msgstr "Valore relativo dell'ultimo sottocampionamento, per la ponderazione lineare"
 
-#: src/synfig/layers/layer_pastecanvas.cpp:128
+#: src/synfig/layers/layer_pastecanvas.cpp:129
 msgid "Position offset"
 msgstr ""
 
-#: src/synfig/layers/layer_pastecanvas.cpp:132
+#: src/synfig/layers/layer_pastecanvas.cpp:133
 msgid "Transformation"
 msgstr ""
 
-#: src/synfig/layers/layer_pastecanvas.cpp:133
+#: src/synfig/layers/layer_pastecanvas.cpp:134
 msgid "Position, rotation, skew and scale"
 msgstr ""
 
-#: src/synfig/layers/layer_pastecanvas.cpp:137
+#: src/synfig/layers/layer_pastecanvas.cpp:138
 msgid "Canvas"
 msgstr "Tela"
 
-#: src/synfig/layers/layer_pastecanvas.cpp:138
+#: src/synfig/layers/layer_pastecanvas.cpp:139
 msgid "Group content"
 msgstr ""
 
-#: src/synfig/layers/layer_pastecanvas.cpp:143
+#: src/synfig/layers/layer_pastecanvas.cpp:144
+msgid "Multiplier to speed up, slow down, freeze, or reverse time"
+msgstr ""
+
+#: src/synfig/layers/layer_pastecanvas.cpp:149
 msgid "Time Offset to apply to the context"
 msgstr "Scostamento temporale da applicare al contesto"
 
-#: src/synfig/layers/layer_pastecanvas.cpp:147
+#: src/synfig/layers/layer_pastecanvas.cpp:153
 msgid "Lock Selection"
 msgstr ""
 
-#: src/synfig/layers/layer_pastecanvas.cpp:148
+#: src/synfig/layers/layer_pastecanvas.cpp:154
 msgid "When checked prevents to select the children using the mouse click"
 msgstr "Se selezionato, impedisce di selezionare i discendenti con il clic del mouse"
 
-#: src/synfig/layers/layer_pastecanvas.cpp:153
+#: src/synfig/layers/layer_pastecanvas.cpp:159
 msgid "Outline Grow"
 msgstr "Incremento contorno"
 
-#: src/synfig/layers/layer_pastecanvas.cpp:154
+#: src/synfig/layers/layer_pastecanvas.cpp:160
 msgid "Exponential value to grow children Outline layers width"
 msgstr "Valore esponenziale di crescita dei figli per l'ampiezza dei livelli Contorno"
 
-#: src/synfig/layers/layer_pastecanvas.cpp:168
+#: src/synfig/layers/layer_pastecanvas.cpp:174
 msgid "Current Time"
 msgstr "Ora Attuale"
 
@@ -3325,7 +3330,7 @@ msgstr "Punto Prodotto"
 msgid "Time String"
 msgstr "Stringa Tempo"
 
-#: src/synfig/valuenode.cpp:191 src/synfig/valuenodes/valuenode_real.cpp:158
+#: src/synfig/valuenode.cpp:191 src/synfig/valuenodes/valuenode_real.cpp:163
 #: src/synfig/valuenodes/valuenode_realstring.cpp:170
 msgid "Real"
 msgstr "Reale"
@@ -3456,8 +3461,8 @@ msgstr "%s:%d tipo errato per %s: richiesto %s ma ottenuto %s"
 #: src/synfig/valuenodes/valuenode_integer.cpp:81
 #: src/synfig/valuenodes/valuenode_integer.cpp:143
 #: src/synfig/valuenodes/valuenode_range.cpp:95
-#: src/synfig/valuenodes/valuenode_real.cpp:78
-#: src/synfig/valuenodes/valuenode_real.cpp:138
+#: src/synfig/valuenodes/valuenode_real.cpp:81
+#: src/synfig/valuenodes/valuenode_real.cpp:143
 #: src/synfig/valuenodes/valuenode_repeat_gradient.cpp:84
 #: src/synfig/valuenodes/valuenode_scale.cpp:88
 #: src/synfig/valuenodes/valuenode_stripes.cpp:81
@@ -4517,7 +4522,7 @@ msgstr "Valore restituito quando 'Collegamento' è maggiore"
 msgid "The value node to limit its range"
 msgstr "Valore del nodo che limitare la sua gamma"
 
-#: src/synfig/valuenodes/valuenode_real.cpp:180
+#: src/synfig/valuenodes/valuenode_real.cpp:186
 msgid "The real value to be converted"
 msgstr ""
 

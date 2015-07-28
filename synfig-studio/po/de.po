@@ -18,10 +18,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Synfig UI\n"
 "Report-Msgid-Bugs-To: http://www.synfig.org/issues/thebuggenie/synfig\n"
-"POT-Creation-Date: 2015-07-18 18:00+0700\n"
-"PO-Revision-Date: 2015-06-08 16:12+0000\n"
-"Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
-"Language-Team: German (http://www.transifex.com/p/synfig/language/de/)\n"
+"POT-Creation-Date: 2015-07-27 18:00+0700\n"
+"PO-Revision-Date: 2015-07-21 21:44+0000\n"
+"Last-Translator: Ettore Atalan <atalanttore@googlemail.com>\n"
+"Language-Team: German (http://www.transifex.com/projects/p/synfig/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -446,7 +446,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:70
 msgid "Change color lightness (HSL)"
-msgstr ""
+msgstr "Farbhelligkeit ändern (HSL)"
 
 #: ../src/brushlib/brushsettings.py:70
 msgid ""
@@ -458,7 +458,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:71
 msgid "Change color satur. (HSL)"
-msgstr ""
+msgstr "Farbsättigung ändern (HSL)"
 
 #: ../src/brushlib/brushsettings.py:71
 msgid ""
@@ -470,7 +470,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:72
 msgid "Change color value (HSV)"
-msgstr ""
+msgstr "Farbwert ändern (HSV)"
 
 #: ../src/brushlib/brushsettings.py:72
 msgid ""
@@ -482,7 +482,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:73
 msgid "Change color satur. (HSV)"
-msgstr ""
+msgstr "Farbsättigung ändern (HSV)"
 
 #: ../src/brushlib/brushsettings.py:73
 msgid ""
@@ -574,7 +574,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:82
 msgid "Custom input"
-msgstr ""
+msgstr "Eingabe anpassen"
 
 #: ../src/brushlib/brushsettings.py:82
 msgid ""
@@ -584,7 +584,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:83
 msgid "Custom input filter"
-msgstr ""
+msgstr "Eingabefilter anpassen"
 
 #: ../src/brushlib/brushsettings.py:83
 msgid ""
@@ -616,7 +616,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:87
 msgid "Direction filter"
-msgstr ""
+msgstr "Richtungsfilter"
 
 #: ../src/brushlib/brushsettings.py:87
 msgid ""
@@ -626,7 +626,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:89
 msgid "Lock alpha"
-msgstr ""
+msgstr "Alpha sperren"
 
 #: ../src/brushlib/brushsettings.py:89
 msgid ""
@@ -692,23 +692,25 @@ msgstr "Einfügen"
 msgid "Index %d"
 msgstr "Index %d"
 
-#: ../src/gui/cellrenderer/cellrenderer_value.cpp:247
-msgid "Paragraph"
-msgstr "Absatz"
+#: ../src/gui/cellrenderer/cellrenderer_value.cpp:246
+#: ../src/gui/states/state_text.cpp:630
+msgid "Text Paragraph"
+msgstr "Text Absatz"
 
-#: ../src/gui/cellrenderer/cellrenderer_value.cpp:250
-msgid "Enter Paragraph Text Here:"
-msgstr "Absatztext hier eingeben:"
+#: ../src/gui/cellrenderer/cellrenderer_value.cpp:246
+#: ../src/gui/states/state_text.cpp:630
+msgid "Enter text here:"
+msgstr "Text hier eingeben:"
 
-#: ../src/gui/cellrenderer/cellrenderer_value.cpp:472
+#: ../src/gui/cellrenderer/cellrenderer_value.cpp:435
 msgid "<Group>"
 msgstr "<Gruppe>"
 
-#: ../src/gui/cellrenderer/cellrenderer_value.cpp:477
+#: ../src/gui/cellrenderer/cellrenderer_value.cpp:440
 msgid "<No Image Selected>"
 msgstr "<Kein Bild ausgewählt>"
 
-#: ../src/gui/cellrenderer/cellrenderer_value.cpp:550
+#: ../src/gui/cellrenderer/cellrenderer_value.cpp:513
 msgid "No Parent"
 msgstr "Kein Elternteil"
 
@@ -732,11 +734,11 @@ msgid "Contributors:"
 msgstr "Mitwirkende:"
 
 #. TRANSLATORS: change this to your name, separate multiple names with \n
-#: ../src/gui/dialogs/about.cpp:187
+#: ../src/gui/dialogs/about.cpp:188
 msgid "translator-credits"
 msgstr "Oliver Horn"
 
-#: ../src/gui/dialogs/about.cpp:214
+#: ../src/gui/dialogs/about.cpp:215
 #, c-format
 msgid ""
 "\n"
@@ -744,50 +746,50 @@ msgid ""
 "%s\n"
 msgstr "\nEntwicklungsversion:\n%s\n"
 
-#: ../src/gui/dialogs/about.cpp:219
+#: ../src/gui/dialogs/about.cpp:220
 #, c-format
 msgid "Built on %s\n"
 msgstr "Basierend auf %s\n"
 
-#: ../src/gui/dialogs/about.cpp:223
+#: ../src/gui/dialogs/about.cpp:224
 msgid "Built with:\n"
 msgstr "Erstellt mit:\n"
 
-#: ../src/gui/dialogs/about.cpp:224
+#: ../src/gui/dialogs/about.cpp:225
 #, c-format
 msgid "ETL %s\n"
 msgstr "ETL %s\n"
 
-#: ../src/gui/dialogs/about.cpp:225
+#: ../src/gui/dialogs/about.cpp:226
 #, c-format
 msgid "Synfig API %s\n"
 msgstr "Synfig API %s\n"
 
-#: ../src/gui/dialogs/about.cpp:226
+#: ../src/gui/dialogs/about.cpp:227
 #, c-format
 msgid "Synfig library %d\n"
 msgstr "Synfig Bibliothek %d\n"
 
-#: ../src/gui/dialogs/about.cpp:227
+#: ../src/gui/dialogs/about.cpp:228
 #, c-format
 msgid "GTK+ %d.%d.%d\n"
 msgstr "GTK+ %d.%d.%d\n"
 
-#: ../src/gui/dialogs/about.cpp:229
+#: ../src/gui/dialogs/about.cpp:230
 #, c-format
 msgid "GNU G++ %d.%d.%d\n"
 msgstr "GNU G++ %d.%d.%d\n"
 
-#: ../src/gui/dialogs/about.cpp:234
+#: ../src/gui/dialogs/about.cpp:235
 msgid "Using:\n"
 msgstr "Benutzt:\n"
 
-#: ../src/gui/dialogs/about.cpp:235
+#: ../src/gui/dialogs/about.cpp:236
 #, c-format
 msgid "Synfig %s\n"
 msgstr "Synfig %s\n"
 
-#: ../src/gui/dialogs/about.cpp:236
+#: ../src/gui/dialogs/about.cpp:237
 #, c-format
 msgid "GTK+ %d.%d.%d"
 msgstr "GTK+ %d.%d.%d"
@@ -1047,11 +1049,11 @@ msgstr "Schlüsselbild Dialog"
 
 #: ../src/gui/dialogs/dialog_keyframe.cpp:93
 msgid "Description :"
-msgstr ""
+msgstr "Beschreibung :"
 
 #: ../src/gui/dialogs/dialog_keyframe.cpp:98
 msgid "Active :"
-msgstr ""
+msgstr "Aktiv :"
 
 #: ../src/gui/dialogs/dialog_preview.cpp:65 ../src/gui/canvasview.cpp:1851
 msgid "Preview Window"
@@ -1322,7 +1324,7 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:313
 msgid "Dark UI theme (if available)"
-msgstr ""
+msgstr "Dunkles UI-Thema (wenn verfügbar)"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:322
 msgid "Single thread only (CPUs)"
@@ -1842,7 +1844,7 @@ msgstr "Neuer Metadateneintrag"
 
 #: ../src/gui/docks/dock_metadata.cpp:152
 msgid "Key Name: "
-msgstr ""
+msgstr "Schlüsselname: "
 
 #: ../src/gui/docks/dock_metadata.cpp:152 ../src/gui/states/state_text.cpp:636
 msgid "Ok"
@@ -1874,7 +1876,7 @@ msgstr "Name"
 msgid "Time Track"
 msgstr "Zeitleiste"
 
-#: ../src/gui/docks/dock_timetrack.cpp:410 ../src/gui/app.cpp:979
+#: ../src/gui/docks/dock_timetrack.cpp:411 ../src/gui/app.cpp:979
 msgid "Timetrack"
 msgstr "Zeitleiste"
 
@@ -1985,7 +1987,7 @@ msgstr ""
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:277
 #: ../src/gui/instance.cpp:441
 msgid "Use Another Name…"
-msgstr ""
+msgstr "Verwenden Sie einen anderen Namen…"
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:278
 #: ../src/gui/instance.cpp:442
@@ -2570,15 +2572,15 @@ msgstr "Neuer Verlauf"
 
 #: ../src/gui/states/state_lasso.cpp:617
 msgid "Lasso"
-msgstr ""
+msgstr "Lasso"
 
 #: ../src/gui/states/state_lasso.cpp:944 ../src/gui/iconcontroller.cpp:158
 msgid "Cutout Tool"
-msgstr ""
+msgstr "Ausschnitt-Werkzeug"
 
 #: ../src/gui/states/state_lasso.cpp:1590
 msgid "Mask"
-msgstr ""
+msgstr "Maske"
 
 #: ../src/gui/states/state_mirror.cpp:172
 msgid "Horizontal"
@@ -2707,7 +2709,7 @@ msgstr "Skizze speichern"
 
 #: ../src/gui/states/state_sketch.cpp:170
 msgid "Unable to save sketch"
-msgstr "Skizze speichern nicht möglich"
+msgstr "Skizze kann nicht gespeichert werden"
 
 #: ../src/gui/states/state_sketch.cpp:179
 #: ../src/gui/states/state_sketch.cpp:242
@@ -2716,7 +2718,7 @@ msgstr "Skizze laden"
 
 #: ../src/gui/states/state_sketch.cpp:189
 msgid "Unable to load sketch"
-msgstr "Skizze laden nicht möglich"
+msgstr "Skizze kann nicht geladen werden"
 
 #: ../src/gui/states/state_sketch.cpp:239
 #: ../src/gui/states/state_sketch.cpp:270
@@ -2752,7 +2754,7 @@ msgstr "Skizze öffnen"
 #: ../src/gui/states/state_sketch.cpp:327
 #: ../src/gui/states/state_sketch.cpp:395 ../src/gui/iconcontroller.cpp:160
 msgid "Sketch Tool"
-msgstr "Skizze Werkzeug"
+msgstr "Skizzen-Werkzeug"
 
 #: ../src/gui/states/state_smoothmove.cpp:200
 #: ../src/gui/iconcontroller.cpp:163
@@ -2851,17 +2853,9 @@ msgstr "Text Werkzeug"
 msgid "New Text"
 msgstr "Neuer Text"
 
-#: ../src/gui/states/state_text.cpp:630
-msgid "Text Paragraph"
-msgstr "Text Absatz"
-
-#: ../src/gui/states/state_text.cpp:630
-msgid "Enter text here:"
-msgstr "Text hier eingeben:"
-
 #: ../src/gui/states/state_text.cpp:632
 msgid "Input text"
-msgstr ""
+msgstr "Text eingeben"
 
 #: ../src/gui/states/state_text.cpp:633
 msgid "Text: "
@@ -2886,7 +2880,7 @@ msgstr "Radius:"
 
 #: ../src/gui/states/state_width.cpp:581
 msgid "Sketch Width"
-msgstr "Skizzen Breite"
+msgstr "Skizzenbreite"
 
 #: ../src/gui/trees/canvastreestore.cpp:250
 #: ../src/gui/trees/canvastreestore.cpp:283
@@ -3022,8 +3016,8 @@ msgstr "Schlüssel"
 msgid "Data"
 msgstr "Daten"
 
-#: ../src/gui/widgets/widget_bonechooser.cpp:110
-#: ../src/gui/widgets/widget_bonechooser.cpp:128
+#: ../src/gui/widgets/widget_bonechooser.cpp:115
+#: ../src/gui/widgets/widget_bonechooser.cpp:133
 msgid "<None>"
 msgstr "<Keiner>"
 
@@ -3033,11 +3027,11 @@ msgstr "Weiteres..."
 
 #: ../src/gui/widgets/widget_canvaschooser.cpp:135
 msgid "Choose canvas"
-msgstr ""
+msgstr "Animation auswählen"
 
 #: ../src/gui/widgets/widget_canvaschooser.cpp:136
 msgid "Canvas Name: "
-msgstr ""
+msgstr "Animationsname: "
 
 #: ../src/gui/widgets/widget_canvaschooser.cpp:139
 msgid "Choose"
@@ -3067,7 +3061,7 @@ msgstr "YUV"
 
 #: ../src/gui/widgets/widget_coloredit.cpp:390
 msgid "HSV"
-msgstr ""
+msgstr "HSV"
 
 #: ../src/gui/widgets/widget_coloredit.cpp:430
 msgid "HTML code"
@@ -3138,15 +3132,15 @@ msgstr "Standard Verlauf"
 
 #: ../src/gui/widgets/widget_filename.cpp:142
 msgid "Please choose an audio file"
-msgstr ""
+msgstr "Bitte wählen Sie eine Audiodatei aus"
 
 #: ../src/gui/widgets/widget_filename.cpp:149
 msgid "Please choose an image file"
-msgstr ""
+msgstr "Bitte wählen Sie eine Bilddatei aus"
 
 #: ../src/gui/widgets/widget_filename.cpp:155
 msgid "Please choose a file"
-msgstr ""
+msgstr "Bitte wählen Sie eine Datei aus"
 
 #: ../src/gui/widgets/widget_gradient.cpp:209
 msgid "Insert Color Stop"
@@ -3855,7 +3849,7 @@ msgstr "Bilder (*.png, *.jpeg, *.bmp, *.svg)"
 
 #: ../src/gui/app.cpp:2386
 msgid "Image sequence files (*.lst)"
-msgstr ""
+msgstr "Bildsequenzdateien (*.lst)"
 
 #: ../src/gui/app.cpp:2391 ../src/gui/app.cpp:2596
 msgid "Audio (*.ogg, *.mp3, *.wav)"
@@ -3864,7 +3858,7 @@ msgstr "Audio (*.ogg, *.mp3, *.wav)"
 #: ../src/gui/app.cpp:2401 ../src/gui/app.cpp:2553 ../src/gui/app.cpp:2607
 #: ../src/gui/app.cpp:2714
 msgid "Any files"
-msgstr ""
+msgstr "Alle Dateien"
 
 #: ../src/gui/app.cpp:2448 ../src/gui/app.cpp:2490
 #: ../src/gui/iconcontroller.cpp:184 ../src/gui/mainwindow.cpp:147
@@ -3873,11 +3867,11 @@ msgstr "Öffnen"
 
 #: ../src/gui/app.cpp:2452 ../src/gui/app.cpp:2938
 msgid "Synfig palette files (*.spal)"
-msgstr ""
+msgstr "Synfig-Palettendateien (*.spal)"
 
 #: ../src/gui/app.cpp:2494 ../src/gui/app.cpp:3000
 msgid "Synfig sketch files (*.sketch)"
-msgstr ""
+msgstr "Synfig-Skizzendateien (*.sketch)"
 
 #: ../src/gui/app.cpp:2533 ../src/gui/app.cpp:2592
 msgid "Load"
@@ -3885,7 +3879,7 @@ msgstr "Laden"
 
 #: ../src/gui/app.cpp:2537
 msgid "Images and sequence files (*.png, *.jpg, *.jpeg, *.bmp, *.svg, *.lst)"
-msgstr ""
+msgstr "Bilder und Sequenzdateien (*.png, *.jpg, *.jpeg, *.bmp, *.svg, *.lst)"
 
 #: ../src/gui/app.cpp:2700
 msgid "Open history"
@@ -3897,15 +3891,15 @@ msgstr "Synfig-Dateien (*.sif, *.sifz, *.sfg)"
 
 #: ../src/gui/app.cpp:2806
 msgid "Uncompressed Synfig file (*.sif)"
-msgstr ""
+msgstr "Unkomprimierte Synfig-Datei (*.sif)"
 
 #: ../src/gui/app.cpp:2814
 msgid "Compressed Synfig file (*.sifz)"
-msgstr ""
+msgstr "Komprimierte Synfig-Datei (*.sifz)"
 
 #: ../src/gui/app.cpp:2818
 msgid "Container format file (*.sfg)"
-msgstr ""
+msgstr "Containerformatdatei (*.sfg)"
 
 #: ../src/gui/app.cpp:2834
 msgid "current"
@@ -3991,7 +3985,7 @@ msgstr ""
 
 #: ../src/gui/app.cpp:3526 ../src/gui/app.cpp:3619
 msgid "Update Anyway"
-msgstr ""
+msgstr "Trotzdem aktualisieren"
 
 #: ../src/gui/app.cpp:3555 ../src/gui/app.cpp:3648
 msgid "Uncaught error on file open (BUG)"
@@ -4132,7 +4126,7 @@ msgstr "Alle speichern"
 
 #: ../src/gui/canvasview.cpp:1701
 msgid "Save all opened documents"
-msgstr ""
+msgstr "Alle offenen Dokumente speichern"
 
 #: ../src/gui/canvasview.cpp:1739 ../src/gui/mainwindow.cpp:150
 msgid "Quit"
@@ -4842,7 +4836,7 @@ msgstr "CVS-Aktualisierung"
 #: ../src/gui/iconcontroller.cpp:347 ../src/gui/instance.cpp:596
 #: ../src/gui/instance.cpp:618
 msgid "CVS Commit"
-msgstr "CVS Commit"
+msgstr "CVS Einchecken"
 
 #: ../src/gui/iconcontroller.cpp:348 ../src/gui/instance.cpp:753
 msgid "CVS Revert"
@@ -4910,7 +4904,7 @@ msgstr "Dies sichert alle Änderungen. Bist Du sicher?"
 
 #: ../src/gui/instance.cpp:600 ../src/gui/instance.cpp:622
 msgid "Commit"
-msgstr ""
+msgstr "Einchecken"
 
 #: ../src/gui/instance.cpp:611
 msgid ""
@@ -4924,7 +4918,7 @@ msgstr "Protokollmeldung: "
 
 #: ../src/gui/instance.cpp:633
 msgid "An error has occurred when trying to COMMIT"
-msgstr "Ein Fehler trat beim COMMIT auf"
+msgstr "Ein Fehler trat beim EINCHECKEN auf"
 
 #: ../src/gui/instance.cpp:648
 msgid "This composition has already been added to the repository"
@@ -4965,7 +4959,7 @@ msgstr ""
 
 #: ../src/gui/instance.cpp:759 ../src/gui/instance.cpp:833
 msgid "Revert"
-msgstr ""
+msgstr "Rückgängig machen"
 
 #: ../src/gui/instance.cpp:770
 msgid "Unable to remove previous version"
@@ -5018,7 +5012,7 @@ msgstr "Ohne Speichern schließen"
 #: ../src/gui/instance.cpp:892
 #, c-format
 msgid "Commit changes of \"%s\" to  the CVS repository?"
-msgstr ""
+msgstr "Änderungen von \"%s\" in das CVS-Repositorium einchecken?"
 
 #: ../src/gui/instance.cpp:895
 msgid ""
@@ -5028,11 +5022,11 @@ msgstr ""
 
 #: ../src/gui/instance.cpp:901
 msgid "Close without Committing"
-msgstr ""
+msgstr "Ohne Einchecken schließen"
 
 #: ../src/gui/instance.cpp:903
 msgid "Commit…"
-msgstr ""
+msgstr "Eincheckvorgang…"
 
 #: ../src/gui/instance.cpp:1107
 msgid "Export"
@@ -6167,7 +6161,7 @@ msgstr "Abzusenkende Ebene"
 
 #: ../src/synfigapp/actions/layermakebline.cpp:66
 msgid "Make Outline"
-msgstr ""
+msgstr "Umrandung erstellen"
 
 #: ../src/synfigapp/actions/layermakebline.cpp:70
 msgid "Make Advanced Outline"
@@ -6175,7 +6169,7 @@ msgstr ""
 
 #: ../src/synfigapp/actions/layermakebline.cpp:74
 msgid "Make Region"
-msgstr ""
+msgstr "Region erstellen"
 
 #: ../src/synfigapp/actions/layermakebline.cpp:90
 msgid "Base layer"
@@ -7129,7 +7123,7 @@ msgstr ""
 
 #: ../src/synfigapp/action_system.cpp:111
 msgid "This action cannot be undone."
-msgstr ""
+msgstr "Diese Aktion kann nicht rückgängig gemacht werden."
 
 #: ../src/synfigapp/action_system.cpp:117
 msgid "Continue"

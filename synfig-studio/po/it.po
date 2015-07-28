@@ -14,10 +14,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Synfig UI\n"
 "Report-Msgid-Bugs-To: http://www.synfig.org/issues/thebuggenie/synfig\n"
-"POT-Creation-Date: 2015-07-18 18:00+0700\n"
-"PO-Revision-Date: 2015-06-08 16:12+0000\n"
+"POT-Creation-Date: 2015-07-27 18:00+0700\n"
+"PO-Revision-Date: 2015-07-20 14:13+0000\n"
 "Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
-"Language-Team: Italian (http://www.transifex.com/p/synfig/language/it/)\n"
+"Language-Team: Italian (http://www.transifex.com/projects/p/synfig/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -688,23 +688,25 @@ msgstr "Incolla"
 msgid "Index %d"
 msgstr "Indice %d"
 
-#: ../src/gui/cellrenderer/cellrenderer_value.cpp:247
-msgid "Paragraph"
-msgstr "Paragrafo"
+#: ../src/gui/cellrenderer/cellrenderer_value.cpp:246
+#: ../src/gui/states/state_text.cpp:630
+msgid "Text Paragraph"
+msgstr "Testo del Paragrafo"
 
-#: ../src/gui/cellrenderer/cellrenderer_value.cpp:250
-msgid "Enter Paragraph Text Here:"
-msgstr "Inserire il Testo del Paragrafo Qui:"
+#: ../src/gui/cellrenderer/cellrenderer_value.cpp:246
+#: ../src/gui/states/state_text.cpp:630
+msgid "Enter text here:"
+msgstr "Inserire qui il Testo:"
 
-#: ../src/gui/cellrenderer/cellrenderer_value.cpp:472
+#: ../src/gui/cellrenderer/cellrenderer_value.cpp:435
 msgid "<Group>"
 msgstr ""
 
-#: ../src/gui/cellrenderer/cellrenderer_value.cpp:477
+#: ../src/gui/cellrenderer/cellrenderer_value.cpp:440
 msgid "<No Image Selected>"
 msgstr "<Nessuna Immagine Selezionata>"
 
-#: ../src/gui/cellrenderer/cellrenderer_value.cpp:550
+#: ../src/gui/cellrenderer/cellrenderer_value.cpp:513
 msgid "No Parent"
 msgstr ""
 
@@ -728,11 +730,11 @@ msgid "Contributors:"
 msgstr "Contributori:"
 
 #. TRANSLATORS: change this to your name, separate multiple names with \n
-#: ../src/gui/dialogs/about.cpp:187
+#: ../src/gui/dialogs/about.cpp:188
 msgid "translator-credits"
 msgstr "Bottero Ermanno"
 
-#: ../src/gui/dialogs/about.cpp:214
+#: ../src/gui/dialogs/about.cpp:215
 #, c-format
 msgid ""
 "\n"
@@ -740,50 +742,50 @@ msgid ""
 "%s\n"
 msgstr "\nVersione di sviluppo:\n%s \n"
 
-#: ../src/gui/dialogs/about.cpp:219
+#: ../src/gui/dialogs/about.cpp:220
 #, c-format
 msgid "Built on %s\n"
 msgstr "Costruito su %s\n"
 
-#: ../src/gui/dialogs/about.cpp:223
+#: ../src/gui/dialogs/about.cpp:224
 msgid "Built with:\n"
 msgstr "Costruito con: \n"
 
-#: ../src/gui/dialogs/about.cpp:224
+#: ../src/gui/dialogs/about.cpp:225
 #, c-format
 msgid "ETL %s\n"
 msgstr "ETL %s\n"
 
-#: ../src/gui/dialogs/about.cpp:225
+#: ../src/gui/dialogs/about.cpp:226
 #, c-format
 msgid "Synfig API %s\n"
 msgstr "Synfig API %s\n"
 
-#: ../src/gui/dialogs/about.cpp:226
+#: ../src/gui/dialogs/about.cpp:227
 #, c-format
 msgid "Synfig library %d\n"
 msgstr "Libreria Synfig %d\n"
 
-#: ../src/gui/dialogs/about.cpp:227
+#: ../src/gui/dialogs/about.cpp:228
 #, c-format
 msgid "GTK+ %d.%d.%d\n"
 msgstr "GTK+ %d.%d.%d\n"
 
-#: ../src/gui/dialogs/about.cpp:229
+#: ../src/gui/dialogs/about.cpp:230
 #, c-format
 msgid "GNU G++ %d.%d.%d\n"
 msgstr "GNU G++ %d.%d.%d\n"
 
-#: ../src/gui/dialogs/about.cpp:234
+#: ../src/gui/dialogs/about.cpp:235
 msgid "Using:\n"
 msgstr "Usando:\n"
 
-#: ../src/gui/dialogs/about.cpp:235
+#: ../src/gui/dialogs/about.cpp:236
 #, c-format
 msgid "Synfig %s\n"
 msgstr "Synfig %s\n"
 
-#: ../src/gui/dialogs/about.cpp:236
+#: ../src/gui/dialogs/about.cpp:237
 #, c-format
 msgid "GTK+ %d.%d.%d"
 msgstr "GTK+ %d.%d.%d"
@@ -1870,7 +1872,7 @@ msgstr "Nome"
 msgid "Time Track"
 msgstr "Linea Temporale"
 
-#: ../src/gui/docks/dock_timetrack.cpp:410 ../src/gui/app.cpp:979
+#: ../src/gui/docks/dock_timetrack.cpp:411 ../src/gui/app.cpp:979
 msgid "Timetrack"
 msgstr "Linea Temporale"
 
@@ -2847,14 +2849,6 @@ msgstr "Strumento Testo"
 msgid "New Text"
 msgstr "Nuovo Testo"
 
-#: ../src/gui/states/state_text.cpp:630
-msgid "Text Paragraph"
-msgstr "Testo del Paragrafo"
-
-#: ../src/gui/states/state_text.cpp:630
-msgid "Enter text here:"
-msgstr "Inserire qui il Testo:"
-
 #: ../src/gui/states/state_text.cpp:632
 msgid "Input text"
 msgstr ""
@@ -3018,8 +3012,8 @@ msgstr "Chiave"
 msgid "Data"
 msgstr "Dati"
 
-#: ../src/gui/widgets/widget_bonechooser.cpp:110
-#: ../src/gui/widgets/widget_bonechooser.cpp:128
+#: ../src/gui/widgets/widget_bonechooser.cpp:115
+#: ../src/gui/widgets/widget_bonechooser.cpp:133
 msgid "<None>"
 msgstr ""
 

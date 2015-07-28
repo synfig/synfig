@@ -15,10 +15,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Synfig UI\n"
 "Report-Msgid-Bugs-To: http://www.synfig.org/issues/thebuggenie/synfig\n"
-"POT-Creation-Date: 2015-07-18 18:00+0700\n"
-"PO-Revision-Date: 2015-04-29 15:43+0000\n"
+"POT-Creation-Date: 2015-07-27 18:00+0700\n"
+"PO-Revision-Date: 2015-07-22 14:45+0000\n"
 "Last-Translator: Ettore Atalan <atalanttore@googlemail.com>\n"
-"Language-Team: German (http://www.transifex.com/p/synfig/language/de/)\n"
+"Language-Team: German (http://www.transifex.com/projects/p/synfig/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -166,7 +166,7 @@ msgstr "Text Ausrichtung"
 #: src/modules/mod_geometry/circle.cpp:161
 #: src/modules/mod_gradient/curvegradient.cpp:550
 #: src/modules/mod_particle/plant.cpp:431
-#: src/synfig/layers/layer_pastecanvas.cpp:127
+#: src/synfig/layers/layer_pastecanvas.cpp:128
 #: src/synfig/layers/layer_shape.cpp:1229
 #: src/synfig/valuenodes/valuenode_bone.cpp:597
 #: src/synfig/valuenodes/valuenode_composite.cpp:692
@@ -440,7 +440,7 @@ msgid "File to import"
 msgstr "Zu importierende Datei"
 
 #: src/modules/lyr_std/import.cpp:322
-#: src/synfig/layers/layer_pastecanvas.cpp:142
+#: src/synfig/layers/layer_pastecanvas.cpp:148
 msgid "Time Offset"
 msgstr "Zeitversatz"
 
@@ -1916,7 +1916,7 @@ msgstr "Super sampling des Verlaufs"
 #: src/synfig/valuenodes/valuenode_log.cpp:159
 #: src/synfig/valuenodes/valuenode_not.cpp:141
 #: src/synfig/valuenodes/valuenode_range.cpp:289
-#: src/synfig/valuenodes/valuenode_real.cpp:179
+#: src/synfig/valuenodes/valuenode_real.cpp:185
 #: src/synfig/valuenodes/valuenode_reciprocal.cpp:165
 #: src/synfig/valuenodes/valuenode_reference.cpp:143
 #: src/synfig/valuenodes/valuenode_scale.cpp:249
@@ -1943,6 +1943,7 @@ msgid "Seeds the random number generator"
 msgstr "Startwert für Zufallszahlen"
 
 #: src/modules/mod_noise/valuenode_random.cpp:265
+#: src/synfig/layers/layer_pastecanvas.cpp:143
 msgid "Speed"
 msgstr "Geschwindigkeit"
 
@@ -2362,47 +2363,51 @@ msgstr "Subsample Endwert"
 msgid "Relative Amount Of The Last Subsample, For Linear Weighting"
 msgstr "Relativer Wert des letzten Subsample, für lineare Gewichtung "
 
-#: src/synfig/layers/layer_pastecanvas.cpp:128
+#: src/synfig/layers/layer_pastecanvas.cpp:129
 msgid "Position offset"
 msgstr "Positionsversatz"
 
-#: src/synfig/layers/layer_pastecanvas.cpp:132
+#: src/synfig/layers/layer_pastecanvas.cpp:133
 msgid "Transformation"
 msgstr "Transformation"
 
-#: src/synfig/layers/layer_pastecanvas.cpp:133
+#: src/synfig/layers/layer_pastecanvas.cpp:134
 msgid "Position, rotation, skew and scale"
 msgstr "Position, Rotation, Neigung und Skalierung"
 
-#: src/synfig/layers/layer_pastecanvas.cpp:137
+#: src/synfig/layers/layer_pastecanvas.cpp:138
 msgid "Canvas"
 msgstr "Animation"
 
-#: src/synfig/layers/layer_pastecanvas.cpp:138
+#: src/synfig/layers/layer_pastecanvas.cpp:139
 msgid "Group content"
 msgstr "Gruppeninhalt"
 
-#: src/synfig/layers/layer_pastecanvas.cpp:143
+#: src/synfig/layers/layer_pastecanvas.cpp:144
+msgid "Multiplier to speed up, slow down, freeze, or reverse time"
+msgstr ""
+
+#: src/synfig/layers/layer_pastecanvas.cpp:149
 msgid "Time Offset to apply to the context"
 msgstr "Zeitversatz der auf den Kontext angewendet wird"
 
-#: src/synfig/layers/layer_pastecanvas.cpp:147
+#: src/synfig/layers/layer_pastecanvas.cpp:153
 msgid "Lock Selection"
 msgstr "Auswahl sperren"
 
-#: src/synfig/layers/layer_pastecanvas.cpp:148
+#: src/synfig/layers/layer_pastecanvas.cpp:154
 msgid "When checked prevents to select the children using the mouse click"
 msgstr "sperrt Untergeordnete für Mausklick Auswahl"
 
-#: src/synfig/layers/layer_pastecanvas.cpp:153
+#: src/synfig/layers/layer_pastecanvas.cpp:159
 msgid "Outline Grow"
 msgstr "Wachstum der Umrandung"
 
-#: src/synfig/layers/layer_pastecanvas.cpp:154
+#: src/synfig/layers/layer_pastecanvas.cpp:160
 msgid "Exponential value to grow children Outline layers width"
 msgstr "Exponentieller Wert für Breitenwachstum der Umrandung Untergeordneter"
 
-#: src/synfig/layers/layer_pastecanvas.cpp:168
+#: src/synfig/layers/layer_pastecanvas.cpp:174
 msgid "Current Time"
 msgstr "Aktuelle Zeit"
 
@@ -2481,15 +2486,15 @@ msgstr "Ton"
 
 #: src/synfig/layers/layer_sound.cpp:102
 msgid "Path to sound file"
-msgstr ""
+msgstr "Pfad zur Tondatei"
 
 #: src/synfig/layers/layer_sound.cpp:108
 msgid "Delay"
-msgstr ""
+msgstr "Verzögerung"
 
 #: src/synfig/layers/layer_sound.cpp:109
 msgid "Delay before play"
-msgstr ""
+msgstr "Verzögerung vor dem Abspielen"
 
 #: src/synfig/layers/layer_sound.cpp:114
 msgid "Volume"
@@ -2497,7 +2502,7 @@ msgstr "Lautstärke"
 
 #: src/synfig/layers/layer_sound.cpp:115
 msgid "Volume of sound"
-msgstr ""
+msgstr "Lautstärke des Tons"
 
 #: src/synfig/layers/layer_switch.cpp:58 src/synfig/layers/layer_switch.cpp:82
 #: src/synfig/valuenode.cpp:173 src/synfig/valuenodes/valuenode_switch.cpp:133
@@ -2848,67 +2853,67 @@ msgstr "Ebenengröße Abweichung (app:%d, lib:%d)"
 
 #: src/synfig/main.cpp:215
 msgid "Starting Subsystem \"Sound\""
-msgstr "Starte das Subsystem \"Sound\""
+msgstr "Untersystem \"Ton\" wird gestartet"
 
 #: src/synfig/main.cpp:217
 msgid "Unable to initialize subsystem \"Sound\""
-msgstr "Subsystem \"Sound\" kann nicht initialisiert werden"
+msgstr "Untersystem \"Ton\" kann nicht initialisiert werden"
 
 #: src/synfig/main.cpp:219
 msgid "Starting Subsystem \"Types\""
-msgstr "Starte Subsystem  \"Types\""
+msgstr "Untersystem \"Typen\" wird gestartet"
 
 #: src/synfig/main.cpp:221
 msgid "Unable to initialize subsystem \"Types\""
-msgstr "Subsystem \"Types\" kann nicht initialisiert werden"
+msgstr "Untersystem \"Typen\" kann nicht initialisiert werden"
 
 #: src/synfig/main.cpp:223
 msgid "Starting Subsystem \"Modules\""
-msgstr "Starte Subsystem \"Modules\""
+msgstr "Untersystem \"Module\" wird gestartet"
 
 #: src/synfig/main.cpp:227
 msgid "Unable to initialize subsystem \"Modules\""
-msgstr "Subsystem \"Modules\" kann nicht initialisiert werden"
+msgstr "Untersystem \"Module\" kann nicht initialisiert werden"
 
 #: src/synfig/main.cpp:230
 msgid "Starting Subsystem \"Layers\""
-msgstr "Starte Subsystem \"Layers\""
+msgstr "Untersystem \"Ebenen\" wird gestartet"
 
 #: src/synfig/main.cpp:235
 msgid "Unable to initialize subsystem \"Layers\""
-msgstr "Subsystem \"Layers\" kann nicht initialisiert werden"
+msgstr "Untersystem \"Ebenen\" kann nicht initialisiert werden"
 
 #: src/synfig/main.cpp:238
 msgid "Starting Subsystem \"Targets\""
-msgstr "Starte Subsystem \"Targets\""
+msgstr "Untersystem \"Ziele\" wird gestartet"
 
 #: src/synfig/main.cpp:244
 msgid "Unable to initialize subsystem \"Targets\""
-msgstr "Subsystem \"Targets\" kann nicht initialisiert werden"
+msgstr "Untersystem \"Ziele\" kann nicht initialisiert werden"
 
 #: src/synfig/main.cpp:247
 msgid "Starting Subsystem \"Importers\""
-msgstr "Starte Subsystem \"Importers\""
+msgstr "Untersystem \"Importierer\" wird gestartet"
 
 #: src/synfig/main.cpp:254
 msgid "Unable to initialize subsystem \"Importers\""
-msgstr "Subsystem \"Importers\" kann nicht initialisiert werden"
+msgstr "Untersystem \"Importierer\" kann nicht initialisiert werden"
 
 #: src/synfig/main.cpp:257
 msgid "Starting Subsystem \"Cairo Importers\""
-msgstr "Starte Subsystem \"Cairo Importers\""
+msgstr "Untersystem \"Cairo-Importierer\" wird gestartet"
 
 #: src/synfig/main.cpp:265
 msgid "Unable to initialize subsystem \"Cairo Importers\""
-msgstr "Subsystem \"Cairo Importers\" kann nicht initialisiert werden"
+msgstr "Untersystem \"Cairo-Importierer\" kann nicht initialisiert werden"
 
 #: src/synfig/main.cpp:268
 msgid "Starting Subsystem \"ValueNodes\""
-msgstr "Starte Subsystem \"ValueNodes\""
+msgstr "Untersystem \"WertKnoten\" wird gestartet"
 
 #: src/synfig/main.cpp:277
 msgid "Unable to initialize subsystem \"ValueNodes\""
-msgstr "Subsystem \"ValueNodes\" kann nicht initialisiert werden"
+msgstr "Untersystem \"WertKnoten\" kann nicht initialisiert werden"
 
 #: src/synfig/main.cpp:314 src/synfig/main.cpp:315
 #, c-format
@@ -3329,7 +3334,7 @@ msgstr "Skalarprodukt"
 msgid "Time String"
 msgstr "Zeit Zeichenkette"
 
-#: src/synfig/valuenode.cpp:191 src/synfig/valuenodes/valuenode_real.cpp:158
+#: src/synfig/valuenode.cpp:191 src/synfig/valuenodes/valuenode_real.cpp:163
 #: src/synfig/valuenodes/valuenode_realstring.cpp:170
 msgid "Real"
 msgstr "Reell"
@@ -3460,8 +3465,8 @@ msgstr "%s:%d falscher Typ für %s: benötigt %s aber erhielt %s"
 #: src/synfig/valuenodes/valuenode_integer.cpp:81
 #: src/synfig/valuenodes/valuenode_integer.cpp:143
 #: src/synfig/valuenodes/valuenode_range.cpp:95
-#: src/synfig/valuenodes/valuenode_real.cpp:78
-#: src/synfig/valuenodes/valuenode_real.cpp:138
+#: src/synfig/valuenodes/valuenode_real.cpp:81
+#: src/synfig/valuenodes/valuenode_real.cpp:143
 #: src/synfig/valuenodes/valuenode_repeat_gradient.cpp:84
 #: src/synfig/valuenodes/valuenode_scale.cpp:88
 #: src/synfig/valuenodes/valuenode_stripes.cpp:81
@@ -4521,7 +4526,7 @@ msgstr "Rückgabewert wenn größer"
 msgid "The value node to limit its range"
 msgstr "Wertknoten zur Begrenzung des Bereichs"
 
-#: src/synfig/valuenodes/valuenode_real.cpp:180
+#: src/synfig/valuenodes/valuenode_real.cpp:186
 msgid "The real value to be converted"
 msgstr "Umzuwandelnde reelle Zahl"
 
@@ -5162,7 +5167,7 @@ msgstr "Der Gamma-Wert wird momentan ignoriert"
 #: src/tool/optionsprocessor.cpp:427
 #, c-format
 msgid "Resolution set to %dx%d."
-msgstr ""
+msgstr "Auflösung festgelegt auf %dx%d."
 
 #: src/tool/optionsprocessor.cpp:444
 msgid "Both video codec and bitrate parameters are necessary."
@@ -5175,11 +5180,11 @@ msgstr "Videocodec \"%s\" wird nicht unterstützt"
 
 #: src/tool/optionsprocessor.cpp:474
 msgid "Target video codec set to: "
-msgstr ""
+msgstr "Zielvideocodec festgelegt auf: "
 
 #: src/tool/optionsprocessor.cpp:480
 msgid "Target bitrate set to: "
-msgstr ""
+msgstr "Zielbitrate festgelegt auf: "
 
 #: src/tool/optionsprocessor.cpp:486
 msgid "Output file sequence separator set to: '"

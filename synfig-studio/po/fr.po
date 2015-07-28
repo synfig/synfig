@@ -24,10 +24,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Synfig UI\n"
 "Report-Msgid-Bugs-To: http://www.synfig.org/issues/thebuggenie/synfig\n"
-"POT-Creation-Date: 2015-07-18 18:00+0700\n"
-"PO-Revision-Date: 2015-06-08 16:12+0000\n"
+"POT-Creation-Date: 2015-07-27 18:00+0700\n"
+"PO-Revision-Date: 2015-07-20 14:13+0000\n"
 "Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
-"Language-Team: French (http://www.transifex.com/p/synfig/language/fr/)\n"
+"Language-Team: French (http://www.transifex.com/projects/p/synfig/language/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -698,23 +698,25 @@ msgstr "Coller"
 msgid "Index %d"
 msgstr "Indice %d"
 
-#: ../src/gui/cellrenderer/cellrenderer_value.cpp:247
-msgid "Paragraph"
-msgstr "Paragraphe"
+#: ../src/gui/cellrenderer/cellrenderer_value.cpp:246
+#: ../src/gui/states/state_text.cpp:630
+msgid "Text Paragraph"
+msgstr "Paragraphe de Texte"
 
-#: ../src/gui/cellrenderer/cellrenderer_value.cpp:250
-msgid "Enter Paragraph Text Here:"
-msgstr "Saisissez votre Texte Ici :"
+#: ../src/gui/cellrenderer/cellrenderer_value.cpp:246
+#: ../src/gui/states/state_text.cpp:630
+msgid "Enter text here:"
+msgstr "Saisissez votre texte ici :"
 
-#: ../src/gui/cellrenderer/cellrenderer_value.cpp:472
+#: ../src/gui/cellrenderer/cellrenderer_value.cpp:435
 msgid "<Group>"
 msgstr "<Groupe>"
 
-#: ../src/gui/cellrenderer/cellrenderer_value.cpp:477
+#: ../src/gui/cellrenderer/cellrenderer_value.cpp:440
 msgid "<No Image Selected>"
 msgstr "<Aucune Image Sélectionnée>"
 
-#: ../src/gui/cellrenderer/cellrenderer_value.cpp:550
+#: ../src/gui/cellrenderer/cellrenderer_value.cpp:513
 msgid "No Parent"
 msgstr "Aucun parent"
 
@@ -738,11 +740,11 @@ msgid "Contributors:"
 msgstr "Contributeurs :"
 
 #. TRANSLATORS: change this to your name, separate multiple names with \n
-#: ../src/gui/dialogs/about.cpp:187
+#: ../src/gui/dialogs/about.cpp:188
 msgid "translator-credits"
 msgstr "Aurore D. (rore),\nBertrand G. (berteh),\nJérôme B. (d.j.a.y)"
 
-#: ../src/gui/dialogs/about.cpp:214
+#: ../src/gui/dialogs/about.cpp:215
 #, c-format
 msgid ""
 "\n"
@@ -750,50 +752,50 @@ msgid ""
 "%s\n"
 msgstr "\nVersion de développement :\n%s\n"
 
-#: ../src/gui/dialogs/about.cpp:219
+#: ../src/gui/dialogs/about.cpp:220
 #, c-format
 msgid "Built on %s\n"
 msgstr "Compilé le %s\n"
 
-#: ../src/gui/dialogs/about.cpp:223
+#: ../src/gui/dialogs/about.cpp:224
 msgid "Built with:\n"
 msgstr "Compilé avec : \n"
 
-#: ../src/gui/dialogs/about.cpp:224
+#: ../src/gui/dialogs/about.cpp:225
 #, c-format
 msgid "ETL %s\n"
 msgstr "ETL %s\n"
 
-#: ../src/gui/dialogs/about.cpp:225
+#: ../src/gui/dialogs/about.cpp:226
 #, c-format
 msgid "Synfig API %s\n"
 msgstr "API Synfig %s\n"
 
-#: ../src/gui/dialogs/about.cpp:226
+#: ../src/gui/dialogs/about.cpp:227
 #, c-format
 msgid "Synfig library %d\n"
 msgstr "Bibliothèque Synfig %d\n"
 
-#: ../src/gui/dialogs/about.cpp:227
+#: ../src/gui/dialogs/about.cpp:228
 #, c-format
 msgid "GTK+ %d.%d.%d\n"
 msgstr "GTK+ %d.%d.%d\n"
 
-#: ../src/gui/dialogs/about.cpp:229
+#: ../src/gui/dialogs/about.cpp:230
 #, c-format
 msgid "GNU G++ %d.%d.%d\n"
 msgstr "GNU G++ %d.%d.%d\n"
 
-#: ../src/gui/dialogs/about.cpp:234
+#: ../src/gui/dialogs/about.cpp:235
 msgid "Using:\n"
 msgstr "Utilise :\n"
 
-#: ../src/gui/dialogs/about.cpp:235
+#: ../src/gui/dialogs/about.cpp:236
 #, c-format
 msgid "Synfig %s\n"
 msgstr "Synfig %s\n"
 
-#: ../src/gui/dialogs/about.cpp:236
+#: ../src/gui/dialogs/about.cpp:237
 #, c-format
 msgid "GTK+ %d.%d.%d"
 msgstr "GTK+ %d.%d.%d"
@@ -1880,7 +1882,7 @@ msgstr "Nom"
 msgid "Time Track"
 msgstr "Axe de temps"
 
-#: ../src/gui/docks/dock_timetrack.cpp:410 ../src/gui/app.cpp:979
+#: ../src/gui/docks/dock_timetrack.cpp:411 ../src/gui/app.cpp:979
 msgid "Timetrack"
 msgstr "Axe de temps"
 
@@ -2857,14 +2859,6 @@ msgstr "Outil Texte"
 msgid "New Text"
 msgstr "Nouveau Texte"
 
-#: ../src/gui/states/state_text.cpp:630
-msgid "Text Paragraph"
-msgstr "Paragraphe de Texte"
-
-#: ../src/gui/states/state_text.cpp:630
-msgid "Enter text here:"
-msgstr "Saisissez votre texte ici :"
-
 #: ../src/gui/states/state_text.cpp:632
 msgid "Input text"
 msgstr "Texte d'entrée"
@@ -3028,8 +3022,8 @@ msgstr "Clé"
 msgid "Data"
 msgstr "Donnée"
 
-#: ../src/gui/widgets/widget_bonechooser.cpp:110
-#: ../src/gui/widgets/widget_bonechooser.cpp:128
+#: ../src/gui/widgets/widget_bonechooser.cpp:115
+#: ../src/gui/widgets/widget_bonechooser.cpp:133
 msgid "<None>"
 msgstr "<Aucun>"
 
