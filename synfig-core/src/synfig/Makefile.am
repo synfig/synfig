@@ -207,6 +207,7 @@ libsynfig_include_HH = \
 	$(VALUEHEADERS)
 
 include color/Makefile_insert
+include debug/Makefile_insert
 include layers/Makefile_insert
 include rendering/Makefile_insert
 include valuenodes/Makefile_insert

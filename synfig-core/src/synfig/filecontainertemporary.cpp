@@ -617,6 +617,21 @@ bool FileContainerTemporary::open_temporary(const std::string &filename_base)
 	return true;
 }
 
+std::string
+FileContainerTemporary::generate_indexed_temporary_filename(const FileSystem::Handle &fs, const std::string &filename)
+{
+	String extension = filename_extension(filename);
+	String sans_extension = filename_sans_extension(filename);
+	for(int index = 1; index < 10000; ++index)
+	{
+		String indexed_filename = strprintf("%s_%04d%s", sans_extension.c_str(), index, extension.c_str());
+		if (!FileSystemNative::instance()->is_exists(indexed_filename))
+			return indexed_filename;
+	}
+	assert(false);
+	return std::string();
+}
+
 /* === E N T R Y P O I N T ================================================= */
 
 
