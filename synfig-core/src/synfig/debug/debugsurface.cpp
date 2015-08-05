@@ -80,11 +80,12 @@ DebugSurface::save_to_file(const void *buffer, int width, int height, int pitch,
 
 		// write rows in reverse order (for TGA format)
 		unsigned char *dest(byte_buffer);
+		Gamma gamma;
 		for(int y = height-1; y >= 0; --y)
 		{
 			const Color *src = (const Color *)((const unsigned char*)buffer + pitch*y);
 			for(int x = 0; x < width; ++x, ++src)
-				dest = Color2PixelFormat( src->clamped(), pf, dest, 1.0 );
+				dest = Color2PixelFormat( src->clamped(), pf, dest, gamma );
 		}
 
 		// create file
