@@ -109,7 +109,7 @@ public:
 			fabs(rect_rb[0] - rect_lt[0]) < 1e-10 ? 0.0 :
 				(rect_rb[0] - rect_lt[0])/(Real)(target_surface->get_width()),
 			fabs(rect_rb[1] - rect_lt[1]) < 1e-10 ? 0.0 :
-				(rect_rb[1] - rect_rb[1])/(Real)(target_surface->get_height()) );
+				(rect_rb[1] - rect_lt[1])/(Real)(target_surface->get_height()) );
 	}
 
 	virtual ~Task();

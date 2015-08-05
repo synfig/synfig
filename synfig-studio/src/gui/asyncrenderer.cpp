@@ -683,6 +683,77 @@ public:
 
 };
 
+class AsyncTarget_GL : public synfig::Target_GL
+{
+public:
+	etl::handle<synfig::Target_GL> warm_target;
+
+	cairo_surface_t* surface;
+	ProgressCallback *callback;
+
+	Glib::Mutex mutex;
+
+#ifndef GLIB_DISPATCHER_BROKEN
+	Glib::Dispatcher frame_ready_signal;
+#endif
+	Glib::Cond cond_frame_queue_empty;
+	bool alive_flag;
+	bool ready_next;
+	sigc::connection ready_connection;
+
+
+public:
+	AsyncTarget_GL(etl::handle<synfig::Target_GL> warm_target):
+		warm_target(warm_target),
+		surface(),
+		callback(),
+		alive_flag(),
+		ready_next()
+	{
+		set_avoid_time_sync(warm_target->get_avoid_time_sync());
+		set_canvas(warm_target->get_canvas());
+		set_quality(warm_target->get_quality());
+		set_alpha_mode(warm_target->get_alpha_mode());
+		set_rend_desc(&warm_target->rend_desc());
+		alive_flag=true;
+#ifndef GLIB_DISPATCHER_BROKEN
+		ready_connection=frame_ready_signal.connect(sigc::mem_fun(*this,&AsyncTarget_Cairo::frame_ready));
+#endif
+	}
+
+	~AsyncTarget_GL()
+	{
+		ready_connection.disconnect();
+	}
+
+	virtual bool render(ProgressCallback *cb=NULL)
+	{
+		return warm_target->render(cb);
+	}
+
+	virtual int next_frame(Time& time)
+	{
+		Glib::Mutex::Lock lock(mutex);
+		if(!alive_flag)
+			return 0;
+		return warm_target->next_frame(time);
+	}
+
+	virtual void end_frame()
+	{
+		Glib::Mutex::Lock lock(mutex);
+		if(!alive_flag)
+			return;
+		return warm_target->end_frame();
+	}
+
+	void set_dead()
+	{
+		Glib::Mutex::Lock lock(mutex);
+		alive_flag=false;
+	}
+};
+
 
 /* === G L O B A L S ======================================================= */
 
@@ -735,7 +806,6 @@ AsyncRenderer::AsyncRenderer(etl::handle<synfig::Target> target_,synfig::Progres
 		
 		target=wrap_target;
 	}
-
 	else if(etl::handle<synfig::Target_Cairo>::cast_dynamic(target_))
 	{
 		etl::handle<AsyncTarget_Cairo> wrap_target(
@@ -748,7 +818,18 @@ AsyncRenderer::AsyncRenderer(etl::handle<synfig::Target> target_,synfig::Progres
 		
 		target=wrap_target;
 	}
+	else if(etl::handle<synfig::Target_GL>::cast_dynamic(target_))
+	{
+		etl::handle<AsyncTarget_GL> wrap_target(
+			new AsyncTarget_GL(
+				etl::handle<synfig::Target_GL>::cast_dynamic(target_)
+			)
+		);
 
+		signal_stop_.connect(sigc::mem_fun(*wrap_target,&AsyncTarget_GL::set_dead));
+
+		target=wrap_target;
+	}
 }
 
 AsyncRenderer::~AsyncRenderer()

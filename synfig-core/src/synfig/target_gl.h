@@ -67,6 +67,7 @@ public:
 	//! Returns the number of peniding frames to render. If it is zero it
 	//! stops rendering frames.
 	virtual int next_frame(Time& time);
+	virtual void end_frame() = 0;
 
 	rendering::Surface::Handle get_surface(int frame) const;
 	const std::map<int, rendering::Surface::Handle>& get_surfaces() const

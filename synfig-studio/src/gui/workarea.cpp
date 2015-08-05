@@ -49,6 +49,7 @@
 #include <sigc++/hide.h>
 #include <ETL/misc>
 
+#include <synfig/debug/debugsurface.h>
 #include <synfig/target_scanline.h>
 #include <synfig/target_tile.h>
 #include <synfig/target_cairo.h>
@@ -1118,6 +1119,9 @@ public:
 		//TODO: #GL
 
 		const std::map<int, rendering::Surface::Handle> &surfaces = get_surfaces();
+		if (surfaces.empty())
+			return;
+
 		assert(!surfaces.empty());
 
 		rendering::Surface::Handle surface = surfaces.begin()->second;
@@ -1127,8 +1131,17 @@ public:
 		clear_surfaces();
 
 		Color *pre_buffer = (Color*)malloc(surface->get_buffer_size());
-		if (!pre_buffer) return;
-		assert(surface->get_pixels(pre_buffer));
+		if (!pre_buffer)
+			return;
+		if (!surface->get_pixels(pre_buffer))
+			return;
+
+		debug::DebugSurface::save_to_file(
+			pre_buffer,
+			surface->get_width(),
+			surface->get_height(),
+			0,
+			"WorkAreaTarget_GL__end_frame" );
 
 		PixelFormat pf(PF_RGB|PF_A);
 
@@ -3449,10 +3462,10 @@ studio::WorkArea::async_update_preview()
 	div = low_resolution ? low_res_pixel_size : 1;
 	if(getenv("SYNFIG_FORCE_GL_RENDER"))
 	{
-			handle<WorkAreaTarget_GL> trgt(new class WorkAreaTarget_GL(this,w,h));
-			trgt->set_rend_desc(&desc);
-			trgt->set_onion_skin(get_onion_skin(), onion_skins);
-			target=trgt;
+		handle<WorkAreaTarget_GL> trgt(new class WorkAreaTarget_GL(this,w,h));
+		trgt->set_rend_desc(&desc);
+		trgt->set_onion_skin(get_onion_skin(), onion_skins);
+		target=trgt;
 	}
 	else if(studio::App::workarea_uses_cairo)
 	{

@@ -121,12 +121,16 @@ Target_GL::render(ProgressCallback *cb)
 					throw String("Renderer 'software' not found");
 
 				task->target_surface = new rendering::SurfaceSW();
+				task->target_surface->set_size(desc.get_w(), desc.get_h());
+				task->rect_lt = desc.get_tl();
+				task->rect_rb = desc.get_br();
 
 				rendering::Task::List list;
 				list.push_back(task);
 				renderer->run(list);
 
 				surfaces[curr_frame_] = task->target_surface;
+				end_frame();
 			}
 		}while(frames);
 	}

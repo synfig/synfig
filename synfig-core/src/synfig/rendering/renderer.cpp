@@ -88,6 +88,9 @@ bool
 Renderer::optimize_recursive(const Optimizer &optimizer, const Optimizer::RunParams& params) const
 {
 	if (params.task) {
+		if (optimizer.run(params))
+			return true;
+
 		for(Task::List::const_iterator i = params.task->sub_tasks.begin(); i != params.task->sub_tasks.end(); ++i)
 		{
 			if (*i)
@@ -96,8 +99,7 @@ Renderer::optimize_recursive(const Optimizer &optimizer, const Optimizer::RunPar
 				sub_params.task = *i;
 				sub_params.out_task.reset();
 
-				if ( optimizer.run(sub_params)
-				  || optimize_recursive(optimizer, sub_params) )
+				if ( optimize_recursive(optimizer, sub_params) )
 				{
 					Task::Handle new_task = params.task->clone();
 					new_task->sub_tasks[ i - params.task->sub_tasks.begin() ]
@@ -137,9 +139,12 @@ Renderer::optimize(Task::List &list) const
 	// optimize
 	for(Optimizer::List::const_iterator i = optimizers.begin(); i != optimizers.end();) {
 		Optimizer::RunParams params(*this, list);
-		if ( (*i)->run(params)
-		  || optimize_recursive(**i, list) )
-			{ i = optimizers.begin(); continue; }
+		if ( (*i)->run(params) || optimize_recursive(**i, list) )
+		{
+			i = optimizers.begin();
+			continue;
+		}
+		++i;
 	 }
 }
 
