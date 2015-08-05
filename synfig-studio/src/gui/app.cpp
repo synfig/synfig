@@ -289,11 +289,11 @@ std::list< etl::handle< studio::Module > > module_list_;
 
 bool studio::App::use_colorspace_gamma=true;
 #ifdef SINGLE_THREADED
-	#ifdef	WIN32
+	//#ifdef	WIN32
 	bool studio::App::single_threaded=true;
-	#else
-	bool studio::App::single_threaded=false;
-	#endif // WIN32
+	//#else
+	//bool studio::App::single_threaded=false;
+	//#endif // WIN32
 #endif  // SINGLE THREADED
 bool studio::App::restrict_radius_ducks=true;
 bool studio::App::resize_imported_images=false;
