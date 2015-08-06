@@ -39,6 +39,8 @@
 
 #include "../surfacesw.h"
 
+#include <synfig/debug/debugsurface.h>
+
 #endif
 
 using namespace synfig;
@@ -258,10 +260,10 @@ TaskContourSW::run(RunParams & /* params */) const
 		SurfaceSW::Handle::cast_dynamic( target_surface )->get_surface();
 
 	Matrix3 transfromation_matrix;
-	transfromation_matrix.m00 = get_units_per_pixel()[0];
-	transfromation_matrix.m11 = get_units_per_pixel()[1];
-	transfromation_matrix.m20 = rect_lt[0];
-	transfromation_matrix.m21 = rect_lt[1];
+	transfromation_matrix.m00 = get_pixels_per_unit()[0];
+	transfromation_matrix.m11 = get_pixels_per_unit()[1];
+	transfromation_matrix.m20 = -rect_lt[0] * transfromation_matrix.m00;
+	transfromation_matrix.m21 = -rect_lt[1] * transfromation_matrix.m11;
 
 	render_contour(
 		a,
@@ -273,6 +275,8 @@ TaskContourSW::run(RunParams & /* params */) const
 		contour->color,
 		1.0,
 		Color::BLEND_COMPOSITE );
+
+	//debug::DebugSurface::save_to_file(a, "TaskContourSW__run");
 
 	return true;
 }

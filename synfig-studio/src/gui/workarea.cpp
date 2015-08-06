@@ -1136,12 +1136,12 @@ public:
 		if (!surface->get_pixels(pre_buffer))
 			return;
 
-		debug::DebugSurface::save_to_file(
-			pre_buffer,
-			surface->get_width(),
-			surface->get_height(),
-			0,
-			"WorkAreaTarget_GL__end_frame" );
+		//debug::DebugSurface::save_to_file(
+		//	pre_buffer,
+		//	surface->get_width(),
+		//	surface->get_height(),
+		//	0,
+		//	"WorkAreaTarget_GL__end_frame" );
 
 		PixelFormat pf(PF_RGB|PF_A);
 
