@@ -152,10 +152,23 @@ reverse_value(const ValueBase &value)
 		if(ValueNode_Reverse::check_type(c_type))
 		{
 			out.reserve(list.size());
-			for(ValueBase::List::const_reverse_iterator it=list.rbegin(),end=list.rend(); it!=end; ++it)
+
+			if(!v.get_loop())
 			{
-				out.push_back(reverse_value(*it));
+				for(ValueBase::List::const_reverse_iterator it=list.rbegin(),end=list.rend(); it!=end; ++it)
+				{
+					out.push_back(reverse_value(*it));
+				}
 			}
+			else
+			{
+				for(ValueBase::List::const_reverse_iterator it=++list.rbegin(),end=list.rend(); it!=end; ++it)
+				{
+					out.push_back(reverse_value(*it));
+				}
+				out.push_back(reverse_value(list.back()));
+			}
+
 			if(c_type == type_dash_item)
 			{
 				Real prev = out.back().get(DashItem()).get_offset();
