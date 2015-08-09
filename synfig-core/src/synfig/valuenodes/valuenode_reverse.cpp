@@ -148,12 +148,23 @@ reverse_value(const ValueBase &value)
 		ValueBase v = value;
 		const ValueBase::List &list = v.get_list();
 		ValueBase::List out;
-		if(ValueNode_Reverse::check_type(v.get_contained_type()))
+		Type &c_type(v.get_contained_type());
+		if(ValueNode_Reverse::check_type(c_type))
 		{
 			out.reserve(list.size());
 			for(ValueBase::List::const_reverse_iterator it=list.rbegin(),end=list.rend(); it!=end; ++it)
 			{
 				out.push_back(reverse_value(*it));
+			}
+			if(c_type == type_dash_item)
+			{
+				for(int i = 0, size = out.size(); i < size; ++i)
+				{
+					DashItem a = out[i].get(DashItem());
+					const DashItem &b = list[size-1-(i+size-1)%size].get(DashItem());
+					a.set_offset(b.get_offset());
+					out[i] = a;
+				}
 			}
 		}
 		else
