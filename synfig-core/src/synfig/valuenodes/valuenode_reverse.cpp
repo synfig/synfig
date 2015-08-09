@@ -148,12 +148,16 @@ reverse_value(const ValueBase &value)
 		ValueBase v = value;
 		const ValueBase::List &list = v.get_list();
 		ValueBase::List out;
-		if(ValueNode_Reverse::check_type(v.get_contained_type())) {
+		if(ValueNode_Reverse::check_type(v.get_contained_type()))
+		{
 			out.reserve(list.size());
-			for(ValueBase::List::const_reverse_iterator it=list.rbegin(),end=list.rend(); it!=end; ++it) {
+			for(ValueBase::List::const_reverse_iterator it=list.rbegin(),end=list.rend(); it!=end; ++it)
+			{
 				out.push_back(reverse_value(*it));
 			}
-		} else {
+		}
+		else
+		{
 			out.resize(list.size());
 			std::reverse_copy(list.begin(), list.end(), out.begin());
 		}
@@ -180,7 +184,8 @@ reverse_value(const ValueBase &value)
 	{
 		const Gradient &grad = value.get(Gradient());
 		Gradient out;
-		for(Gradient::const_reverse_iterator it=grad.rbegin(),end=grad.rend(); it!=end; ++it) {
+		for(Gradient::const_reverse_iterator it=grad.rbegin(),end=grad.rend(); it!=end; ++it)
+		{
 			out.push_back(GradientCPoint(1 - it->pos, it->color));
 		}
 		return out;
