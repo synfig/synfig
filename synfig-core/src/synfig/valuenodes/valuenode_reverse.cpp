@@ -77,6 +77,10 @@ ValueNode_Reverse::ValueNode_Reverse(const ValueBase &x):
 	Vocab ret(get_children_vocab());
 	set_children_vocab(ret);
 	Type &type(x.get_type());
+	if(x.empty()) {
+		set_link("link", ValueNode_Const::create(x));
+	}
+	else
 	if(type == type_list)
 	{
 		Type &c_type(x.get_contained_type());
