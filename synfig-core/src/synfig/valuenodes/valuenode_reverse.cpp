@@ -35,6 +35,8 @@
 
 #include "valuenode_reverse.h"
 #include <synfig/blinepoint.h>
+#include <synfig/segment.h>
+#include <synfig/gradient.h>
 
 #include "valuenode_bline.h"
 #include "valuenode_dilist.h"
@@ -45,6 +47,8 @@
 
 #include <synfig/general.h>
 #include <ETL/misc>
+
+#include <algorithm>
 
 #endif
 
@@ -139,6 +143,44 @@ ValueNode_Reverse::operator()(Time t)const
 {
 	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
 		printf("%s:%d operator()\n", __FILE__, __LINE__);
+
+	Type &type(get_type());
+
+	if(type == type_list)
+	{
+		ValueBase value = (*link_)(t);
+		const ValueBase::List &list = value.get_list();
+		ValueBase::List out;
+		out.resize(list.size());
+		std::reverse_copy(list.begin(), list.end(), out.begin());
+		value.set(out);
+		return value;
+	}
+	else
+	if(type == type_string)
+	{
+		String out = (*link_)(t).get(String());
+		std::reverse(out.begin(), out.end());
+		return out;
+	}
+	else
+	if(type == type_segment)
+	{
+		Segment out = (*link_)(t).get(Segment());
+		std::swap(out.p1, out.p2);
+		std::swap(out.t1, out.t2);
+		return out;
+	}
+	else
+	if(type == type_gradient)
+	{
+		const Gradient &grad = (*link_)(t).get(Gradient());
+		Gradient out;
+		for(Gradient::const_reverse_iterator it=grad.rbegin(),end=grad.rend(); it!=end; ++it) {
+			out.push_back(GradientCPoint(1 - it->pos, it->color));
+		}
+		return out;
+	}
 
 	return (*link_)(t);
 }
