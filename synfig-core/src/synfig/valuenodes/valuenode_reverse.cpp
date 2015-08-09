@@ -158,12 +158,14 @@ reverse_value(const ValueBase &value)
 			}
 			if(c_type == type_dash_item)
 			{
-				for(int i = 0, size = out.size(); i < size; ++i)
+				Real prev = out.back().get(DashItem()).get_offset();
+				for(ValueBase::List::iterator it=out.begin(),end=out.end(); it!=end; ++it)
 				{
-					DashItem a = out[i].get(DashItem());
-					const DashItem &b = list[size-1-(i+size-1)%size].get(DashItem());
-					a.set_offset(b.get_offset());
-					out[i] = a;
+					DashItem di = it->get(DashItem());
+					Real tmp = di.get_offset();
+					di.set_offset(prev);
+					prev = tmp;
+					it->set(di);
 				}
 			}
 		}
