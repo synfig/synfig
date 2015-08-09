@@ -40,6 +40,8 @@
 #include "valuenode_dilist.h"
 #include "valuenode_wplist.h"
 #include "valuenode_dynamiclist.h"
+#include "valuenode_composite.h"
+#include "valuenode_const.h"
 
 #include <synfig/general.h>
 #include <ETL/misc>
@@ -68,22 +70,29 @@ ValueNode_Reverse::ValueNode_Reverse(Type &x):
 ValueNode_Reverse::ValueNode_Reverse(const ValueBase &x):
 	LinkableValueNode(x.get_type())
 {
-	if(x.get_type() != type_list)
-	{
-		assert(0);
-		throw runtime_error(get_local_name()+_(":Bad type ")+x.get_type().description.local_name);
-	}
 	Vocab ret(get_children_vocab());
 	set_children_vocab(ret);
-	Type &type(x.get_contained_type());
-	if(type == type_bline_point)
-		set_link("link", ValueNode_BLine::create(x));
-	else if(type == type_dash_item)
-		set_link("link", ValueNode_DIList::create(x));
-	else if(type == type_width_point)
-		set_link("link", ValueNode_WPList::create(x));
+	Type &type(x.get_type());
+	if(type == type_list)
+	{
+		Type &c_type(x.get_contained_type());
+		if(c_type == type_bline_point)
+			set_link("link", ValueNode_BLine::create(x));
+		else if(c_type == type_dash_item)
+			set_link("link", ValueNode_DIList::create(x));
+		else if(c_type == type_width_point)
+			set_link("link", ValueNode_WPList::create(x));
+		else
+			set_link("link", ValueNode_DynamicList::create_from(x));
+	}
 	else
-		set_link("link", ValueNode_DynamicList::create_from(x));
+	if(ValueNode_Composite::check_type(type)) {
+		set_link("link", ValueNode_Composite::create(x));
+	}
+	else
+	{
+		set_link("link", ValueNode_Const::create(x));
+	}
 }
 
 ValueNode_Reverse*
@@ -110,7 +119,7 @@ ValueNode_Reverse::set_link_vfunc(int i,ValueNode::Handle value)
 
 	switch(i)
 	{
-	case 0: CHECK_TYPE_AND_SET_VALUE(link_, type_list);
+	case 0: CHECK_TYPE_AND_SET_VALUE(link_, get_type());
 	}
 	return false;
 }
@@ -151,7 +160,14 @@ ValueNode_Reverse::get_local_name()const
 bool
 ValueNode_Reverse::check_type(Type &type __attribute__ ((unused)))
 {
-	return type == type_list;
+	return
+		type == type_list ||
+		type == type_string ||
+		type == type_segment ||
+		type == type_gradient ||
+		type == type_bline_point ||
+		type == type_width_point ||
+		type == type_dash_item;
 }
 
 LinkableValueNode::Vocab
@@ -164,7 +180,7 @@ ValueNode_Reverse::get_children_vocab_vfunc()const
 
 	ret.push_back(ParamDesc(ValueBase(),"link")
 		.set_local_name(_("Link"))
-		.set_description(_("The list to be reversed"))
+		.set_description(_("The value to be reversed"))
 	);
 
 	return ret;
