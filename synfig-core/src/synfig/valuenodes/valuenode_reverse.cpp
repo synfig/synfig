@@ -139,34 +139,38 @@ ValueNode_Reverse::get_link_vfunc(int i)const
 }
 
 ValueBase
-ValueNode_Reverse::operator()(Time t)const
+reverse_value(const ValueBase &value)
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
-
-	Type &type(get_type());
+	Type &type(value.get_type());
 
 	if(type == type_list)
 	{
-		ValueBase value = (*link_)(t);
-		const ValueBase::List &list = value.get_list();
+		ValueBase v = value;
+		const ValueBase::List &list = v.get_list();
 		ValueBase::List out;
-		out.resize(list.size());
-		std::reverse_copy(list.begin(), list.end(), out.begin());
-		value.set(out);
-		return value;
+		if(ValueNode_Reverse::check_type(v.get_contained_type())) {
+			out.reserve(list.size());
+			for(ValueBase::List::const_reverse_iterator it=list.rbegin(),end=list.rend(); it!=end; ++it) {
+				out.push_back(reverse_value(*it));
+			}
+		} else {
+			out.resize(list.size());
+			std::reverse_copy(list.begin(), list.end(), out.begin());
+		}
+		v.set(out);
+		return v;
 	}
 	else
 	if(type == type_string)
 	{
-		String out = (*link_)(t).get(String());
+		String out = value.get(String());
 		std::reverse(out.begin(), out.end());
 		return out;
 	}
 	else
 	if(type == type_segment)
 	{
-		Segment out = (*link_)(t).get(Segment());
+		Segment out = value.get(Segment());
 		std::swap(out.p1, out.p2);
 		std::swap(out.t1, out.t2);
 		return out;
@@ -174,7 +178,7 @@ ValueNode_Reverse::operator()(Time t)const
 	else
 	if(type == type_gradient)
 	{
-		const Gradient &grad = (*link_)(t).get(Gradient());
+		const Gradient &grad = value.get(Gradient());
 		Gradient out;
 		for(Gradient::const_reverse_iterator it=grad.rbegin(),end=grad.rend(); it!=end; ++it) {
 			out.push_back(GradientCPoint(1 - it->pos, it->color));
@@ -184,14 +188,14 @@ ValueNode_Reverse::operator()(Time t)const
 	else
 	if(type == type_bline_point)
 	{
-		BLinePoint bp = (*link_)(t).get(BLinePoint());
+		BLinePoint bp = value.get(BLinePoint());
 		bp.reverse();
 		return bp;
 	}
 	else
 	if(type == type_width_point)
 	{
-		WidthPoint wp = (*link_)(t).get(WidthPoint());
+		WidthPoint wp = value.get(WidthPoint());
 		wp.reverse();
 		int tmp = wp.get_side_type_before();
 		wp.set_side_type_before(wp.get_side_type_after());
@@ -201,7 +205,7 @@ ValueNode_Reverse::operator()(Time t)const
 	else
 	if(type == type_dash_item)
 	{
-		DashItem di = (*link_)(t).get(DashItem());
+		DashItem di = value.get(DashItem());
 		int tmp = di.get_side_type_before();
 		di.set_side_type_before(di.get_side_type_after());
 		di.set_side_type_after(tmp);
@@ -209,7 +213,16 @@ ValueNode_Reverse::operator()(Time t)const
 	}
 
 	assert(0);
-	return (*link_)(t);
+	return value;
+}
+
+ValueBase
+ValueNode_Reverse::operator()(Time t)const
+{
+	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
+		printf("%s:%d operator()\n", __FILE__, __LINE__);
+
+	return reverse_value((*link_)(t));
 }
 
 
