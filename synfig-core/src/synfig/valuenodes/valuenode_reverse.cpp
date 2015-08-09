@@ -145,12 +145,15 @@ reverse_value(const ValueBase &value)
 
 	if(type == type_list)
 	{
+		// We'll be writing to this later, so copy it.
 		ValueBase v = value;
 		const ValueBase::List &list = v.get_list();
 		ValueBase::List out;
 		Type &c_type(v.get_contained_type());
 		if(ValueNode_Reverse::check_type(c_type))
 		{
+			// This is a "deep" reversal, so reverse the elements of the list, too.
+
 			out.reserve(list.size());
 
 			if(!v.get_loop())
@@ -162,6 +165,9 @@ reverse_value(const ValueBase &value)
 			}
 			else
 			{
+				// The reversal of a looped list is rotated to end with the same value as the original.
+				// This makes some things work better, e.g. makes an adv. outline come out looking the same
+				// after having both its vertices and its width points reversed.
 				for(ValueBase::List::const_reverse_iterator it=++list.rbegin(),end=list.rend(); it!=end; ++it)
 				{
 					out.push_back(reverse_value(*it));
@@ -171,6 +177,7 @@ reverse_value(const ValueBase &value)
 
 			if(c_type == type_dash_item)
 			{
+				// Dash items need to exchange offsets with their neighbors to work right.
 				Real prev = out.back().get(DashItem()).get_offset();
 				for(ValueBase::List::iterator it=out.begin(),end=out.end(); it!=end; ++it)
 				{
@@ -184,6 +191,7 @@ reverse_value(const ValueBase &value)
 		}
 		else
 		{
+			// The elements aren't reversible. Just copy them.
 			out.resize(list.size());
 			std::reverse_copy(list.begin(), list.end(), out.begin());
 		}
@@ -212,7 +220,7 @@ reverse_value(const ValueBase &value)
 		Gradient out;
 		for(Gradient::const_reverse_iterator it=grad.rbegin(),end=grad.rend(); it!=end; ++it)
 		{
-			out.push_back(GradientCPoint(1 - it->pos, it->color));
+			out.push_back(GradientCPoint(1-it->pos, it->color));
 		}
 		return out;
 	}
