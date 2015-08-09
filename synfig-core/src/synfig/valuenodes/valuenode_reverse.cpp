@@ -34,9 +34,9 @@
 #endif
 
 #include "valuenode_reverse.h"
-#include <synfig/blinepoint.h>
 #include <synfig/segment.h>
 #include <synfig/gradient.h>
+#include <synfig/blinepoint.h>
 
 #include "valuenode_bline.h"
 #include "valuenode_dilist.h"
@@ -181,7 +181,34 @@ ValueNode_Reverse::operator()(Time t)const
 		}
 		return out;
 	}
+	else
+	if(type == type_bline_point)
+	{
+		BLinePoint bp = (*link_)(t).get(BLinePoint());
+		bp.reverse();
+		return bp;
+	}
+	else
+	if(type == type_width_point)
+	{
+		WidthPoint wp = (*link_)(t).get(WidthPoint());
+		wp.reverse();
+		int tmp = wp.get_side_type_before();
+		wp.set_side_type_before(wp.get_side_type_after());
+		wp.set_side_type_after(tmp);
+		return wp;
+	}
+	else
+	if(type == type_dash_item)
+	{
+		DashItem di = (*link_)(t).get(DashItem());
+		int tmp = di.get_side_type_before();
+		di.set_side_type_before(di.get_side_type_after());
+		di.set_side_type_after(tmp);
+		return di;
+	}
 
+	assert(0);
 	return (*link_)(t);
 }
 
