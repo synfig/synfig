@@ -36,6 +36,7 @@ VALUENODES_HH = \
 	valuenodes/valuenode_reciprocal.h \
 	valuenodes/valuenode_reference.h \
 	valuenodes/valuenode_repeat_gradient.h \
+	valuenodes/valuenode_reverse.h \
 	valuenodes/valuenode_scale.h \
 	valuenodes/valuenode_segcalctangent.h \
 	valuenodes/valuenode_segcalcvertex.h \
@@ -101,6 +102,7 @@ VALUENODES_CC = \
 	valuenodes/valuenode_reciprocal.cpp \
 	valuenodes/valuenode_reference.cpp \
 	valuenodes/valuenode_repeat_gradient.cpp \
+	valuenodes/valuenode_reverse.cpp \
 	valuenodes/valuenode_scale.cpp \
 	valuenodes/valuenode_segcalctangent.cpp \
 	valuenodes/valuenode_segcalcvertex.cpp \
