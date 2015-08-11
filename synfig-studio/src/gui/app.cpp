@@ -2446,6 +2446,12 @@ App::dialog_open_file_spal(const std::string &title, std::string &filename, std:
 	dialog->set_current_folder(prev_path);
 	dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
 	dialog->add_button(Gtk::StockID(_("Open")), Gtk::RESPONSE_ACCEPT);
+	
+	Glib::RefPtr<Gtk::FileFilter> filter_supported = Gtk::FileFilter::create();
+	filter_supported->set_name(_("Palette files (*.spal, *.gpl)"));
+	filter_supported->add_pattern("*.spal");
+	filter_supported->add_pattern("*.gpl");
+	dialog->add_filter(filter_supported);
 
 	// show only Synfig color palette file (*.spal)
 	Glib::RefPtr<Gtk::FileFilter> filter_spal = Gtk::FileFilter::create();
