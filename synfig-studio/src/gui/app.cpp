@@ -2452,6 +2452,12 @@ App::dialog_open_file_spal(const std::string &title, std::string &filename, std:
 	filter_spal->set_name(_("Synfig palette files (*.spal)"));
 	filter_spal->add_pattern("*.spal");
 	dialog->add_filter(filter_spal);
+	
+	// ...and add GIMP color palette file too (*.gpl)
+        Glib::RefPtr<Gtk::FileFilter> filter_gpl = Gtk::FileFilter::create();
+	filter_gpl->set_name(_("GIMP palette files (*.gpl)"));
+	filter_gpl->add_pattern("*.gpl");
+	dialog->add_filter(filter_gpl);
 
 	if (filename.empty())
 	dialog->set_filename(prev_path);
