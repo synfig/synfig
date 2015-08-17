@@ -489,13 +489,13 @@ mkimagemagick()
 PKG_NAME=ImageMagick
 #PKG_VERSION=6.8.6-10
 PKG_VERSION=6.8.7-10
-TAREXT=bz2
+TAREXT=xz
 
 if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION%-*}  --print-errors; then
     cd $WORKSPACE
     [ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://www.imagemagick.org/download/releases/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
     if [ ! -d ${PKG_NAME}-${PKG_VERSION} ]; then
-        tar -xjf ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+        tar -xf ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
         cd ${PKG_NAME}-${PKG_VERSION}
     else
         cd ${PKG_NAME}-${PKG_VERSION}
@@ -888,6 +888,7 @@ $CYGWIN_SETUP \
 -s http://www.mirrorservice.org/sites/sourceware.org/pub/cygwin/ \
 -P urlgrabber \
 -P rpm-devel \
+-P rpm-python \
 -P libglib2.0-devel \
 -P libxml2-devel \
 -P libsqlite3-devel \
