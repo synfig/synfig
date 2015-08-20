@@ -799,7 +799,8 @@ installonly_limit=3
 name=Fedora \$releasever - \$basearch
 failovermethod=priority
 #mirrorlist=http://mirrors.fedoraproject.org/metalink?repo=fedora-\$releasever&arch=\$basearch
-baseurl=http://archive.fedoraproject.org/pub/archive/fedora/linux/releases/20/Everything/i386/os/
+#baseurl=http://archive.fedoraproject.org/pub/archive/fedora/linux/releases/21/Everything/i386/os/
+baseurl=http://download.fedoraproject.org/pub/fedora/linux/releases/21/Everything/i386/os/
 enabled=1
 metadata_expire=7d
 
@@ -807,7 +808,8 @@ metadata_expire=7d
 name=Fedora \$releasever - \$basearch - Updates
 failovermethod=priority
 #mirrorlist=http://mirrors.fedoraproject.org/metalink?repo=updates-released-f\$releasever&arch=\$basearch
-baseurl=http://archive.fedoraproject.org/pub/archive/fedora/linux/updates/20/i386/
+#baseurl=http://archive.fedoraproject.org/pub/archive/fedora/linux/updates/21/i386/
+baseurl=http://download.fedoraproject.org/pub/fedora/linux/updates/21/i386/
 enabled=1
 EOF
 
@@ -847,7 +849,7 @@ chmod a+x ${MINGWPREFIX}/bin/*.dll
 mkprep()
 {
 
-export PREP_VERSION=5
+export PREP_VERSION=6
 
 if [[ `cat /prep-done` != "${PREP_VERSION}" ]]; then
 
