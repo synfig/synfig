@@ -44,10 +44,20 @@ if [ `whoami` != "root" ]; then
 	exit 1
 fi
 
-if [ ! -z $UNIVERSAL ]; then
-export BUILDDIR=~/SynfigStudio-build.universal
+export SCRIPTPATH=$(cd `dirname "$0"`; pwd)
+
+SYNFIG_REPO_DIR=$(dirname "$SCRIPTPATH")
+SCRIPTDIR_IS_REPO=0
+
+if [ -e "$SYNFIG_REPO_DIR/build.conf" ]; then
+	source "$SYNFIG_REPO_DIR/build.conf"
+fi
+
+if [ ! -z $UNIVERSAL ] && [[ ! $UNIVERSAL == 0 ]]; then
+export BUILDDIR=~/synfig-buildroot/build.universal
 else
-export BUILDDIR=~/SynfigStudio-build
+export BUILDDIR=~/synfig-buildroot/build
+export UNIVERSAL=0
 fi
 
 if [ -z $X11 ]; then
@@ -71,10 +81,6 @@ LNKDIR=/tmp/skl/SynfigStudio
 MACPORTS=$LNKDIR/Contents/Resources
 MPSRC=MacPorts-2.3.3
 
-SYNFIG_REPO_DIR=~/src/synfig
-SCRIPTDIR_IS_REPO=0
-
-export SCRIPTPATH=$(cd `dirname "$0"`; pwd)
 
 export SYNFIG_PREFIX=${MACPORTS}/synfig/
 export PATH="$MACPORTS/bin:${SYNFIG_PREFIX}/bin:$MACPORTS/sbin:$PATH"
@@ -86,7 +92,7 @@ export LD_LIBRARY_PATH=${MACPORTS}/lib:${SYNFIG_PREFIX}/lib:${SYNFIG_PREFIX}/lib
 #export CPPFLAGS="-fpermissive -I${MACPORTS}/include -I${SYNFIG_PREFIX}/include"
 export CPPFLAGS="-I${MACPORTS}/include -I${SYNFIG_PREFIX}/include"
 export LDFLAGS="-L${MACPORTS}/lib -L${SYNFIG_PREFIX}/lib"
-if [ ! -z $UNIVERSAL ]; then
+if [[ ! $UNIVERSAL == 0 ]]; then
 export CFLAGS="-arch i386 -arch x86_64"
 export CXXFLAGS="-arch i386 -arch x86_64"
 export LDFLAGS="$LDFLAGS -arch i386 -arch x86_64"
@@ -205,7 +211,7 @@ mkdeps()
 	[ -d $MACPORTS/tmp/app ] || mkdir -p $MACPORTS/tmp/app
 	sed -i "" -e "s|/Applications/MacPorts|$MACPORTS/tmp/app|g" "$MACPORTS/etc/macports/macports.conf" || true
 	
-	if [ ! -z $UNIVERSAL ]; then
+	if [[ ! $UNIVERSAL == 0 ]]; then
 		if [[ $X11 == 1 ]]; then
 			echo "+universal +x11 +nonfree" > $MACPORTS/etc/macports/variants.conf
 		else
@@ -300,7 +306,7 @@ mksynfig()
 	sed -i 's/^AC_CONFIG_SUBDIRS(libltdl)$/m4_ifdef([_AC_SEEN_TAG(libltdl)], [], [AC_CONFIG_SUBDIRS(libltdl)])/' configure.ac || true
 	sed -i 's/^# AC_CONFIG_SUBDIRS(libltdl)$/m4_ifdef([_AC_SEEN_TAG(libltdl)], [], [AC_CONFIG_SUBDIRS(libltdl)])/' configure.ac || true
 	autoreconf --install --force
-	if [ ! -z $UNIVERSAL ]; then
+	if [[ ! $UNIVERSAL == 0 ]]; then
 	export DEPTRACK="--disable-dependency-tracking"
 	fi
 	/bin/sh ./configure ${DEPTRACK} --prefix=${SYNFIG_PREFIX} --includedir=${SYNFIG_PREFIX}/include --disable-static --enable-shared --with-magickpp --without-libavcodec --with-boost=${MACPORTS} ${DEBUG}
@@ -320,7 +326,7 @@ mksynfigstudio()
 	make clean || true
 	CONFIGURE_PACKAGE_OPTIONS='--disable-update-mimedb'
 	/bin/sh ./bootstrap.sh
-	if [ ! -z $UNIVERSAL ]; then
+	if [[ ! $UNIVERSAL == 0 ]]; then
 	export DEPTRACK="--disable-dependency-tracking"
 	fi
 	/bin/sh ./configure ${DEPTRACK}  --prefix=${SYNFIG_PREFIX} --includedir=${SYNFIG_PREFIX}/include --disable-static --enable-shared $DEBUG $CONFIGURE_PACKAGE_OPTIONS
@@ -429,7 +435,7 @@ mkdmg()
 	#echo Synfig version is: $VERSION
 
 	ARCH=`uname -m`
-	if [ ! -z $UNIVERSAL ]; then
+	if [[ ! $UNIVERSAL == 0 ]]; then
 	export FINAL_FILENAME=synfigstudio-"$VERSION"
 	else
 	export FINAL_FILENAME=synfigstudio-"$VERSION"."$ARCH"
