@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/software/task/taskmeshgl.h
+/*!	\file synfig/rendering/opengl/task/taskmeshgl.h
 **	\brief TaskMeshGL Header
 **
 **	$Id$

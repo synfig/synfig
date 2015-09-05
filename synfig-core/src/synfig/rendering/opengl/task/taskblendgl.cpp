@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/software/task/taskblendgl.cpp
+/*!	\file synfig/rendering/opengl/task/taskblendgl.cpp
 **	\brief TaskBlendGL
 **
 **	$Id$

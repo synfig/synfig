@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/software/optimizer/optimizerblendgl.cpp
+/*!	\file synfig/rendering/opengl/optimizer/optimizerblendgl.cpp
 **	\brief OptimizerBlendGL
 **
 **	$Id$

@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/software/optimizer/optimizermeshgl.h
+/*!	\file synfig/rendering/opengl/optimizer/optimizermeshgl.h
 **	\brief OptimizerMeshGL Header
 **
 **	$Id$

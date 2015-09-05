@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/software/optimizer/optimizercontourgl.h
+/*!	\file synfig/rendering/opengl/optimizer/optimizercontourgl.h
 **	\brief OptimizerContourGL Header
 **
 **	$Id$

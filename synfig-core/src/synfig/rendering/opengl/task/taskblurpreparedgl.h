@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/software/task/taskblurpreparedgl.h
+/*!	\file synfig/rendering/opengl/task/taskblurpreparedgl.h
 **	\brief TaskBlurPreparedGL Header
 **
 **	$Id$

@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/software/surfacegl.h
+/*!	\file synfig/rendering/opengl/surfacegl.h
 **	\brief SurfaceGL Header
 **
 **	$Id$

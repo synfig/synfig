@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/software/task/taskcontourgl.h
+/*!	\file synfig/rendering/opengl/task/taskcontourgl.h
 **	\brief TaskContourGL Header
 **
 **	$Id$
@@ -46,6 +46,7 @@ class TaskContourGL: public TaskGL
 public:
 	typedef etl::handle<TaskContourGL> Handle;
 
+public:
 	Color color;
 	Contour::Handle contour;
 

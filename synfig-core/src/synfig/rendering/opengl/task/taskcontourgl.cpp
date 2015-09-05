@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/software/task/taskcontourgl.cpp
+/*!	\file synfig/rendering/opengl/task/taskcontourgl.cpp
 **	\brief TaskContourGL
 **
 **	$Id$

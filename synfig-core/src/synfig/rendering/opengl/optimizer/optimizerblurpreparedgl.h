@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/software/optimizer/optimizerblurpreparedgl.h
+/*!	\file synfig/rendering/opengl/optimizer/optimizerblurpreparedgl.h
 **	\brief OptimizerBlurPreparedGL Header
 **
 **	$Id$
