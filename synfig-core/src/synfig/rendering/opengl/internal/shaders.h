@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/software/renderersw.h
-**	\brief RendererSW Header
+/*!	\file synfig/rendering/opengl/internal/shaders.h
+**	\brief Environment Header
 **
 **	$Id$
 **
@@ -22,12 +22,14 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_RENDERING_RENDERERSW_H
-#define __SYNFIG_RENDERING_RENDERERSW_H
+#ifndef __SYNFIG_RENDERING_GL_SHADERS_H
+#define __SYNFIG_RENDERING_GL_SHADERS_H
 
 /* === H E A D E R S ======================================================= */
 
-#include "../renderer.h"
+#include <synfig/color.h>
+
+#include "context.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -39,19 +41,34 @@ namespace synfig
 {
 namespace rendering
 {
+namespace gl
+{
 
-class RendererSW: public Renderer
+class Shaders
 {
 public:
-	typedef etl::handle<RendererSW> Handle;
+	Context &context;
 
-	RendererSW();
-	~RendererSW();
+private:
+	GLuint simple_vertex_id;
+	GLuint simpleProgramId;
 
-	static void initialize() { }
-	static void deinitialize() { }
+	GLuint color_fragment_id;
+	GLuint colorProgramId;
+	GLint colorUniform;
+
+	void check_shader(GLuint id, const String &src);
+	void check_program(GLuint id, const String &name);
+
+public:
+	Shaders(Context &context);
+	~Shaders();
+
+	void simple();
+	void color(const Color &c);
 };
 
+}; /* end namespace gl */
 }; /* end namespace rendering */
 }; /* end namespace synfig */
 

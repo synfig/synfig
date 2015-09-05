@@ -1,0 +1,20 @@
+RENDERING_OPENGL_INTERNAL_HH = \
+	rendering/opengl/internal/antialiasing.h \
+	rendering/opengl/internal/context.h \
+	rendering/opengl/internal/clcontext.h \
+	rendering/opengl/internal/environment.h \
+	rendering/opengl/internal/shaders.h
+
+RENDERING_OPENGL_INTERNAL_CC = \
+	rendering/opengl/internal/antialiasing.cpp \
+	rendering/opengl/internal/context.cpp \
+	rendering/opengl/internal/clcontext.cpp \
+	rendering/opengl/internal/environment.cpp \
+	rendering/opengl/internal/shaders.cpp
+
+RENDERING_OPENGL_HH += \
+    $(RENDERING_OPENGL_INTERNAL_HH)
+
+RENDERING_OPENGL_CC += \
+    $(RENDERING_OPENGL_INTERNAL_CC)
+

@@ -171,6 +171,11 @@ Renderer::initialize()
 	renderers = new std::map<String, Handle>();
 
 	// initialize renderers
+
+	RendererSW::initialize();
+	RendererGL::initialize();
+
+	// register renderers
 	register_renderer("software", new RendererSW());
 	register_renderer("gl", new RendererGL());
 }
@@ -180,6 +185,10 @@ Renderer::deinitialize()
 {
 	while(!get_renderers().empty())
 		unregister_renderer(get_renderers().begin()->first);
+
+	RendererGL::deinitialize();
+	RendererSW::deinitialize();
+
 	delete renderers;
 }
 

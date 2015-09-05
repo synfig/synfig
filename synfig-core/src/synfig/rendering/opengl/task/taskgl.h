@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/software/task/taskgl.h
+/*!	\file synfig/rendering/opengl/task/taskgl.h
 **	\brief TaskGL Header
 **
 **	$Id$
@@ -40,11 +40,16 @@ namespace synfig
 namespace rendering
 {
 
+namespace gl { class Environment; }
+
+
 class TaskGL: public Task
 {
 public:
 	typedef etl::handle<TaskGL> Handle;
 	Task::Handle clone() const { return clone_pointer(this); }
+protected:
+	gl::Environment& env() const;
 };
 
 } /* end namespace rendering */

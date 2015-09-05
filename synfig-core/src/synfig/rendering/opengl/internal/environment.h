@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/software/renderersw.h
-**	\brief RendererSW Header
+/*!	\file synfig/rendering/opengl/internal/enveironment.h
+**	\brief Environment Header
 **
 **	$Id$
 **
@@ -22,12 +22,17 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_RENDERING_RENDERERSW_H
-#define __SYNFIG_RENDERING_RENDERERSW_H
+#ifndef __SYNFIG_RENDERING_GL_ENVIRONMENT_H
+#define __SYNFIG_RENDERING_GL_ENVIRONMENT_H
 
 /* === H E A D E R S ======================================================= */
 
-#include "../renderer.h"
+#include <cassert>
+
+#include "context.h"
+#include "clcontext.h"
+#include "shaders.h"
+#include "antialiasing.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -39,19 +44,36 @@ namespace synfig
 {
 namespace rendering
 {
-
-class RendererSW: public Renderer
+namespace gl
 {
+
+class Environment
+{
+private:
+	static Environment *instance;
+
 public:
-	typedef etl::handle<RendererSW> Handle;
+	Context context;
+	ClContext clcontext;
+	Shaders shaders;
+	Antialiasing antialiasing;
 
-	RendererSW();
-	~RendererSW();
+	Environment():
+		context(),
+		clcontext(),
+		shaders(context),
+		antialiasing(context)
+	{ }
 
-	static void initialize() { }
-	static void deinitialize() { }
+	static Environment& get_instance()
+		{ assert(instance); return *instance; }
+	static void initialize()
+		{ assert(!instance); instance = new Environment(); }
+	static void deinitialize()
+		{ assert(instance); delete instance; }
 };
 
+}; /* end namespace gl */
 }; /* end namespace rendering */
 }; /* end namespace synfig */
 

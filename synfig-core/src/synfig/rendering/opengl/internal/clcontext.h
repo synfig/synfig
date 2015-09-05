@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/software/renderersw.h
-**	\brief RendererSW Header
+/*!	\file synfig/rendering/opengl/internal/clcontext.h
+**	\brief ClContext Header
 **
 **	$Id$
 **
@@ -22,12 +22,14 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_RENDERING_RENDERERSW_H
-#define __SYNFIG_RENDERING_RENDERERSW_H
+#ifndef __SYNFIG_RENDERING_GL_CLCONTEXT_H
+#define __SYNFIG_RENDERING_GL_CLCONTEXT_H
 
 /* === H E A D E R S ======================================================= */
 
-#include "../renderer.h"
+#include <CL/opencl.h>
+
+#include <synfig/string.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -39,19 +41,26 @@ namespace synfig
 {
 namespace rendering
 {
+namespace gl
+{
 
-class RendererSW: public Renderer
+class ClContext
 {
 public:
-	typedef etl::handle<RendererSW> Handle;
+	cl_context context;
+	cl_device_id device;
+	cl_command_queue queue;
 
-	RendererSW();
-	~RendererSW();
+	ClContext();
+	~ClContext();
 
-	static void initialize() { }
-	static void deinitialize() { }
+	cl_program load_program(const String &source);
+
+private:
+	static void callback(const char *, const void *, size_t, void *);
 };
 
+}; /* end namespace gl */
 }; /* end namespace rendering */
 }; /* end namespace synfig */
 

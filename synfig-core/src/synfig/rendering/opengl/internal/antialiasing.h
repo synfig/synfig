@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/software/renderersw.h
-**	\brief RendererSW Header
+/*!	\file synfig/rendering/opengl/internal/antialiasing.h
+**	\brief Antialiasing Header
 **
 **	$Id$
 **
@@ -22,12 +22,12 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_RENDERING_RENDERERSW_H
-#define __SYNFIG_RENDERING_RENDERERSW_H
+#ifndef __SYNFIG_RENDERING_GL_ANTIALIASING_H
+#define __SYNFIG_RENDERING_GL_ANTIALIASING_H
 
 /* === H E A D E R S ======================================================= */
 
-#include "../renderer.h"
+#include "context.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -39,19 +39,34 @@ namespace synfig
 {
 namespace rendering
 {
+namespace gl
+{
 
-class RendererSW: public Renderer
+class Antialiasing
 {
 public:
-	typedef etl::handle<RendererSW> Handle;
+	Context &context;
 
-	RendererSW();
-	~RendererSW();
+private:
+	GLint multisample_max_width;
+	GLint multisample_max_height;
+	GLuint multisample_texture_id;
+	GLuint multisample_renderbuffer_id;
+	GLuint multisample_framebuffer_id;
 
-	static void initialize() { }
-	static void deinitialize() { }
+	GLint multisample_viewport[4];
+	GLint multisample_orig_viewport[4];
+	GLuint multisample_orig_draw_framebuffer_id;
+
+public:
+	Antialiasing(Context &context);
+	~Antialiasing();
+
+	void multisample_begin();
+	void multisample_end();
 };
 
+}; /* end namespace gl */
 }; /* end namespace rendering */
 }; /* end namespace synfig */
 

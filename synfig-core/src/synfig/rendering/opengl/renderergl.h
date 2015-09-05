@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/software/renderergl.h
+/*!	\file synfig/rendering/opengl/renderergl.h
 **	\brief RendererGL Header
 **
 **	$Id$
@@ -27,6 +27,8 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <cassert>
+
 #include "../renderer.h"
 
 /* === M A C R O S ========================================================= */
@@ -47,6 +49,9 @@ public:
 
 	RendererGL();
 	~RendererGL();
+
+	static void initialize();
+	static void deinitialize();
 };
 
 }; /* end namespace rendering */

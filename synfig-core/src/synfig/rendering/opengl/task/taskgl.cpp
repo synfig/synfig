@@ -1,11 +1,11 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/opengl/renderergl.cpp
-**	\brief RendererGL
+/*!	\file synfig/rendering/opengl/task/taskgl.cpp
+**	\brief TaskGL
 **
 **	$Id$
 **
 **	\legal
-**	......... ... 2014 Ivan Mahonin
+**	......... ... 2015 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -35,22 +35,9 @@
 #include <signal.h>
 #endif
 
-#include "renderergl.h"
+#include "taskgl.h"
 
-#include "internal/environment.h"
-
-#include "../common/optimizer/optimizerlinear.h"
-#include "../common/optimizer/optimizersurface.h"
-#include "../common/optimizer/optimizersurfaceconvert.h"
-#include "../common/optimizer/optimizersurfacecreate.h"
-#include "../common/optimizer/optimizersurfacedestroy.h"
-#include "../common/optimizer/optimizertransformation.h"
-
-#include "optimizer/optimizercontourgl.h"
-
-#include "../software/optimizer/optimizerblendsw.h"
-#include "../software/optimizer/optimizerblurpreparedsw.h"
-#include "../software/optimizer/optimizermeshsw.h"
+#include "../internal/environment.h"
 
 #endif
 
@@ -65,34 +52,6 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
-RendererGL::RendererGL()
-{
-	// register optimizers
-	register_optimizer(new OptimizerSurfaceCreate());
-	register_optimizer(new OptimizerSurfaceConvert());
-	register_optimizer(new OptimizerSurfaceDestroy());
-	register_optimizer(new OptimizerTransformation());
-
-	register_optimizer(new OptimizerBlendSW());
-	register_optimizer(new OptimizerBlurPreparedSW());
-	register_optimizer(new OptimizerContourGL());
-	register_optimizer(new OptimizerMeshSW());
-
-	register_optimizer(new OptimizerLinear());
-	register_optimizer(new OptimizerSurface());
-}
-
-RendererGL::~RendererGL() { }
-
-void
-RendererGL::initialize() {
-	gl::Environment::initialize();
-}
-
-void
-RendererGL::deinitialize() {
-	gl::Environment::deinitialize();
-}
-
+gl::Environment& TaskGL::env() const { return gl::Environment::get_instance(); }
 
 /* === E N T R Y P O I N T ================================================= */
