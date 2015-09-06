@@ -1,11 +1,11 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/surface.cpp
-**	\brief Surface
+/*!	\file synfig/rendering/opengl/internal/predeclarations.cpp
+**	\brief Predeclarations
 **
 **	$Id$
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2014 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -35,7 +35,9 @@
 #include <signal.h>
 #endif
 
-#include "surface.h"
+#include "predeclarations.h"
+
+#include "environment.h"
 
 #endif
 
@@ -48,71 +50,28 @@ using namespace rendering;
 
 /* === P R O C E D U R E S ================================================= */
 
-/* === M E T H O D S ======================================================= */
-
-rendering::Surface::Surface():
-	width(0),
-	height(0),
-	created(false),
-	is_temporary(false)
-{ }
-
-rendering::Surface::~Surface() { }
-
-void
-rendering::Surface::set_size(int width, int height)
+namespace synfig
 {
-	assert(!is_created());
-	this->width = width > 0 ? width : 0;
-	this->height = height > 0 ? height : 0;
-}
-
-bool
-rendering::Surface::create()
+namespace rendering
 {
-	if (!is_created() && !empty())
-		created = create_vfunc();
-	return is_created();
-}
-
-
-bool
-rendering::Surface::assign(const Handle &surface)
+namespace gl
 {
-	destroy();
-	if (surface) {
-		set_size(surface->get_width(), surface->get_height());
-		created = assign_vfunc(*surface);
-	} else {
-		set_size(0, 0);
+
+class Predeclarations
+{
+public:
+	void check_types() {
+		// Compile-time checks
+
+		// Type gl::Identifier should be identical to GLuint
+		Identifier **id = (GLuint**)NULL;
 	}
-	return is_created();
-}
+};
 
-void
-rendering::Surface::destroy()
-{
-	if (is_created())
-		destroy_vfunc();
-}
+}; /* end namespace gl */
+}; /* end namespace rendering */
+}; /* end namespace synfig */
 
-bool
-rendering::Surface::empty() const
-{
-	return width <= 0 || height <= 0;
-}
-
-size_t
-rendering::Surface::get_buffer_size() const
-{
-	// TODO: check limits
-	return empty() ? 0 : get_pixels_count() * sizeof(Color);
-}
-
-bool
-rendering::Surface::get_pixels(Color *buffer) const
-{
-	return is_created() && get_pixels_vfunc(buffer);
-}
+/* === M E T H O D S ======================================================= */
 
 /* === E N T R Y P O I N T ================================================= */

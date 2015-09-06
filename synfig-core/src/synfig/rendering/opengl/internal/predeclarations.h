@@ -1,11 +1,11 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/opengl/task/taskgl.h
-**	\brief TaskGL Header
+/*!	\file synfig/rendering/opengl/internal/predeclarations.h
+**	\brief Predeclarations
 **
 **	$Id$
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2014 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -22,13 +22,10 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_RENDERING_TASKGL_H
-#define __SYNFIG_RENDERING_TASKGL_H
+#ifndef __SYNFIG_RENDERING_GL_PREDECLARATIONS_H
+#define __SYNFIG_RENDERING_GL_PREDECLARATIONS_H
 
 /* === H E A D E R S ======================================================= */
-
-#include "../../task.h"
-#include "../internal/predeclarations.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -40,18 +37,15 @@ namespace synfig
 {
 namespace rendering
 {
-
-class TaskGL: public Task
+namespace gl
 {
-public:
-	typedef etl::handle<TaskGL> Handle;
-	Task::Handle clone() const { return clone_pointer(this); }
-protected:
-	gl::Environment& env() const;
-};
 
-} /* end namespace rendering */
-} /* end namespace synfig */
+typedef unsigned int Identifier;
+class Environment;
+
+}; /* end namespace gl */
+}; /* end namespace rendering */
+}; /* end namespace synfig */
 
 /* -- E N D ----------------------------------------------------------------- */
 

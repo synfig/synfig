@@ -28,7 +28,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include "../surface.h"
-#include <synfig/surface.h>
+#include "internal/predeclarations.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -47,16 +47,21 @@ public:
 	typedef etl::handle<SurfaceGL> Handle;
 
 private:
-	synfig::Surface surface;
+	gl::Identifier id;
 
 protected:
+	gl::Environment& env() const;
+
 	virtual bool create_vfunc();
 	virtual bool assign_vfunc(const Surface &surface);
 	virtual void destroy_vfunc();
 	virtual bool get_pixels_vfunc(Color *buffer) const;
 
 public:
-	const synfig::Surface& get_surface() const { return surface; }
+	gl::Identifier get_id() const { return id; }
+
+	SurfaceGL();
+	~SurfaceGL();
 };
 
 } /* end namespace rendering */

@@ -37,6 +37,8 @@
 
 #include "surfacegl.h"
 
+#include "internal/environment.h"
+
 #endif
 
 using namespace synfig;
@@ -50,31 +52,67 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
+SurfaceGL::SurfaceGL(): id()
+	{ }
+
+SurfaceGL::~SurfaceGL()
+	{ if (id) SurfaceGL::destroy_vfunc(); }
+
+gl::Environment& SurfaceGL::env() const
+	{ return gl::Environment::get_instance(); }
+
 bool
 SurfaceGL::create_vfunc()
 {
-	// TODO:
-	return false;
+	gl::Context::Lock lock(env().context);
+	glGenTextures(1, &id);
+	glBindTexture(GL_TEXTURE_2D, id);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, get_width(), get_height(), 0, GL_RGBA, GL_FLOAT, NULL);
+
+	{
+		// clear texture
+		gl::Framebuffers::FramebufferLock framebuffer = env().framebuffers.get_framebuffer();
+		glBindFramebuffer(GL_DRAW_BUFFER, framebuffer.get_id());
+		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, id, 0);
+		glClear(GL_COLOR_BUFFER_BIT);
+		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, 0, 0);
+		glBindFramebuffer(GL_DRAW_BUFFER, 0);
+	}
+
+	return true;
 }
 
 bool
-SurfaceGL::assign_vfunc(const rendering::Surface & /* surface */)
+SurfaceGL::assign_vfunc(const rendering::Surface &surface)
 {
-	// TODO:
-	return false;
+	std::vector<char> data(surface.get_buffer_size());
+	surface.get_pixels((Color*)&data.front());
+
+	gl::Context::Lock lock(env().context);
+	glGenTextures(1, &id);
+	glBindTexture(GL_TEXTURE_2D, id);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, get_width(), get_height(), 0, GL_RGBA, GL_FLOAT, &data.front());
+
+	return true;
 }
 
 void
 SurfaceGL::destroy_vfunc()
 {
-	// TODO:
+	glDeleteTextures(1, &id);
+	id = 0;
 }
 
 bool
-SurfaceGL::get_pixels_vfunc(Color * /* buffer */) const
+SurfaceGL::get_pixels_vfunc(Color *buffer) const
 {
-	// TODO:
-	return false;
+	gl::Framebuffers::FramebufferLock framebuffer = env().framebuffers.get_framebuffer();
+	glBindFramebuffer(GL_READ_BUFFER, framebuffer.get_id());
+	glFramebufferTexture2D(GL_READ_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, id, 0);
+	glReadPixels(0, 0, get_width(), get_height(), GL_RGBA, GL_FLOAT, buffer);
+	glFramebufferTexture2D(GL_READ_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, 0, 0);
+	glBindFramebuffer(GL_READ_BUFFER, 0);
+	return true;
 }
 
 /* === E N T R Y P O I N T ================================================= */

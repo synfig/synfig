@@ -72,6 +72,7 @@ public:
 	bool empty() const;
 	int get_width() const { return width; }
 	int get_height() const { return height; }
+	int get_pixels_count() const { return get_width()*get_height(); }
 	size_t get_buffer_size() const;
 	bool is_created() const { return created; }
 	bool get_pixels(Color *buffer) const;
