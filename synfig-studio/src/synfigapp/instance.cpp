@@ -38,6 +38,7 @@
 #include <synfig/loadcanvas.h>
 #include <synfig/savecanvas.h>
 #include <synfig/filesystemnative.h>
+#include <synfig/valuenodes/valuenode_add.h>
 #include <synfig/valuenodes/valuenode_composite.h>
 #include <synfig/valuenodes/valuenode_radialcomposite.h>
 #include <synfig/valuenodes/valuenode_reference.h>
@@ -88,6 +89,7 @@ synfigapp::is_editable(synfig::ValueNode::Handle value_node)
 {
 	if(ValueNode_Const::Handle::cast_dynamic(value_node)
 		|| ValueNode_Animated::Handle::cast_dynamic(value_node)
+		|| ValueNode_Add::Handle::cast_dynamic(value_node)
 		|| ValueNode_Composite::Handle::cast_dynamic(value_node)
 		|| ValueNode_RadialComposite::Handle::cast_dynamic(value_node)
 		||(ValueNode_Reference::Handle::cast_dynamic(value_node) && !ValueNode_Greyed::Handle::cast_dynamic(value_node))

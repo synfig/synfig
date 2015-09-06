@@ -159,6 +159,18 @@ synfig::ValueNode_Add::operator()(Time t)const
 	return ValueBase();
 }
 
+ValueBase
+synfig::ValueNode_Add::get_inverse(Time t, const synfig::Real &target_value) const
+{
+	return target_value / (*scalar)(t).get(Real()) - (*ref_b)(t).get(Vector::value_type());
+}
+
+synfig::ValueBase
+synfig::ValueNode_Add::get_inverse(Time t, const synfig::Angle &target_value) const
+{
+	return target_value / (*scalar)(t).get(Real()) - (*ref_b)(t).get(Angle());
+}
+
 bool
 ValueNode_Add::set_link_vfunc(int i,ValueNode::Handle value)
 {
