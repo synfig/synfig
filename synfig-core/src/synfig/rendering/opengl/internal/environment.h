@@ -29,11 +29,12 @@
 
 #include <cassert>
 
+#include "antialiasing.h"
+#include "buffers.h"
 #include "context.h"
 #include "clcontext.h"
-#include "buffers.h"
+#include "framebuffers.h"
 #include "shaders.h"
-#include "antialiasing.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -59,13 +60,15 @@ public:
 	Buffers buffers;
 	Shaders shaders;
 	Antialiasing antialiasing;
+	Framebuffers framebuffers;
 
 	Environment():
 		context(),
 		clcontext(),
 		buffers(context),
 		shaders(context),
-		antialiasing(context)
+		antialiasing(context),
+		framebuffers(context)
 	{ }
 
 	static Environment& get_instance()
