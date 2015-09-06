@@ -116,8 +116,6 @@ Action::ValueDescConnect::is_candidate(const ParamList &x)
 		// don't show the option of connecting to an existing Index parameter of the Duplicate layer
 		if(x.count("dest"))
 		{
-			ValueDesc value_desc=x.find("dest")->second.get_value_desc();
-
 			if (value_desc.parent_is_layer() &&
 				value_desc.get_layer()->get_name() == "duplicate" &&
 				value_desc.get_param_name() == "index")
@@ -126,8 +124,6 @@ Action::ValueDescConnect::is_candidate(const ParamList &x)
 
 		if(x.count("src"))
 		{
-			ValueDesc value_desc=x.find("dest")->second.get_value_desc();
-			ValueNode::Handle value_node=x.find("src")->second.get_value_node();
 			if(value_desc.get_value_type()==value_node->get_type())
 				return true;
 		}
