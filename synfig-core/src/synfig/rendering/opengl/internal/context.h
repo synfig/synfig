@@ -90,7 +90,7 @@ public:
 		}
 
 		void make_current() const;
-		static ContextInfo get_current();
+		static ContextInfo get_current(Display *default_display);
 	};
 
 private:

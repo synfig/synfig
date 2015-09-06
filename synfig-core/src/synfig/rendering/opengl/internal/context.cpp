@@ -62,10 +62,11 @@ void gl::Context::ContextInfo::make_current() const
 	glXMakeContextCurrent(display, drawable, read_drawable, context);
 }
 
-gl::Context::ContextInfo gl::Context::ContextInfo::get_current()
+gl::Context::ContextInfo gl::Context::ContextInfo::get_current(Display *default_display)
 {
 	ContextInfo ci;
 	ci.display = glXGetCurrentDisplay();
+	if (!ci.display) ci.display = default_display;
 	ci.drawable = glXGetCurrentDrawable();
 	ci.read_drawable = glXGetCurrentReadDrawable();
 	ci.context = glXGetCurrentContext();
@@ -156,13 +157,13 @@ gl::Context::~Context()
 bool gl::Context::is_current() const
 {
 	return is_valid()
-		&& context_info == ContextInfo::get_current();
+		&& context_info == ContextInfo::get_current(display);
 }
 
 void gl::Context::use()
 {
 	if (is_valid()) {
-		context_stack.push_back(ContextInfo::get_current());
+		context_stack.push_back(ContextInfo::get_current(display));
 		context_info.make_current();
 	}
 }

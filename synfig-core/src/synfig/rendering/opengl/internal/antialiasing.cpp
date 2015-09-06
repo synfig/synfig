@@ -116,6 +116,7 @@ gl::Antialiasing::~Antialiasing()
 void
 gl::Antialiasing::multisample_begin()
 {
+	Context::Lock lock(context);
 	glGetIntegerv(GL_VIEWPORT, multisample_orig_viewport);
 	multisample_viewport[2] = std::min(multisample_orig_viewport[2], multisample_max_width);
 	multisample_viewport[3] = std::min(multisample_orig_viewport[3], multisample_max_height);
@@ -131,6 +132,7 @@ gl::Antialiasing::multisample_begin()
 void
 gl::Antialiasing::multisample_end()
 {
+	Context::Lock lock(context);
 	GLuint prev_read_framebuffer_id = 0;
 	glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, (GLint*)&prev_read_framebuffer_id);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, (GLuint)multisample_orig_draw_framebuffer_id);

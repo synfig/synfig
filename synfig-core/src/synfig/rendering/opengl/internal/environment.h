@@ -31,6 +31,7 @@
 
 #include "context.h"
 #include "clcontext.h"
+#include "buffers.h"
 #include "shaders.h"
 #include "antialiasing.h"
 
@@ -55,12 +56,14 @@ private:
 public:
 	Context context;
 	ClContext clcontext;
+	Buffers buffers;
 	Shaders shaders;
 	Antialiasing antialiasing;
 
 	Environment():
 		context(),
 		clcontext(),
+		buffers(context),
 		shaders(context),
 		antialiasing(context)
 	{ }
