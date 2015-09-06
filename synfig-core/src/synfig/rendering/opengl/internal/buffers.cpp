@@ -117,7 +117,7 @@ gl::Buffers::~Buffers()
 	Context::Lock lock(context);
 
 	// delete vertex arrays
-	for(std::vector<VertexArray>::iterator i = vertex_arrays.begin(); i != vertex_arrays.end(); ++i)
+	for(std::list<VertexArray>::iterator i = vertex_arrays.begin(); i != vertex_arrays.end(); ++i)
 	{
 		assert(!i->locks);
 		glDeleteVertexArrays(1, &i->id);
@@ -139,7 +139,7 @@ gl::Buffers::VertexArrayLock
 gl::Buffers::get_vertex_array()
 {
 	Context::Lock lock(context);
-	for(std::vector<VertexArray>::iterator i = vertex_arrays.begin(); i != vertex_arrays.end(); ++i)
+	for(std::list<VertexArray>::iterator i = vertex_arrays.begin(); i != vertex_arrays.end(); ++i)
 		if (!i->locks)
 			return VertexArrayLock(&*i);
 	vertex_arrays.push_back(VertexArray());

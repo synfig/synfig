@@ -23,9 +23,11 @@
 /* === S T A R T =========================================================== */
 
 #ifndef __SYNFIG_RENDERING_GL_BUFFERS_H
-#define __SYNFIG_RENDERING_GL_BUFFRES_H
+#define __SYNFIG_RENDERING_GL_BUFFERS_H
 
 /* === H E A D E R S ======================================================= */
+
+#include <list>
 
 #include "context.h"
 
@@ -154,7 +156,7 @@ public:
 private:
 	Buffer array_buffer;
 	Buffer element_array_buffer;
-	std::vector<VertexArray> vertex_arrays;
+	std::list<VertexArray> vertex_arrays;
 
 public:
 	Buffers(Context &context);
