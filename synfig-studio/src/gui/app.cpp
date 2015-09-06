@@ -3531,7 +3531,7 @@ App::open_as(std::string filename,std::string as,synfig::FileContainerZip::file_
 			one_moment.hide();
 
 			if(instance->is_updated() && App::dialog_message_2b(
-				_("Newer version of this file availabel on the CVS repository!"),
+				_("Newer version of this file available on the CVS repository!"),
 				_("repository. Would you like to update now? (It would probably be a good idea)"),
 				Gtk::MESSAGE_QUESTION,
 				_("Cancel"),
