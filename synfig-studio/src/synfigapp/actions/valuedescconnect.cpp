@@ -106,6 +106,13 @@ Action::ValueDescConnect::is_candidate(const ParamList &x)
 {
 	if(candidate_check(get_param_vocab(),x))
 	{
+	    ValueDesc value_desc(x.find("dest")->second.get_value_desc());
+	    ValueNode::Handle value_node(x.find("src")->second.get_value_node());
+
+	    //! forbid recursive linking
+	    if (value_desc.parent_is_value_node() && value_node == value_desc.get_parent_value_node())
+	        return false;
+
 		// don't show the option of connecting to an existing Index parameter of the Duplicate layer
 		if(x.count("dest"))
 		{
