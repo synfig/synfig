@@ -60,11 +60,13 @@ namespace gl
 class Predeclarations
 {
 public:
-	void check_types() {
+	void* check_types() {
 		// Compile-time checks
 
 		// Type gl::Identifier should be identical to GLuint
 		Identifier **id = (GLuint**)NULL;
+
+		return id;
 	}
 };
 
