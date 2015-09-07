@@ -57,12 +57,36 @@ typedef GLXContext (*GLXCREATECONTEXTATTRIBSARBPROC)(Display*, GLXFBConfig, GLXC
 
 /* === M E T H O D S ======================================================= */
 
-void gl::Context::ContextInfo::make_current() const
+#define ADD_ENUM(x) std::pair<GLenum, const char *>(x, #x)
+std::pair<GLenum, const char*> gl::Context::enum_strings[] = {
+	// errors
+	ADD_ENUM(GL_INVALID_ENUM),
+	ADD_ENUM(GL_INVALID_VALUE),
+	ADD_ENUM(GL_INVALID_OPERATION),
+	ADD_ENUM(GL_INVALID_FRAMEBUFFER_OPERATION),
+	ADD_ENUM(GL_STACK_OVERFLOW),
+	ADD_ENUM(GL_STACK_UNDERFLOW),
+	ADD_ENUM(GL_OUT_OF_MEMORY),
+	// framebuffer statuses
+	ADD_ENUM(GL_FRAMEBUFFER_COMPLETE),
+	ADD_ENUM(GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT),
+	ADD_ENUM(GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT),
+	ADD_ENUM(GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER),
+	ADD_ENUM(GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER),
+	ADD_ENUM(GL_FRAMEBUFFER_UNSUPPORTED),
+	// end
+	ADD_ENUM(GL_NONE) };
+
+
+
+void
+gl::Context::ContextInfo::make_current() const
 {
 	glXMakeContextCurrent(display, drawable, read_drawable, context);
 }
 
-gl::Context::ContextInfo gl::Context::ContextInfo::get_current(Display *default_display)
+gl::Context::ContextInfo
+gl::Context::ContextInfo::get_current(Display *default_display)
 {
 	ContextInfo ci;
 	ci.display = glXGetCurrentDisplay();
@@ -154,33 +178,49 @@ gl::Context::~Context()
 	context_info.display = None;
 }
 
-bool gl::Context::is_current() const
+bool
+gl::Context::is_current() const
 {
 	return is_valid()
 		&& context_info == ContextInfo::get_current(display);
 }
 
-void gl::Context::use()
+void
+gl::Context::use()
 {
 	if (is_valid()) {
 		context_stack.push_back(ContextInfo::get_current(display));
 		context_info.make_current();
+		check("gl::Context::use");
 	}
 }
 
-void gl::Context::unuse()
+void
+gl::Context::unuse()
 {
 	assert(is_current());
 	if (is_valid()) {
 		assert(!context_stack.empty());
+		check("gl::Context::unuse");
 		context_stack.back().make_current();
 		context_stack.pop_back();
 	}
 }
 
-void gl::Context::check(const std::string &s) {
+void
+gl::Context::check(const char *s)
+{
 	if (GLenum error = glGetError())
-		warning("%s GL error: 0x%x", s.c_str(), error);
+		warning("%s GL error: 0x%x %s", s, error, get_enum_string(error));
+}
+
+const char *
+gl::Context::get_enum_string(GLenum x)
+{
+	for(int i = 0; i < (int)sizeof(enum_strings)/(int)sizeof(enum_strings[0]); ++i)
+		if (enum_strings[i].first == x)
+			return enum_strings[i].second;
+	return "";
 }
 
 /* === E N T R Y P O I N T ================================================= */

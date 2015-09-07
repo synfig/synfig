@@ -140,6 +140,8 @@ public:
 
 	RenderbufferLock get_renderbuffer(GLenum internalformat, int width, int height);
 	FramebufferLock get_framebuffer();
+
+	void check(const char *s = "");
 };
 
 }; /* end namespace gl */

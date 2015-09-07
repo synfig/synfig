@@ -30,6 +30,7 @@
 #include <cassert>
 
 #include <vector>
+#include <utility>
 
 #include <GL/gl.h>
 #include <GL/glx.h>
@@ -102,6 +103,8 @@ private:
 	ContextInfo context_info;
 	std::vector<ContextInfo> context_stack;
 
+	static std::pair<GLenum, const char*> enum_strings[];
+
 public:
 	Context();
 	~Context();
@@ -111,7 +114,8 @@ public:
 	void use();
 	void unuse();
 
-	void check(const String &s = String());
+	void check(const char *s = "");
+	const char* get_enum_string(GLenum x);
 };
 
 }; /* end namespace gl */

@@ -35,6 +35,8 @@
 #include <signal.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "framebuffers.h"
 
 #endif
@@ -108,6 +110,29 @@ gl::Framebuffers::get_framebuffer()
 	Framebuffer *i = &framebuffers.back();
 	glGenFramebuffers(1, &i->id);
 	return FramebufferLock(i);
+}
+
+void
+gl::Framebuffers::check(const char *s) {
+	context.check(s);
+
+	GLuint id = 0;
+	glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, (GLint*)&id);
+	if (id)
+	{
+		GLenum status = glCheckFramebufferStatus(GL_DRAW_FRAMEBUFFER);
+		if (status != GL_FRAMEBUFFER_COMPLETE)
+			warning("%s GL wrong draw framebuffer status: 0x%x %s id %d", s, status, context.get_enum_string(status), id);
+	}
+
+	id = 0;
+	glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, (GLint*)&id);
+	if (id)
+	{
+		GLenum status = glCheckFramebufferStatus(GL_READ_FRAMEBUFFER);
+		if (status != GL_FRAMEBUFFER_COMPLETE)
+			warning("%s GL wrong read framebuffer status: 0x%x %s id %d", s, status, context.get_enum_string(status), id);
+	}
 }
 
 /* === E N T R Y P O I N T ================================================= */
