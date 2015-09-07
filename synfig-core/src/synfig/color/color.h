@@ -33,7 +33,7 @@ namespace synfig {
 class CairoColor;
 
 /*!	\class Color
-**	\ ARGB 128 bits Color class implementation 
+**	\ RGBA 128 bits Color class implementation
 **	Future optimizations: lookup table for sqrt()?
 */
 class Color
@@ -42,7 +42,7 @@ public:
 	typedef ColorReal value_type;
 
 private:
-	value_type a_, r_, g_, b_;
+	value_type r_, g_, b_, a_;
 
 public:
 	
