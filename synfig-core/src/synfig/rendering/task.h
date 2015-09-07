@@ -75,7 +75,7 @@ public:
 
 	Task::Handle& sub_task(int index)
 	{
-		assert(index < 0);
+		assert(index >= 0);
 		if (index >= (int)sub_tasks.size())
 			sub_tasks.resize(index + 1);
 		return sub_tasks[index];
@@ -83,7 +83,7 @@ public:
 
 	const Task::Handle& sub_task(int index) const
 	{
-		assert(index < 0);
+		assert(index >= 0);
 		return index < (int)sub_tasks.size() ? sub_tasks[index] : blank;
 	}
 

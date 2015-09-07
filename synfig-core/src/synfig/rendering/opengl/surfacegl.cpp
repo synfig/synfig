@@ -56,7 +56,7 @@ SurfaceGL::SurfaceGL(): id()
 	{ }
 
 SurfaceGL::~SurfaceGL()
-	{ if (id) SurfaceGL::destroy_vfunc(); }
+	{ destroy(); }
 
 gl::Environment& SurfaceGL::env() const
 	{ return gl::Environment::get_instance(); }
@@ -72,13 +72,16 @@ SurfaceGL::create_vfunc()
 	{
 		// clear texture
 		gl::Framebuffers::FramebufferLock framebuffer = env().framebuffers.get_framebuffer();
-		glBindFramebuffer(GL_DRAW_BUFFER, framebuffer.get_id());
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, framebuffer.get_id());
 		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, id, 0);
+		env().framebuffers.check("SurfaceGL::create_vfunc");
+		glViewport(0, 0, get_width(), get_height());
 		glClear(GL_COLOR_BUFFER_BIT);
 		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, 0, 0);
-		glBindFramebuffer(GL_DRAW_BUFFER, 0);
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 	}
 
+	env().context.check("SurfaceGL::create_vfunc");
 	return true;
 }
 
@@ -93,25 +96,35 @@ SurfaceGL::assign_vfunc(const rendering::Surface &surface)
 	glBindTexture(GL_TEXTURE_2D, id);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, get_width(), get_height(), 0, GL_RGBA, GL_FLOAT, &data.front());
 
+	env().context.check("SurfaceGL::assign_vfunc");
 	return true;
 }
 
 void
 SurfaceGL::destroy_vfunc()
 {
+	gl::Context::Lock lock(env().context);
 	glDeleteTextures(1, &id);
 	id = 0;
+	env().context.check("SurfaceGL::destroy_vfunc");
 }
 
 bool
 SurfaceGL::get_pixels_vfunc(Color *buffer) const
 {
+	gl::Context::Lock lock(env().context);
+
 	gl::Framebuffers::FramebufferLock framebuffer = env().framebuffers.get_framebuffer();
-	glBindFramebuffer(GL_READ_BUFFER, framebuffer.get_id());
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, framebuffer.get_id());
 	glFramebufferTexture2D(GL_READ_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, id, 0);
+	env().framebuffers.check("SurfaceGL::get_pixels_vfunc");
+
 	glReadPixels(0, 0, get_width(), get_height(), GL_RGBA, GL_FLOAT, buffer);
+
 	glFramebufferTexture2D(GL_READ_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, 0, 0);
-	glBindFramebuffer(GL_READ_BUFFER, 0);
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+
+	env().context.check("SurfaceGL::get_pixels_vfunc");
 	return true;
 }
 

@@ -57,10 +57,10 @@ using namespace rendering;
 bool
 TaskBlurPreparedSW::run(RunParams & /* params */) const
 {
-	synfig::Surface &a =
-		SurfaceSW::Handle::cast_dynamic( target_surface )->get_surface();
-	const synfig::Surface &b =
-		SurfaceSW::Handle::cast_dynamic( sub_task()->target_surface )->get_surface();
+	//synfig::Surface &a =
+	//	SurfaceSW::Handle::cast_dynamic( target_surface )->get_surface();
+	//const synfig::Surface &b =
+	//	SurfaceSW::Handle::cast_dynamic( sub_task()->target_surface )->get_surface();
 
 	::Blur bl;
 	bl.set_type(blur.type);

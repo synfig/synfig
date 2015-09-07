@@ -57,6 +57,7 @@ protected:
 	virtual bool get_pixels_vfunc(Color *buffer) const;
 
 public:
+	~SurfaceSW() { destroy(); }
 	const synfig::Surface& get_surface() const { return surface; }
 	synfig::Surface& get_surface() { return surface; }
 };

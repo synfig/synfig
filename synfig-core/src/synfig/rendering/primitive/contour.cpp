@@ -107,7 +107,7 @@ public:
 	}
 
 	template<typename T>
-	static void move_to(SplitParams<T> params, const Vector &p1)
+	static void move_to(SplitParams<T> &params, const Vector &p1)
 	{
 		if (params.prev_point)
 			params.out_bounds.expand(p1);
@@ -124,13 +124,13 @@ public:
 	}
 
 	template<typename T>
-	static void line_to(SplitParams<T> params, const Vector &p1)
+	static void line_to(SplitParams<T> &params, const Vector &p1)
 	{
 		if (!params.prev_point) {
-			move_to(params.out_contour, params.zero);
+			move_to(params, params.zero);
 		} else
 		if (params.prev_type == CLOSE) {
-			move_to(params.out_contour, *params.prev_point);
+			move_to(params, *params.prev_point);
 		} else
 		if (params.prev_type == LINE) {
 			params.line_bounds = params.line_bounds.expand(p1);
@@ -145,13 +145,13 @@ public:
 		}
 
 		params.prev_type = LINE;
+		params.line_bounds = Rect(*params.prev_point, p1);
 		params.prev_point = &line_to(params.out_contour, p1);
-		params.line_bounds = Rect(p1);
 		params.out_bounds.expand(p1);
 	}
 
 	template<typename T>
-	static void close(SplitParams<T> params, const Vector &p1)
+	static void close(SplitParams<T> &params, const Vector &p1)
 	{
 		if (!params.prev_point || params.prev_type != LINE)
 			return;
@@ -161,7 +161,7 @@ public:
 
 	template<typename T>
 	static void conic_split(
-		SplitParams<T> params,
+		SplitParams<T> &params,
 		const Vector &p1,
 		const Vector &pp0 )
 	{
@@ -186,7 +186,7 @@ public:
 
 	template<typename T>
 	static void cubic_split(
-		SplitParams<T> params,
+		SplitParams<T> &params,
 		const Vector &p1,
 		const Vector &pp0,
 		const Vector &pp1 )
@@ -247,26 +247,26 @@ public:
 			switch(i->type) {
 			case CLOSE:
 				p1 = transform_matrix.get_transformed(i->p1);
-				Helper::close(params, i->p1);
+				Helper::close(params, p1);
 				break;
 			case MOVE:
 				p1 = transform_matrix.get_transformed(i->p1);
-				Helper::move_to(params, i->p1);
+				Helper::move_to(params, p1);
 				break;
 			case LINE:
 				p1 = transform_matrix.get_transformed(i->p1);
-				Helper::line_to(params, i->p1);
+				Helper::line_to(params, p1);
 				break;
 			case CONIC:
 				p1 = transform_matrix.get_transformed(i->p1);
 				pp0 = transform_matrix.get_transformed(i->pp0);
-				Helper::conic_split(params, i->p1, i->pp0);
+				Helper::conic_split(params, p1, pp0);
 				break;
 			case CUBIC:
 				p1 = transform_matrix.get_transformed(i->p1);
 				pp0 = transform_matrix.get_transformed(i->pp0);
 				pp1 = transform_matrix.get_transformed(i->pp1);
-				Helper::cubic_split(params, i->p1, i->pp0, i->pp1);
+				Helper::cubic_split(params, p1, pp0, pp1);
 				break;
 			default:
 				break;

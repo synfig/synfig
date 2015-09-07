@@ -184,7 +184,7 @@ void gl::Shaders::simple()
 void gl::Shaders::color(const Color &c)
 {
 	glUseProgram(colorProgramId);
-	glUniform4f(colorUniform, c.get_r(), c.get_g(), c.get_b(), c.get_a());
+	glUniform4fv(colorUniform, 1, (const GLfloat*)&c);
 }
 
 

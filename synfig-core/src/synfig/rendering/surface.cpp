@@ -57,7 +57,7 @@ rendering::Surface::Surface():
 	is_temporary(false)
 { }
 
-rendering::Surface::~Surface() { }
+rendering::Surface::~Surface() { destroy(); }
 
 void
 rendering::Surface::set_size(int width, int height)
@@ -93,7 +93,10 @@ void
 rendering::Surface::destroy()
 {
 	if (is_created())
+	{
 		destroy_vfunc();
+		created = false;
+	}
 }
 
 bool

@@ -127,6 +127,7 @@ gl::Antialiasing::multisample_begin()
 		multisample_viewport[1],
 		multisample_viewport[2],
 		multisample_viewport[3] );
+	glClear(GL_COLOR_BUFFER_BIT);
 }
 
 void

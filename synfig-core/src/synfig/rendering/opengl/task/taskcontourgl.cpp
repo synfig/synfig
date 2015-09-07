@@ -101,7 +101,7 @@ TaskContourGL::render_polygon(
 	glBindVertexArray(polygon_va.get_id());
 	glEnableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, polygon_buf.get_id());
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_TRUE, 0, polygon_buf.get_pointer());
+	glVertexAttribPointer(0, 2, GL_DOUBLE, GL_TRUE, 0, polygon_buf.get_pointer());
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	e.shaders.simple();
@@ -126,17 +126,17 @@ TaskContourGL::render_polygon(
 	glBindVertexArray(quad_va.get_id());
 	glEnableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, quad_buf.get_id());
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_TRUE, 0, quad_buf.get_pointer());
+	glVertexAttribPointer(0, 2, GL_DOUBLE, GL_TRUE, 0, quad_buf.get_pointer());
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	e.shaders.color(color);
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
-	glDisableVertexAttribArray(0);
-	glBindVertexArray(0);
-
 	glDisable(GL_STENCIL_TEST);
 	glDisable(GL_SCISSOR_TEST);
+
+	glDisableVertexAttribArray(0);
+	glBindVertexArray(0);
 
 	if (antialias) e.antialiasing.multisample_end();
 }
@@ -168,6 +168,8 @@ TaskContourGL::render_contour(
 bool
 TaskContourGL::run(RunParams & /* params */) const
 {
+	gl::Context::Lock lock(env().context);
+
 	SurfaceGL::Handle target =
 		SurfaceGL::Handle::cast_dynamic(target_surface);
 
@@ -184,9 +186,11 @@ TaskContourGL::run(RunParams & /* params */) const
 
 	gl::Framebuffers::RenderbufferLock renderbuffer = env().framebuffers.get_renderbuffer(GL_STENCIL_INDEX8, target->get_width(), target->get_height());
 	gl::Framebuffers::FramebufferLock framebuffer = env().framebuffers.get_framebuffer();
-	glBindFramebuffer(GL_DRAW_BUFFER, framebuffer.get_id());
-	glFramebufferRenderbuffer(GL_READ_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, renderbuffer.get_id());
-	glFramebufferTexture2D(GL_READ_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, target->get_id(), 0);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, framebuffer.get_id());
+	glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, renderbuffer.get_id());
+	glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, target->get_id(), 0);
+	glViewport(0, 0, target->get_width(), target->get_height());
+	env().context.check("TaskContourGL::run bind framebuffer");
 
 	// render
 
@@ -197,12 +201,14 @@ TaskContourGL::run(RunParams & /* params */) const
 		contour->antialias,
 		contour->winding_style,
 		contour->color );
+	env().context.check("TaskContourGL::run render contour");
 
 	// release framebuffer
 
-	glFramebufferTexture2D(GL_READ_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, 0, 0);
-	glFramebufferRenderbuffer(GL_READ_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, 0);
-	glBindFramebuffer(GL_DRAW_BUFFER, 0);
+	glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, 0, 0);
+	glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, 0);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+	env().context.check("TaskContourGL::run release contour");
 
 	return true;
 }
