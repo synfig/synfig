@@ -37,6 +37,9 @@
 
 #include "optimizercontourgl.h"
 
+#include "../../common/task/taskcontour.h"
+#include "../task/taskcontourgl.h"
+
 #endif
 
 using namespace synfig;
@@ -51,9 +54,16 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 bool
-OptimizerContourGL::run(const RunParams& /* params */) const
+OptimizerContourGL::run(const RunParams& params) const
 {
-	// TODO:
+	TaskContour::Handle contour = TaskContour::Handle::cast_dynamic(params.task);
+	if (contour && contour->target_surface) {
+		TaskContourGL::Handle contour_gl(new TaskContourGL());
+		*((Task*)(contour_gl.get())) = *((Task*)(contour.get()));
+		contour_gl->contour = contour->contour;
+		params.out_task = contour_gl;
+		return true;
+	}
 	return false;
 }
 
