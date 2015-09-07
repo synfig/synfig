@@ -32,6 +32,7 @@
 #include <ETL/handle>
 
 #include <synfig/vector.h>
+#include <synfig/rect.h>
 #include <synfig/color.h>
 
 /* === M A C R O S ========================================================= */
@@ -64,21 +65,28 @@ public:
 		CLOSE,
 		MOVE,
 		LINE,
-		CUBIC,
-		CONIC
+		CONIC,
+		CUBIC
 	};
 
 	struct Chunk {
 		ChunkType type;
-		Vector p1, t0, t1;
+		Vector p1;
+		Vector pp0, pp1; // intermediate points for CONIC and CUBIC
 		Chunk(): type() { }
-		Chunk(ChunkType type, const Vector &p1, const Vector &t0 = Vector(), const Vector &t1 = Vector()):
-			type(type), p1(p1), t0(t0), t1(t1) { }
+		Chunk(ChunkType type, const Vector &p1):
+			type(type), p1(p1), pp0(p1), pp1(p1) { }
+		Chunk(ChunkType type, const Vector &p1, const Vector &pp0):
+			type(type), p1(p1), pp0(pp0), pp1(pp0) { }
+		Chunk(ChunkType type, const Vector &p1, const Vector &pp0, const Vector &pp1):
+			type(type), p1(p1), pp0(pp0), pp1(pp1) { }
 	};
 
 	typedef std::vector<Chunk> ChunkList;
 
 private:
+	class Helper;
+
 	ChunkList chunks;
 	size_t first;
 
@@ -97,13 +105,34 @@ public:
 	void clear();
 	void move_to(const Vector &v);
 	void line_to(const Vector &v);
-	void cubic_to(const Vector &v, const Vector &t0, const Vector &t1);
-	void conic_to(const Vector &v, const Vector &t);
+	void conic_to(const Vector &v, const Vector &pp0);
+	void cubic_to(const Vector &v, const Vector &pp0, const Vector &pp1);
 	void close();
 
 	void assign(const Contour &other);
 
 	const ChunkList& get_chunks() const { return chunks; }
+
+	void split(Contour &out_contour, const Rect &bounds, const Vector &min_size) const;
+	void split(std::vector<Vector> &out_contour, const Rect &bounds, const Vector &min_size) const;
+
+	static Rect line_bounds(
+		const Vector &p0,
+		const Vector &p1 )
+	{ return Rect(p0).expand(p1); }
+
+	static Rect conic_bounds(
+		const Vector &p0,
+		const Vector &p1,
+		const Vector &pp0 )
+	{ return Rect(p0).expand(p1).expand(pp0); }
+
+	static Rect cubic_bounds(
+		const Vector &p0,
+		const Vector &p1,
+		const Vector &pp0,
+		const Vector &pp1 )
+	{ return Rect(p0).expand(p1).expand(pp0).expand(pp1); }
 };
 
 } /* end namespace rendering */

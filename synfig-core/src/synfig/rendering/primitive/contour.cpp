@@ -50,6 +50,189 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
+class Contour::Helper {
+public:
+	template<typename T>
+	struct SplitParams {
+		typedef T ContourType;
+
+		ContourType &out_contour;
+		const Rect bounds;
+		const Vector min_size;
+		const Vector min_line_size;
+
+		Rect line_bounds;
+		int level;
+
+		ChunkType prev_type;
+		Vector *prev_point;
+		Vector zero;
+
+		SplitParams(
+			ContourType &out_contour,
+			const Rect &bounds,
+			const Vector &min_size
+		):
+			out_contour(out_contour),
+			bounds(bounds),
+			min_size(min_size),
+			min_line_size(min_size*0.5),
+			level(46),
+			prev_type(),
+			prev_point(),
+			zero()
+		{ }
+
+		const Vector& get_p0() const { return prev_point ? *prev_point : zero; }
+	};
+
+	static Vector& move_to(Contour &out_contour, const Vector &p1)
+		{ out_contour.chunks.push_back(Chunk(MOVE, p1)); return out_contour.chunks.back().p1; }
+	static Vector& line_to(Contour &out_contour, const Vector &p1)
+		{ out_contour.chunks.push_back(Chunk(LINE, p1)); return out_contour.chunks.back().p1; }
+	static Vector& close(Contour &out_contour, const Vector &p1)
+		{ out_contour.chunks.push_back(Chunk(CLOSE, p1)); return out_contour.chunks.back().p1; }
+
+	static Vector& move_to(std::vector<Vector> &out_contour, const Vector &p1)
+		{ out_contour.push_back(p1); return out_contour.back(); }
+	static Vector& line_to(std::vector<Vector> &out_contour, const Vector &p1)
+		{ out_contour.push_back(p1); return out_contour.back(); }
+	static Vector& close(std::vector<Vector> &out_contour, const Vector &p1)
+	{
+		out_contour.push_back(p1);
+		out_contour.push_back(out_contour.front());
+		return *(out_contour.rbegin() + 1);
+	}
+
+	template<typename T>
+	static void move_to(SplitParams<T> params, const Vector &p1)
+	{
+		if (params.prev_point && params.prev_type == MOVE)
+		{
+			*params.prev_point = p1;
+			return;
+		}
+		params.prev_type = MOVE;
+		params.prev_point = &move_to(params.out_contour, p1);
+	}
+
+	template<typename T>
+	static void line_to(SplitParams<T> params, const Vector &p1)
+	{
+		if (!params.prev_point) {
+			move_to(params.out_contour, params.zero);
+		} else
+		if (params.prev_type == CLOSE) {
+			move_to(params.out_contour, *params.prev_point);
+		} else
+		if (params.prev_type == LINE) {
+			params.line_bounds = params.line_bounds.expand(p1);
+			if ( !etl::intersect(params.bounds, params.line_bounds)
+			  || ( params.line_bounds.maxx - params.line_bounds.minx <= params.min_line_size[0]
+				&& params.line_bounds.maxy - params.line_bounds.miny <= params.min_line_size[0] ))
+			{
+				*params.prev_point = p1;
+				return;
+			}
+		}
+
+		params.prev_type = LINE;
+		params.prev_point = &line_to(params.out_contour, p1);
+		params.line_bounds = Rect(p1);
+	}
+
+	template<typename T>
+	static void close(SplitParams<T> params, const Vector &p1)
+	{
+		if (!params.prev_point || params.prev_type != LINE)
+			return;
+		params.prev_type = CLOSE;
+		params.prev_point = &close(params.out_contour, p1);
+	}
+
+	template<typename T>
+	static void conic_split(
+		SplitParams<T> params,
+		const Vector &p1,
+		const Vector &pp0 )
+	{
+		assert(params.level > 0);
+		const Vector &p0 = params.get_p0();
+		Rect bounds = conic_bounds(p0, p1, pp0);
+		if ( !etl::intersect(params.bounds, bounds)
+		  || ( bounds.maxx - bounds.minx <= params.min_size[0]
+			&& bounds.maxy - bounds.miny <= params.min_size[0] ))
+		{
+			line_to(params, p1);
+			return;
+		}
+		Vector a0 = (p0 + pp0)*0.5;
+		Vector a1 = (pp0 + p1)*0.5;
+		Vector b = (a0 + a1)*0.5;
+		--params.level;
+		conic_split(params, b, a0);
+		conic_split(params, p1, a1);
+		++params.level;
+	}
+
+	template<typename T>
+	static void cubic_split(
+		SplitParams<T> params,
+		const Vector &p1,
+		const Vector &pp0,
+		const Vector &pp1 )
+	{
+		assert(params.level > 0);
+		const Vector &p0 = params.get_p0();
+		Rect b = cubic_bounds(p0, p1, pp0, pp1);
+		if ( !etl::intersect(params.bounds, b)
+		  || ( b.maxx - b.minx <= params.min_size[0]
+			&& b.maxy - b.miny <= params.min_size[0] ))
+		{
+			line_to(params, p1);
+			return;
+		}
+		Vector a0 = (p0 + pp0)*0.5;
+		Vector a1 = (pp0 + pp1)*0.5;
+		Vector a2 = (pp1 + p1)*0.5;
+		Vector b0 = (a0 + a1)*0.5;
+		Vector b1 = (a1 + a2)*0.5;
+		Vector c = (b0 + b1)*0.5;
+		--params.level;
+		cubic_split(params, c, a0, b0);
+		cubic_split(params, p1, b1, a1);
+		++params.level;
+	}
+
+	template<typename T>
+	static void contour_split(SplitParams<T> &params, const Contour &contour)
+	{
+		for(ChunkList::const_iterator i = contour.get_chunks().begin(); i != contour.get_chunks().end(); ++i) {
+			switch(i->type) {
+			case CLOSE:
+				Helper::close(params, i->p1);
+				break;
+			case MOVE:
+				Helper::move_to(params, i->p1);
+				break;
+			case LINE:
+				Helper::line_to(params, i->p1);
+				break;
+			case CONIC:
+				Helper::conic_split(params, i->p1, i->pp0);
+				break;
+			case CUBIC:
+				Helper::cubic_split(params, i->p1, i->pp0, i->pp1);
+				break;
+			default:
+				break;
+			}
+		}
+	}
+};
+
+
+
 void
 Contour::clear()
 {
@@ -63,10 +246,8 @@ void
 Contour::move_to(const Vector &v)
 {
 	if (chunks.empty()) {
-		if (v.is_equal_to(Vector::zero())) {
-			first = chunks.size();
-			chunks.push_back(Chunk(MOVE, v));
-		}
+		first = chunks.size();
+		chunks.push_back(Chunk(MOVE, v));
 	} else {
 		if (!v.is_equal_to(chunks.back().p1)) {
 			if (chunks.back().type == MOVE)
@@ -92,33 +273,28 @@ void
 Contour::line_to(const Vector &v)
 {
 	if (!v.is_equal_to(chunks.empty() ? Vector::zero() : chunks.back().p1))
-	{
 		chunks.push_back(Chunk(LINE, v));
-	}
 }
 
 void
-Contour::conic_to(const Vector &v, const Vector &t)
+Contour::conic_to(const Vector &v, const Vector &pp0)
 {
 	if (!v.is_equal_to(chunks.empty() ? Vector::zero() : chunks.back().p1))
-	{
-		chunks.push_back(Chunk(CONIC, v, t));
-	}
+		chunks.push_back(Chunk(CONIC, v, pp0));
 }
 
 void
-Contour::cubic_to(const Vector &v, const Vector &t0, const Vector &t1)
+Contour::cubic_to(const Vector &v, const Vector &pp0, const Vector &pp1)
 {
 	if (!v.is_equal_to(chunks.empty() ? Vector::zero() : chunks.back().p1))
-	{
-		chunks.push_back(Chunk(CUBIC, v, t0, t1));
-	}
+		chunks.push_back(Chunk(CUBIC, v, pp0, pp1));
 }
 
 void
 Contour::close()
 {
-	if (chunks.size() > first) {
+	if (chunks.size() > first)
+	{
 		chunks.push_back(Chunk(CLOSE, chunks[first].p1));
 		first = chunks.size();
 	}
@@ -135,5 +311,18 @@ Contour::assign(const Contour &other)
 	color = other.color;
 }
 
+void
+Contour::split(Contour &out_contour, const Rect &bounds, const Vector &min_size) const
+{
+	Helper::SplitParams<Contour> params(out_contour, bounds, min_size);
+	Helper::contour_split(params, *this);
+}
+
+void
+Contour::split(std::vector<Vector> &out_contour, const Rect &bounds, const Vector &min_size) const
+{
+	Helper::SplitParams< std::vector<Vector> > params(out_contour, bounds, min_size);
+	Helper::contour_split(params, *this);
+}
 
 /* === E N T R Y P O I N T ================================================= */
