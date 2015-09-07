@@ -108,6 +108,7 @@ for file in \
    libbz2\*.dll \
    libcairo\*.dll \
    libdl.dll \
+   libepoxy\*.dll \
    libexpat\*.dll \
    libffi\*.dll \
    libfontconfig\*.dll \
