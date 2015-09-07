@@ -57,6 +57,7 @@ OptimizerLinear::run(const RunParams& params) const
 {
 	if (!params.task)
 	{
+		bool optimized = false;
 		// convert task-tree to linear list
 		for(Task::List::iterator i = params.list.begin(); i != params.list.end();)
 		{
@@ -72,6 +73,7 @@ OptimizerLinear::run(const RunParams& params) const
 					{
 						i = params.list.insert(i, *j);
 						++i;
+						optimized = true;
 
 						if (!found)
 						{
@@ -95,6 +97,7 @@ OptimizerLinear::run(const RunParams& params) const
 			}
 			++i;
 		}
+		return optimized;
 	}
 	return false;
 }

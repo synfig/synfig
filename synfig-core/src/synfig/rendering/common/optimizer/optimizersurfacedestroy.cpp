@@ -58,6 +58,7 @@ OptimizerSurfaceDestroy::run(const RunParams& params) const
 {
 	if (!params.task)
 	{
+		bool optimized = false;
 		for(Task::List::iterator i = params.list.begin(); i != params.list.end();)
 		{
 			if (*i && (*i)->target_surface)
@@ -75,6 +76,7 @@ OptimizerSurfaceDestroy::run(const RunParams& params) const
 					if (destroyed)
 					{
 						i = params.list.erase(i);
+						optimized = true;
 						continue;
 					}
 				}
@@ -88,6 +90,7 @@ OptimizerSurfaceDestroy::run(const RunParams& params) const
 						++i;
 						i = params.list.insert(i, surface_destroy);
 						++i;
+						optimized = true;
 						continue;
 					}
 				}
@@ -95,7 +98,7 @@ OptimizerSurfaceDestroy::run(const RunParams& params) const
 			}
 			++i;
 		}
-
+		return optimized;
 	}
 	return false;
 }

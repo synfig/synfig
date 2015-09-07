@@ -38,6 +38,7 @@
 #include "optimizersurfacecreate.h"
 
 #include "../task/tasksurfacecreate.h"
+#include "../task/tasksurfaceconvert.h"
 
 #endif
 
@@ -57,14 +58,15 @@ OptimizerSurfaceCreate::run(const RunParams& params) const
 {
 	if (!params.task)
 	{
+		bool optimized = false;
 		for(Task::List::iterator i = params.list.begin(); i != params.list.end();)
 		{
-			if (*i && (*i)->target_surface)
+			if (*i && (*i)->target_surface && !TaskSurfaceConvert::Handle::cast_dynamic(*i))
 			{
 				bool created = (*i)->target_surface->is_created();
 				if (!created)
 					for(Task::List::const_iterator j = params.list.begin(); j != i; ++j)
-						if ( TaskSurfaceCreate::Handle::cast_dynamic(*j)
+						if ( (TaskSurfaceCreate::Handle::cast_dynamic(*j) || TaskSurfaceConvert::Handle::cast_dynamic(*j))
 						  && (*j)->target_surface == (*i)->target_surface )
 							{ created = true; break; }
 
@@ -74,6 +76,7 @@ OptimizerSurfaceCreate::run(const RunParams& params) const
 					if (created)
 					{
 						i = params.list.erase(i);
+						optimized = true;
 						continue;
 					}
 				}
@@ -86,6 +89,7 @@ OptimizerSurfaceCreate::run(const RunParams& params) const
 						surface_create->target_surface = (*i)->target_surface;
 						i = params.list.insert(i, surface_create);
 						++i; ++i;
+						optimized = true;
 						continue;
 					}
 				}
@@ -93,7 +97,7 @@ OptimizerSurfaceCreate::run(const RunParams& params) const
 			}
 			++i;
 		}
-
+		return optimized;
 	}
 	return false;
 }
