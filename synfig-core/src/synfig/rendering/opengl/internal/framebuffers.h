@@ -80,6 +80,8 @@ public:
 			{ }
 		RenderbufferLock(const RenderbufferLock &other): renderbuffer()
 			{ *this = other; }
+		~RenderbufferLock()
+			{ set(NULL); }
 		RenderbufferLock& operator = (const RenderbufferLock &other)
 			{ set(other.renderbuffer); return *this; }
 		GLuint get_id() const
@@ -117,6 +119,8 @@ public:
 			{ }
 		FramebufferLock(const FramebufferLock &other): framebuffer()
 			{ *this = other; }
+		~FramebufferLock()
+			{ set(NULL); }
 		FramebufferLock& operator = (const FramebufferLock &other)
 			{ set(other.framebuffer); return *this; }
 		GLuint get_id() const

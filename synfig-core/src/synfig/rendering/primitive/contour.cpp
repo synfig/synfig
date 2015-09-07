@@ -57,6 +57,7 @@ public:
 		typedef T ContourType;
 
 		ContourType &out_contour;
+		Rect &out_bounds;
 		const Rect bounds;
 		const Vector min_size;
 		const Vector min_line_size;
@@ -70,18 +71,19 @@ public:
 
 		SplitParams(
 			ContourType &out_contour,
-			const Rect &bounds,
+			Rect &ref_bounds,
 			const Vector &min_size
 		):
 			out_contour(out_contour),
-			bounds(bounds),
+			out_bounds(ref_bounds),
+			bounds(ref_bounds),
 			min_size(min_size),
 			min_line_size(min_size*0.5),
 			level(46),
 			prev_type(),
 			prev_point(),
 			zero()
-		{ }
+		{ out_bounds = Rect(ref_bounds.minx, ref_bounds.maxx); }
 
 		const Vector& get_p0() const { return prev_point ? *prev_point : zero; }
 	};
@@ -107,6 +109,11 @@ public:
 	template<typename T>
 	static void move_to(SplitParams<T> params, const Vector &p1)
 	{
+		if (params.prev_point)
+			params.out_bounds.expand(p1);
+		else
+			params.out_bounds = Rect(p1);
+
 		if (params.prev_point && params.prev_type == MOVE)
 		{
 			*params.prev_point = p1;
@@ -132,6 +139,7 @@ public:
 				&& params.line_bounds.maxy - params.line_bounds.miny <= params.min_line_size[0] ))
 			{
 				*params.prev_point = p1;
+				params.out_bounds.expand(p1);
 				return;
 			}
 		}
@@ -139,6 +147,7 @@ public:
 		params.prev_type = LINE;
 		params.prev_point = &line_to(params.out_contour, p1);
 		params.line_bounds = Rect(p1);
+		params.out_bounds.expand(p1);
 	}
 
 	template<typename T>
@@ -229,6 +238,41 @@ public:
 			}
 		}
 	}
+
+	template<typename T>
+	static void contour_split(SplitParams<T> &params, const Contour &contour, const Matrix &transform_matrix)
+	{
+		Vector p1, pp0, pp1;
+		for(ChunkList::const_iterator i = contour.get_chunks().begin(); i != contour.get_chunks().end(); ++i) {
+			switch(i->type) {
+			case CLOSE:
+				p1 = transform_matrix.get_transformed(i->p1);
+				Helper::close(params, i->p1);
+				break;
+			case MOVE:
+				p1 = transform_matrix.get_transformed(i->p1);
+				Helper::move_to(params, i->p1);
+				break;
+			case LINE:
+				p1 = transform_matrix.get_transformed(i->p1);
+				Helper::line_to(params, i->p1);
+				break;
+			case CONIC:
+				p1 = transform_matrix.get_transformed(i->p1);
+				pp0 = transform_matrix.get_transformed(i->pp0);
+				Helper::conic_split(params, i->p1, i->pp0);
+				break;
+			case CUBIC:
+				p1 = transform_matrix.get_transformed(i->p1);
+				pp0 = transform_matrix.get_transformed(i->pp0);
+				pp1 = transform_matrix.get_transformed(i->pp1);
+				Helper::cubic_split(params, i->p1, i->pp0, i->pp1);
+				break;
+			default:
+				break;
+			}
+		}
+	}
 };
 
 
@@ -312,17 +356,45 @@ Contour::assign(const Contour &other)
 }
 
 void
-Contour::split(Contour &out_contour, const Rect &bounds, const Vector &min_size) const
+Contour::split(
+	Contour &out_contour,
+	Rect &ref_bounds,
+	const Vector &min_size ) const
 {
-	Helper::SplitParams<Contour> params(out_contour, bounds, min_size);
+	Helper::SplitParams<Contour> params(out_contour, ref_bounds, min_size);
 	Helper::contour_split(params, *this);
 }
 
 void
-Contour::split(std::vector<Vector> &out_contour, const Rect &bounds, const Vector &min_size) const
+Contour::split(
+	std::vector<Vector> &out_contour,
+	Rect &ref_bounds,
+	const Vector &min_size ) const
 {
-	Helper::SplitParams< std::vector<Vector> > params(out_contour, bounds, min_size);
+	Helper::SplitParams< std::vector<Vector> > params(out_contour, ref_bounds, min_size);
 	Helper::contour_split(params, *this);
+}
+
+void
+Contour::split(
+	Contour &out_contour,
+	Rect &ref_bounds,
+	const Matrix &transform_matrix,
+	const Vector &min_size ) const
+{
+	Helper::SplitParams<Contour> params(out_contour, ref_bounds, min_size);
+	Helper::contour_split(params, *this, transform_matrix);
+}
+
+void
+Contour::split(
+	std::vector<Vector> &out_contour,
+	Rect &ref_bounds,
+	const Matrix &transform_matrix,
+	const Vector &min_size ) const
+{
+	Helper::SplitParams< std::vector<Vector> > params(out_contour, ref_bounds, min_size);
+	Helper::contour_split(params, *this, transform_matrix);
 }
 
 /* === E N T R Y P O I N T ================================================= */

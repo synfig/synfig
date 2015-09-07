@@ -28,6 +28,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include <list>
+#include <vector>
 
 #include "context.h"
 
@@ -73,7 +74,8 @@ public:
 				(next ? next->prev : buffer.last) = this;
 			}
 
-			~Chunk() {
+			~Chunk()
+			{
 				(prev ? prev->next : buffer.first) = next;
 				(next ? next->prev : buffer.last) = prev;
 			}
@@ -107,6 +109,8 @@ public:
 			{ }
 		BufferLock(const BufferLock &other): chunk()
 			{ *this = other; }
+		~BufferLock()
+			{ set(NULL); }
 		BufferLock& operator = (const BufferLock &other)
 			{ set(other.chunk); return *this; }
 		GLuint get_id() const
@@ -144,6 +148,8 @@ public:
 			{ }
 		VertexArrayLock(const VertexArrayLock &other): vertex_array()
 			{ *this = other; }
+		~VertexArrayLock()
+			{ set(NULL); }
 		VertexArrayLock& operator = (const VertexArrayLock &other)
 			{ set(other.vertex_array); return *this; }
 		GLuint get_id() const
@@ -158,6 +164,8 @@ private:
 	Buffer element_array_buffer;
 	std::list<VertexArray> vertex_arrays;
 
+	BufferLock default_quad_buffer;
+
 public:
 	Buffers(Context &context);
 	~Buffers();
@@ -165,11 +173,35 @@ public:
 private:
 	BufferLock get_buffer(Buffer &buffer, const void *data, int size);
 
+	template<typename T>
+	BufferLock get_buffer(Buffer &buffer, const std::vector<T> &data, int offset = 0, int count = 0)
+	{
+		assert(offset >= 0);
+		if (count <= 0) count = (int)data.size() - offset;
+		assert(offset + count <= (int)data.size());
+		if (!count) return BufferLock();
+		return get_buffer(buffer, &data.front(), count*sizeof(data.front()));
+	}
+
 public:
+	// returns buffer with four synfig::Vector: (-1, -1), (-1, 1), (1, -1), (1, 1)
+	BufferLock get_default_quad_buffer()
+		{ return default_quad_buffer; }
+
 	BufferLock get_array_buffer(const void *data, int size)
 		{ return get_buffer(array_buffer, data, size); }
+
+	template<typename T>
+	BufferLock get_array_buffer(const std::vector<T> &data, int offset = 0, int count = 0)
+		{ return get_buffer(array_buffer, data, offset, count); }
+
 	BufferLock get_element_array_buffer(const void *data, int size)
 		{ return get_buffer(element_array_buffer, data, size); }
+
+	template<typename T>
+	BufferLock get_element_array_buffer(const std::vector<T> &data, int offset = 0, int count = 0)
+		{ return get_buffer(element_array_buffer, data, offset, count); }
+
 	VertexArrayLock get_vertex_array();
 };
 

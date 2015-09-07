@@ -33,6 +33,7 @@
 
 #include <synfig/vector.h>
 #include <synfig/rect.h>
+#include <synfig/matrix.h>
 #include <synfig/color.h>
 
 /* === M A C R O S ========================================================= */
@@ -113,8 +114,25 @@ public:
 
 	const ChunkList& get_chunks() const { return chunks; }
 
-	void split(Contour &out_contour, const Rect &bounds, const Vector &min_size) const;
-	void split(std::vector<Vector> &out_contour, const Rect &bounds, const Vector &min_size) const;
+	void split(
+		Contour &out_contour,
+		Rect &ref_bounds,
+		const Vector &min_size ) const;
+	void split(
+		std::vector<Vector> &out_contour,
+		Rect &ref_bounds,
+		const Vector &min_size ) const;
+
+	void split(
+		Contour &out_contour,
+		Rect &ref_bounds,
+		const Matrix &transform_matrix,
+		const Vector &min_size ) const;
+	void split(
+		std::vector<Vector> &out_contour,
+		Rect &ref_bounds,
+		const Matrix &transform_matrix,
+		const Vector &min_size ) const;
 
 	static Rect line_bounds(
 		const Vector &p0,

@@ -9,6 +9,7 @@ RENDERING_OPENGL_TASK_CC = \
 	rendering/opengl/task/taskblendgl.cpp \
 	rendering/opengl/task/taskblurpreparedgl.cpp \
 	rendering/opengl/task/taskcontourgl.cpp \
+	rendering/opengl/task/taskgl.cpp \
 	rendering/opengl/task/taskmeshgl.cpp
 
 RENDERING_OPENGL_HH += \

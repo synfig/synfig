@@ -37,6 +37,9 @@
 
 #include "taskcontourgl.h"
 
+#include "../internal/environment.h"
+#include "../surfacegl.h"
+
 #endif
 
 using namespace synfig;
@@ -50,11 +53,158 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
+void
+TaskContourGL::render_polygon(
+	const std::vector<Vector> &polygon,
+	const Rect &bounds,
+	bool invert,
+	bool antialias,
+	Contour::WindingStyle winding_style,
+	const Color &color )
+{
+	if (polygon.empty()) return;
+	gl::Environment &e = gl::Environment::get_instance();
+
+	if (antialias) e.antialiasing.multisample_begin();
+
+	gl::Buffers::BufferLock quad_buf = e.buffers.get_default_quad_buffer();
+	gl::Buffers::VertexArrayLock quad_va = e.buffers.get_vertex_array();
+
+	gl::Buffers::BufferLock polygon_buf = e.buffers.get_array_buffer(polygon);
+	gl::Buffers::VertexArrayLock polygon_va = e.buffers.get_vertex_array();
+
+	bool even_odd = winding_style == Contour::WINDING_EVEN_ODD;
+
+	GLint vp[4] = { };
+	glGetIntegerv(GL_VIEWPORT, vp);
+	int x0 = (int)floor(vp[0] + (bounds.minx + 1.0)*0.5*vp[2]);
+	int x1 = (int)ceil (vp[0] + (bounds.maxx + 1.0)*0.5*vp[2]);
+	int y0 = (int)floor(vp[1] + (bounds.miny + 1.0)*0.5*vp[3]);
+	int y1 = (int)ceil (vp[1] + (bounds.maxy + 1.0)*0.5*vp[3]);
+	glScissor(x0, y0, x1-x0, y1-y0);
+
+	glEnable(GL_SCISSOR_TEST);
+	glEnable(GL_STENCIL_TEST);
+
+	// render mask
+
+	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+	glClear(GL_STENCIL_BUFFER_BIT);
+	glStencilFunc(GL_ALWAYS, 0, 0);
+	if (even_odd) {
+		glStencilOp(GL_INCR_WRAP, GL_INCR_WRAP, GL_INCR_WRAP);
+	} else {
+		glStencilOpSeparate(GL_FRONT, GL_INCR_WRAP, GL_INCR_WRAP, GL_INCR_WRAP);
+		glStencilOpSeparate(GL_BACK, GL_DECR_WRAP, GL_DECR_WRAP, GL_DECR_WRAP);
+	}
+
+	glBindVertexArray(polygon_va.get_id());
+	glEnableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, polygon_buf.get_id());
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_TRUE, 0, polygon_buf.get_pointer());
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	e.shaders.simple();
+	glDrawArrays(GL_TRIANGLE_FAN, 0, polygon.size());
+
+	glDisableVertexAttribArray(0);
+	glBindVertexArray(0);
+
+	// fill mask
+
+	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+	if (!even_odd && !invert)
+		glStencilFunc(GL_NOTEQUAL, 0, -1);
+	if (!even_odd &&  invert)
+		glStencilFunc(GL_EQUAL, 0, -1);
+	if ( even_odd && !invert)
+		glStencilFunc(GL_EQUAL, 1, 1);
+	if ( even_odd &&  invert)
+		glStencilFunc(GL_EQUAL, 0, 1);
+
+	glBindVertexArray(quad_va.get_id());
+	glEnableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, quad_buf.get_id());
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_TRUE, 0, quad_buf.get_pointer());
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	e.shaders.color(color);
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+	glDisableVertexAttribArray(0);
+	glBindVertexArray(0);
+
+	glDisable(GL_STENCIL_TEST);
+	glDisable(GL_SCISSOR_TEST);
+
+	if (antialias) e.antialiasing.multisample_end();
+}
+
+void
+TaskContourGL::render_contour(
+	const Contour &contour,
+	const Matrix &transform_matrix,
+	bool invert,
+	bool antialias,
+	Contour::WindingStyle winding_style,
+	const Color &color )
+{
+	GLint vp[4] = { };
+	glGetIntegerv(GL_VIEWPORT, vp);
+	if (!vp[2] || !vp[3]) return;
+
+	std::vector<Vector> polygon;
+	Rect full_bounds(-1.0, -1.0, 1.0, 1.0);
+	Rect bounds = full_bounds;
+	Vector pixel_size(2.0/(Real)vp[2], 2.0/(Real)vp[3]);
+
+	contour.split(polygon, bounds, transform_matrix, pixel_size);
+
+	if (invert) bounds = full_bounds;
+	render_polygon(polygon, bounds, invert, antialias, winding_style, color);
+}
+
 bool
 TaskContourGL::run(RunParams & /* params */) const
 {
-	// TODO:
-	return false;
+	SurfaceGL::Handle target =
+		SurfaceGL::Handle::cast_dynamic(target_surface);
+
+	// transformation
+
+	Vector rect_size = rect_rb - rect_lt;
+	Matrix3 transfromation_matrix;
+	transfromation_matrix.m00 = fabs(rect_size[0]) > 1e-10 ? 2.0/rect_size[0] : 0.0;
+	transfromation_matrix.m11 = fabs(rect_size[1]) > 1e-10 ? 2.0/rect_size[1] : 0.0;
+	transfromation_matrix.m20 = -1.0 - rect_lt[0] * transfromation_matrix.m00;
+	transfromation_matrix.m21 = -1.0 - rect_lt[1] * transfromation_matrix.m11;
+
+	// bind framebuffer
+
+	gl::Framebuffers::RenderbufferLock renderbuffer = env().framebuffers.get_renderbuffer(GL_STENCIL_INDEX8, target->get_width(), target->get_height());
+	gl::Framebuffers::FramebufferLock framebuffer = env().framebuffers.get_framebuffer();
+	glBindFramebuffer(GL_DRAW_BUFFER, framebuffer.get_id());
+	glFramebufferRenderbuffer(GL_READ_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, renderbuffer.get_id());
+	glFramebufferTexture2D(GL_READ_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, target->get_id(), 0);
+
+	// render
+
+	render_contour(
+		*contour,
+		transfromation_matrix,
+		contour->invert,
+		contour->antialias,
+		contour->winding_style,
+		contour->color );
+
+	// release framebuffer
+
+	glFramebufferTexture2D(GL_READ_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, 0, 0);
+	glFramebufferRenderbuffer(GL_READ_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, 0);
+	glBindFramebuffer(GL_DRAW_BUFFER, 0);
+
+	return true;
 }
 
 /* === E N T R Y P O I N T ================================================= */

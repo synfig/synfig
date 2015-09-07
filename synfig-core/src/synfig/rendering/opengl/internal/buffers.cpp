@@ -39,6 +39,7 @@
 #include <cstring>
 
 #include <synfig/general.h>
+#include <synfig/vector.h>
 
 #include "buffers.h"
 
@@ -110,11 +111,24 @@ gl::Buffers::Buffers(Context &context):
 	context(context),
 	array_buffer(context, GL_ARRAY_BUFFER, GL_DYNAMIC_DRAW, 1024*1024),
 	element_array_buffer(context, GL_ELEMENT_ARRAY_BUFFER, GL_DYNAMIC_DRAW, 1024*1024)
-{ }
+{
+	Context::Lock lock(context);
+
+	Vector default_quad_buffer_data[] = {
+		Vector(-1.0, -1.0),
+		Vector(-1.0,  1.0),
+		Vector( 1.0, -1.0),
+		Vector( 1.0,  1.0) };
+	default_quad_buffer = get_array_buffer(
+		default_quad_buffer_data,
+		sizeof(default_quad_buffer_data) );
+}
 
 gl::Buffers::~Buffers()
 {
 	Context::Lock lock(context);
+
+	default_quad_buffer = BufferLock();
 
 	// delete vertex arrays
 	for(std::list<VertexArray>::iterator i = vertex_arrays.begin(); i != vertex_arrays.end(); ++i)
@@ -127,6 +141,10 @@ gl::Buffers::~Buffers()
 gl::Buffers::BufferLock
 gl::Buffers::get_buffer(Buffer &buffer, const void *data, int size)
 {
+	if (!data) return BufferLock();
+	assert(size >= 0);
+	if (!size) return BufferLock();
+
 	Context::Lock lock(context);
 	Buffer::Chunk *chunk = buffer.alloc(size);
 	glBindBuffer(buffer.target, buffer.id);

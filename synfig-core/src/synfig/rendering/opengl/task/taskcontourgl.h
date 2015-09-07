@@ -52,6 +52,22 @@ public:
 
 	Task::Handle clone() const { return clone_pointer(this); }
 
+	static void render_polygon(
+		const std::vector<Vector> &polygon,
+		const Rect &bounds,
+		bool invert,
+		bool antialias,
+		Contour::WindingStyle winding_style,
+		const Color &color );
+
+	static void render_contour(
+		const Contour &contour,
+		const Matrix &transform_matrix,
+		bool invert,
+		bool antialias,
+		Contour::WindingStyle winding_style,
+		const Color &color );
+
 	virtual bool run(RunParams &params) const;
 };
 
