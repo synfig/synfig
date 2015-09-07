@@ -116,9 +116,9 @@ Target_GL::render(ProgressCallback *cb)
 			rendering::Task::Handle task = context.build_rendering_task();
 			if (task)
 			{
-				rendering::Renderer::Handle renderer = rendering::Renderer::get_renderer("software");
+				rendering::Renderer::Handle renderer = rendering::Renderer::get_renderer("gl");
 				if (!renderer)
-					throw String("Renderer 'software' not found");
+					throw String("Renderer 'gl' not found");
 
 				task->target_surface = new rendering::SurfaceSW();
 				task->target_surface->set_size(desc.get_w(), desc.get_h());
