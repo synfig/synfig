@@ -207,9 +207,7 @@ TaskContourSW::render_contour(
 {
 	Polyspan span;
 	span.init(0, 0, target_surface.get_w(), target_surface.get_h());
-	Vector p1, t0, t1;
-	p1 = transform_matrix.get_transformed(Vector::zero());
-	span.move_to(p1[0], p1[1]);
+	Vector p1, pp0, pp1;
 	for(Contour::ChunkList::const_iterator i = chunks.begin(); i != chunks.end(); ++i)
 	{
 		switch(i->type)
@@ -227,14 +225,14 @@ TaskContourSW::render_contour(
 				break;
 			case Contour::CONIC:
 				p1 = transform_matrix.get_transformed(i->p1);
-				t0 = transform_matrix.get_transformed(i->t0, false);
-				span.conic_to(t0[0], t0[1], p1[0], p1[1]);
+				pp0 = transform_matrix.get_transformed(i->pp0);
+				span.conic_to(p1[0], p1[1], pp0[0], pp0[1]);
 				break;
 			case Contour::CUBIC:
 				p1 = transform_matrix.get_transformed(i->p1);
-				t0 = transform_matrix.get_transformed(i->t0, false);
-				t1 = transform_matrix.get_transformed(i->t1, false);
-				span.cubic_to(t0[0], t0[1], t1[0], t1[1], p1[0], p1[1]);
+				pp0 = transform_matrix.get_transformed(i->pp0);
+				pp1 = transform_matrix.get_transformed(i->pp1);
+				span.cubic_to(p1[0], p1[1], pp0[0], pp0[1], pp1[0], pp1[1]);
 				break;
 			default:
 				break;

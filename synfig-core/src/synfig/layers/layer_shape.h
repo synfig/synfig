@@ -87,8 +87,8 @@ public:
 	void clear();
 	void move_to(Real x, Real y);
 	void line_to(Real x, Real y);
-	void conic_to(Real x1, Real y1, Real x, Real y);
-	void curve_to(Real x1, Real y1, Real x2, Real y2, Real x, Real y);
+	void conic_to(Real x, Real y, Real x1, Real y1);
+	void cubic_to(Real x, Real y, Real x1, Real y1, Real x2, Real y2);
 	void close();
 
 	virtual bool set_param(const String & param, const synfig::ValueBase &value);

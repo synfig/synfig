@@ -161,8 +161,8 @@ public:
 
 	//primitive_to functions
 	void line_to(Real x, Real y);
-	void conic_to(Real x1, Real y1, Real x, Real y);
-	void cubic_to(Real x1, Real y1, Real x2, Real y2, Real x, Real y);
+	void conic_to(Real x, Real y, Real x1, Real y1);
+	void cubic_to(Real x, Real y, Real x1, Real y1, Real x2, Real y2);
 
 	void draw_scanline(int y, Real x1, Real y1, Real x2, Real y2);
 	void draw_line(Real x1, Real y1, Real x2, Real y2);

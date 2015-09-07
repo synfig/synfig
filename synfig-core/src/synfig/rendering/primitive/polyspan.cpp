@@ -414,7 +414,7 @@ Polyspan::subd_conic_stack(Point *arc)
 }
 
 void
-Polyspan::conic_to(Real x1, Real y1, Real x, Real y)
+Polyspan::conic_to(Real x, Real y, Real x1, Real y1)
 {
 	Point *current = arc;
 	int		level = 0;
@@ -566,7 +566,7 @@ Polyspan::subd_cubic_stack(Point *arc)
 
 
 void
-Polyspan::cubic_to(Real x1, Real y1, Real x2, Real y2, Real x, Real y)
+Polyspan::cubic_to(Real x, Real y, Real x1, Real y1, Real x2, Real y2)
 {
 	Point *current = arc;
 	int		num = 0;

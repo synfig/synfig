@@ -176,18 +176,18 @@ struct CurveArray
 		degrees.clear();
 	}
 
-	int size () const
+	int size() const
 	{
 		return degrees.size();
 	}
 
-	void Start(Point m)
+	void start(Point m)
 	{
 		reset(m[0],m[0],m[1],m[1]);
 		pointlist.push_back(m);
 	}
 
-	void AddCubic(Point p1, Point p2, Point dest)
+	void add_cubic(Point dest, Point p1, Point p2)
 	{
 		aabb.expand(p1[0],p1[1]);
 		aabb.expand(p2[0],p2[1]);
@@ -200,7 +200,7 @@ struct CurveArray
 		degrees.push_back(3);
 	}
 
-	void AddConic(Point p1, Point dest)
+	void add_conic(Point dest, Point p1)
 	{
 		aabb.expand(p1[0],p1[1]);
 		aabb.expand(dest[0],dest[1]);
@@ -309,7 +309,7 @@ struct CurveArray
 		return intersects;
 	}
 
-	static int 	quadratic_eqn(Real a, Real b, Real c, Real *t0, Real *t1)
+	static int quadratic_eqn(Real a, Real b, Real c, Real *t0, Real *t1)
 	{
 		const Real b2_4ac = b*b - 4*a*c;
 
@@ -664,23 +664,23 @@ struct Layer_Shape::Intersector
 		const Real x1 = tangent[0]/2.0 + cur_x;
 		const Real y1 = tangent[1]/2.0 + cur_y;
 
-		conic_to(x1,y1,x,y);
+		conic_to(x,y,x1,y1);
 	}
 
-	void conic_to(Real x1, Real y1, Real x, Real y)
+	void conic_to(Real x, Real y, Real x1, Real y1)
 	{
 		//if we're not already a curve start one
 		if(prim != TYPE_CURVE)
 		{
 			CurveArray	c;
 
-			c.Start(Point(cur_x,cur_y));
-			c.AddConic(Point(x1,y1),Point(x,y));
+			c.start(Point(cur_x,cur_y));
+			c.add_conic(Point(x,y),Point(x1,y1));
 
 			curves.push_back(c);
 		}else
 		{
-			curves.back().AddConic(Point(x1,y1),Point(x,y));
+			curves.back().add_conic(Point(x,y),Point(x1,y1));
 		}
 
 		cur_x = x;
@@ -696,28 +696,28 @@ struct Layer_Shape::Intersector
 		prim = TYPE_CURVE;
 	}
 
-	void curve_to_smooth(Real x2, Real y2, Real x, Real y)
+	void curve_to_smooth(Real x, Real y, Real x2, Real y2)
 	{
 		Real x1 = tangent[0]/3.0 + cur_x;
 		Real y1 = tangent[1]/3.0 + cur_y;
 
-		curve_to(x1,y1,x2,y2,x,y);
+		cubic_to(x,y,x1,y1,x2,y2);
 	}
 
-	void curve_to(Real x1, Real y1, Real x2, Real y2, Real x, Real y)
+	void cubic_to(Real x, Real y,Real x1, Real y1, Real x2, Real y2)
 	{
 		//if we're not already a curve start one
 		if(prim != TYPE_CURVE)
 		{
 			CurveArray	c;
 
-			c.Start(Point(cur_x,cur_y));
-			c.AddCubic(Point(x1,y1),Point(x2,y2),Point(x,y));
+			c.start(Point(cur_x,cur_y));
+			c.add_cubic(Point(x,y),Point(x1,y1),Point(x2,y2));
 
 			curves.push_back(c);
 		}else
 		{
-			curves.back().AddCubic(Point(x1,y1),Point(x2,y2),Point(x,y));
+			curves.back().add_cubic(Point(x,y),Point(x1,y1),Point(x2,y2));
 		}
 
 		cur_x = x;
@@ -749,7 +749,7 @@ struct Layer_Shape::Intersector
 	}
 
 	//assumes the line to count the intersections with is (-1,0)
-	int	intersect (Real x, Real y) const
+	int	intersect(Real x, Real y) const
 	{
 		int inter = 0;
 		unsigned int i;
@@ -1013,16 +1013,16 @@ void Layer_Shape::line_to(Real x, Real y)
 	edge_table->line_to(x,y);
 }
 
-void Layer_Shape::conic_to(Real x1, Real y1, Real x, Real y)
+void Layer_Shape::conic_to(Real x, Real y, Real x1, Real y1)
 {
 	contour->conic_to(Vector(x, y), Vector(x1, y1));
-	edge_table->conic_to(x1,y1,x,y);
+	edge_table->conic_to(x,y,x1,y1);
 }
 
-void Layer_Shape::curve_to(Real x1, Real y1, Real x2, Real y2, Real x, Real y)
+void Layer_Shape::cubic_to(Real x, Real y, Real x1, Real y1, Real x2, Real y2)
 {
 	contour->cubic_to(Vector(x, y), Vector(x1, y1), Vector(x2, y2));
-	edge_table->curve_to(x1,y1,x2,y2,x,y);
+	edge_table->cubic_to(x,y,x1,y1,x2,y2);
 }
 
 bool
@@ -1198,8 +1198,12 @@ Layer_Shape::accelerated_render(Context context,Surface *surface,int quality, co
 bool
 Layer_Shape::render_shape(Surface *surface, bool useblend, const RendDesc &renddesc) const
 {
+	Point origin=param_origin.get(Point());
+	Matrix translate;
+	translate.set_translate(origin);
 	Matrix world_to_pixels_matrix =
-		renddesc.get_transformation_matrix()
+		translate
+	  * renddesc.get_transformation_matrix()
 	  * renddesc.get_world_to_pixels_matrix();
 
 	rendering::TaskContourSW::render_contour(
