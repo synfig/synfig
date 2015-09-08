@@ -894,7 +894,7 @@ AsyncRenderer::start()
 			mem_fun(*this,&AsyncRenderer::start_),
 			false
 		)
-		,50
+		, 0
 	);
 }
 
