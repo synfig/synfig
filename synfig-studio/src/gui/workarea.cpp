@@ -1143,23 +1143,23 @@ public:
 		//	0,
 		//	"WorkAreaTarget_GL__end_frame" );
 
-		PixelFormat pf(PF_RGB|PF_A);
-
-		size_t stride = surface->get_width() * synfig::channels(pf);
+		size_t stride = 4 * surface->get_width();
 		size_t total_bytes = surface->get_height() * stride;
 		unsigned char *buffer = (unsigned char*)malloc(total_bytes);
 		if (!buffer) { free(pre_buffer); return; }
 
 		unsigned char *dest(buffer);
-		const Color *src(pre_buffer);
-		int w(surface->get_width());
-		int x(w*surface->get_height());
-		for(int i=0;i<x;i++)
-			dest = Color2PixelFormat(
-					   (*(src++)).clamped(),
-					   pf,
-					   dest,
-					   App::gamma );
+		unsigned char *end(dest + total_bytes);
+		Color *src(pre_buffer);
+		while(dest != end) {
+			*(dest++) = App::gamma.r_F32_to_U8(src->get_r());
+			*(dest++) = App::gamma.g_F32_to_U8(src->get_g());
+			*(dest++) = App::gamma.b_F32_to_U8(src->get_b());
+			*(dest++) = src->get_a() <= 0.f ? 0
+					  : src->get_a() >= 1.f ? 255
+				      : (unsigned char)floorf(src->get_a()*255.999f);
+			++src;
+		}
 
 		free(pre_buffer);
 
@@ -1167,7 +1167,7 @@ public:
 		pixbuf = Gdk::Pixbuf::create_from_data(
 					buffer,	// pointer to the data
 					Gdk::COLORSPACE_RGB, // the colorspace
-					(pf & PF_A) == PF_A, // has alpha?
+					true, // has alpha?
 					8, // bits per sample
 					surface->get_width(),	// width
 					surface->get_height(),	// height
@@ -1268,15 +1268,15 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 
 	meta_data_lock=false;
 
-	insert_renderer(new Renderer_Background,000);
-	insert_renderer(new Renderer_Canvas,	010);
-	insert_renderer(new Renderer_Grid,		100);
-	insert_renderer(new Renderer_Guides,	200);
-	insert_renderer(new Renderer_Ducks,		300);
-	insert_renderer(new Renderer_BBox,		399);
-	insert_renderer(new Renderer_Dragbox,	400);
-	insert_renderer(new Renderer_Timecode,	500);
-	insert_renderer(new Renderer_BoneSetup,	501);
+	insert_renderer(new Renderer_Background, 000);
+	insert_renderer(new Renderer_Canvas,     010);
+	insert_renderer(new Renderer_Grid,       100);
+	insert_renderer(new Renderer_Guides,     200);
+	insert_renderer(new Renderer_Ducks,      300);
+	insert_renderer(new Renderer_BBox,       399);
+	insert_renderer(new Renderer_Dragbox,    400);
+	insert_renderer(new Renderer_Timecode,   500);
+	insert_renderer(new Renderer_BoneSetup,  501);
 
 	signal_duck_selection_changed().connect(sigc::mem_fun(*this,&studio::WorkArea::queue_draw));
 	signal_strokes_changed().connect(sigc::mem_fun(*this,&studio::WorkArea::queue_draw));
