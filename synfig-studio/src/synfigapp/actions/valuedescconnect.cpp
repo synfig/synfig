@@ -102,27 +102,6 @@ Action::ValueDescConnect::get_param_vocab()
 }
 
 bool
-is_value_node_descendant(ValueNode::Handle value_node_src, ValueNode::Handle value_node_dest)
-{
-    if(value_node_dest == NULL)
-        return false;
-    if(value_node_src == value_node_dest)
-        return true;
-
-    // loop through the parents of each node in current_nodes
-    set<Node*> node_parents(value_node_dest->parent_set);
-    ValueNode::Handle value_node_parent = NULL;
-    for (set<Node*>::iterator iter = node_parents.begin(); iter != node_parents.end(); iter++)
-    {
-        value_node_parent = ValueNode::Handle::cast_dynamic(*iter);
-        if(value_node_src == value_node_parent)
-            break;
-    }
-
-    return value_node_dest->parent_count() ? is_value_node_descendant(value_node_src, value_node_parent) : false;
-}
-
-bool
 Action::ValueDescConnect::is_candidate(const ParamList &x)
 {
 	if(candidate_check(get_param_vocab(),x))
@@ -130,12 +109,11 @@ Action::ValueDescConnect::is_candidate(const ParamList &x)
 	    ValueDesc value_desc(x.find("dest")->second.get_value_desc());
 	    ValueNode::Handle value_node(x.find("src")->second.get_value_node());
 
-//	    if (value_desc.parent_is_value_node())
-//	        ret = is_value_node_descendant(value_node, value_desc);
 	    //! forbid recursive linking (fix #48)
 	    if (value_desc.parent_is_value_node())
 	    {
-	        if (is_value_node_descendant(value_node, value_desc.get_parent_value_node()))
+	        ValueNode* vn = dynamic_cast<ValueNode*>(value_node.get());
+	        if (vn && vn->is_descendant(value_desc.get_parent_value_node()))
 	            return false;
 	    }
 
