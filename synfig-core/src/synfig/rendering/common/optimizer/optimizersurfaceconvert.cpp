@@ -75,7 +75,7 @@ OptimizerSurfaceConvert::run(const RunParams& params) const
 				   || (gl && !SurfaceGL::Handle::cast_dynamic((*i)->target_surface)) ))
 				{
 					if (task == params.task) {
-						task == params.task->clone();
+						task = params.task->clone();
 						i = task->sub_tasks.begin() + (i - params.task->sub_tasks.begin());
 					}
 					TaskSurfaceConvert::Handle surface_convert(new TaskSurfaceConvert());
@@ -91,7 +91,7 @@ OptimizerSurfaceConvert::run(const RunParams& params) const
 			 && ( (sw && !SurfaceSW::Handle::cast_dynamic(task->target_surface))
 			   || (gl && !SurfaceGL::Handle::cast_dynamic(task->target_surface)) ))
 			{
-				if (task == params.task) task == params.task->clone();
+				if (task == params.task) task = params.task->clone();
 				TaskSurfaceConvert::Handle surface_convert(new TaskSurfaceConvert());
 				surface_convert->sub_task() = task;
 				surface_convert->target_surface = task->target_surface;

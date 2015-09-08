@@ -78,8 +78,8 @@ RendererGL::RendererGL()
 	register_optimizer(new OptimizerContourGL());
 	register_optimizer(new OptimizerMeshSW());
 
-	register_optimizer(new OptimizerLinear());
 	register_optimizer(new OptimizerSurface());
+	register_optimizer(new OptimizerLinear());
 }
 
 RendererGL::~RendererGL() { }

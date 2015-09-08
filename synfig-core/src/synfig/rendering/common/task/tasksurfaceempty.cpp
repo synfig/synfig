@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/software/task/taskblendsw.cpp
-**	\brief TaskBlendSW
+/*!	\file synfig/rendering/common/task/tasksurfaceempty.cpp
+**	\brief TaskSurfaceEmpty
 **
 **	$Id$
 **
@@ -35,10 +35,7 @@
 #include <signal.h>
 #endif
 
-#include "taskblendsw.h"
-#include "../surfacesw.h"
-
-#include <synfig/debug/debugsurface.h>
+#include "tasksurfaceempty.h"
 
 #endif
 
@@ -54,27 +51,8 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 bool
-TaskBlendSW::run(RunParams & /* params */) const
+TaskSurfaceEmpty::run(RunParams & /* params */) const
 {
-	const synfig::Surface &a =
-		SurfaceSW::Handle::cast_dynamic( sub_task_a()->target_surface )->get_surface();
-	const synfig::Surface &b =
-		SurfaceSW::Handle::cast_dynamic( sub_task_b()->target_surface )->get_surface();
-	synfig::Surface &c =
-		SurfaceSW::Handle::cast_dynamic( target_surface )->get_surface();
-
-	//debug::DebugSurface::save_to_file(a, "TaskBlendSW__run__a");
-	//debug::DebugSurface::save_to_file(b, "TaskBlendSW__run__b");
-
-	synfig::Surface::pen p = c.get_pen(0, 0);
-	const_cast<synfig::Surface*>(&a)->blit_to(p);
-	synfig::Surface::alpha_pen ap(c.get_pen(0, 0));
-	ap.set_blend_method(blend_method);
-	ap.set_alpha(alpha);
-	const_cast<synfig::Surface*>(&b)->blit_to(ap);
-
-	//debug::DebugSurface::save_to_file(c, "TaskBlendSW__run__c");
-
 	return true;
 }
 

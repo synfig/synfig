@@ -35,9 +35,11 @@
 #include <signal.h>
 #endif
 
-#include "renderer.h"
+#include <typeinfo>
 
-#include "../general.h"
+#include <synfig/general.h>
+
+#include "renderer.h"
 
 #include "software/renderersw.h"
 #include "opengl/renderergl.h"
@@ -104,6 +106,7 @@ Renderer::optimize_recursive(const Optimizer &optimizer, const Optimizer::RunPar
 					Task::Handle new_task = params.task->clone();
 					new_task->sub_tasks[ i - params.task->sub_tasks.begin() ]
 						= sub_params.out_task;
+					params.out_task = new_task;
 					return true;
 				}
 			}
@@ -151,8 +154,10 @@ Renderer::optimize(Task::List &list) const
 bool
 Renderer::run(const Task::List &list) const
 {
+	//log(list, "input list");
 	Task::List optimized_list(list);
 	optimize(optimized_list);
+	//log(optimized_list, "optimized list");
 
 	bool success = true;
 
@@ -161,6 +166,43 @@ Renderer::run(const Task::List &list) const
 		if (!(*i)->run(params)) success = false;
 
 	return success;
+}
+
+void
+Renderer::log(const Task::Handle &task, const String &prefix) const
+{
+	if (task)
+	{
+		info( prefix
+			+ typeid(*task).name()
+			+ ( task->target_surface
+			  ?	etl::strprintf(" target %s (%dx%d) 0x%x",
+					typeid(*task->target_surface).name(),
+					task->target_surface->get_width(),
+					task->target_surface->get_height(),
+					task->target_surface.get() )
+			  : "" ));
+		for(Task::List::const_iterator i = task->sub_tasks.begin(); i != task->sub_tasks.end(); ++i)
+			log(*i, prefix + "  ");
+	}
+	else
+	{
+		info(prefix + " NULL");
+	}
+}
+
+void
+Renderer::log(const Task::List &list, const String &name) const
+{
+	String line = "-------------------------------------------";
+	String n = "    " + name;
+	n.resize(line.size(), ' ');
+	for(int i = 0; i < (int)line.size(); ++i)
+		if (n[i] == ' ') n[i] = line[i];
+	info(n);
+	for(Task::List::const_iterator i = list.begin(); i != list.end(); ++i)
+		log(*i);
+	info(line);
 }
 
 void

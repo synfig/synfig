@@ -37,6 +37,11 @@
 
 #include "optimizersurface.h"
 
+#include "../../software/task/tasksw.h"
+#include "../../software/surfacesw.h"
+#include "../../opengl/task/taskgl.h"
+#include "../../opengl/surfacegl.h"
+
 #endif
 
 using namespace synfig;
@@ -51,9 +56,44 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 bool
-OptimizerSurface::run(const RunParams& /* params */) const
+OptimizerSurface::run(const RunParams& params) const
 {
-	// TODO: remove all TaskSurface from top-level of task-tree
+	if ( params.task
+	  && params.task->target_surface
+	  && !params.task->target_surface->empty())
+	{
+		bool sw = (bool)TaskSW::Handle::cast_dynamic(params.task);
+		bool gl = (bool)TaskGL::Handle::cast_dynamic(params.task);
+		if (sw || gl)
+		{
+			// Create surfaces when subtasks have no target_surface
+			Task::Handle task = params.task;
+			for(Task::List::iterator i = task->sub_tasks.begin(); i != task->sub_tasks.end(); ++i)
+			{
+				if (*i && (!(*i)->target_surface || (*i)->target_surface->empty()))
+				{
+					if (task == params.task) {
+						task = params.task->clone();
+						i = task->sub_tasks.begin() + (i - params.task->sub_tasks.begin());
+					}
+					*i = (*i)->clone();
+					if (!(*i)->target_surface) {
+						if (sw) (*i)->target_surface = new SurfaceSW();
+						if (gl) (*i)->target_surface = new SurfaceGL();
+					}
+					(*i)->target_surface->set_size( task->target_surface->get_size() );
+					(*i)->rect_lt = task->rect_lt;
+					(*i)->rect_rb = task->rect_rb;
+				}
+			}
+
+			if (task != params.task)
+			{
+				params.out_task = task;
+				return true;
+			}
+		}
+	}
 	return false;
 }
 

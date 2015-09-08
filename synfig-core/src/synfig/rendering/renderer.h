@@ -65,6 +65,8 @@ public:
 private:
 	bool optimize_recursive(const Optimizer &optimizer, const Optimizer::RunParams& params) const;
 	bool optimize_recursive(const Optimizer &optimizer, Task::List &list) const;
+	void log(const Task::Handle &task, const String &prefix = String()) const;
+	void log(const Task::List &list, const String &name = String()) const;
 
 public:
 	void optimize(Task::List &list) const;

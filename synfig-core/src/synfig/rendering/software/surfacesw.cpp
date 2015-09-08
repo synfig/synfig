@@ -54,6 +54,7 @@ bool
 SurfaceSW::create_vfunc()
 {
 	surface.set_wh(get_width(), get_height());
+	surface.clear();
 	return true;
 }
 

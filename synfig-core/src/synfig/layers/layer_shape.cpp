@@ -1224,7 +1224,7 @@ rendering::Task::Handle
 Layer_Shape::build_rendering_task_vfunc(Context context)const
 {
 	Real amount = get_amount();
-	//TODO: Color::BlendMethod blend_method = get_blend_method();
+	Color::BlendMethod blend_method = get_blend_method();
 
 	Color color = param_color.get(Color());
 	//TODO: Point origin = param_origin.get(Point());
@@ -1250,21 +1250,13 @@ Layer_Shape::build_rendering_task_vfunc(Context context)const
 	task_contour->contour->antialias = antialias;
 	task_contour->contour->winding_style = winding_style;
 
-	rendering::TaskBlend::Handle sub_task = context.build_rendering_task();
-	if (sub_task)
-	{
-		rendering::TaskBlend::Handle task_blend(new rendering::TaskBlend());
-		task_blend->alpha = amount;
-		task_blend->sub_task_a() = task_contour;
-		task_blend->sub_task_b() = sub_task;
-		task = task_blend;
-	}
-	else
-	{
-		// TODO: use some kind of 'dummy' task instead of this optimization
-		task_contour->contour->color.set_a(
-			amount * task_contour->contour->color.get_a() );
-	}
+	rendering::TaskBlend::Handle next = context.build_rendering_task();
+	rendering::TaskBlend::Handle task_blend(new rendering::TaskBlend());
+	task_blend->alpha = amount;
+	task_blend->blend_method = blend_method;
+	task_blend->sub_task_a() = next;
+	task_blend->sub_task_b() = task_contour;
+	task = task_blend;
 
 	return task;
 }

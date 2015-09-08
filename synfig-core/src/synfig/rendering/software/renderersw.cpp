@@ -75,8 +75,8 @@ RendererSW::RendererSW()
 	register_optimizer(new OptimizerContourSW());
 	register_optimizer(new OptimizerMeshSW());
 
-	register_optimizer(new OptimizerLinear());
 	register_optimizer(new OptimizerSurface());
+	register_optimizer(new OptimizerLinear());
 }
 
 RendererSW::~RendererSW() { }
