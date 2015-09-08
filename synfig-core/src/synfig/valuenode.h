@@ -228,6 +228,9 @@ public:
 	//! Returns \true if the Value Node has an ID (has been exported)
 	bool is_exported()const { return !get_id().empty(); }
 
+	//! Check recursively if \value_node_dest is a descendant of the Value Node
+	bool is_descendant(ValueNode::Handle value_node_dest);
+
 	//! Returns the type of the ValueNode
 	Type& get_type()const { return *type; }
 
@@ -256,8 +259,9 @@ public:
 	//! \see etl::rhandle
 	int replace(etl::handle<ValueNode> x);
 	
-	//! Get/Set the default interpolation for Value Nodes
+	//! Get the default interpolation for Value Nodes
 	virtual Interpolation get_interpolation()const { return INTERPOLATION_UNDEFINED; }
+	//! Set the default interpolation for Value Nodes
 	virtual void set_interpolation(Interpolation /* i*/) { }
 
 protected:
