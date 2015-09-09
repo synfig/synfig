@@ -49,15 +49,20 @@ public:
 	struct RunParams {
 		const Renderer &renderer;
 		Task::List &list;
-		Task::Handle task;
+		const Task::Handle task;
+		const RunParams * const parent;
 
 		mutable Task::Handle out_task;
 
 		RunParams(
 			const Renderer &renderer,
 			Task::List &list,
-			const Task::Handle &task = Task::Handle()
-		): renderer(renderer), list(list), task(task) { }
+			const Task::Handle &task = Task::Handle(),
+			const RunParams *parent = NULL
+		): renderer(renderer), list(list), task(task), parent(parent) { }
+
+		RunParams sub(const Task::Handle &task) const
+			{ return RunParams(renderer, list, task, this); }
 	};
 
 	virtual ~Optimizer();

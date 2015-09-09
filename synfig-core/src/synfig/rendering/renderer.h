@@ -68,6 +68,9 @@ private:
 	void log(const Task::Handle &task, const String &prefix = String()) const;
 	void log(const Task::List &list, const String &name = String()) const;
 
+	static void initialize_renderers();
+	static void deinitialize_renderers();
+
 public:
 	void optimize(Task::List &list) const;
 	bool run(const Task::List &list) const;

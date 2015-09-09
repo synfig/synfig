@@ -60,6 +60,29 @@ using namespace rendering;
 Renderer::Handle Renderer::blank;
 std::map<String, Renderer::Handle> *Renderer::renderers;
 
+
+
+void
+Renderer::initialize_renderers()
+{
+	// initialize renderers
+	RendererSW::initialize();
+	RendererGL::initialize();
+
+	// register renderers
+	register_renderer("software", new RendererSW());
+	register_renderer("gl", new RendererGL());
+}
+
+void
+Renderer::deinitialize_renderers()
+{
+	RendererGL::deinitialize();
+	RendererSW::deinitialize();
+}
+
+
+
 Renderer::~Renderer() { }
 
 bool
@@ -97,10 +120,7 @@ Renderer::optimize_recursive(const Optimizer &optimizer, const Optimizer::RunPar
 		{
 			if (*i)
 			{
-				Optimizer::RunParams sub_params(params);
-				sub_params.task = *i;
-				sub_params.out_task.reset();
-
+				Optimizer::RunParams sub_params = params.sub(*i);
 				if ( optimize_recursive(optimizer, sub_params) )
 				{
 					Task::Handle new_task = params.task->clone();
@@ -118,11 +138,9 @@ Renderer::optimize_recursive(const Optimizer &optimizer, const Optimizer::RunPar
 bool
 Renderer::optimize_recursive(const Optimizer &optimizer, Task::List &list) const
 {
-	Optimizer::RunParams params(*this, list);
 	for(Task::List::iterator i = list.begin(); i != list.end(); ++i)
 	{
-		params.task = *i;
-		params.out_task.reset();
+		Optimizer::RunParams params(*this, list, *i);
 		if (optimize_recursive(optimizer, params))
 		{
 			if (params.out_task) *i = params.out_task; else list.erase(i);
@@ -212,14 +230,7 @@ Renderer::initialize()
 		synfig::error("rendering::Renderer already initialized");
 	renderers = new std::map<String, Handle>();
 
-	// initialize renderers
-
-	RendererSW::initialize();
-	RendererGL::initialize();
-
-	// register renderers
-	register_renderer("software", new RendererSW());
-	register_renderer("gl", new RendererGL());
+	initialize_renderers();
 }
 
 void
@@ -228,8 +239,7 @@ Renderer::deinitialize()
 	while(!get_renderers().empty())
 		unregister_renderer(get_renderers().begin()->first);
 
-	RendererGL::deinitialize();
-	RendererSW::deinitialize();
+	deinitialize_renderers();
 
 	delete renderers;
 }
