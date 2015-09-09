@@ -65,7 +65,11 @@ TaskContourGL::render_polygon(
 	if (polygon.empty()) return;
 	gl::Environment &e = gl::Environment::get_instance();
 
-	if (antialias) e.antialiasing.multisample_begin();
+	if (antialias) e.antialiasing.multisample_begin(false);
+
+	glClearColor(color.get_r(), color.get_g(), color.get_b(), 0.f);
+	glClear(GL_COLOR_BUFFER_BIT);
+	glClearColor(0.f, 0.f, 0.f, 0.f);
 
 	gl::Buffers::BufferLock quad_buf = e.buffers.get_default_quad_buffer();
 	gl::Buffers::VertexArrayLock quad_va = e.buffers.get_vertex_array();
@@ -112,7 +116,6 @@ TaskContourGL::render_polygon(
 
 	// fill mask
 
-	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
 	if (!even_odd && !invert)
 		glStencilFunc(GL_NOTEQUAL, 0, -1);
@@ -129,9 +132,11 @@ TaskContourGL::render_polygon(
 	glVertexAttribPointer(0, 2, GL_DOUBLE, GL_TRUE, 0, quad_buf.get_pointer());
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
+	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_TRUE);
 	e.shaders.color(color);
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
+	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 	glDisable(GL_STENCIL_TEST);
 	glDisable(GL_SCISSOR_TEST);
 

@@ -114,7 +114,7 @@ gl::Antialiasing::~Antialiasing()
 }
 
 void
-gl::Antialiasing::multisample_begin()
+gl::Antialiasing::multisample_begin(bool clear)
 {
 	Context::Lock lock(context);
 	glGetIntegerv(GL_VIEWPORT, multisample_orig_viewport);
@@ -127,7 +127,7 @@ gl::Antialiasing::multisample_begin()
 		multisample_viewport[1],
 		multisample_viewport[2],
 		multisample_viewport[3] );
-	glClear(GL_COLOR_BUFFER_BIT);
+	if (clear) glClear(GL_COLOR_BUFFER_BIT);
 }
 
 void

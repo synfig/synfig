@@ -62,7 +62,7 @@ public:
 	Antialiasing(Context &context);
 	~Antialiasing();
 
-	void multisample_begin();
+	void multisample_begin(bool clear = true);
 	void multisample_end();
 };
 
