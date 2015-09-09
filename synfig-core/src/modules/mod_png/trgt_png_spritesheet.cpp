@@ -203,7 +203,7 @@ png_trgt_spritesheet::end_frame()
 	cur_y = 0;
 	if (params.dir == TargetParam::HR)
 	{
-		//Horisontal render. Columns increment
+		//Horizontal render. Columns increment
 		cur_col++;
 		if (cur_col >= (unsigned int)params.columns)
 		{
