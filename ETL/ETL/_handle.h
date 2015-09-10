@@ -33,6 +33,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include <cassert>
+#include <typeinfo>
 
 /* === M A C R O S ========================================================= */
 
@@ -343,6 +344,10 @@ public:
 	template<typename U>
 	bool type_is() const
 	{ return dynamic_cast<const U*>(obj); }
+
+	template<typename U>
+	bool type_equal() const
+	{ return typeid(*obj) == typeid(U); }
 }; // END of template class handle
 
 // ========================================================================
@@ -793,6 +798,10 @@ public:
 	template<typename U>
 	bool type_is() const
 	{ return dynamic_cast<const U*>(obj); }
+
+	template<typename U>
+	bool type_equal() const
+	{ return typeid(*obj) == typeid(U); }
 }; // END of template class loose_handle
 
 // cast loose_handle<> -> handle<>
