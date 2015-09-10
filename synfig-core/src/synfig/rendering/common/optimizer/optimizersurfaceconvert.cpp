@@ -95,6 +95,7 @@ OptimizerSurfaceConvert::run(const RunParams& params) const
 				surface_convert->target_surface = task->target_surface;
 				if (sw) task->target_surface = new SurfaceSW();
 				if (gl) task->target_surface = new SurfaceGL();
+				task->target_surface->is_temporary = true;
 				task->target_surface->set_size( surface_convert->target_surface->get_size() );
 				task = surface_convert;
 			}
@@ -109,6 +110,7 @@ OptimizerSurfaceConvert::run(const RunParams& params) const
 					surface_convert->sub_task() = task;
 					if (parent_sw) surface_convert->target_surface = new SurfaceSW();
 					if (parent_gl) surface_convert->target_surface = new SurfaceGL();
+					surface_convert->target_surface->is_temporary = true;
 					surface_convert->target_surface->set_size( task->target_surface->get_size() );
 					task = surface_convert;
 				}

@@ -72,14 +72,18 @@ OptimizerSurface::run(const RunParams& params) const
 			{
 				if (*i && (!(*i)->target_surface || (*i)->target_surface->empty()))
 				{
-					if (task == params.task) {
+					if (task == params.task)
+					{
 						task = params.task->clone();
 						i = task->sub_tasks.begin() + (i - params.task->sub_tasks.begin());
 					}
 					*i = (*i)->clone();
-					if (!(*i)->target_surface) {
+
+					if (!(*i)->target_surface)
+					{
 						if (sw) (*i)->target_surface = new SurfaceSW();
 						if (gl) (*i)->target_surface = new SurfaceGL();
+						(*i)->target_surface->is_temporary = true;
 					}
 					(*i)->target_surface->set_size( task->target_surface->get_size() );
 					(*i)->rect_lt = task->rect_lt;
