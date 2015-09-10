@@ -37,6 +37,7 @@
 
 #include "renderersw.h"
 
+#include "../common/optimizer/optimizercomposite.h"
 #include "../common/optimizer/optimizerlinear.h"
 #include "../common/optimizer/optimizersurface.h"
 #include "../common/optimizer/optimizersurfaceconvert.h"
@@ -73,6 +74,8 @@ RendererSW::RendererSW()
 	register_optimizer(new OptimizerBlurPreparedSW());
 	register_optimizer(new OptimizerContourSW());
 	register_optimizer(new OptimizerMeshSW());
+
+	register_optimizer(new OptimizerComposite());
 
 	register_optimizer(new OptimizerLinear());
 	register_optimizer(new OptimizerSurfaceCreate());

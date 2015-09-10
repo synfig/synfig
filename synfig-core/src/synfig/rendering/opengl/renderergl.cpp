@@ -39,6 +39,7 @@
 
 #include "internal/environment.h"
 
+#include "../common/optimizer/optimizercomposite.h"
 #include "../common/optimizer/optimizerlinear.h"
 #include "../common/optimizer/optimizersurface.h"
 #include "../common/optimizer/optimizersurfaceconvert.h"
@@ -48,6 +49,7 @@
 
 #include "optimizer/optimizercontourgl.h"
 
+#include "../software/optimizer/optimizercontoursw.h"
 #include "../software/optimizer/optimizerblendsw.h"
 #include "../software/optimizer/optimizerblurpreparedsw.h"
 #include "../software/optimizer/optimizermeshsw.h"
@@ -74,8 +76,10 @@ RendererGL::RendererGL()
 
 	register_optimizer(new OptimizerBlendSW());
 	register_optimizer(new OptimizerBlurPreparedSW());
-	register_optimizer(new OptimizerContourGL());
+	register_optimizer(new OptimizerContourSW());
 	register_optimizer(new OptimizerMeshSW());
+
+	register_optimizer(new OptimizerComposite());
 
 	register_optimizer(new OptimizerLinear());
 	register_optimizer(new OptimizerSurfaceCreate());

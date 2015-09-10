@@ -37,8 +37,6 @@
 
 #include "optimizerblendsw.h"
 
-#include "../../common/task/tasksurface.h"
-#include "../../common/task/taskblend.h"
 #include "../task/taskblendsw.h"
 #include "../surfacesw.h"
 
@@ -59,14 +57,12 @@ bool
 OptimizerBlendSW::run(const RunParams& params) const
 {
 	TaskBlend::Handle blend = TaskBlend::Handle::cast_dynamic(params.task);
-	if (blend && blend->target_surface)
+	if ( blend
+	  && blend->target_surface
+	  && blend.type_equal<TaskBlend>() )
 	{
-		TaskBlendSW::Handle blend_sw(new TaskBlendSW());
-		*((Task*)(blend_sw.get())) = *((Task*)(blend.get()));
-		blend_sw->blend_method = blend->blend_method;
-		blend_sw->alpha = blend->alpha;
-		assign_surface<SurfaceSW>(blend_sw->sub_task_a(), blend_sw);
-		assign_surface<SurfaceSW>(blend_sw->sub_task_b(), blend_sw);
+		TaskBlendSW::Handle blend_sw;
+		init_and_assign_all<SurfaceSW>(blend_sw, blend);
 
 		if ( blend_sw->target_surface->is_temporary
 		  && blend_sw->sub_task_a()->target_surface )

@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/software/task/taskcontoursw.h
-**	\brief TaskContourSW Header
+/*!	\file synfig/rendering/common/task/taskcomposite.h
+**	\brief TaskComposite Header
 **
 **	$Id$
 **
@@ -22,17 +22,14 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_RENDERING_TASKCONTOURSW_H
-#define __SYNFIG_RENDERING_TASKCONTOURSW_H
+#ifndef __SYNFIG_RENDERING_TASKCOMPOSITE_H
+#define __SYNFIG_RENDERING_TASKCOMPOSITE_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/surface.h>
+#include <synfig/color.h>
 
-#include "tasksw.h"
-#include "../../common/task/taskcontour.h"
-#include "../../primitive/contour.h"
-#include "../../primitive/polyspan.h"
+#include "../../task.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -45,38 +42,25 @@ namespace synfig
 namespace rendering
 {
 
-class TaskContourSW: public TaskContour, public TaskSW
+class TaskComposite: public Task
 {
 public:
-	typedef etl::handle<TaskContourSW> Handle;
+	typedef etl::handle<TaskComposite> Handle;
 	Task::Handle clone() const { return clone_pointer(this); }
-	virtual bool run(RunParams &params) const;
 
-	virtual Color::BlendMethodFlags get_supported_blend_methods() const
-		{ return Color::BLEND_METHODS_ALL & ~Color::BLEND_METHODS_STRAIGHT; }
+	bool blend;
+	Color::BlendMethod blend_method;
+	Color::value_type amount;
 
-	// static
+	TaskComposite():
+		blend(),
+		blend_method(),
+		amount() { }
 
-	static void render_polyspan(
-		synfig::Surface &target_surface,
-		const Polyspan &polyspan,
-		bool invert,
-		bool antialias,
-		Contour::WindingStyle winding_style,
-		const Color &color,
-		Color::value_type opacity,
-		Color::BlendMethod blend_method );
+	virtual Color::BlendMethodFlags get_supported_blend_methods() const { return 0; }
 
-	static void render_contour(
-		synfig::Surface &target_surface,
-		const Contour::ChunkList &chunks,
-		bool invert,
-		bool antialias,
-		Contour::WindingStyle winding_style,
-		const Matrix &transform_matrix,
-		const Color &color,
-		Color::value_type opacity,
-		Color::BlendMethod blend_method );
+	bool is_blend_method_supported(Color::BlendMethod blend_method)
+		{ return get_supported_blend_methods() & (1 << blend_method); }
 };
 
 } /* end namespace rendering */

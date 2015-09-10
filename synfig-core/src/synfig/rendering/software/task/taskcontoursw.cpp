@@ -271,8 +271,8 @@ TaskContourSW::run(RunParams & /* params */) const
 		contour->winding_style,
 		transfromation_matrix,
 		contour->color,
-		1.0,
-		Color::BLEND_COMPOSITE );
+		blend ? amount : 1.0,
+		blend ? blend_method : Color::BLEND_COMPOSITE );
 
 	//debug::DebugSurface::save_to_file(a, "TaskContourSW__run");
 

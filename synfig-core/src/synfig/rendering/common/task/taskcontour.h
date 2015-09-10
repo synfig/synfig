@@ -27,7 +27,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include "../../task.h"
+#include "taskcomposite.h"
 #include "../../primitive/contour.h"
 
 /* === M A C R O S ========================================================= */
@@ -41,13 +41,11 @@ namespace synfig
 namespace rendering
 {
 
-class TaskContour: public Task
+class TaskContour: public TaskComposite
 {
 public:
 	typedef etl::handle<TaskContour> Handle;
-
 	Contour::Handle contour;
-
 	Task::Handle clone() const { return clone_pointer(this); }
 };
 

@@ -104,6 +104,40 @@ public:
 				parent->rect_lt,
 				parent->rect_rb );
 	}
+
+	template<typename T>
+	static void assign_surfaces(const Task::Handle &parent)
+	{
+		if (parent && parent->target_surface)
+		{
+			for(Task::List::iterator i = parent->sub_tasks.begin(); i != parent->sub_tasks.end(); ++i)
+				assign_surface<T>(*i, parent);
+		}
+	}
+
+	template<typename T, typename TT>
+	static void assign(const etl::handle<T> &dest, const etl::handle<TT> &src)
+		{ *(TT*)dest.get() = *src; }
+
+	template<typename SurfaceType, typename T, typename TT>
+	static void assign_all(const etl::handle<T> &dest, const etl::handle<TT> &src)
+		{ assign(dest, src); assign_surfaces<SurfaceType>(dest); }
+
+	template<typename T, typename TT>
+	static void init_and_assign(etl::handle<T> &dest, const etl::handle<TT> &src)
+		{ dest = new T(); assign(dest, src); }
+
+	template<typename SurfaceType, typename T, typename TT>
+	static void init_and_assign_all(etl::handle<T> &dest, const etl::handle<TT> &src)
+		{ dest = new T(); assign_all<SurfaceType>(dest, src); }
+
+	template<typename T, typename TT>
+	static const etl::handle<T> create_and_assign(const etl::handle<TT> &src)
+		{ const etl::handle<T> dest = new T(); assign(dest, src); return dest; }
+
+	template<typename SurfaceType, typename T, typename TT>
+	static const etl::handle<T> create_and_assign_all(const etl::handle<TT> &src)
+		{ const etl::handle<T> dest = new T(); assign_all<SurfaceType>(dest, src); return dest; }
 };
 
 } /* end namespace rendering */

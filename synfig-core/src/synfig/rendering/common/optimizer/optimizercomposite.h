@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/software/task/taskcontoursw.h
-**	\brief TaskContourSW Header
+/*!	\file synfig/rendering/common/optimizer/optimizercomposite.h
+**	\brief OptimizerComposite Header
 **
 **	$Id$
 **
@@ -22,17 +22,12 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_RENDERING_TASKCONTOURSW_H
-#define __SYNFIG_RENDERING_TASKCONTOURSW_H
+#ifndef __SYNFIG_RENDERING_OPTIMIZERCOMPOSITE_H
+#define __SYNFIG_RENDERING_OPTIMIZERCOMPOSITE_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/surface.h>
-
-#include "tasksw.h"
-#include "../../common/task/taskcontour.h"
-#include "../../primitive/contour.h"
-#include "../../primitive/polyspan.h"
+#include "../../optimizer.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -45,38 +40,10 @@ namespace synfig
 namespace rendering
 {
 
-class TaskContourSW: public TaskContour, public TaskSW
+class OptimizerComposite: public Optimizer
 {
 public:
-	typedef etl::handle<TaskContourSW> Handle;
-	Task::Handle clone() const { return clone_pointer(this); }
-	virtual bool run(RunParams &params) const;
-
-	virtual Color::BlendMethodFlags get_supported_blend_methods() const
-		{ return Color::BLEND_METHODS_ALL & ~Color::BLEND_METHODS_STRAIGHT; }
-
-	// static
-
-	static void render_polyspan(
-		synfig::Surface &target_surface,
-		const Polyspan &polyspan,
-		bool invert,
-		bool antialias,
-		Contour::WindingStyle winding_style,
-		const Color &color,
-		Color::value_type opacity,
-		Color::BlendMethod blend_method );
-
-	static void render_contour(
-		synfig::Surface &target_surface,
-		const Contour::ChunkList &chunks,
-		bool invert,
-		bool antialias,
-		Contour::WindingStyle winding_style,
-		const Matrix &transform_matrix,
-		const Color &color,
-		Color::value_type opacity,
-		Color::BlendMethod blend_method );
+	virtual bool run(const RunParams &params) const;
 };
 
 } /* end namespace rendering */

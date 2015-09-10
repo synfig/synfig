@@ -58,6 +58,7 @@ OptimizerLinear::run(const RunParams& params) const
 	if (!params.task)
 	{
 		bool optimized = false;
+
 		// convert task-tree to linear list
 		for(Task::List::iterator i = params.list.begin(); i != params.list.end();)
 		{
@@ -97,6 +98,12 @@ OptimizerLinear::run(const RunParams& params) const
 			}
 			++i;
 		}
+
+		// remove dummy tasks
+		for(Task::List::iterator i = params.list.begin(); i != params.list.end();)
+			if (i->type_equal<Task>())
+				{ i = params.list.erase(i); optimized = true; } else ++i;
+
 		return optimized;
 	}
 	return false;

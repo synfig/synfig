@@ -28,6 +28,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include "taskgl.h"
+#include "../../common/task/taskcontour.h"
 #include "../../primitive/contour.h"
 
 /* === M A C R O S ========================================================= */
@@ -41,16 +42,12 @@ namespace synfig
 namespace rendering
 {
 
-class TaskContourGL: public Task, public TaskGL
+class TaskContourGL: public TaskContour, public TaskGL
 {
 public:
 	typedef etl::handle<TaskContourGL> Handle;
-
-public:
-	Color color;
-	Contour::Handle contour;
-
 	Task::Handle clone() const { return clone_pointer(this); }
+	virtual bool run(RunParams &params) const;
 
 	static void render_polygon(
 		const std::vector<Vector> &polygon,
@@ -67,8 +64,6 @@ public:
 		bool antialias,
 		Contour::WindingStyle winding_style,
 		const Color &color );
-
-	virtual bool run(RunParams &params) const;
 };
 
 } /* end namespace rendering */

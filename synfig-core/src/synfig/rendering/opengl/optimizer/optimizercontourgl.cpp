@@ -37,7 +37,6 @@
 
 #include "optimizercontourgl.h"
 
-#include "../../common/task/taskcontour.h"
 #include "../task/taskcontourgl.h"
 
 #endif
@@ -57,11 +56,11 @@ bool
 OptimizerContourGL::run(const RunParams& params) const
 {
 	TaskContour::Handle contour = TaskContour::Handle::cast_dynamic(params.task);
-	if (contour && contour->target_surface) {
-		TaskContourGL::Handle contour_gl(new TaskContourGL());
-		*((Task*)(contour_gl.get())) = *((Task*)(contour.get()));
-		contour_gl->contour = contour->contour;
-		params.out_task = contour_gl;
+	if ( contour
+	  && contour->target_surface
+	  && contour.type_equal<TaskContour>() )
+	{
+		params.out_task = create_and_assign<TaskContourGL>(contour);
 		return true;
 	}
 	return false;

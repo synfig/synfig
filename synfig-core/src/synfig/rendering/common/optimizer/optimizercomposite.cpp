@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/software/optimizer/optimizercontoursw.cpp
-**	\brief OptimizerContourSW
+/*!	\file synfig/rendering/common/optimizer/optimizercomposite.cpp
+**	\brief OptimizerComposite
 **
 **	$Id$
 **
@@ -35,9 +35,10 @@
 #include <signal.h>
 #endif
 
-#include "optimizercontoursw.h"
+#include "optimizercomposite.h"
 
-#include "../task/taskcontoursw.h"
+#include "../task/taskblend.h"
+#include "../task/taskcomposite.h"
 
 #endif
 
@@ -53,15 +54,40 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 bool
-OptimizerContourSW::run(const RunParams& params) const
+OptimizerComposite::run(const RunParams& params) const
 {
-	TaskContour::Handle contour = TaskContour::Handle::cast_dynamic(params.task);
-	if ( contour
-	  && contour->target_surface
-	  && contour.type_equal<TaskContour>() )
+	TaskBlend::Handle blend = TaskBlend::Handle::cast_dynamic(params.task);
+	if ( blend
+	  && blend->target_surface
+	  && blend->sub_task_a()
+	  && blend->sub_task_a()->target_surface
+	  && blend->sub_task_a()->target_surface->is_temporary
+	  && blend->sub_task_b()
+	  && blend->sub_task_b()->target_surface
+	  && blend->sub_task_a()->target_surface->is_temporary )
 	{
-		params.out_task = create_and_assign<TaskContourSW>(contour);
-		return true;
+		TaskComposite::Handle composite = TaskComposite::Handle::cast_dynamic(blend->sub_task_b());
+		if ( composite
+		  && composite->is_blend_method_supported(blend->blend_method)
+		  && !composite->blend )
+		{
+			Task::Handle task_a = blend->sub_task_a()->clone();
+			task_a->target_surface = blend->target_surface;
+
+			TaskComposite::Handle task_b = composite->clone();
+			task_b->target_surface = blend->target_surface;
+			task_b->blend = true;
+			task_b->blend_method = blend->blend_method;
+			task_b->amount = blend->amount;
+
+			Task::Handle task = new Task();
+			assign(task, Task::Handle(blend));
+			task->sub_task(0) = task_a;
+			task->sub_task(1) = task_b;
+
+			params.out_task = task;
+			return true;
+		}
 	}
 	return false;
 }

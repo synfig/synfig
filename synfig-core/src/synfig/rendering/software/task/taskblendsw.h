@@ -28,6 +28,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include "tasksw.h"
+#include "../../common/task/taskblend.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -40,24 +41,11 @@ namespace synfig
 namespace rendering
 {
 
-class TaskBlendSW: public Task, public TaskSW
+class TaskBlendSW: public TaskBlend, public TaskSW
 {
 public:
 	typedef etl::handle<TaskBlendSW> Handle;
-
-	Color::BlendMethod blend_method;
-	Color::value_type alpha;
-
-	TaskBlendSW():
-		blend_method(Color::BLEND_COMPOSITE), alpha(1.0) { }
 	Task::Handle clone() const { return clone_pointer(this); }
-
-	const Task::Handle& sub_task_a() const { return sub_task(0); }
-	Task::Handle& sub_task_a() { return sub_task(0); }
-
-	const Task::Handle& sub_task_b() const { return sub_task(1); }
-	Task::Handle& sub_task_b() { return sub_task(1); }
-
 	virtual bool run(RunParams &params) const;
 };
 

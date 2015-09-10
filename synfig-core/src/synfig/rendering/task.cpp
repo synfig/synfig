@@ -56,6 +56,6 @@ Task::~Task() { }
 
 bool
 Task::run(RunParams & /* params */) const
-	{ return false; }
+	{ return true; }
 
 /* === E N T R Y P O I N T ================================================= */

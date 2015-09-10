@@ -28,6 +28,8 @@
 /* === H E A D E R S ======================================================= */
 
 #include "../../task.h"
+
+#include "../surfacegl.h"
 #include "../internal/predeclarations.h"
 
 /* === M A C R O S ========================================================= */
