@@ -40,7 +40,7 @@ namespace synfig
 namespace rendering
 {
 
-class TaskBlendSW: public TaskSW
+class TaskBlendSW: public Task, public TaskSW
 {
 public:
 	typedef etl::handle<TaskBlendSW> Handle;

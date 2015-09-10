@@ -41,11 +41,10 @@ namespace synfig
 namespace rendering
 {
 
-class TaskGL: public Task
+class TaskGL
 {
 public:
-	typedef etl::handle<TaskGL> Handle;
-	Task::Handle clone() const { return clone_pointer(this); }
+	virtual ~TaskGL() { }
 protected:
 	gl::Environment& env() const;
 };

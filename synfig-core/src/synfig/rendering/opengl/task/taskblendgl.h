@@ -40,7 +40,7 @@ namespace synfig
 namespace rendering
 {
 
-class TaskBlendGL: public TaskGL
+class TaskBlendGL: public Task, public TaskGL
 {
 public:
 	typedef etl::handle<TaskBlendGL> Handle;

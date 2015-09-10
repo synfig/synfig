@@ -85,8 +85,8 @@ OptimizerSurfaceConvert::run(const RunParams& params) const
 			bool target_sw = SurfaceSW::Handle::cast_dynamic(task->target_surface);
 			bool target_gl = SurfaceGL::Handle::cast_dynamic(task->target_surface);
 
-			bool sw = (bool)TaskSW::Handle::cast_dynamic(task);
-			bool gl = (bool)TaskGL::Handle::cast_dynamic(task);
+			bool sw = task.type_is<TaskSW>();
+			bool gl = task.type_is<TaskGL>();
 			if ( (sw && !target_sw) || (gl && !target_gl) )
 			{
 				task = task->clone();
@@ -102,8 +102,8 @@ OptimizerSurfaceConvert::run(const RunParams& params) const
 
 			if (params.parent && params.parent->task)
 			{
-				bool parent_sw = (bool)TaskSW::Handle::cast_dynamic(params.parent->task);
-				bool parent_gl = (bool)TaskGL::Handle::cast_dynamic(params.parent->task);
+				bool parent_sw = params.parent->task.type_is<TaskSW>();
+				bool parent_gl = params.parent->task.type_is<TaskGL>();
 				if ( (parent_sw && !target_sw) || (parent_gl && !target_gl) )
 				{
 					TaskSurfaceConvert::Handle surface_convert(new TaskSurfaceConvert());

@@ -40,11 +40,10 @@ namespace synfig
 namespace rendering
 {
 
-class TaskSW: public Task
+class TaskSW
 {
 public:
-	typedef etl::handle<TaskSW> Handle;
-	Task::Handle clone() const { return clone_pointer(this); }
+	virtual ~TaskSW() { }
 };
 
 } /* end namespace rendering */

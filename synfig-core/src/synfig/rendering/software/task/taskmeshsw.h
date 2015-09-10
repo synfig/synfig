@@ -43,7 +43,7 @@ namespace synfig
 namespace rendering
 {
 
-class TaskMeshSW: public TaskSW
+class TaskMeshSW: public Task, public TaskSW
 {
 private:
 	class Internal;

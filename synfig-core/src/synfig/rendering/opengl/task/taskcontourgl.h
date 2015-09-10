@@ -41,7 +41,7 @@ namespace synfig
 namespace rendering
 {
 
-class TaskContourGL: public TaskGL
+class TaskContourGL: public Task, public TaskGL
 {
 public:
 	typedef etl::handle<TaskContourGL> Handle;

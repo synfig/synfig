@@ -41,7 +41,7 @@ namespace synfig
 namespace rendering
 {
 
-class TaskBlurPreparedGL: public TaskGL
+class TaskBlurPreparedGL: public Task, public TaskGL
 {
 public:
 	typedef etl::handle<TaskBlurPreparedGL> Handle;

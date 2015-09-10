@@ -40,7 +40,7 @@ namespace synfig
 namespace rendering
 {
 
-class TaskExpandSurfaceSW: public TaskSW
+class TaskExpandSurfaceSW: public Task, public TaskSW
 {
 public:
 	typedef etl::handle<TaskExpandSurfaceSW> Handle;

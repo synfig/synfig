@@ -62,8 +62,8 @@ OptimizerSurface::run(const RunParams& params) const
 	  && params.task->target_surface
 	  && !params.task->target_surface->empty())
 	{
-		bool sw = (bool)TaskSW::Handle::cast_dynamic(params.task);
-		bool gl = (bool)TaskGL::Handle::cast_dynamic(params.task);
+		bool sw = params.task.type_is<TaskSW>();
+		bool gl = params.task.type_is<TaskGL>();
 		if (sw || gl)
 		{
 			// Create surfaces when subtasks have no target_surface

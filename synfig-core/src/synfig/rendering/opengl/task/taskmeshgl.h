@@ -41,7 +41,7 @@ namespace synfig
 namespace rendering
 {
 
-class TaskMeshGL: public TaskGL
+class TaskMeshGL: public Task, public TaskGL
 {
 private:
 	class Internal;

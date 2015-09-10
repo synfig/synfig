@@ -45,7 +45,7 @@ namespace synfig
 namespace rendering
 {
 
-class TaskContourSW: public TaskSW
+class TaskContourSW: public Task, public TaskSW
 {
 public:
 	typedef etl::handle<TaskContourSW> Handle;
