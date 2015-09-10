@@ -54,49 +54,58 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 bool
+OptimizerSurfaceDestroy::insert_task(
+	std::set<Surface::Handle> &destroyed_surfaces,
+	Task::List &list,
+	Task::List::reverse_iterator &ri,
+	const Task::Handle &task )
+{
+	if ( task
+	  && task->target_surface
+	  && !task->target_surface->is_created()
+	  && !destroyed_surfaces.count(task->target_surface) )
+	{
+		destroyed_surfaces.insert(task->target_surface);
+		TaskSurfaceDestroy::Handle surface_destroy = new TaskSurfaceDestroy();
+		surface_destroy->target_surface = task->target_surface;
+		Task::List::iterator i(ri.base());
+		i = list.insert(i, surface_destroy);
+		ri = Task::List::reverse_iterator(i);
+		return true;
+	}
+	return false;
+}
+
+bool
 OptimizerSurfaceDestroy::run(const RunParams& params) const
 {
 	if (!params.task)
 	{
 		bool optimized = false;
-		for(Task::List::iterator i = params.list.begin(); i != params.list.end();)
+		std::set<Surface::Handle> destroyed_surfaces;
+		for(Task::List::reverse_iterator ri = params.list.rbegin(); ri != params.list.rend();)
 		{
-			if (*i && (*i)->target_surface)
+			if (*ri)
 			{
-				bool destroyed = false;
-				if (!destroyed)
-					for(Task::List::const_iterator j = i+1; j != params.list.end(); ++j)
-						if ( TaskSurfaceDestroy::Handle::cast_dynamic(*j)
-						  && (*j)->target_surface == (*i)->target_surface )
-							{ destroyed = true; break; }
-
-				if (TaskSurfaceDestroy::Handle::cast_dynamic(*i))
+				if (TaskSurfaceDestroy::Handle::cast_dynamic(*ri))
 				{
-					// Remove unneeded TaskSurfaceDestroy
-					if (destroyed)
+					if (destroyed_surfaces.count((*ri)->target_surface))
 					{
+						Task::List::iterator i(ri.base());
 						i = params.list.erase(i);
-						optimized = true;
+						ri = Task::List::reverse_iterator(i);
 						continue;
 					}
+					destroyed_surfaces.insert((*ri)->target_surface);
 				}
 				else
 				{
-					// Insert TaskSurfaceDestroy when target_surface used last time
-					if (!destroyed && (*i)->target_surface->is_temporary)
-					{
-						TaskSurfaceDestroy::Handle surface_destroy(new TaskSurfaceDestroy());
-						surface_destroy->target_surface = (*i)->target_surface;
-						++i;
-						i = params.list.insert(i, surface_destroy);
-						++i;
-						optimized = true;
-						continue;
-					}
+					for(std::vector<Task::Handle>::const_iterator j = (*ri)->sub_tasks.begin(); j != (*ri)->sub_tasks.end(); ++j)
+						optimized |= insert_task(destroyed_surfaces, params.list, ri, *j);
+					optimized |= insert_task(destroyed_surfaces, params.list, ri, *ri);
 				}
-
 			}
-			++i;
+			++ri;
 		}
 		return optimized;
 	}

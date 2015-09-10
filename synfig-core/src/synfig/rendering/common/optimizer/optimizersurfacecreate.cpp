@@ -54,46 +54,55 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 bool
+OptimizerSurfaceCreate::insert_task(
+	std::set<Surface::Handle> &created_surfaces,
+	Task::List &list,
+	Task::List::iterator &i,
+	const Task::Handle &task )
+{
+	if ( task
+	  && task->target_surface
+	  && !task->target_surface->is_created()
+	  && !created_surfaces.count(task->target_surface) )
+	{
+		created_surfaces.insert(task->target_surface);
+		TaskSurfaceCreate::Handle surface_create = new TaskSurfaceCreate();
+		surface_create->target_surface = task->target_surface;
+		i = list.insert(i, surface_create);
+		++i;
+		return true;
+	}
+	return false;
+}
+
+bool
 OptimizerSurfaceCreate::run(const RunParams& params) const
 {
 	if (!params.task)
 	{
 		bool optimized = false;
+		std::set<Surface::Handle> created_surfaces;
 		for(Task::List::iterator i = params.list.begin(); i != params.list.end();)
 		{
-			if (*i && (*i)->target_surface && !TaskSurfaceConvert::Handle::cast_dynamic(*i))
+			if (*i)
 			{
-				bool created = (*i)->target_surface->is_created();
-				if (!created)
-					for(Task::List::const_iterator j = params.list.begin(); j != i; ++j)
-						if ( (TaskSurfaceCreate::Handle::cast_dynamic(*j) || TaskSurfaceConvert::Handle::cast_dynamic(*j))
-						  && (*j)->target_surface == (*i)->target_surface )
-							{ created = true; break; }
-
 				if (TaskSurfaceCreate::Handle::cast_dynamic(*i))
 				{
-					// Remove unneeded TaskSurfaceCreate
-					if (created)
-					{
-						i = params.list.erase(i);
-						optimized = true;
-						continue;
-					}
+					if (created_surfaces.count((*i)->target_surface))
+						{ i = params.list.erase(i); continue; }
+					created_surfaces.insert((*i)->target_surface);
+				}
+				else
+				if (TaskSurfaceConvert::Handle::cast_dynamic(*i))
+				{
+					created_surfaces.insert((*i)->target_surface);
 				}
 				else
 				{
-					// Insert TaskSurfaceCreate when target_surface used first time
-					if (!created)
-					{
-						TaskSurfaceCreate::Handle surface_create(new TaskSurfaceCreate());
-						surface_create->target_surface = (*i)->target_surface;
-						i = params.list.insert(i, surface_create);
-						++i; ++i;
-						optimized = true;
-						continue;
-					}
+					for(std::vector<Task::Handle>::const_iterator j = (*i)->sub_tasks.begin(); j != (*i)->sub_tasks.end(); ++j)
+						optimized |= insert_task(created_surfaces, params.list, i, *j);
+					optimized |= insert_task(created_surfaces, params.list, i, *i);
 				}
-
 			}
 			++i;
 		}

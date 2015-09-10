@@ -68,18 +68,18 @@ using namespace rendering;
 RendererGL::RendererGL()
 {
 	// register optimizers
-	register_optimizer(new OptimizerSurfaceCreate());
-	register_optimizer(new OptimizerSurfaceConvert());
-	register_optimizer(new OptimizerSurfaceDestroy());
 	register_optimizer(new OptimizerTransformation());
+	register_optimizer(new OptimizerSurface());
+	register_optimizer(new OptimizerSurfaceConvert());
 
 	register_optimizer(new OptimizerBlendSW());
 	register_optimizer(new OptimizerBlurPreparedSW());
 	register_optimizer(new OptimizerContourGL());
 	register_optimizer(new OptimizerMeshSW());
 
-	register_optimizer(new OptimizerSurface());
 	register_optimizer(new OptimizerLinear());
+	register_optimizer(new OptimizerSurfaceCreate());
+	//register_optimizer(new OptimizerSurfaceDestroy());
 }
 
 RendererGL::~RendererGL() { }

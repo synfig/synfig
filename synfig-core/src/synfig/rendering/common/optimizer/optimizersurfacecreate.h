@@ -27,6 +27,8 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <set>
+
 #include "../../optimizer.h"
 
 /* === M A C R O S ========================================================= */
@@ -42,6 +44,13 @@ namespace rendering
 
 class OptimizerSurfaceCreate: public Optimizer
 {
+private:
+	static bool insert_task(
+		std::set<Surface::Handle> &created_surfaces,
+		Task::List &list,
+		Task::List::iterator &i,
+		const Task::Handle &task );
+
 public:
 	virtual bool run(const RunParams &params) const;
 };

@@ -180,8 +180,16 @@ Renderer::run(const Task::List &list) const
 	bool success = true;
 
 	Task::RunParams params;
-	for(Task::List::const_iterator i = optimized_list.begin(); i != optimized_list.end(); ++i)
-		if (!(*i)->run(params)) success = false;
+	for(Task::List::iterator i = optimized_list.begin(); i != optimized_list.end(); ++i)
+	{
+		// execute task
+		if (!(*i)->run(params))
+			success = false;
+		// release task to release some resources associated with it
+		i->reset();
+	}
+	// optimized_list now contains NULLs, clear it to avoid any mistakes
+	optimized_list.clear();
 
 	return success;
 }
