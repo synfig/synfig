@@ -1252,7 +1252,7 @@ Layer_Shape::build_rendering_task_vfunc(Context context)const
 
 	rendering::TaskBlend::Handle next = context.build_rendering_task();
 	rendering::TaskBlend::Handle task_blend(new rendering::TaskBlend());
-	task_blend->alpha = amount;
+	task_blend->amount = amount;
 	task_blend->blend_method = blend_method;
 	task_blend->sub_task_a() = next;
 	task_blend->sub_task_b() = task_contour;
