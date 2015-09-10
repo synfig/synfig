@@ -339,6 +339,10 @@ public:
 	template <class U>
 	operator handle<U>()const
 	{ return handle<U>(static_cast<U*>(obj)); }
+
+	template<typename U>
+	bool type_is() const
+	{ return dynamic_cast<const U*>(obj); }
 }; // END of template class handle
 
 // ========================================================================
@@ -785,6 +789,10 @@ public:
 	void ref() { if(obj)obj->ref(); }
 
 	bool unref() { if(obj && !obj->unref()){ obj=0; return false; } return true; }
+
+	template<typename U>
+	bool type_is() const
+	{ return dynamic_cast<const U*>(obj); }
 }; // END of template class loose_handle
 
 // cast loose_handle<> -> handle<>
