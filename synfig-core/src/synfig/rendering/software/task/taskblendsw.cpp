@@ -66,8 +66,12 @@ TaskBlendSW::run(RunParams & /* params */) const
 	//debug::DebugSurface::save_to_file(a, "TaskBlendSW__run__a");
 	//debug::DebugSurface::save_to_file(b, "TaskBlendSW__run__b");
 
-	synfig::Surface::pen p = c.get_pen(0, 0);
-	const_cast<synfig::Surface*>(&a)->blit_to(p);
+	if (&a != &c)
+	{
+		synfig::Surface::pen p = c.get_pen(0, 0);
+		const_cast<synfig::Surface*>(&a)->blit_to(p);
+	}
+
 	synfig::Surface::alpha_pen ap(c.get_pen(0, 0));
 	ap.set_blend_method(blend_method);
 	ap.set_alpha(alpha);

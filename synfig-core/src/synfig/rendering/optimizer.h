@@ -69,25 +69,40 @@ public:
 	virtual bool run(const RunParams &params) const = 0;
 
 	template<typename T>
-	static void assign_surface(Task::Handle &task, int width, int height)
+	static void assign_surface(
+		Task::Handle &task,
+		int width, int height,
+		const Vector& rect_lt, const Vector& rect_rb )
 	{
 		if (task && !task->target_surface)
 		{
 			task = task->clone();
 			task->target_surface = new T();
+			task->target_surface->is_temporary = true;
 			task->target_surface->set_size(width, height);
+			task->rect_lt = rect_lt;
+			task->rect_rb = rect_rb;
 		}
 	}
 
 	template<typename T>
-	static void assign_surface(Task::Handle &task, const std::pair<int, int> &size)
-		{ assign_surface<T>(task, size.first, size.second); }
+	static void assign_surface(
+		Task::Handle &task,
+		const std::pair<int, int> &size,
+		const Vector& rect_lt, const Vector& rect_rb )
+	{
+		assign_surface<T>(task, size.first, size.second, rect_lt, rect_rb);
+	}
 
 	template<typename T>
-	static void assign_surface(Task::Handle &task)
+	static void assign_surface(Task::Handle &task, const Task::Handle &parent)
 	{
-		if (task && task->target_surface)
-			assign_surface<T>(task, task->target_surface->get_size());
+		if (task && parent && parent->target_surface)
+			assign_surface<T>(
+				task,
+				parent->target_surface->get_size(),
+				parent->rect_lt,
+				parent->rect_rb );
 	}
 };
 

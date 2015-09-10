@@ -69,7 +69,7 @@ RendererGL::RendererGL()
 {
 	// register optimizers
 	register_optimizer(new OptimizerTransformation());
-	register_optimizer(new OptimizerSurface());
+	//register_optimizer(new OptimizerSurface());
 	register_optimizer(new OptimizerSurfaceConvert());
 
 	register_optimizer(new OptimizerBlendSW());

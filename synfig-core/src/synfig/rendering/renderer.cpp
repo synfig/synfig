@@ -200,10 +200,16 @@ Renderer::log(const Task::Handle &task, const String &prefix) const
 	if (task)
 	{
 		info( prefix
-			+ typeid(*task).name()
+			+ (typeid(*task).name() + 19)
+			+ ( task->rect_lt[0] && task->rect_lt[1]
+			 && task->rect_rb[0] && task->rect_rb[1]
+              ? etl::strprintf(" rect (%f, %f)-(%f, %f)",
+				task->rect_lt[0], task->rect_lt[1],
+				task->rect_rb[0], task->rect_rb[1] )
+		      : "" )
 			+ ( task->target_surface
 			  ?	etl::strprintf(" target %s (%dx%d) 0x%x",
-					typeid(*task->target_surface).name(),
+					(typeid(*task->target_surface).name() + 19),
 					task->target_surface->get_width(),
 					task->target_surface->get_height(),
 					task->target_surface.get() )

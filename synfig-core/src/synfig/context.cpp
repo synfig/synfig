@@ -41,7 +41,7 @@
 #include "transformation.h"
 
 #include "rendering/task.h"
-#include "rendering/common/task/tasksurfaceempty.h"
+#include "rendering/common/task/tasksurface.h"
 
 #endif
 
@@ -579,6 +579,6 @@ Context::build_rendering_task() const
 
 	return *context
 		 ? (*context)->build_rendering_task(context.get_next())
-		 : rendering::Task::Handle(new rendering::TaskSurfaceEmpty());
+		 : rendering::Task::Handle(new rendering::TaskSurface());
 }
 
