@@ -27,7 +27,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include "taskcomposite.h"
+#include "../../task.h"
 #include "../../primitive/contour.h"
 
 /* === M A C R O S ========================================================= */
@@ -41,7 +41,7 @@ namespace synfig
 namespace rendering
 {
 
-class TaskContour: public TaskComposite
+class TaskContour: public Task
 {
 public:
 	typedef etl::handle<TaskContour> Handle;

@@ -31,6 +31,7 @@
 
 #include "tasksw.h"
 #include "../../common/task/taskcontour.h"
+#include "../../common/task/taskcomposite.h"
 #include "../../primitive/contour.h"
 #include "../../primitive/polyspan.h"
 
@@ -45,7 +46,7 @@ namespace synfig
 namespace rendering
 {
 
-class TaskContourSW: public TaskContour, public TaskSW
+class TaskContourSW: public TaskContour, public TaskComposite, public TaskSW
 {
 public:
 	typedef etl::handle<TaskContourSW> Handle;

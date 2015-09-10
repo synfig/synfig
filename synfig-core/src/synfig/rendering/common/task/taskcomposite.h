@@ -42,12 +42,9 @@ namespace synfig
 namespace rendering
 {
 
-class TaskComposite: public Task
+class TaskComposite
 {
 public:
-	typedef etl::handle<TaskComposite> Handle;
-	Task::Handle clone() const { return clone_pointer(this); }
-
 	bool blend;
 	Color::BlendMethod blend_method;
 	Color::value_type amount;
@@ -56,6 +53,8 @@ public:
 		blend(),
 		blend_method(),
 		amount() { }
+
+	virtual ~TaskComposite() { }
 
 	virtual Color::BlendMethodFlags get_supported_blend_methods() const { return 0; }
 

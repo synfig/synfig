@@ -66,7 +66,7 @@ OptimizerComposite::run(const RunParams& params) const
 	  && blend->sub_task_b()->target_surface
 	  && blend->sub_task_a()->target_surface->is_temporary )
 	{
-		TaskComposite::Handle composite = TaskComposite::Handle::cast_dynamic(blend->sub_task_b());
+		TaskComposite *composite = dynamic_cast<TaskComposite*>(blend->sub_task_b().get());
 		if ( composite
 		  && composite->is_blend_method_supported(blend->blend_method)
 		  && !composite->blend )
@@ -74,11 +74,13 @@ OptimizerComposite::run(const RunParams& params) const
 			Task::Handle task_a = blend->sub_task_a()->clone();
 			task_a->target_surface = blend->target_surface;
 
-			TaskComposite::Handle task_b = composite->clone();
+			Task::Handle task_b = blend->sub_task_b()->clone();
 			task_b->target_surface = blend->target_surface;
-			task_b->blend = true;
-			task_b->blend_method = blend->blend_method;
-			task_b->amount = blend->amount;
+
+			composite = dynamic_cast<TaskComposite*>(task_b.get());
+			composite->blend = true;
+			composite->blend_method = blend->blend_method;
+			composite->amount = blend->amount;
 
 			Task::Handle task = new Task();
 			assign(task, Task::Handle(blend));
