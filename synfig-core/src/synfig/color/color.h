@@ -285,38 +285,45 @@ public:
 									//! default when the layer is created
 	};
 
+	typedef unsigned int BlendMethodFlags;
+
+	enum {
+		BLEND_METHODS_ONTO = 0
+			| (1 << BLEND_BRIGHTEN)
+			| (1 << BLEND_DARKEN)
+			| (1 << BLEND_ADD)
+			| (1 << BLEND_SUBTRACT)
+			| (1 << BLEND_MULTIPLY)
+			| (1 << BLEND_DIVIDE)
+			| (1 << BLEND_COLOR)
+			| (1 << BLEND_HUE)
+			| (1 << BLEND_SATURATION)
+			| (1 << BLEND_LUMINANCE)
+			| (1 << BLEND_ONTO)
+			| (1 << BLEND_STRAIGHT_ONTO)
+			| (1 << BLEND_SCREEN)
+			| (1 << BLEND_OVERLAY)
+			| (1 << BLEND_DIFFERENCE)
+			| (1 << BLEND_HARD_LIGHT),
+
+		BLEND_METHODS_STRAIGHT = 0
+			| (1 << BLEND_STRAIGHT)
+			| (1 << BLEND_STRAIGHT_ONTO)
+			| (1 << BLEND_ALPHA_BRIGHTEN),
+
+		BLEND_METHODS_ALL = (1 << BLEND_END) - 1
+	};
+
 	/* Other */
 	static Color blend(Color a, Color b,float amount,BlendMethod type=BLEND_COMPOSITE);
 
 	static bool is_onto(BlendMethod x)
-	{
-		return x==BLEND_BRIGHTEN
-			|| x==BLEND_DARKEN
-			|| x==BLEND_ADD
-			|| x==BLEND_SUBTRACT
-			|| x==BLEND_MULTIPLY
-			|| x==BLEND_DIVIDE
-			|| x==BLEND_COLOR
-			|| x==BLEND_HUE
-			|| x==BLEND_SATURATION
-			|| x==BLEND_LUMINANCE
-			|| x==BLEND_ONTO
-			|| x==BLEND_STRAIGHT_ONTO
-			|| x==BLEND_SCREEN
-			|| x==BLEND_OVERLAY
-			|| x==BLEND_DIFFERENCE
-			|| x==BLEND_HARD_LIGHT
-		;
-	}
+		{ return BLEND_METHODS_ONTO & (1 << x); }
 
 	//! a blending method is considered 'straight' if transparent pixels in the upper layer can affect the result of the blend
 	static bool is_straight(BlendMethod x)
-	{
-		return x==BLEND_STRAIGHT
-			|| x==BLEND_STRAIGHT_ONTO
-			|| x==BLEND_ALPHA_BRIGHTEN
-		;
-	}
+		{ return BLEND_METHODS_STRAIGHT & (1 << x); }
+
 /*protected:
 
 	value_type& operator[](const int i)
