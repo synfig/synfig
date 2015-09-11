@@ -51,12 +51,17 @@ public:
 
 private:
 	GLuint simple_vertex_id;
-	GLuint simpleProgramId;
+	GLuint simple_program_id;
 
 	GLuint color_fragment_id;
-	GLuint colorProgramId;
-	GLint colorUniform;
+	GLuint color_program_id;
+	GLint color_uniform;
 
+	String get_shader_path();
+	String get_shader_path(const String &filename);
+	String load_shader(const String &filename);
+	GLuint compile_shader(GLenum type, const String &src);
+	GLuint load_and_compile_shader(GLenum type, const String &filename);
 	void check_shader(GLuint id, const String &src);
 	void check_program(GLuint id, const String &name);
 

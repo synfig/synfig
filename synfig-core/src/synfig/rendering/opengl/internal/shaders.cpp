@@ -35,7 +35,10 @@
 #include <signal.h>
 #endif
 
+#include <fstream>
+
 #include <synfig/general.h>
+#include <synfig/main.h>
 
 #include "shaders.h"
 
@@ -55,61 +58,82 @@ using namespace rendering;
 gl::Shaders::Shaders(Context &context):
 	context(context),
 	simple_vertex_id(),
-	simpleProgramId(),
+	simple_program_id(),
 	color_fragment_id(),
-	colorProgramId(),
-	colorUniform()
+	color_program_id(),
+	color_uniform()
 {
 	Context::Lock lock(context);
-	const char *lines = NULL;
 
 	// simple
-	String simpleVertexSource =
-		"in vec2 position;\n"
-		"void main() { gl_Position = vec4(position, 0.0, 1.0); }\n";
-
-	simple_vertex_id = glCreateShader(GL_VERTEX_SHADER);
-	lines = simpleVertexSource.c_str();
-	glShaderSource(simple_vertex_id, 1, &lines, NULL);
-	glCompileShader(simple_vertex_id);
-	check_shader(simple_vertex_id, simpleVertexSource);
-
-	simpleProgramId = glCreateProgram();
-	glAttachShader(simpleProgramId, simple_vertex_id);
-	glBindAttribLocation(simpleProgramId, 0, "position");
-	glLinkProgram(simpleProgramId);
-	check_program(simpleProgramId, "simple");
+	simple_vertex_id = load_and_compile_shader(GL_VERTEX_SHADER, "simple_vertex.glsl");
+	simple_program_id = glCreateProgram();
+	glAttachShader(simple_program_id, simple_vertex_id);
+	glLinkProgram(simple_program_id);
+	check_program(simple_program_id, "simple");
 
 	// color
-	String colorFragmentSource =
-		"uniform vec4 color;\n"
-		//"out vec4 colorOut;\n"
-		"void main() { gl_FragColor = color; }\n";
-
-	color_fragment_id = glCreateShader(GL_FRAGMENT_SHADER);
-	lines = colorFragmentSource.c_str();
-	glShaderSource(color_fragment_id, 1, &lines, NULL);
-	glCompileShader(color_fragment_id);
-	check_shader(color_fragment_id, colorFragmentSource);
-
-	colorProgramId = glCreateProgram();
-	glAttachShader(colorProgramId, simple_vertex_id);
-	glAttachShader(colorProgramId, color_fragment_id);
-	glBindAttribLocation(colorProgramId, 0, "position");
-	//glBindFragDataLocation(color_program_id, 0, "colorOut");
-	glLinkProgram(colorProgramId);
-	check_program(colorProgramId, "color");
-	colorUniform = glGetUniformLocation(colorProgramId, "color");
+	color_fragment_id = load_and_compile_shader(GL_FRAGMENT_SHADER, "color_fragment.glsl");
+	color_program_id = glCreateProgram();
+	glAttachShader(color_program_id, simple_vertex_id);
+	glAttachShader(color_program_id, color_fragment_id);
+	glLinkProgram(color_program_id);
+	check_program(color_program_id, "color");
+	color_uniform = glGetUniformLocation(color_program_id, "color");
 }
 
 gl::Shaders::~Shaders()
 {
 	Context::Lock lock(context);
 	glUseProgram(0);
-	glDeleteProgram(colorProgramId);
-	glDeleteProgram(simpleProgramId);
+	glDeleteProgram(color_program_id);
+	glDeleteProgram(simple_program_id);
 	glDeleteShader(color_fragment_id);
 	glDeleteShader(simple_vertex_id);
+}
+
+String
+gl::Shaders::get_shader_path()
+{
+	return Main::get_instance().lib_synfig_path
+		 + ETL_DIRECTORY_SEPARATOR
+		 + "glsl";
+}
+
+String
+gl::Shaders::get_shader_path(const String &filename)
+{
+	return get_shader_path()
+		 + ETL_DIRECTORY_SEPARATOR
+		 + filename;
+}
+
+String
+gl::Shaders::load_shader(const String &filename)
+{
+	String path = get_shader_path(filename);
+	std::ifstream f(path.c_str());
+	assert(f);
+	return String( std::istreambuf_iterator<char>(f),
+			       std::istreambuf_iterator<char>() );
+}
+
+GLuint
+gl::Shaders::compile_shader(GLenum type, const String &src)
+{
+	assert(!src.empty());
+	GLuint id = glCreateShader(type);
+	const char *lines = src.c_str();
+	glShaderSource(id, 1, &lines, NULL);
+	glCompileShader(id);
+	check_shader(id, src);
+	return id;
+}
+
+GLuint
+gl::Shaders::load_and_compile_shader(GLenum type, const String &filename)
+{
+	return compile_shader(type, load_shader(filename));
 }
 
 void
@@ -178,13 +202,13 @@ gl::Shaders::check_program(GLuint id, const String &name)
 
 void gl::Shaders::simple()
 {
-	glUseProgram(simpleProgramId);
+	glUseProgram(simple_program_id);
 }
 
 void gl::Shaders::color(const Color &c)
 {
-	glUseProgram(colorProgramId);
-	glUniform4fv(colorUniform, 1, (const GLfloat*)&c);
+	glUseProgram(color_program_id);
+	glUniform4fv(color_uniform, 1, (const GLfloat*)&c);
 }
 
 

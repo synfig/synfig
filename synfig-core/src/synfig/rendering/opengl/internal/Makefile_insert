@@ -18,6 +18,8 @@ RENDERING_OPENGL_INTERNAL_CC = \
 	rendering/opengl/internal/predeclarations.cpp \
 	rendering/opengl/internal/shaders.cpp
 
+include rendering/opengl/internal/glsl/Makefile_insert
+
 RENDERING_OPENGL_HH += \
     $(RENDERING_OPENGL_INTERNAL_HH)
 
