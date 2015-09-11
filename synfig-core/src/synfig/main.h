@@ -27,7 +27,11 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <cassert>
+
 #include <ETL/ref_count>
+
+#include "string.h"
 #include "general.h"
 
 /* === M A C R O S ========================================================= */
@@ -45,12 +49,23 @@ namespace synfig {
 */
 class Main
 {
+private:
+	static Main *instance;
 	etl::reference_counter ref_count_;
+
 public:
+	synfig::String root_path;
+	synfig::String bin_path;
+	synfig::String share_path;
+	synfig::String locale_path;
+	synfig::String lib_path;
+	synfig::String lib_synfig_path;
+
 	Main(const synfig::String& basepath,ProgressCallback *cb=0);
 	~Main();
 
 	const etl::reference_counter& ref_count()const { return ref_count_; }
+	static const Main& get_instance() { assert(instance); return *instance; }
 }; // END of class Main
 
 }; // END if namespace synfig

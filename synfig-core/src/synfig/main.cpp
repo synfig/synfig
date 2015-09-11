@@ -93,6 +93,7 @@ using namespace synfig;
 /* === S T A T I C S ======================================================= */
 
 static etl::reference_counter synfig_ref_count_(0);
+Main *Main::instance = NULL;
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -182,20 +183,30 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 	synfig_ref_count_.reset();
 	ref_count_=synfig_ref_count_;
 
+	assert(!instance);
+	instance = this;
+
+	// Paths
+
+	root_path       = etl::dirname(basepath);
+	bin_path        = root_path  + ETL_DIRECTORY_SEPARATOR + "bin";
+	share_path      = root_path  + ETL_DIRECTORY_SEPARATOR + "share";
+	locale_path     = share_path + ETL_DIRECTORY_SEPARATOR + "locale";
+	lib_path        = root_path  + ETL_DIRECTORY_SEPARATOR + "lib";
+	lib_synfig_path = lib_path   + ETL_DIRECTORY_SEPARATOR + "synfig";
+
 	// Add initialization after this point
 
 #ifdef ENABLE_NLS
 	String locale_dir;
-	locale_dir = etl::dirname(basepath)+ETL_DIRECTORY_SEPARATOR+"share"+ETL_DIRECTORY_SEPARATOR+"locale";
+	locale_dir = locale_path;
 #ifdef WIN32
 	locale_dir = Glib::locale_from_utf8(locale_dir);
 #endif
 
-	bindtextdomain("synfig", locale_dir.c_str() );
+	bindtextdomain("synfig", locale_path.c_str() );
 	bind_textdomain_codeset("synfig", "UTF-8");
 #endif
-
-	String prefix=etl::dirname(basepath);
 
 	unsigned int i;
 #ifdef _DEBUG
@@ -233,7 +244,7 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 	}
 
 	if(cb)cb->task(_("Starting Subsystem \"Modules\""));
-	if(!Module::subsys_init(prefix))
+	if(!Module::subsys_init(root_path))
 	{
 		rendering::Renderer::subsys_stop();
 		Type::subsys_stop();
@@ -319,7 +330,7 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 	#ifdef SYSCONFDIR
 		locations.push_back(SYSCONFDIR"/"MODULE_LIST_FILENAME);
 	#endif
-		locations.push_back(prefix+ETL_DIRECTORY_SEPARATOR+"etc"+ETL_DIRECTORY_SEPARATOR+MODULE_LIST_FILENAME);
+		locations.push_back(root_path + ETL_DIRECTORY_SEPARATOR + "etc" + ETL_DIRECTORY_SEPARATOR + MODULE_LIST_FILENAME);
 		locations.push_back("/usr/local/etc/"MODULE_LIST_FILENAME);
 	#ifdef __APPLE__
 		locations.push_back("/Library/Frameworks/synfig.framework/Resources/"MODULE_LIST_FILENAME);
@@ -408,6 +419,9 @@ synfig::Main::~Main()
 #if defined(HAVE_SIGNAL_H) && defined(SIGPIPE)
 	signal(SIGPIPE, SIG_DFL);
 #endif
+
+	assert(instance);
+	instance = NULL;
 }
 
 static const String
