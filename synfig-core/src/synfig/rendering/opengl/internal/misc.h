@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/opengl/renderergl.h
-**	\brief RendererGL Header
+/*!	\file synfig/rendering/opengl/internal/misc.h
+**	\brief Misc Header
 **
 **	$Id$
 **
@@ -22,12 +22,15 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_RENDERING_RENDERERGL_H
-#define __SYNFIG_RENDERING_RENDERERGL_H
+#ifndef __SYNFIG_RENDERING_GL_MISC_H
+#define __SYNFIG_RENDERING_GL_MISC_H
 
 /* === H E A D E R S ======================================================= */
 
-#include "../renderer.h"
+#include <list>
+#include <vector>
+
+#include "context.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -39,19 +42,25 @@ namespace synfig
 {
 namespace rendering
 {
+namespace gl
+{
 
-class RendererGL: public Renderer
+class Misc
 {
 public:
-	typedef etl::handle<RendererGL> Handle;
+	Context &context;
 
-	RendererGL();
-	~RendererGL();
+private:
+	GLuint sampler_nearest;
 
-	static void initialize();
-	static void deinitialize();
+public:
+	Misc(Context &context);
+	~Misc();
+
+	GLuint get_sampler_nearest() { return sampler_nearest; }
 };
 
+}; /* end namespace gl */
 }; /* end namespace rendering */
 }; /* end namespace synfig */
 

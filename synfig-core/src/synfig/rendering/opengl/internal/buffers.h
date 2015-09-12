@@ -5,7 +5,7 @@
 **	$Id$
 **
 **	\legal
-**	......... ... 2014 Ivan Mahonin
+**	......... ... 2015 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as

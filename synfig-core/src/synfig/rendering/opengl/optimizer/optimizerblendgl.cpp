@@ -37,6 +37,9 @@
 
 #include "optimizerblendgl.h"
 
+#include "../task/taskblendgl.h"
+#include "../surfacegl.h"
+
 #endif
 
 using namespace synfig;
@@ -51,9 +54,23 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 bool
-OptimizerBlendGL::run(const RunParams& /* params */) const
+OptimizerBlendGL::run(const RunParams& params) const
 {
-	// TODO:
+	TaskBlend::Handle blend = TaskBlend::Handle::cast_dynamic(params.task);
+	if ( blend
+	  && blend->target_surface
+	  && blend.type_equal<TaskBlend>() )
+	{
+		TaskBlendGL::Handle blend_gl;
+		init_and_assign_all<SurfaceGL>(blend_gl, blend);
+
+		//if ( blend_gl->target_surface->is_temporary
+		//  && blend_gl->sub_task_a()->target_surface )
+		//	blend_gl->target_surface = blend_gl->sub_task_a()->target_surface;
+
+		params.out_task = blend_gl;
+		return true;
+	}
 	return false;
 }
 

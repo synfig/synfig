@@ -35,10 +35,10 @@
 #include <signal.h>
 #endif
 
+#include <synfig/debug/debugsurface.h>
+
 #include "taskblendsw.h"
 #include "../surfacesw.h"
-
-#include <synfig/debug/debugsurface.h>
 
 #endif
 

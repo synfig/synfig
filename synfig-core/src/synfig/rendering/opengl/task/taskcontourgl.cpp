@@ -126,22 +126,23 @@ TaskContourGL::render_polygon(
 	if ( even_odd &&  invert)
 		glStencilFunc(GL_EQUAL, 0, 1);
 
+	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_TRUE);
+
 	glBindVertexArray(quad_va.get_id());
 	glEnableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, quad_buf.get_id());
 	glVertexAttribPointer(0, 2, GL_DOUBLE, GL_TRUE, 0, quad_buf.get_pointer());
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_TRUE);
 	e.shaders.color(color);
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+	glDisableVertexAttribArray(0);
+	glBindVertexArray(0);
 
 	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 	glDisable(GL_STENCIL_TEST);
 	glDisable(GL_SCISSOR_TEST);
-
-	glDisableVertexAttribArray(0);
-	glBindVertexArray(0);
 
 	if (antialias) e.antialiasing.multisample_end();
 }

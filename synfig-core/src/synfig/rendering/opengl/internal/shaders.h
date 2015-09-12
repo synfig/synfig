@@ -5,7 +5,7 @@
 **	$Id$
 **
 **	\legal
-**	......... ... 2014 Ivan Mahonin
+**	......... ... 2015 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -26,6 +26,8 @@
 #define __SYNFIG_RENDERING_GL_SHADERS_H
 
 /* === H E A D E R S ======================================================= */
+
+#include <cstring>
 
 #include <synfig/color.h>
 
@@ -49,6 +51,15 @@ class Shaders
 public:
 	Context &context;
 
+	struct BlendProgramInfo {
+		GLuint id;
+		GLuint fragment_id;
+		GLuint amount_uniform;
+		GLuint sampler_dest_uniform;
+		GLuint sampler_src_uniform;
+		BlendProgramInfo() { memset(this, 0, sizeof(*this)); }
+	};
+
 private:
 	GLuint simple_vertex_id;
 	GLuint simple_program_id;
@@ -56,6 +67,8 @@ private:
 	GLuint color_fragment_id;
 	GLuint color_program_id;
 	GLint color_uniform;
+
+	BlendProgramInfo blend_programs[Color::BLEND_END];
 
 	String get_shader_path();
 	String get_shader_path(const String &filename);
@@ -65,12 +78,15 @@ private:
 	void check_shader(GLuint id, const String &src);
 	void check_program(GLuint id, const String &name);
 
+	void load_blend(Color::BlendMethod method, const String &name);
+
 public:
 	Shaders(Context &context);
 	~Shaders();
 
 	void simple();
 	void color(const Color &c);
+	void blend(Color::BlendMethod method, Color::value_type amount);
 };
 
 }; /* end namespace gl */

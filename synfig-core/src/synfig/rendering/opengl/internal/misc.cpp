@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/opengl/renderergl.cpp
-**	\brief RendererGL
+/*!	\file synfig/rendering/opengl/internal/misc.cpp
+**	\brief Misc
 **
 **	$Id$
 **
@@ -35,23 +35,7 @@
 #include <signal.h>
 #endif
 
-#include "renderergl.h"
-
-#include "internal/environment.h"
-
-#include "../common/optimizer/optimizercomposite.h"
-#include "../common/optimizer/optimizerlinear.h"
-#include "../common/optimizer/optimizersurface.h"
-#include "../common/optimizer/optimizersurfaceconvert.h"
-#include "../common/optimizer/optimizersurfacecreate.h"
-#include "../common/optimizer/optimizersurfacedestroy.h"
-#include "../common/optimizer/optimizertransformation.h"
-
-#include "optimizer/optimizercontourgl.h"
-#include "optimizer/optimizerblendgl.h"
-
-#include "../software/optimizer/optimizerblurpreparedsw.h"
-#include "../software/optimizer/optimizermeshsw.h"
+#include "misc.h"
 
 #endif
 
@@ -66,36 +50,20 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
-RendererGL::RendererGL()
+gl::Misc::Misc(Context &context):
+	context(context),
+	sampler_nearest()
 {
-	// register optimizers
-	register_optimizer(new OptimizerTransformation());
-	//register_optimizer(new OptimizerSurface());
-	register_optimizer(new OptimizerSurfaceConvert());
-
-	register_optimizer(new OptimizerBlendGL());
-	register_optimizer(new OptimizerBlurPreparedSW());
-	register_optimizer(new OptimizerContourGL());
-	register_optimizer(new OptimizerMeshSW());
-
-	register_optimizer(new OptimizerComposite());
-
-	register_optimizer(new OptimizerLinear());
-	register_optimizer(new OptimizerSurfaceCreate());
-	//register_optimizer(new OptimizerSurfaceDestroy());
+	Context::Lock lock(context);
+	glGenSamplers(1, &sampler_nearest);
+	glSamplerParameteri(sampler_nearest, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glSamplerParameteri(sampler_nearest, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 }
 
-RendererGL::~RendererGL() { }
-
-void
-RendererGL::initialize() {
-	gl::Environment::initialize();
+gl::Misc::~Misc()
+{
+	Context::Lock lock(context);
+	glDeleteSamplers(1, &sampler_nearest);
 }
-
-void
-RendererGL::deinitialize() {
-	gl::Environment::deinitialize();
-}
-
 
 /* === E N T R Y P O I N T ================================================= */

@@ -5,7 +5,7 @@
 **	$Id$
 **
 **	\legal
-**	......... ... 2014 Ivan Mahonin
+**	......... ... 2015 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -34,6 +34,7 @@
 #include "context.h"
 #include "clcontext.h"
 #include "framebuffers.h"
+#include "misc.h"
 #include "shaders.h"
 
 /* === M A C R O S ========================================================= */
@@ -61,6 +62,7 @@ public:
 	Shaders shaders;
 	Antialiasing antialiasing;
 	Framebuffers framebuffers;
+	Misc misc;
 
 	Environment():
 		context(),
@@ -68,7 +70,8 @@ public:
 		buffers(context),
 		shaders(context),
 		antialiasing(context),
-		framebuffers(context)
+		framebuffers(context),
+		misc(context)
 	{ }
 
 	static Environment& get_instance()

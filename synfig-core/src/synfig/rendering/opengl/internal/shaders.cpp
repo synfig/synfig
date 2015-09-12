@@ -5,7 +5,7 @@
 **	$Id$
 **
 **	\legal
-**	......... ... 2014 Ivan Mahonin
+**	......... ... 2015 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -80,12 +80,46 @@ gl::Shaders::Shaders(Context &context):
 	glLinkProgram(color_program_id);
 	check_program(color_program_id, "color");
 	color_uniform = glGetUniformLocation(color_program_id, "color");
+
+	// blend
+	load_blend(Color::BLEND_COMPOSITE,      "composite");
+	load_blend(Color::BLEND_STRAIGHT,       "straight");
+	load_blend(Color::BLEND_ONTO,           "onto");
+	load_blend(Color::BLEND_STRAIGHT_ONTO,  "straightonto");
+	load_blend(Color::BLEND_BEHIND,         "behind");
+	load_blend(Color::BLEND_SCREEN,         "screen");
+	load_blend(Color::BLEND_OVERLAY,        "overlay");
+	load_blend(Color::BLEND_HARD_LIGHT,     "hardlight");
+	load_blend(Color::BLEND_MULTIPLY,       "multiply");
+	load_blend(Color::BLEND_DIVIDE,         "divide");
+	load_blend(Color::BLEND_ADD,            "add");
+	load_blend(Color::BLEND_SUBTRACT,       "subtract");
+	load_blend(Color::BLEND_DIFFERENCE,     "difference");
+	load_blend(Color::BLEND_BRIGHTEN,       "brighten");
+	load_blend(Color::BLEND_DARKEN,         "darken");
+	load_blend(Color::BLEND_COLOR,          "color");
+	load_blend(Color::BLEND_HUE,            "hue");
+	load_blend(Color::BLEND_SATURATION,     "saturation");
+	load_blend(Color::BLEND_LUMINANCE,      "luminance");
+	load_blend(Color::BLEND_ALPHA_OVER,     "alphaover");
+	load_blend(Color::BLEND_ALPHA_BRIGHTEN, "alphabrighten");
+	load_blend(Color::BLEND_ALPHA_DARKEN,   "alphadarken");
+
+	#ifndef NDEBUG
+	for(int i = 0; i < Color::BLEND_END; ++i)
+		assert(blend_programs[i].id);
+	#endif
 }
 
 gl::Shaders::~Shaders()
 {
 	Context::Lock lock(context);
 	glUseProgram(0);
+	for(int i = 0; i < Color::BLEND_END; ++i)
+	{
+		glDeleteProgram(blend_programs[i].id);
+		glDeleteShader(blend_programs[i].fragment_id);
+	}
 	glDeleteProgram(color_program_id);
 	glDeleteProgram(simple_program_id);
 	glDeleteShader(color_fragment_id);
@@ -113,7 +147,7 @@ gl::Shaders::load_shader(const String &filename)
 {
 	String path = get_shader_path(filename);
 	std::ifstream f(path.c_str());
-	assert(f);
+	//assert(f);
 	return String( std::istreambuf_iterator<char>(f),
 			       std::istreambuf_iterator<char>() );
 }
@@ -121,7 +155,7 @@ gl::Shaders::load_shader(const String &filename)
 GLuint
 gl::Shaders::compile_shader(GLenum type, const String &src)
 {
-	assert(!src.empty());
+	//assert(!src.empty());
 	GLuint id = glCreateShader(type);
 	const char *lines = src.c_str();
 	glShaderSource(id, 1, &lines, NULL);
@@ -200,16 +234,52 @@ gl::Shaders::check_program(GLuint id, const String &name)
 	}
 }
 
-void gl::Shaders::simple()
+void
+gl::Shaders::load_blend(Color::BlendMethod method, const String &name)
 {
-	glUseProgram(simple_program_id);
+	assert(method >= 0 && method < Color::BLEND_END);
+	BlendProgramInfo &i = blend_programs[method];
+	i.fragment_id = load_and_compile_shader(
+		GL_FRAGMENT_SHADER,
+		"blend_" + name + "_fragment.glsl" );
+	i.id = glCreateProgram();
+	glAttachShader(i.id, simple_vertex_id);
+	glAttachShader(i.id, i.fragment_id);
+	glLinkProgram(i.id);
+	check_program(i.id, "color");
+	i.amount_uniform = glGetUniformLocation(i.id, "amount");
+	i.sampler_dest_uniform = glGetUniformLocation(i.id, "sampler_dest");
+	i.sampler_src_uniform = glGetUniformLocation(i.id, "sampler_src");
 }
 
-void gl::Shaders::color(const Color &c)
+
+void
+gl::Shaders::simple()
+{
+	glUseProgram(simple_program_id);
+	context.check("gl::Shaders::simple");
+}
+
+void
+gl::Shaders::color(const Color &c)
 {
 	glUseProgram(color_program_id);
 	glUniform4fv(color_uniform, 1, (const GLfloat*)&c);
+	context.check("gl::Shaders::color");
 }
+
+void
+gl::Shaders::blend(Color::BlendMethod method, Color::value_type amount)
+{
+	assert(method >= 0 && method < Color::BLEND_END);
+	BlendProgramInfo &i = blend_programs[method];
+	glUseProgram(i.id);
+	glUniform1f(i.amount_uniform, amount);
+	glUniform1i(i.sampler_dest_uniform, 0);
+	glUniform1i(i.sampler_src_uniform, 1);
+	context.check("gl::Shaders::blend");
+}
+
 
 
 
