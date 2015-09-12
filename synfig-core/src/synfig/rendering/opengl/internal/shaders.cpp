@@ -35,6 +35,8 @@
 #include <signal.h>
 #endif
 
+#include <cctype>
+
 #include <fstream>
 
 #include <synfig/general.h>
@@ -238,10 +240,14 @@ void
 gl::Shaders::load_blend(Color::BlendMethod method, const String &name)
 {
 	assert(method >= 0 && method < Color::BLEND_END);
+
+	String src = load_shader("blend_fragment.glsl");
+	size_t pos = src.find("#0");
+	if (pos != String::npos)
+		src = src.substr(0, pos) + name + src.substr(pos + 2);
+
 	BlendProgramInfo &i = blend_programs[method];
-	i.fragment_id = load_and_compile_shader(
-		GL_FRAGMENT_SHADER,
-		"blend_" + name + "_fragment.glsl" );
+	i.fragment_id = compile_shader(GL_FRAGMENT_SHADER, src);
 	i.id = glCreateProgram();
 	glAttachShader(i.id, simple_vertex_id);
 	glAttachShader(i.id, i.fragment_id);
