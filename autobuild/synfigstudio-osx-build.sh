@@ -54,20 +54,18 @@ if [ -e "$SYNFIG_REPO_DIR/build.conf" ]; then
 fi
 
 if [ ! -z $UNIVERSAL ] && [[ ! $UNIVERSAL == 0 ]]; then
-export BUILDDIR=~/synfig-buildroot/build.universal
+export BUILDDIR=~/synfig-buildroot/build.u
 else
 export BUILDDIR=~/synfig-buildroot/build
 export UNIVERSAL=0
 fi
 
-if [ -z $X11 ]; then
+if [ ! -z $X11 ] && [[ ! $X11 == 0 ]]; then
 	export X11=1
-fi
-if [[ $X11 == 1 ]]; then
 	export BUILDDIR=${BUILDDIR}.x11
 fi
 
-if [ ! -z $DEBUG ]; then
+if [ ! -z $DEBUG ] && [[ ! $DEBUG == 0 ]]; then
 	echo
 	echo "Debug mode: enabled"
 	echo
