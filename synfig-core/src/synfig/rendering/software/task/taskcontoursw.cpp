@@ -217,7 +217,7 @@ TaskContourSW::render_contour(
 				break;
 			case Contour::MOVE:
 				p1 = transform_matrix.get_transformed(i->p1);
-				span.move_to(p1[0], p1[0]);
+				span.move_to(p1[0], p1[1]);
 				break;
 			case Contour::LINE:
 				p1 = transform_matrix.get_transformed(i->p1);
