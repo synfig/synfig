@@ -28,6 +28,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include "../../task.h"
+#include "tasksolid.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -40,7 +41,7 @@ namespace synfig
 namespace rendering
 {
 
-class TaskSurfaceEmpty: public Task
+class TaskSurfaceEmpty: public Task, public TaskSolid
 {
 public:
 	typedef etl::handle<TaskSurfaceEmpty> Handle;

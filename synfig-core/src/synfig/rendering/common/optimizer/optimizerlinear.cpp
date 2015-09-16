@@ -38,6 +38,7 @@
 #include "optimizerlinear.h"
 
 #include "../task/tasksurface.h"
+#include "../task/tasksurfaceempty.h"
 
 #endif
 
@@ -70,7 +71,9 @@ OptimizerLinear::run(const RunParams& params) const
 
 				for(Task::List::iterator j = (*i)->sub_tasks.begin(); j != (*i)->sub_tasks.end(); ++j)
 				{
-					if (*j && !TaskSurface::Handle::cast_dynamic(*j))
+					if ( *j
+					  && !TaskSurface::Handle::cast_dynamic(*j)
+					  && !TaskSurfaceEmpty::Handle::cast_dynamic(*j) )
 					{
 						i = params.list.insert(i, *j);
 						++i;

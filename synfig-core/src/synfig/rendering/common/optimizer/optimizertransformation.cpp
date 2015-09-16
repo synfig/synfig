@@ -37,7 +37,10 @@
 
 #include "optimizertransformation.h"
 
+#include "../../primitive/affinetransformation.h"
 #include "../task/tasktransformation.h"
+#include "../task/tasktransformableaffine.h"
+#include "../task/tasksolid.h"
 #include "../task/taskmesh.h"
 
 #endif
@@ -54,12 +57,106 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 bool
+OptimizerTransformation::can_optimize(const Task::Handle &sub_task)
+{
+	if (!sub_task)
+		return true;
+	if (sub_task.type_is<TaskSolid>())
+		return true;
+	if (sub_task.type_is<TaskTransformableAffine>())
+		return true;
+	if (TaskTransformation::Handle transformation = TaskTransformation::Handle::cast_dynamic(sub_task))
+		if (AffineTransformation::Handle::cast_dynamic(transformation->transformation))
+			return true;
+	return false;
+}
+
+void
+OptimizerTransformation::calc_unoptimized_blend_brunches(int &ref_count, const Task::Handle &blend_sub_task)
+{
+	if (ref_count > 1)
+		return;
+	if (can_optimize(blend_sub_task))
+		return;
+	if (TaskBlend::Handle blend = TaskBlend::Handle::cast_dynamic(blend_sub_task))
+	{
+		calc_unoptimized_blend_brunches(ref_count, blend->sub_task_a());
+		calc_unoptimized_blend_brunches(ref_count, blend->sub_task_b());
+		return;
+	}
+	++ref_count;
+}
+
+bool
 OptimizerTransformation::run(const RunParams& params) const
 {
-	// TODO: Optimize affine transformation
 	// TODO: Optimize transformation to transformation
 	if (TaskTransformation::Handle transformation = TaskTransformation::Handle::cast_dynamic(params.task))
 	{
+		// transformation of TaskSolid or null-task is meaningless
+		if ( !transformation->sub_task()
+		  || transformation->sub_task().type_is<TaskSolid>())
+		{
+			params.out_task = transformation->sub_task();
+			return true;
+		}
+
+		// optimize affine transformation
+		if (AffineTransformation::Handle affine_transformation = AffineTransformation::Handle::cast_dynamic(transformation->transformation))
+		{
+			if (transformation->sub_task().type_is<TaskTransformableAffine>())
+			{
+				// apply affine transformation to sub-task
+				Task::Handle task = transformation->sub_task()->clone();
+				TaskTransformableAffine *transformable_affine = task.type_pointer<TaskTransformableAffine>();
+				transformable_affine->transformation *=
+					affine_transformation->matrix;
+				params.out_task = task;
+				return true;
+			}
+			else
+			if (transformation->sub_task().type_is<TaskTransformation>())
+			{
+				// optimize affine transformation of affine transformation
+				if (TaskTransformation::Handle sub_transformation = TaskTransformation::Handle::cast_dynamic(transformation->sub_task()))
+				{
+					if (AffineTransformation::Handle sub_affine_transformation = AffineTransformation::Handle::cast_dynamic(sub_transformation->transformation))
+					{
+						TaskTransformation::Handle transformation = TaskTransformation::Handle::cast_dynamic(transformation->clone());
+						AffineTransformation::Handle new_affine_transformation = new AffineTransformation();
+						new_affine_transformation->matrix =
+							sub_affine_transformation->matrix
+						  * affine_transformation->matrix;
+						transformation->transformation = new_affine_transformation;
+						params.out_task = transformation;
+						return true;
+					}
+				}
+			}
+			else
+			if (TaskBlend::Handle blend = TaskBlend::Handle::cast_dynamic(transformation->sub_task()))
+			{
+				// optimize transfromation of TaskBlend
+				int count = 0;
+				calc_unoptimized_blend_brunches(count, blend->sub_task_a());
+				calc_unoptimized_blend_brunches(count, blend->sub_task_b());
+				if (count < 2)
+				{
+					blend = TaskBlend::Handle::cast_dynamic(blend->clone());
+					TaskTransformation::Handle transformation_a = TaskTransformation::Handle::cast_dynamic(transformation->clone());
+					transformation_a->sub_task() = blend->sub_task_a();
+					blend->sub_task_a() = transformation_a;
+					TaskTransformation::Handle transformation_b = TaskTransformation::Handle::cast_dynamic(transformation->clone());
+					transformation_b->sub_task() = blend->sub_task_b();
+					blend->sub_task_b() = transformation_b;
+					params.out_task = blend;
+					return true;
+				}
+			}
+		}
+
+		// build mesh
+		/* TODO: make separate optimizer for mesh
 		if ( transformation->target_surface
 		  && !transformation->target_surface->empty() )
 		{
@@ -76,6 +173,7 @@ OptimizerTransformation::run(const RunParams& params) const
 			params.out_task = mesh;
 			return true;
 		}
+		*/
 	}
 	return false;
 }

@@ -182,11 +182,13 @@ TaskContourGL::run(RunParams & /* params */) const
 	// transformation
 
 	Vector rect_size = rect_rb - rect_lt;
-	Matrix3 transfromation_matrix;
-	transfromation_matrix.m00 = fabs(rect_size[0]) > 1e-10 ? 2.0/rect_size[0] : 0.0;
-	transfromation_matrix.m11 = fabs(rect_size[1]) > 1e-10 ? 2.0/rect_size[1] : 0.0;
-	transfromation_matrix.m20 = -1.0 - rect_lt[0] * transfromation_matrix.m00;
-	transfromation_matrix.m21 = -1.0 - rect_lt[1] * transfromation_matrix.m11;
+	Matrix bounds_transfromation;
+	bounds_transfromation.m00 = fabs(rect_size[0]) > 1e-10 ? 2.0/rect_size[0] : 0.0;
+	bounds_transfromation.m11 = fabs(rect_size[1]) > 1e-10 ? 2.0/rect_size[1] : 0.0;
+	bounds_transfromation.m20 = -1.0 - rect_lt[0] * bounds_transfromation.m00;
+	bounds_transfromation.m21 = -1.0 - rect_lt[1] * bounds_transfromation.m11;
+
+	Matrix matrix = transformation * bounds_transfromation;
 
 	// bind framebuffer
 
@@ -202,7 +204,7 @@ TaskContourGL::run(RunParams & /* params */) const
 
 	render_contour(
 		*contour,
-		transfromation_matrix,
+		matrix,
 		contour->invert,
 		contour->antialias,
 		contour->winding_style,

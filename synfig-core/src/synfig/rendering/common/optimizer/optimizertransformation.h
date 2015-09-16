@@ -28,6 +28,8 @@
 /* === H E A D E R S ======================================================= */
 
 #include "../../optimizer.h"
+#include "../../task.h"
+#include "../task/taskblend.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -42,6 +44,10 @@ namespace rendering
 
 class OptimizerTransformation: public Optimizer
 {
+private:
+	static bool can_optimize(const Task::Handle &sub_task);
+	static void calc_unoptimized_blend_brunches(int &ref_count, const Task::Handle &blend_sub_task);
+
 public:
 	virtual bool run(const RunParams &params) const;
 };

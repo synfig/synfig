@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/common/task/taskcontour.h
-**	\brief TaskContour Header
+/*!	\file synfig/rendering/common/task/tasktransformableaffine.h
+**	\brief TaskTransformableAffine Header
 **
 **	$Id$
 **
@@ -22,14 +22,12 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_RENDERING_TASKCONTOUR_H
-#define __SYNFIG_RENDERING_TASKCONTOUR_H
+#ifndef __SYNFIG_RENDERING_TASKTRANSFORMABLEAFFINE_H
+#define __SYNFIG_RENDERING_TASKTRANSFORMABLEAFFINE_H
 
 /* === H E A D E R S ======================================================= */
 
-#include "../../task.h"
-#include "../../primitive/contour.h"
-#include "tasktransformableaffine.h"
+#include <synfig/matrix.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -42,12 +40,11 @@ namespace synfig
 namespace rendering
 {
 
-class TaskContour: public Task, public TaskTransformableAffine
+class TaskTransformableAffine
 {
 public:
-	typedef etl::handle<TaskContour> Handle;
-	Contour::Handle contour;
-	Task::Handle clone() const { return clone_pointer(this); }
+	Matrix transformation;
+	virtual ~TaskTransformableAffine() { }
 };
 
 } /* end namespace rendering */
