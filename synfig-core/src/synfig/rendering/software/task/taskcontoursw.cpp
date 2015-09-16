@@ -257,12 +257,11 @@ TaskContourSW::run(RunParams & /* params */) const
 	synfig::Surface &a =
 		SurfaceSW::Handle::cast_dynamic( target_surface )->get_surface();
 
-	Vector rect_size = rect_rb - rect_lt;
 	Matrix bounds_transfromation;
-	bounds_transfromation.m00 = fabs(rect_size[0]) > 1e-10 ? 2.0/rect_size[0] : 0.0;
-	bounds_transfromation.m11 = fabs(rect_size[1]) > 1e-10 ? 2.0/rect_size[1] : 0.0;
-	bounds_transfromation.m20 = -1.0 - rect_lt[0] * bounds_transfromation.m00;
-	bounds_transfromation.m21 = -1.0 - rect_lt[1] * bounds_transfromation.m11;
+	bounds_transfromation.m00 = get_pixels_per_unit()[0];
+	bounds_transfromation.m11 = get_pixels_per_unit()[1];
+	bounds_transfromation.m20 = -rect_lt[0] * bounds_transfromation.m00;
+	bounds_transfromation.m21 = -rect_lt[1] * bounds_transfromation.m11;
 
 	Matrix matrix = transformation * bounds_transfromation;
 
