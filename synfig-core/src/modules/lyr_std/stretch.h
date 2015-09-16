@@ -69,6 +69,9 @@ public:
 	virtual Vocab get_param_vocab()const;
 	virtual etl::handle<synfig::Transform> get_transform()const;
 	virtual synfig::Rect get_full_bounding_rect(Context context)const;
+
+protected:
+	virtual rendering::Task::Handle build_rendering_task_vfunc(Context context)const;
 }; // END of class Layer_Stretch
 
 }; // END of namespace synfig

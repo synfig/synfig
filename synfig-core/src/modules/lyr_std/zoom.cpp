@@ -30,7 +30,6 @@
 #	include <config.h>
 #endif
 
-#include "zoom.h"
 #include <synfig/string.h>
 #include <synfig/time.h>
 #include <synfig/context.h>
@@ -40,6 +39,11 @@
 #include <synfig/value.h>
 #include <synfig/valuenode.h>
 #include <synfig/transform.h>
+
+#include "zoom.h"
+
+#include <synfig/rendering/common/task/tasktransformation.h>
+#include <synfig/rendering/primitive/affinetransformation.h>
 
 #endif
 
@@ -206,3 +210,19 @@ Zoom::get_full_bounding_rect(synfig::Context context)const
 	return (context.get_full_bounding_rect()-center)*exp(param_amount.get(Real()))+center;
 }
 
+rendering::Task::Handle
+Zoom::build_rendering_task_vfunc(Context context)const
+{
+	Real amount=param_amount.get(Real());
+	Point center=param_center.get(Point());
+
+	rendering::TaskTransformation::Handle task_transformation(new rendering::TaskTransformation());
+	rendering::AffineTransformation::Handle affine_transformation(new rendering::AffineTransformation());
+	affine_transformation->matrix =
+			Matrix().set_translate(-center)
+		  * Matrix().set_scale(exp(amount))
+		  * Matrix().set_translate(center);
+	task_transformation->transformation = affine_transformation;
+	task_transformation->sub_task() = context.build_rendering_task();
+	return task_transformation;
+}

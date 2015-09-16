@@ -31,7 +31,6 @@
 #	include <config.h>
 #endif
 
-#include "stretch.h"
 #include <synfig/string.h>
 #include <synfig/time.h>
 #include <synfig/context.h>
@@ -41,6 +40,11 @@
 #include <synfig/value.h>
 #include <synfig/valuenode.h>
 #include <synfig/transform.h>
+
+#include "stretch.h"
+
+#include <synfig/rendering/common/task/tasktransformation.h>
+#include <synfig/rendering/primitive/affinetransformation.h>
 
 #endif
 
@@ -243,4 +247,21 @@ Layer_Stretch::get_full_bounding_rect(Context context)const
 					  (min[1]-center[1])*amount[1]+center[1]),
 				Point((max[0]-center[0])*amount[0]+center[0],
 					  (max[1]-center[1])*amount[1]+center[1]));
+}
+
+rendering::Task::Handle
+Layer_Stretch::build_rendering_task_vfunc(Context context)const
+{
+	Vector amount=param_amount.get(Vector());
+	Point center=param_center.get(Point());
+
+	rendering::TaskTransformation::Handle task_transformation(new rendering::TaskTransformation());
+	rendering::AffineTransformation::Handle affine_transformation(new rendering::AffineTransformation());
+	affine_transformation->matrix =
+			Matrix().set_translate(-center)
+		  * Matrix().set_scale(amount)
+		  * Matrix().set_translate(center);
+	task_transformation->transformation = affine_transformation;
+	task_transformation->sub_task() = context.build_rendering_task();
+	return task_transformation;
 }

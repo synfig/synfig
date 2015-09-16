@@ -32,7 +32,6 @@
 #	include <config.h>
 #endif
 
-#include "translate.h"
 #include <synfig/string.h>
 #include <synfig/time.h>
 #include <synfig/context.h>
@@ -43,6 +42,11 @@
 #include <synfig/valuenode.h>
 #include <synfig/canvas.h>
 #include <synfig/transform.h>
+
+#include "translate.h"
+
+#include <synfig/rendering/common/task/tasktransformation.h>
+#include <synfig/rendering/primitive/affinetransformation.h>
 
 #endif
 
@@ -190,4 +194,16 @@ Translate::get_full_bounding_rect(Context context)const
 {
 	Vector origin=param_origin.get(Vector());
 	return context.get_full_bounding_rect() + origin;
+}
+
+
+rendering::Task::Handle
+Translate::build_rendering_task_vfunc(Context context)const
+{
+	rendering::TaskTransformation::Handle task_transformation(new rendering::TaskTransformation());
+	rendering::AffineTransformation::Handle affine_transformation(new rendering::AffineTransformation());
+	affine_transformation->matrix.set_translate(param_origin.get(Vector()));
+	task_transformation->transformation = affine_transformation;
+	task_transformation->sub_task() = context.build_rendering_task();
+	return task_transformation;
 }

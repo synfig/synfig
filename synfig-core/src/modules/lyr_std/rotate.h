@@ -71,6 +71,9 @@ public:
 	virtual Rect get_full_bounding_rect(Context context)const;
 
 	virtual etl::handle<synfig::Transform> get_transform()const;
+
+protected:
+	virtual rendering::Task::Handle build_rendering_task_vfunc(Context context)const;
 };
 
 /* === E N D =============================================================== */
