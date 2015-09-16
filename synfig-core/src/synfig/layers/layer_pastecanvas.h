@@ -194,7 +194,7 @@ protected:
 	//! Layer time points. \todo clarify all this comments.
 	virtual void get_times_vfunc(Node::time_set &set) const;
 
-	virtual rendering::Task::Handle build_rendering_task_vfunc(Context context)const;
+	virtual rendering::Task::Handle build_composite_task_vfunc(ContextParams context_params)const;
 }; // END of class Layer_PasteCanvas
 
 }; // END of namespace synfig

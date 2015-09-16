@@ -1221,44 +1221,21 @@ Layer_Shape::render_shape(Surface *surface, bool useblend, const RendDesc &rendd
 }
 
 rendering::Task::Handle
-Layer_Shape::build_rendering_task_vfunc(Context context)const
+Layer_Shape::build_composite_task_vfunc(ContextParams context_params)const
 {
-	Real amount = get_amount();
-	Color::BlendMethod blend_method = get_blend_method();
-
-	Color color = param_color.get(Color());
-	//TODO: Point origin = param_origin.get(Point());
-	bool invert = param_invert.get(bool());
-	bool antialias = param_antialias.get(bool());
-	rendering::Contour::WindingStyle winding_style =
-		(rendering::Contour::WindingStyle)param_winding_style.get(int());
-	//TODO: int blurtype = param_blurtype.get(int());
-	//TODO: Real feather = param_feather.get(Real());
-
 	// TODO: origin
 	// TODO: blurtype
 	// TODO: feather
 
 	rendering::TaskContour::Handle task_contour(new rendering::TaskContour());
-	rendering::Task::Handle task = task_contour;
-
 	// TODO: multithreading without this copying
 	task_contour->contour = new rendering::Contour();
 	task_contour->contour->assign(*contour);
-	task_contour->contour->color = color;
-	task_contour->contour->invert = invert;
-	task_contour->contour->antialias = antialias;
-	task_contour->contour->winding_style = winding_style;
-
-	rendering::TaskBlend::Handle next = context.build_rendering_task();
-	rendering::TaskBlend::Handle task_blend(new rendering::TaskBlend());
-	task_blend->amount = amount;
-	task_blend->blend_method = blend_method;
-	task_blend->sub_task_a() = next;
-	task_blend->sub_task_b() = task_contour;
-	task = task_blend;
-
-	return task;
+	task_contour->contour->color = param_color.get(Color());
+	task_contour->contour->invert = param_invert.get(bool());
+	task_contour->contour->antialias = param_antialias.get(bool());
+	task_contour->contour->winding_style = (rendering::Contour::WindingStyle)param_winding_style.get(int());
+	return task_contour;
 }
 
 Rect

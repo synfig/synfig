@@ -105,7 +105,7 @@ public:
 	bool feather_cairo_surface(cairo_surface_t* surface, RendDesc renddesc, int quality)const;
 
 protected:
-	virtual rendering::Task::Handle build_rendering_task_vfunc(Context context)const;
+	virtual rendering::Task::Handle build_composite_task_vfunc(ContextParams context_params)const;
 
 private:
 	bool render_shape(Surface *surface, bool useblend, const RendDesc &renddesc) const;

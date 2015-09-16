@@ -320,8 +320,13 @@ Layer_PasteCanvas::set_time(IndependentContext context, Time time)const
 }
 
 void
-Layer_PasteCanvas::apply_z_range_to_params(ContextParams &/*cp*/)const
+Layer_PasteCanvas::apply_z_range_to_params(ContextParams &cp)const
 {
+	ContextParams p;
+	cp.z_range = p.z_range;
+	cp.z_range_position = p.z_range_position;
+	cp.z_range_depth = p.z_range_depth;
+	cp.z_range_blur = p.z_range_blur;
 }
 
 synfig::Layer::Handle
@@ -693,11 +698,10 @@ Layer_PasteCanvas::fill_sound_processor(SoundProcessor &soundProcessor) const
 }
 
 rendering::Task::Handle
-Layer_PasteCanvas::build_rendering_task_vfunc(Context context)const
+Layer_PasteCanvas::build_composite_task_vfunc(ContextParams context_params)const
 {
-	Real amount = get_amount();
-	Color::BlendMethod blend_method = get_blend_method();
-	Matrix transformation_matrix = get_summary_transformation().get_matrix();
+	if (!canvas)
+		return new rendering::TaskSurfaceEmpty();
 
 	// TODO:
 	// time_offset;
@@ -705,29 +709,13 @@ Layer_PasteCanvas::build_rendering_task_vfunc(Context context)const
 	// children_lock;
 	// curr_time;
 
-	rendering::Task::Handle sub_task;
-	if (canvas)
-	{
-		rendering::TaskTransformation::Handle task_transformation(new rendering::TaskTransformation());
-		rendering::AffineTransformation::Handle affine_transformation(new rendering::AffineTransformation());
-		affine_transformation->matrix = transformation_matrix;
-		task_transformation->transformation = affine_transformation;
-		task_transformation->sub_task() = canvas->get_context(context).build_rendering_task();
-		sub_task = task_transformation;
-	}
-	else
-	{
-		sub_task = new rendering::TaskSurfaceEmpty();
-	}
-
-	rendering::TaskBlend::Handle next = context.build_rendering_task();
-	rendering::TaskBlend::Handle task_blend(new rendering::TaskBlend());
-	task_blend->amount = amount;
-	task_blend->blend_method = blend_method;
-	task_blend->sub_task_a() = next;
-	task_blend->sub_task_b() = sub_task;
-
-	return task_blend;
+	apply_z_range_to_params(context_params);
+	rendering::TaskTransformation::Handle task_transformation(new rendering::TaskTransformation());
+	rendering::AffineTransformation::Handle affine_transformation(new rendering::AffineTransformation());
+	affine_transformation->matrix = get_summary_transformation().get_matrix();
+	task_transformation->transformation = affine_transformation;
+	task_transformation->sub_task() = canvas->get_context(context_params).build_rendering_task();
+	return task_transformation;
 }
 
 
