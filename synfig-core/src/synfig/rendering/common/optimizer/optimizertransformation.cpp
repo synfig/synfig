@@ -121,22 +121,20 @@ OptimizerTransformation::run(const RunParams& params) const
 				return true;
 			}
 			else
-			if (transformation->sub_task().type_is<TaskTransformation>())
+			if (TaskTransformation::Handle sub_transformation = TaskTransformation::Handle::cast_dynamic(transformation->sub_task()))
 			{
 				// optimize affine transformation of affine transformation
-				if (TaskTransformation::Handle sub_transformation = TaskTransformation::Handle::cast_dynamic(transformation->sub_task()))
+				if (AffineTransformation::Handle sub_affine_transformation = AffineTransformation::Handle::cast_dynamic(sub_transformation->transformation))
 				{
-					if (AffineTransformation::Handle sub_affine_transformation = AffineTransformation::Handle::cast_dynamic(sub_transformation->transformation))
-					{
-						TaskTransformation::Handle transformation = TaskTransformation::Handle::cast_dynamic(transformation->clone());
-						AffineTransformation::Handle new_affine_transformation = new AffineTransformation();
-						new_affine_transformation->matrix =
-							sub_affine_transformation->matrix
-						  * affine_transformation->matrix;
-						transformation->transformation = new_affine_transformation;
-						params.out_task = transformation;
-						return true;
-					}
+					transformation = TaskTransformation::Handle::cast_dynamic(transformation->clone());
+					AffineTransformation::Handle new_affine_transformation = new AffineTransformation();
+					new_affine_transformation->matrix =
+						sub_affine_transformation->matrix
+					  * affine_transformation->matrix;
+					transformation->transformation = new_affine_transformation;
+					transformation->sub_task() = sub_transformation->sub_task();
+					params.out_task = transformation;
+					return true;
 				}
 			}
 			else
