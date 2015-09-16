@@ -326,7 +326,7 @@ rendering::Task::Handle
 Layer_Composite::build_rendering_task_vfunc(Context context)const
 {
 	rendering::TaskBlend::Handle task_blend(new rendering::TaskBlend());
-	task_blend->amount = get_amount();
+	task_blend->amount = get_amount() * Context::z_depth_visibility(context.get_params(), *this);
 	task_blend->blend_method = get_blend_method();
 	task_blend->sub_task_a() = context.build_rendering_task();
 	task_blend->sub_task_b() = build_composite_task_vfunc(context.get_params());
