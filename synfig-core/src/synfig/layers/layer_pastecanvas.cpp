@@ -32,6 +32,9 @@
 #	include <config.h>
 #endif
 
+// TODO: remove
+#include <fstream>
+
 #include "layer_pastecanvas.h"
 #include "string.h"
 #include "time.h"
@@ -44,6 +47,10 @@
 #include "../canvas.h"
 #include "../cairo_renddesc.h"
 
+#include <synfig/rendering/common/task/taskblend.h>
+#include <synfig/rendering/common/task/tasksurfaceempty.h>
+#include <synfig/rendering/common/task/tasktransformation.h>
+#include <synfig/rendering/primitive/affinetransformation.h>
 
 #endif
 
@@ -523,8 +530,20 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 		intermediate_desc.set_tl(pixel_aligned_tl);
 		intermediate_desc.set_br(pixel_aligned_br);
 		Surface intermediate_surface;
+
+		//{ // TODO: remove
+		//	std::ofstream of("/tmp/contours.txt", std::ios_base::app);
+		//	of << "g " << x0 << " " << y0 << endl;
+		//}
+
 		if(!canvasContext.accelerated_render(&intermediate_surface,quality,intermediate_desc,&stagetwo))
 			return false;
+
+		//{ // TODO: remove
+		//	std::ofstream of("/tmp/contours.txt", std::ios_base::app);
+		//	of << "end" << endl;
+		//}
+
 		Surface::alpha_pen apen(surface->get_pen(x0, y0));
 		apen.set_alpha(get_amount());
 		apen.set_blend_method(blend_using_straight ? Color::BLEND_STRAIGHT : blend_method);
@@ -672,3 +691,43 @@ Layer_PasteCanvas::fill_sound_processor(SoundProcessor &soundProcessor) const
 {
 	if (active() && canvas) canvas->fill_sound_processor(soundProcessor);
 }
+
+rendering::Task::Handle
+Layer_PasteCanvas::build_rendering_task_vfunc(Context context)const
+{
+	Real amount = get_amount();
+	Color::BlendMethod blend_method = get_blend_method();
+	Matrix transformation_matrix = get_summary_transformation().get_matrix();
+
+	// TODO:
+	// time_offset;
+	// outline_grow;
+	// children_lock;
+	// curr_time;
+
+	rendering::Task::Handle sub_task;
+	if (canvas)
+	{
+		rendering::TaskTransformation::Handle task_transformation(new rendering::TaskTransformation());
+		rendering::AffineTransformation::Handle affine_transformation(new rendering::AffineTransformation());
+		affine_transformation->matrix = transformation_matrix;
+		task_transformation->transformation = affine_transformation;
+		task_transformation->sub_task() = canvas->get_context(context).build_rendering_task();
+		sub_task = task_transformation;
+	}
+	else
+	{
+		sub_task = new rendering::TaskSurfaceEmpty();
+	}
+
+	rendering::TaskBlend::Handle next = context.build_rendering_task();
+	rendering::TaskBlend::Handle task_blend(new rendering::TaskBlend());
+	task_blend->amount = amount;
+	task_blend->blend_method = blend_method;
+	task_blend->sub_task_a() = next;
+	task_blend->sub_task_b() = sub_task;
+
+	return task_blend;
+}
+
+
