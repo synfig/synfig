@@ -104,6 +104,12 @@ OptimizerTransformation::run(const RunParams& params) const
 		// optimize affine transformation
 		if (AffineTransformation::Handle affine_transformation = AffineTransformation::Handle::cast_dynamic(transformation->transformation))
 		{
+			if (affine_transformation->matrix.is_identity())
+			{
+				params.out_task = transformation->sub_task();
+				return true;
+			}
+			else
 			if (transformation->sub_task().type_is<TaskTransformableAffine>())
 			{
 				// apply affine transformation to sub-task
