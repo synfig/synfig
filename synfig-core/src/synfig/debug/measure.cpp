@@ -75,7 +75,7 @@ Measure::~Measure() {
 		text += String((stack.size()-1)*2, ' ')
 		      + "end " + strprintf("%13.6f ", subs ? subs_s : full_s)
 		      + name
-			  + (subs ? strprintf("(full time: %.6f)", full_s) : String())
+			  + (subs ? strprintf(" (full time: %.6f)", full_s) : String())
 		      + "\n";
 
 	stack.pop_back();

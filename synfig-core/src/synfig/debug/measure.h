@@ -73,8 +73,8 @@ private:
 	Measure(const Measure&) { }
 	Measure& operator= (const Measure&) { return *this; }
 public:
-	Measure(const String&): { }
-	Measure(const String&, bool): { }
+	Measure(const String&) { }
+	Measure(const String&, bool) { }
 };
 
 #endif
