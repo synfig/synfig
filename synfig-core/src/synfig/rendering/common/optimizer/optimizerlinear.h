@@ -43,7 +43,14 @@ namespace rendering
 class OptimizerLinear: public Optimizer
 {
 public:
-	virtual bool run(const RunParams &params) const;
+	OptimizerLinear()
+	{
+		category_id = CATEGORY_ID_LINEAR;
+		depends_from = CATEGORY_TREE;
+		for_list = true;
+	}
+
+	virtual void run(const RunParams &params) const;
 };
 
 } /* end namespace rendering */

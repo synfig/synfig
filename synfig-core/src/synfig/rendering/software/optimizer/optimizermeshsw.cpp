@@ -54,10 +54,10 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
-bool
+void
 OptimizerMeshSW::run(const RunParams& params) const
 {
-	TaskMesh::Handle mesh = TaskMesh::Handle::cast_dynamic(params.task);
+	TaskMesh::Handle mesh = TaskMesh::Handle::cast_dynamic(params.ref_task);
 	if ( mesh
 	  && mesh->target_surface
 	  && mesh->sub_task()
@@ -92,10 +92,8 @@ OptimizerMeshSW::run(const RunParams& params) const
 			mesh_sw->sub_task()->rect_lt = mesh->mesh->get_source_rectangle().get_min();
 			mesh_sw->sub_task()->rect_rb = mesh->mesh->get_source_rectangle().get_max();
 		}
-
-		return true;
+		apply(params, mesh_sw);
 	}
-	return false;
 }
 
 /* === E N T R Y P O I N T ================================================= */

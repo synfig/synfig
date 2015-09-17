@@ -45,14 +45,21 @@ namespace rendering
 class OptimizerSurfaceCreate: public Optimizer
 {
 private:
-	static bool insert_task(
+	void insert_task(
 		std::set<Surface::Handle> &created_surfaces,
-		Task::List &list,
+		const RunParams& params,
 		Task::List::iterator &i,
-		const Task::Handle &task );
+		const Task::Handle &task ) const;
 
 public:
-	virtual bool run(const RunParams &params) const;
+	OptimizerSurfaceCreate()
+	{
+		category_id = CATEGORY_ID_LIST;
+		depends_from = CATEGORY_LINEAR;
+		for_list = true;
+	}
+
+	virtual void run(const RunParams &params) const;
 };
 
 } /* end namespace rendering */

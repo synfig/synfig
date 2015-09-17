@@ -53,12 +53,10 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
-bool
+void
 OptimizerComposite::run(const RunParams& params) const
 {
-	params.finish_current = true;
-
-	TaskBlend::Handle blend = TaskBlend::Handle::cast_dynamic(params.task);
+	TaskBlend::Handle blend = TaskBlend::Handle::cast_dynamic(params.ref_task);
 	if ( blend
 	  && blend->target_surface
 	  && blend->sub_task_a()
@@ -89,11 +87,9 @@ OptimizerComposite::run(const RunParams& params) const
 			task->sub_task(0) = task_a;
 			task->sub_task(1) = task_b;
 
-			params.out_task = task;
-			return true;
+			apply(params, task);
 		}
 	}
-	return false;
 }
 
 /* === E N T R Y P O I N T ================================================= */

@@ -53,63 +53,54 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
-bool
+void
 OptimizerLinear::run(const RunParams& params) const
 {
-	if (!params.task)
+	// convert task-tree to linear list
+	for(Task::List::iterator i = params.list.begin(); i != params.list.end();)
 	{
-		bool optimized = false;
-
-		// convert task-tree to linear list
-		for(Task::List::iterator i = params.list.begin(); i != params.list.end();)
+		if (!TaskSurface::Handle::cast_dynamic(*i))
 		{
-			if (!TaskSurface::Handle::cast_dynamic(*i))
+			// remember current position
+			int index = i - params.list.begin();
+			bool found = false;
+
+			for(Task::List::iterator j = (*i)->sub_tasks.begin(); j != (*i)->sub_tasks.end(); ++j)
 			{
-				// remember current position
-				int index = i - params.list.begin();
-				bool found = false;
-
-				for(Task::List::iterator j = (*i)->sub_tasks.begin(); j != (*i)->sub_tasks.end(); ++j)
+				if ( *j
+				  && !TaskSurface::Handle::cast_dynamic(*j)
+				  && !TaskSurfaceEmpty::Handle::cast_dynamic(*j) )
 				{
-					if ( *j
-					  && !TaskSurface::Handle::cast_dynamic(*j)
-					  && !TaskSurfaceEmpty::Handle::cast_dynamic(*j) )
+					i = params.list.insert(i, *j);
+					++i;
+
+					if (!found)
 					{
-						i = params.list.insert(i, *j);
-						++i;
-						optimized = true;
-
-						if (!found)
-						{
-							// clone task
-							int index = j - (*i)->sub_tasks.begin();
-							*i = (*i)->clone();
-							j = (*i)->sub_tasks.begin() + index;
-							found = true;
-						}
-
-						// replace sub_task by TaskSurface
-						TaskSurface::Handle surface(new TaskSurface());
-						surface->target_surface = (*j)->target_surface;
-						*j = surface;
+						// clone task
+						int index = j - (*i)->sub_tasks.begin();
+						*i = (*i)->clone();
+						j = (*i)->sub_tasks.begin() + index;
+						found = true;
 					}
+
+					// replace sub_task by TaskSurface
+					TaskSurface::Handle surface(new TaskSurface());
+					surface->target_surface = (*j)->target_surface;
+					*j = surface;
 				}
-
-				// if changed then go back to check inserted tasks
-				if (found)
-					{ i = params.list.begin() + index; continue; }
 			}
-			++i;
+
+			// if changed then go back to check inserted tasks
+			if (found)
+				{ i = params.list.begin() + index; continue; }
 		}
-
-		// remove dummy tasks
-		for(Task::List::iterator i = params.list.begin(); i != params.list.end();)
-			if (i->type_equal<Task>())
-				{ i = params.list.erase(i); optimized = true; } else ++i;
-
-		return optimized;
+		++i;
 	}
-	return false;
+
+	// remove dummy tasks
+	//for(Task::List::iterator i = params.list.begin(); i != params.list.end();)
+	//	if (i->type_equal<Task>() || i->type_is<TaskSurface>() || i->type_is<TaskSurfaceEmpty>())
+	//		i = params.list.erase(i); else ++i;
 }
 
 /* === E N T R Y P O I N T ================================================= */

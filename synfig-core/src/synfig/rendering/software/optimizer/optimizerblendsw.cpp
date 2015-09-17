@@ -53,12 +53,10 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
-bool
+void
 OptimizerBlendSW::run(const RunParams& params) const
 {
-	params.finish_current = true;
-
-	TaskBlend::Handle blend = TaskBlend::Handle::cast_dynamic(params.task);
+	TaskBlend::Handle blend = TaskBlend::Handle::cast_dynamic(params.ref_task);
 	if ( blend
 	  && blend->target_surface
 	  && blend.type_equal<TaskBlend>() )
@@ -70,10 +68,8 @@ OptimizerBlendSW::run(const RunParams& params) const
 		  && blend_sw->sub_task_a()->target_surface )
 			blend_sw->target_surface = blend_sw->sub_task_a()->target_surface;
 
-		params.out_task = blend_sw;
-		return true;
+		apply(params, blend_sw);
 	}
-	return false;
 }
 
 /* === E N T R Y P O I N T ================================================= */

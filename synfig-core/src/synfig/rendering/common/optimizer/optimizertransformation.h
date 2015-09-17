@@ -49,7 +49,13 @@ private:
 	static void calc_unoptimized_blend_brunches(int &ref_count, const Task::Handle &blend_sub_task);
 
 public:
-	virtual bool run(const RunParams &params) const;
+	OptimizerTransformation()
+	{
+		category_id = CATEGORY_ID_COMMON;
+		for_task = true;
+	}
+
+	virtual void run(const RunParams &params) const;
 };
 
 } /* end namespace rendering */

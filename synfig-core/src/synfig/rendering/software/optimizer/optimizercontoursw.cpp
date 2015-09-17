@@ -52,20 +52,16 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
-bool
+void
 OptimizerContourSW::run(const RunParams& params) const
 {
-	params.finish_current = true;
-
-	TaskContour::Handle contour = TaskContour::Handle::cast_dynamic(params.task);
+	TaskContour::Handle contour = TaskContour::Handle::cast_dynamic(params.ref_task);
 	if ( contour
 	  && contour->target_surface
 	  && contour.type_equal<TaskContour>() )
 	{
-		params.out_task = create_and_assign<TaskContourSW>(contour);
-		return true;
+		apply(params, create_and_assign<TaskContourSW>(contour));
 	}
-	return false;
 }
 
 /* === E N T R Y P O I N T ================================================= */

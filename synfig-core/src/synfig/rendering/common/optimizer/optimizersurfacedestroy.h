@@ -45,14 +45,19 @@ namespace rendering
 class OptimizerSurfaceDestroy: public Optimizer
 {
 private:
-	static bool insert_task(
+	void insert_task(
 		std::set<Surface::Handle> &destroyed_surfaces,
-		Task::List &list,
+		const RunParams& params,
 		Task::List::reverse_iterator &ri,
-		const Task::Handle &task );
+		const Task::Handle &task ) const;
 
 public:
-	virtual bool run(const RunParams &params) const;
+	OptimizerSurfaceDestroy()
+	{
+		// TODO:
+	}
+
+	virtual void run(const RunParams &params) const;
 };
 
 } /* end namespace rendering */

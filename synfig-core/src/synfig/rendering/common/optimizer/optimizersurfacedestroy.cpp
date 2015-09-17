@@ -53,12 +53,12 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
-bool
+void
 OptimizerSurfaceDestroy::insert_task(
 	std::set<Surface::Handle> &destroyed_surfaces,
-	Task::List &list,
+	const RunParams& params,
 	Task::List::reverse_iterator &ri,
-	const Task::Handle &task )
+	const Task::Handle &task ) const
 {
 	if ( task
 	  && task->target_surface
@@ -69,47 +69,40 @@ OptimizerSurfaceDestroy::insert_task(
 		TaskSurfaceDestroy::Handle surface_destroy = new TaskSurfaceDestroy();
 		surface_destroy->target_surface = task->target_surface;
 		Task::List::iterator i(ri.base());
-		i = list.insert(i, surface_destroy);
+		i = params.list.insert(i, surface_destroy);
 		ri = Task::List::reverse_iterator(i);
-		return true;
+		apply(params);
 	}
-	return false;
 }
 
-bool
+void
 OptimizerSurfaceDestroy::run(const RunParams& params) const
 {
-	if (!params.task)
+	std::set<Surface::Handle> destroyed_surfaces;
+	for(Task::List::reverse_iterator ri = params.list.rbegin(); ri != params.list.rend();)
 	{
-		bool optimized = false;
-		std::set<Surface::Handle> destroyed_surfaces;
-		for(Task::List::reverse_iterator ri = params.list.rbegin(); ri != params.list.rend();)
+		if (*ri)
 		{
-			if (*ri)
+			if (TaskSurfaceDestroy::Handle::cast_dynamic(*ri))
 			{
-				if (TaskSurfaceDestroy::Handle::cast_dynamic(*ri))
+				if (destroyed_surfaces.count((*ri)->target_surface))
 				{
-					if (destroyed_surfaces.count((*ri)->target_surface))
-					{
-						Task::List::iterator i(ri.base());
-						i = params.list.erase(i);
-						ri = Task::List::reverse_iterator(i);
-						continue;
-					}
-					destroyed_surfaces.insert((*ri)->target_surface);
+					Task::List::iterator i(ri.base());
+					i = params.list.erase(i);
+					ri = Task::List::reverse_iterator(i);
+					continue;
 				}
-				else
-				{
-					for(std::vector<Task::Handle>::const_iterator j = (*ri)->sub_tasks.begin(); j != (*ri)->sub_tasks.end(); ++j)
-						optimized |= insert_task(destroyed_surfaces, params.list, ri, *j);
-					optimized |= insert_task(destroyed_surfaces, params.list, ri, *ri);
-				}
+				destroyed_surfaces.insert((*ri)->target_surface);
 			}
-			++ri;
+			else
+			{
+				for(std::vector<Task::Handle>::const_iterator j = (*ri)->sub_tasks.begin(); j != (*ri)->sub_tasks.end(); ++j)
+					insert_task(destroyed_surfaces, params, ri, *j);
+				insert_task(destroyed_surfaces, params, ri, *ri);
+			}
 		}
-		return optimized;
+		++ri;
 	}
-	return false;
 }
 
 /* === E N T R Y P O I N T ================================================= */

@@ -43,7 +43,12 @@ namespace rendering
 class OptimizerMeshSW: public Optimizer
 {
 public:
-	virtual bool run(const RunParams &params) const;
+	OptimizerMeshSW()
+	{
+		// TODO:
+	}
+
+	virtual void run(const RunParams &params) const;
 };
 
 } /* end namespace rendering */

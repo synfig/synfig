@@ -53,12 +53,12 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
-bool
+void
 OptimizerSurfaceCreate::insert_task(
 	std::set<Surface::Handle> &created_surfaces,
-	Task::List &list,
+	const RunParams& params,
 	Task::List::iterator &i,
-	const Task::Handle &task )
+	const Task::Handle &task ) const
 {
 	if ( task
 	  && task->target_surface
@@ -68,47 +68,40 @@ OptimizerSurfaceCreate::insert_task(
 		created_surfaces.insert(task->target_surface);
 		TaskSurfaceCreate::Handle surface_create = new TaskSurfaceCreate();
 		surface_create->target_surface = task->target_surface;
-		i = list.insert(i, surface_create);
+		i = params.list.insert(i, surface_create);
 		++i;
-		return true;
+		apply(params);
 	}
-	return false;
 }
 
-bool
+void
 OptimizerSurfaceCreate::run(const RunParams& params) const
 {
-	if (!params.task)
+	std::set<Surface::Handle> created_surfaces;
+	for(Task::List::iterator i = params.list.begin(); i != params.list.end();)
 	{
-		bool optimized = false;
-		std::set<Surface::Handle> created_surfaces;
-		for(Task::List::iterator i = params.list.begin(); i != params.list.end();)
+		if (*i)
 		{
-			if (*i)
+			if (TaskSurfaceCreate::Handle::cast_dynamic(*i))
 			{
-				if (TaskSurfaceCreate::Handle::cast_dynamic(*i))
-				{
-					if (created_surfaces.count((*i)->target_surface))
-						{ i = params.list.erase(i); continue; }
-					created_surfaces.insert((*i)->target_surface);
-				}
-				else
-				if (TaskSurfaceConvert::Handle::cast_dynamic(*i))
-				{
-					created_surfaces.insert((*i)->target_surface);
-				}
-				else
-				{
-					for(std::vector<Task::Handle>::const_iterator j = (*i)->sub_tasks.begin(); j != (*i)->sub_tasks.end(); ++j)
-						optimized |= insert_task(created_surfaces, params.list, i, *j);
-					optimized |= insert_task(created_surfaces, params.list, i, *i);
-				}
+				if (created_surfaces.count((*i)->target_surface))
+					{ i = params.list.erase(i); continue; }
+				created_surfaces.insert((*i)->target_surface);
 			}
-			++i;
+			else
+			if (TaskSurfaceConvert::Handle::cast_dynamic(*i))
+			{
+				created_surfaces.insert((*i)->target_surface);
+			}
+			else
+			{
+				for(std::vector<Task::Handle>::const_iterator j = (*i)->sub_tasks.begin(); j != (*i)->sub_tasks.end(); ++j)
+					insert_task(created_surfaces, params, i, *j);
+				insert_task(created_surfaces, params, i, *i);
+			}
 		}
-		return optimized;
+		++i;
 	}
-	return false;
 }
 
 /* === E N T R Y P O I N T ================================================= */

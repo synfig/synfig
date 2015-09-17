@@ -43,7 +43,12 @@ namespace rendering
 class OptimizerBlurPreparedSW: public Optimizer
 {
 public:
-	virtual bool run(const RunParams &params) const;
+	OptimizerBlurPreparedSW()
+	{
+		// TODO:
+	}
+
+	virtual void run(const RunParams &params) const;
 };
 
 } /* end namespace rendering */

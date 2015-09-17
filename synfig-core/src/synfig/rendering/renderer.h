@@ -51,19 +51,19 @@ private:
 	static Handle blank;
 	static std::map<String, Handle> *renderers;
 
-	Optimizer::List optimizers;
+	Optimizer::List optimizers[Optimizer::CATEGORY_ID_COUNT];
 
 public:
 
 	virtual ~Renderer();
 
-	const Optimizer::List& get_optimizers() const { return optimizers; }
+	const Optimizer::List& get_optimizers(Optimizer::CategoryId category_id) const { return optimizers[category_id]; }
 	bool is_optimizer_registered(const Optimizer::Handle &optimizer) const;
 	void register_optimizer(const Optimizer::Handle &optimizer);
 	void unregister_optimizer(const Optimizer::Handle &optimizer);
 
 private:
-	bool optimize_recursive(const Optimizer &optimizer, const Optimizer::RunParams& params) const;
+	void optimize_recursive(const Optimizer &optimizer, const Optimizer::RunParams& params) const;
 	void log(const Task::Handle &task, const String &prefix = String()) const;
 	void log(const Task::List &list, const String &name = String()) const;
 

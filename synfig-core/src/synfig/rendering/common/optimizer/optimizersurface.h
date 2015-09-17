@@ -43,7 +43,12 @@ namespace rendering
 class OptimizerSurface: public Optimizer
 {
 public:
-	virtual bool run(const RunParams &params) const;
+	OptimizerSurface()
+	{
+		// TODO:
+	}
+
+	virtual void run(const RunParams &params) const;
 };
 
 } /* end namespace rendering */

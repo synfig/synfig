@@ -43,7 +43,13 @@ namespace rendering
 class OptimizerComposite: public Optimizer
 {
 public:
-	virtual bool run(const RunParams &params) const;
+	OptimizerComposite()
+	{
+		category_id = CATEGORY_ID_COMMON;
+		for_task = true;
+	}
+
+	virtual void run(const RunParams &params) const;
 };
 
 } /* end namespace rendering */

@@ -87,20 +87,18 @@ OptimizerTransformation::calc_unoptimized_blend_brunches(int &ref_count, const T
 	++ref_count;
 }
 
-bool
+void
 OptimizerTransformation::run(const RunParams& params) const
 {
-	params.finish_current = true;
-
 	// TODO: Optimize transformation to transformation
-	if (TaskTransformation::Handle transformation = TaskTransformation::Handle::cast_dynamic(params.task))
+	if (TaskTransformation::Handle transformation = TaskTransformation::Handle::cast_dynamic(params.ref_task))
 	{
 		// transformation of TaskSolid or null-task is meaningless
 		if ( !transformation->sub_task()
 		  || transformation->sub_task().type_is<TaskSolid>())
 		{
-			params.out_task = transformation->sub_task();
-			return true;
+			apply(params, transformation->sub_task());
+			return;
 		}
 
 		// optimize affine transformation
@@ -108,8 +106,8 @@ OptimizerTransformation::run(const RunParams& params) const
 		{
 			if (affine_transformation->matrix.is_identity())
 			{
-				params.out_task = transformation->sub_task();
-				return true;
+				apply(params, transformation->sub_task());
+				return;
 			}
 			else
 			if (transformation->sub_task().type_is<TaskTransformableAffine>())
@@ -119,8 +117,8 @@ OptimizerTransformation::run(const RunParams& params) const
 				TaskTransformableAffine *transformable_affine = task.type_pointer<TaskTransformableAffine>();
 				transformable_affine->transformation *=
 					affine_transformation->matrix;
-				params.out_task = task;
-				return true;
+				apply(params, task);
+				return;
 			}
 			else
 			if (TaskTransformation::Handle sub_transformation = TaskTransformation::Handle::cast_dynamic(transformation->sub_task()))
@@ -135,8 +133,9 @@ OptimizerTransformation::run(const RunParams& params) const
 					  * affine_transformation->matrix;
 					transformation->transformation = new_affine_transformation;
 					transformation->sub_task() = sub_transformation->sub_task();
-					params.out_task = transformation;
-					return true;
+
+					apply(params, transformation);
+					return;
 				}
 			}
 			else
@@ -155,33 +154,12 @@ OptimizerTransformation::run(const RunParams& params) const
 					TaskTransformation::Handle transformation_b = TaskTransformation::Handle::cast_dynamic(transformation->clone());
 					transformation_b->sub_task() = blend->sub_task_b();
 					blend->sub_task_b() = transformation_b;
-					params.out_task = blend;
-					return true;
+					apply(params, blend);
+					return;
 				//}
 			}
 		}
-
-		// build mesh
-		/* TODO: make separate optimizer for mesh
-		if ( transformation->target_surface
-		  && !transformation->target_surface->empty() )
-		{
-			// TODO: custom parameter
-			Real precision_pixels = 5.0;
-
-			TaskMesh::Handle mesh(new TaskMesh());
-			*((Task*)(mesh.get())) = *((Task*)(transformation.get()));
-			mesh->mesh = transformation->transformation->build_mesh(
-				transformation->rect_lt,
-				transformation->rect_rb,
-				transformation->get_units_per_pixel() * precision_pixels );
-
-			params.out_task = mesh;
-			return true;
-		}
-		*/
 	}
-	return false;
 }
 
 /* === E N T R Y P O I N T ================================================= */

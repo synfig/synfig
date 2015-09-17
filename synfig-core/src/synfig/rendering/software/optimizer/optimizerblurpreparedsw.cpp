@@ -57,10 +57,10 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
-bool
+void
 OptimizerBlurPreparedSW::run(const RunParams& params) const
 {
-	TaskBlur::Handle blur = TaskBlur::Handle::cast_dynamic(params.task);
+	TaskBlur::Handle blur = TaskBlur::Handle::cast_dynamic(params.ref_task);
 	if ( blur
 	  && blur->target_surface
 	  && blur->sub_task() )
@@ -106,10 +106,8 @@ OptimizerBlurPreparedSW::run(const RunParams& params) const
 			blur_prepared_sw->sub_task() = sub;
 		}
 
-		params.out_task = blur_prepared_sw;
-		return true;
+		apply(params, blur_prepared_sw);
 	}
-	return false;
 }
 
 /* === E N T R Y P O I N T ================================================= */

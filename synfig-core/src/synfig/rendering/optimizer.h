@@ -45,35 +45,93 @@ class Optimizer: public etl::shared_object
 public:
 	typedef etl::handle<Optimizer> Handle;
 	typedef std::vector<Handle> List;
+	typedef unsigned int Category;
 
-	struct RunParams {
+	enum CategoryId
+	{
+		CATEGORY_ID_COMMON,		// common optimizations of task-tree
+		CATEGORY_ID_SPECIALIZE, // renderer-specified optimizations of task-tree
+		CATEGORY_ID_CONVERT,	// OptimizerSurfaceConvert
+		CATEGORY_ID_LINEAR,		// OptimizerLinear
+		CATEGORY_ID_LIST		// optimizations of plain (linear) list of tasks
+	};
+
+	enum
+	{
+		CATEGORY_ID_COUNT = CATEGORY_ID_LIST + 1,
+		CATEGORY_COMMON     = 1 << CATEGORY_ID_COMMON,		// --
+		CATEGORY_SPECIALIZE = 1 << CATEGORY_ID_SPECIALIZE,	// --
+		CATEGORY_CONVERT    = 1 << CATEGORY_ID_CONVERT,		// --
+		CATEGORY_LINEAR     = 1 << CATEGORY_ID_LINEAR,		// --
+		CATEGORY_LIST       = 1 << CATEGORY_ID_LIST,		// --
+		CATEGORY_TREE       = CATEGORY_LINEAR - 1, 			// optimizations of task-tree
+		CATEGORY_ALL        = (1 << CATEGORY_ID_COUNT) -1		// all optimizations
+	};
+
+	struct RunParams
+	{
 		const Renderer &renderer;
 		Task::List &list;
-		const Task::Handle task;
+		const Category depends_from;
 		const RunParams * const parent;
 
-		mutable bool finish_current;
-		mutable Task::Handle out_task;
+		mutable Task::Handle ref_task;
+		mutable Category ref_affects_to;
 
 		RunParams(
 			const Renderer &renderer,
 			Task::List &list,
+			Category depends_from,
 			const Task::Handle &task = Task::Handle(),
 			const RunParams *parent = NULL
 		):
 			renderer(renderer),
 			list(list),
-			task(task),
+			depends_from(depends_from),
 			parent(parent),
-			finish_current(false)
+			ref_task(task),
+			ref_affects_to()
+		{ }
+
+		RunParams(const RunParams &other):
+			renderer(other.renderer),
+			list(other.list),
+			depends_from(other.depends_from),
+			parent(other.parent),
+			ref_task(other.ref_task),
+			ref_affects_to()
 		{ }
 
 		RunParams sub(const Task::Handle &task) const
-			{ return RunParams(renderer, list, task, this); }
+			{ return RunParams(renderer, list, depends_from, task, this); }
 	};
 
+	CategoryId category_id;
+	Category depends_from;
+	Category affects_to;
+	bool for_list;
+	bool for_task;
+
+	Optimizer(): category_id(), depends_from(), affects_to(), for_list(), for_task() { }
 	virtual ~Optimizer();
-	virtual bool run(const RunParams &params) const = 0;
+
+	virtual void run(const RunParams &params) const = 0;
+
+	void apply(const RunParams &params) const
+	{
+		params.ref_affects_to |= affects_to;
+	}
+
+	void apply(const RunParams &params, const Task::Handle &task) const
+	{
+		params.ref_affects_to |= affects_to;
+		params.ref_task = task;
+	}
+
+	void apply_clone(const RunParams &params) const
+	{
+		apply(params, params.ref_task->clone());
+	}
 
 	template<typename T>
 	static void assign_surface(

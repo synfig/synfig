@@ -43,7 +43,14 @@ namespace rendering
 class OptimizerSurfaceConvert: public Optimizer
 {
 public:
-	virtual bool run(const RunParams &params) const;
+	OptimizerSurfaceConvert()
+	{
+		category_id = CATEGORY_ID_CONVERT;
+		depends_from = CATEGORY_SPECIALIZE;
+		for_task = true;
+	}
+
+	virtual void run(const RunParams &params) const;
 };
 
 } /* end namespace rendering */

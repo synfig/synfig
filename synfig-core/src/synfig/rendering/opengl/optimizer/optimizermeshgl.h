@@ -43,7 +43,12 @@ namespace rendering
 class OptimizerMeshGL: public Optimizer
 {
 public:
-	virtual bool run(const RunParams &params) const;
+	OptimizerMeshGL()
+	{
+		// TODO:
+	}
+
+	virtual void run(const RunParams &params) const;
 };
 
 } /* end namespace rendering */

@@ -55,27 +55,28 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
-bool
+void
 OptimizerSurface::run(const RunParams& params) const
 {
-	if ( params.task
-	  && params.task->target_surface
-	  && !params.task->target_surface->empty())
+	if ( params.ref_task->target_surface
+	  && !params.ref_task->target_surface->empty())
 	{
-		bool sw = params.task.type_is<TaskSW>();
-		bool gl = params.task.type_is<TaskGL>();
+		bool sw = params.ref_task.type_is<TaskSW>();
+		bool gl = params.ref_task.type_is<TaskGL>();
 		if (sw || gl)
 		{
 			// Create surfaces when subtasks have no target_surface
-			Task::Handle task = params.task;
-			for(Task::List::iterator i = task->sub_tasks.begin(); i != task->sub_tasks.end(); ++i)
+			bool optimized = false;
+			for(Task::List::iterator i = params.ref_task->sub_tasks.begin(); i != params.ref_task->sub_tasks.end(); ++i)
 			{
 				if (*i && (!(*i)->target_surface || (*i)->target_surface->empty()))
 				{
-					if (task == params.task)
+					if (!optimized)
 					{
-						task = params.task->clone();
-						i = task->sub_tasks.begin() + (i - params.task->sub_tasks.begin());
+						int index = i - params.ref_task->sub_tasks.begin();
+						apply_clone(params);
+						optimized = true;
+						i = params.ref_task->sub_tasks.begin() + index;
 					}
 					*i = (*i)->clone();
 
@@ -85,20 +86,13 @@ OptimizerSurface::run(const RunParams& params) const
 						if (gl) (*i)->target_surface = new SurfaceGL();
 						(*i)->target_surface->is_temporary = true;
 					}
-					(*i)->target_surface->set_size( task->target_surface->get_size() );
-					(*i)->rect_lt = task->rect_lt;
-					(*i)->rect_rb = task->rect_rb;
+					(*i)->target_surface->set_size( params.ref_task->target_surface->get_size() );
+					(*i)->rect_lt = params.ref_task->rect_lt;
+					(*i)->rect_rb = params.ref_task->rect_rb;
 				}
-			}
-
-			if (task != params.task)
-			{
-				params.out_task = task;
-				return true;
 			}
 		}
 	}
-	return false;
 }
 
 /* === E N T R Y P O I N T ================================================= */

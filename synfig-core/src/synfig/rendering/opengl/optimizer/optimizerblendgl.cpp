@@ -53,12 +53,10 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
-bool
+void
 OptimizerBlendGL::run(const RunParams& params) const
 {
-	params.finish_current = true;
-
-	TaskBlend::Handle blend = TaskBlend::Handle::cast_dynamic(params.task);
+	TaskBlend::Handle blend = TaskBlend::Handle::cast_dynamic(params.ref_task);
 	if ( blend
 	  && blend->target_surface
 	  && blend.type_equal<TaskBlend>() )
@@ -66,14 +64,12 @@ OptimizerBlendGL::run(const RunParams& params) const
 		TaskBlendGL::Handle blend_gl;
 		init_and_assign_all<SurfaceGL>(blend_gl, blend);
 
-		//if ( blend_gl->target_surface->is_temporary
-		//  && blend_gl->sub_task_a()->target_surface )
-		//	blend_gl->target_surface = blend_gl->sub_task_a()->target_surface;
+		if ( blend_gl->target_surface->is_temporary
+		  && blend_gl->sub_task_a()->target_surface )
+			blend_gl->target_surface = blend_gl->sub_task_a()->target_surface;
 
-		params.out_task = blend_gl;
-		return true;
+		apply(params, blend_gl);
 	}
-	return false;
 }
 
 /* === E N T R Y P O I N T ================================================= */

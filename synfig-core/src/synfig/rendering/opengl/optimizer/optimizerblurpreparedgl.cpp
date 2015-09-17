@@ -50,11 +50,10 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
-bool
+void
 OptimizerBlurPreparedGL::run(const RunParams& /* params */) const
 {
 	// TODO:
-	return false;
 }
 
 /* === E N T R Y P O I N T ================================================= */
