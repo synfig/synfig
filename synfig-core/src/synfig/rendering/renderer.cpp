@@ -38,6 +38,7 @@
 #include <typeinfo>
 
 #include <synfig/general.h>
+#include <synfig/debug/measure.h>
 
 #include "renderer.h"
 
@@ -112,42 +113,49 @@ Renderer::unregister_optimizer(const Optimizer::Handle &optimizer)
 bool
 Renderer::optimize_recursive(const Optimizer &optimizer, const Optimizer::RunParams& params) const
 {
-	if (params.task) {
-		if (optimizer.run(params))
-			return true;
+	Task::Handle task(params.task);
+	bool optimized = false;
+	bool finish_current = true;
 
-		for(Task::List::const_iterator i = params.task->sub_tasks.begin(); i != params.task->sub_tasks.end(); ++i)
+	Optimizer::RunParams p(params);
+	if (task) {
+		if (optimizer.run(p))
+		{
+			optimized = true;
+			if (!p.finish_current) finish_current = false;
+			task = p.out_task;
+		}
+	}
+
+	if (task) {
+		for(Task::List::const_iterator i = task->sub_tasks.begin(); finish_current && i != task->sub_tasks.end();)
 		{
 			if (*i)
 			{
-				Optimizer::RunParams sub_params = params.sub(*i);
+				Optimizer::RunParams sub_params = p.sub(*i);
 				if ( optimize_recursive(optimizer, sub_params) )
 				{
-					Task::Handle new_task = params.task->clone();
-					new_task->sub_tasks[ i - params.task->sub_tasks.begin() ]
-						= sub_params.out_task;
-					params.out_task = new_task;
-					return true;
+					optimized = true;
+					if (!sub_params.finish_current) finish_current = false;
+					int index = i - task->sub_tasks.begin();
+					task = task->clone();
+					task->sub_tasks[index] = sub_params.out_task;
+					if (index >= (int)task->sub_tasks.size())
+						break;
+					i = task->sub_tasks.begin() + index;
+					continue;
 				}
 			}
+			++i;
 		}
 	}
-	return false;
-}
 
-bool
-Renderer::optimize_recursive(const Optimizer &optimizer, Task::List &list) const
-{
-	for(Task::List::iterator i = list.begin(); i != list.end(); ++i)
+	if (optimized)
 	{
-		Optimizer::RunParams params(*this, list, *i);
-		if (optimize_recursive(optimizer, params))
-		{
-			if (params.out_task) *i = params.out_task; else list.erase(i);
-			return true;
-		}
+		params.finish_current = finish_current;
+		params.out_task = task;
 	}
-	return false;
+	return optimized;
 }
 
 void
@@ -160,11 +168,43 @@ Renderer::optimize(Task::List &list) const
 	// optimize
 	for(Optimizer::List::const_iterator i = optimizers.begin(); i != optimizers.end();) {
 		Optimizer::RunParams params(*this, list);
-		if ( (*i)->run(params) || optimize_recursive(**i, list) )
+
+		bool optimized = false;
+		bool finish_current = true;
+		if (finish_current && (*i)->run(params))
+		{
+			optimized = true;
+			if (!params.finish_current) finish_current = false;
+		}
+
+		if (finish_current)
+			for(Task::List::iterator j = list.begin(); finish_current && j != list.end();)
+			{
+				if (*j)
+				{
+					Optimizer::RunParams params(*this, list, *j);
+					if (optimize_recursive(**i, params))
+					{
+						optimized = true;
+						if (!params.finish_current) finish_current = false;
+						if (params.out_task) *j = params.out_task; else j = list.erase(j);
+						continue;
+					}
+				}
+				else
+				{
+					j = list.erase(j);
+					continue;
+				}
+				++j;
+			}
+
+		if (optimized)
 		{
 			i = optimizers.begin();
 			continue;
 		}
+
 		++i;
 	 }
 }
@@ -172,21 +212,30 @@ Renderer::optimize(Task::List &list) const
 bool
 Renderer::run(const Task::List &list) const
 {
+	debug::Measure t("Renderer::run");
+
 	//log(list, "input list");
 	Task::List optimized_list(list);
-	optimize(optimized_list);
+	{
+		debug::Measure t("optimize");
+		optimize(optimized_list);
+	}
 	//log(optimized_list, "optimized list");
 
 	bool success = true;
 
-	Task::RunParams params;
-	for(Task::List::iterator i = optimized_list.begin(); i != optimized_list.end(); ++i)
 	{
-		// execute task
-		if (!(*i)->run(params))
-			success = false;
-		// release task to release some resources associated with it
-		i->reset();
+		debug::Measure t("run tasks", true);
+		Task::RunParams params;
+		for(Task::List::iterator i = optimized_list.begin(); i != optimized_list.end(); ++i)
+		{
+			debug::Measure t(typeid(**i).name() + 19);
+			// execute task
+			if (!(*i)->run(params))
+				success = false;
+			// release task to release some resources associated with it
+			i->reset();
+		}
 	}
 	// optimized_list now contains NULLs, clear it to avoid any mistakes
 	optimized_list.clear();

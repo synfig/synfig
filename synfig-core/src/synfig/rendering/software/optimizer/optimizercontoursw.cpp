@@ -55,6 +55,8 @@ using namespace rendering;
 bool
 OptimizerContourSW::run(const RunParams& params) const
 {
+	params.finish_current = true;
+
 	TaskContour::Handle contour = TaskContour::Handle::cast_dynamic(params.task);
 	if ( contour
 	  && contour->target_surface

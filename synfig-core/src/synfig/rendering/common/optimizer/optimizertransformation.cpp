@@ -90,6 +90,8 @@ OptimizerTransformation::calc_unoptimized_blend_brunches(int &ref_count, const T
 bool
 OptimizerTransformation::run(const RunParams& params) const
 {
+	params.finish_current = true;
+
 	// TODO: Optimize transformation to transformation
 	if (TaskTransformation::Handle transformation = TaskTransformation::Handle::cast_dynamic(params.task))
 	{
@@ -141,11 +143,11 @@ OptimizerTransformation::run(const RunParams& params) const
 			if (TaskBlend::Handle blend = TaskBlend::Handle::cast_dynamic(transformation->sub_task()))
 			{
 				// optimize transfromation of TaskBlend
-				int count = 0;
-				calc_unoptimized_blend_brunches(count, blend->sub_task_a());
-				calc_unoptimized_blend_brunches(count, blend->sub_task_b());
-				if (count < 2)
-				{
+				//int count = 0;
+				//calc_unoptimized_blend_brunches(count, blend->sub_task_a());
+				//calc_unoptimized_blend_brunches(count, blend->sub_task_b());
+				//if (count < 2)
+				//{
 					blend = TaskBlend::Handle::cast_dynamic(blend->clone());
 					TaskTransformation::Handle transformation_a = TaskTransformation::Handle::cast_dynamic(transformation->clone());
 					transformation_a->sub_task() = blend->sub_task_a();
@@ -155,7 +157,7 @@ OptimizerTransformation::run(const RunParams& params) const
 					blend->sub_task_b() = transformation_b;
 					params.out_task = blend;
 					return true;
-				}
+				//}
 			}
 		}
 

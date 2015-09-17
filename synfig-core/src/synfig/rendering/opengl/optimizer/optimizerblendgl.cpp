@@ -56,6 +56,8 @@ using namespace rendering;
 bool
 OptimizerBlendGL::run(const RunParams& params) const
 {
+	params.finish_current = true;
+
 	TaskBlend::Handle blend = TaskBlend::Handle::cast_dynamic(params.task);
 	if ( blend
 	  && blend->target_surface

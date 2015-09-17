@@ -70,15 +70,15 @@ RendererGL::RendererGL()
 {
 	// register optimizers
 	register_optimizer(new OptimizerTransformation());
+	register_optimizer(new OptimizerComposite());
 	//register_optimizer(new OptimizerSurface());
-	register_optimizer(new OptimizerSurfaceConvert());
 
 	register_optimizer(new OptimizerBlendGL());
-	register_optimizer(new OptimizerBlurPreparedSW());
+	//register_optimizer(new OptimizerBlurPreparedSW());
 	register_optimizer(new OptimizerContourGL());
-	register_optimizer(new OptimizerMeshSW());
+	//register_optimizer(new OptimizerMeshSW());
 
-	register_optimizer(new OptimizerComposite());
+	register_optimizer(new OptimizerSurfaceConvert());
 
 	register_optimizer(new OptimizerLinear());
 	register_optimizer(new OptimizerSurfaceCreate());

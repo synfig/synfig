@@ -59,6 +59,8 @@ using namespace rendering;
 bool
 OptimizerSurfaceConvert::run(const RunParams& params) const
 {
+	params.finish_current = true;
+
 	if (params.task && params.task->target_surface)
 	{
 		Task::Handle task = params.task;

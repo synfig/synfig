@@ -52,6 +52,7 @@ public:
 		const Task::Handle task;
 		const RunParams * const parent;
 
+		mutable bool finish_current;
 		mutable Task::Handle out_task;
 
 		RunParams(
@@ -59,7 +60,13 @@ public:
 			Task::List &list,
 			const Task::Handle &task = Task::Handle(),
 			const RunParams *parent = NULL
-		): renderer(renderer), list(list), task(task), parent(parent) { }
+		):
+			renderer(renderer),
+			list(list),
+			task(task),
+			parent(parent),
+			finish_current(false)
+		{ }
 
 		RunParams sub(const Task::Handle &task) const
 			{ return RunParams(renderer, list, task, this); }
