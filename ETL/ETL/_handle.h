@@ -375,7 +375,7 @@ public:
 
 protected:
 	rshared_object():rrefcount(0),front_(0),back_(0) { }
-	rshared_object(const rshared_object&):rrefcount(0),front_(0),back_(0) { }
+	rshared_object(const rshared_object &other): shared_object(other), rrefcount(0),front_(0),back_(0) { }
 	rshared_object& operator= (const rshared_object&) { return *this; }
 
 public:
