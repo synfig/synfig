@@ -74,6 +74,8 @@ private:
 
 protected:
 	shared_object():refcount(0) { }
+	shared_object(const shared_object&):refcount(0) { }
+	shared_object& operator= (const shared_object&) { return *this; }
 
 #ifdef ETL_SELF_DELETING_SHARED_OBJECT
 	virtual ~shared_object() { }
@@ -152,6 +154,8 @@ class virtual_shared_object
 {
 protected:
 	virtual_shared_object() { }
+	virtual_shared_object(const virtual_shared_object&) { }
+	virtual_shared_object& operator= (const virtual_shared_object&) { return *this; }
 public:
 	virtual ~virtual_shared_object()=0;
 	virtual void ref()const=0;
@@ -371,6 +375,8 @@ public:
 
 protected:
 	rshared_object():rrefcount(0),front_(0),back_(0) { }
+	rshared_object(const rshared_object&):rrefcount(0),front_(0),back_(0) { }
+	rshared_object& operator= (const rshared_object&) { return *this; }
 
 public:
 	virtual void rref()const
