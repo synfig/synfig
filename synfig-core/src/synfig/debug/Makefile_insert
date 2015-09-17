@@ -1,8 +1,10 @@
 DEBUG_HH = \
-	debug/debugsurface.h
+	debug/debugsurface.h \
+	debug/measure.h
 
 DEBUG_CC = \
-	debug/debugsurface.cpp
+	debug/debugsurface.cpp \
+	debug/measure.cpp
 
 libsynfig_include_HH += \
     $(DEBUG_HH)
