@@ -50,6 +50,14 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
+const Optimizer::CategoryInfo Optimizer::categories_info[CATEGORY_ID_COUNT] = {
+	CategoryInfo(false),   // CATEGORY_ID_COMMON
+	CategoryInfo(true),    // CATEGORY_ID_SPECIALIZE
+	CategoryInfo(false),   // CATEGORY_ID_POST_SPECIALIZE
+	CategoryInfo(false),   // CATEGORY_ID_CONVERT
+	CategoryInfo(false),   // CATEGORY_ID_LINEAR
+	CategoryInfo(false) }; // CATEGORY_ID_LIST
+
 Optimizer::~Optimizer() { }
 
 /* === E N T R Y P O I N T ================================================= */

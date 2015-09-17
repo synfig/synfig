@@ -112,40 +112,42 @@ Renderer::unregister_optimizer(const Optimizer::Handle &optimizer)
 }
 
 void
-Renderer::optimize_recursive(const Optimizer &optimizer, const Optimizer::RunParams& params) const
+Renderer::optimize_recursive(const Optimizer::List &optimizers, const Optimizer::RunParams& params) const
 {
+	if (!params.ref_task) return;
 	if (params.ref_affects_to & params.depends_from) return;
 
-	if (params.ref_task)
+	for(Optimizer::List::const_iterator i = optimizers.begin(); i != optimizers.end(); ++i)
 	{
 		Optimizer::RunParams p(params);
-		optimizer.run(p);
+		(*i)->run(p);
 		params.ref_affects_to |= p.ref_affects_to;
 		params.ref_task = p.ref_task;
+		if (!params.ref_task) return;
 		if (params.ref_affects_to & params.depends_from) return;
 	}
 
-	if (params.ref_task)
+	bool task_clonned = false;
+	for(Task::List::iterator i = params.ref_task->sub_tasks.begin(); i != params.ref_task->sub_tasks.end();)
 	{
-		for(Task::List::const_iterator i = params.ref_task->sub_tasks.begin(); i != params.ref_task->sub_tasks.end();)
+		if (*i)
 		{
-			if (*i)
+			Optimizer::RunParams sub_params = params.sub(*i);
+			optimize_recursive(optimizers, sub_params);
+			if (sub_params.ref_task != *i)
 			{
-				Optimizer::RunParams sub_params = params.sub(*i);
-				optimize_recursive(optimizer, sub_params);
-				if (sub_params.ref_task != *i)
+				if (task_clonned)
 				{
 					int index = i - params.ref_task->sub_tasks.begin();
 					params.ref_task = params.ref_task->clone();
-					params.ref_task->sub_tasks[index] = sub_params.ref_task;
-					if (index >= (int)params.ref_task->sub_tasks.size())
-						break;
 					i = params.ref_task->sub_tasks.begin() + index;
-				} else ++i;
-				params.ref_affects_to |= sub_params.ref_affects_to;
-				if (params.ref_affects_to & params.depends_from) return;
+					task_clonned = true;
+				}
+				*i = sub_params.ref_task;
 			} else ++i;
-		}
+			params.ref_affects_to |= sub_params.ref_affects_to;
+			if (params.ref_affects_to & params.depends_from) return;
+		} else ++i;
 	}
 }
 
@@ -156,6 +158,7 @@ Renderer::optimize(Task::List &list) const
 	int current_optimizer_index = 0;
 	Optimizer::Category current_affected = 0;
 	Optimizer::Category categories_to_process = Optimizer::CATEGORY_ALL;
+	Optimizer::List single(1);
 
 	while(categories_to_process &= Optimizer::CATEGORY_ALL)
 	{
@@ -185,53 +188,72 @@ Renderer::optimize(Task::List &list) const
 			continue;
 		}
 
-		const Optimizer &optimizer = *optimizers[current_category_id][current_optimizer_index];
-		Optimizer::Category depends_from = ((1 << current_category_id) - 1) & optimizer.depends_from;
-		Optimizer::Category depends_from_self = (1 << current_category_id) & optimizer.depends_from;
+		bool simultaneous_run = Optimizer::categories_info[current_category_id].simultaneous_run;
+		const Optimizer::List &current_optimizers = simultaneous_run ? optimizers[current_category_id] : single;
+		if (!simultaneous_run) {
+			single.front() = optimizers[current_category_id][current_optimizer_index];
+			Optimizer::Category depends_from_self = (1 << current_category_id) & single.front()->depends_from;
+			if (current_affected & depends_from_self)
+			{
+				current_category_id = 0;
+				current_optimizer_index = 0;
+				current_affected = 0;
+				continue;
+			}
+		}
 
-		if ( (categories_to_process & depends_from)
-		  || (current_affected & depends_from_self) )
+		Optimizer::Category depends_from = 0;
+		for(Optimizer::List::const_iterator i = current_optimizers.begin(); i != current_optimizers.end(); ++i)
+			depends_from |= ((1 << current_category_id) - 1) & (*i)->depends_from;
+
+		//info("optimize category %d index %d", current_category_id, current_optimizer_index);
+
+		for(Optimizer::List::const_iterator i = current_optimizers.begin(); !(categories_to_process & depends_from) && i != current_optimizers.end(); ++i)
+		{
+			if ((*i)->for_list)
+			{
+				Optimizer::RunParams params(*this, list, depends_from);
+				(*i)->run(params);
+				categories_to_process |= current_affected |= params.ref_affects_to;
+			}
+		}
+
+		for(Optimizer::List::const_iterator i = current_optimizers.begin(); !(categories_to_process & depends_from) && i != current_optimizers.end(); ++i)
+		{
+			if ((*i)->for_task)
+			{
+				for(Task::List::iterator j = list.begin(); !(categories_to_process & depends_from) && j != list.end();)
+				{
+					if (*j)
+					{
+						Optimizer::RunParams params(*this, list, depends_from, *j);
+						optimize_recursive(current_optimizers, params);
+						if (*j != params.ref_task)
+						{
+							if (params.ref_task)
+								*j = params.ref_task;
+							else
+								j = list.erase(j);
+						} else ++j;
+						categories_to_process |= current_affected |= params.ref_affects_to;
+					}
+					else
+					{
+						j = list.erase(j);
+					}
+				}
+			}
+		}
+
+		if (categories_to_process & depends_from)
 		{
 			current_category_id = 0;
 			current_optimizer_index = 0;
+			current_affected = 0;
 			continue;
 		}
 
-		if (optimizer.for_list)
-		{
-			Optimizer::RunParams params(*this, list, depends_from);
-			optimizer.run(params);
-			categories_to_process |= current_affected |= params.ref_affects_to;
-			if (current_affected & depends_from) continue;
-		}
-
-		if (optimizer.for_task)
-		{
-			for(Task::List::iterator j = list.begin(); j != list.end();)
-			{
-				if (*j)
-				{
-					Optimizer::RunParams params(*this, list, depends_from, *j);
-					optimize_recursive(optimizer, params);
-					if (*j != params.ref_task)
-					{
-						if (params.ref_task)
-							*j = params.ref_task;
-						else
-							j = list.erase(j);
-					} else ++j;
-					categories_to_process |= current_affected |= params.ref_affects_to;
-					if (current_affected & optimizer.depends_from) break;
-				}
-				else
-				{
-					j = list.erase(j);
-				}
-			}
-			if (current_affected & optimizer.depends_from) continue;
-		}
-
-		++current_optimizer_index;
+		current_optimizer_index += current_optimizers.size();
 	}
 
 	// remove nulls

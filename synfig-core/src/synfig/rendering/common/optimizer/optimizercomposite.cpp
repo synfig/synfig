@@ -64,7 +64,7 @@ OptimizerComposite::run(const RunParams& params) const
 	  && blend->sub_task_a()->target_surface->is_temporary
 	  && blend->sub_task_b()
 	  && blend->sub_task_b()->target_surface
-	  && blend->sub_task_a()->target_surface->is_temporary )
+	  && blend->sub_task_b()->target_surface->is_temporary )
 	{
 		TaskComposite *composite = blend->sub_task_b().type_pointer<TaskComposite>();
 		if ( composite

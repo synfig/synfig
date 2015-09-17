@@ -45,7 +45,8 @@ class OptimizerComposite: public Optimizer
 public:
 	OptimizerComposite()
 	{
-		category_id = CATEGORY_ID_COMMON;
+		category_id = CATEGORY_ID_POST_SPECIALIZE;
+		depends_from = CATEGORY_SPECIALIZE;
 		for_task = true;
 	}
 

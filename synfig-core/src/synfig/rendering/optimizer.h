@@ -49,11 +49,12 @@ public:
 
 	enum CategoryId
 	{
-		CATEGORY_ID_COMMON,		// common optimizations of task-tree
-		CATEGORY_ID_SPECIALIZE, // renderer-specified optimizations of task-tree
-		CATEGORY_ID_CONVERT,	// OptimizerSurfaceConvert
-		CATEGORY_ID_LINEAR,		// OptimizerLinear
-		CATEGORY_ID_LIST		// optimizations of plain (linear) list of tasks
+		CATEGORY_ID_COMMON,		     // common optimizations of task-tree
+		CATEGORY_ID_SPECIALIZE,      // renderer-specified optimizations of task-tree
+		CATEGORY_ID_POST_SPECIALIZE, // optimizations of task-tree, which required assigned surfaces
+		CATEGORY_ID_CONVERT,	     // OptimizerSurfaceConvert
+		CATEGORY_ID_LINEAR,		     // OptimizerLinear
+		CATEGORY_ID_LIST		     // optimizations of plain (linear) list of tasks
 	};
 
 	enum
@@ -66,6 +67,12 @@ public:
 		CATEGORY_LIST       = 1 << CATEGORY_ID_LIST,		// --
 		CATEGORY_TREE       = CATEGORY_LINEAR - 1, 			// optimizations of task-tree
 		CATEGORY_ALL        = (1 << CATEGORY_ID_COUNT) -1		// all optimizations
+	};
+
+	struct CategoryInfo
+	{
+		bool simultaneous_run;
+		CategoryInfo(bool simultaneous_run): simultaneous_run(simultaneous_run) { }
 	};
 
 	struct RunParams
@@ -105,6 +112,8 @@ public:
 		RunParams sub(const Task::Handle &task) const
 			{ return RunParams(renderer, list, depends_from, task, this); }
 	};
+
+	static const CategoryInfo categories_info[CATEGORY_ID_COUNT];
 
 	CategoryId category_id;
 	Category depends_from;

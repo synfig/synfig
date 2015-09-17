@@ -98,9 +98,9 @@ OptimizerLinear::run(const RunParams& params) const
 	}
 
 	// remove dummy tasks
-	//for(Task::List::iterator i = params.list.begin(); i != params.list.end();)
-	//	if (i->type_equal<Task>() || i->type_is<TaskSurface>() || i->type_is<TaskSurfaceEmpty>())
-	//		i = params.list.erase(i); else ++i;
+	for(Task::List::iterator i = params.list.begin(); i != params.list.end();)
+		if (i->type_equal<Task>()/* || i->type_is<TaskSurface>() || i->type_is<TaskSurfaceEmpty>()*/)
+			i = params.list.erase(i); else ++i;
 }
 
 /* === E N T R Y P O I N T ================================================= */

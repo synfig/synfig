@@ -47,7 +47,6 @@ public:
 	{
 		category_id = CATEGORY_ID_SPECIALIZE;
 		depends_from = CATEGORY_ID_COMMON;
-		affects_to = CATEGORY_ID_SPECIALIZE;
 		for_task = true;
 	}
 

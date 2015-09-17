@@ -67,19 +67,15 @@ RendererSW::RendererSW()
 {
 	// register optimizers
 	register_optimizer(new OptimizerTransformation());
-	register_optimizer(new OptimizerComposite());
-	//register_optimizer(new OptimizerSurface());
 
 	register_optimizer(new OptimizerBlendSW());
-	//register_optimizer(new OptimizerBlurPreparedSW());
 	register_optimizer(new OptimizerContourSW());
-	//register_optimizer(new OptimizerMeshSW());
 
+	register_optimizer(new OptimizerComposite());
 	register_optimizer(new OptimizerSurfaceConvert());
 
 	register_optimizer(new OptimizerLinear());
 	register_optimizer(new OptimizerSurfaceCreate());
-	//register_optimizer(new OptimizerSurfaceDestroy());
 }
 
 RendererSW::~RendererSW() { }
