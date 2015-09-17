@@ -168,6 +168,8 @@ public:
 	void draw_line(Real x1, Real y1, Real x2, Real y2);
 
 	Real extract_alpha(Real area, Contour::WindingStyle winding_style) const;
+
+	etl::rect<int> calc_bounds() const;
 };
 
 } /* end namespace rendering */

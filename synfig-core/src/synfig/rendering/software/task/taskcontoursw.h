@@ -68,6 +68,11 @@ public:
 		Color::value_type opacity,
 		Color::BlendMethod blend_method );
 
+	static void build_polyspan(
+		const Contour::ChunkList &chunks,
+		const Matrix &transform_matrix,
+		Polyspan &out_polyspan );
+
 	static void render_contour(
 		synfig::Surface &target_surface,
 		const Contour::ChunkList &chunks,

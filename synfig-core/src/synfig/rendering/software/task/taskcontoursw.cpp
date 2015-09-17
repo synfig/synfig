@@ -194,6 +194,46 @@ TaskContourSW::render_polyspan(
 }
 
 void
+TaskContourSW::build_polyspan(
+	const Contour::ChunkList &chunks,
+	const Matrix &transform_matrix,
+	Polyspan &out_polyspan )
+{
+	Vector p1, pp0, pp1;
+	for(Contour::ChunkList::const_iterator i = chunks.begin(); i != chunks.end(); ++i)
+	{
+		switch(i->type)
+		{
+			case Contour::CLOSE:
+				out_polyspan.close();
+				break;
+			case Contour::MOVE:
+				p1 = transform_matrix.get_transformed(i->p1);
+				out_polyspan.move_to(p1[0], p1[1]);
+				break;
+			case Contour::LINE:
+				p1 = transform_matrix.get_transformed(i->p1);
+				out_polyspan.line_to(p1[0], p1[1]);
+				break;
+			case Contour::CONIC:
+				p1 = transform_matrix.get_transformed(i->p1);
+				pp0 = transform_matrix.get_transformed(i->pp0);
+				out_polyspan.conic_to(p1[0], p1[1], pp0[0], pp0[1]);
+				break;
+			case Contour::CUBIC:
+				p1 = transform_matrix.get_transformed(i->p1);
+				pp0 = transform_matrix.get_transformed(i->pp0);
+				pp1 = transform_matrix.get_transformed(i->pp1);
+				out_polyspan.cubic_to(p1[0], p1[1], pp0[0], pp0[1], pp1[0], pp1[1]);
+				break;
+			default:
+				break;
+		}
+	}
+}
+
+
+void
 TaskContourSW::render_contour(
 	synfig::Surface &target_surface,
 	const Contour::ChunkList &chunks,
@@ -205,44 +245,14 @@ TaskContourSW::render_contour(
 	Color::value_type opacity,
 	Color::BlendMethod blend_method )
 {
-	Polyspan span;
-	span.init(0, 0, target_surface.get_w(), target_surface.get_h());
-	Vector p1, pp0, pp1;
-	for(Contour::ChunkList::const_iterator i = chunks.begin(); i != chunks.end(); ++i)
-	{
-		switch(i->type)
-		{
-			case Contour::CLOSE:
-				span.close();
-				break;
-			case Contour::MOVE:
-				p1 = transform_matrix.get_transformed(i->p1);
-				span.move_to(p1[0], p1[1]);
-				break;
-			case Contour::LINE:
-				p1 = transform_matrix.get_transformed(i->p1);
-				span.line_to(p1[0], p1[1]);
-				break;
-			case Contour::CONIC:
-				p1 = transform_matrix.get_transformed(i->p1);
-				pp0 = transform_matrix.get_transformed(i->pp0);
-				span.conic_to(p1[0], p1[1], pp0[0], pp0[1]);
-				break;
-			case Contour::CUBIC:
-				p1 = transform_matrix.get_transformed(i->p1);
-				pp0 = transform_matrix.get_transformed(i->pp0);
-				pp1 = transform_matrix.get_transformed(i->pp1);
-				span.cubic_to(p1[0], p1[1], pp0[0], pp0[1], pp1[0], pp1[1]);
-				break;
-			default:
-				break;
-		}
-	}
-	span.sort_marks();
+	Polyspan polyspan;
+	polyspan.init(0, 0, target_surface.get_w(), target_surface.get_h());
+	build_polyspan(chunks, transform_matrix, polyspan);
+	polyspan.sort_marks();
 
 	return render_polyspan(
 		target_surface,
-		span,
+		polyspan,
 		invert,
 		antialias,
 		winding_style,
@@ -252,7 +262,7 @@ TaskContourSW::render_contour(
 }
 
 bool
-TaskContourSW::run(RunParams & /* params */) const
+TaskContourSW::run(RunParams &params) const
 {
 	synfig::Surface &a =
 		SurfaceSW::Handle::cast_dynamic( target_surface )->get_surface();
@@ -265,16 +275,23 @@ TaskContourSW::run(RunParams & /* params */) const
 
 	Matrix matrix = transformation * bounds_transfromation;
 
-	render_contour(
+	Polyspan polyspan;
+	polyspan.init(0, 0, a.get_w(), a.get_h());
+	build_polyspan(contour->get_chunks(), matrix, polyspan);
+	polyspan.sort_marks();
+
+	render_polyspan(
 		a,
-		contour->get_chunks(),
+		polyspan,
 		contour->invert,
 		contour->antialias,
 		contour->winding_style,
-		matrix,
 		contour->color,
 		blend ? amount : 1.0,
 		blend ? blend_method : Color::BLEND_COMPOSITE );
+
+	if (!contour->invert)
+		params.used_rect = polyspan.calc_bounds();
 
 	//debug::DebugSurface::save_to_file(a, "TaskContourSW__run");
 

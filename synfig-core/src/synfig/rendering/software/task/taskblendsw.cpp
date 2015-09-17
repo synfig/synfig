@@ -54,7 +54,7 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 bool
-TaskBlendSW::run(RunParams & /* params */) const
+TaskBlendSW::run(RunParams &params) const
 {
 	const synfig::Surface &a =
 		SurfaceSW::Handle::cast_dynamic( sub_task_a()->target_surface )->get_surface();
@@ -72,10 +72,32 @@ TaskBlendSW::run(RunParams & /* params */) const
 		const_cast<synfig::Surface*>(&a)->blit_to(p);
 	}
 
-	synfig::Surface::alpha_pen ap(c.get_pen(0, 0));
-	ap.set_blend_method(blend_method);
-	ap.set_alpha(amount);
-	const_cast<synfig::Surface*>(&b)->blit_to(ap);
+	const etl::rect<int> &ra = sub_task_a()->target_surface->used_rect;
+	const etl::rect<int> &rb = sub_task_b()->target_surface->used_rect;
+
+	if (Color::is_straight(blend_method))
+	{
+		synfig::Surface::alpha_pen ap(c.get_pen(0, 0));
+		ap.set_blend_method(blend_method);
+		ap.set_alpha(amount);
+		const_cast<synfig::Surface*>(&b)->blit_to(ap);
+	}
+	else
+	{
+		if (rb.valid())
+		{
+			synfig::Surface::alpha_pen ap(c.get_pen(rb.minx, rb.miny));
+			ap.set_blend_method(blend_method);
+			ap.set_alpha(amount);
+			const_cast<synfig::Surface*>(&b)->blit_to(
+				ap, rb.minx, rb.miny, rb.maxx - rb.minx, rb.maxy - rb.miny );
+		}
+
+		if (ra.valid() && rb.valid())
+			set_union(params.used_rect, ra, rb);
+		else
+			params.used_rect = ra.valid() ? ra : rb;
+	}
 
 	//debug::DebugSurface::save_to_file(c, "TaskBlendSW__run__c");
 
