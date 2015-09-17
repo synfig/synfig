@@ -51,8 +51,9 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 bool
-TaskSurfaceCreate::run(RunParams & /* params */) const
+TaskSurfaceCreate::run(RunParams &params) const
 {
+	params.used_rect = etl::rect<int>(0, 0, 0, 0);
 	return target_surface
 	    && target_surface->create();
 }

@@ -28,6 +28,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include <ETL/handle>
+#include <ETL/rect>
 
 #include <synfig/color.h>
 
@@ -60,6 +61,7 @@ protected:
 
 public:
 	bool is_temporary;
+	etl::rect<int> used_rect;
 
 	Surface();
 	virtual ~Surface();

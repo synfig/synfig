@@ -29,6 +29,8 @@
 
 #include <vector>
 
+#include <ETL/rect>
+
 #include <synfig/vector.h>
 
 #include "surface.h"
@@ -53,7 +55,9 @@ public:
 	typedef etl::handle<Task> Handle;
 	typedef std::vector<Handle> List;
 
-	struct RunParams { };
+	struct RunParams {
+		mutable etl::rect<int> used_rect;
+	};
 
 	Surface::Handle target_surface;
 	synfig::Point rect_lt;

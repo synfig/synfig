@@ -277,15 +277,33 @@ Renderer::run(const Task::List &list) const
 	bool success = true;
 
 	{
-		debug::Measure t("run tasks", true);
+		debug::Measure t("run tasks");
 		Task::RunParams params;
 		for(Task::List::iterator i = optimized_list.begin(); i != optimized_list.end(); ++i)
 		{
 			debug::Measure t(typeid(**i).name() + 19);
-			// execute task
+
+			// prepare params
+			params.used_rect.minx = 0;
+			params.used_rect.miny = 0;
+			params.used_rect.maxx = (*i)->target_surface ? (*i)->target_surface->get_width() : 0;
+			params.used_rect.maxy = (*i)->target_surface ? (*i)->target_surface->get_height() : 0;
+
+			// run
 			if (!(*i)->run(params))
 				success = false;
-			// release task to release some resources associated with it
+
+			// update used rect for target surface
+			if (params.used_rect.valid())
+			{
+				etl::rect<int> &target_rect = (*i)->target_surface->used_rect;
+				if (target_rect.valid())
+					etl::set_union(target_rect, target_rect, params.used_rect);
+				else
+					target_rect = params.used_rect;
+			}
+
+			// remove task
 			i->reset();
 		}
 	}

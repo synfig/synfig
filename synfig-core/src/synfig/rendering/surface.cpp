@@ -54,7 +54,8 @@ rendering::Surface::Surface():
 	width(0),
 	height(0),
 	created(false),
-	is_temporary(false)
+	is_temporary(false),
+	used_rect(0, 0, 0, 0)
 { }
 
 rendering::Surface::~Surface() { destroy(); }
