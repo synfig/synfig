@@ -49,7 +49,7 @@ using namespace debug;
 
 /* === M E T H O D S ======================================================= */
 
-#ifdef _DEBUG
+#ifdef SYNFIG_DEBUG_MEASURE
 
 std::vector<Measure*> Measure::stack;
 String Measure::text;

@@ -34,6 +34,10 @@
 
 /* === M A C R O S ========================================================= */
 
+//#ifdef _DEBUG
+#define SYNFIG_DEBUG_MEASURE
+//#endif
+
 /* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */
@@ -41,7 +45,7 @@
 namespace synfig {
 namespace debug {
 
-#ifdef _DEBUG
+#ifdef SYNFIG_DEBUG_MEASURE
 
 class Measure {
 private:
