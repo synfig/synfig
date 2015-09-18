@@ -46,6 +46,7 @@
 #include "../common/optimizer/optimizersurfacecreate.h"
 #include "../common/optimizer/optimizersurfacedestroy.h"
 #include "../common/optimizer/optimizertransformation.h"
+#include "../common/optimizer/optimizertransformationaffine.h"
 
 #include "optimizer/optimizercontourgl.h"
 #include "optimizer/optimizerblendgl.h"
@@ -69,7 +70,7 @@ using namespace rendering;
 RendererGL::RendererGL()
 {
 	// register optimizers
-	register_optimizer(new OptimizerTransformation());
+	register_optimizer(new OptimizerTransformationAffine());
 
 	register_optimizer(new OptimizerBlendGL());
 	register_optimizer(new OptimizerContourGL());

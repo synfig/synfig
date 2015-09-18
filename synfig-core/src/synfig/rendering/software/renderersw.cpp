@@ -44,6 +44,7 @@
 #include "../common/optimizer/optimizersurfacecreate.h"
 #include "../common/optimizer/optimizersurfacedestroy.h"
 #include "../common/optimizer/optimizertransformation.h"
+#include "../common/optimizer/optimizertransformationaffine.h"
 
 #include "optimizer/optimizerblendsw.h"
 #include "optimizer/optimizerblurpreparedsw.h"
@@ -66,7 +67,7 @@ using namespace rendering;
 RendererSW::RendererSW()
 {
 	// register optimizers
-	register_optimizer(new OptimizerTransformation());
+	register_optimizer(new OptimizerTransformationAffine());
 
 	register_optimizer(new OptimizerBlendSW());
 	register_optimizer(new OptimizerContourSW());
