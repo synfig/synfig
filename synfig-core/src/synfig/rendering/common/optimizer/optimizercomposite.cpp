@@ -35,10 +35,13 @@
 #include <signal.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "optimizercomposite.h"
 
 #include "../task/taskblend.h"
 #include "../task/taskcomposite.h"
+#include "../task/tasksurfaceempty.h"
 
 #endif
 
@@ -66,6 +69,29 @@ OptimizerComposite::run(const RunParams& params) const
 	  && blend->sub_task_b()->target_surface
 	  && blend->sub_task_b()->target_surface->is_temporary )
 	{
+		// TODO: check other methods
+		if (blend->blend_method == Color::BLEND_COMPOSITE)
+		{
+			if ( blend->sub_task_b().type_equal<Task>()
+			  || blend->sub_task_b().type_is<TaskSurfaceEmpty>() )
+			{
+				if (blend->sub_task_a()->target_surface == blend->target_surface)
+				{
+					apply(params, blend->sub_task_a());
+					run(params);
+					return;
+				}
+				else
+				{
+					Task::Handle sub_task = blend->sub_task_a()->clone();
+					sub_task->target_surface = blend->target_surface;
+					apply(params, sub_task);
+					run(params);
+					return;
+				}
+			}
+		}
+
 		TaskComposite *composite = blend->sub_task_b().type_pointer<TaskComposite>();
 		if ( composite
 		  && composite->is_blend_method_supported(blend->blend_method)
@@ -88,6 +114,44 @@ OptimizerComposite::run(const RunParams& params) const
 			task->sub_task(1) = task_b;
 
 			apply(params, task);
+			run(params);
+			return;
+		}
+
+		if (((1 << blend->blend_method) & Color::BLEND_METHODS_COMMUTATIVE)
+		 && fabsf(blend->amount - 1.f) <= 1e-6 )
+		{
+			if (TaskBlend::Handle sub_blend = TaskBlend::Handle::cast_dynamic(blend->sub_task_b()))
+			{
+				if ( sub_blend->blend_method == blend->blend_method
+				  && fabsf(sub_blend->amount - 1.f) <= 1e-6
+				  && sub_blend->target_surface
+				  && sub_blend->sub_task_a()
+				  && sub_blend->sub_task_a()->target_surface
+				  && sub_blend->sub_task_a()->target_surface->is_temporary
+				  && sub_blend->sub_task_b()
+				  && sub_blend->sub_task_b()->target_surface
+				  && sub_blend->sub_task_b()->target_surface->is_temporary )
+				{
+					Task::Handle task_a = blend->sub_task_a();
+					Task::Handle task_b = sub_blend->sub_task_a();
+					Task::Handle task_c = sub_blend->sub_task_b();
+
+					TaskBlend::Handle new_sub_blend = sub_blend->clone();
+					new_sub_blend->sub_task_a() = blend->sub_task_a();
+					new_sub_blend->sub_task_b() = sub_blend->sub_task_a();
+					if (sub_blend->target_surface == sub_blend->sub_task_a()->target_surface)
+						new_sub_blend->target_surface = new_sub_blend->sub_task_a()->target_surface;
+
+					TaskBlend::Handle new_blend = blend->clone();
+					new_blend->sub_task_a() = new_sub_blend;
+					new_blend->sub_task_b() = sub_blend->sub_task_b();
+
+					apply(params, new_blend);
+					run(params);
+					return;
+				}
+			}
 		}
 	}
 }

@@ -34,9 +34,9 @@
 
 /* === M A C R O S ========================================================= */
 
-//#ifdef _DEBUG
+#ifdef _DEBUG
 #define SYNFIG_DEBUG_MEASURE
-//#endif
+#endif
 
 /* === T Y P E D E F S ===================================================== */
 

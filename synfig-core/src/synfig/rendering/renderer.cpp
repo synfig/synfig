@@ -226,8 +226,7 @@ Renderer::optimize(Task::List &list) const
 		}
 
 		//info("optimize category %d index %d", current_category_id, current_optimizer_index);
-
-		debug::Measure t(etl::strprintf("optimize category %d index %d", current_category_id, current_optimizer_index));
+		//debug::Measure t(etl::strprintf("optimize category %d index %d", current_category_id, current_optimizer_index));
 
 		if (for_list)
 		{

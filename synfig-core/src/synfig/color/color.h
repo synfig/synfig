@@ -315,6 +315,11 @@ public:
 			| (1 << BLEND_COMPOSITE)
 			| (1 << BLEND_ONTO),
 
+		// TODO: check all other methods for commutativity
+		// commutativity is: method(method(a, b), c) == method(a, method(b, c))
+		BLEND_METHODS_COMMUTATIVE = 0
+			| (1 << BLEND_COMPOSITE),
+
 		BLEND_METHODS_ALL = (1 << BLEND_END) - 1
 	};
 
