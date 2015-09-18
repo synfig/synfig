@@ -69,8 +69,7 @@ OptimizerComposite::run(const RunParams& params) const
 	  && blend->sub_task_b()->target_surface
 	  && blend->sub_task_b()->target_surface->is_temporary )
 	{
-		// TODO: check other methods
-		if (blend->blend_method == Color::BLEND_COMPOSITE)
+		if (!Color::is_straight(blend->blend_method))
 		{
 			if ( blend->sub_task_b().type_equal<Task>()
 			  || blend->sub_task_b().type_is<TaskSurfaceEmpty>() )
@@ -118,7 +117,7 @@ OptimizerComposite::run(const RunParams& params) const
 			return;
 		}
 
-		if (((1 << blend->blend_method) & Color::BLEND_METHODS_COMMUTATIVE)
+		if (((1 << blend->blend_method) & Color::BLEND_METHODS_ASSOCIATIVE)
 		 && fabsf(blend->amount - 1.f) <= 1e-6 )
 		{
 			if (TaskBlend::Handle sub_blend = TaskBlend::Handle::cast_dynamic(blend->sub_task_b()))

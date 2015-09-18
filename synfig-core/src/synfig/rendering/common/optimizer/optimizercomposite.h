@@ -47,8 +47,6 @@ public:
 	{
 		category_id = CATEGORY_ID_POST_SPECIALIZE;
 		depends_from = CATEGORY_SPECIALIZE;
-		//affects_to = CATEGORY_ID_POST_SPECIALIZE;
-		//mode = MODE_REPEAT_LAST;
 		for_task = true;
 	}
 
