@@ -266,22 +266,22 @@ Renderer::run(const Task::List &list) const
 {
 	debug::Measure t("Renderer::run");
 
-	log(list, "input list");
+	//log(list, "input list");
 	Task::List optimized_list(list);
 	{
 		debug::Measure t("optimize");
 		optimize(optimized_list);
 	}
-	log(optimized_list, "optimized list");
+	//log(optimized_list, "optimized list");
 
 	bool success = true;
 
 	{
-		debug::Measure t("run tasks");
+		debug::Measure t("run tasks", false);
 		Task::RunParams params;
 		for(Task::List::iterator i = optimized_list.begin(); i != optimized_list.end(); ++i)
 		{
-			debug::Measure t(typeid(**i).name() + 19);
+			//debug::Measure t(typeid(**i).name() + 19);
 
 			// prepare params
 			params.used_rect.minx = 0;

@@ -65,7 +65,11 @@ TaskContourSW::render_polyspan(
 	Color::value_type opacity,
 	Color::BlendMethod blend_method )
 {
+	bool simple_fill = (Color::BLEND_METHODS_OVERWRITE_ON_ALPHA_ONE & (1 << blend_method))
+			        && fabsf(1.f - opacity*color.get_a()) <= 1e-6;
+
 	synfig::Surface::alpha_pen p(target_surface.begin(), opacity, blend_method);
+	synfig::Surface::pen sp(target_surface.begin());
 	const Polyspan::ContextRect &window = polyspan.get_window();
 	const Polyspan::cover_array &covers = polyspan.get_covers();
 
@@ -76,6 +80,7 @@ TaskContourSW::render_polyspan(
 	int	y = 0, x = 0;
 
 	p.set_value(color);
+	sp.set_value(color);
 	cover = 0;
 
 	if (cur_mark == end_mark)
@@ -83,8 +88,16 @@ TaskContourSW::render_polyspan(
 		// no marks at all
 		if (invert)
 		{
-			p.move_to(window.minx, window.miny);
-			p.put_block(window.maxy - window.miny, window.maxx - window.minx);
+			if (simple_fill)
+			{
+				sp.move_to(window.minx, window.miny);
+				sp.put_block(window.maxy - window.miny, window.maxx - window.minx);
+			}
+			else
+			{
+				p.move_to(window.minx, window.miny);
+				p.put_block(window.maxy - window.miny, window.maxx - window.minx);
+			}
 		}
 		return;
 	}
@@ -92,17 +105,34 @@ TaskContourSW::render_polyspan(
 	// fill initial rect / line
 	if (invert)
 	{
-		// fill all the area above the first vertex
-		p.move_to(window.minx, window.miny);
-		y = window.miny;
-		int l = window.maxx - window.minx;
+		if (simple_fill)
+		{
+			// fill all the area above the first vertex
+			sp.move_to(window.minx, window.miny);
+			y = window.miny;
+			int l = window.maxx - window.minx;
 
-		p.put_block(cur_mark->y - window.miny, l);
+			sp.put_block(cur_mark->y - window.miny, l);
 
-		// fill the area to the left of the first vertex on that line
-		l = cur_mark->x - window.minx;
-		p.move_to(window.minx, cur_mark->y);
-		if (l) p.put_hline(l);
+			// fill the area to the left of the first vertex on that line
+			l = cur_mark->x - window.minx;
+			sp.move_to(window.minx, cur_mark->y);
+			if (l) sp.put_hline(l);
+		}
+		else
+		{
+			// fill all the area above the first vertex
+			p.move_to(window.minx, window.miny);
+			y = window.miny;
+			int l = window.maxx - window.minx;
+
+			p.put_block(cur_mark->y - window.miny, l);
+
+			// fill the area to the left of the first vertex on that line
+			l = cur_mark->x - window.minx;
+			p.move_to(window.minx, cur_mark->y);
+			if (l) p.put_hline(l);
+		}
 	}
 
 	while(true)
@@ -141,7 +171,7 @@ TaskContourSW::render_polyspan(
 			}
 
 			p.inc_x();
-			x++;
+			++x;
 		}
 
 		// if we're done, don't use iterator and exit
@@ -153,11 +183,27 @@ TaskContourSW::render_polyspan(
 			if (invert)
 			{
 				// fill the area at the end of the line
-				p.put_hline(window.maxx - x);
+				if (simple_fill)
+				{
+					sp.move_to(p);
+					sp.put_hline(window.maxx - x);
+				}
+				else
+				{
+					p.put_hline(window.maxx - x);
+				}
 
 				// fill area at the beginning of the next line
-				p.move_to(window.minx, cur_mark->y);
-				p.put_hline(cur_mark->x - window.minx);
+				if (simple_fill)
+				{
+					sp.move_to(window.minx, cur_mark->y);
+					sp.put_hline(cur_mark->x - window.minx);
+				}
+				else
+				{
+					p.move_to(window.minx, cur_mark->y);
+					p.put_hline(cur_mark->x - window.minx);
+				}
 			}
 
 			cover = 0;
@@ -169,7 +215,21 @@ TaskContourSW::render_polyspan(
 		{
 			alpha = polyspan.extract_alpha(cover, winding_style);
 			if (invert) alpha = 1 - alpha;
+			if (alpha >= .5)
+			{
+				if (simple_fill)
+				{
+					sp.move_to(p);
+					sp.put_hline(cur_mark->x - x);
+					p.move_to(sp);
+				}
+				else
+				{
+					p.put_hline(cur_mark->x - x);
+				}
+			}
 
+			/*
 			if (antialias)
 			{
 				if (alpha) p.put_hline(cur_mark->x - x, alpha);
@@ -178,18 +238,33 @@ TaskContourSW::render_polyspan(
 			{
 				if (alpha >= .5) p.put_hline(cur_mark->x - x);
 			}
+			*/
 		}
 	}
 
 	// fill the after stuff
 	if (invert)
 	{
-		//fill the area at the end of the line
-		p.put_hline(window.maxx - x);
+		if (simple_fill)
+		{
+			sp.move_to(p);
 
-		//fill area at the beginning of the next line
-		p.move_to(window.minx, y+1);
-		p.put_block(window.maxy - y - 1, window.maxx - window.minx);
+			//fill the area at the end of the line
+			sp.put_hline(window.maxx - x);
+
+			//fill area at the beginning of the next line
+			sp.move_to(window.minx, y+1);
+			sp.put_block(window.maxy - y - 1, window.maxx - window.minx);
+		}
+		else
+		{
+			//fill the area at the end of the line
+			p.put_hline(window.maxx - x);
+
+			//fill area at the beginning of the next line
+			p.move_to(window.minx, y+1);
+			p.put_block(window.maxy - y - 1, window.maxx - window.minx);
+		}
 	}
 }
 
