@@ -46,6 +46,7 @@ public:
 	typedef etl::handle<Optimizer> Handle;
 	typedef std::vector<Handle> List;
 	typedef unsigned int Category;
+	typedef unsigned int Mode;
 
 	enum CategoryId
 	{
@@ -69,6 +70,14 @@ public:
 		CATEGORY_ALL        = (1 << CATEGORY_ID_COUNT) -1		// all optimizations
 	};
 
+	enum
+	{
+		MODE_NONE = 0,
+		MODE_REPEAT_LAST = 1,
+		MODE_REPEAT_BRUNCH = 2,
+		MODE_REPEAT = MODE_REPEAT_LAST | MODE_REPEAT_BRUNCH
+	};
+
 	struct CategoryInfo
 	{
 		bool simultaneous_run;
@@ -84,6 +93,7 @@ public:
 
 		mutable Task::Handle ref_task;
 		mutable Category ref_affects_to;
+		mutable Mode ref_mode;
 
 		RunParams(
 			const Renderer &renderer,
@@ -97,7 +107,8 @@ public:
 			depends_from(depends_from),
 			parent(parent),
 			ref_task(task),
-			ref_affects_to()
+			ref_affects_to(),
+			ref_mode()
 		{ }
 
 		RunParams(const RunParams &other):
@@ -106,7 +117,8 @@ public:
 			depends_from(other.depends_from),
 			parent(other.parent),
 			ref_task(other.ref_task),
-			ref_affects_to()
+			ref_affects_to(),
+			ref_mode()
 		{ }
 
 		RunParams sub(const Task::Handle &task) const
@@ -118,10 +130,12 @@ public:
 	CategoryId category_id;
 	Category depends_from;
 	Category affects_to;
+	Mode mode;
 	bool for_list;
 	bool for_task;
+	bool for_root_task;
 
-	Optimizer(): category_id(), depends_from(), affects_to(), for_list(), for_task() { }
+	Optimizer(): category_id(), depends_from(), affects_to(), mode(), for_list(), for_task(), for_root_task() { }
 	virtual ~Optimizer();
 
 	virtual void run(const RunParams &params) const = 0;
@@ -129,11 +143,12 @@ public:
 	void apply(const RunParams &params) const
 	{
 		params.ref_affects_to |= affects_to;
+		params.ref_mode |= mode;
 	}
 
 	void apply(const RunParams &params, const Task::Handle &task) const
 	{
-		params.ref_affects_to |= affects_to;
+		apply(params);
 		params.ref_task = task;
 	}
 

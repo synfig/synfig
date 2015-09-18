@@ -52,6 +52,7 @@ public:
 	OptimizerTransformation()
 	{
 		category_id = CATEGORY_ID_COMMON;
+		mode = MODE_REPEAT_LAST;
 		for_task = true;
 	}
 
