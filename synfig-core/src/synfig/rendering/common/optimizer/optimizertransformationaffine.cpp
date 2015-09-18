@@ -137,7 +137,11 @@ OptimizerTransformationAffine::recursive(Task::Handle &ref_task, const Matrix &m
 		}
 	}
 
-	if ( matrix.is_identity()
+	Matrix m = matrix;
+	if (ref_task.type_is<TaskSolid>())
+		m.set_identity();
+
+	if ( m.is_identity()
 	  || TaskBlend::Handle::cast_dynamic(ref_task) )
 	{
 		bool task_clonned = false;
@@ -160,7 +164,7 @@ OptimizerTransformationAffine::recursive(Task::Handle &ref_task, const Matrix &m
 				}
 				else
 				{
-					recursive(*i, matrix);
+					recursive(*i, m);
 				}
 			}
 		}
