@@ -316,7 +316,9 @@ public:
 			| (1 << BLEND_ONTO),
 
 		BLEND_METHODS_ASSOCIATIVE = 0
-			| (1 << BLEND_COMPOSITE),
+			| (1 << BLEND_COMPOSITE)
+			| (1 << BLEND_BEHIND)
+			| (1 << BLEND_ALPHA_DARKEN),
 
 		BLEND_METHODS_ALL = (1 << BLEND_END) - 1
 	};

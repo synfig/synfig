@@ -69,6 +69,13 @@ OptimizerComposite::run(const RunParams& params) const
 	  && blend->sub_task_b()->target_surface
 	  && blend->sub_task_b()->target_surface->is_temporary )
 	{
+		if (fabsf(blend->amount) <= 1e-6)
+		{
+			apply(params, blend->sub_task_a());
+			run(params);
+			return;
+		}
+
 		if (!Color::is_straight(blend->blend_method))
 		{
 			if ( blend->sub_task_b().type_equal<Task>()
@@ -117,13 +124,12 @@ OptimizerComposite::run(const RunParams& params) const
 			return;
 		}
 
-		if (((1 << blend->blend_method) & Color::BLEND_METHODS_ASSOCIATIVE)
-		 && fabsf(blend->amount - 1.f) <= 1e-6 )
+		if ( ((1 << blend->blend_method) & Color::BLEND_METHODS_ASSOCIATIVE)
+		  && fabsf(blend->amount - 1.f) <= 1e-6 )
 		{
 			if (TaskBlend::Handle sub_blend = TaskBlend::Handle::cast_dynamic(blend->sub_task_b()))
 			{
 				if ( sub_blend->blend_method == blend->blend_method
-				  && fabsf(sub_blend->amount - 1.f) <= 1e-6
 				  && sub_blend->target_surface
 				  && sub_blend->sub_task_a()
 				  && sub_blend->sub_task_a()->target_surface
@@ -137,12 +143,14 @@ OptimizerComposite::run(const RunParams& params) const
 					Task::Handle task_c = sub_blend->sub_task_b();
 
 					TaskBlend::Handle new_sub_blend = sub_blend->clone();
+					new_sub_blend->amount = blend->amount;
 					new_sub_blend->sub_task_a() = blend->sub_task_a();
 					new_sub_blend->sub_task_b() = sub_blend->sub_task_a();
 					if (sub_blend->target_surface == sub_blend->sub_task_a()->target_surface)
 						new_sub_blend->target_surface = new_sub_blend->sub_task_a()->target_surface;
 
 					TaskBlend::Handle new_blend = blend->clone();
+					new_blend->amount = blend->amount * sub_blend->amount;
 					new_blend->sub_task_a() = new_sub_blend;
 					new_blend->sub_task_b() = sub_blend->sub_task_b();
 
