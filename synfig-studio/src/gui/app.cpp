@@ -2147,7 +2147,7 @@ App::apply_gtk_settings(bool use_dark)
 		// Fix GtkPaned (big margin makes it hard to grab first keyframe))
 		data = "GtkPaned { margin: 2px; }";
 		//Fix #810: Insetsetive context menus on OSX
-		data += ".window-frame, .window-frame:backdrop { margin: 0; }";
+		data += ".window-frame, .window-frame:backdrop { box-shadow: none; margin: 0; }";
 		Glib::RefPtr<Gtk::CssProvider> css = Gtk::CssProvider::create();
 		if(not css->load_from_data(data)) {
 			synfig::info("Failed to load css rules.");
