@@ -253,6 +253,8 @@ src/synfig/layers/layer_shape.cpp
 src/synfig/layers/layer_shape.h
 src/synfig/layers/layer_skeleton.cpp
 src/synfig/layers/layer_skeleton.h
+src/synfig/layers/layer_skeletondeformation.cpp
+src/synfig/layers/layer_skeletondeformation.h
 src/synfig/layers/layer_solidcolor.cpp
 src/synfig/layers/layer_solidcolor.h
 src/synfig/layers/layer_sound.cpp
