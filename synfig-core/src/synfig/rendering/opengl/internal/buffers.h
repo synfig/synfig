@@ -177,8 +177,10 @@ private:
 	BufferLock get_buffer(Buffer &buffer, const std::vector<T> &data, int offset = 0, int count = 0)
 	{
 		assert(offset >= 0);
-		if (count <= 0) count = (int)data.size() - offset;
+		assert(count >= 0);
+		if (!count) count = (int)data.size() - offset;
 		assert(offset + count <= (int)data.size());
+		assert(count >= 0);
 		if (!count) return BufferLock();
 		return get_buffer(buffer, &data.front(), count*sizeof(data.front()));
 	}
@@ -195,12 +197,20 @@ public:
 	BufferLock get_array_buffer(const std::vector<T> &data, int offset = 0, int count = 0)
 		{ return get_buffer(array_buffer, data, offset, count); }
 
+	template<typename T, int size>
+	BufferLock get_array_buffer(const T (&data)[size], int offset = 0, int count = 0)
+		{ return get_buffer(array_buffer, &data[offset], count ? sizeof(T)*count : sizeof(data)); }
+
 	BufferLock get_element_array_buffer(const void *data, int size)
 		{ return get_buffer(element_array_buffer, data, size); }
 
 	template<typename T>
 	BufferLock get_element_array_buffer(const std::vector<T> &data, int offset = 0, int count = 0)
 		{ return get_buffer(element_array_buffer, data, offset, count); }
+
+	template<typename T, int size>
+	BufferLock get_element_array_buffer(const T (&data)[size], int offset = 0, int count = 0)
+		{ return get_buffer(element_array_buffer, &data[offset], count ? sizeof(T)*count : sizeof(data)); }
 
 	VertexArrayLock get_vertex_array();
 };

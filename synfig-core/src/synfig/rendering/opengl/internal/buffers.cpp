@@ -119,9 +119,7 @@ gl::Buffers::Buffers(Context &context):
 		Vector(-1.0,  1.0),
 		Vector( 1.0, -1.0),
 		Vector( 1.0,  1.0) };
-	default_quad_buffer = get_array_buffer(
-		default_quad_buffer_data,
-		sizeof(default_quad_buffer_data) );
+	default_quad_buffer = get_array_buffer(default_quad_buffer_data);
 }
 
 gl::Buffers::~Buffers()
