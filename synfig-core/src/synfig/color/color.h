@@ -253,6 +253,18 @@ public:
 	static inline Color yellow() { return Color(1,1,0); }
 	//@}
 
+	enum Interpolation
+	{
+		INTERPOLATION_NEAREST = 0,
+		INTERPOLATION_LINEAR = 1,
+		INTERPOLATION_COSINE = 2,
+		INTERPOLATION_CUBIC = 3
+	};
+
+	enum {
+		INTERPOLATION_COUNT = 4
+	};
+
 	//! \writeme
 	enum BlendMethod
 	{
