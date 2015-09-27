@@ -59,11 +59,20 @@ using namespace rendering;
 
 gl::Shaders::Shaders(Context &context):
 	context(context),
+
 	simple_vertex_id(),
 	simple_program_id(),
+
 	color_fragment_id(),
 	color_program_id(),
-	color_uniform()
+	color_uniform(),
+
+	texture_vertex_id(),
+	texture_fragment_id(),
+	texture_program_id(),
+	texture_uniform(),
+
+	antialiased_textured_rect_vertex_id()
 {
 	Context::Lock lock(context);
 
@@ -106,10 +115,30 @@ gl::Shaders::Shaders(Context &context):
 	load_blend(Color::BLEND_ALPHA_OVER,     "alphaover");
 	load_blend(Color::BLEND_ALPHA_BRIGHTEN, "alphabrighten");
 	load_blend(Color::BLEND_ALPHA_DARKEN,   "alphadarken");
-
 	#ifndef NDEBUG
 	for(int i = 0; i < Color::BLEND_END; ++i)
 		assert(blend_programs[i].id);
+	#endif
+
+	// texture
+	texture_vertex_id = load_and_compile_shader(GL_VERTEX_SHADER, "texture_vertex.glsl");
+	texture_fragment_id = load_and_compile_shader(GL_FRAGMENT_SHADER, "texture_fragment.glsl");
+	texture_program_id = glCreateProgram();
+	glAttachShader(texture_program_id, texture_vertex_id);
+	glAttachShader(texture_program_id, texture_fragment_id);
+	glLinkProgram(texture_program_id);
+	check_program(texture_program_id, "texture");
+	texture_uniform = glGetUniformLocation(texture_program_id, "sampler");
+
+	// antialiased textured rect
+	antialiased_textured_rect_vertex_id = load_and_compile_shader(GL_VERTEX_SHADER, "antialiased_textured_rect_vertex.glsl");
+	load_antialiased_textured_rect(Color::INTERPOLATION_NEAREST, "nearest");
+	load_antialiased_textured_rect(Color::INTERPOLATION_LINEAR, "linear");
+	load_antialiased_textured_rect(Color::INTERPOLATION_COSINE, "cosine");
+	load_antialiased_textured_rect(Color::INTERPOLATION_CUBIC, "cubic");
+	#ifndef NDEBUG
+	for(int i = 0; i < Color::INTERPOLATION_COUNT; ++i)
+		assert(antialiased_textured_rect_programs[i].id);
 	#endif
 }
 
@@ -117,14 +146,25 @@ gl::Shaders::~Shaders()
 {
 	Context::Lock lock(context);
 	glUseProgram(0);
+
+	// texture
+	glDeleteProgram(texture_program_id);
+	glDeleteShader(texture_fragment_id);
+	glDeleteShader(texture_vertex_id);
+
+	// blend
 	for(int i = 0; i < Color::BLEND_END; ++i)
 	{
 		glDeleteProgram(blend_programs[i].id);
 		glDeleteShader(blend_programs[i].fragment_id);
 	}
+
+	// color
 	glDeleteProgram(color_program_id);
-	glDeleteProgram(simple_program_id);
 	glDeleteShader(color_fragment_id);
+
+	// simple
+	glDeleteProgram(simple_program_id);
 	glDeleteShader(simple_vertex_id);
 }
 
@@ -252,10 +292,31 @@ gl::Shaders::load_blend(Color::BlendMethod method, const String &name)
 	glAttachShader(i.id, simple_vertex_id);
 	glAttachShader(i.id, i.fragment_id);
 	glLinkProgram(i.id);
-	check_program(i.id, "color");
+	check_program(i.id, "blend_" + name);
 	i.amount_uniform = glGetUniformLocation(i.id, "amount");
 	i.sampler_dest_uniform = glGetUniformLocation(i.id, "sampler_dest");
 	i.sampler_src_uniform = glGetUniformLocation(i.id, "sampler_src");
+}
+
+void
+gl::Shaders::load_antialiased_textured_rect(Color::Interpolation interpolation, const String &name)
+{
+	assert(interpolation >= 0 && interpolation < (int)Color::INTERPOLATION_COUNT);
+
+	String src = load_shader("antialiased_textured_rect_fragment.glsl");
+	size_t pos = src.find("#0");
+	if (pos != String::npos)
+		src = src.substr(0, pos) + name + src.substr(pos + 2);
+
+	AntialiasedTexturedRectProgramInfo &i = antialiased_textured_rect_programs[interpolation];
+	i.fragment_id = compile_shader(GL_FRAGMENT_SHADER, src);
+	i.id = glCreateProgram();
+	glAttachShader(i.id, antialiased_textured_rect_vertex_id);
+	glAttachShader(i.id, i.fragment_id);
+	glLinkProgram(i.id);
+	check_program(i.id, "antialiased_textured_rect_" + name);
+	i.sampler_uniform = glGetUniformLocation(i.id, "sampler");
+	i.aascale_uniform = glGetUniformLocation(i.id, "aascale");
 }
 
 
@@ -286,7 +347,24 @@ gl::Shaders::blend(Color::BlendMethod method, Color::value_type amount)
 	context.check("gl::Shaders::blend");
 }
 
+void
+gl::Shaders::texture()
+{
+	glUseProgram(texture_program_id);
+	glUniform1i(texture_uniform, 0);
+	context.check("gl::Shaders::texture");
+}
 
+void
+gl::Shaders::antialiased_textured_rect(Color::Interpolation interpolation, const Vector &aascale)
+{
+	assert(interpolation >= 0 && interpolation < (int)Color::INTERPOLATION_COUNT);
+	AntialiasedTexturedRectProgramInfo &i = antialiased_textured_rect_programs[interpolation];
+	glUseProgram(i.id);
+	glUniform1i(i.sampler_uniform, 0);
+	glUniform2dv(i.aascale_uniform, 1, (const GLdouble*)&aascale);
+	context.check("gl::Shaders::antialiased_textured_rect");
+}
 
 
 /* === E N T R Y P O I N T ================================================= */

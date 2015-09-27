@@ -30,6 +30,7 @@
 #include <cstring>
 
 #include <synfig/color.h>
+#include <synfig/vector.h>
 
 #include "context.h"
 
@@ -57,7 +58,17 @@ public:
 		GLuint amount_uniform;
 		GLuint sampler_dest_uniform;
 		GLuint sampler_src_uniform;
-		BlendProgramInfo() { memset(this, 0, sizeof(*this)); }
+		BlendProgramInfo()
+			{ memset(this, 0, sizeof(*this)); }
+	};
+
+	struct AntialiasedTexturedRectProgramInfo {
+		GLuint id;
+		GLuint fragment_id;
+		GLuint sampler_uniform;
+		GLuint aascale_uniform;
+		AntialiasedTexturedRectProgramInfo()
+			{ memset(this, 0, sizeof(*this)); }
 	};
 
 private:
@@ -70,6 +81,14 @@ private:
 
 	BlendProgramInfo blend_programs[Color::BLEND_END];
 
+	GLuint texture_vertex_id;
+	GLuint texture_fragment_id;
+	GLuint texture_program_id;
+	GLuint texture_uniform;
+
+	GLuint antialiased_textured_rect_vertex_id;
+	AntialiasedTexturedRectProgramInfo antialiased_textured_rect_programs[Color::INTERPOLATION_COUNT];
+
 	String get_shader_path();
 	String get_shader_path(const String &filename);
 	String load_shader(const String &filename);
@@ -79,6 +98,7 @@ private:
 	void check_program(GLuint id, const String &name);
 
 	void load_blend(Color::BlendMethod method, const String &name);
+	void load_antialiased_textured_rect(Color::Interpolation interpolation, const String &name);
 
 public:
 	Shaders(Context &context);
@@ -87,6 +107,8 @@ public:
 	void simple();
 	void color(const Color &c);
 	void blend(Color::BlendMethod method, Color::value_type amount);
+	void texture();
+	void antialiased_textured_rect(Color::Interpolation interpolation, const Vector &aascale);
 };
 
 }; /* end namespace gl */

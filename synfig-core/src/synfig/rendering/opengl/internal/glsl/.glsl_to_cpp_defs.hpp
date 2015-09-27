@@ -27,6 +27,7 @@
 #define uniform
 #define in
 #define out
+#define inout
 #define layout(...)
 
 
@@ -155,18 +156,31 @@ namespace __defs {
 	typedef __defs::vec3<T> p ## vec3; \
 	typedef __defs::vec4<T> p ## vec4;
 
-#define __defs_vecfunc(f, p) \
-	p ## vec2 f(p ## vec2);\
-	p ## vec3 f(p ## vec3);\
-	p ## vec4 f(p ## vec4);
+#define __defs_func_1(f, t) \
+	t f(t);
 
-#define __defs_vecfunc2(f, p) \
-	p ## vec2 f(p ## vec2, p ## vec2); \
-	p ## vec3 f(p ## vec3, p ## vec3); \
-	p ## vec4 f(p ## vec4, p ## vec4);
+#define __defs_func_2(f, t) \
+	t f(t, t);
 
-#define __defs_vecsfunc(f, T, p) \
-	T f(T); __defs_vecfunc(f, p)
+#define __defs_func_3(f, t) \
+	t f(t, t, t);
+
+#define __defs_func(args, f, t) \
+	__defs_func_ ## args(f, t)
+
+#define __defs_vecfunc(args, f, p) \
+	__defs_func(args, f, p ## vec2) \
+	__defs_func(args, f, p ## vec3) \
+	__defs_func(args, f, p ## vec4)
+
+#define __defs_vecsfunc(args, f, t, p) \
+	__defs_func(args, f, t) \
+	__defs_vecfunc(args, f, p)
+
+#define __defs_vecoper(sign, t, p) \
+	p ## vec2 operator sign(t, p ## vec2); \
+	p ## vec3 operator sign(t, p ## vec3); \
+	p ## vec4 operator sign(t, p ## vec4);
 
 
 // built-in types
@@ -176,14 +190,30 @@ __defs_vectypedefs(int,i)
 __defs_vectypedefs(bool,b)
 
 
+// built-in vector operators
+
+__defs_vecoper(*, float,)
+__defs_vecoper(*, int, i)
+__defs_vecoper(*, bool, b)
+
+
 // built-in functions
 
-__defs_vecsfunc(floor, float,)
-__defs_vecsfunc(ceil, float,)
-__defs_vecfunc2(dot,)
+__defs_vecsfunc(1, floor, float,)
+__defs_vecsfunc(1, ceil, float,)
+__defs_vecsfunc(1, fract, float,)
+__defs_vecsfunc(1, sin, float,)
+__defs_vecsfunc(1, cos, float,)
+__defs_vecsfunc(1, abs, float,)
+__defs_vecsfunc(1, abs, int, i)
+__defs_vecsfunc(3, clamp, float,)
+__defs_vecsfunc(3, clamp, int, i)
+__defs_vecfunc(2, dot,)
 
+vec4 texture(sampler2D, vec2);
+vec4 texture(sampler2D, vec2, float);
+ivec2 textureSize(sampler2D, int);
 vec4 texelFetch(sampler2D, ivec2, int);
-
 
 // built-in variables
 
