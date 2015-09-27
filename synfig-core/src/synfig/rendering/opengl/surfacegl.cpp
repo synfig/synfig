@@ -55,6 +55,9 @@ using namespace rendering;
 SurfaceGL::SurfaceGL(): id()
 	{ }
 
+SurfaceGL::SurfaceGL(const Surface &other): id()
+	{ assign(other); }
+
 SurfaceGL::~SurfaceGL()
 	{ destroy(); }
 

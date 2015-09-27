@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/software/surfacesw.cpp
-**	\brief SurfaceSW
+/*!	\file synfig/rendering/software/surfacememoryreadwrapper.cpp
+**	\brief SurfaceMemoryReadWrapper
 **
 **	$Id$
 **
@@ -35,7 +35,9 @@
 #include <signal.h>
 #endif
 
-#include <synfig/rendering/software/surfacesw.h>
+#include <cstring>
+
+#include "surfacememoryreadwrapper.h"
 
 #endif
 
@@ -51,35 +53,30 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 bool
-SurfaceSW::create_vfunc()
-{
-	surface.set_wh(get_width(), get_height());
-	surface.clear();
-	return true;
-}
+SurfaceMemoryReadWrapper::create_vfunc()
+	{ return false; }
 
 bool
-SurfaceSW::assign_vfunc(const rendering::Surface &surface)
-{
-	this->surface.set_wh(get_width(), get_height());
-	if (surface.get_pixels(&this->surface[0][0]))
-		return true;
-	this->surface.set_wh(0, 0);
-	return false;
-}
+SurfaceMemoryReadWrapper::assign_vfunc(const Surface &surface)
+	{ return false; }
 
 void
-SurfaceSW::destroy_vfunc()
-{
-	this->surface.set_wh(0, 0);
-}
+SurfaceMemoryReadWrapper::destroy_vfunc()
+	{ buffer = NULL; }
 
 bool
-SurfaceSW::get_pixels_vfunc(Color *buffer) const
-{
-	memcpy(buffer, &this->surface[0][0], get_buffer_size());
-	return true;
-}
+SurfaceMemoryReadWrapper::get_pixels_vfunc(Color *buffer) const
+	{ memcpy(buffer, this->buffer, get_buffer_size()); }
 
+void
+SurfaceMemoryReadWrapper::set_buffer(const Color *buffer)
+{
+	if (!empty() && this->buffer != buffer)
+	{
+		unset_alternative();
+		this->buffer = buffer;
+		mark_as_created(this->buffer);
+	}
+}
 
 /* === E N T R Y P O I N T ================================================= */

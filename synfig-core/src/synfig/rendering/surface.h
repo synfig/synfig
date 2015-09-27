@@ -27,10 +27,11 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <ETL/handle>
 #include <ETL/rect>
 
 #include <synfig/color.h>
+
+#include "resource.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -43,7 +44,7 @@ namespace synfig
 namespace rendering
 {
 
-class Surface: public etl::shared_object
+class Surface: public Resource
 {
 public:
 	typedef etl::handle<Surface> Handle;
@@ -54,12 +55,14 @@ private:
 	bool created;
 
 protected:
+	void mark_as_created(bool create = true);
 	virtual bool create_vfunc() = 0;
 	virtual bool assign_vfunc(const Surface &surface) = 0;
 	virtual void destroy_vfunc() = 0;
 	virtual bool get_pixels_vfunc(Color *buffer) const = 0;
 
 public:
+	// TODO: move to Resource?
 	bool is_temporary;
 	etl::rect<int> used_rect;
 
@@ -67,7 +70,11 @@ public:
 	virtual ~Surface();
 
 	void set_size(int width, int height);
+
 	bool create();
+	bool assign(const Color *buffer);
+	bool assign(const Color *buffer, int width, int height);
+	bool assign(const Surface &surface);
 	bool assign(const Handle &surface);
 	void destroy();
 

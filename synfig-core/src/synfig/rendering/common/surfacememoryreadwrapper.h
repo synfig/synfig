@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/opengl/surfacegl.h
-**	\brief SurfaceGL Header
+/*!	\file synfig/rendering/software/surfacememoryreadwrapper.h
+**	\brief SurfaceMemoryReadWrapper Header
 **
 **	$Id$
 **
@@ -22,13 +22,12 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_RENDERING_SURFACEGL_H
-#define __SYNFIG_RENDERING_SURFACEGL_H
+#ifndef __SYNFIG_RENDERING_SURFACEMEMORYREADWRAPPER_H
+#define __SYNFIG_RENDERING_SURFACEMEMORYREADWRAPPER_H
 
 /* === H E A D E R S ======================================================= */
 
 #include "../surface.h"
-#include "internal/predeclarations.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -41,28 +40,30 @@ namespace synfig
 namespace rendering
 {
 
-class SurfaceGL: public Surface
+class SurfaceMemoryReadWrapper: public Surface
 {
 public:
-	typedef etl::handle<SurfaceGL> Handle;
+	typedef etl::handle<SurfaceMemoryReadWrapper> Handle;
 
 private:
-	gl::Identifier id;
+	const Color *buffer;
 
 protected:
-	gl::Environment& env() const;
-
 	virtual bool create_vfunc();
 	virtual bool assign_vfunc(const Surface &surface);
 	virtual void destroy_vfunc();
 	virtual bool get_pixels_vfunc(Color *buffer) const;
 
 public:
-	gl::Identifier get_id() const { return id; }
+	SurfaceMemoryReadWrapper(): buffer() { }
+	explicit SurfaceMemoryReadWrapper(const Color *buffer, int width, int height):
+		buffer() { set_buffer(buffer, width, height); }
+	~SurfaceMemoryReadWrapper() { destroy(); }
 
-	SurfaceGL();
-	explicit SurfaceGL(const Surface &other);
-	~SurfaceGL();
+	const Color* get_buffer() const { return buffer; }
+	void set_buffer(const Color *buffer);
+	void set_buffer(const Color *buffer, int width, int height)
+		{ set_size(width, height); set_buffer(buffer); }
 };
 
 } /* end namespace rendering */

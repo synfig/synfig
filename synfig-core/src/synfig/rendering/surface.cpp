@@ -37,6 +37,8 @@
 
 #include "surface.h"
 
+#include "common/surfacememoryreadwrapper.h"
+
 #endif
 
 using namespace synfig;
@@ -61,9 +63,14 @@ rendering::Surface::Surface():
 rendering::Surface::~Surface() { destroy(); }
 
 void
+rendering::Surface::mark_as_created(bool created)
+	{ this->created = created; }
+
+void
 rendering::Surface::set_size(int width, int height)
 {
 	assert(!is_created());
+	unset_alternative();
 	this->width = width > 0 ? width : 0;
 	this->height = height > 0 ? height : 0;
 }
@@ -71,6 +78,7 @@ rendering::Surface::set_size(int width, int height)
 bool
 rendering::Surface::create()
 {
+	unset_alternative();
 	if (!is_created() && !empty())
 		created = create_vfunc();
 	return is_created();
@@ -78,16 +86,35 @@ rendering::Surface::create()
 
 
 bool
-rendering::Surface::assign(const Handle &surface)
+rendering::Surface::assign(const Color *buffer)
+{
+	return assign(buffer, get_width(), get_height());
+}
+
+bool
+rendering::Surface::assign(const Color *buffer, int width, int height)
+{
+	return assign(SurfaceMemoryReadWrapper(buffer, width, height));
+}
+
+bool
+rendering::Surface::assign(const Surface &surface)
 {
 	destroy();
-	if (surface) {
-		set_size(surface->get_width(), surface->get_height());
-		created = assign_vfunc(*surface);
-	} else {
-		set_size(0, 0);
-	}
+	unset_alternative();
+	set_size(surface.get_width(), surface.get_height());
+	created = assign_vfunc(surface);
 	return is_created();
+}
+
+
+bool
+rendering::Surface::assign(const Handle &surface)
+{
+	if (surface)
+		return assign(*surface);
+	destroy();
+	return false;
 }
 
 void
@@ -95,6 +122,7 @@ rendering::Surface::destroy()
 {
 	if (is_created())
 	{
+		unset_alternative();
 		destroy_vfunc();
 		created = false;
 	}
