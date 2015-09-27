@@ -1,12 +1,14 @@
 RENDERING_HH = \
 	rendering/optimizer.h \
 	rendering/renderer.h \
+	rendering/resource.h \
 	rendering/surface.h \
 	rendering/task.h
 
 RENDERING_CC = \
 	rendering/optimizer.cpp \
 	rendering/renderer.cpp \
+	rendering/resource.cpp \
 	rendering/surface.cpp \
 	rendering/task.cpp
 
