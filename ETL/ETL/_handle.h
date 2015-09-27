@@ -157,7 +157,7 @@ protected:
 	virtual_shared_object(const virtual_shared_object&) { }
 	virtual_shared_object& operator= (const virtual_shared_object&) { return *this; }
 public:
-	virtual ~virtual_shared_object()=0;
+	virtual ~virtual_shared_object() { }
 	virtual void ref()const=0;
 	virtual bool unref()const=0;
 	virtual bool unref_inactive()const=0;
