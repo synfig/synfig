@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/opengl/task/taskblendgl.cpp
-**	\brief TaskBlendGL
+/*!	\file synfig/rendering/opengl/task/tasksurfaceresamplegl
+**	\brief TaskSurfaceResampleGL
 **
 **	$Id$
 **
@@ -35,7 +35,7 @@
 #include <signal.h>
 #endif
 
-#include "taskblendgl.h"
+#include "tasksurfaceresamplegl.h"
 
 #include "../internal/environment.h"
 #include "../surfacegl.h"
@@ -54,16 +54,27 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 bool
-TaskBlendGL::run(RunParams & /* params */) const
+TaskSurfaceResampleGL::run(RunParams & /* params */) const
 {
 	gl::Context::Lock(env().context);
 
 	SurfaceGL::Handle a =
-		SurfaceGL::Handle::cast_dynamic(sub_task_a()->target_surface);
-	SurfaceGL::Handle b =
-		SurfaceGL::Handle::cast_dynamic(sub_task_b()->target_surface);
+		SurfaceGL::Handle::cast_dynamic(sub_task()->target_surface);
 	SurfaceGL::Handle target =
 		SurfaceGL::Handle::cast_dynamic(target_surface);
+
+	// prepare arrays
+	Vector k(target->get_width(), target->get_height());
+	Vector d( transformation.get_axis_x().multiply_coords(k).norm().divide_coords(k).mag() / transformation.get_axis_x().mag(),
+			  transformation.get_axis_x().multiply_coords(k).norm().divide_coords(k).mag() / transformation.get_axis_x().mag() );
+	Vector coords[4][3];
+	for(int i = 0; i < 4; ++i)
+	{
+		coords[i][2] = Vector(i%2 ? 1.0 : -1.0, i/2 ? 1.0 : -1.0).multiply_coords(Vector(1.0, 1.0) + d);
+		coords[i][0] = transformation.get_transformed(coords[i][2]);
+		coords[i][1] = crop_lt + (coords[i][2] + Vector(1.0, 1.0)).multiply_coords(crop_rb - crop_lt)*0.5;
+	}
+	Vector aascale = d.one_divide_coords();
 
 	gl::Framebuffers::FramebufferLock framebuffer = env().framebuffers.get_framebuffer();
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, framebuffer.get_id());
@@ -71,37 +82,36 @@ TaskBlendGL::run(RunParams & /* params */) const
 	glViewport(0, 0, target->get_width(), target->get_height());
 	env().context.check();
 
-	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, a->get_id());
-	glBindSampler(0, env().samplers.get_nearest());
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, b->get_id());
-	glBindSampler(1, env().samplers.get_nearest());
+	glBindSampler(0, env().samplers.get_interpolation(interpolation));
 	env().context.check();
 
-	gl::Buffers::BufferLock quad_buf = env().buffers.get_default_quad_buffer();
-	gl::Buffers::VertexArrayLock quad_va = env().buffers.get_vertex_array();
+	gl::Buffers::BufferLock buf = env().buffers.get_array_buffer(coords);
+	gl::Buffers::VertexArrayLock va = env().buffers.get_vertex_array();
 	env().context.check();
 
-	glBindVertexArray(quad_va.get_id());
+	glBindVertexArray(va.get_id());
+	glBindBuffer(GL_ARRAY_BUFFER, buf.get_id());
 	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, quad_buf.get_id());
-	glVertexAttribPointer(0, 2, GL_DOUBLE, GL_TRUE, 0, quad_buf.get_pointer());
+	//glEnableVertexAttribArray(1);
+	//glEnableVertexAttribArray(2);
+	glVertexAttribPointer(0, 2, GL_DOUBLE, GL_TRUE, sizeof(coords[0]), (const char*)buf.get_pointer() + 0*sizeof(coords[0][0]));
+	glVertexAttribPointer(1, 2, GL_DOUBLE, GL_TRUE, sizeof(coords[0]), (const char*)buf.get_pointer() + 1*sizeof(coords[0][0]));
+	glVertexAttribPointer(2, 2, GL_DOUBLE, GL_TRUE, sizeof(coords[0]), (const char*)buf.get_pointer() + 2*sizeof(coords[0][0]));
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	env().context.check();
 
-	env().shaders.blend(blend_method, amount);
+	//env().shaders.antialiased_textured_rect(interpolation, aascale);
+	env().shaders.color(Color(0.f, 0.f, 1.f, 1.f));
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 	env().context.check();
 
 	glDisableVertexAttribArray(0);
+	glDisableVertexAttribArray(1);
+	glDisableVertexAttribArray(2);
 	glBindVertexArray(0);
 	env().context.check();
 
-	glActiveTexture(GL_TEXTURE1);
-	glBindSampler(1, 0);
-	glBindTexture(GL_TEXTURE_2D, 0);
-	glActiveTexture(GL_TEXTURE0);
 	glBindSampler(0, 0);
 	glBindTexture(GL_TEXTURE_2D, 0);
 	env().context.check();

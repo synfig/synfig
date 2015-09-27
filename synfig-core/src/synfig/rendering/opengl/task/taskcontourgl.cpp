@@ -197,6 +197,7 @@ TaskContourGL::run(RunParams & /* params */) const
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, framebuffer.get_id());
 	glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, renderbuffer.get_id());
 	glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, target->get_id(), 0);
+	env().framebuffers.check("TaskContourGL::run bind framebuffer");
 	glViewport(0, 0, target->get_width(), target->get_height());
 	env().context.check("TaskContourGL::run bind framebuffer");
 
