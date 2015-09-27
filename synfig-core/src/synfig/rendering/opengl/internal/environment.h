@@ -27,6 +27,7 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <synfig/rendering/opengl/internal/samplers.h>
 #include <cassert>
 
 #include "antialiasing.h"
@@ -35,6 +36,7 @@
 #include "clcontext.h"
 #include "framebuffers.h"
 #include "misc.h"
+#include "samplers.h"
 #include "shaders.h"
 
 /* === M A C R O S ========================================================= */
@@ -58,6 +60,7 @@ private:
 public:
 	Context context;
 	ClContext clcontext;
+	Samplers samplers;
 	Buffers buffers;
 	Shaders shaders;
 	Antialiasing antialiasing;
@@ -67,6 +70,7 @@ public:
 	Environment():
 		context(),
 		clcontext(),
+		samplers(context),
 		buffers(context),
 		shaders(context),
 		antialiasing(context),

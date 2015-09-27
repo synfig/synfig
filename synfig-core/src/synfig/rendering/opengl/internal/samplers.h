@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/opengl/internal/misc.h
-**	\brief Misc Header
+/*!	\file synfig/rendering/opengl/internal/sampler.h
+**	\brief Sampler Header
 **
 **	$Id$
 **
@@ -22,13 +22,15 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_RENDERING_GL_MISC_H
-#define __SYNFIG_RENDERING_GL_MISC_H
+#ifndef __SYNFIG_RENDERING_GL_SAMPLER_H
+#define __SYNFIG_RENDERING_GL_SAMPLER_H
 
 /* === H E A D E R S ======================================================= */
 
 #include <list>
 #include <vector>
+
+#include <synfig/color.h>
 
 #include "context.h"
 
@@ -45,16 +47,24 @@ namespace rendering
 namespace gl
 {
 
-class Misc
+class Samplers
 {
 public:
 	Context &context;
 
 private:
+	GLuint nearest;
+	GLuint linear;
 
 public:
-	Misc(Context &context);
-	~Misc();
+	Samplers(Context &context);
+	~Samplers();
+
+	GLuint get_nearest() { return nearest; }
+	GLuint get_linear() { return linear; }
+
+	// use with Shaders::antialiased_textured_rect
+	GLuint get_interpolation(Color::Interpolation interpolation);
 };
 
 }; /* end namespace gl */
