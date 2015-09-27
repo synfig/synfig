@@ -45,6 +45,8 @@
 #include <synfig/canvas.h>
 #include <synfig/filesystemnative.h>
 
+#include <synfig/rendering/software/surfacesw.h>
+
 #endif
 
 using namespace synfig;
@@ -198,6 +200,9 @@ Import::set_param(const String & param, const ValueBase &value)
 				{
 					synfig::warning(strprintf("Unable to get frame from \"%s\"",filename_with_path.c_str()));
 				}
+
+				rendering_surface = new rendering::SurfaceSW();
+				rendering_surface->assign(surface[0], surface.get_w(), surface.get_h());
 
 				importer=newimporter;
 				filename=newfilename;
