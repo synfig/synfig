@@ -35,6 +35,8 @@
 #include <signal.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "tasksurfaceresamplegl.h"
 
 #include "../internal/environment.h"
@@ -63,15 +65,25 @@ TaskSurfaceResampleGL::run(RunParams & /* params */) const
 	SurfaceGL::Handle target =
 		SurfaceGL::Handle::cast_dynamic(target_surface);
 
+	Vector rect_size = rect_rb - rect_lt;
+	Matrix bounds_transfromation;
+	bounds_transfromation.m00 = fabs(rect_size[0]) > 1e-10 ? 2.0/rect_size[0] : 0.0;
+	bounds_transfromation.m11 = fabs(rect_size[1]) > 1e-10 ? 2.0/rect_size[1] : 0.0;
+	bounds_transfromation.m20 = -1.0 - rect_lt[0] * bounds_transfromation.m00;
+	bounds_transfromation.m21 = -1.0 - rect_lt[1] * bounds_transfromation.m11;
+
+	Matrix matrix = transformation * bounds_transfromation;
+
 	// prepare arrays
 	Vector k(target->get_width(), target->get_height());
-	Vector d( transformation.get_axis_x().multiply_coords(k).norm().divide_coords(k).mag() / transformation.get_axis_x().mag(),
-			  transformation.get_axis_x().multiply_coords(k).norm().divide_coords(k).mag() / transformation.get_axis_x().mag() );
+	Vector d( matrix.get_axis_x().multiply_coords(k).norm().divide_coords(k).mag() / matrix.get_axis_x().mag(),
+			  matrix.get_axis_y().multiply_coords(k).norm().divide_coords(k).mag() / matrix.get_axis_y().mag() );
+	d *= 4.0;
 	Vector coords[4][3];
 	for(int i = 0; i < 4; ++i)
 	{
 		coords[i][2] = Vector(i%2 ? 1.0 : -1.0, i/2 ? 1.0 : -1.0).multiply_coords(Vector(1.0, 1.0) + d);
-		coords[i][0] = transformation.get_transformed(coords[i][2]);
+		coords[i][0] = matrix.get_transformed(coords[i][2]*0.5 + Vector(0.5, 0.5));
 		coords[i][1] = crop_lt + (coords[i][2] + Vector(1.0, 1.0)).multiply_coords(crop_rb - crop_lt)*0.5;
 	}
 	Vector aascale = d.one_divide_coords();
@@ -93,16 +105,15 @@ TaskSurfaceResampleGL::run(RunParams & /* params */) const
 	glBindVertexArray(va.get_id());
 	glBindBuffer(GL_ARRAY_BUFFER, buf.get_id());
 	glEnableVertexAttribArray(0);
-	//glEnableVertexAttribArray(1);
-	//glEnableVertexAttribArray(2);
+	glEnableVertexAttribArray(1);
+	glEnableVertexAttribArray(2);
 	glVertexAttribPointer(0, 2, GL_DOUBLE, GL_TRUE, sizeof(coords[0]), (const char*)buf.get_pointer() + 0*sizeof(coords[0][0]));
 	glVertexAttribPointer(1, 2, GL_DOUBLE, GL_TRUE, sizeof(coords[0]), (const char*)buf.get_pointer() + 1*sizeof(coords[0][0]));
 	glVertexAttribPointer(2, 2, GL_DOUBLE, GL_TRUE, sizeof(coords[0]), (const char*)buf.get_pointer() + 2*sizeof(coords[0][0]));
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	env().context.check();
 
-	//env().shaders.antialiased_textured_rect(interpolation, aascale);
-	env().shaders.color(Color(0.f, 0.f, 1.f, 1.f));
+	env().shaders.antialiased_textured_rect(interpolation, aascale);
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 	env().context.check();
 

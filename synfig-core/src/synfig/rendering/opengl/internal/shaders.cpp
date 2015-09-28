@@ -296,6 +296,7 @@ gl::Shaders::load_blend(Color::BlendMethod method, const String &name)
 	i.amount_uniform = glGetUniformLocation(i.id, "amount");
 	i.sampler_dest_uniform = glGetUniformLocation(i.id, "sampler_dest");
 	i.sampler_src_uniform = glGetUniformLocation(i.id, "sampler_src");
+	context.check("gl::Shaders::load_blend");
 }
 
 void
@@ -317,6 +318,7 @@ gl::Shaders::load_antialiased_textured_rect(Color::Interpolation interpolation, 
 	check_program(i.id, "antialiased_textured_rect_" + name);
 	i.sampler_uniform = glGetUniformLocation(i.id, "sampler");
 	i.aascale_uniform = glGetUniformLocation(i.id, "aascale");
+	context.check("gl::Shaders::load_antialiased_textured_rect");
 }
 
 
@@ -362,7 +364,7 @@ gl::Shaders::antialiased_textured_rect(Color::Interpolation interpolation, const
 	AntialiasedTexturedRectProgramInfo &i = antialiased_textured_rect_programs[interpolation];
 	glUseProgram(i.id);
 	glUniform1i(i.sampler_uniform, 0);
-	glUniform2dv(i.aascale_uniform, 1, (const GLdouble*)&aascale);
+	glUniform2f(i.aascale_uniform, (float)aascale[0], (float)aascale[1]);
 	context.check("gl::Shaders::antialiased_textured_rect");
 }
 

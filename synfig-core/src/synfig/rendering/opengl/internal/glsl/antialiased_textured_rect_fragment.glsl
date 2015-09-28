@@ -103,6 +103,4 @@ void main()
 
 	vec2 aa = clamp(vec2(0.5) + (vec2(1) - abs(aacoord))*aascale, vec2(0), vec2(1));
 	out_color.a *= aa.x*aa.y;
-
-	out_color = vec4(1, 1, 1, 1);
 }

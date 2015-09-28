@@ -77,7 +77,7 @@ RendererGL::RendererGL()
 
 	register_optimizer(new OptimizerBlendGL());
 	register_optimizer(new OptimizerContourGL());
-	//register_optimizer(new OptimizerSurfaceResampleGL());
+	register_optimizer(new OptimizerSurfaceResampleGL());
 
 	register_optimizer(new OptimizerComposite());
 	register_optimizer(new OptimizerSurfaceConvert());

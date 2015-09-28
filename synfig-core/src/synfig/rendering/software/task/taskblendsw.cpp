@@ -98,28 +98,28 @@ TaskBlendSW::run(RunParams &params) const
 		used_rect_b = ra;
 	}
 
-	if (params.used_rect.valid())
+	if (used_rect_a.valid() && &a != &c)
 	{
-		int x = used_rect_a.minx;
-		int y = used_rect_a.miny;
-		int w = used_rect_a.maxx - x;
-		int h = used_rect_a.maxy - y;
+		synfig::Surface::pen p = c.get_pen(used_rect_a.minx, used_rect_a.miny);
+		const_cast<synfig::Surface*>(&a)->blit_to(
+			p,
+			used_rect_a.minx,
+			used_rect_a.miny,
+			used_rect_a.maxx - used_rect_a.minx,
+			used_rect_a.maxy - used_rect_a.miny );
+	}
 
-		if (&a != &c)
-		{
-			synfig::Surface::pen p = c.get_pen(x, y);
-			const_cast<synfig::Surface*>(&a)->blit_to(p, x, y, w, h);
-		}
-
-		x = used_rect_b.minx;
-		y = used_rect_b.miny;
-		w = used_rect_b.maxx - x;
-		h = used_rect_b.maxy - y;
-
-		synfig::Surface::alpha_pen ap(c.get_pen(x, y));
+	if (used_rect_b.valid())
+	{
+		synfig::Surface::alpha_pen ap(c.get_pen(used_rect_b.minx, used_rect_b.miny));
 		ap.set_blend_method(blend_method);
 		ap.set_alpha(amount);
-		const_cast<synfig::Surface*>(&b)->blit_to(ap, x, y, w, h);
+		const_cast<synfig::Surface*>(&b)->blit_to(
+			ap,
+			used_rect_b.minx,
+			used_rect_b.miny,
+			used_rect_b.maxx - used_rect_b.minx,
+			used_rect_b.maxy - used_rect_b.miny );
 	}
 
 	//debug::DebugSurface::save_to_file(c, "TaskBlendSW__run__c");

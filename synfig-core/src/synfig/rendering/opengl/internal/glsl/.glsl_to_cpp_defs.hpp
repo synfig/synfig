@@ -29,6 +29,9 @@
 #define out
 #define inout
 #define layout(...)
+#define noperspective
+#define flat
+#define smooth
 
 
 // predeclarations

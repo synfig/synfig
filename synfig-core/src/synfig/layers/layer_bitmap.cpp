@@ -829,7 +829,7 @@ Layer_Bitmap::set_cairo_surface(cairo_surface_t *cs)
 }
 
 rendering::Task::Handle
-Layer_Bitmap::build_composite_task_vfunc(ContextParams context_params) const
+Layer_Bitmap::build_composite_task_vfunc(ContextParams /* context_params */) const
 {
 	if ( !rendering_surface
 	  || !rendering_surface->is_created() )
@@ -841,10 +841,15 @@ Layer_Bitmap::build_composite_task_vfunc(ContextParams context_params) const
 	rendering::TaskSurface::Handle task_surface(new rendering::TaskSurface());
 	task_surface->target_surface = rendering_surface;
 
+	Vector lt = param_tl.get(Vector());
+	Vector rb = param_br.get(Vector());
+
 	rendering::TaskSurfaceResample::Handle task_resample(new rendering::TaskSurfaceResample());
 	task_resample->interpolation = (Color::Interpolation)param_c.get(int());
-	task_resample->crop_lt = param_tl.get(Vector());
-	task_resample->crop_rb = param_br.get(Vector());
+	task_resample->transformation.m00 = rb[0] - lt[0];
+	task_resample->transformation.m11 = rb[1] - lt[1];
+	task_resample->transformation.m20 = lt[0];
+	task_resample->transformation.m21 = lt[1];
 	task_resample->sub_task() = task_surface;
 	return task_resample;
 }

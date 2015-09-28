@@ -287,15 +287,78 @@ Renderer::optimize(Task::List &list) const
 bool
 Renderer::run(const Task::List &list) const
 {
+	/*
+	{
+		for(int i = 0; i < Color::BLEND_END; ++i)
+		{
+			int count = 0;
+			int count1 = 0;
+			int count2 = 0;
+			int count3 = 0;
+			for(int j = 0; j < 1000000; ++j)
+			{
+				Color colors[6];
+				Color::value_type *channels = (Color::value_type*)&colors[0];
+				for(int k = 0; k < 16; ++k)
+					channels[k] = (float)rand()/(float)RAND_MAX*10.f - 5.f;
+
+				Color x, y;
+				Color::value_type a0, a1;
+
+				a0 = 1.f;
+				a1 = 1.f;
+				x = Color::blend(colors[2], Color::blend(colors[1], colors[0], a0, (Color::BlendMethod)i), a0*a1, (Color::BlendMethod)i);
+				y = Color::blend(Color::blend(colors[2], colors[1], a1, (Color::BlendMethod)i), colors[0], a0, (Color::BlendMethod)i);
+				if ( fabsf(x.get_r() - y.get_r()) > 1e-3
+				  || fabsf(x.get_g() - y.get_g()) > 1e-3
+				  || fabsf(x.get_b() - y.get_b()) > 1e-3
+				  || fabsf(x.get_a() - y.get_a()) > 1e-3 )
+					++count;
+
+				a0 = channels[12];
+				a1 = channels[13];
+				x = Color::blend(colors[2], Color::blend(colors[1], colors[0], a0, (Color::BlendMethod)i), a0*a1, (Color::BlendMethod)i);
+				y = Color::blend(Color::blend(colors[2], colors[1], a1, (Color::BlendMethod)i), colors[0], a0, (Color::BlendMethod)i);
+				if ( fabsf(x.get_r() - y.get_r()) > 1e-3
+				  || fabsf(x.get_g() - y.get_g()) > 1e-3
+				  || fabsf(x.get_b() - y.get_b()) > 1e-3
+				  || fabsf(x.get_a() - y.get_a()) > 1e-3 )
+					++count1;
+
+				a0 = 1.f;
+				a1 = channels[13];
+				x = Color::blend(colors[2], Color::blend(colors[1], colors[0], a0, (Color::BlendMethod)i), a0*a1, (Color::BlendMethod)i);
+				y = Color::blend(Color::blend(colors[2], colors[1], a1, (Color::BlendMethod)i), colors[0], a0, (Color::BlendMethod)i);
+				if ( fabsf(x.get_r() - y.get_r()) > 1e-3
+				  || fabsf(x.get_g() - y.get_g()) > 1e-3
+				  || fabsf(x.get_b() - y.get_b()) > 1e-3
+				  || fabsf(x.get_a() - y.get_a()) > 1e-3 )
+					++count2;
+
+				a0 = channels[12];
+				a1 = 1.f;
+				x = Color::blend(colors[2], Color::blend(colors[1], colors[0], a0, (Color::BlendMethod)i), a0*a1, (Color::BlendMethod)i);
+				y = Color::blend(Color::blend(colors[2], colors[1], a1, (Color::BlendMethod)i), colors[0], a0, (Color::BlendMethod)i);
+				if ( fabsf(x.get_r() - y.get_r()) > 1e-3
+				  || fabsf(x.get_g() - y.get_g()) > 1e-3
+				  || fabsf(x.get_b() - y.get_b()) > 1e-3
+				  || fabsf(x.get_a() - y.get_a()) > 1e-3 )
+					++count3;
+			}
+			info("association %d %d %d %d %d", i, count, count1, count2, count3);
+		}
+	}
+	*/
+
 	debug::Measure t("Renderer::run");
 
-	//log(list, "input list");
+	log(list, "input list");
 	Task::List optimized_list(list);
 	{
 		debug::Measure t("optimize");
 		optimize(optimized_list);
 	}
-	//log(optimized_list, "optimized list");
+	log(optimized_list, "optimized list");
 
 	bool success = true;
 
