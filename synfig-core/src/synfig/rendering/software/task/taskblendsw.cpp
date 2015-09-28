@@ -68,13 +68,17 @@ TaskBlendSW::run(RunParams &params) const
 
 	const etl::rect<int> &ra = sub_task_a()->target_surface->used_rect;
 	const etl::rect<int> &rb = sub_task_b()->target_surface->used_rect;
+	etl::rect<int> used_rect_a = ra;
+	etl::rect<int> used_rect_b = params.used_rect;
 
 	if (!Color::is_straight(blend_method) && Color::is_onto(blend_method))
 	{
 		if (ra.valid() && rb.valid())
 			set_intersect(params.used_rect, ra, rb);
 		else
-			params.used_rect = ra.valid() ? rb : ra;
+			params.used_rect = etl::rect<int>(0, 0, 0, 0);
+		used_rect_a = params.used_rect;
+		used_rect_b = params.used_rect;
 	}
 	else
 	if (!Color::is_straight(blend_method))
@@ -83,25 +87,34 @@ TaskBlendSW::run(RunParams &params) const
 			set_union(params.used_rect, ra, rb);
 		else
 			params.used_rect = ra.valid() ? ra : rb;
+		used_rect_a = ra;
+		used_rect_b = rb;
 	}
 	else
 	if (Color::is_onto(blend_method))
 	{
-		params.used_rect = rb;
+		params.used_rect = ra;
+		used_rect_a = ra;
+		used_rect_b = ra;
 	}
 
 	if (params.used_rect.valid())
 	{
-		int x = params.used_rect.minx;
-		int y = params.used_rect.miny;
-		int w = params.used_rect.maxx - x;
-		int h = params.used_rect.maxy - y;
+		int x = used_rect_a.minx;
+		int y = used_rect_a.miny;
+		int w = used_rect_a.maxx - x;
+		int h = used_rect_a.maxy - y;
 
 		if (&a != &c)
 		{
 			synfig::Surface::pen p = c.get_pen(x, y);
 			const_cast<synfig::Surface*>(&a)->blit_to(p, x, y, w, h);
 		}
+
+		x = used_rect_b.minx;
+		y = used_rect_b.miny;
+		w = used_rect_b.maxx - x;
+		h = used_rect_b.maxy - y;
 
 		synfig::Surface::alpha_pen ap(c.get_pen(x, y));
 		ap.set_blend_method(blend_method);
