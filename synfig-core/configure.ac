@@ -398,6 +398,7 @@ PKG_CHECK_MODULES(LIBGL, gl,,[
 LIBGL_CFLAGS="$LIBGL_CFLAGS -DGL_GLEXT_PROTOTYPES"
 CONFIG_DEPS="$CONFIG_DEPS gl"
 
+AC_CHECK_HEADER(CL/opencl.h,,AC_MSG_ERROR([ ** You need to install opencl-headers package.]))
 PKG_CHECK_MODULES(LIBCL, OpenCL,,[
 	AC_MSG_ERROR([ ** You need to install OpenCL.])
 ])

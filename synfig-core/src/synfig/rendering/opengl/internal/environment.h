@@ -59,7 +59,7 @@ private:
 
 public:
 	Context context;
-	ClContext clcontext;
+	//ClContext clcontext;
 	Samplers samplers;
 	Buffers buffers;
 	Shaders shaders;
@@ -69,7 +69,7 @@ public:
 
 	Environment():
 		context(),
-		clcontext(),
+		//clcontext(),
 		samplers(context),
 		buffers(context),
 		shaders(context),

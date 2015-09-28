@@ -116,7 +116,7 @@ Target_GL::render(ProgressCallback *cb)
 			rendering::Task::Handle task = context.build_rendering_task();
 			if (task)
 			{
-				rendering::Renderer::Handle renderer = rendering::Renderer::get_renderer("gl");
+				rendering::Renderer::Handle renderer = rendering::Renderer::get_renderer("software");
 				if (!renderer)
 					throw String("Renderer 'gl' not found");
 

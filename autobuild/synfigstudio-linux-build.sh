@@ -911,6 +911,8 @@ initialize()
 				ImageMagick-c++-devel \
 				jack-audio-connection-kit-devel \
 				mlt-devel \
+				ocl-icd-devel \
+				opencl-headers \
 				gtkmm30-devel \
 				glibmm24-devel"
 		fi
