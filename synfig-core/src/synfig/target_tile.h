@@ -76,8 +76,8 @@ public:
 	**	\returns The number of tiles left to go <i>plus one</i>.
 	**		This means that whenever this function returns zero,
 	**		there are no more tiles to render and that any value
-	**		in \a x or \a y should be disregarded. */
-	virtual int next_tile(int& x, int& y);
+	**		in \a rect should be disregarded. */
+	virtual int next_tile(RectInt& rect);
 	
 	//! Returns the number of peniding frames to render. If it is zero it
 	//! stops rendering frames.
@@ -85,15 +85,6 @@ public:
 
 	//! Adds the tile at \a x , \a y contained in \a surface
 	virtual bool add_tile(const synfig::Surface &surface, int x, int y)=0;
-	//! Returns the total tiles of the imaged rounded to integer number of tiles
-	virtual int total_tiles()const
-	{
-		// Width of the image(in tiles)
-		const int tw(rend_desc().get_w()/tile_w_+(rend_desc().get_w()%tile_w_?1:0));
-		const int th(rend_desc().get_h()/tile_h_+(rend_desc().get_h()%tile_h_?1:0));
-
-		return tw*th;
-	}
 
 	//! Marks the start of a frame
 	/*! \return \c true on success, \c false upon an error.

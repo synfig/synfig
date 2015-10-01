@@ -86,8 +86,6 @@ namespace studio
 {
 class WorkAreaTarget;
 class WorkAreaTarget_Full;
-class WorkAreaTarget_Cairo;
-class WorkAreaTarget_Cairo_Tile;
 class WorkAreaTarget_GL;
 
 class Instance;
@@ -95,6 +93,7 @@ class CanvasView;
 class WorkArea;
 class WorkAreaRenderer;
 class AsyncRenderer;
+
 class DirtyTrap
 {
 	friend class WorkArea;
@@ -102,6 +101,66 @@ class DirtyTrap
 public:
 	DirtyTrap(WorkArea *work_area);
 	~DirtyTrap();
+};
+
+class WorkAreaTile
+{
+public:
+	typedef std::list<WorkAreaTile> List;
+
+	int refresh_id;
+	synfig::RectInt rect;
+	Glib::RefPtr<Gdk::Pixbuf> pixbuf;
+	cairo_surface_t* surface;
+
+	WorkAreaTile(): refresh_id(), surface()
+		{ }
+	WorkAreaTile(int refresh_id, int left, int top, const Glib::RefPtr<Gdk::Pixbuf> &pixbuf):
+		refresh_id(refresh_id),
+		rect( left,
+			  top,
+			  left + (pixbuf ? pixbuf->get_width() : 0),
+			  top + (pixbuf ? pixbuf->get_height() : 0) ),
+		pixbuf(pixbuf),
+		surface() { }
+	WorkAreaTile(int refresh_id, int left, int top, cairo_surface_t *surface):
+		refresh_id(refresh_id),
+		rect( left,
+			  top,
+			  left + (surface ? cairo_image_surface_get_width(surface) : 0),
+			  top + (surface ? cairo_image_surface_get_height(surface) : 0) ),
+		pixbuf(pixbuf),
+		surface() { }
+
+	bool operator< (const WorkAreaTile &other) { return refresh_id < other.refresh_id; }
+};
+
+class WorkAreaTileBook
+{
+private:
+	WorkAreaTile::List tiles;
+
+public:
+	const WorkAreaTile::List& get_tiles() const { return tiles; }
+
+	WorkAreaTile* find_tile(int refresh_id, const synfig::RectInt &rect);
+
+	void clear() { tiles.clear(); }
+
+	void sort();
+
+	void add(const WorkAreaTile &tile);
+
+	void add(int refresh_id, int left, int top, const Glib::RefPtr<Gdk::Pixbuf> &pixbuf)
+		{ add(WorkAreaTile(refresh_id, left, top, pixbuf)); }
+	void add(int refresh_id, int left, int top, cairo_surface_t *surface)
+		{ add(WorkAreaTile(refresh_id, left, top, surface)); }
+
+	void get_dirty_rects(
+		std::vector<synfig::RectInt> &out_rects,
+		int refresh_id,
+		const synfig::RectInt &bounds,
+		const synfig::VectorInt &max_size = synfig::VectorInt(INT_MAX, INT_MAX) ) const;
 };
 
 
@@ -252,9 +311,7 @@ private:
 	//Glib::RefPtr<Gdk::Pixbuf> pix_buf;
 
 	//! This vector holds all of the tiles for this frame
-	std::vector< std::pair<Glib::RefPtr<Gdk::Pixbuf>,int> > tile_book;
-	// This vector holds all the cairo surfaces for the frame 
-	SurfaceBook cairo_book;
+	WorkAreaTileBook tile_book;
 
 	//! This integer describes the total times that the work area has been refreshed
 	int refreshes;
@@ -308,8 +365,8 @@ public:
 
 	const etl::loose_handle<synfig::ValueNode>& get_selected_value_node() { return  selected_value_node_; }
 	const synfig::Point& get_drag_point()const { return drag_point; }
-	std::vector< std::pair<Glib::RefPtr<Gdk::Pixbuf>,int> >& get_tile_book(){ return tile_book; }
-	SurfaceBook& get_cairo_book() { return cairo_book; }
+	const WorkAreaTileBook& get_tile_book() const { return tile_book; }
+	WorkAreaTileBook& get_tile_book() { return tile_book; }
 	int get_refreshes()const { return refreshes; }
 	bool get_canceled()const { return canceled_; }
 	bool get_queued()const { return queued; }
@@ -322,6 +379,8 @@ public:
 	//int get_w()const { return w; }
 	//int get_h()const { return h; }
 
+	synfig::VectorInt get_windows_offset() const;
+	synfig::RectInt get_window_rect(int stepx = 1, int stepy = 1) const;
 	int get_tile_w()const { return tile_w; }
 	int get_tile_h()const { return tile_h; }
 
@@ -354,9 +413,6 @@ private:
 
 	//unsigned char *get_buffer() { return buffer; }
 	bool set_wh(int w, int h,int chan=3);
-
-	int next_unrendered_tile(int refreshes)const;
-	int next_unrendered_tile()const { return next_unrendered_tile(refreshes); }
 
 	/*
  -- ** -- S I G N A L S -------------------------------------------------------

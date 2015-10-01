@@ -53,7 +53,7 @@ using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 const unsigned int	DEF_TILE_WIDTH = TILE_SIZE / 2;
-const unsigned int	DEF_TILE_HEIGHT= TILE_SIZE / 2;
+const unsigned int	DEF_TILE_HEIGHT = TILE_SIZE / 2;
 
 // note that if this isn't defined then the rendering is incorrect for
 // the straight blend method since the optimize_layers() function in
@@ -73,75 +73,6 @@ const unsigned int	DEF_TILE_HEIGHT= TILE_SIZE / 2;
 
 /* === M E T H O D S ======================================================= */
 
-struct Target_Tile::TileGroup
-{
-	struct TileInfo {
-		int tile_index;
-		int x, y;
-		TileInfo(): tile_index(), x(), y() { }
-		bool operator < (const TileInfo &other) const
-		{
-			return y < other.y ? true
-				 : other.y < y ? false
-				 : x < other.x ? false
-				 : other.x < x ? false
-				 : tile_index < other.tile_index;
-		}
-	};
-
-	int x0, y0, x1, y1;
-	std::vector<TileInfo> tiles;
-
-	TileGroup(): x0(), y0(), x1(), y1() { }
-
-	static bool can_fill_rectangle(int x0, int y0, int x1, int y1, const std::vector<TileInfo> &tiles)
-	{
-		for(int x = x0; x < x1; ++x)
-		{
-			for(int y = y0; y < y1; ++y)
-			{
-				bool found = false;
-				for(std::vector<TileInfo>::const_iterator i = tiles.begin(); i != tiles.end(); ++i)
-					if (i->x == x && i->y == y) { found = true; break; }
-				if (!found) return false;
-			}
-		}
-		return true;
-	}
-
-	void take_tiles(std::vector<TileInfo> &tiles)
-	{
-		for(int x = x0; x < x1; ++x)
-			for(int y = y0; y < y1; ++y)
-				for(std::vector<TileInfo>::iterator i = tiles.begin(); i != tiles.end(); ++i)
-					if (i->x == x && i->y == y)
-						{ this->tiles.push_back(*i); tiles.erase(i); break; }
-	}
-
-	static void group_tiles(std::vector<TileGroup> &out_groups, std::vector<TileInfo> &in_tiles)
-	{
-		while(!in_tiles.empty())
-		{
-			out_groups.push_back(TileGroup());
-			TileGroup &group = out_groups.back();
-			group.x0 = in_tiles.front().x;
-			group.y0 = in_tiles.front().y;
-			group.x1 = group.x0 + 1;
-			group.y1 = group.y0 + 1;
-			group.take_tiles(in_tiles);
-			while(can_fill_rectangle(group.x0 - 1, group.y0, group.x0, group.y1, in_tiles))
-				{ --group.x0; group.take_tiles(in_tiles); }
-			while(can_fill_rectangle(group.x0, group.y0 - 1, group.x1, group.y0, in_tiles))
-				{ --group.y0; group.take_tiles(in_tiles); }
-			while(can_fill_rectangle(group.x1, group.y0, group.x1 + 1, group.y1, in_tiles))
-				{ ++group.x1; group.take_tiles(in_tiles); }
-			while(can_fill_rectangle(group.x0, group.y1, group.x1, group.y1 + 1, in_tiles))
-				{ ++group.y1; group.take_tiles(in_tiles); }
-			std::sort(group.tiles.begin(), group.tiles.end());
-		}
-	}
-};
-
 Target_Tile::Target_Tile():
 	threads_(2),
 	tile_w_(DEF_TILE_WIDTH),
@@ -159,7 +90,7 @@ Target_Tile::next_frame(Time& time)
 }
 
 int
-Target_Tile::next_tile(int& x, int& y)
+Target_Tile::next_tile(RectInt& rect)
 {
 	// Width of the image(in tiles)
 	int tw(rend_desc().get_w()/tile_w_);
@@ -169,8 +100,10 @@ Target_Tile::next_tile(int& x, int& y)
 	if(rend_desc().get_w()%tile_w_!=0)tw++;
 	if(rend_desc().get_h()%tile_h_!=0)th++;
 
-	x=(curr_tile_%tw)*tile_h_;
-	y=(curr_tile_/tw)*tile_w_;
+	rect.minx = (curr_tile_%tw)*tile_w_;
+	rect.miny = (curr_tile_/tw)*tile_h_;
+	rect.maxx = rect.minx + tile_w_;
+	rect.maxy = rect.miny + tile_h_;
 
 	curr_tile_++;
 	return (tw*th)-curr_tile_+1;
@@ -185,7 +118,6 @@ synfig::Target_Tile::render_frame_(Context context,ProgressCallback *cb)
 		return false;
 	}
 	const RendDesc &rend_desc(desc);
-#define total_tiles total_tiles()
 
 	etl::clock total_time;
 	etl::clock::value_type work_time(0);
@@ -200,34 +132,25 @@ synfig::Target_Tile::render_frame_(Context context,ProgressCallback *cb)
 		Surface surface;
 
 		RendDesc tile_desc;
-		int x,y,w,h;
-		int i;
+		RectInt rect;
+		int i = 0;
 		etl::clock tile_timer;
 		tile_timer.reset();
-		while((i=next_tile(x,y)))
+		while(next_tile(rect))
 		{
 			find_tile_time+=tile_timer();
-			SuperCallback	super(cb,(total_tiles-i+1)*1000,(total_tiles-i+2)*1000,total_tiles*1000);
+
+			SuperCallback super(cb,i,i+1,10000);
 			if(!super.amount_complete(0,1000))
 				return false;
-			//if(cb && !cb->amount_complete(total_tiles-i,total_tiles))
-			//	return false;
+			++i;
 
 			// Perform clipping on the tile
 			if(clipping_)
-			{
-				w=x+tile_w_<rend_desc.get_w()?tile_w_:rend_desc.get_w()-x;
-				h=y+tile_h_<rend_desc.get_h()?tile_h_:rend_desc.get_h()-y;
-				if(w<=0||h<=0)continue;
-			}
-			else
-			{
-				w=tile_w_;
-				h=tile_h_;
-			}
+				etl::set_intersect(rect, rect, RectInt(0, 0, rend_desc.get_w(), rend_desc.get_h()));
 
 			tile_desc=rend_desc;
-			tile_desc.set_subwindow(x,y,w,h);
+			tile_desc.set_subwindow(rect.minx, rect.miny, rect.maxx - rect.minx, rect.maxy - rect. miny);
 			if(!parametric_render(context, surface, tile_desc,&super))
 			{
 				// For some reason, the parametric renderer failed.
@@ -263,14 +186,15 @@ synfig::Target_Tile::render_frame_(Context context,ProgressCallback *cb)
 				}
 
 				// Add the tile to the target
-				if(!add_tile(surface,x,y))
+				if(!add_tile(surface, rect.minx, rect.miny))
 				{
 					if(cb)cb->error(_("add_tile():Unable to put surface on target"));
 					return false;
 				}
 			}
-		tile_timer.reset();
+			tile_timer.reset();
 		}
+		SuperCallback super(cb,i,10000,10000);
 	}
 	else // If quality is set otherwise, then we use the accelerated renderer
 	{
@@ -278,51 +202,41 @@ synfig::Target_Tile::render_frame_(Context context,ProgressCallback *cb)
 		tile_timer.reset();
 
 		// Gather tiles
-		std::vector<TileGroup::TileInfo> tiles;
-		TileGroup::TileInfo tile_info;
-		while((tile_info.tile_index = next_tile(tile_info.x, tile_info.y)) != 0) {
+		std::vector<RectInt> tiles;
+		RectInt rect;
+		while(next_tile(rect)) {
 			if (clipping_)
-				if (tile_info.x >= rend_desc.get_w() || tile_info.y >= rend_desc.get_h())
+				if (rect.minx >= rend_desc.get_w() || rect.miny >= rend_desc.get_h())
 					continue;
-			tile_info.x /= tile_w_;
-			tile_info.y /= tile_h_;
-			tiles.push_back(tile_info);
+			tiles.push_back(rect);
 		}
 		find_tile_time += tile_timer();
 
-		// Group tiles
-		std::vector<TileGroup> groups;
-		TileGroup::group_tiles(groups, tiles);
-
 		// Render groups
-		for(std::vector<TileGroup>::iterator i = groups.begin(); i != groups.end(); ++i)
+		for(std::vector<RectInt>::iterator i = tiles.begin(); i != tiles.end(); ++i)
 		{
 			// Progress callback
-			int group_index = i - groups.begin();
-			int groups_count = (int)groups.size();
-			SuperCallback super(cb, (groups_count-group_index)*1000, (groups_count-group_index+1)*1000, groups_count*1000);
+			int index = i - tiles.begin();
+			int count = (int)tiles.size();
+			SuperCallback super(cb, (count-index)*1000, (count-index+1)*1000, count*1000);
 			if(!super.amount_complete(0,1000))
 				return false;
 
 			// Render group
 			tile_timer.reset();
 
-			int x0 = i->x0 * tile_w_;
-			int y0 = i->y0 * tile_w_;
-			int x1 = i->x1 * tile_w_;
-			int y1 = i->y1 * tile_w_;
-
+			rect = *i;
 			if (clipping_)
-			{
-				x1 = std::min(x1, rend_desc.get_w());
-				y1 = std::min(y1, rend_desc.get_h());
-			}
+				etl::set_intersect(rect, rect, RectInt(0, 0, rend_desc.get_w(), rend_desc.get_h()));
 
-			RendDesc group_desc=rend_desc;
-			group_desc.set_subwindow(x0,y0,x1-x0,y1-y0);
+			if (!rect.valid())
+				continue;
+
+			RendDesc tile_desc=rend_desc;
+			tile_desc.set_subwindow(rect.minx, rect.miny, rect.maxx - rect.minx, rect.maxy - rect.miny);
 
 			Surface surface;
-			if (!context.accelerated_render(&surface, get_quality(), group_desc, &super))
+			if (!context.accelerated_render(&surface, get_quality(), tile_desc, &super))
 			{
 				// For some reason, the accelerated renderer failed.
 				if(cb)cb->error(_("Accelerated Renderer Failure"));
@@ -334,6 +248,7 @@ synfig::Target_Tile::render_frame_(Context context,ProgressCallback *cb)
 				if(cb)cb->error(_("Bad surface"));
 				return false;
 			}
+
 			switch(get_alpha_mode())
 			{
 				case TARGET_ALPHA_MODE_FILL:
@@ -353,46 +268,29 @@ synfig::Target_Tile::render_frame_(Context context,ProgressCallback *cb)
 					break;
 				default:
 					break;
-				}
+			}
 
 			work_time += tile_timer();
 
-			// Split group by tiles
-			for(std::vector<TileGroup::TileInfo>::iterator j = i->tiles.begin(); j != i->tiles.end(); ++j)
+			// Add the tile to the target
+			tile_timer.reset();
+			if (!add_tile(surface, rect.minx, rect.miny))
 			{
-				int tx0 = j->x * tile_w_;
-				int ty0 = j->y * tile_w_;
-				int tx1 = std::min(tx0 + tile_w_, x1);
-				int ty1 = std::min(ty0 + tile_w_, y1);
-
-				Surface tile_surface(Surface::size_type(tx1-tx0, ty1-ty0));
-				Surface::pen pen = tile_surface.get_pen(0, 0);
-				surface.blit_to(
-					pen,
-					tx0-x0, ty0-y0,
-					tile_surface.get_w(), tile_surface.get_h() );
-
-				// Add the tile to the target
-				tile_timer.reset();
-				if(!add_tile(tile_surface, tx0, ty0))
-				{
-					if(cb)cb->error(_("add_tile():Unable to put surface on target"));
-					return false;
-				}
-				add_tile_time+=tile_timer();
+				if(cb)cb->error(_("add_tile():Unable to put surface on target"));
+				return false;
 			}
+			add_tile_time+=tile_timer();
 
 			signal_progress()();
 		}
 	}
-	if(cb && !cb->amount_complete(total_tiles,total_tiles))
+	if(cb && !cb->amount_complete(10000,10000))
 		return false;
 
 #ifdef SYNFIG_DISPLAY_EFFICIENCY
 	synfig::info(">>>>>> Render Time: %fsec, Find Tile Time: %fsec, Add Tile Time: %fsec, Total Time: %fsec",work_time,find_tile_time,add_tile_time,total_time());
 	synfig::info(">>>>>> FRAME EFFICIENCY: %f%%",(100.0f*work_time/total_time()));
 #endif
-#undef total_tiles
 	return true;
 }
 

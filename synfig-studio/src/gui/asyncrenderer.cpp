@@ -130,17 +130,12 @@ public:
 		alive_flag=false;
 	}
 
-	virtual int total_tiles()const
-	{
-		return warm_target->total_tiles();
-	}
-
-	virtual int next_tile(int& x, int& y)
+	virtual int next_tile(RectInt& rect)
 	{
 		if(!alive_flag)
 			return 0;
 
-		return warm_target->next_tile(x,y);
+		return warm_target->next_tile(rect);
 	}
 
 	virtual int next_frame(Time& time)
@@ -313,11 +308,6 @@ public:
 	{
 		Glib::Mutex::Lock lock(mutex);
 		alive_flag=false;
-	}
-	
-	virtual int total_tiles()const
-	{
-		return warm_target->total_tiles();
 	}
 	
 	virtual int next_tile(int& x, int& y)
