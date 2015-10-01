@@ -42,6 +42,139 @@
 
 namespace synfig {
 
+class RectInt : public etl::rect<int>
+{
+public:
+
+	using etl::rect<int>::set_point;
+	using etl::rect<int>::expand;
+	using etl::rect<int>::set;
+
+	static RectInt zero()
+	{
+		return RectInt(
+			0,
+			0,
+			0,
+			0
+		);
+	}
+
+	RectInt() { }
+
+	RectInt(const PointInt& x) { set_point(x); }
+
+	RectInt(const PointInt& min, const PointInt& max) { set_point(min); expand(max); }
+
+	RectInt(const value_type &x1,const value_type &y1)	{ set_point(x1,y1); }
+
+	RectInt(const value_type &x1,const value_type &y1,
+			const value_type &x2,const value_type &y2)
+	{
+		set_point(x1,y1);
+		expand(x2,y2);
+	}
+
+	void set_point(const PointInt& max) { set_point(max[0],max[1]);	}
+
+	RectInt& expand(const PointInt& max) { expand(max[0],max[1]); return *this; }
+
+	RectInt& expand(const int& r) { minx-=r; miny-=r; maxx+=r; maxy+=r; return *this; }
+
+	RectInt& expand_x(const int& r) { minx-=r; maxx+=r; return *this; }
+
+	RectInt& expand_y(const int& r) { miny-=r; maxy+=r; return *this; }
+
+	RectInt& set(const PointInt& min,const PointInt& max) { set(min[0],min[1],max[0],max[1]); return *this; }
+
+	PointInt get_min()const { return PointInt(minx,miny); }
+	PointInt get_max()const { return PointInt(maxx,maxy); }
+
+	bool is_inside(const PointInt& x) { return x[0]>=minx && x[0]<maxx && x[1]>=miny && x[1]<maxy; }
+
+	int area()const
+	{
+		return (maxx-minx)*(maxy-miny);
+	}
+
+	// Operators
+
+	RectInt& operator+=(const VectorInt& rhs)
+	{
+		minx+=rhs[0]; miny+=rhs[1];
+		maxx+=rhs[0]; maxy+=rhs[1];
+		return *this;
+	}
+
+	RectInt& operator-=(const VectorInt& rhs)
+	{
+		minx-=rhs[0]; miny-=rhs[1];
+		maxx-=rhs[0]; maxy-=rhs[1];
+		return *this;
+	}
+
+	RectInt& operator*=(const int& rhs)
+	{
+		minx*=rhs; miny*=rhs;
+		maxx*=rhs; maxy*=rhs;
+		return *this;
+	}
+
+	RectInt& operator/=(int rhs)
+	{
+		minx/=rhs; miny/=rhs;
+		maxx/=rhs; maxy/=rhs;
+		return *this;
+	}
+
+	RectInt& operator&=(const RectInt& rhs)
+	{
+		if(rhs.area()>0 && area()>0)
+			etl::set_intersect(*this,*this,rhs);
+		else
+			*this=zero();
+		return *this;
+	}
+
+	RectInt& operator|=(const RectInt& rhs)
+	{
+		if(rhs.area()>0 && area()>0)
+			etl::set_union(*this,*this,rhs);
+		else
+		{
+			if(area()<rhs.area())
+				*this=rhs;
+		}
+		return *this;
+	}
+
+	RectInt operator+(const VectorInt& rhs)const { return RectInt(*this)+=rhs; }
+
+	RectInt operator-(const VectorInt& rhs)const { return RectInt(*this)-=rhs; }
+
+	RectInt operator*(const int& rhs)const { return RectInt(*this)*=rhs; }
+
+	RectInt operator/(const int& rhs)const { return RectInt(*this)/=rhs; }
+
+	RectInt operator&(const RectInt& rhs)const { return RectInt(*this)&=rhs; }
+
+	RectInt operator|(const RectInt& rhs)const { return RectInt(*this)|=rhs; }
+
+	bool operator&&(const RectInt& rhs)const { return etl::intersect(*this, rhs); }
+
+	bool operator==(const RectInt &rhs)const { return get_min() == rhs.get_min() && get_max() == rhs.get_max(); }
+
+	bool operator!=(const RectInt &rhs)const { return get_min() != rhs.get_min() || get_max() != rhs.get_max(); }
+
+	bool is_valid()const { return valid(); }
+
+	RectInt multiply_coords(const VectorInt &rhs) const
+		{ return RectInt(minx*rhs[0], miny*rhs[1], maxx*rhs[0], maxy*rhs[1]); }
+	RectInt divide_coords(const VectorInt &rhs) const
+		{ return RectInt(minx/rhs[0], miny/rhs[1], maxx/rhs[0], maxy/rhs[1]); }
+}; // END of class RectInt
+
+
 class Rect : public etl::rect<Real>
 {
 public:
