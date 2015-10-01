@@ -59,9 +59,9 @@
 #define RENDER_DIR_PREFERENCE		"render_dir"
 
 // uncomment define SINGLE_THREADED to use a single thread, and hopefully get more stability (dooglus) - changed to be default if using windows (Nov 2009 pixelgeek)
-//#ifdef WIN32
+#ifdef WIN32
 #define SINGLE_THREADED
-//#endif
+#endif
 
 /* === T Y P E D E F S ===================================================== */
 
