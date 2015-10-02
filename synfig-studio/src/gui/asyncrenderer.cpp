@@ -34,6 +34,7 @@
 #include "app.h"
 #include <glibmm/thread.h>
 #include <glibmm/dispatcher.h>
+#include <sigc++/bind.h>
 
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
@@ -52,6 +53,7 @@
 #endif
 
 #include <synfig/general.h>
+#include <synfig/context.h>
 #include <ETL/clock>
 
 #include "general.h"
@@ -65,7 +67,7 @@ using namespace etl;
 using namespace synfig;
 using namespace studio;
 
-#define BOREDOM_TIMEOUT		50
+#define BOREDOM_TIMEOUT		1
 
 #define REJOIN_ON_STOP	1
 
@@ -91,6 +93,8 @@ public:
 		}
 	};
 	std::list<tile_t> tile_queue;
+	std::list<Glib::Thread*> threads;
+	bool err;
 	Glib::Mutex mutex;
 
 #ifndef GLIB_DISPATCHER_BROKEN
@@ -103,7 +107,7 @@ public:
 
 public:
 	AsyncTarget_Tile(etl::handle<synfig::Target_Tile> warm_target):
-		warm_target(warm_target)
+		warm_target(warm_target), err(false)
 	{
 		set_avoid_time_sync(warm_target->get_avoid_time_sync());
 		set_tile_w(warm_target->get_tile_w());
@@ -113,7 +117,9 @@ public:
 		set_alpha_mode(warm_target->get_alpha_mode());
 		set_threads(warm_target->get_threads());
 		set_clipping(warm_target->get_clipping());
+		set_allow_multithreading(warm_target->get_allow_multithreading());
 		set_rend_desc(&warm_target->rend_desc());
+		set_engine(warm_target->get_engine());
 		alive_flag=true;
 #ifndef GLIB_DISPATCHER_BROKEN
 		ready_connection=tile_ready_signal.connect(sigc::mem_fun(*this,&AsyncTarget_Tile::tile_ready));
@@ -128,6 +134,67 @@ public:
 	{
 		Glib::Mutex::Lock lock(mutex);
 		alive_flag=false;
+	}
+
+	virtual bool async_render_tile(synfig::RectInt rect, synfig::Context context, synfig::RendDesc tile_desc, synfig::ProgressCallback *cb=NULL)
+	{
+		if(!alive_flag)
+			return false;
+
+#ifdef SINGLE_THREADED
+		if (single_threaded())
+			return sync_render_tile(rect, context, tile_desc, cb);
+#endif
+
+		if (!get_allow_multithreading())
+			return sync_render_tile(rect, context, tile_desc, cb);
+
+		Glib::Thread *thread = Glib::Thread::create(
+			sigc::hide_return(
+				sigc::bind(
+					sigc::mem_fun(*this, &AsyncTarget_Tile::sync_render_tile),
+					rect, context, tile_desc, (synfig::ProgressCallback*)NULL )),
+				true
+			);
+		assert(thread);
+
+		{
+			Glib::Mutex::Lock lock(mutex);
+			threads.push_back(thread);
+		}
+
+		return true;
+	}
+
+	bool sync_render_tile(synfig::RectInt rect, synfig::Context context, synfig::RendDesc tile_desc, synfig::ProgressCallback *cb)
+	{
+		if(!alive_flag)
+			return false;
+		bool r = warm_target->async_render_tile(rect, context, tile_desc, cb);
+		if (!r) { Glib::Mutex::Lock lock(mutex); err = true; }
+		return r;
+	}
+
+	virtual bool wait_render_tiles(ProgressCallback *cb=NULL)
+	{
+		if(!alive_flag)
+			return false;
+
+		while(true)
+		{
+			Glib::Thread *thread;
+			{
+				Glib::Mutex::Lock lock(mutex);
+				if (threads.empty()) break;
+				thread = threads.front();
+				threads.pop_front();
+
+			}
+			thread->join();
+		}
+
+		{ Glib::Mutex::Lock lock(mutex); if (err) return false; }
+		return warm_target->wait_render_tiles(cb);
 	}
 
 	virtual int next_tile(RectInt& rect)
@@ -149,6 +216,7 @@ public:
 	{
 		if(!alive_flag)
 			return false;
+		{ Glib::Mutex::Lock lock(mutex); err = false; }
 		return warm_target->start_frame(cb);
 	}
 

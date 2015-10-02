@@ -31,17 +31,21 @@
 #	include <config.h>
 #endif
 
+#include <vector>
+#include <algorithm>
+
+#include <ETL/clock>
+
 #include "target_tile.h"
+#include "general.h"
 #include "string.h"
 #include "surface.h"
 #include "render.h"
 #include "canvas.h"
 #include "context.h"
-#include "general.h"
-#include <ETL/clock>
 
-#include <vector>
-#include <algorithm>
+#include "rendering/renderer.h"
+#include "rendering/software/surfacesw.h"
 
 #endif
 
@@ -78,7 +82,8 @@ Target_Tile::Target_Tile():
 	tile_w_(DEF_TILE_WIDTH),
 	tile_h_(DEF_TILE_HEIGHT),
 	curr_tile_(0),
-	clipping_(true)
+	clipping_(true),
+	allow_multithreading_(false)
 {
 	curr_frame_=0;
 }
@@ -112,11 +117,6 @@ Target_Tile::next_tile(RectInt& rect)
 bool
 synfig::Target_Tile::render_frame_(Context context,ProgressCallback *cb)
 {
-	if(tile_w_<=0||tile_h_<=0)
-	{
-		if(cb)cb->error(_("Bad Tile Size"));
-		return false;
-	}
 	const RendDesc &rend_desc(desc);
 
 	etl::clock total_time;
@@ -212,7 +212,7 @@ synfig::Target_Tile::render_frame_(Context context,ProgressCallback *cb)
 		}
 		find_tile_time += tile_timer();
 
-		// Render groups
+		// Render tiles
 		for(std::vector<RectInt>::iterator i = tiles.begin(); i != tiles.end(); ++i)
 		{
 			// Progress callback
@@ -222,7 +222,7 @@ synfig::Target_Tile::render_frame_(Context context,ProgressCallback *cb)
 			if(!super.amount_complete(0,1000))
 				return false;
 
-			// Render group
+			// Render tile
 			tile_timer.reset();
 
 			rect = *i;
@@ -235,55 +235,13 @@ synfig::Target_Tile::render_frame_(Context context,ProgressCallback *cb)
 			RendDesc tile_desc=rend_desc;
 			tile_desc.set_subwindow(rect.minx, rect.miny, rect.maxx - rect.minx, rect.maxy - rect.miny);
 
-			Surface surface;
-			if (!context.accelerated_render(&surface, get_quality(), tile_desc, &super))
-			{
-				// For some reason, the accelerated renderer failed.
-				if(cb)cb->error(_("Accelerated Renderer Failure"));
-				return false;
-			}
-
-			if(!surface)
-			{
-				if(cb)cb->error(_("Bad surface"));
-				return false;
-			}
-
-			switch(get_alpha_mode())
-			{
-				case TARGET_ALPHA_MODE_FILL:
-					for(int i=0; i<surface.get_w()*surface.get_h(); ++i)
-						surface[0][i] = Color::blend(surface[0][i], desc.get_bg_color(), 1.0f);
-					break;
-				case TARGET_ALPHA_MODE_EXTRACT:
-					for(int i=0; i<surface.get_w()*surface.get_h(); ++i)
-					{
-						float a=surface[0][i].get_a();
-						surface[0][i] = Color(a,a,a,a);
-					}
-					break;
-				case TARGET_ALPHA_MODE_REDUCE:
-					for(int i=0;i<surface.get_w()*surface.get_h(); ++i)
-						surface[0][i].set_a(1.0f);
-					break;
-				default:
-					break;
-			}
-
-			work_time += tile_timer();
-
-			// Add the tile to the target
-			tile_timer.reset();
-			if (!add_tile(surface, rect.minx, rect.miny))
-			{
-				if(cb)cb->error(_("add_tile():Unable to put surface on target"));
-				return false;
-			}
-			add_tile_time+=tile_timer();
-
-			signal_progress()();
+			async_render_tile(rect, context, tile_desc, &super);
 		}
 	}
+
+	if (!wait_render_tiles(cb))
+		return false;
+
 	if(cb && !cb->amount_complete(10000,10000))
 		return false;
 
@@ -293,6 +251,85 @@ synfig::Target_Tile::render_frame_(Context context,ProgressCallback *cb)
 #endif
 	return true;
 }
+
+bool
+synfig::Target_Tile::async_render_tile(RectInt rect, Context context, RendDesc tile_desc, ProgressCallback *cb)
+{
+	rendering::SurfaceSW::Handle surfacesw(new rendering::SurfaceSW());
+	surfacesw->set_size(tile_desc.get_w(), tile_desc.get_h());
+	Surface &surface = surfacesw->get_surface();
+	if (get_engine().empty())
+	{
+		if (!context.accelerated_render(&surface, get_quality(), tile_desc, cb))
+		{
+			// For some reason, the accelerated renderer failed.
+			if(cb)cb->error(_("Accelerated Renderer Failure"));
+			return false;
+		}
+	}
+	else
+	{
+		rendering::Task::Handle task = context.build_rendering_task();
+		if (task)
+		{
+			rendering::Renderer::Handle renderer = rendering::Renderer::get_renderer(get_engine());
+			if (!renderer)
+				throw "Renderer '" + get_engine() + "' not found";
+
+			task->target_surface = surfacesw;
+			task->rect_lt = tile_desc.get_tl();
+			task->rect_rb = tile_desc.get_br();
+
+			rendering::Task::List list;
+			list.push_back(task);
+			renderer->run(list);
+		}
+	}
+
+	if(!surface)
+	{
+		if(cb)cb->error(_("Bad surface"));
+		return false;
+	}
+
+	switch(get_alpha_mode())
+	{
+		case TARGET_ALPHA_MODE_FILL:
+			for(int i=0; i<surface.get_w()*surface.get_h(); ++i)
+				surface[0][i] = Color::blend(surface[0][i], desc.get_bg_color(), 1.0f);
+			break;
+		case TARGET_ALPHA_MODE_EXTRACT:
+			for(int i=0; i<surface.get_w()*surface.get_h(); ++i)
+			{
+				float a=surface[0][i].get_a();
+				surface[0][i] = Color(a,a,a,a);
+			}
+			break;
+		case TARGET_ALPHA_MODE_REDUCE:
+			for(int i=0;i<surface.get_w()*surface.get_h(); ++i)
+				surface[0][i].set_a(1.0f);
+			break;
+		default:
+			break;
+	}
+
+	// Add the tile to the target
+	if (!add_tile(surface, rect.minx, rect.miny))
+	{
+		if(cb)cb->error(_("add_tile():Unable to put surface on target"));
+		return false;
+	}
+
+	signal_progress()();
+	return true;
+}
+
+bool
+synfig::Target_Tile::wait_render_tiles(ProgressCallback* /* cb */)
+{
+	return true;
+}
+
 
 bool
 synfig::Target_Tile::render(ProgressCallback *cb)
@@ -353,7 +390,7 @@ synfig::Target_Tile::render(ProgressCallback *cb)
 
 	#ifdef SYNFIG_OPTIMIZE_LAYER_TREE
 				Canvas::Handle op_canvas;
-				if (!getenv("SYNFIG_DISABLE_OPTIMIZE_LAYER_TREE"))
+				if (get_engine().empty() && !getenv("SYNFIG_DISABLE_OPTIMIZE_LAYER_TREE"))
 				{
 					op_canvas = Canvas::create();
 					op_canvas->set_file_name(canvas->get_file_name());
@@ -365,23 +402,6 @@ synfig::Target_Tile::render(ProgressCallback *cb)
 	#else
 				context=canvas->get_context(context_params);
 	#endif
-
-	/*
-				#ifdef SYNFIG_OPTIMIZE_LAYER_TREE
-				Context context;
-				Canvas::Handle op_canvas(Canvas::create());
-				op_canvas->set_file_name(canvas->get_file_name());
-				// Set the time that we wish to render
-				canvas->set_time(t);
-				optimize_layers(canvas->get_time(), canvas->get_context(context_params), op_canvas);
-				context=op_canvas->get_context();
-				#else
-				Context context;
-				// Set the time that we wish to render
-				canvas->set_time(t);
-				context=canvas->get_context(context_params);
-				#endif
-	*/
 
 				if(!render_frame_(context,0))
 					return false;

@@ -94,6 +94,7 @@ using namespace synfig;
 
 static etl::reference_counter synfig_ref_count_(0);
 Main *Main::instance = NULL;
+Mutex general_io_mutex;
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -448,7 +449,7 @@ synfig::error(const char *format,...)
 void
 synfig::error(const String &str)
 {
-	static Mutex mutex; Mutex::Lock lock(mutex);
+	Mutex::Lock lock(general_io_mutex);
 	cerr<<"synfig("<<getpid()<<")"<<current_time().c_str()<<_("error")<<": "<<str.c_str()<<endl;
 }
 
@@ -463,7 +464,7 @@ synfig::warning(const char *format,...)
 void
 synfig::warning(const String &str)
 {
-	static Mutex mutex; Mutex::Lock lock(mutex);
+	Mutex::Lock lock(general_io_mutex);
 	cerr<<"synfig("<<getpid()<<")"<<current_time().c_str()<<_("warning")<<": "<<str.c_str()<<endl;
 }
 
@@ -478,7 +479,7 @@ synfig::info(const char *format,...)
 void
 synfig::info(const String &str)
 {
-	static Mutex mutex; Mutex::Lock lock(mutex);
+	Mutex::Lock lock(general_io_mutex);
 	cerr<<"synfig("<<getpid()<<")"<<current_time().c_str()<<_("info")<<": "<<str.c_str()<<endl;
 }
 

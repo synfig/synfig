@@ -163,7 +163,7 @@ Renderer::optimize_recursive(const Optimizer::List &optimizers, const Optimizer:
 void
 Renderer::optimize(Task::List &list) const
 {
-	debug::Measure t("Renderer::optimize");
+	//debug::Measure t("Renderer::optimize");
 
 	int current_category_id = 0;
 	int current_optimizer_index = 0;
@@ -350,12 +350,12 @@ Renderer::run(const Task::List &list) const
 	}
 	*/
 
-	debug::Measure t("Renderer::run");
+	//debug::Measure t("Renderer::run");
 
 	//log(list, "input list");
 	Task::List optimized_list(list);
 	{
-		debug::Measure t("optimize");
+		//debug::Measure t("optimize");
 		optimize(optimized_list);
 	}
 	//log(optimized_list, "optimized list");
@@ -363,7 +363,7 @@ Renderer::run(const Task::List &list) const
 	bool success = true;
 
 	{
-		debug::Measure t("run tasks");
+		//debug::Measure t("run tasks");
 		Task::RunParams params;
 		for(Task::List::iterator i = optimized_list.begin(); i != optimized_list.end(); ++i)
 		{

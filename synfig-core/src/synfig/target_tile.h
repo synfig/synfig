@@ -33,7 +33,7 @@
 
 /* === M A C R O S ========================================================= */
 
-#define TILE_SIZE 120
+#define TILE_SIZE 64
 
 /* === T Y P E D E F S ===================================================== */
 
@@ -59,6 +59,10 @@ class Target_Tile : public Target
 	//! or not
 	bool clipping_;
 
+	bool allow_multithreading_;
+
+	String engine_;
+
 	struct TileGroup;
 public:
 	typedef etl::handle<Target_Tile> Handle;
@@ -69,6 +73,9 @@ public:
 
 	//! Renders the canvas to the target
 	virtual bool render(ProgressCallback *cb=NULL);
+
+	virtual bool async_render_tile(RectInt rect, Context context, RendDesc tile_desc, ProgressCallback *cb=NULL);
+	virtual bool wait_render_tiles(ProgressCallback *cb=NULL);
 
 	//! Determines which tile needs to be rendered next.
 	/*!	Most cases will not have to redefine this function.
@@ -111,6 +118,14 @@ public:
 	bool get_clipping()const { return clipping_; }
 	//! Sets clipping
 	void set_clipping(bool x) { clipping_=x; }
+	//! Gets clipping
+	bool get_allow_multithreading()const { return allow_multithreading_; }
+	//! Sets clipping
+	void set_allow_multithreading(bool x) { allow_multithreading_=x; }
+	//! Gets engine
+	const String& get_engine()const { return engine_; }
+	//! Sets engine
+	void set_engine(const String &x) { engine_=x; }
 
 private:
 	//! Renders the context to the surface

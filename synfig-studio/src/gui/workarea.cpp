@@ -110,6 +110,7 @@ public:
 	bool low_res;
 	int w,h;
 	int real_tile_w,real_tile_h;
+	int max_tile_w,max_tile_h;
 
 	int refresh_id;
 
@@ -165,13 +166,15 @@ public:
 	}
 public:
 
-	WorkAreaTarget(WorkArea *workarea,int w, int h):
+	WorkAreaTarget(WorkArea *workarea, int w, int h, int max_tile_w, int max_tile_h):
 		workarea(workarea),
 		low_res(workarea->get_low_resolution_flag()),
 		w(w),
 		h(h),
 		real_tile_w(workarea->get_tile_w()),
 		real_tile_h(workarea->get_tile_h()),
+		max_tile_w(max_tile_w),
+		max_tile_h(max_tile_h),
 		refresh_id(workarea->get_refreshes()),
 		onionskin(false),
 		onion_first_tile(),
@@ -229,7 +232,7 @@ public:
 			tiles_queue,
 			refresh_id - onion_skin_queue.size(),
 			workarea->get_window_rect(get_tile_w(), get_tile_h()),
-			VectorInt(2*get_tile_w(), 2*get_tile_h()) );
+			VectorInt(max_tile_w, max_tile_h) );
 
 		if(!onionskin)
 			return synfig::Target_Tile::next_frame(time);
@@ -3121,18 +3124,26 @@ studio::WorkArea::async_update_preview()
 	div = low_resolution ? low_res_pixel_size : 1;
 	if(getenv("SYNFIG_FORCE_GL_RENDER"))
 	{
-		handle<WorkAreaTarget_GL> trgt(new class WorkAreaTarget_GL(this,w,h));
-		trgt->set_rend_desc(&desc);
-		trgt->set_onion_skin(get_onion_skin(), onion_skins);
-		target=trgt;
-	}
-	else if ((w*h > 240*div*135*div && !getenv("SYNFIG_DISABLE_TILE_RENDER")) || getenv("SYNFIG_FORCE_TILE_RENDER"))
-	{
 		// do a tile render
-		handle<WorkAreaTarget> trgt(new class WorkAreaTarget(this,w,h));
+		handle<WorkAreaTarget> trgt(new class WorkAreaTarget(this,w,h,256,256));
 
 		trgt->set_rend_desc(&desc);
 		trgt->set_onion_skin(get_onion_skin(), onion_skins);
+		trgt->set_allow_multithreading(true);
+		trgt->set_engine(
+			String(getenv("SYNFIG_FORCE_GL_RENDER")) == "software"
+		 || String(getenv("SYNFIG_FORCE_GL_RENDER")) == "gl"
+		  ? String(getenv("SYNFIG_FORCE_GL_RENDER")) : "software" );
+		target=trgt;
+	}
+	else if (!getenv("SYNFIG_DISABLE_TILE_RENDER") || getenv("SYNFIG_FORCE_TILE_RENDER"))
+	{
+		// do a tile render
+		handle<WorkAreaTarget> trgt(new class WorkAreaTarget(this,w,h,256,256));
+
+		trgt->set_rend_desc(&desc);
+		trgt->set_onion_skin(get_onion_skin(), onion_skins);
+		trgt->set_allow_multithreading(true);
 		target=trgt;
 	}
 	else
@@ -3262,7 +3273,7 @@ again:
 
 	// Create the render target
 	handle<Target> target;
-	target=new class WorkAreaTarget(this, w, h);
+	target=new class WorkAreaTarget(this, w, h, 1024, 1024);
 
 	target->set_rend_desc(&desc);
 
