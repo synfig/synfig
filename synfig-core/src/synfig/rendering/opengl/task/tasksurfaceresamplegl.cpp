@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/opengl/task/tasksurfaceresamplegl
+/*!	\file synfig/rendering/opengl/task/tasksurfaceresamplegl.cpp
 **	\brief TaskSurfaceResampleGL
 **
 **	$Id$
