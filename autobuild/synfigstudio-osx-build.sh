@@ -449,7 +449,7 @@ mkdmg()
 
 	echo "Creating and attaching disk image..."
 	[ ! -e "$TRANSITORY_FILENAME" ] || rm -rf "$TRANSITORY_FILENAME"
-	/usr/bin/hdiutil create -type SPARSE -size 3072m -fs "Case-sensitive HFS+" -volname "$VOLNAME" -attach "$TRANSITORY_FILENAME"
+	/usr/bin/hdiutil create -type SPARSE -size 3072m -fs "HFS+" -volname "$VOLNAME" -attach "$TRANSITORY_FILENAME"
 
 	echo "Copying files to disk image..."
 	cp -R $APPDIR /Volumes/"$VOLNAME"/SynfigStudio.app
