@@ -3125,11 +3125,11 @@ studio::WorkArea::async_update_preview()
 	if(getenv("SYNFIG_FORCE_GL_RENDER"))
 	{
 		// do a tile render
-		handle<WorkAreaTarget> trgt(new class WorkAreaTarget(this,w,h,256,256));
+		handle<WorkAreaTarget> trgt(new class WorkAreaTarget(this,w,h,2048,2048));
 
 		trgt->set_rend_desc(&desc);
 		trgt->set_onion_skin(get_onion_skin(), onion_skins);
-		trgt->set_allow_multithreading(true);
+		//trgt->set_allow_multithreading(true);
 		trgt->set_engine(
 			String(getenv("SYNFIG_FORCE_GL_RENDER")) == "software"
 		 || String(getenv("SYNFIG_FORCE_GL_RENDER")) == "gl"
@@ -3139,11 +3139,11 @@ studio::WorkArea::async_update_preview()
 	else if (!getenv("SYNFIG_DISABLE_TILE_RENDER") || getenv("SYNFIG_FORCE_TILE_RENDER"))
 	{
 		// do a tile render
-		handle<WorkAreaTarget> trgt(new class WorkAreaTarget(this,w,h,256,256));
+		handle<WorkAreaTarget> trgt(new class WorkAreaTarget(this,w,h,2048,2048));
 
 		trgt->set_rend_desc(&desc);
 		trgt->set_onion_skin(get_onion_skin(), onion_skins);
-		trgt->set_allow_multithreading(true);
+		//trgt->set_allow_multithreading(true);
 		target=trgt;
 	}
 	else
