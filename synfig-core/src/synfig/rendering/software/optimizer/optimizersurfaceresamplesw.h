@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/common/task/taskcomposite.h
-**	\brief TaskComposite Header
+/*!	\file synfig/rendering/opengl/optimizer/optimizersurfaceresamplesw.h
+**	\brief OptimizerSurfaceResampleSW Header
 **
 **	$Id$
 **
@@ -22,12 +22,12 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_RENDERING_TASKCOMPOSITE_H
-#define __SYNFIG_RENDERING_TASKCOMPOSITE_H
+#ifndef __SYNFIG_RENDERING_OPTIMIZERSURFACERESAMPLESW_H
+#define __SYNFIG_RENDERING_OPTIMIZERSURFACERESAMPLESW_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/color.h>
+#include "../../optimizer.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -40,24 +40,17 @@ namespace synfig
 namespace rendering
 {
 
-class TaskComposite
+class OptimizerSurfaceResampleSW: public Optimizer
 {
 public:
-	bool blend;
-	Color::BlendMethod blend_method;
-	Color::value_type amount;
+	OptimizerSurfaceResampleSW()
+	{
+		category_id = CATEGORY_ID_SPECIALIZE;
+		depends_from = CATEGORY_ID_COMMON;
+		for_task = true;
+	}
 
-	TaskComposite():
-		blend(),
-		blend_method(Color::BLEND_COMPOSITE),
-		amount() { }
-
-	virtual ~TaskComposite() { }
-
-	virtual Color::BlendMethodFlags get_supported_blend_methods() const { return 0; }
-
-	bool is_blend_method_supported(Color::BlendMethod blend_method)
-		{ return get_supported_blend_methods() & (1 << blend_method); }
+	virtual void run(const RunParams &params) const;
 };
 
 } /* end namespace rendering */

@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/software/renderersw.cpp
-**	\brief RendererSW
+/*!	\file synfig/rendering/opengl/optimizer/optimizersurfaceresamplegl.cpp
+**	\brief OptimizerSurfaceResampleGL
 **
 **	$Id$
 **
@@ -35,22 +35,10 @@
 #include <signal.h>
 #endif
 
-#include "renderersw.h"
+#include "optimizersurfaceresamplesw.h"
 
-#include "../common/optimizer/optimizercomposite.h"
-#include "../common/optimizer/optimizerlinear.h"
-#include "../common/optimizer/optimizersurface.h"
-#include "../common/optimizer/optimizersurfaceconvert.h"
-#include "../common/optimizer/optimizersurfacecreate.h"
-#include "../common/optimizer/optimizersurfacedestroy.h"
-#include "../common/optimizer/optimizertransformation.h"
-#include "../common/optimizer/optimizertransformationaffine.h"
-
-#include "optimizer/optimizerblendsw.h"
-#include "optimizer/optimizerblurpreparedsw.h"
-#include "optimizer/optimizercontoursw.h"
-#include "optimizer/optimizermeshsw.h"
-#include "optimizer/optimizersurfaceresamplesw.h"
+#include "../task/tasksurfaceresamplesw.h"
+#include "../surfacesw.h"
 
 #endif
 
@@ -65,22 +53,18 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
-RendererSW::RendererSW()
+void
+OptimizerSurfaceResampleSW::run(const RunParams& params) const
 {
-	// register optimizers
-	register_optimizer(new OptimizerTransformationAffine());
-
-	register_optimizer(new OptimizerBlendSW());
-	register_optimizer(new OptimizerContourSW());
-	register_optimizer(new OptimizerSurfaceResampleSW());
-
-	register_optimizer(new OptimizerComposite());
-	register_optimizer(new OptimizerSurfaceConvert());
-
-	register_optimizer(new OptimizerLinear());
-	register_optimizer(new OptimizerSurfaceCreate());
+	TaskSurfaceResample::Handle resample = TaskSurfaceResample::Handle::cast_dynamic(params.ref_task);
+	if ( resample
+	  && resample->target_surface
+	  && resample.type_equal<TaskSurfaceResample>() )
+	{
+		TaskSurfaceResampleSW::Handle resample_gl;
+		init_and_assign_all<SurfaceSW>(resample_gl, resample);
+		apply(params, resample_gl);
+	}
 }
-
-RendererSW::~RendererSW() { }
 
 /* === E N T R Y P O I N T ================================================= */

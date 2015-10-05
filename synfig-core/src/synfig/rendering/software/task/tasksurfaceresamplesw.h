@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/common/task/taskcomposite.h
-**	\brief TaskComposite Header
+/*!	\file synfig/rendering/opengl/task/tasksurfaceresamplesw.h
+**	\brief TaskSurfaceResampleSW Header
 **
 **	$Id$
 **
@@ -22,12 +22,14 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_RENDERING_TASKCOMPOSITE_H
-#define __SYNFIG_RENDERING_TASKCOMPOSITE_H
+#ifndef __SYNFIG_RENDERING_TASKSURFACERESAMPLESW_H
+#define __SYNFIG_RENDERING_TASKSURFACERESAMPLESW_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/color.h>
+#include "tasksw.h"
+#include "../../common/task/tasksurfaceresample.h"
+#include "../../common/task/taskcomposite.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -40,24 +42,12 @@ namespace synfig
 namespace rendering
 {
 
-class TaskComposite
+class TaskSurfaceResampleSW: public TaskSurfaceResample, public TaskComposite, public TaskSW
 {
 public:
-	bool blend;
-	Color::BlendMethod blend_method;
-	Color::value_type amount;
-
-	TaskComposite():
-		blend(),
-		blend_method(Color::BLEND_COMPOSITE),
-		amount() { }
-
-	virtual ~TaskComposite() { }
-
-	virtual Color::BlendMethodFlags get_supported_blend_methods() const { return 0; }
-
-	bool is_blend_method_supported(Color::BlendMethod blend_method)
-		{ return get_supported_blend_methods() & (1 << blend_method); }
+	typedef etl::handle<TaskSurfaceResampleSW> Handle;
+	Task::Handle clone() const { return clone_pointer(this); }
+	virtual bool run(RunParams &params) const;
 };
 
 } /* end namespace rendering */
