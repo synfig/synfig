@@ -62,6 +62,8 @@ TaskSurfaceResampleSW::run(RunParams & /* params */) const
 	synfig::Surface &target =
 		SurfaceSW::Handle::cast_dynamic(target_surface)->get_surface();
 
+	// transformation matrix
+
 	Matrix bounds_transfromation;
 	bounds_transfromation.m00 = get_pixels_per_unit()[0];
 	bounds_transfromation.m11 = get_pixels_per_unit()[1];
@@ -69,6 +71,8 @@ TaskSurfaceResampleSW::run(RunParams & /* params */) const
 	bounds_transfromation.m21 = -rect_lt[1] * bounds_transfromation.m11;
 
 	Matrix matrix = transformation * bounds_transfromation;
+
+	// bounds
 
 	Rect boundsf(   matrix.get_transformed(Vector(0.0, 0.0)) );
 	boundsf.expand( matrix.get_transformed(Vector(1.0, 0.0)) );
@@ -81,34 +85,70 @@ TaskSurfaceResampleSW::run(RunParams & /* params */) const
 					(int)floor(boundsf.maxy) + 2 );
 	etl::set_intersect(bounds, bounds, RectInt(0, 0, target.get_w(), target.get_h()));
 
-	Matrix a_matrix;
-	a_matrix.m00 = (crop_rb[0] - crop_lt[0])*a.get_w();
-	a_matrix.m11 = (crop_rb[1] - crop_lt[1])*a.get_h();
-	a_matrix.m20 = -crop_lt[0] * a_matrix.m00;
-	a_matrix.m21 = -crop_lt[1] * a_matrix.m11;
+	// texture matrices
 
 	Matrix inv_matrix = matrix;
 	inv_matrix.invert();
 
-	Matrix sub_matrix = inv_matrix * a_matrix;
+	Matrix pos_matrix;
+	pos_matrix.m00 = (crop_rb[0] - crop_lt[0])*a.get_w();
+	pos_matrix.m11 = (crop_rb[1] - crop_lt[1])*a.get_h();
+	pos_matrix.m20 = -crop_lt[0] * pos_matrix.m00;
+	pos_matrix.m21 = -crop_lt[1] * pos_matrix.m11;
+
+	Matrix aa0_matrix;
+	aa0_matrix.m00 = matrix.get_axis_x().mag();
+	aa0_matrix.m11 = matrix.get_axis_y().mag();
+	aa0_matrix.m20 = 0.5;
+	aa0_matrix.m21 = 0.5;
+
+	Matrix aa1_matrix;
+	aa1_matrix.m00 = -aa0_matrix.m00;
+	aa1_matrix.m11 = -aa0_matrix.m11;
+	aa1_matrix.m20 = 0.5 - 1.0*aa1_matrix.m00;
+	aa1_matrix.m21 = 0.5 - 1.0*aa1_matrix.m11;
+
+	pos_matrix = inv_matrix * pos_matrix;
+	aa0_matrix = inv_matrix * aa0_matrix;
+	aa1_matrix = inv_matrix * aa1_matrix;
 
 	// TODO: gamma, interpolation
 
-	Vector aa_offset( 0.5*a_matrix.m00, 0.5*a_matrix.m11 );
-	Vector aa_scale( 2.0/(a_matrix.m00*inv_matrix.get_axis_x().mag()),
-					  2.0/(a_matrix.m11*inv_matrix.get_axis_y().mag()) );
-	synfig::Surface::alpha_pen p(target.get_pen(0, 0));
+	int idx = bounds.minx - bounds.maxx;
+
+	Vector pos   = pos_matrix.get_transformed( Vector((Real)bounds.minx, (Real)bounds.miny) );
+	Vector dx    = pos_matrix.get_transformed( Vector(1.0, 0.0), false );
+	Vector dy    = pos_matrix.get_transformed( Vector((Real)idx, 1.0), false );
+
+	Vector aa0   = aa0_matrix.get_transformed( Vector((Real)bounds.minx, (Real)bounds.miny) );
+	Vector dxaa0 = aa0_matrix.get_transformed( Vector(1.0, 0.0), false );
+	Vector dyaa0 = aa0_matrix.get_transformed( Vector((Real)(bounds.minx - bounds.maxx), 1.0), false );
+
+	Vector aa1   = aa1_matrix.get_transformed( Vector((Real)bounds.minx, (Real)bounds.miny) );
+	Vector dxaa1 = aa1_matrix.get_transformed( Vector(1.0, 0.0), false );
+	Vector dyaa1 = aa1_matrix.get_transformed( Vector((Real)idx, 1.0), false );
+
+	synfig::Surface::alpha_pen p(target.get_pen(bounds.minx, bounds.miny));
 	p.set_blend_method(blend ? blend_method : Color::BLEND_COMPOSITE);
 	for(int y = bounds.miny; y < bounds.maxy; ++y)
 	{
 		for(int x = bounds.minx; x < bounds.maxx; ++x)
 		{
-			Vector pos = sub_matrix.get_transformed(Vector((Real)x, (Real)y));
-			Real aa = std::max(std::min( (aa_offset[0] - fabs(aa_offset[0] - pos[0]))*aa_scale[0] + 0.5, 1.0), 0.0)
-					* std::max(std::min( (aa_offset[1] - fabs(aa_offset[1] - pos[1]))*aa_scale[1] + 0.5, 1.0), 0.0);
-			p.move_to(x, y);
+			Real aa = std::max(std::min(aa0[0], 1.0), 0.0)
+					* std::max(std::min(aa0[1], 1.0), 0.0)
+					* std::max(std::min(aa1[0], 1.0), 0.0)
+					* std::max(std::min(aa1[1], 1.0), 0.0);
 			p.put_value(a.linear_sample(pos[0] - 0.5, pos[1] - 0.5), aa);
+			pos += dx;
+			aa0 += dxaa0;
+			aa1 += dxaa1;
+			p.inc_x();
 		}
+		p.inc_x(idx);
+		p.inc_y();
+		pos += dy;
+		aa0 += dyaa0;
+		aa1 += dyaa1;
 	}
 
 	return true;
