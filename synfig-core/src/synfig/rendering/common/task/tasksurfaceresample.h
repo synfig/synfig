@@ -48,11 +48,16 @@ class TaskSurfaceResample: public Task, public TaskTransformableAffine
 public:
 	typedef etl::handle<TaskSurfaceResample> Handle;
 
+	Color::value_type gamma;
 	Color::Interpolation interpolation;
 	Vector crop_lt;
 	Vector crop_rb;
 
-	TaskSurfaceResample(): interpolation(), crop_rb(1.0, 1.0) { }
+	TaskSurfaceResample():
+		gamma(1.f),
+		interpolation(Color::INTERPOLATION_LINEAR),
+		crop_rb(1.0, 1.0)
+	{ }
 
 	Task::Handle clone() const { return clone_pointer(this); }
 

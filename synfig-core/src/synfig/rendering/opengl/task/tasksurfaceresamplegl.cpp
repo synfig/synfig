@@ -65,6 +65,8 @@ TaskSurfaceResampleGL::run(RunParams & /* params */) const
 	SurfaceGL::Handle target =
 		SurfaceGL::Handle::cast_dynamic(target_surface);
 
+	// TODO: gamma
+
 	Vector rect_size = rect_rb - rect_lt;
 	Matrix bounds_transfromation;
 	bounds_transfromation.m00 = fabs(rect_size[0]) > 1e-10 ? 2.0/rect_size[0] : 0.0;

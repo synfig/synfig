@@ -54,6 +54,118 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
+class TaskSurfaceResampleSW::Helper
+{
+public:
+	struct Args {
+		const synfig::Surface &surface;
+		const RectInt &bounds;
+		float gamma_adjust;
+		Vector pos, pos_dx, pos_dy;
+		Vector aa0, aa0_dx, aa0_dy;
+		Vector aa1, aa1_dx, aa1_dy;
+		Args(const synfig::Surface &surface, const RectInt &bounds):
+			surface(surface), bounds(bounds), gamma_adjust() { }
+	};
+
+	static inline Color nearest(const synfig::Surface &surface, const Vector &pos)
+	{
+		return surface[ std::max(std::min((int)floor(pos[1]), surface.get_h()-1), 0) ]
+					  [ std::max(std::min((int)floor(pos[0]), surface.get_w()-1), 0) ];
+	}
+
+	static inline Color linear(const synfig::Surface &surface, const Vector &pos)
+		{ return surface.linear_sample(pos[0] - 0.5, pos[1] - 0.5); }
+
+	static inline Color cosine(const synfig::Surface &surface, const Vector &pos)
+		{ return surface.cosine_sample(pos[0] - 0.5, pos[1] - 0.5); }
+
+	static inline Color cubic(const synfig::Surface &surface, const Vector &pos)
+		{ return surface.cubic_sample(pos[0] - 0.5, pos[1] - 0.5); }
+
+	static inline void gamma(Color &color, float gamma_adjust)
+	{
+		if (gamma_adjust != 1.f)
+		{
+			color.set_r( powf((float)color.get_r(), gamma_adjust) );
+			color.set_g( powf((float)color.get_g(), gamma_adjust) );
+			color.set_b( powf((float)color.get_b(), gamma_adjust) );
+		}
+	}
+
+	static inline void nogamma(Color&, float) { }
+
+	template<typename pen, void gamma(Color&, float), Color filter(const synfig::Surface&, const Vector&)>
+	static inline void fill(pen &p, Args &a)
+	{
+		int idx = a.bounds.maxx - a.bounds.minx;
+		int idy = a.bounds.maxy - a.bounds.miny;
+		for(int y = idy; y; --y)
+		{
+			for(int x = idx; x; --x)
+			{
+				if ( a.aa0[0] > 0.0 && a.aa0[1] > 0.0
+				  && a.aa1[0] > 0.0 && a.aa1[1] > 0.0 )
+				{
+					Color c = filter(a.surface, a.pos);
+					c.set_a( c.get_a()
+						   * std::min(a.aa0[0], 1.0)
+						   * std::min(a.aa0[1], 1.0)
+						   * std::min(a.aa1[0], 1.0)
+						   * std::min(a.aa1[1], 1.0) );
+					gamma(c, a.gamma_adjust);
+					p.put_value(c);
+				}
+
+				a.pos += a.pos_dx;
+				a.aa0 += a.aa0_dx;
+				a.aa1 += a.aa1_dx;
+				p.inc_x();
+			}
+			p.dec_x(idx);
+			p.inc_y();
+			a.pos += a.pos_dy;
+			a.aa0 += a.aa0_dy;
+			a.aa1 += a.aa1_dy;
+		}
+	}
+
+	template<typename pen, void gamma(Color&, float)>
+	static inline void fill(
+		Color::Interpolation interpolation,
+		pen &p, Args &a )
+	{
+		switch(interpolation)
+		{
+		case Color::INTERPOLATION_LINEAR:
+			fill<pen, gamma, linear>(p, a); break;
+		case Color::INTERPOLATION_COSINE:
+			fill<pen, gamma, cosine>(p, a); break;
+		case Color::INTERPOLATION_CUBIC:
+			fill<pen, gamma, cubic>(p, a); break;
+		default:
+			fill<pen, gamma, nearest>(p, a); break;
+		}
+	}
+
+	template<typename pen>
+	static inline void fill(
+		Color::value_type gamma_adjust,
+		Color::Interpolation interpolation,
+		pen &p, Args &a )
+	{
+		if (fabsf(gamma_adjust - 1.f) < 1e-6)
+		{
+			fill<pen, nogamma>(interpolation, p, a);
+		}
+		else
+		{
+			a.gamma_adjust = gamma_adjust;
+			fill<pen, gamma>(interpolation, p, a);
+		}
+	}
+};
+
 bool
 TaskSurfaceResampleSW::run(RunParams & /* params */) const
 {
@@ -87,68 +199,62 @@ TaskSurfaceResampleSW::run(RunParams & /* params */) const
 
 	// texture matrices
 
-	Matrix inv_matrix = matrix;
-	inv_matrix.invert();
-
-	Matrix pos_matrix;
-	pos_matrix.m00 = (crop_rb[0] - crop_lt[0])*a.get_w();
-	pos_matrix.m11 = (crop_rb[1] - crop_lt[1])*a.get_h();
-	pos_matrix.m20 = -crop_lt[0] * pos_matrix.m00;
-	pos_matrix.m21 = -crop_lt[1] * pos_matrix.m11;
-
-	Matrix aa0_matrix;
-	aa0_matrix.m00 = matrix.get_axis_x().mag();
-	aa0_matrix.m11 = matrix.get_axis_y().mag();
-	aa0_matrix.m20 = 0.5;
-	aa0_matrix.m21 = 0.5;
-
-	Matrix aa1_matrix;
-	aa1_matrix.m00 = -aa0_matrix.m00;
-	aa1_matrix.m11 = -aa0_matrix.m11;
-	aa1_matrix.m20 = 0.5 - 1.0*aa1_matrix.m00;
-	aa1_matrix.m21 = 0.5 - 1.0*aa1_matrix.m11;
-
-	pos_matrix = inv_matrix * pos_matrix;
-	aa0_matrix = inv_matrix * aa0_matrix;
-	aa1_matrix = inv_matrix * aa1_matrix;
-
-	// TODO: gamma, interpolation
-
-	int idx = bounds.minx - bounds.maxx;
-
-	Vector pos   = pos_matrix.get_transformed( Vector((Real)bounds.minx, (Real)bounds.miny) );
-	Vector dx    = pos_matrix.get_transformed( Vector(1.0, 0.0), false );
-	Vector dy    = pos_matrix.get_transformed( Vector((Real)idx, 1.0), false );
-
-	Vector aa0   = aa0_matrix.get_transformed( Vector((Real)bounds.minx, (Real)bounds.miny) );
-	Vector dxaa0 = aa0_matrix.get_transformed( Vector(1.0, 0.0), false );
-	Vector dyaa0 = aa0_matrix.get_transformed( Vector((Real)(bounds.minx - bounds.maxx), 1.0), false );
-
-	Vector aa1   = aa1_matrix.get_transformed( Vector((Real)bounds.minx, (Real)bounds.miny) );
-	Vector dxaa1 = aa1_matrix.get_transformed( Vector(1.0, 0.0), false );
-	Vector dyaa1 = aa1_matrix.get_transformed( Vector((Real)idx, 1.0), false );
-
-	synfig::Surface::alpha_pen p(target.get_pen(bounds.minx, bounds.miny));
-	p.set_blend_method(blend ? blend_method : Color::BLEND_COMPOSITE);
-	for(int y = bounds.miny; y < bounds.maxy; ++y)
+	if (bounds.valid())
 	{
-		for(int x = bounds.minx; x < bounds.maxx; ++x)
+		Matrix inv_matrix = matrix;
+		inv_matrix.invert();
+
+		Matrix pos_matrix;
+		pos_matrix.m00 = (crop_rb[0] - crop_lt[0])*a.get_w();
+		pos_matrix.m11 = (crop_rb[1] - crop_lt[1])*a.get_h();
+		pos_matrix.m20 = -crop_lt[0] * pos_matrix.m00;
+		pos_matrix.m21 = -crop_lt[1] * pos_matrix.m11;
+
+		Matrix aa0_matrix;
+		aa0_matrix.m00 = matrix.get_axis_x().mag();
+		aa0_matrix.m11 = matrix.get_axis_y().mag();
+		aa0_matrix.m20 = 0.5;
+		aa0_matrix.m21 = 0.5;
+
+		Matrix aa1_matrix;
+		aa1_matrix.m00 = -aa0_matrix.m00;
+		aa1_matrix.m11 = -aa0_matrix.m11;
+		aa1_matrix.m20 = 0.5 - 1.0*aa1_matrix.m00;
+		aa1_matrix.m21 = 0.5 - 1.0*aa1_matrix.m11;
+
+		pos_matrix = inv_matrix * pos_matrix;
+		aa0_matrix = inv_matrix * aa0_matrix;
+		aa1_matrix = inv_matrix * aa1_matrix;
+
+		Helper::Args args(a, bounds);
+
+		Vector start((Real)bounds.minx, (Real)bounds.miny);
+		Vector dx(1.0, 0.0);
+		Vector dy((Real)(bounds.minx - bounds.maxx), 1.0);
+
+		args.pos    = pos_matrix.get_transformed( start );
+		args.pos_dx = pos_matrix.get_transformed( dx, false );
+		args.pos_dy = pos_matrix.get_transformed( dy, false );
+
+		args.aa0    = aa0_matrix.get_transformed( start );
+		args.aa0_dx = aa0_matrix.get_transformed( dx, false );
+		args.aa0_dy = aa0_matrix.get_transformed( dy, false );
+
+		args.aa1    = aa1_matrix.get_transformed( start );
+		args.aa1_dx = aa1_matrix.get_transformed( dx, false );
+		args.aa1_dy = aa1_matrix.get_transformed( dy, false );
+
+		if (blend)
 		{
-			Real aa = std::max(std::min(aa0[0], 1.0), 0.0)
-					* std::max(std::min(aa0[1], 1.0), 0.0)
-					* std::max(std::min(aa1[0], 1.0), 0.0)
-					* std::max(std::min(aa1[1], 1.0), 0.0);
-			p.put_value(a.linear_sample(pos[0] - 0.5, pos[1] - 0.5), aa);
-			pos += dx;
-			aa0 += dxaa0;
-			aa1 += dxaa1;
-			p.inc_x();
+			synfig::Surface::alpha_pen p(target.get_pen(bounds.minx, bounds.miny));
+			p.set_blend_method(blend_method);
+			Helper::fill(gamma, interpolation, p, args);
 		}
-		p.inc_x(idx);
-		p.inc_y();
-		pos += dy;
-		aa0 += dyaa0;
-		aa1 += dyaa1;
+		else
+		{
+			synfig::Surface::pen p(target.get_pen(bounds.minx, bounds.miny));
+			Helper::fill(gamma, interpolation, p, args);
+		}
 	}
 
 	return true;

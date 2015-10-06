@@ -352,13 +352,13 @@ Renderer::run(const Task::List &list) const
 
 	//debug::Measure t("Renderer::run");
 
-	//log(list, "input list");
+	log(list, "input list");
 	Task::List optimized_list(list);
 	{
 		//debug::Measure t("optimize");
 		optimize(optimized_list);
 	}
-	//log(optimized_list, "optimized list");
+	log(optimized_list, "optimized list");
 
 	bool success = true;
 
