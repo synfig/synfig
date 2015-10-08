@@ -4,6 +4,16 @@ More detailed notes are available on the news page:
 
 http://synfig.org/cms/en/news/
 
+ 1.0.2 (git tag "1.0.2") - October 9, 2015 - Bugfix release.
+ 
+  * Dropdown list for Switch Group to choose active layer. Thanks to Max May.
+  * Allow to load Gimp Palette files (.gpl) in Palette Editor Panel (issue #830). Thanks to Tony (aka BobSynfig).
+  * Fix crash on linking regular vertex and width point center (issue #889). Thanks to Jerome Blanchi.
+  * Fix crash of "Link to Spline" operation when trying to link vertex to the spline it belongs to (issue #574). Thanks to Jerome Blanchi.
+  * The "Add" convert type now supports reverse manipulations for Real and Angle values.
+  * Rendering optimizations (every workarea update is faster by 50ms now).
+  * Forbid creating recursive (looped) connections for parameters (issue #48). Thanks to Jerome Blanchi.
+ 
  1.0.1 (git tag "1.0.1") - July 21, 2015 - Bugfix release.
  
   * Fix switching bone parent.
