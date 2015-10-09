@@ -34,55 +34,59 @@
 #	include <config.h>
 #endif
 
-#include <cstdlib>
 #include <cstdio>
+#include <cstdlib>
 #include <cstring>
-#include <ETL/stringf>
-#include <libxml++/libxml++.h>
+
+#include <iostream>
+#include <map>
 #include <vector>
 #include <stdexcept>
-#include <iostream>
 
-#include <synfig/layers/layer_group.h>
+#include <libxml++/libxml++.h>
+#include <sigc++/bind.h>
+
+#include <ETL/stringf>
+
 #include "loadcanvas.h"
-#include "valuenode.h"
-#include "boneweightpair.h"
-#include "valuenodes/valuenode_animated.h"
-#include "valuenodes/valuenode_composite.h"
-#include "valuenodes/valuenode_const.h"
-#include "valuenodes/valuenode_linear.h"
-#include "valuenodes/valuenode_dynamiclist.h"
-#include "valuenodes/valuenode_reference.h"
-#include "valuenodes/valuenode_add.h"
-#include "valuenodes/valuenode_scale.h"
-#include "valuenodes/valuenode_exp.h"
-#include "valuenodes/valuenode_timedswap.h"
-#include "valuenodes/valuenode_twotone.h"
-#include "valuenodes/valuenode_stripes.h"
-#include "valuenodes/valuenode_segcalctangent.h"
-#include "valuenodes/valuenode_segcalcvertex.h"
-#include "valuenodes/valuenode_bline.h"
-#include "valuenodes/valuenode_bone.h"
-#include "valuenodes/valuenode_boneweightpair.h"
-#include "valuenodes/valuenode_bonelink.h"
-#include "valuenodes/valuenode_weightedaverage.h"
-#include "valuenodes/valuenode_wplist.h"
-#include "valuenodes/valuenode_dilist.h"
-#include "valueoperations.h"
 
+#include "general.h"
+#include "localization.h"
+
+#include "boneweightpair.h"
+#include "boneweightpair.h"
+#include "exception.h"
+#include "importer.h"
+#include "gradient.h"
 #include "layer.h"
 #include "string.h"
-
-#include "exception.h"
-
-#include "gradient.h"
-
-#include "importer.h"
-
+#include "valuenode.h"
+#include "valueoperations.h"
 #include "zstreambuf.h"
 
-#include <map>
-#include <sigc++/bind.h>
+#include "layers/layer_group.h"
+
+#include "valuenodes/valuenode_add.h"
+#include "valuenodes/valuenode_animated.h"
+#include "valuenodes/valuenode_bline.h"
+#include "valuenodes/valuenode_bone.h"
+#include "valuenodes/valuenode_bonelink.h"
+#include "valuenodes/valuenode_boneweightpair.h"
+#include "valuenodes/valuenode_composite.h"
+#include "valuenodes/valuenode_const.h"
+#include "valuenodes/valuenode_dilist.h"
+#include "valuenodes/valuenode_dynamiclist.h"
+#include "valuenodes/valuenode_exp.h"
+#include "valuenodes/valuenode_linear.h"
+#include "valuenodes/valuenode_reference.h"
+#include "valuenodes/valuenode_scale.h"
+#include "valuenodes/valuenode_segcalctangent.h"
+#include "valuenodes/valuenode_segcalcvertex.h"
+#include "valuenodes/valuenode_stripes.h"
+#include "valuenodes/valuenode_timedswap.h"
+#include "valuenodes/valuenode_twotone.h"
+#include "valuenodes/valuenode_weightedaverage.h"
+#include "valuenodes/valuenode_wplist.h"
 
 #endif
 

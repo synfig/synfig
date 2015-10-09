@@ -29,6 +29,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "docks/dock_keyframes.h"
 #include "app.h"
 
@@ -43,7 +45,7 @@
 #include "canvasview.h"
 #include "actionmanagers/keyframeactionmanager.h"
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

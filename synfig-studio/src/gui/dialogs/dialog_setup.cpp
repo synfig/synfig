@@ -31,22 +31,28 @@
 #	include <config.h>
 #endif
 
-#include "dialogs/dialog_setup.h"
-#include "app.h"
+#include <synfig/general.h>
+
 #include <gtkmm/scale.h>
 #include <gtkmm/table.h>
 #include <gtkmm/frame.h>
 #include <gtkmm/notebook.h>
-#include "widgets/widget_enum.h"
-#include "autorecover.h"
 
 #include <ETL/stringf>
 #include <ETL/misc>
-#include "general.h"
+
+#include <synfig/rendering/renderer.h>
 
 #include <synfig/rendering/renderer.h>
 
 #include <synfigapp/canvasinterface.h>
+
+#include "dialogs/dialog_setup.h"
+
+#include "app.h"
+#include <gui/localization.h>
+#include "widgets/widget_enum.h"
+#include "autorecover.h"
 
 #endif
 

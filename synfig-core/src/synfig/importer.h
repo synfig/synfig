@@ -28,13 +28,17 @@
 /* === H E A D E R S ======================================================= */
 
 #include <cstdio>
+
 #include <map>
+
 #include <ETL/handle>
+
+#include "filesystem.h"
+#include "gamma.h"
+#include "progresscallback.h"
+#include "renddesc.h"
 #include "string.h"
 #include "time.h"
-#include "gamma.h"
-#include "renddesc.h"
-#include "filesystem.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -93,7 +97,6 @@
 namespace synfig {
 
 class Surface;
-class ProgressCallback;
 
 /*!	\class Importer
 **	\brief Used for importing bitmaps of various formats, including animations.

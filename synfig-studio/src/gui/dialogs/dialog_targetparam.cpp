@@ -23,8 +23,10 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <synfig/general.h>
+
+#include <gui/localization.h>
 #include "dialogs/dialog_targetparam.h"
-#include "general.h"
 
 /* === U S I N G =========================================================== */
 

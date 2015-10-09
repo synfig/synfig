@@ -30,6 +30,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "action.h"
 #include "instance.h"
 
@@ -149,7 +151,7 @@
 
 #include "canvasinterface.h"
 
-#include "general.h"
+#include <synfigapp/localization.h>
 
 #endif
 

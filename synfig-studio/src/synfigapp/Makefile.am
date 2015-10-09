@@ -307,7 +307,7 @@ SYNFIGAPPHH = \
 	settings.h \
 	uimanager.h \
 	value_desc.h \
-	general.h
+	localization.h
 
 SYNFIGAPPCC = \
 	$(ACTIONCC) \

@@ -30,6 +30,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "docks/dock_metadata.h"
 #include "app.h"
 
@@ -43,7 +45,7 @@
 #include "trees/metadatatree.h"
 #include "canvasview.h"
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

@@ -29,6 +29,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "dialogs/dialog_keyframe.h"
 #include <gtkmm/scrolledwindow.h>
 #include <gtkmm/button.h>
@@ -36,7 +38,7 @@
 #include <synfigapp/action.h>
 #include <synfigapp/instance.h>
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

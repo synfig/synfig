@@ -29,11 +29,12 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "cvs.h"
 #include <ETL/stringf>
 #include <fstream>
 #include <iostream>
-#include <synfig/general.h>
 #include <cstdlib>
 
 
@@ -43,7 +44,7 @@
 
 #include <cassert>
 
-#include "general.h"
+#include <synfigapp/localization.h>
 
 #endif
 

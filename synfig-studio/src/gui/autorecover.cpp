@@ -69,7 +69,9 @@
 #include <unistd.h>
 #endif
 
-#include "general.h"
+#include <synfig/general.h>
+
+#include <gui/localization.h>
 
 #endif
 

@@ -31,6 +31,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "widgets/widget_curves.h"
 #include <cmath>
 #include "app.h"
@@ -40,7 +42,7 @@
 #include <ETL/misc>
 #include <sigc++/object.h>
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

@@ -38,7 +38,7 @@
 #include <synfig/general.h>
 #include <synfig/guid.h>
 
-#include "general.h"
+#include <synfigapp/localization.h>
 
 #endif
 

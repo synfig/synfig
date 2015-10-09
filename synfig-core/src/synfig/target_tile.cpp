@@ -37,12 +37,15 @@
 #include <ETL/clock>
 
 #include "target_tile.h"
+
 #include "general.h"
-#include "string.h"
-#include "surface.h"
-#include "render.h"
+#include <synfig/localization.h>
+
 #include "canvas.h"
 #include "context.h"
+#include "render.h"
+#include "string.h"
+#include "surface.h"
 
 #include "rendering/renderer.h"
 #include "rendering/software/surfacesw.h"

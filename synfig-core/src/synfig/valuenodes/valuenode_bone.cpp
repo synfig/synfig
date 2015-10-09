@@ -34,6 +34,7 @@
 #include "valuenode_const.h"
 #include "valuenode_animated.h"
 #include <synfig/general.h>
+#include <synfig/localization.h>
 #include <synfig/canvas.h>
 
 #endif

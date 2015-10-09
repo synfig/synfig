@@ -30,11 +30,12 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include <gtkmm/label.h>
 #include <gtkmm/scrolledwindow.h>
-#include <synfig/general.h>
 #include "docks/dialog_tooloptions.h"
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

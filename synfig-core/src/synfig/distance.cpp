@@ -35,6 +35,7 @@
 #include "distance.h"
 #include "renddesc.h"
 #include "general.h"
+#include <synfig/localization.h>
 #include <ctype.h>
 #endif
 

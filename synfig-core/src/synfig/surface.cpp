@@ -38,6 +38,7 @@
 #include "target_cairo.h"
 #include "target_tile.h"
 #include "general.h"
+#include <synfig/localization.h>
 
 #ifdef HAS_VIMAGE
 #include <Accelerate/Accelerate.h>

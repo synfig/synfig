@@ -30,6 +30,7 @@
 #endif
 
 #include <synfig/general.h>
+#include <synfig/localization.h>
 
 #include "measure.h"
 

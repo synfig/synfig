@@ -30,10 +30,12 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "trees/metadatatree.h"
 #include <ETL/misc>
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

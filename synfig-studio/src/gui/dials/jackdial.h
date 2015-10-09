@@ -35,8 +35,6 @@
 #include <gtkmm/button.h>
 #include <gtkmm/togglebutton.h>
 
-#include "general.h"
-
 #include <gui/widgets/widget_time.h>
 
 /* === M A C R O S ========================================================= */

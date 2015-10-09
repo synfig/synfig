@@ -35,6 +35,7 @@
 
 #include <autorevision.h>
 #include <synfig/general.h>
+#include <synfig/localization.h>
 #include <synfig/canvas.h>
 #include <synfig/context.h>
 #include <synfig/target.h>

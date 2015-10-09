@@ -30,6 +30,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "layerparamdisconnect.h"
 #include "waypointdisconnect.h"
 #include "valuenodelinkdisconnect.h"
@@ -42,7 +44,7 @@
 #include <synfig/valuenodes/valuenode_duplicate.h>
 #include <synfig/valuenodes/valuenode_bone.h>
 
-#include <synfigapp/general.h>
+#include <synfigapp/localization.h>
 
 #endif
 

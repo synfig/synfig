@@ -36,9 +36,6 @@
 #include <gtkmm/toggletoolbutton.h>
 #include "duckmatic.h"
 
-#include "general.h"
-
-
 /* === M A C R O S ========================================================= */
 
 /* === T Y P E D E F S ===================================================== */

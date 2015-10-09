@@ -30,21 +30,25 @@
 /* === H E A D E R S ======================================================= */
 
 #include <map>
+
 #include <ETL/handle>
-#include "real.h"
-#include "string.h"
+
 #include <sigc++/signal.h>
 #include <sigc++/connection.h>
-#include "node.h"
-#include "time.h"
-#include "guid.h"
-#include "interpolation.h"
-#include "target.h" // for RenderMethod. TODO: put RenderMethod apart
 
 #include "cairo.h"
+#include "guid.h"
+#include "interpolation.h"
+#include "node.h"
+#include "paramdesc.h"
+#include "progresscallback.h"
+#include "real.h"
 #include "rendermethod.h"
-
 #include "rendering/task.h"
+#include "string.h"
+#include "time.h"
+#include "vector.h"
+#include "value.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -169,26 +173,19 @@
 
 namespace synfig {
 
-class Canvas;
-class Vector;
-typedef Vector Point;
-class Canvas;
-class ParamDesc;
-class ParamVocab;
-class ValueNode;
-class ValueBase;
-class Time;
-class Surface;
-class CairoSurface;
-class RendDesc;
-class ProgressCallback;
-class IndependentContext;
-class Context;
-class Color;
 class CairoColor;
-class Transform;
+class CairoSurface;
+class Canvas;
+class Color;
+class Context;
+class ContextParams;
+class IndependentContext;
 class Rect;
-class GUID;
+class RendDesc;
+class SoundProcessor;
+class Surface;
+class Transform;
+class ValueNode;
 
 
 /*!	\class Layer

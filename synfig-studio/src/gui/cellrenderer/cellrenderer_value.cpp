@@ -31,6 +31,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include <gtkmm/label.h>
 #include <ETL/stringf>
 #include <gtkmm/celleditable.h>
@@ -58,7 +60,7 @@
 
 #include <gdkmm/general.h>
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

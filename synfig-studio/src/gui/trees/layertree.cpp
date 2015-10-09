@@ -31,6 +31,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "layertree.h"
 #include "layerparamtreestore.h"
 #include "cellrenderer/cellrenderer_value.h"
@@ -47,7 +49,7 @@
 #  include <synfig/timepointcollect.h>
 #endif	// TIMETRACK_IN_PARAMS_PANEL
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

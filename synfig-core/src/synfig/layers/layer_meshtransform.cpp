@@ -29,12 +29,18 @@
 #	include <config.h>
 #endif
 
-#include "layer_meshtransform.h"
-#include <algorithm>
 #include <cmath>
 #include <climits>
-#include <synfig/transform.h>
+
+#include <algorithm>
+
+#include "layer_meshtransform.h"
+
+#include <synfig/general.h>
+#include <synfig/localization.h>
+
 #include <synfig/context.h>
+#include <synfig/transform.h>
 
 #include <synfig/rendering/software/task/taskmeshsw.h>
 

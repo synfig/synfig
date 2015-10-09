@@ -28,13 +28,13 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include "canvasbase.h"
+#include "canvas.h"
 #include "rect.h"
 #include "renddesc.h"
 #include "surface.h"
-#include <synfig/layers/layer_composite.h>
-#include "general.h"
 #include "rendering/task.h"
+
+#include <synfig/layers/layer_composite.h>
 
 /* === M A C R O S ========================================================= */
 

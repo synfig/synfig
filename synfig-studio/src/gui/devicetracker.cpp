@@ -34,12 +34,14 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "devicetracker.h"
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
 #include <synfigapp/main.h>
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

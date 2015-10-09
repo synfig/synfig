@@ -32,6 +32,9 @@
 #	include <config.h>
 #endif
 
+#include <synfig/localization.h>
+#include <synfig/general.h>
+
 #include "supersample.h"
 #include <synfig/string.h>
 #include <synfig/time.h>
@@ -44,6 +47,7 @@
 #include <synfig/cairo_renddesc.h>
 
 #include <synfig/target.h>
+#include <synfig/target_scanline.h>
 #include <synfig/render.h>
 
 #endif

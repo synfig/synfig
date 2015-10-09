@@ -39,7 +39,6 @@
 #include <vector>
 #include <ETL/trivial>
 #include <ETL/handle>
-#include "general.h"
 #include "blinepoint.h"
 #include "bone.h"
 #include "widthpoint.h"

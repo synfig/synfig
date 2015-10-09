@@ -32,7 +32,6 @@
 #include <map>
 #include <typeinfo>
 #include "string.h"
-#include "general.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -400,6 +399,8 @@ private:
 	}
 
 protected:
+	static String local_n(const char *x);
+
 	virtual void initialize_vfunc(Description &description)
 	{
 		description.version = "0.0";

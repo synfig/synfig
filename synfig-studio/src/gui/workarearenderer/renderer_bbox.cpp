@@ -31,10 +31,12 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "renderer_bbox.h"
 #include "workarea.h"
 #include "canvasview.h"
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

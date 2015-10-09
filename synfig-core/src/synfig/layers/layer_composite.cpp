@@ -32,6 +32,7 @@
 #endif
 
 #include <synfig/general.h>
+#include <synfig/localization.h>
 #include <synfig/context.h>
 #include <synfig/time.h>
 #include <synfig/color.h>

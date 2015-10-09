@@ -30,6 +30,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "docks/dock_info.h"
 #include "canvasview.h"
 #include "workarea.h"
@@ -41,7 +43,7 @@
 #include <gtkmm/separator.h>
 #include <gtkmm/invisible.h>
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

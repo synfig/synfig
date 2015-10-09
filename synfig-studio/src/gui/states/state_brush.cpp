@@ -30,6 +30,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include <gtkmm/dialog.h>
 #include <gtkmm/entry.h>
 #include <gtkmm/grid.h>
@@ -61,7 +63,7 @@
 
 #include "ducktransform_matrix.h"
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

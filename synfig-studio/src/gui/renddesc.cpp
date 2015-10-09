@@ -31,6 +31,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "renddesc.h"
 #include <gtkmm/label.h>
 #include <gtkmm/frame.h>
@@ -38,10 +40,9 @@
 #include <gtkmm/box.h>
 #include <gtkmm/grid.h>
 #include <ETL/misc>
-#include <synfig/general.h>
 //#include <gtkmm/separator.h>
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

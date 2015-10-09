@@ -33,6 +33,9 @@
 #	include <config.h>
 #endif
 
+#include <synfig/localization.h>
+#include <synfig/general.h>
+
 #include <synfig/module.h>
 #include "mptr_imagemagick.h"
 #include "trgt_imagemagick.h"

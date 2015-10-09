@@ -29,6 +29,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include <gtkmm/label.h>
 #include "widgets/widget_value.h"
 #include <ETL/stringf>
@@ -51,7 +53,7 @@
 #include "app.h"
 #include "widgets/widget_distance.h"
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

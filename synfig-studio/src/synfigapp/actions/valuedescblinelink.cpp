@@ -30,6 +30,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "layerparamconnect.h"
 #include "valuenodelinkconnect.h"
 #include "valuenodereplace.h"
@@ -44,7 +46,7 @@
 #include <synfig/valuenodes/valuenode_blinecalcwidth.h>
 #include <synfig/valuenodes/valuenode_bline.h>
 
-#include <synfigapp/general.h>
+#include <synfigapp/localization.h>
 
 #endif
 

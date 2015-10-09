@@ -36,6 +36,7 @@
 #include "valuenode_composite.h"
 #include <synfig/canvas.h>
 #include <synfig/general.h>
+#include <synfig/localization.h>
 #include <synfig/exception.h>
 #include <synfig/blinepoint.h>
 #include <vector>
@@ -366,7 +367,7 @@ synfig::hom_to_std(const ValueBase &bline, Real pos, bool index_loop, bool bline
 		if (pos > 1) pos = 1;
 	}
 	// Calculate the lengths and the total length
-	Real tl(0), pl(0), mpl, bl;
+	Real tl(0), pl(0), mpl, bl(0);
 	std::vector<Real> lengths;
 	vector<BLinePoint>::const_iterator iter, next;
 	tl=bline_length(bline, bline_loop,&lengths);

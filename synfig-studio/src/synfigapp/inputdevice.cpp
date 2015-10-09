@@ -30,13 +30,15 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "inputdevice.h"
 #include "settings.h"
 #include <cstdio>
 #include <ETL/stringf>
 #include "main.h"
 
-#include "general.h"
+#include <synfigapp/localization.h>
 
 #endif
 

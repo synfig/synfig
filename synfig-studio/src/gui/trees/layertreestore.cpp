@@ -30,6 +30,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include <glibmm/main.h>
 
 #include "layertreestore.h"
@@ -46,7 +48,7 @@
 
 #include <gtk/gtk.h>
 #include <ETL/clock>
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

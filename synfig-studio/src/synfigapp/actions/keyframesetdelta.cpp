@@ -29,10 +29,12 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "keyframesetdelta.h"
 #include "keyframeset.h"
 
-#include <synfigapp/general.h>
+#include <synfigapp/localization.h>
 
 #endif
 

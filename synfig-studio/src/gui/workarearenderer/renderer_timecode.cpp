@@ -31,6 +31,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "renderer_timecode.h"
 #include "workarea.h"
 #include <pangomm/layout.h>
@@ -39,7 +41,7 @@
 #include "app.h"
 #include <cassert>
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

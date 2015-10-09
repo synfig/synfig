@@ -29,6 +29,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "mod_palette.h"
 #include "dock_paledit.h"
 #include "dock_palbrowse.h"
@@ -36,7 +38,7 @@
 #include "../../app.h"
 #include "../../docks/dockmanager.h"
 
-#include "../../general.h"
+#include <gui/localization.h>
 
 #endif
 

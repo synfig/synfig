@@ -31,22 +31,26 @@
 #	include <config.h>
 #endif
 
-#include "docks/dock_navigator.h"
-#include "canvasview.h"
-#include "workarea.h"
-
 #include <cassert>
+
+#include <gtkmm/separator.h>
+#include <gdkmm/general.h>
+
+#include <synfig/general.h>
+
 #include <synfig/canvas.h>
 #include <synfig/context.h>
 #include <synfig/target_scanline.h>
+#include <synfig/target_gl.h>
 #include <synfig/surface.h>
-#include <gdkmm/general.h>
 
-#include <gtkmm/separator.h>
+#include "docks/dock_navigator.h"
 
+#include <gui/localization.h>
+
+#include "workarea.h"
+#include "canvasview.h"
 #include "asyncrenderer.h"
-
-#include "general.h"
 
 #endif
 

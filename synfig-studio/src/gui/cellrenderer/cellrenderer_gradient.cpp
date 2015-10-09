@@ -29,13 +29,15 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include <gtkmm/entry.h>
 #include <gtkmm/button.h>
 #include "cellrenderer_gradient.h"
 #include "widgets/widget_gradient.h"
 #include "app.h"
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

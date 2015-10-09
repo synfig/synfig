@@ -30,6 +30,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "docks/dock_children.h"
 #include "app.h"
 
@@ -44,7 +46,7 @@
 #include "trees/childrentree.h"
 #include "canvasview.h"
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

@@ -32,6 +32,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "preview.h"
 #include "app.h"
 #include "audiocontainer.h"
@@ -46,7 +48,7 @@
 #include <algorithm>
 #include "asyncrenderer.h"
 
-#include "general.h"
+#include <gui/localization.h>
 
 #include <cmath>
 #include <cassert>

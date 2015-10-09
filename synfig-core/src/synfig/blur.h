@@ -28,10 +28,9 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/general.h>
-#include <synfig/surface.h>
-#include <synfig/color.h>
-#include <synfig/vector.h>
+#include "vector.h"
+#include "surface.h"
+#include "progresscallback.h"
 
 /* === M A C R O S ========================================================= */
 

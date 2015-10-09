@@ -29,6 +29,10 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
+#include <gui/localization.h>
+
 #include "mainwindow.h"
 #include "canvasview.h"
 #include "docks/dockable.h"

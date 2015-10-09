@@ -33,6 +33,7 @@
 
 #include "valuenode.h"
 #include "general.h"
+#include <synfig/localization.h>
 #include "canvas.h"
 #include "releases.h"
 

@@ -33,9 +33,11 @@
 #include "timegather.h"
 #include "value_desc.h"
 
+#include <synfig/general.h>
+
 #include <synfig/layers/layer_pastecanvas.h>
 
-#include "general.h"
+#include <synfigapp/localization.h>
 
 #endif
 

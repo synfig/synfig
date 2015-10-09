@@ -38,6 +38,7 @@
 #include <typeinfo>
 
 #include <synfig/general.h>
+#include <synfig/localization.h>
 #include <synfig/debug/measure.h>
 
 #include "renderer.h"

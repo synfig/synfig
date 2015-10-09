@@ -31,33 +31,36 @@
 #	include <config.h>
 #endif
 
-#include "canvas.h"
-#include "layer.h"
-#include "render.h"
-#include "value.h"
-#include <synfig/layers/layer_bitmap.h>
-#include <synfig/layers/layer_mime.h>
-#include "context.h"
-#include "paramdesc.h"
-#include "surface.h"
+#include <sigc++/adaptors/bind.h>
 
-#include <synfig/layers/layer_solidcolor.h>
-#include <synfig/layers/layer_polygon.h>
-#include <synfig/layers/layer_group.h>
-#include <synfig/layers/layer_switch.h>
-#include <synfig/layers/layer_motionblur.h>
-#include <synfig/layers/layer_duplicate.h>
-#include <synfig/layers/layer_skeleton.h>
-#include <synfig/layers/layer_skeletondeformation.h>
-#include <synfig/layers/layer_sound.h>
+#include "layer.h"
+
+#include "general.h"
+#include <synfig/localization.h>
+#include "rect.h"
+#include "guid.h"
+#include "value.h"
+#include "render.h"
+#include "canvas.h"
+#include "context.h"
+#include "surface.h"
+#include "paramdesc.h"
+#include "transform.h"
+
+#include "layers/layer_bitmap.h"
+#include "layers/layer_duplicate.h"
+#include "layers/layer_group.h"
+#include "layers/layer_mime.h"
+#include "layers/layer_motionblur.h"
+#include "layers/layer_polygon.h"
+#include "layers/layer_skeleton.h"
+#include "layers/layer_skeletondeformation.h"
+#include "layers/layer_solidcolor.h"
+#include "layers/layer_sound.h"
+#include "layers/layer_switch.h"
 
 #include "valuenodes/valuenode_const.h"
 
-#include "transform.h"
-#include "rect.h"
-#include "guid.h"
-
-#include <sigc++/adaptors/bind.h>
 #endif
 
 /* === U S I N G =========================================================== */

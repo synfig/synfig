@@ -29,12 +29,14 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "layerencapsulateswitch.h"
 #include "layeradd.h"
 #include "layerremove.h"
 #include <synfigapp/canvasinterface.h>
 
-#include <synfigapp/general.h>
+#include <synfigapp/localization.h>
 
 #endif
 

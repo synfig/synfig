@@ -30,13 +30,15 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include <gtkmm/entry.h>
 #include <gtkmm/button.h>
 #include "widgets/widget_filename.h"
 #include "app.h"
 #include "canvasview.h"
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

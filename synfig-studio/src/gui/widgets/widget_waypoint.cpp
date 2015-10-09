@@ -31,6 +31,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include <gtkmm/label.h>
 #include <gtkmm/frame.h>
 #include <gtkmm/alignment.h>
@@ -45,7 +47,7 @@
 #include "widgets/widget_time.h"
 #include "widgets/widget_waypoint.h"
 #include "widgets/widget_enum.h"
-#include "general.h"
+#include <gui/localization.h>
 //#include <synfig/interpolation.h>
 
 #endif

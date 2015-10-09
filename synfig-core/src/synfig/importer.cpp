@@ -30,15 +30,21 @@
 #	include <config.h>
 #endif
 
+#include <cctype>
+
+#include <algorithm>
+#include <functional>
+#include <map>
+
+#include <glibmm.h>
+
+#include "general.h"
+#include <synfig/localization.h>
+
 #include "canvas.h"
 #include "importer.h"
-#include "surface.h"
-#include <algorithm>
 #include "string.h"
-#include <map>
-#include <ctype.h>
-#include <functional>
-#include <glibmm.h>
+#include "surface.h"
 
 #endif
 

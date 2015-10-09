@@ -32,6 +32,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include <sigc++/adaptors/hide.h>
 
 #include "workarea.h"
@@ -80,7 +82,7 @@
 
 #include <synfig/mutex.h>
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

@@ -23,6 +23,9 @@
 #include "definitions.h"
 #include "synfigtoolexception.h"
 
+#include <synfig/localization.h>
+#include <synfig/general.h>
+
 #include <synfig/main.h>
 
 boost::shared_ptr<SynfigToolGeneralOptions> SynfigToolGeneralOptions::_instance;

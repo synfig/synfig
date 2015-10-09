@@ -33,6 +33,9 @@
 
 #include "target_gl.h"
 
+#include "general.h"
+#include <synfig/localization.h>
+
 #include "context.h"
 #include "rendering/renderer.h"
 #include "rendering/software/surfacesw.h"

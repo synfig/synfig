@@ -32,13 +32,17 @@
 #endif
 
 #include "context.h"
+
+#include "general.h"
+#include <synfig/localization.h>
 #include "layer.h"
-#include <synfig/layers/layer_pastecanvas.h>
 #include "string.h"
 #include "vector.h"
 #include "color.h"
 #include "valuenode.h"
 #include "transformation.h"
+
+#include "layers/layer_pastecanvas.h"
 
 #include "rendering/task.h"
 #include "rendering/common/task/tasksurfaceempty.h"

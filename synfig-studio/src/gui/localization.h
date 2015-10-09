@@ -1,12 +1,11 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfigapp/general.h
-**	\brief Te
+/*!	\file gui/localization.h
+**	\brief Localization
 **
 **	$Id$
 **
 **	\legal
 **	Copyright (c) 2007 Paul Wise
-**	Copyright (c) 2007 Chris Moore
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -23,8 +22,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIGAPP_GENERAL_H
-#define __SYNFIGAPP_GENERAL_H
+#ifndef __SYNFIGSTUDIO_LOCALIZATION_H
+#define __SYNFIGSTUDIO_LOCALIZATION_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -34,17 +33,13 @@
 
 /* === M A C R O S ========================================================= */
 
-#undef _
-#undef gettext_noop
-#undef N_
 #ifdef ENABLE_NLS
-#define _(x) dgettext("synfigstudio",x)
+#define _(x) gettext(x)
 #define gettext_noop(x) x
 #define N_(x) gettext_noop(x)
 #else
 #define _(x) (x)
 #define N_(x) (x)
-#define gettext(x) (x)
 #endif
 
 /* === T Y P E D E F S ===================================================== */

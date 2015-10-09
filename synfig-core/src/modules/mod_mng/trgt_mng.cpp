@@ -34,6 +34,9 @@
 #	include <config.h>
 #endif
 
+#include <synfig/listimporter.h>
+#include <synfig/general.h>
+
 #include "trgt_mng.h"
 #include <libmng.h>
 #include <ETL/stringf>

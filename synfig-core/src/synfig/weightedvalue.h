@@ -74,7 +74,7 @@ namespace types_namespace {
 
 			Type::initialize_vfunc(description);
 			description.name = "weighted_" + type.description.name;
-			description.local_name = N_("weighted") + String(" ") + type.description.local_name;
+			description.local_name = local_n("weighted") + String(" ") + type.description.local_name;
 			register_all_but_compare<WeightedValue<T>, TypeWeightedValue<T>::to_string>();
 		}
 		Type& get_contained_type() { return get_type_alias(T()).type; }

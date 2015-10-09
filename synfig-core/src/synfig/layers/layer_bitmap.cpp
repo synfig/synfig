@@ -46,6 +46,7 @@
 #include <synfig/target.h>
 
 #include <synfig/general.h>
+#include <synfig/localization.h>
 #include <synfig/paramdesc.h>
 
 #include <synfig/rendering/common/task/tasksurface.h>

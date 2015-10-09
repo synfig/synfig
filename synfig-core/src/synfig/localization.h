@@ -1,11 +1,12 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file gtkmm/general.h
-**	\brief General header file for synfigstudio
+/*!	\file localization.h
+**	\brief Localization
 **
 **	$Id$
 **
 **	\legal
-**	Copyright (c) 2007 Paul Wise
+**	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**  Copyright (c) 2010 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -22,30 +23,26 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIGSTUDIO_GENERAL_H
-#define __SYNFIGSTUDIO_GENERAL_H
+#ifndef __SYNFIG_LOCALIZATION_H
+#define __SYNFIG_LOCALIZATION_H
 
 /* === H E A D E R S ======================================================= */
 
 #ifdef ENABLE_NLS
-#include <libintl.h>
+ #include <libintl.h>
 #endif
 
 /* === M A C R O S ========================================================= */
 
-#undef _
-#undef gettext_noop
-#undef N_
 #ifdef ENABLE_NLS
-#define _(x) gettext(x)
+#define _(x) dgettext("synfig",x)
 #define gettext_noop(x) x
 #define N_(x) gettext_noop(x)
 #else
+#define dgettext(a,x) (x)
 #define _(x) (x)
 #define N_(x) (x)
 #endif
-
-/* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 

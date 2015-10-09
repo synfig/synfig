@@ -37,18 +37,18 @@
 
 #include <ETL/stringf>
 
+#include <synfig/general.h>
+
 #include <gtkmm/image.h>
 #include <gdkmm/pixbufloader.h>
 #include <gtkmm/button.h>
 #include <gtkmm/label.h>
 #include <gtkmm/fixed.h>
 
-#include <synfig/general.h>
-
 #include "onemoment.h"
 #include "app.h"
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

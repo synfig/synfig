@@ -30,10 +30,14 @@
 #	include <config.h>
 #endif
 
-#include "listimporter.h"
-#include "general.h"
-#include "filesystemnative.h"
 #include <fstream>
+
+#include "listimporter.h"
+
+#include "general.h"
+#include <synfig/localization.h>
+
+#include "filesystemnative.h"
 
 #endif
 

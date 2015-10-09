@@ -32,6 +32,9 @@
 #	include <config.h>
 #endif
 
+#include <synfig/localization.h>
+#include <synfig/general.h>
+
 #include <ETL/stringf>
 #include "trgt_gif.h"
 #include <cstdio>

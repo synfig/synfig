@@ -31,6 +31,9 @@
 #	include <config.h>
 #endif
 
+#include <synfig/localization.h>
+#include <synfig/general.h>
+
 #include <iostream>
 #include "version.h"
 #include "general.h"

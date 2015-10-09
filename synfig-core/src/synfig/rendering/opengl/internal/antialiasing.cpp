@@ -38,6 +38,7 @@
 #include <cstring>
 
 #include <synfig/general.h>
+#include <synfig/localization.h>
 
 #include "antialiasing.h"
 

@@ -34,6 +34,7 @@
 
 #include "filecontainertemporary.h"
 #include "general.h"
+#include <synfig/localization.h>
 #include "guid.h"
 #include "zstreambuf.h"
 

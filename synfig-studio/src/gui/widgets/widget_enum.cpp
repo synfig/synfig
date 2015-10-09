@@ -29,12 +29,14 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include <gtkmm/menu.h>
 #include "widgets/widget_enum.h"
 #include <ETL/stringf>
 #include <synfig/valuenode.h>
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

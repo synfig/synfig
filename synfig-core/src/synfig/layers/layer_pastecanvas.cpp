@@ -32,20 +32,21 @@
 #	include <config.h>
 #endif
 
-// TODO: remove
-#include <fstream>
-
 #include "layer_pastecanvas.h"
-#include "string.h"
-#include "time.h"
-#include "../context.h"
-#include "../paramdesc.h"
-#include "../renddesc.h"
-#include "../surface.h"
-#include "../value.h"
-#include "../valuenode.h"
-#include "../canvas.h"
-#include "../cairo_renddesc.h"
+
+#include <synfig/general.h>
+#include <synfig/localization.h>
+
+#include <synfig/cairo_renddesc.h>
+#include <synfig/canvas.h>
+#include <synfig/context.h>
+#include <synfig/paramdesc.h>
+#include <synfig/renddesc.h>
+#include <synfig/time.h>
+#include <synfig/string.h>
+#include <synfig/surface.h>
+#include <synfig/value.h>
+#include <synfig/valuenode.h>
 
 #include <synfig/rendering/common/task/taskblend.h>
 #include <synfig/rendering/common/task/tasksurfaceempty.h>

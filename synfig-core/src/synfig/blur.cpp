@@ -30,17 +30,15 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-#include <synfig/surface.h>
+#include <stdexcept>
+
+#include <ETL/boxblur>
+#include <ETL/gaussian>
 
 #include "blur.h"
 
-#include <stdexcept>
-#include <ETL/stringf>
-
-#include <ETL/pen>
-#include <ETL/gaussian>
-#include <ETL/boxblur>
+#include "general.h"
+#include <synfig/localization.h>
 
 #endif
 

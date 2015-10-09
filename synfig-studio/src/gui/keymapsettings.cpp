@@ -31,11 +31,13 @@
 
 #include "keymapsettings.h"
 
+#include <synfig/general.h>
+
 #include <gtkmm/accelkey.h>
 #include <gtkmm/accelmap.h>
 #include <gtk/gtk.h>
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

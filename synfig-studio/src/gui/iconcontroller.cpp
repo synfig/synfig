@@ -34,6 +34,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "iconcontroller.h"
 #include <synfig/valuenodes/valuenode_const.h>
 #include <gtkmm/button.h>
@@ -43,7 +45,7 @@
 
 #include <gdkmm.h>
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

@@ -29,9 +29,11 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "layerresetpose.h"
 #include <synfigapp/canvasinterface.h>
-#include <synfigapp/general.h>
+#include <synfigapp/localization.h>
 
 #include <synfig/valuenodes/valuenode_bone.h>
 #include <synfig/valuenodes/valuenode_composite.h>

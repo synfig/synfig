@@ -31,6 +31,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include <synfig/valuenodes/valuenode_dynamiclist.h>
 
 #include "state_bline.h"
@@ -51,7 +53,7 @@
 #include <synfig/transform.h>
 #include <synfigapp/main.h>
 
-#include "general.h"
+#include <gui/localization.h>
 
 #include <gtkmm/separatormenuitem.h>
 #include <gtkmm/imagemenuitem.h>

@@ -71,6 +71,8 @@
 #include <windows.h>
 #endif
 
+#include <synfig/general.h>
+
 #include <synfig/loadcanvas.h>
 #include <synfig/savecanvas.h>
 #include <synfig/importer.h>
@@ -149,7 +151,7 @@
 #include <gtkmm/filechooser.h>
 #include <gtkmm/filechooserdialog.h>
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

@@ -35,6 +35,10 @@
 #endif
 
 #include "stroboscope.h"
+
+#include <synfig/localization.h>
+#include <synfig/general.h>
+
 #include <synfig/valuenode.h>
 #include <synfig/valuenodes/valuenode_const.h>
 #include <synfig/valuenodes/valuenode_subtract.h>

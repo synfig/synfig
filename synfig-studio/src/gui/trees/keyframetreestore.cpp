@@ -31,6 +31,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "trees/keyframetreestore.h"
 #include <synfig/valuenode.h>
 #include "iconcontroller.h"
@@ -47,7 +49,7 @@
 #include "onemoment.h"
 #include <synfig/exception.h>
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

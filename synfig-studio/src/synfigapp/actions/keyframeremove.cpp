@@ -30,6 +30,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "keyframeremove.h"
 #include <synfigapp/canvasinterface.h>
 #include <synfig/valuenodes/valuenode_dynamiclist.h>
@@ -37,7 +39,7 @@
 #include "activepointremove.h"
 #include "waypointremove.h"
 
-#include <synfigapp/general.h>
+#include <synfigapp/localization.h>
 
 #endif
 

@@ -37,6 +37,7 @@
 
 #include "savecanvas.h"
 #include "general.h"
+#include <synfig/localization.h>
 #include "valuenode.h"
 #include "valuenodes/valuenode_animated.h"
 #include "valuenodes/valuenode_const.h"

@@ -31,6 +31,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "instance.h"
 #include "canvasinterface.h"
 #include <iostream>
@@ -62,7 +64,7 @@
 #include "actions/layerembed.h"
 #include <map>
 
-#include "general.h"
+#include <synfigapp/localization.h>
 
 #include <synfig/importer.h>
 

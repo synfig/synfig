@@ -29,6 +29,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "docks/dock_params.h"
 #include "app.h"
 
@@ -42,7 +44,7 @@
 #include "trees/layerparamtreestore.h"
 #include "workarea.h"
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

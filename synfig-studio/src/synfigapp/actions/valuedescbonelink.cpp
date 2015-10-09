@@ -30,6 +30,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "layerparamconnect.h"
 #include "valuenodelinkconnect.h"
 #include "valuenodereplace.h"
@@ -42,7 +44,7 @@
 #include <synfig/valuenodes/valuenode_bonelink.h>
 #include <synfig/valuetransformation.h>
 
-#include <synfigapp/general.h>
+#include <synfigapp/localization.h>
 
 #endif
 

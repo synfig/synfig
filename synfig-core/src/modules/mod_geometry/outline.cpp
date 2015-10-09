@@ -33,6 +33,9 @@
 #	include <config.h>
 #endif
 
+#include <synfig/localization.h>
+#include <synfig/general.h>
+
 #include "outline.h"
 #include <synfig/string.h>
 #include <synfig/time.h>

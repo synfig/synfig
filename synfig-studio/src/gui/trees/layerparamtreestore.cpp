@@ -32,6 +32,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include <glibmm/main.h>
 
 #include "layerparamtreestore.h"
@@ -44,7 +46,7 @@
 #include "app.h"
 #include <ETL/clock>
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

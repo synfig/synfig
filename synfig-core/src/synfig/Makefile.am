@@ -71,6 +71,8 @@ SYNFIGHEADERS = \
 	angle.h \
 	canvasbase.h \
 	general.h \
+	localization.h \
+	progresscallback.h \
 	guidset.h \
 	interpolation.h \
 	protocol.h \

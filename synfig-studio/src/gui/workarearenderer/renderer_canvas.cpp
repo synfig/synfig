@@ -31,11 +31,13 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "renderer_canvas.h"
 #include <ETL/misc>
 #include <gdkmm/general.h>
 
-#include "general.h"
+#include <gui/localization.h>
 #include "app.h"
 
 #endif

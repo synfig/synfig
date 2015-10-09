@@ -40,7 +40,7 @@
 #include <functional>
 
 #ifdef _DEBUG
-#include "general.h"
+#include <synfig/localization.h>
 #endif
 
 #ifdef HASH_MAP_H

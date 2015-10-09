@@ -30,11 +30,15 @@
 #endif
 
 #include "layer_sound.h"
+
+#include <synfig/general.h>
+#include <synfig/localization.h>
+
+#include <synfig/real.h>
+#include <synfig/soundprocessor.h>
 #include <synfig/string.h>
 #include <synfig/time.h>
-#include <synfig/real.h>
 #include <synfig/value.h>
-#include <synfig/soundprocessor.h>
 
 #endif
 

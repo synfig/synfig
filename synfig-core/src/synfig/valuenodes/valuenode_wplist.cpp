@@ -35,6 +35,7 @@
 #include "valuenode_composite.h"
 #include "valuenode_bline.h"
 #include <synfig/general.h>
+#include <synfig/localization.h>
 #include <synfig/exception.h>
 #include <synfig/widthpoint.h>
 #include <vector>
@@ -166,7 +167,7 @@ synfig::widthpoint_interpolate(const WidthPoint& prev, const WidthPoint& next, c
 	else
 	if(p > pp || np > p)
 	{
-		Real q;
+		Real q(0);
 		if(nsb != side_int)
 			nw=0.0;
 		if(psa != side_int)

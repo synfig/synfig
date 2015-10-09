@@ -31,9 +31,13 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
+#include <gui/localization.h>
 #include "keyframedial.h"
 #include <gtkmm/image.h>
 #include <gtkmm/stock.h>
+
 #endif
 
 /* === U S I N G =========================================================== */

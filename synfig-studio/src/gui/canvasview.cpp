@@ -35,6 +35,8 @@
 
 #include <sigc++/adaptors/hide.h>
 
+#include <synfig/general.h>
+
 #include <sstream>
 #include <algorithm>
 #include <math.h>
@@ -136,7 +138,7 @@
 
 #include <pangomm.h>
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

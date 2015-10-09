@@ -35,6 +35,9 @@
 #	include <config.h>
 #endif
 
+#include <synfig/localization.h>
+#include <synfig/general.h>
+
 #include "trgt_png_spritesheet.h"
 #include <png.h>
 #include <ETL/stringf>

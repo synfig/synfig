@@ -29,14 +29,18 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <sigc++/signal.h>
-#include "string.h"
-#include <utility>
 #include <map>
+#include <utility>
+
+#include <sigc++/signal.h>
+
 #include <ETL/handle>
-#include "renddesc.h"
-#include "color.h"
+
 #include "canvas.h"
+#include "color.h"
+#include "progresscallback.h"
+#include "renddesc.h"
+#include "string.h"
 #include "targetparam.h"
 
 /* === M A C R O S ========================================================= */

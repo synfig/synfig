@@ -38,13 +38,14 @@
 
 #include <ETL/hermite>
 
+#include <synfig/general.h>
+
 #include "duckmatic.h"
 #include "ducktransform_scale.h"
 #include "ducktransform_translate.h"
 #include "ducktransform_rotate.h"
 #include <synfigapp/value_desc.h>
 #include <synfigapp/canvasinterface.h>
-#include <synfig/general.h>
 #include <synfig/paramdesc.h>
 #include <synfig/valuenodes/valuenode_timedswap.h>
 #include <synfig/valuenodes/valuenode_animated.h>
@@ -81,7 +82,7 @@
 
 #include "onemoment.h"
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

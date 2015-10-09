@@ -33,6 +33,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "renderer_ducks.h"
 #include "workarea.h"
 #include "duckmatic.h"
@@ -45,7 +47,7 @@
 #include <synfig/valuenodes/valuenode_composite.h>
 #include "app.h"
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

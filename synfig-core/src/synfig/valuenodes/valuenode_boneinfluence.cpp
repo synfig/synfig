@@ -38,6 +38,7 @@
 #include <synfig/boneweightpair.h>
 #include <synfig/canvas.h>
 #include <synfig/general.h>
+#include <synfig/localization.h>
 
 #endif
 

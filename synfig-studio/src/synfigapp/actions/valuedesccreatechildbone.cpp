@@ -29,10 +29,12 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "valuedesccreatechildbone.h"
 #include "valuenodestaticlistinsertsmart.h"
 #include <synfigapp/canvasinterface.h>
-#include <synfigapp/general.h>
+#include <synfigapp/localization.h>
 #include <synfig/valuenodes/valuenode_bone.h>
 
 #endif

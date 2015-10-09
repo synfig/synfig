@@ -39,6 +39,7 @@
 #include <cstring>
 
 #include <synfig/general.h>
+#include <synfig/localization.h>
 #include <synfig/vector.h>
 
 #include "buffers.h"

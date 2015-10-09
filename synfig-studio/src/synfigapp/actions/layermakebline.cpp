@@ -29,6 +29,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "layermakebline.h"
 #include "layeradd.h"
 #include "layermove.h"
@@ -36,7 +38,7 @@
 #include <synfig/context.h>
 #include <synfigapp/canvasinterface.h>
 
-#include <synfigapp/general.h>
+#include <synfigapp/localization.h>
 
 #endif
 

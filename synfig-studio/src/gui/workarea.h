@@ -46,7 +46,6 @@
 
 #include <synfig/time.h>
 #include <synfig/vector.h>
-#include <synfig/general.h>
 #include <synfig/renddesc.h>
 #include <synfig/canvas.h>
 

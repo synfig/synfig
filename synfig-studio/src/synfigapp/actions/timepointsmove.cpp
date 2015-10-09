@@ -29,6 +29,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "timepointsmove.h"
 #include <synfig/layers/layer_pastecanvas.h>
 #include <synfigapp/canvasinterface.h>
@@ -41,7 +43,7 @@
 
 #include <typeinfo>
 
-#include <synfigapp/general.h>
+#include <synfigapp/localization.h>
 
 #endif
 

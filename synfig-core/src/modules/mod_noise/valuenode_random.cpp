@@ -33,7 +33,8 @@
 
 #include "valuenode_random.h"
 #include "synfig/valuenodes/valuenode_const.h"
-#include "synfig/general.h"
+#include <synfig/general.h>
+#include <synfig/localization.h>
 #include "synfig/color.h"
 #include <ETL/misc>
 #include <time.h>

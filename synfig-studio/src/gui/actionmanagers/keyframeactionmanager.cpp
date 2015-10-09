@@ -30,12 +30,14 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "keyframeactionmanager.h"
 #include "trees/keyframetree.h"
 #include <synfigapp/action_param.h>
 #include "instance.h"
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

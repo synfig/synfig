@@ -31,6 +31,7 @@
 
 #include "cairo_renddesc.h"
 #include "general.h"
+#include <synfig/localization.h>
 
 #endif
 

@@ -23,10 +23,11 @@
 /* === H E A D E R S ======================================================= */
 #include <math.h>
 
-#include <gtkmm/grid.h>
+#include <synfig/general.h>
 
+#include <gtkmm/grid.h>
+#include <gui/localization.h>
 #include "dialogs/dialog_spritesheetparam.h"
-#include "general.h"
 
 namespace studio
 {

@@ -32,7 +32,7 @@
 #include <ETL/ref_count>
 
 #include "string.h"
-#include "general.h"
+#include "progresscallback.h"
 
 /* === M A C R O S ========================================================= */
 

@@ -31,6 +31,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "docks/dock_timetrack.h"
 #include "app.h"
 
@@ -45,7 +47,7 @@
 #include "workarea.h"
 #include "widgets/widget_timeslider.h"
 #include "widgets/widget_keyframe_list.h"
-#include "general.h"
+#include <gui/localization.h>
 #include "trees/layertree.h"
 #include <synfig/timepointcollect.h>
 

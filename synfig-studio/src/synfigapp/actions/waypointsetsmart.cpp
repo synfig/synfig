@@ -30,6 +30,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "waypointsetsmart.h"
 #include "valuenodelinkconnect.h"
 #include "valuenodereplace.h"
@@ -42,7 +44,7 @@
 #include <synfig/exception.h>
 #include <synfigapp/main.h>
 
-#include <synfigapp/general.h>
+#include <synfigapp/localization.h>
 
 #endif
 

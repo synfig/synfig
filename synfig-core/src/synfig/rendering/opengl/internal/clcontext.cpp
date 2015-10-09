@@ -40,6 +40,7 @@
 #include <vector>
 
 #include <synfig/general.h>
+#include <synfig/localization.h>
 
 #include "clcontext.h"
 

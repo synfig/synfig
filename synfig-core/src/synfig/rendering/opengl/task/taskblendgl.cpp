@@ -36,6 +36,7 @@
 #endif
 
 #include <synfig/general.h>
+#include <synfig/localization.h>
 
 #include "taskblendgl.h"
 

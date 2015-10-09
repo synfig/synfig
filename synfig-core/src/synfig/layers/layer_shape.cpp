@@ -31,26 +31,29 @@
 #	include <config.h>
 #endif
 
-#include <vector>
-#include <deque>
 #include <cfloat>
+
+#include <deque>
+#include <vector>
 
 #include "layer_shape.h"
 
-#include <synfig/string.h>
-#include <synfig/time.h>
+#include <synfig/general.h>
+#include <synfig/localization.h>
+
+#include <synfig/blur.h>
 #include <synfig/context.h>
+#include <synfig/curve_helper.h>
 #include <synfig/paramdesc.h>
 #include <synfig/renddesc.h>
+#include <synfig/string.h>
 #include <synfig/surface.h>
+#include <synfig/time.h>
 #include <synfig/value.h>
 #include <synfig/valuenode.h>
-#include <synfig/blur.h>
 
-#include <synfig/curve_helper.h>
-
-#include <synfig/rendering/common/task/taskcontour.h>
 #include <synfig/rendering/common/task/taskblend.h>
+#include <synfig/rendering/common/task/taskcontour.h>
 
 #endif
 
