@@ -23,7 +23,6 @@ TARGETHEADERS = \
 	target_cairo.h \
 	target_tile.h \
 	target_cairo_tile.h \
-	target_gl.h \
 	targetparam.h
 
 TARGETSOURCES = \
@@ -33,8 +32,7 @@ TARGETSOURCES = \
 	target_scanline.cpp \
 	target_cairo.cpp \
 	target_tile.cpp \
-	target_cairo_tile.cpp \
-	target_gl.cpp
+	target_cairo_tile.cpp
 
 
 IMPORTERHEADERS = \

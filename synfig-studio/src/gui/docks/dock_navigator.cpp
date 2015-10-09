@@ -41,7 +41,6 @@
 #include <synfig/canvas.h>
 #include <synfig/context.h>
 #include <synfig/target_scanline.h>
-#include <synfig/target_gl.h>
 #include <synfig/surface.h>
 
 #include "docks/dock_navigator.h"
