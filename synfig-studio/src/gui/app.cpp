@@ -313,8 +313,8 @@ String studio::App::browser_command("xdg-open"); // Linux XDG standard
 #endif
 String studio::App::brushes_path("");
 String studio::App::sequence_separator(".");
-bool studio::App::navigator_uses_cairo=false;
-bool studio::App::workarea_uses_cairo=false;
+String studio::App::navigator_renderer;
+String studio::App::workarea_renderer;
 
 bool studio::App::enable_mainwin_menubar = true;
 String studio::App::ui_language ("os_LANG");
@@ -608,14 +608,14 @@ public:
 				value=App::sequence_separator;
 				return true;
 			}
-			if(key=="navigator_uses_cairo")
+			if(key=="navigator_renderer")
 			{
-				value=strprintf("%i",(int)App::navigator_uses_cairo);
+				value=App::navigator_renderer;
 				return true;
 			}
-			if(key=="workarea_uses_cairo")
+			if(key=="workarea_renderer")
 			{
-				value=strprintf("%i",(int)App::workarea_uses_cairo);
+				value=App::workarea_renderer;
 				return true;
 			}
 			if(key=="enable_mainwin_menubar")
@@ -760,16 +760,14 @@ public:
 				App::sequence_separator=value;
 				return true;
 			}
-			if(key=="navigator_uses_cairo")
+			if(key=="navigator_renderer")
 			{
-				int i(atoi(value.c_str()));
-				App::navigator_uses_cairo=i;
+				App::navigator_renderer=value;
 				return true;
 			}
-			if(key=="workarea_uses_cairo")
+			if(key=="workarea_renderer")
 			{
-				int i(atoi(value.c_str()));
-				App::workarea_uses_cairo=i;
+				App::workarea_renderer=value;
 				return true;
 			}
 			if(key=="enable_mainwin_menubar")

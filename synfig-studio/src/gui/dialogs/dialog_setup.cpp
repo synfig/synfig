@@ -44,6 +44,8 @@
 #include <ETL/misc>
 #include "general.h"
 
+#include <synfig/rendering/renderer.h>
+
 #include <synfigapp/canvasinterface.h>
 
 #endif
@@ -407,11 +409,23 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	attach_label(render_table, _("Image Sequence Separator String"), 0, xpadding, ypadding);
 	render_table->attach(image_sequence_separator, 1, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 	// Render - Use Cairo on Navigator
-	attach_label(render_table, _("Use Cairo render on Navigator"), 1, xpadding, ypadding);
-	render_table->attach(toggle_navigator_uses_cairo, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+	attach_label(render_table, _("Navigator renderer"), 1, xpadding, ypadding);
+	render_table->attach(navigator_renderer_combo, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 	// Render - Use Cairo on WorkArea
-	attach_label(render_table, _("Use Cairo render on WorkArea"), 2, xpadding, ypadding);
-	render_table->attach(toggle_workarea_uses_cairo, 1, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+	attach_label(render_table, _("WorkArea renderer"), 2, xpadding, ypadding);
+	render_table->attach(workarea_renderer_combo, 1, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+
+	// TODO: make cool and localized names
+	navigator_renderer_combo.append("", "");
+	workarea_renderer_combo.append("", "");
+	typedef std::map<synfig::String, synfig::rendering::Renderer::Handle> RendererMap;
+	const RendererMap &renderers = synfig::rendering::Renderer::get_renderers();
+	for(RendererMap::const_iterator i = renderers.begin(); i != renderers.end(); ++i)
+	{
+		assert(!i->first.empty());
+		navigator_renderer_combo.append(i->first, i->first);
+		workarea_renderer_combo.append(i->first, i->first);
+	}
 	
 	show_all_children();
 }
@@ -507,10 +521,10 @@ Dialog_Setup::on_apply_pressed()
 	App::sequence_separator=image_sequence_separator.get_text();
 
 	// Set the navigator uses cairo flag
-	App::navigator_uses_cairo=toggle_navigator_uses_cairo.get_active();
+	App::navigator_renderer=navigator_renderer_combo.get_active_id();
 
 	// Set the workarea uses cairo flag
-	App::workarea_uses_cairo=toggle_workarea_uses_cairo.get_active();
+	App::workarea_renderer=workarea_renderer_combo.get_active_id();
 
 	// Set ui language
 	App::ui_language = (_lang_codes[ui_language_combo.get_active_row_number()]).c_str();
@@ -694,10 +708,10 @@ Dialog_Setup::refresh()
 	image_sequence_separator.set_text(App::sequence_separator);
 
 	// Refresh the status of the navigator_uses_cairo flag
-	toggle_navigator_uses_cairo.set_active(App::navigator_uses_cairo);
+	navigator_renderer_combo.set_active_id(App::navigator_renderer);
 
 	// Refresh the status of the workarea_uses_cairo flag
-	toggle_workarea_uses_cairo.set_active(App::workarea_uses_cairo);
+	workarea_renderer_combo.set_active_id(App::workarea_renderer);
 
 	// Refresh the ui language
 

@@ -230,8 +230,8 @@ public:
 	static synfig::String predefined_fps;
 	static float preferred_fps;
 	static synfig::String sequence_separator;
-	static bool navigator_uses_cairo;
-	static bool workarea_uses_cairo;
+	static synfig::String navigator_renderer;
+	static synfig::String workarea_renderer;
 	static bool enable_mainwin_menubar;
 	static synfig::String ui_language;
 

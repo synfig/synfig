@@ -3122,7 +3122,9 @@ studio::WorkArea::async_update_preview()
 	// if we have lots of pixels to render and the tile renderer isn't disabled, use it
 	int div;
 	div = low_resolution ? low_res_pixel_size : 1;
-	if(getenv("SYNFIG_FORCE_GL_RENDER"))
+	if( !App::workarea_renderer.empty()
+	 || !getenv("SYNFIG_DISABLE_TILE_RENDER")
+	 || getenv("SYNFIG_FORCE_TILE_RENDER") )
 	{
 		// do a tile render
 		handle<WorkAreaTarget> trgt(new class WorkAreaTarget(this,w,h,2048,2048));
@@ -3130,20 +3132,7 @@ studio::WorkArea::async_update_preview()
 		trgt->set_rend_desc(&desc);
 		trgt->set_onion_skin(get_onion_skin(), onion_skins);
 		//trgt->set_allow_multithreading(true);
-		trgt->set_engine(
-			String(getenv("SYNFIG_FORCE_GL_RENDER")) == "software"
-		 || String(getenv("SYNFIG_FORCE_GL_RENDER")) == "gl"
-		  ? String(getenv("SYNFIG_FORCE_GL_RENDER")) : "software" );
-		target=trgt;
-	}
-	else if (!getenv("SYNFIG_DISABLE_TILE_RENDER") || getenv("SYNFIG_FORCE_TILE_RENDER"))
-	{
-		// do a tile render
-		handle<WorkAreaTarget> trgt(new class WorkAreaTarget(this,w,h,2048,2048));
-
-		trgt->set_rend_desc(&desc);
-		trgt->set_onion_skin(get_onion_skin(), onion_skins);
-		//trgt->set_allow_multithreading(true);
+		trgt->set_engine(App::workarea_renderer);
 		target=trgt;
 	}
 	else
