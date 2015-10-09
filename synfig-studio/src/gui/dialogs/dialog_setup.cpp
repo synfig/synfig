@@ -713,10 +713,10 @@ Dialog_Setup::refresh()
 	//Refresh the sequence separator
 	image_sequence_separator.set_text(App::sequence_separator);
 
-	// Refresh the status of the navigator_uses_cairo flag
+	// Refresh the status of the navigator_renderer
 	navigator_renderer_combo.set_active_id(App::navigator_renderer);
 
-	// Refresh the status of the workarea_uses_cairo flag
+	// Refresh the status of the workarea_renderer
 	workarea_renderer_combo.set_active_id(App::workarea_renderer);
 
 	// Refresh the ui language

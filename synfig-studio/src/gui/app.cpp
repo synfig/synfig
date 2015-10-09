@@ -812,8 +812,8 @@ public:
 		ret.push_back("preferred_fps");
 		ret.push_back("predefined_fps");
 		ret.push_back("sequence_separator");
-		ret.push_back("navigator_uses_cairo");
-		ret.push_back("workarea_uses_cairo");
+		ret.push_back("navigator_renderer");
+		ret.push_back("workarea_renderer");
 		ret.push_back("enable_mainwin_menubar");
 
 		return ret;
@@ -2125,8 +2125,8 @@ App::restore_default_settings()
 	synfigapp::Main::settings().set_value("pref.preferred_fps","24.0");
 	synfigapp::Main::settings().set_value("pref.predefined_fps",DEFAULT_PREDEFINED_FPS);
 	synfigapp::Main::settings().set_value("sequence_separator", ".");
-	synfigapp::Main::settings().set_value("navigator_uses_cairo", "0");
-	synfigapp::Main::settings().set_value("workarea_uses_cairo", "0");
+	synfigapp::Main::settings().set_value("navigator_renderer", "");
+	synfigapp::Main::settings().set_value("workarea_renderer", "");
 	synfigapp::Main::settings().set_value("pref.enable_mainwin_menubar", "1");
 }
 
