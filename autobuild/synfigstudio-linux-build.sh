@@ -512,7 +512,7 @@ if [[ $MODE != 'quick' ]]; then
 	autoreconf --install --force
 	if [ -e /etc/debian_version ] && [ -z $BOOST_CONFIGURE_OPTIONS ]; then
 		# Debian/Ubuntu multiarch
-		MULTIARCH_LIBDIR="/usr/lib/`uname -i`-linux-gnu/"
+		MULTIARCH_LIBDIR="/usr/lib/`uname -m`-linux-gnu/"
 		if [ -e "${MULTIARCH_LIBDIR}/libboost_program_options.so" ]; then
 			export BOOST_CONFIGURE_OPTIONS="--with-boost-libdir=$MULTIARCH_LIBDIR"
 		fi
