@@ -730,7 +730,7 @@ Layer::accelerated_render(Context context,Surface *surface,int quality, const Re
 {
 	RENDER_TRANSFORMED_IF_NEED(__FILE__, __LINE__)
 
-	handle<Target_Scanline> target=surface_target(surface);
+	handle<Target_Scanline> target=surface_target_scanline(surface);
 	if(!target)
 	{
 		if(cb)cb->error(_("Unable to create surface target"));

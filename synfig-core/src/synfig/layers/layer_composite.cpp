@@ -126,7 +126,7 @@ Layer_Composite::accelerated_render(Context context,Surface *surface,int quality
 	image.push_front(const_cast<synfig::Layer_Composite*>(this));
 
 	// Set up a surface target
-	Target_Scanline::Handle target(surface_target(surface));
+	Target_Scanline::Handle target(surface_target_scanline(surface));
 
 	if(!target)
 	{

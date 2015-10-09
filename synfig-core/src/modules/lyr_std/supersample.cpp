@@ -142,7 +142,7 @@ SuperSample::accelerated_render(Context context,Surface *surface,int quality, co
 	// Render the scene
 	if(scanline)
 	{
-		handle<Target_Scanline> target=surface_target(&tempsurface);
+		handle<Target_Scanline> target=surface_target_scanline(&tempsurface);
 		if(!target)
 		{
 			if(cb)cb->error(_("Unable to create SurfaceTarget"));

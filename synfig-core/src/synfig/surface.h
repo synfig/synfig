@@ -47,6 +47,7 @@ namespace synfig {
 class Target;
 class Target_Scanline;
 class Target_Cairo;
+class Target_Tile;
 
 class ColorPrep
 {
@@ -264,8 +265,10 @@ public:
 
 
 
-//! Creates a target that will render to \a surface
-etl::handle<Target_Scanline> surface_target(Surface *surface);
+//! Creates a target that will render to \a surface by specified \a renderer
+etl::handle<Target_Tile> surface_target(Surface *surface, const String &renderer = String());
+//! Creates a target that will render to \a surface by specified \a renderer
+etl::handle<Target_Scanline> surface_target_scanline(Surface *surface);
 //!Creates a target that will render to a cairo_surface_t image surface
 etl::handle<Target_Cairo> cairo_image_target(cairo_surface_t** surface);
 
