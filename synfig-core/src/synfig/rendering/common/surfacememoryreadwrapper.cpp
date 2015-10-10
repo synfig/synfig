@@ -57,7 +57,7 @@ SurfaceMemoryReadWrapper::create_vfunc()
 	{ return false; }
 
 bool
-SurfaceMemoryReadWrapper::assign_vfunc(const Surface &surface)
+SurfaceMemoryReadWrapper::assign_vfunc(const Surface & /* surface */)
 	{ return false; }
 
 void
@@ -66,7 +66,7 @@ SurfaceMemoryReadWrapper::destroy_vfunc()
 
 bool
 SurfaceMemoryReadWrapper::get_pixels_vfunc(Color *buffer) const
-	{ memcpy(buffer, this->buffer, get_buffer_size()); }
+	{ memcpy(buffer, this->buffer, get_buffer_size()); return true; }
 
 void
 SurfaceMemoryReadWrapper::set_buffer(const Color *buffer)
