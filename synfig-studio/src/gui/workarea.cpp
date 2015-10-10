@@ -3019,10 +3019,10 @@ again:
 	set_rend_desc(desc);
 
 	// Create the render target
-	handle<Target> target;
-	target=new class WorkAreaTarget(this, w, h, 1024, 1024);
-
+	handle<WorkAreaTarget> target = new WorkAreaTarget(this,w,h,2048,2048);
 	target->set_rend_desc(&desc);
+	//target->set_allow_multithreading(false);
+	target->set_engine(App::workarea_renderer);
 
 	// We can rest assured that our time has already
 	// been set, so there is no need to have to
