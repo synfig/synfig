@@ -99,14 +99,33 @@ IconController::~IconController()
 }
 
 void
-IconController::init_icons(const synfig::String& path_to_icons)
+IconController::init_icon(const synfig::String &name, const synfig::String &iconfile, const synfig::String& desc)
 {
-	
+	Gtk::StockItem stockitem(Gtk::StockID("synfig-" + name), desc);
+	Gtk::Stock::add(stockitem);
+	Glib::RefPtr<Gtk::IconSet> icon_set = Gtk::IconSet::create();
 	Gtk::IconSource icon_source;
 	icon_source.set_direction_wildcarded();
 	icon_source.set_state_wildcarded();
 	icon_source.set_size_wildcarded();
-	
+	icon_source.set_filename(iconfile);
+	icon_set->add_source(icon_source);
+	icon_factory->add(stockitem.get_stock_id(), icon_set);
+}
+
+void
+IconController::init_icon_clone(const synfig::String &name, const synfig::String& desc)
+{
+	Gtk::StockItem stockitem(Gtk::StockID("synfig-" + name), desc);
+	Gtk::Stock::add(stockitem);
+	Glib::RefPtr<Gtk::IconSet> icon_set = Gtk::IconSet::create();
+	if (Gtk::Stock::lookup(stockitem.get_stock_id(), icon_set))
+		icon_factory->add(stockitem.get_stock_id(), icon_set);
+}
+
+void
+IconController::init_icons(const synfig::String& path_to_icons)
+{
 	try{
 	Gtk::Window::set_default_icon_from_file(path_to_icons+"synfig_icon."+IMAGE_EXT);
 	} catch(...)
@@ -114,25 +133,14 @@ IconController::init_icons(const synfig::String& path_to_icons)
 		synfig::warning("Unable to open "+path_to_icons+"synfig_icon."+IMAGE_EXT);
 	}
 
-#define INIT_STOCK_ICON(name,iconfile,desc){							\
-	Gtk::StockItem stockitem(Gtk::StockID("synfig-" #name),desc); \
-	Gtk::Stock::add(stockitem);								\
-	Glib::RefPtr<Gtk::IconSet> icon_set = Gtk::IconSet::create(); \
-	icon_source.set_filename(path_to_icons+iconfile);							\
-	icon_set->add_source(icon_source);						\
-	icon_factory->add(stockitem.get_stock_id(),icon_set); \
-	}
+#define INIT_STOCK_ICON(name,iconfile,desc) \
+	init_icon(#name, (path_to_icons) + (iconfile), (desc));
 
-#define INIT_STOCK_ICON_CLONE(name,stockid,desc){							\
-	Gtk::StockItem stockitem(Gtk::StockID("synfig-" #name),desc); \
-	Gtk::Stock::add(stockitem);								\
-	Glib::RefPtr<Gtk::IconSet> icon_set = Gtk::IconSet::create(); \
-	if(Gtk::Stock::lookup(stockitem.get_stock_id(),icon_set))	\
-	icon_factory->add(stockitem.get_stock_id(),icon_set); \
-	}
+#define INIT_STOCK_ICON_CLONE(name,desc) \
+	init_icon_clone(#name, (desc));
 
-#define INIT_STOCK_ITEM(name,desc)							\
-	stock_##name=Gtk::StockItem(Gtk::StockID("synfig-" #name),desc);   			\
+#define INIT_STOCK_ITEM(name,desc) \
+	stock_##name = Gtk::StockItem(Gtk::StockID("synfig-" #name),desc); \
 	Gtk::Stock::add(stock_##name);
 
 	// Types
@@ -344,13 +352,14 @@ IconController::init_icons(const synfig::String& path_to_icons)
 	INIT_STOCK_ICON(utils_chain_link_off,"utils_chain_link_off_icon."IMAGE_EXT,_("Unlinked"));
 	INIT_STOCK_ICON(utils_timetrack_align,"utils_timetrack_align_icon."IMAGE_EXT,"Utils Timetrack align");
 
-	INIT_STOCK_ICON_CLONE(cvs_add,"gtk-add",_("CVS Add"));
-	INIT_STOCK_ICON_CLONE(cvs_update,"gtk-open",_("CVS Update"));
-	INIT_STOCK_ICON_CLONE(cvs_commit,"gtk-save",_("CVS Commit"));
-	INIT_STOCK_ICON_CLONE(cvs_revert,"gtk-revert",_("CVS Revert"));
+	INIT_STOCK_ICON_CLONE(cvs_add,_("CVS Add"));
+	INIT_STOCK_ICON_CLONE(cvs_update,_("CVS Update"));
+	INIT_STOCK_ICON_CLONE(cvs_commit,_("CVS Commit"));
+	INIT_STOCK_ICON_CLONE(cvs_revert,_("CVS Revert"));
 
 #undef INIT_STOCK_ICON
 #undef INIT_STOCK_ICON_CLONE
+#undef INIT_STOCK_ITEM
 
 	icon_factory->add_default();
 
