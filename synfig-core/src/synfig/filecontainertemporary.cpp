@@ -619,7 +619,7 @@ bool FileContainerTemporary::open_temporary(const std::string &filename_base)
 }
 
 std::string
-FileContainerTemporary::generate_indexed_temporary_filename(const FileSystem::Handle &fs, const std::string &filename)
+FileContainerTemporary::generate_indexed_temporary_filename(const FileSystem::Handle & /* fs */, const std::string &filename)
 {
 	String extension = filename_extension(filename);
 	String sans_extension = filename_sans_extension(filename);

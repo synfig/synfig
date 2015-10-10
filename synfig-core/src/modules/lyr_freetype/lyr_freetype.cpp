@@ -1035,7 +1035,7 @@ Layer_Freetype::accelerated_cairorender(Context context, cairo_t *cr, int qualit
 	cairo_surface_t* inverted = NULL;
 	subimage=cairo_surface_create_similar(cairo_get_target(cr), CAIRO_CONTENT_COLOR_ALPHA, ww, wh);
 	cairo_t* subcr=cairo_create(subimage);
-	cairo_t* invertcr;
+	cairo_t* invertcr = NULL;
 	if(invert)
 	{
 		inverted=cairo_surface_create_similar(cairo_get_target(cr), CAIRO_CONTENT_COLOR_ALPHA, ww, wh);

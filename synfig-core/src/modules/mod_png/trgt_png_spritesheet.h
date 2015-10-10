@@ -79,6 +79,8 @@ private:
 	unsigned int sheet_width;
 	unsigned int sheet_height;
 	FILE * in_file_pointer;
+	FILE * out_file_pointer;
+	unsigned int cur_out_image_row;
 	PngImage in_image;
 	synfig::String filename;
 	synfig::String sequence_separator;
