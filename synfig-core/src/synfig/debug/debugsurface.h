@@ -27,14 +27,18 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <ETL/handle>
 #include <synfig/string.h>
-#include <synfig/surface.h>
 
 /* === M A C R O S ========================================================= */
 
 /* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */
+
+
+namespace synfig { class Surface; }
+namespace synfig { namespace rendering { class Surface; } }
 
 namespace synfig {
 namespace debug {
@@ -46,9 +50,13 @@ public:
 #ifdef _DEBUG
 	static void save_to_file(const void *buffer, int width, int height, int stride, const String &filename);
 	static void save_to_file(const Surface &surface, const String &filename);
+	static void save_to_file(const rendering::Surface &surface, const String &filename);
+	static void save_to_file(const etl::handle<rendering::Surface> &surface, const String &filename);
 #else
 	inline static void save_to_file(const void *, int, int, int, const String &) { }
 	inline static void save_to_file(const Surface &, const String &) { }
+	inline static void save_to_file(const rendering::Surface &, const String &) { }
+	inline static void save_to_file(const etl::handle<rendering::Surface> &, const String &);
 #endif
 
 };

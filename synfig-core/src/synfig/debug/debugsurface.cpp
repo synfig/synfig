@@ -29,10 +29,14 @@
 #	include <config.h>
 #endif
 
+#include <vector>
+
 #include "debugsurface.h"
 
 #include <synfig/filesystemnative.h>
 #include <synfig/filecontainertemporary.h>
+#include <synfig/rendering/surface.h>
+#include <synfig/surface.h>
 
 #endif
 
@@ -73,7 +77,7 @@ DebugSurface::save_to_file(const void *buffer, int width, int height, int pitch,
 		if (pitch == 0)
 			pitch = width * sizeof(Color);
 
-		PixelFormat pf(PF_RGB|PF_A);
+		PixelFormat pf(PF_BGR|PF_A);
 		size_t total_bytes = width * height * synfig::channels(pf);
 		unsigned char *byte_buffer = (unsigned char*)malloc(total_bytes);
 		if (!byte_buffer) return;
@@ -122,6 +126,28 @@ DebugSurface::save_to_file(const Surface &surface, const String &filename)
 {
 	if (surface.is_valid())
 		save_to_file(&surface[0][0], surface.get_w(), surface.get_h(), surface.get_pitch(), filename);
+	else
+		save_to_file(NULL, 0, 0, 0, filename);
+}
+
+void
+DebugSurface::save_to_file(const rendering::Surface &surface, const String &filename)
+{
+	if (surface.is_created())
+	{
+		std::vector<Color> buffer(surface.get_pixels_count());
+		surface.get_pixels(&buffer.front());
+		save_to_file(&buffer.front(), surface.get_width(), surface.get_height(), 0, filename);
+	}
+	else
+		save_to_file(NULL, 0, 0, 0, filename);
+}
+
+void
+DebugSurface::save_to_file(const rendering::Surface::Handle &surface, const String &filename)
+{
+	if (surface)
+		save_to_file(*surface, filename);
 	else
 		save_to_file(NULL, 0, 0, 0, filename);
 }

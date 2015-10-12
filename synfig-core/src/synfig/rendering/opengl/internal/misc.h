@@ -30,6 +30,8 @@
 #include <list>
 #include <vector>
 
+#include <synfig/color.h>
+
 #include "context.h"
 
 /* === M A C R O S ========================================================= */
@@ -55,6 +57,8 @@ private:
 public:
 	Misc(Context &context);
 	~Misc();
+
+	void clear(const Color &color);
 };
 
 }; /* end namespace gl */

@@ -40,6 +40,7 @@
 #include <synfig/general.h>
 #include <synfig/localization.h>
 #include <synfig/debug/measure.h>
+#include <synfig/debug/debugsurface.h>
 
 #include "renderer.h"
 
@@ -50,6 +51,14 @@
 
 using namespace synfig;
 using namespace rendering;
+
+
+#ifdef _DEBUG
+//#define DEBUG_TASK_LIST
+//#define DEBUG_TASK_MEASURE
+//#define DEBUG_TASK_SURFACE
+#endif
+
 
 /* === M A C R O S ========================================================= */
 
@@ -353,22 +362,33 @@ Renderer::run(const Task::List &list) const
 
 	//debug::Measure t("Renderer::run");
 
+	#ifdef DEBUG_TASK_LIST
 	log(list, "input list");
+	#endif
+
 	Task::List optimized_list(list);
 	{
 		//debug::Measure t("optimize");
 		optimize(optimized_list);
 	}
+
+	#ifdef DEBUG_TASK_LIST
 	log(optimized_list, "optimized list");
+	#endif
 
 	bool success = true;
 
 	{
-		//debug::Measure t("run tasks");
+		#ifdef DEBUG_TASK_MEASURE
+		debug::Measure t("run tasks");
+		#endif
+
 		Task::RunParams params;
 		for(Task::List::iterator i = optimized_list.begin(); i != optimized_list.end(); ++i)
 		{
-			//debug::Measure t(typeid(**i).name() + 19);
+			#ifdef DEBUG_TASK_MEASURE
+			debug::Measure t(typeid(**i).name() + 19);
+			#endif
 
 			// prepare params
 			params.used_rect.minx = 0;
@@ -378,7 +398,16 @@ Renderer::run(const Task::List &list) const
 
 			// run
 			if (!(*i)->run(params))
+			{
 				success = false;
+				warning("task #%d '%s' failed", i - optimized_list.begin(), typeid(**i).name());
+			}
+
+			if (params.used_rect.valid() && !(*i)->target_surface->is_created())
+			{
+				success = false;
+				warning("task #%d '%s' target_surface is not created", i - optimized_list.begin(), typeid(**i).name());
+			}
 
 			// update used rect for target surface
 			if (params.used_rect.valid())
@@ -389,6 +418,10 @@ Renderer::run(const Task::List &list) const
 				else
 					target_rect = params.used_rect;
 			}
+
+			#ifdef DEBUG_TASK_SURFACE
+			debug::DebugSurface::save_to_file((*i)->target_surface, etl::strprintf("task%d", i - optimized_list.begin()));
+			#endif
 
 			// remove task
 			i->reset();
