@@ -35,6 +35,8 @@
 #include <signal.h>
 #endif
 
+#include <synfig/localization.h>
+
 #include "renderergl.h"
 
 #include "internal/environment.h"
@@ -88,6 +90,8 @@ RendererGL::RendererGL()
 }
 
 RendererGL::~RendererGL() { }
+
+String RendererGL::get_name() const { return _("Cobra (hardware)"); }
 
 void
 RendererGL::initialize() {

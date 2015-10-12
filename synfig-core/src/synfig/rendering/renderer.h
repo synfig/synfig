@@ -57,6 +57,8 @@ public:
 
 	virtual ~Renderer();
 
+	virtual String get_name() const = 0;
+
 	const Optimizer::List& get_optimizers(Optimizer::CategoryId category_id) const { return optimizers[category_id]; }
 	bool is_optimizer_registered(const Optimizer::Handle &optimizer) const;
 	void register_optimizer(const Optimizer::Handle &optimizer);

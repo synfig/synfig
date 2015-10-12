@@ -48,6 +48,8 @@ public:
 	RendererSW();
 	~RendererSW();
 
+	virtual String get_name() const;
+
 	static void initialize() { }
 	static void deinitialize() { }
 };

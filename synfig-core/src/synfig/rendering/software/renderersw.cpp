@@ -35,6 +35,8 @@
 #include <signal.h>
 #endif
 
+#include <synfig/localization.h>
+
 #include "renderersw.h"
 
 #include "../common/optimizer/optimizercomposite.h"
@@ -84,5 +86,8 @@ RendererSW::RendererSW()
 }
 
 RendererSW::~RendererSW() { }
+
+String RendererSW::get_name() const { return _("Cobra (software)"); }
+
 
 /* === E N T R Y P O I N T ================================================= */

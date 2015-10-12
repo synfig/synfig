@@ -421,16 +421,15 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	attach_label(render_table, _("WorkArea renderer"), 2, xpadding, ypadding);
 	render_table->attach(workarea_renderer_combo, 1, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 
-	// TODO: make cool and localized names
-	navigator_renderer_combo.append("", "");
-	workarea_renderer_combo.append("", "");
+	navigator_renderer_combo.append("", _("Legacy"));
+	workarea_renderer_combo.append("", _("Legacy"));
 	typedef std::map<synfig::String, synfig::rendering::Renderer::Handle> RendererMap;
 	const RendererMap &renderers = synfig::rendering::Renderer::get_renderers();
 	for(RendererMap::const_iterator i = renderers.begin(); i != renderers.end(); ++i)
 	{
 		assert(!i->first.empty());
-		navigator_renderer_combo.append(i->first, i->first);
-		workarea_renderer_combo.append(i->first, i->first);
+		navigator_renderer_combo.append(i->first, i->second->get_name());
+		workarea_renderer_combo.append(i->first, i->second->get_name());
 	}
 	
 	show_all_children();
