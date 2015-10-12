@@ -32,6 +32,8 @@
 #include <vector>
 #include <utility>
 
+#include <glibmm/threads.h>
+
 #include <GL/gl.h>
 #include <GL/glx.h>
 
@@ -95,6 +97,8 @@ public:
 	};
 
 private:
+	Glib::Threads::RecMutex rec_mutex;
+
 	Display *display;
 	GLXFBConfig config;
 	GLXPbuffer pbuffer;

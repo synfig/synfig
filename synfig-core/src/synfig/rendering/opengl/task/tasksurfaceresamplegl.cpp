@@ -59,7 +59,7 @@ using namespace rendering;
 bool
 TaskSurfaceResampleGL::run(RunParams & /* params */) const
 {
-	gl::Context::Lock(env().context);
+	gl::Context::Lock lock(env().context);
 
 	SurfaceGL::Handle a =
 		SurfaceGL::Handle::cast_dynamic(sub_task()->target_surface);

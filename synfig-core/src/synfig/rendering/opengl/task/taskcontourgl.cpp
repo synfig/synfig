@@ -191,53 +191,49 @@ TaskContourGL::run(RunParams &params) const
 	Matrix matrix = transformation * bounds_transfromation;
 
 	// check bounds
-	GLint vp[4] = { };
-	glGetIntegerv(GL_VIEWPORT, vp);
-	if (vp[2] && vp[3])
+	assert(target->get_width() > 0 && target->get_height() > 0);
+	std::vector<Vector> polygon;
+	Rect full_bounds(-1.0, -1.0, 1.0, 1.0);
+	Rect bounds = full_bounds;
+	Vector pixel_size(2.0/(Real)target->get_width(), 2.0/(Real)target->get_height());
+
+	contour->split(polygon, bounds, matrix, pixel_size);
+	if (contour->invert) bounds = full_bounds;
+
+	params.used_rect.minx = (int)floor((bounds.minx + 1.0)*0.5*target->get_width());
+	params.used_rect.maxx = (int)ceil ((bounds.maxx + 1.0)*0.5*target->get_width());
+	params.used_rect.miny = (int)floor((bounds.miny + 1.0)*0.5*target->get_height());
+	params.used_rect.maxy = (int)ceil ((bounds.maxy + 1.0)*0.5*target->get_height());
+
+	if (params.used_rect.valid())
 	{
-		std::vector<Vector> polygon;
-		Rect full_bounds(-1.0, -1.0, 1.0, 1.0);
-		Rect bounds = full_bounds;
-		Vector pixel_size(2.0/(Real)vp[2], 2.0/(Real)vp[3]);
+		// bind framebuffer
 
-		contour->split(polygon, bounds, matrix, pixel_size);
-		if (contour->invert) bounds = full_bounds;
+		gl::Framebuffers::RenderbufferLock renderbuffer = env().framebuffers.get_renderbuffer(GL_STENCIL_INDEX8, target->get_width(), target->get_height());
+		gl::Framebuffers::FramebufferLock framebuffer = env().framebuffers.get_framebuffer();
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, framebuffer.get_id());
+		glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, renderbuffer.get_id());
+		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, target->get_id(), 0);
+		env().framebuffers.check("TaskContourGL::run bind framebuffer");
+		glViewport(0, 0, target->get_width(), target->get_height());
+		env().context.check("TaskContourGL::run viewport");
 
-		params.used_rect.minx = (int)floor((bounds.minx + 1.0)*0.5*vp[2]);
-		params.used_rect.maxx = (int)ceil ((bounds.maxx + 1.0)*0.5*vp[2]);
-		params.used_rect.miny = (int)floor((bounds.miny + 1.0)*0.5*vp[3]);
-		params.used_rect.maxy = (int)ceil ((bounds.maxy + 1.0)*0.5*vp[3]);
+		// render
 
-		if (params.used_rect.valid())
-		{
-			// bind framebuffer
+		render_polygon(
+			polygon,
+			bounds,
+			contour->invert,
+			contour->antialias,
+			contour->winding_style,
+			contour->color );
 
-			gl::Framebuffers::RenderbufferLock renderbuffer = env().framebuffers.get_renderbuffer(GL_STENCIL_INDEX8, target->get_width(), target->get_height());
-			gl::Framebuffers::FramebufferLock framebuffer = env().framebuffers.get_framebuffer();
-			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, framebuffer.get_id());
-			glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, renderbuffer.get_id());
-			glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, target->get_id(), 0);
-			env().framebuffers.check("TaskContourGL::run bind framebuffer");
-			glViewport(0, 0, target->get_width(), target->get_height());
-			env().context.check("TaskContourGL::run bind framebuffer");
+		// release framebuffer
 
-			// render
-
-			render_polygon(
-				polygon,
-				bounds,
-				contour->invert,
-				contour->antialias,
-				contour->winding_style,
-				contour->color );
-
-			// release framebuffer
-
-			glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, 0, 0);
-			glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, 0);
-			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-			env().context.check("TaskContourGL::run release contour");
-		}
+		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, 0, 0);
+		glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, 0);
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+		env().context.check("TaskContourGL::run release contour");
 	}
 
 	return true;

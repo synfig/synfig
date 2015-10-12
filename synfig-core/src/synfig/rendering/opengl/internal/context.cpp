@@ -84,6 +84,7 @@ void
 gl::Context::ContextInfo::make_current() const
 {
 	glXMakeContextCurrent(display, drawable, read_drawable, context);
+	assert(*this == get_current(display));
 }
 
 gl::Context::ContextInfo
@@ -158,11 +159,11 @@ gl::Context::Context():
 	assert(context);
 	use();
 	check();
+	unuse();
 }
 
 gl::Context::~Context()
 {
-	unuse();
 	if (context)
 		glXDestroyContext(display, context);
 	context = NULL;
@@ -190,8 +191,10 @@ void
 gl::Context::use()
 {
 	if (is_valid()) {
+		rec_mutex.lock();
 		context_stack.push_back(ContextInfo::get_current(display));
-		context_info.make_current();
+		if (context_info != context_stack.back())
+			context_info.make_current();
 		check("gl::Context::use");
 	}
 }
@@ -203,8 +206,13 @@ gl::Context::unuse()
 	if (is_valid()) {
 		assert(!context_stack.empty());
 		check("gl::Context::unuse");
-		context_stack.back().make_current();
+		if (context_stack.back() != context_info)
+		{
+			glFinish();
+			context_stack.back().make_current();
+		}
 		context_stack.pop_back();
+		rec_mutex.unlock();
 	}
 }
 
