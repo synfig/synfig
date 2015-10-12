@@ -54,7 +54,7 @@
 
 #include "../software/optimizer/optimizerblendsw.h"
 #include "../software/optimizer/optimizercontoursw.h"
-#include "../software/optimizer/optimizerblurpreparedsw.h"
+#include "../software/optimizer/optimizerlayersw.h"
 #include "../software/optimizer/optimizermeshsw.h"
 
 #endif
@@ -77,6 +77,7 @@ RendererGL::RendererGL()
 
 	register_optimizer(new OptimizerBlendGL());
 	register_optimizer(new OptimizerContourGL());
+	register_optimizer(new OptimizerLayerSW());
 	register_optimizer(new OptimizerSurfaceResampleGL());
 
 	register_optimizer(new OptimizerComposite());

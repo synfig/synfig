@@ -103,7 +103,7 @@ Renderer_Canvas::render_vfunc(
 	RectInt window_rect(get_work_area()->get_window_rect());
 
 	Cairo::RefPtr<Cairo::Context> cr = drawable->create_cairo_context();
-	const WorkAreaTile::List& tiles(get_tile_book().get_tiles());
+	const WorkAreaTile::List tiles(get_tile_book().get_tiles());
 
 	for(WorkAreaTile::List::const_iterator i = tiles.begin(); i != tiles.end(); ++i)
 	{

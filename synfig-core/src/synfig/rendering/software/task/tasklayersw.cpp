@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/software/renderersw.cpp
-**	\brief RendererSW
+/*!	\file synfig/rendering/software/task/tasklayersw.cpp
+**	\brief TaskLayerSW
 **
 **	$Id$
 **
@@ -35,23 +35,12 @@
 #include <signal.h>
 #endif
 
-#include "renderersw.h"
+#include "tasklayersw.h"
 
-#include "../common/optimizer/optimizercomposite.h"
-#include "../common/optimizer/optimizerlinear.h"
-#include "../common/optimizer/optimizersurface.h"
-#include "../common/optimizer/optimizersurfaceconvert.h"
-#include "../common/optimizer/optimizersurfacecreate.h"
-#include "../common/optimizer/optimizersurfacedestroy.h"
-#include "../common/optimizer/optimizertransformation.h"
-#include "../common/optimizer/optimizertransformationaffine.h"
-
-#include "optimizer/optimizerblendsw.h"
-#include "optimizer/optimizerblurpreparedsw.h"
-#include "optimizer/optimizercontoursw.h"
-#include "optimizer/optimizerlayersw.h"
-#include "optimizer/optimizermeshsw.h"
-#include "optimizer/optimizersurfaceresamplesw.h"
+#include "../surfacesw.h"
+#include <synfig/guid.h>
+#include <synfig/canvas.h>
+#include <synfig/context.h>
 
 #endif
 
@@ -66,23 +55,20 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
-RendererSW::RendererSW()
+bool
+TaskLayerSW::run(RunParams & /* params */) const
 {
-	// register optimizers
-	register_optimizer(new OptimizerTransformationAffine());
+	synfig::Surface &target =
+		SurfaceSW::Handle::cast_dynamic( target_surface )->get_surface();
 
-	register_optimizer(new OptimizerBlendSW());
-	register_optimizer(new OptimizerContourSW());
-	register_optimizer(new OptimizerLayerSW());
-	register_optimizer(new OptimizerSurfaceResampleSW());
+	RendDesc desc;
+	desc.set_tl(rect_lt);
+	desc.set_br(rect_rb);
+	desc.set_wh(target.get_w(), target.get_h());
+	desc.set_antialias(1);
 
-	register_optimizer(new OptimizerComposite());
-	register_optimizer(new OptimizerSurfaceConvert());
-
-	register_optimizer(new OptimizerLinear());
-	register_optimizer(new OptimizerSurfaceCreate());
+	Canvas::Handle canvas = Canvas::create();
+	return layer->accelerated_render(canvas->get_context(ContextParams()), &target, 4, desc, NULL);
 }
-
-RendererSW::~RendererSW() { }
 
 /* === E N T R Y P O I N T ================================================= */

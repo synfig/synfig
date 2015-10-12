@@ -200,8 +200,8 @@ TaskContourGL::run(RunParams &params) const
 	contour->split(polygon, bounds, matrix, pixel_size);
 	if (contour->invert) bounds = full_bounds;
 
-	params.used_rect.minx = (int)floor((bounds.minx + 1.0)*0.5*target->get_width());
-	params.used_rect.maxx = (int)ceil ((bounds.maxx + 1.0)*0.5*target->get_width());
+	params.used_rect.minx = (int)floor((bounds.minx + 1.0)*0.5*target->get_width() );
+	params.used_rect.maxx = (int)ceil ((bounds.maxx + 1.0)*0.5*target->get_width() );
 	params.used_rect.miny = (int)floor((bounds.miny + 1.0)*0.5*target->get_height());
 	params.used_rect.maxy = (int)ceil ((bounds.maxy + 1.0)*0.5*target->get_height());
 

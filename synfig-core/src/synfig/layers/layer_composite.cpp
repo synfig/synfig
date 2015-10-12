@@ -48,7 +48,7 @@
 #include "layer_pastecanvas.h"
 #include "layer_bitmap.h"
 #include <synfig/rendering/common/task/taskblend.h>
-#include <synfig/rendering/common/task/tasksurfaceempty.h>
+#include <synfig/rendering/common/task/tasklayer.h>
 
 #endif
 
@@ -320,7 +320,9 @@ Layer_Composite::get_param(const String & param)const
 rendering::Task::Handle
 Layer_Composite::build_composite_task_vfunc(ContextParams /*context_params*/)const
 {
-	return new rendering::TaskSurfaceEmpty();
+	rendering::TaskLayer::Handle task = new rendering::TaskLayer();
+	task->layer = clone(NULL);
+	return task;
 }
 
 rendering::Task::Handle
