@@ -2940,9 +2940,8 @@ studio::WorkArea::async_update_finished()
 		Real execution_time = async_renderer->get_execution_time();
 		if (execution_time > 0.0)
 		{
-			cb->task( strprintf("%s (%s %f %s)",
-				_("Idle"),
-				_("Last rendering time"),
+			cb->task( strprintf("%s %f %s",
+				_("Rendered:"),
 				async_renderer->get_execution_time(),
 				_("sec") ));
 		}
