@@ -64,6 +64,12 @@ public:
 	synfig::Point rect_rb;
 	List sub_tasks;
 
+	mutable List deps;
+	mutable RunParams params;
+	mutable bool success;
+
+	Task(): success(true) { }
+
 	template<typename T>
 	static T* clone_pointer(const T *task)
 	{

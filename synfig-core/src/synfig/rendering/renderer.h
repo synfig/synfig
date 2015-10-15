@@ -47,9 +47,12 @@ class Renderer: public etl::shared_object
 public:
 	typedef etl::handle<Renderer> Handle;
 
+	class Queue;
+
 private:
 	static Handle blank;
 	static std::map<String, Handle> *renderers;
+	static Queue *queue;
 
 	Optimizer::List optimizers[Optimizer::CATEGORY_ID_COUNT];
 

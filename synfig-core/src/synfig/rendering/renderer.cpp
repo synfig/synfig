@@ -37,6 +37,8 @@
 
 #include <typeinfo>
 
+#include <glibmm/threads.h>
+
 #include <synfig/general.h>
 #include <synfig/localization.h>
 #include <synfig/debug/measure.h>
@@ -46,6 +48,8 @@
 
 #include "software/renderersw.h"
 #include "opengl/renderergl.h"
+#include "common/task/taskcallback.h"
+#include "opengl/task/taskgl.h"
 
 #endif
 
@@ -57,6 +61,7 @@ using namespace rendering;
 //#define DEBUG_TASK_LIST
 //#define DEBUG_TASK_MEASURE
 //#define DEBUG_TASK_SURFACE
+//#define DEBUG_TASK_THREAD
 #endif
 
 
@@ -70,6 +75,185 @@ using namespace rendering;
 
 Renderer::Handle Renderer::blank;
 std::map<String, Renderer::Handle> *Renderer::renderers;
+Renderer::Queue *Renderer::queue;
+
+
+class Renderer::Queue
+{
+private:
+	Glib::Threads::Mutex mutex;
+	Glib::Threads::Mutex threads_mutex;
+	Glib::Threads::Cond cond;
+
+	Task::List queue;
+	bool started;
+
+	std::list<Glib::Threads::Thread*> threads;
+
+	void start() {
+		Glib::Threads::Mutex::Lock lock(mutex);
+		if (started) return;
+
+		int count = g_get_num_processors() - 1;
+		if (count < 1) count = 1;
+		for(int i = 0; i < count; ++i)
+			threads.push_back(
+				Glib::Threads::Thread::create(
+					sigc::bind(sigc::mem_fun(*this, &Queue::process), i) ));
+		started = true;
+	}
+
+	void stop() {
+		{
+			Glib::Threads::Mutex::Lock lock(mutex);
+			started = false;
+			cond.broadcast();
+		}
+		while(!threads.empty())
+			{ threads.front()->join(); threads.pop_front(); }
+	}
+
+	void process(int index)
+	{
+		bool gl = index == 0;
+		while(Task::Handle task = get(gl))
+		{
+			#ifdef DEBUG_TASK_THREAD
+			info("thread %d: begin task '%s'", index, typeid(*task).name());
+			#endif
+
+			// TODO: optimizer for rects
+			task->params.used_rect.minx = 0;
+			task->params.used_rect.miny = 0;
+			task->params.used_rect.maxx = task->target_surface ? task->target_surface->get_width() : 0;
+			task->params.used_rect.maxy = task->target_surface ? task->target_surface->get_height() : 0;
+
+			if (!task->run(task->params))
+				task->success = false;
+
+			if (task->params.used_rect.valid() && !task->target_surface->is_created())
+			{
+				task->success = false;
+				warning("task '%s' target_surface is not created", typeid(*task).name());
+			}
+
+			// update used rect for target surface
+			if (task->params.used_rect.valid())
+			{
+				etl::rect<int> &target_rect = task->target_surface->used_rect;
+				if (target_rect.valid())
+					etl::set_union(target_rect, target_rect, task->params.used_rect);
+				else
+					target_rect = task->params.used_rect;
+			}
+
+			#ifdef DEBUG_TASK_THREAD
+			info("thread %d: end task '%s'", index, typeid(*task).name());
+			#endif
+			done(task);
+		}
+	}
+
+	void done(const Task::Handle &task)
+	{
+		assert(task);
+		bool unlocked = false;
+		Glib::Threads::Mutex::Lock lock(mutex);
+		for(Task::List::iterator i = queue.begin(); i != queue.end();)
+		{
+			assert(*i);
+			if (*i == task) { i = queue.erase(i); continue; }
+			for(Task::List::iterator j = (*i)->deps.begin(); j != (*i)->deps.end();)
+			{
+				assert(*j);
+				if (*j == task)
+				{
+					if (!task->success) (*i)->success = false;
+					j = (*i)->deps.erase(j);
+					if ((*i)->deps.empty()) unlocked = true;
+					continue;
+				}
+				++j;
+			}
+			++i;
+		}
+		if (unlocked) cond.broadcast();
+	}
+
+	Task::Handle get(bool gl) {
+		Glib::Threads::Mutex::Lock lock(mutex);
+		while(true)
+		{
+			if (!started) return Task::Handle();
+
+			if (gl)
+			{
+				for(Task::List::iterator i = queue.begin(); i != queue.end(); ++i)
+				{
+					assert(*i);
+					if ((*i)->deps.empty() && i->type_is<TaskGL>())
+					{
+						Task::Handle task = *i;
+						queue.erase(i);
+						return task;
+					}
+				}
+			}
+
+			for(Task::List::iterator i = queue.begin(); i != queue.end(); ++i)
+			{
+				assert(*i);
+				if ((*i)->deps.empty() && !i->type_is<TaskGL>())
+				{
+					Task::Handle task = *i;
+					queue.erase(i);
+					return task;
+				}
+			}
+
+			cond.wait(mutex);
+		}
+	}
+
+	static void fix_task(const Task &task, const Task::RunParams &params)
+	{
+		for(Task::List::iterator i = task.deps.begin(); i != task.deps.end();)
+			if (*i) ++i; else i = (*i)->deps.erase(i);
+		task.params = params;
+		task.success = true;
+	}
+
+public:
+	Queue(): started(false) { start(); }
+	~Queue() { stop(); }
+
+	void enqueue(const Task::Handle &task, const Task::RunParams &params)
+	{
+		if (!task) return;
+		fix_task(*task, params);
+		Glib::Threads::Mutex::Lock lock(mutex);
+		queue.push_back(task);
+		cond.broadcast();
+	}
+
+	void enqueue(const Task::List &tasks, const Task::RunParams &params)
+	{
+		int count = 0;
+		for(Task::List::const_iterator i = tasks.begin(); i != tasks.end(); ++i)
+			if (*i) { fix_task(**i, params); ++count; }
+		if (!count) return;
+		Glib::Threads::Mutex::Lock lock(mutex);
+		for(Task::List::const_iterator i = tasks.begin(); i != tasks.end(); ++i)
+			if (*i) queue.push_back(*i);
+		cond.broadcast();
+	}
+
+	void clear()
+	{
+		Glib::Threads::Mutex::Lock lock(mutex);
+		queue.clear();
+	}
+};
 
 
 
@@ -297,70 +481,9 @@ Renderer::optimize(Task::List &list) const
 bool
 Renderer::run(const Task::List &list) const
 {
-	/*
-	{
-		for(int i = 0; i < Color::BLEND_END; ++i)
-		{
-			int count = 0;
-			int count1 = 0;
-			int count2 = 0;
-			int count3 = 0;
-			for(int j = 0; j < 1000000; ++j)
-			{
-				Color colors[6];
-				Color::value_type *channels = (Color::value_type*)&colors[0];
-				for(int k = 0; k < 16; ++k)
-					channels[k] = (float)rand()/(float)RAND_MAX*10.f - 5.f;
-
-				Color x, y;
-				Color::value_type a0, a1;
-
-				a0 = 1.f;
-				a1 = 1.f;
-				x = Color::blend(colors[2], Color::blend(colors[1], colors[0], a0, (Color::BlendMethod)i), a0*a1, (Color::BlendMethod)i);
-				y = Color::blend(Color::blend(colors[2], colors[1], a1, (Color::BlendMethod)i), colors[0], a0, (Color::BlendMethod)i);
-				if ( fabsf(x.get_r() - y.get_r()) > 1e-3
-				  || fabsf(x.get_g() - y.get_g()) > 1e-3
-				  || fabsf(x.get_b() - y.get_b()) > 1e-3
-				  || fabsf(x.get_a() - y.get_a()) > 1e-3 )
-					++count;
-
-				a0 = channels[12];
-				a1 = channels[13];
-				x = Color::blend(colors[2], Color::blend(colors[1], colors[0], a0, (Color::BlendMethod)i), a0*a1, (Color::BlendMethod)i);
-				y = Color::blend(Color::blend(colors[2], colors[1], a1, (Color::BlendMethod)i), colors[0], a0, (Color::BlendMethod)i);
-				if ( fabsf(x.get_r() - y.get_r()) > 1e-3
-				  || fabsf(x.get_g() - y.get_g()) > 1e-3
-				  || fabsf(x.get_b() - y.get_b()) > 1e-3
-				  || fabsf(x.get_a() - y.get_a()) > 1e-3 )
-					++count1;
-
-				a0 = 1.f;
-				a1 = channels[13];
-				x = Color::blend(colors[2], Color::blend(colors[1], colors[0], a0, (Color::BlendMethod)i), a0*a1, (Color::BlendMethod)i);
-				y = Color::blend(Color::blend(colors[2], colors[1], a1, (Color::BlendMethod)i), colors[0], a0, (Color::BlendMethod)i);
-				if ( fabsf(x.get_r() - y.get_r()) > 1e-3
-				  || fabsf(x.get_g() - y.get_g()) > 1e-3
-				  || fabsf(x.get_b() - y.get_b()) > 1e-3
-				  || fabsf(x.get_a() - y.get_a()) > 1e-3 )
-					++count2;
-
-				a0 = channels[12];
-				a1 = 1.f;
-				x = Color::blend(colors[2], Color::blend(colors[1], colors[0], a0, (Color::BlendMethod)i), a0*a1, (Color::BlendMethod)i);
-				y = Color::blend(Color::blend(colors[2], colors[1], a1, (Color::BlendMethod)i), colors[0], a0, (Color::BlendMethod)i);
-				if ( fabsf(x.get_r() - y.get_r()) > 1e-3
-				  || fabsf(x.get_g() - y.get_g()) > 1e-3
-				  || fabsf(x.get_b() - y.get_b()) > 1e-3
-				  || fabsf(x.get_a() - y.get_a()) > 1e-3 )
-					++count3;
-			}
-			info("association %d %d %d %d %d", i, count, count1, count2, count3);
-		}
-	}
-	*/
-
-	//debug::Measure t("Renderer::run");
+	#ifdef DEBUG_TASK_MEASURE
+	debug::Measure t("Renderer::run");
+	#endif
 
 	#ifdef DEBUG_TASK_LIST
 	log(list, "input list");
@@ -368,13 +491,34 @@ Renderer::run(const Task::List &list) const
 
 	Task::List optimized_list(list);
 	{
-		//debug::Measure t("optimize");
+		#ifdef DEBUG_TASK_MEASURE
+		debug::Measure t("optimize");
+		#endif
 		optimize(optimized_list);
 	}
 
 	#ifdef DEBUG_TASK_LIST
 	log(optimized_list, "optimized list");
 	#endif
+
+	{
+		#ifdef DEBUG_TASK_MEASURE
+		debug::Measure t("find deps");
+		#endif
+
+		for(Task::List::const_iterator i = optimized_list.begin(); i != optimized_list.end(); ++i)
+		{
+			(*i)->deps.clear();
+			for(Task::List::const_iterator j = (*i)->sub_tasks.begin(); j != (*i)->sub_tasks.end(); ++j)
+				if (*j)
+					for(Task::List::const_reverse_iterator rk(i); rk != optimized_list.rend(); ++rk)
+						if ((*j)->target_surface == (*rk)->target_surface)
+							{ (*i)->deps.push_back(*rk); break; }
+			for(Task::List::const_reverse_iterator rk(i); rk != optimized_list.rend(); ++rk)
+				if ((*i)->target_surface == (*rk)->target_surface)
+					{ (*i)->deps.push_back(*rk); break; }
+		}
+	}
 
 	bool success = true;
 
@@ -383,52 +527,21 @@ Renderer::run(const Task::List &list) const
 		debug::Measure t("run tasks");
 		#endif
 
-		Task::RunParams params;
-		for(Task::List::iterator i = optimized_list.begin(); i != optimized_list.end(); ++i)
-		{
-			#ifdef DEBUG_TASK_MEASURE
-			debug::Measure t(typeid(**i).name() + 19);
-			#endif
+		Glib::Threads::Cond cond;
+		Glib::Threads::Mutex mutex;
+		Glib::Threads::Mutex::Lock lock(mutex);
 
-			// prepare params
-			params.used_rect.minx = 0;
-			params.used_rect.miny = 0;
-			params.used_rect.maxx = (*i)->target_surface ? (*i)->target_surface->get_width() : 0;
-			params.used_rect.maxy = (*i)->target_surface ? (*i)->target_surface->get_height() : 0;
+		TaskCallbackCond::Handle task_cond = new TaskCallbackCond();
+		task_cond->cond = &cond;
+		task_cond->mutex = &mutex;
+		task_cond->deps = optimized_list;
+		optimized_list.push_back(task_cond);
 
-			// run
-			if (!(*i)->run(params))
-			{
-				success = false;
-				warning("task #%d '%s' failed", i - optimized_list.begin(), typeid(**i).name());
-			}
+		queue->enqueue(optimized_list, Task::RunParams());
 
-			if (params.used_rect.valid() && !(*i)->target_surface->is_created())
-			{
-				success = false;
-				warning("task #%d '%s' target_surface is not created", i - optimized_list.begin(), typeid(**i).name());
-			}
-
-			// update used rect for target surface
-			if (params.used_rect.valid())
-			{
-				etl::rect<int> &target_rect = (*i)->target_surface->used_rect;
-				if (target_rect.valid())
-					etl::set_union(target_rect, target_rect, params.used_rect);
-				else
-					target_rect = params.used_rect;
-			}
-
-			#ifdef DEBUG_TASK_SURFACE
-			debug::DebugSurface::save_to_file((*i)->target_surface, etl::strprintf("task%d", i - optimized_list.begin()));
-			#endif
-
-			// remove task
-			i->reset();
-		}
+		task_cond->cond->wait(mutex);
+		if (!task_cond->success) success = false;
 	}
-	// optimized_list now contains NULLs, clear it to avoid any mistakes
-	optimized_list.clear();
 
 	return success;
 }
@@ -479,9 +592,10 @@ Renderer::log(const Task::List &list, const String &name) const
 void
 Renderer::initialize()
 {
-	if (renderers != NULL)
+	if (renderers != NULL || queue != NULL)
 		synfig::error("rendering::Renderer already initialized");
 	renderers = new std::map<String, Handle>();
+	queue = new Queue();
 
 	initialize_renderers();
 }
@@ -489,12 +603,16 @@ Renderer::initialize()
 void
 Renderer::deinitialize()
 {
+	if (renderers == NULL || queue == NULL)
+		synfig::error("rendering::Renderer not initialized");
+
 	while(!get_renderers().empty())
 		unregister_renderer(get_renderers().begin()->first);
 
 	deinitialize_renderers();
 
 	delete renderers;
+	delete queue;
 }
 
 void

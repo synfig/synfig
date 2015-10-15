@@ -112,6 +112,7 @@ public:
 	int w,h;
 	int real_tile_w,real_tile_h;
 	int max_tile_w,max_tile_h;
+	bool force_fullframe;
 
 	int refresh_id;
 
@@ -167,13 +168,14 @@ public:
 	}
 public:
 
-	WorkAreaTarget(WorkArea *workarea, int w, int h, int max_tile_w, int max_tile_h):
+	WorkAreaTarget(WorkArea *workarea, int w, int h, int max_tile_w, int max_tile_h, bool force_fullframe):
 		workarea(workarea),
 		low_res(workarea->get_low_resolution_flag()),
 		w(w),
 		h(h),
 		real_tile_w(workarea->get_tile_w()),
 		real_tile_h(workarea->get_tile_h()),
+		force_fullframe(force_fullframe),
 		max_tile_w(max_tile_w),
 		max_tile_h(max_tile_h),
 		refresh_id(workarea->get_refreshes()),
@@ -229,11 +231,21 @@ public:
 	{
 		synfig::Mutex::Lock lock(mutex);
 
-		workarea->get_tile_book().get_dirty_rects(
-			tiles_queue,
-			refresh_id - onion_skin_queue.size(),
-			workarea->get_window_rect(get_tile_w(), get_tile_h()),
-			VectorInt(max_tile_w, max_tile_h) );
+		RectInt window_rect = workarea->get_window_rect(get_tile_w(), get_tile_h());
+
+		if (force_fullframe)
+		{
+			tiles_queue.clear();
+			tiles_queue.push_back(window_rect);
+		}
+		else
+		{
+			workarea->get_tile_book().get_dirty_rects(
+				tiles_queue,
+				refresh_id - onion_skin_queue.size(),
+				window_rect,
+				VectorInt(max_tile_w, max_tile_h) );
+		}
 
 		if(!onionskin)
 			return synfig::Target_Tile::next_frame(time);
@@ -2885,7 +2897,7 @@ studio::WorkArea::async_update_preview()
 	 || getenv("SYNFIG_FORCE_TILE_RENDER") )
 	{
 		// do a tile render
-		handle<WorkAreaTarget> trgt(new class WorkAreaTarget(this,w,h,2048,2048));
+		handle<WorkAreaTarget> trgt(new class WorkAreaTarget(this,w,h,2048,2048,!App::workarea_renderer.empty()));
 
 		trgt->set_rend_desc(&desc);
 		trgt->set_onion_skin(get_onion_skin(), onion_skins);
@@ -3018,7 +3030,7 @@ again:
 	set_rend_desc(desc);
 
 	// Create the render target
-	handle<WorkAreaTarget> target = new WorkAreaTarget(this,w,h,2048,2048);
+	handle<WorkAreaTarget> target = new WorkAreaTarget(this,w,h,2048,2048,true);
 	target->set_rend_desc(&desc);
 	//target->set_allow_multithreading(false);
 	target->set_engine(App::workarea_renderer);
