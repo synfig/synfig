@@ -356,8 +356,8 @@ Renderer_Ducks::render_vfunc(
 		if(!(*iter)->get_editable(alternative))
 			screen_duck.color=(DUCK_COLOR_NOT_EDITABLE);
 		else if((*iter)->get_tangent())
-			if(0){
-				// Tangents have different color depending on the split state (disabled for now)
+			if(true){
+				// Tangents have different color depending on the split state
 				//
 				// Check if we can reach the canvas and set the time to
 				// evaluate the split value accordingly
@@ -365,22 +365,35 @@ Renderer_Ducks::render_vfunc(
 				synfig::Time time(canvas_h?canvas_h->get_time():synfig::Time(0));
 				// Retrieve the split value of the bline point.
 				const synfigapp::ValueDesc& v_d((*iter)->get_value_desc());
-				synfig::LinkableValueNode::Handle parent;
-				if(v_d.parent_is_linkable_value_node())
+
+				synfig::ValueNode_Composite::Handle parent; //rename value_node
+                if(v_d.is_value_node())
 				{
-					parent=v_d.get_parent_value_node();
-					bool split;
-					synfig::ValueNode::Handle child(parent->get_link("split"));
-					if(synfig::ValueNode_Animated::Handle::cast_dynamic(child))
-					{
-						synfig::ValueNode_Animated::Handle animated_child(synfig::ValueNode_Animated::Handle::cast_dynamic(child));
-						split=animated_child->new_waypoint_at_time(time).get_value(time).get(split);
-					}
-					else if(synfig::ValueNode_Const::Handle::cast_dynamic(child))
-					{
-						synfig::ValueNode_Const::Handle const_child(synfig::ValueNode_Const::Handle::cast_dynamic(child));
-						split=(const_child->get_value()).get(split);
-					}
+					parent=v_d.get_value_node();
+
+					bool bline = (parent->get_type()!=type_bline_point);
+					bool split=false;
+
+			        try
+			        {
+                        synfig::ValueNode::Handle child(parent->get_link("split_angle"));
+                        if(synfig::ValueNode_Animated::Handle::cast_dynamic(child))
+                        {
+                            synfig::ValueNode_Animated::Handle animated_child(
+                                    synfig::ValueNode_Animated::Handle::cast_dynamic(child));
+                            split=animated_child->new_waypoint_at_time(time).get_value(time).get(split);
+                        }
+                        else if(synfig::ValueNode_Const::Handle::cast_dynamic(child))
+                        {
+                            synfig::ValueNode_Const::Handle const_child(
+                                    synfig::ValueNode_Const::Handle::cast_dynamic(child));
+                            split=(const_child->get_value()).get(split);
+                        }
+			        }
+			        catch(Exception::BadLinkName)
+			        {
+
+			        }
 					screen_duck.color=(split? DUCK_COLOR_TANGENT_2 : DUCK_COLOR_TANGENT_1);
 				}
 				else
