@@ -356,8 +356,9 @@ Renderer_Ducks::render_vfunc(
 		if(!(*iter)->get_editable(alternative))
 			screen_duck.color=(DUCK_COLOR_NOT_EDITABLE);
 		else if((*iter)->get_tangent())
-			if(true){
-				// Tangents have different color depending on the split state
+		{
+			if(false){
+				// Tangents ducks have different color depending on the split state (disabled for now)
 				//
 				// Check if we can reach the canvas and set the time to
 				// evaluate the split value accordingly
@@ -402,6 +403,7 @@ Renderer_Ducks::render_vfunc(
 				// All tangents are the same color
 				screen_duck.color=((*iter)->get_scalar()<0 ? DUCK_COLOR_TANGENT_1 : DUCK_COLOR_TANGENT_1);
 			}
+		}
 		else if((*iter)->get_type()&Duck::TYPE_SKEW)
 			screen_duck.color=DUCK_COLOR_TANGENT_2;
 		else if((*iter)->get_type()&Duck::TYPE_VERTEX)
