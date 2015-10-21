@@ -35,6 +35,9 @@
 
 /* === M A C R O S ========================================================= */
 
+#define BBOX_COLOR_OUTLINE      Gdk::Color("#ffffff")
+#define BBOX_COLOR_FAILBACK     Gdk::Color("#000000")
+
 /* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */
