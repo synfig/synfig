@@ -200,7 +200,7 @@ Renderer_Dragbox::render_vfunc(
 		cr->set_antialias(Cairo::ANTIALIAS_NONE);
 
 		cr->set_line_width(1.0);
-		cr->set_source_rgb(0,0,0);
+		cr->set_source_rgb(GDK_COLOR_TO_RGB(DRAGBOX_COLOR_OUTLINE));
 		std::valarray<double> dashes(2);
 		dashes[0]=5.0;
 		dashes[1]=5.0;
