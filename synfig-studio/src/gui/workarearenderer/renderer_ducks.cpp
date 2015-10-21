@@ -10,6 +10,7 @@
 **  Copyright (c) 2008 Gerald Young
 **  Copyright (c) 2011 Nikita Kitaev
 **  Copyright (c) 2011 Carlos López
+**  Copyright (c) 2015 Jérôme Blanchi
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -91,8 +92,7 @@ struct ScreenDuck
 void
 Renderer_Ducks::render_vfunc(
 	const Glib::RefPtr<Gdk::Window>& drawable,
-	const Gdk::Rectangle& /*expose_area*/
-)
+	const Gdk::Rectangle& /*expose_area*/)
 {
 	assert(get_work_area());
 	if(!get_work_area())
@@ -353,52 +353,72 @@ Renderer_Ducks::render_vfunc(
 		screen_duck.hover=hover;
 		screen_duck.has_alternative=(*iter)->get_alternative_value_desc().is_valid();
 
+		bool splited_angle=false;
+		bool splited_radius=false;
+
 		if(!(*iter)->get_editable(alternative))
 			screen_duck.color=(DUCK_COLOR_NOT_EDITABLE);
 		else if((*iter)->get_tangent())
 		{
+		    // Check if we can reach the canvas and set the time to
+		    // evaluate the split value accordingly
+		    synfig::Canvas::Handle canvas_h(get_work_area()->get_canvas());
+		    synfig::Time time(canvas_h?canvas_h->get_time():synfig::Time(0));
+		    // Retrieve the split value of the bline point.
+		    const synfigapp::ValueDesc& v_d((*iter)->get_value_desc());
+
+		    synfig::ValueNode_Composite::Handle value_node; //rename value_node
+		    if(v_d.is_value_node())
+            {
+                value_node=v_d.get_value_node();
+
+                try
+                {
+                    synfig::ValueNode::Handle child(value_node->get_link("split_angle"));
+                    if(synfig::ValueNode_Animated::Handle::cast_dynamic(child))
+                    {
+                        synfig::ValueNode_Animated::Handle animated_child(
+                                synfig::ValueNode_Animated::Handle::cast_dynamic(child));
+                        splited_angle=animated_child->new_waypoint_at_time(time).get_value(time).get(bool());
+                    }
+                    else if(synfig::ValueNode_Const::Handle::cast_dynamic(child))
+                    {
+                        synfig::ValueNode_Const::Handle const_child(
+                                synfig::ValueNode_Const::Handle::cast_dynamic(child));
+                        splited_angle=(const_child->get_value()).get(bool());
+                    }
+                }
+                catch(Exception::BadLinkName)
+                {
+
+                }
+
+                try
+                {
+                    synfig::ValueNode::Handle child(value_node->get_link("split_radius"));
+                    if(synfig::ValueNode_Animated::Handle::cast_dynamic(child))
+                    {
+                        synfig::ValueNode_Animated::Handle animated_child(
+                                synfig::ValueNode_Animated::Handle::cast_dynamic(child));
+                        splited_radius=animated_child->new_waypoint_at_time(time).get_value(time).get(bool());
+                    }
+                    else if(synfig::ValueNode_Const::Handle::cast_dynamic(child))
+                    {
+                        synfig::ValueNode_Const::Handle const_child(
+                                synfig::ValueNode_Const::Handle::cast_dynamic(child));
+                        splited_radius=(const_child->get_value()).get(bool());
+                    }
+                }
+                catch(Exception::BadLinkName)
+                {
+
+                }
+            }
+
 			if(false){
 				// Tangents ducks have different color depending on the split state (disabled for now)
-				//
-				// Check if we can reach the canvas and set the time to
-				// evaluate the split value accordingly
-				synfig::Canvas::Handle canvas_h(get_work_area()->get_canvas());
-				synfig::Time time(canvas_h?canvas_h->get_time():synfig::Time(0));
-				// Retrieve the split value of the bline point.
-				const synfigapp::ValueDesc& v_d((*iter)->get_value_desc());
+			    screen_duck.color=(splited_angle? DUCK_COLOR_TANGENT_2 : DUCK_COLOR_TANGENT_1);
 
-				synfig::ValueNode_Composite::Handle parent; //rename value_node
-                if(v_d.is_value_node())
-				{
-					parent=v_d.get_value_node();
-
-					bool bline = (parent->get_type()!=type_bline_point);
-					bool split=false;
-
-			        try
-			        {
-                        synfig::ValueNode::Handle child(parent->get_link("split_angle"));
-                        if(synfig::ValueNode_Animated::Handle::cast_dynamic(child))
-                        {
-                            synfig::ValueNode_Animated::Handle animated_child(
-                                    synfig::ValueNode_Animated::Handle::cast_dynamic(child));
-                            split=animated_child->new_waypoint_at_time(time).get_value(time).get(split);
-                        }
-                        else if(synfig::ValueNode_Const::Handle::cast_dynamic(child))
-                        {
-                            synfig::ValueNode_Const::Handle const_child(
-                                    synfig::ValueNode_Const::Handle::cast_dynamic(child));
-                            split=(const_child->get_value()).get(split);
-                        }
-			        }
-			        catch(Exception::BadLinkName)
-			        {
-
-			        }
-					screen_duck.color=(split? DUCK_COLOR_TANGENT_2 : DUCK_COLOR_TANGENT_1);
-				}
-				else
-					screen_duck.color=DUCK_COLOR_TANGENT_1;
 			} else {
 				// All tangents are the same color
 				screen_duck.color=((*iter)->get_scalar()<0 ? DUCK_COLOR_TANGENT_1 : DUCK_COLOR_TANGENT_1);
@@ -432,33 +452,42 @@ Renderer_Ducks::render_vfunc(
 			cr->move_to(origin[0], origin[1]);
 			cr->line_to(point[0], point[1]);
 
-			if(solid_lines)
+//			if(solid_lines) // Disabled (solid_lines metadata entry)
 			{
 				// Outside
 				cr->set_line_width(3.0);
 				cr->set_source_rgb(GDK_COLOR_TO_RGB(DUCK_COLOR_CONNECT_OUTSIDE)); //DUCK_COLOR_CONNECT_OUTSIDE
 				cr->stroke_preserve();
 
+				// Both tangents are collinear and have same length, dash the line
+				if(!splited_radius && !splited_angle)
+				{
+				    std::valarray<double> dashes(2);
+				    dashes[0]=5.0;
+				    dashes[1]=5.0;
+				    cr->set_dash(dashes, 0);
+				}
+
 				// Inside
 				cr->set_line_width(1.0);
 				cr->set_source_rgb(GDK_COLOR_TO_RGB(DUCK_COLOR_CONNECT_INSIDE)); //DUCK_COLOR_CONNECT_INSIDE : 159.0/255,239.0/255,239.0/255
 				cr->stroke();
 			}
-			else
-			{
-				// White background
-				cr->set_line_width(1.0);
-				cr->set_source_rgb(GDK_COLOR_TO_RGB(DUCK_COLOR_CONNECT_OUTSIDE)); //DUCK_COLOR_CONNECT_OUTSIDE
-				cr->stroke_preserve();
-
-				// Dashes on top of the background
-				cr->set_source_rgb(GDK_COLOR_TO_RGB(DUCK_COLOR_CONNECT_INSIDE)); //DUCK_COLOR_CONNECT_INSIDE : 159.0/255,239.0/255,239.0/255
-				std::valarray<double> dashes(2);
-				dashes[0]=5.0;
-				dashes[1]=5.0;
-				cr->set_dash(dashes, 0);
-				cr->stroke();
-			}
+//			else
+//			{
+//				// White background
+//				cr->set_line_width(1.0);
+//				cr->set_source_rgb(GDK_COLOR_TO_RGB(DUCK_COLOR_CONNECT_OUTSIDE)); //DUCK_COLOR_CONNECT_OUTSIDE
+//				cr->stroke_preserve();
+//
+//				// Dashes on top of the background
+//				cr->set_source_rgb(GDK_COLOR_TO_RGB(DUCK_COLOR_CONNECT_INSIDE)); //DUCK_COLOR_CONNECT_INSIDE : 159.0/255,239.0/255,239.0/255
+//				std::valarray<double> dashes(2);
+//				dashes[0]=5.0;
+//				dashes[1]=5.0;
+//				cr->set_dash(dashes, 0);
+//				cr->stroke();
+//			}
 
 			cr->restore();
 		}
