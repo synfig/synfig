@@ -388,7 +388,7 @@ Renderer_Ducks::render_vfunc(
                         splited_angle=(const_child->get_value()).get(bool());
                     }
                 }
-                catch(Exception::BadLinkName)
+                catch(Exception::BadLinkName&)
                 {
 
                 }
@@ -409,7 +409,7 @@ Renderer_Ducks::render_vfunc(
                         splited_radius=(const_child->get_value()).get(bool());
                     }
                 }
-                catch(Exception::BadLinkName)
+                catch(Exception::BadLinkName&)
                 {
 
                 }
@@ -432,7 +432,7 @@ Renderer_Ducks::render_vfunc(
 			screen_duck.color=DUCK_COLOR_VERTEX;
 		else if((*iter)->get_type()&Duck::TYPE_RADIUS)
 			screen_duck.color=((*iter)->is_linear() ? DUCK_COLOR_LINEAR : DUCK_COLOR_RADIUS);
-		else if((*iter)->get_type()&Duck::TYPE_SCALE_X || (*iter)->get_type()&Duck::TYPE_SCALE_Y)
+		else if(((*iter)->get_type()&Duck::TYPE_SCALE_X) || ((*iter)->get_type()&Duck::TYPE_SCALE_Y))
 			screen_duck.color=DUCK_COLOR_TANGENT_1;
 		else if((*iter)->get_type()&Duck::TYPE_WIDTH)
 			screen_duck.color=DUCK_COLOR_WIDTH;
@@ -708,9 +708,9 @@ Renderer_Ducks::render_vfunc(
 
 		if(!screen_duck_list.front().selected)
 		{
-			color.set_red(color.get_red()*2/3);
-			color.set_green(color.get_green()*2/3);
-			color.set_blue(color.get_blue()*2/3);
+		    color.set_rgb_p(color.get_red_p()*2/3,
+		                    color.get_green_p()*2/3,
+		                    color.get_blue_p()*2/3);
 		}
 
 		if(screen_duck_list.front().hover)
