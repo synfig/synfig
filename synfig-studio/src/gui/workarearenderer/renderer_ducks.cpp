@@ -175,11 +175,11 @@ Renderer_Ducks::render_vfunc(
 		{
 			//Solid line background
 			cr->set_line_width(1.0);
-			cr->set_source_rgb(0,0,0); // DUCK_COLOR_BEZIER_1
+			cr->set_source_rgb(GDK_COLOR_TO_RGB(DUCK_COLOR_BEZIER_1)); // DUCK_COLOR_BEZIER_1
 			cr->stroke_preserve();
 
 			//Dashes
-			cr->set_source_rgb(175.0/255.0,175.0/255.0,175.0/255.0); //DUCK_COLOR_BEZIER_2
+			cr->set_source_rgb(GDK_COLOR_TO_RGB(DUCK_COLOR_BEZIER_2)); //DUCK_COLOR_BEZIER_2 : 175.0/255.0,175.0/255.0,175.0/255.0
 			std::valarray<double> dashes(2);
 			dashes[0]=5.0;
 			dashes[1]=5.0;
@@ -262,7 +262,7 @@ Renderer_Ducks::render_vfunc(
 					);
 
 				cr->set_line_width(2.0);
-				cr->set_source_rgb(1, 0, 0); //DUCK_COLOR_SELECTED
+				cr->set_source_rgb(GDK_COLOR_TO_RGB(DUCK_COLOR_SELECTED)); //DUCK_COLOR_SELECTED
 				cr->stroke();
 
 				cr->restore();
@@ -290,11 +290,11 @@ Renderer_Ducks::render_vfunc(
 
 				// Solid white box
 				cr->set_line_width(1.0);
-				cr->set_source_rgb(1,1,1); //DUCK_COLOR_BOX_1
+				cr->set_source_rgb(GDK_COLOR_TO_RGB(DUCK_COLOR_BOX_1)); //DUCK_COLOR_BOX_1
 				cr->stroke_preserve();
 
 				// Dashes
-				cr->set_source_rgb(0,0,0); //DUCK_COLOR_BOX_2
+				cr->set_source_rgb(GDK_COLOR_TO_RGB(DUCK_COLOR_BOX_2)); //DUCK_COLOR_BOX_2
 				std::valarray<double> dashes(2);
 				dashes[0]=5.0;
 				dashes[1]=5.0;
@@ -333,11 +333,11 @@ Renderer_Ducks::render_vfunc(
 
 			// Solid white box
 			cr->set_line_width(1.0);
-			cr->set_source_rgb(1,1,1); //DUCK_COLOR_BOX_1
+			cr->set_source_rgb(GDK_COLOR_TO_RGB(DUCK_COLOR_BOX_1)); //DUCK_COLOR_BOX_1
 			cr->stroke_preserve();
 
 			// Dashes
-			cr->set_source_rgb(0,0,0); //DUCK_COLOR_BOX_2
+			cr->set_source_rgb(GDK_COLOR_TO_RGB(DUCK_COLOR_BOX_2)); //DUCK_COLOR_BOX_2
 			std::valarray<double> dashes(2);
 			dashes[0]=5.0;
 			dashes[1]=5.0;
@@ -436,23 +436,23 @@ Renderer_Ducks::render_vfunc(
 			{
 				// Outside
 				cr->set_line_width(3.0);
-				cr->set_source_rgb(0,0,0); //DUCK_COLOR_CONNECT_OUTSIDE
+				cr->set_source_rgb(GDK_COLOR_TO_RGB(DUCK_COLOR_CONNECT_OUTSIDE)); //DUCK_COLOR_CONNECT_OUTSIDE
 				cr->stroke_preserve();
 
 				// Inside
 				cr->set_line_width(1.0);
-				cr->set_source_rgb(159.0/255,239.0/255,239.0/255); //DUCK_COLOR_CONNECT_INSIDE
+				cr->set_source_rgb(GDK_COLOR_TO_RGB(DUCK_COLOR_CONNECT_INSIDE)); //DUCK_COLOR_CONNECT_INSIDE : 159.0/255,239.0/255,239.0/255
 				cr->stroke();
 			}
 			else
 			{
 				// White background
 				cr->set_line_width(1.0);
-				cr->set_source_rgb(0,0,0); //DUCK_COLOR_CONNECT_OUTSIDE
+				cr->set_source_rgb(GDK_COLOR_TO_RGB(DUCK_COLOR_CONNECT_OUTSIDE)); //DUCK_COLOR_CONNECT_OUTSIDE
 				cr->stroke_preserve();
 
 				// Dashes on top of the background
-				cr->set_source_rgb(159.0/255,239.0/255,239.0/255); //DUCK_COLOR_CONNECT_INSIDE
+				cr->set_source_rgb(GDK_COLOR_TO_RGB(DUCK_COLOR_CONNECT_INSIDE)); //DUCK_COLOR_CONNECT_INSIDE : 159.0/255,239.0/255,239.0/255
 				std::valarray<double> dashes(2);
 				dashes[0]=5.0;
 				dashes[1]=5.0;
@@ -540,7 +540,7 @@ Renderer_Ducks::render_vfunc(
 
 				layout->set_text(real_mag.get_string());
 
-				cr->set_source_rgb(0,0,0); // DUCK_COLOR_WIDTH_TEXT_1
+				cr->set_source_rgb(GDK_COLOR_TO_RGB(DUCK_COLOR_WIDTH_TEXT_1)); // DUCK_COLOR_WIDTH_TEXT_1
 				cr->move_to(
 					point[0]+1+6,
 					point[1]+1-8
@@ -549,7 +549,7 @@ Renderer_Ducks::render_vfunc(
 				cr->stroke();
 
 
-				cr->set_source_rgb(1,0,1); // DUCK_COLOR_WIDTH_TEXT_2
+				cr->set_source_rgb(GDK_COLOR_TO_RGB(DUCK_COLOR_WIDTH_TEXT_2)); // DUCK_COLOR_WIDTH_TEXT_2
 				cr->move_to(
 					point[0]+6,
 					point[1]-8
@@ -636,7 +636,7 @@ Renderer_Ducks::render_vfunc(
 						cr->save();
 						layout->set_text(strprintf("%2.3f", new_value));
 
-						cr->set_source_rgb(0,0,0); // DUCK_COLOR_WIDTH_TEXT_1
+						cr->set_source_rgb(GDK_COLOR_TO_RGB(DUCK_COLOR_WIDTH_TEXT_1)); // DUCK_COLOR_WIDTH_TEXT_1
 						cr->move_to(
 							point[0]+1+6,
 							point[1]+1-18
@@ -645,7 +645,7 @@ Renderer_Ducks::render_vfunc(
 						cr->stroke();
 
 
-						cr->set_source_rgb(1,0,1); // DUCK_COLOR_WIDTH_TEXT_2
+						cr->set_source_rgb(GDK_COLOR_TO_RGB(DUCK_COLOR_WIDTH_TEXT_2)); // DUCK_COLOR_WIDTH_TEXT_2
 						cr->move_to(
 							point[0]+6,
 							point[1]-18
@@ -707,7 +707,7 @@ Renderer_Ducks::render_vfunc(
 		cr->fill_preserve();
 
 		cr->set_line_width(outline);
-		cr->set_source_rgba(0,0,0,1); //DUCK_COLOR_OUTLINE
+		cr->set_source_rgba(GDK_COLOR_TO_RGB(DUCK_COLOR_OUTLINE),1); //DUCK_COLOR_OUTLINE
 		cr->stroke();
 
 		cr->restore();
