@@ -29,6 +29,8 @@
 #	include <config.h>
 #endif
 
+#include <glib.h>
+
 #include <synfig/general.h>
 #include <synfig/localization.h>
 
@@ -64,13 +66,13 @@ void Measure::init() {
 		      + name
 			  + "\n";
 	stack.push_back(this);
-	t = clock();
+	t = g_get_real_time();
 }
 
 Measure::~Measure() {
-	clock_t dt = clock() - t;
-	double full_s = (double)dt/(double)(CLOCKS_PER_SEC);
-	double subs_s = (double)subs/(double)(CLOCKS_PER_SEC);
+	long long dt = g_get_real_time() - t;
+	double full_s = (double)dt*0.000001;
+	double subs_s = (double)subs*0.000001;
 
 	if (!hide)
 		text += String((stack.size()-1)*2, ' ')

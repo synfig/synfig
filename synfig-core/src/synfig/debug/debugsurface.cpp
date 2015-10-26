@@ -54,7 +54,7 @@ using namespace debug;
 
 /* === M E T H O D S ======================================================= */
 
-#ifdef _DEBUG
+#ifdef SYNFIG_DEBUG_SURFACE
 
 void
 DebugSurface::save_to_file(const void *buffer, int width, int height, int pitch, const String &filename)

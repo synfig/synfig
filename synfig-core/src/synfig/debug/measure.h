@@ -27,7 +27,6 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <ctime>
 #include <vector>
 
 #include <synfig/string.h>
@@ -55,8 +54,8 @@ private:
 	String name;
 	bool hide;
 	bool hide_subs;
-	clock_t subs;
-	clock_t t;
+	long long subs;
+	long long t;
 
 	Measure(const Measure&): name(), hide(), hide_subs(), subs(), t() { }
 	Measure& operator= (const Measure&) { return *this; }

@@ -32,6 +32,10 @@
 
 /* === M A C R O S ========================================================= */
 
+#ifdef _DEBUG
+#define SYNFIG_DEBUG_SURFACE
+#endif
+
 /* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */
@@ -47,7 +51,7 @@ class DebugSurface
 {
 public:
 
-#ifdef _DEBUG
+#ifdef SYNFIG_DEBUG_SURFACE
 	static void save_to_file(const void *buffer, int width, int height, int stride, const String &filename);
 	static void save_to_file(const Surface &surface, const String &filename);
 	static void save_to_file(const rendering::Surface &surface, const String &filename);
