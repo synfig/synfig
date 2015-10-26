@@ -29,8 +29,7 @@
 
 #include <vector>
 
-#include <ETL/rect>
-
+#include <synfig/rect.h>
 #include <synfig/vector.h>
 
 #include "surface.h"
@@ -55,20 +54,20 @@ public:
 	typedef etl::handle<Task> Handle;
 	typedef std::vector<Handle> List;
 
-	struct RunParams {
-		mutable etl::rect<int> used_rect;
-	};
+	struct RunParams { };
 
 	Surface::Handle target_surface;
-	synfig::Point rect_lt;
-	synfig::Point rect_rb;
+	synfig::Point source_rect_lt;
+	synfig::Point source_rect_rb;
+	RectInt target_rect;
 	List sub_tasks;
 
+	mutable Rect bounds;
 	mutable List deps;
 	mutable RunParams params;
 	mutable bool success;
 
-	Task(): success(true) { }
+	Task(): target_rect(0, 0), bounds(0.0, 0.0), success(true) { }
 
 	template<typename T>
 	static T* clone_pointer(const T *task)
@@ -99,32 +98,35 @@ public:
 
 	Vector get_pixels_per_unit() const
 	{
-		if (!target_surface || target_surface->empty())
+		if (!target_rect.valid())
 			return Vector();
 		return Vector(
-			fabs(rect_rb[0] - rect_lt[0]) < 1e-10 ? 0.0 :
-				(Real)(target_surface->get_width())/(rect_rb[0] - rect_lt[0]),
-			fabs(rect_rb[1] - rect_lt[1]) < 1e-10 ? 0.0 :
-				(Real)(target_surface->get_height())/(rect_rb[1] - rect_lt[1]) );
+			fabs(source_rect_rb[0] - source_rect_lt[0]) < 1e-10 ? 0.0 :
+				(Real)(target_rect.maxx - target_rect.minx)/(source_rect_rb[0] - source_rect_lt[0]),
+			fabs(source_rect_rb[1] - source_rect_lt[1]) < 1e-10 ? 0.0 :
+				(Real)(target_rect.maxy - target_rect.miny)/(source_rect_rb[1] - source_rect_lt[1]) );
 	}
 
 	Vector get_units_per_pixel() const
 	{
-		if ( !target_surface
-		  || target_surface->empty()
-		  || fabs(rect_rb[0] - rect_lt[0]) < 1e-10
-		  || fabs(rect_rb[1] - rect_lt[1]) < 1e-10 )
+		if ( !target_rect.valid()
+		  || fabs(source_rect_rb[0] - source_rect_lt[0]) < 1e-10
+		  || fabs(source_rect_rb[1] - source_rect_lt[1]) < 1e-10 )
 			return Vector();
 		return Vector(
-			fabs(rect_rb[0] - rect_lt[0]) < 1e-10 ? 0.0 :
-				(rect_rb[0] - rect_lt[0])/(Real)(target_surface->get_width()),
-			fabs(rect_rb[1] - rect_lt[1]) < 1e-10 ? 0.0 :
-				(rect_rb[1] - rect_lt[1])/(Real)(target_surface->get_height()) );
+			fabs(source_rect_rb[0] - source_rect_lt[0]) < 1e-10 ? 0.0 :
+				(source_rect_rb[0] - source_rect_lt[0])/(Real)(target_rect.maxx - target_rect.minx),
+			fabs(source_rect_rb[1] - source_rect_lt[1]) < 1e-10 ? 0.0 :
+				(source_rect_rb[1] - source_rect_lt[1])/(Real)(target_rect.maxy - target_rect.miny) );
 	}
 
 	virtual ~Task();
 	virtual bool run(RunParams &params) const;
 	virtual Task::Handle clone() const { return clone_pointer(this); }
+
+	// use OptimizerCalcBounds and field 'bounds'
+	// to avoid multiple calculation of bounds of same task
+	virtual Rect calc_bounds() const { return Rect::infinite(); }
 };
 
 } /* end namespace rendering */

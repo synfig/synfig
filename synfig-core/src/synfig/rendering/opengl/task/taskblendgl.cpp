@@ -57,8 +57,9 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 bool
-TaskBlendGL::run(RunParams &params) const
+TaskBlendGL::run(RunParams & /* params */) const
 {
+	/* TODO:
 	gl::Context::Lock lock(env().context);
 
 	SurfaceGL::Handle a =
@@ -68,15 +69,15 @@ TaskBlendGL::run(RunParams &params) const
 	SurfaceGL::Handle target =
 		SurfaceGL::Handle::cast_dynamic(target_surface);
 
-	const etl::rect<int> &ra = sub_task_a()->target_surface->used_rect;
-	const etl::rect<int> &rb = sub_task_b()->target_surface->used_rect;
+	const RectInt &ra = sub_task_a()->target_surface->used_rect;
+	const RectInt &rb = sub_task_b()->target_surface->used_rect;
 
 	if (!Color::is_straight(blend_method) && Color::is_onto(blend_method))
 	{
 		if (ra.valid() && rb.valid())
 			set_intersect(params.used_rect, ra, rb);
 		else
-			params.used_rect = etl::rect<int>(0, 0, 0, 0);
+			params.used_rect = RectInt(0, 0, 0, 0);
 	}
 	else
 	if (!Color::is_straight(blend_method))
@@ -150,7 +151,7 @@ TaskBlendGL::run(RunParams &params) const
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 		env().context.check();
 	}
-
+	*/
 	return true;
 }
 

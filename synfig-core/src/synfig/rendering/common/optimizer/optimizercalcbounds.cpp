@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/common/task/tasksurfacecreate.cpp
-**	\brief TaskSurfaceCreate
+/*!	\file synfig/rendering/common/optimizer/optimizercomposite.cpp
+**	\brief OptimizerComposite
 **
 **	$Id$
 **
@@ -35,7 +35,10 @@
 #include <signal.h>
 #endif
 
-#include "tasksurfacecreate.h"
+#include <synfig/general.h>
+#include <synfig/localization.h>
+
+#include "optimizercalcbounds.h"
 
 #endif
 
@@ -50,11 +53,11 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
-bool
-TaskSurfaceCreate::run(RunParams & /* params */) const
+void
+OptimizerCalcBounds::run(const RunParams& params) const
 {
-	return target_surface
-	    && target_surface->create();
+	if (params.ref_task)
+		params.ref_task->bounds = params.ref_task->calc_bounds();
 }
 
 /* === E N T R Y P O I N T ================================================= */

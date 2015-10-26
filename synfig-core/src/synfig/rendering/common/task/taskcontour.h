@@ -48,6 +48,12 @@ public:
 	typedef etl::handle<TaskContour> Handle;
 	Contour::Handle contour;
 	Task::Handle clone() const { return clone_pointer(this); }
+
+	virtual Rect calc_bounds() const
+		{ return !contour ? Rect::zero()
+			   : contour->invert ? Rect::infinite()
+		       : contour->calc_bounds(transformation); }
+
 };
 
 } /* end namespace rendering */

@@ -41,6 +41,7 @@
 
 #include "internal/environment.h"
 
+#include "../common/optimizer/optimizercalcbounds.h"
 #include "../common/optimizer/optimizercomposite.h"
 #include "../common/optimizer/optimizerlinear.h"
 #include "../common/optimizer/optimizersurface.h"
@@ -76,6 +77,7 @@ RendererGL::RendererGL()
 {
 	// register optimizers
 	register_optimizer(new OptimizerTransformationAffine());
+	register_optimizer(new OptimizerCalcBounds());
 
 	register_optimizer(new OptimizerBlendGL());
 	register_optimizer(new OptimizerContourGL());

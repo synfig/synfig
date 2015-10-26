@@ -180,8 +180,8 @@ TaskSurfaceResampleSW::run(RunParams & /* params */) const
 	Matrix bounds_transfromation;
 	bounds_transfromation.m00 = get_pixels_per_unit()[0];
 	bounds_transfromation.m11 = get_pixels_per_unit()[1];
-	bounds_transfromation.m20 = -rect_lt[0] * bounds_transfromation.m00;
-	bounds_transfromation.m21 = -rect_lt[1] * bounds_transfromation.m11;
+	bounds_transfromation.m20 = -source_rect_lt[0]*bounds_transfromation.m00 + target_rect.minx;
+	bounds_transfromation.m21 = -source_rect_lt[1]*bounds_transfromation.m11 + target_rect.miny;
 
 	Matrix matrix = transformation * bounds_transfromation;
 

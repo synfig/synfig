@@ -64,7 +64,6 @@ protected:
 public:
 	// TODO: move to Resource?
 	bool is_temporary;
-	etl::rect<int> used_rect;
 
 	Surface();
 	virtual ~Surface();

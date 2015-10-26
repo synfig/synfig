@@ -39,6 +39,7 @@
 
 #include "renderersw.h"
 
+#include "../common/optimizer/optimizercalcbounds.h"
 #include "../common/optimizer/optimizercomposite.h"
 #include "../common/optimizer/optimizerlinear.h"
 #include "../common/optimizer/optimizersurface.h"
@@ -72,6 +73,7 @@ RendererSW::RendererSW()
 {
 	// register optimizers
 	register_optimizer(new OptimizerTransformationAffine());
+	register_optimizer(new OptimizerCalcBounds());
 
 	register_optimizer(new OptimizerBlendSW());
 	register_optimizer(new OptimizerContourSW());

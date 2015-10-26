@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/opengl/optimizer/optimizersurfaceresamplegl.h
-**	\brief OptimizerSurfaceResampleGL Header
+/*!	\file synfig/rendering/common/optimizer/optimizercalcbounds.h
+**	\brief OptimizerComposite Header
 **
 **	$Id$
 **
@@ -22,8 +22,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_RENDERING_OPTIMIZERSURFACERESAMPLEGL_H
-#define __SYNFIG_RENDERING_OPTIMIZERSURFACERESAMPLEGL_H
+#ifndef __SYNFIG_RENDERING_OPTIMIZERCALCBOUNDS_H
+#define __SYNFIG_RENDERING_OPTIMIZERCALCBOUNDS_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -40,14 +40,15 @@ namespace synfig
 namespace rendering
 {
 
-class OptimizerSurfaceResampleGL: public Optimizer
+class OptimizerCalcBounds: public Optimizer
 {
 public:
-	OptimizerSurfaceResampleGL()
+	OptimizerCalcBounds()
 	{
-		category_id = CATEGORY_ID_SPECIALIZE;
-		depends_from = CATEGORY_COMMON & CATEGORY_PRE_SPECIALIZE;
+		category_id = CATEGORY_ID_PRE_SPECIALIZE;
+		depends_from = CATEGORY_COMMON;
 		for_task = true;
+		deep_first = true;
 	}
 
 	virtual void run(const RunParams &params) const;

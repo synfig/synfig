@@ -70,7 +70,7 @@ TaskContourSW::render_polyspan(
 
 	synfig::Surface::alpha_pen p(target_surface.begin(), opacity, blend_method);
 	synfig::Surface::pen sp(target_surface.begin());
-	const Polyspan::ContextRect &window = polyspan.get_window();
+	const RectInt &window = polyspan.get_window();
 	const Polyspan::cover_array &covers = polyspan.get_covers();
 
 	Polyspan::cover_array::const_iterator cur_mark = covers.begin();
@@ -337,38 +337,38 @@ TaskContourSW::render_contour(
 }
 
 bool
-TaskContourSW::run(RunParams &params) const
+TaskContourSW::run(RunParams & /* params */) const
 {
 	synfig::Surface &a =
 		SurfaceSW::Handle::cast_dynamic( target_surface )->get_surface();
 
-	Matrix bounds_transfromation;
-	bounds_transfromation.m00 = get_pixels_per_unit()[0];
-	bounds_transfromation.m11 = get_pixels_per_unit()[1];
-	bounds_transfromation.m20 = -rect_lt[0] * bounds_transfromation.m00;
-	bounds_transfromation.m21 = -rect_lt[1] * bounds_transfromation.m11;
+	if (target_rect.valid())
+	{
+		Matrix bounds_transfromation;
+		bounds_transfromation.m00 = get_pixels_per_unit()[0];
+		bounds_transfromation.m11 = get_pixels_per_unit()[1];
+		bounds_transfromation.m20 = -source_rect_lt[0]*bounds_transfromation.m00 + target_rect.minx;
+		bounds_transfromation.m21 = -source_rect_lt[1]*bounds_transfromation.m11 + target_rect.miny;
 
-	Matrix matrix = transformation * bounds_transfromation;
+		Matrix matrix = transformation * bounds_transfromation;
 
-	Polyspan polyspan;
-	polyspan.init(0, 0, a.get_w(), a.get_h());
-	build_polyspan(contour->get_chunks(), matrix, polyspan);
-	polyspan.sort_marks();
+		Polyspan polyspan;
+		polyspan.init(target_rect);
+		build_polyspan(contour->get_chunks(), matrix, polyspan);
+		polyspan.sort_marks();
 
-	render_polyspan(
-		a,
-		polyspan,
-		contour->invert,
-		contour->antialias,
-		contour->winding_style,
-		contour->color,
-		blend ? amount : 1.0,
-		blend ? blend_method : Color::BLEND_COMPOSITE );
+		render_polyspan(
+			a,
+			polyspan,
+			contour->invert,
+			contour->antialias,
+			contour->winding_style,
+			contour->color,
+			blend ? amount : 1.0,
+			blend ? blend_method : Color::BLEND_COMPOSITE );
 
-	if (!contour->invert)
-		params.used_rect = polyspan.calc_bounds();
-
-	//debug::DebugSurface::save_to_file(a, "TaskContourSW__run");
+		//debug::DebugSurface::save_to_file(a, "TaskContourSW__run");
+	}
 
 	return true;
 }

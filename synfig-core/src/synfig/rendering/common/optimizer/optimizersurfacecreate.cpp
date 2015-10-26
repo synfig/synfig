@@ -68,6 +68,7 @@ OptimizerSurfaceCreate::insert_task(
 		created_surfaces.insert(task->target_surface);
 		TaskSurfaceCreate::Handle surface_create = new TaskSurfaceCreate();
 		surface_create->target_surface = task->target_surface;
+		surface_create->target_rect = RectInt(0, 0, task->target_surface->get_width(), task->target_surface->get_height());
 		i = params.list.insert(i, surface_create);
 		++i;
 		apply(params);

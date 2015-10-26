@@ -46,7 +46,7 @@ public:
 	OptimizerContourSW()
 	{
 		category_id = CATEGORY_ID_SPECIALIZE;
-		depends_from = CATEGORY_ID_COMMON;
+		depends_from = CATEGORY_COMMON & CATEGORY_PRE_SPECIALIZE;
 		for_task = true;
 	}
 

@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/common/task/tasksurfacecreate.cpp
-**	\brief TaskSurfaceCreate
+/*!	\file synfig/rendering/common/task/taskblend.cpp
+**	\brief TaskBlend
 **
 **	$Id$
 **
@@ -35,7 +35,7 @@
 #include <signal.h>
 #endif
 
-#include "tasksurfacecreate.h"
+#include "taskblend.h"
 
 #endif
 
@@ -50,11 +50,24 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
-bool
-TaskSurfaceCreate::run(RunParams & /* params */) const
+Rect
+TaskBlend::calc_bounds() const
 {
-	return target_surface
-	    && target_surface->create();
+	Rect ra = sub_task_a() ? sub_task_a()->bounds : Rect::zero();
+	Rect rb = sub_task_b() ? sub_task_b()->bounds : Rect::zero();
+	Rect bounds = Rect::zero();
+	if (Color::is_onto(blend_method))
+		bounds = ra;
+	else
+	if (ra.valid() && rb.valid())
+		set_union(bounds, ra, rb);
+	else
+	if (ra.valid())
+		bounds = ra;
+	else
+	if (rb.valid())
+		bounds = rb;
+	return bounds;
 }
 
 /* === E N T R Y P O I N T ================================================= */

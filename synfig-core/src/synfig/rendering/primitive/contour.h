@@ -114,6 +114,8 @@ public:
 
 	const ChunkList& get_chunks() const { return chunks; }
 
+	Rect calc_bounds(const Matrix &transform_matrix) const;
+
 	void split(
 		Contour &out_contour,
 		Rect &ref_bounds,

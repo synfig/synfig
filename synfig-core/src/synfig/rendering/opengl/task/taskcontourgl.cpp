@@ -172,7 +172,7 @@ TaskContourGL::render_contour(
 }
 
 bool
-TaskContourGL::run(RunParams &params) const
+TaskContourGL::run(RunParams & /* params */) const
 {
 	gl::Context::Lock lock(env().context);
 
@@ -181,32 +181,25 @@ TaskContourGL::run(RunParams &params) const
 
 	// transformation
 
-	Vector rect_size = rect_rb - rect_lt;
+	Vector rect_size = source_rect_rb - source_rect_lt;
 	Matrix bounds_transfromation;
 	bounds_transfromation.m00 = fabs(rect_size[0]) > 1e-10 ? 2.0/rect_size[0] : 0.0;
 	bounds_transfromation.m11 = fabs(rect_size[1]) > 1e-10 ? 2.0/rect_size[1] : 0.0;
-	bounds_transfromation.m20 = -1.0 - rect_lt[0] * bounds_transfromation.m00;
-	bounds_transfromation.m21 = -1.0 - rect_lt[1] * bounds_transfromation.m11;
+	bounds_transfromation.m20 = -1.0 - source_rect_lt[0]*bounds_transfromation.m00;
+	bounds_transfromation.m21 = -1.0 - source_rect_lt[1]*bounds_transfromation.m11;
 
 	Matrix matrix = transformation * bounds_transfromation;
 
-	// check bounds
-	assert(target->get_width() > 0 && target->get_height() > 0);
-	std::vector<Vector> polygon;
-	Rect full_bounds(-1.0, -1.0, 1.0, 1.0);
-	Rect bounds = full_bounds;
-	Vector pixel_size(2.0/(Real)target->get_width(), 2.0/(Real)target->get_height());
-
-	contour->split(polygon, bounds, matrix, pixel_size);
-	if (contour->invert) bounds = full_bounds;
-
-	params.used_rect.minx = (int)floor((bounds.minx + 1.0)*0.5*target->get_width() );
-	params.used_rect.maxx = (int)ceil ((bounds.maxx + 1.0)*0.5*target->get_width() );
-	params.used_rect.miny = (int)floor((bounds.miny + 1.0)*0.5*target->get_height());
-	params.used_rect.maxy = (int)ceil ((bounds.maxy + 1.0)*0.5*target->get_height());
-
-	if (params.used_rect.valid())
+	if (target_rect.valid())
 	{
+		// check bounds
+		std::vector<Vector> polygon;
+		Rect bounds(-1.0, -1.0, 1.0, 1.0);
+		Vector pixel_size(
+			2.0/(Real)(target_rect.maxx - target_rect.minx),
+			2.0/(Real)(target_rect.maxy - target_rect.miny) );
+		contour->split(polygon, bounds, matrix, pixel_size);
+
 		// bind framebuffer
 
 		gl::Framebuffers::RenderbufferLock renderbuffer = env().framebuffers.get_renderbuffer(GL_STENCIL_INDEX8, target->get_width(), target->get_height());
@@ -215,7 +208,11 @@ TaskContourGL::run(RunParams &params) const
 		glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, renderbuffer.get_id());
 		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, target->get_id(), 0);
 		env().framebuffers.check("TaskContourGL::run bind framebuffer");
-		glViewport(0, 0, target->get_width(), target->get_height());
+		glViewport(
+			target_rect.minx,
+			target_rect.miny,
+			target_rect.maxx - target_rect.minx,
+			target_rect.maxy - target_rect.miny );
 		env().context.check("TaskContourGL::run viewport");
 
 		// render

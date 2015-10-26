@@ -32,7 +32,7 @@
 
 #include <vector>
 
-#include <ETL/rect>
+#include <synfig/rect.h>
 
 #include "contour.h"
 
@@ -50,8 +50,6 @@ namespace rendering
 class Polyspan
 {
 public:
-	typedef etl::rect<int> ContextRect;
-
 	struct PenMark
 	{
 		int y, x;
@@ -106,7 +104,7 @@ private:
 	int				flags;
 
 	//the window that will be drawn (used for clipping)
-	ContextRect		window;
+	RectInt		    window;
 
 	//add the current cell, but only if there is information to add
 	void addcurrent();
@@ -114,18 +112,18 @@ private:
 	//move to the next cell (cover values 0 initially), keeping the current if necessary
 	void move_pen(int x, int y);
 
-	static bool clip_conic(const Point *const p, const ContextRect &r);
+	static bool clip_conic(const Point *const p, const RectInt &r);
 	static Real max_edges_conic(const Point *const p);
 	static void subd_conic_stack(Point *arc);
 
-	static bool clip_cubic(const Point *const p, const ContextRect &r);
+	static bool clip_cubic(const Point *const p, const RectInt &r);
 	static Real max_edges_cubic(const Point *const p);
 	static void subd_cubic_stack(Point *arc);
 
 public:
 	Polyspan();
 
-	const ContextRect& get_window() const { return window; }
+	const RectInt& get_window() const { return window; }
 	const cover_array& get_covers() const { return covers; }
 
 	bool notclosed() const
@@ -133,7 +131,7 @@ public:
 
 	//0 out all the variables involved in processing
 	void clear();
-	void init(const ContextRect &window)
+	void init(const RectInt &window)
 		{ clear(); this->window = window; }
 	void init(int minx, int miny, int maxx, int maxy)
 	{
@@ -169,7 +167,7 @@ public:
 
 	Real extract_alpha(Real area, Contour::WindingStyle winding_style) const;
 
-	etl::rect<int> calc_bounds() const;
+	RectInt calc_bounds() const;
 };
 
 } /* end namespace rendering */

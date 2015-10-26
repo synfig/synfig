@@ -61,7 +61,9 @@ using namespace rendering;
 //#define DEBUG_TASK_LIST
 //#define DEBUG_TASK_MEASURE
 //#define DEBUG_TASK_SURFACE
-//#define DEBUG_TASK_THREAD
+//#define DEBUG_OPTIMIZATION
+//#define DEBUG_THREAD_TASK
+//#define DEBUG_THREAD_WAIT
 #endif
 
 
@@ -94,12 +96,21 @@ private:
 		Glib::Threads::Mutex::Lock lock(mutex);
 		if (started) return;
 
-		int count = g_get_num_processors() - 1;
-		if (count < 1) count = 1;
+		// one thread reserved for OpenGL
+		// also this thread almost don't use CPU time
+		// so we have ~50% of one core for GUI
+		#ifdef DEBUG_TASK_SURFACE
+		int count = 2;
+		#else
+		int count = g_get_num_processors();
+		if (count < 2) count = 2;
+		#endif
+
 		for(int i = 0; i < count; ++i)
 			threads.push_back(
 				Glib::Threads::Thread::create(
 					sigc::bind(sigc::mem_fun(*this, &Queue::process), i) ));
+		info("rendering threads %d", count);
 		started = true;
 	}
 
@@ -115,41 +126,23 @@ private:
 
 	void process(int index)
 	{
-		bool gl = index == 0;
-		while(Task::Handle task = get(gl))
+		while(Task::Handle task = get(index))
 		{
-			#ifdef DEBUG_TASK_THREAD
+			#ifdef DEBUG_THREAD_TASK
 			info("thread %d: begin task '%s'", index, typeid(*task).name());
 			#endif
-
-			// TODO: optimizer for rects
-			task->params.used_rect.minx = 0;
-			task->params.used_rect.miny = 0;
-			task->params.used_rect.maxx = task->target_surface ? task->target_surface->get_width() : 0;
-			task->params.used_rect.maxy = task->target_surface ? task->target_surface->get_height() : 0;
 
 			if (!task->run(task->params))
 				task->success = false;
 
-			if (task->params.used_rect.valid() && !task->target_surface->is_created())
-			{
-				task->success = false;
-				warning("task '%s' target_surface is not created", typeid(*task).name());
-			}
+			#ifdef DEBUG_TASK_SURFACE
+			debug::DebugSurface::save_to_file(task->target_surface, etl::strprintf("task"));
+			#endif
 
-			// update used rect for target surface
-			if (task->params.used_rect.valid())
-			{
-				etl::rect<int> &target_rect = task->target_surface->used_rect;
-				if (target_rect.valid())
-					etl::set_union(target_rect, target_rect, task->params.used_rect);
-				else
-					target_rect = task->params.used_rect;
-			}
-
-			#ifdef DEBUG_TASK_THREAD
+			#ifdef DEBUG_THREAD_TASK
 			info("thread %d: end task '%s'", index, typeid(*task).name());
 			#endif
+
 			done(task);
 		}
 	}
@@ -180,36 +173,27 @@ private:
 		if (unlocked) cond.broadcast();
 	}
 
-	Task::Handle get(bool gl) {
+	Task::Handle get(int thread_index) {
 		Glib::Threads::Mutex::Lock lock(mutex);
 		while(true)
 		{
 			if (!started) return Task::Handle();
 
-			if (gl)
-			{
-				for(Task::List::iterator i = queue.begin(); i != queue.end(); ++i)
-				{
-					assert(*i);
-					if ((*i)->deps.empty() && i->type_is<TaskGL>())
-					{
-						Task::Handle task = *i;
-						queue.erase(i);
-						return task;
-					}
-				}
-			}
-
 			for(Task::List::iterator i = queue.begin(); i != queue.end(); ++i)
 			{
 				assert(*i);
-				if ((*i)->deps.empty() && !i->type_is<TaskGL>())
+				if ((*i)->deps.empty() && ((thread_index == 0) == i->type_is<TaskGL>()))
 				{
 					Task::Handle task = *i;
 					queue.erase(i);
 					return task;
 				}
 			}
+
+			#ifdef DEBUG_THREAD_WAIT
+			if (thread_index > 0 && !queue.empty())
+				info("thread %d: rendering wait for task", thread_index);
+			#endif
 
 			cond.wait(mutex);
 		}
@@ -313,45 +297,67 @@ Renderer::optimize_recursive(const Optimizer::List &optimizers, const Optimizer:
 
 	for(Optimizer::List::const_iterator i = optimizers.begin(); i != optimizers.end(); ++i)
 	{
-		if ((*i)->for_task || ((*i)->for_root_task && !params.parent))
+		if (!(*i)->deep_first)
 		{
-			Optimizer::RunParams p(params);
-			(*i)->run(p);
-			params.ref_affects_to |= p.ref_affects_to;
-			params.ref_mode |= p.ref_mode;
-			params.ref_task = p.ref_task;
-			if (!params.ref_task) return;
-			if (params.ref_affects_to & params.depends_from) return;
+			if ((*i)->for_task || ((*i)->for_root_task && !params.parent))
+			{
+				Optimizer::RunParams p(params);
+				(*i)->run(p);
+				params.ref_affects_to |= p.ref_affects_to;
+				params.ref_mode |= p.ref_mode;
+				params.ref_task = p.ref_task;
+				if (!params.ref_task) return;
+				if (params.ref_affects_to & params.depends_from) return;
+			}
 		}
 	}
 
-	if (first_level_only) return;
-
-	bool task_clonned = false;
-	for(Task::List::iterator i = params.ref_task->sub_tasks.begin(); i != params.ref_task->sub_tasks.end();)
+	if (!first_level_only)
 	{
-		if (*i)
+		bool task_clonned = false;
+		for(Task::List::iterator i = params.ref_task->sub_tasks.begin(); i != params.ref_task->sub_tasks.end();)
 		{
-			Optimizer::RunParams sub_params = params.sub(*i);
-			optimize_recursive(optimizers, sub_params, false);
-			if (sub_params.ref_task != *i)
+			if (*i)
 			{
-				if (!task_clonned)
+				Optimizer::RunParams sub_params = params.sub(*i);
+				optimize_recursive(optimizers, sub_params, false);
+				if (sub_params.ref_task != *i)
 				{
-					int index = i - params.ref_task->sub_tasks.begin();
-					params.ref_task = params.ref_task->clone();
-					i = params.ref_task->sub_tasks.begin() + index;
-					task_clonned = true;
-				}
-				*i = sub_params.ref_task;
-				if (!(sub_params.ref_mode & Optimizer::MODE_REPEAT)) ++i;
+					if (!task_clonned)
+					{
+						int index = i - params.ref_task->sub_tasks.begin();
+						params.ref_task = params.ref_task->clone();
+						i = params.ref_task->sub_tasks.begin() + index;
+						task_clonned = true;
+					}
+					*i = sub_params.ref_task;
+					if (!(sub_params.ref_mode & Optimizer::MODE_REPEAT)) ++i;
+				} else ++i;
+				params.ref_affects_to |= sub_params.ref_affects_to;
+				if (sub_params.ref_mode & Optimizer::MODE_REPEAT_BRUNCH)
+					params.ref_mode |= sub_params.ref_mode;
+				if (params.ref_affects_to & params.depends_from) return;
 			} else ++i;
-			params.ref_affects_to |= sub_params.ref_affects_to;
-			if (sub_params.ref_mode & Optimizer::MODE_REPEAT_BRUNCH)
-				params.ref_mode |= sub_params.ref_mode;
-			if (params.ref_affects_to & params.depends_from) return;
-		} else ++i;
+		}
 	}
+
+	for(Optimizer::List::const_iterator i = optimizers.begin(); i != optimizers.end(); ++i)
+	{
+		if ((*i)->deep_first)
+		{
+			if ((*i)->for_task || ((*i)->for_root_task && !params.parent))
+			{
+				Optimizer::RunParams p(params);
+				(*i)->run(p);
+				params.ref_affects_to |= p.ref_affects_to;
+				params.ref_mode |= p.ref_mode;
+				params.ref_task = p.ref_task;
+				if (!params.ref_task) return;
+				if (params.ref_affects_to & params.depends_from) return;
+			}
+		}
+	}
+
 }
 
 void
@@ -419,8 +425,10 @@ Renderer::optimize(Task::List &list) const
 			if ((*i)->for_root_task) for_root_task = true;
 		}
 
-		//info("optimize category %d index %d", current_category_id, current_optimizer_index);
+		#ifdef DEBUG_OPTIMIZATION
+		log(list, etl::strprintf("before optimize category %d index %d", current_category_id, current_optimizer_index));
 		//debug::Measure t(etl::strprintf("optimize category %d index %d", current_category_id, current_optimizer_index));
+		#endif
 
 		if (for_list)
 		{
@@ -506,18 +514,23 @@ Renderer::run(const Task::List &list) const
 		debug::Measure t("find deps");
 		#endif
 
+		//int brunches = 0;
 		for(Task::List::const_iterator i = optimized_list.begin(); i != optimized_list.end(); ++i)
 		{
 			(*i)->deps.clear();
 			for(Task::List::const_iterator j = (*i)->sub_tasks.begin(); j != (*i)->sub_tasks.end(); ++j)
 				if (*j)
 					for(Task::List::const_reverse_iterator rk(i); rk != optimized_list.rend(); ++rk)
-						if ((*j)->target_surface == (*rk)->target_surface)
+						if ( (*j)->target_surface == (*rk)->target_surface
+						  && etl::intersect((*j)->target_rect, (*rk)->target_rect) )
 							{ (*i)->deps.push_back(*rk); break; }
 			for(Task::List::const_reverse_iterator rk(i); rk != optimized_list.rend(); ++rk)
-				if ((*i)->target_surface == (*rk)->target_surface)
+				if ( (*i)->target_surface == (*rk)->target_surface
+				  && etl::intersect((*i)->target_rect, (*rk)->target_rect) )
 					{ (*i)->deps.push_back(*rk); break; }
+			//if ((*i)->deps.empty()) ++brunches;
 		}
+		//info("rendering brunches %d", brunches);
 	}
 
 	bool success = true;
@@ -553,14 +566,24 @@ Renderer::log(const Task::Handle &task, const String &prefix) const
 	{
 		info( prefix
 			+ (typeid(*task).name() + 19)
-			+ ( task->rect_lt[0] && task->rect_lt[1]
-			 && task->rect_rb[0] && task->rect_rb[1]
-              ? etl::strprintf(" rect (%f, %f)-(%f, %f)",
-				task->rect_lt[0], task->rect_lt[1],
-				task->rect_rb[0], task->rect_rb[1] )
+			+ ( task->bounds.valid()
+			  ? etl::strprintf(" bounds (%f, %f)-(%f, %f)",
+				task->bounds.minx, task->bounds.miny,
+				task->bounds.maxx, task->bounds.maxy )
+			  : "" )
+			+ ( task->source_rect_lt[0] && task->source_rect_lt[1]
+			 && task->source_rect_rb[0] && task->source_rect_rb[1]
+              ? etl::strprintf(" source (%f, %f)-(%f, %f)",
+				task->source_rect_lt[0], task->source_rect_lt[1],
+				task->source_rect_rb[0], task->source_rect_rb[1] )
 		      : "" )
+			+ ( task->target_rect.valid()
+			  ? etl::strprintf(" target (%d, %d)-(%d, %d)",
+				task->target_rect.minx, task->target_rect.miny,
+				task->target_rect.maxx, task->target_rect.maxy )
+			  : "" )
 			+ ( task->target_surface
-			  ?	etl::strprintf(" target %s (%dx%d) 0x%x",
+			  ?	etl::strprintf(" surface %s (%dx%d) 0x%x",
 					(typeid(*task->target_surface).name() + 19),
 					task->target_surface->get_width(),
 					task->target_surface->get_height(),

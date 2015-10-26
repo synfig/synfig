@@ -49,6 +49,8 @@ public:
 	Task::Handle clone() const { return clone_pointer(this); }
 
 	virtual bool run(RunParams &params) const;
+
+	virtual Rect calc_bounds() const { return Rect::zero(); }
 };
 
 } /* end namespace rendering */

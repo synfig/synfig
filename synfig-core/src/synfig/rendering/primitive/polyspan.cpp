@@ -338,7 +338,7 @@ Polyspan::line_to(Real x, Real y)
 }
 
 bool
-Polyspan::clip_conic(const Point *const p, const ContextRect &r)
+Polyspan::clip_conic(const Point *const p, const RectInt &r)
 {
 	const Real minx = std::min(std::min(p[0][0],p[1][0]),p[2][0]);
 	const Real miny = std::min(std::min(p[0][1],p[1][1]),p[2][1]);
@@ -488,7 +488,7 @@ Polyspan::conic_to(Real x, Real y, Real x1, Real y1)
 }
 
 bool
-Polyspan::clip_cubic(const Point *const p, const ContextRect &r)
+Polyspan::clip_cubic(const Point *const p, const RectInt &r)
 {
 	return 	((p[0][0] > r.maxx) && (p[1][0] > r.maxx) && (p[2][0] > r.maxx) && (p[3][0] > r.maxx)) ||
 			((p[0][0] < r.minx) && (p[1][0] < r.minx) && (p[2][0] < r.minx) && (p[3][0] < r.minx)) ||
@@ -925,11 +925,11 @@ Polyspan::extract_alpha(Real area, Contour::WindingStyle winding_style) const
 	return area;
 }
 
-etl::rect<int>
+RectInt
 Polyspan::calc_bounds() const
 {
-	if (covers.empty()) return etl::rect<int>(window.minx, window.miny);
-	etl::rect<int> bounds(covers.front().x, covers.front().y);
+	if (covers.empty()) return RectInt(window.minx, window.miny);
+	RectInt bounds(covers.front().x, covers.front().y);
 	for(cover_array::const_iterator i = covers.begin() + 1; i != covers.end(); ++i)
 		bounds.expand(i->x, i->y);
 	set_intersect(bounds, bounds, window);

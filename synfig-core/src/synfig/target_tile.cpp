@@ -280,8 +280,9 @@ synfig::Target_Tile::async_render_tile(RectInt rect, Context context, RendDesc t
 				throw "Renderer '" + get_engine() + "' not found";
 
 			task->target_surface = surfacesw;
-			task->rect_lt = tile_desc.get_tl();
-			task->rect_rb = tile_desc.get_br();
+			task->source_rect_lt = tile_desc.get_tl();
+			task->source_rect_rb = tile_desc.get_br();
+			task->target_rect = RectInt(0, 0, surfacesw->get_width(), surfacesw->get_height());
 
 			rendering::Task::List list;
 			list.push_back(task);

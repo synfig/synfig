@@ -355,6 +355,28 @@ Contour::assign(const Contour &other)
 	color = other.color;
 }
 
+Rect
+Contour::calc_bounds(const Matrix &transform_matrix) const
+{
+	if (chunks.empty()) return Rect::zero();
+	Rect bounds(chunks.front().p1);
+	for(ChunkList::const_iterator i = chunks.begin(); i != chunks.end(); ++i) {
+		switch(i->type) {
+		case CUBIC:
+			bounds.expand( transform_matrix.get_transformed(i->pp1) );
+		case CONIC:
+			bounds.expand( transform_matrix.get_transformed(i->pp0) );
+		case CLOSE:
+		case MOVE:
+		case LINE:
+			bounds.expand( transform_matrix.get_transformed(i->p1) );
+		default:
+			break;
+		}
+	}
+	return bounds;
+}
+
 void
 Contour::split(
 	Contour &out_contour,

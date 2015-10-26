@@ -87,8 +87,9 @@ OptimizerSurface::run(const RunParams& params) const
 						(*i)->target_surface->is_temporary = true;
 					}
 					(*i)->target_surface->set_size( params.ref_task->target_surface->get_size() );
-					(*i)->rect_lt = params.ref_task->rect_lt;
-					(*i)->rect_rb = params.ref_task->rect_rb;
+					(*i)->source_rect_lt = params.ref_task->source_rect_lt;
+					(*i)->source_rect_rb = params.ref_task->source_rect_rb;
+					(*i)->target_rect = params.ref_task->target_rect;
 				}
 			}
 		}

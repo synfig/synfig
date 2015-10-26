@@ -51,6 +51,7 @@ public:
 	enum CategoryId
 	{
 		CATEGORY_ID_COMMON,		     // common optimizations of task-tree
+		CATEGORY_ID_PRE_SPECIALIZE,  // common optimizations, when transformations already applied
 		CATEGORY_ID_SPECIALIZE,      // renderer-specified optimizations of task-tree
 		CATEGORY_ID_POST_SPECIALIZE, // optimizations of task-tree, which required assigned surfaces
 		CATEGORY_ID_CONVERT,	     // OptimizerSurfaceConvert
@@ -60,14 +61,16 @@ public:
 
 	enum
 	{
-		CATEGORY_ID_COUNT = CATEGORY_ID_LIST + 1,
-		CATEGORY_COMMON     = 1 << CATEGORY_ID_COMMON,		// --
-		CATEGORY_SPECIALIZE = 1 << CATEGORY_ID_SPECIALIZE,	// --
-		CATEGORY_CONVERT    = 1 << CATEGORY_ID_CONVERT,		// --
-		CATEGORY_LINEAR     = 1 << CATEGORY_ID_LINEAR,		// --
-		CATEGORY_LIST       = 1 << CATEGORY_ID_LIST,		// --
-		CATEGORY_TREE       = CATEGORY_LINEAR - 1, 			// optimizations of task-tree
-		CATEGORY_ALL        = (1 << CATEGORY_ID_COUNT) -1		// all optimizations
+		CATEGORY_ID_COUNT        = CATEGORY_ID_LIST + 1,
+		CATEGORY_COMMON          = 1 << CATEGORY_ID_COMMON,          // --
+		CATEGORY_PRE_SPECIALIZE  = 1 << CATEGORY_ID_PRE_SPECIALIZE,  // --
+		CATEGORY_SPECIALIZE      = 1 << CATEGORY_ID_SPECIALIZE,      // --
+		CATEGORY_POST_SPECIALIZE = 1 << CATEGORY_ID_POST_SPECIALIZE, // --
+		CATEGORY_CONVERT         = 1 << CATEGORY_ID_CONVERT,         // --
+		CATEGORY_LINEAR          = 1 << CATEGORY_ID_LINEAR,          // --
+		CATEGORY_LIST            = 1 << CATEGORY_ID_LIST,            // --
+		CATEGORY_TREE            = CATEGORY_LINEAR - 1,              // optimizations of task-tree
+		CATEGORY_ALL             = (1 << CATEGORY_ID_COUNT) -1       // all optimizations
 	};
 
 	enum
@@ -134,8 +137,9 @@ public:
 	bool for_list;
 	bool for_task;
 	bool for_root_task;
+	bool deep_first;
 
-	Optimizer(): category_id(), depends_from(), affects_to(), mode(), for_list(), for_task(), for_root_task() { }
+	Optimizer(): category_id(), depends_from(), affects_to(), mode(), for_list(), for_task(), for_root_task(), deep_first() { }
 	virtual ~Optimizer();
 
 	virtual void run(const RunParams &params) const = 0;
@@ -157,11 +161,78 @@ public:
 		apply(params, params.ref_task->clone());
 	}
 
+	static void apply_target_bounds(Task &task, const RectInt &target_bounds)
+	{
+		RectInt tr = task.target_rect;
+		if (tr.valid())
+		{
+			if (target_bounds.valid())
+			{
+				RectInt ntr = target_bounds;
+				etl::set_intersect(ntr, ntr, tr);
+				if (ntr.valid())
+				{
+					Vector lt = task.source_rect_lt;
+					Vector rb = task.source_rect_rb;
+					Vector k( (rb[0] - lt[0])/(Real)(tr.maxx - tr.minx),
+							  (rb[1] - lt[1])/(Real)(tr.maxy - tr.miny) );
+					task.source_rect_lt[0] = (Real)(ntr.minx - tr.minx)*k[0] + lt[0];
+					task.source_rect_lt[1] = (Real)(ntr.miny - tr.miny)*k[1] + lt[1];
+					task.source_rect_rb[0] = (Real)(ntr.maxx - tr.minx)*k[0] + lt[0];
+					task.source_rect_rb[1] = (Real)(ntr.maxy - tr.miny)*k[1] + lt[1];
+					task.target_rect = ntr;
+					return;
+				}
+			}
+			task.source_rect_lt = task.source_rect_rb = Vector::zero();
+			task.target_rect = RectInt::zero();
+		}
+	}
+
+	static void apply_source_bounds(Task &task, const Rect &source_bounds)
+	{
+		RectInt tr = task.target_rect;
+		if (tr.valid())
+		{
+			if (source_bounds.valid())
+			{
+				Rect sb = source_bounds;
+				Vector lt = task.source_rect_lt;
+				Vector rb = task.source_rect_rb;
+				Vector nlt( std::min(std::max(lt[0], sb.minx), sb.maxx),
+							std::min(std::max(lt[1], sb.miny), sb.maxy) );
+				Vector nrb( std::min(std::max(rb[0], sb.minx), sb.maxx),
+							std::min(std::max(rb[1], sb.miny), sb.maxy) );
+				if (nlt[0] != nrb[0] && nlt[1] != nrb[1])
+				{
+					Vector k( (Real)(tr.maxx - tr.minx)/(rb[0] - lt[0]),
+							  (Real)(tr.maxy - tr.miny)/(rb[1] - lt[1]) );
+
+					// TODO: use floor and ceil instead increment
+					RectInt ntr( (int)floor((nlt[0] - lt[0])*k[0] + tr.minx),
+								 (int)floor((nlt[1] - lt[1])*k[1] + tr.miny),
+								 (int)floor((nrb[0] - lt[0])*k[0] + tr.minx),
+								 (int)floor((nrb[1] - lt[1])*k[1] + tr.miny) );
+					++ntr.maxx;
+					++ntr.maxy;
+					apply_target_bounds(task, ntr);
+					return;
+				}
+			}
+			task.source_rect_lt = task.source_rect_rb = Vector::zero();
+			task.target_rect = RectInt::zero();
+		}
+	}
+
+	static void apply_source_bounds(Task &task)
+		{ apply_source_bounds(task, task.bounds); }
+
 	template<typename T>
 	static void assign_surface(
 		Task::Handle &task,
 		int width, int height,
-		const Vector& rect_lt, const Vector& rect_rb )
+		const Vector& rect_lt, const Vector& rect_rb,
+		const RectInt &target_rect )
 	{
 		if (task && !task->target_surface)
 		{
@@ -169,8 +240,10 @@ public:
 			task->target_surface = new T();
 			task->target_surface->is_temporary = true;
 			task->target_surface->set_size(width, height);
-			task->rect_lt = rect_lt;
-			task->rect_rb = rect_rb;
+			task->source_rect_lt = rect_lt;
+			task->source_rect_rb = rect_rb;
+			task->target_rect = target_rect;
+			apply_source_bounds(*task);
 		}
 	}
 
@@ -178,9 +251,10 @@ public:
 	static void assign_surface(
 		Task::Handle &task,
 		const std::pair<int, int> &size,
-		const Vector& rect_lt, const Vector& rect_rb )
+		const Vector& rect_lt, const Vector& rect_rb,
+		const RectInt &target_rect )
 	{
-		assign_surface<T>(task, size.first, size.second, rect_lt, rect_rb);
+		assign_surface<T>(task, size.first, size.second, rect_lt, rect_rb, target_rect);
 	}
 
 	template<typename T>
@@ -190,8 +264,9 @@ public:
 			assign_surface<T>(
 				task,
 				parent->target_surface->get_size(),
-				parent->rect_lt,
-				parent->rect_rb );
+				parent->source_rect_lt,
+				parent->source_rect_rb,
+				parent->target_rect );
 	}
 
 	template<typename T>
@@ -206,7 +281,7 @@ public:
 
 	template<typename T, typename TT>
 	static void assign(const etl::handle<T> &dest, const etl::handle<TT> &src)
-		{ *(TT*)dest.get() = *src; }
+		{ *(TT*)dest.get() = *src; apply_source_bounds(*dest); }
 
 	template<typename SurfaceType, typename T, typename TT>
 	static void assign_all(const etl::handle<T> &dest, const etl::handle<TT> &src)

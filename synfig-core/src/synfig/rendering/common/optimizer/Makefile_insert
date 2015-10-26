@@ -1,4 +1,5 @@
 RENDERING_COMMON_OPTIMIZER_HH = \
+	rendering/common/optimizer/optimizercalcbounds.h \
 	rendering/common/optimizer/optimizercomposite.h \
 	rendering/common/optimizer/optimizerlinear.h \
 	rendering/common/optimizer/optimizersurface.h \
@@ -9,6 +10,7 @@ RENDERING_COMMON_OPTIMIZER_HH = \
 	rendering/common/optimizer/optimizertransformationaffine.h
 
 RENDERING_COMMON_OPTIMIZER_CC = \
+	rendering/common/optimizer/optimizercalcbounds.cpp \
 	rendering/common/optimizer/optimizercomposite.cpp \
 	rendering/common/optimizer/optimizerlinear.cpp \
 	rendering/common/optimizer/optimizersurface.cpp \

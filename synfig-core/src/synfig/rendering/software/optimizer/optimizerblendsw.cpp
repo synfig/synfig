@@ -66,7 +66,26 @@ OptimizerBlendSW::run(const RunParams& params) const
 
 		if ( blend_sw->target_surface->is_temporary
 		  && blend_sw->sub_task_a()->target_surface )
+		{
 			blend_sw->target_surface = blend_sw->sub_task_a()->target_surface;
+		}
+
+		// TODO: use offsets to avoid memory overhead
+
+		//else
+		//{
+		//	RectInt atr = blend_sw->sub_task_a()->target_rect;
+		//	blend_sw->sub_task_a()->target_surface->set_size( atr.maxx - atr.minx, atr.maxy - atr.miny );
+		//	blend_sw->offset_a[0] = atr.minx;
+		//	blend_sw->offset_a[1] = atr.miny;
+		//	atr -= blend_sw->offset_a;
+		//}
+
+		//RectInt btr = blend_sw->sub_task_b()->target_rect;
+		//blend_sw->sub_task_b()->target_surface->set_size( btr.maxx - btr.minx, btr.maxy - btr.miny );
+		//blend_sw->offset_a[0] = btr.minx;
+		//blend_sw->offset_b[1] = btr.miny;
+		//btr -= blend_sw->offset_a;
 
 		apply(params, blend_sw);
 	}

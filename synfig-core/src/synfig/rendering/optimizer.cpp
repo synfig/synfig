@@ -52,6 +52,7 @@ using namespace rendering;
 
 const Optimizer::CategoryInfo Optimizer::categories_info[CATEGORY_ID_COUNT] = {
 	CategoryInfo(false),   // CATEGORY_ID_COMMON
+	CategoryInfo(false),   // CATEGORY_ID_PRE_SPECIALIZE
 	CategoryInfo(true),    // CATEGORY_ID_SPECIALIZE
 	CategoryInfo(false),   // CATEGORY_ID_POST_SPECIALIZE
 	CategoryInfo(false),   // CATEGORY_ID_CONVERT
