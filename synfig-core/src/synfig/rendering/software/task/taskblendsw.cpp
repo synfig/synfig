@@ -80,8 +80,8 @@ TaskBlendSW::run(RunParams & /* params */) const
 	if (rb.valid())
 	{
 		synfig::Surface::alpha_pen ap(c.get_pen(
-			rb.minx + offset_a[0],
-			rb.miny + offset_a[1] ));
+			rb.minx + offset_b[0],
+			rb.miny + offset_b[1] ));
 		ap.set_blend_method(blend_method);
 		ap.set_alpha(amount);
 		const_cast<synfig::Surface*>(&b)->blit_to(

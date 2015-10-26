@@ -70,13 +70,20 @@ OptimizerComposite::run(const RunParams& params) const
 	  && blend->sub_task_b()->target_surface
 	  && blend->sub_task_b()->target_surface->is_temporary )
 	{
+		// remove blend if amount is zero
 		if (fabsf(blend->amount) <= 1e-6)
 		{
 			apply(params, blend->sub_task_a());
+			if (blend->offset_a[0] || blend->offset_a[1])
+			{
+				params.ref_task = params.ref_task->clone();
+				params.ref_task->target_rect += blend->offset_a;
+			}
 			run(params);
 			return;
 		}
 
+		// remove non-straight blend if task_b is empty
 		if (!Color::is_straight(blend->blend_method))
 		{
 			if ( blend->sub_task_b().type_equal<Task>()
@@ -84,6 +91,7 @@ OptimizerComposite::run(const RunParams& params) const
 			{
 				if (blend->sub_task_a()->target_surface == blend->target_surface)
 				{
+					assert(blend->offset_a[0] == 0 && blend->offset_a[1] == 0);
 					apply(params, blend->sub_task_a());
 					run(params);
 					return;
@@ -92,6 +100,7 @@ OptimizerComposite::run(const RunParams& params) const
 				{
 					Task::Handle sub_task = blend->sub_task_a()->clone();
 					sub_task->target_surface = blend->target_surface;
+					sub_task->target_rect += blend->offset_a;
 					apply(params, sub_task);
 					run(params);
 					return;
@@ -99,6 +108,7 @@ OptimizerComposite::run(const RunParams& params) const
 			}
 		}
 
+		// remove blend if task_b supports blending
 		TaskComposite *composite = blend->sub_task_b().type_pointer<TaskComposite>();
 		if ( composite
 		  && composite->is_blend_method_supported(blend->blend_method)
@@ -106,9 +116,11 @@ OptimizerComposite::run(const RunParams& params) const
 		{
 			Task::Handle task_a = blend->sub_task_a()->clone();
 			task_a->target_surface = blend->target_surface;
+			task_a->target_rect += blend->offset_a;
 
 			Task::Handle task_b = blend->sub_task_b()->clone();
 			task_b->target_surface = blend->target_surface;
+			task_b->target_rect += blend->offset_b;
 
 			composite = task_b.type_pointer<TaskComposite>();
 			composite->blend = true;
@@ -125,6 +137,7 @@ OptimizerComposite::run(const RunParams& params) const
 			return;
 		}
 
+		// change blend order if possible to optimize simple groups
 		if ( ((1 << blend->blend_method) & Color::BLEND_METHODS_ASSOCIATIVE)
 		  && fabsf(blend->amount - 1.f) <= 1e-6 )
 		{
@@ -143,21 +156,56 @@ OptimizerComposite::run(const RunParams& params) const
 					Task::Handle task_b = sub_blend->sub_task_a();
 					Task::Handle task_c = sub_blend->sub_task_b();
 
-					TaskBlend::Handle new_sub_blend = sub_blend->clone();
-					new_sub_blend->amount = blend->amount;
-					new_sub_blend->sub_task_a() = blend->sub_task_a();
-					new_sub_blend->sub_task_b() = sub_blend->sub_task_a();
-					if (sub_blend->target_surface == sub_blend->sub_task_a()->target_surface)
-						new_sub_blend->target_surface = new_sub_blend->sub_task_a()->target_surface;
+					VectorInt offset_a = blend->offset_a;
+					VectorInt offset_b = blend->offset_b + sub_blend->offset_a;
+					VectorInt offset_c = blend->offset_b + sub_blend->offset_b;
 
-					TaskBlend::Handle new_blend = blend->clone();
-					new_blend->amount = blend->amount * sub_blend->amount;
-					new_blend->sub_task_a() = new_sub_blend;
-					new_blend->sub_task_b() = sub_blend->sub_task_b();
+					RectInt rect_a = task_a->target_rect + offset_a;
+					RectInt rect_b = task_b->target_rect + offset_b;
+					RectInt rect_c = task_c->target_rect + offset_c;
 
-					apply(params, new_blend);
-					run(params);
-					return;
+					Surface::Handle surface = blend->target_surface;
+					Surface::Handle sub_surface = sub_blend->target_surface;
+					Surface::Handle surface_a = task_a->target_surface;
+					Surface::Handle surface_b = task_b->target_surface;
+					Surface::Handle surface_c = task_c->target_surface;
+
+					if ((surface == surface_a) == (sub_surface == surface_b))
+					{
+						TaskBlend::Handle new_sub_blend = sub_blend->clone();
+						new_sub_blend->amount = blend->amount;
+						new_sub_blend->sub_task_a() = task_a;
+						new_sub_blend->sub_task_b() = task_b;
+
+						TaskBlend::Handle new_blend = blend->clone();
+						new_blend->amount = blend->amount * sub_blend->amount;
+						new_blend->sub_task_a() = new_sub_blend;
+						new_blend->sub_task_b() = task_c;
+						new_blend->offset_b = offset_c;
+
+						etl::set_union(new_sub_blend->target_rect, rect_a, rect_b);
+
+						if (surface == surface_a && sub_surface == surface_b)
+						{
+							new_blend->offset_a = VectorInt(0, 0);
+							new_sub_blend->target_surface = surface_a;
+						}
+						else
+						{
+							new_blend->offset_a = VectorInt(new_sub_blend->target_rect.minx, new_sub_blend->target_rect.miny);
+							new_sub_blend->target_surface->set_size(
+								new_sub_blend->target_rect.maxx - new_sub_blend->target_rect.minx,
+								new_sub_blend->target_rect.maxy - new_sub_blend->target_rect.miny );
+						}
+
+						new_sub_blend->target_rect -= new_blend->offset_a;
+						new_sub_blend->offset_a = offset_a - new_blend->offset_a;
+						new_sub_blend->offset_b = offset_b - new_blend->offset_a;
+
+						apply(params, new_blend);
+						run(params);
+						return;
+					}
 				}
 			}
 		}
