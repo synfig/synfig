@@ -65,9 +65,10 @@ public:
 	mutable Rect bounds;
 	mutable List deps;
 	mutable RunParams params;
+	mutable int index;
 	mutable bool success;
 
-	Task(): target_rect(0, 0), bounds(0.0, 0.0), success(true) { }
+	Task(): target_rect(0, 0), bounds(0.0, 0.0), index(), success(true) { }
 
 	template<typename T>
 	static T* clone_pointer(const T *task)

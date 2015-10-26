@@ -58,12 +58,12 @@ using namespace rendering;
 
 
 #ifdef _DEBUG
-//#define DEBUG_TASK_LIST
-//#define DEBUG_TASK_MEASURE
+#define DEBUG_TASK_LIST
+#define DEBUG_TASK_MEASURE
 //#define DEBUG_TASK_SURFACE
-//#define DEBUG_OPTIMIZATION
-//#define DEBUG_THREAD_TASK
-//#define DEBUG_THREAD_WAIT
+#define DEBUG_OPTIMIZATION
+#define DEBUG_THREAD_TASK
+#define DEBUG_THREAD_WAIT
 #endif
 
 
@@ -86,6 +86,7 @@ private:
 	Glib::Threads::Mutex mutex;
 	Glib::Threads::Mutex threads_mutex;
 	Glib::Threads::Cond cond;
+	Glib::Threads::Cond condgl;
 
 	Task::List queue;
 	bool started;
@@ -119,28 +120,29 @@ private:
 			Glib::Threads::Mutex::Lock lock(mutex);
 			started = false;
 			cond.broadcast();
+			condgl.broadcast();
 		}
 		while(!threads.empty())
 			{ threads.front()->join(); threads.pop_front(); }
 	}
 
-	void process(int index)
+	void process(int thread_index)
 	{
-		while(Task::Handle task = get(index))
+		while(Task::Handle task = get(thread_index))
 		{
 			#ifdef DEBUG_THREAD_TASK
-			info("thread %d: begin task '%s'", index, typeid(*task).name());
+			info("thread %d: begin task #%d '%s'", thread_index, task->index, typeid(*task).name());
 			#endif
 
 			if (!task->run(task->params))
 				task->success = false;
 
 			#ifdef DEBUG_TASK_SURFACE
-			debug::DebugSurface::save_to_file(task->target_surface, etl::strprintf("task"));
+			debug::DebugSurface::save_to_file(task->target_surface, etl::strprintf("task%d", task.index));
 			#endif
 
 			#ifdef DEBUG_THREAD_TASK
-			info("thread %d: end task '%s'", index, typeid(*task).name());
+			info("thread %d: end task #%d '%s'", thread_index, task->index, typeid(*task).name());
 			#endif
 
 			done(task);
@@ -150,7 +152,6 @@ private:
 	void done(const Task::Handle &task)
 	{
 		assert(task);
-		bool unlocked = false;
 		Glib::Threads::Mutex::Lock lock(mutex);
 		for(Task::List::iterator i = queue.begin(); i != queue.end();)
 		{
@@ -163,18 +164,23 @@ private:
 				{
 					if (!task->success) (*i)->success = false;
 					j = (*i)->deps.erase(j);
-					if ((*i)->deps.empty()) unlocked = true;
+					if ((*i)->deps.empty())
+						(i->type_is<TaskGL>() ? condgl : cond).signal();
 					continue;
 				}
 				++j;
 			}
 			++i;
 		}
-		if (unlocked) cond.broadcast();
 	}
 
 	Task::Handle get(int thread_index) {
 		Glib::Threads::Mutex::Lock lock(mutex);
+
+		#ifdef DEBUG_THREAD_WAIT
+		bool queue_empty = true;
+		#endif
+
 		while(true)
 		{
 			if (!started) return Task::Handle();
@@ -182,20 +188,24 @@ private:
 			for(Task::List::iterator i = queue.begin(); i != queue.end(); ++i)
 			{
 				assert(*i);
-				if ((*i)->deps.empty() && ((thread_index == 0) == i->type_is<TaskGL>()))
+				if ((*i)->deps.empty() && (thread_index == 0) == i->type_is<TaskGL>())
 				{
 					Task::Handle task = *i;
 					queue.erase(i);
 					return task;
 				}
+				#ifdef DEBUG_THREAD_WAIT
+				if (queue_empty && (thread_index == 0) == i->type_is<TaskGL>())
+					queue_empty = true;
+				#endif
 			}
 
 			#ifdef DEBUG_THREAD_WAIT
-			if (thread_index > 0 && !queue.empty())
+			if (queue_empty)
 				info("thread %d: rendering wait for task", thread_index);
 			#endif
 
-			cond.wait(mutex);
+			(thread_index ? cond : condgl).wait(mutex);
 		}
 	}
 
@@ -217,7 +227,7 @@ public:
 		fix_task(*task, params);
 		Glib::Threads::Mutex::Lock lock(mutex);
 		queue.push_back(task);
-		cond.broadcast();
+		(task.type_is<TaskGL>() ? condgl : cond).signal();
 	}
 
 	void enqueue(const Task::List &tasks, const Task::RunParams &params)
@@ -228,8 +238,13 @@ public:
 		if (!count) return;
 		Glib::Threads::Mutex::Lock lock(mutex);
 		for(Task::List::const_iterator i = tasks.begin(); i != tasks.end(); ++i)
-			if (*i) queue.push_back(*i);
-		cond.broadcast();
+		{
+			if (*i)
+			{
+				queue.push_back(*i);
+				(i->type_is<TaskGL>() ? condgl : cond).signal();
+			}
+		}
 	}
 
 	void clear()
@@ -505,18 +520,14 @@ Renderer::run(const Task::List &list) const
 		optimize(optimized_list);
 	}
 
-	#ifdef DEBUG_TASK_LIST
-	log(optimized_list, "optimized list");
-	#endif
-
 	{
 		#ifdef DEBUG_TASK_MEASURE
 		debug::Measure t("find deps");
 		#endif
 
-		//int brunches = 0;
 		for(Task::List::const_iterator i = optimized_list.begin(); i != optimized_list.end(); ++i)
 		{
+			(*i)->index = i - optimized_list.begin() + 1;
 			(*i)->deps.clear();
 			for(Task::List::const_iterator j = (*i)->sub_tasks.begin(); j != (*i)->sub_tasks.end(); ++j)
 				if (*j)
@@ -528,10 +539,12 @@ Renderer::run(const Task::List &list) const
 				if ( (*i)->target_surface == (*rk)->target_surface
 				  && etl::intersect((*i)->target_rect, (*rk)->target_rect) )
 					{ (*i)->deps.push_back(*rk); break; }
-			//if ((*i)->deps.empty()) ++brunches;
 		}
-		//info("rendering brunches %d", brunches);
 	}
+
+	#ifdef DEBUG_TASK_LIST
+	log(optimized_list, "optimized list");
+	#endif
 
 	bool success = true;
 
@@ -564,7 +577,17 @@ Renderer::log(const Task::Handle &task, const String &prefix) const
 {
 	if (task)
 	{
+		String deps;
+		if (!task->deps.empty())
+		{
+			for(Task::List::const_iterator i = task->deps.begin(); i != task->deps.end(); ++i)
+				deps += etl::strprintf("%d ", (*i)->index);
+			deps = "(" + deps.substr(0, deps.size()-1) + ") ";
+		}
+
 		info( prefix
+			+ (task->index ? etl::strprintf("#%d ", task->index): "")
+			+ deps
 			+ (typeid(*task).name() + 19)
 			+ ( task->bounds.valid()
 			  ? etl::strprintf(" bounds (%f, %f)-(%f, %f)",

@@ -59,7 +59,7 @@ OptimizerLinear::run(const RunParams& params) const
 	// convert task-tree to linear list
 	for(Task::List::iterator i = params.list.begin(); i != params.list.end();)
 	{
-		if (!TaskSurface::Handle::cast_dynamic(*i))
+		if (!i->type_is<TaskSurface>())
 		{
 			// remember current position
 			int index = i - params.list.begin();
@@ -100,7 +100,7 @@ OptimizerLinear::run(const RunParams& params) const
 
 	// remove dummy tasks
 	for(Task::List::iterator i = params.list.begin(); i != params.list.end();)
-		if (i->type_equal<Task>()/* || i->type_is<TaskSurface>() || i->type_is<TaskSurfaceEmpty>()*/)
+		if (i->type_equal<Task>()/* || i->type_is<TaskSurface>() || i->type_is<TaskSurfaceEmpty>() */)
 			i = params.list.erase(i); else ++i;
 }
 

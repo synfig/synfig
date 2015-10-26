@@ -68,6 +68,8 @@ OptimizerBlendSW::run(const RunParams& params) const
 		  && blend_sw->sub_task_a()->target_surface )
 		{
 			blend_sw->target_surface = blend_sw->sub_task_a()->target_surface;
+			//if (!Color::is_straight(blend_sw->blend_method))
+			//	apply_source_bounds(*blend_sw, blend_sw->sub_task_a()->bounds);
 		}
 
 		// TODO: use offsets to avoid memory overhead
