@@ -2896,8 +2896,11 @@ studio::WorkArea::async_update_preview()
 	 || !getenv("SYNFIG_DISABLE_TILE_RENDER")
 	 || getenv("SYNFIG_FORCE_TILE_RENDER") )
 	{
+		bool legacy = App::workarea_renderer.empty();
+		int ts = legacy ? 2048 : 256;
+
 		// do a tile render
-		handle<WorkAreaTarget> trgt(new class WorkAreaTarget(this,w,h,2048,2048,!App::workarea_renderer.empty()));
+		handle<WorkAreaTarget> trgt(new class WorkAreaTarget(this,w,h,ts,ts,!legacy));
 
 		trgt->set_rend_desc(&desc);
 		trgt->set_onion_skin(get_onion_skin(), onion_skins);
