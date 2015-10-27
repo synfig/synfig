@@ -194,27 +194,31 @@ public:
 		RectInt tr = task.target_rect;
 		if (tr.valid())
 		{
-			if (source_bounds.valid())
+			Rect nsb = source_bounds;
+			if (nsb.valid())
 			{
-				Rect sb = source_bounds;
 				Vector lt = task.source_rect_lt;
 				Vector rb = task.source_rect_rb;
-				Vector nlt( std::min(std::max(lt[0], sb.minx), sb.maxx),
-							std::min(std::max(lt[1], sb.miny), sb.maxy) );
-				Vector nrb( std::min(std::max(rb[0], sb.minx), sb.maxx),
-							std::min(std::max(rb[1], sb.miny), sb.maxy) );
+				Vector nlt( std::min(std::max(lt[0], nsb.minx), nsb.maxx),
+							std::min(std::max(lt[1], nsb.miny), nsb.maxy) );
+				Vector nrb( std::min(std::max(rb[0], nsb.minx), nsb.maxx),
+							std::min(std::max(rb[1], nsb.miny), nsb.maxy) );
 				if (nlt[0] != nrb[0] && nlt[1] != nrb[1])
 				{
-					Vector k( (Real)(tr.maxx - tr.minx)/(rb[0] - lt[0]),
-							  (Real)(tr.maxy - tr.miny)/(rb[1] - lt[1]) );
+					Vector k(  (Real)(tr.maxx - tr.minx)/(rb[0] - lt[0]),
+							   (Real)(tr.maxy - tr.miny)/(rb[1] - lt[1]) );
+					Vector t0( (nlt[0] - lt[0])*k[0] + tr.minx,
+							   (nlt[1] - lt[1])*k[1] + tr.miny );
+					Vector t1( (nrb[0] - lt[0])*k[0] + tr.minx,
+							   (nrb[1] - lt[1])*k[1] + tr.miny );
+					if (t1[0] < t0[0]) std::swap(t1[0], t0[0]);
+					if (t1[1] < t0[1]) std::swap(t1[1], t0[1]);
 
-					// TODO: use floor and ceil instead increment
-					RectInt ntr( (int)floor((nlt[0] - lt[0])*k[0] + tr.minx),
-								 (int)floor((nlt[1] - lt[1])*k[1] + tr.miny),
-								 (int)floor((nrb[0] - lt[0])*k[0] + tr.minx),
-								 (int)floor((nrb[1] - lt[1])*k[1] + tr.miny) );
-					++ntr.maxx;
-					++ntr.maxy;
+					const Real e = 1e-6;
+					RectInt ntr( (int)floor(t0[0] + e),
+							     (int)floor(t0[1] + e),
+								 (int)ceil (t1[0] - e),
+								 (int)ceil (t1[1] - e) );
 					apply_target_bounds(task, ntr);
 					return;
 				}
