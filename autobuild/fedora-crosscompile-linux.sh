@@ -82,11 +82,12 @@ AT_SPI2_VERSION=2.10.2
 AT_SPI2_ATK_VERSION=2.10.2
 GLIB_VERSION=2.42.1
 GDK_PIXBUF_VERSION=2.31.3
-GTK_VERSION=3.14.9
+GTK_VERSION=3.14.14
 PIXMAN_VERSION=0.30.0		# required by CAIRO 1.12.0
 HARFBUZZ_VERSION=0.9.24
 PANGO_VERSION=1.36.8
 ATKMM_VERSION=2.22.7
+IMAGEMAGICK_VERSION=6.9.1
 
 # System libraries
 FONTCONFIG_VERSION=2.11.0
@@ -279,11 +280,9 @@ for PKG in \
 	fi
 done
 
-for PKG in dpkg-dev; do
-	if ! ( rpm -qv $PKG > /dev/null ); then
-		MISSING_PKGS="$MISSING_PKGS $PKG"
-	fi
-done
+if ! ( which dpkg-buildpackage > /dev/null ); then
+	MISSING_PKGS="$MISSING_PKGS dpkg-dev"
+fi
 
 if [ ! -z "$MISSING_PKGS" ]; then
 	echo "ERROR: Please install following packages:"
@@ -401,6 +400,13 @@ cat > ${DEPSPREFIX}/bin/bison <<EOF
 /usr/bin/bison "\$@"
 EOF
 chmod a+x  ${DEPSPREFIX}/bin/bison
+
+cat > ${DEPSPREFIX}/bin/git <<EOF
+#!/bin/sh
+
+/usr/bin/git "\$@"
+EOF
+chmod a+x  ${DEPSPREFIX}/bin/git
 
 #for binary in bzip2; do
 #	ln -sf /usr/bin/$binary  ${DEPSPREFIX}/bin/$binary
@@ -912,9 +918,9 @@ fi
 mkimagemagick()
 {
 PKG_NAME=ImageMagick
-PKG_VERSION="6.9.1-7"
+PKG_VERSION="${IMAGEMAGICK_VERSION}-8"
 TAREXT=bz2
-if ! pkg-config ${PKG_NAME} --exact-version=${IMAGEMAGICK_VERSION}  --print-errors; then
+if [ ! -f ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done ]; then
 	( cd ${WORKSPACE}/cache/ && wget -c http://www.imagemagick.org/download/releases/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
 	pushd ${SRCPREFIX}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xjf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
@@ -932,6 +938,9 @@ if ! pkg-config ${PKG_NAME} --exact-version=${IMAGEMAGICK_VERSION}  --print-erro
 	make install
 	cd ..
 	popd
+	
+	touch ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done
+	
 fi
 }
 
@@ -2007,8 +2016,8 @@ fi
 if [ -x /usr/bin/update-desktop-database ]; then
   update-desktop-database
 fi
-chmod a+rX -R /opt/synfig
-chmod a+rX /opt
+#chmod a+rX -R /opt/synfig
+#chmod a+rX /opt
 EOF
 	chmod a+x ${DEB_DIST}/debian/postinst
 	
@@ -2067,7 +2076,7 @@ binary-arch: build
 	-dh_shlibdeps
 	dh_gencontrol
 	dh_md5sums
-	dh_builddeb
+#	dh_builddeb
 
 binary: binary-indep binary-arch
 .PHONY: build clean binary-indep binary-arch binary
@@ -2077,12 +2086,18 @@ EOF
 	#run_native fakeroot alien -g -k --scripts synfigstudio-${VERSION}-${REVISION}.${RPM_ARCH}.rpm
 		
 	cd synfigstudio-${VERSION}
+	
 	run_native dpkg-buildpackage -rfakeroot -a${SYS_ARCH} -d || true
+	# We have to use "dpkg-deb" command from chroot, 
+	# because recent dpkg-deb seems broken on Fedora
+	chmod -R a+rX debian/synfigstudio
+	/usr/bin/fakeroot dpkg-deb -b debian/synfigstudio
 	#run_native fakeroot dpkg-deb --build synfigstudio
-	if [ ! -e ../synfigstudio_${VERSION}-${REVISION}_${SYS_ARCH}.deb ]; then
+	if [ ! -e debian/synfigstudio.deb ]; then
 		echo "Failed to generate deb package"
 		exit 1
 	fi
+	mv debian/synfigstudio.deb ../synfigstudio_${VERSION}-${REVISION}_${SYS_ARCH}.deb
 	mv ../synfigstudio_${VERSION}-${REVISION}_${SYS_ARCH}.deb ${WORKSPACE}
 	rm -rf synfigstudio-${VERSION}.orig
 	rm -rf synfigstudio_${VERSION}.orig.tar.gz
