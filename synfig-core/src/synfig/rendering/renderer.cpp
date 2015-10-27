@@ -61,9 +61,9 @@ using namespace rendering;
 #define DEBUG_TASK_LIST
 #define DEBUG_TASK_MEASURE
 //#define DEBUG_TASK_SURFACE
-#define DEBUG_OPTIMIZATION
-#define DEBUG_THREAD_TASK
-#define DEBUG_THREAD_WAIT
+//#define DEBUG_OPTIMIZATION
+//#define DEBUG_THREAD_TASK
+//#define DEBUG_THREAD_WAIT
 #endif
 
 
@@ -133,6 +133,10 @@ private:
 			#ifdef DEBUG_THREAD_TASK
 			info("thread %d: begin task #%d '%s'", thread_index, task->index, typeid(*task).name());
 			#endif
+
+			assert( !task->target_rect.valid() || etl::contains(
+				RectInt(0, 0, task->target_surface->get_width(), task->target_surface->get_height()),
+				task->target_rect ));
 
 			if (!task->run(task->params))
 				task->success = false;
@@ -322,6 +326,9 @@ Renderer::optimize_recursive(const Optimizer::List &optimizers, const Optimizer:
 				params.ref_mode |= p.ref_mode;
 				params.ref_task = p.ref_task;
 				if (!params.ref_task) return;
+				assert( !params.ref_task->target_rect.valid() || etl::contains(
+					RectInt(0, 0, params.ref_task->target_surface->get_width(), params.ref_task->target_surface->get_height()),
+					params.ref_task->target_rect ));
 				if (params.ref_affects_to & params.depends_from) return;
 			}
 		}
@@ -368,6 +375,9 @@ Renderer::optimize_recursive(const Optimizer::List &optimizers, const Optimizer:
 				params.ref_mode |= p.ref_mode;
 				params.ref_task = p.ref_task;
 				if (!params.ref_task) return;
+				assert( !params.ref_task->target_rect.valid() || etl::contains(
+					RectInt(0, 0, params.ref_task->target_surface->get_width(), params.ref_task->target_surface->get_height()),
+					params.ref_task->target_rect ));
 				if (params.ref_affects_to & params.depends_from) return;
 			}
 		}
