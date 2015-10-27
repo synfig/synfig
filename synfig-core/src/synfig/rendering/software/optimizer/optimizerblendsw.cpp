@@ -64,27 +64,28 @@ OptimizerBlendSW::run(const RunParams& params) const
 		TaskBlendSW::Handle blend_sw;
 		init_and_assign_all<SurfaceSW>(blend_sw, blend);
 
-		if ( blend_sw->target_surface->is_temporary
-		  && blend_sw->sub_task_a()->target_surface )
+		if ( blend_sw->sub_task_a()->target_surface->is_temporary )
 		{
-			blend_sw->target_surface = blend_sw->sub_task_a()->target_surface;
-			//if (!Color::is_straight(blend_sw->blend_method))
-			//	apply_source_bounds(*blend_sw, blend_sw->sub_task_a()->bounds);
+			blend_sw->sub_task_a()->target_surface = blend_sw->target_surface;
+			blend_sw->sub_task_a()->target_rect +=
+				VectorInt(blend_sw->target_rect.minx, blend_sw->target_rect.miny);
+			blend_sw->offset_a[0] = -blend_sw->target_rect.minx;
+			blend_sw->offset_a[1] = -blend_sw->target_rect.miny;
 		}
 		else
 		{
 			RectInt &atr = blend_sw->sub_task_a()->target_rect;
-			blend_sw->sub_task_a()->target_surface->set_size( atr.maxx - atr.minx, atr.maxy - atr.miny );
 			blend_sw->offset_a[0] = atr.minx;
 			blend_sw->offset_a[1] = atr.miny;
 			atr -= blend_sw->offset_a;
+			blend_sw->sub_task_a()->target_surface->set_size(atr.maxx, atr.maxy);
 		}
 
 		RectInt &btr = blend_sw->sub_task_b()->target_rect;
-		blend_sw->sub_task_b()->target_surface->set_size( btr.maxx - btr.minx, btr.maxy - btr.miny );
 		blend_sw->offset_b[0] = btr.minx;
 		blend_sw->offset_b[1] = btr.miny;
 		btr -= blend_sw->offset_b;
+		blend_sw->sub_task_b()->target_surface->set_size(btr.maxx, btr.maxy);
 
 		apply(params, blend_sw);
 	}

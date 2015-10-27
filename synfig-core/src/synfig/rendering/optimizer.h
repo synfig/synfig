@@ -252,25 +252,18 @@ public:
 	}
 
 	template<typename T>
-	static void assign_surface(
-		Task::Handle &task,
-		const std::pair<int, int> &size,
-		const Vector& rect_lt, const Vector& rect_rb,
-		const RectInt &target_rect )
-	{
-		assign_surface<T>(task, size.first, size.second, rect_lt, rect_rb, target_rect);
-	}
-
-	template<typename T>
 	static void assign_surface(Task::Handle &task, const Task::Handle &parent)
 	{
 		if (task && parent && parent->target_surface)
 			assign_surface<T>(
 				task,
-				parent->target_surface->get_size(),
+				parent->target_rect.maxx - parent->target_rect.minx,
+				parent->target_rect.maxy - parent->target_rect.miny,
 				parent->source_rect_lt,
 				parent->source_rect_rb,
-				parent->target_rect );
+				RectInt( 0, 0,
+					parent->target_rect.maxx - parent->target_rect.minx,
+					parent->target_rect.maxy - parent->target_rect.miny ));
 	}
 
 	template<typename T>

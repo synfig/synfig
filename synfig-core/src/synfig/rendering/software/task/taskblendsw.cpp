@@ -70,8 +70,8 @@ TaskBlendSW::run(RunParams & /* params */) const
 	if (ra.valid() && &a != &c)
 	{
 		synfig::Surface::pen p = c.get_pen(
-			ra.minx + offset_a[0],
-			ra.miny + offset_a[1] );
+			target_rect.minx + ra.minx + offset_a[0],
+			target_rect.miny + ra.miny + offset_a[1] );
 		const_cast<synfig::Surface*>(&a)->blit_to(
 			p, ra.minx, ra.miny, ra.maxx - ra.minx, ra.maxy - ra.miny );
 	}
@@ -80,8 +80,8 @@ TaskBlendSW::run(RunParams & /* params */) const
 	if (rb.valid())
 	{
 		synfig::Surface::alpha_pen ap(c.get_pen(
-			rb.minx + offset_b[0],
-			rb.miny + offset_b[1] ));
+			target_rect.minx + rb.minx + offset_b[0],
+			target_rect.miny + rb.miny + offset_b[1] ));
 		ap.set_blend_method(blend_method);
 		ap.set_alpha(amount);
 		const_cast<synfig::Surface*>(&b)->blit_to(

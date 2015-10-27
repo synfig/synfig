@@ -91,7 +91,6 @@ OptimizerComposite::run(const RunParams& params) const
 			{
 				if (blend->sub_task_a()->target_surface == blend->target_surface)
 				{
-					assert(blend->offset_a[0] == 0 && blend->offset_a[1] == 0);
 					apply(params, blend->sub_task_a());
 					run(params);
 					return;
@@ -116,11 +115,15 @@ OptimizerComposite::run(const RunParams& params) const
 		{
 			Task::Handle task_a = blend->sub_task_a()->clone();
 			task_a->target_surface = blend->target_surface;
-			task_a->target_rect += blend->offset_a;
+			task_a->target_rect +=
+				VectorInt(blend->target_rect.minx, blend->target_rect.miny)
+			  + blend->offset_a;
 
 			Task::Handle task_b = blend->sub_task_b()->clone();
 			task_b->target_surface = blend->target_surface;
-			task_b->target_rect += blend->offset_b;
+			task_b->target_rect +=
+				VectorInt(blend->target_rect.minx, blend->target_rect.miny)
+			  + blend->offset_b;
 
 			composite = task_b.type_pointer<TaskComposite>();
 			composite->blend = true;
@@ -162,7 +165,7 @@ OptimizerComposite::run(const RunParams& params) const
 
 					RectInt rect_a = task_a->target_rect + offset_a;
 					RectInt rect_b = task_b->target_rect + offset_b;
-					RectInt rect_c = task_c->target_rect + offset_c;
+					//RectInt rect_c = task_c->target_rect + offset_c;
 
 					Surface::Handle surface = blend->target_surface;
 					Surface::Handle sub_surface = sub_blend->target_surface;
