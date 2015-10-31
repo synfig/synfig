@@ -76,6 +76,7 @@ private:
 	static void deinitialize_renderers();
 
 public:
+	int get_max_simultaneous_threads() const;
 	void optimize(Task::List &list) const;
 	bool run(const Task::List &list) const;
 

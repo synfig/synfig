@@ -63,7 +63,7 @@ using namespace rendering;
 //#define DEBUG_TASK_SURFACE
 //#define DEBUG_OPTIMIZATION
 //#define DEBUG_THREAD_TASK
-//#define DEBUG_THREAD_WAIT
+#define DEBUG_THREAD_WAIT
 #endif
 
 
@@ -200,12 +200,12 @@ private:
 				}
 				#ifdef DEBUG_THREAD_WAIT
 				if (queue_empty && (thread_index == 0) == i->type_is<TaskGL>())
-					queue_empty = true;
+					queue_empty = false;
 				#endif
 			}
 
 			#ifdef DEBUG_THREAD_WAIT
-			if (queue_empty)
+			if (!queue_empty)
 				info("thread %d: rendering wait for task", thread_index);
 			#endif
 
@@ -225,6 +225,11 @@ public:
 	Queue(): started(false) { start(); }
 	~Queue() { stop(); }
 
+	int get_threads_count() const
+	{
+		return threads.size();
+	}
+
 	void enqueue(const Task::Handle &task, const Task::RunParams &params)
 	{
 		if (!task) return;
@@ -241,12 +246,22 @@ public:
 			if (*i) { fix_task(**i, params); ++count; }
 		if (!count) return;
 		Glib::Threads::Mutex::Lock lock(mutex);
+		int glsignals = 0;
+		int signals = 0;
+		int threads = get_threads_count() - 1;
 		for(Task::List::const_iterator i = tasks.begin(); i != tasks.end(); ++i)
 		{
 			if (*i)
 			{
 				queue.push_back(*i);
-				(i->type_is<TaskGL>() ? condgl : cond).signal();
+				if (i->type_is<TaskGL>())
+				{
+					if (glsignals < 1) { condgl.signal(); ++glsignals; }
+				}
+				else
+				{
+					if (signals < threads) { cond.signal(); ++signals; }
+				}
 			}
 		}
 	}
@@ -282,6 +297,13 @@ Renderer::deinitialize_renderers()
 
 
 Renderer::~Renderer() { }
+
+int
+Renderer::get_max_simultaneous_threads() const
+{
+	assert(queue);
+	return queue->get_threads_count() - 1;
+}
 
 bool
 Renderer::is_optimizer_registered(const Optimizer::Handle &optimizer) const
@@ -540,15 +562,17 @@ Renderer::run(const Task::List &list) const
 			(*i)->index = i - optimized_list.begin() + 1;
 			(*i)->deps.clear();
 			for(Task::List::const_iterator j = (*i)->sub_tasks.begin(); j != (*i)->sub_tasks.end(); ++j)
-				if (*j)
+				if (*j && (*j)->target_rect.valid())
 					for(Task::List::const_reverse_iterator rk(i); rk != optimized_list.rend(); ++rk)
 						if ( (*j)->target_surface == (*rk)->target_surface
+						  && (*rk)->target_rect.valid()
 						  && etl::intersect((*j)->target_rect, (*rk)->target_rect) )
-							{ (*i)->deps.push_back(*rk); break; }
-			for(Task::List::const_reverse_iterator rk(i); rk != optimized_list.rend(); ++rk)
-				if ( (*i)->target_surface == (*rk)->target_surface
-				  && etl::intersect((*i)->target_rect, (*rk)->target_rect) )
-					{ (*i)->deps.push_back(*rk); break; }
+							{ (*i)->deps.push_back(*rk); }
+			if ((*i)->target_rect.valid())
+				for(Task::List::const_reverse_iterator rk(i); rk != optimized_list.rend(); ++rk)
+					if ( (*i)->target_surface == (*rk)->target_surface
+					  && etl::intersect((*i)->target_rect, (*rk)->target_rect) )
+						{ (*i)->deps.push_back(*rk); }
 		}
 	}
 

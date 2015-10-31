@@ -32,6 +32,7 @@
 #include "tasksw.h"
 #include "../../common/task/taskcontour.h"
 #include "../../common/task/taskcomposite.h"
+#include "../../common/task/tasksplittable.h"
 #include "../../primitive/contour.h"
 #include "../../primitive/polyspan.h"
 
@@ -46,11 +47,12 @@ namespace synfig
 namespace rendering
 {
 
-class TaskContourSW: public TaskContour, public TaskSW, public TaskComposite
+class TaskContourSW: public TaskContour, public TaskSW, public TaskComposite, public TaskSplittable
 {
 public:
 	typedef etl::handle<TaskContourSW> Handle;
 	Task::Handle clone() const { return clone_pointer(this); }
+	virtual void split(const RectInt &sub_target_rect);
 	virtual bool run(RunParams &params) const;
 
 	virtual Rect calc_bounds() const { return Rect::infinite(); }

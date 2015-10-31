@@ -38,6 +38,7 @@
 #include "taskcontoursw.h"
 
 #include "../surfacesw.h"
+#include "../../optimizer.h"
 
 #include <synfig/debug/debugsurface.h>
 
@@ -334,6 +335,12 @@ TaskContourSW::render_contour(
 		color,
 		opacity,
 		blend_method );
+}
+
+void
+TaskContourSW::split(const RectInt &sub_target_rect)
+{
+	Optimizer::apply_target_bounds(*this, sub_target_rect);
 }
 
 bool

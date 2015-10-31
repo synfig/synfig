@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/software/task/taskblendsw.h
-**	\brief TaskBlendSW Header
+/*!	\file synfig/rendering/common/task/tasksplittable.h
+**	\brief TaskSplittable Header
 **
 **	$Id$
 **
@@ -22,14 +22,10 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_RENDERING_TASKBLENDSW_H
-#define __SYNFIG_RENDERING_TASKBLENDSW_H
+#ifndef __SYNFIG_RENDERING_TASKSPLITTABLE_H
+#define __SYNFIG_RENDERING_TASKSPLITTABLE_H
 
 /* === H E A D E R S ======================================================= */
-
-#include "tasksw.h"
-#include "../../common/task/taskblend.h"
-#include "../../common/task/tasksplittable.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -42,13 +38,13 @@ namespace synfig
 namespace rendering
 {
 
-class TaskBlendSW: public TaskBlend, public TaskSW, public TaskSplittable
+class TaskSplittable
 {
 public:
-	typedef etl::handle<TaskBlendSW> Handle;
-	Task::Handle clone() const { return clone_pointer(this); }
-	virtual void split(const RectInt &sub_target_rect);
-	virtual bool run(RunParams &params) const;
+	bool splitted;
+	TaskSplittable(): splitted(false) { }
+	virtual void split(const RectInt &sub_target_rect) = 0;
+	virtual ~TaskSplittable() { }
 };
 
 } /* end namespace rendering */

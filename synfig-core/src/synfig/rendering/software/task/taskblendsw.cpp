@@ -39,6 +39,7 @@
 
 #include "taskblendsw.h"
 #include "../surfacesw.h"
+#include "../../optimizer.h"
 
 #endif
 
@@ -53,6 +54,17 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
+void
+TaskBlendSW::split(const RectInt &sub_target_rect)
+{
+	RectInt prev_target_rect = target_rect;
+	Optimizer::apply_target_bounds(*this, sub_target_rect);
+	offset_a[0] += prev_target_rect.minx - target_rect.minx;
+	offset_a[1] += prev_target_rect.miny - target_rect.miny;
+	offset_b[0] += prev_target_rect.minx - target_rect.minx;
+	offset_b[1] += prev_target_rect.miny - target_rect.miny;
+}
+
 bool
 TaskBlendSW::run(RunParams & /* params */) const
 {
@@ -66,26 +78,38 @@ TaskBlendSW::run(RunParams & /* params */) const
 	//debug::DebugSurface::save_to_file(a, "TaskBlendSW__run__a");
 	//debug::DebugSurface::save_to_file(b, "TaskBlendSW__run__b");
 
-	RectInt ra = sub_task_a()->target_rect;
-	if (ra.valid() && &a != &c)
+	RectInt r = target_rect - VectorInt(target_rect.minx, target_rect.miny);
+	if (r.valid())
 	{
-		synfig::Surface::pen p = c.get_pen(
-			target_rect.minx + ra.minx + offset_a[0],
-			target_rect.miny + ra.miny + offset_a[1] );
-		const_cast<synfig::Surface*>(&a)->blit_to(
-			p, ra.minx, ra.miny, ra.maxx - ra.minx, ra.maxy - ra.miny );
-	}
+		RectInt ra = sub_task_a()->target_rect;
+		if (ra.valid() && &a != &c)
+		{
+			etl::set_intersect(ra, ra, r - offset_a);
+			if (ra.valid())
+			{
+				synfig::Surface::pen p = c.get_pen(
+					target_rect.minx + ra.minx + offset_a[0],
+					target_rect.miny + ra.miny + offset_a[1] );
+				const_cast<synfig::Surface*>(&a)->blit_to(
+					p, ra.minx, ra.miny, ra.maxx - ra.minx, ra.maxy - ra.miny );
+			}
+		}
 
-	RectInt rb = sub_task_b()->target_rect;
-	if (rb.valid())
-	{
-		synfig::Surface::alpha_pen ap(c.get_pen(
-			target_rect.minx + rb.minx + offset_b[0],
-			target_rect.miny + rb.miny + offset_b[1] ));
-		ap.set_blend_method(blend_method);
-		ap.set_alpha(amount);
-		const_cast<synfig::Surface*>(&b)->blit_to(
-			ap, rb.minx, rb.miny, rb.maxx - rb.minx, rb.maxy - rb.miny );
+		RectInt rb = sub_task_b()->target_rect;
+		if (rb.valid())
+		{
+			etl::set_intersect(rb, rb, r - offset_b);
+			if (rb.valid())
+			{
+				synfig::Surface::alpha_pen ap(c.get_pen(
+					target_rect.minx + rb.minx + offset_b[0],
+					target_rect.miny + rb.miny + offset_b[1] ));
+				ap.set_blend_method(blend_method);
+				ap.set_alpha(amount);
+				const_cast<synfig::Surface*>(&b)->blit_to(
+					ap, rb.minx, rb.miny, rb.maxx - rb.minx, rb.maxy - rb.miny );
+			}
+		}
 	}
 
 	//debug::DebugSurface::save_to_file(c, "TaskBlendSW__run__c");

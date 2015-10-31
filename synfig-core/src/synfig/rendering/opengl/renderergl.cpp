@@ -44,6 +44,7 @@
 #include "../common/optimizer/optimizercalcbounds.h"
 #include "../common/optimizer/optimizercomposite.h"
 #include "../common/optimizer/optimizerlinear.h"
+#include "../common/optimizer/optimizersplit.h"
 #include "../common/optimizer/optimizersurface.h"
 #include "../common/optimizer/optimizersurfaceconvert.h"
 #include "../common/optimizer/optimizersurfacecreate.h"
@@ -89,6 +90,7 @@ RendererGL::RendererGL()
 
 	register_optimizer(new OptimizerLinear());
 	register_optimizer(new OptimizerSurfaceCreate());
+	register_optimizer(new OptimizerSplit());
 }
 
 RendererGL::~RendererGL() { }
