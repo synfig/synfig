@@ -155,20 +155,20 @@ set_environment()
 	else
 		export LD_PRELOAD=/${LIBDIR}/libc.so.6:/${LIBDIR}/libpthread.so.0:/${LIBDIR}/libdl.so.2
 	fi
-	export LD_LIBRARY_PATH=${PREFIX}/lib:${DEPSPREFIX}/lib:${SYSPREFIX}/${LIBDIR}:${SYSPREFIX}/usr/${LIBDIR}
+	export LD_LIBRARY_PATH=${PREFIX}/lib:${DEPSPREFIX}/lib:${SYSPREFIX}/${LIBDIR}:${SYSPREFIX}/usr/lib:${SYSPREFIX}/lib/x86_64-linux-gnu:${SYSPREFIX}/usr/lib/x86_64-linux-gnu
 	
-	export PATH=${PREFIX}/bin:${DEPSPREFIX}/bin:${SYSPREFIX}/bin:${SYSPREFIX}/usr/bin
-	export LDFLAGS="-Wl,-rpath -Wl,\\\$\$ORIGIN/lib -L${PREFIX}/lib -L${DEPSPREFIX}/lib -L${SYSPREFIX}/${LIBDIR} -L${SYSPREFIX}/usr/${LIBDIR}"
+	export PATH=${DEPSPREFIX}/bin:${PREFIX}/bin:${SYSPREFIX}/bin:${SYSPREFIX}/usr/bin
+	export LDFLAGS="-Wl,-rpath -Wl,\\\$\$ORIGIN/lib -L${PREFIX}/lib -L${DEPSPREFIX}/lib -L${SYSPREFIX}/${LIBDIR} -L${SYSPREFIX}/usr/${LIBDIR} -L${SYSPREFIX}/lib/x86_64-linux-gnu/ -L${SYSPREFIX}/usr/lib/x86_64-linux-gnu/"
 	#export CFLAGS=" -nostdinc  -I${SYSPREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.3.2/include -I${SYSPREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.3.2/include-fixed  -I${PREFIX}/include  -I${DEPSPREFIX}/include -I${SYSPREFIX}/usr/include"
-	GCC_VER=4.4
-	export CFLAGS="-I${SYSPREFIX}/usr/include -I${PREFIX}/include -I${SYSPREFIX}/usr/include/${GCC_ARCH}-linux-gnu" 
+	GCC_VER=4.7
+	export CPPFLAGS="-I${SYSPREFIX}/usr/include -I${DEPSPREFIX}/include -I${PREFIX}/include -I${SYSPREFIX}/usr/include/${GCC_ARCH}-linux-gnu" 
 	#export CXXFLAGS="-I${SYSPREFIX}/usr/include/linux/  -I${SYSPREFIX}/usr/include/c++/${GCC_VER}/ -I${SYSPREFIX}/usr/include/c++/${GCC_VER}/${GCC_ARCH}-linux-gnu/ -I${SYSPREFIX}/usr/lib/gcc/${GCC_ARCH}-linux-gnu/${GCC_VER}/include/ -I${SYSPREFIX}/usr/lib/gcc/${GCC_ARCH}-linux-gnu/${GCC_VER}/include-fixed/  -I${SYSPREFIX}/usr/${GCC_ARCH}-linux-gnu/include"
 	#export CXXFLAGS="-I${SYSPREFIX}/usr/local/include/x86_64-linux-gnu -I${SYSPREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.4.5/include -I${SYSPREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.4.5/include-fixed -I${SYSPREFIX}/usr/lib/gcc/../../x86_64-linux-gnu/include -I${SYSPREFIX}/usr/include/x86_64-linux-gnu"
 	#export CXXFLAGS=" -nostdinc   -I${SYSPREFIX}/usr/lib/gcc/../../include/c++/4.3  -I${SYSPREFIX}/usr/lib/gcc/../../include/c++/4.3/x86_64-linux-gnu -I${SYSPREFIX}/usr/lib/gcc/../../include/c++/4.3/backward -I${SYSPREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.3.2/include -I${SYSPREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.3.2/include-fixed -I${PREFIX}/include  -I${DEPSPREFIX}/include -I${SYSPREFIX}/usr/include"
-	export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:${DEPSPREFIX}/lib/pkgconfig:${SYSPREFIX}/usr/lib/pkgconfig:${SYSPREFIX}/usr/share/pkgconfig:${SYSPREFIX}/usr/lib/${HOST2}/pkgconfig
-	PERL_VERSION=`perl -v | grep "This is perl" | sed "s|This is perl, v||g" | cut -f 1 -d " "`
+	export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:${DEPSPREFIX}/lib/pkgconfig:${SYSPREFIX}/usr/lib/pkgconfig:${SYSPREFIX}/usr/lib/x86_64-linux-gnu/pkgconfig:${SYSPREFIX}/usr/share/pkgconfig
+	PERL_VERSION=`perl -v | grep "This is perl" | sed "s|This is perl .*(v||g" | sed "s|).*||"`
 	export NM=nm
-	export PERL5LIB="${SYSPREFIX}/etc/perl:${DEPSPREFIX}/lib/perl/${PERL_VERSION}:${DEPSPREFIX}/share/perl/${PERL_VERSION}:${SYSPREFIX}/usr/lib/perl5:${SYSPREFIX}/usr/share/perl5:${SYSPREFIX}/usr/lib/perl/${PERL_VERSION}:${SYSPREFIX}/usr/share/perl/${PERL_VERSION}:${DEPSPREFIX}/lib/site_perl"
+	export PERL5LIB="${SYSPREFIX}/etc/perl:${SYSPREFIX}/usr/share/automake-1.11:${DEPSPREFIX}/lib/perl/${PERL_VERSION}:${DEPSPREFIX}/share/perl/${PERL_VERSION}:${SYSPREFIX}/usr/lib/perl5:${SYSPREFIX}/usr/share/perl5:${SYSPREFIX}/usr/lib/perl/${PERL_VERSION}:${SYSPREFIX}/usr/share/perl/${PERL_VERSION}:${DEPSPREFIX}/lib/site_perl"
 	if [[ $ARCH == "32" ]]; then
 		export CFLAGS="$CFLAGS -m32"
 		export CXXFLAGS="$CXXFLAGS -m32"
@@ -235,13 +235,15 @@ mkprefix()
 			libdbus-1-dev \
 			wget mawk \
 			python-dev \
-			libpciaccess-dev libx11-xcb-dev \
+			gettext \
+			libpciaccess-dev  multiarch-support libx11-xcb-dev \
 			libudev-dev \
-			x11proto-gl-dev x11proto-dri2-dev \
+			x11proto-gl-dev \
 			bzip2"
 			
-			#libxshmfence-dev 
-			#libgl1-mesa-dev \
+			#autoconf automake m4 autopoint \
+			#libtool intltool gettext \
+			# libgl1-mesa-dev \
 			#llvm-dev \
 	
 	INCLUDE_LIST=""
@@ -257,7 +259,7 @@ mkprefix()
 		fakeroot fakechroot \
 		debootstrap --variant=fakechroot --download-only --keep-debootstrap-dir --arch=$SYS_ARCH \
 		--include=$INCLUDE_LIST \
-		squeeze ${SYSPREFIX} http://ftp.ru.debian.org/debian #http://archive.debian.org/debian
+		wheezy ${SYSPREFIX} http://ftp.ru.debian.org/debian #http://archive.debian.org/debian
 
 	#LD_LIBRARY_PATH=${UBUNTU_LIBDIR}:/${LIBDIR}:${SYSPREFIX}/usr/${LIBDIR} PATH=/usr/local/sbin:/usr/sbin:/sbin:/sbin:/bin:/usr/bin:${SYSPREFIX}/usr/sbin:${SYSPREFIX}/sbin:${SYSPREFIX}/usr/bin:${SYSPREFIX}/bin:$PATH HOME=/ LOGNAME=root fakeroot fakechroot debootstrap --variant=fakechroot --arch=$SYS_ARCH --foreign --keep-debootstrap-dir --include=sudo --include=apt lenny ${SYSPREFIX} http://archive.debian.org/debian
 	
@@ -265,15 +267,17 @@ mkprefix()
 	
 	pushd ${SYSPREFIX}/var/cache/apt/archives/
 	
-	wget -c http://repo.asis.io/squeeze-updates/pool/main/libx/libxshmfence/libxshmfence-dev_1.2-1_amd64.deb
+	wget -c http://repo.asis.io/wheezy-updates/pool/main/libx/libxshmfence/libxshmfence-dev_1.2-1_amd64.deb
 
-	wget -c http://repo.asis.io/squeeze-updates/pool/main/libx/libxshmfence/libxshmfence1_1.2-1_amd64.deb
+	wget -c http://repo.asis.io/wheezy-updates/pool/main/libx/libxshmfence/libxshmfence1_1.2-1_amd64.deb
 	
-	wget -c http://repo.asis.io/squeeze-updates/pool/main/x/x11proto-gl/x11proto-gl-dev_1.4.17-1_all.deb
-	wget -c  http://repo.asis.io/squeeze-updates/pool/main/x/x11proto-dri2/x11proto-dri2-dev_2.8-2_all.deb
 	wget -c http://repo.asis.io/squeeze-updates/pool/main/x/x11proto-dri3/x11proto-dri3-dev_1.0-1_all.deb
 	
 	popd
+
+	#touch /home/zelgadis/synfig-buildroot/linux64/sys.off/var/lib/dpkg/status
+
+	#fakeroot dpkg --log=/home/zelgadis/synfig-buildroot/linux64/sys.off/var/log/dpkg.log --unpack --force-not-root --root=/home/zelgadis/synfig-buildroot/linux64/sys.off --ignore-depends=multiarch-support,libc6 ./libxshmfence-dev_1.2-1_amd64.deb  ./libxshmfence1_1.2-1_amd64.deb 
 
 	for file in `ls -1 ${SYSPREFIX}/var/cache/apt/archives/*.deb`; do
 		echo $file
@@ -318,6 +322,13 @@ elif [[ `cat ${SYSPREFIX}/etc/chroot.id` != "Synfig Buildroot v${BUILDROOT_VERSI
 	mkprefix
 fi
 
+mkprepconf
+
+}
+
+mkprepconf()
+{
+
 #[ ! -e ${SYSPREFIX}/lib-native ] || rm -rf ${SYSPREFIX}/lib-native
 #mkdir -p ${SYSPREFIX}/lib-native
 #for file in libc.so.6 libpthread.so.0 ; do
@@ -325,27 +336,41 @@ fi
 #done
 
 ln -sf ${SYSPREFIX}/usr/bin/mawk ${SYSPREFIX}/usr/bin/awk
+ln -sf ${SYSPREFIX}/usr/bin/aclocal-1.11 ${SYSPREFIX}/usr/bin/aclocal
 	
 # Patching libraries ...
 for lib in libc libpthread; do
-	sed -i "s| /lib/| ${SYSPREFIX}/lib/|g" ${SYSPREFIX}/usr/lib/$lib.so
-	sed -i "s| /usr/lib/| ${SYSPREFIX}/usr/lib/|g" ${SYSPREFIX}/usr/lib/$lib.so
+	sed -i "s| /lib/| ${SYSPREFIX}/lib/|g" ${SYSPREFIX}/usr/lib/x86_64-linux-gnu/$lib.so
+	sed -i "s| /usr/lib/| ${SYSPREFIX}/usr/lib/|g" ${SYSPREFIX}/usr/lib/x86_64-linux-gnu/$lib.so
 done
+
+sed -i "s|prefix=\"/usr\"|prefix=\"${SYSPREFIX}/usr\"|g" ${SYSPREFIX}/usr/bin/autopoint
+
+#sed -i "s|@automake_includes = (\"/usr/share/aclocal|@automake_includes = (\"${SYSPREFIX}/usr/share/aclocal|g" ${SYSPREFIX}/usr/bin/aclocal-1.11
+#sed -i "s|p@system_includes = ('/usr/share/aclocal')|@system_includes = ('${SYSPREFIX}/usr/share/aclocal')|g" ${SYSPREFIX}/usr/bin/aclocal-1.11
+
 for file in `find ${SYSPREFIX}/usr/lib/pkgconfig/ -type f -name "*.pc"`; do
-	sed -i "s|prefix=/usr|prefix=${SYSPREFIX}/usr|g" ${file}
+	sed -i "s|=/usr|=${SYSPREFIX}/usr|g" ${file}
+done
+for file in `find ${SYSPREFIX}/usr/lib/x86_64-linux-gnu/pkgconfig/ -type f -name "*.pc"`; do
+	sed -i "s|=/usr|=${SYSPREFIX}/usr|g" ${file}
 done
 for file in `find ${SYSPREFIX}/usr/bin/ -type f -name "*-config"`; do
-	sed -i "s|prefix=/usr|prefix=${SYSPREFIX}/usr|g" ${file}
+	sed -i "s|=/usr|=${SYSPREFIX}/usr|g" ${file}
 done
 for file in `find ${SYSPREFIX}/usr/lib/ -type f -name "*.la"`; do
-	sed -i "s|libdir='/usr/lib'|libdir='${SYSPREFIX}/usr/lib'|g" ${file}
+	sed -i "s|libdir='/usr/lib|libdir='${SYSPREFIX}/usr/lib|g" ${file}
+	sed -i "s| /usr/lib| ${SYSPREFIX}/usr/lib|g" ${file}
+done
+for file in `find ${SYSPREFIX}/usr/lib/x86_64-linux-gnu/ -type f -name "*.la"`; do
+	sed -i "s|libdir='/usr/lib|libdir='${SYSPREFIX}/usr/lib|g" ${file}
 	sed -i "s| /usr/lib| ${SYSPREFIX}/usr/lib|g" ${file}
 done
 
-sed -i "s|#! /usr/bin/python2.6|#!${SYSPREFIX}/usr/bin/python2.6|g" ${SYSPREFIX}/usr/bin/python2.6-config
+sed -i "s|#! /usr/bin/python2.7|#!${SYSPREFIX}/usr/bin/python2.7|g" ${SYSPREFIX}/usr/bin/python2.7-config
 
 # Fixing symlinks
-if [[ $ARCH == 64 ]]; then
+if [[ $ARCH == 64off ]]; then
 	rm ${SYSPREFIX}/lib64
 	rm ${SYSPREFIX}/usr/lib64
 	ln -sf ${SYSPREFIX}/lib ${SYSPREFIX}/lib64
@@ -368,14 +393,14 @@ ln -sf ${SYSPREFIX}/usr/bin/gcc ${SYSPREFIX}/usr/bin/cc
 
 [ -e "${PREFIX}/lib" ] || mkdir -p ${PREFIX}/lib
 #cp ${SYSPREFIX}/usr/lib/libltdl* ${PREFIX}/lib/
-cp ${SYSPREFIX}/usr/lib/libpng12* ${PREFIX}/lib/
-cp ${SYSPREFIX}/usr/lib/libdb-4*.so ${PREFIX}/lib/
-cp ${SYSPREFIX}/lib/libpcre.so* ${PREFIX}/lib/
-cp ${SYSPREFIX}/usr/lib/libffi*.so* ${PREFIX}/lib
+cp ${SYSPREFIX}/lib/x86_64-linux-gnu/libpng12* ${PREFIX}/lib/
+cp ${SYSPREFIX}/usr/lib/x86_64-linux-gnu/libdb-5*.so ${PREFIX}/lib/
+cp ${SYSPREFIX}/lib/x86_64-linux-gnu/libpcre.so* ${PREFIX}/lib/
+cp ${SYSPREFIX}/usr/lib/x86_64-linux-gnu/libffi*.so* ${PREFIX}/lib
 # SDL deps
-cp ${SYSPREFIX}/usr/lib/libdirect-*.so* ${PREFIX}/lib/
-cp ${SYSPREFIX}/usr/lib/libdirectfb-*.so* ${PREFIX}/lib/
-cp ${SYSPREFIX}/usr/lib/libfusion*.so* ${PREFIX}/lib/
+cp ${SYSPREFIX}/usr/lib/x86_64-linux-gnu/libdirect-*.so* ${PREFIX}/lib/
+cp ${SYSPREFIX}/usr/lib/x86_64-linux-gnu/libdirectfb-*.so* ${PREFIX}/lib/
+cp ${SYSPREFIX}/usr/lib/x86_64-linux-gnu/libfusion*.so* ${PREFIX}/lib/
 
 #RANDOM_SYSPREFIX=`tr -cd '[:alnum:]' < /dev/urandom | fold -w8 | head -n1`
 #DATE=`date +%s`
@@ -387,19 +412,45 @@ cp ${SYSPREFIX}/usr/lib/libfusion*.so* ${PREFIX}/lib/
 
 [ -e ${DEPSPREFIX}/bin ] || mkdir -p ${DEPSPREFIX}/bin
 
-cat > ${DEPSPREFIX}/bin/gcc-- <<EOF
+cat > ${DEPSPREFIX}/bin/gcc <<EOF
 #!/bin/sh
 
-${SYSPREFIX}/usr/bin/gcc -nostdinc -I${SYSPREFIX}/usr/lib/gcc/${GCC_ARCH}-linux-gnu/4.3.2/include -I${SYSPREFIX}/usr/lib/gcc/${GCC_ARCH}-linux-gnu/4.3.2/include-fixed -I${PREFIX}/include  -I${DEPSPREFIX}/include -I${SYSPREFIX}/usr/include  "\$@"
-EOF
-#chmod a+x  ${DEPSPREFIX}/bin/gcc
+#${SYSPREFIX}/usr/bin/gcc -nostdinc -I${SYSPREFIX}/usr/lib/gcc/${GCC_ARCH}-linux-gnu/4.3.2/include -I${SYSPREFIX}/usr/lib/gcc/${GCC_ARCH}-linux-gnu/4.3.2/include-fixed -I${PREFIX}/include  -I${DEPSPREFIX}/include -I${SYSPREFIX}/usr/include  "\$@"
 
-cat > ${DEPSPREFIX}/bin/g++-- <<EOF
+${SYSPREFIX}/usr/bin/gcc --sysroot=${SYSPREFIX} "\$@"
+
+EOF
+chmod a+x  ${DEPSPREFIX}/bin/gcc
+
+cat > ${DEPSPREFIX}/bin/g++ <<EOF
 #!/bin/sh
 
-${SYSPREFIX}/usr/bin/g++ -nostdinc   -I${SYSPREFIX}/usr/lib/gcc/../../include/c++/4.3  -I${SYSPREFIX}/usr/lib/gcc/../../include/c++/4.3/${GCC_ARCH}-linux-gnu -I${SYSPREFIX}/usr/lib/gcc/../../include/c++/4.3/backward -I${SYSPREFIX}/usr/lib/gcc/${GCC_ARCH}-linux-gnu/4.3.2/include -I${SYSPREFIX}/usr/lib/gcc/${GCC_ARCH}-linux-gnu/4.3.2/include-fixed -I${PREFIX}/include  -I${DEPSPREFIX}/include -I${SYSPREFIX}/usr/include "\$@"
+#${SYSPREFIX}/usr/bin/g++ -nostdinc   -I${SYSPREFIX}/usr/lib/gcc/../../include/c++/4.3  -I${SYSPREFIX}/usr/lib/gcc/../../include/c++/4.3/${GCC_ARCH}-linux-gnu -I${SYSPREFIX}/usr/lib/gcc/../../include/c++/4.3/backward -I${SYSPREFIX}/usr/lib/gcc/${GCC_ARCH}-linux-gnu/4.3.2/include -I${SYSPREFIX}/usr/lib/gcc/${GCC_ARCH}-linux-gnu/4.3.2/include-fixed -I${PREFIX}/include  -I${DEPSPREFIX}/include -I${SYSPREFIX}/usr/include "\$@"
+
+${SYSPREFIX}/usr/bin/g++ --sysroot=${SYSPREFIX} "\$@"
 EOF
-#chmod a+x  ${DEPSPREFIX}/bin/g++
+chmod a+x  ${DEPSPREFIX}/bin/g++ || true
+
+cat > ${DEPSPREFIX}/bin/synfig-- <<EOF
+#!/bin/sh
+
+#if [ -d ${DEPSPREFIX} ]; then
+#mv ${DEPSPREFIX} ${DEPSPREFIX}.off
+#fi
+
+LD_PRELOAD=""
+LD_LIBRARY_PATH=""
+PATH="/usr/local/bin/:/usr/sbin:/usr/bin:/bin"
+LDFLAGS=""
+CFLAGS=""
+CXXFLAGS=""
+PKG_CONFIG_PATH=""
+PERL5LIB=""
+
+${SYSPREFIX}/usr/bin/synfig "\$@"
+EOF
+#chmod a+x  ${DEPSPREFIX}/bin/synfig || true
+
 
 cat > ${DEPSPREFIX}/bin/rsync <<EOF
 #!/bin/sh
@@ -523,6 +574,7 @@ if [ ! -f ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done ]; then
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
 	[ ! -e config.cache ] || rm config.cache
+	
 	./configure --build=${HOST} --prefix=${PREFIX}/ \
 		--disable-static --enable-shared
 	make -j${THREADS}
@@ -1449,6 +1501,7 @@ if [ ! -f ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done ]; then
 		--with-dri-drivers="swrast" \
 		--disable-static --enable-shared
 		
+#		 \
 #		--disable-egl \
 
 	make -j${THREADS}
@@ -1459,8 +1512,6 @@ if [ ! -f ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done ]; then
 	touch ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done
 fi
 }
-
-
 
 mkcairomm()
 {
@@ -1549,6 +1600,7 @@ if [ ${PREFIX} != ${DEPSPREFIX} ]; then
 fi
 }
 
+# TODO: remove?
 mkm4()
 {
 PKG_NAME=m4
@@ -1571,6 +1623,7 @@ fi
 
 }
 
+# TODO: remove?
 mkautoconf()
 {
 PKG_NAME=autoconf
@@ -1592,6 +1645,7 @@ if [ ! -e ${DEPSPREFIX}/bin/autoconf ]; then
 fi
 }
 
+# TODO: remove?
 mkautomake()
 {
 PKG_NAME=automake
@@ -1613,6 +1667,7 @@ if [ ! -e ${DEPSPREFIX}/bin/automake ]; then
 fi
 }
 
+# TODO: remove?
 mklibtool()
 {
 PKG_NAME=libtool
@@ -1654,6 +1709,7 @@ fi
 PATH="$PATH_BAK"
 }
 
+# TODO: remove?
 mkintltool()
 {
 PKG_NAME=intltool
@@ -1675,11 +1731,12 @@ fi
 
 }
 
+# TODO: remove?
 mkgettext()
 {
 
 PKG_NAME=gettext
-PKG_VERSION="0.17"
+PKG_VERSION="0.19.6"
 TAREXT=gz
 
 mkdir -p $SYSPREFIX/tmp/gettext-bin || true
@@ -1783,6 +1840,13 @@ mv ${DEPSPREFIX}.off ${DEPSPREFIX}
 cd ..
 
 make -j${THREADS} install
+
+#for DIR in build_tools src plugins po brushes; do
+#cd $DIR
+#make -j${THREADS}
+#make -j${THREADS} install
+#cd ..
+#done
 
 }
 
@@ -2097,7 +2161,6 @@ Package: synfigstudio
 Provides: synfig
 Recommends: synfig-examples
 Architecture: any
-Depends: \${shlibs:Depends}
 Description: Film-Quality 2D Vector Animation package
  Synfig Animation Studio is a powerful, industrial-strength vector-based
  2D animation software, designed from the ground-up for producing
@@ -2253,7 +2316,7 @@ mkall()
 	mkautomake
 	mklibtool
 	mkintltool
-	mkgettext
+	#mkgettext
 	
 	# system libraries
 	mklibjpeg
@@ -2309,6 +2372,7 @@ do_cleanup()
 		[ ! -e ${DEPSPREFIX} ] || mv ${DEPSPREFIX} ${DEPSPREFIX}.off
 	fi
 	[ ! -e ${SYSPREFIX} ] || mv ${SYSPREFIX} ${SYSPREFIX}.off
+
 	exit
 }
 
@@ -2324,6 +2388,7 @@ else
 	echo "Executing custom user command..."
 	#mkprep
 	set_environment
+
 
 	$@
 fi
