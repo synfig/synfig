@@ -33,7 +33,9 @@
 #include "antialiasing.h"
 #include "buffers.h"
 #include "context.h"
+#ifdef WITH_OPENCL
 #include "clcontext.h"
+#endif
 #include "framebuffers.h"
 #include "misc.h"
 #include "samplers.h"
@@ -59,7 +61,9 @@ private:
 
 public:
 	Context context;
-	//ClContext clcontext;
+#ifdef WITH_OPENCL
+	ClContext clcontext;
+#endif
 	Samplers samplers;
 	Buffers buffers;
 	Shaders shaders;
@@ -69,7 +73,9 @@ public:
 
 	Environment():
 		context(),
-		//clcontext(),
+#ifdef WITH_OPENCL
+		clcontext(),
+#endif
 		samplers(context),
 		buffers(context),
 		shaders(context),

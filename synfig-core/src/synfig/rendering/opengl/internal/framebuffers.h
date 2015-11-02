@@ -32,7 +32,9 @@
 #include <list>
 
 #include "context.h"
+#ifdef WITH_OPENCL
 #include "clcontext.h"
+#endif
 #include "buffers.h"
 #include "shaders.h"
 #include "antialiasing.h"

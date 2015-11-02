@@ -151,8 +151,6 @@ AC_ARG_WITH(ffmpeg,
 AM_CONDITIONAL(WITH_FFMPEG, test $with_ffmpeg = yes)
 
 
-
-
 AC_ARG_WITH(vimage,
 	AS_HELP_STRING(--with-vimage, [support Apple vImage]),[
 ],[
@@ -398,11 +396,24 @@ PKG_CHECK_MODULES(LIBGL, gl,,[
 LIBGL_CFLAGS="$LIBGL_CFLAGS -DGL_GLEXT_PROTOTYPES"
 CONFIG_DEPS="$CONFIG_DEPS gl"
 
-AC_CHECK_HEADER(CL/opencl.h,,AC_MSG_ERROR([ ** You need to install opencl-headers package.]))
-PKG_CHECK_MODULES(LIBCL, OpenCL,,[
-	AC_MSG_ERROR([ ** You need to install OpenCL.])
+AC_ARG_WITH(opencl,
+	AS_HELP_STRING(--with-opencl, [enable OpenCL (default=auto)]),[
+],[
+	with_opencl="no"
 ])
-CONFIG_DEPS="$CONFIG_DEPS OpenCL"
+
+if test $with_opencl != "no" ; then {
+	AC_CHECK_HEADER(CL/opencl.h,,AC_MSG_ERROR([ ** You need to install opencl-headers package.]))
+	PKG_CHECK_MODULES(LIBCL, OpenCL,[
+		CONFIG_DEPS="$CONFIG_DEPS OpenCL"
+		with_opencl="yes"
+	],[
+		AC_MSG_ERROR([ ** You need to install OpenCL.])
+		with_opencl="no"
+	])
+	
+} ; fi
+AM_CONDITIONAL(WITH_OPENCL, test $with_opencl = yes)
 
 PKG_CHECK_MODULES(LIBPANGO, pango pangocairo,[
 	CONFIG_DEPS="$CONFIG_DEPS pango pangocairo"
@@ -766,6 +777,7 @@ vImage ---------------------------> $with_vimage
 ImageMagick ----------------------> $with_imagemagick
 Magick++ -------------------------> $with_magickpp
 FFMPEG ---------------------------> $with_ffmpeg
+OpenCL ---------------------------> $with_opencl
 libdv ----------------------------> $with_libdv
 OpenEXR --------------------------> $with_openexr
 Using OpenEXR's \"half\" type ------> $use_openexr_half
