@@ -99,6 +99,7 @@ if [[ $ARCH == "32" ]]; then
 	export GCC_ARCH=i486
 	export LIBDIR="lib"
 	export HOST=i686-pc-linux-gnu
+	export HOST2=i686-linux-gnu
 	if ( cat /etc/issue | egrep "Ubuntu" ); then
 		export UBUNTU_LIBDIR="/lib/i386-linux-gnu/"
 	fi
@@ -108,6 +109,7 @@ else
 	export GCC_ARCH=x86_64
 	export LIBDIR="lib64"
 	export HOST=x86_64-pc-linux-gnu
+	export HOST2=x86_64-linux-gnu
 	if ( cat /etc/issue | egrep "Ubuntu" ); then
 		export UBUNTU_LIBDIR="/lib/x86_64-linux-gnu/"
 	fi
@@ -163,7 +165,7 @@ set_environment()
 	#export CXXFLAGS="-I${SYSPREFIX}/usr/include/linux/  -I${SYSPREFIX}/usr/include/c++/${GCC_VER}/ -I${SYSPREFIX}/usr/include/c++/${GCC_VER}/${GCC_ARCH}-linux-gnu/ -I${SYSPREFIX}/usr/lib/gcc/${GCC_ARCH}-linux-gnu/${GCC_VER}/include/ -I${SYSPREFIX}/usr/lib/gcc/${GCC_ARCH}-linux-gnu/${GCC_VER}/include-fixed/  -I${SYSPREFIX}/usr/${GCC_ARCH}-linux-gnu/include"
 	#export CXXFLAGS="-I${SYSPREFIX}/usr/local/include/x86_64-linux-gnu -I${SYSPREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.4.5/include -I${SYSPREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.4.5/include-fixed -I${SYSPREFIX}/usr/lib/gcc/../../x86_64-linux-gnu/include -I${SYSPREFIX}/usr/include/x86_64-linux-gnu"
 	#export CXXFLAGS=" -nostdinc   -I${SYSPREFIX}/usr/lib/gcc/../../include/c++/4.3  -I${SYSPREFIX}/usr/lib/gcc/../../include/c++/4.3/x86_64-linux-gnu -I${SYSPREFIX}/usr/lib/gcc/../../include/c++/4.3/backward -I${SYSPREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.3.2/include -I${SYSPREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.3.2/include-fixed -I${PREFIX}/include  -I${DEPSPREFIX}/include -I${SYSPREFIX}/usr/include"
-	export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:${DEPSPREFIX}/lib/pkgconfig:${SYSPREFIX}/usr/lib/pkgconfig:${SYSPREFIX}/usr/share/pkgconfig
+	export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:${DEPSPREFIX}/lib/pkgconfig:${SYSPREFIX}/usr/lib/pkgconfig:${SYSPREFIX}/usr/share/pkgconfig:${SYSPREFIX}/usr/lib/${HOST2}/pkgconfig
 	PERL_VERSION=`perl -v | grep "This is perl" | sed "s|This is perl, v||g" | cut -f 1 -d " "`
 	export NM=nm
 	export PERL5LIB="${SYSPREFIX}/etc/perl:${DEPSPREFIX}/lib/perl/${PERL_VERSION}:${DEPSPREFIX}/share/perl/${PERL_VERSION}:${SYSPREFIX}/usr/lib/perl5:${SYSPREFIX}/usr/share/perl5:${SYSPREFIX}/usr/lib/perl/${PERL_VERSION}:${SYSPREFIX}/usr/share/perl/${PERL_VERSION}:${DEPSPREFIX}/lib/site_perl"
@@ -233,7 +235,14 @@ mkprefix()
 			libdbus-1-dev \
 			wget mawk \
 			python-dev \
+			libpciaccess-dev libx11-xcb-dev \
+			libudev-dev \
+			x11proto-gl-dev x11proto-dri2-dev \
 			bzip2"
+			
+			#libxshmfence-dev 
+			#libgl1-mesa-dev \
+			#llvm-dev \
 	
 	INCLUDE_LIST=""
 	for deb in $DEB_LIST_MINIMAL; do
@@ -253,6 +262,18 @@ mkprefix()
 	#LD_LIBRARY_PATH=${UBUNTU_LIBDIR}:/${LIBDIR}:${SYSPREFIX}/usr/${LIBDIR} PATH=/usr/local/sbin:/usr/sbin:/sbin:/sbin:/bin:/usr/bin:${SYSPREFIX}/usr/sbin:${SYSPREFIX}/sbin:${SYSPREFIX}/usr/bin:${SYSPREFIX}/bin:$PATH HOME=/ LOGNAME=root fakeroot fakechroot debootstrap --variant=fakechroot --arch=$SYS_ARCH --foreign --keep-debootstrap-dir --include=sudo --include=apt lenny ${SYSPREFIX} http://archive.debian.org/debian
 	
 	#LD_LIBRARY_PATH=${UBUNTU_LIBDIR}:/${LIBDIR}:${SYSPREFIX}/usr/${LIBDIR} PATH=/usr/local/sbin:/usr/sbin:/sbin:/sbin:/bin:/usr/bin:${SYSPREFIX}/usr/sbin:${SYSPREFIX}/sbin:${SYSPREFIX}/usr/bin:${SYSPREFIX}/bin:$PATH fakeroot fakechroot linux32 chroot ${SYSPREFIX} #${SYSPREFIX}/debootstrap/debootstrap --second-stage
+	
+	pushd ${SYSPREFIX}/var/cache/apt/archives/
+	
+	wget -c http://repo.asis.io/squeeze-updates/pool/main/libx/libxshmfence/libxshmfence-dev_1.2-1_amd64.deb
+
+	wget -c http://repo.asis.io/squeeze-updates/pool/main/libx/libxshmfence/libxshmfence1_1.2-1_amd64.deb
+	
+	wget -c http://repo.asis.io/squeeze-updates/pool/main/x/x11proto-gl/x11proto-gl-dev_1.4.17-1_all.deb
+	wget -c  http://repo.asis.io/squeeze-updates/pool/main/x/x11proto-dri2/x11proto-dri2-dev_2.8-2_all.deb
+	wget -c http://repo.asis.io/squeeze-updates/pool/main/x/x11proto-dri3/x11proto-dri3-dev_1.0-1_all.deb
+	
+	popd
 
 	for file in `ls -1 ${SYSPREFIX}/var/cache/apt/archives/*.deb`; do
 		echo $file
@@ -918,12 +939,12 @@ fi
 mkimagemagick()
 {
 PKG_NAME=ImageMagick
-PKG_VERSION="${IMAGEMAGICK_VERSION}-8"
-TAREXT=bz2
+PKG_VERSION="${IMAGEMAGICK_VERSION}-10"
+TAREXT=xz
 if [ ! -f ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done ]; then
 	( cd ${WORKSPACE}/cache/ && wget -c http://www.imagemagick.org/download/releases/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
 	pushd ${SRCPREFIX}
-	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xjf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar xf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
 	./configure --host=${HOST} --prefix=${PREFIX} --includedir=${PREFIX}/include \
 		--disable-static --enable-shared \
@@ -1205,7 +1226,7 @@ if [ ! -f ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done ]; then
 	
 	if [ -d ffmpeg ]; then
 	   cd ffmpeg
-	   /usr/bin/git pull
+	   /usr/bin/git fetch
 	   cd ..
 	else
 		/usr/bin/git clone git://source.ffmpeg.org/ffmpeg.git ffmpeg
@@ -1217,6 +1238,8 @@ if [ ! -f ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done ]; then
 	#cd ${PKG_NAME}-${PKG_VERSION}
 	
 	cd ${PKG_NAME}
+	git reset --hard
+	git checkout a194298954e98d9157
 	
 	./configure --prefix=${PREFIX} \
 		--arch=${SYS_ARCH} \
@@ -1338,6 +1361,106 @@ if ! cat ${PREFIX}/include/boost/version.hpp |egrep "BOOST_LIB_VERSION \"${PKG_V
 fi
 #cp ${DEPSPREFIX}/lib/libboost_program_options.so.*.0 ${PREFIX}/lib/
 }
+
+mklibdrm()
+{
+PKG_NAME=libdrm
+PKG_VERSION=2.4.65
+TAREXT=gz
+if [ ! -f ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done ]; then
+	( cd ${WORKSPACE}/cache/ && wget -c --no-check-certificate http://dri.freedesktop.org/libdrm/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
+	pushd ${SRCPREFIX}
+	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xzf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	cd ${PKG_NAME}-${PKG_VERSION}
+	./configure --host=${HOST} --prefix=${DEPSPREFIX} --includedir=${DEPSPREFIX}/include \
+		--disable-static --enable-shared
+	make -j${THREADS}
+	make install
+	cd ..
+	popd
+	
+	touch ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done
+fi
+}
+
+mkxcb-proto()
+{
+
+PKG_NAME=xcb-proto
+PKG_VERSION=1.11
+TAREXT=bz2
+if [ ! -f ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done ]; then
+	( cd ${WORKSPACE}/cache/ && wget -c --no-check-certificate http://xcb.freedesktop.org/dist/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
+	pushd ${SRCPREFIX}
+	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar xf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	cd ${PKG_NAME}-${PKG_VERSION}
+	./configure --host=${HOST} --prefix=${DEPSPREFIX} --includedir=${DEPSPREFIX}/include \
+		--disable-static --enable-shared
+
+	make -j${THREADS}
+	make install
+	cd ..
+	popd
+	
+	touch ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done
+fi
+}
+
+mklibxcb()
+{
+
+mkxcb-proto
+
+PKG_NAME=libxcb
+PKG_VERSION=1.11.1
+TAREXT=bz2
+if [ ! -f ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done ]; then
+	( cd ${WORKSPACE}/cache/ && wget -c --no-check-certificate http://xcb.freedesktop.org/dist/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
+	pushd ${SRCPREFIX}
+	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar xf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	cd ${PKG_NAME}-${PKG_VERSION}
+	./configure --host=${HOST} --prefix=${DEPSPREFIX} --includedir=${DEPSPREFIX}/include \
+		--disable-static --enable-shared
+
+	make -j${THREADS}
+	make install
+	cd ..
+	popd
+	
+	touch ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done
+fi
+}
+
+mkmesa()
+{
+mklibxcb
+mklibdrm
+
+PKG_NAME=mesa
+PKG_VERSION=10.6.9
+TAREXT=gz
+if [ ! -f ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done ]; then
+	#( cd ${WORKSPACE}/cache/ && wget -c --no-check-certificate ftp://ftp.freedesktop.org/pub/mesa/${PKG_VERSION}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
+	pushd ${SRCPREFIX}
+	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xzf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	cd ${PKG_NAME}-${PKG_VERSION}
+	./configure --host=${HOST} --prefix=${DEPSPREFIX} --includedir=${DEPSPREFIX}/include \
+		--with-gallium-drivers="swrast" \
+		--with-dri-drivers="swrast" \
+		--disable-static --enable-shared
+		
+#		--disable-egl \
+
+	make -j${THREADS}
+	make install
+	cd ..
+	popd
+	
+	touch ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done
+fi
+}
+
+
 
 mkcairomm()
 {
@@ -1648,8 +1771,18 @@ make clean || true
 	--sysconfdir=${PREFIX}/etc --datadir=${PREFIX}/share  \
 	--disable-static --enable-shared \
 	$DEBUG_OPT
-make -j${THREADS}
-make install
+
+cd build_tools
+make
+cd ..
+
+cd images
+mv ${DEPSPREFIX} ${DEPSPREFIX}.off
+make -j${THREADS} install
+mv ${DEPSPREFIX}.off ${DEPSPREFIX}
+cd ..
+
+make -j${THREADS} install
 
 }
 
@@ -2140,6 +2273,7 @@ mkall()
 	mkjack
 	
 	# synfig-core deps
+	mkmesa
 	mklibsigcpp
 	mkglibmm
 	mklibxmlpp
@@ -2190,7 +2324,6 @@ else
 	echo "Executing custom user command..."
 	#mkprep
 	set_environment
-
 
 	$@
 fi
