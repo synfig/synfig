@@ -157,25 +157,14 @@ private:
 	{
 		assert(task);
 		Glib::Threads::Mutex::Lock lock(mutex);
-		for(Task::List::iterator i = queue.begin(); i != queue.end();)
+		for(Task::List::iterator i = task->back_deps.begin(); i != task->back_deps.end(); ++i)
 		{
 			assert(*i);
-			if (*i == task) { i = queue.erase(i); continue; }
-			for(Task::List::iterator j = (*i)->deps.begin(); j != (*i)->deps.end();)
-			{
-				assert(*j);
-				if (*j == task)
-				{
-					if (!task->success) (*i)->success = false;
-					j = (*i)->deps.erase(j);
-					if ((*i)->deps.empty())
-						(i->type_is<TaskGL>() ? condgl : cond).signal();
-					continue;
-				}
-				++j;
-			}
-			++i;
+			--(*i)->deps_count;
+			if ((*i)->deps_count == 0)
+				(i->type_is<TaskGL>() ? condgl : cond).signal();
 		}
+		task->back_deps.clear();
 	}
 
 	Task::Handle get(int thread_index) {
@@ -192,7 +181,7 @@ private:
 			for(Task::List::iterator i = queue.begin(); i != queue.end(); ++i)
 			{
 				assert(*i);
-				if ((*i)->deps.empty() && (thread_index == 0) == i->type_is<TaskGL>())
+				if ((*i)->deps_count == 0 && (thread_index == 0) == i->type_is<TaskGL>())
 				{
 					Task::Handle task = *i;
 					queue.erase(i);
@@ -215,8 +204,8 @@ private:
 
 	static void fix_task(const Task &task, const Task::RunParams &params)
 	{
-		for(Task::List::iterator i = task.deps.begin(); i != task.deps.end();)
-			if (*i) ++i; else i = (*i)->deps.erase(i);
+		//for(Task::List::iterator i = task.back_deps.begin(); i != task.back_deps.end();)
+		//	if (*i) ++i; else i = (*i)->back_deps.erase(i);
 		task.params = params;
 		task.success = true;
 	}
@@ -559,20 +548,25 @@ Renderer::run(const Task::List &list) const
 
 		for(Task::List::const_iterator i = optimized_list.begin(); i != optimized_list.end(); ++i)
 		{
+			(*i)->back_deps.clear();
+			(*i)->deps_count = 0;
+		}
+
+		for(Task::List::const_iterator i = optimized_list.begin(); i != optimized_list.end(); ++i)
+		{
 			(*i)->index = i - optimized_list.begin() + 1;
-			(*i)->deps.clear();
 			for(Task::List::const_iterator j = (*i)->sub_tasks.begin(); j != (*i)->sub_tasks.end(); ++j)
 				if (*j && (*j)->target_rect.valid())
 					for(Task::List::const_reverse_iterator rk(i); rk != optimized_list.rend(); ++rk)
 						if ( (*j)->target_surface == (*rk)->target_surface
 						  && (*rk)->target_rect.valid()
 						  && etl::intersect((*j)->target_rect, (*rk)->target_rect) )
-							{ (*i)->deps.push_back(*rk); }
+							{ (*rk)->back_deps.push_back(*i); ++(*i)->deps_count; }
 			if ((*i)->target_rect.valid())
 				for(Task::List::const_reverse_iterator rk(i); rk != optimized_list.rend(); ++rk)
 					if ( (*i)->target_surface == (*rk)->target_surface
 					  && etl::intersect((*i)->target_rect, (*rk)->target_rect) )
-						{ (*i)->deps.push_back(*rk); }
+						{ (*rk)->back_deps.push_back(*i); ++(*i)->deps_count; }
 		}
 	}
 
@@ -594,7 +588,8 @@ Renderer::run(const Task::List &list) const
 		TaskCallbackCond::Handle task_cond = new TaskCallbackCond();
 		task_cond->cond = &cond;
 		task_cond->mutex = &mutex;
-		task_cond->deps = optimized_list;
+		for(Task::List::const_iterator i = optimized_list.begin(); i != optimized_list.end(); ++i)
+			{ (*i)->back_deps.push_back(task_cond); ++task_cond->deps_count; }
 		optimized_list.push_back(task_cond);
 
 		queue->enqueue(optimized_list, Task::RunParams());
@@ -611,17 +606,17 @@ Renderer::log(const Task::Handle &task, const String &prefix) const
 {
 	if (task)
 	{
-		String deps;
-		if (!task->deps.empty())
+		String back_deps;
+		if (!task->back_deps.empty())
 		{
-			for(Task::List::const_iterator i = task->deps.begin(); i != task->deps.end(); ++i)
-				deps += etl::strprintf("%d ", (*i)->index);
-			deps = "(" + deps.substr(0, deps.size()-1) + ") ";
+			for(Task::List::const_iterator i = task->back_deps.begin(); i != task->back_deps.end(); ++i)
+				back_deps += etl::strprintf("%d ", (*i)->index);
+			back_deps = "(" + back_deps.substr(0, back_deps.size()-1) + ") ";
 		}
 
 		info( prefix
 			+ (task->index ? etl::strprintf("#%d ", task->index): "")
-			+ deps
+			+ back_deps
 			+ (typeid(*task).name() + 19)
 			+ ( task->bounds.valid()
 			  ? etl::strprintf(" bounds (%f, %f)-(%f, %f)",

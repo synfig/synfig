@@ -63,12 +63,13 @@ public:
 	List sub_tasks;
 
 	mutable Rect bounds;
-	mutable List deps;
+	mutable List back_deps;
 	mutable RunParams params;
 	mutable int index;
+	mutable int deps_count;
 	mutable bool success;
 
-	Task(): target_rect(0, 0), bounds(0.0, 0.0), index(), success(true) { }
+	Task(): target_rect(0, 0), bounds(0.0, 0.0), index(), deps_count(0), success(true) { }
 
 	template<typename T>
 	static T* clone_pointer(const T *task)
