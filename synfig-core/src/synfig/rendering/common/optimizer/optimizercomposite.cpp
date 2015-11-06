@@ -77,10 +77,9 @@ OptimizerComposite::run(const RunParams& params) const
 			if (blend->offset_a[0] || blend->offset_a[1])
 			{
 				params.ref_task = params.ref_task->clone();
-				params.ref_task->target_rect += blend->offset_a;
-				assert( !params.ref_task->target_rect.valid() || etl::contains(
-					RectInt(0, 0, params.ref_task->target_surface->get_width(), params.ref_task->target_surface->get_height()),
-					params.ref_task->target_rect ));
+				params.ref_task->target_surface = blend->target_surface;
+				params.ref_task->target_rect += VectorInt(blend->target_rect.minx, blend->target_rect.miny) + blend->offset_a;
+				apply_target_bounds(*params.ref_task, RectInt(0, 0, blend->target_surface->get_width(), blend->target_surface->get_height()));
 			}
 			run(params);
 			return;
@@ -89,6 +88,7 @@ OptimizerComposite::run(const RunParams& params) const
 		// remove non-straight blend if task_b is empty
 		if (!Color::is_straight(blend->blend_method))
 		{
+			// TODO: may be buggz here
 			if ( blend->sub_task_b().type_equal<Task>()
 			  || blend->sub_task_b().type_is<TaskSurfaceEmpty>() )
 			{
