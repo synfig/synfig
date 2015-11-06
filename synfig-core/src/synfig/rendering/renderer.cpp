@@ -63,7 +63,7 @@ using namespace rendering;
 //#define DEBUG_TASK_SURFACE
 //#define DEBUG_OPTIMIZATION
 //#define DEBUG_THREAD_TASK
-#define DEBUG_THREAD_WAIT
+//#define DEBUG_THREAD_WAIT
 #endif
 
 
@@ -149,20 +149,27 @@ private:
 			info("thread %d: end task #%d '%s'", thread_index, task->index, typeid(*task).name());
 			#endif
 
-			done(task);
+			done(thread_index, task);
 		}
 	}
 
-	void done(const Task::Handle &task)
+	void done(int thread_index, const Task::Handle &task)
 	{
 		assert(task);
+		bool found = false;
 		Glib::Threads::Mutex::Lock lock(mutex);
 		for(Task::List::iterator i = task->back_deps.begin(); i != task->back_deps.end(); ++i)
 		{
 			assert(*i);
 			--(*i)->deps_count;
 			if ((*i)->deps_count == 0)
-				(i->type_is<TaskGL>() ? condgl : cond).signal();
+			{
+				bool gl = i->type_is<TaskGL>();
+				if (!found && gl == (thread_index == 0))
+					found = true;
+				else
+					(gl ? condgl : cond).signal();
+			}
 		}
 		task->back_deps.clear();
 	}
