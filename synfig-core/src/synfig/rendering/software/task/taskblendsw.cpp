@@ -36,6 +36,7 @@
 #endif
 
 #include <synfig/debug/debugsurface.h>
+#include <synfig/general.h>
 
 #include "taskblendsw.h"
 #include "../surfacesw.h"
@@ -63,6 +64,25 @@ TaskBlendSW::split(const RectInt &sub_target_rect)
 	offset_a[1] += prev_target_rect.miny - target_rect.miny;
 	offset_b[0] += prev_target_rect.minx - target_rect.minx;
 	offset_b[1] += prev_target_rect.miny - target_rect.miny;
+	if (target_rect.is_valid())
+	{
+		if (sub_task_a() && sub_task_a()->target_rect.is_valid())
+		{
+			sub_task_a() = sub_task_a()->clone();
+			etl::set_intersect(
+				sub_task_a()->target_rect,
+				sub_task_a()->target_rect,
+				target_rect - VectorInt(target_rect.minx, target_rect.miny) - offset_a );
+		}
+		if (sub_task_b() && sub_task_b()->target_rect.is_valid())
+		{
+			sub_task_b() = sub_task_b()->clone();
+			etl::set_intersect(
+				sub_task_b()->target_rect,
+				sub_task_b()->target_rect,
+				target_rect - VectorInt(target_rect.minx, target_rect.miny) - offset_b );
+		}
+	}
 }
 
 bool
