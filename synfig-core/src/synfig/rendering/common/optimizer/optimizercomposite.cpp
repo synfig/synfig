@@ -65,7 +65,7 @@ OptimizerComposite::run(const RunParams& params) const
 	  && blend->target_surface
 	  && blend->sub_task_a()
 	  && blend->sub_task_a()->target_surface
-	  && blend->sub_task_a()->target_surface->is_temporary
+	  // && blend->sub_task_a()->target_surface->is_temporary
 	  && blend->sub_task_b()
 	  && blend->sub_task_b()->target_surface
 	  && blend->sub_task_b()->target_surface->is_temporary )
@@ -90,7 +90,8 @@ OptimizerComposite::run(const RunParams& params) const
 		{
 			// TODO: may be buggz here
 			if ( blend->sub_task_b().type_equal<Task>()
-			  || blend->sub_task_b().type_is<TaskSurfaceEmpty>() )
+			  || blend->sub_task_b().type_is<TaskSurfaceEmpty>()
+			  || !blend->sub_task_b()->target_rect.valid() )
 			{
 				if (blend->sub_task_a()->target_surface == blend->target_surface)
 				{
