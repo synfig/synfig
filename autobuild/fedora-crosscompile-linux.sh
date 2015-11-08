@@ -157,6 +157,13 @@ set_environment()
 	
 	export PATH=${DEPSPREFIX}/bin:${PREFIX}/bin:${SYSPREFIX}/bin:${SYSPREFIX}/usr/bin
 	export LDFLAGS="-Wl,-rpath -Wl,\\\$\$ORIGIN/lib -L${PREFIX}/lib -L${DEPSPREFIX}/lib -L${SYSPREFIX}/${LIBDIR} -L${SYSPREFIX}/usr/${LIBDIR} -L${SYSPREFIX}/lib/${RPM_ARCH}-linux-gnu/ -L${SYSPREFIX}/usr/lib/${RPM_ARCH}-linux-gnu/"
+	if [[ $DEBUG == 1 ]]; then
+		export CFLAGS="-O0"
+		export CXXFLAGS="-00"
+	else
+		export CFLAGS="-O2"
+		export CXXFLAGS="-02"
+	fi
 	#export CFLAGS=" -nostdinc  -I${SYSPREFIX}/usr/lib/gcc/${RPM_ARCH}-linux-gnu/4.3.2/include -I${SYSPREFIX}/usr/lib/gcc/${RPM_ARCH}-linux-gnu/4.3.2/include-fixed  -I${PREFIX}/include  -I${DEPSPREFIX}/include -I${SYSPREFIX}/usr/include"
 	GCC_VER=4.7
 	export CPPFLAGS="-I${SYSPREFIX}/usr/include -I${DEPSPREFIX}/include -I${PREFIX}/include -I${SYSPREFIX}/usr/include/${RPM_ARCH}-linux-gnu" 
