@@ -99,7 +99,6 @@ if [[ $ARCH == "32" ]]; then
 	export GCC_ARCH=i486
 	export LIBDIR="lib"
 	export HOST=i686-pc-linux-gnu
-	export HOST2=i686-linux-gnu
 	if ( cat /etc/issue | egrep "Ubuntu" ); then
 		export UBUNTU_LIBDIR="/lib/i386-linux-gnu/"
 	fi
@@ -109,7 +108,6 @@ else
 	export GCC_ARCH=x86_64
 	export LIBDIR="lib64"
 	export HOST=x86_64-pc-linux-gnu
-	export HOST2=x86_64-linux-gnu
 	if ( cat /etc/issue | egrep "Ubuntu" ); then
 		export UBUNTU_LIBDIR="/lib/x86_64-linux-gnu/"
 	fi
@@ -155,17 +153,17 @@ set_environment()
 	else
 		export LD_PRELOAD=/${LIBDIR}/libc.so.6:/${LIBDIR}/libpthread.so.0:/${LIBDIR}/libdl.so.2
 	fi
-	export LD_LIBRARY_PATH=${PREFIX}/lib:${DEPSPREFIX}/lib:${SYSPREFIX}/${LIBDIR}:${SYSPREFIX}/usr/lib:${SYSPREFIX}/lib/x86_64-linux-gnu:${SYSPREFIX}/usr/lib/x86_64-linux-gnu
+	export LD_LIBRARY_PATH=${PREFIX}/lib:${DEPSPREFIX}/lib:${SYSPREFIX}/${LIBDIR}:${SYSPREFIX}/usr/lib:${SYSPREFIX}/lib/${RPM_ARCH}-linux-gnu:${SYSPREFIX}/usr/lib/${RPM_ARCH}-linux-gnu
 	
 	export PATH=${DEPSPREFIX}/bin:${PREFIX}/bin:${SYSPREFIX}/bin:${SYSPREFIX}/usr/bin
-	export LDFLAGS="-Wl,-rpath -Wl,\\\$\$ORIGIN/lib -L${PREFIX}/lib -L${DEPSPREFIX}/lib -L${SYSPREFIX}/${LIBDIR} -L${SYSPREFIX}/usr/${LIBDIR} -L${SYSPREFIX}/lib/x86_64-linux-gnu/ -L${SYSPREFIX}/usr/lib/x86_64-linux-gnu/"
-	#export CFLAGS=" -nostdinc  -I${SYSPREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.3.2/include -I${SYSPREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.3.2/include-fixed  -I${PREFIX}/include  -I${DEPSPREFIX}/include -I${SYSPREFIX}/usr/include"
+	export LDFLAGS="-Wl,-rpath -Wl,\\\$\$ORIGIN/lib -L${PREFIX}/lib -L${DEPSPREFIX}/lib -L${SYSPREFIX}/${LIBDIR} -L${SYSPREFIX}/usr/${LIBDIR} -L${SYSPREFIX}/lib/${RPM_ARCH}-linux-gnu/ -L${SYSPREFIX}/usr/lib/${RPM_ARCH}-linux-gnu/"
+	#export CFLAGS=" -nostdinc  -I${SYSPREFIX}/usr/lib/gcc/${RPM_ARCH}-linux-gnu/4.3.2/include -I${SYSPREFIX}/usr/lib/gcc/${RPM_ARCH}-linux-gnu/4.3.2/include-fixed  -I${PREFIX}/include  -I${DEPSPREFIX}/include -I${SYSPREFIX}/usr/include"
 	GCC_VER=4.7
-	export CPPFLAGS="-I${SYSPREFIX}/usr/include -I${DEPSPREFIX}/include -I${PREFIX}/include -I${SYSPREFIX}/usr/include/${GCC_ARCH}-linux-gnu" 
+	export CPPFLAGS="-I${SYSPREFIX}/usr/include -I${DEPSPREFIX}/include -I${PREFIX}/include -I${SYSPREFIX}/usr/include/${RPM_ARCH}-linux-gnu" 
 	#export CXXFLAGS="-I${SYSPREFIX}/usr/include/linux/  -I${SYSPREFIX}/usr/include/c++/${GCC_VER}/ -I${SYSPREFIX}/usr/include/c++/${GCC_VER}/${GCC_ARCH}-linux-gnu/ -I${SYSPREFIX}/usr/lib/gcc/${GCC_ARCH}-linux-gnu/${GCC_VER}/include/ -I${SYSPREFIX}/usr/lib/gcc/${GCC_ARCH}-linux-gnu/${GCC_VER}/include-fixed/  -I${SYSPREFIX}/usr/${GCC_ARCH}-linux-gnu/include"
 	#export CXXFLAGS="-I${SYSPREFIX}/usr/local/include/x86_64-linux-gnu -I${SYSPREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.4.5/include -I${SYSPREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.4.5/include-fixed -I${SYSPREFIX}/usr/lib/gcc/../../x86_64-linux-gnu/include -I${SYSPREFIX}/usr/include/x86_64-linux-gnu"
 	#export CXXFLAGS=" -nostdinc   -I${SYSPREFIX}/usr/lib/gcc/../../include/c++/4.3  -I${SYSPREFIX}/usr/lib/gcc/../../include/c++/4.3/x86_64-linux-gnu -I${SYSPREFIX}/usr/lib/gcc/../../include/c++/4.3/backward -I${SYSPREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.3.2/include -I${SYSPREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.3.2/include-fixed -I${PREFIX}/include  -I${DEPSPREFIX}/include -I${SYSPREFIX}/usr/include"
-	export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:${DEPSPREFIX}/lib/pkgconfig:${SYSPREFIX}/usr/lib/pkgconfig:${SYSPREFIX}/usr/lib/x86_64-linux-gnu/pkgconfig:${SYSPREFIX}/usr/share/pkgconfig
+	export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:${DEPSPREFIX}/lib/pkgconfig:${SYSPREFIX}/usr/lib/pkgconfig:${SYSPREFIX}/usr/lib/${RPM_ARCH}-linux-gnu/pkgconfig:${SYSPREFIX}/usr/share/pkgconfig
 	PERL_VERSION=`perl -v | grep "This is perl" | sed "s|This is perl .*(v||g" | sed "s|).*||"`
 	export NM=nm
 	export PERL5LIB="${SYSPREFIX}/etc/perl:${SYSPREFIX}/usr/share/automake-1.11:${DEPSPREFIX}/lib/perl/${PERL_VERSION}:${DEPSPREFIX}/share/perl/${PERL_VERSION}:${SYSPREFIX}/usr/lib/perl5:${SYSPREFIX}/usr/share/perl5:${SYSPREFIX}/usr/lib/perl/${PERL_VERSION}:${SYSPREFIX}/usr/share/perl/${PERL_VERSION}:${DEPSPREFIX}/lib/site_perl"
@@ -235,13 +233,13 @@ mkprefix()
 			libdbus-1-dev \
 			wget mawk \
 			python-dev \
-			gettext \
+			gettext autopoint \
 			libpciaccess-dev  multiarch-support libx11-xcb-dev \
 			libudev-dev \
 			x11proto-gl-dev \
 			bzip2"
 			
-			#autoconf automake m4 autopoint \
+			#autoconf automake m4  \
 			#libtool intltool gettext \
 			# libgl1-mesa-dev \
 			#llvm-dev \
@@ -267,9 +265,11 @@ mkprefix()
 	
 	pushd ${SYSPREFIX}/var/cache/apt/archives/
 	
-	wget -c http://repo.asis.io/wheezy-updates/pool/main/libx/libxshmfence/libxshmfence-dev_1.2-1_amd64.deb
+	wget -c http://repo.asis.io/wheezy-updates/pool/main/libx/libxshmfence/libxshmfence-dev_1.2-1_${SYS_ARCH}.deb
 
-	wget -c http://repo.asis.io/wheezy-updates/pool/main/libx/libxshmfence/libxshmfence1_1.2-1_amd64.deb
+	wget -c http://repo.asis.io/wheezy-updates/pool/main/libx/libxshmfence/libxshmfence1_1.2-1_${SYS_ARCH}.deb
+	
+	wget -c http://repo.asis.io/squeeze-updates/pool/main/x/x11proto-dri2/x11proto-dri2-dev_2.8-2_all.deb
 	
 	wget -c http://repo.asis.io/squeeze-updates/pool/main/x/x11proto-dri3/x11proto-dri3-dev_1.0-1_all.deb
 	
@@ -340,8 +340,8 @@ ln -sf ${SYSPREFIX}/usr/bin/aclocal-1.11 ${SYSPREFIX}/usr/bin/aclocal
 	
 # Patching libraries ...
 for lib in libc libpthread; do
-	sed -i "s| /lib/| ${SYSPREFIX}/lib/|g" ${SYSPREFIX}/usr/lib/x86_64-linux-gnu/$lib.so
-	sed -i "s| /usr/lib/| ${SYSPREFIX}/usr/lib/|g" ${SYSPREFIX}/usr/lib/x86_64-linux-gnu/$lib.so
+	sed -i "s| /lib/| ${SYSPREFIX}/lib/|g" ${SYSPREFIX}/usr/lib/${RPM_ARCH}-linux-gnu/$lib.so
+	sed -i "s| /usr/lib/| ${SYSPREFIX}/usr/lib/|g" ${SYSPREFIX}/usr/lib/${RPM_ARCH}-linux-gnu/$lib.so
 done
 
 sed -i "s|prefix=\"/usr\"|prefix=\"${SYSPREFIX}/usr\"|g" ${SYSPREFIX}/usr/bin/autopoint
@@ -352,7 +352,7 @@ sed -i "s|prefix=\"/usr\"|prefix=\"${SYSPREFIX}/usr\"|g" ${SYSPREFIX}/usr/bin/au
 for file in `find ${SYSPREFIX}/usr/lib/pkgconfig/ -type f -name "*.pc"`; do
 	sed -i "s|=/usr|=${SYSPREFIX}/usr|g" ${file}
 done
-for file in `find ${SYSPREFIX}/usr/lib/x86_64-linux-gnu/pkgconfig/ -type f -name "*.pc"`; do
+for file in `find ${SYSPREFIX}/usr/lib/${RPM_ARCH}-linux-gnu/pkgconfig/ -type f -name "*.pc"`; do
 	sed -i "s|=/usr|=${SYSPREFIX}/usr|g" ${file}
 done
 for file in `find ${SYSPREFIX}/usr/bin/ -type f -name "*-config"`; do
@@ -362,7 +362,7 @@ for file in `find ${SYSPREFIX}/usr/lib/ -type f -name "*.la"`; do
 	sed -i "s|libdir='/usr/lib|libdir='${SYSPREFIX}/usr/lib|g" ${file}
 	sed -i "s| /usr/lib| ${SYSPREFIX}/usr/lib|g" ${file}
 done
-for file in `find ${SYSPREFIX}/usr/lib/x86_64-linux-gnu/ -type f -name "*.la"`; do
+for file in `find ${SYSPREFIX}/usr/lib/${RPM_ARCH}-linux-gnu/ -type f -name "*.la"`; do
 	sed -i "s|libdir='/usr/lib|libdir='${SYSPREFIX}/usr/lib|g" ${file}
 	sed -i "s| /usr/lib| ${SYSPREFIX}/usr/lib|g" ${file}
 done
@@ -393,14 +393,14 @@ ln -sf ${SYSPREFIX}/usr/bin/gcc ${SYSPREFIX}/usr/bin/cc
 
 [ -e "${PREFIX}/lib" ] || mkdir -p ${PREFIX}/lib
 #cp ${SYSPREFIX}/usr/lib/libltdl* ${PREFIX}/lib/
-cp ${SYSPREFIX}/lib/x86_64-linux-gnu/libpng12* ${PREFIX}/lib/
-cp ${SYSPREFIX}/usr/lib/x86_64-linux-gnu/libdb-5*.so ${PREFIX}/lib/
-cp ${SYSPREFIX}/lib/x86_64-linux-gnu/libpcre.so* ${PREFIX}/lib/
-cp ${SYSPREFIX}/usr/lib/x86_64-linux-gnu/libffi*.so* ${PREFIX}/lib
+cp ${SYSPREFIX}/lib/${RPM_ARCH}-linux-gnu/libpng12* ${PREFIX}/lib/
+cp ${SYSPREFIX}/usr/lib/${RPM_ARCH}-linux-gnu/libdb-5*.so ${PREFIX}/lib/
+cp ${SYSPREFIX}/lib/${RPM_ARCH}-linux-gnu/libpcre.so* ${PREFIX}/lib/
+cp ${SYSPREFIX}/usr/lib/${RPM_ARCH}-linux-gnu/libffi*.so* ${PREFIX}/lib
 # SDL deps
-cp ${SYSPREFIX}/usr/lib/x86_64-linux-gnu/libdirect-*.so* ${PREFIX}/lib/
-cp ${SYSPREFIX}/usr/lib/x86_64-linux-gnu/libdirectfb-*.so* ${PREFIX}/lib/
-cp ${SYSPREFIX}/usr/lib/x86_64-linux-gnu/libfusion*.so* ${PREFIX}/lib/
+cp ${SYSPREFIX}/usr/lib/${RPM_ARCH}-linux-gnu/libdirect-*.so* ${PREFIX}/lib/
+cp ${SYSPREFIX}/usr/lib/${RPM_ARCH}-linux-gnu/libdirectfb-*.so* ${PREFIX}/lib/
+cp ${SYSPREFIX}/usr/lib/${RPM_ARCH}-linux-gnu/libfusion*.so* ${PREFIX}/lib/
 
 #RANDOM_SYSPREFIX=`tr -cd '[:alnum:]' < /dev/urandom | fold -w8 | head -n1`
 #DATE=`date +%s`
@@ -438,16 +438,18 @@ cat > ${DEPSPREFIX}/bin/synfig-- <<EOF
 #mv ${DEPSPREFIX} ${DEPSPREFIX}.off
 #fi
 
-LD_PRELOAD=""
-LD_LIBRARY_PATH=""
-PATH="/usr/local/bin/:/usr/sbin:/usr/bin:/bin"
-LDFLAGS=""
-CFLAGS=""
-CXXFLAGS=""
-PKG_CONFIG_PATH=""
-PERL5LIB=""
+export LD_PRELOAD=""
+export LD_LIBRARY_PATH=""
+export PATH="/usr/local/bin/:/usr/sbin:/usr/bin:/bin"
+export LDFLAGS=""
+export CFLAGS=""
+export CXXFLAGS=""
+export PKG_CONFIG_PATH=""
+export PERL5LIB=""
 
-${SYSPREFIX}/usr/bin/synfig "\$@"
+echo "-----------------!!!-------------"
+
+~/synfig/bin/synfig "\$@"
 EOF
 #chmod a+x  ${DEPSPREFIX}/bin/synfig || true
 
@@ -654,6 +656,9 @@ if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
 	pushd ${SRCPREFIX}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
+	
+	sed -i 's|if test "x$cairo_cc_stderr" != "x"; then|if test "x$cairo_cc_stderr___" != "x"; then|g' configure 
+	
 	./configure --host=${HOST} --prefix=${PREFIX} \
 		--disable-static 	\
 		--enable-warnings 	\
@@ -1585,6 +1590,10 @@ if ! pkg-config jack --exact-version=${PKG_VERSION}  --print-errors; then
 	pushd ${SRCPREFIX}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xzf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
+	
+	# Disable check for parallel jack installs
+	sed -i 's|if test $not_overwriting -gt 0 ; then|if test $not_overwriting -gt 500 ; then|g' configure 
+	
 	./configure --host=${HOST} --prefix=${DEPSPREFIX} --includedir=${DEPSPREFIX}/include \
 		--libdir=${DEPSPREFIX}/lib \
 		--disable-static --enable-shared
@@ -1600,7 +1609,6 @@ if [ ${PREFIX} != ${DEPSPREFIX} ]; then
 fi
 }
 
-# TODO: remove?
 mkm4()
 {
 PKG_NAME=m4
@@ -1623,7 +1631,6 @@ fi
 
 }
 
-# TODO: remove?
 mkautoconf()
 {
 PKG_NAME=autoconf
@@ -1645,7 +1652,6 @@ if [ ! -e ${DEPSPREFIX}/bin/autoconf ]; then
 fi
 }
 
-# TODO: remove?
 mkautomake()
 {
 PKG_NAME=automake
@@ -1667,7 +1673,6 @@ if [ ! -e ${DEPSPREFIX}/bin/automake ]; then
 fi
 }
 
-# TODO: remove?
 mklibtool()
 {
 PKG_NAME=libtool
@@ -1709,7 +1714,6 @@ fi
 PATH="$PATH_BAK"
 }
 
-# TODO: remove?
 mkintltool()
 {
 PKG_NAME=intltool
@@ -1833,11 +1837,33 @@ cd build_tools
 make
 cd ..
 
+[ -e ${PREFIX}/bin/synfig.bin ] || mv ${PREFIX}/bin/synfig ${PREFIX}/bin/synfig.bin
+cat > ${PREFIX}/bin/synfig <<EOF
+#!/bin/sh
+
+export LD_PRELOAD=""
+export LD_LIBRARY_PATH=""
+export PATH="/usr/local/bin/:/usr/sbin:/usr/bin:/bin"
+export LDFLAGS=""
+export CFLAGS=""
+export CXXFLAGS=""
+export PKG_CONFIG_PATH=""
+export PERL5LIB=""
+
+echo "-----------------!!!-------------"
+
+~/synfig/bin/synfig "\$@"
+EOF
+chmod a+x  ${PREFIX}/bin/synfig || true
+
 cd images
-mv ${DEPSPREFIX} ${DEPSPREFIX}.off
+#mv ${DEPSPREFIX} ${DEPSPREFIX}.off
 make -j${THREADS} install
-mv ${DEPSPREFIX}.off ${DEPSPREFIX}
+#mv ${DEPSPREFIX}.off ${DEPSPREFIX}
 cd ..
+
+rm ${PREFIX}/bin/synfig
+mv ${PREFIX}/bin/synfig.bin ${PREFIX}/bin/synfig
 
 make -j${THREADS} install
 
