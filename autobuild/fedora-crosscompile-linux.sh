@@ -39,7 +39,7 @@ if [[ $DEBUG == 1 ]]; then
 	DEBUG_OPT2='--enable-debug=yes'
 	export SUFFIX="-debug"
 else
-	DEBUG_OPT=''
+	DEBUG_OPT='--enable-optimization=3'
 fi
 
 if [ ! -z $SUBSET ]; then
@@ -159,10 +159,10 @@ set_environment()
 	export LDFLAGS="-Wl,-rpath -Wl,\\\$\$ORIGIN/lib -L${PREFIX}/lib -L${DEPSPREFIX}/lib -L${SYSPREFIX}/${LIBDIR} -L${SYSPREFIX}/usr/${LIBDIR} -L${SYSPREFIX}/lib/${RPM_ARCH}-linux-gnu/ -L${SYSPREFIX}/usr/lib/${RPM_ARCH}-linux-gnu/"
 	if [[ $DEBUG == 1 ]]; then
 		export CFLAGS="-O0"
-		export CXXFLAGS="-00"
+		export CXXFLAGS="-O0"
 	else
-		export CFLAGS="-O2"
-		export CXXFLAGS="-02"
+		export CFLAGS="-O3"
+		export CXXFLAGS="-O3"
 	fi
 	#export CFLAGS=" -nostdinc  -I${SYSPREFIX}/usr/lib/gcc/${RPM_ARCH}-linux-gnu/4.3.2/include -I${SYSPREFIX}/usr/lib/gcc/${RPM_ARCH}-linux-gnu/4.3.2/include-fixed  -I${PREFIX}/include  -I${DEPSPREFIX}/include -I${SYSPREFIX}/usr/include"
 	GCC_VER=4.7
