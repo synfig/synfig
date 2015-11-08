@@ -35,6 +35,8 @@
 #include <gdkmm/rectangle.h>
 
 /* === M A C R O S ========================================================= */
+#define GDK_COLOR_TO_RGB(color)               \
+    color.get_red_p (), color.get_green_p (), color.get_blue_p ()
 
 /* === T Y P E D E F S ===================================================== */
 

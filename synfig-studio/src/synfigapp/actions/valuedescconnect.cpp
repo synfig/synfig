@@ -108,11 +108,21 @@ Action::ValueDescConnect::is_candidate(const ParamList &x)
 {
 	if(candidate_check(get_param_vocab(),x))
 	{
+	    ValueDesc value_desc(x.find("dest")->second.get_value_desc());
+	    ValueNode::Handle value_node(x.find("src")->second.get_value_node());
+
+	    //! forbid recursive linking (fix #48)
+	    if (value_desc.parent_is_value_node())
+	    {
+	        ValueNode* vn = dynamic_cast<ValueNode*>(value_node.get());
+	        if (vn && vn->is_descendant(value_desc.get_parent_value_node()))
+	            return false;
+	    }
+
+
 		// don't show the option of connecting to an existing Index parameter of the Duplicate layer
 		if(x.count("dest"))
 		{
-			ValueDesc value_desc=x.find("dest")->second.get_value_desc();
-
 			if (value_desc.parent_is_layer() &&
 				value_desc.get_layer()->get_name() == "duplicate" &&
 				value_desc.get_param_name() == "index")
@@ -121,8 +131,6 @@ Action::ValueDescConnect::is_candidate(const ParamList &x)
 
 		if(x.count("src"))
 		{
-			ValueDesc value_desc=x.find("dest")->second.get_value_desc();
-			ValueNode::Handle value_node=x.find("src")->second.get_value_node();
 			if(value_desc.get_value_type()==value_node->get_type())
 				return true;
 		}

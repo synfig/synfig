@@ -123,7 +123,7 @@ Action::ValueDescLink::set_param(const synfig::String& name, const Action::Param
 			if(compo)
 			{
 				String param_name;
-				if (!value_desc.get_sub_name().empty())
+				if (value_desc.parent_is_value_desc() && !value_desc.get_sub_name().empty())
 				{
 					LinkableValueNode::Vocab vocab = compo->get_children_vocab();
 					for(LinkableValueNode::Vocab::const_iterator i = vocab.begin(); i != vocab.end(); ++i)
@@ -131,9 +131,10 @@ Action::ValueDescLink::set_param(const synfig::String& name, const Action::Param
 							param_name = value_desc.get_sub_name();
 				}
 				
-				//! \todo these check may be unused 
+				//! Test used for with point handle
 				if (param_name.empty() && compo->get_type() == type_width_point)
 					param_name = "position";
+
 				if (param_name.empty() && compo->get_type() == type_bline_point)
 					param_name = "point";
 				

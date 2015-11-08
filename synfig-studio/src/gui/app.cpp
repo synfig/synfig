@@ -871,16 +871,10 @@ init_ui_manager()
 #define DEFINE_ACTION(x,stock) { Glib::RefPtr<Gtk::Action> action( Gtk::Action::create(x, stock) ); actions_action_group->add(action); }
 
 // actions in File menu
-DEFINE_ACTION("new", Gtk::StockID("synfig-new_doc"));
-DEFINE_ACTION("open", Gtk::StockID("synfig-open"));
 DEFINE_ACTION("save", Gtk::StockID("synfig-save"));
 DEFINE_ACTION("save-as", Gtk::StockID("synfig-save_as"));
 DEFINE_ACTION("save-all", Gtk::StockID("synfig-save_all"));
 DEFINE_ACTION("revert", Gtk::Stock::REVERT_TO_SAVED);
-DEFINE_ACTION("cvs-add", Gtk::StockID("synfig-cvs_add"));
-DEFINE_ACTION("cvs-update", Gtk::StockID("synfig-cvs_update"));
-DEFINE_ACTION("cvs-commit", Gtk::StockID("synfig-cvs_commit"));
-DEFINE_ACTION("cvs-revert", Gtk::StockID("synfig-cvs_revert"));
 DEFINE_ACTION("import", _("Import..."));
 DEFINE_ACTION("render", _("Render..."));
 DEFINE_ACTION("preview", _("Preview..."));
@@ -1011,11 +1005,6 @@ DEFINE_ACTION("keyframe-properties","Properties");
 "		<menuitem action='save-all' />"
 "		<menuitem action='revert' />"
 "		<separator name='sep-file2'/>"
-"		<menuitem action='cvs-add' />"
-"		<menuitem action='cvs-update' />"
-"		<menuitem action='cvs-commit' />"
-"		<menuitem action='cvs-revert' />"
-"		<separator name='sep-file3'/>"
 "		<menuitem action='import' />"
 "		<separator name='sep-file4'/>"
 "		<menuitem action='preview' />"
@@ -1204,7 +1193,7 @@ DEFINE_ACTION("keyframe-properties","Properties");
 	try
 	{
 		actions_action_group->set_sensitive(false);
-		App::ui_manager()->set_add_tearoffs(true);
+		App::ui_manager()->set_add_tearoffs(false);
 		App::ui_manager()->insert_action_group(menus_action_group,1);
 		App::ui_manager()->insert_action_group(actions_action_group,1);
 		App::ui_manager()->add_ui_from_string(ui_info);
@@ -1262,6 +1251,10 @@ DEFINE_ACTION("keyframe-properties","Properties");
 	ACCEL2(Gtk::AccelKey(GDK_KEY_Escape,static_cast<Gdk::ModifierType>(0), "<Actions>/canvasview/stop"							));
 	ACCEL("<Control>g",													"<Actions>/canvasview/toggle-grid-show"				);
 	ACCEL("<Control>l",													"<Actions>/canvasview/toggle-grid-snap"				);
+	ACCEL("<Control>n",													"<Actions>/mainwindow/new"				);
+	ACCEL("<Control>o",													"<Actions>/mainwindow/open"				);
+	ACCEL("<Control>s",													"<Actions>/canvasview/save"				);
+	ACCEL("<Control><Shift>s",											"<Actions>/canvasview/save-as"				);
 	ACCEL2(Gtk::AccelKey('`',Gdk::CONTROL_MASK,							"<Actions>/canvasview/toggle-low-res"					));
 	ACCEL("<Mod1>1",													"<Actions>/canvasview/mask-position-ducks"			);
 	ACCEL("<Mod1>2",													"<Actions>/canvasview/mask-vertex-ducks"				);
@@ -2154,7 +2147,7 @@ App::apply_gtk_settings(bool use_dark)
 		// Fix GtkPaned (big margin makes it hard to grab first keyframe))
 		data = "GtkPaned { margin: 2px; }";
 		//Fix #810: Insetsetive context menus on OSX
-		data += ".window-frame, .window-frame:backdrop { margin: 0; }";
+		data += ".window-frame, .window-frame:backdrop { box-shadow: none; margin: 0; }";
 		Glib::RefPtr<Gtk::CssProvider> css = Gtk::CssProvider::create();
 		if(not css->load_from_data(data)) {
 			synfig::info("Failed to load css rules.");
@@ -2453,12 +2446,24 @@ App::dialog_open_file_spal(const std::string &title, std::string &filename, std:
 	dialog->set_current_folder(prev_path);
 	dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
 	dialog->add_button(Gtk::StockID(_("Open")), Gtk::RESPONSE_ACCEPT);
+	
+	Glib::RefPtr<Gtk::FileFilter> filter_supported = Gtk::FileFilter::create();
+	filter_supported->set_name(_("Palette files (*.spal, *.gpl)"));
+	filter_supported->add_pattern("*.spal");
+	filter_supported->add_pattern("*.gpl");
+	dialog->add_filter(filter_supported);
 
 	// show only Synfig color palette file (*.spal)
 	Glib::RefPtr<Gtk::FileFilter> filter_spal = Gtk::FileFilter::create();
 	filter_spal->set_name(_("Synfig palette files (*.spal)"));
 	filter_spal->add_pattern("*.spal");
 	dialog->add_filter(filter_spal);
+	
+	// ...and add GIMP color palette file too (*.gpl)
+        Glib::RefPtr<Gtk::FileFilter> filter_gpl = Gtk::FileFilter::create();
+	filter_gpl->set_name(_("GIMP palette files (*.gpl)"));
+	filter_gpl->add_pattern("*.gpl");
+	dialog->add_filter(filter_gpl);
 
 	if (filename.empty())
 	dialog->set_filename(prev_path);
@@ -3526,7 +3531,7 @@ App::open_as(std::string filename,std::string as,synfig::FileContainerZip::file_
 			one_moment.hide();
 
 			if(instance->is_updated() && App::dialog_message_2b(
-				_("Newer version of this file availabel on the CVS repository!"),
+				_("Newer version of this file available on the CVS repository!"),
 				_("repository. Would you like to update now? (It would probably be a good idea)"),
 				Gtk::MESSAGE_QUESTION,
 				_("Cancel"),

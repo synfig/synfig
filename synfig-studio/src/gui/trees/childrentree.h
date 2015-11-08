@@ -118,7 +118,7 @@ private:
 
 	void on_edited_value(const Glib::ustring&path_string,synfig::ValueBase value);
 
-	void on_waypoint_clicked_childrentree(const etl::handle<synfig::Node>& node,const synfig::Time&,const synfig::Time&,int button);
+	void on_waypoint_clicked_childrentree(const etl::handle<synfig::Node>& node,const synfig::Time&,const synfig::Time&, const synfig::Time&,int button);
 
 	bool on_tree_view_query_tooltip(int x, int y, bool keyboard_tooltip, const Glib::RefPtr<Gtk::Tooltip>& tooltip);
 

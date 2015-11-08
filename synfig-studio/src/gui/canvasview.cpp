@@ -957,6 +957,13 @@ CanvasView::~CanvasView()
 		synfig::info("CanvasView::~CanvasView(): Deleted");
 }
 
+void CanvasView::save_all()
+{
+	std::list<etl::handle<Instance> >::iterator iter;
+	for(iter=App::instance_list.begin();iter!=App::instance_list.end();iter++)
+		(*iter)->save();
+}
+
 void CanvasView::activate()
 {
 	activation_index_.activate();
@@ -1693,9 +1700,13 @@ CanvasView::init_menus()
 	action_group->add( Gtk::Action::create("save-as", Gtk::StockID("synfig-save_as"), _("Save As...")),
 		sigc::hide_return(sigc::mem_fun(*get_instance().get(), &studio::Instance::dialog_save_as))
 	);
+	action_group->add( Gtk::Action::create("save-all", Gtk::StockID("synfig-save_all"), _("Save All"), _("Save all opened documents")),
+		sigc::ptr_fun(save_all)
+	);
 	action_group->add( Gtk::Action::create("revert", Gtk::Stock::REVERT_TO_SAVED),
 		sigc::hide_return(sigc::mem_fun(*get_instance().get(), &studio::Instance::safe_revert))
 	);
+	/*
 	action_group->add( Gtk::Action::create("cvs-add", Gtk::StockID("synfig-cvs_add")),
 		sigc::hide_return(sigc::mem_fun(*get_instance(), &studio::Instance::dialog_cvs_add))
 	);
@@ -1708,6 +1719,7 @@ CanvasView::init_menus()
 	action_group->add( Gtk::Action::create("cvs-commit", Gtk::StockID("synfig-cvs_commit")),
 		sigc::hide_return(sigc::mem_fun(*get_instance(), &studio::Instance::dialog_cvs_commit))
 	);
+	*/
 	action_group->add( Gtk::Action::create("import", _("Import...")),
 		sigc::hide_return(sigc::mem_fun(*this, &studio::CanvasView::image_import))
 	);

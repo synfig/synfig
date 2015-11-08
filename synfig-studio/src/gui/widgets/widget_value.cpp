@@ -45,6 +45,7 @@
 #include "widgets/widget_vector.h"
 #include "widgets/widget_filename.h"
 #include "widgets/widget_enum.h"
+#include "widgets/widget_sublayer.h"
 #include "widgets/widget_coloredit.h"
 #include "widgets/widget_bonechooser.h"
 #include "widgets/widget_canvaschooser.h"
@@ -94,6 +95,9 @@ Widget_ValueBase::Widget_ValueBase():
 	enum_widget=manage(new class Widget_Enum());
 	pack_start(*enum_widget);
 
+	sublayer_widget=manage(new class Widget_Sublayer());
+	pack_start(*sublayer_widget);
+
 	real_widget=manage(new class Gtk::SpinButton(real_adjustment,0.05,DIGITS));
 	pack_start(*real_widget);
 
@@ -131,6 +135,7 @@ Widget_ValueBase::Widget_ValueBase():
 	vector_widget->signal_activate().connect(sigc::mem_fun(*this,&Widget_ValueBase::activate));
 	color_widget->signal_activate().connect(sigc::mem_fun(*this,&Widget_ValueBase::activate));
 	enum_widget->signal_changed().connect(sigc::mem_fun(*this,&Widget_ValueBase::activate));
+	sublayer_widget->signal_changed().connect(sigc::mem_fun(*this,&Widget_ValueBase::activate));
 	real_widget->signal_activate().connect(sigc::mem_fun(*this,&Widget_ValueBase::activate));
 	integer_widget->signal_activate().connect(sigc::mem_fun(*this,&Widget_ValueBase::activate));
 	angle_widget->signal_activate().connect(sigc::mem_fun(*this,&Widget_ValueBase::activate));
@@ -198,6 +203,7 @@ Widget_ValueBase::set_sensitive(bool x)
 	bone_widget->set_sensitive(x);
 	canvas_widget->set_sensitive(x);
 	enum_widget->set_sensitive(x);
+	sublayer_widget->set_sensitive(x);
 	angle_widget->set_sensitive(x);
 	filename_widget->set_sensitive(x);
 	time_widget->set_sensitive(x);
@@ -217,6 +223,7 @@ Widget_ValueBase::set_value(const synfig::ValueBase &data)
 	bone_widget->hide();
 	canvas_widget->hide();
 	enum_widget->hide();
+	sublayer_widget->hide();
 	angle_widget->hide();
 	filename_widget->hide();
 	time_widget->hide();
@@ -306,15 +313,21 @@ Widget_ValueBase::set_value(const synfig::ValueBase &data)
 		else
 		if (type == type_string)
 		{
-			if(child_param_desc.get_hint()!="filename" && param_desc.get_hint()!="filename")
-			{
-				string_widget->set_text(value.get(string()));
-				string_widget->show();
-			}
-			else
+			if(child_param_desc.get_hint()=="filename" || param_desc.get_hint()=="filename")
 			{
 				filename_widget->set_value(value.get(string()));
 				filename_widget->show();
+			}
+			else if(child_param_desc.get_hint()=="sublayer_name" || param_desc.get_hint()=="sublayer_name")
+			{
+				sublayer_widget->set_value_desc(value_desc);
+				sublayer_widget->set_value(value.get(string()));
+				sublayer_widget->show();
+			}
+			else
+			{
+				string_widget->set_text(value.get(string()));
+				string_widget->show();
 			}
 		}
 		else
@@ -383,13 +396,16 @@ Widget_ValueBase::get_value()
 	else
 	if (type == type_string)
 	{
-		if(param_desc.get_hint()!="filename")
+		if(param_desc.get_hint()=="filename")
 		{
-			value=string(string_widget->get_text());
+			value=string(filename_widget->get_value());
+		}
+		else if(param_desc.get_hint()=="sublayer_name") {
+			value=string(sublayer_widget->get_value());
 		}
 		else
 		{
-			value=string(filename_widget->get_value());
+			value=string(string_widget->get_text());
 		}
 	}
 	else
@@ -457,13 +473,16 @@ Widget_ValueBase::on_grab_focus()
 	else
 	if (type == type_string)
 	{
-		if(param_desc.get_hint()!="filename")
+		if(param_desc.get_hint()=="filename")
 		{
-			string_widget->grab_focus();
+			filename_widget->grab_focus();
+		}
+		else if(param_desc.get_hint()=="sublayer_name") {
+			sublayer_widget->grab_focus();
 		}
 		else
 		{
-			filename_widget->grab_focus();
+			string_widget->grab_focus();
 		}
 	}
 	else

@@ -132,15 +132,6 @@ MainWindow::MainWindow()
 
 MainWindow::~MainWindow(){ }
 
-
-void
-MainWindow::save_all()
-{
-	std::list<etl::handle<Instance> >::iterator iter;
-	for(iter=App::instance_list.begin();iter!=App::instance_list.end();iter++)
-		(*iter)->save();
-}
-
 void
 MainWindow::show_dialog_input()
 {
@@ -159,9 +150,6 @@ MainWindow::init_menus()
 	);
 	action_group->add( Gtk::Action::create("open", Gtk::StockID("synfig-open"), _("Open"), _("Open an existing document")),
 		sigc::hide_return(sigc::bind(sigc::ptr_fun(&studio::App::dialog_open), ""))
-	);
-	action_group->add( Gtk::Action::create("save-all", Gtk::StockID("synfig-save_all"), _("Save All"), _("Save all opened documents")),
-		sigc::ptr_fun(save_all)
 	);
 	action_group->add( Gtk::Action::create("quit", Gtk::StockID("gtk-quit"), _("Quit")),
 		sigc::hide_return(sigc::ptr_fun(&studio::App::quit))

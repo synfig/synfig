@@ -46,7 +46,6 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-//TODO: write reverse for rest of flags cases.
 void
 synfig::BLinePoint::reverse()
 {
@@ -57,9 +56,25 @@ synfig::BLinePoint::reverse()
 		tangent_[1]=-tangent_[1];
 	}
 	else
+	if(merge_tangent_both_)
 	{
 		tangent_[0]=-tangent_[0];
 		tangent_[1]=-tangent_[1];
+	}
+	else
+	if(split_tangent_radius_)
+	{
+		Real mag0 = tangent_[0].mag(), mag1 = tangent_[1].mag();
+		tangent_[0]=Vector(-mag1, mag0==0?Angle::rad(0):tangent_[0].angle());
+		tangent_[1]=Vector(-mag0, mag1==0?Angle::rad(0):tangent_[1].angle());
+		update_tangent2();
+	}
+	else
+	{
+		Real mag0 = tangent_[0].mag(), mag1 = tangent_[1].mag();
+		Angle angle0 = mag0==0?Angle::rad(0):tangent_[0].angle();
+		tangent_[0]=Vector(-mag0, mag1==0?Angle::rad(0):tangent_[1].angle());
+		tangent_[1]=Vector(-mag1, angle0);
 		update_tangent2();
 	}
 }
@@ -67,7 +82,7 @@ synfig::BLinePoint::reverse()
 void
 synfig::BLinePoint::update_tangent2()
 {
-	if(tangent_[0].mag() != 0)
+	if(tangent_[0].mag_squared() != 0)
 		tangent2_radius_split_=Vector(tangent_[1].mag(), tangent_[0].angle());
 	else
 		tangent2_radius_split_=tangent_[1];

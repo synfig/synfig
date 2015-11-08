@@ -196,6 +196,8 @@ src/gui/widgets/widget_keyframe_list.h
 src/gui/widgets/widget_link.h
 src/gui/widgets/widget_sound.cpp
 src/gui/widgets/widget_sound.h
+src/gui/widgets/widget_sublayer.cpp
+src/gui/widgets/widget_sublayer.h
 src/gui/widgets/widget_time.cpp
 src/gui/widgets/widget_time.h
 src/gui/widgets/widget_timeslider.cpp

@@ -118,7 +118,7 @@ Renderer_Timecode::render_vfunc(
 
 		cr->save();
 
-		cr->set_source_rgb(95.0/255.0,0,0);
+		cr->set_source_rgb(GDK_COLOR_TO_RGB(TIMECODE_COLOR_TEXT));
 		cr->move_to(4,4);
 		layout->show_in_cairo_context(cr);
 

@@ -48,7 +48,7 @@ public:
 
 	ValueNode_Switch(Type &x);
 
-	ValueNode_Switch(const ValueNode::Handle &x);
+	ValueNode_Switch(const ValueBase &x);
 
 //	static Handle create(Type &x);
 //	static Handle create(const ValueNode::Handle &x);

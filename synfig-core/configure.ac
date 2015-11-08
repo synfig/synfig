@@ -2,7 +2,7 @@
 
 # -- I N I T --------------------------------------------------
 
-AC_INIT([Synfig Core],[1.1.0],[http://www.synfig.org/issues/thebuggenie/synfig],[synfig])
+AC_INIT([Synfig Core],[1.1.3],[http://www.synfig.org/issues/thebuggenie/synfig],[synfig])
 AC_REVISION
 
 AC_CONFIG_AUX_DIR(config)
@@ -337,7 +337,7 @@ AM_CONDITIONAL(WITH_JPEG, test $with_jpeg = yes)
 AC_LIB_LTDL
 
 # Languages list (alphabetical order, please!)
-ALL_LINGUAS="ar bs ca cs da de el_GR en_GB es eu eu_ES fa_IR fr gl he hu it ja_JP lt nl no_NO pl_PL pt_BR ro ru si sk_SK sr_RS sv_SE tr uz@Latn zh-Hant zh_CN zh_TW"
+ALL_LINGUAS="ar bs ca cs cs_CZ da de el_GR en_CZ en_GB es eu eu_ES fa_IR fr gl he hu it ja_JP lt nl no_NO pl_PL pt_BR ro ru si sk_SK sr_RS sv_SE tr uz@Latn zh-Hant zh_CN zh_TW zh_TW.Big5 ur"
 
 AM_GNU_GETTEXT([external])
 # This is here so autoreconf will run autopoint

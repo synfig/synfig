@@ -74,6 +74,9 @@ ValueNode_Real::ValueNode_Real(const ValueBase &x):
 	if (type == type_integer)
 		set_link("link", ValueNode_Const::create(float(x.get(int()))));
 	else
+	if (type == type_time)
+		set_link("link", ValueNode_Const::create(float(x.get(Time()))));
+	else
 	{
 		assert(0);
 		throw runtime_error(get_local_name()+_(":Bad type ")+x.get_type().description.local_name);
@@ -134,6 +137,8 @@ ValueNode_Real::operator()(Time t)const
 		return bool(real);
 	if (type == type_integer)
 		return int(real);
+	if (type == type_time)
+		return Time(real);
 
 	assert(0);
 	throw runtime_error(get_local_name()+_(":Bad type ")+get_type().description.local_name);
@@ -163,9 +168,10 @@ bool
 ValueNode_Real::check_type(Type &type __attribute__ ((unused)))
 {
 	return
-		type==type_angle ||
-		type==type_bool  ||
-		type==type_integer;
+		type==type_angle   ||
+		type==type_bool    ||
+		type==type_integer ||
+		type==type_time;
 }
 
 LinkableValueNode::Vocab

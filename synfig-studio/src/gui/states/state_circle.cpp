@@ -554,7 +554,7 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	id_box.pack_start(id_entry);
 
 	// 2, layer types creation
-	layer_types_label.set_label(_("Create:"));
+	layer_types_label.set_label(_("Layer Type:"));
 	layer_types_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
 	LAYER_CREATION(layer_circle_togglebutton,

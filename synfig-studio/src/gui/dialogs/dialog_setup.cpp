@@ -118,16 +118,17 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	Gtk::Notebook *notebook=manage(new class Gtk::Notebook());
 	get_vbox()->pack_start(*notebook);
 
-
+	
 	// Gamma
 	Gtk::Table *gamma_table=manage(new Gtk::Table(2,2,false));
 	gamma_table->set_border_width(8);
 	gamma_table->set_row_spacings(6);
 	gamma_table->set_col_spacings(6);
 	notebook->append_page(*gamma_table,_("Gamma"));
-
+	
+#ifndef __APPLE__
 	gamma_table->attach(gamma_pattern, 0, 2, 0, 1, Gtk::EXPAND, Gtk::SHRINK|Gtk::FILL, 0, 1);
-
+#endif
 	Gtk::HScale* scale_gamma_r(manage(new Gtk::HScale(adj_gamma_r)));
 	gamma_table->attach(*manage(new Gtk::Label(_("Red"), Gtk::ALIGN_END, Gtk::ALIGN_END)), 0, 1, 1, 2, Gtk::FILL, Gtk::FILL, 0, 0);
 	gamma_table->attach(*scale_gamma_r, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0.5);
@@ -146,11 +147,11 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	gamma_table->attach(*manage(new Gtk::Label(_("Black Level"), Gtk::ALIGN_END, Gtk::ALIGN_END)), 0, 1, 4, 5, Gtk::FILL, Gtk::FILL, 0, 0);
 	gamma_table->attach(black_level_selector, 1, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0.5);
 	black_level_selector.signal_value_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Setup::on_black_level_change));
-
+	 
 	//gamma_table->attach(*manage(new Gtk::Label(_("Red-Blue Level"))), 0, 1, 5, 6, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	//gamma_table->attach(red_blue_level_selector, 1, 2, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	//red_blue_level_selector.signal_value_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Setup::on_red_blue_level_change));
-
+	
 	// Misc
 	Gtk::Table *misc_table=manage(new Gtk::Table(2,2,false));
 	misc_table->set_border_width(8);

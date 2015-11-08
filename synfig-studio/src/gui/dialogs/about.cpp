@@ -154,6 +154,7 @@ About::About()
 	authors.push_back("Luka Pravica");
 	authors.push_back("Nikita Kitaev (nikitakit)");
 	authors.push_back("Martin Michlmayr (tbm)");
+	authors.push_back("Max May (Permutatrix)");
 	authors.push_back("Miguel Gea Milvaques (xerakko)");
 	authors.push_back("Paul Wise (pabs)");
 	authors.push_back("Ralf Corsepius");

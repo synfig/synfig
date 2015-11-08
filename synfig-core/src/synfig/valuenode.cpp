@@ -99,6 +99,7 @@
 #include "valuenodes/valuenode_dynamic.h"
 #include "valuenodes/valuenode_derivative.h"
 #include "valuenodes/valuenode_weightedaverage.h"
+#include "valuenodes/valuenode_reverse.h"
 
 #include "layer.h"
 
@@ -217,6 +218,8 @@ ValueNode::subsys_init()
 	
 	ADD_VALUENODE(ValueNode_Dynamic,           "dynamic",         _("Dynamic"),          RELEASE_VERSION_1_0);
 	ADD_VALUENODE(ValueNode_Derivative,        "derivative",      _("Derivative"),       RELEASE_VERSION_1_0);
+	
+	ADD_VALUENODE(ValueNode_Reverse,           "reverse",         _("Reverse"),          RELEASE_VERSION_1_0_2);
 
 #undef ADD_VALUENODE_CREATE
 #undef ADD_VALUENODE
@@ -396,6 +399,27 @@ ValueNode::get_description(bool show_exported_name)const
 		ret += strprintf(" (%s)", get_id().c_str());
 
 	return ret;
+}
+
+bool
+ValueNode::is_descendant(ValueNode::Handle value_node_dest)
+{
+    if(!value_node_dest)
+        return false;
+    if(Handle(this) == value_node_dest)
+        return true;
+
+    //! loop through the parents of each node in current_nodes
+    set<Node*> node_parents(value_node_dest->parent_set);
+    ValueNode::Handle value_node_parent = NULL;
+    for (set<Node*>::iterator iter = node_parents.begin(); iter != node_parents.end(); iter++)
+    {
+        value_node_parent = ValueNode::Handle::cast_dynamic(*iter);
+        if(Handle(this) == value_node_parent)
+            break;
+    }
+
+    return value_node_dest->parent_count() ? is_descendant(value_node_parent) : false;
 }
 
 ValueNodeList::ValueNodeList():

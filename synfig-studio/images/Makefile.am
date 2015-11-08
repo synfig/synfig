@@ -7,6 +7,8 @@ EXT = @imageext@
 EXTRA_DIST = \
 	installer_logo.sif \
 	installer_logo_osx.sif \
+	splash_screen-1.0.1.sif \
+	splash_screen-1.0.2.sif \
 	splash_screen-1.0.sif \
 	splash_screen-1.0.x.sif \
 	splash_screen-0.64.1.sif \

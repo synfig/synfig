@@ -44,20 +44,28 @@ if [ `whoami` != "root" ]; then
 	exit 1
 fi
 
-if [ ! -z $UNIVERSAL ]; then
-export BUILDDIR=~/SynfigStudio-build.universal
-else
-export BUILDDIR=~/SynfigStudio-build
+export SCRIPTPATH=$(cd `dirname "$0"`; pwd)
+
+SYNFIG_REPO_DIR=$(dirname "$SCRIPTPATH")
+SCRIPTDIR_IS_REPO=0
+
+if [ -e "$SYNFIG_REPO_DIR/build.conf" ]; then
+	source "$SYNFIG_REPO_DIR/build.conf"
 fi
 
-if [ -z $X11 ]; then
-	export X11=1
+if [ ! -z $UNIVERSAL ] && [[ ! $UNIVERSAL == 0 ]]; then
+export BUILDDIR=~/synfig-buildroot/build.u
+else
+export BUILDDIR=~/synfig-buildroot/build
+export UNIVERSAL=0
 fi
-if [[ $X11 == 1 ]]; then
+
+if [ ! -z $X11 ] && [[ ! $X11 == 0 ]]; then
+	export X11=1
 	export BUILDDIR=${BUILDDIR}.x11
 fi
 
-if [ ! -z $DEBUG ]; then
+if [ ! -z $DEBUG ] && [[ ! $DEBUG == 0 ]]; then
 	echo
 	echo "Debug mode: enabled"
 	echo
@@ -71,10 +79,6 @@ LNKDIR=/tmp/skl/SynfigStudio
 MACPORTS=$LNKDIR/Contents/Resources
 MPSRC=MacPorts-2.3.3
 
-SYNFIG_REPO_DIR=~/src/synfig
-SCRIPTDIR_IS_REPO=0
-
-export SCRIPTPATH=$(cd `dirname "$0"`; pwd)
 
 export SYNFIG_PREFIX=${MACPORTS}/synfig/
 export PATH="$MACPORTS/bin:${SYNFIG_PREFIX}/bin:$MACPORTS/sbin:$PATH"
@@ -86,7 +90,7 @@ export LD_LIBRARY_PATH=${MACPORTS}/lib:${SYNFIG_PREFIX}/lib:${SYNFIG_PREFIX}/lib
 #export CPPFLAGS="-fpermissive -I${MACPORTS}/include -I${SYNFIG_PREFIX}/include"
 export CPPFLAGS="-I${MACPORTS}/include -I${SYNFIG_PREFIX}/include"
 export LDFLAGS="-L${MACPORTS}/lib -L${SYNFIG_PREFIX}/lib"
-if [ ! -z $UNIVERSAL ]; then
+if [[ ! $UNIVERSAL == 0 ]]; then
 export CFLAGS="-arch i386 -arch x86_64"
 export CXXFLAGS="-arch i386 -arch x86_64"
 export LDFLAGS="$LDFLAGS -arch i386 -arch x86_64"
@@ -205,7 +209,7 @@ mkdeps()
 	[ -d $MACPORTS/tmp/app ] || mkdir -p $MACPORTS/tmp/app
 	sed -i "" -e "s|/Applications/MacPorts|$MACPORTS/tmp/app|g" "$MACPORTS/etc/macports/macports.conf" || true
 	
-	if [ ! -z $UNIVERSAL ]; then
+	if [[ ! $UNIVERSAL == 0 ]]; then
 		if [[ $X11 == 1 ]]; then
 			echo "+universal +x11 +nonfree" > $MACPORTS/etc/macports/variants.conf
 		else
@@ -300,7 +304,7 @@ mksynfig()
 	sed -i 's/^AC_CONFIG_SUBDIRS(libltdl)$/m4_ifdef([_AC_SEEN_TAG(libltdl)], [], [AC_CONFIG_SUBDIRS(libltdl)])/' configure.ac || true
 	sed -i 's/^# AC_CONFIG_SUBDIRS(libltdl)$/m4_ifdef([_AC_SEEN_TAG(libltdl)], [], [AC_CONFIG_SUBDIRS(libltdl)])/' configure.ac || true
 	autoreconf --install --force
-	if [ ! -z $UNIVERSAL ]; then
+	if [[ ! $UNIVERSAL == 0 ]]; then
 	export DEPTRACK="--disable-dependency-tracking"
 	fi
 	/bin/sh ./configure ${DEPTRACK} --prefix=${SYNFIG_PREFIX} --includedir=${SYNFIG_PREFIX}/include --disable-static --enable-shared --with-magickpp --without-libavcodec --with-boost=${MACPORTS} ${DEBUG}
@@ -320,7 +324,7 @@ mksynfigstudio()
 	make clean || true
 	CONFIGURE_PACKAGE_OPTIONS='--disable-update-mimedb'
 	/bin/sh ./bootstrap.sh
-	if [ ! -z $UNIVERSAL ]; then
+	if [[ ! $UNIVERSAL == 0 ]]; then
 	export DEPTRACK="--disable-dependency-tracking"
 	fi
 	/bin/sh ./configure ${DEPTRACK}  --prefix=${SYNFIG_PREFIX} --includedir=${SYNFIG_PREFIX}/include --disable-static --enable-shared $DEBUG $CONFIGURE_PACKAGE_OPTIONS
@@ -401,7 +405,7 @@ mkapp()
 
 	# app bundle files
 	echo "*** Please do _NOT_ delete this file. The file script depends on it. ***" > "$SYNFIGAPP/v$VERSION"
-	sed -i "" -e "s/_VERSION_/$VERSION/g" "$SYNFIGAPP/../MacOS/synfigstudio" 
+	sed -i "" -e "s/_VERSION_/$VERSION/g" "$SYNFIGAPP/../MacOS/SynfigStudio" 
 	sed -i "" -e "s/_VERSION_/$VERSION/g" "$SYNFIGAPP/../Info.plist" 
 
 	# save information about the ports which make up this build
@@ -429,7 +433,7 @@ mkdmg()
 	#echo Synfig version is: $VERSION
 
 	ARCH=`uname -m`
-	if [ ! -z $UNIVERSAL ]; then
+	if [[ ! $UNIVERSAL == 0 ]]; then
 	export FINAL_FILENAME=synfigstudio-"$VERSION"
 	else
 	export FINAL_FILENAME=synfigstudio-"$VERSION"."$ARCH"
@@ -445,7 +449,7 @@ mkdmg()
 
 	echo "Creating and attaching disk image..."
 	[ ! -e "$TRANSITORY_FILENAME" ] || rm -rf "$TRANSITORY_FILENAME"
-	/usr/bin/hdiutil create -type SPARSE -size 3072m -fs "Case-sensitive HFS+" -volname "$VOLNAME" -attach "$TRANSITORY_FILENAME"
+	/usr/bin/hdiutil create -type SPARSE -size 3072m -fs "HFS+" -volname "$VOLNAME" -attach "$TRANSITORY_FILENAME"
 
 	echo "Copying files to disk image..."
 	cp -R $APPDIR /Volumes/"$VOLNAME"/SynfigStudio.app
@@ -497,7 +501,8 @@ get_version_release_string()
 		BREED=.$BREED
 	fi
 	REVISION=`git show --pretty=format:%ci HEAD |  head -c 10 | tr -d '-'`
-	echo "$VERSION-$REVISION$BREED.$RELEASE"
+	echo "$VERSION-$REVISION$BREED"
+	#echo "$VERSION-$REVISION$BREED.$RELEASE"
 	popd >/dev/null
 }
 

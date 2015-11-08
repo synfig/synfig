@@ -245,44 +245,7 @@ public:
 
 bool get_paragraph(synfig::String& text)
 {
-	Gtk::Dialog dialog(
-		_("Paragraph"),	// Title
-		true			// Modal
-	);
-	Gtk::Label label(_("Enter Paragraph Text Here:"));
-	label.show();
-	dialog.get_vbox()->pack_start(label);
-
-
-	Glib::RefPtr<Gtk::TextBuffer> text_buffer(Gtk::TextBuffer::create());
-	text_buffer->set_text(text);
-
-	Gtk::TextView text_view(text_buffer);
-	text_view.show();
-	dialog.get_vbox()->pack_start(text_view);
-
-/*
-	Gtk::Entry entry;
-	entry.set_text(text);
-	entry.show();
-	entry.set_activates_default(true);
-	dialog.get_vbox()->pack_start(entry);
-*/
-
-	dialog.add_button(Gtk::StockID("gtk-ok"),Gtk::RESPONSE_OK);
-	dialog.add_button(Gtk::StockID("gtk-cancel"),Gtk::RESPONSE_CANCEL);
-	dialog.set_default_response(Gtk::RESPONSE_OK);
-
-	//text_entry.signal_activate().connect(sigc::bind(sigc::mem_fun(dialog,&Gtk::Dialog::response),Gtk::RESPONSE_OK));
-
-	dialog.show();
-
-	if(dialog.run()!=Gtk::RESPONSE_OK)
-		return false;
-
-	text=text_buffer->get_text();
-
-	return true;
+	return App::dialog_paragraph(_("Text Paragraph"), _("Enter text here:"), text);
 }
 
 /* === M E T H O D S ======================================================= */
