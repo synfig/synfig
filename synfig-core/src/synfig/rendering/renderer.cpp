@@ -58,7 +58,7 @@ using namespace rendering;
 
 
 #ifdef _DEBUG
-#define DEBUG_TASK_LIST
+//#define DEBUG_TASK_LIST
 #define DEBUG_TASK_MEASURE
 //#define DEBUG_TASK_SURFACE
 //#define DEBUG_OPTIMIZATION
@@ -103,7 +103,7 @@ private:
 		#ifdef DEBUG_TASK_SURFACE
 		int count = 2;
 		#else
-		int count = g_get_num_processors();
+		int count = g_get_num_processors()/2;
 		if (count < 2) count = 2;
 		#endif
 
@@ -158,7 +158,7 @@ private:
 		assert(task);
 		bool found = false;
 		Glib::Threads::Mutex::Lock lock(mutex);
-		for(Task::List::iterator i = task->back_deps.begin(); i != task->back_deps.end(); ++i)
+		for(Task::Set::iterator i = task->back_deps.begin(); i != task->back_deps.end(); ++i)
 		{
 			assert(*i);
 			--(*i)->deps_count;
@@ -568,12 +568,14 @@ Renderer::run(const Task::List &list) const
 						if ( (*j)->target_surface == (*rk)->target_surface
 						  && (*rk)->target_rect.valid()
 						  && etl::intersect((*j)->target_rect, (*rk)->target_rect) )
-							{ (*rk)->back_deps.push_back(*i); ++(*i)->deps_count; }
+							if ((*rk)->back_deps.insert(*i).second)
+								++(*i)->deps_count;
 			if ((*i)->target_rect.valid())
 				for(Task::List::const_reverse_iterator rk(i); rk != optimized_list.rend(); ++rk)
 					if ( (*i)->target_surface == (*rk)->target_surface
 					  && etl::intersect((*i)->target_rect, (*rk)->target_rect) )
-						{ (*rk)->back_deps.push_back(*i); ++(*i)->deps_count; }
+						if ((*rk)->back_deps.insert(*i).second)
+							++(*i)->deps_count;
 		}
 	}
 
@@ -596,7 +598,8 @@ Renderer::run(const Task::List &list) const
 		task_cond->cond = &cond;
 		task_cond->mutex = &mutex;
 		for(Task::List::const_iterator i = optimized_list.begin(); i != optimized_list.end(); ++i)
-			{ (*i)->back_deps.push_back(task_cond); ++task_cond->deps_count; }
+			if ((*i)->back_deps.insert(task_cond).second)
+				++task_cond->deps_count;
 		optimized_list.push_back(task_cond);
 
 		queue->enqueue(optimized_list, Task::RunParams());
@@ -616,13 +619,16 @@ Renderer::log(const Task::Handle &task, const String &prefix) const
 		String back_deps;
 		if (!task->back_deps.empty())
 		{
-			for(Task::List::const_iterator i = task->back_deps.begin(); i != task->back_deps.end(); ++i)
+			for(Task::Set::const_iterator i = task->back_deps.begin(); i != task->back_deps.end(); ++i)
 				back_deps += etl::strprintf("%d ", (*i)->index);
 			back_deps = "(" + back_deps.substr(0, back_deps.size()-1) + ") ";
 		}
 
 		info( prefix
 			+ (task->index ? etl::strprintf("#%d ", task->index): "")
+			+ ( task->deps_count
+			  ? etl::strprintf("%d ", task->deps_count )
+			  : "" )
 			+ back_deps
 			+ (typeid(*task).name() + 19)
 			+ ( task->bounds.valid()

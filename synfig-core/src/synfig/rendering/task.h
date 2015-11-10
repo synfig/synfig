@@ -28,6 +28,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include <vector>
+#include <set>
 
 #include <synfig/rect.h>
 #include <synfig/vector.h>
@@ -53,6 +54,7 @@ private:
 public:
 	typedef etl::handle<Task> Handle;
 	typedef std::vector<Handle> List;
+	typedef std::set<Handle> Set;
 
 	struct RunParams { };
 
@@ -63,7 +65,7 @@ public:
 	List sub_tasks;
 
 	mutable Rect bounds;
-	mutable List back_deps;
+	mutable Set back_deps;
 	mutable RunParams params;
 	mutable int index;
 	mutable int deps_count;
