@@ -153,83 +153,81 @@ OptimizerComposite::run(const RunParams& params) const
 			return;
 		}
 
+
 		// change blend order if possible to optimize simple groups
 		if ( ((1 << blend->blend_method) & Color::BLEND_METHODS_ASSOCIATIVE)
 		  && fabsf(blend->amount - 1.f) <= 1e-6 )
 		{
 			if (TaskBlend::Handle sub_blend = TaskBlend::Handle::cast_dynamic(blend->sub_task_b()))
 			{
+				Task::Handle task_a = blend->sub_task_a();
+				Task::Handle task_b = sub_blend->sub_task_a();
+				Task::Handle task_c = sub_blend->sub_task_b();
+
 				if ( sub_blend->blend_method == blend->blend_method
 				  && sub_blend->target_surface
-				  && sub_blend->sub_task_a()
-				  && sub_blend->sub_task_a()->target_surface
-				  && sub_blend->sub_task_a()->target_surface->is_temporary
-				  && sub_blend->sub_task_b()
-				  && sub_blend->sub_task_b()->target_surface
-				  && sub_blend->sub_task_b()->target_surface->is_temporary )
+				  && task_a
+				  && task_a->target_surface
+				  && task_a->target_surface->is_temporary
+				  && task_b
+				  && task_b->target_surface
+				  && task_b->target_surface->is_temporary
+				  && task_a->target_rect.valid()
+				  && task_b->target_rect.valid()
+				  && task_c->target_rect.valid()
+				  && !task_c.type_is<TaskBlend>()
+				  && ( blend->target_surface == task_a->target_surface
+				    || sub_blend->target_surface != task_b->target_surface ))
 				{
-					Task::Handle task_a = blend->sub_task_a();
-					Task::Handle task_b = sub_blend->sub_task_a();
-					Task::Handle task_c = sub_blend->sub_task_b();
+					TaskBlend::Handle new_blend = blend->clone();
+					TaskBlend::Handle new_sub_blend = sub_blend->clone();
+					new_blend->sub_task_a() = new_sub_blend;
+					new_sub_blend->sub_task_a() = task_a;
+					new_sub_blend->sub_task_b() = task_b;
+					new_blend->sub_task_b() = task_c;
 
-					if ( task_a->target_rect.valid()
-					  && task_b->target_rect.valid()
-					  && task_c->target_rect.valid() )
+					VectorInt offset_a = blend->target_rect.get_min()
+									   + blend->offset_a;
+					VectorInt offset_b = blend->target_rect.get_min()
+									   + blend->offset_b
+									   + sub_blend->target_rect.get_min()
+									   + sub_blend->offset_a;
+					VectorInt offset_c = blend->target_rect.get_min()
+									   + blend->offset_b
+									   + sub_blend->target_rect.get_min()
+									   + sub_blend->offset_b;
+
+					etl::set_union(
+						new_sub_blend->target_rect,
+						task_a->target_rect + offset_a,
+						task_b->target_rect + offset_b);
+
+					new_blend->offset_a = -new_blend->target_rect.get_min();
+					if (blend->target_surface == task_a->target_surface)
 					{
-						VectorInt offset_a = blend->offset_a;
-						VectorInt offset_b = blend->offset_b + sub_blend->offset_a;
-						VectorInt offset_c = blend->offset_b + sub_blend->offset_b;
-
-						RectInt rect_a = task_a->target_rect + offset_a;
-						RectInt rect_b = task_b->target_rect + offset_b;
-						//RectInt rect_c = task_c->target_rect + offset_c;
-
-						Surface::Handle surface = blend->target_surface;
-						Surface::Handle sub_surface = sub_blend->target_surface;
-						Surface::Handle surface_a = task_a->target_surface;
-						Surface::Handle surface_b = task_b->target_surface;
-						Surface::Handle surface_c = task_c->target_surface;
-
-						if ((surface == surface_a) == (sub_surface == surface_b))
-						{
-							TaskBlend::Handle new_sub_blend = sub_blend->clone();
-							new_sub_blend->amount = blend->amount;
-							new_sub_blend->sub_task_a() = task_a;
-							new_sub_blend->sub_task_b() = task_b;
-
-							TaskBlend::Handle new_blend = blend->clone();
-							new_blend->amount = blend->amount * sub_blend->amount;
-							new_blend->sub_task_a() = new_sub_blend;
-							new_blend->sub_task_b() = task_c;
-							new_blend->offset_b = offset_c;
-
-							etl::set_union(new_sub_blend->target_rect, rect_a, rect_b);
-
-							if (surface == surface_a && sub_surface == surface_b)
-							{
-								new_blend->offset_a = VectorInt(-new_blend->target_rect.minx, -new_blend->target_rect.miny);
-								new_sub_blend->target_surface = surface_a;
-							}
-							else
-							{
-								new_blend->offset_a = VectorInt(new_sub_blend->target_rect.minx, new_sub_blend->target_rect.miny);
-								new_sub_blend->target_surface->set_size(
-									new_sub_blend->target_rect.maxx - new_sub_blend->target_rect.minx,
-									new_sub_blend->target_rect.maxy - new_sub_blend->target_rect.miny );
-							}
-
-							new_sub_blend->target_rect -= new_blend->offset_a;
-							assert( !new_sub_blend->target_rect.valid() || etl::contains(
-								RectInt(0, 0, new_sub_blend->target_surface->get_width(), new_sub_blend->target_surface->get_height()),
-								new_sub_blend->target_rect ));
-							new_sub_blend->offset_a = offset_a - new_blend->offset_a;
-							new_sub_blend->offset_b = offset_b - new_blend->offset_a;
-
-							apply(params, new_blend);
-							run(params);
-							return;
-						}
+						new_sub_blend->target_surface = blend->target_surface;
 					}
+					else
+					{
+						new_blend->offset_a += new_sub_blend->target_rect.get_min();
+						new_sub_blend->target_rect -= new_sub_blend->target_rect.get_min();
+						new_sub_blend->target_surface->set_size(new_sub_blend->target_rect.maxx, new_sub_blend->target_rect.maxy);
+					}
+
+					new_sub_blend->offset_a = offset_a
+											- new_sub_blend->target_rect.get_min()
+											- new_blend->offset_a
+											- new_blend->target_rect.get_min();
+					new_sub_blend->offset_b = offset_b
+											- new_sub_blend->target_rect.get_min()
+											- new_blend->offset_a
+											- new_blend->target_rect.get_min();
+					new_blend->offset_b = offset_c
+										- new_blend->target_rect.get_min();
+
+					apply(params, new_blend);
+					run(params);
+					return;
 				}
 			}
 		}
