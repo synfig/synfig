@@ -59,7 +59,7 @@ using namespace rendering;
 void
 OptimizerSplit::run(const RunParams& params) const
 {
-	const int min_area = 64*64;
+	const int min_area = 256*256;
 	int threads = params.renderer.get_max_simultaneous_threads();
 	for(Task::List::iterator i = params.list.begin(); i != params.list.end(); ++i)
 	{
