@@ -2320,7 +2320,7 @@ EOF
 	# We have to use "dpkg-deb" command from chroot, 
 	# because recent dpkg-deb seems broken on Fedora
 	chmod -R a+rX debian/synfigstudio
-	/usr/bin/fakeroot dpkg-deb -b debian/synfigstudio
+	run_native /usr/bin/fakeroot dpkg-deb -b debian/synfigstudio
 	#run_native fakeroot dpkg-deb --build synfigstudio
 	if [ ! -e debian/synfigstudio.deb ]; then
 		echo "Failed to generate deb package"
