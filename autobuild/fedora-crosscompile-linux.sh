@@ -2036,6 +2036,7 @@ mkpackage()
 	rm -rf ${DISTPREFIX}/lib/gtkmm-2.4
 	rm -rf ${DISTPREFIX}/lib/pkgconfig
 	rm -rf ${DISTPREFIX}/lib/sigc++-2.0
+	rm -rf ${DISTPREFIX}/share/applications/gtk3-*
 	rm -rf ${DISTPREFIX}/share/doc
 	rm -rf ${DISTPREFIX}/share/devhelp
 	rm -rf ${DISTPREFIX}/share/gtk-doc
