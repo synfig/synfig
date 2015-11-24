@@ -50,6 +50,8 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
+Resource::Id Resource::last_id = 0;
+
 Resource::Storage::Storage(): refcount() { }
 
 Resource::Storage::~Storage() { }

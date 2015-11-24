@@ -57,6 +57,7 @@
 using namespace std;
 using namespace etl;
 using namespace synfig;
+using namespace rendering;
 
 /* === M A C R O S ========================================================= */
 const unsigned int	DEF_TILE_WIDTH = TILE_SIZE / 2;
@@ -89,6 +90,8 @@ Target_Tile::Target_Tile():
 	allow_multithreading_(false)
 {
 	curr_frame_=0;
+	if (const char *s = getenv("SYNFIG_TARGET_DEFAULT_ENGINE"))
+		set_engine(s);
 }
 
 int
@@ -115,6 +118,41 @@ Target_Tile::next_tile(RectInt& rect)
 
 	curr_tile_++;
 	return (tw*th)-curr_tile_+1;
+}
+
+bool
+synfig::Target_Tile::call_renderer(Context &context, const etl::handle<rendering::SurfaceSW> &surfacesw, int quality, const RendDesc &renddesc, ProgressCallback *cb)
+{
+	surfacesw->set_size(desc.get_w(), desc.get_h());
+	if (get_engine().empty())
+	{
+		if(!context.accelerated_render(&surfacesw->get_surface(),quality,desc,0))
+		{
+			// For some reason, the accelerated renderer failed.
+			if(cb)cb->error(_("Accelerated Renderer Failure"));
+			return false;
+		}
+	}
+	else
+	{
+		rendering::Task::Handle task = context.build_rendering_task();
+		if (task)
+		{
+			rendering::Renderer::Handle renderer = rendering::Renderer::get_renderer(get_engine());
+			if (!renderer)
+				throw "Renderer '" + get_engine() + "' not found";
+
+			task->target_surface = surfacesw;
+			task->source_rect_lt = desc.get_tl();
+			task->source_rect_rb = desc.get_br();
+			task->target_rect = RectInt(0, 0, surfacesw->get_width(), surfacesw->get_height());
+
+			rendering::Task::List list;
+			list.push_back(task);
+			renderer->run(list);
+		}
+	}
+	return true;
 }
 
 bool
@@ -258,36 +296,14 @@ synfig::Target_Tile::render_frame_(Context context,ProgressCallback *cb)
 bool
 synfig::Target_Tile::async_render_tile(RectInt rect, Context context, RendDesc tile_desc, ProgressCallback *cb)
 {
-	rendering::SurfaceSW::Handle surfacesw(new rendering::SurfaceSW());
-	surfacesw->set_size(tile_desc.get_w(), tile_desc.get_h());
+	SurfaceSW::Handle surfacesw(new rendering::SurfaceSW());
 	Surface &surface = surfacesw->get_surface();
-	if (get_engine().empty())
-	{
-		if (!context.accelerated_render(&surface, get_quality(), tile_desc, cb))
-		{
-			// For some reason, the accelerated renderer failed.
-			if(cb)cb->error(_("Accelerated Renderer Failure"));
-			return false;
-		}
-	}
-	else
-	{
-		rendering::Task::Handle task = context.build_rendering_task();
-		if (task)
-		{
-			rendering::Renderer::Handle renderer = rendering::Renderer::get_renderer(get_engine());
-			if (!renderer)
-				throw "Renderer '" + get_engine() + "' not found";
 
-			task->target_surface = surfacesw;
-			task->source_rect_lt = tile_desc.get_tl();
-			task->source_rect_rb = tile_desc.get_br();
-			task->target_rect = RectInt(0, 0, surfacesw->get_width(), surfacesw->get_height());
-
-			rendering::Task::List list;
-			list.push_back(task);
-			renderer->run(list);
-		}
+	if (!call_renderer(context, surfacesw, get_quality(), tile_desc, cb))
+	{
+		// For some reason, the accelerated renderer failed.
+		if(cb)cb->error(_("Accelerated Renderer Failure"));
+		return false;
 	}
 
 	if(!surface)

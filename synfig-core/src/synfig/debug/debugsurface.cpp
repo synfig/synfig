@@ -54,14 +54,14 @@ using namespace debug;
 
 /* === M E T H O D S ======================================================= */
 
-#ifdef SYNFIG_DEBUG_SURFACE
-
 void
-DebugSurface::save_to_file(const void *buffer, int width, int height, int pitch, const String &filename)
+DebugSurface::save_to_file(const void *buffer, int width, int height, int pitch, const String &filename, bool overwrite)
 {
 	// generate filename
 	String actual_filename =
-		FileContainerTemporary::generate_indexed_temporary_filename(
+		overwrite
+		? filename
+		: FileContainerTemporary::generate_indexed_temporary_filename(
 			FileSystemNative::instance(),
 			filename + ".tga" );
 
@@ -122,34 +122,32 @@ DebugSurface::save_to_file(const void *buffer, int width, int height, int pitch,
 }
 
 void
-DebugSurface::save_to_file(const Surface &surface, const String &filename)
+DebugSurface::save_to_file(const Surface &surface, const String &filename, bool overwrite)
 {
 	if (surface.is_valid())
-		save_to_file(&surface[0][0], surface.get_w(), surface.get_h(), surface.get_pitch(), filename);
+		save_to_file(&surface[0][0], surface.get_w(), surface.get_h(), surface.get_pitch(), filename, overwrite);
 	else
-		save_to_file(NULL, 0, 0, 0, filename);
+		save_to_file(NULL, 0, 0, 0, filename, overwrite);
 }
 
 void
-DebugSurface::save_to_file(const rendering::Surface &surface, const String &filename)
+DebugSurface::save_to_file(const rendering::Surface &surface, const String &filename, bool overwrite)
 {
 	if (surface.is_created())
 	{
 		std::vector<Color> buffer(surface.get_pixels_count());
 		surface.get_pixels(&buffer.front());
-		save_to_file(&buffer.front(), surface.get_width(), surface.get_height(), 0, filename);
+		save_to_file(&buffer.front(), surface.get_width(), surface.get_height(), 0, filename, overwrite);
 	}
 	else
-		save_to_file(NULL, 0, 0, 0, filename);
+		save_to_file(NULL, 0, 0, 0, filename, overwrite);
 }
 
 void
-DebugSurface::save_to_file(const rendering::Surface::Handle &surface, const String &filename)
+DebugSurface::save_to_file(const rendering::Surface::Handle &surface, const String &filename, bool overwrite)
 {
 	if (surface)
-		save_to_file(*surface, filename);
+		save_to_file(*surface, filename, overwrite);
 	else
-		save_to_file(NULL, 0, 0, 0, filename);
+		save_to_file(NULL, 0, 0, 0, filename, overwrite);
 }
-
-#endif

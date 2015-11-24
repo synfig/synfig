@@ -27,6 +27,8 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <cstdio>
+
 #include <map>
 
 #include "optimizer.h"
@@ -49,10 +51,17 @@ public:
 
 	class Queue;
 
+	struct DebugOptions {
+		String task_list_log;
+		String task_list_optimized_log;
+		String result_image;
+	};
+
 private:
 	static Handle blank;
 	static std::map<String, Handle> *renderers;
 	static Queue *queue;
+	static DebugOptions debug_options;
 
 	Optimizer::List optimizers[Optimizer::CATEGORY_ID_COUNT];
 
@@ -69,8 +78,8 @@ public:
 
 private:
 	void optimize_recursive(const Optimizer::List &optimizers, const Optimizer::RunParams& params, bool first_level_only) const;
-	void log(const Task::Handle &task, const String &prefix = String()) const;
-	void log(const Task::List &list, const String &name = String()) const;
+	void log(const String &logfile, const Task::Handle &task, const String &prefix = String()) const;
+	void log(const String &logfile, const Task::List &list, const String &name = String()) const;
 
 	static void initialize_renderers();
 	static void deinitialize_renderers();
@@ -86,6 +95,9 @@ public:
 	static void unregister_renderer(const String &name);
 	static const Renderer::Handle& get_renderer(const String &name);
 	static const std::map<String, Handle>& get_renderers();
+
+	static const DebugOptions& get_debug_options()
+		{ return debug_options; }
 
 	static bool subsys_init()
 	{

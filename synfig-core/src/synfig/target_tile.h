@@ -41,6 +41,8 @@
 
 namespace synfig {
 
+namespace rendering { class SurfaceSW; }
+
 /*!	\class Target_Tile
 **	\brief Render-target
 **	\todo writeme
@@ -64,6 +66,9 @@ class Target_Tile : public Target
 	String engine_;
 
 	struct TileGroup;
+
+	bool call_renderer(Context &context, const etl::handle<rendering::SurfaceSW> &surfacesw, int quality, const RendDesc &renddesc, ProgressCallback *cb);
+
 public:
 	typedef etl::handle<Target_Tile> Handle;
 	typedef etl::loose_handle<Target_Tile> LooseHandle;

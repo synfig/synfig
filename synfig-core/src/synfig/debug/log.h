@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file measure.h
+/*!	\file debug/log.h
 **	\brief Template Header
 **
 **	$Id$
@@ -22,47 +22,50 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_DEBUG_MEASURE_H
-#define __SYNFIG_DEBUG_MEASURE_H
+#ifndef __SYNFIG_DEBUG_LOG_H
+#define __SYNFIG_DEBUG_LOG_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <vector>
-
+#include <ETL/handle>
+#include <synfig/mutex.h>
 #include <synfig/string.h>
 
 /* === M A C R O S ========================================================= */
-
-#define SYNFIG_DEBUG_MEASURE
 
 /* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
+
 namespace synfig {
 namespace debug {
 
-class Measure {
+class Log
+{
 private:
-	static std::vector<Measure*> stack;
-	static String text;
-
-	String name;
-	bool hide;
-	bool hide_subs;
-	long long subs;
-	long long t;
-
-	Measure(const Measure&): name(), hide(), hide_subs(), subs(), t() { }
-	Measure& operator= (const Measure&) { return *this; }
-	void init();
+	static Mutex mutex;
 
 public:
-	Measure(const String &name, bool hide_subs = false):
-		name(name), hide(), hide_subs(hide_subs), subs(), t()
-	{ init(); }
 
-	~Measure();
+static void append_line_to_file(const String &logfile, const String &str);
+
+
+//! Reports an error
+/*! Call this when an error occurs, describing what happened */
+static void error(const String &logfile, const String &str);
+static void error(const String &logfile, const char *format,...);
+
+//! Reports a warning
+/*! Call this when something questionable occurs, describing what happened */
+static void warning(const String &logfile, const String &str);
+static void warning(const String &logfile, const char *format,...);
+
+//! Reports some information
+/*! Call this to report various information. Please be sparse... */
+static void info(const String &logfile, const String &str);
+static void info(const String &logfile, const char *format,...);
+
 };
 
 }; // END of namespace debug

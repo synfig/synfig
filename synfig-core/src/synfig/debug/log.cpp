@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file measure.cpp
+/*!	\file debug/log.cpp
 **	\brief Template File
 **
 **	$Id$
@@ -29,12 +29,13 @@
 #	include <config.h>
 #endif
 
-#include <glib.h>
+#include <cstdlib>
+
+#include <fstream>
+
+#include "log.h"
 
 #include <synfig/general.h>
-#include <synfig/localization.h>
-
-#include "measure.h"
 
 #endif
 
@@ -52,41 +53,53 @@ using namespace debug;
 
 /* === M E T H O D S ======================================================= */
 
-std::vector<Measure*> Measure::stack;
-String Measure::text;
+Mutex Log::mutex;
 
-void Measure::init() {
-	hide = !stack.empty() && stack.back()->hide_subs;
-	hide_subs |= hide;
-	if (!hide)
-		text += String(stack.size()*2, ' ')
-		      + "begin             "
-		      + name
-			  + "\n";
-	stack.push_back(this);
-	t = g_get_real_time();
+void Log::append_line_to_file(const String &logfile, const String &str)
+{
+	Mutex::Lock lock(mutex);
+	std::ofstream f(logfile.c_str(), std::ios_base::app);
+	f << str << std::endl;
 }
 
-Measure::~Measure() {
-	long long dt = g_get_real_time() - t;
-	double full_s = (double)dt*0.000001;
-	double subs_s = (double)subs*0.000001;
+void
+Log::error(const String &logfile, const String &str)
+{
+	if (logfile.empty()) synfig::error(str); else append_line_to_file(logfile, str);
+}
 
-	if (!hide)
-		text += String((stack.size()-1)*2, ' ')
-		      + "end " + strprintf("%13.6f ", subs ? subs_s : full_s)
-		      + name
-			  + (subs ? strprintf(" (full time: %.6f)", full_s) : String())
-		      + "\n";
+void
+Log::warning(const String &logfile, const String &str)
+{
+	if (logfile.empty()) synfig::warning(str); else append_line_to_file(logfile, str);
+}
 
-	stack.pop_back();
-	if (stack.empty())
-	{
-		info("\n" + text);
-		text.clear();
-	}
-	else
-	{
-		stack.back()->subs += dt;
-	}
+void
+Log::info(const String &logfile, const String &str)
+{
+	if (logfile.empty()) synfig::info(str); else append_line_to_file(logfile, str);
+}
+
+void
+Log::error(const String &logfile, const char *format,...)
+{
+	va_list args;
+	va_start(args,format);
+	error(logfile, vstrprintf(format,args));
+}
+
+void
+Log::warning(const String &logfile, const char *format,...)
+{
+	va_list args;
+	va_start(args,format);
+	error(logfile, vstrprintf(format,args));
+}
+
+void
+Log::info(const String &logfile, const char *format,...)
+{
+	va_list args;
+	va_start(args,format);
+	error(logfile, vstrprintf(format,args));
 }

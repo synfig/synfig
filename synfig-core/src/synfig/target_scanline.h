@@ -38,6 +38,8 @@
 
 namespace synfig {
 
+namespace rendering { class SurfaceSW; }
+
 /*!	\class Target_Scanline
 **	\brief This is a Target class that implements the render fucntion
 * for a line by line render procedure
@@ -46,6 +48,10 @@ class Target_Scanline : public Target
 {
 	//! Number of threads to use
 	int threads_;
+
+	String engine_;
+
+	bool call_renderer(Context &context, const etl::handle<rendering::SurfaceSW> &surfacesw, int quality, const RendDesc &renddesc, ProgressCallback *cb);
 
 public:
 	typedef etl::handle<Target_Scanline> Handle;
@@ -88,9 +94,15 @@ public:
 	*/
 	virtual bool end_scanline()=0;
 	//! Sets the number of threads
+
 	void set_threads(int x) { threads_=x; }
 	//! Gets the number of threads
 	int get_threads()const { return threads_; }
+	//! Gets engine
+	const String& get_engine()const { return engine_; }
+	//! Sets engine
+	void set_engine(const String &x) { engine_=x; }
+
 	//! Puts the rendered surface onto the target.
 	bool add_frame(const synfig::Surface *surface);
 private:

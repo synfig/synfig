@@ -46,6 +46,12 @@ namespace rendering
 class Resource: public etl::shared_object
 {
 public:
+	typedef unsigned long long Id;
+
+private:
+	static Id last_id;
+
+public:
 	typedef etl::handle<Resource> Handle;
 	typedef std::vector<Handle> List;
 
@@ -77,9 +83,14 @@ public:
 	};
 
 private:
+	const Id id;
 	mutable Storage::Handle alternatives;
 
 public:
+	Resource(): id(++last_id) { }
+
+	Id get_id() const { return id; }
+
 	const List& get_alternatives() const
 		{ return alternatives ? alternatives->resources : Storage::blank; }
 

@@ -35,14 +35,17 @@
 #include <signal.h>
 #endif
 
+#include <cstdlib>
+
 #include <typeinfo>
 
 #include <glibmm/threads.h>
 
 #include <synfig/general.h>
 #include <synfig/localization.h>
-#include <synfig/debug/measure.h>
 #include <synfig/debug/debugsurface.h>
+#include <synfig/debug/log.h>
+#include <synfig/debug/measure.h>
 
 #include "renderer.h"
 
@@ -78,7 +81,7 @@ using namespace rendering;
 Renderer::Handle Renderer::blank;
 std::map<String, Renderer::Handle> *Renderer::renderers;
 Renderer::Queue *Renderer::queue;
-
+Renderer::DebugOptions Renderer::debug_options;
 
 class Renderer::Queue
 {
@@ -532,13 +535,21 @@ Renderer::optimize(Task::List &list) const
 bool
 Renderer::run(const Task::List &list) const
 {
+	//info("renderer: %s", get_name().c_str());
+	//info("renderer.debug.task_list_log: %s", get_debug_options().task_list_log.c_str());
+	//info("renderer.debug.task_list_optimized_log: %s", get_debug_options().task_list_optimized_log.c_str());
+	//info("renderer.debug.result_image: %s", get_debug_options().result_image.c_str());
+
 	#ifdef DEBUG_TASK_MEASURE
 	debug::Measure t("Renderer::run");
 	#endif
 
 	#ifdef DEBUG_TASK_LIST
-	log(list, "input list");
+	log("", list, "input list");
 	#endif
+
+	if (!get_debug_options().task_list_log.empty())
+		log(get_debug_options().task_list_log, list, "input list");
 
 	Task::List optimized_list(list);
 	{
@@ -580,8 +591,11 @@ Renderer::run(const Task::List &list) const
 	}
 
 	#ifdef DEBUG_TASK_LIST
-	log(optimized_list, "optimized list");
+	log("", optimized_list, "optimized list");
 	#endif
+
+	if (!get_debug_options().task_list_optimized_log.empty())
+		log(get_debug_options().task_list_optimized_log, optimized_list, "optimized list");
 
 	bool success = true;
 
@@ -606,13 +620,21 @@ Renderer::run(const Task::List &list) const
 
 		task_cond->cond->wait(mutex);
 		if (!task_cond->success) success = false;
+
+		if (!get_debug_options().result_image.empty())
+			debug::DebugSurface::save_to_file(
+				optimized_list.size() > 1
+					? (*(optimized_list.rbegin()+1))->target_surface
+					: Surface::Handle(),
+				get_debug_options().result_image,
+				true );
 	}
 
 	return success;
 }
 
 void
-Renderer::log(const Task::Handle &task, const String &prefix) const
+Renderer::log(const String &logfile, const Task::Handle &task, const String &prefix) const
 {
 	if (task)
 	{
@@ -624,7 +646,8 @@ Renderer::log(const Task::Handle &task, const String &prefix) const
 			back_deps = "(" + back_deps.substr(0, back_deps.size()-1) + ") ";
 		}
 
-		info( prefix
+		debug::Log::info(logfile,
+		      prefix
 			+ (task->index ? etl::strprintf("#%d ", task->index): "")
 			+ ( task->deps_count
 			  ? etl::strprintf("%d ", task->deps_count )
@@ -648,33 +671,33 @@ Renderer::log(const Task::Handle &task, const String &prefix) const
 				task->target_rect.maxx, task->target_rect.maxy )
 			  : "" )
 			+ ( task->target_surface
-			  ?	etl::strprintf(" surface %s (%dx%d) 0x%x",
+			  ?	etl::strprintf(" surface %s (%dx%d) id %d",
 					(typeid(*task->target_surface).name() + 19),
 					task->target_surface->get_width(),
 					task->target_surface->get_height(),
-					task->target_surface.get() )
+					task->target_surface->get_id() )
 			  : "" ));
 		for(Task::List::const_iterator i = task->sub_tasks.begin(); i != task->sub_tasks.end(); ++i)
-			log(*i, prefix + "  ");
+			log(logfile, *i, prefix + "  ");
 	}
 	else
 	{
-		info(prefix + " NULL");
+		debug::Log::info(logfile, prefix + " NULL");
 	}
 }
 
 void
-Renderer::log(const Task::List &list, const String &name) const
+Renderer::log(const String &logfile, const Task::List &list, const String &name) const
 {
 	String line = "-------------------------------------------";
 	String n = "    " + name;
 	n.resize(line.size(), ' ');
 	for(int i = 0; i < (int)line.size(); ++i)
 		if (n[i] == ' ') n[i] = line[i];
-	info(n);
+	debug::Log::info(logfile, n);
 	for(Task::List::const_iterator i = list.begin(); i != list.end(); ++i)
-		log(*i);
-	info(line);
+		log(logfile, *i, "");
+	debug::Log::info(logfile, line);
 }
 
 void
@@ -682,6 +705,15 @@ Renderer::initialize()
 {
 	if (renderers != NULL || queue != NULL)
 		synfig::error("rendering::Renderer already initialized");
+
+	// init debug options
+	if (const char *s = getenv("SYNFIG_RENDERING_DEBUG_TASK_LIST_LOG"))
+		debug_options.task_list_log = s;
+	if (const char *s = getenv("SYNFIG_RENDERING_DEBUG_TASK_LIST_OPTIMIZED_LOG"))
+		debug_options.task_list_optimized_log = s;
+	if (const char *s = getenv("SYNFIG_RENDERING_DEBUG_RESULT_IMAGE"))
+		debug_options.result_image = s;
+
 	renderers = new std::map<String, Handle>();
 	queue = new Queue();
 

@@ -22,19 +22,12 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_DEBUG_DEBUGSURFACE_H
-#define __SYNFIG_DEBUG_DEBUGSURFACE_H
-
 /* === H E A D E R S ======================================================= */
 
 #include <ETL/handle>
 #include <synfig/string.h>
 
 /* === M A C R O S ========================================================= */
-
-#ifdef _DEBUG
-#define SYNFIG_DEBUG_SURFACE
-#endif
 
 /* === T Y P E D E F S ===================================================== */
 
@@ -50,24 +43,13 @@ namespace debug {
 class DebugSurface
 {
 public:
-
-#ifdef SYNFIG_DEBUG_SURFACE
-	static void save_to_file(const void *buffer, int width, int height, int stride, const String &filename);
-	static void save_to_file(const Surface &surface, const String &filename);
-	static void save_to_file(const rendering::Surface &surface, const String &filename);
-	static void save_to_file(const etl::handle<rendering::Surface> &surface, const String &filename);
-#else
-	inline static void save_to_file(const void *, int, int, int, const String &) { }
-	inline static void save_to_file(const Surface &, const String &) { }
-	inline static void save_to_file(const rendering::Surface &, const String &) { }
-	inline static void save_to_file(const etl::handle<rendering::Surface> &, const String &);
-#endif
-
+	static void save_to_file(const void *buffer, int width, int height, int stride, const String &filename, bool overwrite = false);
+	static void save_to_file(const Surface &surface, const String &filename, bool overwrite = false);
+	static void save_to_file(const rendering::Surface &surface, const String &filename, bool overwrite = false);
+	static void save_to_file(const etl::handle<rendering::Surface> &surface, const String &filename, bool overwrite = false);
 };
 
 }; // END of namespace debug
 }; // END of namespace synfig
 
 /* === E N D =============================================================== */
-
-#endif
