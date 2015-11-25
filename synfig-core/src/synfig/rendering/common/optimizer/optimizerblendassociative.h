@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/common/optimizer/optimizercomposite.h
-**	\brief OptimizerComposite Header
+/*!	\file synfig/rendering/common/optimizer/optimizerblendassociative.h
+**	\brief OptimizerBlendAssociative Header
 **
 **	$Id$
 **
@@ -22,8 +22,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_RENDERING_OPTIMIZERCOMPOSITE_H
-#define __SYNFIG_RENDERING_OPTIMIZERCOMPOSITE_H
+#ifndef __SYNFIG_RENDERING_OPTIMIZERBLENDASSOCIATIVE_H
+#define __SYNFIG_RENDERING_OPTIMIZERBLENDASSOCIATIVE_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -40,13 +40,14 @@ namespace synfig
 namespace rendering
 {
 
-class OptimizerComposite: public Optimizer
+class OptimizerBlendAssociative: public Optimizer
 {
 public:
-	OptimizerComposite()
+	OptimizerBlendAssociative()
 	{
 		category_id = CATEGORY_ID_POST_SPECIALIZE;
 		depends_from = CATEGORY_SPECIALIZE;
+		mode = MODE_REPEAT_LAST;
 		for_task = true;
 	}
 

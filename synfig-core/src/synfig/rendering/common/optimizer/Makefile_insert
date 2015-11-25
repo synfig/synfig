@@ -1,6 +1,10 @@
 RENDERING_COMMON_OPTIMIZER_HH = \
+	rendering/common/optimizer/optimizerblendassociative.h \
+	rendering/common/optimizer/optimizerblendcomposite.h \
+	rendering/common/optimizer/optimizerblendseparate.h \
+	rendering/common/optimizer/optimizerblendsplit.h \
+	rendering/common/optimizer/optimizerblendzero.h \
 	rendering/common/optimizer/optimizercalcbounds.h \
-	rendering/common/optimizer/optimizercomposite.h \
 	rendering/common/optimizer/optimizerlinear.h \
 	rendering/common/optimizer/optimizersplit.h \
 	rendering/common/optimizer/optimizersurface.h \
@@ -11,8 +15,12 @@ RENDERING_COMMON_OPTIMIZER_HH = \
 	rendering/common/optimizer/optimizertransformationaffine.h
 
 RENDERING_COMMON_OPTIMIZER_CC = \
+	rendering/common/optimizer/optimizerblendassociative.cpp \
+	rendering/common/optimizer/optimizerblendcomposite.cpp \
+	rendering/common/optimizer/optimizerblendseparate.cpp \
+	rendering/common/optimizer/optimizerblendsplit.cpp \
+	rendering/common/optimizer/optimizerblendzero.cpp \
 	rendering/common/optimizer/optimizercalcbounds.cpp \
-	rendering/common/optimizer/optimizercomposite.cpp \
 	rendering/common/optimizer/optimizerlinear.cpp \
 	rendering/common/optimizer/optimizersplit.cpp \
 	rendering/common/optimizer/optimizersurface.cpp \
