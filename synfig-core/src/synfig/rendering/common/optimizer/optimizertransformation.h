@@ -52,7 +52,8 @@ public:
 	OptimizerTransformation()
 	{
 		category_id = CATEGORY_ID_COMMON;
-		mode = MODE_REPEAT_LAST;
+		// TODO: is MODE_RECURSIVE actually needs?
+		mode = MODE_REPEAT_LAST | MODE_RECURSIVE;
 		for_task = true;
 	}
 

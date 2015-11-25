@@ -60,6 +60,9 @@ using namespace synfig;
 using namespace rendering;
 
 
+#define SYNFIG_RENDERING_MAX_THREADS 256
+
+
 #ifdef _DEBUG
 //#define DEBUG_TASK_LIST
 #define DEBUG_TASK_MEASURE
@@ -103,12 +106,17 @@ private:
 		// one thread reserved for OpenGL
 		// also this thread almost don't use CPU time
 		// so we have ~50% of one core for GUI
+		int count = g_get_num_processors();
+
 		#ifdef DEBUG_TASK_SURFACE
-		int count = 2;
-		#else
-		int count = g_get_num_processors()/2;
-		if (count < 2) count = 2;
+		count = 2;
 		#endif
+
+		if (const char *s = getenv("SYNFIG_RENDERING_THREADS"))
+			count = atoi(s) + 1;
+
+		if (count > SYNFIG_RENDERING_MAX_THREADS) count = SYNFIG_RENDERING_MAX_THREADS;
+		if (count < 2) count = 2;
 
 		for(int i = 0; i < count; ++i)
 			threads.push_back(
@@ -333,72 +341,140 @@ void
 Renderer::optimize_recursive(const Optimizer::List &optimizers, const Optimizer::RunParams& params, bool first_level_only) const
 {
 	if (!params.ref_task) return;
+
+	// check dependencies
 	if (params.ref_affects_to & params.depends_from) return;
 
+	// run all non-deep-first optimizers for current task
+	// before processing of sub-tasks (see Optimizer::deep_first)
 	for(Optimizer::List::const_iterator i = optimizers.begin(); i != optimizers.end(); ++i)
 	{
 		if (!(*i)->deep_first)
 		{
 			if ((*i)->for_task || ((*i)->for_root_task && !params.parent))
 			{
+				// run
 				Optimizer::RunParams p(params);
 				(*i)->run(p);
+
+				// apply params
 				params.ref_affects_to |= p.ref_affects_to;
 				params.ref_mode |= p.ref_mode;
 				params.ref_task = p.ref_task;
+
+				// return when current task removed
 				if (!params.ref_task) return;
+
 				assert( !params.ref_task->target_rect.valid() || etl::contains(
 					RectInt(0, 0, params.ref_task->target_surface->get_width(), params.ref_task->target_surface->get_height()),
 					params.ref_task->target_rect ));
+
+				// check dependencies
 				if (params.ref_affects_to & params.depends_from) return;
 			}
 		}
 	}
 
+	// process sub-tasks, only for non-for-root-task optimizers (see Optimizer::for_root_task)
 	if (!first_level_only)
 	{
 		bool task_clonned = false;
+		bool nonrecursive = false;
+		bool parent_nonrecursive = true;
+		Optimizer::RunParams initial_params(params);
 		for(Task::List::iterator i = params.ref_task->sub_tasks.begin(); i != params.ref_task->sub_tasks.end();)
 		{
 			if (*i)
 			{
-				Optimizer::RunParams sub_params = params.sub(*i);
-				optimize_recursive(optimizers, sub_params, false);
+				// recursive run
+				Optimizer::RunParams sub_params = initial_params.sub(*i);
+				optimize_recursive(optimizers, sub_params, nonrecursive);
+				nonrecursive = false;
+
+				// replace sub-task if optimized
 				if (sub_params.ref_task != *i)
 				{
+					// before replacement clone current task (if it not already cloned)
 					if (!task_clonned)
 					{
 						int index = i - params.ref_task->sub_tasks.begin();
 						params.ref_task = params.ref_task->clone();
-						i = params.ref_task->sub_tasks.begin() + index;
+						i = params.ref_task->sub_tasks.begin() + index; // validate iterator
 						task_clonned = true;
 					}
 					*i = sub_params.ref_task;
-					if (!(sub_params.ref_mode & Optimizer::MODE_REPEAT)) ++i;
-				} else ++i;
+
+					// go to next sub-task if we don't need to repeat optimization (see Optimizer::MODE_REPEAT)
+					if (sub_params.ref_mode & Optimizer::MODE_REPEAT_LAST == Optimizer::MODE_REPEAT_LAST)
+					{
+						// check non-recursive flag (see Optimizer::MODE_RECURSIVE)
+						if (!(sub_params.ref_mode & Optimizer::MODE_RECURSIVE))
+							nonrecursive = true;
+					}
+					else
+					{
+						++i;
+					}
+				}
+				else
+				{
+					// go to next sub-task, when sub-task not unchanged
+					++i;
+				}
+
+				// apply affected categories
 				params.ref_affects_to |= sub_params.ref_affects_to;
-				if (sub_params.ref_mode & Optimizer::MODE_REPEAT_BRUNCH)
-					params.ref_mode |= sub_params.ref_mode;
+
+				// if mode is REPEAT_BRUNCH then provide this flag to result
+				if (sub_params.ref_mode & Optimizer::MODE_REPEAT_BRUNCH == Optimizer::MODE_REPEAT_BRUNCH)
+				{
+					params.ref_mode |= Optimizer::MODE_REPEAT_BRUNCH;
+					params.ref_mode |= (sub_params.ref_mode & Optimizer::MODE_RECURSIVE);
+				}
+				else
+				// if mode is REPEAT_PARENT then provide flag REPEAT_LAST to result (repeat only one upper level)
+				if (sub_params.ref_mode & Optimizer::MODE_REPEAT_PARENT == Optimizer::MODE_REPEAT_PARENT)
+				{
+					params.ref_mode |= Optimizer::MODE_REPEAT_LAST;
+					params.ref_mode |= (sub_params.ref_mode & Optimizer::MODE_RECURSIVE);
+				}
+
+				// check dependencies
 				if (params.ref_affects_to & params.depends_from) return;
-			} else ++i;
+			}
+			else
+			{
+				// skip nulls
+				++i;
+			}
 		}
 	}
 
+	// run deep-first optimizers for current task
+	// when all sub-tasks are processed (see Optimizer::deep_first)
 	for(Optimizer::List::const_iterator i = optimizers.begin(); i != optimizers.end(); ++i)
 	{
 		if ((*i)->deep_first)
 		{
 			if ((*i)->for_task || ((*i)->for_root_task && !params.parent))
 			{
+				// run
 				Optimizer::RunParams p(params);
 				(*i)->run(p);
+
+				// apply params
 				params.ref_affects_to |= p.ref_affects_to;
 				params.ref_mode |= p.ref_mode;
 				params.ref_task = p.ref_task;
+
+				// return when current task removed
 				if (!params.ref_task) return;
+
 				assert( !params.ref_task->target_rect.valid() || etl::contains(
 					RectInt(0, 0, params.ref_task->target_surface->get_width(), params.ref_task->target_surface->get_height()),
 					params.ref_task->target_rect ));
+
+				// check dependencies
 				if (params.ref_affects_to & params.depends_from) return;
 			}
 		}
@@ -491,18 +567,29 @@ Renderer::optimize(Task::List &list) const
 
 		if (for_task || for_root_task)
 		{
+			bool nonrecursive = false;
 			for(Task::List::iterator j = list.begin(); !(categories_to_process & depends_from) && j != list.end();)
 			{
 				if (*j)
 				{
 					Optimizer::RunParams params(*this, list, depends_from, *j);
-					optimize_recursive(current_optimizers, params, !for_task);
+					optimize_recursive(current_optimizers, params, !for_task || nonrecursive);
+					nonrecursive = false;
+
 					if (*j != params.ref_task)
 					{
+
 						if (params.ref_task)
 						{
 							*j = params.ref_task;
-							if (!(params.ref_mode & Optimizer::MODE_REPEAT)) ++j;
+							// go to next sub-task if we don't need to repeat optimization (see Optimizer::MODE_REPEAT)
+							if (params.ref_mode & Optimizer::MODE_REPEAT_LAST == Optimizer::MODE_REPEAT_LAST)
+							{
+								// check non-recursive flag (see Optimizer::MODE_RECURSIVE)
+								if (!(params.ref_mode & Optimizer::MODE_RECURSIVE))
+									nonrecursive = true;
+							}
+							else ++j;
 						}
 						else
 							j = list.erase(j);

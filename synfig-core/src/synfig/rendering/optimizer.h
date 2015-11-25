@@ -50,52 +50,72 @@ public:
 
 	enum CategoryId
 	{
-		CATEGORY_ID_COMMON,		     // common optimizations of task-tree
-		CATEGORY_ID_PRE_SPECIALIZE,  // common optimizations, when transformations already applied
-		CATEGORY_ID_SPECIALIZE,      // renderer-specified optimizations of task-tree
-		CATEGORY_ID_POST_SPECIALIZE, // optimizations of task-tree, which required assigned surfaces
-		CATEGORY_ID_CONVERT,	     // OptimizerSurfaceConvert
-		CATEGORY_ID_LINEAR,		     // OptimizerLinear
-		CATEGORY_ID_LIST		     // optimizations of plain (linear) list of tasks
+		CATEGORY_ID_COMMON,		     //! common optimizations of task-tree
+		CATEGORY_ID_PRE_SPECIALIZE,  //! common optimizations, when transformations already applied
+		CATEGORY_ID_SPECIALIZE,      //! renderer-specified optimizations of task-tree
+		CATEGORY_ID_POST_SPECIALIZE, //! optimizations of task-tree, which required assigned surfaces
+		CATEGORY_ID_CONVERT,	     //! OptimizerSurfaceConvert
+		CATEGORY_ID_LINEAR,		     //! OptimizerLinear
+		CATEGORY_ID_LIST		     //! optimizations of plain (linear) list of tasks
 	};
 
 	enum
 	{
 		CATEGORY_ID_COUNT        = CATEGORY_ID_LIST + 1,
-		CATEGORY_COMMON          = 1 << CATEGORY_ID_COMMON,          // --
-		CATEGORY_PRE_SPECIALIZE  = 1 << CATEGORY_ID_PRE_SPECIALIZE,  // --
-		CATEGORY_SPECIALIZE      = 1 << CATEGORY_ID_SPECIALIZE,      // --
-		CATEGORY_POST_SPECIALIZE = 1 << CATEGORY_ID_POST_SPECIALIZE, // --
-		CATEGORY_CONVERT         = 1 << CATEGORY_ID_CONVERT,         // --
-		CATEGORY_LINEAR          = 1 << CATEGORY_ID_LINEAR,          // --
-		CATEGORY_LIST            = 1 << CATEGORY_ID_LIST,            // --
-		CATEGORY_TREE            = CATEGORY_LINEAR - 1,              // optimizations of task-tree
-		CATEGORY_ALL             = (1 << CATEGORY_ID_COUNT) -1       // all optimizations
+		CATEGORY_COMMON          = 1 << CATEGORY_ID_COMMON,          //! --
+		CATEGORY_PRE_SPECIALIZE  = 1 << CATEGORY_ID_PRE_SPECIALIZE,  //! --
+		CATEGORY_SPECIALIZE      = 1 << CATEGORY_ID_SPECIALIZE,      //! --
+		CATEGORY_POST_SPECIALIZE = 1 << CATEGORY_ID_POST_SPECIALIZE, //! --
+		CATEGORY_CONVERT         = 1 << CATEGORY_ID_CONVERT,         //! --
+		CATEGORY_LINEAR          = 1 << CATEGORY_ID_LINEAR,          //! --
+		CATEGORY_LIST            = 1 << CATEGORY_ID_LIST,            //! --
+		CATEGORY_TREE            = CATEGORY_LINEAR - 1,              //! optimizations of task-tree
+		CATEGORY_ALL             = (1 << CATEGORY_ID_COUNT) -1       //! all optimizations
 	};
 
 	enum
 	{
-		MODE_NONE = 0,
-		MODE_REPEAT_LAST = 1,
-		MODE_REPEAT_BRUNCH = 2,
-		MODE_REPEAT = MODE_REPEAT_LAST | MODE_REPEAT_BRUNCH
+		MODE_NONE          = 0,	//! do nothing
+		MODE_REPEAT_LAST   = 1, //! repeat optimization for current task
+		MODE_REPEAT_PARENT = 3, //! repeat optimization for parent task (includes MODE_REPEAT_LAST)
+		MODE_REPEAT_BRUNCH = 7, //! repeat optimization for each of parent tasks (includes MODE_REPEAT_PARENT and MODE_REPEAT_LAST)
+								//! in sequence: current, parent, parent-of-parent, etc
+		MODE_RECURSIVE     = 8,	//! uses with MODE_REPEAT_XXX, and tells what
+		                        //! repeating should be done with recursive call of subtasks
 	};
 
 	struct CategoryInfo
 	{
+		//! if set then run all optimizers for each task, else run each optimizer for all tasks
+		//! true:  optimizer1(taskA), optimizer2(taskA), optimizer1(taskB), optimizer2(taskB)
+		//! false: optimizer1(taskA), optimizer1(taskB), optimizer2(taskA), optimizer2(taskB)
 		bool simultaneous_run;
 		CategoryInfo(bool simultaneous_run): simultaneous_run(simultaneous_run) { }
 	};
 
 	struct RunParams
 	{
+		//! current renderer
 		const Renderer &renderer;
+
+		//! List of tasks for optimization,
+		//! (see Optimizer::for_list)
 		Task::List &list;
+
 		const Category depends_from;
+
+		//! Parent optimization params.
+		//! Optimizer can read parent tasks via this field
 		const RunParams * const parent;
 
+		//! Task for optimization, optimizer may replace or remove (make null) it,
+		//! (see Optimizer::for_task and Optimizer::for_root_task)
 		mutable Task::Handle ref_task;
+		//! Optimizer may mark dirty some set of categories, these categories should be reran
 		mutable Category ref_affects_to;
+		//! Optimizer may affect to optimization sequence.
+		//! For example, initiate reoptimization of current task.
+		//! (see Optimizater::MODE_XXX)
 		mutable Mode ref_mode;
 
 		RunParams(
@@ -124,20 +144,34 @@ public:
 			ref_mode()
 		{ }
 
+		//! Creates RunParams structure for sub-task
 		RunParams sub(const Task::Handle &task) const
 			{ return RunParams(renderer, list, depends_from, task, this); }
 	};
 
 	static const CategoryInfo categories_info[CATEGORY_ID_COUNT];
 
+	//! Category of this optimizer,
+	//! see enum Optimizer::CategoryId (CATEGORY_ID_XXX)
 	CategoryId category_id;
+	//! Set of categories of optimizers which should be complete before run this optimizer,
+	//! see Optimizer::CATEGORY_XXX enumerations
 	Category depends_from;
+	//! Set of categories of optimizers which should be processed again when this optimizer applied,
+	//! see Optimizer::CATEGORY_XXX enumerations
 	Category affects_to;
+	//! Mode determines what shoud do optimization system when this optimizer applied,
+	//! see Optimizer::MODE_XXXX enumerations
 	Mode mode;
+	//! Optimizer uses for list of tasks
 	bool for_list;
+	//! Optimizer uses for individual tasks
 	bool for_task;
+	//! Optimizer uses for individual tasks, but root nodes of the list only
 	bool for_root_task;
+	//! Optimizer runs for task after all of sub-tasks are processed
 	bool deep_first;
+
 
 	Optimizer(): category_id(), depends_from(), affects_to(), mode(), for_list(), for_task(), for_root_task(), deep_first() { }
 	virtual ~Optimizer();
