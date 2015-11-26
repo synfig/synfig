@@ -46,6 +46,7 @@
 #include "../common/optimizer/optimizerblendzero.h"
 #include "../common/optimizer/optimizercalcbounds.h"
 #include "../common/optimizer/optimizerlinear.h"
+#include "../common/optimizer/optimizerlist.h"
 #include "../common/optimizer/optimizersplit.h"
 #include "../common/optimizer/optimizersurface.h"
 #include "../common/optimizer/optimizersurfaceconvert.h"
@@ -87,7 +88,8 @@ RendererSW::RendererSW()
 
 	register_optimizer(new OptimizerBlendZero());
 	register_optimizer(new OptimizerBlendComposite());
-	//register_optimizer(new OptimizerBlendAssociative());
+	register_optimizer(new OptimizerList());
+	register_optimizer(new OptimizerBlendAssociative());
 	//register_optimizer(new OptimizerBlendSeparate());
 	//register_optimizer(new OptimizerBlendSplit());
 	register_optimizer(new OptimizerSurfaceConvert());

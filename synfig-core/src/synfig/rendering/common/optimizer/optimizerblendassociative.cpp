@@ -40,9 +40,9 @@
 
 #include "optimizerblendassociative.h"
 
+#include "../task/tasklist.h"
 #include "../task/taskblend.h"
 #include "../task/taskcomposite.h"
-#include "../task/tasksurfaceempty.h"
 
 #endif
 
@@ -60,177 +60,79 @@ using namespace rendering;
 void
 OptimizerBlendAssociative::run(const RunParams& params) const
 {
+	// TODO: optimization works only if surface_a == target_surface
 	TaskBlend::Handle blend = TaskBlend::Handle::cast_dynamic(params.ref_task);
 	if ( blend
 	  && blend->target_surface
 	  && blend->sub_task_a()
-	  && blend->sub_task_a()->target_surface
-	  // && blend->sub_task_a()->target_surface->is_temporary
-	  && blend->sub_task_b()
-	  && blend->sub_task_b()->target_surface
-	  && blend->sub_task_b()->target_surface->is_temporary )
+	  && blend->sub_task_a()->target_surface == blend->target_surface
+	  && ((1 << blend->blend_method) & Color::BLEND_METHODS_ASSOCIATIVE)
+	  && fabsf(blend->amount - 1.f) <= 1e-6 )
 	{
-		// remove blend if amount is zero
-		if (fabsf(blend->amount) <= 1e-6)
+		if (TaskList::Handle list_b = TaskList::Handle::cast_dynamic(blend->sub_task_b()))
 		{
-			apply(params, blend->sub_task_a());
-			if (blend->offset_a[0] || blend->offset_a[1])
+			bool empty = true;
+			bool valid = true;
+			for(Task::List::const_iterator i = list_b->sub_tasks.begin(); i != list_b->sub_tasks.end(); ++i)
 			{
-				params.ref_task = params.ref_task->clone();
-				params.ref_task->target_surface = blend->target_surface;
-				params.ref_task->target_rect += VectorInt(blend->target_rect.minx, blend->target_rect.miny) + blend->offset_a;
-				apply_target_bounds(*params.ref_task, RectInt(0, 0, blend->target_surface->get_width(), blend->target_surface->get_height()));
-			}
-			run(params);
-			return;
-		}
-
-		// remove non-straight blend if task_b is empty
-		if (!Color::is_straight(blend->blend_method))
-		{
-			// TODO: may be buggz here
-			if ( blend->sub_task_b().type_equal<Task>()
-			  || blend->sub_task_b().type_is<TaskSurfaceEmpty>()
-			  || !blend->sub_task_b()->target_rect.valid() )
-			{
-				if (blend->sub_task_a()->target_surface == blend->target_surface)
+				if (*i && (*i)->target_rect.valid())
 				{
-					apply(params, blend->sub_task_a());
-					run(params);
-					return;
+					empty = false;
+					TaskComposite *composite = i->type_pointer<TaskComposite>();
+					if ( !composite
+					  || !composite->is_blend_method_supported(blend->blend_method)
+					  || (composite->blend && composite->blend_method != blend->blend_method)  )
+					{
+						valid = false;
+						break;
+					}
+				}
+			}
+
+			if (!empty && valid)
+			{
+				// create list
+				TaskList::Handle list;
+				if (TaskList::Handle list_a = TaskList::Handle::cast_dynamic(blend->sub_task_a()))
+				{
+					list = list_a->clone();
+					assign(list, Task::Handle(blend));
+					list->sub_tasks = list_a->sub_tasks;
 				}
 				else
 				{
-					Task::Handle sub_task = blend->sub_task_a()->clone();
-					sub_task->target_surface = blend->target_surface;
-					sub_task->target_rect += blend->offset_a;
-					assert( !sub_task->target_rect.valid() || etl::contains(
-						RectInt(0, 0, sub_task->target_surface->get_width(), sub_task->target_surface->get_height()),
-						sub_task->target_rect ));
-					apply(params, sub_task);
-					run(params);
-					return;
+					list = new TaskList();
+					assign(list, Task::Handle(blend));
+					list->sub_tasks.clear();
+					list->sub_tasks.push_back(blend->sub_task_a());
 				}
-			}
-		}
 
-		//run(params.sub(blend->sub_task_a()));
-		//run(params.sub(blend->sub_task_b()));
-
-		// change blend order if possible to optimize simple groups
-		if ( ((1 << blend->blend_method) & Color::BLEND_METHODS_ASSOCIATIVE)
-		  && fabsf(blend->amount - 1.f) <= 1e-6 )
-		{
-			if (TaskBlend::Handle sub_blend = TaskBlend::Handle::cast_dynamic(blend->sub_task_b()))
-			{
-				Task::Handle task_a = blend->sub_task_a();
-				Task::Handle task_b = sub_blend->sub_task_a();
-				Task::Handle task_c = sub_blend->sub_task_b();
-				if ( sub_blend->blend_method == blend->blend_method
-				  && sub_blend->target_surface
-				  && task_a
-				  && task_a->target_surface
-				  && task_a->target_surface->is_temporary
-				  && task_b
-				  && task_b->target_surface
-				  && task_b->target_surface->is_temporary
-				  && task_a->target_rect.valid()
-				  && task_b->target_rect.valid()
-				  && task_c->target_rect.valid()
-				  && !task_c.type_is<TaskBlend>()
-				  && ( blend->target_surface == task_a->target_surface
-				    || sub_blend->target_surface != task_b->target_surface ))
+				// add tasks into list
+				for(Task::List::const_iterator i = list_b->sub_tasks.begin(); i != list_b->sub_tasks.end(); ++i)
 				{
-					TaskBlend::Handle new_blend = blend->clone();
-					TaskBlend::Handle new_sub_blend = sub_blend->clone();
-					new_blend->sub_task_a() = new_sub_blend;
-					new_sub_blend->sub_task_a() = task_a;
-					new_sub_blend->sub_task_b() = task_b;
-					new_blend->sub_task_b() = task_c;
-
-					VectorInt offset_a = blend->target_rect.get_min()
-									   + blend->offset_a;
-					VectorInt offset_b = blend->target_rect.get_min()
-									   + blend->offset_b
-									   + sub_blend->target_rect.get_min()
-									   + sub_blend->offset_a;
-					VectorInt offset_c = blend->target_rect.get_min()
-									   + blend->offset_b
-									   + sub_blend->target_rect.get_min()
-									   + sub_blend->offset_b;
-
-					etl::set_union(
-						new_sub_blend->target_rect,
-						task_a->target_rect + offset_a,
-						task_b->target_rect + offset_b);
-
-					new_blend->offset_a = -new_blend->target_rect.get_min();
-					if (blend->target_surface == task_a->target_surface)
+					if (*i && (*i)->target_rect.valid())
 					{
-						new_sub_blend->target_surface = blend->target_surface;
-					}
-					else
-					{
-						new_blend->offset_a += new_sub_blend->target_rect.get_min();
-						new_sub_blend->target_rect -= new_sub_blend->target_rect.get_min();
-						new_sub_blend->target_surface->set_size(new_sub_blend->target_rect.maxx, new_sub_blend->target_rect.maxy);
-					}
+						Task::Handle task = (*i)->clone();
 
-					new_sub_blend->offset_a = offset_a
-											- new_sub_blend->target_rect.get_min()
-											- new_blend->offset_a
-											- new_blend->target_rect.get_min();
-					new_sub_blend->offset_b = offset_b
-											- new_sub_blend->target_rect.get_min()
-											- new_blend->offset_a
-											- new_blend->target_rect.get_min();
-					new_blend->offset_b = offset_c
-										- new_blend->target_rect.get_min();
+						TaskComposite *composite = i->type_pointer<TaskComposite>();
+						if (!composite->blend)
+						{
+							composite->blend = true;
+							composite->blend_method = blend->blend_method;
+							composite->amount = 1.f;
+						}
 
-					apply(params, new_blend);
-					run(params);
-					return;
+						task->target_surface = list->target_surface;
+						task->target_rect +=
+							  blend->target_rect.get_min()
+							+ blend->offset_b;
+
+						list->sub_tasks.push_back(task);
+					}
 				}
+
+				apply(params, list);
 			}
-		}
-
-		// remove blend if task_b supports blending
-		TaskComposite *composite = blend->sub_task_b().type_pointer<TaskComposite>();
-		if ( composite
-		  && composite->is_blend_method_supported(blend->blend_method)
-		  && !composite->blend )
-		{
-			Task::Handle task_a = blend->sub_task_a()->clone();
-			task_a->target_surface = blend->target_surface;
-			task_a->target_rect +=
-				VectorInt(blend->target_rect.minx, blend->target_rect.miny)
-			  + blend->offset_a;
-			assert( !task_a->target_rect.valid() || etl::contains(
-				RectInt(0, 0, task_a->target_surface->get_width(), task_a->target_surface->get_height()),
-				task_a->target_rect ));
-
-			Task::Handle task_b = blend->sub_task_b()->clone();
-			task_b->target_surface = blend->target_surface;
-			task_b->target_rect +=
-				VectorInt(blend->target_rect.minx, blend->target_rect.miny)
-			  + blend->offset_b;
-			assert( !task_b->target_rect.valid() || etl::contains(
-				RectInt(0, 0, task_b->target_surface->get_width(), task_b->target_surface->get_height()),
-				task_b->target_rect ));
-
-			composite = task_b.type_pointer<TaskComposite>();
-			composite->blend = true;
-			composite->blend_method = blend->blend_method;
-			composite->amount = blend->amount;
-
-			Task::Handle task = new Task();
-			assign(task, Task::Handle(blend));
-			task->sub_task(0) = task_a;
-			task->sub_task(1) = task_b;
-
-			apply(params, task);
-			run(params);
-			return;
 		}
 	}
 }
