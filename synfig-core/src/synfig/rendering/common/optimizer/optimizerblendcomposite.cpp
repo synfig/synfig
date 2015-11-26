@@ -42,7 +42,7 @@
 
 #include "../task/taskblend.h"
 #include "../task/taskcomposite.h"
-#include "../task/tasksurfaceempty.h"
+#include "../task/tasklist.h"
 
 #endif
 
@@ -99,8 +99,9 @@ OptimizerBlendComposite::run(const RunParams& params) const
 			composite->blend_method = blend->blend_method;
 			composite->amount = blend->amount;
 
-			Task::Handle task = new Task();
+			TaskList::Handle task = new TaskList();
 			assign(task, Task::Handle(blend));
+			task->sub_tasks.clear();
 			task->sub_task(0) = task_a;
 			task->sub_task(1) = task_b;
 
