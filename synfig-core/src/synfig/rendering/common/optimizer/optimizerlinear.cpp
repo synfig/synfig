@@ -37,6 +37,7 @@
 
 #include "optimizerlinear.h"
 
+#include "../task/tasklist.h"
 #include "../task/tasksurface.h"
 #include "../task/tasksurfaceempty.h"
 
@@ -100,7 +101,7 @@ OptimizerLinear::run(const RunParams& params) const
 
 	// remove dummy tasks
 	for(Task::List::iterator i = params.list.begin(); i != params.list.end();)
-		if (i->type_equal<Task>()/* || i->type_is<TaskSurface>() || i->type_is<TaskSurfaceEmpty>() */)
+		if (i->type_equal<Task>() || i->type_is<TaskList>()/* || i->type_is<TaskSurface>() || i->type_is<TaskSurfaceEmpty>() */)
 			i = params.list.erase(i); else ++i;
 }
 
