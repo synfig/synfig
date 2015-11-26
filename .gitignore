@@ -213,3 +213,6 @@ ETL/test/surface
 ETL/doc
 synfig-core/doc
 synfig-studio/doc
+/.project
+/.cproject
+/.settings/
