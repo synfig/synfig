@@ -41,8 +41,6 @@
 #include "optimizerblendzero.h"
 
 #include "../task/taskblend.h"
-#include "../task/taskcomposite.h"
-#include "../task/tasksurfaceempty.h"
 
 #endif
 
@@ -58,26 +56,66 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 void
+OptimizerBlendZero::apply_zero(const RunParams &params, const TaskBlend::Handle &blend, const Task::Handle &task) const
+{
+	if (!task || !task->target_rect.valid())
+	{
+		apply(params, Task::Handle());
+		return;
+	}
+
+
+	if (task->target_surface == blend->target_surface)
+	{
+		apply(params, blend->sub_task_a());
+		return;
+	}
+
+	apply(params, task->clone());
+	params.ref_task->target_surface = blend->target_surface;
+	params.ref_task->target_rect +=
+		  blend->target_rect.get_min()
+		- task->target_rect.get_min()
+		+ blend->offset_a;
+}
+
+void
 OptimizerBlendZero::run(const RunParams& params) const
 {
 	TaskBlend::Handle blend = TaskBlend::Handle::cast_dynamic(params.ref_task);
 	if ( blend
 	  && blend->target_surface
 	  && blend->sub_task_a()
-	  && blend->sub_task_a()->target_surface )
+	  && blend->sub_task_a()->target_surface
+	  && blend->sub_task_b()
+	  && blend->sub_task_a()->target_surface)
 	{
-		// remove blend if amount is zero
-		if (fabsf(blend->amount) <= 1e-6)
+		bool zero_amount = fabsf(blend->amount) <= 1e-6;
+
+		if (zero_amount)
+			{ apply_zero(params, blend, blend->sub_task_a()); return; }
+
+		bool valid_a = blend->sub_task_a()->target_rect.is_valid();
+		bool valid_b = blend->sub_task_b()->target_rect.is_valid();
+
+		if (!valid_b && !valid_a)
+			{ apply_zero(params, blend, Task::Handle()); return; }
+
+		bool one_amount = fabsf(blend->amount - 1.f) <= 1e-6;
+		bool intertsects = valid_a && valid_b
+						&& etl::intersect(blend->sub_task_a()->target_rect, blend->sub_task_b()->target_rect);
+
+		if (one_amount && !intertsects)
 		{
-			apply(params, blend->sub_task_a());
-			if (blend->offset_a[0] || blend->offset_a[1])
-			{
-				params.ref_task = params.ref_task->clone();
-				params.ref_task->target_surface = blend->target_surface;
-				params.ref_task->target_rect += VectorInt(blend->target_rect.minx, blend->target_rect.miny) + blend->offset_a;
-				apply_target_bounds(*params.ref_task, RectInt(0, 0, blend->target_surface->get_width(), blend->target_surface->get_height()));
-			}
-			return;
+			bool onto = Color::is_straight(blend->blend_method);
+			bool straight = Color::is_straight(blend->blend_method);
+
+			if ( onto && straight)
+				{ apply_zero(params, blend, Task::Handle()); return; }
+			if ( onto )
+				{ apply_zero(params, blend, blend->sub_task_a()); return; }
+			if ( straight )
+				{ apply_zero(params, blend, blend->sub_task_b()); return; }
 		}
 	}
 }

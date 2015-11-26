@@ -40,14 +40,20 @@ namespace synfig
 namespace rendering
 {
 
+class TaskBlend;
+
 class OptimizerBlendZero: public Optimizer
 {
+private:
+	void apply_zero(const RunParams &params, const etl::handle<TaskBlend> &blend, const Task::Handle &task) const;
+
 public:
 	OptimizerBlendZero()
 	{
 		category_id = CATEGORY_ID_POST_SPECIALIZE;
 		depends_from = CATEGORY_SPECIALIZE;
 		mode = MODE_REPEAT_PARENT;
+		deep_first = true;
 		for_task = true;
 	}
 
