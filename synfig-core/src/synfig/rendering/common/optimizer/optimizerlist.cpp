@@ -38,6 +38,8 @@
 #include "optimizerlist.h"
 
 #include "../task/tasklist.h"
+#include "../task/tasksurface.h"
+#include "../task/tasksurfaceempty.h"
 
 #endif
 
@@ -71,7 +73,7 @@ OptimizerList::run(const RunParams& params) const
 	{
 		for(Task::List::iterator i = list->sub_tasks.begin(); i != list->sub_tasks.end();)
 		{
-			if (!(*i) || !(*i)->target_rect.valid())
+			if (!(*i) || !(*i)->target_rect.valid() || i->type_is<TaskSurface>() || i->type_is<TaskSurfaceEmpty>())
 			{
 				clone_list(params, i, list);
 				i = list->sub_tasks.erase(i);
@@ -90,6 +92,9 @@ OptimizerList::run(const RunParams& params) const
 
 			++i;
 		}
+
+		if (list->sub_tasks.size() == 1)
+			apply(params, list->sub_tasks[0]);
 	}
 }
 
