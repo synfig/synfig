@@ -728,8 +728,11 @@ Renderer::log(const String &logfile, const Task::Handle &task, const String &pre
 		String back_deps;
 		if (!task->back_deps.empty())
 		{
+			std::multiset<int> back_deps_set;
 			for(Task::Set::const_iterator i = task->back_deps.begin(); i != task->back_deps.end(); ++i)
-				back_deps += etl::strprintf("%d ", (*i)->index);
+				back_deps_set.insert((*i)->index);
+			for(std::multiset<int>::const_iterator i = back_deps_set.begin(); i != back_deps_set.end(); ++i)
+				back_deps += etl::strprintf("%d ", *i);
 			back_deps = "(" + back_deps.substr(0, back_deps.size()-1) + ") ";
 		}
 
