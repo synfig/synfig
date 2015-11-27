@@ -380,7 +380,6 @@ Renderer::optimize_recursive(const Optimizer::List &optimizers, const Optimizer:
 	{
 		bool task_clonned = false;
 		bool nonrecursive = false;
-		bool parent_nonrecursive = true;
 		Optimizer::RunParams initial_params(params);
 		for(Task::List::iterator i = params.ref_task->sub_tasks.begin(); i != params.ref_task->sub_tasks.end();)
 		{
@@ -405,7 +404,7 @@ Renderer::optimize_recursive(const Optimizer::List &optimizers, const Optimizer:
 					*i = sub_params.ref_task;
 
 					// go to next sub-task if we don't need to repeat optimization (see Optimizer::MODE_REPEAT)
-					if (sub_params.ref_mode & Optimizer::MODE_REPEAT_LAST == Optimizer::MODE_REPEAT_LAST)
+					if ((sub_params.ref_mode & Optimizer::MODE_REPEAT_LAST) == Optimizer::MODE_REPEAT_LAST)
 					{
 						// check non-recursive flag (see Optimizer::MODE_RECURSIVE)
 						if (!(sub_params.ref_mode & Optimizer::MODE_RECURSIVE))
@@ -426,14 +425,14 @@ Renderer::optimize_recursive(const Optimizer::List &optimizers, const Optimizer:
 				params.ref_affects_to |= sub_params.ref_affects_to;
 
 				// if mode is REPEAT_BRUNCH then provide this flag to result
-				if (sub_params.ref_mode & Optimizer::MODE_REPEAT_BRUNCH == Optimizer::MODE_REPEAT_BRUNCH)
+				if ((sub_params.ref_mode & Optimizer::MODE_REPEAT_BRUNCH) == Optimizer::MODE_REPEAT_BRUNCH)
 				{
 					params.ref_mode |= Optimizer::MODE_REPEAT_BRUNCH;
 					params.ref_mode |= (sub_params.ref_mode & Optimizer::MODE_RECURSIVE);
 				}
 				else
 				// if mode is REPEAT_PARENT then provide flag REPEAT_LAST to result (repeat only one upper level)
-				if (sub_params.ref_mode & Optimizer::MODE_REPEAT_PARENT == Optimizer::MODE_REPEAT_PARENT)
+				if ((sub_params.ref_mode & Optimizer::MODE_REPEAT_PARENT) == Optimizer::MODE_REPEAT_PARENT)
 				{
 					params.ref_mode |= Optimizer::MODE_REPEAT_LAST;
 					params.ref_mode |= (sub_params.ref_mode & Optimizer::MODE_RECURSIVE);
@@ -583,7 +582,7 @@ Renderer::optimize(Task::List &list) const
 						{
 							*j = params.ref_task;
 							// go to next sub-task if we don't need to repeat optimization (see Optimizer::MODE_REPEAT)
-							if (params.ref_mode & Optimizer::MODE_REPEAT_LAST == Optimizer::MODE_REPEAT_LAST)
+							if ((params.ref_mode & Optimizer::MODE_REPEAT_LAST) == Optimizer::MODE_REPEAT_LAST)
 							{
 								// check non-recursive flag (see Optimizer::MODE_RECURSIVE)
 								if (!(params.ref_mode & Optimizer::MODE_RECURSIVE))
