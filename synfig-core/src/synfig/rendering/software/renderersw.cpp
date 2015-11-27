@@ -90,8 +90,8 @@ RendererSW::RendererSW()
 	register_optimizer(new OptimizerBlendComposite());
 	register_optimizer(new OptimizerList());
 	register_optimizer(new OptimizerBlendAssociative());
-	//register_optimizer(new OptimizerBlendSeparate());
-	//register_optimizer(new OptimizerBlendSplit());
+	register_optimizer(new OptimizerBlendSeparate());
+	register_optimizer(new OptimizerBlendSplit());
 	register_optimizer(new OptimizerSurfaceConvert());
 
 	register_optimizer(new OptimizerLinear());

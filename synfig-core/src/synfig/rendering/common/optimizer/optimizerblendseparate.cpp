@@ -41,7 +41,8 @@
 #include "optimizerblendseparate.h"
 
 #include "../task/taskblend.h"
-#include "../task/taskcomposite.h"
+#include "../task/tasklist.h"
+#include "../task/tasksurface.h"
 #include "../task/tasksurfaceempty.h"
 
 #endif
@@ -64,174 +65,53 @@ OptimizerBlendSeparate::run(const RunParams& params) const
 	if ( blend
 	  && blend->target_surface
 	  && blend->sub_task_a()
-	  && blend->sub_task_a()->target_surface
-	  // && blend->sub_task_a()->target_surface->is_temporary
+	  && blend->sub_task_a()->target_surface == blend->target_surface
+	  && !blend->sub_task_a().type_is<TaskSurface>()
+	  && !blend->sub_task_a().type_is<TaskSurfaceEmpty>()
 	  && blend->sub_task_b()
-	  && blend->sub_task_b()->target_surface
-	  && blend->sub_task_b()->target_surface->is_temporary )
+	  && blend->sub_task_b()->target_surface )
 	{
-		// remove blend if amount is zero
-		if (fabsf(blend->amount) <= 1e-6)
-		{
-			apply(params, blend->sub_task_a());
-			if (blend->offset_a[0] || blend->offset_a[1])
-			{
-				params.ref_task = params.ref_task->clone();
-				params.ref_task->target_surface = blend->target_surface;
-				params.ref_task->target_rect += VectorInt(blend->target_rect.minx, blend->target_rect.miny) + blend->offset_a;
-				apply_target_bounds(*params.ref_task, RectInt(0, 0, blend->target_surface->get_width(), blend->target_surface->get_height()));
-			}
-			run(params);
-			return;
-		}
+		TaskBlend::Handle new_blend = TaskBlend::Handle::cast_dynamic(blend->clone());
+		new_blend->sub_task_a() = new TaskSurface();
+		assign(new_blend->sub_task_a(), Task::Handle(blend->sub_task_a()));
+		new_blend->sub_task_a()->sub_tasks.clear();
 
-		// remove non-straight blend if task_b is empty
+		RectInt blend_rect = blend->target_rect;
 		if (!Color::is_straight(blend->blend_method))
+			etl::set_intersect(
+				blend_rect, blend_rect,
+				blend->sub_task_b()->target_rect
+				+ blend->target_rect.get_min()
+				+ blend->offset_b );
+		if (Color::is_onto(blend->blend_method))
+			etl::set_intersect(blend_rect, blend_rect, blend->sub_task_a()->target_rect);
+		if (blend_rect != blend->target_rect)
 		{
-			// TODO: may be buggz here
-			if ( blend->sub_task_b().type_equal<Task>()
-			  || blend->sub_task_b().type_is<TaskSurfaceEmpty>()
-			  || !blend->sub_task_b()->target_rect.valid() )
-			{
-				if (blend->sub_task_a()->target_surface == blend->target_surface)
-				{
-					apply(params, blend->sub_task_a());
-					run(params);
-					return;
-				}
-				else
-				{
-					Task::Handle sub_task = blend->sub_task_a()->clone();
-					sub_task->target_surface = blend->target_surface;
-					sub_task->target_rect += blend->offset_a;
-					assert( !sub_task->target_rect.valid() || etl::contains(
-						RectInt(0, 0, sub_task->target_surface->get_width(), sub_task->target_surface->get_height()),
-						sub_task->target_rect ));
-					apply(params, sub_task);
-					run(params);
-					return;
-				}
-			}
+			new_blend->target_rect = blend_rect;
+			new_blend->offset_a = -blend_rect.get_min();
+			new_blend->offset_b += blend->target_rect.get_min()
+					             - blend_rect.get_min();
 		}
 
-		//run(params.sub(blend->sub_task_a()));
-		//run(params.sub(blend->sub_task_b()));
+		etl::set_intersect(new_blend->sub_task_a()->target_rect, new_blend->sub_task_a()->target_rect, new_blend->target_rect);
 
-		// change blend order if possible to optimize simple groups
-		if ( ((1 << blend->blend_method) & Color::BLEND_METHODS_ASSOCIATIVE)
-		  && fabsf(blend->amount - 1.f) <= 1e-6 )
-		{
-			if (TaskBlend::Handle sub_blend = TaskBlend::Handle::cast_dynamic(blend->sub_task_b()))
-			{
-				Task::Handle task_a = blend->sub_task_a();
-				Task::Handle task_b = sub_blend->sub_task_a();
-				Task::Handle task_c = sub_blend->sub_task_b();
-				if ( sub_blend->blend_method == blend->blend_method
-				  && sub_blend->target_surface
-				  && task_a
-				  && task_a->target_surface
-				  && task_a->target_surface->is_temporary
-				  && task_b
-				  && task_b->target_surface
-				  && task_b->target_surface->is_temporary
-				  && task_a->target_rect.valid()
-				  && task_b->target_rect.valid()
-				  && task_c->target_rect.valid()
-				  && !task_c.type_is<TaskBlend>()
-				  && ( blend->target_surface == task_a->target_surface
-				    || sub_blend->target_surface != task_b->target_surface ))
-				{
-					TaskBlend::Handle new_blend = blend->clone();
-					TaskBlend::Handle new_sub_blend = sub_blend->clone();
-					new_blend->sub_task_a() = new_sub_blend;
-					new_sub_blend->sub_task_a() = task_a;
-					new_sub_blend->sub_task_b() = task_b;
-					new_blend->sub_task_b() = task_c;
+		// TODO: we can truncate task_a when blend straight used,
+		// but in current code organization we cannot change target_rects of
+		// unknown tasks.
+		// For example, to change tagret_rect of TaskBlend we should to change
+		// fields TaskBlend::offset_a and TaskBlend::offset_b
+		// May be we can use TaskSplittable interface?
+		// I need to think about it
 
-					VectorInt offset_a = blend->target_rect.get_min()
-									   + blend->offset_a;
-					VectorInt offset_b = blend->target_rect.get_min()
-									   + blend->offset_b
-									   + sub_blend->target_rect.get_min()
-									   + sub_blend->offset_a;
-					VectorInt offset_c = blend->target_rect.get_min()
-									   + blend->offset_b
-									   + sub_blend->target_rect.get_min()
-									   + sub_blend->offset_b;
+		TaskList::Handle list;
+		list = new TaskList();
+		assign(list, Task::Handle(blend));
+		list->sub_tasks.clear();
 
-					etl::set_union(
-						new_sub_blend->target_rect,
-						task_a->target_rect + offset_a,
-						task_b->target_rect + offset_b);
+		list->sub_tasks.push_back(blend->sub_task_a());
+		list->sub_tasks.push_back(new_blend);
 
-					new_blend->offset_a = -new_blend->target_rect.get_min();
-					if (blend->target_surface == task_a->target_surface)
-					{
-						new_sub_blend->target_surface = blend->target_surface;
-					}
-					else
-					{
-						new_blend->offset_a += new_sub_blend->target_rect.get_min();
-						new_sub_blend->target_rect -= new_sub_blend->target_rect.get_min();
-						new_sub_blend->target_surface->set_size(new_sub_blend->target_rect.maxx, new_sub_blend->target_rect.maxy);
-					}
-
-					new_sub_blend->offset_a = offset_a
-											- new_sub_blend->target_rect.get_min()
-											- new_blend->offset_a
-											- new_blend->target_rect.get_min();
-					new_sub_blend->offset_b = offset_b
-											- new_sub_blend->target_rect.get_min()
-											- new_blend->offset_a
-											- new_blend->target_rect.get_min();
-					new_blend->offset_b = offset_c
-										- new_blend->target_rect.get_min();
-
-					apply(params, new_blend);
-					run(params);
-					return;
-				}
-			}
-		}
-
-		// remove blend if task_b supports blending
-		TaskComposite *composite = blend->sub_task_b().type_pointer<TaskComposite>();
-		if ( composite
-		  && composite->is_blend_method_supported(blend->blend_method)
-		  && !composite->blend )
-		{
-			Task::Handle task_a = blend->sub_task_a()->clone();
-			task_a->target_surface = blend->target_surface;
-			task_a->target_rect +=
-				VectorInt(blend->target_rect.minx, blend->target_rect.miny)
-			  + blend->offset_a;
-			assert( !task_a->target_rect.valid() || etl::contains(
-				RectInt(0, 0, task_a->target_surface->get_width(), task_a->target_surface->get_height()),
-				task_a->target_rect ));
-
-			Task::Handle task_b = blend->sub_task_b()->clone();
-			task_b->target_surface = blend->target_surface;
-			task_b->target_rect +=
-				VectorInt(blend->target_rect.minx, blend->target_rect.miny)
-			  + blend->offset_b;
-			assert( !task_b->target_rect.valid() || etl::contains(
-				RectInt(0, 0, task_b->target_surface->get_width(), task_b->target_surface->get_height()),
-				task_b->target_rect ));
-
-			composite = task_b.type_pointer<TaskComposite>();
-			composite->blend = true;
-			composite->blend_method = blend->blend_method;
-			composite->amount = blend->amount;
-
-			Task::Handle task = new Task();
-			assign(task, Task::Handle(blend));
-			task->sub_task(0) = task_a;
-			task->sub_task(1) = task_b;
-
-			apply(params, task);
-			run(params);
-			return;
-		}
+		apply(params, list);
 	}
 }
 
