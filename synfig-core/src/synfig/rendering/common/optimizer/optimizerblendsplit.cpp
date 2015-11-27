@@ -79,8 +79,12 @@ OptimizerBlendSplit::run(const RunParams& params) const
 				if (*i && (*i)->target_rect.valid())
 					groups.push_back((*i)->target_rect);
 
+			#ifndef	NDEBUG
+			int sub_tasks_count = (int)groups.size();
+			#endif
+
 			bool retry = true;
-			while(!retry)
+			while(retry)
 			{
 				retry = false;
 				for(int i = 0; i < (int)groups.size(); ++i)
@@ -107,6 +111,10 @@ OptimizerBlendSplit::run(const RunParams& params) const
 				assign(list, Task::Handle(blend));
 				list->sub_tasks.clear();
 
+				#ifndef	NDEBUG
+				Task::Set processed;
+				#endif
+
 				// fill list
 				for(int j = 0; j < (int)groups.size(); ++j)
 				{
@@ -132,12 +140,22 @@ OptimizerBlendSplit::run(const RunParams& params) const
 					// fill list-b of sub-blend
 					for(Task::List::const_iterator i = list_b->sub_tasks.begin(); i != list_b->sub_tasks.end(); ++i)
 						if (*i && (*i)->target_rect.valid() && etl::intersect(groups[j], (*i)->target_rect))
+						{
+							#ifndef	NDEBUG
+							assert(processed.count(*i) == 0);
+							processed.insert(*i);
+							#endif
 							sub_list_b->sub_tasks.push_back(*i);
+						}
 
 					// optimization for list with single task
 					if (sub_list_b->sub_tasks.size() == 1)
 						sub_blend->sub_task_b() = sub_list_b->sub_tasks[0];
 				}
+
+				#ifndef	NDEBUG
+				assert((int)processed.size() == sub_tasks_count);
+				#endif
 
 				apply(params, list);
 			}

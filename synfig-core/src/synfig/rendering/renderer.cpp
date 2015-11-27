@@ -64,8 +64,8 @@ using namespace rendering;
 
 
 #ifdef _DEBUG
-//#define DEBUG_TASK_LIST
-#define DEBUG_TASK_MEASURE
+#define DEBUG_TASK_LIST
+//#define DEBUG_TASK_MEASURE
 //#define DEBUG_TASK_SURFACE
 //#define DEBUG_OPTIMIZATION
 //#define DEBUG_THREAD_TASK
@@ -658,6 +658,7 @@ Renderer::run(const Task::List &list) const
 
 		for(Task::List::const_iterator i = optimized_list.begin(); i != optimized_list.end(); ++i)
 		{
+			assert((*i)->index == 0);
 			(*i)->index = i - optimized_list.begin() + 1;
 			for(Task::List::const_iterator j = (*i)->sub_tasks.begin(); j != (*i)->sub_tasks.end(); ++j)
 				if (*j && (*j)->target_rect.valid())
