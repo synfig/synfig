@@ -36,6 +36,7 @@
 #endif
 
 #include <cstdlib>
+#include <climits>
 
 #include <typeinfo>
 
@@ -338,7 +339,7 @@ Renderer::unregister_optimizer(const Optimizer::Handle &optimizer)
 }
 
 void
-Renderer::optimize_recursive(const Optimizer::List &optimizers, const Optimizer::RunParams& params, bool first_level_only) const
+Renderer::optimize_recursive(const Optimizer::List &optimizers, const Optimizer::RunParams& params, int max_level) const
 {
 	if (!params.ref_task) return;
 
@@ -376,7 +377,7 @@ Renderer::optimize_recursive(const Optimizer::List &optimizers, const Optimizer:
 	}
 
 	// process sub-tasks, only for non-for-root-task optimizers (see Optimizer::for_root_task)
-	if (!first_level_only)
+	if (max_level > 0)
 	{
 		bool task_clonned = false;
 		bool nonrecursive = false;
@@ -387,7 +388,7 @@ Renderer::optimize_recursive(const Optimizer::List &optimizers, const Optimizer:
 			{
 				// recursive run
 				Optimizer::RunParams sub_params = initial_params.sub(*i);
-				optimize_recursive(optimizers, sub_params, nonrecursive);
+				optimize_recursive(optimizers, sub_params, nonrecursive ? 1 : max_level-1);
 				nonrecursive = false;
 
 				// replace sub-task if optimized
@@ -547,7 +548,7 @@ Renderer::optimize(Task::List &list) const
 		}
 
 		#ifdef DEBUG_OPTIMIZATION
-		log(list, etl::strprintf("before optimize category %d index %d", current_category_id, current_optimizer_index));
+		log("", list, etl::strprintf("before optimize category %d index %d", current_category_id, current_optimizer_index));
 		//debug::Measure t(etl::strprintf("optimize category %d index %d", current_category_id, current_optimizer_index));
 		#endif
 
@@ -572,7 +573,7 @@ Renderer::optimize(Task::List &list) const
 				if (*j)
 				{
 					Optimizer::RunParams params(*this, list, depends_from, *j);
-					optimize_recursive(current_optimizers, params, !for_task || nonrecursive);
+					optimize_recursive(current_optimizers, params, !for_task ? 0 : nonrecursive ? 1 : INT_MAX);
 					nonrecursive = false;
 
 					if (*j != params.ref_task)
