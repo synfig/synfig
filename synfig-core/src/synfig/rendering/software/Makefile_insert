@@ -1,8 +1,10 @@
 RENDERING_SOFTWARE_HH = \
+	rendering/software/renderersafe.h \
 	rendering/software/renderersw.h \
 	rendering/software/surfacesw.h
 
 RENDERING_SOFTWARE_CC = \
+	rendering/software/renderersafe.cpp \
 	rendering/software/renderersw.cpp \
 	rendering/software/surfacesw.cpp
 
