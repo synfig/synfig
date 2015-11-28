@@ -51,6 +51,7 @@
 #include "renderer.h"
 
 #include "software/renderersw.h"
+#include "software/renderersafe.h"
 #include "opengl/renderergl.h"
 #include "common/task/taskcallback.h"
 #include "opengl/task/taskgl.h"
@@ -66,9 +67,10 @@ using namespace rendering;
 
 #ifdef _DEBUG
 #define DEBUG_TASK_LIST
-//#define DEBUG_TASK_MEASURE
+#define DEBUG_TASK_MEASURE
 //#define DEBUG_TASK_SURFACE
 //#define DEBUG_OPTIMIZATION
+#define DEBUG_OPTIMIZATION_MEASURE
 //#define DEBUG_THREAD_TASK
 //#define DEBUG_THREAD_WAIT
 #endif
@@ -293,6 +295,7 @@ Renderer::initialize_renderers()
 	// register renderers
 	register_renderer("software", new RendererSW());
 	register_renderer("gl", new RendererGL());
+	register_renderer("safe", new RendererSafe());
 }
 
 void
@@ -381,6 +384,7 @@ Renderer::optimize_recursive(const Optimizer::List &optimizers, const Optimizer:
 	{
 		bool task_clonned = false;
 		bool nonrecursive = false;
+		bool recursive = false;
 		Optimizer::RunParams initial_params(params);
 		for(Task::List::iterator i = params.ref_task->sub_tasks.begin(); i != params.ref_task->sub_tasks.end();)
 		{
@@ -388,8 +392,9 @@ Renderer::optimize_recursive(const Optimizer::List &optimizers, const Optimizer:
 			{
 				// recursive run
 				Optimizer::RunParams sub_params = initial_params.sub(*i);
-				optimize_recursive(optimizers, sub_params, nonrecursive ? 1 : max_level-1);
+				optimize_recursive(optimizers, sub_params, nonrecursive ? 1 : recursive ? INT_MAX : max_level-1);
 				nonrecursive = false;
+				recursive = false;
 
 				// replace sub-task if optimized
 				if (sub_params.ref_task != *i)
@@ -408,7 +413,9 @@ Renderer::optimize_recursive(const Optimizer::List &optimizers, const Optimizer:
 					if ((sub_params.ref_mode & Optimizer::MODE_REPEAT_LAST) == Optimizer::MODE_REPEAT_LAST)
 					{
 						// check non-recursive flag (see Optimizer::MODE_RECURSIVE)
-						if (!(sub_params.ref_mode & Optimizer::MODE_RECURSIVE))
+						if (sub_params.ref_mode & Optimizer::MODE_RECURSIVE)
+							recursive = true;
+						else
 							nonrecursive = true;
 					}
 					else
@@ -549,7 +556,10 @@ Renderer::optimize(Task::List &list) const
 
 		#ifdef DEBUG_OPTIMIZATION
 		log("", list, etl::strprintf("before optimize category %d index %d", current_category_id, current_optimizer_index));
-		//debug::Measure t(etl::strprintf("optimize category %d index %d", current_category_id, current_optimizer_index));
+		#endif
+
+		#ifdef DEBUG_OPTIMIZATION_MEASURE
+		debug::Measure t(etl::strprintf("optimize category %d index %d", current_category_id, current_optimizer_index));
 		#endif
 
 		if (for_list)
