@@ -40,6 +40,7 @@
 #include "renderersw.h"
 
 #include "../common/optimizer/optimizerblendassociative.h"
+#include "../common/optimizer/optimizerblendblend.h"
 #include "../common/optimizer/optimizerblendcomposite.h"
 #include "../common/optimizer/optimizerblendseparate.h"
 #include "../common/optimizer/optimizerblendsplit.h"
@@ -87,6 +88,7 @@ RendererSW::RendererSW()
 	register_optimizer(new OptimizerSurfaceResampleSW());
 
 	register_optimizer(new OptimizerBlendZero());
+	register_optimizer(new OptimizerBlendBlend());
 	register_optimizer(new OptimizerBlendComposite());
 	register_optimizer(new OptimizerList());
 	register_optimizer(new OptimizerBlendAssociative());
