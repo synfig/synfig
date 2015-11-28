@@ -81,6 +81,11 @@ OptimizerBlendBlend::run(const RunParams& params) const
 		if ( sub_blend
 		  && blend->blend_method == Color::BLEND_COMPOSITE
 		  && sub_blend->blend_method == blend->blend_method
+		  && sub_blend->target_surface
+		  && sub_blend->sub_task_a()
+		  && sub_blend->sub_task_a()->target_surface == sub_blend->target_surface
+		  && sub_blend->sub_task_b()
+		  && sub_blend->sub_task_b()->target_surface
 		  && (sub_blend->sub_task_a().type_is<TaskSurface>() || sub_blend->sub_task_a().type_is<TaskSurfaceEmpty>()) )
 		{
 			Task::Handle task_a = blend->sub_task_a()->clone();
