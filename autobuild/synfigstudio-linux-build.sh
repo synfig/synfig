@@ -873,6 +873,7 @@ initialize()
 		libjasper-dev \
 		x11proto-xext-dev libdirectfb-dev libxfixes-dev libxinerama-dev libxdamage-dev libxcomposite-dev libxcursor-dev libxft-dev libxrender-dev libxt-dev libxrandr-dev libxi-dev libxext-dev libx11-dev \
 		libatk1.0-dev \
+		libgl1-mesa-dev \
 		imagemagick \
 		bzip2"
 	if which yum >/dev/null; then
