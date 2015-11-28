@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/common/optimizer/optimizerblendcomposite.cpp
-**	\brief OptimizerBlendComposite
+/*!	\file synfig/rendering/common/optimizer/optimizerblendblend.cpp
+**	\brief OptimizerBlendBlend
 **
 **	$Id$
 **
@@ -38,10 +38,9 @@
 #include <synfig/general.h>
 #include <synfig/localization.h>
 
-#include "optimizerblendcomposite.h"
+#include "optimizerblendblend.h"
 
 #include "../task/taskblend.h"
-#include "../task/taskcomposite.h"
 #include "../task/tasklist.h"
 #include "../task/tasksurface.h"
 #include "../task/tasksurfaceempty.h"
@@ -60,7 +59,7 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 void
-OptimizerBlendComposite::run(const RunParams& params) const
+OptimizerBlendBlend::run(const RunParams& params) const
 {
 	TaskBlend::Handle blend = TaskBlend::Handle::cast_dynamic(params.ref_task);
 	if ( blend
@@ -74,11 +73,15 @@ OptimizerBlendComposite::run(const RunParams& params) const
 		// blend(amount1, target1, blend(amount2, target2, source))
 		//     -> blend(amount1*amount2, target1, source)
 
-		// remove blend if task_b supports blending
-		TaskComposite *composite = blend->sub_task_b().type_pointer<TaskComposite>();
-		if ( composite
-		  && composite->is_blend_method_supported(blend->blend_method)
-		  && (!composite->blend || (blend->blend_method == Color::BLEND_COMPOSITE && composite->blend_method == blend->blend_method)) )
+		// TODO: Derive TaskBlend from TaskComposite,
+		// possible problems: fields TaskBlend::offset_*, we cannot change target_rect
+
+		// remove blend if task_b is also TaskBlend
+		TaskBlend::Handle sub_blend = TaskBlend::Handle::cast_dynamic(blend->sub_task_b());
+		if ( sub_blend
+		  && blend->blend_method == Color::BLEND_COMPOSITE
+		  && sub_blend->blend_method == blend->blend_method
+		  && (sub_blend->sub_task_a().type_is<TaskSurface>() || sub_blend->sub_task_a().type_is<TaskSurfaceEmpty>()) )
 		{
 			Task::Handle task_a = blend->sub_task_a()->clone();
 			task_a->target_surface = blend->target_surface;
@@ -86,11 +89,17 @@ OptimizerBlendComposite::run(const RunParams& params) const
 				VectorInt(blend->target_rect.minx, blend->target_rect.miny)
 			  + blend->offset_a;
 
-			Task::Handle task_b = blend->sub_task_b()->clone();
+			TaskBlend::Handle task_b = TaskBlend::Handle::cast_dynamic(sub_blend->clone());
 			task_b->target_surface = blend->target_surface;
-			task_b->target_rect +=
-				VectorInt(blend->target_rect.minx, blend->target_rect.miny)
-			  + blend->offset_b;
+			task_b->target_rect += blend->target_rect.get_min() + blend->offset_b;
+			task_b->offset_a = -task_b->target_rect.get_min();
+
+			task_b->sub_task_a() = new TaskSurface();
+			assign(task_b->sub_task_a(), sub_blend->sub_task_a());
+			task_b->sub_task_a()->target_surface = blend->target_surface;
+			task_b->sub_task_a()->target_rect += sub_blend->offset_a - task_b->offset_a;
+
+			task_b->amount *= blend->amount;
 
 			assert( !task_a->target_rect.valid() || etl::contains(
 				RectInt(0, 0, task_a->target_surface->get_width(), task_a->target_surface->get_height()),
@@ -98,18 +107,6 @@ OptimizerBlendComposite::run(const RunParams& params) const
 			assert( !task_b->target_rect.valid() || etl::contains(
 				RectInt(0, 0, task_b->target_surface->get_width(), task_b->target_surface->get_height()),
 				task_b->target_rect ));
-
-			composite = task_b.type_pointer<TaskComposite>();
-			if (composite->blend)
-			{
-				composite->amount *= blend->amount;
-			}
-			else
-			{
-				composite->blend = true;
-				composite->blend_method = blend->blend_method;
-				composite->amount = blend->amount;
-			}
 
 			Task::Handle task;
 			if (task_a.type_is<TaskSurface>() || task_a.type_is<TaskSurfaceEmpty>())

@@ -1,5 +1,6 @@
 RENDERING_COMMON_OPTIMIZER_HH = \
 	rendering/common/optimizer/optimizerblendassociative.h \
+	rendering/common/optimizer/optimizerblendblend.h \
 	rendering/common/optimizer/optimizerblendcomposite.h \
 	rendering/common/optimizer/optimizerblendseparate.h \
 	rendering/common/optimizer/optimizerblendsplit.h \
@@ -17,6 +18,7 @@ RENDERING_COMMON_OPTIMIZER_HH = \
 
 RENDERING_COMMON_OPTIMIZER_CC = \
 	rendering/common/optimizer/optimizerblendassociative.cpp \
+	rendering/common/optimizer/optimizerblendblend.cpp \
 	rendering/common/optimizer/optimizerblendcomposite.cpp \
 	rendering/common/optimizer/optimizerblendseparate.cpp \
 	rendering/common/optimizer/optimizerblendsplit.cpp \
