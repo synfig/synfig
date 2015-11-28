@@ -98,36 +98,68 @@ TaskBlendSW::run(RunParams & /* params */) const
 	//debug::DebugSurface::save_to_file(a, "TaskBlendSW__run__a");
 	//debug::DebugSurface::save_to_file(b, "TaskBlendSW__run__b");
 
-	RectInt r = target_rect - VectorInt(target_rect.minx, target_rect.miny);
+	RectInt r = target_rect;
 	if (r.valid())
 	{
-		RectInt ra = sub_task_a()->target_rect;
-		if (ra.valid() && &a != &c)
+		RectInt ra = sub_task_a()->target_rect + r.get_min() + offset_a;
+		if (ra.valid())
 		{
-			etl::set_intersect(ra, ra, r - offset_a);
-			if (ra.valid())
+			etl::set_intersect(ra, ra, r);
+			if (ra.valid() && &a != &c)
 			{
-				synfig::Surface::pen p = c.get_pen(
-					target_rect.minx + ra.minx + offset_a[0],
-					target_rect.miny + ra.miny + offset_a[1] );
+				synfig::Surface::pen p = c.get_pen(ra.minx, ra.maxx);
 				const_cast<synfig::Surface*>(&a)->blit_to(
-					p, ra.minx, ra.miny, ra.maxx - ra.minx, ra.maxy - ra.miny );
+					p,
+					ra.minx - r.minx - offset_a[0],
+					ra.miny - r.miny - offset_a[1],
+					ra.maxx - ra.minx,
+					ra.maxy - ra.miny );
 			}
 		}
 
-		RectInt rb = sub_task_b()->target_rect;
+		RectInt fill[] = { ra, RectInt::zero(), RectInt::zero(), RectInt::zero() };
+		RectInt rb = sub_task_b()->target_rect + r.get_min() + offset_b;
 		if (rb.valid())
 		{
-			etl::set_intersect(rb, rb, r - offset_b);
+			etl::set_intersect(rb, rb, r);
 			if (rb.valid())
 			{
-				synfig::Surface::alpha_pen ap(c.get_pen(
-					target_rect.minx + rb.minx + offset_b[0],
-					target_rect.miny + rb.miny + offset_b[1] ));
+				synfig::Surface::alpha_pen ap(c.get_pen(rb.minx, rb.miny));
 				ap.set_blend_method(blend_method);
 				ap.set_alpha(amount);
 				const_cast<synfig::Surface*>(&b)->blit_to(
-					ap, rb.minx, rb.miny, rb.maxx - rb.minx, rb.maxy - rb.miny );
+					ap,
+					rb.minx - r.minx - offset_b[0],
+					rb.miny - r.miny - offset_b[1],
+					rb.maxx - rb.minx,
+					rb.maxy - rb.miny );
+
+				if (ra.valid())
+				{
+					// mark unfilled regions
+					fill[0] = fill[1] = fill[2] = fill[3] = ra;
+					fill[0].maxx = fill[2].minx = fill[3].minx = std::max(ra.minx, std::min(ra.maxx, rb.minx));
+					fill[1].minx = fill[2].maxx = fill[3].maxx = std::max(ra.minx, std::min(ra.maxx, rb.maxx));
+					fill[2].maxy = std::max(ra.miny, std::min(ra.maxy, rb.miny));
+					fill[3].miny = std::max(ra.miny, std::min(ra.maxy, rb.maxy));
+				}
+			}
+		}
+
+		if (Color::is_straight(blend_method))
+		{
+			for(int i = 0; i < 4; ++i)
+			{
+				if (fill[i].valid())
+				{
+					synfig::Surface::alpha_pen ap(
+						c.get_pen(fill[i].minx, fill[i].miny) );
+					ap.set_blend_method(blend_method);
+					ap.set_alpha(amount);
+					c.fill( Color(0, 0, 0, 0), ap,
+							fill[i].maxx - fill[i].minx,
+							fill[i].maxy - fill[i].miny );
+				}
 			}
 		}
 	}
