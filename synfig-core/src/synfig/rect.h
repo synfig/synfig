@@ -45,10 +45,11 @@ namespace synfig {
 class RectInt : public etl::rect<int>
 {
 public:
+	typedef etl::rect<int> baserect;
 
-	using etl::rect<int>::set_point;
-	using etl::rect<int>::expand;
-	using etl::rect<int>::set;
+	using baserect::set_point;
+	using baserect::expand;
+	using baserect::set;
 
 	static RectInt zero()
 	{
@@ -60,7 +61,7 @@ public:
 		);
 	}
 
-	RectInt() { }
+	RectInt(): baserect(0, 0, 0, 0) { }
 
 	RectInt(const PointInt& x) { set_point(x); }
 
@@ -129,7 +130,7 @@ public:
 
 	RectInt& operator&=(const RectInt& rhs)
 	{
-		if(rhs.area()>0 && area()>0)
+		if(rhs.valid() && valid())
 			etl::set_intersect(*this,*this,rhs);
 		else
 			*this=zero();
@@ -138,7 +139,7 @@ public:
 
 	RectInt& operator|=(const RectInt& rhs)
 	{
-		if(rhs.area()>0 && area()>0)
+		if(rhs.valid()>0 && valid()>0)
 			etl::set_union(*this,*this,rhs);
 		else
 		{
@@ -160,7 +161,7 @@ public:
 
 	RectInt operator|(const RectInt& rhs)const { return RectInt(*this)|=rhs; }
 
-	bool operator&&(const RectInt& rhs)const { return etl::intersect(*this, rhs); }
+	bool operator&&(const RectInt& rhs)const { return valid() && rhs.valid() && etl::intersect(*this, rhs); }
 
 	bool operator==(const RectInt &rhs)const { return get_min() == rhs.get_min() && get_max() == rhs.get_max(); }
 
@@ -178,10 +179,11 @@ public:
 class Rect : public etl::rect<Real>
 {
 public:
+	typedef etl::rect<Real> baserect;
 
-	using etl::rect<Real>::set_point;
-	using etl::rect<Real>::expand;
-	using etl::rect<Real>::set;
+	using baserect::set_point;
+	using baserect::expand;
+	using baserect::set;
 
 	static Rect full_plane();
 
@@ -208,7 +210,7 @@ public:
 		);
 	}
 
-	Rect() { }
+	Rect(): baserect(0, 0, 0, 0) { }
 
 	Rect(const Point& x) { set_point(x); }
 
@@ -278,7 +280,8 @@ public:
 
 	Rect& operator&=(const Rect& rhs)
 	{
-		if(rhs.area()>0.00000001 && area()>0.00000001)
+		if ( rhs.valid() && valid()
+		  && rhs.area()>0.00000001 && area()>0.00000001 )
 			etl::set_intersect(*this,*this,rhs);
 		else
 			*this=zero();
@@ -287,7 +290,8 @@ public:
 
 	Rect& operator|=(const Rect& rhs)
 	{
-		if(rhs.area()>0.00000001 && area()>0.00000001)
+		if ( rhs.valid() && valid()
+		  && rhs.area()>0.00000001 && area()>0.00000001 )
 			etl::set_union(*this,*this,rhs);
 		else
 		{
@@ -309,13 +313,20 @@ public:
 
 	Rect operator|(const Rect& rhs)const { return Rect(*this)|=rhs; }
 
-	bool operator&&(const Rect& rhs)const { return etl::intersect(*this, rhs); }
+	bool operator&&(const Rect& rhs)const { return valid() && rhs.valid() && etl::intersect(*this, rhs); }
 
 	bool operator==(const Rect &rhs)const { return get_min() == rhs.get_min() && get_max() == rhs.get_max(); }
 
 	bool operator!=(const Rect &rhs)const { return get_min() != rhs.get_min() || get_max() != rhs.get_max(); }
 
 	bool is_valid()const { return valid(); }
+	bool is_nan_or_inf()const
+	{
+		return isnan(minx)
+			|| isnan(miny)
+			|| isinf(maxx)
+			|| isinf(maxy);
+	}
 
 	Rect multiply_coords(const Vector &rhs) const
 		{ return Rect(minx*rhs[0], miny*rhs[1], maxx*rhs[0], maxy*rhs[1]); }
