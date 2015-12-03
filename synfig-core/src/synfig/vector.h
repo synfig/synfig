@@ -80,6 +80,8 @@ public:
 	VectorInt(): _x(0), _y(0) { };
 	VectorInt(const value_type &x, const value_type &y):_x(x),_y(y) { };
 
+	static VectorInt zero() { return VectorInt(0, 0); }
+
 	value_type &
 	operator[](const int& i)
 		{ return i ? _y: _x; }
@@ -309,7 +311,7 @@ public:
 		return (*this-rhs).mag_squared()<=epsilon;
 	}
 
-	static const Vector zero() { return Vector(0,0); }
+	static Vector zero() { return Vector(0,0); }
 
 	Vector multiply_coords(const Vector &rhs) const
 		{ return Vector(_x*rhs._x, _y*rhs._y); }
