@@ -98,7 +98,7 @@ RendererSW::RendererSW()
 
 	register_optimizer(new OptimizerLinear());
 	register_optimizer(new OptimizerSurfaceCreate());
-	register_optimizer(new OptimizerSplit());
+	//register_optimizer(new OptimizerSplit());
 }
 
 RendererSW::~RendererSW() { }

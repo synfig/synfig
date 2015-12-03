@@ -57,8 +57,10 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 void
-OptimizerSplit::run(const RunParams& params) const
+OptimizerSplit::run(const RunParams& /* params */) const
 {
+	// TODO: this version of split don't keep coordinates
+	/*
 	const int min_area = 256*256;
 	int threads = params.renderer.get_max_simultaneous_threads();
 	for(Task::List::iterator i = params.list.begin(); i != params.list.end(); ++i)
@@ -91,6 +93,7 @@ OptimizerSplit::run(const RunParams& params) const
 			}
 		}
 	}
+	*/
 }
 
 /* === E N T R Y P O I N T ================================================= */
