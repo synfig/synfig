@@ -355,11 +355,13 @@ Renderer_Ducks::render_vfunc(
 
 		bool splited_angle=false;
 		bool splited_radius=false;
+		bool is_bline_point=false;
 
 		if(!(*iter)->get_editable(alternative))
 			screen_duck.color=(DUCK_COLOR_NOT_EDITABLE);
-		else if((*iter)->get_tangent())
+		else if((*iter)->get_tangent() && (*iter)->get_value_desc().get_value_type() != type_transformation)
 		{
+		    is_bline_point=true;
 		    // Check if we can reach the canvas and set the time to
 		    // evaluate the split value accordingly
 		    synfig::Canvas::Handle canvas_h(get_work_area()->get_canvas());
@@ -460,7 +462,7 @@ Renderer_Ducks::render_vfunc(
 				cr->stroke_preserve();
 
 				// Both tangents are collinear and have same length, dash the line
-				if(!splited_radius && !splited_angle)
+				if(is_bline_point && !splited_radius && !splited_angle)
 				{
 				    std::valarray<double> dashes(2);
 				    dashes[0]=5.0;
