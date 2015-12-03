@@ -92,17 +92,27 @@ Renderer::DebugOptions Renderer::debug_options;
 
 class Renderer::Queue
 {
+public:
+	typedef std::list<Glib::Threads::Thread*> ThreadList;
+	typedef std::map<int, Task::Handle> ThreadTaskMap;
+	typedef std::set<Task::Handle> TaskSet;
+	typedef std::list<Task::Handle> TaskQueue;
+
 private:
 	Glib::Threads::Mutex mutex;
 	Glib::Threads::Mutex threads_mutex;
 	Glib::Threads::Cond cond;
 	Glib::Threads::Cond condgl;
 
-	Task::List queue;
+	TaskQueue ready_tasks;
+	TaskQueue gl_ready_tasks;
+	TaskSet not_ready_tasks;
+	TaskSet gl_not_ready_tasks;
+
 	bool started;
 
-	std::list<Glib::Threads::Thread*> threads;
-	std::map<int, Task::Handle> tasks_in_process;
+	ThreadList threads;
+	ThreadTaskMap tasks_in_process;
 
 	void start() {
 		Glib::Threads::Mutex::Lock lock(mutex);
@@ -156,7 +166,7 @@ private:
 				task->success = false;
 
 			#ifdef DEBUG_TASK_SURFACE
-			debug::DebugSurface::save_to_file(task->target_surface, etl::strprintf("task%d", task.index));
+			debug::DebugSurface::save_to_file(task->target_surface, etl::strprintf("task%d", task->index));
 			#endif
 
 			#ifdef DEBUG_THREAD_TASK
@@ -179,7 +189,14 @@ private:
 			if ((*i)->deps_count == 0)
 			{
 				bool gl = i->type_is<TaskGL>();
-				if (!found && gl == (thread_index == 0))
+				TaskQueue &queue = gl ? gl_ready_tasks     : ready_tasks;
+				TaskSet   &wait  = gl ? gl_not_ready_tasks : not_ready_tasks;
+				wait.erase(*i);
+				queue.push_back(*i);
+
+				// current process will take one task,
+				// so we don't need to call signal by first time
+				if (!found)
 					found = true;
 				else
 					(gl ? condgl : cond).signal();
@@ -193,35 +210,25 @@ private:
 	Task::Handle get(int thread_index) {
 		Glib::Threads::Mutex::Lock lock(mutex);
 
+		TaskQueue &queue = thread_index == 0 ? gl_ready_tasks     : ready_tasks;
+		TaskSet   &wait  = thread_index == 0 ? gl_not_ready_tasks : not_ready_tasks;
 		while(started)
 		{
-			bool queue_empty = true;
-			for(Task::List::iterator i = queue.begin(); i != queue.end(); ++i)
+			if (!queue.empty())
 			{
-				assert(*i);
-				if ((*i)->deps_count == 0 && (thread_index == 0) == i->type_is<TaskGL>())
-				{
-					Task::Handle task = *i;
-					queue.erase(i);
-					assert( tasks_in_process.count(thread_index) == 0 );
-					tasks_in_process[thread_index] = task;
-					return task;
-				}
-				if (queue_empty && (thread_index == 0) == i->type_is<TaskGL>())
-					queue_empty = false;
+				Task::Handle task = queue.front();
+				queue.pop_front();
+				assert( tasks_in_process.count(thread_index) == 0 );
+				tasks_in_process[thread_index] = task;
+				return task;
 			}
 
 			#ifdef DEBUG_THREAD_WAIT
-			if (!queue_empty)
+			if (!wait.empty())
 				info("thread %d: rendering wait for task", thread_index);
 			#endif
 
-			assert( queue_empty || !tasks_in_process.empty() );
-
-			if (!queue_empty && tasks_in_process.empty())
-				for(Task::List::iterator i = queue.begin(); i != queue.end();)
-					if ((thread_index == 0) == i->type_is<TaskGL>())
-						i = queue.erase(i); else ++i;
+			assert( wait.empty() || !tasks_in_process.empty() );
 
 			(thread_index ? cond : condgl).wait(mutex);
 		}
@@ -250,8 +257,18 @@ public:
 		if (!task) return;
 		fix_task(*task, params);
 		Glib::Threads::Mutex::Lock lock(mutex);
-		queue.push_back(task);
-		(task.type_is<TaskGL>() ? condgl : cond).signal();
+
+		bool gl = task.type_is<TaskGL>();
+		TaskQueue &queue = gl ? gl_ready_tasks     : ready_tasks;
+		TaskSet   &wait  = gl ? gl_not_ready_tasks : not_ready_tasks;
+		if (task->deps_count == 0) {
+			queue.push_back(task);
+			(gl ? condgl : cond).signal();
+		}
+		else
+		{
+			wait.insert(task);
+		}
 	}
 
 	void enqueue(const Task::List &tasks, const Task::RunParams &params)
@@ -260,6 +277,7 @@ public:
 		for(Task::List::const_iterator i = tasks.begin(); i != tasks.end(); ++i)
 			if (*i) { fix_task(**i, params); ++count; }
 		if (!count) return;
+
 		Glib::Threads::Mutex::Lock lock(mutex);
 		int glsignals = 0;
 		int signals = 0;
@@ -268,14 +286,23 @@ public:
 		{
 			if (*i)
 			{
-				queue.push_back(*i);
-				if (i->type_is<TaskGL>())
-				{
-					if (glsignals < 1) { condgl.signal(); ++glsignals; }
+				bool gl = i->type_is<TaskGL>();
+				TaskQueue &queue = gl ? gl_ready_tasks     : ready_tasks;
+				TaskSet   &wait  = gl ? gl_not_ready_tasks : not_ready_tasks;
+				if ((*i)->deps_count == 0) {
+					queue.push_back(*i);
+					if (gl)
+					{
+						if (glsignals < 1) { condgl.signal(); ++glsignals; }
+					}
+					else
+					{
+						if (signals < threads) { cond.signal(); ++signals; }
+					}
 				}
 				else
 				{
-					if (signals < threads) { cond.signal(); ++signals; }
+					wait.insert(*i);
 				}
 			}
 		}
@@ -284,7 +311,10 @@ public:
 	void clear()
 	{
 		Glib::Threads::Mutex::Lock lock(mutex);
-		queue.clear();
+		ready_tasks.clear();
+		gl_ready_tasks.clear();
+		not_ready_tasks.clear();
+		gl_not_ready_tasks.clear();
 	}
 };
 
@@ -703,6 +733,7 @@ Renderer::run(const Task::List &list) const
 									++(*i)->deps_count;
 				for(Task::List::const_reverse_iterator rk(i); rk != optimized_list.rend(); ++rk)
 					if ( (*i)->target_surface == (*rk)->target_surface
+					  && (*rk)->valid_target()
 					  && etl::intersect((*i)->get_target_rect(), (*rk)->get_target_rect()) )
 						if ((*rk)->back_deps.insert(*i).second)
 							++(*i)->deps_count;
