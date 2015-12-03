@@ -77,9 +77,21 @@ public:
 	void unregister_optimizer(const Optimizer::Handle &optimizer);
 
 private:
-	void optimize_recursive(const Optimizer::List &optimizers, const Optimizer::RunParams& params, int max_level) const;
-	void log(const String &logfile, const Task::Handle &task, const String &prefix = String()) const;
-	void log(const String &logfile, const Task::List &list, const String &name = String()) const;
+	void optimize_recursive(
+		const Optimizer::List &optimizers,
+		const Optimizer::RunParams& params,
+		int max_level ) const;
+
+	void log(
+		const String &logfile,
+		const Task::Handle &task,
+		const Optimizer::RunParams* optimization_stack = NULL,
+		int level = 0 ) const;
+	void log(
+		const String &logfile,
+		const Task::List &list,
+		const String &name = String(),
+		const Optimizer::RunParams* optimization_stack = NULL ) const;
 
 	static void initialize_renderers();
 	static void deinitialize_renderers();
