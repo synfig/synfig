@@ -68,12 +68,12 @@ TaskSurfaceResampleGL::run(RunParams & /* params */) const
 
 	// TODO: gamma
 
-	Vector rect_size = source_rect_rb - source_rect_lt;
+	Vector rect_size = get_source_rect_rb() - get_source_rect_lt();
 	Matrix bounds_transfromation;
 	bounds_transfromation.m00 = fabs(rect_size[0]) > 1e-10 ? 2.0/rect_size[0] : 0.0;
 	bounds_transfromation.m11 = fabs(rect_size[1]) > 1e-10 ? 2.0/rect_size[1] : 0.0;
-	bounds_transfromation.m20 = -1.0 - source_rect_lt[0] * bounds_transfromation.m00;
-	bounds_transfromation.m21 = -1.0 - source_rect_lt[1] * bounds_transfromation.m11;
+	bounds_transfromation.m20 = -1.0 - get_source_rect_lt()[0] * bounds_transfromation.m00;
+	bounds_transfromation.m21 = -1.0 - get_source_rect_lt()[1] * bounds_transfromation.m11;
 
 	Matrix matrix = transformation * bounds_transfromation;
 
@@ -95,10 +95,10 @@ TaskSurfaceResampleGL::run(RunParams & /* params */) const
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, framebuffer.get_id());
 	glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, target->get_id(), 0);
 	glViewport(
-		target_rect.minx,
-		target_rect.miny,
-		target_rect.maxx - target_rect.minx,
-		target_rect.maxy - target_rect.miny );
+		get_target_rect().minx,
+		get_target_rect().miny,
+		get_target_rect().maxx - get_target_rect().minx,
+		get_target_rect().maxy - get_target_rect().miny );
 	env().context.check();
 
 	glBindTexture(GL_TEXTURE_2D, a->get_id());

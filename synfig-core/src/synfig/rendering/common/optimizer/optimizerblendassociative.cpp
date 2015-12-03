@@ -75,7 +75,7 @@ OptimizerBlendAssociative::run(const RunParams& params) const
 			bool valid = true;
 			for(Task::List::const_iterator i = list_b->sub_tasks.begin(); i != list_b->sub_tasks.end(); ++i)
 			{
-				if (*i && (*i)->target_rect.valid())
+				if (*i && (*i)->valid_target())
 				{
 					empty = false;
 					TaskComposite *composite = i->type_pointer<TaskComposite>();
@@ -110,7 +110,7 @@ OptimizerBlendAssociative::run(const RunParams& params) const
 				// add tasks into list
 				for(Task::List::const_iterator i = list_b->sub_tasks.begin(); i != list_b->sub_tasks.end(); ++i)
 				{
-					if (*i && (*i)->target_rect.valid())
+					if (*i && (*i)->valid_target())
 					{
 						Task::Handle task = (*i)->clone();
 
@@ -123,9 +123,9 @@ OptimizerBlendAssociative::run(const RunParams& params) const
 						}
 
 						task->target_surface = list->target_surface;
-						task->target_rect +=
-							  blend->target_rect.get_min()
-							+ blend->offset_b;
+						task->move_target_rect(
+							blend->get_target_offset() + blend->offset_b );
+						assert(task->check());
 
 						list->sub_tasks.push_back(task);
 					}

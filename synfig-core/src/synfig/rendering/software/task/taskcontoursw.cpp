@@ -340,7 +340,7 @@ TaskContourSW::render_contour(
 void
 TaskContourSW::split(const RectInt &sub_target_rect)
 {
-	Optimizer::apply_target_bounds(*this, sub_target_rect);
+	trunc_target_rect(sub_target_rect);
 }
 
 bool
@@ -349,18 +349,18 @@ TaskContourSW::run(RunParams & /* params */) const
 	synfig::Surface &a =
 		SurfaceSW::Handle::cast_dynamic( target_surface )->get_surface();
 
-	if (target_rect.valid())
+	if (valid_target())
 	{
 		Matrix bounds_transfromation;
 		bounds_transfromation.m00 = get_pixels_per_unit()[0];
 		bounds_transfromation.m11 = get_pixels_per_unit()[1];
-		bounds_transfromation.m20 = -source_rect_lt[0]*bounds_transfromation.m00 + target_rect.minx;
-		bounds_transfromation.m21 = -source_rect_lt[1]*bounds_transfromation.m11 + target_rect.miny;
+		bounds_transfromation.m20 = -get_source_rect_lt()[0]*bounds_transfromation.m00 + get_target_rect().minx;
+		bounds_transfromation.m21 = -get_source_rect_lt()[1]*bounds_transfromation.m11 + get_target_rect().miny;
 
 		Matrix matrix = transformation * bounds_transfromation;
 
 		Polyspan polyspan;
-		polyspan.init(target_rect);
+		polyspan.init(get_target_rect());
 		build_polyspan(contour->get_chunks(), matrix, polyspan);
 		polyspan.sort_marks();
 

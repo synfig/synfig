@@ -85,9 +85,9 @@ OptimizerLinear::run(const RunParams& params) const
 					}
 
 					// replace sub_task by TaskSurface
-					TaskSurface::Handle surface(new TaskSurface());
-					surface->target_surface = (*j)->target_surface;
-					surface->target_rect = (*j)->target_rect;
+					Task::Handle surface(new TaskSurface());
+					assign(surface, *j);
+					surface->sub_tasks.clear();
 					*j = surface;
 				}
 			}

@@ -64,8 +64,8 @@ TaskLayerSW::run(RunParams & /* params */) const
 	// TODO: target_rect
 
 	RendDesc desc;
-	desc.set_tl(source_rect_lt);
-	desc.set_br(source_rect_rb);
+	desc.set_tl(get_source_rect_lt());
+	desc.set_br(get_source_rect_rb());
 	desc.set_wh(target.get_w(), target.get_h());
 	desc.set_antialias(1);
 

@@ -64,28 +64,31 @@ OptimizerBlendSW::run(const RunParams& params) const
 		TaskBlendSW::Handle blend_sw;
 		init_and_assign_all<SurfaceSW>(blend_sw, blend);
 
+		// TODO: Are we really need to check 'is_temporary' flag?
 		if ( blend_sw->sub_task_a()->target_surface->is_temporary )
 		{
 			blend_sw->sub_task_a()->target_surface = blend_sw->target_surface;
-			blend_sw->sub_task_a()->target_rect +=
-				VectorInt(blend_sw->target_rect.minx, blend_sw->target_rect.miny);
-			blend_sw->offset_a[0] = -blend_sw->target_rect.minx;
-			blend_sw->offset_a[1] = -blend_sw->target_rect.miny;
+			blend_sw->sub_task_a()->move_target_rect(
+				blend_sw->get_target_offset() );
+			blend_sw->offset_a = -blend_sw->get_target_offset();
+			assert( blend_sw->sub_task_a()->check() );
 		}
 		else
 		{
-			RectInt &atr = blend_sw->sub_task_a()->target_rect;
-			blend_sw->offset_a[0] = atr.minx;
-			blend_sw->offset_a[1] = atr.miny;
-			atr -= blend_sw->offset_a;
-			blend_sw->sub_task_a()->target_surface->set_size(atr.maxx, atr.maxy);
+			blend_sw->offset_a = blend_sw->sub_task_a()->get_target_offset();
+			blend_sw->sub_task_a()->set_target_origin( VectorInt::zero() );
+			blend_sw->sub_task_a()->target_surface->set_size(
+				blend_sw->sub_task_a()->get_target_rect().maxx,
+				blend_sw->sub_task_a()->get_target_rect().maxy );
+			assert( blend_sw->sub_task_a()->check() );
 		}
 
-		RectInt &btr = blend_sw->sub_task_b()->target_rect;
-		blend_sw->offset_b[0] = btr.minx;
-		blend_sw->offset_b[1] = btr.miny;
-		btr -= blend_sw->offset_b;
-		blend_sw->sub_task_b()->target_surface->set_size(btr.maxx, btr.maxy);
+		blend_sw->offset_b = blend_sw->sub_task_b()->get_target_offset();
+		blend_sw->sub_task_b()->set_target_origin( VectorInt::zero() );
+		blend_sw->sub_task_b()->target_surface->set_size(
+			blend_sw->sub_task_b()->get_target_rect().maxx,
+			blend_sw->sub_task_b()->get_target_rect().maxy );
+		assert( blend_sw->sub_task_b()->check() );
 
 		apply(params, blend_sw);
 	}

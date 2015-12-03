@@ -82,8 +82,11 @@ OptimizerBlurPreparedSW::run(const RunParams& params) const
 		TaskBlurPreparedSW::Handle blur_prepared_sw(new TaskBlurPreparedSW());
 		*((Task*)(blur_prepared_sw.get())) = *((Task*)(blur.get()));
 		blur_prepared_sw->blur = blur->blur;
-		blur_prepared_sw->source_rect_lt -= d;
-		blur_prepared_sw->source_rect_rb += d;
+		blur_prepared_sw->init_target_rect(
+			blur_prepared_sw->get_target_rect(),
+			blur_prepared_sw->get_source_rect_lt() - d,
+			blur_prepared_sw->get_source_rect_rb() + d );
+		assert( blur_prepared_sw->check() );
 
 		if (blur_prepared_sw->sub_task()->target_surface)
 		{
@@ -92,8 +95,11 @@ OptimizerBlurPreparedSW::run(const RunParams& params) const
 			*((Task*)(expand.get())) = *((Task*)(blur.get()));
 			expand->target_surface = new SurfaceSW();
 			expand->target_surface->set_size(width, height);
-			expand->source_rect_lt -= d;
-			expand->source_rect_rb += d;
+			expand->init_target_rect(
+				expand->get_target_rect(),
+				expand->get_source_rect_lt() - d,
+				expand->get_source_rect_rb() + d );
+			assert( expand->check() );
 			blur_prepared_sw->sub_task() = expand;
 		}
 		else
@@ -101,8 +107,11 @@ OptimizerBlurPreparedSW::run(const RunParams& params) const
 			Task::Handle sub = blur_prepared_sw->sub_task()->clone();
 			sub->target_surface = new SurfaceSW();
 			sub->target_surface->set_size(width, height);
-			sub->source_rect_lt -= d;
-			sub->source_rect_rb += d;
+			sub->init_target_rect(
+				sub->get_target_rect(),
+				sub->get_source_rect_lt() - d,
+				sub->get_source_rect_rb() + d );
+			assert( sub->check() );
 			blur_prepared_sw->sub_task() = sub;
 		}
 

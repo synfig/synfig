@@ -82,22 +82,17 @@ OptimizerBlendComposite::run(const RunParams& params) const
 		{
 			Task::Handle task_a = blend->sub_task_a()->clone();
 			task_a->target_surface = blend->target_surface;
-			task_a->target_rect +=
-				VectorInt(blend->target_rect.minx, blend->target_rect.miny)
-			  + blend->offset_a;
+			task_a->move_target_rect(
+				blend->get_target_offset()
+			  + blend->offset_a );
+			assert( task_a->check() );
 
 			Task::Handle task_b = blend->sub_task_b()->clone();
 			task_b->target_surface = blend->target_surface;
-			task_b->target_rect +=
-				VectorInt(blend->target_rect.minx, blend->target_rect.miny)
-			  + blend->offset_b;
-
-			assert( !task_a->target_rect.valid() || etl::contains(
-				RectInt(0, 0, task_a->target_surface->get_width(), task_a->target_surface->get_height()),
-				task_a->target_rect ));
-			assert( !task_b->target_rect.valid() || etl::contains(
-				RectInt(0, 0, task_b->target_surface->get_width(), task_b->target_surface->get_height()),
-				task_b->target_rect ));
+			task_b->move_target_rect(
+				blend->get_target_offset()
+			  + blend->offset_b );
+			assert( task_b->check() );
 
 			composite = task_b.type_pointer<TaskComposite>();
 			if (composite->blend)

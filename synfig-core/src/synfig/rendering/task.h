@@ -58,21 +58,14 @@ public:
 
 	struct RunParams { };
 
-	Surface::Handle target_surface;
-	synfig::Point source_rect_lt;
-	synfig::Point source_rect_rb;
-	RectInt target_rect;
-	List sub_tasks;
-
+private:
 	mutable Rect bounds;
-	mutable Set back_deps;
-	mutable RunParams params;
-	mutable int index;
-	mutable int deps_count;
-	mutable bool success;
 
-	Task(): target_rect(0, 0), bounds(0.0, 0.0), index(), deps_count(0), success(true) { }
+	Point source_rect_lt;
+	Point source_rect_rb;
+	RectInt target_rect;
 
+protected:
 	template<typename T>
 	static T* clone_pointer(const T *task)
 	{
@@ -85,6 +78,22 @@ public:
 	template<typename T>
 	static etl::handle<T> clone(const etl::handle<T> &task)
 		{ return clone_pointer(task.get()); }
+
+public:
+	Surface::Handle target_surface;
+	List sub_tasks;
+
+	mutable int index;
+	mutable int deps_count;
+	mutable Set back_deps;
+
+	mutable RunParams params;
+	mutable bool success;
+
+
+	Task(): index(), deps_count(0), success(true) { }
+	virtual ~Task();
+
 
 	Task::Handle& sub_task(int index)
 	{
@@ -100,37 +109,67 @@ public:
 		return index < (int)sub_tasks.size() ? sub_tasks[index] : blank;
 	}
 
-	Vector get_pixels_per_unit() const
+
+	//! calls from update_bounds()
+	virtual Rect calc_bounds() const { return Rect::infinite(); }
+	//! use OptimizerCalcBounds and to avoid multiple calculation of bounds of same task
+	void update_bounds() const { bounds = calc_bounds(); }
+	const Rect& get_bounds() const { return bounds; }
+
+
+	void init_target_rect(const RectInt &target_rect, const Point &source_rect_lt, const Point &source_rect_rb);
+	void clear_target_rect();
+
+
+	const RectInt& get_target_rect() const { return target_rect; }
+	const VectorInt get_target_offset() const { return target_rect.get_min(); }
+	const Point& get_source_rect_lt() const { return source_rect_lt; }
+	const Point& get_source_rect_rb() const { return source_rect_rb; }
+	Vector get_pixels_per_unit() const;
+	Vector get_units_per_pixel() const;
+
+	void trunc_target_rect(const RectInt &rect);
+	void trunc_source_rect(const Rect &rect);
+	void trunc_source_rect(const Point &lt, const Point &rb);
+	void trunc_target_by_bounds();
+
+	void move_target_rect(const VectorInt &offset);
+	void set_target_origin(const VectorInt &origin);
+
+	bool valid_target_surface() const
 	{
-		if (!target_rect.valid())
-			return Vector();
-		return Vector(
-			fabs(source_rect_rb[0] - source_rect_lt[0]) < 1e-10 ? 0.0 :
-				(Real)(target_rect.maxx - target_rect.minx)/(source_rect_rb[0] - source_rect_lt[0]),
-			fabs(source_rect_rb[1] - source_rect_lt[1]) < 1e-10 ? 0.0 :
-				(Real)(target_rect.maxy - target_rect.miny)/(source_rect_rb[1] - source_rect_lt[1]) );
+		return target_surface
+			&& !target_surface->empty();
 	}
 
-	Vector get_units_per_pixel() const
+	bool valid_target_rect() const
 	{
-		if ( !target_rect.valid()
-		  || fabs(source_rect_rb[0] - source_rect_lt[0]) < 1e-10
-		  || fabs(source_rect_rb[1] - source_rect_lt[1]) < 1e-10 )
-			return Vector();
-		return Vector(
-			fabs(source_rect_rb[0] - source_rect_lt[0]) < 1e-10 ? 0.0 :
-				(source_rect_rb[0] - source_rect_lt[0])/(Real)(target_rect.maxx - target_rect.minx),
-			fabs(source_rect_rb[1] - source_rect_lt[1]) < 1e-10 ? 0.0 :
-				(source_rect_rb[1] - source_rect_lt[1])/(Real)(target_rect.maxy - target_rect.miny) );
+		return target_rect.valid()
+			&& !source_rect_lt.is_nan_or_inf()
+			&& !source_rect_rb.is_nan_or_inf()
+			&& fabs(source_rect_rb[0] - source_rect_lt[0]) >= 1e-10
+			&& fabs(source_rect_rb[1] - source_rect_lt[1]) >= 1e-10;
 	}
 
-	virtual ~Task();
+	bool valid_target() const
+	{
+		return valid_target_surface()
+			&& valid_target_rect()
+			&& etl::contains(RectInt(VectorInt::zero(), target_surface->get_size()), target_rect);
+	}
+
+	bool check() const
+	{
+		if ( valid_target_surface()
+		  && valid_target_rect()
+		  && !etl::contains(RectInt(VectorInt::zero(), target_surface->get_size()), target_rect) )
+			return false;
+
+		return true;
+	}
+
 	virtual bool run(RunParams &params) const;
 	virtual Task::Handle clone() const { return clone_pointer(this); }
-
-	// use OptimizerCalcBounds and field 'bounds'
-	// to avoid multiple calculation of bounds of same task
-	virtual Rect calc_bounds() const { return Rect::infinite(); }
 };
 
 } /* end namespace rendering */

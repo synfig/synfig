@@ -110,9 +110,7 @@ synfig::Target_Scanline::call_renderer(Context &context, const etl::handle<rende
 				throw "Renderer '" + get_engine() + "' not found";
 
 			task->target_surface = surfacesw;
-			task->source_rect_lt = renddesc.get_tl();
-			task->source_rect_rb = renddesc.get_br();
-			task->target_rect = RectInt(0, 0, surfacesw->get_width(), surfacesw->get_height());
+			task->init_target_rect(RectInt(VectorInt::zero(), surfacesw->get_size()), renddesc.get_tl(), renddesc.get_br());
 
 			rendering::Task::List list;
 			list.push_back(task);

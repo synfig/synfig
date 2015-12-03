@@ -76,8 +76,8 @@ OptimizerBlendSplit::run(const RunParams& params) const
 			// try to find dedicated groups
 			std::vector<RectInt> groups;
 			for(Task::List::const_iterator i = list_b->sub_tasks.begin(); i != list_b->sub_tasks.end(); ++i)
-				if (*i && (*i)->target_rect.valid())
-					groups.push_back((*i)->target_rect);
+				if (*i && (*i)->valid_target())
+					groups.push_back((*i)->get_target_rect());
 
 			#ifndef	NDEBUG
 			int sub_tasks_count = (int)groups.size();
@@ -121,25 +121,26 @@ OptimizerBlendSplit::run(const RunParams& params) const
 					// create sub-blend
 					TaskList::Handle sub_list_b = TaskList::Handle::cast_dynamic(blend->sub_task_b()->clone());
 					sub_list_b->sub_tasks.clear();
-					sub_list_b->target_rect = groups[j];
+					sub_list_b->trunc_target_rect(groups[j]);
 
 					RectInt rect = groups[j]
-								 + blend->target_rect.get_min()
+								 + blend->get_target_offset()
 								 + blend->offset_b;
 					TaskBlend::Handle sub_blend = TaskBlend::Handle::cast_dynamic(blend->clone());
-					sub_blend->target_rect = rect;
+					sub_blend->trunc_target_rect(rect);
 					sub_blend->sub_task_a() = new TaskSurface();
 					assign(sub_blend->sub_task_a(), blend->sub_task_a());
-					etl::set_intersect(sub_blend->sub_task_a()->target_rect, blend->sub_task_a()->target_rect, rect);
+					sub_blend->sub_task_a()->sub_tasks.clear();
+					sub_blend->sub_task_a()->trunc_target_rect(rect);
 					sub_blend->sub_task_b() = sub_list_b;
 					sub_blend->offset_a = -rect.get_min();
-					sub_blend->offset_b += blend->target_rect.get_min() - rect.get_min();
+					sub_blend->offset_b += blend->get_target_offset() - rect.get_min();
 
 					list->sub_tasks.push_back(sub_blend);
 
 					// fill list-b of sub-blend
 					for(Task::List::const_iterator i = list_b->sub_tasks.begin(); i != list_b->sub_tasks.end(); ++i)
-						if (*i && (*i)->target_rect.valid() && etl::intersect(groups[j], (*i)->target_rect))
+						if (*i && (*i)->valid_target() && etl::contains(groups[j], (*i)->get_target_rect()))
 						{
 							#ifndef	NDEBUG
 							assert(processed.count(*i) == 0);

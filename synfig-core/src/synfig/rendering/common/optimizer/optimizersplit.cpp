@@ -66,7 +66,7 @@ OptimizerSplit::run(const RunParams& params) const
 		if ( i->type_is<TaskSplittable>()
 		 &&  !i->type_pointer<TaskSplittable>()->splitted )
 		{
-			RectInt r = (*i)->target_rect;
+			RectInt r = (*i)->get_target_rect();
 			int w = r.maxx - r.minx;
 			int h = r.maxy - r.miny;
 			int t = std::min(h, std::min(w*h/min_area, threads));

@@ -41,6 +41,7 @@
 #include "optimizerblendzero.h"
 
 #include "../task/taskblend.h"
+#include "../task/tasksurfaceempty.h"
 
 #endif
 
@@ -58,12 +59,13 @@ using namespace rendering;
 void
 OptimizerBlendZero::apply_zero(const RunParams &params, const TaskBlend::Handle &blend, const Task::Handle &task) const
 {
-	if (!task || !task->target_rect.valid())
+	if (!task || !task->valid_target())
 	{
-		apply(params, Task::Handle());
+		Task::Handle empty = new TaskSurfaceEmpty();
+		empty->target_surface = params.ref_task->target_surface;
+		apply(params, empty);
 		return;
 	}
-
 
 	if (task->target_surface == blend->target_surface)
 	{
@@ -73,10 +75,11 @@ OptimizerBlendZero::apply_zero(const RunParams &params, const TaskBlend::Handle 
 
 	apply(params, task->clone());
 	params.ref_task->target_surface = blend->target_surface;
-	params.ref_task->target_rect +=
-		  blend->target_rect.get_min()
-		- task->target_rect.get_min()
-		+ blend->offset_a;
+	params.ref_task->move_target_rect(
+		  blend->get_target_offset()
+		- task->get_target_offset()
+		+ blend->offset_a );
+	assert( params.ref_task->check() );
 }
 
 void
@@ -95,15 +98,15 @@ OptimizerBlendZero::run(const RunParams& params) const
 		if (zero_amount)
 			{ apply_zero(params, blend, blend->sub_task_a()); return; }
 
-		bool valid_a = blend->sub_task_a()->target_rect.is_valid();
-		bool valid_b = blend->sub_task_b()->target_rect.is_valid();
+		bool valid_a = blend->sub_task_a()->valid_target();
+		bool valid_b = blend->sub_task_b()->valid_target();
 
 		if (!valid_b && !valid_a)
 			{ apply_zero(params, blend, Task::Handle()); return; }
 
 		bool one_amount = fabsf(blend->amount - 1.f) <= 1e-6;
 		bool intertsects = valid_a && valid_b
-						&& etl::intersect(blend->sub_task_a()->target_rect, blend->sub_task_b()->target_rect);
+						&& etl::intersect(blend->sub_task_a()->get_target_rect(), blend->sub_task_b()->get_target_rect());
 
 		if (one_amount && !intertsects)
 		{

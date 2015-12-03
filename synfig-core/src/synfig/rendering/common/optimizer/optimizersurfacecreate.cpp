@@ -61,14 +61,26 @@ OptimizerSurfaceCreate::insert_task(
 	const Task::Handle &task ) const
 {
 	if ( task
-	  && task->target_surface
+	  && task->valid_target()
 	  && !task->target_surface->is_created()
 	  && !created_surfaces.count(task->target_surface) )
 	{
 		created_surfaces.insert(task->target_surface);
 		TaskSurfaceCreate::Handle surface_create = new TaskSurfaceCreate();
 		surface_create->target_surface = task->target_surface;
-		surface_create->target_rect = RectInt(0, 0, task->target_surface->get_width(), task->target_surface->get_height());
+
+		VectorInt size = task->target_surface->get_size();
+		RectInt rect = task->get_target_rect();
+		Vector lt = task->get_source_rect_lt();
+		Vector rb = task->get_source_rect_rb();
+		Vector k( (rb[0] - lt[0])/(rect.maxx - rect.minx),
+				  (rb[1] - lt[1])/(rect.maxy - rect.miny) );
+		Vector nlt( lt[0] - k[0]*rect.minx,
+				    lt[1] - k[1]*rect.miny);
+		Vector nrb( lt[0] + k[0]*(size[0] - rect.minx),
+				    lt[1] + k[1]*(size[1] - rect.miny) );
+		surface_create->init_target_rect(RectInt(VectorInt::zero(), size), nlt, nrb);
+		assert( surface_create->check() );
 		i = params.list.insert(i, surface_create);
 		++i;
 		apply(params);
@@ -81,7 +93,7 @@ OptimizerSurfaceCreate::run(const RunParams& params) const
 	std::set<Surface::Handle> created_surfaces;
 	for(Task::List::iterator i = params.list.begin(); i != params.list.end();)
 	{
-		if (*i)
+		if (*i && (*i)->valid_target())
 		{
 			if (TaskSurfaceCreate::Handle::cast_dynamic(*i))
 			{

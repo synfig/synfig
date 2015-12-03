@@ -76,24 +76,24 @@ OptimizerBlendSeparate::run(const RunParams& params) const
 		assign(new_blend->sub_task_a(), Task::Handle(blend->sub_task_a()));
 		new_blend->sub_task_a()->sub_tasks.clear();
 
-		RectInt blend_rect = blend->target_rect;
+		RectInt blend_rect = blend->get_target_rect();
 		if (!Color::is_straight(blend->blend_method))
 			etl::set_intersect(
 				blend_rect, blend_rect,
-				blend->sub_task_b()->target_rect
-				+ blend->target_rect.get_min()
+				blend->sub_task_b()->get_target_rect()
+				+ blend->get_target_offset()
 				+ blend->offset_b );
 		if (Color::is_onto(blend->blend_method))
-			etl::set_intersect(blend_rect, blend_rect, blend->sub_task_a()->target_rect);
-		if (blend_rect != blend->target_rect)
+			etl::set_intersect(blend_rect, blend_rect, blend->sub_task_a()->get_target_rect());
+		if (blend_rect != blend->get_target_rect())
 		{
-			new_blend->target_rect = blend_rect;
+			new_blend->trunc_target_rect(blend_rect);
 			new_blend->offset_a = -blend_rect.get_min();
-			new_blend->offset_b += blend->target_rect.get_min()
+			new_blend->offset_b += blend->get_target_offset()
 					             - blend_rect.get_min();
 		}
 
-		etl::set_intersect(new_blend->sub_task_a()->target_rect, new_blend->sub_task_a()->target_rect, new_blend->target_rect);
+		//new_blend->sub_task_a()->trunc_target_rect( new_blend->get_target_rect() );
 
 		// TODO: we can truncate task_a when blend straight used,
 		// but in current code organization we cannot change target_rects of

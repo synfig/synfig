@@ -452,14 +452,14 @@ TaskMeshSW::run(RunParams & /* params */) const
 	Matrix3 transfromation_matrix;
 	transfromation_matrix.m00 = get_units_per_pixel()[0];
 	transfromation_matrix.m11 = get_units_per_pixel()[1];
-	transfromation_matrix.m20 = source_rect_lt[0];
-	transfromation_matrix.m21 = source_rect_lt[1];
+	transfromation_matrix.m20 = get_source_rect_lt()[0];
+	transfromation_matrix.m21 = get_source_rect_lt()[1];
 
 	Matrix3 texture_transfromation_matrix;
 	texture_transfromation_matrix.m00 = sub_task()->get_units_per_pixel()[0];
 	texture_transfromation_matrix.m11 = sub_task()->get_units_per_pixel()[1];
-	texture_transfromation_matrix.m20 = sub_task()->source_rect_lt[0];
-	texture_transfromation_matrix.m21 = sub_task()->source_rect_lt[1];
+	texture_transfromation_matrix.m20 = sub_task()->get_source_rect_lt()[0];
+	texture_transfromation_matrix.m21 = sub_task()->get_source_rect_lt()[1];
 
 	render_mesh(
 		a,

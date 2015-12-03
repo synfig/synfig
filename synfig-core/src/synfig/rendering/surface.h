@@ -27,9 +27,8 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <ETL/rect>
-
 #include <synfig/color.h>
+#include <synfig/vector.h>
 
 #include "resource.h"
 
@@ -85,10 +84,10 @@ public:
 	bool is_created() const { return created; }
 	bool get_pixels(Color *buffer) const;
 
-	void set_size(const std::pair<int, int> &x)
-		{ set_size(x.first, x.second); }
-	std::pair<int, int> get_size() const
-		{ return std::pair<int, int>(get_width(), get_height()); }
+	void set_size(const VectorInt &x)
+		{ set_size(x[0], x[1]); }
+	VectorInt get_size() const
+		{ return VectorInt(get_width(), get_height()); }
 };
 
 } /* end namespace rendering */

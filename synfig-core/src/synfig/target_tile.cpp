@@ -123,10 +123,10 @@ Target_Tile::next_tile(RectInt& rect)
 bool
 synfig::Target_Tile::call_renderer(Context &context, const etl::handle<rendering::SurfaceSW> &surfacesw, int quality, const RendDesc &renddesc, ProgressCallback *cb)
 {
-	surfacesw->set_size(desc.get_w(), desc.get_h());
+	surfacesw->set_size(renddesc.get_w(), renddesc.get_h());
 	if (get_engine().empty())
 	{
-		if(!context.accelerated_render(&surfacesw->get_surface(),quality,desc,0))
+		if(!context.accelerated_render(&surfacesw->get_surface(),quality,renddesc,0))
 		{
 			// For some reason, the accelerated renderer failed.
 			if(cb)cb->error(_("Accelerated Renderer Failure"));
@@ -143,9 +143,7 @@ synfig::Target_Tile::call_renderer(Context &context, const etl::handle<rendering
 				throw "Renderer '" + get_engine() + "' not found";
 
 			task->target_surface = surfacesw;
-			task->source_rect_lt = desc.get_tl();
-			task->source_rect_rb = desc.get_br();
-			task->target_rect = RectInt(0, 0, surfacesw->get_width(), surfacesw->get_height());
+			task->init_target_rect(RectInt(VectorInt::zero(), surfacesw->get_size()), renddesc.get_tl(), renddesc.get_br());
 
 			rendering::Task::List list;
 			list.push_back(task);

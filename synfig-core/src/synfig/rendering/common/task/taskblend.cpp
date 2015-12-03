@@ -53,8 +53,8 @@ using namespace rendering;
 Rect
 TaskBlend::calc_bounds() const
 {
-	Rect ra = sub_task_a() ? sub_task_a()->bounds : Rect::zero();
-	Rect rb = sub_task_b() ? sub_task_b()->bounds : Rect::zero();
+	Rect ra = sub_task_a() ? sub_task_a()->get_bounds() : Rect::zero();
+	Rect rb = sub_task_b() ? sub_task_b()->get_bounds() : Rect::zero();
 	Rect bounds = Rect::zero();
 	if (Color::is_onto(blend_method))
 		bounds = ra;

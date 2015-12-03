@@ -89,9 +89,11 @@ OptimizerMeshSW::run(const RunParams& params) const
 			mesh_sw->sub_task() = mesh->sub_task()->clone();
 			mesh_sw->sub_task()->target_surface = new SurfaceSW();
 			mesh_sw->sub_task()->target_surface->set_size(width, height);
-			mesh_sw->sub_task()->source_rect_lt = mesh->mesh->get_source_rectangle().get_min();
-			mesh_sw->sub_task()->source_rect_rb = mesh->mesh->get_source_rectangle().get_max();
-			mesh_sw->sub_task()->target_rect = RectInt(0, 0, width, height);
+			mesh_sw->sub_task()->init_target_rect(
+				RectInt(0, 0, width, height),
+				mesh->mesh->get_source_rectangle().get_min(),
+				mesh->mesh->get_source_rectangle().get_max() );
+			assert( mesh_sw->check() );
 		}
 		apply(params, mesh_sw);
 	}

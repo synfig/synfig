@@ -88,30 +88,20 @@ OptimizerBlendBlend::run(const RunParams& params) const
 		  && sub_blend->sub_task_b()->target_surface
 		  && (sub_blend->sub_task_a().type_is<TaskSurface>() || sub_blend->sub_task_a().type_is<TaskSurfaceEmpty>()) )
 		{
-			Task::Handle task_a = blend->sub_task_a()->clone();
-			task_a->target_surface = blend->target_surface;
-			task_a->target_rect +=
-				VectorInt(blend->target_rect.minx, blend->target_rect.miny)
-			  + blend->offset_a;
+			Task::Handle task_a = blend->sub_task_a();
 
 			TaskBlend::Handle task_b = TaskBlend::Handle::cast_dynamic(sub_blend->clone());
 			task_b->target_surface = blend->target_surface;
-			task_b->target_rect += blend->target_rect.get_min() + blend->offset_b;
-			task_b->offset_a = -task_b->target_rect.get_min();
+			task_b->move_target_rect(
+				blend->get_target_offset() + blend->offset_b );
+			assert( task_b->check() );
 
 			task_b->sub_task_a() = new TaskSurface();
-			assign(task_b->sub_task_a(), sub_blend->sub_task_a());
-			task_b->sub_task_a()->target_surface = blend->target_surface;
-			task_b->sub_task_a()->target_rect += sub_blend->offset_a - task_b->offset_a;
+			assign(task_b->sub_task_a(), blend->sub_task_a());
+			task_b->sub_task_a()->sub_tasks.clear();
+			task_b->offset_a = -task_b->get_target_offset();
 
 			task_b->amount *= blend->amount;
-
-			assert( !task_a->target_rect.valid() || etl::contains(
-				RectInt(0, 0, task_a->target_surface->get_width(), task_a->target_surface->get_height()),
-				task_a->target_rect ));
-			assert( !task_b->target_rect.valid() || etl::contains(
-				RectInt(0, 0, task_b->target_surface->get_width(), task_b->target_surface->get_height()),
-				task_b->target_rect ));
 
 			Task::Handle task;
 			if (task_a.type_is<TaskSurface>() || task_a.type_is<TaskSurfaceEmpty>())

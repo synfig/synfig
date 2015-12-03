@@ -58,29 +58,29 @@ using namespace rendering;
 void
 TaskBlendSW::split(const RectInt &sub_target_rect)
 {
-	RectInt prev_target_rect = target_rect;
-	Optimizer::apply_target_bounds(*this, sub_target_rect);
-	offset_a[0] += prev_target_rect.minx - target_rect.minx;
-	offset_a[1] += prev_target_rect.miny - target_rect.miny;
-	offset_b[0] += prev_target_rect.minx - target_rect.minx;
-	offset_b[1] += prev_target_rect.miny - target_rect.miny;
-	if (target_rect.is_valid())
+	RectInt prev_target_rect = get_target_rect();
+	trunc_target_rect(sub_target_rect);
+	offset_a += prev_target_rect.get_min() - get_target_offset();
+	offset_b += prev_target_rect.get_min() - get_target_offset();
+	if (valid_target())
 	{
-		if (sub_task_a() && sub_task_a()->target_rect.is_valid())
+		if (sub_task_a() && sub_task_a()->valid_target())
 		{
+			// TODO: Buggg! Here we should to call "split" if possible
+			// TODO: solve problem with offset_a and offset_b
 			sub_task_a() = sub_task_a()->clone();
-			etl::set_intersect(
-				sub_task_a()->target_rect,
-				sub_task_a()->target_rect,
-				target_rect - VectorInt(target_rect.minx, target_rect.miny) - offset_a );
+			sub_task_a()->trunc_target_rect(
+				get_target_rect()
+				- get_target_offset()
+				- offset_a );
 		}
-		if (sub_task_b() && sub_task_b()->target_rect.is_valid())
+		if (sub_task_b() && sub_task_b()->valid_target())
 		{
-			sub_task_b() = sub_task_b()->clone();
-			etl::set_intersect(
-				sub_task_b()->target_rect,
-				sub_task_b()->target_rect,
-				target_rect - VectorInt(target_rect.minx, target_rect.miny) - offset_b );
+			sub_task_b() = sub_task_a()->clone();
+			sub_task_b()->trunc_target_rect(
+				get_target_rect()
+				- get_target_offset()
+				- offset_b );
 		}
 	}
 }
@@ -98,10 +98,10 @@ TaskBlendSW::run(RunParams & /* params */) const
 	//debug::DebugSurface::save_to_file(a, "TaskBlendSW__run__a");
 	//debug::DebugSurface::save_to_file(b, "TaskBlendSW__run__b");
 
-	RectInt r = target_rect;
+	RectInt r = get_target_rect();
 	if (r.valid())
 	{
-		RectInt ra = sub_task_a()->target_rect + r.get_min() + offset_a;
+		RectInt ra = sub_task_a()->get_target_rect() + r.get_min() + offset_a;
 		if (ra.valid())
 		{
 			etl::set_intersect(ra, ra, r);
@@ -118,7 +118,7 @@ TaskBlendSW::run(RunParams & /* params */) const
 		}
 
 		RectInt fill[] = { ra, RectInt::zero(), RectInt::zero(), RectInt::zero() };
-		RectInt rb = sub_task_b()->target_rect + r.get_min() + offset_b;
+		RectInt rb = sub_task_b()->get_target_rect() + r.get_min() + offset_b;
 		if (rb.valid())
 		{
 			etl::set_intersect(rb, rb, r);

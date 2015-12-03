@@ -108,6 +108,8 @@ public:
 		//! Optimizer can read parent tasks via this field
 		const RunParams * const parent;
 
+		const Task::Handle orig_task;
+
 		//! Task for optimization, optimizer may replace or remove (make null) it,
 		//! (see Optimizer::for_task and Optimizer::for_root_task)
 		mutable Task::Handle ref_task;
@@ -129,6 +131,7 @@ public:
 			list(list),
 			depends_from(depends_from),
 			parent(parent),
+			orig_task(task),
 			ref_task(task),
 			ref_affects_to(),
 			ref_mode()
@@ -139,6 +142,7 @@ public:
 			list(other.list),
 			depends_from(other.depends_from),
 			parent(other.parent),
+			orig_task(other.orig_task),
 			ref_task(other.ref_task),
 			ref_affects_to(),
 			ref_mode()
@@ -147,6 +151,19 @@ public:
 		//! Creates RunParams structure for sub-task
 		RunParams sub(const Task::Handle &task) const
 			{ return RunParams(renderer, list, depends_from, task, this); }
+
+		const RunParams& root() const
+			{ return parent ? parent->root() : *this; }
+		int get_current_level_index() const
+			{ return parent ? parent->get_current_level_index() + 1 : 0; }
+		const RunParams* get_parent(int index) const
+		{
+			return index == 0 ? this
+				 : index < 0 || !parent ? NULL
+				 : parent->get_parent(index - 1);
+		}
+		const RunParams* get_level(int index) const
+			{ return get_parent(get_current_level_index() - index); }
 	};
 
 	static const CategoryInfo categories_info[CATEGORY_ID_COUNT];
@@ -195,76 +212,6 @@ public:
 		apply(params, params.ref_task->clone());
 	}
 
-	static void apply_target_bounds(Task &task, const RectInt &target_bounds)
-	{
-		RectInt tr = task.target_rect;
-		if (tr.valid())
-		{
-			if (target_bounds.valid())
-			{
-				RectInt ntr = target_bounds;
-				etl::set_intersect(ntr, ntr, tr);
-				if (ntr.valid())
-				{
-					Vector lt = task.source_rect_lt;
-					Vector rb = task.source_rect_rb;
-					Vector k( (rb[0] - lt[0])/(Real)(tr.maxx - tr.minx),
-							  (rb[1] - lt[1])/(Real)(tr.maxy - tr.miny) );
-					task.source_rect_lt[0] = (Real)(ntr.minx - tr.minx)*k[0] + lt[0];
-					task.source_rect_lt[1] = (Real)(ntr.miny - tr.miny)*k[1] + lt[1];
-					task.source_rect_rb[0] = (Real)(ntr.maxx - tr.minx)*k[0] + lt[0];
-					task.source_rect_rb[1] = (Real)(ntr.maxy - tr.miny)*k[1] + lt[1];
-					task.target_rect = ntr;
-					return;
-				}
-			}
-			task.source_rect_lt = task.source_rect_rb = Vector::zero();
-			task.target_rect = RectInt::zero();
-		}
-	}
-
-	static void apply_source_bounds(Task &task, const Rect &source_bounds)
-	{
-		RectInt tr = task.target_rect;
-		if (tr.valid())
-		{
-			Rect nsb = source_bounds;
-			if (nsb.valid())
-			{
-				Vector lt = task.source_rect_lt;
-				Vector rb = task.source_rect_rb;
-				Vector nlt( std::min(std::max(lt[0], nsb.minx), nsb.maxx),
-							std::min(std::max(lt[1], nsb.miny), nsb.maxy) );
-				Vector nrb( std::min(std::max(rb[0], nsb.minx), nsb.maxx),
-							std::min(std::max(rb[1], nsb.miny), nsb.maxy) );
-				if (nlt[0] != nrb[0] && nlt[1] != nrb[1])
-				{
-					Vector k(  (Real)(tr.maxx - tr.minx)/(rb[0] - lt[0]),
-							   (Real)(tr.maxy - tr.miny)/(rb[1] - lt[1]) );
-					Vector t0( (nlt[0] - lt[0])*k[0] + tr.minx,
-							   (nlt[1] - lt[1])*k[1] + tr.miny );
-					Vector t1( (nrb[0] - lt[0])*k[0] + tr.minx,
-							   (nrb[1] - lt[1])*k[1] + tr.miny );
-					if (t1[0] < t0[0]) std::swap(t1[0], t0[0]);
-					if (t1[1] < t0[1]) std::swap(t1[1], t0[1]);
-
-					const Real e = 1e-6;
-					RectInt ntr( (int)floor(t0[0] + e),
-							     (int)floor(t0[1] + e),
-								 (int)ceil (t1[0] - e),
-								 (int)ceil (t1[1] - e) );
-					apply_target_bounds(task, ntr);
-					return;
-				}
-			}
-			task.source_rect_lt = task.source_rect_rb = Vector::zero();
-			task.target_rect = RectInt::zero();
-		}
-	}
-
-	static void apply_source_bounds(Task &task)
-		{ apply_source_bounds(task, task.bounds); }
-
 	template<typename T>
 	static void assign_surface(
 		Task::Handle &task,
@@ -278,10 +225,9 @@ public:
 			task->target_surface = new T();
 			task->target_surface->is_temporary = true;
 			task->target_surface->set_size(width, height);
-			task->source_rect_lt = rect_lt;
-			task->source_rect_rb = rect_rb;
-			task->target_rect = target_rect;
-			apply_source_bounds(*task);
+			task->init_target_rect(target_rect, rect_lt, rect_rb);
+			assert( task->check() );
+			task->trunc_target_by_bounds();
 		}
 	}
 
@@ -291,13 +237,13 @@ public:
 		if (task && parent && parent->target_surface)
 			assign_surface<T>(
 				task,
-				parent->target_rect.maxx - parent->target_rect.minx,
-				parent->target_rect.maxy - parent->target_rect.miny,
-				parent->source_rect_lt,
-				parent->source_rect_rb,
+				parent->get_target_rect().maxx - parent->get_target_rect().minx,
+				parent->get_target_rect().maxy - parent->get_target_rect().miny,
+				parent->get_source_rect_lt(),
+				parent->get_source_rect_rb(),
 				RectInt( 0, 0,
-					parent->target_rect.maxx - parent->target_rect.minx,
-					parent->target_rect.maxy - parent->target_rect.miny ));
+					parent->get_target_rect().maxx - parent->get_target_rect().minx,
+					parent->get_target_rect().maxy - parent->get_target_rect().miny ));
 	}
 
 	template<typename T>
@@ -312,7 +258,7 @@ public:
 
 	template<typename T, typename TT>
 	static void assign(const etl::handle<T> &dest, const etl::handle<TT> &src)
-		{ *(TT*)dest.get() = *src; apply_source_bounds(*dest); }
+		{ *(TT*)dest.get() = *src; dest->trunc_target_by_bounds(); }
 
 	template<typename SurfaceType, typename T, typename TT>
 	static void assign_all(const etl::handle<T> &dest, const etl::handle<TT> &src)
