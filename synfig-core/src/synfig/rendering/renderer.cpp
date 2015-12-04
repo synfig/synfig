@@ -443,7 +443,7 @@ Renderer::optimize_recursive(
 				// recursive run
 				initial_params.ref_task = params.ref_task;
 				Optimizer::RunParams sub_params = initial_params.sub(*i);
-				optimize_recursive(optimizers, sub_params, calls_count, optimizations_count, nonrecursive ? 1 : recursive ? INT_MAX : max_level-1);
+				optimize_recursive(optimizers, sub_params, calls_count, optimizations_count, nonrecursive ? 0 : recursive ? INT_MAX : max_level-1);
 				nonrecursive = false;
 				recursive = false;
 
