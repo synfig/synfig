@@ -57,6 +57,20 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 void
+OptimizerTransformationAffine::replace(Task::Handle &dest, const Task::Handle &src, bool clonned) const
+{
+	if (src && dest && dest->valid_target() && !src->valid_target())
+	{
+		Task::Handle task = clonned ? src : src->clone();
+		task->target_surface = dest->target_surface;
+		task->init_target_rect(dest->get_target_rect(), dest->get_source_rect_lt(), dest->get_source_rect_rb());
+		dest = task;
+		return;
+	}
+	dest = src;
+}
+
+void
 OptimizerTransformationAffine::recursive(Task::Handle &ref_task, const Matrix &matrix) const
 {
 	if (!ref_task)
@@ -69,7 +83,7 @@ OptimizerTransformationAffine::recursive(Task::Handle &ref_task, const Matrix &m
 			// skip identity transfromation
 			if (affine_transformation->matrix.is_identity())
 			{
-				ref_task = transformation->sub_task();
+				replace(ref_task, transformation->sub_task());
 				recursive(ref_task, matrix);
 				return;
 			}
@@ -77,14 +91,14 @@ OptimizerTransformationAffine::recursive(Task::Handle &ref_task, const Matrix &m
 			// transformation of null-task is meaningless, remove transformation and return
 			if (!transformation->sub_task())
 			{
-				ref_task.reset();
+				replace(ref_task, Task::Handle());
 				return;
 			}
 
 			// transformation of TaskSolid is meaningless, skip transformation and continue branch
 			if (transformation->sub_task().type_is<TaskSolid>())
 			{
-				ref_task = transformation->sub_task();
+				replace(ref_task, transformation->sub_task());
 				recursive(ref_task, Matrix());
 				return;
 			}
@@ -92,15 +106,15 @@ OptimizerTransformationAffine::recursive(Task::Handle &ref_task, const Matrix &m
 			// apply affine transformation to sub-tasks of blend
 			if (TaskBlend::Handle blend = TaskBlend::Handle::cast_dynamic(transformation->sub_task()))
 			{
-				ref_task = blend;
-				recursive(ref_task, affine_transformation->matrix*matrix);
+				replace(ref_task, blend);
+				recursive(ref_task, affine_transformation->matrix * matrix);
 				return;
 			}
 
 			// apply affine transformation to transformable sub-task
 			if (transformation->sub_task().type_is<TaskTransformableAffine>())
 			{
-				ref_task = transformation->sub_task();
+				replace(ref_task, transformation->sub_task());
 				recursive(ref_task, affine_transformation->matrix * matrix);
 				return;
 			}
@@ -110,7 +124,7 @@ OptimizerTransformationAffine::recursive(Task::Handle &ref_task, const Matrix &m
 			{
 				if (AffineTransformation::Handle::cast_dynamic(sub_transformation->transformation))
 				{
-					ref_task = transformation->sub_task();
+					replace(ref_task, transformation->sub_task());
 					recursive(ref_task, affine_transformation->matrix*matrix);
 					return;
 				}
@@ -125,13 +139,13 @@ OptimizerTransformationAffine::recursive(Task::Handle &ref_task, const Matrix &m
 				{
 					transformation = TaskTransformation::Handle::cast_dynamic(transformation->clone());
 					transformation->sub_task() = sub_task;
-					ref_task = transformation;
+					replace(ref_task, transformation, true);
 				}
 				return;
 			}
 
 			// take matrix and remove current transformation, it will recreated with new matrix in recursive-call
-			ref_task = transformation->sub_task();
+			replace(ref_task, transformation->sub_task());
 			recursive(ref_task, affine_transformation->matrix * matrix);
 			return;
 		}
@@ -141,54 +155,83 @@ OptimizerTransformationAffine::recursive(Task::Handle &ref_task, const Matrix &m
 	if (ref_task.type_is<TaskSolid>())
 		m.set_identity();
 
-	if ( m.is_identity()
-	  || TaskBlend::Handle::cast_dynamic(ref_task) )
+	if ( !m.is_identity() )
 	{
-		bool task_clonned = false;
-		for(Task::List::iterator i = ref_task->sub_tasks.begin(); i != ref_task->sub_tasks.end(); ++i)
+		if ( TaskBlend::Handle::cast_dynamic(ref_task) )
 		{
-			if (*i)
+			bool task_clonned = false;
+			for(Task::List::iterator i = ref_task->sub_tasks.begin(); i != ref_task->sub_tasks.end(); ++i)
 			{
-				if (!task_clonned)
+				if (*i)
 				{
-					Task::Handle sub_task = *i;
-					recursive(sub_task, matrix);
-					if (sub_task != *i)
+					if (!task_clonned)
 					{
-						int index = i - ref_task->sub_tasks.begin();
-						ref_task = ref_task->clone();
-						i = ref_task->sub_tasks.begin() + index;
-						*i = sub_task;
-						task_clonned = true;
+						Task::Handle sub_task = *i;
+						recursive(sub_task, m);
+						if (sub_task != *i)
+						{
+							int index = i - ref_task->sub_tasks.begin();
+							replace(ref_task, ref_task->clone(), true);
+							i = ref_task->sub_tasks.begin() + index;
+							*i = sub_task;
+							task_clonned = true;
+						}
+					}
+					else
+					{
+						recursive(*i, m);
 					}
 				}
-				else
+			}
+			return;
+		}
+
+		// apply affine transformation to transformable sub-task
+		if (ref_task.type_is<TaskTransformableAffine>())
+		{
+			replace(ref_task, ref_task->clone(), true);
+			TaskTransformableAffine *transformable_affine = ref_task.type_pointer<TaskTransformableAffine>();
+			transformable_affine->transformation *= matrix;
+			recursive(ref_task, Matrix());
+			return;
+		}
+
+		// transformation task is required here, create it
+		TaskTransformation::Handle transformation(new TaskTransformation());
+		AffineTransformation::Handle affine_transformation = new AffineTransformation();
+		affine_transformation->matrix = matrix;
+		transformation->transformation = affine_transformation;
+		transformation->sub_task() = ref_task;
+		replace(ref_task, transformation, true);
+		recursive(transformation->sub_task(), Matrix());
+		return;
+	}
+
+	// recursive call for all sub-tasks
+	bool task_clonned = false;
+	for(Task::List::iterator i = ref_task->sub_tasks.begin(); i != ref_task->sub_tasks.end(); ++i)
+	{
+		if (*i)
+		{
+			if (!task_clonned)
+			{
+				Task::Handle sub_task = *i;
+				recursive(sub_task, Matrix());
+				if (sub_task != *i)
 				{
-					recursive(*i, m);
+					int index = i - ref_task->sub_tasks.begin();
+					replace(ref_task, ref_task->clone(), true);
+					i = ref_task->sub_tasks.begin() + index;
+					*i = sub_task;
+					task_clonned = true;
 				}
 			}
+			else
+			{
+				recursive(*i, Matrix());
+			}
 		}
-		return;
 	}
-
-	// apply affine transformation to transformable sub-task
-	if (ref_task.type_is<TaskTransformableAffine>())
-	{
-		ref_task = ref_task->clone();
-		TaskTransformableAffine *transformable_affine = ref_task.type_pointer<TaskTransformableAffine>();
-		transformable_affine->transformation *= matrix;
-		recursive(ref_task, Matrix());
-		return;
-	}
-
-	// transformation task is required here, create it
-	TaskTransformation::Handle transformation(new TaskTransformation());
-	AffineTransformation::Handle affine_transformation = new AffineTransformation();
-	affine_transformation->matrix = matrix;
-	transformation->transformation = affine_transformation;
-	transformation->sub_task() = ref_task;
-	ref_task = transformation;
-	recursive(transformation->sub_task(), Matrix());
 	return;
 }
 

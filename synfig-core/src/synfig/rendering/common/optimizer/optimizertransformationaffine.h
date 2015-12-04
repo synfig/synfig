@@ -46,6 +46,7 @@ namespace rendering
 class OptimizerTransformationAffine: public Optimizer
 {
 private:
+	void replace(Task::Handle &dest, const Task::Handle &src, bool clonned = false) const;
 	void recursive(Task::Handle &ref_task, const Matrix &matrix) const;
 
 public:
