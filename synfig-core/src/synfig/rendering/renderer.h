@@ -80,6 +80,8 @@ private:
 	void optimize_recursive(
 		const Optimizer::List &optimizers,
 		const Optimizer::RunParams& params,
+		int &calls_count,
+		int &optimizations_count,
 		int max_level ) const;
 
 	void log(

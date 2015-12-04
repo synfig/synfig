@@ -66,12 +66,13 @@ using namespace rendering;
 
 
 #ifdef _DEBUG
-#define DEBUG_TASK_LIST
+//#define DEBUG_TASK_LIST
 #define DEBUG_TASK_MEASURE
 //#define DEBUG_TASK_SURFACE
 //#define DEBUG_OPTIMIZATION
 //#define DEBUG_OPTIMIZATION_EACH_CHANGE
 //#define DEBUG_OPTIMIZATION_MEASURE
+//#define DEBUG_OPTIMIZATION_COUNTERS
 //#define DEBUG_THREAD_TASK
 //#define DEBUG_THREAD_WAIT
 #endif
@@ -205,6 +206,7 @@ private:
 		task->back_deps.clear();
 		assert( tasks_in_process.count(thread_index) == 1 );
 		tasks_in_process.erase(thread_index);
+		//info("rendering threads used %d", tasks_in_process.size());
 	}
 
 	Task::Handle get(int thread_index) {
@@ -220,6 +222,7 @@ private:
 				queue.pop_front();
 				assert( tasks_in_process.count(thread_index) == 0 );
 				tasks_in_process[thread_index] = task;
+				//info("rendering threads used %d", tasks_in_process.size());
 				return task;
 			}
 
@@ -380,6 +383,8 @@ void
 Renderer::optimize_recursive(
 	const Optimizer::List &optimizers,
 	const Optimizer::RunParams& params,
+	int &calls_count,
+	int &optimizations_count,
 	int max_level ) const
 {
 	if (!params.ref_task) return;
@@ -399,10 +404,14 @@ Renderer::optimize_recursive(
 				Optimizer::RunParams p(params);
 				(*i)->run(p);
 
-				#ifdef DEBUG_OPTIMIZATION_EACH_CHANGE
+				++calls_count;
 				if (params.ref_task != p.ref_task)
+				{
+					++optimizations_count;
+					#ifdef DEBUG_OPTIMIZATION_EACH_CHANGE
 					log("", params.list, (typeid(**i).name() + 19), &p);
-				#endif
+					#endif
+				}
 
 				// apply params
 				params.ref_affects_to |= p.ref_affects_to;
@@ -434,7 +443,7 @@ Renderer::optimize_recursive(
 				// recursive run
 				initial_params.ref_task = params.ref_task;
 				Optimizer::RunParams sub_params = initial_params.sub(*i);
-				optimize_recursive(optimizers, sub_params, nonrecursive ? 1 : recursive ? INT_MAX : max_level-1);
+				optimize_recursive(optimizers, sub_params, calls_count, optimizations_count, nonrecursive ? 1 : recursive ? INT_MAX : max_level-1);
 				nonrecursive = false;
 				recursive = false;
 
@@ -454,7 +463,7 @@ Renderer::optimize_recursive(
 					// go to next sub-task if we don't need to repeat optimization (see Optimizer::MODE_REPEAT)
 					if ((sub_params.ref_mode & Optimizer::MODE_REPEAT_LAST) == Optimizer::MODE_REPEAT_LAST)
 					{
-						// check non-recursive flag (see Optimizer::MODE_RECURSIVE)
+						// check recursive flag (see Optimizer::MODE_RECURSIVE)
 						if (sub_params.ref_mode & Optimizer::MODE_RECURSIVE)
 							recursive = true;
 						else
@@ -511,10 +520,14 @@ Renderer::optimize_recursive(
 				Optimizer::RunParams p(params);
 				(*i)->run(p);
 
-				#ifdef DEBUG_OPTIMIZATION_EACH_CHANGE
+				++calls_count;
 				if (params.ref_task != p.ref_task)
+				{
+					++optimizations_count;
+					#ifdef DEBUG_OPTIMIZATION_EACH_CHANGE
 					log("", params.list, (typeid(**i).name() + 19), &p);
-				#endif
+					#endif
+				}
 
 				// apply params
 				params.ref_affects_to |= p.ref_affects_to;
@@ -622,13 +635,16 @@ Renderer::optimize(Task::List &list) const
 
 		if (for_task || for_root_task)
 		{
+			int calls_count = 0;
+			int optimizations_count = 0;
+
 			bool nonrecursive = false;
 			for(Task::List::iterator j = list.begin(); !(categories_to_process & depends_from) && j != list.end();)
 			{
 				if (*j)
 				{
 					Optimizer::RunParams params(*this, list, depends_from, *j);
-					optimize_recursive(current_optimizers, params, !for_task ? 0 : nonrecursive ? 1 : INT_MAX);
+					optimize_recursive(current_optimizers, params, calls_count, optimizations_count, !for_task ? 0 : nonrecursive ? 1 : INT_MAX);
 					nonrecursive = false;
 
 					if (*j != params.ref_task)
@@ -656,6 +672,11 @@ Renderer::optimize(Task::List &list) const
 					j = list.erase(j);
 				}
 			}
+
+			#ifdef DEBUG_OPTIMIZATION_COUNTERS
+			debug::Log::info("", "optimize category %d index %d: calls %d, changes %d",
+				current_category_id, current_optimizer_index, calls_count, optimizations_count );
+			#endif
 		}
 
 		if (categories_to_process & depends_from)
