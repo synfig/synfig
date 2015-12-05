@@ -44,12 +44,12 @@ namespace synfig
 namespace rendering
 {
 
+class RenderQueue;
+
 class Renderer: public etl::shared_object
 {
 public:
 	typedef etl::handle<Renderer> Handle;
-
-	class Queue;
 
 	struct DebugOptions {
 		String task_list_log;
@@ -60,7 +60,7 @@ public:
 private:
 	static Handle blank;
 	static std::map<String, Handle> *renderers;
-	static Queue *queue;
+	static RenderQueue *queue;
 	static DebugOptions debug_options;
 
 	Optimizer::List optimizers[Optimizer::CATEGORY_ID_COUNT];
