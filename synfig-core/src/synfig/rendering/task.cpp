@@ -78,9 +78,9 @@ Task::get_units_per_pixel() const
 	  || fabs(source_rect_rb[1] - source_rect_lt[1]) < 1e-10 )
 		return Vector();
 	return Vector(
-		fabs(source_rect_rb[0] - source_rect_lt[0]) < 1e-10 ? 0.0 :
+		target_rect.maxx == target_rect.minx ? 0.0 :
 			(source_rect_rb[0] - source_rect_lt[0])/(Real)(target_rect.maxx - target_rect.minx),
-		fabs(source_rect_rb[1] - source_rect_lt[1]) < 1e-10 ? 0.0 :
+		target_rect.maxy == target_rect.miny ? 0.0 :
 			(source_rect_rb[1] - source_rect_lt[1])/(Real)(target_rect.maxy - target_rect.miny) );
 }
 
