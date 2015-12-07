@@ -71,6 +71,7 @@ RendererSafe::RendererSafe()
 {
 	// register optimizers
 	register_optimizer(new OptimizerTransformationAffine());
+	register_optimizer(new OptimizerSurfaceResample());
 	register_optimizer(new OptimizerCalcBounds());
 
 	register_optimizer(new OptimizerBlendSW());
