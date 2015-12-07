@@ -101,7 +101,9 @@ OptimizerLinear::run(const RunParams& params) const
 
 	// remove dummy tasks
 	for(Task::List::iterator i = params.list.begin(); i != params.list.end();)
-		if (i->type_equal<Task>() || i->type_is<TaskList>()/* || i->type_is<TaskSurface>() || i->type_is<TaskSurfaceEmpty>() */)
+		if ( i->type_is<TaskList>()
+		  || i->type_is<TaskSurfaceEmpty>()
+		  /*|| i->type_is<TaskSurface>()*/ )
 			i = params.list.erase(i); else ++i;
 }
 

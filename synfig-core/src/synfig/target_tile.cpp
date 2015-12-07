@@ -143,6 +143,7 @@ synfig::Target_Tile::call_renderer(Context &context, const etl::handle<rendering
 				throw "Renderer '" + get_engine() + "' not found";
 
 			task->target_surface = surfacesw;
+			task->target_surface->create();
 			task->init_target_rect(RectInt(VectorInt::zero(), surfacesw->get_size()), renddesc.get_tl(), renddesc.get_br());
 
 			rendering::Task::List list;
