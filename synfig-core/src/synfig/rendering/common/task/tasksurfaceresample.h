@@ -55,7 +55,7 @@ public:
 
 	TaskSurfaceResample():
 		gamma(1.f),
-		interpolation(Color::INTERPOLATION_LINEAR),
+		interpolation(Color::INTERPOLATION_CUBIC),
 		crop_rb(1.0, 1.0)
 	{ }
 

@@ -170,91 +170,100 @@ public:
 bool
 TaskSurfaceResampleSW::run(RunParams & /* params */) const
 {
+	const Real precision = 1e-10;
+
 	const synfig::Surface &a =
 		SurfaceSW::Handle::cast_dynamic(sub_task()->target_surface)->get_surface();
 	synfig::Surface &target =
 		SurfaceSW::Handle::cast_dynamic(target_surface)->get_surface();
 
-	// transformation matrix
-
-	Matrix bounds_transfromation;
-	bounds_transfromation.m00 = get_pixels_per_unit()[0];
-	bounds_transfromation.m11 = get_pixels_per_unit()[1];
-	bounds_transfromation.m20 = -get_source_rect_lt()[0]*bounds_transfromation.m00 + get_target_rect().minx;
-	bounds_transfromation.m21 = -get_source_rect_lt()[1]*bounds_transfromation.m11 + get_target_rect().miny;
-
-	Matrix matrix = transformation * bounds_transfromation;
-
-	// bounds
-
-	Rect boundsf(   matrix.get_transformed(Vector(0.0, 0.0)) );
-	boundsf.expand( matrix.get_transformed(Vector(1.0, 0.0)) );
-	boundsf.expand( matrix.get_transformed(Vector(0.0, 1.0)) );
-	boundsf.expand( matrix.get_transformed(Vector(1.0, 1.0)) );
-
-	RectInt bounds( (int)floor(boundsf.minx) - 1,
-			        (int)floor(boundsf.miny) - 1,
-					(int)floor(boundsf.maxx) + 2,
-					(int)floor(boundsf.maxy) + 2 );
-	etl::set_intersect(bounds, bounds, RectInt(0, 0, target.get_w(), target.get_h()));
-
-	// texture matrices
-
-	if (bounds.valid())
+	if (valid_target() && sub_task()->valid_target())
 	{
-		Matrix inv_matrix = matrix;
-		inv_matrix.invert();
+		// transformation matrix
 
-		Matrix pos_matrix;
-		pos_matrix.m00 = (crop_rb[0] - crop_lt[0])*a.get_w();
-		pos_matrix.m11 = (crop_rb[1] - crop_lt[1])*a.get_h();
-		pos_matrix.m20 = -crop_lt[0] * pos_matrix.m00;
-		pos_matrix.m21 = -crop_lt[1] * pos_matrix.m11;
+		Matrix src_pixels_to_units;
+		src_pixels_to_units.m00 = sub_task()->get_units_per_pixel()[0];
+		src_pixels_to_units.m11 = sub_task()->get_units_per_pixel()[1];
+		src_pixels_to_units.m20 = -sub_task()->get_target_offset()[0]*src_pixels_to_units.m00 + sub_task()->get_source_rect_lt()[0];
+		src_pixels_to_units.m21 = -sub_task()->get_target_offset()[1]*src_pixels_to_units.m11 + sub_task()->get_source_rect_lt()[1];
 
-		Matrix aa0_matrix;
-		aa0_matrix.m00 = matrix.get_axis_x().mag();
-		aa0_matrix.m11 = matrix.get_axis_y().mag();
-		aa0_matrix.m20 = 0.5;
-		aa0_matrix.m21 = 0.5;
+		Matrix dest_units_to_pixels;
+		dest_units_to_pixels.m00 = get_pixels_per_unit()[0];
+		dest_units_to_pixels.m11 = get_pixels_per_unit()[1];
+		dest_units_to_pixels.m20 = -get_source_rect_lt()[0]*dest_units_to_pixels.m00 + get_target_offset()[0];
+		dest_units_to_pixels.m21 = -get_source_rect_lt()[1]*dest_units_to_pixels.m11 + get_target_offset()[1];
 
-		Matrix aa1_matrix;
-		aa1_matrix.m00 = -aa0_matrix.m00;
-		aa1_matrix.m11 = -aa0_matrix.m11;
-		aa1_matrix.m20 = 0.5 - 1.0*aa1_matrix.m00;
-		aa1_matrix.m21 = 0.5 - 1.0*aa1_matrix.m11;
+		Matrix matrix = src_pixels_to_units * transformation * dest_units_to_pixels;
 
-		pos_matrix = inv_matrix * pos_matrix;
-		aa0_matrix = inv_matrix * aa0_matrix;
-		aa1_matrix = inv_matrix * aa1_matrix;
+		// bounds
 
-		Helper::Args args(a, bounds);
+		RectInt sub_target = sub_task()->get_target_rect();
+		Vector corners[] = {
+			matrix.get_transformed(Vector( Real(sub_target.minx), Real(sub_target.miny) )),
+			matrix.get_transformed(Vector( Real(sub_target.maxx), Real(sub_target.miny) )),
+			matrix.get_transformed(Vector( Real(sub_target.minx), Real(sub_target.maxy) )),
+			matrix.get_transformed(Vector( Real(sub_target.maxx), Real(sub_target.maxy) )) };
 
-		Vector start((Real)bounds.minx, (Real)bounds.miny);
-		Vector dx(1.0, 0.0);
-		Vector dy((Real)(bounds.minx - bounds.maxx), 1.0);
+		Rect boundsf(   corners[0] );
+		boundsf.expand( corners[1] );
+		boundsf.expand( corners[2] );
+		boundsf.expand( corners[3] );
 
-		args.pos    = pos_matrix.get_transformed( start );
-		args.pos_dx = pos_matrix.get_transformed( dx, false );
-		args.pos_dy = pos_matrix.get_transformed( dy, false );
+		RectInt bounds( (int)floor(boundsf.minx + precision) - 1,
+						(int)floor(boundsf.miny + precision) - 1,
+						(int)ceil (boundsf.maxx - precision) + 1,
+						(int)ceil (boundsf.maxy - precision) + 1 );
+		etl::set_intersect(bounds, bounds, get_target_rect());
 
-		args.aa0    = aa0_matrix.get_transformed( start );
-		args.aa0_dx = aa0_matrix.get_transformed( dx, false );
-		args.aa0_dy = aa0_matrix.get_transformed( dy, false );
+		// texture matrices
 
-		args.aa1    = aa1_matrix.get_transformed( start );
-		args.aa1_dx = aa1_matrix.get_transformed( dx, false );
-		args.aa1_dy = aa1_matrix.get_transformed( dy, false );
-
-		if (blend)
+		if (bounds.valid())
 		{
-			synfig::Surface::alpha_pen p(target.get_pen(bounds.minx, bounds.miny));
-			p.set_blend_method(blend_method);
-			Helper::fill(gamma, interpolation, p, args);
-		}
-		else
-		{
-			synfig::Surface::pen p(target.get_pen(bounds.minx, bounds.miny));
-			Helper::fill(gamma, interpolation, p, args);
+			Matrix inv_matrix = matrix;
+			inv_matrix.invert();
+
+			Real sx = (corners[1] - corners[0]).mag()/Real(sub_target.maxx - sub_target.minx);
+			Real sy = (corners[2] - corners[0]).mag()/Real(sub_target.maxy - sub_target.miny);
+
+			Matrix aa0_matrix = inv_matrix
+					          * Matrix().set_scale(sx, sy)
+							  * Matrix().set_translate(0.5, 0.5);
+			Matrix aa1_matrix = inv_matrix
+					          * Matrix().set_translate(
+					        		-Real(sub_target.maxx - sub_target.minx),
+									-Real(sub_target.maxy - sub_target.miny) )
+					          * Matrix().set_scale(-sx, -sy)
+							  * Matrix().set_translate(0.5, 0.5);
+
+			Helper::Args args(a, bounds);
+
+			Vector start((Real)bounds.minx, (Real)bounds.miny);
+			Vector dx(1.0, 0.0);
+			Vector dy((Real)(bounds.minx - bounds.maxx), 1.0);
+
+			args.pos    = inv_matrix.get_transformed( start );
+			args.pos_dx = inv_matrix.get_transformed( dx, false );
+			args.pos_dy = inv_matrix.get_transformed( dy, false );
+
+			args.aa0    = aa0_matrix.get_transformed( start );
+			args.aa0_dx = aa0_matrix.get_transformed( dx, false );
+			args.aa0_dy = aa0_matrix.get_transformed( dy, false );
+
+			args.aa1    = aa1_matrix.get_transformed( start );
+			args.aa1_dx = aa1_matrix.get_transformed( dx, false );
+			args.aa1_dy = aa1_matrix.get_transformed( dy, false );
+
+			if (blend)
+			{
+				synfig::Surface::alpha_pen p(target.get_pen(bounds.minx, bounds.miny));
+				p.set_blend_method(blend_method);
+				Helper::fill(gamma, interpolation, p, args);
+			}
+			else
+			{
+				synfig::Surface::pen p(target.get_pen(bounds.minx, bounds.miny));
+				Helper::fill(gamma, interpolation, p, args);
+			}
 		}
 	}
 

@@ -838,17 +838,14 @@ Layer_Bitmap::build_composite_task_vfunc(ContextParams /* context_params */) con
 
 	rendering::TaskSurface::Handle task_surface(new rendering::TaskSurface());
 	task_surface->target_surface = rendering_surface;
-
-	Vector lt = param_tl.get(Vector());
-	Vector rb = param_br.get(Vector());
+	task_surface->init_target_rect(
+		RectInt(0, 0, task_surface->target_surface->get_width(), task_surface->target_surface->get_height()),
+		param_tl.get(Vector()),
+		param_br.get(Vector()) );
 
 	rendering::TaskSurfaceResample::Handle task_resample(new rendering::TaskSurfaceResample());
 	task_resample->gamma = (Color::value_type)param_gamma_adjust.get(Real());
 	task_resample->interpolation = (Color::Interpolation)param_c.get(int());
-	task_resample->transformation.m00 = rb[0] - lt[0];
-	task_resample->transformation.m11 = rb[1] - lt[1];
-	task_resample->transformation.m20 = lt[0];
-	task_resample->transformation.m21 = lt[1];
 	task_resample->sub_task() = task_surface;
 	return task_resample;
 }
