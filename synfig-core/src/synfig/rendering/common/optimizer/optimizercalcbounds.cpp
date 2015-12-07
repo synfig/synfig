@@ -57,7 +57,11 @@ void
 OptimizerCalcBounds::run(const RunParams& params) const
 {
 	if (params.ref_task)
+	{
 		params.ref_task->update_bounds();
+		if (params.ref_task->valid_target_rect())
+			params.ref_task->trunc_target_by_bounds();
+	}
 }
 
 /* === E N T R Y P O I N T ================================================= */
