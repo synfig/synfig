@@ -558,8 +558,8 @@ Renderer::run(const Task::List &list) const
 
 		if (!get_debug_options().result_image.empty())
 			debug::DebugSurface::save_to_file(
-				optimized_list.size() > 1
-					? (*(optimized_list.rbegin()+1))->target_surface
+				!list.empty() && list.back()
+					? list.back()->target_surface
 					: Surface::Handle(),
 				get_debug_options().result_image,
 				true );
