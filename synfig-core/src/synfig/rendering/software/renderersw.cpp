@@ -53,6 +53,7 @@
 #include "../common/optimizer/optimizersurfaceconvert.h"
 #include "../common/optimizer/optimizersurfacecreate.h"
 #include "../common/optimizer/optimizersurfacedestroy.h"
+#include "../common/optimizer/optimizersurfaceresample.h"
 #include "../common/optimizer/optimizertransformation.h"
 #include "../common/optimizer/optimizertransformationaffine.h"
 
@@ -80,6 +81,7 @@ RendererSW::RendererSW()
 {
 	// register optimizers
 	register_optimizer(new OptimizerTransformationAffine());
+	register_optimizer(new OptimizerSurfaceResample());
 	register_optimizer(new OptimizerCalcBounds());
 
 	register_optimizer(new OptimizerBlendSW());

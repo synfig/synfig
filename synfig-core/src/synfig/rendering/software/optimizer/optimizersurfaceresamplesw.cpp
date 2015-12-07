@@ -71,6 +71,7 @@ OptimizerSurfaceResampleSW::run(const RunParams& params) const
 		{
 			const Real precision = 1e-10;
 			const int border_size = 4;
+			const int max_sub_surface_size = 4096;
 
 			RectInt target = resample->get_target_rect();
 			Vector src_lt = resample->get_source_rect_lt();
@@ -92,15 +93,23 @@ OptimizerSurfaceResampleSW::run(const RunParams& params) const
 					    .expand( corners[3] );
 
 			// calculate size of surface of sub-task
-			Real lx = (corners[1] - corners[0]).mag();
-			Real ly = (corners[2] - corners[0]).mag();
-			if (lx > precision && ly > precision)
+			Real sub_units_per_pixel_x0 = fabs(corners[1][0] - corners[0][0])/Real(target.maxx - target.minx);
+			Real sub_units_per_pixel_x1 = fabs(corners[2][0] - corners[0][0])/Real(target.maxy - target.miny);
+			Real sub_units_per_pixel_y0 = fabs(corners[1][1] - corners[0][1])/Real(target.maxx - target.minx);
+			Real sub_units_per_pixel_y1 = fabs(corners[2][1] - corners[0][1])/Real(target.maxy - target.miny);
+			Vector sub_units_per_pixel(
+				std::max(sub_units_per_pixel_x0, sub_units_per_pixel_x1),
+				std::max(sub_units_per_pixel_y0, sub_units_per_pixel_y1) );
+
+			if ( sub_units_per_pixel[0] > precision
+			  && sub_units_per_pixel[1] > precision )
 			{
-				int sub_w = (int)ceil((target.maxx - target.minx)*(sub_src.maxx - sub_src.minx)/lx - precision);
-				int sub_h = (int)ceil((target.maxy - target.miny)*(sub_src.maxy - sub_src.miny)/ly - precision);
+				int sub_w = (int)ceil( (sub_src.maxx - sub_src.minx)/sub_units_per_pixel[0] - precision);
+				int sub_h = (int)ceil( (sub_src.maxy - sub_src.miny)/sub_units_per_pixel[1] - precision);
+				if (sub_w > max_sub_surface_size) sub_w = max_sub_surface_size;
+				if (sub_h > max_sub_surface_size) sub_h = max_sub_surface_size;
 
 				// add border
-				/*
 				Vector border( (sub_src.maxx - sub_src.minx)/Real(sub_w),
 						       (sub_src.maxy - sub_src.miny)/Real(sub_h) );
 				border *= Real(border_size);
@@ -110,7 +119,6 @@ OptimizerSurfaceResampleSW::run(const RunParams& params) const
 				sub_src.maxy += border[0];
 				sub_w += 2*border_size;
 				sub_h += 2*border_size;
-				*/
 
 				// set target
 				resample_sw->sub_task()->target_surface->set_size(sub_w, sub_h);

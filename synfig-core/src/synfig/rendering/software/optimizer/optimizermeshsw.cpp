@@ -94,6 +94,7 @@ OptimizerMeshSW::run(const RunParams& params) const
 				mesh->mesh->get_source_rectangle().get_min(),
 				mesh->mesh->get_source_rectangle().get_max() );
 			assert( mesh_sw->check() );
+			mesh_sw->sub_task()->trunc_target_by_bounds();
 		}
 		apply(params, mesh_sw);
 	}
