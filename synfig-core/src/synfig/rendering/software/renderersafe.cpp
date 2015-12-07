@@ -45,6 +45,7 @@
 #include "../common/optimizer/optimizersurfaceconvert.h"
 #include "../common/optimizer/optimizersurfacecreate.h"
 #include "../common/optimizer/optimizersurfacedestroy.h"
+#include "../common/optimizer/optimizersurfaceresample.h"
 #include "../common/optimizer/optimizertransformationaffine.h"
 
 #include "optimizer/optimizerblendsw.h"
