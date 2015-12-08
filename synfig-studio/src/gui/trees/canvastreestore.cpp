@@ -418,6 +418,17 @@ CanvasTreeStore::find_next_value_desc(const synfigapp::ValueDesc& value_desc, Gt
 }
 
 bool
+CanvasTreeStore::find_value_desc(const synfigapp::ValueDesc& value_desc, Gtk::TreeIter& iter)
+{
+    for(iter = children().begin(); iter ; ++iter)
+    {
+        if (value_desc==(*iter)[model.value_desc])
+            return true;
+    }
+    return false;
+}
+
+bool
 CanvasTreeStore::find_first_value_node(const synfig::ValueNode::Handle& value_node, Gtk::TreeIter& iter)
 {
 	// maybe replace the ValueNode_Const or ValueNode_Animated with the contained ValueNode_Bone

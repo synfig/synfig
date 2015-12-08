@@ -270,6 +270,8 @@ public:
 	synfig::Layer::Handle get_selected_layer()const;
 	void clear_selected_layers();
 
+	void select_param(const synfigapp::ValueDesc& valuedesc);
+
 }; // END of LayerTree
 
 }; // END of namespace studio
