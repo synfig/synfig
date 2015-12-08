@@ -105,6 +105,27 @@ public:
 		{
 			for(int x = idx; x; --x)
 			{
+				Color c = filter(a.surface, a.pos);
+				gamma(c, a.gamma_adjust);
+				p.put_value(c);
+				a.pos += a.pos_dx;
+				p.inc_x();
+			}
+			p.dec_x(idx);
+			p.inc_y();
+			a.pos += a.pos_dy;
+		}
+	}
+
+	template<typename pen, void gamma(Color&, float), Color filter(const synfig::Surface&, const Vector&)>
+	static inline void fill_aa(pen &p, Args &a)
+	{
+		int idx = a.bounds.maxx - a.bounds.minx;
+		int idy = a.bounds.maxy - a.bounds.miny;
+		for(int y = idy; y; --y)
+		{
+			for(int x = idx; x; --x)
+			{
 				if ( a.aa0[0] > 0.0 && a.aa0[1] > 0.0
 				  && a.aa1[0] > 0.0 && a.aa1[1] > 0.0 )
 				{
@@ -131,21 +152,33 @@ public:
 		}
 	}
 
+	template<typename pen, void gamma(Color&, float), Color filter(const synfig::Surface&, const Vector&)>
+	static inline void fill(
+		bool antialiasing,
+		pen &p, Args &a )
+	{
+		if (antialiasing)
+			fill_aa<pen, gamma, filter>(p, a);
+		else
+			fill<pen, gamma, filter>(p, a);
+	}
+
 	template<typename pen, void gamma(Color&, float)>
 	static inline void fill(
 		Color::Interpolation interpolation,
+		bool antialiasing,
 		pen &p, Args &a )
 	{
 		switch(interpolation)
 		{
 		case Color::INTERPOLATION_LINEAR:
-			fill<pen, gamma, linear>(p, a); break;
+			fill<pen, gamma, linear>(antialiasing, p, a); break;
 		case Color::INTERPOLATION_COSINE:
-			fill<pen, gamma, cosine>(p, a); break;
+			fill<pen, gamma, cosine>(antialiasing, p, a); break;
 		case Color::INTERPOLATION_CUBIC:
-			fill<pen, gamma, cubic>(p, a); break;
+			fill<pen, gamma, cubic>(antialiasing, p, a); break;
 		default:
-			fill<pen, gamma, nearest>(p, a); break;
+			fill<pen, gamma, nearest>(antialiasing, p, a); break;
 		}
 	}
 
@@ -153,16 +186,17 @@ public:
 	static inline void fill(
 		Color::value_type gamma_adjust,
 		Color::Interpolation interpolation,
+		bool antialiasing,
 		pen &p, Args &a )
 	{
 		if (fabsf(gamma_adjust - 1.f) < 1e-6)
 		{
-			fill<pen, nogamma>(interpolation, p, a);
+			fill<pen, nogamma>(interpolation, antialiasing, p, a);
 		}
 		else
 		{
 			a.gamma_adjust = gamma_adjust;
-			fill<pen, gamma>(interpolation, p, a);
+			fill<pen, gamma>(interpolation, antialiasing, p, a);
 		}
 	}
 };
@@ -222,19 +256,6 @@ TaskSurfaceResampleSW::run(RunParams & /* params */) const
 			Matrix inv_matrix = matrix;
 			inv_matrix.invert();
 
-			Real sx = (corners[1] - corners[0]).mag()/Real(sub_target.maxx - sub_target.minx);
-			Real sy = (corners[2] - corners[0]).mag()/Real(sub_target.maxy - sub_target.miny);
-
-			Matrix aa0_matrix = inv_matrix
-					          * Matrix().set_scale(sx, sy)
-							  * Matrix().set_translate(0.5, 0.5);
-			Matrix aa1_matrix = inv_matrix
-					          * Matrix().set_translate(
-					        		-Real(sub_target.maxx - sub_target.minx),
-									-Real(sub_target.maxy - sub_target.miny) )
-					          * Matrix().set_scale(-sx, -sy)
-							  * Matrix().set_translate(0.5, 0.5);
-
 			Helper::Args args(a, bounds);
 
 			Vector start((Real)bounds.minx, (Real)bounds.miny);
@@ -245,24 +266,64 @@ TaskSurfaceResampleSW::run(RunParams & /* params */) const
 			args.pos_dx = inv_matrix.get_transformed( dx, false );
 			args.pos_dy = inv_matrix.get_transformed( dy, false );
 
-			args.aa0    = aa0_matrix.get_transformed( start );
-			args.aa0_dx = aa0_matrix.get_transformed( dx, false );
-			args.aa0_dy = aa0_matrix.get_transformed( dy, false );
+			bool aa = antialiasing;
 
-			args.aa1    = aa1_matrix.get_transformed( start );
-			args.aa1_dx = aa1_matrix.get_transformed( dx, false );
-			args.aa1_dy = aa1_matrix.get_transformed( dy, false );
+			if (aa)
+			{
+				Vector sub_corners[] = {
+					inv_matrix.get_transformed(Vector( Real(bounds.minx), Real(bounds.miny) )),
+					inv_matrix.get_transformed(Vector( Real(bounds.maxx), Real(bounds.miny) )),
+					inv_matrix.get_transformed(Vector( Real(bounds.minx), Real(bounds.maxy) )),
+					inv_matrix.get_transformed(Vector( Real(bounds.maxx), Real(bounds.maxy) )) };
+
+				Rect sub_boundsf(   sub_corners[0] );
+				sub_boundsf.expand( sub_corners[1] );
+				sub_boundsf.expand( sub_corners[2] );
+				sub_boundsf.expand( sub_corners[3] );
+
+				RectInt sub_bounds( (int)floor(sub_boundsf.minx + precision) - 1,
+								(int)floor(sub_boundsf.miny + precision) - 1,
+								(int)ceil (sub_boundsf.maxx - precision) + 1,
+								(int)ceil (sub_boundsf.maxy - precision) + 1 );
+
+				if (etl::contains(sub_target, sub_bounds))
+					aa = false;
+			}
+
+			if (aa)
+			{
+				Real sx = (corners[1] - corners[0]).mag()/Real(sub_target.maxx - sub_target.minx);
+				Real sy = (corners[2] - corners[0]).mag()/Real(sub_target.maxy - sub_target.miny);
+
+				Matrix aa0_matrix = inv_matrix
+								  * Matrix().set_scale(sx, sy)
+								  * Matrix().set_translate(0.5, 0.5);
+				Matrix aa1_matrix = inv_matrix
+								  * Matrix().set_translate(
+										-Real(sub_target.maxx - sub_target.minx),
+										-Real(sub_target.maxy - sub_target.miny) )
+								  * Matrix().set_scale(-sx, -sy)
+								  * Matrix().set_translate(0.5, 0.5);
+
+				args.aa0    = aa0_matrix.get_transformed( start );
+				args.aa0_dx = aa0_matrix.get_transformed( dx, false );
+				args.aa0_dy = aa0_matrix.get_transformed( dy, false );
+
+				args.aa1    = aa1_matrix.get_transformed( start );
+				args.aa1_dx = aa1_matrix.get_transformed( dx, false );
+				args.aa1_dy = aa1_matrix.get_transformed( dy, false );
+			}
 
 			if (blend)
 			{
 				synfig::Surface::alpha_pen p(target.get_pen(bounds.minx, bounds.miny));
 				p.set_blend_method(blend_method);
-				Helper::fill(gamma, interpolation, p, args);
+				Helper::fill(gamma, interpolation, aa, p, args);
 			}
 			else
 			{
 				synfig::Surface::pen p(target.get_pen(bounds.minx, bounds.miny));
-				Helper::fill(gamma, interpolation, p, args);
+				Helper::fill(gamma, interpolation, aa, p, args);
 			}
 		}
 	}

@@ -846,6 +846,7 @@ Layer_Bitmap::build_composite_task_vfunc(ContextParams /* context_params */) con
 	rendering::TaskSurfaceResample::Handle task_resample(new rendering::TaskSurfaceResample());
 	task_resample->gamma = (Color::value_type)param_gamma_adjust.get(Real());
 	task_resample->interpolation = (Color::Interpolation)param_c.get(int());
+	task_resample->antialiasing = true;
 	task_resample->sub_task() = task_surface;
 	return task_resample;
 }

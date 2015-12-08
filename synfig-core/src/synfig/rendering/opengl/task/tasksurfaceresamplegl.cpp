@@ -87,7 +87,7 @@ TaskSurfaceResampleGL::run(RunParams & /* params */) const
 	{
 		coords[i][2] = Vector(i%2 ? 1.0 : -1.0, i/2 ? 1.0 : -1.0).multiply_coords(Vector(1.0, 1.0) + d);
 		coords[i][0] = matrix.get_transformed(coords[i][2]*0.5 + Vector(0.5, 0.5));
-		coords[i][1] = crop_lt + (coords[i][2] + Vector(1.0, 1.0)).multiply_coords(crop_rb - crop_lt)*0.5;
+		coords[i][1] = (coords[i][2] + Vector(1.0, 1.0))*0.5;
 	}
 	Vector aascale = d.one_divide_coords();
 
