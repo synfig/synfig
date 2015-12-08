@@ -177,6 +177,7 @@ public:
 
 	bool find_first_value_desc(const synfigapp::ValueDesc& value_desc, Gtk::TreeIter& iter);
 	bool find_next_value_desc(const synfigapp::ValueDesc& value_desc, Gtk::TreeIter& iter);
+	bool find_value_desc(const synfigapp::ValueDesc& value_desc, Gtk::TreeIter& iter);
 
 	bool find_first_value_node(const synfig::ValueNode::Handle& value_node, Gtk::TreeIter& iter);
 	bool find_next_value_node(const synfig::ValueNode::Handle& value_node, Gtk::TreeIter& iter);
