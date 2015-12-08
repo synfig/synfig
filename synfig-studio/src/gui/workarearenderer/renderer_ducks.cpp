@@ -369,8 +369,8 @@ Renderer_Ducks::render_vfunc(
 		    // Retrieve the split value of the bline point.
 		    const synfigapp::ValueDesc& v_d((*iter)->get_value_desc());
 
-		    synfig::ValueNode_Composite::Handle value_node; //rename value_node
-		    if(v_d.is_value_node())
+		    synfig::ValueNode_Composite::Handle value_node;
+		    if(v_d.is_value_node() && v_d.get_value_node())
             {
                 value_node=v_d.get_value_node();
 
