@@ -596,3 +596,48 @@ LayerParamTreeStore::on_layer_param_changed(synfig::Layer::Handle /*handle*/,syn
 {
 	queue_refresh();
 }
+
+bool
+LayerParamTreeStore::find_value_desc(const synfigapp::ValueDesc& value_desc, Gtk::TreeIter& iter)
+{
+    for(iter = children().begin(); iter && iter != children().end(); ++iter)
+    {
+        if (value_desc==(*iter)[model.value_desc])
+            return true;
+    }
+
+    Gtk::TreeIter iter2;
+
+    for(iter2 = children().begin(); iter2 && iter2 != children().end(); ++iter2)
+    {
+        if((*iter2).children().empty())
+            continue;
+
+        if(find_value_desc(value_desc,iter,iter2->children()/*,prev*/))
+            return true;
+    }
+    return false;
+}
+
+bool
+LayerParamTreeStore::find_value_desc(const synfigapp::ValueDesc& value_desc, Gtk::TreeIter& iter, const Gtk::TreeNodeChildren child_iter)
+{
+    for(iter = child_iter.begin(); iter && iter != child_iter.end(); ++iter)
+    {
+        if (value_desc==(*iter)[model.value_desc])
+            return true;
+    }
+
+    Gtk::TreeIter iter2;
+
+    for(iter2 = child_iter.begin(); iter2 && iter2 != child_iter.end(); ++iter2)
+    {
+        if((*iter2).children().empty())
+            continue;
+
+        if(find_value_desc(value_desc,iter,iter2->children()/*,prev*/))
+            return true;
+    }
+
+    return false;
+}
