@@ -38,6 +38,7 @@
 #include "iconcontroller.h"
 #include <gtkmm/button.h>
 #include <synfig/paramdesc.h>
+#include <synfig/valuenodes/valuenode_bone.h>
 #include "layertree.h"
 #include <synfigapp/action_system.h>
 #include <synfigapp/instance.h>
@@ -629,16 +630,28 @@ LayerParamTreeStore::find_value_desc(const synfigapp::ValueDesc& value_desc, Gtk
     {
         //DEBUG DEBUG
         printf("%s:%d valuedesc l++ %s\n", __FILE__, __LINE__, ((synfigapp::ValueDesc)(*iter)[model.value_desc]).get_description().c_str());
+        if(value_desc.is_value_node())
+        {
+            if( value_desc.get_value_node()==((synfigapp::ValueDesc)(*iter)[model.value_desc]).get_value_node() )
+                return true;
+        }
         if (value_desc==(*iter)[model.value_desc])
             return true;
-        if(value_desc.is_value_node() &&
-                value_desc.get_value_node()==((synfigapp::ValueDesc)(*iter)[model.value_desc]).get_value_node() )
-            return true;
+
     }
 
-    Gtk::TreeIter iter2;
+    Gtk::TreeIter iter2 = child_iter.begin();
 
-    for(iter2 = child_iter.begin(); iter2 && iter2 != child_iter.end(); ++iter2)
+    // for bones, do not inspect recursively to don't get trapped in bones hierarchy
+    if( ((synfigapp::ValueDesc)(*iter2)[model.value_desc]).parent_is_value_node() )
+    {
+        etl::handle<ValueNode_Bone> bone_node =
+            etl::handle<ValueNode_Bone>::cast_dynamic(
+                    ((synfigapp::ValueDesc)(*iter2)[model.value_desc]).get_parent_value_node() );
+        if(bone_node) return false;
+    }
+
+    for( ; iter2 && iter2 != child_iter.end(); ++iter2)
     {
         if((*iter2).children().empty())
             continue;
