@@ -91,18 +91,18 @@ Renderer::initialize_renderers()
 {
 	// initialize renderers
 	RendererSW::initialize();
-	RendererGL::initialize();
+	//RendererGL::initialize();
 
 	// register renderers
 	register_renderer("software", new RendererSW());
-	register_renderer("gl", new RendererGL());
+	//register_renderer("gl", new RendererGL());
 	register_renderer("safe", new RendererSafe());
 }
 
 void
 Renderer::deinitialize_renderers()
 {
-	RendererGL::deinitialize();
+	//RendererGL::deinitialize();
 	RendererSW::deinitialize();
 }
 
