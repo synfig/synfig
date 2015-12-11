@@ -604,6 +604,9 @@ LayerParamTreeStore::find_value_desc(const synfigapp::ValueDesc& value_desc, Gtk
 {
     for(iter = children().begin(); iter && iter != children().end(); ++iter)
     {
+        //DEBUG DEBUG
+        printf("%s:%d valuedesc l0 %s\n", __FILE__, __LINE__, ((synfigapp::ValueDesc)(*iter)[model.value_desc]).get_description().c_str());
+
         if (value_desc==(*iter)[model.value_desc])
             return true;
     }
@@ -626,7 +629,12 @@ LayerParamTreeStore::find_value_desc(const synfigapp::ValueDesc& value_desc, Gtk
 {
     for(iter = child_iter.begin(); iter && iter != child_iter.end(); ++iter)
     {
+        //DEBUG DEBUG
+        printf("%s:%d valuedesc l++ %s\n", __FILE__, __LINE__, ((synfigapp::ValueDesc)(*iter)[model.value_desc]).get_description().c_str());
         if (value_desc==(*iter)[model.value_desc])
+            return true;
+        if(value_desc.is_value_node() &&
+                value_desc.get_value_node()==((synfigapp::ValueDesc)(*iter)[model.value_desc]).get_value_node() )
             return true;
     }
 
