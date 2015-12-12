@@ -48,6 +48,8 @@ public:
 	Context &context;
 
 private:
+	bool allowed;
+
 	GLint multisample_max_width;
 	GLint multisample_max_height;
 	GLuint multisample_texture_id;
@@ -62,6 +64,7 @@ public:
 	Antialiasing(Context &context);
 	~Antialiasing();
 
+	bool is_allowed() const { return allowed; }
 	void multisample_begin(bool clear = true);
 	void multisample_end();
 };

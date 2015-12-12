@@ -110,20 +110,21 @@ gl::Context::Context():
 	context_info.display = display;
 
 	// choose config
+	assert(display);
 	if (display)
 	{
 		int config_attribs[] = {
-			GLX_DOUBLEBUFFER,      False,
+			//GLX_DOUBLEBUFFER,      False,
 			GLX_RED_SIZE,          8,
 			GLX_GREEN_SIZE,        8,
 			GLX_BLUE_SIZE,         8,
 			GLX_ALPHA_SIZE,        8,
-			GLX_DEPTH_SIZE,        24,
-			GLX_STENCIL_SIZE,      8,
-			GLX_ACCUM_RED_SIZE,    8,
-			GLX_ACCUM_GREEN_SIZE,  8,
-			GLX_ACCUM_BLUE_SIZE,   8,
-			GLX_ACCUM_ALPHA_SIZE,  8,
+			//GLX_DEPTH_SIZE,        24,
+			//GLX_STENCIL_SIZE,      8,
+			//GLX_ACCUM_RED_SIZE,    8,
+			//GLX_ACCUM_GREEN_SIZE,  8,
+			//GLX_ACCUM_BLUE_SIZE,   8,
+			//GLX_ACCUM_ALPHA_SIZE,  8,
 			GLX_DRAWABLE_TYPE,     GLX_PBUFFER_BIT,
 			None };
 		int nelements = 0;
@@ -133,6 +134,7 @@ gl::Context::Context():
 	}
 
 	// create pbuffer
+	assert(config);
 	if (config)
 	{
 		int pbuffer_attribs[] = {
@@ -145,6 +147,7 @@ gl::Context::Context():
 	}
 
 	// create context
+	assert(pbuffer);
 	if (pbuffer)
 	{
 		int context_attribs[] = {

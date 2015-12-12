@@ -57,6 +57,7 @@ using namespace rendering;
 
 gl::Antialiasing::Antialiasing(Context &context):
 	context(context),
+	allowed(false),
 	multisample_max_width(),
 	multisample_max_height(),
 	multisample_texture_id(),
@@ -100,6 +101,8 @@ gl::Antialiasing::Antialiasing(Context &context):
 	GLenum multisample_status = glCheckFramebufferStatus(GL_DRAW_FRAMEBUFFER);
 	if (multisample_status != GL_FRAMEBUFFER_COMPLETE)
 		warning("multisample framebuffer incomplete 0x%x", multisample_status);
+	else
+		allowed = true;
 
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, prev_draw_framebuffer_id);
 
@@ -118,16 +121,18 @@ void
 gl::Antialiasing::multisample_begin(bool clear)
 {
 	Context::Lock lock(context);
-	glGetIntegerv(GL_VIEWPORT, multisample_orig_viewport);
-	multisample_viewport[2] = std::min(multisample_orig_viewport[2], multisample_max_width);
-	multisample_viewport[3] = std::min(multisample_orig_viewport[3], multisample_max_height);
-	glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, (GLint*)&multisample_orig_draw_framebuffer_id);
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, multisample_framebuffer_id);
-	glViewport(
-		multisample_viewport[0],
-		multisample_viewport[1],
-		multisample_viewport[2],
-		multisample_viewport[3] );
+	if (is_allowed()) {
+		glGetIntegerv(GL_VIEWPORT, multisample_orig_viewport);
+		multisample_viewport[2] = std::min(multisample_orig_viewport[2], multisample_max_width);
+		multisample_viewport[3] = std::min(multisample_orig_viewport[3], multisample_max_height);
+		glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, (GLint*)&multisample_orig_draw_framebuffer_id);
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, multisample_framebuffer_id);
+		glViewport(
+			multisample_viewport[0],
+			multisample_viewport[1],
+			multisample_viewport[2],
+			multisample_viewport[3] );
+	}
 	if (clear) glClear(GL_COLOR_BUFFER_BIT);
 }
 
@@ -135,26 +140,28 @@ void
 gl::Antialiasing::multisample_end()
 {
 	Context::Lock lock(context);
-	GLuint prev_read_framebuffer_id = 0;
-	glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, (GLint*)&prev_read_framebuffer_id);
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, (GLuint)multisample_orig_draw_framebuffer_id);
-	glBindFramebuffer(GL_READ_FRAMEBUFFER, (GLuint)multisample_framebuffer_id);
-	glBlitFramebuffer(
-		multisample_viewport[0],
-		multisample_viewport[1],
-		multisample_viewport[2],
-		multisample_viewport[3],
-		multisample_orig_viewport[0],
-		multisample_orig_viewport[1],
-		multisample_orig_viewport[2],
-		multisample_orig_viewport[3],
-		GL_COLOR_BUFFER_BIT, GL_LINEAR );
-	glBindFramebuffer(GL_READ_FRAMEBUFFER, prev_read_framebuffer_id);
-	glViewport(
-		multisample_orig_viewport[0],
-		multisample_orig_viewport[1],
-		multisample_orig_viewport[2],
-		multisample_orig_viewport[3] );
+	if (is_allowed()) {
+		GLuint prev_read_framebuffer_id = 0;
+		glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, (GLint*)&prev_read_framebuffer_id);
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, (GLuint)multisample_orig_draw_framebuffer_id);
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, (GLuint)multisample_framebuffer_id);
+		glBlitFramebuffer(
+			multisample_viewport[0],
+			multisample_viewport[1],
+			multisample_viewport[2],
+			multisample_viewport[3],
+			multisample_orig_viewport[0],
+			multisample_orig_viewport[1],
+			multisample_orig_viewport[2],
+			multisample_orig_viewport[3],
+			GL_COLOR_BUFFER_BIT, GL_LINEAR );
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, prev_read_framebuffer_id);
+		glViewport(
+			multisample_orig_viewport[0],
+			multisample_orig_viewport[1],
+			multisample_orig_viewport[2],
+			multisample_orig_viewport[3] );
+	}
 }
 
 /* === E N T R Y P O I N T ================================================= */
