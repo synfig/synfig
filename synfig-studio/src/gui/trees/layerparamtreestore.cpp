@@ -40,7 +40,6 @@
 #include <synfig/paramdesc.h>
 #include <synfig/valuenodes/valuenode_bone.h>
 #include <synfig/valuenodes/valuenode_composite.h>
-#include <synfig/valuenode.h>
 
 #include "layertree.h"
 #include <synfigapp/action_system.h>
@@ -604,104 +603,83 @@ LayerParamTreeStore::on_layer_param_changed(synfig::Layer::Handle /*handle*/,syn
 bool
 LayerParamTreeStore::find_value_desc(const synfigapp::ValueDesc& value_desc, Gtk::TreeIter& iter)
 {
-    //DEBUG DEBUG
-    printf("\n\nValueDesc : %s\n", value_desc.get_description().c_str());
+    //! check level0
     for(iter = children().begin(); iter && iter != children().end(); ++iter)
     {
-        //DEBUG DEBUG
-        printf("%s:%d valuedesc l0 %s\n", __FILE__, __LINE__, ((synfigapp::ValueDesc)(*iter)[model.value_desc]).get_description().c_str());
-
+        if(value_desc.is_value_node())
+        {
+            //! transformation handle is at level 0, force to inspect deeper if case.
+            if( (value_desc.get_value_node()==((synfigapp::ValueDesc)(*iter)[model.value_desc]).get_value_node()) &&
+                    (value_desc.get_value_type() == type_transformation)
+                    )
+            {
+                Gtk::TreeIter iter2 = iter->children().begin();
+                for( ; iter2 && iter2 != iter->children().end(); ++iter2)
+                {
+                    if ( ((synfigapp::ValueDesc)(*iter2)[model.value_desc]).get_name() ==
+                            value_desc.get_sub_name() )
+                    {
+                        iter = iter2;
+                        return true;
+                    }
+                }
+            }
+        }
+        //! something found
         if (value_desc==(*iter)[model.value_desc])
             return true;
     }
 
+    //! let's go for deepness
     Gtk::TreeIter iter2;
-
     for(iter2 = children().begin(); iter2 && iter2 != children().end(); ++iter2)
     {
         if((*iter2).children().empty())
             continue;
 
-        if(find_value_desc(value_desc,iter,iter2->children()/*,prev*/))
+        if(find_value_desc(value_desc,iter,iter2->children()))
             return true;
     }
     return false;
 }
 
-//DEBUG DEBUG
-#define quote(x) #x
-
 bool
 LayerParamTreeStore::find_value_desc(const synfigapp::ValueDesc& value_desc, Gtk::TreeIter& iter, const Gtk::TreeNodeChildren child_iter)
 {
-//    bool compo = false, bline = false;
+    // actual level from child_iter
     for(iter = child_iter.begin(); iter && iter != child_iter.end(); ++iter)
     {
-        //DEBUG DEBUG
-        printf("%s:%d valuedesc l++ %s\n", __FILE__, __LINE__, ((synfigapp::ValueDesc)(*iter)[model.value_desc]).get_description().c_str());
-        if (value_desc==(*iter)[model.value_desc])
-            return true;
         if(value_desc.is_value_node())
         {
-            if( value_desc.get_value_node()==((synfigapp::ValueDesc)(*iter)[model.value_desc]).get_value_node() )
-            {
-//                // for vertex handle force to inspect deeper
-//                if(ValueNode_BLine::Handle::cast_dynamic(
-//                        ((synfigapp::ValueDesc)(*iter)[model.value_desc]).get_value_node() )
-//                        )
-//                {
-//                    bline = true;
-//                }
-
-                // for vertex handle force to inspect deeper
-                if(value_desc.get_value_type() == type_bline_point &&
-                        (ValueNode_Composite::Handle::cast_dynamic(
-                        ((synfigapp::ValueDesc)(*iter)[model.value_desc]).get_value_node()))
-                        )
-                {
-                    //DEBUB DEBUG
-                    std::cout<<"ORIGIN ValueDEscName:"<<value_desc.get_name()<<"\n";
-
-                    //check iteratively spline point (bline) children for same name.
-                    Gtk::TreeIter iter2 = iter->children().begin();
-                    for( ; iter2 && iter2 != iter->children().end(); ++iter2)
-                    {
-                        if ( ((synfigapp::ValueDesc)(*iter2)[model.value_desc]).get_name() ==
-                                value_desc.get_sub_name() )
-                        {
-                            iter = iter2;
-                            break;
-                        }
-                        //DEBUG DEBUG
- /*                       printf("VALUEDESC CompoChild\tDesc:%s\tName:%s\n",
-                                ((synfigapp::ValueDesc)(*iter2)[model.value_desc]).get_description().c_str(),
-                                ((synfigapp::ValueDesc)(*iter2)[model.value_desc]).get_name().c_str()
-                                );
-
-                        std::cout<<typeid((*iter2)[model.value_desc]).name()<<"\t"<< quote((*iter2)[model.value_desc]) <<"\n";
-
-                        ValueNode::Handle vn = ValueNode::Handle::cast_dynamic(
-                                                ((synfigapp::ValueDesc)(*iter2)[model.value_desc]).get_value_node() );
-                        LinkableValueNode::Handle lvn = LinkableValueNode::Handle::cast_dynamic(
-                                                ((synfigapp::ValueDesc)(*iter2)[model.value_desc]).get_value_node() );
-
-                        std::cout<<typeid(vn).name()<<"\t"<< typeid(lvn).name() << "\t" << quote(vn) <<"\n";
-
-//                        if(((synfigapp::ValueDesc)(*iter2)[model.value_desc]).parent_is_value_desc())
-               //             printf("valudesc sub name %s \n",((synfigapp::ValueDesc)(*iter2)[model.value_desc]).get_sub_name().c_str() );*/
-                    }
-
-
-                }
-
-                return true;
-            }
+            // for vertex handle force to inspect deeper
+            if( value_desc.get_value_node()==((synfigapp::ValueDesc)(*iter)[model.value_desc]).get_value_node() &&
+                    (value_desc.get_value_type() == type_bline_point)
+                    )
+// seems to be not necessary to check the ValueNode
+//                     if((ValueNode_Composite::Handle::cast_dynamic(
+//                             ((synfigapp::ValueDesc)(*iter)[model.value_desc]).get_value_node()))
+//                             )
+                 {
+                     //check iteratively spline point (bline) children for same name.
+                     Gtk::TreeIter iter2 = iter->children().begin();
+                     for( ; iter2 && iter2 != iter->children().end(); ++iter2)
+                     {
+                         if ( ((synfigapp::ValueDesc)(*iter2)[model.value_desc]).get_name() ==
+                                 value_desc.get_sub_name() )
+                         {
+                             iter = iter2;
+                             return true;
+                         }
+                     }
+                 }
         }
+        if (value_desc==(*iter)[model.value_desc])
+            return true;
     }
 
     Gtk::TreeIter iter2 = child_iter.begin();
 
-    // for bones, do not inspect recursively to don't get trapped in bones hierarchy
+    //! for bones, do not inspect recursively to don't get trapped in bones hierarchy
     if( ((synfigapp::ValueDesc)(*iter2)[model.value_desc]).parent_is_value_node() )
     {
         if(ValueNode_Bone::Handle::cast_dynamic(
