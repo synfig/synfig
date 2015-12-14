@@ -1,0 +1,12 @@
+RENDERING_SOFTWARE_FUNCTION_HH = \
+	rendering/software/function/contour.h
+
+RENDERING_SOFTWARE_FUNCTION_CC = \
+	rendering/software/function/contour.cpp
+
+RENDERING_SOFTWARE_HH += \
+    $(RENDERING_SOFTWARE_FUNCTION_HH)
+
+RENDERING_SOFTWARE_CC += \
+    $(RENDERING_SOFTWARE_FUNCTION_CC)
+

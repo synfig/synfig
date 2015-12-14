@@ -54,6 +54,7 @@
 
 #include <synfig/rendering/common/task/taskblend.h>
 #include <synfig/rendering/common/task/taskcontour.h>
+#include <synfig/rendering/software/function/contour.h>
 
 #endif
 
@@ -1209,7 +1210,7 @@ Layer_Shape::render_shape(Surface *surface, bool useblend, const RendDesc &rendd
 	  * renddesc.get_transformation_matrix()
 	  * renddesc.get_world_to_pixels_matrix();
 
-	rendering::TaskContourSW::render_contour(
+	rendering::software::Contour::render_contour(
 		*surface,
 		contour->get_chunks(),
 		param_invert.get(bool(true)),

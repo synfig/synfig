@@ -34,7 +34,7 @@
 #include <synfig/vector.h>
 #include <synfig/blur.h>
 
-#include <synfig/rendering/software/task/taskcontoursw.h>
+#include <synfig/rendering/primitive/contour.h>
 
 #include <vector>
 

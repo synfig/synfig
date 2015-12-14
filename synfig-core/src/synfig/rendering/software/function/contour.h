@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/software/task/taskcontoursw.h
-**	\brief TaskContourSW Header
+/*!	\file synfig/rendering/software/function/contour.h
+**	\brief Contour Header
 **
 **	$Id$
 **
@@ -22,17 +22,13 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_RENDERING_TASKCONTOURSW_H
-#define __SYNFIG_RENDERING_TASKCONTOURSW_H
+#ifndef __SYNFIG_RENDERING_SOFTWARE_CONTOUR_H
+#define __SYNFIG_RENDERING_SOFTWARE_CONTOUR_H
 
 /* === H E A D E R S ======================================================= */
 
 #include <synfig/surface.h>
 
-#include "tasksw.h"
-#include "../../common/task/taskcontour.h"
-#include "../../common/task/taskcomposite.h"
-#include "../../common/task/tasksplittable.h"
 #include "../../primitive/contour.h"
 #include "../../primitive/polyspan.h"
 
@@ -46,21 +42,40 @@ namespace synfig
 {
 namespace rendering
 {
+namespace software
+{
 
-class TaskContourSW: public TaskContour, public TaskSW, public TaskComposite, public TaskSplittable
+class Contour
 {
 public:
-	typedef etl::handle<TaskContourSW> Handle;
-	Task::Handle clone() const { return clone_pointer(this); }
-	virtual void split(const RectInt &sub_target_rect);
-	virtual bool run(RunParams &params) const;
+	static void render_polyspan(
+		synfig::Surface &target_surface,
+		const Polyspan &polyspan,
+		bool invert,
+		bool antialias,
+		rendering::Contour::WindingStyle winding_style,
+		const Color &color,
+		Color::value_type opacity,
+		Color::BlendMethod blend_method );
 
-	virtual Rect calc_bounds() const { return Rect::infinite(); }
+	static void build_polyspan(
+		const rendering::Contour::ChunkList &chunks,
+		const Matrix &transform_matrix,
+		Polyspan &out_polyspan );
 
-	virtual Color::BlendMethodFlags get_supported_blend_methods() const
-		{ return Color::BLEND_METHODS_ALL & ~Color::BLEND_METHODS_STRAIGHT; }
+	static void render_contour(
+		synfig::Surface &target_surface,
+		const rendering::Contour::ChunkList &chunks,
+		bool invert,
+		bool antialias,
+		rendering::Contour::WindingStyle winding_style,
+		const Matrix &transform_matrix,
+		const Color &color,
+		Color::value_type opacity,
+		Color::BlendMethod blend_method );
 };
 
+} /* end namespace software */
 } /* end namespace rendering */
 } /* end namespace synfig */
 
