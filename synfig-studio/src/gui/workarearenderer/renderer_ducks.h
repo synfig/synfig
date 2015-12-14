@@ -93,6 +93,10 @@ class Renderer_Ducks : public studio::WorkAreaRenderer
 public:
 	~Renderer_Ducks();
 
+	//! \brief	Renderer for the handles (ducks) and associated (tangents, beziers, hover, tooltip ...)
+	//! \TODO immense function !! break into parts and clean
+	//! \Param[in] drawable
+	//! \Param[in] expose_area
 	void render_vfunc(const Glib::RefPtr<Gdk::Window>& drawable,const Gdk::Rectangle& expose_area	);
 
 protected:
