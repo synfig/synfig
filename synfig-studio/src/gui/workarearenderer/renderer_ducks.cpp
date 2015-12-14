@@ -427,7 +427,7 @@ Renderer_Ducks::render_vfunc(
 			}
 		}
 		else if((*iter)->get_type()&Duck::TYPE_SKEW)
-			screen_duck.color=DUCK_COLOR_TANGENT_2;
+			screen_duck.color=DUCK_COLOR_SKEW;
 		else if((*iter)->get_type()&Duck::TYPE_VERTEX)
 			screen_duck.color=DUCK_COLOR_VERTEX;
 		else if((*iter)->get_type()&Duck::TYPE_SCALE)
@@ -688,6 +688,37 @@ Renderer_Ducks::render_vfunc(
 					}
 				}
 			}
+		}
+
+		if( ((*iter)->get_value_desc().is_value_node()) &&
+		        ((*iter)->get_value_desc().get_value_type() == type_transformation)
+		        )
+		{
+		    if(hover)
+		    {
+                cr->save();
+
+                layout->set_text((*iter)->get_value_desc().get_layer()->get_description());
+
+                cr->set_source_rgb(GDK_COLOR_TO_RGB(DUCK_COLOR_TRANSFO_TEXT_1));
+                cr->move_to(
+                    point[0]+1+10,
+                    point[1]+1-12
+                    );
+                layout->show_in_cairo_context(cr);
+                cr->stroke();
+
+                cr->set_source_rgb(GDK_COLOR_TO_RGB(DUCK_COLOR_ORIGIN));
+                cr->move_to(
+                    point[0]+10,
+                    point[1]-12
+                    );
+                layout->show_in_cairo_context(cr);
+                cr->stroke();
+
+                cr->restore();
+		    }
+
 		}
 
 	}
