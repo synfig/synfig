@@ -1934,6 +1934,10 @@ CanvasView::init_menus()
 
 	{
 		Glib::RefPtr<Gtk::ToggleAction> action;
+		//! toggle none/last visible
+		action= Gtk::ToggleAction::create("mask-none-ducks", _("Toggle None/Last visible Handles"));
+		action->set_active(false);
+		action_group->add(action,  sigc::mem_fun(*this,&CanvasView::toggle_duck_mask_all));
 
 #define DUCK_MASK(lower,upper,string)												\
 		action=Gtk::ToggleAction::create("mask-" #lower "-ducks", string);			\
@@ -1948,11 +1952,11 @@ CanvasView::init_menus()
 		DUCK_MASK(vertex,VERTEX,_("Show Vertex Handles"));
 		DUCK_MASK(radius,RADIUS,_("Show Radius Handles"));
 		DUCK_MASK(width,WIDTH,_("Show Width Handles"));
+		DUCK_MASK(widthpoint-position, WIDTHPOINT_POSITION, _("Show WidthPoints Position Handles"));
 		DUCK_MASK(angle,ANGLE,_("Show Angle Handles"));
 		action_mask_bone_setup_ducks = action;
 		DUCK_MASK(bone-recursive,BONE_RECURSIVE,_("Show Recursive Scale Bone Handles"));
 		action_mask_bone_recursive_ducks = action;
-		DUCK_MASK(widthpoint-position, WIDTHPOINT_POSITION, _("Show WidthPoints Position Handles"));
 
 #undef DUCK_MASK
 
@@ -4012,6 +4016,7 @@ CanvasView::toggle_duck_mask(Duckmatic::Type type)
 		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("mask-angle-ducks"));
 		action->set_active((bool)(work_area->get_type_mask()&Duck::TYPE_ANGLE));
 		// Update toggle ducks buttons
+		action->get_active();
 		toggleducksdial.update_toggles(work_area->get_type_mask());
 	}
 	catch(...)
@@ -4019,6 +4024,23 @@ CanvasView::toggle_duck_mask(Duckmatic::Type type)
 		toggling_ducks_=false;
 	}
 	toggling_ducks_=false;
+}
+
+void
+CanvasView::toggle_duck_mask_all()
+{
+    if (work_area->get_type_mask_state ()== Duck::TYPE_NONE)
+    {
+        work_area->set_type_mask_state ( work_area->get_type_mask());
+        work_area->set_type_mask(Duck::TYPE_NONE);
+        toggle_duck_mask(Duck::TYPE_NONE);
+    }
+    else
+    {
+        work_area->set_type_mask(work_area->get_type_mask_state());
+        work_area->set_type_mask_state ( Duck::TYPE_NONE);
+        toggle_duck_mask(Duck::TYPE_NONE);
+    }
 }
 
 void
