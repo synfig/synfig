@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file dialog_setup.cpp
-**	\brief Template File
+**	\brief Dialog Preference implementation
 **
 **	$Id$
 **
@@ -80,7 +80,7 @@ attach_label(Gtk::Table *table, String str, guint col, guint xpadding, guint ypa
 }
 
 Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
-	Dialog(_("Synfig Studio Setup"),parent,true),
+	Dialog(_("Synfig Studio Preferences"),parent,true),
 	adj_gamma_r(Gtk::Adjustment::create(2.2,0.1,3.0,0.025,0.025,0.025)),
 	adj_gamma_g(Gtk::Adjustment::create(2.2,0.1,3.0,0.025,0.025,0.025)),
 	adj_gamma_b(Gtk::Adjustment::create(2.2,0.1,3.0,0.025,0.025,0.025)),
@@ -118,14 +118,14 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	Gtk::Notebook *notebook=manage(new class Gtk::Notebook());
 	get_vbox()->pack_start(*notebook);
 
-	
+
 	// Gamma
 	Gtk::Table *gamma_table=manage(new Gtk::Table(2,2,false));
 	gamma_table->set_border_width(8);
 	gamma_table->set_row_spacings(6);
 	gamma_table->set_col_spacings(6);
 	notebook->append_page(*gamma_table,_("Gamma"));
-	
+
 #ifndef __APPLE__
 	gamma_table->attach(gamma_pattern, 0, 2, 0, 1, Gtk::EXPAND, Gtk::SHRINK|Gtk::FILL, 0, 1);
 #endif
@@ -147,11 +147,11 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	gamma_table->attach(*manage(new Gtk::Label(_("Black Level"), Gtk::ALIGN_END, Gtk::ALIGN_END)), 0, 1, 4, 5, Gtk::FILL, Gtk::FILL, 0, 0);
 	gamma_table->attach(black_level_selector, 1, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0.5);
 	black_level_selector.signal_value_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Setup::on_black_level_change));
-	 
+
 	//gamma_table->attach(*manage(new Gtk::Label(_("Red-Blue Level"))), 0, 1, 5, 6, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	//gamma_table->attach(red_blue_level_selector, 1, 2, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	//red_blue_level_selector.signal_value_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Setup::on_red_blue_level_change));
-	
+
 	// Misc
 	Gtk::Table *misc_table=manage(new Gtk::Table(2,2,false));
 	misc_table->set_border_width(8);
@@ -432,7 +432,7 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 		navigator_renderer_combo.append(i->first, i->second->get_name());
 		workarea_renderer_combo.append(i->first, i->second->get_name());
 	}
-	
+
 	show_all_children();
 }
 
@@ -489,17 +489,17 @@ Dialog_Setup::on_apply_pressed()
 
 	// Set the resize_imported_images flag
 	App::resize_imported_images=toggle_resize_imported_images.get_active();
-	
+
 	// Set the experimental features flag
 	App::enable_experimental_features=toggle_enable_experimental_features.get_active();
-	
+
 	// Set the dark theme flag
 	App::use_dark_theme=toggle_use_dark_theme.get_active();
 	App::apply_gtk_settings(App::use_dark_theme);
 
 	// Set the browser_command textbox
 	App::browser_command=textbox_browser_command.get_text();
-	
+
 	if ( textbox_brushes_path.get_text() == App::get_base_path()+ETL_DIRECTORY_SEPARATOR+"share"+ETL_DIRECTORY_SEPARATOR+"synfig"+ETL_DIRECTORY_SEPARATOR+"brushes" )
 		App::brushes_path="";
 	else
@@ -677,16 +677,16 @@ Dialog_Setup::refresh()
 
 	// Refresh the status of the resize_imported_images flag
 	toggle_resize_imported_images.set_active(App::resize_imported_images);
-	
+
 	// Refresh the status of the experimental features flag
 	toggle_enable_experimental_features.set_active(App::enable_experimental_features);
-	
+
 	// Refresh the status of the theme flag
 	toggle_use_dark_theme.set_active(App::use_dark_theme);
 
 	// Refresh the browser_command textbox
 	textbox_browser_command.set_text(App::browser_command);
-	
+
 	if (App::brushes_path == "")
 		textbox_brushes_path.set_text(App::get_base_path()+ETL_DIRECTORY_SEPARATOR+"share"+ETL_DIRECTORY_SEPARATOR+"synfig"+ETL_DIRECTORY_SEPARATOR+"brushes");
 	else
