@@ -899,16 +899,17 @@ DEFINE_ACTION("restore-default-settings", _("Restore Defaults"));
 DEFINE_ACTION("toggle-mainwin-menubar", _("Menubar"));
 DEFINE_ACTION("toggle-mainwin-toolbar", _("Toolbar"));
 
+DEFINE_ACTION("mask-none-ducks", _("Toggle None/Last visible Handles"));
 DEFINE_ACTION("mask-position-ducks", _("Show Position Handles"));
 DEFINE_ACTION("mask-vertex-ducks", _("Show Vertex Handles"));
 DEFINE_ACTION("mask-tangent-ducks", _("Show Tangent Handles"));
 DEFINE_ACTION("mask-radius-ducks", _("Show Radius Handles"));
 DEFINE_ACTION("mask-width-ducks", _("Show Width Handles"));
+DEFINE_ACTION("mask-widthpoint-position-ducks", _("Show WidthPoints Position Handles"));
 DEFINE_ACTION("mask-angle-ducks", _("Show Angle Handles"));
 DEFINE_ACTION("mask-bone-setup-ducks", _("Show Bone Setup Handles"));
 DEFINE_ACTION("mask-bone-recursive-ducks", _("Show Recursive Scale Bone Handles"));
 DEFINE_ACTION("mask-bone-ducks", _("Next Bone Handles"));
-DEFINE_ACTION("mask-widthpoint-position-ducks", _("Show WidthPoints Position Handles"));
 DEFINE_ACTION("quality-00", _("Use Parametric Renderer"));
 DEFINE_ACTION("quality-01", _("Use Quality Level 1"));
 DEFINE_ACTION("quality-02", _("Use Quality Level 2"));
@@ -1035,16 +1036,17 @@ DEFINE_ACTION("keyframe-properties","Properties");
 "		<menuitem action='toggle-mainwin-toolbar' />"
 "		<separator />"
 "		<menu action='menu-duck-mask'>"
+"			<menuitem action='mask-none-ducks' />"
 "			<menuitem action='mask-position-ducks' />"
 "			<menuitem action='mask-vertex-ducks' />"
 "			<menuitem action='mask-tangent-ducks' />"
 "			<menuitem action='mask-radius-ducks' />"
 "			<menuitem action='mask-width-ducks' />"
+"			<menuitem action='mask-widthpoint-position-ducks' />"
 "			<menuitem action='mask-angle-ducks' />"
 "			<menuitem action='mask-bone-setup-ducks' />"
 "			<menuitem action='mask-bone-recursive-ducks' />"
 "			<menuitem action='mask-bone-ducks' />"
-"			<menuitem action='mask-widthpoint-position-ducks' />"
 "		</menu>"
 "		<menu action='menu-preview-quality'>"
 "			<menuitem action='quality-00' />"
@@ -1256,6 +1258,7 @@ DEFINE_ACTION("keyframe-properties","Properties");
 	ACCEL("<Control>s",													"<Actions>/canvasview/save"				);
 	ACCEL("<Control><Shift>s",											"<Actions>/canvasview/save-as"				);
 	ACCEL2(Gtk::AccelKey('`',Gdk::CONTROL_MASK,							"<Actions>/canvasview/toggle-low-res"					));
+	ACCEL("<Mod1>0",                                                    							"<Actions>/canvasview/mask-none-ducks"          );
 	ACCEL("<Mod1>1",													"<Actions>/canvasview/mask-position-ducks"			);
 	ACCEL("<Mod1>2",													"<Actions>/canvasview/mask-vertex-ducks"				);
 	ACCEL("<Mod1>3",													"<Actions>/canvasview/mask-tangent-ducks"				);
