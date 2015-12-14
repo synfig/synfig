@@ -220,92 +220,6 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	attach_label(misc_table, _("Brush Presets Path"), 5, xpadding, ypadding);
 	misc_table->attach(textbox_brushes_path, 1, 2, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 
-	// Misc - 6 UI Language
-	Glib::ustring lang_names[] = {
-		_("System Language"),
-		_("Arabic"),
-		_("Basque"),
-		_("Basque (Spain)"),
-		_("Catalan"),
-		_("Chinese (China)"),
-		_("Czech"),
-		_("Danish"),
-		_("Dutch "),
-		_("English"),
-		_("English (United Kingdom)"),
-		_("Farsi (Iran)"),
-		_("French "),
-		_("German"),
-		_("Greek (Greece)"),
-		_("Hebrew "),
-		_("Hungarian "),
-		_("Italian "),
-		_("Japanese (Japan)"),
-		_("Lithuanian "),
-		_("Norwegian (Norway)"),
-		_("Polish (Poland)"),
-		_("Portuguese (Brazil)"),
-		_("Romanian"),
-		_("Russian"),
-		_("Spanish"),
-		_("Sinhala"),
-		_("Slovak (Slovakia)"),
-		_("Swedish (Sweden)"),
-		_("Turkish"),
-	};
-
-   Glib::ustring lang_codes[] = {
-		"os_LANG",		// System Language
-		"ar",			// Arabick
-		"eu",			// Basque
-		"eu_ES",		// Basque (Spain)
-		"ca",			// Catalan
-		"zh_CN",		// Chinese (China)
-		"cs",			// CZech
-		"da",			// Danish
-		"nl",			// Dutch
-		"en",			// English - default of development
-		"en_GB",		// English (United Kingdom)
-		"fa_IR",		// Farsi (Iran)
-		"fr",			// French
-		"de",			// German
-		"el_GR",		// Greek (Greece)
-		"he",			// Hebrew
-		"hu",			// Hungarian
-		"it",			// Italian
-		"ja_JP",		// Japanese (Japan)
-		"lt",			// Lithuanian
-		"no_NO",		// Norwegian (Norway)
-		"pl_PL",		// Polish (Poland)
-		"pt_BR",		// Portuguese (Brazil)
-		"ro",			// Romanian
-		"ru",			// Russian
-		"es",			// Spanish
-		"si",			// Sinhala
-		"sk_SK",		// Slovak (Slovakia)
-		"sv_SE",		// Swedish (Sweden)
-		"tr"			// Turkish
-   };
-
-	int num_items = G_N_ELEMENTS(lang_names);
-	Glib::ustring default_code;
-	int row = 0;
-	Glib::ustring lang_code = App::ui_language;
-
-	for (int i =0 ; i < num_items; ++i)
-	{
-		ui_language_combo.append(lang_names[i]);
-		_lang_codes.push_back(lang_codes[i]);
-			if (lang_code == _lang_codes[i])
-			row = i;
-	}
-
-	ui_language_combo.set_active(row);
-	ui_language_combo.signal_changed().connect(sigc::mem_fun(*this, &studio::Dialog_Setup::on_ui_language_combo_change));
-
-	attach_label(misc_table, _("Interface Language"), 6, xpadding, ypadding);
-	misc_table->attach(ui_language_combo, 1, 2, 6, 7, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
-
 	// Misc - 7 Visually Linear Color Selection
 	attach_label(misc_table, _("Visually linear color selection"), 7, xpadding, ypadding);
 	misc_table->attach(toggle_use_colorspace_gamma, 1, 2, 7, 8, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
@@ -317,10 +231,6 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	// Misc - 9 Scaling New Imported Images to Fit Canvas
 	attach_label(misc_table, _("Scaling new imported image to fix canvas"), 9, xpadding, ypadding);
 	misc_table->attach(toggle_resize_imported_images, 1, 2, 9, 10, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
-
-	// Misc - 10 Dark UI theme
-	attach_label(misc_table, _("Dark UI theme (if available)"), 10, xpadding, ypadding);
-	misc_table->attach(toggle_use_dark_theme, 1, 2, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 
 	// Misc - 11 enable_experimental_features
 	//attach_label(misc_table, _("Experimental features (restart needed)"), 11, xpadding, ypadding);
@@ -432,6 +342,102 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 		navigator_renderer_combo.append(i->first, i->second->get_name());
 		workarea_renderer_combo.append(i->first, i->second->get_name());
 	}
+
+	// Interface
+	Gtk::Table *interface_table=manage(new Gtk::Table(2,2,false));
+	interface_table->set_border_width(8);
+	notebook->append_page(*interface_table,_("Interface"));
+
+	// Interface - UI Language
+	Glib::ustring lang_names[] = {
+		_("System Language"),
+		_("Arabic"),
+		_("Basque"),
+		_("Basque (Spain)"),
+		_("Catalan"),
+		_("Chinese (China)"),
+		_("Czech"),
+		_("Danish"),
+		_("Dutch "),
+		_("English"),
+		_("English (United Kingdom)"),
+		_("Farsi (Iran)"),
+		_("French "),
+		_("German"),
+		_("Greek (Greece)"),
+		_("Hebrew "),
+		_("Hungarian "),
+		_("Italian "),
+		_("Japanese (Japan)"),
+		_("Lithuanian "),
+		_("Norwegian (Norway)"),
+		_("Polish (Poland)"),
+		_("Portuguese (Brazil)"),
+		_("Romanian"),
+		_("Russian"),
+		_("Spanish"),
+		_("Sinhala"),
+		_("Slovak (Slovakia)"),
+		_("Swedish (Sweden)"),
+		_("Turkish"),
+	};
+
+   Glib::ustring lang_codes[] = {
+		"os_LANG",		// System Language
+		"ar",			// Arabick
+		"eu",			// Basque
+		"eu_ES",		// Basque (Spain)
+		"ca",			// Catalan
+		"zh_CN",		// Chinese (China)
+		"cs",			// CZech
+		"da",			// Danish
+		"nl",			// Dutch
+		"en",			// English - default of development
+		"en_GB",		// English (United Kingdom)
+		"fa_IR",		// Farsi (Iran)
+		"fr",			// French
+		"de",			// German
+		"el_GR",		// Greek (Greece)
+		"he",			// Hebrew
+		"hu",			// Hungarian
+		"it",			// Italian
+		"ja_JP",		// Japanese (Japan)
+		"lt",			// Lithuanian
+		"no_NO",		// Norwegian (Norway)
+		"pl_PL",		// Polish (Poland)
+		"pt_BR",		// Portuguese (Brazil)
+		"ro",			// Romanian
+		"ru",			// Russian
+		"es",			// Spanish
+		"si",			// Sinhala
+		"sk_SK",		// Slovak (Slovakia)
+		"sv_SE",		// Swedish (Sweden)
+		"tr"			// Turkish
+   };
+
+	int num_items = G_N_ELEMENTS(lang_names);
+	Glib::ustring default_code;
+	int row = 0;
+	Glib::ustring lang_code = App::ui_language;
+
+	for (int i =0 ; i < num_items; ++i)
+	{
+		ui_language_combo.append(lang_names[i]);
+		_lang_codes.push_back(lang_codes[i]);
+			if (lang_code == _lang_codes[i])
+			row = i;
+	}
+
+	ui_language_combo.set_active(row);
+	ui_language_combo.signal_changed().connect(sigc::mem_fun(*this, &studio::Dialog_Setup::on_ui_language_combo_change));
+
+	attach_label(interface_table, _("Interface Language"), 1, xpadding, ypadding);
+	interface_table->attach(ui_language_combo, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+
+	// Interface - Dark UI theme
+	attach_label(interface_table, _("Dark UI theme (if available)"), 2, xpadding, ypadding);
+	interface_table->attach(toggle_use_dark_theme, 1, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+
 
 	show_all_children();
 }
