@@ -705,20 +705,20 @@ Renderer_Ducks::render_vfunc(
 				{
 					cr->save();
 
-					layout->set_text((*iter)->get_value_desc().get_layer()->get_description());
+					layout->set_text((*iter)->get_value_desc().get_layer()->get_non_empty_description());
 
 					cr->set_source_rgb(GDK_COLOR_TO_RGB(DUCK_COLOR_TRANSFO_TEXT_1));
 					cr->move_to(
-						point[0]+1+10,
-						point[1]+1-12
+						point[0]+1+14,
+						point[1]+1-14
 						);
 					layout->show_in_cairo_context(cr);
 					cr->stroke();
 
 					cr->set_source_rgb(GDK_COLOR_TO_RGB(DUCK_COLOR_ORIGIN));
 					cr->move_to(
-						point[0]+10,
-						point[1]-12
+						point[0]+14,
+						point[1]-14
 						);
 					layout->show_in_cairo_context(cr);
 					cr->stroke();
