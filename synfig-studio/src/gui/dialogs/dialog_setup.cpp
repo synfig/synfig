@@ -69,6 +69,13 @@ using namespace studio;
 
 /* === M A C R O S ========================================================= */
 
+#define DIALOG_PREFERENCE_UI_INIT_GRID(grid) 					\
+		grid->set_orientation(Gtk::ORIENTATION_HORIZONTAL);		\
+		grid->set_row_spacing(6);								\
+		grid->set_column_spacing(12);							\
+		grid->set_border_width(8);								\
+		grid->set_column_homogeneous(false);
+
 /* === G L O B A L S ======================================================= */
 
 /* === P R O C E D U R E S ================================================= */
@@ -190,17 +197,15 @@ Dialog_Setup::create_gamma_page(Gtk::Notebook& notebook)
 void
 Dialog_Setup::create_misc_page(Gtk::Notebook& notebook)
 {
-	Gtk::Table *misc_table=manage(new Gtk::Table(2,2,false));
-	misc_table->set_border_width(8);
-	notebook.append_page(*misc_table,_("Misc."));
+	Gtk::Grid *misc_grid=manage(new Gtk::Grid());
+	DIALOG_PREFERENCE_UI_INIT_GRID(misc_grid);
+	notebook.append_page(*misc_grid,_("Misc."));
 
-	int xpadding(6), ypadding(6);
-
+	int row=0;
 	// Misc - 0 Timestamp
 	timestamp_menu=manage(new class Gtk::Menu());
-	attach_label(misc_table, _("Timestamp"), 0, xpadding, ypadding);
-	misc_table->attach(timestamp_comboboxtext, 1, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
-
+	attach_label(misc_grid, _("Timestamp"), row);
+	misc_grid->attach(timestamp_comboboxtext, 1, row, 1, 1);
 
 	#define ADD_TIMESTAMP(desc,x) {				\
 		timestamp_comboboxtext.append(desc);	\
@@ -219,7 +224,6 @@ Dialog_Setup::create_misc_page(Gtk::Notebook& notebook)
 	timestamp_comboboxtext.signal_changed().connect(
 		sigc::mem_fun(*this, &Dialog_Setup::on_time_format_changed) );
 
-
 	// Misc - 1 Unit system
 	{
 		ParamDesc param_desc;
@@ -236,47 +240,47 @@ Dialog_Setup::create_misc_page(Gtk::Notebook& notebook)
 		widget_enum=manage(new Widget_Enum());
 		widget_enum->set_param_desc(param_desc);
 
-		attach_label(misc_table, _("Unit System"), 1, xpadding, ypadding);
-		misc_table->attach(*widget_enum, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+		attach_label(misc_grid, _("Unit System"), ++row);
+		misc_grid->attach(*widget_enum, 1, row, 1, 1);
 	}
 
 	// Misc - 2 Recent files
 	Gtk::SpinButton* recent_files_spinbutton(manage(new Gtk::SpinButton(adj_recent_files,1,0)));
-	attach_label(misc_table, _("Recent Files"), 2, xpadding, ypadding);
-	misc_table->attach(*recent_files_spinbutton, 1, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+	attach_label(misc_grid, _("Recent Files"), ++row);
+	misc_grid->attach(*recent_files_spinbutton, 1, row, 1, 1);
 
 	// Misc - 3 Auto backup interval
-	attach_label(misc_table, _("Auto Backup Interval (0 to disable)"), 3, xpadding, ypadding);
-	misc_table->attach(auto_backup_interval, 1, 2, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+	attach_label(misc_grid, _("Auto Backup Interval (0 to disable)"), ++row);
+	misc_grid->attach(auto_backup_interval, 1, row, 1, 1);
 
 	// Misc - 4 Browser_command
-	attach_label(misc_table, _("Browser Command"), 4, xpadding, ypadding);
-	misc_table->attach(textbox_browser_command, 1, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+	attach_label(misc_grid, _("Browser Command"), ++row);
+	misc_grid->attach(textbox_browser_command, 1, row, 1, 1);
 
 	// Misc - 5 Brushes path
-	attach_label(misc_table, _("Brush Presets Path"), 5, xpadding, ypadding);
-	misc_table->attach(textbox_brushes_path, 1, 2, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+	attach_label(misc_grid, _("Brush Presets Path"), ++row);
+	misc_grid->attach(textbox_brushes_path, 1, row, 1, 1);
 
 	// Misc - 7 Visually Linear Color Selection
-	attach_label(misc_table, _("Visually linear color selection"), 7, xpadding, ypadding);
-	misc_table->attach(toggle_use_colorspace_gamma, 1, 2, 7, 8, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+	attach_label(misc_grid, _("Visually linear color selection"), ++row);
+	misc_grid->attach(toggle_use_colorspace_gamma, 1, row, 1, 1);
 
 	// Misc - 8 Restrict Really-valued Handles to Top Right Quadrant
-	attach_label(misc_table, _("Restrict really-valued handles to top right quadrant"), 8, xpadding, ypadding);
-	misc_table->attach(toggle_restrict_radius_ducks, 1, 2, 8, 9, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+	attach_label(misc_grid, _("Restrict really-valued handles to top right quadrant"), ++row);
+	misc_grid->attach(toggle_restrict_radius_ducks, 1, row, 1, 1);
 
 	// Misc - 9 Scaling New Imported Images to Fit Canvas
-	attach_label(misc_table, _("Scaling new imported image to fix canvas"), 9, xpadding, ypadding);
-	misc_table->attach(toggle_resize_imported_images, 1, 2, 9, 10, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+	attach_label(misc_grid, _("Scaling new imported image to fix canvas"), ++row);
+	misc_grid->attach(toggle_resize_imported_images, 1, row, 1, 1);
 
 	// Misc - 11 enable_experimental_features
-	//attach_label(misc_table, _("Experimental features (restart needed)"), 11, xpadding, ypadding);
-	//misc_table->attach(toggle_enable_experimental_features, 0, 2, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+	//attach_label(misc_grid, _("Experimental features (restart needed)"), ++row);
+	//misc_grid->attach(toggle_enable_experimental_features, 1, row, 1, 1);
 
 #ifdef SINGLE_THREADED
 	// Misc - 12 single_threaded
-	attach_label(misc_table, _("Single thread only (CPUs)"), 12, xpadding, ypadding);
-	misc_table->attach(toggle_single_threaded, 1, 2, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+	attach_label(misc_grid, _("Single thread only (CPUs)"), ++row);
+	misc_grid->attach(toggle_single_threaded, 1, row, 1, 1);
 #endif
 
 }
@@ -394,13 +398,7 @@ void
 Dialog_Setup::create_interface_page(Gtk::Notebook& notebook)
 {
 	Gtk::Grid *interface_grid=manage(new Gtk::Grid());
-	interface_grid->set_orientation(Gtk::ORIENTATION_HORIZONTAL);
-	//TODO UI Constancy on design : Change it to macro (from settings?)
-	interface_grid->set_row_spacing(6);
-	interface_grid->set_column_spacing(12);
-
-	interface_grid->set_border_width(8);
-	interface_grid->set_column_homogeneous(false);
+	DIALOG_PREFERENCE_UI_INIT_GRID(interface_grid);
 	notebook.append_page(*interface_grid,_("Interface"));
 
 	// Interface - UI Language
@@ -486,30 +484,31 @@ Dialog_Setup::create_interface_page(Gtk::Notebook& notebook)
 	ui_language_combo.set_active(row);
 	ui_language_combo.signal_changed().connect(sigc::mem_fun(*this, &studio::Dialog_Setup::on_ui_language_combo_change));
 
-	attach_label(interface_grid, _("Interface Language"), 1);
+	row = 0;
+	attach_label(interface_grid, _("Interface Language"), row);
 	// TODO TOFIX combo width is set to 5 to reduce switch widgets (toggle handle tooltip).
 	// should have better way to deal with it to get a fixed and small size for the switch
-	interface_grid->attach(ui_language_combo, 1, 1, 5, 1);
+	interface_grid->attach(ui_language_combo, 1, row, 5, 1);
 	ui_language_combo.set_hexpand(true);
 
 	// Interface - Dark UI theme
-	attach_label(interface_grid, _("Dark UI theme (if available)"), 2);
-	interface_grid->attach(toggle_use_dark_theme, 1, 2, 1, 1);
+	attach_label(interface_grid, _("Dark UI theme (if available)"), ++row);
+	interface_grid->attach(toggle_use_dark_theme, 1, row, 1, 1);
 
 	// Interface - Handle tooltip
 	// TODO attach label title (bold / underline?)
-	attach_label(interface_grid, _("Handle Tooltips Visible"), 3);
+	attach_label(interface_grid, _("Handle Tooltips Visible"), ++row);
 	// Interface - width point tooltip
-	attach_label(interface_grid, _("Width point tooltips"), 4);
+	attach_label(interface_grid, _("Width point tooltips"), ++row);
 	// TODO Switch fixed and smaller size !!!
-	interface_grid->attach(toggle_widthpoint_handle_tooltip, 1, 4, 1, 1);
+	interface_grid->attach(toggle_widthpoint_handle_tooltip, 1, row, 1, 1);
 	// Interface - radius tooltip
-	attach_label(interface_grid, _("Radius tooltips"), 5);
-	interface_grid->attach(toggle_radius_handle_tooltip, 1, 5, 1, 1);
+	attach_label(interface_grid, _("Radius tooltips"), ++row);
+	interface_grid->attach(toggle_radius_handle_tooltip, 1, row, 1, 1);
 	// Interface - tranformation widget tooltip
-	attach_label(interface_grid, _("Transformation widget tooltips"), 6);
+	attach_label(interface_grid, _("Transformation widget tooltips"), ++row);
 	//TODO rename toggle_handle_tooltip_transformation
-	interface_grid->attach(toggle_transformation_handle_tooltip, 1, 6, 1, 1);
+	interface_grid->attach(toggle_transformation_handle_tooltip, 1, row, 1, 1);
 }
 
 void
