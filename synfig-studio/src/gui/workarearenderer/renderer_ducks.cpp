@@ -548,7 +548,8 @@ Renderer_Ducks::render_vfunc(
 		if(hover)
 		{
 			//! Tooltip time : radius
-			if((*iter)->is_radius())
+			if( (App::ui_handle_tooltip_flag&Duck::STRUCT_RADIUS) &&
+					(*iter)->is_radius())
 			{
 				Real mag;
 				if ((*iter)->get_exponential()){
@@ -600,7 +601,8 @@ Renderer_Ducks::render_vfunc(
 				cr->restore();
 			}
 			//! Tooltip time : width point position
-			if((*iter)->get_type()&&Duck::TYPE_WIDTHPOINT_POSITION)
+			if( (App::ui_handle_tooltip_flag&Duck::STRUCT_WIDTHPOINT) &&
+					(*iter)->get_type()&&Duck::TYPE_WIDTHPOINT_POSITION)
 			{
 				if(hover)
 				{
@@ -697,7 +699,8 @@ Renderer_Ducks::render_vfunc(
 				}
 			}
 			//! Tooltip time : transformation widget, display layer name
-			if( ((*iter)->get_value_desc().is_value_node()) &&
+			if( (App::ui_handle_tooltip_flag&Duck::STRUCT_TRANSFORMATION) &&
+					((*iter)->get_value_desc().is_value_node()) &&
 					((*iter)->get_value_desc().get_value_type() == type_transformation)
 					)
 			{

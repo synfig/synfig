@@ -36,7 +36,11 @@
 #include <gtkmm/scale.h>
 #include <gtkmm/table.h>
 #include <gtkmm/frame.h>
+#include <gtkmm/grid.h>
 #include <gtkmm/notebook.h>
+#include "widgets/widget_enum.h"
+#include "autorecover.h"
+#include "duck.h"
 
 #include <ETL/stringf>
 #include <ETL/misc>
@@ -79,6 +83,14 @@ attach_label(Gtk::Table *table, String str, guint col, guint xpadding, guint ypa
 	table->attach(*label, 0, 1, col, col+1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 }
 
+static void
+attach_label(Gtk::Grid *grid, String str, guint col)
+{
+	Gtk::Label* label(manage(new Gtk::Label((str + ":").c_str())));
+	label->set_alignment(Gtk::ALIGN_END, Gtk::ALIGN_CENTER);
+	grid->attach(*label, 0, col, 1, 1);
+}
+
 Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	Dialog(_("Synfig Studio Preferences"),parent,true),
 	adj_gamma_r(Gtk::Adjustment::create(2.2,0.1,3.0,0.025,0.025,0.025)),
@@ -118,6 +130,8 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	Gtk::Notebook *notebook=manage(new class Gtk::Notebook());
 	get_vbox()->pack_start(*notebook);
 
+	//TODO BReak notebook pages fill into functions
+	//TODO replace deprecated Gtk::Table by Gtk::Grid
 
 	// Gamma
 	Gtk::Table *gamma_table=manage(new Gtk::Table(2,2,false));
@@ -344,9 +358,15 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	}
 
 	// Interface
-	Gtk::Table *interface_table=manage(new Gtk::Table(2,2,false));
-	interface_table->set_border_width(8);
-	notebook->append_page(*interface_table,_("Interface"));
+	Gtk::Grid *interface_grid=manage(new Gtk::Grid());
+	interface_grid->set_orientation(Gtk::ORIENTATION_HORIZONTAL);
+	//TODO UI Constancy on design : Change it to macro (from settings?)
+	interface_grid->set_row_spacing(6);
+	interface_grid->set_column_spacing(12);
+
+	interface_grid->set_border_width(8);
+	interface_grid->set_column_homogeneous(false);
+	notebook->append_page(*interface_grid,_("Interface"));
 
 	// Interface - UI Language
 	Glib::ustring lang_names[] = {
@@ -431,13 +451,30 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	ui_language_combo.set_active(row);
 	ui_language_combo.signal_changed().connect(sigc::mem_fun(*this, &studio::Dialog_Setup::on_ui_language_combo_change));
 
-	attach_label(interface_table, _("Interface Language"), 1, xpadding, ypadding);
-	interface_table->attach(ui_language_combo, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+	attach_label(interface_grid, _("Interface Language"), 1);
+	// TODO TOFIX combo width is set to 5 to reduce switch widgets (toggle handle tooltip).
+	// should have better way to deal with it to get a fixed and small size for the switch
+	interface_grid->attach(ui_language_combo, 1, 1, 5, 1);
+	ui_language_combo.set_hexpand(true);
 
 	// Interface - Dark UI theme
-	attach_label(interface_table, _("Dark UI theme (if available)"), 2, xpadding, ypadding);
-	interface_table->attach(toggle_use_dark_theme, 1, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+	attach_label(interface_grid, _("Dark UI theme (if available)"), 2);
+	interface_grid->attach(toggle_use_dark_theme, 1, 2, 1, 1);
 
+	// Interface - Handle tooltip
+	// TODO attach label title (bold / underline?)
+	attach_label(interface_grid, _("Handle Tooltips Visible"), 3);
+	// Interface - width point tooltip
+	attach_label(interface_grid, _("Width point tooltips"), 4);
+	// TODO Switch fixed and smaller size !!!
+	interface_grid->attach(toggle_widthpoint_handle_tooltip, 1, 4, 1, 1);
+	// Interface - radius tooltip
+	attach_label(interface_grid, _("Radius tooltips"), 5);
+	interface_grid->attach(toggle_radius_handle_tooltip, 1, 5, 1, 1);
+	// Interface - tranformation widget tooltip
+	attach_label(interface_grid, _("Transformation widget tooltips"), 6);
+	//TODO rename toggle_handle_tooltip_transformation
+	interface_grid->attach(toggle_transformation_handle_tooltip, 1, 6, 1, 1);
 
 	show_all_children();
 }
@@ -541,6 +578,12 @@ Dialog_Setup::on_apply_pressed()
 	// Set ui language
 	App::ui_language = (_lang_codes[ui_language_combo.get_active_row_number()]).c_str();
 
+	// Set ui tooltip on widht point
+	App::ui_handle_tooltip_flag=toggle_widthpoint_handle_tooltip.get_active()?Duck::STRUCT_WIDTHPOINT:Duck::STRUCT_NONE;
+	// Set ui tooltip on widht point
+	App::ui_handle_tooltip_flag|=toggle_radius_handle_tooltip.get_active()?Duck::STRUCT_RADIUS:Duck::STRUCT_NONE;
+	// Set ui tooltip on widht point
+	App::ui_handle_tooltip_flag|=toggle_transformation_handle_tooltip.get_active()?Duck::STRUCT_TRANSFORMATION:Duck::STRUCT_NONE;
 
 	App::save_settings();
 	App::setup_changed();
@@ -726,6 +769,11 @@ Dialog_Setup::refresh()
 	workarea_renderer_combo.set_active_id(App::workarea_renderer);
 
 	// Refresh the ui language
+
+	// refresh ui tooltip handle info
+	toggle_widthpoint_handle_tooltip.set_active(App::ui_handle_tooltip_flag&Duck::STRUCT_WIDTHPOINT);
+	toggle_radius_handle_tooltip.set_active(App::ui_handle_tooltip_flag&Duck::STRUCT_RADIUS);
+	toggle_transformation_handle_tooltip.set_active(App::ui_handle_tooltip_flag&Duck::STRUCT_TRANSFORMATION);
 
 }
 

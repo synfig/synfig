@@ -41,6 +41,7 @@
 #include <gtkmm/tooltip.h>
 #include <gtkmm/comboboxtext.h>
 #include <gtkmm/spinbutton.h>
+#include <gtkmm/switch.h>
 
 #include <synfig/gamma.h>
 #include <synfig/time.h>
@@ -218,6 +219,10 @@ class Dialog_Setup : public Gtk::Dialog
 	Gtk::Entry image_sequence_separator;
 	Gtk::ComboBoxText navigator_renderer_combo;
 	Gtk::ComboBoxText workarea_renderer_combo;
+
+	Gtk::Switch toggle_widthpoint_handle_tooltip;
+	Gtk::Switch toggle_radius_handle_tooltip;
+	Gtk::Switch toggle_transformation_handle_tooltip;
 
 public:
 

@@ -209,7 +209,7 @@ public:
 	static bool shutdown_in_progress;
 
 	static bool use_colorspace_gamma;
-	
+
 #ifdef SINGLE_THREADED
 	static bool single_threaded;
 #endif
@@ -220,7 +220,7 @@ public:
 	static bool use_dark_theme;
 
 	static synfigapp::PluginManager plugin_manager;
-	
+
 	static synfig::String browser_command;
 	static synfig::String brushes_path;
 	static synfig::String custom_filename_prefix;
@@ -234,6 +234,7 @@ public:
 	static synfig::String workarea_renderer;
 	static bool enable_mainwin_menubar;
 	static synfig::String ui_language;
+	static long ui_handle_tooltip_flag;
 
 	/*
  -- ** -- S I G N A L S -------------------------------------------------------
