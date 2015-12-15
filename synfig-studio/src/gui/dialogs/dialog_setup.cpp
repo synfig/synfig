@@ -206,6 +206,7 @@ Dialog_Setup::create_misc_page(Gtk::Notebook& notebook)
 	timestamp_menu=manage(new class Gtk::Menu());
 	attach_label(misc_grid, _("Timestamp"), row);
 	misc_grid->attach(timestamp_comboboxtext, 1, row, 1, 1);
+	timestamp_comboboxtext.set_hexpand(true);
 
 	#define ADD_TIMESTAMP(desc,x) {				\
 		timestamp_comboboxtext.append(desc);	\
@@ -242,45 +243,55 @@ Dialog_Setup::create_misc_page(Gtk::Notebook& notebook)
 
 		attach_label(misc_grid, _("Unit System"), ++row);
 		misc_grid->attach(*widget_enum, 1, row, 1, 1);
+		widget_enum->set_hexpand(true);
 	}
 
 	// Misc - 2 Recent files
 	Gtk::SpinButton* recent_files_spinbutton(manage(new Gtk::SpinButton(adj_recent_files,1,0)));
 	attach_label(misc_grid, _("Recent Files"), ++row);
 	misc_grid->attach(*recent_files_spinbutton, 1, row, 1, 1);
+	recent_files_spinbutton->set_hexpand(true);
 
 	// Misc - 3 Auto backup interval
 	attach_label(misc_grid, _("Auto Backup Interval (0 to disable)"), ++row);
 	misc_grid->attach(auto_backup_interval, 1, row, 1, 1);
+	auto_backup_interval.set_hexpand(true);
 
 	// Misc - 4 Browser_command
 	attach_label(misc_grid, _("Browser Command"), ++row);
 	misc_grid->attach(textbox_browser_command, 1, row, 1, 1);
+	textbox_browser_command.set_hexpand(true);
 
 	// Misc - 5 Brushes path
 	attach_label(misc_grid, _("Brush Presets Path"), ++row);
 	misc_grid->attach(textbox_brushes_path, 1, row, 1, 1);
+	textbox_brushes_path.set_hexpand(true);
 
 	// Misc - 7 Visually Linear Color Selection
 	attach_label(misc_grid, _("Visually linear color selection"), ++row);
 	misc_grid->attach(toggle_use_colorspace_gamma, 1, row, 1, 1);
+	toggle_use_colorspace_gamma.set_hexpand(true);
 
 	// Misc - 8 Restrict Really-valued Handles to Top Right Quadrant
 	attach_label(misc_grid, _("Restrict really-valued handles to top right quadrant"), ++row);
 	misc_grid->attach(toggle_restrict_radius_ducks, 1, row, 1, 1);
+	toggle_restrict_radius_ducks.set_hexpand(true);
 
 	// Misc - 9 Scaling New Imported Images to Fit Canvas
 	attach_label(misc_grid, _("Scaling new imported image to fix canvas"), ++row);
 	misc_grid->attach(toggle_resize_imported_images, 1, row, 1, 1);
+	toggle_resize_imported_images.set_hexpand(true);
 
 	// Misc - 11 enable_experimental_features
 	//attach_label(misc_grid, _("Experimental features (restart needed)"), ++row);
 	//misc_grid->attach(toggle_enable_experimental_features, 1, row, 1, 1);
+	//toggle_enable_experimental_features.set_hexpand(true);
 
 #ifdef SINGLE_THREADED
 	// Misc - 12 single_threaded
 	attach_label(misc_grid, _("Single thread only (CPUs)"), ++row);
 	misc_grid->attach(toggle_single_threaded, 1, row, 1, 1);
+	toggle_single_threaded.set_hexpand(true);
 #endif
 
 }
@@ -294,36 +305,40 @@ Dialog_Setup::create_document_page(Gtk::Notebook& notebook)
 
 	/*---------Document------------------*\
 	 *
-	 *  doc prefix _________
-	 *  doc x [_]  predef resolution
-	 *  doc y [_]  [resolutions]
-	 *             predef FPS
-	 *  fps   [_]  [FPS]
+	 *  doc prefix  ___________________
+	 *  doc x      [_]  predef resolution
+	 *  doc y      [_]  [  resolutions  ]
+	 *                  predef FPS
+	 *  fps        [_]  [      FPS      ]
 	 *
 	 */
 
 	int row(0);
 	// Document - Preferred file name prefix
 	attach_label(document_grid, _("New Document filename prefix"), row);
-	document_grid->attach(textbox_custom_filename_prefix, 1, row, 1, 1);
+	document_grid->attach(textbox_custom_filename_prefix, 1, row, 2, 1);
 	textbox_custom_filename_prefix.set_tooltip_text( _("File name prefix for the new created document"));
+	textbox_custom_filename_prefix.set_hexpand(true);
 
 	// Document - New Document X size
 	pref_x_size_spinbutton = Gtk::manage(new Gtk::SpinButton(adj_pref_x_size, 1, 0));
 	attach_label(document_grid, _("New Document X size"),++row);
 	document_grid->attach(*pref_x_size_spinbutton, 1, row, 1, 1);
 	pref_x_size_spinbutton->set_tooltip_text(_("Width in pixels of the new created document"));
+	pref_x_size_spinbutton->set_hexpand(true);
 
 	//Document - Label for predefined sizes of canvases.
 	Gtk::Label* label(manage(new Gtk::Label(_("Predefined Resolutions:"))));
 	label->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 	document_grid->attach(*label, 2, row, 1, 1);
+	label->set_hexpand(true);
 
 	// Document - New Document Y size
 	pref_y_size_spinbutton = Gtk::manage(new Gtk::SpinButton(adj_pref_y_size, 1, 0));
 	attach_label(document_grid,_("New Document Y size"), ++row);
 	document_grid->attach(*pref_y_size_spinbutton, 1, row, 1, 1);
 	pref_y_size_spinbutton->set_tooltip_text(_("High in pixels of the new created document"));
+	pref_y_size_spinbutton->set_hexpand(true);
 
 	//Document - Template for predefined sizes of canvases.
 	size_template_combo = Gtk::manage(new Gtk::ComboBoxText());
@@ -349,17 +364,20 @@ Dialog_Setup::create_document_page(Gtk::Notebook& notebook)
 	Gtk::Label* label1(manage(new Gtk::Label(_("Predefined FPS:"))));
 	label1->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 	document_grid->attach(*label1,2, ++row, 1,1);
+	label1->set_hexpand(true);
 
 	// Document - New Document FPS
 	pref_fps_spinbutton = Gtk::manage(new Gtk::SpinButton(adj_pref_fps, 1, 3));
 	attach_label(document_grid,_("New Document FPS"), ++row);
 	document_grid->attach(*pref_fps_spinbutton, 1, row, 1, 1);
 	pref_fps_spinbutton->set_tooltip_text(_("Frames per second of the new created document"));
+	pref_fps_spinbutton->set_hexpand(true);
 
 	//Document - Template for predefined fps
 	fps_template_combo = Gtk::manage(new Gtk::ComboBoxText());
 	document_grid->attach(*fps_template_combo, 2, row, 1, 1);
 	fps_template_combo->signal_changed().connect(sigc::mem_fun(*this, &studio::Dialog_Setup::on_fps_template_combo_change));
+	fps_template_combo->set_hexpand(true);
 	//Document - Fill the FPS combo box with proper strings (not localised)
 	float f[8];
 	f[0] = 60;
@@ -379,21 +397,30 @@ Dialog_Setup::create_document_page(Gtk::Notebook& notebook)
 void
 Dialog_Setup::create_render_page(Gtk::Notebook& notebook)
 {
-	int xpadding(6), ypadding(6);
+	/*---------Render------------------*\
+	 *
+	 *  sequence separator _________
+	 *  use cairo navigato _______
+	 *  use cairo workarea _____
+	 *
+	 *
+	 */
 
-	Gtk::Table *render_table = manage(new Gtk::Table(2, 4, false));
-	render_table->set_border_width(8);
-	notebook.append_page(*render_table, _("Render"));
+	Gtk::Grid *render_grid = manage(new Gtk::Grid());
+	DIALOG_PREFERENCE_UI_INIT_GRID(render_grid);
+	notebook.append_page(*render_grid, _("Render"));
 
+	int row(0);
 	// Render - Image sequence separator
-	attach_label(render_table, _("Image Sequence Separator String"), 0, xpadding, ypadding);
-	render_table->attach(image_sequence_separator, 1, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+	attach_label(render_grid, _("Image Sequence Separator String"), row);
+	render_grid->attach(image_sequence_separator, 1, row, 1, 1);
+	image_sequence_separator.set_hexpand(true);
 	// Render - Use Cairo on Navigator
-	attach_label(render_table, _("Navigator renderer"), 1, xpadding, ypadding);
-	render_table->attach(navigator_renderer_combo, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+	attach_label(render_grid, _("Navigator renderer"), ++row);
+	render_grid->attach(navigator_renderer_combo, 1, row, 1, 1);
 	// Render - Use Cairo on WorkArea
-	attach_label(render_table, _("WorkArea renderer"), 2, xpadding, ypadding);
-	render_table->attach(workarea_renderer_combo, 1, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+	attach_label(render_grid, _("WorkArea renderer"), ++row);
+	render_grid->attach(workarea_renderer_combo, 1, row, 1, 1);
 
 	navigator_renderer_combo.append("", _("Legacy"));
 	workarea_renderer_combo.append("", _("Legacy"));
