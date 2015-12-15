@@ -174,7 +174,7 @@ class Dialog_Setup : public Gtk::Dialog
 	void on_time_format_changed();
 
 	void create_gamma_page(Gtk::Notebook& notebook);
-	void create_misc_page(Gtk::Notebook& notebook);
+	void create_system_page(Gtk::Notebook& notebook);
 	void create_document_page(Gtk::Notebook& notebook);
 	void create_render_page(Gtk::Notebook& notebook);
 	void create_interface_page(Gtk::Notebook& notebook);
@@ -240,6 +240,7 @@ class Dialog_Setup : public Gtk::Dialog
 	Gtk::Switch toggle_handle_tooltip_widthpoint;
 	Gtk::Switch toggle_handle_tooltip_radius;
 	Gtk::Switch toggle_handle_tooltip_transformation;
+	Gtk::Switch toggle_autobackup;
 
 public:
 

@@ -129,8 +129,8 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 
 	// Gamma
 	create_gamma_page(*notebook);
-	// Misc
-	create_misc_page(*notebook);
+	// System
+	create_system_page(*notebook);
 	// Document
 	create_document_page(*notebook);
 	// Editing
@@ -221,17 +221,19 @@ Dialog_Setup::create_gamma_page(Gtk::Notebook& notebook)
 }
 
 void
-Dialog_Setup::create_misc_page(Gtk::Notebook& notebook)
+Dialog_Setup::create_system_page(Gtk::Notebook& notebook)
 {
-	Gtk::Grid *misc_grid=manage(new Gtk::Grid());
-	DIALOG_PREFERENCE_UI_INIT_GRID(misc_grid);
-	notebook.append_page(*misc_grid,_("Misc."));
+	Gtk::Grid *grid=manage(new Gtk::Grid());
+	DIALOG_PREFERENCE_UI_INIT_GRID(grid);
+	notebook.append_page(*grid,_("System"));
 
 	int row=0;
-	// Misc - 0 Timestamp
+	// System _ Units section
+	attach_label_title(grid, _("Units"), row);
+	// System - 0 Timestamp
 	timestamp_menu=manage(new class Gtk::Menu());
-	attach_label(misc_grid, _("Timestamp"), row);
-	misc_grid->attach(timestamp_comboboxtext, 1, row, 1, 1);
+	attach_label(grid, _("Timestamp"), ++row);
+	grid->attach(timestamp_comboboxtext, 1, row, 1, 1);
 	timestamp_comboboxtext.set_hexpand(true);
 
 	#define ADD_TIMESTAMP(desc,x) {				\
@@ -251,7 +253,7 @@ Dialog_Setup::create_misc_page(Gtk::Notebook& notebook)
 	timestamp_comboboxtext.signal_changed().connect(
 		sigc::mem_fun(*this, &Dialog_Setup::on_time_format_changed) );
 
-	// Misc - 1 Unit system
+	// System - 1 Unit system
 	{
 		ParamDesc param_desc;
 		param_desc
@@ -267,41 +269,52 @@ Dialog_Setup::create_misc_page(Gtk::Notebook& notebook)
 		widget_enum=manage(new Widget_Enum());
 		widget_enum->set_param_desc(param_desc);
 
-		attach_label(misc_grid, _("Unit System"), ++row);
-		misc_grid->attach(*widget_enum, 1, row, 1, 1);
+		attach_label(grid, _("Unit System"), ++row);
+		grid->attach(*widget_enum, 1, row, 1, 1);
 		widget_enum->set_hexpand(true);
 	}
 
-	// Misc - 2 Recent files
+	// System - Recent files
+	attach_label_title(grid, _("Recent Files"), ++row);
 	Gtk::SpinButton* recent_files_spinbutton(manage(new Gtk::SpinButton(adj_recent_files,1,0)));
-	attach_label(misc_grid, _("Recent Files"), ++row);
-	misc_grid->attach(*recent_files_spinbutton, 1, row, 1, 1);
-	recent_files_spinbutton->set_hexpand(true);
+	grid->attach(*recent_files_spinbutton, 1, row, 1, 1);
+	toggle_autobackup.set_hexpand(false);
 
-	// Misc - 3 Auto backup interval
-	attach_label(misc_grid, _("Auto Backup Interval (0 to disable)"), ++row);
-	misc_grid->attach(auto_backup_interval, 1, row, 1, 1);
+	// System - Auto backup interval
+	attach_label_title(grid, _("Auto Backup"), ++row);
+	grid->attach(toggle_autobackup, 1, row, 1, 1);
+	toggle_autobackup.set_hexpand(false);
+	toggle_autobackup.set_halign(Gtk::ALIGN_START);
+// TODO use switch	!
+	toggle_autobackup.set_active(true);
+	toggle_autobackup.set_sensitive(false);
+
+	attach_label(grid, _("Interval (0 to disable)"), ++row);
+	grid->attach(auto_backup_interval, 1, row, 1, 1);
 	auto_backup_interval.set_hexpand(true);
 
-	// Misc - 4 Browser_command
-	attach_label(misc_grid, _("Browser Command"), ++row);
-	misc_grid->attach(textbox_browser_command, 1, row, 1, 1);
+	grid->attach(*recent_files_spinbutton, 1, row, 1, 1);
+	recent_files_spinbutton->set_hexpand(true);
+
+	// System - Browser_command
+	attach_label_title(grid, _("Browser Command"), ++row);
+	grid->attach(textbox_browser_command, 1, row, 1, 1);
 	textbox_browser_command.set_hexpand(true);
 
-	// Misc - 5 Brushes path
-	attach_label(misc_grid, _("Brush Presets Path"), ++row);
-	misc_grid->attach(textbox_brushes_path, 1, row, 1, 1);
+	// System - Brushes path
+	attach_label_title(grid, _("Brush Presets Path"), ++row);
+	grid->attach(textbox_brushes_path, 1, row, 1, 1);
 	textbox_brushes_path.set_hexpand(true);
 
-	// Misc - 11 enable_experimental_features
-	//attach_label(misc_grid, _("Experimental features (restart needed)"), ++row);
-	//misc_grid->attach(toggle_enable_experimental_features, 1, row, 1, 1);
+	// System - 11 enable_experimental_features
+	//attach_label(grid, _("Experimental features (restart needed)"), ++row);
+	//grid->attach(toggle_enable_experimental_features, 1, row, 1, 1);
 	//toggle_enable_experimental_features.set_hexpand(true);
 
 #ifdef SINGLE_THREADED
-	// Misc - 12 single_threaded
-	attach_label(misc_grid, _("Single thread only (CPUs)"), ++row);
-	misc_grid->attach(toggle_single_threaded, 1, row, 1, 1);
+	// System - 12 single_threaded
+	attach_label(grid, _("Single thread only (CPUs)"), ++row);
+	grid->attach(toggle_single_threaded, 1, row, 1, 1);
 	toggle_single_threaded.set_hexpand(true);
 #endif
 
