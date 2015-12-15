@@ -8,6 +8,7 @@
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **	Copyright (c) 2008, 2009, 2012 Carlos López
+**	Copyright (c) 2015 Jerome Blanchi
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -34,7 +35,6 @@
 #include <synfig/general.h>
 
 #include <gtkmm/scale.h>
-#include <gtkmm/table.h>
 #include <gtkmm/frame.h>
 #include <gtkmm/grid.h>
 #include <gtkmm/notebook.h>
@@ -83,14 +83,6 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 static void
-attach_label(Gtk::Table *table, String str, guint col, guint xpadding, guint ypadding)
-{
-	Gtk::Label* label(manage(new Gtk::Label((str + ":").c_str())));
-	label->set_alignment(Gtk::ALIGN_END, Gtk::ALIGN_CENTER);
-	table->attach(*label, 0, 1, col, col+1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
-}
-
-static void
 attach_label(Gtk::Grid *grid, String str, guint col)
 {
 	Gtk::Label* label(manage(new Gtk::Label((str + ":").c_str())));
@@ -137,8 +129,6 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	Gtk::Notebook *notebook=manage(new class Gtk::Notebook());
 	get_vbox()->pack_start(*notebook);
 
-	//TODO replace deprecated Gtk::Table by Gtk::Grid
-
 	// Gamma
 	create_gamma_page(*notebook);
 	// Misc
@@ -160,38 +150,56 @@ Dialog_Setup::~Dialog_Setup()
 void
 Dialog_Setup::create_gamma_page(Gtk::Notebook& notebook)
 {
-	Gtk::Table *gamma_table=manage(new Gtk::Table(2,2,false));
-	gamma_table->set_border_width(8);
-	gamma_table->set_row_spacings(6);
-	gamma_table->set_col_spacings(6);
-	notebook.append_page(*gamma_table,_("Gamma"));
+	Gtk::Grid *gamma_grid=manage(new Gtk::Grid());
+	DIALOG_PREFERENCE_UI_INIT_GRID(gamma_grid);
+	notebook.append_page(*gamma_grid,_("Gamma"));
 
+	/*---------Gamma------------------*\
+	 *
+	 *        *****°°°°°°°#####
+	 *        *****°°°°°°°#####
+	 *        *****°°°°°°°#####
+	 *        *****°°°°°°°#####
+	 *        *****°°°°°°°#####
+	 *   red ---------x--------------
+	 * green ---------x--------------
+	 *  blue ---------x--------------
+	 * black ---------x--------------
+	 *
+	 */
+
+	int row(0);
 #ifndef __APPLE__
-	gamma_table->attach(gamma_pattern, 0, 2, 0, 1, Gtk::EXPAND, Gtk::SHRINK|Gtk::FILL, 0, 1);
+	gamma_grid->attach(gamma_pattern, 0, row, 2, 1);
+	gamma_pattern.set_halign(Gtk::ALIGN_CENTER);
 #endif
-	Gtk::HScale* scale_gamma_r(manage(new Gtk::HScale(adj_gamma_r)));
-	gamma_table->attach(*manage(new Gtk::Label(_("Red"), Gtk::ALIGN_END, Gtk::ALIGN_END)), 0, 1, 1, 2, Gtk::FILL, Gtk::FILL, 0, 0);
-	gamma_table->attach(*scale_gamma_r, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0.5);
+	Gtk::Scale* scale_gamma_r(manage(new Gtk::Scale(adj_gamma_r)));
+	attach_label(gamma_grid, _("Red"), ++row);
+	gamma_grid->attach(*scale_gamma_r, 1, row, 1, 1);
+	scale_gamma_r->set_hexpand_set(true);
 	adj_gamma_r->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Setup::on_gamma_r_change));
 
-	Gtk::HScale* scale_gamma_g(manage(new Gtk::HScale(adj_gamma_g)));
-	gamma_table->attach(*manage(new Gtk::Label(_("Green"), Gtk::ALIGN_END, Gtk::ALIGN_END)), 0, 1, 2, 3, Gtk::FILL, Gtk::FILL, 0, 0);
-	gamma_table->attach(*scale_gamma_g, 1, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0.5);
+	Gtk::Scale* scale_gamma_g(manage(new Gtk::Scale(adj_gamma_g)));
+	attach_label(gamma_grid, _("Green"), ++row);
+	gamma_grid->attach(*scale_gamma_g, 1, row, 1, 1);
+	scale_gamma_g->set_hexpand(true);
 	adj_gamma_g->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Setup::on_gamma_g_change));
 
-	Gtk::HScale* scale_gamma_b(manage(new Gtk::HScale(adj_gamma_b)));
-	gamma_table->attach(*manage(new Gtk::Label(_("Blue"), Gtk::ALIGN_END, Gtk::ALIGN_END)), 0, 1, 3, 4, Gtk::FILL, Gtk::FILL, 0, 0);
-	gamma_table->attach(*scale_gamma_b, 1, 2, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0.5);
+	Gtk::Scale* scale_gamma_b(manage(new Gtk::Scale(adj_gamma_b)));
+	attach_label(gamma_grid, _("Blue"), ++row);
+	gamma_grid->attach(*scale_gamma_b, 1, row, 1, 1);
+	scale_gamma_b->set_hexpand(true);
 	adj_gamma_b->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Setup::on_gamma_b_change));
 
-	gamma_table->attach(*manage(new Gtk::Label(_("Black Level"), Gtk::ALIGN_END, Gtk::ALIGN_END)), 0, 1, 4, 5, Gtk::FILL, Gtk::FILL, 0, 0);
-	gamma_table->attach(black_level_selector, 1, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0.5);
+	attach_label(gamma_grid, _("Black Level"), ++row);
+	gamma_grid->attach(black_level_selector, 1, row, 1, 1);
+	black_level_selector.set_hexpand(true);
 	black_level_selector.signal_value_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Setup::on_black_level_change));
 
-	//gamma_table->attach(*manage(new Gtk::Label(_("Red-Blue Level"))), 0, 1, 5, 6, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	//gamma_table->attach(red_blue_level_selector, 1, 2, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	//attach_label(gamma_grid,_("Red-Blue Level"), ++row);
+	//gamma_grid->attach(red_blue_level_selector, 1, row, 1, 1);
+	//red_blue_level_selector.set_hexpand(true);
 	//red_blue_level_selector.signal_value_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Setup::on_red_blue_level_change));
-
 }
 
 void
@@ -526,9 +534,7 @@ Dialog_Setup::create_interface_page(Gtk::Notebook& notebook)
 
 	row = 0;
 	attach_label(interface_grid, _("Interface Language"), row);
-	// TODO TOFIX combo width is set to 5 to reduce switch widgets (toggle handle tooltip).
-	// should have better way to deal with it to get a fixed and small size for the switch
-	interface_grid->attach(ui_language_combo, 1, row, 5, 1);
+	interface_grid->attach(ui_language_combo, 1, row, 1, 1);
 	ui_language_combo.set_hexpand(true);
 
 	// Interface - Dark UI theme
@@ -540,15 +546,21 @@ Dialog_Setup::create_interface_page(Gtk::Notebook& notebook)
 	attach_label(interface_grid, _("Handle Tooltips Visible"), ++row);
 	// Interface - width point tooltip
 	attach_label(interface_grid, _("Width point tooltips"), ++row);
-	// TODO Switch fixed and smaller size !!!
+
 	interface_grid->attach(toggle_widthpoint_handle_tooltip, 1, row, 1, 1);
+	toggle_widthpoint_handle_tooltip.set_halign(Gtk::ALIGN_START);
+	toggle_widthpoint_handle_tooltip.set_hexpand(false);
 	// Interface - radius tooltip
 	attach_label(interface_grid, _("Radius tooltips"), ++row);
 	interface_grid->attach(toggle_radius_handle_tooltip, 1, row, 1, 1);
-	// Interface - tranformation widget tooltip
+	toggle_radius_handle_tooltip.set_halign(Gtk::ALIGN_START);
+	toggle_radius_handle_tooltip.set_hexpand(false);
+	// Interface - transformation widget tooltip
 	attach_label(interface_grid, _("Transformation widget tooltips"), ++row);
 	//TODO rename toggle_handle_tooltip_transformation
 	interface_grid->attach(toggle_transformation_handle_tooltip, 1, row, 1, 1);
+	toggle_transformation_handle_tooltip.set_halign(Gtk::ALIGN_START);
+	toggle_transformation_handle_tooltip.set_hexpand(false);
 }
 
 void
