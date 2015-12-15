@@ -8,6 +8,7 @@
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **	Copyright (c) 2008, 2009, 2012 Carlos López
+**	Copyright (c) 2014 Yu Chen
 **	Copyright (c) 2015 Jerome Blanchi
 **
 **	This package is free software; you can redistribute it and/or
@@ -35,7 +36,7 @@
 #include <synfig/general.h>
 
 #include <gtkmm/scale.h>
-#include <gtkmm/frame.h>
+#include <gtkmm/eventbox.h>
 #include "widgets/widget_enum.h"
 #include "autorecover.h"
 #include "duck.h"
@@ -115,30 +116,102 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	add_action_widget(*ok_button,2);
 	ok_button->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_Setup::on_ok_pressed));
 
-	// Style for title
+	// Style for title and section
 	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
+	section_attrlist.insert(attr);
 	title_attrlist.insert(attr);
+	Pango::AttrInt pango_size(Pango::Attribute::create_attr_size(Pango::SCALE*26));
+	title_attrlist.change(pango_size);
+	// create negative foreground/background attributes
+	Gdk::RGBA colorcontext(get_style_context()->get_color());
+	Gdk::RGBA bgcolorcontext(get_style_context()->get_background_color());
+	Pango::AttrColor bgcolor = Pango::Attribute::create_attr_background(colorcontext.get_red_u(),
+			colorcontext.get_green_u(),
+			colorcontext.get_blue_u()
+			);
+	title_attrlist.change(bgcolor);
+	Pango::AttrColor color = Pango::Attribute::create_attr_foreground(bgcolorcontext.get_red_u(),
+			bgcolorcontext.get_green_u(),
+			bgcolorcontext.get_blue_u()
+			);
+	title_attrlist.change(color);
 
 	// Notebook
-	Gtk::Notebook *notebook=manage(new class Gtk::Notebook());
+	notebook=manage(new class Gtk::Notebook());
 	// Main preferences notebook
-	//TODO treeview not tab
-//	notebook->set_show_tabs (false);
+	notebook->set_show_tabs (false);
 	notebook->set_show_border (false);
-	get_vbox()->pack_start(*notebook);
 
-	// Gamma
-	create_gamma_page(*notebook);
-	// System
-	create_system_page(*notebook);
-	// Document
-	create_document_page(*notebook);
-	// Editing
-	create_editing_page(*notebook);
-	// Render
-	create_render_page(*notebook);
+	synfig::String interface_str(_("Interface")),
+			document_str(_("Document")),
+			editing_str(_("Editing")),
+			render_str(_("Render")),
+			system_str(_("System")),
+			gamma_str(_("Gamma"));
+	// FIXED ORDER : the page added to notebook same has treeview
 	// Interface
-	create_interface_page(*notebook);
+	create_interface_page(interface_str);
+	// Document
+	create_document_page(document_str);
+	// Editing
+	create_editing_page(editing_str);
+	// Render
+	create_render_page(render_str);
+	// System
+	create_system_page(system_str);
+	// Gamma
+	create_gamma_page(gamma_str);
+
+	/*******************/
+	/* Categories List */
+	/*******************/
+	// FIXED ORDER : the page added to notebook same has treeview (see create_xxxx_page() upper)
+	prefs_categories_reftreemodel = Gtk::TreeStore::create(prefs_categories);
+	prefs_categories_treeview.set_model(prefs_categories_reftreemodel);
+	// TODO treeview single click
+	Gtk::TreeModel::Row row = *(prefs_categories_reftreemodel->append());
+	row[prefs_categories.category_id] = 0;
+	row[prefs_categories.category_name] = interface_str;
+
+	row = *(prefs_categories_reftreemodel->append());
+	row[prefs_categories.category_id] = 1;
+	row[prefs_categories.category_name] = document_str;
+
+	row = *(prefs_categories_reftreemodel->append());
+	row[prefs_categories.category_id] = 2;
+	row[prefs_categories.category_name] = editing_str;
+
+	row = *(prefs_categories_reftreemodel->append());
+	row[prefs_categories.category_id] = 3;
+	row[prefs_categories.category_name] = render_str;
+
+	row = *(prefs_categories_reftreemodel->append());
+	row[prefs_categories.category_id] = 4;
+	row[prefs_categories.category_name] = system_str;
+
+	Gtk::TreeModel::Row childrow = *(prefs_categories_reftreemodel->append(row.children()));
+	childrow[prefs_categories.category_id] = 5;
+	childrow[prefs_categories.category_name] = gamma_str;
+
+	prefs_categories_treeview.set_headers_visible(false);
+	prefs_categories_treeview.append_column(_("Category"), prefs_categories.category_name);
+	prefs_categories_treeview.expand_all();
+
+	prefs_categories_treeview.signal_row_activated().connect(sigc::mem_fun(*this,
+			&Dialog_Setup::on_treeview_row_activated));
+
+	prefs_categories_scrolledwindow.add(prefs_categories_treeview);
+	prefs_categories_scrolledwindow.set_size_request(-1, 80);
+	prefs_categories_scrolledwindow.set_policy(Gtk::POLICY_NEVER, Gtk::POLICY_AUTOMATIC);
+
+	main_grid.attach(prefs_categories_scrolledwindow, 0, 0, 1 ,1);
+	notebook->show_all();
+
+	main_grid.attach(*notebook, 1, 0, 1, 1);
+	main_grid.set_border_width(6);
+
+	get_vbox()->pack_start(main_grid);
+	get_vbox()->set_border_width(12);
 
 	show_all_children();
 }
@@ -148,29 +221,54 @@ Dialog_Setup::~Dialog_Setup()
 }
 
 void
-Dialog_Setup::attach_label(Gtk::Grid *grid, synfig::String str, guint col)
+Dialog_Setup::attach_label(Gtk::Grid *grid, synfig::String str, guint row)
 {
 	Gtk::Label* label(manage(new Gtk::Label((str + ":").c_str())));
 	label->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 	label->set_margin_start(10);
-	grid->attach(*label, 0, col, 1, 1);
+	grid->attach(*label, 0, row, 1, 1);
 }
 
 void
-Dialog_Setup::attach_label_title(Gtk::Grid *grid, synfig::String str, guint col)
+Dialog_Setup::attach_label_section(Gtk::Grid *grid, synfig::String str, guint row)
+{
+	Gtk::Label* label(manage(new Gtk::Label(str)));
+	label->set_attributes(section_attrlist);
+	label->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	grid->attach(*label, 0, row, 1, 1);
+}
+
+void
+Dialog_Setup::attach_label_title(Gtk::Grid *grid, synfig::String str)
 {
 	Gtk::Label* label(manage(new Gtk::Label(str)));
 	label->set_attributes(title_attrlist);
 	label->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
-	grid->attach(*label, 0, col, 1, 1);
+	label->set_margin_start(20);
+	Gtk::EventBox* box(manage(new Gtk::EventBox()));
+	box->add(*label);
+	box->override_background_color(get_style_context()->get_color());
+	grid->attach(*box, 0, 0, 1, 1);
 }
 
 void
-Dialog_Setup::create_gamma_page(Gtk::Notebook& notebook)
+Dialog_Setup::attach_label(Gtk::Grid *grid, synfig::String str, guint row, guint col)
 {
-	Gtk::Grid *gamma_grid=manage(new Gtk::Grid());
-	DIALOG_PREFERENCE_UI_INIT_GRID(gamma_grid);
-	notebook.append_page(*gamma_grid,_("Gamma"));
+	Gtk::Label* label(manage(new Gtk::Label((str + ":").c_str())));
+	label->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	label->set_margin_start(10);
+	grid->attach(*label, col, row, 1, 1);
+}
+
+void
+Dialog_Setup::create_gamma_page(synfig::String name)
+{
+	Gtk::Grid *grid=manage(new Gtk::Grid());
+	Gtk::Grid *main_grid=manage(new Gtk::Grid());
+	DIALOG_PREFERENCE_UI_INIT_GRID(grid);
+	notebook->append_page(*main_grid,name);
+	attach_label_title(main_grid,name);
+	main_grid->attach(*grid, 0,1,1,1);
 
 	/*---------Gamma------------------*\
 	 *
@@ -186,50 +284,64 @@ Dialog_Setup::create_gamma_page(Gtk::Notebook& notebook)
 	 *
 	 */
 
-	int row(0);
+	int row(1);
 #ifndef __APPLE__
-	gamma_grid->attach(gamma_pattern, 0, row, 2, 1);
+	grid->attach(gamma_pattern, 0, row, 2, 1);
 	gamma_pattern.set_halign(Gtk::ALIGN_CENTER);
 #endif
 	Gtk::Scale* scale_gamma_r(manage(new Gtk::Scale(adj_gamma_r)));
-	attach_label(gamma_grid, _("Red"), ++row);
-	gamma_grid->attach(*scale_gamma_r, 1, row, 1, 1);
+	attach_label(grid, _("Red"), ++row);
+	grid->attach(*scale_gamma_r, 1, row, 1, 1);
 	scale_gamma_r->set_hexpand_set(true);
 	adj_gamma_r->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Setup::on_gamma_r_change));
 
 	Gtk::Scale* scale_gamma_g(manage(new Gtk::Scale(adj_gamma_g)));
-	attach_label(gamma_grid, _("Green"), ++row);
-	gamma_grid->attach(*scale_gamma_g, 1, row, 1, 1);
+	attach_label(grid, _("Green"), ++row);
+	grid->attach(*scale_gamma_g, 1, row, 1, 1);
 	scale_gamma_g->set_hexpand(true);
 	adj_gamma_g->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Setup::on_gamma_g_change));
 
 	Gtk::Scale* scale_gamma_b(manage(new Gtk::Scale(adj_gamma_b)));
-	attach_label(gamma_grid, _("Blue"), ++row);
-	gamma_grid->attach(*scale_gamma_b, 1, row, 1, 1);
+	attach_label(grid, _("Blue"), ++row);
+	grid->attach(*scale_gamma_b, 1, row, 1, 1);
 	scale_gamma_b->set_hexpand(true);
 	adj_gamma_b->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Setup::on_gamma_b_change));
 
-	attach_label(gamma_grid, _("Black Level"), ++row);
-	gamma_grid->attach(black_level_selector, 1, row, 1, 1);
+	attach_label(grid, _("Black Level"), ++row);
+	grid->attach(black_level_selector, 1, row, 1, 1);
 	black_level_selector.set_hexpand(true);
 	black_level_selector.signal_value_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Setup::on_black_level_change));
 
-	//attach_label(gamma_grid,_("Red-Blue Level"), ++row);
-	//gamma_grid->attach(red_blue_level_selector, 1, row, 1, 1);
+	//attach_label(grid,_("Red-Blue Level"), ++row);
+	//grid->attach(red_blue_level_selector, 1, row, 1, 1);
 	//red_blue_level_selector.set_hexpand(true);
 	//red_blue_level_selector.signal_value_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Setup::on_red_blue_level_change));
 }
 
 void
-Dialog_Setup::create_system_page(Gtk::Notebook& notebook)
+Dialog_Setup::create_system_page(synfig::String name)
 {
 	Gtk::Grid *grid=manage(new Gtk::Grid());
+	Gtk::Grid *main_grid=manage(new Gtk::Grid());
 	DIALOG_PREFERENCE_UI_INIT_GRID(grid);
-	notebook.append_page(*grid,_("System"));
+	notebook->append_page(*main_grid,name);
+	attach_label_title(main_grid,name);
+	main_grid->attach(*grid, 0,1,1,1);
 
-	int row=0;
+	/*---------System--------------------*\
+	 * UNITS
+	 *  Timestamp  [_____________________]
+	 *  UnitSystem [_____________________]
+	 * RECENTFILE  [_____________________]
+	 * AUTOBACKUP  [x| ]
+	 *  Interval   [_____________________]
+	 * BROWSER     [_____________________]
+	 * BRUSH       [_____________________]
+	 */
+
+	int row(1);
 	// System _ Units section
-	attach_label_title(grid, _("Units"), row);
+	attach_label_section(grid, _("Units"), row);
 	// System - 0 Timestamp
 	timestamp_menu=manage(new class Gtk::Menu());
 	attach_label(grid, _("Timestamp"), ++row);
@@ -275,13 +387,13 @@ Dialog_Setup::create_system_page(Gtk::Notebook& notebook)
 	}
 
 	// System - Recent files
-	attach_label_title(grid, _("Recent Files"), ++row);
+	attach_label_section(grid, _("Recent Files"), ++row);
 	Gtk::SpinButton* recent_files_spinbutton(manage(new Gtk::SpinButton(adj_recent_files,1,0)));
 	grid->attach(*recent_files_spinbutton, 1, row, 1, 1);
 	toggle_autobackup.set_hexpand(false);
 
 	// System - Auto backup interval
-	attach_label_title(grid, _("Auto Backup"), ++row);
+	attach_label_section(grid, _("Auto Backup"), ++row);
 	grid->attach(toggle_autobackup, 1, row, 1, 1);
 	toggle_autobackup.set_hexpand(false);
 	toggle_autobackup.set_halign(Gtk::ALIGN_START);
@@ -291,18 +403,18 @@ Dialog_Setup::create_system_page(Gtk::Notebook& notebook)
 
 	attach_label(grid, _("Interval (0 to disable)"), ++row);
 	grid->attach(auto_backup_interval, 1, row, 1, 1);
-	auto_backup_interval.set_hexpand(true);
+	auto_backup_interval.set_hexpand(false);
 
 	grid->attach(*recent_files_spinbutton, 1, row, 1, 1);
 	recent_files_spinbutton->set_hexpand(true);
 
 	// System - Browser_command
-	attach_label_title(grid, _("Browser Command"), ++row);
+	attach_label_section(grid, _("Browser Command"), ++row);
 	grid->attach(textbox_browser_command, 1, row, 1, 1);
 	textbox_browser_command.set_hexpand(true);
 
 	// System - Brushes path
-	attach_label_title(grid, _("Brush Presets Path"), ++row);
+	attach_label_section(grid, _("Brush Presets Path"), ++row);
 	grid->attach(textbox_brushes_path, 1, row, 1, 1);
 	textbox_brushes_path.set_hexpand(true);
 
@@ -321,11 +433,14 @@ Dialog_Setup::create_system_page(Gtk::Notebook& notebook)
 }
 
 void
-Dialog_Setup::create_document_page(Gtk::Notebook& notebook)
+Dialog_Setup::create_document_page(synfig::String name)
 {
-	Gtk::Grid *document_grid = manage(new Gtk::Grid());
-	DIALOG_PREFERENCE_UI_INIT_GRID(document_grid);
-	notebook.append_page(*document_grid, _("Document"));
+	Gtk::Grid *grid = manage(new Gtk::Grid());
+	Gtk::Grid *main_grid=manage(new Gtk::Grid());
+	DIALOG_PREFERENCE_UI_INIT_GRID(grid);
+	notebook->append_page(*main_grid,name);
+	attach_label_title(main_grid,name);
+	main_grid->attach(*grid, 0,1,1,1);
 
 	/*---------Document------------------*\
 	 * NEW CANVAS
@@ -337,30 +452,30 @@ Dialog_Setup::create_document_page(Gtk::Notebook& notebook)
 	 *
 	 */
 
-	int row(0);
-	attach_label_title(document_grid, _("New Canvas"), row);
+	int row(1);
+	attach_label_section(grid, _("New Canvas"), row);
 	// Document - Preferred file name prefix
-	attach_label(document_grid, _("Name prefix"), ++row);
-	document_grid->attach(textbox_custom_filename_prefix, 1, row, 6, 1);
+	attach_label(grid, _("Name prefix"), ++row);
+	grid->attach(textbox_custom_filename_prefix, 1, row, 6, 1);
 	textbox_custom_filename_prefix.set_tooltip_text( _("File name prefix for the new created document"));
 	textbox_custom_filename_prefix.set_hexpand(true);
 
 	//Document - Label for predefined fps
 //	Gtk::Label* label1(manage(new Gtk::Label(_("Predefined FPS:"))));
 //	label1->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
-//	document_grid->attach(*label1, 5, ++row, 1,1);
+//	grid->attach(*label1, 5, ++row, 1,1);
 //	label1->set_hexpand(true);
 
 	// Document - New Document FPS
 	pref_fps_spinbutton = Gtk::manage(new Gtk::SpinButton(adj_pref_fps, 1, 3));
-	attach_label(document_grid,_("FPS"), ++row);
-	document_grid->attach(*pref_fps_spinbutton, 1, row, 1, 1);
+	attach_label(grid,_("FPS"), ++row);
+	grid->attach(*pref_fps_spinbutton, 1, row, 1, 1);
 	pref_fps_spinbutton->set_tooltip_text(_("Frames per second of the new created document"));
 	pref_fps_spinbutton->set_hexpand(true);
 
 	//Document - Template for predefined fps
 	fps_template_combo = Gtk::manage(new Gtk::ComboBoxText());
-	document_grid->attach(*fps_template_combo, 6, row, 1, 1);
+	grid->attach(*fps_template_combo, 6, row, 1, 1);
 	fps_template_combo->signal_changed().connect(sigc::mem_fun(*this, &studio::Dialog_Setup::on_fps_template_combo_change));
 	fps_template_combo->set_hexpand(true);
 	//Document - Fill the FPS combo box with proper strings (not localised)
@@ -376,44 +491,45 @@ Dialog_Setup::create_document_page(Gtk::Notebook& notebook)
 	for (int i=0; i<8; i++)
 		fps_template_combo->prepend(strprintf("%5.3f", f[i]));
 
-	attach_label(document_grid, _("Size"),++row);
+	attach_label(grid, _("Size"),++row);
 	// Document - New Document X size
 	synfig::String labelstr(_("Widht"));
 	Gtk::Label* label(manage(new Gtk::Label(labelstr + ":")));
 	label->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
-	document_grid->attach(*label, 1, ++row, 1, 1);
+	grid->attach(*label, 1, ++row, 1, 1);
 
 	pref_x_size_spinbutton = Gtk::manage(new Gtk::SpinButton(adj_pref_x_size, 1, 0));
-	document_grid->attach(*pref_x_size_spinbutton, 2, row, 1, 1);
+	grid->attach(*pref_x_size_spinbutton, 2, row, 1, 1);
 	pref_x_size_spinbutton->set_tooltip_text(_("Width in pixels of the new created document"));
 	pref_x_size_spinbutton->set_hexpand(true);
 //
 //	//Document - Label for predefined sizes of canvases.
 //	Gtk::Label* label(manage(new Gtk::Label(_("Predefined Resolutions:"))));
 //	label->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
-//	document_grid->attach(*label, 3, row, 1, 1);
+//	grid->attach(*label, 3, row, 1, 1);
 //	label->set_hexpand(true);
 //
 
+	//TODO X BOLD
 	labelstr = " X ";
 	label = manage(new Gtk::Label(labelstr));
 	label->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
-	document_grid->attach(*label, 3, row, 1, 1);
+	grid->attach(*label, 3, row, 1, 1);
 
 	// Document - New Document Y size
 	labelstr=_("Height");
 	label = manage(new Gtk::Label(labelstr + ":"));
 	label->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
-	document_grid->attach(*label, 4, row, 1, 1);
+	grid->attach(*label, 4, row, 1, 1);
 
 	pref_y_size_spinbutton = Gtk::manage(new Gtk::SpinButton(adj_pref_y_size, 1, 0));
-	document_grid->attach(*pref_y_size_spinbutton, 5, row, 1, 1);
+	grid->attach(*pref_y_size_spinbutton, 5, row, 1, 1);
 	pref_y_size_spinbutton->set_tooltip_text(_("High in pixels of the new created document"));
 	pref_y_size_spinbutton->set_hexpand(true);
 
 	//Document - Template for predefined sizes of canvases.
 	size_template_combo = Gtk::manage(new Gtk::ComboBoxText());
-	document_grid->attach(*size_template_combo, 6, row, 1, 1);
+	grid->attach(*size_template_combo, 6, row, 1, 1);
 	size_template_combo->signal_changed().connect(sigc::mem_fun(*this, &studio::Dialog_Setup::on_size_template_combo_change));
 	size_template_combo->prepend(_("4096x3112 Full Aperture 4K"));
 	size_template_combo->prepend(_("2048x1556 Full Aperture Native 2K"));
@@ -435,11 +551,14 @@ Dialog_Setup::create_document_page(Gtk::Notebook& notebook)
 }
 
 void
-Dialog_Setup::create_editing_page(Gtk::Notebook& notebook)
+Dialog_Setup::create_editing_page(synfig::String name)
 {
 	Gtk::Grid *grid = manage(new Gtk::Grid());
+	Gtk::Grid *main_grid=manage(new Gtk::Grid());
 	DIALOG_PREFERENCE_UI_INIT_GRID(grid);
-	notebook.append_page(*grid, _("Editing"));
+	notebook->append_page(*main_grid,name);
+	attach_label_title(main_grid,name);
+	main_grid->attach(*grid, 0,1,1,1);
 
 	/*---------Editing------------------*\
 	 * IMPORTED IMAGE
@@ -451,9 +570,9 @@ Dialog_Setup::create_editing_page(Gtk::Notebook& notebook)
 	 *
 	 */
 
-	int row(0);
+	int row(1);
 	// Editing Imported image section
-	attach_label_title(grid, _("Imported Image"), row);
+	attach_label_section(grid, _("Imported Image"), row);
 	// Editing - Scaling New Imported Images to Fit Canvas
 	grid->attach(toggle_resize_imported_images, 0, ++row, 1, 1);
 	toggle_resize_imported_images.set_tooltip_text(_("Scaling new imported image to fix canvas"));
@@ -462,11 +581,12 @@ Dialog_Setup::create_editing_page(Gtk::Notebook& notebook)
 
 	synfig::String labelstr(_("Scale to fit canvas"));
 	Gtk::Label* label(manage(new Gtk::Label(labelstr)));
+	label->set_hexpand(true);
 	label->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 	grid->attach(*label, 1, row, 1, 1);
 
 	// Editing Other section
-	attach_label_title(grid, _("Other"), ++row);
+	attach_label_section(grid, _("Other"), ++row);
 	// Editing - Visually Linear Color Selection
 	grid->attach(toggle_use_colorspace_gamma, 0, ++row, 1, 1);
 	toggle_use_colorspace_gamma.set_halign(Gtk::ALIGN_END);
@@ -475,6 +595,7 @@ Dialog_Setup::create_editing_page(Gtk::Notebook& notebook)
 	labelstr = _("Visually linear color selection");
 	label = manage(new Gtk::Label(labelstr));
 	label->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	label->set_hexpand(true);
 	grid->attach(*label, 1, row, 1, 1);
 
 	// Editing - Restrict Really-valued Handles to Top Right Quadrant
@@ -485,36 +606,40 @@ Dialog_Setup::create_editing_page(Gtk::Notebook& notebook)
 	labelstr = _("Restrict really-valued handles to top right quadrant");
 	label = manage(new Gtk::Label(labelstr));
 	label->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	label->set_hexpand(true);
 	grid->attach(*label, 1, row, 1, 1);
 }
 
 void
-Dialog_Setup::create_render_page(Gtk::Notebook& notebook)
+Dialog_Setup::create_render_page(synfig::String name)
 {
+	Gtk::Grid *grid = manage(new Gtk::Grid());
+	Gtk::Grid *main_grid=manage(new Gtk::Grid());
+	DIALOG_PREFERENCE_UI_INIT_GRID(grid);
+	notebook->append_page(*main_grid,name);
+	attach_label_title(main_grid,name);
+	main_grid->attach(*grid, 0,1,1,1);
+
 	/*---------Render------------------*\
 	 *
 	 *  sequence separator _________
-	 *  use cairo navigato _______
-	 *  use cairo workarea _____
+	 *  use cairo navigato [x]
+	 *  use cairo workarea [x]
 	 *
 	 *
 	 */
 
-	Gtk::Grid *render_grid = manage(new Gtk::Grid());
-	DIALOG_PREFERENCE_UI_INIT_GRID(render_grid);
-	notebook.append_page(*render_grid, _("Render"));
-
-	int row(0);
+	int row(1);
 	// Render - Image sequence separator
-	attach_label(render_grid, _("Image Sequence Separator String"), row);
-	render_grid->attach(image_sequence_separator, 1, row, 1, 1);
+	attach_label(grid, _("Image Sequence Separator String"), row);
+	grid->attach(image_sequence_separator, 1, row, 1, 1);
 	image_sequence_separator.set_hexpand(true);
 	// Render - Use Cairo on Navigator
-	attach_label(render_grid, _("Navigator renderer"), ++row);
-	render_grid->attach(navigator_renderer_combo, 1, row, 1, 1);
+	attach_label(grid, _("Navigator renderer"), ++row);
+	grid->attach(navigator_renderer_combo, 1, row, 1, 1);
 	// Render - Use Cairo on WorkArea
-	attach_label(render_grid, _("WorkArea renderer"), ++row);
-	render_grid->attach(workarea_renderer_combo, 1, row, 1, 1);
+	attach_label(grid, _("WorkArea renderer"), ++row);
+	grid->attach(workarea_renderer_combo, 1, row, 1, 1);
 
 	navigator_renderer_combo.append("", _("Legacy"));
 	workarea_renderer_combo.append("", _("Legacy"));
@@ -529,11 +654,26 @@ Dialog_Setup::create_render_page(Gtk::Notebook& notebook)
 }
 
 void
-Dialog_Setup::create_interface_page(Gtk::Notebook& notebook)
+Dialog_Setup::create_interface_page(synfig::String name)
 {
-	Gtk::Grid *interface_grid=manage(new Gtk::Grid());
-	DIALOG_PREFERENCE_UI_INIT_GRID(interface_grid);
-	notebook.append_page(*interface_grid,_("Interface"));
+	Gtk::Grid *grid=manage(new Gtk::Grid());
+	Gtk::Grid *main_grid=manage(new Gtk::Grid());
+	DIALOG_PREFERENCE_UI_INIT_GRID(grid);
+	notebook->append_page(*main_grid,name);
+	attach_label_title(main_grid,name);
+	main_grid->attach(*grid, 0,1,1,1);
+
+	/*---------Interface------------------*\
+	 * LANGUAGE
+	 *  [________________________________]
+	 * COLORTHEME
+	 *  DarkUI          [x]
+	 * HANDLETOOLTIP
+	 *  Widthpoint      [x| ]
+	 *  Radius          [x| ]
+	 *  Transformation  [x| ]
+	 *
+	 */
 
 	// Interface - UI Language
 	Glib::ustring lang_names[] = {
@@ -604,7 +744,7 @@ Dialog_Setup::create_interface_page(Gtk::Notebook& notebook)
 
 	int num_items = G_N_ELEMENTS(lang_names);
 	Glib::ustring default_code;
-	int row = 0;
+	int row(1);
 	Glib::ustring lang_code = App::ui_language;
 
 	for (int i =0 ; i < num_items; ++i)
@@ -618,34 +758,34 @@ Dialog_Setup::create_interface_page(Gtk::Notebook& notebook)
 	ui_language_combo.set_active(row);
 	ui_language_combo.signal_changed().connect(sigc::mem_fun(*this, &studio::Dialog_Setup::on_ui_language_combo_change));
 
-	row = 0;
+	row = 1;
 	// Interface - Language section
-	attach_label_title(interface_grid, _("Language"), row);
-	interface_grid->attach(ui_language_combo, 0, ++row, 4, 1);
+	attach_label_section(grid, _("Language"), row);
+	grid->attach(ui_language_combo, 0, ++row, 4, 1);
 	ui_language_combo.set_hexpand(true);
 	ui_language_combo.set_margin_start(10);
 
 	// Interface - Color Theme section
-	attach_label_title(interface_grid, _("Color Theme"), ++row);
+	attach_label_section(grid, _("Color Theme"), ++row);
 	// Interface - Dark UI theme
-	attach_label(interface_grid, _("Dark UI theme (if available)"), ++row);
-	interface_grid->attach(toggle_use_dark_theme, 1, row, 1, 1);
+	attach_label(grid, _("Dark UI theme (if available)"), ++row);
+	grid->attach(toggle_use_dark_theme, 1, row, 1, 1);
 
 	// Interface - Handle tooltip section
-	attach_label_title(interface_grid, _("Handle Tooltips Visible"), ++row);
+	attach_label_section(grid, _("Handle Tooltips Visible"), ++row);
 	// Interface - width point tooltip
-	attach_label(interface_grid, _("Width point tooltips"), ++row);
-	interface_grid->attach(toggle_handle_tooltip_widthpoint, 1, row, 1, 1);
+	attach_label(grid, _("Width point tooltips"), ++row);
+	grid->attach(toggle_handle_tooltip_widthpoint, 1, row, 1, 1);
 	toggle_handle_tooltip_widthpoint.set_halign(Gtk::ALIGN_START);
 	toggle_handle_tooltip_widthpoint.set_hexpand(false);
 	// Interface - radius tooltip
-	attach_label(interface_grid, _("Radius tooltips"), ++row);
-	interface_grid->attach(toggle_handle_tooltip_radius, 1, row, 1, 1);
+	attach_label(grid, _("Radius tooltips"), ++row);
+	grid->attach(toggle_handle_tooltip_radius, 1, row, 1, 1);
 	toggle_handle_tooltip_radius.set_halign(Gtk::ALIGN_START);
 	toggle_handle_tooltip_radius.set_hexpand(false);
 	// Interface - transformation widget tooltip
-	attach_label(interface_grid, _("Transformation widget tooltips"), ++row);
-	interface_grid->attach(toggle_handle_tooltip_transformation, 1, row, 1, 1);
+	attach_label(grid, _("Transformation widget tooltips"), ++row);
+	grid->attach(toggle_handle_tooltip_transformation, 1, row, 1, 1);
 	toggle_handle_tooltip_transformation.set_halign(Gtk::ALIGN_START);
 	toggle_handle_tooltip_transformation.set_hexpand(false);
 }
@@ -1269,4 +1409,13 @@ RedBlueLevelSelector::on_event(GdkEvent *event)
 	}
 
 	return false;
+}
+
+void Dialog_Setup::on_treeview_row_activated(const Gtk::TreeModel::Path& path, Gtk::TreeViewColumn* /* column */)
+{
+	Gtk::TreeModel::iterator iter = prefs_categories_reftreemodel->get_iter(path);
+	if(iter)
+	{
+		notebook->set_current_page((int)((*iter)[prefs_categories.category_id]));
+	}
 }

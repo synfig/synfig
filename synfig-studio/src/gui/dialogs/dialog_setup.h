@@ -32,7 +32,6 @@
 
 #include <gtk/gtk.h>
 #include <gtkmm/adjustment.h>
-#include <gtkmm/table.h>
 #include <gtkmm/button.h>
 #include <gtkmm/dialog.h>
 #include <gtkmm/drawingarea.h>
@@ -44,6 +43,9 @@
 #include <gtkmm/switch.h>
 #include <gtkmm/notebook.h>
 #include <gtkmm/grid.h>
+#include <gtkmm/scrolledwindow.h>
+#include <gtkmm/treeview.h>
+#include <gtkmm/treestore.h>
 
 #include <gui/widgets/widget_time.h>
 
@@ -173,18 +175,26 @@ class Dialog_Setup : public Gtk::Dialog
 	void on_ui_language_combo_change();
 	void on_time_format_changed();
 
-	void create_gamma_page(Gtk::Notebook& notebook);
-	void create_system_page(Gtk::Notebook& notebook);
-	void create_document_page(Gtk::Notebook& notebook);
-	void create_render_page(Gtk::Notebook& notebook);
-	void create_interface_page(Gtk::Notebook& notebook);
-	void create_editing_page(Gtk::Notebook& notebook);
+	void create_gamma_page(synfig::String name);
+	void create_system_page(synfig::String name);
+	void create_document_page(synfig::String name);
+	void create_render_page(synfig::String name);
+	void create_interface_page(synfig::String name);
+	void create_editing_page(synfig::String name);
 
-	void attach_label(Gtk::Grid *grid, synfig::String str, guint col);
-	void attach_label_title(Gtk::Grid *grid, synfig::String str, guint col);
+	//! \Brief Set the main title of the page
+	void attach_label_title(Gtk::Grid *grid, synfig::String str);
+	//! \Brief Add a new section (col 0) at specified row
+	void attach_label_section(Gtk::Grid *grid, synfig::String str, guint row);
+	//! \Brief Add a single label (col 0) at specified row
+	void attach_label(Gtk::Grid *grid, synfig::String str, guint row);
+	//! \Brief Add a single label at specified row and col
+	void attach_label(Gtk::Grid *grid, synfig::String str, guint row, guint col);
 
-	// Style for title
+	Gtk::Notebook *notebook;
+	// Style for title(s)
 	Pango::AttrList title_attrlist;
+	Pango::AttrList section_attrlist;
 
 	GammaPattern gamma_pattern;
 	BlackLevelSelector black_level_selector;
@@ -241,6 +251,32 @@ class Dialog_Setup : public Gtk::Dialog
 	Gtk::Switch toggle_handle_tooltip_radius;
 	Gtk::Switch toggle_handle_tooltip_transformation;
 	Gtk::Switch toggle_autobackup;
+
+protected:
+	//Signal handlers:
+	void on_treeview_row_activated(const Gtk::TreeModel::Path& path, Gtk::TreeViewColumn* column);
+
+
+
+	//Tree model columns:
+	class PrefsCategories : public Gtk::TreeModel::ColumnRecord
+	{
+		public:
+
+		PrefsCategories() { add(category_id); add(category_name); }
+
+		Gtk::TreeModelColumn<int> category_id;
+		Gtk::TreeModelColumn<Glib::ustring> category_name;
+	};
+
+	PrefsCategories prefs_categories;
+
+	//Child widgets:
+	Gtk::Grid main_grid;
+
+	Gtk::ScrolledWindow prefs_categories_scrolledwindow;
+	Gtk::TreeView prefs_categories_treeview;
+	Glib::RefPtr<Gtk::TreeStore> prefs_categories_reftreemodel;
 
 public:
 
