@@ -208,6 +208,14 @@ Task::trunc_target_by_bounds()
 	trunc_source_rect(get_bounds());
 }
 
+Task::Handle
+Task::clone_recursive() const {
+	Task::Handle task = clone();
+	for(List::iterator i = task->sub_tasks.begin(); i != task->sub_tasks.end(); ++i)
+		if (*i) *i = (*i)->clone_recursive();
+	return task;
+}
+
 
 
 /* === E N T R Y P O I N T ================================================= */

@@ -90,6 +90,7 @@ public:
 
 	PointInt get_min()const { return PointInt(minx,miny); }
 	PointInt get_max()const { return PointInt(maxx,maxy); }
+	VectorInt get_size()const { return get_max() - get_min(); }
 
 	bool is_inside(const PointInt& x) { return x[0]>=minx && x[0]<maxx && x[1]>=miny && x[1]<maxy; }
 
@@ -239,6 +240,7 @@ public:
 
 	Point get_min()const { return Point(minx,miny); }
 	Point get_max()const { return Point(maxx,maxy); }
+	Vector get_size()const { return get_max() - get_min(); }
 
 	bool is_inside(const Point& x) { return x[0]>minx && x[0]<maxx && x[1]>miny && x[1]<maxy; }
 

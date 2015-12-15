@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/software/optimizer/optimizerblurpreparedsw.h
-**	\brief OptimizerBlurPreparedSW Header
+/*!	\file synfig/rendering/software/function/fft.h
+**	\brief FFT Header
 **
 **	$Id$
 **
@@ -22,12 +22,12 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_RENDERING_OPTIMIZERBLURPREPAREDSW_H
-#define __SYNFIG_RENDERING_OPTIMIZERBLURPREPAREDSW_H
+#ifndef __SYNFIG_RENDERING_SOFTWARE_FFT_H
+#define __SYNFIG_RENDERING_SOFTWARE_FFT_H
 
 /* === H E A D E R S ======================================================= */
 
-#include "../../optimizer.h"
+#include <synfig/complex.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -39,18 +39,38 @@ namespace synfig
 {
 namespace rendering
 {
+namespace software
+{
 
-class OptimizerBlurPreparedSW: public Optimizer
+class FFT
 {
 public:
-	OptimizerBlurPreparedSW()
-	{
-		// TODO:
-	}
+	static int get_power_of_two(int x);
+	static bool is_power_of_two(int x);
 
-	virtual void run(const RunParams &params) const;
+	//! Fast Furier Transform
+	//! @count should be power of 2
+	//! @stride - distance (in items) between two sequential items
+	static void fft(Complex *x, int count, int stride, bool invert);
+
+	//! Fast Furier Transform
+	//! @count should be power of 2
+	static void fft(Complex *x, int count, bool invert)
+		{ fft(x, count, 1, invert); }
+
+	//! Fast Furier Transform 2d
+	//! @rows and @cols should be power of 2
+	//! @col_stride - distance (in items) between two sequential items
+	//! @row_stride - distance (in items) between two sequential rows of items
+	static void fft2d(Complex *x, int rows, int row_stride, int cols, int col_stride, bool invert);
+
+	//! Fast Furier Transform 2d
+	//! @rows and @cols should be power of 2
+	static void fft2d(Complex *x, int rows, int cols, bool invert)
+		{ fft2d(x, rows, cols, cols, 1, invert); }
 };
 
+} /* end namespace software */
 } /* end namespace rendering */
 } /* end namespace synfig */
 

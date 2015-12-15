@@ -31,6 +31,10 @@
 #	include <config.h>
 #endif
 
+#include <cstring>
+
+#include <ETL/pen>
+
 #include "blur.h"
 
 #include <synfig/localization.h>
@@ -47,8 +51,8 @@
 #include <synfig/segment.h>
 #include <synfig/cairo_renddesc.h>
 
-#include <cstring>
-#include <ETL/pen>
+#include <synfig/rendering/common/task/taskblend.h>
+#include <synfig/rendering/common/task/taskblur.h>
 
 #endif
 
@@ -443,4 +447,24 @@ Blur_Layer::get_full_bounding_rect(Context context)const
 	Rect bounds(context.get_full_bounding_rect().expand_x(size[0]).expand_y(size[1]));
 
 	return bounds;
+}
+
+rendering::Task::Handle
+Blur_Layer::build_rendering_task_vfunc(Context context)const
+{
+	Vector size = param_size.get(Point());
+	Real amount = get_amount() * Context::z_depth_visibility(context.get_params(), *this);
+	rendering::TaskBlur::Handle task_blur(new rendering::TaskBlur());
+	task_blur->blur.size = size*amount;
+	task_blur->blur.type = (rendering::Blur::Type)param_type.get(int());
+	task_blur->sub_task() = context.build_rendering_task();
+
+	rendering::TaskBlend::Handle task_blend(new rendering::TaskBlend());
+	task_blend->amount = get_amount() * Context::z_depth_visibility(context.get_params(), *this);
+	task_blend->blend_method = get_blend_method();
+	task_blend->sub_task_a() = task_blur->sub_task()->clone_recursive();
+	task_blend->sub_task_b() = task_blur;
+	return task_blend;
+
+	return task_blur;
 }

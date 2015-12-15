@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/common/task/taskblur.h
-**	\brief TaskBlur Header
+/*!	\file synfig/rendering/software/optimizer/optimizerblursw.h
+**	\brief OptimizerBlurSW Header
 **
 **	$Id$
 **
@@ -22,13 +22,12 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_RENDERING_TASKBLUR_H
-#define __SYNFIG_RENDERING_TASKBLUR_H
+#ifndef __SYNFIG_RENDERING_OPTIMIZERBLURSW_H
+#define __SYNFIG_RENDERING_OPTIMIZERBLURSW_H
 
 /* === H E A D E R S ======================================================= */
 
-#include "../../task.h"
-#include "../../primitive/blur.h"
+#include "../../optimizer.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -41,18 +40,17 @@ namespace synfig
 namespace rendering
 {
 
-class TaskBlur: public Task
+class OptimizerBlurSW: public Optimizer
 {
 public:
-	typedef etl::handle<TaskBlur> Handle;
+	OptimizerBlurSW()
+	{
+		category_id = CATEGORY_ID_SPECIALIZE;
+		depends_from = CATEGORY_COMMON & CATEGORY_PRE_SPECIALIZE;
+		for_task = true;
+	}
 
-	Blur blur;
-
-	TaskBlur() { }
-	Task::Handle clone() const { return clone_pointer(this); }
-
-	const Task::Handle& sub_task() const { return Task::sub_task(0); }
-	Task::Handle& sub_task() { return Task::sub_task(0); }
+	virtual void run(const RunParams &params) const;
 };
 
 } /* end namespace rendering */

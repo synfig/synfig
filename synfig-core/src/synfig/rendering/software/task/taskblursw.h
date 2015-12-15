@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/software/task/taskblurpreparedsw.h
-**	\brief TaskBlurPreparedSW Header
+/*!	\file synfig/rendering/software/task/taskblursw.h
+**	\brief TaskBlurSW Header
 **
 **	$Id$
 **
@@ -22,13 +22,14 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_RENDERING_TASKBLURPREPAREDSW_H
-#define __SYNFIG_RENDERING_TASKBLURPREPAREDSW_H
+#ifndef __SYNFIG_RENDERING_TASKBLURSW_H
+#define __SYNFIG_RENDERING_TASKBLURSW_H
 
 /* === H E A D E R S ======================================================= */
 
 #include "tasksw.h"
-#include "../../primitive/blur.h"
+#include "../../common/task/taskblur.h"
+#include "../../common/task/taskcomposite.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -41,20 +42,21 @@ namespace synfig
 namespace rendering
 {
 
-class TaskBlurPreparedSW: public Task, public TaskSW
+class TaskBlurSW: public TaskBlur, public TaskSW, public TaskComposite
 {
+private:
+	class Helper;
+
 public:
-	typedef etl::handle<TaskBlurPreparedSW> Handle;
+	typedef etl::handle<TaskBlurSW> Handle;
 
-	Blur blur;
-
-	TaskBlurPreparedSW() { }
+	TaskBlurSW() { }
 	Task::Handle clone() const { return clone_pointer(this); }
 
-	const Task::Handle& sub_task() const { return Task::sub_task(0); }
-	Task::Handle& sub_task() { return Task::sub_task(0); }
-
 	virtual bool run(RunParams &params) const;
+
+	virtual Color::BlendMethodFlags get_supported_blend_methods() const
+		{ return Color::BLEND_METHODS_ALL & ~Color::BLEND_METHODS_STRAIGHT; }
 };
 
 } /* end namespace rendering */

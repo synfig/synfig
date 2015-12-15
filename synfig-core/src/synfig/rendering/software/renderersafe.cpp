@@ -49,7 +49,7 @@
 #include "../common/optimizer/optimizertransformationaffine.h"
 
 #include "optimizer/optimizerblendsw.h"
-#include "optimizer/optimizerblurpreparedsw.h"
+#include "optimizer/optimizerblursw.h"
 #include "optimizer/optimizercontoursw.h"
 #include "optimizer/optimizerlayersw.h"
 #include "optimizer/optimizermeshsw.h"
@@ -76,6 +76,7 @@ RendererSafe::RendererSafe()
 	register_optimizer(new OptimizerCalcBounds());
 
 	register_optimizer(new OptimizerBlendSW());
+	register_optimizer(new OptimizerBlurSW());
 	register_optimizer(new OptimizerContourSW());
 	register_optimizer(new OptimizerLayerSW());
 	register_optimizer(new OptimizerSurfaceResampleSW());

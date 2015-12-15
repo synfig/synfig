@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/software/task/taskblurpreparedsw.cpp
-**	\brief TaskBlurPreparedSW
+/*!	\file synfig/rendering/software/task/taskblursw.cpp
+**	\brief TaskBlurSW
 **
 **	$Id$
 **
@@ -35,11 +35,10 @@
 #include <signal.h>
 #endif
 
-#include <synfig/blur.h>
-
-#include "taskblurpreparedsw.h"
+#include <synfig/rendering/software/task/taskblursw.h>
 
 #include "../surfacesw.h"
+#include "../function/blur.h"
 
 #endif
 
@@ -55,18 +54,33 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 bool
-TaskBlurPreparedSW::run(RunParams & /* params */) const
+TaskBlurSW::run(RunParams & /* params */) const
 {
-	//synfig::Surface &a =
-	//	SurfaceSW::Handle::cast_dynamic( target_surface )->get_surface();
-	//const synfig::Surface &b =
-	//	SurfaceSW::Handle::cast_dynamic( sub_task()->target_surface )->get_surface();
+	if (!valid_target() || !sub_task()->valid_target())
+		return true;
 
-	::Blur bl;
-	bl.set_type(blur.type);
-	bl.set_size(blur.size);
+	synfig::Surface &a =
+		SurfaceSW::Handle::cast_dynamic( target_surface )->get_surface();
+	const synfig::Surface &b =
+		SurfaceSW::Handle::cast_dynamic( sub_task()->target_surface )->get_surface();
 
-	// TODO:
+	Vector s = blur.size;
+	Vector pixels_per_unit = get_pixels_per_unit();
+	s[0] *= pixels_per_unit[0];
+	s[1] *= pixels_per_unit[1];
+
+	Vector offsetf = get_source_rect_lt() - sub_task()->get_source_rect_lt();
+	Vector sub_pixels_per_unit = sub_task()->get_pixels_per_unit();
+	offsetf[0] *= sub_pixels_per_unit[0];
+	offsetf[1] *= sub_pixels_per_unit[1];
+	VectorInt offset((int)round(offsetf[0]), (int)round(offsetf[1]));
+	offset += sub_task()->get_target_rect().get_min();
+
+	software::Blur::blur(
+		a, get_target_rect(),
+		b, offset,
+		blur.type, s,
+		blend, blend_method, amount);
 
 	return false;
 }

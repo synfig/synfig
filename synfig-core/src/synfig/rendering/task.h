@@ -170,6 +170,8 @@ public:
 
 	virtual bool run(RunParams &params) const;
 	virtual Task::Handle clone() const { return clone_pointer(this); }
+
+	Task::Handle clone_recursive() const;
 };
 
 } /* end namespace rendering */

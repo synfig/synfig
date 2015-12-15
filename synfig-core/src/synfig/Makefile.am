@@ -76,6 +76,7 @@ SYNFIGHEADERS = \
 	protocol.h \
 	quick_rng.h \
 	real.h \
+	complex.h \
 	releases.h \
 	segment.h \
 	smartfile.h \
