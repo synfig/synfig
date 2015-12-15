@@ -288,35 +288,46 @@ Dialog_Setup::create_misc_page(Gtk::Notebook& notebook)
 void
 Dialog_Setup::create_document_page(Gtk::Notebook& notebook)
 {
-	int xpadding(6), ypadding(6);
+	Gtk::Grid *document_grid = manage(new Gtk::Grid());
+	DIALOG_PREFERENCE_UI_INIT_GRID(document_grid);
+	notebook.append_page(*document_grid, _("Document"));
 
-	Gtk::Table *document_table = manage(new Gtk::Table(2, 4, false));
-	document_table->set_border_width(8);
-	notebook.append_page(*document_table, _("Document"));
+	/*---------Document------------------*\
+	 *
+	 *  doc prefix _________
+	 *  doc x [_]  predef resolution
+	 *  doc y [_]  [resolutions]
+	 *             predef FPS
+	 *  fps   [_]  [FPS]
+	 *
+	 */
 
+	int row(0);
 	// Document - Preferred file name prefix
-	attach_label(document_table, _("New Document filename prefix"), 0, xpadding, ypadding);
-	document_table->attach(textbox_custom_filename_prefix, 1, 4, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+	attach_label(document_grid, _("New Document filename prefix"), row);
+	document_grid->attach(textbox_custom_filename_prefix, 1, row, 1, 1);
 	textbox_custom_filename_prefix.set_tooltip_text( _("File name prefix for the new created document"));
 
 	// Document - New Document X size
 	pref_x_size_spinbutton = Gtk::manage(new Gtk::SpinButton(adj_pref_x_size, 1, 0));
-	attach_label(document_table, _("New Document X size"),1, xpadding, ypadding);
-	document_table->attach(*pref_x_size_spinbutton, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+	attach_label(document_grid, _("New Document X size"),++row);
+	document_grid->attach(*pref_x_size_spinbutton, 1, row, 1, 1);
 	pref_x_size_spinbutton->set_tooltip_text(_("Width in pixels of the new created document"));
+
+	//Document - Label for predefined sizes of canvases.
+	Gtk::Label* label(manage(new Gtk::Label(_("Predefined Resolutions:"))));
+	label->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	document_grid->attach(*label, 2, row, 1, 1);
 
 	// Document - New Document Y size
 	pref_y_size_spinbutton = Gtk::manage(new Gtk::SpinButton(adj_pref_y_size, 1, 0));
-	attach_label(document_table,_("New Document Y size"), 2, xpadding, ypadding);
-	document_table->attach(*pref_y_size_spinbutton, 1, 2, 2, 3,Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+	attach_label(document_grid,_("New Document Y size"), ++row);
+	document_grid->attach(*pref_y_size_spinbutton, 1, row, 1, 1);
 	pref_y_size_spinbutton->set_tooltip_text(_("High in pixels of the new created document"));
 
 	//Document - Template for predefined sizes of canvases.
 	size_template_combo = Gtk::manage(new Gtk::ComboBoxText());
-	Gtk::Label* label(manage(new Gtk::Label(_("Predefined Resolutions:"))));
-	label->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
-	document_table->attach(*label, 2, 3, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
-	document_table->attach(*size_template_combo, 2, 3, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+	document_grid->attach(*size_template_combo, 2, row, 1, 1);
 	size_template_combo->signal_changed().connect(sigc::mem_fun(*this, &studio::Dialog_Setup::on_size_template_combo_change));
 	size_template_combo->prepend(_("4096x3112 Full Aperture 4K"));
 	size_template_combo->prepend(_("2048x1556 Full Aperture Native 2K"));
@@ -334,12 +345,20 @@ Dialog_Setup::create_document_page(Gtk::Notebook& notebook)
 	size_template_combo->prepend(_("360x203   Web 360x HD"));
 	size_template_combo->prepend(DEFAULT_PREDEFINED_SIZE);
 
-	//Document - Template for predefined fps
-	fps_template_combo = Gtk::manage(new Gtk::ComboBoxText());
+	//Document - Label for predefined fps
 	Gtk::Label* label1(manage(new Gtk::Label(_("Predefined FPS:"))));
 	label1->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
-	document_table->attach(*label1, 2, 3, 3, 4, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
-	document_table->attach(*fps_template_combo,2, 3, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+	document_grid->attach(*label1,2, ++row, 1,1);
+
+	// Document - New Document FPS
+	pref_fps_spinbutton = Gtk::manage(new Gtk::SpinButton(adj_pref_fps, 1, 3));
+	attach_label(document_grid,_("New Document FPS"), ++row);
+	document_grid->attach(*pref_fps_spinbutton, 1, row, 1, 1);
+	pref_fps_spinbutton->set_tooltip_text(_("Frames per second of the new created document"));
+
+	//Document - Template for predefined fps
+	fps_template_combo = Gtk::manage(new Gtk::ComboBoxText());
+	document_grid->attach(*fps_template_combo, 2, row, 1, 1);
 	fps_template_combo->signal_changed().connect(sigc::mem_fun(*this, &studio::Dialog_Setup::on_fps_template_combo_change));
 	//Document - Fill the FPS combo box with proper strings (not localised)
 	float f[8];
@@ -355,12 +374,6 @@ Dialog_Setup::create_document_page(Gtk::Notebook& notebook)
 		fps_template_combo->prepend(strprintf("%5.3f", f[i]));
 
 	fps_template_combo->prepend(DEFAULT_PREDEFINED_FPS);
-
-	// Document - New Document FPS
-	pref_fps_spinbutton = Gtk::manage(new Gtk::SpinButton(adj_pref_fps, 1, 3));
-	attach_label(document_table,_("New Document FPS"), 4, xpadding, ypadding);
-	document_table->attach(*pref_fps_spinbutton, 1, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
-	pref_fps_spinbutton->set_tooltip_text(_("Frames per second of the new created document"));
 }
 
 void
