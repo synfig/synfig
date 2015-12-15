@@ -38,12 +38,14 @@
 #include <gtkmm/drawingarea.h>
 #include <gtkmm/comboboxtext.h>
 #include <gtkmm/checkbutton.h>
-#include <gui/widgets/widget_time.h>
 #include <gtkmm/tooltip.h>
 #include <gtkmm/comboboxtext.h>
 #include <gtkmm/spinbutton.h>
 #include <gtkmm/switch.h>
 #include <gtkmm/notebook.h>
+#include <gtkmm/grid.h>
+
+#include <gui/widgets/widget_time.h>
 
 #include <synfig/gamma.h>
 #include <synfig/time.h>
@@ -176,6 +178,13 @@ class Dialog_Setup : public Gtk::Dialog
 	void create_document_page(Gtk::Notebook& notebook);
 	void create_render_page(Gtk::Notebook& notebook);
 	void create_interface_page(Gtk::Notebook& notebook);
+	void create_editing_page(Gtk::Notebook& notebook);
+
+	void attach_label(Gtk::Grid *grid, synfig::String str, guint col);
+	void attach_label_title(Gtk::Grid *grid, synfig::String str, guint col);
+
+	// Style for title
+	Pango::AttrList title_attrlist;
 
 	GammaPattern gamma_pattern;
 	BlackLevelSelector black_level_selector;
@@ -228,9 +237,9 @@ class Dialog_Setup : public Gtk::Dialog
 	Gtk::ComboBoxText navigator_renderer_combo;
 	Gtk::ComboBoxText workarea_renderer_combo;
 
-	Gtk::Switch toggle_widthpoint_handle_tooltip;
-	Gtk::Switch toggle_radius_handle_tooltip;
-	Gtk::Switch toggle_transformation_handle_tooltip;
+	Gtk::Switch toggle_handle_tooltip_widthpoint;
+	Gtk::Switch toggle_handle_tooltip_radius;
+	Gtk::Switch toggle_handle_tooltip_transformation;
 
 public:
 

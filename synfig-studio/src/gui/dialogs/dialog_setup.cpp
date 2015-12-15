@@ -36,8 +36,6 @@
 
 #include <gtkmm/scale.h>
 #include <gtkmm/frame.h>
-#include <gtkmm/grid.h>
-#include <gtkmm/notebook.h>
 #include "widgets/widget_enum.h"
 #include "autorecover.h"
 #include "duck.h"
@@ -82,14 +80,6 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-static void
-attach_label(Gtk::Grid *grid, String str, guint col)
-{
-	Gtk::Label* label(manage(new Gtk::Label((str + ":").c_str())));
-	label->set_alignment(Gtk::ALIGN_END, Gtk::ALIGN_CENTER);
-	grid->attach(*label, 0, col, 1, 1);
-}
-
 Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	Dialog(_("Synfig Studio Preferences"),parent,true),
 	adj_gamma_r(Gtk::Adjustment::create(2.2,0.1,3.0,0.025,0.025,0.025)),
@@ -125,8 +115,16 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	add_action_widget(*ok_button,2);
 	ok_button->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_Setup::on_ok_pressed));
 
+	// Style for title
+	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
+	title_attrlist.insert(attr);
+
 	// Notebook
 	Gtk::Notebook *notebook=manage(new class Gtk::Notebook());
+	// Main preferences notebook
+	//TODO treeview not tab
+//	notebook->set_show_tabs (false);
+	notebook->set_show_border (false);
 	get_vbox()->pack_start(*notebook);
 
 	// Gamma
@@ -135,6 +133,8 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	create_misc_page(*notebook);
 	// Document
 	create_document_page(*notebook);
+	// Editing
+	create_editing_page(*notebook);
 	// Render
 	create_render_page(*notebook);
 	// Interface
@@ -145,6 +145,24 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 
 Dialog_Setup::~Dialog_Setup()
 {
+}
+
+void
+Dialog_Setup::attach_label(Gtk::Grid *grid, synfig::String str, guint col)
+{
+	Gtk::Label* label(manage(new Gtk::Label((str + ":").c_str())));
+	label->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	label->set_margin_start(10);
+	grid->attach(*label, 0, col, 1, 1);
+}
+
+void
+Dialog_Setup::attach_label_title(Gtk::Grid *grid, synfig::String str, guint col)
+{
+	Gtk::Label* label(manage(new Gtk::Label(str)));
+	label->set_attributes(title_attrlist);
+	label->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	grid->attach(*label, 0, col, 1, 1);
 }
 
 void
@@ -275,21 +293,6 @@ Dialog_Setup::create_misc_page(Gtk::Notebook& notebook)
 	misc_grid->attach(textbox_brushes_path, 1, row, 1, 1);
 	textbox_brushes_path.set_hexpand(true);
 
-	// Misc - 7 Visually Linear Color Selection
-	attach_label(misc_grid, _("Visually linear color selection"), ++row);
-	misc_grid->attach(toggle_use_colorspace_gamma, 1, row, 1, 1);
-	toggle_use_colorspace_gamma.set_hexpand(true);
-
-	// Misc - 8 Restrict Really-valued Handles to Top Right Quadrant
-	attach_label(misc_grid, _("Restrict really-valued handles to top right quadrant"), ++row);
-	misc_grid->attach(toggle_restrict_radius_ducks, 1, row, 1, 1);
-	toggle_restrict_radius_ducks.set_hexpand(true);
-
-	// Misc - 9 Scaling New Imported Images to Fit Canvas
-	attach_label(misc_grid, _("Scaling new imported image to fix canvas"), ++row);
-	misc_grid->attach(toggle_resize_imported_images, 1, row, 1, 1);
-	toggle_resize_imported_images.set_hexpand(true);
-
 	// Misc - 11 enable_experimental_features
 	//attach_label(misc_grid, _("Experimental features (restart needed)"), ++row);
 	//misc_grid->attach(toggle_enable_experimental_features, 1, row, 1, 1);
@@ -312,45 +315,92 @@ Dialog_Setup::create_document_page(Gtk::Notebook& notebook)
 	notebook.append_page(*document_grid, _("Document"));
 
 	/*---------Document------------------*\
+	 * NEW CANVAS
+	 *  prefix  ___________________
+	 *  fps   [_]                    [FPS]
+	 *  size
+	 *        H[_]xW[_]      [resolutions]
 	 *
-	 *  doc prefix  ___________________
-	 *  doc x      [_]  predef resolution
-	 *  doc y      [_]  [  resolutions  ]
-	 *                  predef FPS
-	 *  fps        [_]  [      FPS      ]
 	 *
 	 */
 
 	int row(0);
+	attach_label_title(document_grid, _("New Canvas"), row);
 	// Document - Preferred file name prefix
-	attach_label(document_grid, _("New Document filename prefix"), row);
-	document_grid->attach(textbox_custom_filename_prefix, 1, row, 2, 1);
+	attach_label(document_grid, _("Name prefix"), ++row);
+	document_grid->attach(textbox_custom_filename_prefix, 1, row, 6, 1);
 	textbox_custom_filename_prefix.set_tooltip_text( _("File name prefix for the new created document"));
 	textbox_custom_filename_prefix.set_hexpand(true);
 
+	//Document - Label for predefined fps
+//	Gtk::Label* label1(manage(new Gtk::Label(_("Predefined FPS:"))));
+//	label1->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+//	document_grid->attach(*label1, 5, ++row, 1,1);
+//	label1->set_hexpand(true);
+
+	// Document - New Document FPS
+	pref_fps_spinbutton = Gtk::manage(new Gtk::SpinButton(adj_pref_fps, 1, 3));
+	attach_label(document_grid,_("FPS"), ++row);
+	document_grid->attach(*pref_fps_spinbutton, 1, row, 1, 1);
+	pref_fps_spinbutton->set_tooltip_text(_("Frames per second of the new created document"));
+	pref_fps_spinbutton->set_hexpand(true);
+
+	//Document - Template for predefined fps
+	fps_template_combo = Gtk::manage(new Gtk::ComboBoxText());
+	document_grid->attach(*fps_template_combo, 6, row, 1, 1);
+	fps_template_combo->signal_changed().connect(sigc::mem_fun(*this, &studio::Dialog_Setup::on_fps_template_combo_change));
+	fps_template_combo->set_hexpand(true);
+	//Document - Fill the FPS combo box with proper strings (not localised)
+	float f[8];
+	f[0] = 60;
+	f[1] = 50;
+	f[2] = 30;
+	f[3] = 25;
+	f[4] = 24.967;
+	f[5] = 24;
+	f[6] = 15;
+	f[7] = 12;
+	for (int i=0; i<8; i++)
+		fps_template_combo->prepend(strprintf("%5.3f", f[i]));
+
+	attach_label(document_grid, _("Size"),++row);
 	// Document - New Document X size
+	synfig::String labelstr(_("Widht"));
+	Gtk::Label* label(manage(new Gtk::Label(labelstr + ":")));
+	label->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	document_grid->attach(*label, 1, ++row, 1, 1);
+
 	pref_x_size_spinbutton = Gtk::manage(new Gtk::SpinButton(adj_pref_x_size, 1, 0));
-	attach_label(document_grid, _("New Document X size"),++row);
-	document_grid->attach(*pref_x_size_spinbutton, 1, row, 1, 1);
+	document_grid->attach(*pref_x_size_spinbutton, 2, row, 1, 1);
 	pref_x_size_spinbutton->set_tooltip_text(_("Width in pixels of the new created document"));
 	pref_x_size_spinbutton->set_hexpand(true);
+//
+//	//Document - Label for predefined sizes of canvases.
+//	Gtk::Label* label(manage(new Gtk::Label(_("Predefined Resolutions:"))));
+//	label->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+//	document_grid->attach(*label, 3, row, 1, 1);
+//	label->set_hexpand(true);
+//
 
-	//Document - Label for predefined sizes of canvases.
-	Gtk::Label* label(manage(new Gtk::Label(_("Predefined Resolutions:"))));
+	labelstr = " X ";
+	label = manage(new Gtk::Label(labelstr));
 	label->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
-	document_grid->attach(*label, 2, row, 1, 1);
-	label->set_hexpand(true);
+	document_grid->attach(*label, 3, row, 1, 1);
 
 	// Document - New Document Y size
+	labelstr=_("Height");
+	label = manage(new Gtk::Label(labelstr + ":"));
+	label->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	document_grid->attach(*label, 4, row, 1, 1);
+
 	pref_y_size_spinbutton = Gtk::manage(new Gtk::SpinButton(adj_pref_y_size, 1, 0));
-	attach_label(document_grid,_("New Document Y size"), ++row);
-	document_grid->attach(*pref_y_size_spinbutton, 1, row, 1, 1);
+	document_grid->attach(*pref_y_size_spinbutton, 5, row, 1, 1);
 	pref_y_size_spinbutton->set_tooltip_text(_("High in pixels of the new created document"));
 	pref_y_size_spinbutton->set_hexpand(true);
 
 	//Document - Template for predefined sizes of canvases.
 	size_template_combo = Gtk::manage(new Gtk::ComboBoxText());
-	document_grid->attach(*size_template_combo, 2, row, 1, 1);
+	document_grid->attach(*size_template_combo, 6, row, 1, 1);
 	size_template_combo->signal_changed().connect(sigc::mem_fun(*this, &studio::Dialog_Setup::on_size_template_combo_change));
 	size_template_combo->prepend(_("4096x3112 Full Aperture 4K"));
 	size_template_combo->prepend(_("2048x1556 Full Aperture Native 2K"));
@@ -368,38 +418,61 @@ Dialog_Setup::create_document_page(Gtk::Notebook& notebook)
 	size_template_combo->prepend(_("360x203   Web 360x HD"));
 	size_template_combo->prepend(DEFAULT_PREDEFINED_SIZE);
 
-	//Document - Label for predefined fps
-	Gtk::Label* label1(manage(new Gtk::Label(_("Predefined FPS:"))));
-	label1->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
-	document_grid->attach(*label1,2, ++row, 1,1);
-	label1->set_hexpand(true);
-
-	// Document - New Document FPS
-	pref_fps_spinbutton = Gtk::manage(new Gtk::SpinButton(adj_pref_fps, 1, 3));
-	attach_label(document_grid,_("New Document FPS"), ++row);
-	document_grid->attach(*pref_fps_spinbutton, 1, row, 1, 1);
-	pref_fps_spinbutton->set_tooltip_text(_("Frames per second of the new created document"));
-	pref_fps_spinbutton->set_hexpand(true);
-
-	//Document - Template for predefined fps
-	fps_template_combo = Gtk::manage(new Gtk::ComboBoxText());
-	document_grid->attach(*fps_template_combo, 2, row, 1, 1);
-	fps_template_combo->signal_changed().connect(sigc::mem_fun(*this, &studio::Dialog_Setup::on_fps_template_combo_change));
-	fps_template_combo->set_hexpand(true);
-	//Document - Fill the FPS combo box with proper strings (not localised)
-	float f[8];
-	f[0] = 60;
-	f[1] = 50;
-	f[2] = 30;
-	f[3] = 25;
-	f[4] = 24.967;
-	f[5] = 24;
-	f[6] = 15;
-	f[7] = 12;
-	for (int i=0; i<8; i++)
-		fps_template_combo->prepend(strprintf("%5.3f", f[i]));
-
 	fps_template_combo->prepend(DEFAULT_PREDEFINED_FPS);
+}
+
+void
+Dialog_Setup::create_editing_page(Gtk::Notebook& notebook)
+{
+	Gtk::Grid *grid = manage(new Gtk::Grid());
+	DIALOG_PREFERENCE_UI_INIT_GRID(grid);
+	notebook.append_page(*grid, _("Editing"));
+
+	/*---------Editing------------------*\
+	 * IMPORTED IMAGE
+	 *  [x] Scale to fit
+	 * OTHER
+	 *  [x] Linear color
+	 *  [x] Restrict radius
+	 *
+	 *
+	 */
+
+	int row(0);
+	// Editing Imported image section
+	attach_label_title(grid, _("Imported Image"), row);
+	// Editing - Scaling New Imported Images to Fit Canvas
+	grid->attach(toggle_resize_imported_images, 0, ++row, 1, 1);
+	toggle_resize_imported_images.set_tooltip_text(_("Scaling new imported image to fix canvas"));
+	toggle_resize_imported_images.set_halign(Gtk::ALIGN_END);
+	toggle_resize_imported_images.set_hexpand(false);
+
+	synfig::String labelstr(_("Scale to fit canvas"));
+	Gtk::Label* label(manage(new Gtk::Label(labelstr)));
+	label->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	grid->attach(*label, 1, row, 1, 1);
+
+	// Editing Other section
+	attach_label_title(grid, _("Other"), ++row);
+	// Editing - Visually Linear Color Selection
+	grid->attach(toggle_use_colorspace_gamma, 0, ++row, 1, 1);
+	toggle_use_colorspace_gamma.set_halign(Gtk::ALIGN_END);
+	toggle_use_colorspace_gamma.set_hexpand(false);
+
+	labelstr = _("Visually linear color selection");
+	label = manage(new Gtk::Label(labelstr));
+	label->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	grid->attach(*label, 1, row, 1, 1);
+
+	// Editing - Restrict Really-valued Handles to Top Right Quadrant
+	grid->attach(toggle_restrict_radius_ducks, 0, ++row, 1, 1);
+	toggle_restrict_radius_ducks.set_halign(Gtk::ALIGN_END);
+	toggle_restrict_radius_ducks.set_hexpand(false);
+
+	labelstr = _("Restrict really-valued handles to top right quadrant");
+	label = manage(new Gtk::Label(labelstr));
+	label->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	grid->attach(*label, 1, row, 1, 1);
 }
 
 void
@@ -533,34 +606,35 @@ Dialog_Setup::create_interface_page(Gtk::Notebook& notebook)
 	ui_language_combo.signal_changed().connect(sigc::mem_fun(*this, &studio::Dialog_Setup::on_ui_language_combo_change));
 
 	row = 0;
-	attach_label(interface_grid, _("Interface Language"), row);
-	interface_grid->attach(ui_language_combo, 1, row, 1, 1);
+	// Interface - Language section
+	attach_label_title(interface_grid, _("Language"), row);
+	interface_grid->attach(ui_language_combo, 0, ++row, 4, 1);
 	ui_language_combo.set_hexpand(true);
+	ui_language_combo.set_margin_start(10);
 
+	// Interface - Color Theme section
+	attach_label_title(interface_grid, _("Color Theme"), ++row);
 	// Interface - Dark UI theme
 	attach_label(interface_grid, _("Dark UI theme (if available)"), ++row);
 	interface_grid->attach(toggle_use_dark_theme, 1, row, 1, 1);
 
-	// Interface - Handle tooltip
-	// TODO attach label title (bold / underline?)
-	attach_label(interface_grid, _("Handle Tooltips Visible"), ++row);
+	// Interface - Handle tooltip section
+	attach_label_title(interface_grid, _("Handle Tooltips Visible"), ++row);
 	// Interface - width point tooltip
 	attach_label(interface_grid, _("Width point tooltips"), ++row);
-
-	interface_grid->attach(toggle_widthpoint_handle_tooltip, 1, row, 1, 1);
-	toggle_widthpoint_handle_tooltip.set_halign(Gtk::ALIGN_START);
-	toggle_widthpoint_handle_tooltip.set_hexpand(false);
+	interface_grid->attach(toggle_handle_tooltip_widthpoint, 1, row, 1, 1);
+	toggle_handle_tooltip_widthpoint.set_halign(Gtk::ALIGN_START);
+	toggle_handle_tooltip_widthpoint.set_hexpand(false);
 	// Interface - radius tooltip
 	attach_label(interface_grid, _("Radius tooltips"), ++row);
-	interface_grid->attach(toggle_radius_handle_tooltip, 1, row, 1, 1);
-	toggle_radius_handle_tooltip.set_halign(Gtk::ALIGN_START);
-	toggle_radius_handle_tooltip.set_hexpand(false);
+	interface_grid->attach(toggle_handle_tooltip_radius, 1, row, 1, 1);
+	toggle_handle_tooltip_radius.set_halign(Gtk::ALIGN_START);
+	toggle_handle_tooltip_radius.set_hexpand(false);
 	// Interface - transformation widget tooltip
 	attach_label(interface_grid, _("Transformation widget tooltips"), ++row);
-	//TODO rename toggle_handle_tooltip_transformation
-	interface_grid->attach(toggle_transformation_handle_tooltip, 1, row, 1, 1);
-	toggle_transformation_handle_tooltip.set_halign(Gtk::ALIGN_START);
-	toggle_transformation_handle_tooltip.set_hexpand(false);
+	interface_grid->attach(toggle_handle_tooltip_transformation, 1, row, 1, 1);
+	toggle_handle_tooltip_transformation.set_halign(Gtk::ALIGN_START);
+	toggle_handle_tooltip_transformation.set_hexpand(false);
 }
 
 void
@@ -659,11 +733,11 @@ Dialog_Setup::on_apply_pressed()
 	App::ui_language = (_lang_codes[ui_language_combo.get_active_row_number()]).c_str();
 
 	// Set ui tooltip on widht point
-	App::ui_handle_tooltip_flag=toggle_widthpoint_handle_tooltip.get_active()?Duck::STRUCT_WIDTHPOINT:Duck::STRUCT_NONE;
+	App::ui_handle_tooltip_flag=toggle_handle_tooltip_widthpoint.get_active()?Duck::STRUCT_WIDTHPOINT:Duck::STRUCT_NONE;
 	// Set ui tooltip on widht point
-	App::ui_handle_tooltip_flag|=toggle_radius_handle_tooltip.get_active()?Duck::STRUCT_RADIUS:Duck::STRUCT_NONE;
+	App::ui_handle_tooltip_flag|=toggle_handle_tooltip_radius.get_active()?Duck::STRUCT_RADIUS:Duck::STRUCT_NONE;
 	// Set ui tooltip on widht point
-	App::ui_handle_tooltip_flag|=toggle_transformation_handle_tooltip.get_active()?Duck::STRUCT_TRANSFORMATION:Duck::STRUCT_NONE;
+	App::ui_handle_tooltip_flag|=toggle_handle_tooltip_transformation.get_active()?Duck::STRUCT_TRANSFORMATION:Duck::STRUCT_NONE;
 
 	App::save_settings();
 	App::setup_changed();
@@ -851,9 +925,9 @@ Dialog_Setup::refresh()
 	// Refresh the ui language
 
 	// refresh ui tooltip handle info
-	toggle_widthpoint_handle_tooltip.set_active(App::ui_handle_tooltip_flag&Duck::STRUCT_WIDTHPOINT);
-	toggle_radius_handle_tooltip.set_active(App::ui_handle_tooltip_flag&Duck::STRUCT_RADIUS);
-	toggle_transformation_handle_tooltip.set_active(App::ui_handle_tooltip_flag&Duck::STRUCT_TRANSFORMATION);
+	toggle_handle_tooltip_widthpoint.set_active(App::ui_handle_tooltip_flag&Duck::STRUCT_WIDTHPOINT);
+	toggle_handle_tooltip_radius.set_active(App::ui_handle_tooltip_flag&Duck::STRUCT_RADIUS);
+	toggle_handle_tooltip_transformation.set_active(App::ui_handle_tooltip_flag&Duck::STRUCT_TRANSFORMATION);
 
 }
 
