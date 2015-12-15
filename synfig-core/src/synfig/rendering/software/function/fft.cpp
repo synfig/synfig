@@ -141,11 +141,11 @@ software::FFT::fft2d(Complex *x, int rows, int row_stride, int cols, int col_str
 	// fft rows
 	if (cols > 1)
 		for(Complex *r = x, *end = x + rows*row_stride; r < end; r += row_stride)
-			fft(r, col_stride, invert);
+			fft(r, cols, col_stride, invert);
 	// fft cols
 	if (rows > 1)
 		for(Complex *c = x, *end = x + cols*col_stride; c < end; c += col_stride)
-			fft(c, row_stride, invert);
+			fft(c, rows, row_stride, invert);
 }
 
 /* === E N T R Y P O I N T ================================================= */

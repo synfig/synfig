@@ -53,21 +53,12 @@ public:
 	//! @stride - distance (in items) between two sequential items
 	static void fft(Complex *x, int count, int stride, bool invert);
 
-	//! Fast Furier Transform
-	//! @count should be power of 2
-	static void fft(Complex *x, int count, bool invert)
-		{ fft(x, count, 1, invert); }
-
 	//! Fast Furier Transform 2d
 	//! @rows and @cols should be power of 2
 	//! @col_stride - distance (in items) between two sequential items
 	//! @row_stride - distance (in items) between two sequential rows of items
 	static void fft2d(Complex *x, int rows, int row_stride, int cols, int col_stride, bool invert);
 
-	//! Fast Furier Transform 2d
-	//! @rows and @cols should be power of 2
-	static void fft2d(Complex *x, int rows, int cols, bool invert)
-		{ fft2d(x, rows, cols, cols, 1, invert); }
 };
 
 } /* end namespace software */

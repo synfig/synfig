@@ -184,16 +184,18 @@ software::Blur::fill_pattern_2d_disk(
 		for(int c = 0; c <= sizei[0]; ++c)
 		{
 			Complex &x = pattern[r*row_stride + c*col_stride];
-			//Real r_squared = pos.mag_squared();
+			Real r_squared = pos.mag_squared();
 			/// assume that pattern already contains zeros
-			//if (r_squared <= 1.0)
-			//{
+			if (r_squared <= 1.0)
+			{
 				//if (r_squared <= minr_squared)
 					x = 1.0;
 				//else
 				//	x = (maxr - sqrt(r_squared))*one_div_delta_r;
 				sum += sumk[0]*sumk[1]*x.real();
-			//}
+			}
+			pos[0] += k[0];
+			sumk[0] = 2.0;
 		}
 		sumk[0] = 1.0;
 		sumk[1] = 2.0;
@@ -406,6 +408,7 @@ software::Blur::blur_fft(
 			FFT::fft2d(&surface.front() + channel, rows, row_stride, cols, col_stride, false);
 			multiply_2d(&surface.front() + channel, rows, row_stride, cols, col_stride, &full_pattern.front(), cols, 1);
 			FFT::fft2d(&surface.front() + channel, rows, row_stride, cols, col_stride, true);
+			//add_2d(&surface.front() + channel, rows, row_stride, cols, col_stride, &full_pattern.front(), cols, 1);
 		}
 	}
 	else
