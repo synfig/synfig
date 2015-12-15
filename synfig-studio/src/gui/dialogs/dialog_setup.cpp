@@ -130,15 +130,34 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	Gtk::Notebook *notebook=manage(new class Gtk::Notebook());
 	get_vbox()->pack_start(*notebook);
 
-	//TODO BReak notebook pages fill into functions
 	//TODO replace deprecated Gtk::Table by Gtk::Grid
 
 	// Gamma
+	create_gamma_page(*notebook);
+	// Misc
+	create_misc_page(*notebook);
+	// Document
+	create_document_page(*notebook);
+	// Render
+	create_render_page(*notebook);
+	// Interface
+	create_interface_page(*notebook);
+
+	show_all_children();
+}
+
+Dialog_Setup::~Dialog_Setup()
+{
+}
+
+void
+Dialog_Setup::create_gamma_page(Gtk::Notebook& notebook)
+{
 	Gtk::Table *gamma_table=manage(new Gtk::Table(2,2,false));
 	gamma_table->set_border_width(8);
 	gamma_table->set_row_spacings(6);
 	gamma_table->set_col_spacings(6);
-	notebook->append_page(*gamma_table,_("Gamma"));
+	notebook.append_page(*gamma_table,_("Gamma"));
 
 #ifndef __APPLE__
 	gamma_table->attach(gamma_pattern, 0, 2, 0, 1, Gtk::EXPAND, Gtk::SHRINK|Gtk::FILL, 0, 1);
@@ -166,10 +185,14 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	//gamma_table->attach(red_blue_level_selector, 1, 2, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	//red_blue_level_selector.signal_value_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Setup::on_red_blue_level_change));
 
-	// Misc
+}
+
+void
+Dialog_Setup::create_misc_page(Gtk::Notebook& notebook)
+{
 	Gtk::Table *misc_table=manage(new Gtk::Table(2,2,false));
 	misc_table->set_border_width(8);
-	notebook->append_page(*misc_table,_("Misc."));
+	notebook.append_page(*misc_table,_("Misc."));
 
 	int xpadding(6), ypadding(6);
 
@@ -256,11 +279,16 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	misc_table->attach(toggle_single_threaded, 1, 2, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 #endif
 
+}
 
-	// Document
+void
+Dialog_Setup::create_document_page(Gtk::Notebook& notebook)
+{
+	int xpadding(6), ypadding(6);
+
 	Gtk::Table *document_table = manage(new Gtk::Table(2, 4, false));
 	document_table->set_border_width(8);
-	notebook->append_page(*document_table, _("Document"));
+	notebook.append_page(*document_table, _("Document"));
 
 	// Document - Preferred file name prefix
 	attach_label(document_table, _("New Document filename prefix"), 0, xpadding, ypadding);
@@ -329,12 +357,16 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	attach_label(document_table,_("New Document FPS"), 4, xpadding, ypadding);
 	document_table->attach(*pref_fps_spinbutton, 1, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 	pref_fps_spinbutton->set_tooltip_text(_("Frames per second of the new created document"));
+}
 
+void
+Dialog_Setup::create_render_page(Gtk::Notebook& notebook)
+{
+	int xpadding(6), ypadding(6);
 
-	// Render - Table
 	Gtk::Table *render_table = manage(new Gtk::Table(2, 4, false));
 	render_table->set_border_width(8);
-	notebook->append_page(*render_table, _("Render"));
+	notebook.append_page(*render_table, _("Render"));
 
 	// Render - Image sequence separator
 	attach_label(render_table, _("Image Sequence Separator String"), 0, xpadding, ypadding);
@@ -356,8 +388,11 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 		navigator_renderer_combo.append(i->first, i->second->get_name());
 		workarea_renderer_combo.append(i->first, i->second->get_name());
 	}
+}
 
-	// Interface
+void
+Dialog_Setup::create_interface_page(Gtk::Notebook& notebook)
+{
 	Gtk::Grid *interface_grid=manage(new Gtk::Grid());
 	interface_grid->set_orientation(Gtk::ORIENTATION_HORIZONTAL);
 	//TODO UI Constancy on design : Change it to macro (from settings?)
@@ -366,7 +401,7 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 
 	interface_grid->set_border_width(8);
 	interface_grid->set_column_homogeneous(false);
-	notebook->append_page(*interface_grid,_("Interface"));
+	notebook.append_page(*interface_grid,_("Interface"));
 
 	// Interface - UI Language
 	Glib::ustring lang_names[] = {
@@ -475,12 +510,6 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	attach_label(interface_grid, _("Transformation widget tooltips"), 6);
 	//TODO rename toggle_handle_tooltip_transformation
 	interface_grid->attach(toggle_transformation_handle_tooltip, 1, 6, 1, 1);
-
-	show_all_children();
-}
-
-Dialog_Setup::~Dialog_Setup()
-{
 }
 
 void

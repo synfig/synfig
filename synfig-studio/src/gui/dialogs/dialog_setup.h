@@ -42,6 +42,7 @@
 #include <gtkmm/comboboxtext.h>
 #include <gtkmm/spinbutton.h>
 #include <gtkmm/switch.h>
+#include <gtkmm/notebook.h>
 
 #include <synfig/gamma.h>
 #include <synfig/time.h>
@@ -168,6 +169,12 @@ class Dialog_Setup : public Gtk::Dialog
 	void on_fps_template_combo_change();
 	void on_ui_language_combo_change();
 	void on_time_format_changed();
+
+	void create_gamma_page(Gtk::Notebook& notebook);
+	void create_misc_page(Gtk::Notebook& notebook);
+	void create_document_page(Gtk::Notebook& notebook);
+	void create_render_page(Gtk::Notebook& notebook);
+	void create_interface_page(Gtk::Notebook& notebook);
 
 	GammaPattern gamma_pattern;
 	BlackLevelSelector black_level_selector;
