@@ -46,6 +46,7 @@
 #include <gtkmm/scrolledwindow.h>
 #include <gtkmm/treeview.h>
 #include <gtkmm/treestore.h>
+#include <gtkmm/listviewtext.h>
 
 #include <gui/widgets/widget_time.h>
 
@@ -160,6 +161,25 @@ class Widget_Enum;
 
 class Dialog_Setup : public Gtk::Dialog
 {
+	/* Draft for change resume */
+	enum Change
+	{
+		CHANGE_NONE					=	(0),		//    0
+		CHANGE_UI_LANGUAGE			=	(1 <<  0),	//    1
+		CHANGE_TANGENT				=	(1 <<  1),	//    2
+		CHANGE_RADIUS					=	(1 <<  2),	//    4
+		CHANGE_WIDTH					=	(1 <<  3),	//    8
+		CHANGE_ANGLE					=	(1 <<  4),	//   16
+		CHANGE_VERTEX					=	(1 <<  5),	//   32
+		CHANGE_BONE_RECURSIVE			=	(1 <<  6),	//   64
+		CHANGE_BRUSH_PATH				=	(1 <<  7),	//  128
+		CHANGE_SCALE					=	(1 <<  8),	//  256
+		CHANGE_SCALE_X				=	(1 <<  9),	//  512
+		CHANGE_SCALE_Y				=	(1 << 10),	// 1024
+		CHANGE_SKEW					=	(1 << 11),	// 2048
+
+		CHANGE_ALL					=	(~0)
+	};
 
 	void on_ok_pressed();
 	void on_apply_pressed();
@@ -174,6 +194,9 @@ class Dialog_Setup : public Gtk::Dialog
 	void on_fps_template_combo_change();
 	void on_ui_language_combo_change();
 	void on_time_format_changed();
+
+	void on_brush_path_add_clicked();
+	void on_brush_path_remove_clicked();
 
 	void create_gamma_page(synfig::String name);
 	void create_system_page(synfig::String name);
@@ -228,7 +251,8 @@ class Dialog_Setup : public Gtk::Dialog
 	Gtk::CheckButton toggle_use_dark_theme;
 
 	Gtk::Entry textbox_browser_command;
-	Gtk::Entry textbox_brushes_path;
+	Gtk::Entry textbox_brushe_path;
+	Gtk::ListViewText* listviewtext_brushes_path;
 
 	Gtk::ComboBoxText* size_template_combo;
 	Gtk::ComboBoxText* fps_template_combo;
@@ -252,6 +276,8 @@ class Dialog_Setup : public Gtk::Dialog
 	Gtk::Switch toggle_handle_tooltip_radius;
 	Gtk::Switch toggle_handle_tooltip_transformation;
 	Gtk::Switch toggle_autobackup;
+
+	long pref_modification_flag;
 
 protected:
 	//Signal handlers:

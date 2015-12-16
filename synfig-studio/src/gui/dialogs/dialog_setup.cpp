@@ -83,6 +83,7 @@ using namespace studio;
 
 Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	Dialog(_("Synfig Studio Preferences"),parent,true),
+	listviewtext_brushes_path(manage (new Gtk::ListViewText(1, true, Gtk::SELECTION_SINGLE))),
 	adj_gamma_r(Gtk::Adjustment::create(2.2,0.1,3.0,0.025,0.025,0.025)),
 	adj_gamma_g(Gtk::Adjustment::create(2.2,0.1,3.0,0.025,0.025,0.025)),
 	adj_gamma_b(Gtk::Adjustment::create(2.2,0.1,3.0,0.025,0.025,0.025)),
@@ -401,7 +402,7 @@ Dialog_Setup::create_system_page(synfig::String name)
 	grid->attach(toggle_autobackup, 1, row, 1, 1);
 	toggle_autobackup.set_hexpand(false);
 	toggle_autobackup.set_halign(Gtk::ALIGN_START);
-// TODO use switch	!
+// TODO Autobackup siwtch is disabled for now !
 	toggle_autobackup.set_active(true);
 	toggle_autobackup.set_sensitive(false);
 
@@ -421,9 +422,27 @@ Dialog_Setup::create_system_page(synfig::String name)
 	// http://www.synfig.org/issues/thebuggenie/synfig/issues/765
 	// System - Brushes path
 	attach_label_section(grid, _("Brush Presets Path"), ++row);
-	grid->attach(textbox_brushes_path, 1, row, 1, 1);
-	textbox_brushes_path.set_hexpand(true);
+	grid->attach(textbox_brushe_path, 1, row, 1, 1);
+	textbox_brushe_path.set_hexpand(true);
 
+	grid->attach(*listviewtext_brushes_path, 1, ++row, 1,3);
+	listviewtext_brushes_path->set_headers_visible(false);
+	// Brushes path buttons
+	Gtk::Grid* brush_path_btn_grid(manage (new Gtk::Grid()));
+	Gtk::Button* brush_path_add(manage (new Gtk::Button()));
+	brush_path_add->set_image_from_icon_name("add", Gtk::ICON_SIZE_BUTTON);
+	brush_path_btn_grid->attach(*brush_path_add, 0, 0, 1, 1);
+	brush_path_add->set_halign(Gtk::ALIGN_END);
+	brush_path_add->signal_clicked().connect(
+			sigc::mem_fun(*this, &Dialog_Setup::on_brush_path_add_clicked));
+	Gtk::Button* brush_path_remove(manage (new Gtk::Button()));
+	brush_path_remove->set_image_from_icon_name("remove", Gtk::ICON_SIZE_BUTTON);
+	brush_path_btn_grid->attach(*brush_path_remove, 0, 1, 1, 1);
+	brush_path_remove->set_halign(Gtk::ALIGN_END);
+	brush_path_remove->signal_clicked().connect(
+			sigc::mem_fun(*this, &Dialog_Setup::on_brush_path_remove_clicked));
+	grid->attach(*brush_path_btn_grid, 0, row, 1,1);
+	brush_path_btn_grid->set_halign(Gtk::ALIGN_END);
 	// System - 11 enable_experimental_features
 	//attach_label(grid, _("Experimental features (restart needed)"), ++row);
 	//grid->attach(toggle_enable_experimental_features, 1, row, 1, 1);
@@ -850,10 +869,18 @@ Dialog_Setup::on_apply_pressed()
 	// Set the browser_command textbox
 	App::browser_command=textbox_browser_command.get_text();
 
-	if ( textbox_brushes_path.get_text() == App::get_base_path()+ETL_DIRECTORY_SEPARATOR+"share"+ETL_DIRECTORY_SEPARATOR+"synfig"+ETL_DIRECTORY_SEPARATOR+"brushes" )
+	if (pref_modification_flag&Dialog_Setup::CHANGE_BRUSH_PATH)
+	{
+		if(listviewtext_brushes_path->size())
+		{
+
+		}
+
+	}
+	if ( textbox_brushe_path.get_text() == App::get_base_path()+ETL_DIRECTORY_SEPARATOR+"share"+ETL_DIRECTORY_SEPARATOR+"synfig"+ETL_DIRECTORY_SEPARATOR+"brushes" )
 		App::brushes_path="";
 	else
-		App::brushes_path=textbox_brushes_path.get_text();
+		App::brushes_path=textbox_brushe_path.get_text();
 
 	// Set the preferred file name prefix
 	App::custom_filename_prefix=textbox_custom_filename_prefix.get_text();
@@ -1044,9 +1071,14 @@ Dialog_Setup::refresh()
 	textbox_browser_command.set_text(App::browser_command);
 
 	if (App::brushes_path == "")
-		textbox_brushes_path.set_text(App::get_base_path()+ETL_DIRECTORY_SEPARATOR+"share"+ETL_DIRECTORY_SEPARATOR+"synfig"+ETL_DIRECTORY_SEPARATOR+"brushes");
+		listviewtext_brushes_path->append(App::get_base_path()+ETL_DIRECTORY_SEPARATOR+"share"+ETL_DIRECTORY_SEPARATOR+"synfig"+ETL_DIRECTORY_SEPARATOR+"brushes");
 	else
-		textbox_brushes_path.set_text(App::brushes_path);
+		listviewtext_brushes_path->append(App::brushes_path);
+
+	if (App::brushes_path == "")
+		textbox_brushe_path.set_text(App::get_base_path()+ETL_DIRECTORY_SEPARATOR+"share"+ETL_DIRECTORY_SEPARATOR+"synfig"+ETL_DIRECTORY_SEPARATOR+"brushes");
+	else
+		textbox_brushe_path.set_text(App::brushes_path);
 
 	// Refresh the preferred filename prefix
 	textbox_custom_filename_prefix.set_text(App::custom_filename_prefix);
@@ -1416,4 +1448,41 @@ Dialog_Setup::on_treeviewselection_changed()
 	{
 		notebook->set_current_page((int) ((*iter)[prefs_categories.category_id]));
 	}
+}
+
+void
+Dialog_Setup::on_brush_path_add_clicked()
+{
+	guint row = listviewtext_brushes_path->append(_("New brush path"));
+	//! TODO HERE / select and give edit mode new item
+	//! TODO HERE / limit listviewtext size !
+	//listviewtext_brushes_path->size();
+}
+
+void
+Dialog_Setup::on_brush_path_remove_clicked()
+{
+//    Glib::RefPtr<Gtk::TreeModel> reftm =
+//m_listviewtextAvailable->get_model();
+//    Glib::RefPtr<Gtk::TreeStore> refStore =
+//Glib::RefPtr<Gtk::TreeStore>::cast_dynamic(reftm);
+//    if(refStore){
+//        std::cout << __FILE__ << '[' << __LINE__ << "]  it's a
+//Gtk::TreeStore" << std::endl;
+//        refStore->erase(sel_it);
+//        return;
+//    }
+//    Glib::RefPtr<Gtk::ListStore> refLStore =
+//Glib::RefPtr<Gtk::ListStore>::cast_dynamic(reftm);
+//    if(refLStore){
+//        std::cout << __FILE__ << '[' << __LINE__ << "]  it's a
+//Gtk::ListStore" << std::endl;
+//        refLStore->erase(sel_it);
+//    }
+//
+//
+//That works and my model turns out to be a Gtk::ListStore I found some
+//code here
+
+	//https://mail.gnome.org/archives/gtkmm-list/2013-May/msg00024.html
 }
