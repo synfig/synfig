@@ -255,9 +255,7 @@ class Dialog_Setup : public Gtk::Dialog
 
 protected:
 	//Signal handlers:
-	void on_treeview_row_activated(const Gtk::TreeModel::Path& path, Gtk::TreeViewColumn* column);
-
-
+	void on_treeviewselection_changed ();
 
 	//Tree model columns:
 	class PrefsCategories : public Gtk::TreeModel::ColumnRecord

@@ -170,7 +170,7 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 		// WARNING FIXED ORDER : the page added to notebook same has treeview (see create_xxxx_page() upper)
 		prefs_categories_reftreemodel = Gtk::TreeStore::create(prefs_categories);
 		prefs_categories_treeview.set_model(prefs_categories_reftreemodel);
-		// TODO treeview single click
+
 		Gtk::TreeModel::Row row = *(prefs_categories_reftreemodel->append());
 		row[prefs_categories.category_id] = 0;
 		row[prefs_categories.category_name] = interface_str;
@@ -199,9 +199,8 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 		prefs_categories_treeview.append_column(_("Category"), prefs_categories.category_name);
 		prefs_categories_treeview.expand_all();
 
-		//prefs_categories_treeview.signal_
-		prefs_categories_treeview.signal_row_activated().connect(sigc::mem_fun(*this,
-				&Dialog_Setup::on_treeview_row_activated));
+		prefs_categories_treeview.get_selection()->signal_changed().connect(
+				sigc::mem_fun(*this, &Dialog_Setup::on_treeviewselection_changed));
 
 		prefs_categories_scrolledwindow.add(prefs_categories_treeview);
 		prefs_categories_scrolledwindow.set_size_request(-1, 80);
@@ -474,7 +473,7 @@ Dialog_Setup::create_document_page(synfig::String name)
 //	grid->attach(*label1, 5, ++row, 1,1);
 //	label1->set_hexpand(true);
 //
-	// TODO add
+	// TODO add label with some FPS description ( ex : 23.976 FPS->NTSC television , 25 PAL, 48->Film Industrie, 30->cinematic-like appearance ...)
 	// Document - New Document FPS
 	pref_fps_spinbutton = Gtk::manage(new Gtk::SpinButton(adj_pref_fps, 1, 3));
 	attach_label(grid,_("FPS"), ++row);
@@ -502,7 +501,7 @@ Dialog_Setup::create_document_page(synfig::String name)
 
 	//Document - Size
 	attach_label(grid, _("Size"),++row);
-
+	// TODO chain icon for ratio / ratio indication (see Widget_RendDesc)
 	// Document - New Document X size
 	Gtk::Label* label = attach_label(grid,_("Width"), ++row, 1);
 	label->set_alignment(Gtk::ALIGN_END, Gtk::ALIGN_CENTER);
@@ -1375,8 +1374,6 @@ RedBlueLevelSelector::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 	return true;
 }
 
-
-
 bool
 RedBlueLevelSelector::on_event(GdkEvent *event)
 {
@@ -1412,11 +1409,11 @@ RedBlueLevelSelector::on_event(GdkEvent *event)
 	return false;
 }
 
-void Dialog_Setup::on_treeview_row_activated(const Gtk::TreeModel::Path& path, Gtk::TreeViewColumn* /* column */)
+void
+Dialog_Setup::on_treeviewselection_changed()
 {
-	Gtk::TreeModel::iterator iter = prefs_categories_reftreemodel->get_iter(path);
-	if(iter)
+	if(const Gtk::TreeModel::iterator iter = prefs_categories_treeview.get_selection()->get_selected())
 	{
-		notebook->set_current_page((int)((*iter)[prefs_categories.category_id]));
+		notebook->set_current_page((int) ((*iter)[prefs_categories.category_id]));
 	}
 }
