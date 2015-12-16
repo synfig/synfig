@@ -189,7 +189,8 @@ class Dialog_Setup : public Gtk::Dialog
 	//! \Brief Add a single label (col 0) at specified row
 	void attach_label(Gtk::Grid *grid, synfig::String str, guint row);
 	//! \Brief Add a single label at specified row and col
-	void attach_label(Gtk::Grid *grid, synfig::String str, guint row, guint col);
+	//! \return Gtk::Label* for further change
+	Gtk::Label* attach_label(Gtk::Grid *grid, synfig::String str, guint row, guint col, bool endstring=true);
 
 	Gtk::Notebook *notebook;
 	// Style for title(s)

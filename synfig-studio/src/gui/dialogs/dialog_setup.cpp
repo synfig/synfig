@@ -118,6 +118,7 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 
 	// Style for title and section
 	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
+	//! Nota section_attrlist also use for BOLDING " X " string in document page
 	section_attrlist.insert(attr);
 	title_attrlist.insert(attr);
 	Pango::AttrInt pango_size(Pango::Attribute::create_attr_size(Pango::SCALE*26));
@@ -148,7 +149,7 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 			render_str(_("Render")),
 			system_str(_("System")),
 			gamma_str(_("Gamma"));
-	// FIXED ORDER : the page added to notebook same has treeview
+	// WARNING FIXED ORDER : the page added to notebook same has treeview
 	// Interface
 	create_interface_page(interface_str);
 	// Document
@@ -165,44 +166,47 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	/*******************/
 	/* Categories List */
 	/*******************/
-	// FIXED ORDER : the page added to notebook same has treeview (see create_xxxx_page() upper)
-	prefs_categories_reftreemodel = Gtk::TreeStore::create(prefs_categories);
-	prefs_categories_treeview.set_model(prefs_categories_reftreemodel);
-	// TODO treeview single click
-	Gtk::TreeModel::Row row = *(prefs_categories_reftreemodel->append());
-	row[prefs_categories.category_id] = 0;
-	row[prefs_categories.category_name] = interface_str;
+	{
+		// WARNING FIXED ORDER : the page added to notebook same has treeview (see create_xxxx_page() upper)
+		prefs_categories_reftreemodel = Gtk::TreeStore::create(prefs_categories);
+		prefs_categories_treeview.set_model(prefs_categories_reftreemodel);
+		// TODO treeview single click
+		Gtk::TreeModel::Row row = *(prefs_categories_reftreemodel->append());
+		row[prefs_categories.category_id] = 0;
+		row[prefs_categories.category_name] = interface_str;
 
-	row = *(prefs_categories_reftreemodel->append());
-	row[prefs_categories.category_id] = 1;
-	row[prefs_categories.category_name] = document_str;
+		row = *(prefs_categories_reftreemodel->append());
+		row[prefs_categories.category_id] = 1;
+		row[prefs_categories.category_name] = document_str;
 
-	row = *(prefs_categories_reftreemodel->append());
-	row[prefs_categories.category_id] = 2;
-	row[prefs_categories.category_name] = editing_str;
+		row = *(prefs_categories_reftreemodel->append());
+		row[prefs_categories.category_id] = 2;
+		row[prefs_categories.category_name] = editing_str;
 
-	row = *(prefs_categories_reftreemodel->append());
-	row[prefs_categories.category_id] = 3;
-	row[prefs_categories.category_name] = render_str;
+		row = *(prefs_categories_reftreemodel->append());
+		row[prefs_categories.category_id] = 3;
+		row[prefs_categories.category_name] = render_str;
 
-	row = *(prefs_categories_reftreemodel->append());
-	row[prefs_categories.category_id] = 4;
-	row[prefs_categories.category_name] = system_str;
+		row = *(prefs_categories_reftreemodel->append());
+		row[prefs_categories.category_id] = 4;
+		row[prefs_categories.category_name] = system_str;
 
-	Gtk::TreeModel::Row childrow = *(prefs_categories_reftreemodel->append(row.children()));
-	childrow[prefs_categories.category_id] = 5;
-	childrow[prefs_categories.category_name] = gamma_str;
+		Gtk::TreeModel::Row childrow = *(prefs_categories_reftreemodel->append(row.children()));
+		childrow[prefs_categories.category_id] = 5;
+		childrow[prefs_categories.category_name] = gamma_str;
 
-	prefs_categories_treeview.set_headers_visible(false);
-	prefs_categories_treeview.append_column(_("Category"), prefs_categories.category_name);
-	prefs_categories_treeview.expand_all();
+		prefs_categories_treeview.set_headers_visible(false);
+		prefs_categories_treeview.append_column(_("Category"), prefs_categories.category_name);
+		prefs_categories_treeview.expand_all();
 
-	prefs_categories_treeview.signal_row_activated().connect(sigc::mem_fun(*this,
-			&Dialog_Setup::on_treeview_row_activated));
+		//prefs_categories_treeview.signal_
+		prefs_categories_treeview.signal_row_activated().connect(sigc::mem_fun(*this,
+				&Dialog_Setup::on_treeview_row_activated));
 
-	prefs_categories_scrolledwindow.add(prefs_categories_treeview);
-	prefs_categories_scrolledwindow.set_size_request(-1, 80);
-	prefs_categories_scrolledwindow.set_policy(Gtk::POLICY_NEVER, Gtk::POLICY_AUTOMATIC);
+		prefs_categories_scrolledwindow.add(prefs_categories_treeview);
+		prefs_categories_scrolledwindow.set_size_request(-1, 80);
+		prefs_categories_scrolledwindow.set_policy(Gtk::POLICY_NEVER, Gtk::POLICY_AUTOMATIC);
+	}
 
 	main_grid.attach(prefs_categories_scrolledwindow, 0, 0, 1 ,1);
 	notebook->show_all();
@@ -251,13 +255,14 @@ Dialog_Setup::attach_label_title(Gtk::Grid *grid, synfig::String str)
 	grid->attach(*box, 0, 0, 1, 1);
 }
 
-void
-Dialog_Setup::attach_label(Gtk::Grid *grid, synfig::String str, guint row, guint col)
+Gtk::Label*
+Dialog_Setup::attach_label(Gtk::Grid *grid, synfig::String str, guint row, guint col, bool endstring)
 {
-	Gtk::Label* label(manage(new Gtk::Label((str + ":").c_str())));
+	str = endstring?str+":":str;
+	Gtk::Label* label(manage(new Gtk::Label(str)));
 	label->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
-	label->set_margin_start(10);
 	grid->attach(*label, col, row, 1, 1);
+	return label;
 }
 
 void
@@ -413,6 +418,8 @@ Dialog_Setup::create_system_page(synfig::String name)
 	grid->attach(textbox_browser_command, 1, row, 1, 1);
 	textbox_browser_command.set_hexpand(true);
 
+	// TODO full featured Gtk List View, with Add/Remove buttons.
+	// http://www.synfig.org/issues/thebuggenie/synfig/issues/765
 	// System - Brushes path
 	attach_label_section(grid, _("Brush Presets Path"), ++row);
 	grid->attach(textbox_brushes_path, 1, row, 1, 1);
@@ -459,13 +466,15 @@ Dialog_Setup::create_document_page(synfig::String name)
 	grid->attach(textbox_custom_filename_prefix, 1, row, 6, 1);
 	textbox_custom_filename_prefix.set_tooltip_text( _("File name prefix for the new created document"));
 	textbox_custom_filename_prefix.set_hexpand(true);
-
-	//Document - Label for predefined fps
+//
+//  commented during redesign 15/12
+//	Document - Label for predefined fps
 //	Gtk::Label* label1(manage(new Gtk::Label(_("Predefined FPS:"))));
 //	label1->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 //	grid->attach(*label1, 5, ++row, 1,1);
 //	label1->set_hexpand(true);
-
+//
+	// TODO add
 	// Document - New Document FPS
 	pref_fps_spinbutton = Gtk::manage(new Gtk::SpinButton(adj_pref_fps, 1, 3));
 	attach_label(grid,_("FPS"), ++row);
@@ -491,40 +500,34 @@ Dialog_Setup::create_document_page(synfig::String name)
 	for (int i=0; i<8; i++)
 		fps_template_combo->prepend(strprintf("%5.3f", f[i]));
 
+	//Document - Size
 	attach_label(grid, _("Size"),++row);
-	// Document - New Document X size
-	synfig::String labelstr(_("Widht"));
-	Gtk::Label* label(manage(new Gtk::Label(labelstr + ":")));
-	label->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
-	grid->attach(*label, 1, ++row, 1, 1);
 
+	// Document - New Document X size
+	Gtk::Label* label = attach_label(grid,_("Width"), ++row, 1);
+	label->set_alignment(Gtk::ALIGN_END, Gtk::ALIGN_CENTER);
 	pref_x_size_spinbutton = Gtk::manage(new Gtk::SpinButton(adj_pref_x_size, 1, 0));
 	grid->attach(*pref_x_size_spinbutton, 2, row, 1, 1);
 	pref_x_size_spinbutton->set_tooltip_text(_("Width in pixels of the new created document"));
 	pref_x_size_spinbutton->set_hexpand(true);
 //
+//  commented during redesign 15/12
 //	//Document - Label for predefined sizes of canvases.
 //	Gtk::Label* label(manage(new Gtk::Label(_("Predefined Resolutions:"))));
 //	label->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 //	grid->attach(*label, 3, row, 1, 1);
 //	label->set_hexpand(true);
 //
-
-	//TODO X BOLD
-	labelstr = " X ";
-	label = manage(new Gtk::Label(labelstr));
-	label->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
-	grid->attach(*label, 3, row, 1, 1);
+	label = attach_label(grid, "X", row, 3, false);// "X" stand for multiply operation
+	// NOTA : Use of "section" attributes for BOLDING
+	label->set_attributes(section_attrlist);
+	label->set_alignment(Gtk::ALIGN_CENTER, Gtk::ALIGN_CENTER);
 
 	// Document - New Document Y size
-	labelstr=_("Height");
-	label = manage(new Gtk::Label(labelstr + ":"));
-	label->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
-	grid->attach(*label, 4, row, 1, 1);
-
+	attach_label(grid,_("Height"), row, 4);
 	pref_y_size_spinbutton = Gtk::manage(new Gtk::SpinButton(adj_pref_y_size, 1, 0));
 	grid->attach(*pref_y_size_spinbutton, 5, row, 1, 1);
-	pref_y_size_spinbutton->set_tooltip_text(_("High in pixels of the new created document"));
+	pref_y_size_spinbutton->set_tooltip_text(_("Height in pixels of the new created document"));
 	pref_y_size_spinbutton->set_hexpand(true);
 
 	//Document - Template for predefined sizes of canvases.
@@ -573,41 +576,39 @@ Dialog_Setup::create_editing_page(synfig::String name)
 	int row(1);
 	// Editing Imported image section
 	attach_label_section(grid, _("Imported Image"), row);
+
 	// Editing - Scaling New Imported Images to Fit Canvas
 	grid->attach(toggle_resize_imported_images, 0, ++row, 1, 1);
-	toggle_resize_imported_images.set_tooltip_text(_("Scaling new imported image to fix canvas"));
+	toggle_resize_imported_images.set_tooltip_text(_("When you import images, check this option if you want they fit the Canvas size."));
 	toggle_resize_imported_images.set_halign(Gtk::ALIGN_END);
 	toggle_resize_imported_images.set_hexpand(false);
-
-	synfig::String labelstr(_("Scale to fit canvas"));
-	Gtk::Label* label(manage(new Gtk::Label(labelstr)));
+	Gtk::Label* label = attach_label(grid,_("Scale to fit canvas"), row, 1, false);
 	label->set_hexpand(true);
-	label->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
-	grid->attach(*label, 1, row, 1, 1);
 
 	// Editing Other section
 	attach_label_section(grid, _("Other"), ++row);
+
 	// Editing - Visually Linear Color Selection
 	grid->attach(toggle_use_colorspace_gamma, 0, ++row, 1, 1);
 	toggle_use_colorspace_gamma.set_halign(Gtk::ALIGN_END);
 	toggle_use_colorspace_gamma.set_hexpand(false);
-
-	labelstr = _("Visually linear color selection");
-	label = manage(new Gtk::Label(labelstr));
-	label->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	toggle_use_colorspace_gamma.set_tooltip_text(_("Color output is non-linear, if 0 \
+is black and 100 is white, then 50 is only about 22 percent of the brightness \
+of white, rather than 50% as you might expect. \
+Option (ON by default) to make sure that if you ask for 50, you get 50% of the brightness of white."));
+	label = attach_label(grid,_("Visually linear color selection"), row, 1, false);
 	label->set_hexpand(true);
-	grid->attach(*label, 1, row, 1, 1);
 
 	// Editing - Restrict Really-valued Handles to Top Right Quadrant
 	grid->attach(toggle_restrict_radius_ducks, 0, ++row, 1, 1);
 	toggle_restrict_radius_ducks.set_halign(Gtk::ALIGN_END);
 	toggle_restrict_radius_ducks.set_hexpand(false);
-
-	labelstr = _("Restrict really-valued handles to top right quadrant");
-	label = manage(new Gtk::Label(labelstr));
-	label->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	toggle_restrict_radius_ducks.set_tooltip_text("Restrict the position of the handle \
+(especially for radius) to be in the top right quadrant of the 2D space. Allow to set \
+the real value to any number and also easily reach the value of 0.0 just \
+dragging the handle to the left bottom part of your 2D space.");
+	label = attach_label(grid,_("Restrict really-valued handles to top right quadrant"), row, 1, false);
 	label->set_hexpand(true);
-	grid->attach(*label, 1, row, 1, 1);
 }
 
 void
