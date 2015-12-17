@@ -33,10 +33,12 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-
+#include "app.h"
+#include "mainwindow.h"
+#include "dialogs/dialog_setup.h"
 #include <gtkmm/scale.h>
 #include <gtkmm/eventbox.h>
+#include <gtkmm/filechooserdialog.h>
 #include "widgets/widget_enum.h"
 #include "autorecover.h"
 #include "duck.h"
@@ -48,6 +50,8 @@
 
 #include <synfig/rendering/renderer.h>
 
+#include <synfigapp/main.h>
+#include <synfigapp/settings.h>
 #include <synfigapp/canvasinterface.h>
 
 #include "dialogs/dialog_setup.h"
@@ -84,7 +88,7 @@ using namespace studio;
 
 Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	Dialog(_("Synfig Studio Preferences"),parent,true),
-	listviewtext_brushes_path(manage (new Gtk::ListViewText(3, true, Gtk::SELECTION_BROWSE))),
+	listviewtext_brushes_path(manage (new Gtk::ListViewText(1, true, Gtk::SELECTION_BROWSE))),
 	adj_gamma_r(Gtk::Adjustment::create(2.2,0.1,3.0,0.025,0.025,0.025)),
 	adj_gamma_g(Gtk::Adjustment::create(2.2,0.1,3.0,0.025,0.025,0.025)),
 	adj_gamma_b(Gtk::Adjustment::create(2.2,0.1,3.0,0.025,0.025,0.025)),
@@ -216,6 +220,9 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 
 	main_grid.attach(*notebook, 1, 0, 1, 1);
 	main_grid.set_border_width(6);
+
+	//! TODO create a warning zone to push message on rare events (like no brush path, zero fps ...)
+	//! this warning zone could also hold normal message like : "x change to come"  (and a link to "Changes summary" page)
 
 	get_vbox()->pack_start(main_grid);
 	get_vbox()->set_border_width(12);
@@ -425,15 +432,10 @@ Dialog_Setup::create_system_page(synfig::String name)
 	// http://www.synfig.org/issues/thebuggenie/synfig/issues/765
 	// System - Brushes path
 	{
+		attach_label_section(grid, _("Brush Presets Path"), ++row);
 		// TODO Check if Gtk::ListStore::create need something like manage
 		brushpath_refmodel = Gtk::ListStore::create(prefs_brushpath);
-//		brushpath_refmodel = manage(new Gtk::ListStore(1));
-		brushpath_refmodel->set_column_types(prefs_brushpath);
 		listviewtext_brushes_path->set_model(brushpath_refmodel);
-//		listviewtext_brushes_path->append_column("Messages", prefs_brushpath.path);
-		attach_label_section(grid, _("Brush Presets Path"), ++row);
-//	grid->attach(textbox_brushe_path, 1, row, 1, 1);
-//	textbox_brushe_path.set_vexpand(false);
 
 		Gtk::ScrolledWindow* scroll(manage (new Gtk::ScrolledWindow()));
 		scroll->add(*listviewtext_brushes_path);
@@ -1094,8 +1096,8 @@ Dialog_Setup::refresh()
 	else
 		(*it)[prefs_brushpath.path]=App::brushes_path;
 	// Select the first entry
-	listviewtext_brushes_path->get_selection()->select(
-			listviewtext_brushes_path->get_model()->children().begin());
+//	listviewtext_brushes_path->get_selection()->select(
+//			listviewtext_brushes_path->get_model()->children().begin());
 
 	if (App::brushes_path == "")
 		textbox_brushe_path.set_text(App::get_base_path()+ETL_DIRECTORY_SEPARATOR+"share"+ETL_DIRECTORY_SEPARATOR+"synfig"+ETL_DIRECTORY_SEPARATOR+"brushes");
@@ -1476,43 +1478,53 @@ void
 Dialog_Setup::on_brush_path_add_clicked()
 {
 
-//	guint row = listviewtext_brushes_path->append(_("New brush path"), it);
-	Glib::RefPtr<Gtk::ListStore> liststore = Glib::RefPtr<Gtk::ListStore>::cast_dynamic(
-			listviewtext_brushes_path->get_model());
-	Gtk::TreeIter it(liststore->append());
-	(*it)[prefs_brushpath.path]=_("New brush path");
-//	Gtk::TreeNodeChildren children(->children());
-//	Gtk::TreeIter it(model->children().end());
+	bool newpath(false);
+	synfig::String dir_name, dialog_title(_("Select a new path for brush"));
+	//! TODO Make it app member
+	{
+		synfig::String prev_path;
+		synfigapp::Settings settings;
+		if(settings.get_value(MISC_DIR_PREFERENCE, prev_path))
+			prev_path = ".";
 
-	listviewtext_brushes_path->scroll_to_row(listviewtext_brushes_path->get_model()->get_path(*it));
-	//! TODO HERE / select and give edit mode new item
-	//listviewtext_brushes_path->size();
+		prev_path = absolute_path(prev_path);
+
+		Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(*App::main_window,
+					dialog_title, Gtk::FILE_CHOOSER_ACTION_SELECT_FOLDER);
+
+		dialog->set_transient_for(*this);
+		dialog->set_current_folder(prev_path);
+		dialog->add_button(_("Cancel"), Gtk::RESPONSE_CANCEL)->set_image_from_icon_name("gtk-cancel", Gtk::ICON_SIZE_BUTTON);
+		dialog->add_button(_("Open"),   Gtk::RESPONSE_ACCEPT)->set_image_from_icon_name("gtk-open", Gtk::ICON_SIZE_BUTTON);
+
+		if(dialog->run() == GTK_RESPONSE_ACCEPT)
+		{
+			dir_name = dialog->get_filename();
+			newpath = true;
+			//delete dialog;
+			//return true;
+		}
+		delete dialog;
+	}
+
+	if(newpath)
+	{
+		// add the new path
+		Glib::RefPtr<Gtk::ListStore> liststore = Glib::RefPtr<Gtk::ListStore>::cast_dynamic(
+				listviewtext_brushes_path->get_model());
+		Gtk::TreeIter it(liststore->append());
+		(*it)[prefs_brushpath.path]=dir_name;
+		// high light it in the brush path list
+		listviewtext_brushes_path->scroll_to_row(listviewtext_brushes_path->get_model()->get_path(*it));
+		listviewtext_brushes_path->get_selection()->select(listviewtext_brushes_path->get_model()->get_path(*it));
+	}
 }
 
 void
 Dialog_Setup::on_brush_path_remove_clicked()
 {
-//    Glib::RefPtr<Gtk::TreeModel> reftm =
-//m_listviewtextAvailable->get_model();
-//    Glib::RefPtr<Gtk::TreeStore> refStore =
-//Glib::RefPtr<Gtk::TreeStore>::cast_dynamic(reftm);
-//    if(refStore){
-//        std::cout << __FILE__ << '[' << __LINE__ << "]  it's a
-//Gtk::TreeStore" << std::endl;
-//        refStore->erase(sel_it);
-//        return;
-//    }
-//    Glib::RefPtr<Gtk::ListStore> refLStore =
-//Glib::RefPtr<Gtk::ListStore>::cast_dynamic(reftm);
-//    if(refLStore){
-//        std::cout << __FILE__ << '[' << __LINE__ << "]  it's a
-//Gtk::ListStore" << std::endl;
-//        refLStore->erase(sel_it);
-//    }
-//
-//
-//That works and my model turns out to be a Gtk::ListStore I found some
-//code here
+	Glib::RefPtr<Gtk::ListStore> refLStore = Glib::RefPtr<Gtk::ListStore>::cast_dynamic(listviewtext_brushes_path->get_model());
+	refLStore->erase(listviewtext_brushes_path->get_selection()->get_selected());
 
-	//https://mail.gnome.org/archives/gtkmm-list/2013-May/msg00024.html
+	//! TODO if list size == 0: push warning to warning zone
 }
