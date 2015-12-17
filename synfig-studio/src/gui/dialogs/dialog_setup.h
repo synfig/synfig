@@ -181,10 +181,12 @@ class Dialog_Setup : public Gtk::Dialog
 		CHANGE_ALL					=	(~0)
 	};
 
+	//Signal handlers dialog
 	void on_ok_pressed();
 	void on_apply_pressed();
 	void on_restore_pressed();
-
+	void on_treeviewselection_changed ();
+	//Signal handlers pages
 	void on_gamma_r_change();
 	void on_gamma_g_change();
 	void on_gamma_b_change();
@@ -198,13 +200,8 @@ class Dialog_Setup : public Gtk::Dialog
 	void on_brush_path_add_clicked();
 	void on_brush_path_remove_clicked();
 
-	void create_gamma_page(synfig::String name);
-	void create_system_page(synfig::String name);
-	void create_document_page(synfig::String name);
-	void create_render_page(synfig::String name);
-	void create_interface_page(synfig::String name);
-	void create_editing_page(synfig::String name);
-
+	// TODO Move design function to class to further global use (make ui consistant and .rc)
+	//User Interface Design
 	//! \Brief Set the main title of the page
 	void attach_label_title(Gtk::Grid *grid, synfig::String str);
 	//! \Brief Add a new section (col 0) at specified row
@@ -215,11 +212,25 @@ class Dialog_Setup : public Gtk::Dialog
 	//! \return Gtk::Label* for further change
 	Gtk::Label* attach_label(Gtk::Grid *grid, synfig::String str, guint row, guint col, bool endstring=true);
 
+	void create_gamma_page(synfig::String name);
+	void create_system_page(synfig::String name);
+	void create_document_page(synfig::String name);
+	void create_render_page(synfig::String name);
+	void create_interface_page(synfig::String name);
+	void create_editing_page(synfig::String name);
+
+	//Child widgets:
 	Gtk::Notebook *notebook;
+	Gtk::Grid main_grid;
+	Gtk::ScrolledWindow prefs_categories_scrolledwindow;
+	Gtk::TreeView prefs_categories_treeview;
+	Glib::RefPtr<Gtk::TreeStore> prefs_categories_reftreemodel;
+
 	// Style for title(s)
 	Pango::AttrList title_attrlist;
 	Pango::AttrList section_attrlist;
 
+	// Widget for pages
 	GammaPattern gamma_pattern;
 	BlackLevelSelector black_level_selector;
 	RedBlueLevelSelector red_blue_level_selector;
@@ -253,6 +264,7 @@ class Dialog_Setup : public Gtk::Dialog
 	Gtk::Entry textbox_browser_command;
 	Gtk::Entry textbox_brushe_path;
 	Gtk::ListViewText* listviewtext_brushes_path;
+	Glib::RefPtr<Gtk::ListStore> brushpath_refmodel;
 
 	Gtk::ComboBoxText* size_template_combo;
 	Gtk::ComboBoxText* fps_template_combo;
@@ -279,11 +291,8 @@ class Dialog_Setup : public Gtk::Dialog
 
 	long pref_modification_flag;
 
-protected:
-	//Signal handlers:
-	void on_treeviewselection_changed ();
-
-	//Tree model columns:
+	// TODO Move treeview + title dialog style to upper class for global use and consistancy
+	//Preferences Categories Tree model columns:
 	class PrefsCategories : public Gtk::TreeModel::ColumnRecord
 	{
 		public:
@@ -293,15 +302,16 @@ protected:
 		Gtk::TreeModelColumn<int> category_id;
 		Gtk::TreeModelColumn<Glib::ustring> category_name;
 	};
-
 	PrefsCategories prefs_categories;
 
-	//Child widgets:
-	Gtk::Grid main_grid;
-
-	Gtk::ScrolledWindow prefs_categories_scrolledwindow;
-	Gtk::TreeView prefs_categories_treeview;
-	Glib::RefPtr<Gtk::TreeStore> prefs_categories_reftreemodel;
+	//Brush path Tree model columns:
+	class PrefsBrushPath : public Gtk::TreeModel::ColumnRecord
+	{
+		public:
+		PrefsBrushPath() { add(path); }
+		Gtk::TreeModelColumn<Glib::ustring> path;
+	};
+	PrefsBrushPath prefs_brushpath;
 
 public:
 

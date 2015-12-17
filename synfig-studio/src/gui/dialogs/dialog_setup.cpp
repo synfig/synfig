@@ -67,7 +67,8 @@ using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
-
+// TODO Group All HARDCODED user interface information somewhere "global"
+// TODO All UI info from .rc
 #define DIALOG_PREFERENCE_UI_INIT_GRID(grid) 					\
 		grid->set_orientation(Gtk::ORIENTATION_HORIZONTAL);		\
 		grid->set_row_spacing(6);								\
@@ -83,7 +84,7 @@ using namespace studio;
 
 Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	Dialog(_("Synfig Studio Preferences"),parent,true),
-	listviewtext_brushes_path(manage (new Gtk::ListViewText(1, true, Gtk::SELECTION_SINGLE))),
+	listviewtext_brushes_path(manage (new Gtk::ListViewText(3, true, Gtk::SELECTION_BROWSE))),
 	adj_gamma_r(Gtk::Adjustment::create(2.2,0.1,3.0,0.025,0.025,0.025)),
 	adj_gamma_g(Gtk::Adjustment::create(2.2,0.1,3.0,0.025,0.025,0.025)),
 	adj_gamma_b(Gtk::Adjustment::create(2.2,0.1,3.0,0.025,0.025,0.025)),
@@ -117,6 +118,8 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	add_action_widget(*ok_button,2);
 	ok_button->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_Setup::on_ok_pressed));
 
+	//! TODO Make global this design to being used else where in other dialogs
+	//! TODO UI design information to .rc
 	// Style for title and section
 	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
 	//! Nota section_attrlist also use for BOLDING " X " string in document page
@@ -421,28 +424,40 @@ Dialog_Setup::create_system_page(synfig::String name)
 	// TODO full featured Gtk List View, with Add/Remove buttons.
 	// http://www.synfig.org/issues/thebuggenie/synfig/issues/765
 	// System - Brushes path
-	attach_label_section(grid, _("Brush Presets Path"), ++row);
-	grid->attach(textbox_brushe_path, 1, row, 1, 1);
-	textbox_brushe_path.set_hexpand(true);
+	{
+		// TODO Check if Gtk::ListStore::create need something like manage
+		brushpath_refmodel = Gtk::ListStore::create(prefs_brushpath);
+//		brushpath_refmodel = manage(new Gtk::ListStore(1));
+		brushpath_refmodel->set_column_types(prefs_brushpath);
+		listviewtext_brushes_path->set_model(brushpath_refmodel);
+//		listviewtext_brushes_path->append_column("Messages", prefs_brushpath.path);
+		attach_label_section(grid, _("Brush Presets Path"), ++row);
+//	grid->attach(textbox_brushe_path, 1, row, 1, 1);
+//	textbox_brushe_path.set_vexpand(false);
 
-	grid->attach(*listviewtext_brushes_path, 1, ++row, 1,3);
-	listviewtext_brushes_path->set_headers_visible(false);
-	// Brushes path buttons
-	Gtk::Grid* brush_path_btn_grid(manage (new Gtk::Grid()));
-	Gtk::Button* brush_path_add(manage (new Gtk::Button()));
-	brush_path_add->set_image_from_icon_name("add", Gtk::ICON_SIZE_BUTTON);
-	brush_path_btn_grid->attach(*brush_path_add, 0, 0, 1, 1);
-	brush_path_add->set_halign(Gtk::ALIGN_END);
-	brush_path_add->signal_clicked().connect(
-			sigc::mem_fun(*this, &Dialog_Setup::on_brush_path_add_clicked));
-	Gtk::Button* brush_path_remove(manage (new Gtk::Button()));
-	brush_path_remove->set_image_from_icon_name("remove", Gtk::ICON_SIZE_BUTTON);
-	brush_path_btn_grid->attach(*brush_path_remove, 0, 1, 1, 1);
-	brush_path_remove->set_halign(Gtk::ALIGN_END);
-	brush_path_remove->signal_clicked().connect(
-			sigc::mem_fun(*this, &Dialog_Setup::on_brush_path_remove_clicked));
-	grid->attach(*brush_path_btn_grid, 0, row, 1,1);
-	brush_path_btn_grid->set_halign(Gtk::ALIGN_END);
+		Gtk::ScrolledWindow* scroll(manage (new Gtk::ScrolledWindow()));
+		scroll->add(*listviewtext_brushes_path);
+//	listviewtext_brushes_path->
+		listviewtext_brushes_path->set_headers_visible(false);
+		grid->attach(*scroll, 1, row, 1,3);
+
+		// Brushes path buttons
+		Gtk::Grid* brush_path_btn_grid(manage (new Gtk::Grid()));
+		Gtk::Button* brush_path_add(manage (new Gtk::Button()));
+		brush_path_add->set_image_from_icon_name("add", Gtk::ICON_SIZE_BUTTON);
+		brush_path_btn_grid->attach(*brush_path_add, 0, 0, 1, 1);
+		brush_path_add->set_halign(Gtk::ALIGN_END);
+		brush_path_add->signal_clicked().connect(
+				sigc::mem_fun(*this, &Dialog_Setup::on_brush_path_add_clicked));
+		Gtk::Button* brush_path_remove(manage (new Gtk::Button()));
+		brush_path_remove->set_image_from_icon_name("remove", Gtk::ICON_SIZE_BUTTON);
+		brush_path_btn_grid->attach(*brush_path_remove, 0, 1, 1, 1);
+		brush_path_remove->set_halign(Gtk::ALIGN_END);
+		brush_path_remove->signal_clicked().connect(
+				sigc::mem_fun(*this, &Dialog_Setup::on_brush_path_remove_clicked));
+		grid->attach(*brush_path_btn_grid, 0, ++row, 1,1);
+		brush_path_btn_grid->set_halign(Gtk::ALIGN_END);
+	}
 	// System - 11 enable_experimental_features
 	//attach_label(grid, _("Experimental features (restart needed)"), ++row);
 	//grid->attach(toggle_enable_experimental_features, 1, row, 1, 1);
@@ -869,6 +884,7 @@ Dialog_Setup::on_apply_pressed()
 	// Set the browser_command textbox
 	App::browser_command=textbox_browser_command.get_text();
 
+	//! TODO Create Change mecanism has Class for being used elsewhere
 	if (pref_modification_flag&Dialog_Setup::CHANGE_BRUSH_PATH)
 	{
 		if(listviewtext_brushes_path->size())
@@ -1070,10 +1086,16 @@ Dialog_Setup::refresh()
 	// Refresh the browser_command textbox
 	textbox_browser_command.set_text(App::browser_command);
 
+	Glib::RefPtr<Gtk::ListStore> liststore = Glib::RefPtr<Gtk::ListStore>::cast_dynamic(
+			listviewtext_brushes_path->get_model());
+	Gtk::TreeIter it(liststore->append());
 	if (App::brushes_path == "")
-		listviewtext_brushes_path->append(App::get_base_path()+ETL_DIRECTORY_SEPARATOR+"share"+ETL_DIRECTORY_SEPARATOR+"synfig"+ETL_DIRECTORY_SEPARATOR+"brushes");
+		(*it)[prefs_brushpath.path]=App::get_base_path()+ETL_DIRECTORY_SEPARATOR+"share"+ETL_DIRECTORY_SEPARATOR+"synfig"+ETL_DIRECTORY_SEPARATOR+"brushes";
 	else
-		listviewtext_brushes_path->append(App::brushes_path);
+		(*it)[prefs_brushpath.path]=App::brushes_path;
+	// Select the first entry
+	listviewtext_brushes_path->get_selection()->select(
+			listviewtext_brushes_path->get_model()->children().begin());
 
 	if (App::brushes_path == "")
 		textbox_brushe_path.set_text(App::get_base_path()+ETL_DIRECTORY_SEPARATOR+"share"+ETL_DIRECTORY_SEPARATOR+"synfig"+ETL_DIRECTORY_SEPARATOR+"brushes");
@@ -1453,9 +1475,17 @@ Dialog_Setup::on_treeviewselection_changed()
 void
 Dialog_Setup::on_brush_path_add_clicked()
 {
-	guint row = listviewtext_brushes_path->append(_("New brush path"));
+
+//	guint row = listviewtext_brushes_path->append(_("New brush path"), it);
+	Glib::RefPtr<Gtk::ListStore> liststore = Glib::RefPtr<Gtk::ListStore>::cast_dynamic(
+			listviewtext_brushes_path->get_model());
+	Gtk::TreeIter it(liststore->append());
+	(*it)[prefs_brushpath.path]=_("New brush path");
+//	Gtk::TreeNodeChildren children(->children());
+//	Gtk::TreeIter it(model->children().end());
+
+	listviewtext_brushes_path->scroll_to_row(listviewtext_brushes_path->get_model()->get_path(*it));
 	//! TODO HERE / select and give edit mode new item
-	//! TODO HERE / limit listviewtext size !
 	//listviewtext_brushes_path->size();
 }
 
