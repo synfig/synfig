@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/software/renderersw.h
-**	\brief RendererSW Header
+/*!	\file synfig/rendering/software/function/fftw.h
+**	\brief FFTW Header
 **
 **	$Id$
 **
@@ -22,12 +22,12 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_RENDERING_RENDERERSW_H
-#define __SYNFIG_RENDERING_RENDERERSW_H
+#ifndef __SYNFIG_RENDERING_SOFTWARE_FFTW_H
+#define __SYNFIG_RENDERING_SOFTWARE_FFTW_H
 
 /* === H E A D E R S ======================================================= */
 
-#include "../renderer.h"
+#include <synfig/complex.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -39,23 +39,38 @@ namespace synfig
 {
 namespace rendering
 {
-
-class RendererSW: public Renderer
+namespace software
 {
+
+class FFTW
+{
+private:
+	class Internal;
+
 public:
-	typedef etl::handle<RendererSW> Handle;
+	static int get_valid_count(int x);
+	static bool is_valid_count(int x);
 
-	RendererSW();
-	~RendererSW();
+	static void multiply(Complex *x, int count, int stride, Real y);
 
-	virtual String get_name() const;
+	//! Fast Furier Transform
+	//! @count should be compatible, use get_valid_count()
+	//! @stride - distance (in items) between two sequential items
+	static void fft(Complex *x, int count, int stride, bool invert);
+
+	//! Fast Furier Transform 2d
+	//! @rows and @cols should be compatible, use get_valid_count()
+	//! @col_stride - distance (in items) between two sequential items
+	//! @row_stride - distance (in items) between two sequential rows of items
+	static void fft2d(Complex *x, int rows, int row_stride, int cols, int col_stride, bool invert, bool do_rows = true, bool do_cols = true);
 
 	static void initialize();
 	static void deinitialize();
 };
 
-}; /* end namespace rendering */
-}; /* end namespace synfig */
+} /* end namespace software */
+} /* end namespace rendering */
+} /* end namespace synfig */
 
 /* -- E N D ----------------------------------------------------------------- */
 

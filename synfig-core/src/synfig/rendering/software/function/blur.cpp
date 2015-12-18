@@ -337,8 +337,8 @@ software::Blur::blur_fft(
 
 	// init
 	const int chanels = 4;
-	int rows = FFT::get_power_of_two(sr_size[1]);
-	int cols = FFT::get_power_of_two(sr_size[0]);
+	int rows = FFT::get_valid_count(sr_size[1]);
+	int cols = FFT::get_valid_count(sr_size[0]);
 	int col_stride = chanels;
 	int row_stride = cols*col_stride;
 	vector<Complex> surface;
@@ -429,18 +429,14 @@ software::Blur::blur_fft(
 		FFT::fft(&col_pattern.front(), rows, 1, false);
 		for(int channel = 0; channel < chanels; ++channel)
 		{
+			FFT::fft2d(&surface_rows->front() + channel, rows, row_stride, cols, col_stride, false, true, false);
 			for(int r = 0; r < rows; ++r)
-			{
-				FFT::fft(&surface_rows->front() + r*row_stride + channel, cols, col_stride, false);
 				multiply(&surface_rows->front() + r*row_stride + channel, cols, col_stride, &row_pattern.front(), 1);
-				FFT::fft(&surface_rows->front() + r*row_stride + channel, cols, col_stride, true);
-			}
+			FFT::fft2d(&surface_rows->front() + channel, rows, row_stride, cols, col_stride, true, true, false);
+			FFT::fft2d(&surface_cols->front() + channel, rows, row_stride, cols, col_stride, false, false, true);
 			for(int c = 0; c < cols; ++c)
-			{
-				FFT::fft(&surface_cols->front() + c*col_stride + channel, rows, row_stride, false);
 				multiply(&surface_cols->front() + c*col_stride + channel, rows, row_stride, &col_pattern.front(), 1);
-				FFT::fft(&surface_cols->front() + c*col_stride + channel, rows, row_stride, true);
-			}
+			FFT::fft2d(&surface_cols->front() + channel, rows, row_stride, cols, col_stride, true, false, true);
 		}
 
 		if (cross)

@@ -1,12 +1,16 @@
 RENDERING_SOFTWARE_FUNCTION_HH = \
 	rendering/software/function/blur.h \
 	rendering/software/function/contour.h \
-	rendering/software/function/fft.h
+	rendering/software/function/fft.h \
+	rendering/software/function/fftown.h \
+	rendering/software/function/fftw.h
 
 RENDERING_SOFTWARE_FUNCTION_CC = \
 	rendering/software/function/blur.cpp \
 	rendering/software/function/contour.cpp \
-	rendering/software/function/fft.cpp
+	rendering/software/function/fft.cpp \
+	rendering/software/function/fftown.cpp \
+	rendering/software/function/fftw.cpp
 
 RENDERING_SOFTWARE_HH += \
     $(RENDERING_SOFTWARE_FUNCTION_HH)

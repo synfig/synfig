@@ -27,7 +27,8 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/complex.h>
+#include "fftown.h"
+#include "fftw.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -42,24 +43,7 @@ namespace rendering
 namespace software
 {
 
-class FFT
-{
-public:
-	static int get_power_of_two(int x);
-	static bool is_power_of_two(int x);
-
-	//! Fast Furier Transform
-	//! @count should be power of 2
-	//! @stride - distance (in items) between two sequential items
-	static void fft(Complex *x, int count, int stride, bool invert);
-
-	//! Fast Furier Transform 2d
-	//! @rows and @cols should be power of 2
-	//! @col_stride - distance (in items) between two sequential items
-	//! @row_stride - distance (in items) between two sequential rows of items
-	static void fft2d(Complex *x, int rows, int row_stride, int cols, int col_stride, bool invert);
-
-};
+typedef FFTW FFT;
 
 } /* end namespace software */
 } /* end namespace rendering */

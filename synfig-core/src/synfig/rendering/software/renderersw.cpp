@@ -64,6 +64,8 @@
 #include "optimizer/optimizermeshsw.h"
 #include "optimizer/optimizersurfaceresamplesw.h"
 
+#include "function/fftw.h"
+
 #endif
 
 using namespace synfig;
@@ -108,5 +110,15 @@ RendererSW::~RendererSW() { }
 
 String RendererSW::get_name() const { return _("Cobra (software)"); }
 
+void RendererSW::initialize()
+{
+	software::FFTW::initialize();
+
+}
+
+void RendererSW::deinitialize()
+{
+	software::FFTW::deinitialize();
+}
 
 /* === E N T R Y P O I N T ================================================= */
