@@ -53,6 +53,8 @@ public:
 
 	const Task::Handle& sub_task() const { return Task::sub_task(0); }
 	Task::Handle& sub_task() { return Task::sub_task(0); }
+
+	virtual Rect calc_bounds() const;
 };
 
 } /* end namespace rendering */
