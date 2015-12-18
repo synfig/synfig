@@ -49,6 +49,7 @@
 #include <synfigapp/instance.h>
 #include <synfigapp/pluginmanager.h>
 #include "iconcontroller.h"
+#include "mainwindow.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -377,6 +378,7 @@ public:
 	static bool dialog_open_file_image(const std::string &title, std::string &filename, std::string preference);
 	static bool dialog_open_file_audio(const std::string &title, std::string &filename, std::string preference);
 	static bool dialog_open_file_with_history_button(const std::string &title, std::string &filename, bool &show_history, std::string preference);
+	static bool dialog_open_folder(const std::string &title, std::string &filename, std::string preference, Gtk::Window& transientwind=*App::main_window);
 	static bool dialog_save_file(const std::string &title, std::string &filename, std::string preference);
 	static bool dialog_save_file_spal(const std::string &title, std::string &filename, std::string preference);
 	static bool dialog_save_file_sketch(const std::string &title, std::string &filename, std::string preference);

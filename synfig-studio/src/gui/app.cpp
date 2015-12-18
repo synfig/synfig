@@ -89,7 +89,6 @@
 #include "dialogs/dialog_gradient.h"
 #include "dialogs/dialog_input.h"
 #include "dialogs/dialog_color.h"
-#include "mainwindow.h"
 #include "docks/dock_toolbox.h"
 #include "onemoment.h"
 
@@ -1409,7 +1408,7 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 
 	// Initialize the Synfig library
 	try { synfigapp_main=etl::smart_ptr<synfigapp::Main>(new synfigapp::Main(basepath,&synfig_init_cb)); }
-	catch(std::runtime_error x)
+	catch(std::runtime_error &x)
 	{
 		get_ui_interface()->error(strprintf("%s\n\n%s", _("Failed to initialize synfig!"), x.what()));
 		throw;
@@ -1711,7 +1710,7 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 					details,
 					_("Got it"));
 	}
-	catch(String x)
+	catch(String &x)
 	{
 		get_ui_interface()->error(_("Unknown exception caught when constructing App.\nThis software may be unstable.") + String("\n\n") + x);
 	}
@@ -2774,6 +2773,34 @@ App::dialog_open_file_with_history_button(const std::string &title, std::string 
 #endif   // not USE_WIN32_FILE_DIALOGS
 }
 
+bool
+App::dialog_open_folder(const std::string &title, std::string &foldername, std::string preference, Gtk::Window& transientwind)
+{
+	synfig::String prev_path;
+	synfigapp::Settings settings;
+	if(settings.get_value(preference, prev_path))
+		prev_path = ".";
+
+	prev_path = absolute_path(prev_path);
+
+	Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(*App::main_window,
+			title, Gtk::FILE_CHOOSER_ACTION_SELECT_FOLDER);
+
+	dialog->set_transient_for(transientwind);
+	dialog->set_current_folder(prev_path);
+	dialog->add_button(_("Cancel"), Gtk::RESPONSE_CANCEL)->set_image_from_icon_name("gtk-cancel", Gtk::ICON_SIZE_BUTTON);
+	dialog->add_button(_("Open"),   Gtk::RESPONSE_ACCEPT)->set_image_from_icon_name("gtk-open", Gtk::ICON_SIZE_BUTTON);
+
+	if(dialog->run() == GTK_RESPONSE_ACCEPT)
+	{
+		foldername = dialog->get_filename();
+		delete dialog;
+		return true;
+	}
+	delete dialog;
+	return false;
+}
+
 
 bool
 App::dialog_save_file(const std::string &title, std::string &filename, std::string preference)
@@ -3559,7 +3586,7 @@ App::open_as(std::string filename,std::string as,synfig::FileContainerZip::file_
 				instance->dialog_cvs_update();
 		}
 	}
-	catch(String x)
+	catch(String &x)
 	{
 		dialog_message_1b(
 			"ERROR",
@@ -3569,7 +3596,7 @@ App::open_as(std::string filename,std::string as,synfig::FileContainerZip::file_
 
 		return false;
 	}
-	catch(runtime_error x)
+	catch(runtime_error &x)
 	{
 		dialog_message_1b(
 			"ERROR",
@@ -3652,7 +3679,7 @@ App::open_from_temporary_container_as(std::string container_filename_base,std::s
 				instance->dialog_cvs_update();
 		}
 	}
-	catch(String x)
+	catch(String &x)
 	{
 		dialog_message_1b(
 				"ERROR",
@@ -3662,7 +3689,7 @@ App::open_from_temporary_container_as(std::string container_filename_base,std::s
 
 		return false;
 	}
-	catch(runtime_error x)
+	catch(runtime_error &x)
 	{
 		dialog_message_1b(
 				"ERROR",

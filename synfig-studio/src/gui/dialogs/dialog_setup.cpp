@@ -34,7 +34,6 @@
 #endif
 
 #include "app.h"
-#include "mainwindow.h"
 #include "dialogs/dialog_setup.h"
 #include <gtkmm/scale.h>
 #include <gtkmm/eventbox.h>
@@ -50,8 +49,6 @@
 
 #include <synfig/rendering/renderer.h>
 
-#include <synfigapp/main.h>
-#include <synfigapp/settings.h>
 #include <synfigapp/canvasinterface.h>
 
 #include "dialogs/dialog_setup.h"
@@ -1477,43 +1474,14 @@ Dialog_Setup::on_treeviewselection_changed()
 void
 Dialog_Setup::on_brush_path_add_clicked()
 {
-
-	bool newpath(false);
-	synfig::String dir_name, dialog_title(_("Select a new path for brush"));
-	//! TODO Make it app member
-	{
-		synfig::String prev_path;
-		synfigapp::Settings settings;
-		if(settings.get_value(MISC_DIR_PREFERENCE, prev_path))
-			prev_path = ".";
-
-		prev_path = absolute_path(prev_path);
-
-		Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(*App::main_window,
-					dialog_title, Gtk::FILE_CHOOSER_ACTION_SELECT_FOLDER);
-
-		dialog->set_transient_for(*this);
-		dialog->set_current_folder(prev_path);
-		dialog->add_button(_("Cancel"), Gtk::RESPONSE_CANCEL)->set_image_from_icon_name("gtk-cancel", Gtk::ICON_SIZE_BUTTON);
-		dialog->add_button(_("Open"),   Gtk::RESPONSE_ACCEPT)->set_image_from_icon_name("gtk-open", Gtk::ICON_SIZE_BUTTON);
-
-		if(dialog->run() == GTK_RESPONSE_ACCEPT)
-		{
-			dir_name = dialog->get_filename();
-			newpath = true;
-			//delete dialog;
-			//return true;
-		}
-		delete dialog;
-	}
-
-	if(newpath)
+	synfig::String foldername;
+	if(App::dialog_open_folder(_("Select a new path for brush"), foldername, MISC_DIR_PREFERENCE, *this))
 	{
 		// add the new path
 		Glib::RefPtr<Gtk::ListStore> liststore = Glib::RefPtr<Gtk::ListStore>::cast_dynamic(
 				listviewtext_brushes_path->get_model());
 		Gtk::TreeIter it(liststore->append());
-		(*it)[prefs_brushpath.path]=dir_name;
+		(*it)[prefs_brushpath.path]=foldername;
 		// high light it in the brush path list
 		listviewtext_brushes_path->scroll_to_row(listviewtext_brushes_path->get_model()->get_path(*it));
 		listviewtext_brushes_path->get_selection()->select(listviewtext_brushes_path->get_model()->get_path(*it));
