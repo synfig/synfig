@@ -43,6 +43,7 @@
 
 #include "fft.h"
 #include <synfig/angle.h>
+#include <synfig/general.h>
 
 #endif
 
@@ -168,39 +169,47 @@ software::Blur::fill_pattern_2d_disk(
 
 	Real sum = 0.0;
 
-	Real minr_squared = (s[0]-0.5)*(s[0]-0.5) + (s[1]-0.5)*(s[1]-0.5);
-	Real minr = sqrt(minr_squared);
-	Real maxr_squared = (s[0]+0.5)*(s[0]+0.5) + (s[1]+0.5)*(s[1]+0.5);
-	Real maxr = sqrt(maxr_squared);
-	Real delta_r = maxr - minr;
-	Real one_div_delta_r = delta_r > precision ? 1.0/delta_r : 0.0;
-
 	// draw one sector
-	Vector k(1.0/s[0], 1.0/s[1]);
-	Vector pos(0.0, 0.0);
+	Vector k0(s[0] - 0.5, s[1] - 0.5);
+	Vector k1(s[0] + 0.5, s[1] + 0.5);
+	Vector kk0( k0[0] > precision ? 1.0/k0[0] : 0.0,
+			    k0[1] > precision ? 1.0/k0[1] : 0.0 );
+	Vector kk1( k1[0] > precision ? 1.0/k1[0] : 0.0,
+			    k1[1] > precision ? 1.0/k1[1] : 0.0 );
+	Vector pp0(0.0, 0.0);
+	Vector pp1(0.0, 0.0);
 	Vector sumk(1.0, 1.0);
 	for(int r = 0; r <= sizei[1]; ++r)
 	{
 		for(int c = 0; c <= sizei[0]; ++c)
 		{
 			Complex &x = pattern[r*row_stride + c*col_stride];
-			Real r_squared = pos.mag_squared();
+			Real r1_squared = pp1.mag_squared();
 			/// assume that pattern already contains zeros
-			if (r_squared <= 1.0)
+			if (r1_squared < 1.0)
 			{
-				//if (r_squared <= minr_squared)
+				Real r0_squared = pp0.mag_squared();
+				if (r0_squared <= 1.0)
+				{
 					x = 1.0;
-				//else
-				//	x = (maxr - sqrt(r_squared))*one_div_delta_r;
+				}
+				else
+				{
+					Real rr0 = sqrt(r0_squared);
+					Real rr1 = sqrt(r1_squared);
+					Real drr = rr0 - rr1;
+					x = drr > precision ? rr0*(1.0 - rr1)/drr : 0.0;
+				}
 				sum += sumk[0]*sumk[1]*x.real();
 			}
-			pos[0] += k[0];
+			pp0[0] += kk0[0];
+			pp1[0] += kk1[0];
 			sumk[0] = 2.0;
 		}
 		sumk[0] = 1.0;
 		sumk[1] = 2.0;
-		pos[0] = 0.0;
-		pos[1] += k[1];
+		pp0[0] = 0.0; pp0[1] += kk0[1];
+		pp1[0] = 0.0; pp1[1] += kk1[1];
 	}
 
 	// normalize sector
