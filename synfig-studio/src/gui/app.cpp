@@ -312,7 +312,7 @@ String studio::App::browser_command("open"); // MacOS only
 #else
 String studio::App::browser_command("xdg-open"); // Linux XDG standard
 #endif
-String studio::App::brushes_path("");
+std::set< String > studio::App::brushes_path;
 String studio::App::sequence_separator(".");
 String studio::App::navigator_renderer;
 String studio::App::workarea_renderer;
@@ -814,7 +814,9 @@ public:
 		ret.push_back("enable_experimental_features");
 		ret.push_back("use_dark_theme");
 		ret.push_back("browser_command");
+		//! Brushes path stored using brush_path_count and brush_path_N (Keep brushes_path for backward compatibilty ?)
 		ret.push_back("brushes_path");
+		ret.push_back("brushes_path_count");
 		ret.push_back("custom_filename_prefix");
 		ret.push_back("ui_language");
 		ret.push_back("preferred_x_size");

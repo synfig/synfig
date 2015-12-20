@@ -1485,6 +1485,8 @@ Dialog_Setup::on_brush_path_add_clicked()
 		// high light it in the brush path list
 		listviewtext_brushes_path->scroll_to_row(listviewtext_brushes_path->get_model()->get_path(*it));
 		listviewtext_brushes_path->get_selection()->select(listviewtext_brushes_path->get_model()->get_path(*it));
+
+		pref_modification_flag|=CHANGE_BRUSH_PATH;
 	}
 }
 
@@ -1494,5 +1496,6 @@ Dialog_Setup::on_brush_path_remove_clicked()
 	Glib::RefPtr<Gtk::ListStore> refLStore = Glib::RefPtr<Gtk::ListStore>::cast_dynamic(listviewtext_brushes_path->get_model());
 	refLStore->erase(listviewtext_brushes_path->get_selection()->get_selected());
 
+	pref_modification_flag|=CHANGE_BRUSH_PATH;
 	//! TODO if list size == 0: push warning to warning zone
 }
