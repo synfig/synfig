@@ -38,6 +38,9 @@
 #include "iconcontroller.h"
 #include <gtkmm/button.h>
 #include <synfig/paramdesc.h>
+#include <synfig/valuenodes/valuenode_bone.h>
+#include <synfig/valuenodes/valuenode_composite.h>
+
 #include "layertree.h"
 #include <synfigapp/action_system.h>
 #include <synfigapp/instance.h>
@@ -297,7 +300,7 @@ LayerParamTreeStore::set_value_impl(const Gtk::TreeModel::iterator& iter, int co
 */
 		CanvasTreeStore::set_value_impl(iter,column, value);
 	}
-	catch(std::exception x)
+	catch(std::exception& x)
 	{
 		g_warning("%s", x.what());
 	}
@@ -595,4 +598,103 @@ void
 LayerParamTreeStore::on_layer_param_changed(synfig::Layer::Handle /*handle*/,synfig::String /*param_name*/)
 {
 	queue_refresh();
+}
+
+bool
+LayerParamTreeStore::find_value_desc(const synfigapp::ValueDesc& value_desc, Gtk::TreeIter& iter)
+{
+    //! check level0
+    for(iter = children().begin(); iter && iter != children().end(); ++iter)
+    {
+        if(value_desc.is_value_node())
+        {
+            //! transformation handle is at level 0, force to inspect deeper if case.
+            if( (value_desc.get_value_node()==((synfigapp::ValueDesc)(*iter)[model.value_desc]).get_value_node()) &&
+                    (value_desc.get_value_type() == type_transformation)
+                    )
+            {
+                Gtk::TreeIter iter2 = iter->children().begin();
+                for( ; iter2 && iter2 != iter->children().end(); ++iter2)
+                {
+                    if ( ((synfigapp::ValueDesc)(*iter2)[model.value_desc]).get_name() ==
+                            value_desc.get_sub_name() )
+                    {
+                        iter = iter2;
+                        return true;
+                    }
+                }
+            }
+        }
+        //! something found
+        if (value_desc==(*iter)[model.value_desc])
+            return true;
+    }
+
+    //! let's go for deepness
+    Gtk::TreeIter iter2;
+    for(iter2 = children().begin(); iter2 && iter2 != children().end(); ++iter2)
+    {
+        if((*iter2).children().empty())
+            continue;
+
+        if(find_value_desc(value_desc,iter,iter2->children()))
+            return true;
+    }
+    return false;
+}
+
+bool
+LayerParamTreeStore::find_value_desc(const synfigapp::ValueDesc& value_desc, Gtk::TreeIter& iter, const Gtk::TreeNodeChildren child_iter)
+{
+    // actual level from child_iter
+    for(iter = child_iter.begin(); iter && iter != child_iter.end(); ++iter)
+    {
+        if(value_desc.is_value_node())
+        {
+            // for vertex handle force to inspect deeper
+            if( value_desc.get_value_node()==((synfigapp::ValueDesc)(*iter)[model.value_desc]).get_value_node() &&
+                    (value_desc.get_value_type() == type_bline_point)
+                    )
+// seems to be not necessary to check the ValueNode
+//                     if((ValueNode_Composite::Handle::cast_dynamic(
+//                             ((synfigapp::ValueDesc)(*iter)[model.value_desc]).get_value_node()))
+//                             )
+                 {
+                     //check iteratively spline point (bline) children for same name.
+                     Gtk::TreeIter iter2 = iter->children().begin();
+                     for( ; iter2 && iter2 != iter->children().end(); ++iter2)
+                     {
+                         if ( ((synfigapp::ValueDesc)(*iter2)[model.value_desc]).get_name() ==
+                                 value_desc.get_sub_name() )
+                         {
+                             iter = iter2;
+                             return true;
+                         }
+                     }
+                 }
+        }
+        if (value_desc==(*iter)[model.value_desc])
+            return true;
+    }
+
+    Gtk::TreeIter iter2 = child_iter.begin();
+
+    //! for bones, do not inspect recursively to don't get trapped in bones hierarchy
+    if( ((synfigapp::ValueDesc)(*iter2)[model.value_desc]).parent_is_value_node() )
+    {
+        if(ValueNode_Bone::Handle::cast_dynamic(
+                ((synfigapp::ValueDesc)(*iter2)[model.value_desc]).get_parent_value_node()))
+            return false;
+    }
+
+    for( ; iter2 && iter2 != child_iter.end(); ++iter2)
+    {
+        if((*iter2).children().empty())
+            continue;
+
+        if(find_value_desc(value_desc,iter,iter2->children()))
+            return true;
+    }
+
+    return false;
 }

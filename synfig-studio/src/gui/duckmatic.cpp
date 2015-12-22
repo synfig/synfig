@@ -360,6 +360,11 @@ Duckmatic::select_duck(const etl::handle<Duck> &duck)
 	{
 		selected_ducks.insert(duck->get_guid());
 		signal_duck_selection_changed_();
+
+		if(selected_ducks.size() == 1)
+		{
+		    signal_duck_selection_single_(duck);
+		}
 	}
 }
 

@@ -1043,6 +1043,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	insert_renderer(new Renderer_BoneSetup,	501);
 
 	signal_duck_selection_changed().connect(sigc::mem_fun(*this,&studio::WorkArea::queue_draw));
+	signal_duck_selection_single().connect(sigc::mem_fun(*this, &studio::WorkArea::on_duck_selection_single));
 	signal_strokes_changed().connect(sigc::mem_fun(*this,&studio::WorkArea::queue_draw));
 	signal_grid_changed().connect(sigc::mem_fun(*this,&studio::WorkArea::queue_draw));
 	signal_grid_changed().connect(sigc::mem_fun(*this,&studio::WorkArea::save_meta_data));
@@ -2779,6 +2780,15 @@ WorkArea::on_vruler_event(GdkEvent *event)
 	return false;
 }
 
+void
+WorkArea::on_duck_selection_single(const etl::handle<Duck>& duck)
+{
+	if(dragging == DRAG_NONE)
+	{
+		studio::LayerTree* tree_layer(dynamic_cast<studio::LayerTree*>(canvas_view->get_ext_widget("layers_cmp")));
+		tree_layer->select_param(duck->get_value_desc());
+	}
+}
 
 void
 WorkArea::refresh_dimension_info()
