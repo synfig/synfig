@@ -969,6 +969,7 @@ initialize()
 					libtiff-devel \
 					libjasper-devel \
 					libdirectfb-devel \
+					libfftw3-dev \
 					libXfixes-devel \
 					libXinerama-devel \
 					libXdamage-devel \
