@@ -69,6 +69,11 @@ public:
 	bool load_from_string(const synfig::String& data);
 	bool save_to_string(synfig::String& data);
 
+	//! \brief Load optionally filtered settings from given synfig settings format filename
+	//! \return false if file open failed, else true.
+	//! \sa		set_value
+	//! \Param[in] filename, the synfig settings format filename. Should be aboslute path.
+	//! \Param[in] key_filter, optional, string use to filter the settings key. No wildcard only full equal string test.
 	bool load_from_file(const synfig::String& filename, const synfig::String& key_filter = "" );
 	bool save_to_file(const synfig::String& filename)const;
 }; // END of class Settings
