@@ -639,6 +639,7 @@ private:
 	bool on_drawing_area_event(GdkEvent* event);
 	bool on_hruler_event(GdkEvent* event);
 	bool on_vruler_event(GdkEvent* event);
+	void on_duck_selection_single(const etl::handle<Duck>& duck_guid);
 
 	/*
  -- ** -- S T A T I C   P U B L I C   M E T H O D S ---------------------------

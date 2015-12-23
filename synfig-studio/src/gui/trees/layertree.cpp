@@ -563,6 +563,29 @@ LayerTree::set_show_timetrack(bool x)
 }
 
 void
+LayerTree::select_param(const synfigapp::ValueDesc& valuedesc)
+{
+    get_param_tree_view().get_selection()->unselect_all();
+
+    Gtk::TreeIter iter;
+    if(param_tree_store_->find_value_desc(valuedesc, iter))
+    {
+        Gtk::TreePath path(iter);
+        for(int i=(int)path.size();i;i--)
+        {
+            int j;
+            path=Gtk::TreePath(iter);
+            for(j=i;j;j--)
+                path.up();
+            get_param_tree_view().expand_row(path,false);
+        }
+
+        get_param_tree_view().scroll_to_row(Gtk::TreePath(iter));
+        get_param_tree_view().get_selection()->select(iter);
+    }
+}
+
+void
 LayerTree::set_model(Glib::RefPtr<LayerTreeStore> layer_tree_store)
 {
 	layer_tree_store_=layer_tree_store;

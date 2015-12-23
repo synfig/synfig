@@ -214,6 +214,7 @@ private:
 	etl::handle<BezierDrag_Base> bezier_dragger_;
 
 	sigc::signal<void> signal_duck_selection_changed_;
+	sigc::signal<void, const etl::handle<Duck>& > signal_duck_selection_single_;
 
 	sigc::signal<void> signal_strokes_changed_;
 
@@ -294,6 +295,7 @@ public:
 	bool get_lock_animation_mode()const { return lock_animation_mode_; }
 
 	sigc::signal<void>& signal_duck_selection_changed() { return signal_duck_selection_changed_; }
+	sigc::signal<void, const etl::handle<Duck>& >& signal_duck_selection_single() { return signal_duck_selection_single_; }
 	sigc::signal<void>& signal_strokes_changed() { return signal_strokes_changed_; }
 	sigc::signal<void>& signal_grid_changed() { return signal_grid_changed_; }
 	sigc::signal<void>& signal_sketch_saved() { return signal_sketch_saved_; }
