@@ -223,7 +223,8 @@ public:
 	static synfigapp::PluginManager plugin_manager;
 
 	static synfig::String browser_command;
-	static synfig::String brushes_path;
+//	static synfig::String brushes_path;
+	static std::set< synfig::String > brushes_path;
 	static synfig::String custom_filename_prefix;
 	static int preferred_x_size;
 	static int preferred_y_size;

@@ -54,6 +54,8 @@
 #include <synfig/time.h>
 #include <algorithm>
 
+#include <synfigapp/settings.h>
+
 #include "app.h"
 
 /* === M A C R O S ========================================================= */
@@ -219,6 +221,8 @@ class Dialog_Setup : public Gtk::Dialog
 	void create_interface_page(synfig::String name);
 	void create_editing_page(synfig::String name);
 
+	synfigapp::Settings &input_settings;
+
 	//Child widgets:
 	Gtk::Notebook *notebook;
 	Gtk::Grid main_grid;
@@ -309,7 +313,7 @@ class Dialog_Setup : public Gtk::Dialog
 	{
 		public:
 		PrefsBrushPath() { add(path); }
-		Gtk::TreeModelColumn<Glib::ustring> path;
+		Gtk::TreeModelColumn<synfig::String> path;
 	};
 	PrefsBrushPath prefs_brushpath;
 

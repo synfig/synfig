@@ -50,6 +50,7 @@
 #include <synfig/rendering/renderer.h>
 
 #include <synfigapp/canvasinterface.h>
+#include <synfigapp/main.h>
 
 #include "dialogs/dialog_setup.h"
 
@@ -85,6 +86,7 @@ using namespace studio;
 
 Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	Dialog(_("Synfig Studio Preferences"),parent,true),
+	input_settings(synfigapp::Main::get_selected_input_device()->settings()),
 	listviewtext_brushes_path(manage (new Gtk::ListViewText(1, true, Gtk::SELECTION_BROWSE))),
 	adj_gamma_r(Gtk::Adjustment::create(2.2,0.1,3.0,0.025,0.025,0.025)),
 	adj_gamma_g(Gtk::Adjustment::create(2.2,0.1,3.0,0.025,0.025,0.025)),
@@ -884,18 +886,26 @@ Dialog_Setup::on_apply_pressed()
 	App::browser_command=textbox_browser_command.get_text();
 
 	//! TODO Create Change mecanism has Class for being used elsewhere
+	// Set the preferred brush path(s)
 	if (pref_modification_flag&Dialog_Setup::CHANGE_BRUSH_PATH)
 	{
-		if(listviewtext_brushes_path->size())
+		App::brushes_path.clear();
+		int path_count = 0;
+
+		Glib::RefPtr<Gtk::ListStore> liststore = Glib::RefPtr<Gtk::ListStore>::cast_dynamic(
+				listviewtext_brushes_path->get_model());
+
+		for(Gtk::TreeIter ui_iter = liststore->children().begin();
+				ui_iter!=liststore->children().end();ui_iter++)
 		{
-
+			const Gtk::TreeRow row = *(ui_iter);
+			// TODO utf_8 path : care to other locale than english ?
+			synfig::String path((row[prefs_brushpath.path]));
+			input_settings.set_value(strprintf("brush.path_%d", path_count++), path);
+			App::brushes_path.insert(path);
 		}
-
+		input_settings.set_value("brush.path_count", strprintf("%d", path_count));
 	}
-	if ( textbox_brushe_path.get_text() == App::get_base_path()+ETL_DIRECTORY_SEPARATOR+"share"+ETL_DIRECTORY_SEPARATOR+"synfig"+ETL_DIRECTORY_SEPARATOR+"brushes" )
-		App::brushes_path="";
-	else
-		App::brushes_path=textbox_brushe_path.get_text();
 
 	// Set the preferred file name prefix
 	App::custom_filename_prefix=textbox_custom_filename_prefix.get_text();
@@ -1085,21 +1095,40 @@ Dialog_Setup::refresh()
 	// Refresh the browser_command textbox
 	textbox_browser_command.set_text(App::browser_command);
 
+	// Refresh the brush path(s)
 	Glib::RefPtr<Gtk::ListStore> liststore = Glib::RefPtr<Gtk::ListStore>::cast_dynamic(
 			listviewtext_brushes_path->get_model());
-	Gtk::TreeIter it(liststore->append());
-	if (App::brushes_path == "")
-		(*it)[prefs_brushpath.path]=App::get_base_path()+ETL_DIRECTORY_SEPARATOR+"share"+ETL_DIRECTORY_SEPARATOR+"synfig"+ETL_DIRECTORY_SEPARATOR+"brushes";
+	//! Keep "brushes_path" preferences entry for backward compatibilty (15/12 - v1.0.3)
+	//! Now brush path(s) are hold by input preferences : brush.path_count & brush.path_%d
+	String value;
+	Gtk::TreeIter ui_iter;
+	bool bvalue(input_settings.get_value("brush.path_count",value));
+	int i(atoi(value.c_str()));
+	App::brushes_path.clear();
+	liststore->clear();
+	if(!bvalue || (bvalue && i<=0))
+	{
+		App::brushes_path.insert(App::get_base_path()+ETL_DIRECTORY_SEPARATOR+"share"+ETL_DIRECTORY_SEPARATOR+"synfig"+ETL_DIRECTORY_SEPARATOR+"brushes");
+	}
 	else
-		(*it)[prefs_brushpath.path]=App::brushes_path;
-	// Select the first entry
-//	listviewtext_brushes_path->get_selection()->select(
-//			listviewtext_brushes_path->get_model()->children().begin());
-
-	if (App::brushes_path == "")
-		textbox_brushe_path.set_text(App::get_base_path()+ETL_DIRECTORY_SEPARATOR+"share"+ETL_DIRECTORY_SEPARATOR+"synfig"+ETL_DIRECTORY_SEPARATOR+"brushes");
-	else
-		textbox_brushe_path.set_text(App::brushes_path);
+	{
+		for(int j = 0; j<i;j++)
+		{
+			if(input_settings.get_value(strprintf("brush.path_%d", j),value))
+			{
+				App::brushes_path.insert(value);
+			}
+		}
+	}
+	for (set<synfig::String>::iterator setiter = App::brushes_path.begin();
+			setiter != App::brushes_path.end(); setiter++)
+	{
+		ui_iter = liststore->append();
+		(*ui_iter)[prefs_brushpath.path]=*setiter;
+	}
+	// Select the first brush path entry
+	//listviewtext_brushes_path->get_selection()->select(
+	//		listviewtext_brushes_path->get_model()->children().begin());
 
 	// Refresh the preferred filename prefix
 	textbox_custom_filename_prefix.set_text(App::custom_filename_prefix);
@@ -1475,6 +1504,7 @@ void
 Dialog_Setup::on_brush_path_add_clicked()
 {
 	synfig::String foldername;
+	//! TODO dialog_add_folder
 	if(App::dialog_open_folder(_("Select a new path for brush"), foldername, MISC_DIR_PREFERENCE, *this))
 	{
 		// add the new path

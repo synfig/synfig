@@ -450,9 +450,11 @@ StateBrush_Context::load_settings()
 	try
 	{
 		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
-		
+
 		String value;
-		/*if(settings.get_value("brush.path_count",value))
+		bool bvalue(settings.get_value("brush.path_count",value));
+		int count = atoi(value.c_str());
+		if(bvalue && count>0)
 		{
 			paths.clear();
 			int count = atoi(value.c_str());
@@ -461,12 +463,12 @@ StateBrush_Context::load_settings()
 					paths.insert(value);
 		}
 		else
-		{*/
-			if (App::brushes_path=="")
+		{
+			if (App::brushes_path.empty())
 				paths.insert(App::get_base_path()+ETL_DIRECTORY_SEPARATOR+"share"+ETL_DIRECTORY_SEPARATOR+"synfig"+ETL_DIRECTORY_SEPARATOR+"brushes");
 			else
-				paths.insert(App::brushes_path);
-		//}
+				paths.insert(*(App::brushes_path.begin()));
+		}
 		refresh_tool_options();
 
 		if (settings.get_value("brush.selected_brush_filename",value))

@@ -570,9 +570,13 @@ public:
 				value=App::browser_command;
 				return true;
 			}
+			//! "Keep brushes_path" preferences entry for backward compatibilty (15/12 - v1.0.3)
+			//! Now brush path(s) are hold by input preferences : brush.path_count & brush.path_%d
 			if(key=="brushes_path")
 			{
-				value=App::brushes_path;
+				value="";
+				if(!App::brushes_path.empty())
+					value=*(App::brushes_path.begin());
 				return true;
 			}
 			if(key=="custom_filename_prefix")
@@ -724,9 +728,11 @@ public:
 				App::browser_command=value;
 				return true;
 			}
+			//! "Keep brushes_path" preferences entry for backward compatibilty (15/12 - v1.0.3)
+			//! Now brush path(s) are hold by input preferences : brush.path_count & brush.path_%d
 			if(key=="brushes_path")
 			{
-				App::brushes_path=value;
+				App::brushes_path.insert(value);
 				return true;
 			}
 			if(key=="custom_filename_prefix")
@@ -814,9 +820,7 @@ public:
 		ret.push_back("enable_experimental_features");
 		ret.push_back("use_dark_theme");
 		ret.push_back("browser_command");
-		//! Brushes path stored using brush_path_count and brush_path_N (Keep brushes_path for backward compatibilty ?)
 		ret.push_back("brushes_path");
-		ret.push_back("brushes_path_count");
 		ret.push_back("custom_filename_prefix");
 		ret.push_back("ui_language");
 		ret.push_back("preferred_x_size");
