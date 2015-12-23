@@ -49,6 +49,7 @@
 
 #include <synfig/rendering/renderer.h>
 
+#include "canvasview.h"
 #include <synfigapp/canvasinterface.h>
 #include <synfigapp/main.h>
 
@@ -947,6 +948,12 @@ Dialog_Setup::on_apply_pressed()
 	App::save_settings();
 	App::setup_changed();
 
+	if ((pref_modification_flag&Dialog_Setup::CHANGE_BRUSH_PATH) &&
+			String(App::get_selected_canvas_view()->get_smach().get_state_name()) == String("brush"))
+	{
+		App::get_selected_canvas_view()->get_smach().process_event(EVENT_REFRESH_TOOL_OPTIONS);
+	}
+
 }
 
 void
@@ -1046,6 +1053,7 @@ Dialog_Setup::on_time_format_changed()
 void
 Dialog_Setup::refresh()
 {
+	pref_modification_flag = Dialog_Setup::CHANGE_NONE;
 	// Refresh the temporary gamma; do this before adjusting the sliders,
 	// or variables will be used before their initialization.
 	gamma_pattern.set_gamma_r(App::gamma.get_gamma_r());
