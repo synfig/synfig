@@ -64,7 +64,7 @@
 #include "optimizer/optimizermeshsw.h"
 #include "optimizer/optimizersurfaceresamplesw.h"
 
-#include "function/fftw.h"
+#include "function/fft.h"
 
 #endif
 
@@ -112,13 +112,13 @@ String RendererSW::get_name() const { return _("Cobra (software)"); }
 
 void RendererSW::initialize()
 {
-	software::FFTW::initialize();
+	software::FFT::initialize();
 
 }
 
 void RendererSW::deinitialize()
 {
-	software::FFTW::deinitialize();
+	software::FFT::deinitialize();
 }
 
 /* === E N T R Y P O I N T ================================================= */

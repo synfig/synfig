@@ -38,9 +38,11 @@
 #include <cassert>
 
 #include <algorithm>
+#include <functional>
 
 #include "blur.h"
 
+#include "blurtemplates.h"
 #include "fft.h"
 #include <synfig/angle.h>
 #include <synfig/general.h>
@@ -60,20 +62,10 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 Real
-software::Blur::gauss(Real x, Real radius)
-{
-	const Real precision = 1e-10;
-	static const Real k = 1.0/sqrt(2.0*PI);
-	if (fabs(radius) < precision)
-		return fabs(x) < precision ? 1.0 : 0.0;
-	return k*exp(-0.5*x*x/(radius*radius))/radius;
-}
-
-Real
 software::Blur::get_extra_size(rendering::Blur::Type type)
 {
-	static const synfig::Real min_value = 1.0 / 4096.0;
-	static const synfig::Real gauss_size = sqrt(-2.0*log(min_value/gauss(0.0, 1.0)));
+	static const Real min_value = 1.0 / 4096.0;
+	static const Real gauss_size = sqrt(-2.0*log(min_value/BlurTemplates::gauss(0.0, 1.0)));
 
 	switch(type)
 	{
@@ -101,204 +93,6 @@ software::Blur::get_extra_size(
 }
 
 void
-software::Blur::fill_pattern_box(
-	Complex *pattern,
-	int count,
-	int stride,
-	Real size )
-{
-	const Real precision = 1e-10;
-	Real s = 0.5 + fabs(size);
-	Complex w = 0.5/s;
-	int sizei = floor(s - precision);
-
-	// discrete fill
-	if (sizei < 1 || sizei > count/2)
-	{
-		/// assume that pattern already contains zeros
-		//for(Complex *x = pattern, *end = x + count*stride; x < end; x += pattern)
-		//	*x = 0.0;
-	}
-	else
-	{
-		for(Complex *x = pattern, *end = x + sizei*stride; x < end; x += stride)
-			*x = w;
-		/// assume that pattern already contains zeros
-		//for(Complex *x = pattern + (sizei+1)*stride, *end = pattern + (count - sizei)*stride; x < end; x += stride)
-		//	*x = 0.0;
-		for(Complex *x = pattern + (count - sizei + 1)*stride, *end = pattern + count*stride; x < end; x += stride)
-			*x = w;
-	}
-
-	// antialiasing
-	if (sizei >= 0) {
-		Complex aa = w*(1.0 - s + Real(sizei));
-		pattern[sizei*stride] = aa;
-		if (sizei >= 1) pattern[(count-sizei)*stride] = aa;
-	}
-}
-
-void
-software::Blur::fill_pattern_gauss(
-	Complex *pattern,
-	int count,
-	int stride,
-	Real size )
-{
-	pattern[0] = gauss(0, size);
-	Real s = fabs(size);
-	for(int i = count/2; i; --i)
-		pattern[i*stride] = pattern[(count-i)*stride] = gauss(i, s);
-}
-
-void
-software::Blur::fill_pattern_2d_disk(
-	Complex *pattern,
-	int rows,
-	int row_stride,
-	int cols,
-	int col_stride,
-	const Vector &size )
-{
-	const Real precision = 1e-10;
-	Vector s(0.5+fabs(size[0]), 0.5+fabs(size[1]));
-
-	VectorInt sizei(
-		std::min(cols/2, (int)ceil(s[0] - precision)),
-		std::min(rows/2, (int)ceil(s[1] - precision)) );
-
-	Real sum = 0.0;
-
-	// draw one sector
-	Vector k0(s[0] - 0.5, s[1] - 0.5);
-	Vector k1(s[0] + 0.5, s[1] + 0.5);
-	Vector kk0( k0[0] > precision ? 1.0/k0[0] : 0.0,
-			    k0[1] > precision ? 1.0/k0[1] : 0.0 );
-	Vector kk1( k1[0] > precision ? 1.0/k1[0] : 0.0,
-			    k1[1] > precision ? 1.0/k1[1] : 0.0 );
-	Vector pp0(0.0, 0.0);
-	Vector pp1(0.0, 0.0);
-	Vector sumk(1.0, 1.0);
-	for(int r = 0; r <= sizei[1]; ++r)
-	{
-		for(int c = 0; c <= sizei[0]; ++c)
-		{
-			Complex &x = pattern[r*row_stride + c*col_stride];
-			Real r1_squared = pp1.mag_squared();
-			/// assume that pattern already contains zeros
-			if (r1_squared < 1.0)
-			{
-				Real r0_squared = pp0.mag_squared();
-				if (r0_squared <= 1.0)
-				{
-					x = 1.0;
-				}
-				else
-				{
-					Real rr0 = sqrt(r0_squared);
-					Real rr1 = sqrt(r1_squared);
-					Real drr = rr0 - rr1;
-					x = drr > precision ? rr0*(1.0 - rr1)/drr : 0.0;
-				}
-				sum += sumk[0]*sumk[1]*x.real();
-			}
-			pp0[0] += kk0[0];
-			pp1[0] += kk1[0];
-			sumk[0] = 2.0;
-		}
-		sumk[0] = 1.0;
-		sumk[1] = 2.0;
-		pp0[0] = 0.0; pp0[1] += kk0[1];
-		pp1[0] = 0.0; pp1[1] += kk1[1];
-	}
-
-	// normalize sector
-	if (sum > precision)
-	{
-		double nk = 1.0/sum;
-		for(int r = 0; r <= sizei[1]; ++r)
-			for(int c = 0; c <= sizei[0]; ++c)
-				pattern[r*row_stride + c*col_stride].real() *= nk;
-	}
-
-	// clone sector
-	for(int r = 0; r <= sizei[1]; ++r)
-	{
-		for(int c = 0; c <= sizei[0]; ++c)
-		{
-			Complex &x = pattern[r*row_stride + c*col_stride];
-			if (c > 0)
-				pattern[r*row_stride + (cols - c)*col_stride] = x;
-			if (r > 0)
-				pattern[(rows - r)*row_stride + c*col_stride] = x;
-			if (r > 0 && c > 0)
-				pattern[(rows - r)*row_stride + (cols - c)*col_stride] = x;
-		}
-	}
-
-	/// assume that pattern already contains zeros
-	/// and don't touch other cells
-}
-
-void
-software::Blur::multiply(
-	Complex *target,
-	int count,
-	int stride,
-	const Complex *amplfier,
-	int amplfier_stride )
-{
-	const Complex *y = amplfier;
-	for(Complex *x = target, *end = x + count*stride; x < end; x += stride, y += amplfier_stride)
-		*x *= *y;
-}
-
-void
-software::Blur::multiply_2d(
-	Complex *target,
-	int rows,
-	int row_stride,
-	int cols,
-	int col_stride,
-	const Complex *amplfier,
-	int amplfier_row_stride,
-	int amplfier_col_stride )
-{
-	const Complex *y = amplfier;
-	for(Complex *x = target, *end = x + rows*row_stride; x < end; x += row_stride, y += amplfier_row_stride)
-		multiply(x, cols, col_stride, y, amplfier_col_stride);
-}
-
-void
-software::Blur::add(
-	Complex *target,
-	int count,
-	int stride,
-	const Complex *amplfier,
-	int amplfier_stride )
-{
-	const Complex *y = amplfier;
-	for(Complex *x = target, *end = x + count*stride; x < end; x += stride, y += amplfier_stride)
-		*x += *y;
-}
-
-void
-software::Blur::add_2d(
-	Complex *target,
-	int rows,
-	int row_stride,
-	int cols,
-	int col_stride,
-	const Complex *amplfier,
-	int amplfier_row_stride,
-	int amplfier_col_stride )
-{
-	const Complex *y = amplfier;
-	for(Complex *x = target, *end = x + rows*row_stride; x < end; x += row_stride, y += amplfier_row_stride)
-		add(x, cols, col_stride, y, amplfier_col_stride);
-}
-
-void
 software::Blur::blur_fft(
 	synfig::Surface &dest,
 	const RectInt &dest_rect,
@@ -308,7 +102,7 @@ software::Blur::blur_fft(
 	const Vector &size,
 	bool blend,
 	Color::BlendMethod blend_method,
-	Color::value_type amount )
+	ColorReal amount )
 {
 	const Real precision = 1e-10;
 
@@ -345,62 +139,97 @@ software::Blur::blur_fft(
 	VectorInt dr_size = dr.get_size();
 
 	// init
-	const int chanels = 4;
+	const int channels = 4;
 	int rows = FFT::get_valid_count(sr_size[1]);
 	int cols = FFT::get_valid_count(sr_size[0]);
-	int col_stride = chanels;
-	int row_stride = cols*col_stride;
-	vector<Complex> surface;
+	vector<Complex> surface(rows*cols*channels);
 	vector<Complex> full_pattern;
 	vector<Complex> row_pattern;
 	vector<Complex> col_pattern;
 	bool full = false;
 	bool cross = false;
 
+	Array<const ColorReal, 3> arr_src((const ColorReal*)&src[sr.miny][sr.minx]);
+	arr_src
+		.set_dim(rows, src.get_pitch()/sizeof(Color)*channels)
+		.set_dim(cols, channels)
+		.set_dim(channels, 1);
+	Array<Real, 4> arr_surface(&surface.front().real());
+	arr_surface
+		.set_dim(rows, cols*channels*2)
+		.set_dim(cols, channels*2)
+		.set_dim(channels, 2)
+		.set_dim(2, 1);
+	Array<Real, 3> arr_full_pattern;
+	arr_full_pattern
+		.set_dim(rows, 2*cols)
+		.set_dim(cols, 2)
+		.set_dim(2, 1);
+	Array<Real, 2> arr_row_pattern;
+	arr_row_pattern
+		.set_dim(cols, 2)
+		.set_dim(2, 1);
+	Array<Real, 2> arr_col_pattern;
+	arr_col_pattern
+		.set_dim(rows, 2)
+		.set_dim(2, 1);
+
 	// convert surface to complex
-	surface.resize(rows*row_stride);
-	for(int r = 0; r < sr_size[1]; ++r)
+	Array<const Color, 2>::Iterator rr(arr_src.group_items<const Color>());
+	for(Array<Real, 3>::Iterator r(arr_surface.reorder(0, 1, 2)); r; ++r, ++rr)
 	{
-		Complex *cmpl = &surface[r*row_stride];
-		for(const Color *color = &src[r+sr.miny][sr.minx], *end = color + sr_size[0]; color < end; ++color, cmpl += col_stride)
+		Array<const Color, 1>::Iterator cc(*rr);
+		for(Array<Real, 2>::Iterator c(*r); c; ++c, ++cc)
 		{
-			Color::value_type a = color->get_a();
-			cmpl[0].real() = color->get_r()*a;
-			cmpl[1].real() = color->get_g()*a;
-			cmpl[2].real() = color->get_b()*a;
-			cmpl[3].real() = a;
+			ColorReal a = cc->get_a();
+			(*c)[0] = cc->get_r()*a;
+			(*c)[1] = cc->get_g()*a;
+			(*c)[2] = cc->get_b()*a;
+			(*c)[3] = a;
 		}
+	}
+
+	// alloc memory
+	switch(type)
+	{
+	case rendering::Blur::BOX:
+	case rendering::Blur::CROSS:
+	case rendering::Blur::GAUSSIAN:
+	case rendering::Blur::FASTGAUSSIAN:
+		row_pattern.resize(cols);
+		col_pattern.resize(rows);
+		arr_row_pattern.pointer = &row_pattern.front().real();
+		arr_col_pattern.pointer = &col_pattern.front().real();
+		break;
+	case rendering::Blur::DISC:
+		full_pattern.resize(rows*cols);
+		arr_full_pattern.pointer = &full_pattern.front().real();
+		break;
+	default:
+		assert(false);
+		break;
 	}
 
 	// create patterns
 	switch(type)
 	{
 	case rendering::Blur::BOX:
-		row_pattern.resize(cols);
-		fill_pattern_box(&row_pattern.front(), cols, 1, s[0]);
-		col_pattern.resize(rows);
-		fill_pattern_box(&col_pattern.front(), rows, 1, s[1]);
+		BlurTemplates::fill_pattern_box(arr_row_pattern.reorder(0), s[0]);
+		BlurTemplates::fill_pattern_box(arr_col_pattern.reorder(0), s[1]);
 		break;
 	case rendering::Blur::CROSS:
-		row_pattern.resize(cols);
-		fill_pattern_box(&row_pattern.front(), cols, 1, s[0]);
-		//fill_pattern_gauss(&row_pattern.front(), cols, 1, s[0]);
-		col_pattern.resize(rows);
-		fill_pattern_box(&col_pattern.front(), rows, 1, s[1]);
-		//fill_pattern_gauss(&col_pattern.front(), rows, 1, s[1]);
+		BlurTemplates::fill_pattern_box(arr_row_pattern.reorder(0), s[0]);
+		BlurTemplates::fill_pattern_box(arr_col_pattern.reorder(0), s[1]);
 		cross = true;
-		break;
-	case rendering::Blur::DISC:
-		full_pattern.resize(rows*cols);
-		fill_pattern_2d_disk(&full_pattern.front(), rows, cols, cols, 1, s);
-		full = true;
 		break;
 	case rendering::Blur::GAUSSIAN:
 	case rendering::Blur::FASTGAUSSIAN:
-		row_pattern.resize(cols);
-		fill_pattern_gauss(&row_pattern.front(), cols, 1, s[0]);
-		col_pattern.resize(rows);
-		fill_pattern_gauss(&col_pattern.front(), rows, 1, s[1]);
+		BlurTemplates::fill_pattern_gauss(arr_row_pattern.reorder(0), s[0]);
+		BlurTemplates::fill_pattern_gauss(arr_col_pattern.reorder(0), s[1]);
+		break;
+	case rendering::Blur::DISC:
+		BlurTemplates::fill_pattern_2d_disk(arr_full_pattern.reorder(0, 1), s[0], s[1]);
+		full = true;
 		break;
 	default:
 		assert(false);
@@ -411,45 +240,53 @@ software::Blur::blur_fft(
 
 	if (full)
 	{
-		FFT::fft2d(&full_pattern.front(), rows, cols, cols, 1, false);
-		for(int channel = 0; channel < chanels; ++channel)
+		FFT::fft2d(arr_full_pattern.group_items<Complex>(), false);
+		for(Array<Complex, 3>::Iterator channel(arr_surface.group_items<Complex>().reorder(2, 0, 1)); channel; ++channel)
 		{
-			FFT::fft2d(&surface.front() + channel, rows, row_stride, cols, col_stride, false);
-			multiply_2d(&surface.front() + channel, rows, row_stride, cols, col_stride, &full_pattern.front(), cols, 1);
-			FFT::fft2d(&surface.front() + channel, rows, row_stride, cols, col_stride, true);
-			//add_2d(&surface.front() + channel, rows, row_stride, cols, col_stride, &full_pattern.front(), cols, 1);
+			FFT::fft2d(*channel, false);
+			channel->process< std::multiplies<Complex> >(arr_full_pattern.group_items<Complex>());
+			FFT::fft2d(*channel, true);
 		}
 	}
 	else
 	{
 		vector<Complex> surface_copy;
-		vector<Complex> *surface_rows = &surface;
-		vector<Complex> *surface_cols = &surface;
+		Array<Complex, 3> arr_surface_rows(arr_surface.group_items<Complex>().reorder(2, 0, 1));
+		Array<Complex, 3> arr_surface_cols(arr_surface_rows.reorder(0, 2, 1));
 
 		if (cross)
 		{
-			for(Complex *x = &surface.front() + 3, *end = x + rows*row_stride; x < end; x += col_stride)
-				x->real() *= 0.5;
+			arr_surface.reorder(0, 1, 2).process< std::multiplies<Real> >(0.5);
 			surface_copy = surface;
-			surface_cols = &surface_copy;
+			arr_surface_cols.pointer = &surface_copy.front();
 		}
 
-		FFT::fft(&row_pattern.front(), cols, 1, false);
-		FFT::fft(&col_pattern.front(), rows, 1, false);
-		for(int channel = 0; channel < chanels; ++channel)
+		FFT::fft(arr_row_pattern.group_items<Complex>(), false);
+		for(Array<Complex, 3>::Iterator channel(arr_surface_rows); channel; ++channel)
 		{
-			FFT::fft2d(&surface_rows->front() + channel, rows, row_stride, cols, col_stride, false, true, false);
-			for(int r = 0; r < rows; ++r)
-				multiply(&surface_rows->front() + r*row_stride + channel, cols, col_stride, &row_pattern.front(), 1);
-			FFT::fft2d(&surface_rows->front() + channel, rows, row_stride, cols, col_stride, true, true, false);
-			FFT::fft2d(&surface_cols->front() + channel, rows, row_stride, cols, col_stride, false, false, true);
-			for(int c = 0; c < cols; ++c)
-				multiply(&surface_cols->front() + c*col_stride + channel, rows, row_stride, &col_pattern.front(), 1);
-			FFT::fft2d(&surface_cols->front() + channel, rows, row_stride, cols, col_stride, true, false, true);
+			FFT::fft2d(*channel, false, true, false);
+			for(Array<Complex, 2>::Iterator r(*channel); r; ++r)
+				r->process< std::multiplies<Complex> >(arr_row_pattern.group_items<Complex>());
+			FFT::fft2d(*channel, true, true, false);
 		}
 
+		FFT::fft(arr_col_pattern.group_items<Complex>(), false);
+		for(Array<Complex, 3>::Iterator channel(arr_surface_cols); channel; ++channel)
+		{
+			FFT::fft2d(*channel, false, true, false);
+			for(Array<Complex, 2>::Iterator c(*channel); c; ++c)
+				c->process< std::multiplies<Complex> >(arr_col_pattern.group_items<Complex>());
+			FFT::fft2d(*channel, true, true, false);
+		}
+
+		arr_surface_rows.process< BlurTemplates::Abs<Complex> >();
 		if (cross)
-			add(&surface.front(), rows*row_stride, 1, &surface_copy.front(), 1);
+		{
+			arr_surface_cols.process< BlurTemplates::Abs<Complex> >();
+			arr_surface_rows.split_items<Real>().reorder(0, 1, 2)
+				.process< std::plus<Real> >(
+					arr_surface_cols.split_items<Real>().reorder(0, 2, 1) );
+		}
 	}
 
 	// convert surface from complex to color
@@ -460,14 +297,17 @@ software::Blur::blur_fft(
 		for(int r = 0; r < dr_size[1]; ++r)
 		{
 			apen.move_to(dr.minx, r + dr.miny);
-			for( Complex *cmpl = &surface[(r+offset[1])*row_stride + offset[0]*col_stride], *end = cmpl + dr_size[0]*col_stride;
-				 cmpl < end;
-				 apen.inc_x(), cmpl += col_stride )
+			for( Array<Real, 2>::Iterator cmpl(arr_surface.reorder(0, 1, 2)[r+offset[1]], offset[0], offset[0]+dr_size[0]);
+				 cmpl;
+				 ++cmpl, apen.inc_x() )
 			{
-				Real a = abs(cmpl[3]);
+				Real a = (*cmpl)[3];
 				Real one_div_a = fabs(a) < precision ? 0.0 : 1.0/a;
 				apen.put_value(
-					Color( abs(cmpl[0])*one_div_a, abs(cmpl[1])*one_div_a, abs(cmpl[2])*one_div_a, a ),
+					Color( (*cmpl)[0]*one_div_a,
+						   (*cmpl)[1]*one_div_a,
+						   (*cmpl)[2]*one_div_a,
+						   a ),
 					amount );
 				apen.inc_x();
 			}
@@ -477,14 +317,16 @@ software::Blur::blur_fft(
 	{
 		for(int r = 0; r < dr_size[1]; ++r)
 		{
-			Complex *cmpl = &surface[(r+offset[1])*row_stride + offset[0]*col_stride];
-			for(Color *color = &dest[r + dr.miny][dr.minx], *end = color + dr_size[0]; color < end; ++color, cmpl += col_stride)
+			Color *color = &dest[r + dr.miny][dr.minx];
+			for( Array<Complex, 2>::Iterator cmpl(arr_surface.group_items<Complex>()[r+offset[1]], offset[0], offset[0]+dr_size[0]);
+				 cmpl;
+				 ++cmpl, ++color )
 			{
-				Real a = abs(cmpl[3]);
+				Real a = abs((*cmpl)[3]);
 				Real one_div_a = fabs(a) < precision ? 0.0 : 1.0/a;
-				color->set_r( abs(cmpl[0])*one_div_a );
-				color->set_g( abs(cmpl[1])*one_div_a );
-				color->set_b( abs(cmpl[2])*one_div_a );
+				color->set_r( abs((*cmpl)[0])*one_div_a );
+				color->set_g( abs((*cmpl)[1])*one_div_a );
+				color->set_b( abs((*cmpl)[2])*one_div_a );
 				color->set_a( a );
 			}
 		}
@@ -501,7 +343,7 @@ software::Blur::blur(
 	const Vector &size,
 	bool blend,
 	Color::BlendMethod blend_method,
-	Color::value_type amount )
+	ColorReal amount )
 {
 	// TODO: special functions for small sizes and for fast-gaussian blur
 	blur_fft(dest, dest_rect, src, src_offset, type, size, blend, blend_method, amount);

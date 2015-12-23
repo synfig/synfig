@@ -51,72 +51,8 @@ namespace software
 class Blur
 {
 public:
-	static Real gauss(Real x, Real radius);
-
 	static Real get_extra_size(rendering::Blur::Type type);
 	static VectorInt get_extra_size(rendering::Blur::Type type, const Vector &size);
-
-	static void fill_pattern_2d(
-		Complex *pattern,
-		int rows,
-		int row_stride,
-		int cols,
-		int col_stride,
-		Real value );
-
-	static void fill_pattern_box(
-		Complex *pattern,
-		int count,
-		int stride,
-		Real size );
-
-	static void fill_pattern_gauss(
-		Complex *pattern,
-		int count,
-		int stride,
-		Real size );
-
-	static void fill_pattern_2d_disk(
-		Complex *pattern,
-		int rows,
-		int row_stride,
-		int cols,
-		int col_stride,
-		const Vector &size );
-
-	static void multiply(
-		Complex *target,
-		int count,
-		int stride,
-		const Complex *amplfier,
-		int amplfier_stride );
-
-	static void multiply_2d(
-		Complex *target,
-		int rows,
-		int row_stride,
-		int cols,
-		int col_stride,
-		const Complex *amplfier,
-		int amplfier_row_stride,
-		int amplfier_col_stride );
-
-	static void add(
-		Complex *target,
-		int count,
-		int stride,
-		const Complex *amplfier,
-		int amplfier_stride );
-
-	static void add_2d(
-		Complex *target,
-		int rows,
-		int row_stride,
-		int cols,
-		int col_stride,
-		const Complex *amplfier,
-		int amplfier_row_stride,
-		int amplfier_col_stride );
 
 	//! Full-size blur using Furier transform
 	static void blur_fft(

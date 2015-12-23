@@ -27,8 +27,8 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include "fftown.h"
-#include "fftw.h"
+#include "array.h"
+#include <synfig/complex.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -43,7 +43,21 @@ namespace rendering
 namespace software
 {
 
-typedef FFTW FFT;
+class FFT
+{
+private:
+	class Internal;
+
+public:
+	static int get_valid_count(int x);
+	static bool is_valid_count(int x);
+
+	static void fft(const Array<Complex, 1> &x, bool invert);
+	static void fft2d(const Array<Complex, 2> &x, bool invert, bool do_rows = true, bool do_cols = true);
+
+	static void initialize();
+	static void deinitialize();
+};
 
 } /* end namespace software */
 } /* end namespace rendering */
