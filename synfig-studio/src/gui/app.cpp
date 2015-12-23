@@ -540,6 +540,11 @@ public:
 				return true;
 			}
 #endif
+			if(key=="auto_recover_backup")
+			{
+				value=strprintf("%i",App::auto_recover->get_enable());
+				return true;
+			}
 			if(key=="auto_recover_backup_interval")
 			{
 				value=strprintf("%i",App::auto_recover->get_timeout());
@@ -666,6 +671,12 @@ public:
 			{
 				int i(atoi(value.c_str()));
 				App::set_time_format(static_cast<synfig::Time::Format>(i));
+				return true;
+			}
+			if(key=="auto_recover_backup")
+			{
+				int i(atoi(value.c_str()));
+				App::auto_recover->enable(i);
 				return true;
 			}
 			if(key=="auto_recover_backup_interval")
@@ -814,6 +825,7 @@ public:
 #ifdef SINGLE_THREADED
 		ret.push_back("use_single_threaded");
 #endif
+		ret.push_back("auto_recover_backup");
 		ret.push_back("auto_recover_backup_interval");
 		ret.push_back("restrict_radius_ducks");
 		ret.push_back("resize_imported_images");
@@ -2123,6 +2135,7 @@ App::set_workspace_animating()
 void
 App::restore_default_settings()
 {
+	// TODO autorecover default auto_recover_backup_interval
 	synfigapp::Main::settings().set_value("pref.distance_system","pt");
 	synfigapp::Main::settings().set_value("pref.use_colorspace_gamma","1");
 #ifdef SINGLE_THREADED
@@ -2145,6 +2158,7 @@ App::restore_default_settings()
 	ostringstream temp;
 	temp << Duck::STRUCT_DEFAULT;
 	synfigapp::Main::settings().set_value("pref.ui_handle_tooltip_flag", temp.str());
+	synfigapp::Main::settings().set_value("pref.auto_recover_backup", "1");
 }
 
 void
