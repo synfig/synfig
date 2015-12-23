@@ -33,22 +33,19 @@
 #include <gtk/gtk.h>
 #include <gtkmm/adjustment.h>
 #include <gtkmm/button.h>
+#include <gtkmm/checkbutton.h>
+#include <gtkmm/comboboxtext.h>
 #include <gtkmm/dialog.h>
 #include <gtkmm/drawingarea.h>
-#include <gtkmm/comboboxtext.h>
-#include <gtkmm/checkbutton.h>
-#include <gtkmm/tooltip.h>
-#include <gtkmm/comboboxtext.h>
-#include <gtkmm/spinbutton.h>
-#include <gtkmm/switch.h>
-#include <gtkmm/notebook.h>
 #include <gtkmm/grid.h>
-#include <gtkmm/scrolledwindow.h>
-#include <gtkmm/treeview.h>
-#include <gtkmm/treestore.h>
 #include <gtkmm/listviewtext.h>
-
-#include <glibmm/signalproxy.h>
+#include <gtkmm/notebook.h>
+#include <gtkmm/spinbutton.h>
+#include <gtkmm/scrolledwindow.h>
+#include <gtkmm/switch.h>
+#include <gtkmm/treestore.h>
+#include <gtkmm/treeview.h>
+#include <gtkmm/tooltip.h>
 
 #include <gui/widgets/widget_time.h>
 
