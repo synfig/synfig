@@ -405,31 +405,24 @@ Dialog_Setup::create_system_page(synfig::String name)
 	attach_label_section(grid, _("Recent Files"), ++row);
 	Gtk::SpinButton* recent_files_spinbutton(manage(new Gtk::SpinButton(adj_recent_files,1,0)));
 	grid->attach(*recent_files_spinbutton, 1, row, 1, 1);
-	toggle_autobackup.set_hexpand(false);
 
 	// System - Auto backup interval
 	attach_label_section(grid, _("Auto Backup"), ++row);
 	grid->attach(toggle_autobackup, 1, row, 1, 1);
 	toggle_autobackup.set_hexpand(false);
 	toggle_autobackup.set_halign(Gtk::ALIGN_START);
-// TODO Autobackup siwtch is disabled for now !
-	toggle_autobackup.set_active(true);
-	toggle_autobackup.set_sensitive(false);
+	toggle_autobackup.property_active().signal_changed().connect(
+			sigc::mem_fun(*this, &Dialog_Setup::on_autobackup_changed));
 
-	attach_label(grid, _("Interval (0 to disable)"), ++row);
+	attach_label(grid, _("Interval"), ++row);
 	grid->attach(auto_backup_interval, 1, row, 1, 1);
 	auto_backup_interval.set_hexpand(false);
-
-	grid->attach(*recent_files_spinbutton, 1, row, 1, 1);
-	recent_files_spinbutton->set_hexpand(true);
 
 	// System - Browser_command
 	attach_label_section(grid, _("Browser Command"), ++row);
 	grid->attach(textbox_browser_command, 1, row, 1, 1);
 	textbox_browser_command.set_hexpand(true);
 
-	// TODO full featured Gtk List View, with Add/Remove buttons.
-	// http://www.synfig.org/issues/thebuggenie/synfig/issues/765
 	// System - Brushes path
 	{
 		attach_label_section(grid, _("Brush Presets Path"), ++row);
@@ -439,7 +432,6 @@ Dialog_Setup::create_system_page(synfig::String name)
 
 		Gtk::ScrolledWindow* scroll(manage (new Gtk::ScrolledWindow()));
 		scroll->add(*listviewtext_brushes_path);
-//	listviewtext_brushes_path->
 		listviewtext_brushes_path->set_headers_visible(false);
 		grid->attach(*scroll, 1, row, 1,3);
 
@@ -865,8 +857,14 @@ Dialog_Setup::on_apply_pressed()
 	App::single_threaded=toggle_single_threaded.get_active();
 #endif
 
-	// Set the auto backup interval
-	App::auto_recover->set_timeout(auto_backup_interval.get_value() * 1000);
+	//if(pref_modification_flag&CHANGE_AUTOBACKUP)
+	// TODO catch change event on auto_backup_interval before use CHANGE_AUTOBACKUP
+	{
+		// Set the auto backup status
+		App::auto_recover->enable(toggle_autobackup.get_active());
+		// Set the auto backup interval
+		App::auto_recover->set_timeout(auto_backup_interval.get_value() * 1000);
+	}
 
 	App::distance_system=Distance::System(widget_enum->get_value());
 
@@ -888,7 +886,7 @@ Dialog_Setup::on_apply_pressed()
 
 	//! TODO Create Change mecanism has Class for being used elsewhere
 	// Set the preferred brush path(s)
-	if (pref_modification_flag&Dialog_Setup::CHANGE_BRUSH_PATH)
+	if (pref_modification_flag&CHANGE_BRUSH_PATH)
 	{
 		App::brushes_path.clear();
 		int path_count = 0;
@@ -948,7 +946,7 @@ Dialog_Setup::on_apply_pressed()
 	App::save_settings();
 	App::setup_changed();
 
-	if ((pref_modification_flag&Dialog_Setup::CHANGE_BRUSH_PATH) &&
+	if ((pref_modification_flag&CHANGE_BRUSH_PATH) &&
 			String(App::get_selected_canvas_view()->get_smach().get_state_name()) == String("brush"))
 	{
 		App::get_selected_canvas_view()->get_smach().process_event(EVENT_REFRESH_TOOL_OPTIONS);
@@ -1051,9 +1049,18 @@ Dialog_Setup::on_time_format_changed()
 }
 
 void
+Dialog_Setup::on_autobackup_changed()
+{
+	if(!refreshing) pref_modification_flag |= CHANGE_AUTOBACKUP;
+	auto_backup_interval.set_sensitive(toggle_autobackup.get_active());
+	App::auto_recover->enable(toggle_autobackup.get_active());
+}
+
+void
 Dialog_Setup::refresh()
 {
-	pref_modification_flag = Dialog_Setup::CHANGE_NONE;
+	refreshing = true;
+	pref_modification_flag = CHANGE_NONE;
 	// Refresh the temporary gamma; do this before adjusting the sliders,
 	// or variables will be used before their initialization.
 	gamma_pattern.set_gamma_r(App::gamma.get_gamma_r());
@@ -1084,9 +1091,10 @@ Dialog_Setup::refresh()
 	// Refresh the status of the single_threaded flag
 	toggle_single_threaded.set_active(App::single_threaded);
 #endif
-
+	toggle_autobackup.set_active(App::auto_recover->get_enable());
 	// Refresh the value of the auto backup interval
 	auto_backup_interval.set_value(App::auto_recover->get_timeout() / 1000);
+	auto_backup_interval.set_sensitive(App::auto_recover->get_enable());
 
 	// Refresh the status of the restrict_radius_ducks flag
 	toggle_restrict_radius_ducks.set_active(App::restrict_radius_ducks);
@@ -1172,6 +1180,7 @@ Dialog_Setup::refresh()
 	toggle_handle_tooltip_radius.set_active(App::ui_handle_tooltip_flag&Duck::STRUCT_RADIUS);
 	toggle_handle_tooltip_transformation.set_active(App::ui_handle_tooltip_flag&Duck::STRUCT_TRANSFORMATION);
 
+	refreshing = false;
 }
 
 GammaPattern::GammaPattern():

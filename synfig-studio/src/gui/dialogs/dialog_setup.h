@@ -48,6 +48,8 @@
 #include <gtkmm/treestore.h>
 #include <gtkmm/listviewtext.h>
 
+#include <glibmm/signalproxy.h>
+
 #include <gui/widgets/widget_time.h>
 
 #include <synfig/gamma.h>
@@ -168,7 +170,7 @@ class Dialog_Setup : public Gtk::Dialog
 	{
 		CHANGE_NONE					=	(0),		//    0
 		CHANGE_UI_LANGUAGE			=	(1 <<  0),	//    1
-		CHANGE_TANGENT				=	(1 <<  1),	//    2
+		CHANGE_AUTOBACKUP			=	(1 <<  1),	//    2
 		CHANGE_RADIUS					=	(1 <<  2),	//    4
 		CHANGE_WIDTH					=	(1 <<  3),	//    8
 		CHANGE_ANGLE					=	(1 <<  4),	//   16
@@ -198,6 +200,7 @@ class Dialog_Setup : public Gtk::Dialog
 	void on_fps_template_combo_change();
 	void on_ui_language_combo_change();
 	void on_time_format_changed();
+	void on_autobackup_changed();
 
 	void on_brush_path_add_clicked();
 	void on_brush_path_remove_clicked();
@@ -294,6 +297,8 @@ class Dialog_Setup : public Gtk::Dialog
 	Gtk::Switch toggle_autobackup;
 
 	long pref_modification_flag;
+	//! Do not update state flag on refreshing
+	bool refreshing;
 
 	// TODO Move treeview + title dialog style to upper class for global use and consistancy
 	//Preferences Categories Tree model columns:
