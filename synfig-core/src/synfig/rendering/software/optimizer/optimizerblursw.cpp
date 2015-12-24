@@ -88,10 +88,10 @@ OptimizerBlurSW::run(const RunParams& params) const
 			Vector rb = blur_sw->get_source_rect_rb();
 			Vector k( (rb[0] - lt[0])/(rect.maxx - rect.minx),
 					  (rb[1] - lt[1])/(rect.maxy - rect.miny) );
-			Vector nlt( lt[0] - k[0]*rect.minx,
-						lt[1] - k[1]*rect.miny);
-			Vector nrb( lt[0] + k[0]*(size[0] - rect.minx),
-						lt[1] + k[1]*(size[1] - rect.miny) );
+			Vector nlt( lt[0] - k[0]*extra_size[0],
+						lt[1] - k[1]*extra_size[1] );
+			Vector nrb( rb[0] + k[0]*extra_size[0],
+						rb[1] + k[1]*extra_size[1] );
 			blur_sw->sub_task()->init_target_rect(RectInt(VectorInt::zero(), size), nlt, nrb);
 			blur_sw->sub_task()->trunc_target_by_bounds();
 			assert( blur_sw->sub_task()->check() );

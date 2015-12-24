@@ -61,6 +61,40 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
+bool
+software::Blur::Params::validate()
+{
+	const Real precision = 1e-10;
+
+	if (blend && fabs(amount) < precision)
+		return false;
+
+	if ( !dest->is_valid()
+	  || !dest_rect.valid()
+	  || !src->is_valid() ) return false;
+
+	offset = src_offset - dest_rect.get_min();
+
+	VectorInt extra_size = get_extra_size(type, size);
+	etl::set_intersect(dest_rect, dest_rect, RectInt(0, 0, dest->get_w(), dest->get_h()));
+	if (!dest_rect.valid()) return false;
+
+	src_rect = dest_rect + offset;
+	src_rect.minx -= extra_size[0];
+	src_rect.miny -= extra_size[1];
+	src_rect.maxx += extra_size[0];
+	src_rect.maxy += extra_size[1];
+	if (!src_rect.valid()) return false;
+	etl::set_intersect(src_rect, src_rect, RectInt(0, 0, src->get_w(), src->get_h()));
+	if (!src_rect.valid()) return false;
+	etl::set_intersect(dest_rect, dest_rect, src_rect - offset);
+	if (!dest_rect.valid()) return false;
+	offset += src_rect.get_min();
+
+	return true;
+}
+
+
 Real
 software::Blur::get_extra_size(rendering::Blur::Type type)
 {
@@ -93,55 +127,12 @@ software::Blur::get_extra_size(
 }
 
 void
-software::Blur::blur_fft(
-	synfig::Surface &dest,
-	const RectInt &dest_rect,
-	const synfig::Surface &src,
-	const VectorInt src_offset,
-	rendering::Blur::Type type,
-	const Vector &size,
-	bool blend,
-	Color::BlendMethod blend_method,
-	ColorReal amount )
+software::Blur::blur_fft(const Params &params)
 {
-	const Real precision = 1e-10;
-
-	if (blend && fabs(amount) < precision)
-		return;
-
-	if ( !dest.is_valid()
-	  || !dest_rect.valid()
-	  || !src.is_valid() ) return;
-
-	Vector s(fabs(size[0]), fabs(size[1]));
-
-	// rects
-	VectorInt offset = dest_rect.get_min() - src_offset;
-
-	VectorInt extra_size = get_extra_size(type, size);
-	RectInt dr = dest_rect;
-	etl::set_intersect(dr, dr, RectInt(0, 0, dest.get_w(), dest.get_h()));
-	if (!dr.valid()) return;
-
-	RectInt sr = dr - offset;
-	sr.minx -= extra_size[0];
-	sr.miny -= extra_size[1];
-	sr.maxx += extra_size[0];
-	sr.maxy += extra_size[1];
-	if (!sr.valid()) return;
-	etl::set_intersect(sr, sr, RectInt(0, 0, src.get_w(), src.get_h()));
-	if (!sr.valid()) return;
-	etl::set_intersect(dr, dr, sr + offset);
-	if (!dr.valid()) return;
-	offset -= sr.get_min();
-
-	VectorInt sr_size = sr.get_size();
-	VectorInt dr_size = dr.get_size();
-
 	// init
 	const int channels = 4;
-	int rows = FFT::get_valid_count(sr_size[1]);
-	int cols = FFT::get_valid_count(sr_size[0]);
+	int rows = FFT::get_valid_count(params.src_rect.get_size()[1]);
+	int cols = FFT::get_valid_count(params.src_rect.get_size()[0]);
 	vector<Complex> surface(rows*cols*channels);
 	vector<Complex> full_pattern;
 	vector<Complex> row_pattern;
@@ -149,11 +140,6 @@ software::Blur::blur_fft(
 	bool full = false;
 	bool cross = false;
 
-	Array<const ColorReal, 3> arr_src((const ColorReal*)&src[sr.miny][sr.minx]);
-	arr_src
-		.set_dim(rows, src.get_pitch()/sizeof(Color)*channels)
-		.set_dim(cols, channels)
-		.set_dim(channels, 1);
 	Array<Real, 4> arr_surface(&surface.front().real());
 	arr_surface
 		.set_dim(rows, cols*channels*2)
@@ -175,22 +161,10 @@ software::Blur::blur_fft(
 		.set_dim(2, 1);
 
 	// convert surface to complex
-	Array<const Color, 2>::Iterator rr(arr_src.group_items<const Color>());
-	for(Array<Real, 3>::Iterator r(arr_surface.reorder(0, 1, 2)); r; ++r, ++rr)
-	{
-		Array<const Color, 1>::Iterator cc(*rr);
-		for(Array<Real, 2>::Iterator c(*r); c; ++c, ++cc)
-		{
-			ColorReal a = cc->get_a();
-			(*c)[0] = cc->get_r()*a;
-			(*c)[1] = cc->get_g()*a;
-			(*c)[2] = cc->get_b()*a;
-			(*c)[3] = a;
-		}
-	}
+	BlurTemplates::read_surface(arr_surface.reorder(0, 1, 2), *params.src, VectorInt(0, 0), params.src_rect);
 
 	// alloc memory
-	switch(type)
+	switch(params.type)
 	{
 	case rendering::Blur::BOX:
 	case rendering::Blur::CROSS:
@@ -207,37 +181,39 @@ software::Blur::blur_fft(
 		break;
 	default:
 		assert(false);
-		break;
+		return;
 	}
 
 	// create patterns
-	switch(type)
+	switch(params.type)
 	{
 	case rendering::Blur::BOX:
-		BlurTemplates::fill_pattern_box(arr_row_pattern.reorder(0), s[0]);
-		BlurTemplates::fill_pattern_box(arr_col_pattern.reorder(0), s[1]);
+		BlurTemplates::fill_pattern_box(arr_row_pattern.reorder(0), params.size[0]);
+		BlurTemplates::fill_pattern_box(arr_col_pattern.reorder(0), params.size[1]);
 		break;
 	case rendering::Blur::CROSS:
-		BlurTemplates::fill_pattern_box(arr_row_pattern.reorder(0), s[0]);
-		BlurTemplates::fill_pattern_box(arr_col_pattern.reorder(0), s[1]);
+		BlurTemplates::fill_pattern_box(arr_row_pattern.reorder(0), params.size[0]);
+		BlurTemplates::fill_pattern_box(arr_col_pattern.reorder(0), params.size[1]);
 		cross = true;
 		break;
 	case rendering::Blur::GAUSSIAN:
 	case rendering::Blur::FASTGAUSSIAN:
-		BlurTemplates::fill_pattern_gauss(arr_row_pattern.reorder(0), s[0]);
-		BlurTemplates::fill_pattern_gauss(arr_col_pattern.reorder(0), s[1]);
+		BlurTemplates::fill_pattern_gauss(arr_row_pattern.reorder(0), params.size[0]);
+		BlurTemplates::fill_pattern_gauss(arr_col_pattern.reorder(0), params.size[1]);
 		break;
 	case rendering::Blur::DISC:
-		BlurTemplates::fill_pattern_2d_disk(arr_full_pattern.reorder(0, 1), s[0], s[1]);
+		BlurTemplates::fill_pattern_2d_disk(
+			arr_full_pattern.reorder(0, 1),
+			params.size[0],
+			params.size[1] );
 		full = true;
 		break;
 	default:
 		assert(false);
-		break;
+		return;
 	}
 
 	// process
-
 	if (full)
 	{
 		FFT::fft2d(arr_full_pattern.group_items<Complex>(), false);
@@ -290,63 +266,104 @@ software::Blur::blur_fft(
 	}
 
 	// convert surface from complex to color
-	if (blend)
-	{
-		Surface::alpha_pen apen(dest.get_pen(0, 0));
-		apen.set_blend_method(blend_method);
-		for(int r = 0; r < dr_size[1]; ++r)
-		{
-			apen.move_to(dr.minx, r + dr.miny);
-			for( Array<Real, 2>::Iterator cmpl(arr_surface.reorder(0, 1, 2)[r+offset[1]], offset[0], offset[0]+dr_size[0]);
-				 cmpl;
-				 ++cmpl, apen.inc_x() )
-			{
-				Real a = (*cmpl)[3];
-				Real one_div_a = fabs(a) < precision ? 0.0 : 1.0/a;
-				apen.put_value(
-					Color( (*cmpl)[0]*one_div_a,
-						   (*cmpl)[1]*one_div_a,
-						   (*cmpl)[2]*one_div_a,
-						   a ),
-					amount );
-				apen.inc_x();
-			}
-		}
-	}
-	else
-	{
-		for(int r = 0; r < dr_size[1]; ++r)
-		{
-			Color *color = &dest[r + dr.miny][dr.minx];
-			for( Array<Complex, 2>::Iterator cmpl(arr_surface.group_items<Complex>()[r+offset[1]], offset[0], offset[0]+dr_size[0]);
-				 cmpl;
-				 ++cmpl, ++color )
-			{
-				Real a = abs((*cmpl)[3]);
-				Real one_div_a = fabs(a) < precision ? 0.0 : 1.0/a;
-				color->set_r( abs((*cmpl)[0])*one_div_a );
-				color->set_g( abs((*cmpl)[1])*one_div_a );
-				color->set_b( abs((*cmpl)[2])*one_div_a );
-				color->set_a( a );
-			}
-		}
-	}
+	BlurTemplates::write_surface(
+		*params.dest,
+		arr_surface.reorder(0, 1, 2),
+		params.dest_rect,
+		params.offset,
+		params.blend,
+		params.blend_method,
+		params.amount );
 }
 
 void
-software::Blur::blur(
-	synfig::Surface &dest,
-	const RectInt &dest_rect,
-	const synfig::Surface &src,
-	const VectorInt src_offset,
-	rendering::Blur::Type type,
-	const Vector &size,
-	bool blend,
-	Color::BlendMethod blend_method,
-	ColorReal amount )
+software::Blur::blur_box(const Params &params)
 {
+	const Real precision(1e-5);
+	const int channels = 4;
+	int rows = params.src_rect.get_size()[1];
+	int cols = params.src_rect.get_size()[0];
+
+	vector<ColorReal> surface(rows*cols*channels);
+	Array<ColorReal, 3> arr_surface(&surface.front());
+	arr_surface
+		.set_dim(rows, cols*channels)
+		.set_dim(cols, channels)
+		.set_dim(channels, 1);
+	BlurTemplates::read_surface(arr_surface, *params.src, VectorInt(0, 0), params.src_rect);
+
+	bool cross = false;
+	switch(params.type)
+	{
+	case rendering::Blur::BOX:
+		break;
+	case rendering::Blur::CROSS:
+		cross = true;
+		break;
+	default:
+		assert(false);
+		return;
+	}
+
+	deque<ColorReal> q;
+	vector<ColorReal> surface_copy;
+	Array<ColorReal, 3> arr_surface_rows(arr_surface.reorder(2, 0, 1));
+	Array<ColorReal, 3> arr_surface_cols(arr_surface_rows.reorder(0, 2, 1));
+
+	if (cross)
+	{
+		arr_surface.process< std::multiplies<ColorReal> >(0.5);
+		surface_copy = surface;
+		arr_surface_cols.pointer = &surface_copy.front();
+	}
+
+	if (fabs(params.size[0] - round(params.size[0])) < precision)
+		for(Array<ColorReal, 3>::Iterator channel(arr_surface_rows); channel; ++channel)
+			for(Array<ColorReal, 2>::Iterator r(*channel); r; ++r)
+				BlurTemplates::box_blur_discrete(*r, q, (int)round(params.size[0]));
+	else
+		for(Array<ColorReal, 3>::Iterator channel(arr_surface_rows); channel; ++channel)
+			for(Array<ColorReal, 2>::Iterator r(*channel); r; ++r)
+				BlurTemplates::box_blur_discrete(*r, q, (ColorReal)params.size[0]);
+
+	if (fabs(params.size[1] - round(params.size[1])) < precision)
+		for(Array<ColorReal, 3>::Iterator channel(arr_surface_cols); channel; ++channel)
+			for(Array<ColorReal, 2>::Iterator c(*channel); c; ++c)
+				BlurTemplates::box_blur_discrete(*c, q, (int)round(params.size[1]));
+	else
+		for(Array<ColorReal, 3>::Iterator channel(arr_surface_cols); channel; ++channel)
+			for(Array<ColorReal, 2>::Iterator c(*channel); c; ++c)
+				BlurTemplates::box_blur_aa(*c, q, (ColorReal)params.size[1]);
+
+	if (cross)
+		arr_surface_rows
+			.process< std::plus<ColorReal> >(
+				arr_surface_cols.reorder(0, 2, 1) );
+
+	BlurTemplates::write_surface(
+		*params.dest,
+		arr_surface,
+		params.dest_rect,
+		params.offset,
+		params.blend,
+		params.blend_method,
+		params.amount );
+}
+
+void
+software::Blur::blur(Params params)
+{
+	if (!params.validate()) return;
+
+	if ( params.type == rendering::Blur::BOX
+	  || params.type == rendering::Blur::CROSS )
+	{
+		blur_box(params);
+		return;
+	}
+
 	// TODO: special functions for small sizes and for fast-gaussian blur
-	blur_fft(dest, dest_rect, src, src_offset, type, size, blend, blend_method, amount);
+	blur_fft(params);
 }
 
 /* === E N T R Y P O I N T ================================================= */

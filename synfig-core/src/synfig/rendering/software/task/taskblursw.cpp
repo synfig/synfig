@@ -77,10 +77,11 @@ TaskBlurSW::run(RunParams & /* params */) const
 	offset += sub_task()->get_target_rect().get_min();
 
 	software::Blur::blur(
-		a, get_target_rect(),
-		b, offset,
-		blur.type, s,
-		blend, blend_method, amount);
+		software::Blur::Params(
+			a, get_target_rect(),
+			b, offset,
+			blur.type, s,
+			blend, blend_method, amount ));
 
 	return false;
 }

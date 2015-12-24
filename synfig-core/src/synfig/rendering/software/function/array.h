@@ -228,6 +228,18 @@ public:
 			Parent::group_items_ptr((TT*)NULL) );
 	}
 
+	Array get_range(int r, int begin, int end) const
+	{
+		assert(begin >= 0 && begin <= end && end <= get_count(r));
+		Array a(*this);
+		a.pointer += a.get_stride(r)*begin;
+		a.set_count(r, end - begin);
+		return a;
+	}
+
+	Array get_range(int r, int begin) const
+		{ return get_range(r, begin, get_count(r)); }
+
 	Array<Type, 1> reorder(int d0) const
 	{
 		Array<Type, 1> a(Parent::pointer);

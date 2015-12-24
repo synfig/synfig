@@ -51,32 +51,60 @@ namespace software
 class Blur
 {
 public:
+	class Params {
+	public:
+		synfig::Surface *dest;
+		RectInt dest_rect;
+		const synfig::Surface *src;
+		VectorInt src_offset;
+		RectInt src_rect;
+		rendering::Blur::Type type;
+		Vector size;
+		VectorInt extra_size;
+		VectorInt offset;
+		bool blend;
+		Color::BlendMethod blend_method;
+		ColorReal amount;
+
+		Params(): dest(), src(), blend(), blend_method(), amount() { }
+		Params(
+			synfig::Surface &dest,
+			const RectInt &dest_rect,
+			const synfig::Surface &src,
+			const VectorInt src_offset,
+			rendering::Blur::Type type,
+			const Vector &size,
+			bool blend,
+			Color::BlendMethod blend_method,
+			ColorReal amount
+		):
+			dest(&dest),
+			dest_rect(dest_rect),
+			src(&src),
+			src_offset(src_offset),
+			type(type),
+			size(size),
+			blend(blend),
+			blend_method(blend_method),
+			amount(amount)
+		{ }
+
+		bool validate();
+	};
+
 	static Real get_extra_size(rendering::Blur::Type type);
 	static VectorInt get_extra_size(rendering::Blur::Type type, const Vector &size);
 
+private:
 	//! Full-size blur using Furier transform
-	static void blur_fft(
-		synfig::Surface &dest,
-		const RectInt &dest_rect,
-		const synfig::Surface &src,
-		const VectorInt src_offset,
-		rendering::Blur::Type type,
-		const Vector &size,
-		bool blend,
-		Color::BlendMethod blend_method,
-		Color::value_type amount );
+	static void blur_fft(const Params &params);
 
+	// Fast box-blur
+	static void blur_box(const Params &params);
+
+public:
 	//! Generic blur function
-	static void blur(
-		synfig::Surface &dest,
-		const RectInt &dest_rect,
-		const synfig::Surface &src,
-		const VectorInt src_offset,
-		rendering::Blur::Type type,
-		const Vector &size,
-		bool blend,
-		Color::BlendMethod blend_method,
-		Color::value_type amount );
+	static void blur(Params params);
 };
 
 } /* end namespace software */

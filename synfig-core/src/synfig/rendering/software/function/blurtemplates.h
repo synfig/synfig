@@ -35,6 +35,7 @@
 #include "array.h"
 
 #include <synfig/angle.h>
+#include <synfig/surface.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -204,6 +205,7 @@ public:
 		if (x.count < full_size) return;
 		T w(T(1.0)/T(full_size));
 		T sum(0.0);
+		q.clear();
 		for(typename A::Iterator i(x, 0, full_size); i; ++i)
 			{ q.push_back(*i); sum += *i; }
 		for(typename A::Iterator i(x, full_size), j(x, s); i; ++i, ++j)
@@ -267,6 +269,7 @@ public:
 		T aa(T(1.0) - s + T(sizei));
 		T sum(0.0);
 		T aa_out = x[0];
+		q.clear();
 		for(typename A::Iterator i(x, 1, 2*sizei); i; ++i)
 			{ q.push_back(*i); sum += *i; }
 		q.push_back(x[2*sizei]);
@@ -324,6 +327,159 @@ public:
 				aa_in = *i1;
 			}
 		}
+	}
+
+	template<typename T>
+	static void box_blur(const Array<T, 1> &x, std::deque<T> &q, const T &size)
+	{
+		const T precision(1e-5);
+		if (fabs(size - round(size)) < precision)
+			box_blur_discrete(x, q, (int)round(size));
+		else
+			box_blur_aa(x, q, size);
+	}
+
+	template<typename T>
+	static void box_blur(const Array<T, 1> &dst, const Array<const T, 1> &src, const T &size, const int offset)
+	{
+		const T precision(1e-5);
+		if (fabs(size - round(size)) < precision)
+			box_blur_discrete(dst, src, (int)round(size), offset);
+		else
+			box_blur_aa(dst, src, size, offset);
+	}
+
+	static void surface_as_array(Array<const Color, 2> &a, const synfig::Surface &src, const RectInt &r)
+	{
+		assert(src.is_valid() && r.is_valid());
+		assert(r.minx >= 0 && r.miny >= 0);
+		assert(r.maxx <= src.get_w() && r.miny <= src.get_h());
+		a.pointer = &src[r.miny][r.minx];
+		a.set_dim(r.maxy - r.miny, src.get_pitch()/sizeof(Color))
+		 .set_dim(r.maxx - r.minx, 1);
+	}
+
+	static void surface_as_array(Array<Color, 2> &a, synfig::Surface &src, const RectInt &r)
+	{
+		assert(src.is_valid() && r.is_valid());
+		assert(r.minx >= 0 && r.miny >= 0);
+		assert(r.maxx <= src.get_w() && r.miny <= src.get_h());
+		a.pointer = &src[r.miny][r.minx];
+		a.set_dim(r.maxy - r.miny, src.get_pitch()/sizeof(Color))
+		 .set_dim(r.maxx - r.minx, 1);
+	}
+
+	static Array<Color, 2> surface_as_array(synfig::Surface &src)
+		{ Array<Color, 2> a; surface_as_array(a, src, RectInt(0, 0, src.get_w(), src.get_h())); return a; }
+	static Array<Color, 2> surface_as_array(synfig::Surface &src, const RectInt &r)
+		{ Array<Color, 2> a; surface_as_array(a, src, r); return a; }
+
+	static Array<const Color, 2> surface_as_array(const synfig::Surface &src)
+		{ Array<const Color, 2> a; surface_as_array(a, src, RectInt(0, 0, src.get_w(), src.get_h())); return a; }
+	static Array<const Color, 2> surface_as_array(const synfig::Surface &src, const RectInt &r)
+		{ Array<const Color, 2> a; surface_as_array(a, src, r); return a; }
+
+	template<typename T>
+	static void read_surface(
+		const Array<T, 3> &dst,
+		const Array<const Color, 2> &src )
+	{
+		assert(dst.count == src.count);
+		assert(dst.sub().count == src.sub().count);
+		assert(dst.sub().sub().count == 4);
+		Array<const Color, 2>::Iterator rr(src);
+		for(typename Array<T, 3>::Iterator r(dst); r; ++r, ++rr)
+		{
+			Array<const Color, 1>::Iterator cc(*rr);
+			for(typename Array<T, 2>::Iterator c(*r); c; ++c, ++cc)
+			{
+				ColorReal a = cc->get_a();
+				(*c)[0] = cc->get_r()*a;
+				(*c)[1] = cc->get_g()*a;
+				(*c)[2] = cc->get_b()*a;
+				(*c)[3] = a;
+			}
+		}
+	}
+
+	template<typename T>
+	static void read_surface(
+		const Array<T, 3> &dst,
+		const synfig::Surface &src,
+		const VectorInt &dst_offset,
+		const RectInt &src_rect )
+	{
+		RectInt dst_rect = src_rect - src_rect.get_min() + dst_offset;
+		Array<T, 3> dst_range = dst.get_range(1, dst_rect.minx, dst_rect.maxx)
+								   .get_range(0, dst_rect.miny, dst_rect.maxy);
+		Array<const Color, 2> src_range = surface_as_array(src, src_rect);
+		read_surface(dst_range, src_range);
+	}
+
+	template<typename T>
+	static void write_surface(
+		const Array<Color, 2> &dst,
+		const Array<T, 3> &src )
+	{
+		assert(dst.count == src.count);
+		assert(dst.sub().count == src.sub().count);
+		assert(src.sub().sub().count == 4);
+		const ColorReal precision = 1e-10;
+		Array<Color, 2>::Iterator rr(dst);
+		for(typename Array<T, 3>::Iterator r(src); r; ++r, ++rr)
+		{
+			Array<Color, 1>::Iterator cc(*rr);
+			for(typename Array<T, 2>::Iterator c(*r); c; ++c, ++cc)
+			{
+				ColorReal a = (*c)[3];
+				Real one_div_a = fabs(a) < precision ? 0.0 : 1.0/a;
+				Color color((*c)[0]*one_div_a, (*c)[1]*one_div_a, (*c)[2]*one_div_a, a);
+				*cc = color;
+			}
+		}
+	}
+
+	template<typename T>
+	static void write_surface(
+		const Array<Color, 2> &dst,
+		const Array<T, 3> &src,
+		Color::BlendMethod blend_method,
+		ColorReal amount )
+	{
+		assert(dst.count == src.count);
+		assert(dst.sub().count == src.sub().count);
+		assert(src.sub().sub().count == 4);
+		const ColorReal precision = 1e-10;
+		Array<Color, 2>::Iterator rr(dst);
+		for(typename Array<T, 3>::Iterator r(src); r; ++r, ++rr)
+		{
+			Array<Color, 1>::Iterator cc(*rr);
+			for(typename Array<T, 2>::Iterator c(*r); c; ++c, ++cc)
+			{
+				ColorReal a = (*c)[3];
+				Real one_div_a = fabs(a) < precision ? 0.0 : 1.0/a;
+				Color color((*c)[0]*one_div_a, (*c)[1]*one_div_a, (*c)[2]*one_div_a, a);
+				*cc = Color::blend(*cc, color, amount, blend_method);
+			}
+		}
+	}
+
+	template<typename T>
+	static void write_surface(
+		synfig::Surface &dst,
+		const Array<T, 3> &src,
+		const RectInt &dst_rect,
+		const VectorInt &src_offset,
+		bool blend,
+		Color::BlendMethod blend_method,
+		ColorReal amount )
+	{
+		RectInt src_rect = dst_rect - dst_rect.get_min() + src_offset;
+		Array<Color, 2> dst_range = surface_as_array(dst, dst_rect);
+		Array<T, 3> src_range = src.get_range(1, src_rect.minx, src_rect.maxx)
+								   .get_range(0, src_rect.miny, src_rect.maxy);
+		if (blend) write_surface(dst_range, src_range, blend_method, amount);
+			  else write_surface(dst_range, src_range);
 	}
 };
 
