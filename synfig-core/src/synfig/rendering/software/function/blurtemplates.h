@@ -105,8 +105,14 @@ public:
 	{
 		x[0] = gauss(T(0), size);
 		T s = fabs(size);
+		T sum(x[0]);
 		for(int i = x.count/2; i; --i)
-			x[i] = x[x.count - i] = gauss(T(i), s);
+			sum += (x[i] = x[x.count - i] = gauss(T(i), s));
+		if (x.count % 2 == 0)
+			sum -= 0.5*x[x.count/2];
+		T k = 0.5/sum;
+		for(typename Array<T, 1>::Iterator i(x); i; ++i)
+			*i *= k;
 	}
 
 	template<typename T>
