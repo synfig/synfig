@@ -1271,6 +1271,30 @@ if [ ! -f ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done ]; then
 fi
 }
 
+mkfftw()
+{
+PKG_NAME=fftw
+PKG_VERSION=3.3.4
+TAREXT=gz
+if [ ! -f ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done ]; then
+	( cd ${WORKSPACE}/cache/ && wget -c --no-check-certificate http://www.fftw.org/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
+	pushd ${SRCPREFIX}
+	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	cd ${PKG_NAME}-${PKG_VERSION}
+	[ ! -e config.cache ] || rm config.cache
+	./configure --host=${HOST} --prefix=${PREFIX}/ \
+		${DEBUG_OPT2} \
+		--disable-static --enable-shared
+	make -j${THREADS}
+	make install
+	cd ..
+	popd
+	
+	touch ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done
+	
+fi
+}
+
 mkffmpeg()
 {
 
@@ -2380,6 +2404,7 @@ mkall()
 	mkmlt
 	mkimagemagick
 	mkboost
+	mkfftw
 	
 	# synfig-studio deps
 	mkcairomm
