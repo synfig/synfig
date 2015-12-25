@@ -390,11 +390,11 @@ PKG_CHECK_MODULES(LIBCAIRO, [cairo >= 1.12.0],[
 	AC_MSG_ERROR([ ** You need to install cairo version 1.12.0 or higher.])
 ])
 
-PKG_CHECK_MODULES(LIBGL, gl,,[
-	AC_MSG_ERROR([ ** You need to install OpenGL.])
-])
+#PKG_CHECK_MODULES(LIBGL, gl,,[
+#	AC_MSG_ERROR([ ** You need to install OpenGL.])
+#])
 LIBGL_CFLAGS="$LIBGL_CFLAGS -DGL_GLEXT_PROTOTYPES"
-CONFIG_DEPS="$CONFIG_DEPS gl"
+#CONFIG_DEPS="$CONFIG_DEPS gl"
 
 AC_ARG_WITH(opencl,
 	AS_HELP_STRING(--with-opencl, [enable OpenCL (default=auto)]),[
