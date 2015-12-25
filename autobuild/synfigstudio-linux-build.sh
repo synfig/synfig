@@ -890,6 +890,7 @@ initialize()
 				intltool \
 				libpng-devel \
 				libjpeg-devel \
+				fftw-devel \
 				freetype-devel \
 				fontconfig-devel \
 				atk-devel \
