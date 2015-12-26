@@ -60,6 +60,7 @@ public:
 		RectInt src_rect;
 		rendering::Blur::Type type;
 		Vector size;
+		Vector amplified_size;
 		VectorInt extra_size;
 		VectorInt offset;
 		bool blend;
@@ -92,6 +93,7 @@ public:
 		bool validate();
 	};
 
+	static Real get_size_amplifier(rendering::Blur::Type type);
 	static Real get_extra_size(rendering::Blur::Type type);
 	static VectorInt get_extra_size(rendering::Blur::Type type, const Vector &size);
 

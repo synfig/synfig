@@ -54,6 +54,18 @@ class BlurTemplates
 {
 public:
 	template<typename T>
+	static T amplifier_box() { return T(0.25)*sqrt(T(PI)); }
+	template<typename T>
+	static T amplifier_cross() { return T(1.0); }
+	template<typename T>
+	static T amplifier_disk() { return T(0.5); }
+	template<typename T>
+	static T amplifier_gauss() { return T(3.0)/T(8.0); }
+	template<typename T>
+	static T amplifier_fastgauss() { return amplifier_gauss<T>(); }
+
+
+	template<typename T>
 	struct Abs { T operator() (const T &x) { return abs(x); } };
 
 	template<typename T>
@@ -64,6 +76,13 @@ public:
 		if (abs(r) < precision)
 			return fabs(x) < precision ? T(1.0) : T(0.0);
 		return k*exp(T(-0.5)*x*x/(r*r))/r;
+	}
+
+	template<typename T>
+	static T ungauss(const T &x)
+	{
+		static const T k( T(1.0)/sqrt(T(2.0)*PI) );
+		return sqrt(-T(2.0)*log(x/k));
 	}
 
 	template<typename T>
@@ -103,14 +122,14 @@ public:
 	template<typename T>
 	static void fill_pattern_gauss(const Array<T, 1> &x, T size)
 	{
-		x[0] = gauss(T(0), size);
-		T s = fabs(size);
-		T sum(x[0]);
+		T s = T(0.5)+fabs(size);
+		x[0] = gauss(T(0), s);
 		for(int i = x.count/2; i; --i)
-			sum += (x[i] = x[x.count - i] = gauss(T(i), s));
-		if (x.count % 2 == 0)
-			sum -= 0.5*x[x.count/2];
-		T k = 0.5/sum;
+			x[i] = x[x.count - i] = gauss(T(i), s);
+		T sum(0.0);
+		for(typename Array<T, 1>::Iterator i(x); i; ++i)
+			sum += *i;
+		T k = T(1.0)/sum;
 		for(typename Array<T, 1>::Iterator i(x); i; ++i)
 			*i *= k;
 	}
@@ -121,6 +140,7 @@ public:
 		typedef Array<T, 2> A;
 
 		const T precision(1e-10);
+
 		T sx(T(0.5) + fabs(size_x));
 		T sy(T(0.5) + fabs(size_y));
 
