@@ -52,9 +52,11 @@
 
 #include "software/renderersw.h"
 #include "software/renderersafe.h"
-#include "opengl/renderergl.h"
 #include "common/task/taskcallback.h"
+#ifdef WITH_OPENGL
+#include "opengl/renderergl.h"
 #include "opengl/task/taskgl.h"
+#endif
 
 #endif
 
@@ -189,7 +191,11 @@ private:
 			--(*i)->deps_count;
 			if ((*i)->deps_count == 0)
 			{
+#ifdef WITH_OPENGL
 				bool gl = i->type_is<TaskGL>();
+#else
+				bool gl = false;
+#endif
 				TaskQueue &queue = gl ? gl_ready_tasks     : ready_tasks;
 				TaskSet   &wait  = gl ? gl_not_ready_tasks : not_ready_tasks;
 				wait.erase(*i);
@@ -261,7 +267,11 @@ public:
 		fix_task(*task, params);
 		Glib::Threads::Mutex::Lock lock(mutex);
 
+#ifdef WITH_OPENGL
 		bool gl = task.type_is<TaskGL>();
+#else
+		bool gl = false;
+#endif
 		TaskQueue &queue = gl ? gl_ready_tasks     : ready_tasks;
 		TaskSet   &wait  = gl ? gl_not_ready_tasks : not_ready_tasks;
 		if (task->deps_count == 0) {
@@ -289,7 +299,11 @@ public:
 		{
 			if (*i)
 			{
+#ifdef WITH_OPENGL
 				bool gl = i->type_is<TaskGL>();
+#else
+				bool gl = false;
+#endif
 				TaskQueue &queue = gl ? gl_ready_tasks     : ready_tasks;
 				TaskSet   &wait  = gl ? gl_not_ready_tasks : not_ready_tasks;
 				if ((*i)->deps_count == 0) {
@@ -328,18 +342,24 @@ Renderer::initialize_renderers()
 {
 	// initialize renderers
 	RendererSW::initialize();
+#ifdef WITH_OPENGL
 	RendererGL::initialize();
+#endif
 
 	// register renderers
 	register_renderer("software", new RendererSW());
-	register_renderer("gl", new RendererGL());
 	register_renderer("safe", new RendererSafe());
+#ifdef WITH_OPENGL
+	register_renderer("gl", new RendererGL());
+#endif
 }
 
 void
 Renderer::deinitialize_renderers()
 {
+#ifdef WITH_OPENGL
 	RendererGL::deinitialize();
+#endif
 	RendererSW::deinitialize();
 }
 

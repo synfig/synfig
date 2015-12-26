@@ -39,8 +39,10 @@
 
 #include "../../software/task/tasksw.h"
 #include "../../software/surfacesw.h"
+#ifdef WITH_OPENGL
 #include "../../opengl/task/taskgl.h"
 #include "../../opengl/surfacegl.h"
+#endif
 
 #endif
 
@@ -62,7 +64,11 @@ OptimizerSurface::run(const RunParams& params) const
 	  && !params.ref_task->target_surface->empty())
 	{
 		bool sw = params.ref_task.type_is<TaskSW>();
+#ifdef WITH_OPENGL
 		bool gl = params.ref_task.type_is<TaskGL>();
+#else
+		bool gl = false;
+#endif
 		if (sw || gl)
 		{
 			// Create surfaces when subtasks have no target_surface
@@ -83,7 +89,9 @@ OptimizerSurface::run(const RunParams& params) const
 					if (!(*i)->target_surface)
 					{
 						if (sw) (*i)->target_surface = new SurfaceSW();
+#ifdef WITH_OPENGL
 						if (gl) (*i)->target_surface = new SurfaceGL();
+#endif
 						(*i)->target_surface->is_temporary = true;
 					}
 					(*i)->target_surface->set_size( params.ref_task->target_surface->get_size() );
