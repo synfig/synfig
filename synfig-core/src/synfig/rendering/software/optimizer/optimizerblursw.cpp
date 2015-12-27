@@ -43,6 +43,7 @@
 #include "../../common/task/taskblur.h"
 
 #include <synfig/blur.h>
+#include <synfig/general.h>
 
 #endif
 
@@ -68,6 +69,7 @@ OptimizerBlurSW::run(const RunParams& params) const
 		TaskBlurSW::Handle blur_sw;
 		init_and_assign_all<SurfaceSW>(blur_sw, blur);
 
+		/*
 		if ( blur_sw->sub_task()
 		  && blur_sw->sub_task()->target_surface
 		  && blur_sw->sub_task()->target_surface->is_temporary )
@@ -96,6 +98,7 @@ OptimizerBlurSW::run(const RunParams& params) const
 			blur_sw->sub_task()->trunc_target_by_bounds();
 			assert( blur_sw->sub_task()->check() );
 		}
+		*/
 
 		apply(params, blur_sw);
 	}

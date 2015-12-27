@@ -69,7 +69,7 @@ OptimizerBlendZero::apply_zero(const RunParams &params, const TaskBlend::Handle 
 
 	if (task->target_surface == blend->target_surface)
 	{
-		apply(params, blend->sub_task_a());
+		apply(params, task);
 		return;
 	}
 
@@ -78,7 +78,7 @@ OptimizerBlendZero::apply_zero(const RunParams &params, const TaskBlend::Handle 
 	params.ref_task->move_target_rect(
 		  blend->get_target_offset()
 		- task->get_target_offset()
-		+ blend->offset_a );
+		+ (task == blend->sub_task_a() ? blend->offset_a : blend->offset_b) );
 	assert( params.ref_task->check() );
 }
 
@@ -110,15 +110,15 @@ OptimizerBlendZero::run(const RunParams& params) const
 
 		if (one_amount && !intertsects)
 		{
-			bool onto = Color::is_straight(blend->blend_method);
+			bool onto = Color::is_onto(blend->blend_method);
 			bool straight = Color::is_straight(blend->blend_method);
 
 			if ( onto && straight)
 				{ apply_zero(params, blend, Task::Handle()); return; }
 			if ( onto )
 				{ apply_zero(params, blend, blend->sub_task_a()); return; }
-			if ( straight )
-				{ apply_zero(params, blend, blend->sub_task_b()); return; }
+			//if ( straight )
+			//	{ apply_zero(params, blend, blend->sub_task_b()); return; }
 		}
 	}
 }

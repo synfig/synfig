@@ -148,7 +148,7 @@ software::Blur::get_extra_size(
 {
 	const Real precision = 1e-10;
 	Vector s = size*get_extra_size(type);
-	return VectorInt( (int)ceil(fabs(s[0]) + 0.5 - precision), (int)ceil(fabs(s[1]) + 0.5 - precision) );
+	return VectorInt( (int)ceil(fabs(s[0]) + 1.0 - precision), (int)ceil(fabs(s[1]) + 1.0 - precision) );
 }
 
 void

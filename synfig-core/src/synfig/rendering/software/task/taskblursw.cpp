@@ -35,10 +35,12 @@
 #include <signal.h>
 #endif
 
-#include <synfig/rendering/software/task/taskblursw.h>
+#include "taskblursw.h"
 
 #include "../surfacesw.h"
 #include "../function/blur.h"
+
+#include <synfig/general.h>
 
 #endif
 

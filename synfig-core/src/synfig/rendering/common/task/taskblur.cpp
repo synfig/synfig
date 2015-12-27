@@ -57,10 +57,10 @@ TaskBlur::calc_bounds() const
 {
 	Rect bounds = sub_task() ? sub_task()->get_bounds() : Rect::zero();
 	Vector size = blur.size * software::Blur::get_extra_size(blur.type) * 1.05;
-	bounds.minx -= size[0];
-	bounds.miny -= size[1];
-	bounds.maxx += size[0];
-	bounds.maxy += size[1];
+	bounds.minx -= fabs(size[0]);
+	bounds.miny -= fabs(size[1]);
+	bounds.maxx += fabs(size[0]);
+	bounds.maxy += fabs(size[1]);
 	return bounds;
 }
 

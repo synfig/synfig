@@ -73,7 +73,7 @@ public:
 	{
 		static const T precision(1e-10);
 		static const T k( T(1.0)/sqrt(T(2.0)*PI) );
-		if (abs(r) < precision)
+		if (fabs(r) < precision)
 			return fabs(x) < precision ? T(1.0) : T(0.0);
 		return k*exp(T(-0.5)*x*x/(r*r))/r;
 	}
@@ -123,7 +123,7 @@ public:
 	static void fill_pattern_gauss(const Array<T, 1> &x, T size)
 	{
 		T s = T(0.5)+fabs(size);
-		x[0] = gauss(T(0), s);
+		x[0] = gauss(T(0.0), s);
 		for(int i = x.count/2; i; --i)
 			x[i] = x[x.count - i] = gauss(T(i), s);
 		T sum(0.0);
