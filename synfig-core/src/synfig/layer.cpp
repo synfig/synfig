@@ -61,6 +61,8 @@
 
 #include "valuenodes/valuenode_const.h"
 
+#include "rendering/common/task/tasksurfaceempty.h"
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -781,7 +783,8 @@ Layer::build_rendering_task_vfunc(Context /* context */)const
 rendering::Task::Handle
 Layer::build_rendering_task(Context context)const
 {
-	return build_rendering_task_vfunc(context);
+	rendering::Task::Handle task = build_rendering_task_vfunc(context);
+	return task ? task : rendering::Task::Handle(new rendering::TaskSurfaceEmpty());
 }
 
 String
