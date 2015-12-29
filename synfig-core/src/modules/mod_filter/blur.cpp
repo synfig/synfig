@@ -53,6 +53,7 @@
 
 #include <synfig/rendering/common/task/taskblend.h>
 #include <synfig/rendering/common/task/taskblur.h>
+#include <synfig/rendering/software/function/blur.h>
 
 #endif
 
@@ -75,7 +76,7 @@ SYNFIG_LAYER_INIT(Blur_Layer);
 SYNFIG_LAYER_SET_NAME(Blur_Layer,"blur");
 SYNFIG_LAYER_SET_LOCAL_NAME(Blur_Layer,N_("Blur"));
 SYNFIG_LAYER_SET_CATEGORY(Blur_Layer,N_("Blurs"));
-SYNFIG_LAYER_SET_VERSION(Blur_Layer,"0.2");
+SYNFIG_LAYER_SET_VERSION(Blur_Layer,"0.3");
 SYNFIG_LAYER_SET_CVS_ID(Blur_Layer,"$Id$");
 
 /* -- F U N C T I O N S ----------------------------------------------------- */
@@ -127,6 +128,8 @@ Blur_Layer::get_color(Context context, const Point &pos)const
 {
 	synfig::Point size=param_size.get(Point());
 	int type=param_type.get(int());
+  	size *= rendering::software::Blur::get_size_amplifier((rendering::Blur::Type)type)
+  	      * ::Blur::get_size_amplifier(type);
 	
 	Point blurpos = Blur(size,type)(pos);
 
@@ -146,6 +149,8 @@ Blur_Layer::accelerated_render(Context context,Surface *surface,int quality, con
 
 	synfig::Point size=param_size.get(Point());
 	int type=param_type.get(int());
+  	size *= rendering::software::Blur::get_size_amplifier((rendering::Blur::Type)type)
+  	      * ::Blur::get_size_amplifier(type);
 
 	// don't do anything at quality 10
 	if (quality == 10)
@@ -255,6 +260,22 @@ Blur_Layer::accelerated_render(Context context,Surface *surface,int quality, con
 		return false;
 	}
 
+	// check size
+	for(int i = surface->get_w()-2; i; --i)
+	{
+		Real a0 = (*surface)[0][i].get_a();
+		Real a1 = (*surface)[0][i+1].get_a();
+		if (type == 2) a0*=2.0, a1*=2.0;
+		if (a0 > 0.25) {
+			Real d = (a1 - a0);
+			Real p = fabs(d) > 1e-10 ? (a0 - 0.25)/d : 0.0;
+			p += i - 200;
+			Real pw = (Real)workdesc.get_w()/(workdesc.get_br()[0]-workdesc.get_tl()[0]);
+			info("legacy type %d size %f actual size %f", type, size[0]*pw, p);
+			break;
+		}
+	}
+
 	return true;
 }
 
@@ -264,6 +285,8 @@ Blur_Layer::accelerated_cairorender(Context context, cairo_t *cr, int quality, c
 {
 	synfig::Point size=param_size.get(Point());
 	int type=param_type.get(int());
+  	size *= rendering::software::Blur::get_size_amplifier((rendering::Blur::Type)type)
+  	      * ::Blur::get_size_amplifier(type);
 
 	// don't do anything at quality 10
 	if (quality == 10)
@@ -440,6 +463,9 @@ Rect
 Blur_Layer::get_full_bounding_rect(Context context)const
 {
 	synfig::Point size=param_size.get(Point());
+	int type=param_type.get(int());
+  	size *= rendering::software::Blur::get_size_amplifier((rendering::Blur::Type)type)
+  	      * ::Blur::get_size_amplifier(type);
 
 	if(is_disabled() || Color::is_onto(get_blend_method()))
 		return context.get_full_bounding_rect();
@@ -453,14 +479,16 @@ rendering::Task::Handle
 Blur_Layer::build_rendering_task_vfunc(Context context)const
 {
 	Vector size = param_size.get(Point());
+	rendering::Blur::Type type = (rendering::Blur::Type)param_type.get(int());
 	Real amount = get_amount() * Context::z_depth_visibility(context.get_params(), *this);
+
 	rendering::TaskBlur::Handle task_blur(new rendering::TaskBlur());
-	task_blur->blur.size = size*amount;
-	task_blur->blur.type = (rendering::Blur::Type)param_type.get(int());
+	task_blur->blur.size = size;
+	task_blur->blur.type = type;
 	task_blur->sub_task() = context.build_rendering_task();
 
 	rendering::TaskBlend::Handle task_blend(new rendering::TaskBlend());
-	task_blend->amount = get_amount() * Context::z_depth_visibility(context.get_params(), *this);
+	task_blend->amount = amount;
 	task_blend->blend_method = get_blend_method();
 	task_blend->sub_task_a() = task_blur->sub_task()->clone_recursive();
 	task_blend->sub_task_b() = task_blur;

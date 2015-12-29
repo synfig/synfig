@@ -58,6 +58,8 @@ private:
 	synfig::ProgressCallback *cb;
 
 public:
+	static synfig::Real get_size_amplifier(int type);
+
 	void set_size(const synfig::Point &x) { size = x; }
 	const synfig::Point& get_size() const { return size; }
 

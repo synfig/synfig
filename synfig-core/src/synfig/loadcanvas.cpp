@@ -53,6 +53,7 @@
 #include "general.h"
 #include "localization.h"
 
+#include "blur.h"
 #include "boneweightpair.h"
 #include "boneweightpair.h"
 #include "exception.h"
@@ -3080,6 +3081,35 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 			else
 			if (zoom_const)
 				transformation_node->set_link("scale", ValueNode_Const::create((*scale_scalar_node)(0), canvas));
+		}
+	}
+
+	// add amplifiers for blur
+	if (layer->get_name() == "blur" && (version == "0.0" || version == "0.1" || version == "0.2"))
+	{
+		if (layer->dynamic_param_list().count("type"))
+		{
+			warning(element, "Cannot apply amplifiers to layer blur with animated type");
+		}
+		if (layer->get_param("type").get(int()) == ::Blur::GAUSSIAN)
+		{
+			warning(element, "Cannot apply amplifiers to layer blur with type GAUSSIAN");
+		}
+		else
+		{
+			int type = layer->get_param("type").get(int());
+			Real amplifier = 1.0 / ::Blur::get_size_amplifier(type);
+			if (layer->dynamic_param_list().count("size") && layer->dynamic_param_list().find("size")->second)
+			{
+				ValueNode_Scale::Handle scale = ValueNode_Scale::create(layer->get_param("size"));
+				scale->set_link("link", ValueNode::Handle(layer->dynamic_param_list().find("size")->second));
+				scale->set_link("scalar", ValueNode_Const::create(amplifier));
+				layer->connect_dynamic_param("size", ValueNode::LooseHandle(scale));
+			}
+			else
+			{
+				layer->set_param("size", layer->get_param("size").get(Vector()) * amplifier);
+			}
 		}
 	}
 
