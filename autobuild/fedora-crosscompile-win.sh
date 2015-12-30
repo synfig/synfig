@@ -87,6 +87,7 @@ if [ -z $NOSU ]; then
 		${TOOLCHAIN}-libltdl \
 		${TOOLCHAIN}-dlfcn \
 		${TOOLCHAIN}-SDL \
+		${TOOLCHAIN}-fftw \
 		mingw32-nsis \
 		p7zip \
 		ImageMagick \
