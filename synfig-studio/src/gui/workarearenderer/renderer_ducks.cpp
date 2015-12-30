@@ -695,15 +695,77 @@ Renderer_Ducks::render_vfunc(
 					}
 				}
 			}
-			//! Tooltip time : transformation widget, display layer name
-			if( (App::ui_handle_tooltip_flag&Duck::STRUCT_TRANSFORMATION) &&
+			//! Tooltip time : transformation widget, display layer name &| value
+			if( ((App::ui_handle_tooltip_flag&Duck::STRUCT_TRANSFORMATION) ||
+				 (App::ui_handle_tooltip_flag&Duck::STRUCT_TRANSFO_BY_VALUE)) &&
 					((*iter)->get_value_desc().is_value_node()) &&
 					((*iter)->get_value_desc().get_value_type() == type_transformation)
 					)
 			{
 				cr->save();
+				String tooltiptext("");
+				if(App::ui_handle_tooltip_flag&Duck::STRUCT_TRANSFORMATION)
+					tooltiptext = (*iter)->get_value_desc().get_layer()->get_non_empty_description();
 
-				layout->set_text((*iter)->get_value_desc().get_layer()->get_non_empty_description());
+				if(App::ui_handle_tooltip_flag&Duck::STRUCT_TRANSFO_BY_VALUE)
+				{
+					String value = (*iter)->get_value_desc().get_sub_name() +
+							": ";
+					const Real mag((point-origin).mag());
+					Distance real_mag(mag, Distance::SYSTEM_UNITS);
+					synfig::Angle::deg ang ((*iter)->get_linear_angle());
+//					switch((*iter)->get_type())
+//					{
+//					case Duck::TYPE_SKEW:
+//						break;
+//					case Duck::TYPE_SCALE_X:
+//						break;
+//					case Duck::TYPE_SCALE_Y:
+//						break;
+//					case Duck::TYPE_POSITION:
+//						break;
+//					case Duck::TYPE_ANGLE:
+//						value+=strprintf("%2.3f°",ang.get());
+//						break;
+//					}
+
+				    synfig::Canvas::Handle canvas_h(get_work_area()->get_canvas());
+				    synfig::Time time(canvas_h?canvas_h->get_time():synfig::Time(0));
+					// COPY PASTE FROM Duckmatic::on_duck_changed
+		            Transformation transformation = (*iter)->get_value_desc().get_value(time).get(Transformation());
+		            Point axis_x_one(1, transformation.angle);
+		            Point axis_y_one(1, transformation.angle + Angle::deg(90.f) + transformation.skew_angle);
+
+					const synfig::RendDesc rend_desc = get_work_area()->get_rend_desc();
+					switch((*iter)->get_type()) {
+					case Duck::TYPE_POSITION:
+						value += strprintf("x:%2.3f y:%2.3f",
+								Distance(sub_trans_point[0],Distance::SYSTEM_UNITS).get(App::distance_system,rend_desc),
+								Distance(sub_trans_point[1],Distance::SYSTEM_UNITS).get(App::distance_system,rend_desc));
+						break;
+					case Duck::TYPE_ANGLE:
+						value+=strprintf("%2.3f°",synfig::Angle::deg((*iter)->get_rotations()).get());
+						break;
+					case Duck::TYPE_SKEW:
+						value+=strprintf("%2.3f°",synfig::Angle::deg((*iter)->get_rotations()).get());
+						break;
+					case Duck::TYPE_SCALE:
+						transformation.scale = transformation.scale.multiply_coords((*iter)->get_point());
+						break;
+					case Duck::TYPE_SCALE_X:
+						transformation.scale[0] *= (*iter)->get_point()[0];
+						break;
+					case Duck::TYPE_SCALE_Y:
+						transformation.scale[1] *= (*iter)->get_point()[0];
+						break;
+					default:
+						break;
+					}
+
+					tooltiptext = App::ui_handle_tooltip_flag&Duck::STRUCT_TRANSFORMATION? tooltiptext + " " + value : value;
+				}
+
+				layout->set_text(tooltiptext);
 
 				cr->set_source_rgb(GDK_COLOR_TO_RGB(DUCK_COLOR_TRANSFO_TEXT_1));
 				cr->move_to(

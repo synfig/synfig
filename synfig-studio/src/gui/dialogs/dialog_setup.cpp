@@ -457,6 +457,11 @@ Dialog_Setup::create_system_page(synfig::String name)
 	toggle_single_threaded.set_hexpand(true);
 #endif
 
+	// signal for change resume
+	auto_backup_interval.signal_changed().connect(
+			sigc::bind<int>(sigc::mem_fun(*this, &Dialog_Setup::on_value_change), CHANGE_AUTOBACKUP));
+	toggle_autobackup.property_active().signal_changed().connect(
+			sigc::bind<int>(sigc::mem_fun(*this, &Dialog_Setup::on_value_change), CHANGE_AUTOBACKUP));
 }
 
 void
@@ -644,8 +649,8 @@ Dialog_Setup::create_render_page(synfig::String name)
 	/*---------Render------------------*\
 	 *
 	 *  sequence separator _________
-	 *  use cairo navigato [x]
-	 *  use cairo workarea [x]
+	 *   navigator [ Legacy ]
+	 *   workarea  [ Legacy ]
 	 *
 	 *
 	 */
@@ -655,10 +660,10 @@ Dialog_Setup::create_render_page(synfig::String name)
 	attach_label(grid, _("Image Sequence Separator String"), row);
 	grid->attach(image_sequence_separator, 1, row, 1, 1);
 	image_sequence_separator.set_hexpand(true);
-	// Render - Use Cairo on Navigator
+	// Render - Navigator
 	attach_label(grid, _("Navigator renderer"), ++row);
 	grid->attach(navigator_renderer_combo, 1, row, 1, 1);
-	// Render - Use Cairo on WorkArea
+	// Render - WorkArea
 	attach_label(grid, _("WorkArea renderer"), ++row);
 	grid->attach(workarea_renderer_combo, 1, row, 1, 1);
 
@@ -692,7 +697,7 @@ Dialog_Setup::create_interface_page(synfig::String name)
 	 * HANDLETOOLTIP
 	 *  Widthpoint      [x| ]
 	 *  Radius          [x| ]
-	 *  Transformation  [x| ]
+	 *  Transformation  [x| ] [ Name ]
 	 *
 	 */
 
@@ -779,6 +784,7 @@ Dialog_Setup::create_interface_page(synfig::String name)
 	ui_language_combo.set_active(row);
 	ui_language_combo.signal_changed().connect(sigc::mem_fun(*this, &studio::Dialog_Setup::on_ui_language_combo_change));
 
+	// row is used now for ui construction
 	row = 1;
 	// Interface - Language section
 	attach_label_section(grid, _("Language"), row);
@@ -809,6 +815,27 @@ Dialog_Setup::create_interface_page(synfig::String name)
 	grid->attach(toggle_handle_tooltip_transformation, 1, row, 1, 1);
 	toggle_handle_tooltip_transformation.set_halign(Gtk::ALIGN_START);
 	toggle_handle_tooltip_transformation.set_hexpand(false);
+	toggle_handle_tooltip_transformation.property_active().signal_changed().connect(
+			sigc::mem_fun(*this, &Dialog_Setup::on_tooltip_transformation_changed));
+	grid->attach(combo_handle_tooltip_transformation, 3, row, 1, 1);
+	combo_handle_tooltip_transformation.append(_("Name")); // HANDLE_TOOLTIP_TRANSFO_NAME
+	combo_handle_tooltip_transformation.append(_("Name Value")); // HANDLE_TOOLTIP_TRANSFO_NAMEVALUE
+	combo_handle_tooltip_transformation.append(_("Value")); // HANDLE_TOOLTIP_TRANSFO_VALUE
+
+	//! change resume signal connexion
+	ui_language_combo.signal_changed().connect(
+			sigc::bind<int> (sigc::mem_fun(*this, &Dialog_Setup::on_value_change), CHANGE_UI_LANGUAGE));
+	//TODO signal change on value
+	//toggle_use_dark_theme.signal_changed().connect(
+	//		sigc::bind<int> (sigc::mem_fun(*this, &Dialog_Setup::on_value_change), CHANGE_UI_THEME));
+	toggle_handle_tooltip_widthpoint.property_active().signal_changed().connect(
+			sigc::bind<int> (sigc::mem_fun(*this, &Dialog_Setup::on_value_change), CHANGE_UI_HANDLE_TOOLTIP));
+	toggle_handle_tooltip_radius.property_active().signal_changed().connect(
+			sigc::bind<int> (sigc::mem_fun(*this, &Dialog_Setup::on_value_change), CHANGE_UI_HANDLE_TOOLTIP));
+	toggle_handle_tooltip_transformation.property_active().signal_changed().connect(
+			sigc::bind<int> (sigc::mem_fun(*this, &Dialog_Setup::on_value_change), CHANGE_UI_HANDLE_TOOLTIP));
+	combo_handle_tooltip_transformation.signal_changed().connect(
+			sigc::bind<int> (sigc::mem_fun(*this, &Dialog_Setup::on_value_change), CHANGE_UI_HANDLE_TOOLTIP));
 }
 
 void
@@ -920,21 +947,40 @@ Dialog_Setup::on_apply_pressed()
 	// Set the preferred image sequence separator
 	App::sequence_separator=image_sequence_separator.get_text();
 
-	// Set the navigator uses cairo flag
+	// Set the navigator render flag
 	App::navigator_renderer=navigator_renderer_combo.get_active_id();
 
-	// Set the workarea uses cairo flag
+	// Set the workarea render flag
 	App::workarea_renderer=workarea_renderer_combo.get_active_id();
 
 	// Set ui language
-	App::ui_language = (_lang_codes[ui_language_combo.get_active_row_number()]).c_str();
+	if (pref_modification_flag&CHANGE_UI_LANGUAGE)
+		App::ui_language = (_lang_codes[ui_language_combo.get_active_row_number()]).c_str();
 
-	// Set ui tooltip on widht point
-	App::ui_handle_tooltip_flag=toggle_handle_tooltip_widthpoint.get_active()?Duck::STRUCT_WIDTHPOINT:Duck::STRUCT_NONE;
-	// Set ui tooltip on widht point
-	App::ui_handle_tooltip_flag|=toggle_handle_tooltip_radius.get_active()?Duck::STRUCT_RADIUS:Duck::STRUCT_NONE;
-	// Set ui tooltip on widht point
-	App::ui_handle_tooltip_flag|=toggle_handle_tooltip_transformation.get_active()?Duck::STRUCT_TRANSFORMATION:Duck::STRUCT_NONE;
+	if (pref_modification_flag&CHANGE_UI_HANDLE_TOOLTIP)
+	{
+		// Set ui tooltip on widht point
+		App::ui_handle_tooltip_flag=toggle_handle_tooltip_widthpoint.get_active()?Duck::STRUCT_WIDTHPOINT:Duck::STRUCT_NONE;
+		// Set ui tooltip on radius
+		App::ui_handle_tooltip_flag|=toggle_handle_tooltip_radius.get_active()?Duck::STRUCT_RADIUS:Duck::STRUCT_NONE;
+		// Set ui tooltip on transformation
+		if(toggle_handle_tooltip_transformation.get_active())
+		{
+			switch(combo_handle_tooltip_transformation.get_active_row_number())
+			{
+			case HANDLE_TOOLTIP_TRANSFO_NAME:
+				App::ui_handle_tooltip_flag|=Duck::STRUCT_TRANSFORMATION;
+				break;
+			case HANDLE_TOOLTIP_TRANSFO_NAMEVALUE:
+				App::ui_handle_tooltip_flag|=Duck::STRUCT_TRANSFORMATION+Duck::STRUCT_TRANSFO_BY_VALUE;
+				break;
+			case HANDLE_TOOLTIP_TRANSFO_VALUE:
+				App::ui_handle_tooltip_flag|=Duck::STRUCT_TRANSFO_BY_VALUE;
+				break;
+			}
+		}
+	}
+
 
 	App::save_settings();
 	App::setup_changed();
@@ -1044,9 +1090,16 @@ Dialog_Setup::on_time_format_changed()
 void
 Dialog_Setup::on_autobackup_changed()
 {
-	if(!refreshing) pref_modification_flag |= CHANGE_AUTOBACKUP;
+//	if(!refreshing) pref_modification_flag |= CHANGE_AUTOBACKUP;
 	auto_backup_interval.set_sensitive(toggle_autobackup.get_active());
 	App::auto_recover->enable(toggle_autobackup.get_active());
+}
+
+void
+Dialog_Setup::on_tooltip_transformation_changed()
+{
+//	if(!refreshing) pref_modification_flag |= CHANGE_UI_HANDLE_TOOLTIP;
+	combo_handle_tooltip_transformation.set_sensitive(toggle_handle_tooltip_transformation.get_active());
 }
 
 void
@@ -1171,7 +1224,20 @@ Dialog_Setup::refresh()
 	// refresh ui tooltip handle info
 	toggle_handle_tooltip_widthpoint.set_active(App::ui_handle_tooltip_flag&Duck::STRUCT_WIDTHPOINT);
 	toggle_handle_tooltip_radius.set_active(App::ui_handle_tooltip_flag&Duck::STRUCT_RADIUS);
-	toggle_handle_tooltip_transformation.set_active(App::ui_handle_tooltip_flag&Duck::STRUCT_TRANSFORMATION);
+	toggle_handle_tooltip_transformation.set_active( (App::ui_handle_tooltip_flag&Duck::STRUCT_TRANSFORMATION) ||
+			(App::ui_handle_tooltip_flag&Duck::STRUCT_TRANSFO_BY_VALUE));
+	if((App::ui_handle_tooltip_flag&Duck::STRUCT_TRANSFORMATION) &&
+			(App::ui_handle_tooltip_flag&Duck::STRUCT_TRANSFO_BY_VALUE) )
+	{
+		combo_handle_tooltip_transformation.set_active(HANDLE_TOOLTIP_TRANSFO_NAMEVALUE);
+	}
+	else if(App::ui_handle_tooltip_flag&Duck::STRUCT_TRANSFORMATION)
+		{
+			combo_handle_tooltip_transformation.set_active(HANDLE_TOOLTIP_TRANSFO_NAME);
+		}else if(App::ui_handle_tooltip_flag&Duck::STRUCT_TRANSFO_BY_VALUE)
+		{
+			combo_handle_tooltip_transformation.set_active(HANDLE_TOOLTIP_TRANSFO_VALUE);
+		}
 
 	refreshing = false;
 }
@@ -1538,4 +1604,10 @@ Dialog_Setup::on_brush_path_remove_clicked()
 
 	pref_modification_flag|=CHANGE_BRUSH_PATH;
 	//! TODO if list size == 0: push warning to warning zone
+}
+
+void
+Dialog_Setup::on_value_change(int valueflag)
+{
+	if(!refreshing) pref_modification_flag |= valueflag;
 }

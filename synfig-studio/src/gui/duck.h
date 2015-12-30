@@ -121,6 +121,7 @@ public:
 		STRUCT_GRADIENT				=	(1 <<  4),	//   16
 		STRUCT_TEXT					=	(1 <<  5),	//   32
 		STRUCT_RADIUS				=	(1 <<  6),	//   64
+		STRUCT_TRANSFO_BY_VALUE		=	(1 <<  7),	//  128
 
 		STRUCT_ALL					=	(~0),
 

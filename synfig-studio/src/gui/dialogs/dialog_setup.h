@@ -168,7 +168,7 @@ class Dialog_Setup : public Gtk::Dialog
 		CHANGE_NONE					=	(0),		//    0
 		CHANGE_UI_LANGUAGE			=	(1 <<  0),	//    1
 		CHANGE_AUTOBACKUP			=	(1 <<  1),	//    2
-		CHANGE_RADIUS					=	(1 <<  2),	//    4
+		CHANGE_UI_HANDLE_TOOLTIP					=	(1 <<  2),	//    4
 		CHANGE_WIDTH					=	(1 <<  3),	//    8
 		CHANGE_ANGLE					=	(1 <<  4),	//   16
 		CHANGE_VERTEX					=	(1 <<  5),	//   32
@@ -182,11 +182,21 @@ class Dialog_Setup : public Gtk::Dialog
 		CHANGE_ALL					=	(~0)
 	};
 
+	enum HandleToolTip
+	{
+		HANDLE_TOOLTIP_TRANSFO_NAME 		= 0,
+		HANDLE_TOOLTIP_TRANSFO_NAMEVALUE,
+		HANDLE_TOOLTIP_TRANSFO_VALUE
+	};
+
 	//Signal handlers dialog
 	void on_ok_pressed();
 	void on_apply_pressed();
 	void on_restore_pressed();
 	void on_treeviewselection_changed ();
+	// Change mechanism
+	// TODO on change class
+	void on_value_change(int valueflag);
 	//Signal handlers pages
 	void on_gamma_r_change();
 	void on_gamma_g_change();
@@ -198,6 +208,7 @@ class Dialog_Setup : public Gtk::Dialog
 	void on_ui_language_combo_change();
 	void on_time_format_changed();
 	void on_autobackup_changed();
+	void on_tooltip_transformation_changed();
 
 	void on_brush_path_add_clicked();
 	void on_brush_path_remove_clicked();
@@ -274,7 +285,7 @@ class Dialog_Setup : public Gtk::Dialog
 	Gtk::ComboBoxText* fps_template_combo;
 	Gtk::ComboBoxText ui_language_combo;
 	std::vector<Glib::ustring> _lang_codes;
-
+	Gtk::ComboBoxText combo_handle_tooltip_transformation;
 
 	Gtk::Entry textbox_custom_filename_prefix;
 	Glib::RefPtr<Gtk::Adjustment> adj_pref_x_size;
