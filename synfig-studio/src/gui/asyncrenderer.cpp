@@ -754,6 +754,8 @@ AsyncRenderer::AsyncRenderer(etl::handle<synfig::Target> target_,synfig::Progres
 #ifdef SINGLE_THREADED
 	updating(false),
 #endif
+	start_clock(0),
+	finish_clock(0),
 	start_time(0, 0),
 	finish_time(0, 0)
 {
@@ -830,6 +832,7 @@ AsyncRenderer::stop()
 				render_thread->join();
 #endif
 			finish_time.assign_current_time();
+			finish_clock = ::clock();
 
 
 			// Make sure all the dispatch crap is cleared out
@@ -863,6 +866,8 @@ AsyncRenderer::start()
 {
 	start_time.assign_current_time();
 	finish_time = start_time;
+	start_clock = ::clock();
+	finish_clock = start_clock;
 	done_connection=Glib::signal_timeout().connect(
 		sigc::bind_return(
 			mem_fun(*this,&AsyncRenderer::start_),

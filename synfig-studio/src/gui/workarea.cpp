@@ -2965,9 +2965,10 @@ studio::WorkArea::async_update_finished()
 		Real execution_time = async_renderer->get_execution_time();
 		if (execution_time > 0.0)
 		{
-			cb->task( strprintf("%s %f %s",
+			cb->task( strprintf("%s %f (%f) %s",
 				_("Rendered:"),
 				async_renderer->get_execution_time(),
+				async_renderer->get_execution_clock(),
 				_("sec") ));
 		}
 		else
