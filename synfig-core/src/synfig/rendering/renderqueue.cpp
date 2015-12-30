@@ -47,8 +47,9 @@
 #include <synfig/debug/measure.h>
 
 #include "renderqueue.h"
-
+#ifdef WITH_OPENGL
 #include "opengl/task/taskgl.h"
+#endif
 
 #endif
 
@@ -156,7 +157,11 @@ RenderQueue::done(int thread_index, const Task::Handle &task)
 		--(*i)->deps_count;
 		if ((*i)->deps_count == 0)
 		{
+#ifdef WITH_OPENGL
 			bool gl = i->type_is<TaskGL>();
+#else
+			bool gl = false;
+#endif
 			TaskQueue &queue = gl ? gl_ready_tasks     : ready_tasks;
 			TaskSet   &wait  = gl ? gl_not_ready_tasks : not_ready_tasks;
 			wait.erase(*i);
@@ -229,7 +234,11 @@ RenderQueue::enqueue(const Task::Handle &task, const Task::RunParams &params)
 	fix_task(*task, params);
 	Glib::Threads::Mutex::Lock lock(mutex);
 
+#ifdef WITH_OPENGL
 	bool gl = task.type_is<TaskGL>();
+#else
+	bool gl = false;
+#endif
 	TaskQueue &queue = gl ? gl_ready_tasks     : ready_tasks;
 	TaskSet   &wait  = gl ? gl_not_ready_tasks : not_ready_tasks;
 	if (task->deps_count == 0) {
@@ -258,7 +267,11 @@ RenderQueue::enqueue(const Task::List &tasks, const Task::RunParams &params)
 	{
 		if (*i)
 		{
+#ifdef WITH_OPENGL
 			bool gl = i->type_is<TaskGL>();
+#else
+			bool gl = false;
+#endif
 			TaskQueue &queue = gl ? gl_ready_tasks     : ready_tasks;
 			TaskSet   &wait  = gl ? gl_not_ready_tasks : not_ready_tasks;
 			if ((*i)->deps_count == 0) {

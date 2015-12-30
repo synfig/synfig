@@ -390,11 +390,23 @@ PKG_CHECK_MODULES(LIBCAIRO, [cairo >= 1.12.0],[
 	AC_MSG_ERROR([ ** You need to install cairo version 1.12.0 or higher.])
 ])
 
-PKG_CHECK_MODULES(LIBGL, gl,,[
-	AC_MSG_ERROR([ ** You need to install OpenGL.])
+AC_ARG_WITH(opengl,
+	AS_HELP_STRING(--with-opengl, [enable OpenGL (default=auto)]),[
+],[
+	with_opengl="yes"
 ])
-LIBGL_CFLAGS="$LIBGL_CFLAGS -DGL_GLEXT_PROTOTYPES"
-CONFIG_DEPS="$CONFIG_DEPS gl"
+if test $with_opengl != "no" ; then {
+	PKG_CHECK_MODULES(LIBGL, gl, [
+		CONFIG_DEPS="$CONFIG_DEPS gl"
+		LIBGL_CFLAGS="$LIBGL_CFLAGS -DGL_GLEXT_PROTOTYPES"
+		#with_opengl = yes
+		AM_CONDITIONAL(WITH_OPENGL, true)
+	],[
+		AC_MSG_RESULT([ ** Cannot find gl.pc. OpenGL disabled.])
+		AM_CONDITIONAL(WITH_OPENGL, false)
+	])	
+} ; fi
+#AM_CONDITIONAL(WITH_OPENGL, test $with_opengl = yes)
 
 AC_ARG_WITH(opencl,
 	AS_HELP_STRING(--with-opencl, [enable OpenCL (default=auto)]),[
@@ -782,6 +794,7 @@ vImage ---------------------------> $with_vimage
 ImageMagick ----------------------> $with_imagemagick
 Magick++ -------------------------> $with_magickpp
 FFMPEG ---------------------------> $with_ffmpeg
+OpenGL ---------------------------> $with_opengl
 OpenCL ---------------------------> $with_opencl
 libdv ----------------------------> $with_libdv
 OpenEXR --------------------------> $with_openexr

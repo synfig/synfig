@@ -51,9 +51,11 @@
 
 #include "software/renderersw.h"
 #include "software/renderersafe.h"
-#include "opengl/renderergl.h"
 #include "common/task/taskcallback.h"
+#ifdef WITH_OPENGL
+#include "opengl/renderergl.h"
 #include "opengl/task/taskgl.h"
+#endif
 
 #endif
 
@@ -91,18 +93,24 @@ Renderer::initialize_renderers()
 {
 	// initialize renderers
 	RendererSW::initialize();
+#ifdef WITH_OPENGL
 	RendererGL::initialize();
+#endif
 
 	// register renderers
 	register_renderer("software", new RendererSW());
-	register_renderer("gl", new RendererGL());
 	register_renderer("safe", new RendererSafe());
+#ifdef WITH_OPENGL
+	register_renderer("gl", new RendererGL());
+#endif
 }
 
 void
 Renderer::deinitialize_renderers()
 {
+#ifdef WITH_OPENGL
 	RendererGL::deinitialize();
+#endif
 	RendererSW::deinitialize();
 }
 

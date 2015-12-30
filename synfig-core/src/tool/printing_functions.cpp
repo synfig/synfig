@@ -38,6 +38,10 @@
 #include "printing_functions.h"
 #endif
 
+#ifdef ENABLE_NLS
+#include <libintl.h>
+#endif
+
 using namespace std;
 using namespace synfig;
 

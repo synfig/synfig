@@ -32,8 +32,8 @@ export SRCPREFIX=$WORKSPACE/win$ARCH/source
 export CACHEDIR=$WORKSPACE/cache
 export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib/pkgconfig/
 export PKG_CONFIG_LIBDIR=${PREFIX}/lib/pkgconfig
-export PATH=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin:${PREFIX}/bin:$PATH
-export LD_LIBRARY_PATH=${PREFIX}/lib
+export PATH=/usr/${TOOLCHAIN_HOST}/bin:/usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin:${PREFIX}/bin:$PATH
+export LD_LIBRARY_PATH=${PREFIX}/lib:/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib
 
 export CC=/usr/bin/${TOOLCHAIN_HOST}-gcc
 export CXX=/usr/bin/${TOOLCHAIN_HOST}-g++
@@ -91,6 +91,11 @@ if [ -z $NOSU ]; then
 		p7zip \
 		ImageMagick \
 		"
+
+# Mesa deps (not used)
+#		scons \
+#		python-mako \
+
 fi
 
 # copy libs
@@ -497,6 +502,36 @@ if ! pkg-config ${PKG_NAME}\+\+ --exact-version=${PKG_VERSION}  --print-errors; 
     cp -rf ${PREFIX}/lib/mlt ${PREFIX}/bin/lib/
     cp -rf ${PREFIX}/share/mlt ${PREFIX}/bin/share/
 
+fi
+}
+
+# not used
+mkmesa()
+{
+PKG_NAME=mesa
+PKG_VERSION=11.0.5
+TAREXT=gz
+if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
+	#( cd ${WORKSPACE}/cache/ && wget -c --no-check-certificate ftp://ftp.freedesktop.org/pub/mesa/${PKG_VERSION}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
+	pushd ${SRCPREFIX}
+	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xzf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	cd ${PKG_NAME}-${PKG_VERSION}
+	# TODO: change machine! (64bit)
+	#LDFLAGS="-static -s"
+	scons build=release platform=windows toolchain=crossmingw machine=x86 libgl-gdi
+#	./configure --host=${HOST} --prefix=${DEPSPREFIX} --includedir=${DEPSPREFIX}/include \
+#		--with-gallium-drivers="swrast" \
+#		--with-dri-drivers="swrast" \
+#		--disable-static --enable-shared
+		
+#		 \
+#		--disable-egl \
+
+	#make -j${THREADS}
+	#make install
+	cd ..
+	popd
+	
 fi
 }
 

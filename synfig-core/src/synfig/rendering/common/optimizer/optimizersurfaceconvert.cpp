@@ -40,8 +40,10 @@
 #include "../task/tasksurfaceconvert.h"
 #include "../../software/surfacesw.h"
 #include "../../software/task/tasksw.h"
+#ifdef WITH_OPENGL
 #include "../../opengl/surfacegl.h"
 #include "../../opengl/task/taskgl.h"
+#endif
 
 #endif
 
@@ -59,6 +61,7 @@ using namespace rendering;
 void
 OptimizerSurfaceConvert::run(const RunParams& params) const
 {
+#ifdef WITH_OPENGL
 	if (params.ref_task->target_surface)
 	{
 		if (TaskSurfaceConvert::Handle surface_convert = TaskSurfaceConvert::Handle::cast_dynamic(params.ref_task))
@@ -115,6 +118,7 @@ OptimizerSurfaceConvert::run(const RunParams& params) const
 			}
 		}
 	}
+#endif
 }
 
 /* === E N T R Y P O I N T ================================================= */
