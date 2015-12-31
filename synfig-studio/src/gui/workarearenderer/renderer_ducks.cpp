@@ -719,10 +719,15 @@ Renderer_Ducks::render_vfunc(
 					const synfig::RendDesc rend_desc = get_work_area()->get_rend_desc();
 					switch((*iter)->get_type()) {
 					case Duck::TYPE_POSITION:
-						value += strprintf(" %2.3g %2.3g",
-								Distance(sub_trans_point[0],Distance::SYSTEM_UNITS).get(App::distance_system,rend_desc),
-								Distance(sub_trans_point[1],Distance::SYSTEM_UNITS).get(App::distance_system,rend_desc));
-						break;
+					{
+						Distance posx(sub_trans_point[0],Distance::SYSTEM_UNITS);
+						posx.convert(App::distance_system,rend_desc);
+						Distance posy(sub_trans_point[1],Distance::SYSTEM_UNITS);
+						posy.convert(App::distance_system,rend_desc);
+
+						value += " " + posx.get_string(3) + " " + posy.get_string(3);
+					}
+					break;
 					case Duck::TYPE_ANGLE:
 						value+=strprintf(" %2.2g°",
 								synfig::Angle::deg(transformation.angle + ((*iter)->get_rotations())).get());
@@ -732,21 +737,35 @@ Renderer_Ducks::render_vfunc(
 								synfig::Angle::deg(transformation.skew_angle + ((*iter)->get_rotations())).get());
 						break;
 					case Duck::TYPE_SCALE:
-						value += strprintf(" %2.3g %2.3g",
-								Distance(transformation.scale.multiply_coords((*iter)->get_point())[0],
-										Distance::SYSTEM_UNITS).get(App::distance_system,rend_desc) ,
-								Distance(transformation.scale.multiply_coords((*iter)->get_point())[1],
-										Distance::SYSTEM_UNITS).get(App::distance_system,rend_desc));
-						break;
+					{
+						Distance scalex(transformation.scale.multiply_coords((*iter)->get_point())[0],
+								Distance::SYSTEM_UNITS);
+						scalex.convert(App::distance_system,rend_desc);
+						Distance scaley(transformation.scale.multiply_coords((*iter)->get_point())[1],
+								Distance::SYSTEM_UNITS);
+						scaley.convert(App::distance_system,rend_desc);
+
+						value += " " + scalex.get_string(3) + " " +	scaley.get_string(3);
+					}
+					break;
 					case Duck::TYPE_SCALE_X:
-						value += strprintf("x %2.3g",
-								Distance(transformation.scale[0] * ((*iter)->get_point())[0],
-										Distance::SYSTEM_UNITS).get(App::distance_system,rend_desc));
-						break;
+					{
+						Distance scalex(transformation.scale[0] * ((*iter)->get_point())[0],
+								Distance::SYSTEM_UNITS);
+						scalex.convert(App::distance_system,rend_desc);
+						value += "x" + scalex.get_string(3);
+					}
+					break;
 					case Duck::TYPE_SCALE_Y:
-						value += strprintf("y %2.3g",
-								Distance(transformation.scale[1] * ((*iter)->get_point())[0],
-										Distance::SYSTEM_UNITS).get(App::distance_system,rend_desc));
+					{
+						Distance scaley(transformation.scale[1] * ((*iter)->get_point())[0],
+								Distance::SYSTEM_UNITS);
+						scaley.convert(App::distance_system,rend_desc);
+						value += "y" + scaley.get_string(3);
+					}
+//						value += strprintf("y %2.3g",
+//								Distance(transformation.scale[1] * ((*iter)->get_point())[0],
+//										Distance::SYSTEM_UNITS).get(App::distance_system,rend_desc));
 						break;
 					default:
 						break;
