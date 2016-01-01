@@ -117,6 +117,7 @@ for file in \
    libepoxy\*.dll \
    libexpat\*.dll \
    libffi\*.dll \
+   libfftw\*.dll \
    libfontconfig\*.dll \
    libfreetype\*.dll \
    libgcc_s_\*.dll \

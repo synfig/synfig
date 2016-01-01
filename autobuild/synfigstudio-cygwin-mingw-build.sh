@@ -1093,6 +1093,7 @@ for file in \
    libdl.dll \
    libexpat\*.dll \
    libffi\*.dll \
+   libfftw\*.dll \
    libfontconfig\*.dll \
    libfreetype\*.dll \
    libgcc_s_\*.dll \
