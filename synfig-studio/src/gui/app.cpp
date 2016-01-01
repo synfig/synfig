@@ -89,7 +89,6 @@
 #include "dialogs/dialog_gradient.h"
 #include "dialogs/dialog_input.h"
 #include "dialogs/dialog_color.h"
-#include "mainwindow.h"
 #include "docks/dock_toolbox.h"
 #include "onemoment.h"
 
@@ -313,13 +312,14 @@ String studio::App::browser_command("open"); // MacOS only
 #else
 String studio::App::browser_command("xdg-open"); // Linux XDG standard
 #endif
-String studio::App::brushes_path("");
+std::set< String > studio::App::brushes_path;
 String studio::App::sequence_separator(".");
 String studio::App::navigator_renderer;
 String studio::App::workarea_renderer;
 
 bool studio::App::enable_mainwin_menubar = true;
 String studio::App::ui_language ("os_LANG");
+long studio::App::ui_handle_tooltip_flag(Duck::STRUCT_DEFAULT);
 
 static int max_recent_files_=25;
 int studio::App::get_max_recent_files() { return max_recent_files_; }
@@ -540,6 +540,11 @@ public:
 				return true;
 			}
 #endif
+			if(key=="auto_recover_backup")
+			{
+				value=strprintf("%i",App::auto_recover->get_enable());
+				return true;
+			}
 			if(key=="auto_recover_backup_interval")
 			{
 				value=strprintf("%i",App::auto_recover->get_timeout());
@@ -570,9 +575,13 @@ public:
 				value=App::browser_command;
 				return true;
 			}
+			//! "Keep brushes_path" preferences entry for backward compatibilty (15/12 - v1.0.3)
+			//! Now brush path(s) are hold by input preferences : brush.path_count & brush.path_%d
 			if(key=="brushes_path")
 			{
-				value=App::brushes_path;
+				value="";
+				if(!App::brushes_path.empty())
+					value=*(App::brushes_path.begin());
 				return true;
 			}
 			if(key=="custom_filename_prefix")
@@ -625,6 +634,11 @@ public:
 				value=strprintf("%i", (int)App::enable_mainwin_menubar);
 				return true;
 			}
+			if(key=="ui_handle_tooltip_flag")
+			{
+				value=strprintf("%il", (long)App::ui_handle_tooltip_flag);
+				return true;
+			}
 		}
 		catch(...)
 		{
@@ -657,6 +671,12 @@ public:
 			{
 				int i(atoi(value.c_str()));
 				App::set_time_format(static_cast<synfig::Time::Format>(i));
+				return true;
+			}
+			if(key=="auto_recover_backup")
+			{
+				int i(atoi(value.c_str()));
+				App::auto_recover->enable(i);
 				return true;
 			}
 			if(key=="auto_recover_backup_interval")
@@ -719,9 +739,11 @@ public:
 				App::browser_command=value;
 				return true;
 			}
+			//! "Keep brushes_path" preferences entry for backward compatibilty (15/12 - v1.0.3)
+			//! Now brush path(s) are hold by input preferences : brush.path_count & brush.path_%d
 			if(key=="brushes_path")
 			{
-				App::brushes_path=value;
+				App::brushes_path.insert(value);
 				return true;
 			}
 			if(key=="custom_filename_prefix")
@@ -778,6 +800,12 @@ public:
 				App::enable_mainwin_menubar = i;
 				return true;
 			}
+			if(key=="ui_handle_tooltip_flag")
+			{
+				long l(atol(value.c_str()));
+				App::ui_handle_tooltip_flag = l;
+				return true;
+			}
 		}
 		catch(...)
 		{
@@ -797,6 +825,7 @@ public:
 #ifdef SINGLE_THREADED
 		ret.push_back("use_single_threaded");
 #endif
+		ret.push_back("auto_recover_backup");
 		ret.push_back("auto_recover_backup_interval");
 		ret.push_back("restrict_radius_ducks");
 		ret.push_back("resize_imported_images");
@@ -815,6 +844,7 @@ public:
 		ret.push_back("navigator_renderer");
 		ret.push_back("workarea_renderer");
 		ret.push_back("enable_mainwin_menubar");
+		ret.push_back("ui_handle_tooltip_flag");
 
 		return ret;
 	}
@@ -1120,7 +1150,7 @@ DEFINE_ACTION("keyframe-properties","Properties");
 		// TODO: (Plugins) Arrange menu items into groups
 
 		synfigapp::PluginManager::plugin plugin = *p;
-		
+
 		DEFINE_ACTION(plugin.id, plugin.name);
 		ui_info_menu += strprintf("	<menuitem action='%s'/>", plugin.id.c_str());
 	}
@@ -1328,7 +1358,7 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 	{
 		Glib::setenv ("LANGUAGE",  App::ui_language.c_str(), 1);
 	}
-	
+
 	std::string path_to_icons;
 #ifdef WIN32
 	path_to_icons=basepath+ETL_DIRECTORY_SEPARATOR+".."+ETL_DIRECTORY_SEPARATOR+IMAGE_DIR;
@@ -1347,7 +1377,7 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 	}
 	path_to_icons+=ETL_DIRECTORY_SEPARATOR;
 	init_icons(path_to_icons);
-	
+
 	ui_interface_=new GlobalUIInterface();
 
 	// don't call thread_init() if threads are already initialized
@@ -1393,10 +1423,10 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 	shutdown_in_progress=false;
 	SuperCallback synfig_init_cb(splash_screen.get_callback(),0,9000,10000);
 	SuperCallback studio_init_cb(splash_screen.get_callback(),9000,10000,10000);
-		
+
 	// Initialize the Synfig library
 	try { synfigapp_main=etl::smart_ptr<synfigapp::Main>(new synfigapp::Main(basepath,&synfig_init_cb)); }
-	catch(std::runtime_error x)
+	catch(std::runtime_error &x)
 	{
 		get_ui_interface()->error(strprintf("%s\n\n%s", _("Failed to initialize synfig!"), x.what()));
 		throw;
@@ -1407,7 +1437,7 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		throw;
 	}
 
-	
+
 	// add the preferences to the settings
 	synfigapp::Main::settings().add_domain(&_preferences,"pref");
 
@@ -1416,7 +1446,7 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		// Try to load settings early to get access to some important
 		// values, like "enable_experimental_features".
 		studio_init_cb.task(_("Loading Basic Settings..."));
-		
+
 		load_settings("pref.use_dark_theme");
 		App::apply_gtk_settings(App::use_dark_theme);
 
@@ -1427,9 +1457,9 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		load_settings("pref.enable_mainwin_menubar");
 
 		studio_init_cb.task(_("Loading Plugins..."));
-		
+
 		std::string pluginsprefix;
-	
+
 		// system plugins path
 #ifdef WIN32
 		pluginsprefix=App::get_base_path()+ETL_DIRECTORY_SEPARATOR+PLUGIN_DIR;
@@ -1444,11 +1474,11 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 				+ETL_DIRECTORY_SEPARATOR+"plugins";
 		}
 		plugin_manager.load_dir(pluginsprefix);
-		
+
 		// user plugins path
 		pluginsprefix=Glib::build_filename(synfigapp::Main::get_user_app_directory(),"plugins");
 		plugin_manager.load_dir(pluginsprefix);
-		
+
 		studio_init_cb.task(_("Init UI Manager..."));
 		App::ui_manager_=studio::UIManager::create();
 		init_ui_manager();
@@ -1546,7 +1576,7 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		studio_init_cb.task(_("Init Input Dialog..."));
 		dialog_input=new studio::Dialog_Input(*App::main_window);
 		dialog_input->signal_apply().connect( sigc::mem_fun( *device_tracker, &DeviceTracker::save_preferences) );
-		
+
 		studio_init_cb.task(_("Init auto recovery..."));
 		auto_recover=new AutoRecover();
 
@@ -1698,7 +1728,7 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 					details,
 					_("Got it"));
 	}
-	catch(String x)
+	catch(String &x)
 	{
 		get_ui_interface()->error(_("Unknown exception caught when constructing App.\nThis software may be unstable.") + String("\n\n") + x);
 	}
@@ -2029,7 +2059,7 @@ App::set_workspace_default()
 			"]"
 		"]"
 	"]";
-         
+
 	std::string layout = DockManager::layout_from_template(tpl, dx, dy, sx, sy);
 	dock_manager->load_layout_from_string(layout);
 	dock_manager->show_all_dock_dialogs();
@@ -2105,6 +2135,7 @@ App::set_workspace_animating()
 void
 App::restore_default_settings()
 {
+	// TODO autorecover default auto_recover_backup_interval
 	synfigapp::Main::settings().set_value("pref.distance_system","pt");
 	synfigapp::Main::settings().set_value("pref.use_colorspace_gamma","1");
 #ifdef SINGLE_THREADED
@@ -2124,6 +2155,10 @@ App::restore_default_settings()
 	synfigapp::Main::settings().set_value("navigator_renderer", "");
 	synfigapp::Main::settings().set_value("workarea_renderer", "");
 	synfigapp::Main::settings().set_value("pref.enable_mainwin_menubar", "1");
+	ostringstream temp;
+	temp << Duck::STRUCT_DEFAULT;
+	synfigapp::Main::settings().set_value("pref.ui_handle_tooltip_flag", temp.str());
+	synfigapp::Main::settings().set_value("pref.auto_recover_backup", "1");
 }
 
 void
@@ -2131,18 +2166,18 @@ App::apply_gtk_settings(bool use_dark)
 {
 	GtkSettings *gtk_settings;
 	gtk_settings = gtk_settings_get_default ();
-	
+
 	gchar *theme_name=getenv("SYNFIG_GTK_THEME");
 	if(theme_name) {
 		g_object_set (G_OBJECT (gtk_settings), "gtk-theme-name", theme_name, NULL);
 	}
-	
+
 	// dark theme
 	g_object_set (G_OBJECT (gtk_settings), "gtk-application-prefer-dark-theme", use_dark, NULL);
-	
+
 	// enable menu icons
 	g_object_set (G_OBJECT (gtk_settings), "gtk-menu-images", TRUE, NULL);
-	
+
 	// fix checkboxes for Adwaita theme
 	g_object_get (G_OBJECT (gtk_settings), "gtk-theme-name", &theme_name, NULL);
 	if ( String(theme_name) == "Adwaita" ){
@@ -2449,7 +2484,7 @@ App::dialog_open_file_spal(const std::string &title, std::string &filename, std:
 	dialog->set_current_folder(prev_path);
 	dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
 	dialog->add_button(Gtk::StockID(_("Open")), Gtk::RESPONSE_ACCEPT);
-	
+
 	Glib::RefPtr<Gtk::FileFilter> filter_supported = Gtk::FileFilter::create();
 	filter_supported->set_name(_("Palette files (*.spal, *.gpl)"));
 	filter_supported->add_pattern("*.spal");
@@ -2461,7 +2496,7 @@ App::dialog_open_file_spal(const std::string &title, std::string &filename, std:
 	filter_spal->set_name(_("Synfig palette files (*.spal)"));
 	filter_spal->add_pattern("*.spal");
 	dialog->add_filter(filter_spal);
-	
+
 	// ...and add GIMP color palette file too (*.gpl)
         Glib::RefPtr<Gtk::FileFilter> filter_gpl = Gtk::FileFilter::create();
 	filter_gpl->set_name(_("GIMP palette files (*.gpl)"));
@@ -2756,6 +2791,34 @@ App::dialog_open_file_with_history_button(const std::string &title, std::string 
 	delete dialog;
 	return false;
 #endif   // not USE_WIN32_FILE_DIALOGS
+}
+
+bool
+App::dialog_open_folder(const std::string &title, std::string &foldername, std::string preference, Gtk::Window& transientwind)
+{
+	synfig::String prev_path;
+	synfigapp::Settings settings;
+	if(settings.get_value(preference, prev_path))
+		prev_path = ".";
+
+	prev_path = absolute_path(prev_path);
+
+	Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(*App::main_window,
+			title, Gtk::FILE_CHOOSER_ACTION_SELECT_FOLDER);
+
+	dialog->set_transient_for(transientwind);
+	dialog->set_current_folder(prev_path);
+	dialog->add_button(_("Cancel"), Gtk::RESPONSE_CANCEL)->set_image_from_icon_name("gtk-cancel", Gtk::ICON_SIZE_BUTTON);
+	dialog->add_button(_("Open"),   Gtk::RESPONSE_ACCEPT)->set_image_from_icon_name("gtk-open", Gtk::ICON_SIZE_BUTTON);
+
+	if(dialog->run() == GTK_RESPONSE_ACCEPT)
+	{
+		foldername = dialog->get_filename();
+		delete dialog;
+		return true;
+	}
+	delete dialog;
+	return false;
 }
 
 
@@ -3204,7 +3267,7 @@ App::dialog_message_1b(
 
 	if (details != "details")
 		dialog.set_secondary_text(details);
-	
+
 	Gtk::Label label;
 	Gtk::ScrolledWindow sw;
 	if (long_details != "long_details")
@@ -3543,7 +3606,7 @@ App::open_as(std::string filename,std::string as,synfig::FileContainerZip::file_
 				instance->dialog_cvs_update();
 		}
 	}
-	catch(String x)
+	catch(String &x)
 	{
 		dialog_message_1b(
 			"ERROR",
@@ -3553,7 +3616,7 @@ App::open_as(std::string filename,std::string as,synfig::FileContainerZip::file_
 
 		return false;
 	}
-	catch(runtime_error x)
+	catch(runtime_error &x)
 	{
 		dialog_message_1b(
 			"ERROR",
@@ -3636,7 +3699,7 @@ App::open_from_temporary_container_as(std::string container_filename_base,std::s
 				instance->dialog_cvs_update();
 		}
 	}
-	catch(String x)
+	catch(String &x)
 	{
 		dialog_message_1b(
 				"ERROR",
@@ -3646,7 +3709,7 @@ App::open_from_temporary_container_as(std::string container_filename_base,std::s
 
 		return false;
 	}
-	catch(runtime_error x)
+	catch(runtime_error &x)
 	{
 		dialog_message_1b(
 				"ERROR",

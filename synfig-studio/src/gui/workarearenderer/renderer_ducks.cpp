@@ -91,6 +91,7 @@ struct ScreenDuck
 	ScreenDuck(): selected(), hover(), width(0), has_alternative(false) { }
 };
 
+// TODO immense function !! break into parts and clean
 void
 Renderer_Ducks::render_vfunc(
 	const Glib::RefPtr<Gdk::Window>& drawable,
@@ -429,7 +430,7 @@ Renderer_Ducks::render_vfunc(
 			}
 		}
 		else if((*iter)->get_type()&Duck::TYPE_SKEW)
-			screen_duck.color=DUCK_COLOR_TANGENT_2;
+			screen_duck.color=DUCK_COLOR_SKEW;
 		else if((*iter)->get_type()&Duck::TYPE_VERTEX)
 			screen_duck.color=DUCK_COLOR_VERTEX;
 		else if((*iter)->get_type()&Duck::TYPE_SCALE)
@@ -541,7 +542,14 @@ Renderer_Ducks::render_vfunc(
 				cr->restore();
 			}
 
-			if(hover)
+		}
+
+		//! Tooltip time
+		if(hover)
+		{
+			//! Tooltip time : radius
+			if( (App::ui_handle_tooltip_flag&Duck::STRUCT_RADIUS) &&
+					(*iter)->is_radius())
 			{
 				Real mag;
 				if ((*iter)->get_exponential()){
@@ -592,12 +600,9 @@ Renderer_Ducks::render_vfunc(
 
 				cr->restore();
 			}
-
-		}
-
-		if((*iter)->get_type()&&Duck::TYPE_WIDTHPOINT_POSITION)
-		{
-			if(hover)
+			//! Tooltip time : width point position
+			if( (App::ui_handle_tooltip_flag&Duck::STRUCT_WIDTHPOINT) &&
+					(*iter)->get_type()&&Duck::TYPE_WIDTHPOINT_POSITION)
 			{
 				synfig::Canvas::Handle canvas_h(get_work_area()->get_canvas());
 				synfig::Time time(canvas_h?canvas_h->get_time():synfig::Time(0));
@@ -690,7 +695,106 @@ Renderer_Ducks::render_vfunc(
 					}
 				}
 			}
-		}
+			//! Tooltip time : transformation widget, display layer name &| value
+			if( ((App::ui_handle_tooltip_flag&Duck::STRUCT_TRANSFORMATION) ||
+				 (App::ui_handle_tooltip_flag&Duck::STRUCT_TRANSFO_BY_VALUE)) &&
+					((*iter)->get_value_desc().is_value_node()) &&
+					((*iter)->get_value_desc().get_value_type() == type_transformation)
+					)
+			{
+				cr->save();
+				String tooltiptext("");
+				if(App::ui_handle_tooltip_flag&Duck::STRUCT_TRANSFORMATION)
+					tooltiptext = (*iter)->get_value_desc().get_layer()->get_non_empty_description();
+
+				if(App::ui_handle_tooltip_flag&Duck::STRUCT_TRANSFO_BY_VALUE)
+				{
+					//TODO translation of subname
+					String value = (*iter)->get_value_desc().get_sub_name();
+
+					synfig::Canvas::Handle canvas_h(get_work_area()->get_canvas());
+					synfig::Time time(canvas_h?canvas_h->get_time():synfig::Time(0));
+					Transformation transformation = (*iter)->get_value_desc().get_value(time).get(Transformation());
+
+					const synfig::RendDesc rend_desc = get_work_area()->get_rend_desc();
+					switch((*iter)->get_type()) {
+					case Duck::TYPE_POSITION:
+					{
+						Distance posx(sub_trans_point[0],Distance::SYSTEM_UNITS);
+						posx.convert(App::distance_system,rend_desc);
+						Distance posy(sub_trans_point[1],Distance::SYSTEM_UNITS);
+						posy.convert(App::distance_system,rend_desc);
+
+						value += " " + posx.get_string(3) + " " + posy.get_string(3);
+					}
+					break;
+					case Duck::TYPE_ANGLE:
+						value+=strprintf(" %2.2g°",
+								synfig::Angle::deg(transformation.angle + ((*iter)->get_rotations())).get());
+						break;
+					case Duck::TYPE_SKEW:
+						value+=strprintf(" %2.2g°",
+								synfig::Angle::deg(transformation.skew_angle + ((*iter)->get_rotations())).get());
+						break;
+					case Duck::TYPE_SCALE:
+					{
+						Distance scalex(transformation.scale.multiply_coords((*iter)->get_point())[0],
+								Distance::SYSTEM_UNITS);
+						scalex.convert(App::distance_system,rend_desc);
+						Distance scaley(transformation.scale.multiply_coords((*iter)->get_point())[1],
+								Distance::SYSTEM_UNITS);
+						scaley.convert(App::distance_system,rend_desc);
+
+						value += " " + scalex.get_string(3) + " " +	scaley.get_string(3);
+					}
+					break;
+					case Duck::TYPE_SCALE_X:
+					{
+						Distance scalex(transformation.scale[0] * ((*iter)->get_point())[0],
+								Distance::SYSTEM_UNITS);
+						scalex.convert(App::distance_system,rend_desc);
+						value += "x" + scalex.get_string(3);
+					}
+					break;
+					case Duck::TYPE_SCALE_Y:
+					{
+						Distance scaley(transformation.scale[1] * ((*iter)->get_point())[0],
+								Distance::SYSTEM_UNITS);
+						scaley.convert(App::distance_system,rend_desc);
+						value += "y" + scaley.get_string(3);
+					}
+//						value += strprintf("y %2.3g",
+//								Distance(transformation.scale[1] * ((*iter)->get_point())[0],
+//										Distance::SYSTEM_UNITS).get(App::distance_system,rend_desc));
+						break;
+					default:
+						break;
+					}
+
+					tooltiptext = App::ui_handle_tooltip_flag&Duck::STRUCT_TRANSFORMATION? tooltiptext + "\n" + value : value;
+				}
+
+				layout->set_text(tooltiptext);
+
+				cr->set_source_rgb(GDK_COLOR_TO_RGB(DUCK_COLOR_TRANSFO_TEXT_1));
+				cr->move_to(
+					point[0]+1+14,
+					point[1]+1-14
+					);
+				layout->show_in_cairo_context(cr);
+				cr->stroke();
+
+				cr->set_source_rgb(GDK_COLOR_TO_RGB(DUCK_COLOR_ORIGIN));
+				cr->move_to(
+					point[0]+14,
+					point[1]-14
+					);
+				layout->show_in_cairo_context(cr);
+				cr->stroke();
+
+				cr->restore();
+			}
+		}//! end if hover
 
 	}
 
