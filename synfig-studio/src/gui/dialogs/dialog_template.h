@@ -74,10 +74,6 @@ private:
 	Gtk::TreeView categories_treeview;
 	Glib::RefPtr<Gtk::TreeStore> categories_reftreemodel;
 
-	// Style for title(s)
-	Pango::AttrList title_attrlist;
-	Pango::AttrList section_attrlist;
-
 	//Preferences Categories Tree model columns:
 	class Categories : public Gtk::TreeModel::ColumnRecord
 	{
@@ -96,6 +92,10 @@ private:
  -- ** -- P R O T E C T E D   D A T A -----------------------------------------------
 	*/
 protected:
+	// Style for title(s)
+	Pango::AttrList title_attrlist;
+	Pango::AttrList section_attrlist;
+
 	struct PageInfo
 	{
 		Gtk::Grid* grid;
@@ -109,20 +109,12 @@ protected:
 public:
 
 	/*
- -- ** -- S I G N A L S -------------------------------------------------------
-	*/
-
-	//Signal handlers dialog
-	virtual void on_ok_pressed() ;
-	virtual void on_apply_pressed() = 0;
-	virtual void on_restore_pressed();
-	void on_treeviewselection_changed ();
-
-	/*
  -- ** -- P R I V A T E   M E T H O D S ---------------------------------------
 	*/
 
 private:
+
+	void on_treeviewselection_changed ();
 
 	/*
  -- ** -- P R O T E C T E D   M E T H O D S ---------------------------------------
@@ -147,6 +139,14 @@ protected:
 	//! \Brief Add a new child page to the Notebook and Treeview collection
 	//! \return PageInfo used to fill with widget the new page
 	PageInfo add_child_page(synfig::String page_title, Gtk::TreeRow parentrow);
+
+	/*
+ -- ** -- S I G N A L S -------------------------------------------------------
+	*/
+	//Signal handlers dialog
+	virtual void on_ok_pressed() ;
+	virtual void on_apply_pressed() = 0;
+	virtual void on_restore_pressed() {}
 
 	/*
  -- ** -- P U B L I C   M E T H O D S ---------------------------------------

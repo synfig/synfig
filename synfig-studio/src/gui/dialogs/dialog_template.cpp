@@ -113,7 +113,6 @@ Dialog_Template::Dialog_Template(Gtk::Window& parent, synfig::String dialog_titl
 
 		categories_treeview.set_headers_visible(false);
 		categories_treeview.append_column(_("Category"), categories.category_name);
-		categories_treeview.expand_all();
 
 		categories_treeview.get_selection()->signal_changed().connect(
 				sigc::mem_fun(*this, &Dialog_Template::on_treeviewselection_changed));
@@ -147,13 +146,6 @@ void
 Dialog_Template::on_ok_pressed()
 {
 	on_apply_pressed();
-	hide();
-}
-
-
-void
-Dialog_Template::on_restore_pressed()
-{
 	hide();
 }
 
@@ -241,6 +233,8 @@ Dialog_Template::add_child_page(synfig::String page_title, Gtk::TreeRow parentro
 	pageinfo.row = *(categories_reftreemodel->append(parentrow.children()));
 	pageinfo.row[categories.category_id] = page_index++;
 	pageinfo.row[categories.category_name] = page_title;
+
+	categories_treeview.expand_all();
 
 	return pageinfo;
 }

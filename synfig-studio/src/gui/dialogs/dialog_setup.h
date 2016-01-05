@@ -29,22 +29,16 @@
 #define __SYNFIG_STUDIO_DIALOG_SETUP_H
 
 /* === H E A D E R S ======================================================= */
+#include <dialogs/dialog_template.h>
 
-#include <gtk/gtk.h>
 #include <gtkmm/adjustment.h>
 #include <gtkmm/button.h>
 #include <gtkmm/checkbutton.h>
 #include <gtkmm/comboboxtext.h>
-#include <gtkmm/dialog.h>
 #include <gtkmm/drawingarea.h>
-#include <gtkmm/grid.h>
 #include <gtkmm/listviewtext.h>
-#include <gtkmm/notebook.h>
 #include <gtkmm/spinbutton.h>
-#include <gtkmm/scrolledwindow.h>
 #include <gtkmm/switch.h>
-#include <gtkmm/treestore.h>
-#include <gtkmm/treeview.h>
 #include <gtkmm/tooltip.h>
 
 #include <gui/widgets/widget_time.h>
@@ -160,7 +154,7 @@ public:
 
 class Widget_Enum;
 
-class Dialog_Setup : public Gtk::Dialog
+class Dialog_Setup : public Dialog_Template
 {
 	/* Draft for change resume */
 	enum Change
@@ -189,11 +183,7 @@ class Dialog_Setup : public Gtk::Dialog
 		HANDLE_TOOLTIP_TRANSFO_VALUE
 	};
 
-	//Signal handlers dialog
-	void on_ok_pressed();
-	void on_apply_pressed();
-	void on_restore_pressed();
-	void on_treeviewselection_changed ();
+
 	// Change mechanism
 	// TODO on change class
 	void on_value_change(int valueflag);
@@ -213,37 +203,14 @@ class Dialog_Setup : public Gtk::Dialog
 	void on_brush_path_add_clicked();
 	void on_brush_path_remove_clicked();
 
-	// TODO Move design function to class to further global use (make ui consistant and .rc)
-	//User Interface Design
-	//! \Brief Set the main title of the page
-	void attach_label_title(Gtk::Grid *grid, synfig::String str);
-	//! \Brief Add a new section (col 0) at specified row
-	void attach_label_section(Gtk::Grid *grid, synfig::String str, guint row);
-	//! \Brief Add a single label (col 0) at specified row
-	void attach_label(Gtk::Grid *grid, synfig::String str, guint row);
-	//! \Brief Add a single label at specified row and col
-	//! \return Gtk::Label* for further change
-	Gtk::Label* attach_label(Gtk::Grid *grid, synfig::String str, guint row, guint col, bool endstring=true);
-
-	void create_gamma_page(synfig::String name);
-	void create_system_page(synfig::String name);
-	void create_document_page(synfig::String name);
-	void create_render_page(synfig::String name);
-	void create_interface_page(synfig::String name);
-	void create_editing_page(synfig::String name);
+	void create_gamma_page(PageInfo pi);
+	void create_system_page(PageInfo pi);
+	void create_document_page(PageInfo pi);
+	void create_render_page(PageInfo pi);
+	void create_interface_page(PageInfo pi);
+	void create_editing_page(PageInfo pi);
 
 	synfigapp::Settings &input_settings;
-
-	//Child widgets:
-	Gtk::Notebook *notebook;
-	Gtk::Grid main_grid;
-	Gtk::ScrolledWindow prefs_categories_scrolledwindow;
-	Gtk::TreeView prefs_categories_treeview;
-	Glib::RefPtr<Gtk::TreeStore> prefs_categories_reftreemodel;
-
-	// Style for title(s)
-	Pango::AttrList title_attrlist;
-	Pango::AttrList section_attrlist;
 
 	// Widget for pages
 	GammaPattern gamma_pattern;
@@ -308,19 +275,6 @@ class Dialog_Setup : public Gtk::Dialog
 	//! Do not update state flag on refreshing
 	bool refreshing;
 
-	// TODO Move treeview + title dialog style to upper class for global use and consistancy
-	//Preferences Categories Tree model columns:
-	class PrefsCategories : public Gtk::TreeModel::ColumnRecord
-	{
-		public:
-
-		PrefsCategories() { add(category_id); add(category_name); }
-
-		Gtk::TreeModelColumn<int> category_id;
-		Gtk::TreeModelColumn<Glib::ustring> category_name;
-	};
-	PrefsCategories prefs_categories;
-
 	//Brush path Tree model columns:
 	class PrefsBrushPath : public Gtk::TreeModel::ColumnRecord
 	{
@@ -329,6 +283,15 @@ class Dialog_Setup : public Gtk::Dialog
 		Gtk::TreeModelColumn<synfig::String> path;
 	};
 	PrefsBrushPath prefs_brushpath;
+
+public:
+	/*
+ -- ** -- S I G N A L S -------------------------------------------------------
+	*/
+
+	//Signal handlers dialog
+	virtual void on_apply_pressed();
+	virtual void on_restore_pressed();
 
 public:
 
