@@ -9,3 +9,4 @@ Icon=synfig_icon
 Categories=GTK;Graphics;2DGraphics;VectorGraphics;
 StartupNotify=true
 MimeType=application/x-sif;
+Keywords=2D;Vector;Animation;Cartoon;Anime;FX;Draw;
