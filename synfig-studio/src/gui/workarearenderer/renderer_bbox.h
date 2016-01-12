@@ -1,6 +1,7 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file renderer_bbox.h
-**	\brief Template Header
+**  \brief Renderer_BBox classe is used to render in the workarea the bouding box
+** of the selected layer(s)
 **
 **	$Id$
 **
@@ -33,6 +34,9 @@
 #include <synfig/rect.h>
 
 /* === M A C R O S ========================================================= */
+
+#define BBOX_COLOR_OUTLINE      Gdk::Color("#ffffff")
+#define BBOX_COLOR_FAILBACK     Gdk::Color("#000000")
 
 /* === T Y P E D E F S ===================================================== */
 

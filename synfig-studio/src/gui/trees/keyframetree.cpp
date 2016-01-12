@@ -31,13 +31,15 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "app.h"
 #include "trees/keyframetree.h"
 #include "cellrenderer/cellrenderer_time.h"
 #include <gtkmm/treemodelsort.h>
 #include <ETL/misc>
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

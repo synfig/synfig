@@ -31,6 +31,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "trees/canvastreestore.h"
 #include <synfig/valuenode.h>
 #include "iconcontroller.h"
@@ -45,7 +47,7 @@
 #include <ETL/clock>
 #include <synfig/interpolation.h>
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

@@ -35,6 +35,8 @@
 
 #include <sigc++/adaptors/hide.h>
 
+#include <synfig/general.h>
+
 #include <sstream>
 #include <algorithm>
 #include <math.h>
@@ -136,7 +138,7 @@
 
 #include <pangomm.h>
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 
@@ -955,6 +957,13 @@ CanvasView::~CanvasView()
 		synfig::info("CanvasView::~CanvasView(): Deleted");
 }
 
+void CanvasView::save_all()
+{
+	std::list<etl::handle<Instance> >::iterator iter;
+	for(iter=App::instance_list.begin();iter!=App::instance_list.end();iter++)
+		(*iter)->save();
+}
+
 void CanvasView::activate()
 {
 	activation_index_.activate();
@@ -1691,9 +1700,13 @@ CanvasView::init_menus()
 	action_group->add( Gtk::Action::create("save-as", Gtk::StockID("synfig-save_as"), _("Save As...")),
 		sigc::hide_return(sigc::mem_fun(*get_instance().get(), &studio::Instance::dialog_save_as))
 	);
+	action_group->add( Gtk::Action::create("save-all", Gtk::StockID("synfig-save_all"), _("Save All"), _("Save all opened documents")),
+		sigc::ptr_fun(save_all)
+	);
 	action_group->add( Gtk::Action::create("revert", Gtk::Stock::REVERT_TO_SAVED),
 		sigc::hide_return(sigc::mem_fun(*get_instance().get(), &studio::Instance::safe_revert))
 	);
+	/*
 	action_group->add( Gtk::Action::create("cvs-add", Gtk::StockID("synfig-cvs_add")),
 		sigc::hide_return(sigc::mem_fun(*get_instance(), &studio::Instance::dialog_cvs_add))
 	);
@@ -1706,6 +1719,7 @@ CanvasView::init_menus()
 	action_group->add( Gtk::Action::create("cvs-commit", Gtk::StockID("synfig-cvs_commit")),
 		sigc::hide_return(sigc::mem_fun(*get_instance(), &studio::Instance::dialog_cvs_commit))
 	);
+	*/
 	action_group->add( Gtk::Action::create("import", _("Import...")),
 		sigc::hide_return(sigc::mem_fun(*this, &studio::CanvasView::image_import))
 	);
@@ -1922,6 +1936,10 @@ CanvasView::init_menus()
 
 	{
 		Glib::RefPtr<Gtk::ToggleAction> action;
+		//! toggle none/last visible
+		action= Gtk::ToggleAction::create("mask-none-ducks", _("Toggle None/Last visible Handles"));
+		action->set_active(false);
+		action_group->add(action,  sigc::mem_fun(*this,&CanvasView::toggle_duck_mask_all));
 
 #define DUCK_MASK(lower,upper,string)												\
 		action=Gtk::ToggleAction::create("mask-" #lower "-ducks", string);			\
@@ -1936,11 +1954,11 @@ CanvasView::init_menus()
 		DUCK_MASK(vertex,VERTEX,_("Show Vertex Handles"));
 		DUCK_MASK(radius,RADIUS,_("Show Radius Handles"));
 		DUCK_MASK(width,WIDTH,_("Show Width Handles"));
+		DUCK_MASK(widthpoint-position, WIDTHPOINT_POSITION, _("Show WidthPoints Position Handles"));
 		DUCK_MASK(angle,ANGLE,_("Show Angle Handles"));
 		action_mask_bone_setup_ducks = action;
 		DUCK_MASK(bone-recursive,BONE_RECURSIVE,_("Show Recursive Scale Bone Handles"));
 		action_mask_bone_recursive_ducks = action;
-		DUCK_MASK(widthpoint-position, WIDTHPOINT_POSITION, _("Show WidthPoints Position Handles"));
 
 #undef DUCK_MASK
 
@@ -3236,6 +3254,7 @@ void
 CanvasView::on_play_timeout()
 {
 	Time time;
+	// Used ifdef WITH_JACK
 	Time starttime = get_canvas()->rend_desc().get_time_start();
 	Time endtime = get_canvas()->rend_desc().get_time_end();
 
@@ -3999,6 +4018,7 @@ CanvasView::toggle_duck_mask(Duckmatic::Type type)
 		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("mask-angle-ducks"));
 		action->set_active((bool)(work_area->get_type_mask()&Duck::TYPE_ANGLE));
 		// Update toggle ducks buttons
+		action->get_active();
 		toggleducksdial.update_toggles(work_area->get_type_mask());
 	}
 	catch(...)
@@ -4006,6 +4026,23 @@ CanvasView::toggle_duck_mask(Duckmatic::Type type)
 		toggling_ducks_=false;
 	}
 	toggling_ducks_=false;
+}
+
+void
+CanvasView::toggle_duck_mask_all()
+{
+    if (work_area->get_type_mask_state ()== Duck::TYPE_NONE)
+    {
+        work_area->set_type_mask_state ( work_area->get_type_mask());
+        work_area->set_type_mask(Duck::TYPE_NONE);
+        toggle_duck_mask(Duck::TYPE_NONE);
+    }
+    else
+    {
+        work_area->set_type_mask(work_area->get_type_mask_state());
+        work_area->set_type_mask_state ( Duck::TYPE_NONE);
+        toggle_duck_mask(Duck::TYPE_NONE);
+    }
 }
 
 void
@@ -4521,7 +4558,7 @@ CanvasView::on_interpolation_changed()
 }
 
 void
-CanvasView::on_interpolation_event(GdkEvent *event)
+CanvasView::on_interpolation_event(GdkEvent * /* event */)
 {
 	widget_interpolation_scroll->get_hscrollbar()->get_adjustment()->set_value(0);
 }

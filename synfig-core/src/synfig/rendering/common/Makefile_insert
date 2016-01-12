@@ -1,0 +1,15 @@
+RENDERING_COMMON_HH = \
+	rendering/common/surfacememoryreadwrapper.h
+
+RENDERING_COMMON_CC = \
+	rendering/common/surfacememoryreadwrapper.cpp
+
+include rendering/common/optimizer/Makefile_insert
+include rendering/common/task/Makefile_insert
+
+RENDERING_HH += \
+    $(RENDERING_COMMON_HH)
+
+RENDERING_CC += \
+    $(RENDERING_COMMON_CC)
+

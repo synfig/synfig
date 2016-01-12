@@ -36,6 +36,7 @@
 #include "valuenode_bone.h"
 #include <synfig/boneweightpair.h>
 #include <synfig/general.h>
+#include <synfig/localization.h>
 #include <synfig/exception.h>
 #include <vector>
 #include <list>

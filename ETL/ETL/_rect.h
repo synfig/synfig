@@ -137,6 +137,23 @@ inline bool intersect(const rect<T> &r1, const rect<T> &r2)
 	return intersect(r1,r2,std::less<T>());
 }
 
+
+template < typename T, typename F >
+inline bool contains(const rect<T> &big, const rect<T> &small, const F & func)
+{
+	return !func(small.minx, big.minx) &&
+		   !func(big.maxx, small.maxx) &&
+		   !func(small.miny, big.miny) &&
+		   !func(big.maxy, small.maxy);
+}
+
+template < typename T >
+inline bool contains(const rect<T> &big, const rect<T> &small)
+{
+	return contains(big,small,std::less<T>());
+}
+
+
 template < typename T >
 void set_intersect(rect<T> &rout, const rect<T> &r1, const rect<T> &r2)
 {

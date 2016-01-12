@@ -33,17 +33,25 @@
 #endif
 
 #include "layer_pastecanvas.h"
-#include "string.h"
-#include "time.h"
-#include "../context.h"
-#include "../paramdesc.h"
-#include "../renddesc.h"
-#include "../surface.h"
-#include "../value.h"
-#include "../valuenode.h"
-#include "../canvas.h"
-#include "../cairo_renddesc.h"
 
+#include <synfig/general.h>
+#include <synfig/localization.h>
+
+#include <synfig/cairo_renddesc.h>
+#include <synfig/canvas.h>
+#include <synfig/context.h>
+#include <synfig/paramdesc.h>
+#include <synfig/renddesc.h>
+#include <synfig/time.h>
+#include <synfig/string.h>
+#include <synfig/surface.h>
+#include <synfig/value.h>
+#include <synfig/valuenode.h>
+
+#include <synfig/rendering/common/task/taskblend.h>
+#include <synfig/rendering/common/task/tasksurfaceempty.h>
+#include <synfig/rendering/common/task/tasktransformation.h>
+#include <synfig/rendering/primitive/affinetransformation.h>
 
 #endif
 
@@ -81,6 +89,7 @@ public:
 Layer_PasteCanvas::Layer_PasteCanvas():
 	param_origin(Point()),
 	param_transformation(Transformation()),
+	param_time_dilation (Real(1)),
 	param_time_offset (Time(0)),
 	depth(0),
 	extra_reference(false)
@@ -136,6 +145,11 @@ Layer_PasteCanvas::get_param_vocab()const
 	ret.push_back(ParamDesc("canvas")
 		.set_local_name(_("Canvas"))
 		.set_description(_("Group content"))
+	);
+
+	ret.push_back(ParamDesc("time_dilation")
+		.set_local_name(_("Speed"))
+		.set_description(_("Multiplier to speed up, slow down, freeze, or reverse time"))
 	);
 
 	ret.push_back(ParamDesc("time_offset")
@@ -204,6 +218,7 @@ Layer_PasteCanvas::set_param(const String & param, const ValueBase &value)
 		return true;
 	}
 #else
+	IMPORT_VALUE(param_time_dilation);
 	IMPORT_VALUE(param_time_offset);
 #endif
 
@@ -291,6 +306,7 @@ Layer_PasteCanvas::get_param(const String& param)const
 		synfig::ValueBase ret(canvas);
 		return ret;
 	}
+	EXPORT_VALUE(param_time_dilation);
 	EXPORT_VALUE(param_time_offset);
 	EXPORT_VALUE(param_children_lock);
 	EXPORT_VALUE(param_curr_time);
@@ -302,6 +318,7 @@ Layer_PasteCanvas::get_param(const String& param)const
 void
 Layer_PasteCanvas::set_time(IndependentContext context, Time time)const
 {
+	Real time_dilation=param_time_dilation.get(Real());
 	Time time_offset=param_time_offset.get(Time());
 
 	if(depth==MAX_DEPTH)return;depth_counter counter(depth);
@@ -309,12 +326,17 @@ Layer_PasteCanvas::set_time(IndependentContext context, Time time)const
 
 	context.set_time(time);
 	if(canvas)
-		canvas->set_time(time+time_offset);
+		canvas->set_time(time*time_dilation+time_offset);
 }
 
 void
-Layer_PasteCanvas::apply_z_range_to_params(ContextParams &/*cp*/)const
+Layer_PasteCanvas::apply_z_range_to_params(ContextParams &cp)const
 {
+	ContextParams p;
+	cp.z_range = p.z_range;
+	cp.z_range_position = p.z_range_position;
+	cp.z_range_depth = p.z_range_depth;
+	cp.z_range_blur = p.z_range_blur;
 }
 
 synfig::Layer::Handle
@@ -391,6 +413,7 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 	  * renddesc.get_transformation_matrix() );
 
 	Real outline_grow=param_outline_grow.get(Real());
+	Real time_dilation=param_time_dilation.get(Real());
 	Time time_offset=param_time_offset.get(Time());
 	Time curr_time=param_curr_time.get(Time());
 
@@ -427,7 +450,7 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 	canvas->set_grow_value(outline_grow+grow_value);
 
 	if(muck_with_time_ && curr_time!=Time::begin() /*&& canvas->get_time()!=curr_time+time_offset*/)
-		canvas->set_time(curr_time+time_offset);
+		canvas->set_time(curr_time*time_dilation+time_offset);
 
 	Color::BlendMethod blend_method(get_blend_method());
 	const Rect full_bounding_rect(canvasContext.get_full_bounding_rect());
@@ -523,8 +546,20 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 		intermediate_desc.set_tl(pixel_aligned_tl);
 		intermediate_desc.set_br(pixel_aligned_br);
 		Surface intermediate_surface;
+
+		//{ // TODO: remove
+		//	std::ofstream of("/tmp/contours.txt", std::ios_base::app);
+		//	of << "g " << x0 << " " << y0 << endl;
+		//}
+
 		if(!canvasContext.accelerated_render(&intermediate_surface,quality,intermediate_desc,&stagetwo))
 			return false;
+
+		//{ // TODO: remove
+		//	std::ofstream of("/tmp/contours.txt", std::ios_base::app);
+		//	of << "end" << endl;
+		//}
+
 		Surface::alpha_pen apen(surface->get_pen(x0, y0));
 		apen.set_alpha(get_amount());
 		apen.set_blend_method(blend_using_straight ? Color::BLEND_STRAIGHT : blend_method);
@@ -543,6 +578,7 @@ Layer_PasteCanvas::accelerated_cairorender(Context context,cairo_t *cr, int qual
 	Transformation transformation(get_summary_transformation());
 
 	Real outline_grow=param_outline_grow.get(Real());
+	Real time_dilation=param_time_dilation.get(Real());
 	Time time_offset=param_time_offset.get(Time());
 	Time curr_time=param_curr_time.get(Time());
 
@@ -563,12 +599,6 @@ Layer_PasteCanvas::accelerated_cairorender(Context context,cairo_t *cr, int qual
 	SuperCallback stagethree(cb,9000,9999,10000);
 
 
-	Real grow_value(get_parent_canvas_grow_value());
-	canvas->set_grow_value(outline_grow+grow_value);
-
-	if(muck_with_time_ && curr_time!=Time::begin() /*&& canvas->get_time()!=curr_time+time_offset*/)
-		canvas->set_time(curr_time+time_offset);
-
 	bool ret;
 	RendDesc workdesc(renddesc);
 
@@ -576,6 +606,12 @@ Layer_PasteCanvas::accelerated_cairorender(Context context,cairo_t *cr, int qual
 	ret=context.accelerated_cairorender(cr, quality, renddesc, &stagethree);
 	if(!ret)
 		return false;
+
+	Real grow_value(get_parent_canvas_grow_value());
+	canvas->set_grow_value(outline_grow+grow_value);
+
+	if(muck_with_time_ && curr_time!=Time::begin() /*&& canvas->get_time()!=curr_time+time_offset*/)
+		canvas->set_time(curr_time*time_dilation+time_offset);
 
 
 	// render the canvas to be pasted onto pastesurface
@@ -636,6 +672,7 @@ Layer_PasteCanvas::accelerated_cairorender(Context context,cairo_t *cr, int qual
 
 void Layer_PasteCanvas::get_times_vfunc(Node::time_set &set) const
 {
+	Real time_dilation=param_time_dilation.get(Real());
 	Time time_offset=param_time_offset.get(Time());
 
 	Node::time_set tset;
@@ -646,12 +683,18 @@ void Layer_PasteCanvas::get_times_vfunc(Node::time_set &set) const
 	//Make sure we offset the time...
 	//! \todo: SOMETHING STILL HAS TO BE DONE WITH THE OTHER DIRECTION
 	//		   (recursing down the tree needs to take this into account too...)
-	for(; i != end; ++i)
-		set.insert(*i
+	for(; i != end; ++i) {
 #ifdef ADJUST_WAYPOINTS_FOR_TIME_OFFSET // see node.h
-				   - time_offset
+		if (time_dilation!=0)
+		{
+			TimePoint tp = *i;
+			tp.set_time((tp.get_time() - time_offset) / time_dilation);
+			set.insert(tp);
+		}
+#else
+		set.insert(*i);
 #endif
-			);
+	}
 
 	Layer::get_times_vfunc(set);
 }
@@ -672,3 +715,26 @@ Layer_PasteCanvas::fill_sound_processor(SoundProcessor &soundProcessor) const
 {
 	if (active() && canvas) canvas->fill_sound_processor(soundProcessor);
 }
+
+rendering::Task::Handle
+Layer_PasteCanvas::build_composite_task_vfunc(ContextParams context_params)const
+{
+	if (!canvas)
+		return new rendering::TaskSurfaceEmpty();
+
+	// TODO:
+	// time_offset;
+	// outline_grow;
+	// children_lock;
+	// curr_time;
+
+	apply_z_range_to_params(context_params);
+	rendering::TaskTransformation::Handle task_transformation(new rendering::TaskTransformation());
+	rendering::AffineTransformation::Handle affine_transformation(new rendering::AffineTransformation());
+	affine_transformation->matrix = get_summary_transformation().get_matrix();
+	task_transformation->transformation = affine_transformation;
+	task_transformation->sub_task() = canvas->get_context(context_params).build_rendering_task();
+	return task_transformation;
+}
+
+

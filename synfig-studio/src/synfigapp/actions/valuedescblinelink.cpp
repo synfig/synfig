@@ -30,6 +30,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "layerparamconnect.h"
 #include "valuenodelinkconnect.h"
 #include "valuenodereplace.h"
@@ -44,7 +46,7 @@
 #include <synfig/valuenodes/valuenode_blinecalcwidth.h>
 #include <synfig/valuenodes/valuenode_bline.h>
 
-#include <synfigapp/general.h>
+#include <synfigapp/localization.h>
 
 #endif
 
@@ -105,10 +107,16 @@ Action::ValueDescBLineLink::is_candidate(const ParamList &x)
 {
 	ParamList::const_iterator i;
 
-	ValueDesc value_desc(x.find("value_desc")->second.get_value_desc());
-
 	if (!candidate_check(get_param_vocab(),x))
 		return false;
+
+	ValueDesc value_desc(x.find("value_desc")->second.get_value_desc());
+	ValueDesc selected_value_desc(x.find("selected_value_desc")->second.get_value_desc());
+
+	//! if the valuedesc belong to the spline, can't link.
+	if(value_desc.parent_is_value_node() && selected_value_desc.parent_is_value_node() &&
+	        value_desc.get_parent_value_node() == selected_value_desc.get_parent_value_node())
+	    return false;
 
 	return (value_desc.parent_is_value_node() &&
 			// We need a dynamic list.

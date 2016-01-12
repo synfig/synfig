@@ -28,6 +28,8 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <ctime>
+
 #include <ETL/handle>
 #include <sigc++/signal.h>
 #include <sigc++/trackable.h>
@@ -86,6 +88,8 @@ class AsyncRenderer : public etl::shared_object, public sigc::trackable
 	Glib::Mutex mutex;
 	sigc::connection done_connection;
 
+	clock_t start_clock;
+	clock_t finish_clock;
 	Glib::TimeVal start_time;
 	Glib::TimeVal finish_time;
 
@@ -109,6 +113,7 @@ public:
 	bool has_error()const { return error; }
 	bool has_success()const { return success; }
 	synfig::Real get_execution_time() const { return (finish_time - start_time).as_double(); }
+	synfig::Real get_execution_clock() const { return (synfig::Real)(finish_clock - start_clock)/(synfig::Real)CLOCKS_PER_SEC; }
 
 	sigc::signal<void>& signal_finished() { return signal_finished_; }
 	sigc::signal<void>& signal_success() { return signal_success_; }

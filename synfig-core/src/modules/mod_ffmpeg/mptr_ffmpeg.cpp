@@ -37,6 +37,7 @@
 #include <cstdio>
 #include <sys/types.h>
 #include <synfig/general.h>
+#include <synfig/localization.h>
 #if HAVE_SYS_WAIT_H
  #include <sys/wait.h>
 #endif

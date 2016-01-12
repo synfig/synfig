@@ -31,33 +31,38 @@
 #	include <config.h>
 #endif
 
-#include "canvas.h"
-#include "layer.h"
-#include "render.h"
-#include "value.h"
-#include <synfig/layers/layer_bitmap.h>
-#include <synfig/layers/layer_mime.h>
-#include "context.h"
-#include "paramdesc.h"
-#include "surface.h"
+#include <sigc++/adaptors/bind.h>
 
-#include <synfig/layers/layer_solidcolor.h>
-#include <synfig/layers/layer_polygon.h>
-#include <synfig/layers/layer_group.h>
-#include <synfig/layers/layer_switch.h>
-#include <synfig/layers/layer_motionblur.h>
-#include <synfig/layers/layer_duplicate.h>
-#include <synfig/layers/layer_skeleton.h>
-#include <synfig/layers/layer_skeletondeformation.h>
-#include <synfig/layers/layer_sound.h>
+#include "layer.h"
+
+#include "general.h"
+#include <synfig/localization.h>
+#include "rect.h"
+#include "guid.h"
+#include "value.h"
+#include "render.h"
+#include "canvas.h"
+#include "context.h"
+#include "surface.h"
+#include "paramdesc.h"
+#include "transform.h"
+
+#include "layers/layer_bitmap.h"
+#include "layers/layer_duplicate.h"
+#include "layers/layer_group.h"
+#include "layers/layer_mime.h"
+#include "layers/layer_motionblur.h"
+#include "layers/layer_polygon.h"
+#include "layers/layer_skeleton.h"
+#include "layers/layer_skeletondeformation.h"
+#include "layers/layer_solidcolor.h"
+#include "layers/layer_sound.h"
+#include "layers/layer_switch.h"
 
 #include "valuenodes/valuenode_const.h"
 
-#include "transform.h"
-#include "rect.h"
-#include "guid.h"
+#include "rendering/common/task/tasksurfaceempty.h"
 
-#include <sigc++/adaptors/bind.h>
 #endif
 
 /* === U S I N G =========================================================== */
@@ -730,7 +735,7 @@ Layer::accelerated_render(Context context,Surface *surface,int quality, const Re
 {
 	RENDER_TRANSFORMED_IF_NEED(__FILE__, __LINE__)
 
-	handle<Target_Scanline> target=surface_target(surface);
+	handle<Target_Scanline> target=surface_target_scanline(surface);
 	if(!target)
 	{
 		if(cb)cb->error(_("Unable to create surface target"));
@@ -768,6 +773,19 @@ Layer::accelerated_cairorender(Context context, cairo_t *cr, int /*quality*/, co
 	return cairorender(context,cr,renddesc,cb);
 }
 
+rendering::Task::Handle
+Layer::build_rendering_task_vfunc(Context /* context */)const
+{
+	warning("Rendering of %s not implemented yet", get_name().c_str());
+	return rendering::Task::Handle();
+}
+
+rendering::Task::Handle
+Layer::build_rendering_task(Context context)const
+{
+	rendering::Task::Handle task = build_rendering_task_vfunc(context);
+	return task ? task : rendering::Task::Handle(new rendering::TaskSurfaceEmpty());
+}
 
 String
 Layer::get_name()const

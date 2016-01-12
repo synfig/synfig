@@ -32,6 +32,9 @@
 #	include <config.h>
 #endif
 
+#include <synfig/localization.h>
+#include <synfig/general.h>
+
 #include <ETL/stringf>
 #include "trgt_imagemagick.h"
 #include <cstdio>
@@ -119,7 +122,7 @@ imagemagick_trgt::set_rend_desc(RendDesc *given_desc)
 }
 
 bool
-imagemagick_trgt::init(synfig::ProgressCallback *cb)
+imagemagick_trgt::init(synfig::ProgressCallback * /* cb */)
 {
 	imagecount=desc.get_frame_start();
 	if(desc.get_frame_end()-desc.get_frame_start()>0)

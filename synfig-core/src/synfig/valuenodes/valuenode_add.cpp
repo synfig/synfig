@@ -32,6 +32,7 @@
 #endif
 
 #include <synfig/general.h>
+#include <synfig/localization.h>
 #include "valuenode_add.h"
 #include "valuenode_const.h"
 #include <stdexcept>
@@ -157,6 +158,18 @@ synfig::ValueNode_Add::operator()(Time t)const
 
 	assert(0);
 	return ValueBase();
+}
+
+ValueBase
+synfig::ValueNode_Add::get_inverse(Time t, const synfig::Real &target_value) const
+{
+	return target_value / (*scalar)(t).get(Real()) - (*ref_b)(t).get(Vector::value_type());
+}
+
+synfig::ValueBase
+synfig::ValueNode_Add::get_inverse(Time t, const synfig::Angle &target_value) const
+{
+	return target_value / (*scalar)(t).get(Real()) - (*ref_b)(t).get(Angle());
 }
 
 bool

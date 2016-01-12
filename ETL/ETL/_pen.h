@@ -191,6 +191,10 @@ public:
 		return *this;
 	}
 	self_type& move_to(int x, int y) { assert(data_); return move(x - x_,y - y_);}
+
+	template<typename TT, typename ATT>
+	self_type& move_to(const generic_pen<TT, ATT> &p) { assert(data_ && p.data_); return move_to(p.x_,p.y_);}
+
 	void set_value(const value_type &v) { value_=v; }
 
 	void inc_x() { assert(data_); x_++; data_++; }

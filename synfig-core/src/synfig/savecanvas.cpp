@@ -37,6 +37,7 @@
 
 #include "savecanvas.h"
 #include "general.h"
+#include <synfig/localization.h>
 #include "valuenode.h"
 #include "valuenodes/valuenode_animated.h"
 #include "valuenodes/valuenode_const.h"
@@ -613,7 +614,6 @@ xmlpp::Element* encode_dynamic_list(xmlpp::Element* root,ValueNode_DynamicList::
 
 		// process waypoints
 		{
-			typedef synfig::ValueNode_DynamicList::ListEntry::Activepoint Activepoint;
 			typedef synfig::ValueNode_DynamicList::ListEntry::ActivepointList ActivepointList;
 			String begin_sequence;
 			String end_sequence;

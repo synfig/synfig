@@ -2,7 +2,7 @@
 
 # -- I N I T --------------------------------------------------
 
-AC_INIT([Synfig Core],[1.0.1],[http://www.synfig.org/issues/thebuggenie/synfig],[synfig])
+AC_INIT([Synfig Core],[1.1.4],[http://www.synfig.org/issues/thebuggenie/synfig],[synfig])
 AC_REVISION
 
 AC_CONFIG_AUX_DIR(config)
@@ -46,9 +46,8 @@ AC_C_BIGENDIAN
 
 # -- A R G U M E N T S ----------------------------------------
 
-
-AC_ARG_DEBUG
 AC_ARG_OPTIMIZATION
+AC_ARG_DEBUG
 AC_ARG_WARNINGS
 AC_ARG_PROFILING
 AC_ARG_PROFILE_ARCS
@@ -133,6 +132,7 @@ if test $with_magickpp = "yes" ; then {
 	PKG_CHECK_MODULES(MAGICKPP, Magick++ >= 6.4.2,[
 		with_magickpp="yes"
 		AM_CONDITIONAL(HAVE_LIBMAGICKPP,true)
+		CONFIG_DEPS="$CONFIG_DEPS Magick++"
 	],[
 		with_magickpp="no"
 		AC_MSG_RESULT([ *** Magick++ Output target disabled])
@@ -149,8 +149,6 @@ AC_ARG_WITH(ffmpeg,
 	with_ffmpeg="yes"
 ])
 AM_CONDITIONAL(WITH_FFMPEG, test $with_ffmpeg = yes)
-
-
 
 
 AC_ARG_WITH(vimage,
@@ -223,6 +221,7 @@ if test $with_libavcodec = "yes" ; then {
 
 	if test $with_libswscale = "yes" ; then {
 		AC_DEFINE(WITH_LIBSWSCALE, [], [enable libswscale support])
+		CONFIG_DEPS="$CONFIG_DEPS libswscale"
 
 		# Need to check both the new and old locations for the swscale header
 		# Need to save flags, add swscale flags, check headers and restore flags
@@ -255,6 +254,7 @@ AC_ARG_WITH(freetype,
 if test $with_freetype != "no" ; then {
 	PKG_CHECK_MODULES(FREETYPE, freetype2,[
 		with_freetype="yes"
+		CONFIG_DEPS="$CONFIG_DEPS freetype2"
 	],[
 		PKG_CHECK_MODULES(FREETYPE, xft,[
 			with_freetype="yes"
@@ -277,6 +277,7 @@ AC_ARG_WITH(fontconfig,
 if test $with_fontconfig != "no" ; then {
 	PKG_CHECK_MODULES(FONTCONFIG, fontconfig,[
 		with_fontconfig="yes"
+		CONFIG_DEPS="$CONFIG_DEPS fontconfig"
 	],[
 		with_fontconfig="no"
 	])
@@ -300,6 +301,7 @@ if test $with_openexr = "yes" ; then {
 	PKG_CHECK_MODULES(OPENEXR, OpenEXR,[
 		AC_DEFINE(HAVE_OPENEXR,[], [ Define if OpenEXR is available ] )
 		AM_CONDITIONAL(WITH_OPENEXR,true)
+		CONFIG_DEPS="$CONFIG_DEPS OpenEXR"
 	],
 	[
 		with_openexr="no"
@@ -311,7 +313,6 @@ if test $with_openexr = "no" ; then {
 } ; fi
 if test $use_openexr_half = yes ; then {
 	AC_MSG_RESULT([ ** Using OpenEXR Half.])
-	CONFIG_DEPS="$CONFIG_DEPS OpenEXR"
 	CONFIG_CFLAGS="$CONFIG_CFLAGS -DUSE_HALF_TYPE"
 	OPENEXR_HALF_LIBS="-lHalf"
 } else {
@@ -336,15 +337,15 @@ AM_CONDITIONAL(WITH_JPEG, test $with_jpeg = yes)
 AC_LIB_LTDL
 
 # Languages list (alphabetical order, please!)
-ALL_LINGUAS="ar bs ca cs da de el_GR en_GB es eu eu_ES fa_IR fr gl he hu it ja_JP lt nl no_NO pl_PL pt_BR ro ru si sk_SK sr_RS sv_SE tr uz@Latn zh-Hant zh_CN zh_TW"
+ALL_LINGUAS="ar bs ca cs cs_CZ da de el_GR en_CZ en_GB es eu eu_ES fa_IR fr gl he hu it ja_JP lt nl no_NO pl_PL pt_BR ro ru si sk_SK sr_RS sv_SE tr uz@Latn zh-Hant zh_CN zh_TW zh_TW.Big5 ur"
 
 AM_GNU_GETTEXT([external])
 # This is here so autoreconf will run autopoint
 AM_GNU_GETTEXT_VERSION([0.15])
 localedir="$datadir/locale"
 
-PKG_CHECK_MODULES(ETL, [ETL >= 0.04.18],,[
-	AC_MSG_ERROR([ ** You need to install the ETL (version 0.04.18 or greater).])
+PKG_CHECK_MODULES(ETL, [ETL >= 0.04.20],,[
+	AC_MSG_ERROR([ ** You need to install the ETL (version 0.04.20 or greater).])
 ])
 CONFIG_DEPS="$CONFIG_DEPS ETL"
 
@@ -388,6 +389,48 @@ PKG_CHECK_MODULES(LIBCAIRO, [cairo >= 1.12.0],[
 ],[
 	AC_MSG_ERROR([ ** You need to install cairo version 1.12.0 or higher.])
 ])
+
+AC_ARG_WITH(opengl,
+	AS_HELP_STRING(--with-opengl, [enable OpenGL (default=auto)]),[
+],[
+	with_opengl="yes"
+])
+if test $with_opengl != "no" ; then {
+	PKG_CHECK_MODULES(LIBGL, gl, [
+		CONFIG_DEPS="$CONFIG_DEPS gl"
+		LIBGL_CFLAGS="$LIBGL_CFLAGS -DGL_GLEXT_PROTOTYPES"
+		#with_opengl = yes
+		AM_CONDITIONAL(WITH_OPENGL, true)
+	],[
+		AC_MSG_RESULT([ ** Cannot find gl.pc. OpenGL disabled.])
+		AM_CONDITIONAL(WITH_OPENGL, false)
+	])	
+} ; fi
+#AM_CONDITIONAL(WITH_OPENGL, test $with_opengl = yes)
+
+AC_ARG_WITH(opencl,
+	AS_HELP_STRING(--with-opencl, [enable OpenCL (default=auto)]),[
+],[
+	with_opencl="no"
+])
+
+if test $with_opencl != "no" ; then {
+	AC_CHECK_HEADER(CL/opencl.h,,AC_MSG_ERROR([ ** You need to install opencl-headers package.]))
+	PKG_CHECK_MODULES(LIBCL, OpenCL,[
+		CONFIG_DEPS="$CONFIG_DEPS OpenCL"
+		with_opencl="yes"
+	],[
+		AC_MSG_ERROR([ ** You need to install OpenCL.])
+		with_opencl="no"
+	])
+	
+} ; fi
+AM_CONDITIONAL(WITH_OPENCL, test $with_opencl = yes)
+
+PKG_CHECK_MODULES(LIBFFTW, fftw3,,[
+	AC_MSG_ERROR([ ** You need to install FFTW 3.])
+])
+CONFIG_DEPS="$CONFIG_DEPS fftw3"
 
 PKG_CHECK_MODULES(LIBPANGO, pango pangocairo,[
 	CONFIG_DEPS="$CONFIG_DEPS pango pangocairo"
@@ -664,8 +707,8 @@ AC_SUBST(CONFIG_CFLAGS)
 AC_SUBST(CONFIG_DEPS)
 AC_SUBST(ETL_CFLAGS)
 
-SYNFIG_LIBS="$VIMAGE_LIBS $LIBZ_LIBS $GLIBMM_LIBS $GIOMM_LIBS $LIBXMLPP_LIBS $MAGICKPP_LIBS $LIBCAIRO_LIBS $LIBCAIROMM_LIBS $LIBPANGO_LIBS $MLTPP_LIBS $ETL_LIBS $LIBSIGC_LIBS $LTLIBINTL"
-SYNFIG_CFLAGS="$BOOST_CPPFLAGS $LIBZ_CFLAGS $GLIBMM_CFLAGS $GIOMM_CFLAGS $LIBXMLPP_CFLAGS $MAGICKPP_CFLAGS $LIBCAIRO_CFLAGS $LIBCAIROMM_CFLAGS $LIBPANGO_CFLAGS $MLTPP_CFLAGS $ETL_CFLAGS $LIBSIGC_CFLAGS $CONFIG_CFLAGS -DSYNFIG_NO_DEPRECATED -DLOCALEDIR=\\\"$localedir\\\""
+SYNFIG_LIBS="$VIMAGE_LIBS $LIBZ_LIBS $GLIBMM_LIBS $GIOMM_LIBS $LIBXMLPP_LIBS $MAGICKPP_LIBS $LIBCAIRO_LIBS $LIBCAIROMM_LIBS $LIBGL_LIBS $LIBCL_LIBS $LIBFFTW_LIBS $LIBPANGO_LIBS $MLTPP_LIBS $ETL_LIBS $LIBSIGC_LIBS $LTLIBINTL"
+SYNFIG_CFLAGS="$BOOST_CPPFLAGS $LIBZ_CFLAGS $GLIBMM_CFLAGS $GIOMM_CFLAGS $LIBXMLPP_CFLAGS $MAGICKPP_CFLAGS $LIBCAIRO_CFLAGS $LIBCAIROMM_CFLAGS $LIBGL_CFLAGS $LIBCL_CFLAGS $LIBFFTW_CFLAGS $LIBPANGO_CFLAGS $MLTPP_CFLAGS $ETL_CFLAGS $LIBSIGC_CFLAGS $CONFIG_CFLAGS -DSYNFIG_NO_DEPRECATED -DLOCALEDIR=\\\"$localedir\\\""
 
 CONFIG_CFLAGS="`echo $CONFIG_CFLAGS | sed s/-mno-cygwin//g | sed s/-mwindows//g`"
 SYNFIG_CFLAGS="`echo $SYNFIG_CFLAGS | sed s/-mno-cygwin//g | sed s/-mwindows//g`"
@@ -751,6 +794,8 @@ vImage ---------------------------> $with_vimage
 ImageMagick ----------------------> $with_imagemagick
 Magick++ -------------------------> $with_magickpp
 FFMPEG ---------------------------> $with_ffmpeg
+OpenGL ---------------------------> $with_opengl
+OpenCL ---------------------------> $with_opencl
 libdv ----------------------------> $with_libdv
 OpenEXR --------------------------> $with_openexr
 Using OpenEXR's \"half\" type ------> $use_openexr_half

@@ -32,6 +32,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "layerparamset.h"
 #include "valuenodeconstset.h"
 #include "valuedescconnect.h"
@@ -40,6 +42,7 @@
 
 #include "valuedescset.h"
 #include <synfigapp/canvasinterface.h>
+#include <synfig/valuenodes/valuenode_add.h>
 #include <synfig/valuenodes/valuenode_bline.h>
 #include <synfig/valuenodes/valuenode_wplist.h>
 #include <synfig/valuenodes/valuenode_blinecalctangent.h>
@@ -62,7 +65,7 @@
 #include <synfig/pair.h>
 #include <synfigapp/main.h>
 
-#include <synfigapp/general.h>
+#include <synfigapp/localization.h>
 
 #endif
 
@@ -676,6 +679,29 @@ Action::ValueDescSet::prepare()
 		add_action(action);
 		return;
 	}
+	// Add value node
+	if (ValueNode_Add::Handle add_value_node = ValueNode_Add::Handle::cast_dynamic(value_desc.get_value_node()))
+	{
+		ValueBase new_value;
+		if (value.get_type() == type_angle)
+			new_value = add_value_node->get_inverse(time, value.get(Angle()));
+		else if(value.get_type() == type_real)
+			new_value = add_value_node->get_inverse(time, value.get(Real()));
+		else
+			throw Error(_("Inverse manipulation of %s scale values not implemented in core."), value.type_name().c_str());
+		Action::Handle action(Action::create("ValueDescSet"));
+		if(!action)
+			throw Error(_("Unable to find action ValueDescSet (bug)"));
+		action->set_param("canvas",get_canvas());
+		action->set_param("canvas_interface",get_canvas_interface());
+		action->set_param("time",time);
+		action->set_param("new_value",new_value);
+		action->set_param("value_desc",ValueDesc(add_value_node,add_value_node->get_link_index_from_name("lhs")));
+		if(!action->is_ready())
+			throw Error(Error::TYPE_NOTREADY);
+		add_action(action);
+		return;
+	}
 	// Real: Reverse manipulations for Real->Angle convert
 	if (ValueNode_Real::Handle real_value_node = ValueNode_Real::Handle::cast_dynamic(value_desc.get_value_node()))
 	{
@@ -848,8 +874,6 @@ Action::ValueDescSet::prepare()
 		}
 		return;
 	}
-
-	// end reverse manipulations
 
 	// WidthPoint Composite: adjust the width point position
 	// to achieve the desired point on bline

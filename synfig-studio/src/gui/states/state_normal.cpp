@@ -31,6 +31,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include <gtkmm/dialog.h>
 #include <gtkmm/entry.h>
 #include <gdk/gdkkeysyms.h>
@@ -57,7 +59,7 @@
 #include <synfig/angle.h>
 #include <synfigapp/main.h>
 
-#include "general.h"
+#include <gui/localization.h>
 #endif
 
 /* === U S I N G =========================================================== */
@@ -256,6 +258,8 @@ void StateNormal_Context::refresh_cursor()
 	// Change the cursor based on key flags
 	if(get_rotate_flag() && !get_scale_flag())
 	{
+	    //!TODO Do not change the cursor in WorkArea::DragMode mode, but actually not stable enough to catch
+	    //! real DRAGBOX mode (go to DRAGNONE too quick)
 		get_work_area()->set_cursor(Gdk::EXCHANGE);
 		return;
 	}

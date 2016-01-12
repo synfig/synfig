@@ -30,6 +30,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "docks/dockbook.h"
 #include "docks/dockable.h"
 #include "app.h"
@@ -41,7 +43,7 @@
 #include <gtkmm/menu.h>
 #include <gtkmm/imagemenuitem.h>
 
-#include "general.h"
+#include <gui/localization.h>
 
 #include "canvasview.h"
 

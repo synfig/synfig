@@ -33,7 +33,9 @@
 #include <iostream>
 #include <string>
 
-#include "general.h"
+#include <synfig/general.h>
+
+#include <synfigapp/localization.h>
 
 #endif
 

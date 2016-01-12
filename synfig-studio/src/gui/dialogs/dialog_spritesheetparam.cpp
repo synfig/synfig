@@ -23,10 +23,11 @@
 /* === H E A D E R S ======================================================= */
 #include <math.h>
 
-#include <gtkmm/grid.h>
+#include <synfig/general.h>
 
+#include <gtkmm/grid.h>
+#include <gui/localization.h>
 #include "dialogs/dialog_spritesheetparam.h"
-#include "general.h"
 
 namespace studio
 {
@@ -52,7 +53,7 @@ Dialog_SpriteSheetParam::Dialog_SpriteSheetParam(Gtk::Window &parent):
 	Gtk::Label* direction_label(manage(new Gtk::Label(_("Direction:"))));
 	direction_label->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 	direction_box = Gtk::manage(new Gtk::ComboBoxText());
-	direction_box->append("horisontal");
+	direction_box->append("horizontal");
 	direction_box->append("vertical");
 	direction_box->set_active(0);
 	direction_box->signal_changed().connect(sigc::mem_fun(*this, &Dialog_SpriteSheetParam::on_dir_change));

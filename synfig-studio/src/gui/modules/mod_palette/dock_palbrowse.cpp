@@ -29,11 +29,13 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "dock_palbrowse.h"
 #include "dock_paledit.h"
 #include "mod_palette.h"
 
-#include "../../general.h"
+#include <gui/localization.h>
 
 #endif
 

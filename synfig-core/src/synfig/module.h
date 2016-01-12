@@ -28,7 +28,6 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include "general.h"
 #include <ETL/handle>
 #include <map>
 #include "string.h"
@@ -218,11 +217,11 @@ public:
 	static inline void Register(Module *mod) { Register(Handle(mod)); }
 
 	//! Virtual Modules properties wrappers. Must be defined in the modules classes
-	virtual const char * Name() { return " "; }
-	virtual const char * Desc() { return " "; }
-	virtual const char * Author() { return " "; }
-	virtual const char * Version() { return " "; }
-	virtual const char * Copyright() { return SYNFIG_COPYRIGHT; }
+	virtual const char * Name();
+	virtual const char * Desc();
+	virtual const char * Author();
+	virtual const char * Version();
+	virtual const char * Copyright();
 
 	virtual ~Module() { destructor_(); }
 };

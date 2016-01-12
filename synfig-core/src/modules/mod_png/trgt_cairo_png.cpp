@@ -33,6 +33,9 @@
 #	include <config.h>
 #endif
 
+#include <synfig/localization.h>
+#include <synfig/general.h>
+
 #include "trgt_cairo_png.h"
 #include <ETL/stringf>
 #include <cstdio>

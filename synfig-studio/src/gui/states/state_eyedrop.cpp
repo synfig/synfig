@@ -29,6 +29,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "state_eyedrop.h"
 #include "state_normal.h"
 #include "workarea.h"
@@ -41,7 +43,7 @@
 #include "canvasview.h"
 #include <synfigapp/main.h>
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

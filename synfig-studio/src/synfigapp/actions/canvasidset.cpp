@@ -30,10 +30,11 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "canvasidset.h"
 #include <synfigapp/canvasinterface.h>
-
-#include <synfigapp/general.h>
+#include <synfigapp/localization.h>
 
 #endif
 

@@ -29,10 +29,12 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "adjust_window.h"
 #include "app.h"
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

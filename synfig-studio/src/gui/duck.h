@@ -106,11 +106,27 @@ public:
 		TYPE_SCALE_Y				=	(1 << 10),	// 1024
 		TYPE_SKEW					=	(1 << 11),	// 2048
 
-		TYPE_ALL		=	(~0),
+		TYPE_ALL					=	(~0),
 
-		TYPE_DEFAULT	=	0xdefadefa
+		TYPE_DEFAULT				=	0xdefadefa
 	};
+	//used for preference/interface handle tooltip flag
+	enum Structure
+	{
+		STRUCT_NONE					=	(0),		//    0
+		STRUCT_BLINEPOINT			=	(1 <<  0),	//    1
+		STRUCT_TRANSFORMATION		=	(1 <<  1),	//    2
+		STRUCT_WIDTHPOINT			=	(1 <<  2),	//    4
+		STRUCT_BONE					=	(1 <<  3),	//    8
+		STRUCT_GRADIENT				=	(1 <<  4),	//   16
+		STRUCT_TEXT					=	(1 <<  5),	//   32
+		STRUCT_RADIUS				=	(1 <<  6),	//   64
+		STRUCT_TRANSFO_BY_VALUE		=	(1 <<  7),	//  128
 
+		STRUCT_ALL					=	(~0),
+
+		STRUCT_DEFAULT				=	0x44 //STRUCT_RADIUS+STRUCT_WIDTHPOINT
+	};
 	typedef etl::handle<Duck> Handle;
 	typedef etl::loose_handle<Duck> LooseHandle;
 
@@ -276,7 +292,7 @@ public:
 	//! Retrieves whether to ignore the duck when checking for user interaction
 	bool get_ignore()const
 		{ return ignore_; }
-	
+
 	//! Sets if the duck is using the exponential function
 	/*!	Such representation allows to set the Real values in the range from \c -inf to \c inf . */
 	void set_exponential(bool n)

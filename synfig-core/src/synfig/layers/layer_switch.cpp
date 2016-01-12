@@ -30,13 +30,17 @@
 #endif
 
 #include "layer_switch.h"
-#include <synfig/string.h>
-#include <synfig/time.h>
+
+#include <synfig/general.h>
+#include <synfig/localization.h>
+
+#include <synfig/canvas.h>
 #include <synfig/context.h>
 #include <synfig/paramdesc.h>
+#include <synfig/string.h>
+#include <synfig/time.h>
 #include <synfig/value.h>
 #include <synfig/valuenode.h>
-#include <synfig/canvas.h>
 
 
 #endif
@@ -90,6 +94,7 @@ Layer_Switch::get_param_vocab()const
 	ret.push_back(ParamDesc("layer_name")
 		.set_local_name(_("Active Layer Name"))
 		.set_description(_("Only layer with specified name are visible"))
+		.set_hint("sublayer_name")
 	);
 
 	return ret;

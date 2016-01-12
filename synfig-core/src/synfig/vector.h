@@ -65,6 +65,127 @@ inline bool isinf(float x) { return !isnan(x) && isnan(x - x); }
 
 namespace synfig {
 
+/*!	\class VectorInt
+**	\todo writeme
+*/
+class VectorInt
+{
+public:
+	typedef int value_type;
+
+protected:
+	value_type _x, _y;
+
+public:
+	VectorInt(): _x(0), _y(0) { };
+	VectorInt(const value_type &x, const value_type &y):_x(x),_y(y) { };
+
+	static VectorInt zero() { return VectorInt(0, 0); }
+
+	value_type &
+	operator[](const int& i)
+		{ return i ? _y: _x; }
+
+	const value_type &
+	operator[] (const int& i) const
+		{ return i ? _y: _x; }
+
+	const VectorInt &
+	operator+=(const VectorInt &rhs)
+	{
+		_x += rhs._x;
+		_y += rhs._y;
+		return *this;
+	}
+
+	const VectorInt &
+	operator-=(const VectorInt &rhs)
+	{
+		_x -= rhs._x;
+		_y -= rhs._y;
+		return *this;
+	}
+
+	const VectorInt &
+	operator*=(const value_type &rhs)
+	{
+		_x *= rhs;
+		_y *= rhs;
+		return *this;
+	}
+
+	const VectorInt &
+	operator/=(const value_type &rhs)
+	{
+		_x /= rhs;
+		_y /= rhs;
+		return *this;
+	}
+
+	VectorInt
+	operator+(const VectorInt &rhs)const
+		{ return VectorInt(*this) += rhs; }
+
+	VectorInt
+	operator-(const VectorInt &rhs)const
+		{ return VectorInt(*this) -= rhs; }
+
+	VectorInt
+	operator*(const value_type &rhs)const
+		{ return VectorInt(*this) *= rhs; }
+
+	VectorInt
+	operator/(const value_type &rhs)const
+		{ return VectorInt(*this) /= rhs; }
+
+	VectorInt
+	operator-()const
+		{ return VectorInt(-_x,-_y); }
+
+	value_type
+	operator*(const VectorInt &rhs)const
+		{ return _x*rhs._x+_y*rhs._y; }
+
+	bool
+	operator==(const VectorInt &rhs)const
+		{ return _x==rhs._x && _y==rhs._y; }
+
+	bool
+	operator!=(const VectorInt &rhs)const
+		{ return _y!=rhs._y || _x!=rhs._x; }
+
+	//! Returns the squared magnitude of the vector
+	value_type mag_squared()const
+		{ return _x*_x+_y*_y; }
+
+	//! Returns the magnitude of the vector
+	Real mag()const
+		{ return sqrt(mag_squared()); }
+
+	//! Returns the reciprocal of the magnitude of the vector
+	Real inv_mag()const
+		{ return 1.0/sqrt(mag_squared()); }
+
+	//! Returns a perpendicular version of the vector
+	VectorInt perp()const
+		{ return VectorInt(_y,-_x); }
+
+	Angle angle()const
+		{ return Angle::rad(atan2(_y, _x)); }
+
+	VectorInt multiply_coords(const VectorInt &rhs) const
+		{ return VectorInt(_x*rhs._x, _y*rhs._y); }
+	VectorInt divide_coords(const VectorInt &rhs) const
+		{ return VectorInt(_x/rhs._x, _y/rhs._y); }
+
+};
+
+/*!	\typedef PointInt
+**	\todo writeme
+*/
+typedef VectorInt PointInt;
+
+
 /*!	\class Vector
 **	\todo writeme
 */
@@ -190,7 +311,7 @@ public:
 		return (*this-rhs).mag_squared()<=epsilon;
 	}
 
-	static const Vector zero() { return Vector(0,0); }
+	static Vector zero() { return Vector(0,0); }
 
 	Vector multiply_coords(const Vector &rhs) const
 		{ return Vector(_x*rhs._x, _y*rhs._y); }

@@ -31,6 +31,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include <synfig/valuenodes/valuenode_dynamiclist.h>
 #include <synfigapp/action_system.h>
 
@@ -50,7 +52,7 @@
 #include "widgets/widget_enum.h"
 #include <synfigapp/main.h>
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 
@@ -406,7 +408,7 @@ StateGradient_Context::StateGradient_Context(CanvasView* canvas_view):
 	id_box.pack_start(id_entry, Gtk::PACK_EXPAND_WIDGET);
 
 	// layer (gradient) creation label
-	layer_types_label.set_label(_("Create:"));
+	layer_types_label.set_label(_("Layer Type:"));
 	layer_types_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 	// layer creation buttons
 	LAYER_CREATION(layer_linear_gradient_togglebutton, toggle_layer_linear_gradient,

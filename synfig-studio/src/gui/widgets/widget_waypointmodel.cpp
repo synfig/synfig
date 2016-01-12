@@ -30,6 +30,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include <gtkmm/label.h>
 #include <gtkmm/spinbutton.h>
 #include <ETL/stringf>
@@ -38,7 +40,7 @@
 #include <gtkmm/menu.h>
 #include "widgets/widget_time.h"
 #include "widgets/widget_waypointmodel.h"
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

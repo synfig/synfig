@@ -32,7 +32,6 @@
 #include <map>
 #include <typeinfo>
 #include "string.h"
-#include "general.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -65,7 +64,7 @@ class Time;
 class Color;
 struct Segment;
 class BLinePoint;
-class Matrix;
+class Matrix3;
 class BoneWeightPair;
 class WidthPoint;
 class DashItem;
@@ -95,7 +94,7 @@ namespace types_namespace
 	SYNFIG_DECLARE_TYPE_ALIAS(Color)
 	SYNFIG_DECLARE_TYPE_ALIAS(Segment)
 	SYNFIG_DECLARE_TYPE_ALIAS(BLinePoint)
-	SYNFIG_DECLARE_TYPE_ALIAS(Matrix)
+	SYNFIG_DECLARE_TYPE_ALIAS(Matrix3)
 	SYNFIG_DECLARE_TYPE_ALIAS(BoneWeightPair)
 	SYNFIG_DECLARE_TYPE_ALIAS(WidthPoint)
 	SYNFIG_DECLARE_TYPE_ALIAS(DashItem)
@@ -400,6 +399,8 @@ private:
 	}
 
 protected:
+	static String local_n(const char *x);
+
 	virtual void initialize_vfunc(Description &description)
 	{
 		description.version = "0.0";

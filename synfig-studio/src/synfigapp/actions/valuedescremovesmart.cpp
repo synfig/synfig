@@ -30,10 +30,12 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "valuedescremovesmart.h"
 #include <synfigapp/canvasinterface.h>
 
-#include <synfigapp/general.h>
+#include <synfigapp/localization.h>
 #include <synfig/valuenodes/valuenode_composite.h>
 
 #endif

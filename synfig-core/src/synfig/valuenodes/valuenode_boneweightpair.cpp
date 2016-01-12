@@ -36,6 +36,7 @@
 #include "valuenode_const.h"
 #include <synfig/canvas.h>
 #include <synfig/general.h>
+#include <synfig/localization.h>
 #include <synfig/boneweightpair.h>
 
 #endif

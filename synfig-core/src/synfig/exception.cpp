@@ -31,6 +31,7 @@
 
 #include "exception.h"
 #include "general.h"
+#include <synfig/localization.h>
 
 #endif
 

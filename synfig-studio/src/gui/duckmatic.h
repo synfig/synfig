@@ -190,7 +190,7 @@ private:
 
 	etl::loose_handle<synfigapp::CanvasInterface> canvas_interface;
 
-	Type type_mask;
+	Type type_mask, type_mask_state;
 
 	DuckMap duck_map;
 
@@ -214,6 +214,7 @@ private:
 	etl::handle<BezierDrag_Base> bezier_dragger_;
 
 	sigc::signal<void> signal_duck_selection_changed_;
+	sigc::signal<void, const etl::handle<Duck>& > signal_duck_selection_single_;
 
 	sigc::signal<void> signal_strokes_changed_;
 
@@ -294,6 +295,7 @@ public:
 	bool get_lock_animation_mode()const { return lock_animation_mode_; }
 
 	sigc::signal<void>& signal_duck_selection_changed() { return signal_duck_selection_changed_; }
+	sigc::signal<void, const etl::handle<Duck>& >& signal_duck_selection_single() { return signal_duck_selection_single_; }
 	sigc::signal<void>& signal_strokes_changed() { return signal_strokes_changed_; }
 	sigc::signal<void>& signal_grid_changed() { return signal_grid_changed_; }
 	sigc::signal<void>& signal_sketch_saved() { return signal_sketch_saved_; }
@@ -358,30 +360,71 @@ public:
 
 	std::list<etl::handle<Stroke> >& persistent_stroke_list() { return persistent_stroke_list_; }
 
-	//! \todo We should modify this to support multiple selections
+    /*
+ -- ** -- D U C K  S E L E C T I O N  M E T H O D S----------------------------
+    */
+
+    //! Return first selected duck (handle) has const Duck etl::handle
 	etl::handle<Duck> get_selected_duck()const;
-
+	//! Return list of selected ducks (handles)
+	/*!
+     ** \return ducks (handles) has const DuckList
+     ** \sa get_selected_duck, clear_selected_ducks, count_selected_ducks
+    */
 	DuckList get_selected_ducks()const;
-
-	//! Returns \a true if the given duck is currently selected
-	bool duck_is_selected(const etl::handle<Duck> &duck)const;
-
+    //! Return list of box contained ducks (handles). The box is defined by a vector's pair
+    /*!
+     ** \param tl The top left canvas coordinate has const synfig::Vector
+     ** \param br The bottom right canvas coordinate has const synfig::Vector
+     ** \return ducks (handles) has const DuckList
+     ** \sa toggle_select_ducks_in_box, select_ducks_in_box, find_duck
+    */
+	DuckList get_ducks_in_box(const synfig::Vector& tl,const synfig::Vector& br)const;
 
 	void refresh_selected_ducks();
-
+    //! Clear all selected ducks
 	void clear_selected_ducks();
-
+	//! Return the number of selected ducks
+    /*!
+     ** \return the number of selected ducks (handles) has int
+     */
 	int count_selected_ducks()const;
-
+    //! Give the selection status of a duck
+    /*!
+     ** \return \a true if the given duck (handle) is currently selected
+     */
+    bool duck_is_selected(const etl::handle<Duck> &duck)const;
+	//! Toggle the duck (handle)
+    /*!
+     ** \param duck The duck (handle) to toggle has etl::handle parameter
+     */
 	void toggle_select_duck(const etl::handle<Duck> &duck);
-
+    //! Select the duck (handle)
+    /*!
+     ** \param duck The duck (handle) to select has etl::handle parameter
+     */
 	void select_duck(const etl::handle<Duck> &duck);
+    //! Unselect the duck (handle)
+    /*!
+     ** \param duck The duck (handle) to unselect has etl::handle parameter
+     */
+	void unselect_duck(const etl::handle<Duck> &duck);
 
+    //! Toggle the ducks (handles) contained in the box defined by a pair of vectors
+    /*!
+     ** \param tl The top left canvas coordinate has const synfig::Vector
+     ** \param br The bottom right canvas coordinate has const synfig::Vector
+     ** \sa toggle_select_duck, select_ducks_in_box, get_ducks_in_box
+    */
 	void toggle_select_ducks_in_box(const synfig::Vector& tl,const synfig::Vector& br);
-
+	//! Select the ducks (handles) contained in the box defined by a pair of vectors
+    /*!
+     ** \param tl The top left canvas coordinate has const synfig::Vector
+     ** \param br The bottom right canvas coordinate has const synfig::Vector
+     ** \sa toggle_select_ducks_in_box, select_ducks_in_box, clear_selected_ducks
+    */
 	void select_ducks_in_box(const synfig::Vector& tl,const synfig::Vector& br);
 
-	void unselect_duck(const etl::handle<Duck> &duck);
 
 	const synfig::TransformStack& get_curr_transform_stack()const { return curr_transform_stack; }
 
@@ -391,13 +434,16 @@ public:
 	etl::handle<Bezier> get_selected_bezier()const;
 
 	//! Begin dragging ducks
-	/*! \param offset Canvas coordinates of the mouse when the drag began */
+	/*!
+	 ** \param offset Canvas coordinates of the mouse when the drag began
+	*/
 	void start_duck_drag(const synfig::Vector& offset);
 
 	//! Continue dragging the selected ducks
 	/*! The overall vector of the drag is vector-offset
-	 *  (where offset was given in start_duck_drag)
-	 *  \param vector Canvas coordinates of the mouse at this moment */
+	 ** (where offset was given in start_duck_drag)
+	 ** \param vector Canvas coordinates of the mouse at this moment
+	*/
 	void translate_selected_ducks(const synfig::Vector& vector);
 
 	//! Update the coordinates of tangents and linked-to-bline ducks
@@ -474,10 +520,20 @@ public:
 	bool add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<CanvasView> canvas_view, const synfig::TransformStack& transform_stack_, synfig::ParamDesc *param_desc=0);
 
 	//! Set the type mask, which determines what types of ducks are shown
+	//! \Param[in]   x   Duck::Type set to backup when toggling handles
+	//! \Sa              get_type_mask(), CanvasView::toggle_duck_all()
 	void set_type_mask(Type x) { type_mask=x; }
-
 	//! Get the type mask, which determines what types of ducks are shown
+	//! \Sa              set_type_mask(), CanvasView::toggle_duck_all()
 	Type get_type_mask()const { return type_mask; }
+
+	//! Set the type mask state, which determines what types of ducks are shown on toggle
+	//! \Param[in]   x   Duck::Type set to backup when toggling handles
+	//! \Sa              get_type_mask_state(), CanvasView::toggle_duck_mask_all()
+	void set_type_mask_state(Type x) { type_mask_state=x; }
+	//! Get the type mask state, which determines what types of ducks are shown on toggle
+	//! \Sa              set_type_mask_state(), CanvasView::toggle_duck_mask_all()
+	Type get_type_mask_state()const { return type_mask_state; }
 
 	void select_all_ducks();
 	void unselect_all_ducks();

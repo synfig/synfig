@@ -29,10 +29,12 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "docks/dock_canvases.h"
 #include "app.h"
 #include "canvasview.h"
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

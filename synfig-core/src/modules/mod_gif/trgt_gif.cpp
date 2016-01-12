@@ -32,6 +32,9 @@
 #	include <config.h>
 #endif
 
+#include <synfig/localization.h>
+#include <synfig/general.h>
+
 #include <ETL/stringf>
 #include "trgt_gif.h"
 #include <cstdio>
@@ -103,7 +106,7 @@ gif::set_rend_desc(RendDesc *given_desc)
 }
 
 bool
-gif::init(synfig::ProgressCallback *cb)
+gif::init(synfig::ProgressCallback * /* cb */)
 {
 	int w=desc.get_w(),h=desc.get_h();
 

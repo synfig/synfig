@@ -36,14 +36,20 @@
 #include <signal.h>
 #endif
 
-#include "render.h"
-#include "target.h"
-#include "canvas.h"
-#include <ETL/handle>
 #include <cassert>
+
+#include <ETL/handle>
+
+#include "render.h"
+
+#include "general.h"
+#include <synfig/localization.h>
+
+#include "canvas.h"
+#include "cairo_renddesc.h"
 #include "context.h"
 #include "surface.h"
-#include "cairo_renddesc.h"
+#include "target.h"
 
 
 #endif

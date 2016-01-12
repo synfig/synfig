@@ -30,11 +30,13 @@
 #endif
 
 
+#include <synfig/general.h>
+
 #include <ETL/stringf>
 
 #include "widgets/widget_ruler.h"
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

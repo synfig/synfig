@@ -30,6 +30,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include <glibmm.h>
 #include "groupactionmanager.h"
 #include "trees/layergrouptree.h"
@@ -37,7 +39,7 @@
 #include "instance.h"
 #include <gtkmm/stock.h>
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

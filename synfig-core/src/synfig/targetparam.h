@@ -35,7 +35,7 @@ struct TargetParam
 {
 	//Spritesheet render direction
 	enum Direction {
-		HR = 0, //Horisontal 
+		HR = 0, //Horizontal 
 		VR = 1  //Vertical
 	};
 	

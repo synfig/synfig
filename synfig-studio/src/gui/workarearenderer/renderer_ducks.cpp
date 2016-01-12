@@ -10,6 +10,7 @@
 **  Copyright (c) 2008 Gerald Young
 **  Copyright (c) 2011 Nikita Kitaev
 **  Copyright (c) 2011 Carlos López
+**  Copyright (c) 2015 Jérôme Blanchi
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -33,6 +34,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "renderer_ducks.h"
 #include "workarea.h"
 #include "duckmatic.h"
@@ -45,7 +48,7 @@
 #include <synfig/valuenodes/valuenode_composite.h>
 #include "app.h"
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 
@@ -88,11 +91,11 @@ struct ScreenDuck
 	ScreenDuck(): selected(), hover(), width(0), has_alternative(false) { }
 };
 
+// TODO immense function !! break into parts and clean
 void
 Renderer_Ducks::render_vfunc(
 	const Glib::RefPtr<Gdk::Window>& drawable,
-	const Gdk::Rectangle& /*expose_area*/
-)
+	const Gdk::Rectangle& /*expose_area*/)
 {
 	assert(get_work_area());
 	if(!get_work_area())
@@ -175,11 +178,11 @@ Renderer_Ducks::render_vfunc(
 		{
 			//Solid line background
 			cr->set_line_width(1.0);
-			cr->set_source_rgb(0,0,0); // DUCK_COLOR_BEZIER_1
+			cr->set_source_rgb(GDK_COLOR_TO_RGB(DUCK_COLOR_BEZIER_1)); // DUCK_COLOR_BEZIER_1
 			cr->stroke_preserve();
 
 			//Dashes
-			cr->set_source_rgb(175.0/255.0,175.0/255.0,175.0/255.0); //DUCK_COLOR_BEZIER_2
+			cr->set_source_rgb(GDK_COLOR_TO_RGB(DUCK_COLOR_BEZIER_2)); //DUCK_COLOR_BEZIER_2 : 175.0/255.0,175.0/255.0,175.0/255.0
 			std::valarray<double> dashes(2);
 			dashes[0]=5.0;
 			dashes[1]=5.0;
@@ -262,7 +265,7 @@ Renderer_Ducks::render_vfunc(
 					);
 
 				cr->set_line_width(2.0);
-				cr->set_source_rgb(1, 0, 0); //DUCK_COLOR_SELECTED
+				cr->set_source_rgb(GDK_COLOR_TO_RGB(DUCK_COLOR_SELECTED)); //DUCK_COLOR_SELECTED
 				cr->stroke();
 
 				cr->restore();
@@ -290,11 +293,11 @@ Renderer_Ducks::render_vfunc(
 
 				// Solid white box
 				cr->set_line_width(1.0);
-				cr->set_source_rgb(1,1,1); //DUCK_COLOR_BOX_1
+				cr->set_source_rgb(GDK_COLOR_TO_RGB(DUCK_COLOR_BOX_1)); //DUCK_COLOR_BOX_1
 				cr->stroke_preserve();
 
 				// Dashes
-				cr->set_source_rgb(0,0,0); //DUCK_COLOR_BOX_2
+				cr->set_source_rgb(GDK_COLOR_TO_RGB(DUCK_COLOR_BOX_2)); //DUCK_COLOR_BOX_2
 				std::valarray<double> dashes(2);
 				dashes[0]=5.0;
 				dashes[1]=5.0;
@@ -333,11 +336,11 @@ Renderer_Ducks::render_vfunc(
 
 			// Solid white box
 			cr->set_line_width(1.0);
-			cr->set_source_rgb(1,1,1); //DUCK_COLOR_BOX_1
+			cr->set_source_rgb(GDK_COLOR_TO_RGB(DUCK_COLOR_BOX_1)); //DUCK_COLOR_BOX_1
 			cr->stroke_preserve();
 
 			// Dashes
-			cr->set_source_rgb(0,0,0); //DUCK_COLOR_BOX_2
+			cr->set_source_rgb(GDK_COLOR_TO_RGB(DUCK_COLOR_BOX_2)); //DUCK_COLOR_BOX_2
 			std::valarray<double> dashes(2);
 			dashes[0]=5.0;
 			dashes[1]=5.0;
@@ -353,51 +356,88 @@ Renderer_Ducks::render_vfunc(
 		screen_duck.hover=hover;
 		screen_duck.has_alternative=(*iter)->get_alternative_value_desc().is_valid();
 
+		bool splited_angle=false;
+		bool splited_radius=false;
+		bool is_bline_point=false;
+
 		if(!(*iter)->get_editable(alternative))
 			screen_duck.color=(DUCK_COLOR_NOT_EDITABLE);
-		else if((*iter)->get_tangent())
-			if(0){
-				// Tangents have different color depending on the split state (disabled for now)
-				//
-				// Check if we can reach the canvas and set the time to
-				// evaluate the split value accordingly
-				synfig::Canvas::Handle canvas_h(get_work_area()->get_canvas());
-				synfig::Time time(canvas_h?canvas_h->get_time():synfig::Time(0));
-				// Retrieve the split value of the bline point.
-				const synfigapp::ValueDesc& v_d((*iter)->get_value_desc());
-				synfig::LinkableValueNode::Handle parent;
-				if(v_d.parent_is_linkable_value_node())
-				{
-					parent=v_d.get_parent_value_node();
-					bool split;
-					synfig::ValueNode::Handle child(parent->get_link("split"));
-					if(synfig::ValueNode_Animated::Handle::cast_dynamic(child))
-					{
-						synfig::ValueNode_Animated::Handle animated_child(synfig::ValueNode_Animated::Handle::cast_dynamic(child));
-						split=animated_child->new_waypoint_at_time(time).get_value(time).get(split);
-					}
-					else if(synfig::ValueNode_Const::Handle::cast_dynamic(child))
-					{
-						synfig::ValueNode_Const::Handle const_child(synfig::ValueNode_Const::Handle::cast_dynamic(child));
-						split=(const_child->get_value()).get(split);
-					}
-					screen_duck.color=(split? DUCK_COLOR_TANGENT_2 : DUCK_COLOR_TANGENT_1);
-				}
-				else
-					screen_duck.color=DUCK_COLOR_TANGENT_1;
+		else if((*iter)->get_tangent() && (*iter)->get_value_desc().get_value_type() != type_transformation)
+		{
+		    is_bline_point=true;
+		    // Check if we can reach the canvas and set the time to
+		    // evaluate the split value accordingly
+		    synfig::Canvas::Handle canvas_h(get_work_area()->get_canvas());
+		    synfig::Time time(canvas_h?canvas_h->get_time():synfig::Time(0));
+		    // Retrieve the split value of the bline point.
+		    const synfigapp::ValueDesc& v_d((*iter)->get_value_desc());
+
+		    synfig::ValueNode_Composite::Handle value_node;
+		    if(v_d.is_value_node() && v_d.get_value_node())
+            {
+                value_node=v_d.get_value_node();
+
+                try
+                {
+                    synfig::ValueNode::Handle child(value_node->get_link("split_angle"));
+                    if(synfig::ValueNode_Animated::Handle::cast_dynamic(child))
+                    {
+                        synfig::ValueNode_Animated::Handle animated_child(
+                                synfig::ValueNode_Animated::Handle::cast_dynamic(child));
+                        splited_angle=animated_child->new_waypoint_at_time(time).get_value(time).get(bool());
+                    }
+                    else if(synfig::ValueNode_Const::Handle::cast_dynamic(child))
+                    {
+                        synfig::ValueNode_Const::Handle const_child(
+                                synfig::ValueNode_Const::Handle::cast_dynamic(child));
+                        splited_angle=(const_child->get_value()).get(bool());
+                    }
+                }
+                catch(Exception::BadLinkName&)
+                {
+
+                }
+
+                try
+                {
+                    synfig::ValueNode::Handle child(value_node->get_link("split_radius"));
+                    if(synfig::ValueNode_Animated::Handle::cast_dynamic(child))
+                    {
+                        synfig::ValueNode_Animated::Handle animated_child(
+                                synfig::ValueNode_Animated::Handle::cast_dynamic(child));
+                        splited_radius=animated_child->new_waypoint_at_time(time).get_value(time).get(bool());
+                    }
+                    else if(synfig::ValueNode_Const::Handle::cast_dynamic(child))
+                    {
+                        synfig::ValueNode_Const::Handle const_child(
+                                synfig::ValueNode_Const::Handle::cast_dynamic(child));
+                        splited_radius=(const_child->get_value()).get(bool());
+                    }
+                }
+                catch(Exception::BadLinkName&)
+                {
+
+                }
+            }
+
+			if(false){
+				// Tangents ducks have different color depending on the split state (disabled for now)
+			    screen_duck.color=(splited_angle? DUCK_COLOR_TANGENT_2 : DUCK_COLOR_TANGENT_1);
+
 			} else {
 				// All tangents are the same color
 				screen_duck.color=((*iter)->get_scalar()<0 ? DUCK_COLOR_TANGENT_1 : DUCK_COLOR_TANGENT_1);
 			}
+		}
 		else if((*iter)->get_type()&Duck::TYPE_SKEW)
-			screen_duck.color=DUCK_COLOR_TANGENT_2;
+			screen_duck.color=DUCK_COLOR_SKEW;
 		else if((*iter)->get_type()&Duck::TYPE_VERTEX)
 			screen_duck.color=DUCK_COLOR_VERTEX;
 		else if((*iter)->get_type()&Duck::TYPE_SCALE)
 			screen_duck.color=DUCK_COLOR_VERTEX;
 		else if((*iter)->get_type()&Duck::TYPE_RADIUS)
 			screen_duck.color=((*iter)->is_linear() ? DUCK_COLOR_LINEAR : DUCK_COLOR_RADIUS);
-		else if((*iter)->get_type()&Duck::TYPE_SCALE_X || (*iter)->get_type()&Duck::TYPE_SCALE_Y)
+		else if(((*iter)->get_type()&Duck::TYPE_SCALE_X) || ((*iter)->get_type()&Duck::TYPE_SCALE_Y))
 			screen_duck.color=DUCK_COLOR_TANGENT_1;
 		else if((*iter)->get_type()&Duck::TYPE_WIDTH)
 			screen_duck.color=DUCK_COLOR_WIDTH;
@@ -417,33 +457,42 @@ Renderer_Ducks::render_vfunc(
 			cr->move_to(origin[0], origin[1]);
 			cr->line_to(point[0], point[1]);
 
-			if(solid_lines)
+//			if(solid_lines) // Disabled (solid_lines metadata entry)
 			{
 				// Outside
 				cr->set_line_width(3.0);
-				cr->set_source_rgb(0,0,0); //DUCK_COLOR_CONNECT_OUTSIDE
+				cr->set_source_rgb(GDK_COLOR_TO_RGB(DUCK_COLOR_CONNECT_OUTSIDE)); //DUCK_COLOR_CONNECT_OUTSIDE
 				cr->stroke_preserve();
+
+				// Both tangents are collinear and have same length, dash the line
+				if(is_bline_point && !splited_radius && !splited_angle)
+				{
+				    std::valarray<double> dashes(2);
+				    dashes[0]=5.0;
+				    dashes[1]=5.0;
+				    cr->set_dash(dashes, 0);
+				}
 
 				// Inside
 				cr->set_line_width(1.0);
-				cr->set_source_rgb(159.0/255,239.0/255,239.0/255); //DUCK_COLOR_CONNECT_INSIDE
+				cr->set_source_rgb(GDK_COLOR_TO_RGB(DUCK_COLOR_CONNECT_INSIDE)); //DUCK_COLOR_CONNECT_INSIDE : 159.0/255,239.0/255,239.0/255
 				cr->stroke();
 			}
-			else
-			{
-				// White background
-				cr->set_line_width(1.0);
-				cr->set_source_rgb(0,0,0); //DUCK_COLOR_CONNECT_OUTSIDE
-				cr->stroke_preserve();
-
-				// Dashes on top of the background
-				cr->set_source_rgb(159.0/255,239.0/255,239.0/255); //DUCK_COLOR_CONNECT_INSIDE
-				std::valarray<double> dashes(2);
-				dashes[0]=5.0;
-				dashes[1]=5.0;
-				cr->set_dash(dashes, 0);
-				cr->stroke();
-			}
+//			else
+//			{
+//				// White background
+//				cr->set_line_width(1.0);
+//				cr->set_source_rgb(GDK_COLOR_TO_RGB(DUCK_COLOR_CONNECT_OUTSIDE)); //DUCK_COLOR_CONNECT_OUTSIDE
+//				cr->stroke_preserve();
+//
+//				// Dashes on top of the background
+//				cr->set_source_rgb(GDK_COLOR_TO_RGB(DUCK_COLOR_CONNECT_INSIDE)); //DUCK_COLOR_CONNECT_INSIDE : 159.0/255,239.0/255,239.0/255
+//				std::valarray<double> dashes(2);
+//				dashes[0]=5.0;
+//				dashes[1]=5.0;
+//				cr->set_dash(dashes, 0);
+//				cr->stroke();
+//			}
 
 			cr->restore();
 		}
@@ -493,7 +542,14 @@ Renderer_Ducks::render_vfunc(
 				cr->restore();
 			}
 
-			if(hover)
+		}
+
+		//! Tooltip time
+		if(hover)
+		{
+			//! Tooltip time : radius
+			if( (App::ui_handle_tooltip_flag&Duck::STRUCT_RADIUS) &&
+					(*iter)->is_radius())
 			{
 				Real mag;
 				if ((*iter)->get_exponential()){
@@ -525,7 +581,7 @@ Renderer_Ducks::render_vfunc(
 
 				layout->set_text(real_mag.get_string());
 
-				cr->set_source_rgb(0,0,0); // DUCK_COLOR_WIDTH_TEXT_1
+				cr->set_source_rgb(GDK_COLOR_TO_RGB(DUCK_COLOR_WIDTH_TEXT_1)); // DUCK_COLOR_WIDTH_TEXT_1
 				cr->move_to(
 					point[0]+1+6,
 					point[1]+1-8
@@ -534,7 +590,7 @@ Renderer_Ducks::render_vfunc(
 				cr->stroke();
 
 
-				cr->set_source_rgb(1,0,1); // DUCK_COLOR_WIDTH_TEXT_2
+				cr->set_source_rgb(GDK_COLOR_TO_RGB(DUCK_COLOR_WIDTH_TEXT_2)); // DUCK_COLOR_WIDTH_TEXT_2
 				cr->move_to(
 					point[0]+6,
 					point[1]-8
@@ -544,12 +600,9 @@ Renderer_Ducks::render_vfunc(
 
 				cr->restore();
 			}
-
-		}
-
-		if((*iter)->get_type()&&Duck::TYPE_WIDTHPOINT_POSITION)
-		{
-			if(hover)
+			//! Tooltip time : width point position
+			if( (App::ui_handle_tooltip_flag&Duck::STRUCT_WIDTHPOINT) &&
+					(*iter)->get_type()&&Duck::TYPE_WIDTHPOINT_POSITION)
 			{
 				synfig::Canvas::Handle canvas_h(get_work_area()->get_canvas());
 				synfig::Time time(canvas_h?canvas_h->get_time():synfig::Time(0));
@@ -621,7 +674,7 @@ Renderer_Ducks::render_vfunc(
 						cr->save();
 						layout->set_text(strprintf("%2.3f", new_value));
 
-						cr->set_source_rgb(0,0,0); // DUCK_COLOR_WIDTH_TEXT_1
+						cr->set_source_rgb(GDK_COLOR_TO_RGB(DUCK_COLOR_WIDTH_TEXT_1)); // DUCK_COLOR_WIDTH_TEXT_1
 						cr->move_to(
 							point[0]+1+6,
 							point[1]+1-18
@@ -630,7 +683,7 @@ Renderer_Ducks::render_vfunc(
 						cr->stroke();
 
 
-						cr->set_source_rgb(1,0,1); // DUCK_COLOR_WIDTH_TEXT_2
+						cr->set_source_rgb(GDK_COLOR_TO_RGB(DUCK_COLOR_WIDTH_TEXT_2)); // DUCK_COLOR_WIDTH_TEXT_2
 						cr->move_to(
 							point[0]+6,
 							point[1]-18
@@ -642,7 +695,106 @@ Renderer_Ducks::render_vfunc(
 					}
 				}
 			}
-		}
+			//! Tooltip time : transformation widget, display layer name &| value
+			if( ((App::ui_handle_tooltip_flag&Duck::STRUCT_TRANSFORMATION) ||
+				 (App::ui_handle_tooltip_flag&Duck::STRUCT_TRANSFO_BY_VALUE)) &&
+					((*iter)->get_value_desc().is_value_node()) &&
+					((*iter)->get_value_desc().get_value_type() == type_transformation)
+					)
+			{
+				cr->save();
+				String tooltiptext("");
+				if(App::ui_handle_tooltip_flag&Duck::STRUCT_TRANSFORMATION)
+					tooltiptext = (*iter)->get_value_desc().get_layer()->get_non_empty_description();
+
+				if(App::ui_handle_tooltip_flag&Duck::STRUCT_TRANSFO_BY_VALUE)
+				{
+					//TODO translation of subname
+					String value = (*iter)->get_value_desc().get_sub_name();
+
+					synfig::Canvas::Handle canvas_h(get_work_area()->get_canvas());
+					synfig::Time time(canvas_h?canvas_h->get_time():synfig::Time(0));
+					Transformation transformation = (*iter)->get_value_desc().get_value(time).get(Transformation());
+
+					const synfig::RendDesc rend_desc = get_work_area()->get_rend_desc();
+					switch((*iter)->get_type()) {
+					case Duck::TYPE_POSITION:
+					{
+						Distance posx(sub_trans_point[0],Distance::SYSTEM_UNITS);
+						posx.convert(App::distance_system,rend_desc);
+						Distance posy(sub_trans_point[1],Distance::SYSTEM_UNITS);
+						posy.convert(App::distance_system,rend_desc);
+
+						value += " " + posx.get_string(3) + " " + posy.get_string(3);
+					}
+					break;
+					case Duck::TYPE_ANGLE:
+						value+=strprintf(" %2.2g°",
+								synfig::Angle::deg(transformation.angle + ((*iter)->get_rotations())).get());
+						break;
+					case Duck::TYPE_SKEW:
+						value+=strprintf(" %2.2g°",
+								synfig::Angle::deg(transformation.skew_angle + ((*iter)->get_rotations())).get());
+						break;
+					case Duck::TYPE_SCALE:
+					{
+						Distance scalex(transformation.scale.multiply_coords((*iter)->get_point())[0],
+								Distance::SYSTEM_UNITS);
+						scalex.convert(App::distance_system,rend_desc);
+						Distance scaley(transformation.scale.multiply_coords((*iter)->get_point())[1],
+								Distance::SYSTEM_UNITS);
+						scaley.convert(App::distance_system,rend_desc);
+
+						value += " " + scalex.get_string(3) + " " +	scaley.get_string(3);
+					}
+					break;
+					case Duck::TYPE_SCALE_X:
+					{
+						Distance scalex(transformation.scale[0] * ((*iter)->get_point())[0],
+								Distance::SYSTEM_UNITS);
+						scalex.convert(App::distance_system,rend_desc);
+						value += "x" + scalex.get_string(3);
+					}
+					break;
+					case Duck::TYPE_SCALE_Y:
+					{
+						Distance scaley(transformation.scale[1] * ((*iter)->get_point())[0],
+								Distance::SYSTEM_UNITS);
+						scaley.convert(App::distance_system,rend_desc);
+						value += "y" + scaley.get_string(3);
+					}
+//						value += strprintf("y %2.3g",
+//								Distance(transformation.scale[1] * ((*iter)->get_point())[0],
+//										Distance::SYSTEM_UNITS).get(App::distance_system,rend_desc));
+						break;
+					default:
+						break;
+					}
+
+					tooltiptext = App::ui_handle_tooltip_flag&Duck::STRUCT_TRANSFORMATION? tooltiptext + "\n" + value : value;
+				}
+
+				layout->set_text(tooltiptext);
+
+				cr->set_source_rgb(GDK_COLOR_TO_RGB(DUCK_COLOR_TRANSFO_TEXT_1));
+				cr->move_to(
+					point[0]+1+14,
+					point[1]+1-14
+					);
+				layout->show_in_cairo_context(cr);
+				cr->stroke();
+
+				cr->set_source_rgb(GDK_COLOR_TO_RGB(DUCK_COLOR_ORIGIN));
+				cr->move_to(
+					point[0]+14,
+					point[1]-14
+					);
+				layout->show_in_cairo_context(cr);
+				cr->stroke();
+
+				cr->restore();
+			}
+		}//! end if hover
 
 	}
 
@@ -664,9 +816,9 @@ Renderer_Ducks::render_vfunc(
 
 		if(!screen_duck_list.front().selected)
 		{
-			color.set_red(color.get_red()*2/3);
-			color.set_green(color.get_green()*2/3);
-			color.set_blue(color.get_blue()*2/3);
+		    color.set_rgb_p(color.get_red_p()*2/3,
+		                    color.get_green_p()*2/3,
+		                    color.get_blue_p()*2/3);
 		}
 
 		if(screen_duck_list.front().hover)
@@ -692,7 +844,7 @@ Renderer_Ducks::render_vfunc(
 		cr->fill_preserve();
 
 		cr->set_line_width(outline);
-		cr->set_source_rgba(0,0,0,1); //DUCK_COLOR_OUTLINE
+		cr->set_source_rgba(GDK_COLOR_TO_RGB(DUCK_COLOR_OUTLINE),1); //DUCK_COLOR_OUTLINE
 		cr->stroke();
 
 		cr->restore();

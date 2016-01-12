@@ -34,6 +34,10 @@
 #endif
 
 #include "import.h"
+
+#include <synfig/localization.h>
+#include <synfig/general.h>
+
 #include <synfig/string.h>
 #include <synfig/time.h>
 #include <synfig/context.h>
@@ -44,6 +48,8 @@
 #include <synfig/valuenode.h>
 #include <synfig/canvas.h>
 #include <synfig/filesystemnative.h>
+
+#include <synfig/rendering/software/surfacesw.h>
 
 #endif
 
@@ -198,6 +204,9 @@ Import::set_param(const String & param, const ValueBase &value)
 				{
 					synfig::warning(strprintf("Unable to get frame from \"%s\"",filename_with_path.c_str()));
 				}
+
+				rendering_surface = new rendering::SurfaceSW();
+				rendering_surface->assign(surface[0], surface.get_w(), surface.get_h());
 
 				importer=newimporter;
 				filename=newfilename;

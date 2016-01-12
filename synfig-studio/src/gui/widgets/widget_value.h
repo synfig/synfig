@@ -69,6 +69,7 @@ class Widget_Color;
 class Widget_ColorEdit;
 class Widget_CanvasChooser;
 class Widget_Enum;
+class Widget_Sublayer;
 class Widget_Filename;
 class Widget_Vector;
 class Widget_Time;
@@ -93,6 +94,7 @@ class Widget_ValueBase : public Gtk::HBox
 	Widget_ColorEdit *color_widget;
 	Widget_CanvasChooser *canvas_widget;
 	Widget_Enum *enum_widget;
+	Widget_Sublayer *sublayer_widget;
 	Widget_Filename *filename_widget;
 	Widget_Time *time_widget;
 	Gtk::Entry *string_widget;

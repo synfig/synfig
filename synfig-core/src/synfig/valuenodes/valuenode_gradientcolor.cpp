@@ -35,6 +35,7 @@
 #include "valuenode_const.h"
 #include <synfig/gradient.h>
 #include <synfig/general.h>
+#include <synfig/localization.h>
 
 #endif
 

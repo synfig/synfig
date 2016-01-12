@@ -29,14 +29,18 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <sigc++/signal.h>
-#include "string.h"
-#include <utility>
 #include <map>
+#include <utility>
+
+#include <sigc++/signal.h>
+
 #include <ETL/handle>
-#include "renddesc.h"
-#include "color.h"
+
 #include "canvas.h"
+#include "color.h"
+#include "progresscallback.h"
+#include "renddesc.h"
+#include "string.h"
 #include "targetparam.h"
 
 /* === M A C R O S ========================================================= */
@@ -59,9 +63,9 @@
 //! Sets the CVS ID of the target
 #define SYNFIG_TARGET_SET_CVS_ID(class,x) const char class::cvs_id__[]=x
 
-//! Defines de implementation of the create method for the target
+//! Defines implementation of the create method for the target
 //! \param filename The file name to be created by the target.
-//! |param p The parameters passed to the target (bit rate and vcodec)
+//! \param p The parameters passed to the target (bit rate and vcodec)
 #define SYNFIG_TARGET_INIT(class)										\
 	synfig::Target* class::create (const char *filename,				\
 								   synfig::TargetParam p)				\
@@ -164,7 +168,9 @@ public:
 	RendDesc desc;
 
 	//! Canvas being rendered in this target module
-	//! \see set_canvas()
+	/*!
+	 ** \sa set_canvas()
+	 */
 	etl::handle<Canvas> canvas;
 
 	//! Render quality used for the render process of the target.
@@ -172,9 +178,7 @@ public:
 	//! Gamma value used for the render process of the target
 	Gamma gamma_;
 	
-	//! Tells how to handle alpha
-	//! Used by non alpha supported targets to decide if the background
-	//! must be filled or not
+	//! Tells how to handle alpha. Used by non alpha supported targets to decide if the background must be filled or not
 	TargetAlphaMode alpha_mode;
 
 	//! When set to true, the target doesn't sync to canvas time.
@@ -198,8 +202,9 @@ public:
 	//! Gets the target avoid time synchronization
 	bool get_avoid_time_sync()const { return avoid_time_sync_; }
 	//! Tells how to handle alpha
-	//! Used by non alpha supported targets to decide if the background
-	//! must be filled or not
+	/*! Used by non alpha supported targets to decide if the background
+	 ** must be filled or not
+	 */
 	TargetAlphaMode get_alpha_mode()const { return alpha_mode; }
 	//! Sets how to handle alpha
 	void set_alpha_mode(TargetAlphaMode x=TARGET_ALPHA_MODE_KEEP) { alpha_mode=x; }
@@ -216,14 +221,18 @@ public:
 	const RendDesc &rend_desc()const { return desc; }
 	//! Sets the RendDesc for the Target to \a desc.
 	/*!	If there are any parts of \a desc that the render target
-	**	is not capable of doing, the render target will adjust
-	**	\a desc to fit its needs.
+	 ** is not capable of doing, the render target will adjust
+	 ** \a desc to fit its needs.
+	 ** \param d an RendDesc pointer.
+	 ** \return true on success
 	*/
 	virtual bool set_rend_desc(RendDesc *d) { desc=*d; return true; }
 	//! Renders the canvas to the target
 	virtual bool render(ProgressCallback *cb=NULL)=0;
 	//! Initialization tasks of the derived target.
-	//! @returns true if the initialization has no errors
+	/*!
+	 ** \returns true if the initialization has no errors
+	*/
 	virtual bool init(ProgressCallback *cb=NULL) { (void)cb; return true; }
 
 	//! Creates a new Target described by \a type, outputting to a file described by \a filename.
@@ -231,10 +240,9 @@ public:
 						 synfig::TargetParam params);
 	
 	//!	Sets the time for the next frame at \a time
-	/*!	\param time The time reference to be modified
+	/*! It modifies the curr_frame_ member which has to be set to zero when next_frame is called for the first time
+	 ** \param time The time reference to be modified
 	 **	\return The number of remainig frames to render
-	 **	It modifies the curr_frame_ member which has to be set to zero 
-	 ** when next_frame is called for the first time
 	 **	\sa curr_frame_
 	*/
 	virtual int	next_frame(Time& time);

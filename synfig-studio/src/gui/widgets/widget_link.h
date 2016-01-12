@@ -30,8 +30,6 @@
 #include <gtkmm/togglebutton.h>
 #include "synfig/string.h"
 
-#include "general.h"
-
 /* === M A C R O S ========================================================= */
 
 /* === T Y P E D E F S ===================================================== */
@@ -52,7 +50,7 @@ protected:
 	void on_toggled();
 
 public:
-	Widget_Link(const std::string &tlt_inactive = _("Link Values"), const std::string &tlt_active = _("Unlink Values"));
+	Widget_Link(const std::string &tlt_inactive, const std::string &tlt_active);
 	~Widget_Link();
 }; // END of class Widget_Link
 

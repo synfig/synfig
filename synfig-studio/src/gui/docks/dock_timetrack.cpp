@@ -31,6 +31,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "docks/dock_timetrack.h"
 #include "app.h"
 
@@ -45,7 +47,7 @@
 #include "workarea.h"
 #include "widgets/widget_timeslider.h"
 #include "widgets/widget_keyframe_list.h"
-#include "general.h"
+#include <gui/localization.h>
 #include "trees/layertree.h"
 #include <synfig/timepointcollect.h>
 
@@ -378,6 +380,7 @@ public:
 	on_waypoint_clicked_timetrackview(const etl::handle<synfig::Node>& node,
 									  const synfig::Time& time,
 									  const synfig::Time& time_offset __attribute__ ((unused)),
+									  const synfig::Time& time_dilation __attribute__ ((unused)),
 									  int button)
 	{
 		std::set<synfig::Waypoint, std::less<UniqueID> > waypoint_set;

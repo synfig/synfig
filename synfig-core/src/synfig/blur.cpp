@@ -30,17 +30,15 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-#include <synfig/surface.h>
+#include <stdexcept>
+
+#include <ETL/boxblur>
+#include <ETL/gaussian>
 
 #include "blur.h"
 
-#include <stdexcept>
-#include <ETL/stringf>
-
-#include <ETL/pen>
-#include <ETL/gaussian>
-#include <ETL/boxblur>
+#include "general.h"
+#include <synfig/localization.h>
 
 #endif
 
@@ -57,6 +55,28 @@ using namespace synfig;
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
+
+synfig::Real
+Blur::get_size_amplifier(int type)
+{
+	// measured values
+	switch(type)
+	{
+	case Blur::BOX:
+		return 19.362962/9.182808*19.362962/20.634363;
+	case Blur::FASTGAUSSIAN:
+		return 20.297409/6.309251*20.297409/21.081510*20.297409/21.513471;
+	case Blur::CROSS:
+		return 19.362962/9.182808*19.362962/20.634363;
+	//case Blur::GAUSSIAN:
+	//	return 20.297409/0.417297*20.297409/9.851342*20.297409/12.328201;
+	case Blur::DISC:
+		return 17.821498/8.778783*17.821498/17.640771;
+	}
+	return 1.0;
+}
+
+
 Point Blur::operator()(const Point &pos) const
 {
 	Point blurpos(pos);

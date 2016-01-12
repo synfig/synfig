@@ -58,6 +58,8 @@ private:
 	ValueBase param_transformation;
 	//! Parameter: (etl::loose_handle<synfig::Canvas>) The canvas parameter
 	etl::loose_handle<synfig::Canvas> canvas;
+	//! Parameter: (Real) Time dilation of the paste canvas layer
+	ValueBase param_time_dilation;
 	//! Parameter: (Time) Time offset of the paste canvas layer
 	ValueBase param_time_offset;
 	//! Parameter: (Real) The value to grow the children outline layers
@@ -141,6 +143,8 @@ public:
 	//! Sets the canvas parameter.
 	//! \see get_sub_canvas()
 	void set_sub_canvas(etl::handle<synfig::Canvas> x);
+	//! Gets time dilation parameter
+	Real get_time_dilation()const { return param_time_dilation.get(Real()); }
 	//! Gets time offset parameter
 	Time get_time_offset()const { return param_time_offset.get(Time()); }
 
@@ -194,6 +198,7 @@ protected:
 	//! Layer time points. \todo clarify all this comments.
 	virtual void get_times_vfunc(Node::time_set &set) const;
 
+	virtual rendering::Task::Handle build_composite_task_vfunc(ContextParams context_params)const;
 }; // END of class Layer_PasteCanvas
 
 }; // END of namespace synfig

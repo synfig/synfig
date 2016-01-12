@@ -32,6 +32,9 @@
 #	include <config.h>
 #endif
 
+#include <synfig/localization.h>
+#include <synfig/general.h>
+
 #include "supersample.h"
 #include <synfig/string.h>
 #include <synfig/time.h>
@@ -44,6 +47,7 @@
 #include <synfig/cairo_renddesc.h>
 
 #include <synfig/target.h>
+#include <synfig/target_scanline.h>
 #include <synfig/render.h>
 
 #endif
@@ -142,7 +146,7 @@ SuperSample::accelerated_render(Context context,Surface *surface,int quality, co
 	// Render the scene
 	if(scanline)
 	{
-		handle<Target_Scanline> target=surface_target(&tempsurface);
+		handle<Target_Scanline> target=surface_target_scanline(&tempsurface);
 		if(!target)
 		{
 			if(cb)cb->error(_("Unable to create SurfaceTarget"));

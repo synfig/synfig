@@ -30,10 +30,13 @@
 #endif
 
 #include <cstdlib>
+
 #include "base_types.h"
 
-#include "value.h"
 #include "general.h"
+#include <synfig/localization.h>
+
+#include "value.h"
 #include "canvas.h"
 #include "valuenodes/valuenode_bone.h"
 #include "gradient.h"

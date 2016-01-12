@@ -42,6 +42,8 @@
 #include <synfig/savecanvas.h>
 #include <synfigapp/main.h>
 
+#include <synfigapp/localization.h>
+
 #endif
 
 /* === U S I N G =========================================================== */

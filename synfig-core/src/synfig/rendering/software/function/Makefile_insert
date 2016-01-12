@@ -1,0 +1,18 @@
+RENDERING_SOFTWARE_FUNCTION_HH = \
+	rendering/software/function/array.h \
+	rendering/software/function/blur.h \
+	rendering/software/function/blurtemplates.h \
+	rendering/software/function/contour.h \
+	rendering/software/function/fft.h
+
+RENDERING_SOFTWARE_FUNCTION_CC = \
+	rendering/software/function/blur.cpp \
+	rendering/software/function/contour.cpp \
+	rendering/software/function/fft.cpp
+
+RENDERING_SOFTWARE_HH += \
+    $(RENDERING_SOFTWARE_FUNCTION_HH)
+
+RENDERING_SOFTWARE_CC += \
+    $(RENDERING_SOFTWARE_FUNCTION_CC)
+

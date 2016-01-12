@@ -1,0 +1,38 @@
+RENDERING_OPENGL_INTERNAL_HH = \
+	rendering/opengl/internal/antialiasing.h \
+	rendering/opengl/internal/buffers.h \
+	rendering/opengl/internal/context.h \
+	rendering/opengl/internal/environment.h \
+	rendering/opengl/internal/framebuffers.h \
+	rendering/opengl/internal/misc.h \
+	rendering/opengl/internal/predeclarations.h \
+	rendering/opengl/internal/samplers.h \
+	rendering/opengl/internal/shaders.h
+
+RENDERING_OPENGL_INTERNAL_CC = \
+	rendering/opengl/internal/antialiasing.cpp \
+	rendering/opengl/internal/buffers.cpp \
+	rendering/opengl/internal/context.cpp \
+	rendering/opengl/internal/environment.cpp \
+	rendering/opengl/internal/framebuffers.cpp \
+	rendering/opengl/internal/misc.cpp \
+	rendering/opengl/internal/predeclarations.cpp \
+	rendering/opengl/internal/samplers.cpp \
+	rendering/opengl/internal/shaders.cpp
+
+
+if WITH_OPENCL
+RENDERING_OPENGL_INTERNAL_HH += \
+	rendering/opengl/internal/clcontext.h
+RENDERING_OPENGL_INTERNAL_CC += \
+	rendering/opengl/internal/clcontext.cpp
+endif
+
+include rendering/opengl/internal/glsl/Makefile_insert
+
+RENDERING_OPENGL_HH += \
+    $(RENDERING_OPENGL_INTERNAL_HH)
+
+RENDERING_OPENGL_CC += \
+    $(RENDERING_OPENGL_INTERNAL_CC)
+

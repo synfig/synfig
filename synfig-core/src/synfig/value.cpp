@@ -33,6 +33,7 @@
 
 #include "value.h"
 #include "general.h"
+#include <synfig/localization.h>
 #include <ETL/stringf>
 #include "canvas.h"
 #include "valuenodes/valuenode_bone.h"

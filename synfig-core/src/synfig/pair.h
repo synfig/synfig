@@ -67,7 +67,7 @@ namespace types_namespace {
 
 			Type::initialize_vfunc(description);
 			description.name = "pair_" + type_first.description.name + "_" + type_second.description.name;
-			description.local_name = N_("Pair") + String(" (")
+			description.local_name = local_n("Pair") + String(" (")
 					               + type_first.description.local_name + String(", ")
 					               + type_second.description.local_name + String(")");
 			register_all_but_compare<ValueType, TypePair::to_string>();

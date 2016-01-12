@@ -33,6 +33,7 @@
 #include "valuenode_step.h"
 #include "valuenode_const.h"
 #include <synfig/general.h>
+#include <synfig/localization.h>
 #include <synfig/color.h>
 #include <ETL/misc>
 

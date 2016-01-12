@@ -29,6 +29,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "docks/dock_layergroups.h"
 #include "app.h"
 
@@ -45,7 +47,7 @@
 #include "trees/layergrouptree.h"
 #include "actionmanagers/groupactionmanager.h"
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

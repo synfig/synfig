@@ -29,12 +29,14 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "widgets/widget_color.h"
 #include <cmath>
 #include "app.h"
 #include <gtkmm/drawingarea.h>
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

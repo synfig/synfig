@@ -31,6 +31,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include <synfig/valuenodes/valuenode_dynamiclist.h>
 
 #include "state_bline.h"
@@ -51,7 +53,7 @@
 #include <synfig/transform.h>
 #include <synfigapp/main.h>
 
-#include "general.h"
+#include <gui/localization.h>
 
 #include <gtkmm/separatormenuitem.h>
 #include <gtkmm/imagemenuitem.h>
@@ -522,7 +524,7 @@ StateBLine_Context::StateBLine_Context(CanvasView* canvas_view):
 	id_box.pack_start(id_entry);
 
 	// 2, layer types creation
-	layer_types_label.set_label(_("Create:"));
+	layer_types_label.set_label(_("Layer Type:"));
 	layer_types_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
 	LAYER_CREATION(layer_region_togglebutton,

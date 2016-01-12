@@ -29,6 +29,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include <gtkmm/label.h>
 #include "dialogs/dialog_waypoint.h"
 #include <gtk/gtk.h>
@@ -41,7 +43,7 @@
 #include "widgets/widget_time.h"
 #include "widgets/widget_waypoint.h"
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

@@ -30,6 +30,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "blineconvert.h"
 #include <vector>
 #include <ETL/gaussian>
@@ -37,10 +39,9 @@
 #include <ETL/clock>
 #include <float.h>
 #include <algorithm>
-#include <synfig/general.h>
 #include <cassert>
 
-#include "general.h"
+#include <synfigapp/localization.h>
 
 #endif
 

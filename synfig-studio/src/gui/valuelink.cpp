@@ -29,9 +29,11 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "valuelink.h"
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

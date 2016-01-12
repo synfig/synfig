@@ -10,6 +10,7 @@
 # define ETL_NAMESPACE 			etl
 #endif
 
+#define ETL_DIRECTORY_SEPARATORS	"/\\"
 #define ETL_DIRECTORY_SEPARATOR0	'/'
 #define ETL_DIRECTORY_SEPARATOR1	'\\'
 

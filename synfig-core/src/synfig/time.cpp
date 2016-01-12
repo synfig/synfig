@@ -36,6 +36,7 @@
 #include <ETL/stringf>
 #include <ETL/misc>
 #include "general.h"
+#include <synfig/localization.h>
 #include <cmath>
 #include <cassert>
 #include <algorithm>

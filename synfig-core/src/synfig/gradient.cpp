@@ -31,12 +31,17 @@
 #endif
 
 #include "gradient.h"
-#include "general.h"
-#include <stdexcept>
-#include "exception.h"
+
 #include <algorithm>
+#include <stdexcept>
 
 #include <ETL/misc>
+
+#include "general.h"
+#include <synfig/localization.h>
+
+#include "exception.h"
+
 #endif
 
 /* === U S I N G =========================================================== */

@@ -45,8 +45,8 @@ class Renderer_Canvas : public studio::WorkAreaRenderer
 public:
 	~Renderer_Canvas();
 
-	std::vector< std::pair<Glib::RefPtr<Gdk::Pixbuf>,int> >& get_tile_book();
-	WorkArea::SurfaceBook& get_cairo_book();
+	WorkAreaTileBook& get_tile_book() const
+		{ return get_work_area()->get_tile_book(); }
 
 	bool get_full_frame()const;
 

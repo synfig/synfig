@@ -30,6 +30,9 @@
 #	include <config.h>
 #endif
 
+#include <synfig/localization.h>
+#include <synfig/general.h>
+
 #include "advanced_outline.h"
 #include <synfig/string.h>
 #include <synfig/time.h>
@@ -1173,7 +1176,7 @@ Advanced_Outline::get_param_vocab()const
 	);
 	ret.push_back(ParamDesc("smoothness")
 		.set_local_name(_("Smoothness"))
-		.set_description(_("Determines the interpolation between withpoints. (0) Linear (1) Smooth"))
+		.set_description(_("Determines the interpolation between widthpoints. (0) Linear (1) Smooth"))
 	);
 	ret.push_back(ParamDesc("homogeneous")
 		.set_local_name(_("Homogeneous"))

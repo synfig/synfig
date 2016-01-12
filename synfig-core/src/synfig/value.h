@@ -39,7 +39,6 @@
 #include <vector>
 #include <ETL/trivial>
 #include <ETL/handle>
-#include "general.h"
 #include "blinepoint.h"
 #include "bone.h"
 #include "widthpoint.h"
@@ -74,7 +73,6 @@ class DashItem;
 class Color;
 class Bone;
 class ValueNode_Bone;
-class Matrix;
 class BoneWeightPair;
 
 /*!	\class ValueBase

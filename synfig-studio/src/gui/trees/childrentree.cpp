@@ -30,6 +30,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "trees/childrentree.h"
 #include "cellrenderer/cellrenderer_value.h"
 #include "cellrenderer/cellrenderer_timetrack.h"
@@ -38,7 +40,7 @@
 #include <gtkmm/scrolledwindow.h>
 #include <synfig/timepointcollect.h>
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 
@@ -280,6 +282,7 @@ void
 ChildrenTree::on_waypoint_clicked_childrentree(const etl::handle<synfig::Node>& node __attribute__ ((unused)),
 											   const synfig::Time& time __attribute__ ((unused)),
 											   const synfig::Time& time_offset __attribute__ ((unused)),
+											   const synfig::Time& time_dilation __attribute__ ((unused)),
 											   int button __attribute__ ((unused)))
 {
 	std::set<synfig::Waypoint, std::less<UniqueID> > waypoint_set;

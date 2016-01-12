@@ -33,6 +33,7 @@
 #include "valuenode_const.h"
 #include "valuenode_bone.h"
 #include <synfig/general.h>
+#include <synfig/localization.h>
 #include <synfig/valueoperations.h>
 
 #endif

@@ -32,6 +32,9 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
+#include <gui/localization.h>
 #include "jackdial.h"
 #include <gtkmm/image.h>
 #include <gtkmm/stock.h>

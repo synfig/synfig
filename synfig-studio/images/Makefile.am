@@ -7,6 +7,8 @@ EXT = @imageext@
 EXTRA_DIST = \
 	installer_logo.sif \
 	installer_logo_osx.sif \
+	splash_screen-1.0.1.sif \
+	splash_screen-1.0.2.sif \
 	splash_screen-1.0.sif \
 	splash_screen-1.0.x.sif \
 	splash_screen-0.64.1.sif \
@@ -601,7 +603,7 @@ action_doc_redo_icon.$(EXT): $(srcdir)/action_doc_icons.sif
 	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
 if DEVELOPMENT_SNAPSHOT
-splash_screen_development.sif: $(srcdir)/splash_screen_development.sif.in
+splash_screen_development.sif: $(srcdir)/splash_screen_development.sif.in $(top_srcdir)/autorevision.h
 	export commit_id=`git log --no-color -1 | head -n 1 | cut -f 2 -d ' ' | cut -c -6` && \
 	export commit_date=`git show --pretty=format:%ci HEAD |  head -c 10` && \
 	export branch=`git branch -a --no-color --contains HEAD | sed -e s/\*\ // | sed -e s/\(no\ branch\)// | tr '\n' ' ' | tr -s ' ' | sed s/^' '//` && \
@@ -611,7 +613,6 @@ splash_screen.$(EXT): splash_screen_development.sif
 	$(SYNFIG) -q $< -o $@ --time 0
 	echo "  File \"images\\$@\"" >>./images.nsh
 	echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
-.PHONY: splash_screen_development.sif
 else
 splash_screen.$(EXT): $(srcdir)/splash_screen-$(PACKAGE_VERSION).sif
 	$(SYNFIG) -q $< -o $@ --time 0

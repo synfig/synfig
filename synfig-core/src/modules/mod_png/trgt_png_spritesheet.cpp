@@ -35,6 +35,9 @@
 #	include <config.h>
 #endif
 
+#include <synfig/localization.h>
+#include <synfig/general.h>
+
 #include "trgt_png_spritesheet.h"
 #include <png.h>
 #include <ETL/stringf>
@@ -96,6 +99,8 @@ png_trgt_spritesheet::png_trgt_spritesheet(const char *Filename, const synfig::T
 	sheet_width(0),
 	sheet_height(0),
 	in_file_pointer(0),
+	out_file_pointer(0),
+	cur_out_image_row(0),
 	filename(Filename),
 	sequence_separator(params.sequence_separator),
 	overflow_buff(0)
@@ -203,7 +208,7 @@ png_trgt_spritesheet::end_frame()
 	cur_y = 0;
 	if (params.dir == TargetParam::HR)
 	{
-		//Horisontal render. Columns increment
+		//Horizontal render. Columns increment
 		cur_col++;
 		if (cur_col >= (unsigned int)params.columns)
 		{
@@ -381,21 +386,21 @@ png_trgt_spritesheet::write_png_file()
 	cout << "write_png_file()" << endl;
 	png_structp png_ptr;
 	png_infop info_ptr;
-	FILE* file;
 	unsigned char buffer [4 * sheet_width];
 
 	
     if (filename == "-")
-    	file=stdout;
+    	out_file_pointer=stdout;
     else
-    	file=fopen(filename.c_str(), POPEN_BINARY_WRITE_TYPE);
+    	out_file_pointer=fopen(filename.c_str(), POPEN_BINARY_WRITE_TYPE);
 
 	
     png_ptr=png_create_write_struct(PNG_LIBPNG_VER_STRING, (png_voidp)this,png_out_error, png_out_warning);
     if (!png_ptr)
     {
         synfig::error("Unable to setup PNG struct");
-        fclose(file);
+        fclose(out_file_pointer);
+        out_file_pointer=NULL;
         return false;
     }
 
@@ -404,7 +409,8 @@ png_trgt_spritesheet::write_png_file()
     if (!info_ptr)
     {
         synfig::error("Unable to setup PNG info struct");
-        fclose(file);
+        fclose(out_file_pointer);
+        out_file_pointer=NULL;
         png_destroy_write_struct(&png_ptr,(png_infopp)NULL);
         return false;
     }
@@ -414,10 +420,11 @@ png_trgt_spritesheet::write_png_file()
     {
         synfig::error("Unable to setup longjump");
         png_destroy_write_struct(&png_ptr, &info_ptr);
-        fclose(file);
+        fclose(out_file_pointer);
+        out_file_pointer=NULL;
         return false;
     }
-    png_init_io(png_ptr,file);
+    png_init_io(png_ptr,out_file_pointer);
     png_set_filter(png_ptr,0,PNG_FILTER_NONE);
 
 	
@@ -457,11 +464,12 @@ png_trgt_spritesheet::write_png_file()
 
     png_write_info_before_PLTE(png_ptr, info_ptr);
     png_write_info(png_ptr, info_ptr);
-	//Writing spritesheet into png image
-	for (unsigned int y = 0; y < sheet_height; y++)
+
+    //Writing spritesheet into png image
+	for (cur_out_image_row = 0; cur_out_image_row < sheet_height; cur_out_image_row++)
 	{
 		convert_color_format(buffer, 
-		                     color_data[y], 
+		                     color_data[cur_out_image_row],
 		                     sheet_width, 
 		                     PF_RGB|(get_alpha_mode()==TARGET_ALPHA_MODE_KEEP)?PF_A:PF_RGB, //Note: PF_RGB == 0
 		                     gamma());
@@ -469,12 +477,14 @@ png_trgt_spritesheet::write_png_file()
 		setjmp(png_jmpbuf(png_ptr));
 		png_write_row(png_ptr,buffer);
 	}
-    if(file)
+	cur_out_image_row = 0;
+    if(out_file_pointer)
     {
         png_write_end(png_ptr,info_ptr);
         png_destroy_write_struct(&png_ptr, &info_ptr);
+        fclose(out_file_pointer);
+        out_file_pointer=NULL;
 
-        fclose(file);
     }
 	return true;
 }

@@ -29,12 +29,14 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "layerembed.h"
 
 #include <synfig/layers/layer_bitmap.h>
 
 #include <synfigapp/canvasinterface.h>
-#include <synfigapp/general.h>
+#include <synfigapp/localization.h>
 #include <synfigapp/instance.h>
 
 

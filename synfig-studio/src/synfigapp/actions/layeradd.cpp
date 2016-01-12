@@ -30,9 +30,11 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "layeradd.h"
 #include <synfigapp/canvasinterface.h>
-#include <synfigapp/general.h>
+#include <synfigapp/localization.h>
 #include <synfig/layers/layer_pastecanvas.h>
 #include <synfig/valuenodes/valuenode_composite.h>
 

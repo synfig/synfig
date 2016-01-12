@@ -30,6 +30,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "dialogs/canvasproperties.h"
 #include <gtkmm/frame.h>
 #include <gtkmm/table.h>
@@ -41,7 +43,7 @@
 #include <gtkmm/scrolledwindow.h>
 #include "app.h"
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

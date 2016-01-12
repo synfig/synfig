@@ -29,7 +29,6 @@
 
 #include <ETL/ref_count>
 #include <synfig/string.h>
-#include <synfig/general.h>
 #include <synfig/main.h>
 #include <synfig/distance.h>
 #include <synfig/real.h>

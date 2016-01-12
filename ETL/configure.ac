@@ -2,7 +2,7 @@
 
 # -- I N I T --------------------------------------------------
 
-AC_INIT([Extended Template Library],[0.04.18],[http://www.synfig.org/issues/thebuggenie/synfig],[ETL])
+AC_INIT([Extended Template Library],[0.04.20],[http://www.synfig.org/issues/thebuggenie/synfig],[ETL])
 AC_REVISION
 
 AC_CONFIG_AUX_DIR(config)
@@ -33,8 +33,8 @@ AC_PROG_RANLIB
 AC_LANG([C++])
 
 AC_ARG_WARNINGS
-AC_ARG_DEBUG
 AC_ARG_OPTIMIZATION
+AC_ARG_DEBUG
 AC_ARG_PROFILING
 
 AC_WIN32_QUIRKS

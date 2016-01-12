@@ -30,11 +30,13 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "widgets/widget_bonechooser.h"
 #include <gtkmm/menu.h>
 #include "app.h"
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 
@@ -100,8 +102,13 @@ Widget_BoneChooser::set_value(synfig::ValueNode_Bone::Handle data)
 		// insert the entry for the currently selected value first so that it appears selected
 		if (!bone->is_root())
 		{
+
+			String label((*(bone->get_link("name")))(time).get(String()));
+			if (label.empty()) label=bone->get_guid().get_string();
+
 			parent_set.erase(bone); // erase it from the set so it won't be inserted twice
 			bones.push_back(bone);
+			append(label);
 			// (*(bone->get_link("name")))(time).get(String());
 		}
 		else
@@ -122,7 +129,7 @@ Widget_BoneChooser::set_value(synfig::ValueNode_Bone::Handle data)
 		}
 	}
 
-	if (bone)
+	if (bone and !bone->is_root())
 	{
 		bones.push_back(ValueNode_Bone::get_root_bone());
 		append(_("<None>"));

@@ -32,6 +32,9 @@
 #	include <config.h>
 #endif
 
+#include <synfig/localization.h>
+#include <synfig/general.h>
+
 #include <ETL/stringf>
 #include "trgt_dv.h"
 #include <cstdio>
@@ -143,7 +146,7 @@ dv_trgt::set_rend_desc(RendDesc *given_desc)
 }
 
 bool
-dv_trgt::init(synfig::ProgressCallback *cb)
+dv_trgt::init(synfig::ProgressCallback * /* cb */)
 {
 	imagecount=desc.get_frame_start();
 

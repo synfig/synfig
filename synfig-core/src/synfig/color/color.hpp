@@ -133,30 +133,30 @@ Color Color::demult_alpha() const
 	}else return alpha();
 }
 
-Color::Color() :a_(0), r_(0), g_(0), b_(0) { }
-Color::Color(const value_type &f) :a_(f),r_(f), g_(f), b_(f) { }
-Color::Color(int f) :a_(f),r_(f), g_(f), b_(f) { }
+Color::Color() :r_(0), g_(0), b_(0),a_(0) { }
+Color::Color(const value_type &f) :r_(f), g_(f), b_(f),a_(f) { }
+Color::Color(int f) :r_(f), g_(f), b_(f),a_(f) { }
 
 Color::Color(const value_type& R,
              const value_type& G,
              const value_type& B,
              const value_type& A):
-	a_(A),
 	r_(R),
 	g_(G),
-	b_(B) { }
+	b_(B),
+	a_(A) { }
 
 Color::Color(const Color& c, const value_type& A):
-	a_(A),
 	r_(c.r_),
 	g_(c.g_),
-	b_(c.b_) { }
+	b_(c.b_),
+	a_(A) { }
 
 Color::Color(const Color& c):
-	a_(c.a_),
 	r_(c.r_),
 	g_(c.g_),
-	b_(c.b_) { }
+	b_(c.b_),
+	a_(c.a_) { }
 
 #ifdef USE_HALF_TYPE
 	friend class ColorAccumulator;

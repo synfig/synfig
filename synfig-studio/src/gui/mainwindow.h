@@ -54,7 +54,10 @@ namespace studio {
 		//! Constructor Helper - Initializes all of the menus
 		void init_menus();
 
-		static void save_all();
+		void make_short_names(
+			const std::vector<synfig::String> &fullnames,
+			std::vector<synfig::String> &shortnames );
+
 		static void show_dialog_input();
 		void on_recent_files_changed();
 		void on_dockable_registered(Dockable* dockable);

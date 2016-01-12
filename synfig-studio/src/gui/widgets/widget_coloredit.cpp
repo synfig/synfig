@@ -32,6 +32,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "widgets/widget_coloredit.h"
 #include <cmath>
 #include "app.h"
@@ -48,7 +50,7 @@
 #include <gdkmm/color.h>
 #include <climits>
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

@@ -29,15 +29,19 @@
 /* === H E A D E R S ======================================================= */
 
 #include <cstdio>
+
+
 #include <map>
+
 #include <ETL/handle>
-#include "string.h"
-#include "time.h"
-#include "gamma.h"
-#include "renddesc.h"
-#include "filesystem.h"
 
 #include "cairo.h"
+#include "filesystem.h"
+#include "gamma.h"
+#include "progresscallback.h"
+#include "renddesc.h"
+#include "string.h"
+#include "time.h"
 
 /* === M A C R O S ========================================================= */
 

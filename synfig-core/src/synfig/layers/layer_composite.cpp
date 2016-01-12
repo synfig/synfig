@@ -31,22 +31,24 @@
 #	include <config.h>
 #endif
 
-#include "layer_composite.h"
-#include "layer_pastecanvas.h"
+#include <synfig/general.h>
+#include <synfig/localization.h>
 #include <synfig/context.h>
 #include <synfig/time.h>
 #include <synfig/color.h>
 #include <synfig/surface.h>
 #include <synfig/renddesc.h>
 #include <synfig/target.h>
-
-#include "layer_bitmap.h"
-
-#include <synfig/general.h>
 #include <synfig/render.h>
 #include <synfig/paramdesc.h>
 #include <synfig/cairo_renddesc.h>
 
+#include "layer_composite.h"
+
+#include "layer_pastecanvas.h"
+#include "layer_bitmap.h"
+#include <synfig/rendering/common/task/taskblend.h>
+#include <synfig/rendering/common/task/tasklayer.h>
 
 #endif
 
@@ -125,7 +127,7 @@ Layer_Composite::accelerated_render(Context context,Surface *surface,int quality
 	image.push_front(const_cast<synfig::Layer_Composite*>(this));
 
 	// Set up a surface target
-	Target_Scanline::Handle target(surface_target(surface));
+	Target_Scanline::Handle target(surface_target_scanline(surface));
 
 	if(!target)
 	{
@@ -313,4 +315,23 @@ Layer_Composite::get_param(const String & param)const
 	//! If it is unknown then call the ancestor's get param member
 	//! to see if it can handle that parameter's string.
 	return Layer::get_param(param);
+}
+
+rendering::Task::Handle
+Layer_Composite::build_composite_task_vfunc(ContextParams /*context_params*/)const
+{
+	rendering::TaskLayer::Handle task = new rendering::TaskLayer();
+	task->layer = clone(NULL);
+	return task;
+}
+
+rendering::Task::Handle
+Layer_Composite::build_rendering_task_vfunc(Context context)const
+{
+	rendering::TaskBlend::Handle task_blend(new rendering::TaskBlend());
+	task_blend->amount = get_amount() * Context::z_depth_visibility(context.get_params(), *this);
+	task_blend->blend_method = get_blend_method();
+	task_blend->sub_task_a() = context.build_rendering_task();
+	task_blend->sub_task_b() = build_composite_task_vfunc(context.get_params());
+	return task_blend;
 }

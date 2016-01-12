@@ -47,6 +47,7 @@
 
 #include <synfig/canvas.h>
 #include <synfig/general.h>
+#include <synfig/localization.h>
 #include "valuenode_animated.h"
 #include "valuenode_bone.h"
 #include "valuenode_const.h"

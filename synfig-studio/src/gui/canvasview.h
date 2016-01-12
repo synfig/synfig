@@ -559,7 +559,8 @@ private:
 	void interpolation_refresh();
 	void on_interpolation_changed();
 	void on_interpolation_event(GdkEvent *event);
-
+	
+	static void save_all();
 
 	/*
  -- ** -- P U B L I C   M E T H O D S -----------------------------------------
@@ -761,7 +762,13 @@ public:
 
 	void update_quality();
 
+	//! Toggle given handle type
+	//! \Param[in]  type The Duckmatic::Type to toggle
+	//! \Sa             DuckMatic::set_type_mask(), DuckMatic::get_type_mask()
 	void toggle_duck_mask(Duckmatic::Type type);
+	//! Toggle between none/last visible handles
+	//! \Sa             DuckMatic::set_type_mask_state(), DuckMatic::get_type_mask_state()
+	void toggle_duck_mask_all();
 
 	bool is_time_equal_to_current_frame(const synfig::Time &time, const synfig::Time &range = synfig::Time(0.0));
 

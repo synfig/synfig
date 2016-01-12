@@ -34,6 +34,7 @@
 #include "app.h"
 #include <glibmm/thread.h>
 #include <glibmm/dispatcher.h>
+#include <sigc++/bind.h>
 
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
@@ -52,9 +53,10 @@
 #endif
 
 #include <synfig/general.h>
+#include <synfig/context.h>
 #include <ETL/clock>
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 
@@ -65,7 +67,7 @@ using namespace etl;
 using namespace synfig;
 using namespace studio;
 
-#define BOREDOM_TIMEOUT		50
+#define BOREDOM_TIMEOUT		1
 
 #define REJOIN_ON_STOP	1
 
@@ -91,6 +93,8 @@ public:
 		}
 	};
 	std::list<tile_t> tile_queue;
+	std::list<Glib::Thread*> threads;
+	bool err;
 	Glib::Mutex mutex;
 
 #ifndef GLIB_DISPATCHER_BROKEN
@@ -103,7 +107,7 @@ public:
 
 public:
 	AsyncTarget_Tile(etl::handle<synfig::Target_Tile> warm_target):
-		warm_target(warm_target)
+		warm_target(warm_target), err(false)
 	{
 		set_avoid_time_sync(warm_target->get_avoid_time_sync());
 		set_tile_w(warm_target->get_tile_w());
@@ -113,7 +117,9 @@ public:
 		set_alpha_mode(warm_target->get_alpha_mode());
 		set_threads(warm_target->get_threads());
 		set_clipping(warm_target->get_clipping());
+		set_allow_multithreading(warm_target->get_allow_multithreading());
 		set_rend_desc(&warm_target->rend_desc());
+		set_engine(warm_target->get_engine());
 		alive_flag=true;
 #ifndef GLIB_DISPATCHER_BROKEN
 		ready_connection=tile_ready_signal.connect(sigc::mem_fun(*this,&AsyncTarget_Tile::tile_ready));
@@ -130,17 +136,73 @@ public:
 		alive_flag=false;
 	}
 
-	virtual int total_tiles()const
+	virtual bool async_render_tile(synfig::RectInt rect, synfig::Context context, synfig::RendDesc tile_desc, synfig::ProgressCallback *cb=NULL)
 	{
-		return warm_target->total_tiles();
+		if(!alive_flag)
+			return false;
+
+#ifdef SINGLE_THREADED
+		if (single_threaded())
+			return sync_render_tile(rect, context, tile_desc, cb);
+#endif
+
+		if (!get_allow_multithreading())
+			return sync_render_tile(rect, context, tile_desc, cb);
+
+		Glib::Thread *thread = Glib::Thread::create(
+			sigc::hide_return(
+				sigc::bind(
+					sigc::mem_fun(*this, &AsyncTarget_Tile::sync_render_tile),
+					rect, context, tile_desc, (synfig::ProgressCallback*)NULL )),
+				true
+			);
+		assert(thread);
+
+		{
+			Glib::Mutex::Lock lock(mutex);
+			threads.push_back(thread);
+		}
+
+		return true;
 	}
 
-	virtual int next_tile(int& x, int& y)
+	bool sync_render_tile(synfig::RectInt rect, synfig::Context context, synfig::RendDesc tile_desc, synfig::ProgressCallback *cb)
+	{
+		if(!alive_flag)
+			return false;
+		bool r = warm_target->async_render_tile(rect, context, tile_desc, cb);
+		if (!r) { Glib::Mutex::Lock lock(mutex); err = true; }
+		return r;
+	}
+
+	virtual bool wait_render_tiles(ProgressCallback *cb=NULL)
+	{
+		if(!alive_flag)
+			return false;
+
+		while(true)
+		{
+			Glib::Thread *thread;
+			{
+				Glib::Mutex::Lock lock(mutex);
+				if (threads.empty()) break;
+				thread = threads.front();
+				threads.pop_front();
+
+			}
+			thread->join();
+		}
+
+		{ Glib::Mutex::Lock lock(mutex); if (err) return false; }
+		return warm_target->wait_render_tiles(cb);
+	}
+
+	virtual int next_tile(RectInt& rect)
 	{
 		if(!alive_flag)
 			return 0;
 
-		return warm_target->next_tile(x,y);
+		return warm_target->next_tile(rect);
 	}
 
 	virtual int next_frame(Time& time)
@@ -154,6 +216,7 @@ public:
 	{
 		if(!alive_flag)
 			return false;
+		{ Glib::Mutex::Lock lock(mutex); err = false; }
 		return warm_target->start_frame(cb);
 	}
 
@@ -313,11 +376,6 @@ public:
 	{
 		Glib::Mutex::Lock lock(mutex);
 		alive_flag=false;
-	}
-	
-	virtual int total_tiles()const
-	{
-		return warm_target->total_tiles();
 	}
 	
 	virtual int next_tile(int& x, int& y)
@@ -683,7 +741,6 @@ public:
 
 };
 
-
 /* === G L O B A L S ======================================================= */
 
 /* === P R O C E D U R E S ================================================= */
@@ -697,6 +754,8 @@ AsyncRenderer::AsyncRenderer(etl::handle<synfig::Target> target_,synfig::Progres
 #ifdef SINGLE_THREADED
 	updating(false),
 #endif
+	start_clock(0),
+	finish_clock(0),
 	start_time(0, 0),
 	finish_time(0, 0)
 {
@@ -735,7 +794,6 @@ AsyncRenderer::AsyncRenderer(etl::handle<synfig::Target> target_,synfig::Progres
 		
 		target=wrap_target;
 	}
-
 	else if(etl::handle<synfig::Target_Cairo>::cast_dynamic(target_))
 	{
 		etl::handle<AsyncTarget_Cairo> wrap_target(
@@ -748,7 +806,6 @@ AsyncRenderer::AsyncRenderer(etl::handle<synfig::Target> target_,synfig::Progres
 		
 		target=wrap_target;
 	}
-
 }
 
 AsyncRenderer::~AsyncRenderer()
@@ -775,6 +832,7 @@ AsyncRenderer::stop()
 				render_thread->join();
 #endif
 			finish_time.assign_current_time();
+			finish_clock = ::clock();
 
 
 			// Make sure all the dispatch crap is cleared out
@@ -808,12 +866,14 @@ AsyncRenderer::start()
 {
 	start_time.assign_current_time();
 	finish_time = start_time;
+	start_clock = ::clock();
+	finish_clock = start_clock;
 	done_connection=Glib::signal_timeout().connect(
 		sigc::bind_return(
 			mem_fun(*this,&AsyncRenderer::start_),
 			false
 		)
-		,50
+		, 0
 	);
 }
 

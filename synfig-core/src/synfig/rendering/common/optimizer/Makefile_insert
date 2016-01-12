@@ -1,0 +1,44 @@
+RENDERING_COMMON_OPTIMIZER_HH = \
+	rendering/common/optimizer/optimizerblendassociative.h \
+	rendering/common/optimizer/optimizerblendblend.h \
+	rendering/common/optimizer/optimizerblendcomposite.h \
+	rendering/common/optimizer/optimizerblendseparate.h \
+	rendering/common/optimizer/optimizerblendsplit.h \
+	rendering/common/optimizer/optimizerblendzero.h \
+	rendering/common/optimizer/optimizercalcbounds.h \
+	rendering/common/optimizer/optimizerlinear.h \
+	rendering/common/optimizer/optimizerlist.h \
+	rendering/common/optimizer/optimizersplit.h \
+	rendering/common/optimizer/optimizersurface.h \
+	rendering/common/optimizer/optimizersurfaceconvert.h \
+	rendering/common/optimizer/optimizersurfacecreate.h \
+	rendering/common/optimizer/optimizersurfacedestroy.h \
+	rendering/common/optimizer/optimizersurfaceresample.h \
+	rendering/common/optimizer/optimizertransformation.h \
+	rendering/common/optimizer/optimizertransformationaffine.h
+
+RENDERING_COMMON_OPTIMIZER_CC = \
+	rendering/common/optimizer/optimizerblendassociative.cpp \
+	rendering/common/optimizer/optimizerblendblend.cpp \
+	rendering/common/optimizer/optimizerblendcomposite.cpp \
+	rendering/common/optimizer/optimizerblendseparate.cpp \
+	rendering/common/optimizer/optimizerblendsplit.cpp \
+	rendering/common/optimizer/optimizerblendzero.cpp \
+	rendering/common/optimizer/optimizercalcbounds.cpp \
+	rendering/common/optimizer/optimizerlinear.cpp \
+	rendering/common/optimizer/optimizerlist.cpp \
+	rendering/common/optimizer/optimizersplit.cpp \
+	rendering/common/optimizer/optimizersurface.cpp \
+	rendering/common/optimizer/optimizersurfaceconvert.cpp \
+	rendering/common/optimizer/optimizersurfacecreate.cpp \
+	rendering/common/optimizer/optimizersurfacedestroy.cpp \
+	rendering/common/optimizer/optimizersurfaceresample.cpp \
+	rendering/common/optimizer/optimizertransformation.cpp \
+	rendering/common/optimizer/optimizertransformationaffine.cpp
+
+RENDERING_COMMON_HH += \
+    $(RENDERING_COMMON_OPTIMIZER_HH)
+
+RENDERING_COMMON_CC += \
+    $(RENDERING_COMMON_OPTIMIZER_CC)
+

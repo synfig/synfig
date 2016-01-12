@@ -30,6 +30,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include <synfig/valuenodes/valuenode_dynamiclist.h>
 #include <synfigapp/action_system.h>
 #include <synfig/valuenodes/valuenode_bline.h>
@@ -50,7 +52,7 @@
 #include "widgets/widget_distance.h"
 #include <synfigapp/main.h>
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 
@@ -552,7 +554,7 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	id_box.pack_start(id_entry);
 
 	// 2, layer types creation
-	layer_types_label.set_label(_("Create:"));
+	layer_types_label.set_label(_("Layer Type:"));
 	layer_types_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
 	LAYER_CREATION(layer_circle_togglebutton,

@@ -29,6 +29,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "canvasoptions.h"
 #include <gtkmm/frame.h>
 #include <gtkmm/table.h>
@@ -38,7 +40,7 @@
 #include "canvasview.h"
 #include "workarea.h"
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

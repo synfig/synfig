@@ -29,6 +29,9 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+#include <gui/localization.h>
+
 #include "app.h"
 #include "docks/dockdroparea.h"
 #include "docks/dockmanager.h"

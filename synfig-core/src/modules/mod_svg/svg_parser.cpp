@@ -31,6 +31,9 @@
 #include <config.h>
 #endif
 
+#include <synfig/localization.h>
+#include <synfig/general.h>
+
 #include <iostream>
 #include <cstring>
 #include "svg_parser.h"
@@ -67,6 +70,8 @@ synfig::open_svg(std::string _filepath,String &errors, String &warnings){
 
 Canvas::Handle
 Svg_parser::load_svg_canvas(std::string _filepath,String &errors, String &warnings){
+	ChangeLocale locale(LC_NUMERIC, "C");
+
 	filepath = _filepath;
 	#ifdef LIBXMLCPP_EXCEPTIONS_ENABLED
   	try{
@@ -98,8 +103,7 @@ Svg_parser::Svg_parser():
 	kux(60),
 	set_canvas(0), //we must run parser_canvas method
 	ox(0),
-	oy(0),
-	locale(LC_NUMERIC, "C")
+	oy(0)
 {
 	// 0.5 in gamma parameter of color correct layer is 1/0.5 = 2 (thinking) it must be 2.2!!!!
 	gamma.set_gamma(2.2);

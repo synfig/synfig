@@ -34,55 +34,60 @@
 #	include <config.h>
 #endif
 
-#include <cstdlib>
 #include <cstdio>
+#include <cstdlib>
 #include <cstring>
-#include <ETL/stringf>
-#include <libxml++/libxml++.h>
+
+#include <iostream>
+#include <map>
 #include <vector>
 #include <stdexcept>
-#include <iostream>
 
-#include <synfig/layers/layer_group.h>
+#include <libxml++/libxml++.h>
+#include <sigc++/bind.h>
+
+#include <ETL/stringf>
+
 #include "loadcanvas.h"
-#include "valuenode.h"
-#include "boneweightpair.h"
-#include "valuenodes/valuenode_animated.h"
-#include "valuenodes/valuenode_composite.h"
-#include "valuenodes/valuenode_const.h"
-#include "valuenodes/valuenode_linear.h"
-#include "valuenodes/valuenode_dynamiclist.h"
-#include "valuenodes/valuenode_reference.h"
-#include "valuenodes/valuenode_add.h"
-#include "valuenodes/valuenode_scale.h"
-#include "valuenodes/valuenode_exp.h"
-#include "valuenodes/valuenode_timedswap.h"
-#include "valuenodes/valuenode_twotone.h"
-#include "valuenodes/valuenode_stripes.h"
-#include "valuenodes/valuenode_segcalctangent.h"
-#include "valuenodes/valuenode_segcalcvertex.h"
-#include "valuenodes/valuenode_bline.h"
-#include "valuenodes/valuenode_bone.h"
-#include "valuenodes/valuenode_boneweightpair.h"
-#include "valuenodes/valuenode_bonelink.h"
-#include "valuenodes/valuenode_weightedaverage.h"
-#include "valuenodes/valuenode_wplist.h"
-#include "valuenodes/valuenode_dilist.h"
-#include "valueoperations.h"
 
+#include "general.h"
+#include "localization.h"
+
+#include "blur.h"
+#include "boneweightpair.h"
+#include "boneweightpair.h"
+#include "exception.h"
+#include "importer.h"
+#include "gradient.h"
 #include "layer.h"
 #include "string.h"
-
-#include "exception.h"
-
-#include "gradient.h"
-
-#include "importer.h"
-
+#include "valuenode.h"
+#include "valueoperations.h"
 #include "zstreambuf.h"
 
-#include <map>
-#include <sigc++/bind.h>
+#include "layers/layer_group.h"
+
+#include "valuenodes/valuenode_add.h"
+#include "valuenodes/valuenode_animated.h"
+#include "valuenodes/valuenode_bline.h"
+#include "valuenodes/valuenode_bone.h"
+#include "valuenodes/valuenode_bonelink.h"
+#include "valuenodes/valuenode_boneweightpair.h"
+#include "valuenodes/valuenode_composite.h"
+#include "valuenodes/valuenode_const.h"
+#include "valuenodes/valuenode_dilist.h"
+#include "valuenodes/valuenode_dynamiclist.h"
+#include "valuenodes/valuenode_exp.h"
+#include "valuenodes/valuenode_linear.h"
+#include "valuenodes/valuenode_reference.h"
+#include "valuenodes/valuenode_scale.h"
+#include "valuenodes/valuenode_segcalctangent.h"
+#include "valuenodes/valuenode_segcalcvertex.h"
+#include "valuenodes/valuenode_stripes.h"
+#include "valuenodes/valuenode_timedswap.h"
+#include "valuenodes/valuenode_twotone.h"
+#include "valuenodes/valuenode_weightedaverage.h"
+#include "valuenodes/valuenode_wplist.h"
 
 #endif
 
@@ -1632,7 +1637,7 @@ CanvasParser::parse_value(xmlpp::Element *element,Canvas::Handle canvas)
 
 		{ // pair
 			types_namespace::TypePairBase *type_pair =
-				dynamic_cast<types_namespace::TypePairBase*>(type_pair);
+				dynamic_cast<types_namespace::TypePairBase*>(type);
 			if (type_pair != NULL)
 			{
 				ValueBase ret = parse_pair(element, *type_pair, canvas);
@@ -3076,6 +3081,35 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 			else
 			if (zoom_const)
 				transformation_node->set_link("scale", ValueNode_Const::create((*scale_scalar_node)(0), canvas));
+		}
+	}
+
+	// add amplifiers for blur
+	if (layer->get_name() == "blur" && (version == "0.0" || version == "0.1" || version == "0.2"))
+	{
+		if (layer->dynamic_param_list().count("type"))
+		{
+			warning(element, "Cannot apply amplifiers to layer blur with animated type");
+		}
+		if (layer->get_param("type").get(int()) == ::Blur::GAUSSIAN)
+		{
+			warning(element, "Cannot apply amplifiers to layer blur with type GAUSSIAN");
+		}
+		else
+		{
+			int type = layer->get_param("type").get(int());
+			Real amplifier = 1.0 / ::Blur::get_size_amplifier(type);
+			if (layer->dynamic_param_list().count("size") && layer->dynamic_param_list().find("size")->second)
+			{
+				ValueNode_Scale::Handle scale = ValueNode_Scale::create(layer->get_param("size"));
+				scale->set_link("link", ValueNode::Handle(layer->dynamic_param_list().find("size")->second));
+				scale->set_link("scalar", ValueNode_Const::create(amplifier));
+				layer->connect_dynamic_param("size", ValueNode::LooseHandle(scale));
+			}
+			else
+			{
+				layer->set_param("size", layer->get_param("size").get(Vector()) * amplifier);
+			}
 		}
 	}
 

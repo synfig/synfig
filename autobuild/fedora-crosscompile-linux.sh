@@ -39,7 +39,7 @@ if [[ $DEBUG == 1 ]]; then
 	DEBUG_OPT2='--enable-debug=yes'
 	export SUFFIX="-debug"
 else
-	DEBUG_OPT=''
+	DEBUG_OPT='--enable-optimization=3'
 fi
 
 if [ ! -z $SUBSET ]; then
@@ -67,7 +67,6 @@ LIBJPEG_VERSION=1.3.1
 LIBSIGCPP_VERSION=2.2.10
 GLEW_VERSION=1.5.1
 CAIROMM_VERSION=1.10.0
-IMAGEMAGICK_VERSION=6.8.9
 PANGOMM_VERSION=2.34.0
 GTKMM_VERSION=3.14.0
 FTGL_VERSION=2.1.2
@@ -83,11 +82,12 @@ AT_SPI2_VERSION=2.10.2
 AT_SPI2_ATK_VERSION=2.10.2
 GLIB_VERSION=2.42.1
 GDK_PIXBUF_VERSION=2.31.3
-GTK_VERSION=3.14.9
+GTK_VERSION=3.14.14
 PIXMAN_VERSION=0.30.0		# required by CAIRO 1.12.0
 HARFBUZZ_VERSION=0.9.24
 PANGO_VERSION=1.36.8
 ATKMM_VERSION=2.22.7
+IMAGEMAGICK_VERSION=6.9.1
 
 # System libraries
 FONTCONFIG_VERSION=2.11.0
@@ -153,20 +153,27 @@ set_environment()
 	else
 		export LD_PRELOAD=/${LIBDIR}/libc.so.6:/${LIBDIR}/libpthread.so.0:/${LIBDIR}/libdl.so.2
 	fi
-	export LD_LIBRARY_PATH=${PREFIX}/lib:${DEPSPREFIX}/lib:${SYSPREFIX}/${LIBDIR}:${SYSPREFIX}/usr/${LIBDIR}
+	export LD_LIBRARY_PATH=${PREFIX}/lib:${DEPSPREFIX}/lib:${SYSPREFIX}/${LIBDIR}:${SYSPREFIX}/usr/lib:${SYSPREFIX}/lib/${RPM_ARCH}-linux-gnu:${SYSPREFIX}/usr/lib/${RPM_ARCH}-linux-gnu
 	
-	export PATH=${PREFIX}/bin:${DEPSPREFIX}/bin:${SYSPREFIX}/bin:${SYSPREFIX}/usr/bin
-	export LDFLAGS="-Wl,-rpath -Wl,\\\$\$ORIGIN/lib -L${PREFIX}/lib -L${DEPSPREFIX}/lib -L${SYSPREFIX}/${LIBDIR} -L${SYSPREFIX}/usr/${LIBDIR}"
-	#export CFLAGS=" -nostdinc  -I${SYSPREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.3.2/include -I${SYSPREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.3.2/include-fixed  -I${PREFIX}/include  -I${DEPSPREFIX}/include -I${SYSPREFIX}/usr/include"
-	GCC_VER=4.4
-	export CFLAGS="-I${SYSPREFIX}/usr/include -I${PREFIX}/include -I${SYSPREFIX}/usr/include/${GCC_ARCH}-linux-gnu" 
+	export PATH=${DEPSPREFIX}/bin:${PREFIX}/bin:${SYSPREFIX}/bin:${SYSPREFIX}/usr/bin
+	export LDFLAGS="-Wl,-rpath -Wl,\\\$\$ORIGIN/lib -L${PREFIX}/lib -L${DEPSPREFIX}/lib -L${SYSPREFIX}/${LIBDIR} -L${SYSPREFIX}/usr/${LIBDIR} -L${SYSPREFIX}/lib/${RPM_ARCH}-linux-gnu/ -L${SYSPREFIX}/usr/lib/${RPM_ARCH}-linux-gnu/"
+	if [[ $DEBUG == 1 ]]; then
+		export CFLAGS="-O0"
+		export CXXFLAGS="-O0"
+	else
+		export CFLAGS="-O3"
+		export CXXFLAGS="-O3"
+	fi
+	#export CFLAGS=" -nostdinc  -I${SYSPREFIX}/usr/lib/gcc/${RPM_ARCH}-linux-gnu/4.3.2/include -I${SYSPREFIX}/usr/lib/gcc/${RPM_ARCH}-linux-gnu/4.3.2/include-fixed  -I${PREFIX}/include  -I${DEPSPREFIX}/include -I${SYSPREFIX}/usr/include"
+	GCC_VER=4.7
+	export CPPFLAGS="-I${SYSPREFIX}/usr/include -I${DEPSPREFIX}/include -I${PREFIX}/include -I${SYSPREFIX}/usr/include/${RPM_ARCH}-linux-gnu" 
 	#export CXXFLAGS="-I${SYSPREFIX}/usr/include/linux/  -I${SYSPREFIX}/usr/include/c++/${GCC_VER}/ -I${SYSPREFIX}/usr/include/c++/${GCC_VER}/${GCC_ARCH}-linux-gnu/ -I${SYSPREFIX}/usr/lib/gcc/${GCC_ARCH}-linux-gnu/${GCC_VER}/include/ -I${SYSPREFIX}/usr/lib/gcc/${GCC_ARCH}-linux-gnu/${GCC_VER}/include-fixed/  -I${SYSPREFIX}/usr/${GCC_ARCH}-linux-gnu/include"
 	#export CXXFLAGS="-I${SYSPREFIX}/usr/local/include/x86_64-linux-gnu -I${SYSPREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.4.5/include -I${SYSPREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.4.5/include-fixed -I${SYSPREFIX}/usr/lib/gcc/../../x86_64-linux-gnu/include -I${SYSPREFIX}/usr/include/x86_64-linux-gnu"
 	#export CXXFLAGS=" -nostdinc   -I${SYSPREFIX}/usr/lib/gcc/../../include/c++/4.3  -I${SYSPREFIX}/usr/lib/gcc/../../include/c++/4.3/x86_64-linux-gnu -I${SYSPREFIX}/usr/lib/gcc/../../include/c++/4.3/backward -I${SYSPREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.3.2/include -I${SYSPREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.3.2/include-fixed -I${PREFIX}/include  -I${DEPSPREFIX}/include -I${SYSPREFIX}/usr/include"
-	export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:${DEPSPREFIX}/lib/pkgconfig:${SYSPREFIX}/usr/lib/pkgconfig:${SYSPREFIX}/usr/share/pkgconfig
-	PERL_VERSION=`perl -v | grep "This is perl" | sed "s|This is perl, v||g" | cut -f 1 -d " "`
+	export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:${DEPSPREFIX}/lib/pkgconfig:${SYSPREFIX}/usr/lib/pkgconfig:${SYSPREFIX}/usr/lib/${RPM_ARCH}-linux-gnu/pkgconfig:${SYSPREFIX}/usr/share/pkgconfig
+	PERL_VERSION=`perl -v | grep "This is perl" | sed "s|This is perl .*(v||g" | sed "s|).*||"`
 	export NM=nm
-	export PERL5LIB="${SYSPREFIX}/etc/perl:${DEPSPREFIX}/lib/perl/${PERL_VERSION}:${DEPSPREFIX}/share/perl/${PERL_VERSION}:${SYSPREFIX}/usr/lib/perl5:${SYSPREFIX}/usr/share/perl5:${SYSPREFIX}/usr/lib/perl/${PERL_VERSION}:${SYSPREFIX}/usr/share/perl/${PERL_VERSION}:${DEPSPREFIX}/lib/site_perl"
+	export PERL5LIB="${SYSPREFIX}/etc/perl:${SYSPREFIX}/usr/share/automake-1.11:${DEPSPREFIX}/lib/perl/${PERL_VERSION}:${DEPSPREFIX}/share/perl/${PERL_VERSION}:${SYSPREFIX}/usr/lib/perl5:${SYSPREFIX}/usr/share/perl5:${SYSPREFIX}/usr/lib/perl/${PERL_VERSION}:${SYSPREFIX}/usr/share/perl/${PERL_VERSION}:${DEPSPREFIX}/lib/site_perl"
 	if [[ $ARCH == "32" ]]; then
 		export CFLAGS="$CFLAGS -m32"
 		export CXXFLAGS="$CXXFLAGS -m32"
@@ -233,7 +240,16 @@ mkprefix()
 			libdbus-1-dev \
 			wget mawk \
 			python-dev \
+			gettext autopoint \
+			libpciaccess-dev  multiarch-support libx11-xcb-dev \
+			libudev-dev \
+			x11proto-gl-dev \
 			bzip2"
+			
+			#autoconf automake m4  \
+			#libtool intltool gettext \
+			# libgl1-mesa-dev \
+			#llvm-dev \
 	
 	INCLUDE_LIST=""
 	for deb in $DEB_LIST_MINIMAL; do
@@ -248,11 +264,27 @@ mkprefix()
 		fakeroot fakechroot \
 		debootstrap --variant=fakechroot --download-only --keep-debootstrap-dir --arch=$SYS_ARCH \
 		--include=$INCLUDE_LIST \
-		squeeze ${SYSPREFIX} http://ftp.ru.debian.org/debian #http://archive.debian.org/debian
+		wheezy ${SYSPREFIX} http://ftp.ru.debian.org/debian #http://archive.debian.org/debian
 
 	#LD_LIBRARY_PATH=${UBUNTU_LIBDIR}:/${LIBDIR}:${SYSPREFIX}/usr/${LIBDIR} PATH=/usr/local/sbin:/usr/sbin:/sbin:/sbin:/bin:/usr/bin:${SYSPREFIX}/usr/sbin:${SYSPREFIX}/sbin:${SYSPREFIX}/usr/bin:${SYSPREFIX}/bin:$PATH HOME=/ LOGNAME=root fakeroot fakechroot debootstrap --variant=fakechroot --arch=$SYS_ARCH --foreign --keep-debootstrap-dir --include=sudo --include=apt lenny ${SYSPREFIX} http://archive.debian.org/debian
 	
 	#LD_LIBRARY_PATH=${UBUNTU_LIBDIR}:/${LIBDIR}:${SYSPREFIX}/usr/${LIBDIR} PATH=/usr/local/sbin:/usr/sbin:/sbin:/sbin:/bin:/usr/bin:${SYSPREFIX}/usr/sbin:${SYSPREFIX}/sbin:${SYSPREFIX}/usr/bin:${SYSPREFIX}/bin:$PATH fakeroot fakechroot linux32 chroot ${SYSPREFIX} #${SYSPREFIX}/debootstrap/debootstrap --second-stage
+	
+	pushd ${SYSPREFIX}/var/cache/apt/archives/
+	
+	wget -c http://repo.asis.io/wheezy-updates/pool/main/libx/libxshmfence/libxshmfence-dev_1.2-1_${SYS_ARCH}.deb
+
+	wget -c http://repo.asis.io/wheezy-updates/pool/main/libx/libxshmfence/libxshmfence1_1.2-1_${SYS_ARCH}.deb
+	
+	wget -c http://repo.asis.io/squeeze-updates/pool/main/x/x11proto-dri2/x11proto-dri2-dev_2.8-2_all.deb
+	
+	wget -c http://repo.asis.io/squeeze-updates/pool/main/x/x11proto-dri3/x11proto-dri3-dev_1.0-1_all.deb
+	
+	popd
+
+	#touch /home/zelgadis/synfig-buildroot/linux64/sys.off/var/lib/dpkg/status
+
+	#fakeroot dpkg --log=/home/zelgadis/synfig-buildroot/linux64/sys.off/var/log/dpkg.log --unpack --force-not-root --root=/home/zelgadis/synfig-buildroot/linux64/sys.off --ignore-depends=multiarch-support,libc6 ./libxshmfence-dev_1.2-1_amd64.deb  ./libxshmfence1_1.2-1_amd64.deb 
 
 	for file in `ls -1 ${SYSPREFIX}/var/cache/apt/archives/*.deb`; do
 		echo $file
@@ -280,11 +312,9 @@ for PKG in \
 	fi
 done
 
-for PKG in dpkg-dev; do
-	if ! ( rpm -qv $PKG > /dev/null ); then
-		MISSING_PKGS="$MISSING_PKGS $PKG"
-	fi
-done
+if ! ( which dpkg-buildpackage > /dev/null ); then
+	MISSING_PKGS="$MISSING_PKGS dpkg-dev"
+fi
 
 if [ ! -z "$MISSING_PKGS" ]; then
 	echo "ERROR: Please install following packages:"
@@ -299,6 +329,13 @@ elif [[ `cat ${SYSPREFIX}/etc/chroot.id` != "Synfig Buildroot v${BUILDROOT_VERSI
 	mkprefix
 fi
 
+mkprepconf
+
+}
+
+mkprepconf()
+{
+
 #[ ! -e ${SYSPREFIX}/lib-native ] || rm -rf ${SYSPREFIX}/lib-native
 #mkdir -p ${SYSPREFIX}/lib-native
 #for file in libc.so.6 libpthread.so.0 ; do
@@ -306,27 +343,41 @@ fi
 #done
 
 ln -sf ${SYSPREFIX}/usr/bin/mawk ${SYSPREFIX}/usr/bin/awk
+ln -sf ${SYSPREFIX}/usr/bin/aclocal-1.11 ${SYSPREFIX}/usr/bin/aclocal
 	
 # Patching libraries ...
 for lib in libc libpthread; do
-	sed -i "s| /lib/| ${SYSPREFIX}/lib/|g" ${SYSPREFIX}/usr/lib/$lib.so
-	sed -i "s| /usr/lib/| ${SYSPREFIX}/usr/lib/|g" ${SYSPREFIX}/usr/lib/$lib.so
+	sed -i "s| /lib/| ${SYSPREFIX}/lib/|g" ${SYSPREFIX}/usr/lib/${RPM_ARCH}-linux-gnu/$lib.so
+	sed -i "s| /usr/lib/| ${SYSPREFIX}/usr/lib/|g" ${SYSPREFIX}/usr/lib/${RPM_ARCH}-linux-gnu/$lib.so
 done
+
+sed -i "s|prefix=\"/usr\"|prefix=\"${SYSPREFIX}/usr\"|g" ${SYSPREFIX}/usr/bin/autopoint
+
+#sed -i "s|@automake_includes = (\"/usr/share/aclocal|@automake_includes = (\"${SYSPREFIX}/usr/share/aclocal|g" ${SYSPREFIX}/usr/bin/aclocal-1.11
+#sed -i "s|p@system_includes = ('/usr/share/aclocal')|@system_includes = ('${SYSPREFIX}/usr/share/aclocal')|g" ${SYSPREFIX}/usr/bin/aclocal-1.11
+
 for file in `find ${SYSPREFIX}/usr/lib/pkgconfig/ -type f -name "*.pc"`; do
-	sed -i "s|prefix=/usr|prefix=${SYSPREFIX}/usr|g" ${file}
+	sed -i "s|=/usr|=${SYSPREFIX}/usr|g" ${file}
+done
+for file in `find ${SYSPREFIX}/usr/lib/${RPM_ARCH}-linux-gnu/pkgconfig/ -type f -name "*.pc"`; do
+	sed -i "s|=/usr|=${SYSPREFIX}/usr|g" ${file}
 done
 for file in `find ${SYSPREFIX}/usr/bin/ -type f -name "*-config"`; do
-	sed -i "s|prefix=/usr|prefix=${SYSPREFIX}/usr|g" ${file}
+	sed -i "s|=/usr|=${SYSPREFIX}/usr|g" ${file}
 done
 for file in `find ${SYSPREFIX}/usr/lib/ -type f -name "*.la"`; do
-	sed -i "s|libdir='/usr/lib'|libdir='${SYSPREFIX}/usr/lib'|g" ${file}
+	sed -i "s|libdir='/usr/lib|libdir='${SYSPREFIX}/usr/lib|g" ${file}
+	sed -i "s| /usr/lib| ${SYSPREFIX}/usr/lib|g" ${file}
+done
+for file in `find ${SYSPREFIX}/usr/lib/${RPM_ARCH}-linux-gnu/ -type f -name "*.la"`; do
+	sed -i "s|libdir='/usr/lib|libdir='${SYSPREFIX}/usr/lib|g" ${file}
 	sed -i "s| /usr/lib| ${SYSPREFIX}/usr/lib|g" ${file}
 done
 
-sed -i "s|#! /usr/bin/python2.6|#!${SYSPREFIX}/usr/bin/python2.6|g" ${SYSPREFIX}/usr/bin/python2.6-config
+sed -i "s|#! /usr/bin/python2.7|#!${SYSPREFIX}/usr/bin/python2.7|g" ${SYSPREFIX}/usr/bin/python2.7-config
 
 # Fixing symlinks
-if [[ $ARCH == 64 ]]; then
+if [[ $ARCH == 64off ]]; then
 	rm ${SYSPREFIX}/lib64
 	rm ${SYSPREFIX}/usr/lib64
 	ln -sf ${SYSPREFIX}/lib ${SYSPREFIX}/lib64
@@ -349,14 +400,14 @@ ln -sf ${SYSPREFIX}/usr/bin/gcc ${SYSPREFIX}/usr/bin/cc
 
 [ -e "${PREFIX}/lib" ] || mkdir -p ${PREFIX}/lib
 #cp ${SYSPREFIX}/usr/lib/libltdl* ${PREFIX}/lib/
-cp ${SYSPREFIX}/usr/lib/libpng12* ${PREFIX}/lib/
-cp ${SYSPREFIX}/usr/lib/libdb-4*.so ${PREFIX}/lib/
-cp ${SYSPREFIX}/lib/libpcre.so* ${PREFIX}/lib/
-cp ${SYSPREFIX}/usr/lib/libffi*.so* ${PREFIX}/lib
+cp ${SYSPREFIX}/lib/${RPM_ARCH}-linux-gnu/libpng12* ${PREFIX}/lib/
+cp ${SYSPREFIX}/usr/lib/${RPM_ARCH}-linux-gnu/libdb-5*.so ${PREFIX}/lib/
+cp ${SYSPREFIX}/lib/${RPM_ARCH}-linux-gnu/libpcre.so* ${PREFIX}/lib/
+cp ${SYSPREFIX}/usr/lib/${RPM_ARCH}-linux-gnu/libffi*.so* ${PREFIX}/lib
 # SDL deps
-cp ${SYSPREFIX}/usr/lib/libdirect-*.so* ${PREFIX}/lib/
-cp ${SYSPREFIX}/usr/lib/libdirectfb-*.so* ${PREFIX}/lib/
-cp ${SYSPREFIX}/usr/lib/libfusion*.so* ${PREFIX}/lib/
+cp ${SYSPREFIX}/usr/lib/${RPM_ARCH}-linux-gnu/libdirect-*.so* ${PREFIX}/lib/
+cp ${SYSPREFIX}/usr/lib/${RPM_ARCH}-linux-gnu/libdirectfb-*.so* ${PREFIX}/lib/
+cp ${SYSPREFIX}/usr/lib/${RPM_ARCH}-linux-gnu/libfusion*.so* ${PREFIX}/lib/
 
 #RANDOM_SYSPREFIX=`tr -cd '[:alnum:]' < /dev/urandom | fold -w8 | head -n1`
 #DATE=`date +%s`
@@ -368,19 +419,47 @@ cp ${SYSPREFIX}/usr/lib/libfusion*.so* ${PREFIX}/lib/
 
 [ -e ${DEPSPREFIX}/bin ] || mkdir -p ${DEPSPREFIX}/bin
 
-cat > ${DEPSPREFIX}/bin/gcc-- <<EOF
+cat > ${DEPSPREFIX}/bin/gcc <<EOF
 #!/bin/sh
 
-${SYSPREFIX}/usr/bin/gcc -nostdinc -I${SYSPREFIX}/usr/lib/gcc/${GCC_ARCH}-linux-gnu/4.3.2/include -I${SYSPREFIX}/usr/lib/gcc/${GCC_ARCH}-linux-gnu/4.3.2/include-fixed -I${PREFIX}/include  -I${DEPSPREFIX}/include -I${SYSPREFIX}/usr/include  "\$@"
-EOF
-#chmod a+x  ${DEPSPREFIX}/bin/gcc
+#${SYSPREFIX}/usr/bin/gcc -nostdinc -I${SYSPREFIX}/usr/lib/gcc/${GCC_ARCH}-linux-gnu/4.3.2/include -I${SYSPREFIX}/usr/lib/gcc/${GCC_ARCH}-linux-gnu/4.3.2/include-fixed -I${PREFIX}/include  -I${DEPSPREFIX}/include -I${SYSPREFIX}/usr/include  "\$@"
 
-cat > ${DEPSPREFIX}/bin/g++-- <<EOF
+${SYSPREFIX}/usr/bin/gcc --sysroot=${SYSPREFIX} "\$@"
+
+EOF
+chmod a+x  ${DEPSPREFIX}/bin/gcc
+
+cat > ${DEPSPREFIX}/bin/g++ <<EOF
 #!/bin/sh
 
-${SYSPREFIX}/usr/bin/g++ -nostdinc   -I${SYSPREFIX}/usr/lib/gcc/../../include/c++/4.3  -I${SYSPREFIX}/usr/lib/gcc/../../include/c++/4.3/${GCC_ARCH}-linux-gnu -I${SYSPREFIX}/usr/lib/gcc/../../include/c++/4.3/backward -I${SYSPREFIX}/usr/lib/gcc/${GCC_ARCH}-linux-gnu/4.3.2/include -I${SYSPREFIX}/usr/lib/gcc/${GCC_ARCH}-linux-gnu/4.3.2/include-fixed -I${PREFIX}/include  -I${DEPSPREFIX}/include -I${SYSPREFIX}/usr/include "\$@"
+#${SYSPREFIX}/usr/bin/g++ -nostdinc   -I${SYSPREFIX}/usr/lib/gcc/../../include/c++/4.3  -I${SYSPREFIX}/usr/lib/gcc/../../include/c++/4.3/${GCC_ARCH}-linux-gnu -I${SYSPREFIX}/usr/lib/gcc/../../include/c++/4.3/backward -I${SYSPREFIX}/usr/lib/gcc/${GCC_ARCH}-linux-gnu/4.3.2/include -I${SYSPREFIX}/usr/lib/gcc/${GCC_ARCH}-linux-gnu/4.3.2/include-fixed -I${PREFIX}/include  -I${DEPSPREFIX}/include -I${SYSPREFIX}/usr/include "\$@"
+
+${SYSPREFIX}/usr/bin/g++ --sysroot=${SYSPREFIX} "\$@"
 EOF
-#chmod a+x  ${DEPSPREFIX}/bin/g++
+chmod a+x  ${DEPSPREFIX}/bin/g++ || true
+
+cat > ${DEPSPREFIX}/bin/synfig-- <<EOF
+#!/bin/sh
+
+#if [ -d ${DEPSPREFIX} ]; then
+#mv ${DEPSPREFIX} ${DEPSPREFIX}.off
+#fi
+
+export LD_PRELOAD=""
+export LD_LIBRARY_PATH=""
+export PATH="/usr/local/bin/:/usr/sbin:/usr/bin:/bin"
+export LDFLAGS=""
+export CFLAGS=""
+export CXXFLAGS=""
+export PKG_CONFIG_PATH=""
+export PERL5LIB=""
+
+echo "-----------------!!!-------------"
+
+~/synfig/bin/synfig "\$@"
+EOF
+#chmod a+x  ${DEPSPREFIX}/bin/synfig || true
+
 
 cat > ${DEPSPREFIX}/bin/rsync <<EOF
 #!/bin/sh
@@ -402,6 +481,13 @@ cat > ${DEPSPREFIX}/bin/bison <<EOF
 /usr/bin/bison "\$@"
 EOF
 chmod a+x  ${DEPSPREFIX}/bin/bison
+
+cat > ${DEPSPREFIX}/bin/git <<EOF
+#!/bin/sh
+
+/usr/bin/git "\$@"
+EOF
+chmod a+x  ${DEPSPREFIX}/bin/git
 
 #for binary in bzip2; do
 #	ln -sf /usr/bin/$binary  ${DEPSPREFIX}/bin/$binary
@@ -497,6 +583,7 @@ if [ ! -f ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done ]; then
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
 	[ ! -e config.cache ] || rm config.cache
+	
 	./configure --build=${HOST} --prefix=${PREFIX}/ \
 		--disable-static --enable-shared
 	make -j${THREADS}
@@ -576,6 +663,9 @@ if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
 	pushd ${SRCPREFIX}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
+	
+	sed -i 's|if test "x$cairo_cc_stderr" != "x"; then|if test "x$cairo_cc_stderr___" != "x"; then|g' configure 
+	
 	./configure --host=${HOST} --prefix=${PREFIX} \
 		--disable-static 	\
 		--enable-warnings 	\
@@ -914,11 +1004,11 @@ mkimagemagick()
 {
 PKG_NAME=ImageMagick
 PKG_VERSION="${IMAGEMAGICK_VERSION}-10"
-TAREXT=bz2
-if ! pkg-config ${PKG_NAME} --exact-version=${IMAGEMAGICK_VERSION}  --print-errors; then
+TAREXT=xz
+if [ ! -f ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done ]; then
 	( cd ${WORKSPACE}/cache/ && wget -c http://www.imagemagick.org/download/releases/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
 	pushd ${SRCPREFIX}
-	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xjf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar xf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
 	./configure --host=${HOST} --prefix=${PREFIX} --includedir=${PREFIX}/include \
 		--disable-static --enable-shared \
@@ -933,6 +1023,9 @@ if ! pkg-config ${PKG_NAME} --exact-version=${IMAGEMAGICK_VERSION}  --print-erro
 	make install
 	cd ..
 	popd
+	
+	touch ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done
+	
 fi
 }
 
@@ -1178,6 +1271,30 @@ if [ ! -f ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done ]; then
 fi
 }
 
+mkfftw()
+{
+PKG_NAME=fftw
+PKG_VERSION=3.3.4
+TAREXT=gz
+if [ ! -f ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done ]; then
+	( cd ${WORKSPACE}/cache/ && wget -c --no-check-certificate http://www.fftw.org/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
+	pushd ${SRCPREFIX}
+	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	cd ${PKG_NAME}-${PKG_VERSION}
+	[ ! -e config.cache ] || rm config.cache
+	./configure --host=${HOST} --prefix=${PREFIX}/ \
+		${DEBUG_OPT2} \
+		--disable-static --enable-shared
+	make -j${THREADS}
+	make install
+	cd ..
+	popd
+	
+	touch ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done
+	
+fi
+}
+
 mkffmpeg()
 {
 
@@ -1197,7 +1314,7 @@ if [ ! -f ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done ]; then
 	
 	if [ -d ffmpeg ]; then
 	   cd ffmpeg
-	   /usr/bin/git pull
+	   /usr/bin/git fetch
 	   cd ..
 	else
 		/usr/bin/git clone git://source.ffmpeg.org/ffmpeg.git ffmpeg
@@ -1209,6 +1326,8 @@ if [ ! -f ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done ]; then
 	#cd ${PKG_NAME}-${PKG_VERSION}
 	
 	cd ${PKG_NAME}
+	git reset --hard
+	git checkout a194298954e98d9157
 	
 	./configure --prefix=${PREFIX} \
 		--arch=${SYS_ARCH} \
@@ -1331,6 +1450,105 @@ fi
 #cp ${DEPSPREFIX}/lib/libboost_program_options.so.*.0 ${PREFIX}/lib/
 }
 
+mklibdrm()
+{
+PKG_NAME=libdrm
+PKG_VERSION=2.4.65
+TAREXT=gz
+if [ ! -f ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done ]; then
+	( cd ${WORKSPACE}/cache/ && wget -c --no-check-certificate http://dri.freedesktop.org/libdrm/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
+	pushd ${SRCPREFIX}
+	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xzf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	cd ${PKG_NAME}-${PKG_VERSION}
+	./configure --host=${HOST} --prefix=${DEPSPREFIX} --includedir=${DEPSPREFIX}/include \
+		--disable-static --enable-shared
+	make -j${THREADS}
+	make install
+	cd ..
+	popd
+	
+	touch ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done
+fi
+}
+
+mkxcb-proto()
+{
+
+PKG_NAME=xcb-proto
+PKG_VERSION=1.11
+TAREXT=bz2
+if [ ! -f ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done ]; then
+	( cd ${WORKSPACE}/cache/ && wget -c --no-check-certificate http://xcb.freedesktop.org/dist/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
+	pushd ${SRCPREFIX}
+	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar xf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	cd ${PKG_NAME}-${PKG_VERSION}
+	./configure --host=${HOST} --prefix=${DEPSPREFIX} --includedir=${DEPSPREFIX}/include \
+		--disable-static --enable-shared
+
+	make -j${THREADS}
+	make install
+	cd ..
+	popd
+	
+	touch ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done
+fi
+}
+
+mklibxcb()
+{
+
+mkxcb-proto
+
+PKG_NAME=libxcb
+PKG_VERSION=1.11.1
+TAREXT=bz2
+if [ ! -f ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done ]; then
+	( cd ${WORKSPACE}/cache/ && wget -c --no-check-certificate http://xcb.freedesktop.org/dist/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
+	pushd ${SRCPREFIX}
+	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar xf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	cd ${PKG_NAME}-${PKG_VERSION}
+	./configure --host=${HOST} --prefix=${DEPSPREFIX} --includedir=${DEPSPREFIX}/include \
+		--disable-static --enable-shared
+
+	make -j${THREADS}
+	make install
+	cd ..
+	popd
+	
+	touch ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done
+fi
+}
+
+mkmesa()
+{
+mklibxcb
+mklibdrm
+
+PKG_NAME=mesa
+PKG_VERSION=10.6.9
+TAREXT=gz
+if [ ! -f ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done ]; then
+	#( cd ${WORKSPACE}/cache/ && wget -c --no-check-certificate ftp://ftp.freedesktop.org/pub/mesa/${PKG_VERSION}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
+	pushd ${SRCPREFIX}
+	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xzf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	cd ${PKG_NAME}-${PKG_VERSION}
+	./configure --host=${HOST} --prefix=${DEPSPREFIX} --includedir=${DEPSPREFIX}/include \
+		--with-gallium-drivers="swrast" \
+		--with-dri-drivers="swrast" \
+		--disable-static --enable-shared
+		
+#		 \
+#		--disable-egl \
+
+	make -j${THREADS}
+	make install
+	cd ..
+	popd
+	
+	touch ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done
+fi
+}
+
 mkcairomm()
 {
 PKG_NAME=cairomm
@@ -1403,6 +1621,10 @@ if ! pkg-config jack --exact-version=${PKG_VERSION}  --print-errors; then
 	pushd ${SRCPREFIX}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xzf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
+	
+	# Disable check for parallel jack installs
+	sed -i 's|if test $not_overwriting -gt 0 ; then|if test $not_overwriting -gt 500 ; then|g' configure 
+	
 	./configure --host=${HOST} --prefix=${DEPSPREFIX} --includedir=${DEPSPREFIX}/include \
 		--libdir=${DEPSPREFIX}/lib \
 		--disable-static --enable-shared
@@ -1544,11 +1766,12 @@ fi
 
 }
 
+# TODO: remove?
 mkgettext()
 {
 
 PKG_NAME=gettext
-PKG_VERSION="0.17"
+PKG_VERSION="0.19.6"
 TAREXT=gz
 
 mkdir -p $SYSPREFIX/tmp/gettext-bin || true
@@ -1640,8 +1863,47 @@ make clean || true
 	--sysconfdir=${PREFIX}/etc --datadir=${PREFIX}/share  \
 	--disable-static --enable-shared \
 	$DEBUG_OPT
-make -j${THREADS}
-make install
+
+cd build_tools
+make
+cd ..
+
+[ -e ${PREFIX}/bin/synfig.bin ] || mv ${PREFIX}/bin/synfig ${PREFIX}/bin/synfig.bin
+cat > ${PREFIX}/bin/synfig <<EOF
+#!/bin/sh
+
+export LD_PRELOAD=""
+export LD_LIBRARY_PATH=""
+export PATH="/usr/local/bin/:/usr/sbin:/usr/bin:/bin"
+export LDFLAGS=""
+export CFLAGS=""
+export CXXFLAGS=""
+export PKG_CONFIG_PATH=""
+export PERL5LIB=""
+
+echo "-----------------!!!-------------"
+
+~/synfig/bin/synfig "\$@"
+EOF
+chmod a+x  ${PREFIX}/bin/synfig || true
+
+cd images
+#mv ${DEPSPREFIX} ${DEPSPREFIX}.off
+make -j${THREADS} install
+#mv ${DEPSPREFIX}.off ${DEPSPREFIX}
+cd ..
+
+rm ${PREFIX}/bin/synfig
+mv ${PREFIX}/bin/synfig.bin ${PREFIX}/bin/synfig
+
+make -j${THREADS} install
+
+#for DIR in build_tools src plugins po brushes; do
+#cd $DIR
+#make -j${THREADS}
+#make -j${THREADS} install
+#cd ..
+#done
 
 }
 
@@ -1798,6 +2060,7 @@ mkpackage()
 	rm -rf ${DISTPREFIX}/lib/gtkmm-2.4
 	rm -rf ${DISTPREFIX}/lib/pkgconfig
 	rm -rf ${DISTPREFIX}/lib/sigc++-2.0
+	rm -rf ${DISTPREFIX}/share/applications/gtk3-*
 	rm -rf ${DISTPREFIX}/share/doc
 	rm -rf ${DISTPREFIX}/share/devhelp
 	rm -rf ${DISTPREFIX}/share/gtk-doc
@@ -1956,7 +2219,6 @@ Package: synfigstudio
 Provides: synfig
 Recommends: synfig-examples
 Architecture: any
-Depends: \${shlibs:Depends}
 Description: Film-Quality 2D Vector Animation package
  Synfig Animation Studio is a powerful, industrial-strength vector-based
  2D animation software, designed from the ground-up for producing
@@ -2008,8 +2270,8 @@ fi
 if [ -x /usr/bin/update-desktop-database ]; then
   update-desktop-database
 fi
-chmod a+rX -R /opt/synfig
-chmod a+rX /opt
+#chmod a+rX -R /opt/synfig
+#chmod a+rX /opt
 EOF
 	chmod a+x ${DEB_DIST}/debian/postinst
 	
@@ -2068,7 +2330,7 @@ binary-arch: build
 	-dh_shlibdeps
 	dh_gencontrol
 	dh_md5sums
-	dh_builddeb
+#	dh_builddeb
 
 binary: binary-indep binary-arch
 .PHONY: build clean binary-indep binary-arch binary
@@ -2078,12 +2340,18 @@ EOF
 	#run_native fakeroot alien -g -k --scripts synfigstudio-${VERSION}-${REVISION}.${RPM_ARCH}.rpm
 		
 	cd synfigstudio-${VERSION}
+	
 	run_native dpkg-buildpackage -rfakeroot -a${SYS_ARCH} -d || true
+	# We have to use "dpkg-deb" command from chroot, 
+	# because recent dpkg-deb seems broken on Fedora
+	chmod -R a+rX debian/synfigstudio
+	run_native /usr/bin/fakeroot dpkg-deb -Zgzip -b debian/synfigstudio
 	#run_native fakeroot dpkg-deb --build synfigstudio
-	if [ ! -e ../synfigstudio_${VERSION}-${REVISION}_${SYS_ARCH}.deb ]; then
+	if [ ! -e debian/synfigstudio.deb ]; then
 		echo "Failed to generate deb package"
 		exit 1
 	fi
+	mv debian/synfigstudio.deb ../synfigstudio_${VERSION}-${REVISION}_${SYS_ARCH}.deb
 	mv ../synfigstudio_${VERSION}-${REVISION}_${SYS_ARCH}.deb ${WORKSPACE}
 	rm -rf synfigstudio-${VERSION}.orig
 	rm -rf synfigstudio_${VERSION}.orig.tar.gz
@@ -2106,7 +2374,7 @@ mkall()
 	mkautomake
 	mklibtool
 	mkintltool
-	mkgettext
+	#mkgettext
 	
 	# system libraries
 	mklibjpeg
@@ -2126,6 +2394,7 @@ mkall()
 	mkjack
 	
 	# synfig-core deps
+	mkmesa
 	mklibsigcpp
 	mkglibmm
 	mklibxmlpp
@@ -2135,6 +2404,7 @@ mkall()
 	mkmlt
 	mkimagemagick
 	mkboost
+	mkfftw
 	
 	# synfig-studio deps
 	mkcairomm
@@ -2161,6 +2431,7 @@ do_cleanup()
 		[ ! -e ${DEPSPREFIX} ] || mv ${DEPSPREFIX} ${DEPSPREFIX}.off
 	fi
 	[ ! -e ${SYSPREFIX} ] || mv ${SYSPREFIX} ${SYSPREFIX}.off
+
 	exit
 }
 

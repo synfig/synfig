@@ -29,13 +29,20 @@
 #	include <config.h>
 #endif
 
-#include "layer_meshtransform.h"
-#include <synfig/renderersoftware.h>
-#include <algorithm>
 #include <cmath>
 #include <climits>
-#include <synfig/transform.h>
+
+#include <algorithm>
+
+#include "layer_meshtransform.h"
+
+#include <synfig/general.h>
+#include <synfig/localization.h>
+
 #include <synfig/context.h>
+#include <synfig/transform.h>
+
+#include <synfig/rendering/software/task/taskmeshsw.h>
 
 #endif
 
@@ -244,12 +251,17 @@ Layer_MeshTransform::accelerated_render(Context context,Surface *surface,int qua
 		Surface maskSurface;
 		maskSurface.set_wh(texture.get_w(), texture.get_h());
 		maskSurface.fill(Color::alpha());
-		RendererSoftware::render_polygon(
+		rendering::TaskMeshSW::render_polygon(
 			maskSurface,
-			mask,
+			&*mask.vertices.begin(),
+			sizeof(*mask.vertices.begin()),
+			mask.triangles.begin()->vertices,
+			sizeof(*mask.triangles.begin()),
+			mask.triangles.size(),
 			texture_renddesc.get_transformation_matrix()
 		  * texture_renddesc.get_world_to_pixels_matrix(),
 			Color::white(),
+			1.0,
 			Color::BLEND_COMPOSITE );
 
 		// apply mask
@@ -278,9 +290,15 @@ Layer_MeshTransform::accelerated_render(Context context,Surface *surface,int qua
 		texture_renddesc.get_world_to_pixels_matrix();
 
 	// render mesh
-	RendererSoftware::render_mesh(
+	rendering::TaskMeshSW::render_mesh(
 		*surface,
-		mesh,
+		&mesh.vertices.begin()->position,
+		sizeof(*mesh.vertices.begin()),
+		&mesh.vertices.begin()->tex_coords,
+		sizeof(*mesh.vertices.begin()),
+		mesh.triangles.begin()->vertices,
+		sizeof(*mesh.triangles.begin()),
+		mesh.triangles.size(),
 		texture,
 		world_to_pixels_matrix,
 		texture_to_texels_matrix,

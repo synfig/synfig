@@ -36,7 +36,9 @@
 #include "surface.h"
 #include "target_scanline.h"
 #include "target_cairo.h"
+#include "target_tile.h"
 #include "general.h"
+#include <synfig/localization.h>
 
 #ifdef HAS_VIMAGE
 #include <Accelerate/Accelerate.h>
@@ -51,127 +53,112 @@ using namespace etl;
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
-class target2cairo_image: public synfig::Target_Cairo
+
+class target2surface : public synfig::Target_Tile
 {
 public:
-	cairo_surface_t** image;
-	target2cairo_image(cairo_surface_t ** s);
-	virtual ~target2cairo_image();
-	virtual bool set_rend_desc(synfig::RendDesc *newdesc);
-	virtual bool obtain_surface(cairo_surface_t*& s);
+	String engine;
+	Surface *surface;
+	bool	 sized;
+public:
+	target2surface(Surface *surface, String engine):
+		surface(surface), sized() { set_engine(engine); }
+
+	virtual bool start_frame(synfig::ProgressCallback * /* cb */)
+	{
+		set_tile_w(desc.get_w());
+		set_tile_h(desc.get_h());
+		return true;
+	}
+
+	bool add_tile(const synfig::Surface &surface, int /* x */, int /* y */)
+	{
+		*this->surface = surface;
+		return true;
+	}
+
+	void end_frame() { }
 };
 
-target2cairo_image::target2cairo_image(cairo_surface_t ** s):image(s)
-{
-}
-
-target2cairo_image::~target2cairo_image()
-{
-}
-
-bool
-target2cairo_image::set_rend_desc(synfig::RendDesc *newdesc)
-{
-	assert(newdesc);
-	desc=*newdesc;
-	return synfig::Target_Cairo::set_rend_desc(newdesc);
-}
-
-bool
-target2cairo_image::obtain_surface(cairo_surface_t*& s)
-{
-	int sw=cairo_image_surface_get_width(*image);
-	int sh=cairo_image_surface_get_height(*image);
-	int w=desc.get_w(), h=desc.get_h();
-	
-	if(sw!=w || sh!=h)
-	{
-		cairo_surface_destroy(*image);
-		*image = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, w, h);
-	}
-	s=cairo_surface_reference(*image);
-	return true;
-}
-
-////
-class target2surface : public synfig::Target_Scanline
+class target2surface_scanline : public synfig::Target_Scanline
 {
 public:
 	Surface *surface;
 	bool	 sized;
-public:
-	target2surface(Surface *surface);
-	virtual ~target2surface();
 
-	virtual bool set_rend_desc(synfig::RendDesc *newdesc);
+	target2surface_scanline(Surface *surface):
+		surface(surface), sized() { }
 
-	virtual bool start_frame(synfig::ProgressCallback *cb);
+	virtual bool set_rend_desc(synfig::RendDesc *newdesc)
+	{
+		assert(newdesc);
+		assert(surface);
+		return synfig::Target_Scanline::set_rend_desc(newdesc);
+	}
 
-	virtual void end_frame();
+	virtual bool start_frame(synfig::ProgressCallback * /* cb */)
+	{
+		if(surface->get_w() != desc.get_w() || surface->get_h() != desc.get_h())
+			surface->set_wh(desc.get_w(),desc.get_h());
+		return true;
+	}
 
-	virtual Color * start_scanline(int scanline);
+	virtual void end_frame()
+		{ }
 
-	virtual bool end_scanline();
+	virtual Color * start_scanline(int scanline)
+		{ return (*surface)[scanline]; }
+
+	virtual bool end_scanline()
+		{ return true; }
 };
 
-target2surface::target2surface(Surface *surface):
-	surface(surface), sized() { }
 
-target2surface::~target2surface() { }
-
-bool
-target2surface::set_rend_desc(synfig::RendDesc *newdesc)
+class target2cairo_image: public synfig::Target_Cairo
 {
-	assert(newdesc);
-	assert(surface);
-	desc=*newdesc;
-	return synfig::Target_Scanline::set_rend_desc(newdesc);
-}
+public:
+	cairo_surface_t** image;
 
-bool
-target2surface::start_frame(synfig::ProgressCallback */*cb*/)
-{
-	if(surface->get_w() != desc.get_w() || surface->get_h() != desc.get_h())
+	target2cairo_image(cairo_surface_t ** s):
+		image(s) { }
+
+	virtual bool set_rend_desc(synfig::RendDesc *newdesc)
 	{
-		surface->set_wh(desc.get_w(),desc.get_h());
+		assert(newdesc);
+		return synfig::Target_Cairo::set_rend_desc(newdesc);
 	}
-	return true;
-}
 
-void
-target2surface::end_frame()
-{
-	return;
-}
+	virtual bool obtain_surface(cairo_surface_t*& s)
+	{
+		int sw=cairo_image_surface_get_width(*image);
+		int sh=cairo_image_surface_get_height(*image);
+		int w=desc.get_w(), h=desc.get_h();
 
-Color *
-target2surface::start_scanline(int scanline)
-{
-	return (*surface)[scanline];
-}
-
-bool
-target2surface::end_scanline()
-{
-	return true;
-}
+		if(sw!=w || sh!=h)
+		{
+			cairo_surface_destroy(*image);
+			*image = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, w, h);
+		}
+		s=cairo_surface_reference(*image);
+		return true;
+	}
+};
 
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
 
-Target_Scanline::Handle
-synfig::surface_target(Surface *surface)
-{
-	return Target_Scanline::Handle(new target2surface(surface));
-}
+Target_Tile::Handle
+synfig::surface_target(Surface *surface, const String &engine)
+	{ return Target_Tile::Handle(new target2surface(surface, engine)); }
 
+Target_Scanline::Handle
+synfig::surface_target_scanline(Surface *surface)
+	{ return Target_Scanline::Handle(new target2surface_scanline(surface)); }
 
 Target_Cairo::Handle
 synfig::cairo_image_target(cairo_surface_t **surface)
-{
-	return Target_Cairo::Handle(new target2cairo_image(surface));
-}
+	{ return Target_Cairo::Handle(new target2cairo_image(surface)); }
 
 
 void

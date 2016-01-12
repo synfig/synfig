@@ -31,6 +31,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "layertree.h"
 #include "layerparamtreestore.h"
 #include "cellrenderer/cellrenderer_value.h"
@@ -47,7 +49,7 @@
 #  include <synfig/timepointcollect.h>
 #endif	// TIMETRACK_IN_PARAMS_PANEL
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 
@@ -561,6 +563,29 @@ LayerTree::set_show_timetrack(bool x)
 }
 
 void
+LayerTree::select_param(const synfigapp::ValueDesc& valuedesc)
+{
+    get_param_tree_view().get_selection()->unselect_all();
+
+    Gtk::TreeIter iter;
+    if(param_tree_store_->find_value_desc(valuedesc, iter))
+    {
+        Gtk::TreePath path(iter);
+        for(int i=(int)path.size();i;i--)
+        {
+            int j;
+            path=Gtk::TreePath(iter);
+            for(j=i;j;j--)
+                path.up();
+            get_param_tree_view().expand_row(path,false);
+        }
+
+        get_param_tree_view().scroll_to_row(Gtk::TreePath(iter));
+        get_param_tree_view().get_selection()->select(iter);
+    }
+}
+
+void
 LayerTree::set_model(Glib::RefPtr<LayerTreeStore> layer_tree_store)
 {
 	layer_tree_store_=layer_tree_store;
@@ -776,6 +801,7 @@ void
 LayerTree::on_waypoint_clicked_layertree(const etl::handle<synfig::Node>& node __attribute__ ((unused)),
 										 const synfig::Time& time __attribute__ ((unused)),
 										 const synfig::Time& time_offset __attribute__ ((unused)),
+										 const synfig::Time& time_dilation __attribute__ ((unused)),
 										 int button __attribute__ ((unused)))
 {
 	std::set<synfig::Waypoint, std::less<UniqueID> > waypoint_set;

@@ -50,7 +50,7 @@ OTHER_HH = \
 	devicetracker.h \
 	dialogsettings.h \
 	duckmatic.h \
-	general.h \
+	localization.h \
 	iconcontroller.h \
 	instance.h \
 	ipc.h \

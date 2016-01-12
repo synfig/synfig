@@ -1,6 +1,7 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file renderer_bbox.cpp
-**	\brief Template File
+**  \brief Renderer_BBox classe is used to render in the workarea the bouding box
+** of the selected layer(s)
 **
 **	$Id$
 **
@@ -30,10 +31,12 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "renderer_bbox.h"
 #include "workarea.h"
 #include "canvasview.h"
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 
@@ -103,7 +106,7 @@ Renderer_BBox::render_vfunc(
 		cr->set_line_join(Cairo::LINE_JOIN_MITER);
 
 		cr->set_line_width(1.0);
-		cr->set_source_rgb(1.0,1.0,1.0);
+		cr->set_source_rgb(GDK_COLOR_TO_RGB(BBOX_COLOR_OUTLINE));
 
 		// Operator difference was added in Cairo 1.9.4
 		// It currently isn't supported by Cairomm
@@ -111,7 +114,7 @@ Renderer_BBox::render_vfunc(
 		cairo_set_operator(cr->cobj(), CAIRO_OPERATOR_DIFFERENCE);
 #else
 		// Fallback: set color to black
-        cr->set_source_rgb(0,0,0);
+        cr->set_source_rgb(GDK_COLOR_TO_RGB(BBOX_COLOR_FAILBACK));
 #endif
 
 		cr->rectangle(

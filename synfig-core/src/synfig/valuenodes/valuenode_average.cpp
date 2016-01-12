@@ -30,9 +30,14 @@
 #endif
 
 #include "valuenode_average.h"
+
+#include <synfig/general.h>
+#include <synfig/localization.h>
+
 #include "valuenode_const.h"
-#include <synfig/valueoperations.h>
+
 #include <synfig/canvas.h>
+#include <synfig/valueoperations.h>
 
 #endif
 

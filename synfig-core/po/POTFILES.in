@@ -253,6 +253,8 @@ src/synfig/layers/layer_shape.cpp
 src/synfig/layers/layer_shape.h
 src/synfig/layers/layer_skeleton.cpp
 src/synfig/layers/layer_skeleton.h
+src/synfig/layers/layer_skeletondeformation.cpp
+src/synfig/layers/layer_skeletondeformation.h
 src/synfig/layers/layer_solidcolor.cpp
 src/synfig/layers/layer_solidcolor.h
 src/synfig/layers/layer_sound.cpp
@@ -416,6 +418,8 @@ src/synfig/valuenodes/valuenode_reference.cpp
 src/synfig/valuenodes/valuenode_reference.h
 src/synfig/valuenodes/valuenode_repeat_gradient.cpp
 src/synfig/valuenodes/valuenode_repeat_gradient.h
+src/synfig/valuenodes/valuenode_reverse.cpp
+src/synfig/valuenodes/valuenode_reverse.h
 src/synfig/valuenodes/valuenode_scale.cpp
 src/synfig/valuenodes/valuenode_scale.h
 src/synfig/valuenodes/valuenode_segcalctangent.cpp

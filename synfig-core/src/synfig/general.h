@@ -28,28 +28,16 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <clocale>
+
 #include <ETL/stringf>
+
 #include "string.h"
 #include "version.h"
-#ifdef ENABLE_NLS
- #include <locale.h>
- #include <libintl.h>
-#endif
 
 /* === M A C R O S ========================================================= */
 
-#ifdef ENABLE_NLS
-#define _(x) dgettext("synfig",x)
-#define gettext_noop(x) x
-#define N_(x) gettext_noop(x)
-#else
-#define dgettext(a,x) (x)
-#define _(x) (x)
-#define N_(x) (x)
-#endif
-
 #define SYNFIG_COPYRIGHT "Copyright (c) 2001-2005 Robert B. Quattlebaum Jr., Adrian Bentley"
-
 
 #ifdef _DEBUG
 #ifdef __FUNC__
@@ -85,51 +73,6 @@ public:
 		setlocale(category,previous.c_str());
 	}
 };
-
-/*!	\class ProgressCallback
-**	\todo writeme
-*/
-class ProgressCallback
-{
-public:
-
-	virtual ~ProgressCallback() { }
-	virtual bool task(const String &/*task*/) { return true; }
-	virtual bool error(const String &/*task*/) { return true; }
-	virtual bool warning(const String &/*task*/) { return true; }
-	virtual bool amount_complete(int /*current*/, int /*total*/) { return true; }
-
-	virtual bool valid() const { return true; }
-};
-
-typedef ProgressCallback ProgressManager;
-
-/*!	\class SuperCallback
-**	\todo writeme
-*/
-class SuperCallback : public ProgressCallback
-{
-	ProgressCallback *cb;
-	int start,end,tot;
-	int w;
-public:
-
-	SuperCallback(): cb(), start(), end(), tot(), w() { }
-	SuperCallback(ProgressCallback *cb,int start_, int end_, int total):
-		cb(cb),start(start_),end(end_),tot(total),w(end-start)
-	{
-		//make sure we don't "inherit" if our subcallback is invalid
-		if(!cb || !cb->valid())
-			cb = NULL;
-	}
-	virtual bool task(const String &task) { if(cb)return cb->task(task); return true; }
-	virtual bool error(const String &task) { if(cb)return cb->error(task); return true; }
-	virtual bool warning(const String &task) { if(cb)return cb->warning(task); return true; }
-	virtual bool amount_complete(int cur, int total) { if(cb)return cb->amount_complete(start+cur*w/total,tot); return true; }
-
-	virtual bool valid() const { return cb != 0; }
-};
-
 
 /*
 extern bool add_to_module_search_path(const std:string &path);

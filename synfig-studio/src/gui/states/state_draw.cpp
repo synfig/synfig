@@ -36,6 +36,8 @@
 #include <ETL/calculus>
 #include <ETL/gaussian>
 
+#include <synfig/general.h>
+
 #include <synfig/valuenodes/valuenode_bline.h>
 #include <synfig/valuenodes/valuenode_wplist.h>
 #include <synfig/valuenodes/valuenode_composite.h>
@@ -65,7 +67,7 @@
 #include <gtkmm/radiobutton.h>
 #include <gtkmm/radiobuttongroup.h>
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 
@@ -634,7 +636,7 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	id_box.pack_start(id_entry);
 
 	// 2, layer types creation
-	layer_types_label.set_label(_("Create:"));
+	layer_types_label.set_label(_("Layer Type:"));
 	layer_types_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
 	LAYER_CREATION(layer_region_togglebutton,

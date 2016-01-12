@@ -30,12 +30,14 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "app.h"
 #include <iostream>
 #include "ipc.h"
 #include <stdexcept>
 
-#include "general.h"
+#include <gui/localization.h>
 
 #ifdef WIN32
 #include <glibmm/convert.h>

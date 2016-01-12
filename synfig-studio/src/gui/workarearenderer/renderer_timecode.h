@@ -32,6 +32,8 @@
 
 /* === M A C R O S ========================================================= */
 
+#define TIMECODE_COLOR_TEXT     Gdk::Color("#5f0000")
+
 static const int timecode_x  = 4, timecode_y  =  4;
 
 /* === T Y P E D E F S ===================================================== */

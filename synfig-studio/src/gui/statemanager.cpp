@@ -30,6 +30,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "statemanager.h"
 #include <gtkmm/actiongroup.h>
 #include <gtkmm/action.h>
@@ -37,7 +39,7 @@
 #include "app.h"
 #include "docks/dock_toolbox.h"
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

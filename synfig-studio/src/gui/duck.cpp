@@ -32,6 +32,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "duck.h"
 #include <ETL/misc>
 
@@ -42,7 +44,7 @@
 #include <synfig/valuenodes/valuenode_blinecalcwidth.h>
 #include <synfig/valuenodes/valuenode_composite.h>
 
-#include "general.h"
+#include <gui/localization.h>
 #endif
 
 /* === U S I N G =========================================================== */

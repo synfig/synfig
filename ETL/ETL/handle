@@ -34,7 +34,7 @@
 // it seems to make things much *less* stable on MS Windows
 #ifndef _WIN32
 #ifdef HAVE_LIBPTHREAD
-#define ETL_LOCK_REFCOUNTS
+//#define ETL_LOCK_REFCOUNTS
 #endif
 #endif
 

@@ -29,10 +29,10 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/general.h>
-#include <synfig/widthpoint.h>
 #include <list>
 #include <vector>
+
+#include <synfig/widthpoint.h>
 
 /* === M A C R O S ========================================================= */
 

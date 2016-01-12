@@ -38,7 +38,7 @@
 #include <synfig/general.h>
 #include <synfig/guid.h>
 
-#include "general.h"
+#include <synfigapp/localization.h>
 
 #endif
 
@@ -210,9 +210,9 @@ Settings::save_to_file(const synfig::String& filename)const
 	}catch(...) { return false; }
 
 #ifdef _WIN32
-	
+
 	// On Win32 platforms, rename() has bad behavior. Work around it.
-		
+
 	// Make random filename and ensure there's no file with such name exist
 	struct stat buf;
 	String old_file;
@@ -220,7 +220,7 @@ Settings::save_to_file(const synfig::String& filename)const
 		synfig::GUID guid;
 		old_file = filename+"."+guid.get_string().substr(0,8);
 	} while (stat(old_file.c_str(), &buf) != -1);
-	
+
 	rename(filename.c_str(),old_file.c_str());
 	if(rename(tmp_filename.c_str(),filename.c_str())!=0)
 	{
@@ -246,7 +246,10 @@ Settings::load_from_file(const synfig::String& filename, const synfig::String& k
 	{
 		std::string line;
 		getline(file,line);
-		if(!line.empty() && ((line[0]>='a' && line[0]<='z')||(line[0]>='A' && line[0]<='Z')))
+		if(!line.empty() && ((line[0]>='a' && line[0]<='z')||
+							 (line[0]>='A' && line[0]<='Z')||
+							 (line[0]>='0' && line[0]<='9'))
+							)
 		{
 			std::string::iterator equal(find(line.begin(),line.end(),'='));
 			if(equal==line.end())
@@ -261,7 +264,7 @@ Settings::load_from_file(const synfig::String& filename, const synfig::String& k
 					if(!set_value(key,value))
 						synfig::warning("Settings::load_from_file(): Key \"%s\" with a value of \"%s\" was rejected.",key.c_str(),value.c_str());
 				}
-				}
+			}
 			catch(...)
 			{
 				synfig::error("Settings::load_from_file(): Attempt to set key \"%s\" with a value of \"%s\" has thrown an exception.",key.c_str(),value.c_str());

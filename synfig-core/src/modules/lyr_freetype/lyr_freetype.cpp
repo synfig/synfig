@@ -40,9 +40,14 @@
 #endif
 
 #include "lyr_freetype.h"
-#endif
+
+#include <synfig/localization.h>
+#include <synfig/general.h>
+
 #include <synfig/cairo_renddesc.h>
 #include <pango/pangocairo.h>
+
+#endif
 
 using namespace std;
 using namespace etl;
@@ -408,7 +413,7 @@ Layer_Freetype::new_face(const String &newfont)
 				FcFontSetAdd(fs, match);
 			if (pat)
 				FcPatternDestroy(pat);
-			if(fs){
+			if(fs && fs->nfont){
 				FcChar8* file;
 				if( FcPatternGetString (fs->fonts[0], FC_FILE, 0, &file) == FcResultMatch )
 					error=FT_New_Face(ft_library,(const char*)file,face_index,&face);
@@ -955,8 +960,8 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 
 				bit = (FT_BitmapGlyph)image;
 
-				for(v=0;v<bit->bitmap.rows;v++)
-					for(u=0;u<bit->bitmap.width;u++)
+				for(v=0;v<(int)bit->bitmap.rows;v++)
+					for(u=0;u<(int)bit->bitmap.width;u++)
 					{
 						int x=u+((pen.x+32)>>6)+ bit->left;
 						int y=((pen.y+32)>>6) + (bit->top - v) * ((ph<0) ? -1 : 1);
@@ -1026,11 +1031,11 @@ Layer_Freetype::accelerated_cairorender(Context context, cairo_t *cr, int qualit
 	const double wty=(-wtly+origin[1])*wsy;
 	
 	// Cairo context
-	cairo_surface_t* subimage;
-	cairo_surface_t* inverted;
+	cairo_surface_t* subimage = NULL;
+	cairo_surface_t* inverted = NULL;
 	subimage=cairo_surface_create_similar(cairo_get_target(cr), CAIRO_CONTENT_COLOR_ALPHA, ww, wh);
 	cairo_t* subcr=cairo_create(subimage);
-	cairo_t* invertcr;
+	cairo_t* invertcr = NULL;
 	if(invert)
 	{
 		inverted=cairo_surface_create_similar(cairo_get_target(cr), CAIRO_CONTENT_COLOR_ALPHA, ww, wh);

@@ -31,18 +31,23 @@
 #	include <config.h>
 #endif
 
+#include <deque>
+#include <vector>
+
 #include "layer_polygon.h"
-#include <synfig/string.h>
-#include <synfig/time.h>
+
+#include <synfig/general.h>
+#include <synfig/localization.h>
+
 #include <synfig/context.h>
 #include <synfig/paramdesc.h>
 #include <synfig/renddesc.h>
+#include <synfig/string.h>
 #include <synfig/surface.h>
+#include <synfig/time.h>
 #include <synfig/value.h>
 #include <synfig/valuenode.h>
-#include <vector>
 
-#include <deque>
 using std::deque;
 
 #endif

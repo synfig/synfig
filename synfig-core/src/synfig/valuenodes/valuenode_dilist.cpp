@@ -35,6 +35,7 @@
 #include "valuenode_composite.h"
 #include "valuenode_bline.h"
 #include <synfig/general.h>
+#include <synfig/localization.h>
 #include <synfig/exception.h>
 #include <synfig/dashitem.h>
 #include <vector>

@@ -31,6 +31,9 @@
 #	include <config.h>
 #endif
 
+#include <synfig/localization.h>
+#include <synfig/general.h>
+
 #include <iostream>
 #include "version.h"
 #include "general.h"
@@ -63,6 +66,7 @@
 #include "layer.h"
 #include "valuenode.h"
 #include "soundprocessor.h"
+#include "rendering/renderer.h"
 
 #include "main.h"
 #include "loadcanvas.h"
@@ -92,6 +96,8 @@ using namespace synfig;
 /* === S T A T I C S ======================================================= */
 
 static etl::reference_counter synfig_ref_count_(0);
+Main *Main::instance = NULL;
+Mutex general_io_mutex;
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -181,20 +187,30 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 	synfig_ref_count_.reset();
 	ref_count_=synfig_ref_count_;
 
+	assert(!instance);
+	instance = this;
+
+	// Paths
+
+	root_path       = etl::dirname(basepath);
+	bin_path        = root_path  + ETL_DIRECTORY_SEPARATOR + "bin";
+	share_path      = root_path  + ETL_DIRECTORY_SEPARATOR + "share";
+	locale_path     = share_path + ETL_DIRECTORY_SEPARATOR + "locale";
+	lib_path        = root_path  + ETL_DIRECTORY_SEPARATOR + "lib";
+	lib_synfig_path = lib_path   + ETL_DIRECTORY_SEPARATOR + "synfig";
+
 	// Add initialization after this point
 
 #ifdef ENABLE_NLS
 	String locale_dir;
-	locale_dir = etl::dirname(basepath)+ETL_DIRECTORY_SEPARATOR+"share"+ETL_DIRECTORY_SEPARATOR+"locale";
+	locale_dir = locale_path;
 #ifdef WIN32
 	locale_dir = Glib::locale_from_utf8(locale_dir);
 #endif
 
-	bindtextdomain("synfig", locale_dir.c_str() );
+	bindtextdomain("synfig", locale_path.c_str() );
 	bind_textdomain_codeset("synfig", "UTF-8");
 #endif
-
-	String prefix=etl::dirname(basepath);
 
 	unsigned int i;
 #ifdef _DEBUG
@@ -218,12 +234,25 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 
 	if(cb)cb->task(_("Starting Subsystem \"Types\""));
 	if(!Type::subsys_init())
+	{
+		SoundProcessor::subsys_stop();
 		throw std::runtime_error(_("Unable to initialize subsystem \"Types\""));
+	}
 
-	if(cb)cb->task(_("Starting Subsystem \"Modules\""));
-	if(!Module::subsys_init(prefix))
+	if(cb)cb->task(_("Starting Subsystem \"Rendering\""));
+	if(!rendering::Renderer::subsys_init())
 	{
 		Type::subsys_stop();
+		SoundProcessor::subsys_stop();
+		throw std::runtime_error(_("Unable to initialize subsystem \"Rendering\""));
+	}
+
+	if(cb)cb->task(_("Starting Subsystem \"Modules\""));
+	if(!Module::subsys_init(root_path))
+	{
+		rendering::Renderer::subsys_stop();
+		Type::subsys_stop();
+		SoundProcessor::subsys_stop();
 		throw std::runtime_error(_("Unable to initialize subsystem \"Modules\""));
 	}
 
@@ -231,7 +260,9 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 	if(!Layer::subsys_init())
 	{
 		Module::subsys_stop();
+		rendering::Renderer::subsys_stop();
 		Type::subsys_stop();
+		SoundProcessor::subsys_stop();
 		throw std::runtime_error(_("Unable to initialize subsystem \"Layers\""));
 	}
 
@@ -240,7 +271,9 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 	{
 		Layer::subsys_stop();
 		Module::subsys_stop();
+		rendering::Renderer::subsys_stop();
 		Type::subsys_stop();
+		SoundProcessor::subsys_stop();
 		throw std::runtime_error(_("Unable to initialize subsystem \"Targets\""));
 	}
 
@@ -250,7 +283,9 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 		Target::subsys_stop();
 		Layer::subsys_stop();
 		Module::subsys_stop();
+		rendering::Renderer::subsys_stop();
 		Type::subsys_stop();
+		SoundProcessor::subsys_stop();
 		throw std::runtime_error(_("Unable to initialize subsystem \"Importers\""));
 	}
 
@@ -261,7 +296,9 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 		Target::subsys_stop();
 		Layer::subsys_stop();
 		Module::subsys_stop();
+		rendering::Renderer::subsys_stop();
 		Type::subsys_stop();
+		SoundProcessor::subsys_stop();
 		throw std::runtime_error(_("Unable to initialize subsystem \"Cairo Importers\""));
 	}
 
@@ -273,7 +310,9 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 		Target::subsys_stop();
 		Layer::subsys_stop();
 		Module::subsys_stop();
+		rendering::Renderer::subsys_stop();
 		Type::subsys_stop();
+		SoundProcessor::subsys_stop();
 		throw std::runtime_error(_("Unable to initialize subsystem \"ValueNodes\""));
 	}
 
@@ -295,7 +334,7 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 	#ifdef SYSCONFDIR
 		locations.push_back(SYSCONFDIR"/"MODULE_LIST_FILENAME);
 	#endif
-		locations.push_back(prefix+ETL_DIRECTORY_SEPARATOR+"etc"+ETL_DIRECTORY_SEPARATOR+MODULE_LIST_FILENAME);
+		locations.push_back(root_path + ETL_DIRECTORY_SEPARATOR + "etc" + ETL_DIRECTORY_SEPARATOR + MODULE_LIST_FILENAME);
 		locations.push_back("/usr/local/etc/"MODULE_LIST_FILENAME);
 	#ifdef __APPLE__
 		locations.push_back("/Library/Frameworks/synfig.framework/Resources/"MODULE_LIST_FILENAME);
@@ -318,12 +357,15 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 
 	if (i == locations.size())
 	{
-		Importer::subsys_stop();
+		ValueNode::subsys_stop();
 		CairoImporter::subsys_stop();
+		Importer::subsys_stop();
 		Target::subsys_stop();
 		Layer::subsys_stop();
 		Module::subsys_stop();
+		rendering::Renderer::subsys_stop();
 		Type::subsys_stop();
+		SoundProcessor::subsys_stop();
 		throw std::runtime_error(strprintf(_("Unable to open module list file '%s'"), MODULE_LIST_FILENAME));
 	}
 
@@ -374,11 +416,16 @@ synfig::Main::~Main()
  	// synfig::info("Module::subsys_stop()");
 	// Module::subsys_stop();
 	// synfig::info("Exiting");
+	rendering::Renderer::subsys_stop();
 	Type::subsys_stop();
+	SoundProcessor::subsys_stop();
 
 #if defined(HAVE_SIGNAL_H) && defined(SIGPIPE)
 	signal(SIGPIPE, SIG_DFL);
 #endif
+
+	assert(instance);
+	instance = NULL;
 }
 
 static const String
@@ -405,7 +452,7 @@ synfig::error(const char *format,...)
 void
 synfig::error(const String &str)
 {
-	static Mutex mutex; Mutex::Lock lock(mutex);
+	Mutex::Lock lock(general_io_mutex);
 	cerr<<"synfig("<<getpid()<<")"<<current_time().c_str()<<_("error")<<": "<<str.c_str()<<endl;
 }
 
@@ -420,7 +467,7 @@ synfig::warning(const char *format,...)
 void
 synfig::warning(const String &str)
 {
-	static Mutex mutex; Mutex::Lock lock(mutex);
+	Mutex::Lock lock(general_io_mutex);
 	cerr<<"synfig("<<getpid()<<")"<<current_time().c_str()<<_("warning")<<": "<<str.c_str()<<endl;
 }
 
@@ -435,7 +482,7 @@ synfig::info(const char *format,...)
 void
 synfig::info(const String &str)
 {
-	static Mutex mutex; Mutex::Lock lock(mutex);
+	Mutex::Lock lock(general_io_mutex);
 	cerr<<"synfig("<<getpid()<<")"<<current_time().c_str()<<_("info")<<": "<<str.c_str()<<endl;
 }
 

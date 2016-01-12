@@ -33,6 +33,7 @@
 
 #include "mptr_bmp.h"
 #include <synfig/general.h>
+#include <synfig/localization.h>
 #include <synfig/surface.h>
 
 #include <algorithm>

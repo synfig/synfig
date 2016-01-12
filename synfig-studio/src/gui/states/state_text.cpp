@@ -31,6 +31,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "state_text.h"
 #include "state_normal.h"
 #include "canvasview.h"
@@ -46,7 +48,7 @@
 #include "widgets/widget_enum.h"
 #include <synfigapp/main.h>
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 
@@ -402,7 +404,7 @@ StateText_Context::StateText_Context(CanvasView *canvas_view):
 	id_box.pack_start(id_entry);
 
 	// 2, layer types creation
-	layer_types_label.set_label(_("Create:"));
+	layer_types_label.set_label(_("Layer Type:"));
 	layer_types_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
 	LAYER_CREATION(layer_text_togglebutton,

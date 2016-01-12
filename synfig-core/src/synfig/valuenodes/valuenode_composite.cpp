@@ -36,6 +36,7 @@
 #include "valuenode_const.h"
 #include <stdexcept>
 #include <synfig/general.h>
+#include <synfig/localization.h>
 #include "valuenode_radialcomposite.h"
 #include <synfig/vector.h>
 #include <synfig/color.h>

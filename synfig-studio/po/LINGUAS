@@ -2,9 +2,11 @@ ar
 bs
 ca
 cs
+cs_CZ
 da
 de
 el_GR
+en_CZ
 en_GB
 es
 eu
@@ -32,3 +34,5 @@ uz@Latn
 zh-Hant
 zh_CN
 zh_TW
+zh_TW.Big5
+ur

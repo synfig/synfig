@@ -31,7 +31,9 @@
 
 #include "module.h"
 
-#include "general.h"
+#include <synfig/general.h>
+
+#include <gui/localization.h>
 
 #endif
 

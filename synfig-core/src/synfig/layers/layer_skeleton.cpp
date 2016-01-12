@@ -29,13 +29,17 @@
 #	include <config.h>
 #endif
 
-#include <synfig/string.h>
 #include "layer_skeleton.h"
-#include <synfig/time.h>
+
+#include <synfig/general.h>
+#include <synfig/localization.h>
+
 #include <synfig/context.h>
 #include <synfig/paramdesc.h>
 #include <synfig/renddesc.h>
+#include <synfig/string.h>
 #include <synfig/surface.h>
+#include <synfig/time.h>
 #include <synfig/value.h>
 #include <synfig/valuenodes/valuenode_bone.h>
 

@@ -545,12 +545,20 @@ public:
 		accumulator_type xfa [4];
 
 		//precalculate indices (all clamped) and offset
-		const int xi = x > 0 ? (x < w_ ? (int)floor(x) : w_-1) : 0;
-		const int xa[] = {std::max(0,xi-1),xi,std::min(w_-1,xi+1),std::min(w_-1,xi+2)};
+		const int xi = (int)floor(x);
+		const int yi = (int)floor(y);
+		int xa[] = { xi-1, xi, xi+1, xi+2 };
+		int ya[] = { yi-1, yi, yi+1, yi+2 };
 
-		const int yi = y > 0 ? (y < h_ ? (int)floor(y) : h_-1) : 0;
-		const int ya[] = {std::max(0,yi-1),yi,std::min(h_-1,yi+1),std::min(h_-1,yi+2)};
+		// clamp all
+		const int w = w_ - 1;
+		const int h = h_ - 1;
+		xa[0] < 0 && ((xa[1] < 0 && ((xa[2] < 0 && ((xa[3] < 0 && (xa[3] = 0)), (xa[2] = 0))), (xa[1] = 0))), (xa[0] = 0));
+		ya[0] < 0 && ((ya[1] < 0 && ((ya[2] < 0 && ((ya[3] < 0 && (ya[3] = 0)), (ya[2] = 0))), (ya[1] = 0))), (ya[0] = 0));
+		xa[3] > w && ((xa[2] > w && ((xa[1] > w && ((xa[0] > w && (xa[0] = w)), (xa[1] = w))), (xa[2] = w))), (xa[3] = w));
+		ya[3] > h && ((ya[2] > h && ((ya[1] > h && ((ya[0] > h && (ya[0] = h)), (ya[1] = h))), (ya[2] = h))), (ya[3] = h));
 
+		// offset
 		const float xf = x-xi;
 		const float yf = y-yi;
 
@@ -592,12 +600,20 @@ public:
 		accumulator_type xfa [4];
 		
 		//precalculate indices (all clamped) and offset
-		const int xi = x > 0 ? (x < w_ ? (int)floor(x) : w_-1) : 0;
-		const int xa[] = {std::max(0,xi-1),xi,std::min(w_-1,xi+1),std::min(w_-1,xi+2)};
-		
-		const int yi = y > 0 ? (y < h_ ? (int)floor(y) : h_-1) : 0;
-		const int ya[] = {std::max(0,yi-1),yi,std::min(h_-1,yi+1),std::min(h_-1,yi+2)};
-		
+		const int xi = (int)floor(x);
+		const int yi = (int)floor(y);
+		int xa[] = { xi-1, xi, xi+1, xi+2 };
+		int ya[] = { yi-1, yi, yi+1, yi+2 };
+
+		// clamp all
+		const int w = w_ - 1;
+		const int h = h_ - 1;
+		xa[0] < 0 && ((xa[1] < 0 && ((xa[2] < 0 && ((xa[3] < 0 && (xa[3] = 0)), (xa[2] = 0))), (xa[1] = 0))), (xa[0] = 0));
+		ya[0] < 0 && ((ya[1] < 0 && ((ya[2] < 0 && ((ya[3] < 0 && (ya[3] = 0)), (ya[2] = 0))), (ya[1] = 0))), (ya[0] = 0));
+		xa[3] > w && ((xa[2] > w && ((xa[1] > w && ((xa[0] > w && (xa[0] = w)), (xa[1] = w))), (xa[2] = w))), (xa[3] = w));
+		ya[3] > h && ((ya[2] > h && ((ya[1] > h && ((ya[0] > h && (ya[0] = h)), (ya[1] = h))), (ya[2] = h))), (ya[3] = h));
+
+		// offset
 		const float xf = x-xi;
 		const float yf = y-yi;
 		

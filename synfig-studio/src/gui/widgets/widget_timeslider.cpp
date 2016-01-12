@@ -31,13 +31,15 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "widgets/widget_timeslider.h"
 
 #include <ETL/misc>
 
 #include <cmath>
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

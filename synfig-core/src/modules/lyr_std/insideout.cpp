@@ -34,6 +34,9 @@
 
 #include "insideout.h"
 
+#include <synfig/localization.h>
+#include <synfig/general.h>
+
 #include <synfig/string.h>
 #include <synfig/time.h>
 #include <synfig/context.h>
