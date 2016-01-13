@@ -22,8 +22,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_TEMPLATE_H
-#define __SYNFIG_TEMPLATE_H
+#ifndef __SYNFIG_ADJUST_WINDOW_H
+#define __SYNFIG_ADJUST_WINDOW_H
 
 /* === H E A D E R S ======================================================= */
 #include <gtkmm/adjustment.h>
