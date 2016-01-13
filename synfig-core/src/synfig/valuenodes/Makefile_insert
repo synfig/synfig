@@ -3,6 +3,7 @@ VALUENODES_HH = \
 	valuenodes/valuenode_and.h \
 	valuenodes/valuenode_anglestring.h \
 	valuenodes/valuenode_animated.h \
+	valuenodes/valuenode_animatedbase.h \
 	valuenodes/valuenode_atan2.h \
 	valuenodes/valuenode_bline.h \
 	valuenodes/valuenode_blinecalctangent.h \
@@ -69,6 +70,7 @@ VALUENODES_CC = \
 	valuenodes/valuenode_and.cpp \
 	valuenodes/valuenode_anglestring.cpp \
 	valuenodes/valuenode_animated.cpp \
+	valuenodes/valuenode_animatedbase.cpp \
 	valuenodes/valuenode_atan2.cpp \
 	valuenodes/valuenode_bline.cpp \
 	valuenodes/valuenode_blinecalctangent.cpp \
