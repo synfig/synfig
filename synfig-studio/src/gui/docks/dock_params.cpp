@@ -95,21 +95,23 @@ Dock_Params::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
 void
 Dock_Params::refresh_selected_param()
 {
+	etl::loose_handle<CanvasView> canvas_view(get_canvas_view());
+	if(!canvas_view) return;
 	Gtk::TreeView* tree_view(
-		static_cast<Gtk::TreeView*>(get_canvas_view()->get_ext_widget(get_name()))
+		static_cast<Gtk::TreeView*>(canvas_view->get_ext_widget(get_name()))
 	);
 	Gtk::TreeModel::iterator iter(tree_view->get_selection()->get_selected());
 
 	if(iter)
 	{
 		LayerParamTreeStore::Model model;
-		get_canvas_view()->work_area->set_selected_value_node(
+		canvas_view->work_area->set_selected_value_node(
 			(synfig::ValueNode::Handle)(*iter)[model.value_node]
 		);
 	}
 	else
 	{
-		get_canvas_view()->work_area->set_selected_value_node(0);
+		canvas_view->work_area->set_selected_value_node(0);
 	}
 }
 

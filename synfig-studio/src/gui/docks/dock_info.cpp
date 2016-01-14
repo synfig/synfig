@@ -65,13 +65,15 @@ using namespace synfig;
 
 void studio::Dock_Info::on_mouse_move()
 {
-	Point pos = get_canvas_view()->work_area->get_cursor_pos();
+	etl::loose_handle<CanvasView> canvas_view(get_canvas_view());
+	if(!canvas_view) return;
+	Point pos = canvas_view->work_area->get_cursor_pos();
 
 	Distance xv(pos[0],Distance::SYSTEM_UNITS);
-	xv.convert(App::distance_system, get_canvas_view()->get_canvas()->rend_desc());
+	xv.convert(App::distance_system, canvas_view->get_canvas()->rend_desc());
 
 	Distance yv(pos[1],Distance::SYSTEM_UNITS);
-	yv.convert(App::distance_system, get_canvas_view()->get_canvas()->rend_desc());
+	yv.convert(App::distance_system, canvas_view->get_canvas()->rend_desc());
 
 	//get the color and set the labels
 
@@ -79,7 +81,7 @@ void studio::Dock_Info::on_mouse_move()
 	y.set_text(yv.get_string(3));
 
 	float cr=0.f,cg=0.f,cb=0.f,ca=0.f;
-	Color c = get_canvas_view()->get_canvas()->get_context( get_canvas_view()->get_context_params() ).get_color(pos);
+	Color c = canvas_view->get_canvas()->get_context( canvas_view->get_context_params() ).get_color(pos);
 	cr = c.get_r(); cg = c.get_g(); cb = c.get_b(); ca = c.get_a();
 
 	if(use_colorspace_gamma())
