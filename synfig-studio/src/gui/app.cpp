@@ -3179,8 +3179,8 @@ App::dialog_select_list_item(const std::string &title, const std::string &messag
 {
 	Gtk::Dialog dialog(title, *App::main_window, true);
 
-	Gtk::Label label(message, 0, 0);
-	label.set_line_wrap();
+	Gtk::Label* label = manage (new Gtk::Label(message, 0, 0));
+	label->set_line_wrap();
 
 	class ModelColumns : public Gtk::TreeModel::ColumnRecord
 	{
@@ -3199,29 +3199,33 @@ App::dialog_select_list_item(const std::string &title, const std::string &messag
 		j->set_value(model_columns.column_main, Glib::ustring(*i));
 	}
 
-	Gtk::TreeView tree(list_store);
+	Gtk::TreeView * tree = manage (new Gtk::TreeView(list_store));
 	Gtk::TreeViewColumn column_index("", model_columns.column_index);
 	Gtk::TreeViewColumn column_main("", model_columns.column_main);
 	column_index.set_visible(false);
-	tree.append_column(column_index);
-	tree.append_column(column_main);
+	tree->append_column(column_index);
+	tree->append_column(column_main);
+	tree->set_hexpand(TRUE);
+	tree->set_halign(Gtk::ALIGN_FILL);
+	tree->set_vexpand(TRUE);
+	tree->set_valign(Gtk::ALIGN_FILL);
 
 	Gtk::TreeModel::Row selected_row = list_store->children()[item_index];
 	if (selected_row)
-		tree.get_selection()->select(selected_row);
+		tree->get_selection()->select(selected_row);
 
-	Gtk::Table table(1, 2);
-	table.attach(label, 0, 1, 0, 1, Gtk::FILL | Gtk::EXPAND, Gtk::FILL);
-	table.attach(tree, 0, 1, 1, 2);
+	Gtk::Grid* grid = manage(new Gtk::Grid());
+	grid->attach(*label, 0, 0, 1, 1);
+	grid->attach(*tree, 0, 1, 1, 2);
 
-	dialog.get_vbox()->pack_start(table);
+	dialog.get_content_area()->pack_start(*grid);
 	dialog.add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
 	dialog.add_button(Gtk::Stock::OPEN,   Gtk::RESPONSE_ACCEPT);
 	dialog.set_default_size(300, 450);
 	dialog.show_all();
 
 	if (dialog.run() == Gtk::RESPONSE_ACCEPT) {
-		item_index = tree.get_selection()->get_selected()->get_value(model_columns.column_index);
+		item_index = tree->get_selection()->get_selected()->get_value(model_columns.column_index);
 		return true;
 	}
 
@@ -3493,16 +3497,16 @@ App::dialog_paragraph(const std::string &title, const std::string &message,std::
 		true			// Modal
 	);
 
-	Gtk::Label label(message);
-	label.show();
-	dialog.get_vbox()->pack_start(label);
+	Gtk::Label* label = manage(new Gtk::Label(message));
+	label->show();
+	dialog.get_content_area()->pack_start(*label);
 
 	Glib::RefPtr<Gtk::TextBuffer> text_buffer(Gtk::TextBuffer::create());
 	text_buffer->set_text(text);
 	Gtk::TextView text_view(text_buffer);
 	text_view.show();
 
-	dialog.get_vbox()->pack_start(text_view);
+	dialog.get_content_area()->pack_start(text_view);
 
 	dialog.add_button(Gtk::StockID("gtk-ok"),Gtk::RESPONSE_OK);
 	dialog.add_button(Gtk::StockID("gtk-cancel"),Gtk::RESPONSE_CANCEL);
