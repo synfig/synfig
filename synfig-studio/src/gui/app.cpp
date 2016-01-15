@@ -11,6 +11,7 @@
 **	Copyright (c) 2008, 2010-2013 Carlos López
 **	Copyright (c) 2009, 2011 Nikita Kitaev
 **	Copyright (c) 2012-2015 Konstantin Dmitriev
+**	Copyright (c) 2013-2016 Jerome Blanchi
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -44,23 +45,23 @@
 #elif defined(HAVE_SYS_ERRNO_H)
 #include <sys/errno.h>
 #endif
-#include <gtkmm/filechooserdialog.h>
+#include <gtkmm/accelmap.h>
+#include <gtkmm/cssprovider.h>
 #include <gtkmm/dialog.h>
-#include <gtkmm/messagedialog.h>
+#include <gtkmm/filechooserdialog.h>
+#include <gtkmm/filefilter.h>
+#include <gtkmm/iconsource.h>
 #include <gtkmm/label.h>
+#include <gtkmm/messagedialog.h>
 #include <gtkmm/stock.h>
 #include <gtkmm/stockitem.h>
-#include <gtkmm/iconsource.h>
-#include <gtkmm/accelmap.h>
-#include <gtkmm/uimanager.h>
 #include <gtkmm/textview.h>
-#include <gtkmm/filefilter.h>
-#include <gtkmm/cssprovider.h>
+#include <gtkmm/uimanager.h>
 
 #include <glibmm/main.h>
-#include <glibmm/thread.h>
 #include <glibmm/miscutils.h>
 #include <glibmm/spawn.h>
+#include <glibmm/thread.h>
 
 #include <gdkmm/general.h>
 
@@ -71,74 +72,73 @@
 
 #include <synfig/general.h>
 
-#include <synfig/loadcanvas.h>
-#include <synfig/savecanvas.h>
-#include <synfig/importer.h>
 #include <synfig/filesystemnative.h>
 #include <synfig/filesystemgroup.h>
 #include <synfig/filecontainertemporary.h>
+#include <synfig/importer.h>
+#include <synfig/loadcanvas.h>
+#include <synfig/savecanvas.h>
 
 #include "app.h"
-#include "dialogs/about.h"
 #include "splash.h"
 #include "instance.h"
 #include "canvasview.h"
-#include "dialogs/dialog_setup.h"
+#include "dialogs/about.h"
+#include "dialogs/dialog_color.h"
 #include "dialogs/dialog_gradient.h"
 #include "dialogs/dialog_input.h"
-#include "dialogs/dialog_color.h"
-#include "docks/dock_toolbox.h"
+#include "dialogs/dialog_setup.h"
 #include "onemoment.h"
+#include "devicetracker.h"
+#include "widgets/widget_enum.h"
 
-#include "docks/dockmanager.h"
+#include "statemanager.h"
 
-#include "states/state_eyedrop.h"
-#include "states/state_normal.h"
-#include "states/state_mirror.h"
-#include "states/state_draw.h"
-#include "states/state_lasso.h"
-#include "states/state_fill.h"
 #include "states/state_bline.h"
 #include "states/state_brush.h"
-#include "states/state_polygon.h"
-#include "states/state_sketch.h"
-#include "states/state_gradient.h"
 #include "states/state_circle.h"
+#include "states/state_draw.h"
+#include "states/state_eyedrop.h"
+#include "states/state_fill.h"
+#include "states/state_gradient.h"
+#include "states/state_lasso.h"
+#include "states/state_mirror.h"
+#include "states/state_normal.h"
+#include "states/state_polygon.h"
 #include "states/state_rectangle.h"
-#include "states/state_smoothmove.h"
+#include "states/state_rotate.h"
 #include "states/state_scale.h"
+#include "states/state_sketch.h"
+#include "states/state_smoothmove.h"
 #include "states/state_star.h"
 #include "states/state_text.h"
 #include "states/state_width.h"
-#include "states/state_rotate.h"
 #include "states/state_zoom.h"
-
-#include "devicetracker.h"
-#include "docks/dialog_tooloptions.h"
-#include "widgets/widget_enum.h"
 
 #include "autorecover.h"
 
 #include <synfigapp/settings.h>
-#include "docks/dock_history.h"
+
+#include "docks/dockmanager.h"
+#include "docks/dialog_tooloptions.h"
 #include "docks/dock_canvases.h"
+#include "docks/dock_children.h"
+#include "docks/dock_curves.h"
+#include "docks/dock_history.h"
+#include "docks/dock_info.h"
 #include "docks/dock_keyframes.h"
 #include "docks/dock_layers.h"
+#include "docks/dock_layergroups.h"
 #include "docks/dock_params.h"
 #include "docks/dock_metadata.h"
-#include "docks/dock_children.h"
-#include "docks/dock_info.h"
 #include "docks/dock_navigator.h"
-#include "docks/dock_layergroups.h"
 #include "docks/dock_timetrack.h"
-#include "docks/dock_curves.h"
+#include "docks/dock_toolbox.h"
 
 #include "modules/module.h"
 #include "modules/mod_palette/mod_palette.h"
 
 #include "ipc.h"
-
-#include "statemanager.h"
 
 #ifdef WITH_FMOD
 #include <fmod.h>
