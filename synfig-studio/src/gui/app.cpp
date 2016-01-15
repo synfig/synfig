@@ -2930,12 +2930,12 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 				.add_enum_value(synfig::RELEASE_VERSION_0_61_06, "0.61.06", strprintf("0.61.06 %s", _("and older"))));
 		file_type_enum->set_value(RELEASE_VERSION_END-1); // default to the most recent version
 
-		Gtk::HBox *hbox = manage(new Gtk::HBox);
-		hbox->pack_start(*manage(new Gtk::Label(_("File Format Version: "))),Gtk::PACK_SHRINK,0);
-		hbox->pack_start(*file_type_enum,Gtk::PACK_EXPAND_WIDGET,0);
-		hbox->show_all();
+		Gtk::Grid *grid = manage(new Gtk::Grid);
+		grid->attach(*manage(new Gtk::Label(_("File Format Version: "))),0,0,1,1);
+		grid->attach(*file_type_enum,1,0,1,1);
+		grid->show_all();
 
-		dialog->set_extra_widget(*hbox);
+		dialog->set_extra_widget(*grid);
 	}
 
 	if (filename.empty()) {
