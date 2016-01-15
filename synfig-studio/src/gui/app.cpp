@@ -62,8 +62,6 @@
 #include <glibmm/miscutils.h>
 #include <glibmm/spawn.h>
 
-#include <gtk/gtk.h>
-
 #include <gdkmm/general.h>
 
 #ifdef WIN32
@@ -145,10 +143,6 @@
 #ifdef WITH_FMOD
 #include <fmod.h>
 #endif
-
-#include <gtkmm/accelmap.h>
-#include <gtkmm/filechooser.h>
-#include <gtkmm/filechooserdialog.h>
 
 #include <gui/localization.h>
 
