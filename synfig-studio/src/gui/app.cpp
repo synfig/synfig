@@ -3447,40 +3447,38 @@ App::dialog_entry(const std::string &action, const std::string &content, std::st
 		true
 	);
 
-	Gtk::Label label(content);
-	label.show();
+	// TODO Group All HARDCODED user interface information somewhere "global"
+	// TODO All UI info from .rc
+#define DIALOG_ENTRY_MARGIN 18
+	Gtk::Label* label = manage (new Gtk::Label(content));
+	label->set_margin_start(DIALOG_ENTRY_MARGIN);
 
-	Gtk::Entry entry;
-	entry.set_text(text);
-	entry.show();
-	entry.set_activates_default(true);
+	Gtk::Entry* entry = manage(new Gtk::Entry());
+	entry->set_text(text);
+	entry->set_margin_end(DIALOG_ENTRY_MARGIN);
+	entry->set_activates_default(true);
+	entry->set_hexpand(TRUE);
+	entry->set_halign(Gtk::ALIGN_FILL);
+#undef DIALOG_ENTRY_MARGIN
 
-	Gtk::Alignment space1;
-	space1.set_size_request(18, 0);
+	Gtk::Grid* grid = manage (new Gtk::Grid());
+	grid->add(*label);
+	grid->add(*entry);
 
-	Gtk::Alignment space2;
-	space2.set_size_request(18, 0);
+	grid->show_all();
 
-	Gtk::Table table(3, 1);
-	table.attach(space1, 0, 1, 0, 1, Gtk::FILL | Gtk::FILL, Gtk::FILL);
-	table.attach(label, 1, 2, 0, 1, Gtk::FILL | Gtk::SHRINK, Gtk::FILL);
-	table.attach(entry, 2, 3, 0, 1, Gtk::FILL | Gtk::EXPAND, Gtk::FILL);
-	table.attach(space2, 3, 4, 0, 1, Gtk::FILL | Gtk::FILL, Gtk::FILL);
-	table.show_all();
-
-	dialog.get_vbox()->pack_start(entry);
-	dialog.get_vbox()->pack_start(table);
+	dialog.get_content_area()->pack_start(*grid);
 	dialog.add_button(button1, Gtk::RESPONSE_CANCEL);
 	dialog.add_button(button2, Gtk::RESPONSE_OK);
 
 	dialog.set_default_response(Gtk::RESPONSE_OK);
-	entry.signal_activate().connect(sigc::bind(sigc::mem_fun(dialog,&Gtk::Dialog::response),Gtk::RESPONSE_OK));
+	entry->signal_activate().connect(sigc::bind(sigc::mem_fun(dialog,&Gtk::Dialog::response),Gtk::RESPONSE_OK));
 	dialog.show();
 
 	if(dialog.run()!=Gtk::RESPONSE_OK)
 		return false;
 
-	text = entry.get_text();
+	text = entry->get_text();
 
 	return true;
 }
