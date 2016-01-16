@@ -9,6 +9,7 @@ Objective of this project
 - Make Synfig development extremely easy.
 - Eliminate ETL - use Boost instead.
 - Improve the documentation.
+- Clean-up the synfig source code. Make it tidy.
 
 Roadmap
-- Close the gap between Harmony and Synfig in terms of advanced features for improved productivity. 
+- Close the gap between Harmony and Synfig in terms of advanced features for improved productivity.
