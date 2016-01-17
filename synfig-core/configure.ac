@@ -399,14 +399,13 @@ if test $with_opengl != "no" ; then {
 	PKG_CHECK_MODULES(LIBGL, gl, [
 		CONFIG_DEPS="$CONFIG_DEPS gl"
 		LIBGL_CFLAGS="$LIBGL_CFLAGS -DGL_GLEXT_PROTOTYPES"
-		#with_opengl = yes
-		AM_CONDITIONAL(WITH_OPENGL, true)
+		with_opengl = yes
 	],[
 		AC_MSG_RESULT([ ** Cannot find gl.pc. OpenGL disabled.])
-		AM_CONDITIONAL(WITH_OPENGL, false)
+		with_opengl = no
 	])	
 } ; fi
-#AM_CONDITIONAL(WITH_OPENGL, test $with_opengl = yes)
+AM_CONDITIONAL(WITH_OPENGL, test $with_opengl = yes)
 
 AC_ARG_WITH(opencl,
 	AS_HELP_STRING(--with-opencl, [enable OpenCL (default=auto)]),[
