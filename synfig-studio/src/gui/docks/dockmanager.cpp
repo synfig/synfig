@@ -30,6 +30,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "docks/dockmanager.h"
 #include <stdexcept>
 #include "docks/dockable.h"
@@ -39,7 +41,7 @@
 #include <synfigapp/main.h>
 #include <gdkmm/general.h>
 
-#include "general.h"
+#include <gui/localization.h>
 
 #include <gtkmm/paned.h>
 #include <gtkmm/box.h>

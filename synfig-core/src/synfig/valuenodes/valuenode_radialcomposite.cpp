@@ -35,6 +35,7 @@
 #include "valuenode_const.h"
 #include <stdexcept>
 #include <synfig/general.h>
+#include <synfig/localization.h>
 #include <synfig/color.h>
 #include <synfig/savecanvas.h>
 #endif

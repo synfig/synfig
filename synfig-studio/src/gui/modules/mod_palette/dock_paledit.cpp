@@ -31,13 +31,14 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include <sys/stat.h>
 #include "dock_paledit.h"
 #include "../../widgets/widget_color.h"
 #include <gtkmm/frame.h>
 #include <gtkmm/table.h>
 #include <gtkmm/label.h>
-#include <synfig/general.h>
 #include <synfigapp/canvasinterface.h>
 #include <synfigapp/value_desc.h>
 #include "../../widgets/widget_color.h"
@@ -49,7 +50,7 @@
 #include "../../dialogs/dialog_color.h"
 #include <errno.h>
 
-#include "../../general.h"
+#include <gui/localization.h>
 
 #endif
 

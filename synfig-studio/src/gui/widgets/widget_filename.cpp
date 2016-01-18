@@ -30,13 +30,15 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include <gtkmm/entry.h>
 #include <gtkmm/button.h>
 #include "widgets/widget_filename.h"
 #include "app.h"
 #include "canvasview.h"
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 
@@ -139,20 +141,20 @@ Widget_Filename::on_button_choose_pressed()
 	// Sound layer
 	if (layer->get_name() == "sound")
 	{
-		if(App::dialog_open_file_audio(_("Please choose an audio file"), filename, MISC_DIR_PREFERENCE))
+		if(App::dialog_open_file_audio(_("Please choose an audio file"), filename, ANIMATION_DIR_PREFERENCE))
 			entry_filename->set_text((filename));
 	}
 
 	// Import Image layer
 	else if (layer->get_name() == "import")
 	{
-		if(App::dialog_open_file_image(_("Please choose an image file"), filename, MISC_DIR_PREFERENCE))
+		if(App::dialog_open_file_image(_("Please choose an image file"), filename, IMAGE_DIR_PREFERENCE))
 			entry_filename->set_text((filename));
 	}
 
 	else
 	{
-		if(App::dialog_open_file(_("Please choose a file"), filename, MISC_DIR_PREFERENCE))
+		if(App::dialog_open_file(_("Please choose a file"), filename, ANIMATION_DIR_PREFERENCE))
 			entry_filename->set_text(filename);
 	}
 }

@@ -34,8 +34,9 @@
 #	include <config.h>
 #endif
 
-#include <gtk/gtk.h>
-#include <gtkmm/accelmap.h>
+#include <synfig/general.h>
+
+#include <sstream>
 
 #include <sigc++/signal.h>
 #include <sigc++/hide.h>
@@ -43,10 +44,13 @@
 #include <sigc++/retype_return.h>
 #include <sigc++/retype.h>
 
-#include "general.h"
-#include <sstream>
+#include <gtk/gtk.h>
+#include <gtkmm/accelmap.h>
 
-#include "docks/dock_toolbox.h"
+#include "localization.h"
+
+#include "dock_toolbox.h"
+
 #include "instance.h"
 #include "app.h"
 #include "canvasview.h"
@@ -57,6 +61,7 @@
 #include "docks/dockmanager.h"
 #include "docks/dockdialog.h"
 #include "widgets/widget_defaults.h"
+
 #include <synfigapp/main.h>
 
 #endif

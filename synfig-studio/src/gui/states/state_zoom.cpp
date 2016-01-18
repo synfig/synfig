@@ -30,6 +30,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include <sigc++/signal.h>
 #include <sigc++/object.h>
 
@@ -46,7 +48,7 @@
 #include "docks/dock_toolbox.h"
 #include <synfigapp/main.h>
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

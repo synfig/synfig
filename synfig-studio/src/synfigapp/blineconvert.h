@@ -27,7 +27,6 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/general.h>
 #include <synfig/blinepoint.h>
 #include <list>
 #include <vector>

@@ -30,13 +30,15 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "dialogs/dialog_soundselect.h"
 #include <gtkmm/alignment.h>
 #include <gtkmm/frame.h>
 #include <gtkmm/label.h>
 #include <gtkmm/table.h>
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

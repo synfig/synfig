@@ -33,7 +33,11 @@
 #	include <config.h>
 #endif
 
-#include "rotate.h"
+#include <ETL/misc>
+
+#include <synfig/localization.h>
+#include <synfig/general.h>
+
 #include <synfig/string.h>
 #include <synfig/time.h>
 #include <synfig/context.h>
@@ -43,7 +47,11 @@
 #include <synfig/value.h>
 #include <synfig/valuenode.h>
 #include <synfig/transform.h>
-#include <ETL/misc>
+
+#include "rotate.h"
+
+#include <synfig/rendering/common/task/tasktransformation.h>
+#include <synfig/rendering/primitive/affinetransformation.h>
 
 #endif
 
@@ -231,5 +239,22 @@ Rotate::get_full_bounding_rect(Context context)const
 {
 	Rect under(context.get_full_bounding_rect());
 	return get_transform()->perform(under);
+}
+
+rendering::Task::Handle
+Rotate::build_rendering_task_vfunc(Context context)const
+{
+	Vector origin=param_origin.get(Vector());
+	Angle amount=param_amount.get(Angle());
+
+	rendering::TaskTransformation::Handle task_transformation(new rendering::TaskTransformation());
+	rendering::AffineTransformation::Handle affine_transformation(new rendering::AffineTransformation());
+	affine_transformation->matrix =
+			Matrix().set_translate(-origin)
+		  * Matrix().set_rotate(amount)
+		  * Matrix().set_translate(origin);
+	task_transformation->transformation = affine_transformation;
+	task_transformation->sub_task() = context.build_rendering_task();
+	return task_transformation;
 }
 

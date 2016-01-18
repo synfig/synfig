@@ -29,6 +29,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "app.h"
 #include <sigc++/hide.h>
 
@@ -36,11 +38,10 @@
 #include "docks/dockmanager.h"
 #include "docks/dockbook.h"
 #include "docks/dockdialog.h"
-#include <synfig/general.h>
 #include <gtkmm/table.h>
 #include <gtk/gtk.h>
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

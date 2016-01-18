@@ -35,6 +35,7 @@
 #include "distance.h"
 #include "renddesc.h"
 #include "general.h"
+#include <synfig/localization.h>
 #include <ctype.h>
 #endif
 
@@ -113,14 +114,8 @@ synfig::String
 Distance::get_string(int digits)const
 {
 	digits=min(9,max(0,digits));
-	String fmt(strprintf("%%.%01df",digits));
+	String fmt(strprintf("%%.%01dg",digits));
 	String str(strprintf(fmt.c_str(),value_));
-	while (*str.rbegin() == '0' && str.length() > 1)
-		str=str.substr(0, str.size()-1);
-	if (*str.rbegin() == ',' or *str.rbegin() == '.')
-		str=str.substr(0, str.size()-1);
-	if (str.length()==0)
-		str='0';
 	return strprintf("%s%s",str.c_str(),system_name(system_).c_str());
 }
 

@@ -45,6 +45,9 @@
 
 #include <glibmm.h>
 
+#include <synfig/localization.h>
+#include <synfig/general.h>
+
 #include <synfig/module.h>
 #include <synfig/importer.h>
 #include <synfig/cairoimporter.h>

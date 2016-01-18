@@ -30,6 +30,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "keyframeset.h"
 #include <synfigapp/canvasinterface.h>
 #include <synfig/valuenodes/valuenode_dynamiclist.h>
@@ -38,7 +40,7 @@
 #include "waypointsetsmart.h"
 #include <synfigapp/main.h>
 
-#include <synfigapp/general.h>
+#include <synfigapp/localization.h>
 
 #endif
 

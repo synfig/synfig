@@ -29,12 +29,14 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "layercopy.h"
 #include "layeradd.h"
 #include <synfig/context.h>
 #include <synfigapp/canvasinterface.h>
 #include <synfigapp/instance.h>
-#include <synfigapp/general.h>
+#include <synfigapp/localization.h>
 #include <synfig/layers/layer_bitmap.h>
 
 #endif

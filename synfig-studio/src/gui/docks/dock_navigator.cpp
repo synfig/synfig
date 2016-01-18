@@ -31,22 +31,25 @@
 #	include <config.h>
 #endif
 
-#include "docks/dock_navigator.h"
-#include "canvasview.h"
-#include "workarea.h"
-
 #include <cassert>
+
+#include <gtkmm/separator.h>
+#include <gdkmm/general.h>
+
+#include <synfig/general.h>
+
 #include <synfig/canvas.h>
 #include <synfig/context.h>
 #include <synfig/target_scanline.h>
 #include <synfig/surface.h>
-#include <gdkmm/general.h>
 
-#include <gtkmm/separator.h>
+#include "docks/dock_navigator.h"
 
+#include <gui/localization.h>
+
+#include "workarea.h"
+#include "canvasview.h"
 #include "asyncrenderer.h"
-
-#include "general.h"
 
 #endif
 
@@ -146,32 +149,17 @@ void studio::Widget_NavView::on_start_render()
 		r.set_w(dw);
 		r.set_h(dh);
 
-		if(studio::App::navigator_uses_cairo)
-		{
-			// Create a cairo_image_target
-			etl::handle<Target_Cairo> targ = cairo_image_target(&cairo_surface);
-			// Fill the target with the proper information
-			targ->set_canvas(get_canvas_view()->get_canvas());
-			targ->set_alpha_mode(TARGET_ALPHA_MODE_FILL);
-			targ->set_avoid_time_sync();
-			targ->set_quality(get_canvas_view()->get_work_area()->get_quality());
-			targ->set_rend_desc(&r);
-			// Sets up a Asynchronous renderer
-			renderer = new AsyncRenderer(targ);
-		}
-		else
-		{
-			// Create a surface_target
-			etl::handle<Target_Scanline>	targ = surface_target(surface.get());
-			// Fill the target with the proper information
-			targ->set_canvas(get_canvas_view()->get_canvas());
-			targ->set_alpha_mode(TARGET_ALPHA_MODE_FILL);
-			targ->set_avoid_time_sync();
-			targ->set_quality(get_canvas_view()->get_work_area()->get_quality());
-			targ->set_rend_desc(&r);
-			// Sets up a Asynchronous renderer
-			renderer = new AsyncRenderer(targ);
-		}
+		// Create a surface_target
+		etl::handle<Target_Tile> targ = surface_target(surface.get(), studio::App::navigator_renderer);
+		// Fill the target with the proper information
+		targ->set_canvas(get_canvas_view()->get_canvas());
+		targ->set_alpha_mode(TARGET_ALPHA_MODE_FILL);
+		targ->set_avoid_time_sync();
+		targ->set_quality(get_canvas_view()->get_work_area()->get_quality());
+		targ->set_rend_desc(&r);
+		// Sets up a Asynchronous renderer
+		renderer = new AsyncRenderer(targ);
+
 		// connnect the renderer success to the finish render handler
 		renderer->signal_success().connect(sigc::mem_fun(*this,&Widget_NavView::on_finish_render));
 		// Mark it as clean since we are to start to render
@@ -183,66 +171,58 @@ void studio::Widget_NavView::on_start_render()
 
 void studio::Widget_NavView::on_finish_render()
 {
-	if(studio::App::navigator_uses_cairo)
+	//convert it into our pixmap
+	PixelFormat pf(PF_RGB);
+
+	if(!*surface)
 	{
-		if(cairo_surface_status(cairo_surface))
-			return;
-		Target_Cairo::gamma_filter(cairo_surface, studio::App::gamma);
+		synfig::warning("dock_navigator: Bad surface");
+		return;
+	}
+
+	int w = 0, h = 0;
+	int dw = surface->get_w();
+	int dh = surface->get_h();
+
+	if(prev)
+	{
+		w = prev->get_width();
+		h = prev->get_height();
+	}
+
+	if(w != dw || h != dh || !prev)
+	{
+		const int total_bytes(dw*dh*synfig::channels(pf));
+
+		//synfig::warning("Nav: Updating the pixbuf to be the right size, etc. (%d bytes)", total_bytes);
+
+		prev.clear();
+		guint8 *bytes = new guint8[total_bytes]; //24 bits per pixel
+
+		//convert into our buffered dataS
+		//synfig::warning("Nav: converting color format into buffer");
+		convert_color_format((unsigned char *)bytes, (*surface)[0], dw*dh, pf, App::gamma);
+
+		prev =
+		Gdk::Pixbuf::create_from_data(
+			bytes,	// pointer to the data
+			Gdk::COLORSPACE_RGB, // the colorspace
+			((pf&PF_A)==PF_A), // has alpha?
+			8, // bits per sample
+			dw,	// width
+			dh,	// height
+			dw*synfig::channels(pf), // stride (pitch)
+			sigc::ptr_fun(freegu8)
+		);
 	}
 	else
 	{
-		//convert it into our pixmap
-		PixelFormat pf(PF_RGB);
-
-		if(!*surface)
+		if(prev) //just in case we're stupid
 		{
-			synfig::warning("dock_navigator: Bad surface");
-			return;
-		}
-
-		int w = 0, h = 0;
-		int dw = surface->get_w();
-		int dh = surface->get_h();
-
-		if(prev)
-		{
-			w = prev->get_width();
-			h = prev->get_height();
-		}
-
-		if(w != dw || h != dh || !prev)
-		{
-			const int total_bytes(dw*dh*synfig::channels(pf));
-
-			//synfig::warning("Nav: Updating the pixbuf to be the right size, etc. (%d bytes)", total_bytes);
-
-			prev.clear();
-			guint8 *bytes = new guint8[total_bytes]; //24 bits per pixel
-
-			//convert into our buffered dataS
-			//synfig::warning("Nav: converting color format into buffer");
-			convert_color_format((unsigned char *)bytes, (*surface)[0], dw*dh, pf, App::gamma);
-
-			prev =
-			Gdk::Pixbuf::create_from_data(
-				bytes,	// pointer to the data
-				Gdk::COLORSPACE_RGB, // the colorspace
-				((pf&PF_A)==PF_A), // has alpha?
-				8, // bits per sample
-				dw,	// width
-				dh,	// height
-				dw*synfig::channels(pf), // stride (pitch)
-				sigc::ptr_fun(freegu8)
-			);
-		}
-		else
-		{
-			if(prev) //just in case we're stupid
-			{
-				convert_color_format((unsigned char *)prev->get_pixels(), (*surface)[0], dw*dh, pf, App::gamma);
-			}
+			convert_color_format((unsigned char *)prev->get_pixels(), (*surface)[0], dw*dh, pf, App::gamma);
 		}
 	}
+
 	queue_draw();
 }
 
@@ -289,15 +269,10 @@ bool studio::Widget_NavView::on_drawto_draw(const Cairo::RefPtr<Cairo::Context> 
 	
 		float pw = get_canvas_view()->get_canvas()->rend_desc().get_pw();
 		float ph = get_canvas_view()->get_canvas()->rend_desc().get_ph();
-		if(prev && !studio::App::navigator_uses_cairo)
+		if(prev)
 		{
 			w = prev->get_width();
 			h = prev->get_height();
-		}
-		if(studio::App::navigator_uses_cairo)
-		{
-			w=cairo_image_surface_get_width(cairo_surface);
-			h=cairo_image_surface_get_height(cairo_surface);
 		}
 
 		//scale up/down to the nearest pixel ratio...
@@ -334,7 +309,7 @@ bool studio::Widget_NavView::on_drawto_draw(const Cairo::RefPtr<Cairo::Context> 
 		if(nw == 0 || nh == 0)return true;
 
 		//draw to drawing area
-		if(prev && !studio::App::navigator_uses_cairo)
+		if(prev)
 		{
 			Glib::RefPtr<Gdk::Pixbuf> scalepx = prev->scale_simple(nw,nh,Gdk::INTERP_NEAREST);
 
@@ -348,15 +323,6 @@ bool studio::Widget_NavView::on_drawto_draw(const Cairo::RefPtr<Cairo::Context> 
 				);
 			cr->paint();
 			cr->restore();
-		}
-		if(studio::App::navigator_uses_cairo)
-		{
-			cr->save();
-			cr->scale(sx, sx);
-			cairo_set_source_surface(cr->cobj(), cairo_surface, offx/sx, offy/sx);
-			cairo_pattern_set_filter(cairo_get_source(cr->cobj()), CAIRO_FILTER_NEAREST);
-			cr->paint();
-			cr->restore();	
 		}
 		cr->save();
 		//draw fancy red rectangle around focus point
@@ -383,11 +349,7 @@ bool studio::Widget_NavView::on_drawto_draw(const Cairo::RefPtr<Cairo::Context> 
 		cr->set_line_cap(Cairo::LINE_CAP_BUTT);
 		cr->set_line_join(Cairo::LINE_JOIN_MITER);
 		cr->set_antialias(Cairo::ANTIALIAS_NONE);
-		// Visually distinguish when using Cairo on Navigator or not.
-		if(!studio::App::navigator_uses_cairo)
-			cr->set_source_rgb(1,0,0);
-		else
-			cr->set_source_rgb(0,1,0);
+		cr->set_source_rgb(1,0,0);
 		cr->rectangle(l,t,rw,rh);
 		cr->stroke();
 
@@ -489,20 +451,15 @@ bool studio::Widget_NavView::on_mouse_event(GdkEvent * e)
 		setpos = true;
 	}
 
-	if(setpos && (prev||studio::App::navigator_uses_cairo) && get_canvas_view())
+	if(setpos && prev && get_canvas_view())
 	{
 		const Point &tl = get_canvas_view()->get_canvas()->rend_desc().get_tl();
 		const Point &br = get_canvas_view()->get_canvas()->rend_desc().get_br();
 		int w,h;
-		if(prev && !studio::App::navigator_uses_cairo)
+		if(prev)
 		{
 			w = prev->get_width();
 			h = prev->get_height();
-		}
-		if(studio::App::navigator_uses_cairo)
-		{
-			w=cairo_image_surface_get_width(cairo_surface);
-			h=cairo_image_surface_get_height(cairo_surface);
 		}
 		float max = abs((br[0]-tl[0]) / drawto.get_width());
 

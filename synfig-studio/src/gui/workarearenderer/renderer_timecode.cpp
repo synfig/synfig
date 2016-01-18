@@ -31,6 +31,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "renderer_timecode.h"
 #include "workarea.h"
 #include <pangomm/layout.h>
@@ -39,7 +41,7 @@
 #include "app.h"
 #include <cassert>
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 
@@ -116,7 +118,7 @@ Renderer_Timecode::render_vfunc(
 
 		cr->save();
 
-		cr->set_source_rgb(95.0/255.0,0,0);
+		cr->set_source_rgb(GDK_COLOR_TO_RGB(TIMECODE_COLOR_TEXT));
 		cr->move_to(4,4);
 		layout->show_in_cairo_context(cr);
 

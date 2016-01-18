@@ -32,13 +32,15 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "widget_keyframe_list.h"
 #include "app.h"
 #include <gtkmm/menu.h>
 #include <synfig/exception.h>
 #include <ETL/misc>
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

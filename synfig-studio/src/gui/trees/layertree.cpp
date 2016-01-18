@@ -31,6 +31,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "layertree.h"
 #include "layerparamtreestore.h"
 #include "cellrenderer/cellrenderer_value.h"
@@ -47,7 +49,7 @@
 #  include <synfig/timepointcollect.h>
 #endif	// TIMETRACK_IN_PARAMS_PANEL
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 
@@ -558,6 +560,29 @@ LayerTree::set_show_timetrack(bool x)
 	//column_time_track->set_visible(x);
 //	column_time_track->set_visible(false);
 	column_z_depth->set_visible(x);
+}
+
+void
+LayerTree::select_param(const synfigapp::ValueDesc& valuedesc)
+{
+    get_param_tree_view().get_selection()->unselect_all();
+
+    Gtk::TreeIter iter;
+    if(param_tree_store_->find_value_desc(valuedesc, iter))
+    {
+        Gtk::TreePath path(iter);
+        for(int i=(int)path.size();i;i--)
+        {
+            int j;
+            path=Gtk::TreePath(iter);
+            for(j=i;j;j--)
+                path.up();
+            get_param_tree_view().expand_row(path,false);
+        }
+
+        get_param_tree_view().scroll_to_row(Gtk::TreePath(iter));
+        get_param_tree_view().get_selection()->select(iter);
+    }
 }
 
 void

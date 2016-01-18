@@ -23,4 +23,18 @@
  </screenshots>
  <url type="homepage">http://www.synfig.org</url>
  <updatecontact>synfig-devl@lists.sourceforge.net</updatecontact>
+ <keywords>
+   <keyword>2D</keyword>
+   <keyword>Vector</keyword>
+   <keyword>Animation</keyword>
+   <keyword>Cartoon</keyword>
+   <keyword>Anime</keyword>
+   <keyword>FX</keyword>
+   <keyword>Draw</keyword>
+   <keyword>Cutout</keyword>
+   <keyword>Moho</keyword>
+   <keyword>Toomboon</keyword>
+   <keyword>Flash</keyword>
+   <keyword>ToonBoom</keyword>
+ </keywords>
 </application>

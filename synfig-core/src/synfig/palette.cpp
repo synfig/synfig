@@ -34,6 +34,7 @@
 #include "palette.h"
 #include "surface.h"
 #include "general.h"
+#include <synfig/localization.h>
 #include "gamma.h"
 #include <fstream>
 #include <iostream>

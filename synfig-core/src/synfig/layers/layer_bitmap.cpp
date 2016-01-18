@@ -30,8 +30,10 @@
 #	include <config.h>
 #endif
 
+#include <ETL/misc>
+
 #include "layer_bitmap.h"
-#include <synfig/layer.h>
+
 #include <synfig/time.h>
 #include <synfig/string.h>
 #include <synfig/vector.h>
@@ -44,8 +46,12 @@
 #include <synfig/target.h>
 
 #include <synfig/general.h>
+#include <synfig/localization.h>
 #include <synfig/paramdesc.h>
-#include <ETL/misc>
+
+#include <synfig/rendering/common/task/tasksurface.h>
+#include <synfig/rendering/common/task/tasksurfaceempty.h>
+#include <synfig/rendering/common/task/tasksurfaceresample.h>
 
 #endif
 
@@ -68,7 +74,7 @@ synfig::Layer_Bitmap::Layer_Bitmap():
 	param_br				(Point(0.5,-0.5)),
 	param_c				(int(1)),
 	param_gamma_adjust	(Real(1.0)),
-	surface			(128,128),
+	surface			(128,128), // TODO: may be 1x1 or 0x0 will be better?
 	trimmed			(false)
 {
 	SET_INTERPOLATION_DEFAULTS();
@@ -821,4 +827,26 @@ Layer_Bitmap::set_cairo_surface(cairo_surface_t *cs)
 	}
 	csurface.set_cairo_surface(cs);
 	csurface.map_cairo_image();
+}
+
+rendering::Task::Handle
+Layer_Bitmap::build_composite_task_vfunc(ContextParams /* context_params */) const
+{
+	if ( !rendering_surface
+	  || !rendering_surface->is_created() )
+		return new rendering::TaskSurfaceEmpty();
+
+	rendering::TaskSurface::Handle task_surface(new rendering::TaskSurface());
+	task_surface->target_surface = rendering_surface;
+	task_surface->init_target_rect(
+		RectInt(0, 0, task_surface->target_surface->get_width(), task_surface->target_surface->get_height()),
+		param_tl.get(Vector()),
+		param_br.get(Vector()) );
+
+	rendering::TaskSurfaceResample::Handle task_resample(new rendering::TaskSurfaceResample());
+	task_resample->gamma = (Color::value_type)param_gamma_adjust.get(Real());
+	task_resample->interpolation = (Color::Interpolation)param_c.get(int());
+	task_resample->antialiasing = true;
+	task_resample->sub_task() = task_surface;
+	return task_resample;
 }

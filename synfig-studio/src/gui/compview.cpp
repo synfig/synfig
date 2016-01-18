@@ -32,6 +32,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "compview.h"
 #include "app.h"
 #include <gtkmm/scrolledwindow.h>
@@ -44,7 +46,7 @@
 #include "canvasview.h"
 #include <synfigapp/action.h>
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

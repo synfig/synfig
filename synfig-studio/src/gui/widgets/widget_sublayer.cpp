@@ -30,6 +30,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include <gtkmm/menu.h>
 #include "widgets/widget_sublayer.h"
 #include <ETL/stringf>
@@ -38,7 +40,7 @@
 #include <synfig/context.h>
 #include <synfig/layers/layer_pastecanvas.h>
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

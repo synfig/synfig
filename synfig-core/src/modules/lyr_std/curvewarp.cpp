@@ -35,6 +35,9 @@
 
 #include "curvewarp.h"
 
+#include <synfig/localization.h>
+#include <synfig/general.h>
+
 #include <synfig/context.h>
 #include <synfig/paramdesc.h>
 #include <synfig/surface.h>

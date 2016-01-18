@@ -30,18 +30,24 @@
 #	include <config.h>
 #endif
 
+#include <cassert>
+
+#include <sigc++/bind.h>
+
+#include "time.h"
+
+#include "general.h"
+#include <synfig/localization.h>
+
 #include "layer.h"
 #include "canvas.h"
-#include <cassert>
-#include "exception.h"
-#include "time.h"
 #include "context.h"
-#include <synfig/layers/layer_pastecanvas.h>
-#include <synfig/valuenodes/valuenode_const.h>
-#include <synfig/valuenodes/valuenode_scale.h>
+#include "exception.h"
 #include "loadcanvas.h"
 #include "filesystemnative.h"
-#include <sigc++/bind.h>
+#include "layers/layer_pastecanvas.h"
+#include "valuenodes/valuenode_const.h"
+#include "valuenodes/valuenode_scale.h"
 
 #endif
 

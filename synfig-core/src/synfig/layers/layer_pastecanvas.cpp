@@ -33,17 +33,25 @@
 #endif
 
 #include "layer_pastecanvas.h"
-#include "string.h"
-#include "time.h"
-#include "../context.h"
-#include "../paramdesc.h"
-#include "../renddesc.h"
-#include "../surface.h"
-#include "../value.h"
-#include "../valuenode.h"
-#include "../canvas.h"
-#include "../cairo_renddesc.h"
 
+#include <synfig/general.h>
+#include <synfig/localization.h>
+
+#include <synfig/cairo_renddesc.h>
+#include <synfig/canvas.h>
+#include <synfig/context.h>
+#include <synfig/paramdesc.h>
+#include <synfig/renddesc.h>
+#include <synfig/time.h>
+#include <synfig/string.h>
+#include <synfig/surface.h>
+#include <synfig/value.h>
+#include <synfig/valuenode.h>
+
+#include <synfig/rendering/common/task/taskblend.h>
+#include <synfig/rendering/common/task/tasksurfaceempty.h>
+#include <synfig/rendering/common/task/tasktransformation.h>
+#include <synfig/rendering/primitive/affinetransformation.h>
 
 #endif
 
@@ -322,8 +330,13 @@ Layer_PasteCanvas::set_time(IndependentContext context, Time time)const
 }
 
 void
-Layer_PasteCanvas::apply_z_range_to_params(ContextParams &/*cp*/)const
+Layer_PasteCanvas::apply_z_range_to_params(ContextParams &cp)const
 {
+	ContextParams p;
+	cp.z_range = p.z_range;
+	cp.z_range_position = p.z_range_position;
+	cp.z_range_depth = p.z_range_depth;
+	cp.z_range_blur = p.z_range_blur;
 }
 
 synfig::Layer::Handle
@@ -533,8 +546,20 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 		intermediate_desc.set_tl(pixel_aligned_tl);
 		intermediate_desc.set_br(pixel_aligned_br);
 		Surface intermediate_surface;
+
+		//{ // TODO: remove
+		//	std::ofstream of("/tmp/contours.txt", std::ios_base::app);
+		//	of << "g " << x0 << " " << y0 << endl;
+		//}
+
 		if(!canvasContext.accelerated_render(&intermediate_surface,quality,intermediate_desc,&stagetwo))
 			return false;
+
+		//{ // TODO: remove
+		//	std::ofstream of("/tmp/contours.txt", std::ios_base::app);
+		//	of << "end" << endl;
+		//}
+
 		Surface::alpha_pen apen(surface->get_pen(x0, y0));
 		apen.set_alpha(get_amount());
 		apen.set_blend_method(blend_using_straight ? Color::BLEND_STRAIGHT : blend_method);
@@ -690,3 +715,26 @@ Layer_PasteCanvas::fill_sound_processor(SoundProcessor &soundProcessor) const
 {
 	if (active() && canvas) canvas->fill_sound_processor(soundProcessor);
 }
+
+rendering::Task::Handle
+Layer_PasteCanvas::build_composite_task_vfunc(ContextParams context_params)const
+{
+	if (!canvas)
+		return new rendering::TaskSurfaceEmpty();
+
+	// TODO:
+	// time_offset;
+	// outline_grow;
+	// children_lock;
+	// curr_time;
+
+	apply_z_range_to_params(context_params);
+	rendering::TaskTransformation::Handle task_transformation(new rendering::TaskTransformation());
+	rendering::AffineTransformation::Handle affine_transformation(new rendering::AffineTransformation());
+	affine_transformation->matrix = get_summary_transformation().get_matrix();
+	task_transformation->transformation = affine_transformation;
+	task_transformation->sub_task() = canvas->get_context(context_params).build_rendering_task();
+	return task_transformation;
+}
+
+

@@ -31,6 +31,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "state_text.h"
 #include "state_normal.h"
 #include "canvasview.h"
@@ -46,7 +48,7 @@
 #include "widgets/widget_enum.h"
 #include <synfigapp/main.h>
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

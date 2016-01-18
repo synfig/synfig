@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file dialogs/dialog_setup.h
-**	\brief Template Header
+**	\brief Dialog Preference Header
 **
 **	$Id$
 **
@@ -8,6 +8,7 @@
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **	Copyright (c) 2008, 2009. 2012 Carlos López
+**	Copyright (c) 2015 Jerome Blanchi
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -28,23 +29,25 @@
 #define __SYNFIG_STUDIO_DIALOG_SETUP_H
 
 /* === H E A D E R S ======================================================= */
+#include <dialogs/dialog_template.h>
 
-#include <gtk/gtk.h>
 #include <gtkmm/adjustment.h>
-#include <gtkmm/table.h>
 #include <gtkmm/button.h>
-#include <gtkmm/dialog.h>
-#include <gtkmm/drawingarea.h>
-#include <gtkmm/comboboxtext.h>
 #include <gtkmm/checkbutton.h>
-#include <gui/widgets/widget_time.h>
-#include <gtkmm/tooltip.h>
 #include <gtkmm/comboboxtext.h>
+#include <gtkmm/drawingarea.h>
+#include <gtkmm/listviewtext.h>
 #include <gtkmm/spinbutton.h>
+#include <gtkmm/switch.h>
+#include <gtkmm/tooltip.h>
+
+#include <gui/widgets/widget_time.h>
 
 #include <synfig/gamma.h>
 #include <synfig/time.h>
 #include <algorithm>
+
+#include <synfigapp/settings.h>
 
 #include "app.h"
 
@@ -151,13 +154,40 @@ public:
 
 class Widget_Enum;
 
-class Dialog_Setup : public Gtk::Dialog
+class Dialog_Setup : public Dialog_Template
 {
+	/* Draft for change resume */
+	enum Change
+	{
+		CHANGE_NONE					=	(0),		//    0
+		CHANGE_UI_LANGUAGE			=	(1 <<  0),	//    1
+		CHANGE_AUTOBACKUP			=	(1 <<  1),	//    2
+		CHANGE_UI_HANDLE_TOOLTIP					=	(1 <<  2),	//    4
+		CHANGE_WIDTH					=	(1 <<  3),	//    8
+		CHANGE_ANGLE					=	(1 <<  4),	//   16
+		CHANGE_VERTEX					=	(1 <<  5),	//   32
+		CHANGE_BONE_RECURSIVE			=	(1 <<  6),	//   64
+		CHANGE_BRUSH_PATH				=	(1 <<  7),	//  128
+		CHANGE_SCALE					=	(1 <<  8),	//  256
+		CHANGE_SCALE_X				=	(1 <<  9),	//  512
+		CHANGE_SCALE_Y				=	(1 << 10),	// 1024
+		CHANGE_SKEW					=	(1 << 11),	// 2048
 
-	void on_ok_pressed();
-	void on_apply_pressed();
-	void on_restore_pressed();
+		CHANGE_ALL					=	(~0)
+	};
 
+	enum HandleToolTip
+	{
+		HANDLE_TOOLTIP_TRANSFO_NAME 		= 0,
+		HANDLE_TOOLTIP_TRANSFO_NAMEVALUE,
+		HANDLE_TOOLTIP_TRANSFO_VALUE
+	};
+
+
+	// Change mechanism
+	// TODO on change class
+	void on_value_change(int valueflag);
+	//Signal handlers pages
 	void on_gamma_r_change();
 	void on_gamma_g_change();
 	void on_gamma_b_change();
@@ -167,7 +197,22 @@ class Dialog_Setup : public Gtk::Dialog
 	void on_fps_template_combo_change();
 	void on_ui_language_combo_change();
 	void on_time_format_changed();
+	void on_autobackup_changed();
+	void on_tooltip_transformation_changed();
 
+	void on_brush_path_add_clicked();
+	void on_brush_path_remove_clicked();
+
+	void create_gamma_page(PageInfo pi);
+	void create_system_page(PageInfo pi);
+	void create_document_page(PageInfo pi);
+	void create_render_page(PageInfo pi);
+	void create_interface_page(PageInfo pi);
+	void create_editing_page(PageInfo pi);
+
+	synfigapp::Settings &input_settings;
+
+	// Widget for pages
 	GammaPattern gamma_pattern;
 	BlackLevelSelector black_level_selector;
 	RedBlueLevelSelector red_blue_level_selector;
@@ -199,13 +244,15 @@ class Dialog_Setup : public Gtk::Dialog
 	Gtk::CheckButton toggle_use_dark_theme;
 
 	Gtk::Entry textbox_browser_command;
-	Gtk::Entry textbox_brushes_path;
+	Gtk::Entry textbox_brushe_path;
+	Gtk::ListViewText* listviewtext_brushes_path;
+	Glib::RefPtr<Gtk::ListStore> brushpath_refmodel;
 
 	Gtk::ComboBoxText* size_template_combo;
 	Gtk::ComboBoxText* fps_template_combo;
 	Gtk::ComboBoxText ui_language_combo;
 	std::vector<Glib::ustring> _lang_codes;
-
+	Gtk::ComboBoxText combo_handle_tooltip_transformation;
 
 	Gtk::Entry textbox_custom_filename_prefix;
 	Glib::RefPtr<Gtk::Adjustment> adj_pref_x_size;
@@ -216,8 +263,35 @@ class Dialog_Setup : public Gtk::Dialog
 	Gtk::SpinButton* pref_x_size_spinbutton;
 
 	Gtk::Entry image_sequence_separator;
-	Gtk::CheckButton toggle_navigator_uses_cairo;
-	Gtk::CheckButton toggle_workarea_uses_cairo;
+	Gtk::ComboBoxText navigator_renderer_combo;
+	Gtk::ComboBoxText workarea_renderer_combo;
+
+	Gtk::Switch toggle_handle_tooltip_widthpoint;
+	Gtk::Switch toggle_handle_tooltip_radius;
+	Gtk::Switch toggle_handle_tooltip_transformation;
+	Gtk::Switch toggle_autobackup;
+
+	long pref_modification_flag;
+	//! Do not update state flag on refreshing
+	bool refreshing;
+
+	//Brush path Tree model columns:
+	class PrefsBrushPath : public Gtk::TreeModel::ColumnRecord
+	{
+		public:
+		PrefsBrushPath() { add(path); }
+		Gtk::TreeModelColumn<synfig::String> path;
+	};
+	PrefsBrushPath prefs_brushpath;
+
+public:
+	/*
+ -- ** -- S I G N A L S -------------------------------------------------------
+	*/
+
+	//Signal handlers dialog
+	virtual void on_apply_pressed();
+	virtual void on_restore_pressed();
 
 public:
 

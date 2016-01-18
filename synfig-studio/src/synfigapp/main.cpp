@@ -36,6 +36,8 @@
 #include <pwd.h>
 #endif
 
+#include <synfig/general.h>
+
 #include <synfig/color.h>
 #include <synfig/gradient.h>
 #include <glibmm.h>
@@ -44,7 +46,7 @@
 
 #include <list>
 
-#include "general.h"
+#include <synfigapp/localization.h>
 
 #endif
 

@@ -33,7 +33,6 @@
 #include "vector.h"
 #include "color.h"
 #include "renddesc.h"
-#include "general.h"
 #include "layer.h"
 #include "canvas.h"
 #include <ETL/handle>

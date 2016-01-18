@@ -1,0 +1,20 @@
+RENDERING_SOFTWARE_HH = \
+	rendering/software/renderersafe.h \
+	rendering/software/renderersw.h \
+	rendering/software/surfacesw.h
+
+RENDERING_SOFTWARE_CC = \
+	rendering/software/renderersafe.cpp \
+	rendering/software/renderersw.cpp \
+	rendering/software/surfacesw.cpp
+
+include rendering/software/function/Makefile_insert
+include rendering/software/optimizer/Makefile_insert
+include rendering/software/task/Makefile_insert
+
+RENDERING_HH += \
+    $(RENDERING_SOFTWARE_HH)
+
+RENDERING_CC += \
+    $(RENDERING_SOFTWARE_CC)
+

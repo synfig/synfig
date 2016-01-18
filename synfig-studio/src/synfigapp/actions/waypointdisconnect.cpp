@@ -30,11 +30,13 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "waypointdisconnect.h"
 #include <synfigapp/canvasinterface.h>
 #include <synfig/valuenodes/valuenode_const.h>
 
-#include <synfigapp/general.h>
+#include <synfigapp/localization.h>
 
 #endif
 

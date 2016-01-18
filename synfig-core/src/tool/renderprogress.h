@@ -28,7 +28,7 @@
 #include <string>
 #include <iosfwd>
 #include <boost/chrono.hpp>
-#include <synfig/general.h>
+#include <synfig/progresscallback.h>
 #include "definitions.h"
 
 

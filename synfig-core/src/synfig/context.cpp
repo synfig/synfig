@@ -32,13 +32,20 @@
 #endif
 
 #include "context.h"
+
+#include "general.h"
+#include <synfig/localization.h>
 #include "layer.h"
-#include <synfig/layers/layer_pastecanvas.h>
 #include "string.h"
 #include "vector.h"
 #include "color.h"
 #include "valuenode.h"
 #include "transformation.h"
+
+#include "layers/layer_pastecanvas.h"
+
+#include "rendering/task.h"
+#include "rendering/common/task/tasksurfaceempty.h"
 
 #endif
 
@@ -560,3 +567,22 @@ Context::accelerated_cairorender(cairo_t *cr,int quality, const RendDesc &rendde
 		throw;
 	}
 }
+
+//!	Make rendering task using ContextParams
+rendering::Task::Handle
+Context::build_rendering_task() const
+{
+	Context context = *this;
+	while ( *context
+		 && ( !context.active()
+		   || ( !get_params().render_excluded_contexts
+			 && (*context)->get_exclude_from_rendering() )))
+		++context;
+
+	// TODO: apply z_range and z_blur (now applies in Canvas::optimize_layers)
+
+	return *context
+		 ? (*context)->build_rendering_task(context.get_next())
+		 : rendering::Task::Handle(new rendering::TaskSurfaceEmpty());
+}
+

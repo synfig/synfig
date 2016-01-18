@@ -49,6 +49,7 @@
 #include <synfigapp/instance.h>
 #include <synfigapp/pluginmanager.h>
 #include "iconcontroller.h"
+#include "mainwindow.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -209,7 +210,7 @@ public:
 	static bool shutdown_in_progress;
 
 	static bool use_colorspace_gamma;
-	
+
 #ifdef SINGLE_THREADED
 	static bool single_threaded;
 #endif
@@ -220,9 +221,10 @@ public:
 	static bool use_dark_theme;
 
 	static synfigapp::PluginManager plugin_manager;
-	
+
 	static synfig::String browser_command;
-	static synfig::String brushes_path;
+//	static synfig::String brushes_path;
+	static std::set< synfig::String > brushes_path;
 	static synfig::String custom_filename_prefix;
 	static int preferred_x_size;
 	static int preferred_y_size;
@@ -230,10 +232,11 @@ public:
 	static synfig::String predefined_fps;
 	static float preferred_fps;
 	static synfig::String sequence_separator;
-	static bool navigator_uses_cairo;
-	static bool workarea_uses_cairo;
+	static synfig::String navigator_renderer;
+	static synfig::String workarea_renderer;
 	static bool enable_mainwin_menubar;
 	static synfig::String ui_language;
+	static long ui_handle_tooltip_flag;
 
 	/*
  -- ** -- S I G N A L S -------------------------------------------------------
@@ -376,6 +379,7 @@ public:
 	static bool dialog_open_file_image(const std::string &title, std::string &filename, std::string preference);
 	static bool dialog_open_file_audio(const std::string &title, std::string &filename, std::string preference);
 	static bool dialog_open_file_with_history_button(const std::string &title, std::string &filename, bool &show_history, std::string preference);
+	static bool dialog_open_folder(const std::string &title, std::string &filename, std::string preference, Gtk::Window& transientwind=*App::main_window);
 	static bool dialog_save_file(const std::string &title, std::string &filename, std::string preference);
 	static bool dialog_save_file_spal(const std::string &title, std::string &filename, std::string preference);
 	static bool dialog_save_file_sketch(const std::string &title, std::string &filename, std::string preference);

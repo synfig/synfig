@@ -32,6 +32,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "blinepointtangentmerge.h"
 #include "valuedescset.h"
 
@@ -41,7 +43,7 @@
 #include "valuedescconnect.h"
 #include <synfigapp/canvasinterface.h>
 
-#include <synfigapp/general.h>
+#include <synfigapp/localization.h>
 #include <synfig/valuenodes/valuenode_radialcomposite.h>
 
 #endif

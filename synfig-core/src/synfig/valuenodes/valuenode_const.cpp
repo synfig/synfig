@@ -35,6 +35,7 @@
 #include "valuenode_composite.h"
 #include <synfig/canvas.h>
 #include <synfig/general.h>
+#include <synfig/localization.h>
 #include <synfig/pair.h>
 
 #endif

@@ -30,6 +30,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "layerparamconnect.h"
 #include "waypointconnect.h"
 #include "valuenodelinkconnect.h"
@@ -38,7 +40,7 @@
 #include "valuedescconnect.h"
 #include <synfigapp/canvasinterface.h>
 
-#include <synfigapp/general.h>
+#include <synfigapp/localization.h>
 
 #endif
 

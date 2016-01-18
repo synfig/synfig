@@ -1,0 +1,22 @@
+RENDERING_OPENGL_TASK_HH = \
+	rendering/opengl/task/taskblendgl.h \
+	rendering/opengl/task/taskblurpreparedgl.h \
+	rendering/opengl/task/taskcontourgl.h \
+	rendering/opengl/task/taskgl.h \
+	rendering/opengl/task/taskmeshgl.h \
+	rendering/opengl/task/tasksurfaceresamplegl.h
+
+RENDERING_OPENGL_TASK_CC = \
+	rendering/opengl/task/taskblendgl.cpp \
+	rendering/opengl/task/taskblurpreparedgl.cpp \
+	rendering/opengl/task/taskcontourgl.cpp \
+	rendering/opengl/task/taskgl.cpp \
+	rendering/opengl/task/taskmeshgl.cpp \
+	rendering/opengl/task/tasksurfaceresamplegl.cpp
+
+RENDERING_OPENGL_HH += \
+    $(RENDERING_OPENGL_TASK_HH)
+
+RENDERING_OPENGL_CC += \
+    $(RENDERING_OPENGL_TASK_CC)
+

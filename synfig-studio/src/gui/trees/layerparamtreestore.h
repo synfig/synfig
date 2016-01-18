@@ -147,6 +147,21 @@ public:
 
 	void refresh_row(Gtk::TreeModel::Row &row);
 
+	//! \brief Search for a value descriptor on the parameter tree.
+	//! On success get the node reference of the synfigapp::ValueDesc on the tree
+	//! \Param[in]  value_desc The value to search for
+	//! \Param[out] iter The node reference of the value in the tree
+	//! \Return     Failed or success to find
+	bool find_value_desc(const synfigapp::ValueDesc& value_desc, Gtk::TreeIter& iter);
+
+	//! \brief Search for a value descriptor on the parameter tree from a given treenode level
+	//! On success get the node reference of the synfigapp::ValueDesc on the tree
+	//! \Param[in]  value_desc The value to search for
+	//! \Param[out] iter The node reference of the value in the tree
+	//! \Param[in] child_iter The node level to look from
+	//! \Return     Failed or success to find
+	bool find_value_desc(const synfigapp::ValueDesc& value_desc, Gtk::TreeIter& iter, const Gtk::TreeNodeChildren child_iter);
+
 	sigc::signal<void>& signal_changed() { return signal_changed_; }
 
 	void changed() { signal_changed_(); }

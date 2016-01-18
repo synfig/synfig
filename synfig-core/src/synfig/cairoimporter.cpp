@@ -30,15 +30,22 @@
 #	include <config.h>
 #endif
 
-#include "canvas.h"
-#include "cairoimporter.h"
-#include "surface.h"
+#include <cctype>
+
 #include <algorithm>
-#include "string.h"
-#include <map>
-#include <ctype.h>
 #include <functional>
+#include <map>
+
 #include <glibmm.h>
+
+#include "cairoimporter.h"
+
+#include "general.h"
+#include <synfig/localization.h>
+
+#include "canvas.h"
+#include "surface.h"
+#include "string.h"
 
 #endif
 

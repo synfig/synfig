@@ -50,6 +50,9 @@ namespace studio {
 class IconController
 {
 	Glib::RefPtr<Gtk::IconFactory> icon_factory;
+	void init_icon(const synfig::String &name, const synfig::String &iconfile, const synfig::String& desc);
+	void init_icon_clone(const synfig::String &name, const synfig::String& desc);
+
 public:
 	IconController(const synfig::String& basepath);
 	~IconController();

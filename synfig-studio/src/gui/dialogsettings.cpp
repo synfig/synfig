@@ -30,11 +30,13 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "dialogsettings.h"
 #include <synfigapp/main.h>
 #include <gdkmm/general.h>
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

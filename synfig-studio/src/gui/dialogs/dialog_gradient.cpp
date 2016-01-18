@@ -29,12 +29,13 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "dialogs/dialog_gradient.h"
 #include "widgets/widget_gradient.h"
 #include <gtkmm/frame.h>
 #include <gtkmm/table.h>
 #include <gtkmm/label.h>
-#include <synfig/general.h>
 #include <synfigapp/canvasinterface.h>
 #include <synfigapp/value_desc.h>
 #include <synfigapp/main.h>
@@ -42,7 +43,7 @@
 #include <gtkmm/spinbutton.h>
 #include "app.h"
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

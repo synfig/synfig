@@ -32,6 +32,7 @@
 #include "cairo_operators.h"
 #include "surface.h"
 #include "general.h"
+#include <synfig/localization.h>
 
 
 #endif

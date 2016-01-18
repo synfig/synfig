@@ -28,9 +28,10 @@
 /* === H E A D E R S ======================================================= */
 
 #include <ETL/handle>
-#include <synfig/general.h>
-#include <synfig/string.h>
 #include <sigc++/object.h>
+
+#include <synfig/string.h>
+#include <synfig/progresscallback.h>
 
 /* === M A C R O S ========================================================= */
 

@@ -36,6 +36,7 @@
 #include <synfig/cairoimporter.h>
 #include <synfig/time.h>
 #include <synfig/general.h>
+#include <synfig/localization.h>
 
 
 #include <cstdio>

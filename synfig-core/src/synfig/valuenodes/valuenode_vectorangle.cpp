@@ -34,6 +34,7 @@
 #include "valuenode_vectorangle.h"
 #include "valuenode_const.h"
 #include <synfig/general.h>
+#include <synfig/localization.h>
 
 #endif
 

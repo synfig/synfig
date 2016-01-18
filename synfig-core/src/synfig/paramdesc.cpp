@@ -31,6 +31,9 @@
 #endif
 
 #include "paramdesc.h"
+
+#include "general.h"
+#include <synfig/localization.h>
 #include "value.h"
 
 #endif

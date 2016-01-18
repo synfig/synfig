@@ -32,6 +32,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include <ETL/hermite>
 #include <ETL/calculus>
 #include <ETL/gaussian>
@@ -67,7 +69,7 @@
 #include <gtkmm/radiobutton.h>
 #include <gtkmm/radiobuttongroup.h>
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

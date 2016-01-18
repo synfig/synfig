@@ -30,6 +30,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include <gtkmm/dialog.h>
 #include <gtkmm/entry.h>
 #include <gtkmm/grid.h>
@@ -61,7 +63,7 @@
 
 #include "ducktransform_matrix.h"
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 
@@ -132,8 +134,6 @@ private:
 	WorkArea::PushState push_state;
 
 	Gtk::Menu menu;
-
-	std::set<String> paths;
 
 	Glib::TimeVal time;
 	etl::handle<synfigapp::Action::LayerPaint> action;
@@ -448,23 +448,25 @@ StateBrush_Context::load_settings()
 	try
 	{
 		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
-		
+
 		String value;
-		/*if(settings.get_value("brush.path_count",value))
+		bool bvalue(settings.get_value("brush.path_count",value));
+		int count = atoi(value.c_str());
+		if(bvalue && count>0)
 		{
-			paths.clear();
+			App::brushes_path.clear();
 			int count = atoi(value.c_str());
 			for(int i = 0; i < count; ++i)
 				if(settings.get_value(strprintf("brush.path_%d", i),value))
-					paths.insert(value);
+					App::brushes_path.insert(value);
 		}
 		else
-		{*/
-			if (App::brushes_path=="")
-				paths.insert(App::get_base_path()+ETL_DIRECTORY_SEPARATOR+"share"+ETL_DIRECTORY_SEPARATOR+"synfig"+ETL_DIRECTORY_SEPARATOR+"brushes");
+		{
+			if (App::brushes_path.empty())
+				App::brushes_path.insert(App::get_base_path()+ETL_DIRECTORY_SEPARATOR+"share"+ETL_DIRECTORY_SEPARATOR+"synfig"+ETL_DIRECTORY_SEPARATOR+"brushes");
 			else
-				paths.insert(App::brushes_path);
-		//}
+				App::brushes_path.insert(*(App::brushes_path.begin()));
+		}
 		refresh_tool_options();
 
 		if (settings.get_value("brush.selected_brush_filename",value))
@@ -487,9 +489,9 @@ StateBrush_Context::save_settings()
 	{
 		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 
-		settings.set_value("brush.path_count", strprintf("%d", (int)paths.size()));
+		settings.set_value("brush.path_count", strprintf("%d", (int)App::brushes_path.size()));
 		int j = 0;
-		for(std::set<String>::const_iterator i = paths.begin(); i != paths.end(); ++i)
+		for(std::set<String>::const_iterator i = App::brushes_path.begin(); i != App::brushes_path.end(); ++i)
 			settings.set_value(strprintf("brush.path_%d", j++), *i);
 
 		settings.set_value("brush.selected_brush_filename", selected_brush_config.filename);
@@ -614,7 +616,7 @@ StateBrush_Context::refresh_tool_options()
 	// load brushes files definition
 	// scan directories
 	std::set<String> files;
-	for(std::set<String>::const_iterator i = paths.begin(); i != paths.end(); ++i)
+	for(std::set<String>::const_iterator i = App::brushes_path.begin(); i != App::brushes_path.end(); ++i)
 		scan_directory(*i, 1, files);
 
 	// run through brush definition and assign a button

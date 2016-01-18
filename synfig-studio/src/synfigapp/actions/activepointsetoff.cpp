@@ -30,6 +30,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "activepointsetoff.h"
 #include "activepointsetsmart.h"
 #include "valuenodelinkconnect.h"
@@ -39,9 +41,9 @@
 #include "activepointadd.h"
 
 #include "valuedescconnect.h"
-#include <synfigapp/canvasinterface.h>
 
-#include <synfigapp/general.h>
+#include <synfigapp/canvasinterface.h>
+#include <synfigapp/localization.h>
 
 #endif
 

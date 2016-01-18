@@ -30,10 +30,12 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "metadatatreestore.h"
 #include <synfigapp/canvasinterface.h>
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

@@ -60,88 +60,146 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-Matrix::Matrix()
+// Matrix2
+
+Matrix2 &
+Matrix2::set_scale(const value_type &sx, const value_type &sy)
 {
-	set_identity();
+	m00=sx;  m01=0.0;
+	m10=0.0; m11=sy;
+	return *this;
 }
 
-Matrix &
-Matrix::set_identity()
+Matrix2 &
+Matrix2::set_rotate(const Angle &a)
 {
-	m00=1.0; m01=0.0; m02=0.0;
-	m10=0.0; m11=1.0; m12=0.0;
-	m20=0.0; m21=0.0; m22=1.0;
-	return (*this);
+	value_type c(Angle::cos(a).get());
+	value_type s(Angle::sin(a).get());
+	m00= c;     m01=s;
+	m10=-1.0*s; m11=c;
+	return *this;
+}
+
+void
+Matrix2::get_transformed(value_type &out_x, value_type &out_y, const value_type x, const value_type y)const
+	{ out_x = x*m00+y*m10; out_y = x*m01+y*m11; }
+
+Matrix2
+Matrix2::operator*=(const Matrix2 &rhs)
+{
+	value_type x, y;
+
+	x = m00;    y = m01;
+	m00=x*rhs.m00 + y*rhs.m10;
+	m01=x*rhs.m01 + y*rhs.m11;
+
+	x = m10;    y = m11;;
+	m10=x*rhs.m00 + y*rhs.m10;
+	m11=x*rhs.m01 + y*rhs.m11;
+
+	return *this;
 }
 
 bool
-Matrix::is_identity() const
+Matrix2::operator==(const Matrix2 &rhs) const
 {
-	static const double e = 0.000001;
-	return fabs(m00 - 1.0) < e && fabs(m01) < e && fabs(m02) < e
-		&& fabs(m10) < e && fabs(m11 - 1.0) < e && fabs(m12) < e
-		&& fabs(m20) < e && fabs(m21) < e && fabs(m22 - 1.0) < e;
+	return fabs(m00 - rhs.m00) < epsilon && fabs(m01 - rhs.m01) < epsilon
+		&& fabs(m10 - rhs.m10) < epsilon && fabs(m11 - rhs.m11) < epsilon;
 }
 
-Matrix &
-Matrix::set_scale(const value_type &sx, const value_type &sy)
+Matrix2
+Matrix2::operator*=(const value_type &rhs)
+{
+	m00*=rhs;
+	m01*=rhs;
+
+	m10*=rhs;
+	m11*=rhs;
+
+	return *this;
+}
+
+Matrix2
+Matrix2::operator+=(const Matrix2 &rhs)
+{
+	m00+=rhs.m00;
+	m01+=rhs.m01;
+
+	m10+=rhs.m10;
+	m11+=rhs.m11;
+
+	return *this;
+}
+
+bool
+Matrix2::is_invertible()const
+	{ return abs(m00*m11 - m01*m10) > epsilon; }
+
+Matrix2&
+Matrix2::invert()
+{
+	value_type det(m00*m11 - m01*m10);
+	if (fabs(det) > epsilon)
+	{
+		value_type k = 1.0/det;
+		std::swap(m00, m11);
+		std::swap(m01, m10);
+		m00 *= k; m01 *= -k;
+		m11 *= k; m10 *= -k;
+	}
+	else
+	if (m00*m00 + m01*m01 > m10*m10 + m11*m11)
+	{
+		m10 = m01; m01 = 0; m11 = 0;
+	}
+	else
+	{
+		m01 = m10; m00 = 0; m10 = 0;
+	}
+	return *this;
+}
+
+String
+Matrix2::get_string(int spaces, String before, String after)const
+{
+	return etl::strprintf("%*s [%7.2f %7.2f] %s\n%*s [%7.2f %7.2f]\n",
+						  spaces, before.c_str(), m00, m01, after.c_str(),
+						  spaces, "",			  m10, m11);
+}
+
+// Matrix3
+
+Matrix3 &
+Matrix3::set_scale(const value_type &sx, const value_type &sy)
 {
 	m00=sx;  m01=0.0; m02=0.0;
 	m10=0.0; m11=sy;  m12=0.0;
 	m20=0.0; m21=0.0; m22=1.0;
-	return (*this);
+	return *this;
 }
 
-Matrix &
-Matrix::set_scale(const value_type &sxy)
-{
-	return set_scale(sxy, sxy);
-}
-
-Matrix &
-Matrix::set_scale(const Vector &s)
-{
-	return set_scale(s[0], s[1]);
-}
-
-Matrix &
-Matrix::set_rotate(const Angle &a)
+Matrix3 &
+Matrix3::set_rotate(const Angle &a)
 {
 	value_type c(Angle::cos(a).get());
 	value_type s(Angle::sin(a).get());
 	m00= c;     m01=s;    m02=0.0;
 	m10=-1.0*s; m11=c;    m12=0.0;
 	m20=0.0;    m21=0.0;  m22=1.0;
-	return (*this);
+	return *this;
 }
 
-Matrix &
-Matrix::set_translate(const Vector &t)
-{
-	return set_translate(t[0], t[1]);
-}
-
-Matrix &
-Matrix::set_translate(value_type x, value_type y)
+Matrix3 &
+Matrix3::set_translate(value_type x, value_type y)
 {
 	m00=1.0; m01=0.0; m02=0.0;
 	m10=0.0; m11=1.0; m12=0.0;
 	m20=x  ; m21=y  ; m22=1.0;
-	return (*this);
-}
-
-Vector
-Matrix::get_transformed(const Vector &v, bool translate)const
-{
-	return translate
-		 ? Vector(v[0]*m00+v[1]*m10+m20,
-				  v[0]*m01+v[1]*m11+m21)
-		 : Vector(v[0]*m00+v[1]*m10,
-				  v[0]*m01+v[1]*m11);
+	return *this;
 }
 
 void
-Matrix::get_transformed(value_type &out_x, value_type &out_y, const value_type x, const value_type y, bool translate)const
+Matrix3::get_transformed(value_type &out_x, value_type &out_y, const value_type x, const value_type y, bool translate)const
 {
 	if (translate)
 	{
@@ -155,8 +213,16 @@ Matrix::get_transformed(value_type &out_x, value_type &out_y, const value_type x
 	}
 }
 
-Matrix
-Matrix::operator*=(const Matrix &rhs)
+bool
+Matrix3::operator==(const Matrix3 &rhs) const
+{
+	return fabs(m00 - rhs.m00) < epsilon && fabs(m01 - rhs.m01) < epsilon && fabs(m02 - rhs.m02) < epsilon
+		&& fabs(m10 - rhs.m10) < epsilon && fabs(m11 - rhs.m11) < epsilon && fabs(m12 - rhs.m12) < epsilon
+		&& fabs(m20 - rhs.m20) < epsilon && fabs(m21 - rhs.m21) < epsilon && fabs(m22 - rhs.m22) < epsilon;
+}
+
+Matrix3
+Matrix3::operator*=(const Matrix3 &rhs)
 {
 	value_type x, y, z;
 
@@ -178,8 +244,8 @@ Matrix::operator*=(const Matrix &rhs)
 	return *this;
 }
 
-Matrix
-Matrix::operator*=(const value_type &rhs)
+Matrix3
+Matrix3::operator*=(const value_type &rhs)
 {
 	m00*=rhs;
 	m01*=rhs;
@@ -196,8 +262,8 @@ Matrix::operator*=(const value_type &rhs)
 	return *this;
 }
 
-Matrix
-Matrix::operator+=(const Matrix &rhs)
+Matrix3
+Matrix3::operator+=(const Matrix3 &rhs)
 {
 	m00+=rhs.m00;
 	m01+=rhs.m01;
@@ -210,37 +276,16 @@ Matrix::operator+=(const Matrix &rhs)
 	m20+=rhs.m20;
 	m21+=rhs.m21;
 	m22+=rhs.m22;
+
 	return *this;
 }
 
-Matrix
-Matrix::operator*(const Matrix &rhs)const
-{
-	return Matrix(*this)*=rhs;
-}
-
-Matrix
-Matrix::operator*(const value_type &rhs)const
-{
-	return Matrix(*this)*=rhs;
-}
-
-Matrix
-Matrix::operator+(const Matrix &rhs)const
-{
-	return Matrix(*this)+=rhs;
-}
-
 bool
-Matrix::is_invertible()const
-{
-//	printf("%s:%d Matrix::is_invertible() checking %f * %f != %f*%f\nie. %f != %f\nie. %d\n",
-//		   __FILE__, __LINE__, m00,m11, m01,m10, m00*m11, m01*m10, abs(m00*m11 - m01*m10) > epsilon);
-	return abs(m00*m11 - m01*m10) > epsilon;
-}
+Matrix3::is_invertible()const
+	{ return abs(m00*m11 - m01*m10) > epsilon; }
 
-Matrix&
-Matrix::invert()
+Matrix3&
+Matrix3::invert()
 {
 	if (is_invertible())
 	{
@@ -269,7 +314,7 @@ Matrix::invert()
 }
 
 String
-Matrix::get_string(int spaces, String before, String after)const
+Matrix3::get_string(int spaces, String before, String after)const
 {
 	return etl::strprintf("%*s [%7.2f %7.2f %7.2f] %s\n%*s [%7.2f %7.2f %7.2f]\n%*s [%7.2f %7.2f %7.2f]\n",
 						  spaces, before.c_str(), m00, m01, m02, after.c_str(),

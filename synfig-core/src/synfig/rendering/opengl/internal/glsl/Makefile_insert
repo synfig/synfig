@@ -1,0 +1,12 @@
+RENDERING_OPENGL_INTERNAL_GLSL_FILES = \
+	rendering/opengl/internal/glsl/antialiased_textured_rect_fragment.glsl \
+	rendering/opengl/internal/glsl/antialiased_textured_rect_vertex.glsl \
+	rendering/opengl/internal/glsl/blend_fragment.glsl \
+	rendering/opengl/internal/glsl/color_fragment.glsl \
+	rendering/opengl/internal/glsl/simple_vertex.glsl \
+	rendering/opengl/internal/glsl/texture_fragment.glsl \
+	rendering/opengl/internal/glsl/texture_vertex.glsl
+	
+rendering_opengl_internaldir = ${libdir}/synfig/glsl
+rendering_opengl_internal_DATA = \
+	$(RENDERING_OPENGL_INTERNAL_GLSL_FILES)

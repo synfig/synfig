@@ -32,6 +32,7 @@
 #include "filesystemnative.h"
 #include <giomm.h>
 #include "general.h"
+#include <synfig/localization.h>
 #include "guid.h"
 #include <sys/stat.h>
 

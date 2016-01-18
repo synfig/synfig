@@ -29,6 +29,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "app.h"
 #include "docks/dock_canvasspecific.h"
 
@@ -42,7 +44,7 @@
 #include "canvasview.h"
 #include <ETL/clock>
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

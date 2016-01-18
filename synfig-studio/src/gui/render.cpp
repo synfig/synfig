@@ -30,6 +30,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "render.h"
 #include "app.h"
 #include <gtkmm/frame.h>
@@ -41,7 +43,7 @@
 #include "dialogs/dialog_ffmpegparam.h"
 #include "dialogs/dialog_spritesheetparam.h"
 
-#include "general.h"
+#include <gui/localization.h>
 
 #include <ETL/stringf>
 #include <errno.h>

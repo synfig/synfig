@@ -33,6 +33,7 @@
 
 #include "cairolistimporter.h"
 #include "general.h"
+#include <synfig/localization.h>
 #include "filesystemnative.h"
 #include <fstream>
 

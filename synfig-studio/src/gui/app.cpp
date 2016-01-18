@@ -11,6 +11,7 @@
 **	Copyright (c) 2008, 2010-2013 Carlos López
 **	Copyright (c) 2009, 2011 Nikita Kitaev
 **	Copyright (c) 2012-2015 Konstantin Dmitriev
+**	Copyright (c) 2013-2016 Jerome Blanchi
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -44,25 +45,23 @@
 #elif defined(HAVE_SYS_ERRNO_H)
 #include <sys/errno.h>
 #endif
-#include <gtkmm/filechooserdialog.h>
+#include <gtkmm/accelmap.h>
+#include <gtkmm/cssprovider.h>
 #include <gtkmm/dialog.h>
-#include <gtkmm/messagedialog.h>
+#include <gtkmm/filechooserdialog.h>
+#include <gtkmm/filefilter.h>
+#include <gtkmm/iconsource.h>
 #include <gtkmm/label.h>
+#include <gtkmm/messagedialog.h>
 #include <gtkmm/stock.h>
 #include <gtkmm/stockitem.h>
-#include <gtkmm/iconsource.h>
-#include <gtkmm/accelmap.h>
-#include <gtkmm/uimanager.h>
 #include <gtkmm/textview.h>
-#include <gtkmm/filefilter.h>
-#include <gtkmm/cssprovider.h>
+#include <gtkmm/uimanager.h>
 
 #include <glibmm/main.h>
-#include <glibmm/thread.h>
 #include <glibmm/miscutils.h>
 #include <glibmm/spawn.h>
-
-#include <gtk/gtk.h>
+#include <glibmm/thread.h>
 
 #include <gdkmm/general.h>
 
@@ -71,85 +70,81 @@
 #include <windows.h>
 #endif
 
-#include <synfig/loadcanvas.h>
-#include <synfig/savecanvas.h>
-#include <synfig/importer.h>
+#include <synfig/general.h>
+
 #include <synfig/filesystemnative.h>
 #include <synfig/filesystemgroup.h>
 #include <synfig/filecontainertemporary.h>
+#include <synfig/importer.h>
+#include <synfig/loadcanvas.h>
+#include <synfig/savecanvas.h>
 
 #include "app.h"
-#include "dialogs/about.h"
 #include "splash.h"
 #include "instance.h"
 #include "canvasview.h"
-#include "dialogs/dialog_setup.h"
+#include "dialogs/about.h"
+#include "dialogs/dialog_color.h"
 #include "dialogs/dialog_gradient.h"
 #include "dialogs/dialog_input.h"
-#include "dialogs/dialog_color.h"
-#include "mainwindow.h"
-#include "docks/dock_toolbox.h"
+#include "dialogs/dialog_setup.h"
 #include "onemoment.h"
+#include "devicetracker.h"
+#include "widgets/widget_enum.h"
 
-#include "docks/dockmanager.h"
+#include "statemanager.h"
 
-#include "states/state_eyedrop.h"
-#include "states/state_normal.h"
-#include "states/state_mirror.h"
-#include "states/state_draw.h"
-#include "states/state_lasso.h"
-#include "states/state_fill.h"
 #include "states/state_bline.h"
 #include "states/state_brush.h"
-#include "states/state_polygon.h"
-#include "states/state_sketch.h"
-#include "states/state_gradient.h"
 #include "states/state_circle.h"
+#include "states/state_draw.h"
+#include "states/state_eyedrop.h"
+#include "states/state_fill.h"
+#include "states/state_gradient.h"
+#include "states/state_lasso.h"
+#include "states/state_mirror.h"
+#include "states/state_normal.h"
+#include "states/state_polygon.h"
 #include "states/state_rectangle.h"
-#include "states/state_smoothmove.h"
+#include "states/state_rotate.h"
 #include "states/state_scale.h"
+#include "states/state_sketch.h"
+#include "states/state_smoothmove.h"
 #include "states/state_star.h"
 #include "states/state_text.h"
 #include "states/state_width.h"
-#include "states/state_rotate.h"
 #include "states/state_zoom.h"
-
-#include "devicetracker.h"
-#include "docks/dialog_tooloptions.h"
-#include "widgets/widget_enum.h"
 
 #include "autorecover.h"
 
 #include <synfigapp/settings.h>
-#include "docks/dock_history.h"
+
+#include "docks/dockmanager.h"
+#include "docks/dialog_tooloptions.h"
 #include "docks/dock_canvases.h"
+#include "docks/dock_children.h"
+#include "docks/dock_curves.h"
+#include "docks/dock_history.h"
+#include "docks/dock_info.h"
 #include "docks/dock_keyframes.h"
 #include "docks/dock_layers.h"
+#include "docks/dock_layergroups.h"
 #include "docks/dock_params.h"
 #include "docks/dock_metadata.h"
-#include "docks/dock_children.h"
-#include "docks/dock_info.h"
 #include "docks/dock_navigator.h"
-#include "docks/dock_layergroups.h"
 #include "docks/dock_timetrack.h"
-#include "docks/dock_curves.h"
+#include "docks/dock_toolbox.h"
 
 #include "modules/module.h"
 #include "modules/mod_palette/mod_palette.h"
 
 #include "ipc.h"
 
-#include "statemanager.h"
-
 #ifdef WITH_FMOD
 #include <fmod.h>
 #endif
 
-#include <gtkmm/accelmap.h>
-#include <gtkmm/filechooser.h>
-#include <gtkmm/filechooserdialog.h>
-
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 
@@ -289,11 +284,11 @@ std::list< etl::handle< studio::Module > > module_list_;
 
 bool studio::App::use_colorspace_gamma=true;
 #ifdef SINGLE_THREADED
-	#ifdef	WIN32
+	//#ifdef	WIN32
 	bool studio::App::single_threaded=true;
-	#else
-	bool studio::App::single_threaded=false;
-	#endif // WIN32
+	//#else
+	//bool studio::App::single_threaded=false;
+	//#endif // WIN32
 #endif  // SINGLE THREADED
 bool studio::App::restrict_radius_ducks=true;
 bool studio::App::resize_imported_images=false;
@@ -311,13 +306,14 @@ String studio::App::browser_command("open"); // MacOS only
 #else
 String studio::App::browser_command("xdg-open"); // Linux XDG standard
 #endif
-String studio::App::brushes_path("");
+std::set< String > studio::App::brushes_path;
 String studio::App::sequence_separator(".");
-bool studio::App::navigator_uses_cairo=false;
-bool studio::App::workarea_uses_cairo=false;
+String studio::App::navigator_renderer;
+String studio::App::workarea_renderer;
 
 bool studio::App::enable_mainwin_menubar = true;
 String studio::App::ui_language ("os_LANG");
+long studio::App::ui_handle_tooltip_flag(Duck::STRUCT_DEFAULT);
 
 static int max_recent_files_=25;
 int studio::App::get_max_recent_files() { return max_recent_files_; }
@@ -538,6 +534,11 @@ public:
 				return true;
 			}
 #endif
+			if(key=="auto_recover_backup")
+			{
+				value=strprintf("%i",App::auto_recover->get_enable());
+				return true;
+			}
 			if(key=="auto_recover_backup_interval")
 			{
 				value=strprintf("%i",App::auto_recover->get_timeout());
@@ -568,9 +569,13 @@ public:
 				value=App::browser_command;
 				return true;
 			}
+			//! "Keep brushes_path" preferences entry for backward compatibilty (15/12 - v1.0.3)
+			//! Now brush path(s) are hold by input preferences : brush.path_count & brush.path_%d
 			if(key=="brushes_path")
 			{
-				value=App::brushes_path;
+				value="";
+				if(!App::brushes_path.empty())
+					value=*(App::brushes_path.begin());
 				return true;
 			}
 			if(key=="custom_filename_prefix")
@@ -608,19 +613,24 @@ public:
 				value=App::sequence_separator;
 				return true;
 			}
-			if(key=="navigator_uses_cairo")
+			if(key=="navigator_renderer")
 			{
-				value=strprintf("%i",(int)App::navigator_uses_cairo);
+				value=App::navigator_renderer;
 				return true;
 			}
-			if(key=="workarea_uses_cairo")
+			if(key=="workarea_renderer")
 			{
-				value=strprintf("%i",(int)App::workarea_uses_cairo);
+				value=App::workarea_renderer;
 				return true;
 			}
 			if(key=="enable_mainwin_menubar")
 			{
 				value=strprintf("%i", (int)App::enable_mainwin_menubar);
+				return true;
+			}
+			if(key=="ui_handle_tooltip_flag")
+			{
+				value=strprintf("%il", (long)App::ui_handle_tooltip_flag);
 				return true;
 			}
 		}
@@ -655,6 +665,12 @@ public:
 			{
 				int i(atoi(value.c_str()));
 				App::set_time_format(static_cast<synfig::Time::Format>(i));
+				return true;
+			}
+			if(key=="auto_recover_backup")
+			{
+				int i(atoi(value.c_str()));
+				App::auto_recover->enable(i);
 				return true;
 			}
 			if(key=="auto_recover_backup_interval")
@@ -717,9 +733,11 @@ public:
 				App::browser_command=value;
 				return true;
 			}
+			//! "Keep brushes_path" preferences entry for backward compatibilty (15/12 - v1.0.3)
+			//! Now brush path(s) are hold by input preferences : brush.path_count & brush.path_%d
 			if(key=="brushes_path")
 			{
-				App::brushes_path=value;
+				App::brushes_path.insert(value);
 				return true;
 			}
 			if(key=="custom_filename_prefix")
@@ -760,22 +778,26 @@ public:
 				App::sequence_separator=value;
 				return true;
 			}
-			if(key=="navigator_uses_cairo")
+			if(key=="navigator_renderer")
 			{
-				int i(atoi(value.c_str()));
-				App::navigator_uses_cairo=i;
+				App::navigator_renderer=value;
 				return true;
 			}
-			if(key=="workarea_uses_cairo")
+			if(key=="workarea_renderer")
 			{
-				int i(atoi(value.c_str()));
-				App::workarea_uses_cairo=i;
+				App::workarea_renderer=value;
 				return true;
 			}
 			if(key=="enable_mainwin_menubar")
 			{
 				int i(atoi(value.c_str()));
 				App::enable_mainwin_menubar = i;
+				return true;
+			}
+			if(key=="ui_handle_tooltip_flag")
+			{
+				long l(atol(value.c_str()));
+				App::ui_handle_tooltip_flag = l;
 				return true;
 			}
 		}
@@ -797,6 +819,7 @@ public:
 #ifdef SINGLE_THREADED
 		ret.push_back("use_single_threaded");
 #endif
+		ret.push_back("auto_recover_backup");
 		ret.push_back("auto_recover_backup_interval");
 		ret.push_back("restrict_radius_ducks");
 		ret.push_back("resize_imported_images");
@@ -812,9 +835,10 @@ public:
 		ret.push_back("preferred_fps");
 		ret.push_back("predefined_fps");
 		ret.push_back("sequence_separator");
-		ret.push_back("navigator_uses_cairo");
-		ret.push_back("workarea_uses_cairo");
+		ret.push_back("navigator_renderer");
+		ret.push_back("workarea_renderer");
 		ret.push_back("enable_mainwin_menubar");
+		ret.push_back("ui_handle_tooltip_flag");
 
 		return ret;
 	}
@@ -899,16 +923,17 @@ DEFINE_ACTION("restore-default-settings", _("Restore Defaults"));
 DEFINE_ACTION("toggle-mainwin-menubar", _("Menubar"));
 DEFINE_ACTION("toggle-mainwin-toolbar", _("Toolbar"));
 
+DEFINE_ACTION("mask-none-ducks", _("Toggle None/Last visible Handles"));
 DEFINE_ACTION("mask-position-ducks", _("Show Position Handles"));
 DEFINE_ACTION("mask-vertex-ducks", _("Show Vertex Handles"));
 DEFINE_ACTION("mask-tangent-ducks", _("Show Tangent Handles"));
 DEFINE_ACTION("mask-radius-ducks", _("Show Radius Handles"));
 DEFINE_ACTION("mask-width-ducks", _("Show Width Handles"));
+DEFINE_ACTION("mask-widthpoint-position-ducks", _("Show WidthPoints Position Handles"));
 DEFINE_ACTION("mask-angle-ducks", _("Show Angle Handles"));
 DEFINE_ACTION("mask-bone-setup-ducks", _("Show Bone Setup Handles"));
 DEFINE_ACTION("mask-bone-recursive-ducks", _("Show Recursive Scale Bone Handles"));
 DEFINE_ACTION("mask-bone-ducks", _("Next Bone Handles"));
-DEFINE_ACTION("mask-widthpoint-position-ducks", _("Show WidthPoints Position Handles"));
 DEFINE_ACTION("quality-00", _("Use Parametric Renderer"));
 DEFINE_ACTION("quality-01", _("Use Quality Level 1"));
 DEFINE_ACTION("quality-02", _("Use Quality Level 2"));
@@ -1035,16 +1060,17 @@ DEFINE_ACTION("keyframe-properties","Properties");
 "		<menuitem action='toggle-mainwin-toolbar' />"
 "		<separator />"
 "		<menu action='menu-duck-mask'>"
+"			<menuitem action='mask-none-ducks' />"
 "			<menuitem action='mask-position-ducks' />"
 "			<menuitem action='mask-vertex-ducks' />"
 "			<menuitem action='mask-tangent-ducks' />"
 "			<menuitem action='mask-radius-ducks' />"
 "			<menuitem action='mask-width-ducks' />"
+"			<menuitem action='mask-widthpoint-position-ducks' />"
 "			<menuitem action='mask-angle-ducks' />"
 "			<menuitem action='mask-bone-setup-ducks' />"
 "			<menuitem action='mask-bone-recursive-ducks' />"
 "			<menuitem action='mask-bone-ducks' />"
-"			<menuitem action='mask-widthpoint-position-ducks' />"
 "		</menu>"
 "		<menu action='menu-preview-quality'>"
 "			<menuitem action='quality-00' />"
@@ -1118,7 +1144,7 @@ DEFINE_ACTION("keyframe-properties","Properties");
 		// TODO: (Plugins) Arrange menu items into groups
 
 		synfigapp::PluginManager::plugin plugin = *p;
-		
+
 		DEFINE_ACTION(plugin.id, plugin.name);
 		ui_info_menu += strprintf("	<menuitem action='%s'/>", plugin.id.c_str());
 	}
@@ -1219,87 +1245,88 @@ DEFINE_ACTION("keyframe-properties","Properties");
 	}
 
 	// the toolbox
-	ACCEL("<Mod1>a",													"<Actions>/action_group_state_manager/state-normal"					);
-	ACCEL("<Mod1>v",													"<Actions>/action_group_state_manager/state-smooth_move"				);
-	ACCEL("<Mod1>s",													"<Actions>/action_group_state_manager/state-scale"					);
-	ACCEL("<Mod1>t",													"<Actions>/action_group_state_manager/state-rotate"					);
-	ACCEL("<Mod1>m",													"<Actions>/action_group_state_manager/state-mirror"					);
-	ACCEL("<Mod1>c",													"<Actions>/action_group_state_manager/state-circle"					);
-	ACCEL("<Mod1>r",													"<Actions>/action_group_state_manager/state-rectangle"				);
-	ACCEL("<Mod1>q",													"<Actions>/action_group_state_manager/state-star"						);
-	ACCEL("<Mod1>g",													"<Actions>/action_group_state_manager/state-gradient"					);
-	ACCEL("<Mod1>p",													"<Actions>/action_group_state_manager/state-polygon"					);
-	ACCEL("<Mod1>b",													"<Actions>/action_group_state_manager/state-bline"					);
-	ACCEL("<Mod1>x",													"<Actions>/action_group_state_manager/state-text"						);
-	ACCEL("<Mod1>f",													"<Actions>/action_group_state_manager/state-fill"						);
-	ACCEL("<Mod1>e",													"<Actions>/action_group_state_manager/state-eyedrop"					);
-	ACCEL("<Mod1>z",													"<Actions>/action_group_state_manager/state-zoom"						);
-	ACCEL("<Mod1>d",													"<Actions>/action_group_state_manager/state-draw"						);
-	ACCEL("<Mod1>k",													"<Actions>/action_group_state_manager/state-sketch"					);
-	ACCEL("<Mod1>w",													"<Actions>/action_group_state_manager/state-width"					);
+	ACCEL("<Mod1>a",								"<Actions>/action_group_state_manager/state-normal"			);
+	ACCEL("<Mod1>v",								"<Actions>/action_group_state_manager/state-smooth_move"		);
+	ACCEL("<Mod1>s",								"<Actions>/action_group_state_manager/state-scale"			);
+	ACCEL("<Mod1>t",								"<Actions>/action_group_state_manager/state-rotate"			);
+	ACCEL("<Mod1>m",								"<Actions>/action_group_state_manager/state-mirror"			);
+	ACCEL("<Mod1>c",								"<Actions>/action_group_state_manager/state-circle"			);
+	ACCEL("<Mod1>r",								"<Actions>/action_group_state_manager/state-rectangle"			);
+	ACCEL("<Mod1>q",								"<Actions>/action_group_state_manager/state-star"			);
+	ACCEL("<Mod1>g",								"<Actions>/action_group_state_manager/state-gradient"			);
+	ACCEL("<Mod1>p",								"<Actions>/action_group_state_manager/state-polygon"			);
+	ACCEL("<Mod1>b",								"<Actions>/action_group_state_manager/state-bline"			);
+	ACCEL("<Mod1>x",								"<Actions>/action_group_state_manager/state-text"			);
+	ACCEL("<Mod1>f",								"<Actions>/action_group_state_manager/state-fill"			);
+	ACCEL("<Mod1>e",								"<Actions>/action_group_state_manager/state-eyedrop"			);
+	ACCEL("<Mod1>z",								"<Actions>/action_group_state_manager/state-zoom"			);
+	ACCEL("<Mod1>d",								"<Actions>/action_group_state_manager/state-draw"			);
+	ACCEL("<Mod1>k",								"<Actions>/action_group_state_manager/state-sketch"			);
+	ACCEL("<Mod1>w",								"<Actions>/action_group_state_manager/state-width"			);
 
 	// everything else
-	ACCEL("<Control>a",													"<Actions>/canvasview/select-all-ducks"				);
-	ACCEL("<Control>d",													"<Actions>/canvasview/unselect-all-ducks"				);
-	ACCEL("<Control><Shift>a",											"<Actions>/canvasview/select-all-layers"				);
-	ACCEL("<Control><Shift>d",											"<Actions>/canvasview/unselect-all-layers"			);
-	ACCEL("F9",															"<Actions>/canvasview/render"							);
-	ACCEL("F11",														"<Actions>/canvasview/preview"						);
-	ACCEL("F8",															"<Actions>/canvasview/properties"						);
-	ACCEL("F12",														"<Actions>/canvasview/options"						);
-	ACCEL("<control>i",													"<Actions>/canvasview/import"							);
-	ACCEL2(Gtk::AccelKey(GDK_KEY_Escape,static_cast<Gdk::ModifierType>(0), "<Actions>/canvasview/stop"							));
-	ACCEL("<Control>g",													"<Actions>/canvasview/toggle-grid-show"				);
-	ACCEL("<Control>l",													"<Actions>/canvasview/toggle-grid-snap"				);
-	ACCEL("<Control>n",													"<Actions>/mainwindow/new"				);
-	ACCEL("<Control>o",													"<Actions>/mainwindow/open"				);
-	ACCEL("<Control>s",													"<Actions>/canvasview/save"				);
-	ACCEL("<Control><Shift>s",											"<Actions>/canvasview/save-as"				);
-	ACCEL2(Gtk::AccelKey('`',Gdk::CONTROL_MASK,							"<Actions>/canvasview/toggle-low-res"					));
-	ACCEL("<Mod1>1",													"<Actions>/canvasview/mask-position-ducks"			);
-	ACCEL("<Mod1>2",													"<Actions>/canvasview/mask-vertex-ducks"				);
-	ACCEL("<Mod1>3",													"<Actions>/canvasview/mask-tangent-ducks"				);
-	ACCEL("<Mod1>4",													"<Actions>/canvasview/mask-radius-ducks"				);
-	ACCEL("<Mod1>5",													"<Actions>/canvasview/mask-width-ducks"				);
-	ACCEL("<Mod1>6",													"<Actions>/canvasview/mask-angle-ducks"				);
-	ACCEL("<Mod1>7",													"<Actions>/canvasview/mask-bone-setup-ducks"			);
-	ACCEL("<Mod1>8",													"<Actions>/canvasview/mask-bone-recursive-ducks"		);
-	ACCEL("<Mod1>9",													"<Actions>/canvasview/mask-bone-ducks"				);
-	ACCEL("<Mod1>5",													"<Actions>/canvasview/mask-widthpoint-position-ducks"				);
-	ACCEL2(Gtk::AccelKey(GDK_KEY_Page_Up,Gdk::SHIFT_MASK,				"<Actions>/action_group_layer_action_manager/action-LayerRaise"				));
-	ACCEL2(Gtk::AccelKey(GDK_KEY_Page_Down,Gdk::SHIFT_MASK,				"<Actions>/action_group_layer_action_manager/action-LayerLower"				));
-	ACCEL("<Control>1",													"<Actions>/canvasview/quality-01"						);
-	ACCEL("<Control>2",													"<Actions>/canvasview/quality-02"						);
-	ACCEL("<Control>3",													"<Actions>/canvasview/quality-03"						);
-	ACCEL("<Control>4",													"<Actions>/canvasview/quality-04"						);
-	ACCEL("<Control>5",													"<Actions>/canvasview/quality-05"						);
-	ACCEL("<Control>6",													"<Actions>/canvasview/quality-06"						);
-	ACCEL("<Control>7",													"<Actions>/canvasview/quality-07"						);
-	ACCEL("<Control>8",													"<Actions>/canvasview/quality-08"						);
-	ACCEL("<Control>9",													"<Actions>/canvasview/quality-09"						);
-	ACCEL("<Control>0",													"<Actions>/canvasview/quality-10"						);
-	ACCEL("<Control>z",													"<Actions>/action_group_dock_history/undo"							);
-	ACCEL("<Control>r",													"<Actions>/action_group_dock_history/redo"							);
-	ACCEL2(Gtk::AccelKey(GDK_KEY_Delete,Gdk::CONTROL_MASK,				"<Actions>/action_group_layer_action_manager/action-LayerRemove"				));
-	ACCEL2(Gtk::AccelKey('(',Gdk::CONTROL_MASK,							"<Actions>/canvasview/decrease-low-res-pixel-size"	));
-	ACCEL2(Gtk::AccelKey(')',Gdk::CONTROL_MASK,							"<Actions>/canvasview/increase-low-res-pixel-size"	));
-	ACCEL2(Gtk::AccelKey('(',Gdk::MOD1_MASK|Gdk::CONTROL_MASK,			"<Actions>/action_group_layer_action_manager/amount-dec"						));
-	ACCEL2(Gtk::AccelKey(')',Gdk::MOD1_MASK|Gdk::CONTROL_MASK,			"<Actions>/action_group_layer_action_manager/amount-inc"						));
-	ACCEL2(Gtk::AccelKey(']',Gdk::CONTROL_MASK,							"<Actions>/canvasview/jump-next-keyframe"				));
-	ACCEL2(Gtk::AccelKey('[',Gdk::CONTROL_MASK,							"<Actions>/canvasview/jump-prev-keyframe"				));
-	ACCEL2(Gtk::AccelKey('=',Gdk::CONTROL_MASK,							"<Actions>/canvasview/canvas-zoom-in"					));
-	ACCEL2(Gtk::AccelKey('-',Gdk::CONTROL_MASK,							"<Actions>/canvasview/canvas-zoom-out"				));
-	ACCEL2(Gtk::AccelKey('+',Gdk::CONTROL_MASK,							"<Actions>/canvasview/time-zoom-in"					));
-	ACCEL2(Gtk::AccelKey('_',Gdk::CONTROL_MASK,							"<Actions>/canvasview/time-zoom-out"					));
-	ACCEL2(Gtk::AccelKey('.',Gdk::CONTROL_MASK,							"<Actions>/canvasview/seek-next-frame"				));
-	ACCEL2(Gtk::AccelKey(',',Gdk::CONTROL_MASK,							"<Actions>/canvasview/seek-prev-frame"				));
-	ACCEL2(Gtk::AccelKey('>',Gdk::CONTROL_MASK,							"<Actions>/canvasview/seek-next-second"				));
-	ACCEL2(Gtk::AccelKey('<',Gdk::CONTROL_MASK,							"<Actions>/canvasview/seek-prev-second"				));
-	ACCEL("<Mod1>o",													"<Actions>/canvasview/toggle-onion-skin"				);
-	ACCEL("<Control><Shift>z",											"<Actions>/canvasview/canvas-zoom-fit"				);
-	ACCEL("<Control>p",													"<Actions>/canvasview/play"							);
-	ACCEL("Home",														"<Actions>/canvasview/seek-begin"						);
-	ACCEL("End",														"<Actions>/canvasview/seek-end"						);
+	ACCEL("<Control>a",								"<Actions>/canvasview/select-all-ducks"					);
+	ACCEL("<Control>d",								"<Actions>/canvasview/unselect-all-ducks"				);
+	ACCEL("<Control><Shift>a",							"<Actions>/canvasview/select-all-layers"				);
+	ACCEL("<Control><Shift>d",							"<Actions>/canvasview/unselect-all-layers"				);
+	ACCEL("F9",									"<Actions>/canvasview/render"						);
+	ACCEL("F11",									"<Actions>/canvasview/preview"						);
+	ACCEL("F8",									"<Actions>/canvasview/properties"					);
+	ACCEL("F12",									"<Actions>/canvasview/options"						);
+	ACCEL("<control>i",								"<Actions>/canvasview/import"						);
+	ACCEL2(Gtk::AccelKey(GDK_KEY_Escape,static_cast<Gdk::ModifierType>(0), 		"<Actions>/canvasview/stop"						));
+	ACCEL("<Control>g",								"<Actions>/canvasview/toggle-grid-show"					);
+	ACCEL("<Control>l",								"<Actions>/canvasview/toggle-grid-snap"					);
+	ACCEL("<Control>n",								"<Actions>/mainwindow/new"						);
+	ACCEL("<Control>o",								"<Actions>/mainwindow/open"						);
+	ACCEL("<Control>s",								"<Actions>/canvasview/save"						);
+	ACCEL("<Control><Shift>s",							"<Actions>/canvasview/save-as"						);
+	ACCEL2(Gtk::AccelKey('`',Gdk::CONTROL_MASK,					"<Actions>/canvasview/toggle-low-res"					));
+	ACCEL("<Mod1>0",                                                    		"<Actions>/canvasview/mask-none-ducks"          			);
+	ACCEL("<Mod1>1",								"<Actions>/canvasview/mask-position-ducks"				);
+	ACCEL("<Mod1>2",								"<Actions>/canvasview/mask-vertex-ducks"				);
+	ACCEL("<Mod1>3",								"<Actions>/canvasview/mask-tangent-ducks"				);
+	ACCEL("<Mod1>4",								"<Actions>/canvasview/mask-radius-ducks"				);
+	ACCEL("<Mod1>5",								"<Actions>/canvasview/mask-width-ducks"					);
+	ACCEL("<Mod1>6",								"<Actions>/canvasview/mask-angle-ducks"					);
+	ACCEL("<Mod1>7",								"<Actions>/canvasview/mask-bone-setup-ducks"				);
+	ACCEL("<Mod1>8",								"<Actions>/canvasview/mask-bone-recursive-ducks"			);
+	ACCEL("<Mod1>9",								"<Actions>/canvasview/mask-bone-ducks"					);
+	ACCEL("<Mod1>5",								"<Actions>/canvasview/mask-widthpoint-position-ducks"			);
+	ACCEL2(Gtk::AccelKey(GDK_KEY_Page_Up,Gdk::SHIFT_MASK,				"<Actions>/action_group_layer_action_manager/action-LayerRaise"		));
+	ACCEL2(Gtk::AccelKey(GDK_KEY_Page_Down,Gdk::SHIFT_MASK,				"<Actions>/action_group_layer_action_manager/action-LayerLower"		));
+	ACCEL("<Control>1",								"<Actions>/canvasview/quality-01"					);
+	ACCEL("<Control>2",								"<Actions>/canvasview/quality-02"					);
+	ACCEL("<Control>3",								"<Actions>/canvasview/quality-03"					);
+	ACCEL("<Control>4",								"<Actions>/canvasview/quality-04"					);
+	ACCEL("<Control>5",								"<Actions>/canvasview/quality-05"					);
+	ACCEL("<Control>6",								"<Actions>/canvasview/quality-06"					);
+	ACCEL("<Control>7",								"<Actions>/canvasview/quality-07"					);
+	ACCEL("<Control>8",								"<Actions>/canvasview/quality-08"					);
+	ACCEL("<Control>9",								"<Actions>/canvasview/quality-09"					);
+	ACCEL("<Control>0",								"<Actions>/canvasview/quality-10"					);
+	ACCEL("<Control>z",								"<Actions>/action_group_dock_history/undo"				);
+	ACCEL("<Control>r",								"<Actions>/action_group_dock_history/redo"				);
+	ACCEL2(Gtk::AccelKey(GDK_KEY_Delete,Gdk::CONTROL_MASK,				"<Actions>/action_group_layer_action_manager/action-LayerRemove"	));
+	ACCEL2(Gtk::AccelKey('(',Gdk::CONTROL_MASK,					"<Actions>/canvasview/decrease-low-res-pixel-size"			));
+	ACCEL2(Gtk::AccelKey(')',Gdk::CONTROL_MASK,					"<Actions>/canvasview/increase-low-res-pixel-size"			));
+	ACCEL2(Gtk::AccelKey('(',Gdk::MOD1_MASK|Gdk::CONTROL_MASK,			"<Actions>/action_group_layer_action_manager/amount-dec"		));
+	ACCEL2(Gtk::AccelKey(')',Gdk::MOD1_MASK|Gdk::CONTROL_MASK,			"<Actions>/action_group_layer_action_manager/amount-inc"		));
+	ACCEL2(Gtk::AccelKey(']',Gdk::CONTROL_MASK,					"<Actions>/canvasview/jump-next-keyframe"				));
+	ACCEL2(Gtk::AccelKey('[',Gdk::CONTROL_MASK,					"<Actions>/canvasview/jump-prev-keyframe"				));
+	ACCEL2(Gtk::AccelKey('=',Gdk::CONTROL_MASK,					"<Actions>/canvasview/canvas-zoom-in"					));
+	ACCEL2(Gtk::AccelKey('-',Gdk::CONTROL_MASK,					"<Actions>/canvasview/canvas-zoom-out"					));
+	ACCEL2(Gtk::AccelKey('+',Gdk::CONTROL_MASK,					"<Actions>/canvasview/time-zoom-in"					));
+	ACCEL2(Gtk::AccelKey('_',Gdk::CONTROL_MASK,					"<Actions>/canvasview/time-zoom-out"					));
+	ACCEL2(Gtk::AccelKey('.',Gdk::CONTROL_MASK,					"<Actions>/canvasview/seek-next-frame"					));
+	ACCEL2(Gtk::AccelKey(',',Gdk::CONTROL_MASK,					"<Actions>/canvasview/seek-prev-frame"					));
+	ACCEL2(Gtk::AccelKey('>',Gdk::CONTROL_MASK,					"<Actions>/canvasview/seek-next-second"					));
+	ACCEL2(Gtk::AccelKey('<',Gdk::CONTROL_MASK,					"<Actions>/canvasview/seek-prev-second"					));
+	ACCEL("<Mod1>o",								"<Actions>/canvasview/toggle-onion-skin"				);
+	ACCEL("<Control><Shift>z",							"<Actions>/canvasview/canvas-zoom-fit"					);
+	ACCEL("<Control>p",								"<Actions>/canvasview/play"						);
+	ACCEL("Home",									"<Actions>/canvasview/seek-begin"					);
+	ACCEL("End",									"<Actions>/canvasview/seek-end"						);
 
 
 #undef ACCEL
@@ -1325,7 +1352,7 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 	{
 		Glib::setenv ("LANGUAGE",  App::ui_language.c_str(), 1);
 	}
-	
+
 	std::string path_to_icons;
 #ifdef WIN32
 	path_to_icons=basepath+ETL_DIRECTORY_SEPARATOR+".."+ETL_DIRECTORY_SEPARATOR+IMAGE_DIR;
@@ -1344,7 +1371,7 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 	}
 	path_to_icons+=ETL_DIRECTORY_SEPARATOR;
 	init_icons(path_to_icons);
-	
+
 	ui_interface_=new GlobalUIInterface();
 
 	// don't call thread_init() if threads are already initialized
@@ -1390,10 +1417,10 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 	shutdown_in_progress=false;
 	SuperCallback synfig_init_cb(splash_screen.get_callback(),0,9000,10000);
 	SuperCallback studio_init_cb(splash_screen.get_callback(),9000,10000,10000);
-		
+
 	// Initialize the Synfig library
 	try { synfigapp_main=etl::smart_ptr<synfigapp::Main>(new synfigapp::Main(basepath,&synfig_init_cb)); }
-	catch(std::runtime_error x)
+	catch(std::runtime_error &x)
 	{
 		get_ui_interface()->error(strprintf("%s\n\n%s", _("Failed to initialize synfig!"), x.what()));
 		throw;
@@ -1404,7 +1431,7 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		throw;
 	}
 
-	
+
 	// add the preferences to the settings
 	synfigapp::Main::settings().add_domain(&_preferences,"pref");
 
@@ -1413,7 +1440,7 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		// Try to load settings early to get access to some important
 		// values, like "enable_experimental_features".
 		studio_init_cb.task(_("Loading Basic Settings..."));
-		
+
 		load_settings("pref.use_dark_theme");
 		App::apply_gtk_settings(App::use_dark_theme);
 
@@ -1424,9 +1451,9 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		load_settings("pref.enable_mainwin_menubar");
 
 		studio_init_cb.task(_("Loading Plugins..."));
-		
+
 		std::string pluginsprefix;
-	
+
 		// system plugins path
 #ifdef WIN32
 		pluginsprefix=App::get_base_path()+ETL_DIRECTORY_SEPARATOR+PLUGIN_DIR;
@@ -1441,11 +1468,11 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 				+ETL_DIRECTORY_SEPARATOR+"plugins";
 		}
 		plugin_manager.load_dir(pluginsprefix);
-		
+
 		// user plugins path
 		pluginsprefix=Glib::build_filename(synfigapp::Main::get_user_app_directory(),"plugins");
 		plugin_manager.load_dir(pluginsprefix);
-		
+
 		studio_init_cb.task(_("Init UI Manager..."));
 		App::ui_manager_=studio::UIManager::create();
 		init_ui_manager();
@@ -1543,7 +1570,7 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		studio_init_cb.task(_("Init Input Dialog..."));
 		dialog_input=new studio::Dialog_Input(*App::main_window);
 		dialog_input->signal_apply().connect( sigc::mem_fun( *device_tracker, &DeviceTracker::save_preferences) );
-		
+
 		studio_init_cb.task(_("Init auto recovery..."));
 		auto_recover=new AutoRecover();
 
@@ -1695,7 +1722,7 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 					details,
 					_("Got it"));
 	}
-	catch(String x)
+	catch(String &x)
 	{
 		get_ui_interface()->error(_("Unknown exception caught when constructing App.\nThis software may be unstable.") + String("\n\n") + x);
 	}
@@ -2026,7 +2053,7 @@ App::set_workspace_default()
 			"]"
 		"]"
 	"]";
-         
+
 	std::string layout = DockManager::layout_from_template(tpl, dx, dy, sx, sy);
 	dock_manager->load_layout_from_string(layout);
 	dock_manager->show_all_dock_dialogs();
@@ -2102,6 +2129,7 @@ App::set_workspace_animating()
 void
 App::restore_default_settings()
 {
+	// TODO autorecover default auto_recover_backup_interval
 	synfigapp::Main::settings().set_value("pref.distance_system","pt");
 	synfigapp::Main::settings().set_value("pref.use_colorspace_gamma","1");
 #ifdef SINGLE_THREADED
@@ -2118,9 +2146,13 @@ App::restore_default_settings()
 	synfigapp::Main::settings().set_value("pref.preferred_fps","24.0");
 	synfigapp::Main::settings().set_value("pref.predefined_fps",DEFAULT_PREDEFINED_FPS);
 	synfigapp::Main::settings().set_value("sequence_separator", ".");
-	synfigapp::Main::settings().set_value("navigator_uses_cairo", "0");
-	synfigapp::Main::settings().set_value("workarea_uses_cairo", "0");
+	synfigapp::Main::settings().set_value("navigator_renderer", "");
+	synfigapp::Main::settings().set_value("workarea_renderer", "");
 	synfigapp::Main::settings().set_value("pref.enable_mainwin_menubar", "1");
+	ostringstream temp;
+	temp << Duck::STRUCT_DEFAULT;
+	synfigapp::Main::settings().set_value("pref.ui_handle_tooltip_flag", temp.str());
+	synfigapp::Main::settings().set_value("pref.auto_recover_backup", "1");
 }
 
 void
@@ -2128,18 +2160,18 @@ App::apply_gtk_settings(bool use_dark)
 {
 	GtkSettings *gtk_settings;
 	gtk_settings = gtk_settings_get_default ();
-	
+
 	gchar *theme_name=getenv("SYNFIG_GTK_THEME");
 	if(theme_name) {
 		g_object_set (G_OBJECT (gtk_settings), "gtk-theme-name", theme_name, NULL);
 	}
-	
+
 	// dark theme
 	g_object_set (G_OBJECT (gtk_settings), "gtk-application-prefer-dark-theme", use_dark, NULL);
-	
+
 	// enable menu icons
 	g_object_set (G_OBJECT (gtk_settings), "gtk-menu-images", TRUE, NULL);
-	
+
 	// fix checkboxes for Adwaita theme
 	g_object_get (G_OBJECT (gtk_settings), "gtk-theme-name", &theme_name, NULL);
 	if ( String(theme_name) == "Adwaita" ){
@@ -2329,8 +2361,8 @@ App::dialog_open_file(const std::string &title, std::string &filename, std::stri
 
 	dialog->set_transient_for(*App::main_window);
 	dialog->set_current_folder(prev_path);
-	dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
-	dialog->add_button(Gtk::StockID(_("Import")), Gtk::RESPONSE_ACCEPT);
+	dialog->add_button(_("Cancel"), Gtk::RESPONSE_CANCEL)->set_image_from_icon_name("gtk-cancel", Gtk::ICON_SIZE_BUTTON);
+	dialog->add_button(_("Import"),   Gtk::RESPONSE_ACCEPT)->set_image_from_icon_name("gtk-open", Gtk::ICON_SIZE_BUTTON);
 
 	// 0 All supported files
 	// 0.1 Synfig documents. sfg is not supported to import
@@ -2444,9 +2476,9 @@ App::dialog_open_file_spal(const std::string &title, std::string &filename, std:
 
 	dialog->set_transient_for(*App::main_window);
 	dialog->set_current_folder(prev_path);
-	dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
-	dialog->add_button(Gtk::StockID(_("Open")), Gtk::RESPONSE_ACCEPT);
-	
+	dialog->add_button(_("Cancel"), Gtk::RESPONSE_CANCEL)->set_image_from_icon_name("gtk-cancel", Gtk::ICON_SIZE_BUTTON);
+	dialog->add_button(_("Load"),   Gtk::RESPONSE_ACCEPT)->set_image_from_icon_name("gtk-open", Gtk::ICON_SIZE_BUTTON);
+
 	Glib::RefPtr<Gtk::FileFilter> filter_supported = Gtk::FileFilter::create();
 	filter_supported->set_name(_("Palette files (*.spal, *.gpl)"));
 	filter_supported->add_pattern("*.spal");
@@ -2458,7 +2490,7 @@ App::dialog_open_file_spal(const std::string &title, std::string &filename, std:
 	filter_spal->set_name(_("Synfig palette files (*.spal)"));
 	filter_spal->add_pattern("*.spal");
 	dialog->add_filter(filter_spal);
-	
+
 	// ...and add GIMP color palette file too (*.gpl)
         Glib::RefPtr<Gtk::FileFilter> filter_gpl = Gtk::FileFilter::create();
 	filter_gpl->set_name(_("GIMP palette files (*.gpl)"));
@@ -2498,8 +2530,8 @@ App::dialog_open_file_sketch(const std::string &title, std::string &filename, st
 
 	dialog->set_transient_for(*App::main_window);
 	dialog->set_current_folder(prev_path);
-	dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
-	dialog->add_button(Gtk::StockID(_("Open")), Gtk::RESPONSE_ACCEPT);
+	dialog->add_button(_("Cancel"), Gtk::RESPONSE_CANCEL)->set_image_from_icon_name("gtk-cancel", Gtk::ICON_SIZE_BUTTON);
+	dialog->add_button(_("Load"),   Gtk::RESPONSE_ACCEPT)->set_image_from_icon_name("gtk-open", Gtk::ICON_SIZE_BUTTON);
 
 	// show only Synfig sketch file (*.sketch)
 	Glib::RefPtr<Gtk::FileFilter> filter_sketch = Gtk::FileFilter::create();
@@ -2541,8 +2573,8 @@ App::dialog_open_file_image(const std::string &title, std::string &filename, std
 
 	dialog->set_transient_for(*App::main_window);
 	dialog->set_current_folder(prev_path);
-	dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
-	dialog->add_button(Gtk::StockID(_("Load")), Gtk::RESPONSE_ACCEPT);
+	dialog->add_button(_("Cancel"), Gtk::RESPONSE_CANCEL)->set_image_from_icon_name("gtk-cancel", Gtk::ICON_SIZE_BUTTON);
+	dialog->add_button(_("Load"),   Gtk::RESPONSE_ACCEPT)->set_image_from_icon_name("gtk-open", Gtk::ICON_SIZE_BUTTON);
 
 	// show only images
 	Glib::RefPtr<Gtk::FileFilter> filter_image = Gtk::FileFilter::create();
@@ -2600,8 +2632,8 @@ App::dialog_open_file_audio(const std::string &title, std::string &filename, std
 
 	dialog->set_transient_for(*App::main_window);
 	dialog->set_current_folder(prev_path);
-	dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
-	dialog->add_button(Gtk::StockID(_("Load")), Gtk::RESPONSE_ACCEPT);
+	dialog->add_button(_("Cancel"), Gtk::RESPONSE_CANCEL)->set_image_from_icon_name("gtk-cancel", Gtk::ICON_SIZE_BUTTON);
+	dialog->add_button(_("Load"),   Gtk::RESPONSE_ACCEPT)->set_image_from_icon_name("gtk-open", Gtk::ICON_SIZE_BUTTON);
 
 	// Audio files
 	Glib::RefPtr<Gtk::FileFilter> filter_audio = Gtk::FileFilter::create();
@@ -2707,8 +2739,8 @@ App::dialog_open_file_with_history_button(const std::string &title, std::string 
 
 		dialog->set_transient_for(*App::main_window);
 	dialog->set_current_folder(prev_path);
-	dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
-	dialog->add_button(Gtk::Stock::OPEN,   Gtk::RESPONSE_ACCEPT);
+	dialog->add_button(_("Cancel"), Gtk::RESPONSE_CANCEL)->set_image_from_icon_name("gtk-cancel", Gtk::ICON_SIZE_BUTTON);
+	dialog->add_button(_("Open"),   Gtk::RESPONSE_ACCEPT)->set_image_from_icon_name("gtk-open", Gtk::ICON_SIZE_BUTTON);
 	Gtk::Button* history_button = dialog->add_button(_("Open history"), RESPONSE_ACCEPT_WITH_HISTORY);
 	// TODO: the Open history button should be file type sensitive one.
 	dialog->set_response_sensitive(RESPONSE_ACCEPT_WITH_HISTORY, true);
@@ -2753,6 +2785,34 @@ App::dialog_open_file_with_history_button(const std::string &title, std::string 
 	delete dialog;
 	return false;
 #endif   // not USE_WIN32_FILE_DIALOGS
+}
+
+bool
+App::dialog_open_folder(const std::string &title, std::string &foldername, std::string preference, Gtk::Window& transientwind)
+{
+	synfig::String prev_path;
+	synfigapp::Settings settings;
+	if(settings.get_value(preference, prev_path))
+		prev_path = ".";
+
+	prev_path = absolute_path(prev_path);
+
+	Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(*App::main_window,
+			title, Gtk::FILE_CHOOSER_ACTION_SELECT_FOLDER);
+
+	dialog->set_transient_for(transientwind);
+	dialog->set_current_folder(prev_path);
+	dialog->add_button(_("Cancel"), Gtk::RESPONSE_CANCEL)->set_image_from_icon_name("gtk-cancel", Gtk::ICON_SIZE_BUTTON);
+	dialog->add_button(_("Open"),   Gtk::RESPONSE_ACCEPT)->set_image_from_icon_name("gtk-open", Gtk::ICON_SIZE_BUTTON);
+
+	if(dialog->run() == GTK_RESPONSE_ACCEPT)
+	{
+		foldername = dialog->get_filename();
+		delete dialog;
+		return true;
+	}
+	delete dialog;
+	return false;
 }
 
 
@@ -2843,7 +2903,9 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 	{
 		file_type_enum = manage(new Widget_Enum());
 		file_type_enum->set_param_desc(ParamDesc().set_hint("enum")
-				.add_enum_value(synfig::RELEASE_VERSION_1_0, "1.0", strprintf("1.0 (%s)", _("current")))
+				.add_enum_value(synfig::RELEASE_VERSION_CURRENT, "Current", _("Current"))
+				.add_enum_value(synfig::RELEASE_VERSION_1_0_2, "1.0.2", "1.0.2")
+				.add_enum_value(synfig::RELEASE_VERSION_1_0, "1.0", "1.0")
 				.add_enum_value(synfig::RELEASE_VERSION_0_64_3, "0.64.3", "0.64.3")
 				.add_enum_value(synfig::RELEASE_VERSION_0_64_2, "0.64.2", "0.64.2")
 				.add_enum_value(synfig::RELEASE_VERSION_0_64_1, "0.64.1", "0.64.1")
@@ -2863,12 +2925,12 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 				.add_enum_value(synfig::RELEASE_VERSION_0_61_06, "0.61.06", strprintf("0.61.06 %s", _("and older"))));
 		file_type_enum->set_value(RELEASE_VERSION_END-1); // default to the most recent version
 
-		Gtk::HBox *hbox = manage(new Gtk::HBox);
-		hbox->pack_start(*manage(new Gtk::Label(_("File Format Version: "))),Gtk::PACK_SHRINK,0);
-		hbox->pack_start(*file_type_enum,Gtk::PACK_EXPAND_WIDGET,0);
-		hbox->show_all();
+		Gtk::Grid *grid = manage(new Gtk::Grid);
+		grid->attach(*manage(new Gtk::Label(_("File Format Version: "))),0,0,1,1);
+		grid->attach(*file_type_enum,1,0,1,1);
+		grid->show_all();
 
-		dialog->set_extra_widget(*hbox);
+		dialog->set_extra_widget(*grid);
 	}
 
 	if (filename.empty()) {
@@ -3112,8 +3174,8 @@ App::dialog_select_list_item(const std::string &title, const std::string &messag
 {
 	Gtk::Dialog dialog(title, *App::main_window, true);
 
-	Gtk::Label label(message, 0, 0);
-	label.set_line_wrap();
+	Gtk::Label* label = manage (new Gtk::Label(message, 0, 0));
+	label->set_line_wrap();
 
 	class ModelColumns : public Gtk::TreeModel::ColumnRecord
 	{
@@ -3132,29 +3194,33 @@ App::dialog_select_list_item(const std::string &title, const std::string &messag
 		j->set_value(model_columns.column_main, Glib::ustring(*i));
 	}
 
-	Gtk::TreeView tree(list_store);
+	Gtk::TreeView * tree = manage (new Gtk::TreeView(list_store));
 	Gtk::TreeViewColumn column_index("", model_columns.column_index);
 	Gtk::TreeViewColumn column_main("", model_columns.column_main);
 	column_index.set_visible(false);
-	tree.append_column(column_index);
-	tree.append_column(column_main);
+	tree->append_column(column_index);
+	tree->append_column(column_main);
+	tree->set_hexpand(TRUE);
+	tree->set_halign(Gtk::ALIGN_FILL);
+	tree->set_vexpand(TRUE);
+	tree->set_valign(Gtk::ALIGN_FILL);
 
 	Gtk::TreeModel::Row selected_row = list_store->children()[item_index];
 	if (selected_row)
-		tree.get_selection()->select(selected_row);
+		tree->get_selection()->select(selected_row);
 
-	Gtk::Table table(1, 2);
-	table.attach(label, 0, 1, 0, 1, Gtk::FILL | Gtk::EXPAND, Gtk::FILL);
-	table.attach(tree, 0, 1, 1, 2);
+	Gtk::Grid* grid = manage(new Gtk::Grid());
+	grid->attach(*label, 0, 0, 1, 1);
+	grid->attach(*tree, 0, 1, 1, 2);
 
-	dialog.get_vbox()->pack_start(table);
+	dialog.get_content_area()->pack_start(*grid);
 	dialog.add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
 	dialog.add_button(Gtk::Stock::OPEN,   Gtk::RESPONSE_ACCEPT);
 	dialog.set_default_size(300, 450);
 	dialog.show_all();
 
 	if (dialog.run() == Gtk::RESPONSE_ACCEPT) {
-		item_index = tree.get_selection()->get_selected()->get_value(model_columns.column_index);
+		item_index = tree->get_selection()->get_selected()->get_value(model_columns.column_index);
 		return true;
 	}
 
@@ -3201,7 +3267,7 @@ App::dialog_message_1b(
 
 	if (details != "details")
 		dialog.set_secondary_text(details);
-	
+
 	Gtk::Label label;
 	Gtk::ScrolledWindow sw;
 	if (long_details != "long_details")
@@ -3380,40 +3446,38 @@ App::dialog_entry(const std::string &action, const std::string &content, std::st
 		true
 	);
 
-	Gtk::Label label(content);
-	label.show();
+	// TODO Group All HARDCODED user interface information somewhere "global"
+	// TODO All UI info from .rc
+#define DIALOG_ENTRY_MARGIN 18
+	Gtk::Label* label = manage (new Gtk::Label(content));
+	label->set_margin_start(DIALOG_ENTRY_MARGIN);
 
-	Gtk::Entry entry;
-	entry.set_text(text);
-	entry.show();
-	entry.set_activates_default(true);
+	Gtk::Entry* entry = manage(new Gtk::Entry());
+	entry->set_text(text);
+	entry->set_margin_end(DIALOG_ENTRY_MARGIN);
+	entry->set_activates_default(true);
+	entry->set_hexpand(TRUE);
+	entry->set_halign(Gtk::ALIGN_FILL);
+#undef DIALOG_ENTRY_MARGIN
 
-	Gtk::Alignment space1;
-	space1.set_size_request(18, 0);
+	Gtk::Grid* grid = manage (new Gtk::Grid());
+	grid->add(*label);
+	grid->add(*entry);
 
-	Gtk::Alignment space2;
-	space2.set_size_request(18, 0);
+	grid->show_all();
 
-	Gtk::Table table(3, 1);
-	table.attach(space1, 0, 1, 0, 1, Gtk::FILL | Gtk::FILL, Gtk::FILL);
-	table.attach(label, 1, 2, 0, 1, Gtk::FILL | Gtk::SHRINK, Gtk::FILL);
-	table.attach(entry, 2, 3, 0, 1, Gtk::FILL | Gtk::EXPAND, Gtk::FILL);
-	table.attach(space2, 3, 4, 0, 1, Gtk::FILL | Gtk::FILL, Gtk::FILL);
-	table.show_all();
-
-	dialog.get_vbox()->pack_start(entry);
-	dialog.get_vbox()->pack_start(table);
+	dialog.get_content_area()->pack_start(*grid);
 	dialog.add_button(button1, Gtk::RESPONSE_CANCEL);
 	dialog.add_button(button2, Gtk::RESPONSE_OK);
 
 	dialog.set_default_response(Gtk::RESPONSE_OK);
-	entry.signal_activate().connect(sigc::bind(sigc::mem_fun(dialog,&Gtk::Dialog::response),Gtk::RESPONSE_OK));
+	entry->signal_activate().connect(sigc::bind(sigc::mem_fun(dialog,&Gtk::Dialog::response),Gtk::RESPONSE_OK));
 	dialog.show();
 
 	if(dialog.run()!=Gtk::RESPONSE_OK)
 		return false;
 
-	text = entry.get_text();
+	text = entry->get_text();
 
 	return true;
 }
@@ -3428,19 +3492,19 @@ App::dialog_paragraph(const std::string &title, const std::string &message,std::
 		true			// Modal
 	);
 
-	Gtk::Label label(message);
-	label.show();
-	dialog.get_vbox()->pack_start(label);
+	Gtk::Label* label = manage(new Gtk::Label(message));
+	label->show();
+	dialog.get_content_area()->pack_start(*label);
 
 	Glib::RefPtr<Gtk::TextBuffer> text_buffer(Gtk::TextBuffer::create());
 	text_buffer->set_text(text);
 	Gtk::TextView text_view(text_buffer);
 	text_view.show();
 
-	dialog.get_vbox()->pack_start(text_view);
+	dialog.get_content_area()->pack_start(text_view);
 
-	dialog.add_button(Gtk::StockID("gtk-ok"),Gtk::RESPONSE_OK);
-	dialog.add_button(Gtk::StockID("gtk-cancel"),Gtk::RESPONSE_CANCEL);
+	dialog.add_button(_("OK"),   Gtk::RESPONSE_OK)->set_image_from_icon_name("gtk-ok", Gtk::ICON_SIZE_BUTTON);
+	dialog.add_button(_("Cancel"), Gtk::RESPONSE_CANCEL)->set_image_from_icon_name("gtk-cancel", Gtk::ICON_SIZE_BUTTON);
 	dialog.set_default_response(Gtk::RESPONSE_OK);
 
 	//text_entry.signal_activate().connect(sigc::bind(sigc::mem_fun(dialog,&Gtk::Dialog::response),Gtk::RESPONSE_OK));
@@ -3540,7 +3604,7 @@ App::open_as(std::string filename,std::string as,synfig::FileContainerZip::file_
 				instance->dialog_cvs_update();
 		}
 	}
-	catch(String x)
+	catch(String &x)
 	{
 		dialog_message_1b(
 			"ERROR",
@@ -3550,7 +3614,7 @@ App::open_as(std::string filename,std::string as,synfig::FileContainerZip::file_
 
 		return false;
 	}
-	catch(runtime_error x)
+	catch(runtime_error &x)
 	{
 		dialog_message_1b(
 			"ERROR",
@@ -3633,7 +3697,7 @@ App::open_from_temporary_container_as(std::string container_filename_base,std::s
 				instance->dialog_cvs_update();
 		}
 	}
-	catch(String x)
+	catch(String &x)
 	{
 		dialog_message_1b(
 				"ERROR",
@@ -3643,7 +3707,7 @@ App::open_from_temporary_container_as(std::string container_filename_base,std::s
 
 		return false;
 	}
-	catch(runtime_error x)
+	catch(runtime_error &x)
 	{
 		dialog_message_1b(
 				"ERROR",

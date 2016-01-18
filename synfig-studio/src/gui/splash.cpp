@@ -33,6 +33,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include <iostream>
 #include <string>
 
@@ -43,12 +45,10 @@
 #include <gtkmm/frame.h>
 #include <gtkmm/fixed.h>
 
-#include <synfig/general.h>
-
 #include "splash.h"
 #include "app.h"
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

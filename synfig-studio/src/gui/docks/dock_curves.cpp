@@ -29,6 +29,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "docks/dock_curves.h"
 #include "app.h"
 
@@ -46,7 +48,7 @@
 #include <gtkmm/scrollbar.h>
 #include "widgets/widget_timeslider.h"
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

@@ -35,6 +35,7 @@
 #include <ETL/stringf>
 #include <libxml++/libxml++.h>
 #include "filecontainerzip.h"
+#include "zstreambuf.h"
 
 #endif
 
@@ -448,8 +449,7 @@ bool FileContainerZip::open_from_history(const std::string &container_filename, 
 			{ fclose(f); return false; }
 
 		if (cdfh.filename_length > 0
-		 && (cdfh.flags & 0x0071) == 0
-		 && cdfh.compression == 0)
+		 && (cdfh.flags & 0x0071) == 0 )
 		{
 			FileInfo info;
 			if (buffer[cdfh.filename_length - 1] == '/')
@@ -465,6 +465,7 @@ bool FileContainerZip::open_from_history(const std::string &container_filename, 
 			info.directory_saved = info.is_directory;
 			info.size = cdfh.compressed_size;
 			info.header_offset = cdfh.offset;
+			info.compression = cdfh.compression;
 			info.crc32 = cdfh.crc32;
 			info.time = DOSTimestamp(cdfh.modification_time, cdfh.modification_date).get_time();
 			info.split_name();
@@ -764,6 +765,7 @@ bool FileContainerZip::file_open_write(const std::string &filename)
 	// update file info
 	info.header_offset = offset;
 	info.size = 0;
+	info.compression = 0;
 	info.crc32 = 0;
 	info.time = t;
 	if (file_ == files_.end())
@@ -829,6 +831,15 @@ size_t FileContainerZip::file_write(const void *buffer, size_t size)
 	return s;
 }
 
+FileContainer::ReadStreamHandle FileContainerZip::get_read_stream(const std::string &filename)
+{
+	ReadStreamHandle stream = FileContainer::get_read_stream(filename);
+	if (stream
+	 && file_is_opened_for_read()
+	 && !file_reading_whole_container_
+	 && file_->second.compression > 0)
+		return new ZReadStream(stream);
+	return stream;
+}
+
 /* === E N T R Y P O I N T ================================================= */
-
-

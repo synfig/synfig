@@ -31,6 +31,7 @@
 #endif
 
 #include <synfig/general.h>
+#include <synfig/localization.h>
 #include "random_noise.h"
 #include <synfig/quick_rng.h>
 #include <cmath>

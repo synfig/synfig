@@ -32,6 +32,7 @@
 #include "valuenode_dynamic.h"
 #include "valuenode_const.h"
 #include <synfig/general.h>
+#include <synfig/localization.h>
 #include <ETL/misc>
 
 #include <boost/numeric/odeint/integrate/integrate.hpp>

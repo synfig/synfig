@@ -38,13 +38,14 @@
 
 #include <ETL/hermite>
 
+#include <synfig/general.h>
+
 #include "duckmatic.h"
 #include "ducktransform_scale.h"
 #include "ducktransform_translate.h"
 #include "ducktransform_rotate.h"
 #include <synfigapp/value_desc.h>
 #include <synfigapp/canvasinterface.h>
-#include <synfig/general.h>
 #include <synfig/paramdesc.h>
 #include <synfig/valuenodes/valuenode_timedswap.h>
 #include <synfig/valuenodes/valuenode_animated.h>
@@ -81,7 +82,7 @@
 
 #include "onemoment.h"
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 
@@ -115,6 +116,7 @@ void set_duck_value_desc(Duck& duck, const synfigapp::ValueDesc& value_desc, con
 Duckmatic::Duckmatic(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface):
 	canvas_interface(canvas_interface),
 	type_mask(Duck::TYPE_ALL-Duck::TYPE_WIDTH-Duck::TYPE_BONE_RECURSIVE-Duck::TYPE_WIDTHPOINT_POSITION),
+	type_mask_state(Duck::TYPE_NONE),
 	alternative_mode_(false),
 	lock_animation_mode_(false),
 	grid_snap(false),
@@ -360,6 +362,11 @@ Duckmatic::select_duck(const etl::handle<Duck> &duck)
 	{
 		selected_ducks.insert(duck->get_guid());
 		signal_duck_selection_changed_();
+
+		if(selected_ducks.size() == 1)
+		{
+		    signal_duck_selection_single_(duck);
+		}
 	}
 }
 

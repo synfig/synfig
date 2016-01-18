@@ -31,6 +31,9 @@
 
 #include "type.h"
 
+#include "general.h"
+#include <synfig/localization.h>
+
 #endif
 
 using namespace synfig;
@@ -163,6 +166,11 @@ void Type::unregister_type()
 		staticData.typesByName.erase(*i);
 }
 
+String Type::local_n(const char *x)
+{
+	return N_(x);
+}
+
 void Type::initialize()
 {
 	if (initialized) return;
@@ -242,7 +250,7 @@ namespace types_namespace {
 		{
 			Type::initialize_vfunc(description);
 			description.name = "nil";
-			description.local_name = N_("nil");
+			description.local_name = local_n("nil");
 			description.aliases.push_back("null");
 			register_default(to_string);
 		}

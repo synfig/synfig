@@ -30,10 +30,12 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include <iostream>
 #include "dialogs/dialog_ffmpegparam.h"
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

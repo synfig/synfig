@@ -30,11 +30,13 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "renderer_guides.h"
 #include "workarea.h"
 #include <ETL/misc>
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 
@@ -228,9 +230,8 @@ Renderer_Guides::render_vfunc(
 		{
 			const float x((*iter-window_startx)/pw);
 
-			//!TODO Remove hardcoded hightlight/selected guide color
 			if(iter==get_work_area()->curr_guide)
-				cr->set_source_rgb(1.0,111.0/255.0,111.0/255.0);
+				cr->set_source_rgb(GDK_COLOR_TO_RGB(GUIDE_COLOR_CURRENT));
 			else
 				cr->set_source_rgb(guides_color.get_r(),guides_color.get_g(),guides_color.get_b());
 
@@ -248,9 +249,8 @@ Renderer_Guides::render_vfunc(
 		for(iter=get_guide_list_y().begin();iter!=get_guide_list_y().end();++iter)
 		{
 			const float y((*iter-window_starty)/ph);
-            //!TODO Remove hardcoded hightlight/selected guide color
 			if(iter==get_work_area()->curr_guide)
-				cr->set_source_rgb(1.0,111.0/255.0,111.0/255.0);
+				cr->set_source_rgb(GDK_COLOR_TO_RGB(GUIDE_COLOR_CURRENT));
 			else
 				cr->set_source_rgb(guides_color.get_r(),guides_color.get_g(),guides_color.get_b());
 

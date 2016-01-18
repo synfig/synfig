@@ -32,6 +32,7 @@
 
 #include "trgt_bmp.h"
 #include <synfig/general.h>
+#include <synfig/localization.h>
 
 #include <cstdio>
 #include <algorithm>

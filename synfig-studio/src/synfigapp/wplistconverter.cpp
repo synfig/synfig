@@ -31,6 +31,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "wplistconverter.h"
 #include <synfig/valuenodes/valuenode_wplist.h>
 

@@ -32,6 +32,7 @@
 #endif
 
 #include <synfig/general.h>
+#include <synfig/localization.h>
 #include "valuenode_add.h"
 #include "valuenode_const.h"
 #include <stdexcept>

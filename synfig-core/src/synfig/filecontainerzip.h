@@ -70,6 +70,7 @@ namespace synfig
 			bool directory_saved;
 			file_size_t size;
 			file_size_t header_offset;
+			unsigned int compression;
 			unsigned int crc32;
 			time_t time;
 
@@ -80,7 +81,7 @@ namespace synfig
 
 			inline FileInfo():
 				is_directory(false), directory_saved(false),
-				size(0), header_offset(0), crc32(0), time(0) { }
+				size(0), header_offset(0), compression(0), crc32(0), time(0) { }
 		};
 
 		typedef std::map< std::string, FileInfo > FileMap;
@@ -133,6 +134,8 @@ namespace synfig
 
 		virtual size_t file_read(void *buffer, size_t size);
 		virtual size_t file_write(const void *buffer, size_t size);
+
+		virtual ReadStreamHandle get_read_stream(const std::string &filename);
 	};
 
 }

@@ -31,6 +31,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include <gtkmm/dialog.h>
 #include <gtkmm/entry.h>
 #include <gdk/gdkkeysyms.h>
@@ -57,7 +59,7 @@
 #include <synfig/angle.h>
 #include <synfigapp/main.h>
 
-#include "general.h"
+#include <gui/localization.h>
 #endif
 
 /* === U S I N G =========================================================== */

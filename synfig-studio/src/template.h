@@ -22,8 +22,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_TEMPLATE_H
-#define __SYNFIG_TEMPLATE_H
+#ifndef __SYNFIG_STUDIO_TEMPLATE_H
+#define __SYNFIG_STUDIO_TEMPLATE_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -34,6 +34,52 @@
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 namespace studio {
+
+/*! \class New Class
+    \brief A new class.
+
+    A more detailed class description.
+*/
+class new_class{
+
+	/*
+ -- ** -- P U B L I C   T Y P E S ---------------------------------------------
+	*/
+
+public:
+
+	/*
+ -- ** -- P R I V A T E   D A T A ---------------------------------------------
+	*/
+
+private:
+
+	/*
+ -- ** -- P U B L I C   D A T A -----------------------------------------------
+	*/
+
+public:
+
+	/*
+ -- ** -- S I G N A L S -------------------------------------------------------
+	*/
+
+	/*
+ -- ** -- P R I V A T E   M E T H O D S ---------------------------------------
+	*/
+
+private:
+
+	/*
+ -- ** -- P U B L I C   M E T H O D S ---------------------------------------
+	*/
+
+public:
+
+
+
+
+};
 
 }; // END of namespace studio
 

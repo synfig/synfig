@@ -1,0 +1,18 @@
+RENDERING_OPENGL_HH = \
+	rendering/opengl/renderergl.h \
+	rendering/opengl/surfacegl.h
+
+RENDERING_OPENGL_CC = \
+	rendering/opengl/renderergl.cpp \
+	rendering/opengl/surfacegl.cpp
+
+include rendering/opengl/internal/Makefile_insert
+include rendering/opengl/optimizer/Makefile_insert
+include rendering/opengl/task/Makefile_insert
+
+RENDERING_HH += \
+    $(RENDERING_OPENGL_HH)
+
+RENDERING_CC += \
+    $(RENDERING_OPENGL_CC)
+

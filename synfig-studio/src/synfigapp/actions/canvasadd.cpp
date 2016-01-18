@@ -29,10 +29,13 @@
 #	include <config.h>
 #endif
 
-#include "canvasadd.h"
-#include <synfigapp/canvasinterface.h>
 
-#include <synfigapp/general.h>
+#include <synfig/general.h>
+
+#include "canvasadd.h"
+
+#include <synfigapp/localization.h>
+#include <synfigapp/canvasinterface.h>
 
 #endif
 

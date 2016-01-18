@@ -29,14 +29,15 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "dialogs/dialog_color.h"
 #include "widgets/widget_color.h"
-#include <synfig/general.h>
 #include <synfigapp/main.h>
 #include <gtkmm/button.h>
 #include "app.h"
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

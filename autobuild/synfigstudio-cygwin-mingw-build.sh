@@ -952,6 +952,7 @@ fedora-mingw-install mingw${ARCH}-libjpeg-turbo
 fedora-mingw-install mingw${ARCH}-gtkmm30
 fedora-mingw-install mingw${ARCH}-dlfcn
 fedora-mingw-install mingw${ARCH}-SDL
+fedora-mingw-install mingw${ARCH}-fftw
 cp ${MINGWPREFIX}/include/SDL/* ${MINGWPREFIX}/include/
 
 # Somehow this is required too...
@@ -1092,6 +1093,7 @@ for file in \
    libdl.dll \
    libexpat\*.dll \
    libffi\*.dll \
+   libfftw\*.dll \
    libfontconfig\*.dll \
    libfreetype\*.dll \
    libgcc_s_\*.dll \

@@ -1,0 +1,30 @@
+RENDERING_HH = \
+	rendering/optimizer.h \
+	rendering/renderer.h \
+	rendering/renderqueue.h \
+	rendering/resource.h \
+	rendering/surface.h \
+	rendering/task.h
+
+RENDERING_CC = \
+	rendering/optimizer.cpp \
+	rendering/renderer.cpp \
+	rendering/renderqueue.cpp \
+	rendering/resource.cpp \
+	rendering/surface.cpp \
+	rendering/task.cpp
+
+include rendering/common/Makefile_insert
+if WITH_OPENGL
+include rendering/opengl/Makefile_insert
+endif
+include rendering/primitive/Makefile_insert
+include rendering/software/Makefile_insert
+
+libsynfig_include_HH += \
+    $(RENDERING_HH)
+
+libsynfig_src += \
+    $(RENDERING_HH) \
+    $(RENDERING_CC)
+

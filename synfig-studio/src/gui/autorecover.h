@@ -43,6 +43,7 @@ namespace studio {
 class AutoRecover
 {
 	int timeout;
+	bool enabled;
 	sigc::connection auto_backup_connect;
 public:
 	AutoRecover();
@@ -54,6 +55,9 @@ public:
 	static bool auto_backup();
 
 	static bool cleanup_pid(int pid);
+
+	void enable(bool ok = true);
+	bool get_enable(){return enabled;}
 
 	void set_timeout(int milliseconds);
 	int get_timeout()const { return timeout; }

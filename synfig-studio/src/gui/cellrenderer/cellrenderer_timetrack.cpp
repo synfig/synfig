@@ -30,6 +30,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include <gtkmm/label.h>
 #include "cellrenderer_timetrack.h"
 #include <gtk/gtk.h>
@@ -45,7 +47,7 @@
 #include <synfigapp/canvasinterface.h>
 #include "instance.h"
 
-#include "general.h"
+#include <gui/localization.h>
 
 #include <synfig/layers/layer_pastecanvas.h>
 

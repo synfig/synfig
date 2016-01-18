@@ -31,6 +31,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include <gtkmm/dialog.h>
 #include <gtkmm/entry.h>
 
@@ -60,7 +62,7 @@
 
 #include <ETL/clock>
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

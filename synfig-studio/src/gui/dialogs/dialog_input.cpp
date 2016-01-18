@@ -29,6 +29,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include <vector>
 
 #include <gtk/gtk.h>
@@ -42,7 +44,7 @@
 #include "dialog_input.h"
 #include <synfigapp/main.h>
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

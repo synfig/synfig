@@ -38,6 +38,9 @@
 #include <ETL/bezier>
 #include <ETL/hermite>
 
+#include <synfig/localization.h>
+#include <synfig/general.h>
+
 #include <synfig/string.h>
 #include <synfig/time.h>
 #include <synfig/context.h>
@@ -141,9 +144,9 @@ Region::sync()
 		}
 
 		//curve to the next end point
-		curve_to(iter->p1[0] + iter->t1[0]/3.0,iter->p1[1] + iter->t1[1]/3.0,
-				 iter->p2[0] - iter->t2[0]/3.0,iter->p2[1] - iter->t2[1]/3.0,
-				 iter->p2[0],iter->p2[1]);
+		cubic_to(iter->p2[0],iter->p2[1],
+				 iter->p1[0] + iter->t1[0]/3.0,iter->p1[1] + iter->t1[1]/3.0,
+				 iter->p2[0] - iter->t2[0]/3.0,iter->p2[1] - iter->t2[1]/3.0);
 
 		last = iter->p2;*/
 

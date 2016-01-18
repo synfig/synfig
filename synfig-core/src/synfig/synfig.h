@@ -97,7 +97,6 @@
 /* === H E A D E R S ======================================================= */
 
 #include "version.h"
-#include "general.h"
 #include "module.h"
 #include "color.h"
 #include "canvas.h"

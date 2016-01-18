@@ -118,6 +118,8 @@ namespace synfig
 
 		bool save_changes(const std::string &filename = std::string(), bool as_copy = false);
 		void discard_changes();
+
+		static std::string generate_indexed_temporary_filename(const FileSystem::Handle &fs, const std::string &filename);
 	};
 
 }

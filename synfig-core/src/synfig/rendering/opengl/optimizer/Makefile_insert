@@ -1,0 +1,20 @@
+RENDERING_OPENGL_OPTIMIZER_HH = \
+	rendering/opengl/optimizer/optimizerblendgl.h \
+	rendering/opengl/optimizer/optimizerblurpreparedgl.h \
+	rendering/opengl/optimizer/optimizercontourgl.h \
+	rendering/opengl/optimizer/optimizermeshgl.h \
+	rendering/opengl/optimizer/optimizersurfaceresamplegl.h
+
+RENDERING_OPENGL_OPTIMIZER_CC = \
+	rendering/opengl/optimizer/optimizerblendgl.cpp \
+	rendering/opengl/optimizer/optimizerblurpreparedgl.cpp \
+	rendering/opengl/optimizer/optimizercontourgl.cpp \
+	rendering/opengl/optimizer/optimizermeshgl.cpp \
+	rendering/opengl/optimizer/optimizersurfaceresamplegl.cpp
+
+RENDERING_OPENGL_HH += \
+    $(RENDERING_OPENGL_OPTIMIZER_HH)
+
+RENDERING_OPENGL_CC += \
+    $(RENDERING_OPENGL_OPTIMIZER_CC)
+

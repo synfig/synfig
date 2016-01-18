@@ -36,6 +36,7 @@
 #include "valuenode_const.h"
 #include "valuenode_composite.h"
 #include <synfig/general.h>
+#include <synfig/localization.h>
 #include <synfig/exception.h>
 #include <ETL/hermite>
 #include <ETL/calculus>

@@ -29,11 +29,13 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "zoomdial.h"
 #include <gtkmm/image.h>
 #include <gtkmm/stock.h>
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

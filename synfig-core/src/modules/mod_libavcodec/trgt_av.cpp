@@ -64,6 +64,7 @@ extern "C"
 #ifndef DISABLE_MODULE
 #	include "trgt_av.h"
 #	include <synfig/general.h>
+#	include <synfig/localization.h>
 #	include <cstdio>
 #	include <algorithm>
 #	include <functional>

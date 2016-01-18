@@ -31,6 +31,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "widgets/widget_defaults.h"
 #include "widgets/widget_color.h"
 #include "widgets/widget_gradient.h"
@@ -48,7 +50,7 @@
 #include "widgets/widget_enum.h"
 #include "widgets/widget_distance.h"
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

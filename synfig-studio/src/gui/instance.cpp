@@ -33,6 +33,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "instance.h"
 #include <cassert>
 
@@ -66,7 +68,7 @@
 #include <errno.h>
 #include <ETL/stringf>
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

@@ -36,6 +36,8 @@
 #include <ETL/calculus>
 #include <ETL/gaussian>
 
+#include <synfig/general.h>
+
 #include <synfig/valuenodes/valuenode_bline.h>
 #include <synfig/valuenodes/valuenode_wplist.h>
 #include <synfig/valuenodes/valuenode_composite.h>
@@ -65,7 +67,7 @@
 #include <gtkmm/radiobutton.h>
 #include <gtkmm/radiobuttongroup.h>
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

@@ -512,7 +512,7 @@ if [[ $MODE != 'quick' ]]; then
 	autoreconf --install --force
 	if [ -e /etc/debian_version ] && [ -z $BOOST_CONFIGURE_OPTIONS ]; then
 		# Debian/Ubuntu multiarch
-		MULTIARCH_LIBDIR="/usr/lib/`uname -i`-linux-gnu/"
+		MULTIARCH_LIBDIR="/usr/lib/`uname -m`-linux-gnu/"
 		if [ -e "${MULTIARCH_LIBDIR}/libboost_program_options.so" ]; then
 			export BOOST_CONFIGURE_OPTIONS="--with-boost-libdir=$MULTIARCH_LIBDIR"
 		fi
@@ -873,6 +873,7 @@ initialize()
 		libjasper-dev \
 		x11proto-xext-dev libdirectfb-dev libxfixes-dev libxinerama-dev libxdamage-dev libxcomposite-dev libxcursor-dev libxft-dev libxrender-dev libxt-dev libxrandr-dev libxi-dev libxext-dev libx11-dev \
 		libatk1.0-dev \
+		libgl1-mesa-dev \
 		imagemagick \
 		bzip2"
 	if which yum >/dev/null; then
@@ -889,6 +890,7 @@ initialize()
 				intltool \
 				libpng-devel \
 				libjpeg-devel \
+				fftw-devel \
 				freetype-devel \
 				fontconfig-devel \
 				atk-devel \
@@ -911,6 +913,8 @@ initialize()
 				ImageMagick-c++-devel \
 				jack-audio-connection-kit-devel \
 				mlt-devel \
+				ocl-icd-devel \
+				opencl-headers \
 				gtkmm30-devel \
 				glibmm24-devel"
 		fi
@@ -966,6 +970,7 @@ initialize()
 					libtiff-devel \
 					libjasper-devel \
 					libdirectfb-devel \
+					libfftw3-dev \
 					libXfixes-devel \
 					libXinerama-devel \
 					libXdamage-devel \

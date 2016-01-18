@@ -35,6 +35,7 @@
 
 #include <autorevision.h>
 #include <synfig/general.h>
+#include <synfig/localization.h>
 #include <synfig/canvas.h>
 #include <synfig/context.h>
 #include <synfig/target.h>
@@ -170,7 +171,7 @@ void OptionsProcessor::process_settings_options()
 
 	if (_vm.count("threads"))
 	{
-		SynfigToolGeneralOptions::instance()->set_threads(_vm["threads"].as<size_t>());
+		SynfigToolGeneralOptions::instance()->set_threads(_vm["threads"].as<int>());
 	}
 
 	VERBOSE_OUT(1) << _("Threads set to ")

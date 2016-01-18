@@ -31,6 +31,10 @@
 #endif
 
 #include "valuenode_greyed.h"
+
+#include <synfig/general.h>
+#include <synfig/localization.h>
+
 #include "valuenode_const.h"
 
 #endif

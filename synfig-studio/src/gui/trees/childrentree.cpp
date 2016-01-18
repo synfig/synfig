@@ -30,6 +30,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "trees/childrentree.h"
 #include "cellrenderer/cellrenderer_value.h"
 #include "cellrenderer/cellrenderer_timetrack.h"
@@ -38,7 +40,7 @@
 #include <gtkmm/scrolledwindow.h>
 #include <synfig/timepointcollect.h>
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

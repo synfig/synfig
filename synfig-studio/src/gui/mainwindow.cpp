@@ -29,6 +29,10 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
+#include <gui/localization.h>
+
 #include "mainwindow.h"
 #include "canvasview.h"
 #include "docks/dockable.h"
@@ -225,17 +229,96 @@ MainWindow::toggle_show_menubar()
 	App::enable_mainwin_menubar = toggling_show_menubar;
 }
 
+void
+MainWindow::make_short_names(
+	const std::vector<synfig::String> &fullnames,
+	std::vector<synfig::String> &shortnames )
+{
+	const int count = (int)fullnames.size();
+	vector< vector<String> > dirs(count);
+	vector< vector<bool> > dirflags(count);
+	shortnames.clear();
+	shortnames.resize(count);
+
+	// build dir lists
+	for(int i = 0; i < count; ++i) {
+		int j = 0;
+		while(j < (int)fullnames[i].size())
+		{
+			size_t k = fullnames[i].find_first_of(ETL_DIRECTORY_SEPARATORS, j);
+			if (k == string::npos) k = fullnames[i].size();
+			string sub = fullnames[i].substr(j, k - j);
+			if (!sub.empty() && sub != "...")
+				dirs[i].insert(dirs[i].begin(), sub);
+			j = (int)k + 1;
+		}
+
+		dirflags[i].resize(dirs.size(), false);
+	}
+
+	// find shotest paths which shows that files are different
+	for(int i = 0; i < count; ++i) {
+		for(int j = 0; j < count; ++j) {
+			if (i == j) continue;
+			for(int k = 0; k < (int)dirs[i].size(); ++k) {
+				dirflags[i][k] = true;
+				if (k >= (int)dirs[j].size() || dirs[i][k] != dirs[j][k])
+					break;
+			}
+		}
+	}
+
+	// remove non-informative dirs from middle of shortest paths
+	// holes will shown as "/.../" at final stage
+	for(int i = 0; i < count; ++i) {
+		for(int k = 1; k < (int)dirs[i].size() && dirflags[i][k]; ++k) {
+			dirflags[i][k] = false;
+			for(int j = 0; j < count; ++j) {
+				if (i == j) continue;
+				int index = -1;
+				for(int l = 0; l < (int)dirs[i].size(); ++l) {
+					if (dirflags[i][l]) {
+						++index;
+						while(index < (int)dirs[j].size() && dirs[i][l] != dirs[j][index])
+							++index;
+					}
+				}
+				if (index < (int)dirs[j].size()) {
+					dirflags[i][k] = true;
+					break;
+				}
+			}
+		}
+	}
+
+	// concatenate dir-lists to short names
+	for(int i = 0; i < count; ++i) {
+		int prevk = 0;
+		for(int k = 0; k < (int)dirs[i].size(); ++k) {
+			if (dirflags[i][k]) {
+				if (prevk < k) shortnames[i] = "/"+shortnames[i];
+				if (prevk < k-1) shortnames[i] = "/..."+shortnames[i];
+				shortnames[i] = dirs[i][k] + shortnames[i];
+				prevk = k;
+			}
+		}
+	}
+}
 
 void
 MainWindow::on_recent_files_changed()
 {
 	Glib::RefPtr<Gtk::ActionGroup> action_group = Gtk::ActionGroup::create("mainwindow-recentfiles");
 
+	vector<String> fullnames(App::get_recent_files().begin(), App::get_recent_files().end());
+	vector<String> shortnames;
+	make_short_names(fullnames, shortnames);
+
 	int index = 0;
 	std::string menu_items;
-	for(list<string>::const_iterator i=App::get_recent_files().begin();i!=App::get_recent_files().end();i++)
+	for(int i = 0; i < (int)fullnames.size(); ++i)
 	{
-		std::string raw = basename(*i);
+		std::string raw = shortnames[i];
 		std::string quoted;
 		size_t pos = 0, last_pos = 0;
 
@@ -244,11 +327,11 @@ MainWindow::on_recent_files_changed()
 			quoted += raw.substr(last_pos, ++pos - last_pos) + '_';
 		quoted += raw.substr(last_pos);
 
-		std::string action_name = strprintf("file-recent-%d", index++);
+		std::string action_name = strprintf("file-recent-%d", i);
 		menu_items += "<menuitem action='" + action_name +"' />";
 
-		action_group->add( Gtk::Action::create(action_name, quoted),
-			sigc::hide_return(sigc::bind(sigc::ptr_fun(&App::open),*i))
+		action_group->add( Gtk::Action::create(action_name, quoted, fullnames[i]),
+			sigc::hide_return(sigc::bind(sigc::ptr_fun(&App::open),fullnames[i]))
 		);
 	}
 

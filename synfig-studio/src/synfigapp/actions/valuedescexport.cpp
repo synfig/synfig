@@ -30,6 +30,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "valuenodeadd.h"
 
 #include "canvasadd.h"
@@ -42,7 +44,7 @@
 #include <synfig/valuenodes/valuenode_const.h>
 #include <synfig/context.h>
 
-#include <synfigapp/general.h>
+#include <synfigapp/localization.h>
 
 #endif
 

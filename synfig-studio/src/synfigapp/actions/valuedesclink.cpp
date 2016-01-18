@@ -31,6 +31,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "valuedesclink.h"
 
 #include <synfigapp/canvasinterface.h>
@@ -38,7 +40,7 @@
 #include <synfig/valuenodes/valuenode_scale.h>
 #include <synfig/valuenodes/valuenode_composite.h>
 
-#include <synfigapp/general.h>
+#include <synfigapp/localization.h>
 #include <zconf.h>
 
 #endif

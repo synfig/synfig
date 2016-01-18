@@ -29,6 +29,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "layerparamconnect.h"
 #include "valuenodelinkconnect.h"
 #include "valuenodereplace.h"
@@ -47,7 +49,7 @@
 #include <synfig/valueoperations.h>
 #include <synfig/weightedvalue.h>
 
-#include <synfigapp/general.h>
+#include <synfigapp/localization.h>
 
 #endif
 

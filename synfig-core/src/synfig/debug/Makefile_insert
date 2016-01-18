@@ -1,0 +1,17 @@
+DEBUG_HH = \
+	debug/debugsurface.h \
+	debug/log.h \
+	debug/measure.h
+
+DEBUG_CC = \
+	debug/debugsurface.cpp \
+	debug/log.cpp \
+	debug/measure.cpp
+
+libsynfig_include_HH += \
+    $(DEBUG_HH)
+
+libsynfig_src += \
+    $(DEBUG_HH) \
+    $(DEBUG_CC)
+

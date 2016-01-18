@@ -69,7 +69,9 @@
 #include <unistd.h>
 #endif
 
-#include "general.h"
+#include <synfig/general.h>
+
+#include <gui/localization.h>
 
 #endif
 
@@ -92,8 +94,10 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-AutoRecover::AutoRecover()
+AutoRecover::AutoRecover():
+enabled(true)
 {
+	// TODO Get out this hard coded pref in app for example
 	// Three Minutes
 	set_timeout(3*60*1000);
 
@@ -123,6 +127,15 @@ AutoRecover::pid()
 {
 //	return getpid();
 	return 0;
+}
+
+void AutoRecover::enable(bool ok /* = true */)
+{
+	enabled = ok;
+	if(ok)
+		set_timeout(get_timeout());
+	else
+		auto_backup_connect.disconnect();
 }
 
 void

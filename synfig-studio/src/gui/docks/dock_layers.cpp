@@ -30,6 +30,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include <glibmm/markup.h>
 
 #include "docks/dock_layers.h"
@@ -48,7 +50,7 @@
 #include "actionmanagers/layeractionmanager.h"
 //#include <ETL/ref_count>
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

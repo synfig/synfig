@@ -29,13 +29,15 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "dialogs/dialog_preview.h"
 #include "preview.h"
 #include <gtkmm/spinbutton.h>
 #include <gtkmm/alignment.h>
 #include <gtkmm/frame.h>
 #include <gtkmm/box.h>
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

@@ -34,6 +34,8 @@
 
 //#include <iostream>
 
+#include <synfig/general.h>
+
 #include <ETL/clock>
 #include <synfig/valuenodes/valuenode_scale.h>
 #include <synfig/valuenodes/valuenode_timedswap.h>
@@ -69,7 +71,7 @@
 
 #include <synfig/gradient.h>
 
-#include "general.h"
+#include <synfigapp/localization.h>
 
 #endif
 

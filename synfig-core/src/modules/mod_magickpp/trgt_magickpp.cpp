@@ -31,6 +31,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include <ETL/misc>
 #include "trgt_magickpp.h"
 

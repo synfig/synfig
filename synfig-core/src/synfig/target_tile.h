@@ -33,13 +33,15 @@
 
 /* === M A C R O S ========================================================= */
 
-#define TILE_SIZE 120
+#define TILE_SIZE 64
 
 /* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 namespace synfig {
+
+namespace rendering { class SurfaceSW; }
 
 /*!	\class Target_Tile
 **	\brief Render-target
@@ -59,7 +61,14 @@ class Target_Tile : public Target
 	//! or not
 	bool clipping_;
 
+	bool allow_multithreading_;
+
+	String engine_;
+
 	struct TileGroup;
+
+	bool call_renderer(Context &context, const etl::handle<rendering::SurfaceSW> &surfacesw, int quality, const RendDesc &renddesc, ProgressCallback *cb);
+
 public:
 	typedef etl::handle<Target_Tile> Handle;
 	typedef etl::loose_handle<Target_Tile> LooseHandle;
@@ -70,14 +79,17 @@ public:
 	//! Renders the canvas to the target
 	virtual bool render(ProgressCallback *cb=NULL);
 
+	virtual bool async_render_tile(RectInt rect, Context context, RendDesc tile_desc, ProgressCallback *cb=NULL);
+	virtual bool wait_render_tiles(ProgressCallback *cb=NULL);
+
 	//! Determines which tile needs to be rendered next.
 	/*!	Most cases will not have to redefine this function.
 	**	The default should be adequate in nearly all situations.
 	**	\returns The number of tiles left to go <i>plus one</i>.
 	**		This means that whenever this function returns zero,
 	**		there are no more tiles to render and that any value
-	**		in \a x or \a y should be disregarded. */
-	virtual int next_tile(int& x, int& y);
+	**		in \a rect should be disregarded. */
+	virtual int next_tile(RectInt& rect);
 	
 	//! Returns the number of peniding frames to render. If it is zero it
 	//! stops rendering frames.
@@ -85,15 +97,6 @@ public:
 
 	//! Adds the tile at \a x , \a y contained in \a surface
 	virtual bool add_tile(const synfig::Surface &surface, int x, int y)=0;
-	//! Returns the total tiles of the imaged rounded to integer number of tiles
-	virtual int total_tiles()const
-	{
-		// Width of the image(in tiles)
-		const int tw(rend_desc().get_w()/tile_w_+(rend_desc().get_w()%tile_w_?1:0));
-		const int th(rend_desc().get_h()/tile_h_+(rend_desc().get_h()%tile_h_?1:0));
-
-		return tw*th;
-	}
 
 	//! Marks the start of a frame
 	/*! \return \c true on success, \c false upon an error.
@@ -120,6 +123,14 @@ public:
 	bool get_clipping()const { return clipping_; }
 	//! Sets clipping
 	void set_clipping(bool x) { clipping_=x; }
+	//! Gets clipping
+	bool get_allow_multithreading()const { return allow_multithreading_; }
+	//! Sets clipping
+	void set_allow_multithreading(bool x) { allow_multithreading_=x; }
+	//! Gets engine
+	const String& get_engine()const { return engine_; }
+	//! Sets engine
+	void set_engine(const String &x) { engine_=x; }
 
 private:
 	//! Renders the context to the surface

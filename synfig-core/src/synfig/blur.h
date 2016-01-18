@@ -27,18 +27,16 @@
 #define __SYNFIG_BLUR_HELPER_H
 
 /* === H E A D E R S ======================================================= */
-#include <synfig/surface.h>
-#include <synfig/color.h>
-#include <synfig/vector.h>
+
+#include "vector.h"
+#include "surface.h"
+#include "progresscallback.h"
 
 /* === M A C R O S ========================================================= */
 
 /* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */
-using namespace synfig;
-using namespace std;
-using namespace etl;
 
 class Blur
 {
@@ -55,35 +53,73 @@ public:
 	};
 
 private:
-	Point	size;
-	int				type;
-
-	ProgressCallback *cb;
+	synfig::Point size;
+	int type;
+	synfig::ProgressCallback *cb;
 
 public:
-	Point & set_size(const Point &v) { return (size = v); }
-	const Point & get_size() const { return size; }
-	Point & get_size() { return size; }
+	static synfig::Real get_size_amplifier(int type);
 
-	int & set_type(const int &t) { return (type = t); }
-	const int & get_type() const { return type; }
-	int & get_type() { return type; }
+	void set_size(const synfig::Point &x) { size = x; }
+	const synfig::Point& get_size() const { return size; }
+
+	void set_type(int x) { type = x; }
+	int get_type() const { return type; }
+
+	static synfig::Real get_surface_extra_size_amplifier(int type) {
+		static const synfig::Real gauss_max_deviation = 1.0 / 512.0;
+		static const synfig::Real gauss_size_amplifier = 0.5*sqrt(-2.0*log(gauss_max_deviation));
+
+		switch(type)
+		{
+			case Blur::DISC:
+			case Blur::BOX:
+			case Blur::CROSS:
+				return 0.5;
+			case Blur::FASTGAUSSIAN:
+				return 1.0;
+			case Blur::GAUSSIAN:
+				return gauss_size_amplifier;
+			default:
+				break;
+		}
+		return 0.0;
+	}
+
+	synfig::Real get_surface_extra_size_amplifier() const
+		{ return get_surface_extra_size_amplifier(get_type()); }
+
+	synfig::Point get_surface_extra_size() const
+		{ return get_size() * get_surface_extra_size_amplifier(); }
+
+	void get_surface_extra_size(synfig::Real pixels_per_width_unit, synfig::Real pixels_per_height_unit, int &out_dx, int &out_dy) const {
+		synfig::Point es = get_surface_extra_size();
+		out_dx = (int)ceil(fabs(es[0]*pixels_per_width_unit));
+		out_dy = (int)ceil(fabs(es[1]*pixels_per_height_unit));
+	}
+
+	void get_surface_expanded_size(synfig::Real pixels_per_width_unit, synfig::Real pixels_per_height_unit, int &width, int &height) const {
+		int dw, dh;
+		get_surface_extra_size(pixels_per_width_unit, pixels_per_height_unit, dw, dh);
+		width = width > 0 ? width + 2*dw : 2*dw;
+		height = height > 0 ? height + 2*dh : 2*dh;
+	}
 
 	Blur(): type(), cb() {}
-	Blur(const Point &s, int t, ProgressCallback *callb=0):size(s), type(t), cb(callb) {}
-	Blur(Real sx, Real sy, int t, ProgressCallback *callb = 0): size(sx,sy), type(t), cb(callb) {}
+	Blur(const synfig::Point &s, int t, synfig::ProgressCallback *callb=0):size(s), type(t), cb(callb) {}
+	Blur(synfig::Real sx, synfig::Real sy, int t, synfig::ProgressCallback *callb = 0): size(sx,sy), type(t), cb(callb) {}
 
 	//Parametric Blur
-	Point operator()(const Point &p) const;
-	Point operator()(Real x, Real y) const;
+	synfig::Point operator()(const synfig::Point &p) const;
+	synfig::Point operator()(synfig::Real x, synfig::Real y) const;
 
 	//Surface based blur
 	//	input surface can be the same as output surface,
 	//	though both have to be the same size
-	bool operator()(const Surface &surface, const Vector &resolution, Surface &out) const;
-	bool operator()(cairo_surface_t *surface, const Vector &resolution, cairo_surface_t *out) const;
+	bool operator()(const synfig::Surface &surface, const synfig::Vector &resolution, synfig::Surface &out) const;
+	bool operator()(cairo_surface_t *surface, const synfig::Vector &resolution, cairo_surface_t *out) const;
 
-	bool operator()(const etl::surface<float> &surface, const Vector &resolution, etl::surface<float> &out) const;
+	bool operator()(const etl::surface<float> &surface, const synfig::Vector &resolution, etl::surface<float> &out) const;
 	//bool operator()(const etl::surface<unsigned char> &surface, const Vector &resolution, etl::surface<unsigned char> &out) const;
 };
 

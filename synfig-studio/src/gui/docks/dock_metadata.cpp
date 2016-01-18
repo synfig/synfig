@@ -30,6 +30,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "docks/dock_metadata.h"
 #include "app.h"
 
@@ -43,7 +45,7 @@
 #include "trees/metadatatree.h"
 #include "canvasview.h"
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 
@@ -159,14 +161,16 @@ Dock_MetaData::on_add_pressed()
 void
 Dock_MetaData::on_delete_pressed()
 {
-	Gtk::TreeView* tree_view(static_cast<Gtk::TreeView*>(get_canvas_view()->get_ext_widget(get_name())));
+	etl::loose_handle<CanvasView> canvas_view(get_canvas_view());
+	if(!canvas_view) return;
+	Gtk::TreeView* tree_view(static_cast<Gtk::TreeView*>(canvas_view->get_ext_widget(get_name())));
 	if(tree_view)
 	{
 		Gtk::TreeModel::iterator iter(tree_view->get_selection()->get_selected());
 		if(tree_view->get_selection()->count_selected_rows())
 		{
 			Gtk::TreeRow row(*iter);
-			Glib::RefPtr<Gtk::TreeModel> treemodel(get_canvas_view()->get_tree_model(get_name()));
+			Glib::RefPtr<Gtk::TreeModel> treemodel(canvas_view->get_tree_model(get_name()));
 			Glib::RefPtr<studio::MetaDataTreeStore> meta_data_tree_store(Glib::RefPtr<studio::MetaDataTreeStore>::cast_dynamic(treemodel));
 			Glib::ustring key(row[meta_data_tree_store->model.key]);
 			if(get_canvas_interface())

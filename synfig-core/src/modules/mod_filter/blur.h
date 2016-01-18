@@ -63,6 +63,7 @@ public:
 	virtual Vocab get_param_vocab()const;
 
 	virtual bool reads_context()const { return true; }
+	virtual rendering::Task::Handle build_rendering_task_vfunc(Context context)const;
 }; // END of class Blur
 
 /* -- E X T E R N S --------------------------------------------------------- */

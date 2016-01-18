@@ -190,7 +190,7 @@ private:
 
 	etl::loose_handle<synfigapp::CanvasInterface> canvas_interface;
 
-	Type type_mask;
+	Type type_mask, type_mask_state;
 
 	DuckMap duck_map;
 
@@ -214,6 +214,7 @@ private:
 	etl::handle<BezierDrag_Base> bezier_dragger_;
 
 	sigc::signal<void> signal_duck_selection_changed_;
+	sigc::signal<void, const etl::handle<Duck>& > signal_duck_selection_single_;
 
 	sigc::signal<void> signal_strokes_changed_;
 
@@ -294,6 +295,7 @@ public:
 	bool get_lock_animation_mode()const { return lock_animation_mode_; }
 
 	sigc::signal<void>& signal_duck_selection_changed() { return signal_duck_selection_changed_; }
+	sigc::signal<void, const etl::handle<Duck>& >& signal_duck_selection_single() { return signal_duck_selection_single_; }
 	sigc::signal<void>& signal_strokes_changed() { return signal_strokes_changed_; }
 	sigc::signal<void>& signal_grid_changed() { return signal_grid_changed_; }
 	sigc::signal<void>& signal_sketch_saved() { return signal_sketch_saved_; }
@@ -518,10 +520,20 @@ public:
 	bool add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<CanvasView> canvas_view, const synfig::TransformStack& transform_stack_, synfig::ParamDesc *param_desc=0);
 
 	//! Set the type mask, which determines what types of ducks are shown
+	//! \Param[in]   x   Duck::Type set to backup when toggling handles
+	//! \Sa              get_type_mask(), CanvasView::toggle_duck_all()
 	void set_type_mask(Type x) { type_mask=x; }
-
 	//! Get the type mask, which determines what types of ducks are shown
+	//! \Sa              set_type_mask(), CanvasView::toggle_duck_all()
 	Type get_type_mask()const { return type_mask; }
+
+	//! Set the type mask state, which determines what types of ducks are shown on toggle
+	//! \Param[in]   x   Duck::Type set to backup when toggling handles
+	//! \Sa              get_type_mask_state(), CanvasView::toggle_duck_mask_all()
+	void set_type_mask_state(Type x) { type_mask_state=x; }
+	//! Get the type mask state, which determines what types of ducks are shown on toggle
+	//! \Sa              set_type_mask_state(), CanvasView::toggle_duck_mask_all()
+	Type get_type_mask_state()const { return type_mask_state; }
 
 	void select_all_ducks();
 	void unselect_all_ducks();

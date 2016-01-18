@@ -30,6 +30,8 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include <glibmm.h>
 #include "layeractionmanager.h"
 #include "trees/layertree.h"
@@ -39,7 +41,7 @@
 #include "instance.h"
 #include <synfigapp/selectionmanager.h>
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

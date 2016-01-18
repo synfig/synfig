@@ -57,6 +57,8 @@
 #include <fcntl.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "docks/dock_toolbox.h"
 #include <glibmm/dispatcher.h>
 #include <synfig/mutex.h>
@@ -71,7 +73,7 @@
 #define read	_read
 #endif
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

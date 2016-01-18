@@ -51,7 +51,7 @@
 #include <gtkmm/box.h>
 #include <synfigapp/main.h>
 
-#include "general.h"
+#include <gui/localization.h>
 
 #endif
 

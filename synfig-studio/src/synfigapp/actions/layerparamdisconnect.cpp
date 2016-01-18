@@ -29,11 +29,13 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "layerparamdisconnect.h"
 #include <synfigapp/canvasinterface.h>
 #include <synfig/valuenodes/valuenode_dynamiclist.h>
 
-#include <synfigapp/general.h>
+#include <synfigapp/localization.h>
 
 #endif
 
