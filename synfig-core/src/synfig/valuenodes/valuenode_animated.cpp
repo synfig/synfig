@@ -51,19 +51,19 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-ValueNode_Animated::Handle
-ValueNode_Animated::create(Type &type)
+ValueNode_Animated::ValueNode_Animated(Type &type):
+	ValueNode_AnimatedInterface(*(ValueNode*)this)
 {
-	ValueNode_Animated::Handle ret(new ValueNode_Animated());
-	ret->set_type(type);
-	return ret;
+	ValueNode_AnimatedInterface::set_type(type);
 }
 
 ValueNode_Animated::Handle
+ValueNode_Animated::create(Type &type)
+	{ return new ValueNode_Animated(type); }
+
+ValueNode_Animated::Handle
 ValueNode_Animated::create(const ValueBase& value, const Time& time)
-{
-	return create(ValueNode::Handle(ValueNode_Const::create(value)),time);
-}
+	{ return create(ValueNode::Handle(ValueNode_Const::create(value)),time); }
 
 ValueNode_Animated::Handle
 ValueNode_Animated::create(ValueNode::Handle value_node, const Time& time)
@@ -78,7 +78,7 @@ ValueNode::Handle
 ValueNode_Animated::clone(Canvas::LooseHandle canvas, const synfig::GUID& deriv_guid)const
 {
 	{ ValueNode* x(find_value_node(get_guid()^deriv_guid).get()); if(x)return x; }
-	ValueNode_Animated* ret(new ValueNode_Animated());
+	ValueNode_Animated* ret(new ValueNode_Animated(get_type()));
 	ret->set_parent_canvas(canvas);
 	ret->set_guid(get_guid()^deriv_guid);
 	ret->assign(*this, deriv_guid);
@@ -102,3 +102,36 @@ ValueNode_Animated::get_string()const
 {
 	return "ValueNode_Animated";
 }
+
+void
+ValueNode_Animated::on_changed()
+{
+	ValueNode::on_changed();
+	ValueNode_AnimatedInterface::on_changed();
+}
+
+ValueBase
+ValueNode_Animated::operator()(Time t) const
+{
+	return (*(ValueNode_Animated*)this)(t);
+}
+
+void
+ValueNode_Animated::get_times_vfunc(Node::time_set &set) const
+{
+	//add all the way point times to the value node...
+
+	WaypointList::const_iterator 	i = waypoint_list().begin(),
+									end = waypoint_list().end();
+
+	for(; i != end; ++i)
+	{
+		TimePoint t;
+		t.set_time(i->get_time());
+		t.set_before(i->get_before());
+		t.set_after(i->get_after());
+		t.set_guid(i->get_guid());
+		set.insert(t);
+	}
+}
+

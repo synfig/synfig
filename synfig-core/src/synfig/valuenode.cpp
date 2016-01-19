@@ -100,6 +100,7 @@
 #include "valuenodes/valuenode_derivative.h"
 #include "valuenodes/valuenode_weightedaverage.h"
 #include "valuenodes/valuenode_reverse.h"
+#include "valuenodes/valuenode_animatedfile.h"
 
 #include "layer.h"
 
@@ -220,6 +221,8 @@ ValueNode::subsys_init()
 	ADD_VALUENODE(ValueNode_Derivative,        "derivative",      _("Derivative"),       RELEASE_VERSION_1_0);
 	
 	ADD_VALUENODE(ValueNode_Reverse,           "reverse",         _("Reverse"),          RELEASE_VERSION_1_0_2);
+
+	ADD_VALUENODE(ValueNode_AnimatedFile,      "animated_file",   _("Animated File"),    RELEASE_VERSION_1_0_2);
 
 #undef ADD_VALUENODE_CREATE
 #undef ADD_VALUENODE

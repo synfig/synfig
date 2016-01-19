@@ -95,6 +95,7 @@ class ValueNode : public synfig::Node
 {
 	friend class Layer;
 	friend class LinkableValueNode;
+	friend class ValueNode_Interface;
 
 	/*
  --	** -- T Y P E S -----------------------------------------------------------
@@ -270,6 +271,28 @@ protected:
 
 	virtual void on_changed();
 }; // END of class ValueNode
+
+
+
+/**	\class ValueNode_Interface */
+class ValueNode_Interface
+{
+private:
+	ValueNode &node_;
+
+protected:
+	explicit ValueNode_Interface(ValueNode &node): node_(node) { }
+
+public:
+	virtual ~ValueNode_Interface() { }
+	ValueNode& node() { return node_; };
+	const ValueNode& node() const { return node_; };
+
+protected:
+	void set_type(Type &t) { node().set_type(t); }
+};
+
+
 
 /*!	\class PlaceholderValueNode
 **	Seems to be a Place to hold a Value Node temporarly.

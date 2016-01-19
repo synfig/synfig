@@ -6,6 +6,7 @@
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**	......... ... 2016 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -39,7 +40,7 @@
 
 namespace synfig {
 
-/*! \class ValueNode_AnimatedBase
+/*! \class ValueNode_AnimatedInterface
  *  \brief Virtual class for the derived ValueNode Animated implementations.
  *
  * It stores the list of waypoints and defines the base methods for:
@@ -50,16 +51,13 @@ namespace synfig {
  * a value node. They must be redefined by the inherited classes and will
  * be different depending on the type of value being animated.
 */
-class ValueNode_AnimatedBase : public ValueNode
+class ValueNode_AnimatedInterfaceConst: public ValueNode_Interface
 {
 private:
 	class Internal;
 
 public:
 	class Interpolator;
-
-	typedef etl::handle<ValueNode_AnimatedBase> Handle;
-	typedef etl::handle<const ValueNode_AnimatedBase> ConstHandle;
 
 	typedef synfig::Waypoint Waypoint;
 	typedef synfig::WaypointList WaypointList;
@@ -74,10 +72,14 @@ private:
 	//! List of Waypoints. \see waypoint.h
 	WaypointList waypoint_list_;
 
-public:
-	WaypointList &editable_waypoint_list() { return waypoint_list_; }
+protected:
+	explicit ValueNode_AnimatedInterfaceConst(ValueNode &node);
 
-	const WaypointList &waypoint_list()const { return waypoint_list_; }
+public:
+	virtual ~ValueNode_AnimatedInterfaceConst();
+
+protected:
+	WaypointList &editable_waypoint_list() { return waypoint_list_; }
 
 	//! Creates a new waypoint at a Time \t with a given ValueBase \value
 	//! Must be redefined in the inherited class
@@ -85,77 +87,89 @@ public:
 	//! Creates a new waypoint at a Time \t with a given ValueNode handle \value_node
 	//! Must be redefined in the inherited class
 	WaypointList::iterator new_waypoint(Time t, ValueNode::Handle value_node);
+	//! Adds a waypoint \x
+	//! \see : Waypoint new_waypoint_at_time(const Time& t)const;
+	WaypointList::iterator add(const Waypoint &x);
+	//! Inserts time \delta from time \location to the waypoints.
+	//! used to move waypoints in the time line.
+	void insert_time(const Time& location, const Time& delta);
+	//! Removes a waypoint based on its UniqueId from the waypoint list
+	void erase(const UniqueID &x);
+	//! Removes all waypoints
+	void erase_all();
 
+	//! Finds Waypoint iterator and associated boolean if found. Find by UniqueID
+	findresult 			   find_uid(const UniqueID &x);
+	//! Finds Waypoint iterator and associated boolean if found. Find by Time
+	findresult			   find_time(const Time &x);
+	//! Finds a Waypoint by given UniqueID \x
+	WaypointList::iterator find(const UniqueID &x);
+	//! Finds a Waypoint by given Time \x
+	WaypointList::iterator find(const Time &x);
+	//! Finds next Waypoint at a given time \x starting from current waypoint
+	WaypointList::iterator find_next(const Time &x);
+	//! Finds previous Waypoint at a given time \x starting from current waypoint
+	WaypointList::iterator find_prev(const Time &x);
+	//! Fills the \list with the waypoints between \begin and \end
+	int find(const Time& begin, const Time& end, std::vector<Waypoint*>& list);
+
+	void set_type(Type &t);
+
+	virtual void animated_changed() { }
+	void on_changed();
+	ValueBase operator()(Time t) const;
+
+	void assign(const ValueNode_AnimatedInterfaceConst &animated, const synfig::GUID& deriv_guid);
+
+	//! Get/Set the default interpolation for Value Nodes
+	Interpolation get_interpolation()const { return interpolation_; }
+	void set_interpolation(Interpolation i) { interpolation_=i; }
+
+public:
+	const WaypointList &waypoint_list()const { return waypoint_list_; }
+	bool waypoint_is_only_use_of_valuenode(Waypoint &waypoint) const;
 	//! Returns a new waypoint at a given time but it is not inserted in the Waypoint List.
 	/*! \note this does not add any waypoint to the ValueNode! */
 	Waypoint new_waypoint_at_time(const Time& t)const;
 
-	//! Adds a waypoint \x
-	//! \see : Waypoint new_waypoint_at_time(const Time& t)const;
-	WaypointList::iterator add(const Waypoint &x);
-
-	bool waypoint_is_only_use_of_valuenode(Waypoint &waypoint);
-
-	//! Removes a waypoint based on its UniqueId from the waypoint list
-	void erase(const UniqueID &x);
-
 	//! Finds Waypoint iterator and associated boolean if found. Find by UniqueID
-	findresult 			find_uid(const UniqueID &x);
-	//! Finds Waypoint iterator and associated boolean if found. Find by UniqueID
-	const_findresult 	find_uid(const UniqueID &x)const;
+	const_findresult 	         find_uid(const UniqueID &x)const;
 	//! Finds Waypoint iterator and associated boolean if found. Find by Time
-	findresult			find_time(const Time &x);
-	//! Finds Waypoint iterator and associated boolean if found. Find by Time
-	const_findresult	find_time(const Time &x)const;
-
-	//! Finds a Waypoint by given UniqueID \x
-	WaypointList::iterator find(const UniqueID &x);
+	const_findresult	         find_time(const Time &x)const;
 	//! Finds a Waypoint by given UniqueID \x
 	WaypointList::const_iterator find(const UniqueID &x)const;
 	//! Finds a Waypoint by given Time \x
-	WaypointList::iterator find(const Time &x);
-	//! Finds a Waypoint by given Time \x
 	WaypointList::const_iterator find(const Time &x)const;
-
-	//! Finds next Waypoint at a given time \x starting from current waypoint
-	WaypointList::iterator find_next(const Time &x);
 	//! Finds next Waypoint at a given time \x starting from current waypoint
 	WaypointList::const_iterator find_next(const Time &x)const;
 	//! Finds previous Waypoint at a given time \x starting from current waypoint
-	WaypointList::iterator find_prev(const Time &x);
-	//! Finds previous Waypoint at a given time \x starting from current waypoint
 	WaypointList::const_iterator find_prev(const Time &x)const;
-
-	virtual ~ValueNode_AnimatedBase();
-
-	virtual void assign(const ValueNode &value_node, const synfig::GUID& deriv_guid);
-
-	virtual void on_changed();
-	virtual ValueBase operator()(Time t) const;
-
 	//! Fills the \list with the waypoints between \begin and \end
-	int find(const Time& begin,const Time& end,std::vector<Waypoint*>& list);
-
-	//! Inserts time \delta from time \location to the waypoints.
-	//! used to move waypoints in the time line.
-	void insert_time(const Time& location, const Time& delta);
-
-	//! Get/Set the default interpolation for Value Nodes
-	virtual Interpolation get_interpolation()const { return interpolation_; }
-	virtual void set_interpolation(Interpolation i) { interpolation_=i; }
-
-	
-
-protected:
-	ValueNode_AnimatedBase();
-
-	//! Sets the type of the Animated Value Node
-	void set_type(Type &t);
-	//!	Function to be overloaded that fills the Time Point Set with
-	//! all the children Time Points. Time Point is like Waypoint but
-	//! without value node
-	virtual void get_times_vfunc(Node::time_set &set) const;
+	int find(const Time& begin, const Time& end, std::vector<const Waypoint*>& list) const;
 };
+
+class ValueNode_AnimatedInterface: public ValueNode_AnimatedInterfaceConst
+{
+protected:
+	explicit ValueNode_AnimatedInterface(ValueNode &node): ValueNode_AnimatedInterfaceConst(node) { }
+	virtual void animated_changed() { node().changed(); }
+
+public:
+	using ValueNode_AnimatedInterfaceConst::editable_waypoint_list;
+	using ValueNode_AnimatedInterfaceConst::new_waypoint;
+	using ValueNode_AnimatedInterfaceConst::new_waypoint;
+	using ValueNode_AnimatedInterfaceConst::add;
+	using ValueNode_AnimatedInterfaceConst::insert_time;
+	using ValueNode_AnimatedInterfaceConst::erase;
+	using ValueNode_AnimatedInterfaceConst::erase_all;
+
+	using ValueNode_AnimatedInterfaceConst::find_uid;
+	using ValueNode_AnimatedInterfaceConst::find_time;
+	using ValueNode_AnimatedInterfaceConst::find;
+	using ValueNode_AnimatedInterfaceConst::find_next;
+	using ValueNode_AnimatedInterfaceConst::find_prev;
+};
+
 
 }; // END of namespace synfig
 
