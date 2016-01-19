@@ -324,10 +324,10 @@ public:
 	bool is_valid()const { return valid(); }
 	bool is_nan_or_inf()const
 	{
-		return isnan(minx)
-			|| isnan(miny)
-			|| isinf(maxx)
-			|| isinf(maxy);
+		return std::isnan(minx)
+			|| std::isnan(miny)
+			|| std::isinf(maxx)
+			|| std::isinf(maxy);
 	}
 
 	Rect multiply_coords(const Vector &rhs) const

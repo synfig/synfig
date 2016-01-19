@@ -113,7 +113,7 @@ public:
 	{ return CairoColorAccumulator(-r_,-g_,-b_,-a_); }
 	
 	bool is_valid()const
-	{ return !isnan(r_) && !isnan(g_) && !isnan(b_) && !isnan(a_); }
+	{ return !std::isnan(r_) && !std::isnan(g_) && !std::isnan(b_) && !std::isnan(a_); }
 	
 public:
 	CairoColorAccumulator(): a_(), r_(), g_(), b_() { }

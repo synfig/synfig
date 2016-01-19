@@ -746,7 +746,7 @@ Warp::accelerated_render(Context context,Surface *surface,int quality, const Ren
 				u=(tmp[0]-tl[0])*src_pw;
 				v=(tmp[1]-tl[1])*src_ph;
 
-				if(u<0 || v<0 || u>=source.get_w() || v>=source.get_h() || isnan(u) || isnan(v))
+				if(u<0 || v<0 || u>=source.get_w() || v>=source.get_h() || std::isnan(u) || std::isnan(v))
 					(*surface)[y][x]=context.get_color(tmp);
 				else
 					(*surface)[y][x]=source.cubic_sample(u,v);
@@ -780,7 +780,7 @@ Warp::accelerated_render(Context context,Surface *surface,int quality, const Ren
 				u=(tmp[0]-tl[0])*src_pw;
 				v=(tmp[1]-tl[1])*src_ph;
 
-				if(u<0 || v<0 || u>=source.get_w() || v>=source.get_h() || isnan(u) || isnan(v))
+				if(u<0 || v<0 || u>=source.get_w() || v>=source.get_h() || std::isnan(u) || std::isnan(v))
 					(*surface)[y][x]=context.get_color(tmp);
 				else
 					(*surface)[y][x]=source.linear_sample(u,v);
@@ -813,7 +813,7 @@ Warp::accelerated_render(Context context,Surface *surface,int quality, const Ren
 				u=(tmp[0]-tl[0])*src_pw;
 				v=(tmp[1]-tl[1])*src_ph;
 
-				if(u<0 || v<0 || u>=source.get_w() || v>=source.get_h() || isnan(u) || isnan(v))
+				if(u<0 || v<0 || u>=source.get_w() || v>=source.get_h() || std::isnan(u) || std::isnan(v))
 					(*surface)[y][x]=context.get_color(tmp);
 				else
 					//pen.set_value(source[v][u]);
@@ -1098,7 +1098,7 @@ Warp::accelerated_cairorender(Context context, cairo_t *cr, int quality, const R
 				u=(tmp[0]-tl[0])*src_pw;
 				v=(tmp[1]-tl[1])*src_ph;
 				
-				if(u<0 || v<0 || u>=sourcew || v>=sourceh || isnan(u) || isnan(v))
+				if(u<0 || v<0 || u>=sourcew || v>=sourceh || std::isnan(u) || std::isnan(v))
 					csurface[y][x]=context.get_cairocolor(tmp);
 				else
 				{

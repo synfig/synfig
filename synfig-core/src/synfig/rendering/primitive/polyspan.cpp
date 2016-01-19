@@ -155,8 +155,8 @@ void
 Polyspan::move_to(Real x, Real y)
 {
 	close();
-	if(isnan(x))x=0;
-	if(isnan(y))y=0;
+	if(std::isnan(x))x=0;
+	if(std::isnan(y))y=0;
 	move_pen((int)floor(x),(int)floor(y));
 	close_y = cur_y = y;
 	close_x = cur_x = x;
@@ -752,8 +752,8 @@ Polyspan::draw_line(Real x1, Real y1, Real x2, Real y2)
 	Real fy1 = y1 - iy1;
 	Real fy2 = y2 - iy2;
 
-	assert(!isnan(fy1));
-	assert(!isnan(fy2));
+	assert(!std::isnan(fy1));
+	assert(!std::isnan(fy2));
 
 	Real dx,dy,dxdy,mult,x_from,x_to;
 

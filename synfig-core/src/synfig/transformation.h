@@ -72,8 +72,8 @@ public:
 	bool is_valid()const
 	{
 		return offset.is_valid()
-		    && !isnan(Angle::rad(angle).get())
-		    && !isnan(Angle::rad(skew_angle).get())
+		    && !std::isnan(Angle::rad(angle).get())
+		    && !std::isnan(Angle::rad(skew_angle).get())
 		    && scale.is_valid();
 	}
 
@@ -142,10 +142,10 @@ public:
 
 	static Rect transform_bounds(const Matrix &matrix, const Rect &bounds)
 	{
-		if (isnan(bounds.minx) || isinf(bounds.minx)
-		 || isnan(bounds.maxx) || isinf(bounds.maxx)
-		 || isnan(bounds.miny) || isinf(bounds.miny)
-		 || isnan(bounds.maxy) || isinf(bounds.maxy))
+		if (std::isnan(bounds.minx) || std::isinf(bounds.minx)
+		 || std::isnan(bounds.maxx) || std::isinf(bounds.maxx)
+		 || std::isnan(bounds.miny) || std::isinf(bounds.miny)
+		 || std::isnan(bounds.maxy) || std::isinf(bounds.maxy))
 			return Rect::infinite();
 
 		Rect transformed_bounds(

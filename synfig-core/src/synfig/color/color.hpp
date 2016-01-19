@@ -117,7 +117,7 @@ Color Color::operator~()const
 { return Color(1.0f-r_,1.0f-g_,1.0f-b_,a_); }
 
 bool Color::is_valid()const
-{ return !isnan(r_) && !isnan(g_) && !isnan(b_) && !isnan(a_); }
+{ return !std::isnan(r_) && !std::isnan(g_) && !std::isnan(b_) && !std::isnan(a_); }
 
 Color Color::premult_alpha() const
 {

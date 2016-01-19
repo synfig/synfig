@@ -34,29 +34,31 @@
 
 /* === M A C R O S ========================================================= */
 
+// Commented during c++11 support
+//
 // For some reason isnan() isn't working on macosx any more.
 // This is a quick fix.
-#if defined(__APPLE__) && !defined(SYNFIG_ISNAN_FIX)
-#ifdef isnan
-#undef isnan
-#endif
-inline bool isnan(double x) { return x != x; }
-inline bool isnan(float x) { return x != x; }
-#define SYNFIG_ISNAN_FIX 1
-#ifdef isinf
-#undef isinf
-#endif
-inline bool isinf(double x) { return !isnan(x) && isnan(x - x); }
-inline bool isinf(float x) { return !isnan(x) && isnan(x - x); }
-#define SYNFIG_ISINF_FIX 1
-#else
-#ifndef isnan
-#define isnan(x) (std::isnan)(x)
-#endif
-#ifndef isinf
-#define isinf(x) (std::isinf)(x)
-#endif
-#endif
+// #if defined(__APPLE__) && !defined(SYNFIG_ISNAN_FIX)
+// #ifdef isnan
+// #undef isnan
+// #endif
+// inline bool isnan(double x) { return x != x; }
+// inline bool isnan(float x) { return x != x; }
+// #define SYNFIG_ISNAN_FIX 1
+// #ifdef isinf
+// #undef isinf
+// #endif
+// inline bool isinf(double x) { return !isnan(x) && isnan(x - x); }
+// inline bool isinf(float x) { return !isnan(x) && isnan(x - x); }
+// #define SYNFIG_ISINF_FIX 1
+// #else
+// #ifndef isnan
+// #define isnan(x) (std::isnan)(x)
+// #endif
+// #ifndef isinf
+// #define isinf(x) (std::isinf)(x)
+// #endif
+// #endif
 
 
 /* === T Y P E D E F S ===================================================== */
@@ -205,8 +207,8 @@ public:
 	_y(radius*Angle::sin(angle).get())
 	{ };
 
-	bool is_valid()const { return !(isnan(_x) || isnan(_y)); }
-	bool is_nan_or_inf()const { return isnan(_x) || isnan(_y) || isinf(_x) || isinf(_y); }
+	bool is_valid()const { return !(std::isnan(_x) || std::isnan(_y)); }
+	bool is_nan_or_inf()const { return std::isnan(_x) || std::isnan(_y) || std::isinf(_x) || std::isinf(_y); }
 
 	value_type &
 	operator[](const int& i)

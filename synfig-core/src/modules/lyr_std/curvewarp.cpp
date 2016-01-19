@@ -570,7 +570,7 @@ CurveWarp::accelerated_render(Context context,Surface *surface,int quality, cons
 				tmp=transform(pos);
 				u=(tmp[0]-src_tl[0])/src_pw;
 				v=(tmp[1]-src_tl[1])/src_ph;
-				if(u<0 || v<0 || u>=src_w || v>=src_h || isnan(u) || isnan(v))
+				if(u<0 || v<0 || u>=src_w || v>=src_h || std::isnan(u) || std::isnan(v))
 					(*surface)[y][x]=context.get_color(tmp);
 				else
 					(*surface)[y][x]=source.cubic_sample(u,v);
@@ -585,7 +585,7 @@ CurveWarp::accelerated_render(Context context,Surface *surface,int quality, cons
 				tmp=transform(pos);
 				u=(tmp[0]-src_tl[0])/src_pw;
 				v=(tmp[1]-src_tl[1])/src_ph;
-				if(u<0 || v<0 || u>=src_w || v>=src_h || isnan(u) || isnan(v))
+				if(u<0 || v<0 || u>=src_w || v>=src_h || std::isnan(u) || std::isnan(v))
 					(*surface)[y][x]=context.get_color(tmp);
 				else
 					(*surface)[y][x]=source.linear_sample(u,v);
@@ -600,7 +600,7 @@ CurveWarp::accelerated_render(Context context,Surface *surface,int quality, cons
 				tmp=transform(pos);
 				u=(tmp[0]-src_tl[0])/src_pw;
 				v=(tmp[1]-src_tl[1])/src_ph;
-				if(u<0 || v<0 || u>=src_w || v>=src_h || isnan(u) || isnan(v))
+				if(u<0 || v<0 || u>=src_w || v>=src_h || std::isnan(u) || std::isnan(v))
 					(*surface)[y][x]=context.get_color(tmp);
 				else
 					(*surface)[y][x]=source[floor_to_int(v)][floor_to_int(u)];
@@ -773,7 +773,7 @@ if (along > max_along) max_along = along
 				tmp=transform(pos);
 				u=(tmp[0]-src_tl[0])/src_pw;
 				v=(tmp[1]-src_tl[1])/src_ph;
-				if(u<0 || v<0 || u>=src_w || v>=src_h || isnan(u) || isnan(v))
+				if(u<0 || v<0 || u>=src_w || v>=src_h || std::isnan(u) || std::isnan(v))
 					result[y][x]=CairoColor(context.get_color(tmp)).premult_alpha();
 				else
 					result[y][x]=source.cubic_sample_cooked(u,v);
@@ -788,7 +788,7 @@ if (along > max_along) max_along = along
 				tmp=transform(pos);
 				u=(tmp[0]-src_tl[0])/src_pw;
 				v=(tmp[1]-src_tl[1])/src_ph;
-				if(u<0 || v<0 || u>=src_w || v>=src_h || isnan(u) || isnan(v))
+				if(u<0 || v<0 || u>=src_w || v>=src_h || std::isnan(u) || std::isnan(v))
 					result[y][x]=CairoColor(context.get_color(tmp)).premult_alpha();
 				else
 					result[y][x]=source.linear_sample_cooked(u,v);
@@ -803,7 +803,7 @@ if (along > max_along) max_along = along
 				tmp=transform(pos);
 				u=(tmp[0]-src_tl[0])/src_pw;
 				v=(tmp[1]-src_tl[1])/src_ph;
-				if(u<0 || v<0 || u>=src_w || v>=src_h || isnan(u) || isnan(v))
+				if(u<0 || v<0 || u>=src_w || v>=src_h || std::isnan(u) || std::isnan(v))
 					result[y][x]=CairoColor(context.get_color(tmp)).premult_alpha();
 				else
 					result[y][x]=source[floor_to_int(v)][floor_to_int(u)];

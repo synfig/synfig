@@ -186,9 +186,9 @@ Transformation::build_mesh(const Rect &target_rect, const Vector &precision) con
 		std::swap(valid_target_rect.maxy, valid_target_rect.miny);
 
 	Vector valid_precision(fabs(precision[0]), fabs(precision[1]));
-	if (isnan(valid_precision[0]) || isinf(valid_precision[0]))
+	if (std::isnan(valid_precision[0]) || std::isinf(valid_precision[0]))
 		valid_precision[0] = valid_target_rect.maxx - valid_target_rect.minx;
-	if (isnan(valid_precision[1]) || isinf(valid_precision[1]))
+	if (std::isnan(valid_precision[1]) || std::isinf(valid_precision[1]))
 		valid_precision[1] = valid_target_rect.maxx - valid_target_rect.minx;
 	if (valid_precision[0] < epsilon)
 		valid_precision[0] = epsilon;

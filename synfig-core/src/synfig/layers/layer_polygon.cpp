@@ -107,7 +107,7 @@ Layer_Polygon::sync()
 
 	for(i = 1;i < pointcount; i++)
 	{
-		if(isnan(vector_list[i][0]) || isnan(vector_list[i][1]))
+		if(std::isnan(vector_list[i][0]) || std::isnan(vector_list[i][1]))
 			break;
 		line_to(vector_list[i][0],vector_list[i][1]);
 	}
@@ -132,7 +132,7 @@ Layer_Polygon::add_polygon(const std::vector<Point> &point_list)
 
 	for(i = 1;i < pointcount; i++)
 	{
-		if(isnan(point_list[i][0]) || isnan(point_list[i][1]))
+		if(std::isnan(point_list[i][0]) || std::isnan(point_list[i][1]))
 			break;
 		line_to(point_list[i][0],point_list[i][1]);
 	}

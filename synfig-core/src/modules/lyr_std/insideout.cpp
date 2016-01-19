@@ -130,7 +130,7 @@ public:
 		Point origin=layer->param_origin.get(Point());
 		Point pos(x-origin);
 		Real inv_mag=pos.inv_mag();
-		if(!isnan(inv_mag))
+		if(!std::isnan(inv_mag))
 			return (pos*(inv_mag*inv_mag)+origin);
 		return x;
 	}
@@ -140,7 +140,7 @@ public:
 		Point origin=layer->param_origin.get(Point());
 		Point pos(x-origin);
 		Real inv_mag=pos.inv_mag();
-		if(!isnan(inv_mag))
+		if(!std::isnan(inv_mag))
 			return (pos*(inv_mag*inv_mag)+origin);
 		return x;
 	}

@@ -332,7 +332,7 @@ synfig::Gradient::operator()(const Real &x,float supersample)const
 	float begin_sample(x-supersample*0.5);
 	float end_sample(x+supersample*0.5);
 
-	if(cpoints.size()==1 || end_sample<=cpoints.front().pos || isnan(x))
+	if(cpoints.size()==1 || end_sample<=cpoints.front().pos || std::isnan(x))
 		return cpoints.front().color;
 
 	if(begin_sample>=cpoints.back().pos)

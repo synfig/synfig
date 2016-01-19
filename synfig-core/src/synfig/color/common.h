@@ -47,20 +47,22 @@
 #define gamma_in(x)				((x>=0) ? pow((float)x,1.0f/colorspace_gamma()) : -pow((float)-x,1.0f/colorspace_gamma()))
 #define gamma_out(x)			((x>=0) ? pow((float)x,     colorspace_gamma()) : -pow((float)-x,     colorspace_gamma()))
 
+// Commented during c++11 support
+//
 // For some reason isnan() isn't working on macosx any more.
 // This is a quick fix.
-#if defined(__APPLE__) && !defined(SYNFIG_ISNAN_FIX)
-    #ifdef isnan
-        #undef isnan
-    #endif
-    inline bool isnan(double x) { return x != x; }
-    inline bool isnan(float x) { return x != x; }
-    #define SYNFIG_ISNAN_FIX 1
-#else
-    #ifndef isnan
-        #define isnan(x) (std::isnan)(x)
-    #endif
-#endif
+// #if defined(__APPLE__) && !defined(SYNFIG_ISNAN_FIX)
+//     #ifdef isnan
+//         #undef isnan
+//     #endif
+//     inline bool isnan(double x) { return x != x; }
+//     inline bool isnan(float x) { return x != x; }
+//     #define SYNFIG_ISNAN_FIX 1
+// #else
+//     #ifndef isnan
+//         #define isnan(x) (std::isnan)(x)
+//     #endif
+// #endif
 
 namespace synfig {
 

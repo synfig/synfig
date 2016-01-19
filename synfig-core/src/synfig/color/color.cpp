@@ -160,10 +160,10 @@ Color::clamped_negative()const
 	if(ret.b_>1) ret.b_=1;
 	if(ret.a_>1) ret.a_=1;
 
-	if(isnan(ret.get_r())) ret.r_=0.5;
-	if(isnan(ret.get_g())) ret.g_=0.5;
-	if(isnan(ret.get_b())) ret.b_=0.5;
-	if(isnan(ret.get_a())) ret.a_=1;
+	if(std::isnan(ret.get_r())) ret.r_=0.5;
+	if(std::isnan(ret.get_g())) ret.g_=0.5;
+	if(std::isnan(ret.get_b())) ret.b_=0.5;
+	if(std::isnan(ret.get_a())) ret.a_=1;
 
 /*
 	if(ret.r_>1) { ret.g_/=ret.r_; ret.b_/=ret.r_; ret.r_=1; }
@@ -193,10 +193,10 @@ Color::clamped()const
 	if(ret.b_>1) ret.b_=1;
 	if(ret.a_>1) ret.a_=1;
 
-	if(isnan(ret.get_r())) ret.r_=0.5;
-	if(isnan(ret.get_g())) ret.g_=0.5;
-	if(isnan(ret.get_b())) ret.b_=0.5;
-	if(isnan(ret.get_a())) ret.a_=1;
+	if(std::isnan(ret.get_r())) ret.r_=0.5;
+	if(std::isnan(ret.get_g())) ret.g_=0.5;
+	if(std::isnan(ret.get_b())) ret.b_=0.5;
+	if(std::isnan(ret.get_a())) ret.a_=1;
 
 	return(ret);
 }

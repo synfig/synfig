@@ -120,9 +120,9 @@ Layer_ColorCorrect::correct_color(const Color &in)const
 		}
 	}
 
-	assert(!isnan(ret.get_r()));
-	assert(!isnan(ret.get_g()));
-	assert(!isnan(ret.get_b()));
+	assert(!std::isnan(ret.get_r()));
+	assert(!std::isnan(ret.get_g()));
+	assert(!std::isnan(ret.get_b()));
 
 	if(exposure!=0.0)
 	{

@@ -38,16 +38,18 @@
 
 /* === M A C R O S ========================================================= */
 
+// Commented during c++11 support
+//
 // For some reason isnan() isn't working on macosx any more.
 // This is a quick fix.
-#if defined(__APPLE__) && !defined(SYNFIG_ISNAN_FIX)
-#ifdef isnan
-#undef isnan
-#endif
-inline bool isnan(double x) { return x != x; }
-inline bool isnan(float x) { return x != x; }
-#define SYNFIG_ISNAN_FIX 1
-#endif
+// #if defined(__APPLE__) && !defined(SYNFIG_ISNAN_FIX)
+// #ifdef isnan
+// #undef isnan
+// #endif
+// inline bool isnan(double x) { return x != x; }
+// inline bool isnan(float x) { return x != x; }
+// #define SYNFIG_ISNAN_FIX 1
+// #endif
 
 #define COUT_MATRIX(m)													\
 	cout<<"["<<m.m00<<"]["<<m.m01<<"]["<<m.m02<<"]"<<endl;				\
