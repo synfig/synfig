@@ -165,7 +165,9 @@ software::Blur::blur_fft(const Params &params)
 	bool full = false;
 	bool cross = false;
 
-	Array<Real, 4> arr_surface(&surface.front().real());
+	Real surfacereal(surface.front().real());
+	Array<Real, 4> arr_surface(& surfacereal);
+
 	arr_surface
 		.set_dim(rows, cols*channels*2)
 		.set_dim(cols, channels*2)
