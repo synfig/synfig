@@ -71,7 +71,6 @@ protected:
 
 	virtual void on_changed();
 	virtual bool set_link_vfunc(int i, ValueNode::Handle x);
-	virtual void get_times_vfunc(Node::time_set &set) const;
 };
 
 }; // END of namespace synfig

@@ -142,11 +142,3 @@ ValueNode_AnimatedFile::get_children_vocab_vfunc() const
 	return ret;
 }
 
-
-void
-ValueNode_AnimatedFile::get_times_vfunc(Node::time_set &set) const
-{
-	//TODO:
-	LinkableValueNode::get_times_vfunc(set);
-}
-

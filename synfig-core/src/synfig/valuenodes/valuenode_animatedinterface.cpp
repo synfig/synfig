@@ -1223,3 +1223,22 @@ ValueNode_AnimatedInterfaceConst::insert_time(const Time& location, const Time& 
 	}
 	catch(Exception::NotFound) { }
 }
+
+void
+ValueNode_AnimatedInterfaceConst::get_times_vfunc(Node::time_set &set) const
+{
+	//add all the way point times to the value node...
+
+	WaypointList::const_iterator 	i = waypoint_list().begin(),
+									end = waypoint_list().end();
+
+	for(; i != end; ++i)
+	{
+		TimePoint t;
+		t.set_time(i->get_time());
+		t.set_before(i->get_before());
+		t.set_after(i->get_after());
+		t.set_guid(i->get_guid());
+		set.insert(t);
+	}
+}

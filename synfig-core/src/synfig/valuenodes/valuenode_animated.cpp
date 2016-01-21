@@ -87,21 +87,15 @@ ValueNode_Animated::clone(Canvas::LooseHandle canvas, const synfig::GUID& deriv_
 
 String
 ValueNode_Animated::get_name()const
-{
-	return "animated";
-}
+	{ return "animated"; }
 
 String
 ValueNode_Animated::get_local_name()const
-{
-	return _("Animated");
-}
+	{ return _("Animated"); }
 
 String
 ValueNode_Animated::get_string()const
-{
-	return "ValueNode_Animated";
-}
+	{ return "ValueNode_Animated"; }
 
 void
 ValueNode_Animated::on_changed()
@@ -112,26 +106,9 @@ ValueNode_Animated::on_changed()
 
 ValueBase
 ValueNode_Animated::operator()(Time t) const
-{
-	return (*(ValueNode_Animated*)this)(t);
-}
+	{ return (*(ValueNode_Animated*)this)(t); }
 
 void
 ValueNode_Animated::get_times_vfunc(Node::time_set &set) const
-{
-	//add all the way point times to the value node...
-
-	WaypointList::const_iterator 	i = waypoint_list().begin(),
-									end = waypoint_list().end();
-
-	for(; i != end; ++i)
-	{
-		TimePoint t;
-		t.set_time(i->get_time());
-		t.set_before(i->get_before());
-		t.set_after(i->get_after());
-		t.set_guid(i->get_guid());
-		set.insert(t);
-	}
-}
+	{ ValueNode_AnimatedInterface::get_times_vfunc(set); }
 

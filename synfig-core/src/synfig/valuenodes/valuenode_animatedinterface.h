@@ -116,8 +116,10 @@ protected:
 	void set_type(Type &t);
 
 	virtual void animated_changed() { }
+
 	void on_changed();
 	ValueBase operator()(Time t) const;
+	void get_times_vfunc(Node::time_set &set) const;
 
 	void assign(const ValueNode_AnimatedInterfaceConst &animated, const synfig::GUID& deriv_guid);
 
