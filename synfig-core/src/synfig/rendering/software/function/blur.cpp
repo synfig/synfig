@@ -165,8 +165,7 @@ software::Blur::blur_fft(const Params &params)
 	bool full = false;
 	bool cross = false;
 
-	Real surfacereal(surface.front().real());
-	Array<Real, 4> arr_surface(& surfacereal);
+	Array<Real, 4> arr_surface((Real*)&surface.front());
 
 	arr_surface
 		.set_dim(rows, cols*channels*2)
@@ -199,12 +198,12 @@ software::Blur::blur_fft(const Params &params)
 	case rendering::Blur::FASTGAUSSIAN:
 		row_pattern.resize(cols);
 		col_pattern.resize(rows);
-		arr_row_pattern.pointer = &row_pattern.front().real();
-		arr_col_pattern.pointer = &col_pattern.front().real();
+		arr_row_pattern.pointer = (Real*)&row_pattern.front();
+		arr_col_pattern.pointer = (Real*)&col_pattern.front();
 		break;
 	case rendering::Blur::DISC:
 		full_pattern.resize(rows*cols);
-		arr_full_pattern.pointer = &full_pattern.front().real();
+		arr_full_pattern.pointer = (Real*)&full_pattern.front();
 		break;
 	default:
 		assert(false);
