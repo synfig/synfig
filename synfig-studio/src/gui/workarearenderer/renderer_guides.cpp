@@ -137,14 +137,14 @@ Renderer_Guides::event_vfunc(GdkEvent* event)
 			mouse_pos=synfig::Point(screen_to_comp_coords(synfig::Point(event->button.x,event->button.y)));
 			button_pressed=event->button.button;
 			pressure=1.0f;
-			if(isnan(event->button.x) || isnan(event->button.y))
+			if(std::isnan(event->button.x) || std::isnan(event->button.y))
 				return false;
 		}
 		else
 		{
 			double x(event->button.axes[0]);
 			double y(event->button.axes[1]);
-			if(isnan(x) || isnan(y))
+			if(std::isnan(x) || std::isnan(y))
 				return false;
 
 			pressure=event->button.axes[2];
@@ -153,7 +153,7 @@ Renderer_Guides::event_vfunc(GdkEvent* event)
 			pressure/=1.0f-0.04f;
 
 
-			assert(!isnan(pressure));
+			assert(!std::isnan(pressure));
 
 			mouse_pos=synfig::Point(screen_to_comp_coords(synfig::Point(x,y)));
 

@@ -1673,7 +1673,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 		if (gdk_device_get_axis(device, event->motion.axes, GDK_AXIS_PRESSURE, &p))
 			p = std::max(0.0, (p - 0.04)/(1.0 - 0.04)); else p = 1.0;
 
-		if(isnan(x) || isnan(y) || isnan(p))
+		if(std::isnan(x) || std::isnan(y) || std::isnan(p))
 			return false;
 
 		mouse_pos=synfig::Point(screen_to_comp_coords(synfig::Point(x, y)));
@@ -1724,7 +1724,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 		if (gdk_device_get_axis(device, event->motion.axes, GDK_AXIS_PRESSURE, &p))
 			p = std::max(0.0, (p - 0.04)/(1.0 - 0.04)); else p = 1.0;
 
-		if(isnan(x) || isnan(y) || isnan(p))
+		if(std::isnan(x) || std::isnan(y) || std::isnan(p))
 			return false;
 
 		mouse_pos=synfig::Point(screen_to_comp_coords(synfig::Point(x, y)));
@@ -2137,11 +2137,11 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 			}
 
 			// Erase the guides if dragged into the rulers
-			if(curr_guide_is_x && !isnan(x) && x<0.0 )
+			if(curr_guide_is_x && !std::isnan(x) && x<0.0 )
 			{
 				get_guide_list_x().erase(curr_guide);
 			}
-			else if(!curr_guide_is_x && !isnan(y) && y<0.0 )
+			else if(!curr_guide_is_x && !std::isnan(y) && y<0.0 )
 			{
 				get_guide_list_y().erase(curr_guide);
 			}
