@@ -169,7 +169,7 @@ public:
 		Parent(pointer, other), count(count), stride(stride) { }
 
 	operator const Array<const Type, Rank>& () const
-		{ return *(const Array<const Type, Rank>*)*this; }
+		{ return *(const Array<const Type, Rank>*)this; }
 
 	Parent& sub() { return *this; }
 	const Parent& sub() const { return *this; }
