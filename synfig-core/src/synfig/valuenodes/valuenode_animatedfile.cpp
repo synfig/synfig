@@ -148,7 +148,7 @@ ValueNode_AnimatedFile::create(const ValueBase &x)
 
 String
 ValueNode_AnimatedFile::get_name()const
-	{ return "animatedfile"; }
+	{ return "animated_file"; }
 
 String
 ValueNode_AnimatedFile::get_local_name()const
