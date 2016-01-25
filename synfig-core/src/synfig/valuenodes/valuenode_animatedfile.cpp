@@ -29,6 +29,9 @@
 #	include <config.h>
 #endif
 
+#include <istream>
+#include <map>
+
 #include <synfig/localization.h>
 #include <synfig/general.h>
 
@@ -51,10 +54,82 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
+class ValueNode_AnimatedFile::Parser {
+public:
+	static bool parse_pgo(istream &s, map<Time, String> &value)
+	{
+		String word;
+		bool unexpected_end = false;
+
+		String id, version;
+		s >> id >> word >>  version;
+		if (id != "lipsync" || word != "version")
+			{ error("Wrong format of .pgo file"); return false; }
+		if (version != "1")
+			warning("Unknown version of .pgo file: '%s'", version.c_str());
+		getline(s, word);
+		getline(s, word);
+
+		Real fps;
+		s >> fps;
+		if (fps <= 1e-10)
+			return false;
+		Real fk = 1.0/fps;
+		getline(s, word);
+		getline(s, word);
+
+		int voices = 0;
+		s >> voices;
+		getline(s, word);
+		for(int i = 0; i < voices; ++i)
+		{
+			getline(s, word);
+			getline(s, word);
+
+			int phrases = 0;
+			s >> phrases;
+			getline(s, word);
+			for(int j = 0; j < phrases; ++j)
+			{
+				getline(s, word);
+				getline(s, word);
+				getline(s, word);
+
+				int words = 0;
+				s >> words;
+				getline(s, word);
+				for(int k = 0; k < words; ++k)
+				{
+					int phonemes = 0;
+					s >> word >> word >> word >> phonemes;
+					getline(s, word);
+					for(int l = 0; l < phonemes; ++l)
+					{
+						int frame = 0;
+						String phoneme;
+						if (s)
+						{
+							s >> frame >> phoneme;
+							getline(s, word);
+							value[Time(frame*fk)] = phoneme;
+						} else unexpected_end = true;
+					}
+				}
+			}
+		}
+
+		if (unexpected_end)
+			warning("Unexpected end of .pgo file. Unsupported format?");
+
+		return true;
+	}
+};
+
 ValueNode_AnimatedFile::ValueNode_AnimatedFile(Type &t):
 	ValueNode_AnimatedInterfaceConst(*(ValueNode*)this),
 	filename(ValueNode_Const::create(String("")))
 {
+	ValueNode_AnimatedInterfaceConst::set_interpolation(INTERPOLATION_CONSTANT);
 	ValueNode_AnimatedInterfaceConst::set_type(t);
 	set_children_vocab(get_children_vocab());
 }
@@ -83,11 +158,27 @@ void
 ValueNode_AnimatedFile::load_file(const String &filename)
 {
 	if (current_filename == filename) return;
+	if ( !get_parent_canvas()
+	  || !get_parent_canvas()->get_identifier().file_system ) return;
+
 	erase_all();
 	if (!filename.empty())
 	{
-		//todo: load
+		// Read papagayo file
+		if (filename_extension(filename) == ".pgo")
+		{
+			FileSystem::ReadStreamHandle rs = get_parent_canvas()->get_identifier().file_system->get_read_stream(filename);
+			map<Time, String> phonemes;
+			if (!rs)
+				error("Cannot open .pgo file: %s", filename.c_str());
+			else
+			if (Parser::parse_pgo(*rs, phonemes))
+				for(map<Time, String>::const_iterator i = phonemes.begin(); i != phonemes.end(); ++i)
+					new_waypoint(i->first, i->second);
+		}
 	}
+
+	ValueNode_AnimatedInterfaceConst::on_changed();
 	current_filename = filename;
 }
 

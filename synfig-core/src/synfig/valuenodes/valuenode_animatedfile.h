@@ -45,6 +45,7 @@ public:
 	typedef etl::handle<const ValueNode_AnimatedFile> ConstHandle;
 
 private:
+	class Parser;
 	String current_filename;
 	ValueNode::RHandle filename;
 
