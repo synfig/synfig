@@ -425,6 +425,26 @@ ValueNode::is_descendant(ValueNode::Handle value_node_dest)
     return value_node_dest->parent_count() ? is_descendant(value_node_parent) : false;
 }
 
+void
+ValueNode::get_values(std::set<ValueBase> &x) const
+	{ get_values_vfunc(x); }
+
+void
+ValueNode::get_values_vfunc(std::set<ValueBase> &x) const
+{
+	if (Canvas::Handle canvas = get_parent_canvas())
+	{
+		const RendDesc &desc = canvas->rend_desc();
+		Real fps = desc.get_frame_rate();
+		int begin = desc.get_frame_start();
+		int end = desc.get_frame_end();
+		if (begin > end) swap(begin, end);
+		for(int i = begin; i <= end; ++i)
+			x.insert( (*this)(Time(i*fps)) );
+	}
+}
+
+
 ValueNodeList::ValueNodeList():
 	placeholder_count_(0)
 {

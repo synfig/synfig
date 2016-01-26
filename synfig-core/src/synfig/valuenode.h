@@ -265,11 +265,15 @@ public:
 	//! Set the default interpolation for Value Nodes
 	virtual void set_interpolation(Interpolation /* i*/) { }
 
+	void get_values(std::set<ValueBase> &x) const;
+
 protected:
 	//! Sets the type of the ValueNode
 	void set_type(Type &t) { type=&t; }
 
 	virtual void on_changed();
+
+	virtual void get_values_vfunc(std::set<ValueBase> &x) const;
 }; // END of class ValueNode
 
 
