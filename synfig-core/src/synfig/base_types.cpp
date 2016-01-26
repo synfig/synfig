@@ -158,8 +158,10 @@ public:
 		operator const Time&() const { return t = r; }
 	};
 private:
-	static bool compare(const InternalPointer a, const InternalPointer b)
-		{ return abs((*(Inner*)a).r - (*(Inner*)b).r) <= 0.00000000000001; }
+	static bool equal(const InternalPointer a, const InternalPointer b)
+		{ return abs((*(Inner*)a).r - (*(Inner*)b).r) <= 1e-14; }
+	static bool less(const InternalPointer a, const InternalPointer b)
+		{ return !equal(a, b) && (*(Inner*)a).r < (*(Inner*)b).r; }
 	static String to_string(const Inner &x) { return etl::strprintf("Real (%f)", (Real)x); }
 	void initialize_vfunc(Description &description)
 	{
@@ -171,7 +173,8 @@ private:
 		register_all_but_compare<Inner, Real, to_string>();
 		register_alias<Inner, float>();
 		register_alias<Inner, Time>();
-		register_compare(compare);
+		register_equal(equal);
+		register_less(less);
 	}
 public:
 	static TypeReal instance;
@@ -187,8 +190,10 @@ class TypeTime: public Type
 {
 	typedef TypeReal::Inner Inner;
 	static String to_string(const Inner &x) { return etl::strprintf("Time (%s)", ((const Time&)x).get_string().c_str()); }
-	static bool compare(const InternalPointer a, const InternalPointer b)
+	static bool equal(const InternalPointer a, const InternalPointer b)
 		{ return (const Time&)*(Inner*)a == (const Time&)*(Inner*)b; }
+	static bool less(const InternalPointer a, const InternalPointer b)
+		{ return !equal(a, b) && (const Time&)*(Inner*)a < (const Time&)*(Inner*)b; }
 	void initialize_vfunc(Description &description)
 	{
 		Type::initialize_vfunc(description);
@@ -199,7 +204,8 @@ class TypeTime: public Type
 		register_all_but_compare<Inner, Time, to_string>();
 		register_alias<Inner, Real>();
 		register_alias<Inner, Time>();
-		register_compare(compare);
+		register_equal(equal);
+		register_less(less);
 		register_copy(identifier, TypeReal::instance.identifier, Operation::DefaultFuncs::copy<Inner>);
 		register_copy(TypeReal::instance.identifier, identifier, Operation::DefaultFuncs::copy<Inner>);
 	}

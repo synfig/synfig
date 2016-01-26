@@ -225,8 +225,17 @@ ValueBase::ident_type(const String &str)
 bool
 ValueBase::operator==(const ValueBase& rhs)const
 {
-	Operation::CompareFunc func =
-		Type::get_operation<Operation::CompareFunc>(
-			Operation::Description::get_compare(type->identifier, rhs.type->identifier) );
+	Operation::EqualFunc func =
+		Type::get_operation<Operation::EqualFunc>(
+			Operation::Description::get_equal(type->identifier, rhs.type->identifier) );
+	return func == NULL ? false : func(data, rhs.data);
+}
+
+bool
+ValueBase::operator<(const ValueBase& rhs)const
+{
+	Operation::LessFunc func =
+		Type::get_operation<Operation::LessFunc>(
+			Operation::Description::get_less(type->identifier, rhs.type->identifier) );
 	return func == NULL ? false : func(data, rhs.data);
 }

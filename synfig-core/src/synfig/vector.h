@@ -183,6 +183,14 @@ public:
 	bool is_valid()const { return !(std::isnan(_x) || std::isnan(_y)); }
 	bool is_nan_or_inf()const { return std::isnan(_x) || std::isnan(_y) || std::isinf(_x) || std::isinf(_y); }
 
+	bool
+	operator<(const Vector &rhs)const
+	{
+		return _x<rhs._x ? true
+			 : rhs._x<_x ? false
+			 : _y<rhs._y;
+	}
+
 	value_type &
 	operator[](const int& i)
 	{ return i?_y:_x; }

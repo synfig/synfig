@@ -140,14 +140,16 @@ public:
 		TYPE_PUT,
 		TYPE_GET,
 		TYPE_COPY,
-		TYPE_COMPARE,
+		TYPE_EQUAL,
+		TYPE_LESS,
 		TYPE_TO_STRING,
 	};
 
 	typedef InternalPointer	(*CreateFunc)	();
 	typedef void			(*DestroyFunc)	(const InternalPointer);
 	typedef void			(*CopyFunc)		(const InternalPointer dest, const InternalPointer src);
-	typedef bool			(*CompareFunc)	(const InternalPointer, const InternalPointer);
+	typedef bool			(*EqualFunc)	(const InternalPointer, const InternalPointer);
+	typedef bool			(*LessFunc)		(const InternalPointer, const InternalPointer);
 	typedef InternalPointer	(*BinaryFunc)	(const InternalPointer, const InternalPointer);
 	typedef String			(*ToStringFunc)	(const InternalPointer);
 
@@ -184,8 +186,11 @@ public:
 		static void copy(InternalPointer dest, const InternalPointer src)
 			{ *(Inner*)dest = *(Inner*)src; }
 		template<typename Inner>
-		static bool compare(InternalPointer a, const InternalPointer b)
+		static bool equal(InternalPointer a, const InternalPointer b)
 			{ return *(Inner*)a == *(Inner*)b; }
+		template<typename Inner>
+		static bool less(InternalPointer a, const InternalPointer b)
+			{ return *(Inner*)a < *(Inner*)b; }
 		template<typename Inner, String (*Func)(const Inner&)>
 		static String to_string(const InternalPointer x)
 			{ return Func(*(const Inner*)x); }
@@ -231,11 +236,15 @@ public:
 		inline static Description get_copy(TypeId type_a, TypeId type_b)
 			{ return Description(TYPE_COPY, 0, type_a, type_b); }
 		inline static Description get_copy(TypeId type)
-			{ return get_compare(type, type); }
-		inline static Description get_compare(TypeId type_a, TypeId type_b)
-			{ return Description(TYPE_COPY, 0, type_a, type_b); }
-		inline static Description get_compare(TypeId type)
-			{ return get_compare(type, type); }
+			{ return get_copy(type, type); }
+		inline static Description get_equal(TypeId type_a, TypeId type_b)
+			{ return Description(TYPE_EQUAL, 0, type_a, type_b); }
+		inline static Description get_equal(TypeId type)
+			{ return get_equal(type, type); }
+		inline static Description get_less(TypeId type_a, TypeId type_b)
+			{ return Description(TYPE_LESS, 0, type_a, type_b); }
+		inline static Description get_less(TypeId type)
+			{ return get_less(type, type); }
 		inline static Description get_to_string(TypeId type)
 			{ return Description(TYPE_TO_STRING, 0, type); }
 		inline static Description get_binary(OperationType operation_type, TypeId return_type, TypeId type_a, TypeId type_b)
@@ -489,10 +498,14 @@ protected:
 		{ register_operation(Operation::Description::get_copy(type_a, type_b), func); }
 	inline void register_copy(TypeId type, Operation::CopyFunc func)
 		{ register_operation(Operation::Description::get_copy(type), func); }
-	inline void register_compare(TypeId type_a, TypeId type_b, Operation::CompareFunc func)
-		{ register_operation(Operation::Description::get_compare(type_a, type_b), func); }
-	inline void register_compare(TypeId type, Operation::CompareFunc func)
-		{ register_operation(Operation::Description::get_compare(type), func); }
+	inline void register_equal(TypeId type_a, TypeId type_b, Operation::EqualFunc func)
+		{ register_operation(Operation::Description::get_equal(type_a, type_b), func); }
+	inline void register_equal(TypeId type, Operation::EqualFunc func)
+		{ register_operation(Operation::Description::get_equal(type), func); }
+	inline void register_less(TypeId type_a, TypeId type_b, Operation::LessFunc func)
+		{ register_operation(Operation::Description::get_less(type_a, type_b), func); }
+	inline void register_less(TypeId type, Operation::EqualFunc func)
+		{ register_operation(Operation::Description::get_less(type), func); }
 	inline void register_to_string(TypeId type, Operation::ToStringFunc func)
 		{ register_operation(Operation::Description::get_to_string(type), func); }
 	inline void register_binary(Operation::OperationType operation_type, TypeId type_return, TypeId type_a, TypeId type_b, Operation::BinaryFunc func)
@@ -515,8 +528,10 @@ protected:
 		{ register_get(identifier, func); }
 	inline void register_copy(Operation::CopyFunc func)
 		{ register_copy(identifier, func); }
-	inline void register_compare(Operation::CompareFunc func)
-		{ register_compare(identifier, func); }
+	inline void register_equal(Operation::EqualFunc func)
+		{ register_equal(identifier, func); }
+	inline void register_less(Operation::EqualFunc func)
+		{ register_less(identifier, func); }
 	inline void register_to_string(Operation::ToStringFunc func)
 		{ register_to_string(identifier, func); }
 
@@ -536,8 +551,10 @@ protected:
 		{ register_get<T>(identifier, func); }
 	inline void register_default(Operation::CopyFunc func)
 		{ register_copy(identifier, func); }
-	inline void register_default(Operation::CompareFunc func)
-		{ register_compare(identifier, func); }
+	inline void register_default_equal(Operation::EqualFunc func)
+		{ register_equal(identifier, func); }
+	inline void register_default_less(Operation::LessFunc func)
+		{ register_less(identifier, func); }
 	inline void register_default(Operation::ToStringFunc func)
 		{ register_to_string(identifier, func); }
 
@@ -550,7 +567,8 @@ protected:
 		register_default<Outer>(Operation::DefaultFuncs::put<Inner, Outer>);
 		register_default<Outer>(Operation::DefaultFuncs::get<Inner, Outer>);
 		register_default(Operation::DefaultFuncs::copy<Inner>);
-		register_default(Operation::DefaultFuncs::compare<Inner>);
+		register_default_equal(Operation::DefaultFuncs::equal<Inner>);
+		register_default_less(Operation::DefaultFuncs::less<Inner>);
 		register_default(Operation::DefaultFuncs::to_string<Inner, Func>);
 	}
 

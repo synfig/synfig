@@ -165,6 +165,16 @@ public:
 	//! Not equal than operator.
 	bool operator!=(const ValueBase& rhs)const { return !operator==(rhs); }
 
+	//! todo writeme
+	bool operator<(const ValueBase& rhs)const;
+
+	bool operator>(const ValueBase& rhs)const
+		{ return rhs < *this; }
+	bool operator<=(const ValueBase& rhs)const
+		{ return !(*this < rhs); }
+	bool operator>=(const ValueBase& rhs)const
+		{ return !(rhs < *this); }
+
 	//!	Constant index operator for when value is of type TYPE_LIST
 	const ValueBase &operator[](int index)const
 		{ assert(type==&type_list); assert(index>0); return get_list()[index]; }

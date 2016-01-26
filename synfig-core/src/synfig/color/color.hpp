@@ -103,6 +103,14 @@ Color Color::operator*(const float &rhs)const
 Color Color::operator/(const float &rhs)const
 { return Color(*this)/=rhs; }
 
+bool Color::operator<(const Color &rhs)const
+{
+	return r_<rhs.r_ ? true  : rhs.r_<r_ ? false
+		 : g_<rhs.g_ ? true  : rhs.g_<g_ ? false
+		 : b_<rhs.b_ ? true  : rhs.b_<b_ ? false
+		 : a_<rhs.a_;
+}
+
 bool Color::operator==(const Color &rhs)const
 { return r_==rhs.r_ && g_==rhs.g_ && b_==rhs.b_ && a_==rhs.a_; }
 
