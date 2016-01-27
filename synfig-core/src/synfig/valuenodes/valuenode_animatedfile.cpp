@@ -165,7 +165,8 @@ ValueNode_AnimatedFile::load_file(const String &filename)
 	if (!filename.empty())
 	{
 		// Read papagayo file
-		if (filename_extension(filename) == ".pgo")
+		if ( filename_extension(filename) == ".pgo"
+		  && get_type() == type_string )
 		{
 			FileSystem::ReadStreamHandle rs = get_parent_canvas()->get_identifier().file_system->get_read_stream(filename);
 			map<Time, String> phonemes;
