@@ -30,7 +30,7 @@
 #endif
 
 #include <algorithm>
-#include <sigc++/signal.h>
+#include <sigc++/sigc++.h>
 
 #include <ETL/stringf>
 #include <ETL/clock>

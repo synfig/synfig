@@ -31,10 +31,6 @@
 #include <ctime>
 
 #include <ETL/handle>
-#include <sigc++/signal.h>
-#include <sigc++/trackable.h>
-#include <sigc++/connection.h>
-
 #include <synfig/target_scanline.h>
 #include <synfig/target_tile.h>
 #include <synfig/target_cairo.h>

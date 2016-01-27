@@ -62,7 +62,6 @@
 #include "app.h"
 
 #include <utility>
-#include <sigc++/connection.h>
 
 #include <gtkmm/radiobutton.h>
 #include <gtkmm/radiobuttongroup.h>

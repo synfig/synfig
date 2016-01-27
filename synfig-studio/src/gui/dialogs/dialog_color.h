@@ -30,8 +30,7 @@
 #include <gtk/gtk.h>
 #include <gtkmm/dialog.h>
 #include <gtkmm/tooltip.h>
-#include <sigc++/functors/slot.h>
-
+#include <sigc++/sigc++.h>
 #include "widgets/widget_coloredit.h"
 #include "dialogsettings.h"
 

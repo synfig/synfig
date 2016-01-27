@@ -30,7 +30,7 @@
 
 #include <synfig/string.h>
 #include <synfig/canvas.h>
-#include <sigc++/connection.h>
+#include <sigc++/sigc++.h>
 
 /* === M A C R O S ========================================================= */
 

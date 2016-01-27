@@ -34,21 +34,14 @@
 
 #include <synfig/general.h>
 
-#include <sigc++/adaptors/hide.h>
-
 #include "workarea.h"
 #include "canvasview.h"
-#include "app.h"
-#include <gtkmm/window.h>
-#include <gtkmm/image.h>
-#include <gtkmm/drawingarea.h>
 #include <gtkmm/arrow.h>
-#include <gtkmm/image.h>
+#include <gtkmm/frame.h>
 #include <gtkmm/scrollbar.h>
+#include <gtkmm/window.h>
+
 #include <cmath>
-#include <sigc++/retype_return.h>
-#include <sigc++/retype.h>
-#include <sigc++/hide.h>
 #include <ETL/misc>
 
 #include <synfig/debug/debugsurface.h>
@@ -77,7 +70,6 @@
 #include "workarearenderer/renderer_dragbox.h"
 #include "workarearenderer/renderer_bbox.h"
 #include "asyncrenderer.h"
-#include <gtkmm/frame.h>
 
 #include <synfig/mutex.h>
 

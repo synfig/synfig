@@ -34,7 +34,6 @@
 #include "app.h"
 #include <glibmm/thread.h>
 #include <glibmm/dispatcher.h>
-#include <sigc++/bind.h>
 
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>

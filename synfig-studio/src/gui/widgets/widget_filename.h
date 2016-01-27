@@ -26,9 +26,7 @@
 #define __SYNFIG_STUDIO_WIDGET_FILENAME_H
 
 /* === H E A D E R S ======================================================= */
-
-#include <sigc++/signal.h>
-#include <sigc++/slot.h>
+#include <sigc++/sigc++.h>
 #include <gtkmm/grid.h>
 #include <gtkmm/entry.h>
 #include <gtkmm/button.h>

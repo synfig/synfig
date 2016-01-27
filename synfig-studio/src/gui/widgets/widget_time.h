@@ -27,8 +27,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <sigc++/signal.h>
-#include <sigc++/slot.h>
+#include <sigc++/sigc++.h>
 #include <gtkmm/entry.h>
 #include <synfig/time.h>
 

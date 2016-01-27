@@ -33,8 +33,6 @@
 #	include <config.h>
 #endif
 
-#include <sigc++/adaptors/hide.h>
-
 #include <synfig/general.h>
 
 #include <sstream>
@@ -92,10 +90,6 @@
 #include <synfigapp/selectionmanager.h>
 //#include <synfigapp/action_setwaypoint.h>
 //#include <synfigapp/action_deletewaypoint.h>
-
-#include <sigc++/retype_return.h>
-#include <sigc++/retype.h>
-//#include <sigc++/hide.h>
 
 #include "canvasview.h"
 #include "instance.h"

@@ -31,8 +31,7 @@
 #include <list>
 #include <map>
 #include <synfig/string.h>
-#include <sigc++/signal.h>
-#include <sigc++/object.h>
+#include <sigc++/sigc++.h>
 #include <ETL/smart_ptr>
 
 #include <gtkmm/widget.h>

@@ -68,11 +68,6 @@
 #include <synfig/context.h>
 #include <synfig/layers/layer_pastecanvas.h>
 
-#include <sigc++/retype_return.h>
-#include <sigc++/retype.h>
-#include <sigc++/hide.h>
-#include <sigc++/bind.h>
-
 #include "ducktransform_matrix.h"
 #include "ducktransform_rotate.h"
 #include "ducktransform_translate.h"

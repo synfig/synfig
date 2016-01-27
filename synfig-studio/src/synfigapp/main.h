@@ -33,8 +33,7 @@
 #include <synfig/distance.h>
 #include <synfig/real.h>
 #include <synfig/waypoint.h>
-#include <sigc++/signal.h>
-#include <sigc++/object.h>
+#include <sigc++/sigc++.h>
 #include "inputdevice.h"
 #include "settings.h"
 

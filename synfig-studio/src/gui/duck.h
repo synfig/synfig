@@ -37,8 +37,7 @@
 #include <synfig/vector.h>
 #include <synfig/string.h>
 #include <synfig/real.h>
-#include <sigc++/signal.h>
-#include <sigc++/object.h>
+#include <sigc++/sigc++.h>
 #include <synfig/time.h>
 #include <ETL/smart_ptr>
 #include <synfigapp/value_desc.h>

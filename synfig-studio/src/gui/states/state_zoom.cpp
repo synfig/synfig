@@ -30,21 +30,17 @@
 #	include <config.h>
 #endif
 
+#include "app.h"
 #include <synfig/general.h>
-
-#include <sigc++/signal.h>
-#include <sigc++/object.h>
 
 #include <ETL/handle>
 #include <synfig/vector.h>
-
 
 #include "state_zoom.h"
 #include "state_normal.h"
 #include "event_mouse.h"
 #include "canvasview.h"
 #include "workarea.h"
-#include "app.h"
 #include "docks/dock_toolbox.h"
 #include <synfigapp/main.h>
 

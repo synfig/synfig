@@ -29,9 +29,7 @@
 #define __SYNFIG_STUDIO_APP_H
 
 /* === H E A D E R S ======================================================= */
-
-#include <sigc++/bind.h>
-
+#include <sigc++/sigc++.h>
 #include <gtkmm/main.h>
 #include <string>
 #include <list>

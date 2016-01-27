@@ -30,8 +30,7 @@
 
 //#include <synfig/canvas.h>
 #include <synfig/value.h>
-#include <sigc++/signal.h>
-#include <sigc++/object.h>
+#include <sigc++/sigc++.h>
 #include <list>
 #include "selectionmanager.h"
 #include "uimanager.h"

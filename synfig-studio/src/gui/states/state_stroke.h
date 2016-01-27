@@ -29,7 +29,7 @@
 
 #include "canvasview.h"
 #include "workarea.h"
-#include <sigc++/object.h>
+#include <sigc++/sigc++.h>
 #include "duckmatic.h"
 #include <synfig/blinepoint.h>
 #include <list>

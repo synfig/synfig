@@ -33,7 +33,7 @@
 #include <gtkmm/tooltip.h>
 #include <gtkmm/window.h>
 #include <synfig/keyframe.h>
-#include <sigc++/connection.h>
+#include <sigc++/sigc++.h>
 #include <synfigapp/canvasinterface.h>
 
 

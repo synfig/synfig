@@ -32,7 +32,6 @@
 #include <synfig/general.h>
 
 #include "app.h"
-#include <sigc++/hide.h>
 
 #include "docks/dockable.h"
 #include "docks/dockmanager.h"

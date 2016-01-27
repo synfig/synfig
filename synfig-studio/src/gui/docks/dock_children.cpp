@@ -38,10 +38,6 @@
 #include <gtkmm/scrolledwindow.h>
 #include <cassert>
 #include "instance.h"
-#include <sigc++/signal.h>
-#include <sigc++/hide.h>
-#include <sigc++/retype_return.h>
-#include <sigc++/slot.h>
 #include "trees/childrentreestore.h"
 #include "trees/childrentree.h"
 #include "canvasview.h"

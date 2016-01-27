@@ -31,7 +31,6 @@
 #endif
 
 #include "app.h"
-#include <sigc++/adaptors/hide.h>
 
 #include "docks/dockdialog.h"
 #include "docks/dockbook.h"
@@ -42,10 +41,6 @@
 #include <synfig/general.h>
 #include <synfig/uniqueid.h>
 #include <gtkmm/table.h>
-#include <sigc++/hide.h>
-#include <sigc++/slot.h>
-#include <sigc++/retype_return.h>
-#include <sigc++/retype.h>
 #include "canvasview.h"
 #include <gtkmm/paned.h>
 #include <gtkmm/box.h>

@@ -33,7 +33,7 @@
 #include <gtkmm/treeview.h>
 #include <gtkmm/treestore.h>
 #include <synfigapp/instance.h>
-#include <sigc++/object.h>
+#include <sigc++/sigc++.h>
 #include <synfigapp/value_desc.h>
 #include "trees/historytreestore.h"
 #include <synfig/canvas.h>

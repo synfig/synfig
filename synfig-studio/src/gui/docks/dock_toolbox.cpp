@@ -38,12 +38,6 @@
 
 #include <sstream>
 
-#include <sigc++/signal.h>
-#include <sigc++/hide.h>
-#include <sigc++/slot.h>
-#include <sigc++/retype_return.h>
-#include <sigc++/retype.h>
-
 #include <gtk/gtk.h>
 #include <gtkmm/accelmap.h>
 

@@ -40,10 +40,7 @@
 #include <gtkmm/scrolledwindow.h>
 #include <cassert>
 #include "instance.h"
-#include <sigc++/signal.h>
-#include <sigc++/hide.h>
-#include <sigc++/retype_return.h>
-#include <sigc++/slot.h>
+#include <sigc++/sigc++.h>
 #include "trees/layertreestore.h"
 #include "trees/layertree.h"
 #include "canvasview.h"

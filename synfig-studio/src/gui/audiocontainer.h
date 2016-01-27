@@ -26,7 +26,7 @@
 #define __SYNFIG_AUDIOCONTAINER_H
 
 /* === H E A D E R S ======================================================= */
-#include <sigc++/signal.h>
+#include <sigc++/sigc++.h>
 
 #include <ETL/handle>
 

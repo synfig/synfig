@@ -28,7 +28,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include <ETL/handle>
-#include <sigc++/object.h>
+#include <sigc++/sigc++.h>
 
 #include <synfig/string.h>
 #include <synfig/progresscallback.h>

@@ -28,8 +28,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include <ETL/handle>
-#include <sigc++/signal.h>
-#include <sigc++/object.h>
+#include <sigc++/sigc++.h>
 #include <synfig/vector.h>
 #include <gdkmm/window.h>
 #include <gdkmm/rectangle.h>

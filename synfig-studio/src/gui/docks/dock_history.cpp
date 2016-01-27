@@ -35,14 +35,9 @@
 #include "docks/dock_history.h"
 #include "app.h"
 
-
-
 #include <gtkmm/scrolledwindow.h>
 #include <cassert>
 #include "instance.h"
-#include <sigc++/signal.h>
-#include <sigc++/hide.h>
-#include <sigc++/slot.h>
 #include <synfigapp/action.h>
 #include "trees/historytreestore.h"
 
