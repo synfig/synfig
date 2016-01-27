@@ -106,7 +106,7 @@ ValueNode_Animated::on_changed()
 
 ValueBase
 ValueNode_Animated::operator()(Time t) const
-	{ return (*(ValueNode_Animated*)this)(t); }
+	{ return ValueNode_AnimatedInterface::operator()(t); }
 
 void
 ValueNode_Animated::get_times_vfunc(Node::time_set &set) const
