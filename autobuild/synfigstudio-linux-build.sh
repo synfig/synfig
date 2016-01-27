@@ -876,7 +876,53 @@ initialize()
 		libgl1-mesa-dev \
 		imagemagick \
 		bzip2"
-	if which yum >/dev/null; then
+	if which dnf >/dev/null; then
+		#
+		#  Fedora >= 22
+		#
+		PKG_LIST="git"
+		if [[ $MODE == 'package' ]]; then
+			PKG_LIST="${PKG_LIST} \
+				debootstrap \
+				rsync"
+		else
+			PKG_LIST="${PKG_LIST} \
+				intltool \
+				libpng-devel \
+				libjpeg-devel \
+				fftw-devel \
+				freetype-devel \
+				fontconfig-devel \
+				atk-devel \
+				pango-devel \
+				cairo-devel \
+				gtk3-devel \
+				gettext-devel \
+				libxml2-devel \
+				libxml++-devel \
+				gcc-c++ \
+				autoconf \
+				automake \
+				libtool \
+				libtool-ltdl-devel \
+				boost-devel \
+				boost-program-options \
+				shared-mime-info \
+				OpenEXR-devel \
+				libmng-devel \
+				ImageMagick-c++-devel \
+				jack-audio-connection-kit-devel \
+				mlt-devel \
+				ocl-icd-devel \
+				opencl-headers \
+				gtkmm30-devel \
+				glibmm24-devel"
+		fi
+		if ! ( rpm -qv $PKG_LIST ); then
+			echo "Running dnf (you need root privelegies to do that)..."
+			su -c "dnf install $PKG_LIST" || true
+		fi
+	elif which yum >/dev/null; then
 		#
 		#  Fedora
 		#
