@@ -396,14 +396,22 @@ AC_ARG_WITH(opengl,
 	with_opengl="yes"
 ])
 if test $with_opengl != "no" ; then {
-	PKG_CHECK_MODULES(LIBGL, gl, [
-		CONFIG_DEPS="$CONFIG_DEPS gl"
-		LIBGL_CFLAGS="$LIBGL_CFLAGS -DGL_GLEXT_PROTOTYPES"
-		with_opengl = yes
-	],[
-		AC_MSG_RESULT([ ** Cannot find gl.pc. OpenGL disabled.])
-		with_opengl = no
-	])	
+	case "$host" in
+		*darwin*)
+			AC_MSG_RESULT([ ** OpenGL is not available for OSX yet. Disabled.])
+			with_opengl="no"
+		;;
+		*)
+			PKG_CHECK_MODULES(LIBGL, gl, [
+				CONFIG_DEPS="$CONFIG_DEPS gl"
+				LIBGL_CFLAGS="$LIBGL_CFLAGS -DGL_GLEXT_PROTOTYPES"
+				with_opengl="yes"
+			],[
+				AC_MSG_RESULT([ ** Cannot find gl.pc. OpenGL disabled.])
+				with_opengl="no"
+			])
+		;;
+	esac
 } ; fi
 AM_CONDITIONAL(WITH_OPENGL, test $with_opengl = yes)
 
