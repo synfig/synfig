@@ -64,6 +64,11 @@ public:
 
 	Layer::Handle get_current_layer()const;
 
+	void get_existant_layers(std::set<String> &x) const;
+	void get_possible_layers(std::set<String> &x) const;
+	void get_possible_new_layers(std::set<String> &x) const;
+	void get_impossible_existant_layers(std::set<String> &x) const;
+
 	//! Sets z_range* fields of specified ContextParams \a cp
 	virtual void apply_z_range_to_params(ContextParams &cp)const;
 }; // END of class Layer_Switch
