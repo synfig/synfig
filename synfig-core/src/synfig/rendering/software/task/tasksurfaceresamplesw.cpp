@@ -96,7 +96,7 @@ public:
 
 	static inline void nogamma(Color&, float) { }
 
-	template<typename pen, void gamma(Color&, float), Color filter(const synfig::Surface&, const Vector&)>
+	template<typename pen, void gamma_func(Color&, float), Color filter_func(const synfig::Surface&, const Vector&)>
 	static inline void fill(pen &p, Args &a)
 	{
 		int idx = a.bounds.maxx - a.bounds.minx;
@@ -105,8 +105,8 @@ public:
 		{
 			for(int x = idx; x; --x)
 			{
-				Color c = filter(a.surface, a.pos);
-				gamma(c, a.gamma_adjust);
+				Color c = filter_func(a.surface, a.pos);
+				gamma_func(c, a.gamma_adjust);
 				p.put_value(c);
 				a.pos += a.pos_dx;
 				p.inc_x();
@@ -117,7 +117,7 @@ public:
 		}
 	}
 
-	template<typename pen, void gamma(Color&, float), Color filter(const synfig::Surface&, const Vector&)>
+	template<typename pen, void gamma_func(Color&, float), Color filter_func(const synfig::Surface&, const Vector&)>
 	static inline void fill_aa(pen &p, Args &a)
 	{
 		int idx = a.bounds.maxx - a.bounds.minx;
@@ -129,13 +129,13 @@ public:
 				if ( a.aa0[0] > 0.0 && a.aa0[1] > 0.0
 				  && a.aa1[0] > 0.0 && a.aa1[1] > 0.0 )
 				{
-					Color c = filter(a.surface, a.pos);
+					Color c = filter_func(a.surface, a.pos);
 					c.set_a( c.get_a()
 						   * std::min(a.aa0[0], 1.0)
 						   * std::min(a.aa0[1], 1.0)
 						   * std::min(a.aa1[0], 1.0)
 						   * std::min(a.aa1[1], 1.0) );
-					gamma(c, a.gamma_adjust);
+					gamma_func(c, a.gamma_adjust);
 					p.put_value(c);
 				}
 
@@ -152,18 +152,18 @@ public:
 		}
 	}
 
-	template<typename pen, void gamma(Color&, float), Color filter(const synfig::Surface&, const Vector&)>
+	template<typename pen, void gamma_func(Color&, float), Color filter_func(const synfig::Surface&, const Vector&)>
 	static inline void fill(
 		bool antialiasing,
 		pen &p, Args &a )
 	{
 		if (antialiasing)
-			fill_aa<pen, gamma, filter>(p, a);
+			fill_aa<pen, gamma_func, filter_func>(p, a);
 		else
-			fill<pen, gamma, filter>(p, a);
+			fill<pen, gamma_func, filter_func>(p, a);
 	}
 
-	template<typename pen, void gamma(Color&, float)>
+	template<typename pen, void gamma_func(Color&, float)>
 	static inline void fill(
 		Color::Interpolation interpolation,
 		bool antialiasing,
@@ -172,13 +172,13 @@ public:
 		switch(interpolation)
 		{
 		case Color::INTERPOLATION_LINEAR:
-			fill<pen, gamma, linear>(antialiasing, p, a); break;
+			fill<pen, gamma_func, linear>(antialiasing, p, a); break;
 		case Color::INTERPOLATION_COSINE:
-			fill<pen, gamma, cosine>(antialiasing, p, a); break;
+			fill<pen, gamma_func, cosine>(antialiasing, p, a); break;
 		case Color::INTERPOLATION_CUBIC:
-			fill<pen, gamma, cubic>(antialiasing, p, a); break;
+			fill<pen, gamma_func, cubic>(antialiasing, p, a); break;
 		default:
-			fill<pen, gamma, nearest>(antialiasing, p, a); break;
+			fill<pen, gamma_func, nearest>(antialiasing, p, a); break;
 		}
 	}
 
