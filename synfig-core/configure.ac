@@ -390,6 +390,7 @@ PKG_CHECK_MODULES(LIBCAIRO, [cairo >= 1.12.0],[
 	AC_MSG_ERROR([ ** You need to install cairo version 1.12.0 or higher.])
 ])
 
+AC_MSG_CHECKING([for OpenGL])
 AC_ARG_WITH(opengl,
 	AS_HELP_STRING(--with-opengl, [enable OpenGL (default=auto)]),[
 ],[
@@ -405,6 +406,7 @@ if test $with_opengl != "no" ; then {
 			PKG_CHECK_MODULES(LIBGL, gl, [
 				CONFIG_DEPS="$CONFIG_DEPS gl"
 				LIBGL_CFLAGS="$LIBGL_CFLAGS -DGL_GLEXT_PROTOTYPES"
+				CONFIG_CFLAGS="$CONFIG_CFLAGS -DWITH_OPENGL"
 				with_opengl="yes"
 			],[
 				AC_MSG_RESULT([ ** Cannot find gl.pc. OpenGL disabled.])
