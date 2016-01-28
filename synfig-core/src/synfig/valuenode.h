@@ -266,6 +266,7 @@ public:
 	virtual void set_interpolation(Interpolation /* i*/) { }
 
 	void get_values(std::set<ValueBase> &x) const;
+	void get_values(std::map<Time, ValueBase> &x) const;
 
 protected:
 	//! Sets the type of the ValueNode
@@ -273,7 +274,7 @@ protected:
 
 	virtual void on_changed();
 
-	virtual void get_values_vfunc(std::set<ValueBase> &x) const;
+	virtual void get_values_vfunc(std::map<Time, ValueBase> &x) const;
 }; // END of class ValueNode
 
 

@@ -427,20 +427,43 @@ ValueNode::is_descendant(ValueNode::Handle value_node_dest)
 
 void
 ValueNode::get_values(std::set<ValueBase> &x) const
+{
+	std::map<Time, ValueBase> v;
+	get_values(v);
+	for(std::map<Time, ValueBase>::const_iterator i = v.begin(); i != v.end(); ++i)
+		x.insert(i->second);
+}
+
+void
+ValueNode::get_values(std::map<Time, ValueBase> &x) const
 	{ get_values_vfunc(x); }
 
 void
-ValueNode::get_values_vfunc(std::set<ValueBase> &x) const
+ValueNode::get_values_vfunc(std::map<Time, ValueBase> &x) const
 {
+	typedef std::map<Time, ValueBase> Map;
+	typedef Map::const_iterator Iterator;
+	typedef std::pair<Iterator, Iterator> Range;
+
 	if (Canvas::Handle canvas = get_parent_canvas())
 	{
 		const RendDesc &desc = canvas->rend_desc();
 		Real fps = desc.get_frame_rate();
-		int begin = desc.get_frame_start();
-		int end = desc.get_frame_end();
-		if (begin > end) swap(begin, end);
-		for(int i = begin; i <= end; ++i)
-			x.insert( (*this)(Time(i*fps)) );
+		if (fabs(fps) > 1e-10)
+		{
+			Real k = 1.0/fps;
+			int begin = desc.get_frame_start();
+			int end = desc.get_frame_end();
+			if (begin > end) swap(begin, end);
+			for(int i = begin; i <= end; ++i)
+			{
+				Time t(i*k);
+				ValueBase v = (*this)(t);
+				Range r = x.equal_range(t);
+				if (r.first == x.end() || r.first->second != v)
+					x[t] = v;
+			}
+		}
 	}
 }
 
