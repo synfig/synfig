@@ -354,7 +354,7 @@ CanvasInterface::apply_layer_param_defaults(synfig::Layer::Handle layer)
 
 
 Layer::Handle
-CanvasInterface::add_layer_to(synfig::String name, synfig::Canvas::Handle canvas, int depth)
+CanvasInterface::add_layer_to(synfig::String name, synfig::Canvas::Handle canvas, int depth, const synfig::String &description)
 {
 	synfigapp::Action::PassiveGrouper group(get_instance().get(),_("Add Layer To"));
 
@@ -391,6 +391,7 @@ CanvasInterface::add_layer_to(synfig::String name, synfig::Canvas::Handle canvas
 	
 	// Apply some defaults
 	apply_layer_param_defaults(layer);
+	if (!description.empty()) layer->set_description(description);
 	
 	// Action to add the layer
 	Action::Handle 	action(Action::LayerAdd::create());

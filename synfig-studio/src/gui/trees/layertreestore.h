@@ -49,6 +49,12 @@ class LayerTreeStore : virtual public Gtk::TreeStore
 
 public:
 
+	enum RecordType
+	{
+		RECORD_TYPE_LAYER,
+		RECORD_TYPE_BLANK
+	};
+
 	class Model : public Gtk::TreeModel::ColumnRecord
 	{
 	public:
@@ -66,7 +72,10 @@ public:
 		Gtk::TreeModelColumn<bool>						exclude_from_rendering;
 		Gtk::TreeModelColumn<Pango::Style>				style;
 		Gtk::TreeModelColumn<Pango::Weight>				weight;
+
+		Gtk::TreeModelColumn<RecordType>				record_type;
 		Gtk::TreeModelColumn<synfig::Layer::Handle>		layer;
+		Gtk::TreeModelColumn<Glib::ustring>			    blank_label;
 		Gtk::TreeModelColumn<synfig::Canvas::Handle> 	contained_canvas;
 
 		Gtk::TreeModelColumn<bool>						children_lock;
@@ -86,7 +95,9 @@ public:
 			add(exclude_from_rendering);
 			add(style);
 			add(weight);
+			add(record_type);
 			add(layer);
+			add(blank_label);
 			add(contained_canvas);
 			add(z_depth);
 			add(index);
@@ -130,6 +141,9 @@ private:
 	*/
 
 private:
+	template<typename T>
+	void set_gvalue_tpl(Glib::ValueBase& value, const T &v, bool use_assign_operator = false) const;
+
 	virtual void  set_value_impl (const Gtk::TreeModel::iterator& row, int column, const Glib::ValueBase& value);
 	virtual void  get_value_vfunc (const Gtk::TreeModel::iterator& iter, int column, Glib::ValueBase& value)const;
 
@@ -208,7 +222,8 @@ public:
 
 	void refresh_row(Gtk::TreeModel::Row &row);
 
-	void set_row_layer(Gtk::TreeRow &row,synfig::Layer::Handle &handle);
+	void set_row_layer(Gtk::TreeRow &row, const synfig::Layer::Handle &handle);
+	void set_row_blank(Gtk::TreeRow &row, const synfig::String &label, int depth);
 
 	static int z_sorter(const Gtk::TreeModel::iterator &rhs,const Gtk::TreeModel::iterator &lhs);
 	static int index_sorter(const Gtk::TreeModel::iterator &rhs,const Gtk::TreeModel::iterator &lhs);

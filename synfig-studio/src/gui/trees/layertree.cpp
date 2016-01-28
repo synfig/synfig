@@ -512,7 +512,10 @@ LayerTree::select_layers(const LayerList &layer_list)
 static inline void __layer_grabber(const Gtk::TreeModel::iterator& iter, LayerTree::LayerList* ret)
 {
 	const LayerTreeStore::Model layer_tree_model;
-	ret->push_back((Layer::Handle)(*iter)[layer_tree_model.layer]);
+	LayerTreeStore::RecordType record_type((*iter)[layer_tree_model.record_type]);
+	Layer::Handle layer((*iter)[layer_tree_model.layer]);
+	if (record_type == LayerTreeStore::RECORD_TYPE_LAYER && layer)
+		ret->push_back(layer);
 }
 
 LayerTree::LayerList
@@ -545,7 +548,7 @@ LayerTree::get_selected_layer()const
 	if(layers.empty())
 		return 0;
 
-	return *layers.begin();
+	return layers.front();
 }
 
 void

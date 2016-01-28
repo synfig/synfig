@@ -279,7 +279,7 @@ public:
 	//! Creates a new layer, of type \c id at the top of the layer stack
 	// synfig::Layer::Handle add_layer(synfig::String id) { return add_layer_to(id,get_canvas()); }
 
-	synfig::Layer::Handle add_layer_to(synfig::String id,synfig::Canvas::Handle canvas, int depth=0);
+	synfig::Layer::Handle add_layer_to(synfig::String id, synfig::Canvas::Handle canvas, int depth=0, const synfig::String &description = synfig::String());
 
 	bool convert(ValueDesc value_desc, synfig::String type);
 	//! Adds the given ValueNode to the canvas.
