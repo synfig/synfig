@@ -199,6 +199,23 @@ const synfig::Node::time_set *get_times_from_vdesc(const synfigapp::ValueDesc &v
 	return 0;
 }
 
+//kind of a hack... pointer is ugly
+void get_change_times_from_vdesc(const synfigapp::ValueDesc &v, std::set<synfig::Time> &times)
+{
+	if (v.is_value_node())
+	{
+		if ( v.get_value_type() == type_string
+		  || v.get_value_type() == type_bool
+		  || v.get_value_type() == type_canvas )
+		{
+			std::map<Time, ValueBase> x;
+			v.get_value_node()->get_values(x);
+			for(std::map<Time, ValueBase>::const_iterator i = x.begin(); i != x.end(); ++i)
+				times.insert(i->first);
+		}
+	}
+}
+
 bool get_closest_time(const synfig::Node::time_set &tset, const Time &t, const Time &range, Time &out)
 {
 	Node::time_set::const_iterator	i,j,end = tset.end();
@@ -256,6 +273,7 @@ CellRenderer_TimeTrack::render_vfunc(
 	// Gtk::ShadowType shadow;
 
 	Gdk::Color
+		change_time_color("#008800"),
 		curr_time_color("#0000ff"),
 		inactive_color("#000000"),
 		keyframe_color("#a07f7f");
@@ -295,21 +313,47 @@ CellRenderer_TimeTrack::render_vfunc(
 		}
 	}
 
+	const synfig::Time time_offset = get_time_offset_from_vdesc(value_desc);
+	const synfig::Time time_dilation = get_time_dilation_from_vdesc(value_desc);
+	Gdk::Rectangle area(cell_area);
+	float 	lower = adjustment->get_lower(),
+			upper = adjustment->get_upper();
+
+	//render time points where value changed
+	{
+		std::set<Time> times;
+		get_change_times_from_vdesc(value_desc, times);
+		for(std::set<Time>::const_iterator i = times.begin(); i != times.end(); ++i)
+		{
+			//find the coordinate in the drawable space...
+			Time t_orig = *i;
+			if(!t_orig.is_valid()) continue;
+			Time t = t_orig - time_offset;
+			if (time_dilation!=0)
+				t = t / time_dilation;
+			if(t<adjustment->get_lower() || t>adjustment->get_upper()) continue;
+
+			const int w = 1;
+			const int h = (area.get_height() - 2)/2;
+			const int x = area.get_x() + (int)((t-lower)*area.get_width()/(upper-lower));
+			const int y = area.get_y() + (area.get_height() - h)/2;
+
+			cr->rectangle(x, y, w, h);
+			cr->set_source_rgb(
+				change_time_color.get_red_p(),
+				change_time_color.get_green_p(),
+				change_time_color.get_blue_p() );
+			cr->fill();
+		}
+	}
+
 	//render all the time points that exist
 	{
 		const synfig::Node::time_set *tset = get_times_from_vdesc(value_desc);
 
 		if(tset)
 		{
-			const synfig::Time time_offset = get_time_offset_from_vdesc(value_desc);
-			const synfig::Time time_dilation = get_time_dilation_from_vdesc(value_desc);
 			synfig::Node::time_set::const_iterator	i = tset->begin(), end = tset->end();
-
-			float 	lower = adjustment->get_lower(),
-					upper = adjustment->get_upper();
-
-			Gdk::Rectangle area(cell_area);
-
 			bool valselected = sel_value.get_value_node() == base_value && !sel_times.empty();
 
 			float cfps = get_canvas()->rend_desc().get_frame_rate();
@@ -401,7 +445,6 @@ CellRenderer_TimeTrack::render_vfunc(
 		}
 	}
 
-	Gdk::Rectangle area(cell_area);
 	// If the parent of this value node is a dynamic list, then
 	// render the on and off times
 	if(parent_value_node)
