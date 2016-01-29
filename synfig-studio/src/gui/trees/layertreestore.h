@@ -52,7 +52,7 @@ public:
 	enum RecordType
 	{
 		RECORD_TYPE_LAYER,
-		RECORD_TYPE_BLANK
+		RECORD_TYPE_GHOST
 	};
 
 	class Model : public Gtk::TreeModel::ColumnRecord
@@ -75,7 +75,7 @@ public:
 
 		Gtk::TreeModelColumn<RecordType>				record_type;
 		Gtk::TreeModelColumn<synfig::Layer::Handle>		layer;
-		Gtk::TreeModelColumn<Glib::ustring>			    blank_label;
+		Gtk::TreeModelColumn<Glib::ustring>			    ghost_label;
 		Gtk::TreeModelColumn<synfig::Canvas::Handle> 	contained_canvas;
 
 		Gtk::TreeModelColumn<bool>						children_lock;
@@ -97,7 +97,7 @@ public:
 			add(weight);
 			add(record_type);
 			add(layer);
-			add(blank_label);
+			add(ghost_label);
 			add(contained_canvas);
 			add(z_depth);
 			add(index);
@@ -224,7 +224,7 @@ public:
 	void refresh_row(Gtk::TreeModel::Row &row);
 
 	void set_row_layer(Gtk::TreeRow &row, const synfig::Layer::Handle &handle);
-	void set_row_blank(Gtk::TreeRow &row, const synfig::String &label, int depth);
+	void set_row_ghost(Gtk::TreeRow &row, const synfig::String &label, int depth);
 
 	static int z_sorter(const Gtk::TreeModel::iterator &rhs,const Gtk::TreeModel::iterator &lhs);
 	static int index_sorter(const Gtk::TreeModel::iterator &rhs,const Gtk::TreeModel::iterator &lhs);

@@ -173,11 +173,11 @@ LayerTreeStore::get_value_vfunc(const Gtk::TreeModel::iterator& iter, int column
 {
 	if ( column != model.record_type.index()
 	  && column != model.layer.index()
-	  && column != model.blank_label.index() )
+	  && column != model.ghost_label.index() )
 	{
 		RecordType record_type((*iter)[model.record_type]);
 		Layer::Handle layer((*iter)[model.layer]);
-		Glib::ustring blank_label((*iter)[model.blank_label]);
+		Glib::ustring ghost_label((*iter)[model.ghost_label]);
 
 		if (record_type == RECORD_TYPE_LAYER && layer)
 		{
@@ -260,16 +260,16 @@ LayerTreeStore::get_value_vfunc(const Gtk::TreeModel::iterator& iter, int column
 			return;
 		}
 		else
-		if (record_type == RECORD_TYPE_BLANK)
+		if (record_type == RECORD_TYPE_GHOST)
 		{
-			// Placeholder for new layer (blank)
+			// Placeholder for new layer (ghost)
 
 			// TODO: set style and weight
 			if (column == model.z_depth.index())
 				set_gvalue_tpl<float>(value, (*iter)[model.index]);
 			else
 			if (column == model.label.index())
-				set_gvalue_tpl<Glib::ustring>(value, blank_label, true);
+				set_gvalue_tpl<Glib::ustring>(value, ghost_label, true);
 			else
 				Gtk::TreeStore::get_value_vfunc(iter,column,value);
 
@@ -302,7 +302,7 @@ LayerTreeStore::set_value_impl(const Gtk::TreeModel::iterator& iter, int column,
 	{
 		RecordType record_type((*iter)[model.record_type]);
 		synfig::Layer::Handle layer((*iter)[model.layer]);
-		Glib::ustring blank_label((*iter)[model.blank_label]);
+		Glib::ustring ghost_label((*iter)[model.ghost_label]);
 
 		if (record_type == RECORD_TYPE_LAYER)
 		{
@@ -376,9 +376,9 @@ LayerTreeStore::set_value_impl(const Gtk::TreeModel::iterator& iter, int column,
 			}
 		}
 		else
-		if (record_type == RECORD_TYPE_BLANK)
+		if (record_type == RECORD_TYPE_GHOST)
 		{
-			// Edit placeholder for new layer (blank)
+			// Edit placeholder for new layer (ghost)
 
 			if ( column == model.label.index()
 			  || column == model.exclude_from_rendering.index() )
@@ -403,7 +403,7 @@ LayerTreeStore::set_value_impl(const Gtk::TreeModel::iterator& iter, int column,
 							"group",
 							canvas,
 							canvas->size(),
-							blank_label.c_str() );
+							ghost_label.c_str() );
 					}
 				}
 
@@ -573,7 +573,7 @@ LayerTreeStore::drag_data_received_vfunc(const TreeModel::Path& dest, const Gtk:
 			dest_layer = row[model.layer];
 		}
 		else
-		if (RECORD_TYPE_BLANK == (RecordType)row[model.record_type] && row.parent())
+		if (RECORD_TYPE_GHOST == (RecordType)row[model.record_type] && row.parent())
 		{
 			// TODO: check RecordType for parent
 			dest_canvas = (Canvas::Handle)(*row.parent())[model.contained_canvas];
@@ -581,7 +581,7 @@ LayerTreeStore::drag_data_received_vfunc(const TreeModel::Path& dest, const Gtk:
 				"group",
 				dest_canvas,
 				dest_canvas->size(),
-				((Glib::ustring)row[model.blank_label]).c_str() );
+				((Glib::ustring)row[model.ghost_label]).c_str() );
 			dest_canvas = dest_layer->get_param("canvas").get(Canvas::Handle());
 			dest_layer_depth = -1;
 		}
@@ -784,7 +784,7 @@ LayerTreeStore::set_row_layer(Gtk::TreeRow &row, const synfig::Layer::Handle &ha
 			for(std::set<String>::const_reverse_iterator i = possible_new_layers.rbegin(); i != possible_new_layers.rend(); ++i)
 			{
 				Gtk::TreeRow row_(*(prepend(row.children())));
-				set_row_blank(row_, *i, --index);
+				set_row_ghost(row_, *i, --index);
 			}
 
 			for(Canvas::reverse_iterator iter = canvas->rbegin(); iter != canvas->rend(); ++iter)
@@ -816,11 +816,11 @@ LayerTreeStore::set_row_layer(Gtk::TreeRow &row, const synfig::Layer::Handle &ha
 }
 
 void
-LayerTreeStore::set_row_blank(Gtk::TreeRow &row, const synfig::String &label, int depth)
+LayerTreeStore::set_row_ghost(Gtk::TreeRow &row, const synfig::String &label, int depth)
 {
 	row[model.index] = depth;
-	row[model.record_type] = RECORD_TYPE_BLANK;
-	row[model.blank_label] = label;
+	row[model.record_type] = RECORD_TYPE_GHOST;
+	row[model.ghost_label] = label;
 }
 
 void
