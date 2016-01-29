@@ -218,8 +218,16 @@ synfig::Layer::set_canvas(etl::loose_handle<Canvas> x)
 
 void
 synfig::Layer::on_canvas_set()
-{
-}
+	{ }
+
+void
+synfig::Layer::on_static_param_changed(const String & /* param */)
+	{ }
+
+void
+synfig::Layer::on_dynamic_param_changed(const String & /* param */)
+	{ }
+
 
 etl::loose_handle<synfig::Canvas>
 synfig::Layer::get_canvas()const
@@ -269,6 +277,22 @@ Layer::set_description(const String& x)
 	}
 }
 
+void
+Layer::static_param_changed(const String &param)
+{
+	on_static_param_changed(param);
+	if (!dynamic_param_list().count(param))
+		signal_static_param_changed_(param);
+}
+
+void
+Layer::dynamic_param_changed(const String &param)
+{
+	on_dynamic_param_changed(param);
+	if (!dynamic_param_list().count(param))
+		signal_dynamic_param_changed_(param);
+}
+
 bool
 Layer::connect_dynamic_param(const String& param, etl::loose_handle<ValueNode> value_node)
 {
@@ -277,7 +301,11 @@ Layer::connect_dynamic_param(const String& param, etl::loose_handle<ValueNode> v
 	if(previous==value_node)
 		return true;
 
+	String param_noref = param;
 	dynamic_param_list_[param]=ValueNode::Handle(value_node);
+	dynamic_param_list_connections_[param] =
+		value_node->signal_changed().connect(
+			sigc::bind(sigc::mem_fun(*this, &Layer::dynamic_param_changed), param_noref) );
 
 	if(previous)
 		remove_child(previous.get());
@@ -289,6 +317,7 @@ Layer::connect_dynamic_param(const String& param, etl::loose_handle<ValueNode> v
 		value_node->set_parent_canvas(get_canvas());
 	}
 
+	dynamic_param_changed(param);
 	changed();
 	return true;
 }
@@ -300,6 +329,8 @@ Layer::disconnect_dynamic_param(const String& param)
 
 	if(previous)
 	{
+		dynamic_param_list_connections_[param].disconnect();
+		dynamic_param_list_connections_.erase(param);
 		dynamic_param_list_.erase(param);
 
 		// fix 2353284: if two parameters in the same layer are
@@ -314,6 +345,7 @@ Layer::disconnect_dynamic_param(const String& param)
 		if (iter == dynamic_param_list().end())
 			remove_child(previous.get());
 
+		static_param_changed(param);
 		changed();
 	}
 	return true;

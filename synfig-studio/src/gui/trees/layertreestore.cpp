@@ -233,7 +233,7 @@ LayerTreeStore::get_value_vfunc(const Gtk::TreeModel::iterator& iter, int column
 					if(sub_canvas && !sub_canvas->is_inline())
 					{
 						Gtk::TreeRow row=*iter;
-						if(*row.parent())
+						if(*row.parent() && RECORD_TYPE_LAYER == (RecordType)(*row.parent())[model.record_type])
 						{
 							paste = etl::handle<Layer_PasteCanvas>::cast_dynamic(
 									Layer::Handle((*row.parent())[model.layer]) );
@@ -676,6 +676,10 @@ LayerTreeStore::rebuild()
 		iter->second.disconnect();
 	subcanvas_changed_connections.clear();
 
+	for (iter = switch_changed_connections.begin(); iter != switch_changed_connections.end(); iter++)
+		iter->second.disconnect();
+	switch_changed_connections.clear();
+
 	//etl::clock timer;timer.reset();
 
 	//synfig::warning("---------rebuilding layer table---------");
@@ -719,38 +723,42 @@ LayerTreeStore::refresh()
 void
 LayerTreeStore::refresh_row(Gtk::TreeModel::Row &row)
 {
-	Layer::Handle layer=row[model.layer];
-	/*
+	RecordType record_type = row[model.record_type];
+	Layer::Handle layer = row[model.layer];
+
+	if (record_type == RECORD_TYPE_LAYER && layer)
 	{
-		row[model.name] = layer->get_local_name();
-		if(layer->get_description().empty())
+		/*
 		{
-			row[model.label] = layer->get_local_name();
-			row[model.tooltip] = Glib::ustring("Layer");
+			row[model.name] = layer->get_local_name();
+			if(layer->get_description().empty())
+			{
+				row[model.label] = layer->get_local_name();
+				row[model.tooltip] = Glib::ustring("Layer");
+			}
+			else
+			{
+				row[model.label] = layer->get_description();
+				row[model.tooltip] = layer->get_local_name();
+			}
 		}
-		else
-		{
-			row[model.label] = layer->get_description();
-			row[model.tooltip] = layer->get_local_name();
-		}
+		*/
+
+		if(layer->dynamic_param_list().count("z_depth"))
+			row[model.z_depth]=Time::begin();
+		//	row_changed(get_path(row),row);
+
+		Gtk::TreeModel::Children children = row.children();
+		Gtk::TreeModel::Children::iterator iter;
+
+		if(!children.empty())
+			for(iter = children.begin(); iter && iter != children.end(); ++iter)
+			{
+				Gtk::TreeRow row=*iter;
+				refresh_row(row);
+			}
 	}
-	*/
-
-	if(layer->dynamic_param_list().count("z_depth"))
-		row[model.z_depth]=Time::begin();
-	//	row_changed(get_path(row),row);
-
-	Gtk::TreeModel::Children children = row.children();
-	Gtk::TreeModel::Children::iterator iter;
-
-	if(!children.empty())
-		for(iter = children.begin(); iter && iter != children.end(); ++iter)
-		{
-			Gtk::TreeRow row=*iter;
-			refresh_row(row);
-		}
 }
-
 
 void
 LayerTreeStore::set_row_layer(Gtk::TreeRow &row, const synfig::Layer::Handle &handle)
@@ -851,8 +859,11 @@ LayerTreeStore::on_layer_added(synfig::Layer::Handle layer)
 	if (etl::handle<Layer_PasteCanvas>::cast_dynamic(layer))
 		subcanvas_changed_connections[layer] =
 			(etl::handle<Layer_PasteCanvas>::cast_dynamic(layer))->signal_subcanvas_changed().connect(
-				sigc::mem_fun(*this,&studio::LayerTreeStore::queue_rebuild)
-			);
+				sigc::mem_fun(*this,&studio::LayerTreeStore::queue_rebuild) );
+	if (etl::handle<Layer_Switch> layer_switch = etl::handle<Layer_Switch>::cast_dynamic(layer))
+		switch_changed_connections[layer_switch] =
+			layer_switch->signal_possible_layers_changed().connect(
+				sigc::mem_fun(*this,&studio::LayerTreeStore::queue_rebuild) );
 
 	assert(layer);
 	Gtk::TreeRow row;
@@ -880,6 +891,11 @@ LayerTreeStore::on_layer_removed(synfig::Layer::Handle handle)
 	{
 		subcanvas_changed_connections[handle].disconnect();
 		subcanvas_changed_connections.erase(handle);
+	}
+	if (etl::handle<Layer_Switch>::cast_dynamic(handle))
+	{
+		switch_changed_connections[handle].disconnect();
+		switch_changed_connections.erase(handle);
 	}
 	Gtk::TreeModel::Children::iterator iter;
 	if(find_layer_row(handle,iter))
@@ -981,7 +997,7 @@ LayerTreeStore::on_layer_lowered(synfig::Layer::Handle layer)
 		//synfigapp::SelectionManager::LayerList layer_list=canvas_interface()->get_selection_manager()->get_selected_layers();
 		iter2=iter;
 		iter2++;
-		if(!iter2)
+		if(!iter2 || RECORD_TYPE_LAYER != (*iter2)[model.record_type])
 		{
 			rebuild();
 			return;
@@ -1009,7 +1025,7 @@ LayerTreeStore::on_layer_raised(synfig::Layer::Handle layer)
 
 	if(find_layer_row_(layer, canvas_interface()->get_canvas(), children_, iter,iter2))
 	{
-		if(iter!=iter2)
+		if(iter!=iter2 && RECORD_TYPE_LAYER==(*iter2)[model.record_type])
 		{
 			//Gtk::TreeModel::Row row = *iter;
 			Gtk::TreeModel::Row row2 = *iter2;
@@ -1149,7 +1165,8 @@ LayerTreeStore::find_layer_row_(const synfig::Layer::Handle &layer, synfig::Canv
 		for(iter=prev=layers.begin(); iter && iter != layers.end(); prev=iter++)
 		{
 			Gtk::TreeModel::Row row = *iter;
-			if(layer==(synfig::Layer::Handle)row[model.layer])
+			if ( RECORD_TYPE_LAYER == (RecordType)row[model.record_type]
+			  && layer == (synfig::Layer::Handle)row[model.layer] )
 				return true;
 		}
 
@@ -1165,6 +1182,9 @@ LayerTreeStore::find_layer_row_(const synfig::Layer::Handle &layer, synfig::Canv
 		assert((bool)true);
 
 		if(row.children().empty())
+			continue;
+
+		if (RECORD_TYPE_LAYER != (RecordType)row[model.record_type])
 			continue;
 
 		Canvas::Handle canvas((*row.children().begin())[model.canvas]);

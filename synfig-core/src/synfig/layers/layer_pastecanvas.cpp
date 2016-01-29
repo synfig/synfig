@@ -229,6 +229,10 @@ Layer_PasteCanvas::set_param(const String & param, const ValueBase &value)
 }
 
 void
+Layer_PasteCanvas::childs_changed()
+	{ on_childs_changed(); }
+
+void
 Layer_PasteCanvas::set_sub_canvas(etl::handle<synfig::Canvas> x)
 {
 	if(canvas && muck_with_time_)
@@ -238,20 +242,15 @@ Layer_PasteCanvas::set_sub_canvas(etl::handle<synfig::Canvas> x)
 	if (extra_reference)
 		canvas->unref();
 
-	child_changed_connection.disconnect();
+	childs_changed_connection.disconnect();
 
 	if (canvas != x) signal_subcanvas_changed()();
 
 	canvas=x;
 
-	/*if(canvas)
-		child_changed_connection=canvas->signal_changed().connect(
-			sigc::mem_fun(
-				*this,
-				&Layer_PasteCanvas::changed
-			)
-		);
-	*/
+	if(canvas)
+		childs_changed_connection=canvas->signal_changed().connect(
+			sigc::mem_fun(*this, &Layer_PasteCanvas::childs_changed) );
 
 	if(canvas && muck_with_time_)
 		add_child(canvas.get());

@@ -125,6 +125,7 @@ private:
 	sigc::connection queue_connection;
 
 	std::map<synfig::Layer::Handle, sigc::connection> subcanvas_changed_connections;
+	std::map<synfig::Layer::Handle, sigc::connection> switch_changed_connections;
 
 	etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_;
 

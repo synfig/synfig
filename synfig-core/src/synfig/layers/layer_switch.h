@@ -47,6 +47,12 @@ private:
 	//! Parameter: (String) Active Layer Name
 	ValueBase param_layer_name;
 
+	mutable std::set<String> last_possible_layers;
+	mutable std::set<String> last_existant_layers;
+
+	sigc::signal<void> signal_possible_layers_changed_;
+	void possible_layers_changed();
+
 public:
 	//! Default constructor
 	Layer_Switch();
@@ -63,6 +69,13 @@ public:
 	virtual Vocab get_param_vocab()const;
 
 	Layer::Handle get_current_layer()const;
+
+	sigc::signal<void>& signal_possible_layers_changed() { return signal_possible_layers_changed_; }
+
+	virtual void on_childs_changed();
+	virtual void on_static_param_changed(const String &param);
+	virtual void on_dynamic_param_changed(const String &param);
+	virtual void on_possible_layers_changed() { }
 
 	void get_existant_layers(std::set<String> &x) const;
 	void get_possible_layers(std::set<String> &x) const;

@@ -152,11 +152,55 @@ Layer_Switch::apply_z_range_to_params(ContextParams &cp)const
 }
 
 void
+Layer_Switch::possible_layers_changed()
+{
+	on_possible_layers_changed();
+	signal_possible_layers_changed_();
+}
+
+void
+Layer_Switch::on_childs_changed()
+{
+	Layer_PasteCanvas::on_childs_changed();
+	std::set<String> a(last_existant_layers), b;
+	get_existant_layers(b);
+	if (a != b)
+		possible_layers_changed();
+}
+
+void
+Layer_Switch::on_static_param_changed(const String &param)
+{
+	Layer_PasteCanvas::on_static_param_changed(param);
+	if (param == "layer_name")
+	{
+		std::set<String> a(last_possible_layers), b;
+		get_possible_layers(b);
+		if (a != b)
+			possible_layers_changed();
+	}
+}
+
+void
+Layer_Switch::on_dynamic_param_changed(const String &param)
+{
+	Layer_PasteCanvas::on_dynamic_param_changed(param);
+	if (param == "layer_name")
+	{
+		std::set<String> a(last_possible_layers), b;
+		get_possible_layers(b);
+		if (a != b)
+			possible_layers_changed();
+	}
+}
+
+void
 Layer_Switch::get_existant_layers(std::set<String> &x) const
 {
 	if (!get_sub_canvas()) return;
 	for(IndependentContext i = get_sub_canvas()->get_independent_context(); *i; ++i)
 		x.insert((*i)->get_description());
+	last_existant_layers = x;
 }
 
 void
@@ -175,6 +219,7 @@ Layer_Switch::get_possible_layers(std::set<String> &x) const
 		if (!param_layer_name.get(String()).empty())
 			x.insert(param_layer_name.get(String()));
 	}
+	last_possible_layers = x;
 }
 
 void
