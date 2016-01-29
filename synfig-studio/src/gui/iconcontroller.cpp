@@ -263,6 +263,11 @@ IconController::init_icons(const synfig::String& path_to_icons)
 	INIT_STOCK_ICON(layer_transform_translate,"layer_transform_translate_icon."IMAGE_EXT,_("Translate Layer"));
 	INIT_STOCK_ICON(layer_transform_scale,"layer_transform_scale_icon."IMAGE_EXT,_("Scale Layer"));
 
+	// Ghost Layers
+	INIT_STOCK_ICON(layer_ghost_group,"layer_other_group_icon."IMAGE_EXT,_("Group Ghost"));
+	//INIT_STOCK_ICON(layer_ghost_group,"layer_ghost_group_icon."IMAGE_EXT,_("Group Ghost"));
+
+
 	INIT_STOCK_ICON(info,"info_icon."IMAGE_EXT,_("Info Tool"));
 	INIT_STOCK_ICON(group,"set_icon."IMAGE_EXT,_("Set"));
 
@@ -624,6 +629,8 @@ studio::layer_icon(const synfig::String &layer)
 		return Gtk::StockID("synfig-layer_transform_translate");
 	else if(layer=="zoom")
 		return Gtk::StockID("synfig-layer_transform_scale");
+	else if(layer=="ghost_group")
+		return Gtk::StockID("synfig-layer_ghost_group");
 	else
 		return Gtk::StockID("synfig-layer");
 }

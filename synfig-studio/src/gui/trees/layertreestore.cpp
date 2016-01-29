@@ -271,6 +271,9 @@ LayerTreeStore::get_value_vfunc(const Gtk::TreeModel::iterator& iter, int column
 			if (column == model.label.index())
 				set_gvalue_tpl<Glib::ustring>(value, ghost_label, true);
 			else
+			if (column == model.icon.index())
+				set_gvalue_tpl< Glib::RefPtr<Gdk::Pixbuf> >(value, get_tree_pixbuf_layer("ghost_group"));
+			else
 				Gtk::TreeStore::get_value_vfunc(iter,column,value);
 
 			return;
