@@ -492,8 +492,9 @@ Dialog_Setup::create_interface_page(PageInfo pi)
 	 * HANDLETOOLTIP
 	 *  Widthpoint      [x| ]
 	 *  Radius          [x| ]
-	 *  Transformation  [x| ] [ Name ]
-	 *
+	 *  Transformation  [x| ]
+	 *        [x] Name
+	 *        [x] Value
 	 */
 
 	// Interface - UI Language
@@ -594,28 +595,33 @@ Dialog_Setup::create_interface_page(PageInfo pi)
 	pi.grid->attach(toggle_use_dark_theme, 1, row, 1, 1);
 
 	// Interface - Handle tooltip section
-	attach_label_section(pi.grid, _("Handle Tooltips Visible"), ++row);
+	attach_label_section(pi.grid, _("Handle Tooltips"), ++row);
 	// Interface - width point tooltip
-	attach_label(pi.grid, _("Width point tooltips"), ++row);
+	attach_label(pi.grid, _("Width point"), ++row);
 	pi.grid->attach(toggle_handle_tooltip_widthpoint, 1, row, 1, 1);
 	toggle_handle_tooltip_widthpoint.set_halign(Gtk::ALIGN_START);
 	toggle_handle_tooltip_widthpoint.set_hexpand(false);
 	// Interface - radius tooltip
-	attach_label(pi.grid, _("Radius tooltips"), ++row);
+	attach_label(pi.grid, _("Radius"), ++row);
 	pi.grid->attach(toggle_handle_tooltip_radius, 1, row, 1, 1);
 	toggle_handle_tooltip_radius.set_halign(Gtk::ALIGN_START);
 	toggle_handle_tooltip_radius.set_hexpand(false);
 	// Interface - transformation widget tooltip
-	attach_label(pi.grid, _("Transformation widget tooltips"), ++row);
+	attach_label(pi.grid, _("Transformation widget"), ++row);
 	pi.grid->attach(toggle_handle_tooltip_transformation, 1, row, 1, 1);
 	toggle_handle_tooltip_transformation.set_halign(Gtk::ALIGN_START);
 	toggle_handle_tooltip_transformation.set_hexpand(false);
 	toggle_handle_tooltip_transformation.property_active().signal_changed().connect(
 			sigc::mem_fun(*this, &Dialog_Setup::on_tooltip_transformation_changed));
-	pi.grid->attach(combo_handle_tooltip_transformation, 3, row, 1, 1);
-	combo_handle_tooltip_transformation.append(_("Name")); // HANDLE_TOOLTIP_TRANSFO_NAME
-	combo_handle_tooltip_transformation.append(_("Name Value")); // HANDLE_TOOLTIP_TRANSFO_NAMEVALUE
-	combo_handle_tooltip_transformation.append(_("Value")); // HANDLE_TOOLTIP_TRANSFO_VALUE
+
+	Gtk::Grid* toggle_transfo( manage (new Gtk::Grid()));
+	toggle_transfo->attach(toggle_handle_tooltip_transfo_name, 0, 1, 1, 1);
+	Gtk::Label* tmp = attach_label(toggle_transfo, _("Name"), 1, 1, FALSE);// HANDLE_TOOLTIP_TRANSFO_NAME
+	toggle_transfo->attach(toggle_handle_tooltip_transfo_value, 0, 2, 1, 1);
+	attach_label(toggle_transfo, _("Value"), 2, 1, FALSE);// HANDLE_TOOLTIP_TRANSFO_VALUE
+	pi.grid->attach(*toggle_transfo, 0, ++row, 1,1);
+	toggle_transfo->set_halign(Gtk::ALIGN_END);
+	toggle_transfo->show_all_children();
 
 	//! change resume signal connexion
 	ui_language_combo.signal_changed().connect(
@@ -629,7 +635,9 @@ Dialog_Setup::create_interface_page(PageInfo pi)
 			sigc::bind<int> (sigc::mem_fun(*this, &Dialog_Setup::on_value_change), CHANGE_UI_HANDLE_TOOLTIP));
 	toggle_handle_tooltip_transformation.property_active().signal_changed().connect(
 			sigc::bind<int> (sigc::mem_fun(*this, &Dialog_Setup::on_value_change), CHANGE_UI_HANDLE_TOOLTIP));
-	combo_handle_tooltip_transformation.signal_changed().connect(
+	toggle_handle_tooltip_transfo_name.property_active().signal_changed().connect(
+			sigc::bind<int> (sigc::mem_fun(*this, &Dialog_Setup::on_value_change), CHANGE_UI_HANDLE_TOOLTIP));
+	toggle_handle_tooltip_transfo_value.property_active().signal_changed().connect(
 			sigc::bind<int> (sigc::mem_fun(*this, &Dialog_Setup::on_value_change), CHANGE_UI_HANDLE_TOOLTIP));
 }
 
@@ -753,17 +761,13 @@ Dialog_Setup::on_apply_pressed()
 		// Set ui tooltip on transformation
 		if(toggle_handle_tooltip_transformation.get_active())
 		{
-			switch(combo_handle_tooltip_transformation.get_active_row_number())
+			if(toggle_handle_tooltip_transfo_name.get_active())
 			{
-			case HANDLE_TOOLTIP_TRANSFO_NAME:
 				App::ui_handle_tooltip_flag|=Duck::STRUCT_TRANSFORMATION;
-				break;
-			case HANDLE_TOOLTIP_TRANSFO_NAMEVALUE:
-				App::ui_handle_tooltip_flag|=Duck::STRUCT_TRANSFORMATION+Duck::STRUCT_TRANSFO_BY_VALUE;
-				break;
-			case HANDLE_TOOLTIP_TRANSFO_VALUE:
+			}
+			if(toggle_handle_tooltip_transfo_value.get_active())
+			{
 				App::ui_handle_tooltip_flag|=Duck::STRUCT_TRANSFO_BY_VALUE;
-				break;
 			}
 		}
 	}
@@ -877,7 +881,6 @@ Dialog_Setup::on_time_format_changed()
 void
 Dialog_Setup::on_autobackup_changed()
 {
-//	if(!refreshing) pref_modification_flag |= CHANGE_AUTOBACKUP;
 	auto_backup_interval.set_sensitive(toggle_autobackup.get_active());
 	App::auto_recover->enable(toggle_autobackup.get_active());
 }
@@ -885,8 +888,8 @@ Dialog_Setup::on_autobackup_changed()
 void
 Dialog_Setup::on_tooltip_transformation_changed()
 {
-//	if(!refreshing) pref_modification_flag |= CHANGE_UI_HANDLE_TOOLTIP;
-	combo_handle_tooltip_transformation.set_sensitive(toggle_handle_tooltip_transformation.get_active());
+	toggle_handle_tooltip_transfo_name.set_sensitive(toggle_handle_tooltip_transformation.get_active());
+	toggle_handle_tooltip_transfo_value.set_sensitive(toggle_handle_tooltip_transformation.get_active());
 }
 
 void
@@ -1011,20 +1014,21 @@ Dialog_Setup::refresh()
 	// refresh ui tooltip handle info
 	toggle_handle_tooltip_widthpoint.set_active(App::ui_handle_tooltip_flag&Duck::STRUCT_WIDTHPOINT);
 	toggle_handle_tooltip_radius.set_active(App::ui_handle_tooltip_flag&Duck::STRUCT_RADIUS);
-	toggle_handle_tooltip_transformation.set_active( (App::ui_handle_tooltip_flag&Duck::STRUCT_TRANSFORMATION) ||
-			(App::ui_handle_tooltip_flag&Duck::STRUCT_TRANSFO_BY_VALUE));
-	if((App::ui_handle_tooltip_flag&Duck::STRUCT_TRANSFORMATION) &&
-			(App::ui_handle_tooltip_flag&Duck::STRUCT_TRANSFO_BY_VALUE) )
+	if((App::ui_handle_tooltip_flag&Duck::STRUCT_TRANSFORMATION) ||
+			(App::ui_handle_tooltip_flag&Duck::STRUCT_TRANSFO_BY_VALUE))
 	{
-		combo_handle_tooltip_transformation.set_active(HANDLE_TOOLTIP_TRANSFO_NAMEVALUE);
+		toggle_handle_tooltip_transformation.set_active(true);
+		toggle_handle_tooltip_transfo_name.set_active(
+			(App::ui_handle_tooltip_flag&Duck::STRUCT_TRANSFORMATION));
+		toggle_handle_tooltip_transfo_value.set_active(
+			(App::ui_handle_tooltip_flag&Duck::STRUCT_TRANSFO_BY_VALUE));
 	}
-	else if(App::ui_handle_tooltip_flag&Duck::STRUCT_TRANSFORMATION)
-		{
-			combo_handle_tooltip_transformation.set_active(HANDLE_TOOLTIP_TRANSFO_NAME);
-		}else if(App::ui_handle_tooltip_flag&Duck::STRUCT_TRANSFO_BY_VALUE)
-		{
-			combo_handle_tooltip_transformation.set_active(HANDLE_TOOLTIP_TRANSFO_VALUE);
-		}
+	else
+	{
+		toggle_handle_tooltip_transformation.set_active(false);
+		toggle_handle_tooltip_transfo_name.set_sensitive(false);
+		toggle_handle_tooltip_transfo_value.set_sensitive(false);
+	}
 
 	refreshing = false;
 }

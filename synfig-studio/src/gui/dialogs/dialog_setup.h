@@ -176,14 +176,6 @@ class Dialog_Setup : public Dialog_Template
 		CHANGE_ALL					=	(~0)
 	};
 
-	enum HandleToolTip
-	{
-		HANDLE_TOOLTIP_TRANSFO_NAME 		= 0,
-		HANDLE_TOOLTIP_TRANSFO_NAMEVALUE,
-		HANDLE_TOOLTIP_TRANSFO_VALUE
-	};
-
-
 	// Change mechanism
 	// TODO on change class
 	void on_value_change(int valueflag);
@@ -252,7 +244,8 @@ class Dialog_Setup : public Dialog_Template
 	Gtk::ComboBoxText* fps_template_combo;
 	Gtk::ComboBoxText ui_language_combo;
 	std::vector<Glib::ustring> _lang_codes;
-	Gtk::ComboBoxText combo_handle_tooltip_transformation;
+	Gtk::CheckButton toggle_handle_tooltip_transfo_value;
+	Gtk::CheckButton toggle_handle_tooltip_transfo_name;
 
 	Gtk::Entry textbox_custom_filename_prefix;
 	Glib::RefPtr<Gtk::Adjustment> adj_pref_x_size;
