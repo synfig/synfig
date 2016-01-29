@@ -173,10 +173,12 @@ LayerTreeStore::get_value_vfunc(const Gtk::TreeModel::iterator& iter, int column
 {
 	if ( column != model.record_type.index()
 	  && column != model.layer.index()
+	  && column != model.layer_impossible.index()
 	  && column != model.ghost_label.index() )
 	{
 		RecordType record_type((*iter)[model.record_type]);
 		Layer::Handle layer((*iter)[model.layer]);
+		bool layer_impossible((*iter)[model.layer_impossible]);
 		Glib::ustring ghost_label((*iter)[model.ghost_label]);
 
 		if (record_type == RECORD_TYPE_LAYER && layer)
@@ -251,6 +253,12 @@ LayerTreeStore::get_value_vfunc(const Gtk::TreeModel::iterator& iter, int column
 
 				set_gvalue_tpl<Pango::Weight>(value, weight);
 			}
+			else
+			if (column == model.underline.index())
+				set_gvalue_tpl<Pango::Underline>(value, layer_impossible ? Pango::UNDERLINE_SINGLE : Pango::UNDERLINE_NONE);
+			else
+			if (column == model.strikethrough.index())
+				set_gvalue_tpl<bool>(value, false);
 			else
 			if (column == model.icon.index())
 				set_gvalue_tpl< Glib::RefPtr<Gdk::Pixbuf> >(value, get_tree_pixbuf_layer(layer->get_name()));
@@ -793,6 +801,8 @@ LayerTreeStore::set_row_layer(Gtk::TreeRow &row, const synfig::Layer::Handle &ha
 			for(Canvas::reverse_iterator iter = canvas->rbegin(); iter != canvas->rend(); ++iter)
 			{
 				Gtk::TreeRow row_(*(prepend(row.children())));
+				bool xx = (bool)impossible_existant_layers.count((*iter)->get_description());
+				row_[model.layer_impossible] = xx;
 				set_row_layer(row_,*iter);
 			}
 

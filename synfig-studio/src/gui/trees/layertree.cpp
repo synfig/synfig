@@ -216,6 +216,8 @@ LayerTree::create_layer_tree()
 		column->add_attribute(cellrenderer->property_text(), layer_model.label);
 		column->add_attribute(cellrenderer->property_style(), layer_model.style);
 		column->add_attribute(cellrenderer->property_weight(), layer_model.weight);
+		column->add_attribute(cellrenderer->property_underline(), layer_model.underline);
+		column->add_attribute(cellrenderer->property_strikethrough(), layer_model.strikethrough);
 		cellrenderer->signal_edited().connect(sigc::mem_fun(*this, &studio::LayerTree::on_layer_renamed));
 		cellrenderer->property_editable()=true;
 

@@ -72,9 +72,12 @@ public:
 		Gtk::TreeModelColumn<bool>						exclude_from_rendering;
 		Gtk::TreeModelColumn<Pango::Style>				style;
 		Gtk::TreeModelColumn<Pango::Weight>				weight;
+		Gtk::TreeModelColumn<Pango::Underline>			underline;
+		Gtk::TreeModelColumn<bool>						strikethrough;
 
 		Gtk::TreeModelColumn<RecordType>				record_type;
 		Gtk::TreeModelColumn<synfig::Layer::Handle>		layer;
+		Gtk::TreeModelColumn<bool>			    		layer_impossible;
 		Gtk::TreeModelColumn<Glib::ustring>			    ghost_label;
 		Gtk::TreeModelColumn<synfig::Canvas::Handle> 	contained_canvas;
 
@@ -95,8 +98,11 @@ public:
 			add(exclude_from_rendering);
 			add(style);
 			add(weight);
+			add(underline);
+			add(strikethrough);
 			add(record_type);
 			add(layer);
+			add(layer_impossible);
 			add(ghost_label);
 			add(contained_canvas);
 			add(z_depth);
