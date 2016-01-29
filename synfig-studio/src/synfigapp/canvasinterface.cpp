@@ -50,6 +50,8 @@
 #include <synfig/valuenodes/valuenode_dilist.h>
 #include <synfig/pair.h>
 
+#include <synfig/layers/layer_pastecanvas.h>
+
 #include <synfig/waypoint.h>
 #include <synfig/loadcanvas.h>
 #include <synfig/importer.h>
@@ -388,7 +390,9 @@ CanvasInterface::add_layer_to(synfig::String name, synfig::Canvas::Handle canvas
 		}
 
 	layer->set_canvas(canvas);
-	
+	if (etl::handle<Layer_PasteCanvas>::cast_dynamic(layer))
+		layer->set_param("canvas", Canvas::create_inline(canvas));
+
 	// Apply some defaults
 	apply_layer_param_defaults(layer);
 	if (!description.empty()) layer->set_description(description);

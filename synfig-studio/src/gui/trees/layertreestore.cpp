@@ -444,11 +444,10 @@ LayerTreeStore::drag_data_get_vfunc(const TreeModel::Path& path, Gtk::SelectionD
 
 	if((bool)true)
 	{
-		Layer* layer(((Layer::Handle)row[model.layer]).get());
-		assert(layer);
+		Layer* layer = (RecordType)row[model.record_type] == RECORD_TYPE_LAYER
+				     ? ((Layer::Handle)row[model.layer]).get()
+		             : NULL;
 		bool included(false);
-
-		//gtk_selection_data_set (selection_data, gdk_atom_intern("LAYER",false), 8, reinterpret_cast<const guchar*>(&layer), sizeof(layer));
 
 		std::vector<Layer*> layers;
 		// The following is a hack for multiple row DND
@@ -459,7 +458,7 @@ LayerTreeStore::drag_data_get_vfunc(const TreeModel::Path& path, Gtk::SelectionD
 				selection_data.set("LAYER", 8, reinterpret_cast<const guchar*>(&layer), sizeof(layer));
 				return true;
 			}
-			while(!bleh.empty())
+			if (layer) while(!bleh.empty())
 			{
 				if(bleh.back().get()==layer)
 					included=true;
@@ -467,7 +466,7 @@ LayerTreeStore::drag_data_get_vfunc(const TreeModel::Path& path, Gtk::SelectionD
 				bleh.pop_back();
 			}
 		}
-		if(!included)
+		if(layer && !included)
 			layers.push_back(layer);
 		selection_data.set("LAYER", 8, reinterpret_cast<const guchar*>(&layers.front()), sizeof(void*)*layers.size());
 
@@ -498,22 +497,26 @@ LayerTreeStore::row_drop_possible_vfunc (const TreeModel::Path& dest, const Gtk:
 		//Layer::Handle src(reinterpret_cast<Layer**>(const_cast<guint8*>(selection_data.get_data()))[i]);
 		//assert(src);
 
-		//return true;
 		TreeModel::Path dest_parent(dest);
-		if(!dest_parent.up() || dest.size()==1)
+		if (!dest_parent.up() || dest.size()==1)
 		{
 			//row=(*get_iter(dest));
 			//dest_canvas=(Canvas::Handle)(row[model.canvas]);
 			return true;
 		}
-		else if((bool)const_cast<LayerTreeStore*>(this)->get_iter(dest_parent))
-			return (bool)(Canvas::Handle)(*const_cast<LayerTreeStore*>(this)->get_iter(dest_parent))[model.contained_canvas];
+		else
+		if ((bool)const_cast<LayerTreeStore*>(this)->get_iter(dest_parent))
+		{
+			TreeModel::Row row = *const_cast<LayerTreeStore*>(this)->get_iter(dest_parent);
+			return RECORD_TYPE_LAYER == (RecordType)row[model.record_type]
+				&& (bool)(Canvas::Handle)row[model.contained_canvas];
+		}
 	}
 	return false;
 }
 
 bool
-LayerTreeStore::drag_data_received_vfunc (const TreeModel::Path& dest, const Gtk::SelectionData& selection_data)
+LayerTreeStore::drag_data_received_vfunc(const TreeModel::Path& dest, const Gtk::SelectionData& selection_data)
 {
 
 	//if(!dest_parent.up() || !get_iter(dest)) return false;
@@ -532,115 +535,82 @@ LayerTreeStore::drag_data_received_vfunc (const TreeModel::Path& dest, const Gtk
 
 	if ((selection_data.get_length() >= 0) && (selection_data.get_format() == 8))
 	{
-		Gtk::TreeModel::Row row;
-		Canvas::Handle dest_canvas;
-
-		int dest_layer_depth=dest.back();
-
-		TreeModel::Path dest_parent(dest);
-		if(!dest_parent.up() || !get_iter(dest_parent))
-		{
-			TreeModel::Path dest_(dest);
-			if(!get_iter(dest_))
-				dest_.prev();
-
-			if(!get_iter(dest_))
-				return false;
-
+		synfigapp::SelectionManager::LayerList dropped_layers;
+		if(synfig::String(selection_data.get_data_type())=="LAYER")
+			for(unsigned int i=0; i<selection_data.get_length()/sizeof(void*); i++)
 			{
-				row=(*get_iter(dest_));
-				dest_canvas=(Canvas::Handle)(row[model.canvas]);
+				Layer::Handle l(reinterpret_cast<Layer**>(const_cast<guint8*>(selection_data.get_data()))[i]);
+				if (l) dropped_layers.push_back(l);
 			}
+
+		Gtk::TreeModel::Row row(*get_iter(dest));
+		Canvas::Handle dest_canvas;
+		Layer::Handle dest_layer;
+		int dest_layer_depth = dest.back();
+
+		if (RECORD_TYPE_LAYER == (RecordType)row[model.record_type])
+		{
+			// TODO: check RecordType for parent
+			TreeModel::Path dest_parent(dest);
+			if(!dest_parent.up() || !get_iter(dest_parent))
+			{
+				TreeModel::Path dest_(dest);
+				if(!get_iter(dest_))
+					dest_.prev();
+				if(!get_iter(dest_))
+					return false;
+				{
+					row=(*get_iter(dest_));
+					dest_canvas=(Canvas::Handle)(row[model.canvas]);
+				}
+			}
+			else
+			{
+				row=(*get_iter(dest_parent));
+				dest_canvas=row[model.contained_canvas];
+			}
+			assert(dest_canvas);
+			dest_layer = row[model.layer];
+		}
+		else
+		if (RECORD_TYPE_BLANK == (RecordType)row[model.record_type] && row.parent())
+		{
+			// TODO: check RecordType for parent
+			dest_canvas = (Canvas::Handle)(*row.parent())[model.contained_canvas];
+			dest_layer = canvas_interface()->add_layer_to(
+				"group",
+				dest_canvas,
+				dest_canvas->size(),
+				((Glib::ustring)row[model.blank_label]).c_str() );
+			dest_canvas = dest_layer->get_param("canvas").get(Canvas::Handle());
+			dest_layer_depth = -1;
 		}
 		else
 		{
-			row=(*get_iter(dest_parent));
-			dest_canvas=row[model.contained_canvas];
+			return false;
 		}
 
-		assert(dest_canvas);
-
-		Layer::Handle dest_layer(row[model.layer]);
-
-		if(synfig::String(selection_data.get_data_type())=="LAYER")for(unsigned int i=0;i<selection_data.get_length()/sizeof(void*);i++)
+		for(synfigapp::SelectionManager::LayerList::const_iterator i = dropped_layers.begin(); i != dropped_layers.end(); ++i)
 		{
-			//synfig::info("dest_layer_depth=%d",dest_layer_depth);
-
-			Layer::Handle src(reinterpret_cast<Layer**>(const_cast<guint8*>(selection_data.get_data()))[i]);
-			assert(src);
-			if(dest_layer==src)
-				continue;
+			Layer::Handle src(*i);
+			if(dest_layer == src) continue;
 
 			if(dest_canvas==src->get_canvas() && src->get_depth()<dest_layer_depth)
 				dest_layer_depth--;
 
-			// In this case, we are just moving.
-//			if(dest_canvas==src->get_canvas())
-			{
-				//if(dest_canvas==src->get_canvas() && dest_layer_depth && dest_layer_depth>src->get_depth())
-				//	dest_layer_depth--;
-				if(dest_canvas==src->get_canvas() && dest_layer_depth==src->get_depth())
-					continue;
-
-				synfigapp::Action::Handle action(synfigapp::Action::create("LayerMove"));
-				action->set_param("canvas",dest_canvas);
-				action->set_param("canvas_interface",canvas_interface());
-				action->set_param("layer",src);
-				action->set_param("new_index",dest_layer_depth);
-				action->set_param("dest_canvas",dest_canvas);
-				if(canvas_interface()->get_instance()->perform_action(action))
-					ret=true;
-				else
-				{
-					passive_grouper.cancel();
-					return false;
-				}
+			if(dest_canvas==src->get_canvas() && dest_layer_depth==src->get_depth())
 				continue;
-			}
-			/*else // In this case we need to remove and then add
-			{
 
-				synfigapp::Action::Handle action;
-				action=synfigapp::Action::create("LayerRemove");
-				action->set_param("canvas",Canvas::Handle(src->get_canvas()));
-				if(!action->set_param("canvas_interface",App::get_instance(src->get_canvas())->find_canvas_interface(src->get_canvas())))
-					action->set_param("canvas_interface",canvas_interface());
-				action->set_param("layer",src);
-				if(!canvas_interface()->get_instance()->perform_action(action))
-				{
-					passive_grouper.cancel();
-					ret=false;
-					return false;
-				}
-
-				action=synfigapp::Action::create("LayerAdd");
-				action->set_param("canvas",dest_canvas);
-				action->set_param("canvas_interface",canvas_interface());
-				action->set_param("new",src);
-				if(!canvas_interface()->get_instance()->perform_action(action))
-				{
-					passive_grouper.cancel();
-					ret=false;
-					return false;
-				}
-
-				if(dest_layer_depth!=0)
-				{
-					action=synfigapp::Action::create("LayerMove");
-					action->set_param("canvas",dest_canvas);
-					action->set_param("canvas_interface",canvas_interface());
-					action->set_param("layer",src);
-					action->set_param("new_index",dest_layer_depth);
-					if(!canvas_interface()->get_instance()->perform_action(action))
-					{
-						passive_grouper.cancel();
-						ret=false;
-						return false;
-					}
-				}
-				ret=true;
-			}
-			*/
+			synfigapp::Action::Handle action(synfigapp::Action::create("LayerMove"));
+			action->set_param("canvas",dest_canvas);
+			action->set_param("canvas_interface",canvas_interface());
+			action->set_param("layer",src);
+			action->set_param("new_index",dest_layer_depth);
+			action->set_param("dest_canvas",dest_canvas);
+			if (canvas_interface()->get_instance()->perform_action(action))
+				{ ret=true; }
+			else
+				{ passive_grouper.cancel(); return false; }
 		}
 	}
 	synfig::info("I supposedly moved %d layers",i);
