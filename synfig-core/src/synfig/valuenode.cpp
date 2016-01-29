@@ -443,7 +443,6 @@ ValueNode::get_values_vfunc(std::map<Time, ValueBase> &x) const
 {
 	typedef std::map<Time, ValueBase> Map;
 	typedef Map::const_iterator Iterator;
-	typedef std::pair<Iterator, Iterator> Range;
 
 	if (Canvas::Handle canvas = get_parent_canvas())
 	{
@@ -459,8 +458,8 @@ ValueNode::get_values_vfunc(std::map<Time, ValueBase> &x) const
 			{
 				Time t(i*k);
 				ValueBase v = (*this)(t);
-				Range r = x.equal_range(t);
-				if (r.first == x.end() || r.first->second != v)
+				Iterator j = x.upper_bound(t);
+				if (j == x.begin() || (--j)->second != v)
 					x[t] = v;
 			}
 		}
