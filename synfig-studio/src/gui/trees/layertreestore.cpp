@@ -273,12 +273,28 @@ LayerTreeStore::get_value_vfunc(const Gtk::TreeModel::iterator& iter, int column
 		{
 			// Placeholder for new layer (ghost)
 
-			// TODO: set style and weight
 			if (column == model.z_depth.index())
 				set_gvalue_tpl<float>(value, (*iter)[model.index]);
 			else
 			if (column == model.label.index())
 				set_gvalue_tpl<Glib::ustring>(value, ghost_label, true);
+			else
+			if (column == model.weight.index())
+			{
+				Pango::Weight weight = Pango::WEIGHT_NORMAL;
+				if (iter->parent())
+				{
+					RecordType parent_record_type((*iter->parent())[model.record_type]);
+					Layer::Handle parent_layer((*iter->parent())[model.layer]);
+
+					etl::handle<Layer_Switch> layer_switch=
+						etl::handle<Layer_Switch>::cast_dynamic(parent_layer);
+					if (parent_record_type == RECORD_TYPE_LAYER && layer_switch)
+						if (ghost_label == layer_switch->get_param("layer_name").get(String()))
+							weight = Pango::WEIGHT_BOLD;
+				}
+				set_gvalue_tpl<Pango::Weight>(value, weight);
+			}
 			else
 			if (column == model.icon.index())
 				set_gvalue_tpl< Glib::RefPtr<Gdk::Pixbuf> >(value, get_tree_pixbuf_layer("ghost_group"));
