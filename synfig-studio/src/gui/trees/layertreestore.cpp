@@ -740,10 +740,10 @@ LayerTreeStore::rebuild()
 void
 LayerTreeStore::refresh()
 {
-	etl::clock timer;timer.reset();
+	etl::clock timer;
+	timer.reset();
 
 	Gtk::TreeModel::Children children_(children());
-
 	Gtk::TreeModel::Children::iterator iter;
 
 	if(!children_.empty())
@@ -751,7 +751,9 @@ LayerTreeStore::refresh()
 		{
 			Gtk::TreeRow row=*iter;
 			refresh_row(row);
+			row_changed(get_path(iter), iter);
 		}
+
 	//synfig::info("LayerTreeStore::refresh() took %f seconds",float(timer()));
 }
 
@@ -791,6 +793,7 @@ LayerTreeStore::refresh_row(Gtk::TreeModel::Row &row)
 			{
 				Gtk::TreeRow row=*iter;
 				refresh_row(row);
+				row_changed(get_path(iter), iter);
 			}
 	}
 }
