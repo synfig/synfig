@@ -308,8 +308,8 @@ Dialog_Setup::create_document_page(PageInfo pi)
 	 * NEW CANVAS
 	 *  prefix  ___________________
 	 *  fps   [_]                    [FPS]
-	 *  size
-	 *        H[_]xW[_]      [resolutions]
+	 *  size  H[_]xW[_]      [resolutions]
+	 *
 	 *
 	 *
 	 */
@@ -318,23 +318,23 @@ Dialog_Setup::create_document_page(PageInfo pi)
 	attach_label_section(pi.grid, _("New Canvas"), row);
 	// Document - Preferred file name prefix
 	attach_label(pi.grid, _("Name prefix"), ++row);
-	pi.grid->attach(textbox_custom_filename_prefix, 1, row, 6, 1);
+	pi.grid->attach(textbox_custom_filename_prefix, 1, row, 2, 1);
 	textbox_custom_filename_prefix.set_tooltip_text( _("File name prefix for the new created document"));
 	textbox_custom_filename_prefix.set_hexpand(true);
 
 	// TODO add label with some FPS description ( ex : 23.976 FPS->NTSC television , 25 PAL, 48->Film Industrie, 30->cinematic-like appearance ...)
 	// Document - New Document FPS
-	pref_fps_spinbutton = Gtk::manage(new Gtk::SpinButton(adj_pref_fps, 1, 3));
 	attach_label(pi.grid,_("FPS"), ++row);
+	pref_fps_spinbutton = Gtk::manage(new Gtk::SpinButton(adj_pref_fps, 1, 3));
 	pi.grid->attach(*pref_fps_spinbutton, 1, row, 1, 1);
 	pref_fps_spinbutton->set_tooltip_text(_("Frames per second of the new created document"));
 	pref_fps_spinbutton->set_hexpand(true);
 
 	//Document - Template for predefined fps
 	fps_template_combo = Gtk::manage(new Gtk::ComboBoxText());
-	pi.grid->attach(*fps_template_combo, 6, row, 1, 1);
+	pi.grid->attach(*fps_template_combo, 2, row, 1 ,1);
+	fps_template_combo->set_halign(Gtk::ALIGN_END);
 	fps_template_combo->signal_changed().connect(sigc::mem_fun(*this, &studio::Dialog_Setup::on_fps_template_combo_change));
-	fps_template_combo->set_hexpand(true);
 	//Document - Fill the FPS combo box with proper strings (not localised)
 	float f[8];
 	f[0] = 60;
@@ -352,28 +352,35 @@ Dialog_Setup::create_document_page(PageInfo pi)
 	attach_label(pi.grid, _("Size"),++row);
 	// TODO chain icon for ratio / ratio indication (see Widget_RendDesc)
 	// Document - New Document X size
-	Gtk::Label* label = attach_label(pi.grid,_("Width"), ++row, 1);
-	label->set_alignment(Gtk::ALIGN_END, Gtk::ALIGN_CENTER);
+	Gtk::Grid *grid_size(manage (new Gtk::Grid()));
+
+	Gtk::Label* label = attach_label(grid_size,_("Width"), 0, 0);
+	label->set_halign(Gtk::ALIGN_END);
+
 	pref_x_size_spinbutton = Gtk::manage(new Gtk::SpinButton(adj_pref_x_size, 1, 0));
-	pi.grid->attach(*pref_x_size_spinbutton, 2, row, 1, 1);
+	grid_size->attach(*pref_x_size_spinbutton, 1, 0, 1, 1);
 	pref_x_size_spinbutton->set_tooltip_text(_("Width in pixels of the new created document"));
 	pref_x_size_spinbutton->set_hexpand(true);
 
-	label = attach_label(pi.grid, "X", row, 3, false);// "X" stand for multiply operation
+	label = attach_label(grid_size, "X", 0, 2, false);// "X" stand for multiply operation
 	// NOTA : Use of "section" attributes for BOLDING
 	label->set_attributes(section_attrlist);
-	label->set_alignment(Gtk::ALIGN_CENTER, Gtk::ALIGN_CENTER);
+	label->set_margin_start(3);
+	label->set_margin_end(3);
+	label->set_halign(Gtk::ALIGN_CENTER);
 
 	// Document - New Document Y size
-	attach_label(pi.grid,_("Height"), row, 4);
+	attach_label(grid_size,_("Height"), 0, 3);
 	pref_y_size_spinbutton = Gtk::manage(new Gtk::SpinButton(adj_pref_y_size, 1, 0));
-	pi.grid->attach(*pref_y_size_spinbutton, 5, row, 1, 1);
+	grid_size->attach(*pref_y_size_spinbutton, 4, 0, 1, 1);
 	pref_y_size_spinbutton->set_tooltip_text(_("Height in pixels of the new created document"));
 	pref_y_size_spinbutton->set_hexpand(true);
+	pi.grid->attach(*grid_size, 1, row, 1,1);
 
 	//Document - Template for predefined sizes of canvases.
 	size_template_combo = Gtk::manage(new Gtk::ComboBoxText());
-	pi.grid->attach(*size_template_combo, 6, row, 1, 1);
+	pi.grid->attach(*size_template_combo, 2, row, 1 ,1);
+	size_template_combo->set_halign(Gtk::ALIGN_END);
 	size_template_combo->signal_changed().connect(sigc::mem_fun(*this, &studio::Dialog_Setup::on_size_template_combo_change));
 	size_template_combo->prepend(_("4096x3112 Full Aperture 4K"));
 	size_template_combo->prepend(_("2048x1556 Full Aperture Native 2K"));
