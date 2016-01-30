@@ -297,7 +297,6 @@ private:
 
 	//! Map of parameter with animated value nodes
 	DynamicParamList dynamic_param_list_;
-	std::map<String, sigc::connection> dynamic_param_list_connections_;
 
 	//! A description of what this layer does
 	String description_;
@@ -633,6 +632,8 @@ protected:
 
 	//! This is called whenever a parameter is changed
 	virtual void on_changed();
+
+	virtual void on_child_changed(const Node *x);
 
 	//! Called to figure out the animation time information
 	virtual void get_times_vfunc(Node::time_set &set) const;
