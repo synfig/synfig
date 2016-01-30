@@ -439,31 +439,39 @@ ValueNode::get_values(std::map<Time, ValueBase> &x) const
 	{ get_values_vfunc(x); }
 
 void
-ValueNode::get_values_vfunc(std::map<Time, ValueBase> &x) const
+ValueNode::add_value_to_map(std::map<Time, ValueBase> &x, Time t, const ValueBase &v)
 {
-	typedef std::map<Time, ValueBase> Map;
-	typedef Map::const_iterator Iterator;
+	std::map<Time, ValueBase>::const_iterator j = x.upper_bound(t);
+	if (j == x.begin() || (--j)->second != v)
+		{ ValueBase tmp(v); x[t] = tmp; }
+}
 
+void
+ValueNode::calc_values(std::map<Time, ValueBase> &x, int begin, int end, Real fps) const
+{
+	if (fabs(fps) > 1e-10)
+	{
+		Real k = 1.0/fps;
+		if (begin > end) swap(begin, end);
+		for(int i = begin; i <= end; ++i)
+			add_value_to_map(x, i*k, (*this)(i*k));
+	}
+}
+
+void
+ValueNode::calc_values(std::map<Time, ValueBase> &x) const
+{
 	if (Canvas::Handle canvas = get_parent_canvas())
 	{
 		const RendDesc &desc = canvas->rend_desc();
-		Real fps = desc.get_frame_rate();
-		if (fabs(fps) > 1e-10)
-		{
-			Real k = 1.0/fps;
-			int begin = desc.get_frame_start();
-			int end = desc.get_frame_end();
-			if (begin > end) swap(begin, end);
-			for(int i = begin; i <= end; ++i)
-			{
-				Time t(i*k);
-				ValueBase v = (*this)(t);
-				Iterator j = x.upper_bound(t);
-				if (j == x.begin() || (--j)->second != v)
-					x[t] = v;
-			}
-		}
+		calc_values(x, desc.get_frame_start(), desc.get_frame_end(), desc.get_frame_rate());
 	}
+}
+
+void
+ValueNode::get_values_vfunc(std::map<Time, ValueBase> &x) const
+{
+	calc_values(x);
 }
 
 

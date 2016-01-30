@@ -268,6 +268,11 @@ public:
 	void get_values(std::set<ValueBase> &x) const;
 	void get_values(std::map<Time, ValueBase> &x) const;
 
+	void calc_values(std::map<Time, ValueBase> &x) const;
+	void calc_values(std::map<Time, ValueBase> &x, int begin, int end, Real fps) const;
+
+	static void add_value_to_map(std::map<Time, ValueBase> &x, Time t, const ValueBase &v);
+
 protected:
 	//! Sets the type of the ValueNode
 	void set_type(Type &t) { type=&t; }

@@ -244,6 +244,8 @@ public:
 	virtual WaypointList::iterator new_waypoint(Time t, ValueNode::Handle value_node) = 0;
 	virtual void on_changed() = 0;
 	virtual ValueBase operator()(Time t) const = 0;
+	virtual void get_values_vfunc(std::map<Time, ValueBase> &x) const
+		{ Interpolator::animated.node().calc_values(x); }
 };
 
 class synfig::ValueNode_AnimatedInterfaceConst::Internal {
@@ -908,13 +910,15 @@ ValueNode_AnimatedInterfaceConst::new_waypoint(Time t, ValueNode::Handle value_n
 
 void
 ValueNode_AnimatedInterfaceConst::on_changed()
-{
-	interpolator_->on_changed();
-}
+	{ interpolator_->on_changed(); }
 
 ValueBase
 ValueNode_AnimatedInterfaceConst::operator()(Time t) const
 	{ return (*interpolator_)(t); }
+
+void
+ValueNode_AnimatedInterfaceConst::get_values_vfunc(std::map<Time, ValueBase> &x) const
+	{ interpolator_->get_values_vfunc(x); }
 
 Waypoint
 ValueNode_AnimatedInterfaceConst::new_waypoint_at_time(const Time& time)const
