@@ -43,6 +43,7 @@
 #include "app.h"
 #include "instance.h"
 #include <synfig/layers/layer_pastecanvas.h>
+#include <synfig/layers/layer_group.h>
 #include <synfig/layers/layer_switch.h>
 #include <synfigapp/action_system.h>
 #include <synfig/context.h>
@@ -558,6 +559,8 @@ LayerTreeStore::drag_data_received_vfunc(const TreeModel::Path& dest, const Gtk:
 				Layer::Handle l(reinterpret_cast<Layer**>(const_cast<guint8*>(selection_data.get_data()))[i]);
 				if (l) dropped_layers.push_back(l);
 			}
+		if (dropped_layers.empty())
+			return false;
 
 		Gtk::TreeModel::Row row(*get_iter(dest));
 		Canvas::Handle dest_canvas;
@@ -593,18 +596,42 @@ LayerTreeStore::drag_data_received_vfunc(const TreeModel::Path& dest, const Gtk:
 		{
 			// TODO: check RecordType for parent
 			dest_canvas = (Canvas::Handle)(*row.parent())[model.contained_canvas];
-			int depth = dest_canvas->size();
-			dest_layer = canvas_interface()->layer_create("group", dest_canvas);
-			if (dest_layer)
+			dest_layer_depth = dest_canvas->size();
+			if (dropped_layers.size() == 1 && etl::handle<Layer_Group>::cast_dynamic(dropped_layers.front()))
 			{
-				synfigapp::Action::PassiveGrouper group(
-					canvas_interface()->get_instance().get(), _("Create Group from Ghost"));
+				Layer::Handle src = dropped_layers.front();
+				synfigapp::Action::Handle action;
+
+				action = synfigapp::Action::create("LayerMove");
+				action->set_param("canvas", dest_canvas);
+				action->set_param("canvas_interface", canvas_interface());
+				action->set_param("layer", src);
+				action->set_param("new_index", dest_layer_depth);
+				action->set_param("dest_canvas", dest_canvas);
+				if (!canvas_interface()->get_instance()->perform_action(action))
+					{ passive_grouper.cancel(); return false; }
+
+				action = synfigapp::Action::create("LayerSetDesc");
+				action->set_param("canvas", canvas_interface()->get_canvas());
+				action->set_param("canvas_interface", canvas_interface());
+				action->set_param("layer", dropped_layers.front());
+				action->set_param("new_description", synfig::String(((Glib::ustring)row[model.ghost_label]).c_str()));
+				if (!canvas_interface()->get_instance()->perform_action(action))
+					{ passive_grouper.cancel(); return false; }
+
+				dropped_layers.clear();
+				ret = true;
+			}
+			else
+			{
+				dest_layer = canvas_interface()->layer_create("group", dest_canvas);
+				if (!dest_layer) return false;
 				canvas_interface()->layer_set_defaults(dest_layer);
 				dest_layer->set_description( ((Glib::ustring)row[model.ghost_label]).c_str() );
 				canvas_interface()->layer_add_action(dest_layer);
-				canvas_interface()->layer_move_action(dest_layer, depth);
+				canvas_interface()->layer_move_action(dest_layer, dest_layer_depth);
+				dest_canvas = dest_layer->get_param("canvas").get(Canvas::Handle());
 			}
-			dest_canvas = dest_layer->get_param("canvas").get(Canvas::Handle());
 			dest_layer_depth = -1;
 		}
 		else
