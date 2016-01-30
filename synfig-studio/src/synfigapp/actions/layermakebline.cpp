@@ -165,7 +165,7 @@ Action::LayerMakeBLine::prepare_make_bline(const synfig::String &bline_layer_nam
 
 	// Apply some defaults
 	new_layer->set_canvas(subcanvas);
-	get_canvas_interface()->apply_layer_param_defaults(new_layer);
+	get_canvas_interface()->layer_set_defaults(new_layer);
 
 	// Set depth
 	{

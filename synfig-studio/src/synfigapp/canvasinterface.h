@@ -272,14 +272,20 @@ public:
 	/*! \see Mode */
 	Mode get_mode()const;
 
-	//! Applies initial param values for \c layer
-	/*! canvas property of layer should be set before call */
-	void apply_layer_param_defaults(synfig::Layer::Handle layer);
+
 
 	//! Creates a new layer, of type \c id at the top of the layer stack
-	// synfig::Layer::Handle add_layer(synfig::String id) { return add_layer_to(id,get_canvas()); }
+	synfig::Layer::Handle add_layer_to(const synfig::String &id, const synfig::Canvas::Handle &canvas, int depth = 0);
 
-	synfig::Layer::Handle add_layer_to(synfig::String id, synfig::Canvas::Handle canvas, int depth=0, const synfig::String &description = synfig::String());
+	//! Stage 1/4 of add_layer_to. Create new layer and assign canvas
+	synfig::Layer::Handle layer_create(const synfig::String &id, const synfig::Canvas::Handle &canvas);
+	//! Stage 2/4 of add_layer_to. Apply defaut parameters (canvas should be assigned before)
+	void layer_set_defaults(const synfig::Layer::Handle &layer);
+	//! Stage 3/4 of add_layer_to. Perform action to add the layer
+	bool layer_add_action(const synfig::Layer::Handle &layer);
+	//! Stage 4/4 of add_layer_to. Perform action to move the layer (set depth)
+	bool layer_move_action(const synfig::Layer::Handle &layer, int depth);
+
 
 	bool convert(ValueDesc value_desc, synfig::String type);
 	//! Adds the given ValueNode to the canvas.

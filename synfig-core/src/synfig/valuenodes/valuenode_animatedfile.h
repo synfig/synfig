@@ -48,6 +48,7 @@ private:
 	class Parser;
 	String current_filename;
 	ValueNode::RHandle filename;
+	std::map<String, String> filefields;
 
 	explicit ValueNode_AnimatedFile(Type &t);
 
@@ -66,6 +67,8 @@ public:
 	virtual Vocab get_children_vocab_vfunc() const;
 
 	virtual ValueBase operator()(Time t) const;
+
+	String get_file_field(Time t, const String &field_name) const;
 
 protected:
 	LinkableValueNode* create_new() const;

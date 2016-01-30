@@ -356,16 +356,19 @@ cleanup_path(std::string path)
 }
 
 inline std::string
-absolute_path(std::string path)
+absolute_path(std::string curr_path, std::string path)
 {
-	std::string ret(current_working_directory());
-
+	std::string ret(curr_path);
 	if(path.empty())
 		return cleanup_path(ret);
 	if(is_absolute_path(path))
 		return cleanup_path(path);
 	return cleanup_path(ret+ETL_DIRECTORY_SEPARATOR+path);
 }
+
+inline std::string
+absolute_path(std::string path)
+	{ return absolute_path(current_working_directory(), path); }
 
 inline std::string
 relative_path(std::string curr_path,std::string dest_path)
@@ -406,6 +409,21 @@ relative_path(std::string curr_path,std::string dest_path)
 
 	return dest_path;
 }
+
+inline std::string
+relative_path(std::string path)
+	{ return relative_path(current_working_directory(), path); }
+
+inline std::string
+solve_relative_path(std::string curr_path,std::string dest_path)
+{
+	if(is_absolute_path(dest_path))
+		return cleanup_path(dest_path);
+	if(dest_path.empty())
+		return cleanup_path(curr_path);
+	return cleanup_path(curr_path + ETL_DIRECTORY_SEPARATOR + dest_path);
+}
+
 
 _ETL_END_NAMESPACE
 

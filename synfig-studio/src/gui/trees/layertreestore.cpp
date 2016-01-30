@@ -410,11 +410,16 @@ LayerTreeStore::set_value_impl(const Gtk::TreeModel::iterator& iter, int column,
 										  : canvas_interface()->get_canvas();
 					if (canvas)
 					{
-						canvas_interface()->add_layer_to(
-							"group",
-							canvas,
-							canvas->size(),
-							ghost_label.c_str() );
+						int depth = canvas->size();
+						if (Layer::Handle layer = canvas_interface()->layer_create("group", canvas))
+						{
+							synfigapp::Action::PassiveGrouper group(
+								canvas_interface()->get_instance().get(), _("Create Group from Ghost"));
+							canvas_interface()->layer_set_defaults(layer);
+							layer->set_description(ghost_label.c_str());
+							canvas_interface()->layer_add_action(layer);
+							canvas_interface()->layer_move_action(layer, depth);
+						}
 					}
 				}
 
@@ -588,11 +593,17 @@ LayerTreeStore::drag_data_received_vfunc(const TreeModel::Path& dest, const Gtk:
 		{
 			// TODO: check RecordType for parent
 			dest_canvas = (Canvas::Handle)(*row.parent())[model.contained_canvas];
-			dest_layer = canvas_interface()->add_layer_to(
-				"group",
-				dest_canvas,
-				dest_canvas->size(),
-				((Glib::ustring)row[model.ghost_label]).c_str() );
+			int depth = dest_canvas->size();
+			dest_layer = canvas_interface()->layer_create("group", dest_canvas);
+			if (dest_layer)
+			{
+				synfigapp::Action::PassiveGrouper group(
+					canvas_interface()->get_instance().get(), _("Create Group from Ghost"));
+				canvas_interface()->layer_set_defaults(dest_layer);
+				dest_layer->set_description( ((Glib::ustring)row[model.ghost_label]).c_str() );
+				canvas_interface()->layer_add_action(dest_layer);
+				canvas_interface()->layer_move_action(dest_layer, depth);
+			}
 			dest_canvas = dest_layer->get_param("canvas").get(Canvas::Handle());
 			dest_layer_depth = -1;
 		}

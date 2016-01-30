@@ -56,7 +56,7 @@ using namespace synfig;
 
 class ValueNode_AnimatedFile::Parser {
 public:
-	static bool parse_pgo(istream &s, map<Time, String> &value)
+	static bool parse_pgo(istream &s, map<Time, String> &value, map<String, String> &fields)
 	{
 		String word;
 		bool unexpected_end = false;
@@ -69,6 +69,7 @@ public:
 			warning("Unknown version of .pgo file: '%s'", version.c_str());
 		getline(s, word);
 		getline(s, word);
+		fields["sound"] = word;
 
 		Real fps;
 		s >> fps;
@@ -161,6 +162,7 @@ ValueNode_AnimatedFile::load_file(const String &filename)
 	if ( !get_parent_canvas()
 	  || !get_parent_canvas()->get_identifier().file_system ) return;
 
+	filefields.clear();
 	erase_all();
 	if (!filename.empty())
 	{
@@ -173,7 +175,7 @@ ValueNode_AnimatedFile::load_file(const String &filename)
 			if (!rs)
 				error("Cannot open .pgo file: %s", filename.c_str());
 			else
-			if (Parser::parse_pgo(*rs, phonemes))
+			if (Parser::parse_pgo(*rs, phonemes, filefields))
 				for(map<Time, String>::const_iterator i = phonemes.begin(); i != phonemes.end(); ++i)
 					new_waypoint(i->first, i->second);
 		}
@@ -182,6 +184,15 @@ ValueNode_AnimatedFile::load_file(const String &filename)
 	ValueNode_AnimatedInterfaceConst::on_changed();
 	current_filename = filename;
 }
+
+String
+ValueNode_AnimatedFile::get_file_field(Time t, const String &field_name) const
+{
+	(*this)(t);
+	std::map<String, String>::const_iterator i = filefields.find(field_name);
+	return i == filefields.end() ? String() : i->second;
+}
+
 
 void
 ValueNode_AnimatedFile::on_changed()
