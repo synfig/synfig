@@ -32,6 +32,8 @@
 #include <istream>
 #include <map>
 
+#include <giomm.h>
+
 #include <synfig/localization.h>
 #include <synfig/general.h>
 
@@ -54,7 +56,14 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-class ValueNode_AnimatedFile::Parser {
+class ValueNode_AnimatedFile::Internal
+{
+public:
+	Glib::RefPtr<Gio::FileMonitor> file_monitor;
+};
+
+class ValueNode_AnimatedFile::Parser
+{
 public:
 	static bool parse_pgo(istream &s, map<Time, String> &value, map<String, String> &fields)
 	{
@@ -128,12 +137,18 @@ public:
 
 ValueNode_AnimatedFile::ValueNode_AnimatedFile(Type &t):
 	ValueNode_AnimatedInterfaceConst(*(ValueNode*)this),
+	internal(new Internal()),
 	filename(ValueNode_Const::create(String("")))
 {
 	ValueNode_AnimatedInterfaceConst::set_interpolation(INTERPOLATION_CONSTANT);
 	ValueNode_AnimatedInterfaceConst::set_type(t);
 	set_children_vocab(get_children_vocab());
 	set_link("filename", ValueNode_Const::create(String()));
+}
+
+ValueNode_AnimatedFile::~ValueNode_AnimatedFile()
+{
+	delete internal;
 }
 
 bool
@@ -157,14 +172,23 @@ ValueNode_AnimatedFile::get_local_name()const
 	{ return _("Animation from File"); }
 
 void
-ValueNode_AnimatedFile::load_file(const String &filename)
+ValueNode_AnimatedFile::file_changed()
 {
-	if (current_filename == filename) return;
+	load_file(current_filename, true);
+	changed();
+}
+
+void
+ValueNode_AnimatedFile::load_file(const String &filename, bool forse)
+{
+	if (current_filename == filename && !forse) return;
 	if ( !get_parent_canvas()
 	  || !get_parent_canvas()->get_identifier().file_system ) return;
 
+	internal->file_monitor.clear();
 	filefields.clear();
 	erase_all();
+
 	if (!filename.empty())
 	{
 		// Read papagayo file
@@ -179,6 +203,16 @@ ValueNode_AnimatedFile::load_file(const String &filename)
 			if (Parser::parse_pgo(*rs, phonemes, filefields))
 				for(map<Time, String>::const_iterator i = phonemes.begin(); i != phonemes.end(); ++i)
 					new_waypoint(i->first, i->second);
+		}
+
+		String uri = get_parent_canvas()->get_identifier().file_system->get_real_uri(filename);
+		if (!uri.empty())
+		{
+			String filename_noref = filename;
+			internal->file_monitor = Gio::File::create_for_uri(uri.c_str())->monitor_file();
+			internal->file_monitor->signal_changed().connect(
+				sigc::hide( sigc::hide( sigc::hide(
+					sigc::mem_fun(*this, &ValueNode_AnimatedFile::file_changed) ))));
 		}
 	}
 

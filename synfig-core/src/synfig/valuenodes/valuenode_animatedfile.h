@@ -45,16 +45,23 @@ public:
 	typedef etl::handle<const ValueNode_AnimatedFile> ConstHandle;
 
 private:
+	class Internal;
 	class Parser;
+
+	Internal *internal;
+
 	String current_filename;
 	ValueNode::RHandle filename;
 	std::map<String, String> filefields;
 
 	explicit ValueNode_AnimatedFile(Type &t);
 
-	void load_file(const String &filename);
+	void load_file(const String &filename, bool forse = false);
+	void file_changed();
 
 public:
+	~ValueNode_AnimatedFile();
+
 	virtual String get_name()const;
 	virtual String get_local_name()const;
 
