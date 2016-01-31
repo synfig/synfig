@@ -49,7 +49,8 @@ class LayerActionManager
 	etl::handle<synfigapp::CanvasInterface> canvas_interface_;
 
 	Glib::RefPtr<Gtk::ActionGroup>	action_group_;
-	Gtk::UIManager::ui_merge_id 	popup_id_;
+	Gtk::UIManager::ui_merge_id 	popup_id_menu_;
+	Gtk::UIManager::ui_merge_id 	popup_id_bar_;
 
 
 	Glib::RefPtr<Gtk::ActionGroup> action_group_copy_paste;

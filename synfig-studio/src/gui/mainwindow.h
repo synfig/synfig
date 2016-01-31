@@ -54,10 +54,6 @@ namespace studio {
 		//! Constructor Helper - Initializes all of the menus
 		void init_menus();
 
-		void make_short_names(
-			const std::vector<synfig::String> &fullnames,
-			std::vector<synfig::String> &shortnames );
-
 		static void show_dialog_input();
 		void on_recent_files_changed();
 		void on_dockable_registered(Dockable* dockable);
@@ -77,6 +73,10 @@ namespace studio {
 
 		DockBook& main_dock_book() { return *main_dock_book_; }
 		const DockBook& main_dock_book() const { return *main_dock_book_; }
+
+		static void make_short_filenames(
+			const std::vector<synfig::String> &fullnames,
+			std::vector<synfig::String> &shortnames );
 	};
 }; // END of namespace studio
 

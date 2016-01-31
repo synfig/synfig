@@ -38,6 +38,8 @@
 #include "instance.h"
 #include <cassert>
 
+#include <giomm.h>
+
 #include <gtkmm/stock.h>
 #include <gtkmm/image.h>
 #include <gtkmm/menuitem.h>
@@ -52,6 +54,7 @@
 #include "docks/dock_toolbox.h"
 #include "onemoment.h"
 #include <synfig/savecanvas.h>
+#include <synfig/layers/layer_pastecanvas.h>
 
 #include "autorecover.h"
 #include <synfig/valuenodes/valuenode_composite.h>
@@ -1568,4 +1571,164 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas,const st
 	// add here the rest of specific actions for multiple selected value_descs
 	if (value_desc.is_valid())
 		make_param_menu(menu,canvas,value_desc, 0.f, false);
+}
+
+
+void
+Instance::gather_uri(std::set<synfig::String> &x, const synfig::ValueNode::Handle &value_node) const
+{
+	if (!value_node || !value_node->get_parent_canvas()) return;
+
+	LinkableValueNode::Handle linkable_value_node = LinkableValueNode::Handle::cast_dynamic(value_node);
+	if (!linkable_value_node) return;
+
+	FileSystem::Handle file_system = App::get_instance(value_node->get_parent_canvas())->get_file_system();
+	if (!file_system) return;
+
+	Time t = value_node->get_parent_canvas()->get_time();
+
+	ParamVocab vocab = linkable_value_node->get_children_vocab();
+	for(ParamVocab::const_iterator i = vocab.begin(); i != vocab.end(); ++i)
+	{
+		ValueNode::Handle child_node = linkable_value_node->get_link(i->get_name());
+		if (!child_node) continue;
+
+		if (i->get_hint() == "filename")
+		{
+			ValueBase v = (*child_node)(t);
+			if (v.can_get(String()))
+			{
+				String filename = v.get(String());
+				if (!filename.empty() && filename[0] != '#')
+					filename = etl::absolute_path(value_node->get_parent_canvas()->get_file_path() + "/", filename);
+				String uri = file_system->get_real_uri(filename);
+				if (!uri.empty()) x.insert(uri);
+			}
+		}
+
+		gather_uri(x, child_node);
+	}
+}
+
+void
+Instance::gather_uri(std::set<synfig::String> &x, const synfig::Layer::Handle &layer) const
+{
+	if (!layer || !layer->get_canvas()) return;
+
+	FileSystem::Handle file_system = App::get_instance(layer->get_canvas())->get_file_system();
+	if (!file_system) return;
+
+	ParamVocab vocab = layer->get_param_vocab();
+	for(ParamVocab::const_iterator i = vocab.begin(); i != vocab.end(); ++i)
+	{
+		if (i->get_hint() == "filename")
+		{
+			ValueBase v = layer->get_param(i->get_name());
+			if (v.can_get(String()))
+			{
+				String filename = v.get(String());
+				if (!filename.empty() && filename[0] != '#')
+					filename = etl::absolute_path(layer->get_canvas()->get_file_path() + "/", filename);
+				String uri = file_system->get_real_uri(filename);
+				if (!uri.empty()) x.insert(uri);
+			}
+		}
+
+		Layer::DynamicParamList::const_iterator j = layer->dynamic_param_list().find(i->get_name());
+		if (j != layer->dynamic_param_list().end() && j->second)
+			gather_uri(x, j->second);
+	}
+
+	if (etl::handle<Layer_PasteCanvas> paste = etl::handle<Layer_PasteCanvas>::cast_dynamic(layer))
+		gather_uri(x, paste->get_param("canvas").get(Canvas::Handle()));
+}
+
+void
+Instance::gather_uri(std::set<synfig::String> &x, const synfig::Canvas::Handle &canvas) const
+{
+	if (!canvas) return;
+
+	FileSystem::Handle file_system = App::get_instance(canvas)->get_file_system();
+	if (!file_system) return;
+
+	for(Canvas::const_iterator i = canvas->begin(); i != canvas->end(); ++i)
+		gather_uri(x, *i);
+}
+
+void
+Instance::gather_uri(std::set<synfig::String> &x, const synfigapp::SelectionManager::LayerList &layers) const
+{
+	for(synfigapp::SelectionManager::LayerList::const_iterator i = layers.begin(); i != layers.end(); ++i)
+		gather_uri(x, *i);
+}
+
+void
+Instance::gather_uri(std::map<synfig::String, synfig::String> &x, const synfigapp::SelectionManager::LayerList &layers) const
+{
+	std::set<String> uri_set;
+	gather_uri(uri_set, layers);
+	std::vector<String> uri_list;
+	std::vector<String> filename_list;
+	for(std::set<String>::const_iterator i = uri_set.begin(); i != uri_set.end(); ++i)
+	{
+		String filename = Glib::filename_from_uri(*i);
+		if (!filename.empty())
+		{
+			uri_list.push_back(*i);
+			filename_list.push_back(filename);
+		}
+	}
+
+	std::vector<String> shortnames;
+	MainWindow::make_short_filenames(filename_list, shortnames);
+	for(int i = 0; i < (int)uri_list.size() && i < (int)shortnames.size(); ++i)
+		x[shortnames[i]] = uri_list[i];
+}
+
+void
+Instance::add_special_layer_actions_to_menu(Gtk::Menu *menu, const synfig::Layer::Handle &layer) const
+{
+	add_special_layer_actions_to_menu(menu, synfigapp::SelectionManager::LayerList(1, layer));
+}
+
+void
+Instance::add_special_layer_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup>& action_group, synfig::String& ui_info, const synfig::Layer::Handle &layer) const
+{
+	add_special_layer_actions_to_group(action_group, ui_info, synfigapp::SelectionManager::LayerList(1, layer));
+}
+
+void
+Instance::add_special_layer_actions_to_menu(Gtk::Menu *menu, const synfigapp::SelectionManager::LayerList &layers) const
+{
+	std::map<String, String> uris;
+	gather_uri(uris, layers);
+	for(std::map<String, String>::const_iterator i = uris.begin(); i != uris.end(); ++i)
+	{
+		Gtk::MenuItem *item = manage(new Gtk::ImageMenuItem(Gtk::StockID("gtk-open")));
+		item->set_label( (String(_("Open file")) + " '" + i->first + "'").c_str() );
+		item->signal_activate().connect(
+			sigc::bind(sigc::ptr_fun(&App::open_uri), i->second) );
+		item->show();
+		menu->append(*item);
+	}
+}
+
+void
+Instance::add_special_layer_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup>& action_group, synfig::String& ui_info, const synfigapp::SelectionManager::LayerList &layers) const
+{
+	std::map<String, String> uris;
+	gather_uri(uris, layers);
+	int index = 0;
+	for(std::map<String, String>::const_iterator i = uris.begin(); i != uris.end(); ++i, ++index)
+	{
+		String action_name = etl::strprintf("special-action-open-file-%d", index);
+		String local_name = String(_("Open file")) + " '" + i->first + "'";
+		action_group->add(
+			Gtk::Action::create(
+				action_name,
+				Gtk::Stock::OPEN,
+				local_name, local_name ),
+			sigc::bind(sigc::ptr_fun(&App::open_uri), i->second) );
+		ui_info += strprintf("<menuitem action='%s' />", action_name.c_str());
+	}
 }

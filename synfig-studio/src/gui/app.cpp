@@ -63,6 +63,9 @@
 #include <glibmm/spawn.h>
 #include <glibmm/thread.h>
 
+#include <gtk/gtk.h>
+#include <gdk/gdk.h>
+
 #include <gdkmm/general.h>
 
 #ifdef _WIN32
@@ -3342,7 +3345,7 @@ App::dialog_message_3b(const std::string &message,
 
 
 static bool
-try_open_url(const std::string &url)
+try_open_web_url(const std::string &url)
 {
 #ifdef _WIN32
 	return ShellExecute(GetDesktopWindow(), "open", url.c_str(), NULL, NULL, SW_SHOW);
@@ -3420,7 +3423,7 @@ try_open_url(const std::string &url)
 void
 App::dialog_help()
 {
-	if (!try_open_url("http://synfig.org/wiki/Category:Manual"))
+	if (!try_open_web_url("http://synfig.org/wiki/Category:Manual"))
 	{
 		Gtk::MessageDialog dialog(*App::main_window, _("Documentation"), false, Gtk::MESSAGE_INFO, Gtk::BUTTONS_CLOSE, true);
 		dialog.set_secondary_text(_("Documentation for Synfig Studio is available on the website:\n\nhttp://synfig.org/wiki/Category:Manual"));
@@ -3430,9 +3433,9 @@ App::dialog_help()
 }
 
 void
-App::open_url(const std::string &url)
+App::open_web_url(const std::string &url)
 {
-	if(!try_open_url(url))
+	if(!try_open_web_url(url))
 	{
 		Gtk::MessageDialog dialog(*App::main_window, _("No browser was found. Please load this website manually:"), false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_CLOSE, true);
 		dialog.set_secondary_text(url);
@@ -3441,6 +3444,11 @@ App::open_url(const std::string &url)
 	}
 }
 
+void App::open_uri(const std::string &uri)
+{
+	synfig::info("Opening URI: " + uri);
+	gtk_show_uri(NULL, uri.c_str(), GDK_CURRENT_TIME, NULL);
+}
 
 bool
 App::dialog_entry(const std::string &action, const std::string &content, std::string &text, const std::string &button1, const std::string &button2)

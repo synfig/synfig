@@ -2040,6 +2040,8 @@ CanvasView::popup_layer_menu(synfig::Layer::Handle layer)
 	}
 
 	add_actions_to_menu(menu, param_list,synfigapp::Action::CATEGORY_LAYER);
+	get_instance()->add_special_layer_actions_to_menu(menu, layer);
+
 	menu->popup(3,gtk_get_current_event_time());
 }
 
@@ -2467,6 +2469,7 @@ CanvasView::add_actions_to_menu(Gtk::Menu *menu, const synfigapp::Action::ParamL
 {
 	get_instance()->add_actions_to_menu(menu, param_list, category);
 }
+
 
 bool
 CanvasView::on_layer_user_click(int button, Gtk::TreeRow /*row*/, LayerTree::ColumnID /*column_id*/)

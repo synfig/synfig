@@ -183,7 +183,7 @@ MainWindow::init_menus()
 	// help
 	#define URL(action_name,title,url) \
 		action_group->add( Gtk::Action::create(action_name, title), \
-			sigc::bind(sigc::ptr_fun(&studio::App::open_url),url))
+			sigc::bind(sigc::ptr_fun(&studio::App::open_web_url),url))
 	#define WIKI(action_name,title,page) \
 		URL(action_name,title, "http://synfig.org/wiki" + String(page))
 	#define SITE(action_name,title,page) \
@@ -230,10 +230,17 @@ MainWindow::toggle_show_menubar()
 }
 
 void
-MainWindow::make_short_names(
+MainWindow::make_short_filenames(
 	const std::vector<synfig::String> &fullnames,
 	std::vector<synfig::String> &shortnames )
 {
+	if (fullnames.size() == 1)
+	{
+		shortnames.resize(1);
+		shortnames[0] = etl::basename(fullnames[0]);
+		return;
+	}
+
 	const int count = (int)fullnames.size();
 	vector< vector<String> > dirs(count);
 	vector< vector<bool> > dirflags(count);
@@ -243,11 +250,14 @@ MainWindow::make_short_names(
 	// build dir lists
 	for(int i = 0; i < count; ++i) {
 		int j = 0;
-		while(j < (int)fullnames[i].size())
+		String fullname = fullnames[i];
+		if (fullname.substr(0, 7) == "file://")
+			fullname = fullname.substr(7);
+		while(j < (int)fullname.size())
 		{
-			size_t k = fullnames[i].find_first_of(ETL_DIRECTORY_SEPARATORS, j);
-			if (k == string::npos) k = fullnames[i].size();
-			string sub = fullnames[i].substr(j, k - j);
+			size_t k = fullname.find_first_of(ETL_DIRECTORY_SEPARATORS, j);
+			if (k == string::npos) k = fullname.size();
+			string sub = fullname.substr(j, k - j);
 			if (!sub.empty() && sub != "...")
 				dirs[i].insert(dirs[i].begin(), sub);
 			j = (int)k + 1;
@@ -312,7 +322,7 @@ MainWindow::on_recent_files_changed()
 
 	vector<String> fullnames(App::get_recent_files().begin(), App::get_recent_files().end());
 	vector<String> shortnames;
-	make_short_names(fullnames, shortnames);
+	make_short_filenames(fullnames, shortnames);
 
 	int index = 0;
 	std::string menu_items;
