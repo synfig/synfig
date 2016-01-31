@@ -144,7 +144,7 @@ FileSystem::ReadStreamHandle FileSystemNative::get_read_stream(const std::string
 #else
 	FILE *f = fopen(fix_slashes(filename).c_str(), "rb");
 #endif
-	return f == NULL
+	return f == NULL#
 	     ? ReadStreamHandle()
 	     : ReadStreamHandle(new ReadStream(this, f));
 }
@@ -163,7 +163,8 @@ FileSystem::WriteStreamHandle FileSystemNative::get_write_stream(const std::stri
 
 std::string FileSystemNative::get_real_uri(const std::string &filename)
 {
-	return Glib::filename_to_uri(filename);
+	if (filename.empty()) return std::string();
+	return Glib::filename_to_uri(etl::absolute_path(filename));
 }
 
 
