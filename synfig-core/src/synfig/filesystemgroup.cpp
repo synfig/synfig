@@ -161,6 +161,15 @@ FileSystem::WriteStreamHandle FileSystemGroup::get_write_stream(const std::strin
 	     : WriteStreamHandle();
 }
 
+std::string FileSystemGroup::get_real_uri(const std::string &filename)
+{
+	Handle file_system;
+	std::string internal_filename;
+	return find_system(filename, file_system, internal_filename)
+		 ? file_system->get_real_uri(internal_filename)
+		 : std::string();
+}
+
 /* === E N T R Y P O I N T ================================================= */
 
 

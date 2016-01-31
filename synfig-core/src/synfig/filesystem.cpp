@@ -121,7 +121,6 @@ std::string FileSystem::fix_slashes(const std::string &filename)
 	return fixed;
 }
 
-
 std::istream& FileSystem::safeGetline(std::istream& is, std::string& t)
 {
 	t.clear();
@@ -155,6 +154,9 @@ std::istream& FileSystem::safeGetline(std::istream& is, std::string& t)
 		}
 	}
 }
+
+std::string FileSystem::get_real_uri(const std::string & /* filename */)
+	{ return std::string(); }
 
 /* === E N T R Y P O I N T ================================================= */
 
