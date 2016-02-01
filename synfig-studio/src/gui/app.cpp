@@ -869,7 +869,7 @@ init_ui_manager()
 	menus_action_group->add( Gtk::Action::create("menu-canvas", _("_Canvas")));
 
 	menus_action_group->add( Gtk::Action::create("menu-layer", _("_Layer")));
-	menus_action_group->add( Gtk::Action::create("menu-layer-new", _("New Layer")));
+	menus_action_group->add( Gtk::Action::create("menu-layer-new", Gtk::Stock::NEW, _("New Layer")));
 	menus_action_group->add( Gtk::Action::create("menu-toolbox", _("Toolbox")));
 	menus_action_group->add( Gtk::Action::create("menu-plugins", _("Plug-Ins")));
 

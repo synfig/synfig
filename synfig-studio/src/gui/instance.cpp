@@ -1704,7 +1704,7 @@ Instance::add_special_layer_actions_to_menu(Gtk::Menu *menu, const synfigapp::Se
 	gather_uri(uris, layers);
 	for(std::map<String, String>::const_iterator i = uris.begin(); i != uris.end(); ++i)
 	{
-		Gtk::MenuItem *item = manage(new Gtk::ImageMenuItem(Gtk::StockID("gtk-open")));
+		Gtk::MenuItem *item = manage(new Gtk::ImageMenuItem(Gtk::Stock::OPEN));
 		item->set_label( (String(_("Open file")) + " '" + i->first + "'").c_str() );
 		item->signal_activate().connect(
 			sigc::bind(sigc::ptr_fun(&App::open_uri), i->second) );
