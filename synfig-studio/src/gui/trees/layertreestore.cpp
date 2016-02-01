@@ -720,6 +720,7 @@ LayerTreeStore::rebuild()
 	//synfig::warning("---------rebuilding layer table---------");
 	// Save the selection data
 	synfigapp::SelectionManager::LayerList layer_list=canvas_interface()->get_selection_manager()->get_selected_layers();
+	synfigapp::SelectionManager::LayerList expanded_layer_list=canvas_interface()->get_selection_manager()->get_expanded_layers();
 
 	// Clear out the current list
 	clear();
@@ -731,6 +732,8 @@ LayerTreeStore::rebuild()
 	);
 
 	// Reselect the previously selected layers
+	if(!expanded_layer_list.empty())
+		canvas_interface()->get_selection_manager()->set_expanded_layers(expanded_layer_list);
 	if(!layer_list.empty())
 		canvas_interface()->get_selection_manager()->set_selected_layers(layer_list);
 

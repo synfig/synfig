@@ -72,6 +72,8 @@ public:
 	//! Clears the layer selection list
 	virtual void clear_selected_layers()=0;
 
+	virtual LayerList get_expanded_layers()const { return LayerList(); }
+	virtual void set_expanded_layers(const LayerList & /* layer_list */) { }
 
 
 	//! Returns the number of children selected.

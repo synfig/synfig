@@ -560,6 +560,58 @@ LayerTree::clear_selected_layers()
 }
 
 void
+LayerTree::expand_layer(synfig::Layer::Handle layer)
+{
+	if (!layer) return;
+	Gtk::TreeModel::Children::iterator iter;
+	if(layer_tree_store_->find_layer_row(layer,iter))
+	{
+		if(sorted_layer_tree_store_)
+			iter=sorted_layer_tree_store_->convert_child_iter_to_iter(iter);
+
+		Gtk::TreePath path(iter);
+		get_layer_tree_view().expand_to_path(path);
+	}
+}
+
+void
+LayerTree::expand_layers(const LayerList& layer_list)
+{
+	for(LayerList::const_iterator i = layer_list.begin(); i != layer_list.end(); ++i)
+		expand_layer(*i);
+}
+
+LayerTree::LayerList
+LayerTree::get_expanded_layers()const
+{
+	LayerList list;
+	get_expanded_layers(list, layer_tree_store_->children());
+	return list;
+}
+
+void
+LayerTree::get_expanded_layers(LayerList &list, const Gtk::TreeNodeChildren &rows)const
+{
+	const LayerTreeStore::Model model;
+	for(Gtk::TreeNodeChildren::const_iterator i = rows.begin(); i != rows.end(); ++i)
+	{
+		if ( (LayerTreeStore::RecordType)(*i)[model.record_type] == LayerTreeStore::RECORD_TYPE_LAYER
+		  && (Layer::Handle)(*i)[model.layer] )
+		{
+			Gtk::TreeNodeChildren::const_iterator j = i;
+			if(sorted_layer_tree_store_)
+				j = sorted_layer_tree_store_->convert_child_iter_to_iter(i);
+			Gtk::TreePath path(j);
+			if (const_cast<Gtk::TreeView*>(&get_layer_tree_view())->row_expanded(path))
+			{
+				list.push_back( (Layer::Handle)(*i)[model.layer] );
+				get_expanded_layers(list, i->children());
+			}
+		}
+	}
+}
+
+void
 LayerTree::set_show_timetrack(bool x)
 {
 	//column_time_track->set_visible(x);

@@ -499,6 +499,18 @@ public:
 		view->layer_tree->clear_selected_layers();
 	}
 
+	virtual LayerList get_expanded_layers()const
+	{
+		if(!view->layer_tree) { synfig::error("%s:%d canvas_view.layer_tree not defined!?", __FILE__, __LINE__); return LayerList(); }
+		return view->layer_tree->get_expanded_layers();
+	}
+
+	virtual void set_expanded_layers(const LayerList &layer_list)
+	{
+		if(!view->layer_tree) { synfig::error("%s:%d canvas_view.layer_tree not defined!?", __FILE__, __LINE__); return; }
+		view->layer_tree->expand_layers(layer_list);
+	}
+
 	//! Returns the number of value_nodes selected.
 	virtual int get_selected_children_count()const
 	{
