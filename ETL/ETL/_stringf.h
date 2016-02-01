@@ -45,7 +45,7 @@
 #define ETL_STRPRINTF_MAX_LENGTH	(800)
 #endif
 
-#ifdef WIN32
+#ifdef _WIN32
 #define POPEN_BINARY_READ_TYPE "rb"
 #define POPEN_BINARY_WRITE_TYPE "wb"
 #else
@@ -257,7 +257,7 @@ filename_sans_extension(const std::string &str)
 inline bool
 is_absolute_path(const std::string &path)
 {
-#ifdef WIN32
+#ifdef _WIN32
 	if(path.size()>=3 && path[1]==':' && is_separator(path[2]))
 		return true;
 #endif
@@ -382,7 +382,7 @@ relative_path(std::string curr_path,std::string dest_path)
 	else
 		curr_path=cleanup_path(curr_path);
 
-#ifdef WIN32
+#ifdef _WIN32
 	// If we are on windows and the dest path is on a different drive,
 	// then there is no way to make a relative path to it.
 	if(dest_path.size()>=3 && dest_path[1]==':' && dest_path[0]!=curr_path[0])

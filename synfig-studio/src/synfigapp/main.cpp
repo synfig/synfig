@@ -32,7 +32,7 @@
 #include "main.h"
 #include "action.h"
 
-#ifndef WIN32
+#ifndef _WIN32
 #include <pwd.h>
 #endif
 
@@ -118,7 +118,7 @@ synfigapp::Main::Main(const synfig::String &basepath, synfig::ProgressCallback *
 #ifdef ENABLE_NLS
 	String locale_dir;
 	locale_dir = etl::dirname(basepath)+ETL_DIRECTORY_SEPARATOR+"share"+ETL_DIRECTORY_SEPARATOR+"locale";
-#ifdef WIN32
+#ifdef _WIN32
 	locale_dir = Glib::locale_from_utf8(locale_dir);
 #endif
 	
@@ -443,7 +443,7 @@ synfigapp::Main::get_user_app_directory()
 {
 	String dir;
 	//! \todo do we need something like Glib::locale_from_utf8()?  (bug #1837445)
-#ifdef WIN32
+#ifdef _WIN32
 	dir = String(getenv("HOMEDRIVE"))+getenv("HOMEPATH");
 #else
 	struct passwd* pwd = getpwuid(getuid());

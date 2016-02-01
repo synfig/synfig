@@ -139,7 +139,7 @@ bool FileSystemNative::file_rename(const std::string &from_filename, const std::
 
 FileSystem::ReadStreamHandle FileSystemNative::get_read_stream(const std::string &filename)
 {
-#ifdef WIN32
+#ifdef _WIN32
 	FILE *f = fopen(Glib::locale_from_utf8(fix_slashes(filename)).c_str(), "rb");
 #else
 	FILE *f = fopen(fix_slashes(filename).c_str(), "rb");
@@ -151,7 +151,7 @@ FileSystem::ReadStreamHandle FileSystemNative::get_read_stream(const std::string
 
 FileSystem::WriteStreamHandle FileSystemNative::get_write_stream(const std::string &filename)
 {
-#ifdef WIN32
+#ifdef _WIN32
 	FILE *f = fopen(Glib::locale_from_utf8(fix_slashes(filename)).c_str(), "wb");
 #else
 	FILE *f = fopen(fix_slashes(filename).c_str(), "wb");

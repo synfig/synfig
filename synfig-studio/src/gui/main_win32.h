@@ -23,7 +23,7 @@
 #ifndef MAIN_WIN32_H
 #define	MAIN_WIN32_H
 
-#ifdef WIN32
+#ifdef _WIN32
 void redirectIOToConsole();
 bool consoleOptionEnabled(int argc, char* argv[]);
 #endif /* WIN32 */

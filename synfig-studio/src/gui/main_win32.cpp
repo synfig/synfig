@@ -25,7 +25,7 @@ for which a new license (GPL+exception) is in place.
 *                                                                         *
 ***************************************************************************/
 
-#ifdef WIN32
+#ifdef _WIN32
 
 #include <iostream>
 #include <signal.h>

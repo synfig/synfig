@@ -30,7 +30,7 @@
 #	include <config.h>
 #endif
 
-#ifndef WIN32
+#ifndef _WIN32
 #include <unistd.h>
 #include <sys/types.h>
 #include <signal.h>
@@ -482,7 +482,7 @@ synfig::render_threaded(
 	ProgressCallback *callback,
 	int threads)
 {
-#ifndef WIN32
+#ifndef _WIN32
     struct _render_thread
     {
 		int

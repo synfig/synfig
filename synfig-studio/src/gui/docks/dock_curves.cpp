@@ -203,7 +203,7 @@ Dock_Curves::on_update_header_height( int header_height)
 {
 	// FIXME very bad hack (timetrack dock also contains this)
 	//! Adapt the border size "according" to different windows manager rendering
-#ifdef WIN32
+#ifdef _WIN32
 	header_height-=2;
 #elif defined(__APPLE__)
 	header_height+=6;

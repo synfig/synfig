@@ -353,7 +353,7 @@ RenderSettings::submit_next_render_pass()
 		render_passes.pop_back();
 		
 		TargetAlphaMode pass_alpha_mode = pass_info.first;
-#ifdef WIN32
+#ifdef _WIN32
 		String pass_filename = Glib::locale_from_utf8(pass_info.second);
 #else
 		String pass_filename = pass_info.second;

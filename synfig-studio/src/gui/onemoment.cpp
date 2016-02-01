@@ -63,7 +63,7 @@ using namespace studio;
 #define PACKAGE	"synfigstudio"
 #endif
 
-#ifdef WIN32
+#ifdef _WIN32
 #	ifdef IMAGE_DIR
 #		undef IMAGE_DIR
 #		define IMAGE_DIR "share\\pixmaps"

@@ -94,7 +94,7 @@ int main(int argc, char* argv[])
 	boost::filesystem::path locale_path =
 		binary_path.parent_path().parent_path();
 	locale_path = locale_path/"share"/"locale";
-#ifdef WIN32
+#ifdef _WIN32
 	locale_path = Glib::locale_from_utf8(locale_path.string());
 #endif
 	bindtextdomain("synfig", locale_path.string().c_str() );

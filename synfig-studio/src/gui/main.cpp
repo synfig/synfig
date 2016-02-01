@@ -39,7 +39,7 @@
 
 #include <gui/localization.h>
 
-#ifdef WIN32
+#ifdef _WIN32
 #include <glibmm/convert.h>
 #include "main_win32.h"
 #endif
@@ -66,7 +66,7 @@ using namespace studio;
 int main(int argc, char **argv)
 {
 	
-#ifdef WIN32
+#ifdef _WIN32
 	if (consoleOptionEnabled(argc, argv))
 	{
 		redirectIOToConsole();
@@ -78,7 +78,7 @@ int main(int argc, char **argv)
 #ifdef ENABLE_NLS
 	String locale_dir;
 	locale_dir = etl::dirname(etl::dirname(binary_path))+ETL_DIRECTORY_SEPARATOR+"share"+ETL_DIRECTORY_SEPARATOR+"locale";
-#ifdef WIN32
+#ifdef _WIN32
 	locale_dir = Glib::locale_from_utf8(locale_dir);
 #endif
 	

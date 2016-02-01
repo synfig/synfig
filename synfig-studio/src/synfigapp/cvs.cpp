@@ -59,7 +59,7 @@ using namespace synfigapp;
 
 #define cvs_command		synfig::String("cvs -z4")
 
-#ifndef WIN32
+#ifndef _WIN32
 #define HAVE_STRPTIME
 #endif
 

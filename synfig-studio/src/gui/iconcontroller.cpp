@@ -58,7 +58,7 @@ using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
-#ifdef WIN32
+#ifdef _WIN32
 #	ifdef IMAGE_DIR
 #		undef IMAGE_DIR
 #		define IMAGE_DIR "share\\pixmaps"
@@ -79,7 +79,7 @@ using namespace synfig;
 static std::map< int, Glib::RefPtr<Gdk::Pixbuf> > _tree_pixbuf_table_value_type;
 static Glib::RefPtr<Gdk::Pixbuf> _tree_pixbuf_table_interpolation[(int)INTERPOLATION_CLAMPED+1];
 
-#ifdef WIN32
+#ifdef _WIN32
 IconController::IconController(const synfig::String& basepath)
 #else
 IconController::IconController(const synfig::String& /*basepath*/)
@@ -477,7 +477,7 @@ studio::get_interpolation_pixbuf(synfig::Interpolation type)
 	return _tree_pixbuf_table_interpolation[int(type)];
 }
 
-#ifdef WIN32
+#ifdef _WIN32
 #define TEMPORARY_DELETE_MACRO DELETE
 #undef DELETE
 #endif
@@ -502,7 +502,7 @@ studio::get_action_stock_id(const synfigapp::Action::BookEntry& action)
 	return stock_id;
 }
 
-#ifdef WIN32
+#ifdef _WIN32
 #define DELETE TEMPORARY_DELETE_MACRO
 #undef TEMPORARY_DELETE_MACRO
 #endif

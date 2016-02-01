@@ -126,7 +126,7 @@ Import::set_param(const String & param, const ValueBase &value)
 		//	newfilename=basename(newfilename);
 		//}
 
-#ifndef WIN32
+#ifndef _WIN32
 		if(is_absolute_path(newfilename))
 		{
 			string curpath(cleanup_path(absolute_path(get_canvas()->get_file_path())));

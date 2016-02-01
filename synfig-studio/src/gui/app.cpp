@@ -65,7 +65,7 @@
 
 #include <gdkmm/general.h>
 
-#ifdef WIN32
+#ifdef _WIN32
 #define WINVER 0x0500
 #include <windows.h>
 #endif
@@ -162,7 +162,7 @@ using namespace studio;
 #define DPI2DPM(x)	(float(x)*39.3700787402f)
 #endif
 
-#ifdef WIN32
+#ifdef _WIN32
 #	ifdef IMAGE_DIR
 #		undef IMAGE_DIR
 #		define IMAGE_DIR "share\\pixmaps"
@@ -177,7 +177,7 @@ using namespace studio;
 #	define IMAGE_EXT	"tif"
 #endif
 
-#ifdef WIN32
+#ifdef _WIN32
 #	ifdef PLUGIN_DIR
 #		undef PLUGIN_DIR
 #		define PLUGIN_DIR "share\\synfig\\plugins"
@@ -1354,7 +1354,7 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 	}
 
 	std::string path_to_icons;
-#ifdef WIN32
+#ifdef _WIN32
 	path_to_icons=basepath+ETL_DIRECTORY_SEPARATOR+".."+ETL_DIRECTORY_SEPARATOR+IMAGE_DIR;
 #else
 	path_to_icons=IMAGE_DIR;
@@ -1455,7 +1455,7 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		std::string pluginsprefix;
 
 		// system plugins path
-#ifdef WIN32
+#ifdef _WIN32
 		pluginsprefix=App::get_base_path()+ETL_DIRECTORY_SEPARATOR+PLUGIN_DIR;
 #else
 		pluginsprefix=PLUGIN_DIR;
@@ -1706,7 +1706,7 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 					"experimental features on the \"Misc\" tab of Setup dialog.");
 		}
 		*/
-#ifdef WIN32
+#ifdef _WIN32
 		if (message!=""){
 			message = _("There is a bug, which can cause computer to hang/freeze when "
 					"resizing the canvas window.");
@@ -2289,7 +2289,7 @@ App::show_setup()
 gint Signal_Open_Ok(GtkWidget */*widget*/, int *val){*val=1;return 0;}
 gint Signal_Open_Cancel(GtkWidget */*widget*/, int *val){*val=2;return 0;}
 
-//#ifdef WIN32
+//#ifdef _WIN32
 //#define USE_WIN32_FILE_DIALOGS 1
 //#endif
 
@@ -2297,7 +2297,7 @@ gint Signal_Open_Cancel(GtkWidget */*widget*/, int *val){*val=2;return 0;}
 static OPENFILENAME ofn={};
 #endif
 
-#ifdef WIN32
+#ifdef _WIN32
 #include <gdk/gdkwin32.h>
 #endif
 
@@ -3336,7 +3336,7 @@ App::dialog_message_3b(const std::string &message,
 static bool
 try_open_url(const std::string &url)
 {
-#ifdef WIN32
+#ifdef _WIN32
 	return ShellExecute(GetDesktopWindow(), "open", url.c_str(), NULL, NULL, SW_SHOW);
 #else // !WIN32
 	std::vector<std::string> command_line;
@@ -3527,7 +3527,7 @@ App::open(std::string filename)
 bool
 App::open_as(std::string filename,std::string as,synfig::FileContainerZip::file_size_t truncate_storage_size)
 {
-#ifdef WIN32
+#ifdef _WIN32
     size_t buf_size = PATH_MAX - 1;
     char* long_name = (char*)malloc(buf_size);
     long_name[0] = '\0';

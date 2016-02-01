@@ -44,7 +44,7 @@
 #include <stdexcept>
 
 // Includes used by get_binary_path():
-#ifdef WIN32
+#ifdef _WIN32
 #include <windows.h>
 #elif defined(__APPLE__)
 #include <mach-o/dyld.h>
@@ -204,7 +204,7 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 #ifdef ENABLE_NLS
 	String locale_dir;
 	locale_dir = locale_path;
-#ifdef WIN32
+#ifdef _WIN32
 	locale_dir = Glib::locale_from_utf8(locale_dir);
 #endif
 
@@ -342,7 +342,7 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 		if(getenv("HOME"))
 			locations.push_back(strprintf("%s/Library/Synfig/%s", getenv("HOME"), MODULE_LIST_FILENAME));
 	#endif
-	#ifdef WIN32
+	#ifdef _WIN32
 		locations.push_back("C:\\Program Files\\Synfig\\etc\\"MODULE_LIST_FILENAME);
 	#endif
 	}
@@ -495,7 +495,7 @@ synfig::get_binary_path(const String &fallback_path)
 	
 	String result;
 
-#ifdef WIN32
+#ifdef _WIN32
 	
 	size_t buf_size = PATH_MAX - 1;
 	char* path = (char*)malloc(buf_size);

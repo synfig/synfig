@@ -63,7 +63,7 @@ using namespace studio;
 #define PACKAGE	"synfigstudio"
 #endif
 
-#ifdef WIN32
+#ifdef _WIN32
 #	ifdef IMAGE_DIR
 #		undef IMAGE_DIR
 #		define IMAGE_DIR "share\\pixmaps"
@@ -159,7 +159,7 @@ Splash::Splash():
 	Gtk::Window(getenv("SYNFIG_DISABLE_POPUP_WINDOWS") ? Gtk::WINDOW_TOPLEVEL : Gtk::WINDOW_POPUP)
 {
 	std::string imagepath;
-#ifdef WIN32
+#ifdef _WIN32
 	imagepath=App::get_base_path()+ETL_DIRECTORY_SEPARATOR+IMAGE_DIR;
 #else
 	imagepath=IMAGE_DIR;

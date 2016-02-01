@@ -424,7 +424,7 @@ Layer_Freetype::new_face(const String &newfont)
 	}
 #endif
 
-#ifdef WIN32
+#ifdef _WIN32
 	if(error)error=FT_New_Face(ft_library,("C:\\WINDOWS\\FONTS\\"+newfont).c_str(),face_index,&face);
 	if(error)error=FT_New_Face(ft_library,("C:\\WINDOWS\\FONTS\\"+newfont+".ttf").c_str(),face_index,&face);
 #else

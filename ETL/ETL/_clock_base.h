@@ -29,7 +29,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#ifndef WIN32
+#ifndef _WIN32
 #include <unistd.h>
 #else
 inline void sleep(int i) { Sleep(i*1000); }

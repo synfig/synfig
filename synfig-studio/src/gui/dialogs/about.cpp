@@ -62,7 +62,7 @@ using namespace studio;
 #define PACKAGE	"synfigstudio"
 #endif
 
-#ifdef WIN32
+#ifdef _WIN32
 #	ifdef IMAGE_DIR
 #		undef IMAGE_DIR
 #		define IMAGE_DIR "share\\pixmaps"
@@ -188,7 +188,7 @@ About::About()
 	set_translator_credits(_("translator-credits"));
 
 	std::string imagepath;
-#ifdef WIN32
+#ifdef _WIN32
 	imagepath=App::get_base_path()+ETL_DIRECTORY_SEPARATOR+IMAGE_DIR;
 #else
 	imagepath=IMAGE_DIR;

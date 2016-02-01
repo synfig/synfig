@@ -53,7 +53,7 @@ using namespace studio;
 
 /* === M A C R O S ========================================================= */
 
-#ifdef WIN32
+#ifdef _WIN32
 #	ifdef IMAGE_DIR
 #		undef IMAGE_DIR
 #		define IMAGE_DIR "share\\pixmaps"

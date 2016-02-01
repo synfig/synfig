@@ -123,7 +123,7 @@ PluginLauncher::check_python_version(String path)
 }
 
 bool
-#ifdef WIN32
+#ifdef _WIN32
 PluginLauncher::execute( std::string script_path, const std::string& synfig_root )
 #else
 PluginLauncher::execute( std::string script_path, const std::string& /* synfig_root */ )
@@ -151,7 +151,7 @@ PluginLauncher::execute( std::string script_path, const std::string& /* synfig_r
 		for(iter=binary_choices.begin();iter!=binary_choices.end();iter++)
 		{
 			String python_path;
-#ifdef WIN32
+#ifdef _WIN32
 			python_path = "\"" + synfig_root+ETL_DIRECTORY_SEPARATOR+"python"+ETL_DIRECTORY_SEPARATOR+*iter+".exe" + "\"";
 #else
 			python_path = *iter;
@@ -174,7 +174,7 @@ PluginLauncher::execute( std::string script_path, const std::string& /* synfig_r
 	
 	// Construct the full command:
 	command = command+" \""+script_path+"\" \""+filename_processed+"\" 2>&1";
-#ifdef WIN32
+#ifdef _WIN32
 	// This covers the dumb cmd.exe behavior.
 	// See: http://eli.thegreenplace.net/2011/01/28/on-spaces-in-the-paths-of-programs-and-files-on-windows/
 	command = "\"" + command + "\"";
