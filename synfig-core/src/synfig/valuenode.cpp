@@ -512,7 +512,7 @@ ValueNode::calc_time_bounds(int &begin, int &end, Real &fps) const
 	bool found = false;
 	Time b = 0.0;
 	Time e = 10*60;
-	fps = 25;
+	fps = 24;
 
 	find_time_bounds(*this, found, b, e, fps);
 	if (get_parent_canvas())
