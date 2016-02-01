@@ -144,7 +144,7 @@ FileSystem::ReadStreamHandle FileSystemNative::get_read_stream(const std::string
 #else
 	FILE *f = fopen(fix_slashes(filename).c_str(), "rb");
 #endif
-	return f == NULL#
+	return f == NULL
 	     ? ReadStreamHandle()
 	     : ReadStreamHandle(new ReadStream(this, f));
 }
