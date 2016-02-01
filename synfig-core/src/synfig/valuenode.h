@@ -280,6 +280,7 @@ public:
 	static void add_value_to_map(std::map<Time, ValueBase> &x, Time t, const ValueBase &v);
 
 private:
+	static void canvas_time_bounds(const Canvas &canvas, bool &found, Time &begin, Time &end, Real &fps);
 	static void find_time_bounds(const Node &node, bool &found, Time &begin, Time &end, Real &fps);
 
 protected:

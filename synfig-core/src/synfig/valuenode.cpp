@@ -471,6 +471,24 @@ ValueNode::add_value_to_map(std::map<Time, ValueBase> &x, Time t, const ValueBas
 }
 
 void
+ValueNode::canvas_time_bounds(const Canvas &canvas, bool &found, Time &begin, Time &end, Real &fps)
+{
+	if (!found)
+	{
+		found = true;
+		begin = canvas.rend_desc().get_time_start();
+		end = canvas.rend_desc().get_time_end();
+		fps = canvas.rend_desc().get_frame_rate();
+	}
+	else
+	{
+		begin = min(begin, canvas.rend_desc().get_time_start());
+		end = min(end, canvas.rend_desc().get_time_end());
+		fps = max(fps, (Real)canvas.rend_desc().get_frame_rate());
+	}
+}
+
+void
 ValueNode::find_time_bounds(const Node &node, bool &found, Time &begin, Time &end, Real &fps)
 {
 	for(std::set<Node*>::const_iterator i = node.parent_set.begin(); i != node.parent_set.end(); ++i)
@@ -479,22 +497,7 @@ ValueNode::find_time_bounds(const Node &node, bool &found, Time &begin, Time &en
 		if (Layer *layer = dynamic_cast<Layer*>(*i))
 		{
 			if (Canvas::Handle canvas = layer->get_canvas())
-			{
-				canvas = canvas->get_root();
-				if (!found)
-				{
-					found = true;
-					begin = canvas->rend_desc().get_time_start();
-					end = canvas->rend_desc().get_time_end();
-					fps = canvas->rend_desc().get_frame_rate();
-				}
-				else
-				{
-					begin = min(begin, canvas->rend_desc().get_time_start());
-					end = min(end, canvas->rend_desc().get_time_end());
-					fps = max(fps, (Real)canvas->rend_desc().get_frame_rate());
-				}
-			}
+				canvas_time_bounds(*canvas->get_root(), found, begin, end, fps);
 		}
 		else
 		{
@@ -506,11 +509,17 @@ ValueNode::find_time_bounds(const Node &node, bool &found, Time &begin, Time &en
 void
 ValueNode::calc_time_bounds(int &begin, int &end, Real &fps) const
 {
-	fps = 25;
+	bool found = false;
 	Time b = 0.0;
 	Time e = 10*60;
-	bool found = false;
+	fps = 25;
+
 	find_time_bounds(*this, found, b, e, fps);
+	if (get_parent_canvas())
+		canvas_time_bounds(*get_parent_canvas(), found, b, e, fps);
+	if (get_root_canvas())
+		canvas_time_bounds(*get_root_canvas(), found, b, e, fps);
+
 	begin = (int)floor(b*fps);
 	end = (int)ceil(e*fps);
 }
