@@ -66,8 +66,8 @@ static const guint no_prev_popup((guint)-1);
 
 LayerActionManager::LayerActionManager():
 	action_group_(Gtk::ActionGroup::create("action_group_layer_action_manager")),
-	popup_id_menu_(no_prev_popup),
-	popup_id_bar_(no_prev_popup),
+	menu_popup_id_(no_prev_popup),
+	menu_main_id_(no_prev_popup),
 	action_group_copy_paste(Gtk::ActionGroup::create("action_group_copy_paste")),
 	queued(false)
 {
@@ -184,13 +184,13 @@ LayerActionManager::clear()
 	if(ui_manager_)
 	{
 		// Clear out old stuff
-		if(popup_id_menu_!=no_prev_popup || popup_id_bar_!=no_prev_popup)
+		if(menu_popup_id_!=no_prev_popup || menu_main_id_!=no_prev_popup)
 		{
-			get_ui_manager()->remove_ui(popup_id_menu_);
-			get_ui_manager()->remove_ui(popup_id_bar_);
+			get_ui_manager()->remove_ui(menu_popup_id_);
+			get_ui_manager()->remove_ui(menu_main_id_);
 			if(action_group_)get_ui_manager()->ensure_update();
-			popup_id_menu_=no_prev_popup;
-			popup_id_bar_=no_prev_popup;
+			menu_popup_id_=no_prev_popup;
+			menu_main_id_=no_prev_popup;
 			if(action_group_)while(!action_group_->get_actions().empty())action_group_->remove(*action_group_->get_actions().begin());
 #ifdef ONE_ACTION_GROUP
 #else
@@ -315,6 +315,8 @@ LayerActionManager::refresh()
 
 			handle<studio::Instance>::cast_static(get_canvas_interface()->get_instance())->
 				add_actions_to_group(action_group_, ui_info, param_list, synfigapp::Action::CATEGORY_LAYER);
+
+			ui_info+="<separator/>";
 			handle<studio::Instance>::cast_static(get_canvas_interface()->get_instance())->
 				add_special_layer_actions_to_group(action_group_, ui_info, layer_list);
 		}
@@ -334,7 +336,7 @@ LayerActionManager::refresh()
 			     "</menu>"
 			   "</popup>" +
 			 "</ui>";
-	popup_id_menu_=get_ui_manager()->add_ui_from_string(full_ui_info);
+	menu_popup_id_=get_ui_manager()->add_ui_from_string(full_ui_info);
 	full_ui_info=
 			 "<ui>"
 			   "<menubar action='menubar-main'>"
@@ -348,7 +350,7 @@ LayerActionManager::refresh()
 			     "</menu>"
 			   "</menubar>" +
 			 "</ui>";
-	popup_id_bar_=get_ui_manager()->add_ui_from_string(full_ui_info);
+	menu_main_id_=get_ui_manager()->add_ui_from_string(full_ui_info);
 #ifdef ONE_ACTION_GROUP
 #else
 	get_ui_manager()->insert_action_group(action_group_);
