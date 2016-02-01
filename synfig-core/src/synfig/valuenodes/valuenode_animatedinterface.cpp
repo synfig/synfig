@@ -244,8 +244,43 @@ public:
 	virtual WaypointList::iterator new_waypoint(Time t, ValueNode::Handle value_node) = 0;
 	virtual void on_changed() = 0;
 	virtual ValueBase operator()(Time t) const = 0;
+
 	virtual void get_values_vfunc(std::map<Time, ValueBase> &x) const
-		{ Interpolator::animated.node().calc_values(x); }
+	{
+		// TODO: special case for discrete interpolation mode
+		if (animated.waypoint_list().empty())
+			Interpolator::animated.node().calc_values(x);
+		else
+			Interpolator::animated.node().calc_values(
+				x,
+				animated.node().time_to_frame( animated.waypoint_list().front().get_time() ),
+				animated.node().time_to_frame( animated.waypoint_list().back().get_time() ) );
+	}
+
+	void calc_values_constant(std::map<Time, ValueBase> &x) const
+	{
+		if (animated.waypoint_list().empty())
+			{ ValueNode::add_value_to_map(x, 0, animated.node().get_type()); return; }
+		if (animated.waypoint_list().size() == 1)
+			{ animated.waypoint_list().front().get_value_node()->get_values(x); return; }
+
+		for(WaypointList::const_iterator i = animated.waypoint_list().begin(); i != animated.waypoint_list().end(); ++i)
+		{
+			WaypointList::const_iterator ii = i; ++ii;
+			bool first = i == animated.waypoint_list().begin();
+			bool last = ii == animated.waypoint_list().end();
+			Time begin = i->get_time();
+			Time end = ii->get_time();
+
+			std::map<Time, ValueBase> m;
+			ValueNode::add_value_to_map(x, begin, (*i->get_value_node())(begin));
+			i->get_value_node()->get_values(m);
+			for(std::map<Time, ValueBase>::const_iterator j = m.begin(); j != m.end(); ++j)
+				if ( (first || j->first >= begin)
+				  && (last  || j->first <  end) )
+					ValueNode::add_value_to_map(x, j->first, j->second);
+		}
+	}
 };
 
 class synfig::ValueNode_AnimatedInterfaceConst::Internal {
@@ -714,6 +749,9 @@ public:
 
 			return iter->get_value(t);
 		}
+
+		virtual void get_values_vfunc(std::map<Time, ValueBase> &x) const
+			{ Interpolator::calc_values_constant(x); }
 	}; // END of class Constant
 
 	class AnimBool: public Interpolator
@@ -808,6 +846,9 @@ public:
 				return iter->get_value(t).get(bool()) || next->get_value(t).get(bool());
 			return iter->get_value(t);
 		}
+
+		virtual void get_values_vfunc(std::map<Time, ValueBase> &x) const
+			{ calc_values_constant(x); }
 	}; // END of class _AnimBool
 
 };

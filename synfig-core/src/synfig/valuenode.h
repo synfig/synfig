@@ -265,13 +265,22 @@ public:
 	//! Set the default interpolation for Value Nodes
 	virtual void set_interpolation(Interpolation /* i*/) { }
 
+	// TODO: cache of values (we need to fix chain of signals 'changed' in LinkableValueNodes
 	void get_values(std::set<ValueBase> &x) const;
+	void get_value_change_times(std::set<Time> &x) const;
 	void get_values(std::map<Time, ValueBase> &x) const;
 
+	void calc_time_bounds(int &begin, int &end, Real &fps) const;
 	void calc_values(std::map<Time, ValueBase> &x) const;
+	void calc_values(std::map<Time, ValueBase> &x, int begin, int end) const;
 	void calc_values(std::map<Time, ValueBase> &x, int begin, int end, Real fps) const;
 
+	int time_to_frame(Time t);
+	static int time_to_frame(Time t, Real fps);
 	static void add_value_to_map(std::map<Time, ValueBase> &x, Time t, const ValueBase &v);
+
+private:
+	static void find_time_bounds(const Node &node, bool &found, Time &begin, Time &end, Real &fps);
 
 protected:
 	//! Sets the type of the ValueNode
@@ -481,6 +490,8 @@ protected:
 
 	//! Virtual memebr to set the children vocabulary to a given value
 	virtual void set_children_vocab(const Vocab& rvocab);
+
+	virtual void get_values_vfunc(std::map<Time, ValueBase> &x) const;
 }; // END of class LinkableValueNode
 
 /*!	\class ValueNodeList

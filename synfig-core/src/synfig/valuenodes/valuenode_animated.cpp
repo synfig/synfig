@@ -109,6 +109,10 @@ ValueNode_Animated::operator()(Time t) const
 	{ return ValueNode_AnimatedInterface::operator()(t); }
 
 void
+ValueNode_Animated::get_values_vfunc(std::map<Time, ValueBase> &x) const
+	{ ValueNode_AnimatedInterface::get_values_vfunc(x); }
+
+void
 ValueNode_Animated::get_times_vfunc(Node::time_set &set) const
 	{ ValueNode_AnimatedInterface::get_times_vfunc(set); }
 

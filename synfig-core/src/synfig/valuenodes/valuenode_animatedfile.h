@@ -74,6 +74,7 @@ public:
 	virtual Vocab get_children_vocab_vfunc() const;
 
 	virtual ValueBase operator()(Time t) const;
+	virtual void get_values_vfunc(std::map<Time, ValueBase> &x) const;
 
 	String get_file_field(Time t, const String &field_name) const;
 

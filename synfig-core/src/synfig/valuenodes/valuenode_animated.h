@@ -63,7 +63,7 @@ public:
 	static Handle create(ValueNode::Handle value_node, const Time& time);
 
 	virtual ValueBase operator()(Time t) const;
-
+	virtual void get_values_vfunc(std::map<Time, ValueBase> &x) const;
 
 	virtual Interpolation get_interpolation()const
 		{ return ValueNode_AnimatedInterfaceConst::get_interpolation(); }

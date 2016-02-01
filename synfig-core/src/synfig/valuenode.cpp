@@ -435,8 +435,32 @@ ValueNode::get_values(std::set<ValueBase> &x) const
 }
 
 void
+ValueNode::get_value_change_times(std::set<Time> &x) const
+{
+	std::map<Time, ValueBase> v;
+	get_values(v);
+	for(std::map<Time, ValueBase>::const_iterator i = v.begin(); i != v.end(); ++i)
+		x.insert(i->first);
+}
+
+void
 ValueNode::get_values(std::map<Time, ValueBase> &x) const
 	{ get_values_vfunc(x); }
+
+int
+ValueNode::time_to_frame(Time t, Real fps)
+	{ return (int)floor(t*fps + 1e-10); }
+
+int
+ValueNode::time_to_frame(Time t)
+{
+	if (Canvas::Handle canvas = get_parent_canvas())
+	{
+		const RendDesc &desc = canvas->rend_desc();
+		return time_to_frame(t, desc.get_frame_rate());
+	}
+	return 0;
+}
 
 void
 ValueNode::add_value_to_map(std::map<Time, ValueBase> &x, Time t, const ValueBase &v)
@@ -444,6 +468,51 @@ ValueNode::add_value_to_map(std::map<Time, ValueBase> &x, Time t, const ValueBas
 	std::map<Time, ValueBase>::const_iterator j = x.upper_bound(t);
 	if (j == x.begin() || (--j)->second != v)
 		{ ValueBase tmp(v); x[t] = tmp; }
+}
+
+void
+ValueNode::find_time_bounds(const Node &node, bool &found, Time &begin, Time &end, Real &fps)
+{
+	for(std::set<Node*>::const_iterator i = node.parent_set.begin(); i != node.parent_set.end(); ++i)
+	{
+		if (!*i) continue;
+		if (Layer *layer = dynamic_cast<Layer*>(*i))
+		{
+			if (Canvas::Handle canvas = layer->get_canvas())
+			{
+				canvas = canvas->get_root();
+				if (!found)
+				{
+					found = true;
+					begin = canvas->rend_desc().get_time_start();
+					end = canvas->rend_desc().get_time_end();
+					fps = canvas->rend_desc().get_frame_rate();
+				}
+				else
+				{
+					begin = min(begin, canvas->rend_desc().get_time_start());
+					end = min(end, canvas->rend_desc().get_time_end());
+					fps = max(fps, (Real)canvas->rend_desc().get_frame_rate());
+				}
+			}
+		}
+		else
+		{
+			find_time_bounds(**i, found, begin, end, fps);
+		}
+	}
+}
+
+void
+ValueNode::calc_time_bounds(int &begin, int &end, Real &fps) const
+{
+	fps = 25;
+	Time b = 0.0;
+	Time e = 10*60;
+	bool found = false;
+	find_time_bounds(*this, found, b, e, fps);
+	begin = (int)floor(b*fps);
+	end = (int)ceil(e*fps);
 }
 
 void
@@ -459,13 +528,21 @@ ValueNode::calc_values(std::map<Time, ValueBase> &x, int begin, int end, Real fp
 }
 
 void
+ValueNode::calc_values(std::map<Time, ValueBase> &x, int begin, int end) const
+{
+	int b, e;
+	Real fps;
+	calc_time_bounds(b, e, fps);
+	calc_values(x, begin, end, fps);
+}
+
+void
 ValueNode::calc_values(std::map<Time, ValueBase> &x) const
 {
-	if (Canvas::Handle canvas = get_parent_canvas())
-	{
-		const RendDesc &desc = canvas->rend_desc();
-		calc_values(x, desc.get_frame_start(), desc.get_frame_end(), desc.get_frame_rate());
-	}
+	int begin, end;
+	Real fps;
+	calc_time_bounds(begin, end, fps);
+	calc_values(x, begin, end, fps);
 }
 
 void
@@ -921,4 +998,15 @@ LinkableValueNode::set_root_canvas(etl::loose_handle<Canvas> x)
 	ValueNode::set_root_canvas(x);
 	for(int i = 0; i < link_count(); ++i)
 		get_link(i)->set_root_canvas(x);
+}
+
+void
+LinkableValueNode::get_values_vfunc(std::map<Time, ValueBase> &x) const
+{
+	std::set<Time> times;
+	for(int i = 0; i < link_count(); ++i)
+		if (ValueNode::Handle link = get_link(i))
+			link->get_value_change_times(times);
+	for(std::set<Time>::const_iterator i = times.begin(); i != times.end(); ++i)
+		add_value_to_map(x, *i, (*this)(*i));
 }

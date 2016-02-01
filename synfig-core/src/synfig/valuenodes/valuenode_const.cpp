@@ -179,3 +179,8 @@ ValueNode_Const::get_string()const
 void ValueNode_Const::get_times_vfunc(Node::time_set &/*set*/) const
 {
 }
+
+void ValueNode_Const::get_values_vfunc(std::map<Time, ValueBase> &x) const
+{
+	add_value_to_map(x, 0, value);
+}

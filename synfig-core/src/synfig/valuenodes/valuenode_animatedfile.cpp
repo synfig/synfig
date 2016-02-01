@@ -280,3 +280,33 @@ ValueNode_AnimatedFile::get_children_vocab_vfunc() const
 	return ret;
 }
 
+void
+ValueNode_AnimatedFile::get_values_vfunc(std::map<Time, ValueBase> &x) const
+{
+	ValueNode::Handle filename = get_link("filename");
+	if (!filename)
+	{
+		(*this)(0);
+		ValueNode_AnimatedInterfaceConst::get_values_vfunc(x);
+		return;
+	}
+
+	std::map<Time, ValueBase> m;
+	filename->get_values(m);
+	for(std::map<Time, ValueBase>::const_iterator i = m.begin(); i != m.end(); ++i)
+	{
+		std::map<Time, ValueBase>::const_iterator ii = i; ++ii;
+		bool first = i == m.begin();
+		bool last = ii == m.end();
+		Time begin = i->first;
+		Time end = ii->first;
+
+		std::map<Time, ValueBase> mm;
+		ValueNode::add_value_to_map(x, begin, (*this)(begin));
+		ValueNode_AnimatedInterfaceConst::get_values_vfunc(mm);
+		for(std::map<Time, ValueBase>::const_iterator j = mm.begin(); j != mm.end(); ++j)
+			if ( (first || j->first >= begin)
+			  && (last  || j->first <  end) )
+				ValueNode::add_value_to_map(x, j->first, j->second);
+	}
+}

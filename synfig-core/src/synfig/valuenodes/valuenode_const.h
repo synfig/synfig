@@ -74,6 +74,7 @@ public:
 
 protected:
 	virtual void get_times_vfunc(Node::time_set &set) const;
+	virtual void get_values_vfunc(std::map<Time, ValueBase> &x) const;
 };
 
 }; // END of namespace synfig
