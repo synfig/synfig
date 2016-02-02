@@ -78,7 +78,7 @@ private:
 	//! affected by the origin and transformation.
 	mutable Rect bounds;
 	//! signal connection for children. Seems to be used only here
-	sigc::connection child_changed_connection;
+	sigc::connection childs_changed_connection;
 
 	// Nasty hack: Remember whether we called an extra ref() when
 	// setting the canvas, so we know whether to call an extra unref()
@@ -106,6 +106,8 @@ private:
 	// did, but we've forgotten whether we did.  So we use this
 	// 'extra_reference' member to store that decision.
 	bool extra_reference;
+
+	void childs_changed();
 
 	/*
  -- ** -- S I G N A L S -------------------------------------------------------
@@ -190,6 +192,8 @@ public:
 	virtual void set_render_method(Context context, RenderMethod x);
 
 	virtual void fill_sound_processor(SoundProcessor &soundProcessor) const;
+
+	virtual void on_childs_changed() { }
 
 protected:
 	//!	Function to be overloaded that fills the Time Point Set with

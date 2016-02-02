@@ -43,6 +43,8 @@
 #include "app.h"
 #include "instance.h"
 #include <synfig/layers/layer_pastecanvas.h>
+#include <synfig/layers/layer_group.h>
+#include <synfig/layers/layer_switch.h>
 #include <synfigapp/action_system.h>
 #include <synfig/context.h>
 
@@ -152,198 +154,158 @@ LayerTreeStore::create(etl::loose_handle<synfigapp::CanvasInterface> canvas_inte
 	return Glib::RefPtr<LayerTreeStore>(new LayerTreeStore(canvas_interface_));
 }
 
-void
-LayerTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int column, Glib::ValueBase& value)const
+template<typename T>
+void LayerTreeStore::set_gvalue_tpl(Glib::ValueBase& value, const T &v, bool use_assign_operator) const
 {
-	if(column==model.index.index())
+	Glib::Value<T> x;
+	g_value_init(x.gobj(), x.value_type());
+
+	x.set(v);
+
+	g_value_init(value.gobj(), x.value_type());
+	if (use_assign_operator)
+		value = x;
+	else
+		g_value_copy(x.gobj(), value.gobj());
+}
+
+void
+LayerTreeStore::get_value_vfunc(const Gtk::TreeModel::iterator& iter, int column, Glib::ValueBase& value)const
+{
+	if ( column != model.record_type.index()
+	  && column != model.layer.index()
+	  && column != model.layer_impossible.index()
+	  && column != model.ghost_label.index() )
 	{
-		synfig::Layer::Handle layer((*iter)[model.layer]);
+		RecordType record_type((*iter)[model.record_type]);
+		Layer::Handle layer((*iter)[model.layer]);
+		bool layer_impossible((*iter)[model.layer_impossible]);
+		Glib::ustring ghost_label((*iter)[model.ghost_label]);
 
-		if(!layer)return;
-
-		Glib::Value<int> x;
-		g_value_init(x.gobj(),x.value_type());
-
-		x.set(layer->get_depth());
-
-		g_value_init(value.gobj(),x.value_type());
-		g_value_copy(x.gobj(),value.gobj());
-	}
-	else if(column==model.z_depth.index())
-	{
-		synfig::Layer::Handle layer((*iter)[model.layer]);
-
-		if(!layer)return;
-
-		Glib::Value<float> x;
-		g_value_init(x.gobj(),x.value_type());
-
-		x.set(layer->get_true_z_depth(canvas_interface()->get_time()));
-
-		g_value_init(value.gobj(),x.value_type());
-		g_value_copy(x.gobj(),value.gobj());
-	}
-	else if(column==model.children_lock.index())
-	{
-		synfig::Layer::Handle layer((*iter)[model.layer]);
-
-		if(!layer)return;
-
-		Glib::Value<bool> x;
-		g_value_init(x.gobj(),x.value_type());
-		x.set(false);
-
-		ValueBase v(layer->get_param("children_lock"));
-		if(v.same_type_as(bool()))
-			x.set(v.get(bool()));
-
-		g_value_init(value.gobj(),x.value_type());
-		g_value_copy(x.gobj(),value.gobj());
-	}
-	else if(column==model.label.index())
-	{
-		synfig::Layer::Handle layer((*iter)[model.layer]);
-
-		if(!layer)return;
-
-		Glib::Value<Glib::ustring> x;
-		g_value_init(x.gobj(),x.value_type());
-
-		x.set(layer->get_non_empty_description());
-
-		g_value_init(value.gobj(),x.value_type());
-		//g_value_copy(x.gobj(),value.gobj());
-		value=x;
-	}
-	else if(column==model.tooltip.index())
-	{
-		synfig::Layer::Handle layer((*iter)[model.layer]);
-
-		if(!layer)return;
-
-		Glib::Value<Glib::ustring> x;
-		g_value_init(x.gobj(),x.value_type());
-
-
-		x.set(layer->get_local_name());
-
-		g_value_init(value.gobj(),x.value_type());
-		//g_value_copy(x.gobj(),value.gobj());
-		value=x;
-	}
-	else if(column==model.canvas.index())
-	{
-		synfig::Layer::Handle layer((*iter)[model.layer]);
-
-		if(!layer)return;
-
-		Glib::Value<Canvas::Handle> x;
-		g_value_init(x.gobj(),x.value_type());
-
-
-		x.set(layer->get_canvas());
-
-		g_value_init(value.gobj(),x.value_type());
-		//g_value_copy(x.gobj(),value.gobj());
-		value=x;
-	}
-	else if(column==model.active.index())
-	{
-		synfig::Layer::Handle layer((*iter)[model.layer]);
-
-		if(!layer)return;
-
-		Glib::Value<bool> x;
-		g_value_init(x.gobj(),x.value_type());
-
-		x.set(layer->active());
-
-		g_value_init(value.gobj(),x.value_type());
-		g_value_copy(x.gobj(),value.gobj());
-	}
-	else if(column==model.exclude_from_rendering.index())
-	{
-		synfig::Layer::Handle layer((*iter)[model.layer]);
-
-		if(!layer)return;
-
-		Glib::Value<bool> x;
-		g_value_init(x.gobj(),x.value_type());
-
-		x.set(layer->get_exclude_from_rendering());
-
-		g_value_init(value.gobj(),x.value_type());
-		g_value_copy(x.gobj(),value.gobj());
-	}
-	else if(column==model.style.index())
-	{
-		synfig::Layer::Handle layer((*iter)[model.layer]);
-
-		if(!layer)return;
-
-		Glib::Value<Pango::Style> x;
-		g_value_init(x.gobj(),x.value_type());
-		//Change style to italic for current layer in treeview in case of excluded from rendering
-		x.set(layer->get_exclude_from_rendering() ? Pango::STYLE_ITALIC : Pango::STYLE_NORMAL);
-
-		g_value_init(value.gobj(),x.value_type());
-		g_value_copy(x.gobj(),value.gobj());
-	}
-	else if(column==model.weight.index())
-	{
-		synfig::Layer::Handle layer((*iter)[model.layer]);
-
-		if(!layer)return;
-
-		Glib::Value<Pango::Weight> x;
-		g_value_init(x.gobj(),x.value_type());
-
-		etl::handle<Layer_PasteCanvas> paste=
-			etl::handle<Layer_PasteCanvas>::cast_dynamic(
-				layer->get_parent_paste_canvas_layer() );
-		if(paste)
+		if (record_type == RECORD_TYPE_LAYER && layer)
 		{
-			etl::handle<synfig::Canvas> sub_canvas=paste->get_param("canvas").get(sub_canvas);
-			if(sub_canvas && !sub_canvas->is_inline())
+			// Real layer
+
+			if (column == model.index.index())
+				set_gvalue_tpl<int>(value, layer->get_depth());
+			else
+			if (column == model.z_depth.index())
+				set_gvalue_tpl<float>(value, layer->get_true_z_depth(canvas_interface()->get_time()));
+			else
+			if (column == model.children_lock.index())
 			{
-				Gtk::TreeRow row=*iter;
-				if(*row.parent())
-				{
-					paste = etl::handle<Layer_PasteCanvas>::cast_dynamic(
-							Layer::Handle((*row.parent())[model.layer]) );
-				}
+				ValueBase v(layer->get_param("children_lock"));
+				set_gvalue_tpl<bool>(value, v.same_type_as(bool()) && v.get(bool()));
 			}
-		}
-		if(paste)
-		{
-			//Change style to bold for current layer in treeview in case of visible in z_depth_visibility
-			synfig::ContextParams cp;
-			paste->apply_z_range_to_params(cp);
-			float visibility=synfig::Context::z_depth_visibility(cp, *layer);
-			x.set(visibility==1.0 && cp.z_range ? Pango::WEIGHT_BOLD : Pango::WEIGHT_NORMAL);
+			else
+			if (column == model.label.index())
+				set_gvalue_tpl<Glib::ustring>(value, layer->get_non_empty_description(), true);
+			else
+			if (column == model.tooltip.index())
+				set_gvalue_tpl<Glib::ustring>(value, layer->get_local_name(), true);
+			else
+			if (column == model.canvas.index())
+				set_gvalue_tpl<Canvas::Handle>(value, layer->get_canvas(), true);
+			else
+			if (column == model.active.index())
+				set_gvalue_tpl<bool>(value, layer->active());
+			else
+			if (column == model.exclude_from_rendering.index())
+			{
+				set_gvalue_tpl<bool>(value, layer->get_exclude_from_rendering());
+			}
+			else
+			if (column == model.style.index())
+			{
+				//Change style to italic for current layer in treeview in case of excluded from rendering
+				Pango::Style style = layer->get_exclude_from_rendering()
+					               ? Pango::STYLE_ITALIC : Pango::STYLE_NORMAL;
+				set_gvalue_tpl<Pango::Style>(value, style);
+			}
+			else
+			if (column == model.weight.index())
+			{
+				Pango::Weight weight = Pango::WEIGHT_NORMAL;
+
+				etl::handle<Layer_PasteCanvas> paste=
+					etl::handle<Layer_PasteCanvas>::cast_dynamic(
+						layer->get_parent_paste_canvas_layer() );
+				if(paste)
+				{
+					etl::handle<synfig::Canvas> sub_canvas=paste->get_param("canvas").get(sub_canvas);
+					if(sub_canvas && !sub_canvas->is_inline())
+					{
+						Gtk::TreeRow row=*iter;
+						if(*row.parent() && RECORD_TYPE_LAYER == (RecordType)(*row.parent())[model.record_type])
+						{
+							paste = etl::handle<Layer_PasteCanvas>::cast_dynamic(
+									Layer::Handle((*row.parent())[model.layer]) );
+						}
+					}
+				}
+				if(paste)
+				{
+					//Change style to bold for current layer in treeview in case of visible in z_depth_visibility
+					synfig::ContextParams cp;
+					paste->apply_z_range_to_params(cp);
+					float visibility=synfig::Context::z_depth_visibility(cp, *layer);
+					weight = visibility==1.0 && cp.z_range ? Pango::WEIGHT_BOLD : Pango::WEIGHT_NORMAL;
+				}
+
+				set_gvalue_tpl<Pango::Weight>(value, weight);
+			}
+			else
+			if (column == model.underline.index())
+				set_gvalue_tpl<Pango::Underline>(value, layer_impossible ? Pango::UNDERLINE_SINGLE : Pango::UNDERLINE_NONE);
+			else
+			if (column == model.strikethrough.index())
+				set_gvalue_tpl<bool>(value, false);
+			else
+			if (column == model.icon.index())
+				set_gvalue_tpl< Glib::RefPtr<Gdk::Pixbuf> >(value, get_tree_pixbuf_layer(layer->get_name()));
+			else
+				Gtk::TreeStore::get_value_vfunc(iter,column,value);
+
+			return;
 		}
 		else
-			x.set(Pango::WEIGHT_NORMAL);
+		if (record_type == RECORD_TYPE_GHOST)
+		{
+			// Placeholder for new layer (ghost)
 
-		g_value_init(value.gobj(),x.value_type());
-		g_value_copy(x.gobj(),value.gobj());
+			if (column == model.z_depth.index())
+				set_gvalue_tpl<float>(value, (*iter)[model.index]);
+			else
+			if (column == model.label.index())
+				set_gvalue_tpl<Glib::ustring>(value, ghost_label, true);
+			else
+			if (column == model.weight.index())
+			{
+				Pango::Weight weight = Pango::WEIGHT_NORMAL;
+				if (iter->parent())
+				{
+					RecordType parent_record_type((*iter->parent())[model.record_type]);
+					Layer::Handle parent_layer((*iter->parent())[model.layer]);
+
+					etl::handle<Layer_Switch> layer_switch=
+						etl::handle<Layer_Switch>::cast_dynamic(parent_layer);
+					if (parent_record_type == RECORD_TYPE_LAYER && layer_switch)
+						if (ghost_label == layer_switch->get_param("layer_name").get(String()))
+							weight = Pango::WEIGHT_BOLD;
+				}
+				set_gvalue_tpl<Pango::Weight>(value, weight);
+			}
+			else
+			if (column == model.icon.index())
+				set_gvalue_tpl< Glib::RefPtr<Gdk::Pixbuf> >(value, get_tree_pixbuf_layer("ghost_group"));
+			else
+				Gtk::TreeStore::get_value_vfunc(iter,column,value);
+
+			return;
+		}
 	}
-	else if(column==model.icon.index())
-	{
-		synfig::Layer::Handle layer((*iter)[model.layer]);
-		if(!layer)return;
 
-		Glib::Value<Glib::RefPtr<Gdk::Pixbuf> > x;
-		g_value_init(x.gobj(),x.value_type());
-
-		//x.set(layer_icon);
-		x.set(get_tree_pixbuf_layer(layer->get_name()));
-
-		g_value_init(value.gobj(),x.value_type());
-		g_value_copy(x.gobj(),value.gobj());
-	}
-	else
-		Gtk::TreeStore::get_value_vfunc(iter,column,value);
+	Gtk::TreeStore::get_value_vfunc(iter,column,value);
 }
 
 void
@@ -366,84 +328,123 @@ LayerTreeStore::set_value_impl(const Gtk::TreeModel::iterator& iter, int column,
 
 	try
 	{
-		if(column==model.label.index())
+		RecordType record_type((*iter)[model.record_type]);
+		synfig::Layer::Handle layer((*iter)[model.layer]);
+		Glib::ustring ghost_label((*iter)[model.ghost_label]);
+
+		if (record_type == RECORD_TYPE_LAYER)
 		{
-			Glib::Value<Glib::ustring> x;
-			g_value_init(x.gobj(),model.label.type());
-			g_value_copy(value.gobj(),x.gobj());
+			// Edit real layer
 
-			synfig::Layer::Handle layer((*iter)[model.layer]);
-			if(!layer)
+			if (column == model.label.index())
+			{
+				if (!layer) return;
+
+				Glib::Value<Glib::ustring> x;
+				g_value_init(x.gobj(),model.label.type());
+				g_value_copy(value.gobj(),x.gobj());
+
+				synfig::String new_desc(x.get());
+
+				if (new_desc == layer->get_local_name())
+					new_desc = synfig::String();
+				if (new_desc == layer->get_description())
+					return;
+
+				synfigapp::Action::Handle action(synfigapp::Action::create("LayerSetDesc"));
+				if (!action) return;
+
+				action->set_param("canvas",canvas_interface()->get_canvas());
+				action->set_param("canvas_interface",canvas_interface());
+				action->set_param("layer",layer);
+				action->set_param("new_description",synfig::String(x.get()));
+
+				canvas_interface()->get_instance()->perform_action(action);
 				return;
-			synfig::String new_desc(x.get());
+			}
+			else
+			if (column == model.active.index())
+			{
+				if (!layer) return;
 
-			if(new_desc==layer->get_local_name())
-				new_desc=synfig::String();
+				Glib::Value<bool> x;
+				g_value_init(x.gobj(),model.active.type());
+				g_value_copy(value.gobj(),x.gobj());
 
-			if(new_desc==layer->get_description())
+				synfigapp::Action::Handle action(synfigapp::Action::create("LayerActivate"));
+				if (!action) return;
+
+				action->set_param("canvas",canvas_interface()->get_canvas());
+				action->set_param("canvas_interface",canvas_interface());
+				action->set_param("layer",layer);
+				action->set_param("new_status",bool(x.get()));
+
+				canvas_interface()->get_instance()->perform_action(action);
 				return;
+			}
+			else
+			if (column == model.exclude_from_rendering.index())
+			{
+				if (!layer) return;
 
-			synfigapp::Action::Handle action(synfigapp::Action::create("LayerSetDesc"));
+				Glib::Value<bool> x;
+				g_value_init(x.gobj(),model.exclude_from_rendering.type());
+				g_value_copy(value.gobj(),x.gobj());
 
-			if(!action)
+				synfigapp::Action::Handle action(synfigapp::Action::create("LayerSetExcludeFromRendering"));
+				if (!action) return;
+
+				action->set_param("canvas",canvas_interface()->get_canvas());
+				action->set_param("canvas_interface",canvas_interface());
+				action->set_param("layer",layer);
+				action->set_param("new_state",bool(x.get()));
+
+				canvas_interface()->get_instance()->perform_action(action);
 				return;
-
-			action->set_param("canvas",canvas_interface()->get_canvas());
-			action->set_param("canvas_interface",canvas_interface());
-			action->set_param("layer",layer);
-			action->set_param("new_description",synfig::String(x.get()));
-
-			canvas_interface()->get_instance()->perform_action(action);
-			return;
-		}
-		else if(column==model.active.index())
-		{
-			synfig::Layer::Handle layer((*iter)[model.layer]);
-
-			if(!layer)return;
-
-			Glib::Value<bool> x;
-			g_value_init(x.gobj(),model.active.type());
-			g_value_copy(value.gobj(),x.gobj());
-
-			synfigapp::Action::Handle action(synfigapp::Action::create("LayerActivate"));
-
-			if(!action)
-				return;
-
-			action->set_param("canvas",canvas_interface()->get_canvas());
-			action->set_param("canvas_interface",canvas_interface());
-			action->set_param("layer",layer);
-			action->set_param("new_status",bool(x.get()));
-
-			canvas_interface()->get_instance()->perform_action(action);
-			return;
-		}
-		else if(column==model.exclude_from_rendering.index())
-		{
-			synfig::Layer::Handle layer((*iter)[model.layer]);
-
-			if(!layer)return;
-
-			Glib::Value<bool> x;
-			g_value_init(x.gobj(),model.exclude_from_rendering.type());
-			g_value_copy(value.gobj(),x.gobj());
-
-			synfigapp::Action::Handle action(synfigapp::Action::create("LayerSetExcludeFromRendering"));
-
-			if(!action)
-				return;
-
-			action->set_param("canvas",canvas_interface()->get_canvas());
-			action->set_param("canvas_interface",canvas_interface());
-			action->set_param("layer",layer);
-			action->set_param("new_state",bool(x.get()));
-
-			canvas_interface()->get_instance()->perform_action(action);
-			return;
+			}
 		}
 		else
-			Gtk::TreeStore::set_value_impl(iter,column, value);
+		if (record_type == RECORD_TYPE_GHOST)
+		{
+			// Edit placeholder for new layer (ghost)
+
+			if ( column == model.label.index()
+			  || column == model.exclude_from_rendering.index() )
+			{
+				return;
+			}
+			else
+			if (column == model.active.index())
+			{
+				Glib::Value<bool> x;
+				g_value_init(x.gobj(),model.active.type());
+				g_value_copy(value.gobj(),x.gobj());
+
+				if (x.get())
+				{
+					Canvas::Handle canvas = iter->parent()
+							              ? (*iter->parent())[model.contained_canvas]
+										  : canvas_interface()->get_canvas();
+					if (canvas)
+					{
+						int depth = canvas->size();
+						if (Layer::Handle layer = canvas_interface()->layer_create("group", canvas))
+						{
+							synfigapp::Action::PassiveGrouper group(
+								canvas_interface()->get_instance().get(), _("Create Group from Ghost"));
+							canvas_interface()->layer_set_defaults(layer);
+							layer->set_description(ghost_label.c_str());
+							canvas_interface()->layer_add_action(layer);
+							canvas_interface()->layer_move_action(layer, depth);
+						}
+					}
+				}
+
+				return;
+			}
+		}
+
+		Gtk::TreeStore::set_value_impl(iter,column,value);
 
 	}
 	catch(std::exception x)
@@ -452,21 +453,20 @@ LayerTreeStore::set_value_impl(const Gtk::TreeModel::iterator& iter, int column,
 	}
 }
 
-
-
-
 bool
-LayerTreeStore::row_draggable_vfunc (const TreeModel::Path& /*path*/)const
+LayerTreeStore::row_draggable_vfunc(const TreeModel::Path& path)const
 {
-	//if(!get_iter(path)) return false;
-//	Gtk::TreeModel::Row row(*get_iter(path));
+	Gtk::TreeIter iter = const_cast<LayerTreeStore*>(this)->get_iter(path);
+	if (!iter) return false;
 
-	return true;
-//	return (bool)true;
+	RecordType record_type((*iter)[model.record_type]);
+	synfig::Layer::Handle layer((*iter)[model.layer]);
+
+	return record_type == RECORD_TYPE_LAYER && layer;
 }
 
 bool
-LayerTreeStore::drag_data_get_vfunc (const TreeModel::Path& path, Gtk::SelectionData& selection_data)const
+LayerTreeStore::drag_data_get_vfunc(const TreeModel::Path& path, Gtk::SelectionData& selection_data)const
 {
 	if(!const_cast<LayerTreeStore*>(this)->get_iter(path)) return false;
 	//synfig::info("Dragged data of type \"%s\"",selection_data.get_data_type());
@@ -477,11 +477,10 @@ LayerTreeStore::drag_data_get_vfunc (const TreeModel::Path& path, Gtk::Selection
 
 	if((bool)true)
 	{
-		Layer* layer(((Layer::Handle)row[model.layer]).get());
-		assert(layer);
+		Layer* layer = (RecordType)row[model.record_type] == RECORD_TYPE_LAYER
+				     ? ((Layer::Handle)row[model.layer]).get()
+		             : NULL;
 		bool included(false);
-
-		//gtk_selection_data_set (selection_data, gdk_atom_intern("LAYER",false), 8, reinterpret_cast<const guchar*>(&layer), sizeof(layer));
 
 		std::vector<Layer*> layers;
 		// The following is a hack for multiple row DND
@@ -492,7 +491,7 @@ LayerTreeStore::drag_data_get_vfunc (const TreeModel::Path& path, Gtk::Selection
 				selection_data.set("LAYER", 8, reinterpret_cast<const guchar*>(&layer), sizeof(layer));
 				return true;
 			}
-			while(!bleh.empty())
+			if (layer) while(!bleh.empty())
 			{
 				if(bleh.back().get()==layer)
 					included=true;
@@ -500,7 +499,7 @@ LayerTreeStore::drag_data_get_vfunc (const TreeModel::Path& path, Gtk::Selection
 				bleh.pop_back();
 			}
 		}
-		if(!included)
+		if(layer && !included)
 			layers.push_back(layer);
 		selection_data.set("LAYER", 8, reinterpret_cast<const guchar*>(&layers.front()), sizeof(void*)*layers.size());
 
@@ -531,22 +530,26 @@ LayerTreeStore::row_drop_possible_vfunc (const TreeModel::Path& dest, const Gtk:
 		//Layer::Handle src(reinterpret_cast<Layer**>(const_cast<guint8*>(selection_data.get_data()))[i]);
 		//assert(src);
 
-		//return true;
 		TreeModel::Path dest_parent(dest);
-		if(!dest_parent.up() || dest.size()==1)
+		if (!dest_parent.up() || dest.size()==1)
 		{
 			//row=(*get_iter(dest));
 			//dest_canvas=(Canvas::Handle)(row[model.canvas]);
 			return true;
 		}
-		else if((bool)const_cast<LayerTreeStore*>(this)->get_iter(dest_parent))
-			return (bool)(Canvas::Handle)(*const_cast<LayerTreeStore*>(this)->get_iter(dest_parent))[model.contained_canvas];
+		else
+		if ((bool)const_cast<LayerTreeStore*>(this)->get_iter(dest_parent))
+		{
+			TreeModel::Row row = *const_cast<LayerTreeStore*>(this)->get_iter(dest_parent);
+			return RECORD_TYPE_LAYER == (RecordType)row[model.record_type]
+				&& (bool)(Canvas::Handle)row[model.contained_canvas];
+		}
 	}
 	return false;
 }
 
 bool
-LayerTreeStore::drag_data_received_vfunc (const TreeModel::Path& dest, const Gtk::SelectionData& selection_data)
+LayerTreeStore::drag_data_received_vfunc(const TreeModel::Path& dest, const Gtk::SelectionData& selection_data)
 {
 
 	//if(!dest_parent.up() || !get_iter(dest)) return false;
@@ -565,115 +568,114 @@ LayerTreeStore::drag_data_received_vfunc (const TreeModel::Path& dest, const Gtk
 
 	if ((selection_data.get_length() >= 0) && (selection_data.get_format() == 8))
 	{
-		Gtk::TreeModel::Row row;
-		Canvas::Handle dest_canvas;
-
-		int dest_layer_depth=dest.back();
-
-		TreeModel::Path dest_parent(dest);
-		if(!dest_parent.up() || !get_iter(dest_parent))
-		{
-			TreeModel::Path dest_(dest);
-			if(!get_iter(dest_))
-				dest_.prev();
-
-			if(!get_iter(dest_))
-				return false;
-
+		synfigapp::SelectionManager::LayerList dropped_layers;
+		if(synfig::String(selection_data.get_data_type())=="LAYER")
+			for(unsigned int i=0; i<selection_data.get_length()/sizeof(void*); i++)
 			{
-				row=(*get_iter(dest_));
-				dest_canvas=(Canvas::Handle)(row[model.canvas]);
+				Layer::Handle l(reinterpret_cast<Layer**>(const_cast<guint8*>(selection_data.get_data()))[i]);
+				if (l) dropped_layers.push_back(l);
 			}
+		if (dropped_layers.empty())
+			return false;
+
+		Gtk::TreeModel::Row row(*get_iter(dest));
+		Canvas::Handle dest_canvas;
+		Layer::Handle dest_layer;
+		int dest_layer_depth = dest.back();
+
+		if (RECORD_TYPE_LAYER == (RecordType)row[model.record_type])
+		{
+			// TODO: check RecordType for parent
+			TreeModel::Path dest_parent(dest);
+			if(!dest_parent.up() || !get_iter(dest_parent))
+			{
+				TreeModel::Path dest_(dest);
+				if(!get_iter(dest_))
+					dest_.prev();
+				if(!get_iter(dest_))
+					return false;
+				{
+					row=(*get_iter(dest_));
+					dest_canvas=(Canvas::Handle)(row[model.canvas]);
+				}
+			}
+			else
+			{
+				row=(*get_iter(dest_parent));
+				dest_canvas=row[model.contained_canvas];
+			}
+			assert(dest_canvas);
+			dest_layer = row[model.layer];
+		}
+		else
+		if (RECORD_TYPE_GHOST == (RecordType)row[model.record_type] && row.parent())
+		{
+			// TODO: check RecordType for parent
+			dest_canvas = (Canvas::Handle)(*row.parent())[model.contained_canvas];
+			dest_layer_depth = dest_canvas->size();
+			if (dropped_layers.size() == 1 && etl::handle<Layer_Group>::cast_dynamic(dropped_layers.front()))
+			{
+				Layer::Handle src = dropped_layers.front();
+				synfigapp::Action::Handle action;
+
+				action = synfigapp::Action::create("LayerMove");
+				action->set_param("canvas", dest_canvas);
+				action->set_param("canvas_interface", canvas_interface());
+				action->set_param("layer", src);
+				action->set_param("new_index", dest_layer_depth);
+				action->set_param("dest_canvas", dest_canvas);
+				if (!canvas_interface()->get_instance()->perform_action(action))
+					{ passive_grouper.cancel(); return false; }
+
+				action = synfigapp::Action::create("LayerSetDesc");
+				action->set_param("canvas", canvas_interface()->get_canvas());
+				action->set_param("canvas_interface", canvas_interface());
+				action->set_param("layer", dropped_layers.front());
+				action->set_param("new_description", synfig::String(((Glib::ustring)row[model.ghost_label]).c_str()));
+				if (!canvas_interface()->get_instance()->perform_action(action))
+					{ passive_grouper.cancel(); return false; }
+
+				dropped_layers.clear();
+				ret = true;
+			}
+			else
+			{
+				dest_layer = canvas_interface()->layer_create("group", dest_canvas);
+				if (!dest_layer) return false;
+				canvas_interface()->layer_set_defaults(dest_layer);
+				dest_layer->set_description( ((Glib::ustring)row[model.ghost_label]).c_str() );
+				canvas_interface()->layer_add_action(dest_layer);
+				canvas_interface()->layer_move_action(dest_layer, dest_layer_depth);
+				dest_canvas = dest_layer->get_param("canvas").get(Canvas::Handle());
+			}
+			dest_layer_depth = -1;
 		}
 		else
 		{
-			row=(*get_iter(dest_parent));
-			dest_canvas=row[model.contained_canvas];
+			return false;
 		}
 
-		assert(dest_canvas);
-
-		Layer::Handle dest_layer(row[model.layer]);
-
-		if(synfig::String(selection_data.get_data_type())=="LAYER")for(unsigned int i=0;i<selection_data.get_length()/sizeof(void*);i++)
+		for(synfigapp::SelectionManager::LayerList::const_iterator i = dropped_layers.begin(); i != dropped_layers.end(); ++i)
 		{
-			//synfig::info("dest_layer_depth=%d",dest_layer_depth);
-
-			Layer::Handle src(reinterpret_cast<Layer**>(const_cast<guint8*>(selection_data.get_data()))[i]);
-			assert(src);
-			if(dest_layer==src)
-				continue;
+			Layer::Handle src(*i);
+			if(dest_layer == src) continue;
 
 			if(dest_canvas==src->get_canvas() && src->get_depth()<dest_layer_depth)
 				dest_layer_depth--;
 
-			// In this case, we are just moving.
-//			if(dest_canvas==src->get_canvas())
-			{
-				//if(dest_canvas==src->get_canvas() && dest_layer_depth && dest_layer_depth>src->get_depth())
-				//	dest_layer_depth--;
-				if(dest_canvas==src->get_canvas() && dest_layer_depth==src->get_depth())
-					continue;
-
-				synfigapp::Action::Handle action(synfigapp::Action::create("LayerMove"));
-				action->set_param("canvas",dest_canvas);
-				action->set_param("canvas_interface",canvas_interface());
-				action->set_param("layer",src);
-				action->set_param("new_index",dest_layer_depth);
-				action->set_param("dest_canvas",dest_canvas);
-				if(canvas_interface()->get_instance()->perform_action(action))
-					ret=true;
-				else
-				{
-					passive_grouper.cancel();
-					return false;
-				}
+			if(dest_canvas==src->get_canvas() && dest_layer_depth==src->get_depth())
 				continue;
-			}
-			/*else // In this case we need to remove and then add
-			{
 
-				synfigapp::Action::Handle action;
-				action=synfigapp::Action::create("LayerRemove");
-				action->set_param("canvas",Canvas::Handle(src->get_canvas()));
-				if(!action->set_param("canvas_interface",App::get_instance(src->get_canvas())->find_canvas_interface(src->get_canvas())))
-					action->set_param("canvas_interface",canvas_interface());
-				action->set_param("layer",src);
-				if(!canvas_interface()->get_instance()->perform_action(action))
-				{
-					passive_grouper.cancel();
-					ret=false;
-					return false;
-				}
-
-				action=synfigapp::Action::create("LayerAdd");
-				action->set_param("canvas",dest_canvas);
-				action->set_param("canvas_interface",canvas_interface());
-				action->set_param("new",src);
-				if(!canvas_interface()->get_instance()->perform_action(action))
-				{
-					passive_grouper.cancel();
-					ret=false;
-					return false;
-				}
-
-				if(dest_layer_depth!=0)
-				{
-					action=synfigapp::Action::create("LayerMove");
-					action->set_param("canvas",dest_canvas);
-					action->set_param("canvas_interface",canvas_interface());
-					action->set_param("layer",src);
-					action->set_param("new_index",dest_layer_depth);
-					if(!canvas_interface()->get_instance()->perform_action(action))
-					{
-						passive_grouper.cancel();
-						ret=false;
-						return false;
-					}
-				}
-				ret=true;
-			}
-			*/
+			synfigapp::Action::Handle action(synfigapp::Action::create("LayerMove"));
+			action->set_param("canvas",dest_canvas);
+			action->set_param("canvas_interface",canvas_interface());
+			action->set_param("layer",src);
+			action->set_param("new_index",dest_layer_depth);
+			action->set_param("dest_canvas",dest_canvas);
+			if (canvas_interface()->get_instance()->perform_action(action))
+				{ ret=true; }
+			else
+				{ passive_grouper.cancel(); return false; }
 		}
 	}
 	synfig::info("I supposedly moved %d layers",i);
@@ -709,11 +711,16 @@ LayerTreeStore::rebuild()
 		iter->second.disconnect();
 	subcanvas_changed_connections.clear();
 
+	for (iter = switch_changed_connections.begin(); iter != switch_changed_connections.end(); iter++)
+		iter->second.disconnect();
+	switch_changed_connections.clear();
+
 	//etl::clock timer;timer.reset();
 
 	//synfig::warning("---------rebuilding layer table---------");
 	// Save the selection data
 	synfigapp::SelectionManager::LayerList layer_list=canvas_interface()->get_selection_manager()->get_selected_layers();
+	synfigapp::SelectionManager::LayerList expanded_layer_list=canvas_interface()->get_selection_manager()->get_expanded_layers();
 
 	// Clear out the current list
 	clear();
@@ -725,6 +732,8 @@ LayerTreeStore::rebuild()
 	);
 
 	// Reselect the previously selected layers
+	if(!expanded_layer_list.empty())
+		canvas_interface()->get_selection_manager()->set_expanded_layers(expanded_layer_list);
 	if(!layer_list.empty())
 		canvas_interface()->get_selection_manager()->set_selected_layers(layer_list);
 
@@ -734,10 +743,10 @@ LayerTreeStore::rebuild()
 void
 LayerTreeStore::refresh()
 {
-	etl::clock timer;timer.reset();
+	etl::clock timer;
+	timer.reset();
 
 	Gtk::TreeModel::Children children_(children());
-
 	Gtk::TreeModel::Children::iterator iter;
 
 	if(!children_.empty())
@@ -745,48 +754,55 @@ LayerTreeStore::refresh()
 		{
 			Gtk::TreeRow row=*iter;
 			refresh_row(row);
+			row_changed(get_path(iter), iter);
 		}
+
 	//synfig::info("LayerTreeStore::refresh() took %f seconds",float(timer()));
 }
 
 void
 LayerTreeStore::refresh_row(Gtk::TreeModel::Row &row)
 {
-	Layer::Handle layer=row[model.layer];
-	/*
+	RecordType record_type = row[model.record_type];
+	Layer::Handle layer = row[model.layer];
+
+	if (record_type == RECORD_TYPE_LAYER && layer)
 	{
-		row[model.name] = layer->get_local_name();
-		if(layer->get_description().empty())
+		/*
 		{
-			row[model.label] = layer->get_local_name();
-			row[model.tooltip] = Glib::ustring("Layer");
+			row[model.name] = layer->get_local_name();
+			if(layer->get_description().empty())
+			{
+				row[model.label] = layer->get_local_name();
+				row[model.tooltip] = Glib::ustring("Layer");
+			}
+			else
+			{
+				row[model.label] = layer->get_description();
+				row[model.tooltip] = layer->get_local_name();
+			}
 		}
-		else
-		{
-			row[model.label] = layer->get_description();
-			row[model.tooltip] = layer->get_local_name();
-		}
+		*/
+
+		if(layer->dynamic_param_list().count("z_depth"))
+			row[model.z_depth]=Time::begin();
+		//	row_changed(get_path(row),row);
+
+		Gtk::TreeModel::Children children = row.children();
+		Gtk::TreeModel::Children::iterator iter;
+
+		if(!children.empty())
+			for(iter = children.begin(); iter && iter != children.end(); ++iter)
+			{
+				Gtk::TreeRow row=*iter;
+				refresh_row(row);
+				row_changed(get_path(iter), iter);
+			}
 	}
-	*/
-
-	if(layer->dynamic_param_list().count("z_depth"))
-		row[model.z_depth]=Time::begin();
-	//	row_changed(get_path(row),row);
-
-	Gtk::TreeModel::Children children = row.children();
-	Gtk::TreeModel::Children::iterator iter;
-
-	if(!children.empty())
-		for(iter = children.begin(); iter && iter != children.end(); ++iter)
-		{
-			Gtk::TreeRow row=*iter;
-			refresh_row(row);
-		}
 }
 
-
 void
-LayerTreeStore::set_row_layer(Gtk::TreeRow &row,synfig::Layer::Handle &handle)
+LayerTreeStore::set_row_layer(Gtk::TreeRow &row, const synfig::Layer::Handle &handle)
 {
 	//row[model.id] = handle->get_name();
 	//row[model.name] = handle->get_local_name();
@@ -802,6 +818,7 @@ LayerTreeStore::set_row_layer(Gtk::TreeRow &row,synfig::Layer::Handle &handle)
 	}*/
 
 	//row[model.active] = handle->active();
+	row[model.record_type] = RECORD_TYPE_LAYER;
 	row[model.layer] = handle;
 	//row[model.canvas] = handle->get_canvas();
 	//row[model.icon] = layer_icon;
@@ -824,14 +841,31 @@ LayerTreeStore::set_row_layer(Gtk::TreeRow &row,synfig::Layer::Handle &handle)
 			if(!canvas)
 				continue;
 
-			Canvas::reverse_iterator iter;
 			row[model.contained_canvas]=canvas;
 
-			for(iter=canvas->rbegin();iter!=canvas->rend();++iter)
+			std::set<String> possible_new_layers;
+			std::set<String> impossible_existant_layers;
+			if (etl::handle<Layer_Switch> layer_switch = etl::handle<Layer_Switch>::cast_dynamic(handle))
+			{
+				layer_switch->get_possible_new_layers(possible_new_layers);
+				layer_switch->get_impossible_existant_layers(impossible_existant_layers);
+			}
+
+			int index = canvas->size() + possible_new_layers.size();
+			for(std::set<String>::const_reverse_iterator i = possible_new_layers.rbegin(); i != possible_new_layers.rend(); ++i)
 			{
 				Gtk::TreeRow row_(*(prepend(row.children())));
+				set_row_ghost(row_, *i, --index);
+			}
+
+			for(Canvas::reverse_iterator iter = canvas->rbegin(); iter != canvas->rend(); ++iter)
+			{
+				Gtk::TreeRow row_(*(prepend(row.children())));
+				bool xx = (bool)impossible_existant_layers.count((*iter)->get_description());
+				row_[model.layer_impossible] = xx;
 				set_row_layer(row_,*iter);
 			}
+
 			continue;
 		}
 
@@ -855,13 +889,24 @@ LayerTreeStore::set_row_layer(Gtk::TreeRow &row,synfig::Layer::Handle &handle)
 }
 
 void
+LayerTreeStore::set_row_ghost(Gtk::TreeRow &row, const synfig::String &label, int depth)
+{
+	row[model.index] = depth;
+	row[model.record_type] = RECORD_TYPE_GHOST;
+	row[model.ghost_label] = label;
+}
+
+void
 LayerTreeStore::on_layer_added(synfig::Layer::Handle layer)
 {
 	if (etl::handle<Layer_PasteCanvas>::cast_dynamic(layer))
 		subcanvas_changed_connections[layer] =
 			(etl::handle<Layer_PasteCanvas>::cast_dynamic(layer))->signal_subcanvas_changed().connect(
-				sigc::mem_fun(*this,&studio::LayerTreeStore::queue_rebuild)
-			);
+				sigc::mem_fun(*this,&studio::LayerTreeStore::queue_rebuild) );
+	if (etl::handle<Layer_Switch> layer_switch = etl::handle<Layer_Switch>::cast_dynamic(layer))
+		switch_changed_connections[layer_switch] =
+			layer_switch->signal_possible_layers_changed().connect(
+				sigc::mem_fun(*this,&studio::LayerTreeStore::queue_rebuild) );
 
 	assert(layer);
 	Gtk::TreeRow row;
@@ -889,6 +934,11 @@ LayerTreeStore::on_layer_removed(synfig::Layer::Handle handle)
 	{
 		subcanvas_changed_connections[handle].disconnect();
 		subcanvas_changed_connections.erase(handle);
+	}
+	if (etl::handle<Layer_Switch>::cast_dynamic(handle))
+	{
+		switch_changed_connections[handle].disconnect();
+		switch_changed_connections.erase(handle);
 	}
 	Gtk::TreeModel::Children::iterator iter;
 	if(find_layer_row(handle,iter))
@@ -990,7 +1040,7 @@ LayerTreeStore::on_layer_lowered(synfig::Layer::Handle layer)
 		//synfigapp::SelectionManager::LayerList layer_list=canvas_interface()->get_selection_manager()->get_selected_layers();
 		iter2=iter;
 		iter2++;
-		if(!iter2)
+		if(!iter2 || RECORD_TYPE_LAYER != (*iter2)[model.record_type])
 		{
 			rebuild();
 			return;
@@ -1018,7 +1068,7 @@ LayerTreeStore::on_layer_raised(synfig::Layer::Handle layer)
 
 	if(find_layer_row_(layer, canvas_interface()->get_canvas(), children_, iter,iter2))
 	{
-		if(iter!=iter2)
+		if(iter!=iter2 && RECORD_TYPE_LAYER==(*iter2)[model.record_type])
 		{
 			//Gtk::TreeModel::Row row = *iter;
 			Gtk::TreeModel::Row row2 = *iter2;
@@ -1158,7 +1208,8 @@ LayerTreeStore::find_layer_row_(const synfig::Layer::Handle &layer, synfig::Canv
 		for(iter=prev=layers.begin(); iter && iter != layers.end(); prev=iter++)
 		{
 			Gtk::TreeModel::Row row = *iter;
-			if(layer==(synfig::Layer::Handle)row[model.layer])
+			if ( RECORD_TYPE_LAYER == (RecordType)row[model.record_type]
+			  && layer == (synfig::Layer::Handle)row[model.layer] )
 				return true;
 		}
 
@@ -1174,6 +1225,9 @@ LayerTreeStore::find_layer_row_(const synfig::Layer::Handle &layer, synfig::Canv
 		assert((bool)true);
 
 		if(row.children().empty())
+			continue;
+
+		if (RECORD_TYPE_LAYER != (RecordType)row[model.record_type])
 			continue;
 
 		Canvas::Handle canvas((*row.children().begin())[model.canvas]);

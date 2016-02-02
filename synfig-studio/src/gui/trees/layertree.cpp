@@ -216,6 +216,8 @@ LayerTree::create_layer_tree()
 		column->add_attribute(cellrenderer->property_text(), layer_model.label);
 		column->add_attribute(cellrenderer->property_style(), layer_model.style);
 		column->add_attribute(cellrenderer->property_weight(), layer_model.weight);
+		column->add_attribute(cellrenderer->property_underline(), layer_model.underline);
+		column->add_attribute(cellrenderer->property_strikethrough(), layer_model.strikethrough);
 		cellrenderer->signal_edited().connect(sigc::mem_fun(*this, &studio::LayerTree::on_layer_renamed));
 		cellrenderer->property_editable()=true;
 
@@ -512,7 +514,10 @@ LayerTree::select_layers(const LayerList &layer_list)
 static inline void __layer_grabber(const Gtk::TreeModel::iterator& iter, LayerTree::LayerList* ret)
 {
 	const LayerTreeStore::Model layer_tree_model;
-	ret->push_back((Layer::Handle)(*iter)[layer_tree_model.layer]);
+	LayerTreeStore::RecordType record_type((*iter)[layer_tree_model.record_type]);
+	Layer::Handle layer((*iter)[layer_tree_model.layer]);
+	if (record_type == LayerTreeStore::RECORD_TYPE_LAYER && layer)
+		ret->push_back(layer);
 }
 
 LayerTree::LayerList
@@ -545,13 +550,65 @@ LayerTree::get_selected_layer()const
 	if(layers.empty())
 		return 0;
 
-	return *layers.begin();
+	return layers.front();
 }
 
 void
 LayerTree::clear_selected_layers()
 {
 	get_layer_tree_view().get_selection()->unselect_all();
+}
+
+void
+LayerTree::expand_layer(synfig::Layer::Handle layer)
+{
+	if (!layer) return;
+	Gtk::TreeModel::Children::iterator iter;
+	if(layer_tree_store_->find_layer_row(layer,iter))
+	{
+		if(sorted_layer_tree_store_)
+			iter=sorted_layer_tree_store_->convert_child_iter_to_iter(iter);
+
+		Gtk::TreePath path(iter);
+		get_layer_tree_view().expand_to_path(path);
+	}
+}
+
+void
+LayerTree::expand_layers(const LayerList& layer_list)
+{
+	for(LayerList::const_iterator i = layer_list.begin(); i != layer_list.end(); ++i)
+		expand_layer(*i);
+}
+
+LayerTree::LayerList
+LayerTree::get_expanded_layers()const
+{
+	LayerList list;
+	get_expanded_layers(list, layer_tree_store_->children());
+	return list;
+}
+
+void
+LayerTree::get_expanded_layers(LayerList &list, const Gtk::TreeNodeChildren &rows)const
+{
+	const LayerTreeStore::Model model;
+	for(Gtk::TreeNodeChildren::const_iterator i = rows.begin(); i != rows.end(); ++i)
+	{
+		if ( (LayerTreeStore::RecordType)(*i)[model.record_type] == LayerTreeStore::RECORD_TYPE_LAYER
+		  && (Layer::Handle)(*i)[model.layer] )
+		{
+			Gtk::TreeNodeChildren::const_iterator j = i;
+			if(sorted_layer_tree_store_)
+				j = sorted_layer_tree_store_->convert_child_iter_to_iter(i);
+			Gtk::TreePath path(j);
+			if (const_cast<Gtk::TreeView*>(&get_layer_tree_view())->row_expanded(path))
+			{
+				list.push_back( (Layer::Handle)(*i)[model.layer] );
+				get_expanded_layers(list, i->children());
+			}
+		}
+	}
 }
 
 void

@@ -100,6 +100,7 @@
 #include "valuenodes/valuenode_derivative.h"
 #include "valuenodes/valuenode_weightedaverage.h"
 #include "valuenodes/valuenode_reverse.h"
+#include "valuenodes/valuenode_animatedfile.h"
 
 #include "layer.h"
 
@@ -220,6 +221,8 @@ ValueNode::subsys_init()
 	ADD_VALUENODE(ValueNode_Derivative,        "derivative",      _("Derivative"),       RELEASE_VERSION_1_0);
 	
 	ADD_VALUENODE(ValueNode_Reverse,           "reverse",         _("Reverse"),          RELEASE_VERSION_1_0_2);
+
+	ADD_VALUENODE(ValueNode_AnimatedFile,      "animated_file",   _("Animated File"),    RELEASE_VERSION_1_0_2);
 
 #undef ADD_VALUENODE_CREATE
 #undef ADD_VALUENODE
@@ -421,6 +424,142 @@ ValueNode::is_descendant(ValueNode::Handle value_node_dest)
 
     return value_node_dest->parent_count() ? is_descendant(value_node_parent) : false;
 }
+
+void
+ValueNode::get_values(std::set<ValueBase> &x) const
+{
+	std::map<Time, ValueBase> v;
+	get_values(v);
+	for(std::map<Time, ValueBase>::const_iterator i = v.begin(); i != v.end(); ++i)
+		x.insert(i->second);
+}
+
+void
+ValueNode::get_value_change_times(std::set<Time> &x) const
+{
+	std::map<Time, ValueBase> v;
+	get_values(v);
+	for(std::map<Time, ValueBase>::const_iterator i = v.begin(); i != v.end(); ++i)
+		x.insert(i->first);
+}
+
+void
+ValueNode::get_values(std::map<Time, ValueBase> &x) const
+	{ get_values_vfunc(x); }
+
+int
+ValueNode::time_to_frame(Time t, Real fps)
+	{ return (int)floor(t*fps + 1e-10); }
+
+int
+ValueNode::time_to_frame(Time t)
+{
+	if (Canvas::Handle canvas = get_parent_canvas())
+	{
+		const RendDesc &desc = canvas->rend_desc();
+		return time_to_frame(t, desc.get_frame_rate());
+	}
+	return 0;
+}
+
+void
+ValueNode::add_value_to_map(std::map<Time, ValueBase> &x, Time t, const ValueBase &v)
+{
+	std::map<Time, ValueBase>::const_iterator j = x.upper_bound(t);
+	if (j == x.begin() || (--j)->second != v)
+		{ ValueBase tmp(v); x[t] = tmp; }
+}
+
+void
+ValueNode::canvas_time_bounds(const Canvas &canvas, bool &found, Time &begin, Time &end, Real &fps)
+{
+	if (!found)
+	{
+		found = true;
+		begin = canvas.rend_desc().get_time_start();
+		end = canvas.rend_desc().get_time_end();
+		fps = canvas.rend_desc().get_frame_rate();
+	}
+	else
+	{
+		begin = min(begin, canvas.rend_desc().get_time_start());
+		end = min(end, canvas.rend_desc().get_time_end());
+		fps = max(fps, (Real)canvas.rend_desc().get_frame_rate());
+	}
+}
+
+void
+ValueNode::find_time_bounds(const Node &node, bool &found, Time &begin, Time &end, Real &fps)
+{
+	for(std::set<Node*>::const_iterator i = node.parent_set.begin(); i != node.parent_set.end(); ++i)
+	{
+		if (!*i) continue;
+		if (Layer *layer = dynamic_cast<Layer*>(*i))
+		{
+			if (Canvas::Handle canvas = layer->get_canvas())
+				canvas_time_bounds(*canvas->get_root(), found, begin, end, fps);
+		}
+		else
+		{
+			find_time_bounds(**i, found, begin, end, fps);
+		}
+	}
+}
+
+void
+ValueNode::calc_time_bounds(int &begin, int &end, Real &fps) const
+{
+	bool found = false;
+	Time b = 0.0;
+	Time e = 10*60;
+	fps = 24;
+
+	find_time_bounds(*this, found, b, e, fps);
+	if (get_parent_canvas())
+		canvas_time_bounds(*get_parent_canvas(), found, b, e, fps);
+	if (get_root_canvas())
+		canvas_time_bounds(*get_root_canvas(), found, b, e, fps);
+
+	begin = (int)floor(b*fps);
+	end = (int)ceil(e*fps);
+}
+
+void
+ValueNode::calc_values(std::map<Time, ValueBase> &x, int begin, int end, Real fps) const
+{
+	if (fabs(fps) > 1e-10)
+	{
+		Real k = 1.0/fps;
+		if (begin > end) swap(begin, end);
+		for(int i = begin; i <= end; ++i)
+			add_value_to_map(x, i*k, (*this)(i*k));
+	}
+}
+
+void
+ValueNode::calc_values(std::map<Time, ValueBase> &x, int begin, int end) const
+{
+	int b, e;
+	Real fps;
+	calc_time_bounds(b, e, fps);
+	calc_values(x, begin, end, fps);
+}
+
+void
+ValueNode::calc_values(std::map<Time, ValueBase> &x) const
+{
+	int begin, end;
+	Real fps;
+	calc_time_bounds(begin, end, fps);
+	calc_values(x, begin, end, fps);
+}
+
+void
+ValueNode::get_values_vfunc(std::map<Time, ValueBase> &x) const
+{
+	calc_values(x);
+}
+
 
 ValueNodeList::ValueNodeList():
 	placeholder_count_(0)
@@ -868,4 +1007,15 @@ LinkableValueNode::set_root_canvas(etl::loose_handle<Canvas> x)
 	ValueNode::set_root_canvas(x);
 	for(int i = 0; i < link_count(); ++i)
 		get_link(i)->set_root_canvas(x);
+}
+
+void
+LinkableValueNode::get_values_vfunc(std::map<Time, ValueBase> &x) const
+{
+	std::set<Time> times;
+	for(int i = 0; i < link_count(); ++i)
+		if (ValueNode::Handle link = get_link(i))
+			link->get_value_change_times(times);
+	for(std::set<Time>::const_iterator i = times.begin(); i != times.end(); ++i)
+		add_value_to_map(x, *i, (*this)(*i));
 }

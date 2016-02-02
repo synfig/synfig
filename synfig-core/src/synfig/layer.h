@@ -97,6 +97,7 @@
 	if (#x=="param_"+param && x.get_type()==value.get_type())                   \
 	{                                                                           \
 		x=value;                                                                \
+        static_param_changed(param);                                            \
 		return true;                                                            \
 	}
 
@@ -109,6 +110,7 @@
 		{
 #define IMPORT_VALUE_PLUS_END                                                   \
 		}                                                                       \
+        static_param_changed(param);                                            \
 		return true;                                                            \
 	}
 #define IMPORT_VALUE_PLUS(x,y)                                                  \
@@ -336,6 +338,10 @@ private:
 
 	sigc::signal<void, String> signal_removed_from_group_;
 
+	sigc::signal<void, String> signal_static_param_changed_;
+
+	sigc::signal<void, String> signal_dynamic_param_changed_;
+
 	/*
  -- ** -- S I G N A L   I N T E R F A C E -------------------------------------
 	*/
@@ -358,11 +364,18 @@ public:
 
 	sigc::signal<void, String>& signal_removed_from_group() { return signal_removed_from_group_; }
 
+	sigc::signal<void, String>& signal_static_param_changed() { return signal_static_param_changed_; }
+
+	sigc::signal<void, String>& signal_dynamic_param_changed() { return signal_dynamic_param_changed_; }
+
 	/*
  --	** -- C O N S T R U C T O R S ---------------------------------------------
 	*/
 
 protected:
+
+	void static_param_changed(const String &param);
+	void dynamic_param_changed(const String &param);
 
 	Layer();
 
@@ -376,6 +389,8 @@ public:
 public:
 
 	virtual void on_canvas_set();
+	virtual void on_static_param_changed(const String &param);
+	virtual void on_dynamic_param_changed(const String &param);
 
 	//! Adds this layer to the given layer group
 	void add_to_group(const String&);
@@ -617,6 +632,8 @@ protected:
 
 	//! This is called whenever a parameter is changed
 	virtual void on_changed();
+
+	virtual void on_child_changed(const Node *x);
 
 	//! Called to figure out the animation time information
 	virtual void get_times_vfunc(Node::time_set &set) const;

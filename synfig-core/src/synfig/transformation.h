@@ -78,6 +78,15 @@ public:
 	}
 
 	bool
+	operator<(const Transformation &rhs)const
+	{
+		return offset<rhs.offset         ? true : rhs.offset<offset         ? false
+			 : angle<rhs.angle           ? true : rhs.angle<angle           ? false
+			 : skew_angle<rhs.skew_angle ? true : rhs.skew_angle<skew_angle ? false
+			 : scale<rhs.scale;
+	}
+
+	bool
 	operator==(const Transformation &rhs)const
 	{
 		return offset==rhs.offset

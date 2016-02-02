@@ -60,6 +60,7 @@ public:
 	inline Color operator- (const Color &rhs) const;
 	inline Color operator* (const float &rhs) const;
 	inline Color operator/ (const float &rhs) const;
+	inline bool operator<  (const Color &rhs)const;
 	inline bool operator== (const Color &rhs) const;
 	inline bool operator!= (const Color &rhs) const;
 	inline Color operator- () const;

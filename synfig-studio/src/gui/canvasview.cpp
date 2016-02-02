@@ -499,6 +499,18 @@ public:
 		view->layer_tree->clear_selected_layers();
 	}
 
+	virtual LayerList get_expanded_layers()const
+	{
+		if(!view->layer_tree) { synfig::error("%s:%d canvas_view.layer_tree not defined!?", __FILE__, __LINE__); return LayerList(); }
+		return view->layer_tree->get_expanded_layers();
+	}
+
+	virtual void set_expanded_layers(const LayerList &layer_list)
+	{
+		if(!view->layer_tree) { synfig::error("%s:%d canvas_view.layer_tree not defined!?", __FILE__, __LINE__); return; }
+		view->layer_tree->expand_layers(layer_list);
+	}
+
 	//! Returns the number of value_nodes selected.
 	virtual int get_selected_children_count()const
 	{
@@ -2040,6 +2052,8 @@ CanvasView::popup_layer_menu(synfig::Layer::Handle layer)
 	}
 
 	add_actions_to_menu(menu, param_list,synfigapp::Action::CATEGORY_LAYER);
+	get_instance()->add_special_layer_actions_to_menu(menu, layer);
+
 	menu->popup(3,gtk_get_current_event_time());
 }
 
@@ -2467,6 +2481,7 @@ CanvasView::add_actions_to_menu(Gtk::Menu *menu, const synfigapp::Action::ParamL
 {
 	get_instance()->add_actions_to_menu(menu, param_list, category);
 }
+
 
 bool
 CanvasView::on_layer_user_click(int button, Gtk::TreeRow /*row*/, LayerTree::ColumnID /*column_id*/)

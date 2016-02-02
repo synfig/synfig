@@ -175,6 +175,9 @@ private:
 	//! Node changed signal
 	sigc::signal<void> signal_changed_;
 
+	//! Child node changed signal
+	sigc::signal<void, const Node*> signal_child_changed_;
+
 	//!	GUID changed signal
 	/*! \note The second parameter is the *OLD* guid! */
 	sigc::signal<void,GUID> signal_guid_changed_;
@@ -191,6 +194,8 @@ public:
 	sigc::signal<void>& signal_deleted() { return signal_deleted_; }
 
 	sigc::signal<void>& signal_changed() { return signal_changed_; }
+
+	sigc::signal<void, const Node*>& signal_child_changed() { return signal_child_changed_; }
 
 	//!	GUID Changed
 	/*! \note The second parameter is the *OLD* guid! */
@@ -218,6 +223,7 @@ public:
 public:
 
 	void changed();
+	void child_changed(const Node *x);
 
 	//! Gets the GUID for this Node
 	const GUID& get_guid()const;
@@ -257,6 +263,11 @@ protected:
 	//! To be overloaded by the derivative classes. Emits a signal where the
 	//! the GUI can be connected to.
 	virtual void on_changed();
+
+	//! Used when child node has changed. Calls changed() too.
+	//! To be overloaded by the derivative classes. Emits a signal where the
+	//! the GUI can be connected to.
+	virtual void on_child_changed(const Node *x);
 
 	//! Used when the node's GUID has changed.
 	//! To be overloaded by the derivative classes. Emits a signal where the

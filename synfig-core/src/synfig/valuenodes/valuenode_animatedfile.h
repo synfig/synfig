@@ -1,11 +1,11 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file valuenode_animated.h
-**	\brief Header file for Valuenode_Animated.
+/*!	\file valuenode_animatedfile.h
+**	\brief Header file for Valuenode_AnimatedFile.
 **
 **	$Id$
 **
 **	\legal
-**	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**	......... ... 2016 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -22,8 +22,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_VALUENODE_ANIMATED_H
-#define __SYNFIG_VALUENODE_ANIMATED_H
+#ifndef __SYNFIG_VALUENODE_ANIMATEDFILE_H
+#define __SYNFIG_VALUENODE_ANIMATEDFILE_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -37,44 +37,52 @@
 
 namespace synfig {
 
-/*! \class ValueNode_Animated
- *  \brief Virtual class for the ValueNode Animated implementation.
-*/
-struct ValueNode_Animated : public ValueNode, public ValueNode_AnimatedInterface
+/** \class ValueNode_AnimatedFile */
+struct ValueNode_AnimatedFile : public LinkableValueNode, public ValueNode_AnimatedInterfaceConst
 {
 public:
-	typedef etl::handle<ValueNode_Animated> Handle;
-	typedef etl::handle<const ValueNode_Animated> ConstHandle;
+	typedef etl::handle<ValueNode_AnimatedFile> Handle;
+	typedef etl::handle<const ValueNode_AnimatedFile> ConstHandle;
 
-	ValueNode::Handle clone(Canvas::LooseHandle canvas, const synfig::GUID& deriv_guid)const;
+private:
+	class Internal;
+	class Parser;
 
-	//! Virtual member to be filled by inherited classes
+	Internal *internal;
+
+	String current_filename;
+	ValueNode::RHandle filename;
+	std::map<String, String> filefields;
+
+	explicit ValueNode_AnimatedFile(Type &t);
+
+	void load_file(const String &filename, bool forse = false);
+	void file_changed();
+
+public:
+	~ValueNode_AnimatedFile();
+
 	virtual String get_name()const;
-	//! Virtual member to be filled by inherited classes
 	virtual String get_local_name()const;
 
-	String get_string()const;
+	using synfig::LinkableValueNode::get_link_vfunc;
+	using synfig::LinkableValueNode::set_link_vfunc;
+	virtual ValueNode::LooseHandle get_link_vfunc(int i) const;
 
-	//! Creates a Valuenode_Animated by type
-	static Handle create(Type &type);
-	//! Creates a Valuenode_Animated by ValueBase and Time
-	static Handle create(const ValueBase& value, const Time& time);
-	//! Creates a Valuenode_Animated by ValueNode and Time
-	static Handle create(ValueNode::Handle value_node, const Time& time);
+	static bool check_type(Type &type);
+	static ValueNode_AnimatedFile* create(const ValueBase &x);
+	virtual Vocab get_children_vocab_vfunc() const;
 
 	virtual ValueBase operator()(Time t) const;
 	virtual void get_values_vfunc(std::map<Time, ValueBase> &x) const;
 
-	virtual Interpolation get_interpolation()const
-		{ return ValueNode_AnimatedInterfaceConst::get_interpolation(); }
-	virtual void set_interpolation(Interpolation i)
-		{ ValueNode_AnimatedInterfaceConst::set_interpolation(i); }
+	String get_file_field(Time t, const String &field_name) const;
 
 protected:
-	ValueNode_Animated(Type &type);
+	LinkableValueNode* create_new() const;
 
 	virtual void on_changed();
-	virtual void get_times_vfunc(Node::time_set &set) const;
+	virtual bool set_link_vfunc(int i, ValueNode::Handle x);
 };
 
 }; // END of namespace synfig

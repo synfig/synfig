@@ -161,6 +161,12 @@ FileSystem::WriteStreamHandle FileSystemNative::get_write_stream(const std::stri
 	     : WriteStreamHandle(new WriteStream(this, f));
 }
 
+std::string FileSystemNative::get_real_uri(const std::string &filename)
+{
+	if (filename.empty()) return std::string();
+	return Glib::filename_to_uri(etl::absolute_path(filename));
+}
+
 
 /* === E N T R Y P O I N T ================================================= */
 

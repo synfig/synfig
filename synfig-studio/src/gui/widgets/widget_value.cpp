@@ -396,11 +396,11 @@ Widget_ValueBase::get_value()
 	else
 	if (type == type_string)
 	{
-		if(param_desc.get_hint()=="filename")
+		if(child_param_desc.get_hint()=="filename" || param_desc.get_hint()=="filename")
 		{
 			value=string(filename_widget->get_value());
 		}
-		else if(param_desc.get_hint()=="sublayer_name") {
+		else if(child_param_desc.get_hint()=="sublayer_name" || param_desc.get_hint()=="sublayer_name") {
 			value=string(sublayer_widget->get_value());
 		}
 		else

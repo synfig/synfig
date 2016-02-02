@@ -210,10 +210,21 @@ public:
 	bool safe_revert();
 	bool safe_close();
 
-	void add_actions_to_menu(Gtk::Menu *menu,   const synfigapp::Action::ParamList &param_list, synfigapp::Action::Category category=synfigapp::Action::CATEGORY_ALL)const;
+	void gather_uri(std::set<synfig::String> &x, const synfig::ValueNode::Handle &value_node) const;
+	void gather_uri(std::set<synfig::String> &x, const synfig::Layer::Handle &layer) const;
+	void gather_uri(std::set<synfig::String> &x, const synfig::Canvas::Handle &canvas) const;
+	void gather_uri(std::set<synfig::String> &x, const synfigapp::SelectionManager::LayerList &layers) const;
+	void gather_uri(std::map<synfig::String, synfig::String> &x, const synfigapp::SelectionManager::LayerList &layers) const;
+
+	void add_actions_to_menu(Gtk::Menu *menu, const synfigapp::Action::ParamList &param_list, synfigapp::Action::Category category=synfigapp::Action::CATEGORY_ALL)const;
 	void add_actions_to_menu(Gtk::Menu *menu, const synfigapp::Action::ParamList &param_list1,const synfigapp::Action::ParamList &param_list2, synfigapp::Action::Category category=synfigapp::Action::CATEGORY_ALL)const;
 
 	void add_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup>& action_group, synfig::String& ui_info,   const synfigapp::Action::ParamList &param_list, synfigapp::Action::Category category=synfigapp::Action::CATEGORY_ALL)const;
+
+	void add_special_layer_actions_to_menu(Gtk::Menu *menu, const synfig::Layer::Handle &layer) const;
+	void add_special_layer_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup>& action_group, synfig::String& ui_info, const synfig::Layer::Handle &layer) const;
+	void add_special_layer_actions_to_menu(Gtk::Menu *menu, const synfigapp::SelectionManager::LayerList &layers) const;
+	void add_special_layer_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup>& action_group, synfig::String& ui_info, const synfigapp::SelectionManager::LayerList &layers) const;
 
 	void process_action(synfig::String name, synfigapp::Action::ParamList param_list);
 

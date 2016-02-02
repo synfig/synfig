@@ -181,6 +181,7 @@ synfig::Layer::create(const String &name)
 synfig::Layer::~Layer()
 {
 	_LayerCounter::counter--;
+
 	while(!dynamic_param_list_.empty())
 	{
 		remove_child(dynamic_param_list_.begin()->second.get());
@@ -218,8 +219,16 @@ synfig::Layer::set_canvas(etl::loose_handle<Canvas> x)
 
 void
 synfig::Layer::on_canvas_set()
-{
-}
+	{ }
+
+void
+synfig::Layer::on_static_param_changed(const String & /* param */)
+	{ }
+
+void
+synfig::Layer::on_dynamic_param_changed(const String & /* param */)
+	{ }
+
 
 etl::loose_handle<synfig::Canvas>
 synfig::Layer::get_canvas()const
@@ -269,39 +278,39 @@ Layer::set_description(const String& x)
 	}
 }
 
-bool
-Layer::connect_dynamic_param(const String& param, etl::loose_handle<ValueNode> value_node)
+void
+Layer::static_param_changed(const String &param)
 {
-	ValueNode::Handle previous(dynamic_param_list_[param]);
+	on_static_param_changed(param);
+	if (!dynamic_param_list().count(param))
+		signal_static_param_changed_(param);
+}
 
-	if(previous==value_node)
-		return true;
-
-	dynamic_param_list_[param]=ValueNode::Handle(value_node);
-
-	if(previous)
-		remove_child(previous.get());
-
-	add_child(value_node.get());
-
-	if(!value_node->is_exported() && get_canvas())
-	{
-		value_node->set_parent_canvas(get_canvas());
-	}
-
-	changed();
-	return true;
+void
+Layer::dynamic_param_changed(const String &param)
+{
+	on_dynamic_param_changed(param);
+	if (!dynamic_param_list().count(param))
+		signal_dynamic_param_changed_(param);
 }
 
 bool
-Layer::disconnect_dynamic_param(const String& param)
+Layer::connect_dynamic_param(const String& param, etl::loose_handle<ValueNode> value_node)
 {
-	ValueNode::Handle previous(dynamic_param_list_[param]);
+	if (!value_node) return disconnect_dynamic_param(param);
 
-	if(previous)
+	ValueNode::Handle previous;
+	DynamicParamList::iterator i = dynamic_param_list_.find(param);
+	if (i != dynamic_param_list_.end()) previous = i->second;
+
+	if (previous == value_node)
+		return true;
+
+	String param_noref = param;
+	dynamic_param_list_[param]=ValueNode::Handle(value_node);
+
+	if (previous)
 	{
-		dynamic_param_list_.erase(param);
-
 		// fix 2353284: if two parameters in the same layer are
 		// connected to the same valuenode and we disconnect one of
 		// them, the parent-child relationship for the remaining
@@ -313,9 +322,44 @@ Layer::disconnect_dynamic_param(const String& param)
 				break;
 		if (iter == dynamic_param_list().end())
 			remove_child(previous.get());
-
-		changed();
 	}
+
+	add_child(value_node.get());
+	if(!value_node->is_exported() && get_canvas())
+		value_node->set_parent_canvas(get_canvas());
+
+	dynamic_param_changed(param);
+	changed();
+	return true;
+}
+
+bool
+Layer::disconnect_dynamic_param(const String& param)
+{
+	DynamicParamList::iterator i = dynamic_param_list_.find(param);
+	if (i == dynamic_param_list_.end()) return true;
+
+	ValueNode::Handle previous(i->second);
+	dynamic_param_list_.erase(i);
+
+	if(previous)
+	{
+		// fix 2353284: if two parameters in the same layer are
+		// connected to the same valuenode and we disconnect one of
+		// them, the parent-child relationship for the remaining
+		// connection was being deleted.  now we search the parameter
+		// list to see if another parameter uses the same valuenode
+		DynamicParamList::const_iterator iter;
+		for (iter = dynamic_param_list().begin(); iter != dynamic_param_list().end(); iter++)
+			if (iter->second == previous)
+				break;
+		if (iter == dynamic_param_list().end())
+			remove_child(previous.get());
+	}
+
+	static_param_changed(param);
+	changed();
+
 	return true;
 }
 
@@ -327,6 +371,19 @@ Layer::on_changed()
 
 	dirty_time_=Time::end();
 	Node::on_changed();
+}
+
+void
+Layer::on_child_changed(const Node *x)
+{
+	Node::on_child_changed(x);
+	for(DynamicParamList::const_iterator i = dynamic_param_list().begin(); i != dynamic_param_list().end();)
+	{
+		DynamicParamList::const_iterator j = i;
+		++i;
+		if (j->second.get() == x)
+			dynamic_param_changed(j->first);
+	}
 }
 
 bool

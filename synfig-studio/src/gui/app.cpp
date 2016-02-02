@@ -63,6 +63,9 @@
 #include <glibmm/spawn.h>
 #include <glibmm/thread.h>
 
+#include <gtk/gtk.h>
+#include <gdk/gdk.h>
+
 #include <gdkmm/general.h>
 
 #ifdef _WIN32
@@ -866,7 +869,7 @@ init_ui_manager()
 	menus_action_group->add( Gtk::Action::create("menu-canvas", _("_Canvas")));
 
 	menus_action_group->add( Gtk::Action::create("menu-layer", _("_Layer")));
-	menus_action_group->add( Gtk::Action::create("menu-layer-new", _("New Layer")));
+	menus_action_group->add( Gtk::Action::create("menu-layer-new", Gtk::Stock::NEW, _("New Layer")));
 	menus_action_group->add( Gtk::Action::create("menu-toolbox", _("Toolbox")));
 	menus_action_group->add( Gtk::Action::create("menu-plugins", _("Plug-Ins")));
 
@@ -2390,6 +2393,8 @@ App::dialog_open_file(const std::string &title, std::string &filename, std::stri
 	filter_supported->add_pattern("*.ogg");
 	filter_supported->add_pattern("*.mp3");
 	filter_supported->add_pattern("*.wav");
+	// 0.4 lipsync files
+	filter_supported->add_pattern("*.pgo");
 
 	// Sub fileters
 	// 1 Synfig documents. sfg is not supported to import
@@ -2428,7 +2433,12 @@ App::dialog_open_file(const std::string &title, std::string &filename, std::stri
 	filter_audio->add_pattern("*.mp3");
 	filter_audio->add_pattern("*.wav");
 
-	// 4 Any files
+	// 4 Lipsync files
+	Glib::RefPtr<Gtk::FileFilter> filter_lipsync = Gtk::FileFilter::create();
+	filter_lipsync->set_name(_("Lipsync (*.pgo)"));
+	filter_lipsync->add_pattern("*.pgo");
+
+	// 5 Any files
 	Glib::RefPtr<Gtk::FileFilter> filter_any = Gtk::FileFilter::create();
 	filter_any->set_name(_("Any files"));
 	filter_any->add_pattern("*");
@@ -2438,6 +2448,7 @@ App::dialog_open_file(const std::string &title, std::string &filename, std::stri
 	dialog->add_filter(filter_image);
 	dialog->add_filter(filter_image_list);
 	dialog->add_filter(filter_audio);
+	dialog->add_filter(filter_lipsync);
 	dialog->add_filter(filter_any);
 
 	if (filename.empty())
@@ -3334,7 +3345,7 @@ App::dialog_message_3b(const std::string &message,
 
 
 static bool
-try_open_url(const std::string &url)
+try_open_web_url(const std::string &url)
 {
 #ifdef _WIN32
 	return ShellExecute(GetDesktopWindow(), "open", url.c_str(), NULL, NULL, SW_SHOW);
@@ -3412,7 +3423,7 @@ try_open_url(const std::string &url)
 void
 App::dialog_help()
 {
-	if (!try_open_url("http://synfig.org/wiki/Category:Manual"))
+	if (!try_open_web_url("http://synfig.org/wiki/Category:Manual"))
 	{
 		Gtk::MessageDialog dialog(*App::main_window, _("Documentation"), false, Gtk::MESSAGE_INFO, Gtk::BUTTONS_CLOSE, true);
 		dialog.set_secondary_text(_("Documentation for Synfig Studio is available on the website:\n\nhttp://synfig.org/wiki/Category:Manual"));
@@ -3422,9 +3433,9 @@ App::dialog_help()
 }
 
 void
-App::open_url(const std::string &url)
+App::open_web_url(const std::string &url)
 {
-	if(!try_open_url(url))
+	if(!try_open_web_url(url))
 	{
 		Gtk::MessageDialog dialog(*App::main_window, _("No browser was found. Please load this website manually:"), false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_CLOSE, true);
 		dialog.set_secondary_text(url);
@@ -3433,6 +3444,11 @@ App::open_url(const std::string &url)
 	}
 }
 
+void App::open_uri(const std::string &uri)
+{
+	synfig::info("Opening URI: " + uri);
+	gtk_show_uri(NULL, uri.c_str(), GDK_CURRENT_TIME, NULL);
+}
 
 bool
 App::dialog_entry(const std::string &action, const std::string &content, std::string &text, const std::string &button1, const std::string &button2)

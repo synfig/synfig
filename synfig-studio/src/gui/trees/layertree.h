@@ -270,7 +270,14 @@ public:
 	synfig::Layer::Handle get_selected_layer()const;
 	void clear_selected_layers();
 
+	void expand_layer(synfig::Layer::Handle layer);
+	void expand_layers(const LayerList& layer_list);
+	LayerList get_expanded_layers()const;
+
 	void select_param(const synfigapp::ValueDesc& valuedesc);
+
+private:
+	void get_expanded_layers(LayerList &list, const Gtk::TreeNodeChildren &rows)const;
 
 }; // END of LayerTree
 

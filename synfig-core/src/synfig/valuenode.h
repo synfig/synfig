@@ -95,6 +95,7 @@ class ValueNode : public synfig::Node
 {
 	friend class Layer;
 	friend class LinkableValueNode;
+	friend class ValueNode_Interface;
 
 	/*
  --	** -- T Y P E S -----------------------------------------------------------
@@ -264,12 +265,54 @@ public:
 	//! Set the default interpolation for Value Nodes
 	virtual void set_interpolation(Interpolation /* i*/) { }
 
+	// TODO: cache of values (we need to fix chain of signals 'changed' in LinkableValueNodes
+	void get_values(std::set<ValueBase> &x) const;
+	void get_value_change_times(std::set<Time> &x) const;
+	void get_values(std::map<Time, ValueBase> &x) const;
+
+	void calc_time_bounds(int &begin, int &end, Real &fps) const;
+	void calc_values(std::map<Time, ValueBase> &x) const;
+	void calc_values(std::map<Time, ValueBase> &x, int begin, int end) const;
+	void calc_values(std::map<Time, ValueBase> &x, int begin, int end, Real fps) const;
+
+	int time_to_frame(Time t);
+	static int time_to_frame(Time t, Real fps);
+	static void add_value_to_map(std::map<Time, ValueBase> &x, Time t, const ValueBase &v);
+
+private:
+	static void canvas_time_bounds(const Canvas &canvas, bool &found, Time &begin, Time &end, Real &fps);
+	static void find_time_bounds(const Node &node, bool &found, Time &begin, Time &end, Real &fps);
+
 protected:
 	//! Sets the type of the ValueNode
 	void set_type(Type &t) { type=&t; }
 
 	virtual void on_changed();
+
+	virtual void get_values_vfunc(std::map<Time, ValueBase> &x) const;
 }; // END of class ValueNode
+
+
+
+/**	\class ValueNode_Interface */
+class ValueNode_Interface
+{
+private:
+	ValueNode &node_;
+
+protected:
+	explicit ValueNode_Interface(ValueNode &node): node_(node) { }
+
+public:
+	virtual ~ValueNode_Interface() { }
+	ValueNode& node() { return node_; };
+	const ValueNode& node() const { return node_; };
+
+protected:
+	void set_type(Type &t) { node().set_type(t); }
+};
+
+
 
 /*!	\class PlaceholderValueNode
 **	Seems to be a Place to hold a Value Node temporarly.
@@ -448,6 +491,8 @@ protected:
 
 	//! Virtual memebr to set the children vocabulary to a given value
 	virtual void set_children_vocab(const Vocab& rvocab);
+
+	virtual void get_values_vfunc(std::map<Time, ValueBase> &x) const;
 }; // END of class LinkableValueNode
 
 /*!	\class ValueNodeList

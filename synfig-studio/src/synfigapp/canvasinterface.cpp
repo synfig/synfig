@@ -48,7 +48,10 @@
 #include <synfig/valuenodes/valuenode_bline.h>
 #include <synfig/valuenodes/valuenode_wplist.h>
 #include <synfig/valuenodes/valuenode_dilist.h>
+#include <synfig/valuenodes/valuenode_animatedfile.h>
 #include <synfig/pair.h>
+
+#include <synfig/layers/layer_pastecanvas.h>
 
 #include <synfig/waypoint.h>
 #include <synfig/loadcanvas.h>
@@ -185,18 +188,53 @@ CanvasInterface::get_mode()const
 	return mode_;
 }
 
+synfig::Layer::Handle
+CanvasInterface::layer_create(
+	const synfig::String &id,
+	const synfig::Canvas::Handle &canvas )
+{
+	Layer::Handle layer = Layer::create(id);
+	assert(layer);
+	if (!layer)
+		return Layer::Handle();
+
+	if (canvas!=get_canvas() && !canvas->is_inline())
+	{
+		synfig::error("Bad canvas passed to \"layer_create\"");
+		return 0;
+	}
+
+	// automatically export the Index parameter of new Duplicate layers
+	if (id == "duplicate")
+		for (int i = 1; ; i++)
+		{
+			String name = strprintf(_("Index %d"), i);
+			try
+			{
+				canvas->find_value_node(name, true);
+			}
+			catch (Exception::IDNotFound x)
+			{
+				add_value_node(layer->dynamic_param_list().find("index")->second, id);
+				break;
+			}
+		}
+
+	layer->set_canvas(canvas);
+	if (etl::handle<Layer_PasteCanvas>::cast_dynamic(layer))
+		layer->set_param("canvas", Canvas::create_inline(canvas));
+
+	return layer;
+}
 
 void
-CanvasInterface::apply_layer_param_defaults(synfig::Layer::Handle layer)
+CanvasInterface::layer_set_defaults(const synfig::Layer::Handle &layer)
 {
-	if(!layer)
+	if (!layer || !layer->get_canvas())
 		return;
 
-	synfig::Canvas::Handle canvas( layer->get_canvas() );
-	if (!canvas)
-		return;
-
-	synfig::String name( layer->get_name() );
+	synfig::Canvas::Handle canvas = layer->get_canvas();
+	synfig::String name(layer->get_name());
 
 	ValueBase p;
 	p=layer->get_param("fg");
@@ -352,102 +390,66 @@ CanvasInterface::apply_layer_param_defaults(synfig::Layer::Handle layer)
 	}
 }
 
+bool
+CanvasInterface::layer_add_action(const synfig::Layer::Handle &layer)
+{
+	if (!layer || !layer->get_canvas())
+		{ assert(false); return false; }
+
+	Action::Handle action(Action::LayerAdd::create());
+	if (!action)
+		{ assert(false); return false; }
+
+	action->set_param("canvas", layer->get_canvas());
+	action->set_param("canvas_interface", etl::loose_handle<CanvasInterface>(this));
+	action->set_param("new", layer);
+
+	if(!action->is_ready())
+		{ get_ui_interface()->error(_("Action Not Ready")); return false; }
+	if(!get_instance()->perform_action(action))
+		{ get_ui_interface()->error(_("Action Failed.")); return false; }
+
+	return true;
+}
+
+bool
+CanvasInterface::layer_move_action(const synfig::Layer::Handle &layer, int depth)
+{
+	if (!layer || !layer->get_canvas())
+		{ assert(false); return false; }
+
+	Action::Handle action(Action::create("LayerMove"));
+	if (!action)
+		{ assert(false); return false; }
+
+	action->set_param("canvas", layer->get_canvas());
+	action->set_param("canvas_interface", etl::loose_handle<CanvasInterface>(this));
+	action->set_param("layer", layer);
+	action->set_param("new_index", depth);
+
+	if (!action->is_ready())
+		{ get_ui_interface()->error(_("Move Action Not Ready")); return false; }
+	if (!get_instance()->perform_action(action))
+		{ get_ui_interface()->error(_("Move Action Failed.")); return false; }
+
+	return true;
+}
 
 Layer::Handle
-CanvasInterface::add_layer_to(synfig::String name, synfig::Canvas::Handle canvas, int depth)
+CanvasInterface::add_layer_to(const synfig::String &id, const synfig::Canvas::Handle &canvas, int depth)
 {
 	synfigapp::Action::PassiveGrouper group(get_instance().get(),_("Add Layer To"));
 
-	Layer::Handle	layer(Layer::create(name));
+	Layer::Handle layer = layer_create(id, canvas);
+	if (!layer) return Layer::Handle();
 
-	assert(layer);
-
-	if(!layer)
-		return 0;
-
-	if(canvas!=get_canvas() && !canvas->is_inline())
-	{
-		synfig::error("Bad canvas passed to \"add_layer_to\"");
-		return 0;
-	}
-
-	// automatically export the Index parameter of new Duplicate layers
-	if (name == "duplicate")
-		for (int i = 1; ; i++)
-		{
-			String name = strprintf(_("Index %d"), i);
-			try
-			{
-				canvas->find_value_node(name, true);
-			}
-			catch (Exception::IDNotFound x)
-			{
-				add_value_node(layer->dynamic_param_list().find("index")->second, name);
-				break;
-			}
-		}
-
-	layer->set_canvas(canvas);
-	
-	// Apply some defaults
-	apply_layer_param_defaults(layer);
-	
-	// Action to add the layer
-	Action::Handle 	action(Action::LayerAdd::create());
-
-	assert(action);
-	if(!action)
-		return 0;
-
-	action->set_param("canvas",canvas);
-	action->set_param("canvas_interface",etl::loose_handle<CanvasInterface>(this));
-	action->set_param("new",layer);
-
-	if(!action->is_ready())
-	{
-		get_ui_interface()->error(_("Action Not Ready"));
-		return 0;
-	}
-
-	if(!get_instance()->perform_action(action))
-	{
-		get_ui_interface()->error(_("Action Failed."));
-		return 0;
-	}
-
-	// synfig::info("DEPTH=%d",depth);
-
-	// Action to move the layer (if necessary)
-	if(depth>0)
-	{
-		Action::Handle 	action(Action::create("LayerMove"));
-
-		assert(action);
-		if(!action)
-			return 0;
-
-		action->set_param("canvas",canvas);
-		action->set_param("canvas_interface",etl::loose_handle<CanvasInterface>(this));
-		action->set_param("layer",layer);
-		action->set_param("new_index",depth);
-
-		if(!action->is_ready())
-		{
-			get_ui_interface()->error(_("Move Action Not Ready"));
-			return 0;
-		}
-
-		if(!get_instance()->perform_action(action))
-		{
-			get_ui_interface()->error(_("Move Action Failed."));
-			return 0;
-		}
-	}
-
+	layer_set_defaults(layer);
+	layer_add_action(layer);
+	if (depth != 0)
+		layer_move_action(layer, depth);
 
 	return layer;
 }
-
 
 bool
 CanvasInterface::convert(ValueDesc value_desc, synfig::String type)
@@ -684,7 +686,7 @@ CanvasInterface::import(const synfig::String &filename, synfig::String &errors, 
 {
 	Action::PassiveGrouper group(get_instance().get(),_("Import"));
 
-	synfig::info("Attempting to import "+filename);
+	synfig::info("Attempting to import " + filename);
 
 	if (filename_extension(filename) == "")
 	{
@@ -696,16 +698,65 @@ CanvasInterface::import(const synfig::String &filename, synfig::String &errors, 
 	if (ext.size()) ext = ext.substr(1); // skip initial '.'
 	std::transform(ext.begin(),ext.end(),ext.begin(),&::tolower);
 
-	if (ext=="wav" || ext=="ogg" || ext=="mp3"){
-		Layer::Handle layer(add_layer_to("sound",get_canvas()));
-		if(!layer)
-			throw String(_("Unable to create \"Sound\" layer"));
-		layer->set_param("filename",ValueBase(filename));
-		signal_layer_new_description()(layer,filename);
+	if (ext=="pgo")
+	{
+		synfigapp::Action::PassiveGrouper group(get_instance().get(),_("Import Lipsync"));
+
+		// switch
+
+		Layer::Handle layer_switch = layer_create("switch", get_canvas());
+		if(!layer_switch)
+			throw String(_("Unable to create \"Switch\" layer"));
+
+		layer_set_defaults(layer_switch);
+		layer_switch->set_description(etl::basename(filename));
+
+		ValueNode_AnimatedFile::Handle animatedfile_node = ValueNode_AnimatedFile::create(String());
+		animatedfile_node->set_link("filename", ValueNode_Const::create(filename));
+		layer_switch->connect_dynamic_param("layer_name", ValueNode::LooseHandle(animatedfile_node));
+
+		if (!layer_add_action(layer_switch))
+			throw String(_("Unable to add \"Switch\" layer"));
+
+		// sound
+
+		String soundfile = animatedfile_node->get_file_field(0, "sound");
+		if (!soundfile.empty())
+		{
+			soundfile = etl::solve_relative_path(etl::dirname(filename), soundfile);
+			Layer::Handle layer_sound = layer_create("sound", get_canvas());
+			if(!layer_sound)
+				throw String(_("Unable to create \"Sound\" layer"));
+
+			layer_set_defaults(layer_sound);
+			layer_sound->set_description(etl::basename(soundfile));
+			layer_sound->set_param("filename", ValueBase(soundfile));
+
+			if (!layer_add_action(layer_sound))
+				throw String(_("Unable to add \"Sound\" layer"));
+		}
+
 		return true;
 	}
 
-	if(ext=="svg"){//I don't like it, but worse is nothing
+	if (ext=="wav" || ext=="ogg" || ext=="mp3")
+	{
+		Layer::Handle layer = layer_create("sound", get_canvas());
+		if(!layer)
+			throw String(_("Unable to create \"Sound\" layer"));
+
+		layer_set_defaults(layer);
+		layer->set_description(etl::basename(filename));
+		layer->set_param("filename", ValueBase(filename));
+
+		if (!layer_add_action(layer))
+			throw String(_("Unable to add \"Sound\" layer"));
+
+		return true;
+	}
+
+	if (ext=="svg") //I don't like it, but worse is nothing
+	{
 		Layer::Handle _new_layer(add_layer_to("group",get_canvas()));
 		Layer::Handle _aux_layer(add_layer_to("svg_layer",get_canvas()));
 		if(_aux_layer){
@@ -733,7 +784,7 @@ CanvasInterface::import(const synfig::String &filename, synfig::String &errors, 
 	}
 
 	// If this is a SIF file, then we need to do things slightly differently
-	if(ext=="sif" || ext=="sifz")try
+	if (ext=="sif" || ext=="sifz")try
 	{
 		Canvas::Handle outside_canvas(synfig::open_canvas_as(get_canvas()->get_identifier().file_system->get_identifier(filename), filename, errors, warnings));
 		if(!outside_canvas)

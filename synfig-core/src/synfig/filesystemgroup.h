@@ -72,6 +72,7 @@ namespace synfig
 		virtual bool file_rename(const std::string &from_filename, const std::string &to_filename);
 		virtual ReadStreamHandle get_read_stream(const std::string &filename);
 		virtual WriteStreamHandle get_write_stream(const std::string &filename);
+		virtual std::string get_real_uri(const std::string &filename);
 	};
 
 }

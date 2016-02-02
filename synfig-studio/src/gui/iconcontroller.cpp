@@ -263,6 +263,13 @@ IconController::init_icons(const synfig::String& path_to_icons)
 	INIT_STOCK_ICON(layer_transform_translate,"layer_transform_translate_icon."IMAGE_EXT,_("Translate Layer"));
 	INIT_STOCK_ICON(layer_transform_scale,"layer_transform_scale_icon."IMAGE_EXT,_("Scale Layer"));
 
+	// Ghost Layers
+	// TODO: icon for ghost group
+	INIT_STOCK_ICON(layer_ghost_group,"layer_other_group_icon."IMAGE_EXT,_("Group Ghost"));
+	//INIT_STOCK_ICON(layer_ghost_group,"layer_ghost_group_icon."IMAGE_EXT,_("Group Ghost"));
+
+	INIT_STOCK_ICON(layer_new,"grid_enable_icon."IMAGE_EXT,_("Show Grid"));
+
 	INIT_STOCK_ICON(info,"info_icon."IMAGE_EXT,_("Info Tool"));
 	INIT_STOCK_ICON(group,"set_icon."IMAGE_EXT,_("Set"));
 
@@ -272,6 +279,8 @@ IconController::init_icons(const synfig::String& path_to_icons)
 	INIT_STOCK_ICON(grid_snap_disable,"grid_snap_disable_icon."IMAGE_EXT,_("Disable Grid Snap"));
 	INIT_STOCK_ICON(duplicate,"duplicate_icon."IMAGE_EXT,_("Duplicate"));
 	INIT_STOCK_ICON(encapsulate,"group_icon."IMAGE_EXT,_("Group"));
+	// TODO: icon for 'Group Layer into Switch' action
+	INIT_STOCK_ICON(encapsulate_switch,"layer_other_switch_icon."IMAGE_EXT,_("Group into Switch"));
 	INIT_STOCK_ICON(select_all_child_layers,"select_all_child_layers_icon."IMAGE_EXT,_("Select All Child Layers"));
 
 	INIT_STOCK_ICON(clear_undo,"clear_undo_icon."IMAGE_EXT,_("Clear Undo Stack"));
@@ -624,6 +633,8 @@ studio::layer_icon(const synfig::String &layer)
 		return Gtk::StockID("synfig-layer_transform_translate");
 	else if(layer=="zoom")
 		return Gtk::StockID("synfig-layer_transform_scale");
+	else if(layer=="ghost_group")
+		return Gtk::StockID("synfig-layer_ghost_group");
 	else
 		return Gtk::StockID("synfig-layer");
 }

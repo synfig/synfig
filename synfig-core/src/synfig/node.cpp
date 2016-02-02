@@ -201,6 +201,12 @@ Node::changed()
 	on_changed();
 }
 
+void
+Node::child_changed(const Node *x)
+{
+	on_child_changed(x);
+}
+
 
 //! Gets the GUID for this value node
 const synfig::GUID&
@@ -334,8 +340,15 @@ Node::on_changed()
 	std::set<Node*>::iterator iter;
 	for(iter=parent_set.begin();iter!=parent_set.end();++iter)
 	{
-		(*iter)->changed();
+		(*iter)->child_changed(this);
 	}
+}
+
+void
+Node::on_child_changed(const Node *x)
+{
+	signal_child_changed()(x);
+	changed();
 }
 
 void
