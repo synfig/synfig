@@ -1707,7 +1707,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 		double x = 0.0, y = 0.0, p = 0.0;
 		int ox = 0, oy = 0;
 		Gtk::Container *toplevel = drawing_frame->get_toplevel();
-		drawing_frame->translate_coordinates(*toplevel, 0, 0, ox, oy);
+		if (toplevel) drawing_frame->translate_coordinates(*toplevel, 0, 0, ox, oy);
 
 		if (gdk_device_get_axis(device, event->motion.axes, GDK_AXIS_X, &x))
 			x -= ox; else x = event->motion.x;
@@ -2116,18 +2116,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 		{
 		case DRAG_GUIDE :
 		{
-			double y,x;
-			if (gdk_device_get_axis(curr_input_device, event->button.axes, GDK_AXIS_X, &x) &&
-				gdk_device_get_axis(curr_input_device, event->button.axes, GDK_AXIS_Y, &y)	)
-			{
-				x=(event->button.axes[0]);
-				y=(event->button.axes[1]);
-			}
-			else
-			{
-				x=event->button.x;
-				y=event->button.y;
-			}
+			double y(event->button.y),x(event->button.x);
 
 			// Erase the guides if dragged into the rulers
 			if(curr_guide_is_x && !std::isnan(x) && x<0.0 )
