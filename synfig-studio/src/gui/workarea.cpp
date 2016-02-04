@@ -2117,7 +2117,8 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 		case DRAG_GUIDE :
 		{
 			double y,x;
-			if(*(event->button.axes))
+			if (gdk_device_get_axis(curr_input_device, event->button.axes, GDK_AXIS_X, &x) &&
+				gdk_device_get_axis(curr_input_device, event->button.axes, GDK_AXIS_Y, &y)	)
 			{
 				x=(event->button.axes[0]);
 				y=(event->button.axes[1]);
@@ -2675,7 +2676,7 @@ WorkArea::refresh(const Cairo::RefPtr<Cairo::Context> &cr)
 		}
 	}
 #endif
-	
+
 	assert(get_canvas());
 
 	//!Check if the window we want draw is ready
@@ -3329,7 +3330,7 @@ studio::WorkArea::set_cursor(const Glib::RefPtr<Gdk::Cursor> &x)
 	//!Check if the window we want draw is ready
 	Glib::RefPtr<Gdk::Window> draw_area_window = drawing_area->get_window();
 	if(!draw_area_window) return;
-	
+
 	draw_area_window->set_cursor(x);
 }
 void
@@ -3338,7 +3339,7 @@ studio::WorkArea::set_cursor(Gdk::CursorType x)
 	//!Check if the window we want draw is ready
 	Glib::RefPtr<Gdk::Window> draw_area_window = drawing_area->get_window();
 	if(!draw_area_window) return;
-	
+
 	draw_area_window->set_cursor(Gdk::Cursor::create(x));
 }
 
@@ -3355,7 +3356,7 @@ studio::WorkArea::reset_cursor()
 	//!Check if the window we want draw is ready
 	Glib::RefPtr<Gdk::Window> draw_area_window = drawing_area->get_window();
 	if(!draw_area_window) return;
-	
+
 	draw_area_window->set_cursor(Gdk::Cursor::create(Gdk::TOP_LEFT_ARROW));
 //	set_cursor(Gdk::TOP_LEFT_ARROW);
 }
