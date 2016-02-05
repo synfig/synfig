@@ -726,10 +726,12 @@ LayerTreeStore::rebuild()
 	clear();
 
 	// Go ahead and add all the layers
-	std::for_each(
-		canvas_interface()->get_canvas()->rbegin(), canvas_interface()->get_canvas()->rend(),
-		sigc::mem_fun(*this, &studio::LayerTreeStore::on_layer_added)
-	);
+	for(Canvas::reverse_iterator iter = canvas_interface()->get_canvas()->rbegin(); iter != canvas_interface()->get_canvas()->rend(); ++iter)
+	{
+		Gtk::TreeRow row_(*(prepend(children())));
+		row_[model.layer_impossible] = false;
+		set_row_layer(row_,*iter);
+	}
 
 	// Reselect the previously selected layers
 	if(!expanded_layer_list.empty())
@@ -804,6 +806,21 @@ LayerTreeStore::refresh_row(Gtk::TreeModel::Row &row)
 void
 LayerTreeStore::set_row_layer(Gtk::TreeRow &row, const synfig::Layer::Handle &handle)
 {
+	if (etl::handle<Layer_Switch> layer_paste = etl::handle<Layer_PasteCanvas>::cast_dynamic(handle))
+	{
+		subcanvas_changed_connections[layer_paste].disconnect();
+		subcanvas_changed_connections[layer_paste] =
+			layer_paste->signal_subcanvas_changed().connect(
+				sigc::mem_fun(*this,&studio::LayerTreeStore::queue_rebuild) );
+	}
+	if (etl::handle<Layer_Switch> layer_switch = etl::handle<Layer_Switch>::cast_dynamic(handle))
+	{
+		switch_changed_connections[layer_switch].disconnect();
+		switch_changed_connections[layer_switch] =
+			layer_switch->signal_possible_layers_changed().connect(
+				sigc::mem_fun(*this,&studio::LayerTreeStore::queue_rebuild) );
+	}
+
 	//row[model.id] = handle->get_name();
 	//row[model.name] = handle->get_local_name();
 	/*if(handle->get_description().empty())
@@ -899,15 +916,6 @@ LayerTreeStore::set_row_ghost(Gtk::TreeRow &row, const synfig::String &label, in
 void
 LayerTreeStore::on_layer_added(synfig::Layer::Handle layer)
 {
-	if (etl::handle<Layer_PasteCanvas>::cast_dynamic(layer))
-		subcanvas_changed_connections[layer] =
-			(etl::handle<Layer_PasteCanvas>::cast_dynamic(layer))->signal_subcanvas_changed().connect(
-				sigc::mem_fun(*this,&studio::LayerTreeStore::queue_rebuild) );
-	if (etl::handle<Layer_Switch> layer_switch = etl::handle<Layer_Switch>::cast_dynamic(layer))
-		switch_changed_connections[layer_switch] =
-			layer_switch->signal_possible_layers_changed().connect(
-				sigc::mem_fun(*this,&studio::LayerTreeStore::queue_rebuild) );
-
 	assert(layer);
 	Gtk::TreeRow row;
 	if(canvas_interface()->get_canvas()==layer->get_canvas())
