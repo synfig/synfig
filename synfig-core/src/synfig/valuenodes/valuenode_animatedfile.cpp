@@ -29,6 +29,8 @@
 #	include <config.h>
 #endif
 
+#include <climits>
+
 #include <istream>
 #include <map>
 
@@ -80,6 +82,7 @@ public:
 		getline(s, word);
 		fields["sound"] = word;
 
+		int first_frame = INT_MAX;
 		Real fps;
 		s >> fps;
 		if (fps <= 1e-10)
@@ -110,8 +113,9 @@ public:
 				getline(s, word);
 				for(int k = 0; k < words; ++k)
 				{
+					int end_frame = 0;
 					int phonemes = 0;
-					s >> word >> word >> word >> phonemes;
+					s >> word >> word >> end_frame >> phonemes;
 					getline(s, word);
 					for(int l = 0; l < phonemes; ++l)
 					{
@@ -120,13 +124,17 @@ public:
 						if (s)
 						{
 							s >> frame >> phoneme;
+							first_frame = min(frame, first_frame);
 							getline(s, word);
 							value[Time(frame*fk)] = phoneme;
 						} else unexpected_end = true;
 					}
+					value[Time(end_frame*fk)] = "rest";
 				}
 			}
 		}
+		if (first_frame == INT_MAX) first_frame= 1;
+		value[Time((first_frame-1)*fk)] = "rest";
 
 		if (unexpected_end)
 			warning("Unexpected end of .pgo file. Unsupported format?");
