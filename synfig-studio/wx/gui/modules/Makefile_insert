@@ -1,0 +1,5 @@
+include modules/mod_palette/Makefile_insert
+
+synfigstudio_src += \
+	modules/module.h \
+	modules/module.cpp

@@ -1,0 +1,35 @@
+DIALOGS_HH = \
+	dialogs/about.h \
+	dialogs/canvasoptions.h \
+	dialogs/canvasproperties.h \
+	dialogs/dialog_color.h \
+	dialogs/dialog_gradient.h \
+	dialogs/dialog_input.h \
+	dialogs/dialog_keyframe.h \
+	dialogs/dialog_preview.h \
+	dialogs/dialog_setup.h \
+	dialogs/dialog_soundselect.h \
+	dialogs/dialog_targetparam.h \
+	dialogs/dialog_ffmpegparam.h \
+	dialogs/dialog_spritesheetparam.h \ 
+	dialogs/dialog_waypoint.h
+
+DIALOGS_CC = \
+	dialogs/about.cpp \
+	dialogs/canvasoptions.cpp \
+	dialogs/canvasproperties.cpp \
+	dialogs/dialog_color.cpp \
+	dialogs/dialog_gradient.cpp \
+	dialogs/dialog_input.cpp \
+	dialogs/dialog_keyframe.cpp \
+	dialogs/dialog_preview.cpp \
+	dialogs/dialog_setup.cpp \
+	dialogs/dialog_soundselect.cpp \
+	dialogs/dialog_targetparam.cpp \
+	dialogs/dialog_ffmpegparam.cpp \
+	dialogs/dialog_spritesheetparam.cpp \ 
+	dialogs/dialog_waypoint.cpp
+
+synfigstudio_src += \
+	$(DIALOGS_HH) \
+	$(DIALOGS_CC)

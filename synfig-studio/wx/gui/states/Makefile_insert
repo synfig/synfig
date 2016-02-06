@@ -1,0 +1,49 @@
+STATES_HH = \
+	states/state_bline.h \
+	states/state_circle.h \
+	states/state_draw.h \
+	states/state_lasso.h \
+	states/state_eyedrop.h \
+	states/state_fill.h \
+	states/state_gradient.h \
+	states/state_mirror.h \
+	states/state_normal.h \
+	states/state_polygon.h \
+	states/state_rectangle.h \
+	states/state_rotate.h \
+	states/state_scale.h \
+	states/state_sketch.h \
+	states/state_smoothmove.h \
+	states/state_star.h \
+	states/state_stroke.h \
+	states/state_text.h \
+	states/state_width.h \
+	states/state_zoom.h \
+	states/state_brush.h
+
+STATES_CC = \
+	states/state_bline.cpp \
+	states/state_circle.cpp \
+	states/state_draw.cpp \
+	states/state_lasso.cpp \
+	states/state_eyedrop.cpp \
+	states/state_fill.cpp \
+	states/state_gradient.cpp \
+	states/state_mirror.cpp \
+	states/state_normal.cpp \
+	states/state_polygon.cpp \
+	states/state_rectangle.cpp \
+	states/state_rotate.cpp \
+	states/state_scale.cpp \
+	states/state_sketch.cpp \
+	states/state_smoothmove.cpp \
+	states/state_star.cpp \
+	states/state_stroke.cpp \
+	states/state_text.cpp \
+	states/state_width.cpp \
+	states/state_zoom.cpp \
+	states/state_brush.cpp
+
+synfigstudio_src += \
+	$(STATES_HH) \
+	$(STATES_CC)
