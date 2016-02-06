@@ -1,0 +1,39 @@
+TREEVIEW_HH = \
+	trees/childrentree.h \
+	trees/keyframetree.h \
+	trees/layergrouptree.h \
+	trees/layertree.h \
+	trees/metadatatree.h
+
+TREEVIEW_CC = \
+	trees/childrentree.cpp \
+	trees/keyframetree.cpp \
+	trees/layergrouptree.cpp \
+	trees/layertree.cpp \
+	trees/metadatatree.cpp
+
+TREESTORE_HH = \
+	trees/canvastreestore.h \
+	trees/childrentreestore.h \
+	trees/historytreestore.h \
+	trees/keyframetreestore.h \
+	trees/layergrouptreestore.h \
+	trees/layerparamtreestore.h \
+	trees/layertreestore.h \
+	trees/metadatatreestore.h
+
+TREESTORE_CC = \
+	trees/canvastreestore.cpp \
+	trees/childrentreestore.cpp \
+	trees/historytreestore.cpp \
+	trees/keyframetreestore.cpp \
+	trees/layergrouptreestore.cpp \
+	trees/layerparamtreestore.cpp \
+	trees/layertreestore.cpp \
+	trees/metadatatreestore.cpp
+
+synfigstudio_src += \
+	$(TREEVIEW_HH) \
+	$(TREEVIEW_CC) \
+	$(TREESTORE_HH) \
+	$(TREESTORE_CC)

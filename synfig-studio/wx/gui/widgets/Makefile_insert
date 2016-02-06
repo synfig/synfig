@@ -1,0 +1,51 @@
+WIDGETS_HH = \
+	widgets/widget_canvaschooser.h \
+	widgets/widget_color.h \
+	widgets/widget_coloredit.h \
+	widgets/widget_compselect.h \
+	widgets/widget_curves.h \
+	widgets/widget_defaults.h \
+	widgets/widget_distance.h \
+	widgets/widget_enum.h \
+	widgets/widget_sublayer.h \
+	widgets/widget_filename.h \
+	widgets/widget_gradient.h \
+	widgets/widget_link.h \
+	widgets/widget_sound.h \
+	widgets/widget_time.h \
+	widgets/widget_timeslider.h \
+	widgets/widget_value.h \
+	widgets/widget_vector.h \
+	widgets/widget_waypoint.h \
+	widgets/widget_waypointmodel.h \
+	widgets/widget_keyframe_list.h \
+	widgets/widget_bonechooser.h \
+	widgets/widget_ruler.h
+
+WIDGETS_CC = \
+	widgets/widget_canvaschooser.cpp \
+	widgets/widget_color.cpp \
+	widgets/widget_coloredit.cpp \
+	widgets/widget_compselect.cpp \
+	widgets/widget_curves.cpp \
+	widgets/widget_defaults.cpp \
+	widgets/widget_distance.cpp \
+	widgets/widget_enum.cpp \
+	widgets/widget_sublayer.cpp \
+	widgets/widget_filename.cpp \
+	widgets/widget_gradient.cpp \
+	widgets/widget_link.cpp \
+	widgets/widget_sound.cpp \
+	widgets/widget_time.cpp \
+	widgets/widget_timeslider.cpp \
+	widgets/widget_value.cpp \
+	widgets/widget_vector.cpp \
+	widgets/widget_waypoint.cpp \
+	widgets/widget_waypointmodel.cpp \
+	widgets/widget_keyframe_list.cpp \
+	widgets/widget_bonechooser.cpp \
+	widgets/widget_ruler.cpp
+
+synfigstudio_src += \
+	$(WIDGETS_HH) \
+	$(WIDGETS_CC)

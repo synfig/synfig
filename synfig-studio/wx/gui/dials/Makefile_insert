@@ -1,0 +1,19 @@
+DIALS_HH = \
+	dials/zoomdial.h \
+	dials/framedial.h \
+	dials/jackdial.h \
+	dials/keyframedial.h \
+	dials/toggleducksdial.h \
+	dials/resolutiondial.h
+
+DIALS_CC = \
+	dials/zoomdial.cpp \
+	dials/framedial.cpp \
+	dials/jackdial.cpp \
+	dials/keyframedial.cpp \
+	dials/toggleducksdial.cpp \
+	dials/resolutiondial.cpp
+
+synfigstudio_src += \
+	$(DIALS_HH) \
+	$(DIALS_CC)

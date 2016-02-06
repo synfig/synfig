@@ -1,0 +1,15 @@
+CELLRENDERER_HH = \
+	cellrenderer/cellrenderer_gradient.h \
+	cellrenderer/cellrenderer_time.h \
+	cellrenderer/cellrenderer_timetrack.h \
+	cellrenderer/cellrenderer_value.h
+
+CELLRENDERER_CC = \
+	cellrenderer/cellrenderer_gradient.cpp \
+	cellrenderer/cellrenderer_time.cpp \
+	cellrenderer/cellrenderer_timetrack.cpp \
+	cellrenderer/cellrenderer_value.cpp
+
+synfigstudio_src += \
+	$(CELLRENDERER_HH) \
+	$(CELLRENDERER_CC)

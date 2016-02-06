@@ -1,0 +1,13 @@
+PALETTE_HH = \
+	modules/mod_palette/dock_palbrowse.h \
+	modules/mod_palette/dock_paledit.h \
+	modules/mod_palette/mod_palette.h
+
+PALETTE_CC = \
+	modules/mod_palette/dock_palbrowse.cpp \
+	modules/mod_palette/dock_paledit.cpp \
+	modules/mod_palette/mod_palette.cpp
+
+synfigstudio_src += \
+	$(PALETTE_HH) \
+	$(PALETTE_CC)
