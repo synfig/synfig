@@ -54,6 +54,9 @@ if sys.platform == 'win32':
 else:
 	PLUGIN_DIR = "/usr/local/share/synfig/plugins"
 
+def init_ui_manager():
+	
+
 
 class App(wx.Frame):
 	def __init__(self, basepath, argc, argv):
