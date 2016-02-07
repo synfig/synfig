@@ -29,7 +29,6 @@ from app import App
 from general import *
 
 if sys.platform == 'win32':
-	#from main_win32 import *
 	import locale
 
 
@@ -39,24 +38,21 @@ if sys.platform == 'win32':
 if __name__ == '__main__':
 
 	argc = len(sys.argv)
-	#if sys.platfrom == 'win32':
-	#	if consoleOptionEnabled(sys.argv):
-	#		redirectIOToConsole()
 
 	binary_path = os.path.dirname(os.path.abspath(sys.argv[0])) #C:\Program Files\Synfig\bin
-	print ("  " + "binary_path: " + binary_path)
+	#print ("  " + "binary_path: " + binary_path)
 
 	#                                C:\Program Files\Synfig           \\          share        \\          locale
 	#locale_dir = etl::dirname(etl::dirname(binary_path))+ETL_DIRECTORY_SEPARATOR+"share"+ETL_DIRECTORY_SEPARATOR+"locale";
 	locale_dir = os.path.dirname(os.path.dirname(binary_path)) + os.path.sep + "share" + os.path.sep + "locale"
-	print ("  " + "locale_dir: " + locale_dir)
+	#print ("  " + "locale_dir: " + locale_dir)
 	if sys.platform == 'win32':
 		locale_dir = locale_from_utf8(locale_dir)
 	
-	locale.setlocale(locale.LC_ALL, "")
-	gettext.bindtextdomain(GETTEXT_PACKAGE,  locale_dir)
-	gettext.bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8")
-	gettext.textdomain(GETTEXT_PACKAGE)
+	#locale.setlocale(locale.LC_ALL, "")
+	#gettext.bindtextdomain(GETTEXT_PACKAGE,  locale_dir)
+	#gettext.bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8")
+	#gettext.textdomain(GETTEXT_PACKAGE)
 
 	
 	# {

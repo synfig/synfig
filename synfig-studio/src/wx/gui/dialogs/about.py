@@ -17,7 +17,7 @@
 # =========================================================================
 
 from general import *
-import sys
+import sys, os
 
 VERSION = "1.0.2"
 
@@ -33,6 +33,8 @@ import wx
 import wx.lib.agw.hyperlink as hl
 from wx.lib.wordwrap import wordwrap
 
+cwd = os.getcwd()
+
 class AboutDialog(wx.Dialog):
 	def __init__(self, parent, ID, title, pos=wx.DefaultPosition, size=(420, 350), style=wx.DEFAULT_DIALOG_STYLE):
 		wx.Dialog.__init__(self,parent,ID,title,pos,size, style)
@@ -44,8 +46,8 @@ class AboutDialog(wx.Dialog):
 		v.Add(v2,0,wx.ALIGN_CENTRE_HORIZONTAL)
 		
 		# Icons
-		self.SetIcon(wx.Icon("synfig_icon.ico"))
-		png = wx.Image("synfig_icon" +IMAGE_EXT, wx.BITMAP_TYPE_PNG).ConvertToBitmap()
+		self.SetIcon(wx.Icon(cwd + "\synfig_icon.ico"))
+		png = wx.Image(cwd + "\synfig_icon." +IMAGE_EXT, wx.BITMAP_TYPE_PNG).ConvertToBitmap()
 		img = wx.StaticBitmap(self, -1, png)
 
 		# Labels
@@ -287,59 +289,22 @@ class About(AboutDialog):
 	#// TRANSLATORS: change this to your name, separate multiple names with \n
 	#set_translator_credits(_("translator-credits"));
 
-	std::string imagepath;
-#ifdef WIN32
-	imagepath=App::get_base_path()+os.path.sep+IMAGE_DIR;
-#else
-	imagepath=IMAGE_DIR;
-#endif
-	char* synfig_root=getenv("SYNFIG_ROOT");
-	if(synfig_root) {
-		imagepath=synfig_root;
-		imagepath+=ETL_DIRECTORY_SEPARATOR;
-		imagepath+="share";
-		imagepath+=ETL_DIRECTORY_SEPARATOR;
-		imagepath+="pixmaps";
-	}
-	imagepath+=ETL_DIRECTORY_SEPARATOR;
+	#std::string imagepath;
+    #ifdef WIN32
+	#imagepath=App::get_base_path()+os.path.sep+IMAGE_DIR;
+    #else
+	#imagepath=IMAGE_DIR;
+    #endif
+	#char* synfig_root=getenv("SYNFIG_ROOT");
+	#if(synfig_root) {
+	#	imagepath=synfig_root;
+	#	imagepath+=ETL_DIRECTORY_SEPARATOR;
+	#	imagepath+="share";
+	#	imagepath+=ETL_DIRECTORY_SEPARATOR;
+	#	imagepath+="pixmaps";
+	#}
+	#imagepath+=ETL_DIRECTORY_SEPARATOR;
 
-	Gtk::Image *Logo = manage(new class Gtk::Image());
-	Logo->set(imagepath+"synfig_icon."IMAGE_EXT);
-	set_logo(Logo->get_pixbuf());
-
-#ifdef SHOW_EXTRA_INFO
-
-	string extra_info = get_comments() + "\n";
-
-	#ifdef DEVEL_VERSION
-		extra_info += strprintf(_("\nDevelopment version:\n%s\n"),DEVEL_VERSION);
-	#endif
-
-	extra_info += "\n";
-
-	extra_info += strprintf(_("Built on %s" /* at %s */ "\n"), __DATE__ /* , __TIME__ */ );
-
-	extra_info += "\n";
-
-	extra_info += strprintf(_("Built with:\n"), ETL_VERSION);
-	extra_info += strprintf(_("ETL %s\n"), ETL_VERSION);
-	extra_info += strprintf(_("Synfig API %s\n"), stringify(SYNFIG_VERSION));
-	extra_info += strprintf(_("Synfig library %d\n"), SYNFIG_LIBRARY_VERSION);
-	extra_info += strprintf(_("GTK+ %d.%d.%d\n"), GTK_MAJOR_VERSION, GTK_MINOR_VERSION, GTK_MICRO_VERSION);
-	#ifdef __GNUC__
-		extra_info += strprintf(_("GNU G++ %d.%d.%d\n"),__GNUC__,__GNUC_MINOR__,__GNUC_PATCHLEVEL__);
-	#endif
-
-	extra_info += "\n";
-
-	extra_info += strprintf(_("Using:\n"), synfig::get_version());
-	extra_info += strprintf(_("Synfig %s\n"), synfig::get_version());
-	extra_info += strprintf(_("GTK+ %d.%d.%d"),gtk_major_version,gtk_minor_version,gtk_micro_version);
-
-	#ifdef _DEBUG
-		extra_info += "\n\nDEBUG BUILD";
-	#endif
-
-	set_comments(extra_info);
-
-#endif
+	#Gtk::Image *Logo = manage(new class Gtk::Image());
+	#Logo->set(imagepath+"synfig_icon."IMAGE_EXT);
+	#set_logo(Logo->get_pixbuf());
