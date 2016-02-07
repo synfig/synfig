@@ -1,4 +1,0 @@
-Subject: crash editing bone parent
-
-convert bone1's parent to 'reference'
-then edit bone2's parent
