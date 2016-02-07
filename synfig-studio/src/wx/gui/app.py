@@ -99,23 +99,23 @@ class App(wx.Frame):
 
         # File menu
         menu_file = wx.Menu()
-        menu_file.Append(ID_New,_("New"))
-        menu_file.Append(ID_Open, _("Open"))
+        menu_file.Append(ID_New,_("New\tCtrl+N"))
+        menu_file.Append(ID_Open, _("Open\tCtrl+O"))
         menu_open_recent = wx.Menu()
         menu_file.AppendMenu(ID_MenuOpenRecent,_("Open Recent"), menu_open_recent)
         menu_file.AppendSeparator()
-        menu_file.Append(ID_Save, _("Save"))
-        menu_file.Append(ID_SaveAs, _("Save As..."))
+        menu_file.Append(ID_Save, _("Save\tCtrl+S"))
+        menu_file.Append(ID_SaveAs, _("Save As...\tShift+Ctrl+S"))
         menu_file.Append(ID_SaveAll, _("Save All"))
         menu_file.Append(ID_Revert, _("Revert"))
         menu_file.AppendSeparator()
-        menu_file.Append(ID_Import, _("Import"))
+        menu_file.Append(ID_Import, _("Import\tCtrl+I"))
         menu_file.AppendSeparator()
-        menu_file.Append(ID_Preview, _("Preview"))
-        menu_file.Append(ID_Render, _("Render"))
+        menu_file.Append(ID_Preview, _("Preview\tF11"))
+        menu_file.Append(ID_Render, _("Render\tF9"))
         menu_file.AppendSeparator()
-        menu_file.Append(ID_CloseDocument, _("Close Document"))
-        menu_file.Append(ID_Quit, _("Quit"))
+        menu_file.Append(ID_CloseDocument, _("Close Document\tCtrl+W"))
+        menu_file.Append(ID_Quit, _("Quit\tCtrl+Q"))
 
         # Edit menu
         menu_edit = wx.Menu()
@@ -140,7 +140,7 @@ class App(wx.Frame):
 
         # Help menu
         menu_help = wx.Menu()
-        menu_help.Append(ID_Help, _("Help"))
+        menu_help.Append(ID_Help, _("Help\tF1"))
         menu_help.AppendSeparator()
         menu_help.Append(ID_HelpTutorials, _("Tutorials"))
         menu_help.Append(ID_HelpReference, _("Reference"))
