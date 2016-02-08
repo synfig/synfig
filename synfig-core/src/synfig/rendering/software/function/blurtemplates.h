@@ -92,64 +92,39 @@ public:
 
 		const T precision(1e-10);
 		T s(fabs(size));
-		T w(T(1.0)/(T(1.0) + T(2.0)*s));
 		int sizei = 1 + (int)floor(s + precision);
 
-		// discrete fill
-		if (sizei < 1 || sizei > x.count/2)
-		{
-			/// assume that pattern already contains zeros
-			//x.fill(T(0.0));
-		}
-		else
-		{
-			for(typename A::Iterator i(x, 0, sizei); i; ++i)
-				*i = w;
-			/// assume that pattern already contains zeros
-			//for(A::Iterator i(x, sizei+1, x.count - sizei + 1); i; ++i)
-			//	*i = T(0.0);
-			for(typename A::Iterator i(x, x.count - sizei + 1); i; ++i)
-				*i = w;
-		}
+		/// assume that pattern already contains zeros
+		for(typename A::Iterator i(x, 0, std::min(sizei, x.count)); i; ++i)
+			*i = T(1.0);
 
 		// antialiasing
-		if (sizei >= 0) {
-			T aa(w*(T(sizei-1) - s));
-			x[x.count - sizei] = x[sizei] = aa;
-		}
+		if (sizei < x.count)
+			x[sizei] = T(sizei-1) - s;
 	}
 
 	template<typename T>
 	static void fill_pattern_gauss(const Array<T, 1> &x, T size)
 	{
+		if (x.count <= 0) return;
 		T s = T(0.5)+fabs(size);
 		x[0] = gauss(T(0.0), s);
-		for(int i = x.count/2; i; --i)
-			x[i] = x[x.count - i] = gauss(T(i), s);
-		T sum(0.0);
-		for(typename Array<T, 1>::Iterator i(x); i; ++i)
-			sum += *i;
-		T k = T(1.0)/sum;
-		for(typename Array<T, 1>::Iterator i(x); i; ++i)
-			*i *= k;
+		for(int i = 0; i < x.count; ++i)
+			x[i] = gauss(T(i), s);
 	}
 
 	template<typename T>
 	static void fill_pattern_2d_disk(const Array<T, 2> &x, const T &size_x, const T &size_y)
 	{
-		typedef Array<T, 2> A;
-
 		const T precision(1e-10);
 
 		T sx(T(0.5) + fabs(size_x));
 		T sy(T(0.5) + fabs(size_y));
 
-		int sizec = std::min(x.get_count(1)/2, (int)ceil(sx - precision));
-		int sizer = std::min(x.get_count(0)/2, (int)ceil(sy - precision));
+		int sizec = std::min(x.get_count(1)-1, (int)ceil(sx - precision));
+		int sizer = std::min(x.get_count(0)-1, (int)ceil(sy - precision));
 
-		T sum(0.0);
-
-		// draw one sector
+		// draw sector
 		T k0x(sx - T(0.5)), k0y(sy - T(0.5));
 		T k1x(sx + T(0.5)), k1y(sy + T(0.5));
 		T kk0x( k0x > precision ? T(1.0)/k0x : T(0.0) );
@@ -158,7 +133,6 @@ public:
 		T kk1y( k1y > precision ? T(1.0)/k1y : T(0.0) );
 		T pp0x(0.0), pp0y(0.0);
 		T pp1x(0.0), pp1y(0.0);
-		T sumkx(1.0), sumky(1.0);
 		for(int r = 0; r <= sizer; ++r)
 		{
 			for(int c = 0; c <= sizec; ++c)
@@ -180,40 +154,12 @@ public:
 						T drr = rr0 - rr1;
 						v = drr > precision ? rr0*(1.0 - rr1)/drr : T(0.0);
 					}
-					sum += sumkx*sumky*v;
 				}
 				pp0x += kk0x;
 				pp1x += kk1x;
-				sumkx = T(2.0);
 			}
-			sumkx = T(1.0);
-			sumky = T(2.0);
 			pp0x = T(0.0); pp0y += kk0y;
 			pp1x = T(0.0); pp1y += kk1y;
-		}
-
-		// normalize sector
-		if (sum > precision)
-		{
-			T nk(T(1.0)/sum);
-			for(typename A::Iterator r(x, 0, sizer); r; ++r)
-				for(typename Array<T, 1>::Iterator c(*r, 0, sizec); c; ++c)
-					*c *= nk;
-		}
-
-		// clone sector
-		for(int r = 0; r <= sizer; ++r)
-		{
-			for(int c = 0; c <= sizec; ++c)
-			{
-				T &v = x[r][c];
-				if (c > 0)
-					x[r][x.sub().count - c] = v;
-				if (r > 0)
-					x[x.count - r][c] = v;
-				if (r > 0 && c > 0)
-					x[x.count - r][x.sub().count - c] = v;
-			}
 		}
 
 		/// assume that pattern already contains zeros
@@ -221,7 +167,163 @@ public:
 	}
 
 	template<typename T>
-	static void box_blur_discrete(const Array<T, 1> &x, std::deque<T> &q, const int size)
+	static void mirror_pattern(const Array<T, 1> &x)
+	{
+		typedef Array<T, 1> A;
+		int count = (x.count-1)/2;
+		for(typename A::Iterator i(x, 1, 1 + count), j(typename A::Iterator(x).get_reverse()); i; ++i, ++j)
+			*j = *i;
+	}
+
+	template<typename T>
+	static void mirror_pattern_2d(const Array<T, 2> &x)
+	{
+		typedef Array<T, 2> A;
+		int count = (x.count-1)/2;
+		for(typename A::Iterator i(x, 1, 1 + count); i; ++i)
+			mirror_pattern(*i);
+		for(typename A::Iterator i(x.reorder(1, 0)); i; ++i)
+			mirror_pattern(*i);
+	}
+
+	template<typename T>
+	static void normalize_full_pattern(const Array<T, 1> &x)
+	{
+		const T precision(1e-10);
+		typedef Array<T, 1> A;
+		T sum = T();
+		for(typename A::Iterator i(x); i; ++i)
+			sum += *i;
+		if (sum > precision)
+		{
+			T k = T(1.0)/sum;
+			for(typename A::Iterator i(x); i; ++i)
+				*i *= k;
+		}
+	}
+
+	template<typename T>
+	static void normalize_half_pattern(const Array<T, 1> &x)
+	{
+		if (x.count <= 0) return;
+		const T precision(1e-10);
+		typedef Array<T, 1> A;
+		T sum = x[0];
+		for(typename A::Iterator i(x, 1); i; ++i)
+			sum += T(2.0)*(*i);
+		if (sum > precision)
+		{
+			T k = T(1.0)/sum;
+			for(typename A::Iterator i(x); i; ++i)
+				*i *= k;
+		}
+	}
+
+	template<typename T>
+	static void normalize_full_pattern_2d(const Array<T, 2> &x)
+	{
+		if (x.get_count(0) <= 0 || x.get_count(1) <= 0) return;
+		const T precision(1e-10);
+		typedef Array<T, 2> A;
+		typedef Array<T, 1> B;
+		T sum = T(0.0);
+		for(typename A::Iterator i(x); i; ++i)
+		for(typename B::Iterator j(*i); j; ++j)
+			sum += *j;
+		if (sum > precision)
+		{
+			T k = T(1.0)/sum;
+			for(typename A::Iterator i(x); i; ++i)
+			for(typename B::Iterator j(*i); j; ++j)
+				*j *= k;
+		}
+	}
+
+	template<typename T>
+	static void normalize_half_pattern_2d(const Array<T, 2> &x)
+	{
+		if (x.get_count(0) <= 0 || x.get_count(1) <= 0) return;
+		const T precision(1e-10);
+		typedef Array<T, 2> A;
+		typedef Array<T, 1> B;
+		T sum = x[0][0];
+		for(typename A::Iterator i(x, 1); i; ++i)
+			sum += T(2.0)*(*i)[0];
+		for(typename B::Iterator j(x[0], 1); j; ++j)
+			sum += T(2.0)*(*j);
+		for(typename A::Iterator i(x, 1); i; ++i)
+		for(typename B::Iterator j(*i, 1); j; ++j)
+			sum += T(4.0)*(*j);
+		if (sum > precision)
+		{
+			T k = T(1.0)/sum;
+			for(typename A::Iterator i(x); i; ++i)
+			for(typename B::Iterator j(*i); j; ++j)
+				*j *= k;
+		}
+	}
+
+	template<typename T>
+	static void blur_pattern(const Array<T, 1> &dst, const Array<T, 1> &src, const Array<T, 1> &pattern)
+	{
+		typedef Array<T, 1> A;
+		if (pattern.count <= 0)
+		{
+			dst.assign(src);
+			return;
+		}
+
+		int pattern_size = pattern.count - 1;
+		int end = std::min(src.count, dst.count) - pattern_size;
+
+		int si = pattern_size;
+		for(typename A::Iterator di(dst, pattern_size, end); di; ++di, ++si)
+		{
+			(*di) += src[si] * pattern[0];
+			for(int i = 1; i <= pattern_size; ++i)
+				(*di) += (src[si - i] + src[si + i])*pattern[i];
+		}
+	}
+
+	template<typename T>
+	static void blur_2d_pattern(const Array<T, 2> &dst, const Array<T, 2> &src, const Array<T, 2> &pattern)
+	{
+		typedef Array<T, 2> A;
+		typedef Array<T, 1> B;
+		if (pattern.get_count(0) <= 0 || pattern.get_count(1) <= 0)
+		{
+			dst.assign(src);
+			return;
+		}
+
+		int pattern_size0 = pattern.get_count(0) - 1;
+		int pattern_size1 = pattern.get_count(1) - 1;
+		int end0 = std::min(src.get_count(0), dst.get_count(0)) - pattern_size0;
+		int end1 = std::min(src.get_count(1), dst.get_count(1)) - pattern_size1;
+
+		int si0 = pattern_size0;
+		int si1 = pattern_size1;
+		for(typename A::Iterator di0(dst, pattern_size0, end0); di0; ++di0, ++si0, si1 = pattern_size1)
+		for(typename B::Iterator di1(*di0, pattern_size1, end1); di1; ++di1, ++si1)
+		{
+			(*di1) += src[si0][si1]*pattern[0][0];
+
+			for(int i0 = 1; i0 <= pattern_size0; ++i0)
+				(*di1) += (src[si0 - i0][si1] + src[si0 + i0][si1])*pattern[i0][0];
+			for(int i1 = 1; i1 <= pattern_size1; ++i1)
+				(*di1) += (src[si0][si1 - i1] + src[si0][si1 + i1])*pattern[0][i1];
+
+			for(int i0 = 1; i0 <= pattern_size0; ++i0)
+			for(int i1 = 1; i1 <= pattern_size1; ++i1)
+				(*di1) += pattern[i0][i1]*( src[si0 - i0][si1 - i1]
+						                  + src[si0 - i0][si1 + i1]
+										  + src[si0 + i0][si1 - i1]
+										  + src[si0 + i0][si1 + i1] );
+		}
+	}
+
+	template<typename T>
+	static void blur_box_discrete(const Array<T, 1> &x, std::deque<T> &q, const int size)
 	{
 		typedef Array<T, 1> A;
 		if (size == 0) return;
@@ -244,7 +346,7 @@ public:
 	}
 
 	template<typename T>
-	static void box_blur_discrete(const Array<T, 1> &dst, const Array<const T, 1> &src, const int size, const int offset)
+	static void blur_box_discrete(const Array<T, 1> &dst, const Array<const T, 1> &src, const int size, const int offset)
 	{
 		typedef Array<T, 1> A;
 		typedef Array<const T, 1> B;
@@ -280,7 +382,7 @@ public:
 	}
 
 	template<typename T>
-	static void box_blur_aa(const Array<T, 1> &x, std::deque<T> &q, const T &size)
+	static void blur_box_aa(const Array<T, 1> &x, std::deque<T> &q, const T &size)
 	{
 		typedef Array<T, 1> A;
 
@@ -312,7 +414,7 @@ public:
 	}
 
 	template<typename T>
-	static void box_blur_aa(const Array<T, 1> &dst, const Array<const T, 1> &src, const T &size, const int offset)
+	static void blur_box_aa(const Array<T, 1> &dst, const Array<const T, 1> &src, const T &size, const int offset)
 	{
 		typedef Array<T, 1> A;
 		typedef Array<const T, 1> B;
@@ -356,23 +458,47 @@ public:
 	}
 
 	template<typename T>
-	static void box_blur(const Array<T, 1> &x, std::deque<T> &q, const T &size)
+	static void blur_box(const Array<T, 1> &x, std::deque<T> &q, const T &size)
 	{
 		const T precision(1e-5);
 		if (fabs(size - round(size)) < precision)
-			box_blur_discrete(x, q, (int)round(size));
+			blur_box_discrete(x, q, (int)round(size));
 		else
-			box_blur_aa(x, q, size);
+			blur_box_aa(x, q, size);
 	}
 
 	template<typename T>
-	static void box_blur(const Array<T, 1> &dst, const Array<const T, 1> &src, const T &size, const int offset)
+	static void blur_box(const Array<T, 1> &dst, const Array<const T, 1> &src, const T &size, const int offset)
 	{
 		const T precision(1e-5);
 		if (fabs(size - round(size)) < precision)
-			box_blur_discrete(dst, src, (int)round(size), offset);
+			blur_box_discrete(dst, src, (int)round(size), offset);
 		else
-			box_blur_aa(dst, src, size, offset);
+			blur_box_aa(dst, src, size, offset);
+	}
+
+	template<typename T>
+	static void blur_iir(const Array<T, 1> &x, const T &k0, const T &k1, const T &k2, const T &k3)
+	{
+		typedef Array<T, 1> A;
+		typename A::Iterator i(x);
+		for(typename A::Iterator i3(i), i2(++i), i1(++i), i0(++i); i0; ++i0, ++i1, ++i2, ++i3)
+			*i0 = k0*(*i0) + k1*(*i1) + k2*(*i2) + k3*(*i3);
+		i = typename A::Iterator(x).get_reverse();
+		for(typename A::Iterator i3(i), i2(++i), i1(++i), i0(++i); i0; ++i0, ++i1, ++i2, ++i3)
+			*i0 = k0*(*i0) + k1*(*i1) + k2*(*i2) + k3*(*i3);
+	}
+
+	template<typename T>
+	static void blur_iir(const Array<T, 1> &dst, const Array<T, 1> &src, const T &k0, const T &k1, const T &k2, const T &k3)
+	{
+		typedef Array<T, 1> A;
+		typename A::Iterator j(dst), i(src), i0(src, 3);
+		for(typename A::Iterator j3(j), j2(++j), j1(++j), j0(++j); i0 && j0; ++i0, ++j0, ++j1, ++j2, ++j3)
+			*j0 = k0*(*i0) + k1*(*j1) + k2*(*j2) + k3*(*j3);
+		j = A::Iterator(dst, 0, i0 - i).get_reverse();
+		for(typename A::Iterator j3(j), j2(++j), j1(++j), j0(++j); j0; ++j0, ++j1, ++j2, ++j3)
+			*j0 = k0*(*j0) + k1*(*j1) + k2*(*j2) + k3*(*j3);
 	}
 
 	static void surface_as_array(Array<const Color, 2> &a, const synfig::Surface &src, const RectInt &r)
@@ -406,7 +532,7 @@ public:
 		{ Array<const Color, 2> a; surface_as_array(a, src, r); return a; }
 
 	template<typename T>
-	static void read_surface(
+	static void surface_read(
 		const Array<T, 3> &dst,
 		const Array<const Color, 2> &src )
 	{
@@ -429,7 +555,7 @@ public:
 	}
 
 	template<typename T>
-	static void read_surface(
+	static void surface_read(
 		const Array<T, 3> &dst,
 		const synfig::Surface &src,
 		const VectorInt &dst_offset,
@@ -439,11 +565,11 @@ public:
 		Array<T, 3> dst_range = dst.get_range(1, dst_rect.minx, dst_rect.maxx)
 								   .get_range(0, dst_rect.miny, dst_rect.maxy);
 		Array<const Color, 2> src_range = surface_as_array(src, src_rect);
-		read_surface(dst_range, src_range);
+		surface_read(dst_range, src_range);
 	}
 
 	template<typename T>
-	static void write_surface(
+	static void surface_write(
 		const Array<Color, 2> &dst,
 		const Array<T, 3> &src )
 	{
@@ -466,7 +592,7 @@ public:
 	}
 
 	template<typename T>
-	static void write_surface(
+	static void surface_write(
 		const Array<Color, 2> &dst,
 		const Array<T, 3> &src,
 		Color::BlendMethod blend_method,
@@ -491,7 +617,7 @@ public:
 	}
 
 	template<typename T>
-	static void write_surface(
+	static void surface_write(
 		synfig::Surface &dst,
 		const Array<T, 3> &src,
 		const RectInt &dst_rect,
@@ -504,8 +630,8 @@ public:
 		Array<Color, 2> dst_range = surface_as_array(dst, dst_rect);
 		Array<T, 3> src_range = src.get_range(1, src_rect.minx, src_rect.maxx)
 								   .get_range(0, src_rect.miny, src_rect.maxy);
-		if (blend) write_surface(dst_range, src_range, blend_method, amount);
-			  else write_surface(dst_range, src_range);
+		if (blend) surface_write(dst_range, src_range, blend_method, amount);
+			  else surface_write(dst_range, src_range);
 	}
 };
 

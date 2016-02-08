@@ -7,6 +7,7 @@ RENDERING_SOFTWARE_FUNCTION_HH = \
 
 RENDERING_SOFTWARE_FUNCTION_CC = \
 	rendering/software/function/blur.cpp \
+	rendering/software/function/blur_iir_coefficients.cpp \
 	rendering/software/function/contour.cpp \
 	rendering/software/function/fft.cpp
 

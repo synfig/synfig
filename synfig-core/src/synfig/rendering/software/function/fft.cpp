@@ -135,8 +135,8 @@ void
 software::FFT::fft2d(const Array<Complex, 2> &x, bool invert, bool do_rows, bool do_cols)
 {
 	if (x.count == 0 || x.sub().count == 0) return;
-	if ( (!do_cols || x.sub().count == 1)
-	  && (!do_rows || x.count == 1) )
+	if ( (!do_cols || x.count == 1)
+	  && (!do_rows || x.sub().count == 1) )
 		return;
 
 	assert(is_valid_count(x.count) && is_valid_count(x.sub().count));
@@ -172,8 +172,8 @@ software::FFT::fft2d(const Array<Complex, 2> &x, bool invert, bool do_rows, bool
 	// divide by count to complete back-FFT
 	if (invert)
 	{
-		int count = (do_cols ? x.sub().count : 1)
-			      * (do_rows ? x.count : 1);
+		int count = (do_cols ? x.count : 1)
+			      * (do_rows ? x.sub().count : 1);
 		x.process< std::multiplies<Complex> >( 1.0/(Real)count );
 	}
 }

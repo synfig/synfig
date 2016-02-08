@@ -93,16 +93,51 @@ public:
 		bool validate();
 	};
 
+	class IIRCoefficients
+	{
+	public:
+		union {
+			struct { Real k0, k1, k2; };
+			struct { Real k[3]; };
+		};
+		IIRCoefficients(): k0(), k1(), k2() { }
+		IIRCoefficients(Real k0, Real k1, Real k2):
+			k0(k0), k1(k1), k2(k2) { }
+	};
+
+	class IIRCoefficientsPrepared
+	{
+	public:
+		union {
+			struct { Real k0, k1, k2, k3; };
+			struct { Real k[4]; };
+		};
+		IIRCoefficientsPrepared(): k0(), k1(), k2(), k3() { }
+	};
+
 	static Real get_size_amplifier(rendering::Blur::Type type);
 	static Real get_extra_size(rendering::Blur::Type type);
 	static VectorInt get_extra_size(rendering::Blur::Type type, const Vector &size);
 
 private:
+	static const Real iir_min_radius;
+	static const Real iir_max_radius;
+	static const Real iir_radius_step;
+	static const IIRCoefficients iir_coefficients[];
+
+	static IIRCoefficientsPrepared get_iir_coefficients(Real radius);
+
+	//! Simple blur by pattern
+	static void blur_pattern(const Params &params);
+
 	//! Full-size blur using Furier transform
 	static void blur_fft(const Params &params);
 
-	// Fast box-blur
+	//! Fast box-blur
 	static void blur_box(const Params &params);
+
+	//! Blur using infinite impulse response filter (gaussian only)
+	static void blur_iir(const Params &params);
 
 public:
 	//! Generic blur function

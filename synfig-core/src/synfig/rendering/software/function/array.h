@@ -315,7 +315,7 @@ public:
 			stride(array.stride),
 			end(end) { }
 
-		operator bool () const { return array.pointer < end; }
+		operator bool () const { return stride > 0 ? array.pointer < end : array.pointer > end; }
 		TargetRef& operator *  () const { assert(*this); return array.target_ref(); }
 		TargetRef* operator -> () const { assert(*this); return &array.target_ref(); }
 
@@ -329,11 +329,30 @@ public:
 		Iterator operator + (int i) const { return Iterator(array, array.pointer + i*stride, end); }
 		Iterator operator - (int i) const { return Iterator(array, array.pointer - i*stride, end); }
 
+		int operator - (const Iterator &i) const { return (array.pointer - i.array.pointer)/stride; }
+
 		Array<Type, Rank-1> get_array() const { return array; }
 		Type* get_pointer() const { return array.pointer; }
 		Type& get_reference() const { return *array.pointer; }
 		int get_stride() const { return stride; }
 		Type* get_end() const { return end; }
+		int get_count_down() const { return end - array.pointer; }
+
+		Iterator get_reverse() const
+		{
+			Iterator j(*this);
+			j.stride = -stride;
+			j.array.pointer = end + j.stride;
+			j.end = array.pointer + j.stride;
+			return j;
+		}
+
+		Iterator get_sub_range(int count) const
+		{
+			Iterator j(*this);
+			j.end = array.pointer + stride*min(get_count_down(), count);
+			return j;
+		}
 	};
 
 	void fill(const Type &x) const
