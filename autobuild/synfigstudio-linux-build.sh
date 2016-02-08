@@ -17,7 +17,7 @@
 #    ./synfigstudio-linux-build.sh [mode] [revision]
 #
 # where:
-#   - [mode] is full|quick|package
+#   - [mode] is full|quick|package|debug
 #   - [revision] - commit id, branch or tag (package mode only)
 #
 # To build packages it's required to run this script as root.
@@ -1334,6 +1334,13 @@ else
 fi
 
 case $ARG in
+	debug)
+		DEBUG=1
+		MODE='full'
+		initialize
+		mk
+		exit;;
+
 	full)
 		MODE='full'
 		initialize
