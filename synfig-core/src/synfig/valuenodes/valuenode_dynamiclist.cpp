@@ -755,6 +755,8 @@ ValueNode_DynamicList::link_name(int i)const
 int
 ValueNode_DynamicList::get_link_index_from_name(const String &name)const
 {
+	for(int i = 0; i < link_count(); ++i)
+		if (link_name(i) == name) return i;
 	throw Exception::BadLinkName(name);
 }
 

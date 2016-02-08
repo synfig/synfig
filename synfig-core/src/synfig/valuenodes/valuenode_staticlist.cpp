@@ -429,6 +429,8 @@ ValueNode_StaticList::link_name(int i)const // line 693
 int
 ValueNode_StaticList::get_link_index_from_name(const String &name)const // line 699
 {
+	for(int i = 0; i < link_count(); ++i)
+		if (link_name(i) == name) return i;
 	throw Exception::BadLinkName(name);
 }
 
