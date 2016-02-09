@@ -126,7 +126,7 @@ software::Blur::get_extra_size(rendering::Blur::Type type)
 	static const Real gauss_size = BlurTemplates::ungauss(min_value)
 	                             * BlurTemplates::amplifier_gauss<Real>();
 
-	static const Real fast_min_value = 1.0 / 256.0;
+	static const Real fast_min_value = 1.0 / 1024.0;
 	static const Real fast_gauss_size = BlurTemplates::ungauss(fast_min_value)
 	                                  * BlurTemplates::amplifier_gauss<Real>();
 
@@ -578,8 +578,8 @@ software::Blur::blur_iir(const Params &params)
 	int rows = params.src_rect.get_size()[1];
 	int cols = params.src_rect.get_size()[0];
 
-	vector<ColorReal> surface(rows*cols*channels);
-	Array<ColorReal, 3> arr_surface(&surface.front());
+	vector<Real> surface(rows*cols*channels);
+	Array<Real, 3> arr_surface(&surface.front());
 	arr_surface
 		.set_dim(rows, cols*channels)
 		.set_dim(cols, channels)
@@ -596,23 +596,22 @@ software::Blur::blur_iir(const Params &params)
 		return;
 	}
 
-	deque<ColorReal> q;
-	vector<ColorReal> surface_copy;
-	Array<ColorReal, 3> arr_surface_rows(arr_surface.reorder(2, 0, 1));
-	Array<ColorReal, 3> arr_surface_cols(arr_surface_rows.reorder(0, 2, 1));
+	vector<Real> surface_copy;
+	Array<Real, 3> arr_surface_rows(arr_surface.reorder(2, 0, 1));
+	Array<Real, 3> arr_surface_cols(arr_surface_rows.reorder(0, 2, 1));
 
 	IIRCoefficientsPrepared cr = get_iir_coefficients(params.amplified_size[0]);
 	IIRCoefficientsPrepared cc = get_iir_coefficients(params.amplified_size[1]);
 
 	if (fabs(params.amplified_size[0]) > precision)
-		for(Array<ColorReal, 3>::Iterator channel(arr_surface_rows); channel; ++channel)
-			for(Array<ColorReal, 2>::Iterator r(*channel); r; ++r)
-				BlurTemplates::blur_iir(*r, ColorReal(cr.k0), ColorReal(cr.k1), ColorReal(cr.k2), ColorReal(cr.k3));
+		for(Array<Real, 3>::Iterator channel(arr_surface_rows); channel; ++channel)
+			for(Array<Real, 2>::Iterator r(*channel); r; ++r)
+				BlurTemplates::blur_iir(*r, cr.k0, cr.k1, cr.k2, cr.k3);
 
 	if (fabs(params.amplified_size[1]) > precision)
-		for(Array<ColorReal, 3>::Iterator channel(arr_surface_cols); channel; ++channel)
-			for(Array<ColorReal, 2>::Iterator c(*channel); c; ++c)
-				BlurTemplates::blur_iir(*c, ColorReal(cc.k0), ColorReal(cc.k1), ColorReal(cc.k2), ColorReal(cc.k3));
+		for(Array<Real, 3>::Iterator channel(arr_surface_cols); channel; ++channel)
+			for(Array<Real, 2>::Iterator c(*channel); c; ++c)
+				BlurTemplates::blur_iir(*c, cc.k0, cc.k1, cc.k2, cc.k3);
 
 	BlurTemplates::surface_write(
 		*params.dest,
