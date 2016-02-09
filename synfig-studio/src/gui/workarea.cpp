@@ -2420,10 +2420,6 @@ WorkArea::on_hruler_event(GdkEvent *event)
 		{
 			// Event is in the hruler, which has a slightly different
 			// coordinate system from the canvas.
-			gint exes_count = gdk_device_get_n_axes(event->motion.device);
-			for(gint i = 0; i < exes_count; ++i)
-				if (gdk_device_get_axis_use(event->motion.device, i) == GDK_AXIS_Y)
-					event->motion.axes[i] -= hruler->get_height()+2;
 			event->motion.y -= hruler->get_height()+2;
 
 			// call the on drawing area event to refresh eveything.
@@ -2468,10 +2464,6 @@ WorkArea::on_vruler_event(GdkEvent *event)
 		{
 			// Event is in the vruler, which has a slightly different
 			// coordinate system from the canvas.
-			gint exes_count = gdk_device_get_n_axes(event->motion.device);
-			for(gint i = 0; i < exes_count; ++i)
-				if (gdk_device_get_axis_use(event->motion.device, i) == GDK_AXIS_X)
-					event->motion.axes[i] -= vruler->get_width()+2;
 			event->motion.x -= vruler->get_width()+2;
 
 			// call the on drawing area event to refresh eveything.
