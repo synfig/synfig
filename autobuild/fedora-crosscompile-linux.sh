@@ -272,13 +272,13 @@ mkprefix()
 	
 	pushd ${SYSPREFIX}/var/cache/apt/archives/
 	
-	wget -c http://repo.asis.io/wheezy-updates/pool/main/libx/libxshmfence/libxshmfence-dev_1.2-1_${SYS_ARCH}.deb
+	wget -c http://debian.asis.io/debian/pool/main/libx/libxshmfence/libxshmfence-dev_1.2-1_${SYS_ARCH}.deb
 
-	wget -c http://repo.asis.io/wheezy-updates/pool/main/libx/libxshmfence/libxshmfence1_1.2-1_${SYS_ARCH}.deb
+	wget -c http://debian.asis.io/debian/pool/main/libx/libxshmfence/libxshmfence1_1.2-1_${SYS_ARCH}.deb
 	
-	wget -c http://repo.asis.io/squeeze-updates/pool/main/x/x11proto-dri2/x11proto-dri2-dev_2.8-2_all.deb
+	wget -c http://debian.asis.io/debian/pool/main/x/x11proto-dri2/x11proto-dri2-dev_2.8-2_all.deb
 	
-	wget -c http://repo.asis.io/squeeze-updates/pool/main/x/x11proto-dri3/x11proto-dri3-dev_1.0-1_all.deb
+	wget -c http://debian.asis.io/debian/pool/main/x/x11proto-dri3/x11proto-dri3-dev_1.0-1_all.deb
 	
 	popd
 
