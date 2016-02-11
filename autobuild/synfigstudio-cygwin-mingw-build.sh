@@ -876,6 +876,7 @@ $CYGWIN_SETUP \
 -P libnss-devel \
 -P libiconv \
 -P libdb4.8-devel \
+-P libpcre-devel \
 -P python \
 -P file-devel \
 -P zlib-devel \
