@@ -3,6 +3,7 @@ LAYERS_HH = \
 	layers/layer_composite.h \
 	layers/layer_duplicate.h \
 	layers/layer_group.h \
+	layers/layer_invisible.h \
 	layers/layer_meshtransform.h \
 	layers/layer_mime.h \
 	layers/layer_motionblur.h \
@@ -20,6 +21,7 @@ LAYERS_CC = \
 	layers/layer_composite.cpp \
 	layers/layer_duplicate.cpp \
 	layers/layer_group.cpp \
+	layers/layer_invisible.cpp \
 	layers/layer_meshtransform.cpp \
 	layers/layer_mime.cpp \
 	layers/layer_motionblur.cpp \

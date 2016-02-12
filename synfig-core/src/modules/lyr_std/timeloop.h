@@ -29,7 +29,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/layer.h>
+#include <synfig/layers/layer_invisible.h>
 #include <synfig/color.h>
 #include <synfig/time.h>
 #include <synfig/context.h>
@@ -43,7 +43,7 @@ using namespace synfig;
 using namespace std;
 using namespace etl;
 
-class Layer_TimeLoop : public Layer
+class Layer_TimeLoop : public Layer_Invisible
 {
 	SYNFIG_LAYER_MODULE_EXT
 
@@ -76,11 +76,8 @@ public:
 	virtual Vocab get_param_vocab()const;
 	virtual bool set_version(const String &ver);
 	virtual void reset_version();
-	virtual Color get_color(Context context, const Point &pos)const;
 
 	virtual void set_time(IndependentContext context, Time time)const;
-	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
-	virtual bool accelerated_cairorender(Context context, cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 };
 
 /* === E N D =============================================================== */

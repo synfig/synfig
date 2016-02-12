@@ -124,21 +124,3 @@ Layer_Stroboscope::set_time(IndependentContext context, Time t)const
 	context.set_time(ret_time);
 }
 
-Color
-Layer_Stroboscope::get_color(Context context, const Point &pos)const
-{
-	return context.get_color(pos);
-}
-
-bool
-Layer_Stroboscope::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
-{
-	return context.accelerated_render(surface,quality,renddesc,cb);
-}
-
-
-bool
-Layer_Stroboscope::accelerated_cairorender(Context context,cairo_t *cr,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
-{
-	return context.accelerated_cairorender(cr,quality,renddesc,cb);
-}
