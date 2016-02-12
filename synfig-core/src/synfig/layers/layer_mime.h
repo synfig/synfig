@@ -27,9 +27,12 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/layer.h>
-#include <synfig/string.h>
 #include <map>
+
+#include <synfig/string.h>
+
+#include "layer_invisible.h"
+
 
 /* === M A C R O S ========================================================= */
 
@@ -45,7 +48,7 @@ namespace synfig {
 **	all of the correct layers installed to still work with
 **	that composition.
 */
-class Layer_Mime : public Layer
+class Layer_Mime : public Layer_Invisible
 {
 	std::map<String,ValueBase> param_list;
 	String name;
@@ -59,9 +62,6 @@ public:
 	virtual bool set_param(const String &param, const ValueBase &value);
 
 	virtual ValueBase get_param(const String &param)const;
-
-	virtual Color get_color(Context context, const Point &pos)const;
-	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 
 	virtual Vocab get_param_vocab()const;
 	virtual String get_local_name()const;

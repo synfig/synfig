@@ -114,20 +114,6 @@ Layer_Mime::get_param(const String &param)const
 	return ValueBase();
 }
 
-Color
-Layer_Mime::get_color(Context context, const Point &pos)const
-{
-	// A Layer_Mime layer should do nothing at all.
-	return context.get_color(pos);
-}
-
-bool
-Layer_Mime::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
-{
-	// A Layer_Mime layer should do nothing at all.
-	return context.accelerated_render(surface,quality,renddesc,cb);
-}
-
 Layer::Vocab
 Layer_Mime::get_param_vocab()const
 {
