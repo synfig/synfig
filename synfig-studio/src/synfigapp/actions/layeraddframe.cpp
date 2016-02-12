@@ -5,7 +5,8 @@
 **	$Id$
 **
 **	\legal
-**	......... ... 2014 Ivan Mahonin
+**	Copyright (c) 2014 Ivan Mahonin
+**	Copyright (c) 2016 Jérôme Blanchi
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -88,7 +89,14 @@ Action::LayerAddFrame::get_param_vocab()
 bool
 Action::LayerAddFrame::is_candidate(const ParamList &x)
 {
-	return candidate_check(get_param_vocab(),x);
+	if (!candidate_check(get_param_vocab(),x)) return false;
+
+	Layer::Handle layer=x.find("layer")->second.get_layer();
+	if(!layer) return false;
+
+	if (!etl::handle<Layer_Switch>::cast_dynamic(layer)) return false;
+
+	return true;
 }
 
 bool
