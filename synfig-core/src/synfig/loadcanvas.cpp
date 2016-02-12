@@ -2180,7 +2180,7 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 			   (element->get_name() == "composite") && value_node->link_name(i) =="split_radius")
 			{
 				// old versions must have split_radius and split_angle set to the same value node than split
-				value_node->set_link("split_radius", value_node->get_link(value_node->get_link_index_from_name("split"))->clone(canvas));
+				value_node->set_link("split_radius", value_node->get_link("split")->clone(canvas));
 				continue;
 			}
 			// 'split_angle' was added while canvas 0.9 was in use and
