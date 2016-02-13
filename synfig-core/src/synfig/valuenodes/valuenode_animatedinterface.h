@@ -160,7 +160,6 @@ protected:
 public:
 	using ValueNode_AnimatedInterfaceConst::editable_waypoint_list;
 	using ValueNode_AnimatedInterfaceConst::new_waypoint;
-	using ValueNode_AnimatedInterfaceConst::new_waypoint;
 	using ValueNode_AnimatedInterfaceConst::add;
 	using ValueNode_AnimatedInterfaceConst::insert_time;
 	using ValueNode_AnimatedInterfaceConst::erase;
