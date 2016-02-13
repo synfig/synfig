@@ -61,6 +61,7 @@ Dialog_Color::Dialog_Color():
 	dialog_settings(this, "color"),
 	busy_(false)
 {
+	set_transient_for((Gtk::Window&)(*App::main_window));
 	set_type_hint(Gdk::WINDOW_TYPE_HINT_UTILITY);
 
 	create_color_edit_widget();
