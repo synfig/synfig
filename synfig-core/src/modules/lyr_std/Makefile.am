@@ -53,7 +53,9 @@ liblyr_std_la_SOURCES = \
 	curvewarp.cpp \
 	curvewarp.h \
 	stroboscope.cpp \
-	stroboscope.h
+	stroboscope.h \
+	freetime.cpp \
+	freetime.h
 
 liblyr_std_la_CXXFLAGS = \
 	@SYNFIG_CFLAGS@

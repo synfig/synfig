@@ -71,6 +71,7 @@
 #include "timeloop.h"
 #include "curvewarp.h"
 #include "stroboscope.h"
+#include "freetime.h"
 
 #endif
 
@@ -105,5 +106,6 @@ MODULE_INVENTORY_BEGIN(liblyr_std)
 		LAYER(Layer_Stroboscope)
 		LAYER(Layer_SphereDistort)
 		LAYER(CurveWarp)
+		LAYER(Layer_FreeTime)
 	END_LAYERS
 MODULE_INVENTORY_END
