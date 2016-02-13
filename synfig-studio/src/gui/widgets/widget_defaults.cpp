@@ -247,25 +247,25 @@ Widget_Defaults::Widget_Defaults()
 	_widget_brush = manage(new Widget_Brush());
 	_widget_brush->set_size_request(56, 48);
 	_widget_brush->set_tooltip_text(_("Brush Preview"));
-	
+
 	brush_increase = Gtk::manage(new class Gtk::Button("+"));
 	brush_increase->set_tooltip_text(_("Decrease brush size"));
 	brush_increase->set_relief(Gtk::RELIEF_NONE);
 	brush_increase->set_border_width(0);
 	brush_increase->signal_clicked().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::on_brush_increase_clicked));
-	
+
 	brush_decrease = Gtk::manage(new class Gtk::Button("-"));
 	brush_decrease->set_tooltip_text(_("Increase brush size"));
 	brush_decrease->set_relief(Gtk::RELIEF_NONE);
 	brush_decrease->set_border_width(0);
 	brush_decrease->signal_clicked().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::on_brush_decrease_clicked));
-	
+
 	brush_entry = Gtk::manage(new class Gtk::Entry());
 	brush_entry->set_width_chars(4);
 	brush_entry->set_has_frame(false);
 	brush_entry->signal_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::on_brush_entry_changed));
 	brush_entry->set_tooltip_text(_("Brush Size"));
-	
+
 	Gtk::Table* brush_layout = Gtk::manage(new class Gtk::Table(2, 3, false));
 	brush_layout->attach(*_widget_brush, 0, 2, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	brush_layout->attach(*brush_decrease, 0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
@@ -297,7 +297,7 @@ Widget_Defaults::Widget_Defaults()
 	* was removed from toolbox as planned, then toolbutton in toolbox will have
 	* proper column spacing by default. I will let it as it is, because the toolbox
 	* still need more love.
-	* 
+	*
 	* NOTE2: Commented out as of 2014-06-24 -- KD.
 	*/
 
@@ -354,7 +354,7 @@ Widget_Defaults::Widget_Defaults()
 		//widget_blend_method->show();
 		//widget_opacity->show();
 		//widget_brush_bline_width->show_all();
-		
+
 		Gtk::ToolItemGroup *tool_item_group = manage(new class Gtk::ToolItemGroup());
 		gtk_tool_item_group_set_label(tool_item_group->gobj(), NULL);
 
@@ -365,7 +365,7 @@ Widget_Defaults::Widget_Defaults()
 		palette->set_icon_size(Gtk::IconSize::from_name("synfig-small_icon_16x16"));
 		palette->set_size_request(100,100);
 		palette->show();
-		
+
 		Gtk::ToolItem *tool_item1 = manage(new class Gtk::ToolItem());
 		tool_item1->add(*widget_colors_gradient);
 		tool_item_group->insert(*tool_item1);
@@ -374,16 +374,16 @@ Widget_Defaults::Widget_Defaults()
 		tool_item2->add(*widget_brush);
 		tool_item_group->insert(*tool_item2);
 		tool_item2->show();
-		
+
 		tool_item_group->show_all();
-		
+
 		//Gtk::ScrolledWindow *scrolled_window = manage(new Gtk::ScrolledWindow());
 		//scrolled_window->add(*palette);
 		//scrolled_window->show();
-		
+
 		//pack_start(*scrolled_window, Gtk::PACK_EXPAND_PADDING, 4);
 		pack_start(*palette, Gtk::PACK_EXPAND_WIDGET|Gtk::PACK_SHRINK, 4);
-		
+
 	}
 
 
@@ -491,8 +491,8 @@ void
 Widget_Defaults::on_otln_color_clicked()
 {
 	// Left click on outline color
-	App::dialog_color->set_color(synfigapp::Main::get_outline_color());
 	App::dialog_color->reset();
+	App::dialog_color->set_color(synfigapp::Main::get_outline_color());
 	App::dialog_color->signal_edited().connect(sigc::ptr_fun(synfigapp::Main::set_outline_color));
 	App::dialog_color->present();
 }
@@ -501,8 +501,8 @@ void
 Widget_Defaults::on_fill_color_clicked()
 {
 	// Left click on fill color
-	App::dialog_color->set_color(synfigapp::Main::get_fill_color());
 	App::dialog_color->reset();
+	App::dialog_color->set_color(synfigapp::Main::get_fill_color());
 	App::dialog_color->signal_edited().connect(sigc::ptr_fun(synfigapp::Main::set_fill_color));
 	App::dialog_color->present();
 }

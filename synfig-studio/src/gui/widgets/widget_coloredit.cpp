@@ -8,7 +8,8 @@
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007 Chris Moore
 **  Copyright (c) 2008 Paul Wise
-**  Copyright (c) 2015 Denis Zdorovtsov, Jerome Blanchi
+**  Copyright (c) 2015 Denis Zdorovtsov
+**  Copyright (c) 2015-2016 Jérôme Blanchi
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -342,7 +343,7 @@ ColorSlider::on_event(GdkEvent *event)
 }
 
 /* === M E T H O D S ======================================================= */
-void 
+void
 Widget_ColorEdit::SliderRow(int i,ColorSlider * n, char * l, Pango::AttrList & attr_list, Gtk::Table* table)
 {
 	Gtk::Label *label;
@@ -419,7 +420,7 @@ Widget_ColorEdit::Widget_ColorEdit():
 	//This defines are used for code below simplification.
 	#define SLIDER_ROW(i,n,l) SliderRow(i, slider_##n = manage(new ColorSlider(ColorSlider::TYPE_##n)), l,attr_list,table);
 	#define ATTACH_SPIN_BUTTON(i,n) AttachSpinButton(i, spinbutton_##n = manage(new class Gtk::SpinButton(n##_adjustment, 1, 0)),table);
-	
+
 	{ //RGB frame
 		Gtk::Table* table(rgb_table);
 		SLIDER_ROW(0,R,_("Red"));
@@ -507,8 +508,8 @@ void Widget_ColorEdit::setHVSColor(synfig::Color color)
 
 void
 Widget_ColorEdit::on_color_changed()
-{ 
-	//Spike! Gtk::ColorSelection emits this signal when I use 
+{
+	//Spike! Gtk::ColorSelection emits this signal when I use
 	//set_current_color(...). It calls recursion. Used a flag to fix it.
 	if (!colorHVSChanged)
 	{
@@ -624,7 +625,7 @@ Widget_ColorEdit::set_value(const synfig::Color &data)
 	clamp_=false;
 
 	color=data;
-	
+
 	if(use_colorspace_gamma())
 	{
 		R_adjustment->set_value(gamma_in(color.get_r())*100);
@@ -650,6 +651,7 @@ Widget_ColorEdit::set_value(const synfig::Color &data)
 	slider_A->set_color(color);
 	hex_color->set_text(color.get_hex());
 	widget_color.set_value(color);
+	setHVSColor(color);
 
 	hold_signals=false;
 }
