@@ -762,7 +762,7 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	//synfig::info("Canvasview: Before big chunk of allocation and tabling stuff");
 	//create all allocated stuff for this canvas
 	audio = new AudioContainer();
-	
+
 	Gtk::Alignment *space = Gtk::manage(new Gtk::Alignment());
 	space->set_size_request(4,4);
         space->show();
@@ -1115,13 +1115,13 @@ CanvasView::create_time_bar()
 	timeslider->set_can_focus(true);
 	//time_scroll->signal_value_changed().connect(sigc::mem_fun(*work_area, &studio::WorkArea::render_preview_hook));
 	//time_scroll->set_update_policy(Gtk::UPDATE_DISCONTINUOUS);
-	
+
 	timetrack = manage(new class Gtk::VBox());
 	timetrack->pack_start(*widget_kf_list);
 	timetrack->pack_start(*timeslider);
 	timetrack->pack_start(*time_window_scroll);
 	timetrack->hide();
-	
+
 	// Interpolation widget
 	widget_interpolation = manage(new Widget_Enum());
 	widget_interpolation->set_param_desc(
@@ -1153,7 +1153,7 @@ CanvasView::create_time_bar()
 	widget_interpolation_scroll->set_size_request(25,0);
 	Gtk::Scrollbar* hscroll=widget_interpolation_scroll->get_hscrollbar();
 	hscroll->hide();
-	
+
 	widget_interpolation->signal_changed().connect(sigc::mem_fun(*this,&studio::CanvasView::on_interpolation_changed));
 	widget_interpolation_scroll->add_events(Gdk::POINTER_MOTION_MASK);
 	widget_interpolation_scroll->signal_event().connect(sigc::bind_return(sigc::mem_fun(*this,&studio::CanvasView::on_interpolation_event),false));
@@ -1175,7 +1175,7 @@ CanvasView::create_time_bar()
 		animatebutton->set_relief(Gtk::RELIEF_NONE);
 		animatebutton->show();
 	}
-	
+
 	{
 		Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon_16x16");
 		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-timetrack"), iconsize));
@@ -1218,7 +1218,7 @@ CanvasView::create_time_bar()
 	framedial->signal_seek_begin().connect(
 			sigc::bind(sigc::mem_fun(*canvas_interface().get(), &synfigapp::CanvasInterface::seek_time), Time::begin())
 	);
-	
+
 	framedial->signal_seek_prev_keyframe().connect(sigc::mem_fun(*canvas_interface().get(), &synfigapp::CanvasInterface::jump_to_prev_keyframe));
 	framedial->signal_seek_prev_frame().connect(sigc::bind(sigc::mem_fun(*canvas_interface().get(), &synfigapp::CanvasInterface::seek_frame), -1));
 	framedial->signal_play().connect(sigc::mem_fun(*this, &studio::CanvasView::on_play_pause_pressed));
@@ -1248,10 +1248,10 @@ CanvasView::create_time_bar()
 	Gtk::Alignment *space = Gtk::manage(new Gtk::Alignment());
 	space->set_size_request(4);
         space->show();
-	
+
 	Gtk::Alignment *space2 = Gtk::manage(new Gtk::Alignment());
 	space2->set_size_request(4);
-	
+
 	jackdial = manage(new class JackDial());
 #ifdef WITH_JACK
 	jackbutton = jackdial->get_toggle_jackbutton();
@@ -1266,7 +1266,7 @@ CanvasView::create_time_bar()
 	}
 #endif
 	statusbar->show();
-	
+
 	timebar = Gtk::manage(new class Gtk::Table(11, 2, false));
 
 	//Attach widgets to the timebar
@@ -1282,7 +1282,7 @@ CanvasView::create_time_bar()
 	timebar->attach(*keyframedial, 8, 9, 1, 2, Gtk::SHRINK, Gtk::SHRINK);
 	timebar->attach(*space, 9, 10, 1, 2, Gtk::SHRINK, Gtk::FILL);
 	timebar->attach(*animatebutton, 10, 11, 1, 2, Gtk::SHRINK, Gtk::SHRINK);
-	
+
 	timebar->attach(*timetrack, 0, 11, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL);
 
 	timebar->show();
@@ -1345,7 +1345,7 @@ CanvasView::create_display_bar()
 
 	// Separator
 	displaybar->append( *create_tool_separator() );
-	
+
 	{ // Setup render options dialog button
 		Gtk::Image *icon = Gtk::manage(new Gtk::Image(Gtk::StockID("synfig-render_options"), iconsize));
 		icon->set_padding(0, 0);
@@ -1474,7 +1474,7 @@ CanvasView::create_display_bar()
 
 		displaybar->append(*onion_skin);
 	}
-	
+
 	{ // Set up past onion skin spin button
 		past_onion_spin=Gtk::manage(new class Gtk::SpinButton(past_onion_adjustment_));
 		past_onion_spin->signal_value_changed().connect(
@@ -1507,7 +1507,7 @@ CanvasView::create_display_bar()
 
 	// Separator
 	displaybar->append( *create_tool_separator() );
-	
+
 	{ // Setup refresh button
 		Gtk::Image *icon = Gtk::manage(new Gtk::Image(Gtk::StockID("gtk-refresh"), iconsize));
 		icon->set_padding(0, 0);
@@ -1522,10 +1522,10 @@ CanvasView::create_display_bar()
 
 		displaybar->append(*refreshbutton);
 	}
-	
+
 	// Separator
 	displaybar->append( *create_tool_separator() );
-	
+
 	// Set up the ResolutionDial widget
 	resolutiondial.update_lowres(work_area->get_low_resolution_flag());
 	resolutiondial.signal_increase_resolution().connect(
@@ -1537,18 +1537,18 @@ CanvasView::create_display_bar()
 	resolutiondial.insert_to_toolbar(*displaybar);
 
 	displaybar->show();
-	
+
 	progressbar =manage(new class Gtk::ProgressBar());
 	//progressbar->set_text("Idle");
 	//progressbar->set_show_text(true);
 	progressbar->show();
 	cancel=false;
-	
+
 	{
 		Gtk::Image *icon = Gtk::manage(new Gtk::Image(Gtk::StockID("gtk-stop"), iconsize));
 		icon->set_padding(0, 0);
 		icon->show();
-		
+
 		stopbutton = Gtk::manage(new class Gtk::Button());
 		stopbutton->set_image(*icon);
 		stopbutton->signal_clicked().connect(SLOT_EVENT(EVENT_STOP));
@@ -1558,13 +1558,13 @@ CanvasView::create_display_bar()
 		stopbutton->show();
 		stopbutton->set_sensitive(false);
 	}
-	
+
 	Gtk::HBox *hbox = manage(new class Gtk::HBox(false, 0));
 	hbox->pack_start(*displaybar, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0);
 	//hbox->pack_start(*progressbar, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0);
 	hbox->pack_start(*stopbutton, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0);
 	hbox->show();
-	
+
 	return hbox;
 }
 
@@ -2281,8 +2281,8 @@ CanvasView::close_view()
 static bool _close_instance(etl::handle<Instance> instance)
 {
 	etl::handle<Instance> argh(instance);
-	instance->safe_close();
-	synfig::info("closed");
+	if(instance->safe_close())
+		synfig::info("closed");
 	return false;
 }
 
@@ -2360,7 +2360,7 @@ CanvasView::create_tab_label()
 	attach_dnd_to(*event_box);
 
 	Glib::ustring text(get_local_name());
-	
+
 	Gtk::HBox* box(manage(new Gtk::HBox()));
 	event_box->add(*box);
 	box->show();
@@ -4492,7 +4492,7 @@ CanvasView::toggle_jack_button()
 
 		if(answer == synfigapp::UIInterface::RESPONSE_OK)
 			set_jack_enabled(!get_jack_enabled());
-		
+
 		// Update button state
 		toggling_jack = true;
 		jackdial->get_toggle_jackbutton()->set_active(get_jack_enabled());

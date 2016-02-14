@@ -174,7 +174,7 @@ public:
 	CanvasViewList & canvas_view_list() { return canvas_view_list_; }
 
 	const CanvasViewList & canvas_view_list()const { return canvas_view_list_; }
-	
+
 	void run_plugin(std::string plugin_path);
 
 	bool save_as(const synfig::String &filename);
@@ -208,6 +208,8 @@ public:
 	void refresh_canvas_tree();
 
 	bool safe_revert();
+	//! Perform necessary tests before close an instance
+	//! returns true if it's safe to close the instance
 	bool safe_close();
 
 	void gather_uri(std::set<synfig::String> &x, const synfig::ValueNode::Handle &value_node) const;
