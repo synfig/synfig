@@ -126,7 +126,7 @@ software::Blur::get_extra_size(rendering::Blur::Type type)
 	static const Real gauss_size = BlurTemplates::ungauss(min_value)
 	                             * BlurTemplates::amplifier_gauss<Real>();
 
-	static const Real fast_min_value = 1.0 / 1024.0;
+	static const Real fast_min_value = 1.0 / 128.0;
 	static const Real fast_gauss_size = BlurTemplates::ungauss(fast_min_value)
 	                                  * BlurTemplates::amplifier_gauss<Real>();
 
@@ -167,16 +167,16 @@ software::Blur::blur_pattern(const Params &params)
 	int cols = params.src_rect.get_size()[0];
 	int pattern_rows = params.extra_size[1] + 1;
 	int pattern_cols = params.extra_size[0] + 1;
-	vector<Real> src_surface(rows*cols*channels);
-	vector<Real> dst_surface(rows*cols*channels);
-	vector<Real> full_pattern;
-	vector<Real> row_pattern;
-	vector<Real> col_pattern;
+	vector<ColorReal> src_surface(rows*cols*channels);
+	vector<ColorReal> dst_surface(rows*cols*channels);
+	vector<ColorReal> full_pattern;
+	vector<ColorReal> row_pattern;
+	vector<ColorReal> col_pattern;
 	bool full = false;
 	bool cross = false;
 
-	Array<Real, 3> arr_src_surface((Real*)&src_surface.front());
-	Array<Real, 3> arr_dst_surface((Real*)&dst_surface.front());
+	Array<ColorReal, 3> arr_src_surface(&src_surface.front());
+	Array<ColorReal, 3> arr_dst_surface(&dst_surface.front());
 
 	arr_src_surface
 		.set_dim(rows, cols*channels)
@@ -186,14 +186,14 @@ software::Blur::blur_pattern(const Params &params)
 		.set_dim(rows, cols*channels)
 		.set_dim(cols, channels)
 		.set_dim(channels, 1);
-	Array<Real, 2> arr_full_pattern;
+	Array<ColorReal, 2> arr_full_pattern;
 	arr_full_pattern
 		.set_dim(pattern_rows, pattern_cols)
 		.set_dim(pattern_cols, 1);
-	Array<Real, 1> arr_row_pattern;
+	Array<ColorReal, 1> arr_row_pattern;
 	arr_row_pattern
 		.set_dim(pattern_cols, 1);
-	Array<Real, 1> arr_col_pattern;
+	Array<ColorReal, 1> arr_col_pattern;
 	arr_col_pattern
 		.set_dim(pattern_rows, 1);
 
@@ -225,24 +225,24 @@ software::Blur::blur_pattern(const Params &params)
 	switch(params.type)
 	{
 	case rendering::Blur::BOX:
-		BlurTemplates::fill_pattern_box(arr_row_pattern, params.amplified_size[0]);
-		BlurTemplates::fill_pattern_box(arr_col_pattern, params.amplified_size[1]);
+		BlurTemplates::fill_pattern_box(arr_row_pattern, (ColorReal)params.amplified_size[0]);
+		BlurTemplates::fill_pattern_box(arr_col_pattern, (ColorReal)params.amplified_size[1]);
 		break;
 	case rendering::Blur::CROSS:
-		BlurTemplates::fill_pattern_box(arr_row_pattern, params.amplified_size[0]);
-		BlurTemplates::fill_pattern_box(arr_col_pattern, params.amplified_size[1]);
+		BlurTemplates::fill_pattern_box(arr_row_pattern, (ColorReal)params.amplified_size[0]);
+		BlurTemplates::fill_pattern_box(arr_col_pattern, (ColorReal)params.amplified_size[1]);
 		cross = true;
 		break;
 	case rendering::Blur::GAUSSIAN:
 	case rendering::Blur::FASTGAUSSIAN:
-		BlurTemplates::fill_pattern_gauss(arr_row_pattern, params.amplified_size[0]);
-		BlurTemplates::fill_pattern_gauss(arr_col_pattern, params.amplified_size[1]);
+		BlurTemplates::fill_pattern_gauss(arr_row_pattern, (ColorReal)params.amplified_size[0]);
+		BlurTemplates::fill_pattern_gauss(arr_col_pattern, (ColorReal)params.amplified_size[1]);
 		break;
 	case rendering::Blur::DISC:
 		BlurTemplates::fill_pattern_2d_disk(
 			arr_full_pattern,
-			params.amplified_size[0],
-			params.amplified_size[1] );
+			(ColorReal)params.amplified_size[0],
+			(ColorReal)params.amplified_size[1] );
 		full = true;
 		break;
 	default:
@@ -254,7 +254,7 @@ software::Blur::blur_pattern(const Params &params)
 	if (full)
 	{
 		BlurTemplates::normalize_half_pattern_2d( arr_full_pattern );
-		for(Array<Real, 3>::Iterator dst(arr_dst_surface.reorder(2, 0, 1)), src(arr_src_surface.reorder(2, 0, 1)); dst; ++dst, ++src)
+		for(Array<ColorReal, 3>::Iterator dst(arr_dst_surface.reorder(2, 0, 1)), src(arr_src_surface.reorder(2, 0, 1)); dst; ++dst, ++src)
 			BlurTemplates::blur_2d_pattern(*dst, *src, arr_full_pattern);
 	}
 	else
@@ -262,20 +262,20 @@ software::Blur::blur_pattern(const Params &params)
 		BlurTemplates::normalize_half_pattern( arr_row_pattern );
 		BlurTemplates::normalize_half_pattern( arr_col_pattern );
 
-		Array<Real, 3> arr_src_surface_rows(arr_src_surface.reorder(2, 0, 1));
-		Array<Real, 3> arr_src_surface_cols(arr_src_surface_rows.reorder(0, 2, 1));
+		Array<ColorReal, 3> arr_src_surface_rows(arr_src_surface.reorder(2, 0, 1));
+		Array<ColorReal, 3> arr_src_surface_cols(arr_src_surface_rows.reorder(0, 2, 1));
 
-		Array<Real, 3> arr_dst_surface_rows(arr_dst_surface.reorder(2, 0, 1));
-		Array<Real, 3> arr_dst_surface_cols(arr_dst_surface_rows.reorder(0, 2, 1));
+		Array<ColorReal, 3> arr_dst_surface_rows(arr_dst_surface.reorder(2, 0, 1));
+		Array<ColorReal, 3> arr_dst_surface_cols(arr_dst_surface_rows.reorder(0, 2, 1));
 
 		if (cross)
 		{
-			arr_row_pattern.process< std::multiplies<Real> >(0.5);
-			arr_col_pattern.process< std::multiplies<Real> >(0.5);
+			arr_row_pattern.process< std::multiplies<ColorReal> >(0.5);
+			arr_col_pattern.process< std::multiplies<ColorReal> >(0.5);
 		}
 
-		for(Array<Real, 3>::Iterator src_channel(arr_src_surface_rows), dst_channel(arr_dst_surface_rows); dst_channel; ++src_channel, ++dst_channel)
-			for(Array<Real, 2>::Iterator sr(*src_channel), dr(*dst_channel); dr; ++sr, ++dr)
+		for(Array<ColorReal, 3>::Iterator src_channel(arr_src_surface_rows), dst_channel(arr_dst_surface_rows); dst_channel; ++src_channel, ++dst_channel)
+			for(Array<ColorReal, 2>::Iterator sr(*src_channel), dr(*dst_channel); dr; ++sr, ++dr)
 				BlurTemplates::blur_pattern(*dr, *sr, arr_row_pattern);
 
 		if (!cross)
@@ -285,8 +285,8 @@ software::Blur::blur_pattern(const Params &params)
 			memset(&src_surface.front(), 0, sizeof(src_surface.front())*src_surface.size());
 		}
 
-		for(Array<Real, 3>::Iterator src_channel(arr_src_surface_cols), dst_channel(arr_dst_surface_cols); dst_channel; ++src_channel, ++dst_channel)
-			for(Array<Real, 2>::Iterator sr(*src_channel), dr(*dst_channel); dr; ++sr, ++dr)
+		for(Array<ColorReal, 3>::Iterator src_channel(arr_src_surface_cols), dst_channel(arr_dst_surface_cols); dst_channel; ++src_channel, ++dst_channel)
+			for(Array<ColorReal, 2>::Iterator sr(*src_channel), dr(*dst_channel); dr; ++sr, ++dr)
 				BlurTemplates::blur_pattern(*dr, *sr, arr_row_pattern);
 	}
 
@@ -524,10 +524,6 @@ software::Blur::blur_box(const Params &params)
 		arr_surface_rows
 			.process< std::plus<ColorReal> >(
 				arr_surface_cols.reorder(0, 2, 1) );
-	//if (cross)
-	//	arr_surface_rows
-	//		.assign(
-	//			arr_surface_cols.reorder(0, 2, 1) );
 
 	BlurTemplates::surface_write(
 		*params.dest,
@@ -546,8 +542,10 @@ software::Blur::get_iir_coefficients(Real radius)
 	radius = max(iir_min_radius + precision, min(iir_max_radius - precision, fabs(radius)));
 
 	Real x = (radius - iir_min_radius)/iir_radius_step;
-	int index = floor(x);
-	x -= index;
+	//int index = floor(x);
+	//x -= index;
+	int index = round(x);
+	x = 0.0;
 
 	const IIRCoefficients &prev = iir_coefficients[index];
 	const IIRCoefficients &next = iir_coefficients[index+1];
@@ -578,8 +576,8 @@ software::Blur::blur_iir(const Params &params)
 	int rows = params.src_rect.get_size()[1];
 	int cols = params.src_rect.get_size()[0];
 
-	vector<Real> surface(rows*cols*channels);
-	Array<Real, 3> arr_surface(&surface.front());
+	vector<ColorReal> surface(rows*cols*channels);
+	Array<ColorReal, 3> arr_surface(&surface.front());
 	arr_surface
 		.set_dim(rows, cols*channels)
 		.set_dim(cols, channels)
@@ -596,22 +594,31 @@ software::Blur::blur_iir(const Params &params)
 		return;
 	}
 
-	vector<Real> surface_copy;
-	Array<Real, 3> arr_surface_rows(arr_surface.reorder(2, 0, 1));
-	Array<Real, 3> arr_surface_cols(arr_surface_rows.reorder(0, 2, 1));
+	Array<ColorReal, 3> arr_surface_rows(arr_surface.reorder(2, 0, 1));
+	Array<ColorReal, 3> arr_surface_cols(arr_surface_rows.reorder(0, 2, 1));
 
 	IIRCoefficientsPrepared cr = get_iir_coefficients(params.amplified_size[0]);
 	IIRCoefficientsPrepared cc = get_iir_coefficients(params.amplified_size[1]);
 
+	ColorReal cr0 = (ColorReal)cr.k0;
+	ColorReal cr1 = (ColorReal)cr.k1;
+	ColorReal cr2 = (ColorReal)cr.k2;
+	ColorReal cr3 = (ColorReal)cr.k3;
+
+	ColorReal cc0 = (ColorReal)cc.k0;
+	ColorReal cc1 = (ColorReal)cc.k1;
+	ColorReal cc2 = (ColorReal)cc.k2;
+	ColorReal cc3 = (ColorReal)cc.k3;
+
 	if (fabs(params.amplified_size[0]) > precision)
-		for(Array<Real, 3>::Iterator channel(arr_surface_rows); channel; ++channel)
-			for(Array<Real, 2>::Iterator r(*channel); r; ++r)
-				BlurTemplates::blur_iir(*r, cr.k0, cr.k1, cr.k2, cr.k3);
+		for(Array<ColorReal, 3>::Iterator channel(arr_surface_rows); channel; ++channel)
+			for(Array<ColorReal, 2>::Iterator r(*channel); r; ++r)
+				BlurTemplates::blur_iir(*r, cr0, cr1, cr2, cr3);
 
 	if (fabs(params.amplified_size[1]) > precision)
-		for(Array<Real, 3>::Iterator channel(arr_surface_cols); channel; ++channel)
-			for(Array<Real, 2>::Iterator c(*channel); c; ++c)
-				BlurTemplates::blur_iir(*c, cc.k0, cc.k1, cc.k2, cc.k3);
+		for(Array<ColorReal, 3>::Iterator channel(arr_surface_cols); channel; ++channel)
+			for(Array<ColorReal, 2>::Iterator c(*channel); c; ++c)
+				BlurTemplates::blur_iir(*c, cc0, cc1, cc2, cc3);
 
 	BlurTemplates::surface_write(
 		*params.dest,

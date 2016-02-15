@@ -171,7 +171,8 @@ public:
 	{
 		typedef Array<T, 1> A;
 		int count = (x.count-1)/2;
-		for(typename A::Iterator i(x, 1, 1 + count), j(typename A::Iterator(x).get_reverse()); i; ++i, ++j)
+		typename A::ReverseIterator j(x);
+		for(typename A::Iterator i(x, 1, 1 + count); i; ++i, ++j)
 			*j = *i;
 	}
 
@@ -481,24 +482,26 @@ public:
 	static void blur_iir(const Array<T, 1> &x, const T &k0, const T &k1, const T &k2, const T &k3)
 	{
 		typedef Array<T, 1> A;
-		typename A::Iterator i(x);
-		for(typename A::Iterator i3(i), i2(++i), i1(++i), i0(++i); i0; ++i0, ++i1, ++i2, ++i3)
-			*i0 = k0*(*i0) + k1*(*i1) + k2*(*i2) + k3*(*i3);
-		i = typename A::Iterator(x).get_reverse();
-		for(typename A::Iterator i3(i), i2(++i), i1(++i), i0(++i); i0; ++i0, ++i1, ++i2, ++i3)
-			*i0 = k0*(*i0) + k1*(*i1) + k2*(*i2) + k3*(*i3);
+		T d3(0.0), d2(0.0), d1(0.0), d0;
+		for(typename A::Iterator i(x); i; ++i)
+			*i = d0 = k0*(*i) + k1*d1 + k2*d2 + k3*d3, d3 = d2, d2 = d1, d1 = d0;
+		d3 = d2 = d1 = T(0.0);
+		for(typename A::ReverseIterator i(x); i; ++i)
+			*i = d0 = k0*(*i) + k1*d1 + k2*d2 + k3*d3, d3 = d2, d2 = d1, d1 = d0;
 	}
 
 	template<typename T>
 	static void blur_iir(const Array<T, 1> &dst, const Array<T, 1> &src, const T &k0, const T &k1, const T &k2, const T &k3)
 	{
 		typedef Array<T, 1> A;
-		typename A::Iterator j(dst), i(src), i0(src, 3);
-		for(typename A::Iterator j3(j), j2(++j), j1(++j), j0(++j); i0 && j0; ++i0, ++j0, ++j1, ++j2, ++j3)
-			*j0 = k0*(*i0) + k1*(*j1) + k2*(*j2) + k3*(*j3);
-		j = A::Iterator(dst, 0, i0 - i).get_reverse();
-		for(typename A::Iterator j3(j), j2(++j), j1(++j), j0(++j); j0; ++j0, ++j1, ++j2, ++j3)
-			*j0 = k0*(*j0) + k1*(*j1) + k2*(*j2) + k3*(*j3);
+		int count = std::min(dst.count, src.count);
+		T d3(0.0), d2(0.0), d1(0.0), d0;
+		dst[0] = dst[1] = dst[2] = dst[dst.count - 1] = dst[dst.count - 2] = dst[dst.count - 3] = 0.0;
+		for(typename A::Iterator j(dst, count), i(src, count); j; ++j, ++i)
+			*j = d0 = k0*(*i) + k1*d1 + k2*d2 + k3*d3, d3 = d2, d2 = d1, d1 = d0;
+		d3 = d2 = d1 = T(0.0);
+		for(typename A::ReverseIterator j(dst, dst.count - count), i(src, src.count - count); j; ++j, ++i)
+			*j = d0 = k0*(*i) + k1*d1 + k2*d2 + k3*d3, d3 = d2, d2 = d1, d1 = d0;
 	}
 
 	static void surface_as_array(Array<const Color, 2> &a, const synfig::Surface &src, const RectInt &r)

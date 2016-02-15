@@ -285,6 +285,8 @@ public:
 		return a;
 	}
 
+	class ReverseIterator;
+
 	class Iterator
 	{
 	private:
@@ -315,7 +317,12 @@ public:
 			stride(array.stride),
 			end(end) { }
 
-		operator bool () const { return stride > 0 ? array.pointer < end : array.pointer > end; }
+		explicit Iterator(const ReverseIterator &reverse):
+			array(reverse.get_end() - reverse.get_stride(), reverse.get_array()),
+			stride(-reverse.get_stride()),
+			end(reverse.get_pointer() - reverse.get_stride()) { }
+
+		operator bool () const { return array.pointer < end; }
 		TargetRef& operator *  () const { assert(*this); return array.target_ref(); }
 		TargetRef* operator -> () const { assert(*this); return &array.target_ref(); }
 
@@ -338,18 +345,81 @@ public:
 		Type* get_end() const { return end; }
 		int get_count_down() const { return end - array.pointer; }
 
-		Iterator get_reverse() const
-		{
-			Iterator j(*this);
-			j.stride = -stride;
-			j.array.pointer = end + j.stride;
-			j.end = array.pointer + j.stride;
-			return j;
-		}
+		ReverseIterator get_reverse() const
+			{ return ReverseIterator(*this); }
 
 		Iterator get_sub_range(int count) const
 		{
 			Iterator j(*this);
+			j.end = array.pointer + stride*min(get_count_down(), count);
+			return j;
+		}
+	};
+
+	class ReverseIterator
+	{
+	private:
+		Array<Type, Rank-1> array;
+		int stride;
+		Type *end;
+
+	public:
+		ReverseIterator(): stride(), end() { }
+		explicit ReverseIterator(const Array &array):
+			array(array.pointer + (array.count - 1)*array.stride, array),
+			stride(-array.stride),
+			end(array.pointer - array.stride) { }
+		ReverseIterator(const Array &array, int begin):
+			array(array.pointer + (array.count - 1 - begin)*array.stride, array),
+			stride(-array.stride),
+			end(array.pointer - array.stride) { }
+		ReverseIterator(const Array &array, int begin, int end):
+			array(array.pointer + (array.count - 1 - begin)*array.stride, array),
+			stride(array.stride),
+			end(array.pointer + (array.count - 1 - end)*array.stride, array) { }
+		ReverseIterator(const Array &array, Type *current):
+			array(current, array),
+			stride(-array.stride),
+			end(array.pointer - array.stride) { }
+		ReverseIterator(const Array &array, Type *current, Type *end):
+			array(current, array),
+			stride(-array.stride),
+			end(end) { }
+
+		explicit ReverseIterator(const Iterator &base):
+			array(base.get_end() - base.get_stride(), base.get_array()),
+			stride(-base.get_stride()),
+			end(base.get_pointer() - base.get_stride()) { }
+
+		operator bool () const { return array.pointer > end; }
+		TargetRef& operator *  () const { assert(*this); return array.target_ref(); }
+		TargetRef* operator -> () const { assert(*this); return &array.target_ref(); }
+
+		ReverseIterator& operator ++ () { array.pointer += stride; return *this; }
+		ReverseIterator& operator -- () { array.pointer -= stride; return *this; }
+		ReverseIterator  operator ++ () const { Iterator copy(*this); array.pointer += stride; return copy; }
+		ReverseIterator  operator -- () const { Iterator copy(*this); array.pointer -= stride; return copy; }
+		ReverseIterator& operator += (int i) { array.pointer += i*stride; return *this; }
+		ReverseIterator& operator -= (int i) { array.pointer -= i*stride; return *this; }
+
+		ReverseIterator operator + (int i) const { return Iterator(array, array.pointer + i*stride, end); }
+		ReverseIterator operator - (int i) const { return Iterator(array, array.pointer - i*stride, end); }
+
+		int operator - (const Iterator &i) const { return (array.pointer - i.array.pointer)/stride; }
+
+		Array<Type, Rank-1> get_array() const { return array; }
+		Type* get_pointer() const { return array.pointer; }
+		Type& get_reference() const { return *array.pointer; }
+		int get_stride() const { return stride; }
+		Type* get_end() const { return end; }
+		int get_count_down() const { return end - array.pointer; }
+
+		Iterator get_base() const
+			{ return Iterator(*this); }
+
+		ReverseIterator get_sub_range(int count) const
+		{
+			ReverseIterator j(*this);
 			j.end = array.pointer + stride*min(get_count_down(), count);
 			return j;
 		}
