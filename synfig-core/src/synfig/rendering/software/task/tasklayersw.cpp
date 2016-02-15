@@ -69,8 +69,8 @@ TaskLayerSW::run(RunParams & /* params */) const
 	desc.set_wh(target.get_w(), target.get_h());
 	desc.set_antialias(1);
 
-	Canvas::Handle canvas = Canvas::create();
-	return layer->accelerated_render(canvas->get_context(ContextParams()), &target, 4, desc, NULL);
+	CanvasBase fake_canvas_base(1);
+	return layer->accelerated_render(Context(fake_canvas_base.begin(), ContextParams()), &target, 4, desc, NULL);
 }
 
 /* === E N T R Y P O I N T ================================================= */
