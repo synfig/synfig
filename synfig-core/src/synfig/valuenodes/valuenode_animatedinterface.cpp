@@ -249,9 +249,9 @@ public:
 	{
 		// TODO: special case for discrete interpolation mode
 		if (animated.waypoint_list().empty())
-			Interpolator::animated.node().calc_values(x);
+			animated.node().calc_values(x);
 		else
-			Interpolator::animated.node().calc_values(
+			animated.node().calc_values(
 				x,
 				animated.node().time_to_frame( animated.waypoint_list().front().get_time() ),
 				animated.node().time_to_frame( animated.waypoint_list().back().get_time() ) );
@@ -294,6 +294,8 @@ public:
 		subtractor<value_type> subtract_func;
 		magnitude<value_type> magnitude_func;
 		is_angle_type<value_type> is_angle;
+
+		using Interpolator::animated;
 
 	private:
 		struct PathSegment
@@ -346,12 +348,12 @@ public:
 
 		virtual WaypointList::iterator new_waypoint(Time t, ValueBase value)
 		{
-			try { Interpolator::animated.find(t); throw Exception::BadTime(_("A waypoint already exists at this point in time")); } catch(Exception::NotFound) { };
+			try { animated.find(t); throw Exception::BadTime(_("A waypoint already exists at this point in time")); } catch(Exception::NotFound) { };
 			Waypoint waypoint(value, t);
-			waypoint.set_parent_value_node(&Interpolator::animated.node());
+			waypoint.set_parent_value_node(&animated.node());
 
-			Interpolator::animated.waypoint_list_.push_back(waypoint);
-			WaypointList::iterator ret=Interpolator::animated.waypoint_list_.end();
+			animated.waypoint_list_.push_back(waypoint);
+			WaypointList::iterator ret=animated.waypoint_list_.end();
 			--ret;
 
 			if(is_angle())
@@ -360,20 +362,20 @@ public:
 				ret->set_after(INTERPOLATION_LINEAR);
 			}
 
-			Interpolator::animated.animated_changed();
+			animated.animated_changed();
 
 			return ret;
 		}
 
 		virtual WaypointList::iterator new_waypoint(Time t, ValueNode::Handle value_node)
 		{
-			try { Interpolator::animated.find(t); throw Exception::BadTime(_("A waypoint already exists at this point in time")); } catch(Exception::NotFound) { };
+			try { animated.find(t); throw Exception::BadTime(_("A waypoint already exists at this point in time")); } catch(Exception::NotFound) { };
 
 			Waypoint waypoint(value_node,t);
-			waypoint.set_parent_value_node(&Interpolator::animated.node());
+			waypoint.set_parent_value_node(&animated.node());
 
-			Interpolator::animated.waypoint_list_.push_back(waypoint);
-			WaypointList::iterator ret=Interpolator::animated.waypoint_list_.end();
+			animated.waypoint_list_.push_back(waypoint);
+			WaypointList::iterator ret=animated.waypoint_list_.end();
 			--ret;
 
 			if(is_angle())
@@ -382,7 +384,7 @@ public:
 				ret->set_after(INTERPOLATION_LINEAR);
 			}
 
-			Interpolator::animated.animated_changed();
+			animated.animated_changed();
 
 			return ret;
 		}
@@ -391,8 +393,6 @@ public:
 		{
 			if (getenv("SYNFIG_DEBUG_ON_CHANGED"))
 				printf("%s:%d _Hermite::on_changed()\n", __FILE__, __LINE__);
-
-			ValueNode_AnimatedInterfaceConst &animated = Interpolator::animated;
 
 			if(animated.waypoint_list_.size()<=1)
 				return;
@@ -639,8 +639,6 @@ public:
 
 		virtual ValueBase operator()(Time t)const
 		{
-			ValueNode_AnimatedInterfaceConst &animated = Interpolator::animated;
-
 			if(animated.waypoint_list_.empty())
 				return value_type();	//! \todo Perhaps we should throw something here?
 			if(animated.waypoint_list_.size()==1)
@@ -673,6 +671,8 @@ public:
 		// Bounds of this curve
 		Time r,s;
 
+		using Interpolator::animated;
+
 	public:
 		Constant(ValueNode_AnimatedInterfaceConst &node): Interpolator(node) { }
 
@@ -684,15 +684,15 @@ public:
 			// Make sure we are getting data of the correct type
 			//if(data.type!=type)
 			//	return waypoint_list_type::iterator();
-			try { Interpolator::animated.find(t); throw Exception::BadTime(_("A waypoint already exists at this point in time")); } catch(Exception::NotFound) { };
+			try { animated.find(t); throw Exception::BadTime(_("A waypoint already exists at this point in time")); } catch(Exception::NotFound) { };
 
 			Waypoint waypoint(value,t);
-			waypoint.set_parent_value_node(&Interpolator::animated.node());
+			waypoint.set_parent_value_node(&animated.node());
 
-			Interpolator::animated.waypoint_list_.push_back(waypoint);
-			WaypointList::iterator ret=Interpolator::animated.waypoint_list_.end();
+			animated.waypoint_list_.push_back(waypoint);
+			WaypointList::iterator ret=animated.waypoint_list_.end();
 			--ret;
-			Interpolator::animated.animated_changed();
+			animated.animated_changed();
 
 			return ret;
 		}
@@ -702,15 +702,15 @@ public:
 			// Make sure we are getting data of the correct type
 			//if(data.type!=type)
 			//	return waypoint_list_type::iterator();
-			try { Interpolator::animated.find(t); throw Exception::BadTime(_("A waypoint already exists at this point in time")); } catch(Exception::NotFound) { };
+			try { animated.find(t); throw Exception::BadTime(_("A waypoint already exists at this point in time")); } catch(Exception::NotFound) { };
 
 			Waypoint waypoint(value_node,t);
-			waypoint.set_parent_value_node(&Interpolator::animated.node());
+			waypoint.set_parent_value_node(&animated.node());
 
-			Interpolator::animated.waypoint_list_.push_back(waypoint);
-			WaypointList::iterator ret=Interpolator::animated.waypoint_list_.end();
+			animated.waypoint_list_.push_back(waypoint);
+			WaypointList::iterator ret=animated.waypoint_list_.end();
 			--ret;
-			Interpolator::animated.animated_changed();
+			animated.animated_changed();
 
 			return ret;
 		}
@@ -720,31 +720,31 @@ public:
 			if (getenv("SYNFIG_DEBUG_ON_CHANGED"))
 				printf("%s:%d _Constant::on_changed()\n", __FILE__, __LINE__);
 
-			if(Interpolator::animated.waypoint_list_.size()<=1)
+			if(animated.waypoint_list_.size()<=1)
 				return;
-			std::sort(Interpolator::animated.waypoint_list_.begin(), Interpolator::animated.waypoint_list_.end());
-			r = Interpolator::animated.waypoint_list_.front().get_time();
-			s = Interpolator::animated.waypoint_list_.back().get_time();
+			std::sort(animated.waypoint_list_.begin(), animated.waypoint_list_.end());
+			r = animated.waypoint_list_.front().get_time();
+			s = animated.waypoint_list_.back().get_time();
 
 		}
 
 		virtual ValueBase operator()(Time t)const
 		{
-			if(Interpolator::animated.waypoint_list_.size()==1)
-				return Interpolator::animated.waypoint_list_.front().get_value(t);
-			if(Interpolator::animated.waypoint_list_.empty())
+			if(animated.waypoint_list_.size()==1)
+				return animated.waypoint_list_.front().get_value(t);
+			if(animated.waypoint_list_.empty())
 				return value_type();
 			if(t<=r)
-				return Interpolator::animated.waypoint_list_.front().get_value(t);
+				return animated.waypoint_list_.front().get_value(t);
 			if(t>=s)
-				return Interpolator::animated.waypoint_list_.back().get_value(t);
+				return animated.waypoint_list_.back().get_value(t);
 
-			typename WaypointList::const_iterator iter;
-			typename WaypointList::const_iterator next;
+			WaypointList::const_iterator iter;
+			WaypointList::const_iterator next;
 
 			// This next line will set iter to the
 			// correct iterator for the given time.
-			for(next=Interpolator::animated.waypoint_list_.begin(),iter=next++;next!=Interpolator::animated.waypoint_list_.end() && t>=next->get_time();iter=next++)
+			for(next=animated.waypoint_list_.begin(),iter=next++;next!=animated.waypoint_list_.end() && t>=next->get_time();iter=next++)
 				continue;
 
 			return iter->get_value(t);
