@@ -193,13 +193,13 @@ Canvas::empty()const
 Layer::Handle &
 Canvas::back()
 {
-	return *(CanvasBase::end()-1);
+	return *(end()-1);
 }
 
 const Layer::Handle &
 Canvas::back()const
 {
-	return *(CanvasBase::end()-1);
+	return *(end()-1);
 }
 
 IndependentContext

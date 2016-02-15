@@ -517,24 +517,15 @@ LayerTreeStore::drag_data_delete_vfunc (const TreeModel::Path& /*path*/)
 bool
 LayerTreeStore::row_drop_possible_vfunc (const TreeModel::Path& dest, const Gtk::SelectionData& selection_data)const
 {
-	//if(!const_cast<LayerTreeStore*>(this)->get_iter(dest)) return false;
-
 	//synfig::info("possible_drop -- data of type \"%s\"",selection_data.get_data_type());
 	//synfig::info("possible_drop -- data of target \"%s\"",gdk_atom_name(selection_data->target));
 	//synfig::info("possible_drop -- selection=\"%s\"",gdk_atom_name(selection_data->selection));
 
-	//Gtk::TreeModel::Row row(*get_iter(dest));
-
-	if(synfig::String(selection_data.get_data_type())=="LAYER" && (bool)true)
+	if (synfig::String(selection_data.get_data_type())=="LAYER")
 	{
-		//Layer::Handle src(reinterpret_cast<Layer**>(const_cast<guint8*>(selection_data.get_data()))[i]);
-		//assert(src);
-
 		TreeModel::Path dest_parent(dest);
 		if (!dest_parent.up() || dest.size()==1)
 		{
-			//row=(*get_iter(dest));
-			//dest_canvas=(Canvas::Handle)(row[model.canvas]);
 			return true;
 		}
 		else
@@ -579,10 +570,21 @@ LayerTreeStore::drag_data_received_vfunc(const TreeModel::Path& dest, const Gtk:
 			return false;
 
 		Gtk::TreeModel::Row row(*get_iter(dest));
+		if (!row)
+			{ TreeModel::Path p(dest); p.up(); row = *get_iter(p); }
+
 		Canvas::Handle dest_canvas;
 		Layer::Handle dest_layer;
 		int dest_layer_depth = dest.back();
 
+		if (!row)
+		{
+			dest_canvas = get_canvas_interface()->get_canvas();
+			if (!dest_canvas->empty())
+				dest_layer = dest_canvas->back();
+			dest_layer_depth = dest_layer ? dest_layer->get_depth() + 1 : 0;
+		}
+		else
 		if (RECORD_TYPE_LAYER == (RecordType)row[model.record_type])
 		{
 			// TODO: check RecordType for parent
@@ -648,7 +650,7 @@ LayerTreeStore::drag_data_received_vfunc(const TreeModel::Path& dest, const Gtk:
 				canvas_interface()->layer_move_action(dest_layer, dest_layer_depth);
 				dest_canvas = dest_layer->get_param("canvas").get(Canvas::Handle());
 			}
-			dest_layer_depth = -1;
+			dest_layer_depth = 0;
 		}
 		else
 		{
@@ -658,7 +660,7 @@ LayerTreeStore::drag_data_received_vfunc(const TreeModel::Path& dest, const Gtk:
 		for(synfigapp::SelectionManager::LayerList::const_iterator i = dropped_layers.begin(); i != dropped_layers.end(); ++i)
 		{
 			Layer::Handle src(*i);
-			if(dest_layer == src) continue;
+			if(!src || dest_layer == src) continue;
 
 			if(dest_canvas==src->get_canvas() && src->get_depth()<dest_layer_depth)
 				dest_layer_depth--;
@@ -681,6 +683,7 @@ LayerTreeStore::drag_data_received_vfunc(const TreeModel::Path& dest, const Gtk:
 	synfig::info("I supposedly moved %d layers",i);
 
 	// Reselect the previously selected layers
+	canvas_interface()->get_selection_manager()->clear_selected_layers();
 	canvas_interface()->get_selection_manager()->set_selected_layers(selected_layer_list);
 
 	return ret;
