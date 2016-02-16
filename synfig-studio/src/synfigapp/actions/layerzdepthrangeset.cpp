@@ -131,7 +131,7 @@ Action::LayerZDepthRangeSet::set_param(const synfig::String& name, const Action:
 		if(layer)
 		{
 			// Expand position and depth to include the given layer
-			float layer_z_depth=layer->get_true_z_depth();
+			float layer_z_depth=layer->get_true_z_depth(Time(0));
 			if(z_position > layer_z_depth)
 				z_position=layer_z_depth;
 			if(z_position + z_depth <= layer_z_depth)

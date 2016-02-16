@@ -716,23 +716,26 @@ Layer_PasteCanvas::fill_sound_processor(SoundProcessor &soundProcessor) const
 }
 
 rendering::Task::Handle
-Layer_PasteCanvas::build_composite_task_vfunc(ContextParams context_params)const
+Layer_PasteCanvas::build_composite_task_vfunc(ContextParams context_params) const
 {
 	if (!canvas)
 		return new rendering::TaskSurfaceEmpty();
 
-	// TODO:
-	// time_offset;
-	// outline_grow;
-	// children_lock;
-	// curr_time;
+	Real grow_value = get_parent_canvas_grow_value();
+	Real outline_grow = param_outline_grow.get(Real());
+	if (fabs(outline_grow) > 1e-8)
+		canvas->set_grow_value(grow_value + outline_grow);
+
+	CanvasBase sub_queue;
+	Context sub_context;
+	canvas->get_context_sorted(context_params, sub_queue, sub_context);
 
 	apply_z_range_to_params(context_params);
 	rendering::TaskTransformation::Handle task_transformation(new rendering::TaskTransformation());
 	rendering::AffineTransformation::Handle affine_transformation(new rendering::AffineTransformation());
 	affine_transformation->matrix = get_summary_transformation().get_matrix();
 	task_transformation->transformation = affine_transformation;
-	task_transformation->sub_task() = canvas->get_context(context_params).build_rendering_task();
+	task_transformation->sub_task() = sub_context.build_rendering_task();
 	return task_transformation;
 }
 

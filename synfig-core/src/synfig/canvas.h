@@ -586,6 +586,9 @@ public:
 	//! Retireves the first layer of the double queue of Layers assigned with rendering parameters
 	Context get_context(const Context &parent_context)const;
 
+	//! Retireves sorted double queue of Layers and Context of the first layer with rendering parameters
+	void get_context_sorted(const ContextParams &params, CanvasBase &out_queue, Context &out_context) const;
+
 	//! Returns the last Canvas layer queue iterator. Notice that it
 	/*! overrides the std::end() member that would return an interator
 	 * just past the last element of the queue.*/

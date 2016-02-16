@@ -220,6 +220,24 @@ Canvas::get_context(const Context &parent_context)const
 	return get_context(parent_context.get_params());
 }
 
+void
+Canvas::get_context_sorted(const ContextParams &params, CanvasBase &out_queue, Context &out_context) const
+{
+	multimap<Real, Layer::Handle> layers;
+	for(const_iterator i = begin(); i != end(); ++i)
+	{
+		assert(*i);
+		layers.insert(pair<Real, Layer::Handle>((*i)->get_true_z_depth(), *i));
+	}
+
+	out_queue.clear();
+	for(multimap<Real, Layer::Handle>::const_iterator i = layers.begin(); i != layers.end(); ++i)
+		out_queue.push_back(i->second);
+	out_queue.push_back(Layer::Handle());
+
+	out_context = Context(out_queue.begin(), params);
+}
+
 const ValueNodeList &
 Canvas::value_node_list()const
 {
