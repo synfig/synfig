@@ -212,13 +212,13 @@ studio::Instance::run_plugin(std::string plugin_path)
 				synfigapp::UIInterface::RESPONSE_OK);
 
 	if(answer == synfigapp::UIInterface::RESPONSE_OK){
-	
+
 		OneMoment one_moment;
 
 		Canvas::Handle canvas(this->get_canvas());
-		
+
 		synfigapp::PluginLauncher launcher(canvas);
-		
+
 		Time cur_time;
 		cur_time = canvas->get_time();
 
@@ -251,16 +251,16 @@ studio::Instance::run_plugin(std::string plugin_path)
 						_("Close"));
 
 				one_moment.show();
-				
+
 			}
 		}
-	
-	
+
+
 		canvas=0;
 
 		App::open_as(launcher.get_result_path(),launcher.get_original_path());
-	
-	
+
+
 		etl::handle<Instance> new_instance = App::instance_list.back();
 		new_instance->inc_action_count(); // This file isn't saved! mark it as such
 
@@ -528,8 +528,10 @@ Instance::close()
 		studio::App::set_selected_canvas_view(0);
 		studio::App::set_selected_instance(0);
 	}
-	else
+	else if(studio::App::instance_list.size() == 1)
+	{
 		studio::App::instance_list.front()->canvas_view_list().front()->present();
+	}
 }
 
 void
@@ -1218,7 +1220,7 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 		item->show();
 		parammenu.append(*item);
 	}
-	
+
 	// Interpolation menu: Show it only if
 	// the value description is constant or animated (layer parameter or exported) and not static
 	// and value is not canvas type
@@ -1260,14 +1262,14 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 		item->show_all(); \
 		param_interpolation_menu->append(*item); \
 		param_list.erase("new_value");
-		
-		
+
+
 		ADD_IMAGE_MENU_ITEM(INTERPOLATION_TCB, "synfig-interpolation_type_tcb", _("TCB"));
 		ADD_IMAGE_MENU_ITEM(INTERPOLATION_LINEAR, "synfig-interpolation_type_linear", _("Linear"));
 		ADD_IMAGE_MENU_ITEM(INTERPOLATION_HALT, "synfig-interpolation_type_ease", _("Ease"));
 		ADD_IMAGE_MENU_ITEM(INTERPOLATION_CONSTANT, "synfig-interpolation_type_const", _("Constant"));
 		ADD_IMAGE_MENU_ITEM(INTERPOLATION_CLAMPED, "synfig-interpolation_type_clamped", _("Clamped"));
-		
+
 		#undef ADD_IMAGE_MENU_ITEM
 
 		item = Gtk::manage(new Gtk::MenuItem(_("Interpolation")));
@@ -1370,7 +1372,7 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 		item = Gtk::manage(new Gtk::SeparatorMenuItem());
 		item->show();
 		parammenu.append(*item);
-		
+
 		////// After ///////////////////////
 		param_list.erase("value_desc");
 		param_list.add("value_desc",synfigapp::ValueDesc(wpoint_composite, wpoint_composite->get_link_index_from_name("side_after")));
