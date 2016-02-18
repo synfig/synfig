@@ -41,10 +41,12 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
+namespace synfig
+{
+namespace modules
+{
 namespace lyr_std
 {
-
-using namespace synfig;
 
 class Warp_Trans;
 
@@ -96,7 +98,9 @@ public:
 	virtual etl::handle<Transform> get_transform()const;
 };
 
-} // END of namespace lyr_std
+}; // END of namespace lyr_std
+}; // END of namespace modules
+}; // END of namespace synfig
 
 /* === E N D =============================================================== */
 

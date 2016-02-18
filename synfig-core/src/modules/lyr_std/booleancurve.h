@@ -38,10 +38,12 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
+namespace synfig
+{
+namespace modules
+{
 namespace lyr_std
 {
-
-using namespace synfig;
 
 class BooleanCurve : public Layer_Shape
 {
@@ -73,7 +75,9 @@ public:
 	virtual bool accelerated_render(Context context, Surface *surface, int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 };
 
-} // END of namespace lyr_std
+}; // END of namespace lyr_std
+}; // END of namespace modules
+}; // END of namespace synfig
 
 /* === E N D =============================================================== */
 

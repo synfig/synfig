@@ -38,10 +38,12 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
+namespace synfig
+{
+namespace modules
+{
 namespace lyr_std
 {
-
-using namespace synfig;
 
 class SuperSample : public Layer
 {
@@ -66,7 +68,9 @@ public:
 	virtual Vocab get_param_vocab()const;
 };
 
-} // END of namespace lyr_std
+}; // END of namespace lyr_std
+}; // END of namespace modules
+}; // END of namespace synfig
 
 /* === E N D =============================================================== */
 

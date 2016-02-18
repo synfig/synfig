@@ -53,6 +53,7 @@
 using namespace std;
 using namespace etl;
 using namespace synfig;
+using namespace modules;
 using namespace lyr_std;
 
 /* === M A C R O S ========================================================= */

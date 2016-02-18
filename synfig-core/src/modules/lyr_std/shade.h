@@ -34,10 +34,12 @@
 #include <synfig/vector.h>
 #include <synfig/blur.h>
 
+namespace synfig
+{
+namespace modules
+{
 namespace lyr_std
 {
-
-using namespace synfig;
 
 class Layer_Shade : public Layer_Composite
 {
@@ -70,7 +72,9 @@ public:
 	virtual bool reads_context()const { return true; }
 }; // END of class Layer_Shade
 
-} // END of namespace lyr_std
+}; // END of namespace lyr_std
+}; // END of namespace modules
+}; // END of namespace synfig
 
 /* -- E X T E R N S --------------------------------------------------------- */
 

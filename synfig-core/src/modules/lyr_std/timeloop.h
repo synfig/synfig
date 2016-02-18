@@ -40,10 +40,12 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
+namespace synfig
+{
+namespace modules
+{
 namespace lyr_std
 {
-
-using namespace synfig;
 
 class Layer_TimeLoop : public Layer_Invisible
 {
@@ -82,7 +84,9 @@ public:
 	virtual void set_time(IndependentContext context, Time time)const;
 };
 
-} // END of namespace lyr_std
+}; // END of namespace lyr_std
+}; // END of namespace modules
+}; // END of namespace synfig
 
 /* === E N D =============================================================== */
 

@@ -56,6 +56,7 @@
 using namespace std;
 using namespace etl;
 using namespace synfig;
+using namespace modules;
 using namespace lyr_std;
 
 /* === G L O B A L S ======================================================= */

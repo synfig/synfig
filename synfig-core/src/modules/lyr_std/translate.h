@@ -40,10 +40,12 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
+namespace synfig
+{
+namespace modules
+{
 namespace lyr_std
 {
-
-using namespace synfig;
 
 class Translate_Trans;
 
@@ -72,7 +74,9 @@ protected:
 	virtual rendering::Task::Handle build_rendering_task_vfunc(Context context)const;
 };
 
-} // END of namespace lyr_std
+}; // END of namespace lyr_std
+}; // END of namespace modules
+}; // END of namespace synfig
 
 /* === E N D =============================================================== */
 

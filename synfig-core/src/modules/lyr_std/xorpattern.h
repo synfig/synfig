@@ -42,10 +42,12 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
+namespace synfig
+{
+namespace modules
+{
 namespace lyr_std
 {
-
-using namespace synfig;
 
 class XORPattern : public Layer_Composite, public Layer_NoDeform
 {
@@ -67,7 +69,9 @@ public:
 	virtual Layer::Handle hit_check(Context context, const Point &point)const;
 };
 
-} // END of namespace lyr_std
+}; // END of namespace lyr_std
+}; // END of namespace modules
+}; // END of namespace synfig
 
 /* === E N D =============================================================== */
 

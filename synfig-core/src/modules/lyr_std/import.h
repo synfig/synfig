@@ -41,10 +41,12 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
+namespace synfig
+{
+namespace modules
+{
 namespace lyr_std
 {
-
-using namespace synfig;
 
 class Import : public Layer_Bitmap
 {
@@ -81,7 +83,9 @@ public:
 	virtual void set_render_method(Context context, RenderMethod x);
 };
 
-} // END of namespace lyr_std
+}; // END of namespace lyr_std
+}; // END of namespace modules
+}; // END of namespace synfig
 
 /* === E N D =============================================================== */
 
