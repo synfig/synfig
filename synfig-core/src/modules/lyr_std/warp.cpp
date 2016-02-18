@@ -52,6 +52,11 @@
 
 #endif
 
+using namespace std;
+using namespace etl;
+using namespace synfig;
+using namespace lyr_std;
+
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
@@ -428,20 +433,20 @@ Warp::get_param_vocab()const
 }
 
 
-class Warp_Trans : public Transform
+class lyr_std::Warp_Trans : public Transform
 {
 	etl::handle<const Warp> layer;
 public:
 	Warp_Trans(const Warp* x):Transform(x->get_guid()),layer(x) { }
 
-	synfig::Vector perform(const synfig::Vector& x)const
+	Vector perform(const Vector& x)const
 	{
 		return layer->transform_backward(x);
 		//Point pos(x-layer->origin);
 		//return Point(layer->cos_val*pos[0]-layer->sin_val*pos[1],layer->sin_val*pos[0]+layer->cos_val*pos[1])+layer->origin;
 	}
 
-	synfig::Vector unperform(const synfig::Vector& x)const
+	Vector unperform(const Vector& x)const
 	{
 
 		return layer->transform_forward(x);
@@ -449,7 +454,7 @@ public:
 		//return Point(layer->cos_val*pos[0]+layer->sin_val*pos[1],-layer->sin_val*pos[0]+layer->cos_val*pos[1])+layer->origin;
 	}
 
-	synfig::String get_string()const
+	String get_string()const
 	{
 		return "warp";
 	}
@@ -460,8 +465,8 @@ Warp::get_transform()const
 	return new Warp_Trans(this);
 }
 
-synfig::Layer::Handle
-Warp::hit_check(synfig::Context context, const synfig::Point &p)const
+Layer::Handle
+Warp::hit_check(Context context, const Point &p)const
 {
 	Point src_tl=param_src_tl.get(Point());
 	Point src_br=param_src_br.get(Point());
@@ -642,8 +647,8 @@ Warp::accelerated_render(Context context,Surface *surface,int quality, const Ren
 	;
 	swap(tl[1],br[1]);*/
 
-	//synfig::warning("given window: [%f,%f]-[%f,%f] %dx%d",tl[0],tl[1],br[0],br[1],renddesc.get_w(),renddesc.get_h());
-	//synfig::warning("Projected: [%f,%f]-[%f,%f]",bounding_rect.get_min()[0],bounding_rect.get_min()[1],bounding_rect.get_max()[0],bounding_rect.get_max()[1]);
+	//warning("given window: [%f,%f]-[%f,%f] %dx%d",tl[0],tl[1],br[0],br[1],renddesc.get_w(),renddesc.get_h());
+	//warning("Projected: [%f,%f]-[%f,%f]",bounding_rect.get_min()[0],bounding_rect.get_min()[1],bounding_rect.get_max()[0],bounding_rect.get_max()[1]);
 
 	// If we are clipping, then go ahead and clip to the
 	// source rectangle
@@ -701,7 +706,7 @@ Warp::accelerated_render(Context context,Surface *surface,int quality, const Ren
 	desc.set_br(br);
 	desc.set_wh(ceil_to_int(src_pw*(br[0]-tl[0])),ceil_to_int(src_ph*(br[1]-tl[1])));
 
-	//synfig::warning("surface to render: [%f,%f]-[%f,%f] %dx%d",desc.get_tl()[0],desc.get_tl()[1],desc.get_br()[0],desc.get_br()[1],desc.get_w(),desc.get_h());
+	//warning("surface to render: [%f,%f]-[%f,%f] %dx%d",desc.get_tl()[0],desc.get_tl()[1],desc.get_br()[0],desc.get_br()[1],desc.get_w(),desc.get_h());
 	if(desc.get_w()==0 && desc.get_h()==0)
 	{
 		surface->set_wh(renddesc.get_w(),renddesc.get_h());
@@ -981,8 +986,8 @@ Warp::accelerated_cairorender(Context context, cairo_t *cr, int quality, const R
 	 ;
 	 swap(tl[1],br[1]);*/
 	
-	//synfig::warning("given window: [%f,%f]-[%f,%f] %dx%d",tl[0],tl[1],br[0],br[1],renddesc.get_w(),renddesc.get_h());
-	//synfig::warning("Projected: [%f,%f]-[%f,%f]",bounding_rect.get_min()[0],bounding_rect.get_min()[1],bounding_rect.get_max()[0],bounding_rect.get_max()[1]);
+	//warning("given window: [%f,%f]-[%f,%f] %dx%d",tl[0],tl[1],br[0],br[1],renddesc.get_w(),renddesc.get_h());
+	//warning("Projected: [%f,%f]-[%f,%f]",bounding_rect.get_min()[0],bounding_rect.get_min()[1],bounding_rect.get_max()[0],bounding_rect.get_max()[1]);
 	
 	// If we are clipping, then go ahead and clip to the
 	// source rectangle
@@ -1038,7 +1043,7 @@ Warp::accelerated_cairorender(Context context, cairo_t *cr, int quality, const R
 	desc.set_br(br);
 	desc.set_wh(ceil_to_int(src_pw*(br[0]-tl[0])),ceil_to_int(src_ph*(br[1]-tl[1])));
 	
-	//synfig::warning("surface to render: [%f,%f]-[%f,%f] %dx%d",desc.get_tl()[0],desc.get_tl()[1],desc.get_br()[0],desc.get_br()[1],desc.get_w(),desc.get_h());
+	//warning("surface to render: [%f,%f]-[%f,%f] %dx%d",desc.get_tl()[0],desc.get_tl()[1],desc.get_br()[0],desc.get_br()[1],desc.get_w(),desc.get_h());
 	if(desc.get_w()==0 && desc.get_h()==0)
 	{
 		cairo_save(cr);
@@ -1143,13 +1148,13 @@ Warp::accelerated_cairorender(Context context, cairo_t *cr, int quality, const R
 	return true;
 }
 
-synfig::Rect
+Rect
 Warp::get_bounding_rect()const
 {
 	return Rect::full_plane();
 }
 
-synfig::Rect
+Rect
 Warp::get_full_bounding_rect(Context context)const
 {
 //	return Rect::full_plane();

@@ -53,6 +53,11 @@
 
 #endif
 
+using namespace std;
+using namespace etl;
+using namespace synfig;
+using namespace lyr_std;
+
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
@@ -111,8 +116,8 @@ Translate::get_param_vocab()const
 	return ret;
 }
 
-synfig::Layer::Handle
-Translate::hit_check(synfig::Context context, const synfig::Point &pos)const
+Layer::Handle
+Translate::hit_check(Context context, const Point &pos)const
 {
 	Vector origin=param_origin.get(Vector());
 	return context.hit_check(pos-origin);
@@ -125,23 +130,23 @@ Translate::get_color(Context context, const Point &pos)const
 	return context.get_color(pos-origin);
 }
 
-class Translate_Trans : public Transform
+class lyr_std::Translate_Trans : public Transform
 {
 	etl::handle<const Translate> layer;
 public:
 	Translate_Trans(const Translate* x):Transform(x->get_guid()),layer(x) { }
 
-	synfig::Vector perform(const synfig::Vector& x)const
+	Vector perform(const Vector& x)const
 	{
 		return x+layer->param_origin.get(Vector());
 	}
 
-	synfig::Vector unperform(const synfig::Vector& x)const
+	Vector unperform(const Vector& x)const
 	{
 		return x-layer->param_origin.get(Vector());
 	}
 
-	synfig::String get_string()const
+	String get_string()const
 	{
 		return "translate";
 	}

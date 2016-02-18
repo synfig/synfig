@@ -41,45 +41,53 @@
 /* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */
+
+namespace lyr_std
+{
+
+using namespace synfig;
+
 class Twirl_Trans;
 
-class Twirl : public synfig::Layer_Composite
+class Twirl : public Layer_Composite
 {
 	SYNFIG_LAYER_MODULE_EXT
 	friend class Twirl_Trans;
 
 private:
-	//! Parameter: (synfig::Point)
-	synfig::ValueBase param_center;
-	//! Parameter: (synfig::Real)
-	synfig::ValueBase param_radius;
-	//! Parameter: (synfig::Angle)
-	synfig::ValueBase param_rotations;
+	//! Parameter: (Point)
+	ValueBase param_center;
+	//! Parameter: (Real)
+	ValueBase param_radius;
+	//! Parameter: (Angle)
+	ValueBase param_rotations;
 	//! Parameter: (bool)
-	synfig::ValueBase param_distort_inside;
+	ValueBase param_distort_inside;
 	//! Parameter: (bool)
-	synfig::ValueBase param_distort_outside;
+	ValueBase param_distort_outside;
 
-	synfig::Point distort(const synfig::Point &pos, bool reverse=false)const;
+	Point distort(const Point &pos, bool reverse=false)const;
 public:
 
 	Twirl();
 
-	virtual bool set_param(const synfig::String & param, const synfig::ValueBase &value);
+	virtual bool set_param(const String & param, const ValueBase &value);
 
-	virtual synfig::ValueBase get_param(const synfig::String & param)const;
+	virtual ValueBase get_param(const String & param)const;
 
-	virtual synfig::Color get_color(synfig::Context context, const synfig::Point &pos)const;
-	virtual synfig::CairoColor get_cairocolor(synfig::Context context, const synfig::Point &pos)const;
+	virtual Color get_color(Context context, const Point &pos)const;
+	virtual CairoColor get_cairocolor(Context context, const Point &pos)const;
 
-	//virtual bool accelerated_render(synfig::Context context,synfig::Surface *surface,int quality, const synfig::RendDesc &renddesc, synfig::ProgressCallback *cb)const;
+	//virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 
-	synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;
+	Layer::Handle hit_check(Context context, const Point &point)const;
 
 	virtual Vocab get_param_vocab()const;
-	virtual etl::handle<synfig::Transform> get_transform()const;
+	virtual etl::handle<Transform> get_transform()const;
 	virtual bool reads_context()const { return true; }
 }; // END of class Twirl
+
+} // END of namespace lyr_std
 
 /* === E N D =============================================================== */
 

@@ -55,6 +55,11 @@
 
 #endif
 
+using namespace std;
+using namespace etl;
+using namespace synfig;
+using namespace lyr_std;
+
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
@@ -135,27 +140,27 @@ Rotate::get_param_vocab()const
 	return ret;
 }
 
-class Rotate_Trans : public Transform
+class lyr_std::Rotate_Trans : public Transform
 {
 	etl::handle<const Rotate> layer;
 public:
 	Rotate_Trans(const Rotate* x):Transform(x->get_guid()),layer(x) { }
 
-	synfig::Vector perform(const synfig::Vector& x)const
+	Vector perform(const Vector& x)const
 	{
 		Vector origin=layer->param_origin.get(Vector());
 		Point pos(x-origin);
 		return Point(layer->cos_val*pos[0]-layer->sin_val*pos[1],layer->sin_val*pos[0]+layer->cos_val*pos[1])+origin;
 	}
 
-	synfig::Vector unperform(const synfig::Vector& x)const
+	Vector unperform(const Vector& x)const
 	{
 		Vector origin=layer->param_origin.get(Vector());
 		Point pos(x-origin);
 		return Point(layer->cos_val*pos[0]+layer->sin_val*pos[1],-layer->sin_val*pos[0]+layer->cos_val*pos[1])+origin;
 	}
 
-	synfig::String get_string()const
+	String get_string()const
 	{
 		return "rotate";
 	}
@@ -166,8 +171,8 @@ Rotate::get_transform()const
 	return new Rotate_Trans(this);
 }
 
-synfig::Layer::Handle
-Rotate::hit_check(synfig::Context context, const synfig::Point &p)const
+Layer::Handle
+Rotate::hit_check(Context context, const Point &p)const
 {
 	Vector origin=param_origin.get(Vector());
 	Point pos(p-origin);

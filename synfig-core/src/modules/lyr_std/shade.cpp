@@ -53,9 +53,10 @@
 
 #endif
 
-using namespace synfig;
-using namespace etl;
 using namespace std;
+using namespace etl;
+using namespace synfig;
+using namespace lyr_std;
 
 /*#define TYPE_BOX			0
 #define TYPE_FASTGUASSIAN	1
@@ -75,7 +76,7 @@ SYNFIG_LAYER_SET_CVS_ID(Layer_Shade,"$Id$");
 
 /* -- F U N C T I O N S ----------------------------------------------------- */
 
-inline void clamp(synfig::Vector &v)
+inline void clamp(Vector &v)
 {
 	if(v[0]<0.0)v[0]=0.0;
 	if(v[1]<0.0)v[1]=0.0;
@@ -98,7 +99,7 @@ Layer_Shade::set_param(const String &param, const ValueBase &value)
 {
 	IMPORT_VALUE_PLUS(param_size,
 		{
-			synfig::Vector size=param_size.get(synfig::Vector());
+			Vector size=param_size.get(Vector());
 			clamp(size);
 			param_size.set(size);
 		}
@@ -106,7 +107,7 @@ Layer_Shade::set_param(const String &param, const ValueBase &value)
 	IMPORT_VALUE(param_type);
 	IMPORT_VALUE_PLUS(param_color,
 		{
-			synfig::Color color=param_color.get(synfig::Color());
+			Color color=param_color.get(Color());
 			if (color.get_a() == 0)
 			{
 				if (converted_blend_)
@@ -147,10 +148,10 @@ Layer_Shade::get_param(const String &param)const
 Color
 Layer_Shade::get_color(Context context, const Point &pos)const
 {
-	synfig::Vector size=param_size.get(synfig::Vector());
+	Vector size=param_size.get(Vector());
 	int type=param_type.get(int());
-	synfig::Color color=param_color.get(synfig::Color());
-	synfig::Vector origin=param_origin.get(synfig::Vector());
+	Color color=param_color.get(Color());
+	Vector origin=param_origin.get(Vector());
 	bool invert=param_invert.get(bool());
 	
 	Point blurpos = Blur(size,type)(pos);
@@ -173,10 +174,10 @@ Layer_Shade::accelerated_render(Context context,Surface *surface,int quality, co
 {
 	RENDER_TRANSFORMED_IF_NEED(__FILE__, __LINE__)
 
-	synfig::Vector size=param_size.get(synfig::Vector());
+	Vector size=param_size.get(Vector());
 	int type=param_type.get(int());
-	synfig::Color color=param_color.get(synfig::Color());
-	synfig::Vector origin=param_origin.get(synfig::Vector());
+	Color color=param_color.get(Color());
+	Vector origin=param_origin.get(Vector());
 	bool invert=param_invert.get(bool());
 
 	int x,y;
@@ -356,7 +357,7 @@ Layer_Shade::accelerated_render(Context context,Surface *surface,int quality, co
 
 		workdesc.clear_flags();
 		workdesc.set_wh(tmpw,tmph);
-		//synfig::info("fw: %d, fh: %d",fw,fh);
+		//info("fw: %d, fh: %d",fw,fh);
 
 		//render the blur fodder
 		if(!context.accelerated_render(&worksurface,quality,workdesc,&stageone))
@@ -412,10 +413,10 @@ Layer_Shade::accelerated_render(Context context,Surface *surface,int quality, co
 bool
 Layer_Shade::accelerated_cairorender(Context context,cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
-	synfig::Vector size=param_size.get(synfig::Vector());
+	Vector size=param_size.get(Vector());
 	int type=param_type.get(int());
-	synfig::Color color=param_color.get(synfig::Color());
-	synfig::Vector origin=param_origin.get(synfig::Vector());
+	Color color=param_color.get(Color());
+	Vector origin=param_origin.get(Vector());
 	bool invert=param_invert.get(bool());
 
 	int x,y;
@@ -562,7 +563,7 @@ Layer_Shade::accelerated_cairorender(Context context,cairo_t *cr, int quality, c
 	CairoSurface cairoworksurface(worksurface);
 	if(!cairoworksurface.map_cairo_image())
 	{
-		synfig::info("map cairo image failed");
+		info("map cairo image failed");
 		return false;
 	}
 	// Extract the alpha
@@ -654,8 +655,8 @@ Layer_Shade::get_param_vocab(void)const
 Rect
 Layer_Shade::get_full_bounding_rect(Context context)const
 {
-	synfig::Vector size=param_size.get(synfig::Vector());
-	synfig::Vector origin=param_origin.get(synfig::Vector());
+	Vector size=param_size.get(Vector());
+	Vector origin=param_origin.get(Vector());
 	bool invert=param_invert.get(bool());
 
 	if(is_disabled())

@@ -40,9 +40,10 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
+namespace lyr_std
+{
+
 using namespace synfig;
-using namespace std;
-using namespace etl;
 
 class Mandelbrot : public Layer
 {
@@ -96,6 +97,8 @@ public:
 	virtual Color get_color(Context context, const Point &pos)const;
 	virtual Vocab get_param_vocab()const;
 };
+
+} // END of namespace lyr_std
 
 /* === E N D =============================================================== */
 

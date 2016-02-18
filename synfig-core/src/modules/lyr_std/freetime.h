@@ -34,9 +34,11 @@
 /* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */
+
+namespace lyr_std
+{
+
 using namespace synfig;
-using namespace std;
-using namespace etl;
 
 class Layer_FreeTime : public Layer_Invisible
 {
@@ -53,15 +55,12 @@ public:
 	~Layer_FreeTime();
 
 	virtual bool set_param(const String & param, const ValueBase &value);
-
 	virtual ValueBase get_param(const String & param)const;
-
 	virtual Vocab get_param_vocab()const;
-	virtual bool set_version(const String &ver);
-	virtual void reset_version();
-
 	virtual void set_time(IndependentContext context, Time time)const;
 };
+
+} // END of namespace lyr_std
 
 /* === E N D =============================================================== */
 

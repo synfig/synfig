@@ -48,6 +48,11 @@
 
 #endif
 
+using namespace std;
+using namespace etl;
+using namespace synfig;
+using namespace lyr_std;
+
 /* === M A C R O S ========================================================= */
 
 #define LOG_OF_2		0.69314718055994528623
@@ -217,11 +222,11 @@ Julia::get_param(const String & param)const
 Color
 Julia::get_color(Context context, const Point &pos)const
 {
-	synfig::Color icolor=param_icolor.get(synfig::Color());
-	synfig::Color ocolor=param_ocolor.get(synfig::Color());
-	synfig::Angle color_shift=param_color_shift.get(synfig::Angle());
+	Color icolor=param_icolor.get(Color());
+	Color ocolor=param_ocolor.get(Color());
+	Angle color_shift=param_color_shift.get(Angle());
 	int iterations=param_iterations.get(int());
-	synfig::Point seed=param_seed.get(synfig::Point());
+	Point seed=param_seed.get(Point());
 	bool distort_inside=param_distort_inside.get(bool());
 	bool shade_inside=param_shade_inside.get(bool());
 	bool solid_inside=param_solid_inside.get(bool());

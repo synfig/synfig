@@ -35,52 +35,55 @@
 #include <synfig/blur.h>
 #include <synfig/angle.h>
 
-using namespace synfig;
-using namespace std;
-using namespace etl;
+namespace lyr_std
+{
 
-class Layer_Bevel : public synfig::Layer_Composite
+using namespace synfig;
+
+class Layer_Bevel : public Layer_Composite
 {
 	SYNFIG_LAYER_MODULE_EXT
 private:
 	//!Parameter: (int) type of blur to use
 	ValueBase param_type;
-	//!Parameter: (synfig::Real) amount of blur
+	//!Parameter: (Real) amount of blur
 	ValueBase param_softness;
-	//!Parameter: (synfig::Color) light color
+	//!Parameter: (Color) light color
 	ValueBase param_color1;
-	//!Parameter: (synfig::Color) dark color
+	//!Parameter: (Color) dark color
 	ValueBase param_color2;
-	//!Parameter: (synfig::Angle) angle of the light source
+	//!Parameter: (Angle) angle of the light source
 	ValueBase param_angle;
-	//!Parameter: (synfig::Real) depth of the bevel
+	//!Parameter: (Real) depth of the bevel
 	ValueBase param_depth;
 	//!Parameter: (bool) use luma
 	ValueBase param_use_luma;
 	//!Parameter: (bool) solid
 	ValueBase param_solid;
 	
-	synfig::Vector	offset;
-	synfig::Vector	offset45;
+	Vector	offset;
+	Vector	offset45;
 
 
 	void calc_offset();
 public:
 	Layer_Bevel();
 
-	virtual bool set_param(const String & param, const synfig::ValueBase &value);
+	virtual bool set_param(const String &param, const ValueBase &value);
 
-	virtual ValueBase get_param(const String & param)const;
+	virtual ValueBase get_param(const String &param)const;
 
 	virtual Color get_color(Context context, const Point &pos)const;
 
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 	virtual bool accelerated_cairorender(Context context, cairo_t *cr,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 
-	virtual synfig::Rect get_full_bounding_rect(Context context)const;
+	virtual Rect get_full_bounding_rect(Context context)const;
 	virtual Vocab get_param_vocab()const;
 	virtual bool reads_context()const { return true; }
 }; // END of class Layer_Bevel
+
+} // END of namespace lyr_std
 
 /* -- E X T E R N S --------------------------------------------------------- */
 

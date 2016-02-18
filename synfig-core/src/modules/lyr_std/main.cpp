@@ -75,6 +75,11 @@
 
 #endif
 
+using namespace std;
+using namespace etl;
+using namespace synfig;
+using namespace lyr_std;
+
 /* === E N T R Y P O I N T ================================================= */
 
 MODULE_DESC_BEGIN(liblyr_std)

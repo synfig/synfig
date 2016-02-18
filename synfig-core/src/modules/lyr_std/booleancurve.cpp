@@ -50,6 +50,7 @@
 using namespace std;
 using namespace etl;
 using namespace synfig;
+using namespace lyr_std;
 
 /* === M A C R O S ========================================================= */
 
@@ -69,9 +70,9 @@ BooleanCurve::~BooleanCurve()
 {
 }
 
-bool BooleanCurve::set_param(const String & param, const synfig::ValueBase &value)
+bool BooleanCurve::set_param(const String & param, const ValueBase &value)
 {
-	if(param=="regions" && value.same_type_as(synfig::ValueBase::List()))
+	if(param=="regions" && value.same_type_as(ValueBase::List()))
 	{
 		vector<BLinePoint> bv;
 		int size = value.get_list().size();

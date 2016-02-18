@@ -53,9 +53,10 @@
 
 #endif
 
-using namespace synfig;
 using namespace std;
 using namespace etl;
+using namespace synfig;
+using namespace lyr_std;
 
 /* === M A C R O S ========================================================= */
 
@@ -122,7 +123,7 @@ Import::set_param(const String & param, const ValueBase &value)
 
 		//if(get_canvas()->get_file_path()==dirname(newfilename))
 		//{
-		//	synfig::info("Image seems to be in local directory. Adjusting path...");
+		//	info("Image seems to be in local directory. Adjusting path...");
 		//	newfilename=basename(newfilename);
 		//}
 
@@ -133,7 +134,7 @@ Import::set_param(const String & param, const ValueBase &value)
 			while(basename(curpath)==".")curpath=dirname(curpath);
 
 			newfilename=relative_path(curpath,newfilename);
-			synfig::info("basename(curpath)=%s, Path adjusted to %s",basename(curpath).c_str(),newfilename.c_str());
+			info("basename(curpath)=%s, Path adjusted to %s",basename(curpath).c_str(),newfilename.c_str());
 		}
 #endif
 
@@ -164,7 +165,7 @@ Import::set_param(const String & param, const ValueBase &value)
 				// If we are already loaded, don't reload
 				if(filename==newfilename && importer)
 				{
-					synfig::warning(strprintf(_("Filename seems to already be set to \"%s\" (%s)"),filename.c_str(),newfilename.c_str()));
+					warning(strprintf(_("Filename seems to already be set to \"%s\" (%s)"),filename.c_str(),newfilename.c_str()));
 					return true;
 				}
 
@@ -189,7 +190,7 @@ Import::set_param(const String & param, const ValueBase &value)
 					newimporter=Importer::open(file_system->get_identifier(get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR+basename(newfilename_orig)));
 					if(!newimporter)
 					{
-						synfig::error(strprintf("Unable to create an importer object with file \"%s\"",filename_with_path.c_str()));
+						error(strprintf("Unable to create an importer object with file \"%s\"",filename_with_path.c_str()));
 						importer=0;
 						filename=newfilename;
 						abs_filename=filename_with_path;
@@ -202,7 +203,7 @@ Import::set_param(const String & param, const ValueBase &value)
 				surface.clear();
 				if(!newimporter->get_frame(surface,get_canvas()->rend_desc(),Time(0),trimmed,width,height,top,left))
 				{
-					synfig::warning(strprintf("Unable to get frame from \"%s\"",filename_with_path.c_str()));
+					warning(strprintf("Unable to get frame from \"%s\"",filename_with_path.c_str()));
 				}
 
 				rendering_surface = new rendering::SurfaceSW();
@@ -224,7 +225,7 @@ Import::set_param(const String & param, const ValueBase &value)
 				
 				if(filename==newfilename && cimporter)
 				{
-					synfig::warning(strprintf(_("Filename seems to already be set to \"%s\" (%s)"),filename.c_str(),newfilename.c_str()));
+					warning(strprintf(_("Filename seems to already be set to \"%s\" (%s)"),filename.c_str(),newfilename.c_str()));
 					return true;
 				}
 				assert(get_canvas());
@@ -248,7 +249,7 @@ Import::set_param(const String & param, const ValueBase &value)
 					newimporter=CairoImporter::open(file_system->get_identifier(get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR+basename(newfilename_orig)));
 					if(!newimporter)
 					{
-						synfig::error(strprintf("Unable to create an importer object with file \"%s\"",filename_with_path.c_str()));
+						error(strprintf("Unable to create an importer object with file \"%s\"",filename_with_path.c_str()));
 						cimporter=0;
 						filename=newfilename;
 						abs_filename=filename_with_path;
@@ -261,7 +262,7 @@ Import::set_param(const String & param, const ValueBase &value)
 				cairo_surface_t* cs;
 				if(!newimporter->get_frame(cs, get_canvas()->rend_desc(), Time(0), trimmed, width, height, top, left))
 				{
-					synfig::warning(strprintf("Unable to get frame from \"%s\"",filename_with_path.c_str()));
+					warning(strprintf("Unable to get frame from \"%s\"",filename_with_path.c_str()));
 				}
 				set_cairo_surface(cs);
 				cairo_surface_destroy(cs);

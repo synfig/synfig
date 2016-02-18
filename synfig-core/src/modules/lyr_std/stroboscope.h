@@ -40,9 +40,11 @@
 /* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */
+
+namespace lyr_std
+{
+
 using namespace synfig;
-using namespace std;
-using namespace etl;
 
 class Layer_Stroboscope : public Layer_Invisible
 {
@@ -66,6 +68,9 @@ public:
 
 	virtual void set_time(IndependentContext context, Time time)const;
 };
+
+} // END of namespace lyr_std
+
 /* === E N D =============================================================== */
 
 #endif

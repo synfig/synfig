@@ -37,9 +37,10 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
+namespace lyr_std
+{
+
 using namespace synfig;
-using namespace std;
-using namespace etl;
 
 class Zoom_Trans;
 
@@ -55,19 +56,21 @@ private:
 public:
 	Zoom();
 
-	virtual bool set_param(const String & param, const synfig::ValueBase &value);
+	virtual bool set_param(const String & param, const ValueBase &value);
 	virtual ValueBase get_param(const String & param)const;
 	virtual Color get_color(Context context, const Point &pos)const;
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 	virtual bool accelerated_cairorender(Context context, cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
-	synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;
+	Layer::Handle hit_check(Context context, const Point &point)const;
 	virtual Vocab get_param_vocab()const;
-	virtual synfig::Rect get_full_bounding_rect(synfig::Context context)const;
-	virtual etl::handle<synfig::Transform> get_transform()const;
+	virtual Rect get_full_bounding_rect(Context context)const;
+	virtual etl::handle<Transform> get_transform()const;
 
 protected:
 	virtual rendering::Task::Handle build_rendering_task_vfunc(Context context)const;
 };
+
+} // END of namespace lyr_std
 
 /* === E N D =============================================================== */
 

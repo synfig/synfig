@@ -26,18 +26,22 @@
 #define __SYNFIG_BOOLEAN_CURVE_H
 
 /* === H E A D E R S ======================================================= */
-#include <synfig/layers/layer_shape.h>
-#include <synfig/blinepoint.h>
 
 #include <vector>
+
+#include <synfig/layers/layer_shape.h>
+#include <synfig/blinepoint.h>
 
 /* === M A C R O S ========================================================= */
 
 /* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */
-namespace synfig
+
+namespace lyr_std
 {
+
+using namespace synfig;
 
 class BooleanCurve : public Layer_Shape
 {
@@ -60,16 +64,17 @@ public:
 	BooleanCurve();
 	~BooleanCurve();
 
-	virtual bool set_param(const String & param, const synfig::ValueBase &value);
-	virtual ValueBase get_param(const String & param)const;
+	virtual bool set_param(const String &param, const ValueBase &value);
+	virtual ValueBase get_param(const String &param)const;
 
 	virtual Vocab get_param_vocab()const;
 
 	virtual Color get_color(Context context, const Point &pos)const;
-	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
+	virtual bool accelerated_render(Context context, Surface *surface, int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 };
 
-} //end of namespace synfig
+} // END of namespace lyr_std
+
 /* === E N D =============================================================== */
 
 #endif

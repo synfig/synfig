@@ -49,6 +49,11 @@
 
 #endif
 
+using namespace std;
+using namespace etl;
+using namespace synfig;
+using namespace lyr_std;
+
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
@@ -89,8 +94,8 @@ InsideOut::get_param(const String & param)const
 	return ValueBase();
 }
 
-synfig::Layer::Handle
-InsideOut::hit_check(synfig::Context context, const synfig::Point &p)const
+Layer::Handle
+InsideOut::hit_check(Context context, const Point &p)const
 {
 	Point origin=param_origin.get(Point());
 	Point pos(p-origin);
@@ -119,13 +124,13 @@ InsideOut::get_cairocolor(Context context, const Point &p)const
 	return context.get_cairocolor(invpos+origin);
 }
 
-class InsideOut_Trans : public Transform
+class lyr_std::InsideOut_Trans : public Transform
 {
 	etl::handle<const InsideOut> layer;
 public:
 	InsideOut_Trans(const InsideOut* x):Transform(x->get_guid()),layer(x) { }
 
-	synfig::Vector perform(const synfig::Vector& x)const
+	Vector perform(const Vector& x)const
 	{
 		Point origin=layer->param_origin.get(Point());
 		Point pos(x-origin);
@@ -135,7 +140,7 @@ public:
 		return x;
 	}
 
-	synfig::Vector unperform(const synfig::Vector& x)const
+	Vector unperform(const Vector& x)const
 	{
 		Point origin=layer->param_origin.get(Point());
 		Point pos(x-origin);
@@ -145,7 +150,7 @@ public:
 		return x;
 	}
 
-	synfig::String get_string()const
+	String get_string()const
 	{
 		return "insideout";
 	}

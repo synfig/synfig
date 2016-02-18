@@ -56,6 +56,7 @@
 using namespace std;
 using namespace etl;
 using namespace synfig;
+using namespace lyr_std;
 
 /* === M A C R O S ========================================================= */
 
@@ -302,8 +303,8 @@ inline Point sphtrans(const Point &p, const Point &center, const Real &radius,
 	return sphtrans(p, center, radius, percent, type, tmp);
 }
 
-synfig::Layer::Handle
-Layer_SphereDistort::hit_check(synfig::Context context, const synfig::Point &pos)const
+Layer::Handle
+Layer_SphereDistort::hit_check(Context context, const Point &pos)const
 {
 	Vector center=param_center.get(Vector());
 	double radius=param_radius.get(double());
@@ -374,7 +375,7 @@ Layer_SphereDistort::accelerated_render(Context context,Surface *surface,int qua
 			(type == TYPE_DISTH && (sphr.minx >= windr.maxx || windr.minx >= sphr.maxx)) ||
 			(type == TYPE_DISTV && (sphr.miny >= windr.maxy || windr.miny >= sphr.maxy)) )
 		{
-			//synfig::warning("Spherize: Bounding box reject");
+			//warning("Spherize: Bounding box reject");
 			if (clip)
 			{
 				surface->set_wh(renddesc.get_w(), renddesc.get_h());
@@ -385,7 +386,7 @@ Layer_SphereDistort::accelerated_render(Context context,Surface *surface,int qua
 				return context.accelerated_render(surface,quality,renddesc,cb);
 		}
 
-		//synfig::warning("Spherize: Bounding box accept");
+		//warning("Spherize: Bounding box accept");
 	}
 
 	//Ok, so we overlap some... now expand the window for rendering
@@ -414,10 +415,10 @@ Layer_SphereDistort::accelerated_render(Context context,Surface *surface,int qua
 		//expandr.set_point(tl[0],tl[1]);
 		//expandr.expand(br[0],br[1]);
 
-		//synfig::warning("Spherize: Loop through lines and stuff");
+		//warning("Spherize: Loop through lines and stuff");
 		for(int i=0; i<4; ++i)
 		{
-			//synfig::warning("Spherize: 	%d", i);
+			//warning("Spherize: 	%d", i);
 			Vector p_o = center-origin[i];
 
 			//project onto left line
@@ -437,13 +438,13 @@ Layer_SphereDistort::accelerated_render(Context context,Surface *surface,int qua
 			expandr.expand(p[0],p[1]);
 		}
 
-		/*synfig::warning("Spherize: Bounding box (%f,%f)-(%f,%f)",
+		/*warning("Spherize: Bounding box (%f,%f)-(%f,%f)",
 							expandr.minx,expandr.miny,expandr.maxx,expandr.maxy);*/
 
 		//now that we have the bounding rectangle of ALL the pixels (should be...)
 		//order it so that it's in the same orientation as the tl,br pair
 
-		//synfig::warning("Spherize: Organize like tl,br");
+		//warning("Spherize: Organize like tl,br");
 		Point ntl(0,0),nbr(0,0);
 
 		//sort x
@@ -484,7 +485,7 @@ Layer_SphereDistort::accelerated_render(Context context,Surface *surface,int qua
 		nw = renddesc.get_w() + nr - nl;
 		nh = renddesc.get_h() + nb - nt;
 
-		//synfig::warning("Spherize: Setting subwindow (%d,%d) (%d,%d) (%d,%d)",nl,nt,nr,nb,nw,nh);
+		//warning("Spherize: Setting subwindow (%d,%d) (%d,%d) (%d,%d)",nl,nt,nr,nb,nw,nh);
 		r.set_subwindow(nl,nt,nw,nh);
 
 		/*r = renddesc;
@@ -492,10 +493,10 @@ Layer_SphereDistort::accelerated_render(Context context,Surface *surface,int qua
 		nl = 0, nt = 0;*/
 	}
 
-	//synfig::warning("Spherize: render background");
+	//warning("Spherize: render background");
 	if(!context.accelerated_render(&background,quality,r,cb))
 	{
-		synfig::warning("SphereDistort: Layer below failed");
+		warning("SphereDistort: Layer below failed");
 		return false;
 	}
 
@@ -511,7 +512,7 @@ Layer_SphereDistort::accelerated_render(Context context,Surface *surface,int qua
 
 	Point rtl = r.get_tl();
 
-	//synfig::warning("Spherize: About to transform");
+	//warning("Spherize: About to transform");
 
 	for(y = 0; y < h; ++y, sample[1] += ph, p.inc_y())
 	{
@@ -531,7 +532,7 @@ Layer_SphereDistort::accelerated_render(Context context,Surface *surface,int qua
 
 			if(!(xs >= 0 && xs < nw && ys >= 0 && ys < nh))
 			{
-				//synfig::warning("Spherize: we failed to account for %f,%f",xs,ys);
+				//warning("Spherize: we failed to account for %f,%f",xs,ys);
 				p.put_value(context.get_color(trans));//Color::alpha());
 				continue;
 			}
@@ -717,7 +718,7 @@ Layer_SphereDistort::accelerated_cairorender(Context context, cairo_t *cr, int q
 	cairo_translate(subcr, -wtlx, -wtly);
 	if(!context.accelerated_cairorender(subcr,quality,r,cb))
 	{
-		synfig::warning("Cairo SphereDistort: Layer below failed");
+		warning("Cairo SphereDistort: Layer below failed");
 		return false;
 	}
 	cairo_destroy(subcr);
@@ -732,13 +733,13 @@ Layer_SphereDistort::accelerated_cairorender(Context context, cairo_t *cr, int q
 	CairoSurface cresult(result);
 	if(!cresult.map_cairo_image())
 	{
-		synfig::warning("Sphere Distort: map cairo surface failed");
+		warning("Sphere Distort: map cairo surface failed");
 		return false;
 	}
 	CairoSurface cbackground(background);
 	if(!cbackground.map_cairo_image())
 	{
-		synfig::warning("Sphere Distort: map cairo surface failed");
+		warning("Sphere Distort: map cairo surface failed");
 		return false;
 	}
 	
@@ -796,23 +797,23 @@ Layer_SphereDistort::accelerated_cairorender(Context context, cairo_t *cr, int q
 
 #endif
 
-class synfig::Spherize_Trans : public synfig::Transform
+class lyr_std::Spherize_Trans : public Transform
 {
 	etl::handle<const Layer_SphereDistort> layer;
 public:
 	Spherize_Trans(const Layer_SphereDistort* x):Transform(x->get_guid()),layer(x) { }
 
-	synfig::Vector perform(const synfig::Vector& x)const
+	Vector perform(const Vector& x)const
 	{
 		return sphtrans(x,layer->param_center.get(Vector()),layer->param_radius.get(double()),-layer->param_amount.get(double()),layer->param_type.get(int()));
 	}
 
-	synfig::Vector unperform(const synfig::Vector& x)const
+	Vector unperform(const Vector& x)const
 	{
 		return sphtrans(x,layer->param_center.get(Vector()),layer->param_radius.get(double()),-layer->param_amount.get(double()),layer->param_type.get(int()));
 	}
 
-	synfig::String get_string()const
+	String get_string()const
 	{
 		return "spheredistort";
 	}

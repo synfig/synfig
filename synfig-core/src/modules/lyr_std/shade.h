@@ -34,21 +34,22 @@
 #include <synfig/vector.h>
 #include <synfig/blur.h>
 
-using namespace synfig;
-using namespace std;
-using namespace etl;
+namespace lyr_std
+{
 
-class Layer_Shade : public synfig::Layer_Composite
+using namespace synfig;
+
+class Layer_Shade : public Layer_Composite
 {
 	SYNFIG_LAYER_MODULE_EXT
 private:
-	//!Parameter: (synfig::Vector)
+	//!Parameter: (Vector)
 	ValueBase param_size;
 	//!Parameter: (int)
 	ValueBase param_type;
-	//!Parameter: (synfig::Color)
+	//!Parameter: (Color)
 	ValueBase param_color;
-	//!Parameter: (synfig::Vector)
+	//!Parameter: (Vector)
 	ValueBase param_origin;
 	//!Parameter: (bool)
 	ValueBase param_invert;
@@ -56,7 +57,7 @@ private:
 public:
 	Layer_Shade();
 
-	virtual bool set_param(const String & param, const synfig::ValueBase &value);
+	virtual bool set_param(const String & param, const ValueBase &value);
 
 	virtual ValueBase get_param(const String & param)const;
 
@@ -68,6 +69,8 @@ public:
 	virtual Vocab get_param_vocab()const;
 	virtual bool reads_context()const { return true; }
 }; // END of class Layer_Shade
+
+} // END of namespace lyr_std
 
 /* -- E X T E R N S --------------------------------------------------------- */
 

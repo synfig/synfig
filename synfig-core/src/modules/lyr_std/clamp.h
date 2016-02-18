@@ -36,7 +36,10 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace synfig {
+namespace lyr_std
+{
+
+using namespace synfig;
 
 class Layer_Clamp : public Layer
 {
@@ -47,9 +50,9 @@ private:
 	ValueBase param_invert_negative;
 	//!Parameter: (bool)
 	ValueBase param_clamp_ceiling;
-	//!Parameter: (synfig::Real)
+	//!Parameter: (Real)
 	ValueBase param_ceiling;
-	//!Parameter: (synfig::Real)
+	//!Parameter: (Real)
 	ValueBase param_floor;
 
 	Color clamp_color(const Color &in)const;
@@ -58,7 +61,7 @@ public:
 
 	Layer_Clamp();
 
-	virtual bool set_param(const String & param, const synfig::ValueBase &value);
+	virtual bool set_param(const String & param, const ValueBase &value);
 
 	virtual ValueBase get_param(const String & param)const;
 
@@ -71,7 +74,7 @@ public:
 	virtual Vocab get_param_vocab()const;
 }; // END of class Layer_Clamp
 
-}; // END of namespace synfig
+} // END of namespace lyr_std
 
 /* === E N D =============================================================== */
 

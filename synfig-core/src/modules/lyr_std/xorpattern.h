@@ -42,11 +42,12 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-using namespace synfig;
-using namespace std;
-using namespace etl;
+namespace lyr_std
+{
 
-class XORPattern : public synfig::Layer_Composite, public synfig::Layer_NoDeform
+using namespace synfig;
+
+class XORPattern : public Layer_Composite, public Layer_NoDeform
 {
 	SYNFIG_LAYER_MODULE_EXT
 
@@ -63,8 +64,10 @@ public:
 	virtual ValueBase get_param(const String &param)const;
 	virtual Color get_color(Context context, const Point &pos)const;
 	virtual Vocab get_param_vocab()const;
-	virtual synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;
+	virtual Layer::Handle hit_check(Context context, const Point &point)const;
 };
+
+} // END of namespace lyr_std
 
 /* === E N D =============================================================== */
 

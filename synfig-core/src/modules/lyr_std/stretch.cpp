@@ -53,9 +53,10 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace std;
+using namespace etl;
 using namespace synfig;
+using namespace lyr_std;
 
 /* === G L O B A L S ======================================================= */
 
@@ -121,8 +122,8 @@ Layer_Stretch::get_param_vocab()const
 	return ret;
 }
 
-synfig::Layer::Handle
-Layer_Stretch::hit_check(synfig::Context context, const synfig::Point &pos)const
+Layer::Handle
+Layer_Stretch::hit_check(Context context, const Point &pos)const
 {
 	Vector amount=param_amount.get(Vector());
 	Point center=param_center.get(Point());
@@ -145,13 +146,13 @@ Layer_Stretch::get_color(Context context, const Point &pos)const
 	return context.get_color(npos);
 }
 
-class Stretch_Trans : public Transform
+class lyr_std::Stretch_Trans : public Transform
 {
 	etl::handle<const Layer_Stretch> layer;
 public:
 	Stretch_Trans(const Layer_Stretch* x):Transform(x->get_guid()),layer(x) { }
 
-	synfig::Vector perform(const synfig::Vector& x)const
+	Vector perform(const Vector& x)const
 	{
 		Vector amount=layer->param_amount.get(Vector());
 		Point center=layer->param_center.get(Point());
@@ -160,7 +161,7 @@ public:
 					  (x[1]-center[1])*amount[1]+center[1]);
 	}
 
-	synfig::Vector unperform(const synfig::Vector& x)const
+	Vector unperform(const Vector& x)const
 	{
 		Vector amount=layer->param_amount.get(Vector());
 		Point center=layer->param_center.get(Point());
@@ -169,7 +170,7 @@ public:
 					  (x[1]-center[1])/amount[1]+center[1]);
 	}
 
-	synfig::String get_string()const
+	String get_string()const
 	{
 		return "stretch";
 	}

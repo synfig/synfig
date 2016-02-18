@@ -38,11 +38,12 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-using namespace synfig;
-using namespace std;
-using namespace etl;
+namespace lyr_std
+{
 
-class SuperSample : public synfig::Layer
+using namespace synfig;
+
+class SuperSample : public Layer
 {
 	SYNFIG_LAYER_MODULE_EXT
 
@@ -54,17 +55,18 @@ private:
 public:
 	SuperSample();
 
-	virtual bool set_param(const String & param, const synfig::ValueBase &value);
+	virtual bool set_param(const String & param, const ValueBase &value);
 
 	virtual ValueBase get_param(const String & param)const;
 
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 	virtual bool accelerated_cairorender(Context context,cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
-	using Layer::get_bounding_rect;
-	virtual synfig::Rect get_bounding_rect(Context context)const;
+	virtual Rect get_bounding_rect(Context context)const;
 
 	virtual Vocab get_param_vocab()const;
 };
+
+} // END of namespace lyr_std
 
 /* === E N D =============================================================== */
 

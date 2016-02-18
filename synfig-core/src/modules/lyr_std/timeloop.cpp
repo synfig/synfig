@@ -49,9 +49,10 @@
 
 #endif
 
-using namespace synfig;
 using namespace std;
 using namespace etl;
+using namespace synfig;
+using namespace lyr_std;
 
 /* === M A C R O S ========================================================= */
 

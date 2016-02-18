@@ -48,9 +48,10 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace std;
+using namespace etl;
 using namespace synfig;
+using namespace lyr_std;
 
 /* === G L O B A L S ======================================================= */
 
@@ -82,8 +83,8 @@ Layer_Clamp::clamp_color(const Color &in)const
 {
 	bool invert_negative=param_invert_negative.get(bool());
 	bool clamp_ceiling=param_clamp_ceiling.get(bool());
-	synfig::Real ceiling=param_ceiling.get(synfig::Real());
-	synfig::Real floor=param_floor.get(synfig::Real());
+	Real ceiling=param_ceiling.get(Real());
+	Real floor=param_floor.get(Real());
 	
 	Color ret(in);
 

@@ -48,9 +48,10 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace std;
+using namespace etl;
 using namespace synfig;
+using namespace lyr_std;
 
 /* === G L O B A L S ======================================================= */
 
@@ -142,12 +143,12 @@ Twirl::get_param_vocab()const
 	return ret;
 }
 
-synfig::Point
-Twirl::distort(const synfig::Point &pos,bool reverse)const
+Point
+Twirl::distort(const Point &pos,bool reverse)const
 {
-	synfig::Point center=param_center.get(synfig::Point());
-	synfig::Real radius=param_radius.get(synfig::Real());
-	synfig::Angle rotations=param_rotations.get(synfig::Angle());
+	Point center=param_center.get(Point());
+	Real radius=param_radius.get(Real());
+	Angle rotations=param_rotations.get(Angle());
 	bool distort_inside=param_distort_inside.get(bool());
 	bool distort_outside=param_distort_outside.get(bool());
 	
@@ -173,8 +174,8 @@ Twirl::distort(const synfig::Point &pos,bool reverse)const
 	return twirled+center;
 }
 
-synfig::Layer::Handle
-Twirl::hit_check(synfig::Context context, const synfig::Point &pos)const
+Layer::Handle
+Twirl::hit_check(Context context, const Point &pos)const
 {
 	return context.hit_check(distort(pos));
 }
@@ -192,23 +193,23 @@ Twirl::get_cairocolor(Context context, const Point &pos)const
 }
 
 
-class Twirl_Trans : public Transform
+class lyr_std::Twirl_Trans : public Transform
 {
 	etl::handle<const Twirl> layer;
 public:
 	Twirl_Trans(const Twirl* x):Transform(x->get_guid()),layer(x) { }
 
-	synfig::Vector perform(const synfig::Vector& x)const
+	Vector perform(const Vector& x)const
 	{
 		return layer->distort(x,true);
 	}
 
-	synfig::Vector unperform(const synfig::Vector& x)const
+	Vector unperform(const Vector& x)const
 	{
 		return layer->distort(x,false);
 	}
 
-	synfig::String get_string()const
+	String get_string()const
 	{
 		return "twirl";
 	}

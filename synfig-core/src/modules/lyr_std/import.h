@@ -35,13 +35,16 @@
 #include <synfig/cairoimporter.h>
 #include <synfig/rendermethod.h>
 
-using namespace synfig;
-
 /* === M A C R O S ========================================================= */
 
 /* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */
+
+namespace lyr_std
+{
+
+using namespace synfig;
 
 class Import : public Layer_Bitmap
 {
@@ -77,6 +80,8 @@ public:
 	
 	virtual void set_render_method(Context context, RenderMethod x);
 };
+
+} // END of namespace lyr_std
 
 /* === E N D =============================================================== */
 

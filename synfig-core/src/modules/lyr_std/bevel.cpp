@@ -52,9 +52,10 @@
 
 #endif
 
-using namespace synfig;
-using namespace etl;
 using namespace std;
+using namespace etl;
+using namespace synfig;
+using namespace lyr_std;
 
 /*#define TYPE_BOX			0
 #define TYPE_FASTGUASSIAN	1
@@ -76,7 +77,7 @@ SYNFIG_LAYER_SET_CVS_ID(Layer_Bevel,"$Id$");
 
 /* -- F U N C T I O N S ----------------------------------------------------- */
 
-inline void clamp(synfig::Vector &v)
+inline void clamp(Vector &v)
 {
 	if(v[0]<0.0)v[0]=0.0;
 	if(v[1]<0.0)v[1]=0.0;
@@ -102,8 +103,8 @@ Layer_Bevel::Layer_Bevel():
 void
 Layer_Bevel::calc_offset()
 {
-	synfig::Angle angle=param_angle.get(synfig::Angle());
-	synfig::Real depth=param_depth.get(synfig::Real());
+	Angle angle=param_angle.get(Angle());
+	Real depth=param_depth.get(Real());
 	
 	offset[0]=Angle::cos(angle).get()*depth;
 	offset[1]=Angle::sin(angle).get()*depth;
@@ -117,7 +118,7 @@ Layer_Bevel::set_param(const String &param, const ValueBase &value)
 {
 	IMPORT_VALUE_PLUS(param_softness,
 		{
-			synfig::Real softness=param_softness.get(Real());
+			Real softness=param_softness.get(Real());
 			softness=softness>0?softness:0;
 			param_softness.set(softness);
 		}
@@ -154,10 +155,10 @@ Layer_Bevel::get_param(const String &param)const
 Color
 Layer_Bevel::get_color(Context context, const Point &pos)const
 {
-	synfig::Real softness=param_softness.get(Real());
+	Real softness=param_softness.get(Real());
 	int type=param_type.get(int());
-	synfig::Color color1=param_color1.get(synfig::Color());
-	synfig::Color color2=param_color2.get(synfig::Color());
+	Color color1=param_color1.get(Color());
+	Color color2=param_color2.get(Color());
 	
 	const Vector size(softness,softness);
 	Point blurpos = Blur(size,type)(pos);
@@ -184,10 +185,10 @@ Layer_Bevel::accelerated_render(Context context,Surface *surface,int quality, co
 {
 	RENDER_TRANSFORMED_IF_NEED(__FILE__, __LINE__)
 
-	synfig::Real softness=param_softness.get(Real());
+	Real softness=param_softness.get(Real());
 	int type=param_type.get(int());
-	synfig::Color color1=param_color1.get(synfig::Color());
-	synfig::Color color2=param_color2.get(synfig::Color());
+	Color color1=param_color1.get(Color());
+	Color color2=param_color2.get(Color());
 	bool use_luma=param_use_luma.get(bool());
 	bool solid=param_solid.get(bool());
 	
@@ -382,10 +383,10 @@ Layer_Bevel::accelerated_render(Context context,Surface *surface,int quality, co
 bool
 Layer_Bevel::accelerated_cairorender(Context context, cairo_t *cr,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
-	synfig::Real softness=param_softness.get(Real());
+	Real softness=param_softness.get(Real());
 	int type=param_type.get(int());
-	synfig::Color color1=param_color1.get(synfig::Color());
-	synfig::Color color2=param_color2.get(synfig::Color());
+	Color color1=param_color1.get(Color());
+	Color color2=param_color2.get(Color());
 	bool use_luma=param_use_luma.get(bool());
 	bool solid=param_solid.get(bool());
 
@@ -504,14 +505,14 @@ Layer_Bevel::accelerated_cairorender(Context context, cairo_t *cr,int quality, c
 	CairoSurface cairoworksurface(worksurface);
 	if(!cairoworksurface.map_cairo_image())
 	{
-		synfig::info("map cairo image failed");
+		info("map cairo image failed");
 		return false;
 	}
 	// Extract the CairoSurface from the cairo_surface_t
 	CairoSurface cairosurface(surface);
 	if(!cairosurface.map_cairo_image())
 	{
-		synfig::info("map cairo image failed");
+		info("map cairo image failed");
 		return false;
 	}
 
@@ -666,8 +667,8 @@ Layer_Bevel::get_param_vocab(void)const
 Rect
 Layer_Bevel::get_full_bounding_rect(Context context)const
 {
-	synfig::Real softness=param_softness.get(Real());
-	synfig::Real depth=param_depth.get(synfig::Real());
+	Real softness=param_softness.get(Real());
+	Real depth=param_depth.get(Real());
 
 	if(is_disabled())
 		return context.get_full_bounding_rect();

@@ -34,19 +34,20 @@
 #include <synfig/localization.h>
 #include <synfig/general.h>
 
-#include "freetime.h"
-
 #include <synfig/time.h>
 #include <synfig/context.h>
 #include <synfig/canvas.h>
 #include <synfig/value.h>
 #include <synfig/paramdesc.h>
 
+#include "freetime.h"
+
 #endif
 
-using namespace synfig;
 using namespace std;
 using namespace etl;
+using namespace synfig;
+using namespace lyr_std;
 
 /* === M A C R O S ========================================================= */
 
@@ -109,3 +110,4 @@ Layer_FreeTime::set_time(IndependentContext context, Time /* t */)const
 	Time time = param_time.get(Time());
 	context.set_time(time);
 }
+

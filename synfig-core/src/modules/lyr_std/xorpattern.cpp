@@ -49,6 +49,11 @@
 
 #endif
 
+using namespace std;
+using namespace etl;
+using namespace synfig;
+using namespace lyr_std;
+
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
@@ -141,15 +146,15 @@ XORPattern::get_param_vocab()const
 	return ret;
 }
 
-synfig::Layer::Handle
-XORPattern::hit_check(synfig::Context context, const synfig::Point &getpos)const
+Layer::Handle
+XORPattern::hit_check(Context context, const Point &getpos)const
 {
 	// if we have a zero amount
 	if(get_amount()==0.0)
 		// then the click passes down to our context
 		return context.hit_check(getpos);
 
-	synfig::Layer::Handle tmp;
+	Layer::Handle tmp;
 	// if we are behind the context, and the click hits something in the context
 	if(get_blend_method()==Color::BLEND_BEHIND && (tmp=context.hit_check(getpos)))
 		// then return the thing it hit in the context

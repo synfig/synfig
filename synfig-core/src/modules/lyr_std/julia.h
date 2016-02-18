@@ -40,24 +40,25 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-using namespace synfig;
-using namespace std;
-using namespace etl;
+namespace lyr_std
+{
 
-class Julia : public synfig::Layer
+using namespace synfig;
+
+class Julia : public Layer
 {
 	SYNFIG_LAYER_MODULE_EXT
 
 private:
-	//!Parameter: (synfig::Color)
+	//!Parameter: (Color)
 	ValueBase param_icolor;
-	//!Parameter: (synfig::Color)
+	//!Parameter: (Color)
 	ValueBase param_ocolor;
-	//!Parameter: (synfig::Angle)
+	//!Parameter: (Angle)
 	ValueBase param_color_shift;
 	//!Parameter: (int)
 	ValueBase param_iterations;
-	//!Parameter: (synfig::Point)
+	//!Parameter: (Point)
 	ValueBase param_seed;
 	//!Parameter: (Real)
 	ValueBase param_bailout;
@@ -94,14 +95,16 @@ private:
 public:
 	Julia();
 
-	virtual bool set_param(const synfig::String &param, const synfig::ValueBase &value);
+	virtual bool set_param(const String &param, const ValueBase &value);
 
-	virtual ValueBase get_param(const synfig::String &param)const;
+	virtual ValueBase get_param(const String &param)const;
 
-	virtual Color get_color(synfig::Context context, const synfig::Point &pos)const;
+	virtual Color get_color(Context context, const Point &pos)const;
 
 	virtual Vocab get_param_vocab()const;
 };
+
+} // END of namespace lyr_std
 
 /* === E N D =============================================================== */
 

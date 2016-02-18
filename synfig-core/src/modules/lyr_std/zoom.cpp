@@ -50,6 +50,11 @@
 
 #endif
 
+using namespace std;
+using namespace etl;
+using namespace synfig;
+using namespace lyr_std;
+
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
@@ -117,8 +122,8 @@ Zoom::get_param_vocab()const
 	return ret;
 }
 
-synfig::Layer::Handle
-Zoom::hit_check(synfig::Context context, const synfig::Point &pos)const
+Layer::Handle
+Zoom::hit_check(Context context, const Point &pos)const
 {
 	Vector center=param_center.get(Vector());
 	return context.hit_check((pos-center)/exp(param_amount.get(Real()))+center);
@@ -131,27 +136,27 @@ Zoom::get_color(Context context, const Point &pos)const
 	return context.get_color((pos-center)/exp(param_amount.get(Real()))+center);
 }
 
-class Zoom_Trans : public Transform
+class lyr_std::Zoom_Trans : public Transform
 {
 	etl::handle<const Zoom> layer;
 public:
 	Zoom_Trans(const Zoom* x):Transform(x->get_guid()),layer(x) { }
 
-	synfig::Vector perform(const synfig::Vector& x)const
+	Vector perform(const Vector& x)const
 	{
 		Vector center=layer->param_center.get(Vector());
 		Real amount=layer->param_amount.get(Real());
 		return (x-center)*exp(amount)+center;
 	}
 
-	synfig::Vector unperform(const synfig::Vector& x)const
+	Vector unperform(const Vector& x)const
 	{
 		Vector center=layer->param_center.get(Vector());
 		Real amount=layer->param_amount.get(Real());
 		return (x-center)/exp(amount)+center;
 	}
 
-	synfig::String get_string()const
+	String get_string()const
 	{
 		return "zoom";
 	}
@@ -206,8 +211,8 @@ Zoom::accelerated_cairorender(Context context, cairo_t *cr,int quality, const Re
 /////
 
 
-synfig::Rect
-Zoom::get_full_bounding_rect(synfig::Context context)const
+Rect
+Zoom::get_full_bounding_rect(Context context)const
 {
 	Vector center=param_center.get(Vector());
 	return (context.get_full_bounding_rect()-center)*exp(param_amount.get(Real()))+center;

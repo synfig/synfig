@@ -47,6 +47,11 @@
 
 #endif
 
+using namespace std;
+using namespace etl;
+using namespace synfig;
+using namespace lyr_std;
+
 /* === M A C R O S ========================================================= */
 
 #define FAKE_TANGENT_STEP 0.000001
@@ -63,10 +68,10 @@ SYNFIG_LAYER_SET_CVS_ID(CurveWarp,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
 
-inline float calculate_distance(const std::vector<synfig::BLinePoint>& bline)
+inline float calculate_distance(const std::vector<BLinePoint>& bline)
 {
-	std::vector<synfig::BLinePoint>::const_iterator iter,next,ret;
-	std::vector<synfig::BLinePoint>::const_iterator end(bline.end());
+	std::vector<BLinePoint>::const_iterator iter,next,ret;
+	std::vector<BLinePoint>::const_iterator end(bline.end());
 
 	float dist(0);
 
@@ -85,11 +90,11 @@ inline float calculate_distance(const std::vector<synfig::BLinePoint>& bline)
 	return dist;
 }
 
-std::vector<synfig::BLinePoint>::const_iterator
-find_closest_to_bline(bool fast, const std::vector<synfig::BLinePoint>& bline,const Point& p,float& t, float& len, bool& extreme)
+std::vector<BLinePoint>::const_iterator
+find_closest_to_bline(bool fast, const std::vector<BLinePoint>& bline,const Point& p,float& t, float& len, bool& extreme)
 {
-	std::vector<synfig::BLinePoint>::const_iterator iter,next,ret;
-	std::vector<synfig::BLinePoint>::const_iterator end(bline.end());
+	std::vector<BLinePoint>::const_iterator iter,next,ret;
+	std::vector<BLinePoint>::const_iterator end(bline.end());
 
 	ret=bline.end();
 	float dist(100000000000.0);
@@ -153,7 +158,7 @@ find_closest_to_bline(bool fast, const std::vector<synfig::BLinePoint>& bline,co
 inline void
 CurveWarp::sync()
 {
-	std::vector<synfig::BLinePoint> bline(param_bline.get_list_of(synfig::BLinePoint()));
+	std::vector<BLinePoint> bline(param_bline.get_list_of(BLinePoint()));
 	Point start_point=param_start_point.get(Point());
 	Point end_point=param_end_point.get(Point());
 	
@@ -166,10 +171,10 @@ CurveWarp::CurveWarp():
 	param_perp_width(ValueBase(Real(1))),
 	param_start_point(ValueBase(Point(-2.5,-0.5))),
 	param_end_point(ValueBase(Point(2.5,-0.3))),
-	param_bline(ValueBase(std::vector<synfig::BLinePoint>())),
+	param_bline(ValueBase(std::vector<BLinePoint>())),
 	param_fast(ValueBase(true))
 {
-	std::vector<synfig::BLinePoint> bline;
+	std::vector<BLinePoint> bline;
 	bline.push_back(BLinePoint());
 	bline.push_back(BLinePoint());
 	bline[0].set_vertex(Point(-2.5,0));
@@ -188,7 +193,7 @@ CurveWarp::CurveWarp():
 inline Point
 CurveWarp::transform(const Point &point_, Real *dist, Real *along, int quality)const
 {
-	std::vector<synfig::BLinePoint> bline(param_bline.get_list_of(synfig::BLinePoint()));
+	std::vector<BLinePoint> bline(param_bline.get_list_of(BLinePoint()));
 	Point start_point=param_start_point.get(Point());
 	Point end_point=param_end_point.get(Point());
 	Point origin=param_origin.get(Point());
@@ -218,7 +223,7 @@ CurveWarp::transform(const Point &point_, Real *dist, Real *along, int quality)c
 	{
 		Point point(point_-origin);
 
-		std::vector<synfig::BLinePoint>::const_iterator iter,next;
+		std::vector<BLinePoint>::const_iterator iter,next;
 
 		// Figure out the BLinePoint we will be using,
 		next=find_closest_to_bline(fast,bline,point,t,len,extreme);
@@ -267,7 +272,7 @@ CurveWarp::transform(const Point &point_, Real *dist, Real *along, int quality)c
 					if (other_tangent[0] == 0 && other_tangent[1] == 0)
 					{
 						// find the previous blinepoint
-						std::vector<synfig::BLinePoint>::const_iterator prev;
+						std::vector<BLinePoint>::const_iterator prev;
 						if (iter != bline.begin()) (prev = iter)--;
 						else prev = iter;
 
@@ -292,7 +297,7 @@ CurveWarp::transform(const Point &point_, Real *dist, Real *along, int quality)c
 					if (other_tangent[0] == 0 && other_tangent[1] == 0)
 					{
 						// find the next blinepoint
-						std::vector<synfig::BLinePoint>::const_iterator next2(next);
+						std::vector<BLinePoint>::const_iterator next2(next);
 						if (++next2 == bline.end())
 							next2 = next;
 
@@ -324,13 +329,13 @@ CurveWarp::transform(const Point &point_, Real *dist, Real *along, int quality)c
 
 		if (t < 0.5)
 		{
-			std::vector<synfig::BLinePoint>::const_iterator iter(bline.begin());
+			std::vector<BLinePoint>::const_iterator iter(bline.begin());
 			tangent = iter->get_tangent1().norm();
 			len = 0;
 		}
 		else
 		{
-			std::vector<synfig::BLinePoint>::const_iterator iter(--bline.end());
+			std::vector<BLinePoint>::const_iterator iter(--bline.end());
 			tangent = iter->get_tangent2().norm();
 			len = curve_length_;
 		}
@@ -354,8 +359,8 @@ CurveWarp::transform(const Point &point_, Real *dist, Real *along, int quality)c
 			perp_ * unscaled_distance/(thickness*perp_width));
 }
 
-synfig::Layer::Handle
-CurveWarp::hit_check(synfig::Context context, const synfig::Point &point)const
+Layer::Handle
+CurveWarp::hit_check(Context context, const Point &point)const
 {
 	return context.hit_check(transform(point));
 }
@@ -494,7 +499,7 @@ CurveWarp::accelerated_render(Context context,Surface *surface,int quality, cons
 
 #if 0
 	// look at each blinepoint
-	std::vector<synfig::BLinePoint>::const_iterator iter;
+	std::vector<BLinePoint>::const_iterator iter;
 	for (iter=bline.begin(); iter!=bline.end(); iter++)
 		src_rect.expand(transform(iter->get_vertex()+origin, &dist, &along)); UPDATE_DIST;
 #endif
@@ -680,7 +685,7 @@ if (along > max_along) max_along = along
 	
 #if 0
 	// look at each blinepoint
-	std::vector<synfig::BLinePoint>::const_iterator iter;
+	std::vector<BLinePoint>::const_iterator iter;
 	for (iter=bline.begin(); iter!=bline.end(); iter++)
 		src_rect.expand(transform(iter->get_vertex()+origin, &dist, &along)); UPDATE_DIST;
 #endif
