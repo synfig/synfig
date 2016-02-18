@@ -1602,7 +1602,7 @@ Instance::gather_uri(std::set<synfig::String> &x, const synfig::ValueNode::Handl
 			{
 				String filename = v.get(String());
 				if (!filename.empty() && filename[0] != '#')
-					filename = etl::absolute_path(value_node->get_parent_canvas()->get_file_path() + "/", filename);
+					filename = etl::absolute_path(value_node->get_parent_canvas()->get_file_path(), filename);
 				String uri = file_system->get_real_uri(filename);
 				if (!uri.empty()) x.insert(uri);
 			}
@@ -1630,7 +1630,7 @@ Instance::gather_uri(std::set<synfig::String> &x, const synfig::Layer::Handle &l
 			{
 				String filename = v.get(String());
 				if (!filename.empty() && filename[0] != '#')
-					filename = etl::absolute_path(layer->get_canvas()->get_file_path() + "/", filename);
+					filename = etl::absolute_path(layer->get_canvas()->get_file_path(), filename);
 				String uri = file_system->get_real_uri(filename);
 				if (!uri.empty()) x.insert(uri);
 			}

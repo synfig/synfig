@@ -3345,85 +3345,15 @@ App::dialog_message_3b(const std::string &message,
 
 
 static bool
-try_open_web_url(const std::string &url)
+try_open_uri(const std::string &uri)
 {
-#ifdef _WIN32
-	return ShellExecute(GetDesktopWindow(), "open", url.c_str(), NULL, NULL, SW_SHOW);
-#else // !WIN32
-	std::vector<std::string> command_line;
-	std::vector<std::string> browsers;
-	browsers.reserve(23);
-
-	// Browser wrapper scripts
-#ifdef USE_OPEN_FOR_URLS
-	browsers.push_back("open");              // Apple MacOS X wrapper, on Linux it opens a virtual console
-#endif
-	browsers.push_back("xdg-open");          // XDG wrapper
-	browsers.push_back("sensible-browser");  // Debian wrapper
-	browsers.push_back("gnome-open");        // GNOME wrapper
-	browsers.push_back("kfmclient");         // KDE wrapper
-	browsers.push_back("exo-open");          // XFCE wrapper
-
-	// Alternatives system
-	browsers.push_back("gnome-www-browser"); // Debian GNOME alternative
-	browsers.push_back("x-www-browser");     // Debian GUI alternative
-
-	// Individual browsers
-	browsers.push_back("firefox");
-	browsers.push_back("epiphany-browser");
-	browsers.push_back("epiphany");
-	browsers.push_back("konqueror");
-	browsers.push_back("iceweasel");
-	browsers.push_back("mozilla");
-	browsers.push_back("netscape");
-	browsers.push_back("icecat");
-	browsers.push_back("galeon");
-	browsers.push_back("midori");
-	browsers.push_back("safari");
-	browsers.push_back("opera");
-	browsers.push_back("amaya");
-	browsers.push_back("netsurf");
-	browsers.push_back("dillo");
-
-	// Try the user-specified browser first
-	command_line.push_back(App::browser_command);
-	if( command_line[0] == "kfmclient" ) command_line.push_back("openURL");
-	command_line.push_back(url);
-
-	try { Glib::spawn_async(".", command_line, Glib::SPAWN_SEARCH_PATH); return true; }
-	catch( Glib::SpawnError& exception ){
-
-		while ( !browsers.empty() )
-		{
-			// Skip the browser if we already tried it
-			if( browsers[0] == App::browser_command )
-				continue;
-
-			// Construct the command line
-			command_line.clear();
-			command_line.push_back(browsers[0]);
-			if( command_line[0] == "kfmclient" ) command_line.push_back("openURL");
-			command_line.push_back(url);
-
-			// Remove the browser from the list
-			browsers.erase(browsers.begin());
-
-			// Try to spawn the browser
-			try { Glib::spawn_async(".", command_line, Glib::SPAWN_SEARCH_PATH); }
-			// Failed, move on to the next one
-			catch(Glib::SpawnError& exception){ continue; }
-			return true; // No exception means we succeeded!
-		}
-	}
-
-	return false;
-#endif // !WIN32
+	return gtk_show_uri(NULL, uri.c_str(), GDK_CURRENT_TIME, NULL);
 }
 
 void
 App::dialog_help()
 {
-	if (!try_open_web_url("http://synfig.org/wiki/Category:Manual"))
+	if (!try_open_uri("http://synfig.org/wiki/Category:Manual"))
 	{
 		Gtk::MessageDialog dialog(*App::main_window, _("Documentation"), false, Gtk::MESSAGE_INFO, Gtk::BUTTONS_CLOSE, true);
 		dialog.set_secondary_text(_("Documentation for Synfig Studio is available on the website:\n\nhttp://synfig.org/wiki/Category:Manual"));
@@ -3432,22 +3362,16 @@ App::dialog_help()
 	}
 }
 
-void
-App::open_web_url(const std::string &url)
-{
-	if(!try_open_web_url(url))
-	{
-		Gtk::MessageDialog dialog(*App::main_window, _("No browser was found. Please load this website manually:"), false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_CLOSE, true);
-		dialog.set_secondary_text(url);
-		dialog.set_title(_("No browser found"));
-		dialog.run();
-	}
-}
-
 void App::open_uri(const std::string &uri)
 {
 	synfig::info("Opening URI: " + uri);
-	gtk_show_uri(NULL, uri.c_str(), GDK_CURRENT_TIME, NULL);
+	if(!try_open_uri(uri))
+	{
+		Gtk::MessageDialog dialog(*App::main_window, _("No compatible application was found. Please load open file manually:"), false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_CLOSE, true);
+		dialog.set_secondary_text(uri);
+		dialog.set_title(_("Error"));
+		dialog.run();
+	}
 }
 
 bool

@@ -413,8 +413,6 @@ public:
 			const std::string &button2,
 			const std::string &button3);
 
-	static void open_web_url(const std::string &url);
-
 	static void open_uri(const std::string &uri);
 
 	static synfig::String get_config_file(const synfig::String& file);

@@ -254,5 +254,5 @@ void About::close(int){
 
 void About::on_link_clicked(Gtk::AboutDialog&, const Glib::ustring &url)
 {
-	App::open_web_url(url);
+	App::open_uri(url);
 }
