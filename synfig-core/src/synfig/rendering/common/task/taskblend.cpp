@@ -70,4 +70,21 @@ TaskBlend::calc_bounds() const
 	return bounds;
 }
 
+VectorInt
+TaskBlend::get_offset_a() const
+{
+	if (!sub_task_a()) return VectorInt::zero();
+	Vector offset = (sub_task_a()->get_source_rect_lt() - get_source_rect_lt()).multiply_coords(get_pixels_per_unit());
+	return VectorInt((int)round(offset[0]), (int)round(offset[1])) - sub_task_a()->get_target_offset();
+}
+
+VectorInt
+TaskBlend::get_offset_b() const
+{
+	if (!sub_task_b()) return VectorInt::zero();
+	Vector offset = (sub_task_b()->get_source_rect_lt() - get_source_rect_lt()).multiply_coords(get_pixels_per_unit());
+	return VectorInt((int)round(offset[0]), (int)round(offset[1])) - sub_task_b()->get_target_offset();
+}
+
+
 /* === E N T R Y P O I N T ================================================= */

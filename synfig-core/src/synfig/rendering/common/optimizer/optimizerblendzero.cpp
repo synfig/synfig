@@ -78,7 +78,7 @@ OptimizerBlendZero::apply_zero(const RunParams &params, const TaskBlend::Handle 
 	params.ref_task->move_target_rect(
 		  blend->get_target_offset()
 		- task->get_target_offset()
-		+ (task == blend->sub_task_a() ? blend->offset_a : blend->offset_b) );
+		+ (task == blend->sub_task_a() ? blend->get_offset_a() : blend->get_offset_b()) );
 	assert( params.ref_task->check() );
 }
 

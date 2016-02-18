@@ -82,16 +82,11 @@ OptimizerBlendSeparate::run(const RunParams& params) const
 				blend_rect, blend_rect,
 				blend->sub_task_b()->get_target_rect()
 				+ blend->get_target_offset()
-				+ blend->offset_b );
+				+ blend->get_offset_b() );
 		if (Color::is_onto(blend->blend_method))
 			etl::set_intersect(blend_rect, blend_rect, blend->sub_task_a()->get_target_rect());
 		if (blend_rect != blend->get_target_rect())
-		{
 			new_blend->trunc_target_rect(blend_rect);
-			new_blend->offset_a = -blend_rect.get_min();
-			new_blend->offset_b += blend->get_target_offset()
-					             - blend_rect.get_min();
-		}
 
 		//new_blend->sub_task_a()->trunc_target_rect( new_blend->get_target_rect() );
 

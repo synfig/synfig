@@ -47,8 +47,6 @@ public:
 
 	Color::BlendMethod blend_method;
 	Color::value_type amount;
-	VectorInt offset_a;
-	VectorInt offset_b;
 
 	TaskBlend():
 		blend_method(Color::BLEND_COMPOSITE), amount(1.0) { }
@@ -59,6 +57,9 @@ public:
 
 	const Task::Handle& sub_task_b() const { return sub_task(1); }
 	Task::Handle& sub_task_b() { return sub_task(1); }
+
+	VectorInt get_offset_a() const;
+	VectorInt get_offset_b() const;
 
 	virtual Rect calc_bounds() const;
 };

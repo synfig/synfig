@@ -125,7 +125,7 @@ OptimizerBlendSplit::run(const RunParams& params) const
 
 					RectInt rect = groups[j]
 								 + blend->get_target_offset()
-								 + blend->offset_b;
+								 + blend->get_offset_b();
 					TaskBlend::Handle sub_blend = TaskBlend::Handle::cast_dynamic(blend->clone());
 					sub_blend->trunc_target_rect(rect);
 					sub_blend->sub_task_a() = new TaskSurface();
@@ -133,8 +133,6 @@ OptimizerBlendSplit::run(const RunParams& params) const
 					sub_blend->sub_task_a()->sub_tasks.clear();
 					sub_blend->sub_task_a()->trunc_target_rect(rect);
 					sub_blend->sub_task_b() = sub_list_b;
-					sub_blend->offset_a = -rect.get_min();
-					sub_blend->offset_b += blend->get_target_offset() - rect.get_min();
 
 					list->sub_tasks.push_back(sub_blend);
 

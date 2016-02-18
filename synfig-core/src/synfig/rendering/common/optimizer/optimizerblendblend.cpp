@@ -93,13 +93,12 @@ OptimizerBlendBlend::run(const RunParams& params) const
 			TaskBlend::Handle task_b = TaskBlend::Handle::cast_dynamic(sub_blend->clone());
 			task_b->target_surface = blend->target_surface;
 			task_b->move_target_rect(
-				blend->get_target_offset() + blend->offset_b );
+				blend->get_target_offset() + blend->get_offset_b() );
 			assert( task_b->check() );
 
 			task_b->sub_task_a() = new TaskSurface();
 			assign(task_b->sub_task_a(), blend->sub_task_a());
 			task_b->sub_task_a()->sub_tasks.clear();
-			task_b->offset_a = -task_b->get_target_offset();
 
 			task_b->amount *= blend->amount;
 

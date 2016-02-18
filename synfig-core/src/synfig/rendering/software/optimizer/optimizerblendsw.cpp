@@ -70,12 +70,10 @@ OptimizerBlendSW::run(const RunParams& params) const
 			blend_sw->sub_task_a()->target_surface = blend_sw->target_surface;
 			blend_sw->sub_task_a()->move_target_rect(
 				blend_sw->get_target_offset() );
-			blend_sw->offset_a = -blend_sw->get_target_offset();
 			assert( blend_sw->sub_task_a()->check() );
 		}
 		else
 		{
-			blend_sw->offset_a = blend_sw->sub_task_a()->get_target_offset();
 			blend_sw->sub_task_a()->set_target_origin( VectorInt::zero() );
 			blend_sw->sub_task_a()->target_surface->set_size(
 				blend_sw->sub_task_a()->get_target_rect().maxx,
@@ -83,7 +81,6 @@ OptimizerBlendSW::run(const RunParams& params) const
 			assert( blend_sw->sub_task_a()->check() );
 		}
 
-		blend_sw->offset_b = blend_sw->sub_task_b()->get_target_offset();
 		blend_sw->sub_task_b()->set_target_origin( VectorInt::zero() );
 		blend_sw->sub_task_b()->target_surface->set_size(
 			blend_sw->sub_task_b()->get_target_rect().maxx,

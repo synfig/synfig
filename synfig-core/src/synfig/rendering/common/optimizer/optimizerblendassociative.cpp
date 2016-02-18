@@ -124,7 +124,7 @@ OptimizerBlendAssociative::run(const RunParams& params) const
 
 						task->target_surface = list->target_surface;
 						task->move_target_rect(
-							blend->get_target_offset() + blend->offset_b );
+							blend->get_target_offset() + blend->get_offset_b() );
 						assert(task->check());
 
 						list->sub_tasks.push_back(task);

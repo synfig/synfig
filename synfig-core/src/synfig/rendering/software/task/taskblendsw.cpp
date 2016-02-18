@@ -58,29 +58,24 @@ using namespace rendering;
 void
 TaskBlendSW::split(const RectInt &sub_target_rect)
 {
-	RectInt prev_target_rect = get_target_rect();
 	trunc_target_rect(sub_target_rect);
-	offset_a += prev_target_rect.get_min() - get_target_offset();
-	offset_b += prev_target_rect.get_min() - get_target_offset();
 	if (valid_target())
 	{
 		if (sub_task_a() && sub_task_a()->valid_target())
 		{
-			// TODO: Buggg! Here we should to call "split" if possible
-			// TODO: solve problem with offset_a and offset_b
 			sub_task_a() = sub_task_a()->clone();
 			sub_task_a()->trunc_target_rect(
 				get_target_rect()
 				- get_target_offset()
-				- offset_a );
+				- get_offset_a() );
 		}
 		if (sub_task_b() && sub_task_b()->valid_target())
 		{
-			sub_task_b() = sub_task_a()->clone();
+			sub_task_b() = sub_task_b()->clone();
 			sub_task_b()->trunc_target_rect(
 				get_target_rect()
 				- get_target_offset()
-				- offset_b );
+				- get_offset_b() );
 		}
 	}
 }
@@ -101,7 +96,7 @@ TaskBlendSW::run(RunParams & /* params */) const
 	RectInt r = get_target_rect();
 	if (r.valid())
 	{
-		RectInt ra = sub_task_a()->get_target_rect() + r.get_min() + offset_a;
+		RectInt ra = sub_task_a()->get_target_rect() + r.get_min() + get_offset_a();
 		if (ra.valid())
 		{
 			etl::set_intersect(ra, ra, r);
@@ -110,15 +105,15 @@ TaskBlendSW::run(RunParams & /* params */) const
 				synfig::Surface::pen p = c.get_pen(ra.minx, ra.maxx);
 				const_cast<synfig::Surface*>(&a)->blit_to(
 					p,
-					ra.minx - r.minx - offset_a[0],
-					ra.miny - r.miny - offset_a[1],
+					ra.minx - r.minx - get_offset_a()[0],
+					ra.miny - r.miny - get_offset_a()[1],
 					ra.maxx - ra.minx,
 					ra.maxy - ra.miny );
 			}
 		}
 
 		RectInt fill[] = { ra, RectInt::zero(), RectInt::zero(), RectInt::zero() };
-		RectInt rb = sub_task_b()->get_target_rect() + r.get_min() + offset_b;
+		RectInt rb = sub_task_b()->get_target_rect() + r.get_min() + get_offset_b();
 		if (rb.valid())
 		{
 			etl::set_intersect(rb, rb, r);
@@ -129,8 +124,8 @@ TaskBlendSW::run(RunParams & /* params */) const
 				ap.set_alpha(amount);
 				const_cast<synfig::Surface*>(&b)->blit_to(
 					ap,
-					rb.minx - r.minx - offset_b[0],
-					rb.miny - r.miny - offset_b[1],
+					rb.minx - r.minx - get_offset_b()[0],
+					rb.miny - r.miny - get_offset_b()[1],
 					rb.maxx - rb.minx,
 					rb.maxy - rb.miny );
 
