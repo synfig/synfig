@@ -44,6 +44,8 @@
 #include <synfig/valuenode.h>
 #include <synfig/cairo_renddesc.h>
 
+#include <synfig/rendering/module/common/task/taskcolorcorrect.h>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -332,4 +334,17 @@ Rect
 Layer_ColorCorrect::get_full_bounding_rect(Context context)const
 {
 	return context.get_full_bounding_rect();
+}
+
+rendering::Task::Handle
+Layer_ColorCorrect::build_rendering_task_vfunc(Context context)const
+{
+	rendering::TaskColorCorrect::Handle task_color_correct(new rendering::TaskColorCorrect());
+	task_color_correct->hue_adjust = param_hue_adjust.get(Angle());
+	task_color_correct->brightness = param_brightness.get(Real());
+	task_color_correct->contrast = param_contrast.get(Real());
+	task_color_correct->exposure = param_exposure.get(Real());
+	task_color_correct->gamma = param_gamma.get(Real());
+	task_color_correct->sub_task() = context.build_rendering_task();
+	return task_color_correct;
 }

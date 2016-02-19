@@ -48,6 +48,7 @@
 #include "../common/optimizer/optimizercalcbounds.h"
 #include "../common/optimizer/optimizerlinear.h"
 #include "../common/optimizer/optimizerlist.h"
+#include "../common/optimizer/optimizerpixelprocessorsplit.h"
 #include "../common/optimizer/optimizersplit.h"
 #include "../common/optimizer/optimizersurface.h"
 #include "../common/optimizer/optimizersurfaceconvert.h"
@@ -63,6 +64,9 @@
 #include "optimizer/optimizerlayersw.h"
 #include "optimizer/optimizermeshsw.h"
 #include "optimizer/optimizersurfaceresamplesw.h"
+
+#include "../module/software/optimizer/optimizerclampsw.h"
+#include "../module/software/optimizer/optimizercolorcorrectsw.h"
 
 #include "function/fft.h"
 
@@ -92,6 +96,9 @@ RendererSW::RendererSW()
 	register_optimizer(new OptimizerLayerSW());
 	register_optimizer(new OptimizerSurfaceResampleSW());
 
+	register_optimizer(new OptimizerClampSW());
+	register_optimizer(new OptimizerColorCorrectSW());
+
 	register_optimizer(new OptimizerBlendZero());
 	register_optimizer(new OptimizerBlendBlend());
 	register_optimizer(new OptimizerBlendComposite());
@@ -99,6 +106,7 @@ RendererSW::RendererSW()
 	register_optimizer(new OptimizerBlendAssociative());
 	register_optimizer(new OptimizerBlendSeparate());
 	register_optimizer(new OptimizerBlendSplit());
+	register_optimizer(new OptimizerPixelProcessorSplit());
 	register_optimizer(new OptimizerSurfaceConvert());
 
 	register_optimizer(new OptimizerLinear());

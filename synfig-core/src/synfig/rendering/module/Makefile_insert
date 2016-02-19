@@ -1,0 +1,13 @@
+RENDERING_MODULE_HH =
+
+RENDERING_MODULE_CC =
+
+include rendering/module/common/Makefile_insert
+include rendering/module/software/Makefile_insert
+
+RENDERING_HH += \
+    $(RENDERING_MODULE_HH)
+
+RENDERING_CC += \
+    $(RENDERING_MODULE_CC)
+

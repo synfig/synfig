@@ -1,0 +1,14 @@
+RENDERING_MODULE_SOFTWARE_TASK_HH = \
+	rendering/module/software/task/taskclampsw.h \
+	rendering/module/software/task/taskcolorcorrectsw.h
+
+RENDERING_MODULE_SOFTWARE_TASK_CC = \
+	rendering/module/software/task/taskclampsw.cpp \
+	rendering/module/software/task/taskcolorcorrectsw.cpp
+
+RENDERING_MODULE_SOFTWARE_HH += \
+    $(RENDERING_MODULE_SOFTWARE_TASK_HH)
+
+RENDERING_MODULE_SOFTWARE_CC += \
+    $(RENDERING_MODULE_SOFTWARE_TASK_CC)
+

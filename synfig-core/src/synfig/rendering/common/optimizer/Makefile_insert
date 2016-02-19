@@ -8,6 +8,7 @@ RENDERING_COMMON_OPTIMIZER_HH = \
 	rendering/common/optimizer/optimizercalcbounds.h \
 	rendering/common/optimizer/optimizerlinear.h \
 	rendering/common/optimizer/optimizerlist.h \
+	rendering/common/optimizer/optimizerpixelprocessorsplit.h \
 	rendering/common/optimizer/optimizersplit.h \
 	rendering/common/optimizer/optimizersurface.h \
 	rendering/common/optimizer/optimizersurfaceconvert.h \
@@ -27,6 +28,7 @@ RENDERING_COMMON_OPTIMIZER_CC = \
 	rendering/common/optimizer/optimizercalcbounds.cpp \
 	rendering/common/optimizer/optimizerlinear.cpp \
 	rendering/common/optimizer/optimizerlist.cpp \
+	rendering/common/optimizer/optimizerpixelprocessorsplit.cpp \
 	rendering/common/optimizer/optimizersplit.cpp \
 	rendering/common/optimizer/optimizersurface.cpp \
 	rendering/common/optimizer/optimizersurfaceconvert.cpp \

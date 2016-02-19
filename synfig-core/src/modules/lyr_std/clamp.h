@@ -74,6 +74,8 @@ public:
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 
 	virtual Vocab get_param_vocab()const;
+
+	virtual rendering::Task::Handle build_rendering_task_vfunc(Context context)const;
 }; // END of class Layer_Clamp
 
 }; // END of namespace lyr_std

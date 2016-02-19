@@ -78,6 +78,8 @@ public:
 	virtual bool accelerated_cairorender(Context context,cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 
 	virtual Vocab get_param_vocab()const;
+
+	virtual rendering::Task::Handle build_rendering_task_vfunc(Context context)const;
 }; // END of class Layer_ColorCorrect
 
 }; // END of namespace synfig

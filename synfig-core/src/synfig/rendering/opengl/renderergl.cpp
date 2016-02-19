@@ -56,9 +56,13 @@
 #include "optimizer/optimizersurfaceresamplegl.h"
 
 #include "../software/optimizer/optimizerblendsw.h"
+#include "../software/optimizer/optimizerblursw.h"
 #include "../software/optimizer/optimizercontoursw.h"
 #include "../software/optimizer/optimizerlayersw.h"
 #include "../software/optimizer/optimizermeshsw.h"
+
+#include "../module/software/optimizer/optimizerclampsw.h"
+#include "../module/software/optimizer/optimizercolorcorrectsw.h"
 
 #endif
 
@@ -80,9 +84,13 @@ RendererGL::RendererGL()
 	register_optimizer(new OptimizerCalcBounds());
 
 	register_optimizer(new OptimizerBlendGL());
+	register_optimizer(new OptimizerBlurSW());
 	register_optimizer(new OptimizerContourGL());
 	register_optimizer(new OptimizerLayerSW());
 	register_optimizer(new OptimizerSurfaceResampleGL());
+
+	register_optimizer(new OptimizerClampSW());
+	register_optimizer(new OptimizerColorCorrectSW());
 
 	register_optimizer(new OptimizerSurfaceConvert());
 

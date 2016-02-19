@@ -18,6 +18,7 @@ include rendering/common/Makefile_insert
 if WITH_OPENGL
 include rendering/opengl/Makefile_insert
 endif
+include rendering/module/Makefile_insert
 include rendering/primitive/Makefile_insert
 include rendering/software/Makefile_insert
 

@@ -44,6 +44,8 @@
 #include <synfig/value.h>
 #include <synfig/valuenode.h>
 
+#include <synfig/rendering/module/common/task/taskclamp.h>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -222,4 +224,16 @@ Rect
 Layer_Clamp::get_full_bounding_rect(Context context)const
 {
 	return context.get_full_bounding_rect();
+}
+
+rendering::Task::Handle
+Layer_Clamp::build_rendering_task_vfunc(Context context)const
+{
+	rendering::TaskClamp::Handle task_clamp(new rendering::TaskClamp());
+	task_clamp->invert_negative = param_invert_negative.get(bool());
+	task_clamp->clamp_ceiling = param_clamp_ceiling.get(bool());
+	task_clamp->floor = param_floor.get(Real());
+	task_clamp->ceiling = param_ceiling.get(Real());
+	task_clamp->sub_task() = context.build_rendering_task();
+	return task_clamp;
 }

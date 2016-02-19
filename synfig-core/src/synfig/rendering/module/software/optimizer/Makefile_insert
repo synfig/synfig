@@ -1,0 +1,14 @@
+RENDERING_MODULE_SOFTWARE_OPTIMIZER_HH = \
+	rendering/module/software/optimizer/optimizerclampsw.h \
+	rendering/module/software/optimizer/optimizercolorcorrectsw.h
+
+RENDERING_MODULE_SOFTWARE_OPTIMIZER_CC = \
+	rendering/module/software/optimizer/optimizerclampsw.cpp \
+	rendering/module/software/optimizer/optimizercolorcorrectsw.cpp
+
+RENDERING_MODULE_SOFTWARE_HH += \
+    $(RENDERING_MODULE_SOFTWARE_OPTIMIZER_HH)
+
+RENDERING_MODULE_SOFTWARE_CC += \
+    $(RENDERING_MODULE_SOFTWARE_OPTIMIZER_CC)
+

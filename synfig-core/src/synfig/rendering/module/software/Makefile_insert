@@ -1,0 +1,13 @@
+RENDERING_MODULE_SOFTWARE_HH =
+
+RENDERING_MODULE_SOFTWARE_CC =
+
+include rendering/module/software/optimizer/Makefile_insert
+include rendering/module/software/task/Makefile_insert
+
+RENDERING_MODULE_HH += \
+    $(RENDERING_MODULE_SOFTWARE_HH)
+
+RENDERING_MODULE_CC += \
+    $(RENDERING_MODULE_SOFTWARE_CC)
+
