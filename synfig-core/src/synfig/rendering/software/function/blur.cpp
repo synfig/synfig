@@ -73,8 +73,6 @@ software::Blur::Params::validate()
 	  || !dest_rect.valid()
 	  || !src->is_valid() ) return false;
 
-	offset = src_offset - dest_rect.get_min();
-
 	amplified_size = size*get_size_amplifier(type);
 	amplified_size[0] = fabs(amplified_size[0]);
 	amplified_size[1] = fabs(amplified_size[1]);
@@ -83,7 +81,7 @@ software::Blur::Params::validate()
 	etl::set_intersect(dest_rect, dest_rect, RectInt(0, 0, dest->get_w(), dest->get_h()));
 	if (!dest_rect.valid()) return false;
 
-	src_rect = dest_rect + offset;
+	src_rect = dest_rect - dest_rect.get_min() + src_offset;
 	src_rect.minx -= extra_size[0];
 	src_rect.miny -= extra_size[1];
 	src_rect.maxx += extra_size[0];
@@ -93,7 +91,7 @@ software::Blur::Params::validate()
 	if (!src_rect.valid()) return false;
 	etl::set_intersect(dest_rect, dest_rect, src_rect - offset);
 	if (!dest_rect.valid()) return false;
-	offset += src_rect.get_min();
+	offset = src_offset + src_rect.get_min();
 
 	return true;
 }

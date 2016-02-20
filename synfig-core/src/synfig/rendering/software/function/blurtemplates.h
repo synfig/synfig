@@ -614,7 +614,7 @@ public:
 				ColorReal a = (*c)[3];
 				Real one_div_a = fabs(a) < precision ? 0.0 : 1.0/a;
 				Color color((*c)[0]*one_div_a, (*c)[1]*one_div_a, (*c)[2]*one_div_a, a);
-				*cc = Color::blend(*cc, color, amount, blend_method);
+				*cc = Color::blend(color, *cc, amount, blend_method);
 			}
 		}
 	}
