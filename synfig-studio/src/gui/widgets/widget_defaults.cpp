@@ -249,13 +249,13 @@ Widget_Defaults::Widget_Defaults()
 	_widget_brush->set_tooltip_text(_("Brush Preview"));
 
 	brush_increase = Gtk::manage(new class Gtk::Button("+"));
-	brush_increase->set_tooltip_text(_("Decrease brush size"));
+	brush_increase->set_tooltip_text(_("Increase brush size"));
 	brush_increase->set_relief(Gtk::RELIEF_NONE);
 	brush_increase->set_border_width(0);
 	brush_increase->signal_clicked().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::on_brush_increase_clicked));
 
 	brush_decrease = Gtk::manage(new class Gtk::Button("-"));
-	brush_decrease->set_tooltip_text(_("Increase brush size"));
+	brush_decrease->set_tooltip_text(_("Decrease brush size"));
 	brush_decrease->set_relief(Gtk::RELIEF_NONE);
 	brush_decrease->set_border_width(0);
 	brush_decrease->signal_clicked().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::on_brush_decrease_clicked));
