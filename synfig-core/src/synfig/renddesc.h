@@ -113,6 +113,8 @@ private:
 	Time time_begin, time_end;
 	//! Transformation matrix which should be applied for each primitive before rendering
 	Matrix transformation_matrix;
+	//! Root outline grow value
+	Real outline_grow;
 
 public:
 	//! Anti alias filers types. Seems never implemented
@@ -143,6 +145,7 @@ public:
 		frame_rate	(24),
 		time_begin	(0),
 		time_end	(0),
+		outline_grow(0),
 		AntialiasFilter(ANTIALIAS_UNIFORM)
 	{ }
 
@@ -356,6 +359,9 @@ public:
 			0.0, (get_h() > 0 ? 0.0 : 1.0/Real(get_h())*(get_br()[1] - get_tl()[1])), 0.0,
 			get_tl()[0], get_tl()[1], 1.0 );
 	}
+
+	Real get_outline_grow() const { return outline_grow; }
+	void set_outline_grow(Real x) { outline_grow = x; }
 
 };	// END of class RendDesc
 

@@ -174,6 +174,7 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 			// Set the time that we wish to render
 			if(!get_avoid_time_sync() || canvas->get_time()!=t)
 				canvas->set_time(t);
+			canvas->set_outline_grow(desc.get_outline_grow());
 
 	#ifdef SYNFIG_OPTIMIZE_LAYER_TREE
 			Canvas::Handle op_canvas;
@@ -330,6 +331,7 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 		// Set the time that we wish to render
 		if(!get_avoid_time_sync() || canvas->get_time()!=t)
 			canvas->set_time(t);
+		canvas->set_outline_grow(desc.get_outline_grow());
 		Context context;
 
 #ifdef SYNFIG_OPTIMIZE_LAYER_TREE
