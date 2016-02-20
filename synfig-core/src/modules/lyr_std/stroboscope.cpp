@@ -115,7 +115,7 @@ Layer_Stroboscope::get_param_vocab()const
 }
 
 void
-Layer_Stroboscope::set_time(IndependentContext context, Time t)const
+Layer_Stroboscope::set_time_vfunc(IndependentContext context, Time t)const
 {
 	float frequency=param_frequency.get(float());
 	

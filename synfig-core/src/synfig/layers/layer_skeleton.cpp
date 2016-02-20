@@ -84,8 +84,8 @@ Layer_Skeleton::Layer_Skeleton():
 	SET_STATIC_DEFAULTS();
 
 	set_exclude_from_rendering(true);
-	Layer_Polygon::set_param("color", ValueBase(Color(0.5, 0.5, 1.0, 1.0)));
-	Layer_Polygon::set_param("amount", ValueBase(Real(0.5)));
+	Layer_Shape::set_param("color", ValueBase(Color(0.5, 0.5, 1.0, 1.0)));
+	Layer_Composite::set_param("amount", ValueBase(Real(0.5)));
 }
 
 #ifdef _DEBUG
@@ -97,21 +97,21 @@ Layer_Skeleton::~Layer_Skeleton()
 #endif
 
 bool
-Layer_Skeleton::set_param(const String & param, const ValueBase &value)
+Layer_Skeleton::set_param(const String &param, const ValueBase &value)
 {
-	// lock color param
-	if (param == "color") return false;
-
 	IMPORT_VALUE(param_name);
 
 	if (param=="bones" && param_bones.get_type()==value.get_type())
 	{
 		param_bones = value;
-		sync();
+		force_sync();
 		return true;
 	}
 
-	return Layer_Polygon::set_param(param,value);
+	// Skip shape, polygon and composite parameters
+	if (param == "amount")
+		return Layer_Composite::set_param(param,value);
+	return Layer::set_param(param,value);
 }
 
 ValueBase
@@ -123,19 +123,18 @@ Layer_Skeleton::get_param(const String &param)const
 	EXPORT_NAME();
 	EXPORT_VERSION();
 
-	return Layer_Polygon::get_param(param);
+	// Skip shape, polygon and composite parameters
+	if (param == "amount")
+		return Layer_Composite::get_param(param);
+	return Layer::get_param(param);
 }
 
 Layer::Vocab
 Layer_Skeleton::get_param_vocab()const
 {
+	// Skip shape, polygon and composite parameters
 	Layer::Vocab ret(Layer::get_param_vocab());
 
-	// Params from layer Layer_Shape
-	//ret.push_back(ParamDesc("color")
-	//	.set_local_name(_("Color"))
-	//);
-	
 	ret.push_back(ParamDesc("amount")
 		.set_local_name(_("Amount"))
 		.set_description(_("Alpha channel of the layer"))
@@ -153,21 +152,7 @@ Layer_Skeleton::get_param_vocab()const
 }
 
 void
-Layer_Skeleton::set_time(IndependentContext context, Time time)const
-{
-	const_cast<Layer_Skeleton*>(this)->sync();
-	context.set_time(time);
-}
-
-void
-Layer_Skeleton::set_time(IndependentContext context, Time time, const Point &pos)const
-{
-	const_cast<Layer_Skeleton*>(this)->sync();
-	context.set_time(time,pos);
-}
-
-void
-Layer_Skeleton::sync()
+Layer_Skeleton::sync_vfunc()
 {
  	const std::vector<ValueBase> &list = param_bones.get_list();
 
@@ -225,7 +210,6 @@ Layer_Skeleton::sync()
 			if (j++ >= segments_count1) break; else angle += segment_angle1;
 		}
 
-		add_polygon(list);
- 		upload_polygon(list);
+ 		set_stored_polygon(list);
  	}
 }

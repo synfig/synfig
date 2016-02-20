@@ -133,7 +133,7 @@ param_dilist(ValueBase(std::vector<synfig::DashItem>()))
 **	with the polygon layer.
 */
 void
-Advanced_Outline::sync()
+Advanced_Outline::sync_vfunc()
 {
 	ValueBase bline_=param_bline;
 	ValueBase wplist_=param_wplist;
@@ -217,7 +217,7 @@ Advanced_Outline::sync()
 		Real bezier_size = 1.0/(blineloop?bline_size:(bline_size==1?1.0:(bline_size-1)));
 		const vector<BLinePoint>::const_iterator bend(bline.end());
 		// Retrieve the parent canvas grow value
-		Real gv(exp(get_parent_canvas_grow_value()));
+		Real gv(exp(get_outline_grow_mark()));
 		// If we have only one blinepoint and it the bline is not looped
 		// then there is nothing to render
 		if(!blineloop && bline_size==1)
@@ -1054,9 +1054,8 @@ Advanced_Outline::sync()
 }
 
 bool
-Advanced_Outline::set_param(const String & param, const ValueBase &value)
+Advanced_Outline::set_shape_param(const String & param, const ValueBase &value)
 {
-
 	IMPORT_VALUE(param_bline);
 	IMPORT_VALUE(param_wplist);
 	IMPORT_VALUE(param_dilist);
@@ -1076,23 +1075,15 @@ Advanced_Outline::set_param(const String & param, const ValueBase &value)
 	IMPORT_VALUE(param_dash_enabled);
 	IMPORT_VALUE(param_fast);
 
-	if(param=="vector_list")
-		return false;
-	return Layer_Polygon::set_param(param,value);
+	// Skip polygon parameters
+	return Layer_Shape::set_shape_param(param,value);
 }
 
-void
-Advanced_Outline::set_time(IndependentContext context, Time time)const
+bool
+Advanced_Outline::set_param(const String & param, const ValueBase &value)
 {
-	const_cast<Advanced_Outline*>(this)->sync();
-	context.set_time(time);
-}
-
-void
-Advanced_Outline::set_time(IndependentContext context, Time time, Vector pos)const
-{
-	const_cast<Advanced_Outline*>(this)->sync();
-	context.set_time(time,pos);
+	// Skip polygon parameters
+	return Layer_Shape::set_param(param,value);
 }
 
 bool
@@ -1122,17 +1113,17 @@ Advanced_Outline::get_param(const String& param)const
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
-	if(param=="vector_list")
-		return ValueBase();
-	return Layer_Polygon::get_param(param);
+
+	// Skip polygon parameters
+	return Layer_Shape::get_param(param);
 }
 
 Layer::Vocab
 Advanced_Outline::get_param_vocab()const
 {
-	Layer::Vocab ret(Layer_Polygon::get_param_vocab());
-	// Pop off the polygon parameter from the polygon vocab
-	ret.pop_back();
+	// Skip polygon parameters
+	Layer::Vocab ret(Layer_Shape::get_param_vocab());
+
 	ret.push_back(ParamDesc("bline")
 		.set_local_name(_("Vertices"))
 		.set_origin("origin")

@@ -159,7 +159,8 @@ Layer::Layer():
 	optimized_(false),
 	exclude_from_rendering_(false),
 	param_z_depth(Real(0.0f)),
-	dirty_time_(Time::end())
+	time_mark(Time::end()),
+	outline_grow_mark(0.0)
 {
 	_LayerCounter::counter++;
 	SET_INTERPOLATION_DEFAULTS();
@@ -369,7 +370,7 @@ Layer::on_changed()
 	if (getenv("SYNFIG_DEBUG_ON_CHANGED"))
 		printf("%s:%d Layer::on_changed()\n", __FILE__, __LINE__);
 
-	dirty_time_=Time::end();
+	clear_time_mark();
 	Node::on_changed();
 }
 
@@ -453,6 +454,9 @@ Layer::clone(Canvas::LooseHandle canvas, const GUID& deriv_guid) const
 	ret->set_optimized(optimized());
 	ret->set_exclude_from_rendering(get_exclude_from_rendering());
 	ret->set_guid(get_guid()^deriv_guid);
+
+	ret->set_time_mark(get_time_mark());
+	ret->set_outline_grow_mark(get_outline_grow_mark());
 
 	//ret->set_param_list(get_param_list());
 	// Process the parameter list so that
@@ -583,22 +587,42 @@ Layer::set_version(const String &/*ver*/)
 
 void
 Layer::reset_version()
-{
-}
+	{ }
 
 
 void
 Layer::set_time(IndependentContext context, Time time)const
 {
-	context.set_time(time);
-	dirty_time_=time;
+	Layer::ParamList params;
+	Layer::DynamicParamList::const_iterator iter;
+	// For each parameter of the layer sets the time by the operator()(time)
+	for(iter=dynamic_param_list().begin();iter!=dynamic_param_list().end();iter++)
+		params[iter->first]=(*iter->second)(time);
+	// Sets the modified parameter list to the current context layer
+	const_cast<Layer*>(this)->set_param_list(params);
+
+	set_time_mark(time);
+
+	set_time_vfunc(context, time);
 }
 
 void
-Layer::set_time(IndependentContext context, Time time, const Point &pos)const
+Layer::set_time_vfunc(IndependentContext context, Time time)const
 {
-	context.set_time(time,pos);
-	dirty_time_=time;
+	context.set_time(time);
+}
+
+void
+Layer::set_outline_grow(IndependentContext context, Real outline_grow)const
+{
+	set_outline_grow_mark(outline_grow);
+	set_outline_grow_vfunc(context, outline_grow);
+}
+
+void
+Layer::set_outline_grow_vfunc(IndependentContext context, Real outline_grow)const
+{
+	context.set_outline_grow(outline_grow);
 }
 
 void
@@ -968,22 +992,6 @@ Layer::get_string()const
 
 }
 
-Real
-Layer::get_parent_canvas_grow_value()const
-{
-	Canvas::Handle parent_canvas(get_canvas());
-	Real ret;
-	if(parent_canvas)
-	{
-		ret=parent_canvas->get_grow_value();
-	}
-	else
-	{
-		ret=0.0;
-	}
-	return ret;
-}
-
 void
 Layer::fill_sound_processor(SoundProcessor & /* soundProcessor */) const
-{ }
+	{ }

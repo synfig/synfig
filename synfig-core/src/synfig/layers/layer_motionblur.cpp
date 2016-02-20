@@ -102,26 +102,12 @@ Layer_MotionBlur::get_param(const String &param)const
 	return Layer_Composite::get_param(param);
 }
 
-void
-Layer_MotionBlur::set_time(IndependentContext context, Time time)const
-{
-	context.set_time(time);
-	time_cur=time;
-}
-
-void
-Layer_MotionBlur::set_time(IndependentContext context, Time time, const Point &pos)const
-{
-	context.set_time(time,pos);
-	time_cur=time;
-}
-
 Color
 Layer_MotionBlur::get_color(Context context, const Point &pos)const
 {
 /*	if(aperture)
 	{
-		Time time(time_cur);
+		Time time(get_time_mark());
 		time+=(Vector::value_type)( (signed)(RAND_MAX/2)-(signed)rand() )/(Vector::value_type)(RAND_MAX) *aperture -aperture*0.5;
 		context.set_time(time, pos);
 	}
@@ -261,7 +247,7 @@ Layer_MotionBlur::accelerated_render(Context context,Surface *surface,int qualit
 				continue;
 			divisor += scale;
 			subimagecb=SuperCallback(cb,i*(5000/samples),(i+1)*(5000/samples),5000);
-			context.set_time(time_cur-aperture*ipos);
+			context.set_time(get_time_mark()-aperture*ipos);
 			if(!context.accelerated_render(&tmp,quality,renddesc,&subimagecb))
 				return false;
 			for(int y=0;y<renddesc.get_h();y++)
@@ -396,7 +382,7 @@ Layer_MotionBlur::accelerated_cairorender(Context context, cairo_t *cr ,int qual
 			if(scale==0)
 				continue;
 			subimagecb=SuperCallback(cb,i*(5000/samples),(i+1)*(5000/samples),5000);
-			context.set_time(time_cur-aperture*ipos);
+			context.set_time(get_time_mark()-aperture*ipos);
 			cairo_push_group(cr);
 			if(!context.accelerated_cairorender(cr,quality,renddesc,&subimagecb))
 			{

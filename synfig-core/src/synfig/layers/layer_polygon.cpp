@@ -87,34 +87,7 @@ Layer_Polygon::Layer_Polygon():
 }
 
 Layer_Polygon::~Layer_Polygon()
-{
-}
-
-void
-Layer_Polygon::sync()
-{
-/*
-	int i,pointcount=vector_list.size();
-
-	if(pointcount<3)
-		return;
-
-	//Layer_Shape::clear();
-	//clear();
-
-	// Build edge table
-	move_to(vector_list[0][0],vector_list[0][1]);
-
-	for(i = 1;i < pointcount; i++)
-	{
-		if(std::isnan(vector_list[i][0]) || std::isnan(vector_list[i][1]))
-			break;
-		line_to(vector_list[i][0],vector_list[i][1]);
-	}
-	close();
-	//endpath();
-*/
-}
+	{ }
 
 void
 Layer_Polygon::add_polygon(const std::vector<Point> &point_list)
@@ -123,9 +96,6 @@ Layer_Polygon::add_polygon(const std::vector<Point> &point_list)
 
 	if(pointcount<3)
 		return;
-
-	//Layer_Shape::clear();
-	//clear();
 
 	// Build edge table
 	move_to(point_list[0][0],point_list[0][1]);
@@ -137,21 +107,22 @@ Layer_Polygon::add_polygon(const std::vector<Point> &point_list)
 		line_to(point_list[i][0],point_list[i][1]);
 	}
 	close();
-	//endpath();
 }
 
 void
-Layer_Polygon::upload_polygon(const std::vector<Point> &point_list)
+Layer_Polygon::set_stored_polygon(const std::vector<Point> &point_list)
 {
 	ValueBase::List vector_list;
 	vector_list.reserve(point_list.size());
 	for(std::vector<Point>::const_iterator i = point_list.begin(); i != point_list.end(); ++i)
 		vector_list.push_back(*i);
 	param_vector_list.set(vector_list);
+	Layer_Shape::clear();
+	add_polygon(point_list);
 }
 
 void
-Layer_Polygon::clear()
+Layer_Polygon::clear_stored_polygon()
 {
 	Layer_Shape::clear();
 	param_vector_list.set(ValueBase::List());
@@ -165,7 +136,6 @@ Layer_Polygon::set_param(const String & param, const ValueBase &value)
 		param_vector_list=value;
 		Layer_Shape::clear();
 		add_polygon(value.get_list_of(Vector()));
-		sync();
 		return true;
 	}
 

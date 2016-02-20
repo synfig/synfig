@@ -81,7 +81,7 @@ public:
 	virtual bool set_version(const String &ver);
 	virtual void reset_version();
 
-	virtual void set_time(IndependentContext context, Time time)const;
+	virtual void set_time_vfunc(IndependentContext context, Time time)const;
 };
 
 }; // END of namespace lyr_std

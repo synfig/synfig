@@ -109,20 +109,6 @@ Layer_Duplicate::get_param(const String &param)const
 	return Layer_Composite::get_param(param);
 }
 
-void
-Layer_Duplicate::set_time(IndependentContext context, Time time)const
-{
-	context.set_time(time);
-	time_cur=time;
-}
-
-void
-Layer_Duplicate::set_time(IndependentContext context, Time time, const Point &pos)const
-{
-	context.set_time(time,pos);
-	time_cur=time;
-}
-
 Color
 Layer_Duplicate::get_color(Context context, const Point &pos)const
 {
@@ -134,6 +120,7 @@ Layer_Duplicate::get_color(Context context, const Point &pos)const
 	Color color;
 
 	Mutex::Lock lock(mutex);
+	Time time_cur = get_time_mark();
 	duplicate_param->reset_index(time_cur);
 	do
 	{
@@ -195,6 +182,7 @@ Layer_Duplicate::accelerated_render(Context context,Surface *surface,int quality
 	surface->clear();
 
 	Color::BlendMethod blend_method(get_blend_method());
+	Time time_cur = get_time_mark();
 	int steps = duplicate_param->count_steps(time_cur);
 
 	Mutex::Lock lock(mutex);
@@ -242,6 +230,7 @@ Layer_Duplicate::accelerated_cairorender(Context context, cairo_t *cr, int quali
 	if (!duplicate_param) return context.accelerated_cairorender(cr,quality,renddesc,cb);
 	
 	Color::BlendMethod blend_method(get_blend_method());
+	Time time_cur = get_time_mark();
 	int steps = duplicate_param->count_steps(time_cur);
 	
 	Mutex::Lock lock(mutex);

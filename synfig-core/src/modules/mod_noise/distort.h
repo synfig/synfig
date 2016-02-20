@@ -62,9 +62,6 @@ private:
 	//!Parameter: (bool)
 	synfig::ValueBase param_turbulent;
 
-	//void sync();
-	mutable synfig::Time curr_time;
-
 	synfig::Color color_func(const synfig::Point &x, float supersample,synfig::Context context)const;
 	synfig::CairoColor cairocolor_func(const synfig::Point &x, float supersample,synfig::Context context)const;
 	synfig::Point point_func(const synfig::Point &point)const;
@@ -80,8 +77,6 @@ public:
 	virtual synfig::CairoColor get_cairocolor(synfig::Context context, const synfig::Point &pos)const;
 	//virtual bool accelerated_render(synfig::Context context,synfig::Surface *surface,int quality, const synfig::RendDesc &renddesc, synfig::ProgressCallback *cb)const;
 	synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;
-	virtual void set_time(synfig::IndependentContext context, synfig::Time time)const;
-	virtual void set_time(synfig::IndependentContext context, synfig::Time time, const synfig::Point &point)const;
 	using Layer::get_bounding_rect;
 	virtual synfig::Rect get_bounding_rect(synfig::Context context)const;
 	virtual Vocab get_param_vocab()const;

@@ -207,7 +207,13 @@ Layer_PasteCanvas::set_param(const String & param, const ValueBase &value)
 #endif
 
 	IMPORT_VALUE(param_children_lock);
-	IMPORT_VALUE(param_outline_grow);
+	IMPORT_VALUE_PLUS(param_outline_grow,
+		if (canvas)
+		{
+			Real sub_outline_grow = param_outline_grow.get(Real());
+			canvas->set_outline_grow(get_outline_grow_mark() + sub_outline_grow);
+		}
+	);
 	return Layer_Composite::set_param(param,value);
 }
 
@@ -297,22 +303,31 @@ Layer_PasteCanvas::get_param(const String& param)const
 }
 
 void
-Layer_PasteCanvas::set_time(IndependentContext context, Time time)const
+Layer_PasteCanvas::set_time_vfunc(IndependentContext context, Time time)const
 {
-	Real time_dilation=param_time_dilation.get(Real());
-	Time time_offset=param_time_offset.get(Time());
-
 	if (depth==MAX_DEPTH) return;
 	depth_counter counter(depth);
 
 	context.set_time(time);
 	if (canvas)
 	{
-		Real grow_value = get_parent_canvas_grow_value();
-		Real outline_grow = param_outline_grow.get(Real());
-		if (fabs(outline_grow) > 1e-8)
-			canvas->set_grow_value(grow_value + outline_grow);
-		canvas->set_time(time*time_dilation+time_offset);
+		Real time_dilation=param_time_dilation.get(Real());
+		Time time_offset=param_time_offset.get(Time());
+		canvas->set_time(time*time_dilation + time_offset);
+	}
+}
+
+void
+Layer_PasteCanvas::set_outline_grow_vfunc(IndependentContext context, Real outline_grow)const
+{
+	if (depth==MAX_DEPTH) return;
+	depth_counter counter(depth);
+
+	context.set_outline_grow(outline_grow);
+	if (canvas)
+	{
+		Real sub_outline_grow = param_outline_grow.get(Real());
+		canvas->set_outline_grow(outline_grow + sub_outline_grow);
 	}
 }
 

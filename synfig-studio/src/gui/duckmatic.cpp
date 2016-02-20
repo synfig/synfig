@@ -2278,7 +2278,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
                     if (param_desc)
                     {
                         ValueBase value(synfigapp::ValueDesc(value_desc.get_layer(),param_desc->get_hint()).get_value(get_time()));
-                        Real gv(value_desc.get_layer()->get_parent_canvas_grow_value());
+                        Real gv(value_desc.get_layer()->get_outline_grow_mark());
                         if(value.same_type_as(synfig::Real()))
                             duck->set_scalar(exp(gv)*value.get(synfig::Real())*0.5f);
                         // if it doesn't have a "width" parameter, scale by 0.5f instead
@@ -2704,7 +2704,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
                         if (param_desc)
                         {
                             ValueBase value(synfigapp::ValueDesc(value_desc.get_layer(),"width").get_value(get_time()));
-                            Real gv(value_desc.get_layer()->get_parent_canvas_grow_value());
+                            Real gv(value_desc.get_layer()->get_outline_grow_mark());
                             if(value.same_type_as(synfig::Real()))
                                 wduck->set_scalar(exp(gv)*(value.get(synfig::Real())*0.5f));
                             // if it doesn't have a "width" parameter, scale by 0.5f instead

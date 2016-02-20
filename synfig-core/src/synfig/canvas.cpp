@@ -86,7 +86,7 @@ Canvas::Canvas(const String &id):
 	is_inline_	(false),
 	is_dirty_	(true),
 	op_flag_	(false),
-	grow_value	(0.0)
+	outline_grow(0.0)
 {
 	identifier_.file_system = FileSystemNative::instance();
 	_CanvasCounter::counter++;
@@ -321,20 +321,19 @@ Canvas::set_description(const String &x)
 }
 
 void
-Canvas::set_grow_value(Real x)
+Canvas::set_outline_grow(Real x)
 {
-	if(grow_value!=x)
+	if (fabs(outline_grow - x) > 1e-8)
 	{
-		grow_value=x;
-		get_independent_context().set_dirty_outlines();
+		outline_grow = x;
+		get_independent_context().set_outline_grow(outline_grow);
 	}
-
 }
 
 Real
-Canvas::get_grow_value()const
+Canvas::get_outline_grow()const
 {
-	return grow_value;
+	return outline_grow;
 }
 
 void
@@ -1268,11 +1267,6 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 			Canvas::Handle paste_sub_canvas = paste_canvas->get_sub_canvas();
 			if(paste_sub_canvas)
 			{
-				Real parent_grow(paste_canvas->get_parent_canvas_grow_value());
-				if(paste_sub_canvas->is_inline())
-					paste_sub_canvas->set_grow_value(parent_grow+paste_canvas->get_param("outline_grow").get(Real()));
-				else
-					paste_sub_canvas->set_grow_value(0.0);
 				ContextParams params=context.get_params();
 				paste_canvas->apply_z_range_to_params(params);
 				optimize_layers(time, paste_sub_canvas->get_context(params),sub_canvas,motion_blurred);
@@ -1420,10 +1414,6 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 	for(iter2=sort_list.begin();iter2!=sort_list.end();++iter2)
 		op_canvas->push_back_simple(iter2->second);
 	op_canvas->op_flag_=true;
-	if(!context->empty() && (*context)->get_canvas())
-	{
-		op_canvas->set_grow_value((*context)->get_canvas()->get_grow_value());
-	}
 }
 
 void

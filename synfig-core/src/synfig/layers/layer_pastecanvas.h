@@ -167,8 +167,7 @@ public:
 	virtual void apply_z_range_to_params(ContextParams &cp)const;
 	//! Gets the blend color of the Layer in the context at \a pos
 	virtual Color get_color(Context context, const Point &pos)const;
-	//! Sets the time of the Paste Canvas Layer and those under it
-	virtual void set_time(IndependentContext context, Time time)const;
+
 	//! Renders the Canvas to the given Surface in an accelerated manner
 	//! See Layer::accelerated_render
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
@@ -189,6 +188,10 @@ public:
 	virtual void on_childs_changed() { }
 
 protected:
+	//! Sets the time of the Paste Canvas Layer and those under it
+	virtual void set_time_vfunc(IndependentContext context, Time time)const;
+	//! Sets the outline_grow of the Paste Canvas Layer and those under it
+	virtual void set_outline_grow_vfunc(IndependentContext context, Real outline_grow)const;
 	//!	Function to be overloaded that fills the Time Point Set with
 	//! all the children Time Points. In this case the children Time Points
 	//! are the canvas parameter children layers Time points and the Paste Canvas

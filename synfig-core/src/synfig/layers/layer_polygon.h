@@ -72,16 +72,10 @@ public:
 	void add_polygon(const std::vector<Point> &point_list);
 	
 	// Places the point_list on the vector_list, for later render as polygon.
-	void upload_polygon(const std::vector<Point> &point_list);
+	void set_stored_polygon(const std::vector<Point> &point_list);
 
 	//! Clears out any polygon data
-	/*!	Also clears out the EdgeTable, so there is no
-	**	need to call sync() after using this function.
-	*/
-	void clear();
-
-	//! Updates EdgeTable so it will reflect the parameter data
-	void sync();
+	void clear_stored_polygon();
 
 	virtual bool set_param(const String & param, const synfig::ValueBase &value);
 
@@ -91,7 +85,6 @@ public:
 private:
 	class 		PolySpan;
 	bool render_polyspan(Surface *surface,PolySpan &polyspan)const;
-
 }; // END of Layer_Polygon
 
 }; // END of namespace synfig

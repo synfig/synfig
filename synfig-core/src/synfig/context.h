@@ -72,13 +72,10 @@ public:
 	{ return CanvasBase::const_iterator::operator=(x); }
 
 	//! Sets the context to the Time \time. It is done recursively.
-	void set_time(Time time)const;
+	void set_time(Time time) const;
 
-	//!	Sets the context to the Time \time. It is done recursively. Vector \pos is not used
-	void set_time(Time time,const Vector &pos)const;
-
-	//! Sets dirty (dirty_time_= Time::end()) to all Outline type layers
-	void set_dirty_outlines();
+	//! Sets the context outline grow to \outline_grow. It is done recursively.
+	void set_outline_grow(Real outline_grow) const;
 };
 
 

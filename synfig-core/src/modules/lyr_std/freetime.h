@@ -59,7 +59,7 @@ public:
 	virtual bool set_param(const String & param, const ValueBase &value);
 	virtual ValueBase get_param(const String & param)const;
 	virtual Vocab get_param_vocab()const;
-	virtual void set_time(IndependentContext context, Time time)const;
+	virtual void set_time_vfunc(IndependentContext context, Time time)const;
 };
 
 }; // END of namespace lyr_std

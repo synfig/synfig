@@ -68,7 +68,7 @@ public:
 
 	virtual Vocab get_param_vocab()const;
 
-	virtual void set_time(IndependentContext context, Time time)const;
+	virtual void set_time_vfunc(IndependentContext context, Time time)const;
 };
 
 }; // END of namespace lyr_std

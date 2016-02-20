@@ -64,14 +64,13 @@ private:
 public:
 	Star();
 
-	//! Updates the polygon data to match the parameters.
-	void sync();
-	bool import_parameters(const String &param, const ValueBase &value);
+	virtual bool set_shape_param(const String &param, const ValueBase &value);
 	virtual bool set_param(const String & param, const synfig::ValueBase &value);
-
 	virtual ValueBase get_param(const String & param)const;
-
 	virtual Vocab get_param_vocab()const;
+
+protected:
+	virtual void sync_vfunc();
 };
 
 /* === E N D =============================================================== */

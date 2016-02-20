@@ -177,7 +177,7 @@ Outline::Outline()
 **	with the polygon layer.
 */
 void
-Outline::sync()
+Outline::sync_vfunc()
 {
 	ValueBase bline=param_bline;
 	bool round_tip[2];
@@ -235,7 +235,7 @@ Outline::sync()
 	Vector first_tangent=bline.front().get_tangent2();
 	Vector last_tangent=iter->get_tangent1();
 	// Retrieve the parent canvas grow value
-	Real gv(exp(get_parent_canvas_grow_value()));
+	Real gv(exp(get_outline_grow_mark()));
 	// if we are looped and drawing sharp cusps, we'll need a value for the incoming tangent
 	if (loop && sharp_cusps && last_tangent.is_equal_to(Vector::zero()))
 	{
@@ -412,8 +412,7 @@ Outline::sync()
 			side_a.push_back(curve(n));
 	}
 
-	add_polygon(side_a);
-	Layer_Polygon::upload_polygon(side_a);
+	set_stored_polygon(side_a);
 
 
 #else /* 1 */
@@ -690,7 +689,7 @@ Outline::sync()
 #undef bline
 
 bool
-Outline::set_param(const String & param, const ValueBase &value)
+Outline::set_shape_param(const String & param, const ValueBase &value)
 {
 	if(param=="segment_list")
 	{
@@ -772,24 +771,15 @@ Outline::set_param(const String & param, const ValueBase &value)
 	IMPORT_VALUE(param_expand);
 	IMPORT_VALUE(param_homogeneous_width);
 
-	if(param!="vector_list")
-		return Layer_Polygon::set_param(param,value);
-
-	return false;
+	// Skip polygon parameters
+	return Layer_Shape::set_shape_param(param,value);
 }
 
-void
-Outline::set_time(IndependentContext context, Time time)const
+bool
+Outline::set_param(const String & param, const ValueBase &value)
 {
-	const_cast<Outline*>(this)->sync();
-	context.set_time(time);
-}
-
-void
-Outline::set_time(IndependentContext context, Time time, Vector pos)const
-{
-	const_cast<Outline*>(this)->sync();
-	context.set_time(time,pos);
+	// Skip polygon parameters
+	return Layer_Shape::set_param(param,value);
 }
 
 ValueBase
@@ -809,18 +799,15 @@ Outline::get_param(const String& param)const
 	EXPORT_NAME();
 	EXPORT_VERSION();
 
-	if(param!="vector_list")
-		return Layer_Polygon::get_param(param);
-	return ValueBase();
+	// Skip polygon parameters
+	return Layer_Shape::get_param(param);
 }
 
 Layer::Vocab
 Outline::get_param_vocab()const
 {
-	Layer::Vocab ret(Layer_Polygon::get_param_vocab());
-
-	// Pop off the polygon parameter from the polygon vocab
-	ret.pop_back();
+	// Skip polygon parameters
+	Layer::Vocab ret(Layer_Shape::get_param_vocab());
 
 	ret.push_back(ParamDesc("bline")
 		.set_local_name(_("Vertices"))

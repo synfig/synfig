@@ -246,7 +246,7 @@ Layer_TimeLoop::reset_version()
 }
 
 void
-Layer_TimeLoop::set_time(IndependentContext context, Time t)const
+Layer_TimeLoop::set_time_vfunc(IndependentContext context, Time t)const
 {
 	Time link_time=param_link_time.get(Time());
 	Time local_time=param_local_time.get(Time());

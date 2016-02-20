@@ -87,7 +87,7 @@ Star::Star():
 }
 
 void
-Star::sync()
+Star::sync_vfunc()
 {
 	Angle angle = param_angle.get(Angle());
 	int points = param_points.get(int(0));
@@ -107,13 +107,11 @@ Star::sync()
 		if (!regular_polygon)
 			vector_list.push_back(Point(Angle::cos(dist2).get()*radius2,Angle::sin(dist2).get()*radius2));
 	}
-	clear();
-	add_polygon(vector_list);
-	upload_polygon(vector_list);
+	set_stored_polygon(vector_list);
 }
 
 bool
-Star::import_parameters(const String &param, const ValueBase &value)
+Star::set_shape_param(const String &param, const ValueBase &value)
 {
 	IMPORT_VALUE(param_radius1);
 	IMPORT_VALUE(param_radius2);
@@ -127,20 +125,15 @@ Star::import_parameters(const String &param, const ValueBase &value)
 	IMPORT_VALUE(param_angle);
 	IMPORT_VALUE(param_regular_polygon);
 
-	return Layer_Polygon::set_param(param,value);
-
+	// Skip polygon parameters
+	return Layer_Shape::set_shape_param(param,value);
 }
 
 bool
 Star::set_param(const String & param, const ValueBase &value)
 {
-	if(import_parameters(param, value))
-	{
-		sync();
-		return true;
-	}
-	
-	return false;
+	// Skip polygon parameters
+	return Layer_Shape::set_param(param,value);
 }
 
 ValueBase
@@ -155,19 +148,15 @@ Star::get_param(const String& param)const
 	EXPORT_NAME();
 	EXPORT_VERSION();
 
-	if(param=="vector_list")
-		return ValueBase();
-
-	return Layer_Polygon::get_param(param);
+	// Skip polygon parameters
+	return Layer_Shape::get_param(param);
 }
 
 Layer::Vocab
 Star::get_param_vocab()const
 {
-	Layer::Vocab ret(Layer_Polygon::get_param_vocab());
-
-	// Pop off the polygon parameter from the polygon vocab
-	ret.pop_back();
+	// Skip polygon parameters
+	Layer::Vocab ret(Layer_Shape::get_param_vocab());
 
 	ret.push_back(ParamDesc("radius1")
 		.set_local_name(_("Outer Radius"))

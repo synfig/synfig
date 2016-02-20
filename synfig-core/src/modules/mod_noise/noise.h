@@ -67,14 +67,6 @@ private:
 	//!Parameter: (bool)
 	synfig::ValueBase param_super_sample;
 
-
-//	bool do_displacement;
-//	synfig::Vector displacement;
-
-	//void sync();
-	mutable synfig::Time curr_time;
-
-
 	synfig::Color color_func(const synfig::Point &x, float supersample,synfig::Context context)const;
 
 	float calc_supersample(const synfig::Point &x, float pw,float ph)const;
@@ -88,9 +80,6 @@ public:
 	virtual synfig::CairoColor get_cairocolor(synfig::Context context, const synfig::Point &pos)const;
 	virtual bool accelerated_render(synfig::Context context,synfig::Surface *surface,int quality, const synfig::RendDesc &renddesc, synfig::ProgressCallback *cb)const;
 	synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;
-	virtual void set_time(synfig::IndependentContext context, synfig::Time time)const;
-	virtual void set_time(synfig::IndependentContext context, synfig::Time time, const synfig::Point &point)const;
-
 	virtual Vocab get_param_vocab()const;
 };
 

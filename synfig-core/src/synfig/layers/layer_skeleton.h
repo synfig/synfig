@@ -59,15 +59,12 @@ public:
 #endif
 
 	virtual bool set_param(const synfig::String & param, const synfig::ValueBase &value);
-
 	virtual synfig::ValueBase get_param(const synfig::String & param)const;
 
 	virtual Vocab get_param_vocab()const;
 
-	//! Updates the polygon data to match the parameters.
-	virtual void sync();
-	virtual void set_time(IndependentContext context, Time time)const;
-	virtual void set_time(IndependentContext context, Time time, const Point &pos)const;
+protected:
+	virtual void sync_vfunc();
 }; // END of class Layer_Skeleton
 
 }; // END of namespace synfig

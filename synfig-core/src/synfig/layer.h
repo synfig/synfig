@@ -305,7 +305,8 @@ private:
 	ValueBase param_z_depth;
 
 	//! \writeme
-	mutable Time dirty_time_;
+	mutable Time time_mark;
+	mutable Real outline_grow_mark;
 
 	//! Contains the name of the group that this layer belongs to
 	String group_;
@@ -545,20 +546,27 @@ public:
 	//! Get a list of all of the parameters and their values
 	virtual ParamList get_param_list()const;
 
+	Time get_time_mark() const { return time_mark; }
+	void set_time_mark(Time time) const { time_mark = time; }
+	void clear_time_mark() const { time_mark = Time::end(); }
+
+	Real get_outline_grow_mark() const { return outline_grow_mark; }
+	void set_outline_grow_mark(Real outline_grow) const { outline_grow_mark = outline_grow; }
+	void clear_outline_grow_mark() const { outline_grow_mark = 0.0; }
+
 	//! Sets the \a time for the Layer and those under it
 	/*!	\param context		Context iterator referring to next Layer.
 	**	\param time			writeme
 	**	\see Context::set_time()
 	*/
-	virtual void set_time(IndependentContext context, Time time)const;
+	void set_time(IndependentContext context, Time time)const;
 
-	//! Sets the \a time for the selected Layer and those under it for a specific \a point
+	//! Sets the \a outline_grow for the Layer and those under it
 	/*!	\param context		Context iterator referring to next Layer.
-	**	\param time			writeme
-	**	\param point		writeme
-	**	\see Context::set_time()
-	**	\todo \a point should be of the type <tt>const Point \&</tt> */
-	virtual void set_time(IndependentContext context, Time time, const Point &point)const;
+	**	\param outline_grow	writeme
+	**	\see Context::set_outline_grow()
+	*/
+	void set_outline_grow(IndependentContext context, Real outline_grow)const;
 
 	//! Gets the blend color of the Layer in the context at \a pos
 	/*!	\param context		Context iterator referring to next Layer.
@@ -587,7 +595,9 @@ public:
 	virtual bool accelerated_cairorender(Context context, cairo_t* cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 
 protected:
-	virtual rendering::Task::Handle build_rendering_task_vfunc(Context context)const;
+	virtual void set_time_vfunc(IndependentContext context, Time time) const;
+	virtual void set_outline_grow_vfunc(IndependentContext context, Real outline_grow) const;
+	virtual rendering::Task::Handle build_rendering_task_vfunc(Context context) const;
 
 public:
 	//! Returns rendering task for context
@@ -625,9 +635,6 @@ public:
 
 	//! Disconnects the parameter from any Value Node
 	virtual bool disconnect_dynamic_param(const String& param);
-
-	//! Retrieves the grow value from its parent canvas
-	Real get_parent_canvas_grow_value()const;
 
 	virtual void fill_sound_processor(SoundProcessor &soundProcessor) const;
 

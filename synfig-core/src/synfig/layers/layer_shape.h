@@ -74,6 +74,9 @@ private:
 	Intersector	*edge_table;
 	rendering::Contour::Handle contour;
 
+	mutable Time last_sync_time;
+	mutable Real last_sync_outline_grow;
+
 protected:
 	Layer_Shape(const Real &a = 1.0, const Color::BlendMethod m = Color::BLEND_COMPOSITE);
 
@@ -91,6 +94,10 @@ public:
 	void cubic_to(Real x, Real y, Real x1, Real y1, Real x2, Real y2);
 	void close();
 
+	void sync(bool force = false) const;
+	void force_sync() const { sync(true); }
+
+	virtual bool set_shape_param(const String & param, const synfig::ValueBase &value);
 	virtual bool set_param(const String & param, const synfig::ValueBase &value);
 	virtual ValueBase get_param(const String & param)const;
 
@@ -100,11 +107,10 @@ public:
 	virtual bool accelerated_render(Context context, Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 	virtual synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;
 	virtual Rect get_bounding_rect()const;
-	//This function translates Shape primitives to Cairo primitives. Currently only supported move_to and line_to.
-	bool shape_to_cairo(cairo_t* cr)const;
-	bool feather_cairo_surface(cairo_surface_t* surface, RendDesc renddesc, int quality)const;
 
 protected:
+	virtual void sync_vfunc();
+	virtual void set_time_vfunc(IndependentContext context, Time time)const;
 	virtual rendering::Task::Handle build_composite_task_vfunc(ContextParams context_params)const;
 
 private:

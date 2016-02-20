@@ -116,7 +116,7 @@ Noise::color_func(const Point &point, float pixel_size,Context /*context*/)const
 
 	int i;
 	Time time;
-	time=speed*curr_time;
+	time=speed*get_time_mark();
 	int smooth((!speed && smooth_ == (int)RandomNoise::SMOOTH_SPLINE) ? (int)RandomNoise::SMOOTH_FAST_SPLINE : smooth_);
 
 	float ftime(time);
@@ -193,20 +193,6 @@ inline float
 Noise::calc_supersample(const synfig::Point &/*x*/, float /*pw*/,float /*ph*/)const
 {
 	return 0.0f;
-}
-
-void
-Noise::set_time(synfig::IndependentContext context, synfig::Time t)const
-{
-	curr_time=t;
-	context.set_time(t);
-}
-
-void
-Noise::set_time(synfig::IndependentContext context, synfig::Time t, const synfig::Point &point)const
-{
-	curr_time=t;
-	context.set_time(t,point);
 }
 
 synfig::Layer::Handle

@@ -97,8 +97,7 @@ NoiseDistort::point_func(const Point &point)const
 	float y(point[1]/size[1]*(1<<detail));
 	
 	int i;
-	Time time;
-	time=speed*curr_time;
+	Time time = speed*get_time_mark();
 	int temp_smooth(smooth_);
 	int smooth((!speed && temp_smooth == (int)(RandomNoise::SMOOTH_SPLINE)) ? (int)(RandomNoise::SMOOTH_FAST_SPLINE) : temp_smooth);
 	
@@ -153,20 +152,6 @@ inline float
 NoiseDistort::calc_supersample(const synfig::Point &/*x*/, float /*pw*/,float /*ph*/)const
 {
 	return 0.0f;
-}
-
-void
-NoiseDistort::set_time(synfig::IndependentContext context, synfig::Time t)const
-{
-	curr_time=t;
-	context.set_time(t);
-}
-
-void
-NoiseDistort::set_time(synfig::IndependentContext context, synfig::Time t, const synfig::Point &point)const
-{
-	curr_time=t;
-	context.set_time(t,point);
 }
 
 synfig::Layer::Handle

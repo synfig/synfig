@@ -249,7 +249,7 @@ private:
 
 	//! Value to store temporarly the grow value for the child outline type layers
 	/*! \see get_grow_value set_grow_value */
-	Real grow_value;
+	Real outline_grow;
 
 
 	/*
@@ -639,9 +639,10 @@ public:
 
 	//! Stores the external canvas by its file name and the Canvas handle
 	void register_external_canvas(String file, Handle canvas);
-	//! Set/Get members for the grow value
-	Real get_grow_value()const;
-	void set_grow_value(Real x);
+
+	//! Set/Get members for the outline grow value
+	Real get_outline_grow()const;
+	void set_outline_grow(Real x);
 
 #if 0
 	void show_canvas_ancestry(String file, int line, String note)const;

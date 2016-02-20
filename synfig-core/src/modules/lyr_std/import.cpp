@@ -338,7 +338,7 @@ Import::get_param_vocab()const
 }
 
 void
-Import::set_time(IndependentContext context, Time time)const
+Import::set_time_vfunc(IndependentContext context, Time time)const
 {
 	Time time_offset=param_time_offset.get(Time());
 	switch (get_method())
@@ -371,42 +371,6 @@ Import::set_time(IndependentContext context, Time time)const
 	
 	}
 	context.set_time(time);
-}
-
-void
-Import::set_time(IndependentContext context, Time time, const Point &pos)const
-{
-	Time time_offset=param_time_offset.get(Time());
-	switch (get_method())
-	{
-		case SOFTWARE:
-			if(get_amount() && importer &&
-			   importer->is_animated())
-				importer->get_frame(surface,get_canvas()->rend_desc(),time+time_offset,trimmed,width,height,top,left);
-			break;
-		case OPENGL:
-			break;
-		case CAIRO:
-		{
-
-			if(get_amount() && cimporter &&
-			   cimporter->is_animated())
-			{
-				cairo_surface_t* cs;
-				cimporter->get_frame(cs, get_canvas()->rend_desc(), time+time_offset, trimmed, width, height, top, left);
-				if(cs)
-				{
-					csurface.set_cairo_surface(cs);
-					csurface.map_cairo_image();
-					cairo_surface_destroy(cs);
-				}
-			}
-			break;
-
-		}
-			
-	}
-	context.set_time(time,pos);
 }
 
 void

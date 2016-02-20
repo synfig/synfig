@@ -361,31 +361,7 @@ Plant::set_param(const String & param, const ValueBase &value)
 
 	return Layer_Composite::set_param(param,value);
 }
-/*
-void
-Plant::set_time(IndependentContext context, Time time)const
-{
-	if(needs_sync==true)
-	{
-		sync();
-		needs_sync_=false;
-	}
-	//const_cast<Plant*>(this)->sync();
-	context.set_time(time);
-}
 
-void
-Plant::set_time(IndependentContext context, Time time, Vector pos)const
-{
-	if(needs_sync==true)
-	{
-		sync();
-		needs_sync_=false;
-	}
-	//const_cast<Plant*>(this)->sync();
-	context.set_time(time,pos);
-}
-*/
 ValueBase
 Plant::get_param(const String& param)const
 {

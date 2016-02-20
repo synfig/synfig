@@ -98,7 +98,7 @@ Region::Region()
 }
 
 void
-Region::sync()
+Region::sync_vfunc()
 {
 	ValueBase bline=param_bline;
 	
@@ -171,15 +171,11 @@ Region::sync()
 	if(!looped)
 		vector_list.push_back(segment_list[0].p1);
 
-	clear();
-	add_polygon(vector_list);
-
-	/*close();
-	endpath();*/
+	set_stored_polygon(vector_list);
 }
 
 bool
-Region::set_param(const String & param, const ValueBase &value)
+Region::set_shape_param(const String & param, const ValueBase &value)
 {
 	if(param=="segment_list")
 	{
@@ -219,6 +215,15 @@ Region::set_param(const String & param, const ValueBase &value)
 		return true;
 	}
 	*/
+
+	// Skip polygon parameters
+	return Layer_Shape::set_shape_param(param, value);
+}
+
+bool
+Region::set_param(const String & param, const ValueBase &value)
+{
+	// Skip polygon parameters
 	return Layer_Shape::set_param(param,value);
 }
 
@@ -229,12 +234,14 @@ Region::get_param(const String& param)const
 	EXPORT_NAME();
 	EXPORT_VERSION();
 
+	// Skip polygon parameters
 	return Layer_Shape::get_param(param);
 }
 
 Layer::Vocab
 Region::get_param_vocab()const
 {
+	// Skip polygon parameters
 	Layer::Vocab ret(Layer_Shape::get_param_vocab());
 
 	ret.push_back(ParamDesc("bline")
@@ -245,18 +252,3 @@ Region::get_param_vocab()const
 
 	return ret;
 }
-
-void
-Region::set_time(IndependentContext context, Time time)const
-{
-	const_cast<Region*>(this)->sync();
-	context.set_time(time);
-}
-
-void
-Region::set_time(IndependentContext context, Time time, Vector pos)const
-{
-	const_cast<Region*>(this)->sync();
-	context.set_time(time,pos);
-}
-

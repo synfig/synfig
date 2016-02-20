@@ -106,9 +106,8 @@ Layer_FreeTime::get_param_vocab()const
 }
 
 void
-Layer_FreeTime::set_time(IndependentContext context, Time /* t */)const
+Layer_FreeTime::set_time_vfunc(IndependentContext context, Time /* t */)const
 {
-	Time time = param_time.get(Time());
-	context.set_time(time);
+	context.set_time( param_time.get(Time()) );
 }
 

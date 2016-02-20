@@ -819,8 +819,17 @@ Layer_Shape::clear()
 }
 
 bool
+Layer_Shape::set_shape_param(const String &/* param */, const synfig::ValueBase &/* value */)
+{
+	return false;
+}
+
+bool
 Layer_Shape::set_param(const String & param, const ValueBase &value)
 {
+	if (set_shape_param(param, value))
+		{ force_sync(); return true; }
+
 	IMPORT_VALUE_PLUS(param_color,
 	{
 		Color color=param_color.get(Color());
@@ -925,6 +934,8 @@ Layer_Shape::get_param_vocab()const
 synfig::Layer::Handle
 Layer_Shape::hit_check(synfig::Context context, const synfig::Point &p)const
 {
+	sync();
+
 	Color color=param_color.get(Color());
 	Point origin=param_origin.get(Point());
 	bool invert =param_invert.get(bool(true));
@@ -971,6 +982,8 @@ Layer_Shape::hit_check(synfig::Context context, const synfig::Point &p)const
 Color
 Layer_Shape::get_color(Context context, const Point &p)const
 {
+	sync();
+
 	Color color=param_color.get(Color());
 	Point origin=param_origin.get(Point());
 	bool invert =param_invert.get(bool(true));
@@ -1030,9 +1043,34 @@ void Layer_Shape::cubic_to(Real x, Real y, Real x1, Real y1, Real x2, Real y2)
 	edge_table->cubic_to(x,y,x1,y1,x2,y2);
 }
 
+void
+Layer_Shape::set_time_vfunc(IndependentContext context, Time time)const
+{
+	sync();
+	Layer_Composite::set_time_vfunc(context, time);
+}
+
+void
+Layer_Shape::sync(bool force) const
+{
+	if ( force
+	  || !last_sync_time.is_equal(get_time_mark())
+	  || fabs(last_sync_outline_grow - get_outline_grow_mark()) > 1e-8 )
+	{
+		last_sync_time = get_time_mark();
+		last_sync_outline_grow = get_outline_grow_mark();
+		const_cast<Layer_Shape*>(this)->sync_vfunc();
+	}
+}
+
+void
+Layer_Shape::sync_vfunc()
+	{ }
+
 bool
 Layer_Shape::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
+	sync();
 	Color color=param_color.get(Color());
 	Point origin=param_origin.get(Point());
 	bool invert =param_invert.get(bool(true));
@@ -1228,6 +1266,7 @@ Layer_Shape::render_shape(Surface *surface, bool useblend, const RendDesc &rendd
 rendering::Task::Handle
 Layer_Shape::build_composite_task_vfunc(ContextParams /*context_params*/)const
 {
+	sync();
 	rendering::Task::Handle task;
 
 	rendering::TaskContour::Handle task_contour(new rendering::TaskContour());
@@ -1257,6 +1296,7 @@ Layer_Shape::build_composite_task_vfunc(ContextParams /*context_params*/)const
 Rect
 Layer_Shape::get_bounding_rect()const
 {
+	sync();
 	Point origin=param_origin.get(Point());
 	bool invert =param_invert.get(bool(true));
 	Real feather=param_feather.get(Real());
