@@ -125,6 +125,9 @@ bool
 synfig::Module::Register(const String &module_name, ProgressCallback *callback)
 {
 #ifndef USE_CF_BUNDLES
+	// reset error string
+	lt_dlerror();
+
 	lt_dlhandle module;
 
 	if(callback)callback->task(strprintf(_("Attempting to register \"%s\""),module_name.c_str()));

@@ -99,10 +99,10 @@ public:
 		}
 		else
 		{
-			cerr<<task.c_str()<<endl;
+			synfig::info(task);
 		}
 
-		while(studio::App::events_pending())studio::App::iteration(false);
+		while(studio::App::events_pending()) studio::App::iteration(false);
 		return true;
 	}
 
@@ -113,12 +113,10 @@ public:
 			splash.tasklabel->set_label(_("ERROR:")+task);
 			splash.tasklabel->show();
 		}
-		else
-		{
-			cerr<<task.c_str()<<endl;
-		}
 
-		while(studio::App::events_pending())studio::App::iteration(false);
+		synfig::error(task);
+
+		while(studio::App::events_pending()) studio::App::iteration(false);
 		return true;
 	}
 
@@ -129,12 +127,10 @@ public:
 			splash.tasklabel->set_label(_("WARNING:")+task);
 			splash.tasklabel->show();
 		}
-		else
-		{
-			cerr<<task.c_str()<<endl;
-		}
 
-		while(studio::App::events_pending())studio::App::iteration(false);
+		synfig::warning(task);
+
+		while(studio::App::events_pending()) studio::App::iteration(false);
 		return true;
 	}
 
