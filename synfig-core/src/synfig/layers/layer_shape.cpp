@@ -53,6 +53,7 @@
 #include <synfig/valuenode.h>
 
 #include <synfig/rendering/common/task/taskblend.h>
+#include <synfig/rendering/common/task/taskblur.h>
 #include <synfig/rendering/common/task/taskcontour.h>
 #include <synfig/rendering/software/function/contour.h>
 
@@ -1227,9 +1228,7 @@ Layer_Shape::render_shape(Surface *surface, bool useblend, const RendDesc &rendd
 rendering::Task::Handle
 Layer_Shape::build_composite_task_vfunc(ContextParams /*context_params*/)const
 {
-	// TODO: origin
-	// TODO: blurtype
-	// TODO: feather
+	rendering::Task::Handle task;
 
 	rendering::TaskContour::Handle task_contour(new rendering::TaskContour());
 	// TODO: multithreading without this copying
@@ -1240,7 +1239,19 @@ Layer_Shape::build_composite_task_vfunc(ContextParams /*context_params*/)const
 	task_contour->contour->invert = param_invert.get(bool());
 	task_contour->contour->antialias = param_antialias.get(bool());
 	task_contour->contour->winding_style = (rendering::Contour::WindingStyle)param_winding_style.get(int());
-	return task_contour;
+	task = task_contour;
+
+	Real feather = param_feather.get(Real());
+	if (fabs(feather) > 1e-8)
+	{
+		rendering::TaskBlur::Handle task_blur(new rendering::TaskBlur());
+		task_blur->blur.size = Vector(feather, feather);
+		task_blur->blur.type = (rendering::Blur::Type)param_blurtype.get(int());
+		task_blur->sub_task() = task;
+		task = task_blur;
+	}
+
+	return task;
 }
 
 Rect
