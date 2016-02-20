@@ -66,11 +66,7 @@ private:
 	ValueBase param_outline_grow;
 	//! Parameter: (bool) Value that avoid hit check to go depth into the children.
 	ValueBase param_children_lock;
-	//! Parameter: Current time of the paste canvas layer. \see set_time
-	mutable ValueBase param_curr_time;
 
-	//! \todo writeme!
-	bool muck_with_time_;
 	//! Recursion depth counter.
 	mutable int depth;
 
@@ -135,9 +131,6 @@ public:
 	//! is called and it sets the parent of the canvas parameter to that canvas
 	//! if it is on line
 	virtual void on_canvas_set();
-	//! Sets muck_with_time.
-	//! \todo writeme!
-	void set_muck_with_time(bool x=false) { muck_with_time_=x; }
 
 	//! Gets the canvas parameter. It is called sub_canvas to avoid confusion
 	//! with the get_canvas from the Layer class.

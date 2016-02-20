@@ -1325,7 +1325,6 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 			etl::handle<Layer_PasteCanvas> new_layer =
 				etl::handle<Layer_PasteCanvas>::cast_dynamic( Layer::create(paste_canvas->get_name()) );
 			new_layer->set_optimized(true);
-			new_layer->set_muck_with_time(false);
 			if (motion_blurred)
 			{
 				Layer::DynamicParamList dynamic_param_list(paste_canvas->dynamic_param_list());
@@ -1336,7 +1335,6 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 			//param_list.erase("canvas");
 			new_layer->set_param_list(param_list);
 			new_layer->set_sub_canvas(sub_canvas);
-			new_layer->set_muck_with_time(true);
 			layer=new_layer;
 		}
 		else					// not a PasteCanvas - does it use blend method 'Straight'?

@@ -89,17 +89,13 @@ public:
 Layer_PasteCanvas::Layer_PasteCanvas():
 	param_origin(Point()),
 	param_transformation(Transformation()),
-	param_time_dilation (Real(1)),
-	param_time_offset (Time(0)),
+	param_time_dilation(Real(1)),
+	param_time_offset(Time(0)),
+	param_outline_grow(Real(0)),
+	param_children_lock(bool(false)),
 	depth(0),
 	extra_reference(false)
 {
-	param_children_lock=ValueBase(bool(false));
-	param_outline_grow=ValueBase(Real(0));
-	param_curr_time=ValueBase(Time::begin());
-
-	muck_with_time_=true;
-
 	SET_INTERPOLATION_DEFAULTS();
 	SET_STATIC_DEFAULTS();
 }
@@ -172,18 +168,6 @@ Layer_PasteCanvas::get_param_vocab()const
 		ret.back().hidden();
 	}
 
-	// optimize_layers() in canvas.cpp makes a new PasteCanvas layer
-	// and copies over the parameters of the old layer.  the
-	// 'curr_time' member wasn't being copied, so I've added it as a
-	// hidden, non critical parameter, and now it will be.  this
-	// allows a single exported subcanvas to be used more than once at
-	// a time, with different time offets in each.  see bug #1896557.
-	ret.push_back(ParamDesc("curr_time")
-		.set_local_name(_("Current Time"))
-		.not_critical()
-		.hidden()
-	);
-
 	return ret;
 }
 
@@ -224,7 +208,6 @@ Layer_PasteCanvas::set_param(const String & param, const ValueBase &value)
 
 	IMPORT_VALUE(param_children_lock);
 	IMPORT_VALUE(param_outline_grow);
-	IMPORT_VALUE(param_curr_time);
 	return Layer_Composite::set_param(param,value);
 }
 
@@ -235,7 +218,7 @@ Layer_PasteCanvas::childs_changed()
 void
 Layer_PasteCanvas::set_sub_canvas(etl::handle<synfig::Canvas> x)
 {
-	if(canvas && muck_with_time_)
+	if (canvas)
 		remove_child(canvas.get());
 
 	// if(canvas && (canvas->is_inline() || !get_canvas() || get_canvas()->get_root()!=canvas->get_root()))
@@ -248,14 +231,14 @@ Layer_PasteCanvas::set_sub_canvas(etl::handle<synfig::Canvas> x)
 
 	canvas=x;
 
-	if(canvas)
+	if (canvas)
 		childs_changed_connection=canvas->signal_changed().connect(
 			sigc::mem_fun(*this, &Layer_PasteCanvas::childs_changed) );
 
-	if(canvas && muck_with_time_)
+	if (canvas)
 		add_child(canvas.get());
 
-	if(canvas && (canvas->is_inline() || !get_canvas() || get_canvas()->get_root()!=canvas->get_root()))
+	if (canvas && (canvas->is_inline() || !get_canvas() || get_canvas()->get_root()!=canvas->get_root()))
 	{
 		canvas->ref();
 		extra_reference = true;
@@ -263,7 +246,7 @@ Layer_PasteCanvas::set_sub_canvas(etl::handle<synfig::Canvas> x)
 	else
 		extra_reference = false;
 
-	if(canvas)
+	if (canvas)
 		on_canvas_set();
 }
 
@@ -308,7 +291,6 @@ Layer_PasteCanvas::get_param(const String& param)const
 	EXPORT_VALUE(param_time_dilation);
 	EXPORT_VALUE(param_time_offset);
 	EXPORT_VALUE(param_children_lock);
-	EXPORT_VALUE(param_curr_time);
 	EXPORT_VALUE(param_outline_grow);
 
 	return Layer_Composite::get_param(param);
@@ -320,12 +302,18 @@ Layer_PasteCanvas::set_time(IndependentContext context, Time time)const
 	Real time_dilation=param_time_dilation.get(Real());
 	Time time_offset=param_time_offset.get(Time());
 
-	if(depth==MAX_DEPTH)return;depth_counter counter(depth);
-	param_curr_time.set(time);
+	if (depth==MAX_DEPTH) return;
+	depth_counter counter(depth);
 
 	context.set_time(time);
-	if(canvas)
+	if (canvas)
+	{
+		Real grow_value = get_parent_canvas_grow_value();
+		Real outline_grow = param_outline_grow.get(Real());
+		if (fabs(outline_grow) > 1e-8)
+			canvas->set_grow_value(grow_value + outline_grow);
 		canvas->set_time(time*time_dilation+time_offset);
+	}
 }
 
 void
@@ -411,11 +399,6 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 		get_summary_transformation().get_matrix()
 	  * renddesc.get_transformation_matrix() );
 
-	Real outline_grow=param_outline_grow.get(Real());
-	Real time_dilation=param_time_dilation.get(Real());
-	Time time_offset=param_time_offset.get(Time());
-	Time curr_time=param_curr_time.get(Time());
-
 	if(cb && !cb->amount_complete(0,10000)) return false;
 
 	if(depth==MAX_DEPTH)
@@ -444,12 +427,6 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 	else
 	if (!context.accelerated_render(surface,quality,renddesc,&stageone))
 		return false;
-
-	Real grow_value(get_parent_canvas_grow_value());
-	canvas->set_grow_value(outline_grow+grow_value);
-
-	if(muck_with_time_ && curr_time!=Time::begin() /*&& canvas->get_time()!=curr_time+time_offset*/)
-		canvas->set_time(curr_time*time_dilation+time_offset);
 
 	Color::BlendMethod blend_method(get_blend_method());
 	const Rect full_bounding_rect(canvasContext.get_full_bounding_rect());
@@ -576,11 +553,6 @@ Layer_PasteCanvas::accelerated_cairorender(Context context,cairo_t *cr, int qual
 {
 	Transformation transformation(get_summary_transformation());
 
-	Real outline_grow=param_outline_grow.get(Real());
-	Real time_dilation=param_time_dilation.get(Real());
-	Time time_offset=param_time_offset.get(Time());
-	Time curr_time=param_curr_time.get(Time());
-
 	if(cb && !cb->amount_complete(0,10000)) return false;
 
 	if(depth==MAX_DEPTH)
@@ -605,13 +577,6 @@ Layer_PasteCanvas::accelerated_cairorender(Context context,cairo_t *cr, int qual
 	ret=context.accelerated_cairorender(cr, quality, renddesc, &stagethree);
 	if(!ret)
 		return false;
-
-	Real grow_value(get_parent_canvas_grow_value());
-	canvas->set_grow_value(outline_grow+grow_value);
-
-	if(muck_with_time_ && curr_time!=Time::begin() /*&& canvas->get_time()!=curr_time+time_offset*/)
-		canvas->set_time(curr_time*time_dilation+time_offset);
-
 
 	// render the canvas to be pasted onto pastesurface
 	cairo_surface_t* pastesurface=cairo_surface_create_similar_image(cairo_get_target(cr), CAIRO_FORMAT_ARGB32, workdesc.get_w(), workdesc.get_h());
@@ -720,11 +685,6 @@ Layer_PasteCanvas::build_composite_task_vfunc(ContextParams context_params) cons
 {
 	if (!canvas)
 		return new rendering::TaskSurfaceEmpty();
-
-	Real grow_value = get_parent_canvas_grow_value();
-	Real outline_grow = param_outline_grow.get(Real());
-	if (fabs(outline_grow) > 1e-8)
-		canvas->set_grow_value(grow_value + outline_grow);
 
 	CanvasBase sub_queue;
 	Context sub_context;
