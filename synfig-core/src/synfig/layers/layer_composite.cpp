@@ -321,7 +321,8 @@ rendering::Task::Handle
 Layer_Composite::build_composite_task_vfunc(ContextParams /*context_params*/)const
 {
 	rendering::TaskLayer::Handle task = new rendering::TaskLayer();
-	task->layer = clone(NULL);
+	// TODO: This is not thread-safe
+	task->layer = const_cast<Layer_Composite*>(this);//clone(NULL);
 	return task;
 }
 
