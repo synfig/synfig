@@ -61,11 +61,17 @@ TaskLayerSW::run(RunParams & /* params */) const
 	synfig::Surface &target =
 		SurfaceSW::Handle::cast_dynamic( target_surface )->get_surface();
 
-	// TODO: target_rect
+	Vector upp = get_units_per_pixel();
+	Vector lt = get_source_rect_lt();
+	Vector rb = get_source_rect_rb();
+	lt[0] -= get_target_rect().minx*upp[0];
+	lt[1] -= get_target_rect().miny*upp[1];
+	rb[0] += (target.get_w() - get_target_rect().maxx)*upp[0];
+	rb[1] += (target.get_h() - get_target_rect().maxy)*upp[1];
 
 	RendDesc desc;
-	desc.set_tl(get_source_rect_lt());
-	desc.set_br(get_source_rect_rb());
+	desc.set_tl(lt);
+	desc.set_br(rb);
 	desc.set_wh(target.get_w(), target.get_h());
 	desc.set_antialias(1);
 

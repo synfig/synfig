@@ -48,6 +48,8 @@ public:
 	typedef etl::handle<TaskLayer> Handle;
 	Layer::Handle layer;
 	Task::Handle clone() const { return clone_pointer(this); }
+	virtual Rect calc_bounds() const
+		{ return layer ? layer->get_bounding_rect() : Rect::zero(); }
 };
 
 } /* end namespace rendering */
