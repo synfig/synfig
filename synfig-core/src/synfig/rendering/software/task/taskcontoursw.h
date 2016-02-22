@@ -55,8 +55,6 @@ public:
 	virtual void split(const RectInt &sub_target_rect);
 	virtual bool run(RunParams &params) const;
 
-	virtual Rect calc_bounds() const { return Rect::infinite(); }
-
 	virtual Color::BlendMethodFlags get_supported_blend_methods() const
 		{ return Color::BLEND_METHODS_ALL & ~Color::BLEND_METHODS_STRAIGHT; }
 };
