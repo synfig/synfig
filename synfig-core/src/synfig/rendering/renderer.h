@@ -98,6 +98,14 @@ private:
 	static void initialize_renderers();
 	static void deinitialize_renderers();
 
+	typedef std::pair<Surface::Handle, int>             DepTargetKey;
+	typedef std::pair<Task::Handle, Task::Set>          DepTargetValue;
+	typedef std::multimap<DepTargetKey, DepTargetValue> DepTargetMap;
+	typedef DepTargetMap::value_type                    DepTargetPair;
+
+	void find_deps(Task::Set &ref_full_deps, const DepTargetMap &target_map, const Task::Handle &task, const Task::Handle &sub_task) const;
+	void find_deps(const Task::List &list) const;
+
 public:
 	int get_max_simultaneous_threads() const;
 	void optimize(Task::List &list) const;

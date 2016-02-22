@@ -63,15 +63,15 @@ using namespace synfig;
 using namespace rendering;
 
 
-#ifdef _DEBUG
-#define DEBUG_TASK_LIST
+//#ifdef _DEBUG
+//#define DEBUG_TASK_LIST
 #define DEBUG_TASK_MEASURE
 //#define DEBUG_TASK_SURFACE
 //#define DEBUG_OPTIMIZATION
 //#define DEBUG_OPTIMIZATION_EACH_CHANGE
 //#define DEBUG_OPTIMIZATION_MEASURE
 //#define DEBUG_OPTIMIZATION_COUNTERS
-#endif
+//#endif
 
 
 /* === M A C R O S ========================================================= */
@@ -466,6 +466,59 @@ Renderer::optimize(Task::List &list) const
 		if (*j) ++j; else j = list.erase(j);
 }
 
+void
+Renderer::find_deps(Task::Set &ref_full_deps, const DepTargetMap &target_map, const Task::Handle &task, const Task::Handle &sub_task) const
+{
+	const int &index = task->index;
+	const RectInt &rect = sub_task->get_target_rect();
+	const Surface::Handle &surface = sub_task->target_surface;
+
+	DepTargetMap::const_reverse_iterator rbegin (target_map.upper_bound( DepTargetKey(surface, index) ));
+	DepTargetMap::const_reverse_iterator rend   (target_map.lower_bound( DepTargetKey(surface, 0)     ));
+	for(DepTargetMap::const_reverse_iterator ri = rbegin; ri != rend; ++ri)
+	{
+		const Task::Handle &prev_task = ri->second.first;
+		assert(prev_task);
+		assert(prev_task->target_surface == surface);
+
+		if ( ref_full_deps.count(prev_task) == 0
+		  && etl::intersect(rect, prev_task->get_target_rect()) )
+		{
+			ref_full_deps.insert(prev_task);
+			ref_full_deps.insert(ri->second.second.begin(), ri->second.second.end());
+			prev_task->back_deps.insert(task);
+			++task->deps_count;
+		}
+	}
+}
+
+void
+Renderer::find_deps(const Task::List &list) const
+{
+	DepTargetMap target_map;
+	for(Task::List::const_iterator i = list.begin(); i != list.end(); ++i)
+	{
+		assert((*i)->index == 0);
+		(*i)->index = i - list.begin() + 1;
+
+		(*i)->back_deps.clear();
+		(*i)->deps_count = 0;
+
+		if ((*i)->valid_target()) {
+			Task::Set full_deps;
+
+			for(Task::List::const_iterator j = (*i)->sub_tasks.begin(); j != (*i)->sub_tasks.end(); ++j)
+				if (*j && (*j)->valid_target())
+					find_deps(full_deps, target_map, *i, *j);
+			find_deps(full_deps, target_map, *i, *i);
+
+			target_map.insert( DepTargetPair(
+				DepTargetKey((*i)->target_surface, (*i)->index),
+				DepTargetValue(*i, full_deps) ));
+		}
+	}
+}
+
 bool
 Renderer::run(const Task::List &list) const
 {
@@ -502,35 +555,7 @@ Renderer::run(const Task::List &list) const
 		#ifdef DEBUG_TASK_MEASURE
 		debug::Measure t("find deps");
 		#endif
-
-		for(Task::List::const_iterator i = optimized_list.begin(); i != optimized_list.end(); ++i)
-		{
-			(*i)->back_deps.clear();
-			(*i)->deps_count = 0;
-		}
-
-		for(Task::List::const_iterator i = optimized_list.begin(); i != optimized_list.end(); ++i)
-		{
-			assert((*i)->index == 0);
-			(*i)->index = i - optimized_list.begin() + 1;
-			if ((*i)->valid_target())
-			{
-				for(Task::List::const_iterator j = (*i)->sub_tasks.begin(); j != (*i)->sub_tasks.end(); ++j)
-					if (*j && (*j)->valid_target())
-						for(Task::List::const_reverse_iterator rk(i); rk != optimized_list.rend(); ++rk)
-							if ( (*j)->target_surface == (*rk)->target_surface
-							  && (*rk)->valid_target()
-							  && etl::intersect((*j)->get_target_rect(), (*rk)->get_target_rect()) )
-								if ((*rk)->back_deps.insert(*i).second)
-									++(*i)->deps_count;
-				for(Task::List::const_reverse_iterator rk(i); rk != optimized_list.rend(); ++rk)
-					if ( (*i)->target_surface == (*rk)->target_surface
-					  && (*rk)->valid_target()
-					  && etl::intersect((*i)->get_target_rect(), (*rk)->get_target_rect()) )
-						if ((*rk)->back_deps.insert(*i).second)
-							++(*i)->deps_count;
-			}
-		}
+		find_deps(optimized_list);
 	}
 
 	#ifdef DEBUG_TASK_LIST
