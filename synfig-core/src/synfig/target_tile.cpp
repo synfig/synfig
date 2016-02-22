@@ -39,13 +39,15 @@
 #include "target_tile.h"
 
 #include "general.h"
-#include <synfig/localization.h>
+#include "localization.h"
 
 #include "canvas.h"
 #include "context.h"
 #include "render.h"
 #include "string.h"
 #include "surface.h"
+
+#include "debug/measure.h"
 
 #include "rendering/renderer.h"
 #include "rendering/software/surfacesw.h"
@@ -60,8 +62,14 @@ using namespace synfig;
 using namespace rendering;
 
 /* === M A C R O S ========================================================= */
+
 const unsigned int	DEF_TILE_WIDTH = TILE_SIZE / 2;
 const unsigned int	DEF_TILE_HEIGHT = TILE_SIZE / 2;
+
+#ifdef _DEBUG
+//#define DEBUG_MEASURE
+#endif
+
 
 // note that if this isn't defined then the rendering is incorrect for
 // the straight blend method since the optimize_layers() function in
@@ -123,6 +131,10 @@ Target_Tile::next_tile(RectInt& rect)
 bool
 synfig::Target_Tile::call_renderer(Context &context, const etl::handle<rendering::SurfaceSW> &surfacesw, int quality, const RendDesc &renddesc, ProgressCallback *cb)
 {
+	#ifdef DEBUG_MEASURE
+	debug::Measure t("Target_Tile::call_renderer");
+	#endif
+
 	surfacesw->set_size(renddesc.get_w(), renddesc.get_h());
 	if (get_engine().empty())
 	{
@@ -135,7 +147,14 @@ synfig::Target_Tile::call_renderer(Context &context, const etl::handle<rendering
 	}
 	else
 	{
-		rendering::Task::Handle task = context.build_rendering_task();
+		rendering::Task::Handle task;
+		{
+			#ifdef DEBUG_MEASURE
+			debug::Measure t("build rendering task");
+			#endif
+			task = context.build_rendering_task();
+		}
+
 		if (task)
 		{
 			rendering::Renderer::Handle renderer = rendering::Renderer::get_renderer(get_engine());
@@ -148,7 +167,13 @@ synfig::Target_Tile::call_renderer(Context &context, const etl::handle<rendering
 
 			rendering::Task::List list;
 			list.push_back(task);
-			renderer->run(list);
+
+			{
+				#ifdef DEBUG_MEASURE
+				debug::Measure t("run renderer");
+				#endif
+				renderer->run(list);
+			}
 		}
 	}
 	return true;
