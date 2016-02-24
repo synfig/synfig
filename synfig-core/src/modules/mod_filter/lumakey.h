@@ -31,7 +31,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/layers/layer_composite.h>
+#include <synfig/layers/layer_composite_fork.h>
 #include <synfig/color.h>
 #include <synfig/vector.h>
 
@@ -45,7 +45,7 @@ using namespace synfig;
 using namespace std;
 using namespace etl;
 
-class LumaKey : public Layer_Composite, public Layer_NoDeform
+class LumaKey : public Layer_CompositeFork, public Layer_NoDeform
 {
 	SYNFIG_LAYER_MODULE_EXT
 private:
@@ -68,6 +68,9 @@ public:
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 	virtual bool accelerated_cairorender(Context context, cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 	virtual bool reads_context()const { return true; }
+
+protected:
+	virtual rendering::Task::Handle build_rendering_task_vfunc(Context context) const;
 }; // END of class LumaKey
 
 /* === E N D =============================================================== */

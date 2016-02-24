@@ -22,6 +22,7 @@ RENDERING_COMMON_TASK_HH = \
 RENDERING_COMMON_TASK_CC = \
 	rendering/common/task/taskblend.cpp \
 	rendering/common/task/taskblur.cpp \
+	rendering/common/task/tasklayer.cpp \
 	rendering/common/task/taskpixelprocessor.cpp \
 	rendering/common/task/tasksurfaceconvert.cpp \
 	rendering/common/task/tasksurfacecreate.cpp \

@@ -1,11 +1,11 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/common/task/tasklayer.h
-**	\brief TaskLayer Header
+/*!	\file layer_rendering_task.h
+**	\brief Layer_RenderingTask Headers
 **
 **	$Id$
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2016 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -22,15 +22,13 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_RENDERING_TASKLAYER_H
-#define __SYNFIG_RENDERING_TASKLAYER_H
+#ifndef __SYNFIG_LAYER_RENDERING_TASK_H
+#define __SYNFIG_LAYER_RENDERING_TASK_H
 
 /* === H E A D E R S ======================================================= */
 
-#include "../../task.h"
-
 #include <synfig/layer.h>
-#include <synfig/layers/layer_rendering_task.h>
+#include <synfig/rendering/renderer.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -38,26 +36,25 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace synfig
-{
-namespace rendering
-{
+namespace synfig {
 
-class TaskLayer: public Task
+/*!	\class Layer_RenderingTask
+**	\brief Temporary class to support layers which yet not converted to new engine
+*/
+class Layer_RenderingTask : public Layer
 {
 public:
-	typedef etl::handle<TaskLayer> Handle;
+	const rendering::Renderer *renderer;
+	rendering::Task::Handle task;
 
-	Layer::Handle layer;
-	etl::handle<Layer_RenderingTask> sub_layer;
+	Layer_RenderingTask();
 
-	Task::Handle clone() const { return clone_pointer(this); }
-	virtual Rect calc_bounds() const;
-};
+	virtual Rect get_bounding_rect()const;
+	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
+}; // END of class Layer_RenderingTask
 
-} /* end namespace rendering */
-} /* end namespace synfig */
+}; // END of namespace synfig
 
-/* -- E N D ----------------------------------------------------------------- */
+/* === E N D =============================================================== */
 
 #endif

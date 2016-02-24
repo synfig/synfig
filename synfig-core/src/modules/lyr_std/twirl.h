@@ -29,7 +29,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/layers/layer_composite.h>
+#include <synfig/layers/layer_composite_fork.h>
 #include <synfig/color.h>
 #include <synfig/vector.h>
 #include <synfig/value.h>
@@ -51,7 +51,7 @@ namespace lyr_std
 
 class Twirl_Trans;
 
-class Twirl : public Layer_Composite
+class Twirl : public Layer_CompositeFork
 {
 	SYNFIG_LAYER_MODULE_EXT
 	friend class Twirl_Trans;
@@ -87,6 +87,9 @@ public:
 	virtual Vocab get_param_vocab()const;
 	virtual etl::handle<Transform> get_transform()const;
 	virtual bool reads_context()const { return true; }
+
+protected:
+	virtual rendering::Task::Handle build_rendering_task_vfunc(Context context) const;
 }; // END of class Twirl
 
 }; // END of namespace lyr_std

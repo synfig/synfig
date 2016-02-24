@@ -56,7 +56,7 @@ private:
 
 protected:
 	//! Default constructor. Not used directly.
-	Layer_Composite(Real amount=1.0, Color::BlendMethod blend_method=Color::BLEND_COMPOSITE);
+	explicit Layer_Composite(Real amount=1.0, Color::BlendMethod blend_method=Color::BLEND_COMPOSITE);
 
 	//! Converted blend is used to check if an old version of canvas
 	//! is used in the composition. Old Straight was used as new Composite
@@ -94,6 +94,7 @@ public:
 
 protected:
 	virtual rendering::Task::Handle build_composite_task_vfunc(ContextParams context_params)const;
+	virtual rendering::Task::Handle build_composite_fork_task_vfunc(ContextParams context_params, rendering::Task::Handle sub_task)const;
 	virtual rendering::Task::Handle build_rendering_task_vfunc(Context context)const;
 }; // END of class Layer_Composite
 

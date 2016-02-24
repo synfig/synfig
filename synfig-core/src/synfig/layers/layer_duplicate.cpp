@@ -65,7 +65,7 @@ SYNFIG_LAYER_SET_CVS_ID(Layer_Duplicate,"$Id$");
 /* === M E M B E R S ======================================================= */
 
 Layer_Duplicate::Layer_Duplicate():
-	Layer_Composite(1.0,Color::BLEND_COMPOSITE)
+	Layer_CompositeFork(1.0,Color::BLEND_COMPOSITE)
 {
 	LinkableValueNode* index_value_node = ValueNode_Duplicate::create(Real(3));
 	connect_dynamic_param("index", index_value_node);
@@ -256,3 +256,7 @@ Layer_Duplicate::accelerated_cairorender(Context context, cairo_t *cr, int quali
 	cairo_restore(cr);
 	return true;
 }
+
+rendering::Task::Handle
+Layer_Duplicate::build_rendering_task_vfunc(Context context) const
+	{ return Layer::build_rendering_task_vfunc(context); }

@@ -28,7 +28,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/layers/layer_composite.h>
+#include <synfig/layer.h>
 #include <synfig/vector.h>
 #include <synfig/rect.h>
 

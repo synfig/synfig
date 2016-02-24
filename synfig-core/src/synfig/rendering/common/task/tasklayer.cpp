@@ -1,11 +1,11 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/software/task/tasklayersw.cpp
-**	\brief TaskLayerSW
+/*!	\file synfig/rendering/common/task/tasklayer.cpp
+**	\brief TaskLayer
 **
 **	$Id$
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2016 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -35,11 +35,8 @@
 #include <signal.h>
 #endif
 
-#include "tasklayersw.h"
+#include "tasklayer.h"
 
-#include "../surfacesw.h"
-#include <synfig/guid.h>
-#include <synfig/canvas.h>
 #include <synfig/context.h>
 
 #endif
@@ -55,42 +52,15 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
-bool
-TaskLayerSW::run(RunParams &params) const
+Rect
+TaskLayer::calc_bounds() const
 {
-	assert(layer);
-
-	synfig::Surface &target =
-		SurfaceSW::Handle::cast_dynamic( target_surface )->get_surface();
-
-	Vector upp = get_units_per_pixel();
-	Vector lt = get_source_rect_lt();
-	Vector rb = get_source_rect_rb();
-	lt[0] -= get_target_rect().minx*upp[0];
-	lt[1] -= get_target_rect().miny*upp[1];
-	rb[0] += (target.get_w() - get_target_rect().maxx)*upp[0];
-	rb[1] += (target.get_h() - get_target_rect().maxy)*upp[1];
-
-	RendDesc desc;
-	desc.set_tl(lt);
-	desc.set_br(rb);
-	desc.set_wh(target.get_w(), target.get_h());
-	desc.set_antialias(1);
+	if (!layer) return Rect::zero();
 
 	CanvasBase fake_canvas_base;
-	fake_canvas_base.push_back(layer);
 	if (sub_layer) fake_canvas_base.push_back(sub_layer);
 	fake_canvas_base.push_back(Layer::Handle());
-
-	Context context(fake_canvas_base.begin(), ContextParams());
-	++context;
-
-	if (sub_layer) sub_layer->renderer = params.renderer;
-	if (sub_layer && sub_layer->task) sub_layer->task->update_bounds_recursive();
-	bool result = layer->accelerated_render(context, &target, 4, desc, NULL);
-	if (sub_layer) sub_layer->renderer = NULL;
-
-	return result;
+	return layer->get_full_bounding_rect(Context(fake_canvas_base.begin(), ContextParams()));
 }
 
 /* === E N T R Y P O I N T ================================================= */

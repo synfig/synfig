@@ -50,36 +50,84 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
+SurfaceSW::SurfaceSW():
+	own_surface(true), surface(new synfig::Surface())
+{ }
+
+SurfaceSW::SurfaceSW(const Surface &other):
+	own_surface(true), surface(new synfig::Surface())
+{
+	assign(other);
+}
+
+SurfaceSW::~SurfaceSW()
+{
+	if (!own_surface) reset_surface();
+	destroy();
+}
+
 bool
 SurfaceSW::create_vfunc()
 {
-	surface.set_wh(get_width(), get_height());
-	surface.clear();
+	surface->set_wh(get_width(), get_height());
+	surface->clear();
 	return true;
 }
 
 bool
 SurfaceSW::assign_vfunc(const rendering::Surface &surface)
 {
-	this->surface.set_wh(get_width(), get_height());
-	if (surface.get_pixels(&this->surface[0][0]))
+	this->surface->set_wh(get_width(), get_height());
+	if (surface.get_pixels(&(*this->surface)[0][0]))
 		return true;
-	this->surface.set_wh(0, 0);
+	this->surface->set_wh(0, 0);
 	return false;
 }
 
 void
 SurfaceSW::destroy_vfunc()
 {
-	this->surface.set_wh(0, 0);
+	assert(surface);
+	surface->set_wh(0, 0);
 }
 
 bool
 SurfaceSW::get_pixels_vfunc(Color *buffer) const
 {
-	memcpy(buffer, &this->surface[0][0], get_buffer_size());
+	assert(surface);
+	assert((int)surface->get_pitch() == (int)sizeof(Color)*get_width());
+	memcpy(buffer, &(*this->surface)[0][0], get_buffer_size());
 	return true;
 }
 
+void
+SurfaceSW::set_surface(synfig::Surface &surface, bool own_surface)
+{
+	this->own_surface = own_surface;
+
+	if (&surface == this->surface)
+		return;
+
+	unset_alternative();
+
+	this->surface = &surface;
+	assert(this->surface);
+	mark_as_created(false);
+	set_size(this->surface->get_w(), this->surface->get_h());
+	mark_as_created(this->surface->get_w() > 0 && this->surface->get_h() > 0);
+}
+
+void
+SurfaceSW::reset_surface()
+{
+	unset_alternative();
+	if (!own_surface)
+	{
+		own_surface = true;
+		surface = new synfig::Surface();
+	}
+	surface->set_wh(0, 0);
+	mark_as_created(false);
+}
 
 /* === E N T R Y P O I N T ================================================= */

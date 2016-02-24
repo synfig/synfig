@@ -68,7 +68,7 @@ SYNFIG_LAYER_SET_CVS_ID(NoiseDistort,"$Id$");
 /* === M E T H O D S ======================================================= */
 
 NoiseDistort::NoiseDistort():
-	Layer_Composite(1.0,Color::BLEND_STRAIGHT),
+	Layer_CompositeFork(1.0,Color::BLEND_STRAIGHT),
 	param_displacement(ValueBase(Vector(0.25,0.25))),
 	param_size(ValueBase(Vector(1,1))),
 	param_random(ValueBase(int(time(NULL)))),
@@ -334,3 +334,7 @@ NoiseDistort::accelerated_render(Context context,Surface *surface,int quality, c
 	return true;
 }
 */
+
+rendering::Task::Handle
+NoiseDistort::build_rendering_task_vfunc(Context context) const
+	{ return Layer::build_rendering_task_vfunc(context); }

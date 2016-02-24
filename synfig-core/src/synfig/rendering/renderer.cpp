@@ -63,7 +63,7 @@ using namespace synfig;
 using namespace rendering;
 
 
-//#ifdef _DEBUG
+#ifdef _DEBUG
 //#define DEBUG_TASK_LIST
 #define DEBUG_TASK_MEASURE
 //#define DEBUG_TASK_SURFACE
@@ -71,7 +71,7 @@ using namespace rendering;
 //#define DEBUG_OPTIMIZATION_EACH_CHANGE
 //#define DEBUG_OPTIMIZATION_MEASURE
 //#define DEBUG_OPTIMIZATION_COUNTERS
-//#endif
+#endif
 
 
 /* === M A C R O S ========================================================= */
@@ -584,7 +584,7 @@ Renderer::run(const Task::List &list) const
 				++task_cond->deps_count;
 		optimized_list.push_back(task_cond);
 
-		queue->enqueue(optimized_list, Task::RunParams());
+		queue->enqueue(optimized_list, Task::RunParams(this));
 
 		task_cond->cond->wait(mutex);
 		if (!task_cond->success) success = false;

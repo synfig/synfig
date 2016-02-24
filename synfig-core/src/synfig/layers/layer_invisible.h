@@ -53,7 +53,7 @@ public:
 
 protected:
 	virtual rendering::Task::Handle build_rendering_task_vfunc(Context context)const;
-}; // END of class Layer_Composite
+}; // END of class Layer_Invisible
 
 }; // END of namespace synfig
 

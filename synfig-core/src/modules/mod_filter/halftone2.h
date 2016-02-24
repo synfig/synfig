@@ -31,7 +31,7 @@
 
 #include <synfig/vector.h>
 #include <synfig/valuenode.h>
-#include <synfig/layers/layer_composite.h>
+#include <synfig/layers/layer_composite_fork.h>
 #include <synfig/time.h>
 #include <synfig/angle.h>
 #include "halftone.h"
@@ -57,7 +57,7 @@ using namespace synfig;
 using namespace std;
 using namespace etl;
 
-class Halftone2 : public Layer_Composite
+class Halftone2 : public Layer_CompositeFork
 {
 	SYNFIG_LAYER_MODULE_EXT
 
@@ -86,6 +86,9 @@ public:
 	Layer::Handle hit_check(Context context, const Point &point)const;
 	virtual Vocab get_param_vocab()const;
 	virtual bool reads_context()const { return true; }
+
+protected:
+	virtual rendering::Task::Handle build_rendering_task_vfunc(Context context) const;
 }; // END of class Halftone2
 
 /* === E N D =============================================================== */

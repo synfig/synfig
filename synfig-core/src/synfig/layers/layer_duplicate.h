@@ -29,14 +29,14 @@
 /* === H E A D E R S ======================================================= */
 
 #include <synfig/valuenodes/valuenode_duplicate.h>
-#include "layer_composite.h"
+#include "layer_composite_fork.h"
 #include <synfig/time.h>
 
 /* === S T R U C T S & C L A S S E S ======================================= */
 
 namespace synfig {
 
-class Layer_Duplicate : public synfig::Layer_Composite
+class Layer_Duplicate : public synfig::Layer_CompositeFork
 {
 	SYNFIG_LAYER_MODULE_EXT
 
@@ -58,6 +58,9 @@ public:
 	virtual bool accelerated_cairorender(Context context, cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 	virtual Vocab get_param_vocab()const;
 	virtual bool reads_context()const { return true; }
+
+protected:
+	virtual rendering::Task::Handle build_rendering_task_vfunc(Context context) const;
 }; // END of class Layer_Duplicate
 
 }; // END of namespace synfig

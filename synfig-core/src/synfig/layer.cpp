@@ -61,6 +61,7 @@
 
 #include "valuenodes/valuenode_const.h"
 
+#include "rendering/common/task/tasklayer.h"
 #include "rendering/common/task/tasksurfaceempty.h"
 
 #endif
@@ -862,10 +863,14 @@ Layer::accelerated_cairorender(Context context, cairo_t *cr, int /*quality*/, co
 }
 
 rendering::Task::Handle
-Layer::build_rendering_task_vfunc(Context /* context */)const
+Layer::build_rendering_task_vfunc(Context context)const
 {
-	warning("Rendering of %s not implemented yet", get_name().c_str());
-	return rendering::Task::Handle();
+	rendering::TaskLayer::Handle task = new rendering::TaskLayer();
+	// TODO: This is not thread-safe
+	task->layer = const_cast<Layer*>(this);//clone(NULL);
+	task->sub_layer = new Layer_RenderingTask();
+	task->sub_layer->task = context.build_rendering_task();
+	return task;
 }
 
 rendering::Task::Handle

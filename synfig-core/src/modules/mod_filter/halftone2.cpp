@@ -69,7 +69,7 @@ SYNFIG_LAYER_SET_CVS_ID(Halftone2,"$Id$");
 /* === M E T H O D S ======================================================= */
 
 Halftone2::Halftone2():
-	Layer_Composite(1.0,Color::BLEND_STRAIGHT),
+	Layer_CompositeFork(1.0,Color::BLEND_STRAIGHT),
 	param_color_dark(ValueBase(Color::black())),
 	param_color_light(ValueBase(Color::white()))
 {
@@ -355,5 +355,9 @@ Halftone2::accelerated_cairorender(Context context,cairo_t *cr,int quality, cons
 	
 	return true;
 }
+
+rendering::Task::Handle
+Halftone2::build_rendering_task_vfunc(Context context) const
+	{ return Layer::build_rendering_task_vfunc(context); }
 
 ///

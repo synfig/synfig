@@ -31,7 +31,7 @@
 
 #include <synfig/vector.h>
 #include <synfig/valuenode.h>
-#include <synfig/layers/layer_composite.h>
+#include <synfig/layers/layer_composite_fork.h>
 #include <synfig/gradient.h>
 #include <synfig/time.h>
 #include "random_noise.h"
@@ -42,7 +42,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-class NoiseDistort : public synfig::Layer_Composite
+class NoiseDistort : public synfig::Layer_CompositeFork
 {
 	SYNFIG_LAYER_MODULE_EXT
 
@@ -81,6 +81,9 @@ public:
 	virtual synfig::Rect get_bounding_rect(synfig::Context context)const;
 	virtual Vocab get_param_vocab()const;
 	virtual bool reads_context()const { return true; }
+
+protected:
+	virtual synfig::rendering::Task::Handle build_rendering_task_vfunc(synfig::Context context) const;
 }; // EOF of class NoiseDistort
 
 /* === E N D =============================================================== */

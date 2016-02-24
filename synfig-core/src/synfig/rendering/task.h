@@ -46,6 +46,8 @@ namespace synfig
 namespace rendering
 {
 
+class Renderer;
+
 class Task: public etl::shared_object
 {
 private:
@@ -56,7 +58,11 @@ public:
 	typedef std::vector<Handle> List;
 	typedef std::set<Handle> Set;
 
-	struct RunParams { };
+	struct RunParams {
+		const Renderer *renderer;
+		RunParams(): renderer(NULL) { }
+		explicit RunParams(const Renderer *renderer): renderer(renderer) { }
+	};
 
 private:
 	mutable Rect bounds;
@@ -114,6 +120,7 @@ public:
 	virtual Rect calc_bounds() const { return Rect::infinite(); }
 	//! use OptimizerCalcBounds and to avoid multiple calculation of bounds of same task
 	void update_bounds() const { bounds = calc_bounds(); }
+	void update_bounds_recursive() const;
 	const Rect& get_bounds() const { return bounds; }
 
 

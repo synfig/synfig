@@ -88,7 +88,7 @@ inline void clamp(synfig::Vector &v)
 }
 
 Blur_Layer::Blur_Layer():
-	Layer_Composite(1.0,Color::BLEND_STRAIGHT),
+	Layer_CompositeFork(1.0,Color::BLEND_STRAIGHT),
 	param_size(ValueBase(Point(0.1,0.1))),
 	param_type(ValueBase(int(Blur::FASTGAUSSIAN)))
 {
@@ -476,23 +476,15 @@ Blur_Layer::get_full_bounding_rect(Context context)const
 }
 
 rendering::Task::Handle
-Blur_Layer::build_rendering_task_vfunc(Context context)const
+Blur_Layer::build_composite_fork_task_vfunc(ContextParams /* context_params */, rendering::Task::Handle sub_task)const
 {
 	Vector size = param_size.get(Point());
 	rendering::Blur::Type type = (rendering::Blur::Type)param_type.get(int());
-	Real amount = get_amount() * Context::z_depth_visibility(context.get_params(), *this);
 
 	rendering::TaskBlur::Handle task_blur(new rendering::TaskBlur());
 	task_blur->blur.size = size;
 	task_blur->blur.type = type;
-	task_blur->sub_task() = context.build_rendering_task();
-
-	rendering::TaskBlend::Handle task_blend(new rendering::TaskBlend());
-	task_blend->amount = amount;
-	task_blend->blend_method = get_blend_method();
-	task_blend->sub_task_a() = task_blur->sub_task()->clone_recursive();
-	task_blend->sub_task_b() = task_blur;
-	return task_blend;
+	task_blur->sub_task() = sub_task->clone_recursive();
 
 	return task_blur;
 }

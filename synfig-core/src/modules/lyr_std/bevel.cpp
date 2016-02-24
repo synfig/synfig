@@ -85,7 +85,7 @@ inline void clamp(Vector &v)
 }
 
 Layer_Bevel::Layer_Bevel():
-	Layer_Composite	(0.75,Color::BLEND_ONTO),
+	Layer_CompositeFork(0.75,Color::BLEND_ONTO),
 	param_type(ValueBase(int(Blur::FASTGAUSSIAN))),
 	param_softness (ValueBase(Real(0.1))),
 	param_color1(ValueBase(Color::white())),
@@ -685,3 +685,7 @@ Layer_Bevel::get_full_bounding_rect(Context context)const
 
 	return bounds;
 }
+
+rendering::Task::Handle
+Layer_Bevel::build_rendering_task_vfunc(Context context) const
+	{ return Layer::build_rendering_task_vfunc(context); }

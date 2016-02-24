@@ -70,7 +70,7 @@ SYNFIG_LAYER_SET_CVS_ID(Twirl,"$Id$");
 /* === E N T R Y P O I N T ================================================= */
 
 Twirl::Twirl():
-	Layer_Composite(1.0,Color::BLEND_STRAIGHT),
+	Layer_CompositeFork(1.0,Color::BLEND_STRAIGHT),
 	param_center(ValueBase(Point(0,0))),
 	param_radius(ValueBase(Real(1.0))),
 	param_rotations(ValueBase(Angle::zero())),
@@ -271,3 +271,7 @@ Twirl::accelerated_render(Context context,Surface *surface,int quality, const Re
 	return true;
 }
 */
+
+rendering::Task::Handle
+Twirl::build_rendering_task_vfunc(Context context) const
+	{ return Layer::build_rendering_task_vfunc(context); }

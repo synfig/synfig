@@ -69,7 +69,7 @@ SYNFIG_LAYER_SET_CVS_ID(LumaKey,"$Id$");
 /* === M E T H O D S ======================================================= */
 
 LumaKey::LumaKey():
-	Layer_Composite	(1.0,Color::BLEND_STRAIGHT)
+	Layer_CompositeFork(1.0,Color::BLEND_STRAIGHT)
 {
 	set_blend_method(Color::BLEND_STRAIGHT);
 
@@ -245,3 +245,7 @@ LumaKey::get_bounding_rect(Context context)const
 
 	return context.get_full_bounding_rect();
 }
+
+rendering::Task::Handle
+LumaKey::build_rendering_task_vfunc(Context context) const
+	{ return Layer::build_rendering_task_vfunc(context); }

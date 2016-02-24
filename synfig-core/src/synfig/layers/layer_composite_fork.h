@@ -1,11 +1,11 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/common/task/tasklayer.h
-**	\brief TaskLayer Header
+/*!	\file layer_composite_fork.h
+**	\brief Layer_CompositeFork Class Headers
 **
 **	$Id$
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2016 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -22,15 +22,12 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_RENDERING_TASKLAYER_H
-#define __SYNFIG_RENDERING_TASKLAYER_H
+#ifndef __SYNFIG_LAYER_COMPOSITE_FORK_H
+#define __SYNFIG_LAYER_COMPOSITE_FORK_H
 
 /* === H E A D E R S ======================================================= */
 
-#include "../../task.h"
-
-#include <synfig/layer.h>
-#include <synfig/layers/layer_rendering_task.h>
+#include "layer_composite.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -38,26 +35,21 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace synfig
+namespace synfig {
+
+/*!	\class Layer_CompositeFork
+**	\brief Base class for composite layers which also
+**	 do manipulations with context
+*/
+class Layer_CompositeFork : public Layer_Composite
 {
-namespace rendering
-{
+protected:
+	//! Default constructor. Not used directly.
+	explicit Layer_CompositeFork(Real amount=1.0, Color::BlendMethod blend_method=Color::BLEND_COMPOSITE);
+}; // END of class Layer_Invisible
 
-class TaskLayer: public Task
-{
-public:
-	typedef etl::handle<TaskLayer> Handle;
+}; // END of namespace synfig
 
-	Layer::Handle layer;
-	etl::handle<Layer_RenderingTask> sub_layer;
-
-	Task::Handle clone() const { return clone_pointer(this); }
-	virtual Rect calc_bounds() const;
-};
-
-} /* end namespace rendering */
-} /* end namespace synfig */
-
-/* -- E N D ----------------------------------------------------------------- */
+/* === E N D =============================================================== */
 
 #endif

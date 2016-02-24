@@ -308,3 +308,7 @@ Layer_MeshTransform::accelerated_render(Context context,Surface *surface,int qua
 
 	return true;
 }
+
+rendering::Task::Handle
+Layer_MeshTransform::build_rendering_task_vfunc(Context context) const
+	{ return Layer::build_rendering_task_vfunc(context); }

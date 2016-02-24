@@ -27,7 +27,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include "layer_composite.h"
+#include "layer_composite_fork.h"
 #include <synfig/mesh.h>
 #include <synfig/polygon.h>
 
@@ -39,7 +39,7 @@
 
 namespace synfig {
 class Mesh_Trans;
-class Layer_MeshTransform : public Layer_Composite
+class Layer_MeshTransform : public Layer_CompositeFork
 {
 protected:
 	friend class Mesh_Trans;
@@ -69,6 +69,9 @@ public:
 	virtual Rect get_full_bounding_rect(Context context)const;
 	virtual etl::handle<synfig::Transform> get_transform()const;
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
+
+protected:
+	virtual rendering::Task::Handle build_rendering_task_vfunc(Context context) const;
 }; // END of class Layer_MeshTransform
 
 }; // END of namespace synfig

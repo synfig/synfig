@@ -216,6 +216,13 @@ Task::clone_recursive() const {
 	return task;
 }
 
+void
+Task::update_bounds_recursive() const
+{
+	for(List::const_iterator i = sub_tasks.begin(); i != sub_tasks.end(); ++i)
+		if (*i) (*i)->update_bounds_recursive();
+	update_bounds();
+}
 
 
 /* === E N T R Y P O I N T ================================================= */

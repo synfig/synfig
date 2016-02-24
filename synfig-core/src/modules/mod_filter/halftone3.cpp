@@ -72,7 +72,7 @@ SYNFIG_LAYER_SET_CVS_ID(Halftone3,"$Id$");
 /* === M E T H O D S ======================================================= */
 
 Halftone3::Halftone3():
-Layer_Composite(1.0,Color::BLEND_STRAIGHT)
+Layer_CompositeFork(1.0,Color::BLEND_STRAIGHT)
 {
 	param_size=ValueBase(synfig::Vector(0.25,0.25));
 	param_type=ValueBase(int(TYPE_SYMMETRIC));
@@ -533,5 +533,9 @@ Halftone3::accelerated_cairorender(Context context, cairo_t *cr, int quality, co
 	
 	return true;
 }
+
+rendering::Task::Handle
+Halftone3::build_rendering_task_vfunc(Context context) const
+	{ return Layer::build_rendering_task_vfunc(context); }
 
 ////

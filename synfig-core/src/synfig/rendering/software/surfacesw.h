@@ -48,7 +48,8 @@ public:
 	typedef etl::handle<SurfaceSW> Handle;
 
 private:
-	synfig::Surface surface;
+	bool own_surface;
+	synfig::Surface *surface;
 
 protected:
 	virtual bool create_vfunc();
@@ -57,12 +58,17 @@ protected:
 	virtual bool get_pixels_vfunc(Color *buffer) const;
 
 public:
-	SurfaceSW() { }
-	explicit SurfaceSW(const Surface &other) { assign(other); }
-	~SurfaceSW() { destroy(); }
+	SurfaceSW();
+	explicit SurfaceSW(const Surface &other);
+	~SurfaceSW();
 
-	const synfig::Surface& get_surface() const { return surface; }
-	synfig::Surface& get_surface() { return surface; }
+	const synfig::Surface& get_surface() const { return *surface; }
+	synfig::Surface& get_surface() { return *surface; }
+
+	bool is_own_surface() const { return own_surface; }
+
+	void set_surface(synfig::Surface &surface, bool own_surface = false);
+	void reset_surface();
 };
 
 } /* end namespace rendering */

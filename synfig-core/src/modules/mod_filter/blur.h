@@ -29,7 +29,7 @@
 
 /* -- H E A D E R S --------------------------------------------------------- */
 
-#include <synfig/layers/layer_composite.h>
+#include <synfig/layers/layer_composite_fork.h>
 #include <synfig/color.h>
 #include <synfig/vector.h>
 #include <synfig/blur.h>
@@ -38,7 +38,7 @@ using namespace synfig;
 using namespace std;
 using namespace etl;
 
-class Blur_Layer : public Layer_Composite
+class Blur_Layer : public Layer_CompositeFork
 {
 	SYNFIG_LAYER_MODULE_EXT
 private:
@@ -63,7 +63,9 @@ public:
 	virtual Vocab get_param_vocab()const;
 
 	virtual bool reads_context()const { return true; }
-	virtual rendering::Task::Handle build_rendering_task_vfunc(Context context)const;
+
+protected:
+	virtual rendering::Task::Handle build_composite_fork_task_vfunc(ContextParams context_params, rendering::Task::Handle sub_task)const;
 }; // END of class Blur
 
 /* -- E X T E R N S --------------------------------------------------------- */

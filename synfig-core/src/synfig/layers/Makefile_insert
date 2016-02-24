@@ -1,6 +1,7 @@
 LAYERS_HH = \
 	layers/layer_bitmap.h \
 	layers/layer_composite.h \
+	layers/layer_composite_fork.h \
 	layers/layer_duplicate.h \
 	layers/layer_group.h \
 	layers/layer_invisible.h \
@@ -9,6 +10,7 @@ LAYERS_HH = \
 	layers/layer_motionblur.h \
 	layers/layer_pastecanvas.h \
 	layers/layer_polygon.h \
+	layers/layer_rendering_task.h \
 	layers/layer_shape.h \
 	layers/layer_solidcolor.h \
 	layers/layer_sound.h \
@@ -19,6 +21,7 @@ LAYERS_HH = \
 LAYERS_CC = \
 	layers/layer_bitmap.cpp \
 	layers/layer_composite.cpp \
+	layers/layer_composite_fork.cpp \
 	layers/layer_duplicate.cpp \
 	layers/layer_group.cpp \
 	layers/layer_invisible.cpp \
@@ -27,6 +30,7 @@ LAYERS_CC = \
 	layers/layer_motionblur.cpp \
 	layers/layer_pastecanvas.cpp \
 	layers/layer_polygon.cpp \
+	layers/layer_rendering_task.cpp \
 	layers/layer_shape.cpp \
 	layers/layer_solidcolor.cpp \
 	layers/layer_sound.cpp \

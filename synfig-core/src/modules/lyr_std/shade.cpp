@@ -84,7 +84,7 @@ inline void clamp(Vector &v)
 }
 
 Layer_Shade::Layer_Shade():
-	Layer_Composite	(0.75,Color::BLEND_BEHIND),
+	Layer_CompositeFork(0.75,Color::BLEND_BEHIND),
 	param_size(ValueBase(Vector(0.1,0.1))),
 	param_type(ValueBase(int(Blur::FASTGAUSSIAN))),
 	param_color(ValueBase(Color::black())),
@@ -678,3 +678,7 @@ Layer_Shade::get_full_bounding_rect(Context context)const
 
 	return bounds|under;
 }
+
+rendering::Task::Handle
+Layer_Shade::build_rendering_task_vfunc(Context context) const
+	{ return Layer::build_rendering_task_vfunc(context); }

@@ -29,7 +29,7 @@
 
 /* -- H E A D E R S --------------------------------------------------------- */
 
-#include <synfig/layers/layer_composite.h>
+#include <synfig/layers/layer_composite_fork.h>
 #include <synfig/color.h>
 #include <synfig/vector.h>
 #include <synfig/blur.h>
@@ -42,7 +42,7 @@ namespace modules
 namespace lyr_std
 {
 
-class Layer_Bevel : public Layer_Composite
+class Layer_Bevel : public Layer_CompositeFork
 {
 	SYNFIG_LAYER_MODULE_EXT
 private:
@@ -83,6 +83,9 @@ public:
 	virtual Rect get_full_bounding_rect(Context context)const;
 	virtual Vocab get_param_vocab()const;
 	virtual bool reads_context()const { return true; }
+
+protected:
+	virtual rendering::Task::Handle build_rendering_task_vfunc(Context context) const;
 }; // END of class Layer_Bevel
 
 }; // END of namespace lyr_std

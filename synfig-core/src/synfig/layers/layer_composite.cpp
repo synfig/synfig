@@ -327,12 +327,18 @@ Layer_Composite::build_composite_task_vfunc(ContextParams /*context_params*/)con
 }
 
 rendering::Task::Handle
+Layer_Composite::build_composite_fork_task_vfunc(ContextParams context_params, rendering::Task::Handle /* sub_task */)const
+{
+	return build_composite_task_vfunc(context_params);
+}
+
+rendering::Task::Handle
 Layer_Composite::build_rendering_task_vfunc(Context context)const
 {
 	rendering::TaskBlend::Handle task_blend(new rendering::TaskBlend());
 	task_blend->amount = get_amount() * Context::z_depth_visibility(context.get_params(), *this);
 	task_blend->blend_method = get_blend_method();
 	task_blend->sub_task_a() = context.build_rendering_task();
-	task_blend->sub_task_b() = build_composite_task_vfunc(context.get_params());
+	task_blend->sub_task_b() = build_composite_fork_task_vfunc(context.get_params(), task_blend->sub_task_a());
 	return task_blend;
 }

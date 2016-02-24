@@ -65,7 +65,7 @@ SYNFIG_LAYER_SET_CVS_ID(Layer_MotionBlur,"$Id$");
 /* === M E M B E R S ======================================================= */
 
 Layer_MotionBlur::Layer_MotionBlur():
-	Layer_Composite         (1.0,Color::BLEND_STRAIGHT),
+	Layer_CompositeFork     (1.0,Color::BLEND_STRAIGHT),
 	param_aperture          (ValueBase(Time(0))),
 	param_subsamples_factor (ValueBase(Real(1.0))),
 	param_subsampling_type  (ValueBase(int(SUBSAMPLING_HYPERBOLIC))),
@@ -401,3 +401,6 @@ Layer_MotionBlur::accelerated_cairorender(Context context, cairo_t *cr ,int qual
 	return true;
 }
 
+rendering::Task::Handle
+Layer_MotionBlur::build_rendering_task_vfunc(Context context) const
+	{ return Layer::build_rendering_task_vfunc(context); }
