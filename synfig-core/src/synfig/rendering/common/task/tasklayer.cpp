@@ -58,9 +58,14 @@ TaskLayer::calc_bounds() const
 	if (!layer) return Rect::zero();
 
 	CanvasBase fake_canvas_base;
+	fake_canvas_base.push_back(layer);
 	if (sub_layer) fake_canvas_base.push_back(sub_layer);
 	fake_canvas_base.push_back(Layer::Handle());
-	return layer->get_full_bounding_rect(Context(fake_canvas_base.begin(), ContextParams()));
+
+	Context context(fake_canvas_base.begin(), ContextParams());
+
+	if (sub_layer && sub_layer->task) sub_layer->task->update_bounds_recursive();
+	return layer->get_full_bounding_rect(context);
 }
 
 /* === E N T R Y P O I N T ================================================= */

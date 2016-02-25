@@ -86,7 +86,6 @@ TaskLayerSW::run(RunParams &params) const
 	++context;
 
 	if (sub_layer) sub_layer->renderer = params.renderer;
-	if (sub_layer && sub_layer->task) sub_layer->task->update_bounds_recursive();
 	bool result = layer->accelerated_render(context, &target, 4, desc, NULL);
 	if (sub_layer) sub_layer->renderer = NULL;
 
