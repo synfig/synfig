@@ -210,6 +210,6 @@ Layer_Skeleton::sync_vfunc()
 			if (j++ >= segments_count1) break; else angle += segment_angle1;
 		}
 
- 		set_stored_polygon(list);
+ 		add_polygon(list);
  	}
 }
