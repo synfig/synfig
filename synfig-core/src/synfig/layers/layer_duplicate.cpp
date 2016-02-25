@@ -45,6 +45,9 @@
 #include <synfig/value.h>
 #include <synfig/valuenode.h>
 
+#include <synfig/rendering/common/task/tasksurfaceempty.h>
+#include <synfig/rendering/common/task/taskblend.h>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -190,9 +193,7 @@ Layer_Duplicate::accelerated_render(Context context,Surface *surface,int quality
 	do
 	{
 		subimagecb=SuperCallback(cb,i*(5000/steps),(i+1)*(5000/steps),5000);
-		// \todo can we force a re-evaluation of all the variables without changing the time twice?
-		context.set_time(time_cur+1);
-		context.set_time(time_cur);
+		context.set_time(time_cur, true);
 		if(!context.accelerated_render(&tmp,quality,renddesc,&subimagecb)) return false;
 
 		Surface::alpha_pen apen(surface->begin());
@@ -239,16 +240,14 @@ Layer_Duplicate::accelerated_cairorender(Context context, cairo_t *cr, int quali
 	do
 	{
 		subimagecb=SuperCallback(cb,i*(5000/steps),(i+1)*(5000/steps),5000);
-		// \todo can we force a re-evaluation of all the variables without changing the time twice?
-		context.set_time(time_cur+1);
-		context.set_time(time_cur);
+		context.set_time(time_cur, true);
 		cairo_push_group(cr);
 		if(!context.accelerated_cairorender(cr,quality,renddesc,&subimagecb))
 		{
 			cairo_pop_group(cr);
 			return false;
 		}
-		cairo_pop_group_to_source(cr);;
+		cairo_pop_group_to_source(cr);
 		// \todo have a checkbox allowing use of 'behind' to reverse the order?
 		cairo_paint_with_alpha_operator(cr, get_amount(), i ? blend_method : Color::BLEND_COMPOSITE);
 		i++;
@@ -259,4 +258,32 @@ Layer_Duplicate::accelerated_cairorender(Context context, cairo_t *cr, int quali
 
 rendering::Task::Handle
 Layer_Duplicate::build_rendering_task_vfunc(Context context) const
-	{ return Layer::build_rendering_task_vfunc(context); }
+{
+	handle<ValueNode_Duplicate> duplicate_param = get_duplicate_param();
+	if (!duplicate_param)
+		return context.build_rendering_task();
+
+	Time time_cur = get_time_mark();
+
+	ColorReal amount = get_amount() * Context::z_depth_visibility(context.get_params(), *this);
+	Color::BlendMethod blend_method = get_blend_method();
+
+	rendering::Task::Handle task = new rendering::TaskSurfaceEmpty();
+
+	Mutex::Lock lock(mutex);
+	duplicate_param->reset_index(time_cur);
+	do
+	{
+		context.set_time(time_cur, true);
+
+		rendering::TaskBlend::Handle task_blend(new rendering::TaskBlend());
+		task_blend->amount = amount;
+		task_blend->blend_method = blend_method;
+		task_blend->sub_task_a() = task;
+		task_blend->sub_task_b() = context.build_rendering_task();
+		task = task_blend;
+	}
+	while (duplicate_param->step(time_cur));
+
+	return task;
+}

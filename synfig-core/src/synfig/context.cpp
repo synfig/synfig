@@ -94,13 +94,13 @@ _print_profile_report()
 
 
 void
-IndependentContext::set_time(Time time)const
+IndependentContext::set_time(Time time, bool force)const
 {
 	IndependentContext context(*this);
 	while(*context)
 	{
 		if ( (*context)->active() &&
-		    !(*context)->get_time_mark().is_equal(time) )
+		    (force || !(*context)->get_time_mark().is_equal(time)) )
 			break;
 		++context;
 	}
