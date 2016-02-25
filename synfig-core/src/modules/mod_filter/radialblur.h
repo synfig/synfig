@@ -32,7 +32,7 @@
 
 #include <synfig/vector.h>
 #include <synfig/angle.h>
-#include <synfig/layers/layer_composite.h>
+#include <synfig/layers/layer_composite_fork.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -44,7 +44,7 @@ using namespace synfig;
 using namespace std;
 using namespace etl;
 
-class RadialBlur : public Layer_Composite
+class RadialBlur : public Layer_CompositeFork
 {
 	SYNFIG_LAYER_MODULE_EXT
 	friend class RadialBlur_Trans;
@@ -67,6 +67,9 @@ public:
 	virtual bool accelerated_cairorender(Context context, cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 	virtual Vocab get_param_vocab()const;
 	virtual bool reads_context()const { return true; }
+
+protected:
+	virtual rendering::Task::Handle build_rendering_task_vfunc(Context context) const;
 }; // END of class RadialBlur
 
 /* === E N D =============================================================== */

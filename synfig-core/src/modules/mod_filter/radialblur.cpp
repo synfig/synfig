@@ -68,7 +68,7 @@ SYNFIG_LAYER_SET_CVS_ID(RadialBlur,"$Id$");
 /* === E N T R Y P O I N T ================================================= */
 
 RadialBlur::RadialBlur():
-	Layer_Composite(1.0,Color::BLEND_STRAIGHT),
+	Layer_CompositeFork(1.0,Color::BLEND_STRAIGHT),
 	param_origin (ValueBase(Vector(0,0))),
 	param_size(ValueBase(Real(0.2))),
 	param_fade_out(ValueBase(false))
@@ -166,11 +166,16 @@ RadialBlur::accelerated_render(Context context,Surface *surface,int quality, con
 		for(x=0,pos[0]=tl[0];x<w;x+=(w-1),pos[0]+=pw*(w-1))
 			rect.expand((pos-origin)*(1.0f-size) + origin);
 
+	Vector stl = rect.get_min();
+	Vector sbr = rect.get_max();
+	if (br[0] < tl[0]) swap(stl[0], sbr[0]);
+	if (br[1] < tl[1]) swap(stl[1], sbr[1]);
+
 	// round out to the nearest pixel
-	Point tmp_surface_tl = Point(tl[0] - pw*(int((tl[0]-rect.get_min()[0])/pw+1-1e-6)),
-								 tl[1] - ph*(int((tl[1]-rect.get_max()[1])/ph+1-1e-6)));
-	Point tmp_surface_br = Point(br[0] + pw*(int((rect.get_max()[0]-br[0])/pw+2-1e-6)),
-								 br[1] + ph*(int((rect.get_min()[1]-br[1])/ph+2-1e-6)));
+	Point tmp_surface_tl = Point(tl[0] - pw*(int((tl[0]-stl[0])/pw+1-1e-6)),
+								 tl[1] - ph*(int((tl[1]-stl[1])/ph+1-1e-6)));
+	Point tmp_surface_br = Point(br[0] + pw*(int((sbr[0]-br[0])/pw+2-1e-6)),
+								 br[1] + ph*(int((sbr[1]-br[1])/ph+2-1e-6)));
 
 	// round to nearest integer width and height (should be very
 	// nearly whole numbers already, but don't want to round 5.99999
@@ -533,3 +538,7 @@ RadialBlur::accelerated_cairorender(Context context, cairo_t *cr, int quality, c
 	// we are done
 	return true;
 }
+
+rendering::Task::Handle
+RadialBlur::build_rendering_task_vfunc(Context context) const
+	{ return Layer::build_rendering_task_vfunc(context); }
