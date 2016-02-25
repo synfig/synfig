@@ -161,7 +161,7 @@ TaskColorCorrectSW::run(RunParams & /* params */) const
 	if (r.valid())
 	{
 		VectorInt offset = get_offset();
-		RectInt ra = sub_task()->get_target_rect() + r.get_min() + get_offset();
+		RectInt ra = sub_task()->get_target_rect() + r.get_min() + offset;
 		if (ra.valid())
 		{
 			etl::set_intersect(ra, ra, r);
@@ -175,7 +175,7 @@ TaskColorCorrectSW::run(RunParams & /* params */) const
 				synfig::Surface::pen pa = c.get_pen(ra.minx, ra.maxx);
 				for(int y = ra.miny; y < ra.maxy; ++y)
 				{
-					const Color *ca = &a[y - r.miny + offset[1]][ra.minx - r.minx + offset[0]];
+					const Color *ca = &a[y - r.miny - offset[1]][ra.minx - r.minx - offset[0]];
 					Color *cc = &c[y][ra.minx];
 					for(int x = ra.minx; x < ra.maxx; ++x, ++ca, ++cc)
 						correct_pixel(*cc, *ca, hue_adjust, shift, amplifier, g);
