@@ -89,9 +89,9 @@ software::Blur::Params::validate()
 	if (!src_rect.valid()) return false;
 	etl::set_intersect(src_rect, src_rect, RectInt(0, 0, src->get_w(), src->get_h()));
 	if (!src_rect.valid()) return false;
-	etl::set_intersect(dest_rect, dest_rect, src_rect - offset);
+	etl::set_intersect(dest_rect, dest_rect, src_rect - src_offset + dest_rect.get_min());
 	if (!dest_rect.valid()) return false;
-	offset = src_offset + src_rect.get_min();
+	offset = src_offset - src_rect.get_min();
 
 	return true;
 }

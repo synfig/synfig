@@ -71,10 +71,7 @@ TaskBlurSW::run(RunParams & /* params */) const
 	s[0] *= pixels_per_unit[0];
 	s[1] *= pixels_per_unit[1];
 
-	Vector offsetf = get_source_rect_lt() - sub_task()->get_source_rect_lt();
-	Vector sub_pixels_per_unit = sub_task()->get_pixels_per_unit();
-	offsetf[0] *= sub_pixels_per_unit[0];
-	offsetf[1] *= sub_pixels_per_unit[1];
+	Vector offsetf = (get_source_rect_lt() - sub_task()->get_source_rect_lt()).multiply_coords(pixels_per_unit);
 	VectorInt offset((int)round(offsetf[0]), (int)round(offsetf[1]));
 	offset += sub_task()->get_target_rect().get_min();
 
