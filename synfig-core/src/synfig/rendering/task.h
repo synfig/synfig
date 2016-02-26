@@ -60,8 +60,8 @@ public:
 
 	struct RunParams {
 		const Renderer *renderer;
-		RunParams(): renderer(NULL) { }
-		explicit RunParams(const Renderer *renderer): renderer(renderer) { }
+		mutable Task::List sub_queue;
+		explicit RunParams(const Renderer *renderer = NULL): renderer(renderer) { }
 	};
 
 private:

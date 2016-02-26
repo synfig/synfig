@@ -602,6 +602,27 @@ Renderer::run(const Task::List &list) const
 }
 
 void
+Renderer::enqueue(const Task::List &list, const Task::Handle &finish_signal_task) const
+{
+	#ifndef NDEBUG
+	for(Task::List::const_iterator j = list.begin(); j != list.end(); ++j)
+		assert( (*j)->check() );
+	#endif
+
+	Task::List optimized_list(list);
+	optimize(optimized_list);
+	find_deps(optimized_list);
+	if (finish_signal_task)
+	{
+		for(Task::List::const_iterator i = optimized_list.begin(); i != optimized_list.end(); ++i)
+			if ((*i)->back_deps.insert(finish_signal_task).second)
+				++finish_signal_task->deps_count;
+		optimized_list.push_back(finish_signal_task);
+	}
+	queue->enqueue(optimized_list, Task::RunParams(this));
+}
+
+void
 Renderer::log(
 	const String &logfile,
 	const Task::Handle &task,

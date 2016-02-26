@@ -128,6 +128,12 @@ RenderQueue::process(int thread_index)
 		info("thread %d: begin task #%d '%s'", thread_index, task->index, typeid(*task).name());
 		#endif
 
+		if (TaskSubQueue::Handle task_sub_queue = TaskSubQueue::Handle::cast_dynamic(task))
+		{
+			done(thread_index, task_sub_queue->sub_task());
+			continue;
+		}
+
 		assert( task->check() );
 
 		if (!task->run(task->params))
@@ -140,6 +146,18 @@ RenderQueue::process(int thread_index)
 		#ifdef DEBUG_THREAD_TASK
 		info("thread %d: end task #%d '%s'", thread_index, task->index, typeid(*task).name());
 		#endif
+
+		if (!task->params.sub_queue.empty())
+		{
+			if (task->params.renderer)
+			{
+				TaskSubQueue::Handle task_sub_queue(new TaskSubQueue::Handle());
+				task_sub_queue->sub_task() = task;
+				task->params.renderer->enqueue(task->params.sub_queue, task);
+				continue;
+			}
+			task->success = false;
+		}
 
 		done(thread_index, task);
 	}
@@ -218,6 +236,7 @@ RenderQueue::fix_task(const Task &task, const Task::RunParams &params)
 	//for(Task::List::iterator i = task.back_deps.begin(); i != task.back_deps.end();)
 	//	if (*i) ++i; else i = (*i)->back_deps.erase(i);
 	task.params = params;
+	task.params.sub_queue_signal_task.reset();
 	task.success = true;
 }
 

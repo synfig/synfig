@@ -55,6 +55,17 @@ public:
 	typedef std::list<Task::Handle> TaskQueue;
 
 private:
+	class TaskSubQueue: public Task
+	{
+	public:
+		typedef etl::handle<TaskSubQueue> Handle;
+
+		Task::Handle clone() const { return clone_pointer(this); }
+
+		const Task::Handle& sub_task() const { return Task::sub_task(0); }
+		Task::Handle& sub_task() { return Task::sub_task(0); }
+	};
+
 	Glib::Threads::Mutex mutex;
 	Glib::Threads::Mutex threads_mutex;
 	Glib::Threads::Cond cond;
