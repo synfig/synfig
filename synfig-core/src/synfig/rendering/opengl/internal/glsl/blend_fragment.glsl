@@ -105,17 +105,20 @@ void main()
 #endif
 #ifdef method_add
 
-	dest.rgb += src.rgb*(src.a*amount);
+	dest.a = dest.a + src.a*amount;
+	dest.rgb = (dest.rgb*dest.a + src.rgb*(src.a*amount))/dest.a;
 
 #endif
 #ifdef method_subtract
 
-	dest.rgb -= src.rgb*(src.a*amount);
+	dest.a = dest.a - src.a*amount;
+	dest.rgb = (dest.rgb*dest.a - src.rgb*(src.a*amount))/dest.a;
 
 #endif
 #ifdef method_difference
 
-	dest.rgb = abs(dest.rgb - src.rgb*(src.a*amount));
+	dest.a = abs(dest.a - src.a*amount);
+	dest.rgb = abs(dest.rgb*dest.a - src.rgb*(src.a*amount))/dest.a;
 
 #endif
 #ifdef method_multiply
