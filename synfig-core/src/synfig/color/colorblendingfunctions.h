@@ -150,11 +150,16 @@ C blendfunc_DARKEN(C &a,C &b,float amount)
 template <class C>
 C blendfunc_ADD(C &a,C &b,float amount)
 {
-	const float alpha(a.get_a()*amount);
+	float ba(b.get_a());
+	float aa(a.get_a()*amount);
+	const float alpha(ba + aa);
+	const float k = fabs(alpha) > 1e-8 ? 1.0/alpha : 0.0;
+	aa *= k; ba *= k;
 
-	b.set_r(b.get_r()+a.get_r()*alpha);
-	b.set_g(b.get_g()+a.get_g()*alpha);
-	b.set_b(b.get_b()+a.get_b()*alpha);
+	b.set_r(b.get_r()*ba+a.get_r()*aa);
+	b.set_g(b.get_g()*ba+a.get_g()*aa);
+	b.set_b(b.get_b()*ba+a.get_b()*aa);
+	b.set_a(alpha);
 
 	return b;
 }
@@ -162,11 +167,16 @@ C blendfunc_ADD(C &a,C &b,float amount)
 template <class C>
 C blendfunc_SUBTRACT(C &a,C &b,float amount)
 {
-	const float alpha(a.get_a()*amount);
+	float ba(b.get_a());
+	float aa(a.get_a()*amount);
+	const float alpha(ba - aa);
+	const float k = fabs(alpha) > 1e-8 ? 1.0/alpha : 0.0;
+	aa *= k; ba *= k;
 
-	b.set_r(b.get_r()-a.get_r()*alpha);
-	b.set_g(b.get_g()-a.get_g()*alpha);
-	b.set_b(b.get_b()-a.get_b()*alpha);
+	b.set_r(b.get_r()*ba - a.get_r()*aa);
+	b.set_g(b.get_g()*ba - a.get_g()*aa);
+	b.set_b(b.get_b()*ba - a.get_b()*aa);
+	b.set_a(alpha);
 
 	return b;
 }
@@ -174,11 +184,16 @@ C blendfunc_SUBTRACT(C &a,C &b,float amount)
 template <class C>
 C blendfunc_DIFFERENCE(C &a,C &b,float amount)
 {
-	const float alpha(a.get_a()*amount);
+	float ba(b.get_a());
+	float aa(a.get_a()*amount);
+	const float alpha(fabs(ba - aa));
+	const float k = alpha > 1e-8 ? 1.0/alpha : 0.0;
+	aa *= k; ba *= k;
 
-	b.set_r(std::abs(b.get_r()-a.get_r()*alpha));
-	b.set_g(std::abs(b.get_g()-a.get_g()*alpha));
-	b.set_b(std::abs(b.get_b()-a.get_b()*alpha));
+	b.set_r( fabs(b.get_r()*ba - a.get_r()*aa) );
+	b.set_g( fabs(b.get_g()*ba - a.get_g()*aa) );
+	b.set_b( fabs(b.get_b()*ba - a.get_b()*aa) );
+	b.set_a(alpha);
 
 	return b;
 }

@@ -45,6 +45,9 @@
 #include <synfig/value.h>
 #include <synfig/valuenode.h>
 
+#include <synfig/rendering/common/task/taskblend.h>
+#include <synfig/rendering/common/task/tasksurfaceempty.h>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -403,4 +406,69 @@ Layer_MotionBlur::accelerated_cairorender(Context context, cairo_t *cr ,int qual
 
 rendering::Task::Handle
 Layer_MotionBlur::build_rendering_task_vfunc(Context context) const
-	{ return Layer::build_rendering_task_vfunc(context); }
+{
+	const Real precision = 1e-8;
+
+	Time aperture = param_aperture.get(Time());
+	Real subsamples_factor = param_subsamples_factor.get(Real());
+	SubsamplingType subsampling_type = (SubsamplingType)param_subsampling_type.get(int());
+	Real subsample_start = param_subsample_start.get(Real());
+	Real subsample_end = param_subsample_end.get(Real());
+
+	int samples = (int)round(12.0 * fabs(subsamples_factor));
+	if (samples <= 1)
+		return context.build_rendering_task();
+
+	// Only in modes where subsample_start/end matters...
+	if (subsampling_type == SUBSAMPLING_LINEAR)
+	{
+		// We won't render when the scale==0, so we'll use those samples elsewhere
+		if (fabs(subsample_start) < precision) ++samples;
+		if (fabs(subsample_end) < precision) ++samples;
+	}
+
+	vector<Real> scales(samples, 0.0);
+	Real sum = 0.0;
+	for(int i = 0; i < samples; i++)
+	{
+		Real pos = (Real)i/(Real)(samples - 1);
+		Real ipos = 1.0 - pos;
+		Real scale = 0.0;
+		switch(subsampling_type)
+		{
+			case SUBSAMPLING_LINEAR:
+				scale = ipos*subsample_start + pos*subsample_end;
+				break;
+			case SUBSAMPLING_HYPERBOLIC:
+				scale = 1.0/(samples - i);
+				break;
+			case SUBSAMPLING_CONSTANT:
+			default:
+				scale = 1.0; // Weights don't matter for constant overall subsampling.
+				break;
+		}
+		scales[i] = scale;
+		sum += scale;
+	}
+
+	Real k = 1.0/sum;
+	rendering::Task::Handle task = new rendering::TaskSurfaceEmpty();
+	for(int i = 0; i < samples; i++)
+	{
+		if (fabs(scales[i]*k) < 1e-8)
+			continue;
+
+		Real pos = (Real)i/(Real)(samples - 1);
+		Real ipos = 1.0 - pos;
+		context.set_time(get_time_mark() - aperture*ipos);
+
+		rendering::TaskBlend::Handle task_blend(new rendering::TaskBlend());
+		task_blend->amount = scales[i]*k;
+		task_blend->blend_method = Color::BLEND_ADD;
+		task_blend->sub_task_a() = task;
+		task_blend->sub_task_b() = context.build_rendering_task();
+		task = task_blend;
+	}
+
+	return task;
+}

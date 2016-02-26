@@ -304,8 +304,6 @@ public:
 		BLEND_METHODS_ONTO = 0
 			| (1 << BLEND_BRIGHTEN)
 			| (1 << BLEND_DARKEN)
-			| (1 << BLEND_ADD)
-			| (1 << BLEND_SUBTRACT)
 			| (1 << BLEND_MULTIPLY)
 			| (1 << BLEND_DIVIDE)
 			| (1 << BLEND_COLOR)
@@ -316,7 +314,6 @@ public:
 			| (1 << BLEND_STRAIGHT_ONTO)
 			| (1 << BLEND_SCREEN)
 			| (1 << BLEND_OVERLAY)
-			| (1 << BLEND_DIFFERENCE)
 			| (1 << BLEND_HARD_LIGHT),
 
 		BLEND_METHODS_STRAIGHT = 0
@@ -329,8 +326,12 @@ public:
 
 		BLEND_METHODS_ASSOCIATIVE = 0
 			| (1 << BLEND_COMPOSITE)
+			| (1 << BLEND_ADD)
 			| (1 << BLEND_BEHIND)
 			| (1 << BLEND_ALPHA_DARKEN),
+
+		BLEND_METHODS_COMMUTATIVE = 0
+			| (1 << BLEND_ADD),
 
 		BLEND_METHODS_ALL = (1 << BLEND_END) - 1
 	};
