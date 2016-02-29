@@ -47,6 +47,8 @@
 #include <synfig/debug/measure.h>
 
 #include "renderqueue.h"
+#include "renderer.h"
+
 #ifdef WITH_OPENGL
 #include "opengl/task/taskgl.h"
 #endif
@@ -151,7 +153,7 @@ RenderQueue::process(int thread_index)
 		{
 			if (task->params.renderer)
 			{
-				TaskSubQueue::Handle task_sub_queue(new TaskSubQueue::Handle());
+				TaskSubQueue::Handle task_sub_queue(new TaskSubQueue());
 				task_sub_queue->sub_task() = task;
 				task->params.renderer->enqueue(task->params.sub_queue, task);
 				continue;
@@ -236,7 +238,7 @@ RenderQueue::fix_task(const Task &task, const Task::RunParams &params)
 	//for(Task::List::iterator i = task.back_deps.begin(); i != task.back_deps.end();)
 	//	if (*i) ++i; else i = (*i)->back_deps.erase(i);
 	task.params = params;
-	task.params.sub_queue_signal_task.reset();
+	task.params.sub_queue.clear();
 	task.success = true;
 }
 
@@ -273,9 +275,11 @@ RenderQueue::enqueue(const Task::Handle &task, const Task::RunParams &params)
 void
 RenderQueue::enqueue(const Task::List &tasks, const Task::RunParams &params)
 {
+	Task::RunParams p(params);
+	p.sub_queue.clear();
 	int count = 0;
 	for(Task::List::const_iterator i = tasks.begin(); i != tasks.end(); ++i)
-		if (*i) { fix_task(**i, params); ++count; }
+		if (*i) { fix_task(**i, p); ++count; }
 	if (!count) return;
 
 	Glib::Threads::Mutex::Lock lock(mutex);
