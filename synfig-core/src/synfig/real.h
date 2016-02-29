@@ -29,10 +29,94 @@
 
 namespace synfig {
 
+
 /*!	\typedef Real
 **	\todo writeme
 */
 typedef double Real;
+
+
+template<typename T = Real>
+inline T real_low_precision()
+	{ return T(1e-6); }
+template<typename T = Real>
+inline T real_precision()
+	{ return T(1e-8); }
+template<typename T = Real>
+inline T real_high_precision()
+	{ return T(1e-10); }
+
+
+// comparison should be symmetric
+// approximate_equal(a, b) absolutely identical to approximate_equal(b, a)
+// this code should be equal to code of functions less and less_or_equal
+template<typename T>
+inline bool approximate_equal_custom(const T &a, const T &b, const T &precision)
+	{ return a < b ? b - a < precision : a - b < precision; }
+template<typename T>
+inline bool approximate_less_custom(const T &a, const T &b, const T &precision)
+	{ return a < b && b - a >= precision; }
+template<typename T>
+inline bool approximate_greater_custom(const T &a, const T &b, const T &precision)
+	{ return approximate_less(b, a, precision); }
+template<typename T>
+inline bool approximate_less_or_equal_custom(const T &a, const T &b, const T &precision)
+	{ return a < b || a - b < precision; }
+template<typename T>
+inline bool approximate_greater_or_equal_custom(const T &a, const T &b, const T &precision)
+	{ return approximate_less_or_equal(b, a, precision); }
+
+
+template< typename T, T func() = real_precision<T> >
+inline bool approximate_equal(const T &a, const T &b)
+	{ return approximate_equal_custom(a, b, func()); }
+template< typename T, T func() = real_precision<T> >
+inline bool approximate_less(const T &a, const T &b)
+	{ return approximate_less_custom(a, b, func()); }
+template< typename T, T func() = real_precision<T> >
+inline bool approximate_greater(const T &a, const T &b)
+	{ return approximate_greater_custom(a, b, func()); }
+template< typename T, T func() = real_precision<T> >
+inline bool approximate_less_or_equal(const T &a, const T &b)
+	{ return approximate_less_or_equal_custom(a, b, func()); }
+template< typename T, T func() = real_precision<T> >
+inline bool approximate_greater_or_equal(const T &a, const T &b)
+	{ return approximate_greater_or_equal_custom(a, b, func()); }
+
+
+template<typename T>
+inline bool approximate_equal_lp(const T &a, const T &b)
+	{ return approximate_equal_custom(a, b, real_low_precision<T>()); }
+template<typename T>
+inline bool approximate_less_lp(const T &a, const T &b)
+	{ return approximate_less_custom(a, b, real_low_precision()); }
+template<typename T>
+inline bool approximate_greater_lp(const T &a, const T &b)
+	{ return approximate_greater_custom(a, b, real_low_precision()); }
+template<typename T>
+inline bool approximate_less_or_equal_lp(const T &a, const T &b)
+	{ return approximate_less_or_equal_custom(a, b, real_low_precision()); }
+template<typename T>
+inline bool approximate_greater_or_equal_lp(const T &a, const T &b)
+	{ return approximate_greater_or_equal_custom(a, b, real_low_precision()); }
+
+
+template<typename T>
+inline bool approximate_equal_hp(const T &a, const T &b)
+	{ return approximate_equal_custom(a, b, real_high_precision<T>()); }
+template<typename T>
+inline bool approximate_less_hp(const T &a, const T &b)
+	{ return approximate_less_custom(a, b, real_high_precision()); }
+template<typename T>
+inline bool approximate_greater_hp(const T &a, const T &b)
+	{ return approximate_greater_custom(a, b, real_high_precision()); }
+template<typename T>
+inline bool approximate_less_or_equal_hp(const T &a, const T &b)
+	{ return approximate_less_or_equal_custom(a, b, real_high_precision()); }
+template<typename T>
+inline bool approximate_greater_or_equal_hp(const T &a, const T &b)
+	{ return approximate_greater_or_equal_custom(a, b, real_high_precision()); }
+
 
 }; // END of namespace synfig
 

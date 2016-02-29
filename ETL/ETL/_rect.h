@@ -179,6 +179,104 @@ void set_union(rect<T> &rout, const rect<T> &r1, const rect<T> &r2)
 	rout = local;*/
 }
 
+template<typename List, typename T, typename F>
+void rects_subtract(List &list, const rect<T> &r, const F &less)
+{
+	if (!r.valid(less)) return;
+	for(typename List::iterator i = list.begin(); i != list.end();)
+	{
+		if (intersect(*i, r))
+		{
+			rect<T> &x = *i;
+			rect<T> y;
+			y.minx = std::max(x.minx, r.maxx);
+			y.maxx = std::min(x.maxx, r.minx);
+			y.miny = std::max(x.miny, r.maxy);
+			y.maxy = std::min(x.maxy, r.miny);
+
+			T rects[][4] = {
+				{ x.minx, x.maxx, x.miny, x.maxy },
+				{ y.minx, r.maxx, x.miny, x.maxy },
+				{ y.minx, x.maxx, x.miny, y.maxy },
+				{ y.minx, x.maxx, y.miny, x.maxy }
+			};
+
+			const int count = sizeof(rects)/sizeof(rects[0]);
+
+			bool inserted = false;
+			for(int j = 0; j < count; ++j)
+			{
+				if ( less(rects[j][0], rects[j][1])
+				  && less(rects[j][2], rects[j][3]) )
+				{
+					rect<T> rr;
+					rr.minx = rects[i][0];
+					rr.maxx = rects[i][1];
+					rr.miny = rects[i][2];
+					rr.maxy = rects[i][3];
+					if (inserted)
+						i = list.insert(++i, rr);
+					else
+						*i = rr, inserted = true;
+				}
+			}
+			if (!inserted) i = list.erase(i); continue;
+		}
+		++i;
+	}
+}
+
+template<typename List, typename T>
+void rects_subtract(List &list, const rect<T> &r)
+	{ rects_subtract(list, r, std::less<T>()); }
+
+template<typename List, typename T, typename F>
+void rects_add(List &list, const rect<T> &r, const F &less)
+{
+	if (!r.valid(less)) return;
+	rects_subtract(list, r, less);
+	list.insert(list.end(), r);
+}
+
+template<typename List, typename T>
+void rects_add(List &list, const rect<T> &r)
+	{ rects_add(list, r, std::less<T>()); }
+
+template<typename List, typename F>
+void rects_merge(List &list, const F &less)
+{
+	for(typename List::iterator i = list.begin(); i != list.end();)
+		if (!i->valid(less)) i = list.erase(i); else ++i;
+
+	bool merged_any = true;
+	while(merged_any)
+	{
+		merged_any = false;
+		for(typename List::iterator i = list.begin(); i != list.end();)
+		{
+			bool merged_current = false;
+			for(typename List::iterator j = list.begin(); j != list.end(); ++j)
+				if ( !less(i->minx, j->minx) && !less(j->minx, i->minx)
+				  && !less(i->maxy, j->miny) && !less(j->miny, i->maxy) )
+				{
+					j->miny = i->miny;
+					i = list.erase(i);
+					merged_current = true;
+					break;
+				}
+			if (merged_current) merged_any = true; else ++i;
+		}
+	}
+}
+
+template<typename List>
+void rects_merge(List &list)
+{
+	typedef typename List::value_type R;
+	typedef typename R::value_type T;
+	rects_merge(list, std::less<T>());
+}
+
 _ETL_END_NAMESPACE
 
 /* === E X T E R N S ======================================================= */

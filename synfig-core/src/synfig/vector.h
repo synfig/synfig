@@ -258,11 +258,11 @@ public:
 
 	bool
 	operator==(const Vector &rhs)const
-		{ return _x==rhs._x && _y==rhs._y; }
+		{ return is_equal_to(rhs); }
 
 	bool
 	operator!=(const Vector &rhs)const
-		{ return _y!=rhs._y || _x!=rhs._x; }
+		{ return !(*this == rhs); }
 
 	//! Returns the squared magnitude of the vector
 	value_type mag_squared()const
@@ -288,11 +288,7 @@ public:
 		{ return Angle::rad(atan2(_y, _x)); }
 
 	bool is_equal_to(const Vector& rhs)const
-	{
-		static const value_type epsilon(0.0000000000001);
-//		return (_x>rhs._x)?_x-rhs._x<=epsilon:rhs._x-_x<=epsilon && (_y>rhs._y)?_y-rhs._y<=epsilon:rhs._y-_y<=epsilon;
-		return (*this-rhs).mag_squared()<=epsilon;
-	}
+		{ return approximate_equal((*this-rhs).mag_squared(), value_type(0.0)); }
 
 	static Vector zero() { return Vector(0,0); }
 

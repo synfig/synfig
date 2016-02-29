@@ -168,7 +168,21 @@ public:
 
 	bool operator!=(const RectInt &rhs)const { return get_min() != rhs.get_min() || get_max() != rhs.get_max(); }
 
+	bool contains(const RectInt &x) { return etl::contains(*this, x); }
+
 	bool is_valid()const { return valid(); }
+
+	template<typename List>
+	static void merge(List &list)
+		{ etl::rects_merge(list); }
+
+	template<typename List>
+	void list_add(List &list)
+		{ etl::rects_add(list, *this); merge(list); }
+
+	template<typename List>
+	void list_subtract(List &list)
+		{ etl::rects_subtract(list, *this); merge(list); }
 
 	RectInt multiply_coords(const VectorInt &rhs) const
 		{ return RectInt(minx*rhs[0], miny*rhs[1], maxx*rhs[0], maxy*rhs[1]); }
@@ -329,6 +343,18 @@ public:
 			|| std::isinf(maxx)
 			|| std::isinf(maxy);
 	}
+
+	template<typename List>
+	static void merge(List &list)
+		{ etl::rects_merge(list, approximate_less<Real>); }
+
+	template<typename List>
+	void list_add(List &list)
+		{ etl::rects_add(list, *this, approximate_less<Real>); merge(list); }
+
+	template<typename List>
+	void list_subtract(List &list)
+		{ etl::rects_subtract(list, *this, approximate_less<Real>); merge(list); }
 
 	Rect multiply_coords(const Vector &rhs) const
 		{ return Rect(minx*rhs[0], miny*rhs[1], maxx*rhs[0], maxy*rhs[1]); }
