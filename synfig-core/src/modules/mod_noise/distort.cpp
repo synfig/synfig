@@ -267,6 +267,28 @@ NoiseDistort::get_cairocolor(Context context, const Point &point)const
 		return CairoColor::blend(color,context.get_cairocolor(point),get_amount(),get_blend_method());
 }
 
+RendDesc
+NoiseDistort::get_sub_renddesc_vfunc(const RendDesc &renddesc) const
+{
+	Vector displacement=param_displacement.get(Vector());
+
+	RendDesc desc(renddesc);
+	Real pw = desc.get_pw();
+	Real ph = desc.get_ph();
+
+	Rect r(renddesc.get_tl(), renddesc.get_br());
+	r.expand_x(fabs(displacement[0]));
+	r.expand_y(fabs(displacement[1]));
+
+	desc.set_tl(r.get_min());
+	desc.set_br(r.get_max());
+	desc.set_wh(
+		(int)approximate_ceil(fabs((desc.get_br()[0] - desc.get_tl()[0])/pw)),
+		(int)approximate_ceil(fabs((desc.get_br()[1] - desc.get_tl()[1])/ph)) );
+
+	return desc;
+}
+
 Rect
 NoiseDistort::get_bounding_rect(Context context)const
 {

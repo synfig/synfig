@@ -83,6 +83,7 @@ public:
 	virtual bool reads_context()const { return true; }
 
 protected:
+	virtual synfig::RendDesc get_sub_renddesc_vfunc(const synfig::RendDesc &renddesc) const;
 	virtual synfig::rendering::Task::Handle build_rendering_task_vfunc(synfig::Context context) const;
 }; // EOF of class NoiseDistort
 
