@@ -176,7 +176,7 @@ public:
 	{
 		if(!cp.z_range)
 			return 1.0;
-		float z=layer.get_true_z_depth(layer.get_canvas() ? Time(0) : layer.get_canvas()->get_time());
+		float z=layer.get_true_z_depth();
 		float p=cp.z_range_position;
 		float d=cp.z_range_depth;
 		float t=cp.z_range_blur;

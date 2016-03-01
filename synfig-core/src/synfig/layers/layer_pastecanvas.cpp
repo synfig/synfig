@@ -703,9 +703,9 @@ Layer_PasteCanvas::build_composite_task_vfunc(ContextParams context_params) cons
 
 	CanvasBase sub_queue;
 	Context sub_context;
+	apply_z_range_to_params(context_params);
 	canvas->get_context_sorted(context_params, sub_queue, sub_context);
 
-	apply_z_range_to_params(context_params);
 	rendering::TaskTransformation::Handle task_transformation(new rendering::TaskTransformation());
 	rendering::AffineTransformation::Handle affine_transformation(new rendering::AffineTransformation());
 	affine_transformation->matrix = get_summary_transformation().get_matrix();

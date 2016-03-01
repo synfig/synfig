@@ -94,7 +94,6 @@ public:
 
 protected:
 	virtual rendering::Task::Handle build_composite_task_vfunc(ContextParams context_params)const;
-	virtual rendering::Task::Handle build_composite_fork_task_vfunc(ContextParams context_params, rendering::Task::Handle sub_task)const;
 	virtual rendering::Task::Handle build_rendering_task_vfunc(Context context)const;
 }; // END of class Layer_Composite
 

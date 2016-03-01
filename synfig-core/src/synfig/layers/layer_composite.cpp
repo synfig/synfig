@@ -49,6 +49,7 @@
 #include "layer_bitmap.h"
 #include <synfig/rendering/common/task/taskblend.h>
 #include <synfig/rendering/common/task/tasklayer.h>
+#include <synfig/rendering/common/task/tasksurfaceempty.h>
 
 #endif
 
@@ -320,34 +321,24 @@ Layer_Composite::get_param(const String & param)const
 rendering::Task::Handle
 Layer_Composite::build_composite_task_vfunc(ContextParams /*context_params*/)const
 {
-	rendering::TaskLayer::Handle task = new rendering::TaskLayer();
-	// TODO: This is not thread-safe
-	task->layer = const_cast<Layer_Composite*>(this);//clone(NULL);
-	return task;
-}
-
-rendering::Task::Handle
-Layer_Composite::build_composite_fork_task_vfunc(ContextParams context_params, rendering::Task::Handle /* sub_task */)const
-{
-	return build_composite_task_vfunc(context_params);
+	return new rendering::TaskLayer();
+	//rendering::TaskLayer::Handle task = new rendering::TaskLayer();
+	//// TODO: This is not thread-safe
+	//task->layer = const_cast<Layer_Composite*>(this);//clone(NULL);
+	//return task;
 }
 
 rendering::Task::Handle
 Layer_Composite::build_rendering_task_vfunc(Context context)const
 {
-	rendering::Task::Handle sub_task_a = context.build_rendering_task();
-	rendering::Task::Handle sub_task_b = build_composite_fork_task_vfunc(context.get_params(), sub_task_a);
-
-	if (rendering::TaskLayer::Handle task_layer = rendering::TaskLayer::Handle::cast_dynamic(sub_task_b))
-	{
-		task_layer->sub_task() = sub_task_a;
-		return task_layer;
-	}
+	rendering::Task::Handle sub_task = build_composite_task_vfunc(context.get_params());
+	if (sub_task.type_is<rendering::TaskLayer>())
+		return Layer::build_rendering_task_vfunc(context);
 
 	rendering::TaskBlend::Handle task_blend(new rendering::TaskBlend());
 	task_blend->amount = get_amount() * Context::z_depth_visibility(context.get_params(), *this);
 	task_blend->blend_method = get_blend_method();
-	task_blend->sub_task_a() = sub_task_a;
-	task_blend->sub_task_b() = sub_task_b;
+	task_blend->sub_task_a() = context.build_rendering_task();
+	task_blend->sub_task_b() = sub_task;
 	return task_blend;
 }

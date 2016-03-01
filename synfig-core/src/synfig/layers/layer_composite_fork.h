@@ -46,6 +46,8 @@ class Layer_CompositeFork : public Layer_Composite
 protected:
 	//! Default constructor. Not used directly.
 	explicit Layer_CompositeFork(Real amount=1.0, Color::BlendMethod blend_method=Color::BLEND_COMPOSITE);
+	virtual rendering::Task::Handle build_composite_fork_task_vfunc(ContextParams context_params, rendering::Task::Handle sub_task)const;
+	virtual rendering::Task::Handle build_rendering_task_vfunc(Context context)const;
 }; // END of class Layer_Invisible
 
 }; // END of namespace synfig
