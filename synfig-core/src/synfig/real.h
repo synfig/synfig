@@ -78,30 +78,30 @@ inline T approximate_ceil_custom(const T &a, const T &precision)
 	{ return std::ceil(a - precision); }
 
 
-template< typename T, T func() = real_precision<T> >
+template<typename T>
 inline bool approximate_equal(const T &a, const T &b)
-	{ return approximate_equal_custom(a, b, func()); }
-template< typename T, T func() = real_precision<T> >
+	{ return approximate_equal_custom(a, b, real_precision<T>()); }
+template<typename T>
 inline bool approximate_not_equal(const T &a, const T &b)
-	{ return approximate_not_equal_custom(a, b, func()); }
-template< typename T, T func() = real_precision<T> >
+	{ return approximate_not_equal_custom(a, b, real_precision<T>()); }
+template<typename T>
 inline bool approximate_less(const T &a, const T &b)
-	{ return approximate_less_custom(a, b, func()); }
-template< typename T, T func() = real_precision<T> >
+	{ return approximate_less_custom(a, b, real_precision<T>()); }
+template<typename T>
 inline bool approximate_greater(const T &a, const T &b)
-	{ return approximate_greater_custom(a, b, func()); }
-template< typename T, T func() = real_precision<T> >
+	{ return approximate_greater_custom(a, b, real_precision<T>()); }
+template<typename T>
 inline bool approximate_less_or_equal(const T &a, const T &b)
-	{ return approximate_less_or_equal_custom(a, b, func()); }
-template< typename T, T func() = real_precision<T> >
+	{ return approximate_less_or_equal_custom(a, b, real_precision<T>()); }
+template<typename T>
 inline bool approximate_greater_or_equal(const T &a, const T &b)
-	{ return approximate_greater_or_equal_custom(a, b, func()); }
-template< typename T, T func() = real_precision<T> >
+	{ return approximate_greater_or_equal_custom(a, b, real_precision<T>()); }
+template<typename T>
 inline T approximate_floor(const T &a)
-	{ return approximate_floor_custom(a, func()); }
-template< typename T, T func() = real_precision<T> >
+	{ return approximate_floor_custom(a, real_precision<T>()); }
+template<typename T>
 inline T approximate_ceil(const T &a)
-	{ return approximate_ceil_custom(a, func()); }
+	{ return approximate_ceil_custom(a, real_precision<T>()); }
 
 
 template<typename T>
