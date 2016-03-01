@@ -200,15 +200,9 @@ Layer_MeshTransform::get_transform()const
 	return new Mesh_Trans(this);
 }
 
-bool
-Layer_MeshTransform::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
+RendDesc
+Layer_MeshTransform::get_sub_renddesc_vfunc(const RendDesc &renddesc) const
 {
-	const Real epsilon = 1e-10;
-
-	// initialize surface
-	surface->set_wh(renddesc.get_w(),renddesc.get_h());
-	surface->clear();
-
 	// calculate texture size
 	RendDesc texture_renddesc(renddesc);
 	texture_renddesc.set_transformation_matrix(Matrix());
@@ -218,7 +212,8 @@ Layer_MeshTransform::accelerated_render(Context context,Surface *surface,int qua
 		int texture_width, texture_height;
 		Real pw = fabs(renddesc.get_pw());
 		Real ph = fabs(renddesc.get_ph());
-		if (pw < epsilon || pw < epsilon) return true;
+		if (approximate_equal(pw, 0.0) || approximate_equal(ph, 0.0))
+			return RendDesc();
 		pw = 1.0/pw;
 		ph = 1.0/ph;
 		Vector texture_size = texture_bounds.get_max() - texture_bounds.get_min();
@@ -238,6 +233,20 @@ Layer_MeshTransform::accelerated_render(Context context,Surface *surface,int qua
 		texture_renddesc.set_w(texture_width);
 		texture_renddesc.set_h(texture_height);
 	}
+	return texture_renddesc;
+}
+
+bool
+Layer_MeshTransform::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
+{
+	// initialize surface
+	surface->set_wh(renddesc.get_w(),renddesc.get_h());
+	surface->clear();
+
+	// calculate texture size
+	RendDesc texture_renddesc = get_sub_renddesc(renddesc);
+	if (texture_renddesc.get_w() <= 0 || texture_renddesc.get_h() <= 0)
+		return true;
 
 	// render texture
 	Surface texture;

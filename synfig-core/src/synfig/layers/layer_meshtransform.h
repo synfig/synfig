@@ -71,6 +71,7 @@ public:
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 
 protected:
+	virtual RendDesc get_sub_renddesc_vfunc(const RendDesc &renddesc) const;
 	virtual rendering::Task::Handle build_rendering_task_vfunc(Context context) const;
 }; // END of class Layer_MeshTransform
 
