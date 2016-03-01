@@ -213,7 +213,7 @@ Layer_MeshTransform::get_sub_renddesc_vfunc(const RendDesc &renddesc) const
 		Real pw = fabs(renddesc.get_pw());
 		Real ph = fabs(renddesc.get_ph());
 		if (approximate_equal(pw, 0.0) || approximate_equal(ph, 0.0))
-			return RendDesc();
+			return RendDesc::zero();
 		pw = 1.0/pw;
 		ph = 1.0/ph;
 		Vector texture_size = texture_bounds.get_max() - texture_bounds.get_min();
@@ -245,7 +245,7 @@ Layer_MeshTransform::accelerated_render(Context context,Surface *surface,int qua
 
 	// calculate texture size
 	RendDesc texture_renddesc = get_sub_renddesc(renddesc);
-	if (texture_renddesc.get_w() <= 0 || texture_renddesc.get_h() <= 0)
+	if (texture_renddesc.is_zero())
 		return true;
 
 	// render texture

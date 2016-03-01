@@ -885,7 +885,7 @@ Layer::get_sub_renddesc(const RendDesc &renddesc, int index) const
 {
 	std::vector<RendDesc> descs;
 	get_sub_renddesc(renddesc, descs);
-	return index >=0 && index < (int)descs.size() ? descs[index] : RendDesc();
+	return index >=0 && index < (int)descs.size() ? descs[index] : RendDesc::zero();
 }
 
 rendering::Task::Handle
