@@ -220,6 +220,16 @@ Julia::get_param(const String & param)const
 	return ValueBase();
 }
 
+RendDesc
+Julia::get_sub_renddesc_vfunc(const RendDesc &renddesc) const
+{
+	RendDesc desc(renddesc);
+	desc.set_wh(512, 512);
+	desc.set_tl(Vector(-5.0, -5.0));
+	desc.set_br(Vector( 5.0,  5.0));
+	return desc;
+}
+
 Color
 Julia::get_color(Context context, const Point &pos)const
 {

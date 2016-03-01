@@ -105,6 +105,16 @@ InsideOut::hit_check(Context context, const Point &p)const
 	return context.hit_check(invpos+origin);
 }
 
+RendDesc
+InsideOut::get_sub_renddesc_vfunc(const RendDesc &renddesc) const
+{
+	RendDesc desc(renddesc);
+	desc.set_wh(512, 512);
+	desc.set_tl(Vector(-5.0, -5.0));
+	desc.set_br(Vector( 5.0,  5.0));
+	return desc;
+}
+
 Color
 InsideOut::get_color(Context context, const Point &p)const
 {

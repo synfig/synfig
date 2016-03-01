@@ -98,6 +98,9 @@ public:
 	virtual ValueBase get_param(const String &param)const;
 	virtual Color get_color(Context context, const Point &pos)const;
 	virtual Vocab get_param_vocab()const;
+
+protected:
+	virtual RendDesc get_sub_renddesc_vfunc(const RendDesc &renddesc) const;
 };
 
 }; // END of namespace lyr_std

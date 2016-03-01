@@ -303,6 +303,16 @@ Mandelbrot::get_param_vocab()const
 	return ret;
 }
 
+RendDesc
+Mandelbrot::get_sub_renddesc_vfunc(const RendDesc &renddesc) const
+{
+	RendDesc desc(renddesc);
+	desc.set_wh(512, 512);
+	desc.set_tl(Vector(-5.0, -5.0));
+	desc.set_br(Vector( 5.0,  5.0));
+	return desc;
+}
+
 Color
 Mandelbrot::get_color(Context context, const Point &pos)const
 {
