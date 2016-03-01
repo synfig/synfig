@@ -35,8 +35,10 @@
 #include <synfigapp/canvasinterface.h>
 #include <synfigapp/localization.h>
 #include <synfigapp/instance.h>
+
 #include <synfig/layers/layer_pastecanvas.h>
 #include <synfig/valuenodes/valuenode_composite.h>
+#include <synfig/rendering/software/surfacesw.h>
 
 #endif
 
@@ -172,6 +174,9 @@ Action::LayerPaint::PaintStroke::add_point_and_apply(const PaintPoint &point)
 		Mutex::Lock lock(layer->mutex);
 		brush_.stroke_to(&wrapper, point.x, point.y, point.pressure, 0.f, 0.f, point.dtime);
 		copy_to_cairo_surface(layer->surface, layer->csurface);
+		// TODO: optimize for hardware
+		layer->rendering_surface = new rendering::SurfaceSW();
+		layer->rendering_surface->assign(layer->surface[0], layer->surface.get_w(), layer->surface.get_h());
 	}
 
 	if (wrapper.extra_left > 0 || wrapper.extra_top > 0) {
@@ -224,6 +229,8 @@ Action::LayerPaint::PaintStroke::undo()
 		Mutex::Lock lock(layer->mutex);
 		paint_prev(layer->surface);
 		copy_to_cairo_surface(layer->surface, layer->csurface);
+		layer->rendering_surface = new rendering::SurfaceSW();
+		layer->rendering_surface->assign(layer->surface[0], layer->surface.get_w(), layer->surface.get_h());
 	}
 	applied = false;
 	layer->set_param("tl", ValueBase(tl));
@@ -240,6 +247,8 @@ Action::LayerPaint::PaintStroke::apply()
 		Mutex::Lock lock(layer->mutex);
 		paint_self(layer->surface);
 		copy_to_cairo_surface(layer->surface, layer->csurface);
+		layer->rendering_surface = new rendering::SurfaceSW();
+		layer->rendering_surface->assign(layer->surface[0], layer->surface.get_w(), layer->surface.get_h());
 	}
 	applied = true;
 	layer->set_param("tl", ValueBase(new_tl));
