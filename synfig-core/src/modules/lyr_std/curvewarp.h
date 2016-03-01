@@ -84,6 +84,9 @@ public:
 	Layer::Handle hit_check(Context context, const Point &point)const;
 
 	virtual Vocab get_param_vocab()const;
+
+protected:
+	virtual RendDesc get_sub_renddesc_vfunc(const RendDesc &renddesc) const;
 };
 
 }; // END of namespace lyr_std
