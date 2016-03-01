@@ -38,13 +38,13 @@ namespace synfig {
 typedef double Real;
 
 
-template<typename T = Real>
+template<typename T>
 inline T real_low_precision()
 	{ return T(1e-6); }
-template<typename T = Real>
+template<typename T>
 inline T real_precision()
 	{ return T(1e-8); }
-template<typename T = Real>
+template<typename T>
 inline T real_high_precision()
 	{ return T(1e-10); }
 
