@@ -511,6 +511,149 @@ Warp::get_color(Context context, const Point &p)const
 
 //#define ACCEL_WARP_IS_BROKEN 1
 
+RendDesc
+Warp::get_sub_renddesc_vfunc(const RendDesc &renddesc) const
+{
+	Point dest_tl=param_dest_tl.get(Point());
+	Point dest_tr=param_dest_tr.get(Point());
+	Point dest_bl=param_dest_bl.get(Point());
+	Point dest_br=param_dest_br.get(Point());
+	Real horizon=param_horizon.get(Real());
+	bool clip=param_clip.get(bool());
+
+	Point tl(renddesc.get_tl());
+	Point br(renddesc.get_br());
+
+	Rect bounding_rect;
+
+	Rect render_rect(tl,br);
+	Rect clip_rect(Rect::full_plane());
+	Rect dest_rect(dest_tl,dest_br); dest_rect.expand(dest_tr).expand(dest_bl);
+
+	Real zoom_factor(1.0);
+
+	{
+		Rect other(render_rect);
+		if(clip)
+			other&=dest_rect;
+
+		Point min(other.get_min());
+		Point max(other.get_max());
+
+		bool init_point_set=false;
+
+		// Point trans_point[4];
+		Point p;
+		// Real trans_z[4];
+		Real z,minz(10000000000000.0f),maxz(0);
+
+		//! \todo checking the 4 corners for 0<=z<horizon*2 and using
+		//! only 4 corners which satisfy this condition isn't the
+		//! right thing to do.  It's possible that none of the 4
+		//! corners fall within that range, and yet content of the
+		//! tile does.
+		p=transform_forward(min);
+		z=transform_backward_z(p);
+		if(z>0 && z<horizon*2)
+		{
+			if(init_point_set)
+				bounding_rect.expand(p);
+			else
+				bounding_rect=Rect(p);
+			init_point_set=true;
+			maxz=std::max(maxz,z);
+			minz=std::min(minz,z);
+		}
+
+		p=transform_forward(max);
+		z=transform_backward_z(p);
+		if(z>0 && z<horizon*2)
+		{
+			if(init_point_set)
+				bounding_rect.expand(p);
+			else
+				bounding_rect=Rect(p);
+			init_point_set=true;
+			maxz=std::max(maxz,z);
+			minz=std::min(minz,z);
+		}
+
+		swap(min[1],max[1]);
+
+		p=transform_forward(min);
+		z=transform_backward_z(p);
+		if(z>0 && z<horizon*2)
+		{
+			if(init_point_set)
+				bounding_rect.expand(p);
+			else
+				bounding_rect=Rect(p);
+			init_point_set=true;
+			maxz=std::max(maxz,z);
+			minz=std::min(minz,z);
+		}
+
+		p=transform_forward(max);
+		z=transform_backward_z(p);
+		if(z>0 && z<horizon*2)
+		{
+			if(init_point_set)
+				bounding_rect.expand(p);
+			else
+				bounding_rect=Rect(p);
+			init_point_set=true;
+			maxz=std::max(maxz,z);
+			minz=std::min(minz,z);
+		}
+
+		zoom_factor=(1+(maxz-minz));
+
+	}
+
+	Point min_point(bounding_rect.get_min());
+	Point max_point(bounding_rect.get_max());
+
+	// we're going to divide by the difference of these pairs soon;
+	// if they're the same, we'll be dividing by zero, and we don't
+	// want to do that!
+	// \todo what should we do in this case?
+	if (min_point[0] == max_point[0]) max_point[0] += 0.001;
+	if (min_point[1] == max_point[1]) max_point[1] += 0.001;
+
+	if(tl[0]>br[0])
+	{
+		tl[0]=max_point[0];
+		br[0]=min_point[0];
+	}
+	else
+	{
+		br[0]=max_point[0];
+		tl[0]=min_point[0];
+	}
+	if(tl[1]>br[1])
+	{
+		tl[1]=max_point[1];
+		br[1]=min_point[1];
+	}
+	else
+	{
+		br[1]=max_point[1];
+		tl[1]=min_point[1];
+	}
+
+	const int tmp_d(max(renddesc.get_w(),renddesc.get_h()));
+	Real src_pw=(tmp_d*zoom_factor)/(br[0]-tl[0]);
+	Real src_ph=(tmp_d*zoom_factor)/(br[1]-tl[1]);
+
+	RendDesc desc(renddesc);
+	desc.clear_flags();
+	desc.set_tl(tl);
+	desc.set_br(br);
+	desc.set_wh(ceil_to_int(src_pw*(br[0]-tl[0])),ceil_to_int(src_ph*(br[1]-tl[1])));
+
+	return desc;
+}
+
 bool
 Warp::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
