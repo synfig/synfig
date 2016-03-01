@@ -181,21 +181,11 @@ Layer_Bevel::get_color(Context context, const Point &pos)const
 	return Color::blend(shade,context.get_color(pos),get_amount(),get_blend_method());
 }
 
-bool
-Layer_Bevel::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
+RendDesc
+Layer_Bevel::get_sub_renddesc_vfunc(const RendDesc &renddesc) const
 {
-	RENDER_TRANSFORMED_IF_NEED(__FILE__, __LINE__)
-
 	Real softness=param_softness.get(Real());
 	int type=param_type.get(int());
-	Color color1=param_color1.get(Color());
-	Color color2=param_color2.get(Color());
-	bool use_luma=param_use_luma.get(bool());
-	bool solid=param_solid.get(bool());
-	
-	int x,y;
-	SuperCallback stageone(cb,0,5000,10000);
-	SuperCallback stagetwo(cb,5000,10000,10000);
 
 	const int	w = renddesc.get_w(),
 				h = renddesc.get_h();
@@ -203,29 +193,7 @@ Layer_Bevel::accelerated_render(Context context,Surface *surface,int quality, co
 				ph = renddesc.get_ph();
 	const Vector size(softness,softness);
 
-	RendDesc	workdesc(renddesc);
-	Surface		worksurface;
-	etl::surface<float> blurred;
-
-	//callbacks depend on how long the blur takes
-	if(size[0] || size[1])
-	{
-		if(type == Blur::DISC)
-		{
-			stageone = SuperCallback(cb,0,5000,10000);
-			stagetwo = SuperCallback(cb,5000,10000,10000);
-		}
-		else
-		{
-			stageone = SuperCallback(cb,0,9000,10000);
-			stagetwo = SuperCallback(cb,9000,10000,10000);
-		}
-	}
-	else
-	{
-		stageone = SuperCallback(cb,0,9999,10000);
-		stagetwo = SuperCallback(cb,9999,10000,10000);
-	}
+	RendDesc workdesc(renddesc);
 
 	//expand the working surface to accommodate the blur
 
@@ -255,11 +223,6 @@ Layer_Bevel::accelerated_render(Context context,Surface *surface,int quality, co
 		}
 		case Blur::FASTGAUSSIAN:
 		{
-			if(quality < 4)
-			{
-				halfsizex*=2;
-				halfsizey*=2;
-			}
 			workdesc.set_subwindow(-max(1,halfsizex),-max(1,halfsizey),offset_w+2*max(1,halfsizex),offset_h+2*max(1,halfsizey));
 			break;
 		}
@@ -278,6 +241,78 @@ Layer_Bevel::accelerated_render(Context context,Surface *surface,int quality, co
 			halfsizex = (halfsizex + 1)/2;
 			halfsizey = (halfsizey + 1)/2;
 			workdesc.set_subwindow( -halfsizex, -halfsizey, offset_w+2*halfsizex, offset_h+2*halfsizey );
+
+			break;
+		}
+	}
+
+	return workdesc;
+}
+
+bool
+Layer_Bevel::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
+{
+	RENDER_TRANSFORMED_IF_NEED(__FILE__, __LINE__)
+
+	Real softness=param_softness.get(Real());
+	int type=param_type.get(int());
+	Color color1=param_color1.get(Color());
+	Color color2=param_color2.get(Color());
+	bool use_luma=param_use_luma.get(bool());
+	bool solid=param_solid.get(bool());
+
+	int x,y;
+	SuperCallback stageone(cb,0,5000,10000);
+	SuperCallback stagetwo(cb,5000,10000,10000);
+
+	RendDesc	workdesc = get_sub_renddesc(renddesc);
+	Surface		worksurface;
+	etl::surface<float> blurred;
+
+	const Real	pw = renddesc.get_pw(),
+				ph = renddesc.get_ph();
+	const Vector size(softness,softness);
+
+	int	halfsizex = (int) (abs(size[0]*.5/pw) + 3),
+		halfsizey = (int) (abs(size[1]*.5/ph) + 3);
+
+	int offset_u(round_to_int(offset[0]/pw)),offset_v(round_to_int(offset[1]/ph));
+
+	//callbacks depend on how long the blur takes
+	if(size[0] || size[1])
+	{
+		if(type == Blur::DISC)
+		{
+			stageone = SuperCallback(cb,0,5000,10000);
+			stagetwo = SuperCallback(cb,5000,10000,10000);
+		}
+		else
+		{
+			stageone = SuperCallback(cb,0,9000,10000);
+			stagetwo = SuperCallback(cb,9000,10000,10000);
+		}
+	}
+	else
+	{
+		stageone = SuperCallback(cb,0,9999,10000);
+		stagetwo = SuperCallback(cb,9999,10000,10000);
+	}
+
+	switch(type)
+	{
+		case Blur::GAUSSIAN:
+		{
+			Real pw = (Real)workdesc.get_w()/(workdesc.get_br()[0]-workdesc.get_tl()[0]);
+			Real ph = (Real)workdesc.get_h()/(workdesc.get_br()[1]-workdesc.get_tl()[1]);
+
+			pw=pw*pw;
+			ph=ph*ph;
+
+			halfsizex = (int)(abs(pw)*size[0]*GAUSSIAN_ADJUSTMENT+0.5);
+			halfsizey = (int)(abs(ph)*size[1]*GAUSSIAN_ADJUSTMENT+0.5);
+
+			halfsizex = (halfsizex + 1)/2;
+			halfsizey = (halfsizey + 1)/2;
 
 			break;
 		}
