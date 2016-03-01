@@ -38,6 +38,7 @@
 #include "tasklayer.h"
 
 #include <synfig/context.h>
+#include <synfig/layers/layer_rendering_task.h>
 
 #endif
 
@@ -57,15 +58,16 @@ TaskLayer::calc_bounds() const
 {
 	if (!layer) return Rect::zero();
 
+	etl::handle<Layer_RenderingTask> sub_layer(new Layer_RenderingTask());
+	sub_layer->tasks.push_back(sub_task());
+
 	CanvasBase fake_canvas_base;
 	fake_canvas_base.push_back(layer);
-	if (sub_layer) fake_canvas_base.push_back(sub_layer);
+	fake_canvas_base.push_back(sub_layer);
 	fake_canvas_base.push_back(Layer::Handle());
 
 	Context context(fake_canvas_base.begin(), ContextParams());
-
-	if (sub_layer && sub_layer->task) sub_layer->task->update_bounds_recursive();
-	return layer->get_full_bounding_rect(context);
+	return context.get_full_bounding_rect();
 }
 
 /* === E N T R Y P O I N T ================================================= */

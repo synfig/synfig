@@ -168,7 +168,7 @@ public:
 
 	bool operator!=(const RectInt &rhs)const { return get_min() != rhs.get_min() || get_max() != rhs.get_max(); }
 
-	bool contains(const RectInt &x) { return etl::contains(*this, x); }
+	bool contains(const RectInt &x)const { return etl::contains(*this, x); }
 
 	bool is_valid()const { return valid(); }
 
@@ -256,7 +256,13 @@ public:
 	Point get_max()const { return Point(maxx,maxy); }
 	Vector get_size()const { return get_max() - get_min(); }
 
-	bool is_inside(const Point& x) { return x[0]>minx && x[0]<maxx && x[1]>miny && x[1]<maxy; }
+	bool is_inside(const Point& x)
+	{
+		return approximate_less_or_equal(minx, x[0])
+			&& approximate_less_or_equal(x[0], maxx)
+			&& approximate_less_or_equal(miny, x[1])
+			&& approximate_less_or_equal(x[1], maxy);
+	}
 
 	Real area()const
 	{
@@ -335,6 +341,9 @@ public:
 
 	bool operator!=(const Rect &rhs)const { return get_min() != rhs.get_min() || get_max() != rhs.get_max(); }
 
+	bool contains(const Rect &x)const { return etl::contains(*this, x, approximate_less<Real>); }
+
+	bool valid()const { return etl::rect<value_type>::valid(approximate_less<Real>); }
 	bool is_valid()const { return valid(); }
 	bool is_nan_or_inf()const
 	{

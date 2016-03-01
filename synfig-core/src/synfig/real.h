@@ -25,6 +25,8 @@
 #ifndef __SYNFIG_REAL_H
 #define __SYNFIG_REAL_H
 
+#include <cmath>
+
 /* === T Y P E D E F S ===================================================== */
 
 namespace synfig {
@@ -54,6 +56,9 @@ template<typename T>
 inline bool approximate_equal_custom(const T &a, const T &b, const T &precision)
 	{ return a < b ? b - a < precision : a - b < precision; }
 template<typename T>
+inline bool approximate_not_equal_custom(const T &a, const T &b, const T &precision)
+	{ return !approximate_equal_custom(a, b, precision); }
+template<typename T>
 inline bool approximate_less_custom(const T &a, const T &b, const T &precision)
 	{ return a < b && b - a >= precision; }
 template<typename T>
@@ -65,11 +70,20 @@ inline bool approximate_less_or_equal_custom(const T &a, const T &b, const T &pr
 template<typename T>
 inline bool approximate_greater_or_equal_custom(const T &a, const T &b, const T &precision)
 	{ return approximate_less_or_equal(b, a, precision); }
+template<typename T>
+inline T approximate_floor_custom(const T &a, const T &precision)
+	{ return std::floor(a + precision); }
+template<typename T>
+inline T approximate_ceil_custom(const T &a, const T &precision)
+	{ return std::ceil(a - precision); }
 
 
 template< typename T, T func() = real_precision<T> >
 inline bool approximate_equal(const T &a, const T &b)
 	{ return approximate_equal_custom(a, b, func()); }
+template< typename T, T func() = real_precision<T> >
+inline bool approximate_not_equal(const T &a, const T &b)
+	{ return approximate_not_equal_custom(a, b, func()); }
 template< typename T, T func() = real_precision<T> >
 inline bool approximate_less(const T &a, const T &b)
 	{ return approximate_less_custom(a, b, func()); }
@@ -82,40 +96,64 @@ inline bool approximate_less_or_equal(const T &a, const T &b)
 template< typename T, T func() = real_precision<T> >
 inline bool approximate_greater_or_equal(const T &a, const T &b)
 	{ return approximate_greater_or_equal_custom(a, b, func()); }
+template< typename T, T func() = real_precision<T> >
+inline T approximate_floor(const T &a)
+	{ return approximate_floor_custom(a, func()); }
+template< typename T, T func() = real_precision<T> >
+inline T approximate_ceil(const T &a)
+	{ return approximate_ceil_custom(a, func()); }
 
 
 template<typename T>
 inline bool approximate_equal_lp(const T &a, const T &b)
 	{ return approximate_equal_custom(a, b, real_low_precision<T>()); }
 template<typename T>
+inline bool approximate_not_equal_lp(const T &a, const T &b)
+	{ return approximate_not_equal_custom(a, b, real_low_precision<T>()); }
+template<typename T>
 inline bool approximate_less_lp(const T &a, const T &b)
-	{ return approximate_less_custom(a, b, real_low_precision()); }
+	{ return approximate_less_custom(a, b, real_low_precision<T>()); }
 template<typename T>
 inline bool approximate_greater_lp(const T &a, const T &b)
-	{ return approximate_greater_custom(a, b, real_low_precision()); }
+	{ return approximate_greater_custom(a, b, real_low_precision<T>()); }
 template<typename T>
 inline bool approximate_less_or_equal_lp(const T &a, const T &b)
-	{ return approximate_less_or_equal_custom(a, b, real_low_precision()); }
+	{ return approximate_less_or_equal_custom(a, b, real_low_precision<T>()); }
 template<typename T>
 inline bool approximate_greater_or_equal_lp(const T &a, const T &b)
-	{ return approximate_greater_or_equal_custom(a, b, real_low_precision()); }
+	{ return approximate_greater_or_equal_custom(a, b, real_low_precision<T>()); }
+template<typename T>
+inline T approximate_floor_lp(const T &a)
+	{ return approximate_floor_custom(a, real_low_precision<T>()); }
+template<typename T>
+inline T approximate_ceil_lp(const T &a)
+	{ return approximate_ceil_custom(a, real_low_precision<T>()); }
 
 
 template<typename T>
 inline bool approximate_equal_hp(const T &a, const T &b)
 	{ return approximate_equal_custom(a, b, real_high_precision<T>()); }
 template<typename T>
+inline bool approximate_not_equal_hp(const T &a, const T &b)
+	{ return approximate_not_equal_custom(a, b, real_high_precision<T>()); }
+template<typename T>
 inline bool approximate_less_hp(const T &a, const T &b)
-	{ return approximate_less_custom(a, b, real_high_precision()); }
+	{ return approximate_less_custom(a, b, real_high_precision<T>()); }
 template<typename T>
 inline bool approximate_greater_hp(const T &a, const T &b)
-	{ return approximate_greater_custom(a, b, real_high_precision()); }
+	{ return approximate_greater_custom(a, b, real_high_precision<T>()); }
 template<typename T>
 inline bool approximate_less_or_equal_hp(const T &a, const T &b)
-	{ return approximate_less_or_equal_custom(a, b, real_high_precision()); }
+	{ return approximate_less_or_equal_custom(a, b, real_high_precision<T>()); }
 template<typename T>
 inline bool approximate_greater_or_equal_hp(const T &a, const T &b)
-	{ return approximate_greater_or_equal_custom(a, b, real_high_precision()); }
+	{ return approximate_greater_or_equal_custom(a, b, real_high_precision<T>()); }
+template<typename T>
+inline T approximate_floor_hp(const T &a)
+	{ return approximate_floor_custom(a, real_high_precision<T>()); }
+template<typename T>
+inline T approximate_ceil_hp(const T &a)
+	{ return approximate_ceil_custom(a, real_high_precision<T>()); }
 
 
 }; // END of namespace synfig

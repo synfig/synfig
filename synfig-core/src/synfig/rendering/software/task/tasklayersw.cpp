@@ -42,6 +42,8 @@
 #include <synfig/canvas.h>
 #include <synfig/context.h>
 
+#include <synfig/layers/layer_rendering_task.h>
+
 #endif
 
 using namespace synfig;
@@ -56,7 +58,7 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 bool
-TaskLayerSW::run(RunParams &params) const
+TaskLayerSW::run(RunParams & /* params */) const
 {
 	assert(layer);
 
@@ -77,19 +79,16 @@ TaskLayerSW::run(RunParams &params) const
 	desc.set_wh(target.get_w(), target.get_h());
 	desc.set_antialias(1);
 
+	etl::handle<Layer_RenderingTask> sub_layer(new Layer_RenderingTask());
+	sub_layer->tasks = sub_tasks;
+
 	CanvasBase fake_canvas_base;
 	fake_canvas_base.push_back(layer);
-	if (sub_layer) fake_canvas_base.push_back(sub_layer);
+	fake_canvas_base.push_back(sub_layer);
 	fake_canvas_base.push_back(Layer::Handle());
 
 	Context context(fake_canvas_base.begin(), ContextParams());
-	++context;
-
-	if (sub_layer) sub_layer->renderer = params.renderer;
-	bool result = layer->accelerated_render(context, &target, 4, desc, NULL);
-	if (sub_layer) sub_layer->renderer = NULL;
-
-	return result;
+	return context.accelerated_render(&target, 4, desc, NULL);
 }
 
 /* === E N T R Y P O I N T ================================================= */

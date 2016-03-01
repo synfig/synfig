@@ -43,8 +43,6 @@ using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
-#define epsilon 1e-6
-
 /* === G L O B A L S ======================================================= */
 
 /* === M E T H O D S ======================================================= */
@@ -92,8 +90,10 @@ Matrix2::operator*=(const Matrix2 &rhs)
 bool
 Matrix2::operator==(const Matrix2 &rhs) const
 {
-	return fabs(m00 - rhs.m00) < epsilon && fabs(m01 - rhs.m01) < epsilon
-		&& fabs(m10 - rhs.m10) < epsilon && fabs(m11 - rhs.m11) < epsilon;
+	return approximate_equal(m00, rhs.m00)
+		&& approximate_equal(m01, rhs.m01)
+		&& approximate_equal(m10, rhs.m10)
+		&& approximate_equal(m11, rhs.m11);
 }
 
 Matrix2
@@ -122,13 +122,13 @@ Matrix2::operator+=(const Matrix2 &rhs)
 
 bool
 Matrix2::is_invertible()const
-	{ return abs(m00*m11 - m01*m10) > epsilon; }
+	{ return approximate_not_equal(m00*m11, m01*m10); }
 
 Matrix2&
 Matrix2::invert()
 {
 	value_type det(m00*m11 - m01*m10);
-	if (fabs(det) > epsilon)
+	if (approximate_not_equal(det, 0.0))
 	{
 		value_type k = 1.0/det;
 		std::swap(m00, m11);
@@ -205,9 +205,15 @@ Matrix3::get_transformed(value_type &out_x, value_type &out_y, const value_type 
 bool
 Matrix3::operator==(const Matrix3 &rhs) const
 {
-	return fabs(m00 - rhs.m00) < epsilon && fabs(m01 - rhs.m01) < epsilon && fabs(m02 - rhs.m02) < epsilon
-		&& fabs(m10 - rhs.m10) < epsilon && fabs(m11 - rhs.m11) < epsilon && fabs(m12 - rhs.m12) < epsilon
-		&& fabs(m20 - rhs.m20) < epsilon && fabs(m21 - rhs.m21) < epsilon && fabs(m22 - rhs.m22) < epsilon;
+	return approximate_equal(m00, rhs.m00)
+		&& approximate_equal(m01, rhs.m01)
+		&& approximate_equal(m02, rhs.m02)
+		&& approximate_equal(m10, rhs.m10)
+		&& approximate_equal(m11, rhs.m11)
+		&& approximate_equal(m12, rhs.m12)
+		&& approximate_equal(m20, rhs.m20)
+		&& approximate_equal(m21, rhs.m21)
+		&& approximate_equal(m22, rhs.m22);
 }
 
 Matrix3
@@ -271,7 +277,7 @@ Matrix3::operator+=(const Matrix3 &rhs)
 
 bool
 Matrix3::is_invertible()const
-	{ return abs(m00*m11 - m01*m10) > epsilon; }
+	{ return approximate_not_equal(m00*m11, m01*m10); }
 
 Matrix3&
 Matrix3::invert()

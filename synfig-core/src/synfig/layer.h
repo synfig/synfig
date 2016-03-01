@@ -599,7 +599,13 @@ protected:
 	virtual void set_outline_grow_vfunc(IndependentContext context, Real outline_grow) const;
 	virtual rendering::Task::Handle build_rendering_task_vfunc(Context context) const;
 
+	virtual RendDesc get_sub_renddesc_vfunc(const RendDesc &renddesc) const;
+	virtual void get_sub_renddesc_vfunc(const RendDesc &renddesc, std::vector<RendDesc> &out_descs) const;
+
 public:
+	void get_sub_renddesc(const RendDesc &renddesc, std::vector<RendDesc> &out_descs) const;
+	RendDesc get_sub_renddesc(const RendDesc &renddesc, int index = 0) const;
+
 	//! Returns rendering task for context
 	/*!	\param context		Context iterator referring to next Layer.
 	**	\return \c null on failure

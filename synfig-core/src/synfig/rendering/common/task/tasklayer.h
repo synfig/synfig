@@ -30,7 +30,6 @@
 #include "../../task.h"
 
 #include <synfig/layer.h>
-#include <synfig/layers/layer_rendering_task.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -49,9 +48,12 @@ public:
 	typedef etl::handle<TaskLayer> Handle;
 
 	Layer::Handle layer;
-	etl::handle<Layer_RenderingTask> sub_layer;
 
 	Task::Handle clone() const { return clone_pointer(this); }
+
+	const Task::Handle& sub_task() const { return Task::sub_task(0); }
+	Task::Handle& sub_task() { return Task::sub_task(0); }
+
 	virtual Rect calc_bounds() const;
 };
 

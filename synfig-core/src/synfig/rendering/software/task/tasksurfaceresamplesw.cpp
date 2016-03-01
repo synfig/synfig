@@ -189,7 +189,33 @@ public:
 		bool antialiasing,
 		pen &p, Args &a )
 	{
-		if (fabsf(gamma_adjust - 1.f) < 1e-6)
+		bool no_transform =
+			 a.pos_dx == Vector(1.0, 0.0)
+		  && a.pos_dy == Vector(a.bounds.minx - a.bounds.maxx, 1.0)
+		  && approximate_equal(a.pos[0], std::round(a.pos[0]))
+		  && approximate_equal(a.pos[1], std::round(a.pos[1]));
+
+		bool no_gamma =
+			approximate_equal(gamma_adjust, 1.f);
+
+		if (no_transform)
+		{
+			interpolation = Color::INTERPOLATION_NEAREST;
+			antialiasing = false;
+		}
+		/*
+		if (no_transform && no_gamma && !a.blend)
+		{
+			const_cast<synfig::Surface*>(&a.surface)->blit_to(
+				p,
+				(int)std::round(a.pos[0]),
+				(int)std::round(a.pos[1]),
+				a.bounds.maxx - a.bounds.minx,
+				a.bounds.maxy - a.bounds.miny );
+		}
+		else
+		*/
+		if (no_gamma)
 		{
 			fill<pen, nogamma>(interpolation, antialiasing, p, a);
 		}
@@ -201,11 +227,125 @@ public:
 	}
 };
 
+void
+TaskSurfaceResampleSW::resample(
+	synfig::Surface &dest,
+	const RectInt &dest_bounds,
+	const synfig::Surface &src,
+	const RectInt &src_bounds,
+	const Matrix &transformation,
+	ColorReal gamma,
+	Color::Interpolation interpolation,
+	bool antialiasing,
+	bool blend,
+	ColorReal blend_amount,
+	Color::BlendMethod blend_method )
+{
+	// bounds
+
+	Vector corners[] = {
+		transformation.get_transformed(Vector( Real(src_bounds.minx), Real(src_bounds.miny) )),
+		transformation.get_transformed(Vector( Real(src_bounds.maxx), Real(src_bounds.miny) )),
+		transformation.get_transformed(Vector( Real(src_bounds.minx), Real(src_bounds.maxy) )),
+		transformation.get_transformed(Vector( Real(src_bounds.maxx), Real(src_bounds.maxy) )) };
+
+	Rect boundsf(   corners[0] );
+	boundsf.expand( corners[1] );
+	boundsf.expand( corners[2] );
+	boundsf.expand( corners[3] );
+
+	RectInt bounds( (int)approximate_floor(boundsf.minx) - 1,
+					(int)approximate_floor(boundsf.miny) - 1,
+					(int)approximate_ceil (boundsf.maxx) + 1,
+					(int)approximate_ceil (boundsf.maxy) + 1 );
+
+	etl::set_intersect(bounds, bounds, dest_bounds);
+	etl::set_intersect(bounds, bounds, RectInt(0, 0, dest.get_w(), dest.get_h()));
+
+	// texture matrices
+
+	if (bounds.valid())
+	{
+		Matrix back_transformation = transformation;
+		back_transformation.invert();
+
+		Helper::Args args(src, bounds);
+
+		Vector start((Real)bounds.minx, (Real)bounds.miny);
+		Vector dx(1.0, 0.0);
+		Vector dy((Real)(bounds.minx - bounds.maxx), 1.0);
+
+		args.pos    = back_transformation.get_transformed( start );
+		args.pos_dx = back_transformation.get_transformed( dx, false );
+		args.pos_dy = back_transformation.get_transformed( dy, false );
+
+		bool aa = antialiasing;
+
+		if (aa)
+		{
+			Vector sub_corners[] = {
+				back_transformation.get_transformed(Vector( Real(bounds.minx), Real(bounds.miny) )),
+				back_transformation.get_transformed(Vector( Real(bounds.maxx), Real(bounds.miny) )),
+				back_transformation.get_transformed(Vector( Real(bounds.minx), Real(bounds.maxy) )),
+				back_transformation.get_transformed(Vector( Real(bounds.maxx), Real(bounds.maxy) )) };
+
+			Rect sub_boundsf(   sub_corners[0] );
+			sub_boundsf.expand( sub_corners[1] );
+			sub_boundsf.expand( sub_corners[2] );
+			sub_boundsf.expand( sub_corners[3] );
+
+			RectInt sub_bounds(
+				(int)approximate_floor(sub_boundsf.minx) - 1,
+				(int)approximate_floor(sub_boundsf.miny) - 1,
+				(int)approximate_ceil (sub_boundsf.maxx) + 1,
+				(int)approximate_ceil (sub_boundsf.maxy) + 1 );
+
+			if (src_bounds.contains(sub_bounds))
+				aa = false;
+		}
+
+		if (aa)
+		{
+			Real sx = (corners[1] - corners[0]).mag()/Real(src_bounds.maxx - src_bounds.minx);
+			Real sy = (corners[2] - corners[0]).mag()/Real(src_bounds.maxy - src_bounds.miny);
+
+			Matrix aa0_matrix = back_transformation
+							  * Matrix().set_scale(sx, sy)
+							  * Matrix().set_translate(0.5, 0.5);
+			Matrix aa1_matrix = back_transformation
+							  * Matrix().set_translate(
+									-Real(src_bounds.maxx - src_bounds.minx),
+									-Real(src_bounds.maxy - src_bounds.miny) )
+							  * Matrix().set_scale(-sx, -sy)
+							  * Matrix().set_translate(0.5, 0.5);
+
+			args.aa0    = aa0_matrix.get_transformed( start );
+			args.aa0_dx = aa0_matrix.get_transformed( dx, false );
+			args.aa0_dy = aa0_matrix.get_transformed( dy, false );
+
+			args.aa1    = aa1_matrix.get_transformed( start );
+			args.aa1_dx = aa1_matrix.get_transformed( dx, false );
+			args.aa1_dy = aa1_matrix.get_transformed( dy, false );
+		}
+
+		if (blend)
+		{
+			synfig::Surface::alpha_pen p(dest.get_pen(bounds.minx, bounds.miny));
+			p.set_blend_method(blend_method);
+			p.set_alpha(blend_amount);
+			Helper::fill(gamma, interpolation, aa, p, args);
+		}
+		else
+		{
+			synfig::Surface::pen p(dest.get_pen(bounds.minx, bounds.miny));
+			Helper::fill(gamma, interpolation, aa, p, args);
+		}
+	}
+}
+
 bool
 TaskSurfaceResampleSW::run(RunParams & /* params */) const
 {
-	const Real precision = 1e-10;
-
 	const synfig::Surface &a =
 		SurfaceSW::Handle::cast_dynamic(sub_task()->target_surface)->get_surface();
 	synfig::Surface &target =
@@ -229,103 +369,20 @@ TaskSurfaceResampleSW::run(RunParams & /* params */) const
 
 		Matrix matrix = src_pixels_to_units * transformation * dest_units_to_pixels;
 
-		// bounds
+		// resample
 
-		RectInt sub_target = sub_task()->get_target_rect();
-		Vector corners[] = {
-			matrix.get_transformed(Vector( Real(sub_target.minx), Real(sub_target.miny) )),
-			matrix.get_transformed(Vector( Real(sub_target.maxx), Real(sub_target.miny) )),
-			matrix.get_transformed(Vector( Real(sub_target.minx), Real(sub_target.maxy) )),
-			matrix.get_transformed(Vector( Real(sub_target.maxx), Real(sub_target.maxy) )) };
-
-		Rect boundsf(   corners[0] );
-		boundsf.expand( corners[1] );
-		boundsf.expand( corners[2] );
-		boundsf.expand( corners[3] );
-
-		RectInt bounds( (int)floor(boundsf.minx + precision) - 1,
-						(int)floor(boundsf.miny + precision) - 1,
-						(int)ceil (boundsf.maxx - precision) + 1,
-						(int)ceil (boundsf.maxy - precision) + 1 );
-		etl::set_intersect(bounds, bounds, get_target_rect());
-
-		// texture matrices
-
-		if (bounds.valid())
-		{
-			Matrix inv_matrix = matrix;
-			inv_matrix.invert();
-
-			Helper::Args args(a, bounds);
-
-			Vector start((Real)bounds.minx, (Real)bounds.miny);
-			Vector dx(1.0, 0.0);
-			Vector dy((Real)(bounds.minx - bounds.maxx), 1.0);
-
-			args.pos    = inv_matrix.get_transformed( start );
-			args.pos_dx = inv_matrix.get_transformed( dx, false );
-			args.pos_dy = inv_matrix.get_transformed( dy, false );
-
-			bool aa = antialiasing;
-
-			if (aa)
-			{
-				Vector sub_corners[] = {
-					inv_matrix.get_transformed(Vector( Real(bounds.minx), Real(bounds.miny) )),
-					inv_matrix.get_transformed(Vector( Real(bounds.maxx), Real(bounds.miny) )),
-					inv_matrix.get_transformed(Vector( Real(bounds.minx), Real(bounds.maxy) )),
-					inv_matrix.get_transformed(Vector( Real(bounds.maxx), Real(bounds.maxy) )) };
-
-				Rect sub_boundsf(   sub_corners[0] );
-				sub_boundsf.expand( sub_corners[1] );
-				sub_boundsf.expand( sub_corners[2] );
-				sub_boundsf.expand( sub_corners[3] );
-
-				RectInt sub_bounds( (int)floor(sub_boundsf.minx + precision) - 1,
-								(int)floor(sub_boundsf.miny + precision) - 1,
-								(int)ceil (sub_boundsf.maxx - precision) + 1,
-								(int)ceil (sub_boundsf.maxy - precision) + 1 );
-
-				if (etl::contains(sub_target, sub_bounds))
-					aa = false;
-			}
-
-			if (aa)
-			{
-				Real sx = (corners[1] - corners[0]).mag()/Real(sub_target.maxx - sub_target.minx);
-				Real sy = (corners[2] - corners[0]).mag()/Real(sub_target.maxy - sub_target.miny);
-
-				Matrix aa0_matrix = inv_matrix
-								  * Matrix().set_scale(sx, sy)
-								  * Matrix().set_translate(0.5, 0.5);
-				Matrix aa1_matrix = inv_matrix
-								  * Matrix().set_translate(
-										-Real(sub_target.maxx - sub_target.minx),
-										-Real(sub_target.maxy - sub_target.miny) )
-								  * Matrix().set_scale(-sx, -sy)
-								  * Matrix().set_translate(0.5, 0.5);
-
-				args.aa0    = aa0_matrix.get_transformed( start );
-				args.aa0_dx = aa0_matrix.get_transformed( dx, false );
-				args.aa0_dy = aa0_matrix.get_transformed( dy, false );
-
-				args.aa1    = aa1_matrix.get_transformed( start );
-				args.aa1_dx = aa1_matrix.get_transformed( dx, false );
-				args.aa1_dy = aa1_matrix.get_transformed( dy, false );
-			}
-
-			if (blend)
-			{
-				synfig::Surface::alpha_pen p(target.get_pen(bounds.minx, bounds.miny));
-				p.set_blend_method(blend_method);
-				Helper::fill(gamma, interpolation, aa, p, args);
-			}
-			else
-			{
-				synfig::Surface::pen p(target.get_pen(bounds.minx, bounds.miny));
-				Helper::fill(gamma, interpolation, aa, p, args);
-			}
-		}
+		resample(
+			target,
+			get_target_rect(),
+			a,
+			sub_task()->get_target_rect(),
+			matrix,
+			gamma,
+			interpolation,
+			antialiasing,
+			blend,
+			amount,
+			blend_method );
 	}
 
 	return true;

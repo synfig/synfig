@@ -862,14 +862,39 @@ Layer::accelerated_cairorender(Context context, cairo_t *cr, int /*quality*/, co
 	return cairorender(context,cr,renddesc,cb);
 }
 
+RendDesc
+Layer::get_sub_renddesc_vfunc(const RendDesc &renddesc) const
+{
+	return renddesc;
+}
+
+void
+Layer::get_sub_renddesc_vfunc(const RendDesc &renddesc, std::vector<RendDesc> &out_descs) const
+{
+	out_descs.push_back( get_sub_renddesc_vfunc(renddesc) );
+}
+
+void
+Layer::get_sub_renddesc(const RendDesc &renddesc, std::vector<RendDesc> &out_descs) const
+{
+	get_sub_renddesc_vfunc(renddesc, out_descs);
+}
+
+RendDesc
+Layer::get_sub_renddesc(const RendDesc &renddesc, int index) const
+{
+	std::vector<RendDesc> descs;
+	get_sub_renddesc(renddesc, descs);
+	return index >=0 && index < (int)descs.size() ? descs[index] : RendDesc();
+}
+
 rendering::Task::Handle
 Layer::build_rendering_task_vfunc(Context context)const
 {
 	rendering::TaskLayer::Handle task = new rendering::TaskLayer();
 	// TODO: This is not thread-safe
 	task->layer = const_cast<Layer*>(this);//clone(NULL);
-	task->sub_layer = new Layer_RenderingTask();
-	task->sub_layer->task = context.build_rendering_task();
+	task->sub_task() = context.build_rendering_task();
 	return task;
 }
 

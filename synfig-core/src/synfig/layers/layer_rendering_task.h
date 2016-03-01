@@ -43,13 +43,16 @@ namespace synfig {
 */
 class Layer_RenderingTask : public Layer
 {
+private:
+	//void put_sub_surface(Surface &dest, RectInt dest_rect, const RendDesc &renddesc, ProgressCallback *cb)const;
+
 public:
-	const rendering::Renderer *renderer;
-	rendering::Task::Handle task;
+	rendering::Task::List tasks;
 
 	Layer_RenderingTask();
 
 	virtual Rect get_bounding_rect()const;
+	virtual Color get_color(Context context, const Point &pos)const;
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 }; // END of class Layer_RenderingTask
 

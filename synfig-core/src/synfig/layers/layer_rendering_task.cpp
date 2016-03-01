@@ -36,6 +36,7 @@
 
 #include <synfig/context.h>
 #include <synfig/rendering/software/surfacesw.h>
+#include <synfig/rendering/software/task/tasksurfaceresamplesw.h>
 
 #include <synfig/debug/debugsurface.h>
 
@@ -55,35 +56,96 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-Layer_RenderingTask::Layer_RenderingTask(): renderer(NULL) { }
+Layer_RenderingTask::Layer_RenderingTask() { }
 
 Rect
 Layer_RenderingTask::get_bounding_rect() const
 {
-	return task ? task->get_bounds() : Rect::zero();
+	Rect rect = Rect::zero();
+	for(rendering::Task::List::const_iterator i = tasks.begin(); i != tasks.end(); ++i)
+		if (*i) rect = rect.is_valid() ? rect | (*i)->get_bounds(): (*i)->get_bounds();
+	return rect;
+}
+
+Color
+Layer_RenderingTask::get_color(Context /* context */, const Point &pos)const
+{
+	for(rendering::Task::List::const_iterator i = tasks.begin(); i != tasks.end(); ++i)
+	{
+		if (*i && (*i)->valid_target() && (*i)->target_surface.type_is<rendering::SurfaceSW>())
+		{
+			RectInt src_target_rect = (*i)->get_target_rect();
+			Vector src_lt = (*i)->get_source_rect_lt();
+			Vector src_rb = (*i)->get_source_rect_rb();
+
+			Matrix units_to_src_pixels;
+			units_to_src_pixels.m00 = (src_target_rect.maxx - src_target_rect.minx)/(src_rb[0] - src_lt[0]);
+			units_to_src_pixels.m11 = (src_target_rect.maxy - src_target_rect.miny)/(src_rb[1] - src_lt[1]);
+			units_to_src_pixels.m20 = src_lt[0] - src_target_rect.minx*units_to_src_pixels.m00;
+			units_to_src_pixels.m21 = src_lt[1] - src_target_rect.miny*units_to_src_pixels.m11;
+
+			Vector p = units_to_src_pixels.get_transformed(pos);
+			Rect src_target_rectf(src_target_rect.minx, src_target_rect.miny, src_target_rect.maxx, src_target_rect.maxy);
+			if (src_target_rectf.is_inside(p))
+				return rendering::SurfaceSW::Handle::cast_dynamic((*i)->target_surface)
+					->get_surface().linear_sample(p[0], p[1]);
+		}
+	}
+	return Color(0.0, 0.0, 0.0, 0.0);
 }
 
 bool
 Layer_RenderingTask::accelerated_render(Context /* context */, Surface *surface, int /* quality */, const RendDesc &renddesc, ProgressCallback * /* cb */) const
 {
-	if (!renderer || !task) return false;
-
 	assert(surface);
 
 	surface->set_wh(renddesc.get_w(), renddesc.get_h());
 	surface->clear();
 
-	rendering::SurfaceSW::Handle target_surface(new rendering::SurfaceSW());
-	target_surface->set_surface(*surface);
-	assert(target_surface->is_created());
+	RectInt dest_target_rect(0, 0, renddesc.get_w(), renddesc.get_h());
+	Vector dest_lt = renddesc.get_tl();
+	Vector dest_rb = renddesc.get_br();
+	if ( dest_target_rect.valid()
+	  && approximate_not_equal(dest_lt[0], dest_rb[0])
+	  && approximate_not_equal(dest_lt[1], dest_rb[1]) )
+	{
+		Matrix units_to_dest_pixels;
+		units_to_dest_pixels.m00 = (dest_target_rect.maxx - dest_target_rect.minx)/(dest_rb[0] - dest_lt[0]);
+		units_to_dest_pixels.m11 = (dest_target_rect.maxy - dest_target_rect.miny)/(dest_rb[1] - dest_lt[1]);
+		units_to_dest_pixels.m20 = dest_target_rect.minx - dest_lt[0]*units_to_dest_pixels.m00;
+		units_to_dest_pixels.m21 = dest_target_rect.miny - dest_lt[1]*units_to_dest_pixels.m11;
 
-	task->target_surface = target_surface;
-	task->target_surface->create();
-	task->init_target_rect(RectInt(VectorInt::zero(), target_surface->get_size()), renddesc.get_tl(), renddesc.get_br());
+		for(rendering::Task::List::const_reverse_iterator ri = tasks.rbegin(); ri != tasks.rend(); ++ri)
+		{
+			if (*ri && (*ri)->valid_target() && (*ri)->target_surface.type_is<rendering::SurfaceSW>())
+			{
+				RectInt src_target_rect = (*ri)->get_target_rect();
+				Vector src_lt = (*ri)->get_source_rect_lt();
+				Vector src_rb = (*ri)->get_source_rect_rb();
 
-	rendering::Task::List list;
-	list.push_back(task);
-	renderer->run(list);
+				Matrix src_pixels_to_units;
+				src_pixels_to_units.m00 = (src_rb[0] - src_lt[0])/(src_target_rect.maxx - src_target_rect.minx);
+				src_pixels_to_units.m11 = (src_rb[1] - src_lt[1])/(src_target_rect.maxy - src_target_rect.miny);
+				src_pixels_to_units.m20 = src_lt[0] - src_target_rect.minx*src_pixels_to_units.m00;
+				src_pixels_to_units.m21 = src_lt[1] - src_target_rect.miny*src_pixels_to_units.m11;
+
+				Matrix transformation = src_pixels_to_units * units_to_dest_pixels;
+
+				rendering::TaskSurfaceResampleSW::resample(
+					*surface,
+					dest_target_rect,
+					rendering::SurfaceSW::Handle::cast_dynamic((*ri)->target_surface)->get_surface(),
+					src_target_rect,
+					transformation,
+					1.f,
+					Color::INTERPOLATION_LINEAR,
+					false,
+					false,
+					1.f,
+					Color::BLEND_COMPOSITE );
+			}
+		}
+	}
 
 	//debug::DebugSurface::save_to_file(*surface, "Layer_RenderingTask");
 

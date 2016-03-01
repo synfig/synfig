@@ -35,9 +35,14 @@
 #include <signal.h>
 #endif
 
+#include <algorithm>
+
 #include "optimizerlayersw.h"
 
+#include "../surfacesw.h"
 #include "../task/tasklayersw.h"
+
+#include <synfig/renddesc.h>
 
 #endif
 
@@ -52,6 +57,12 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
+bool
+OptimizerLayerSW::renddesc_less(const RendDesc &a, const RendDesc &b)
+{
+	return fabs(a.get_pw()*a.get_ph()) > fabs(b.get_pw()*b.get_ph());
+}
+
 void
 OptimizerLayerSW::run(const RunParams& params) const
 {
@@ -60,7 +71,33 @@ OptimizerLayerSW::run(const RunParams& params) const
 	  && layer->target_surface
 	  && layer.type_equal<TaskLayer>() )
 	{
-		apply(params, create_and_assign<TaskLayerSW>(layer));
+		if (!layer->layer) { apply(params, Task::Handle()); return; }
+
+		TaskLayerSW::Handle layer_sw = create_and_assign<TaskLayerSW>(layer);
+		layer_sw->sub_tasks.clear();
+
+		if (layer->sub_task())
+		{
+			VectorInt size = layer_sw->get_target_rect().get_size();
+
+			RendDesc desc;
+			desc.set_wh(size[0], size[1]);
+			desc.set_tl(layer_sw->get_source_rect_lt());
+			desc.set_br(layer_sw->get_source_rect_rb());
+
+			std::vector<RendDesc> descs;
+			layer_sw->layer->get_sub_renddesc(desc, descs);
+			sort(descs.begin(), descs.end(), renddesc_less);
+
+			for(std::vector<RendDesc>::const_iterator i = descs.begin(); i != descs.end(); ++i)
+			{
+				Task::Handle task = layer->sub_task()->clone();
+				assign_surface<SurfaceSW>(task, i->get_w(), i->get_h(), i->get_tl(), i->get_br(), RectInt(0, 0, i->get_w(), i->get_h()));
+				layer_sw->sub_tasks.push_back(task);
+			}
+		}
+
+		apply(params, layer_sw);
 	}
 }
 

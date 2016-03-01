@@ -37,11 +37,19 @@
 
 namespace synfig
 {
+	class RendDesc;
+}
+
+namespace synfig
+{
 namespace rendering
 {
 
 class OptimizerLayerSW: public Optimizer
 {
+private:
+	static bool renddesc_less(const RendDesc &a, const RendDesc &b);
+
 public:
 	OptimizerLayerSW()
 	{
