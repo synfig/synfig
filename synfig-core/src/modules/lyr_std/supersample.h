@@ -66,6 +66,9 @@ public:
 	virtual Rect get_bounding_rect(Context context)const;
 
 	virtual Vocab get_param_vocab()const;
+
+protected:
+	virtual RendDesc get_sub_renddesc_vfunc(const RendDesc &renddesc) const;
 };
 
 }; // END of namespace lyr_std

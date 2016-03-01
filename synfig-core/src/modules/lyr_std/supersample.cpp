@@ -125,6 +125,19 @@ SuperSample::get_param(const String& param)const
 	return ValueBase();
 }
 
+RendDesc
+SuperSample::get_sub_renddesc_vfunc(const RendDesc &renddesc) const
+{
+	int width=param_width.get(int());
+	int height=param_height.get(int());
+
+	RendDesc desc(renddesc);
+	desc.clear_flags();
+	desc.set_wh(desc.get_w()*width,desc.get_h()*height);
+
+	return desc;
+}
+
 bool
 SuperSample::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
@@ -139,13 +152,10 @@ SuperSample::accelerated_render(Context context,Surface *surface,int quality, co
 	if(quality>=10)
 		return context.accelerated_render(surface,quality,renddesc,cb);
 
-	RendDesc desc(renddesc);
+	RendDesc desc = get_sub_renddesc(renddesc);
 
 	SuperCallback subcb(cb,1,9000,10000);
 	SuperCallback stagetwo(cb,9000,10000,10000);
-
-	desc.clear_flags();
-	desc.set_wh(desc.get_w()*width,desc.get_h()*height);
 
 	Surface tempsurface;
 
