@@ -336,6 +336,20 @@ Layer_SphereDistort::get_color(Context context, const Point &pos)const
 	return context.get_color(point);
 }
 
+RendDesc
+Layer_SphereDistort::get_sub_renddesc_vfunc(const RendDesc &renddesc) const
+{
+	RendDesc desc(renddesc);
+	Real pw = desc.get_pw();
+	Real ph = desc.get_ph();
+	desc.set_tl(Vector(-10.0, -10.0));
+	desc.set_br(Vector( 10.0,  10.0));
+	desc.set_wh(
+		(int)approximate_ceil(fabs((desc.get_br()[0] - desc.get_tl()[0])/pw)),
+		(int)approximate_ceil(fabs((desc.get_br()[1] - desc.get_tl()[1])/ph)) );
+	return desc;
+}
+
 #if 1
 bool
 Layer_SphereDistort::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const

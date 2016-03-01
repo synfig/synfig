@@ -87,6 +87,9 @@ public:
 
 	virtual Vocab get_param_vocab()const;
 	virtual etl::handle<Transform> get_transform()const;
+
+protected:
+	virtual RendDesc get_sub_renddesc_vfunc(const RendDesc &renddesc) const;
 }; // END of class Layer_SphereDistort
 
 }; // END of namespace lyr_std
