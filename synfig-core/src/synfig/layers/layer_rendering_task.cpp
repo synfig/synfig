@@ -81,8 +81,8 @@ Layer_RenderingTask::get_color(Context /* context */, const Point &pos)const
 			Matrix units_to_src_pixels;
 			units_to_src_pixels.m00 = (src_target_rect.maxx - src_target_rect.minx)/(src_rb[0] - src_lt[0]);
 			units_to_src_pixels.m11 = (src_target_rect.maxy - src_target_rect.miny)/(src_rb[1] - src_lt[1]);
-			units_to_src_pixels.m20 = src_lt[0] - src_target_rect.minx*units_to_src_pixels.m00;
-			units_to_src_pixels.m21 = src_lt[1] - src_target_rect.miny*units_to_src_pixels.m11;
+			units_to_src_pixels.m20 = src_target_rect.minx - src_lt[0]*units_to_src_pixels.m00;
+			units_to_src_pixels.m21 = src_target_rect.miny - src_lt[1]*units_to_src_pixels.m11;
 
 			Vector p = units_to_src_pixels.get_transformed(pos);
 			Rect src_target_rectf(src_target_rect.minx, src_target_rect.miny, src_target_rect.maxx, src_target_rect.maxy);
