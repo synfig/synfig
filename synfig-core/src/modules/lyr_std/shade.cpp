@@ -170,6 +170,34 @@ Layer_Shade::get_color(Context context, const Point &pos)const
 	return Color::blend(shade,context.get_color(pos),get_amount(),get_blend_method());
 }
 
+RendDesc
+Layer_Shade::get_sub_renddesc_vfunc(const RendDesc &renddesc) const
+{
+	RendDesc desc(renddesc);
+	Real pw = desc.get_pw();
+	Real ph = desc.get_ph();
+
+	Vector size=param_size.get(Vector());
+	int type=param_type.get(int());
+	Vector origin=param_origin.get(Vector());
+	if (type == Blur::GAUSSIAN)
+		size *= 2.0;
+
+	Rect r(renddesc.get_tl(), renddesc.get_br());
+	if (origin[0] > 0.0) r.minx -= fabs(origin[0]) + fabs(size[0]);
+	                else r.maxx += fabs(origin[0]) + fabs(size[0]);
+	if (origin[1] > 0.0) r.miny -= fabs(origin[1]) + fabs(size[1]);
+	                else r.maxy += fabs(origin[1]) + fabs(size[1]);
+
+	desc.set_tl(r.get_min());
+	desc.set_br(r.get_max());
+	desc.set_wh(
+		(int)approximate_ceil(fabs((desc.get_br()[0] - desc.get_tl()[0])/pw)),
+		(int)approximate_ceil(fabs((desc.get_br()[1] - desc.get_tl()[1])/ph)) );
+
+	return desc;
+}
+
 bool
 Layer_Shade::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
