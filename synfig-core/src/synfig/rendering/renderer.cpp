@@ -67,7 +67,7 @@ using namespace rendering;
 //#define DEBUG_TASK_LIST
 #define DEBUG_TASK_MEASURE
 //#define DEBUG_TASK_SURFACE
-#define DEBUG_OPTIMIZATION
+//#define DEBUG_OPTIMIZATION
 //#define DEBUG_OPTIMIZATION_EACH_CHANGE
 //#define DEBUG_OPTIMIZATION_MEASURE
 //#define DEBUG_OPTIMIZATION_COUNTERS
@@ -86,6 +86,7 @@ Renderer::Handle Renderer::blank;
 std::map<String, Renderer::Handle> *Renderer::renderers;
 RenderQueue *Renderer::queue;
 Renderer::DebugOptions Renderer::debug_options;
+long long Renderer::last_registered_optimizer_index = 0;
 
 
 void
@@ -135,12 +136,23 @@ Renderer::is_optimizer_registered(const Optimizer::Handle &optimizer) const
 }
 
 void
-Renderer::register_optimizer(const Optimizer::Handle &optimizer)
+Renderer::register_optimizer(Real order, const Optimizer::Handle &optimizer)
 {
 	if (optimizer) {
 		assert(!is_optimizer_registered(optimizer));
-		optimizers[optimizer->category_id].push_back(optimizer);
+		optimizer->order = order;
+		optimizer->index = ++last_registered_optimizer_index;
+		Optimizer::List &list = optimizers[optimizer->category_id];
+		list.push_back(optimizer);
+		std::sort(list.begin(), list.end(), Optimizer::less);
 	}
+}
+
+void
+Renderer::register_optimizer(const Optimizer::Handle &optimizer)
+{
+	if (optimizer)
+		register_optimizer(optimizer->order, optimizer);
 }
 
 void

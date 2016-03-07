@@ -171,6 +171,10 @@ public:
 	//! Category of this optimizer,
 	//! see enum Optimizer::CategoryId (CATEGORY_ID_XXX)
 	CategoryId category_id;
+	//! Determines the order of optimizers execution inside category
+	Real order;
+	//! Determines the order of optimizers execution inside category when order fields are equal
+	long long index;
 	//! Set of categories of optimizers which should be complete before run this optimizer,
 	//! see Optimizer::CATEGORY_XXX enumerations
 	Category depends_from;
@@ -190,8 +194,17 @@ public:
 	bool deep_first;
 
 
-	Optimizer(): category_id(), depends_from(), affects_to(), mode(), for_list(), for_task(), for_root_task(), deep_first() { }
+	Optimizer(): category_id(), order(), index(), depends_from(), affects_to(), mode(), for_list(), for_task(), for_root_task(), deep_first() { }
 	virtual ~Optimizer();
+
+	static bool less(const Handle &a, const Handle &b)
+	{
+		return !b ? false
+			 : !a ? true
+			 : a->order < b->order ? true
+			 : b->order < a->order ? false
+			 : a->index < b->index;
+	}
 
 	virtual void run(const RunParams &params) const = 0;
 

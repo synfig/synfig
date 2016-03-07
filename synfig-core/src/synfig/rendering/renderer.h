@@ -62,6 +62,7 @@ private:
 	static std::map<String, Handle> *renderers;
 	static RenderQueue *queue;
 	static DebugOptions debug_options;
+	static long long last_registered_optimizer_index;
 
 	Optimizer::List optimizers[Optimizer::CATEGORY_ID_COUNT];
 
@@ -73,6 +74,7 @@ public:
 
 	const Optimizer::List& get_optimizers(Optimizer::CategoryId category_id) const { return optimizers[category_id]; }
 	bool is_optimizer_registered(const Optimizer::Handle &optimizer) const;
+	void register_optimizer(Real order, const Optimizer::Handle &optimizer);
 	void register_optimizer(const Optimizer::Handle &optimizer);
 	void unregister_optimizer(const Optimizer::Handle &optimizer);
 
