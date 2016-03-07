@@ -168,8 +168,31 @@
 //! Marks the end of the valuenodes in the module's inventory
 #define END_VALUENODES }
 
+//! Marks the start of the optimizers in the module's inventory
+#define BEGIN_OPTIMIZERS {
+
+//! Registers a optimizer with order and other extra parameters that is defined in the module's inventory
+#define OPTIMIZER_ORDER_EXT(renderer, order, optimizer) \
+	::synfig::rendering::Renderer::get_renderer(renderer)-> \
+	 	 register_optimizer(order, optimizer);
+
+//! Registers a optimizer with extra parameters that is defined in the module's inventory
+#define OPTIMIZER_EXT(renderer, optimizer) \
+	::synfig::rendering::Renderer::get_renderer(renderer)-> \
+	 	 register_optimizer(optimizer);
+
+//! Registers a optimizer that is defined in the module's inventory
+#define OPTIMIZER(optimizer_class) \
+	OPTIMIZER_EXT("safe", new optimizer_class()) \
+	OPTIMIZER_EXT("software", new optimizer_class()) \
+	OPTIMIZER_EXT("gl", new optimizer_class())
+
+//! Marks the end of the optimizers in the module's inventory
+#define END_OPTIMIZERS }
+
 //! Marks the end of a module's inventory
 #define MODULE_INVENTORY_END	}
+
 
 /* === T Y P E D E F S ===================================================== */
 

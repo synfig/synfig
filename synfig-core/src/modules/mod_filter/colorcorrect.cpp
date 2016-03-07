@@ -44,7 +44,7 @@
 #include <synfig/valuenode.h>
 #include <synfig/cairo_renddesc.h>
 
-#include <synfig/rendering/module/common/task/taskcolorcorrect.h>
+#include <synfig/rendering/software/surfacesw.h>
 
 #endif
 
@@ -53,6 +53,8 @@
 using namespace etl;
 using namespace std;
 using namespace synfig;
+using namespace modules;
+using namespace mod_filter;
 
 /* === G L O B A L S ======================================================= */
 
@@ -68,6 +70,172 @@ SYNFIG_LAYER_SET_CVS_ID(Layer_ColorCorrect,"$Id$");
 /* === M E T H O D S ======================================================= */
 
 /* === E N T R Y P O I N T ================================================= */
+
+void
+TaskColorCorrectSW::split(const RectInt &sub_target_rect)
+{
+	trunc_target_rect(sub_target_rect);
+	if (valid_target() && sub_task() && sub_task()->valid_target())
+	{
+		sub_task() = sub_task()->clone();
+		sub_task()->trunc_target_rect(
+			get_target_rect()
+			- get_target_offset()
+			- get_offset() );
+	}
+}
+
+void
+TaskColorCorrectSW::correct_pixel(Color &dst, const Color &src, const Angle &hue_adjust, ColorReal shift, ColorReal amplifier, const Gamma &gamma) const
+{
+	static const double precision = 1e-8;
+
+	dst = src;
+
+	if (fabs(gamma.get_gamma_r() - 1.0) > precision)
+	{
+		if (dst.get_r() < 0)
+			dst.set_r(-gamma.r_F32_to_F32(-dst.get_r()));
+		else
+			dst.set_r(gamma.r_F32_to_F32(dst.get_r()));
+	}
+
+	if (fabs(gamma.get_gamma_g() - 1.0) > precision)
+	{
+		if (dst.get_g() < 0)
+			dst.set_g(-gamma.g_F32_to_F32(-dst.get_g()));
+		else
+			dst.set_g(gamma.g_F32_to_F32(dst.get_g()));
+	}
+
+	if (fabs(gamma.get_gamma_b() - 1.0) > precision)
+	{
+		if (dst.get_b() < 0)
+			dst.set_b(-gamma.b_F32_to_F32(-dst.get_b()));
+		else
+			dst.set_b(gamma.b_F32_to_F32(dst.get_b()));
+	}
+
+	assert(!isnan(dst.get_r()));
+	assert(!isnan(dst.get_g()));
+	assert(!isnan(dst.get_b()));
+
+	if (fabs(amplifier - 1.0) > precision)
+	{
+		dst.set_r(dst.get_r()*amplifier);
+		dst.set_g(dst.get_g()*amplifier);
+		dst.set_b(dst.get_b()*amplifier);
+	}
+
+	if (fabs(shift) > precision)
+	{
+		// Adjust R Channel Brightness
+		if (dst.get_r() > -shift)
+			dst.set_r(dst.get_r() + shift);
+		else
+		if(dst.get_r() < shift)
+			dst.set_r(dst.get_r() - shift);
+		else
+			dst.set_r(0);
+
+		// Adjust G Channel Brightness
+		if (dst.get_g() > -shift)
+			dst.set_g(dst.get_g() + shift);
+		else
+		if(dst.get_g() < shift)
+			dst.set_g(dst.get_g() - shift);
+		else
+			dst.set_g(0);
+
+		// Adjust B Channel Brightness
+		if (dst.get_b() > -shift)
+			dst.set_b(dst.get_b() + shift);
+		else
+		if(dst.get_b() < shift)
+			dst.set_b(dst.get_b() - shift);
+		else
+			dst.set_b(0);
+	}
+
+	// Return the color, adjusting the hue if necessary
+	if (!!hue_adjust)
+		dst.rotate_uv(hue_adjust);
+}
+
+bool
+TaskColorCorrectSW::run(RunParams & /* params */) const
+{
+	const synfig::Surface &a =
+		rendering::SurfaceSW::Handle::cast_dynamic( sub_task()->target_surface )->get_surface();
+	synfig::Surface &c =
+		rendering::SurfaceSW::Handle::cast_dynamic( target_surface )->get_surface();
+
+	//debug::DebugSurface::save_to_file(a, "TaskClampSW__run__a");
+
+	RectInt r = get_target_rect();
+	if (r.valid())
+	{
+		VectorInt offset = get_offset();
+		RectInt ra = sub_task()->get_target_rect() + r.get_min() + offset;
+		if (ra.valid())
+		{
+			etl::set_intersect(ra, ra, r);
+			if (ra.valid())
+			{
+				ColorReal amplifier = (ColorReal)(contrast*exp(exposure));
+				ColorReal shift = (ColorReal)((brightness - 0.5)*contrast + 0.5);
+				Gamma g(fabs(gamma) < 1e-8 ? 1.0 : 1.0/gamma);
+
+				synfig::Surface::pen pc = c.get_pen(ra.minx, ra.maxx);
+				synfig::Surface::pen pa = c.get_pen(ra.minx, ra.maxx);
+				for(int y = ra.miny; y < ra.maxy; ++y)
+				{
+					const Color *ca = &a[y - r.miny - offset[1]][ra.minx - r.minx - offset[0]];
+					Color *cc = &c[y][ra.minx];
+					for(int x = ra.minx; x < ra.maxx; ++x, ++ca, ++cc)
+						correct_pixel(*cc, *ca, hue_adjust, shift, amplifier, g);
+				}
+			}
+		}
+	}
+
+	//debug::DebugSurface::save_to_file(c, "TaskClampSW__run__c");
+
+	return true;
+}
+
+
+void
+OptimizerColorCorrectSW::run(const RunParams& params) const
+{
+	TaskColorCorrect::Handle color_correct = TaskColorCorrect::Handle::cast_dynamic(params.ref_task);
+	if ( color_correct
+	  && color_correct->target_surface
+	  && color_correct.type_equal<TaskColorCorrect>() )
+	{
+		TaskColorCorrectSW::Handle color_correct_sw;
+		init_and_assign_all<rendering::SurfaceSW>(color_correct_sw, color_correct);
+
+		// TODO: Are we really need to check 'is_temporary' flag?
+		if ( color_correct_sw->sub_task()->target_surface->is_temporary )
+		{
+			color_correct_sw->sub_task()->target_surface = color_correct_sw->target_surface;
+			color_correct_sw->sub_task()->move_target_rect(
+				color_correct_sw->get_target_offset() );
+		}
+		else
+		{
+			color_correct_sw->sub_task()->set_target_origin( VectorInt::zero() );
+			color_correct_sw->sub_task()->target_surface->set_size(
+				color_correct_sw->sub_task()->get_target_rect().maxx,
+				color_correct_sw->sub_task()->get_target_rect().maxy );
+		}
+		assert( color_correct_sw->sub_task()->check() );
+
+		apply(params, color_correct_sw);
+	}
+}
+
 
 Layer_ColorCorrect::Layer_ColorCorrect():
 	param_hue_adjust(ValueBase(Angle::zero())),
@@ -339,7 +507,7 @@ Layer_ColorCorrect::get_full_bounding_rect(Context context)const
 rendering::Task::Handle
 Layer_ColorCorrect::build_rendering_task_vfunc(Context context)const
 {
-	rendering::TaskColorCorrect::Handle task_color_correct(new rendering::TaskColorCorrect());
+	TaskColorCorrect::Handle task_color_correct(new TaskColorCorrect());
 	task_color_correct->hue_adjust = param_hue_adjust.get(Angle());
 	task_color_correct->brightness = param_brightness.get(Real());
 	task_color_correct->contrast = param_contrast.get(Real());

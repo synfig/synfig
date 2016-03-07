@@ -61,9 +61,6 @@
 #include "../software/optimizer/optimizerlayersw.h"
 #include "../software/optimizer/optimizermeshsw.h"
 
-#include "../module/software/optimizer/optimizerclampsw.h"
-#include "../module/software/optimizer/optimizercolorcorrectsw.h"
-
 #endif
 
 using namespace synfig;
@@ -88,9 +85,6 @@ RendererGL::RendererGL()
 	register_optimizer(new OptimizerContourGL());
 	register_optimizer(new OptimizerLayerSW());
 	register_optimizer(new OptimizerSurfaceResampleGL());
-
-	register_optimizer(new OptimizerClampSW());
-	register_optimizer(new OptimizerColorCorrectSW());
 
 	register_optimizer(new OptimizerSurfaceConvert());
 

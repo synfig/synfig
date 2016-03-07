@@ -55,9 +55,6 @@
 #include "optimizer/optimizermeshsw.h"
 #include "optimizer/optimizersurfaceresamplesw.h"
 
-#include "../module/software/optimizer/optimizerclampsw.h"
-#include "../module/software/optimizer/optimizercolorcorrectsw.h"
-
 #endif
 
 using namespace synfig;
@@ -83,9 +80,6 @@ RendererSafe::RendererSafe()
 	register_optimizer(new OptimizerContourSW());
 	register_optimizer(new OptimizerLayerSW());
 	register_optimizer(new OptimizerSurfaceResampleSW());
-
-	register_optimizer(new OptimizerClampSW());
-	register_optimizer(new OptimizerColorCorrectSW());
 
 	register_optimizer(new OptimizerSurfaceConvert());
 

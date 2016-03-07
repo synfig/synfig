@@ -40,6 +40,8 @@
 #include <synfig/string.h>
 #include <synfig/canvas.h>
 
+#include <synfig/rendering/renderer.h>
+
 #include "blur.h"
 #include "colorcorrect.h"
 #include "halftone2.h"
@@ -48,6 +50,10 @@
 #include "radialblur.h"
 
 #endif
+
+using namespace synfig;
+using namespace modules;
+using namespace mod_filter;
 
 /* === E N T R Y P O I N T ================================================= */
 
@@ -68,4 +74,8 @@ MODULE_INVENTORY_BEGIN(libmod_filter)
 		LAYER(RadialBlur)
 		LAYER(Layer_ColorCorrect)
 	END_LAYERS
+	BEGIN_OPTIMIZERS
+		OPTIMIZER(OptimizerColorCorrectSW)
+	END_OPTIMIZERS
+	rendering::Renderer::get_renderer("safe")->register_optimizer(new OptimizerColorCorrectSW());
 MODULE_INVENTORY_END

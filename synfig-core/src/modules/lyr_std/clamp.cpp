@@ -44,7 +44,7 @@
 #include <synfig/value.h>
 #include <synfig/valuenode.h>
 
-#include <synfig/rendering/module/common/task/taskclamp.h>
+#include <synfig/rendering/software/surfacesw.h>
 
 #endif
 
@@ -70,6 +70,144 @@ SYNFIG_LAYER_SET_CVS_ID(Layer_Clamp,"$Id$");
 /* === M E T H O D S ======================================================= */
 
 /* === E N T R Y P O I N T ================================================= */
+
+
+void
+TaskClampSW::split(const RectInt &sub_target_rect)
+{
+	trunc_target_rect(sub_target_rect);
+	if (valid_target() && sub_task() && sub_task()->valid_target())
+	{
+		sub_task() = sub_task()->clone();
+		sub_task()->trunc_target_rect(
+			get_target_rect()
+			- get_target_offset()
+			- get_offset() );
+	}
+}
+
+void
+TaskClampSW::clamp_pixel(Color &dst, const Color &src) const
+{
+	if (fabs(src.get_a()) < 1e-8)
+		{ dst = Color::alpha(); return; }
+
+	dst = src;
+
+	if (invert_negative)
+	{
+		if (dst.get_a() < floor)
+			dst = -dst;
+
+		if(dst.get_r() < floor)
+		{
+			dst.set_g(dst.get_g() - dst.get_r());
+			dst.set_b(dst.get_b() - dst.get_r());
+			dst.set_r(floor);
+		}
+
+		if(dst.get_g() < floor)
+		{
+			dst.set_r(dst.get_r() - dst.get_g());
+			dst.set_b(dst.get_b() - dst.get_g());
+			dst.set_g(floor);
+		}
+
+		if(dst.get_b() < floor)
+		{
+			dst.set_g(dst.get_g() - dst.get_b());
+			dst.set_r(dst.get_r() - dst.get_b());
+			dst.set_b(floor);
+		}
+	}
+	else
+	if (clamp_floor)
+	{
+		if (dst.get_r() < floor) dst.set_r(floor);
+		if (dst.get_g() < floor) dst.set_g(floor);
+		if (dst.get_b() < floor) dst.set_b(floor);
+		if (dst.get_a() < floor) dst.set_a(floor);
+	}
+
+	if (clamp_ceiling)
+	{
+		if (dst.get_r() > ceiling) dst.set_r(ceiling);
+		if (dst.get_g() > ceiling) dst.set_g(ceiling);
+		if (dst.get_b() > ceiling) dst.set_b(ceiling);
+		if (dst.get_a() > ceiling) dst.set_a(ceiling);
+	}
+}
+
+bool
+TaskClampSW::run(RunParams & /* params */) const
+{
+	const synfig::Surface &a =
+		rendering::SurfaceSW::Handle::cast_dynamic( sub_task()->target_surface )->get_surface();
+	synfig::Surface &c =
+		rendering::SurfaceSW::Handle::cast_dynamic( target_surface )->get_surface();
+
+	//debug::DebugSurface::save_to_file(a, "TaskClampSW__run__a");
+
+	RectInt r = get_target_rect();
+	if (r.valid())
+	{
+		VectorInt offset = get_offset();
+		RectInt ra = sub_task()->get_target_rect() + r.get_min() + get_offset();
+		if (ra.valid())
+		{
+			etl::set_intersect(ra, ra, r);
+			if (ra.valid())
+			{
+				synfig::Surface::pen pc = c.get_pen(ra.minx, ra.maxx);
+				synfig::Surface::pen pa = c.get_pen(ra.minx, ra.maxx);
+				for(int y = ra.miny; y < ra.maxy; ++y)
+				{
+					const Color *ca = &a[y - r.miny + offset[1]][ra.minx - r.minx + offset[0]];
+					Color *cc = &c[y][ra.minx];
+					for(int x = ra.minx; x < ra.maxx; ++x, ++ca, ++cc)
+						clamp_pixel(*cc, *ca);
+				}
+			}
+		}
+	}
+
+	//debug::DebugSurface::save_to_file(c, "TaskClampSW__run__c");
+
+	return true;
+}
+
+
+void
+OptimizerClampSW::run(const RunParams& params) const
+{
+	TaskClamp::Handle clamp = TaskClamp::Handle::cast_dynamic(params.ref_task);
+	if ( clamp
+	  && clamp->target_surface
+	  && clamp.type_equal<TaskClamp>() )
+	{
+		TaskClampSW::Handle clamp_sw;
+		init_and_assign_all<rendering::SurfaceSW>(clamp_sw, clamp);
+
+		// TODO: Are we really need to check 'is_temporary' flag?
+		if ( clamp_sw->sub_task()->target_surface->is_temporary )
+		{
+			clamp_sw->sub_task()->target_surface = clamp_sw->target_surface;
+			clamp_sw->sub_task()->move_target_rect(
+					clamp_sw->get_target_offset() );
+		}
+		else
+		{
+			clamp_sw->sub_task()->set_target_origin( VectorInt::zero() );
+			clamp_sw->sub_task()->target_surface->set_size(
+				clamp_sw->sub_task()->get_target_rect().maxx,
+				clamp_sw->sub_task()->get_target_rect().maxy );
+		}
+		assert( clamp_sw->sub_task()->check() );
+
+		apply(params, clamp_sw);
+	}
+}
+
 
 Layer_Clamp::Layer_Clamp():
 	param_invert_negative(ValueBase(false)),
@@ -229,7 +367,7 @@ Layer_Clamp::get_full_bounding_rect(Context context)const
 rendering::Task::Handle
 Layer_Clamp::build_rendering_task_vfunc(Context context)const
 {
-	rendering::TaskClamp::Handle task_clamp(new rendering::TaskClamp());
+	TaskClamp::Handle task_clamp(new TaskClamp());
 	task_clamp->invert_negative = param_invert_negative.get(bool());
 	task_clamp->clamp_ceiling = param_clamp_ceiling.get(bool());
 	task_clamp->floor = param_floor.get(Real());

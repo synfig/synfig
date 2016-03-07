@@ -33,6 +33,11 @@
 #include <synfig/gamma.h>
 #include <synfig/rect.h>
 
+#include <synfig/rendering/optimizer.h>
+#include <synfig/rendering/common/task/taskpixelprocessor.h>
+#include <synfig/rendering/common/task/tasksplittable.h>
+#include <synfig/rendering/software/task/tasksw.h>
+
 /* === M A C R O S ========================================================= */
 
 /* === T Y P E D E F S ===================================================== */
@@ -40,6 +45,56 @@
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 namespace synfig {
+namespace modules {
+namespace mod_filter {
+
+class TaskColorCorrect: public rendering::TaskPixelProcessor
+{
+public:
+	typedef etl::handle<TaskColorCorrect> Handle;
+
+	Angle hue_adjust;
+	Real brightness;
+	Real contrast;
+	Real exposure;
+	Real gamma;
+
+	TaskColorCorrect():
+		hue_adjust(Angle::zero()),
+		brightness(0.0),
+		contrast(1.0),
+		exposure(0.0),
+		gamma(1.0) { }
+	Task::Handle clone() const { return clone_pointer(this); }
+};
+
+
+class TaskColorCorrectSW: public TaskColorCorrect, public rendering::TaskSW, public rendering::TaskSplittable
+{
+private:
+	void correct_pixel(Color &dst, const Color &src, const Angle &hue_djust, ColorReal shift, ColorReal amplifier, const Gamma &gamma) const;
+
+public:
+	typedef etl::handle<TaskColorCorrectSW> Handle;
+	Task::Handle clone() const { return clone_pointer(this); }
+	virtual void split(const RectInt &sub_target_rect);
+	virtual bool run(RunParams &params) const;
+};
+
+
+class OptimizerColorCorrectSW: public rendering::Optimizer
+{
+public:
+	OptimizerColorCorrectSW()
+	{
+		category_id = CATEGORY_ID_SPECIALIZE;
+		depends_from = CATEGORY_COMMON & CATEGORY_PRE_SPECIALIZE;
+		for_task = true;
+	}
+
+	virtual void run(const RunParams &params) const;
+};
+
 
 class Layer_ColorCorrect : public Layer
 {
@@ -82,6 +137,8 @@ public:
 	virtual rendering::Task::Handle build_rendering_task_vfunc(Context context)const;
 }; // END of class Layer_ColorCorrect
 
+}; // END of namespace mod_filter
+}; // END of namespace modules
 }; // END of namespace synfig
 
 /* === E N D =============================================================== */

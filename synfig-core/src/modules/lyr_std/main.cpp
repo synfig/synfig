@@ -39,6 +39,7 @@
 
 #include <synfig/module.h>
 #include <synfig/string.h>
+#include <synfig/rendering/renderer.h>
 
 #include "zoom.h"
 //#include "blur.h"
@@ -58,8 +59,6 @@
 #include "xorpattern.h"
 #include "twirl.h"
 #include "sphere_distort.h"
-
-
 
 #include "shade.h"
 #include "bevel.h"
@@ -114,4 +113,7 @@ MODULE_INVENTORY_BEGIN(liblyr_std)
 		LAYER(CurveWarp)
 		LAYER(Layer_FreeTime)
 	END_LAYERS
+	BEGIN_OPTIMIZERS
+		OPTIMIZER(OptimizerClampSW)
+	END_OPTIMIZERS
 MODULE_INVENTORY_END

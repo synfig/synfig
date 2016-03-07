@@ -65,9 +65,6 @@
 #include "optimizer/optimizermeshsw.h"
 #include "optimizer/optimizersurfaceresamplesw.h"
 
-#include "../module/software/optimizer/optimizerclampsw.h"
-#include "../module/software/optimizer/optimizercolorcorrectsw.h"
-
 #include "function/fft.h"
 
 #endif
@@ -95,9 +92,6 @@ RendererSW::RendererSW()
 	register_optimizer(new OptimizerContourSW());
 	register_optimizer(new OptimizerLayerSW());
 	register_optimizer(new OptimizerSurfaceResampleSW());
-
-	register_optimizer(new OptimizerClampSW());
-	register_optimizer(new OptimizerColorCorrectSW());
 
 	register_optimizer(new OptimizerBlendZero());
 	register_optimizer(new OptimizerBlendBlend());
