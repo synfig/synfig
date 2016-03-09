@@ -112,6 +112,9 @@ public:
 
    	ParamDesc(const ValueBase&, const String &a);
 
+   	ParamDesc(const String &name, const ParamDesc &blank)
+   		{ *this = blank; name_ = name; }
+
 	/*
  --	** -- M E M B E R   F U N C T I O N S -------------------------------------
 	*/
