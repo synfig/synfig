@@ -142,7 +142,7 @@ FilledRect::set_param(const String & param, const ValueBase &value)
 		  });
 
 	if (param == "color")
-		return Layer_Polygon::set_param(param, value);
+		return Layer_Shape::set_param(param, value);
 
 	return Layer_Composite::set_param(param,value);
 }
@@ -161,7 +161,7 @@ FilledRect::get_param(const String &param)const
 	EXPORT_VERSION();
 
 	if (param == "color")
-		return Layer_Polygon::get_param(param);
+		return Layer_Shape::get_param(param);
 
 	return Layer_Composite::get_param(param);
 }
@@ -170,9 +170,9 @@ Layer::Vocab
 FilledRect::get_param_vocab()const
 {
 	Layer::Vocab ret(Layer_Composite::get_param_vocab());
-	Layer::Vocab polygon(Layer_Polygon::get_param_vocab());
+	Layer::Vocab shape(Layer_Shape::get_param_vocab());
 
-	ret.push_back(polygon["color"]);
+	ret.push_back(shape["color"]);
 	ret.push_back(ParamDesc("point1")
 		.set_local_name(_("Point 1"))
 		.set_description(_("First corner of the rectangle"))

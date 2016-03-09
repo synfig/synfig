@@ -41,7 +41,7 @@ using namespace etl;
 
 /* -- S T R U C T S & C L A S S E S ----------------------------------------- */
 
-class Circle : public synfig::Layer_Polygon
+class Circle : public synfig::Layer_Shape
 {
 	SYNFIG_LAYER_MODULE_EXT
 private:

@@ -102,10 +102,10 @@ Circle::set_param(const String &param, const ValueBase &value)
 	  || param == "invert"
 	  || param == "origin"
 	  || param == "feather" )
-		return Layer_Polygon::set_param(param, value);
+		return Layer_Shape::set_param(param, value);
 
 	if ( param == "pos" )
-		return Layer_Polygon::set_param("origin", value);
+		return Layer_Shape::set_param("origin", value);
 
 	return Layer_Composite::set_param(param,value);
 }
@@ -122,10 +122,10 @@ Circle::get_param(const String &param)const
 	  || param == "invert"
 	  || param == "origin"
 	  || param == "feather" )
-		return Layer_Polygon::get_param(param);
+		return Layer_Shape::get_param(param);
 
 	if ( param == "pos" )
-		return Layer_Polygon::get_param("origin");
+		return Layer_Shape::get_param("origin");
 
 	return Layer_Composite::get_param(param);
 }
@@ -134,18 +134,18 @@ Layer::Vocab
 Circle::get_param_vocab()const
 {
 	Layer::Vocab ret(Layer_Composite::get_param_vocab());
-	Layer::Vocab polygon(Layer_Polygon::get_param_vocab());
+	Layer::Vocab shape(Layer_Shape::get_param_vocab());
 
-	ret.push_back(polygon["color"]);
+	ret.push_back(shape["color"]);
 	ret.push_back(ParamDesc("radius")
 		.set_local_name(_("Radius"))
 		.set_origin("origin")
 		.set_description(_("Radius of the circle"))
 		.set_is_distance()
 	);
-	ret.push_back(polygon["feather"]);
-	ret.push_back(polygon["origin"]);
-	ret.push_back(polygon["invert"]);
+	ret.push_back(shape["feather"]);
+	ret.push_back(shape["origin"]);
+	ret.push_back(shape["invert"]);
 
 	return ret;
 }

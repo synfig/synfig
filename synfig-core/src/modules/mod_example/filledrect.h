@@ -27,7 +27,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/layers/layer_polygon.h>
+#include <synfig/layers/layer_shape.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -39,7 +39,7 @@ using namespace synfig;
 using namespace std;
 using namespace etl;
 
-class FilledRect : public Layer_Polygon
+class FilledRect : public Layer_Shape
 {
 	SYNFIG_LAYER_MODULE_EXT
 
