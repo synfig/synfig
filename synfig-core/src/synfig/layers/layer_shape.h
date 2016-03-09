@@ -73,6 +73,7 @@ private:
 	struct Intersector;
 	Intersector	*edge_table;
 	rendering::Contour::Handle contour;
+	Vector feather;
 
 	mutable Time last_sync_time;
 	mutable Real last_sync_outline_grow;
@@ -94,6 +95,9 @@ protected:
 	void conic_to(Real x, Real y, Real x1, Real y1);
 	void cubic_to(Real x, Real y, Real x1, Real y1, Real x2, Real y2);
 	void close();
+
+	Vector get_feather() const { return feather; }
+	void set_feather(const Vector &x) { feather = x; }
 
 public:
 	void sync(bool force = false) const;

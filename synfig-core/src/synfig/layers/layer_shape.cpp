@@ -56,6 +56,7 @@
 #include <synfig/rendering/common/task/taskblur.h>
 #include <synfig/rendering/common/task/taskcontour.h>
 #include <synfig/rendering/software/function/contour.h>
+#include <synfig/rendering/software/function/blur.h>
 
 #endif
 
@@ -857,6 +858,7 @@ Layer_Shape::set_param(const String & param, const ValueBase &value)
 			feather=0;
 			param_feather.set(feather);
 		}
+		set_feather(Vector(feather, feather));
 	}
 	);
 
@@ -1280,12 +1282,13 @@ Layer_Shape::build_composite_task_vfunc(ContextParams /*context_params*/)const
 	task_contour->contour->winding_style = (rendering::Contour::WindingStyle)param_winding_style.get(int());
 	task = task_contour;
 
-	Real feather = param_feather.get(Real());
-	if (fabs(feather) > 1e-8)
+	rendering::Blur::Type blurtype = (rendering::Blur::Type)param_blurtype.get(int());
+	Vector feather = get_feather();
+	if (feather != Vector::zero())
 	{
 		rendering::TaskBlur::Handle task_blur(new rendering::TaskBlur());
-		task_blur->blur.size = Vector(feather, feather);
-		task_blur->blur.type = (rendering::Blur::Type)param_blurtype.get(int());
+		task_blur->blur.size = feather;
+		task_blur->blur.type = blurtype;
 		task_blur->sub_task() = task;
 		task = task_blur;
 	}
@@ -1297,9 +1300,12 @@ Rect
 Layer_Shape::get_bounding_rect()const
 {
 	sync();
-	Point origin=param_origin.get(Point());
-	bool invert =param_invert.get(bool(true));
-	Real feather=param_feather.get(Real());
+	Point origin = param_origin.get(Point());
+	bool invert = param_invert.get(bool(true));
+	rendering::Blur::Type blurtype = (rendering::Blur::Type)param_blurtype.get(int());
+	Vector feather = get_feather();
+
+	Real feather_amplifier = rendering::software::Blur::get_size_amplifier(blurtype);
 
 	if(invert)
 		return Rect::full_plane();
@@ -1308,8 +1314,9 @@ Layer_Shape::get_bounding_rect()const
 		return Rect::zero();
 
 	Rect bounds(edge_table->aabb+origin);
-	bounds.expand(max((bounds.get_min() - bounds.get_max()).mag()*0.01,
-					  feather));
+	bounds.expand((bounds.get_min() - bounds.get_max()).mag()*0.01);
+	bounds.expand_x( fabs(feather_amplifier * feather[0]) );
+	bounds.expand_x( fabs(feather_amplifier * feather[1]) );
 
 	return bounds;
 }
