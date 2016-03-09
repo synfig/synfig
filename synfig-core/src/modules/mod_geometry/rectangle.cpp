@@ -81,7 +81,7 @@ Rectangle::Rectangle():
 }
 
 void
-Rectangle::update_rect()
+Rectangle::sync_vfunc()
 {
 	Real expand = fabs(param_expand.get(Real()));
 	Point p0 = param_point1.get(Point());
@@ -102,9 +102,9 @@ Rectangle::update_rect()
 bool
 Rectangle::set_param(const String & param, const ValueBase &value)
 {
-	IMPORT_VALUE_PLUS(param_point1, { update_rect(); } );
-	IMPORT_VALUE_PLUS(param_point2, { update_rect(); } );
-	IMPORT_VALUE_PLUS(param_expand, { update_rect(); } );
+	IMPORT_VALUE_PLUS(param_point1, force_sync());
+	IMPORT_VALUE_PLUS(param_point2, force_sync());
+	IMPORT_VALUE_PLUS(param_expand, force_sync());
 
 	if ( param == "color"
 	  || param == "invert" )

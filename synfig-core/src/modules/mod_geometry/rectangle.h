@@ -49,7 +49,7 @@ private:
 	synfig::ValueBase param_expand;
 
 protected:
-	void update_rect();
+	virtual void sync_vfunc();
 
 public:
 	Rectangle();
