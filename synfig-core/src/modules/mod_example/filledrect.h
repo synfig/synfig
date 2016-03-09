@@ -63,6 +63,7 @@ protected:
 public:
 	FilledRect();
 
+	virtual bool set_shape_param(const synfig::String & param, const synfig::ValueBase &value);
 	virtual bool set_param(const String & param, const ValueBase &value);
 	virtual ValueBase get_param(const String & param)const;
 	virtual Vocab get_param_vocab()const;

@@ -54,6 +54,7 @@ protected:
 public:
 	Rectangle();
 
+	virtual bool set_shape_param(const synfig::String & param, const synfig::ValueBase &value);
 	virtual bool set_param(const synfig::String & param, const synfig::ValueBase &value);
 	virtual synfig::ValueBase get_param(const synfig::String & param)const;
 

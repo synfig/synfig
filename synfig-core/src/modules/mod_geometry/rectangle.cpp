@@ -37,15 +37,6 @@
 #include <synfig/localization.h>
 #include <synfig/general.h>
 
-#include <synfig/context.h>
-#include <synfig/paramdesc.h>
-#include <synfig/renddesc.h>
-#include <synfig/string.h>
-#include <synfig/surface.h>
-#include <synfig/time.h>
-#include <synfig/value.h>
-#include <synfig/valuenode.h>
-
 #include "rectangle.h"
 
 #endif
@@ -100,11 +91,19 @@ Rectangle::sync_vfunc()
 }
 
 bool
+Rectangle::set_shape_param(const synfig::String & param, const synfig::ValueBase &value)
+{
+	IMPORT_VALUE(param_point1);
+	IMPORT_VALUE(param_point2);
+	IMPORT_VALUE(param_expand);
+	return false;
+}
+
+bool
 Rectangle::set_param(const String & param, const ValueBase &value)
 {
-	IMPORT_VALUE_PLUS(param_point1, force_sync());
-	IMPORT_VALUE_PLUS(param_point2, force_sync());
-	IMPORT_VALUE_PLUS(param_expand, force_sync());
+	if (set_shape_param(param, value))
+		{ force_sync(); return true; }
 
 	if ( param == "color"
 	  || param == "invert" )
@@ -134,31 +133,23 @@ Layer::Vocab
 Rectangle::get_param_vocab()const
 {
 	Layer::Vocab ret(Layer_Composite::get_param_vocab());
+	Layer::Vocab polygon(Layer_Polygon::get_param_vocab());
 
-	ret.push_back(ParamDesc("color")
-		.set_local_name(_("Color"))
-		.set_description(_("Fill color of the layer"))
-	);
-
+	ret.push_back(polygon["color"]);
 	ret.push_back(ParamDesc("point1")
 		.set_local_name(_("Point 1"))
 		.set_box("point2")
 		.set_description(_("First corner of the rectangle"))
 	);
-
 	ret.push_back(ParamDesc("point2")
 		.set_local_name(_("Point 2"))
 		.set_description(_("Second corner of the rectangle"))
 	);
-
 	ret.push_back(ParamDesc("expand")
 		.set_is_distance()
 		.set_local_name(_("Expand amount"))
 	);
-
-	ret.push_back(ParamDesc("invert")
-		.set_local_name(_("Invert the rectangle"))
-	);
+	ret.push_back(polygon["invert"]);
 
 	return ret;
 }
