@@ -62,6 +62,7 @@ public:
 
 	~Layer_Polygon();
 
+protected:
 	//! Adds a polygon to the layer
 	/*!	The edge data is automatically added to the
 	**	EdgeTable, so there is no need to call sync()
@@ -77,11 +78,13 @@ public:
 	//! Clears out any polygon data
 	void clear_stored_polygon();
 
+public:
 	virtual bool set_param(const String & param, const synfig::ValueBase &value);
 
 	virtual ValueBase get_param(const String & param)const;
 
 	virtual Vocab get_param_vocab()const;
+
 private:
 	class 		PolySpan;
 	bool render_polyspan(Surface *surface,PolySpan &polyspan)const;

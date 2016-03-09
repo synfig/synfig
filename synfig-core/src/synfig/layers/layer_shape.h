@@ -84,6 +84,7 @@ public:
 
 	~Layer_Shape();
 
+protected:
 	//! Clears out any data
 	/*!	Also clears out the Intersector
 	*/
@@ -94,6 +95,7 @@ public:
 	void cubic_to(Real x, Real y, Real x1, Real y1, Real x2, Real y2);
 	void close();
 
+public:
 	void sync(bool force = false) const;
 	void force_sync() const { sync(true); }
 
