@@ -27,11 +27,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/layers/layer_composite.h>
-#include <synfig/color.h>
-#include <synfig/vector.h>
-#include <synfig/value.h>
-#include <list>
+#include <synfig/layers/layer_polygon.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -43,13 +39,11 @@ using namespace synfig;
 using namespace std;
 using namespace etl;
 
-class FilledRect : public Layer_Composite, public Layer_NoDeform
+class FilledRect : public Layer_Polygon
 {
 	SYNFIG_LAYER_MODULE_EXT
 
 private:
-	//! Parameter: (Color)
-	ValueBase param_color;
 	//! Parameter: (Point)
 	ValueBase param_point1;
 	//! Parameter: (Point)
@@ -63,24 +57,15 @@ private:
 	//! Parameter: (bool)
 	ValueBase param_bevCircle;
 
-	bool get_color(const Point &pos, Color &out, Real &outamount)const;
+protected:
+	virtual void sync_vfunc();
 
 public:
-
 	FilledRect();
 
 	virtual bool set_param(const String & param, const ValueBase &value);
-
 	virtual ValueBase get_param(const String & param)const;
-
-	virtual Color get_color(Context context, const Point &pos)const;
-
-	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
-	virtual bool accelerated_cairorender(Context context, cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
-
 	virtual Vocab get_param_vocab()const;
-
-	virtual Layer::Handle hit_check(Context context, const Point &point)const;
 }; // END of class FilledRect
 
 /* === E N D =============================================================== */
