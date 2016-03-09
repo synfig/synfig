@@ -28,11 +28,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/layers/layer_composite.h>
-#include <synfig/color.h>
-#include <synfig/vector.h>
-#include <synfig/value.h>
-#include <list>
+#include <synfig/layers/layer_polygon.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -40,41 +36,26 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-class Rectangle : public synfig::Layer_Composite, public synfig::Layer_NoDeform
+class Rectangle : public synfig::Layer_Polygon
 {
 	SYNFIG_LAYER_MODULE_EXT
 
 private:
-	//! Parameter: (Color)
-	synfig::ValueBase param_color;
 	//! Parameter: (Point)
 	synfig::ValueBase param_point1;
 	//! Parameter: (Point)
 	synfig::ValueBase param_point2;
 	//! Parameter: (Real)
 	synfig::ValueBase param_expand;
-	//! Parameter: (bool)
-	synfig::ValueBase param_invert;
+
+protected:
+	void update_rect();
 
 public:
-
 	Rectangle();
 
 	virtual bool set_param(const synfig::String & param, const synfig::ValueBase &value);
-
 	virtual synfig::ValueBase get_param(const synfig::String & param)const;
-
-	virtual bool is_solid_color()const;
-
-	virtual synfig::Color get_color(synfig::Context context, const synfig::Point &pos)const;
-
-	virtual bool accelerated_render(synfig::Context context,synfig::Surface *surface,int quality, const synfig::RendDesc &renddesc, synfig::ProgressCallback *cb)const;
-	virtual bool accelerated_cairorender(synfig::Context context, cairo_t *cr, int quality, const synfig::RendDesc &renddesc, synfig::ProgressCallback *cb)const;
-
-	synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;
-
-	virtual synfig::Rect get_bounding_rect()const;
-	virtual synfig::Rect get_full_bounding_rect(synfig::Context context)const;
 
 	virtual Vocab get_param_vocab()const;
 }; // END of class FilledRect
