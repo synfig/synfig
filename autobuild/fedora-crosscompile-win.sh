@@ -55,18 +55,33 @@ else
 fi
 
 [ -e $SRCPREFIX ] || mkdir -p $SRCPREFIX
-[ -e $CACHE ] || mkdir -p $CACHE
+[ -e $CACHEDIR ] || mkdir -p $CACHEDIR
 
 export VERSION=`cat ${SCRIPTPATH}/../synfig-core/configure.ac |egrep "AC_INIT\(\[Synfig Core\],"| sed "s|.*Core\],\[||" | sed "s|\],\[.*||"`
 pushd "${SCRIPTPATH}" > /dev/null
 export REVISION=`git show --pretty=format:%ci HEAD |  head -c 10 | tr -d '-'`
 popd > /dev/null
 
+#mkdir -p ${WORKSPACE}/win$ARCH/bin || true
+#cat > ${WORKSPACE}/win$ARCH/bin/synfig <<EOF
+##!/bin/sh
+#
+#wine ${PREFIX}/bin/synfig.exe \$@
+#EOF
+#chmod +x ${WORKSPACE}/win$ARCH/bin/synfig
+#export PATH=${WORKSPACE}/win$ARCH/bin:$PATH
+
 mkprep()
 {
 
 if [ -z $NOSU ]; then
-	su -c "yum install -y \
+	DNF_BINARY=yum
+	if [ -f /usr/bin/dnf ]; then
+		DNF_BINARY=dnf
+	fi
+	sudo $DNF_BINARY install -y \
+		wget xz make which unzip \
+		libXdmcp  \
 		intltool \
 		gcc-c++ \
 		autoconf \
@@ -91,7 +106,9 @@ if [ -z $NOSU ]; then
 		mingw32-nsis \
 		p7zip \
 		ImageMagick \
-		"
+		
+	#which synfig || sudo $DNF_BINARY install -y synfig
+		
 
 # Mesa deps (not used)
 #		scons \
@@ -177,7 +194,7 @@ for file in \
    pango \
 # this extra line is required!
 do
-	cp -rf /usr/${TOOLCHAIN_HOST}/sys-root/mingw/etc/$file ${PREFIX}/etc
+	cp -rf /usr/${TOOLCHAIN_HOST}/sys-root/mingw/etc/$file ${PREFIX}/etc  || true
 done
 
 [ -d ${PREFIX}/lib ] || mkdir -p ${PREFIX}/lib
@@ -188,7 +205,7 @@ for file in \
    pkgconfig \
 # this extra line is required!
 do
-	cp -rf /usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib/$file ${PREFIX}/lib
+	cp -rf /usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib/$file ${PREFIX}/lib  || true
 done
 
 [ -d ${PREFIX}/share ] || mkdir -p ${PREFIX}/share
@@ -220,14 +237,14 @@ PKG_NAME=ImageMagick
 #PKG_VERSION=6.8.6-10
 PKG_VERSION=6.8.7-10
 #PKG_VERSION=6.8.8-7
-TAREXT=bz2
+TAREXT=xz
 
 if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION%-*}  --print-errors; then
 	cd $CACHEDIR
-	[ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://www.imagemagick.org/download/legacy/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	[ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://www.imagemagick.org/download/releases/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd $SRCPREFIX
 	if [ ! -d ${PKG_NAME}-${PKG_VERSION} ]; then
-		tar -xjf $CACHEDIR/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+		tar -xf $CACHEDIR/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	fi
 	cd ${PKG_NAME}-${PKG_VERSION}
 	[ ! -e config.cache ] || rm config.cache
@@ -409,10 +426,19 @@ mkffmpeg()
         cd $SRCPREFIX
         mkdir -p ffmpeg
         cd ffmpeg
-        7z x -y $CACHEDIR/ffmpeg-${FFMPEG_VERSION}-win${ARCH}-dev.7z
+	
+	
+	if [ -e /usr/bin/7z ]; then
+		SZIP_BINARY=7z
+	else
+		SZIP_BINARY=7za
+	fi
+		
+	
+        $SZIP_BINARY x -y $CACHEDIR/ffmpeg-${FFMPEG_VERSION}-win${ARCH}-dev.7z
         cp -rf ffmpeg-${FFMPEG_VERSION}-win${ARCH}-dev/include/* ${PREFIX}/include/
         cp -rf ffmpeg-${FFMPEG_VERSION}-win${ARCH}-dev/lib/* ${PREFIX}/lib/
-        7z x -y $CACHEDIR/ffmpeg-${FFMPEG_VERSION}-win${ARCH}-shared.7z
+        $SZIP_BINARY x -y $CACHEDIR/ffmpeg-${FFMPEG_VERSION}-win${ARCH}-shared.7z
         cp -rf ffmpeg-${FFMPEG_VERSION}-win${ARCH}-shared/bin/ffmpeg.exe ${PREFIX}/bin
         cp -rf ffmpeg-${FFMPEG_VERSION}-win${ARCH}-shared/bin/*.dll ${PREFIX}/bin
         mkdir -p ${PREFIX}/share/ffmpeg/presets/ || true
@@ -492,6 +518,8 @@ if ! pkg-config ${PKG_NAME}\+\+ --exact-version=${PKG_VERSION}  --print-errors; 
         touch src/modules/disable-motion_est
         touch src/modules/disable-xine
     fi
+    
+    touch src/modules/disable-gtk2
 
     make all -j$THREADS
     make install -j$THREADS
@@ -645,6 +673,8 @@ gen_list_nsh()
 {
 [ ! -e $2.nsh ] || rm $2.nsh
 [ ! -e $2-uninst.nsh ] || rm $2-uninst.nsh
+touch $2.nsh
+touch $2-uninst.nsh
 for line in `find $1 -print`; do
 	directory=`dirname $line`
 	line1=`echo $directory | sed "s|\./||g" | sed "s|/|\\\\\|g"`
