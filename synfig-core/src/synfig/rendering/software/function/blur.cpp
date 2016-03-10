@@ -533,7 +533,7 @@ software::Blur::blur_box(const Params &params)
 		params.amount );
 }
 
-software::Blur::IIRCoefficientsPrepared
+software::Blur::IIRCoefficients
 software::Blur::get_iir_coefficients(Real radius)
 {
 	const Real precision(1e-8);
@@ -545,25 +545,25 @@ software::Blur::get_iir_coefficients(Real radius)
 	int index = round(x);
 	x = 0.0;
 
-	const IIRCoefficients &prev = iir_coefficients[index];
-	const IIRCoefficients &next = iir_coefficients[index+1];
+	const Real *prev = iir_coefficients_unprepared[index];
+	const Real *next = iir_coefficients_unprepared[index+1];
 
 	Real k[3];
 	for(int i = 0; i < 3; ++i)
-		k[i] = prev.k[i]*(1.0 - x) + next.k[i]*x;
+		k[i] = prev[i]*(1.0 - x) + next[i]*x;
 
 	Real a = 1.0/k[0];
 	Real b = a*cos(PI*k[1]);
 	Real c = 1.0/k[2];
 
-	IIRCoefficientsPrepared cp;
-	cp.k1 = (a*a + 2.0*c*b)/(c*a*a);
-	cp.k2 = -(c + 2.0*b)/(c*a*a);
-	cp.k3 = 1.0/(c*a*a);
+	IIRCoefficients coef;
+	coef.k1 = (a*a + 2.0*c*b)/(c*a*a);
+	coef.k2 = -(c + 2.0*b)/(c*a*a);
+	coef.k3 = 1.0/(c*a*a);
 
-	cp.k0 = 1.0 - cp.k1 - cp.k2 - cp.k3;
+	coef.k0 = 1.0 - coef.k1 - coef.k2 - coef.k3;
 
-	return cp;
+	return coef;
 }
 
 void
@@ -595,8 +595,8 @@ software::Blur::blur_iir(const Params &params)
 	Array<ColorReal, 3> arr_surface_rows(arr_surface.reorder(2, 0, 1));
 	Array<ColorReal, 3> arr_surface_cols(arr_surface_rows.reorder(0, 2, 1));
 
-	IIRCoefficientsPrepared cr = get_iir_coefficients(params.amplified_size[0]);
-	IIRCoefficientsPrepared cc = get_iir_coefficients(params.amplified_size[1]);
+	IIRCoefficients cr = get_iir_coefficients(params.amplified_size[0]);
+	IIRCoefficients cc = get_iir_coefficients(params.amplified_size[1]);
 
 	ColorReal cr0 = (ColorReal)cr.k0;
 	ColorReal cr1 = (ColorReal)cr.k1;

@@ -192,8 +192,8 @@ public:
 		bool no_transform =
 			 a.pos_dx == Vector(1.0, 0.0)
 		  && a.pos_dy == Vector(a.bounds.minx - a.bounds.maxx, 1.0)
-		  && approximate_equal(a.pos[0], std::round(a.pos[0]))
-		  && approximate_equal(a.pos[1], std::round(a.pos[1]));
+		  && approximate_equal(a.pos[0], round(a.pos[0]))
+		  && approximate_equal(a.pos[1], round(a.pos[1]));
 
 		bool no_gamma =
 			approximate_equal(gamma_adjust, 1.f);
@@ -208,8 +208,8 @@ public:
 		{
 			const_cast<synfig::Surface*>(&a.surface)->blit_to(
 				p,
-				(int)std::round(a.pos[0]),
-				(int)std::round(a.pos[1]),
+				(int)round(a.pos[0]),
+				(int)round(a.pos[1]),
 				a.bounds.maxx - a.bounds.minx,
 				a.bounds.maxy - a.bounds.miny );
 		}
