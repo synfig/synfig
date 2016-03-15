@@ -36,6 +36,7 @@
 #include "general.h"
 #include <synfig/localization.h>
 #include "type.h"
+#include <glibmm.h>
 
 #ifndef USE_CF_BUNDLES
 #include <ltdl.h>
@@ -73,7 +74,10 @@ Module::subsys_init(const String &prefix)
 	lt_dladdsearchdir(".");
 	if(getenv("HOME"))
 		lt_dladdsearchdir(strprintf("%s/.local/share/synfig/modules", getenv("HOME")).c_str());
-	lt_dladdsearchdir((prefix+"/lib/synfig/modules").c_str());
+	lt_dladdsearchdir((Glib::locale_from_utf8(prefix) + \
+		ETL_DIRECTORY_SEPARATOR + "lib" + \
+		ETL_DIRECTORY_SEPARATOR + "synfig" + \
+		ETL_DIRECTORY_SEPARATOR + "modules" ).c_str());
 #ifdef LIBDIR
 	lt_dladdsearchdir(LIBDIR"/synfig/modules");
 #endif

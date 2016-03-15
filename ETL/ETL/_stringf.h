@@ -291,6 +291,7 @@ inline std::string
 current_working_directory()
 {
 	char dir[256];
+	// TODO: current_working_directory() should use Glib::locale_to_utf8()
 	std::string ret(getcwd(dir,sizeof(dir)));
 	return ret;
 }

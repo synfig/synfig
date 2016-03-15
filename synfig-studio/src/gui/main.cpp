@@ -38,9 +38,9 @@
 #include <stdexcept>
 
 #include <gui/localization.h>
+#include <glibmm/convert.h>
 
 #ifdef _WIN32
-#include <glibmm/convert.h>
 #include "main_win32.h"
 #endif
 
@@ -78,16 +78,11 @@ int main(int argc, char **argv)
 #ifdef ENABLE_NLS
 	String locale_dir;
 	locale_dir = etl::dirname(etl::dirname(binary_path))+ETL_DIRECTORY_SEPARATOR+"share"+ETL_DIRECTORY_SEPARATOR+"locale";
-#ifdef _WIN32
-	locale_dir = Glib::locale_from_utf8(locale_dir);
-#endif
-	
 	setlocale(LC_ALL, "");
-	bindtextdomain(GETTEXT_PACKAGE,  locale_dir.c_str() );
+	bindtextdomain(GETTEXT_PACKAGE,  Glib::locale_from_utf8(locale_dir).c_str() );
 	bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
 	textdomain(GETTEXT_PACKAGE);
 #endif
-
 	{
 		SmartFILE file(IPC::make_connection());
 		if(file)

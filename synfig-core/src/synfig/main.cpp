@@ -159,11 +159,11 @@ static void broken_pipe_signal (int /*sig*/)  {
 
 bool retrieve_modules_to_load(String filename,std::list<String> &modules_to_load)
 {
-	std::ifstream file(filename.c_str());
+	std::ifstream file(Glib::locale_from_utf8(filename).c_str());
 
 	if(!file)
 	{
-		// warning("Cannot open "+filename);
+		synfig::warning("Cannot open "+filename);
 		return false;
 	}
 
@@ -204,11 +204,8 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 #ifdef ENABLE_NLS
 	String locale_dir;
 	locale_dir = locale_path;
-#ifdef _WIN32
-	locale_dir = Glib::locale_from_utf8(locale_dir);
-#endif
 
-	bindtextdomain("synfig", locale_path.c_str() );
+	bindtextdomain("synfig", Glib::locale_from_utf8(locale_path).c_str() );
 	bind_textdomain_codeset("synfig", "UTF-8");
 #endif
 
@@ -342,15 +339,12 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 		if(getenv("HOME"))
 			locations.push_back(strprintf("%s/Library/Synfig/%s", getenv("HOME"), MODULE_LIST_FILENAME));
 	#endif
-	#ifdef _WIN32
-		locations.push_back("C:\\Program Files\\Synfig\\etc\\" MODULE_LIST_FILENAME);
-	#endif
 	}
 
 	for(i=0;i<locations.size();i++)
 		if(retrieve_modules_to_load(locations[i],modules_to_load))
 		{
-			synfig::info(_("Loading modules from %s"), locations[i].c_str());
+			synfig::info(_("Loading modules from %s"), Glib::locale_from_utf8(locations[i]).c_str());
 			if(cb)cb->task(strprintf(_("Loading modules from %s"),locations[i].c_str()));
 			break;
 		}
@@ -626,5 +620,8 @@ synfig::get_binary_path(const String &fallback_path)
 		// (usually should come from argv[0])
 		result = etl::absolute_path(fallback_path);
 	}
+	
+	result = Glib::locale_to_utf8(result);
+	
 	return result;
 }
