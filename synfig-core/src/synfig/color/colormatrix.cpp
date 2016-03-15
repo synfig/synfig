@@ -211,6 +211,7 @@ ColorMatrix::BatchProcessor::BatchProcessor(const ColorMatrix &matrix):
 	copy_g(matrix.is_copy(1)),
 	copy_b(matrix.is_copy(2)),
 	copy_a(matrix.is_copy(3)),
+	affects_transparent(matrix.is_affects_transparent()),
 	transform_func_r(Internal::get_transform_func_c<0>(matrix)),
 	transform_func_g(Internal::get_transform_func_c<1>(matrix)),
 	transform_func_b(Internal::get_transform_func_c<2>(matrix)),
@@ -352,6 +353,14 @@ ColorMatrix::is_copy() const
 		&& is_copy(3);
 }
 
+bool ColorMatrix::is_affects_transparent() const
+{
+	return approximate_equal_lp(m03, value_type(0.0))
+		|| approximate_equal_lp(m13, value_type(0.0))
+		|| approximate_equal_lp(m23, value_type(0.0))
+		|| approximate_equal_lp(m43, value_type(0.0));
+}
+
 ColorMatrix&
 ColorMatrix::set_scale(value_type r, value_type g, value_type b, value_type a)
 {
@@ -410,6 +419,39 @@ ColorMatrix::set_rotate_uv(const Angle &a)
 }
 
 ColorMatrix&
+ColorMatrix::set_constant(const Color &c)
+{
+	m00 = 0.0;       m01 = 0.0;       m02 = 0.0;       m03 = 0.0;       m04 = 0.0;
+	m10 = 0.0;       m11 = 0.0;       m12 = 0.0;       m13 = 0.0;       m14 = 0.0;
+	m20 = 0.0;       m21 = 0.0;       m22 = 0.0;       m23 = 0.0;       m24 = 0.0;
+	m30 = 0.0;       m31 = 0.0;       m32 = 0.0;       m33 = 0.0;       m34 = 0.0;
+	m40 = c.get_r(); m41 = c.get_g(); m42 = c.get_b(); m43 = c.get_a(); m44 = 1.0;
+	return *this;
+}
+
+ColorMatrix&
+ColorMatrix::set_replace_color(const Color &c)
+{
+	m00 = 0.0;       m01 = 0.0;       m02 = 0.0;       m03 = 0.0; m04 = 0.0;
+	m10 = 0.0;       m11 = 0.0;       m12 = 0.0;       m13 = 0.0; m14 = 0.0;
+	m20 = 0.0;       m21 = 0.0;       m22 = 0.0;       m23 = 0.0; m24 = 0.0;
+	m30 = 0.0;       m31 = 0.0;       m32 = 0.0;       m33 = 1.0; m34 = 0.0;
+	m40 = c.get_r(); m41 = c.get_g(); m42 = c.get_b(); m43 = 0.0; m44 = 1.0;
+	return *this;
+}
+
+ColorMatrix&
+ColorMatrix::set_replace_alpha(value_type x)
+{
+	m00 = 1.0; m01 = 0.0; m02 = 0.0; m03 = 0.0; m04 = 0.0;
+	m10 = 0.0; m11 = 1.0; m12 = 0.0; m13 = 0.0; m14 = 0.0;
+	m20 = 0.0; m21 = 0.0; m22 = 1.0; m23 = 0.0; m24 = 0.0;
+	m30 = 0.0; m31 = 0.0; m32 = 0.0; m33 = 0.0; m34 = 0.0;
+	m40 = 0.0; m41 = 0.0; m42 = 0.0; m43 = x;   m44 = 1.0;
+	return *this;
+}
+
+ColorMatrix&
 ColorMatrix::set_brightness(value_type x)
 	{ return set_translate(x, x, x); }
 
@@ -433,6 +475,28 @@ ColorMatrix::set_hue_saturation(const Angle &hue, value_type saturation)
 	*this *= ColorMatrix().set_rotate_uv(hue);
 	*this *= ColorMatrix().set_scale(1.0, saturation, saturation);
 	*this *= ColorMatrix().set_decode_yuv();
+	return *this;
+}
+
+ColorMatrix&
+ColorMatrix::set_invert_color()
+{
+	m00 = -1.0; m01 =  0.0; m02 =  0.0; m03 = 0.0; m04 = 0.0;
+	m10 =  0.0; m11 = -1.0; m12 =  0.0; m13 = 0.0; m14 = 0.0;
+	m20 =  0.0; m21 =  0.0; m22 = -1.0; m23 = 0.0; m24 = 0.0;
+	m30 =  0.0; m31 =  0.0; m32 =  0.0; m33 = 1.0; m34 = 0.0;
+	m40 =  1.0; m41 =  1.0; m42 =  1.0; m43 = 0.0; m44 = 1.0;
+	return *this;
+}
+
+ColorMatrix&
+ColorMatrix::set_invert_alpha()
+{
+	m00 = 1.0; m01 = 0.0; m02 = 0.0; m03 =  0.0; m04 = 0.0;
+	m10 = 0.0; m11 = 1.0; m12 = 0.0; m13 =  0.0; m14 = 0.0;
+	m20 = 0.0; m21 = 0.0; m22 = 1.0; m23 =  0.0; m24 = 0.0;
+	m30 = 0.0; m31 = 0.0; m32 = 0.0; m33 = -1.0; m34 = 0.0;
+	m40 = 0.0; m41 = 0.0; m42 = 0.0; m43 =  1.0; m44 = 1.0;
 	return *this;
 }
 

@@ -48,6 +48,8 @@ public:
 	typedef etl::handle<TaskPixelColorMatrix> Handle;
 	ColorMatrix matrix;
 	Task::Handle clone() const { return clone_pointer(this); }
+	virtual bool is_transparent() const { return matrix.is_transparent(); }
+	virtual bool is_affects_transparent() const { return matrix.is_affects_transparent(); }
 };
 
 } /* end namespace rendering */

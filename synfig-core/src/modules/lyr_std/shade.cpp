@@ -31,6 +31,11 @@
 #	include <config.h>
 #endif
 
+#include <cstring>
+
+#include <ETL/pen>
+#include <ETL/misc>
+
 #include "shade.h"
 
 #include <synfig/localization.h>
@@ -47,9 +52,11 @@
 #include <synfig/segment.h>
 #include <synfig/cairo_renddesc.h>
 
-#include <cstring>
-#include <ETL/pen>
-#include <ETL/misc>
+#include <synfig/rendering/primitive/affinetransformation.h>
+
+#include <synfig/rendering/common/task/taskblur.h>
+#include <synfig/rendering/common/task/tasktransformation.h>
+#include <synfig/rendering/common/task/taskpixelcolormatrix.h>
 
 #endif
 
@@ -168,34 +175,6 @@ Layer_Shade::get_color(Context context, const Point &pos)const
 		shade.set_a(1.0f-context.get_color(blurpos-origin).get_a());
 
 	return Color::blend(shade,context.get_color(pos),get_amount(),get_blend_method());
-}
-
-RendDesc
-Layer_Shade::get_sub_renddesc_vfunc(const RendDesc &renddesc) const
-{
-	RendDesc desc(renddesc);
-	Real pw = desc.get_pw();
-	Real ph = desc.get_ph();
-
-	Vector size=param_size.get(Vector());
-	int type=param_type.get(int());
-	Vector origin=param_origin.get(Vector());
-	if (type == Blur::GAUSSIAN)
-		size *= 2.0;
-
-	Rect r(renddesc.get_tl(), renddesc.get_br());
-	if (origin[0] > 0.0) r.minx -= fabs(origin[0]) + fabs(size[0]);
-	                else r.maxx += fabs(origin[0]) + fabs(size[0]);
-	if (origin[1] > 0.0) r.miny -= fabs(origin[1]) + fabs(size[1]);
-	                else r.maxy += fabs(origin[1]) + fabs(size[1]);
-
-	desc.set_tl(r.get_min());
-	desc.set_br(r.get_max());
-	desc.set_wh(
-		(int)approximate_ceil(fabs((desc.get_br()[0] - desc.get_tl()[0])/pw)),
-		(int)approximate_ceil(fabs((desc.get_br()[1] - desc.get_tl()[1])/ph)) );
-
-	return desc;
 }
 
 bool
@@ -708,5 +687,34 @@ Layer_Shade::get_full_bounding_rect(Context context)const
 }
 
 rendering::Task::Handle
-Layer_Shade::build_rendering_task_vfunc(Context context) const
-	{ return Layer::build_rendering_task_vfunc(context); }
+Layer_Shade::build_composite_fork_task_vfunc(ContextParams /* context_params */, rendering::Task::Handle sub_task)const
+{
+	Vector size = param_size.get(Vector());
+	rendering::Blur::Type type = (rendering::Blur::Type)param_type.get(int());
+	Color color = param_color.get(Color());
+	Vector origin = param_origin.get(Vector());
+	bool invert = param_invert.get(bool());
+
+	rendering::TaskBlur::Handle task_blur(new rendering::TaskBlur());
+	task_blur->blur.size = size;
+	task_blur->blur.type = type;
+	task_blur->sub_task() = sub_task->clone_recursive();
+
+	ColorMatrix matrix;
+	matrix *= ColorMatrix().set_replace_color(color);
+	if (invert)
+		matrix *= ColorMatrix().set_invert_alpha();
+
+	rendering::TaskPixelColorMatrix::Handle task_colormatrix(new rendering::TaskPixelColorMatrix());
+	task_colormatrix->matrix = matrix;
+	task_colormatrix->sub_task() = task_blur;
+
+	rendering::AffineTransformation::Handle affine_transformation(new rendering::AffineTransformation());
+	affine_transformation->matrix.set_translate(origin);
+
+	rendering::TaskTransformation::Handle task_transformation(new rendering::TaskTransformation());
+	task_transformation->transformation = affine_transformation;
+	task_transformation->sub_task() = task_colormatrix;
+
+	return task_transformation;
+}

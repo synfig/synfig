@@ -54,6 +54,7 @@ public:
 	VectorInt get_offset() const;
 
 	virtual Rect calc_bounds() const;
+	virtual bool is_transparent() const { return false; }
 	virtual bool is_affects_transparent() const { return false; }
 };
 

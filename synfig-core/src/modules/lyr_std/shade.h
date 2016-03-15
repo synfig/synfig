@@ -72,8 +72,7 @@ public:
 	virtual bool reads_context()const { return true; }
 
 protected:
-	virtual RendDesc get_sub_renddesc_vfunc(const RendDesc &renddesc) const;
-	virtual rendering::Task::Handle build_rendering_task_vfunc(Context context) const;
+	virtual rendering::Task::Handle build_composite_fork_task_vfunc(ContextParams context_params, rendering::Task::Handle sub_task)const;
 }; // END of class Layer_Shade
 
 }; // END of namespace lyr_std

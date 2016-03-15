@@ -53,7 +53,8 @@ using namespace rendering;
 Rect
 TaskPixelProcessor::calc_bounds() const
 {
-	return is_affects_transparent() ? Rect::infinite()
+	return is_transparent() ? Rect::zero()
+	     : is_affects_transparent() ? Rect::infinite()
 	     : sub_task() ? sub_task()->get_bounds()
 	     : Rect::zero();
 }

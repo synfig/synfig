@@ -133,6 +133,10 @@ public:
 	bool is_copy() const;
 	bool is_copy(int channel) const;
 
+	bool is_transparent() const
+		{ return is_zero(3); }
+	bool is_affects_transparent() const;
+
 	ColorMatrix& set_scale(value_type r, value_type g, value_type b, value_type a = value_type(1.0));
 	ColorMatrix& set_scale_rgba(value_type rgba)
 		{ return set_scale(rgba, rgba, rgba, rgba); }
@@ -149,6 +153,9 @@ public:
 	ColorMatrix& set_decode_yuv();
 	ColorMatrix& set_rotate_uv(const Angle &a);
 
+	ColorMatrix& set_constant(const Color &c);
+	ColorMatrix& set_replace_color(const Color &c);
+	ColorMatrix& set_replace_alpha(value_type x);
 	ColorMatrix& set_brightness(value_type x);
 	ColorMatrix& set_contrast(value_type x);
 	ColorMatrix& set_exposure(value_type x);
@@ -157,6 +164,8 @@ public:
 		{ return set_hue_saturation(x, 1.0); }
 	ColorMatrix& set_saturation(value_type x)
 		{ return set_hue_saturation(Angle::deg(0.0), x); }
+	ColorMatrix& set_invert_color();
+	ColorMatrix& set_invert_alpha();
 
 	Color get_transformed(Color color) const;
 
@@ -223,6 +232,8 @@ private:
 		struct { bool copy_r, copy_g, copy_b, copy_a; };
 	};
 
+	bool affects_transparent;
+
 	union
 	{
 		transform_func_ptr transform_funcs[4];
@@ -241,6 +252,8 @@ public:
 	bool is_zero() const { return zero_all; }
 	bool is_constant() const { return constant_all; }
 	bool is_copy() const { return copy_all; }
+	bool is_affects_transparent() const { return affects_transparent; }
+
 	const Color& get_constant_value() const { return constant_value; }
 
 	const ColorMatrix& get_matrix() const { return matrix; }
