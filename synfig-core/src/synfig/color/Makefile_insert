@@ -2,6 +2,7 @@ COLOR_HH = \
 	color/color.h \
 	color/color.hpp \
 	color/coloraccumulator.h \
+	color/colormatrix.h \
 	color/cairocolor.h \
 	color/cairocoloraccumulator.h \
 	color/pixelformat.h \
@@ -9,6 +10,7 @@ COLOR_HH = \
 
 COLOR_CC = \
 	color/color.cpp \
+	color/colormatrix.cpp \
 	color/cairocolor.cpp
 
 libsynfig_include_HH += \

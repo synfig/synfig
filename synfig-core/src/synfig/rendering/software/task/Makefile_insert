@@ -5,6 +5,8 @@ RENDERING_SOFTWARE_TASK_HH = \
 	rendering/software/task/taskexpandsurfacesw.h \
 	rendering/software/task/tasklayersw.h \
 	rendering/software/task/taskmeshsw.h \
+	rendering/software/task/taskpixelcolormatrixsw.h \
+	rendering/software/task/taskpixelgammasw.h \
 	rendering/software/task/tasksurfaceresamplesw.h \
 	rendering/software/task/tasksw.h
 
@@ -15,6 +17,8 @@ RENDERING_SOFTWARE_TASK_CC = \
 	rendering/software/task/taskexpandsurfacesw.cpp \
 	rendering/software/task/tasklayersw.cpp \
 	rendering/software/task/taskmeshsw.cpp \
+	rendering/software/task/taskpixelcolormatrixsw.cpp \
+	rendering/software/task/taskpixelgammasw.cpp \
 	rendering/software/task/tasksurfaceresamplesw.cpp
 
 RENDERING_SOFTWARE_HH += \

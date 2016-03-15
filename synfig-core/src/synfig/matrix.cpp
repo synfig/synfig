@@ -62,8 +62,8 @@ Matrix2::set_rotate(const Angle &a)
 {
 	value_type c(Angle::cos(a).get());
 	value_type s(Angle::sin(a).get());
-	m00= c;     m01=s;
-	m10=-1.0*s; m11=c;
+	m00= c; m01=s;
+	m10=-s; m11=c;
 	return *this;
 }
 
@@ -172,9 +172,9 @@ Matrix3::set_rotate(const Angle &a)
 {
 	value_type c(Angle::cos(a).get());
 	value_type s(Angle::sin(a).get());
-	m00= c;     m01=s;    m02=0.0;
-	m10=-1.0*s; m11=c;    m12=0.0;
-	m20=0.0;    m21=0.0;  m22=1.0;
+	m00= c;   m01=s;   m02=0.0;
+	m10=-s;   m11=c;   m12=0.0;
+	m20= 0.0; m21=0.0; m22=1.0;
 	return *this;
 }
 

@@ -60,6 +60,8 @@
 #include "../software/optimizer/optimizercontoursw.h"
 #include "../software/optimizer/optimizerlayersw.h"
 #include "../software/optimizer/optimizermeshsw.h"
+#include "../software/optimizer/optimizerpixelcolormatrixsw.h"
+#include "../software/optimizer/optimizerpixelgammasw.h"
 
 #endif
 
@@ -84,6 +86,8 @@ RendererGL::RendererGL()
 	register_optimizer(new OptimizerBlurSW());
 	register_optimizer(new OptimizerContourGL());
 	register_optimizer(new OptimizerLayerSW());
+	register_optimizer(new OptimizerPixelColorMatrixSW());
+	register_optimizer(new OptimizerPixelGammaSW());
 	register_optimizer(new OptimizerSurfaceResampleGL());
 
 	register_optimizer(new OptimizerSurfaceConvert());

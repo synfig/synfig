@@ -4,6 +4,8 @@ RENDERING_SOFTWARE_OPTIMIZER_HH = \
 	rendering/software/optimizer/optimizercontoursw.h \
 	rendering/software/optimizer/optimizerlayersw.h \
 	rendering/software/optimizer/optimizermeshsw.h \
+	rendering/software/optimizer/optimizerpixelcolormatrixsw.h \
+	rendering/software/optimizer/optimizerpixelgammasw.h \
 	rendering/software/optimizer/optimizersurfaceresamplesw.h
 
 RENDERING_SOFTWARE_OPTIMIZER_CC = \
@@ -12,6 +14,8 @@ RENDERING_SOFTWARE_OPTIMIZER_CC = \
 	rendering/software/optimizer/optimizercontoursw.cpp \
 	rendering/software/optimizer/optimizerlayersw.cpp \
 	rendering/software/optimizer/optimizermeshsw.cpp \
+	rendering/software/optimizer/optimizerpixelcolormatrixsw.cpp \
+	rendering/software/optimizer/optimizerpixelgammasw.cpp \
 	rendering/software/optimizer/optimizersurfaceresamplesw.cpp
 
 RENDERING_SOFTWARE_HH += \

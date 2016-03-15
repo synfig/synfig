@@ -74,8 +74,4 @@ MODULE_INVENTORY_BEGIN(libmod_filter)
 		LAYER(RadialBlur)
 		LAYER(Layer_ColorCorrect)
 	END_LAYERS
-	BEGIN_OPTIMIZERS
-		OPTIMIZER(OptimizerColorCorrectSW)
-	END_OPTIMIZERS
-	rendering::Renderer::get_renderer("safe")->register_optimizer(new OptimizerColorCorrectSW());
 MODULE_INVENTORY_END
