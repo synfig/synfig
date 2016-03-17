@@ -63,6 +63,10 @@ OptimizerSurfaceResample::run(const RunParams& params) const
 		{
 			TaskSurfaceResample::Handle resample = new TaskSurfaceResample();
 			assign(resample, Task::Handle(transformation));
+			resample->init_target_rect(
+				transformation->get_target_rect(),
+				transformation->get_source_rect_lt(),
+				transformation->get_source_rect_rb() );
 			resample->transformation = affine->matrix;
 			apply(params, resample);
 		}
