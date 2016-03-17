@@ -173,13 +173,15 @@
 
 //! Registers a optimizer with order and other extra parameters that is defined in the module's inventory
 #define OPTIMIZER_ORDER_EXT(renderer, order, optimizer) \
-	::synfig::rendering::Renderer::get_renderer(renderer)-> \
-	 	 register_optimizer(order, optimizer);
+	if ( ::synfig::rendering::Renderer::Handle r \
+	   = ::synfig::rendering::Renderer::get_renderer(renderer) ) \
+	 	 r->register_optimizer(order, optimizer);
 
 //! Registers a optimizer with extra parameters that is defined in the module's inventory
 #define OPTIMIZER_EXT(renderer, optimizer) \
-	::synfig::rendering::Renderer::get_renderer(renderer)-> \
-	 	 register_optimizer(optimizer);
+	if ( ::synfig::rendering::Renderer::Handle r \
+	   = ::synfig::rendering::Renderer::get_renderer(renderer) ) \
+	 	 r->register_optimizer(optimizer);
 
 //! Registers a optimizer that is defined in the module's inventory
 #define OPTIMIZER(optimizer_class) \
