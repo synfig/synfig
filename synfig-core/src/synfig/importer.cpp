@@ -46,6 +46,8 @@
 #include "string.h"
 #include "surface.h"
 
+#include <synfig/rendering/software/surfacesw.h>
+
 #endif
 
 /* === M A C R O S ========================================================= */
@@ -149,4 +151,23 @@ Importer::~Importer()
 		{
 			__open_importers->erase(iter);
 		}
+}
+
+rendering::Surface::Handle
+Importer::get_frame(Time time)
+{
+	if (last_surface_ && last_surface_->is_created())
+		return last_surface_;
+
+	Surface surface;
+	bool trimmed = false;
+	unsigned int width = 0, height = 0, top = 0, left = 0;
+	if(!get_frame(surface, RendDesc(), time, trimmed, width, height, top, left))
+		warning(strprintf("Unable to get frame from \"%s\"", identifier.filename.c_str()));
+
+	last_surface_ = new rendering::SurfaceSW();
+	if (surface.is_valid())
+		last_surface_->assign(surface[0], surface.get_w(), surface.get_h());
+
+	return last_surface_;
 }

@@ -197,6 +197,7 @@ Import::set_param(const String & param, const ValueBase &value)
 						abs_filename=filename_with_path;
 						surface.clear();
 						param_filename.set(filename);
+						rendering_surface.reset();
 						return false;
 					}
 				}
@@ -207,8 +208,7 @@ Import::set_param(const String & param, const ValueBase &value)
 					warning(strprintf("Unable to get frame from \"%s\"",filename_with_path.c_str()));
 				}
 
-				rendering_surface = new rendering::SurfaceSW();
-				rendering_surface->assign(surface[0], surface.get_w(), surface.get_h());
+				rendering_surface = newimporter->get_frame(Time(0));
 
 				importer=newimporter;
 				filename=newfilename;

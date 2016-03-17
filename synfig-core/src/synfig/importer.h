@@ -40,6 +40,8 @@
 #include "string.h"
 #include "time.h"
 
+#include <synfig/rendering/surface.h>
+
 /* === M A C R O S ========================================================= */
 
 //! Defines various variables and the create method, common for all importers.
@@ -148,6 +150,7 @@ private:
 	//! Gamma of the importer.
 	//! \todo Do not hardcode the gamma to 2.2
 	Gamma gamma_;
+	rendering::Surface::Handle last_surface_;
 
 protected:
 
@@ -180,6 +183,8 @@ public:
 	{
 		return get_frame(surface,renddesc,time,callback);
 	}
+
+	virtual rendering::Surface::Handle get_frame(Time time);
 
 	//! Returns \c true if the importer pays attention to the \a time parameter of get_frame()
 	virtual bool is_animated() { return false; }
