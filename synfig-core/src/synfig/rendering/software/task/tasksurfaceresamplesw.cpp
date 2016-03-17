@@ -190,10 +190,12 @@ public:
 		pen &p, Args &a )
 	{
 		bool no_transform =
-			 a.pos_dx == Vector(1.0, 0.0)
-		  && a.pos_dy == Vector(a.bounds.minx - a.bounds.maxx, 1.0)
-		  && approximate_equal(a.pos[0], round(a.pos[0]))
-		  && approximate_equal(a.pos[1], round(a.pos[1]));
+			 approximate_equal(fabs(a.pos_dx[0]), 0.0)
+		  && approximate_equal(fabs(a.pos_dx[1]), 1.0)
+		  && approximate_equal(fabs(a.pos_dy[0]), Real(a.bounds.minx - a.bounds.maxx))
+		  && approximate_equal(fabs(a.pos_dy[1]), 1.0)
+		  && approximate_equal(a.pos[0] - 0.5, std::round(a.pos[0] - 0.5))
+		  && approximate_equal(a.pos[1] - 0.5, std::round(a.pos[1] - 0.5));
 
 		bool no_gamma =
 			approximate_equal(gamma_adjust, 1.f);
@@ -203,18 +205,7 @@ public:
 			interpolation = Color::INTERPOLATION_NEAREST;
 			antialiasing = false;
 		}
-		/*
-		if (no_transform && no_gamma && !a.blend)
-		{
-			const_cast<synfig::Surface*>(&a.surface)->blit_to(
-				p,
-				(int)round(a.pos[0]),
-				(int)round(a.pos[1]),
-				a.bounds.maxx - a.bounds.minx,
-				a.bounds.maxy - a.bounds.miny );
-		}
-		else
-		*/
+
 		if (no_gamma)
 		{
 			fill<pen, nogamma>(interpolation, antialiasing, p, a);
@@ -271,7 +262,7 @@ TaskSurfaceResampleSW::resample(
 
 		Helper::Args args(src, bounds);
 
-		Vector start((Real)bounds.minx, (Real)bounds.miny);
+		Vector start((Real)bounds.minx + 0.5, (Real)bounds.miny + 0.5);
 		Vector dx(1.0, 0.0);
 		Vector dy((Real)(bounds.minx - bounds.maxx), 1.0);
 

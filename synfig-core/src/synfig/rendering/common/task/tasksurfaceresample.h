@@ -54,7 +54,7 @@ public:
 
 	TaskSurfaceResample():
 		gamma(1.f),
-		interpolation(Color::INTERPOLATION_CUBIC),
+		interpolation(Color::INTERPOLATION_LINEAR),
 		antialiasing(false)
 	{ }
 

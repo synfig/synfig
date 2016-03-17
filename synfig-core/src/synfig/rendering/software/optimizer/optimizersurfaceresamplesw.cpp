@@ -114,9 +114,9 @@ OptimizerSurfaceResampleSW::run(const RunParams& params) const
 						       (sub_src.maxy - sub_src.miny)/Real(sub_h) );
 				border *= Real(border_size);
 				sub_src.minx -= border[0];
-				sub_src.miny -= border[0];
+				sub_src.miny -= border[1];
 				sub_src.maxx += border[0];
-				sub_src.maxy += border[0];
+				sub_src.maxy += border[1];
 				sub_w += 2*border_size;
 				sub_h += 2*border_size;
 
