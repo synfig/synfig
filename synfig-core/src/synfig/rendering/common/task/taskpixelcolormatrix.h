@@ -49,6 +49,7 @@ public:
 	ColorMatrix matrix;
 	Task::Handle clone() const { return clone_pointer(this); }
 	virtual bool is_transparent() const { return matrix.is_transparent(); }
+	virtual bool is_constant() const { return matrix.is_constant(); }
 	virtual bool is_affects_transparent() const { return matrix.is_affects_transparent(); }
 };
 
