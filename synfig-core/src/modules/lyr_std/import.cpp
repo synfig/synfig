@@ -202,13 +202,15 @@ Import::set_param(const String & param, const ValueBase &value)
 					}
 				}
 
-				surface.clear();
-				if(!newimporter->get_frame(surface,get_canvas()->rend_desc(),Time(0),trimmed,width,height,top,left))
-				{
-					warning(strprintf("Unable to get frame from \"%s\"",filename_with_path.c_str()));
-				}
+				Time time_offset = param_time_offset.get(Time());
+				Time time = get_time_mark() + time_offset;
+				if (!newimporter->is_animated())
+					time = Time(0);
 
-				rendering_surface = newimporter->get_frame(Time(0));
+				surface.clear();
+				if(!newimporter->get_frame(surface,get_canvas()->rend_desc(), time, trimmed, width, height, top, left))
+					warning(strprintf("Unable to get frame from \"%s\"",filename_with_path.c_str()));
+				rendering_surface = newimporter->get_frame(get_canvas()->rend_desc(), time);
 
 				importer=newimporter;
 				filename=newfilename;
@@ -344,9 +346,11 @@ Import::set_time_vfunc(IndependentContext context, Time time)const
 	switch (get_method())
 	{
 	case SOFTWARE:
-		if(get_amount() && importer &&
-		   importer->is_animated())
-			importer->get_frame(surface,get_canvas()->rend_desc(),time+time_offset,trimmed,width,height,top,left);
+		if(get_amount() && importer && importer->is_animated())
+		{
+			importer->get_frame(surface,get_canvas()->rend_desc(), time+time_offset, trimmed, width, height, top, left);
+			rendering_surface = importer->get_frame(get_canvas()->rend_desc(), time+time_offset);
+		}
 		break;
 	case OPENGL:
 		break;

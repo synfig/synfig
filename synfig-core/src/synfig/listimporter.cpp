@@ -38,6 +38,8 @@
 #include <synfig/localization.h>
 
 #include "filesystemnative.h"
+#include <synfig/rendering/software/surfacesw.h>
+
 
 #endif
 
@@ -158,8 +160,8 @@ ListImporter::~ListImporter()
 {
 }
 
-bool
-ListImporter::get_frame(Surface &surface, const RendDesc &renddesc, Time time, ProgressCallback *cb)
+Importer::Handle
+ListImporter::get_sub_importer(const RendDesc &renddesc, Time time, ProgressCallback *cb)
 {
 	float document_fps=renddesc.get_frame_rate();
 	int document_frame=round_to_int(time*document_fps);
@@ -167,49 +169,45 @@ ListImporter::get_frame(Surface &surface, const RendDesc &renddesc, Time time, P
 
 	if(!filename_list.size())
 	{
-		if(cb)cb->error(_("No images in list"));
+		if (cb) cb->error(_("No images in list"));
 		else synfig::error(_("No images in list"));
-		return false;
+		return Importer::Handle();
 	}
 
 	if(frame<0)frame=0;
 	if(frame>=(signed)filename_list.size())frame=filename_list.size()-1;
 
-	// See if that frame is cached
-	std::list<std::pair<String,Surface> >::iterator iter;
-	for(iter=frame_cache.begin();iter!=frame_cache.end();++iter)
-	{
-		if(iter->first==filename_list[frame])
-		{
-			surface.mirror(iter->second);
-			return static_cast<bool>(surface);
-		}
-	}
-
+	const String &filename = filename_list[frame];
 	Importer::Handle importer(Importer::open(FileSystem::Identifier(FileSystemNative::instance(), filename_list[frame])));
-
 	if(!importer)
 	{
 		if(cb)cb->error(_("Unable to open ")+filename_list[frame]);
 		else synfig::error(_("Unable to open ")+filename_list[frame]);
-		return false;
+		return Importer::Handle();
 	}
 
-	if(!importer->get_frame(surface,renddesc,0,cb))
-	{
-		if(cb)cb->error(_("Unable to get frame from ")+filename_list[frame]);
-		else synfig::error(_("Unable to get frame from ")+filename_list[frame]);
-		return false;
-	}
+	for(std::list<Importer::Handle>::iterator i = frame_cache.begin(); i != frame_cache.end();)
+		if (*i == importer) i = frame_cache.erase(i); else ++i;
 
-	if(frame_cache.size()>=LIST_IMPORTER_CACHE_SIZE)
+	while (frame_cache.size() >= LIST_IMPORTER_CACHE_SIZE)
 		frame_cache.pop_front();
+	frame_cache.push_back(importer);
 
-	frame_cache.push_back(std::pair<String,Surface>(filename_list[frame],surface));
+	return importer;
+}
 
-	surface.mirror(frame_cache.back().second);
+bool
+ListImporter::get_frame(Surface &surface, const RendDesc &renddesc, Time time, ProgressCallback *cb)
+{
+	Importer::Handle importer = get_sub_importer(renddesc, time, cb);
+	return importer && importer->get_frame(surface, renddesc, 0, cb);
+}
 
-	return static_cast<bool>(surface);
+rendering::Surface::Handle
+ListImporter::get_frame(const RendDesc &renddesc, const Time &time)
+{
+	Importer::Handle importer = get_sub_importer(renddesc, time, NULL);
+	return importer ? importer->get_frame(renddesc, 0) : new rendering::SurfaceSW();
 }
 
 bool

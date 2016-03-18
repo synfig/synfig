@@ -52,15 +52,17 @@ class ListImporter : public Importer
 private:
 	float fps;
 	std::vector<String> filename_list;
-	std::list<std::pair<String,Surface> > frame_cache;
+	std::list<Importer::Handle> frame_cache;
+
+	Importer::Handle get_sub_importer(const RendDesc &renddesc, Time time, ProgressCallback *cb);
 
 public:
 	ListImporter(const FileSystem::Identifier &identifier);
 
 	~ListImporter();
 
-	virtual bool get_frame(Surface &surface, const RendDesc &renddesc, Time time, ProgressCallback *callback=NULL);
-
+	virtual bool get_frame(Surface &surface, const RendDesc &renddesc, Time time, ProgressCallback *cb=NULL);
+	virtual rendering::Surface::Handle get_frame(const RendDesc &renddesc, const Time &time);
 	virtual bool is_animated();
 
 };

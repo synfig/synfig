@@ -154,7 +154,7 @@ Importer::~Importer()
 }
 
 rendering::Surface::Handle
-Importer::get_frame(Time time)
+Importer::get_frame(const RendDesc & /* renddesc */, const Time &time)
 {
 	if (last_surface_ && last_surface_->is_created())
 		return last_surface_;

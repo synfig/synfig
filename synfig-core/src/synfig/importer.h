@@ -184,7 +184,7 @@ public:
 		return get_frame(surface,renddesc,time,callback);
 	}
 
-	virtual rendering::Surface::Handle get_frame(Time time);
+	virtual rendering::Surface::Handle get_frame(const RendDesc &renddesc, const Time &time);
 
 	//! Returns \c true if the importer pays attention to the \a time parameter of get_frame()
 	virtual bool is_animated() { return false; }
