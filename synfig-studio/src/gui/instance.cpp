@@ -1617,7 +1617,10 @@ Instance::gather_uri(std::set<synfig::String> &x, const synfig::Layer::Handle &l
 {
 	if (!layer || !layer->get_canvas()) return;
 
-	FileSystem::Handle file_system = App::get_instance(layer->get_canvas())->get_file_system();
+	etl::handle<Instance> instance = App::get_instance(layer->get_canvas());
+	if (!instance) return;
+
+	FileSystem::Handle file_system = instance->get_file_system();
 	if (!file_system) return;
 
 	ParamVocab vocab = layer->get_param_vocab();
