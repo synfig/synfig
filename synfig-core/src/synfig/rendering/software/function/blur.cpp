@@ -573,19 +573,57 @@ software::Blur::blur_iir(const Params &params)
 	const int channels = 4;
 	int rows = params.src_rect.get_size()[1];
 	int cols = params.src_rect.get_size()[0];
+	int pattern_rows = params.extra_size[1] + 1;
+	int pattern_cols = params.extra_size[0] + 1;
 
 	vector<ColorReal> surface(rows*cols*channels);
+	vector<ColorReal> tmp_surface;
+	vector<ColorReal> row_pattern;
+	vector<ColorReal> col_pattern;
+
 	Array<ColorReal, 3> arr_surface(&surface.front());
 	arr_surface
 		.set_dim(rows, cols*channels)
 		.set_dim(cols, channels)
 		.set_dim(channels, 1);
+	Array<ColorReal, 1> arr_row_pattern;
+	arr_row_pattern
+		.set_dim(pattern_cols, 1);
+	Array<ColorReal, 1> arr_col_pattern;
+	arr_col_pattern
+		.set_dim(pattern_rows, 1);
+	bool use_row_pattern = params.amplified_size[0] < 4.0;
+	bool use_col_pattern = params.amplified_size[1] < 4.0;
+	bool use_pattern = use_row_pattern || use_col_pattern;
+	if (use_pattern)
+		tmp_surface.resize(rows*cols*channels);
+	Array<ColorReal, 3> arr_tmp_surface(
+		use_pattern ? &tmp_surface.front() : &surface.front(),
+		arr_surface );
+	
+	
 	BlurTemplates::surface_read(arr_surface, *params.src, VectorInt(0, 0), params.src_rect);
 
 	switch(params.type)
 	{
 	case rendering::Blur::GAUSSIAN:
 	case rendering::Blur::FASTGAUSSIAN:
+		if (use_row_pattern)
+		{
+			row_pattern.resize(pattern_cols);
+			arr_row_pattern.pointer = &row_pattern.front();
+			BlurTemplates::fill_pattern_gauss(arr_row_pattern, (ColorReal)params.amplified_size[0]);
+			BlurTemplates::mirror_pattern( arr_row_pattern.reorder(0) );
+			BlurTemplates::normalize_full_pattern( arr_row_pattern.reorder(0) );
+		}
+		if (use_col_pattern)
+		{
+			col_pattern.resize(pattern_rows);
+			arr_col_pattern.pointer = &col_pattern.front();
+			BlurTemplates::fill_pattern_gauss(arr_col_pattern, (ColorReal)params.amplified_size[1]);
+			BlurTemplates::mirror_pattern( arr_col_pattern.reorder(0) );
+			BlurTemplates::normalize_full_pattern( arr_col_pattern.reorder(0) );
+		}
 		break;
 	default:
 		assert(false);
@@ -608,15 +646,48 @@ software::Blur::blur_iir(const Params &params)
 	ColorReal cc2 = (ColorReal)cc.k2;
 	ColorReal cc3 = (ColorReal)cc.k3;
 
+	Array<ColorReal, 3> arr_src_surface_rows(arr_surface.reorder(2, 0, 1));
+	Array<ColorReal, 3> arr_src_surface_cols(arr_surface_rows.reorder(0, 2, 1));
+
+	Array<ColorReal, 3> arr_dst_surface_rows(arr_tmp_surface.reorder(2, 0, 1));
+	Array<ColorReal, 3> arr_dst_surface_cols(arr_dst_surface_rows.reorder(0, 2, 1));
+	
 	if (fabs(params.amplified_size[0]) > precision)
-		for(Array<ColorReal, 3>::Iterator channel(arr_surface_rows); channel; ++channel)
-			for(Array<ColorReal, 2>::Iterator r(*channel); r; ++r)
-				BlurTemplates::blur_iir(*r, cr0, cr1, cr2, cr3);
+	{
+		if (use_row_pattern)
+		{
+			for(Array<ColorReal, 3>::Iterator src_channel(arr_src_surface_rows), dst_channel(arr_dst_surface_rows); dst_channel; ++src_channel, ++dst_channel)
+				for(Array<ColorReal, 2>::Iterator sr(*src_channel), dr(*dst_channel); dr; ++sr, ++dr)
+					BlurTemplates::blur_pattern(*dr, *sr, arr_row_pattern);
+			swap(arr_src_surface_cols.pointer, arr_dst_surface_cols.pointer);
+			swap(arr_surface.pointer, arr_tmp_surface.pointer);
+			arr_surface_cols.pointer = arr_surface.pointer;
+			memset(&surface.front(), 0, sizeof(surface.front())*surface.size());
+		}
+		else
+		{
+			for(Array<ColorReal, 3>::Iterator channel(arr_surface_rows); channel; ++channel)
+				for(Array<ColorReal, 2>::Iterator r(*channel); r; ++r)
+					BlurTemplates::blur_iir(*r, cr0, cr1, cr2, cr3);
+		}
+	}
 
 	if (fabs(params.amplified_size[1]) > precision)
-		for(Array<ColorReal, 3>::Iterator channel(arr_surface_cols); channel; ++channel)
-			for(Array<ColorReal, 2>::Iterator c(*channel); c; ++c)
-				BlurTemplates::blur_iir(*c, cc0, cc1, cc2, cc3);
+	{
+		if (use_col_pattern)
+		{
+			for(Array<ColorReal, 3>::Iterator src_channel(arr_src_surface_cols), dst_channel(arr_dst_surface_cols); dst_channel; ++src_channel, ++dst_channel)
+				for(Array<ColorReal, 2>::Iterator sr(*src_channel), dr(*dst_channel); dr; ++sr, ++dr)
+					BlurTemplates::blur_pattern(*dr, *sr, arr_col_pattern);
+			swap(arr_surface.pointer, arr_tmp_surface.pointer);
+		}
+		else
+		{
+			for(Array<ColorReal, 3>::Iterator channel(arr_surface_cols); channel; ++channel)
+				for(Array<ColorReal, 2>::Iterator c(*channel); c; ++c)
+					BlurTemplates::blur_iir(*c, cc0, cc1, cc2, cc3);
+		}
+	}
 
 	BlurTemplates::surface_write(
 		*params.dest,
@@ -649,11 +720,6 @@ software::Blur::blur(Params params)
 	if ( params.type == rendering::Blur::GAUSSIAN
 	  && params.extra_size[0] < 32
 	  && params.extra_size[1] < 32 )
-		{ blur_pattern(params); return; }
-
-	if ( params.type == rendering::Blur::FASTGAUSSIAN
-	  && params.amplified_size[0] < 4.0
-	  && params.amplified_size[1] < 4.0 )
 		{ blur_pattern(params); return; }
 
 	if ( params.type == rendering::Blur::FASTGAUSSIAN )
