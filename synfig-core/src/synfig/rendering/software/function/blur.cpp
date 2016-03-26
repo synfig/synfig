@@ -722,8 +722,9 @@ software::Blur::blur(Params params)
 	  && params.extra_size[1] < 32 )
 		{ blur_pattern(params); return; }
 
-	if ( params.type == rendering::Blur::FASTGAUSSIAN )
-		{ blur_iir(params); return; }
+	// Disable IIR blur, since it producing artifacts (morevna/ep03/113/113-morning.sifz)
+	//if ( params.type == rendering::Blur::FASTGAUSSIAN )
+	//	{ blur_iir(params); return; }
 
 	blur_fft(params);
 }
