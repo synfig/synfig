@@ -194,8 +194,8 @@ public:
 		  && approximate_equal(fabs(a.pos_dx[1]), 1.0)
 		  && approximate_equal(fabs(a.pos_dy[0]), Real(a.bounds.minx - a.bounds.maxx))
 		  && approximate_equal(fabs(a.pos_dy[1]), 1.0)
-		  && approximate_equal(a.pos[0] - 0.5, std::round(a.pos[0] - 0.5))
-		  && approximate_equal(a.pos[1] - 0.5, std::round(a.pos[1] - 0.5));
+		  && approximate_equal(a.pos[0] - 0.5, round(a.pos[0] - 0.5))
+		  && approximate_equal(a.pos[1] - 0.5, round(a.pos[1] - 0.5));
 
 		bool no_gamma =
 			approximate_equal(gamma_adjust, 1.f);
