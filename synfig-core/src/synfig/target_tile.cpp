@@ -129,51 +129,39 @@ Target_Tile::next_tile(RectInt& rect)
 }
 
 bool
-synfig::Target_Tile::call_renderer(Context &context, const etl::handle<rendering::SurfaceSW> &surfacesw, int quality, const RendDesc &renddesc, ProgressCallback *cb)
+synfig::Target_Tile::call_renderer(Context &context, const etl::handle<rendering::SurfaceSW> &surfacesw, int /* quality */, const RendDesc &renddesc, ProgressCallback * /* cb */)
 {
 	#ifdef DEBUG_MEASURE
 	debug::Measure t("Target_Tile::call_renderer");
 	#endif
 
 	surfacesw->set_size(renddesc.get_w(), renddesc.get_h());
-	if (get_engine().empty())
+	rendering::Task::Handle task;
 	{
-		if(!context.accelerated_render(&surfacesw->get_surface(),quality,renddesc,0))
-		{
-			// For some reason, the accelerated renderer failed.
-			if(cb)cb->error(_("Accelerated Renderer Failure"));
-			return false;
-		}
+		#ifdef DEBUG_MEASURE
+		debug::Measure t("build rendering task");
+		#endif
+		task = context.build_rendering_task();
 	}
-	else
+
+	if (task)
 	{
-		rendering::Task::Handle task;
+		rendering::Renderer::Handle renderer = rendering::Renderer::get_renderer(get_engine());
+		if (!renderer)
+			throw "Renderer '" + get_engine() + "' not found";
+
+		task->target_surface = surfacesw;
+		task->target_surface->create();
+		task->init_target_rect(RectInt(VectorInt::zero(), surfacesw->get_size()), renddesc.get_tl(), renddesc.get_br());
+
+		rendering::Task::List list;
+		list.push_back(task);
+
 		{
 			#ifdef DEBUG_MEASURE
-			debug::Measure t("build rendering task");
+			debug::Measure t("run renderer");
 			#endif
-			task = context.build_rendering_task();
-		}
-
-		if (task)
-		{
-			rendering::Renderer::Handle renderer = rendering::Renderer::get_renderer(get_engine());
-			if (!renderer)
-				throw "Renderer '" + get_engine() + "' not found";
-
-			task->target_surface = surfacesw;
-			task->target_surface->create();
-			task->init_target_rect(RectInt(VectorInt::zero(), surfacesw->get_size()), renddesc.get_tl(), renddesc.get_br());
-
-			rendering::Task::List list;
-			list.push_back(task);
-
-			{
-				#ifdef DEBUG_MEASURE
-				debug::Measure t("run renderer");
-				#endif
-				renderer->run(list);
-			}
+			renderer->run(list);
 		}
 	}
 	return true;
@@ -433,20 +421,7 @@ synfig::Target_Tile::render(ProgressCallback *cb)
 					canvas->set_time(t);
 				canvas->set_outline_grow(desc.get_outline_grow());
 
-	#ifdef SYNFIG_OPTIMIZE_LAYER_TREE
-				Canvas::Handle op_canvas;
-				if (get_engine().empty() && !getenv("SYNFIG_DISABLE_OPTIMIZE_LAYER_TREE"))
-				{
-					op_canvas = Canvas::create();
-					op_canvas->set_file_name(canvas->get_file_name());
-					optimize_layers(canvas->get_time(), canvas->get_context(context_params), op_canvas);
-					context=op_canvas->get_context(context_params);
-				}
-				else
-					context=canvas->get_context(context_params);
-	#else
 				context=canvas->get_context(context_params);
-	#endif
 
 				if(!render_frame_(context,0))
 					return false;

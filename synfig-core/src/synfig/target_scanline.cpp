@@ -88,35 +88,23 @@ Target_Scanline::next_frame(Time& time)
 }
 
 bool
-synfig::Target_Scanline::call_renderer(Context &context, const etl::handle<rendering::SurfaceSW> &surfacesw, int quality, const RendDesc &renddesc, ProgressCallback *cb)
+synfig::Target_Scanline::call_renderer(Context &context, const etl::handle<rendering::SurfaceSW> &surfacesw, int /* quality */, const RendDesc &renddesc, ProgressCallback * /* cb */)
 {
 	surfacesw->set_size(renddesc.get_w(), renddesc.get_h());
-	if (get_engine().empty())
+	rendering::Task::Handle task = context.build_rendering_task();
+	if (task)
 	{
-		if(!context.accelerated_render(&surfacesw->get_surface(),quality,renddesc,0))
-		{
-			// For some reason, the accelerated renderer failed.
-			if(cb)cb->error(_("Accelerated Renderer Failure"));
-			return false;
-		}
-	}
-	else
-	{
-		rendering::Task::Handle task = context.build_rendering_task();
-		if (task)
-		{
-			rendering::Renderer::Handle renderer = rendering::Renderer::get_renderer(get_engine());
-			if (!renderer)
-				throw "Renderer '" + get_engine() + "' not found";
+		rendering::Renderer::Handle renderer = rendering::Renderer::get_renderer(get_engine());
+		if (!renderer)
+			throw "Renderer '" + get_engine() + "' not found";
 
-			task->target_surface = surfacesw;
-			task->target_surface->create();
-			task->init_target_rect(RectInt(VectorInt::zero(), surfacesw->get_size()), renddesc.get_tl(), renddesc.get_br());
+		task->target_surface = surfacesw;
+		task->target_surface->create();
+		task->init_target_rect(RectInt(VectorInt::zero(), surfacesw->get_size()), renddesc.get_tl(), renddesc.get_br());
 
-			rendering::Task::List list;
-			list.push_back(task);
-			renderer->run(list);
-		}
+		rendering::Task::List list;
+		list.push_back(task);
+		renderer->run(list);
 	}
 	return true;
 }
@@ -191,22 +179,7 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 			context=canvas->get_context(context_params);
 	#endif
 
-			// If the quality is set to zero, then we
-			// use the parametric scanline-renderer.
-			if(quality==0 && get_engine().empty())
-			{
-				if(threads_<=0)
-				{
-					if(!synfig::render(context,this,desc,0))
-						return false;
-				}
-				else
-				{
-					if(!synfig::render_threaded(context,this,desc,0,threads_))
-						return false;
-				}
-			}
-			else // If quality is set otherwise, then we use the accelerated renderer
+			// If quality is set otherwise, then we use the accelerated renderer
 			{
 				#if USE_PIXELRENDERING_LIMIT
 				if(desc.get_w()*desc.get_h() > PIXEL_RENDERING_LIMIT)
@@ -349,22 +322,7 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 		context=canvas->get_context(context_params);
 #endif
 
-		// If the quality is set to zero, then we
-		// use the parametric scanline-renderer.
-		if(quality==0 && get_engine().empty())
-		{
-			if(threads_<=0)
-			{
-				if(!synfig::render(context,this,desc,cb))
-					return false;
-			}
-			else
-			{
-				if(!synfig::render_threaded(context,this,desc,cb,threads_))
-					return false;
-			}
-		}
-		else // If quality is set otherwise, then we use the accelerated renderer
+		// If quality is set otherwise, then we use the accelerated renderer
 		{
 			#if USE_PIXELRENDERING_LIMIT
 			if(desc.get_w()*desc.get_h() > PIXEL_RENDERING_LIMIT)

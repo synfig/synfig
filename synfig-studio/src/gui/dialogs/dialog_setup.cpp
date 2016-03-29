@@ -476,8 +476,9 @@ Dialog_Setup::create_render_page(PageInfo pi)
 	attach_label(pi.grid, _("WorkArea renderer"), ++row);
 	pi.grid->attach(workarea_renderer_combo, 1, row, 1, 1);
 
-	navigator_renderer_combo.append("", _("Legacy"));
-	workarea_renderer_combo.append("", _("Legacy"));
+	synfig::rendering::Renderer::Handle default_renderer = synfig::rendering::Renderer::get_renderer("");
+	navigator_renderer_combo.append("", String() + _("Default") + " - " + default_renderer->get_name());
+	workarea_renderer_combo.append("", String() + _("Default") + " - " + default_renderer->get_name());
 	typedef std::map<synfig::String, synfig::rendering::Renderer::Handle> RendererMap;
 	const RendererMap &renderers = synfig::rendering::Renderer::get_renderers();
 	for(RendererMap::const_iterator i = renderers.begin(); i != renderers.end(); ++i)

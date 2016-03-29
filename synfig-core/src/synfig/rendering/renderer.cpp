@@ -769,8 +769,9 @@ Renderer::unregister_renderer(const String &name)
 const Renderer::Handle&
 Renderer::get_renderer(const String &name)
 {
-	return get_renderers().count(name) > 0
-		 ? get_renderers().find(name)->second
+	static const char default_engine[] = "software";
+	return get_renderers().count(name) > 0           ? get_renderers().find(name)->second
+		 : get_renderers().count(default_engine) > 0 ? get_renderers().find(default_engine)->second
 		 : blank;
 }
 

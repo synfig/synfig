@@ -2879,31 +2879,15 @@ studio::WorkArea::async_update_preview()
 	// if we have lots of pixels to render and the tile renderer isn't disabled, use it
 	int div;
 	div = low_resolution ? low_res_pixel_size : 1;
-	if( !App::workarea_renderer.empty()
-	 || !getenv("SYNFIG_DISABLE_TILE_RENDER")
-	 || getenv("SYNFIG_FORCE_TILE_RENDER") )
-	{
-		bool legacy = App::workarea_renderer.empty();
-		int ts = legacy ? 2048 : 2048;
 
-		// do a tile render
-		handle<WorkAreaTarget> trgt(new class WorkAreaTarget(this,w,h,ts,ts,false));
+	// do a tile render
+	handle<WorkAreaTarget> trgt(new class WorkAreaTarget(this,w,h,2048,2048,false));
 
-		trgt->set_rend_desc(&desc);
-		trgt->set_onion_skin(get_onion_skin(), onion_skins);
-		//trgt->set_allow_multithreading(true);
-		trgt->set_engine(App::workarea_renderer);
-		target=trgt;
-	}
-	else
-	{
-		// do a scanline render
-		handle<WorkAreaTarget_Full> trgt(new class WorkAreaTarget_Full(this,w,h));
-
-		trgt->set_rend_desc(&desc);
-		trgt->set_onion_skin(get_onion_skin(), onion_skins);
-		target=trgt;
-	}
+	trgt->set_rend_desc(&desc);
+	trgt->set_onion_skin(get_onion_skin(), onion_skins);
+	//trgt->set_allow_multithreading(true);
+	trgt->set_engine(App::workarea_renderer);
+	target=trgt;
 
 	// We can rest assured that our time has already
 	// been set, so there is no need to have to
