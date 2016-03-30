@@ -278,7 +278,8 @@ Action::ValueDescSet::prepare()
 				action->set_param("canvas_interface",get_canvas_interface());
 				action->set_param("time",time);
 				action->set_param("new_value",values_list[i]);
-				action->set_param("value_desc",ValueDesc(value_desc.get_value_node(), i));
+				action->set_param("value_desc", ValueDesc(
+					LinkableValueNode::Handle::cast_dynamic(value_desc.get_value_node()), i ));
 
 				if(!action->is_ready())
 					throw Error(Error::TYPE_NOTREADY);
@@ -316,7 +317,8 @@ Action::ValueDescSet::prepare()
 				action->set_param("canvas_interface",get_canvas_interface());
 				action->set_param("time",time);
 				action->set_param("new_value",new_values_list[i]);
-				action->set_param("value_desc",ValueDesc(value_desc.get_value_node(), i));
+				action->set_param("value_desc", ValueDesc(
+					LinkableValueNode::Handle::cast_dynamic(value_desc.get_value_node()), i ));
 
 				if(!action->is_ready())
 					throw Error(Error::TYPE_NOTREADY);

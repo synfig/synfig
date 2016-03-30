@@ -1813,33 +1813,36 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 
 					// we have the tangent, but need the vertex - that's the parent
 					if (value_desc.is_value_node()) {
-						ValueNode_Composite::Handle value_node = value_desc.get_value_node();
-						BLinePoint bp((*value_node)(get_time()).get(BLinePoint()));
-						// if the tangent isn't split, then split it
-						if (!bp.get_split_tangent_both())
+						if (ValueNode_Composite::Handle value_node = ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node()))
 						{
-							if (get_canvas_view()->canvas_interface()->change_value(synfigapp::ValueDesc(
-									value_node,
-									value_node->get_link_index_from_name("split_radius")),
-									true)
-							 && get_canvas_view()->canvas_interface()->change_value(synfigapp::ValueDesc(
-									value_node,
-									value_node->get_link_index_from_name("split_angle")),
-									true )
-							)
+							BLinePoint bp((*value_node)(get_time()).get(BLinePoint()));
+							// if the tangent isn't split, then split it
+							if (!bp.get_split_tangent_both())
 							{
-								// rebuild the ducks from scratch, so the tangents ducks aren't connected
-								get_canvas_view()->rebuild_ducks();
+								if (get_canvas_view()->canvas_interface()->change_value(synfigapp::ValueDesc(
+										value_node,
+										value_node->get_link_index_from_name("split_radius")),
+										true)
+								 && get_canvas_view()->canvas_interface()->change_value(synfigapp::ValueDesc(
+										value_node,
+										value_node->get_link_index_from_name("split_angle")),
+										true )
+								)
+								{
+									// rebuild the ducks from scratch, so the tangents ducks aren't connected
+									get_canvas_view()->rebuild_ducks();
 
-								// reprocess the mouse click
-								return on_drawing_area_event(event);
+									// reprocess the mouse click
+									return on_drawing_area_event(event);
+								}
+								else
+									return true;
 							}
-							else
-								return true;
+						} else {
+							synfig::info("parent isn't composite value node?");
 						}
 					} else {
 						// I don't know how to access the vertex from the tangent duck when originally drawing the bline in the bline tool
-
 						// synfig::ValueNode::Handle vn = value_desc.get_value_node();
 						synfig::info("parent isn't value node?  shift-drag-tangent doesn't work in bline tool yet...");
 					}

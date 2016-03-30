@@ -391,8 +391,9 @@ void Instance::save_surface(const synfig::Surface &surface, const synfig::String
 	ext.erase(0, 1);
 	String tmpfile = FileContainerTemporary::generate_temporary_filename();
 
-	etl::handle<Target_Scanline> target
-		= etl::handle<Target_Scanline>(Target::create(Target::ext_book()[ext],tmpfile,TargetParam()));
+	etl::handle<Target_Scanline> target =
+		etl::handle<Target_Scanline>::cast_dynamic(
+			Target::create(Target::ext_book()[ext],tmpfile,TargetParam()) );
 	if (!target) return;
 	target->set_canvas(get_canvas());
 	RendDesc desc;

@@ -97,7 +97,9 @@ ValueNode_BLineCalcWidth::operator()(Time t, Real amount)const
 		printf("%s:%d operator()\n", __FILE__, __LINE__);
 
 	const std::vector<ValueBase> bline((*bline_)(t).get_list());
-	handle<ValueNode_BLine> bline_value_node(bline_);
+	handle<ValueNode_BLine> bline_value_node( handle<ValueNode_BLine>::cast_dynamic(bline_) );
+	assert(bline_value_node);
+
 	const bool looped(bline_value_node->get_loop());
 	int size = bline.size(), from_vertex;
 	bool loop((*loop_)(t).get(bool()));

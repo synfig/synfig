@@ -375,48 +375,49 @@ Renderer_Ducks::render_vfunc(
 		    synfig::ValueNode_Composite::Handle value_node;
 		    if(v_d.is_value_node() && v_d.get_value_node())
             {
-                value_node=v_d.get_value_node();
-
-                try
+                if (synfig::ValueNode_Composite::Handle value_node = synfig::ValueNode_Composite::Handle::cast_dynamic( v_d.get_value_node() ))
                 {
-                    synfig::ValueNode::Handle child(value_node->get_link("split_angle"));
-                    if(synfig::ValueNode_Animated::Handle::cast_dynamic(child))
-                    {
-                        synfig::ValueNode_Animated::Handle animated_child(
-                                synfig::ValueNode_Animated::Handle::cast_dynamic(child));
-                        splited_angle=animated_child->new_waypoint_at_time(time).get_value(time).get(bool());
-                    }
-                    else if(synfig::ValueNode_Const::Handle::cast_dynamic(child))
-                    {
-                        synfig::ValueNode_Const::Handle const_child(
-                                synfig::ValueNode_Const::Handle::cast_dynamic(child));
-                        splited_angle=(const_child->get_value()).get(bool());
-                    }
-                }
-                catch(Exception::BadLinkName&)
-                {
+					try
+					{
+						synfig::ValueNode::Handle child(value_node->get_link("split_angle"));
+						if(synfig::ValueNode_Animated::Handle::cast_dynamic(child))
+						{
+							synfig::ValueNode_Animated::Handle animated_child(
+									synfig::ValueNode_Animated::Handle::cast_dynamic(child));
+							splited_angle=animated_child->new_waypoint_at_time(time).get_value(time).get(bool());
+						}
+						else if(synfig::ValueNode_Const::Handle::cast_dynamic(child))
+						{
+							synfig::ValueNode_Const::Handle const_child(
+									synfig::ValueNode_Const::Handle::cast_dynamic(child));
+							splited_angle=(const_child->get_value()).get(bool());
+						}
+					}
+					catch(Exception::BadLinkName&)
+					{
 
-                }
+					}
 
-                try
-                {
-                    synfig::ValueNode::Handle child(value_node->get_link("split_radius"));
-                    if(synfig::ValueNode_Animated::Handle::cast_dynamic(child))
-                    {
-                        synfig::ValueNode_Animated::Handle animated_child(
-                                synfig::ValueNode_Animated::Handle::cast_dynamic(child));
-                        splited_radius=animated_child->new_waypoint_at_time(time).get_value(time).get(bool());
-                    }
-                    else if(synfig::ValueNode_Const::Handle::cast_dynamic(child))
-                    {
-                        synfig::ValueNode_Const::Handle const_child(
-                                synfig::ValueNode_Const::Handle::cast_dynamic(child));
-                        splited_radius=(const_child->get_value()).get(bool());
-                    }
-                }
-                catch(Exception::BadLinkName&)
-                {
+					try
+					{
+						synfig::ValueNode::Handle child(value_node->get_link("split_radius"));
+						if(synfig::ValueNode_Animated::Handle::cast_dynamic(child))
+						{
+							synfig::ValueNode_Animated::Handle animated_child(
+									synfig::ValueNode_Animated::Handle::cast_dynamic(child));
+							splited_radius=animated_child->new_waypoint_at_time(time).get_value(time).get(bool());
+						}
+						else if(synfig::ValueNode_Const::Handle::cast_dynamic(child))
+						{
+							synfig::ValueNode_Const::Handle const_child(
+									synfig::ValueNode_Const::Handle::cast_dynamic(child));
+							splited_radius=(const_child->get_value()).get(bool());
+						}
+					}
+					catch(Exception::BadLinkName&)
+					{
 
+					}
                 }
             }
 

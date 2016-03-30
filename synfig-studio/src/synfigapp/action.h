@@ -316,8 +316,21 @@ public:
 	bool first_time()const { return action_list_.empty(); }
 
 	void add_action(etl::handle<Undoable> action);
-
 	void add_action_front(etl::handle<Undoable> action);
+
+	void add_action(etl::handle<Base> action)
+	{
+		etl::handle<Undoable> undoable = etl::handle<Undoable>::cast_dynamic(action);
+		assert(undoable);
+		add_action(undoable);
+	}
+
+	void add_action_front(etl::handle<Base> action)
+	{
+		etl::handle<Undoable> undoable = etl::handle<Undoable>::cast_dynamic(action);
+		assert(undoable);
+		add_action_front(undoable);
+	}
 
 	virtual void perform();
 	virtual void undo();

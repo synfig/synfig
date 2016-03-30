@@ -1383,7 +1383,7 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 			// (because paste will be always new layer)
 			// Oops... not always...
 			//if(dynamic_cast<Layer_PasteCanvas*>(layer.get()) != NULL)
-				composite = composite->simple_clone();
+				composite = etl::handle<Layer_Composite>::cast_dynamic(composite->simple_clone());
 			// Let's scale the amount parameter by the z depth visibility
 			ValueNode::Handle amount;
 			// First look if amount is dynamic:

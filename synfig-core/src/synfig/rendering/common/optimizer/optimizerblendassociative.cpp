@@ -95,7 +95,7 @@ OptimizerBlendAssociative::run(const RunParams& params) const
 				TaskList::Handle list;
 				if (TaskList::Handle list_a = TaskList::Handle::cast_dynamic(blend->sub_task_a()))
 				{
-					list = list_a->clone();
+					list = TaskList::Handle::cast_dynamic(list_a->clone());
 					assign(list, Task::Handle(blend));
 					list->sub_tasks = list_a->sub_tasks;
 				}

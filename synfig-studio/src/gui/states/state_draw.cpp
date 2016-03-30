@@ -2045,6 +2045,9 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 			if (whole) min_index = max_index = (min_index + max_index) / 2;
 			// printf("processed min %d max %d whole %d\n", min_index, max_index, whole);
 
+			LinkableValueNode::Handle linkable_parent = LinkableValueNode::Handle::cast_dynamic(parent_value_node);
+			assert(linkable_parent);
+
 			if (direction < 0)
 			{
 				if (whole)
@@ -2053,12 +2056,12 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 					for (int i = min_index; i >= 0; i--)
 					{
 						// printf("%d ", i);
-						vertex_list.insert(start, synfigapp::ValueDesc(parent_value_node, i));
+						vertex_list.insert(start, synfigapp::ValueDesc(linkable_parent, i));
 					}
 					for (int i = points_in_line - 1; i >= min_index; i--)
 					{
 						// printf("%d ", i);
-						vertex_list.insert(start, synfigapp::ValueDesc(parent_value_node, i));
+						vertex_list.insert(start, synfigapp::ValueDesc(linkable_parent, i));
 					}
 				}
 				else
@@ -2068,9 +2071,9 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 					{
 						if (i == -1) i = points_in_line - 1;
 						// printf("%d ", i);
-						vertex_list.insert(start, synfigapp::ValueDesc(parent_value_node, i));
+						vertex_list.insert(start, synfigapp::ValueDesc(linkable_parent, i));
 					}
-					vertex_list.insert(start, synfigapp::ValueDesc(parent_value_node, min_index));
+					vertex_list.insert(start, synfigapp::ValueDesc(linkable_parent, min_index));
 				}
 			}
 			else
@@ -2081,12 +2084,12 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 					for (int i = min_index; i < points_in_line; i++)
 					{
 						// printf("%d ", i);
-						vertex_list.insert(start, synfigapp::ValueDesc(parent_value_node, i));
+						vertex_list.insert(start, synfigapp::ValueDesc(linkable_parent, i));
 					}
 					for (int i = 0; i <= min_index; i++)
 					{
 						// printf("%d ", i);
-						vertex_list.insert(start, synfigapp::ValueDesc(parent_value_node, i));
+						vertex_list.insert(start, synfigapp::ValueDesc(linkable_parent, i));
 					}
 				}
 				else
@@ -2096,9 +2099,9 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 					{
 						if (i == points_in_line) i = 0;
 						// printf("%d ", i);
-						vertex_list.insert(start, synfigapp::ValueDesc(parent_value_node, i));
+						vertex_list.insert(start, synfigapp::ValueDesc(linkable_parent, i));
 					}
-					vertex_list.insert(start, synfigapp::ValueDesc(parent_value_node, max_index));
+					vertex_list.insert(start, synfigapp::ValueDesc(linkable_parent, max_index));
 				}
 			}
 			// printf("\n");
@@ -2304,7 +2307,7 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 										printf("in two - b\n");
 										printf("inserting node with index %d\n", value_desc.get_index()+1);
 										vertex_list.insert(next,
-														   synfigapp::ValueDesc(value_desc.get_parent_value_node(),
+														   synfigapp::ValueDesc(LinkableValueNode::Handle::cast_dynamic(value_desc.get_parent_value_node()),
 																				value_desc.get_index()+1));
 										done=false;
 										break;
@@ -2319,7 +2322,7 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 										printf("inserting node on this line with index %d\n",
 											   value_desc.get_index()-1);
 										vertex_list.insert(next,
-														   synfigapp::ValueDesc(value_desc.get_parent_value_node(),
+														   synfigapp::ValueDesc(LinkableValueNode::Handle::cast_dynamic(value_desc.get_parent_value_node()),
 																				value_desc.get_index()-1));
 										done=false;
 										break;

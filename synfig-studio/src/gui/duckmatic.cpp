@@ -252,12 +252,12 @@ Duckmatic::is_duck_group_selectable(const etl::handle<Duck>& x)const
 			return false;
 		if (value_desc.parent_is_linkable_value_node())
 		{
-			LinkableValueNode::Handle parent_value_node(value_desc.get_parent_value_node());
-			if (ValueNode_Composite::Handle::cast_dynamic(parent_value_node))
+			ValueNode::Handle parent_value_node(value_desc.get_parent_value_node());
+			if (ValueNode_Composite::Handle composite = ValueNode_Composite::Handle::cast_dynamic(parent_value_node))
 			{
 				if (parent_value_node->get_type() == type_bline_point &&
 					ValueNode_BLineCalcVertex::Handle::cast_dynamic(
-						parent_value_node->get_link("point")))
+							composite->get_link("point")))
 					return false;
 				// widths ducks of the widthpoints
 				// Do not avoid selection of the width ducks from widthpoints

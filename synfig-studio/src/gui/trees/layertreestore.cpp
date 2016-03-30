@@ -809,7 +809,7 @@ LayerTreeStore::refresh_row(Gtk::TreeModel::Row &row)
 void
 LayerTreeStore::set_row_layer(Gtk::TreeRow &row, const synfig::Layer::Handle &handle)
 {
-	if (etl::handle<Layer_Switch> layer_paste = etl::handle<Layer_PasteCanvas>::cast_dynamic(handle))
+	if (etl::handle<Layer_PasteCanvas> layer_paste = etl::handle<Layer_PasteCanvas>::cast_dynamic(handle))
 	{
 		subcanvas_changed_connections[layer_paste].disconnect();
 		subcanvas_changed_connections[layer_paste] =

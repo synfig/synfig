@@ -526,6 +526,7 @@ Super::add_action(etl::handle<Undoable> action)
 void
 Super::add_action_front(etl::handle<Undoable> action)
 {
+	assert(action);
 	action_list_.push_front(action);
 	CanvasSpecific *specific_action=dynamic_cast<CanvasSpecific *>(action.get());
 	if(specific_action && !get_canvas())

@@ -343,7 +343,7 @@ public:
 	//! static_cast<> overload -- Useful for implicit casts
 	template <class U>
 	operator handle<U>()const
-	{ return handle<U>(static_cast<U*>(obj)); }
+	{ return handle<U>(obj); }
 
 	template<typename U>
 	bool type_is() const
@@ -714,7 +714,7 @@ public:
 		if(x.get()==obj)
 			return *this;
 
-		obj=static_cast<value_type*>(x.get());
+		obj=x.get();
 		return *this;
 	}
 
@@ -724,7 +724,7 @@ public:
 		if(x.get()==obj)
 			return *this;
 
-		obj=static_cast<value_type*>(x.get());
+		obj=x.get();
 		return *this;
 	}
 

@@ -215,5 +215,4 @@ Action::ActivepointSetOff::prepare()
 		throw Error(Error::TYPE_NOTREADY);
 
 	add_action_front(action);
-
 }
