@@ -761,7 +761,7 @@ Renderer::register_renderer(const String &name, const Renderer::Handle &renderer
 void
 Renderer::unregister_renderer(const String &name)
 {
-	if (renderers->count(name))
+	if (!renderers->count(name))
 		synfig::error("rendering::Renderer renderer '%s' not registered", name.c_str());
 	renderers->erase(name);
 }
