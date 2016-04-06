@@ -39,6 +39,8 @@
 #include <climits>
 //#include <ccomplex>
 
+#include <glibmm/thread.h>
+
 #include <vector>
 #include <set>
 
@@ -63,9 +65,11 @@ class software::FFT::Internal
 {
 public:
 	static std::set<int> counts;
+	static Glib::Mutex mutex;
 };
 
 std::set<int> software::FFT::Internal::counts;
+Glib::Mutex software::FFT::Internal::mutex;
 
 void
 software::FFT::initialize()
@@ -119,12 +123,15 @@ software::FFT::fft(const Array<Complex, 1> &x, bool invert)
 	iodim.is = x.stride;
 	iodim.os = x.stride;
 
-    fftw_plan plan = fftw_plan_guru_dft(
-    	1, &iodim, 0, NULL,
-        (fftw_complex*)x.pointer, (fftw_complex*)x.pointer,
-		invert ? FFTW_BACKWARD : FFTW_FORWARD, FFTW_ESTIMATE );
-	fftw_execute(plan);
-	fftw_destroy_plan(plan);
+	{
+		Glib::Mutex::Lock lock(Internal::mutex);
+		fftw_plan plan = fftw_plan_guru_dft(
+			1, &iodim, 0, NULL,
+			(fftw_complex*)x.pointer, (fftw_complex*)x.pointer,
+			invert ? FFTW_BACKWARD : FFTW_FORWARD, FFTW_ESTIMATE );
+		fftw_execute(plan);
+		fftw_destroy_plan(plan);
+	}
 
 	// divide by count to complete back-FFT
 	if (invert)
@@ -151,23 +158,27 @@ software::FFT::fft2d(const Array<Complex, 2> &x, bool invert, bool do_rows, bool
 	iodim[1].is = x.stride;
 	iodim[1].os = x.stride;
 
-	fftw_plan plan;
-	if (do_rows && do_cols)
 	{
-		plan = fftw_plan_guru_dft(
-			2, iodim, 0, NULL,
-			(fftw_complex*)x.pointer, (fftw_complex*)x.pointer,
-			invert ? FFTW_BACKWARD : FFTW_FORWARD, FFTW_ESTIMATE );
+		Glib::Mutex::Lock lock(Internal::mutex);
+
+		fftw_plan plan;
+		if (do_rows && do_cols)
+		{
+			plan = fftw_plan_guru_dft(
+				2, iodim, 0, NULL,
+				(fftw_complex*)x.pointer, (fftw_complex*)x.pointer,
+				invert ? FFTW_BACKWARD : FFTW_FORWARD, FFTW_ESTIMATE );
+		}
+		else
+		{
+			plan = fftw_plan_guru_dft(
+				1, &iodim[do_rows ? 0 : 1], 1, &iodim[do_rows ? 1 : 0],
+				(fftw_complex*)x.pointer, (fftw_complex*)x.pointer,
+				invert ? FFTW_BACKWARD : FFTW_FORWARD, FFTW_ESTIMATE );
+		}
+		fftw_execute(plan);
+		fftw_destroy_plan(plan);
 	}
-	else
-	{
-		plan = fftw_plan_guru_dft(
-			1, &iodim[do_rows ? 0 : 1], 1, &iodim[do_rows ? 1 : 0],
-			(fftw_complex*)x.pointer, (fftw_complex*)x.pointer,
-			invert ? FFTW_BACKWARD : FFTW_FORWARD, FFTW_ESTIMATE );
-	}
-	fftw_execute(plan);
-	fftw_destroy_plan(plan);
 
 	// divide by count to complete back-FFT
 	if (invert)
