@@ -224,10 +224,13 @@ void
 Canvas::get_context_sorted(const ContextParams &params, CanvasBase &out_queue, Context &out_context) const
 {
 	multimap<Real, Layer::Handle> layers;
-	for(const_iterator i = begin(); i != end(); ++i)
+	int index = 0;
+	for(const_iterator i = begin(); i != end(); ++i, ++index)
 	{
 		assert(*i);
-		layers.insert(pair<Real, Layer::Handle>((*i)->get_true_z_depth(), *i));
+		// TODO: the 1.0001 constant should be somehow user defined
+		Real depth = (*i)->get_z_depth()*1.0001 + (Real)index;
+		layers.insert(pair<Real, Layer::Handle>(depth, *i));
 	}
 
 	out_queue.clear();
