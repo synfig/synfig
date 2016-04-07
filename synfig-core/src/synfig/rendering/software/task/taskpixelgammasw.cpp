@@ -221,10 +221,10 @@ TaskPixelGammaSW::run(RunParams & /* params */) const
 					src.get_pitch()/sizeof(Color),
 					rs.get_width(),
 					rs.get_height(),
-					gamma_r,
-					gamma_g,
-					gamma_b,
-					gamma_a ));
+					1.0/gamma_r,
+					1.0/gamma_g,
+					1.0/gamma_b,
+					1.0/gamma_a ));
 			}
 		}
 	}
