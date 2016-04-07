@@ -701,6 +701,9 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 	synfig::Point origin=param_origin.get(Point());
 	synfig::Vector orient=param_orient.get(Vector());
 	
+	if (renddesc.get_tl()[1] < renddesc.get_br()[1])
+		orient[1] = 1.0 - orient[1];
+
 	static synfig::RecMutex freetype_mutex;
 
 	if(needs_sync_)
@@ -938,7 +941,7 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 			// renders text in the wrong place.
 			by=round_to_int((origin[1]-renddesc.get_tl()[1])*ph*CHAR_RESOLUTION +
 							(1.0-orient[1])*string_height-line_height*curr_line +
-							((ph>0) ? line_height/1.5 : 0));
+							((ph>0) ? -string_height : 0));
 
 			//by=round_to_int(vcompress*((origin[1]-renddesc.get_tl()[1])*ph*64+(1.0-orient[1])*string_height-face->size->metrics.height*curr_line));
 			//synfig::info("curr_line=%d, bx=%d, by=%d",curr_line,bx,by);
