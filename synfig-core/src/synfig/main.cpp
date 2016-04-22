@@ -75,6 +75,8 @@
 
 #include "mutex.h"
 
+#include <giomm.h>
+
 #ifdef HAVE_SIGNAL_H
 #include <signal.h>
 #endif
@@ -221,6 +223,9 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 #endif
 
 	//_config_search_path=new vector"string.h"();
+	
+	// Init Gio to allow use Gio::File::create_for_uri() in ValueNode_AnimatedFile::load file() function
+	Gio::init();
 
 	// Init the subsystems
 	if(cb)cb->amount_complete(0, 100);
