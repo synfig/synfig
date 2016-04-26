@@ -185,7 +185,7 @@ software::FFT::fft2d(const Array<Complex, 2> &x, bool invert, bool do_rows, bool
 	{
 		int count = (do_cols ? x.count : 1)
 			      * (do_rows ? x.sub().count : 1);
-		x.process< std::multiplies<Complex> >( 1.0/(Real)count );
+		x.process< std::multiplies<Complex> >( Complex(1.0/(Real)count) );
 	}
 }
 

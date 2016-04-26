@@ -251,15 +251,12 @@ software::Blur::blur_pattern(const Params &params)
 	// process
 	if (full)
 	{
-		BlurTemplates::mirror_pattern_2d( arr_full_pattern );
-		BlurTemplates::normalize_full_pattern_2d( arr_full_pattern );
+		BlurTemplates::normalize_half_pattern_2d( arr_full_pattern );
 		for(Array<ColorReal, 3>::Iterator dst(arr_dst_surface.reorder(2, 0, 1)), src(arr_src_surface.reorder(2, 0, 1)); dst; ++dst, ++src)
 			BlurTemplates::blur_2d_pattern(*dst, *src, arr_full_pattern);
 	}
 	else
 	{
-		BlurTemplates::mirror_pattern( arr_row_pattern );
-		BlurTemplates::mirror_pattern( arr_col_pattern );
 		BlurTemplates::normalize_half_pattern( arr_row_pattern );
 		BlurTemplates::normalize_half_pattern( arr_col_pattern );
 
@@ -595,8 +592,8 @@ software::Blur::blur_iir(const Params &params)
 	Array<ColorReal, 1> arr_col_pattern;
 	arr_col_pattern
 		.set_dim(pattern_rows, 1);
-	bool use_row_pattern = params.amplified_size[0] < 4.0;
-	bool use_col_pattern = params.amplified_size[1] < 4.0;
+	bool use_row_pattern = params.extra_size[0] < 4;
+	bool use_col_pattern = params.extra_size[1] < 4;
 	bool use_pattern = use_row_pattern || use_col_pattern;
 	if (use_pattern)
 		tmp_surface.resize(rows*cols*channels);
@@ -616,16 +613,14 @@ software::Blur::blur_iir(const Params &params)
 			row_pattern.resize(pattern_cols);
 			arr_row_pattern.pointer = &row_pattern.front();
 			BlurTemplates::fill_pattern_gauss(arr_row_pattern, (ColorReal)params.amplified_size[0]);
-			BlurTemplates::mirror_pattern( arr_row_pattern.reorder(0) );
-			BlurTemplates::normalize_full_pattern( arr_row_pattern.reorder(0) );
+			BlurTemplates::normalize_half_pattern( arr_row_pattern.reorder(0) );
 		}
 		if (use_col_pattern)
 		{
 			col_pattern.resize(pattern_rows);
 			arr_col_pattern.pointer = &col_pattern.front();
 			BlurTemplates::fill_pattern_gauss(arr_col_pattern, (ColorReal)params.amplified_size[1]);
-			BlurTemplates::mirror_pattern( arr_col_pattern.reorder(0) );
-			BlurTemplates::normalize_full_pattern( arr_col_pattern.reorder(0) );
+			BlurTemplates::normalize_half_pattern( arr_col_pattern.reorder(0) );
 		}
 		break;
 	default:

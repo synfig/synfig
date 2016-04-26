@@ -192,7 +192,7 @@ public:
 	{
 		const T precision(1e-10);
 		typedef Array<T, 1> A;
-		T sum = T();
+		T sum = T(0.0);
 		for(typename A::Iterator i(x); i; ++i)
 			sum += *i;
 		if (sum > precision)
