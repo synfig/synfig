@@ -592,8 +592,8 @@ software::Blur::blur_iir(const Params &params)
 	Array<ColorReal, 1> arr_col_pattern;
 	arr_col_pattern
 		.set_dim(pattern_rows, 1);
-	bool use_row_pattern = params.extra_size[0] < 4;
-	bool use_col_pattern = params.extra_size[1] < 4;
+	bool use_row_pattern = (params.extra_size[0] < 4 && params.amplified_size[0] < 2.0);
+	bool use_col_pattern = (params.extra_size[1] < 4 && params.amplified_size[1] < 2.0);
 	bool use_pattern = use_row_pattern || use_col_pattern;
 	if (use_pattern)
 		tmp_surface.resize(rows*cols*channels);
