@@ -251,12 +251,15 @@ software::Blur::blur_pattern(const Params &params)
 	// process
 	if (full)
 	{
-		BlurTemplates::normalize_half_pattern_2d( arr_full_pattern );
+		BlurTemplates::mirror_pattern_2d( arr_full_pattern );
+		BlurTemplates::normalize_full_pattern_2d( arr_full_pattern );
 		for(Array<ColorReal, 3>::Iterator dst(arr_dst_surface.reorder(2, 0, 1)), src(arr_src_surface.reorder(2, 0, 1)); dst; ++dst, ++src)
 			BlurTemplates::blur_2d_pattern(*dst, *src, arr_full_pattern);
 	}
 	else
 	{
+		BlurTemplates::mirror_pattern( arr_row_pattern );
+		BlurTemplates::mirror_pattern( arr_col_pattern );
 		BlurTemplates::normalize_half_pattern( arr_row_pattern );
 		BlurTemplates::normalize_half_pattern( arr_col_pattern );
 
@@ -500,7 +503,7 @@ software::Blur::blur_box(const Params &params)
 		arr_surface_cols.pointer = &surface_copy.front();
 	}
 
-	if (fabs(params.amplified_size[0] - round(params.amplified_size[0])) < precision)
+	if (true || fabs(params.amplified_size[0] - round(params.amplified_size[0])) < precision)
 		for(Array<ColorReal, 3>::Iterator channel(arr_surface_rows); channel; ++channel)
 			for(Array<ColorReal, 2>::Iterator r(*channel); r; ++r)
 				BlurTemplates::blur_box_discrete(*r, q, (int)round(params.amplified_size[0]));
@@ -509,7 +512,7 @@ software::Blur::blur_box(const Params &params)
 			for(Array<ColorReal, 2>::Iterator r(*channel); r; ++r)
 				BlurTemplates::blur_box_aa(*r, q, (ColorReal)params.amplified_size[0]);
 
-	if (fabs(params.amplified_size[1] - round(params.amplified_size[1])) < precision)
+	if (true || fabs(params.amplified_size[1] - round(params.amplified_size[1])) < precision)
 		for(Array<ColorReal, 3>::Iterator channel(arr_surface_cols); channel; ++channel)
 			for(Array<ColorReal, 2>::Iterator c(*channel); c; ++c)
 				BlurTemplates::blur_box_discrete(*c, q, (int)round(params.amplified_size[1]));

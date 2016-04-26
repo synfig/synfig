@@ -395,7 +395,7 @@ public:
 		if (x.count <= 2*sizei) return;
 
 		T w(T(1.0)/(T(1.0) + T(2.0)*s));
-		T aa(T(1.0) - s + T(sizei));
+		T aa(T(sizei) - s);
 		T sum(0.0);
 		T aa_out = x[0];
 		q.clear();
@@ -421,7 +421,7 @@ public:
 		typedef Array<const T, 1> B;
 		const T precision(1e-10);
 
-		T s(abs(size));
+		T s(fabs(size));
 		int sizei = 1 + (int)floor(s + precision);
 		int o0 = std::max(offset - sizei - 1, 0);
 		int o1 = std::max(sizei + 1 - offset, 0);
@@ -439,7 +439,7 @@ public:
 		{
 			if (2*sizei + o0 >= src.count) return;
 			T w(T(1.0)/(T(1.0) + T(2.0)*s));
-			T aa(T(1.0) - s + T(sizei));
+			T aa(T(sizei) - s);
 			T sum(0.0);
 			T aa_out = src[o0];
 			for(typename A::Iterator i(src, o0, 2*sizei+o0); i; ++i)
@@ -548,7 +548,7 @@ public:
 			Array<const Color, 1>::Iterator cc(*rr);
 			for(typename Array<T, 2>::Iterator c(*r); c; ++c, ++cc)
 			{
-				ColorReal a = cc->get_a();
+				T a = cc->get_a();
 				(*c)[0] = cc->get_r()*a;
 				(*c)[1] = cc->get_g()*a;
 				(*c)[2] = cc->get_b()*a;
@@ -586,7 +586,7 @@ public:
 			Array<Color, 1>::Iterator cc(*rr);
 			for(typename Array<T, 2>::Iterator c(*r); c; ++c, ++cc)
 			{
-				ColorReal a = (*c)[3];
+				Real a = (*c)[3];
 				Real one_div_a = fabs(a) < precision ? 0.0 : 1.0/a;
 				Color color((*c)[0]*one_div_a, (*c)[1]*one_div_a, (*c)[2]*one_div_a, a);
 				*cc = color;
