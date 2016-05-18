@@ -98,9 +98,16 @@ FileSystem::FileSystem() { }
 
 FileSystem::~FileSystem() { }
 
-bool FileSystem::file_rename(const String & /* from_filename */, const String & /* to_filename */)
+bool FileSystem::file_rename(const String &from_filename, const String &to_filename)
 {
-	return false;
+	if (fix_slashes(from_filename) == fix_slashes(to_filename))
+		return true;
+	ReadStreamHandle read_stream = get_read_stream(from_filename);
+	if (!read_stream) return false;
+	WriteStreamHandle write_stream = get_write_stream(to_filename);
+	if (!write_stream) return false;
+	return write_stream->write_whole_stream(read_stream)
+		&& file_remove(from_filename);
 }
 
 bool FileSystem::copy(Handle from_file_system, const String &from_filename, Handle to_file_system, const String &to_filename)
