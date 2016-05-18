@@ -121,7 +121,8 @@ String FileSystem::fix_slashes(const String &filename)
 	return fixed;
 }
 
-std::istream& FileSystem::safe_get_line(std::istream& is, String& t)
+std::istream&
+FileSystem::safe_get_line(std::istream& is, String& t)
 {
 	t.clear();
 	//code from http://stackoverflow.com/questions/6089231/getting-std-ifstream-to-handle-lf-cr-and-crlf
@@ -153,6 +154,8 @@ std::istream& FileSystem::safe_get_line(std::istream& is, String& t)
 			t += (char)c;
 		}
 	}
+
+	return is;
 }
 
 String FileSystem::get_real_uri(const String & /* filename */)
