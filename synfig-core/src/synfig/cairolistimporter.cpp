@@ -80,14 +80,14 @@ CairoImporter(identifier)
 	String prefix=etl::dirname(identifier.filename)+ETL_DIRECTORY_SEPARATOR;
 
 	///! read first line and check whether it is a Papagayo lip sync file
-	if(!FileSystem::safeGetline(stream, line).eof())
+	if(!FileSystem::safe_get_line(stream, line).eof())
 	if (line == "MohoSwitch1")
 	{
 		///! it is a Papagayo lipsync file
 		String phoneme, prevphoneme, prevext, ext(".jpg"); // default image format
 		int frame, prevframe = -1; // it means that the previous phoneme is not known
 
-		while(!FileSystem::safeGetline(stream, line).eof())
+		while(!FileSystem::safe_get_line(stream, line).eof())
 		{
 			if(line.find(String("FPS ")) == 0)
 			{
@@ -134,7 +134,7 @@ CairoImporter(identifier)
 	}
 
 	stream.seekg(ios_base::beg);
-	while(!FileSystem::safeGetline(stream, line).eof())
+	while(!FileSystem::safe_get_line(stream, line).eof())
 	{
 		if(line.empty())
 			continue;

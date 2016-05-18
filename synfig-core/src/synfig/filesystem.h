@@ -168,7 +168,7 @@ namespace synfig
 		static String fix_slashes(const String &filename);
 
 		///!@brief Read a stream line by line even '\r\n' ended
-		static std::istream& safeGetline(std::istream& is, String& t);
+		static std::istream& safe_get_line(std::istream& is, String& t);
 	};
 
 }
