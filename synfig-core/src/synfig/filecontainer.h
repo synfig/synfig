@@ -70,16 +70,16 @@ namespace synfig
 		FileContainer();
 		virtual ~FileContainer();
 
-		virtual bool create(const std::string &container_filename) = 0;
-		virtual bool open(const std::string &container_filename) = 0;
+		virtual bool create(const String &container_filename) = 0;
+		virtual bool open(const String &container_filename) = 0;
 		virtual void close() = 0;
 		virtual bool is_opened() = 0;
 
-		virtual bool directory_scan(const std::string &dirname, std::list< std::string > &out_files) = 0;
+		virtual bool directory_scan(const String &dirname, std::list< String > &out_files) = 0;
 
 		virtual bool file_open_read_whole_container();
-		virtual bool file_open_read(const std::string &filename) = 0;
-		virtual bool file_open_write(const std::string &filename) = 0;
+		virtual bool file_open_read(const String &filename) = 0;
+		virtual bool file_open_write(const String &filename) = 0;
 		virtual void file_close();
 
 		virtual bool file_is_opened_for_read() = 0;
@@ -94,8 +94,8 @@ namespace synfig
 		}
 
 		ReadStreamHandle get_read_stream_whole_container();
-		virtual ReadStreamHandle get_read_stream(const std::string &filename);
-		virtual WriteStreamHandle get_write_stream(const std::string &filename);
+		virtual ReadStreamHandle get_read_stream(const String &filename);
+		virtual WriteStreamHandle get_write_stream(const String &filename);
 	};
 
 }

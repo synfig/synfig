@@ -32,7 +32,10 @@
 #include <streambuf>
 #include <istream>
 #include <ostream>
+
 #include <ETL/handle>
+
+#include "string.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -116,9 +119,9 @@ namespace synfig
 		class Identifier {
 		public:
 			Handle file_system;
-			std::string filename;
+			String filename;
 			Identifier() { }
-			Identifier(const Handle &file_system, const std::string &filename):
+			Identifier(const Handle &file_system, const String &filename):
 				file_system(file_system), filename(filename) { }
 
 			bool empty() const { return file_system; }
@@ -146,26 +149,26 @@ namespace synfig
 		FileSystem();
 		virtual ~FileSystem();
 
-		virtual bool is_file(const std::string &filename) = 0;
-		virtual bool is_directory(const std::string &filename) = 0;
+		virtual bool is_file(const String &filename) = 0;
+		virtual bool is_directory(const String &filename) = 0;
 
-		virtual bool directory_create(const std::string &dirname) = 0;
+		virtual bool directory_create(const String &dirname) = 0;
 
-		virtual bool file_remove(const std::string &filename) = 0;
-		virtual bool file_rename(const std::string &from_filename, const std::string &to_filename);
-		virtual ReadStreamHandle get_read_stream(const std::string &filename) = 0;
-		virtual WriteStreamHandle get_write_stream(const std::string &filename) = 0;
-		virtual std::string get_real_uri(const std::string &filename);
+		virtual bool file_remove(const String &filename) = 0;
+		virtual bool file_rename(const String &from_filename, const String &to_filename);
+		virtual ReadStreamHandle get_read_stream(const String &filename) = 0;
+		virtual WriteStreamHandle get_write_stream(const String &filename) = 0;
+		virtual String get_real_uri(const String &filename);
 
-		inline bool is_exists(const std::string filename) { return is_file(filename) || is_directory(filename); }
+		inline bool is_exists(const String filename) { return is_file(filename) || is_directory(filename); }
 
-		Identifier get_identifier(const std::string &filename) { return Identifier(this, filename); }
-		static bool copy(Handle from_file_system, const std::string &from_filename, Handle to_file_system, const std::string &to_filename);
+		Identifier get_identifier(const String &filename) { return Identifier(this, filename); }
+		static bool copy(Handle from_file_system, const String &from_filename, Handle to_file_system, const String &to_filename);
 
-		static std::string fix_slashes(const std::string &filename);
+		static String fix_slashes(const String &filename);
 
 		///!@brief Read a stream line by line even '\r\n' ended
-		static std::istream& safeGetline(std::istream& is, std::string& t);
+		static std::istream& safeGetline(std::istream& is, String& t);
 	};
 
 }

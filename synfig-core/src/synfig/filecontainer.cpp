@@ -106,7 +106,7 @@ FileSystem::ReadStreamHandle FileContainer::get_read_stream_whole_container()
 	return ReadStreamHandle(new ReadStream(this));
 }
 
-FileSystem::ReadStreamHandle FileContainer::get_read_stream(const std::string &filename)
+FileSystem::ReadStreamHandle FileContainer::get_read_stream(const String &filename)
 {
 	if (stream_opened_ || !file_open_read(filename))
 		return ReadStreamHandle();
@@ -115,7 +115,7 @@ FileSystem::ReadStreamHandle FileContainer::get_read_stream(const std::string &f
 	return ReadStreamHandle(new ReadStream(this));
 }
 
-FileSystem::WriteStreamHandle FileContainer::get_write_stream(const std::string &filename)
+FileSystem::WriteStreamHandle FileContainer::get_write_stream(const String &filename)
 {
 	if (stream_opened_ || !file_open_write(filename))
 		return WriteStreamHandle();

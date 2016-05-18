@@ -65,7 +65,7 @@ namespace synfig
 	private:
 		struct FileInfo
 		{
-			std::string name;
+			String name;
 			bool is_directory;
 			bool directory_saved;
 			file_size_t size;
@@ -74,8 +74,8 @@ namespace synfig
 			unsigned int crc32;
 			time_t time;
 
-			std::string name_part_directory;
-			std::string name_part_localname;
+			String name_part_directory;
+			String name_part_localname;
 
 			void split_name();
 
@@ -84,7 +84,7 @@ namespace synfig
 				size(0), header_offset(0), compression(0), crc32(0), time(0) { }
 		};
 
-		typedef std::map< std::string, FileInfo > FileMap;
+		typedef std::map< String, FileInfo > FileMap;
 
 		FILE *storage_file_;
 		FileMap files_;
@@ -97,36 +97,36 @@ namespace synfig
 		bool changed_;
 
 		static unsigned int crc32(unsigned int previous_crc, const void *buffer, size_t size);
-		static std::string encode_history(const HistoryRecord &history_record);
-		static HistoryRecord decode_history(const std::string &comment);
+		static String encode_history(const HistoryRecord &history_record);
+		static HistoryRecord decode_history(const String &comment);
 		static void read_history(std::list<HistoryRecord> &list, FILE *f, file_size_t size);
 
 	public:
 		FileContainerZip();
 		virtual ~FileContainerZip();
 
-		virtual bool create(const std::string &container_filename);
-		virtual bool open(const std::string &container_filename);
-		bool open_from_history(const std::string &container_filename, file_size_t truncate_storage_size = 0);
+		virtual bool create(const String &container_filename);
+		virtual bool open(const String &container_filename);
+		bool open_from_history(const String &container_filename, file_size_t truncate_storage_size = 0);
 		virtual void close();
 		virtual bool is_opened();
 		bool save();
 
-		static std::list<HistoryRecord> read_history(const std::string &container_filename);
+		static std::list<HistoryRecord> read_history(const String &container_filename);
 
-		virtual bool is_file(const std::string &filename);
-		virtual bool is_directory(const std::string &filename);
+		virtual bool is_file(const String &filename);
+		virtual bool is_directory(const String &filename);
 
-		bool directory_check_name(const std::string &dirname);
-		virtual bool directory_create(const std::string &dirname);
-		virtual bool directory_scan(const std::string &dirname, std::list< std::string > &out_files);
+		bool directory_check_name(const String &dirname);
+		virtual bool directory_create(const String &dirname);
+		virtual bool directory_scan(const String &dirname, std::list< String > &out_files);
 
-		virtual bool file_remove(const std::string &filename);
+		virtual bool file_remove(const String &filename);
 
-		bool file_check_name(const std::string &filename);
+		bool file_check_name(const String &filename);
 		virtual bool file_open_read_whole_container();
-		virtual bool file_open_read(const std::string &filename);
-		virtual bool file_open_write(const std::string &filename);
+		virtual bool file_open_read(const String &filename);
+		virtual bool file_open_write(const String &filename);
 		virtual void file_close();
 
 		virtual bool file_is_opened_for_read();
@@ -135,7 +135,7 @@ namespace synfig
 		virtual size_t file_read(void *buffer, size_t size);
 		virtual size_t file_write(const void *buffer, size_t size);
 
-		virtual ReadStreamHandle get_read_stream(const std::string &filename);
+		virtual ReadStreamHandle get_read_stream(const String &filename);
 	};
 
 }

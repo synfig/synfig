@@ -83,30 +83,30 @@ size_t FileSystemNative::WriteStream::internal_write(const void *buffer, size_t 
 FileSystemNative::FileSystemNative() { }
 FileSystemNative::~FileSystemNative() { }
 
-bool FileSystemNative::is_file(const std::string &filename)
+bool FileSystemNative::is_file(const String &filename)
 {
 	return Gio::File::create_for_path(fix_slashes(filename))->query_file_type()
 	    == Gio::FILE_TYPE_REGULAR;
 }
 
-bool FileSystemNative::is_directory(const std::string &filename)
+bool FileSystemNative::is_directory(const String &filename)
 {
 	return Gio::File::create_for_path(fix_slashes(filename))->query_file_type()
 	    == Gio::FILE_TYPE_DIRECTORY;
 }
 
-bool FileSystemNative::directory_create(const std::string &dirname)
+bool FileSystemNative::directory_create(const String &dirname)
 {
 	return is_directory(dirname)
 	    || Gio::File::create_for_path(fix_slashes(dirname))->make_directory();
 }
 
-bool FileSystemNative::file_remove(const std::string &filename)
+bool FileSystemNative::file_remove(const String &filename)
 {
 	return 0 == remove(fix_slashes(filename).c_str());
 }
 
-bool FileSystemNative::file_rename(const std::string &from_filename, const std::string &to_filename)
+bool FileSystemNative::file_rename(const String &from_filename, const String &to_filename)
 {
 #ifdef _WIN32
 	
@@ -114,7 +114,7 @@ bool FileSystemNative::file_rename(const std::string &from_filename, const std::
 	
 	// Make random filename and ensure there's no file with such name exist
 	struct stat buf;
-	std::string old_file;
+	String old_file;
 	do {
 		synfig::GUID guid;
 		old_file = to_filename+"."+guid.get_string().substr(0,8);
@@ -137,7 +137,7 @@ bool FileSystemNative::file_rename(const std::string &from_filename, const std::
 }
 
 
-FileSystem::ReadStreamHandle FileSystemNative::get_read_stream(const std::string &filename)
+FileSystem::ReadStreamHandle FileSystemNative::get_read_stream(const String &filename)
 {
 #ifdef _WIN32
 	FILE *f = fopen(Glib::locale_from_utf8(fix_slashes(filename)).c_str(), "rb");
@@ -149,7 +149,7 @@ FileSystem::ReadStreamHandle FileSystemNative::get_read_stream(const std::string
 	     : ReadStreamHandle(new ReadStream(this, f));
 }
 
-FileSystem::WriteStreamHandle FileSystemNative::get_write_stream(const std::string &filename)
+FileSystem::WriteStreamHandle FileSystemNative::get_write_stream(const String &filename)
 {
 #ifdef _WIN32
 	FILE *f = fopen(Glib::locale_from_utf8(fix_slashes(filename)).c_str(), "wb");
@@ -161,9 +161,9 @@ FileSystem::WriteStreamHandle FileSystemNative::get_write_stream(const std::stri
 	     : WriteStreamHandle(new WriteStream(this, f));
 }
 
-std::string FileSystemNative::get_real_uri(const std::string &filename)
+String FileSystemNative::get_real_uri(const String &filename)
 {
-	if (filename.empty()) return std::string();
+	if (filename.empty()) return String();
 	return Glib::filename_to_uri(etl::absolute_path(filename));
 }
 

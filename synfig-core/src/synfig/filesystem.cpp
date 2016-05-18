@@ -98,12 +98,12 @@ FileSystem::FileSystem() { }
 
 FileSystem::~FileSystem() { }
 
-bool FileSystem::file_rename(const std::string & /* from_filename */, const std::string & /* to_filename */)
+bool FileSystem::file_rename(const String & /* from_filename */, const String & /* to_filename */)
 {
 	return false;
 }
 
-bool FileSystem::copy(Handle from_file_system, const std::string &from_filename, Handle to_file_system, const std::string &to_filename)
+bool FileSystem::copy(Handle from_file_system, const String &from_filename, Handle to_file_system, const String &to_filename)
 {
 	if (from_file_system.empty() || to_file_system.empty()) return false;
 	ReadStreamHandle read_stream = from_file_system->get_read_stream(from_filename);
@@ -113,15 +113,15 @@ bool FileSystem::copy(Handle from_file_system, const std::string &from_filename,
 	return write_stream->write_whole_stream(read_stream);
 }
 
-std::string FileSystem::fix_slashes(const std::string &filename)
+String FileSystem::fix_slashes(const String &filename)
 {
-	std::string fixed = filename;
+	String fixed = filename;
 	for(size_t i = 0; i < filename.size(); ++i)
 		if (fixed[i] == '\\') fixed[i] = '/';
 	return fixed;
 }
 
-std::istream& FileSystem::safeGetline(std::istream& is, std::string& t)
+std::istream& FileSystem::safeGetline(std::istream& is, String& t)
 {
 	t.clear();
 	//code from http://stackoverflow.com/questions/6089231/getting-std-ifstream-to-handle-lf-cr-and-crlf
@@ -155,8 +155,8 @@ std::istream& FileSystem::safeGetline(std::istream& is, std::string& t)
 	}
 }
 
-std::string FileSystem::get_real_uri(const std::string & /* filename */)
-	{ return std::string(); }
+String FileSystem::get_real_uri(const String & /* filename */)
+	{ return String(); }
 
 /* === E N T R Y P O I N T ================================================= */
 

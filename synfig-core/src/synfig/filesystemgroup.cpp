@@ -51,10 +51,10 @@ FileSystemGroup::FileSystemGroup() { }
 
 FileSystemGroup::FileSystemGroup(Handle default_file_system)
 {
-	if (default_file_system) register_system(std::string(), default_file_system);
+	if (default_file_system) register_system(String(), default_file_system);
 }
 
-bool FileSystemGroup::find_system(const std::string &filename, Handle &out_file_system, std::string &out_filename)
+bool FileSystemGroup::find_system(const String &filename, Handle &out_file_system, String &out_filename)
 {
 	for(std::list< Entry >::iterator i = entries_.begin(); i != entries_.end(); i++)
 	{
@@ -71,7 +71,7 @@ bool FileSystemGroup::find_system(const std::string &filename, Handle &out_file_
 	return false;
 }
 
-void FileSystemGroup::register_system(const std::string &prefix, FileSystem::Handle file_system)
+void FileSystemGroup::register_system(const String &prefix, FileSystem::Handle file_system)
 {
 	if (file_system)
 	{
@@ -93,81 +93,81 @@ void FileSystemGroup::register_system(const std::string &prefix, FileSystem::Han
 	}
 }
 
-void FileSystemGroup::unregister_system(const std::string &prefix)
+void FileSystemGroup::unregister_system(const String &prefix)
 {
 	for(std::list< Entry >::iterator i = entries_.begin(); i != entries_.end();)
 		if (i->prefix == prefix)
 			i = entries_.erase(i); else i++;
 }
 
-bool FileSystemGroup::is_file(const std::string &filename)
+bool FileSystemGroup::is_file(const String &filename)
 {
 	Handle file_system;
-	std::string internal_filename;
+	String internal_filename;
 	return find_system(filename, file_system, internal_filename)
 	    && file_system->is_file(internal_filename);
 }
 
-bool FileSystemGroup::is_directory(const std::string &filename)
+bool FileSystemGroup::is_directory(const String &filename)
 {
 	Handle file_system;
-	std::string internal_filename;
+	String internal_filename;
 	return find_system(filename, file_system, internal_filename)
 	    && file_system->is_directory(internal_filename);
 }
 
-bool FileSystemGroup::directory_create(const std::string &dirname)
+bool FileSystemGroup::directory_create(const String &dirname)
 {
 	Handle file_system;
-	std::string internal_dirname;
+	String internal_dirname;
 	return find_system(dirname, file_system, internal_dirname)
 	    && file_system->directory_create(internal_dirname);
 }
 
-bool FileSystemGroup::file_remove(const std::string &filename)
+bool FileSystemGroup::file_remove(const String &filename)
 {
 	Handle file_system;
-	std::string internal_filename;
+	String internal_filename;
 	return find_system(filename, file_system, internal_filename)
 	    && file_system->file_remove(internal_filename);
 }
 
-bool FileSystemGroup::file_rename(const std::string &from_filename, const std::string &to_filename)
+bool FileSystemGroup::file_rename(const String &from_filename, const String &to_filename)
 {
 	// move file across file systems not supported
 	Handle from_file_system, to_file_system;
-	std::string from_internal_filename, to_internal_filename;
+	String from_internal_filename, to_internal_filename;
 	return find_system(from_filename, from_file_system, from_internal_filename)
 	    && find_system(to_filename, to_file_system, to_internal_filename)
 	    && from_file_system == to_file_system
 	    && from_file_system->file_rename(from_internal_filename, to_internal_filename);
 }
 
-FileSystem::ReadStreamHandle FileSystemGroup::get_read_stream(const std::string &filename)
+FileSystem::ReadStreamHandle FileSystemGroup::get_read_stream(const String &filename)
 {
 	Handle file_system;
-	std::string internal_filename;
+	String internal_filename;
 	return find_system(filename, file_system, internal_filename)
 	     ? file_system->get_read_stream(internal_filename)
 	     : ReadStreamHandle();
 }
 
-FileSystem::WriteStreamHandle FileSystemGroup::get_write_stream(const std::string &filename)
+FileSystem::WriteStreamHandle FileSystemGroup::get_write_stream(const String &filename)
 {
 	Handle file_system;
-	std::string internal_filename;
+	String internal_filename;
 	return find_system(filename, file_system, internal_filename)
 	     ? file_system->get_write_stream(internal_filename)
 	     : WriteStreamHandle();
 }
 
-std::string FileSystemGroup::get_real_uri(const std::string &filename)
+String FileSystemGroup::get_real_uri(const String &filename)
 {
 	Handle file_system;
-	std::string internal_filename;
+	String internal_filename;
 	return find_system(filename, file_system, internal_filename)
 		 ? file_system->get_real_uri(internal_filename)
-		 : std::string();
+		 : String();
 }
 
 /* === E N T R Y P O I N T ================================================= */

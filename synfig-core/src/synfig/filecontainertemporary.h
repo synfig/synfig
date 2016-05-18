@@ -48,56 +48,56 @@ namespace synfig
 	private:
 		struct FileInfo
 		{
-			std::string name;
-			std::string tmp_filename;
+			String name;
+			String tmp_filename;
 			bool is_directory;
 			bool is_removed;
 
-			std::string name_part_directory;
-			std::string name_part_localname;
+			String name_part_directory;
+			String name_part_localname;
 
 			void split_name();
 
 			inline FileInfo(): is_directory(false), is_removed(false) { }
 		};
 
-		typedef std::map< std::string, FileInfo > FileMap;
+		typedef std::map< String, FileInfo > FileMap;
 
 		bool is_opened_;
 		FileMap files_;
-		std::string container_filename_;
+		String container_filename_;
 		etl::handle< FileContainerZip > container_;
 		etl::handle< FileSystemNative > file_system_;
 
-		std::string file_;
-		std::string file_tmp_name_;
+		String file_;
+		String file_tmp_name_;
 		FileSystem::ReadStreamHandle file_read_stream_;
 		FileSystem::WriteStreamHandle file_write_stream_;
 
-		std::string temporary_filename_base_;
+		String temporary_filename_base_;
 
-		static std::string get_xml_node_text(xmlpp::Node *node);
+		static String get_xml_node_text(xmlpp::Node *node);
 
 	public:
 		FileContainerTemporary();
 		virtual ~FileContainerTemporary();
 
-		virtual bool create(const std::string &container_filename);
-		virtual bool open(const std::string &container_filename);
-		bool open_from_history(const std::string &container_filename, FileContainerZip::file_size_t truncate_storage_size = 0);
+		virtual bool create(const String &container_filename);
+		virtual bool open(const String &container_filename);
+		bool open_from_history(const String &container_filename, FileContainerZip::file_size_t truncate_storage_size = 0);
 		virtual void close();
 		virtual bool is_opened();
 
-		virtual bool is_file(const std::string &filename);
-		virtual bool is_directory(const std::string &filename);
+		virtual bool is_file(const String &filename);
+		virtual bool is_directory(const String &filename);
 
-		virtual bool directory_create(const std::string &dirname);
-		virtual bool directory_scan(const std::string &dirname, std::list< std::string > &out_files);
+		virtual bool directory_create(const String &dirname);
+		virtual bool directory_scan(const String &dirname, std::list< String > &out_files);
 
-		virtual bool file_remove(const std::string &filename);
+		virtual bool file_remove(const String &filename);
 
-		virtual bool file_open_read(const std::string &filename);
-		virtual bool file_open_write(const std::string &filename);
+		virtual bool file_open_read(const String &filename);
+		virtual bool file_open_write(const String &filename);
 		virtual void file_close();
 
 		virtual bool file_is_opened_for_read();
@@ -106,20 +106,20 @@ namespace synfig
 		virtual size_t file_read(void *buffer, size_t size);
 		virtual size_t file_write(const void *buffer, size_t size);
 
-		static std::string get_temporary_directory();
-		static std::string generate_temporary_filename_base();
-		static std::string generate_temporary_filename();
+		static String get_temporary_directory();
+		static String generate_temporary_filename_base();
+		static String generate_temporary_filename();
 
-		const std::string& get_container_filename() const { return container_filename_; }
-		const std::string& get_temporary_filename_base() const { return temporary_filename_base_; }
+		const String& get_container_filename() const { return container_filename_; }
+		const String& get_temporary_filename_base() const { return temporary_filename_base_; }
 
 		bool save_temporary() const;
-		bool open_temporary(const std::string &filename_base);
+		bool open_temporary(const String &filename_base);
 
-		bool save_changes(const std::string &filename = std::string(), bool as_copy = false);
+		bool save_changes(const String &filename = String(), bool as_copy = false);
 		void discard_changes();
 
-		static std::string generate_indexed_temporary_filename(const FileSystem::Handle &fs, const std::string &filename);
+		static String generate_indexed_temporary_filename(const FileSystem::Handle &fs, const String &filename);
 	};
 
 }

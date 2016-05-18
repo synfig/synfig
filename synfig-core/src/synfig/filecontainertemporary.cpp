@@ -58,10 +58,10 @@ void FileContainerTemporary::FileInfo::split_name()
 {
 	size_t posA = name.rfind('/');
 	size_t posB = name.rfind('\\');
-	size_t pos = posA == std::string::npos ? posB :
-				 posB == std::string::npos ? posA :
+	size_t pos = posA == String::npos ? posB :
+				 posB == String::npos ? posA :
 				 posA > posB ? posA : posB;
-	if (pos == std::string::npos || pos == 0)
+	if (pos == String::npos || pos == 0)
 	{
 		name_part_directory.clear();
 		name_part_localname = name;
@@ -82,27 +82,27 @@ temporary_filename_base_(generate_temporary_filename_base())
 
 FileContainerTemporary::~FileContainerTemporary() { close(); }
 
-std::string FileContainerTemporary::get_temporary_directory()
+String FileContainerTemporary::get_temporary_directory()
 {
     const char *tmpdir;
     if ((tmpdir = getenv("TEMP")) == NULL)
     if ((tmpdir = getenv("TMP")) == NULL)
     if ((tmpdir = getenv("TMPDIR")) == NULL)
     	 tmpdir = "/tmp";
-    return std::string(tmpdir) + ETL_DIRECTORY_SEPARATOR;
+    return String(tmpdir) + ETL_DIRECTORY_SEPARATOR;
 }
 
-std::string FileContainerTemporary::generate_temporary_filename_base()
+String FileContainerTemporary::generate_temporary_filename_base()
 {
     return "synfig_" + GUID().get_string();
 }
 
-std::string FileContainerTemporary::generate_temporary_filename()
+String FileContainerTemporary::generate_temporary_filename()
 {
     return get_temporary_directory() + generate_temporary_filename_base();
 }
 
-bool FileContainerTemporary::create(const std::string &container_filename)
+bool FileContainerTemporary::create(const String &container_filename)
 {
 	bool res
 		 = !is_opened()
@@ -114,7 +114,7 @@ bool FileContainerTemporary::create(const std::string &container_filename)
 	return res;
 }
 
-bool FileContainerTemporary::open(const std::string &container_filename)
+bool FileContainerTemporary::open(const String &container_filename)
 {
 	bool res
 	     = !is_opened()
@@ -126,7 +126,7 @@ bool FileContainerTemporary::open(const std::string &container_filename)
 	return res;
 }
 
-bool FileContainerTemporary::open_from_history(const std::string &container_filename, FileContainerZip::file_size_t truncate_storage_size)
+bool FileContainerTemporary::open_from_history(const String &container_filename, FileContainerZip::file_size_t truncate_storage_size)
 {
 	bool res
 	     = !is_opened()
@@ -155,7 +155,7 @@ bool FileContainerTemporary::is_opened()
 	return is_opened_;
 }
 
-bool FileContainerTemporary::is_file(const std::string &filename)
+bool FileContainerTemporary::is_file(const String &filename)
 {
 	if (!is_opened()) return false;
 	FileMap::const_iterator i = files_.find(fix_slashes(filename));
@@ -164,7 +164,7 @@ bool FileContainerTemporary::is_file(const std::string &filename)
 		 : !i->second.is_removed && !i->second.is_directory;
 }
 
-bool FileContainerTemporary::is_directory(const std::string &filename)
+bool FileContainerTemporary::is_directory(const String &filename)
 {
 	if (!is_opened()) return false;
 	if (filename.empty()) return true;
@@ -174,7 +174,7 @@ bool FileContainerTemporary::is_directory(const std::string &filename)
 		 : !i->second.is_removed && i->second.is_directory;
 }
 
-bool FileContainerTemporary::directory_create(const std::string &dirname)
+bool FileContainerTemporary::directory_create(const String &dirname)
 {
 	if (!is_opened()) return false;
 	if (is_file(dirname)) return false;
@@ -192,7 +192,7 @@ bool FileContainerTemporary::directory_create(const std::string &dirname)
 	return true;
 }
 
-bool FileContainerTemporary::directory_scan(const std::string &dirname, std::list< std::string > &out_files)
+bool FileContainerTemporary::directory_scan(const String &dirname, std::list< String > &out_files)
 {
 	out_files.clear();
 	if (!is_directory(dirname)) return false;
@@ -205,14 +205,14 @@ bool FileContainerTemporary::directory_scan(const std::string &dirname, std::lis
 		{
 			if (i->second.is_removed)
 			{
-				for(std::list< std::string >::iterator j = out_files.begin(); j != out_files.end();)
+				for(std::list< String >::iterator j = out_files.begin(); j != out_files.end();)
 					if (*j == i->second.name_part_localname)
 						j = out_files.erase(j); else j++;
 			}
 			else
 			{
 				bool found = false;
-				for(std::list< std::string >::iterator j = out_files.begin(); j != out_files.end();)
+				for(std::list< String >::iterator j = out_files.begin(); j != out_files.end();)
 					if (*j == i->second.name_part_localname)
 						{ found = true; break; }
 				if (!found)
@@ -224,12 +224,12 @@ bool FileContainerTemporary::directory_scan(const std::string &dirname, std::lis
 	return true;
 }
 
-bool FileContainerTemporary::file_remove(const std::string &filename)
+bool FileContainerTemporary::file_remove(const String &filename)
 {
 	// remove directory
 	if (is_directory(filename))
 	{
-		std::list< std::string > files;
+		std::list< String > files;
 		directory_scan(filename, files);
 		if (!files.empty()) return false;
 
@@ -278,7 +278,7 @@ bool FileContainerTemporary::file_remove(const std::string &filename)
 	return true;
 }
 
-bool FileContainerTemporary::file_open_read(const std::string &filename)
+bool FileContainerTemporary::file_open_read(const String &filename)
 {
 	if (!is_opened() || file_is_opened()) return false;
 	FileMap::const_iterator i = files_.find(fix_slashes(filename));
@@ -294,13 +294,13 @@ bool FileContainerTemporary::file_open_read(const std::string &filename)
 	return true;
 }
 
-bool FileContainerTemporary::file_open_write(const std::string &filename)
+bool FileContainerTemporary::file_open_write(const String &filename)
 {
 	if (!is_opened() || file_is_opened()) return false;
 	if (!container_->file_check_name(filename)) return false;
 
 	FileMap::iterator i = files_.find(fix_slashes(filename));
-	std::string tmp_filename;
+	String tmp_filename;
 
 	FileInfo new_info;
 	if (i == files_.end())
@@ -331,7 +331,7 @@ void FileContainerTemporary::file_close()
 {
 	if (file_write_stream_ && !file_tmp_name_.empty())
 	{
-		std::string prev_name = files_[file_].tmp_filename;
+		String prev_name = files_[file_].tmp_filename;
 		files_[file_].tmp_filename = file_tmp_name_;
 		file_tmp_name_.clear();
 		file_system_->file_remove(prev_name);
@@ -366,13 +366,13 @@ size_t FileContainerTemporary::file_write(const void *buffer, size_t size)
 	return file_write_stream_->write_block(buffer, size);
 }
 
-bool FileContainerTemporary::save_changes(const std::string &filename, bool as_copy)
+bool FileContainerTemporary::save_changes(const String &filename, bool as_copy)
 {
 	if (file_is_opened()) return false;
 
 	etl::handle< FileContainerZip > container;
 
-	std::string fname_abs = fix_slashes(filename);
+	String fname_abs = fix_slashes(filename);
 	if (!is_absolute_path(fname_abs)) fname_abs = absolute_path(fname_abs);
 
 	bool save_at_place = filename.empty() || fname_abs == container_filename_;
@@ -540,9 +540,9 @@ bool FileContainerTemporary::save_temporary() const
 	return true;
 }
 
-std::string FileContainerTemporary::get_xml_node_text(xmlpp::Node *node)
+String FileContainerTemporary::get_xml_node_text(xmlpp::Node *node)
 {
-	std::string s;
+	String s;
 	if (node != NULL)
 	{
 		xmlpp::Element::NodeList list = node->get_children();
@@ -553,7 +553,7 @@ std::string FileContainerTemporary::get_xml_node_text(xmlpp::Node *node)
 	return s;
 }
 
-bool FileContainerTemporary::open_temporary(const std::string &filename_base)
+bool FileContainerTemporary::open_temporary(const String &filename_base)
 {
 	if (is_opened()) return false;
 
@@ -618,8 +618,8 @@ bool FileContainerTemporary::open_temporary(const std::string &filename_base)
 	return true;
 }
 
-std::string
-FileContainerTemporary::generate_indexed_temporary_filename(const FileSystem::Handle & /* fs */, const std::string &filename)
+String
+FileContainerTemporary::generate_indexed_temporary_filename(const FileSystem::Handle & /* fs */, const String &filename)
 {
 	String extension = filename_extension(filename);
 	String sans_extension = filename_sans_extension(filename);
@@ -630,7 +630,7 @@ FileContainerTemporary::generate_indexed_temporary_filename(const FileSystem::Ha
 			return indexed_filename;
 	}
 	assert(false);
-	return std::string();
+	return String();
 }
 
 /* === E N T R Y P O I N T ================================================= */

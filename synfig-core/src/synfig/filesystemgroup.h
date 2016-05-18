@@ -44,35 +44,35 @@ namespace synfig
 	public:
 		struct Entry
 		{
-			std::string prefix;
+			String prefix;
 			Handle file_system;
 			inline Entry() { }
-			inline Entry(const std::string &prefix, const Handle &file_system):
+			inline Entry(const String &prefix, const Handle &file_system):
 				prefix(prefix), file_system(file_system) { }
 		};
 
 	private:
 		std::list< Entry > entries_;
 
-		bool find_system(const std::string &filename, FileSystem::Handle &out_file_system, std::string &out_filename);
+		bool find_system(const String &filename, FileSystem::Handle &out_file_system, String &out_filename);
 
 	public:
 		FileSystemGroup();
 		explicit FileSystemGroup(Handle default_file_system);
 
-		void register_system(const std::string &prefix, FileSystem::Handle file_system);
-		void unregister_system(const std::string &prefix);
+		void register_system(const String &prefix, FileSystem::Handle file_system);
+		void unregister_system(const String &prefix);
 
-		virtual bool is_file(const std::string &filename);
-		virtual bool is_directory(const std::string &filename);
+		virtual bool is_file(const String &filename);
+		virtual bool is_directory(const String &filename);
 
-		virtual bool directory_create(const std::string &dirname);
+		virtual bool directory_create(const String &dirname);
 
-		virtual bool file_remove(const std::string &filename);
-		virtual bool file_rename(const std::string &from_filename, const std::string &to_filename);
-		virtual ReadStreamHandle get_read_stream(const std::string &filename);
-		virtual WriteStreamHandle get_write_stream(const std::string &filename);
-		virtual std::string get_real_uri(const std::string &filename);
+		virtual bool file_remove(const String &filename);
+		virtual bool file_rename(const String &from_filename, const String &to_filename);
+		virtual ReadStreamHandle get_read_stream(const String &filename);
+		virtual WriteStreamHandle get_write_stream(const String &filename);
+		virtual String get_real_uri(const String &filename);
 	};
 
 }
