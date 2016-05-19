@@ -1086,7 +1086,7 @@ synfig::save_canvas(const FileSystem::Identifier &identifier, Canvas::ConstHandl
 
 		encode_canvas_toplevel(document.create_root_node("canvas"),canvas);
 
-		FileSystem::WriteStreamHandle stream = identifier.file_system->get_write_stream(tmp_filename);
+		FileSystem::WriteStream::Handle stream = identifier.file_system->get_write_stream(tmp_filename);
 		if (!stream)
 		{
 			synfig::error("synfig::save_canvas(): Unable to open file for write");
@@ -1094,7 +1094,7 @@ synfig::save_canvas(const FileSystem::Identifier &identifier, Canvas::ConstHandl
 		}
 
 		if (filename_extension(identifier.filename) == ".sifz")
-			stream = FileSystem::WriteStreamHandle(new ZWriteStream(stream));
+			stream = FileSystem::WriteStream::Handle(new ZWriteStream(stream));
 
 		document.write_to_stream_formatted(*stream, "UTF-8");
 

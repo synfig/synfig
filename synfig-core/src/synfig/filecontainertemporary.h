@@ -29,7 +29,6 @@
 
 #include <map>
 #include <ctime>
-#include <libxml++/libxml++.h>
 
 #include "filesystemnative.h"
 #include "filecontainerzip.h"
@@ -40,11 +39,16 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
+namespace xmlpp { class Node; }
+
 namespace synfig
 {
 
 	class FileContainerTemporary: public FileContainer
 	{
+	public:
+		typedef etl::handle<FileContainerTemporary> Handle;
+
 	private:
 		struct FileInfo
 		{
@@ -66,13 +70,13 @@ namespace synfig
 		bool is_opened_;
 		FileMap files_;
 		String container_filename_;
-		etl::handle< FileContainerZip > container_;
-		etl::handle< FileSystemNative > file_system_;
+		FileContainerZip::Handle container_;
+		FileSystemNative::Handle file_system_;
 
 		String file_;
 		String file_tmp_name_;
-		FileSystem::ReadStreamHandle file_read_stream_;
-		FileSystem::WriteStreamHandle file_write_stream_;
+		FileSystem::ReadStream::Handle file_read_stream_;
+		FileSystem::WriteStream::Handle file_write_stream_;
 
 		String temporary_filename_base_;
 

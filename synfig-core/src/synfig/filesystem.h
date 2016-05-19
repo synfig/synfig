@@ -46,19 +46,22 @@
 namespace synfig
 {
 
-	class FileSystem : public etl::rshared_object
+	class FileSystem : public etl::shared_object
 	{
 	public:
-		typedef etl::handle< FileSystem > Handle;
+		typedef etl::handle<FileSystem> Handle;
 
-		class Stream : public etl::rshared_object
+		class Stream : public etl::shared_object
 		{
+		public:
+			typedef etl::handle<Stream> Handle;
+
 		protected:
-			Handle file_system_;
-			Stream(Handle file_system);
+			FileSystem::Handle file_system_;
+			Stream(FileSystem::Handle file_system);
 		public:
 			virtual ~Stream();
-			Handle file_system() const { return file_system_; }
+			FileSystem::Handle file_system() const { return file_system_; }
 		};
 
 		class ReadStream :
@@ -66,10 +69,13 @@ namespace synfig
 			private std::streambuf,
 			public std::istream
 		{
+		public:
+			typedef etl::handle<ReadStream> Handle;
+
 		protected:
 			char buffer_;
 
-			ReadStream(Handle file_system);
+			ReadStream(FileSystem::Handle file_system);
 			virtual int underflow();
 			virtual size_t internal_read(void *buffer, size_t size) = 0;
 
@@ -82,15 +88,16 @@ namespace synfig
 				{ return read_whole_block(&v, sizeof(T)); }
 		};
 
-		typedef etl::handle< ReadStream > ReadStreamHandle;
-
 		class WriteStream :
 			public Stream,
 			private std::streambuf,
 			public std::ostream
 		{
+		public:
+			typedef etl::handle<WriteStream> Handle;
+
 		protected:
-			WriteStream(Handle file_system);
+			WriteStream(FileSystem::Handle file_system);
 	        virtual int overflow(int ch);
 			virtual size_t internal_write(const void *buffer, size_t size) = 0;
 
@@ -108,20 +115,18 @@ namespace synfig
 				{ return (*this << &streambuf).good(); }
 			bool write_whole_stream(std::istream &stream)
 				{ return write_whole_stream(*stream.rdbuf()); }
-			bool write_whole_stream(ReadStreamHandle stream)
+			bool write_whole_stream(ReadStream::Handle stream)
 				{ return !stream || write_whole_stream(*(std::istream*)&(*stream)); }
 			template<typename T> bool write_variable(const T &v)
 				{ return write_whole_block(&v, sizeof(T)); }
 		};
 
-		typedef etl::handle< WriteStream > WriteStreamHandle;
-
 		class Identifier {
 		public:
-			Handle file_system;
+			FileSystem::Handle file_system;
 			String filename;
 			Identifier() { }
-			Identifier(const Handle &file_system, const String &filename):
+			Identifier(const FileSystem::Handle &file_system, const String &filename):
 				file_system(file_system), filename(filename) { }
 
 			bool empty() const { return file_system; }
@@ -142,8 +147,8 @@ namespace synfig
 			bool operator == (const Identifier &other) const
 				{ return !(*this != other); }
 
-			ReadStreamHandle get_read_stream() const;
-			WriteStreamHandle get_write_stream() const;
+			ReadStream::Handle get_read_stream() const;
+			WriteStream::Handle get_write_stream() const;
 		};
 
 		FileSystem();
@@ -156,8 +161,8 @@ namespace synfig
 
 		virtual bool file_remove(const String &filename) = 0;
 		virtual bool file_rename(const String &from_filename, const String &to_filename);
-		virtual ReadStreamHandle get_read_stream(const String &filename) = 0;
-		virtual WriteStreamHandle get_write_stream(const String &filename) = 0;
+		virtual ReadStream::Handle get_read_stream(const String &filename) = 0;
+		virtual WriteStream::Handle get_write_stream(const String &filename) = 0;
 		virtual String get_real_uri(const String &filename);
 
 		inline bool is_exists(const String filename) { return is_file(filename) || is_directory(filename); }

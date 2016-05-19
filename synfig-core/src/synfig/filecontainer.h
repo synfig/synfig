@@ -42,11 +42,15 @@ namespace synfig
 	class FileContainer : public FileSystem
 	{
 	public:
+		typedef etl::handle<FileContainer> Handle;
+
 		class ReadStream : public FileSystem::ReadStream
 		{
+		public:
+			typedef etl::handle<ReadStream> Handle;
 		protected:
 			friend class FileContainer;
-			ReadStream(Handle file_system);
+			ReadStream(FileSystem::Handle file_system);
 			virtual size_t internal_read(void *buffer, size_t size);
 		public:
 			virtual ~ReadStream();
@@ -54,9 +58,11 @@ namespace synfig
 
 		class WriteStream : public FileSystem::WriteStream
 		{
+		public:
+			typedef etl::handle<WriteStream> Handle;
 		protected:
 			friend class FileContainer;
-			WriteStream(Handle file_system);
+			WriteStream(FileSystem::Handle file_system);
 			virtual size_t internal_write(const void *buffer, size_t size);
 		public:
 			virtual ~WriteStream();
@@ -93,9 +99,9 @@ namespace synfig
 			return file_is_opened_for_read() || file_is_opened_for_write();
 		}
 
-		ReadStreamHandle get_read_stream_whole_container();
-		virtual ReadStreamHandle get_read_stream(const String &filename);
-		virtual WriteStreamHandle get_write_stream(const String &filename);
+		FileSystem::ReadStream::Handle get_read_stream_whole_container();
+		virtual FileSystem::ReadStream::Handle get_read_stream(const String &filename);
+		virtual FileSystem::WriteStream::Handle get_write_stream(const String &filename);
 	};
 
 }

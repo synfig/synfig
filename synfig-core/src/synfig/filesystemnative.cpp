@@ -52,11 +52,11 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-const etl::handle< FileSystemNative > FileSystemNative::instance__(new FileSystemNative);
+const FileSystemNative::Handle FileSystemNative::instance__(new FileSystemNative);
 
 // ReadStream
 
-FileSystemNative::ReadStream::ReadStream(Handle file_system, FILE *file):
+FileSystemNative::ReadStream::ReadStream(FileSystem::Handle file_system, FILE *file):
 	FileSystem::ReadStream(file_system), file_(file) { }
 
 FileSystemNative::ReadStream::~ReadStream()
@@ -68,7 +68,7 @@ size_t FileSystemNative::ReadStream::internal_read(void *buffer, size_t size)
 
 // WriteStream
 
-FileSystemNative::WriteStream::WriteStream(Handle file_system, FILE *file):
+FileSystemNative::WriteStream::WriteStream(FileSystem::Handle file_system, FILE *file):
 	FileSystem::WriteStream(file_system), file_(file) { }
 
 FileSystemNative::WriteStream::~WriteStream()
@@ -137,7 +137,7 @@ bool FileSystemNative::file_rename(const String &from_filename, const String &to
 }
 
 
-FileSystem::ReadStreamHandle FileSystemNative::get_read_stream(const String &filename)
+FileSystem::ReadStream::Handle FileSystemNative::get_read_stream(const String &filename)
 {
 #ifdef _WIN32
 	FILE *f = fopen(Glib::locale_from_utf8(fix_slashes(filename)).c_str(), "rb");
@@ -145,11 +145,11 @@ FileSystem::ReadStreamHandle FileSystemNative::get_read_stream(const String &fil
 	FILE *f = fopen(fix_slashes(filename).c_str(), "rb");
 #endif
 	return f == NULL
-	     ? ReadStreamHandle()
-	     : ReadStreamHandle(new ReadStream(this, f));
+	     ? FileSystem::ReadStream::Handle()
+	     : FileSystem::ReadStream::Handle(new ReadStream(this, f));
 }
 
-FileSystem::WriteStreamHandle FileSystemNative::get_write_stream(const String &filename)
+FileSystem::WriteStream::Handle FileSystemNative::get_write_stream(const String &filename)
 {
 #ifdef _WIN32
 	FILE *f = fopen(Glib::locale_from_utf8(fix_slashes(filename)).c_str(), "wb");
@@ -157,8 +157,8 @@ FileSystem::WriteStreamHandle FileSystemNative::get_write_stream(const String &f
 	FILE *f = fopen(fix_slashes(filename).c_str(), "wb");
 #endif
 	return f == NULL
-	     ? WriteStreamHandle()
-	     : WriteStreamHandle(new WriteStream(this, f));
+	     ? FileSystem::WriteStream::Handle()
+	     : FileSystem::WriteStream::Handle(new WriteStream(this, f));
 }
 
 String FileSystemNative::get_real_uri(const String &filename)

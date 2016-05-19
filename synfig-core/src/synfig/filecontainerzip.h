@@ -43,11 +43,15 @@ namespace synfig
 	class FileContainerZip: public FileContainer
 	{
 	public:
+		typedef etl::handle<FileContainerZip> Handle;
+
 		class WholeZipReadStream : public FileSystem::ReadStream
 		{
+		public:
+			typedef etl::handle<WholeZipReadStream> Handle;
 		protected:
 			friend class FileContainerZip;
-			WholeZipReadStream(Handle file_system);
+			WholeZipReadStream(FileSystem::Handle file_system);
 		public:
 			virtual ~WholeZipReadStream();
 			virtual size_t read(void *buffer, size_t size);
@@ -135,7 +139,7 @@ namespace synfig
 		virtual size_t file_read(void *buffer, size_t size);
 		virtual size_t file_write(const void *buffer, size_t size);
 
-		virtual ReadStreamHandle get_read_stream(const String &filename);
+		virtual FileSystem::ReadStream::Handle get_read_stream(const String &filename);
 	};
 
 }

@@ -831,9 +831,9 @@ size_t FileContainerZip::file_write(const void *buffer, size_t size)
 	return s;
 }
 
-FileContainer::ReadStreamHandle FileContainerZip::get_read_stream(const String &filename)
+FileSystem::ReadStream::Handle FileContainerZip::get_read_stream(const String &filename)
 {
-	ReadStreamHandle stream = FileContainer::get_read_stream(filename);
+	FileSystem::ReadStream::Handle stream = FileContainer::get_read_stream(filename);
 	if (stream
 	 && file_is_opened_for_read()
 	 && !file_reading_whole_container_

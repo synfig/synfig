@@ -90,8 +90,8 @@ private:
 	//! Handle for root canvas
 	synfig::Canvas::Handle canvas_;
 
-	etl::handle< synfig::FileSystemGroup > file_system_;
-	etl::handle< synfig::FileContainerTemporary > container_;
+	synfig::FileSystemGroup::Handle file_system_;
+	synfig::FileContainerTemporary::Handle container_;
 
 	CanvasInterfaceList canvas_interface_list_;
 
@@ -112,7 +112,7 @@ private:
 	void embed_all(synfig::Canvas::Handle canvas, bool &success, bool &restart);
 
 protected:
-	Instance(etl::handle<synfig::Canvas>, etl::handle< synfig::FileContainerTemporary > container);
+	Instance(etl::handle<synfig::Canvas>, synfig::FileContainerTemporary::Handle container);
 
 	/*
  -- ** -- P U B L I C   M E T H O D S -----------------------------------------
@@ -137,8 +137,8 @@ public:
 	void unset_selection_manager() { selection_manager_=new NullSelectionManager(); }
 	const etl::handle<SelectionManager> &get_selection_manager() { return selection_manager_; }
 
-	etl::handle< synfig::FileSystemGroup > get_file_system() const { return file_system_; };
-	etl::handle< synfig::FileContainerTemporary > get_container() const { return container_; };
+	synfig::FileSystemGroup::Handle get_file_system() const { return file_system_; };
+	synfig::FileContainerTemporary::Handle get_container() const { return container_; };
 	void save_surface(const synfig::Surface &surface, const synfig::String &filename);
 
 	etl::handle<CanvasInterface> find_canvas_interface(synfig::Canvas::Handle canvas);
@@ -178,7 +178,7 @@ public:
 
 
 public:	// Constructor interfaces
-	static etl::handle<Instance> create(etl::handle<synfig::Canvas> canvas, etl::handle< synfig::FileContainerTemporary > container);
+	static etl::handle<Instance> create(etl::handle<synfig::Canvas> canvas, synfig::FileContainerTemporary::Handle container);
 }; // END class Instance
 
 etl::handle<Instance> find_instance(etl::handle<synfig::Canvas> canvas);

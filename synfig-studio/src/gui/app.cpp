@@ -3486,8 +3486,8 @@ App::open_as(std::string filename,std::string as,synfig::FileContainerZip::file_
 
 		// TODO: move literal "container:" into common place
 		std::string canvas_filename = filename;
-		etl::handle< FileSystemGroup > file_system(new FileSystemGroup(FileSystemNative::instance()));
-		etl::handle< FileContainerTemporary > container(new FileContainerTemporary());
+		FileSystemGroup::Handle file_system(new FileSystemGroup(FileSystemNative::instance()));
+		FileContainerTemporary::Handle container(new FileContainerTemporary());
 		file_system->register_system("#", container);
 
 		// TODO: move literal ".sfg" into common place
@@ -3591,8 +3591,8 @@ App::open_from_temporary_container_as(std::string container_filename_base,std::s
 
 		// TODO: move literals "container:" and "project.sifz" into common place
 		std::string canvas_filename = "#project.sifz";
-		etl::handle< FileSystemGroup > file_system(new FileSystemGroup(FileSystemNative::instance()));
-		etl::handle< FileContainerTemporary > container(new FileContainerTemporary());
+		FileSystemGroup::Handle file_system(new FileSystemGroup(FileSystemNative::instance()));
+		FileContainerTemporary::Handle container(new FileContainerTemporary());
 		file_system->register_system("#", container);
 
 		if (!container->open_temporary(container_filename_base))
@@ -3696,8 +3696,8 @@ App::new_instance()
 	canvas->set_file_name(file_name);
 	canvas->keyframe_list().add(synfig::Keyframe());
 
-	etl::handle< FileSystemGroup > file_system(new FileSystemGroup(FileSystemNative::instance()));
-	etl::handle< FileContainerTemporary > container(new FileContainerTemporary());
+	FileSystemGroup::Handle file_system(new FileSystemGroup(FileSystemNative::instance()));
+	FileContainerTemporary::Handle container(new FileContainerTemporary());
 	file_system->register_system("#", container);
 	container->create(std::string());
 	canvas->set_identifier(file_system->get_identifier(file_name));

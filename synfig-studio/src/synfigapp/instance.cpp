@@ -121,7 +121,7 @@ synfigapp::find_instance(etl::handle<synfig::Canvas> canvas)
 
 /* === M E T H O D S ======================================================= */
 
-Instance::Instance(etl::handle<synfig::Canvas> canvas, etl::handle< synfig::FileContainerTemporary > container):
+Instance::Instance(etl::handle<synfig::Canvas> canvas, synfig::FileContainerTemporary::Handle container):
 	CVSInfo(canvas->get_file_name()),
 	canvas_(canvas),
 	file_system_(new FileSystemGroup(FileSystemNative::instance())),
@@ -137,7 +137,7 @@ Instance::Instance(etl::handle<synfig::Canvas> canvas, etl::handle< synfig::File
 } // END of synfigapp::Instance::Instance()
 
 handle<Instance>
-Instance::create(etl::handle<synfig::Canvas> canvas, etl::handle< synfig::FileContainerTemporary > container)
+Instance::create(etl::handle<synfig::Canvas> canvas, synfig::FileContainerTemporary::Handle container)
 {
 	// Construct a new instance
 	handle<Instance> instance(new Instance(canvas, container));

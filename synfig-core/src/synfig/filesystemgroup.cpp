@@ -49,12 +49,12 @@ using namespace synfig;
 
 FileSystemGroup::FileSystemGroup() { }
 
-FileSystemGroup::FileSystemGroup(Handle default_file_system)
+FileSystemGroup::FileSystemGroup(FileSystem::Handle default_file_system)
 {
 	if (default_file_system) register_system(String(), default_file_system);
 }
 
-bool FileSystemGroup::find_system(const String &filename, Handle &out_file_system, String &out_filename)
+bool FileSystemGroup::find_system(const String &filename, FileSystem::Handle &out_file_system, String &out_filename)
 {
 	for(std::list< Entry >::iterator i = entries_.begin(); i != entries_.end(); i++)
 	{
@@ -102,7 +102,7 @@ void FileSystemGroup::unregister_system(const String &prefix)
 
 bool FileSystemGroup::is_file(const String &filename)
 {
-	Handle file_system;
+	FileSystem::Handle file_system;
 	String internal_filename;
 	return find_system(filename, file_system, internal_filename)
 	    && file_system->is_file(internal_filename);
@@ -110,7 +110,7 @@ bool FileSystemGroup::is_file(const String &filename)
 
 bool FileSystemGroup::is_directory(const String &filename)
 {
-	Handle file_system;
+	FileSystem::Handle file_system;
 	String internal_filename;
 	return find_system(filename, file_system, internal_filename)
 	    && file_system->is_directory(internal_filename);
@@ -118,7 +118,7 @@ bool FileSystemGroup::is_directory(const String &filename)
 
 bool FileSystemGroup::directory_create(const String &dirname)
 {
-	Handle file_system;
+	FileSystem::Handle file_system;
 	String internal_dirname;
 	return find_system(dirname, file_system, internal_dirname)
 	    && file_system->directory_create(internal_dirname);
@@ -126,7 +126,7 @@ bool FileSystemGroup::directory_create(const String &dirname)
 
 bool FileSystemGroup::file_remove(const String &filename)
 {
-	Handle file_system;
+	FileSystem::Handle file_system;
 	String internal_filename;
 	return find_system(filename, file_system, internal_filename)
 	    && file_system->file_remove(internal_filename);
@@ -134,36 +134,42 @@ bool FileSystemGroup::file_remove(const String &filename)
 
 bool FileSystemGroup::file_rename(const String &from_filename, const String &to_filename)
 {
-	// move file across file systems not supported
-	Handle from_file_system, to_file_system;
+	FileSystem::Handle from_file_system, to_file_system;
 	String from_internal_filename, to_internal_filename;
-	return find_system(from_filename, from_file_system, from_internal_filename)
-	    && find_system(to_filename, to_file_system, to_internal_filename)
-	    && from_file_system == to_file_system
-	    && from_file_system->file_rename(from_internal_filename, to_internal_filename);
+
+	if (!find_system(from_filename, from_file_system, from_internal_filename))
+		return false;
+	if (!find_system(to_filename, to_file_system, to_internal_filename))
+		return false;
+
+	if (from_file_system == to_file_system)
+	    return from_file_system->file_rename(from_internal_filename, to_internal_filename);
+
+	// move file across file systems
+	return FileSystem::file_rename(from_filename, to_filename);
 }
 
-FileSystem::ReadStreamHandle FileSystemGroup::get_read_stream(const String &filename)
+FileSystem::ReadStream::Handle FileSystemGroup::get_read_stream(const String &filename)
 {
-	Handle file_system;
+	FileSystem::Handle file_system;
 	String internal_filename;
 	return find_system(filename, file_system, internal_filename)
 	     ? file_system->get_read_stream(internal_filename)
-	     : ReadStreamHandle();
+	     : FileSystem::ReadStream::Handle();
 }
 
-FileSystem::WriteStreamHandle FileSystemGroup::get_write_stream(const String &filename)
+FileSystem::WriteStream::Handle FileSystemGroup::get_write_stream(const String &filename)
 {
-	Handle file_system;
+	FileSystem::Handle file_system;
 	String internal_filename;
 	return find_system(filename, file_system, internal_filename)
 	     ? file_system->get_write_stream(internal_filename)
-	     : WriteStreamHandle();
+	     : FileSystem::WriteStream::Handle();
 }
 
 String FileSystemGroup::get_real_uri(const String &filename)
 {
-	Handle file_system;
+	FileSystem::Handle file_system;
 	String internal_filename;
 	return find_system(filename, file_system, internal_filename)
 		 ? file_system->get_real_uri(internal_filename)

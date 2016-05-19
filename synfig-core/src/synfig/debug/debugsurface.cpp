@@ -93,7 +93,7 @@ DebugSurface::save_to_file(const void *buffer, int width, int height, int pitch,
 		}
 
 		// create file
-		FileSystem::WriteStreamHandle ws =
+		FileSystem::WriteStream::Handle ws =
 			FileSystemNative::instance()
 				->get_write_stream(actual_filename);
 

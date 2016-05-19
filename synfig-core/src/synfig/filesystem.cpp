@@ -50,14 +50,17 @@ using namespace synfig;
 
 // Stream
 
-FileSystem::Stream::Stream(Handle file_system): file_system_(file_system) { }
-FileSystem::Stream::~Stream() { }
+FileSystem::Stream::Stream(FileSystem::Handle file_system):
+	file_system_(file_system) { }
+
+FileSystem::Stream::~Stream()
+	{ }
 
 // ReadStream
 
-FileSystem::ReadStream::ReadStream(Handle file_system):
-Stream(file_system),
-std::istream((std::streambuf*)this)
+FileSystem::ReadStream::ReadStream(FileSystem::Handle file_system):
+	Stream(file_system),
+	std::istream((std::streambuf*)this)
 {
 	setg(&buffer_ + 1, &buffer_ + 1, &buffer_ + 1);
 }
@@ -72,9 +75,9 @@ int FileSystem::ReadStream::underflow()
 
 // WriteStream
 
-FileSystem::WriteStream::WriteStream(Handle file_system):
-Stream(file_system),
-std::ostream((std::streambuf*)this)
+FileSystem::WriteStream::WriteStream(FileSystem::Handle file_system):
+	Stream(file_system),
+	std::ostream((std::streambuf*)this)
 { }
 
 int
@@ -86,10 +89,10 @@ FileSystem::WriteStream::overflow(int character)
 
 // Identifier
 
-FileSystem::ReadStreamHandle FileSystem::Identifier::get_read_stream() const
-	{ return file_system ? file_system->get_read_stream(filename) : ReadStreamHandle(); }
-FileSystem::WriteStreamHandle FileSystem::Identifier::get_write_stream() const
-	{ return file_system ? file_system->get_write_stream(filename) : WriteStreamHandle(); }
+FileSystem::ReadStream::Handle FileSystem::Identifier::get_read_stream() const
+	{ return file_system ? file_system->get_read_stream(filename) : ReadStream::Handle(); }
+FileSystem::WriteStream::Handle FileSystem::Identifier::get_write_stream() const
+	{ return file_system ? file_system->get_write_stream(filename) : WriteStream::Handle(); }
 
 
 // FileSystem
@@ -102,9 +105,9 @@ bool FileSystem::file_rename(const String &from_filename, const String &to_filen
 {
 	if (fix_slashes(from_filename) == fix_slashes(to_filename))
 		return true;
-	ReadStreamHandle read_stream = get_read_stream(from_filename);
+	ReadStream::Handle read_stream = get_read_stream(from_filename);
 	if (!read_stream) return false;
-	WriteStreamHandle write_stream = get_write_stream(to_filename);
+	WriteStream::Handle write_stream = get_write_stream(to_filename);
 	if (!write_stream) return false;
 	return write_stream->write_whole_stream(read_stream)
 		&& file_remove(from_filename);
@@ -113,9 +116,9 @@ bool FileSystem::file_rename(const String &from_filename, const String &to_filen
 bool FileSystem::copy(Handle from_file_system, const String &from_filename, Handle to_file_system, const String &to_filename)
 {
 	if (from_file_system.empty() || to_file_system.empty()) return false;
-	ReadStreamHandle read_stream = from_file_system->get_read_stream(from_filename);
+	ReadStream::Handle read_stream = from_file_system->get_read_stream(from_filename);
 	if (read_stream.empty()) return false;
-	WriteStreamHandle write_stream = to_file_system->get_write_stream(to_filename);
+	WriteStream::Handle write_stream = to_file_system->get_write_stream(to_filename);
 	if (write_stream.empty()) return false;
 	return write_stream->write_whole_stream(read_stream);
 }

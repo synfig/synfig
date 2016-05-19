@@ -509,10 +509,10 @@ Job OptionsProcessor::extract_job()
 			// todo: literals ".sfg", "container:", "project.sifz"
 			if (bfs::path(job.filename).extension().string() == ".sfg")
 			{
-				etl::handle< FileContainerZip > container = new FileContainerZip();
+				FileContainerZip::Handle container = new FileContainerZip();
 				if (container->open(job.filename))
 				{
-					etl::handle< FileSystemGroup > file_system( new FileSystemGroup(FileSystemNative::instance()) );
+					FileSystemGroup::Handle file_system( new FileSystemGroup(FileSystemNative::instance()) );
 					file_system->register_system("#", container);
 					job.root = open_canvas_as(file_system->get_identifier("#project.sifz"), job.filename, errors, warnings);
 				} else
@@ -615,10 +615,10 @@ Job OptionsProcessor::extract_job()
 		// todo: literals ".sfg", "container:", "project.sifz"
 		if (bfs::path(composite_file).extension() == ".sfg")
 		{
-			etl::handle< FileContainerZip > container = new FileContainerZip();
+			FileContainerZip::Handle container = new FileContainerZip();
 			if (container->open(job.filename))
 			{
-				etl::handle< FileSystemGroup > file_system( new FileSystemGroup(FileSystemNative::instance()) );
+				FileSystemGroup::Handle file_system( new FileSystemGroup(FileSystemNative::instance()) );
 				file_system->register_system("#", container);
 				job.root = open_canvas_as(file_system->get_identifier("#project.sifz"), composite_file, errors, warnings);
 			} else

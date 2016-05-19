@@ -32,6 +32,8 @@
 #include <cstring>
 #include <cstdlib>
 
+#include <libxml++/libxml++.h>
+
 #include "filecontainertemporary.h"
 #include "general.h"
 #include <synfig/localization.h>
@@ -370,7 +372,7 @@ bool FileContainerTemporary::save_changes(const String &filename, bool as_copy)
 {
 	if (file_is_opened()) return false;
 
-	etl::handle< FileContainerZip > container;
+	FileContainerZip::Handle container;
 
 	String fname_abs = fix_slashes(filename);
 	if (!is_absolute_path(fname_abs)) fname_abs = absolute_path(fname_abs);
@@ -389,9 +391,9 @@ bool FileContainerTemporary::save_changes(const String &filename, bool as_copy)
 		if (container_->is_opened())
 		{
 			{ // copy container
-				ReadStreamHandle read_steram = container_->get_read_stream_whole_container();
+				FileSystem::ReadStream::Handle read_steram = container_->get_read_stream_whole_container();
 				if (read_steram.empty()) return false;
-				WriteStreamHandle write_stream = file_system_->get_write_stream(filename);
+				FileSystem::WriteStream::Handle write_stream = file_system_->get_write_stream(filename);
 				if (write_stream.empty()) return false;
 				if (!write_stream->write_whole_stream(read_steram)) return false;
 			}
@@ -520,7 +522,7 @@ bool FileContainerTemporary::save_temporary() const
 		entry->add_child("is-removed")->set_child_text(i->second.is_removed ? "true" : "false");
 	}
 
-	FileSystem::WriteStreamHandle stream =
+	FileSystem::WriteStream::Handle stream =
 		file_system_->get_write_stream(
 			get_temporary_directory()
 		  + get_temporary_filename_base());
@@ -557,7 +559,7 @@ bool FileContainerTemporary::open_temporary(const String &filename_base)
 {
 	if (is_opened()) return false;
 
-	FileSystem::ReadStreamHandle stream =
+	FileSystem::ReadStream::Handle stream =
 		file_system_->get_read_stream(
 			get_temporary_directory()
 		  + filename_base);
@@ -619,14 +621,14 @@ bool FileContainerTemporary::open_temporary(const String &filename_base)
 }
 
 String
-FileContainerTemporary::generate_indexed_temporary_filename(const FileSystem::Handle & /* fs */, const String &filename)
+FileContainerTemporary::generate_indexed_temporary_filename(const FileSystem::Handle &fs, const String &filename)
 {
 	String extension = filename_extension(filename);
 	String sans_extension = filename_sans_extension(filename);
 	for(int index = 1; index < 10000; ++index)
 	{
 		String indexed_filename = strprintf("%s_%04d%s", sans_extension.c_str(), index, extension.c_str());
-		if (!FileSystemNative::instance()->is_exists(indexed_filename))
+		if (!fs->is_exists(indexed_filename))
 			return indexed_filename;
 	}
 	assert(false);
