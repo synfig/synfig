@@ -56,17 +56,18 @@ FileSystemGroup::FileSystemGroup(FileSystem::Handle default_file_system)
 
 bool FileSystemGroup::find_system(const String &filename, FileSystem::Handle &out_file_system, String &out_filename)
 {
+	String clean_filename = etl::cleanup_path(filename);
 	for(std::list< Entry >::iterator i = entries_.begin(); i != entries_.end(); i++)
 	{
-		if ( filename.substr(0, i->prefix.size()) == i->prefix
-		  && ( filename.size() == i->prefix.size()
-			|| filename[i->prefix.size()] == ETL_DIRECTORY_SEPARATOR0
-			|| filename[i->prefix.size()] == ETL_DIRECTORY_SEPARATOR1 ))
+		if ( clean_filename.substr(0, i->prefix.size()) == i->prefix
+		  && ( clean_filename.size() == i->prefix.size()
+			|| clean_filename[i->prefix.size()] == ETL_DIRECTORY_SEPARATOR0
+			|| clean_filename[i->prefix.size()] == ETL_DIRECTORY_SEPARATOR1 ))
 		{
 			out_file_system = i->sub_file_system;
-			out_filename = filename.size() == i->prefix.size()
+			out_filename = clean_filename.size() == i->prefix.size()
 			             ? i->sub_prefix
-			             : i->sub_prefix + ETL_DIRECTORY_SEPARATOR + filename.substr(i->prefix.size());
+			             : i->sub_prefix + ETL_DIRECTORY_SEPARATOR + clean_filename.substr(i->prefix.size());
 			return true;
 		}
 	}
