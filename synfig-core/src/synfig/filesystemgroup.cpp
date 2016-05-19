@@ -58,10 +58,15 @@ bool FileSystemGroup::find_system(const String &filename, FileSystem::Handle &ou
 {
 	for(std::list< Entry >::iterator i = entries_.begin(); i != entries_.end(); i++)
 	{
-		if (filename.substr(0, i->prefix.size()) == i->prefix)
+		if ( filename.substr(0, i->prefix.size()) == i->prefix
+		  && ( filename.size() == i->prefix.size()
+			|| filename[i->prefix.size()] == ETL_DIRECTORY_SEPARATOR0
+			|| filename[i->prefix.size()] == ETL_DIRECTORY_SEPARATOR1 ))
 		{
-			out_file_system = i->file_system;
-			out_filename = filename.substr(i->prefix.size());
+			out_file_system = i->sub_file_system;
+			out_filename = filename.size() == i->prefix.size()
+			             ? i->sub_prefix
+			             : i->sub_prefix + ETL_DIRECTORY_SEPARATOR + filename.substr(i->prefix.size());
 			return true;
 		}
 	}
@@ -71,25 +76,26 @@ bool FileSystemGroup::find_system(const String &filename, FileSystem::Handle &ou
 	return false;
 }
 
-void FileSystemGroup::register_system(const String &prefix, FileSystem::Handle file_system)
+void FileSystemGroup::register_system(const String &prefix, const FileSystem::Handle &sub_file_system, const String &sub_prefix)
 {
-	if (file_system)
+	if (sub_file_system)
 	{
 		// keep list sorted by length of prefix desc
 		for(std::list< Entry >::iterator i = entries_.begin(); i != entries_.end(); i++)
 		{
 			if (i->prefix == prefix)
 			{
-				i->file_system = file_system;
+				i->sub_file_system = sub_file_system;
+				i->sub_prefix = sub_prefix;
 				return;
 			}
 			if (i->prefix.size() <= prefix.size())
 			{
-				entries_.insert( i, Entry(prefix, file_system) );
+				entries_.insert( i, Entry(prefix, sub_file_system, sub_prefix) );
 				return;
 			}
 		}
-		entries_.push_back( Entry(prefix, file_system) );
+		entries_.push_back( Entry(prefix, sub_file_system, sub_prefix) );
 	}
 }
 

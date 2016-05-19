@@ -47,10 +47,11 @@ namespace synfig
 		struct Entry
 		{
 			String prefix;
-			FileSystem::Handle file_system;
+			FileSystem::Handle sub_file_system;
+			String sub_prefix;
 			inline Entry() { }
-			inline Entry(const String &prefix, const FileSystem::Handle &file_system):
-				prefix(prefix), file_system(file_system) { }
+			inline Entry(const String &prefix, const FileSystem::Handle &sub_file_system, const String &sub_prefix):
+				prefix(prefix), sub_file_system(sub_file_system), sub_prefix(sub_prefix) { }
 		};
 
 	private:
@@ -62,7 +63,7 @@ namespace synfig
 		FileSystemGroup();
 		explicit FileSystemGroup(FileSystem::Handle default_file_system);
 
-		void register_system(const String &prefix, FileSystem::Handle file_system);
+		void register_system(const String &prefix, const FileSystem::Handle &sub_file_system, const String &sub_prefix = String());
 		void unregister_system(const String &prefix);
 
 		virtual bool is_file(const String &filename);
