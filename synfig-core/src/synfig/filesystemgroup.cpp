@@ -53,7 +53,7 @@ FileSystemGroup::FileSystemGroup() { }
 
 FileSystemGroup::FileSystemGroup(FileSystem::Handle default_file_system)
 {
-	if (default_file_system) register_system(String(), default_file_system);
+	if (default_file_system) register_system(String(), default_file_system, String(), true);
 }
 
 bool FileSystemGroup::find_system(const String &filename, FileSystem::Handle &out_file_system, String &out_filename)
@@ -62,12 +62,13 @@ bool FileSystemGroup::find_system(const String &filename, FileSystem::Handle &ou
 	for(std::list< Entry >::iterator i = entries_.begin(); i != entries_.end(); i++)
 	{
 		if ( clean_filename.substr(0, i->prefix.size()) == i->prefix
-		  && ( clean_filename.size() == i->prefix.size()
+		  && ( i->is_separator
+			|| clean_filename.size() == i->prefix.size()
 			|| clean_filename[i->prefix.size()] == ETL_DIRECTORY_SEPARATOR0
 			|| clean_filename[i->prefix.size()] == ETL_DIRECTORY_SEPARATOR1 ))
 		{
 			out_file_system = i->sub_file_system;
-			out_filename = clean_filename.size() == i->prefix.size()
+			out_filename = i->is_separator || clean_filename.size() == i->prefix.size()
 			             ? i->sub_prefix
 			             : i->sub_prefix + ETL_DIRECTORY_SEPARATOR + clean_filename.substr(i->prefix.size());
 			return true;
@@ -79,7 +80,7 @@ bool FileSystemGroup::find_system(const String &filename, FileSystem::Handle &ou
 	return false;
 }
 
-void FileSystemGroup::register_system(const String &prefix, const FileSystem::Handle &sub_file_system, const String &sub_prefix)
+void FileSystemGroup::register_system(const String &prefix, const FileSystem::Handle &sub_file_system, const String &sub_prefix, bool is_separator)
 {
 	if (sub_file_system)
 	{
@@ -90,15 +91,16 @@ void FileSystemGroup::register_system(const String &prefix, const FileSystem::Ha
 			{
 				i->sub_file_system = sub_file_system;
 				i->sub_prefix = sub_prefix;
+				i->is_separator = is_separator;
 				return;
 			}
 			if (i->prefix.size() <= prefix.size())
 			{
-				entries_.insert( i, Entry(prefix, sub_file_system, sub_prefix) );
+				entries_.insert( i, Entry(prefix, sub_file_system, sub_prefix, is_separator) );
 				return;
 			}
 		}
-		entries_.push_back( Entry(prefix, sub_file_system, sub_prefix) );
+		entries_.push_back( Entry(prefix, sub_file_system, sub_prefix, is_separator) );
 	}
 }
 
@@ -122,7 +124,7 @@ bool FileSystemGroup::is_directory(const String &filename)
 	FileSystem::Handle file_system;
 	String internal_filename;
 	return find_system(filename, file_system, internal_filename)
-	    && (internal_filename.empty() || file_system->is_directory(internal_filename));
+	    && file_system->is_directory(internal_filename);
 }
 
 bool FileSystemGroup::directory_create(const String &dirname)
@@ -130,7 +132,7 @@ bool FileSystemGroup::directory_create(const String &dirname)
 	FileSystem::Handle file_system;
 	String internal_dirname;
 	return find_system(dirname, file_system, internal_dirname)
-	    && (internal_dirname.empty() || file_system->directory_create(internal_dirname));
+	    && file_system->directory_create(internal_dirname);
 }
 
 bool FileSystemGroup::directory_scan(const String &dirname, FileList &out_files)
@@ -153,7 +155,7 @@ bool FileSystemGroup::directory_scan(const String &dirname, FileList &out_files)
 
 	String clean_dirname = etl::cleanup_path(dirname);
 	for(std::list< Entry >::iterator i = entries_.begin(); i != entries_.end(); i++)
-		if (clean_dirname == dirname(i->prefix))
+		if (!i->is_separator && !i->prefix.empty() && clean_dirname == dirname(i->prefix))
 		{
 			if (is_exists(i->prefix))
 				files.insert(etl::basename(i->prefix));

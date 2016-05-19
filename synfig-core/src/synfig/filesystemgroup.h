@@ -49,9 +49,11 @@ namespace synfig
 			String prefix;
 			FileSystem::Handle sub_file_system;
 			String sub_prefix;
-			inline Entry() { }
-			inline Entry(const String &prefix, const FileSystem::Handle &sub_file_system, const String &sub_prefix):
-				prefix(prefix), sub_file_system(sub_file_system), sub_prefix(sub_prefix) { }
+			bool is_separator;
+
+			inline Entry(): is_separator() { }
+			inline Entry(const String &prefix, const FileSystem::Handle &sub_file_system, const String &sub_prefix, bool is_separator):
+				prefix(prefix), sub_file_system(sub_file_system), sub_prefix(sub_prefix), is_separator(is_separator) { }
 		};
 
 	private:
@@ -63,7 +65,7 @@ namespace synfig
 		FileSystemGroup();
 		explicit FileSystemGroup(FileSystem::Handle default_file_system);
 
-		void register_system(const String &prefix, const FileSystem::Handle &sub_file_system, const String &sub_prefix = String());
+		void register_system(const String &prefix, const FileSystem::Handle &sub_file_system, const String &sub_prefix = String(), bool is_separator = false);
 		void unregister_system(const String &prefix);
 
 		virtual bool is_file(const String &filename);
