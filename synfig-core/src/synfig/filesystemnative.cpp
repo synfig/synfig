@@ -29,12 +29,15 @@
 #	include <config.h>
 #endif
 
-#include "filesystemnative.h"
 #include <giomm.h>
+#include <glibmm.h>
+#include <sys/stat.h>
+
 #include "general.h"
 #include <synfig/localization.h>
+
+#include "filesystemnative.h"
 #include "guid.h"
-#include <sys/stat.h>
 
 #endif
 
@@ -99,6 +102,18 @@ bool FileSystemNative::directory_create(const String &dirname)
 {
 	return is_directory(dirname)
 	    || Gio::File::create_for_path(fix_slashes(dirname))->make_directory();
+}
+
+bool FileSystemNative::directory_scan(const String &dirname, FileList &out_files)
+{
+	out_files.clear();
+	if (!is_directory(dirname)) return false;
+
+	Glib::Dir dir(dirname);
+	for(Glib::DirIterator i = dir.begin(); i != dir.end(); ++i)
+		out_files.push_back(Glib::filename_to_utf8(*i));
+
+	return true;
 }
 
 bool FileSystemNative::file_remove(const String &filename)

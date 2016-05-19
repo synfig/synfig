@@ -81,8 +81,6 @@ namespace synfig
 		virtual void close() = 0;
 		virtual bool is_opened() = 0;
 
-		virtual bool directory_scan(const String &dirname, std::list< String > &out_files) = 0;
-
 		virtual bool file_open_read_whole_container();
 		virtual bool file_open_read(const String &filename) = 0;
 		virtual bool file_open_write(const String &filename) = 0;

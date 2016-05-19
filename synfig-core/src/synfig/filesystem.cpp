@@ -128,7 +128,7 @@ String FileSystem::fix_slashes(const String &filename)
 	String fixed = filename;
 	for(size_t i = 0; i < filename.size(); ++i)
 		if (fixed[i] == '\\') fixed[i] = '/';
-	return fixed;
+	return etl::cleanup_path(fixed);
 }
 
 std::istream&

@@ -83,6 +83,7 @@ namespace synfig
 		virtual bool is_directory(const String &filename);
 
 		virtual bool directory_create(const String &dirname);
+		virtual bool directory_scan(const String &dirname, FileList &out_files);
 
 		virtual bool file_remove(const String &filename);
 		virtual bool file_rename(const String &from_filename, const String &to_filename);

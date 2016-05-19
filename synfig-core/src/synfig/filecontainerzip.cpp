@@ -656,7 +656,7 @@ bool FileContainerZip::directory_create(const String &dirname)
 	return true;
 }
 
-bool FileContainerZip::directory_scan(const String &dirname, std::list< String > &out_files)
+bool FileContainerZip::directory_scan(const String &dirname, FileList &out_files)
 {
 	out_files.clear();
 	if (!is_directory(dirname)) return false;
@@ -670,7 +670,7 @@ bool FileContainerZip::file_remove(const String &filename)
 {
 	if (is_directory(filename))
 	{
-		std::list< String > files;
+		FileList files;
 		directory_scan(filename, files);
 		if (!files.empty()) return false;
 		changed_ = true;

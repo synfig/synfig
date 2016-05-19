@@ -28,10 +28,11 @@
 /* === H E A D E R S ======================================================= */
 
 #include <cstdio>
-#include <string>
-#include <streambuf>
+
 #include <istream>
 #include <ostream>
+#include <streambuf>
+#include <vector>
 
 #include <ETL/handle>
 
@@ -50,6 +51,7 @@ namespace synfig
 	{
 	public:
 		typedef etl::handle<FileSystem> Handle;
+		typedef std::vector<String> FileList;
 
 		class Stream : public etl::shared_object
 		{
@@ -158,6 +160,7 @@ namespace synfig
 		virtual bool is_directory(const String &filename) = 0;
 
 		virtual bool directory_create(const String &dirname) = 0;
+		virtual bool directory_scan(const String &dirname, FileList &out_files) = 0;
 
 		virtual bool file_remove(const String &filename) = 0;
 		virtual bool file_rename(const String &from_filename, const String &to_filename);

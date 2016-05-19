@@ -29,6 +29,8 @@
 #	include <config.h>
 #endif
 
+#include <set>
+
 #include "filesystemgroup.h"
 
 #endif
@@ -120,7 +122,7 @@ bool FileSystemGroup::is_directory(const String &filename)
 	FileSystem::Handle file_system;
 	String internal_filename;
 	return find_system(filename, file_system, internal_filename)
-	    && file_system->is_directory(internal_filename);
+	    && (internal_filename.empty() || file_system->is_directory(internal_filename));
 }
 
 bool FileSystemGroup::directory_create(const String &dirname)
@@ -128,7 +130,41 @@ bool FileSystemGroup::directory_create(const String &dirname)
 	FileSystem::Handle file_system;
 	String internal_dirname;
 	return find_system(dirname, file_system, internal_dirname)
-	    && file_system->directory_create(internal_dirname);
+	    && (internal_dirname.empty() || file_system->directory_create(internal_dirname));
+}
+
+bool FileSystemGroup::directory_scan(const String &dirname, FileList &out_files)
+{
+	out_files.clear();
+	if (!is_directory(dirname)) return false;
+
+	std::set<String> files;
+
+	FileSystem::Handle file_system;
+	String internal_dirname;
+	if (find_system(dirname, file_system, internal_dirname))
+	{
+		FileList list;
+		if (!file_system->directory_scan(internal_dirname, list))
+			return false;
+		for(FileList::const_iterator i = list.begin(); i != list.end(); ++i)
+			files.insert(*i);
+	}
+
+	String clean_dirname = etl::cleanup_path(dirname);
+	for(std::list< Entry >::iterator i = entries_.begin(); i != entries_.end(); i++)
+		if (clean_dirname == dirname(i->prefix))
+		{
+			if (is_exists(i->prefix))
+				files.insert(etl::basename(i->prefix));
+			else
+				files.erase(etl::basename(i->prefix));
+		}
+
+	for(std::set<String>::const_iterator i = files.begin(); i != files.end(); ++i)
+		out_files.push_back(*i);
+
+	return true;
 }
 
 bool FileSystemGroup::file_remove(const String &filename)

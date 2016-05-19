@@ -123,7 +123,7 @@ namespace synfig
 
 		bool directory_check_name(const String &dirname);
 		virtual bool directory_create(const String &dirname);
-		virtual bool directory_scan(const String &dirname, std::list< String > &out_files);
+		virtual bool directory_scan(const String &dirname, FileList &out_files);
 
 		virtual bool file_remove(const String &filename);
 

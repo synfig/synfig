@@ -194,7 +194,7 @@ bool FileContainerTemporary::directory_create(const String &dirname)
 	return true;
 }
 
-bool FileContainerTemporary::directory_scan(const String &dirname, std::list< String > &out_files)
+bool FileContainerTemporary::directory_scan(const String &dirname, FileList &out_files)
 {
 	out_files.clear();
 	if (!is_directory(dirname)) return false;
@@ -207,14 +207,14 @@ bool FileContainerTemporary::directory_scan(const String &dirname, std::list< St
 		{
 			if (i->second.is_removed)
 			{
-				for(std::list< String >::iterator j = out_files.begin(); j != out_files.end();)
+				for(FileList::iterator j = out_files.begin(); j != out_files.end();)
 					if (*j == i->second.name_part_localname)
 						j = out_files.erase(j); else j++;
 			}
 			else
 			{
 				bool found = false;
-				for(std::list< String >::iterator j = out_files.begin(); j != out_files.end();)
+				for(FileList::iterator j = out_files.begin(); j != out_files.end();)
 					if (*j == i->second.name_part_localname)
 						{ found = true; break; }
 				if (!found)
@@ -231,7 +231,7 @@ bool FileContainerTemporary::file_remove(const String &filename)
 	// remove directory
 	if (is_directory(filename))
 	{
-		std::list< String > files;
+		FileList files;
 		directory_scan(filename, files);
 		if (!files.empty()) return false;
 
