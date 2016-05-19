@@ -171,7 +171,11 @@ namespace synfig
 		inline bool is_exists(const String filename) { return is_file(filename) || is_directory(filename); }
 
 		Identifier get_identifier(const String &filename) { return Identifier(this, filename); }
+
+		bool remove_recursive(const String &filename);
+
 		static bool copy(Handle from_file_system, const String &from_filename, Handle to_file_system, const String &to_filename);
+		static bool copy_recursive(Handle from_file_system, const String &from_filename, Handle to_file_system, const String &to_filename);
 
 		static String fix_slashes(const String &filename);
 

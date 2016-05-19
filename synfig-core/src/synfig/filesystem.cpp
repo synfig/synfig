@@ -113,6 +113,27 @@ bool FileSystem::file_rename(const String &from_filename, const String &to_filen
 		&& file_remove(from_filename);
 }
 
+bool FileSystem::remove_recursive(const String &filename)
+{
+	assert(!filename.empty());
+
+	if (filename.empty())
+		return false;
+	if (is_file(filename))
+		return file_remove(filename);
+	if (is_directory(filename))
+	{
+		FileList files;
+		directory_scan(filename, files);
+		bool success = true;
+		for(FileList::const_iterator i = files.begin(); i != files.end(); ++i)
+			if (!remove_recursive(filename + ETL_DIRECTORY_SEPARATOR + *i))
+				success = false;
+		return success;
+	}
+	return true;
+}
+
 bool FileSystem::copy(Handle from_file_system, const String &from_filename, Handle to_file_system, const String &to_filename)
 {
 	if (from_file_system.empty() || to_file_system.empty()) return false;
@@ -121,6 +142,30 @@ bool FileSystem::copy(Handle from_file_system, const String &from_filename, Hand
 	WriteStream::Handle write_stream = to_file_system->get_write_stream(to_filename);
 	if (write_stream.empty()) return false;
 	return write_stream->write_whole_stream(read_stream);
+}
+
+bool FileSystem::copy_recursive(Handle from_file_system, const String &from_filename, Handle to_file_system, const String &to_filename)
+{
+	if (!from_file_system || !to_file_system) return false;
+	if (from_file_system->is_file(from_filename))
+		return copy(from_file_system, from_filename, to_file_system, to_filename);
+	if (from_file_system->is_directory(from_filename))
+	{
+		if (!to_file_system->directory_create(to_filename))
+			return false;
+		FileList files;
+		from_file_system->directory_scan(from_filename, files);
+		bool success = true;
+		for(FileList::const_iterator i = files.begin(); i != files.end(); ++i)
+			if (!copy_recursive(
+					from_file_system,
+					from_filename + ETL_DIRECTORY_SEPARATOR + *i,
+					to_file_system,
+					to_filename + ETL_DIRECTORY_SEPARATOR + *i ))
+				success = false;
+		return success;
+	}
+	return false;
 }
 
 String FileSystem::fix_slashes(const String &filename)
