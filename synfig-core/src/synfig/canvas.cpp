@@ -31,6 +31,7 @@
 #endif
 
 #include <cassert>
+#include <cstring>
 
 #include <sigc++/bind.h>
 
@@ -39,12 +40,14 @@
 #include "general.h"
 #include <synfig/localization.h>
 
-#include "layer.h"
 #include "canvas.h"
 #include "context.h"
 #include "exception.h"
-#include "loadcanvas.h"
 #include "filesystemnative.h"
+#include "importer.h"
+#include "layer.h"
+#include "loadcanvas.h"
+
 #include "layers/layer_pastecanvas.h"
 #include "valuenodes/valuenode_const.h"
 #include "valuenodes/valuenode_scale.h"
@@ -1107,6 +1110,12 @@ Canvas::get_file_path()const
 	return dirname(file_name_);
 }
 
+FileSystem::Handle
+Canvas::get_file_system()const
+{
+	return get_identifier().file_system;
+}
+
 void
 Canvas::set_identifier(const FileSystem::Identifier &identifier)
 {
@@ -1118,7 +1127,6 @@ Canvas::get_identifier()const
 {
 	return parent() ? parent()->get_identifier() : identifier_;
 }
-
 
 String
 Canvas::get_meta_data(const String& key)const

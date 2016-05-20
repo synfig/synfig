@@ -551,6 +551,9 @@ public:
 	//! Gets the filename (with path)
 	String get_file_name()const;
 
+	//! Gets file_system of the canvas
+	FileSystem::Handle get_file_system()const;
+
 	//! Sets the file identifier
 	void set_identifier(const FileSystem::Identifier &);
 
