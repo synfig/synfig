@@ -130,6 +130,7 @@ SYNFIGHEADERS = \
 	filesystem.h \
 	filesystemnative.h \
 	filesystemgroup.h \
+	filesystemtemporary.h \
 	filecontainer.h \
 	filecontainerzip.h \
 	filecontainertemporary.h \
@@ -182,6 +183,7 @@ SYNFIGSOURCES = \
 	filesystem.cpp \
 	filesystemnative.cpp \
 	filesystemgroup.cpp \
+	filesystemtemporary.cpp \
 	filecontainer.cpp \
 	filecontainerzip.cpp \
 	filecontainertemporary.cpp \
