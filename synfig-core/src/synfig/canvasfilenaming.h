@@ -62,6 +62,7 @@ public:
 	static String make_short_filename(const String &canvas_filename, const String &filename);
 	static String make_full_filename(const String &canvas_filename, const String &filename);
 	static String make_canvas_independent_filename(const String &canvas_filename, const String &filename);
+	static String make_local_filename(const String &canvas_filename, const String &filename);
 
 	static FileSystem::Handle make_filesystem_container(const String &filename, FileContainerZip::file_size_t truncate_storage_size = 0, bool create_new = false);
 	static FileSystem::Handle make_filesystem(const FileSystem::Handle &filesystem_container);

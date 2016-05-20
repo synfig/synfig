@@ -71,7 +71,7 @@ CanvasFileNaming::content_folder_by_extension(const String &ext)
 	if (Importer::book().count(ext))
 		return "images";
 	if (ext == "pgo")
-		return "animations";
+		return "animation";
 	return String();
 }
 
@@ -176,6 +176,20 @@ CanvasFileNaming::make_canvas_independent_filename(const String &canvas_filename
 		 + etl::basename(full_filename.substr(container_prefix.size()));
 }
 
+String
+CanvasFileNaming::make_local_filename(const String &canvas_filename, const String &filename)
+{
+	String base = etl::basename(filename);
+	if (base.empty())
+		base = etl::basename(etl::dirname(filename));
+	if (base.substr(0, container_prefix.size()) == container_prefix)
+		base = base.substr(container_prefix.size());
+
+	String canvas_absolute_filename = etl::absolute_path(canvas_filename);
+	String canvas_path = etl::dirname(canvas_absolute_filename);
+	return canvas_path + ETL_DIRECTORY_SEPARATOR + base;
+}
+
 FileSystem::Handle
 CanvasFileNaming::make_filesystem_container(const String &filename, FileContainerZip::file_size_t truncate_storage_size, bool create_new)
 {
@@ -256,6 +270,8 @@ String
 CanvasFileNaming::generate_container_filename(const FileSystem::Handle &canvas_filesystem, const String &filename)
 {
 	String base = etl::basename(filename);
+	if (base.empty())
+		base = etl::basename(etl::dirname(filename));
 	if (base.substr(0, container_prefix.size()) == container_prefix)
 		base = base.substr(container_prefix.size());
 	String ext = filename_extension_lower(base);

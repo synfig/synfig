@@ -58,7 +58,7 @@ private:
 	//!Parameter: (Time)
 	ValueBase param_time_offset;
 
-	String abs_filename;
+	String independent_filename;
 	Importer::Handle importer;
 	CairoImporter::Handle cimporter;
 
@@ -77,8 +77,6 @@ public:
 	virtual void on_canvas_set();
 
 	virtual void set_time_vfunc(IndependentContext context, Time time)const;
-	
-	virtual void set_render_method(Context context, RenderMethod x);
 };
 
 }; // END of namespace lyr_std
