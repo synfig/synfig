@@ -29,7 +29,7 @@
 #	include <config.h>
 #endif
 
-#include "layer_sound.h"
+#include <glib.h>
 
 #include <synfig/general.h>
 #include <synfig/localization.h>
@@ -39,6 +39,9 @@
 #include <synfig/string.h>
 #include <synfig/time.h>
 #include <synfig/value.h>
+#include <synfig/canvasfilenaming.h>
+
+#include "layer_sound.h"
 
 #endif
 
@@ -126,10 +129,18 @@ Layer_Sound::get_param_vocab()const
 void
 Layer_Sound::fill_sound_processor(SoundProcessor &soundProcessor) const
 {
+	if (!get_canvas() || !get_canvas()->get_file_system())
+		return;
+
 	String filename = param_filename.get(String());
+	filename = CanvasFileNaming::make_full_filename(get_canvas()->get_file_name(), filename);
+	filename = get_canvas()->get_file_system()->get_real_uri(filename);
+	filename = Glib::filename_from_uri(filename);
+	if (filename.empty())
+		return;
+
 	Time delay = param_delay.get(Time());
 	Real volume = param_volume.get(Real());
-	if (!filename.empty())
-		soundProcessor.addSound(SoundProcessor::PlayOptions(delay, volume), SoundProcessor::Sound(filename));
+	soundProcessor.addSound(SoundProcessor::PlayOptions(delay, volume), SoundProcessor::Sound(filename));
 }
 
