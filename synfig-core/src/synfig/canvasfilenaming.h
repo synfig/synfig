@@ -71,6 +71,7 @@ public:
 
 	static bool is_embeded(const String &filename);
 	static bool is_embeded(const String &canvas_filename, const String &filename);
+	static bool can_embed(const String &filename);
 	static String generate_container_filename(const FileSystem::Handle &canvas_filesystem, const String &filename);
 	static String container_canvas_full_filename();
 }; // END of class CanvasFileNaming

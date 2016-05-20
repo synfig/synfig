@@ -75,9 +75,10 @@
 
 #include <synfig/general.h>
 
+#include <synfig/canvasfilenaming.h>
 #include <synfig/filesystemnative.h>
 #include <synfig/filesystemgroup.h>
-#include <synfig/filecontainertemporary.h>
+#include <synfig/filesystemtemporary.h>
 #include <synfig/importer.h>
 #include <synfig/loadcanvas.h>
 #include <synfig/savecanvas.h>
@@ -3484,27 +3485,22 @@ App::open_as(std::string filename,std::string as,synfig::FileContainerZip::file_
 		OneMoment one_moment;
 		String errors, warnings;
 
-		// TODO: move literal "container:" into common place
-		std::string canvas_filename = filename;
-		FileSystemGroup::Handle file_system(new FileSystemGroup(FileSystemNative::instance()));
-		FileContainerTemporary::Handle container(new FileContainerTemporary());
-		file_system->register_system("#", container);
+		// try open container
+		FileSystem::Handle container = CanvasFileNaming::make_filesystem_container(filename, truncate_storage_size);
+		if (!container)
+			throw (String)strprintf(_("Unable to open container \"%s\"\n\n"),filename.c_str());
+		
+		// wrap container into temporary file-system
+		FileSystemTemporary::Handle container_temporary(new FileSystemTemporary(container));
+		container_temporary->set_meta("canvas-filename", filename);
+		
+		// make canvas file-system
+		FileSystem::Handle canvas_file_system = CanvasFileNaming::make_filesystem(container_temporary);
 
-		// TODO: move literal ".sfg" into common place
-		if (etl::filename_extension(filename) == ".sfg")
-		{
-			if (!container->open_from_history(filename, truncate_storage_size))
-				throw (String)strprintf(_("Unable to open container \"%s\"\n\n"),filename.c_str());
-			// TODO: move literal "project.sifz" into common place
-			canvas_filename = "#project.sifz";
-		}
-		else
-		{
-			if (!container->create(std::string()))
-				throw (String)strprintf(_("Unable to create container\n\n"),filename.c_str());
-		}
-
-		etl::handle<synfig::Canvas> canvas(open_canvas_as(file_system->get_identifier(canvas_filename),as,errors,warnings));
+		// file to open inside canvas file-system
+		String canvas_filename = CanvasFileNaming::find_canvas_file(canvas_file_system);
+		
+		etl::handle<synfig::Canvas> canvas = open_canvas_as(canvas_file_system->get_identifier(canvas_filename), as, errors, warnings);
 		if(canvas && get_instance(canvas))
 		{
 			get_instance(canvas)->find_canvas_view(canvas)->present();
@@ -3527,7 +3523,7 @@ App::open_as(std::string filename,std::string as,synfig::FileContainerZip::file_
 			if (as.find(custom_filename_prefix.c_str()) != 0)
 				add_recent_file(as);
 
-			handle<Instance> instance(Instance::create(canvas, container));
+			handle<Instance> instance(Instance::create(canvas, container_temporary));
 
 			if(!instance)
 				throw (String)strprintf(_("Unable to create instance for \"%s\""),filename.c_str());
@@ -3582,23 +3578,25 @@ App::open_as(std::string filename,std::string as,synfig::FileContainerZip::file_
 //   App::open_as(get_shadow_file_name(filename),filename)
 // other than that, 'filename' and 'as' are the same
 bool
-App::open_from_temporary_container_as(std::string container_filename_base,std::string as)
+App::open_from_temporary_container_as(std::string container_filename_base, std::string as)
 {
 	try
 	{
 		OneMoment one_moment;
 		String errors, warnings;
 
-		// TODO: move literals "container:" and "project.sifz" into common place
-		std::string canvas_filename = "#project.sifz";
-		FileSystemGroup::Handle file_system(new FileSystemGroup(FileSystemNative::instance()));
-		FileContainerTemporary::Handle container(new FileContainerTemporary());
-		file_system->register_system("#", container);
+		// try open temporary container
+		FileSystemTemporary::Handle container_temporary(new FileSystemTemporary());
+		if (!container_temporary->open_temporary(container_filename_base))
+			throw (String)strprintf(_("Unable to open temporary container \"%s\"\n\n"), container_filename_base.c_str());
 
-		if (!container->open_temporary(container_filename_base))
-			throw (String)strprintf(_("Unable to open temporary container \"%s\"\n\n"),container_filename_base.c_str());
+		// make canvas file-system
+		FileSystem::Handle canvas_file_system = CanvasFileNaming::make_filesystem(container_temporary);
 
-		etl::handle<synfig::Canvas> canvas(open_canvas_as(file_system->get_identifier(canvas_filename),as,errors,warnings));
+		// file to open inside canvas file-system
+		String canvas_filename = CanvasFileNaming::find_canvas_file(canvas_file_system);
+
+		etl::handle<synfig::Canvas> canvas(open_canvas_as(canvas_file_system->get_identifier(canvas_filename), as, errors, warnings));
 		if(canvas && get_instance(canvas))
 		{
 			get_instance(canvas)->find_canvas_view(canvas)->present();
@@ -3620,7 +3618,7 @@ App::open_from_temporary_container_as(std::string container_filename_base,std::s
 			if (as.find(custom_filename_prefix.c_str()) != 0)
 				add_recent_file(as);
 
-			handle<Instance> instance(Instance::create(canvas, container));
+			handle<Instance> instance(Instance::create(canvas, container_temporary));
 
 			if(!instance)
 				throw (String)strprintf(_("Unable to create instance for \"%s\""),container_filename_base.c_str());
@@ -3696,10 +3694,8 @@ App::new_instance()
 	canvas->set_file_name(file_name);
 	canvas->keyframe_list().add(synfig::Keyframe());
 
-	FileSystemGroup::Handle file_system(new FileSystemGroup(FileSystemNative::instance()));
-	FileContainerTemporary::Handle container(new FileContainerTemporary());
-	file_system->register_system("#", container);
-	container->create(std::string());
+	FileSystemTemporary::Handle container(new FileSystemTemporary(FileSystemNative::instance()));
+	FileSystemGroup::Handle file_system = CanvasFileNaming::make_filesystem(container);
 	canvas->set_identifier(file_system->get_identifier(file_name));
 
 	handle<Instance> instance = Instance::create(canvas, container);

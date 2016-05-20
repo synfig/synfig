@@ -87,7 +87,7 @@ int studio::Instance::instance_count_=0;
 
 /* === M E T H O D S ======================================================= */
 
-Instance::Instance(synfig::Canvas::Handle canvas, synfig::FileContainerTemporary::Handle container):
+Instance::Instance(synfig::Canvas::Handle canvas, synfig::FileSystemTemporary::Handle container):
 	synfigapp::Instance		(canvas, container),
 	canvas_tree_store_		(Gtk::TreeStore::create(canvas_tree_model)),
 	history_tree_store_		(HistoryTreeStore::create(this)),
@@ -129,7 +129,7 @@ Instance::get_visible_canvases()const
 }
 
 handle<Instance>
-Instance::create(synfig::Canvas::Handle canvas, synfig::FileContainerTemporary::Handle container)
+Instance::create(synfig::Canvas::Handle canvas, synfig::FileSystemTemporary::Handle container)
 {
 	// Construct a new instance
 	handle<Instance> instance(new Instance(canvas, container));

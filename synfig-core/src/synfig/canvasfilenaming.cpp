@@ -246,6 +246,12 @@ CanvasFileNaming::is_embeded(const String &canvas_filename, const String &filena
 		&& short_filename.substr(0, container_prefix.size()) == container_prefix;
 }
 
+bool
+CanvasFileNaming::can_embed(const String &filename)
+{
+	return !content_folder_by_filename(filename).empty();
+}
+
 String
 CanvasFileNaming::generate_container_filename(const FileSystem::Handle &canvas_filesystem, const String &filename)
 {
