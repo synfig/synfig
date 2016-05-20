@@ -792,7 +792,11 @@ CanvasInterface::import(const synfig::String &filename, synfig::String &errors, 
 	// If this is a SIF file, then we need to do things slightly differently
 	if (ext=="sif" || ext=="sifz")try
 	{
-		Canvas::Handle outside_canvas(synfig::open_canvas_as(get_canvas()->get_identifier().file_system->get_identifier(full_filename), full_filename, errors, warnings));
+		FileSystem::Handle file_system = CanvasFileNaming::make_filesystem(full_filename);
+		if(!file_system)
+			throw String(_("Unable to open container")) + ":\n\n" + errors;
+
+		Canvas::Handle outside_canvas(synfig::open_canvas_as(file_system->get_identifier(CanvasFileNaming::find_canvas_file(file_system)), full_filename, errors, warnings));
 		if(!outside_canvas)
 			throw String(_("Unable to open this composition")) + ":\n\n" + errors;
 
