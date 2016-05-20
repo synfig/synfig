@@ -209,6 +209,7 @@ ValueNode_AnimatedFile::load_file(const String &filename, bool forse)
 #endif
 
 	String full_filename = CanvasFileNaming::make_full_filename(get_parent_canvas()->get_file_path(), optimized_filename);
+	String local_filename = CanvasFileNaming::make_local_filename(get_parent_canvas()->get_file_name(), full_filename);
 	String independent_filename = CanvasFileNaming::make_canvas_independent_filename(get_parent_canvas()->get_file_path(), full_filename);
 
 	if (current_filename == independent_filename && !forse) return;
@@ -225,6 +226,9 @@ ValueNode_AnimatedFile::load_file(const String &filename, bool forse)
 		  && get_type() == type_string )
 		{
 			FileSystem::ReadStream::Handle rs = get_parent_canvas()->get_file_system()->get_read_stream(full_filename);
+			if (!rs)
+				FileSystem::ReadStream::Handle rs = get_parent_canvas()->get_file_system()->get_read_stream(local_filename);
+
 			map<Time, String> phonemes;
 			if (!rs)
 				error("Cannot open .pgo file: %s", full_filename.c_str());
