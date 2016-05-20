@@ -133,7 +133,6 @@ SYNFIGHEADERS = \
 	filesystemtemporary.h \
 	filecontainer.h \
 	filecontainerzip.h \
-	filecontainertemporary.h \
 	zstreambuf.h \
 	valueoperations.h \
 	valuetransformation.h \
@@ -187,7 +186,6 @@ SYNFIGSOURCES = \
 	filesystemtemporary.cpp \
 	filecontainer.cpp \
 	filecontainerzip.cpp \
-	filecontainertemporary.cpp \
 	zstreambuf.cpp \
 	valueoperations.cpp \
 	mesh.cpp \

@@ -34,7 +34,7 @@
 #include "debugsurface.h"
 
 #include <synfig/filesystemnative.h>
-#include <synfig/filecontainertemporary.h>
+#include <synfig/filesystemtemporary.h>
 #include <synfig/rendering/surface.h>
 #include <synfig/surface.h>
 
@@ -61,7 +61,7 @@ DebugSurface::save_to_file(const void *buffer, int width, int height, int pitch,
 	String actual_filename =
 		overwrite
 		? filename
-		: FileContainerTemporary::generate_indexed_temporary_filename(
+		: FileSytemTemporary::generate_indexed_temporary_filename(
 			FileSystemNative::instance(),
 			filename + ".tga" );
 
