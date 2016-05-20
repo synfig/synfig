@@ -29,18 +29,19 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-
+#include <gtk/gtk.h>
 #include <gtkmm/label.h>
-#include "widgets/widget_value.h"
-#include <ETL/stringf>
 #include <gtkmm/celleditable.h>
 #include <gtkmm/editable.h>
 #include <gtkmm/entry.h>
 #include <gtkmm/eventbox.h>
-#include <gtk/gtk.h>
-#include "app.h"
 
+#include <ETL/stringf>
+
+#include <synfig/general.h>
+#include <synfig/canvasfilenaming.h>
+
+#include "widgets/widget_value.h"
 
 #include "widgets/widget_vector.h"
 #include "widgets/widget_filename.h"
@@ -50,9 +51,9 @@
 #include "widgets/widget_bonechooser.h"
 #include "widgets/widget_canvaschooser.h"
 #include "widgets/widget_time.h"
+#include "widgets/widget_distance.h"
 
 #include "app.h"
-#include "widgets/widget_distance.h"
 
 #include <gui/localization.h>
 
@@ -315,7 +316,7 @@ Widget_ValueBase::set_value(const synfig::ValueBase &data)
 		{
 			if(child_param_desc.get_hint()=="filename" || param_desc.get_hint()=="filename")
 			{
-				filename_widget->set_value(value.get(string()));
+				filename_widget->set_value(CanvasFileNaming::make_full_filename(canvas->get_file_name(), value.get(string())));
 				filename_widget->show();
 			}
 			else if(child_param_desc.get_hint()=="sublayer_name" || param_desc.get_hint()=="sublayer_name")
@@ -398,7 +399,7 @@ Widget_ValueBase::get_value()
 	{
 		if(child_param_desc.get_hint()=="filename" || param_desc.get_hint()=="filename")
 		{
-			value=string(filename_widget->get_value());
+			value=string(filename_widget->set_value(CanvasFileNaming::make_short_filename(canvas->get_file_name(), filename_widget->get_value())));
 		}
 		else if(child_param_desc.get_hint()=="sublayer_name" || param_desc.get_hint()=="sublayer_name") {
 			value=string(sublayer_widget->get_value());

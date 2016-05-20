@@ -97,6 +97,9 @@ CanvasFileNaming::make_short_filename(const String &canvas_filename, const Strin
 			 ? container_prefix + etl::basename(clean_filename.substr(container_prefix.size()))
 			 : String();
 
+	if (canvas_filename.empty())
+		return clean_filename;
+
 	String canvas_absolute_filename = etl::absolute_path(canvas_filename);
 	String canvas_path = etl::dirname(canvas_absolute_filename);
 	String canvas_basename = etl::basename(canvas_absolute_filename);
@@ -141,6 +144,9 @@ CanvasFileNaming::make_full_filename(const String &canvas_filename, const String
 			 : String();
 	}
 
+	if (canvas_filename.empty())
+		return short_filename;
+
 	String canvas_absolute_filename = etl::absolute_path(canvas_filename);
 	String canvas_path = etl::dirname(canvas_absolute_filename);
 	String absolute_filename = etl::absolute_path(canvas_path, short_filename);
@@ -155,6 +161,9 @@ CanvasFileNaming::make_canvas_independent_filename(const String &canvas_filename
 	if (etl::basename(full_filename).empty()) return String();
 
 	if (full_filename.substr(0, container_prefix.size()) != container_prefix)
+		return full_filename;
+
+	if (canvas_filename.empty())
 		return full_filename;
 
 	String canvas_absolute_filename = etl::absolute_path(canvas_filename);
@@ -179,6 +188,9 @@ CanvasFileNaming::make_canvas_independent_filename(const String &canvas_filename
 String
 CanvasFileNaming::make_local_filename(const String &canvas_filename, const String &filename)
 {
+	if (canvas_filename.empty())
+		return String();
+
 	String base = etl::basename(filename);
 	if (base.empty())
 		base = etl::basename(etl::dirname(filename));
@@ -255,6 +267,9 @@ CanvasFileNaming::is_embeded(const String &filename)
 bool
 CanvasFileNaming::is_embeded(const String &canvas_filename, const String &filename)
 {
+	if (canvas_filename.empty())
+		return is_embeded(filename);
+
 	String short_filename = make_short_filename(canvas_filename, filename);
 	return short_filename.size() > container_prefix.size()
 		&& short_filename.substr(0, container_prefix.size()) == container_prefix;
