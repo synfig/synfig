@@ -139,7 +139,8 @@ SYNFIGHEADERS = \
 	valuetransformation.h \
 	mesh.h \
 	soundprocessor.h \
-	polygon.h
+	polygon.h \
+	canvasfilenaming.h
 
 SYNFIGSOURCES = \
 	activepoint.cpp \
@@ -190,7 +191,8 @@ SYNFIGSOURCES = \
 	zstreambuf.cpp \
 	valueoperations.cpp \
 	mesh.cpp \
-	soundprocessor.cpp
+	soundprocessor.cpp \
+	canvasfilenaming.cpp
 
 
 libsynfig_src = \
