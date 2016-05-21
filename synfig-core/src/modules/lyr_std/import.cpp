@@ -234,6 +234,5 @@ Import::set_time_vfunc(IndependentContext context, Time time)const
 		importer->get_frame(surface,get_canvas()->rend_desc(), time+time_offset, trimmed, width, height, top, left);
 		rendering_surface = importer->get_frame(get_canvas()->rend_desc(), time+time_offset);
 	}
-	break;
 	context.set_time(time);
 }

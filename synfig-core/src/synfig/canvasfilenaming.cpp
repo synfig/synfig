@@ -75,7 +75,7 @@ CanvasFileNaming::content_folder_by_extension(const String &ext)
 	return String();
 }
 
-String
+bool
 CanvasFileNaming::is_container_extension(const String &ext)
 {
 	return ext == "sfg";
@@ -110,7 +110,7 @@ CanvasFileNaming::make_short_filename(const String &canvas_filename, const Strin
 	if (relative_filename.substr(0, prefix.size()) == prefix)
 		return relative_filename.size() > prefix.size()
 			 ? container_prefix + etl::basename(relative_filename.substr(prefix.size()))
-			 : String;
+			 : String();
 
 	if (!is_container_filename(canvas_basename))
 	{
@@ -157,7 +157,7 @@ CanvasFileNaming::make_full_filename(const String &canvas_filename, const String
 String
 CanvasFileNaming::make_canvas_independent_filename(const String &canvas_filename, const String &filename)
 {
-	String full_filename = make_full_filename(canvas_filename, full_filename);
+	String full_filename = make_full_filename(canvas_filename, filename);
 	if (etl::basename(full_filename).empty()) return String();
 
 	if (full_filename.substr(0, container_prefix.size()) != container_prefix)
@@ -234,12 +234,13 @@ FileSystem::Handle
 CanvasFileNaming::make_filesystem(const FileSystem::Handle &filesystem_container)
 {
 	if (!filesystem_container) return FileSystem::Handle();
-	FileSystemGroup::Handle group(FileSystemNative::instance());
+	FileSystemGroup::Handle group(new FileSystemGroup(FileSystemNative::instance()));
 	group->register_system(container_prefix, filesystem_container, String(), true);
+	return group;
 }
 
 FileSystem::Handle
-CanvasFileNaming::make_filesystem(const String &filename, FileContainerZip::file_size_t truncate_storage_size = 0, bool create_new = false)
+CanvasFileNaming::make_filesystem(const String &filename, FileContainerZip::file_size_t truncate_storage_size, bool create_new)
 {
 	return make_filesystem(make_filesystem_container(filename, truncate_storage_size, create_new));
 }

@@ -61,7 +61,7 @@ DebugSurface::save_to_file(const void *buffer, int width, int height, int pitch,
 	String actual_filename =
 		overwrite
 		? filename
-		: FileSytemTemporary::generate_indexed_temporary_filename(
+		: FileSystemTemporary::generate_indexed_temporary_filename(
 			FileSystemNative::instance(),
 			filename + ".tga" );
 

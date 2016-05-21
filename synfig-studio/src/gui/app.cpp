@@ -3695,7 +3695,7 @@ App::new_instance()
 	canvas->keyframe_list().add(synfig::Keyframe());
 
 	FileSystemTemporary::Handle container(new FileSystemTemporary(FileSystemNative::instance()));
-	FileSystemGroup::Handle file_system = CanvasFileNaming::make_filesystem(container);
+	FileSystem::Handle file_system = CanvasFileNaming::make_filesystem(container);
 	canvas->set_identifier(file_system->get_identifier(file_name));
 
 	handle<Instance> instance = Instance::create(canvas, container);

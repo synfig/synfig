@@ -37,6 +37,7 @@
 #include "canvasinterface.h"
 #include <iostream>
 #include <synfig/context.h>
+#include <synfig/canvasfilenaming.h>
 #include <synfig/loadcanvas.h>
 #include <synfig/savecanvas.h>
 #include <synfig/filecontainerzip.h>
@@ -293,19 +294,26 @@ Instance::import_external_canvases()
 	return group.finish();
 }
 
-void Instance::save_surface(const synfig::Surface &surface, const synfig::String &filename)
+bool Instance::save_surface(const synfig::Surface &surface, const synfig::String &filename)
 {
-	if (surface.get_h() <= 0 || surface.get_w() <= 0) return;
+	if (surface.get_h() <= 0 || surface.get_w() <= 0)
+		return false;
 
 	String ext = filename_extension(filename);
-	if (ext.empty()) return;
+	if (ext.empty())
+		return false;
+
 	ext.erase(0, 1);
 	String tmpfile = FileSystemTemporary::generate_temporary_filename();
 
 	etl::handle<Target_Scanline> target =
 		etl::handle<Target_Scanline>::cast_dynamic(
 			Target::create(Target::ext_book()[ext],tmpfile,TargetParam()) );
-	if (!target) return;
+	if (!target)
+		return false;
+
+	bool success = true;
+
 	target->set_canvas(get_canvas());
 	RendDesc desc;
 	desc.set_w(surface.get_w());
@@ -317,11 +325,16 @@ void Instance::save_surface(const synfig::Surface &surface, const synfig::String
 	desc.set_frame_start(0);
 	desc.set_frame_end(0);
 	target->set_rend_desc(&desc);
-	target->add_frame(&surface);
+	if (success)
+		success = target->add_frame(&surface);
 	target = NULL;
 
-	FileSystem::copy(FileSystemNative::instance(), tmpfile, get_file_system(), filename);
+	if (success)
+		success = FileSystem::copy(FileSystemNative::instance(), tmpfile, get_file_system(), filename);
+
 	FileSystemNative::instance()->file_remove(tmpfile);
+
+	return success;
 }
 
 void
@@ -386,7 +399,7 @@ Instance::process_filenames(const ProcessFilenamesParams &params, const synfig::
 				value_node->set_value(new_filename);
 				return;
 			}
-			warning("Cannot process filename for node: %s", node->get_string());
+			warning("Cannot process filename for node: %s", node->get_string().c_str());
 		}
 
 		if (value.can_get(Canvas::Handle()))
@@ -405,7 +418,7 @@ Instance::process_filenames(const ProcessFilenamesParams &params, const synfig::
 
 	// Followed node-types cannot by processed by it self (childs only)
 	if (self)
-		warning("Cannot process filename for node: %s", node->get_string());
+		warning("Cannot process filename for node: %s", node->get_string().c_str());
 
 	// Canvas
 	if (Canvas::Handle canvas = Canvas::Handle::cast_dynamic(node))
@@ -440,7 +453,7 @@ Instance::process_filenames(const ProcessFilenamesParams &params, const synfig::
 		for(ParamVocab::const_iterator i = vocab.begin(); i != vocab.end(); ++i)
 		{
 			Layer::DynamicParamList::const_iterator j = dynamic_params.find(i->get_name());
-			ValueNode::Handle value_node = j != dynamic_params.end() ? ValueNode::Handle() : j->second;
+			ValueNode::Handle value_node = j != dynamic_params.end() ? ValueNode::Handle() : ValueNode::Handle(j->second);
 
 			bool is_filename = i->get_hint() == "filename";
 			if (value_node)
@@ -487,7 +500,7 @@ Instance::process_filenames_undo(const ProcessFilenamesParams &params)
 	for(std::map<std::pair<Layer::Handle, String>, String>::const_iterator i = params.processed_params.begin(); i != params.processed_params.end(); ++i)
 		i->first.first->set_param(i->first.second, i->second);
 	// restore value nodes
-	for(std::map<ValueNode_Const::Handle, String>::const_iterator i = params.processed_params.begin(); i != params.processed_params.end(); ++i)
+	for(std::map<ValueNode_Const::Handle, String>::const_iterator i = params.processed_valuenodes.begin(); i != params.processed_valuenodes.end(); ++i)
 		i->first->set_value(i->second);
 }
 
@@ -539,7 +552,7 @@ Instance::save_as(const synfig::String &file_name)
 			warning("Cannot create container: %s", new_canvas_filename.c_str());
 			return false;
 		}
-		new_container = FileSystemTemporary(container);
+		new_container = new FileSystemTemporary(container);
 		new_canvas_filesystem = CanvasFileNaming::make_filesystem(new_container);
 		if (!new_canvas_filesystem)
 		{
@@ -645,39 +658,14 @@ Instance::generate_new_name(
 			filename = basename(value.get(String()));
 	}
 
-	// extract name from filename or from description
-	String name = filename.empty() ? description : filename_sans_extension(filename);
-	String ext = filename_extension(name);
-	if (ext.find_first_not_of(".0123456789") == String::npos)
-		name = filename_sans_extension(name);
-	for(size_t i = name.find("#", 0); i != String::npos; i = name.find("#", i))
-		name.erase(i, 1);
-	// if name based on description add extension
-	ext = filename.empty() ? ".png" : filename_extension(filename);
+	assert(canvas->get_file_system());
+	String short_filename = CanvasFileNaming::generate_container_filename(canvas->get_file_system(), filename);
+	String full_filename = CanvasFileNaming::make_full_filename(canvas->get_file_name(), short_filename);
+	String base = etl::filename_sans_extension(etl::basename(short_filename));
 
-	// generate new names
-	for(int i = 0; i < 10000; i++) {
-		bool valid = true;
-		String number = strprintf("%04d", i);
-		// TODO: literal '#'
-		String current_description = name + "." + number;
-		String current_filename = "#images/" + name + "." + number + ext;
-		String current_filename_param = "#" + name + "." + number + ext;
-		if (current_description == description || current_filename == filename)
-			valid = false;
-		if (valid && canvas)
-			for(IndependentContext ic = canvas->get_independent_context(); *ic; ic++)
-				if ((*ic)->get_description() == current_description)
-					{ valid = false; break; }
-		if (valid && file_system && file_system->is_exists(current_filename))
-			valid = false;
-		if (valid) {
-			out_description = current_description;
-			out_filename = current_filename;
-			out_filename_param = current_filename_param;
-			break;
-		}
-	}
+	out_description = base;
+	out_filename = full_filename;
+	out_filename_param = short_filename;
 
 	return true;
 }

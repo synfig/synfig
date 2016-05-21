@@ -31,6 +31,8 @@
 
 #include <set>
 
+#include <ETL/stringf>
+
 #include "filesystemgroup.h"
 
 #endif
@@ -155,7 +157,7 @@ bool FileSystemGroup::directory_scan(const String &dirname, FileList &out_files)
 
 	String clean_dirname = etl::cleanup_path(dirname);
 	for(std::list< Entry >::iterator i = entries_.begin(); i != entries_.end(); i++)
-		if (!i->is_separator && !i->prefix.empty() && clean_dirname == dirname(i->prefix))
+		if (!i->is_separator && !i->prefix.empty() && clean_dirname == etl::dirname(i->prefix))
 		{
 			if (is_exists(i->prefix))
 				files.insert(etl::basename(i->prefix));

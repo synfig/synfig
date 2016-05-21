@@ -94,15 +94,14 @@ namespace synfig
 		virtual bool directory_scan(const String &dirname, FileList &out_files);
 
 		virtual bool file_remove(const String &filename);
-		virtual bool file_rename(const String &from_filename, const String &to_filename);
 		virtual FileSystem::ReadStream::Handle get_read_stream(const String &filename);
 		virtual FileSystem::WriteStream::Handle get_write_stream(const String &filename);
 		virtual String get_real_uri(const String &filename);
 
 		const FileSystem::Handle& get_sub_file_system() const
-			{ return file_system; }
+			{ return sub_file_system; }
 		void set_sub_file_system(const FileSystem::Handle &file_system)
-			{ this->file_system = file_system; }
+			{ this->sub_file_system = file_system; }
 
 		bool empty() const { return files.empty() && meta.empty(); }
 
@@ -115,7 +114,7 @@ namespace synfig
 		const String& get_temporary_filename_base() const { return temporary_filename_base; }
 
 		String get_meta(const String &key) const;
-		String set_meta(const String &key, const String &value);
+		void set_meta(const String &key, const String &value);
 		void clear_meta();
 
 		const std::map<String, String>& get_metadata() const;

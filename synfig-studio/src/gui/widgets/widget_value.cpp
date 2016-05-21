@@ -399,7 +399,7 @@ Widget_ValueBase::get_value()
 	{
 		if(child_param_desc.get_hint()=="filename" || param_desc.get_hint()=="filename")
 		{
-			value=string(filename_widget->set_value(CanvasFileNaming::make_short_filename(canvas->get_file_name(), filename_widget->get_value())));
+			value=string(CanvasFileNaming::make_short_filename(canvas->get_file_name(), filename_widget->get_value()));
 		}
 		else if(child_param_desc.get_hint()=="sublayer_name" || param_desc.get_hint()=="sublayer_name") {
 			value=string(sublayer_widget->get_value());

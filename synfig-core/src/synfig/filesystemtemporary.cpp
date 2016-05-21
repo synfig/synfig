@@ -147,7 +147,7 @@ FileSystemTemporary::directory_scan(const String &dirname, FileList &out_files)
 				files_set.insert(etl::basename(i->second.name));
 		}
 
-	for(std::set<String>::const_iterator i = files.begin(); i != files.end(); ++i)
+	for(std::set<String>::const_iterator i = files_set.begin(); i != files_set.end(); ++i)
 		out_files.push_back(*i);
 	return true;
 }
@@ -366,7 +366,7 @@ FileSystemTemporary::save_changes(const FileSystem::Handle &sub_file_system, boo
 	if (as_copy)
 		return save_changes_copy(sub_file_system);
 	set_sub_file_system(sub_file_system);
-	save_changes();
+	return save_changes();
 }
 
 bool
@@ -417,7 +417,7 @@ FileSystemTemporary::get_meta(const String &key) const
 	return i == meta.end() ? String() : i->second;
 }
 
-String
+void
 FileSystemTemporary::set_meta(const String &key, const String &value)
 {
 	meta[key] = value;

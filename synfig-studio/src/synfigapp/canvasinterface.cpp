@@ -32,49 +32,46 @@
 #	include <config.h>
 #endif
 
-//#include <iostream>
+#include <ETL/clock>
 
 #include <synfig/general.h>
 
-#include <ETL/clock>
-#include <synfig/valuenodes/valuenode_scale.h>
-#include <synfig/valuenodes/valuenode_timedswap.h>
-#include <synfig/valuenodes/valuenode_composite.h>
-#include <synfig/valuenodes/valuenode_subtract.h>
-#include <synfig/valuenodes/valuenode_linear.h>
-#include <synfig/valuenodes/valuenode_reference.h>
-#include <synfig/valuenodes/valuenode_twotone.h>
-#include <synfig/valuenodes/valuenode_stripes.h>
-#include <synfig/valuenodes/valuenode_bline.h>
-#include <synfig/valuenodes/valuenode_wplist.h>
-#include <synfig/valuenodes/valuenode_dilist.h>
-#include <synfig/valuenodes/valuenode_animatedfile.h>
+#include <synfig/canvasfilenaming.h>
+#include <synfig/context.h>
+#include <synfig/gradient.h>
+#include <synfig/guidset.h>
+#include <synfig/importer.h>
+#include <synfig/loadcanvas.h>
 #include <synfig/pair.h>
+#include <synfig/waypoint.h>
 
 #include <synfig/layers/layer_pastecanvas.h>
 
-#include <synfig/waypoint.h>
-#include <synfig/loadcanvas.h>
-#include <synfig/importer.h>
-#include <synfig/guidset.h>
+#include <synfig/valuenodes/valuenode_animatedfile.h>
+#include <synfig/valuenodes/valuenode_bline.h>
+#include <synfig/valuenodes/valuenode_linear.h>
+#include <synfig/valuenodes/valuenode_composite.h>
+#include <synfig/valuenodes/valuenode_dilist.h>
+#include <synfig/valuenodes/valuenode_reference.h>
+#include <synfig/valuenodes/valuenode_scale.h>
+#include <synfig/valuenodes/valuenode_stripes.h>
+#include <synfig/valuenodes/valuenode_subtract.h>
+#include <synfig/valuenodes/valuenode_timedswap.h>
+#include <synfig/valuenodes/valuenode_twotone.h>
+#include <synfig/valuenodes/valuenode_wplist.h>
 
-#include <synfig/context.h>
+#include <synfigapp/localization.h>
 
+#include "action_system.h"
 #include "canvasinterface.h"
 #include "instance.h"
+#include "main.h"
 
+#include "actions/editmodeset.h"
 #include "actions/layeradd.h"
 #include "actions/layerremove.h"
 #include "actions/valuedescconvert.h"
 #include "actions/valuenodeadd.h"
-#include "actions/editmodeset.h"
-#include "action_system.h"
-
-#include "main.h"
-
-#include <synfig/gradient.h>
-
-#include <synfigapp/localization.h>
 
 #endif
 

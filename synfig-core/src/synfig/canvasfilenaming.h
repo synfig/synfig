@@ -55,8 +55,8 @@ public:
 	static String content_folder_by_filename(const String &filename)
 		{ return content_folder_by_extension(filename_extension_lower(filename)); }
 
-	static String is_container_extension(const String &ext);
-	static String is_container_filename(const String &filename)
+	static bool is_container_extension(const String &ext);
+	static bool is_container_filename(const String &filename)
 		{ return is_container_extension(filename_extension_lower(filename)); }
 
 	static String make_short_filename(const String &canvas_filename, const String &filename);

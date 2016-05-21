@@ -29,6 +29,8 @@
 #	include <config.h>
 #endif
 
+#include <ETL/stringf>
+
 #include "filesystem.h"
 
 #endif

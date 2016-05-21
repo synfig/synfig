@@ -29,7 +29,7 @@
 #	include <config.h>
 #endif
 
-#include <glib.h>
+#include <glibmm/convert.h>
 
 #include <synfig/general.h>
 #include <synfig/localization.h>
