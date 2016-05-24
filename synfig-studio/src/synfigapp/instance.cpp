@@ -360,6 +360,7 @@ Instance::process_filename(const ProcessFilenamesParams &params, const synfig::S
 			{
 				out_filename = new_filename;
 				params.processed_files[full_filename] = out_filename;
+				info("embed file: %s -> %s", filename.c_str(), out_filename.c_str());
 				return;
 			}
 			else
@@ -371,6 +372,7 @@ Instance::process_filename(const ProcessFilenamesParams &params, const synfig::S
 
 	out_filename = CanvasFileNaming::make_short_filename(params.canvas->get_file_name(), full_filename);
 	params.processed_files[full_filename] = out_filename;
+	info("refine filename: %s -> %s", filename.c_str(), out_filename.c_str());
 }
 
 void
@@ -393,10 +395,14 @@ Instance::process_filenames(const ProcessFilenamesParams &params, const synfig::
 		{
 			if (value.same_type_as(String()))
 			{
-				params.processed_valuenodes[value_node] = value.get(String());
+				String filename = value.get(String());
 				String new_filename;
-				process_filename(params, value.get(String()), new_filename);
-				value_node->set_value(new_filename);
+				process_filename(params, filename, new_filename);
+				if (filename != new_filename)
+				{
+					params.processed_valuenodes[value_node] = filename;
+					value_node->set_value(new_filename);
+				}
 				return;
 			}
 			warning("Cannot process filename for node: %s", node->get_string().c_str());
@@ -453,7 +459,7 @@ Instance::process_filenames(const ProcessFilenamesParams &params, const synfig::
 		for(ParamVocab::const_iterator i = vocab.begin(); i != vocab.end(); ++i)
 		{
 			Layer::DynamicParamList::const_iterator j = dynamic_params.find(i->get_name());
-			ValueNode::Handle value_node = j != dynamic_params.end() ? ValueNode::Handle() : ValueNode::Handle(j->second);
+			ValueNode::Handle value_node = j == dynamic_params.end() ? ValueNode::Handle() : ValueNode::Handle(j->second);
 
 			bool is_filename = i->get_hint() == "filename";
 			if (value_node)
@@ -462,17 +468,22 @@ Instance::process_filenames(const ProcessFilenamesParams &params, const synfig::
 				continue;
 			}
 
-			if (!is_filename)
-				continue;
-
 			ValueBase value = layer->get_param(i->get_name());
-			if (!value.same_type_as(String()))
+
+			if (value.can_get(Canvas::Handle()))
+				process_filenames(params, value.get(Canvas::Handle()));
+
+			if (!is_filename || !value.same_type_as(String()))
 				continue;
 
-			params.processed_params[std::make_pair(layer, i->get_name())] = value.get(String());
+			String filename = value.get(String());
 			String new_filename;
-			process_filename(params, value.get(String()), new_filename);
-			layer->set_param(i->get_name(), new_filename);
+			process_filename(params, filename, new_filename);
+			if (filename != new_filename)
+			{
+				params.processed_params[std::make_pair(layer, i->get_name())] = filename;
+				layer->set_param(i->get_name(), new_filename);
+			}
 		}
 		return;
 	}
@@ -602,7 +613,7 @@ Instance::save_as(const synfig::String &file_name)
 	// save
 	bool success = true;
 	if (success)
-		success = save_canvas(new_canvas_identifier, canvas, !new_container_zip);
+		success = save_canvas(new_canvas_identifier, canvas, false);
 	if (success)
 		success = new_container->save_changes();
 	if (success && new_container_zip)

@@ -116,22 +116,8 @@ Import::set_param(const String & param, const ValueBase &value)
 
 		// TODO: find source of this sreening of unicode characters
 		// Get rid of any %20 crap
-		{
-			String::size_type n;
-			while((n=fixed_filename.find("%20"))!=String::npos)
-				fixed_filename.replace(n,3," ");
-		}
-
-#ifndef _WIN32
-		if(is_absolute_path(fixed_filename))
-		{
-			string curpath(cleanup_path(absolute_path(get_canvas()->get_file_path())));
-			while(basename(curpath)==".")curpath=dirname(curpath);
-
-			fixed_filename=relative_path(curpath,fixed_filename);
-			info("basename(curpath)=%s, Path adjusted to %s",basename(curpath).c_str(),fixed_filename.c_str());
-		}
-#endif
+		for(String::size_type n; (n = fixed_filename.find("%20")) != String::npos;)
+			fixed_filename.replace(n,3," ");
 
 		String full_filename = CanvasFileNaming::make_full_filename(get_canvas()->get_file_name(), fixed_filename);
 		if (full_filename.empty())
@@ -149,7 +135,6 @@ Import::set_param(const String & param, const ValueBase &value)
 		// If we are already loaded, don't reload
 		if(this->independent_filename==independent_filename && importer)
 		{
-			warning(strprintf(_("Filename seems to already be set to \"%s\" (%s)"), filename.c_str(), param_filename.get(String()).c_str()));
 			param_filename.set(filename);
 			return true;
 		}
@@ -170,7 +155,7 @@ Import::set_param(const String & param, const ValueBase &value)
 				surface.clear();
 				param_filename.set(filename);
 				rendering_surface.reset();
-				return false;
+				return true;
 			}
 		}
 

@@ -879,16 +879,12 @@ Canvas::clone(const GUID& deriv_guid, bool for_export)const
 	if(is_inline() && !for_export)
 	{
 		canvas->is_inline_=true;
-		// \todo this was setting parent_=0 - is there a reason for that?
+		// \todo this was setting parent=0 - is there a reason for that?
 		// this was causing bug 1838132, where cloning an inline canvas that contains an imported image fails
 		// it was failing to ascertain the absolute pathname of the imported image, since it needs the pathname
 		// of the canvas to get that, which is stored in the parent canvas
-//		printf("%s:%d clone: setting parent_ of %lx to %lx\n", __FILE__, __LINE__, uintptr_t(canvas.get()), uintptr_t(parent().get()));
-		canvas->parent_=parent();
-//		show_canvas_ancestry(__FILE__, __LINE__, "clone(): old");
-//		canvas->show_canvas_ancestry(__FILE__, __LINE__, "clone(): new");
 		canvas->rend_desc() = rend_desc();
-		//canvas->set_inline(parent());
+		canvas->set_parent(parent());
 	}
 
 	canvas->set_guid(get_guid()^deriv_guid);
@@ -937,20 +933,14 @@ Canvas::set_inline(LooseHandle parent)
 
 	id_=_("in line");
 	is_inline_=true;
-//	printf("%s:%d set_inline: setting parent_ of %lx to %lx\n", __FILE__, __LINE__, uintptr_t(this), uintptr_t(parent.get()));
-	parent_=parent;
-//	show_canvas_ancestry(__FILE__, __LINE__, "set_inline()");
 
 	// Have the parent inherit all of the group stuff
-
 	std::map<String,std::set<etl::handle<Layer> > >::const_iterator iter;
-
 	for(iter=group_db_.begin();iter!=group_db_.end();++iter)
-	{
 		parent->group_db_[iter->first].insert(iter->second.begin(),iter->second.end());
-	}
-
 	rend_desc()=parent->rend_desc();
+
+	set_parent(parent);
 }
 
 Canvas::Handle
@@ -970,17 +960,13 @@ Canvas::new_child_canvas()
 {
 	if(is_inline() && parent_)
 		return parent_->new_child_canvas();
-//		runtime_error("You cannot create a child Canvas in an inline Canvas");
 
 	// Create a new canvas
 	children().push_back(create());
 	Canvas::Handle canvas(children().back());
 
-//	printf("%s:%d new_child_canvas: setting parent_ of %lx to %lx\n", __FILE__, __LINE__, uintptr_t(canvas.get()), uintptr_t(this));
-	canvas->parent_=this;
-//	canvas->show_canvas_ancestry(__FILE__, __LINE__, "new_child_canvas");
-
 	canvas->rend_desc()=rend_desc();
+	canvas->set_parent(this);
 
 	return canvas;
 }
@@ -990,17 +976,14 @@ Canvas::new_child_canvas(const String &id)
 {
 	if(is_inline() && parent_)
 		return parent_->new_child_canvas(id);
-//		runtime_error("You cannot create a child Canvas in an inline Canvas");
 
 	// Create a new canvas
 	children().push_back(create());
 	Canvas::Handle canvas(children().back());
 
 	canvas->set_id(id);
-//	printf("%s:%d new_child_canvas: setting parent_ of %lx to %lx\n", __FILE__, __LINE__, uintptr_t(canvas.get()), uintptr_t(this));
-	canvas->parent_=this;
-//	canvas->show_canvas_ancestry(__FILE__, __LINE__, "new_child_canvas");
 	canvas->rend_desc()=rend_desc();
+	canvas->set_parent(this);
 
 	return canvas;
 }
@@ -1029,9 +1012,7 @@ Canvas::add_child_canvas(Canvas::Handle child_canvas, const synfig::String& id)
 			child_canvas->is_inline_=false;
 		child_canvas->id_=id;
 		children().push_back(child_canvas);
-//		printf("%s:%d add_child_canvas: setting parent_ of %lx to %lx\n", __FILE__, __LINE__, uintptr_t(child_canvas.get()), uintptr_t(this));
-		child_canvas->parent_=this;
-//		child_canvas->show_canvas_ancestry(__FILE__, __LINE__, "add_child_canvas");
+		child_canvas->set_parent(this);
 	}
 
 	return child_canvas;
@@ -1050,10 +1031,25 @@ Canvas::remove_child_canvas(Canvas::Handle child_canvas)
 		throw Exception::IDNotFound(child_canvas->get_id());
 
 	children().remove(child_canvas);
+	child_canvas->set_parent(0);
+}
 
-//	printf("%s:%d remove_child_canvas: setting parent_ of %lx to 0\n", __FILE__, __LINE__, uintptr_t(child_canvas.get()));
-	child_canvas->parent_=0;
-//	child_canvas->show_canvas_ancestry(__FILE__, __LINE__, "remove_child_canvas");
+void
+Canvas::set_parent(const Canvas::LooseHandle &parent)
+{
+	parent_ = parent;
+	on_parent_set();
+}
+
+void
+Canvas::on_parent_set()
+{
+	// parent canvas is important field,
+	// so assume that canvas replaced for layers
+	for(std::list<Handle>::iterator i = children().begin(); i != children().end(); ++i)
+		(*i)->on_parent_set();
+	for(iterator i = begin(); *i; ++i)
+		(*i)->on_canvas_set();
 }
 
 void

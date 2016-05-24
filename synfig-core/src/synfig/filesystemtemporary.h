@@ -54,7 +54,6 @@ namespace synfig
 			String name;
 			String tmp_filename;
 			bool is_directory;
-			bool was_directory;
 			bool is_removed;
 
 			inline FileInfo(): is_directory(false), is_removed(false) { }

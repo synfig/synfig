@@ -71,7 +71,7 @@ bool FileSystemGroup::find_system(const String &filename, FileSystem::Handle &ou
 		{
 			out_file_system = i->sub_file_system;
 			out_filename = i->is_separator || clean_filename.size() == i->prefix.size()
-			             ? i->sub_prefix
+			             ? i->sub_prefix + clean_filename.substr(i->prefix.size())
 			             : i->sub_prefix + ETL_DIRECTORY_SEPARATOR + clean_filename.substr(i->prefix.size());
 			return true;
 		}

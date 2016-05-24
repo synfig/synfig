@@ -94,16 +94,17 @@ FileSystemTemporary::is_file(const String &filename)
 	FileMap::const_iterator i = files.find(fix_slashes(filename));
 	if (i != files.end())
 		return !i->second.is_removed && !i->second.is_directory;
-	return file_system && file_system->is_file(filename);
+	return get_sub_file_system() && get_sub_file_system()->is_file(filename);
 }
 
 bool
 FileSystemTemporary::is_directory(const String &filename)
 {
+	if (filename.empty()) return true;
 	FileMap::const_iterator i = files.find(fix_slashes(filename));
 	if (i != files.end())
 		return !i->second.is_removed && i->second.is_directory;
-	return file_system && file_system->is_directory(filename);
+	return get_sub_file_system() && get_sub_file_system()->is_directory(filename);
 }
 
 bool
@@ -308,7 +309,7 @@ FileSystemTemporary::save_changes(
 			if (to_remove && target_file_system->file_remove(i->second.name))
 			{
 				processed = true;
-				files.erase(i);
+				if (i->second.is_removed) files.erase(i);
 				break;
 			}
 		}

@@ -26,10 +26,14 @@
 #define __SYNFIG_STUDIO_WIDGET_FILENAME_H
 
 /* === H E A D E R S ======================================================= */
+
 #include <sigc++/sigc++.h>
 #include <gtkmm/grid.h>
 #include <gtkmm/entry.h>
 #include <gtkmm/button.h>
+
+#include <synfig/canvas.h>
+
 
 /* === M A C R O S ========================================================= */
 
@@ -46,6 +50,7 @@ class Widget_Filename : public Gtk::Grid
 	Gtk::Entry *entry_filename;
 	Gtk::Button *button_choose;
 	Gtk::Label *label_find;
+	etl::handle<synfig::Canvas> canvas;
 
 	void on_button_choose_pressed();
 
@@ -57,6 +62,7 @@ public:
 
 	void on_value_changed();
 
+	void set_canvas(etl::handle<synfig::Canvas> x) { canvas=x; assert(canvas); }
 	void set_value(const  std::string &data);
 	std::string get_value() const;
 	void set_has_frame(bool x);

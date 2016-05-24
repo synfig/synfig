@@ -37,6 +37,7 @@
 
 #include <synfig/general.h>
 #include <synfig/localization.h>
+#include <synfig/debug/debugsurface.h>
 
 #include "tasksurfaceresamplesw.h"
 
@@ -374,6 +375,9 @@ TaskSurfaceResampleSW::run(RunParams & /* params */) const
 			blend,
 			amount,
 			blend_method );
+
+		//debug::DebugSurface::save_to_file(a, "TaskSurfaceResampleSW__run__a");
+		//debug::DebugSurface::save_to_file(target, "TaskSurfaceResampleSW__run__target");
 	}
 
 	return true;

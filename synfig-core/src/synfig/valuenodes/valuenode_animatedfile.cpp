@@ -199,15 +199,6 @@ ValueNode_AnimatedFile::load_file(const String &filename, bool forse)
 	for(String::size_type n; (n = optimized_filename.find("%20")) != String::npos;)
 		optimized_filename.replace(n,3," ");
 
-#ifndef _WIN32
-	if (is_absolute_path(optimized_filename))
-	{
-		string curpath(cleanup_path(absolute_path(get_parent_canvas()->get_file_path())));
-		while(basename(curpath)==".") curpath = dirname(curpath);
-		optimized_filename = relative_path(curpath, optimized_filename);
-	}
-#endif
-
 	String full_filename = CanvasFileNaming::make_full_filename(get_parent_canvas()->get_file_path(), optimized_filename);
 	String local_filename = CanvasFileNaming::make_local_filename(get_parent_canvas()->get_file_name(), full_filename);
 	String independent_filename = CanvasFileNaming::make_canvas_independent_filename(get_parent_canvas()->get_file_path(), full_filename);

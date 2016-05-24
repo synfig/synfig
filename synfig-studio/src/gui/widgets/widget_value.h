@@ -135,7 +135,7 @@ public:
 	//void set_hint(std::string x) { hint=x; }
 //	std::string get_hint() { return hint; }
 
-	void set_canvas(etl::handle<synfig::Canvas> x) { canvas=x; assert(canvas); }
+	void set_canvas(etl::handle<synfig::Canvas> x);
 	void inside_cellrenderer();
 	Widget_ValueBase();
 	~Widget_ValueBase();

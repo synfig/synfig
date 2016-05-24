@@ -156,8 +156,7 @@ bool FileSystem::copy_recursive(Handle from_file_system, const String &from_file
 		if (!to_file_system->directory_create(to_filename))
 			return false;
 		FileList files;
-		from_file_system->directory_scan(from_filename, files);
-		bool success = true;
+		bool success = from_file_system->directory_scan(from_filename, files);
 		for(FileList::const_iterator i = files.begin(); i != files.end(); ++i)
 			if (!copy_recursive(
 					from_file_system,
@@ -172,10 +171,10 @@ bool FileSystem::copy_recursive(Handle from_file_system, const String &from_file
 
 String FileSystem::fix_slashes(const String &filename)
 {
-	String fixed = filename;
+	String fixed = etl::cleanup_path(filename);
 	for(size_t i = 0; i < filename.size(); ++i)
 		if (fixed[i] == '\\') fixed[i] = '/';
-	return etl::cleanup_path(fixed);
+	return fixed;
 }
 
 std::istream&
