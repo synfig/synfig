@@ -260,7 +260,7 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 									case TARGET_ALPHA_MODE_KEEP:
 										memcpy(colordata,surface[y],rowspan);
 										break;
-								}	
+								}
 
 								if(!end_scanline())
 								{
@@ -268,6 +268,8 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 									return false;
 								}
 							}
+
+							surfacesw->destroy();
 						}
 					}
 
