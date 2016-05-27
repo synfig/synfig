@@ -74,7 +74,7 @@ svg_layer::set_param(const String & param, const ValueBase &value)
 		Canvas::Handle canvas;
 		//if ext of filename == "svg" then
 		filename = value.get(String());
-		canvas=open_svg(CanvasFileNaming::make_full_filename(get_canvas()->get_file_path(), filename),errors,warnings);
+		canvas=open_svg(CanvasFileNaming::make_full_filename(get_canvas()->get_file_name(), filename),errors,warnings);
 		//else other parsers maybe
 		if(canvas)
 			canvas->set_inline(get_canvas());
