@@ -221,14 +221,15 @@ CanvasFileNaming::make_filesystem_container(const String &filename, FileContaine
 	else
 	{
 		String dir = etl::dirname(filename);
-		String name = etl::filename_sans_extension(etl::basename(filename));
+		String base = etl::basename(filename);
+		String name = etl::filename_sans_extension(base);
+		String ext = filename_extension_lower(base);
 		String prefix = dir + ETL_DIRECTORY_SEPARATOR + name + ".";
 
 		FileSystemGroup::Handle group(new FileSystemGroup());
 		group->register_system("images", FileSystemNative::instance(), prefix + "images");
 		group->register_system("animations", FileSystemNative::instance(), prefix + "animations");
-		group->register_system("project.sifz", FileSystemNative::instance(), prefix + "sifz");
-		group->register_system("project.sif", FileSystemNative::instance(), prefix + "sif");
+		group->register_system(ext == "sifz" ? "project.sifz" : "project.sif", FileSystemNative::instance(), filename);
 		return group;
 	}
 
