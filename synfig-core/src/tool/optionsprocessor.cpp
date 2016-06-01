@@ -509,7 +509,7 @@ Job OptionsProcessor::extract_job()
 		{
 			if (FileSystem::Handle file_system = CanvasFileNaming::make_filesystem(job.filename))
 			{
-				FileSystem::Identifier identifier = file_system->get_identifier(CanvasFileNaming::find_canvas_file(file_system));
+				FileSystem::Identifier identifier = file_system->get_identifier(CanvasFileNaming::project_file(job.filename));
 				job.root = open_canvas_as(identifier, job.filename, errors, warnings);
 			}
 			else
@@ -607,7 +607,7 @@ Job OptionsProcessor::extract_job()
 		Canvas::Handle composite;
 		if (FileSystem::Handle file_system = CanvasFileNaming::make_filesystem(composite_file))
 		{
-			FileSystem::Identifier identifier = file_system->get_identifier(CanvasFileNaming::find_canvas_file(file_system));
+			FileSystem::Identifier identifier = file_system->get_identifier(CanvasFileNaming::project_file(composite_file));
 			composite = open_canvas_as(identifier, composite_file, errors, warnings);
 		}
 		else

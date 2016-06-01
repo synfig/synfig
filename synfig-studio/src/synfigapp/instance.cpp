@@ -570,7 +570,7 @@ Instance::save_as(const synfig::String &file_name)
 			warning("Cannot create canvas filesysem for: %s", new_canvas_filename.c_str());
 			return false;
 		}
-		new_canvas_identifier = new_canvas_filesystem->get_identifier(CanvasFileNaming::container_canvas_full_filename());
+		new_canvas_identifier = new_canvas_filesystem->get_identifier(CanvasFileNaming::project_file(new_canvas_filename));
 
 		// copy embedded files
 		if (!FileSystem::copy_recursive(

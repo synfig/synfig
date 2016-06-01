@@ -793,7 +793,7 @@ CanvasInterface::import(const synfig::String &filename, synfig::String &errors, 
 		if(!file_system)
 			throw String(_("Unable to open container")) + ":\n\n" + errors;
 
-		Canvas::Handle outside_canvas(synfig::open_canvas_as(file_system->get_identifier(CanvasFileNaming::find_canvas_file(file_system)), full_filename, errors, warnings));
+		Canvas::Handle outside_canvas(synfig::open_canvas_as(file_system->get_identifier(CanvasFileNaming::project_file(full_filename)), full_filename, errors, warnings));
 		if(!outside_canvas)
 			throw String(_("Unable to open this composition")) + ":\n\n" + errors;
 

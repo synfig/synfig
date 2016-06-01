@@ -3498,7 +3498,7 @@ App::open_as(std::string filename,std::string as,synfig::FileContainerZip::file_
 		FileSystem::Handle canvas_file_system = CanvasFileNaming::make_filesystem(container_temporary);
 
 		// file to open inside canvas file-system
-		String canvas_filename = CanvasFileNaming::find_canvas_file(canvas_file_system);
+		String canvas_filename = CanvasFileNaming::project_file(filename);
 		
 		etl::handle<synfig::Canvas> canvas = open_canvas_as(canvas_file_system->get_identifier(canvas_filename), as, errors, warnings);
 		if(canvas && get_instance(canvas))
@@ -3594,7 +3594,7 @@ App::open_from_temporary_container_as(std::string container_filename_base, std::
 		FileSystem::Handle canvas_file_system = CanvasFileNaming::make_filesystem(container_temporary);
 
 		// file to open inside canvas file-system
-		String canvas_filename = CanvasFileNaming::find_canvas_file(canvas_file_system);
+		String canvas_filename = CanvasFileNaming::project_file(canvas_file_system);
 
 		etl::handle<synfig::Canvas> canvas(open_canvas_as(canvas_file_system->get_identifier(canvas_filename), as, errors, warnings));
 		if(canvas && get_instance(canvas))

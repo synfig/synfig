@@ -243,11 +243,10 @@ AutoRecover::auto_backup()
 
 				Canvas::Handle canvas((*iter)->get_canvas());
 
-				// todo: literal "container:project.sifz"
 				FileSystem::Handle file_system = canvas->get_identifier().file_system;
 				if (file_system && (*iter)->get_container())
 				{
-					if (save_canvas(file_system->get_identifier("#project.sifz"), canvas, false))
+					if (save_canvas(canvas->get_identifier(), canvas, false))
 					{
 						if ((*iter)->get_container()->save_temporary())
 						{

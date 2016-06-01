@@ -59,7 +59,7 @@ namespace synfig
 	private:
 		std::list< Entry > entries_;
 
-		bool find_system(const String &filename, FileSystem::Handle &out_file_system, String &out_filename);
+		const Entry* find_system(const String &filename, FileSystem::Handle &out_file_system, String &out_filename);
 
 	public:
 		FileSystemGroup();

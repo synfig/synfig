@@ -68,7 +68,8 @@ public:
 	static FileSystem::Handle make_filesystem(const FileSystem::Handle &filesystem_container);
 	static FileSystem::Handle make_filesystem(const String &filename, FileContainerZip::file_size_t truncate_storage_size = 0, bool create_new = false);
 
-	static String find_canvas_file(const FileSystem::Handle &canvas_filesystem);
+	static String project_file(const FileSystem::Handle &canvas_filesystem);
+	static String project_file(const String &filename);
 
 	static bool is_embeded(const String &filename);
 	static bool is_embeded(const String &canvas_filename, const String &filename);

@@ -58,7 +58,7 @@ FileSystemGroup::FileSystemGroup(FileSystem::Handle default_file_system)
 	if (default_file_system) register_system(String(), default_file_system, String(), true);
 }
 
-bool FileSystemGroup::find_system(const String &filename, FileSystem::Handle &out_file_system, String &out_filename)
+const FileSystemGroup::Entry* FileSystemGroup::find_system(const String &filename, FileSystem::Handle &out_file_system, String &out_filename)
 {
 	String clean_filename = etl::cleanup_path(filename);
 	for(std::list< Entry >::iterator i = entries_.begin(); i != entries_.end(); i++)
@@ -69,17 +69,20 @@ bool FileSystemGroup::find_system(const String &filename, FileSystem::Handle &ou
 			|| clean_filename[i->prefix.size()] == ETL_DIRECTORY_SEPARATOR0
 			|| clean_filename[i->prefix.size()] == ETL_DIRECTORY_SEPARATOR1 ))
 		{
+			String sub_name = clean_filename.substr(i->prefix.size());
+			if (!i->prefix.empty() && !sub_name.empty() && (sub_name[0] == ETL_DIRECTORY_SEPARATOR0 || sub_name[0] == ETL_DIRECTORY_SEPARATOR1))
+				sub_name = sub_name.substr(1);
 			out_file_system = i->sub_file_system;
-			out_filename = i->is_separator || clean_filename.size() == i->prefix.size()
-			             ? i->sub_prefix + clean_filename.substr(i->prefix.size())
-			             : i->sub_prefix + ETL_DIRECTORY_SEPARATOR + clean_filename.substr(i->prefix.size());
-			return true;
+			out_filename = i->sub_prefix.empty() || sub_name.empty()
+						 ? i->sub_prefix + sub_name
+				         : i->sub_prefix + ETL_DIRECTORY_SEPARATOR + sub_name;
+			return &*i;
 		}
 	}
 
 	out_file_system.reset();
 	out_filename.clear();
-	return false;
+	return NULL;
 }
 
 void FileSystemGroup::register_system(const String &prefix, const FileSystem::Handle &sub_file_system, const String &sub_prefix, bool is_separator)
@@ -123,6 +126,7 @@ bool FileSystemGroup::is_file(const String &filename)
 
 bool FileSystemGroup::is_directory(const String &filename)
 {
+	if (filename.empty()) return true;
 	FileSystem::Handle file_system;
 	String internal_filename;
 	return find_system(filename, file_system, internal_filename)

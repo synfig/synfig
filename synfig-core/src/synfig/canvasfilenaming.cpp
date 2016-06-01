@@ -229,7 +229,7 @@ CanvasFileNaming::make_filesystem_container(const String &filename, FileContaine
 		FileSystemGroup::Handle group(new FileSystemGroup());
 		group->register_system("images", FileSystemNative::instance(), prefix + "images");
 		group->register_system("animations", FileSystemNative::instance(), prefix + "animations");
-		group->register_system(ext == "sifz" ? "project.sifz" : "project.sif", FileSystemNative::instance(), filename);
+		group->register_system(ext == "sif" ? "project.sif" : container_canvas_filename, FileSystemNative::instance(), filename);
 		return group;
 	}
 
@@ -252,7 +252,7 @@ CanvasFileNaming::make_filesystem(const String &filename, FileContainerZip::file
 }
 
 String
-CanvasFileNaming::find_canvas_file(const FileSystem::Handle &canvas_filesystem)
+CanvasFileNaming::project_file(const FileSystem::Handle &canvas_filesystem)
 {
 	if (!canvas_filesystem)
 		return String();
@@ -261,6 +261,13 @@ CanvasFileNaming::find_canvas_file(const FileSystem::Handle &canvas_filesystem)
 	if (canvas_filesystem->is_file(container_prefix + "project.sif"))
 		return container_prefix + "project.sif";
 	return String();
+}
+
+String
+CanvasFileNaming::project_file(const String &filename) {
+	return filename_extension_lower(filename) == "sif"
+		 ? container_prefix + "project.sif"
+		 : container_canvas_full_filename();
 }
 
 bool
