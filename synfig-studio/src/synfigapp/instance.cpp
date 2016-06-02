@@ -129,11 +129,8 @@ synfigapp::find_instance(etl::handle<synfig::Canvas> canvas)
 Instance::Instance(etl::handle<synfig::Canvas> canvas, synfig::FileSystemTemporary::Handle container):
 	CVSInfo(canvas->get_file_name()),
 	canvas_(canvas),
-	file_system_(new FileSystemGroup(FileSystemNative::instance())),
 	container_(container)
 {
-	file_system_->register_system("#", container_);
-
 	assert(canvas->is_root());
 
 	unset_selection_manager();
@@ -330,7 +327,9 @@ bool Instance::save_surface(const synfig::Surface &surface, const synfig::String
 	target = NULL;
 
 	if (success)
-		success = FileSystem::copy(FileSystemNative::instance(), tmpfile, get_file_system(), filename);
+		success = get_canvas()->get_file_system()->directory_create(etl::dirname(filename));
+	if (success)
+		success = FileSystem::copy(FileSystemNative::instance(), tmpfile, get_canvas()->get_file_system(), filename);
 
 	FileSystemNative::instance()->file_remove(tmpfile);
 
@@ -590,6 +589,7 @@ Instance::save_as(const synfig::String &file_name)
 		// set new canvas filename
 		canvas->set_file_name(new_canvas_filename);
 		canvas->set_identifier(new_canvas_identifier);
+		container_ = new_container;
 	}
 
 	// find zip-container
@@ -628,6 +628,7 @@ Instance::save_as(const synfig::String &file_name)
 		// undo
 		canvas->set_file_name(previous_canvas_filename);
 		canvas->set_identifier(previous_canvas_identifier);
+		container_ = previous_container;
 		process_filenames_undo(params);
 		new_canvas_filesystem->remove_recursive(CanvasFileNaming::container_prefix);
 		new_canvas_filesystem.reset();

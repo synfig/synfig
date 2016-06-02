@@ -160,7 +160,7 @@ Action::LayerAddFrame::prepare()
 		->generate_new_name(
 				layer_base,
 				subcanvas,
-				get_canvas_interface()->get_instance()->get_file_system(),
+				get_canvas()->get_file_system(),
 				description,
 				filename,
 				filename_param );

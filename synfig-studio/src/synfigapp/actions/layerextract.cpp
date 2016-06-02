@@ -30,10 +30,12 @@
 #endif
 
 #include <synfig/general.h>
+#include <synfig/string.h>
+#include <synfig/canvasfilenaming.h>
 
 #include "layerextract.h"
-#include <synfigapp/canvasinterface.h>
 
+#include <synfigapp/canvasinterface.h>
 #include <synfigapp/localization.h>
 
 #endif
@@ -91,10 +93,8 @@ Action::LayerExtract::is_candidate(const ParamList &x)
 	if (layer->get_param_list().count("filename") != 0)
 	{
 		String filename = layer->get_param("filename").get(String());
-		// TODO: literal "container:"
-		if (!filename.empty()
-		  && filename.substr(0, String("#").size()) == "#"
-	      && layer->dynamic_param_list().count("filename") == 0)
+		if ( !CanvasFileNaming::is_embeded(filename)
+	      && !layer->dynamic_param_list().count("filename") )
 			return true;
 	}
 
@@ -111,10 +111,8 @@ Action::LayerExtract::set_param(const synfig::String& name, const Action::Param 
 		if (layer->get_param_list().count("filename") != 0)
 		{
 			String filename = layer->get_param("filename").get(String());
-			// TODO: literal "container:"
-			if (!filename.empty()
-			  && filename.substr(0, String("#").size()) == "#"
-		      && layer->dynamic_param_list().count("filename") == 0)
+			if ( !CanvasFileNaming::is_embeded(filename)
+		      && !layer->dynamic_param_list().count("filename") )
 			{
 				this->layer = layer;
 				return true;
@@ -148,33 +146,34 @@ Action::LayerExtract::prepare()
 		return;
 
 	if (layer) {
-		// TODO: "container:" and "images" literals
-		std::string old_filename = layer->get_param("filename").get(String());
-		old_filename = "#images/" + old_filename.substr(String("#").size());
-		std::string src_dir = get_canvas()->get_file_path();
-		if (!is_absolute_path(src_dir))
-			src_dir = absolute_path(src_dir);
+		String old_filename_param = layer->get_param("filename").get(String());
+		String old_filename = CanvasFileNaming::make_full_filename(get_canvas()->get_file_name(), old_filename_param);
 
-		std::string absolute_filename
-			  =	filename.empty()           ? src_dir
-			  : is_absolute_path(filename) ? filename
-			  : cleanup_path(src_dir+ETL_DIRECTORY_SEPARATOR+filename);
+		String new_filename = filename;
+		if (new_filename.empty())
+			new_filename = get_canvas()->get_file_path() + ETL_DIRECTORY_SEPARATOR + old_filename;
+		else
+		if (CanvasFileNaming::is_embeded(new_filename) && !etl::is_absolute_path(new_filename))
+			new_filename = etl::absolute_path(get_canvas()->get_file_path(), new_filename);
 
-		FileSystem::Handle file_system = get_canvas()->get_identifier().file_system;
+		String new_filename_param = CanvasFileNaming::make_short_filename(get_canvas()->get_file_name(), new_filename);
 
+		FileSystem::Handle file_system = get_canvas()->get_file_system();
+
+		// try to create directory
+		if (!file_system->directory_create_recursive(etl::dirname(new_filename)))
+			throw Error(_("Cannot create directory"));
 		// try to copy file
-		if (!FileSystem::copy(file_system, old_filename, file_system, absolute_filename))
+		if (!FileSystem::copy(file_system, old_filename, file_system, new_filename))
 			throw Error(_("Cannot copy file"));
 
 		// create action to change layer param
-		ValueBase value;
-		value.set(absolute_filename);
 		Action::Handle action(Action::create("LayerParamSet"));
-		action->set_param("canvas",get_canvas());
-		action->set_param("canvas_interface",get_canvas_interface());
-		action->set_param("layer",layer);
-		action->set_param("param","filename");
-		action->set_param("new_value",value);
+		action->set_param("canvas", get_canvas());
+		action->set_param("canvas_interface", get_canvas_interface());
+		action->set_param("layer", layer);
+		action->set_param("param", "filename");
+		action->set_param("new_value", new_filename_param);
 		add_action_front(action);
 	}
 }

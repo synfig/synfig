@@ -29,6 +29,8 @@
 #	include <config.h>
 #endif
 
+#include <glibmm.h>
+
 #include <ETL/stringf>
 
 #include "filesystem.h"
@@ -113,6 +115,12 @@ bool FileSystem::file_rename(const String &from_filename, const String &to_filen
 	if (!write_stream) return false;
 	return write_stream->write_whole_stream(read_stream)
 		&& file_remove(from_filename);
+}
+
+bool FileSystem::directory_create_recursive(const String &dirname) {
+	return dirname.empty()
+		|| dirname == "."
+		|| (directory_create_recursive(etl::dirname(dirname)) && directory_create(dirname));
 }
 
 bool FileSystem::remove_recursive(const String &filename)
@@ -217,6 +225,11 @@ FileSystem::safe_get_line(std::istream& is, String& t)
 
 String FileSystem::get_real_uri(const String & /* filename */)
 	{ return String(); }
+
+String FileSystem::get_real_filename(const String &filename) {
+	return Glib::filename_from_uri(get_real_uri(filename));
+}
+
 
 /* === E N T R Y P O I N T ================================================= */
 

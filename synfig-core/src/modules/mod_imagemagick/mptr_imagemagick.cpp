@@ -56,6 +56,7 @@
 #include <synfig/general.h>
 #include <synfig/localization.h>
 #include <synfig/filesystemnative.h>
+#include <synfig/filesystemtemporary.h>
 
 #endif
 
@@ -101,29 +102,29 @@ imagemagick_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &re
 //#define HAS_LIBPNG 1
 
 #if 1
-	if(identifier.filename.empty())
+	if(identifier.filename.empty() || !identifier.file_system)
 	{
 		if(cb)cb->error(_("No file to load"));
 		else synfig::error(_("No file to load"));
 		return false;
 	}
-	string temp_file="/tmp/deleteme.png";
-	string temp_container_file="";
 
-	// todo: "container:" and "images" literals
-	if (identifier.filename.substr(0, String("#images/").size())=="#images/")
-	{
-		temp_container_file = "/tmp/synfigtmp.png";
+	bool is_temporary_file = false;
+	string filename=identifier.file_system->get_real_filename(identifier.filename);
+	string target_filename=FileSystemTemporary::generate_temporary_filename();
+
+	if (filename.empty()) {
+		is_temporary_file = true;
+		filename = FileSystemTemporary::generate_temporary_filename();
+
 		// try to copy file to a temp file
-		if (!FileSystem::copy(identifier.file_system, identifier.filename, identifier.file_system, temp_container_file))
+		if (!FileSystem::copy(identifier.file_system, identifier.filename, identifier.file_system, filename))
 		{
 			if(cb)cb->error(_("Cannot create temporary file of ")+ identifier.filename);
 			else synfig::error(_("Cannot create temporary file of ")+ identifier.filename);
 			return false;
 		}
 	}
-
-	string filename = temp_container_file.size() == 0 ? identifier.filename : temp_container_file;
 
 #if defined(WIN32_PIPE_TO_PROCESSES)
 
@@ -133,16 +134,16 @@ imagemagick_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &re
 	string command;
 
 	if(identifier.filename.find("psd")!=String::npos)
-		command=strprintf("convert \"%s\" -flatten \"png32:%s\"\n",filename.c_str(),temp_file.c_str());
+		command=strprintf("convert \"%s\" -flatten \"png32:%s\"\n",filename.c_str(),target_filename.c_str());
 	else
-		command=strprintf("convert \"%s\" \"png32:%s\"\n",filename.c_str(),temp_file.c_str());
+		command=strprintf("convert \"%s\" \"png32:%s\"\n",filename.c_str(),target_filename.c_str());
 
 	if(system(command.c_str())!=0)
 		return false;
 
 #elif defined(UNIX_PIPE_TO_PROCESSES)
 
-	string output="png32:"+temp_file;
+	string output="png32:"+target_filename;
 
 	pid_t pid = fork();
 
@@ -169,30 +170,29 @@ imagemagick_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &re
 	#error There are no known APIs for creating child processes
 #endif
 
-	//if any delete container tmp file
-	if(temp_container_file.size())
-		identifier.file_system->file_remove(temp_container_file);
+	if(is_temporary_file)
+		identifier.file_system->file_remove(filename);
 
-	Importer::Handle importer(Importer::open(synfig::FileSystem::Identifier(synfig::FileSystemNative::instance(), temp_file)));
+	Importer::Handle importer(Importer::open(synfig::FileSystem::Identifier(synfig::FileSystemNative::instance(), target_filename)));
 
 	if(!importer)
 	{
-		if(cb)cb->error(_("Unable to open ")+temp_file);
-		else synfig::error(_("Unable to open ")+temp_file);
+		if(cb)cb->error(_("Unable to open ")+target_filename);
+		else synfig::error(_("Unable to open ")+target_filename);
 		return false;
 	}
 
 	if(!importer->get_frame(surface,renddesc,0,cb))
 	{
-		if(cb)cb->error(_("Unable to get frame from ")+temp_file);
-		else synfig::error(_("Unable to get frame from ")+temp_file);
+		if(cb)cb->error(_("Unable to get frame from ")+target_filename);
+		else synfig::error(_("Unable to get frame from ")+target_filename);
 		return false;
 	}
 
 	if(!surface)
 	{
-		if(cb)cb->error(_("Bad surface from ")+temp_file);
-		else synfig::error(_("Bad surface from ")+temp_file);
+		if(cb)cb->error(_("Bad surface from ")+target_filename);
+		else synfig::error(_("Bad surface from ")+target_filename);
 		return false;
 	}
 
@@ -222,7 +222,7 @@ imagemagick_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &re
 	Surface bleh(surface);
 	surface=bleh;
 
-	//remove(temp_file.c_str());
+	remove(target_filename.c_str());
 	return true;
 
 #else

@@ -30,10 +30,12 @@
 #endif
 
 #include <synfig/general.h>
-
-#include "layerembed.h"
+#include <synfig/string.h>
+#include <synfig/canvasfilenaming.h>
 
 #include <synfig/layers/layer_bitmap.h>
+
+#include "layerembed.h"
 
 #include <synfigapp/canvasinterface.h>
 #include <synfigapp/localization.h>
@@ -99,10 +101,8 @@ Action::LayerEmbed::is_candidate(const ParamList &x)
 	if (layer_import->get_param_list().count("filename") != 0)
 	{
 		String filename = layer_import->get_param("filename").get(String());
-		// TODO: literal "container:"
-		if (!filename.empty()
-		  && filename.substr(0, String("#").size()) != "#"
-	      && layer_import->dynamic_param_list().count("filename") == 0)
+		if ( !CanvasFileNaming::is_embeded(filename)
+	      && !layer_import->dynamic_param_list().count("filename") )
 			return true;
 	}
 
@@ -132,10 +132,8 @@ Action::LayerEmbed::set_param(const synfig::String& name, const Action::Param &p
 		if (layer_import->get_param_list().count("filename") != 0)
 		{
 			String filename = layer_import->get_param("filename").get(String());
-			// TODO: literal "container:"
-			if (!filename.empty()
-			  && filename.substr(0, String("#").size()) != "#"
-		      && layer_import->dynamic_param_list().count("filename") == 0)
+			if ( !CanvasFileNaming::is_embeded(filename)
+		      && !layer_import->dynamic_param_list().count("filename") )
 			{
 				this->layer_import = layer_import;
 				return true;
@@ -202,34 +200,22 @@ Action::LayerEmbed::prepare()
 	}
 
 	if (layer_import) {
-		// TODO: "container:" and "images" literals
-		std::string dir = "#images/";
+		String new_description;
+		String new_filename;
+		String new_filename_param;
 
-		std::string filename = layer_import->get_param("filename").get(String());
-		std::string src_dir = get_canvas()->get_file_path();
-		if (!is_absolute_path(src_dir))
-			src_dir = absolute_path(src_dir);
+		get_canvas_interface()->get_instance()->generate_new_name(
+			layer_import,
+			get_canvas(),
+			get_canvas()->get_file_system(),
+			new_description,
+			new_filename,
+			new_filename_param );
 
-		std::string absolute_filename
-			  =	filename.empty()           ? src_dir
-			  : is_absolute_path(filename) ? filename
-			  : cleanup_path(src_dir+ETL_DIRECTORY_SEPARATOR+filename);
+		String filename_param = layer_import->get_param("filename").get(String());
+		String filename = CanvasFileNaming::make_full_filename(get_canvas()->get_file_name(), filename_param);
 
-		FileSystem::Handle file_system = get_canvas()->get_identifier().file_system;
-
-		// try to create directory
-		if (!file_system->directory_create(dir.substr(0,dir.size()-1)))
-			throw Error(_("Cannot create directory in container"));
-
-		// generate new filename
-		int i = 0;
-		std::string new_filename = basename(filename);
-		while(file_system->is_exists(dir + new_filename))
-		{
-			new_filename = filename_sans_extension(basename(filename))
-					     + strprintf("_%d", ++i)
-					     + filename_extension(filename);
-		}
+		FileSystem::Handle file_system = get_canvas()->get_file_system();
 
 		etl::loose_handle<synfigapp::Instance> instance =
 			get_canvas_interface()->get_instance();
@@ -237,22 +223,23 @@ Action::LayerEmbed::prepare()
 			etl::handle<Layer_Bitmap>::cast_dynamic(layer_import);
 		if (layer_bitmap && instance->is_layer_registered_to_save(layer_bitmap)) {
 			// save surface
-			get_canvas_interface()->get_instance()->save_surface(layer_bitmap->surface, dir + new_filename);
+			get_canvas_interface()->get_instance()->save_surface(layer_bitmap->surface, new_filename);
 		} else {
+			// try to create directory
+			if (!file_system->directory_create_recursive(etl::dirname(new_filename)))
+				throw Error(_("Cannot create directory in container"));
 			// try to copy file
-			if (!FileSystem::copy(file_system, absolute_filename, file_system, dir + new_filename))
+			if (!FileSystem::copy(file_system, filename, file_system, new_filename))
 				throw Error(_("Cannot copy file into container"));
 		}
 
 		// create action to change layer param
-		ValueBase value;
-		value.set("#" + new_filename);
 		Action::Handle action(Action::create("LayerParamSet"));
-		action->set_param("canvas",get_canvas());
-		action->set_param("canvas_interface",get_canvas_interface());
-		action->set_param("layer",layer_import);
-		action->set_param("param","filename");
-		action->set_param("new_value",value);
+		action->set_param("canvas", get_canvas());
+		action->set_param("canvas_interface", get_canvas_interface());
+		action->set_param("layer", layer_import);
+		action->set_param("param", "filename");
+		action->set_param("new_value", new_filename_param);
 		add_action_front(action);
 	}
 }

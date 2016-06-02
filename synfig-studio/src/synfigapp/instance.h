@@ -90,7 +90,6 @@ private:
 	//! Handle for root canvas
 	synfig::Canvas::Handle canvas_;
 
-	synfig::FileSystemGroup::Handle file_system_;
 	synfig::FileSystemTemporary::Handle container_;
 
 	CanvasInterfaceList canvas_interface_list_;
@@ -164,7 +163,6 @@ public:
 	void unset_selection_manager() { selection_manager_=new NullSelectionManager(); }
 	const etl::handle<SelectionManager> &get_selection_manager() { return selection_manager_; }
 
-	synfig::FileSystemGroup::Handle get_file_system() const { return file_system_; };
 	synfig::FileSystemTemporary::Handle get_container() const { return container_; };
 	bool save_surface(const synfig::Surface &surface, const synfig::String &filename);
 

@@ -170,8 +170,10 @@ namespace synfig
 
 		inline bool is_exists(const String filename) { return is_file(filename) || is_directory(filename); }
 
+		String get_real_filename(const String &filename);
 		Identifier get_identifier(const String &filename) { return Identifier(this, filename); }
 
+		bool directory_create_recursive(const String &dirname);
 		bool remove_recursive(const String &filename);
 
 		static bool copy(Handle from_file_system, const String &from_filename, Handle to_file_system, const String &to_filename);

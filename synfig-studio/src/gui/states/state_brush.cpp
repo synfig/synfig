@@ -39,6 +39,7 @@
 #include <glibmm/timeval.h>
 #include <giomm.h>
 
+#include <synfig/canvasfilenaming.h>
 #include <synfig/layers/layer_switch.h>
 
 #include "state_brush.h"
@@ -772,12 +773,6 @@ StateBrush_Context::event_mouse_down_handler(const Smach::event& x)
 
 				if (selected_layer->get_param_list().count("filename") != 0)
 				{
-					// TODO: "images" and "container:" literals
-					get_canvas_interface()
-						->get_instance()
-						->get_file_system()
-						->directory_create("#images");
-
 					// generate name based on description
 					String description, filename, filename_param;
 					get_canvas_interface()
@@ -785,7 +780,7 @@ StateBrush_Context::event_mouse_down_handler(const Smach::event& x)
 						->generate_new_name(
 								layer,
 								NULL,
-								get_canvas_interface()->get_instance()->get_file_system(),
+								get_canvas()->get_file_system(),
 								description,
 								filename,
 								filename_param );
