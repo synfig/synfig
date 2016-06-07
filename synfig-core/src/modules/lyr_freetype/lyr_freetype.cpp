@@ -663,7 +663,7 @@ Layer_Freetype::sync()
 }
 
 inline Color
-Layer_Freetype::color_func(const Point &point_ __attribute__ ((unused)), int quality __attribute__ ((unused)), float supersample __attribute__ ((unused)))const
+Layer_Freetype::color_func(const Point &point_ __attribute__ ((unused)), int quality __attribute__ ((unused)), ColorReal supersample __attribute__ ((unused)))const
 {
 	bool invert=param_invert.get(bool());
 	if (invert)
@@ -700,9 +700,6 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 	Color color=param_color.get(Color());
 	synfig::Point origin=param_origin.get(Point());
 	synfig::Vector orient=param_orient.get(Vector());
-	
-	if (renddesc.get_tl()[1] < renddesc.get_br()[1])
-		orient[1] = 1.0 - orient[1];
 
 	static synfig::RecMutex freetype_mutex;
 
@@ -763,11 +760,11 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 
 	// Here is where we can compensate for the
 	// error in freetype's rendering engine.
-	const float xerror(abs(size[0]*pw)/(float)face->size->metrics.x_ppem/1.13f/0.996);
-	const float yerror(abs(size[1]*ph)/(float)face->size->metrics.y_ppem/1.13f/0.996);
+	const Real xerror(abs(size[0]*pw)/(Real)face->size->metrics.x_ppem/1.13f/0.996);
+	const Real yerror(abs(size[1]*ph)/(Real)face->size->metrics.y_ppem/1.13f/0.996);
 	//synfig::info("xerror=%f, yerror=%f",xerror,yerror);
-	const float compress(Layer_Freetype::param_compress.get(Real())*xerror);
-	const float vcompress(Layer_Freetype::param_vcompress.get(Real())*yerror);
+	const Real compress(Layer_Freetype::param_compress.get(Real())*xerror);
+	const Real vcompress(Layer_Freetype::param_vcompress.get(Real())*yerror);
 
 	if(error)
 	{
@@ -890,23 +887,20 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 
 	}
 
-	//float	string_height;
+	//Real	string_height;
 	//string_height=(((lines.size()-1)*face->size->metrics.height+lines.back().actual_height()));
 
 	//int string_height=face->size->metrics.ascender;
 //#define METRICS_SCALE_ONE		(65536.0f)
-#define METRICS_SCALE_ONE		((float)(1<<16))
+#define METRICS_SCALE_ONE		((Real)(1<<16))
 
-	float line_height;
-	line_height=vcompress*((float)face->height*(((float)face->size->metrics.y_scale/METRICS_SCALE_ONE)));
+	Real line_height = vcompress*((Real)face->height*(((Real)face->size->metrics.y_scale/METRICS_SCALE_ONE)));
+	Real text_height = (lines.size() - 1)*line_height + lines.back().actual_height();
 
 	// This module sees to expect pixel height to be negative, as it
 	// usually is.  But rendering to .bmp format causes ph to be
 	// positive, which was causing text to be rendered upside down.
-	if (ph>0) line_height = -line_height;
-
-	int	string_height;
-	string_height=round_to_int(((lines.size()-1)*line_height+lines.back().actual_height()));
+	//if (ph>0) line_height = -line_height;
 
 	//synfig::info("string_height=%d",string_height);
 	//synfig::info("line_height=%f",line_height);
@@ -931,18 +925,26 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 	}
 
 	{
+		int sign_y = ph >= 0.0 ? 1 : -1;
+		Real offset_x = (origin[0]-renddesc.get_tl()[0])*pw*CHAR_RESOLUTION;
+		Real offset_y = (origin[1]-renddesc.get_tl()[1])*ph*CHAR_RESOLUTION
+				      - sign_y*text_height*(1.0 - orient[1]);
+
 		std::list<TextLine>::iterator iter;
 		int curr_line;
 		for(curr_line=0,iter=lines.begin();iter!=lines.end();++iter,curr_line++)
 		{
-			bx=round_to_int((origin[0]-renddesc.get_tl()[0])*pw*CHAR_RESOLUTION-orient[0]*iter->width);
+			bx=round_to_int(offset_x - orient[0]*iter->width);
 			// I've no idea why 1.5, but it kind of works.  Otherwise,
 			// rendering to .bmp (which renders from bottom to top, due to
 			// the .bmp format describing the image from bottom to top,
 			// renders text in the wrong place.
+			by=round_to_int(offset_y + sign_y*curr_line*line_height);
+			/*
 			by=round_to_int((origin[1]-renddesc.get_tl()[1])*ph*CHAR_RESOLUTION +
 							(1.0-orient[1])*string_height +
-							((ph>0) ? line_height*(lines.size()-1-curr_line)-lines.back().actual_height(): -line_height*curr_line));
+							(ph>0 ? line_height*(lines.size()-1-curr_line)-lines.back().actual_height(): -line_height*curr_line));
+			*/
 
 			//by=round_to_int(vcompress*((origin[1]-renddesc.get_tl()[1])*ph*64+(1.0-orient[1])*string_height-face->size->metrics.height*curr_line));
 			//synfig::info("curr_line=%d, bx=%d, by=%d",curr_line,bx,by);
@@ -968,13 +970,13 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 					for(u=0;u<(int)bit->bitmap.width;u++)
 					{
 						int x=u+((pen.x+32)>>6)+ bit->left;
-						int y=((pen.y+32)>>6) + (bit->top - v) * ((ph<0) ? -1 : 1);
+						int y=((pen.y+32)>>6) + (bit->top - v) * sign_y;
 						if(	y>=0 &&
 							x>=0 &&
 							y<surface->get_h() &&
 							x<surface->get_w())
 						{
-							float myamount=(float)bit->bitmap.buffer[v*bit->bitmap.pitch+u]/255.0f;
+							Real myamount=(Real)bit->bitmap.buffer[v*bit->bitmap.pitch+u]/255.0f;
 							if(invert)
 								myamount=1.0f-myamount;
 							(*surface)[y][x]=Color::blend(color,(*src_surface)[y][x],myamount*get_amount(),get_blend_method());
@@ -1057,9 +1059,9 @@ Layer_Freetype::accelerated_cairorender(Context context, cairo_t *cr, int qualit
 	pango_font_description_set_weight (font_description, PangoWeight(weight));
 	pango_font_description_set_style (font_description, PangoStyle(style));
 	// The size is scaled to match Software render size (remove the scale?)
-	float sizex=1.75*fabs(size[0])*fabs(wsx);
-	float sizey=1.75*fabs(size[1])*fabs(wsy);
-	float vscale=sizey/sizex;
+	Real sizex=1.75*fabs(size[0])*fabs(wsx);
+	Real sizey=1.75*fabs(size[1])*fabs(wsy);
+	Real vscale=sizey/sizex;
 	pango_font_description_set_absolute_size (font_description, sizex * PANGO_SCALE );
 	
 	//Pango Layout
@@ -1084,15 +1086,15 @@ Layer_Freetype::accelerated_cairorender(Context context, cairo_t *cr, int qualit
 	// Spacing
 	// Horizontal
 	PangoAttrList* attrlist=pango_attr_list_new();
-	float hspace=compress>1.0?0.4*sizex*(compress-1.0):(compress<1.0)?0.5*sizex*(compress-1.0):0;
+	Real hspace=compress>1.0?0.4*sizex*(compress-1.0):(compress<1.0)?0.5*sizex*(compress-1.0):0;
 	PangoAttribute* spacing=pango_attr_letter_spacing_new(hspace*PANGO_SCALE);
 	pango_attr_list_insert_before(attrlist, spacing);
 	pango_layout_set_attributes(layout, attrlist);
 	
 	// Vertical
 	int total_lines=pango_layout_get_line_count(layout);
-	float vspace_total=vcompress>1.0?0.4*logical_layout.height*(vcompress-1.0):(vcompress<1.0)?0.6*logical_layout.height*(vcompress-1.0):0;
-	float vspace=0;
+	Real vspace_total=vcompress>1.0?0.4*logical_layout.height*(vcompress-1.0):(vcompress<1.0)?0.6*logical_layout.height*(vcompress-1.0):0;
+	Real vspace=0;
 	if(total_lines>1)
 		vspace=vspace_total/(total_lines-1);
 	pango_layout_set_spacing(layout, vspace*PANGO_SCALE);

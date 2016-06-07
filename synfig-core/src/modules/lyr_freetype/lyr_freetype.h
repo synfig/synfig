@@ -148,7 +148,7 @@ private:
 
 	void sync();
 
-	synfig::Color color_func(const synfig::Point &x, int quality=10, float supersample=0)const;
+	synfig::Color color_func(const synfig::Point &x, int quality=10, synfig::ColorReal supersample=0)const;
 
 	mutable synfig::Mutex mutex;
 
