@@ -68,19 +68,7 @@ const unsigned int	DEF_TILE_HEIGHT = TILE_SIZE / 2;
 
 #ifdef _DEBUG
 //#define DEBUG_MEASURE
-#endif
-
-
-// note that if this isn't defined then the rendering is incorrect for
-// the straight blend method since the optimize_layers() function in
-// canvas.cpp which makes the straight blend method work correctly
-// isn't called.  ie. leave this defined.  to see the problem, draw a
-// small circle over a solid background.  set circle to amount 0.99
-// and blend method 'straight'.  the background should vanish but doesn't
-#define SYNFIG_OPTIMIZE_LAYER_TREE
-
-#ifdef _DEBUG
-// #define SYNFIG_DISPLAY_EFFICIENCY
+//#define SYNFIG_DISPLAY_EFFICIENCY
 #endif
 
 /* === G L O B A L S ======================================================= */
@@ -443,23 +431,7 @@ synfig::Target_Tile::render(ProgressCallback *cb)
 
 			//synfig::info("2time_set_to %s",t.get_string().c_str());
 
-			Context context;
-
-#ifdef SYNFIG_OPTIMIZE_LAYER_TREE
-			Canvas::Handle op_canvas;
-			if (!getenv("SYNFIG_DISABLE_OPTIMIZE_LAYER_TREE"))
-			{
-				op_canvas = Canvas::create();
-				op_canvas->set_file_name(canvas->get_file_name());
-				optimize_layers(canvas->get_time(), canvas->get_context(context_params), op_canvas);
-				context=op_canvas->get_context(context_params);
-			}
-			else
-				context=canvas->get_context(context_params);
-#else
-			context=canvas->get_context(context_params);
-#endif
-
+			Context context = canvas->get_context(context_params);
 			if(!render_frame_(context, cb))
 				return false;
 			end_frame();

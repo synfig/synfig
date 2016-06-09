@@ -55,14 +55,6 @@ using namespace rendering;
 
 /* === M A C R O S ========================================================= */
 
-// note that if this isn't defined then the rendering is incorrect for
-// the straight blend method since the optimize_layers() function in
-// canvas.cpp which makes the straight blend method work correctly
-// isn't called.  ie. leave this defined.  to see the problem, draw a
-// small circle over a solid background.  set circle to amount 0.99
-// and blend method 'straight'.  the background should vanish but doesn't
-#define SYNFIG_OPTIMIZE_LAYER_TREE
-
 #define PIXEL_RENDERING_LIMIT 1500000
 
 #define USE_PIXELRENDERING_LIMIT 1
@@ -156,28 +148,13 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 
 			Context context;
 			// pass the Render Method to the context
-			context=canvas->get_context(context_params);
+			context = canvas->get_context(context_params);
 			context.set_render_method(SOFTWARE);
 
 			// Set the time that we wish to render
 			if(!get_avoid_time_sync() || canvas->get_time()!=t)
 				canvas->set_time(t);
 			canvas->set_outline_grow(desc.get_outline_grow());
-
-	#ifdef SYNFIG_OPTIMIZE_LAYER_TREE
-			Canvas::Handle op_canvas;
-			if (!getenv("SYNFIG_DISABLE_OPTIMIZE_LAYER_TREE"))
-			{
-				op_canvas = Canvas::create();
-				op_canvas->set_file_name(canvas->get_file_name());
-				optimize_layers(canvas->get_time(), canvas->get_context(context_params), op_canvas);
-				context=op_canvas->get_context(context_params);
-			}
-			else
-				context=canvas->get_context(context_params);
-	#else
-			context=canvas->get_context(context_params);
-	#endif
 
 			// If quality is set otherwise, then we use the accelerated renderer
 			{
@@ -307,22 +284,7 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 		if(!get_avoid_time_sync() || canvas->get_time()!=t)
 			canvas->set_time(t);
 		canvas->set_outline_grow(desc.get_outline_grow());
-		Context context;
-
-#ifdef SYNFIG_OPTIMIZE_LAYER_TREE
-		Canvas::Handle op_canvas;
-		if (!getenv("SYNFIG_DISABLE_OPTIMIZE_LAYER_TREE"))
-		{
-			op_canvas = Canvas::create();
-			op_canvas->set_file_name(canvas->get_file_name());
-			optimize_layers(canvas->get_time(), canvas->get_context(context_params), op_canvas);
-			context=op_canvas->get_context(context_params);
-		}
-		else
-			context=canvas->get_context(context_params);
-#else
-		context=canvas->get_context(context_params);
-#endif
+		Context context = canvas->get_context(context_params);
 
 		// If quality is set otherwise, then we use the accelerated renderer
 		{
