@@ -177,6 +177,7 @@ bool FileSystemGroup::directory_scan(const String &dirname, FileList &out_files)
 
 bool FileSystemGroup::file_remove(const String &filename)
 {
+	if (!is_exists(filename)) return true;
 	FileSystem::Handle file_system;
 	String internal_filename;
 	return find_system(filename, file_system, internal_filename)
