@@ -232,6 +232,8 @@ private:
 	//! Static option for ValueBase parsing function
 	bool parse_static(xmlpp::Element *node);
 
+	//!	Remove unneeded "guid" attributes from xmlpp Element (canvas->layer->param->*->guid)
+	static void fix_canvas_guids(xmlpp::Element* node, std::multimap<String, xmlpp::Element*> *map = NULL);
 }; // END of CanvasParser
 
 /* === E X T E R N S ======================================================= */

@@ -3480,7 +3480,10 @@ CanvasParser::parse_from_file_as(const FileSystem::Identifier &identifier,const 
 			stream.reset();
 			if(parser)
 			{
-				Canvas::Handle canvas(parse_canvas(parser.get_document()->get_root_node(),0,false,identifier,as));
+				xmlpp::Element *root_node = parser.get_document()->get_root_node();
+				fix_canvas_guids(root_node);
+
+				Canvas::Handle canvas(parse_canvas(root_node,0,false,identifier,as));
 				if (!canvas) return canvas;
 				register_canvas_in_map(canvas, as);
 
@@ -3585,6 +3588,40 @@ CanvasParser::parse_as(xmlpp::Element* node,String &errors)
 	}
 	return Canvas::Handle();
 }
+
+void
+CanvasParser::fix_canvas_guids(xmlpp::Element* node, std::multimap<String, xmlpp::Element*> *map) {
+	if (node == NULL) return;
+
+	bool root = map == NULL;
+	assert(root != (bool)node->get_parent());
+
+	if (root) map = new std::multimap<String, xmlpp::Element*>();
+
+	xmlpp::Node::NodeList children = node->get_children();
+	for(xmlpp::Node::NodeList::iterator i = children.begin(); i != children.end(); ++i)
+		fix_canvas_guids(dynamic_cast<xmlpp::Element*>(*i), map);
+
+	if (xmlpp::Attribute *attribute = node->get_attribute("guid"))
+		map->insert(make_pair(attribute->get_value(), node));
+
+	if (root) {
+		while(!map->empty()) {
+			String key = map->begin()->first;
+			if (map->count(key) == 1) {
+				xmlpp::Element *n = map->begin()->second;
+				xmlpp::Element *p = n->get_parent();
+				if (p && p->get_name() == "param") p = p->get_parent();
+				if (p && p->get_name() == "layer") p = p->get_parent();
+				if (p && p->get_name() == "canvas" && !p->get_parent())
+					n->remove_attribute("guid");
+			}
+			map->erase(key);
+		}
+		delete map;
+	}
+}
+
 //extern
 Canvas::Handle
 synfig::open_canvas(xmlpp::Element* node,String &errors,String &warnings){
