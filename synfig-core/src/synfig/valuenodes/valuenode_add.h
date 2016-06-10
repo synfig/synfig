@@ -64,6 +64,7 @@ public:
 	//! Returns the modified Link to match the target value at time t
 	ValueBase get_inverse(Time t, const synfig::Real &target_value) const;
 	ValueBase get_inverse(Time t, const synfig::Angle &target_value) const;
+	ValueBase get_inverse(Time t, const synfig::Vector &target_value) const;
 	
 }; // END of class ValueNode_Add
 

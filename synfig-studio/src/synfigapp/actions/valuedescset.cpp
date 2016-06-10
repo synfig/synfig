@@ -667,7 +667,7 @@ Action::ValueDescSet::prepare()
 		else if(value.get_type() == type_real)
 			new_value = integer_value_node->get_inverse(time, value.get(Real()));
 		else
-			throw Error(_("Inverse manipulation of %s scale values not implemented in core."), value.type_name().c_str());
+			throw Error(_("Inverse manipulation of %s integer values not implemented in core."), value.type_name().c_str());
 		Action::Handle action(Action::create("ValueDescSet"));
 		if(!action)
 			throw Error(_("Unable to find action ValueDescSet (bug)"));
@@ -689,8 +689,10 @@ Action::ValueDescSet::prepare()
 			new_value = add_value_node->get_inverse(time, value.get(Angle()));
 		else if(value.get_type() == type_real)
 			new_value = add_value_node->get_inverse(time, value.get(Real()));
+		else if(value.get_type() == type_vector)
+			new_value = add_value_node->get_inverse(time, value.get(Vector()));
 		else
-			throw Error(_("Inverse manipulation of %s scale values not implemented in core."), value.type_name().c_str());
+			throw Error(_("Inverse manipulation of %s add values not implemented in core."), value.type_name().c_str());
 		Action::Handle action(Action::create("ValueDescSet"));
 		if(!action)
 			throw Error(_("Unable to find action ValueDescSet (bug)"));
@@ -711,7 +713,7 @@ Action::ValueDescSet::prepare()
 		if (value.get_type() == type_angle)
 			new_value = real_value_node->get_inverse(time, value.get(Angle()));
 		else
-			throw Error(_("Inverse manipulation of %s scale values not implemented in core."), value.type_name().c_str());
+			throw Error(_("Inverse manipulation of %s real values not implemented in core."), value.type_name().c_str());
 		Action::Handle action(Action::create("ValueDescSet"));
 		if(!action)
 			throw Error(_("Unable to find action ValueDescSet (bug)"));
