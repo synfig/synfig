@@ -1,19 +1,21 @@
 # Translation file for Synfig Studio package.
-# Copyright (C) 2015 Synfig Contributors
+# Copyright (C) 2016 Synfig Contributors
 # This file is distributed under the same license as the Synfig Studio package.
 # 
 # Translators:
+# jihang Zhao <hulk0@163.com>, 2016
 # morevnaproject <ksee.zelgadis@gmail.com>, 2011
-# Yu Chen <jcomee@gmail.com>, 2010-2011
+# Yu Chen <jcomee@gmail.com>, 2010-2011,2016
 # Yu Chen <jcomee@gmail.com>, 2010, 2011
+# 海滨 吴 <865141699@qq.com>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: Synfig UI\n"
 "Report-Msgid-Bugs-To: http://www.synfig.org/issues/thebuggenie/synfig\n"
-"POT-Creation-Date: 2015-07-27 18:00+0700\n"
-"PO-Revision-Date: 2015-07-20 14:13+0000\n"
-"Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
-"Language-Team: Chinese (China) (http://www.transifex.com/projects/p/synfig/language/zh_CN/)\n"
+"POT-Creation-Date: 2016-06-05 14:00+0700\n"
+"PO-Revision-Date: 2016-03-09 12:22+0000\n"
+"Last-Translator: Yu Chen <jcomee@gmail.com>\n"
+"Language-Team: Chinese (China) (http://www.transifex.com/morevnaproject/synfig/language/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -26,35 +28,35 @@ msgstr "2D 矢量动画工作室"
 
 #: ../synfigstudio.desktop.in.h:2
 msgid "Create and edit 2D animations and compositions"
-msgstr ""
+msgstr "创建、编辑 2D 动画或静态图像"
 
 #: ../synfigstudio.appdata.xml.in.h:1
 msgid "Artist-oriented design"
-msgstr ""
+msgstr "艺术家导向的设计"
 
 #: ../synfigstudio.appdata.xml.in.h:2
 msgid "Features:"
-msgstr ""
+msgstr "功能特性："
 
 #: ../synfigstudio.appdata.xml.in.h:3
 msgid "High Dynamic-Range Imaging (HDRI)"
-msgstr ""
+msgstr "高动态范围成像(HDRI)"
 
 #: ../synfigstudio.appdata.xml.in.h:4
 msgid "Multitude of layers of various types"
-msgstr ""
+msgstr "众多各种类型的层"
 
 #: ../synfigstudio.appdata.xml.in.h:5
 msgid "Path-based Gradients"
-msgstr ""
+msgstr "各种基于路径的渐变"
 
 #: ../synfigstudio.appdata.xml.in.h:6
 msgid "Pentablet-friendly tools"
-msgstr ""
+msgstr "各种数位板友好的工具"
 
 #: ../synfigstudio.appdata.xml.in.h:7
 msgid "Spatial resolution-independence"
-msgstr ""
+msgstr "空间分辨率无关性"
 
 #: ../synfigstudio.appdata.xml.in.h:8
 msgid ""
@@ -63,39 +65,39 @@ msgid ""
 "using a vector and bitmap artwork. It eliminates the need to create "
 "animation frame-by frame, allowing you to produce 2D animation of a higher "
 "quality with fewer people and resources."
-msgstr ""
+msgstr "Synfig Studio 是自由、开放源代码的 2D 动画软件，它被设计成工业级别的，使用矢量或者位图作品来制作影片级动画的解决方案。它消除了逐帧制作的需求，让您用更少的人力和其他资源就可以生产高质量 2D 动画。"
 
 #: ../synfigstudio.appdata.xml.in.h:9
 msgid "Temporal resolution independence"
-msgstr ""
+msgstr "动画临时分辨率无关性"
 
 #: ../synfigstudio-thumbnailer.schemas.in.h:1
 msgid "Enable this thumbnailer."
-msgstr ""
+msgstr "启用该略缩图生成器"
 
 #: ../synfigstudio-thumbnailer.schemas.in.h:2
 msgid "Invoke Synfig as Thumbnailer"
-msgstr ""
+msgstr "用 Synfig 作为略缩图生成器"
 
 #: ../synfigstudio-thumbnailer.schemas.in.h:3
 msgid "Invokes Synfig as a gnome thumbnailer for image/sif files"
-msgstr ""
+msgstr "用 Synfig 作为 Gnome 的 image/sif 文件略缩图生成器"
 
 #: ../synfigstudio-thumbnailer.schemas.in.h:4
 msgid "enable"
-msgstr ""
+msgstr "启用"
 
 #: ../plugins/add-skeleton-simple/plugin.xml.in.h:1
 msgid "Add Skeleton (Simple)"
-msgstr ""
+msgstr "添加（简单）骨架"
 
 #: ../plugins/view-unhide-all-layers/plugin.xml.in.h:1
 msgid "Unhide All Layers"
-msgstr ""
+msgstr "显示所有层"
 
 #: ../src/brushlib/brushsettings.py:26
 msgid "Pressure"
-msgstr ""
+msgstr "压力"
 
 #: ../src/brushlib/brushsettings.py:26
 msgid ""
@@ -105,7 +107,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:27
 msgid "Fine speed"
-msgstr ""
+msgstr "精细速度"
 
 #: ../src/brushlib/brushsettings.py:27
 msgid ""
@@ -116,13 +118,13 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:28
 msgid "Gross speed"
-msgstr ""
+msgstr "总体速度"
 
 #: ../src/brushlib/brushsettings.py:28
 msgid ""
 "Same as fine speed, but changes slower. Also look at the 'gross speed "
 "filter' setting."
-msgstr ""
+msgstr "和精细速度一样，但变化较慢。请看'总速度过滤器'设置。"
 
 #: ../src/brushlib/brushsettings.py:29
 msgid "Random"
@@ -132,22 +134,22 @@ msgstr "随机"
 msgid ""
 "Fast random noise, changing at each evaluation. Evenly distributed between 0"
 " and 1."
-msgstr ""
+msgstr "快速随机噪声，在每个评价中的变化。均匀地分布在0和1之间。"
 
 #: ../src/brushlib/brushsettings.py:30
 msgid "Stroke"
-msgstr ""
+msgstr "描边"
 
 #: ../src/brushlib/brushsettings.py:30
 msgid ""
 "This input slowly goes from zero to one while you draw a stroke. It can also"
 " be configured to jump back to zero periodically while you move. Look at the"
 " 'stroke duration' and 'stroke hold time' settings."
-msgstr ""
+msgstr "这个输入慢慢从0到1，而你画一个冲程。当你移动它也可以配置为跳回到零周期，看一下行程时间和行程保持时间的设置。"
 
 #: ../src/brushlib/brushsettings.py:31
 msgid "Direction"
-msgstr ""
+msgstr "方向"
 
 #: ../src/brushlib/brushsettings.py:31
 msgid ""
@@ -157,7 +159,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:32
 msgid "Declination"
-msgstr ""
+msgstr "倾斜"
 
 #: ../src/brushlib/brushsettings.py:32
 msgid ""
@@ -167,7 +169,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:33
 msgid "Ascension"
-msgstr ""
+msgstr "提升"
 
 #: ../src/brushlib/brushsettings.py:33
 msgid ""
@@ -178,7 +180,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:35
 msgid "Custom"
-msgstr ""
+msgstr "自定义"
 
 #: ../src/brushlib/brushsettings.py:35
 msgid ""
@@ -194,7 +196,7 @@ msgstr ""
 #: ../src/gui/states/state_rectangle.cpp:549
 #: ../src/gui/states/state_star.cpp:672 ../src/gui/states/state_text.cpp:433
 msgid "Opacity"
-msgstr ""
+msgstr "透明"
 
 #: ../src/brushlib/brushsettings.py:44
 msgid ""
@@ -204,17 +206,17 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:45
 msgid "Opacity multiply"
-msgstr ""
+msgstr "不透明度叠加"
 
 #: ../src/brushlib/brushsettings.py:45
 msgid ""
 "This gets multiplied with opaque. You should only change the pressure input of this setting. Use 'opaque' instead to make opacity depend on speed.\n"
 "This setting is responsible to stop painting when there is zero pressure. This is just a convention, the behaviour is identical to 'opaque'."
-msgstr ""
+msgstr "这与不透明会成倍增加。你应该只改变这个设置的压力输入。使用“不透明”而使透明度取决于速度。这个设置负责停止绘画时有零压力。这只是一个惯例，这种行为与“不透明”是相同的。"
 
 #: ../src/brushlib/brushsettings.py:46
 msgid "Opacity linearize"
-msgstr ""
+msgstr "不透明线性化"
 
 #: ../src/brushlib/brushsettings.py:46
 msgid ""
@@ -237,7 +239,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:48
 msgid "Hardness"
-msgstr ""
+msgstr "硬度"
 
 #: ../src/brushlib/brushsettings.py:48
 msgid ""
@@ -247,7 +249,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:49
 msgid "Anti-aliasing"
-msgstr ""
+msgstr "抗锯齿化"
 
 #: ../src/brushlib/brushsettings.py:49
 msgid ""
@@ -269,7 +271,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:51
 msgid "Dabs per actual radius"
-msgstr ""
+msgstr "根据实际半径轻拍"
 
 #: ../src/brushlib/brushsettings.py:51
 msgid ""
@@ -287,7 +289,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:53
 msgid "Radius by random"
-msgstr ""
+msgstr "随机范围"
 
 #: ../src/brushlib/brushsettings.py:53
 msgid ""
@@ -298,7 +300,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:54
 msgid "Fine speed filter"
-msgstr ""
+msgstr "精细速度滤波器"
 
 #: ../src/brushlib/brushsettings.py:54
 msgid ""
@@ -308,7 +310,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:55
 msgid "Gross speed filter"
-msgstr ""
+msgstr "总体速度滤波器"
 
 #: ../src/brushlib/brushsettings.py:55
 msgid "Same as 'fine speed filter', but note that the range is different"
@@ -316,7 +318,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:56
 msgid "Fine speed gamma"
-msgstr ""
+msgstr "伽玛精细速度"
 
 #: ../src/brushlib/brushsettings.py:56
 msgid ""
@@ -328,7 +330,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:57
 msgid "Gross speed gamma"
-msgstr ""
+msgstr "伽玛总体速度"
 
 #: ../src/brushlib/brushsettings.py:57
 msgid "Same as 'fine speed gamma' for gross speed"
@@ -336,7 +338,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:58
 msgid "Jitter"
-msgstr ""
+msgstr "抖动"
 
 #: ../src/brushlib/brushsettings.py:58
 msgid ""
@@ -348,7 +350,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:59
 msgid "Offset by speed"
-msgstr ""
+msgstr "偏移速度"
 
 #: ../src/brushlib/brushsettings.py:59
 msgid ""
@@ -360,7 +362,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:60
 msgid "Offset by speed filter"
-msgstr ""
+msgstr "速度滤波器偏移"
 
 #: ../src/brushlib/brushsettings.py:60
 msgid "How slow the offset goes back to zero when the cursor stops moving"
@@ -368,7 +370,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:61
 msgid "Slow position tracking"
-msgstr ""
+msgstr "缓慢位置跟踪"
 
 #: ../src/brushlib/brushsettings.py:61
 msgid ""
@@ -388,7 +390,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:63
 msgid "Tracking noise"
-msgstr ""
+msgstr "跟踪噪声"
 
 #: ../src/brushlib/brushsettings.py:63
 msgid ""
@@ -398,23 +400,23 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:65
 msgid "Color hue"
-msgstr ""
+msgstr "色相"
 
 #: ../src/brushlib/brushsettings.py:66
 msgid "Color saturation"
-msgstr ""
+msgstr "色彩饱和度"
 
 #: ../src/brushlib/brushsettings.py:67
 msgid "Color value"
-msgstr ""
+msgstr "颜色值"
 
 #: ../src/brushlib/brushsettings.py:67
 msgid "Color value (brightness, intensity)"
-msgstr ""
+msgstr "颜色值(亮度、强度)"
 
 #: ../src/brushlib/brushsettings.py:68
 msgid "Save color"
-msgstr ""
+msgstr "保存颜色"
 
 #: ../src/brushlib/brushsettings.py:68
 msgid ""
@@ -426,7 +428,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:69
 msgid "Change color hue"
-msgstr ""
+msgstr "修改色相"
 
 #: ../src/brushlib/brushsettings.py:69
 msgid ""
@@ -523,7 +525,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:77 ../src/gui/states/state_brush.cpp:510
 msgid "Eraser"
-msgstr ""
+msgstr "橡皮擦"
 
 #: ../src/brushlib/brushsettings.py:77
 msgid ""
@@ -535,7 +537,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:79
 msgid "Stroke threshold"
-msgstr ""
+msgstr "行程阈值"
 
 #: ../src/brushlib/brushsettings.py:79
 msgid ""
@@ -545,7 +547,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:80
 msgid "Stroke duration"
-msgstr ""
+msgstr "行程时间"
 
 #: ../src/brushlib/brushsettings.py:80
 msgid ""
@@ -555,7 +557,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:81
 msgid "Stroke hold time"
-msgstr ""
+msgstr "行程保持时间"
 
 #: ../src/brushlib/brushsettings.py:81
 msgid ""
@@ -566,7 +568,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:82
 msgid "Custom input"
-msgstr ""
+msgstr "自定义输入"
 
 #: ../src/brushlib/brushsettings.py:82
 msgid ""
@@ -576,7 +578,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:83
 msgid "Custom input filter"
-msgstr ""
+msgstr "自定义输入滤波器"
 
 #: ../src/brushlib/brushsettings.py:83
 msgid ""
@@ -586,7 +588,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:85
 msgid "Elliptical dab: ratio"
-msgstr ""
+msgstr "椭圆度：比率"
 
 #: ../src/brushlib/brushsettings.py:85
 msgid ""
@@ -596,7 +598,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:86
 msgid "Elliptical dab: angle"
-msgstr ""
+msgstr "椭圆度：角度"
 
 #: ../src/brushlib/brushsettings.py:86
 msgid ""
@@ -608,7 +610,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:87
 msgid "Direction filter"
-msgstr ""
+msgstr "方向滤波器"
 
 #: ../src/brushlib/brushsettings.py:87
 msgid ""
@@ -618,7 +620,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:89
 msgid "Lock alpha"
-msgstr ""
+msgstr "锁定透明"
 
 #: ../src/brushlib/brushsettings.py:89
 msgid ""
@@ -632,11 +634,11 @@ msgstr ""
 #: ../src/gui/actionmanagers/groupactionmanager.cpp:176
 #: ../src/gui/docks/dock_layergroups.cpp:76
 msgid "Add a New Set"
-msgstr ""
+msgstr "添加新层集"
 
 #: ../src/gui/actionmanagers/groupactionmanager.cpp:269
 msgid "Unnamed Set"
-msgstr ""
+msgstr "未命名的层集"
 
 #: ../src/gui/actionmanagers/keyframeactionmanager.cpp:248
 msgid "Add New Keyframe"
@@ -648,11 +650,11 @@ msgstr "关键帧属性"
 
 #: ../src/gui/actionmanagers/keyframeactionmanager.cpp:257
 msgid "Toggle Keyframe"
-msgstr ""
+msgstr "切换关键帧"
 
 #: ../src/gui/actionmanagers/keyframeactionmanager.cpp:261
 msgid "Set Keyframe Description"
-msgstr ""
+msgstr "设定关键帧的描述"
 
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:106
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:515
@@ -696,11 +698,11 @@ msgstr "在此输入文本"
 
 #: ../src/gui/cellrenderer/cellrenderer_value.cpp:435
 msgid "<Group>"
-msgstr ""
+msgstr "<组>"
 
 #: ../src/gui/cellrenderer/cellrenderer_value.cpp:440
 msgid "<No Image Selected>"
-msgstr "没选择图像"
+msgstr "<没选择图像>"
 
 #: ../src/gui/cellrenderer/cellrenderer_value.cpp:513
 msgid "No Parent"
@@ -835,7 +837,7 @@ msgstr "网格大小(_G)"
 #: ../src/synfigapp/actions/valuedescdisconnect.cpp:97
 #: ../src/synfigapp/actions/valuedescremovesmart.cpp:81
 #: ../src/synfigapp/actions/valuedescresetpose.cpp:78
-#: ../src/synfigapp/actions/valuedescset.cpp:123
+#: ../src/synfigapp/actions/valuedescset.cpp:124
 #: ../src/synfigapp/actions/valuedescskeletonlink.cpp:95
 #: ../src/synfigapp/actions/valuenodedynamiclistinsert.cpp:80
 #: ../src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:91
@@ -851,7 +853,7 @@ msgid "Time"
 msgstr "时间"
 
 #: ../src/gui/dialogs/canvasoptions.cpp:113
-#: ../src/gui/dialogs/dialog_setup.cpp:182
+#: ../src/gui/dialogs/dialog_setup.cpp:183
 msgid "Units"
 msgstr "单位"
 
@@ -981,7 +983,7 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_ffmpegparam.cpp:93
 msgid "FFmpeg parameters"
-msgstr ""
+msgstr "ffmpeg 参数"
 
 #: ../src/gui/dialogs/dialog_ffmpegparam.cpp:100
 msgid "Available Video Codecs:"
@@ -1001,18 +1003,18 @@ msgstr "设为默认"
 
 #: ../src/gui/dialogs/dialog_input.cpp:112
 msgid "Input Dialog"
-msgstr ""
+msgstr "导入对话"
 
 #: ../src/gui/dialogs/dialog_input.cpp:118
 msgid "OK"
-msgstr ""
+msgstr "确定"
 
 #: ../src/gui/dialogs/dialog_input.cpp:119
 #: ../src/gui/docks/dock_history.cpp:259 ../src/gui/docks/dock_history.cpp:273
 #: ../src/gui/docks/dock_history.cpp:287
 #: ../src/gui/docks/dock_metadata.cpp:152 ../src/gui/states/state_text.cpp:635
-#: ../src/gui/widgets/widget_canvaschooser.cpp:138 ../src/gui/app.cpp:3525
-#: ../src/gui/app.cpp:3618 ../src/gui/canvasview.cpp:3964
+#: ../src/gui/widgets/widget_canvaschooser.cpp:138 ../src/gui/app.cpp:3542
+#: ../src/gui/app.cpp:3635 ../src/gui/canvasview.cpp:3968
 #: ../src/gui/compview.cpp:332 ../src/gui/compview.cpp:347
 #: ../src/gui/instance.cpp:209 ../src/gui/instance.cpp:399
 #: ../src/gui/instance.cpp:599 ../src/gui/instance.cpp:621
@@ -1021,19 +1023,19 @@ msgstr ""
 #: ../src/gui/instance.cpp:902 ../src/gui/instance.cpp:1123
 #: ../src/gui/instance.cpp:1434 ../src/synfigapp/action_system.cpp:116
 msgid "Cancel"
-msgstr ""
+msgstr "取消"
 
 #: ../src/gui/dialogs/dialog_input.cpp:207
 msgid "Disabled"
-msgstr ""
+msgstr "禁用"
 
 #: ../src/gui/dialogs/dialog_input.cpp:208
 msgid "Screen"
-msgstr ""
+msgstr "屏幕"
 
 #: ../src/gui/dialogs/dialog_input.cpp:209
 msgid "Window"
-msgstr ""
+msgstr "窗口"
 
 #: ../src/gui/dialogs/dialog_keyframe.cpp:59
 msgid "Keyframe Dialog"
@@ -1041,11 +1043,11 @@ msgstr "关键帧对话框"
 
 #: ../src/gui/dialogs/dialog_keyframe.cpp:93
 msgid "Description :"
-msgstr ""
+msgstr "描述"
 
 #: ../src/gui/dialogs/dialog_keyframe.cpp:98
 msgid "Active :"
-msgstr ""
+msgstr "激活"
 
 #: ../src/gui/dialogs/dialog_preview.cpp:65 ../src/gui/canvasview.cpp:1851
 msgid "Preview Window"
@@ -1057,7 +1059,7 @@ msgstr "预览选项"
 
 #: ../src/gui/dialogs/dialog_preview.cpp:133
 msgid "Use _Cairo render"
-msgstr ""
+msgstr "使用_Cairo 渲染"
 
 #: ../src/gui/dialogs/dialog_preview.cpp:134
 msgid "_Begin time"
@@ -1069,15 +1071,15 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_preview.cpp:149
 msgid "General settings"
-msgstr ""
+msgstr "常规设定"
 
 #: ../src/gui/dialogs/dialog_preview.cpp:151
 msgid "<b>General settings</b>"
-msgstr ""
+msgstr "<b>常规设定</b>"
 
 #: ../src/gui/dialogs/dialog_preview.cpp:163 ../src/gui/render.cpp:155
 msgid "_Quality"
-msgstr "质(_O)"
+msgstr "质量(_O)"
 
 #: ../src/gui/dialogs/dialog_preview.cpp:172
 msgid "_FPS"
@@ -1085,11 +1087,11 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_preview.cpp:185
 msgid "Time settings"
-msgstr ""
+msgstr "时间设定"
 
 #: ../src/gui/dialogs/dialog_preview.cpp:187
 msgid "<b>Time settings</b>"
-msgstr ""
+msgstr "<b>时间设定</b>"
 
 #: ../src/gui/dialogs/dialog_preview.cpp:219 ../src/gui/canvasview.cpp:1366
 msgid "Preview"
@@ -1101,343 +1103,343 @@ msgstr "Synfig Studio 设置"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:94 ../src/gui/app.cpp:896
 msgid "Restore Defaults"
-msgstr ""
+msgstr "恢复默认值"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:119
 msgid "Gamma"
 msgstr "伽马"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:124
+#: ../src/gui/dialogs/dialog_setup.cpp:125
 #: ../src/gui/widgets/widget_coloredit.cpp:423
 msgid "Red"
 msgstr "红"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:129
+#: ../src/gui/dialogs/dialog_setup.cpp:130
 #: ../src/gui/widgets/widget_coloredit.cpp:425
 msgid "Green"
 msgstr "绿"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:134
+#: ../src/gui/dialogs/dialog_setup.cpp:135
 #: ../src/gui/widgets/widget_coloredit.cpp:427
 msgid "Blue"
 msgstr "蓝"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:138
+#: ../src/gui/dialogs/dialog_setup.cpp:139
 msgid "Black Level"
 msgstr "暗电平"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:149
+#: ../src/gui/dialogs/dialog_setup.cpp:150
 msgid "Misc."
 msgstr "杂项"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:155
+#: ../src/gui/dialogs/dialog_setup.cpp:156
 msgid "Timestamp"
 msgstr "时间戳"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:183
+#: ../src/gui/dialogs/dialog_setup.cpp:184
 msgid "Pixels"
 msgstr "像素"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:184
+#: ../src/gui/dialogs/dialog_setup.cpp:185
 msgid "Points"
 msgstr "磅"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:185
+#: ../src/gui/dialogs/dialog_setup.cpp:186
 msgid "Inches"
 msgstr "英寸"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:186
+#: ../src/gui/dialogs/dialog_setup.cpp:187
 msgid "Meters"
 msgstr "米"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:187
+#: ../src/gui/dialogs/dialog_setup.cpp:188
 msgid "Centimeters"
 msgstr "厘米"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:188
+#: ../src/gui/dialogs/dialog_setup.cpp:189
 msgid "Millimeters"
 msgstr "毫米"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:193
+#: ../src/gui/dialogs/dialog_setup.cpp:194
 msgid "Unit System"
 msgstr "单位系统"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:199
+#: ../src/gui/dialogs/dialog_setup.cpp:200
 msgid "Recent Files"
 msgstr "最近的文件"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:203
+#: ../src/gui/dialogs/dialog_setup.cpp:204
 msgid "Auto Backup Interval (0 to disable)"
 msgstr "自动备份间隔 (0为禁用)"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:207
+#: ../src/gui/dialogs/dialog_setup.cpp:208
 msgid "Browser Command"
 msgstr "浏览器命令"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:211
+#: ../src/gui/dialogs/dialog_setup.cpp:212
 msgid "Brush Presets Path"
-msgstr ""
-
-#: ../src/gui/dialogs/dialog_setup.cpp:216
-msgid "System Language"
-msgstr ""
+msgstr "笔刷预设路径"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:217
-msgid "Arabic"
-msgstr ""
+msgid "System Language"
+msgstr "系统语言"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:218
-msgid "Basque"
-msgstr ""
+msgid "Arabic"
+msgstr "阿拉伯语"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:219
+msgid "Basque"
+msgstr "巴斯克语"
+
+#: ../src/gui/dialogs/dialog_setup.cpp:220
 msgid "Basque (Spain)"
 msgstr ""
 
-#: ../src/gui/dialogs/dialog_setup.cpp:220
+#: ../src/gui/dialogs/dialog_setup.cpp:221
 msgid "Catalan"
 msgstr ""
 
-#: ../src/gui/dialogs/dialog_setup.cpp:221
-msgid "Chinese (China)"
-msgstr ""
-
 #: ../src/gui/dialogs/dialog_setup.cpp:222
+msgid "Chinese (China)"
+msgstr "中文 (简体)"
+
+#: ../src/gui/dialogs/dialog_setup.cpp:223
 msgid "Czech"
 msgstr ""
 
-#: ../src/gui/dialogs/dialog_setup.cpp:223
-msgid "Danish"
-msgstr ""
-
 #: ../src/gui/dialogs/dialog_setup.cpp:224
-msgid "Dutch "
-msgstr ""
+msgid "Danish"
+msgstr "丹麦语"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:225
-msgid "English"
-msgstr ""
+msgid "Dutch "
+msgstr "荷兰语"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:226
+msgid "English"
+msgstr "英语"
+
+#: ../src/gui/dialogs/dialog_setup.cpp:227
 msgid "English (United Kingdom)"
 msgstr ""
 
-#: ../src/gui/dialogs/dialog_setup.cpp:227
+#: ../src/gui/dialogs/dialog_setup.cpp:228
 msgid "Farsi (Iran)"
 msgstr ""
 
-#: ../src/gui/dialogs/dialog_setup.cpp:228
-msgid "French "
-msgstr ""
-
 #: ../src/gui/dialogs/dialog_setup.cpp:229
-msgid "German"
-msgstr ""
+msgid "French "
+msgstr "法语"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:230
+msgid "German"
+msgstr "德语"
+
+#: ../src/gui/dialogs/dialog_setup.cpp:231
 msgid "Greek (Greece)"
 msgstr ""
 
-#: ../src/gui/dialogs/dialog_setup.cpp:231
-msgid "Hebrew "
-msgstr ""
-
 #: ../src/gui/dialogs/dialog_setup.cpp:232
-msgid "Hungarian "
-msgstr ""
+msgid "Hebrew "
+msgstr "希伯来语"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:233
-msgid "Italian "
-msgstr ""
+msgid "Hungarian "
+msgstr "匈牙利语"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:234
+msgid "Italian "
+msgstr "意大利语"
+
+#: ../src/gui/dialogs/dialog_setup.cpp:235
 msgid "Japanese (Japan)"
 msgstr ""
 
-#: ../src/gui/dialogs/dialog_setup.cpp:235
-msgid "Lithuanian "
-msgstr ""
-
 #: ../src/gui/dialogs/dialog_setup.cpp:236
+msgid "Lithuanian "
+msgstr "立陶宛语"
+
+#: ../src/gui/dialogs/dialog_setup.cpp:237
 msgid "Norwegian (Norway)"
 msgstr ""
 
-#: ../src/gui/dialogs/dialog_setup.cpp:237
+#: ../src/gui/dialogs/dialog_setup.cpp:238
 msgid "Polish (Poland)"
 msgstr ""
 
-#: ../src/gui/dialogs/dialog_setup.cpp:238
+#: ../src/gui/dialogs/dialog_setup.cpp:239
 msgid "Portuguese (Brazil)"
 msgstr ""
 
-#: ../src/gui/dialogs/dialog_setup.cpp:239
-msgid "Romanian"
-msgstr ""
-
 #: ../src/gui/dialogs/dialog_setup.cpp:240
-msgid "Russian"
-msgstr ""
+msgid "Romanian"
+msgstr "罗马尼亚语"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:241
-msgid "Spanish"
-msgstr ""
+msgid "Russian"
+msgstr "俄语"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:242
-msgid "Sinhala"
-msgstr ""
+msgid "Spanish"
+msgstr "西班牙语"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:243
+msgid "Sinhala"
+msgstr "僧伽罗语"
+
+#: ../src/gui/dialogs/dialog_setup.cpp:244
 msgid "Slovak (Slovakia)"
 msgstr ""
 
-#: ../src/gui/dialogs/dialog_setup.cpp:244
+#: ../src/gui/dialogs/dialog_setup.cpp:245
 msgid "Swedish (Sweden)"
 msgstr ""
 
-#: ../src/gui/dialogs/dialog_setup.cpp:245
+#: ../src/gui/dialogs/dialog_setup.cpp:246
 msgid "Turkish"
-msgstr ""
+msgstr "土耳其语"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:297
+#: ../src/gui/dialogs/dialog_setup.cpp:298
 msgid "Interface Language"
-msgstr ""
+msgstr "界面语言"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:301
+#: ../src/gui/dialogs/dialog_setup.cpp:302
 msgid "Visually linear color selection"
 msgstr ""
 
-#: ../src/gui/dialogs/dialog_setup.cpp:305
+#: ../src/gui/dialogs/dialog_setup.cpp:306
 msgid "Restrict really-valued handles to top right quadrant"
 msgstr ""
 
-#: ../src/gui/dialogs/dialog_setup.cpp:309
+#: ../src/gui/dialogs/dialog_setup.cpp:310
 msgid "Scaling new imported image to fix canvas"
 msgstr ""
 
-#: ../src/gui/dialogs/dialog_setup.cpp:313
+#: ../src/gui/dialogs/dialog_setup.cpp:314
 msgid "Dark UI theme (if available)"
 msgstr ""
 
-#: ../src/gui/dialogs/dialog_setup.cpp:322
+#: ../src/gui/dialogs/dialog_setup.cpp:323
 msgid "Single thread only (CPUs)"
 msgstr ""
 
-#: ../src/gui/dialogs/dialog_setup.cpp:330
+#: ../src/gui/dialogs/dialog_setup.cpp:331
 msgid "Document"
 msgstr "文档"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:333
+#: ../src/gui/dialogs/dialog_setup.cpp:334
 msgid "New Document filename prefix"
 msgstr "新文档的文件名前缀"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:335
+#: ../src/gui/dialogs/dialog_setup.cpp:336
 msgid "File name prefix for the new created document"
 msgstr "新建文档的文件名前缀"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:339
+#: ../src/gui/dialogs/dialog_setup.cpp:340
 msgid "New Document X size"
 msgstr "新文档的宽度"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:341
+#: ../src/gui/dialogs/dialog_setup.cpp:342
 msgid "Width in pixels of the new created document"
 msgstr "新建文档的像素宽度"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:345
+#: ../src/gui/dialogs/dialog_setup.cpp:346
 msgid "New Document Y size"
 msgstr "新文档的高度"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:347
+#: ../src/gui/dialogs/dialog_setup.cpp:348
 msgid "High in pixels of the new created document"
 msgstr "新建文档的像素高度"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:351
+#: ../src/gui/dialogs/dialog_setup.cpp:352
 msgid "Predefined Resolutions:"
 msgstr "预定义的分辨率"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:356
+#: ../src/gui/dialogs/dialog_setup.cpp:357
 msgid "4096x3112 Full Aperture 4K"
 msgstr "4096x3112 Full Aperture 4K"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:357
+#: ../src/gui/dialogs/dialog_setup.cpp:358
 msgid "2048x1556 Full Aperture Native 2K"
 msgstr "2048x1556 Full Aperture Native 2K"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:358
+#: ../src/gui/dialogs/dialog_setup.cpp:359
 msgid "1920x1080 HDTV 1080p/i"
 msgstr "1920x1080 HDTV 1080p/i"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:359
+#: ../src/gui/dialogs/dialog_setup.cpp:360
 msgid "1280x720  HDTV 720p"
 msgstr "1280x720  HDTV 720p"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:360
+#: ../src/gui/dialogs/dialog_setup.cpp:361
 msgid "720x576   DVD PAL"
 msgstr "720x576   DVD PAL"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:361
+#: ../src/gui/dialogs/dialog_setup.cpp:362
 msgid "720x480   DVD NTSC"
 msgstr "720x480   DVD NTSC"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:362
+#: ../src/gui/dialogs/dialog_setup.cpp:363
 msgid "720x540   Web 720x"
 msgstr "720x540   Web 720x"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:363
+#: ../src/gui/dialogs/dialog_setup.cpp:364
 msgid "720x405   Web 720x HD"
 msgstr "720x405   Web 720x HD"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:364
+#: ../src/gui/dialogs/dialog_setup.cpp:365
 msgid "640x480   Web 640x"
 msgstr "640x480   Web 640x"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:365
+#: ../src/gui/dialogs/dialog_setup.cpp:366
 msgid "640x360   Web 640x HD"
 msgstr "640x360   Web 640x HD"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:366
+#: ../src/gui/dialogs/dialog_setup.cpp:367
 msgid "480x360   Web 480x"
 msgstr "480x360   Web 480x"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:367
+#: ../src/gui/dialogs/dialog_setup.cpp:368
 msgid "480x270   Web 480x HD"
 msgstr "480x270   Web 480x HD"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:368
+#: ../src/gui/dialogs/dialog_setup.cpp:369
 msgid "360x270   Web 360x"
 msgstr "360x270   Web 360x"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:369
+#: ../src/gui/dialogs/dialog_setup.cpp:370
 msgid "360x203   Web 360x HD"
 msgstr "360x203   Web 360x HD"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:374
+#: ../src/gui/dialogs/dialog_setup.cpp:375
 msgid "Predefined FPS:"
 msgstr "预定义的 FPS:"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:396
+#: ../src/gui/dialogs/dialog_setup.cpp:397
 msgid "New Document FPS"
 msgstr "新文档的 FPS"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:398
+#: ../src/gui/dialogs/dialog_setup.cpp:399
 msgid "Frames per second of the new created document"
 msgstr "新建文档的每秒帧数"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:404 ../src/gui/canvasview.cpp:1350
+#: ../src/gui/dialogs/dialog_setup.cpp:405 ../src/gui/canvasview.cpp:1350
 #: ../src/gui/render.cpp:178
 msgid "Render"
 msgstr "渲染"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:407
+#: ../src/gui/dialogs/dialog_setup.cpp:408
 msgid "Image Sequence Separator String"
 msgstr ""
 
-#: ../src/gui/dialogs/dialog_setup.cpp:410
+#: ../src/gui/dialogs/dialog_setup.cpp:411
 msgid "Use Cairo render on Navigator"
 msgstr ""
 
-#: ../src/gui/dialogs/dialog_setup.cpp:413
+#: ../src/gui/dialogs/dialog_setup.cpp:414
 msgid "Use Cairo render on WorkArea"
-msgstr ""
+msgstr "在作业区使用Cairo渲染引擎"
 
 #: ../src/gui/dialogs/dialog_setup.h:53
 msgid "Custom Size"
@@ -1477,11 +1479,11 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_spritesheetparam.cpp:42
 msgid "Offset X:"
-msgstr ""
+msgstr "X 轴偏移:"
 
 #: ../src/gui/dialogs/dialog_spritesheetparam.cpp:47
 msgid "Offset Y:"
-msgstr ""
+msgstr "Y 轴偏移:"
 
 #: ../src/gui/dialogs/dialog_spritesheetparam.cpp:52
 msgid "Direction:"
@@ -1489,11 +1491,11 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_spritesheetparam.cpp:61
 msgid "Rows:"
-msgstr ""
+msgstr "行:"
 
 #: ../src/gui/dialogs/dialog_spritesheetparam.cpp:67
 msgid "Columns:"
-msgstr ""
+msgstr "列:"
 
 #: ../src/gui/dialogs/dialog_targetparam.cpp:42
 msgid "Target Parameters"
@@ -1515,15 +1517,15 @@ msgstr "跳至前一关键帧"
 msgid "Seek to previous frame"
 msgstr "跳至前一帧"
 
-#: ../src/gui/dials/framedial.cpp:59 ../src/gui/app.cpp:927
+#: ../src/gui/dials/framedial.cpp:59 ../src/gui/app.cpp:928
 #: ../src/gui/iconcontroller.cpp:296 ../src/gui/preview.cpp:451
 msgid "Play"
 msgstr "播放"
 
-#: ../src/gui/dials/framedial.cpp:60 ../src/gui/app.cpp:930
+#: ../src/gui/dials/framedial.cpp:60 ../src/gui/app.cpp:931
 #: ../src/gui/iconcontroller.cpp:298 ../src/gui/preview.cpp:464
 msgid "Pause"
-msgstr ""
+msgstr "暂停"
 
 #: ../src/gui/dials/framedial.cpp:61
 msgid "Seek to next frame"
@@ -1544,7 +1546,7 @@ msgstr ""
 
 #: ../src/gui/dials/jackdial.cpp:63
 msgid "JACK Offset"
-msgstr ""
+msgstr "JACK 偏移"
 
 #: ../src/gui/dials/keyframedial.cpp:54
 msgid "Unlock past keyframe"
@@ -1556,7 +1558,7 @@ msgstr "解锁后面的关键帧"
 
 #: ../src/gui/dials/resolutiondial.cpp:55
 msgid "Increase Resolution"
-msgstr ""
+msgstr "提高分辨率"
 
 #: ../src/gui/dials/resolutiondial.cpp:55
 msgid "Increase Display Resolution"
@@ -1564,7 +1566,7 @@ msgstr "提高显示分辨率"
 
 #: ../src/gui/dials/resolutiondial.cpp:56
 msgid "Decrease Resolution"
-msgstr ""
+msgstr "降低分辨率"
 
 #: ../src/gui/dials/resolutiondial.cpp:56
 msgid "Decrease Display Resolution"
@@ -1580,7 +1582,7 @@ msgstr "激活时使用低分辨率"
 
 #: ../src/gui/dials/toggleducksdial.cpp:55
 msgid "Position handles"
-msgstr ""
+msgstr "拉杆位置"
 
 #: ../src/gui/dials/toggleducksdial.cpp:55 ../src/gui/iconcontroller.cpp:315
 msgid "Toggle position handles"
@@ -1596,15 +1598,15 @@ msgstr ""
 
 #: ../src/gui/dials/toggleducksdial.cpp:57
 msgid "Tangent handles"
-msgstr ""
+msgstr "切线控制句柄"
 
 #: ../src/gui/dials/toggleducksdial.cpp:57 ../src/gui/iconcontroller.cpp:317
 msgid "Toggle tangent handles"
-msgstr ""
+msgstr "切换切线控制句柄"
 
 #: ../src/gui/dials/toggleducksdial.cpp:58
 msgid "Radius handles"
-msgstr ""
+msgstr "拉杆范围"
 
 #: ../src/gui/dials/toggleducksdial.cpp:58 ../src/gui/iconcontroller.cpp:318
 msgid "Toggle radius handles"
@@ -1612,7 +1614,7 @@ msgstr ""
 
 #: ../src/gui/dials/toggleducksdial.cpp:59
 msgid "Width handles"
-msgstr ""
+msgstr "拉杆宽度"
 
 #: ../src/gui/dials/toggleducksdial.cpp:59 ../src/gui/iconcontroller.cpp:319
 msgid "Toggle width handles"
@@ -1620,7 +1622,7 @@ msgstr ""
 
 #: ../src/gui/dials/toggleducksdial.cpp:60
 msgid "Angle handles"
-msgstr ""
+msgstr "拉杆角度"
 
 #: ../src/gui/dials/toggleducksdial.cpp:60 ../src/gui/iconcontroller.cpp:320
 msgid "Toggle angle handles"
@@ -1643,7 +1645,7 @@ msgid "Zoom to 100%"
 msgstr "缩放至100%"
 
 #: ../src/gui/docks/dialog_tooloptions.cpp:57
-#: ../src/gui/docks/dialog_tooloptions.cpp:74 ../src/gui/app.cpp:969
+#: ../src/gui/docks/dialog_tooloptions.cpp:74 ../src/gui/app.cpp:970
 msgid "Tool Options"
 msgstr "工具选项"
 
@@ -1651,7 +1653,7 @@ msgstr "工具选项"
 msgid "This tool has no options"
 msgstr "此工具没有选项"
 
-#: ../src/gui/docks/dock_canvases.cpp:55 ../src/gui/app.cpp:971
+#: ../src/gui/docks/dock_canvases.cpp:55 ../src/gui/app.cpp:972
 #: ../src/gui/compview.cpp:170
 msgid "Canvas Browser"
 msgstr "画布浏览器"
@@ -1661,15 +1663,15 @@ msgstr "画布浏览器"
 msgid "ID"
 msgstr "ID"
 
-#: ../src/gui/docks/dock_children.cpp:67 ../src/gui/app.cpp:976
+#: ../src/gui/docks/dock_children.cpp:67 ../src/gui/app.cpp:977
 #: ../src/gui/iconcontroller.cpp:270
 msgid "Library"
-msgstr ""
+msgstr "库"
 
-#: ../src/gui/docks/dock_curves.cpp:69 ../src/gui/app.cpp:980
+#: ../src/gui/docks/dock_curves.cpp:69 ../src/gui/app.cpp:981
 #: ../src/gui/iconcontroller.cpp:271
 msgid "Graphs"
-msgstr ""
+msgstr "图表"
 
 #: ../src/gui/docks/dock_history.cpp:69 ../src/gui/docks/dock_history.cpp:125
 #: ../src/gui/compview.cpp:93 ../src/gui/iconcontroller.cpp:276
@@ -1702,11 +1704,11 @@ msgstr "清除撤销和重做堆栈"
 
 #: ../src/gui/docks/dock_history.cpp:111 ../src/gui/iconcontroller.cpp:189
 msgid "Undo"
-msgstr "撤销"
+msgstr "撤消"
 
 #: ../src/gui/docks/dock_history.cpp:112
 msgid "Undo the previous action"
-msgstr "撤销前一个动作"
+msgstr "撤消前一个动作"
 
 #: ../src/gui/docks/dock_history.cpp:119 ../src/gui/iconcontroller.cpp:188
 msgid "Redo"
@@ -1714,7 +1716,7 @@ msgstr "重做"
 
 #: ../src/gui/docks/dock_history.cpp:120
 msgid "Redo the previously undone action"
-msgstr "重做前一个撤销的动作"
+msgstr "重做前一个撤消的动作"
 
 #: ../src/gui/docks/dock_history.cpp:190 ../src/gui/trees/keyframetree.cpp:104
 #: ../src/gui/trees/keyframetree.cpp:301 ../src/gui/compview.cpp:253
@@ -1740,7 +1742,7 @@ msgstr "清除历史记录"
 msgid ""
 "You will not be able to undo any changes that you have made! Are you sure "
 "you want to clear the undo stack?"
-msgstr ""
+msgstr "您将不能撤销任何已做的改变！ 确认要清除历史操作吗？"
 
 #: ../src/gui/docks/dock_history.cpp:260 ../src/gui/docks/dock_history.cpp:274
 #: ../src/gui/docks/dock_history.cpp:288 ../src/gui/states/state_bline.cpp:501
@@ -1752,15 +1754,15 @@ msgstr "清除"
 msgid ""
 "You will not be able to redo any changes that you have made! Are you sure "
 "you want to clear the redo stack?"
-msgstr ""
+msgstr "您将不能重做任何已做的改变！ 确认要清除重做历史操作吗？"
 
 #: ../src/gui/docks/dock_history.cpp:284
 msgid ""
 "You will not be able to undo or redo any changes that you have made! Are you"
 " sure you want to clear the undo and redo stacks?"
-msgstr ""
+msgstr "您将不能撤销或重做任何已做的改变！ 确认要清除撤销和重做历史操作吗？"
 
-#: ../src/gui/docks/dock_info.cpp:107 ../src/gui/app.cpp:977
+#: ../src/gui/docks/dock_info.cpp:107 ../src/gui/app.cpp:978
 msgid "Info"
 msgstr "信息"
 
@@ -1788,20 +1790,20 @@ msgstr "B: "
 msgid "A: "
 msgstr "A: "
 
-#: ../src/gui/docks/dock_keyframes.cpp:66 ../src/gui/app.cpp:972
+#: ../src/gui/docks/dock_keyframes.cpp:66 ../src/gui/app.cpp:973
 #: ../src/gui/iconcontroller.cpp:272
 msgid "Keyframes"
 msgstr "关键帧"
 
-#: ../src/gui/docks/dock_layergroups.cpp:68 ../src/gui/app.cpp:981
+#: ../src/gui/docks/dock_layergroups.cpp:68 ../src/gui/app.cpp:982
 msgid "Sets"
-msgstr ""
+msgstr "层集"
 
 #: ../src/gui/docks/dock_layergroups.cpp:74
 msgid "Set Ops"
 msgstr ""
 
-#: ../src/gui/docks/dock_layers.cpp:76 ../src/gui/app.cpp:973
+#: ../src/gui/docks/dock_layers.cpp:76 ../src/gui/app.cpp:974
 msgid "Layers"
 msgstr "层"
 
@@ -1810,7 +1812,7 @@ msgid "Layer Ops"
 msgstr "层 Ops"
 
 #: ../src/gui/docks/dock_metadata.cpp:66 ../src/gui/docks/dock_metadata.cpp:93
-#: ../src/gui/app.cpp:975
+#: ../src/gui/app.cpp:976
 msgid "Canvas MetaData"
 msgstr "画布元数据"
 
@@ -1836,18 +1838,18 @@ msgstr ""
 
 #: ../src/gui/docks/dock_metadata.cpp:152
 msgid "Key Name: "
-msgstr ""
+msgstr "帧名 :"
 
 #: ../src/gui/docks/dock_metadata.cpp:152 ../src/gui/states/state_text.cpp:636
 msgid "Ok"
-msgstr ""
+msgstr "好"
 
-#: ../src/gui/docks/dock_navigator.cpp:531 ../src/gui/app.cpp:978
+#: ../src/gui/docks/dock_navigator.cpp:531 ../src/gui/app.cpp:979
 #: ../src/gui/iconcontroller.cpp:274
 msgid "Navigator"
 msgstr "导航"
 
-#: ../src/gui/docks/dock_params.cpp:65 ../src/gui/app.cpp:974
+#: ../src/gui/docks/dock_params.cpp:65 ../src/gui/app.cpp:975
 #: ../src/gui/iconcontroller.cpp:278
 msgid "Parameters"
 msgstr "参数"
@@ -1868,7 +1870,7 @@ msgstr "名字"
 msgid "Time Track"
 msgstr "时间轨迹"
 
-#: ../src/gui/docks/dock_timetrack.cpp:411 ../src/gui/app.cpp:979
+#: ../src/gui/docks/dock_timetrack.cpp:411 ../src/gui/app.cpp:980
 msgid "Timetrack"
 msgstr "时间轨迹"
 
@@ -1885,7 +1887,7 @@ msgid "Dock Panel"
 msgstr "停靠面板"
 
 #: ../src/gui/docks/dockmanager.cpp:722 ../src/gui/docks/dockmanager.cpp:732
-#: ../src/gui/app.cpp:1385
+#: ../src/gui/app.cpp:1388
 msgid "Synfig Studio"
 msgstr "Synfig Studio"
 
@@ -1893,7 +1895,7 @@ msgstr "Synfig Studio"
 msgid "Palette Browser"
 msgstr "调色板浏览器"
 
-#: ../src/gui/modules/mod_palette/dock_paledit.cpp:124 ../src/gui/app.cpp:982
+#: ../src/gui/modules/mod_palette/dock_paledit.cpp:124 ../src/gui/app.cpp:983
 msgid "Palette Editor"
 msgstr "调色板"
 
@@ -1917,11 +1919,11 @@ msgstr "保存当前调色板"
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:154
 msgid "Open a palette"
-msgstr ""
+msgstr "打开一个调色板"
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:155
 msgid "Open a saved palette"
-msgstr ""
+msgstr "打开已保存调色板"
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:165
 msgid "Load default"
@@ -1943,14 +1945,14 @@ msgid "Unable to check whether '%s' exists."
 msgstr "未能检出 '%s' 是否存在。"
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:259
-#: ../src/gui/trees/layerparamtreestore.cpp:259
+#: ../src/gui/trees/layerparamtreestore.cpp:262
 #: ../src/gui/widgets/widget_canvaschooser.cpp:153
 #: ../src/gui/widgets/widget_canvaschooser.cpp:172
-#: ../src/gui/widgets/widget_canvaschooser.cpp:182 ../src/gui/app.cpp:1381
-#: ../src/gui/app.cpp:2180 ../src/gui/app.cpp:3508 ../src/gui/app.cpp:3537
-#: ../src/gui/app.cpp:3547 ../src/gui/app.cpp:3557 ../src/gui/app.cpp:3602
-#: ../src/gui/app.cpp:3630 ../src/gui/app.cpp:3640 ../src/gui/app.cpp:3650
-#: ../src/gui/canvasview.cpp:3818 ../src/gui/canvasview.cpp:4089
+#: ../src/gui/widgets/widget_canvaschooser.cpp:182 ../src/gui/app.cpp:1384
+#: ../src/gui/app.cpp:2183 ../src/gui/app.cpp:3525 ../src/gui/app.cpp:3554
+#: ../src/gui/app.cpp:3564 ../src/gui/app.cpp:3574 ../src/gui/app.cpp:3619
+#: ../src/gui/app.cpp:3647 ../src/gui/app.cpp:3657 ../src/gui/app.cpp:3667
+#: ../src/gui/canvasview.cpp:3822 ../src/gui/canvasview.cpp:4111
 #: ../src/gui/instance.cpp:237 ../src/gui/instance.cpp:250
 #: ../src/gui/instance.cpp:319 ../src/gui/instance.cpp:359
 #: ../src/gui/instance.cpp:423 ../src/gui/instance.cpp:457
@@ -1961,7 +1963,7 @@ msgstr "未能检出 '%s' 是否存在。"
 #: ../src/gui/instance.cpp:745 ../src/gui/instance.cpp:772
 #: ../src/gui/instance.cpp:786 ../src/gui/instance.cpp:813
 msgid "Close"
-msgstr ""
+msgstr "关闭"
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:265
 #: ../src/gui/instance.cpp:429
@@ -1979,24 +1981,24 @@ msgstr ""
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:277
 #: ../src/gui/instance.cpp:441
 msgid "Use Another Name…"
-msgstr ""
+msgstr "使用其他名字 …"
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:278
 #: ../src/gui/instance.cpp:442
 msgid "Replace"
-msgstr ""
+msgstr "替换"
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:291
 msgid "Please select a palette file"
 msgstr ""
 
-#: ../src/gui/modules/mod_palette/dock_paledit.cpp:304 ../src/gui/app.cpp:3746
+#: ../src/gui/modules/mod_palette/dock_paledit.cpp:304 ../src/gui/app.cpp:3763
 msgid "Unable to open file"
 msgstr "不能打开文件"
 
 #: ../src/gui/states/state_bline.cpp:338
 msgid "NewSpline"
-msgstr ""
+msgstr "新样条"
 
 #: ../src/gui/states/state_bline.cpp:500
 #: ../src/gui/states/state_polygon.cpp:464
@@ -2005,7 +2007,7 @@ msgstr "制作"
 
 #: ../src/gui/states/state_bline.cpp:508
 msgid "Spline Creation"
-msgstr ""
+msgstr "样条的创建"
 
 #: ../src/gui/states/state_bline.cpp:516
 #: ../src/gui/states/state_circle.cpp:546 ../src/gui/states/state_draw.cpp:628
@@ -2015,7 +2017,7 @@ msgstr ""
 #: ../src/gui/states/state_rectangle.cpp:492
 #: ../src/gui/states/state_star.cpp:615 ../src/gui/states/state_text.cpp:396
 msgid "Name:"
-msgstr ""
+msgstr "名字 :"
 
 #: ../src/gui/states/state_bline.cpp:525
 #: ../src/gui/states/state_circle.cpp:555 ../src/gui/states/state_draw.cpp:637
@@ -2024,8 +2026,8 @@ msgstr ""
 #: ../src/gui/states/state_polygon.cpp:489
 #: ../src/gui/states/state_rectangle.cpp:501
 #: ../src/gui/states/state_star.cpp:624 ../src/gui/states/state_text.cpp:405
-msgid "Create:"
-msgstr ""
+msgid "Layer Type:"
+msgstr "层类型 :"
 
 #: ../src/gui/states/state_bline.cpp:529
 #: ../src/gui/states/state_circle.cpp:562 ../src/gui/states/state_draw.cpp:641
@@ -2034,7 +2036,7 @@ msgstr ""
 #: ../src/gui/states/state_rectangle.cpp:508
 #: ../src/gui/states/state_star.cpp:631
 msgid "Create a region layer"
-msgstr ""
+msgstr "创建区域层"
 
 #: ../src/gui/states/state_bline.cpp:532
 #: ../src/gui/states/state_circle.cpp:565 ../src/gui/states/state_draw.cpp:644
@@ -2042,7 +2044,7 @@ msgstr ""
 #: ../src/gui/states/state_rectangle.cpp:511
 #: ../src/gui/states/state_star.cpp:634
 msgid "Create a outline layer"
-msgstr ""
+msgstr "创建轮廓层"
 
 #: ../src/gui/states/state_bline.cpp:535
 #: ../src/gui/states/state_circle.cpp:568 ../src/gui/states/state_draw.cpp:647
@@ -2050,7 +2052,7 @@ msgstr ""
 #: ../src/gui/states/state_rectangle.cpp:514
 #: ../src/gui/states/state_star.cpp:637
 msgid "Create a advanced outline layer"
-msgstr ""
+msgstr "创建高级轮廓层"
 
 #: ../src/gui/states/state_bline.cpp:538
 #: ../src/gui/states/state_circle.cpp:571
@@ -2058,7 +2060,7 @@ msgstr ""
 #: ../src/gui/states/state_rectangle.cpp:517
 #: ../src/gui/states/state_star.cpp:640
 msgid "Create a plant layer"
-msgstr ""
+msgstr "创建植物层"
 
 #: ../src/gui/states/state_bline.cpp:541
 #: ../src/gui/states/state_circle.cpp:574
@@ -2066,7 +2068,7 @@ msgstr ""
 #: ../src/gui/states/state_rectangle.cpp:520
 #: ../src/gui/states/state_star.cpp:643
 msgid "Create a gradient layer"
-msgstr ""
+msgstr "创建渐变层"
 
 #: ../src/gui/states/state_bline.cpp:553
 #: ../src/gui/states/state_circle.cpp:587 ../src/gui/states/state_draw.cpp:657
@@ -2075,7 +2077,7 @@ msgstr ""
 #: ../src/gui/states/state_rectangle.cpp:533
 #: ../src/gui/states/state_star.cpp:656 ../src/gui/states/state_text.cpp:417
 msgid "Blend Method:"
-msgstr ""
+msgstr "混合方式 :"
 
 #: ../src/gui/states/state_bline.cpp:560
 #: ../src/gui/states/state_circle.cpp:594 ../src/gui/states/state_draw.cpp:664
@@ -2098,7 +2100,7 @@ msgstr ""
 #: ../src/gui/states/state_rectangle.cpp:544
 #: ../src/gui/states/state_star.cpp:667 ../src/gui/states/state_text.cpp:428
 msgid "Opacity:"
-msgstr ""
+msgstr "透明度 :"
 
 #: ../src/gui/states/state_bline.cpp:572
 #: ../src/gui/states/state_circle.cpp:606 ../src/gui/states/state_draw.cpp:676
@@ -2107,7 +2109,7 @@ msgstr ""
 #: ../src/gui/states/state_rectangle.cpp:552
 #: ../src/gui/states/state_star.cpp:675
 msgid "Brush Size:"
-msgstr ""
+msgstr "画笔大小 :"
 
 #: ../src/gui/states/state_bline.cpp:581
 #: ../src/gui/states/state_circle.cpp:639 ../src/gui/states/state_draw.cpp:756
@@ -2133,23 +2135,23 @@ msgstr "自动输出"
 
 #: ../src/gui/states/state_bline.cpp:698 ../src/gui/iconcontroller.cpp:154
 msgid "Spline Tool"
-msgstr ""
+msgstr "样条工具"
 
 #: ../src/gui/states/state_bline.cpp:703
 msgid "Make Spline"
-msgstr ""
+msgstr "制作样条"
 
 #: ../src/gui/states/state_bline.cpp:713
 msgid "Clear current Spline"
-msgstr ""
+msgstr "清理当前样条"
 
 #: ../src/gui/states/state_bline.cpp:802
 msgid "Information: You need at least two (2) points to create a spline"
-msgstr ""
+msgstr "信息: 至少需要两个点才能创建一个样条"
 
 #: ../src/gui/states/state_bline.cpp:810
 msgid "New Spline"
-msgstr ""
+msgstr "新样条"
 
 #: ../src/gui/states/state_bline.cpp:852
 msgid "Unable to add value node"
@@ -2312,13 +2314,13 @@ msgstr "未能创建高级轮廓层"
 #: ../src/gui/states/state_bline.cpp:1734
 #: ../src/gui/states/state_bline.cpp:1881
 msgid "Unloop Spline"
-msgstr ""
+msgstr "不闭合样条"
 
 #: ../src/gui/states/state_bline.cpp:1688
 #: ../src/gui/states/state_bline.cpp:1740
 #: ../src/gui/states/state_bline.cpp:1887
 msgid "Loop Spline"
-msgstr ""
+msgstr "闭合样条"
 
 #: ../src/gui/states/state_bline.cpp:1699
 #: ../src/gui/states/state_bline.cpp:1897
@@ -2341,7 +2343,7 @@ msgstr "未能移除顶点，内部错误，请报告这个 Bug"
 
 #: ../src/gui/states/state_brush.cpp:586 ../src/gui/iconcontroller.cpp:159
 msgid "Brush Tool"
-msgstr ""
+msgstr "笔刷工具"
 
 #: ../src/gui/states/state_brush.cpp:768
 msgid "brush image"
@@ -2349,11 +2351,11 @@ msgstr ""
 
 #: ../src/gui/states/state_circle.cpp:538
 msgid "Circle Creation"
-msgstr ""
+msgstr "建立圆"
 
 #: ../src/gui/states/state_circle.cpp:559
 msgid "Create a circle layer"
-msgstr ""
+msgstr "建立圆形层"
 
 #: ../src/gui/states/state_circle.cpp:595
 msgid "Defines the blend method to be used for circles"
@@ -2361,11 +2363,11 @@ msgstr "定义用于圆形的混合方式"
 
 #: ../src/gui/states/state_circle.cpp:615
 msgid "Spline Points:"
-msgstr ""
+msgstr "样条点:"
 
 #: ../src/gui/states/state_circle.cpp:621 ../src/gui/states/state_star.cpp:689
 msgid "Offset:"
-msgstr ""
+msgstr "偏移"
 
 #: ../src/gui/states/state_circle.cpp:631
 #: ../src/gui/states/state_polygon.cpp:549
@@ -2413,7 +2415,7 @@ msgstr "余弦"
 
 #: ../src/gui/states/state_circle.cpp:675 ../src/gui/states/state_star.cpp:747
 msgid "Spline Origins at Center"
-msgstr ""
+msgstr "样条原点在中心"
 
 #: ../src/gui/states/state_circle.cpp:796 ../src/gui/iconcontroller.cpp:161
 msgid "Circle Tool"
@@ -2446,7 +2448,7 @@ msgstr ""
 
 #: ../src/gui/states/state_draw.cpp:692 ../src/gui/states/state_lasso.cpp:677
 msgid "Min Width:"
-msgstr ""
+msgstr "最小宽度 :"
 
 #: ../src/gui/states/state_draw.cpp:702 ../src/gui/states/state_lasso.cpp:687
 msgid "Smoothness"
@@ -2454,7 +2456,7 @@ msgstr "平滑的"
 
 #: ../src/gui/states/state_draw.cpp:721 ../src/gui/states/state_lasso.cpp:706
 msgid "Width Max Error:"
-msgstr ""
+msgstr "最大宽度错误 :"
 
 #: ../src/gui/states/state_draw.cpp:728 ../src/gui/states/state_lasso.cpp:713
 msgid "Round Ends"
@@ -2479,7 +2481,7 @@ msgstr "手绘工具"
 #: ../src/gui/states/state_draw.cpp:1249
 #: ../src/gui/states/state_lasso.cpp:1230
 msgid "Sketch Spline"
-msgstr ""
+msgstr "草图样条"
 
 #: ../src/gui/states/state_draw.cpp:1882
 #: ../src/gui/states/state_lasso.cpp:1895
@@ -2490,12 +2492,12 @@ msgstr "定义区域"
 #: ../src/gui/states/state_lasso.cpp:2486
 #: ../src/gui/states/state_lasso.cpp:2677
 msgid "Extend Spline"
-msgstr ""
+msgstr "扩展样条"
 
 #: ../src/gui/states/state_draw.cpp:2536
 #: ../src/gui/states/state_lasso.cpp:2549
 msgid "Unable to set lower boundary for wplist"
-msgstr ""
+msgstr "未能设定 WP 清单的下界限"
 
 #: ../src/gui/states/state_draw.cpp:2581 ../src/gui/states/state_draw.cpp:2624
 #: ../src/gui/states/state_draw.cpp:2772 ../src/gui/states/state_draw.cpp:2815
@@ -2510,12 +2512,12 @@ msgstr "未能插入项目"
 #: ../src/gui/states/state_lasso.cpp:2613
 #: ../src/gui/states/state_lasso.cpp:2804
 msgid "Unable to set loop for spline"
-msgstr ""
+msgstr "未能设定闭合样条"
 
 #: ../src/gui/states/state_draw.cpp:2727
 #: ../src/gui/states/state_lasso.cpp:2740
 msgid "Unable to set upper boundary for wplist"
-msgstr ""
+msgstr "未能设定 WP 清单的上界限"
 
 #: ../src/gui/states/state_draw.cpp:2857
 #: ../src/gui/states/state_lasso.cpp:2870
@@ -2564,15 +2566,15 @@ msgstr "新建渐变"
 
 #: ../src/gui/states/state_lasso.cpp:617
 msgid "Lasso"
-msgstr ""
+msgstr "套索"
 
 #: ../src/gui/states/state_lasso.cpp:944 ../src/gui/iconcontroller.cpp:158
 msgid "Cutout Tool"
-msgstr ""
+msgstr "裁剪工具"
 
 #: ../src/gui/states/state_lasso.cpp:1590
 msgid "Mask"
-msgstr ""
+msgstr "遮罩"
 
 #: ../src/gui/states/state_mirror.cpp:172
 msgid "Horizontal"
@@ -2610,15 +2612,15 @@ msgstr "Shift 约束"
 
 #: ../src/gui/states/state_polygon.cpp:472
 msgid "Polygon Creation"
-msgstr ""
+msgstr "创建多边形"
 
 #: ../src/gui/states/state_polygon.cpp:493
 msgid "Create a polygon layer"
-msgstr ""
+msgstr "创建多边形层"
 
 #: ../src/gui/states/state_polygon.cpp:529
 msgid "Defines the blend method to be used for polygons"
-msgstr ""
+msgstr "定义用于多边形的混合方式"
 
 #: ../src/gui/states/state_polygon.cpp:670 ../src/gui/iconcontroller.cpp:153
 msgid "Polygon Tool"
@@ -2643,19 +2645,19 @@ msgstr "未能创建多边形层"
 
 #: ../src/gui/states/state_rectangle.cpp:484
 msgid "Rectangle Creation"
-msgstr ""
+msgstr "矩形创建"
 
 #: ../src/gui/states/state_rectangle.cpp:505
 msgid "Create a rectangle layer"
-msgstr ""
+msgstr "创建一个矩形层"
 
 #: ../src/gui/states/state_rectangle.cpp:541
 msgid "Defines the blend method to be used for rectangles"
-msgstr ""
+msgstr "定义用于矩形的混合方式"
 
 #: ../src/gui/states/state_rectangle.cpp:556
 msgid "Brush size"
-msgstr ""
+msgstr "画笔大小"
 
 #: ../src/gui/states/state_rectangle.cpp:577
 msgid "Expansion:"
@@ -2720,7 +2722,7 @@ msgstr "清除草图"
 
 #: ../src/gui/states/state_sketch.cpp:240
 msgid "Undo Stroke"
-msgstr "撤销描边"
+msgstr "撤消描边"
 
 #: ../src/gui/states/state_sketch.cpp:243
 msgid "Show Sketch"
@@ -2729,7 +2731,7 @@ msgstr "显示草图"
 #: ../src/gui/states/state_sketch.cpp:258
 #: ../src/gui/states/state_sketch.cpp:259
 msgid "Undo Last Stroke"
-msgstr "撤销最后的描边"
+msgstr "撤消最后的描边"
 
 #: ../src/gui/states/state_sketch.cpp:282
 #: ../src/gui/states/state_sketch.cpp:283
@@ -2763,7 +2765,7 @@ msgstr ""
 
 #: ../src/gui/states/state_star.cpp:628
 msgid "Create a star layer"
-msgstr ""
+msgstr "创建星形层"
 
 #: ../src/gui/states/state_star.cpp:664
 msgid "Defines the blend method to be used for stars"
@@ -2771,7 +2773,7 @@ msgstr ""
 
 #: ../src/gui/states/state_star.cpp:684
 msgid "Star Points:"
-msgstr ""
+msgstr "星形尖角"
 
 #: ../src/gui/states/state_star.cpp:695
 msgid "Radius Ratio:"
@@ -2779,7 +2781,7 @@ msgstr "半径比："
 
 #: ../src/gui/states/state_star.cpp:699
 msgid "Regular Polygon"
-msgstr "常用多边形"
+msgstr "正多边形"
 
 #: ../src/gui/states/state_star.cpp:706
 msgid "Inner Width:"
@@ -2791,7 +2793,7 @@ msgstr "内部切线："
 
 #: ../src/gui/states/state_star.cpp:714
 msgid "Outer Width:"
-msgstr "外部切线："
+msgstr "外部宽度："
 
 #: ../src/gui/states/state_star.cpp:718
 msgid "Outer Tangent:"
@@ -2815,7 +2817,7 @@ msgstr ""
 
 #: ../src/gui/states/state_text.cpp:409
 msgid "Create a text layer"
-msgstr ""
+msgstr "创建一个文本层"
 
 #: ../src/gui/states/state_text.cpp:425
 msgid "Defines the blend method to be used for texts"
@@ -2823,7 +2825,7 @@ msgstr ""
 
 #: ../src/gui/states/state_text.cpp:436
 msgid "Multiline Text"
-msgstr ""
+msgstr "多行文本"
 
 #: ../src/gui/states/state_text.cpp:442
 msgid "Size:"
@@ -2847,11 +2849,11 @@ msgstr "新建文本"
 
 #: ../src/gui/states/state_text.cpp:632
 msgid "Input text"
-msgstr ""
+msgstr "输入文本"
 
 #: ../src/gui/states/state_text.cpp:633
 msgid "Text: "
-msgstr ""
+msgstr "文本:"
 
 #: ../src/gui/states/state_width.cpp:236
 msgid "Relative Growth"
@@ -2894,7 +2896,7 @@ msgstr "类型"
 
 #: ../src/gui/trees/childrentree.cpp:123
 #: ../src/synfigapp/actions/layerparamset.cpp:80
-#: ../src/synfigapp/actions/valuedescset.cpp:119
+#: ../src/synfigapp/actions/valuedescset.cpp:120
 #: ../src/synfigapp/actions/valuenodeconstset.cpp:77
 msgid "ValueBase"
 msgstr "值基"
@@ -2943,7 +2945,7 @@ msgstr "反激活"
 
 #: ../src/gui/trees/layergrouptreestore.cpp:563
 msgid "Reset"
-msgstr ""
+msgstr "复位"
 
 #: ../src/gui/trees/layergrouptreestore.cpp:919
 #: ../src/gui/trees/layertreestore.cpp:1089 ../src/gui/iconcontroller.cpp:192
@@ -2973,11 +2975,11 @@ msgstr ""
 msgid "Layer"
 msgstr "层"
 
-#: ../src/gui/trees/layerparamtreestore.cpp:243
+#: ../src/gui/trees/layerparamtreestore.cpp:246
 msgid "Set Layer Parameters"
-msgstr ""
+msgstr "设置层的参数"
 
-#: ../src/gui/trees/layerparamtreestore.cpp:257
+#: ../src/gui/trees/layerparamtreestore.cpp:260
 msgid "Unable to set all layer parameters."
 msgstr "未能设定层的参数"
 
@@ -3019,15 +3021,15 @@ msgstr "其它..."
 
 #: ../src/gui/widgets/widget_canvaschooser.cpp:135
 msgid "Choose canvas"
-msgstr ""
+msgstr "选取画布"
 
 #: ../src/gui/widgets/widget_canvaschooser.cpp:136
 msgid "Canvas Name: "
-msgstr ""
+msgstr "画布名:"
 
 #: ../src/gui/widgets/widget_canvaschooser.cpp:139
 msgid "Choose"
-msgstr ""
+msgstr "选取"
 
 #: ../src/gui/widgets/widget_canvaschooser.cpp:151
 msgid "No canvas name was specified"
@@ -3124,15 +3126,15 @@ msgstr "默认渐变"
 
 #: ../src/gui/widgets/widget_filename.cpp:142
 msgid "Please choose an audio file"
-msgstr ""
+msgstr "请选择一个音频文件"
 
 #: ../src/gui/widgets/widget_filename.cpp:149
 msgid "Please choose an image file"
-msgstr ""
+msgstr "请选择一个图像文件"
 
 #: ../src/gui/widgets/widget_filename.cpp:155
 msgid "Please choose a file"
-msgstr ""
+msgstr "请选择一个文件"
 
 #: ../src/gui/widgets/widget_gradient.cpp:209
 msgid "Insert Color Stop"
@@ -3165,7 +3167,7 @@ msgstr "点击并拖动关键帧"
 #: ../src/gui/widgets/widget_keyframe_list.cpp:397
 #: ../src/gui/widgets/widget_keyframe_list.cpp:403
 msgid "No name"
-msgstr ""
+msgstr "未命名"
 
 #: ../src/gui/widgets/widget_link.h:55
 msgid "Link Values"
@@ -3185,7 +3187,7 @@ msgstr "（非静态值）"
 #: ../src/gui/widgets/widget_waypointmodel.cpp:94
 #: ../src/gui/canvasview.cpp:1122 ../src/gui/instance.cpp:1268
 msgid "Clamped"
-msgstr ""
+msgstr "夹紧"
 
 #: ../src/gui/widgets/widget_waypoint.cpp:90
 #: ../src/gui/widgets/widget_waypoint.cpp:107
@@ -3308,7 +3310,7 @@ msgstr "文件(_F)"
 msgid "Open Recent"
 msgstr "最近打开"
 
-#: ../src/gui/app.cpp:835 ../src/gui/canvasview.cpp:3643
+#: ../src/gui/app.cpp:835 ../src/gui/canvasview.cpp:3647
 msgid "_Edit"
 msgstr "编辑(_E)"
 
@@ -3336,14 +3338,14 @@ msgstr "画布(_C)"
 msgid "_Layer"
 msgstr "层(_L)"
 
-#: ../src/gui/app.cpp:845 ../src/gui/canvasview.cpp:2538
+#: ../src/gui/app.cpp:845 ../src/gui/canvasview.cpp:2542
 #: ../src/synfigapp/actions/layeradd.cpp:83
 msgid "New Layer"
 msgstr "新建层"
 
 #: ../src/gui/app.cpp:847
 msgid "Plug-Ins"
-msgstr ""
+msgstr "插件"
 
 #: ../src/gui/app.cpp:849
 msgid "_Window"
@@ -3363,15 +3365,15 @@ msgstr "帮助(_H)"
 
 #: ../src/gui/app.cpp:878 ../src/gui/canvasview.cpp:1721
 msgid "Import..."
-msgstr ""
+msgstr "导入..."
 
 #: ../src/gui/app.cpp:879 ../src/gui/canvasview.cpp:1724
 msgid "Render..."
-msgstr ""
+msgstr "渲染..."
 
 #: ../src/gui/app.cpp:880 ../src/gui/canvasview.cpp:1727
 msgid "Preview..."
-msgstr ""
+msgstr "预览..."
 
 #: ../src/gui/app.cpp:881 ../src/gui/canvasview.cpp:1736
 msgid "Close Document"
@@ -3399,207 +3401,211 @@ msgstr "输入设备..."
 
 #: ../src/gui/app.cpp:895 ../src/gui/mainwindow.cpp:158
 msgid "Preferences..."
-msgstr ""
+msgstr "首选项..."
 
 #: ../src/gui/app.cpp:899
 msgid "Menubar"
-msgstr ""
+msgstr "菜单栏"
 
 #: ../src/gui/app.cpp:900
 msgid "Toolbar"
+msgstr "工具栏"
+
+#: ../src/gui/app.cpp:902 ../src/gui/canvasview.cpp:1938
+msgid "Toggle None/Last visible Handles"
 msgstr ""
 
-#: ../src/gui/app.cpp:902 ../src/gui/canvasview.cpp:1946
+#: ../src/gui/app.cpp:903 ../src/gui/canvasview.cpp:1950
 msgid "Show Position Handles"
 msgstr ""
 
-#: ../src/gui/app.cpp:903 ../src/gui/canvasview.cpp:1948
+#: ../src/gui/app.cpp:904 ../src/gui/canvasview.cpp:1952
 msgid "Show Vertex Handles"
 msgstr ""
 
-#: ../src/gui/app.cpp:904 ../src/gui/canvasview.cpp:1947
+#: ../src/gui/app.cpp:905 ../src/gui/canvasview.cpp:1951
 msgid "Show Tangent Handles"
 msgstr ""
 
-#: ../src/gui/app.cpp:905 ../src/gui/canvasview.cpp:1949
+#: ../src/gui/app.cpp:906 ../src/gui/canvasview.cpp:1953
 msgid "Show Radius Handles"
 msgstr ""
 
-#: ../src/gui/app.cpp:906 ../src/gui/canvasview.cpp:1950
+#: ../src/gui/app.cpp:907 ../src/gui/canvasview.cpp:1954
 msgid "Show Width Handles"
 msgstr ""
 
-#: ../src/gui/app.cpp:907 ../src/gui/canvasview.cpp:1951
-msgid "Show Angle Handles"
-msgstr ""
-
-#: ../src/gui/app.cpp:908
-msgid "Show Bone Setup Handles"
-msgstr ""
-
-#: ../src/gui/app.cpp:909 ../src/gui/canvasview.cpp:1953
-msgid "Show Recursive Scale Bone Handles"
-msgstr ""
-
-#: ../src/gui/app.cpp:910 ../src/gui/canvasview.cpp:1959
-msgid "Next Bone Handles"
-msgstr ""
-
-#: ../src/gui/app.cpp:911 ../src/gui/canvasview.cpp:1955
+#: ../src/gui/app.cpp:908 ../src/gui/canvasview.cpp:1955
 msgid "Show WidthPoints Position Handles"
 msgstr ""
 
-#: ../src/gui/app.cpp:912 ../src/gui/canvasview.cpp:1789
+#: ../src/gui/app.cpp:909 ../src/gui/canvasview.cpp:1956
+msgid "Show Angle Handles"
+msgstr ""
+
+#: ../src/gui/app.cpp:910
+msgid "Show Bone Setup Handles"
+msgstr "显示骨骼设置句柄控制器"
+
+#: ../src/gui/app.cpp:911 ../src/gui/canvasview.cpp:1958
+msgid "Show Recursive Scale Bone Handles"
+msgstr ""
+
+#: ../src/gui/app.cpp:912 ../src/gui/canvasview.cpp:1963
+msgid "Next Bone Handles"
+msgstr ""
+
+#: ../src/gui/app.cpp:913 ../src/gui/canvasview.cpp:1789
 msgid "Use Parametric Renderer"
 msgstr "采用参数化渲染器"
 
-#: ../src/gui/app.cpp:913
+#: ../src/gui/app.cpp:914
 msgid "Use Quality Level 1"
 msgstr "采用质量级别1"
 
-#: ../src/gui/app.cpp:914
+#: ../src/gui/app.cpp:915
 msgid "Use Quality Level 2"
 msgstr "采用质量级别2"
 
-#: ../src/gui/app.cpp:915
+#: ../src/gui/app.cpp:916
 msgid "Use Quality Level 3"
 msgstr "采用质量级别3"
 
-#: ../src/gui/app.cpp:916
+#: ../src/gui/app.cpp:917
 msgid "Use Quality Level 4"
 msgstr "采用质量级别4"
 
-#: ../src/gui/app.cpp:917
+#: ../src/gui/app.cpp:918
 msgid "Use Quality Level 5"
 msgstr "采用质量级别5"
 
-#: ../src/gui/app.cpp:918
+#: ../src/gui/app.cpp:919
 msgid "Use Quality Level 6"
 msgstr "采用质量级别6"
 
-#: ../src/gui/app.cpp:919
+#: ../src/gui/app.cpp:920
 msgid "Use Quality Level 7"
 msgstr "采用质量级别7"
 
-#: ../src/gui/app.cpp:920
+#: ../src/gui/app.cpp:921
 msgid "Use Quality Level 8"
 msgstr "采用质量级别8"
 
-#: ../src/gui/app.cpp:921
+#: ../src/gui/app.cpp:922
 msgid "Use Quality Level 9"
 msgstr "采用质量级别9"
 
-#: ../src/gui/app.cpp:922
+#: ../src/gui/app.cpp:923
 msgid "Use Quality Level 10"
 msgstr "采用质量级别10"
 
-#: ../src/gui/app.cpp:925 ../src/gui/canvasview.cpp:1823
+#: ../src/gui/app.cpp:926 ../src/gui/canvasview.cpp:1823
 #, c-format
 msgid "Set Low-Res pixel size to %d"
 msgstr "设定低分辨率像素大小为%d"
 
-#: ../src/gui/app.cpp:932
+#: ../src/gui/app.cpp:933
 msgid "Toggle Grid Show"
 msgstr "切换网格显示"
 
-#: ../src/gui/app.cpp:933
+#: ../src/gui/app.cpp:934
 msgid "Toggle Grid Snap"
 msgstr "切换网格吸附"
 
-#: ../src/gui/app.cpp:934
+#: ../src/gui/app.cpp:935
 msgid "Toggle Guide Show"
 msgstr "切换导线显示"
 
-#: ../src/gui/app.cpp:935
+#: ../src/gui/app.cpp:936
 msgid "Toggle Guide Snap"
 msgstr "切换导线吸附"
 
-#: ../src/gui/app.cpp:936
+#: ../src/gui/app.cpp:937
 msgid "Toggle Low-Res"
 msgstr "切换低分辨率"
 
-#: ../src/gui/app.cpp:937 ../src/gui/canvasview.cpp:1839
+#: ../src/gui/app.cpp:938 ../src/gui/canvasview.cpp:1839
 msgid "Decrease Low-Res Pixel Size"
 msgstr "减低低分辨率像素大小"
 
-#: ../src/gui/app.cpp:938 ../src/gui/canvasview.cpp:1842
+#: ../src/gui/app.cpp:939 ../src/gui/canvasview.cpp:1842
 msgid "Increase Low-Res Pixel Size"
 msgstr "提高低分辨率像素大小"
 
-#: ../src/gui/app.cpp:939
+#: ../src/gui/app.cpp:940
 msgid "Toggle Onion Skin"
 msgstr "切换洋葱皮"
 
-#: ../src/gui/app.cpp:946 ../src/gui/iconcontroller.cpp:300
+#: ../src/gui/app.cpp:947 ../src/gui/iconcontroller.cpp:300
 msgid "Seek to Next Keyframe"
-msgstr ""
-
-#: ../src/gui/app.cpp:947
-msgid "Seek to previous Keyframe"
-msgstr ""
+msgstr "跳至后一关键帧"
 
 #: ../src/gui/app.cpp:948
+msgid "Seek to previous Keyframe"
+msgstr "跳至前一关键帧"
+
+#: ../src/gui/app.cpp:949
 msgid "Seek to Next Frame"
-msgstr ""
+msgstr "跳至后一帧"
 
-#: ../src/gui/app.cpp:949 ../src/gui/iconcontroller.cpp:295
+#: ../src/gui/app.cpp:950 ../src/gui/iconcontroller.cpp:295
 msgid "Seek to Previous Frame"
-msgstr ""
+msgstr "跳至前一帧"
 
-#: ../src/gui/app.cpp:950 ../src/gui/canvasview.cpp:1904
+#: ../src/gui/app.cpp:951 ../src/gui/canvasview.cpp:1904
 msgid "Seek Forward"
 msgstr "向前跳"
 
-#: ../src/gui/app.cpp:951 ../src/gui/canvasview.cpp:1906
+#: ../src/gui/app.cpp:952 ../src/gui/canvasview.cpp:1906
 msgid "Seek Backward"
 msgstr "向后跳"
 
-#: ../src/gui/app.cpp:952 ../src/gui/iconcontroller.cpp:293
+#: ../src/gui/app.cpp:953 ../src/gui/iconcontroller.cpp:293
 msgid "Seek to Begin"
 msgstr "到起点"
 
-#: ../src/gui/app.cpp:953 ../src/gui/iconcontroller.cpp:301
+#: ../src/gui/app.cpp:954 ../src/gui/iconcontroller.cpp:301
 msgid "Seek to End"
 msgstr "到终点"
 
-#: ../src/gui/app.cpp:956 ../src/gui/canvasview.cpp:1769
+#: ../src/gui/app.cpp:957 ../src/gui/canvasview.cpp:1769
 msgid "Properties..."
-msgstr ""
+msgstr "属性"
 
-#: ../src/gui/app.cpp:957 ../src/gui/canvasview.cpp:1733
+#: ../src/gui/app.cpp:958 ../src/gui/canvasview.cpp:1733
 msgid "Options..."
-msgstr ""
+msgstr "选项"
 
-#: ../src/gui/app.cpp:960
+#: ../src/gui/app.cpp:961
 msgid "Increase Layer Amount"
 msgstr ""
 
-#: ../src/gui/app.cpp:961
+#: ../src/gui/app.cpp:962
 msgid "Decrease Layer Amount"
 msgstr ""
 
-#: ../src/gui/app.cpp:964 ../src/gui/mainwindow.cpp:169
+#: ../src/gui/app.cpp:965 ../src/gui/mainwindow.cpp:169
 msgid "Compositing"
-msgstr ""
+msgstr "合成模式"
 
-#: ../src/gui/app.cpp:965 ../src/gui/instance.cpp:1237
+#: ../src/gui/app.cpp:966 ../src/gui/instance.cpp:1237
 #: ../src/gui/mainwindow.cpp:175
 msgid "Default"
-msgstr ""
+msgstr "默认模式"
 
-#: ../src/gui/app.cpp:966 ../src/gui/mainwindow.cpp:172
+#: ../src/gui/app.cpp:967 ../src/gui/mainwindow.cpp:172
 msgid "Animating"
-msgstr ""
+msgstr "动画模式"
 
-#: ../src/gui/app.cpp:967
+#: ../src/gui/app.cpp:968
 msgid "Preview Dialog"
 msgstr "预览对话框"
 
-#: ../src/gui/app.cpp:1375
+#: ../src/gui/app.cpp:1378
 msgid "Synfig version mismatched!"
 msgstr ""
 
-#: ../src/gui/app.cpp:1376
+#: ../src/gui/app.cpp:1379
 msgid ""
 "This copy of Synfig Studio was compiled against a different version of "
 "libsynfig than what is currently installed. Synfig Studio will now abort. "
@@ -3607,188 +3613,188 @@ msgid ""
 "http://www.synfig.org/cms/en/download/"
 msgstr ""
 
-#: ../src/gui/app.cpp:1398 ../src/gui/app.cpp:1403
+#: ../src/gui/app.cpp:1401 ../src/gui/app.cpp:1406
 msgid "Failed to initialize synfig!"
 msgstr "初始化 Synfig 失败！"
 
-#: ../src/gui/app.cpp:1415
+#: ../src/gui/app.cpp:1418
 msgid "Loading Basic Settings..."
-msgstr ""
+msgstr "读取基础设置..."
 
-#: ../src/gui/app.cpp:1426
+#: ../src/gui/app.cpp:1429
 msgid "Loading Plugins..."
-msgstr ""
+msgstr "读取插件..."
 
-#: ../src/gui/app.cpp:1449
+#: ../src/gui/app.cpp:1452
 msgid "Init UI Manager..."
 msgstr "初始化 UI 管理器..."
 
-#: ../src/gui/app.cpp:1453
+#: ../src/gui/app.cpp:1456
 msgid "Init Dock Manager..."
 msgstr "初始化停靠管理器..."
 
-#: ../src/gui/app.cpp:1456
+#: ../src/gui/app.cpp:1459
 msgid "Init State Manager..."
 msgstr "初始化状态管理器..."
 
-#: ../src/gui/app.cpp:1459
+#: ../src/gui/app.cpp:1462
 msgid "Init Main Window..."
-msgstr ""
+msgstr "初始化主窗口..."
 
-#: ../src/gui/app.cpp:1463
+#: ../src/gui/app.cpp:1466
 msgid "Init Toolbox..."
 msgstr "初始化工具箱..."
 
-#: ../src/gui/app.cpp:1467
+#: ../src/gui/app.cpp:1470
 msgid "Init About Dialog..."
 msgstr "初始化关于对话框..."
 
-#: ../src/gui/app.cpp:1470
+#: ../src/gui/app.cpp:1473
 msgid "Init Tool Options..."
 msgstr "初始化工具选项..."
 
-#: ../src/gui/app.cpp:1474
+#: ../src/gui/app.cpp:1477
 msgid "Init History..."
 msgstr "初始化历史记录..."
 
-#: ../src/gui/app.cpp:1478
+#: ../src/gui/app.cpp:1481
 msgid "Init Canvases..."
 msgstr "初始化画布..."
 
-#: ../src/gui/app.cpp:1482
+#: ../src/gui/app.cpp:1485
 msgid "Init Keyframes..."
 msgstr "初始化关键帧..."
 
-#: ../src/gui/app.cpp:1489
+#: ../src/gui/app.cpp:1492
 msgid "Init Layers..."
 msgstr "初始化层..."
 
-#: ../src/gui/app.cpp:1493
+#: ../src/gui/app.cpp:1496
 msgid "Init Parameters..."
 msgstr ""
 
-#: ../src/gui/app.cpp:1497
+#: ../src/gui/app.cpp:1500
 msgid "Init MetaData..."
 msgstr "初始化元数据..."
 
-#: ../src/gui/app.cpp:1501
+#: ../src/gui/app.cpp:1504
 msgid "Init Library..."
 msgstr ""
 
-#: ../src/gui/app.cpp:1505
+#: ../src/gui/app.cpp:1508
 msgid "Init Info..."
 msgstr "初始化信息..."
 
-#: ../src/gui/app.cpp:1509
+#: ../src/gui/app.cpp:1512
 msgid "Init Navigator..."
 msgstr "初始化导航器..."
 
-#: ../src/gui/app.cpp:1513
+#: ../src/gui/app.cpp:1516
 msgid "Init Timetrack..."
 msgstr "初始化时间轨迹..."
 
-#: ../src/gui/app.cpp:1517
+#: ../src/gui/app.cpp:1520
 msgid "Init Curve Editor..."
 msgstr "初始化曲线编辑器..."
 
-#: ../src/gui/app.cpp:1521
+#: ../src/gui/app.cpp:1524
 msgid "Init Layer Sets..."
-msgstr ""
+msgstr "初始化层集..."
 
-#: ../src/gui/app.cpp:1526
+#: ../src/gui/app.cpp:1529
 msgid "Init Color Dialog..."
 msgstr "初始化颜色对话框..."
 
-#: ../src/gui/app.cpp:1529
+#: ../src/gui/app.cpp:1532
 msgid "Init Gradient Dialog..."
 msgstr "初始化渐变对话框..."
 
-#: ../src/gui/app.cpp:1532
+#: ../src/gui/app.cpp:1535
 msgid "Init DeviceTracker..."
 msgstr "初始化设备追踪器..."
 
-#: ../src/gui/app.cpp:1537
+#: ../src/gui/app.cpp:1540
 msgid "Init ModPalette..."
 msgstr "初始化 ModPalette..."
 
-#: ../src/gui/app.cpp:1540
+#: ../src/gui/app.cpp:1543
 msgid "Init Setup Dialog..."
 msgstr "初始化设定对话框..."
 
-#: ../src/gui/app.cpp:1543
+#: ../src/gui/app.cpp:1546
 msgid "Init Input Dialog..."
 msgstr "初始化输入对话框..."
 
-#: ../src/gui/app.cpp:1547
+#: ../src/gui/app.cpp:1550
 msgid "Init auto recovery..."
 msgstr "初始化自动恢复..."
 
-#: ../src/gui/app.cpp:1551
+#: ../src/gui/app.cpp:1554
 msgid "Loading Settings..."
 msgstr "设定加载中..."
 
-#: ../src/gui/app.cpp:1562
+#: ../src/gui/app.cpp:1565
 msgid "Init Tools..."
 msgstr "初始化工具..."
 
-#: ../src/gui/app.cpp:1601
+#: ../src/gui/app.cpp:1604
 msgid "Checking auto-recover..."
 msgstr "正在检查自动恢复..."
 
-#: ../src/gui/app.cpp:1610
+#: ../src/gui/app.cpp:1613
 msgid "Auto recovery file(s) found. Do you want to recover unsaved changes?"
 msgstr ""
 
-#: ../src/gui/app.cpp:1611
+#: ../src/gui/app.cpp:1614
 msgid ""
 "Synfig Studio seems to have crashed before you could save all your files."
-msgstr ""
+msgstr "Synfig Studio 好像在您保存文件之前崩溃了。"
 
-#: ../src/gui/app.cpp:1612
+#: ../src/gui/app.cpp:1615
 msgid "Ignore"
 msgstr "忽略"
 
-#: ../src/gui/app.cpp:1613
+#: ../src/gui/app.cpp:1616
 msgid "Recover"
 msgstr "恢复"
 
-#: ../src/gui/app.cpp:1619
+#: ../src/gui/app.cpp:1622
 msgid "Unable to fully recover from previous crash"
 msgstr "未能从上次的崩溃中完全恢复"
 
-#: ../src/gui/app.cpp:1621
+#: ../src/gui/app.cpp:1624
 msgid "Unable to recover from previous crash"
 msgstr "未能从上次的崩溃中恢复"
 
-#: ../src/gui/app.cpp:1625
+#: ../src/gui/app.cpp:1628
 msgid "It would be a good idea to review and save recovered files now."
 msgstr ""
 
-#: ../src/gui/app.cpp:1626
+#: ../src/gui/app.cpp:1629
 msgid ""
 "Synfig Studio has attempted to recover from a previous crash. The files just"
 " recovered are NOT YET SAVED."
-msgstr ""
+msgstr "Synfig Studio 已经尝试从上一次的崩溃中恢复了数据，但是所恢复的文件还没有保存。"
 
-#: ../src/gui/app.cpp:1628
+#: ../src/gui/app.cpp:1631
 msgid "Thanks"
-msgstr ""
+msgstr "谢谢！"
 
-#: ../src/gui/app.cpp:1641
+#: ../src/gui/app.cpp:1644
 msgid "Loading files..."
 msgstr "文件加载中..."
 
-#: ../src/gui/app.cpp:1652
+#: ../src/gui/app.cpp:1655
 msgid "Done."
 msgstr "完成。"
 
-#: ../src/gui/app.cpp:1684
+#: ../src/gui/app.cpp:1687
 msgid ""
 "There is a bug, which can cause computer to hang/freeze when resizing the "
 "canvas window."
 msgstr ""
 
-#: ../src/gui/app.cpp:1686
+#: ../src/gui/app.cpp:1689
 msgid ""
 "If you got affected by this issue, consider pressing ALT+TAB to unfreeze "
 "your system and get it back to the working state. Please accept our "
@@ -3796,223 +3802,231 @@ msgid ""
 "future versions."
 msgstr ""
 
-#: ../src/gui/app.cpp:1696
+#: ../src/gui/app.cpp:1699
 msgid "Got it"
 msgstr ""
 
-#: ../src/gui/app.cpp:1700 ../src/gui/app.cpp:1704
+#: ../src/gui/app.cpp:1703 ../src/gui/app.cpp:1707
 msgid ""
 "Unknown exception caught when constructing App.\n"
 "This software may be unstable."
 msgstr "在创建应用是发生未知异常。\n本软件可能不稳定。"
 
-#: ../src/gui/app.cpp:2173
+#: ../src/gui/app.cpp:2176
 msgid "Quit Request"
 msgstr "请求退出"
 
-#: ../src/gui/app.cpp:2178
+#: ../src/gui/app.cpp:2181
 msgid ""
 "Tasks are currently running. Please cancel the current tasks and try again"
-msgstr ""
+msgstr "有任务正在运行中。 请取消当前任务后再尝试"
 
-#: ../src/gui/app.cpp:2247
+#: ../src/gui/app.cpp:2250
 msgid "Quit Request sent"
 msgstr "退出请求已发送"
 
-#: ../src/gui/app.cpp:2278 ../src/gui/app.cpp:2644 ../src/gui/app.cpp:2753
+#: ../src/gui/app.cpp:2281 ../src/gui/app.cpp:2659 ../src/gui/app.cpp:2768
 msgid "All Files (*.*)"
-msgstr ""
+msgstr "所有文件 (*.*)"
 
-#: ../src/gui/app.cpp:2333 ../src/synfigapp/canvasinterface.cpp:683
+#: ../src/gui/app.cpp:2336 ../src/synfigapp/canvasinterface.cpp:683
 msgid "Import"
 msgstr "输入"
 
-#: ../src/gui/app.cpp:2338
+#: ../src/gui/app.cpp:2341
 msgid "All supported files"
-msgstr ""
+msgstr "所有支持的格式"
 
-#: ../src/gui/app.cpp:2365
+#: ../src/gui/app.cpp:2368
 msgid "Synfig files (*.sif, *.sifz)"
-msgstr ""
+msgstr "Synfig文件 (*.sif, *.sifz)"
 
-#: ../src/gui/app.cpp:2372
+#: ../src/gui/app.cpp:2375
 msgid "Images (*.png, *.jpeg, *.bmp, *.svg)"
-msgstr ""
+msgstr "图像 (*.png, *.jpeg, *.bmp, *.svg)"
 
-#: ../src/gui/app.cpp:2386
+#: ../src/gui/app.cpp:2389
 msgid "Image sequence files (*.lst)"
-msgstr ""
+msgstr "图像序列文件 (*.lst)"
 
-#: ../src/gui/app.cpp:2391 ../src/gui/app.cpp:2596
+#: ../src/gui/app.cpp:2394 ../src/gui/app.cpp:2611
 msgid "Audio (*.ogg, *.mp3, *.wav)"
-msgstr ""
+msgstr "音频 (*.ogg, *.mp3, *.wav)"
 
-#: ../src/gui/app.cpp:2401 ../src/gui/app.cpp:2553 ../src/gui/app.cpp:2607
-#: ../src/gui/app.cpp:2714
+#: ../src/gui/app.cpp:2404 ../src/gui/app.cpp:2568 ../src/gui/app.cpp:2622
+#: ../src/gui/app.cpp:2729
 msgid "Any files"
-msgstr ""
+msgstr "任何文件"
 
-#: ../src/gui/app.cpp:2448 ../src/gui/app.cpp:2490
+#: ../src/gui/app.cpp:2451 ../src/gui/app.cpp:2505
 #: ../src/gui/iconcontroller.cpp:184 ../src/gui/mainwindow.cpp:147
 msgid "Open"
+msgstr "打开"
+
+#: ../src/gui/app.cpp:2454
+msgid "Palette files (*.spal, *.gpl)"
 msgstr ""
 
-#: ../src/gui/app.cpp:2452 ../src/gui/app.cpp:2938
+#: ../src/gui/app.cpp:2461 ../src/gui/app.cpp:2955
 msgid "Synfig palette files (*.spal)"
 msgstr ""
 
-#: ../src/gui/app.cpp:2494 ../src/gui/app.cpp:3000
+#: ../src/gui/app.cpp:2467
+msgid "GIMP palette files (*.gpl)"
+msgstr ""
+
+#: ../src/gui/app.cpp:2509 ../src/gui/app.cpp:3017
 msgid "Synfig sketch files (*.sketch)"
 msgstr ""
 
-#: ../src/gui/app.cpp:2533 ../src/gui/app.cpp:2592
+#: ../src/gui/app.cpp:2548 ../src/gui/app.cpp:2607
 msgid "Load"
-msgstr ""
+msgstr "读取"
 
-#: ../src/gui/app.cpp:2537
+#: ../src/gui/app.cpp:2552
 msgid "Images and sequence files (*.png, *.jpg, *.jpeg, *.bmp, *.svg, *.lst)"
-msgstr ""
+msgstr "图像或图像序列(*.png, *.jpg, *.jpeg, *.bmp, *.svg, *.lst)"
 
-#: ../src/gui/app.cpp:2700
+#: ../src/gui/app.cpp:2715
 msgid "Open history"
-msgstr ""
+msgstr "打开历史记录"
 
-#: ../src/gui/app.cpp:2707
+#: ../src/gui/app.cpp:2722
 msgid "Synfig files (*.sif, *.sifz, *.sfg)"
-msgstr ""
+msgstr "Synfig文件 (*.sif, *.sifz, *.sfg)"
 
-#: ../src/gui/app.cpp:2806
+#: ../src/gui/app.cpp:2821
 msgid "Uncompressed Synfig file (*.sif)"
 msgstr ""
 
-#: ../src/gui/app.cpp:2814
+#: ../src/gui/app.cpp:2829
 msgid "Compressed Synfig file (*.sifz)"
 msgstr ""
 
-#: ../src/gui/app.cpp:2818
+#: ../src/gui/app.cpp:2833
 msgid "Container format file (*.sfg)"
 msgstr ""
 
-#: ../src/gui/app.cpp:2834
-msgid "current"
-msgstr "当期"
+#: ../src/gui/app.cpp:2849
+msgid "Current"
+msgstr "当前"
 
-#: ../src/gui/app.cpp:2851
+#: ../src/gui/app.cpp:2868
 msgid "and older"
 msgstr "以及更旧的"
 
-#: ../src/gui/app.cpp:2855
+#: ../src/gui/app.cpp:2872
 msgid "File Format Version: "
 msgstr "文件格式版本："
 
-#: ../src/gui/app.cpp:3156
+#: ../src/gui/app.cpp:3173
 msgid "Feature not available"
 msgstr "特性无效"
 
-#: ../src/gui/app.cpp:3157
+#: ../src/gui/app.cpp:3174
 msgid "Sorry, this feature has not yet been implemented."
 msgstr "对不起，该特性还没实现。"
 
-#: ../src/gui/app.cpp:3339
+#: ../src/gui/app.cpp:3356
 msgid "Documentation"
 msgstr "文档"
 
-#: ../src/gui/app.cpp:3340
+#: ../src/gui/app.cpp:3357
 msgid ""
 "Documentation for Synfig Studio is available on the website:\n"
 "\n"
 "http://synfig.org/wiki/Category:Manual"
 msgstr "Synfig Stuio 的文档在网站上可以找到：\n\nhttp://synfig.org/wiki/Category:Manual"
 
-#: ../src/gui/app.cpp:3341
+#: ../src/gui/app.cpp:3358
 msgid "Help"
 msgstr "帮助"
 
-#: ../src/gui/app.cpp:3351
+#: ../src/gui/app.cpp:3368
 msgid "No browser was found. Please load this website manually:"
 msgstr "没有找到浏览器。请手工加载这个网站："
 
-#: ../src/gui/app.cpp:3353
+#: ../src/gui/app.cpp:3370
 msgid "No browser found"
 msgstr "没有找到浏览器"
 
-#: ../src/gui/app.cpp:3481
+#: ../src/gui/app.cpp:3498
 #, c-format
 msgid ""
 "Unable to open container \"%s\"\n"
 "\n"
 msgstr ""
 
-#: ../src/gui/app.cpp:3488
+#: ../src/gui/app.cpp:3505
 msgid ""
 "Unable to create container\n"
 "\n"
 msgstr ""
 
-#: ../src/gui/app.cpp:3501 ../src/gui/app.cpp:3595
+#: ../src/gui/app.cpp:3518 ../src/gui/app.cpp:3612
 #, c-format
 msgid ""
 "Unable to load \"%s\":\n"
 "\n"
 msgstr "未能加载\"%s\":\n\n"
 
-#: ../src/gui/app.cpp:3506 ../src/gui/app.cpp:3600
-#: ../src/gui/canvasview.cpp:3816 ../src/gui/canvasview.cpp:4087
+#: ../src/gui/app.cpp:3523 ../src/gui/app.cpp:3617
+#: ../src/gui/canvasview.cpp:3820 ../src/gui/canvasview.cpp:4109
 msgid "Warning"
 msgstr "警告"
 
-#: ../src/gui/app.cpp:3517 ../src/gui/app.cpp:3610
+#: ../src/gui/app.cpp:3534 ../src/gui/app.cpp:3627
 #, c-format
 msgid "Unable to create instance for \"%s\""
 msgstr "未能为\"%s\"创建实例"
 
-#: ../src/gui/app.cpp:3522
-msgid "Newer version of this file availabel on the CVS repository!"
+#: ../src/gui/app.cpp:3539
+msgid "Newer version of this file available on the CVS repository!"
 msgstr ""
 
-#: ../src/gui/app.cpp:3523
+#: ../src/gui/app.cpp:3540
 msgid ""
 "repository. Would you like to update now? (It would probably be a good idea)"
 msgstr ""
 
-#: ../src/gui/app.cpp:3526 ../src/gui/app.cpp:3619
+#: ../src/gui/app.cpp:3543 ../src/gui/app.cpp:3636
 msgid "Update Anyway"
-msgstr ""
+msgstr "持续更新"
 
-#: ../src/gui/app.cpp:3555 ../src/gui/app.cpp:3648
+#: ../src/gui/app.cpp:3572 ../src/gui/app.cpp:3665
 msgid "Uncaught error on file open (BUG)"
 msgstr "打开文件出现为捕获错误 (BUG)"
 
-#: ../src/gui/app.cpp:3583
+#: ../src/gui/app.cpp:3600
 #, c-format
 msgid ""
 "Unable to open temporary container \"%s\"\n"
 "\n"
 msgstr ""
 
-#: ../src/gui/app.cpp:3615
+#: ../src/gui/app.cpp:3632
 msgid "Newer version of this file avaliable on the CVS repository!"
 msgstr ""
 
-#: ../src/gui/app.cpp:3616
+#: ../src/gui/app.cpp:3633
 msgid "Would you like to update now (It would probably be a good idea)"
 msgstr ""
 
-#: ../src/gui/app.cpp:3710 ../src/gui/app.cpp:3734
-#: ../src/gui/canvasview.cpp:4081
+#: ../src/gui/app.cpp:3727 ../src/gui/app.cpp:3751
+#: ../src/gui/canvasview.cpp:4103
 msgid "Please select a file"
-msgstr ""
+msgstr "请选择一个文件"
 
-#: ../src/gui/app.cpp:3730
+#: ../src/gui/app.cpp:3747
 msgid "History entry #"
 msgstr ""
 
-#: ../src/gui/app.cpp:3734
+#: ../src/gui/app.cpp:3751
 msgid "Select one of previous versions of file"
-msgstr ""
+msgstr "选择之前的一个版本"
 
-#: ../src/gui/canvasview.cpp:266 ../src/gui/workarea.cpp:3305
-#: ../src/gui/workarea.cpp:3312 ../src/gui/workarea.cpp:3413
+#: ../src/gui/canvasview.cpp:266 ../src/gui/workarea.cpp:3315
+#: ../src/gui/workarea.cpp:3322 ../src/gui/workarea.cpp:3423
 msgid "Idle"
 msgstr "空闲"
 
@@ -4026,7 +4040,7 @@ msgstr "特性仍未实现"
 
 #: ../src/gui/canvasview.cpp:669
 msgid "Canvas View"
-msgstr ""
+msgstr "画布视图"
 
 #: ../src/gui/canvasview.cpp:1067 ../src/gui/preview.cpp:1438
 msgid "Enable JACK"
@@ -4044,13 +4058,13 @@ msgstr "改变当前时间"
 msgid "Default Interpolation"
 msgstr "默认插值法"
 
-#: ../src/gui/canvasview.cpp:1162 ../src/gui/canvasview.cpp:2811
+#: ../src/gui/canvasview.cpp:1162 ../src/gui/canvasview.cpp:2815
 msgid "Turn on animate editing mode"
 msgstr "打开动画编辑模式"
 
 #: ../src/gui/canvasview.cpp:1175
 msgid "Toggle timebar"
-msgstr ""
+msgstr "切换时间条"
 
 #: ../src/gui/canvasview.cpp:1205
 msgid "Current time"
@@ -4066,7 +4080,7 @@ msgstr "显示预览设定对话框"
 
 #: ../src/gui/canvasview.cpp:1426
 msgid "Show grid"
-msgstr ""
+msgstr "显示网格"
 
 #: ../src/gui/canvasview.cpp:1427
 msgid "Show grid when enabled"
@@ -4074,15 +4088,15 @@ msgstr "激活显示网格"
 
 #: ../src/gui/canvasview.cpp:1443
 msgid "Snap to grid"
-msgstr ""
+msgstr "吸附到网格"
 
 #: ../src/gui/canvasview.cpp:1444
 msgid "Snap to grid when enabled"
-msgstr ""
+msgstr "激活吸附网格"
 
 #: ../src/gui/canvasview.cpp:1463
 msgid "Onion skin"
-msgstr ""
+msgstr "洋葱皮"
 
 #: ../src/gui/canvasview.cpp:1464
 msgid "Shows onion skin when enabled"
@@ -4102,11 +4116,11 @@ msgstr "刷新"
 
 #: ../src/gui/canvasview.cpp:1512
 msgid "Refresh workarea"
-msgstr ""
+msgstr "刷新工作区"
 
 #: ../src/gui/canvasview.cpp:1549
 msgid "Stop current operation"
-msgstr ""
+msgstr "停止当前操作"
 
 #: ../src/gui/canvasview.cpp:1698
 msgid "Save As..."
@@ -4118,7 +4132,7 @@ msgstr "全部保存"
 
 #: ../src/gui/canvasview.cpp:1701
 msgid "Save all opened documents"
-msgstr ""
+msgstr "保存所有已打开的文档"
 
 #: ../src/gui/canvasview.cpp:1739 ../src/gui/mainwindow.cpp:150
 msgid "Quit"
@@ -4169,154 +4183,154 @@ msgstr "在时间轴上放大"
 msgid "Zoom Out on Timeline"
 msgstr "在时间轴上缩小"
 
-#: ../src/gui/canvasview.cpp:2031 ../src/gui/canvasview.cpp:2541
+#: ../src/gui/canvasview.cpp:2035 ../src/gui/canvasview.cpp:2545
 msgid "Select All Children"
 msgstr "选择全部子女"
 
-#: ../src/gui/canvasview.cpp:2324
+#: ../src/gui/canvasview.cpp:2328
 msgid "-MODIFIED"
 msgstr "-已修改"
 
-#: ../src/gui/canvasview.cpp:2326
+#: ../src/gui/canvasview.cpp:2330
 msgid "-UPDATED"
 msgstr "-以更新"
 
-#: ../src/gui/canvasview.cpp:2800
+#: ../src/gui/canvasview.cpp:2804
 msgid "Turn off animate editing mode"
 msgstr "关闭动画编辑模式"
 
-#: ../src/gui/canvasview.cpp:2823
+#: ../src/gui/canvasview.cpp:2827
 msgid "Unlock future keyframes"
 msgstr "解锁后面的关键帧"
 
-#: ../src/gui/canvasview.cpp:2834
+#: ../src/gui/canvasview.cpp:2838
 msgid "Lock future keyframes"
 msgstr "锁住后面的关键帧"
 
-#: ../src/gui/canvasview.cpp:2845
+#: ../src/gui/canvasview.cpp:2849
 msgid "Unlock past keyframes"
 msgstr "解锁前面的关键帧"
 
-#: ../src/gui/canvasview.cpp:2856
+#: ../src/gui/canvasview.cpp:2860
 msgid "Lock past  keyframes"
 msgstr "锁住前面的关键帧"
 
-#: ../src/gui/canvasview.cpp:3481
+#: ../src/gui/canvasview.cpp:3485
 msgid "Change Waypoint Group"
 msgstr "改变航点组"
 
-#: ../src/gui/canvasview.cpp:3512
+#: ../src/gui/canvasview.cpp:3516
 msgid "Duplicate Waypoints"
 msgstr "复制航点"
 
-#: ../src/gui/canvasview.cpp:3528
+#: ../src/gui/canvasview.cpp:3532
 msgid "Remove Waypoints"
 msgstr "移除航点"
 
-#: ../src/gui/canvasview.cpp:3596
+#: ../src/gui/canvasview.cpp:3600
 msgid "_TCB"
 msgstr "_TCB"
 
-#: ../src/gui/canvasview.cpp:3597
+#: ../src/gui/canvasview.cpp:3601
 msgid "_Linear"
 msgstr "线性 (_L)"
 
-#: ../src/gui/canvasview.cpp:3598
+#: ../src/gui/canvasview.cpp:3602
 msgid "_Ease In"
 msgstr "慢入(_E)"
 
-#: ../src/gui/canvasview.cpp:3598
+#: ../src/gui/canvasview.cpp:3602
 msgid "_Ease Out"
 msgstr "慢出(_E)"
 
-#: ../src/gui/canvasview.cpp:3598
+#: ../src/gui/canvasview.cpp:3602
 msgid "_Ease In/Out"
 msgstr "慢入/出 (_E)"
 
-#: ../src/gui/canvasview.cpp:3599
+#: ../src/gui/canvasview.cpp:3603
 msgid "_Constant"
 msgstr "恒定 (_C)"
 
-#: ../src/gui/canvasview.cpp:3600
+#: ../src/gui/canvasview.cpp:3604
 msgid "_Clamped"
-msgstr ""
+msgstr "夹紧(_C)"
 
-#: ../src/gui/canvasview.cpp:3620
+#: ../src/gui/canvasview.cpp:3624
 msgid "_Jump To"
 msgstr "转跳到(_J)"
 
-#: ../src/gui/canvasview.cpp:3627
+#: ../src/gui/canvasview.cpp:3631
 msgid "_Duplicate"
 msgstr "复制(_D)"
 
-#: ../src/gui/canvasview.cpp:3634
+#: ../src/gui/canvasview.cpp:3638
 msgid "_Remove"
 msgstr "移除(_R)"
 
-#: ../src/gui/canvasview.cpp:3634
+#: ../src/gui/canvasview.cpp:3638
 #, c-format
 msgid "_Remove %d Waypoints"
 msgstr "移除 %d 个航点(_R)"
 
-#: ../src/gui/canvasview.cpp:3657
+#: ../src/gui/canvasview.cpp:3661
 msgid "_Both"
 msgstr "两者(_B)"
 
-#: ../src/gui/canvasview.cpp:3663
+#: ../src/gui/canvasview.cpp:3667
 msgid "_In"
 msgstr "入(_I)"
 
-#: ../src/gui/canvasview.cpp:3669
+#: ../src/gui/canvasview.cpp:3673
 msgid "_Out"
 msgstr "出(_O)"
 
-#: ../src/gui/canvasview.cpp:3960
+#: ../src/gui/canvasview.cpp:3964
 msgid " Description"
-msgstr ""
+msgstr "描述"
 
-#: ../src/gui/canvasview.cpp:3961 ../src/gui/instance.cpp:1116
+#: ../src/gui/canvasview.cpp:3965 ../src/gui/instance.cpp:1116
 msgid "Description: "
-msgstr ""
+msgstr "描述:"
 
-#: ../src/gui/canvasview.cpp:3965 ../src/gui/iconcontroller.cpp:257
+#: ../src/gui/canvasview.cpp:3969 ../src/gui/iconcontroller.cpp:257
 #: ../src/gui/instance.cpp:1115 ../src/synfigapp/actions/groupaddlayers.cpp:78
 #: ../src/synfigapp/actions/groupremove.cpp:72
 msgid "Set"
-msgstr ""
+msgstr "层集"
 
-#: ../src/gui/canvasview.cpp:4447
+#: ../src/gui/canvasview.cpp:4469
 msgid "Are you sure you want to disable JACK synchronization?"
 msgstr ""
 
-#: ../src/gui/canvasview.cpp:4448
+#: ../src/gui/canvasview.cpp:4470
 msgid "The JACK server will remain running."
 msgstr ""
 
-#: ../src/gui/canvasview.cpp:4450
+#: ../src/gui/canvasview.cpp:4472
 msgid "Are you sure you want to enable JACK synchronization?"
 msgstr ""
 
-#: ../src/gui/canvasview.cpp:4451
+#: ../src/gui/canvasview.cpp:4473
 msgid "This operation will launch a JACK server, if it isn't started yet."
 msgstr ""
 
-#: ../src/gui/canvasview.cpp:4456
-#: ../src/synfigapp/actions/valuedescset.cpp:1098
+#: ../src/gui/canvasview.cpp:4478
+#: ../src/synfigapp/actions/valuedescset.cpp:1120
 msgid "No"
-msgstr ""
+msgstr "不"
 
-#: ../src/gui/canvasview.cpp:4457
-#: ../src/synfigapp/actions/valuedescset.cpp:1099
+#: ../src/gui/canvasview.cpp:4479
+#: ../src/synfigapp/actions/valuedescset.cpp:1121
 msgid "Yes"
-msgstr ""
+msgstr "是的"
 
 #: ../src/gui/compview.cpp:300
 msgid "Clear Undo"
-msgstr ""
+msgstr "清除撤消记录"
 
 #: ../src/gui/compview.cpp:303
 msgid "Clear Redo"
-msgstr ""
+msgstr "清除重做"
 
 #: ../src/gui/iconcontroller.cpp:137
 msgid "Bool"
@@ -4348,7 +4362,7 @@ msgstr "线段"
 
 #: ../src/gui/iconcontroller.cpp:145
 msgid "Spline Point"
-msgstr ""
+msgstr "样条点"
 
 #: ../src/gui/iconcontroller.cpp:146
 msgid "List"
@@ -4413,7 +4427,7 @@ msgstr "关于"
 
 #: ../src/gui/iconcontroller.cpp:183 ../src/gui/mainwindow.cpp:144
 msgid "New"
-msgstr ""
+msgstr "新建"
 
 #: ../src/gui/iconcontroller.cpp:185 ../src/gui/instance.cpp:875
 msgid "Save"
@@ -4421,7 +4435,7 @@ msgstr "保存"
 
 #: ../src/gui/iconcontroller.cpp:186
 msgid "Save As"
-msgstr ""
+msgstr "另存为"
 
 #: ../src/gui/iconcontroller.cpp:194
 msgid "Blur Layer"
@@ -4477,7 +4491,7 @@ msgstr "简单圆形层"
 
 #: ../src/gui/iconcontroller.cpp:210
 msgid "Clamp Layer"
-msgstr "夹子层"
+msgstr "区间值限定层"
 
 #: ../src/gui/iconcontroller.cpp:211
 msgid "Color Correct Layer"
@@ -4493,7 +4507,7 @@ msgstr "半调3层"
 
 #: ../src/gui/iconcontroller.cpp:214
 msgid "Luma Key Layer"
-msgstr ""
+msgstr "亮度键层"
 
 #: ../src/gui/iconcontroller.cpp:216
 msgid "Julia Set Layer"
@@ -4577,7 +4591,7 @@ msgstr "输入图像层"
 #: ../src/synfigapp/actions/layerencapsulate.cpp:52
 #: ../src/synfigapp/actions/layerencapsulate.cpp:73
 msgid "Group Layer"
-msgstr ""
+msgstr "群组层"
 
 #: ../src/gui/iconcontroller.cpp:239
 msgid "Plant Layer"
@@ -4593,15 +4607,15 @@ msgstr "超级样本层"
 
 #: ../src/gui/iconcontroller.cpp:242
 msgid "Sound Layer"
-msgstr ""
+msgstr "声音层"
 
 #: ../src/gui/iconcontroller.cpp:243
 msgid "Switch Layer"
-msgstr ""
+msgstr "转换层"
 
 #: ../src/gui/iconcontroller.cpp:244
 msgid "Skeleton Layer"
-msgstr ""
+msgstr "骨架层"
 
 #: ../src/gui/iconcontroller.cpp:245
 msgid "Text Layer"
@@ -4633,7 +4647,7 @@ msgstr "调动层"
 
 #: ../src/gui/iconcontroller.cpp:254
 msgid "Scale Layer"
-msgstr ""
+msgstr "缩放层"
 
 #: ../src/gui/iconcontroller.cpp:256
 msgid "Info Tool"
@@ -4697,7 +4711,7 @@ msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:294
 msgid "Seek to Previous Keyframe"
-msgstr ""
+msgstr "跳至前一关键帧"
 
 #: ../src/gui/iconcontroller.cpp:297
 msgid "Stop"
@@ -4705,25 +4719,25 @@ msgstr "停止"
 
 #: ../src/gui/iconcontroller.cpp:299
 msgid "Seek to Next frame"
-msgstr ""
+msgstr "跳至后一帧"
 
 #: ../src/gui/iconcontroller.cpp:302
 msgid "Animate Loop"
-msgstr ""
+msgstr "动画循环"
 
 #: ../src/gui/iconcontroller.cpp:304
 msgid "Add Layer to Set"
-msgstr ""
+msgstr "把此层加到层集"
 
 #: ../src/gui/iconcontroller.cpp:305
 msgid "Remove Layer from Set"
-msgstr ""
+msgstr "把此层从层集中移出"
 
 #: ../src/gui/iconcontroller.cpp:306
 #: ../src/synfigapp/actions/layersetdesc.cpp:50
 #: ../src/synfigapp/actions/layersetdesc.cpp:73
 msgid "Set Layer Description"
-msgstr "设置此层的说明"
+msgstr "设定此层的说明"
 
 #: ../src/gui/iconcontroller.cpp:307
 msgid "Export Value Node"
@@ -4735,23 +4749,23 @@ msgstr "不输出值节点"
 
 #: ../src/gui/iconcontroller.cpp:309
 msgid "Set Interpolation to Flat"
-msgstr "设置插值为 Flat"
+msgstr "设定插值为 Flat"
 
 #: ../src/gui/iconcontroller.cpp:310
 msgid "Set Interpolation to Interpolate"
-msgstr "设置插值为插值"
+msgstr "设定插值为插值"
 
 #: ../src/gui/iconcontroller.cpp:311
 msgid "Set Interpolation to Peak"
-msgstr "设置插值为 Peak"
+msgstr "设定插值为 Peak"
 
 #: ../src/gui/iconcontroller.cpp:312
 msgid "Set Interpolation to Rounded"
-msgstr "设置插值为 Rounded"
+msgstr "设定插值为 Rounded"
 
 #: ../src/gui/iconcontroller.cpp:313
 msgid "Set Interpolation to Squared"
-msgstr "设置插值为 Squared"
+msgstr "设定插值为 Squared"
 
 #: ../src/gui/iconcontroller.cpp:322
 msgid "Toggle show grid"
@@ -4763,11 +4777,11 @@ msgstr "切换吸附网格"
 
 #: ../src/gui/iconcontroller.cpp:324
 msgid "Toggle show guide"
-msgstr ""
+msgstr "切换到显示引导线"
 
 #: ../src/gui/iconcontroller.cpp:325
 msgid "Toggle snap guide"
-msgstr ""
+msgstr "切换吸附引导线"
 
 #: ../src/gui/iconcontroller.cpp:327
 msgid "Toggle onion skin"
@@ -4803,19 +4817,19 @@ msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:338
 msgid "Linear interpolation"
-msgstr ""
+msgstr "线性插值"
 
 #: ../src/gui/iconcontroller.cpp:339
 msgid "Clamped interpolation"
-msgstr ""
+msgstr "夹紧插值法"
 
 #: ../src/gui/iconcontroller.cpp:341
 msgid "Linked"
-msgstr ""
+msgstr "已链接"
 
 #: ../src/gui/iconcontroller.cpp:342
 msgid "Unlinked"
-msgstr ""
+msgstr "未链接"
 
 #: ../src/gui/iconcontroller.cpp:345
 msgid "CVS Add"
@@ -4837,19 +4851,19 @@ msgstr "CVS 复原"
 #: ../src/gui/instance.cpp:201
 #, c-format
 msgid "Do you realy want to run plugin for file \"%s\"?"
-msgstr ""
+msgstr "您真的要在这个文件运行插件 \"%s\" 么?"
 
 #: ../src/gui/instance.cpp:204
 msgid "This operation cannot be undone and all undo history will be cleared."
-msgstr ""
+msgstr "这个操作是不能够撤消的而且所有撤消历史记录也将被清除掉。"
 
 #: ../src/gui/instance.cpp:210
 msgid "Proceed"
-msgstr ""
+msgstr "继续进行"
 
 #: ../src/gui/instance.cpp:231
 msgid "The plugin operation has failed."
-msgstr ""
+msgstr "插件操作失败"
 
 #: ../src/gui/instance.cpp:232
 msgid ""
@@ -4884,7 +4898,7 @@ msgstr ""
 
 #: ../src/gui/instance.cpp:400
 msgid "Sure"
-msgstr ""
+msgstr "确认"
 
 #: ../src/gui/instance.cpp:583
 msgid "You must first add this composition to the repository"
@@ -4896,7 +4910,7 @@ msgstr "这会保存您所做的更改。您确认吗？"
 
 #: ../src/gui/instance.cpp:600 ../src/gui/instance.cpp:622
 msgid "Commit"
-msgstr ""
+msgstr "提交"
 
 #: ../src/gui/instance.cpp:611
 msgid ""
@@ -4906,7 +4920,7 @@ msgstr ""
 
 #: ../src/gui/instance.cpp:619
 msgid "Log Message: "
-msgstr ""
+msgstr "日志信息："
 
 #: ../src/gui/instance.cpp:633
 msgid "An error has occurred when trying to COMMIT"
@@ -4931,7 +4945,7 @@ msgstr "该文件是已更新的"
 
 #: ../src/gui/instance.cpp:708
 msgid "Update"
-msgstr ""
+msgstr "更新"
 
 #: ../src/gui/instance.cpp:728 ../src/gui/instance.cpp:784
 msgid "An error has occurred when trying to UPDATE"
@@ -4947,7 +4961,7 @@ msgid ""
 "This will abandon all changes you have made since the last time you "
 "performed a commit operation. This cannot be undone! Are you sure you want "
 "to do this?"
-msgstr ""
+msgstr "这会抛弃自上一次执行提交操作以来的所做的全部改动，这是不可逆的！您确认要这样做吗？"
 
 #: ../src/gui/instance.cpp:759 ../src/gui/instance.cpp:833
 msgid "Revert"
@@ -4959,7 +4973,7 @@ msgstr "未能移除上个版本"
 
 #: ../src/gui/instance.cpp:807
 msgid "The revert operation has failed."
-msgstr ""
+msgstr "恢复操作失败了。"
 
 #: ../src/gui/instance.cpp:808
 msgid ""
@@ -4976,30 +4990,30 @@ msgstr "恢复至已保存的"
 #: ../src/gui/instance.cpp:829
 msgid ""
 "You will lose any changes you have made since your last save.Are you sure?"
-msgstr ""
+msgstr "这样您会失去自上次保存后所做的全部改动，您确定吗？"
 
 #: ../src/gui/instance.cpp:855
 msgid "The animation is currently playing so the window cannot be closed."
-msgstr ""
+msgstr "动画正在播放中，所以无法关闭该窗口。"
 
 #: ../src/gui/instance.cpp:857
 msgid "Thanks!"
-msgstr ""
+msgstr "谢谢！"
 
 #: ../src/gui/instance.cpp:864
 #, c-format
 msgid "Save changes to document \"%s\" before closing?"
-msgstr ""
+msgstr "在关闭文档前是否要保存 \"%s\" ?"
 
 #: ../src/gui/instance.cpp:867
 msgid ""
 "If you don't save, changes from the last time you saved will be permanently "
 "lost."
-msgstr ""
+msgstr "如果您不做保存，自从上一次保存以后的所做的改动将永久丢失。"
 
 #: ../src/gui/instance.cpp:873
 msgid "Close without Saving"
-msgstr ""
+msgstr "关闭且不保存"
 
 #: ../src/gui/instance.cpp:892
 #, c-format
@@ -5010,11 +5024,11 @@ msgstr ""
 msgid ""
 "If you don't commit, changes not yet on the CVS repository will be "
 "permanently lost."
-msgstr ""
+msgstr "如果您不提交，尚未在 CVS 仓库的改动将会永久丢失。"
 
 #: ../src/gui/instance.cpp:901
 msgid "Close without Committing"
-msgstr ""
+msgstr "关闭且不提交"
 
 #: ../src/gui/instance.cpp:903
 msgid "Commit…"
@@ -5026,7 +5040,7 @@ msgstr "输出"
 
 #: ../src/gui/instance.cpp:1108
 msgid "Name: "
-msgstr ""
+msgstr "名字 : "
 
 #: ../src/gui/instance.cpp:1215
 #: ../src/synfigapp/actions/valuedescconvert.cpp:60
@@ -5043,19 +5057,19 @@ msgstr "编辑航点"
 
 #: ../src/gui/instance.cpp:1393
 msgid "Set width to zero"
-msgstr "设置线宽为零"
+msgstr "设定线宽为零"
 
 #: ../src/gui/instance.cpp:1407
 msgid "Set width to default"
-msgstr "设置线宽为默认值"
+msgstr "设定线宽为默认值"
 
 #: ../src/gui/instance.cpp:1435
 msgid "Apply"
-msgstr ""
+msgstr "应用"
 
 #: ../src/gui/instance.cpp:1440
 msgid "Set Waypoints"
-msgstr "设置航点"
+msgstr "设定航点"
 
 #: ../src/gui/instance.cpp:1502
 msgid "Unable to convert to animated waypoint"
@@ -5091,15 +5105,15 @@ msgstr "synfig studio —— 正在启动应用程序..."
 
 #: ../src/gui/mainwindow.cpp:144
 msgid "Create a new document"
-msgstr ""
+msgstr "创建一个新文档"
 
 #: ../src/gui/mainwindow.cpp:147
 msgid "Open an existing document"
-msgstr ""
+msgstr "打开现有文档"
 
 #: ../src/gui/mainwindow.cpp:164
 msgid "Show Menubar"
-msgstr ""
+msgstr "显示菜单栏"
 
 #. TRANSLATORS:         | Help menu entry:              | A wiki page:
 #. |
@@ -5145,7 +5159,7 @@ msgstr "请稍等..."
 
 #: ../src/gui/onemoment.cpp:93
 msgid "Working..."
-msgstr ""
+msgstr "处理中..."
 
 #: ../src/gui/preview.cpp:107 ../src/gui/workarea.cpp:730
 msgid "Cairo Surface bad status"
@@ -5153,7 +5167,7 @@ msgstr ""
 
 #: ../src/gui/preview.cpp:438
 msgid "Prev frame"
-msgstr ""
+msgstr "上一帧"
 
 #: ../src/gui/preview.cpp:478
 msgid "Next frame"
@@ -5167,15 +5181,15 @@ msgstr "闭环"
 
 #: ../src/gui/preview.cpp:508
 msgid "Halt render"
-msgstr ""
+msgstr "停止渲染"
 
 #: ../src/gui/preview.cpp:515
 msgid "Re-preview"
-msgstr ""
+msgstr "重做预览"
 
 #: ../src/gui/preview.cpp:522
 msgid "Erase all rendered frame(s)"
-msgstr ""
+msgstr "清除所有已渲染帧"
 
 #: ../src/gui/preview.cpp:572 ../src/gui/preview.cpp:772
 #: ../src/gui/preview.cpp:810 ../src/gui/preview.cpp:1197
@@ -5194,7 +5208,7 @@ msgstr "其他"
 
 #: ../src/gui/renddesc.cpp:137
 msgid "Image Size Ratio : "
-msgstr ""
+msgstr "图像尺寸比率 : "
 
 #: ../src/gui/renddesc.cpp:416
 msgid "_Pixel Aspect"
@@ -5226,19 +5240,19 @@ msgstr "图像跨度(_S)"
 
 #: ../src/gui/renddesc.cpp:431
 msgid "Link width and height"
-msgstr ""
+msgstr "链接宽度和高度"
 
 #: ../src/gui/renddesc.cpp:431
 msgid "Unlink width and height"
-msgstr ""
+msgstr "断开宽度和高度链接"
 
 #: ../src/gui/renddesc.cpp:432
 msgid "Link x and y resolution"
-msgstr ""
+msgstr "链接 x 轴和 y 轴分辨率"
 
 #: ../src/gui/renddesc.cpp:432
 msgid "Unlink x and y resolution"
-msgstr ""
+msgstr "断开 x 轴和 y 轴分辨率"
 
 #: ../src/gui/renddesc.cpp:476
 msgid "Image Size"
@@ -5346,7 +5360,7 @@ msgstr ""
 
 #: ../src/gui/render.cpp:74
 msgid "Extract alpha"
-msgstr ""
+msgstr "提取透明度"
 
 #: ../src/gui/render.cpp:84
 msgid "Auto"
@@ -5420,7 +5434,7 @@ msgstr "正在渲染 "
 msgid "File rendered successfully"
 msgstr "文件渲染成功"
 
-#: ../src/gui/render.cpp:424 ../src/gui/workarea.cpp:3308
+#: ../src/gui/render.cpp:424 ../src/gui/workarea.cpp:3318
 msgid "sec"
 msgstr ""
 
@@ -5432,43 +5446,43 @@ msgstr "错误："
 msgid "WARNING:"
 msgstr "警告："
 
-#: ../src/gui/workarea.cpp:1356
+#: ../src/gui/workarea.cpp:1357
 msgid "Unable to set \"grid_color\""
 msgstr ""
 
-#: ../src/gui/workarea.cpp:1387
+#: ../src/gui/workarea.cpp:1388
 msgid "Unable to set \"guide_color\""
 msgstr ""
 
-#: ../src/gui/workarea.cpp:1553
+#: ../src/gui/workarea.cpp:1554
 msgid "Unable to set \"background_first_color\""
 msgstr ""
 
-#: ../src/gui/workarea.cpp:1584
+#: ../src/gui/workarea.cpp:1585
 msgid "Unable to set \"background_second_color\""
 msgstr ""
 
-#: ../src/gui/workarea.cpp:1861
+#: ../src/gui/workarea.cpp:1862
 msgid "Nudge"
 msgstr "轻推"
 
-#: ../src/gui/workarea.cpp:2424 ../src/gui/workarea.cpp:2475
+#: ../src/gui/workarea.cpp:2425 ../src/gui/workarea.cpp:2476
 msgid "Move"
 msgstr "移动"
 
-#: ../src/gui/workarea.cpp:3281
+#: ../src/gui/workarea.cpp:3291
 msgid "Rendering..."
 msgstr "正在渲染..."
 
-#: ../src/gui/workarea.cpp:3306
+#: ../src/gui/workarea.cpp:3316
 msgid "Last rendering time"
-msgstr ""
+msgstr "剩余渲染时间"
 
-#: ../src/gui/workarea.cpp:3319 ../src/gui/workarea.cpp:3415
+#: ../src/gui/workarea.cpp:3329 ../src/gui/workarea.cpp:3425
 msgid "Render Failed"
 msgstr "渲染失败"
 
-#: ../src/gui/workarea.cpp:3397
+#: ../src/gui/workarea.cpp:3407
 #, c-format
 msgid "Rendering canvas %s..."
 msgstr "正在渲染画布%s..."
@@ -5498,8 +5512,8 @@ msgstr "添加活跃点"
 #: ../src/synfigapp/actions/valuedescdisconnect.cpp:93
 #: ../src/synfigapp/actions/valuedescexport.cpp:91
 #: ../src/synfigapp/actions/valuedescremovesmart.cpp:77
-#: ../src/synfigapp/actions/valuedescset.cpp:106
-#: ../src/synfigapp/actions/valuedescset.cpp:115
+#: ../src/synfigapp/actions/valuedescset.cpp:107
+#: ../src/synfigapp/actions/valuedescset.cpp:116
 #: ../src/synfigapp/actions/valuedescsetinterpolation.cpp:77
 #: ../src/synfigapp/actions/valuedescsetinterpolation.cpp:86
 #: ../src/synfigapp/actions/valuenodedynamiclistinsert.cpp:77
@@ -5513,7 +5527,7 @@ msgstr "添加活跃点"
 #: ../src/synfigapp/actions/valuenodestaticlistremovesmart.cpp:85
 #: ../src/synfigapp/actions/valuenodestaticlistrotateorder.cpp:75
 msgid "ValueDesc"
-msgstr "值描述"
+msgstr "ValueDesc"
 
 #: ../src/synfigapp/actions/activepointadd.cpp:81
 #: ../src/synfigapp/actions/activepointsetsmart.cpp:88
@@ -5610,11 +5624,11 @@ msgstr "合并切线"
 
 #: ../src/synfigapp/actions/blinepointtangentmerge.cpp:68
 msgid "Merge Tangents's Radius"
-msgstr ""
+msgstr "合并到切线范围"
 
 #: ../src/synfigapp/actions/blinepointtangentmerge.cpp:77
 msgid "Merge Tangents's Angle"
-msgstr ""
+msgstr "合并到切线角度"
 
 #: ../src/synfigapp/actions/blinepointtangentmerge.cpp:101
 #, c-format
@@ -5628,7 +5642,7 @@ msgstr "合并‘%s’切线"
 #: ../src/synfigapp/actions/blinepointtangentsplit.cpp:264
 #: ../src/synfigapp/actions/blinepointtangentsplit.cpp:402
 msgid "ValueNode of Spline Point"
-msgstr ""
+msgstr "样条点的值节点"
 
 #: ../src/synfigapp/actions/blinepointtangentmerge.cpp:217
 #: ../src/synfigapp/actions/blinepointtangentmerge.cpp:232
@@ -5639,17 +5653,17 @@ msgstr ""
 #: ../src/synfigapp/actions/blinepointtangentsplit.cpp:371
 #: ../src/synfigapp/actions/blinepointtangentsplit.cpp:509
 msgid "Couldn't find action \"ValueDescSet\""
-msgstr "未能发现“值描述集”"
+msgstr "未能发现“ ValueDesc 集”"
 
 #: ../src/synfigapp/actions/blinepointtangentmerge.cpp:258
 #, c-format
 msgid "Merge Tangents's Radius of '%s'"
-msgstr ""
+msgstr "合并‘%s’切线范围"
 
 #: ../src/synfigapp/actions/blinepointtangentmerge.cpp:398
 #, c-format
 msgid "Merge Tangents's Angle of '%s'"
-msgstr ""
+msgstr "合并‘%s’切线角度"
 
 #: ../src/synfigapp/actions/blinepointtangentsplit.cpp:59
 msgid "Split Tangents"
@@ -5657,11 +5671,11 @@ msgstr "分离切线"
 
 #: ../src/synfigapp/actions/blinepointtangentsplit.cpp:68
 msgid "Split Tangents's Radius"
-msgstr ""
+msgstr "分离切线范围"
 
 #: ../src/synfigapp/actions/blinepointtangentsplit.cpp:77
 msgid "Split Tangents's Angle"
-msgstr ""
+msgstr "分离切线角度"
 
 #: ../src/synfigapp/actions/blinepointtangentsplit.cpp:101
 #, c-format
@@ -5671,12 +5685,12 @@ msgstr "分离‘%s’的切线"
 #: ../src/synfigapp/actions/blinepointtangentsplit.cpp:256
 #, c-format
 msgid "Split Tangents's Radius of '%s'"
-msgstr ""
+msgstr "分离‘%s’的切线范围"
 
 #: ../src/synfigapp/actions/blinepointtangentsplit.cpp:394
 #, c-format
 msgid "Split Tangents's Angle of '%s'"
-msgstr ""
+msgstr "分离‘%s’的切线角度"
 
 #: ../src/synfigapp/actions/canvasadd.cpp:49
 msgid "Add Child Canvas"
@@ -5688,7 +5702,7 @@ msgstr "把画布保存成的名字"
 
 #: ../src/synfigapp/actions/canvasdescriptionset.cpp:50
 msgid "Set Canvas Description"
-msgstr "设置画布描述"
+msgstr "设定画布描述"
 
 #. TRANSLATORS: This is used in the 'history' dialog when a Canvas has its
 #. description changed.
@@ -5699,7 +5713,7 @@ msgstr "把画布描述从‘%s’改为‘%s’"
 
 #: ../src/synfigapp/actions/canvasidset.cpp:50
 msgid "Set Canvas Id"
-msgstr "设置画布 ID"
+msgstr "设定画布 ID"
 
 #. TRANSLATORS: This is used in the 'history' dialog when a Canvas has its id
 #. changed.
@@ -5714,27 +5728,27 @@ msgstr "ID"
 
 #: ../src/synfigapp/actions/canvasmetadataerase.cpp:51
 msgid "Erase Canvas Metadata"
-msgstr ""
+msgstr "擦除画布元数据"
 
 #. TRANSLATORS: This is used in the 'history' dialog when a Canvas has its
 #. name changed.
 #: ../src/synfigapp/actions/canvasmetadataerase.cpp:72
 msgid "Erase canvas metadata"
-msgstr ""
+msgstr "擦除画布元数据"
 
 #: ../src/synfigapp/actions/canvasmetadataset.cpp:51
 msgid "Set Canvas Metadata"
-msgstr ""
+msgstr "设定画布元数据"
 
 #. TRANSLATORS: This is used in the 'history' dialog when a Canvas has its
 #. name changed.
 #: ../src/synfigapp/actions/canvasmetadataset.cpp:72
 msgid "Edit canvas metadata"
-msgstr ""
+msgstr "编辑画布元数据"
 
 #: ../src/synfigapp/actions/canvasnameset.cpp:50
 msgid "Set Canvas Name"
-msgstr "设置画布名字"
+msgstr "设定画布名字"
 
 #. TRANSLATORS: This is used in the 'history' dialog when a Canvas has its
 #. name changed.
@@ -5753,11 +5767,11 @@ msgstr "您不能移除根画布！"
 
 #: ../src/synfigapp/actions/canvasremove.cpp:110
 msgid "You cannot remove an canvas from a Group!"
-msgstr ""
+msgstr "您不能从一个群组中移除一个画布！"
 
 #: ../src/synfigapp/actions/canvasrenddescset.cpp:49
 msgid "Set Canvas RendDesc"
-msgstr "设置画布 RendDesc"
+msgstr "设定画布 RendDesc"
 
 #: ../src/synfigapp/actions/canvasrenddescset.cpp:73
 msgid "RendDesc"
@@ -5785,56 +5799,56 @@ msgstr "应用默认渐变"
 
 #: ../src/synfigapp/actions/groupaddlayers.cpp:49
 msgid "Add Layers to Set"
-msgstr ""
+msgstr "把层添加到层集中"
 
 #: ../src/synfigapp/actions/groupaddlayers.cpp:73
 msgid "Layer to be added to set"
-msgstr ""
+msgstr "要加到层集中的层"
 
 #: ../src/synfigapp/actions/groupaddlayers.cpp:79
 msgid "Name of the Set to add the Layers to"
-msgstr ""
+msgstr "层要加入的层集名"
 
 #: ../src/synfigapp/actions/groupremove.cpp:49
 msgid "Remove Set"
-msgstr ""
+msgstr "删除层集"
 
 #: ../src/synfigapp/actions/groupremove.cpp:73
 msgid "Name of the Set to remove"
-msgstr ""
+msgstr "要删除的层集的名字"
 
 #: ../src/synfigapp/actions/groupremovelayers.cpp:50
 msgid "Remove Layers from a Set"
-msgstr ""
+msgstr "从层集中移除层"
 
 #: ../src/synfigapp/actions/groupremovelayers.cpp:74
 msgid "Layer to be removed from Set"
-msgstr ""
+msgstr "要从层集中移除的层"
 
 #: ../src/synfigapp/actions/grouprename.cpp:49
 msgid "Rename Set"
-msgstr ""
+msgstr "重命名层集"
 
 #: ../src/synfigapp/actions/grouprename.cpp:72
 msgid "Old Set"
-msgstr ""
+msgstr "旧层集"
 
 #: ../src/synfigapp/actions/grouprename.cpp:73
 msgid "Name of the Set to rename"
-msgstr ""
+msgstr "要改名的层集的名字"
 
 #: ../src/synfigapp/actions/grouprename.cpp:77
 msgid "New Set"
-msgstr ""
+msgstr "新层集"
 
 #: ../src/synfigapp/actions/grouprename.cpp:78
 msgid "New name for Set"
-msgstr ""
+msgstr "层集的新名字"
 
 #: ../src/synfigapp/actions/grouprename.cpp:123
 #, c-format
 msgid "A set with the name \"%s\" already exists!"
-msgstr ""
+msgstr "已有一个名为“%s”的层集了！"
 
 #: ../src/synfigapp/actions/keyframeadd.cpp:49
 msgid "Add Keyframe"
@@ -5902,7 +5916,7 @@ msgstr "要移除的关键帧"
 
 #: ../src/synfigapp/actions/keyframeset.cpp:55
 msgid "Set Keyframe"
-msgstr "设置关键帧"
+msgstr "设定关键帧"
 
 #: ../src/synfigapp/actions/keyframeset.cpp:389
 msgid ""
@@ -5920,20 +5934,20 @@ msgstr "Delta"
 
 #: ../src/synfigapp/actions/keyframetoggl.cpp:54
 msgid "Activate/Deactivate Keyframe"
-msgstr ""
+msgstr "激活 / 解除激活关键帧"
 
 #: ../src/synfigapp/actions/keyframetoggl.cpp:78
 #: ../src/synfigapp/actions/keyframetoggl.cpp:82
 msgid "Activate Keyframe"
-msgstr ""
+msgstr "激活关键帧"
 
 #: ../src/synfigapp/actions/keyframetoggl.cpp:83
 msgid "Deactivate Keyframe"
-msgstr ""
+msgstr "解除激活关键帧"
 
 #: ../src/synfigapp/actions/keyframetoggl.cpp:94
 msgid "Keyframe to be activated or deactivated"
-msgstr ""
+msgstr "关键帧已被激活或者解除激活"
 
 #: ../src/synfigapp/actions/keyframetoggl.cpp:98
 #: ../src/synfigapp/actions/layeractivate.cpp:91
@@ -5942,7 +5956,7 @@ msgstr "新状态"
 
 #: ../src/synfigapp/actions/keyframetoggl.cpp:99
 msgid "The new status of the keyframe"
-msgstr ""
+msgstr "关键帧新状态"
 
 #: ../src/synfigapp/actions/keyframewaypointset.cpp:53
 msgid "Set Waypoints at Keyframe"
@@ -5996,7 +6010,7 @@ msgstr "要添加的层"
 
 #: ../src/synfigapp/actions/layeraddframe.cpp:51
 msgid "Make New Frame"
-msgstr ""
+msgstr "制作新一帧"
 
 #: ../src/synfigapp/actions/layeraddframe.cpp:76
 msgid "New frame should be added into this Switch Layer"
@@ -6025,15 +6039,15 @@ msgstr ""
 #: ../src/synfigapp/actions/layercopy.cpp:52
 #: ../src/synfigapp/actions/layercopy.cpp:72
 msgid "Simple Copy Layer"
-msgstr ""
+msgstr "简单复制层"
 
 #: ../src/synfigapp/actions/layercopy.cpp:72
 msgid "Simple Copy Layers"
-msgstr ""
+msgstr "简单复制多层"
 
 #: ../src/synfigapp/actions/layercopy.cpp:82
 msgid "Layer to be copied"
-msgstr ""
+msgstr "要复制的层"
 
 #: ../src/synfigapp/actions/layercopy.cpp:137
 #: ../src/synfigapp/actions/layerduplicate.cpp:141
@@ -6054,11 +6068,11 @@ msgstr "要复制的层"
 
 #: ../src/synfigapp/actions/layerembed.cpp:53
 msgid "Embed Layer"
-msgstr ""
+msgstr "嵌入层"
 
 #: ../src/synfigapp/actions/layerembed.cpp:73
 msgid "Layer to be embed"
-msgstr ""
+msgstr "要嵌入的层"
 
 #: ../src/synfigapp/actions/layerembed.cpp:191
 msgid "Cannot generate valid name for new canvas"
@@ -6074,7 +6088,7 @@ msgstr ""
 
 #: ../src/synfigapp/actions/layerencapsulate.cpp:73
 msgid "Group Layers"
-msgstr ""
+msgstr "组层"
 
 #: ../src/synfigapp/actions/layerencapsulate.cpp:83
 #: ../src/synfigapp/actions/layerencapsulateswitch.cpp:81
@@ -6084,12 +6098,12 @@ msgstr ""
 #: ../src/synfigapp/actions/layerencapsulate.cpp:88
 #: ../src/synfigapp/actions/layerencapsulateswitch.cpp:86
 msgid "Description of new switch"
-msgstr ""
+msgstr "新转换层描述"
 
 #: ../src/synfigapp/actions/layerencapsulate.cpp:156
 #: ../src/synfigapp/actions/layerencapsulateswitch.cpp:149
 msgid "No layers to group"
-msgstr ""
+msgstr "没有层成组"
 
 #: ../src/synfigapp/actions/layerencapsulate.cpp:212
 #: ../src/synfigapp/actions/layerencapsulateswitch.cpp:204
@@ -6104,11 +6118,11 @@ msgstr "get_canvas()!=subcanvas"
 #: ../src/synfigapp/actions/layerencapsulateswitch.cpp:51
 #: ../src/synfigapp/actions/layerencapsulateswitch.cpp:71
 msgid "Group Layer into Switch"
-msgstr ""
+msgstr "组进入转换层"
 
 #: ../src/synfigapp/actions/layerencapsulateswitch.cpp:71
 msgid "Group Layers into Switch"
-msgstr ""
+msgstr "群组进入转换层"
 
 #: ../src/synfigapp/actions/layerextract.cpp:49
 msgid "Extract Layer"
@@ -6120,7 +6134,7 @@ msgstr ""
 
 #: ../src/synfigapp/actions/layerextract.cpp:73
 msgid "File name"
-msgstr ""
+msgstr "文件名"
 
 #: ../src/synfigapp/actions/layerextract.cpp:74
 msgid "File name witch path to store exported file"
@@ -6128,11 +6142,11 @@ msgstr ""
 
 #: ../src/synfigapp/actions/layerextract.cpp:165
 msgid "Cannot copy file"
-msgstr ""
+msgstr "无法拷贝文件"
 
 #: ../src/synfigapp/actions/layerfit.cpp:50
 msgid "Fit image"
-msgstr ""
+msgstr "适合图像"
 
 #: ../src/synfigapp/actions/layerfit.cpp:131
 msgid "You cannot fit animated layers"
@@ -6169,7 +6183,7 @@ msgstr ""
 
 #: ../src/synfigapp/actions/layermakebline.cpp:144
 msgid "This layer doesn't contain linked \"spline\" parameter."
-msgstr ""
+msgstr "这个层不包含已经链接的“样条”参数。"
 
 #: ../src/synfigapp/actions/layermove.cpp:50
 #: ../src/synfigapp/actions/layermove.cpp:74
@@ -6233,7 +6247,7 @@ msgstr "层参数已经不再联接了"
 
 #: ../src/synfigapp/actions/layerparamset.cpp:49
 msgid "Set Layer Parameter"
-msgstr "设置层的参数"
+msgstr "设定层的参数"
 
 #: ../src/synfigapp/actions/layerparamset.cpp:132
 msgid "ValueNode attached to Parameter."
@@ -6300,7 +6314,7 @@ msgstr "要删除的层"
 #: ../src/synfigapp/actions/layerresetpose.cpp:51
 #: ../src/synfigapp/actions/valuedescresetpose.cpp:51
 msgid "Reset Pose"
-msgstr ""
+msgstr "重置姿势"
 
 #: ../src/synfigapp/actions/layerresetpose.cpp:76
 msgid "Layer to reset"
@@ -6373,32 +6387,33 @@ msgstr ""
 #: ../src/synfigapp/actions/layerzdepthrangeset.cpp:174
 #: ../src/synfigapp/actions/layerzdepthrangeset.cpp:189
 #: ../src/synfigapp/actions/layerzdepthrangeset.cpp:204
-#: ../src/synfigapp/actions/valuedescset.cpp:206
-#: ../src/synfigapp/actions/valuedescset.cpp:237
-#: ../src/synfigapp/actions/valuedescset.cpp:272
-#: ../src/synfigapp/actions/valuedescset.cpp:310
-#: ../src/synfigapp/actions/valuedescset.cpp:341
-#: ../src/synfigapp/actions/valuedescset.cpp:445
-#: ../src/synfigapp/actions/valuedescset.cpp:494
-#: ../src/synfigapp/actions/valuedescset.cpp:539
-#: ../src/synfigapp/actions/valuedescset.cpp:589
-#: ../src/synfigapp/actions/valuedescset.cpp:624
-#: ../src/synfigapp/actions/valuedescset.cpp:645
-#: ../src/synfigapp/actions/valuedescset.cpp:668
-#: ../src/synfigapp/actions/valuedescset.cpp:689
-#: ../src/synfigapp/actions/valuedescset.cpp:709
-#: ../src/synfigapp/actions/valuedescset.cpp:748
-#: ../src/synfigapp/actions/valuedescset.cpp:804
-#: ../src/synfigapp/actions/valuedescset.cpp:823
-#: ../src/synfigapp/actions/valuedescset.cpp:839
-#: ../src/synfigapp/actions/valuedescset.cpp:923
+#: ../src/synfigapp/actions/valuedescset.cpp:207
+#: ../src/synfigapp/actions/valuedescset.cpp:238
+#: ../src/synfigapp/actions/valuedescset.cpp:273
+#: ../src/synfigapp/actions/valuedescset.cpp:311
+#: ../src/synfigapp/actions/valuedescset.cpp:342
+#: ../src/synfigapp/actions/valuedescset.cpp:446
+#: ../src/synfigapp/actions/valuedescset.cpp:495
+#: ../src/synfigapp/actions/valuedescset.cpp:540
+#: ../src/synfigapp/actions/valuedescset.cpp:590
+#: ../src/synfigapp/actions/valuedescset.cpp:625
+#: ../src/synfigapp/actions/valuedescset.cpp:646
+#: ../src/synfigapp/actions/valuedescset.cpp:669
+#: ../src/synfigapp/actions/valuedescset.cpp:692
+#: ../src/synfigapp/actions/valuedescset.cpp:713
+#: ../src/synfigapp/actions/valuedescset.cpp:733
+#: ../src/synfigapp/actions/valuedescset.cpp:772
+#: ../src/synfigapp/actions/valuedescset.cpp:828
+#: ../src/synfigapp/actions/valuedescset.cpp:847
+#: ../src/synfigapp/actions/valuedescset.cpp:863
+#: ../src/synfigapp/actions/valuedescset.cpp:945
 #: ../src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:205
 #: ../src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:298
 #: ../src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:313
 #: ../src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:404
 #: ../src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:419
 msgid "Unable to find action ValueDescSet (bug)"
-msgstr "未能发现动作值描述集（Bug）"
+msgstr "未能发现动作 ValueDesc 集 (Bug)"
 
 #: ../src/synfigapp/actions/timepointscopy.cpp:58
 msgid "Copy Time Points"
@@ -6472,17 +6487,17 @@ msgstr "移动时间点"
 
 #: ../src/synfigapp/actions/valuedescblinelink.cpp:61
 msgid "Link to Spline"
-msgstr ""
+msgstr "链接到样条上"
 
 #: ../src/synfigapp/actions/valuedescblinelink.cpp:85
 #: ../src/synfigapp/actions/valuedescbonelink.cpp:83
 #: ../src/synfigapp/actions/valuedescskeletonlink.cpp:88
 msgid "ValueDesc to link"
-msgstr "要链接的值描述"
+msgstr "要链接上的 ValueDesc"
 
 #: ../src/synfigapp/actions/valuedescblinelink.cpp:89
 msgid "ValueDesc on Spline to link to"
-msgstr ""
+msgstr "要链接的样条 ValueDesc"
 
 #: ../src/synfigapp/actions/valuedescblinelink.cpp:96
 #: ../src/synfigapp/actions/valuedescremovesmart.cpp:85
@@ -6501,7 +6516,7 @@ msgstr ""
 
 #: ../src/synfigapp/actions/valuedescbonelink.cpp:87
 msgid "ValueDesc on Bone to link to"
-msgstr ""
+msgstr "要链接上的骨骼 ValueDesc"
 
 #: ../src/synfigapp/actions/valuedescconnect.cpp:55
 msgid "Connect"
@@ -6516,7 +6531,7 @@ msgstr "联接‘%s’到‘%s’上"
 
 #: ../src/synfigapp/actions/valuedescconnect.cpp:87
 msgid "Destination ValueDesc"
-msgstr "目标值描述"
+msgstr "目标 ValueDesc"
 
 #: ../src/synfigapp/actions/valuedescconnect.cpp:91
 #: ../src/synfigapp/actions/valuenodereplace.cpp:90
@@ -6527,10 +6542,10 @@ msgstr "源值节点"
 msgid "Source ValueNode Name"
 msgstr "源值节点名"
 
-#: ../src/synfigapp/actions/valuedescconnect.cpp:257
+#: ../src/synfigapp/actions/valuedescconnect.cpp:265
 #: ../src/synfigapp/actions/valuedescdisconnect.cpp:262
 msgid "ValueDesc is not recognized or supported."
-msgstr "不认识或不支持的值描述"
+msgstr "不认识或不支持的 ValueDesc。"
 
 #. TRANSLATORS: This is used in the 'history' dialog when a ValueNode is
 #. converted.  The first %s is what is converted, the 2nd is the local name of
@@ -6546,7 +6561,7 @@ msgstr "您要转换成的值节点类型"
 
 #: ../src/synfigapp/actions/valuedescconvert.cpp:183
 msgid "Unable to decipher ValueDesc (Bug?)"
-msgstr "未能解译值描述 （Bug?）"
+msgstr "未能解译的 ValueDesc (Bug?)"
 
 #: ../src/synfigapp/actions/valuedescconvert.cpp:192
 msgid "Unable to create new value node"
@@ -6559,7 +6574,7 @@ msgstr ""
 #: ../src/synfigapp/actions/valuedesccreatechildbone.cpp:74
 #: ../src/synfigapp/actions/valuedescresetpose.cpp:75
 msgid "ValueDesc on parent Bone"
-msgstr ""
+msgstr "父辈骨骼上的 ValueDesc"
 
 #: ../src/synfigapp/actions/valuedescdisconnect.cpp:59
 msgid "Disconnect"
@@ -6590,7 +6605,7 @@ msgstr ""
 
 #: ../src/synfigapp/actions/valuedescexport.cpp:251
 msgid "Can only export Canvas when used as constant parameter"
-msgstr "只有在用作恒量参数是才能输出画布"
+msgstr "只有在用作恒量参数时才能输出画布"
 
 #: ../src/synfigapp/actions/valuedescexport.cpp:314
 msgid "ValueBase is already exported"
@@ -6610,71 +6625,71 @@ msgstr "链接相反"
 
 #: ../src/synfigapp/actions/valuedesclink.cpp:89
 msgid "ValueDesc to smart link"
-msgstr "要智能链接的值描述"
+msgstr "要智能链接上的 ValueDesc"
 
-#: ../src/synfigapp/actions/valuedesclink.cpp:161
+#: ../src/synfigapp/actions/valuedesclink.cpp:162
 msgid "Cannot link two different exported values ('"
 msgstr "不能链接两个不同的输出值（‘"
 
-#: ../src/synfigapp/actions/valuedesclink.cpp:162
+#: ../src/synfigapp/actions/valuedesclink.cpp:163
 msgid "' and '"
 msgstr "‘和’"
 
-#: ../src/synfigapp/actions/valuedesclink.cpp:163
+#: ../src/synfigapp/actions/valuedesclink.cpp:164
 msgid "')"
 msgstr "‘）"
 
-#: ../src/synfigapp/actions/valuedesclink.cpp:169
+#: ../src/synfigapp/actions/valuedesclink.cpp:170
 msgid "Used exported ValueNode ('"
 msgstr "采用的输出值节点（‘"
 
-#: ../src/synfigapp/actions/valuedesclink.cpp:169
+#: ../src/synfigapp/actions/valuedesclink.cpp:170
 msgid "')."
 msgstr "‘）。"
 
-#: ../src/synfigapp/actions/valuedesclink.cpp:176
+#: ../src/synfigapp/actions/valuedesclink.cpp:177
 msgid "Using the only available ValueNode."
 msgstr "使用有效的值节点。"
 
-#: ../src/synfigapp/actions/valuedesclink.cpp:190
-#: ../src/synfigapp/actions/valuedesclink.cpp:197
+#: ../src/synfigapp/actions/valuedesclink.cpp:191
+#: ../src/synfigapp/actions/valuedesclink.cpp:198
 msgid "Using the most referenced ValueNode."
 msgstr "使用最常引用的值节点。"
 
-#: ../src/synfigapp/actions/valuedesclink.cpp:205
-#: ../src/synfigapp/actions/valuedesclink.cpp:214
+#: ../src/synfigapp/actions/valuedesclink.cpp:206
+#: ../src/synfigapp/actions/valuedesclink.cpp:215
 msgid "There's a tie for most referenced; using the animated ValueNode."
 msgstr "引用最多的已经有连结存在；将采用带动画的值节点。"
 
-#: ../src/synfigapp/actions/valuedesclink.cpp:227
-#: ../src/synfigapp/actions/valuedesclink.cpp:234
+#: ../src/synfigapp/actions/valuedesclink.cpp:228
+#: ../src/synfigapp/actions/valuedesclink.cpp:235
 msgid ""
 "There's a tie for most referenced, and both are animated; using the one with"
 " the most waypoints."
 msgstr "引用最多的已经有连结存在，而且两个都是带动画的；将采用带最多航点的那一个。"
 
-#: ../src/synfigapp/actions/valuedesclink.cpp:247
-#: ../src/synfigapp/actions/valuedesclink.cpp:254
+#: ../src/synfigapp/actions/valuedesclink.cpp:248
+#: ../src/synfigapp/actions/valuedesclink.cpp:255
 msgid ""
 "There's a tie for most referenced, and both are linkable value node "
 "animated; using the one with the most waypoints."
 msgstr "引用最多的已经有连结存在，而且两个都是带动画的；将采用带最多航点的那一个。"
 
-#: ../src/synfigapp/actions/valuedesclink.cpp:263
-#: ../src/synfigapp/actions/valuedesclink.cpp:270
+#: ../src/synfigapp/actions/valuedesclink.cpp:264
+#: ../src/synfigapp/actions/valuedesclink.cpp:271
 msgid "Everything is tied; using the least recently modified value."
 msgstr "全部都是连结的；将采用最近修改过的值。"
 
-#: ../src/synfigapp/actions/valuedesclink.cpp:276
+#: ../src/synfigapp/actions/valuedesclink.cpp:277
 msgid "Absolutely everything is tied."
 msgstr "所有都是完全连结的。"
 
-#: ../src/synfigapp/actions/valuedesclink.cpp:284
+#: ../src/synfigapp/actions/valuedesclink.cpp:285
 #, c-format
 msgid "Cannot link two values of different types ('%s' and '%s')"
 msgstr "不能链接两个不同类型（‘%s‘和’%s‘）的值"
 
-#: ../src/synfigapp/actions/valuedesclink.cpp:321
+#: ../src/synfigapp/actions/valuedesclink.cpp:322
 msgid "No ValueNodes were available, so one was created."
 msgstr "没有值节点可用，因此创建了一个。"
 
@@ -6693,110 +6708,111 @@ msgstr ""
 msgid "Unable to find action (bug)"
 msgstr "未能发现动作 (Bug)"
 
-#: ../src/synfigapp/actions/valuedescset.cpp:79
+#: ../src/synfigapp/actions/valuedescset.cpp:80
 msgid "Set ValueDesc"
-msgstr "设置数组描述"
+msgstr "设定 ValueDesc"
 
-#: ../src/synfigapp/actions/valuedescset.cpp:103
+#: ../src/synfigapp/actions/valuedescset.cpp:104
 #, c-format
 msgid "Set %s"
-msgstr "设置%s"
+msgstr "设定 %s"
 
-#: ../src/synfigapp/actions/valuedescset.cpp:127
+#: ../src/synfigapp/actions/valuedescset.cpp:128
 msgid "Recursive"
 msgstr ""
 
-#: ../src/synfigapp/actions/valuedescset.cpp:131
+#: ../src/synfigapp/actions/valuedescset.cpp:132
 msgid "Animate"
 msgstr "动画"
 
-#: ../src/synfigapp/actions/valuedescset.cpp:135
+#: ../src/synfigapp/actions/valuedescset.cpp:136
 msgid "Lock animation"
-msgstr ""
+msgstr "锁动画"
 
-#: ../src/synfigapp/actions/valuedescset.cpp:232
+#: ../src/synfigapp/actions/valuedescset.cpp:233
 msgid ""
 "this node isn't editable - in the future it will be greyed to prevent "
 "editing"
-msgstr ""
+msgstr "该节点不可编辑 — 在未来这将会弄成灰色的，以防止编辑"
 
-#: ../src/synfigapp/actions/valuedescset.cpp:436
+#: ../src/synfigapp/actions/valuedescset.cpp:437
 #, c-format
 msgid "Bad type for composite (%s)"
 msgstr "坏复合类型（%s）"
 
-#: ../src/synfigapp/actions/valuedescset.cpp:582
+#: ../src/synfigapp/actions/valuedescset.cpp:583
 #, c-format
 msgid "Bad type for radial composite (%s)"
 msgstr "坏放射状复合类型（%s）"
 
-#: ../src/synfigapp/actions/valuedescset.cpp:610
+#: ../src/synfigapp/actions/valuedescset.cpp:611
 msgid "Attempt to edit scale ValueNode with a scale factor of zero."
 msgstr "试图用为零的缩放来编辑缩放值节点。"
 
-#: ../src/synfigapp/actions/valuedescset.cpp:621
-#: ../src/synfigapp/actions/valuedescset.cpp:665
-#: ../src/synfigapp/actions/valuedescset.cpp:686
+#: ../src/synfigapp/actions/valuedescset.cpp:622
+#: ../src/synfigapp/actions/valuedescset.cpp:666
+#: ../src/synfigapp/actions/valuedescset.cpp:689
+#: ../src/synfigapp/actions/valuedescset.cpp:710
 #, c-format
 msgid "Inverse manipulation of %s scale values not implemented in core."
 msgstr "反转操作 %s 缩放值仍未实现。"
 
-#: ../src/synfigapp/actions/valuedescset.cpp:642
+#: ../src/synfigapp/actions/valuedescset.cpp:643
 #, c-format
 msgid "Inverse manipulation of %s range values not implemented in core."
 msgstr "反转操作 %s 范围值仍未实现。"
 
-#: ../src/synfigapp/actions/valuedescset.cpp:960
+#: ../src/synfigapp/actions/valuedescset.cpp:982
 msgid ""
 "It is forbidden to set lower boundary equal or bigger than upper boundary"
-msgstr ""
+msgstr "禁止所设定的下限大于或等于上限"
 
-#: ../src/synfigapp/actions/valuedescset.cpp:1030
-#: ../src/synfigapp/actions/valuedescset.cpp:1142
+#: ../src/synfigapp/actions/valuedescset.cpp:1052
+#: ../src/synfigapp/actions/valuedescset.cpp:1164
 msgid "Direct manipulation of this ValueNode type is not yet supported"
 msgstr "该值节点类型不支持直接操作"
 
-#: ../src/synfigapp/actions/valuedescset.cpp:1096
+#: ../src/synfigapp/actions/valuedescset.cpp:1118
 msgid ""
 "You are trying to edit animated parameter while Animation Mode is off.\n"
 "\n"
 "Do you want to apply offset to this animation?"
 msgstr ""
 
-#: ../src/synfigapp/actions/valuedescset.cpp:1097
+#: ../src/synfigapp/actions/valuedescset.cpp:1119
 msgid ""
 "Hint: You can hold Spacebar key while editing parameter to avoid this "
 "confirmation dialog."
-msgstr ""
+msgstr "提示：你可以按住空格键的同时编辑参数来避免这一确认对话框。"
 
-#: ../src/synfigapp/actions/valuedescset.cpp:1102
+#: ../src/synfigapp/actions/valuedescset.cpp:1124
 msgid "Cancelled by user"
-msgstr ""
+msgstr "已被用户取消了"
 
-#: ../src/synfigapp/actions/valuedescset.cpp:1139
+#: ../src/synfigapp/actions/valuedescset.cpp:1161
 msgid "You must be in Animate-Editing-Mode to directly manipulate this value"
 msgstr "必须在动画编辑模式中才能直接操作该值"
 
-#: ../src/synfigapp/actions/valuedescset.cpp:1158
+#: ../src/synfigapp/actions/valuedescset.cpp:1180
 msgid "Unsupported ValueDesc type"
-msgstr "未支持的值描述类型"
+msgstr "未支持的 ValueDesc 类型"
 
 #: ../src/synfigapp/actions/valuedescsetinterpolation.cpp:53
 msgid "Set Parameter Interpolation"
-msgstr ""
+msgstr "设定参数插值方式"
 
 #: ../src/synfigapp/actions/valuedescsetinterpolation.cpp:74
 #, c-format
 msgid "Set interpolation for %s"
-msgstr ""
+msgstr "为 %s 设定插值"
 
 #: ../src/synfigapp/actions/valuedescskeletonlink.cpp:64
 msgid "Link to Skeleton"
-msgstr ""
+msgstr "链接到骨架"
 
 #: ../src/synfigapp/actions/valuedescskeletonlink.cpp:92
 msgid "ValueDesc of Skeleton's Bone"
-msgstr ""
+msgstr "骨架上的骨骼的 ValueDesc"
 
 #: ../src/synfigapp/actions/valuenodeadd.cpp:49
 msgid "Add ValueNode"
@@ -6828,7 +6844,7 @@ msgstr "移除值节点时捕捉到异常。"
 
 #: ../src/synfigapp/actions/valuenodeconstset.cpp:49
 msgid "Set ValueNode_Const"
-msgstr "设置值节点结构"
+msgstr "设定 ValueNode_Const"
 
 #: ../src/synfigapp/actions/valuenodeconstset.cpp:73
 #: ../src/synfigapp/actions/valuenoderename.cpp:82
@@ -6993,7 +7009,7 @@ msgstr "动作失败。这是个 Bug。请报告之。"
 
 #: ../src/synfigapp/actions/valuenodereplace.cpp:190
 msgid "This action cannot be undone under these circumstances."
-msgstr "在这些情况下，这个动作不能够撤销的。"
+msgstr "在这些情况下，这个动作是不能够撤消的。"
 
 #: ../src/synfigapp/actions/valuenodestaticlistinsertsmart.cpp:51
 msgid "Insert Item (Smart)"
@@ -7032,16 +7048,16 @@ msgstr "该航点已经在这个值节点"
 
 #: ../src/synfigapp/actions/waypointconnect.cpp:50
 msgid "Connect Waypoint"
-msgstr ""
+msgstr "接通航点"
 
 #: ../src/synfigapp/actions/waypointconnect.cpp:78
 #: ../src/synfigapp/actions/waypointdisconnect.cpp:80
 msgid "Waypoint Time"
-msgstr ""
+msgstr "航点时间"
 
 #: ../src/synfigapp/actions/waypointdisconnect.cpp:51
 msgid "Disconnect Waypoint"
-msgstr ""
+msgstr "断开航点"
 
 #: ../src/synfigapp/actions/waypointremove.cpp:49
 msgid "Remove Waypoint"
@@ -7087,7 +7103,7 @@ msgstr "在这个时间点已存在一个航点"
 
 #: ../src/synfigapp/actions/waypointset.cpp:49
 msgid "Set Waypoint"
-msgstr "设置航点"
+msgstr "设定航点"
 
 #: ../src/synfigapp/actions/waypointset.cpp:78
 msgid "Waypoint to be changed"
@@ -7111,15 +7127,15 @@ msgstr "动作没准备好"
 #: ../src/synfigapp/action_system.cpp:110
 #, c-format
 msgid "Do you want to do action \"%s\"?"
-msgstr ""
+msgstr "您要执行动作 \"%s\" 吗？"
 
 #: ../src/synfigapp/action_system.cpp:111
 msgid "This action cannot be undone."
-msgstr ""
+msgstr "该动作不能撤消。"
 
 #: ../src/synfigapp/action_system.cpp:117
 msgid "Continue"
-msgstr ""
+msgstr "继续"
 
 #: ../src/synfigapp/action_system.cpp:136
 #: ../src/synfigapp/action_system.cpp:153
@@ -7134,11 +7150,11 @@ msgstr "成功"
 #: ../src/synfigapp/action_system.cpp:230
 #: ../src/synfigapp/action_system.cpp:232
 msgid " (Undo): "
-msgstr "（撤销）："
+msgstr "(撤消):"
 
 #: ../src/synfigapp/action_system.cpp:292
 msgid "Failed to undo."
-msgstr "撤销失败。"
+msgstr "撤消失败。"
 
 #: ../src/synfigapp/action_system.cpp:328
 #: ../src/synfigapp/action_system.cpp:330
@@ -7218,7 +7234,7 @@ msgstr ""
 
 #: ../src/synfigapp/canvasinterface.cpp:746
 msgid "Could not set children lock of imported canvas"
-msgstr "未能设置导入的画布的子女锁"
+msgstr "未能设定导入的画布的子辈锁"
 
 #: ../src/synfigapp/canvasinterface.cpp:760
 msgid ""

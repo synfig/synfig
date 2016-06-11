@@ -1,9 +1,10 @@
 # Translation file for Synfig Core package.
-# Copyright (C) 2015 Synfig Contributors
+# Copyright (C) 2016 Synfig Contributors
 # This file is distributed under the same license as the Synfig Core package.
 # 
 # Translators:
 # darkspace65 <studio.diba@gmail.com>, 2013
+# Kevin <Kevoelie@gmail.com>, 2015
 # Rodolfo_Jadon, 2014
 # Ruud van Eeghem <r.van.eeghem@gmail.com>, 2011
 # darkspace65 <studio.diba@gmail.com>, 2013
@@ -12,10 +13,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Synfig UI\n"
 "Report-Msgid-Bugs-To: http://www.synfig.org/issues/thebuggenie/synfig\n"
-"POT-Creation-Date: 2015-07-27 18:00+0700\n"
-"PO-Revision-Date: 2015-07-22 14:12+0000\n"
+"POT-Creation-Date: 2016-06-05 14:00+0700\n"
+"PO-Revision-Date: 2015-12-25 06:36+0000\n"
 "Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
-"Language-Team: Dutch (http://www.transifex.com/projects/p/synfig/language/nl/)\n"
+"Language-Team: Dutch (http://www.transifex.com/morevnaproject/synfig/language/nl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -353,6 +354,7 @@ msgstr "Gebogen Warp"
 #: src/modules/lyr_std/sphere_distort.cpp:75
 #: src/modules/lyr_std/stretch.cpp:58 src/modules/lyr_std/twirl.cpp:57
 #: src/modules/lyr_std/warp.cpp:58 src/modules/mod_noise/distort.cpp:59
+#: src/synfig/layers/layer_skeletondeformation.cpp:62
 msgid "Distortions"
 msgstr "Vervorming"
 
@@ -451,7 +453,7 @@ msgstr "Binnen naar buiten"
 
 #: src/modules/lyr_std/insideout.cpp:163
 msgid "Defines where the center will be"
-msgstr ""
+msgstr "Definieert de positie van het centrum"
 
 #: src/modules/lyr_std/julia.cpp:56
 msgid "Julia Set"
@@ -769,7 +771,7 @@ msgstr "Beveilig alpha waarden"
 msgid "Avoid alpha artifacts when checked"
 msgstr "Indien aangevinkt, voorkomt alpha artifacten"
 
-#: src/modules/lyr_std/timeloop.cpp:59 src/synfig/valuenode.cpp:177
+#: src/modules/lyr_std/timeloop.cpp:59 src/synfig/valuenode.cpp:178
 #: src/synfig/valuenodes/valuenode_timeloop.cpp:153
 msgid "Time Loop"
 msgstr "Tijd lus"
@@ -929,7 +931,7 @@ msgstr "Centrum van het patroon"
 msgid "Size of the pattern"
 msgstr "Afmetingen van het patroon"
 
-#: src/modules/lyr_std/zoom.cpp:52 src/synfig/valuenode.cpp:154
+#: src/modules/lyr_std/zoom.cpp:52 src/synfig/valuenode.cpp:155
 #: src/synfig/valuenodes/valuenode_blinecalctangent.cpp:263
 #: src/synfig/valuenodes/valuenode_blinecalcwidth.cpp:221
 #: src/synfig/valuenodes/valuenode_composite.cpp:808
@@ -960,22 +962,22 @@ msgstr "%s is niet in BMP formaat"
 #: src/modules/mod_bmp/mptr_bmp.cpp:151
 #, c-format
 msgid "Failure while reading BITMAP::FILEHEADER from %s"
-msgstr ""
+msgstr "Kan BITMAP::FILEHEADER van %s niet lezen"
 
 #: src/modules/mod_bmp/mptr_bmp.cpp:159
 #, c-format
 msgid "Failure while reading BITMAP::INFOHEADER from %s"
-msgstr ""
+msgstr "Kan BITMAP::FILEHEADER van %s niet lezen"
 
 #: src/modules/mod_bmp/mptr_bmp.cpp:169
 #, c-format
 msgid "Bad BITMAP::FILEHEADER in %s. (bfOffsetBits=%d, should be %d)"
-msgstr ""
+msgstr "Fout BITMAPFILEHEADER in %s. (bfOffsetBits=%d, moet zijn %d)"
 
 #: src/modules/mod_bmp/mptr_bmp.cpp:177
 #, c-format
 msgid "Bad BITMAP::INFOHEADER in %s. (biSize=%d, should be %d)"
-msgstr ""
+msgstr "Corrupte BITMAPFILEHEADER in %s. (bfOffsetBits=%d, moet zijn %d)"
 
 #: src/modules/mod_bmp/mptr_bmp.cpp:195 src/modules/mod_bmp/mptr_bmp.cpp:196
 msgid "Reading compressed bitmaps is not supported"
@@ -1031,6 +1033,7 @@ msgstr "Vulkleur van de laag"
 #: src/modules/mod_example/filledrect.cpp:136
 #: src/modules/mod_geometry/rectangle.cpp:143
 #: src/modules/mod_gradient/lineargradient.cpp:190
+#: src/synfig/layers/layer_skeletondeformation.cpp:104
 msgid "Point 1"
 msgstr "Punt 1"
 
@@ -1042,6 +1045,7 @@ msgstr "Eerste punt van de rechthoek"
 #: src/modules/mod_example/filledrect.cpp:142
 #: src/modules/mod_geometry/rectangle.cpp:149
 #: src/modules/mod_gradient/lineargradient.cpp:195
+#: src/synfig/layers/layer_skeletondeformation.cpp:110
 msgid "Point 2"
 msgstr "Punt 2"
 
@@ -1120,27 +1124,27 @@ msgid ""
 "Error: No FFmpeg binary found.\n"
 "\n"
 "Please install \"ffmpeg\" or \"avconv\" (libav-tools package)."
-msgstr ""
+msgstr "Oeps, ik heb geen FFmpeg binaire gevonden.\n\nKan u alstublieft \"ffmpeg\" of \"avconv\" (libav-tools package) installeren."
 
 #: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:279
 msgid "Unable to open pipe to ffmpeg (no pipe)"
-msgstr ""
+msgstr "Kan data naar FFmpeg niet openen (no pipe)"
 
 #: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:286
 msgid "Unable to open pipe to ffmpeg (pid == -1)"
-msgstr ""
+msgstr "Kan data naar FFmpeg niet openen (pid == -1)"
 
 #: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:296
 msgid "Unable to open pipe to ffmpeg (dup2( p[0], STDIN_FILENO ) == -1)"
-msgstr ""
+msgstr "Kan data naar FFmpeg niet openen (dup2( p[0], STDIN_FILENO ) == -1)"
 
 #: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:318
 msgid "Unable to open pipe to ffmpeg (exec failed)"
-msgstr ""
+msgstr "Kan data naar FFmpeg niet openen (exec failed)"
 
 #: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:336
 msgid "Unable to open pipe to ffmpeg (no file)"
-msgstr ""
+msgstr "Kan data naar FFmpeg niet openen (geen bestand)"
 
 #: src/modules/mod_filter/blur.cpp:69
 msgid "Blur"
@@ -1387,8 +1391,9 @@ msgid "Smoothness"
 msgstr "Gladheid"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:1176
-msgid "Determines the interpolation between withpoints. (0) Linear (1) Smooth"
-msgstr "Bepaalt de interpolatie tussen punten. (0) Lineair (1) Effen"
+msgid ""
+"Determines the interpolation between widthpoints. (0) Linear (1) Smooth"
+msgstr ""
 
 #: src/modules/mod_geometry/advanced_outline.cpp:1179
 #: src/modules/mod_geometry/outline.cpp:869
@@ -1487,7 +1492,7 @@ msgstr "Bepaalt de afval functie voor de pluim"
 #: src/modules/mod_noise/distort.cpp:239 src/modules/mod_noise/noise.cpp:284
 #: src/modules/mod_noise/valuenode_random.cpp:274
 #: src/synfig/layers/layer_bitmap.cpp:169
-#: src/synfig/layers/layer_motionblur.cpp:149 src/synfig/valuenode.cpp:150
+#: src/synfig/layers/layer_motionblur.cpp:149 src/synfig/valuenode.cpp:151
 #: src/synfig/valuenodes/valuenode_linear.cpp:154
 msgid "Linear"
 msgstr "Lineair"
@@ -1694,7 +1699,7 @@ msgstr "Zaagvormig"
 #: src/modules/mod_gradient/lineargradient.cpp:208
 #: src/modules/mod_gradient/radialgradient.cpp:136
 msgid "When checked the gradient is symmetrical at the center"
-msgstr ""
+msgstr "Indien aangevinkt, maakt de gradiënt symmetrisch in het centrum"
 
 #: src/modules/mod_gradient/curvegradient.cpp:577
 msgid "Perpendicular"
@@ -1747,7 +1752,7 @@ msgstr "Geen bestand om te laden"
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:119
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:120
 msgid "Cannot create temporary file of "
-msgstr ""
+msgstr "Kan het bestand niet kopiëren"
 
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:179
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:180
@@ -1838,7 +1843,7 @@ msgid "Nearest Neighbor"
 msgstr "Dichtstbijzijnde buur "
 
 #: src/modules/mod_noise/distort.cpp:241 src/modules/mod_noise/noise.cpp:286
-#: src/modules/mod_noise/valuenode_random.cpp:276 src/synfig/valuenode.cpp:160
+#: src/modules/mod_noise/valuenode_random.cpp:276 src/synfig/valuenode.cpp:161
 #: src/synfig/valuenodes/valuenode_bline.cpp:1010
 #: src/synfig/valuenodes/valuenode_blinecalctangent.cpp:243
 #: src/synfig/valuenodes/valuenode_blinecalcvertex.cpp:201
@@ -1916,6 +1921,7 @@ msgstr "Indien aangevinkt, neemt een super monster van de gradient"
 #: src/synfig/valuenodes/valuenode_real.cpp:185
 #: src/synfig/valuenodes/valuenode_reciprocal.cpp:165
 #: src/synfig/valuenodes/valuenode_reference.cpp:143
+#: src/synfig/valuenodes/valuenode_reverse.cpp:307
 #: src/synfig/valuenodes/valuenode_scale.cpp:249
 #: src/synfig/valuenodes/valuenode_step.cpp:192
 #: src/synfig/valuenodes/valuenode_timeloop.cpp:174
@@ -2026,8 +2032,9 @@ msgid ""
 "size, and an alpha of 1.0 is used when rendering"
 msgstr "Indien actief wordt het alfa kanaal van de gradient vermenigvuldigt met de stam grootte en wordt de afbeelding met een alfa waarde 1.0 gemaakt"
 
-#: src/modules/mod_particle/plant.cpp:473
+#: src/modules/mod_particle/plant.cpp:473 src/synfig/valuenode.cpp:221
 #: src/synfig/valuenodes/valuenode_blinereversetangent.cpp:169
+#: src/synfig/valuenodes/valuenode_reverse.cpp:282
 msgid "Reverse"
 msgstr "Omkeren"
 
@@ -2035,7 +2042,7 @@ msgstr "Omkeren"
 msgid "If enabled, render the plant in the opposite direction"
 msgstr "Indien aangevinkt, laat de plant in de tegengestelde richting groeien"
 
-#: src/modules/mod_particle/plant.cpp:478 src/synfig/valuenode.cpp:181
+#: src/modules/mod_particle/plant.cpp:478 src/synfig/valuenode.cpp:182
 #: src/synfig/valuenodes/valuenode_duplicate.cpp:204
 #: src/synfig/valuenodes/valuenode_step.cpp:137
 msgid "Step"
@@ -2099,7 +2106,7 @@ msgstr ""
 msgid ""
 "The image is too large. It's size must be not more than 5000*2000=10000000 "
 "px. Now is %d*%d=%d px."
-msgstr ""
+msgstr "Het beeld is te groot. Het formaat mag zich niet meer dan 5000 * 2000 = 10000000 px. Nu is %d * %d = %d px."
 
 #: src/modules/mod_ppm/mptr_ppm.cpp:78
 #, c-format
@@ -2148,11 +2155,11 @@ msgstr "spline_punt"
 
 #: src/synfig/base_types.cpp:297
 msgid "matrix"
-msgstr ""
+msgstr "matrix"
 
 #: src/synfig/base_types.cpp:316
 msgid "bone_weight_pair"
-msgstr ""
+msgstr "bot_gewicht_paar"
 
 #: src/synfig/base_types.cpp:336
 msgid "width_point"
@@ -2180,27 +2187,27 @@ msgstr "gradient"
 
 #: src/synfig/base_types.cpp:505
 msgid "bone_object"
-msgstr ""
+msgstr "bot_object"
 
 #: src/synfig/base_types.cpp:540
 msgid "bone_valuenode"
-msgstr ""
+msgstr "Bot_waarde_knooppunt"
 
 #: src/synfig/base_types.cpp:563
 msgid "transformation"
-msgstr ""
+msgstr "transformatie"
 
 #: src/synfig/cairoimporter.cpp:88
 msgid "CairoImporter::open(): Cannot open empty filename"
-msgstr ""
+msgstr "Importer::open(): Kan lege bestandsnaam niet openen"
 
 #: src/synfig/cairoimporter.cpp:102
 msgid "CairoImporter::open(): Couldn't find extension"
-msgstr ""
+msgstr "Importer::open(): Kan extensie niet bepalen"
 
 #: src/synfig/cairoimporter.cpp:113
 msgid "CairoImporter::open(): Unknown file type -- "
-msgstr ""
+msgstr "Importer::open(): Onbekend bestandstype --"
 
 #: src/synfig/cairolistimporter.cpp:166 src/synfig/cairolistimporter.cpp:167
 #: src/synfig/listimporter.cpp:166 src/synfig/listimporter.cpp:167
@@ -2289,7 +2296,7 @@ msgstr "Meng methode"
 msgid "The blending method used to composite on the layers below"
 msgstr "De meng methode die gebruikt wordt op onderliggende lagen"
 
-#: src/synfig/layers/layer_duplicate.cpp:56 src/synfig/valuenode.cpp:179
+#: src/synfig/layers/layer_duplicate.cpp:56 src/synfig/valuenode.cpp:180
 #: src/synfig/valuenodes/valuenode_duplicate.cpp:175
 msgid "Duplicate"
 msgstr "Kopieren"
@@ -2362,15 +2369,15 @@ msgstr "Relatieve grootte van het laatste submonster, voor lineaire weging"
 
 #: src/synfig/layers/layer_pastecanvas.cpp:129
 msgid "Position offset"
-msgstr ""
+msgstr "Positie verschuiving"
 
 #: src/synfig/layers/layer_pastecanvas.cpp:133
 msgid "Transformation"
-msgstr ""
+msgstr "Transformatie"
 
 #: src/synfig/layers/layer_pastecanvas.cpp:134
 msgid "Position, rotation, skew and scale"
-msgstr ""
+msgstr "Positie, draaiing, scheeftrekken en schalen"
 
 #: src/synfig/layers/layer_pastecanvas.cpp:138
 msgid "Canvas"
@@ -2382,7 +2389,7 @@ msgstr "Groepeer inhoud"
 
 #: src/synfig/layers/layer_pastecanvas.cpp:144
 msgid "Multiplier to speed up, slow down, freeze, or reverse time"
-msgstr ""
+msgstr "Multiplicator te versnellen, vertragen, bevriezen, of omgekeerde tijd"
 
 #: src/synfig/layers/layer_pastecanvas.cpp:149
 msgid "Time Offset to apply to the context"
@@ -2390,7 +2397,7 @@ msgstr "Tijd offset, toe te passen op deze context"
 
 #: src/synfig/layers/layer_pastecanvas.cpp:153
 msgid "Lock Selection"
-msgstr ""
+msgstr "deze Selectie vegendelen"
 
 #: src/synfig/layers/layer_pastecanvas.cpp:154
 msgid "When checked prevents to select the children using the mouse click"
@@ -2462,7 +2469,7 @@ msgstr "Oneven/Even"
 
 #: src/synfig/layers/layer_skeleton.cpp:54
 msgid "Skeleton"
-msgstr ""
+msgstr "Skelet"
 
 #: src/synfig/layers/layer_skeleton.cpp:142
 #: src/synfig/valuenodes/valuenode_bone.cpp:587
@@ -2470,7 +2477,41 @@ msgid "Name"
 msgstr "Naam"
 
 #: src/synfig/layers/layer_skeleton.cpp:145
+#: src/synfig/layers/layer_skeletondeformation.cpp:98
 msgid "Bones"
+msgstr "botten"
+
+#: src/synfig/layers/layer_skeletondeformation.cpp:61
+#: src/synfig/layers/layer_skeletondeformation.cpp:89
+msgid "Skeleton Deformation"
+msgstr ""
+
+#: src/synfig/layers/layer_skeletondeformation.cpp:99
+msgid "List of bones"
+msgstr ""
+
+#: src/synfig/layers/layer_skeletondeformation.cpp:106
+msgid "First corner of the bounds rectangle"
+msgstr ""
+
+#: src/synfig/layers/layer_skeletondeformation.cpp:111
+msgid "Second corner of the bounds rectangle"
+msgstr ""
+
+#: src/synfig/layers/layer_skeletondeformation.cpp:115
+msgid "Horizontal subdivisions"
+msgstr ""
+
+#: src/synfig/layers/layer_skeletondeformation.cpp:116
+msgid "Count of horizontal subdivisions of the transformation grid"
+msgstr ""
+
+#: src/synfig/layers/layer_skeletondeformation.cpp:120
+msgid "Vertical subdivisions"
+msgstr ""
+
+#: src/synfig/layers/layer_skeletondeformation.cpp:121
+msgid "Count of vertical subdivisions of the transformation grid"
 msgstr ""
 
 #: src/synfig/layers/layer_solidcolor.cpp:56
@@ -2479,41 +2520,41 @@ msgstr "Effen Kleur"
 
 #: src/synfig/layers/layer_sound.cpp:51
 msgid "Sound"
-msgstr ""
+msgstr "Gelud"
 
 #: src/synfig/layers/layer_sound.cpp:102
 msgid "Path to sound file"
-msgstr ""
+msgstr "Pad naar geluidsbestand"
 
 #: src/synfig/layers/layer_sound.cpp:108
 msgid "Delay"
-msgstr ""
+msgstr "vertraging"
 
 #: src/synfig/layers/layer_sound.cpp:109
 msgid "Delay before play"
-msgstr ""
+msgstr "Vertraging voordat spelen"
 
 #: src/synfig/layers/layer_sound.cpp:114
 msgid "Volume"
-msgstr ""
+msgstr "Volume"
 
 #: src/synfig/layers/layer_sound.cpp:115
 msgid "Volume of sound"
-msgstr ""
+msgstr "Volume van de geluid"
 
 #: src/synfig/layers/layer_switch.cpp:58 src/synfig/layers/layer_switch.cpp:82
-#: src/synfig/valuenode.cpp:173 src/synfig/valuenodes/valuenode_switch.cpp:133
+#: src/synfig/valuenode.cpp:174 src/synfig/valuenodes/valuenode_switch.cpp:133
 #: src/synfig/valuenodes/valuenode_switch.cpp:163
 msgid "Switch"
 msgstr "Wissel"
 
 #: src/synfig/layers/layer_switch.cpp:91
 msgid "Active Layer Name"
-msgstr ""
+msgstr "naam Laag activeren"
 
 #: src/synfig/layers/layer_switch.cpp:92
 msgid "Only layer with specified name are visible"
-msgstr ""
+msgstr "Alleen de laag met de opgegeven naam zichtbaar zijn"
 
 #: src/synfig/loadcanvas.cpp:148
 #, c-format
@@ -2807,7 +2848,7 @@ msgstr "\"author\" zonder waarde"
 msgid "Canvas '%s' has undefined %s: %s"
 msgstr "Tekenvenster '%s' heeft de definitie van %s opgeheven: %s"
 
-#: src/synfig/loadcanvas.cpp:3390 src/synfig/valuenode.cpp:386
+#: src/synfig/loadcanvas.cpp:3390 src/synfig/valuenode.cpp:389
 msgid "ValueNode"
 msgstr "ValueNode"
 
@@ -2817,7 +2858,7 @@ msgstr "ValueNodes"
 
 #: src/synfig/loadcanvas.cpp:3470
 msgid "Can't find linked file"
-msgstr ""
+msgstr "Kan gekoppelde bestand niet openen"
 
 #: src/synfig/loadcanvas.cpp:3481 src/synfig/loadcanvas.cpp:3537
 msgid "Can't open file"
@@ -2850,19 +2891,19 @@ msgstr "Incorrecte grootte van Layer object (app:%d, lib:%d)"
 
 #: src/synfig/main.cpp:215
 msgid "Starting Subsystem \"Sound\""
-msgstr ""
+msgstr "Subsysteem \"gelud\" wordt gestart"
 
 #: src/synfig/main.cpp:217
 msgid "Unable to initialize subsystem \"Sound\""
-msgstr ""
+msgstr "Kan subsysteem \"gelud\" niet initialiseren"
 
 #: src/synfig/main.cpp:219
 msgid "Starting Subsystem \"Types\""
-msgstr ""
+msgstr "Subsysteem \"Types\" wordt gestart"
 
 #: src/synfig/main.cpp:221
 msgid "Unable to initialize subsystem \"Types\""
-msgstr ""
+msgstr "Kan subsysteem \"Types\" niet initialiseren"
 
 #: src/synfig/main.cpp:223
 msgid "Starting Subsystem \"Modules\""
@@ -2870,7 +2911,7 @@ msgstr "Subsysteem \"Modules\" wordt gestart"
 
 #: src/synfig/main.cpp:227
 msgid "Unable to initialize subsystem \"Modules\""
-msgstr ""
+msgstr "Kan subsysteem \"Module\" niet initialiseren"
 
 #: src/synfig/main.cpp:230
 msgid "Starting Subsystem \"Layers\""
@@ -3002,14 +3043,14 @@ msgstr "Kan %s niet openen voor lees toegang"
 #: src/synfig/palette.cpp:340 src/synfig/palette.cpp:382
 #, c-format
 msgid "%s does not appear to be a valid %s palette file"
-msgstr ""
+msgstr "%s lijkt niet te worden een geldige %s paletbestand"
 
 #: src/synfig/palette.cpp:437
 #, c-format
 msgid "%s does not appear to be a supported palette file"
-msgstr ""
+msgstr "%s lijkt niet te worden een geldige paletbestand"
 
-#: src/synfig/paramdesc.cpp:68 src/synfig/valuenode.cpp:151
+#: src/synfig/paramdesc.cpp:68 src/synfig/valuenode.cpp:152
 #: src/synfig/valuenodes/valuenode_composite.cpp:600
 msgid "Composite"
 msgstr "Samenstelling"
@@ -3050,12 +3091,12 @@ msgstr "Vermenigvuldigen"
 msgid "Divide"
 msgstr "Delen"
 
-#: src/synfig/paramdesc.cpp:78 src/synfig/valuenode.cpp:168
-#: src/synfig/valuenodes/valuenode_add.cpp:199
+#: src/synfig/paramdesc.cpp:78 src/synfig/valuenode.cpp:169
+#: src/synfig/valuenodes/valuenode_add.cpp:211
 msgid "Add"
 msgstr "Optellen"
 
-#: src/synfig/paramdesc.cpp:79 src/synfig/valuenode.cpp:158
+#: src/synfig/paramdesc.cpp:79 src/synfig/valuenode.cpp:159
 #: src/synfig/valuenodes/valuenode_subtract.cpp:203
 msgid "Subtract"
 msgstr "Aftrekken"
@@ -3123,7 +3164,7 @@ msgstr "Fout bij initialisatie doel"
 
 #: src/synfig/target_cairo.cpp:155
 msgid "Frame Renderer Failure"
-msgstr ""
+msgstr "deze beeld is mislukt"
 
 #: src/synfig/target_cairo.cpp:165 src/synfig/target_scanline.cpp:274
 #: src/synfig/target_scanline.cpp:435
@@ -3163,7 +3204,7 @@ msgstr "Versnelde weergave mislukt"
 #: src/synfig/target_cairo_tile.cpp:157
 #, c-format
 msgid "Bad surface: %s"
-msgstr ""
+msgstr "Deze \"%s\" is een ongeldig grafisch vlak "
 
 #: src/synfig/target_cairo_tile.cpp:164 src/synfig/target_tile.cpp:266
 #: src/synfig/target_tile.cpp:375
@@ -3172,7 +3213,7 @@ msgstr "add_tile(): Kan grafisch vlak niet op doel plaatsen"
 
 #: src/synfig/target_cairo_tile.cpp:222
 msgid "Can't start frame"
-msgstr ""
+msgstr "Frame kan niet worden gestart"
 
 #: src/synfig/target_tile.cpp:234
 msgid "Parametric Renderer Failure"
@@ -3193,260 +3234,260 @@ msgid ""
 "SECONDS"
 msgstr "Time(): Tijdcode zonder eenheid en frame snelheid onbekend! SECONDEN wordt gebruikt"
 
-#: src/synfig/valuenode.cpp:152
+#: src/synfig/valuenode.cpp:153
 #: src/synfig/valuenodes/valuenode_radialcomposite.cpp:232
 msgid "Radial Composite"
 msgstr "Radiele samenstelling"
 
-#: src/synfig/valuenode.cpp:153
+#: src/synfig/valuenode.cpp:154
 #: src/synfig/valuenodes/valuenode_blinereversetangent.cpp:164
 #: src/synfig/valuenodes/valuenode_reference.cpp:123
 msgid "Reference"
 msgstr "Referentie"
 
-#: src/synfig/valuenode.cpp:155
+#: src/synfig/valuenode.cpp:156
 #: src/synfig/valuenodes/valuenode_segcalctangent.cpp:106
 msgid "Segment Tangent"
 msgstr "Tangentieel segement"
 
-#: src/synfig/valuenode.cpp:156
+#: src/synfig/valuenode.cpp:157
 #: src/synfig/valuenodes/valuenode_segcalcvertex.cpp:104
 msgid "Segment Vertex"
 msgstr "Segment punt"
 
-#: src/synfig/valuenode.cpp:157 src/synfig/valuenodes/valuenode_stripes.cpp:81
+#: src/synfig/valuenode.cpp:158 src/synfig/valuenodes/valuenode_stripes.cpp:81
 #: src/synfig/valuenodes/valuenode_stripes.cpp:171
 msgid "Stripes"
 msgstr "Strepen"
 
-#: src/synfig/valuenode.cpp:159
+#: src/synfig/valuenode.cpp:160
 #: src/synfig/valuenodes/valuenode_twotone.cpp:135
 msgid "Two-Tone"
 msgstr "Dubbel Schaduw"
 
-#: src/synfig/valuenode.cpp:161
+#: src/synfig/valuenode.cpp:162
 #: src/synfig/valuenodes/valuenode_dynamiclist.cpp:770
 msgid "Dynamic List"
 msgstr "Dynamische Lijst"
 
-#: src/synfig/valuenode.cpp:162
+#: src/synfig/valuenode.cpp:163
 #: src/synfig/valuenodes/valuenode_gradientrotate.cpp:78
 #: src/synfig/valuenodes/valuenode_gradientrotate.cpp:146
 msgid "Gradient Rotate"
 msgstr "Rotatie gradient"
 
-#: src/synfig/valuenode.cpp:163 src/synfig/valuenodes/valuenode_sine.cpp:110
+#: src/synfig/valuenode.cpp:164 src/synfig/valuenodes/valuenode_sine.cpp:110
 msgid "Sine"
 msgstr "Sinus"
 
-#: src/synfig/valuenode.cpp:165
+#: src/synfig/valuenode.cpp:166
 #: src/synfig/valuenodes/valuenode_timedswap.cpp:233
 msgid "Timed Swap"
 msgstr "Tijdgebonden wissel"
 
-#: src/synfig/valuenode.cpp:166
+#: src/synfig/valuenode.cpp:167
 #: src/synfig/valuenodes/valuenode_repeat_gradient.cpp:84
 #: src/synfig/valuenodes/valuenode_repeat_gradient.cpp:185
 msgid "Repeat Gradient"
 msgstr "Herhalingsgradient"
 
-#: src/synfig/valuenode.cpp:167 src/synfig/valuenodes/valuenode_exp.cpp:106
+#: src/synfig/valuenode.cpp:168 src/synfig/valuenodes/valuenode_exp.cpp:106
 msgid "Exponential"
 msgstr "Exponentieel"
 
-#: src/synfig/valuenode.cpp:169
+#: src/synfig/valuenode.cpp:170
 #: src/synfig/valuenodes/valuenode_blinecalctangent.cpp:186
 msgid "Spline Tangent"
-msgstr ""
+msgstr "Raaklijnen splitsen"
 
-#: src/synfig/valuenode.cpp:170
+#: src/synfig/valuenode.cpp:171
 #: src/synfig/valuenodes/valuenode_blinecalcvertex.cpp:152
 msgid "Spline Vertex"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:171 src/synfig/valuenodes/valuenode_range.cpp:258
+#: src/synfig/valuenode.cpp:172 src/synfig/valuenodes/valuenode_range.cpp:258
 msgid "Range"
 msgstr "Bereik"
 
-#: src/synfig/valuenode.cpp:174 src/synfig/valuenodes/valuenode_cos.cpp:109
+#: src/synfig/valuenode.cpp:175 src/synfig/valuenodes/valuenode_cos.cpp:109
 msgid "Cos"
 msgstr "Cosinus"
 
-#: src/synfig/valuenode.cpp:175 src/synfig/valuenodes/valuenode_atan2.cpp:107
+#: src/synfig/valuenode.cpp:176 src/synfig/valuenodes/valuenode_atan2.cpp:107
 msgid "aTan2"
 msgstr "aTan2"
 
-#: src/synfig/valuenode.cpp:176
+#: src/synfig/valuenode.cpp:177
 #: src/synfig/valuenodes/valuenode_blinereversetangent.cpp:119
 msgid "Reverse Tangent"
 msgstr "Inverse tangens"
 
-#: src/synfig/valuenode.cpp:178
+#: src/synfig/valuenode.cpp:179
 #: src/synfig/valuenodes/valuenode_reciprocal.cpp:147
 msgid "Reciprocal"
 msgstr "Reciproke"
 
-#: src/synfig/valuenode.cpp:180
+#: src/synfig/valuenode.cpp:181
 #: src/synfig/valuenodes/valuenode_integer.cpp:169
 msgid "Integer"
 msgstr "Geheel getal"
 
-#: src/synfig/valuenode.cpp:182
+#: src/synfig/valuenode.cpp:183
 #: src/synfig/valuenodes/valuenode_blinecalcwidth.cpp:155
 msgid "Spline Width"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:184
+#: src/synfig/valuenode.cpp:185
 #: src/synfig/valuenodes/valuenode_vectorangle.cpp:124
 msgid "Vector Angle"
 msgstr "Vector hoek"
 
-#: src/synfig/valuenode.cpp:185
+#: src/synfig/valuenode.cpp:186
 #: src/synfig/valuenodes/valuenode_vectorlength.cpp:123
 msgid "Vector Length"
 msgstr "Vector lengte"
 
-#: src/synfig/valuenode.cpp:186
+#: src/synfig/valuenode.cpp:187
 #: src/synfig/valuenodes/valuenode_vectorx.cpp:123
 msgid "Vector X"
 msgstr "Vector X"
 
-#: src/synfig/valuenode.cpp:187
+#: src/synfig/valuenode.cpp:188
 #: src/synfig/valuenodes/valuenode_vectory.cpp:123
 msgid "Vector Y"
 msgstr "Vector Y"
 
-#: src/synfig/valuenode.cpp:188
+#: src/synfig/valuenode.cpp:189
 #: src/synfig/valuenodes/valuenode_gradientcolor.cpp:140
 msgid "Gradient Color"
 msgstr "Kleurgradient"
 
-#: src/synfig/valuenode.cpp:189
+#: src/synfig/valuenode.cpp:190
 #: src/synfig/valuenodes/valuenode_dotproduct.cpp:120
 msgid "Dot Product"
 msgstr "Scalair product"
 
-#: src/synfig/valuenode.cpp:190
+#: src/synfig/valuenode.cpp:191
 #: src/synfig/valuenodes/valuenode_timestring.cpp:112
 msgid "Time String"
 msgstr "Tijd naar tekst conversie"
 
-#: src/synfig/valuenode.cpp:191 src/synfig/valuenodes/valuenode_real.cpp:163
+#: src/synfig/valuenode.cpp:192 src/synfig/valuenodes/valuenode_real.cpp:163
 #: src/synfig/valuenodes/valuenode_realstring.cpp:170
 msgid "Real"
 msgstr "Reeele waarde"
 
-#: src/synfig/valuenode.cpp:192
+#: src/synfig/valuenode.cpp:193
 #: src/synfig/valuenodes/valuenode_realstring.cpp:120
 msgid "Real String"
 msgstr "Waarde naar tekst conversie"
 
-#: src/synfig/valuenode.cpp:193 src/synfig/valuenodes/valuenode_join.cpp:137
+#: src/synfig/valuenode.cpp:194 src/synfig/valuenodes/valuenode_join.cpp:137
 msgid "Joined List"
 msgstr "Samengevoegde lijst"
 
-#: src/synfig/valuenode.cpp:194
+#: src/synfig/valuenode.cpp:195
 #: src/synfig/valuenodes/valuenode_anglestring.cpp:122
 msgid "Angle String"
 msgstr "Hoek naar tekst conversie"
 
-#: src/synfig/valuenode.cpp:195
+#: src/synfig/valuenode.cpp:196
 #: src/synfig/valuenodes/valuenode_intstring.cpp:117
 msgid "Int String"
 msgstr "Geheel getal naar tekst conversie"
 
-#: src/synfig/valuenode.cpp:196 src/synfig/valuenodes/valuenode_log.cpp:141
+#: src/synfig/valuenode.cpp:197 src/synfig/valuenodes/valuenode_log.cpp:141
 msgid "Logarithm"
 msgstr "Logaritme"
 
-#: src/synfig/valuenode.cpp:197 src/synfig/valuenodes/valuenode_greyed.cpp:84
+#: src/synfig/valuenode.cpp:198 src/synfig/valuenodes/valuenode_greyed.cpp:84
 msgid "Greyed"
 msgstr "Grijs maken"
 
-#: src/synfig/valuenode.cpp:198 src/synfig/valuenodes/valuenode_pow.cpp:162
+#: src/synfig/valuenode.cpp:199 src/synfig/valuenodes/valuenode_pow.cpp:162
 #: src/synfig/valuenodes/valuenode_pow.cpp:185
 msgid "Power"
 msgstr "Machtsverheffen"
 
-#: src/synfig/valuenode.cpp:199
+#: src/synfig/valuenode.cpp:200
 #: src/synfig/valuenodes/valuenode_compare.cpp:149
 msgid "Compare"
 msgstr "Vergelijken"
 
-#: src/synfig/valuenode.cpp:200
+#: src/synfig/valuenode.cpp:201
 msgid "Not"
 msgstr "Niet"
 
-#: src/synfig/valuenode.cpp:201
+#: src/synfig/valuenode.cpp:202
 msgid "And"
 msgstr "En"
 
-#: src/synfig/valuenode.cpp:202
+#: src/synfig/valuenode.cpp:203
 msgid "Or"
 msgstr "Of"
 
-#: src/synfig/valuenode.cpp:204
+#: src/synfig/valuenode.cpp:205
 #: src/synfig/valuenodes/valuenode_boneinfluence.cpp:178
 msgid "Bone Influence"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:205 src/synfig/valuenodes/valuenode_bone.cpp:505
+#: src/synfig/valuenode.cpp:206 src/synfig/valuenodes/valuenode_bone.cpp:505
 #: src/synfig/valuenodes/valuenode_bonelink.cpp:208
 #: src/synfig/valuenodes/valuenode_boneweightpair.cpp:162
 msgid "Bone"
 msgstr "Bot"
 
-#: src/synfig/valuenode.cpp:206
+#: src/synfig/valuenode.cpp:207
 msgid "Root Bone"
 msgstr "Basisbot"
 
-#: src/synfig/valuenode.cpp:207
+#: src/synfig/valuenode.cpp:208
 #: src/synfig/valuenodes/valuenode_staticlist.cpp:443
 msgid "Static List"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:208
+#: src/synfig/valuenode.cpp:209
 #: src/synfig/valuenodes/valuenode_boneweightpair.cpp:119
 msgid "Bone Weight Pair"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:209
+#: src/synfig/valuenode.cpp:210
 #: src/synfig/valuenodes/valuenode_bonelink.cpp:190
 msgid "Bone Link"
 msgstr "Botverbinding"
 
-#: src/synfig/valuenode.cpp:211 src/synfig/valuenodes/valuenode_wplist.cpp:357
+#: src/synfig/valuenode.cpp:212 src/synfig/valuenodes/valuenode_wplist.cpp:357
 msgid "WPList"
 msgstr "Lijst afwijkende breedtes"
 
-#: src/synfig/valuenode.cpp:212 src/synfig/valuenodes/valuenode_dilist.cpp:178
+#: src/synfig/valuenode.cpp:213 src/synfig/valuenodes/valuenode_dilist.cpp:178
 msgid "DIList"
 msgstr "DIList"
 
-#: src/synfig/valuenode.cpp:214 src/synfig/valuenodes/valuenode_average.cpp:97
+#: src/synfig/valuenode.cpp:215 src/synfig/valuenodes/valuenode_average.cpp:97
 msgid "Average"
 msgstr "Gemiddeld"
 
-#: src/synfig/valuenode.cpp:215
+#: src/synfig/valuenode.cpp:216
 msgid "Weighted Average"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:217
+#: src/synfig/valuenode.cpp:218
 #: src/synfig/valuenodes/valuenode_dynamic.cpp:171
 msgid "Dynamic"
 msgstr "Dynamisch"
 
-#: src/synfig/valuenode.cpp:218
+#: src/synfig/valuenode.cpp:219
 #: src/synfig/valuenodes/valuenode_derivative.cpp:315
 msgid "Derivative"
 msgstr "Afgeleid"
 
-#: src/synfig/valuenode.cpp:253
+#: src/synfig/valuenode.cpp:256
 #, c-format
 msgid "Bad type: ValueNode '%s' doesn't accept type '%s'"
 msgstr "Ongeldige waarde: ValueNode '%s' accepteer niet type '%s'"
 
-#: src/synfig/valuenode.cpp:552
+#: src/synfig/valuenode.cpp:576
 msgid "Placeholder"
 msgstr "Vervanger"
 
@@ -3479,35 +3520,35 @@ msgstr ":Ongeldig type"
 msgid "One or both of my parameters aren't set!"
 msgstr "Een of meer van mijn parameters zijn niet ingevuld!"
 
-#: src/synfig/valuenodes/valuenode_add.cpp:220
+#: src/synfig/valuenodes/valuenode_add.cpp:232
 #: src/synfig/valuenodes/valuenode_compare.cpp:167
 #: src/synfig/valuenodes/valuenode_dotproduct.cpp:167
 #: src/synfig/valuenodes/valuenode_subtract.cpp:227
 msgid "LHS"
 msgstr "Linkerzijde"
 
-#: src/synfig/valuenodes/valuenode_add.cpp:221
+#: src/synfig/valuenodes/valuenode_add.cpp:233
 msgid "Left Hand Side of the add"
 msgstr "Linkerzijde van de optelling"
 
-#: src/synfig/valuenodes/valuenode_add.cpp:225
+#: src/synfig/valuenodes/valuenode_add.cpp:237
 #: src/synfig/valuenodes/valuenode_compare.cpp:172
 #: src/synfig/valuenodes/valuenode_dotproduct.cpp:172
 #: src/synfig/valuenodes/valuenode_subtract.cpp:232
 msgid "RHS"
 msgstr "Rechterzijde"
 
-#: src/synfig/valuenodes/valuenode_add.cpp:226
+#: src/synfig/valuenodes/valuenode_add.cpp:238
 msgid "Right Hand Side of the add"
 msgstr "Rechterzijde van de optelling"
 
-#: src/synfig/valuenodes/valuenode_add.cpp:230
+#: src/synfig/valuenodes/valuenode_add.cpp:242
 #: src/synfig/valuenodes/valuenode_scale.cpp:254
 #: src/synfig/valuenodes/valuenode_subtract.cpp:237
 msgid "Scalar"
 msgstr "Scalair"
 
-#: src/synfig/valuenodes/valuenode_add.cpp:231
+#: src/synfig/valuenodes/valuenode_add.cpp:243
 msgid "Value that multiplies the add"
 msgstr "De waarde waarmee de optelling wordt vermenigvuldigt"
 
@@ -4595,6 +4636,10 @@ msgstr "Eind Kleur"
 #: src/synfig/valuenodes/valuenode_repeat_gradient.cpp:234
 msgid "Used as the end of the resulting gradient"
 msgstr "Wordt gebruikt als einde van de totale gradient"
+
+#: src/synfig/valuenodes/valuenode_reverse.cpp:308
+msgid "The value to be reversed"
+msgstr ""
 
 #: src/synfig/valuenodes/valuenode_scale.cpp:150
 #: src/synfig/valuenodes/valuenode_scale.cpp:167

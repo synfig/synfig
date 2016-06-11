@@ -1,6 +1,7 @@
 ar
 bs
 ca
+ca@valencia
 cs
 cs_CZ
 da
@@ -9,6 +10,7 @@ el_GR
 en_CZ
 en_GB
 es
+es_PY
 eu
 eu_ES
 fa_IR
@@ -17,8 +19,10 @@ gl
 he
 hu
 it
+ja
 ja_JP
 lt
+lv
 nl
 no_NO
 pl_PL
@@ -26,7 +30,9 @@ pt_BR
 ro
 ru
 si
+sk
 sk_SK
+sl
 sr_RS
 sv_SE
 tr

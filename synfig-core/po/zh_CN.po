@@ -1,18 +1,19 @@
 # Translation file for Synfig Core package.
-# Copyright (C) 2015 Synfig Contributors
+# Copyright (C) 2016 Synfig Contributors
 # This file is distributed under the same license as the Synfig Core package.
 # 
 # Translators:
+# jihang Zhao <hulk0@163.com>, 2016
 # morevnaproject <ksee.zelgadis@gmail.com>, 2011
-# Yu Chen <jcomee@gmail.com>, 2010-2011
+# Yu Chen <jcomee@gmail.com>, 2010-2011,2016
 msgid ""
 msgstr ""
 "Project-Id-Version: Synfig UI\n"
 "Report-Msgid-Bugs-To: http://www.synfig.org/issues/thebuggenie/synfig\n"
-"POT-Creation-Date: 2015-07-27 18:00+0700\n"
-"PO-Revision-Date: 2015-07-22 14:12+0000\n"
-"Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
-"Language-Team: Chinese (China) (http://www.transifex.com/projects/p/synfig/language/zh_CN/)\n"
+"POT-Creation-Date: 2016-06-05 14:00+0700\n"
+"PO-Revision-Date: 2016-03-04 12:43+0000\n"
+"Last-Translator: Yu Chen <jcomee@gmail.com>\n"
+"Language-Team: Chinese (China) (http://www.transifex.com/morevnaproject/synfig/language/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -305,7 +306,7 @@ msgstr "要结合的区域集"
 
 #: src/modules/lyr_std/clamp.cpp:55 src/tool/printing_functions.cpp:218
 msgid "Clamp"
-msgstr "夹子"
+msgstr "区间值限定"
 
 #: src/modules/lyr_std/clamp.cpp:56 src/modules/mod_filter/colorcorrect.cpp:57
 #: src/modules/mod_filter/halftone2.cpp:60
@@ -320,11 +321,11 @@ msgstr "反转负相"
 
 #: src/modules/lyr_std/clamp.cpp:166
 msgid "Clamp Ceiling"
-msgstr "夹子上限"
+msgstr "区间值向上取整"
 
 #: src/modules/lyr_std/clamp.cpp:167
 msgid "When checked the Ceiling value is used"
-msgstr "选中后上限值启用"
+msgstr "选上后上限值启用"
 
 #: src/modules/lyr_std/clamp.cpp:171
 msgid "Ceiling"
@@ -332,7 +333,7 @@ msgstr "上限"
 
 #: src/modules/lyr_std/clamp.cpp:172
 msgid "Upper boundary of the clamping"
-msgstr ""
+msgstr "区间上限"
 
 #: src/modules/lyr_std/clamp.cpp:176
 msgid "Floor"
@@ -340,7 +341,7 @@ msgstr "下限"
 
 #: src/modules/lyr_std/clamp.cpp:177
 msgid "Lower boundary of the clamping"
-msgstr ""
+msgstr "区间下限"
 
 #: src/modules/lyr_std/curvewarp.cpp:56
 msgid "Curve Warp"
@@ -350,12 +351,13 @@ msgstr "曲线翘曲"
 #: src/modules/lyr_std/sphere_distort.cpp:75
 #: src/modules/lyr_std/stretch.cpp:58 src/modules/lyr_std/twirl.cpp:57
 #: src/modules/lyr_std/warp.cpp:58 src/modules/mod_noise/distort.cpp:59
+#: src/synfig/layers/layer_skeletondeformation.cpp:62
 msgid "Distortions"
 msgstr "变形"
 
 #: src/modules/lyr_std/curvewarp.cpp:399
 msgid "Position of the destiny Spline line"
-msgstr ""
+msgstr "Destiny 样条线的位置"
 
 #: src/modules/lyr_std/curvewarp.cpp:402
 #: src/modules/lyr_std/supersample.cpp:339
@@ -381,7 +383,7 @@ msgstr "起点"
 
 #: src/modules/lyr_std/curvewarp.cpp:409
 msgid "First point of the source line"
-msgstr ""
+msgstr "源线的第一个点"
 
 #: src/modules/lyr_std/curvewarp.cpp:412
 msgid "End Point"
@@ -389,7 +391,7 @@ msgstr "终点"
 
 #: src/modules/lyr_std/curvewarp.cpp:413
 msgid "Final point of the source line"
-msgstr ""
+msgstr "源线的最后一个点"
 
 #: src/modules/lyr_std/curvewarp.cpp:416
 #: src/modules/mod_geometry/advanced_outline.cpp:1134
@@ -402,7 +404,7 @@ msgstr "顶点"
 
 #: src/modules/lyr_std/curvewarp.cpp:419
 msgid "List of Spline Points where the source line is curved to"
-msgstr ""
+msgstr "源线要弯到的样条点的清单"
 
 #: src/modules/lyr_std/curvewarp.cpp:422
 #: src/modules/mod_geometry/advanced_outline.cpp:1189
@@ -413,7 +415,7 @@ msgstr "快速"
 #: src/modules/lyr_std/curvewarp.cpp:423
 #: src/modules/mod_gradient/curvegradient.cpp:581
 msgid "When checked, renders quickly but with artifacts"
-msgstr ""
+msgstr "当选上后，渲染快但有瑕疵"
 
 #: src/modules/lyr_std/import.cpp:60
 msgid "Import Image"
@@ -431,7 +433,7 @@ msgstr "文件名"
 
 #: src/modules/lyr_std/import.cpp:318
 msgid "File to import"
-msgstr "要输入的文件"
+msgstr "要导入的文件"
 
 #: src/modules/lyr_std/import.cpp:322
 #: src/synfig/layers/layer_pastecanvas.cpp:148
@@ -448,7 +450,7 @@ msgstr "里翻外"
 
 #: src/modules/lyr_std/insideout.cpp:163
 msgid "Defines where the center will be"
-msgstr ""
+msgstr "定义中心点的位置"
 
 #: src/modules/lyr_std/julia.cpp:56
 msgid "Julia Set"
@@ -476,7 +478,7 @@ msgstr "集外的颜色"
 
 #: src/modules/lyr_std/julia.cpp:343
 msgid "Color Shift"
-msgstr "颜色位移"
+msgstr "颜色变动"
 
 #: src/modules/lyr_std/julia.cpp:346 src/modules/lyr_std/mandelbrot.cpp:219
 msgid "Iterations"
@@ -764,9 +766,9 @@ msgstr "确保透明(Alpha)安全"
 
 #: src/modules/lyr_std/supersample.cpp:352
 msgid "Avoid alpha artifacts when checked"
-msgstr "选中后避免产生alpha伪像"
+msgstr "当选上后避免产生透明度瑕疵"
 
-#: src/modules/lyr_std/timeloop.cpp:59 src/synfig/valuenode.cpp:177
+#: src/modules/lyr_std/timeloop.cpp:59 src/synfig/valuenode.cpp:178
 #: src/synfig/valuenodes/valuenode_timeloop.cpp:153
 msgid "Time Loop"
 msgstr "时间循环"
@@ -806,7 +808,7 @@ msgstr "仅为正的持续时间"
 
 #: src/modules/lyr_std/timeloop.cpp:152
 msgid "When checked will loop only positive durations"
-msgstr "选中后将只循环正的周期"
+msgstr "当选上后将只循环正的周期"
 
 #: src/modules/lyr_std/timeloop.cpp:157
 msgid "Symmetrical"
@@ -814,7 +816,7 @@ msgstr "对称"
 
 #: src/modules/lyr_std/timeloop.cpp:158
 msgid "When checked, loops are mirrored centered at Local Time"
-msgstr "选中后，循环以本地时间为中点做镜像"
+msgstr "当选上后，循环以本地时间为中点做镜像"
 
 #: src/modules/lyr_std/translate.cpp:55
 #: src/synfig/valuenodes/valuenode_bonelink.cpp:218
@@ -848,11 +850,11 @@ msgstr "旋扭的转动量"
 
 #: src/modules/lyr_std/twirl.cpp:131
 msgid "When checked, distorts inside the circle"
-msgstr "选中后，在圆环内变形"
+msgstr "当选上后，在圆环内变形"
 
 #: src/modules/lyr_std/twirl.cpp:136
 msgid "When checked, distorts outside the circle"
-msgstr "选中后，在圆环外变形"
+msgstr "当选上后，在圆环外变形"
 
 #: src/modules/lyr_std/warp.cpp:57
 msgid "Warp"
@@ -920,13 +922,13 @@ msgstr "异或图案"
 
 #: src/modules/lyr_std/xorpattern.cpp:130
 msgid "Center of the pattern"
-msgstr ""
+msgstr "图案的中心点"
 
 #: src/modules/lyr_std/xorpattern.cpp:134
 msgid "Size of the pattern"
-msgstr ""
+msgstr "图案的大小"
 
-#: src/modules/lyr_std/zoom.cpp:52 src/synfig/valuenode.cpp:154
+#: src/modules/lyr_std/zoom.cpp:52 src/synfig/valuenode.cpp:155
 #: src/synfig/valuenodes/valuenode_blinecalctangent.cpp:263
 #: src/synfig/valuenodes/valuenode_blinecalcwidth.cpp:221
 #: src/synfig/valuenodes/valuenode_composite.cpp:808
@@ -937,11 +939,11 @@ msgstr "缩放"
 
 #: src/modules/lyr_std/zoom.cpp:100
 msgid "Amount to scale to"
-msgstr ""
+msgstr "缩放的量"
 
 #: src/modules/lyr_std/zoom.cpp:107
 msgid "Point to scale from"
-msgstr ""
+msgstr "缩放的点"
 
 #: src/modules/mod_bmp/mptr_bmp.cpp:132 src/modules/mod_bmp/mptr_bmp.cpp:133
 #: src/modules/mod_ppm/mptr_ppm.cpp:70
@@ -1028,6 +1030,7 @@ msgstr "填充层的颜色"
 #: src/modules/mod_example/filledrect.cpp:136
 #: src/modules/mod_geometry/rectangle.cpp:143
 #: src/modules/mod_gradient/lineargradient.cpp:190
+#: src/synfig/layers/layer_skeletondeformation.cpp:104
 msgid "Point 1"
 msgstr "点1"
 
@@ -1039,6 +1042,7 @@ msgstr "矩形的第一个角"
 #: src/modules/mod_example/filledrect.cpp:142
 #: src/modules/mod_geometry/rectangle.cpp:149
 #: src/modules/mod_gradient/lineargradient.cpp:195
+#: src/synfig/layers/layer_skeletondeformation.cpp:110
 msgid "Point 2"
 msgstr "点2"
 
@@ -1065,7 +1069,7 @@ msgstr "保持倒角圆状"
 
 #: src/modules/mod_example/filledrect.cpp:164
 msgid "When checked the bevel is circular"
-msgstr "选上后倒角是圆状的"
+msgstr "当选上后倒角是圆状的"
 
 #: src/modules/mod_example/metaballs.cpp:57
 msgid "Metaballs"
@@ -1280,7 +1284,7 @@ msgstr "几何图形"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:152
 msgid "No vertices in spline "
-msgstr ""
+msgstr "样条上无顶点"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:1136
 #: src/modules/mod_geometry/outline.cpp:826
@@ -1288,7 +1292,7 @@ msgstr ""
 #: src/modules/mod_gradient/curvegradient.cpp:562
 #: src/modules/mod_particle/plant.cpp:425
 msgid "A list of spline points"
-msgstr ""
+msgstr "样条点的清单"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:1140
 #: src/modules/mod_geometry/outline.cpp:840
@@ -1316,7 +1320,7 @@ msgstr "起点的尖端类型"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:1150
 msgid "Defines the Tip type of the first spline point when spline is unlooped"
-msgstr ""
+msgstr "定义非闭合样条的第一个样条点的尖端类型"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:1152
 #: src/modules/mod_geometry/advanced_outline.cpp:1161
@@ -1360,11 +1364,11 @@ msgstr "未端的尖端类型"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:1159
 msgid "Defines the Tip type of the last spline point when spline is unlooped"
-msgstr ""
+msgstr "定义非闭合样条的最后一个样条点的尖端类型"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:1167
 msgid "Cusps Type"
-msgstr ""
+msgstr "尖端的类型"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:1168
 #: src/modules/mod_geometry/outline.cpp:852
@@ -1384,8 +1388,9 @@ msgid "Smoothness"
 msgstr "平滑的"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:1176
-msgid "Determines the interpolation between withpoints. (0) Linear (1) Smooth"
-msgstr "决定宽度点之间的变化。(0)线性 (1)平滑"
+msgid ""
+"Determines the interpolation between widthpoints. (0) Linear (1) Smooth"
+msgstr ""
 
 #: src/modules/mod_geometry/advanced_outline.cpp:1179
 #: src/modules/mod_geometry/outline.cpp:869
@@ -1397,7 +1402,7 @@ msgstr "单一性"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:1180
 msgid "When true, widthpoints positions are spline length based"
-msgstr ""
+msgstr "设为真时，宽度点的位置是按照样条的长度计算的"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:1183
 msgid "Width Point List"
@@ -1409,7 +1414,7 @@ msgstr "定义变化宽度的宽度点列表"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:1190
 msgid "When checked outline renders faster, but less accurate"
-msgstr ""
+msgstr "当选上后渲染会更快，但没那么精确"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:1193
 msgid "Dashed Outline"
@@ -1417,23 +1422,23 @@ msgstr "虚线化的轮廓"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:1195
 msgid "When checked outline is dashed"
-msgstr "选中后轮廓是虚线的"
+msgstr "当选上后轮廓是虚线的"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:1198
 msgid "Dash Item List"
-msgstr "虚线项目清单"
+msgstr "短线清单"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:1201
 msgid "List of dash items that defines the dashed outline"
-msgstr "定义虚线化轮廓的虚线项目清单"
+msgstr "定义虚线化轮廓的短线清单"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:1204
 msgid "Dash Items Offset"
-msgstr "虚线项目偏移"
+msgstr "短线偏移"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:1207
 msgid "Distance to Offset the Dash Items"
-msgstr "偏移虚线项目的距离"
+msgstr "短线偏移的距离"
 
 #: src/modules/mod_geometry/checkerboard.cpp:58
 msgid "Checkerboard"
@@ -1484,7 +1489,7 @@ msgstr "决定羽化的衰减功能"
 #: src/modules/mod_noise/distort.cpp:239 src/modules/mod_noise/noise.cpp:284
 #: src/modules/mod_noise/valuenode_random.cpp:274
 #: src/synfig/layers/layer_bitmap.cpp:169
-#: src/synfig/layers/layer_motionblur.cpp:149 src/synfig/valuenode.cpp:150
+#: src/synfig/layers/layer_motionblur.cpp:149 src/synfig/valuenode.cpp:151
 #: src/synfig/valuenodes/valuenode_linear.cpp:154
 msgid "Linear"
 msgstr "线性"
@@ -1539,11 +1544,11 @@ msgstr "松散"
 
 #: src/modules/mod_geometry/outline.cpp:866
 msgid "(Currently not used)"
-msgstr ""
+msgstr "(当前未使用的)"
 
 #: src/modules/mod_geometry/outline.cpp:870
 msgid "When checked the width takes the length of the spline to interpolate"
-msgstr "选中后宽度用Spline的长度作插值处理"
+msgstr "当选上后宽度用样条的长度来作插值处理"
 
 #: src/modules/mod_geometry/rectangle.cpp:59
 msgid "Rectangle"
@@ -1656,7 +1661,7 @@ msgstr "渐变围绕变化的中心参考点"
 #: src/modules/mod_gradient/lineargradient.cpp:204
 #: src/modules/mod_gradient/radialgradient.cpp:131
 msgid "When checked the gradient is looped"
-msgstr "选中后渐变是循环的"
+msgstr "当选上后渐变是循环的"
 
 #: src/modules/mod_gradient/curvegradient.cpp:61
 msgid "Curve Gradient"
@@ -1691,7 +1696,7 @@ msgstr "之字形"
 #: src/modules/mod_gradient/lineargradient.cpp:208
 #: src/modules/mod_gradient/radialgradient.cpp:136
 msgid "When checked the gradient is symmetrical at the center"
-msgstr ""
+msgstr "当选上时渐变是以中心对称的"
 
 #: src/modules/mod_gradient/curvegradient.cpp:577
 msgid "Perpendicular"
@@ -1724,7 +1729,7 @@ msgstr "螺旋渐变"
 
 #: src/modules/mod_gradient/spiralgradient.cpp:131
 msgid "Rotation of the spiral"
-msgstr ""
+msgstr "螺旋的旋转方向"
 
 #: src/modules/mod_gradient/spiralgradient.cpp:136
 msgid "Clockwise"
@@ -1732,7 +1737,7 @@ msgstr "顺时针"
 
 #: src/modules/mod_gradient/spiralgradient.cpp:137
 msgid "When checked the spiral turns clockwise"
-msgstr ""
+msgstr "选上后螺旋是顺时针方向的"
 
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:105
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:106
@@ -1744,7 +1749,7 @@ msgstr "无文件可加载"
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:119
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:120
 msgid "Cannot create temporary file of "
-msgstr ""
+msgstr "未能创建模版文件"
 
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:179
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:180
@@ -1835,13 +1840,13 @@ msgid "Nearest Neighbor"
 msgstr "最近的邻居"
 
 #: src/modules/mod_noise/distort.cpp:241 src/modules/mod_noise/noise.cpp:286
-#: src/modules/mod_noise/valuenode_random.cpp:276 src/synfig/valuenode.cpp:160
+#: src/modules/mod_noise/valuenode_random.cpp:276 src/synfig/valuenode.cpp:161
 #: src/synfig/valuenodes/valuenode_bline.cpp:1010
 #: src/synfig/valuenodes/valuenode_blinecalctangent.cpp:243
 #: src/synfig/valuenodes/valuenode_blinecalcvertex.cpp:201
 #: src/synfig/valuenodes/valuenode_blinecalcwidth.cpp:206
 msgid "Spline"
-msgstr "Spline"
+msgstr "样条"
 
 #: src/modules/mod_noise/distort.cpp:242 src/modules/mod_noise/noise.cpp:287
 #: src/modules/mod_noise/valuenode_random.cpp:277
@@ -1871,7 +1876,7 @@ msgstr "湍流"
 
 #: src/modules/mod_noise/distort.cpp:254 src/modules/mod_noise/noise.cpp:299
 msgid "When checked produces turbulent noise"
-msgstr ""
+msgstr "当选上后产生扰动噪声"
 
 #: src/modules/mod_noise/main.cpp:66
 #: src/modules/mod_noise/valuenode_random.cpp:169
@@ -1884,7 +1889,7 @@ msgstr "噪音渐变"
 
 #: src/modules/mod_noise/noise.cpp:277
 msgid "Size of the noise"
-msgstr ""
+msgstr "噪音的大小"
 
 #: src/modules/mod_noise/noise.cpp:302
 msgid "Do Alpha"
@@ -1892,7 +1897,7 @@ msgstr "用透明"
 
 #: src/modules/mod_noise/noise.cpp:303
 msgid "Uses transparency"
-msgstr ""
+msgstr "采用透明度"
 
 #: src/modules/mod_noise/noise.cpp:306
 msgid "Super Sampling"
@@ -1900,7 +1905,7 @@ msgstr "超级取样"
 
 #: src/modules/mod_noise/noise.cpp:307
 msgid "When checked the gradient is supersampled"
-msgstr ""
+msgstr "当选上后渐变是超采样的"
 
 #: src/modules/mod_noise/valuenode_random.cpp:250
 #: src/synfig/valuenodes/valuenode_boneinfluence.cpp:227
@@ -1913,11 +1918,12 @@ msgstr ""
 #: src/synfig/valuenodes/valuenode_real.cpp:185
 #: src/synfig/valuenodes/valuenode_reciprocal.cpp:165
 #: src/synfig/valuenodes/valuenode_reference.cpp:143
+#: src/synfig/valuenodes/valuenode_reverse.cpp:307
 #: src/synfig/valuenodes/valuenode_scale.cpp:249
 #: src/synfig/valuenodes/valuenode_step.cpp:192
 #: src/synfig/valuenodes/valuenode_timeloop.cpp:174
 msgid "Link"
-msgstr "链接"
+msgstr "链环"
 
 #: src/modules/mod_noise/valuenode_random.cpp:251
 msgid "The value node source that provides the central value"
@@ -1934,12 +1940,12 @@ msgstr "种子"
 
 #: src/modules/mod_noise/valuenode_random.cpp:261
 msgid "Seeds the random number generator"
-msgstr ""
+msgstr "随机种子数生产器"
 
 #: src/modules/mod_noise/valuenode_random.cpp:265
 #: src/synfig/layers/layer_pastecanvas.cpp:143
 msgid "Speed"
-msgstr ""
+msgstr "速度"
 
 #: src/modules/mod_noise/valuenode_random.cpp:266
 msgid ""
@@ -1953,7 +1959,7 @@ msgstr ""
 
 #: src/modules/mod_noise/valuenode_random.cpp:273
 msgid "No interpolation"
-msgstr ""
+msgstr "不做插值"
 
 #: src/modules/mod_noise/valuenode_random.cpp:282
 msgid "Loop Time"
@@ -1961,7 +1967,7 @@ msgstr "时间循环"
 
 #: src/modules/mod_noise/valuenode_random.cpp:283
 msgid "Makes the random value repeat after the given time"
-msgstr ""
+msgstr "使随机值在给定的时间后重复"
 
 #: src/modules/mod_particle/plant.cpp:70
 msgid "Plant"
@@ -1973,11 +1979,11 @@ msgstr "用于植物上色的渐变"
 
 #: src/modules/mod_particle/plant.cpp:441
 msgid "Split Angle"
-msgstr "分离角度"
+msgstr "分裂角度"
 
 #: src/modules/mod_particle/plant.cpp:442
 msgid "Angle by which each split deviates from its parent"
-msgstr "从父辈分离的角度"
+msgstr "从父辈偏离分裂的角度"
 
 #: src/modules/mod_particle/plant.cpp:446
 msgid "Gravity"
@@ -1993,7 +1999,7 @@ msgstr "正切率"
 
 #: src/modules/mod_particle/plant.cpp:453
 msgid "Amount to which shoots tend to grow along the tangent to the spline"
-msgstr ""
+msgstr "沿样条切线的增长趋量"
 
 #: src/modules/mod_particle/plant.cpp:457
 msgid "Perpendicular Velocity"
@@ -2003,7 +2009,7 @@ msgstr "垂直速度"
 msgid ""
 "Amount to which shoots tend to grow perpendicular to the tangent to the "
 "spline"
-msgstr ""
+msgstr "沿样条切线的垂直线的增长趋量"
 
 #: src/modules/mod_particle/plant.cpp:462
 msgid "Stem Size"
@@ -2023,8 +2029,9 @@ msgid ""
 "size, and an alpha of 1.0 is used when rendering"
 msgstr "如果打开，渐变的透明度通道用茎的大小相乘，在渲染是使用的透明度为1.0"
 
-#: src/modules/mod_particle/plant.cpp:473
+#: src/modules/mod_particle/plant.cpp:473 src/synfig/valuenode.cpp:221
 #: src/synfig/valuenodes/valuenode_blinereversetangent.cpp:169
+#: src/synfig/valuenodes/valuenode_reverse.cpp:282
 msgid "Reverse"
 msgstr "颠倒"
 
@@ -2032,7 +2039,7 @@ msgstr "颠倒"
 msgid "If enabled, render the plant in the opposite direction"
 msgstr "如果激活，植物出现在另一面"
 
-#: src/modules/mod_particle/plant.cpp:478 src/synfig/valuenode.cpp:181
+#: src/modules/mod_particle/plant.cpp:478 src/synfig/valuenode.cpp:182
 #: src/synfig/valuenodes/valuenode_duplicate.cpp:204
 #: src/synfig/valuenodes/valuenode_step.cpp:137
 msgid "Step"
@@ -2060,7 +2067,7 @@ msgstr "枝桠"
 
 #: src/modules/mod_particle/plant.cpp:494
 msgid "Number of places that growth occurs on each spline section"
-msgstr ""
+msgstr "每段样条出现的生长点的数量"
 
 #: src/modules/mod_particle/plant.cpp:498
 msgid "Random Factor"
@@ -2085,7 +2092,7 @@ msgstr "使用宽度"
 
 #: src/modules/mod_particle/plant.cpp:509
 msgid "Scale the velocity by the spline's width"
-msgstr ""
+msgstr "用样条的宽度对速度作增减"
 
 #: src/modules/mod_png/trgt_cairo_png.cpp:117 src/synfig/target_cairo.cpp:201
 msgid "Cairo Surface bad status"
@@ -2105,7 +2112,7 @@ msgstr "%s 不是 PPM 格式"
 
 #: src/modules/mod_svg/layer_svg.cpp:53
 msgid "Import Svg"
-msgstr ""
+msgstr "导入 SVG"
 
 #: src/synfig/base_types.cpp:78 src/synfig/base_types.cpp:79
 msgid "bool"
@@ -2141,23 +2148,23 @@ msgstr "线段"
 
 #: src/synfig/base_types.cpp:278
 msgid "spline_point"
-msgstr ""
+msgstr "样条的点"
 
 #: src/synfig/base_types.cpp:297
 msgid "matrix"
-msgstr ""
+msgstr "矩阵"
 
 #: src/synfig/base_types.cpp:316
 msgid "bone_weight_pair"
-msgstr ""
+msgstr "骨骼权重对"
 
 #: src/synfig/base_types.cpp:336
 msgid "width_point"
-msgstr ""
+msgstr "宽度点"
 
 #: src/synfig/base_types.cpp:356
 msgid "dash_item"
-msgstr ""
+msgstr "短线"
 
 #: src/synfig/base_types.cpp:375
 msgid "list"
@@ -2177,15 +2184,15 @@ msgstr "渐变"
 
 #: src/synfig/base_types.cpp:505
 msgid "bone_object"
-msgstr ""
+msgstr "骨骼物体"
 
 #: src/synfig/base_types.cpp:540
 msgid "bone_valuenode"
-msgstr ""
+msgstr "骨骼的值节点"
 
 #: src/synfig/base_types.cpp:563
 msgid "transformation"
-msgstr ""
+msgstr "变换"
 
 #: src/synfig/cairoimporter.cpp:88
 msgid "CairoImporter::open(): Cannot open empty filename"
@@ -2276,7 +2283,7 @@ msgstr "图像的右下角"
 #: src/synfig/layers/layer_composite.cpp:252
 #: src/synfig/layers/layer_skeleton.cpp:137
 msgid "Alpha channel of the layer"
-msgstr ""
+msgstr "层透明通道"
 
 #: src/synfig/layers/layer_composite.cpp:255 src/synfig/paramdesc.cpp:66
 msgid "Blend Method"
@@ -2286,7 +2293,7 @@ msgstr "混合方式"
 msgid "The blending method used to composite on the layers below"
 msgstr ""
 
-#: src/synfig/layers/layer_duplicate.cpp:56 src/synfig/valuenode.cpp:179
+#: src/synfig/layers/layer_duplicate.cpp:56 src/synfig/valuenode.cpp:180
 #: src/synfig/valuenodes/valuenode_duplicate.cpp:175
 msgid "Duplicate"
 msgstr "复制"
@@ -2359,15 +2366,15 @@ msgstr "最后子样本的相关量，用于线性权重"
 
 #: src/synfig/layers/layer_pastecanvas.cpp:129
 msgid "Position offset"
-msgstr ""
+msgstr "位置偏移"
 
 #: src/synfig/layers/layer_pastecanvas.cpp:133
 msgid "Transformation"
-msgstr ""
+msgstr "变换"
 
 #: src/synfig/layers/layer_pastecanvas.cpp:134
 msgid "Position, rotation, skew and scale"
-msgstr ""
+msgstr "位置，旋转，歪斜，缩放"
 
 #: src/synfig/layers/layer_pastecanvas.cpp:138
 msgid "Canvas"
@@ -2375,7 +2382,7 @@ msgstr "画布"
 
 #: src/synfig/layers/layer_pastecanvas.cpp:139
 msgid "Group content"
-msgstr ""
+msgstr "群组链接"
 
 #: src/synfig/layers/layer_pastecanvas.cpp:144
 msgid "Multiplier to speed up, slow down, freeze, or reverse time"
@@ -2387,19 +2394,19 @@ msgstr ""
 
 #: src/synfig/layers/layer_pastecanvas.cpp:153
 msgid "Lock Selection"
-msgstr ""
+msgstr "锁定选择"
 
 #: src/synfig/layers/layer_pastecanvas.cpp:154
 msgid "When checked prevents to select the children using the mouse click"
-msgstr ""
+msgstr "当选上后防止鼠标点选到子物体"
 
 #: src/synfig/layers/layer_pastecanvas.cpp:159
 msgid "Outline Grow"
-msgstr ""
+msgstr "轮廓扩展"
 
 #: src/synfig/layers/layer_pastecanvas.cpp:160
 msgid "Exponential value to grow children Outline layers width"
-msgstr ""
+msgstr "用于增大轮廓层宽度的指数值"
 
 #: src/synfig/layers/layer_pastecanvas.cpp:174
 msgid "Current Time"
@@ -2411,11 +2418,11 @@ msgstr "多边形"
 
 #: src/synfig/layers/layer_polygon.cpp:187
 msgid "Vertices List"
-msgstr ""
+msgstr "顶点清单"
 
 #: src/synfig/layers/layer_polygon.cpp:188
 msgid "Define the corners of the polygon"
-msgstr ""
+msgstr "定义多边形的拐角"
 
 #: src/synfig/layers/layer_shape.cpp:66
 msgid "Shape"
@@ -2459,7 +2466,7 @@ msgstr "奇/偶"
 
 #: src/synfig/layers/layer_skeleton.cpp:54
 msgid "Skeleton"
-msgstr ""
+msgstr "骨架"
 
 #: src/synfig/layers/layer_skeleton.cpp:142
 #: src/synfig/valuenodes/valuenode_bone.cpp:587
@@ -2467,8 +2474,42 @@ msgid "Name"
 msgstr "名字"
 
 #: src/synfig/layers/layer_skeleton.cpp:145
+#: src/synfig/layers/layer_skeletondeformation.cpp:98
 msgid "Bones"
-msgstr ""
+msgstr "骨骼"
+
+#: src/synfig/layers/layer_skeletondeformation.cpp:61
+#: src/synfig/layers/layer_skeletondeformation.cpp:89
+msgid "Skeleton Deformation"
+msgstr "骨架变形"
+
+#: src/synfig/layers/layer_skeletondeformation.cpp:99
+msgid "List of bones"
+msgstr "骨骼列表"
+
+#: src/synfig/layers/layer_skeletondeformation.cpp:106
+msgid "First corner of the bounds rectangle"
+msgstr "界限矩形的第一个角"
+
+#: src/synfig/layers/layer_skeletondeformation.cpp:111
+msgid "Second corner of the bounds rectangle"
+msgstr "界限矩形的第二个角"
+
+#: src/synfig/layers/layer_skeletondeformation.cpp:115
+msgid "Horizontal subdivisions"
+msgstr "水平细分"
+
+#: src/synfig/layers/layer_skeletondeformation.cpp:116
+msgid "Count of horizontal subdivisions of the transformation grid"
+msgstr "变形网格的水平细分数量"
+
+#: src/synfig/layers/layer_skeletondeformation.cpp:120
+msgid "Vertical subdivisions"
+msgstr "垂直细分"
+
+#: src/synfig/layers/layer_skeletondeformation.cpp:121
+msgid "Count of vertical subdivisions of the transformation grid"
+msgstr "变形网格的垂直细分数量"
 
 #: src/synfig/layers/layer_solidcolor.cpp:56
 msgid "Solid Color"
@@ -2476,37 +2517,37 @@ msgstr "平涂色"
 
 #: src/synfig/layers/layer_sound.cpp:51
 msgid "Sound"
-msgstr ""
+msgstr "声音"
 
 #: src/synfig/layers/layer_sound.cpp:102
 msgid "Path to sound file"
-msgstr ""
+msgstr "声音文件的路径"
 
 #: src/synfig/layers/layer_sound.cpp:108
 msgid "Delay"
-msgstr ""
+msgstr "延迟"
 
 #: src/synfig/layers/layer_sound.cpp:109
 msgid "Delay before play"
-msgstr ""
+msgstr "播放前延迟"
 
 #: src/synfig/layers/layer_sound.cpp:114
 msgid "Volume"
-msgstr ""
+msgstr "音量"
 
 #: src/synfig/layers/layer_sound.cpp:115
 msgid "Volume of sound"
-msgstr ""
+msgstr "声音音量"
 
 #: src/synfig/layers/layer_switch.cpp:58 src/synfig/layers/layer_switch.cpp:82
-#: src/synfig/valuenode.cpp:173 src/synfig/valuenodes/valuenode_switch.cpp:133
+#: src/synfig/valuenode.cpp:174 src/synfig/valuenodes/valuenode_switch.cpp:133
 #: src/synfig/valuenodes/valuenode_switch.cpp:163
 msgid "Switch"
 msgstr "开关"
 
 #: src/synfig/layers/layer_switch.cpp:91
 msgid "Active Layer Name"
-msgstr ""
+msgstr "激活层名字"
 
 #: src/synfig/layers/layer_switch.cpp:92
 msgid "Only layer with specified name are visible"
@@ -2579,7 +2620,7 @@ msgstr "发现<waypoint>“用“属性，但不是空的。忽略内容..."
 #: src/synfig/loadcanvas.cpp:1730
 #, c-format
 msgid "Unknown ID (%s) referenced in waypoint"
-msgstr ""
+msgstr "在航点中引用了未知 ID (%s)"
 
 #: src/synfig/loadcanvas.cpp:1736 src/synfig/loadcanvas.cpp:1748
 #, c-format
@@ -2648,7 +2689,7 @@ msgstr "‘%s’的解释失败"
 #: src/synfig/loadcanvas.cpp:2072
 #, c-format
 msgid "Unable to connect value node ('%s' of type '%s') to link %d (%s)"
-msgstr "未能联接值节点（'%s'类型的'%s'）到链接%d（%s）"
+msgstr "未能接通值节点（'%s'类型的'%s'）到链接%d（%s）"
 
 #: src/synfig/loadcanvas.cpp:2090
 #, c-format
@@ -2662,7 +2703,7 @@ msgstr "<%s> 缺少链接 %d (%s)"
 
 #: src/synfig/loadcanvas.cpp:2241
 msgid "Unable to create <list>"
-msgstr ""
+msgstr "未能创建 <list>"
 
 #: src/synfig/loadcanvas.cpp:2283 src/synfig/loadcanvas.cpp:2546
 msgid "<entry> is missing its contents or missing \"use\" element"
@@ -2739,7 +2780,7 @@ msgstr "层退回画布链接"
 #: src/synfig/loadcanvas.cpp:2935
 #, c-format
 msgid "Unknown ID (%s) referenced in parameter \"%s\""
-msgstr ""
+msgstr "在属性 \"%s\" 中引用了未知ID (%s)"
 
 #: src/synfig/loadcanvas.cpp:2951
 msgid "<param> is either missing its contents, or missing a \"use\" attribute."
@@ -2769,7 +2810,7 @@ msgstr ""
 
 #: src/synfig/loadcanvas.cpp:3251
 msgid "Inline canvas cannot have a <bones> section"
-msgstr ""
+msgstr "内链画布不能有 <bones> 片段"
 
 #: src/synfig/loadcanvas.cpp:3259
 msgid "Group canvases cannot have keyframes"
@@ -2804,7 +2845,7 @@ msgstr "空白的“作者”栏"
 msgid "Canvas '%s' has undefined %s: %s"
 msgstr "画布‘%s’还么定义%s：%s"
 
-#: src/synfig/loadcanvas.cpp:3390 src/synfig/valuenode.cpp:386
+#: src/synfig/loadcanvas.cpp:3390 src/synfig/valuenode.cpp:389
 msgid "ValueNode"
 msgstr "值节点"
 
@@ -2814,7 +2855,7 @@ msgstr "值节点"
 
 #: src/synfig/loadcanvas.cpp:3470
 msgid "Can't find linked file"
-msgstr ""
+msgstr "未能找到链接的文件"
 
 #: src/synfig/loadcanvas.cpp:3481 src/synfig/loadcanvas.cpp:3537
 msgid "Can't open file"
@@ -2847,19 +2888,19 @@ msgstr "层的大小不匹配(app:%d, lib:%d)"
 
 #: src/synfig/main.cpp:215
 msgid "Starting Subsystem \"Sound\""
-msgstr ""
+msgstr "正在启动“声音”子系统"
 
 #: src/synfig/main.cpp:217
 msgid "Unable to initialize subsystem \"Sound\""
-msgstr ""
+msgstr "未能初始化“声音”子系统"
 
 #: src/synfig/main.cpp:219
 msgid "Starting Subsystem \"Types\""
-msgstr ""
+msgstr "正在启动“类型”子系统"
 
 #: src/synfig/main.cpp:221
 msgid "Unable to initialize subsystem \"Types\""
-msgstr ""
+msgstr "未能初始化“类型”子系统"
 
 #: src/synfig/main.cpp:223
 msgid "Starting Subsystem \"Modules\""
@@ -2867,11 +2908,11 @@ msgstr "正在启动“模块”子系统"
 
 #: src/synfig/main.cpp:227
 msgid "Unable to initialize subsystem \"Modules\""
-msgstr ""
+msgstr "未能初始化“模块”子系统"
 
 #: src/synfig/main.cpp:230
 msgid "Starting Subsystem \"Layers\""
-msgstr "正在启动“层子系统”"
+msgstr "正在启动“层”子系统"
 
 #: src/synfig/main.cpp:235
 msgid "Unable to initialize subsystem \"Layers\""
@@ -2895,11 +2936,11 @@ msgstr "未能初始化“输入”子系统"
 
 #: src/synfig/main.cpp:257
 msgid "Starting Subsystem \"Cairo Importers\""
-msgstr ""
+msgstr "正在启动 “Cairo 导入器”子系统"
 
 #: src/synfig/main.cpp:265
 msgid "Unable to initialize subsystem \"Cairo Importers\""
-msgstr ""
+msgstr "未能初始化 “Cairo 导入器”子系统"
 
 #: src/synfig/main.cpp:268
 msgid "Starting Subsystem \"ValueNodes\""
@@ -3006,68 +3047,68 @@ msgstr ""
 msgid "%s does not appear to be a supported palette file"
 msgstr ""
 
-#: src/synfig/paramdesc.cpp:68 src/synfig/valuenode.cpp:151
+#: src/synfig/paramdesc.cpp:68 src/synfig/valuenode.cpp:152
 #: src/synfig/valuenodes/valuenode_composite.cpp:600
 msgid "Composite"
 msgstr "复合"
 
 #: src/synfig/paramdesc.cpp:69
 msgid "Straight"
-msgstr ""
+msgstr "直接"
 
 #: src/synfig/paramdesc.cpp:70
 msgid "Onto"
-msgstr ""
+msgstr "覆上"
 
 #: src/synfig/paramdesc.cpp:71
 msgid "Straight Onto"
-msgstr ""
+msgstr "直接覆上"
 
 #: src/synfig/paramdesc.cpp:72
 msgid "Behind"
-msgstr ""
+msgstr "在后"
 
 #: src/synfig/paramdesc.cpp:73
 msgid "Screen"
-msgstr ""
+msgstr "滤色"
 
 #: src/synfig/paramdesc.cpp:74
 msgid "Overlay"
-msgstr ""
+msgstr "叠加"
 
 #: src/synfig/paramdesc.cpp:75
 msgid "Hard Light"
-msgstr ""
+msgstr "强光"
 
 #: src/synfig/paramdesc.cpp:76
 msgid "Multiply"
-msgstr ""
+msgstr "正片叠加"
 
 #: src/synfig/paramdesc.cpp:77
 msgid "Divide"
-msgstr ""
+msgstr "相除"
 
-#: src/synfig/paramdesc.cpp:78 src/synfig/valuenode.cpp:168
-#: src/synfig/valuenodes/valuenode_add.cpp:199
+#: src/synfig/paramdesc.cpp:78 src/synfig/valuenode.cpp:169
+#: src/synfig/valuenodes/valuenode_add.cpp:211
 msgid "Add"
-msgstr "添加"
+msgstr "加法"
 
-#: src/synfig/paramdesc.cpp:79 src/synfig/valuenode.cpp:158
+#: src/synfig/paramdesc.cpp:79 src/synfig/valuenode.cpp:159
 #: src/synfig/valuenodes/valuenode_subtract.cpp:203
 msgid "Subtract"
-msgstr "部分追踪"
+msgstr "减"
 
 #: src/synfig/paramdesc.cpp:80
 msgid "Difference"
-msgstr ""
+msgstr "插值"
 
 #: src/synfig/paramdesc.cpp:81
 msgid "Brighten"
-msgstr ""
+msgstr "变亮"
 
 #: src/synfig/paramdesc.cpp:82
 msgid "Darken"
-msgstr ""
+msgstr "变暗"
 
 #: src/synfig/paramdesc.cpp:84
 #: src/synfig/valuenodes/valuenode_radialcomposite.cpp:261
@@ -3082,19 +3123,19 @@ msgstr "饱和度"
 
 #: src/synfig/paramdesc.cpp:86
 msgid "Luminance"
-msgstr ""
+msgstr "亮度"
 
 #: src/synfig/paramdesc.cpp:87
 msgid "Alpha Over"
-msgstr ""
+msgstr "透明度在上"
 
 #: src/synfig/paramdesc.cpp:88
 msgid "Alpha Brighten"
-msgstr ""
+msgstr "透明度变亮"
 
 #: src/synfig/paramdesc.cpp:89
 msgid "Alpha Darken"
-msgstr ""
+msgstr "透明度变暗"
 
 #: src/synfig/render.cpp:248 src/synfig/render.cpp:249
 #: src/synfig/render.cpp:303 src/synfig/render.cpp:304
@@ -3120,7 +3161,7 @@ msgstr "目标初始化失败"
 
 #: src/synfig/target_cairo.cpp:155
 msgid "Frame Renderer Failure"
-msgstr ""
+msgstr "帧渲染器失败"
 
 #: src/synfig/target_cairo.cpp:165 src/synfig/target_scanline.cpp:274
 #: src/synfig/target_scanline.cpp:435
@@ -3129,7 +3170,7 @@ msgstr "未能放置面到目标上"
 
 #: src/synfig/target_cairo.cpp:173
 msgid "Not supported render method"
-msgstr ""
+msgstr "未支持的渲染方法"
 
 #: src/synfig/target_cairo.cpp:180 src/synfig/target_cairo_tile.cpp:259
 #: src/synfig/target_scanline.cpp:448 src/synfig/target_tile.cpp:528
@@ -3160,7 +3201,7 @@ msgstr "加速渲染器失败"
 #: src/synfig/target_cairo_tile.cpp:157
 #, c-format
 msgid "Bad surface: %s"
-msgstr ""
+msgstr "坏面: %s"
 
 #: src/synfig/target_cairo_tile.cpp:164 src/synfig/target_tile.cpp:266
 #: src/synfig/target_tile.cpp:375
@@ -3190,260 +3231,260 @@ msgid ""
 "SECONDS"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:152
+#: src/synfig/valuenode.cpp:153
 #: src/synfig/valuenodes/valuenode_radialcomposite.cpp:232
 msgid "Radial Composite"
 msgstr "半径复合"
 
-#: src/synfig/valuenode.cpp:153
+#: src/synfig/valuenode.cpp:154
 #: src/synfig/valuenodes/valuenode_blinereversetangent.cpp:164
 #: src/synfig/valuenodes/valuenode_reference.cpp:123
 msgid "Reference"
-msgstr "引用"
+msgstr "参考"
 
-#: src/synfig/valuenode.cpp:155
+#: src/synfig/valuenode.cpp:156
 #: src/synfig/valuenodes/valuenode_segcalctangent.cpp:106
 msgid "Segment Tangent"
 msgstr "线段切线"
 
-#: src/synfig/valuenode.cpp:156
+#: src/synfig/valuenode.cpp:157
 #: src/synfig/valuenodes/valuenode_segcalcvertex.cpp:104
 msgid "Segment Vertex"
 msgstr "线段顶点"
 
-#: src/synfig/valuenode.cpp:157 src/synfig/valuenodes/valuenode_stripes.cpp:81
+#: src/synfig/valuenode.cpp:158 src/synfig/valuenodes/valuenode_stripes.cpp:81
 #: src/synfig/valuenodes/valuenode_stripes.cpp:171
 msgid "Stripes"
 msgstr "条纹"
 
-#: src/synfig/valuenode.cpp:159
+#: src/synfig/valuenode.cpp:160
 #: src/synfig/valuenodes/valuenode_twotone.cpp:135
 msgid "Two-Tone"
 msgstr "双色调"
 
-#: src/synfig/valuenode.cpp:161
+#: src/synfig/valuenode.cpp:162
 #: src/synfig/valuenodes/valuenode_dynamiclist.cpp:770
 msgid "Dynamic List"
 msgstr "动态清单"
 
-#: src/synfig/valuenode.cpp:162
+#: src/synfig/valuenode.cpp:163
 #: src/synfig/valuenodes/valuenode_gradientrotate.cpp:78
 #: src/synfig/valuenodes/valuenode_gradientrotate.cpp:146
 msgid "Gradient Rotate"
 msgstr "渐变旋转"
 
-#: src/synfig/valuenode.cpp:163 src/synfig/valuenodes/valuenode_sine.cpp:110
+#: src/synfig/valuenode.cpp:164 src/synfig/valuenodes/valuenode_sine.cpp:110
 msgid "Sine"
 msgstr "正弦"
 
-#: src/synfig/valuenode.cpp:165
+#: src/synfig/valuenode.cpp:166
 #: src/synfig/valuenodes/valuenode_timedswap.cpp:233
 msgid "Timed Swap"
 msgstr "定时交换"
 
-#: src/synfig/valuenode.cpp:166
+#: src/synfig/valuenode.cpp:167
 #: src/synfig/valuenodes/valuenode_repeat_gradient.cpp:84
 #: src/synfig/valuenodes/valuenode_repeat_gradient.cpp:185
 msgid "Repeat Gradient"
 msgstr "重复渐变"
 
-#: src/synfig/valuenode.cpp:167 src/synfig/valuenodes/valuenode_exp.cpp:106
+#: src/synfig/valuenode.cpp:168 src/synfig/valuenodes/valuenode_exp.cpp:106
 msgid "Exponential"
-msgstr "指数"
-
-#: src/synfig/valuenode.cpp:169
-#: src/synfig/valuenodes/valuenode_blinecalctangent.cpp:186
-msgid "Spline Tangent"
-msgstr ""
+msgstr "自然指数"
 
 #: src/synfig/valuenode.cpp:170
+#: src/synfig/valuenodes/valuenode_blinecalctangent.cpp:186
+msgid "Spline Tangent"
+msgstr "样条切线"
+
+#: src/synfig/valuenode.cpp:171
 #: src/synfig/valuenodes/valuenode_blinecalcvertex.cpp:152
 msgid "Spline Vertex"
-msgstr ""
+msgstr "样条顶点"
 
-#: src/synfig/valuenode.cpp:171 src/synfig/valuenodes/valuenode_range.cpp:258
+#: src/synfig/valuenode.cpp:172 src/synfig/valuenodes/valuenode_range.cpp:258
 msgid "Range"
 msgstr "范围"
 
-#: src/synfig/valuenode.cpp:174 src/synfig/valuenodes/valuenode_cos.cpp:109
+#: src/synfig/valuenode.cpp:175 src/synfig/valuenodes/valuenode_cos.cpp:109
 msgid "Cos"
 msgstr "余弦"
 
-#: src/synfig/valuenode.cpp:175 src/synfig/valuenodes/valuenode_atan2.cpp:107
+#: src/synfig/valuenode.cpp:176 src/synfig/valuenodes/valuenode_atan2.cpp:107
 msgid "aTan2"
-msgstr ""
+msgstr "反正切2"
 
-#: src/synfig/valuenode.cpp:176
+#: src/synfig/valuenode.cpp:177
 #: src/synfig/valuenodes/valuenode_blinereversetangent.cpp:119
 msgid "Reverse Tangent"
-msgstr "反正切"
+msgstr "反切线"
 
-#: src/synfig/valuenode.cpp:178
+#: src/synfig/valuenode.cpp:179
 #: src/synfig/valuenodes/valuenode_reciprocal.cpp:147
 msgid "Reciprocal"
 msgstr "倒数"
 
-#: src/synfig/valuenode.cpp:180
+#: src/synfig/valuenode.cpp:181
 #: src/synfig/valuenodes/valuenode_integer.cpp:169
 msgid "Integer"
 msgstr "整数"
 
-#: src/synfig/valuenode.cpp:182
+#: src/synfig/valuenode.cpp:183
 #: src/synfig/valuenodes/valuenode_blinecalcwidth.cpp:155
 msgid "Spline Width"
-msgstr ""
+msgstr "样条宽度"
 
-#: src/synfig/valuenode.cpp:184
+#: src/synfig/valuenode.cpp:185
 #: src/synfig/valuenodes/valuenode_vectorangle.cpp:124
 msgid "Vector Angle"
 msgstr "向量角度"
 
-#: src/synfig/valuenode.cpp:185
+#: src/synfig/valuenode.cpp:186
 #: src/synfig/valuenodes/valuenode_vectorlength.cpp:123
 msgid "Vector Length"
 msgstr "向量长度"
 
-#: src/synfig/valuenode.cpp:186
+#: src/synfig/valuenode.cpp:187
 #: src/synfig/valuenodes/valuenode_vectorx.cpp:123
 msgid "Vector X"
 msgstr "向量 X"
 
-#: src/synfig/valuenode.cpp:187
+#: src/synfig/valuenode.cpp:188
 #: src/synfig/valuenodes/valuenode_vectory.cpp:123
 msgid "Vector Y"
 msgstr "向量 Y"
 
-#: src/synfig/valuenode.cpp:188
+#: src/synfig/valuenode.cpp:189
 #: src/synfig/valuenodes/valuenode_gradientcolor.cpp:140
 msgid "Gradient Color"
 msgstr "渐变色"
 
-#: src/synfig/valuenode.cpp:189
+#: src/synfig/valuenode.cpp:190
 #: src/synfig/valuenodes/valuenode_dotproduct.cpp:120
 msgid "Dot Product"
-msgstr ""
+msgstr "点积"
 
-#: src/synfig/valuenode.cpp:190
+#: src/synfig/valuenode.cpp:191
 #: src/synfig/valuenodes/valuenode_timestring.cpp:112
 msgid "Time String"
 msgstr "时间字符串"
 
-#: src/synfig/valuenode.cpp:191 src/synfig/valuenodes/valuenode_real.cpp:163
+#: src/synfig/valuenode.cpp:192 src/synfig/valuenodes/valuenode_real.cpp:163
 #: src/synfig/valuenodes/valuenode_realstring.cpp:170
 msgid "Real"
 msgstr "实数"
 
-#: src/synfig/valuenode.cpp:192
+#: src/synfig/valuenode.cpp:193
 #: src/synfig/valuenodes/valuenode_realstring.cpp:120
 msgid "Real String"
 msgstr "实数字符串"
 
-#: src/synfig/valuenode.cpp:193 src/synfig/valuenodes/valuenode_join.cpp:137
+#: src/synfig/valuenode.cpp:194 src/synfig/valuenodes/valuenode_join.cpp:137
 msgid "Joined List"
 msgstr "加入的清单"
 
-#: src/synfig/valuenode.cpp:194
+#: src/synfig/valuenode.cpp:195
 #: src/synfig/valuenodes/valuenode_anglestring.cpp:122
 msgid "Angle String"
 msgstr "角度字符串"
 
-#: src/synfig/valuenode.cpp:195
+#: src/synfig/valuenode.cpp:196
 #: src/synfig/valuenodes/valuenode_intstring.cpp:117
 msgid "Int String"
 msgstr "整数字符串"
 
-#: src/synfig/valuenode.cpp:196 src/synfig/valuenodes/valuenode_log.cpp:141
+#: src/synfig/valuenode.cpp:197 src/synfig/valuenodes/valuenode_log.cpp:141
 msgid "Logarithm"
 msgstr "对数"
 
-#: src/synfig/valuenode.cpp:197 src/synfig/valuenodes/valuenode_greyed.cpp:84
+#: src/synfig/valuenode.cpp:198 src/synfig/valuenodes/valuenode_greyed.cpp:84
 msgid "Greyed"
 msgstr "变灰的"
 
-#: src/synfig/valuenode.cpp:198 src/synfig/valuenodes/valuenode_pow.cpp:162
+#: src/synfig/valuenode.cpp:199 src/synfig/valuenodes/valuenode_pow.cpp:162
 #: src/synfig/valuenodes/valuenode_pow.cpp:185
 msgid "Power"
-msgstr "幂"
+msgstr "乘幂"
 
-#: src/synfig/valuenode.cpp:199
+#: src/synfig/valuenode.cpp:200
 #: src/synfig/valuenodes/valuenode_compare.cpp:149
 msgid "Compare"
 msgstr "比较"
 
-#: src/synfig/valuenode.cpp:200
+#: src/synfig/valuenode.cpp:201
 msgid "Not"
 msgstr "非"
 
-#: src/synfig/valuenode.cpp:201
+#: src/synfig/valuenode.cpp:202
 msgid "And"
 msgstr "与"
 
-#: src/synfig/valuenode.cpp:202
+#: src/synfig/valuenode.cpp:203
 msgid "Or"
 msgstr "或"
 
-#: src/synfig/valuenode.cpp:204
+#: src/synfig/valuenode.cpp:205
 #: src/synfig/valuenodes/valuenode_boneinfluence.cpp:178
 msgid "Bone Influence"
-msgstr ""
+msgstr "骨骼影响力"
 
-#: src/synfig/valuenode.cpp:205 src/synfig/valuenodes/valuenode_bone.cpp:505
+#: src/synfig/valuenode.cpp:206 src/synfig/valuenodes/valuenode_bone.cpp:505
 #: src/synfig/valuenodes/valuenode_bonelink.cpp:208
 #: src/synfig/valuenodes/valuenode_boneweightpair.cpp:162
 msgid "Bone"
-msgstr ""
-
-#: src/synfig/valuenode.cpp:206
-msgid "Root Bone"
-msgstr ""
+msgstr "骨骼"
 
 #: src/synfig/valuenode.cpp:207
-#: src/synfig/valuenodes/valuenode_staticlist.cpp:443
-msgid "Static List"
-msgstr ""
+msgid "Root Bone"
+msgstr "顶级骨骼"
 
 #: src/synfig/valuenode.cpp:208
-#: src/synfig/valuenodes/valuenode_boneweightpair.cpp:119
-msgid "Bone Weight Pair"
-msgstr ""
+#: src/synfig/valuenodes/valuenode_staticlist.cpp:443
+msgid "Static List"
+msgstr "静态清单"
 
 #: src/synfig/valuenode.cpp:209
+#: src/synfig/valuenodes/valuenode_boneweightpair.cpp:119
+msgid "Bone Weight Pair"
+msgstr "骨骼权重对"
+
+#: src/synfig/valuenode.cpp:210
 #: src/synfig/valuenodes/valuenode_bonelink.cpp:190
 msgid "Bone Link"
-msgstr ""
+msgstr "骨骼链接"
 
-#: src/synfig/valuenode.cpp:211 src/synfig/valuenodes/valuenode_wplist.cpp:357
+#: src/synfig/valuenode.cpp:212 src/synfig/valuenodes/valuenode_wplist.cpp:357
 msgid "WPList"
-msgstr ""
+msgstr "WP清单"
 
-#: src/synfig/valuenode.cpp:212 src/synfig/valuenodes/valuenode_dilist.cpp:178
+#: src/synfig/valuenode.cpp:213 src/synfig/valuenodes/valuenode_dilist.cpp:178
 msgid "DIList"
-msgstr ""
+msgstr "DI清单"
 
-#: src/synfig/valuenode.cpp:214 src/synfig/valuenodes/valuenode_average.cpp:97
+#: src/synfig/valuenode.cpp:215 src/synfig/valuenodes/valuenode_average.cpp:97
 msgid "Average"
-msgstr ""
+msgstr "平均"
 
-#: src/synfig/valuenode.cpp:215
+#: src/synfig/valuenode.cpp:216
 msgid "Weighted Average"
-msgstr ""
-
-#: src/synfig/valuenode.cpp:217
-#: src/synfig/valuenodes/valuenode_dynamic.cpp:171
-msgid "Dynamic"
-msgstr ""
+msgstr "加权平均"
 
 #: src/synfig/valuenode.cpp:218
+#: src/synfig/valuenodes/valuenode_dynamic.cpp:171
+msgid "Dynamic"
+msgstr "动力"
+
+#: src/synfig/valuenode.cpp:219
 #: src/synfig/valuenodes/valuenode_derivative.cpp:315
 msgid "Derivative"
-msgstr ""
+msgstr "导数"
 
-#: src/synfig/valuenode.cpp:253
+#: src/synfig/valuenode.cpp:256
 #, c-format
 msgid "Bad type: ValueNode '%s' doesn't accept type '%s'"
 msgstr "错误类型：值节点‘%s’不接受‘%s’类型"
 
-#: src/synfig/valuenode.cpp:552
+#: src/synfig/valuenode.cpp:576
 msgid "Placeholder"
 msgstr "位置标志符"
 
@@ -3476,37 +3517,37 @@ msgstr "：错误类型"
 msgid "One or both of my parameters aren't set!"
 msgstr "我的参数的一个或两个都没有被设定！"
 
-#: src/synfig/valuenodes/valuenode_add.cpp:220
+#: src/synfig/valuenodes/valuenode_add.cpp:232
 #: src/synfig/valuenodes/valuenode_compare.cpp:167
 #: src/synfig/valuenodes/valuenode_dotproduct.cpp:167
 #: src/synfig/valuenodes/valuenode_subtract.cpp:227
 msgid "LHS"
-msgstr "左侧"
+msgstr "左边"
 
-#: src/synfig/valuenodes/valuenode_add.cpp:221
+#: src/synfig/valuenodes/valuenode_add.cpp:233
 msgid "Left Hand Side of the add"
-msgstr ""
+msgstr "加法的左边"
 
-#: src/synfig/valuenodes/valuenode_add.cpp:225
+#: src/synfig/valuenodes/valuenode_add.cpp:237
 #: src/synfig/valuenodes/valuenode_compare.cpp:172
 #: src/synfig/valuenodes/valuenode_dotproduct.cpp:172
 #: src/synfig/valuenodes/valuenode_subtract.cpp:232
 msgid "RHS"
-msgstr "右侧"
+msgstr "右边"
 
-#: src/synfig/valuenodes/valuenode_add.cpp:226
+#: src/synfig/valuenodes/valuenode_add.cpp:238
 msgid "Right Hand Side of the add"
-msgstr ""
+msgstr "加法的右边"
 
-#: src/synfig/valuenodes/valuenode_add.cpp:230
+#: src/synfig/valuenodes/valuenode_add.cpp:242
 #: src/synfig/valuenodes/valuenode_scale.cpp:254
 #: src/synfig/valuenodes/valuenode_subtract.cpp:237
 msgid "Scalar"
-msgstr "等比"
+msgstr "标量"
 
-#: src/synfig/valuenodes/valuenode_add.cpp:231
+#: src/synfig/valuenodes/valuenode_add.cpp:243
 msgid "Value that multiplies the add"
-msgstr ""
+msgstr "与加法结果相乘的值"
 
 #: src/synfig/valuenodes/valuenode_and.cpp:129
 msgid "AND"
@@ -3515,7 +3556,7 @@ msgstr "与"
 #: src/synfig/valuenodes/valuenode_and.cpp:147
 #: src/synfig/valuenodes/valuenode_or.cpp:147
 msgid "Link1"
-msgstr "链接1"
+msgstr "链环1"
 
 #: src/synfig/valuenodes/valuenode_and.cpp:148
 msgid "First operand of the AND operation"
@@ -3524,7 +3565,7 @@ msgstr ""
 #: src/synfig/valuenodes/valuenode_and.cpp:152
 #: src/synfig/valuenodes/valuenode_or.cpp:152
 msgid "Link2"
-msgstr "链接2"
+msgstr "链环2"
 
 #: src/synfig/valuenodes/valuenode_and.cpp:153
 msgid "Second operand of the AND operation"
@@ -3534,13 +3575,13 @@ msgstr ""
 #: src/synfig/valuenodes/valuenode_intstring.cpp:166
 #: src/synfig/valuenodes/valuenode_realstring.cpp:171
 msgid "Value to convert to string"
-msgstr ""
+msgstr "转换为字符串的值"
 
 #: src/synfig/valuenodes/valuenode_anglestring.cpp:175
 #: src/synfig/valuenodes/valuenode_intstring.cpp:171
 #: src/synfig/valuenodes/valuenode_realstring.cpp:176
 msgid "Width of the string"
-msgstr ""
+msgstr "字符串的宽度"
 
 #: src/synfig/valuenodes/valuenode_anglestring.cpp:179
 #: src/synfig/valuenodes/valuenode_realstring.cpp:180
@@ -3550,19 +3591,19 @@ msgstr "精度"
 #: src/synfig/valuenodes/valuenode_anglestring.cpp:180
 #: src/synfig/valuenodes/valuenode_realstring.cpp:181
 msgid "Number of decimal places"
-msgstr ""
+msgstr "小数位数"
 
 #: src/synfig/valuenodes/valuenode_anglestring.cpp:184
 #: src/synfig/valuenodes/valuenode_intstring.cpp:175
 #: src/synfig/valuenodes/valuenode_realstring.cpp:185
 msgid "Zero Padded"
-msgstr "零填充"
+msgstr "补零"
 
 #: src/synfig/valuenodes/valuenode_anglestring.cpp:185
 #: src/synfig/valuenodes/valuenode_intstring.cpp:176
 #: src/synfig/valuenodes/valuenode_realstring.cpp:186
 msgid "When checked, the string is left filled with zeros to match the width"
-msgstr ""
+msgstr "当选上后，将在字符串前面补零来保证长度"
 
 #: src/synfig/valuenodes/valuenode_animated.cpp:357
 #: src/synfig/valuenodes/valuenode_animated.cpp:381
@@ -3588,15 +3629,15 @@ msgstr "X"
 
 #: src/synfig/valuenodes/valuenode_atan2.cpp:149
 msgid "Cosine of the angle"
-msgstr ""
+msgstr "角度余弦"
 
 #: src/synfig/valuenodes/valuenode_atan2.cpp:153
 msgid "Y"
-msgstr ""
+msgstr "Y"
 
 #: src/synfig/valuenodes/valuenode_atan2.cpp:154
 msgid "Sine of the angle"
-msgstr ""
+msgstr "角度正弦"
 
 #: src/synfig/valuenodes/valuenode_bline.cpp:986
 #: src/synfig/valuenodes/valuenode_dilist.cpp:154
@@ -3622,17 +3663,17 @@ msgstr "顶点%03d"
 
 #: src/synfig/valuenodes/valuenode_blinecalctangent.cpp:244
 msgid "The Spline where the tangent is linked to"
-msgstr ""
+msgstr "切线所链接的样条"
 
 #: src/synfig/valuenodes/valuenode_blinecalctangent.cpp:249
 #: src/synfig/valuenodes/valuenode_blinecalcvertex.cpp:207
 #: src/synfig/valuenodes/valuenode_blinecalcwidth.cpp:212
 msgid "When checked, the amount would loop"
-msgstr ""
+msgstr "当选上后，数量将循环"
 
 #: src/synfig/valuenodes/valuenode_blinecalctangent.cpp:254
 msgid "The position of the linked tangent on the Spline (0,1]"
-msgstr ""
+msgstr "已链接的切线在样条上所处的位置 (0,1]"
 
 #: src/synfig/valuenodes/valuenode_blinecalctangent.cpp:258
 #: src/synfig/valuenodes/valuenode_composite.cpp:763
@@ -3644,11 +3685,11 @@ msgstr "偏移"
 
 #: src/synfig/valuenodes/valuenode_blinecalctangent.cpp:259
 msgid "Angle offset of the tangent"
-msgstr ""
+msgstr "切线角度偏移"
 
 #: src/synfig/valuenodes/valuenode_blinecalctangent.cpp:264
 msgid "Scale of the tangent"
-msgstr ""
+msgstr "切线标尺"
 
 #: src/synfig/valuenodes/valuenode_blinecalctangent.cpp:268
 msgid "Fixed Length"
@@ -3656,72 +3697,72 @@ msgstr "固定长度"
 
 #: src/synfig/valuenodes/valuenode_blinecalctangent.cpp:269
 msgid "When checked, the tangent's length is fixed"
-msgstr ""
+msgstr "当选上后，切线长度是固定的"
 
 #: src/synfig/valuenodes/valuenode_blinecalctangent.cpp:274
 msgid "When checked, the tangent is Spline length based"
-msgstr ""
+msgstr "当选上后，切线是按照样条的长度计算的"
 
 #: src/synfig/valuenodes/valuenode_blinecalcvertex.cpp:202
 msgid "The spline where the vertex is linked to"
-msgstr ""
+msgstr "已链接的顶点所在的样条"
 
 #: src/synfig/valuenodes/valuenode_blinecalcvertex.cpp:212
 msgid "The position of the linked vertex on the Spline (0,1]"
-msgstr ""
+msgstr "已链接的顶点在样条上所处的位置 (0,1]"
 
 #: src/synfig/valuenodes/valuenode_blinecalcvertex.cpp:217
 msgid "When checked, the position is Spline length based"
-msgstr ""
+msgstr "当选上后，切线是按照样条的长度计算的"
 
 #: src/synfig/valuenodes/valuenode_blinecalcwidth.cpp:207
 msgid "The spline where the width is linked to"
-msgstr ""
+msgstr "已链接的宽度所在的样条"
 
 #: src/synfig/valuenodes/valuenode_blinecalcwidth.cpp:217
 msgid "The position of the linked width on the spline (0,1]"
-msgstr ""
+msgstr "已链接的宽度在样条上所处的位置 (0,1]"
 
 #: src/synfig/valuenodes/valuenode_blinecalcwidth.cpp:222
 msgid "Scale of the width"
-msgstr ""
+msgstr "宽度标尺"
 
 #: src/synfig/valuenodes/valuenode_blinecalcwidth.cpp:227
 msgid "When checked, the width is spline length based"
-msgstr ""
+msgstr "当选上后，宽度是按照样条的长度计算的"
 
 #: src/synfig/valuenodes/valuenode_blinereversetangent.cpp:165
 msgid "The referenced tangent to reverse"
-msgstr ""
+msgstr "要反转的参考切线"
 
 #: src/synfig/valuenodes/valuenode_blinereversetangent.cpp:170
 msgid "When checked, the reference is reversed"
-msgstr ""
+msgstr "当选上后，参考是反转的"
 
 #: src/synfig/valuenodes/valuenode_bone.cpp:249
 #, c-format
 msgid "Bone %d"
-msgstr ""
+msgstr "骨骼 %d"
 
 #: src/synfig/valuenodes/valuenode_bone.cpp:588
 msgid "The name of the bone"
-msgstr ""
+msgstr "骨骼的名字"
 
 #: src/synfig/valuenodes/valuenode_bone.cpp:592
 msgid "Parent"
-msgstr ""
+msgstr "父辈"
 
 #: src/synfig/valuenodes/valuenode_bone.cpp:593
 msgid "The parent bone of the bone"
-msgstr ""
+msgstr "骨骼的父辈骨骼"
 
 #: src/synfig/valuenodes/valuenode_bone.cpp:598
 msgid "The rotating origin of the bone relative to its parent"
-msgstr ""
+msgstr "骨骼相对于其父辈的旋转原点"
 
 #: src/synfig/valuenodes/valuenode_bone.cpp:603
 msgid "The rotating angle of the bone relative to its parent"
-msgstr ""
+msgstr "骨骼相对于其父辈的旋转角度"
 
 #: src/synfig/valuenodes/valuenode_bone.cpp:607
 msgid "Local Length Scale"
@@ -3729,15 +3770,15 @@ msgstr ""
 
 #: src/synfig/valuenodes/valuenode_bone.cpp:608
 msgid "The scale of the bone aligned its length"
-msgstr ""
+msgstr "骨骼的伸缩和其长度对齐"
 
 #: src/synfig/valuenodes/valuenode_bone.cpp:612
 msgid "Bone Width"
-msgstr ""
+msgstr "骨骼宽度"
 
 #: src/synfig/valuenodes/valuenode_bone.cpp:613
 msgid "Bone width at its origin"
-msgstr ""
+msgstr "骨骼在其原点的宽度"
 
 #: src/synfig/valuenodes/valuenode_bone.cpp:617
 msgid "Recursive Length Scale"
@@ -3745,7 +3786,7 @@ msgstr ""
 
 #: src/synfig/valuenodes/valuenode_bone.cpp:618
 msgid "The scale of the bone and its children aligned to its length"
-msgstr ""
+msgstr "骨骼的伸缩以及其子辈和其长度对齐"
 
 #: src/synfig/valuenodes/valuenode_bone.cpp:622
 msgid "Tip Width"
@@ -3753,43 +3794,43 @@ msgstr ""
 
 #: src/synfig/valuenodes/valuenode_bone.cpp:623
 msgid "Bone width at its tip"
-msgstr ""
+msgstr "骨骼在其顶端的宽度"
 
 #: src/synfig/valuenodes/valuenode_bone.cpp:627
 msgid "Z-Depth"
-msgstr ""
+msgstr "Z 深度"
 
 #: src/synfig/valuenodes/valuenode_bone.cpp:628
 msgid "The z-depth of the bone"
-msgstr ""
+msgstr "骨骼的 Z 深度"
 
 #: src/synfig/valuenodes/valuenode_bone.cpp:632
 msgid "Length Setup"
-msgstr ""
+msgstr "长度设置"
 
 #: src/synfig/valuenodes/valuenode_bone.cpp:633
 msgid "The length of the bone at setup"
-msgstr ""
+msgstr "骨骼的设定长度"
 
 #: src/synfig/valuenodes/valuenode_bone.cpp:1043
 msgid "Root"
-msgstr ""
+msgstr "顶级"
 
 #: src/synfig/valuenodes/valuenode_boneinfluence.cpp:222
 msgid "Bone Weight List"
-msgstr ""
+msgstr "骨骼权重清单"
 
 #: src/synfig/valuenodes/valuenode_boneinfluence.cpp:223
 msgid "List of bones used to calculate the influence"
-msgstr ""
+msgstr "用于演算影响力的骨骼清单"
 
 #: src/synfig/valuenodes/valuenode_boneinfluence.cpp:228
 msgid "The value node being bone influenced"
-msgstr ""
+msgstr "被骨骼所影响的值节点"
 
 #: src/synfig/valuenodes/valuenode_bonelink.cpp:209
 msgid "The linked bone"
-msgstr ""
+msgstr "已链接的骨骼"
 
 #: src/synfig/valuenodes/valuenode_bonelink.cpp:213
 #: src/synfig/valuenodes/valuenode_bonelink.cpp:214
@@ -3798,79 +3839,79 @@ msgstr ""
 
 #: src/synfig/valuenodes/valuenode_bonelink.cpp:219
 msgid "Make translation"
-msgstr ""
+msgstr "制作转换"
 
 #: src/synfig/valuenodes/valuenode_bonelink.cpp:224
 msgid "Make rotation"
-msgstr ""
+msgstr "制作旋转"
 
 #: src/synfig/valuenodes/valuenode_bonelink.cpp:228
 msgid "Skew"
-msgstr ""
+msgstr "歪斜"
 
 #: src/synfig/valuenodes/valuenode_bonelink.cpp:229
 msgid "Make skew"
-msgstr ""
+msgstr "使歪斜"
 
 #: src/synfig/valuenodes/valuenode_bonelink.cpp:233
 msgid "Scale X"
-msgstr ""
+msgstr "X轴缩放"
 
 #: src/synfig/valuenodes/valuenode_bonelink.cpp:234
 msgid "Make scaling by X-axis"
-msgstr ""
+msgstr "制作沿 X 轴的缩放"
 
 #: src/synfig/valuenodes/valuenode_bonelink.cpp:238
 msgid "Scale Y"
-msgstr ""
+msgstr "Y轴缩放"
 
 #: src/synfig/valuenodes/valuenode_bonelink.cpp:239
 msgid "Make scaling by Y-axis"
-msgstr ""
+msgstr "制作沿 Y 轴的缩放"
 
 #: src/synfig/valuenodes/valuenode_boneweightpair.cpp:163
 msgid "Bone used to make influence"
-msgstr ""
+msgstr "用作制造影响力的骨骼"
 
 #: src/synfig/valuenodes/valuenode_boneweightpair.cpp:167
 msgid "weight"
-msgstr ""
+msgstr "权重"
 
 #: src/synfig/valuenodes/valuenode_boneweightpair.cpp:168
 msgid "The relative value of influence of the bone"
-msgstr ""
+msgstr "骨骼影响力的相对值"
 
 #: src/synfig/valuenodes/valuenode_compare.cpp:168
 msgid "The left side of the comparison"
-msgstr ""
+msgstr "比较的左边"
 
 #: src/synfig/valuenodes/valuenode_compare.cpp:173
 msgid "The right side of the comparison"
-msgstr ""
+msgstr "比较的右边"
 
 #: src/synfig/valuenodes/valuenode_compare.cpp:177
 msgid "Greater"
-msgstr ""
+msgstr "大于"
 
 #: src/synfig/valuenodes/valuenode_compare.cpp:178
 msgid "When checked, returns true if LHS > RHS"
-msgstr ""
+msgstr "当选上后，如果左边 > 右边则返回真"
 
 #: src/synfig/valuenodes/valuenode_compare.cpp:182
 msgid "Equal"
-msgstr ""
+msgstr "等于"
 
 #: src/synfig/valuenodes/valuenode_compare.cpp:183
 msgid "When checked, returns true if LHS = RHS"
-msgstr ""
+msgstr "当选上后，如果左边 = 右边则返回真"
 
 #: src/synfig/valuenodes/valuenode_compare.cpp:187
 msgid "Less"
-msgstr ""
+msgstr "小于"
 
 #: src/synfig/valuenodes/valuenode_compare.cpp:188
 msgid "When checked, returns true if LHS < RHS"
-msgstr ""
+msgstr "当选上后，如果左边 < 右边则返回真"
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:296
 msgid "Bad type for composite"
@@ -3882,7 +3923,7 @@ msgstr "红"
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:630
 msgid "The red component of the color"
-msgstr ""
+msgstr "颜色的红色分量"
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:633
 msgid "Green"
@@ -3890,7 +3931,7 @@ msgstr "绿"
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:634
 msgid "The green component of the color"
-msgstr ""
+msgstr "颜色的绿色分量"
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:637
 msgid "Blue"
@@ -3898,7 +3939,7 @@ msgstr "蓝"
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:638
 msgid "The blue component of the color"
-msgstr ""
+msgstr "颜色的蓝色分量"
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:641
 msgid "Alpha"
@@ -3906,7 +3947,7 @@ msgstr "透明"
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:642
 msgid "The alpha of the color"
-msgstr ""
+msgstr "颜色的透明度"
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:650
 msgid "Vertex 1"
@@ -3914,7 +3955,7 @@ msgstr "顶点1"
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:651
 msgid "The first vertex of the segment"
-msgstr ""
+msgstr "线段的第一个顶点"
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:654
 #: src/synfig/valuenodes/valuenode_composite.cpp:701
@@ -3923,7 +3964,7 @@ msgstr "切线1"
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:655
 msgid "The first tangent of the segment"
-msgstr ""
+msgstr "线段的第一切线"
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:658
 msgid "Vertex 2"
@@ -3931,7 +3972,7 @@ msgstr "顶点2"
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:659
 msgid "The second vertex of the segment"
-msgstr ""
+msgstr "线段的第二个顶点"
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:662
 #: src/synfig/valuenodes/valuenode_composite.cpp:705
@@ -3940,23 +3981,23 @@ msgstr "切线2"
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:663
 msgid "The second tangent of the segment"
-msgstr ""
+msgstr "线段的第二切线"
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:671
 msgid "X-Axis"
-msgstr ""
+msgstr "X 轴"
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:672
 msgid "The X-Axis component of the vector"
-msgstr ""
+msgstr "矢量的 X 轴分量"
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:675
 msgid "Y-Axis"
-msgstr ""
+msgstr "Y 轴"
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:676
 msgid "The Y-Axis component of the vector"
-msgstr ""
+msgstr "矢量的 Y 轴分量"
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:684
 msgid "Vertex"
@@ -3964,11 +4005,11 @@ msgstr "顶点"
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:685
 msgid "The vertex of the Spline Point"
-msgstr ""
+msgstr "样条点的顶点"
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:689
 msgid "The width of the Spline Point"
-msgstr ""
+msgstr "样条点的宽度"
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:693
 msgid "Defines the Off and On position relative to neighbours"
@@ -3976,39 +4017,39 @@ msgstr ""
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:696
 msgid "Split"
-msgstr ""
+msgstr "分裂"
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:697
 msgid "When checked, tangents are independent"
-msgstr ""
+msgstr "当选上后，切线是独立的"
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:702
 msgid "The first tangent of the Spline Point"
-msgstr ""
+msgstr "样条点的第一切线"
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:706
 msgid "The second tangent of the Spline Point"
-msgstr ""
+msgstr "样条点的第二切线"
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:709
 msgid "Radius Split"
-msgstr ""
+msgstr "分裂半径"
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:710
 msgid "When checked, tangent's radii are independent"
-msgstr ""
+msgstr "当选上后，切线的半径是独立的"
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:713
 msgid "Angle Split"
-msgstr ""
+msgstr "分裂角度"
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:714
 msgid "When checked, tangent's angles are independent"
-msgstr ""
+msgstr "当选上后，切线的角度是独立的"
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:723
 msgid "The [0,1] position of the Width Point over the Spline"
-msgstr ""
+msgstr " 宽度点的在样条上所处的[0,1]位置"
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:727
 msgid "The width of the Width Point"
@@ -4040,7 +4081,7 @@ msgstr ""
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:751
 msgid "Defines the position at start of the Spline"
-msgstr ""
+msgstr "定义样条的起始位置"
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:754
 msgid "Upper Boundary"
@@ -4048,11 +4089,11 @@ msgstr ""
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:755
 msgid "Defines the position at end of the Spline"
-msgstr ""
+msgstr "定义样条的终点位置"
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:764
 msgid "The offset length of the Dash Item over the Spline"
-msgstr ""
+msgstr "样条上的短线的偏移长度"
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:768
 #: src/synfig/valuenodes/valuenode_timedswap.cpp:272
@@ -4061,36 +4102,36 @@ msgstr "长度"
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:769
 msgid "The length of the Dash Item"
-msgstr ""
+msgstr "短线的长度"
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:774
 #: src/synfig/valuenodes/valuenode_composite.cpp:783
 msgid "Defines the side type of the dash item"
-msgstr ""
+msgstr "定义短线的边类型"
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:797
 msgid "The Offset component of the transformation"
-msgstr ""
+msgstr "变换的偏移分量"
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:801
 msgid "The Angle component of the transformation"
-msgstr ""
+msgstr "变换的角度分量"
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:804
 msgid "Skew Angle"
-msgstr ""
+msgstr "歪斜角度"
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:805
 msgid "The Skew Angle component of the transformation"
-msgstr ""
+msgstr "变换的歪斜角度分量"
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:809
 msgid "The Scale component of the transformation"
-msgstr ""
+msgstr "变换的缩放分量"
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:818
 msgid "The Weight of the value"
-msgstr ""
+msgstr "值的权重"
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:821
 msgid "Value"
@@ -4098,27 +4139,27 @@ msgstr "值"
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:822
 msgid "The Value"
-msgstr ""
+msgstr "值"
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:830
 msgid "First"
-msgstr ""
+msgstr "第一个"
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:831
 msgid "The First Value"
-msgstr ""
+msgstr "第一个值"
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:834
 msgid "Second"
-msgstr ""
+msgstr "第二个"
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:835
 msgid "The Second Value"
-msgstr ""
+msgstr "第二个值"
 
 #: src/synfig/valuenodes/valuenode_cos.cpp:156
 msgid "Value to calculate the cosine"
-msgstr ""
+msgstr "用于演算余弦的值"
 
 #: src/synfig/valuenodes/valuenode_cos.cpp:160
 #: src/synfig/valuenodes/valuenode_sine.cpp:159
@@ -4127,68 +4168,68 @@ msgstr "增幅"
 
 #: src/synfig/valuenodes/valuenode_cos.cpp:161
 msgid "Multiplier of the resulting cosine"
-msgstr ""
+msgstr "　余弦结果的乘子"
 
 #: src/synfig/valuenodes/valuenode_derivative.cpp:368
 msgid "Value to calculate the derivative"
-msgstr ""
+msgstr "用于演算倒数的值"
 
 #: src/synfig/valuenodes/valuenode_derivative.cpp:371
 msgid "Interval"
-msgstr ""
+msgstr "区间"
 
 #: src/synfig/valuenodes/valuenode_derivative.cpp:372
 msgid "Interval of time to calculate the finite differences"
-msgstr ""
+msgstr "用于演算有限差分的时间区间"
 
 #: src/synfig/valuenodes/valuenode_derivative.cpp:375
 msgid "Accuracy"
-msgstr ""
+msgstr "精度"
 
 #: src/synfig/valuenodes/valuenode_derivative.cpp:376
 msgid "Accuracy of the derivative"
-msgstr ""
+msgstr "导数的精度"
 
 #: src/synfig/valuenodes/valuenode_derivative.cpp:378
 msgid "Rough"
-msgstr ""
+msgstr "粗略"
 
 #: src/synfig/valuenodes/valuenode_derivative.cpp:380
 msgid "Fine"
-msgstr ""
+msgstr "精细"
 
 #: src/synfig/valuenodes/valuenode_derivative.cpp:381
 msgid "Extreme"
-msgstr ""
+msgstr "极端"
 
 #: src/synfig/valuenodes/valuenode_derivative.cpp:384
 msgid "Order"
-msgstr ""
+msgstr "阶"
 
 #: src/synfig/valuenodes/valuenode_derivative.cpp:385
 msgid "Order of the derivative"
-msgstr ""
+msgstr "导数的阶"
 
 #: src/synfig/valuenodes/valuenode_derivative.cpp:387
 msgid "First Derivative"
-msgstr ""
+msgstr "一阶导数"
 
 #: src/synfig/valuenodes/valuenode_derivative.cpp:388
 msgid "Second Derivative"
-msgstr ""
+msgstr "二阶导数"
 
 #: src/synfig/valuenodes/valuenode_dilist.cpp:166
 #, c-format
 msgid "DashItem %03d"
-msgstr ""
+msgstr "短线 %03d"
 
 #: src/synfig/valuenodes/valuenode_dotproduct.cpp:168
 msgid "The left side of the dot product"
-msgstr ""
+msgstr "点积的左边"
 
 #: src/synfig/valuenodes/valuenode_dotproduct.cpp:173
 msgid "The right side of the dot product"
-msgstr ""
+msgstr "点积的右边"
 
 #: src/synfig/valuenodes/valuenode_duplicate.cpp:194
 msgid "From"
@@ -4212,95 +4253,95 @@ msgstr ""
 
 #: src/synfig/valuenodes/valuenode_dynamic.cpp:237
 msgid "Tip static"
-msgstr ""
+msgstr "顶端静止"
 
 #: src/synfig/valuenodes/valuenode_dynamic.cpp:238
 msgid "Equilibrium tip position without external forces"
-msgstr ""
+msgstr "无外力的平衡顶端位置"
 
 #: src/synfig/valuenodes/valuenode_dynamic.cpp:242
 msgid "Basement of the dynamic system"
-msgstr ""
+msgstr "动力系统的基底"
 
 #: src/synfig/valuenodes/valuenode_dynamic.cpp:245
 msgid "Force"
-msgstr ""
+msgstr "力"
 
 #: src/synfig/valuenodes/valuenode_dynamic.cpp:246
 msgid "External force applied on the mass center of gravity"
-msgstr ""
+msgstr "施加在重力的质量中心的外力"
 
 #: src/synfig/valuenodes/valuenode_dynamic.cpp:249
 msgid "Torque"
-msgstr ""
+msgstr "扭力"
 
 #: src/synfig/valuenodes/valuenode_dynamic.cpp:250
 msgid "External momentum applied at the center of inertia"
-msgstr ""
+msgstr "施加在惯性的中心的外部动量"
 
 #: src/synfig/valuenodes/valuenode_dynamic.cpp:253
 msgid "Damping coefficient"
-msgstr ""
+msgstr "阻尼系数"
 
 #: src/synfig/valuenodes/valuenode_dynamic.cpp:254
 msgid "Radial damping coefficient of the dynamic system"
-msgstr ""
+msgstr "动力系统的径向阻尼系数"
 
 #: src/synfig/valuenodes/valuenode_dynamic.cpp:257
 msgid "Friction coefficient"
-msgstr ""
+msgstr "旋转摩擦系数"
 
 #: src/synfig/valuenodes/valuenode_dynamic.cpp:258
 msgid "Rotational friction coefficient of the dynamic system"
-msgstr ""
+msgstr "动力系统的旋转摩擦系数"
 
 #: src/synfig/valuenodes/valuenode_dynamic.cpp:261
 msgid "Spring coefficient"
-msgstr ""
+msgstr "弹性系数"
 
 #: src/synfig/valuenodes/valuenode_dynamic.cpp:262
 msgid "Radial spring coefficient of the dynamic system"
-msgstr ""
+msgstr "动力系统的径向弹性系数"
 
 #: src/synfig/valuenodes/valuenode_dynamic.cpp:265
 msgid "Torsion coefficient"
-msgstr ""
+msgstr "扭矩系数"
 
 #: src/synfig/valuenodes/valuenode_dynamic.cpp:266
 msgid "Torsion coefficient of the dynamic system"
-msgstr ""
+msgstr "动力系统的扭矩系数"
 
 #: src/synfig/valuenodes/valuenode_dynamic.cpp:269
 msgid "Mass"
-msgstr ""
+msgstr "质量"
 
 #: src/synfig/valuenodes/valuenode_dynamic.cpp:270
 msgid "Mass of the dynamic system"
-msgstr ""
+msgstr "动力系统的质量"
 
 #: src/synfig/valuenodes/valuenode_dynamic.cpp:273
 msgid "Moment of Inertia"
-msgstr ""
+msgstr "转动惯量"
 
 #: src/synfig/valuenodes/valuenode_dynamic.cpp:274
 msgid "Moment of inertia of the dynamic system"
-msgstr ""
+msgstr "动力系统的转动惯量"
 
 #: src/synfig/valuenodes/valuenode_dynamic.cpp:277
 msgid "Spring rigid"
-msgstr ""
+msgstr "弹性刚性"
 
 #: src/synfig/valuenodes/valuenode_dynamic.cpp:278
 msgid "When checked, linear spring is rigid"
-msgstr ""
+msgstr "当选上后，线性弹性是刚性的"
 
 #: src/synfig/valuenodes/valuenode_dynamic.cpp:281
 msgid "Torsion rigid"
-msgstr ""
+msgstr "扭矩刚性"
 
 #: src/synfig/valuenodes/valuenode_dynamic.cpp:282
 msgid "When checked torsion spring is rigid"
-msgstr ""
+msgstr "当选上后，扭矩弹性是刚性的"
 
 #: src/synfig/valuenodes/valuenode_dynamic.cpp:285
 msgid "Origin drags tip"
@@ -4308,7 +4349,7 @@ msgstr ""
 
 #: src/synfig/valuenodes/valuenode_dynamic.cpp:286
 msgid "When checked result is origin + tip otherwise result is just tip"
-msgstr ""
+msgstr "当选上后结果是原点 + 顶端，否则结果只是顶端"
 
 #: src/synfig/valuenodes/valuenode_dynamiclist.cpp:669
 #: src/synfig/valuenodes/valuenode_staticlist.cpp:351
@@ -4329,11 +4370,11 @@ msgstr "指数"
 
 #: src/synfig/valuenodes/valuenode_exp.cpp:151
 msgid "The value to raise the constant 'e'"
-msgstr ""
+msgstr "常量 “e” 的指数"
 
 #: src/synfig/valuenodes/valuenode_exp.cpp:156
 msgid "Multiplier of the resulting exponent"
-msgstr ""
+msgstr "　指数结果的乘子"
 
 #: src/synfig/valuenodes/valuenode_gradientcolor.cpp:159
 msgid "The gradient where the color is picked from"
@@ -4345,7 +4386,7 @@ msgstr ""
 
 #: src/synfig/valuenodes/valuenode_gradientcolor.cpp:169
 msgid "When checked, the index would loop"
-msgstr ""
+msgstr "当选上后，转位会循环"
 
 #: src/synfig/valuenodes/valuenode_gradientrotate.cpp:165
 msgid "The source gradient to rotate"
@@ -4365,7 +4406,7 @@ msgstr ""
 
 #: src/synfig/valuenodes/valuenode_intstring.cpp:165
 msgid "Int"
-msgstr ""
+msgstr "整数"
 
 #: src/synfig/valuenodes/valuenode_join.cpp:187
 msgid "Strings"
@@ -4420,13 +4461,13 @@ msgstr ""
 
 #: src/synfig/valuenodes/valuenode_log.cpp:160
 msgid "Value node used to calculate the Neperian logarithm"
-msgstr ""
+msgstr "用于演算 Neperian 对数的值节点"
 
 #: src/synfig/valuenodes/valuenode_log.cpp:164
 #: src/synfig/valuenodes/valuenode_pow.cpp:190
 #: src/synfig/valuenodes/valuenode_reciprocal.cpp:170
 msgid "Epsilon"
-msgstr ""
+msgstr "Epsilon"
 
 #: src/synfig/valuenodes/valuenode_log.cpp:165
 msgid "Value used to compare 'link' with zero "
@@ -4462,15 +4503,15 @@ msgstr ""
 
 #: src/synfig/valuenodes/valuenode_pow.cpp:180
 msgid "Base"
-msgstr "基底"
+msgstr "底数"
 
 #: src/synfig/valuenodes/valuenode_pow.cpp:181
 msgid "The base to be raised to the power"
-msgstr ""
+msgstr "指数次幂乘方的底数"
 
 #: src/synfig/valuenodes/valuenode_pow.cpp:186
 msgid "The power used to raise the base"
-msgstr ""
+msgstr "指数次幂乘方的指数"
 
 #: src/synfig/valuenodes/valuenode_pow.cpp:191
 msgid "Value used to compare base or power with zero "
@@ -4506,7 +4547,7 @@ msgstr "最小"
 
 #: src/synfig/valuenodes/valuenode_range.cpp:280
 msgid "Returned value when 'Link' is smaller"
-msgstr ""
+msgstr "“链环”比较小时所返回的值"
 
 #: src/synfig/valuenodes/valuenode_range.cpp:284
 msgid "Max"
@@ -4514,11 +4555,11 @@ msgstr "最大"
 
 #: src/synfig/valuenodes/valuenode_range.cpp:285
 msgid "Returned value when 'Link' is greater"
-msgstr ""
+msgstr "“链环”比较大时所返回的值"
 
 #: src/synfig/valuenodes/valuenode_range.cpp:290
 msgid "The value node to limit its range"
-msgstr ""
+msgstr "限定其范围的值节点"
 
 #: src/synfig/valuenodes/valuenode_real.cpp:186
 msgid "The real value to be converted"
@@ -4526,21 +4567,21 @@ msgstr ""
 
 #: src/synfig/valuenodes/valuenode_reciprocal.cpp:166
 msgid "The value node used to calculate its reciprocal"
-msgstr ""
+msgstr "用于演算其倒数的值节点"
 
 #: src/synfig/valuenodes/valuenode_reciprocal.cpp:171
 msgid ""
 "The value used to decide whether 'Link' is too small to obtain its "
 "reciprocal"
-msgstr ""
+msgstr "该值用于判断是否因为“链环”太小而不能取得其倒数"
 
 #: src/synfig/valuenodes/valuenode_reciprocal.cpp:176
 msgid "The resulting value when 'Link' < 'Epsilon'"
-msgstr ""
+msgstr "“链环”小于 “Epsilon” 时所返回的值"
 
 #: src/synfig/valuenodes/valuenode_reference.cpp:144
 msgid "The referenced value"
-msgstr ""
+msgstr "参考值"
 
 #: src/synfig/valuenodes/valuenode_repeat_gradient.cpp:204
 msgid "The source gradient to repeat"
@@ -4566,7 +4607,7 @@ msgstr "指定起点"
 #: src/synfig/valuenodes/valuenode_repeat_gradient.cpp:219
 msgid ""
 "When checked, 'Start Color' is used as the start of the resulting gradient"
-msgstr ""
+msgstr "当选上后，“开始颜色”被用作最终渐变的开始颜色"
 
 #: src/synfig/valuenodes/valuenode_repeat_gradient.cpp:223
 msgid "Specify End"
@@ -4575,7 +4616,7 @@ msgstr "指定终点"
 #: src/synfig/valuenodes/valuenode_repeat_gradient.cpp:224
 msgid ""
 "When checked, 'End Color' is used as the start of the resulting gradient"
-msgstr ""
+msgstr "当选上后，“结束颜色”被用作最终渐变的开始颜色"
 
 #: src/synfig/valuenodes/valuenode_repeat_gradient.cpp:228
 msgid "Start Color"
@@ -4593,6 +4634,10 @@ msgstr "终点颜色"
 msgid "Used as the end of the resulting gradient"
 msgstr ""
 
+#: src/synfig/valuenodes/valuenode_reverse.cpp:308
+msgid "The value to be reversed"
+msgstr "要颠倒的值"
+
 #: src/synfig/valuenodes/valuenode_scale.cpp:150
 #: src/synfig/valuenodes/valuenode_scale.cpp:167
 #: src/synfig/valuenodes/valuenode_scale.cpp:178
@@ -4601,11 +4646,11 @@ msgstr "试图获取一个不可反的值节点的相反值"
 
 #: src/synfig/valuenodes/valuenode_scale.cpp:250
 msgid "The value node used to scale"
-msgstr ""
+msgstr "用作按比例增减的值节点"
 
 #: src/synfig/valuenodes/valuenode_scale.cpp:255
 msgid "Value that multiplies the value node"
-msgstr ""
+msgstr "与值节点相乘的值"
 
 #: src/synfig/valuenodes/valuenode_segcalctangent.cpp:156
 #: src/synfig/valuenodes/valuenode_segcalcvertex.cpp:154
@@ -4614,11 +4659,11 @@ msgstr "线段"
 
 #: src/synfig/valuenodes/valuenode_segcalctangent.cpp:157
 msgid "The Segment where the tangent is linked to"
-msgstr ""
+msgstr "切线所链接位置的线段"
 
 #: src/synfig/valuenodes/valuenode_segcalctangent.cpp:162
 msgid "The position of the linked tangent on the Segment (0,1]"
-msgstr ""
+msgstr "已链接切线在线段上的位置 (0, 1]"
 
 #: src/synfig/valuenodes/valuenode_segcalcvertex.cpp:155
 msgid "The Segment where the vertex is linked to"
@@ -4634,7 +4679,7 @@ msgstr ""
 
 #: src/synfig/valuenodes/valuenode_sine.cpp:160
 msgid "The value that multiplies the resulting sine"
-msgstr ""
+msgstr "与正弦值相乘的值"
 
 #: src/synfig/valuenodes/valuenode_step.cpp:193
 msgid "The value node used to make the step"
@@ -4685,51 +4730,51 @@ msgstr "条纹数"
 
 #: src/synfig/valuenodes/valuenode_stripes.cpp:200
 msgid "Number of stripes in the gradient"
-msgstr ""
+msgstr "渐变中的条纹数量"
 
 #: src/synfig/valuenodes/valuenode_stripes.cpp:205
 msgid "Width of stripes in the gradient between [0,1]"
-msgstr ""
+msgstr "在 [0, 1] 之间的条纹所占宽度"
 
 #: src/synfig/valuenodes/valuenode_subtract.cpp:228
 msgid "Left Hand Side of the subtraction"
-msgstr ""
+msgstr "减法的左边"
 
 #: src/synfig/valuenodes/valuenode_subtract.cpp:233
 msgid "Right Hand Side of the subtraction"
-msgstr ""
+msgstr "减法的右边"
 
 #: src/synfig/valuenodes/valuenode_subtract.cpp:238
 msgid "Value that multiplies the subtraction"
-msgstr ""
+msgstr "与减法结果相乘的值"
 
 #: src/synfig/valuenodes/valuenode_switch.cpp:153
 msgid "Link Off"
-msgstr ""
+msgstr "关闭的"
 
 #: src/synfig/valuenodes/valuenode_switch.cpp:154
 msgid "The value node returned when the switch is off"
-msgstr ""
+msgstr "当开关处于关闭状态时返回的值节点"
 
 #: src/synfig/valuenodes/valuenode_switch.cpp:158
 msgid "Link On"
-msgstr ""
+msgstr "打开的"
 
 #: src/synfig/valuenodes/valuenode_switch.cpp:159
 msgid "The value node returned when the switch is on"
-msgstr ""
+msgstr "当开关处于打开状态时返回的值节点"
 
 #: src/synfig/valuenodes/valuenode_switch.cpp:164
 msgid "When checked, returns 'Link On', otherwise returns 'Link Off'"
-msgstr ""
+msgstr "当选上后，返回“开启时的链环”，否则返回“关闭时的链环”"
 
 #: src/synfig/valuenodes/valuenode_timedswap.cpp:258
 msgid "The value node returned when current time is before 'time' - 'length'"
-msgstr ""
+msgstr "如果“当前时间”处在“时间”减去“长度”的值之前所返回的值节点"
 
 #: src/synfig/valuenodes/valuenode_timedswap.cpp:263
 msgid "The value node returned when current time is after 'time'"
-msgstr ""
+msgstr "如果“当前时间”处在“时间”之后所返回的值节点"
 
 #: src/synfig/valuenodes/valuenode_timedswap.cpp:267
 #: src/synfig/valuenodes/valuenode_timestring.cpp:156
@@ -4738,37 +4783,37 @@ msgstr "时间"
 
 #: src/synfig/valuenodes/valuenode_timedswap.cpp:268
 msgid "The time when the linear interpolation ends"
-msgstr ""
+msgstr "线性插值结束的时间"
 
 #: src/synfig/valuenodes/valuenode_timedswap.cpp:273
 msgid ""
 "The length of time when the linear interpolation between 'Before' and "
 "'After' is made"
-msgstr ""
+msgstr "当设定了“之前”和“之后”时，线性插值的时间长度"
 
 #: src/synfig/valuenodes/valuenode_timeloop.cpp:175
 msgid "The value node to time loop"
-msgstr ""
+msgstr "时间循环的值节点"
 
 #: src/synfig/valuenodes/valuenode_timeloop.cpp:180
 msgid "Start time of the loop for the value node Timeline"
-msgstr ""
+msgstr "时间轴值节点的循环起始时间"
 
 #: src/synfig/valuenodes/valuenode_timeloop.cpp:190
 msgid "Length of the loop"
-msgstr ""
+msgstr "循环长度"
 
 #: src/synfig/valuenodes/valuenode_timestring.cpp:157
 msgid "The time that is converted to string"
-msgstr ""
+msgstr "转换为字符串的时间"
 
 #: src/synfig/valuenodes/valuenode_twotone.cpp:154
 msgid "The start color of the gradient"
-msgstr ""
+msgstr "渐变的开始颜色"
 
 #: src/synfig/valuenodes/valuenode_twotone.cpp:159
 msgid "The end color of the gradient"
-msgstr ""
+msgstr "渐变的结束颜色"
 
 #: src/synfig/valuenodes/valuenode_vectorangle.cpp:143
 #: src/synfig/valuenodes/valuenode_vectorlength.cpp:141
@@ -4795,7 +4840,7 @@ msgstr ""
 
 #: src/synfig/valuenodes/valuenode_weightedaverage.cpp:105
 msgid "weighted Average"
-msgstr ""
+msgstr "加权平均"
 
 #: src/synfig/valuenodes/valuenode_wplist.cpp:345
 #, c-format
@@ -4804,7 +4849,7 @@ msgstr ""
 
 #: src/synfig/weightedvalue.h:77
 msgid "weighted"
-msgstr ""
+msgstr "已加权"
 
 #: src/tool/main.cpp:104
 msgid "FATAL: Synfig Version Mismatch"
@@ -4816,15 +4861,15 @@ msgstr "设定"
 
 #: src/tool/main.cpp:145
 msgid "Specify output target (Default: PNG)"
-msgstr ""
+msgstr "指定输出目标（默认：PNG）"
 
 #: src/tool/main.cpp:146
 msgid "Set the image width in pixels (Use zero for file default)"
-msgstr ""
+msgstr "设置图像的像素宽度（用零是文件默认）"
 
 #: src/tool/main.cpp:147
 msgid "Set the image height in pixels (Use zero for file default)"
-msgstr ""
+msgstr "设置图像的像素高度（用零是文件默认）"
 
 #: src/tool/main.cpp:148
 msgid "Set the diagonal size of image window (Span)"
@@ -4837,7 +4882,7 @@ msgstr "设置参数化渲染器的抗锯齿量。"
 #: src/tool/main.cpp:150
 #, c-format
 msgid "Specify image quality for accelerated renderer (Default: %d)"
-msgstr ""
+msgstr "指定加速渲染器的图像质量（默认%d）"
 
 #: src/tool/main.cpp:151
 msgid "Gamma"
@@ -4845,11 +4890,11 @@ msgstr "伽马"
 
 #: src/tool/main.cpp:152
 msgid "Enable multithreaded renderer using the specified number of threads"
-msgstr ""
+msgstr "打开多线程渲染器，使用指定的线程数"
 
 #: src/tool/main.cpp:153
 msgid "Specify input filename"
-msgstr ""
+msgstr "指定输入的文件名"
 
 #: src/tool/main.cpp:154
 msgid "Specify output filename"
@@ -4859,7 +4904,7 @@ msgstr "指定输出的文件名"
 msgid ""
 "Output file sequence separator string (Use double quotes if you want to use "
 "spaces)"
-msgstr ""
+msgstr "输出文件系列的分隔标号字符串（用英语的双引号来定义空格）"
 
 #: src/tool/main.cpp:156
 msgid "Render the canvas with the given id instead of the root."
@@ -4883,23 +4928,23 @@ msgstr "设定结尾时间"
 
 #: src/tool/main.cpp:162
 msgid "Set the physical resolution (Dots-per-inch)"
-msgstr ""
+msgstr "设定物理分辨率（点数-每-英寸）"
 
 #: src/tool/main.cpp:163
 msgid "Set the physical X resolution (Dots-per-inch)"
-msgstr ""
+msgstr "设定物理 X 分辨率（点数-每-英寸）"
 
 #: src/tool/main.cpp:164
 msgid "Set the physical Y resolution (Dots-per-inch)"
-msgstr ""
+msgstr "设定物理 Y 分辨率（点数-每-英寸）"
 
 #: src/tool/main.cpp:167
 msgid "Switch options"
-msgstr ""
+msgstr "切换选项"
 
 #: src/tool/main.cpp:169
 msgid "Output verbosity level"
-msgstr ""
+msgstr "输出 verbosity level"
 
 #: src/tool/main.cpp:170
 msgid "Quiet mode (No progress/time-remaining display)"
@@ -4907,15 +4952,15 @@ msgstr "安静模式（不显示进度/剩余时间）"
 
 #: src/tool/main.cpp:171
 msgid "Print benchmarks"
-msgstr ""
+msgstr "列出指标"
 
 #: src/tool/main.cpp:172
 msgid "Extract alpha"
-msgstr ""
+msgstr "提取透明度"
 
 #: src/tool/main.cpp:175
 msgid "Misc options"
-msgstr ""
+msgstr "杂项"
 
 #: src/tool/main.cpp:177
 msgid "Append layers in <filename> to composition"
@@ -4927,27 +4972,27 @@ msgstr "打印该根画布的特殊细节"
 
 #: src/tool/main.cpp:179 src/tool/main.cpp:205
 msgid "Print out the list of exported canvases in the composition"
-msgstr ""
+msgstr "列出本创作中已经被输出的画布的清单"
 
 #: src/tool/main.cpp:182
 msgid "FFMPEG target options"
-msgstr ""
+msgstr "FFMPEG 目标操作"
 
 #: src/tool/main.cpp:184
 msgid "Set the codec for the video. See --ffmpeg-video-codecs"
-msgstr ""
+msgstr "为视频设定编码。参考 --ffmpeg-video-codecs"
 
 #: src/tool/main.cpp:185
 msgid "Set the bitrate for the output video"
-msgstr ""
+msgstr "为输出视频设定位率"
 
 #: src/tool/main.cpp:188
 msgid "Synfig info options"
-msgstr ""
+msgstr "Synfig 信息选项"
 
 #: src/tool/main.cpp:190
 msgid "Produce this help message"
-msgstr ""
+msgstr "生成本帮助信息"
 
 #: src/tool/main.cpp:191
 msgid "Print out the list of available importers"
@@ -4980,7 +5025,7 @@ msgstr "打印可用的目标列表"
 #: src/tool/main.cpp:198
 msgid ""
 "Print out the list of available video codecs when encoding through FFMPEG"
-msgstr ""
+msgstr "列出通过 FFMPEG 编码时所有可用的视频编码"
 
 #: src/tool/main.cpp:199
 msgid "Print out the list of available ValueNodes"
@@ -4992,7 +5037,7 @@ msgstr "打印版本信息"
 
 #: src/tool/main.cpp:209
 msgid "Synfig debug flags"
-msgstr ""
+msgstr "Synfig 调试标识"
 
 #: src/tool/main.cpp:211
 msgid "Test GUID generation"
@@ -5004,7 +5049,7 @@ msgstr "测试信号实现"
 
 #: src/tool/main.cpp:247
 msgid "Try 'synfig --help' for more information"
-msgstr ""
+msgstr "试试 “synfig --help” 以获得更多信息"
 
 #: src/tool/joblistprocessor.cpp:73
 msgid "Nothing to do!"
@@ -5025,7 +5070,7 @@ msgstr "默认目标为 PNG..."
 #: src/tool/joblistprocessor.cpp:145
 #, c-format
 msgid "Unable to create output for \"%s\": %s"
-msgstr ""
+msgstr "未能为\"%s\": %s创建输出"
 
 #: src/tool/joblistprocessor.cpp:148 src/tool/joblistprocessor.cpp:168
 msgid "Throwing out job..."
@@ -5038,7 +5083,7 @@ msgstr "创建目标..."
 #: src/tool/joblistprocessor.cpp:165
 #, c-format
 msgid "Unknown target for \"%s\": %s"
-msgstr ""
+msgstr "未知目标 \"%s\": %s"
 
 #: src/tool/joblistprocessor.cpp:178
 msgid "Setting the canvas on the target..."
@@ -5050,11 +5095,11 @@ msgstr "设定目标的品质..."
 
 #: src/tool/joblistprocessor.cpp:186
 msgid "Setting the alpha mode of the target..."
-msgstr ""
+msgstr "设置目标的透明模式..."
 
 #: src/tool/joblistprocessor.cpp:228 src/tool/joblistprocessor.cpp:238
 msgid "Render Failure."
-msgstr ""
+msgstr "渲染失败。"
 
 #: src/tool/joblistprocessor.cpp:232
 msgid "Rendering..."
@@ -5062,11 +5107,11 @@ msgstr "正在渲染..."
 
 #: src/tool/joblistprocessor.cpp:246
 msgid ": Rendered in "
-msgstr ""
+msgstr ": 渲染到"
 
 #: src/tool/joblistprocessor.cpp:248
 msgid " seconds."
-msgstr ""
+msgstr "秒。"
 
 #: src/tool/joblistprocessor.cpp:252
 msgid "Done."
@@ -5086,39 +5131,39 @@ msgstr "冗长设至"
 
 #: src/tool/optionsprocessor.cpp:176
 msgid "Threads set to "
-msgstr ""
+msgstr "线程设为"
 
 #: src/tool/optionsprocessor.cpp:255
 msgid "Layer Name: "
-msgstr ""
+msgstr "层名："
 
 #: src/tool/optionsprocessor.cpp:256
 msgid "Localized Layer Name: "
-msgstr ""
+msgstr "本地化的层名"
 
 #: src/tool/optionsprocessor.cpp:258
 msgid "Version: "
-msgstr ""
+msgstr "版本："
 
 #: src/tool/optionsprocessor.cpp:263
 msgid "param - "
-msgstr ""
+msgstr "属性 - "
 
 #: src/tool/optionsprocessor.cpp:265
 msgid " (not critical)"
-msgstr ""
+msgstr "(不严重的)"
 
 #: src/tool/optionsprocessor.cpp:266
 msgid "\tLocalized Name: "
-msgstr ""
+msgstr "\t本地化的名字："
 
 #: src/tool/optionsprocessor.cpp:270
 msgid "\tDescription: "
-msgstr ""
+msgstr "\t描述："
 
 #: src/tool/optionsprocessor.cpp:274
 msgid "\tHint: "
-msgstr ""
+msgstr "\t窍门： "
 
 #: src/tool/optionsprocessor.cpp:340
 #, c-format
@@ -5156,46 +5201,46 @@ msgstr "渲染帧"
 
 #: src/tool/optionsprocessor.cpp:412
 msgid "Gamma argument is currently ignored"
-msgstr ""
+msgstr "伽马参数当前是被忽略的"
 
 #: src/tool/optionsprocessor.cpp:427
 #, c-format
 msgid "Resolution set to %dx%d."
-msgstr ""
+msgstr "分辨率设为%dx%d。"
 
 #: src/tool/optionsprocessor.cpp:444
 msgid "Both video codec and bitrate parameters are necessary."
-msgstr ""
+msgstr "视频编码和位率两个参数都是需要的。"
 
 #: src/tool/optionsprocessor.cpp:470
 #, c-format
 msgid "Video codec \"%s\" is not supported."
-msgstr ""
+msgstr "不支持的视频编码  \"%s\"  。"
 
 #: src/tool/optionsprocessor.cpp:474
 msgid "Target video codec set to: "
-msgstr ""
+msgstr "目标视频编码设为："
 
 #: src/tool/optionsprocessor.cpp:480
 msgid "Target bitrate set to: "
-msgstr ""
+msgstr "目标比特率设为："
 
 #: src/tool/optionsprocessor.cpp:486
 msgid "Output file sequence separator set to: '"
-msgstr ""
+msgstr "输出文件系列分隔标号设为："
 
 #: src/tool/optionsprocessor.cpp:538
 #, c-format
 msgid "Unable to load file '%s'."
-msgstr ""
+msgstr "未能加载文件'%s'。"
 
 #: src/tool/optionsprocessor.cpp:546
 msgid "No input file provided."
-msgstr ""
+msgstr "没有提供输入文件"
 
 #: src/tool/optionsprocessor.cpp:552
 msgid "Target set to "
-msgstr ""
+msgstr "目标设为"
 
 #: src/tool/optionsprocessor.cpp:571
 msgid "Quality set to "

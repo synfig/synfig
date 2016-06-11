@@ -1,5 +1,5 @@
 # Translation file for Synfig Core package.
-# Copyright (C) 2015 Synfig Contributors
+# Copyright (C) 2016 Synfig Contributors
 # This file is distributed under the same license as the Synfig Core package.
 # 
 # Translators:
@@ -9,10 +9,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Synfig UI\n"
 "Report-Msgid-Bugs-To: http://www.synfig.org/issues/thebuggenie/synfig\n"
-"POT-Creation-Date: 2015-07-27 18:00+0700\n"
-"PO-Revision-Date: 2015-07-22 14:12+0000\n"
+"POT-Creation-Date: 2016-06-05 14:00+0700\n"
+"PO-Revision-Date: 2015-12-25 06:36+0000\n"
 "Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
-"Language-Team: Lithuanian (http://www.transifex.com/projects/p/synfig/language/lt/)\n"
+"Language-Team: Lithuanian (http://www.transifex.com/morevnaproject/synfig/language/lt/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -350,6 +350,7 @@ msgstr "Kreivės deformacija"
 #: src/modules/lyr_std/sphere_distort.cpp:75
 #: src/modules/lyr_std/stretch.cpp:58 src/modules/lyr_std/twirl.cpp:57
 #: src/modules/lyr_std/warp.cpp:58 src/modules/mod_noise/distort.cpp:59
+#: src/synfig/layers/layer_skeletondeformation.cpp:62
 msgid "Distortions"
 msgstr "Iškraipymai"
 
@@ -766,7 +767,7 @@ msgstr "Neliesti alfa"
 msgid "Avoid alpha artifacts when checked"
 msgstr "Įjungus padeda išvengti alfa artefaktų"
 
-#: src/modules/lyr_std/timeloop.cpp:59 src/synfig/valuenode.cpp:177
+#: src/modules/lyr_std/timeloop.cpp:59 src/synfig/valuenode.cpp:178
 #: src/synfig/valuenodes/valuenode_timeloop.cpp:153
 msgid "Time Loop"
 msgstr "Laiko ciklas"
@@ -926,7 +927,7 @@ msgstr "Šablono centras"
 msgid "Size of the pattern"
 msgstr "Šablono dydis"
 
-#: src/modules/lyr_std/zoom.cpp:52 src/synfig/valuenode.cpp:154
+#: src/modules/lyr_std/zoom.cpp:52 src/synfig/valuenode.cpp:155
 #: src/synfig/valuenodes/valuenode_blinecalctangent.cpp:263
 #: src/synfig/valuenodes/valuenode_blinecalcwidth.cpp:221
 #: src/synfig/valuenodes/valuenode_composite.cpp:808
@@ -1028,6 +1029,7 @@ msgstr "Sluoksnio užpildo spalva"
 #: src/modules/mod_example/filledrect.cpp:136
 #: src/modules/mod_geometry/rectangle.cpp:143
 #: src/modules/mod_gradient/lineargradient.cpp:190
+#: src/synfig/layers/layer_skeletondeformation.cpp:104
 msgid "Point 1"
 msgstr "Taškas 1"
 
@@ -1039,6 +1041,7 @@ msgstr "Pirmas stačiakampio kampas"
 #: src/modules/mod_example/filledrect.cpp:142
 #: src/modules/mod_geometry/rectangle.cpp:149
 #: src/modules/mod_gradient/lineargradient.cpp:195
+#: src/synfig/layers/layer_skeletondeformation.cpp:110
 msgid "Point 2"
 msgstr "Taškas 2"
 
@@ -1384,7 +1387,8 @@ msgid "Smoothness"
 msgstr ""
 
 #: src/modules/mod_geometry/advanced_outline.cpp:1176
-msgid "Determines the interpolation between withpoints. (0) Linear (1) Smooth"
+msgid ""
+"Determines the interpolation between widthpoints. (0) Linear (1) Smooth"
 msgstr ""
 
 #: src/modules/mod_geometry/advanced_outline.cpp:1179
@@ -1484,7 +1488,7 @@ msgstr "Nustato ištempimo sumažėjimo funkcija"
 #: src/modules/mod_noise/distort.cpp:239 src/modules/mod_noise/noise.cpp:284
 #: src/modules/mod_noise/valuenode_random.cpp:274
 #: src/synfig/layers/layer_bitmap.cpp:169
-#: src/synfig/layers/layer_motionblur.cpp:149 src/synfig/valuenode.cpp:150
+#: src/synfig/layers/layer_motionblur.cpp:149 src/synfig/valuenode.cpp:151
 #: src/synfig/valuenodes/valuenode_linear.cpp:154
 msgid "Linear"
 msgstr "Linijinis"
@@ -1835,7 +1839,7 @@ msgid "Nearest Neighbor"
 msgstr "Nearest Neighbor"
 
 #: src/modules/mod_noise/distort.cpp:241 src/modules/mod_noise/noise.cpp:286
-#: src/modules/mod_noise/valuenode_random.cpp:276 src/synfig/valuenode.cpp:160
+#: src/modules/mod_noise/valuenode_random.cpp:276 src/synfig/valuenode.cpp:161
 #: src/synfig/valuenodes/valuenode_bline.cpp:1010
 #: src/synfig/valuenodes/valuenode_blinecalctangent.cpp:243
 #: src/synfig/valuenodes/valuenode_blinecalcvertex.cpp:201
@@ -1913,6 +1917,7 @@ msgstr "Kai įjungta, gradientas yra supersampled"
 #: src/synfig/valuenodes/valuenode_real.cpp:185
 #: src/synfig/valuenodes/valuenode_reciprocal.cpp:165
 #: src/synfig/valuenodes/valuenode_reference.cpp:143
+#: src/synfig/valuenodes/valuenode_reverse.cpp:307
 #: src/synfig/valuenodes/valuenode_scale.cpp:249
 #: src/synfig/valuenodes/valuenode_step.cpp:192
 #: src/synfig/valuenodes/valuenode_timeloop.cpp:174
@@ -2023,8 +2028,9 @@ msgid ""
 "size, and an alpha of 1.0 is used when rendering"
 msgstr "If enabled, the alpha channel from the gradient is multiplied by the stem size, and an alpha of 1.0 is used when rendering"
 
-#: src/modules/mod_particle/plant.cpp:473
+#: src/modules/mod_particle/plant.cpp:473 src/synfig/valuenode.cpp:221
 #: src/synfig/valuenodes/valuenode_blinereversetangent.cpp:169
+#: src/synfig/valuenodes/valuenode_reverse.cpp:282
 msgid "Reverse"
 msgstr "Atvirkštinis"
 
@@ -2032,7 +2038,7 @@ msgstr "Atvirkštinis"
 msgid "If enabled, render the plant in the opposite direction"
 msgstr "Jei įjungta, augalas vaizduojamas priešinga kryptimi"
 
-#: src/modules/mod_particle/plant.cpp:478 src/synfig/valuenode.cpp:181
+#: src/modules/mod_particle/plant.cpp:478 src/synfig/valuenode.cpp:182
 #: src/synfig/valuenodes/valuenode_duplicate.cpp:204
 #: src/synfig/valuenodes/valuenode_step.cpp:137
 msgid "Step"
@@ -2286,7 +2292,7 @@ msgstr "Maišymo metodas"
 msgid "The blending method used to composite on the layers below"
 msgstr ""
 
-#: src/synfig/layers/layer_duplicate.cpp:56 src/synfig/valuenode.cpp:179
+#: src/synfig/layers/layer_duplicate.cpp:56 src/synfig/valuenode.cpp:180
 #: src/synfig/valuenodes/valuenode_duplicate.cpp:175
 msgid "Duplicate"
 msgstr "Dublikatas"
@@ -2467,8 +2473,42 @@ msgid "Name"
 msgstr "Pavadinimas"
 
 #: src/synfig/layers/layer_skeleton.cpp:145
+#: src/synfig/layers/layer_skeletondeformation.cpp:98
 msgid "Bones"
 msgstr "Kaulai"
+
+#: src/synfig/layers/layer_skeletondeformation.cpp:61
+#: src/synfig/layers/layer_skeletondeformation.cpp:89
+msgid "Skeleton Deformation"
+msgstr ""
+
+#: src/synfig/layers/layer_skeletondeformation.cpp:99
+msgid "List of bones"
+msgstr ""
+
+#: src/synfig/layers/layer_skeletondeformation.cpp:106
+msgid "First corner of the bounds rectangle"
+msgstr ""
+
+#: src/synfig/layers/layer_skeletondeformation.cpp:111
+msgid "Second corner of the bounds rectangle"
+msgstr ""
+
+#: src/synfig/layers/layer_skeletondeformation.cpp:115
+msgid "Horizontal subdivisions"
+msgstr ""
+
+#: src/synfig/layers/layer_skeletondeformation.cpp:116
+msgid "Count of horizontal subdivisions of the transformation grid"
+msgstr ""
+
+#: src/synfig/layers/layer_skeletondeformation.cpp:120
+msgid "Vertical subdivisions"
+msgstr ""
+
+#: src/synfig/layers/layer_skeletondeformation.cpp:121
+msgid "Count of vertical subdivisions of the transformation grid"
+msgstr ""
 
 #: src/synfig/layers/layer_solidcolor.cpp:56
 msgid "Solid Color"
@@ -2499,7 +2539,7 @@ msgid "Volume of sound"
 msgstr ""
 
 #: src/synfig/layers/layer_switch.cpp:58 src/synfig/layers/layer_switch.cpp:82
-#: src/synfig/valuenode.cpp:173 src/synfig/valuenodes/valuenode_switch.cpp:133
+#: src/synfig/valuenode.cpp:174 src/synfig/valuenodes/valuenode_switch.cpp:133
 #: src/synfig/valuenodes/valuenode_switch.cpp:163
 msgid "Switch"
 msgstr "Pakeitimas"
@@ -2804,7 +2844,7 @@ msgstr ""
 msgid "Canvas '%s' has undefined %s: %s"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:3390 src/synfig/valuenode.cpp:386
+#: src/synfig/loadcanvas.cpp:3390 src/synfig/valuenode.cpp:389
 msgid "ValueNode"
 msgstr "Mazgo reikšmė"
 
@@ -3006,7 +3046,7 @@ msgstr "%s netinkamas %s paletės failas"
 msgid "%s does not appear to be a supported palette file"
 msgstr "%s nepalaikomas paletės failas"
 
-#: src/synfig/paramdesc.cpp:68 src/synfig/valuenode.cpp:151
+#: src/synfig/paramdesc.cpp:68 src/synfig/valuenode.cpp:152
 #: src/synfig/valuenodes/valuenode_composite.cpp:600
 msgid "Composite"
 msgstr "Mišinys"
@@ -3047,12 +3087,12 @@ msgstr "Daugyba"
 msgid "Divide"
 msgstr "Dalyba"
 
-#: src/synfig/paramdesc.cpp:78 src/synfig/valuenode.cpp:168
-#: src/synfig/valuenodes/valuenode_add.cpp:199
+#: src/synfig/paramdesc.cpp:78 src/synfig/valuenode.cpp:169
+#: src/synfig/valuenodes/valuenode_add.cpp:211
 msgid "Add"
 msgstr "Papildytas"
 
-#: src/synfig/paramdesc.cpp:79 src/synfig/valuenode.cpp:158
+#: src/synfig/paramdesc.cpp:79 src/synfig/valuenode.cpp:159
 #: src/synfig/valuenodes/valuenode_subtract.cpp:203
 msgid "Subtract"
 msgstr "Atimti"
@@ -3190,260 +3230,260 @@ msgid ""
 "SECONDS"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:152
+#: src/synfig/valuenode.cpp:153
 #: src/synfig/valuenodes/valuenode_radialcomposite.cpp:232
 msgid "Radial Composite"
 msgstr "Radialinis "
 
-#: src/synfig/valuenode.cpp:153
+#: src/synfig/valuenode.cpp:154
 #: src/synfig/valuenodes/valuenode_blinereversetangent.cpp:164
 #: src/synfig/valuenodes/valuenode_reference.cpp:123
 msgid "Reference"
 msgstr "Nuoroda"
 
-#: src/synfig/valuenode.cpp:155
+#: src/synfig/valuenode.cpp:156
 #: src/synfig/valuenodes/valuenode_segcalctangent.cpp:106
 msgid "Segment Tangent"
 msgstr "Segmento liestinė"
 
-#: src/synfig/valuenode.cpp:156
+#: src/synfig/valuenode.cpp:157
 #: src/synfig/valuenodes/valuenode_segcalcvertex.cpp:104
 msgid "Segment Vertex"
 msgstr "Segmentas viršūnė"
 
-#: src/synfig/valuenode.cpp:157 src/synfig/valuenodes/valuenode_stripes.cpp:81
+#: src/synfig/valuenode.cpp:158 src/synfig/valuenodes/valuenode_stripes.cpp:81
 #: src/synfig/valuenodes/valuenode_stripes.cpp:171
 msgid "Stripes"
 msgstr "Juostelėmis"
 
-#: src/synfig/valuenode.cpp:159
+#: src/synfig/valuenode.cpp:160
 #: src/synfig/valuenodes/valuenode_twotone.cpp:135
 msgid "Two-Tone"
 msgstr "Dviejų atspalvių"
 
-#: src/synfig/valuenode.cpp:161
+#: src/synfig/valuenode.cpp:162
 #: src/synfig/valuenodes/valuenode_dynamiclist.cpp:770
 msgid "Dynamic List"
 msgstr "Dinaminis sąrašas"
 
-#: src/synfig/valuenode.cpp:162
+#: src/synfig/valuenode.cpp:163
 #: src/synfig/valuenodes/valuenode_gradientrotate.cpp:78
 #: src/synfig/valuenodes/valuenode_gradientrotate.cpp:146
 msgid "Gradient Rotate"
 msgstr "Pasukti gradientą"
 
-#: src/synfig/valuenode.cpp:163 src/synfig/valuenodes/valuenode_sine.cpp:110
+#: src/synfig/valuenode.cpp:164 src/synfig/valuenodes/valuenode_sine.cpp:110
 msgid "Sine"
 msgstr "Sin"
 
-#: src/synfig/valuenode.cpp:165
+#: src/synfig/valuenode.cpp:166
 #: src/synfig/valuenodes/valuenode_timedswap.cpp:233
 msgid "Timed Swap"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:166
+#: src/synfig/valuenode.cpp:167
 #: src/synfig/valuenodes/valuenode_repeat_gradient.cpp:84
 #: src/synfig/valuenodes/valuenode_repeat_gradient.cpp:185
 msgid "Repeat Gradient"
 msgstr "Pakartoti gradientą"
 
-#: src/synfig/valuenode.cpp:167 src/synfig/valuenodes/valuenode_exp.cpp:106
+#: src/synfig/valuenode.cpp:168 src/synfig/valuenodes/valuenode_exp.cpp:106
 msgid "Exponential"
 msgstr "Eksponentinis"
 
-#: src/synfig/valuenode.cpp:169
+#: src/synfig/valuenode.cpp:170
 #: src/synfig/valuenodes/valuenode_blinecalctangent.cpp:186
 msgid "Spline Tangent"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:170
+#: src/synfig/valuenode.cpp:171
 #: src/synfig/valuenodes/valuenode_blinecalcvertex.cpp:152
 msgid "Spline Vertex"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:171 src/synfig/valuenodes/valuenode_range.cpp:258
+#: src/synfig/valuenode.cpp:172 src/synfig/valuenodes/valuenode_range.cpp:258
 msgid "Range"
 msgstr "Diapazonas"
 
-#: src/synfig/valuenode.cpp:174 src/synfig/valuenodes/valuenode_cos.cpp:109
+#: src/synfig/valuenode.cpp:175 src/synfig/valuenodes/valuenode_cos.cpp:109
 msgid "Cos"
 msgstr "Cos"
 
-#: src/synfig/valuenode.cpp:175 src/synfig/valuenodes/valuenode_atan2.cpp:107
+#: src/synfig/valuenode.cpp:176 src/synfig/valuenodes/valuenode_atan2.cpp:107
 msgid "aTan2"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:176
+#: src/synfig/valuenode.cpp:177
 #: src/synfig/valuenodes/valuenode_blinereversetangent.cpp:119
 msgid "Reverse Tangent"
 msgstr "Atvirkštinė liestinė"
 
-#: src/synfig/valuenode.cpp:178
+#: src/synfig/valuenode.cpp:179
 #: src/synfig/valuenodes/valuenode_reciprocal.cpp:147
 msgid "Reciprocal"
 msgstr "Abipusis"
 
-#: src/synfig/valuenode.cpp:180
+#: src/synfig/valuenode.cpp:181
 #: src/synfig/valuenodes/valuenode_integer.cpp:169
 msgid "Integer"
 msgstr "Sveikasis skaičius"
 
-#: src/synfig/valuenode.cpp:182
+#: src/synfig/valuenode.cpp:183
 #: src/synfig/valuenodes/valuenode_blinecalcwidth.cpp:155
 msgid "Spline Width"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:184
+#: src/synfig/valuenode.cpp:185
 #: src/synfig/valuenodes/valuenode_vectorangle.cpp:124
 msgid "Vector Angle"
 msgstr "Vektoriaus kampas"
 
-#: src/synfig/valuenode.cpp:185
+#: src/synfig/valuenode.cpp:186
 #: src/synfig/valuenodes/valuenode_vectorlength.cpp:123
 msgid "Vector Length"
 msgstr "Vektoriaus ilgis"
 
-#: src/synfig/valuenode.cpp:186
+#: src/synfig/valuenode.cpp:187
 #: src/synfig/valuenodes/valuenode_vectorx.cpp:123
 msgid "Vector X"
 msgstr "Vektoriaus X"
 
-#: src/synfig/valuenode.cpp:187
+#: src/synfig/valuenode.cpp:188
 #: src/synfig/valuenodes/valuenode_vectory.cpp:123
 msgid "Vector Y"
 msgstr "Vektoriaus Y"
 
-#: src/synfig/valuenode.cpp:188
+#: src/synfig/valuenode.cpp:189
 #: src/synfig/valuenodes/valuenode_gradientcolor.cpp:140
 msgid "Gradient Color"
 msgstr "Gradiento spalva"
 
-#: src/synfig/valuenode.cpp:189
+#: src/synfig/valuenode.cpp:190
 #: src/synfig/valuenodes/valuenode_dotproduct.cpp:120
 msgid "Dot Product"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:190
+#: src/synfig/valuenode.cpp:191
 #: src/synfig/valuenodes/valuenode_timestring.cpp:112
 msgid "Time String"
 msgstr "Laiko eilutė"
 
-#: src/synfig/valuenode.cpp:191 src/synfig/valuenodes/valuenode_real.cpp:163
+#: src/synfig/valuenode.cpp:192 src/synfig/valuenodes/valuenode_real.cpp:163
 #: src/synfig/valuenodes/valuenode_realstring.cpp:170
 msgid "Real"
 msgstr "Realus"
 
-#: src/synfig/valuenode.cpp:192
+#: src/synfig/valuenode.cpp:193
 #: src/synfig/valuenodes/valuenode_realstring.cpp:120
 msgid "Real String"
 msgstr "Faktinė eilutė"
 
-#: src/synfig/valuenode.cpp:193 src/synfig/valuenodes/valuenode_join.cpp:137
+#: src/synfig/valuenode.cpp:194 src/synfig/valuenodes/valuenode_join.cpp:137
 msgid "Joined List"
 msgstr "Jungtinis sąrašas"
 
-#: src/synfig/valuenode.cpp:194
+#: src/synfig/valuenode.cpp:195
 #: src/synfig/valuenodes/valuenode_anglestring.cpp:122
 msgid "Angle String"
 msgstr "Kampo eilutė"
 
-#: src/synfig/valuenode.cpp:195
+#: src/synfig/valuenode.cpp:196
 #: src/synfig/valuenodes/valuenode_intstring.cpp:117
 msgid "Int String"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:196 src/synfig/valuenodes/valuenode_log.cpp:141
+#: src/synfig/valuenode.cpp:197 src/synfig/valuenodes/valuenode_log.cpp:141
 msgid "Logarithm"
 msgstr "Logaritmas"
 
-#: src/synfig/valuenode.cpp:197 src/synfig/valuenodes/valuenode_greyed.cpp:84
+#: src/synfig/valuenode.cpp:198 src/synfig/valuenodes/valuenode_greyed.cpp:84
 msgid "Greyed"
 msgstr "Pilka"
 
-#: src/synfig/valuenode.cpp:198 src/synfig/valuenodes/valuenode_pow.cpp:162
+#: src/synfig/valuenode.cpp:199 src/synfig/valuenodes/valuenode_pow.cpp:162
 #: src/synfig/valuenodes/valuenode_pow.cpp:185
 msgid "Power"
 msgstr "Galia"
 
-#: src/synfig/valuenode.cpp:199
+#: src/synfig/valuenode.cpp:200
 #: src/synfig/valuenodes/valuenode_compare.cpp:149
 msgid "Compare"
 msgstr "Palyginti"
 
-#: src/synfig/valuenode.cpp:200
+#: src/synfig/valuenode.cpp:201
 msgid "Not"
 msgstr "Ne"
 
-#: src/synfig/valuenode.cpp:201
+#: src/synfig/valuenode.cpp:202
 msgid "And"
 msgstr "Ir"
 
-#: src/synfig/valuenode.cpp:202
+#: src/synfig/valuenode.cpp:203
 msgid "Or"
 msgstr "Arba"
 
-#: src/synfig/valuenode.cpp:204
+#: src/synfig/valuenode.cpp:205
 #: src/synfig/valuenodes/valuenode_boneinfluence.cpp:178
 msgid "Bone Influence"
 msgstr "Kaulo poveikis"
 
-#: src/synfig/valuenode.cpp:205 src/synfig/valuenodes/valuenode_bone.cpp:505
+#: src/synfig/valuenode.cpp:206 src/synfig/valuenodes/valuenode_bone.cpp:505
 #: src/synfig/valuenodes/valuenode_bonelink.cpp:208
 #: src/synfig/valuenodes/valuenode_boneweightpair.cpp:162
 msgid "Bone"
 msgstr "Kaulas"
 
-#: src/synfig/valuenode.cpp:206
+#: src/synfig/valuenode.cpp:207
 msgid "Root Bone"
 msgstr "Pagrindinis kaulas"
 
-#: src/synfig/valuenode.cpp:207
+#: src/synfig/valuenode.cpp:208
 #: src/synfig/valuenodes/valuenode_staticlist.cpp:443
 msgid "Static List"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:208
+#: src/synfig/valuenode.cpp:209
 #: src/synfig/valuenodes/valuenode_boneweightpair.cpp:119
 msgid "Bone Weight Pair"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:209
+#: src/synfig/valuenode.cpp:210
 #: src/synfig/valuenodes/valuenode_bonelink.cpp:190
 msgid "Bone Link"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:211 src/synfig/valuenodes/valuenode_wplist.cpp:357
+#: src/synfig/valuenode.cpp:212 src/synfig/valuenodes/valuenode_wplist.cpp:357
 msgid "WPList"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:212 src/synfig/valuenodes/valuenode_dilist.cpp:178
+#: src/synfig/valuenode.cpp:213 src/synfig/valuenodes/valuenode_dilist.cpp:178
 msgid "DIList"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:214 src/synfig/valuenodes/valuenode_average.cpp:97
+#: src/synfig/valuenode.cpp:215 src/synfig/valuenodes/valuenode_average.cpp:97
 msgid "Average"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:215
+#: src/synfig/valuenode.cpp:216
 msgid "Weighted Average"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:217
+#: src/synfig/valuenode.cpp:218
 #: src/synfig/valuenodes/valuenode_dynamic.cpp:171
 msgid "Dynamic"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:218
+#: src/synfig/valuenode.cpp:219
 #: src/synfig/valuenodes/valuenode_derivative.cpp:315
 msgid "Derivative"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:253
+#: src/synfig/valuenode.cpp:256
 #, c-format
 msgid "Bad type: ValueNode '%s' doesn't accept type '%s'"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:552
+#: src/synfig/valuenode.cpp:576
 msgid "Placeholder"
 msgstr ""
 
@@ -3476,35 +3516,35 @@ msgstr ": Blogas tipas"
 msgid "One or both of my parameters aren't set!"
 msgstr ""
 
-#: src/synfig/valuenodes/valuenode_add.cpp:220
+#: src/synfig/valuenodes/valuenode_add.cpp:232
 #: src/synfig/valuenodes/valuenode_compare.cpp:167
 #: src/synfig/valuenodes/valuenode_dotproduct.cpp:167
 #: src/synfig/valuenodes/valuenode_subtract.cpp:227
 msgid "LHS"
 msgstr ""
 
-#: src/synfig/valuenodes/valuenode_add.cpp:221
+#: src/synfig/valuenodes/valuenode_add.cpp:233
 msgid "Left Hand Side of the add"
 msgstr ""
 
-#: src/synfig/valuenodes/valuenode_add.cpp:225
+#: src/synfig/valuenodes/valuenode_add.cpp:237
 #: src/synfig/valuenodes/valuenode_compare.cpp:172
 #: src/synfig/valuenodes/valuenode_dotproduct.cpp:172
 #: src/synfig/valuenodes/valuenode_subtract.cpp:232
 msgid "RHS"
 msgstr ""
 
-#: src/synfig/valuenodes/valuenode_add.cpp:226
+#: src/synfig/valuenodes/valuenode_add.cpp:238
 msgid "Right Hand Side of the add"
 msgstr ""
 
-#: src/synfig/valuenodes/valuenode_add.cpp:230
+#: src/synfig/valuenodes/valuenode_add.cpp:242
 #: src/synfig/valuenodes/valuenode_scale.cpp:254
 #: src/synfig/valuenodes/valuenode_subtract.cpp:237
 msgid "Scalar"
 msgstr "Skaliarinis"
 
-#: src/synfig/valuenodes/valuenode_add.cpp:231
+#: src/synfig/valuenodes/valuenode_add.cpp:243
 msgid "Value that multiplies the add"
 msgstr ""
 
@@ -4591,6 +4631,10 @@ msgstr "Galutinė spalva"
 
 #: src/synfig/valuenodes/valuenode_repeat_gradient.cpp:234
 msgid "Used as the end of the resulting gradient"
+msgstr ""
+
+#: src/synfig/valuenodes/valuenode_reverse.cpp:308
+msgid "The value to be reversed"
 msgstr ""
 
 #: src/synfig/valuenodes/valuenode_scale.cpp:150

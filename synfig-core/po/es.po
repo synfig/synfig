@@ -1,5 +1,5 @@
 # Translation file for Synfig Core package.
-# Copyright (C) 2015 Synfig Contributors
+# Copyright (C) 2016 Synfig Contributors
 # This file is distributed under the same license as the Synfig Core package.
 # 
 # Translators:
@@ -8,15 +8,16 @@
 # genete <genetita@gmail.com>, 2007-2013
 # genete <genetita@gmail.com>, 2013
 # genete <genetita@gmail.com>, 2011, 2012
+# Giovanni Caligaris <giovannicaligaris@gmail.com>, 2015
 # morevnaproject <ksee.zelgadis@gmail.com>, 2011
 msgid ""
 msgstr ""
 "Project-Id-Version: Synfig UI\n"
 "Report-Msgid-Bugs-To: http://www.synfig.org/issues/thebuggenie/synfig\n"
-"POT-Creation-Date: 2015-07-27 18:00+0700\n"
-"PO-Revision-Date: 2015-07-22 14:12+0000\n"
+"POT-Creation-Date: 2016-06-05 14:00+0700\n"
+"PO-Revision-Date: 2015-12-25 06:36+0000\n"
 "Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
-"Language-Team: Spanish (http://www.transifex.com/projects/p/synfig/language/es/)\n"
+"Language-Team: Spanish (http://www.transifex.com/morevnaproject/synfig/language/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -354,6 +355,7 @@ msgstr "Combar por Curva"
 #: src/modules/lyr_std/sphere_distort.cpp:75
 #: src/modules/lyr_std/stretch.cpp:58 src/modules/lyr_std/twirl.cpp:57
 #: src/modules/lyr_std/warp.cpp:58 src/modules/mod_noise/distort.cpp:59
+#: src/synfig/layers/layer_skeletondeformation.cpp:62
 msgid "Distortions"
 msgstr "Distorsiones"
 
@@ -452,7 +454,7 @@ msgstr "Al revés"
 
 #: src/modules/lyr_std/insideout.cpp:163
 msgid "Defines where the center will be"
-msgstr ""
+msgstr "Define donde estará el centro"
 
 #: src/modules/lyr_std/julia.cpp:56
 msgid "Julia Set"
@@ -770,7 +772,7 @@ msgstr "Estar a salvo de Transparencia"
 msgid "Avoid alpha artifacts when checked"
 msgstr "Evita artefactos alfa cuando está marcado"
 
-#: src/modules/lyr_std/timeloop.cpp:59 src/synfig/valuenode.cpp:177
+#: src/modules/lyr_std/timeloop.cpp:59 src/synfig/valuenode.cpp:178
 #: src/synfig/valuenodes/valuenode_timeloop.cpp:153
 msgid "Time Loop"
 msgstr "Bucle de Tiempo"
@@ -930,7 +932,7 @@ msgstr "Centro del patrón"
 msgid "Size of the pattern"
 msgstr "Tamaño del patrón"
 
-#: src/modules/lyr_std/zoom.cpp:52 src/synfig/valuenode.cpp:154
+#: src/modules/lyr_std/zoom.cpp:52 src/synfig/valuenode.cpp:155
 #: src/synfig/valuenodes/valuenode_blinecalctangent.cpp:263
 #: src/synfig/valuenodes/valuenode_blinecalcwidth.cpp:221
 #: src/synfig/valuenodes/valuenode_composite.cpp:808
@@ -961,22 +963,22 @@ msgstr "%s no está en formato BMP"
 #: src/modules/mod_bmp/mptr_bmp.cpp:151
 #, c-format
 msgid "Failure while reading BITMAP::FILEHEADER from %s"
-msgstr ""
+msgstr "Falló mientras leía BITMAP::FILEHEADER desde %s"
 
 #: src/modules/mod_bmp/mptr_bmp.cpp:159
 #, c-format
 msgid "Failure while reading BITMAP::INFOHEADER from %s"
-msgstr ""
+msgstr "Falló mientras leía BITMAP::INFOHEADER desde %s"
 
 #: src/modules/mod_bmp/mptr_bmp.cpp:169
 #, c-format
 msgid "Bad BITMAP::FILEHEADER in %s. (bfOffsetBits=%d, should be %d)"
-msgstr ""
+msgstr "Mal BITMAP::FILEHEADER en %s. (bfOffsetBits=%d, debería ser %d)"
 
 #: src/modules/mod_bmp/mptr_bmp.cpp:177
 #, c-format
 msgid "Bad BITMAP::INFOHEADER in %s. (biSize=%d, should be %d)"
-msgstr ""
+msgstr "Mal BITMAP::INFOHEADER en %s. (biSize=%d, debería ser %d)"
 
 #: src/modules/mod_bmp/mptr_bmp.cpp:195 src/modules/mod_bmp/mptr_bmp.cpp:196
 msgid "Reading compressed bitmaps is not supported"
@@ -1032,6 +1034,7 @@ msgstr "Color de relleno de la capa"
 #: src/modules/mod_example/filledrect.cpp:136
 #: src/modules/mod_geometry/rectangle.cpp:143
 #: src/modules/mod_gradient/lineargradient.cpp:190
+#: src/synfig/layers/layer_skeletondeformation.cpp:104
 msgid "Point 1"
 msgstr "Punto 1"
 
@@ -1043,6 +1046,7 @@ msgstr "Primera esquina del rectángulo"
 #: src/modules/mod_example/filledrect.cpp:142
 #: src/modules/mod_geometry/rectangle.cpp:149
 #: src/modules/mod_gradient/lineargradient.cpp:195
+#: src/synfig/layers/layer_skeletondeformation.cpp:110
 msgid "Point 2"
 msgstr "Punto 2"
 
@@ -1388,8 +1392,9 @@ msgid "Smoothness"
 msgstr "Suavidad"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:1176
-msgid "Determines the interpolation between withpoints. (0) Linear (1) Smooth"
-msgstr "Determina la interpolación entre withpoints. (0) Lineal (1) Suave"
+msgid ""
+"Determines the interpolation between widthpoints. (0) Linear (1) Smooth"
+msgstr ""
 
 #: src/modules/mod_geometry/advanced_outline.cpp:1179
 #: src/modules/mod_geometry/outline.cpp:869
@@ -1488,7 +1493,7 @@ msgstr "Determina la función de caída del desvanecimiento"
 #: src/modules/mod_noise/distort.cpp:239 src/modules/mod_noise/noise.cpp:284
 #: src/modules/mod_noise/valuenode_random.cpp:274
 #: src/synfig/layers/layer_bitmap.cpp:169
-#: src/synfig/layers/layer_motionblur.cpp:149 src/synfig/valuenode.cpp:150
+#: src/synfig/layers/layer_motionblur.cpp:149 src/synfig/valuenode.cpp:151
 #: src/synfig/valuenodes/valuenode_linear.cpp:154
 msgid "Linear"
 msgstr "Linear"
@@ -1748,7 +1753,7 @@ msgstr "Sin archivo a cargar"
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:119
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:120
 msgid "Cannot create temporary file of "
-msgstr ""
+msgstr "No se puede crear el archivo temporal de"
 
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:179
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:180
@@ -1839,7 +1844,7 @@ msgid "Nearest Neighbor"
 msgstr "Vecino más cercano"
 
 #: src/modules/mod_noise/distort.cpp:241 src/modules/mod_noise/noise.cpp:286
-#: src/modules/mod_noise/valuenode_random.cpp:276 src/synfig/valuenode.cpp:160
+#: src/modules/mod_noise/valuenode_random.cpp:276 src/synfig/valuenode.cpp:161
 #: src/synfig/valuenodes/valuenode_bline.cpp:1010
 #: src/synfig/valuenodes/valuenode_blinecalctangent.cpp:243
 #: src/synfig/valuenodes/valuenode_blinecalcvertex.cpp:201
@@ -1917,6 +1922,7 @@ msgstr "Cuando está marcado el gradiente es supermuestreado"
 #: src/synfig/valuenodes/valuenode_real.cpp:185
 #: src/synfig/valuenodes/valuenode_reciprocal.cpp:165
 #: src/synfig/valuenodes/valuenode_reference.cpp:143
+#: src/synfig/valuenodes/valuenode_reverse.cpp:307
 #: src/synfig/valuenodes/valuenode_scale.cpp:249
 #: src/synfig/valuenodes/valuenode_step.cpp:192
 #: src/synfig/valuenodes/valuenode_timeloop.cpp:174
@@ -2027,8 +2033,9 @@ msgid ""
 "size, and an alpha of 1.0 is used when rendering"
 msgstr "Si se habilita, el canal de transparencia del gradiente es multiplicado por el tamaño de tallo y un valor de transparencia de 1,0 se usa al mostrar el gradiente"
 
-#: src/modules/mod_particle/plant.cpp:473
+#: src/modules/mod_particle/plant.cpp:473 src/synfig/valuenode.cpp:221
 #: src/synfig/valuenodes/valuenode_blinereversetangent.cpp:169
+#: src/synfig/valuenodes/valuenode_reverse.cpp:282
 msgid "Reverse"
 msgstr "Inversa"
 
@@ -2036,7 +2043,7 @@ msgstr "Inversa"
 msgid "If enabled, render the plant in the opposite direction"
 msgstr "Si se habilita, la planta se muestra en la dirección opuesta"
 
-#: src/modules/mod_particle/plant.cpp:478 src/synfig/valuenode.cpp:181
+#: src/modules/mod_particle/plant.cpp:478 src/synfig/valuenode.cpp:182
 #: src/synfig/valuenodes/valuenode_duplicate.cpp:204
 #: src/synfig/valuenodes/valuenode_step.cpp:137
 msgid "Step"
@@ -2100,7 +2107,7 @@ msgstr "Mal estatus en Superficie Cairo"
 msgid ""
 "The image is too large. It's size must be not more than 5000*2000=10000000 "
 "px. Now is %d*%d=%d px."
-msgstr ""
+msgstr "La imagen es demasiado grande. Su tamaño no debe ser más de 5000*2000=10000000 px. Ahora es %d*%d=%d px."
 
 #: src/modules/mod_ppm/mptr_ppm.cpp:78
 #, c-format
@@ -2109,7 +2116,7 @@ msgstr "%s no estaba en formato PPM"
 
 #: src/modules/mod_svg/layer_svg.cpp:53
 msgid "Import Svg"
-msgstr ""
+msgstr "Importar Svg"
 
 #: src/synfig/base_types.cpp:78 src/synfig/base_types.cpp:79
 msgid "bool"
@@ -2189,7 +2196,7 @@ msgstr "valor_de_nodo_hueso"
 
 #: src/synfig/base_types.cpp:563
 msgid "transformation"
-msgstr ""
+msgstr "transformación"
 
 #: src/synfig/cairoimporter.cpp:88
 msgid "CairoImporter::open(): Cannot open empty filename"
@@ -2290,7 +2297,7 @@ msgstr "Método de Mezcla"
 msgid "The blending method used to composite on the layers below"
 msgstr "El método de mezcla utilizado para componerse sobre las capas inferiores"
 
-#: src/synfig/layers/layer_duplicate.cpp:56 src/synfig/valuenode.cpp:179
+#: src/synfig/layers/layer_duplicate.cpp:56 src/synfig/valuenode.cpp:180
 #: src/synfig/valuenodes/valuenode_duplicate.cpp:175
 msgid "Duplicate"
 msgstr "Duplicar"
@@ -2367,11 +2374,11 @@ msgstr ""
 
 #: src/synfig/layers/layer_pastecanvas.cpp:133
 msgid "Transformation"
-msgstr ""
+msgstr "Transformación"
 
 #: src/synfig/layers/layer_pastecanvas.cpp:134
 msgid "Position, rotation, skew and scale"
-msgstr ""
+msgstr "Posición, rotación, inclinación y la escala"
 
 #: src/synfig/layers/layer_pastecanvas.cpp:138
 msgid "Canvas"
@@ -2391,7 +2398,7 @@ msgstr "Desplazamiento de tiempo para aplicar al contexto"
 
 #: src/synfig/layers/layer_pastecanvas.cpp:153
 msgid "Lock Selection"
-msgstr ""
+msgstr "Bloquear Selección"
 
 #: src/synfig/layers/layer_pastecanvas.cpp:154
 msgid "When checked prevents to select the children using the mouse click"
@@ -2463,7 +2470,7 @@ msgstr "Par/Impar"
 
 #: src/synfig/layers/layer_skeleton.cpp:54
 msgid "Skeleton"
-msgstr ""
+msgstr "Esqueleto"
 
 #: src/synfig/layers/layer_skeleton.cpp:142
 #: src/synfig/valuenodes/valuenode_bone.cpp:587
@@ -2471,7 +2478,41 @@ msgid "Name"
 msgstr "Nombre"
 
 #: src/synfig/layers/layer_skeleton.cpp:145
+#: src/synfig/layers/layer_skeletondeformation.cpp:98
 msgid "Bones"
+msgstr "Hueso"
+
+#: src/synfig/layers/layer_skeletondeformation.cpp:61
+#: src/synfig/layers/layer_skeletondeformation.cpp:89
+msgid "Skeleton Deformation"
+msgstr ""
+
+#: src/synfig/layers/layer_skeletondeformation.cpp:99
+msgid "List of bones"
+msgstr ""
+
+#: src/synfig/layers/layer_skeletondeformation.cpp:106
+msgid "First corner of the bounds rectangle"
+msgstr ""
+
+#: src/synfig/layers/layer_skeletondeformation.cpp:111
+msgid "Second corner of the bounds rectangle"
+msgstr ""
+
+#: src/synfig/layers/layer_skeletondeformation.cpp:115
+msgid "Horizontal subdivisions"
+msgstr ""
+
+#: src/synfig/layers/layer_skeletondeformation.cpp:116
+msgid "Count of horizontal subdivisions of the transformation grid"
+msgstr ""
+
+#: src/synfig/layers/layer_skeletondeformation.cpp:120
+msgid "Vertical subdivisions"
+msgstr ""
+
+#: src/synfig/layers/layer_skeletondeformation.cpp:121
+msgid "Count of vertical subdivisions of the transformation grid"
 msgstr ""
 
 #: src/synfig/layers/layer_solidcolor.cpp:56
@@ -2480,7 +2521,7 @@ msgstr "Color Sólido"
 
 #: src/synfig/layers/layer_sound.cpp:51
 msgid "Sound"
-msgstr ""
+msgstr "Sonido"
 
 #: src/synfig/layers/layer_sound.cpp:102
 msgid "Path to sound file"
@@ -2488,7 +2529,7 @@ msgstr ""
 
 #: src/synfig/layers/layer_sound.cpp:108
 msgid "Delay"
-msgstr ""
+msgstr "Retraso"
 
 #: src/synfig/layers/layer_sound.cpp:109
 msgid "Delay before play"
@@ -2496,21 +2537,21 @@ msgstr ""
 
 #: src/synfig/layers/layer_sound.cpp:114
 msgid "Volume"
-msgstr ""
+msgstr "Volumen"
 
 #: src/synfig/layers/layer_sound.cpp:115
 msgid "Volume of sound"
-msgstr ""
+msgstr "Volumen del sonido"
 
 #: src/synfig/layers/layer_switch.cpp:58 src/synfig/layers/layer_switch.cpp:82
-#: src/synfig/valuenode.cpp:173 src/synfig/valuenodes/valuenode_switch.cpp:133
+#: src/synfig/valuenode.cpp:174 src/synfig/valuenodes/valuenode_switch.cpp:133
 #: src/synfig/valuenodes/valuenode_switch.cpp:163
 msgid "Switch"
 msgstr "Interruptor"
 
 #: src/synfig/layers/layer_switch.cpp:91
 msgid "Active Layer Name"
-msgstr ""
+msgstr "Nombre de Capa Activa"
 
 #: src/synfig/layers/layer_switch.cpp:92
 msgid "Only layer with specified name are visible"
@@ -2808,7 +2849,7 @@ msgstr "entidad \"author\" vacía"
 msgid "Canvas '%s' has undefined %s: %s"
 msgstr "Lienzo '%s' tiene sin definir '%s':'%s'"
 
-#: src/synfig/loadcanvas.cpp:3390 src/synfig/valuenode.cpp:386
+#: src/synfig/loadcanvas.cpp:3390 src/synfig/valuenode.cpp:389
 msgid "ValueNode"
 msgstr "Valor de Nodo"
 
@@ -2851,19 +2892,19 @@ msgstr "Desajuste en el tamaño de la Capa (app:%d, lib:%d)"
 
 #: src/synfig/main.cpp:215
 msgid "Starting Subsystem \"Sound\""
-msgstr ""
+msgstr "Comenzado Subsistema \"Sound\""
 
 #: src/synfig/main.cpp:217
 msgid "Unable to initialize subsystem \"Sound\""
-msgstr ""
+msgstr "Imposible de inicializar el subsistema \"Sound\""
 
 #: src/synfig/main.cpp:219
 msgid "Starting Subsystem \"Types\""
-msgstr ""
+msgstr "Comenzando subsistema \"Types\""
 
 #: src/synfig/main.cpp:221
 msgid "Unable to initialize subsystem \"Types\""
-msgstr ""
+msgstr "Imposible inicializar el subsistema \"Types\""
 
 #: src/synfig/main.cpp:223
 msgid "Starting Subsystem \"Modules\""
@@ -3010,7 +3051,7 @@ msgstr "%s no parece ser un archivo de paleta %s válido"
 msgid "%s does not appear to be a supported palette file"
 msgstr "%s no parece ser un archivo de paleta soportado"
 
-#: src/synfig/paramdesc.cpp:68 src/synfig/valuenode.cpp:151
+#: src/synfig/paramdesc.cpp:68 src/synfig/valuenode.cpp:152
 #: src/synfig/valuenodes/valuenode_composite.cpp:600
 msgid "Composite"
 msgstr "Componer"
@@ -3051,12 +3092,12 @@ msgstr "Multiplicar"
 msgid "Divide"
 msgstr "Dividir"
 
-#: src/synfig/paramdesc.cpp:78 src/synfig/valuenode.cpp:168
-#: src/synfig/valuenodes/valuenode_add.cpp:199
+#: src/synfig/paramdesc.cpp:78 src/synfig/valuenode.cpp:169
+#: src/synfig/valuenodes/valuenode_add.cpp:211
 msgid "Add"
 msgstr "Sumar"
 
-#: src/synfig/paramdesc.cpp:79 src/synfig/valuenode.cpp:158
+#: src/synfig/paramdesc.cpp:79 src/synfig/valuenode.cpp:159
 #: src/synfig/valuenodes/valuenode_subtract.cpp:203
 msgid "Subtract"
 msgstr "Restar"
@@ -3194,260 +3235,260 @@ msgid ""
 "SECONDS"
 msgstr "Time(): ¡Unidad de tiempo no proporcionada y el ratio de fotogramas es desconocido! Asumiendo SEGUNDOS"
 
-#: src/synfig/valuenode.cpp:152
+#: src/synfig/valuenode.cpp:153
 #: src/synfig/valuenodes/valuenode_radialcomposite.cpp:232
 msgid "Radial Composite"
 msgstr "Composición Radial"
 
-#: src/synfig/valuenode.cpp:153
+#: src/synfig/valuenode.cpp:154
 #: src/synfig/valuenodes/valuenode_blinereversetangent.cpp:164
 #: src/synfig/valuenodes/valuenode_reference.cpp:123
 msgid "Reference"
 msgstr "Referencia"
 
-#: src/synfig/valuenode.cpp:155
+#: src/synfig/valuenode.cpp:156
 #: src/synfig/valuenodes/valuenode_segcalctangent.cpp:106
 msgid "Segment Tangent"
 msgstr "Tangente de Segmento"
 
-#: src/synfig/valuenode.cpp:156
+#: src/synfig/valuenode.cpp:157
 #: src/synfig/valuenodes/valuenode_segcalcvertex.cpp:104
 msgid "Segment Vertex"
 msgstr "Vértice de Segmento"
 
-#: src/synfig/valuenode.cpp:157 src/synfig/valuenodes/valuenode_stripes.cpp:81
+#: src/synfig/valuenode.cpp:158 src/synfig/valuenodes/valuenode_stripes.cpp:81
 #: src/synfig/valuenodes/valuenode_stripes.cpp:171
 msgid "Stripes"
 msgstr "Bandas"
 
-#: src/synfig/valuenode.cpp:159
+#: src/synfig/valuenode.cpp:160
 #: src/synfig/valuenodes/valuenode_twotone.cpp:135
 msgid "Two-Tone"
 msgstr "Dos Tonos"
 
-#: src/synfig/valuenode.cpp:161
+#: src/synfig/valuenode.cpp:162
 #: src/synfig/valuenodes/valuenode_dynamiclist.cpp:770
 msgid "Dynamic List"
 msgstr "Lista Dinámica"
 
-#: src/synfig/valuenode.cpp:162
+#: src/synfig/valuenode.cpp:163
 #: src/synfig/valuenodes/valuenode_gradientrotate.cpp:78
 #: src/synfig/valuenodes/valuenode_gradientrotate.cpp:146
 msgid "Gradient Rotate"
 msgstr "Rotar Gradiente"
 
-#: src/synfig/valuenode.cpp:163 src/synfig/valuenodes/valuenode_sine.cpp:110
+#: src/synfig/valuenode.cpp:164 src/synfig/valuenodes/valuenode_sine.cpp:110
 msgid "Sine"
 msgstr "Seno"
 
-#: src/synfig/valuenode.cpp:165
+#: src/synfig/valuenode.cpp:166
 #: src/synfig/valuenodes/valuenode_timedswap.cpp:233
 msgid "Timed Swap"
 msgstr "Intercambio Temporizado"
 
-#: src/synfig/valuenode.cpp:166
+#: src/synfig/valuenode.cpp:167
 #: src/synfig/valuenodes/valuenode_repeat_gradient.cpp:84
 #: src/synfig/valuenodes/valuenode_repeat_gradient.cpp:185
 msgid "Repeat Gradient"
 msgstr "Repetir Gradiente"
 
-#: src/synfig/valuenode.cpp:167 src/synfig/valuenodes/valuenode_exp.cpp:106
+#: src/synfig/valuenode.cpp:168 src/synfig/valuenodes/valuenode_exp.cpp:106
 msgid "Exponential"
 msgstr "Exponencial"
 
-#: src/synfig/valuenode.cpp:169
+#: src/synfig/valuenode.cpp:170
 #: src/synfig/valuenodes/valuenode_blinecalctangent.cpp:186
 msgid "Spline Tangent"
 msgstr "Tangente de Spline"
 
-#: src/synfig/valuenode.cpp:170
+#: src/synfig/valuenode.cpp:171
 #: src/synfig/valuenodes/valuenode_blinecalcvertex.cpp:152
 msgid "Spline Vertex"
 msgstr "Vértice de Spline"
 
-#: src/synfig/valuenode.cpp:171 src/synfig/valuenodes/valuenode_range.cpp:258
+#: src/synfig/valuenode.cpp:172 src/synfig/valuenodes/valuenode_range.cpp:258
 msgid "Range"
 msgstr "Rango"
 
-#: src/synfig/valuenode.cpp:174 src/synfig/valuenodes/valuenode_cos.cpp:109
+#: src/synfig/valuenode.cpp:175 src/synfig/valuenodes/valuenode_cos.cpp:109
 msgid "Cos"
 msgstr "Coseno"
 
-#: src/synfig/valuenode.cpp:175 src/synfig/valuenodes/valuenode_atan2.cpp:107
+#: src/synfig/valuenode.cpp:176 src/synfig/valuenodes/valuenode_atan2.cpp:107
 msgid "aTan2"
 msgstr "aTan2"
 
-#: src/synfig/valuenode.cpp:176
+#: src/synfig/valuenode.cpp:177
 #: src/synfig/valuenodes/valuenode_blinereversetangent.cpp:119
 msgid "Reverse Tangent"
 msgstr "Revertir Tangente"
 
-#: src/synfig/valuenode.cpp:178
+#: src/synfig/valuenode.cpp:179
 #: src/synfig/valuenodes/valuenode_reciprocal.cpp:147
 msgid "Reciprocal"
 msgstr "Recíproco"
 
-#: src/synfig/valuenode.cpp:180
+#: src/synfig/valuenode.cpp:181
 #: src/synfig/valuenodes/valuenode_integer.cpp:169
 msgid "Integer"
 msgstr "Entero"
 
-#: src/synfig/valuenode.cpp:182
+#: src/synfig/valuenode.cpp:183
 #: src/synfig/valuenodes/valuenode_blinecalcwidth.cpp:155
 msgid "Spline Width"
 msgstr "Espesor de Contorno"
 
-#: src/synfig/valuenode.cpp:184
+#: src/synfig/valuenode.cpp:185
 #: src/synfig/valuenodes/valuenode_vectorangle.cpp:124
 msgid "Vector Angle"
 msgstr "Ángulo de Vector"
 
-#: src/synfig/valuenode.cpp:185
+#: src/synfig/valuenode.cpp:186
 #: src/synfig/valuenodes/valuenode_vectorlength.cpp:123
 msgid "Vector Length"
 msgstr "Longitud de Vector"
 
-#: src/synfig/valuenode.cpp:186
+#: src/synfig/valuenode.cpp:187
 #: src/synfig/valuenodes/valuenode_vectorx.cpp:123
 msgid "Vector X"
 msgstr "X de Vector"
 
-#: src/synfig/valuenode.cpp:187
+#: src/synfig/valuenode.cpp:188
 #: src/synfig/valuenodes/valuenode_vectory.cpp:123
 msgid "Vector Y"
 msgstr "Y de Vector"
 
-#: src/synfig/valuenode.cpp:188
+#: src/synfig/valuenode.cpp:189
 #: src/synfig/valuenodes/valuenode_gradientcolor.cpp:140
 msgid "Gradient Color"
 msgstr "Gradiente de color"
 
-#: src/synfig/valuenode.cpp:189
+#: src/synfig/valuenode.cpp:190
 #: src/synfig/valuenodes/valuenode_dotproduct.cpp:120
 msgid "Dot Product"
 msgstr "Producto Escalar"
 
-#: src/synfig/valuenode.cpp:190
+#: src/synfig/valuenode.cpp:191
 #: src/synfig/valuenodes/valuenode_timestring.cpp:112
 msgid "Time String"
 msgstr "Cadena de Tiempo"
 
-#: src/synfig/valuenode.cpp:191 src/synfig/valuenodes/valuenode_real.cpp:163
+#: src/synfig/valuenode.cpp:192 src/synfig/valuenodes/valuenode_real.cpp:163
 #: src/synfig/valuenodes/valuenode_realstring.cpp:170
 msgid "Real"
 msgstr "Real"
 
-#: src/synfig/valuenode.cpp:192
+#: src/synfig/valuenode.cpp:193
 #: src/synfig/valuenodes/valuenode_realstring.cpp:120
 msgid "Real String"
 msgstr "Cadena de Real"
 
-#: src/synfig/valuenode.cpp:193 src/synfig/valuenodes/valuenode_join.cpp:137
+#: src/synfig/valuenode.cpp:194 src/synfig/valuenodes/valuenode_join.cpp:137
 msgid "Joined List"
 msgstr "Lista Unida"
 
-#: src/synfig/valuenode.cpp:194
+#: src/synfig/valuenode.cpp:195
 #: src/synfig/valuenodes/valuenode_anglestring.cpp:122
 msgid "Angle String"
 msgstr "Cadena de Ángulo"
 
-#: src/synfig/valuenode.cpp:195
+#: src/synfig/valuenode.cpp:196
 #: src/synfig/valuenodes/valuenode_intstring.cpp:117
 msgid "Int String"
 msgstr "Cadena de Entero"
 
-#: src/synfig/valuenode.cpp:196 src/synfig/valuenodes/valuenode_log.cpp:141
+#: src/synfig/valuenode.cpp:197 src/synfig/valuenodes/valuenode_log.cpp:141
 msgid "Logarithm"
 msgstr "Logaritmo"
 
-#: src/synfig/valuenode.cpp:197 src/synfig/valuenodes/valuenode_greyed.cpp:84
+#: src/synfig/valuenode.cpp:198 src/synfig/valuenodes/valuenode_greyed.cpp:84
 msgid "Greyed"
 msgstr "Inalterable"
 
-#: src/synfig/valuenode.cpp:198 src/synfig/valuenodes/valuenode_pow.cpp:162
+#: src/synfig/valuenode.cpp:199 src/synfig/valuenodes/valuenode_pow.cpp:162
 #: src/synfig/valuenodes/valuenode_pow.cpp:185
 msgid "Power"
 msgstr "Potencia"
 
-#: src/synfig/valuenode.cpp:199
+#: src/synfig/valuenode.cpp:200
 #: src/synfig/valuenodes/valuenode_compare.cpp:149
 msgid "Compare"
 msgstr "Comparar"
 
-#: src/synfig/valuenode.cpp:200
+#: src/synfig/valuenode.cpp:201
 msgid "Not"
 msgstr "Negado"
 
-#: src/synfig/valuenode.cpp:201
+#: src/synfig/valuenode.cpp:202
 msgid "And"
 msgstr "Y"
 
-#: src/synfig/valuenode.cpp:202
+#: src/synfig/valuenode.cpp:203
 msgid "Or"
 msgstr "O"
 
-#: src/synfig/valuenode.cpp:204
+#: src/synfig/valuenode.cpp:205
 #: src/synfig/valuenodes/valuenode_boneinfluence.cpp:178
 msgid "Bone Influence"
 msgstr "Influencia de Hueso"
 
-#: src/synfig/valuenode.cpp:205 src/synfig/valuenodes/valuenode_bone.cpp:505
+#: src/synfig/valuenode.cpp:206 src/synfig/valuenodes/valuenode_bone.cpp:505
 #: src/synfig/valuenodes/valuenode_bonelink.cpp:208
 #: src/synfig/valuenodes/valuenode_boneweightpair.cpp:162
 msgid "Bone"
 msgstr "Hueso"
 
-#: src/synfig/valuenode.cpp:206
+#: src/synfig/valuenode.cpp:207
 msgid "Root Bone"
 msgstr "Hueso Raíz"
 
-#: src/synfig/valuenode.cpp:207
+#: src/synfig/valuenode.cpp:208
 #: src/synfig/valuenodes/valuenode_staticlist.cpp:443
 msgid "Static List"
 msgstr "Lista Estática"
 
-#: src/synfig/valuenode.cpp:208
+#: src/synfig/valuenode.cpp:209
 #: src/synfig/valuenodes/valuenode_boneweightpair.cpp:119
 msgid "Bone Weight Pair"
 msgstr "Par Hueso-Peso"
 
-#: src/synfig/valuenode.cpp:209
+#: src/synfig/valuenode.cpp:210
 #: src/synfig/valuenodes/valuenode_bonelink.cpp:190
 msgid "Bone Link"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:211 src/synfig/valuenodes/valuenode_wplist.cpp:357
+#: src/synfig/valuenode.cpp:212 src/synfig/valuenodes/valuenode_wplist.cpp:357
 msgid "WPList"
 msgstr "Lista de Espesores"
 
-#: src/synfig/valuenode.cpp:212 src/synfig/valuenodes/valuenode_dilist.cpp:178
+#: src/synfig/valuenode.cpp:213 src/synfig/valuenodes/valuenode_dilist.cpp:178
 msgid "DIList"
 msgstr "Lista de Elementos Guión"
 
-#: src/synfig/valuenode.cpp:214 src/synfig/valuenodes/valuenode_average.cpp:97
+#: src/synfig/valuenode.cpp:215 src/synfig/valuenodes/valuenode_average.cpp:97
 msgid "Average"
-msgstr ""
+msgstr "Promedio"
 
-#: src/synfig/valuenode.cpp:215
+#: src/synfig/valuenode.cpp:216
 msgid "Weighted Average"
-msgstr ""
-
-#: src/synfig/valuenode.cpp:217
-#: src/synfig/valuenodes/valuenode_dynamic.cpp:171
-msgid "Dynamic"
-msgstr ""
+msgstr "Peso Promedio"
 
 #: src/synfig/valuenode.cpp:218
+#: src/synfig/valuenodes/valuenode_dynamic.cpp:171
+msgid "Dynamic"
+msgstr "Dinámico"
+
+#: src/synfig/valuenode.cpp:219
 #: src/synfig/valuenodes/valuenode_derivative.cpp:315
 msgid "Derivative"
-msgstr ""
+msgstr "Derivado"
 
-#: src/synfig/valuenode.cpp:253
+#: src/synfig/valuenode.cpp:256
 #, c-format
 msgid "Bad type: ValueNode '%s' doesn't accept type '%s'"
 msgstr "Mal tipo: Valor de Nodo %s no acepta el tipo %s"
 
-#: src/synfig/valuenode.cpp:552
+#: src/synfig/valuenode.cpp:576
 msgid "Placeholder"
 msgstr "Casilla"
 
@@ -3480,35 +3521,35 @@ msgstr "Mal tipo "
 msgid "One or both of my parameters aren't set!"
 msgstr "Uno o ambos de mis parámetros no están establecidos!"
 
-#: src/synfig/valuenodes/valuenode_add.cpp:220
+#: src/synfig/valuenodes/valuenode_add.cpp:232
 #: src/synfig/valuenodes/valuenode_compare.cpp:167
 #: src/synfig/valuenodes/valuenode_dotproduct.cpp:167
 #: src/synfig/valuenodes/valuenode_subtract.cpp:227
 msgid "LHS"
 msgstr "LHS"
 
-#: src/synfig/valuenodes/valuenode_add.cpp:221
+#: src/synfig/valuenodes/valuenode_add.cpp:233
 msgid "Left Hand Side of the add"
 msgstr "Parte izquierda de la suma"
 
-#: src/synfig/valuenodes/valuenode_add.cpp:225
+#: src/synfig/valuenodes/valuenode_add.cpp:237
 #: src/synfig/valuenodes/valuenode_compare.cpp:172
 #: src/synfig/valuenodes/valuenode_dotproduct.cpp:172
 #: src/synfig/valuenodes/valuenode_subtract.cpp:232
 msgid "RHS"
 msgstr "RHS"
 
-#: src/synfig/valuenodes/valuenode_add.cpp:226
+#: src/synfig/valuenodes/valuenode_add.cpp:238
 msgid "Right Hand Side of the add"
 msgstr "Parte derecha de la suma"
 
-#: src/synfig/valuenodes/valuenode_add.cpp:230
+#: src/synfig/valuenodes/valuenode_add.cpp:242
 #: src/synfig/valuenodes/valuenode_scale.cpp:254
 #: src/synfig/valuenodes/valuenode_subtract.cpp:237
 msgid "Scalar"
 msgstr "Escalar"
 
-#: src/synfig/valuenodes/valuenode_add.cpp:231
+#: src/synfig/valuenodes/valuenode_add.cpp:243
 msgid "Value that multiplies the add"
 msgstr "Valor que se multiplica la suma"
 
@@ -3592,11 +3633,11 @@ msgstr "X"
 
 #: src/synfig/valuenodes/valuenode_atan2.cpp:149
 msgid "Cosine of the angle"
-msgstr ""
+msgstr "Conseno del ángulo"
 
 #: src/synfig/valuenodes/valuenode_atan2.cpp:153
 msgid "Y"
-msgstr ""
+msgstr "Y"
 
 #: src/synfig/valuenodes/valuenode_atan2.cpp:154
 msgid "Sine of the angle"
@@ -3696,24 +3737,24 @@ msgstr "Cuando se marca, el espesor se basa en la longitud del spline"
 
 #: src/synfig/valuenodes/valuenode_blinereversetangent.cpp:165
 msgid "The referenced tangent to reverse"
-msgstr ""
+msgstr "La tangente referenciado a la inversa"
 
 #: src/synfig/valuenodes/valuenode_blinereversetangent.cpp:170
 msgid "When checked, the reference is reversed"
-msgstr ""
+msgstr "Cuando está marcado, la referencia se invierte"
 
 #: src/synfig/valuenodes/valuenode_bone.cpp:249
 #, c-format
 msgid "Bone %d"
-msgstr ""
+msgstr "Hueso %d"
 
 #: src/synfig/valuenodes/valuenode_bone.cpp:588
 msgid "The name of the bone"
-msgstr ""
+msgstr "El nombre del hueso"
 
 #: src/synfig/valuenodes/valuenode_bone.cpp:592
 msgid "Parent"
-msgstr ""
+msgstr "Pariente"
 
 #: src/synfig/valuenodes/valuenode_bone.cpp:593
 msgid "The parent bone of the bone"
@@ -3721,11 +3762,11 @@ msgstr ""
 
 #: src/synfig/valuenodes/valuenode_bone.cpp:598
 msgid "The rotating origin of the bone relative to its parent"
-msgstr ""
+msgstr "El origen de rotación del hueso con relación a su pariente"
 
 #: src/synfig/valuenodes/valuenode_bone.cpp:603
 msgid "The rotating angle of the bone relative to its parent"
-msgstr ""
+msgstr "El origen de rotación del ángulo con relación a su pariente"
 
 #: src/synfig/valuenodes/valuenode_bone.cpp:607
 msgid "Local Length Scale"
@@ -3737,7 +3778,7 @@ msgstr ""
 
 #: src/synfig/valuenodes/valuenode_bone.cpp:612
 msgid "Bone Width"
-msgstr ""
+msgstr "Anchura del Hueso"
 
 #: src/synfig/valuenodes/valuenode_bone.cpp:613
 msgid "Bone width at its origin"
@@ -3749,7 +3790,7 @@ msgstr ""
 
 #: src/synfig/valuenodes/valuenode_bone.cpp:618
 msgid "The scale of the bone and its children aligned to its length"
-msgstr ""
+msgstr "La escala del hueso y sus hijos alineado a su longitud"
 
 #: src/synfig/valuenodes/valuenode_bone.cpp:622
 msgid "Tip Width"
@@ -3777,7 +3818,7 @@ msgstr ""
 
 #: src/synfig/valuenodes/valuenode_bone.cpp:1043
 msgid "Root"
-msgstr ""
+msgstr "Raíz"
 
 #: src/synfig/valuenodes/valuenode_boneinfluence.cpp:222
 msgid "Bone Weight List"
@@ -3802,11 +3843,11 @@ msgstr ""
 
 #: src/synfig/valuenodes/valuenode_bonelink.cpp:219
 msgid "Make translation"
-msgstr ""
+msgstr "Hacer traducción"
 
 #: src/synfig/valuenodes/valuenode_bonelink.cpp:224
 msgid "Make rotation"
-msgstr ""
+msgstr "Hacer giro"
 
 #: src/synfig/valuenodes/valuenode_bonelink.cpp:228
 msgid "Skew"
@@ -3818,7 +3859,7 @@ msgstr ""
 
 #: src/synfig/valuenodes/valuenode_bonelink.cpp:233
 msgid "Scale X"
-msgstr ""
+msgstr "Escala X"
 
 #: src/synfig/valuenodes/valuenode_bonelink.cpp:234
 msgid "Make scaling by X-axis"
@@ -3826,7 +3867,7 @@ msgstr ""
 
 #: src/synfig/valuenodes/valuenode_bonelink.cpp:238
 msgid "Scale Y"
-msgstr ""
+msgstr "Escala Y"
 
 #: src/synfig/valuenodes/valuenode_bonelink.cpp:239
 msgid "Make scaling by Y-axis"
@@ -3838,7 +3879,7 @@ msgstr ""
 
 #: src/synfig/valuenodes/valuenode_boneweightpair.cpp:167
 msgid "weight"
-msgstr ""
+msgstr "Peso"
 
 #: src/synfig/valuenodes/valuenode_boneweightpair.cpp:168
 msgid "The relative value of influence of the bone"
@@ -4102,23 +4143,23 @@ msgstr "Valor"
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:822
 msgid "The Value"
-msgstr ""
+msgstr "El Valor"
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:830
 msgid "First"
-msgstr ""
+msgstr "Primero"
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:831
 msgid "The First Value"
-msgstr ""
+msgstr "El Primer Valor"
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:834
 msgid "Second"
-msgstr ""
+msgstr "Segundo"
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:835
 msgid "The Second Value"
-msgstr ""
+msgstr "El Segundo Valor"
 
 #: src/synfig/valuenodes/valuenode_cos.cpp:156
 msgid "Value to calculate the cosine"
@@ -4135,11 +4176,11 @@ msgstr "Multiplicador del coseno resultante"
 
 #: src/synfig/valuenodes/valuenode_derivative.cpp:368
 msgid "Value to calculate the derivative"
-msgstr ""
+msgstr "Valor para calcular la derivada"
 
 #: src/synfig/valuenodes/valuenode_derivative.cpp:371
 msgid "Interval"
-msgstr ""
+msgstr "Intervalo"
 
 #: src/synfig/valuenodes/valuenode_derivative.cpp:372
 msgid "Interval of time to calculate the finite differences"
@@ -4147,11 +4188,11 @@ msgstr ""
 
 #: src/synfig/valuenodes/valuenode_derivative.cpp:375
 msgid "Accuracy"
-msgstr ""
+msgstr "Exactitud"
 
 #: src/synfig/valuenodes/valuenode_derivative.cpp:376
 msgid "Accuracy of the derivative"
-msgstr ""
+msgstr "Exactitud del derivado"
 
 #: src/synfig/valuenodes/valuenode_derivative.cpp:378
 msgid "Rough"
@@ -4159,27 +4200,27 @@ msgstr ""
 
 #: src/synfig/valuenodes/valuenode_derivative.cpp:380
 msgid "Fine"
-msgstr ""
+msgstr "Fino"
 
 #: src/synfig/valuenodes/valuenode_derivative.cpp:381
 msgid "Extreme"
-msgstr ""
+msgstr "Extremo"
 
 #: src/synfig/valuenodes/valuenode_derivative.cpp:384
 msgid "Order"
-msgstr ""
+msgstr "Orden"
 
 #: src/synfig/valuenodes/valuenode_derivative.cpp:385
 msgid "Order of the derivative"
-msgstr ""
+msgstr "Orden de la derivada"
 
 #: src/synfig/valuenodes/valuenode_derivative.cpp:387
 msgid "First Derivative"
-msgstr ""
+msgstr "Primer Derivado"
 
 #: src/synfig/valuenodes/valuenode_derivative.cpp:388
 msgid "Second Derivative"
-msgstr ""
+msgstr "Segundo Derivado"
 
 #: src/synfig/valuenodes/valuenode_dilist.cpp:166
 #, c-format
@@ -4228,7 +4269,7 @@ msgstr ""
 
 #: src/synfig/valuenodes/valuenode_dynamic.cpp:245
 msgid "Force"
-msgstr ""
+msgstr "Fuerza"
 
 #: src/synfig/valuenodes/valuenode_dynamic.cpp:246
 msgid "External force applied on the mass center of gravity"
@@ -4236,7 +4277,7 @@ msgstr ""
 
 #: src/synfig/valuenodes/valuenode_dynamic.cpp:249
 msgid "Torque"
-msgstr ""
+msgstr "Esfuerzo de Torsión"
 
 #: src/synfig/valuenodes/valuenode_dynamic.cpp:250
 msgid "External momentum applied at the center of inertia"
@@ -4252,7 +4293,7 @@ msgstr ""
 
 #: src/synfig/valuenodes/valuenode_dynamic.cpp:257
 msgid "Friction coefficient"
-msgstr ""
+msgstr "Coeficiente de fricción"
 
 #: src/synfig/valuenodes/valuenode_dynamic.cpp:258
 msgid "Rotational friction coefficient of the dynamic system"
@@ -4276,15 +4317,15 @@ msgstr ""
 
 #: src/synfig/valuenodes/valuenode_dynamic.cpp:269
 msgid "Mass"
-msgstr ""
+msgstr "Masa"
 
 #: src/synfig/valuenodes/valuenode_dynamic.cpp:270
 msgid "Mass of the dynamic system"
-msgstr ""
+msgstr "Masa del sistema dinámico"
 
 #: src/synfig/valuenodes/valuenode_dynamic.cpp:273
 msgid "Moment of Inertia"
-msgstr ""
+msgstr "Momento de Inercia"
 
 #: src/synfig/valuenodes/valuenode_dynamic.cpp:274
 msgid "Moment of inertia of the dynamic system"
@@ -4349,7 +4390,7 @@ msgstr ""
 
 #: src/synfig/valuenodes/valuenode_gradientcolor.cpp:169
 msgid "When checked, the index would loop"
-msgstr ""
+msgstr "Cuando está marcado, el índice haría bucle"
 
 #: src/synfig/valuenodes/valuenode_gradientrotate.cpp:165
 msgid "The source gradient to rotate"
@@ -4369,7 +4410,7 @@ msgstr "El valor entero a convertir"
 
 #: src/synfig/valuenodes/valuenode_intstring.cpp:165
 msgid "Int"
-msgstr ""
+msgstr "Int"
 
 #: src/synfig/valuenodes/valuenode_join.cpp:187
 msgid "Strings"
@@ -4424,7 +4465,7 @@ msgstr "El valor devuelto cuando el tiempo actual es cero"
 
 #: src/synfig/valuenodes/valuenode_log.cpp:160
 msgid "Value node used to calculate the Neperian logarithm"
-msgstr ""
+msgstr "El valor del nodo utilizado para calcular el logaritmo Neperiano"
 
 #: src/synfig/valuenodes/valuenode_log.cpp:164
 #: src/synfig/valuenodes/valuenode_pow.cpp:190
@@ -4561,7 +4602,7 @@ msgstr "El número de repeticiones del gradiente"
 #: src/synfig/valuenodes/valuenode_repeat_gradient.cpp:214
 msgid ""
 "Specifies how much biased is the source gradient in the repetition [0,1]"
-msgstr ""
+msgstr "Especifica la cantidad de sesgo para el gradiente en la repetición [0,1]"
 
 #: src/synfig/valuenodes/valuenode_repeat_gradient.cpp:218
 msgid "Specify Start"
@@ -4596,6 +4637,10 @@ msgstr "Color de Fin"
 #: src/synfig/valuenodes/valuenode_repeat_gradient.cpp:234
 msgid "Used as the end of the resulting gradient"
 msgstr "Se utiliza como el final del gradiente resultante"
+
+#: src/synfig/valuenodes/valuenode_reverse.cpp:308
+msgid "The value to be reversed"
+msgstr ""
 
 #: src/synfig/valuenodes/valuenode_scale.cpp:150
 #: src/synfig/valuenodes/valuenode_scale.cpp:167
@@ -4760,7 +4805,7 @@ msgstr ""
 
 #: src/synfig/valuenodes/valuenode_timeloop.cpp:190
 msgid "Length of the loop"
-msgstr ""
+msgstr "Longitud del bucle"
 
 #: src/synfig/valuenodes/valuenode_timestring.cpp:157
 msgid "The time that is converted to string"
@@ -4799,7 +4844,7 @@ msgstr "El vector sobre el que se extrae la coordenada Y"
 
 #: src/synfig/valuenodes/valuenode_weightedaverage.cpp:105
 msgid "weighted Average"
-msgstr ""
+msgstr "peso Promedio"
 
 #: src/synfig/valuenodes/valuenode_wplist.cpp:345
 #, c-format
@@ -4915,7 +4960,7 @@ msgstr "Imprimir récords"
 
 #: src/tool/main.cpp:172
 msgid "Extract alpha"
-msgstr ""
+msgstr "Extracto del alfa"
 
 #: src/tool/main.cpp:175
 msgid "Misc options"
@@ -5029,7 +5074,7 @@ msgstr "Usando objetivo por defecto PNG..."
 #: src/tool/joblistprocessor.cpp:145
 #, c-format
 msgid "Unable to create output for \"%s\": %s"
-msgstr ""
+msgstr "Imposible crear salida para \"%s\": %s"
 
 #: src/tool/joblistprocessor.cpp:148 src/tool/joblistprocessor.cpp:168
 msgid "Throwing out job..."
@@ -5042,7 +5087,7 @@ msgstr "Creando el objetivo..."
 #: src/tool/joblistprocessor.cpp:165
 #, c-format
 msgid "Unknown target for \"%s\": %s"
-msgstr ""
+msgstr "Objetivo desconocido para \"%s\": %s"
 
 #: src/tool/joblistprocessor.cpp:178
 msgid "Setting the canvas on the target..."
@@ -5165,7 +5210,7 @@ msgstr "El argumento Gamma is ignorado de momento"
 #: src/tool/optionsprocessor.cpp:427
 #, c-format
 msgid "Resolution set to %dx%d."
-msgstr ""
+msgstr "Resolución establecido en %d%d."
 
 #: src/tool/optionsprocessor.cpp:444
 msgid "Both video codec and bitrate parameters are necessary."
@@ -5182,16 +5227,16 @@ msgstr ""
 
 #: src/tool/optionsprocessor.cpp:480
 msgid "Target bitrate set to: "
-msgstr ""
+msgstr "Establecido el ratio de bits a:"
 
 #: src/tool/optionsprocessor.cpp:486
 msgid "Output file sequence separator set to: '"
-msgstr ""
+msgstr "Separador de secuencia del fichero de salido establecido a: '"
 
 #: src/tool/optionsprocessor.cpp:538
 #, c-format
 msgid "Unable to load file '%s'."
-msgstr ""
+msgstr "Imposible cargar el archivo '%s'."
 
 #: src/tool/optionsprocessor.cpp:546
 msgid "No input file provided."

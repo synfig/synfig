@@ -1,10 +1,10 @@
 # Translation file for Synfig Studio package.
-# Copyright (C) 2015 Synfig Contributors
+# Copyright (C) 2016 Synfig Contributors
 # This file is distributed under the same license as the Synfig Studio package.
 # 
 # Translators:
 # Alexandre Prokoudine <alexandre.prokoudine@gmail.com>, 2010
-# AlexL <loginov.alex.valer@gmail.com>, 2015
+# AlexL <loginov.alex.valer@gmail.com>, 2015-2016
 # Artem Krosheninnikov <feeblehamster@gmail.com>, 2011
 # darumka, 2012
 # darumka, 2012
@@ -22,10 +22,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Synfig UI\n"
 "Report-Msgid-Bugs-To: http://www.synfig.org/issues/thebuggenie/synfig\n"
-"POT-Creation-Date: 2015-07-27 18:00+0700\n"
-"PO-Revision-Date: 2015-07-28 07:28+0000\n"
+"POT-Creation-Date: 2016-06-05 14:00+0700\n"
+"PO-Revision-Date: 2016-01-16 14:20+0000\n"
 "Last-Translator: AlexL <loginov.alex.valer@gmail.com>\n"
-"Language-Team: Russian (http://www.transifex.com/projects/p/synfig/language/ru/)\n"
+"Language-Team: Russian (http://www.transifex.com/morevnaproject/synfig/language/ru/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -847,7 +847,7 @@ msgstr "_Размер ячейки сетки"
 #: ../src/synfigapp/actions/valuedescdisconnect.cpp:97
 #: ../src/synfigapp/actions/valuedescremovesmart.cpp:81
 #: ../src/synfigapp/actions/valuedescresetpose.cpp:78
-#: ../src/synfigapp/actions/valuedescset.cpp:123
+#: ../src/synfigapp/actions/valuedescset.cpp:124
 #: ../src/synfigapp/actions/valuedescskeletonlink.cpp:95
 #: ../src/synfigapp/actions/valuenodedynamiclistinsert.cpp:80
 #: ../src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:91
@@ -863,7 +863,7 @@ msgid "Time"
 msgstr "Время"
 
 #: ../src/gui/dialogs/canvasoptions.cpp:113
-#: ../src/gui/dialogs/dialog_setup.cpp:182
+#: ../src/gui/dialogs/dialog_setup.cpp:183
 msgid "Units"
 msgstr "Единицы"
 
@@ -1023,8 +1023,8 @@ msgstr "OK"
 #: ../src/gui/docks/dock_history.cpp:259 ../src/gui/docks/dock_history.cpp:273
 #: ../src/gui/docks/dock_history.cpp:287
 #: ../src/gui/docks/dock_metadata.cpp:152 ../src/gui/states/state_text.cpp:635
-#: ../src/gui/widgets/widget_canvaschooser.cpp:138 ../src/gui/app.cpp:3525
-#: ../src/gui/app.cpp:3618 ../src/gui/canvasview.cpp:3964
+#: ../src/gui/widgets/widget_canvaschooser.cpp:138 ../src/gui/app.cpp:3542
+#: ../src/gui/app.cpp:3635 ../src/gui/canvasview.cpp:3968
 #: ../src/gui/compview.cpp:332 ../src/gui/compview.cpp:347
 #: ../src/gui/instance.cpp:209 ../src/gui/instance.cpp:399
 #: ../src/gui/instance.cpp:599 ../src/gui/instance.cpp:621
@@ -1119,335 +1119,335 @@ msgstr "Восстановить умолчания"
 msgid "Gamma"
 msgstr "Гамма"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:124
+#: ../src/gui/dialogs/dialog_setup.cpp:125
 #: ../src/gui/widgets/widget_coloredit.cpp:423
 msgid "Red"
 msgstr "Красный"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:129
+#: ../src/gui/dialogs/dialog_setup.cpp:130
 #: ../src/gui/widgets/widget_coloredit.cpp:425
 msgid "Green"
 msgstr "Зеленый"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:134
+#: ../src/gui/dialogs/dialog_setup.cpp:135
 #: ../src/gui/widgets/widget_coloredit.cpp:427
 msgid "Blue"
 msgstr "Синий"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:138
+#: ../src/gui/dialogs/dialog_setup.cpp:139
 msgid "Black Level"
 msgstr "Уровень черного"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:149
+#: ../src/gui/dialogs/dialog_setup.cpp:150
 msgid "Misc."
 msgstr "Разное"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:155
+#: ../src/gui/dialogs/dialog_setup.cpp:156
 msgid "Timestamp"
 msgstr "Формат времени"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:183
+#: ../src/gui/dialogs/dialog_setup.cpp:184
 msgid "Pixels"
 msgstr "Пиксел"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:184
+#: ../src/gui/dialogs/dialog_setup.cpp:185
 msgid "Points"
 msgstr "Точка"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:185
+#: ../src/gui/dialogs/dialog_setup.cpp:186
 msgid "Inches"
 msgstr "Дюйм"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:186
+#: ../src/gui/dialogs/dialog_setup.cpp:187
 msgid "Meters"
 msgstr "Метр"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:187
+#: ../src/gui/dialogs/dialog_setup.cpp:188
 msgid "Centimeters"
 msgstr "Сантиметр"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:188
+#: ../src/gui/dialogs/dialog_setup.cpp:189
 msgid "Millimeters"
 msgstr "Миллиметр"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:193
+#: ../src/gui/dialogs/dialog_setup.cpp:194
 msgid "Unit System"
 msgstr "Единица измерения"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:199
+#: ../src/gui/dialogs/dialog_setup.cpp:200
 msgid "Recent Files"
 msgstr "Недавно открытые файлы"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:203
+#: ../src/gui/dialogs/dialog_setup.cpp:204
 msgid "Auto Backup Interval (0 to disable)"
 msgstr "Интервал автосохранения"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:207
+#: ../src/gui/dialogs/dialog_setup.cpp:208
 msgid "Browser Command"
 msgstr "Команда браузера"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:211
+#: ../src/gui/dialogs/dialog_setup.cpp:212
 msgid "Brush Presets Path"
 msgstr "Путь до наборов кистей"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:216
+#: ../src/gui/dialogs/dialog_setup.cpp:217
 msgid "System Language"
 msgstr "Язык ОС"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:217
+#: ../src/gui/dialogs/dialog_setup.cpp:218
 msgid "Arabic"
 msgstr "Арабский"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:218
+#: ../src/gui/dialogs/dialog_setup.cpp:219
 msgid "Basque"
 msgstr "Баскский"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:219
+#: ../src/gui/dialogs/dialog_setup.cpp:220
 msgid "Basque (Spain)"
 msgstr "Баскский (Испания)"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:220
+#: ../src/gui/dialogs/dialog_setup.cpp:221
 msgid "Catalan"
 msgstr "Каталанский"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:221
+#: ../src/gui/dialogs/dialog_setup.cpp:222
 msgid "Chinese (China)"
 msgstr "Китайский (Китай)"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:222
+#: ../src/gui/dialogs/dialog_setup.cpp:223
 msgid "Czech"
 msgstr "Чешский"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:223
+#: ../src/gui/dialogs/dialog_setup.cpp:224
 msgid "Danish"
 msgstr "Датский"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:224
+#: ../src/gui/dialogs/dialog_setup.cpp:225
 msgid "Dutch "
 msgstr "Голландский"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:225
+#: ../src/gui/dialogs/dialog_setup.cpp:226
 msgid "English"
 msgstr "Английский"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:226
+#: ../src/gui/dialogs/dialog_setup.cpp:227
 msgid "English (United Kingdom)"
 msgstr "Английский (Великобритания)"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:227
+#: ../src/gui/dialogs/dialog_setup.cpp:228
 msgid "Farsi (Iran)"
 msgstr "Фарси (Иран)"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:228
+#: ../src/gui/dialogs/dialog_setup.cpp:229
 msgid "French "
 msgstr "Французский"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:229
+#: ../src/gui/dialogs/dialog_setup.cpp:230
 msgid "German"
 msgstr "Немецкий"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:230
+#: ../src/gui/dialogs/dialog_setup.cpp:231
 msgid "Greek (Greece)"
 msgstr "Греческий (Греция)"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:231
+#: ../src/gui/dialogs/dialog_setup.cpp:232
 msgid "Hebrew "
 msgstr "Иврит"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:232
+#: ../src/gui/dialogs/dialog_setup.cpp:233
 msgid "Hungarian "
 msgstr "Венгерский"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:233
+#: ../src/gui/dialogs/dialog_setup.cpp:234
 msgid "Italian "
 msgstr "Итальянский"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:234
+#: ../src/gui/dialogs/dialog_setup.cpp:235
 msgid "Japanese (Japan)"
 msgstr "Японский (Япония)"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:235
+#: ../src/gui/dialogs/dialog_setup.cpp:236
 msgid "Lithuanian "
 msgstr "Литовкий"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:236
+#: ../src/gui/dialogs/dialog_setup.cpp:237
 msgid "Norwegian (Norway)"
 msgstr "Норвежский (Норвегия)"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:237
+#: ../src/gui/dialogs/dialog_setup.cpp:238
 msgid "Polish (Poland)"
 msgstr "Польский (Польша)"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:238
+#: ../src/gui/dialogs/dialog_setup.cpp:239
 msgid "Portuguese (Brazil)"
 msgstr "Португальский (Бразилия)"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:239
+#: ../src/gui/dialogs/dialog_setup.cpp:240
 msgid "Romanian"
 msgstr "Румынская"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:240
+#: ../src/gui/dialogs/dialog_setup.cpp:241
 msgid "Russian"
 msgstr "Русский"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:241
+#: ../src/gui/dialogs/dialog_setup.cpp:242
 msgid "Spanish"
 msgstr "Испанский"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:242
+#: ../src/gui/dialogs/dialog_setup.cpp:243
 msgid "Sinhala"
 msgstr "Сингальский"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:243
+#: ../src/gui/dialogs/dialog_setup.cpp:244
 msgid "Slovak (Slovakia)"
 msgstr "Словацкий (Словакия)"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:244
+#: ../src/gui/dialogs/dialog_setup.cpp:245
 msgid "Swedish (Sweden)"
 msgstr "Швецкий (Швеция)"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:245
+#: ../src/gui/dialogs/dialog_setup.cpp:246
 msgid "Turkish"
 msgstr "Турецкий"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:297
+#: ../src/gui/dialogs/dialog_setup.cpp:298
 msgid "Interface Language"
 msgstr "Язык интерфейса"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:301
+#: ../src/gui/dialogs/dialog_setup.cpp:302
 msgid "Visually linear color selection"
 msgstr "Выбор визуально линейного цвета"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:305
+#: ../src/gui/dialogs/dialog_setup.cpp:306
 msgid "Restrict really-valued handles to top right quadrant"
 msgstr "Ограничить действительно значимые маркеры в правом верхнем квадранте"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:309
+#: ../src/gui/dialogs/dialog_setup.cpp:310
 msgid "Scaling new imported image to fix canvas"
 msgstr "Масштабирование нового импортированного изображения чтобы исправить холст"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:313
+#: ../src/gui/dialogs/dialog_setup.cpp:314
 msgid "Dark UI theme (if available)"
 msgstr "Тёмная тема интерфейса (если доступна)"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:322
+#: ../src/gui/dialogs/dialog_setup.cpp:323
 msgid "Single thread only (CPUs)"
 msgstr "Только один поток (процессоры)"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:330
+#: ../src/gui/dialogs/dialog_setup.cpp:331
 msgid "Document"
 msgstr "Документ"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:333
+#: ../src/gui/dialogs/dialog_setup.cpp:334
 msgid "New Document filename prefix"
 msgstr "Префикс имён файлов"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:335
+#: ../src/gui/dialogs/dialog_setup.cpp:336
 msgid "File name prefix for the new created document"
 msgstr "Префикс имени файлов для новых документов"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:339
+#: ../src/gui/dialogs/dialog_setup.cpp:340
 msgid "New Document X size"
 msgstr "Ширина новых документов"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:341
+#: ../src/gui/dialogs/dialog_setup.cpp:342
 msgid "Width in pixels of the new created document"
 msgstr "Ширина новых документов в пикселах"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:345
+#: ../src/gui/dialogs/dialog_setup.cpp:346
 msgid "New Document Y size"
 msgstr "Высота новых документов"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:347
+#: ../src/gui/dialogs/dialog_setup.cpp:348
 msgid "High in pixels of the new created document"
 msgstr "Высота новых документов в пикселах"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:351
+#: ../src/gui/dialogs/dialog_setup.cpp:352
 msgid "Predefined Resolutions:"
 msgstr "Предустановки:"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:356
+#: ../src/gui/dialogs/dialog_setup.cpp:357
 msgid "4096x3112 Full Aperture 4K"
 msgstr "4096x3112 полное кадровое окно 4K"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:357
+#: ../src/gui/dialogs/dialog_setup.cpp:358
 msgid "2048x1556 Full Aperture Native 2K"
 msgstr "2048x1556 полное кадровое окно 2K"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:358
+#: ../src/gui/dialogs/dialog_setup.cpp:359
 msgid "1920x1080 HDTV 1080p/i"
 msgstr "1920x1080 HDTV 1080p/i"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:359
+#: ../src/gui/dialogs/dialog_setup.cpp:360
 msgid "1280x720  HDTV 720p"
 msgstr "1280x720  HDTV 720p"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:360
+#: ../src/gui/dialogs/dialog_setup.cpp:361
 msgid "720x576   DVD PAL"
 msgstr "720x576   DVD PAL"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:361
+#: ../src/gui/dialogs/dialog_setup.cpp:362
 msgid "720x480   DVD NTSC"
 msgstr "720x480   DVD NTSC"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:362
+#: ../src/gui/dialogs/dialog_setup.cpp:363
 msgid "720x540   Web 720x"
 msgstr "720x540   Web 720x"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:363
+#: ../src/gui/dialogs/dialog_setup.cpp:364
 msgid "720x405   Web 720x HD"
 msgstr "720x405   Web 720x HD"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:364
+#: ../src/gui/dialogs/dialog_setup.cpp:365
 msgid "640x480   Web 640x"
 msgstr "640x480   Web 640x"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:365
+#: ../src/gui/dialogs/dialog_setup.cpp:366
 msgid "640x360   Web 640x HD"
 msgstr "640x360   Web 640x HD"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:366
+#: ../src/gui/dialogs/dialog_setup.cpp:367
 msgid "480x360   Web 480x"
 msgstr "480x360   Web 480x"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:367
+#: ../src/gui/dialogs/dialog_setup.cpp:368
 msgid "480x270   Web 480x HD"
 msgstr "480x270   Web 480x HD"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:368
+#: ../src/gui/dialogs/dialog_setup.cpp:369
 msgid "360x270   Web 360x"
 msgstr "360x270   Web 360x"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:369
+#: ../src/gui/dialogs/dialog_setup.cpp:370
 msgid "360x203   Web 360x HD"
 msgstr "360x203   Web 360x HD"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:374
+#: ../src/gui/dialogs/dialog_setup.cpp:375
 msgid "Predefined FPS:"
 msgstr "Количество кадров в секунду:"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:396
+#: ../src/gui/dialogs/dialog_setup.cpp:397
 msgid "New Document FPS"
 msgstr "Новый документ FPS"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:398
+#: ../src/gui/dialogs/dialog_setup.cpp:399
 msgid "Frames per second of the new created document"
 msgstr "Количество кадров в секунду в каждом новом документе"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:404 ../src/gui/canvasview.cpp:1350
+#: ../src/gui/dialogs/dialog_setup.cpp:405 ../src/gui/canvasview.cpp:1350
 #: ../src/gui/render.cpp:178
 msgid "Render"
 msgstr "Визуализация"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:407
+#: ../src/gui/dialogs/dialog_setup.cpp:408
 msgid "Image Sequence Separator String"
 msgstr "Строка-разделитель последовательности изображений"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:410
+#: ../src/gui/dialogs/dialog_setup.cpp:411
 msgid "Use Cairo render on Navigator"
 msgstr "Использовать визуализацию Cairo в навигаторе"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:413
+#: ../src/gui/dialogs/dialog_setup.cpp:414
 msgid "Use Cairo render on WorkArea"
 msgstr "Использовать визуализацию Cairo в рабочей зоне"
 
@@ -1527,12 +1527,12 @@ msgstr "Перейти к предыдущему ключевому кадру"
 msgid "Seek to previous frame"
 msgstr "Перейти к предыдущему кадру"
 
-#: ../src/gui/dials/framedial.cpp:59 ../src/gui/app.cpp:927
+#: ../src/gui/dials/framedial.cpp:59 ../src/gui/app.cpp:928
 #: ../src/gui/iconcontroller.cpp:296 ../src/gui/preview.cpp:451
 msgid "Play"
 msgstr "Воспроизведение"
 
-#: ../src/gui/dials/framedial.cpp:60 ../src/gui/app.cpp:930
+#: ../src/gui/dials/framedial.cpp:60 ../src/gui/app.cpp:931
 #: ../src/gui/iconcontroller.cpp:298 ../src/gui/preview.cpp:464
 msgid "Pause"
 msgstr "Пауза"
@@ -1655,7 +1655,7 @@ msgid "Zoom to 100%"
 msgstr "1:1"
 
 #: ../src/gui/docks/dialog_tooloptions.cpp:57
-#: ../src/gui/docks/dialog_tooloptions.cpp:74 ../src/gui/app.cpp:969
+#: ../src/gui/docks/dialog_tooloptions.cpp:74 ../src/gui/app.cpp:970
 msgid "Tool Options"
 msgstr "Параметры инструмента"
 
@@ -1663,7 +1663,7 @@ msgstr "Параметры инструмента"
 msgid "This tool has no options"
 msgstr "У этого инструмента нет параметров"
 
-#: ../src/gui/docks/dock_canvases.cpp:55 ../src/gui/app.cpp:971
+#: ../src/gui/docks/dock_canvases.cpp:55 ../src/gui/app.cpp:972
 #: ../src/gui/compview.cpp:170
 msgid "Canvas Browser"
 msgstr "Просмотр холста"
@@ -1673,12 +1673,12 @@ msgstr "Просмотр холста"
 msgid "ID"
 msgstr "ID"
 
-#: ../src/gui/docks/dock_children.cpp:67 ../src/gui/app.cpp:976
+#: ../src/gui/docks/dock_children.cpp:67 ../src/gui/app.cpp:977
 #: ../src/gui/iconcontroller.cpp:270
 msgid "Library"
 msgstr "Библиотека"
 
-#: ../src/gui/docks/dock_curves.cpp:69 ../src/gui/app.cpp:980
+#: ../src/gui/docks/dock_curves.cpp:69 ../src/gui/app.cpp:981
 #: ../src/gui/iconcontroller.cpp:271
 msgid "Graphs"
 msgstr "Графики"
@@ -1772,7 +1772,7 @@ msgid ""
 " sure you want to clear the undo and redo stacks?"
 msgstr "Вы не сможете отменить или восстановить сделанные ранее изменения! Уверены, что хотите очистить историю действий?"
 
-#: ../src/gui/docks/dock_info.cpp:107 ../src/gui/app.cpp:977
+#: ../src/gui/docks/dock_info.cpp:107 ../src/gui/app.cpp:978
 msgid "Info"
 msgstr "Инфо"
 
@@ -1800,12 +1800,12 @@ msgstr "B: "
 msgid "A: "
 msgstr "A: "
 
-#: ../src/gui/docks/dock_keyframes.cpp:66 ../src/gui/app.cpp:972
+#: ../src/gui/docks/dock_keyframes.cpp:66 ../src/gui/app.cpp:973
 #: ../src/gui/iconcontroller.cpp:272
 msgid "Keyframes"
 msgstr "Ключевые кадры"
 
-#: ../src/gui/docks/dock_layergroups.cpp:68 ../src/gui/app.cpp:981
+#: ../src/gui/docks/dock_layergroups.cpp:68 ../src/gui/app.cpp:982
 msgid "Sets"
 msgstr "Наборы"
 
@@ -1813,7 +1813,7 @@ msgstr "Наборы"
 msgid "Set Ops"
 msgstr "Набор операций"
 
-#: ../src/gui/docks/dock_layers.cpp:76 ../src/gui/app.cpp:973
+#: ../src/gui/docks/dock_layers.cpp:76 ../src/gui/app.cpp:974
 msgid "Layers"
 msgstr "Слои"
 
@@ -1822,7 +1822,7 @@ msgid "Layer Ops"
 msgstr "Слой операций"
 
 #: ../src/gui/docks/dock_metadata.cpp:66 ../src/gui/docks/dock_metadata.cpp:93
-#: ../src/gui/app.cpp:975
+#: ../src/gui/app.cpp:976
 msgid "Canvas MetaData"
 msgstr "Метаданные холста"
 
@@ -1854,12 +1854,12 @@ msgstr "Имя ключа:"
 msgid "Ok"
 msgstr "ОК"
 
-#: ../src/gui/docks/dock_navigator.cpp:531 ../src/gui/app.cpp:978
+#: ../src/gui/docks/dock_navigator.cpp:531 ../src/gui/app.cpp:979
 #: ../src/gui/iconcontroller.cpp:274
 msgid "Navigator"
 msgstr "Навигатор"
 
-#: ../src/gui/docks/dock_params.cpp:65 ../src/gui/app.cpp:974
+#: ../src/gui/docks/dock_params.cpp:65 ../src/gui/app.cpp:975
 #: ../src/gui/iconcontroller.cpp:278
 msgid "Parameters"
 msgstr "Параметры"
@@ -1880,7 +1880,7 @@ msgstr "Название"
 msgid "Time Track"
 msgstr "Дорожка времени"
 
-#: ../src/gui/docks/dock_timetrack.cpp:411 ../src/gui/app.cpp:979
+#: ../src/gui/docks/dock_timetrack.cpp:411 ../src/gui/app.cpp:980
 msgid "Timetrack"
 msgstr "Шкала кадров"
 
@@ -1897,7 +1897,7 @@ msgid "Dock Panel"
 msgstr "Панель дока"
 
 #: ../src/gui/docks/dockmanager.cpp:722 ../src/gui/docks/dockmanager.cpp:732
-#: ../src/gui/app.cpp:1385
+#: ../src/gui/app.cpp:1388
 msgid "Synfig Studio"
 msgstr "Synfig Studio"
 
@@ -1905,7 +1905,7 @@ msgstr "Synfig Studio"
 msgid "Palette Browser"
 msgstr "Просмотр палитр"
 
-#: ../src/gui/modules/mod_palette/dock_paledit.cpp:124 ../src/gui/app.cpp:982
+#: ../src/gui/modules/mod_palette/dock_paledit.cpp:124 ../src/gui/app.cpp:983
 msgid "Palette Editor"
 msgstr "Редактор палитр"
 
@@ -1955,14 +1955,14 @@ msgid "Unable to check whether '%s' exists."
 msgstr "Не удалось проверить, существует ли '%s'"
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:259
-#: ../src/gui/trees/layerparamtreestore.cpp:259
+#: ../src/gui/trees/layerparamtreestore.cpp:262
 #: ../src/gui/widgets/widget_canvaschooser.cpp:153
 #: ../src/gui/widgets/widget_canvaschooser.cpp:172
-#: ../src/gui/widgets/widget_canvaschooser.cpp:182 ../src/gui/app.cpp:1381
-#: ../src/gui/app.cpp:2180 ../src/gui/app.cpp:3508 ../src/gui/app.cpp:3537
-#: ../src/gui/app.cpp:3547 ../src/gui/app.cpp:3557 ../src/gui/app.cpp:3602
-#: ../src/gui/app.cpp:3630 ../src/gui/app.cpp:3640 ../src/gui/app.cpp:3650
-#: ../src/gui/canvasview.cpp:3818 ../src/gui/canvasview.cpp:4089
+#: ../src/gui/widgets/widget_canvaschooser.cpp:182 ../src/gui/app.cpp:1384
+#: ../src/gui/app.cpp:2183 ../src/gui/app.cpp:3525 ../src/gui/app.cpp:3554
+#: ../src/gui/app.cpp:3564 ../src/gui/app.cpp:3574 ../src/gui/app.cpp:3619
+#: ../src/gui/app.cpp:3647 ../src/gui/app.cpp:3657 ../src/gui/app.cpp:3667
+#: ../src/gui/canvasview.cpp:3822 ../src/gui/canvasview.cpp:4111
 #: ../src/gui/instance.cpp:237 ../src/gui/instance.cpp:250
 #: ../src/gui/instance.cpp:319 ../src/gui/instance.cpp:359
 #: ../src/gui/instance.cpp:423 ../src/gui/instance.cpp:457
@@ -2002,7 +2002,7 @@ msgstr "Замена"
 msgid "Please select a palette file"
 msgstr "Пожалуйста, выберите файл палитры"
 
-#: ../src/gui/modules/mod_palette/dock_paledit.cpp:304 ../src/gui/app.cpp:3746
+#: ../src/gui/modules/mod_palette/dock_paledit.cpp:304 ../src/gui/app.cpp:3763
 msgid "Unable to open file"
 msgstr "Не удалось открыть файл"
 
@@ -2036,8 +2036,8 @@ msgstr "Имя:"
 #: ../src/gui/states/state_polygon.cpp:489
 #: ../src/gui/states/state_rectangle.cpp:501
 #: ../src/gui/states/state_star.cpp:624 ../src/gui/states/state_text.cpp:405
-msgid "Create:"
-msgstr "Создать:"
+msgid "Layer Type:"
+msgstr "Тип слоя:"
 
 #: ../src/gui/states/state_bline.cpp:529
 #: ../src/gui/states/state_circle.cpp:562 ../src/gui/states/state_draw.cpp:641
@@ -2906,7 +2906,7 @@ msgstr "Тип"
 
 #: ../src/gui/trees/childrentree.cpp:123
 #: ../src/synfigapp/actions/layerparamset.cpp:80
-#: ../src/synfigapp/actions/valuedescset.cpp:119
+#: ../src/synfigapp/actions/valuedescset.cpp:120
 #: ../src/synfigapp/actions/valuenodeconstset.cpp:77
 msgid "ValueBase"
 msgstr "ValueBase"
@@ -2985,11 +2985,11 @@ msgstr "Сбросить"
 msgid "Layer"
 msgstr "Слой"
 
-#: ../src/gui/trees/layerparamtreestore.cpp:243
+#: ../src/gui/trees/layerparamtreestore.cpp:246
 msgid "Set Layer Parameters"
 msgstr "Смена параметров слоя"
 
-#: ../src/gui/trees/layerparamtreestore.cpp:257
+#: ../src/gui/trees/layerparamtreestore.cpp:260
 msgid "Unable to set all layer parameters."
 msgstr "Невозможно указать все параметры слоя"
 
@@ -3197,7 +3197,7 @@ msgstr "(нестатическое значение)"
 #: ../src/gui/widgets/widget_waypointmodel.cpp:94
 #: ../src/gui/canvasview.cpp:1122 ../src/gui/instance.cpp:1268
 msgid "Clamped"
-msgstr "Ограниченный"
+msgstr "Сгладить"
 
 #: ../src/gui/widgets/widget_waypoint.cpp:90
 #: ../src/gui/widgets/widget_waypoint.cpp:107
@@ -3320,7 +3320,7 @@ msgstr "_Файл"
 msgid "Open Recent"
 msgstr "Открыть последние"
 
-#: ../src/gui/app.cpp:835 ../src/gui/canvasview.cpp:3643
+#: ../src/gui/app.cpp:835 ../src/gui/canvasview.cpp:3647
 msgid "_Edit"
 msgstr "_Правка"
 
@@ -3348,7 +3348,7 @@ msgstr "_Холст"
 msgid "_Layer"
 msgstr "Сло_й"
 
-#: ../src/gui/app.cpp:845 ../src/gui/canvasview.cpp:2538
+#: ../src/gui/app.cpp:845 ../src/gui/canvasview.cpp:2542
 #: ../src/synfigapp/actions/layeradd.cpp:83
 msgid "New Layer"
 msgstr "Создать слой"
@@ -3421,197 +3421,201 @@ msgstr "Показать/спрятать меню"
 msgid "Toolbar"
 msgstr "Панель инструментов"
 
-#: ../src/gui/app.cpp:902 ../src/gui/canvasview.cpp:1946
+#: ../src/gui/app.cpp:902 ../src/gui/canvasview.cpp:1938
+msgid "Toggle None/Last visible Handles"
+msgstr "Без точек/Последние видимые точки"
+
+#: ../src/gui/app.cpp:903 ../src/gui/canvasview.cpp:1950
 msgid "Show Position Handles"
 msgstr "Показывать точки позиции"
 
-#: ../src/gui/app.cpp:903 ../src/gui/canvasview.cpp:1948
+#: ../src/gui/app.cpp:904 ../src/gui/canvasview.cpp:1952
 msgid "Show Vertex Handles"
 msgstr "Показывать точки вершин"
 
-#: ../src/gui/app.cpp:904 ../src/gui/canvasview.cpp:1947
+#: ../src/gui/app.cpp:905 ../src/gui/canvasview.cpp:1951
 msgid "Show Tangent Handles"
 msgstr "Показывать точки касательных"
 
-#: ../src/gui/app.cpp:905 ../src/gui/canvasview.cpp:1949
+#: ../src/gui/app.cpp:906 ../src/gui/canvasview.cpp:1953
 msgid "Show Radius Handles"
 msgstr "Показывать точки радиуса"
 
-#: ../src/gui/app.cpp:906 ../src/gui/canvasview.cpp:1950
+#: ../src/gui/app.cpp:907 ../src/gui/canvasview.cpp:1954
 msgid "Show Width Handles"
 msgstr "Показывать точки ширины "
 
-#: ../src/gui/app.cpp:907 ../src/gui/canvasview.cpp:1951
-msgid "Show Angle Handles"
-msgstr "Показывать точки углов"
-
-#: ../src/gui/app.cpp:908
-msgid "Show Bone Setup Handles"
-msgstr "Показывать точки установки костей"
-
-#: ../src/gui/app.cpp:909 ../src/gui/canvasview.cpp:1953
-msgid "Show Recursive Scale Bone Handles"
-msgstr "Показывать точки рекурсивного масштабирования костей"
-
-#: ../src/gui/app.cpp:910 ../src/gui/canvasview.cpp:1959
-msgid "Next Bone Handles"
-msgstr "Следующие точки костей"
-
-#: ../src/gui/app.cpp:911 ../src/gui/canvasview.cpp:1955
+#: ../src/gui/app.cpp:908 ../src/gui/canvasview.cpp:1955
 msgid "Show WidthPoints Position Handles"
 msgstr "Показывать расположение точек ширины"
 
-#: ../src/gui/app.cpp:912 ../src/gui/canvasview.cpp:1789
+#: ../src/gui/app.cpp:909 ../src/gui/canvasview.cpp:1956
+msgid "Show Angle Handles"
+msgstr "Показывать точки углов"
+
+#: ../src/gui/app.cpp:910
+msgid "Show Bone Setup Handles"
+msgstr "Показывать точки установки костей"
+
+#: ../src/gui/app.cpp:911 ../src/gui/canvasview.cpp:1958
+msgid "Show Recursive Scale Bone Handles"
+msgstr "Показывать точки рекурсивного масштабирования костей"
+
+#: ../src/gui/app.cpp:912 ../src/gui/canvasview.cpp:1963
+msgid "Next Bone Handles"
+msgstr "Следующие точки костей"
+
+#: ../src/gui/app.cpp:913 ../src/gui/canvasview.cpp:1789
 msgid "Use Parametric Renderer"
 msgstr "Параметрический отрисовщик"
 
-#: ../src/gui/app.cpp:913
+#: ../src/gui/app.cpp:914
 msgid "Use Quality Level 1"
 msgstr "Использовать уровень качества 1"
 
-#: ../src/gui/app.cpp:914
+#: ../src/gui/app.cpp:915
 msgid "Use Quality Level 2"
 msgstr "Использовать уровень качества 2"
 
-#: ../src/gui/app.cpp:915
+#: ../src/gui/app.cpp:916
 msgid "Use Quality Level 3"
 msgstr "Использовать уровень качества 3"
 
-#: ../src/gui/app.cpp:916
+#: ../src/gui/app.cpp:917
 msgid "Use Quality Level 4"
 msgstr "Использовать уровень качества 4"
 
-#: ../src/gui/app.cpp:917
+#: ../src/gui/app.cpp:918
 msgid "Use Quality Level 5"
 msgstr "Использовать уровень качества 5"
 
-#: ../src/gui/app.cpp:918
+#: ../src/gui/app.cpp:919
 msgid "Use Quality Level 6"
 msgstr "Использовать уровень качества 6"
 
-#: ../src/gui/app.cpp:919
+#: ../src/gui/app.cpp:920
 msgid "Use Quality Level 7"
 msgstr "Использовать уровень качества 7"
 
-#: ../src/gui/app.cpp:920
+#: ../src/gui/app.cpp:921
 msgid "Use Quality Level 8"
 msgstr "Использовать уровень качества 8"
 
-#: ../src/gui/app.cpp:921
+#: ../src/gui/app.cpp:922
 msgid "Use Quality Level 9"
 msgstr "Использовать уровень качества 9"
 
-#: ../src/gui/app.cpp:922
+#: ../src/gui/app.cpp:923
 msgid "Use Quality Level 10"
 msgstr "Использовать уровень качества 10"
 
-#: ../src/gui/app.cpp:925 ../src/gui/canvasview.cpp:1823
+#: ../src/gui/app.cpp:926 ../src/gui/canvasview.cpp:1823
 #, c-format
 msgid "Set Low-Res pixel size to %d"
 msgstr "Сделать размер равным %dpx"
 
-#: ../src/gui/app.cpp:932
+#: ../src/gui/app.cpp:933
 msgid "Toggle Grid Show"
 msgstr "Переключить отображение сетки"
 
-#: ../src/gui/app.cpp:933
+#: ../src/gui/app.cpp:934
 msgid "Toggle Grid Snap"
 msgstr "Переключить прилипание к сетке"
 
-#: ../src/gui/app.cpp:934
+#: ../src/gui/app.cpp:935
 msgid "Toggle Guide Show"
 msgstr "Переключить отображение направляющих"
 
-#: ../src/gui/app.cpp:935
+#: ../src/gui/app.cpp:936
 msgid "Toggle Guide Snap"
 msgstr "Включить привязку к направляющим"
 
-#: ../src/gui/app.cpp:936
+#: ../src/gui/app.cpp:937
 msgid "Toggle Low-Res"
 msgstr "Переключить низкое разрешение"
 
-#: ../src/gui/app.cpp:937 ../src/gui/canvasview.cpp:1839
+#: ../src/gui/app.cpp:938 ../src/gui/canvasview.cpp:1839
 msgid "Decrease Low-Res Pixel Size"
 msgstr "Уменьшить размер пикселов"
 
-#: ../src/gui/app.cpp:938 ../src/gui/canvasview.cpp:1842
+#: ../src/gui/app.cpp:939 ../src/gui/canvasview.cpp:1842
 msgid "Increase Low-Res Pixel Size"
 msgstr "Увеличить размер пикселов"
 
-#: ../src/gui/app.cpp:939
+#: ../src/gui/app.cpp:940
 msgid "Toggle Onion Skin"
 msgstr "Переключить кальку"
 
-#: ../src/gui/app.cpp:946 ../src/gui/iconcontroller.cpp:300
+#: ../src/gui/app.cpp:947 ../src/gui/iconcontroller.cpp:300
 msgid "Seek to Next Keyframe"
 msgstr "Перейти к следующему ключевому кадру"
 
-#: ../src/gui/app.cpp:947
+#: ../src/gui/app.cpp:948
 msgid "Seek to previous Keyframe"
 msgstr "Перейти к предыдущему ключевому кадру"
 
-#: ../src/gui/app.cpp:948
+#: ../src/gui/app.cpp:949
 msgid "Seek to Next Frame"
 msgstr "Перейти к следующему кадру"
 
-#: ../src/gui/app.cpp:949 ../src/gui/iconcontroller.cpp:295
+#: ../src/gui/app.cpp:950 ../src/gui/iconcontroller.cpp:295
 msgid "Seek to Previous Frame"
 msgstr "Перейти к предыдущему кадру"
 
-#: ../src/gui/app.cpp:950 ../src/gui/canvasview.cpp:1904
+#: ../src/gui/app.cpp:951 ../src/gui/canvasview.cpp:1904
 msgid "Seek Forward"
 msgstr "Перемотать вперед"
 
-#: ../src/gui/app.cpp:951 ../src/gui/canvasview.cpp:1906
+#: ../src/gui/app.cpp:952 ../src/gui/canvasview.cpp:1906
 msgid "Seek Backward"
 msgstr "Перемотать назад"
 
-#: ../src/gui/app.cpp:952 ../src/gui/iconcontroller.cpp:293
+#: ../src/gui/app.cpp:953 ../src/gui/iconcontroller.cpp:293
 msgid "Seek to Begin"
 msgstr "Перемотать к началу"
 
-#: ../src/gui/app.cpp:953 ../src/gui/iconcontroller.cpp:301
+#: ../src/gui/app.cpp:954 ../src/gui/iconcontroller.cpp:301
 msgid "Seek to End"
 msgstr "Перемотать к концу"
 
-#: ../src/gui/app.cpp:956 ../src/gui/canvasview.cpp:1769
+#: ../src/gui/app.cpp:957 ../src/gui/canvasview.cpp:1769
 msgid "Properties..."
 msgstr "Свойства..."
 
-#: ../src/gui/app.cpp:957 ../src/gui/canvasview.cpp:1733
+#: ../src/gui/app.cpp:958 ../src/gui/canvasview.cpp:1733
 msgid "Options..."
 msgstr "Параметры..."
 
-#: ../src/gui/app.cpp:960
+#: ../src/gui/app.cpp:961
 msgid "Increase Layer Amount"
 msgstr "Увеличить значение слоя"
 
-#: ../src/gui/app.cpp:961
+#: ../src/gui/app.cpp:962
 msgid "Decrease Layer Amount"
 msgstr "Уменьшить значение слоя"
 
-#: ../src/gui/app.cpp:964 ../src/gui/mainwindow.cpp:169
+#: ../src/gui/app.cpp:965 ../src/gui/mainwindow.cpp:169
 msgid "Compositing"
 msgstr "Совмещение"
 
-#: ../src/gui/app.cpp:965 ../src/gui/instance.cpp:1237
+#: ../src/gui/app.cpp:966 ../src/gui/instance.cpp:1237
 #: ../src/gui/mainwindow.cpp:175
 msgid "Default"
 msgstr "По-умолчанию"
 
-#: ../src/gui/app.cpp:966 ../src/gui/mainwindow.cpp:172
+#: ../src/gui/app.cpp:967 ../src/gui/mainwindow.cpp:172
 msgid "Animating"
 msgstr "Анимирование"
 
-#: ../src/gui/app.cpp:967
+#: ../src/gui/app.cpp:968
 msgid "Preview Dialog"
 msgstr "Диалог предпросмотра"
 
-#: ../src/gui/app.cpp:1375
+#: ../src/gui/app.cpp:1378
 msgid "Synfig version mismatched!"
 msgstr "Несовпадение версий Synfig!"
 
-#: ../src/gui/app.cpp:1376
+#: ../src/gui/app.cpp:1379
 msgid ""
 "This copy of Synfig Studio was compiled against a different version of "
 "libsynfig than what is currently installed. Synfig Studio will now abort. "
@@ -3619,188 +3623,188 @@ msgid ""
 "http://www.synfig.org/cms/en/download/"
 msgstr "Эта копия Synfig Studio была скомпилирована с другой версией libsynfig, чем та, что установлена в настоящее время. Synfig Studio сейчас потерпит неудачу. Попробуйте загрузить последнюю версию с сайта Synfig на http://www.synfig.org/cms/en/download/"
 
-#: ../src/gui/app.cpp:1398 ../src/gui/app.cpp:1403
+#: ../src/gui/app.cpp:1401 ../src/gui/app.cpp:1406
 msgid "Failed to initialize synfig!"
 msgstr "Не удалось инициализировать Synfig!"
 
-#: ../src/gui/app.cpp:1415
+#: ../src/gui/app.cpp:1418
 msgid "Loading Basic Settings..."
 msgstr "Загружаются базовые параметры..."
 
-#: ../src/gui/app.cpp:1426
+#: ../src/gui/app.cpp:1429
 msgid "Loading Plugins..."
 msgstr "Загружаются плагины..."
 
-#: ../src/gui/app.cpp:1449
+#: ../src/gui/app.cpp:1452
 msgid "Init UI Manager..."
 msgstr "Диспетчер интерфейса..."
 
-#: ../src/gui/app.cpp:1453
+#: ../src/gui/app.cpp:1456
 msgid "Init Dock Manager..."
 msgstr "Диспетчер панелей..."
 
-#: ../src/gui/app.cpp:1456
+#: ../src/gui/app.cpp:1459
 msgid "Init State Manager..."
 msgstr "Диспетчер состояния..."
 
-#: ../src/gui/app.cpp:1459
+#: ../src/gui/app.cpp:1462
 msgid "Init Main Window..."
 msgstr "Инициализация главного окна..."
 
-#: ../src/gui/app.cpp:1463
+#: ../src/gui/app.cpp:1466
 msgid "Init Toolbox..."
 msgstr "Панель инструментов..."
 
-#: ../src/gui/app.cpp:1467
+#: ../src/gui/app.cpp:1470
 msgid "Init About Dialog..."
 msgstr "Справочный диалог..."
 
-#: ../src/gui/app.cpp:1470
+#: ../src/gui/app.cpp:1473
 msgid "Init Tool Options..."
 msgstr "Панель параметров инструментов..."
 
-#: ../src/gui/app.cpp:1474
+#: ../src/gui/app.cpp:1477
 msgid "Init History..."
 msgstr "Панель истории действий..."
 
-#: ../src/gui/app.cpp:1478
+#: ../src/gui/app.cpp:1481
 msgid "Init Canvases..."
 msgstr "Панель холстов..."
 
-#: ../src/gui/app.cpp:1482
+#: ../src/gui/app.cpp:1485
 msgid "Init Keyframes..."
 msgstr "Панель ключевых кадров..."
 
-#: ../src/gui/app.cpp:1489
+#: ../src/gui/app.cpp:1492
 msgid "Init Layers..."
 msgstr "Панель слоёв..."
 
-#: ../src/gui/app.cpp:1493
+#: ../src/gui/app.cpp:1496
 msgid "Init Parameters..."
 msgstr "Инициализация параметров..."
 
-#: ../src/gui/app.cpp:1497
+#: ../src/gui/app.cpp:1500
 msgid "Init MetaData..."
 msgstr "Панель метаданных..."
 
-#: ../src/gui/app.cpp:1501
+#: ../src/gui/app.cpp:1504
 msgid "Init Library..."
 msgstr "Инициализация библиотеки..."
 
-#: ../src/gui/app.cpp:1505
+#: ../src/gui/app.cpp:1508
 msgid "Init Info..."
 msgstr "Панель сведений..."
 
-#: ../src/gui/app.cpp:1509
+#: ../src/gui/app.cpp:1512
 msgid "Init Navigator..."
 msgstr "Панель навигатора..."
 
-#: ../src/gui/app.cpp:1513
+#: ../src/gui/app.cpp:1516
 msgid "Init Timetrack..."
 msgstr "Загружается шкала кадров..."
 
-#: ../src/gui/app.cpp:1517
+#: ../src/gui/app.cpp:1520
 msgid "Init Curve Editor..."
 msgstr "Панель редактора кривых..."
 
-#: ../src/gui/app.cpp:1521
+#: ../src/gui/app.cpp:1524
 msgid "Init Layer Sets..."
 msgstr "Инициализация установок слоёв..."
 
-#: ../src/gui/app.cpp:1526
+#: ../src/gui/app.cpp:1529
 msgid "Init Color Dialog..."
 msgstr "Диалог выбора цвета..."
 
-#: ../src/gui/app.cpp:1529
+#: ../src/gui/app.cpp:1532
 msgid "Init Gradient Dialog..."
 msgstr "Редактор градиентов..."
 
-#: ../src/gui/app.cpp:1532
+#: ../src/gui/app.cpp:1535
 msgid "Init DeviceTracker..."
 msgstr "Устройства ввода..."
 
-#: ../src/gui/app.cpp:1537
+#: ../src/gui/app.cpp:1540
 msgid "Init ModPalette..."
 msgstr "Инициализация ModPalette ..."
 
-#: ../src/gui/app.cpp:1540
+#: ../src/gui/app.cpp:1543
 msgid "Init Setup Dialog..."
 msgstr "Диалог настройки..."
 
-#: ../src/gui/app.cpp:1543
+#: ../src/gui/app.cpp:1546
 msgid "Init Input Dialog..."
 msgstr "Диалог устройств ввода..."
 
-#: ../src/gui/app.cpp:1547
+#: ../src/gui/app.cpp:1550
 msgid "Init auto recovery..."
 msgstr "Автовосстановление..."
 
-#: ../src/gui/app.cpp:1551
+#: ../src/gui/app.cpp:1554
 msgid "Loading Settings..."
 msgstr "Загружаются параметры..."
 
-#: ../src/gui/app.cpp:1562
+#: ../src/gui/app.cpp:1565
 msgid "Init Tools..."
 msgstr "Инструменты..."
 
-#: ../src/gui/app.cpp:1601
+#: ../src/gui/app.cpp:1604
 msgid "Checking auto-recover..."
 msgstr "Нужно ли автовосстановление..."
 
-#: ../src/gui/app.cpp:1610
+#: ../src/gui/app.cpp:1613
 msgid "Auto recovery file(s) found. Do you want to recover unsaved changes?"
 msgstr "Найден(ы) файл(ы) автовосстановления. Вы хотите восстановить несохранённые изменения?"
 
-#: ../src/gui/app.cpp:1611
+#: ../src/gui/app.cpp:1614
 msgid ""
 "Synfig Studio seems to have crashed before you could save all your files."
 msgstr "В Synfig Studio произошел сбой прежде чем вы смогли сохранить все свои файлы."
 
-#: ../src/gui/app.cpp:1612
+#: ../src/gui/app.cpp:1615
 msgid "Ignore"
 msgstr "Проигнорировать"
 
-#: ../src/gui/app.cpp:1613
+#: ../src/gui/app.cpp:1616
 msgid "Recover"
 msgstr "Восстановить"
 
-#: ../src/gui/app.cpp:1619
+#: ../src/gui/app.cpp:1622
 msgid "Unable to fully recover from previous crash"
 msgstr "Невозможно полностью восстановить данные"
 
-#: ../src/gui/app.cpp:1621
+#: ../src/gui/app.cpp:1624
 msgid "Unable to recover from previous crash"
 msgstr "Невозможно восстановить данные"
 
-#: ../src/gui/app.cpp:1625
+#: ../src/gui/app.cpp:1628
 msgid "It would be a good idea to review and save recovered files now."
 msgstr "Будет хорошей идеей сейчас перепроверить и сохранить восстановлённые файлы."
 
-#: ../src/gui/app.cpp:1626
+#: ../src/gui/app.cpp:1629
 msgid ""
 "Synfig Studio has attempted to recover from a previous crash. The files just"
 " recovered are NOT YET SAVED."
 msgstr "Synfig Studio попытался восстановиться после произошедшего сбоя. Восстановленные только что файлы ещё не сохранялись."
 
-#: ../src/gui/app.cpp:1628
+#: ../src/gui/app.cpp:1631
 msgid "Thanks"
 msgstr "Благодарим"
 
-#: ../src/gui/app.cpp:1641
+#: ../src/gui/app.cpp:1644
 msgid "Loading files..."
 msgstr "Загружаются файлы..."
 
-#: ../src/gui/app.cpp:1652
+#: ../src/gui/app.cpp:1655
 msgid "Done."
 msgstr "Готово"
 
-#: ../src/gui/app.cpp:1684
+#: ../src/gui/app.cpp:1687
 msgid ""
 "There is a bug, which can cause computer to hang/freeze when resizing the "
 "canvas window."
 msgstr "Существует ошибка, которая может привести компьютер к зависанию/замораживанию при изменении размера окна холста."
 
-#: ../src/gui/app.cpp:1686
+#: ../src/gui/app.cpp:1689
 msgid ""
 "If you got affected by this issue, consider pressing ALT+TAB to unfreeze "
 "your system and get it back to the working state. Please accept our "
@@ -3808,223 +3812,231 @@ msgid ""
 "future versions."
 msgstr "Если произошла эта ошибка, то нажмите ALT+TAB, и система снова вернётся в рабочее состояние. Приносим свои извинения за доставленные неудобства, мы делаем всё возможное чтобы устранить эту ошибку в следующих версиях."
 
-#: ../src/gui/app.cpp:1696
+#: ../src/gui/app.cpp:1699
 msgid "Got it"
 msgstr "Понятно"
 
-#: ../src/gui/app.cpp:1700 ../src/gui/app.cpp:1704
+#: ../src/gui/app.cpp:1703 ../src/gui/app.cpp:1707
 msgid ""
 "Unknown exception caught when constructing App.\n"
 "This software may be unstable."
 msgstr "Неизвестная ошибка произошла при загрузке приложения. Программа может работать нестабильно."
 
-#: ../src/gui/app.cpp:2173
+#: ../src/gui/app.cpp:2176
 msgid "Quit Request"
 msgstr "Запрос на выход"
 
-#: ../src/gui/app.cpp:2178
+#: ../src/gui/app.cpp:2181
 msgid ""
 "Tasks are currently running. Please cancel the current tasks and try again"
 msgstr "Выполняются задачи. Пожалуйста, отмените текущие задачи и попробуйте снова"
 
-#: ../src/gui/app.cpp:2247
+#: ../src/gui/app.cpp:2250
 msgid "Quit Request sent"
 msgstr "Отправлен запрос на выход"
 
-#: ../src/gui/app.cpp:2278 ../src/gui/app.cpp:2644 ../src/gui/app.cpp:2753
+#: ../src/gui/app.cpp:2281 ../src/gui/app.cpp:2659 ../src/gui/app.cpp:2768
 msgid "All Files (*.*)"
 msgstr "Все файлы (*.*)"
 
-#: ../src/gui/app.cpp:2333 ../src/synfigapp/canvasinterface.cpp:683
+#: ../src/gui/app.cpp:2336 ../src/synfigapp/canvasinterface.cpp:683
 msgid "Import"
 msgstr "Импортировать"
 
-#: ../src/gui/app.cpp:2338
+#: ../src/gui/app.cpp:2341
 msgid "All supported files"
 msgstr "Все поддерживаемые файлы"
 
-#: ../src/gui/app.cpp:2365
+#: ../src/gui/app.cpp:2368
 msgid "Synfig files (*.sif, *.sifz)"
 msgstr "Файлы Synfig (*.sif, *.sifz)"
 
-#: ../src/gui/app.cpp:2372
+#: ../src/gui/app.cpp:2375
 msgid "Images (*.png, *.jpeg, *.bmp, *.svg)"
 msgstr "Изображения (*.png, *.jpeg, *.bmp, *.svg)"
 
-#: ../src/gui/app.cpp:2386
+#: ../src/gui/app.cpp:2389
 msgid "Image sequence files (*.lst)"
 msgstr "Файлы последовательных изображений (*.lst)"
 
-#: ../src/gui/app.cpp:2391 ../src/gui/app.cpp:2596
+#: ../src/gui/app.cpp:2394 ../src/gui/app.cpp:2611
 msgid "Audio (*.ogg, *.mp3, *.wav)"
 msgstr "Аудио (*.ogg, *.mp3, *.wav)"
 
-#: ../src/gui/app.cpp:2401 ../src/gui/app.cpp:2553 ../src/gui/app.cpp:2607
-#: ../src/gui/app.cpp:2714
+#: ../src/gui/app.cpp:2404 ../src/gui/app.cpp:2568 ../src/gui/app.cpp:2622
+#: ../src/gui/app.cpp:2729
 msgid "Any files"
 msgstr "Любые файлы"
 
-#: ../src/gui/app.cpp:2448 ../src/gui/app.cpp:2490
+#: ../src/gui/app.cpp:2451 ../src/gui/app.cpp:2505
 #: ../src/gui/iconcontroller.cpp:184 ../src/gui/mainwindow.cpp:147
 msgid "Open"
 msgstr "Открыть"
 
-#: ../src/gui/app.cpp:2452 ../src/gui/app.cpp:2938
+#: ../src/gui/app.cpp:2454
+msgid "Palette files (*.spal, *.gpl)"
+msgstr "Файлы палитр (*.spal, *.gpl)"
+
+#: ../src/gui/app.cpp:2461 ../src/gui/app.cpp:2955
 msgid "Synfig palette files (*.spal)"
 msgstr "Файлы палитр Synfig (*.spal)"
 
-#: ../src/gui/app.cpp:2494 ../src/gui/app.cpp:3000
+#: ../src/gui/app.cpp:2467
+msgid "GIMP palette files (*.gpl)"
+msgstr "Файлы палитр GIMP (*.gpl)"
+
+#: ../src/gui/app.cpp:2509 ../src/gui/app.cpp:3017
 msgid "Synfig sketch files (*.sketch)"
 msgstr "Файлы эскизов Synfig (*.sketch)"
 
-#: ../src/gui/app.cpp:2533 ../src/gui/app.cpp:2592
+#: ../src/gui/app.cpp:2548 ../src/gui/app.cpp:2607
 msgid "Load"
 msgstr "Загрузить"
 
-#: ../src/gui/app.cpp:2537
+#: ../src/gui/app.cpp:2552
 msgid "Images and sequence files (*.png, *.jpg, *.jpeg, *.bmp, *.svg, *.lst)"
 msgstr "Изображения и файлы последовательных изображений (*.png, *.jpg, *.jpeg, *.bmp, *.svg, *.lst)"
 
-#: ../src/gui/app.cpp:2700
+#: ../src/gui/app.cpp:2715
 msgid "Open history"
 msgstr "Открыть историю"
 
-#: ../src/gui/app.cpp:2707
+#: ../src/gui/app.cpp:2722
 msgid "Synfig files (*.sif, *.sifz, *.sfg)"
 msgstr "Файлы Synfig (*.sif, *.sifz, *.sfg)"
 
-#: ../src/gui/app.cpp:2806
+#: ../src/gui/app.cpp:2821
 msgid "Uncompressed Synfig file (*.sif)"
 msgstr "Несжатый файл Synfig (*.sif)"
 
-#: ../src/gui/app.cpp:2814
+#: ../src/gui/app.cpp:2829
 msgid "Compressed Synfig file (*.sifz)"
 msgstr "Сжатый файл Synfig (*.sifz)"
 
-#: ../src/gui/app.cpp:2818
+#: ../src/gui/app.cpp:2833
 msgid "Container format file (*.sfg)"
 msgstr "Файл формата контейнера (*.sfg)"
 
-#: ../src/gui/app.cpp:2834
-msgid "current"
-msgstr "текущая"
+#: ../src/gui/app.cpp:2849
+msgid "Current"
+msgstr "Текущий"
 
-#: ../src/gui/app.cpp:2851
+#: ../src/gui/app.cpp:2868
 msgid "and older"
 msgstr "и ранее"
 
-#: ../src/gui/app.cpp:2855
+#: ../src/gui/app.cpp:2872
 msgid "File Format Version: "
 msgstr "Версия формата файлов:"
 
-#: ../src/gui/app.cpp:3156
+#: ../src/gui/app.cpp:3173
 msgid "Feature not available"
 msgstr "Функция недоступна"
 
-#: ../src/gui/app.cpp:3157
+#: ../src/gui/app.cpp:3174
 msgid "Sorry, this feature has not yet been implemented."
 msgstr "Извините, пока что эта функция не реализована."
 
-#: ../src/gui/app.cpp:3339
+#: ../src/gui/app.cpp:3356
 msgid "Documentation"
 msgstr "Документация"
 
-#: ../src/gui/app.cpp:3340
+#: ../src/gui/app.cpp:3357
 msgid ""
 "Documentation for Synfig Studio is available on the website:\n"
 "\n"
 "http://synfig.org/wiki/Category:Manual"
 msgstr "Документация по Synfig Studio доступна по адресу:\n\nhttp://synfig.org/wiki/Category:Manual"
 
-#: ../src/gui/app.cpp:3341
+#: ../src/gui/app.cpp:3358
 msgid "Help"
 msgstr "Справка"
 
-#: ../src/gui/app.cpp:3351
+#: ../src/gui/app.cpp:3368
 msgid "No browser was found. Please load this website manually:"
 msgstr "Браузер не найден. Откройте сайт вручную:"
 
-#: ../src/gui/app.cpp:3353
+#: ../src/gui/app.cpp:3370
 msgid "No browser found"
 msgstr "Браузер не найден"
 
-#: ../src/gui/app.cpp:3481
+#: ../src/gui/app.cpp:3498
 #, c-format
 msgid ""
 "Unable to open container \"%s\"\n"
 "\n"
 msgstr "Не удалось открыть контейнер \"%s\"\n\n"
 
-#: ../src/gui/app.cpp:3488
+#: ../src/gui/app.cpp:3505
 msgid ""
 "Unable to create container\n"
 "\n"
 msgstr "Не удалось создать контейнер \"%s\"\n\n"
 
-#: ../src/gui/app.cpp:3501 ../src/gui/app.cpp:3595
+#: ../src/gui/app.cpp:3518 ../src/gui/app.cpp:3612
 #, c-format
 msgid ""
 "Unable to load \"%s\":\n"
 "\n"
 msgstr "Не удалось загрузить «%s»:\n\n"
 
-#: ../src/gui/app.cpp:3506 ../src/gui/app.cpp:3600
-#: ../src/gui/canvasview.cpp:3816 ../src/gui/canvasview.cpp:4087
+#: ../src/gui/app.cpp:3523 ../src/gui/app.cpp:3617
+#: ../src/gui/canvasview.cpp:3820 ../src/gui/canvasview.cpp:4109
 msgid "Warning"
 msgstr "Предупреждение"
 
-#: ../src/gui/app.cpp:3517 ../src/gui/app.cpp:3610
+#: ../src/gui/app.cpp:3534 ../src/gui/app.cpp:3627
 #, c-format
 msgid "Unable to create instance for \"%s\""
 msgstr "Невозможно создать экземпляр для \"%s\""
 
-#: ../src/gui/app.cpp:3522
-msgid "Newer version of this file availabel on the CVS repository!"
+#: ../src/gui/app.cpp:3539
+msgid "Newer version of this file available on the CVS repository!"
 msgstr "В CVS репозитории доступна новее версия этого файла!"
 
-#: ../src/gui/app.cpp:3523
+#: ../src/gui/app.cpp:3540
 msgid ""
 "repository. Would you like to update now? (It would probably be a good idea)"
 msgstr "репозиторий. Хотите обновить сейчас? (Это, вероятно, будет хорошей идеей)"
 
-#: ../src/gui/app.cpp:3526 ../src/gui/app.cpp:3619
+#: ../src/gui/app.cpp:3543 ../src/gui/app.cpp:3636
 msgid "Update Anyway"
 msgstr "Обновить в любом случае"
 
-#: ../src/gui/app.cpp:3555 ../src/gui/app.cpp:3648
+#: ../src/gui/app.cpp:3572 ../src/gui/app.cpp:3665
 msgid "Uncaught error on file open (BUG)"
 msgstr "Неизвестная ошибка при открытии файла (BUG)"
 
-#: ../src/gui/app.cpp:3583
+#: ../src/gui/app.cpp:3600
 #, c-format
 msgid ""
 "Unable to open temporary container \"%s\"\n"
 "\n"
 msgstr "Не удалось открыть временный контейнер \"%s\"\n\n"
 
-#: ../src/gui/app.cpp:3615
+#: ../src/gui/app.cpp:3632
 msgid "Newer version of this file avaliable on the CVS repository!"
 msgstr "В CVS репозитории доступна новее версия этого файла!"
 
-#: ../src/gui/app.cpp:3616
+#: ../src/gui/app.cpp:3633
 msgid "Would you like to update now (It would probably be a good idea)"
 msgstr "Хотите обновить сейчас? (Это, вероятно, будет хорошей идеей)"
 
-#: ../src/gui/app.cpp:3710 ../src/gui/app.cpp:3734
-#: ../src/gui/canvasview.cpp:4081
+#: ../src/gui/app.cpp:3727 ../src/gui/app.cpp:3751
+#: ../src/gui/canvasview.cpp:4103
 msgid "Please select a file"
 msgstr "Пожалуйста, выберите файл"
 
-#: ../src/gui/app.cpp:3730
+#: ../src/gui/app.cpp:3747
 msgid "History entry #"
 msgstr "История входа #"
 
-#: ../src/gui/app.cpp:3734
+#: ../src/gui/app.cpp:3751
 msgid "Select one of previous versions of file"
 msgstr "Выберите одну из предыдущих версий файла"
 
-#: ../src/gui/canvasview.cpp:266 ../src/gui/workarea.cpp:3305
-#: ../src/gui/workarea.cpp:3312 ../src/gui/workarea.cpp:3413
+#: ../src/gui/canvasview.cpp:266 ../src/gui/workarea.cpp:3315
+#: ../src/gui/workarea.cpp:3322 ../src/gui/workarea.cpp:3423
 msgid "Idle"
 msgstr "Бездействие"
 
@@ -4056,7 +4068,7 @@ msgstr "Меняет текущее время"
 msgid "Default Interpolation"
 msgstr "Интерполяция по умолчанию"
 
-#: ../src/gui/canvasview.cpp:1162 ../src/gui/canvasview.cpp:2811
+#: ../src/gui/canvasview.cpp:1162 ../src/gui/canvasview.cpp:2815
 msgid "Turn on animate editing mode"
 msgstr "Включить режим редактирования анимации"
 
@@ -4181,144 +4193,144 @@ msgstr "Приблизить временную шкалу"
 msgid "Zoom Out on Timeline"
 msgstr "Отдалить временную шкалу"
 
-#: ../src/gui/canvasview.cpp:2031 ../src/gui/canvasview.cpp:2541
+#: ../src/gui/canvasview.cpp:2035 ../src/gui/canvasview.cpp:2545
 msgid "Select All Children"
 msgstr "Выделить содержимое"
 
-#: ../src/gui/canvasview.cpp:2324
+#: ../src/gui/canvasview.cpp:2328
 msgid "-MODIFIED"
 msgstr "-ИЗМЕНЕНО"
 
-#: ../src/gui/canvasview.cpp:2326
+#: ../src/gui/canvasview.cpp:2330
 msgid "-UPDATED"
 msgstr "-ОБНОВЛЕНО"
 
-#: ../src/gui/canvasview.cpp:2800
+#: ../src/gui/canvasview.cpp:2804
 msgid "Turn off animate editing mode"
 msgstr "Выключить режим редактирования анимации"
 
-#: ../src/gui/canvasview.cpp:2823
+#: ../src/gui/canvasview.cpp:2827
 msgid "Unlock future keyframes"
 msgstr "Разблокировать следующие кадры"
 
-#: ../src/gui/canvasview.cpp:2834
+#: ../src/gui/canvasview.cpp:2838
 msgid "Lock future keyframes"
 msgstr "Заблокировать следующие ключевые кадры"
 
-#: ../src/gui/canvasview.cpp:2845
+#: ../src/gui/canvasview.cpp:2849
 msgid "Unlock past keyframes"
 msgstr "Разблокировать предыдущие ключевые кадры"
 
-#: ../src/gui/canvasview.cpp:2856
+#: ../src/gui/canvasview.cpp:2860
 msgid "Lock past  keyframes"
 msgstr "Заблокировать предыдущие ключевые кадры"
 
-#: ../src/gui/canvasview.cpp:3481
+#: ../src/gui/canvasview.cpp:3485
 msgid "Change Waypoint Group"
 msgstr "Изменить группу фиксаторов"
 
-#: ../src/gui/canvasview.cpp:3512
+#: ../src/gui/canvasview.cpp:3516
 msgid "Duplicate Waypoints"
 msgstr "Создать копии фиксаторов"
 
-#: ../src/gui/canvasview.cpp:3528
+#: ../src/gui/canvasview.cpp:3532
 msgid "Remove Waypoints"
 msgstr "Удалить фиксаторы"
 
-#: ../src/gui/canvasview.cpp:3596
+#: ../src/gui/canvasview.cpp:3600
 msgid "_TCB"
 msgstr "_TCB"
 
-#: ../src/gui/canvasview.cpp:3597
+#: ../src/gui/canvasview.cpp:3601
 msgid "_Linear"
 msgstr "_Линейная"
 
-#: ../src/gui/canvasview.cpp:3598
+#: ../src/gui/canvasview.cpp:3602
 msgid "_Ease In"
 msgstr "Плавный _вход"
 
-#: ../src/gui/canvasview.cpp:3598
+#: ../src/gui/canvasview.cpp:3602
 msgid "_Ease Out"
 msgstr "Плавный в_ыход"
 
-#: ../src/gui/canvasview.cpp:3598
+#: ../src/gui/canvasview.cpp:3602
 msgid "_Ease In/Out"
 msgstr "Плавный вход/вы_ход"
 
-#: ../src/gui/canvasview.cpp:3599
+#: ../src/gui/canvasview.cpp:3603
 msgid "_Constant"
 msgstr "_Постоянная"
 
-#: ../src/gui/canvasview.cpp:3600
+#: ../src/gui/canvasview.cpp:3604
 msgid "_Clamped"
-msgstr "_Ограниченный"
+msgstr "_Сгладить"
 
-#: ../src/gui/canvasview.cpp:3620
+#: ../src/gui/canvasview.cpp:3624
 msgid "_Jump To"
 msgstr "_Перейти сюда"
 
-#: ../src/gui/canvasview.cpp:3627
+#: ../src/gui/canvasview.cpp:3631
 msgid "_Duplicate"
 msgstr "Про_дублировать"
 
-#: ../src/gui/canvasview.cpp:3634
+#: ../src/gui/canvasview.cpp:3638
 msgid "_Remove"
 msgstr "_Удалить"
 
-#: ../src/gui/canvasview.cpp:3634
+#: ../src/gui/canvasview.cpp:3638
 #, c-format
 msgid "_Remove %d Waypoints"
 msgstr "_Удалить %d фиксаторов"
 
-#: ../src/gui/canvasview.cpp:3657
+#: ../src/gui/canvasview.cpp:3661
 msgid "_Both"
 msgstr "_Оба"
 
-#: ../src/gui/canvasview.cpp:3663
+#: ../src/gui/canvasview.cpp:3667
 msgid "_In"
 msgstr "_Вход"
 
-#: ../src/gui/canvasview.cpp:3669
+#: ../src/gui/canvasview.cpp:3673
 msgid "_Out"
 msgstr "В_ыход"
 
-#: ../src/gui/canvasview.cpp:3960
+#: ../src/gui/canvasview.cpp:3964
 msgid " Description"
 msgstr "Описание"
 
-#: ../src/gui/canvasview.cpp:3961 ../src/gui/instance.cpp:1116
+#: ../src/gui/canvasview.cpp:3965 ../src/gui/instance.cpp:1116
 msgid "Description: "
 msgstr "Описание: "
 
-#: ../src/gui/canvasview.cpp:3965 ../src/gui/iconcontroller.cpp:257
+#: ../src/gui/canvasview.cpp:3969 ../src/gui/iconcontroller.cpp:257
 #: ../src/gui/instance.cpp:1115 ../src/synfigapp/actions/groupaddlayers.cpp:78
 #: ../src/synfigapp/actions/groupremove.cpp:72
 msgid "Set"
 msgstr "Набор"
 
-#: ../src/gui/canvasview.cpp:4447
+#: ../src/gui/canvasview.cpp:4469
 msgid "Are you sure you want to disable JACK synchronization?"
 msgstr "Вы уверены, что хотите отключить синхронизацию JACK?"
 
-#: ../src/gui/canvasview.cpp:4448
+#: ../src/gui/canvasview.cpp:4470
 msgid "The JACK server will remain running."
 msgstr "Сервер JACK останется работать."
 
-#: ../src/gui/canvasview.cpp:4450
+#: ../src/gui/canvasview.cpp:4472
 msgid "Are you sure you want to enable JACK synchronization?"
 msgstr "Вы уверены, что хотите включить синхронизацию JACK?"
 
-#: ../src/gui/canvasview.cpp:4451
+#: ../src/gui/canvasview.cpp:4473
 msgid "This operation will launch a JACK server, if it isn't started yet."
 msgstr "Эта операция запустит сервер JACK, если он ещё не запущен."
 
-#: ../src/gui/canvasview.cpp:4456
-#: ../src/synfigapp/actions/valuedescset.cpp:1098
+#: ../src/gui/canvasview.cpp:4478
+#: ../src/synfigapp/actions/valuedescset.cpp:1120
 msgid "No"
 msgstr "Нет"
 
-#: ../src/gui/canvasview.cpp:4457
-#: ../src/synfigapp/actions/valuedescset.cpp:1099
+#: ../src/gui/canvasview.cpp:4479
+#: ../src/synfigapp/actions/valuedescset.cpp:1121
 msgid "Yes"
 msgstr "Да"
 
@@ -4819,7 +4831,7 @@ msgstr "Линейная интерполяция"
 
 #: ../src/gui/iconcontroller.cpp:339
 msgid "Clamped interpolation"
-msgstr "Ограниченная интерполяции"
+msgstr "Сглаженная интерполяции"
 
 #: ../src/gui/iconcontroller.cpp:341
 msgid "Linked"
@@ -5047,7 +5059,7 @@ msgstr "Преобразовать"
 
 #: ../src/gui/instance.cpp:1266
 msgid "Ease"
-msgstr "Простота"
+msgstr "Замедление"
 
 #: ../src/gui/instance.cpp:1314
 msgid "Edit Waypoint"
@@ -5432,7 +5444,7 @@ msgstr "Визуализация "
 msgid "File rendered successfully"
 msgstr "Файл успешно визуализирован"
 
-#: ../src/gui/render.cpp:424 ../src/gui/workarea.cpp:3308
+#: ../src/gui/render.cpp:424 ../src/gui/workarea.cpp:3318
 msgid "sec"
 msgstr "сек"
 
@@ -5444,43 +5456,43 @@ msgstr "ОШИБКА:"
 msgid "WARNING:"
 msgstr "ПРЕДУПРЕЖДЕНИЕ:"
 
-#: ../src/gui/workarea.cpp:1356
+#: ../src/gui/workarea.cpp:1357
 msgid "Unable to set \"grid_color\""
 msgstr "Невозможно установить \"цвет_сетки\""
 
-#: ../src/gui/workarea.cpp:1387
+#: ../src/gui/workarea.cpp:1388
 msgid "Unable to set \"guide_color\""
 msgstr "Невозможно установить \"цвет_руководства\""
 
-#: ../src/gui/workarea.cpp:1553
+#: ../src/gui/workarea.cpp:1554
 msgid "Unable to set \"background_first_color\""
 msgstr "Невозможно установить \"первый_цвет_фона\""
 
-#: ../src/gui/workarea.cpp:1584
+#: ../src/gui/workarea.cpp:1585
 msgid "Unable to set \"background_second_color\""
 msgstr "Невозможно установить \"второй_цвет_фона\""
 
-#: ../src/gui/workarea.cpp:1861
+#: ../src/gui/workarea.cpp:1862
 msgid "Nudge"
 msgstr "Толкнуть"
 
-#: ../src/gui/workarea.cpp:2424 ../src/gui/workarea.cpp:2475
+#: ../src/gui/workarea.cpp:2425 ../src/gui/workarea.cpp:2476
 msgid "Move"
 msgstr "Переместить"
 
-#: ../src/gui/workarea.cpp:3281
+#: ../src/gui/workarea.cpp:3291
 msgid "Rendering..."
 msgstr "Визуализация..."
 
-#: ../src/gui/workarea.cpp:3306
+#: ../src/gui/workarea.cpp:3316
 msgid "Last rendering time"
 msgstr "Время последней визуализации"
 
-#: ../src/gui/workarea.cpp:3319 ../src/gui/workarea.cpp:3415
+#: ../src/gui/workarea.cpp:3329 ../src/gui/workarea.cpp:3425
 msgid "Render Failed"
 msgstr "Не удалось визуализировать"
 
-#: ../src/gui/workarea.cpp:3397
+#: ../src/gui/workarea.cpp:3407
 #, c-format
 msgid "Rendering canvas %s..."
 msgstr "Визуализация холста %s..."
@@ -5510,8 +5522,8 @@ msgstr "Добавить активную точку"
 #: ../src/synfigapp/actions/valuedescdisconnect.cpp:93
 #: ../src/synfigapp/actions/valuedescexport.cpp:91
 #: ../src/synfigapp/actions/valuedescremovesmart.cpp:77
-#: ../src/synfigapp/actions/valuedescset.cpp:106
-#: ../src/synfigapp/actions/valuedescset.cpp:115
+#: ../src/synfigapp/actions/valuedescset.cpp:107
+#: ../src/synfigapp/actions/valuedescset.cpp:116
 #: ../src/synfigapp/actions/valuedescsetinterpolation.cpp:77
 #: ../src/synfigapp/actions/valuedescsetinterpolation.cpp:86
 #: ../src/synfigapp/actions/valuenodedynamiclistinsert.cpp:77
@@ -6385,25 +6397,26 @@ msgstr "Не найдено родительской группы!"
 #: ../src/synfigapp/actions/layerzdepthrangeset.cpp:174
 #: ../src/synfigapp/actions/layerzdepthrangeset.cpp:189
 #: ../src/synfigapp/actions/layerzdepthrangeset.cpp:204
-#: ../src/synfigapp/actions/valuedescset.cpp:206
-#: ../src/synfigapp/actions/valuedescset.cpp:237
-#: ../src/synfigapp/actions/valuedescset.cpp:272
-#: ../src/synfigapp/actions/valuedescset.cpp:310
-#: ../src/synfigapp/actions/valuedescset.cpp:341
-#: ../src/synfigapp/actions/valuedescset.cpp:445
-#: ../src/synfigapp/actions/valuedescset.cpp:494
-#: ../src/synfigapp/actions/valuedescset.cpp:539
-#: ../src/synfigapp/actions/valuedescset.cpp:589
-#: ../src/synfigapp/actions/valuedescset.cpp:624
-#: ../src/synfigapp/actions/valuedescset.cpp:645
-#: ../src/synfigapp/actions/valuedescset.cpp:668
-#: ../src/synfigapp/actions/valuedescset.cpp:689
-#: ../src/synfigapp/actions/valuedescset.cpp:709
-#: ../src/synfigapp/actions/valuedescset.cpp:748
-#: ../src/synfigapp/actions/valuedescset.cpp:804
-#: ../src/synfigapp/actions/valuedescset.cpp:823
-#: ../src/synfigapp/actions/valuedescset.cpp:839
-#: ../src/synfigapp/actions/valuedescset.cpp:923
+#: ../src/synfigapp/actions/valuedescset.cpp:207
+#: ../src/synfigapp/actions/valuedescset.cpp:238
+#: ../src/synfigapp/actions/valuedescset.cpp:273
+#: ../src/synfigapp/actions/valuedescset.cpp:311
+#: ../src/synfigapp/actions/valuedescset.cpp:342
+#: ../src/synfigapp/actions/valuedescset.cpp:446
+#: ../src/synfigapp/actions/valuedescset.cpp:495
+#: ../src/synfigapp/actions/valuedescset.cpp:540
+#: ../src/synfigapp/actions/valuedescset.cpp:590
+#: ../src/synfigapp/actions/valuedescset.cpp:625
+#: ../src/synfigapp/actions/valuedescset.cpp:646
+#: ../src/synfigapp/actions/valuedescset.cpp:669
+#: ../src/synfigapp/actions/valuedescset.cpp:692
+#: ../src/synfigapp/actions/valuedescset.cpp:713
+#: ../src/synfigapp/actions/valuedescset.cpp:733
+#: ../src/synfigapp/actions/valuedescset.cpp:772
+#: ../src/synfigapp/actions/valuedescset.cpp:828
+#: ../src/synfigapp/actions/valuedescset.cpp:847
+#: ../src/synfigapp/actions/valuedescset.cpp:863
+#: ../src/synfigapp/actions/valuedescset.cpp:945
 #: ../src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:205
 #: ../src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:298
 #: ../src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:313
@@ -6539,7 +6552,7 @@ msgstr "Источник Значения узла"
 msgid "Source ValueNode Name"
 msgstr "Имя источника Значения узла"
 
-#: ../src/synfigapp/actions/valuedescconnect.cpp:257
+#: ../src/synfigapp/actions/valuedescconnect.cpp:265
 #: ../src/synfigapp/actions/valuedescdisconnect.cpp:262
 msgid "ValueDesc is not recognized or supported."
 msgstr "ValueDesc не распознано и не поддерживается."
@@ -6624,69 +6637,69 @@ msgstr "Соединить противоположные"
 msgid "ValueDesc to smart link"
 msgstr "ValueDesc для умной привязки"
 
-#: ../src/synfigapp/actions/valuedesclink.cpp:161
+#: ../src/synfigapp/actions/valuedesclink.cpp:162
 msgid "Cannot link two different exported values ('"
 msgstr "Невозможно связать два различных экспортированных значения ('"
 
-#: ../src/synfigapp/actions/valuedesclink.cpp:162
+#: ../src/synfigapp/actions/valuedesclink.cpp:163
 msgid "' and '"
 msgstr "'и'"
 
-#: ../src/synfigapp/actions/valuedesclink.cpp:163
+#: ../src/synfigapp/actions/valuedesclink.cpp:164
 msgid "')"
 msgstr "')"
 
-#: ../src/synfigapp/actions/valuedesclink.cpp:169
+#: ../src/synfigapp/actions/valuedesclink.cpp:170
 msgid "Used exported ValueNode ('"
 msgstr "Используется экспортированное Значение узла ('"
 
-#: ../src/synfigapp/actions/valuedesclink.cpp:169
+#: ../src/synfigapp/actions/valuedesclink.cpp:170
 msgid "')."
 msgstr ")."
 
-#: ../src/synfigapp/actions/valuedesclink.cpp:176
+#: ../src/synfigapp/actions/valuedesclink.cpp:177
 msgid "Using the only available ValueNode."
 msgstr "С помощью только доступного значения узла"
 
-#: ../src/synfigapp/actions/valuedesclink.cpp:190
-#: ../src/synfigapp/actions/valuedesclink.cpp:197
+#: ../src/synfigapp/actions/valuedesclink.cpp:191
+#: ../src/synfigapp/actions/valuedesclink.cpp:198
 msgid "Using the most referenced ValueNode."
 msgstr "С помощью наиболее используемого в ссылках Значения узла"
 
-#: ../src/synfigapp/actions/valuedesclink.cpp:205
-#: ../src/synfigapp/actions/valuedesclink.cpp:214
+#: ../src/synfigapp/actions/valuedesclink.cpp:206
+#: ../src/synfigapp/actions/valuedesclink.cpp:215
 msgid "There's a tie for most referenced; using the animated ValueNode."
 msgstr "Существует связка для наиболее используемых в ссылках объектов; при помощи анимированного значения узла."
 
-#: ../src/synfigapp/actions/valuedesclink.cpp:227
-#: ../src/synfigapp/actions/valuedesclink.cpp:234
+#: ../src/synfigapp/actions/valuedesclink.cpp:228
+#: ../src/synfigapp/actions/valuedesclink.cpp:235
 msgid ""
 "There's a tie for most referenced, and both are animated; using the one with"
 " the most waypoints."
 msgstr "Существует связка для наиболее используемых в ссылках объектов и оба анимированы; при его помощи с большинством фиксаторов."
 
-#: ../src/synfigapp/actions/valuedesclink.cpp:247
-#: ../src/synfigapp/actions/valuedesclink.cpp:254
+#: ../src/synfigapp/actions/valuedesclink.cpp:248
+#: ../src/synfigapp/actions/valuedesclink.cpp:255
 msgid ""
 "There's a tie for most referenced, and both are linkable value node "
 "animated; using the one with the most waypoints."
 msgstr "Существует связка для наиболее используемых в ссылках объектов и оба связываемых значений узлов анимированы; при его помощи с большинством фиксаторов."
 
-#: ../src/synfigapp/actions/valuedesclink.cpp:263
-#: ../src/synfigapp/actions/valuedesclink.cpp:270
+#: ../src/synfigapp/actions/valuedesclink.cpp:264
+#: ../src/synfigapp/actions/valuedesclink.cpp:271
 msgid "Everything is tied; using the least recently modified value."
 msgstr "Абсолютно все связано; при помощи последнего измененного значения."
 
-#: ../src/synfigapp/actions/valuedesclink.cpp:276
+#: ../src/synfigapp/actions/valuedesclink.cpp:277
 msgid "Absolutely everything is tied."
 msgstr "Абсолютно все связано."
 
-#: ../src/synfigapp/actions/valuedesclink.cpp:284
+#: ../src/synfigapp/actions/valuedesclink.cpp:285
 #, c-format
 msgid "Cannot link two values of different types ('%s' and '%s')"
 msgstr "Невозможно объединить два значения разных типов ('%s' и '%s')"
 
-#: ../src/synfigapp/actions/valuedesclink.cpp:321
+#: ../src/synfigapp/actions/valuedesclink.cpp:322
 msgid "No ValueNodes were available, so one was created."
 msgstr "При отсутствии Значения узла было создано новое"
 
@@ -6705,91 +6718,92 @@ msgstr "Удалить элементы (Умно)"
 msgid "Unable to find action (bug)"
 msgstr "Невозможно найти действие (баг)"
 
-#: ../src/synfigapp/actions/valuedescset.cpp:79
+#: ../src/synfigapp/actions/valuedescset.cpp:80
 msgid "Set ValueDesc"
 msgstr "Установка нисходящей величины"
 
-#: ../src/synfigapp/actions/valuedescset.cpp:103
+#: ../src/synfigapp/actions/valuedescset.cpp:104
 #, c-format
 msgid "Set %s"
 msgstr "Установить %s"
 
-#: ../src/synfigapp/actions/valuedescset.cpp:127
+#: ../src/synfigapp/actions/valuedescset.cpp:128
 msgid "Recursive"
 msgstr "Рекурсивный"
 
-#: ../src/synfigapp/actions/valuedescset.cpp:131
+#: ../src/synfigapp/actions/valuedescset.cpp:132
 msgid "Animate"
 msgstr "Анимировать"
 
-#: ../src/synfigapp/actions/valuedescset.cpp:135
+#: ../src/synfigapp/actions/valuedescset.cpp:136
 msgid "Lock animation"
 msgstr "Заблокировать анимацию"
 
-#: ../src/synfigapp/actions/valuedescset.cpp:232
+#: ../src/synfigapp/actions/valuedescset.cpp:233
 msgid ""
 "this node isn't editable - in the future it will be greyed to prevent "
 "editing"
 msgstr "этот узел не редактируется - в будущем он будет серым, чтобы предотвратить редактирование"
 
-#: ../src/synfigapp/actions/valuedescset.cpp:436
+#: ../src/synfigapp/actions/valuedescset.cpp:437
 #, c-format
 msgid "Bad type for composite (%s)"
 msgstr "Неверный тип для комбинации (%s)"
 
-#: ../src/synfigapp/actions/valuedescset.cpp:582
+#: ../src/synfigapp/actions/valuedescset.cpp:583
 #, c-format
 msgid "Bad type for radial composite (%s)"
 msgstr "Неверный тип для радиальной комбинации (%s)"
 
-#: ../src/synfigapp/actions/valuedescset.cpp:610
+#: ../src/synfigapp/actions/valuedescset.cpp:611
 msgid "Attempt to edit scale ValueNode with a scale factor of zero."
 msgstr "Попытка редактировать значения узла масштабирования равного нулю"
 
-#: ../src/synfigapp/actions/valuedescset.cpp:621
-#: ../src/synfigapp/actions/valuedescset.cpp:665
-#: ../src/synfigapp/actions/valuedescset.cpp:686
+#: ../src/synfigapp/actions/valuedescset.cpp:622
+#: ../src/synfigapp/actions/valuedescset.cpp:666
+#: ../src/synfigapp/actions/valuedescset.cpp:689
+#: ../src/synfigapp/actions/valuedescset.cpp:710
 #, c-format
 msgid "Inverse manipulation of %s scale values not implemented in core."
 msgstr "Обратные манипуляции масштаба %s не используются в ядре."
 
-#: ../src/synfigapp/actions/valuedescset.cpp:642
+#: ../src/synfigapp/actions/valuedescset.cpp:643
 #, c-format
 msgid "Inverse manipulation of %s range values not implemented in core."
 msgstr "Обратные манипуляции диапазона %s не используются в ядре."
 
-#: ../src/synfigapp/actions/valuedescset.cpp:960
+#: ../src/synfigapp/actions/valuedescset.cpp:982
 msgid ""
 "It is forbidden to set lower boundary equal or bigger than upper boundary"
 msgstr "Значение нижней границы не должно быть равно или больше значения верхней границы"
 
-#: ../src/synfigapp/actions/valuedescset.cpp:1030
-#: ../src/synfigapp/actions/valuedescset.cpp:1142
+#: ../src/synfigapp/actions/valuedescset.cpp:1052
+#: ../src/synfigapp/actions/valuedescset.cpp:1164
 msgid "Direct manipulation of this ValueNode type is not yet supported"
 msgstr "Прямое редактирование этого значения узла пока не поддерживается"
 
-#: ../src/synfigapp/actions/valuedescset.cpp:1096
+#: ../src/synfigapp/actions/valuedescset.cpp:1118
 msgid ""
 "You are trying to edit animated parameter while Animation Mode is off.\n"
 "\n"
 "Do you want to apply offset to this animation?"
 msgstr "Вы пытаетесь отредактировать анимированный параметр, в то время как Режим Анимации выключен.\n\nХотите применить смещение к анимации параметра?"
 
-#: ../src/synfigapp/actions/valuedescset.cpp:1097
+#: ../src/synfigapp/actions/valuedescset.cpp:1119
 msgid ""
 "Hint: You can hold Spacebar key while editing parameter to avoid this "
 "confirmation dialog."
 msgstr "Подсказка: Удерживайте ПРОБЕЛ во время редактирования параметра чтобы избежать появления этого диалога."
 
-#: ../src/synfigapp/actions/valuedescset.cpp:1102
+#: ../src/synfigapp/actions/valuedescset.cpp:1124
 msgid "Cancelled by user"
 msgstr "Отменено пользователем"
 
-#: ../src/synfigapp/actions/valuedescset.cpp:1139
+#: ../src/synfigapp/actions/valuedescset.cpp:1161
 msgid "You must be in Animate-Editing-Mode to directly manipulate this value"
 msgstr "Для прямого редактирования этого значения необходимо быть в режиме анимации"
 
-#: ../src/synfigapp/actions/valuedescset.cpp:1158
+#: ../src/synfigapp/actions/valuedescset.cpp:1180
 msgid "Unsupported ValueDesc type"
 msgstr "Неподдерживаемый тип ValueDesc"
 
