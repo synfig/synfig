@@ -106,7 +106,9 @@ OptimizerBlendZero::run(const RunParams& params) const
 
 		bool one_amount = fabsf(blend->amount - 1.f) <= 1e-6;
 		bool intertsects = valid_a && valid_b
-						&& etl::intersect(blend->sub_task_a()->get_target_rect(), blend->sub_task_b()->get_target_rect());
+						&& etl::intersect(
+							blend->sub_task_a()->get_target_rect() + blend->get_offset_a(),
+							blend->sub_task_b()->get_target_rect() + blend->get_offset_b() );
 
 		if (one_amount && !intertsects)
 		{
