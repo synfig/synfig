@@ -144,9 +144,16 @@ OptimizerTransformationAffine::recursive(Task::Handle &ref_task, const Matrix &m
 				return;
 			}
 
-			// take matrix and remove current transformation, it will recreated with new matrix in recursive-call
-			replace(ref_task, transformation->sub_task());
-			recursive(ref_task, affine_transformation->matrix * matrix);
+			// apply matrix to current transformation task
+			TaskTransformation::Handle new_transformation(new TaskTransformation());
+			AffineTransformation::Handle new_affine_transformation = new AffineTransformation();
+			new_affine_transformation->matrix = affine_transformation->matrix * matrix;
+			new_transformation->transformation = new_affine_transformation;
+
+			Task::Handle sub_task = transformation->sub_task();
+			recursive(sub_task, Matrix());
+			new_transformation->sub_task() = sub_task;
+			replace(ref_task, new_transformation, true);
 			return;
 		}
 	}
