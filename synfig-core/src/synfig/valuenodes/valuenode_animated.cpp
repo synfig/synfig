@@ -78,10 +78,10 @@ ValueNode::Handle
 ValueNode_Animated::clone(Canvas::LooseHandle canvas, const synfig::GUID& deriv_guid)const
 {
 	{ ValueNode* x(find_value_node(get_guid()^deriv_guid).get()); if(x)return x; }
-	ValueNode_Animated* ret(new ValueNode_Animated(get_type()));
+	ValueNode_Animated::Handle ret(new ValueNode_Animated(get_type()));
 	ret->set_guid(get_guid()^deriv_guid);
-	ret->assign(*this, deriv_guid);
 	ret->set_parent_canvas(canvas);
+	ret->assign(*this, deriv_guid);
 	return ret;
 }
 

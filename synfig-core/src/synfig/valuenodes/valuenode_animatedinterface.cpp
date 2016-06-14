@@ -934,9 +934,10 @@ ValueNode_AnimatedInterfaceConst::find(const Time& begin, const Time& end, std::
 void
 ValueNode_AnimatedInterfaceConst::assign(const ValueNode_AnimatedInterfaceConst &animated, const synfig::GUID& deriv_guid)
 {
+	assert(interpolator_);
 	delete interpolator_;
 	waypoint_list_.clear();
-	interpolator_ = animated.interpolator_;
+	interpolator_ = animated.interpolator_->create(*this);
 	for(WaypointList::const_iterator iter=animated.waypoint_list().begin(); iter!=animated.waypoint_list().end(); ++iter)
 		add(iter->clone(node().get_parent_canvas(), deriv_guid));
 }
@@ -1145,6 +1146,7 @@ ValueNode_AnimatedInterfaceConst::set_type(Type &t)
 	ValueNode_Interface::set_type(t);
 	assert(t == node().get_type());
 
+	assert(interpolator_);
 	delete interpolator_;
 
 	if (t == type_time)
@@ -1190,10 +1192,14 @@ ValueNode_AnimatedInterfaceConst::set_type(Type &t)
 				t.description.local_name.c_str())
 			);
 	}
+
+	assert(interpolator_);
 }
 
 ValueNode_AnimatedInterfaceConst::~ValueNode_AnimatedInterfaceConst()
 {
+	assert(interpolator_);
+	delete interpolator_;
 }
 
 ValueNode_AnimatedInterfaceConst::findresult

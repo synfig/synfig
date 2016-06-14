@@ -200,10 +200,6 @@ private:
 	Real continuity;
 	Real bias;
 
-	//! The following are for the INTERPOLATION_MANUAL type
-	//! Seems to be not used
-	ValueBase cpoint_before,cpoint_after;
-
 	//! Shouldn't be Real?
 	float time_tension;
 
