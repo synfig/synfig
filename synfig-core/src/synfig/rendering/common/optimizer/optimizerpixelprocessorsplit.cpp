@@ -59,14 +59,14 @@ using namespace rendering;
 void
 OptimizerPixelProcessorSplit::run(const RunParams& params) const
 {
-	TaskPixelProcessor::Handle pixelprocesor = TaskPixelProcessor::Handle::cast_dynamic(params.ref_task);
-	if ( pixelprocesor
-	  && pixelprocesor->target_surface
-	  && pixelprocesor->sub_task()
-	  && pixelprocesor->sub_task()->target_surface
-	  && !pixelprocesor->is_affects_transparent() )
+	TaskPixelProcessor::Handle pixelprocessor = TaskPixelProcessor::Handle::cast_dynamic(params.ref_task);
+	if ( pixelprocessor
+	  && pixelprocessor->target_surface
+	  && pixelprocessor->sub_task()
+	  && pixelprocessor->sub_task()->target_surface
+	  && !pixelprocessor->is_affects_transparent() )
 	{
-		if (TaskList::Handle list = TaskList::Handle::cast_dynamic(pixelprocesor->sub_task()))
+		if (TaskList::Handle list = TaskList::Handle::cast_dynamic(pixelprocessor->sub_task()))
 		{
 			// try to find dedicated groups
 			std::vector<RectInt> groups;
@@ -103,7 +103,7 @@ OptimizerPixelProcessorSplit::run(const RunParams& params) const
 				// create list
 				TaskList::Handle list;
 				list = new TaskList();
-				assign(list, Task::Handle(pixelprocesor));
+				assign(list, Task::Handle(pixelprocessor));
 				list->sub_tasks.clear();
 
 				#ifndef	NDEBUG
@@ -114,14 +114,14 @@ OptimizerPixelProcessorSplit::run(const RunParams& params) const
 				for(int j = 0; j < (int)groups.size(); ++j)
 				{
 					// create sub-pixelprocessor
-					TaskList::Handle sub_list = TaskList::Handle::cast_dynamic(pixelprocesor->sub_task()->clone());
+					TaskList::Handle sub_list = TaskList::Handle::cast_dynamic(pixelprocessor->sub_task()->clone());
 					sub_list->sub_tasks.clear();
 					sub_list->trunc_target_rect(groups[j]);
 
 					RectInt rect = groups[j]
-								 + pixelprocesor->get_target_offset()
-								 + pixelprocesor->get_offset();
-					TaskPixelProcessor::Handle sub_pixelprocesor = TaskPixelProcessor::Handle::cast_dynamic(pixelprocesor->clone());
+								 + pixelprocessor->get_target_offset()
+								 + pixelprocessor->get_offset();
+					TaskPixelProcessor::Handle sub_pixelprocesor = TaskPixelProcessor::Handle::cast_dynamic(pixelprocessor->clone());
 					sub_pixelprocesor->trunc_target_rect(rect);
 					sub_pixelprocesor->sub_task() = sub_list;
 
