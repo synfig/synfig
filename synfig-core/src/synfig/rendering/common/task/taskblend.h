@@ -28,6 +28,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include "../../task.h"
+#include "tasktransformationpass.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -40,7 +41,7 @@ namespace synfig
 namespace rendering
 {
 
-class TaskBlend: public Task
+class TaskBlend: public Task, public TaskTransformationPass
 {
 public:
 	typedef etl::handle<TaskBlend> Handle;

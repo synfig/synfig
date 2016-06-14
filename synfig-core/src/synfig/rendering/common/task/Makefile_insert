@@ -19,7 +19,8 @@ RENDERING_COMMON_TASK_HH = \
 	rendering/common/task/tasksurfaceempty.h \
 	rendering/common/task/tasksurfaceresample.h \
 	rendering/common/task/tasktransformableaffine.h \
-	rendering/common/task/tasktransformation.h
+	rendering/common/task/tasktransformation.h \
+	rendering/common/task/tasktransformationpass.h
 
 RENDERING_COMMON_TASK_CC = \
 	rendering/common/task/taskblend.cpp \

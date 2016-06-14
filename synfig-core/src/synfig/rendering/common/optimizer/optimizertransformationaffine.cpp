@@ -38,7 +38,7 @@
 #include "optimizertransformationaffine.h"
 
 #include "../../primitive/affinetransformation.h"
-#include "../task/taskblend.h"
+#include "../task/tasktransformationpass.h"
 #include "../task/tasksolid.h"
 #include "../task/tasktransformation.h"
 #include "../task/tasktransformableaffine.h"
@@ -103,10 +103,10 @@ OptimizerTransformationAffine::recursive(Task::Handle &ref_task, const Matrix &m
 				return;
 			}
 
-			// apply affine transformation to sub-tasks of blend
-			if (TaskBlend::Handle blend = TaskBlend::Handle::cast_dynamic(transformation->sub_task()))
+			// apply affine transformation to sub-tasks of TransformationPass-tasks
+			if (transformation->sub_task().type_is<TaskTransformationPass>())
 			{
-				replace(ref_task, blend);
+				replace(ref_task, transformation->sub_task());
 				recursive(ref_task, affine_transformation->matrix * matrix);
 				return;
 			}
@@ -164,7 +164,7 @@ OptimizerTransformationAffine::recursive(Task::Handle &ref_task, const Matrix &m
 
 	if ( !m.is_identity() )
 	{
-		if ( TaskBlend::Handle::cast_dynamic(ref_task) )
+		if (ref_task.type_is<TaskTransformationPass>())
 		{
 			bool task_clonned = false;
 			for(Task::List::iterator i = ref_task->sub_tasks.begin(); i != ref_task->sub_tasks.end(); ++i)
