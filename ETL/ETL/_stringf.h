@@ -183,6 +183,9 @@ basename(const std::string &str)
 {
 	std::string::const_iterator iter;
 
+	if(str.empty())
+		return std::string();
+
 	if(str.size() == 1 && is_separator(str[0]))
 		return str;
 
@@ -208,6 +211,9 @@ inline std::string
 dirname(const std::string &str)
 {
 	std::string::const_iterator iter;
+
+	if(str.empty())
+		return std::string();
 
 	if(str.size() == 1 && is_separator(str[0]))
 		return str;

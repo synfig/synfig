@@ -661,23 +661,24 @@ Instance::generate_new_name(
 	out_filename_param.clear();
 
 	String description = layer->get_description();
-	String filename;
+	if (description.empty()) description = layer->get_local_name();
 
-	etl::handle<Layer_Bitmap> layer_bitmap = etl::handle<Layer_Bitmap>::cast_dynamic(layer);
-	if (layer_bitmap
-	 && layer_bitmap->surface.get_w() > 0
-	 && layer_bitmap->surface.get_h() > 0
-	 && layer_bitmap->get_param_list().count("filename"))
+	String filename;
+	if (layer->get_param_list().count("filename"))
 	{
-		ValueBase value = layer_bitmap->get_param("filename");
-		if (value.same_type_as(String()) && filename_extension(value.get(String())) == ".png")
+		ValueBase value = layer->get_param("filename");
+		if (value.same_type_as(String()))
 			filename = basename(value.get(String()));
 	}
+
+	if (filename.empty()) filename = description;
+	if (CanvasFileNaming::filename_extension_lower(filename) != "png")
+		filename += ".png";
 
 	assert(canvas->get_file_system());
 	String short_filename = CanvasFileNaming::generate_container_filename(canvas->get_file_system(), filename);
 	String full_filename = CanvasFileNaming::make_full_filename(canvas->get_file_name(), short_filename);
-	String base = etl::filename_sans_extension(etl::basename(short_filename));
+	String base = etl::filename_sans_extension(CanvasFileNaming::filename_base(short_filename));
 
 	out_description = base;
 	out_filename = full_filename;

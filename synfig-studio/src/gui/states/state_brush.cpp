@@ -779,7 +779,7 @@ StateBrush_Context::event_mouse_down_handler(const Smach::event& x)
 						->get_instance()
 						->generate_new_name(
 								layer,
-								NULL,
+								get_canvas(),
 								get_canvas()->get_file_system(),
 								description,
 								filename,

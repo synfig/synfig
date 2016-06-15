@@ -48,6 +48,7 @@ public:
 	static const String container_directory_separator;
 	static const String container_canvas_filename;
 
+	static String filename_base(const String &filename);
 	static String filename_extension_lower(const String &filename);
 	static String append_directory_separator(const String &path);
 

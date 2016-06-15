@@ -51,6 +51,16 @@ const String CanvasFileNaming::container_canvas_filename("project.sifz");
 
 
 String
+CanvasFileNaming::filename_base(const String &filename)
+{
+	String base = filename;
+	size_t pos;
+	while((pos = base.find(container_prefix)) != String::npos)
+		base.replace(pos, container_prefix.size(), container_directory_separator);
+	return etl::basename(base);
+}
+
+String
 CanvasFileNaming::filename_extension_lower(const String &filename)
 {
 	String ext = etl::filename_extension(filename);
@@ -86,16 +96,16 @@ CanvasFileNaming::make_short_filename(const String &canvas_filename, const Strin
 {
 	if (filename.empty()) return String();
 	String clean_filename = etl::cleanup_path(filename);
-	if (etl::basename(clean_filename).empty())
+	if (filename_base(clean_filename).empty())
 		clean_filename = etl::dirname(clean_filename);
-	if (etl::basename(clean_filename).empty()) return String();
+	if (filename_base(clean_filename).empty()) return String();
 
 	// any file inside container accessible without folder:
 	//     "#filename.png" equals to "#images/filename.png"
 	//     "#filename.pgo" equals to "#animations/filename.pgo"
 	if (clean_filename.substr(0, container_prefix.size()) == container_prefix)
 		return clean_filename.size() > container_prefix.size()
-			 ? container_prefix + etl::basename(clean_filename.substr(container_prefix.size()))
+			 ? container_prefix + filename_base(clean_filename.substr(container_prefix.size()))
 			 : String();
 
 	if (!etl::is_absolute_path(canvas_filename))
@@ -103,7 +113,7 @@ CanvasFileNaming::make_short_filename(const String &canvas_filename, const Strin
 
 	String canvas_absolute_filename = etl::absolute_path(canvas_filename);
 	String canvas_path = etl::dirname(canvas_absolute_filename);
-	String canvas_basename = etl::basename(canvas_absolute_filename);
+	String canvas_basename = filename_base(canvas_absolute_filename);
 	String absolute_filename = etl::absolute_path(canvas_path, clean_filename);
 	String relative_filename = etl::relative_path(canvas_path, absolute_filename);
 
@@ -111,7 +121,7 @@ CanvasFileNaming::make_short_filename(const String &canvas_filename, const Strin
 	String prefix = canvas_basename + container_prefix;
 	if (relative_filename.substr(0, prefix.size()) == prefix)
 		return relative_filename.size() > prefix.size()
-			 ? container_prefix + etl::basename(relative_filename.substr(prefix.size()))
+			 ? container_prefix + filename_base(relative_filename.substr(prefix.size()))
 			 : String();
 
 	if (!is_container_filename(canvas_basename))
@@ -122,7 +132,7 @@ CanvasFileNaming::make_short_filename(const String &canvas_filename, const Strin
 		if ( !content_folder.empty()
 		  && relative_filename.substr(0, prefix.size()) == prefix)
 			return relative_filename.size() > prefix.size()
-				 ? container_prefix + etl::basename(relative_filename.substr(prefix.size()))
+				 ? container_prefix + filename_base(relative_filename.substr(prefix.size()))
 				 : String();
 	}
 
@@ -134,7 +144,7 @@ CanvasFileNaming::make_full_filename(const String &canvas_filename, const String
 {
 	String short_filename = make_short_filename(canvas_filename, filename);
 	if (short_filename.empty()) return String();
-	if (etl::basename(short_filename).empty()) return String();
+	if (filename_base(short_filename).empty()) return String();
 
 	if (short_filename.substr(0, container_prefix.size()) == container_prefix)
 	{
@@ -143,7 +153,7 @@ CanvasFileNaming::make_full_filename(const String &canvas_filename, const String
 				                     ? content_folder + container_directory_separator
 				                     : String();
 		return short_filename.size() > container_prefix.size()
-			 ? container_prefix + content_folder_prefix + etl::basename(short_filename.substr(container_prefix.size()))
+			 ? container_prefix + content_folder_prefix + filename_base(short_filename.substr(container_prefix.size()))
 			 : String();
 	}
 
@@ -162,7 +172,7 @@ CanvasFileNaming::make_canvas_independent_filename(const String &canvas_filename
 {
 	String full_filename = make_full_filename(canvas_filename, filename);
 	if (full_filename.empty()) return String();
-	if (etl::basename(full_filename).empty()) return String();
+	if (filename_base(full_filename).empty()) return String();
 
 	if (full_filename.substr(0, container_prefix.size()) != container_prefix)
 		return full_filename;
@@ -179,23 +189,23 @@ CanvasFileNaming::make_canvas_independent_filename(const String &canvas_filename
 		return canvas_absolute_filename + full_filename;
 
 	String canvas_path = etl::dirname(canvas_absolute_filename);
-	String canvas_basename = etl::basename(canvas_absolute_filename);
+	String canvas_basename = filename_base(canvas_absolute_filename);
 	return canvas_path
 		 + ETL_DIRECTORY_SEPARATOR
 		 + canvas_basename
 		 + "."
 		 + content_folder
 		 + ETL_DIRECTORY_SEPARATOR
-		 + etl::basename(full_filename.substr(container_prefix.size()));
+		 + filename_base(full_filename.substr(container_prefix.size()));
 }
 
 String
 CanvasFileNaming::make_local_filename(const String &canvas_filename, const String &filename)
 {
 	if (filename.empty()) return String();
-	String base = etl::basename(filename);
+	String base = filename_base(filename);
 	if (base.empty())
-		base = etl::basename(etl::dirname(filename));
+		base = filename_base(etl::dirname(filename));
 	if (base.substr(0, container_prefix.size()) == container_prefix)
 		base = base.substr(container_prefix.size());
 
@@ -221,7 +231,7 @@ CanvasFileNaming::make_filesystem_container(const String &filename, FileContaine
 	else
 	{
 		String dir = etl::dirname(filename);
-		String base = etl::basename(filename);
+		String base = filename_base(filename);
 		String name = etl::filename_sans_extension(base);
 		String ext = filename_extension_lower(base);
 		String prefix = dir + ETL_DIRECTORY_SEPARATOR + name + ".";
@@ -298,12 +308,13 @@ CanvasFileNaming::can_embed(const String &filename)
 String
 CanvasFileNaming::generate_container_filename(const FileSystem::Handle &canvas_filesystem, const String &filename)
 {
-	String base = etl::basename(filename);
+	String base = filename_base(filename);
 	if (base.empty())
-		base = etl::basename(etl::dirname(filename));
+		base = filename_base(etl::dirname(filename));
 	if (base.substr(0, container_prefix.size()) == container_prefix)
 		base = base.substr(container_prefix.size());
 	String ext = filename_extension_lower(base);
+	base = etl::filename_sans_extension(base);
 	String content_folder = content_folder_by_extension(ext);
 	String content_prefix = content_folder.empty() ? String() : content_folder + container_directory_separator;
 
