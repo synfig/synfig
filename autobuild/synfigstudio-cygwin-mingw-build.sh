@@ -799,8 +799,8 @@ installonly_limit=3
 name=Fedora \$releasever - \$basearch
 failovermethod=priority
 #mirrorlist=http://mirrors.fedoraproject.org/metalink?repo=fedora-\$releasever&arch=\$basearch
-#baseurl=http://archive.fedoraproject.org/pub/archive/fedora/linux/releases/21/Everything/i386/os/
-baseurl=http://download.fedoraproject.org/pub/fedora/linux/releases/21/Everything/i386/os/
+baseurl=http://archives.fedoraproject.org/pub/archive/fedora/linux/releases/21/Everything/i386/os/
+#baseurl=http://download.fedoraproject.org/pub/fedora/linux/releases/21/Everything/i386/os/
 enabled=1
 metadata_expire=7d
 
@@ -808,8 +808,8 @@ metadata_expire=7d
 name=Fedora \$releasever - \$basearch - Updates
 failovermethod=priority
 #mirrorlist=http://mirrors.fedoraproject.org/metalink?repo=updates-released-f\$releasever&arch=\$basearch
-#baseurl=http://archive.fedoraproject.org/pub/archive/fedora/linux/updates/21/i386/
-baseurl=http://download.fedoraproject.org/pub/fedora/linux/updates/21/i386/
+baseurl=http://archives.fedoraproject.org/pub/archive/fedora/linux/updates/21/i386/
+#baseurl=http://download.fedoraproject.org/pub/fedora/linux/updates/21/i386/
 enabled=1
 EOF
 
@@ -929,9 +929,9 @@ fi
 install_fedora_env()
 {
 cd $WORKSPACE
-wget -c http://archive.fedoraproject.org/pub/archive/fedora/linux/releases/20/Everything/i386/os/Packages/y/yum-3.4.3-106.fc20.noarch.rpm
+wget -c http://archives.fedoraproject.org/pub/archive/fedora/linux/releases/20/Everything/i386/os/Packages/y/yum-3.4.3-106.fc20.noarch.rpm
 rpm -Uhv --force --ignoreos --nodeps yum-3.4.3-106.fc20.noarch.rpm
-wget -c http://archive.fedoraproject.org/pub/archive/fedora/linux/releases/20/Everything/i386/os/Packages/y/yum-utils-1.1.31-18.fc20.noarch.rpm
+wget -c http://archives.fedoraproject.org/pub/archive/fedora/linux/releases/20/Everything/i386/os/Packages/y/yum-utils-1.1.31-18.fc20.noarch.rpm
 rpm -Uhv --force --ignoreos --nodeps yum-utils-1.1.31-18.fc20.noarch.rpm
 #wget -c http://fedora.inode.at/fedora/linux/releases/21/Everything/i386/os/Packages/y/yum-3.4.3-153.fc21.noarch.rpm
 #rpm -Uhv --force --ignoreos --nodeps yum-3.4.3-153.fc21.noarch.rpm
