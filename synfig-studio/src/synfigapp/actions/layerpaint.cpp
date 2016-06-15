@@ -173,6 +173,15 @@ Action::LayerPaint::PaintStroke::add_point_and_apply(const PaintPoint &point)
 	{
 		Mutex::Lock lock(layer->mutex);
 		brush_.stroke_to(&wrapper, point.x, point.y, point.pressure, 0.f, 0.f, point.dtime);
+
+		// fix state in case of surface resized
+		float x = brush_.get_state(STATE_X) + wrapper.offset_x;
+		float y = brush_.get_state(STATE_Y) + wrapper.offset_y;
+		brush_.set_state(STATE_X, x);
+		brush_.set_state(STATE_Y, y);
+		brush_.set_state(STATE_ACTUAL_X, x);
+		brush_.set_state(STATE_ACTUAL_Y, y);
+
 		copy_to_cairo_surface(layer->surface, layer->csurface);
 		// TODO: optimize for hardware
 		layer->rendering_surface = new rendering::SurfaceSW();
