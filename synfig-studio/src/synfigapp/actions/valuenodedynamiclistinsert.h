@@ -56,6 +56,7 @@ private:
 	synfig::Time time;
 	synfig::Real origin;
 	int index;
+	bool force_link_radius;
 
 
 public:

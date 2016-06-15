@@ -31,6 +31,7 @@
 #endif
 
 #include <synfig/general.h>
+#include <synfig/valuenodes/valuenode_composite.h>
 
 #include "valuenodedynamiclistinsert.h"
 #include <synfigapp/canvasinterface.h>
@@ -68,6 +69,7 @@ Action::ValueNodeDynamicListInsert::ValueNodeDynamicListInsert()
 	time=0;
 	origin=0.5f;
 	set_dirty(true);
+	force_link_radius = false;
 }
 
 Action::ParamVocab
@@ -88,6 +90,10 @@ Action::ValueNodeDynamicListInsert::get_param_vocab()
 	);
 	ret.push_back(ParamDesc("item",Param::TYPE_VALUENODE)
 		.set_local_name(_("ValueNode to insert"))
+		.set_optional()
+	);
+	ret.push_back(ParamDesc("force_link_radius",Param::TYPE_BOOL)
+		.set_local_name(_("Force link radius"))
 		.set_optional()
 	);
 
@@ -136,10 +142,6 @@ Action::ValueNodeDynamicListInsert::set_param(const synfig::String& name, const 
 		if(!value_node) // Not a Dynamic list
 			return false;
 
-		list_entry=value_node->create_list_entry(index,time,origin);
-		if(item)
-			list_entry.value_node=item;
-		assert(list_entry.value_node.rcount()==1);
 		return true;
 
 	}
@@ -163,6 +165,12 @@ Action::ValueNodeDynamicListInsert::set_param(const synfig::String& name, const 
 
 		return true;
 	}
+	if(name=="force_link_radius" && param.get_type()==Param::TYPE_BOOL)
+	{
+		force_link_radius=param.get_bool();
+
+		return true;
+	}
 
 	return Action::CanvasSpecific::set_param(name,param);
 }
@@ -181,6 +189,20 @@ Action::ValueNodeDynamicListInsert::perform()
 	if(index>value_node->link_count())
 		index=value_node->link_count();
 
+	list_entry=value_node->create_list_entry(index,time,origin);
+	if(item)
+	{
+		list_entry.value_node=item;
+	}
+	else
+	if (force_link_radius)
+	{
+		ValueNode_Composite::Handle composite = ValueNode_Composite::Handle::cast_dynamic(list_entry.value_node);
+		if (composite && composite->get_type() == type_bline_point)
+			composite->set_link("split_radius", ValueNode_Const::create(false));
+	}
+	assert(list_entry.value_node.rcount()==1);
+
 	value_node->add(list_entry,index);
 	assert(list_entry.value_node.rcount()>=2);
 
@@ -196,6 +218,7 @@ Action::ValueNodeDynamicListInsert::perform()
 void
 Action::ValueNodeDynamicListInsert::undo()
 {
+	assert(list_entry);
 	assert(list_entry.value_node.rcount()>=2);
 	value_node->erase((value_node->list.begin()+index)->value_node);
 	assert(list_entry.value_node.rcount()>=1);

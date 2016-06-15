@@ -231,6 +231,7 @@ Action::ValueNodeDynamicListInsertSmart::prepare()
 			action->set_param("canvas_interface",get_canvas_interface());
 			action->set_param("time",time);
 			action->set_param("origin",origin);
+			if (!keep_shape) action->set_param("force_link_radius",true);
 			action->set_param("value_desc",ValueDesc(value_node,index));
 
 			if(!action->is_ready())
@@ -356,6 +357,7 @@ Action::ValueNodeDynamicListInsertSmart::prepare()
 		action->set_param("canvas_interface",get_canvas_interface());
 		action->set_param("time",time);
 		action->set_param("origin",origin);
+		if (!keep_shape) action->set_param("force_link_radius",true);
 		action->set_param("value_desc",ValueDesc(value_node,index));
 
 		if(!action->is_ready())
