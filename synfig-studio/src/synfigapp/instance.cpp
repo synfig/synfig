@@ -37,11 +37,16 @@
 #include "canvasinterface.h"
 #include <iostream>
 #include <synfig/context.h>
+#include <synfig/canvasfilenaming.h>
 #include <synfig/loadcanvas.h>
 #include <synfig/savecanvas.h>
+#include <synfig/filecontainerzip.h>
+#include <synfig/filesystem.h>
 #include <synfig/filesystemnative.h>
+#include <synfig/filesystemtemporary.h>
 #include <synfig/valuenodes/valuenode_add.h>
 #include <synfig/valuenodes/valuenode_composite.h>
+#include <synfig/valuenodes/valuenode_const.h>
 #include <synfig/valuenodes/valuenode_radialcomposite.h>
 #include <synfig/valuenodes/valuenode_reference.h>
 #include <synfig/valuenodes/valuenode_boneinfluence.h>
@@ -121,14 +126,11 @@ synfigapp::find_instance(etl::handle<synfig::Canvas> canvas)
 
 /* === M E T H O D S ======================================================= */
 
-Instance::Instance(etl::handle<synfig::Canvas> canvas, etl::handle< synfig::FileContainerTemporary > container):
+Instance::Instance(etl::handle<synfig::Canvas> canvas, synfig::FileSystemTemporary::Handle container):
 	CVSInfo(canvas->get_file_name()),
 	canvas_(canvas),
-	file_system_(new FileSystemGroup(FileSystemNative::instance())),
 	container_(container)
 {
-	file_system_->register_system("#", container_);
-
 	assert(canvas->is_root());
 
 	unset_selection_manager();
@@ -137,7 +139,7 @@ Instance::Instance(etl::handle<synfig::Canvas> canvas, etl::handle< synfig::File
 } // END of synfigapp::Instance::Instance()
 
 handle<Instance>
-Instance::create(etl::handle<synfig::Canvas> canvas, etl::handle< synfig::FileContainerTemporary > container)
+Instance::create(etl::handle<synfig::Canvas> canvas, synfig::FileSystemTemporary::Handle container)
 {
 	// Construct a new instance
 	handle<Instance> instance(new Instance(canvas, container));
@@ -181,101 +183,6 @@ Instance::find_canvas_interface(synfig::Canvas::Handle canvas)
 			return *iter;
 
 	return CanvasInterface::create(this,canvas);
-}
-
-bool
-Instance::save_canvas_callback(void *instance_ptr, synfig::Layer::ConstHandle layer, const std::string &param_name, std::string &filename)
-{
-	// todo: "container:" and "images" literals
-	Instance *instance = (Instance*)instance_ptr;
-
-	std::string actual_filename = filename;
-	if (actual_filename.substr(0, std::string("#").size()) == "#")
-		actual_filename = "#images/" + actual_filename.substr(std::string("#").size());
-
-	// skip already packed (or unpacked) files
-	bool file_already_in_container = actual_filename.substr(0, std::string("#").size()) == "#";
-	if (file_already_in_container && instance->save_canvas_into_container_) return false;
-	if (!file_already_in_container && !instance->save_canvas_into_container_) return false;
-
-	const std::string src_dir = instance->get_canvas()->get_file_path();
-	const std::string &dir = instance->save_canvas_reference_directory_;
-	const std::string &localdir = instance->save_canvas_reference_local_directory_;
-
-	std::string absolute_filename
-		  =	file_already_in_container  ? actual_filename
-		  : actual_filename.empty()           ? src_dir
-		  : is_absolute_path(actual_filename) ? actual_filename
-		  : cleanup_path(src_dir+ETL_DIRECTORY_SEPARATOR+actual_filename);
-
-	// is file already copied?
-	for(FileReferenceList::iterator i = instance->save_canvas_references_.begin(); i != instance->save_canvas_references_.end(); i++)
-	{
-		if (i->old_filename == absolute_filename)
-		{
-			FileReference r = *i;
-			r.layer = layer;
-			r.param_name = param_name;
-			instance->save_canvas_references_.push_back(r);
-			filename = r.new_filename;
-			return true;
-		}
-	}
-
-	// try to create directory
-	if (!instance->file_system_->directory_create(dir.substr(0,dir.size()-1)))
-		return false;
-
-	// generate new actual_filename
-	int i = 0;
-	std::string new_filename = basename(actual_filename);
-	while(instance->file_system_->is_exists(dir + new_filename))
-	{
-		new_filename = filename_sans_extension(basename(actual_filename))
-				     + strprintf("_%d", ++i)
-				     + filename_extension(actual_filename);
-	}
-
-	// try to copy file
-	if (!FileSystem::copy(instance->file_system_, absolute_filename, instance->file_system_, dir + new_filename))
-		return false;
-
-	// save information about copied file
-	FileReference r;
-	r.layer = layer;
-	r.param_name = param_name;
-	r.old_filename = absolute_filename;
-	r.new_filename = localdir + new_filename;
-	if (r.new_filename.substr(0, String("#images/").size())=="#images/")
-		r.new_filename = "#" + r.new_filename.substr(String("#images/").size());
-	instance->save_canvas_references_.push_back(r);
-
-	filename = r.new_filename;
-	return true;
-}
-
-void
-Instance::update_references_in_canvas(synfig::Canvas::Handle canvas)
-{
-	for(std::list<Canvas::Handle>::const_iterator i = canvas->children().begin(); i != canvas->children().end(); i++)
-		update_references_in_canvas(*i);
-
-	for(IndependentContext c = canvas->get_independent_context(); *c; c++)
-	{
-		for(FileReferenceList::iterator j = save_canvas_references_.begin(); j != save_canvas_references_.end();)
-		{
-			if (*c == j->layer)
-			{
-				ValueBase value;
-				value.set(j->new_filename);
-				(*c)->set_param(j->param_name, value);
-				(*c)->changed();
-				find_canvas_interface(get_canvas())->signal_layer_param_changed()(*c,j->param_name);
-				j = save_canvas_references_.erase(j);
-			}
-			else j++;
-		}
-	}
 }
 
 bool
@@ -375,26 +282,35 @@ Instance::import_external_canvas(Canvas::Handle canvas, std::map<Canvas*, Canvas
 	return false;
 }
 
-void
+etl::handle<Action::Group>
 Instance::import_external_canvases()
 {
+	synfigapp::Action::PassiveGrouper group(this, _("Import external canvases"));
 	std::map<Canvas*, Canvas::Handle> imported;
 	while(import_external_canvas(get_canvas(), imported));
+	return group.finish();
 }
 
-void Instance::save_surface(const synfig::Surface &surface, const synfig::String &filename)
+bool Instance::save_surface(const synfig::Surface &surface, const synfig::String &filename)
 {
-	if (surface.get_h() <= 0 || surface.get_w() <= 0) return;
+	if (surface.get_h() <= 0 || surface.get_w() <= 0)
+		return false;
 
 	String ext = filename_extension(filename);
-	if (ext.empty()) return;
+	if (ext.empty())
+		return false;
+
 	ext.erase(0, 1);
-	String tmpfile = FileContainerTemporary::generate_temporary_filename();
+	String tmpfile = FileSystemTemporary::generate_temporary_filename();
 
 	etl::handle<Target_Scanline> target =
 		etl::handle<Target_Scanline>::cast_dynamic(
 			Target::create(Target::ext_book()[ext],tmpfile,TargetParam()) );
-	if (!target) return;
+	if (!target)
+		return false;
+
+	bool success = true;
+
 	target->set_canvas(get_canvas());
 	RendDesc desc;
 	desc.set_w(surface.get_w());
@@ -406,100 +322,196 @@ void Instance::save_surface(const synfig::Surface &surface, const synfig::String
 	desc.set_frame_start(0);
 	desc.set_frame_end(0);
 	target->set_rend_desc(&desc);
-	target->add_frame(&surface);
+	if (success)
+		success = target->add_frame(&surface);
 	target = NULL;
 
-	FileSystem::copy(FileSystemNative::instance(), tmpfile, get_file_system(), filename);
+	if (success)
+		success = get_canvas()->get_file_system()->directory_create(etl::dirname(filename));
+	if (success)
+		success = FileSystem::copy(FileSystemNative::instance(), tmpfile, get_canvas()->get_file_system(), filename);
+
 	FileSystemNative::instance()->file_remove(tmpfile);
-}
 
-void
-Instance::embed_all(synfig::Canvas::Handle canvas, bool &success, bool &restart) {
-	etl::handle<CanvasInterface> canvas_interface = find_canvas_interface(canvas);
-
-	Action::ParamList paramList;
-	paramList.add("canvas",canvas);
-	paramList.add("canvas_interface",canvas_interface);
-
-	for(synfig::Canvas::iterator i = canvas->begin(); i != canvas->end(); ++i) {
-		// process layer
-		paramList.remove_all("layer").add("layer",*i);
-		if (Action::LayerEmbed::is_candidate(paramList)) {
-			Action::Handle action(Action::LayerEmbed::create());
-			if (action) {
-				action->set_param_list(paramList);
-				if(action->is_ready()) {
-					if(perform_action(action)) {
-						restart = true;
-						return;
-					}
-				}
-			}
-			success = false;
-		}
-
-		// process sub-canvas
-		etl::handle<Layer_PasteCanvas> layer_pastecanvas =
-			etl::handle<Layer_PasteCanvas>::cast_dynamic(*i);
-		if (layer_pastecanvas) {
-			synfig::Canvas::Handle sub_canvas = layer_pastecanvas->get_sub_canvas();
-			if (sub_canvas) {
-				embed_all(sub_canvas, success, restart);
-				if (restart) return;
-			}
-		}
-	}
-}
-
-
-bool
-Instance::embed_all() {
-	bool success = true;
-	bool restart = true;
-	while(restart) {
-		restart = false;
-		embed_all(get_canvas(), success, restart);
-	}
 	return success;
 }
 
-//! make relative filenames from animated valuenodes
-void Instance::convert_animated_filenames(const Canvas::Handle &canvas, const synfig::String &old_path, const synfig::String &new_path)
+void
+Instance::process_filename(const ProcessFilenamesParams &params, const synfig::String &filename, synfig::String &out_filename)
 {
-	for(Canvas::iterator i = canvas->begin(); i != canvas->end(); ++i)
+	String full_filename = CanvasFileNaming::make_full_filename(params.previous_canvas_filename, filename);
+	map<String, String>::const_iterator i = params.processed_files.find(full_filename);
+	if (i != params.processed_files.end())
+		{ out_filename = i->second; return; }
+
+	if (params.embed_files)
 	{
-		const Layer::DynamicParamList &dynamic_param_list = (*i)->dynamic_param_list();
-		Layer::DynamicParamList::const_iterator j = dynamic_param_list.find("filename");
-		if (j != dynamic_param_list.end())
+		if ( CanvasFileNaming::can_embed(filename)
+		  && !CanvasFileNaming::is_embeded(params.previous_canvas_filename, filename))
 		{
-			ValueNode_Animated::Handle valuenode_animated = ValueNode_Animated::Handle::cast_dynamic(j->second);
-			if (valuenode_animated)
+			String new_filename = CanvasFileNaming::generate_container_filename(get_canvas()->get_identifier().file_system, filename);
+			String new_full_filename = CanvasFileNaming::make_full_filename(get_canvas()->get_file_name(), out_filename);
+			if (FileSystem::copy(
+					params.previous_canvas_filesystem,
+					full_filename,
+					get_canvas()->get_identifier().file_system,
+					new_full_filename ))
 			{
-				WaypointList &waypoint_list = valuenode_animated->editable_waypoint_list();
-				for(WaypointList::iterator k = waypoint_list.begin(); k != waypoint_list.end(); ++k)
-				{
-					ValueNode_Const::Handle valuenode_const = ValueNode_Const::Handle::cast_dynamic(k->get_value_node());
-					if (valuenode_const && valuenode_const->get_type() == type_string)
-					{
-						String s = valuenode_const->get_value().get(String());
-						if (!s.empty() && s[0] != '#')
-						{
-							warning(old_path);
-							warning(new_path);
-							if (!is_absolute_path(s) && !old_path.empty()) s = old_path + ETL_DIRECTORY_SEPARATOR + s;
-							s = relative_path(new_path, s);
-							valuenode_const->set_value(s);
-						}
-					}
-				}
+				out_filename = new_filename;
+				params.processed_files[full_filename] = out_filename;
+				info("embed file: %s -> %s", filename.c_str(), out_filename.c_str());
+				return;
+			}
+			else
+			{
+				warning("Cannot embed file: %s", filename.c_str());
 			}
 		}
-
-		etl::handle<Layer_PasteCanvas> layer_paste_canvas = etl::handle<Layer_PasteCanvas>::cast_dynamic(*i);
-		if (layer_paste_canvas && layer_paste_canvas->get_sub_canvas() && !layer_paste_canvas->get_sub_canvas()->is_root())
-			convert_animated_filenames(Canvas::Handle(layer_paste_canvas->get_sub_canvas()), old_path, new_path);
 	}
 
+	out_filename = CanvasFileNaming::make_short_filename(params.canvas->get_file_name(), full_filename);
+	params.processed_files[full_filename] = out_filename;
+	info("refine filename: %s -> %s", filename.c_str(), out_filename.c_str());
+}
+
+void
+Instance::process_filenames(const ProcessFilenamesParams &params, const synfig::NodeHandle &node, bool self)
+{
+	if (!node || params.processed_nodes.count(node)) return;
+	params.processed_nodes.insert(node);
+
+	// ValueNodeConst
+	if (ValueNode_Const::Handle value_node = ValueNode_Const::Handle::cast_dynamic(node))
+	{
+		// allow to process valuenodes without canvas
+		if ( value_node->get_parent_canvas()
+		  && value_node->get_parent_canvas()->get_root() != params.canvas)
+			return;
+
+		ValueBase value = value_node->get_value();
+
+		if (self)
+		{
+			if (value.same_type_as(String()))
+			{
+				String filename = value.get(String());
+				String new_filename;
+				process_filename(params, filename, new_filename);
+				if (filename != new_filename)
+				{
+					params.processed_valuenodes[value_node] = filename;
+					value_node->set_value(new_filename);
+				}
+				return;
+			}
+			warning("Cannot process filename for node: %s", node->get_string().c_str());
+		}
+
+		if (value.can_get(Canvas::Handle()))
+			process_filenames(params, value.get(Canvas::Handle()));
+		return;
+	}
+
+	// ValueNode_Animated
+	if (ValueNode_Animated::Handle animated = ValueNode_Animated::Handle::cast_dynamic(node))
+	{
+		const WaypointList &waypoints = animated->waypoint_list();
+		for(WaypointList::const_iterator i = waypoints.begin(); i != waypoints.end(); ++i)
+			process_filenames(params, i->get_value_node(), self);
+		return;
+	}
+
+	// Followed node-types cannot by processed by it self (childs only)
+	if (self)
+		warning("Cannot process filename for node: %s", node->get_string().c_str());
+
+	// Canvas
+	if (Canvas::Handle canvas = Canvas::Handle::cast_dynamic(node))
+	{
+		if (canvas->get_root() != params.canvas) return;
+
+		// exported values
+		if (canvas->is_inline())
+		{
+			const ValueNodeList &list = canvas->value_node_list();
+			for(ValueNodeList::const_iterator i = list.begin(); i != list.end(); ++i)
+				process_filenames(params, *i);
+		}
+
+		// layers
+		for(Canvas::const_iterator i = canvas->begin(); i != canvas->end(); ++i)
+			process_filenames(params, *i);
+
+		return;
+	}
+
+	// Layer
+	if (Layer::Handle layer = Layer::Handle::cast_dynamic(node))
+	{
+		// skip layers without canvas
+		if ( !layer->get_canvas()
+		   || layer->get_canvas()->get_root() != params.canvas)
+			return;
+
+		const ParamVocab vocab = layer->get_param_vocab();
+		const Layer::DynamicParamList &dynamic_params = layer->dynamic_param_list();
+		for(ParamVocab::const_iterator i = vocab.begin(); i != vocab.end(); ++i)
+		{
+			Layer::DynamicParamList::const_iterator j = dynamic_params.find(i->get_name());
+			ValueNode::Handle value_node = j == dynamic_params.end() ? ValueNode::Handle() : ValueNode::Handle(j->second);
+
+			bool is_filename = i->get_hint() == "filename";
+			if (value_node)
+			{
+				process_filenames(params, value_node, is_filename);
+				continue;
+			}
+
+			ValueBase value = layer->get_param(i->get_name());
+
+			if (value.can_get(Canvas::Handle()))
+				process_filenames(params, value.get(Canvas::Handle()));
+
+			if (!is_filename || !value.same_type_as(String()))
+				continue;
+
+			String filename = value.get(String());
+			String new_filename;
+			process_filename(params, filename, new_filename);
+			if (filename != new_filename)
+			{
+				params.processed_params[std::make_pair(layer, i->get_name())] = filename;
+				layer->set_param(i->get_name(), new_filename);
+			}
+		}
+		return;
+	}
+
+	// LinkableValueNode
+	if (LinkableValueNode::Handle linkable = LinkableValueNode::Handle::cast_dynamic(node))
+	{
+		// allow to process valuenodes without canvas
+		if ( linkable->get_parent_canvas()
+		  && linkable->get_parent_canvas()->get_root() != params.canvas)
+			return;
+
+		const ParamVocab vocab = linkable->get_children_vocab();
+		for(ParamVocab::const_iterator i = vocab.begin(); i != vocab.end(); ++i)
+			process_filenames(params, ValueNode::Handle(linkable->get_link(i->get_name())), i->get_hint() == "filename");
+
+		return;
+	}
+}
+
+void
+Instance::process_filenames_undo(const ProcessFilenamesParams &params)
+{
+	// restore layer params
+	for(std::map<std::pair<Layer::Handle, String>, String>::const_iterator i = params.processed_params.begin(); i != params.processed_params.end(); ++i)
+		i->first.first->set_param(i->first.second, i->second);
+	// restore value nodes
+	for(std::map<ValueNode_Const::Handle, String>::const_iterator i = params.processed_valuenodes.begin(); i != params.processed_valuenodes.end(); ++i)
+		i->first->set_value(i->second);
 }
 
 bool
@@ -511,14 +523,13 @@ Instance::save()
 bool
 Instance::save_as(const synfig::String &file_name)
 {
-	if (filename_extension(file_name) == ".sfg") embed_all();
+	Canvas::Handle canvas = get_canvas();
+	bool is_filename_changed = file_name != canvas->get_file_name();
 
-	save_canvas_into_container_ = false;
-	bool embed_data = false;
-	bool extract_data = false;
-	std::string canvas_filename = file_name;
-
-	convert_animated_filenames(get_canvas(), absolute_path(get_canvas()->get_file_path()), absolute_path(dirname(file_name)));
+	FileSystem::Identifier previous_canvas_identifier = get_canvas()->get_identifier();
+	FileSystem::Handle previous_canvas_filesystem = previous_canvas_identifier.file_system;
+	FileSystemTemporary::Handle previous_container = get_container();
+	String previous_canvas_filename = get_canvas()->get_file_name();
 
 	// save bitmaps
 	std::set<Layer::Handle> layers_to_save_set;
@@ -533,67 +544,107 @@ Instance::save_as(const synfig::String &file_name)
 		ValueBase value = (*i)->get_param("filename");
 		if (!value.same_type_as(String())) continue;
 		String filename = value.get(String());
-		// TODO: literals '#' and 'images/'
-		if (!filename.empty() && filename[0] == '#')
-			filename.insert(1, "images/");
-		save_surface(layer_bitmap->surface, filename);
+		if (!save_surface(layer_bitmap->surface, filename))
+			warning("Cannot save image: %s", filename.c_str());
 	}
 
-	if (filename_extension(file_name) == ".sfg")
+	FileSystem::Identifier new_canvas_identifier = previous_canvas_identifier;
+	FileSystem::Handle new_canvas_filesystem = previous_canvas_filesystem;
+	FileSystemTemporary::Handle new_container = previous_container;
+	String new_canvas_filename = file_name;
+
+	if (is_filename_changed)
 	{
-		save_canvas_reference_directory_ = "#images/";
-		save_canvas_reference_local_directory_ = "#images/";
-		canvas_filename = "#project.sifz";
-		save_canvas_into_container_ = true;
-		embed_data = filename_extension(get_canvas()->get_file_name()) != ".sfg";
-	} else
-	{
-		save_canvas_reference_directory_ =
-			filename_sans_extension(file_name)
-		  + ".images"
-		  + ETL_DIRECTORY_SEPARATOR;
-		save_canvas_reference_local_directory_ =
-			filename_sans_extension(basename(file_name))
-		  + ".images"
-		  + ETL_DIRECTORY_SEPARATOR;
-		extract_data = filename_extension(get_canvas()->get_file_name()) == ".sfg";
+		// new canvas filesystem
+		FileSystem::Handle container = CanvasFileNaming::make_filesystem_container(new_canvas_filename, 0, true);
+		if (!container)
+		{
+			warning("Cannot create container: %s", new_canvas_filename.c_str());
+			return false;
+		}
+		new_container = new FileSystemTemporary(container);
+		new_canvas_filesystem = CanvasFileNaming::make_filesystem(new_container);
+		if (!new_canvas_filesystem)
+		{
+			warning("Cannot create canvas filesysem for: %s", new_canvas_filename.c_str());
+			return false;
+		}
+		new_canvas_identifier = new_canvas_filesystem->get_identifier(CanvasFileNaming::project_file(new_canvas_filename));
+
+		// copy embedded files
+		if (!FileSystem::copy_recursive(
+			previous_canvas_filesystem,
+			CanvasFileNaming::container_prefix,
+			new_canvas_filesystem,
+			CanvasFileNaming::container_prefix ))
+		{
+			new_canvas_filesystem->remove_recursive(CanvasFileNaming::container_prefix);
+			new_canvas_filesystem.reset();
+			new_container.reset();
+			container.reset();
+			FileSystemNative::instance()->file_remove(new_canvas_filename);
+			return false;
+		}
+
+		// remove previous canvas file
+		if (previous_canvas_identifier.filename != new_canvas_identifier.filename)
+			new_canvas_filesystem->file_remove(previous_canvas_identifier.filename);
+
+		// set new canvas filename
+		canvas->set_file_name(new_canvas_filename);
+		canvas->set_identifier(new_canvas_identifier);
+		container_ = new_container;
 	}
 
-	if (embed_data) import_external_canvases();
+	// find zip-container
+	FileContainerZip::Handle new_container_zip = FileContainerZip::Handle::cast_dynamic(new_container->get_sub_file_system());
+	bool embed_files = (bool)new_container_zip;
+	bool save_files = true;
 
-	bool ret;
+	etl::handle<Action::Group> import_external_canvases_action;
+	if (embed_files)
+		import_external_canvases_action = import_external_canvases();
 
-	String old_file_name(get_file_name());
+	// process filenames
+	ProcessFilenamesParams params(
+		canvas,
+		previous_canvas_filesystem,
+		previous_canvas_filename,
+		(bool)embed_files,
+		save_files );
+	process_filenames(params, canvas);
 
-	set_file_name(file_name);
-	get_canvas()->set_identifier(file_system_->get_identifier(canvas_filename));
-
-	if (embed_data || extract_data)
-		set_save_canvas_external_file_callback(save_canvas_callback, this);
-	else
-		set_save_canvas_external_file_callback(NULL, NULL);
-
-	ret = save_canvas(file_system_->get_identifier(canvas_filename),canvas_,!save_canvas_into_container_);
-
-	if (ret && save_canvas_into_container_)
-	   ret = container_->save_changes(file_name, false);
-
-	if (ret && (embed_data || extract_data))
-		update_references_in_canvas(get_canvas());
-	set_save_canvas_external_file_callback(NULL, NULL);
-	save_canvas_references_.clear();
-
-	if(ret)
-	{
+	// save
+	bool success = true;
+	if (success)
+		success = save_canvas(new_canvas_identifier, canvas, false);
+	if (success)
+		success = new_container->save_changes();
+	if (success && new_container_zip)
+		success = new_container_zip->save();
+	if (success)
 		reset_action_count();
+	if (success)
 		signal_saved_();
+
+	if (!success)
+	{
+		// undo
+		canvas->set_file_name(previous_canvas_filename);
+		canvas->set_identifier(previous_canvas_identifier);
+		container_ = previous_container;
+		process_filenames_undo(params);
+		new_canvas_filesystem->remove_recursive(CanvasFileNaming::container_prefix);
+		new_canvas_filesystem.reset();
+		new_container.reset();
+		FileSystemNative::instance()->file_remove(new_canvas_filename);
+		if (import_external_canvases_action)
+			import_external_canvases_action->undo();
 	}
-	else
-		set_file_name(old_file_name);
 
 	signal_filename_changed_();
 
-	return ret;
+	return success;
 }
 
 bool
@@ -623,39 +674,14 @@ Instance::generate_new_name(
 			filename = basename(value.get(String()));
 	}
 
-	// extract name from filename or from description
-	String name = filename.empty() ? description : filename_sans_extension(filename);
-	String ext = filename_extension(name);
-	if (ext.find_first_not_of(".0123456789") == String::npos)
-		name = filename_sans_extension(name);
-	for(size_t i = name.find("#", 0); i != String::npos; i = name.find("#", i))
-		name.erase(i, 1);
-	// if name based on description add extension
-	ext = filename.empty() ? ".png" : filename_extension(filename);
+	assert(canvas->get_file_system());
+	String short_filename = CanvasFileNaming::generate_container_filename(canvas->get_file_system(), filename);
+	String full_filename = CanvasFileNaming::make_full_filename(canvas->get_file_name(), short_filename);
+	String base = etl::filename_sans_extension(etl::basename(short_filename));
 
-	// generate new names
-	for(int i = 0; i < 10000; i++) {
-		bool valid = true;
-		String number = strprintf("%04d", i);
-		// TODO: literal '#'
-		String current_description = name + "." + number;
-		String current_filename = "#images/" + name + "." + number + ext;
-		String current_filename_param = "#" + name + "." + number + ext;
-		if (current_description == description || current_filename == filename)
-			valid = false;
-		if (valid && canvas)
-			for(IndependentContext ic = canvas->get_independent_context(); *ic; ic++)
-				if ((*ic)->get_description() == current_description)
-					{ valid = false; break; }
-		if (valid && file_system && file_system->is_exists(current_filename))
-			valid = false;
-		if (valid) {
-			out_description = current_description;
-			out_filename = current_filename;
-			out_filename_param = current_filename_param;
-			break;
-		}
-	}
+	out_description = base;
+	out_filename = full_filename;
+	out_filename_param = short_filename;
 
 	return true;
 }

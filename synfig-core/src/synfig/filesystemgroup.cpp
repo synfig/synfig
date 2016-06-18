@@ -29,6 +29,10 @@
 #	include <config.h>
 #endif
 
+#include <set>
+
+#include <ETL/stringf>
+
 #include "filesystemgroup.h"
 
 #endif
@@ -49,125 +53,179 @@ using namespace synfig;
 
 FileSystemGroup::FileSystemGroup() { }
 
-FileSystemGroup::FileSystemGroup(Handle default_file_system)
+FileSystemGroup::FileSystemGroup(FileSystem::Handle default_file_system)
 {
-	if (default_file_system) register_system(std::string(), default_file_system);
+	if (default_file_system) register_system(String(), default_file_system, String(), true);
 }
 
-bool FileSystemGroup::find_system(const std::string &filename, Handle &out_file_system, std::string &out_filename)
+const FileSystemGroup::Entry* FileSystemGroup::find_system(const String &filename, FileSystem::Handle &out_file_system, String &out_filename)
 {
+	String clean_filename = etl::cleanup_path(filename);
 	for(std::list< Entry >::iterator i = entries_.begin(); i != entries_.end(); i++)
 	{
-		if (filename.substr(0, i->prefix.size()) == i->prefix)
+		if ( clean_filename.substr(0, i->prefix.size()) == i->prefix
+		  && ( i->is_separator
+			|| clean_filename.size() == i->prefix.size()
+			|| clean_filename[i->prefix.size()] == ETL_DIRECTORY_SEPARATOR0
+			|| clean_filename[i->prefix.size()] == ETL_DIRECTORY_SEPARATOR1 ))
 		{
-			out_file_system = i->file_system;
-			out_filename = filename.substr(i->prefix.size());
-			return true;
+			String sub_name = clean_filename.substr(i->prefix.size());
+			if (!i->prefix.empty() && !sub_name.empty() && (sub_name[0] == ETL_DIRECTORY_SEPARATOR0 || sub_name[0] == ETL_DIRECTORY_SEPARATOR1))
+				sub_name = sub_name.substr(1);
+			out_file_system = i->sub_file_system;
+			out_filename = i->sub_prefix.empty() || sub_name.empty()
+						 ? i->sub_prefix + sub_name
+				         : i->sub_prefix + ETL_DIRECTORY_SEPARATOR + sub_name;
+			return &*i;
 		}
 	}
 
 	out_file_system.reset();
 	out_filename.clear();
-	return false;
+	return NULL;
 }
 
-void FileSystemGroup::register_system(const std::string &prefix, FileSystem::Handle file_system)
+void FileSystemGroup::register_system(const String &prefix, const FileSystem::Handle &sub_file_system, const String &sub_prefix, bool is_separator)
 {
-	if (file_system)
+	if (sub_file_system)
 	{
 		// keep list sorted by length of prefix desc
 		for(std::list< Entry >::iterator i = entries_.begin(); i != entries_.end(); i++)
 		{
 			if (i->prefix == prefix)
 			{
-				i->file_system = file_system;
+				i->sub_file_system = sub_file_system;
+				i->sub_prefix = sub_prefix;
+				i->is_separator = is_separator;
 				return;
 			}
 			if (i->prefix.size() <= prefix.size())
 			{
-				entries_.insert( i, Entry(prefix, file_system) );
+				entries_.insert( i, Entry(prefix, sub_file_system, sub_prefix, is_separator) );
 				return;
 			}
 		}
-		entries_.push_back( Entry(prefix, file_system) );
+		entries_.push_back( Entry(prefix, sub_file_system, sub_prefix, is_separator) );
 	}
 }
 
-void FileSystemGroup::unregister_system(const std::string &prefix)
+void FileSystemGroup::unregister_system(const String &prefix)
 {
 	for(std::list< Entry >::iterator i = entries_.begin(); i != entries_.end();)
 		if (i->prefix == prefix)
 			i = entries_.erase(i); else i++;
 }
 
-bool FileSystemGroup::is_file(const std::string &filename)
+bool FileSystemGroup::is_file(const String &filename)
 {
-	Handle file_system;
-	std::string internal_filename;
+	FileSystem::Handle file_system;
+	String internal_filename;
 	return find_system(filename, file_system, internal_filename)
 	    && file_system->is_file(internal_filename);
 }
 
-bool FileSystemGroup::is_directory(const std::string &filename)
+bool FileSystemGroup::is_directory(const String &filename)
 {
-	Handle file_system;
-	std::string internal_filename;
+	if (filename.empty()) return true;
+	FileSystem::Handle file_system;
+	String internal_filename;
 	return find_system(filename, file_system, internal_filename)
 	    && file_system->is_directory(internal_filename);
 }
 
-bool FileSystemGroup::directory_create(const std::string &dirname)
+bool FileSystemGroup::directory_create(const String &dirname)
 {
-	Handle file_system;
-	std::string internal_dirname;
+	FileSystem::Handle file_system;
+	String internal_dirname;
 	return find_system(dirname, file_system, internal_dirname)
 	    && file_system->directory_create(internal_dirname);
 }
 
-bool FileSystemGroup::file_remove(const std::string &filename)
+bool FileSystemGroup::directory_scan(const String &dirname, FileList &out_files)
 {
-	Handle file_system;
-	std::string internal_filename;
+	out_files.clear();
+	if (!is_directory(dirname)) return false;
+
+	std::set<String> files;
+
+	FileSystem::Handle file_system;
+	String internal_dirname;
+	if (find_system(dirname, file_system, internal_dirname))
+	{
+		FileList list;
+		if (!file_system->directory_scan(internal_dirname, list))
+			return false;
+		for(FileList::const_iterator i = list.begin(); i != list.end(); ++i)
+			files.insert(*i);
+	}
+
+	String clean_dirname = etl::cleanup_path(dirname);
+	for(std::list< Entry >::iterator i = entries_.begin(); i != entries_.end(); i++)
+		if (!i->is_separator && !i->prefix.empty() && clean_dirname == etl::dirname(i->prefix))
+		{
+			if (is_exists(i->prefix))
+				files.insert(etl::basename(i->prefix));
+			else
+				files.erase(etl::basename(i->prefix));
+		}
+
+	for(std::set<String>::const_iterator i = files.begin(); i != files.end(); ++i)
+		out_files.push_back(*i);
+
+	return true;
+}
+
+bool FileSystemGroup::file_remove(const String &filename)
+{
+	if (!is_exists(filename)) return true;
+	FileSystem::Handle file_system;
+	String internal_filename;
 	return find_system(filename, file_system, internal_filename)
 	    && file_system->file_remove(internal_filename);
 }
 
-bool FileSystemGroup::file_rename(const std::string &from_filename, const std::string &to_filename)
+bool FileSystemGroup::file_rename(const String &from_filename, const String &to_filename)
 {
-	// move file across file systems not supported
-	Handle from_file_system, to_file_system;
-	std::string from_internal_filename, to_internal_filename;
-	return find_system(from_filename, from_file_system, from_internal_filename)
-	    && find_system(to_filename, to_file_system, to_internal_filename)
-	    && from_file_system == to_file_system
-	    && from_file_system->file_rename(from_internal_filename, to_internal_filename);
+	FileSystem::Handle from_file_system, to_file_system;
+	String from_internal_filename, to_internal_filename;
+
+	if (!find_system(from_filename, from_file_system, from_internal_filename))
+		return false;
+	if (!find_system(to_filename, to_file_system, to_internal_filename))
+		return false;
+
+	if (from_file_system == to_file_system)
+	    return from_file_system->file_rename(from_internal_filename, to_internal_filename);
+
+	// move file across file systems
+	return FileSystem::file_rename(from_filename, to_filename);
 }
 
-FileSystem::ReadStreamHandle FileSystemGroup::get_read_stream(const std::string &filename)
+FileSystem::ReadStream::Handle FileSystemGroup::get_read_stream(const String &filename)
 {
-	Handle file_system;
-	std::string internal_filename;
+	FileSystem::Handle file_system;
+	String internal_filename;
 	return find_system(filename, file_system, internal_filename)
 	     ? file_system->get_read_stream(internal_filename)
-	     : ReadStreamHandle();
+	     : FileSystem::ReadStream::Handle();
 }
 
-FileSystem::WriteStreamHandle FileSystemGroup::get_write_stream(const std::string &filename)
+FileSystem::WriteStream::Handle FileSystemGroup::get_write_stream(const String &filename)
 {
-	Handle file_system;
-	std::string internal_filename;
+	FileSystem::Handle file_system;
+	String internal_filename;
 	return find_system(filename, file_system, internal_filename)
 	     ? file_system->get_write_stream(internal_filename)
-	     : WriteStreamHandle();
+	     : FileSystem::WriteStream::Handle();
 }
 
-std::string FileSystemGroup::get_real_uri(const std::string &filename)
+String FileSystemGroup::get_real_uri(const String &filename)
 {
-	Handle file_system;
-	std::string internal_filename;
+	FileSystem::Handle file_system;
+	String internal_filename;
 	return find_system(filename, file_system, internal_filename)
 		 ? file_system->get_real_uri(internal_filename)
-		 : std::string();
+		 : String();
 }
 
 /* === E N T R Y P O I N T ================================================= */

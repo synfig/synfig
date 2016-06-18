@@ -551,7 +551,8 @@ Action::PassiveGrouper::PassiveGrouper(etl::loose_handle<System> instance_,synfi
 	instance_(instance_),
 	name_(name_),
 	redraw_requested_(false),
-	depth_(0)
+	depth_(0),
+	finished_(false)
 {
 	// Add this group onto the group stack
 	instance_->group_stack_.push_front(this);
@@ -590,7 +591,15 @@ Action::PassiveGrouper::request_redraw(etl::handle<CanvasInterface> x)
 }
 
 Action::PassiveGrouper::~PassiveGrouper()
+	{ if (!finished_) finish(); }
+
+etl::handle<Action::Group>
+Action::PassiveGrouper::finish()
 {
+	assert(!finished_);
+	if (finished_) return etl::handle<Action::Group>();
+	finished_ = true;
+
 	assert(instance_->group_stack_.front()==this);
 
 	// Remove this group from the group stack
@@ -684,11 +693,16 @@ Action::PassiveGrouper::~PassiveGrouper()
 			redraw_requested_=false;
 		}
 	}
+
+	return group;
 }
 
 void
 Action::PassiveGrouper::cancel()
 {
+	assert(!finished_);
+	if (finished_) return;
+
 	bool error=false;
 
 	// Cancel any groupers that may be on top of us first

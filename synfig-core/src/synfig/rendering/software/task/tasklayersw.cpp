@@ -41,6 +41,7 @@
 #include <synfig/guid.h>
 #include <synfig/canvas.h>
 #include <synfig/context.h>
+#include <synfig/debug/debugsurface.h>
 
 #include <synfig/layers/layer_rendering_task.h>
 
@@ -82,13 +83,21 @@ TaskLayerSW::run(RunParams & /* params */) const
 	etl::handle<Layer_RenderingTask> sub_layer(new Layer_RenderingTask());
 	sub_layer->tasks = sub_tasks;
 
+	//for(List::const_iterator i = sub_tasks.begin(); i != sub_tasks.end(); ++i)
+	//	if ((*i) && (*i)->valid_target())
+	//		debug::DebugSurface::save_to_file(SurfaceSW::Handle::cast_dynamic( (*i)->target_surface )->get_surface(), "TaskLayerSW__run__sub");
+
 	CanvasBase fake_canvas_base;
 	fake_canvas_base.push_back(layer);
 	fake_canvas_base.push_back(sub_layer);
 	fake_canvas_base.push_back(Layer::Handle());
 
 	Context context(fake_canvas_base.begin(), ContextParams());
-	return context.accelerated_render(&target, 4, desc, NULL);
+	bool result = context.accelerated_render(&target, 4, desc, NULL);
+
+	//debug::DebugSurface::save_to_file(target, "TaskLayerSW__run__target");
+
+	return result;
 }
 
 /* === E N T R Y P O I N T ================================================= */

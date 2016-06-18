@@ -3469,11 +3469,11 @@ CanvasParser::parse_from_file_as(const FileSystem::Identifier &identifier,const 
 		total_warnings_=0;
 		
 		synfig::info(String("Loading file: ") + filename);
-		FileSystem::ReadStreamHandle stream = identifier.get_read_stream();
+		FileSystem::ReadStream::Handle stream = identifier.get_read_stream();
 		if (stream)
 		{
 			if (filename_extension(identifier.filename) == ".sifz")
-				stream = FileSystem::ReadStreamHandle(new ZReadStream(stream));
+				stream = FileSystem::ReadStream::Handle(new ZReadStream(stream));
 
 			xmlpp::DomParser parser;
 			parser.parse_stream(*stream);

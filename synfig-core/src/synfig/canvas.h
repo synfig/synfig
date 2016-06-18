@@ -539,9 +539,6 @@ public:
 	*/
 	ConstHandle find_canvas(const String &id, String &warnings)const;
 
-	//! Sets the file path for the Canvas
-	//void set_file_path(const String &);
-
 	//! Returns the file path from the file name
 	String get_file_path()const;
 
@@ -550,6 +547,9 @@ public:
 
 	//! Gets the filename (with path)
 	String get_file_name()const;
+
+	//! Gets file_system of the canvas
+	FileSystem::Handle get_file_system()const;
 
 	//! Sets the file identifier
 	void set_identifier(const FileSystem::Identifier &);
@@ -655,6 +655,8 @@ public:
 #endif	// _DEBUG
 
 private:
+	//! Sets parent and raises on_parent_set event
+	void set_parent(const Canvas::LooseHandle &parent);
 	//! Adds a \layer to a group given by its \group string to the group
 	//! database
 	void add_group_pair(String group, etl::handle<Layer> layer);
@@ -669,6 +671,8 @@ private:
 	void disconnect_connections(etl::loose_handle<Layer> layer);
 
 protected:
+	//! Parent changed
+	virtual void on_parent_set();
 	//! Sets the Canvas to dirty and calls Node::on_changed()
 	virtual void on_changed();
 	//! Collects the times (TimePoints) of the Layers of the Canvas and

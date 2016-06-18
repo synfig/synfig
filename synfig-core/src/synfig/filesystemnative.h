@@ -41,12 +41,16 @@ namespace synfig
 	class FileSystemNative : public FileSystem
 	{
 	public:
+		typedef etl::handle<FileSystemNative> Handle;
+
 		class ReadStream : public FileSystem::ReadStream
 		{
+		public:
+			typedef etl::handle<ReadStream> Handle;
 		protected:
 			friend class FileSystemNative;
 			FILE *file_;
-			ReadStream(Handle file_system, FILE *file);
+			ReadStream(FileSystem::Handle file_system, FILE *file);
 			virtual size_t internal_read(void *buffer, size_t size);
 		public:
 			virtual ~ReadStream();
@@ -54,35 +58,38 @@ namespace synfig
 
 		class WriteStream : public FileSystem::WriteStream
 		{
+		public:
+			typedef etl::handle<ReadStream> Handle;
 		protected:
 			friend class FileSystemNative;
 			FILE *file_;
-			WriteStream(Handle file_system, FILE *file_);
+			WriteStream(FileSystem::Handle file_system, FILE *file_);
 			virtual size_t internal_write(const void *buffer, size_t size);
 		public:
 			virtual ~WriteStream();
 		};
 
 	private:
-		static const etl::handle< FileSystemNative > instance__;
+		static const Handle instance__;
 		FileSystemNative();
 
 	public:
-		static const etl::handle< FileSystemNative >& instance()
+		static const Handle& instance()
 			{ return instance__; }
 
 		virtual ~FileSystemNative();
 
-		virtual bool is_file(const std::string &filename);
-		virtual bool is_directory(const std::string &filename);
+		virtual bool is_file(const String &filename);
+		virtual bool is_directory(const String &filename);
 
-		virtual bool directory_create(const std::string &dirname);
+		virtual bool directory_create(const String &dirname);
+		virtual bool directory_scan(const String &dirname, FileList &out_files);
 
-		virtual bool file_remove(const std::string &filename);
-		virtual bool file_rename(const std::string &from_filename, const std::string &to_filename);
-		virtual ReadStreamHandle get_read_stream(const std::string &filename);
-		virtual WriteStreamHandle get_write_stream(const std::string &filename);
-		virtual std::string get_real_uri(const std::string &filename);
+		virtual bool file_remove(const String &filename);
+		virtual bool file_rename(const String &from_filename, const String &to_filename);
+		virtual FileSystem::ReadStream::Handle get_read_stream(const String &filename);
+		virtual FileSystem::WriteStream::Handle get_write_stream(const String &filename);
+		virtual String get_real_uri(const String &filename);
 	};
 
 }

@@ -49,19 +49,19 @@ using namespace synfig;
 
 // ReadStream
 
-FileContainer::ReadStream::ReadStream(Handle file_system):
+FileContainer::ReadStream::ReadStream(FileSystem::Handle file_system):
 	FileSystem::ReadStream(file_system) { }
 
 FileContainer::ReadStream::~ReadStream()
 {
-	etl::handle< FileContainer > container ( etl::handle< FileContainer >::cast_static(file_system_) );
+	FileContainer::Handle container( FileContainer::Handle::cast_static(file_system_) );
 	if (container->stream_valid_) container->file_close();
 	container->stream_opened_ = false;
 }
 
 size_t FileContainer::ReadStream::internal_read(void *buffer, size_t size)
 {
-	etl::handle< FileContainer > container ( etl::handle< FileContainer >::cast_static(file_system_) );
+	FileContainer::Handle container( FileContainer::Handle::cast_static(file_system_) );
 	if (!container->stream_valid_) return 0;
 	return container->file_read(buffer, size);
 }
@@ -69,19 +69,19 @@ size_t FileContainer::ReadStream::internal_read(void *buffer, size_t size)
 
 // WriteStream
 
-FileContainer::WriteStream::WriteStream(Handle file_system):
+FileContainer::WriteStream::WriteStream(FileSystem::Handle file_system):
 	FileSystem::WriteStream(file_system) { }
 
 FileContainer::WriteStream::~WriteStream()
 {
-	etl::handle< FileContainer > container ( etl::handle< FileContainer >::cast_static(file_system_) );
+	FileContainer::Handle container( FileContainer::Handle::cast_static(file_system_) );
 	if (container->stream_valid_) container->file_close();
 	container->stream_opened_ = false;
 }
 
 size_t FileContainer::WriteStream::internal_write(const void *buffer, size_t size)
 {
-	etl::handle< FileContainer > container ( etl::handle< FileContainer >::cast_static(file_system_) );
+	FileContainer::Handle container( FileContainer::Handle::cast_static(file_system_) );
 	if (!container->stream_valid_) return 0;
 	return container->file_write(buffer, size);
 }
@@ -97,31 +97,31 @@ bool FileContainer::file_open_read_whole_container() { return false; }
 
 void FileContainer::file_close() { stream_valid_ = false; }
 
-FileSystem::ReadStreamHandle FileContainer::get_read_stream_whole_container()
+FileSystem::ReadStream::Handle FileContainer::get_read_stream_whole_container()
 {
 	if (stream_opened_ || !file_open_read_whole_container())
-		return ReadStreamHandle();
+		return ReadStream::Handle();
 	stream_opened_ = true;
 	stream_valid_ = true;
-	return ReadStreamHandle(new ReadStream(this));
+	return ReadStream::Handle(new ReadStream(this));
 }
 
-FileSystem::ReadStreamHandle FileContainer::get_read_stream(const std::string &filename)
+FileSystem::ReadStream::Handle FileContainer::get_read_stream(const String &filename)
 {
 	if (stream_opened_ || !file_open_read(filename))
-		return ReadStreamHandle();
+		return ReadStream::Handle();
 	stream_opened_ = true;
 	stream_valid_ = true;
-	return ReadStreamHandle(new ReadStream(this));
+	return ReadStream::Handle(new ReadStream(this));
 }
 
-FileSystem::WriteStreamHandle FileContainer::get_write_stream(const std::string &filename)
+FileSystem::WriteStream::Handle FileContainer::get_write_stream(const String &filename)
 {
 	if (stream_opened_ || !file_open_write(filename))
-		return WriteStreamHandle();
+		return WriteStream::Handle();
 	stream_opened_ = true;
 	stream_valid_ = true;
-	return WriteStreamHandle(new WriteStream(this));
+	return WriteStream::Handle(new WriteStream(this));
 }
 
 

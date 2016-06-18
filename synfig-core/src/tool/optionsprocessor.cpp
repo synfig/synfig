@@ -37,6 +37,7 @@
 #include <synfig/general.h>
 #include <synfig/localization.h>
 #include <synfig/canvas.h>
+#include <synfig/canvasfilenaming.h>
 #include <synfig/context.h>
 #include <synfig/target.h>
 #include <synfig/layer.h>
@@ -506,22 +507,14 @@ Job OptionsProcessor::extract_job()
 		string errors, warnings;
 		try
 		{
-			// todo: literals ".sfg", "container:", "project.sifz"
-			if (bfs::path(job.filename).extension().string() == ".sfg")
+			if (FileSystem::Handle file_system = CanvasFileNaming::make_filesystem(job.filename))
 			{
-				etl::handle< FileContainerZip > container = new FileContainerZip();
-				if (container->open(job.filename))
-				{
-					etl::handle< FileSystemGroup > file_system( new FileSystemGroup(FileSystemNative::instance()) );
-					file_system->register_system("#", container);
-					job.root = open_canvas_as(file_system->get_identifier("#project.sifz"), job.filename, errors, warnings);
-				} else
-				{
-					errors.append("Cannot open container " + job.filename + "\n");
-				}
-			} else
+				FileSystem::Identifier identifier = file_system->get_identifier(CanvasFileNaming::project_file(job.filename));
+				job.root = open_canvas_as(identifier, job.filename, errors, warnings);
+			}
+			else
 			{
-				job.root = open_canvas_as(FileSystemNative::instance()->get_identifier(job.filename), job.filename, errors, warnings);
+				errors.append("Cannot open container " + job.filename + "\n");
 			}
 		}
 		catch(runtime_error& x)
@@ -612,22 +605,14 @@ Job OptionsProcessor::extract_job()
 
 		std::string errors, warnings;
 		Canvas::Handle composite;
-		// todo: literals ".sfg", "container:", "project.sifz"
-		if (bfs::path(composite_file).extension() == ".sfg")
+		if (FileSystem::Handle file_system = CanvasFileNaming::make_filesystem(composite_file))
 		{
-			etl::handle< FileContainerZip > container = new FileContainerZip();
-			if (container->open(job.filename))
-			{
-				etl::handle< FileSystemGroup > file_system( new FileSystemGroup(FileSystemNative::instance()) );
-				file_system->register_system("#", container);
-				job.root = open_canvas_as(file_system->get_identifier("#project.sifz"), composite_file, errors, warnings);
-			} else
-			{
-				errors.append("Cannot open container " + composite_file + "\n");
-			}
-		} else
+			FileSystem::Identifier identifier = file_system->get_identifier(CanvasFileNaming::project_file(composite_file));
+			composite = open_canvas_as(identifier, composite_file, errors, warnings);
+		}
+		else
 		{
-			composite = open_canvas_as(FileSystemNative::instance()->get_identifier(composite_file), composite_file, errors, warnings);
+			errors.append("Cannot open container " + composite_file + "\n");
 		}
 
 		if(!composite)
@@ -648,35 +633,7 @@ Job OptionsProcessor::extract_job()
 
 		VERBOSE_OUT(2) << _("Appended contents of ") << composite_file << endl;
 	}
-	/*=== This is a code that comes from bones branch
-	      possibly it is the solution for multi-appending mentioned before ====
-	// Extract composite
-	do{
-		string composite_file;
-		extract_append(imageargs,composite_file);
-		if(!composite_file.empty())
-		{
-			String errors, warnings;
-			Canvas::Handle composite(open_canvas_as(FileSystemNative::instance()->get_identifier(composite_file), composite_file, errors, warnings));
-			if(!composite)
-			{
-				cerr<<_("Unable to append '")<<composite_file<<"'."<<endl;
-				break;
-			}
-			Canvas::reverse_iterator iter;
-			for(iter=composite->rbegin();iter!=composite->rend();++iter)
-			{
-				Layer::Handle layer(*iter);
-				//if(layer->active())
-					job_list.front().canvas->push_front(layer->clone(composite));
-			}
-			VERBOSE_OUT(2)<<_("Appended contents of ")<<composite_file<<endl;
-		}
-	} while(false);
 
-	VERBOSE_OUT(4)<<_("Attempting to determine target/outfile...")<<endl;
-	>>>>>>> genete_bones
-	 */
 	if (_vm.count("list-canvases") || _vm.count("canvases"))
 	{
 		print_child_canvases(job.filename + "#", job.root);

@@ -38,6 +38,7 @@
 
 #include <synfig/localization.h>
 #include <synfig/general.h>
+#include <synfig/canvasfilenaming.h>
 
 #include "valuenode_animatedfile.h"
 #include "valuenode_const.h"
@@ -189,34 +190,48 @@ ValueNode_AnimatedFile::file_changed()
 void
 ValueNode_AnimatedFile::load_file(const String &filename, bool forse)
 {
-	if (current_filename == filename && !forse) return;
 	if ( !get_parent_canvas()
-	  || !get_parent_canvas()->get_identifier().file_system ) return;
+	  || !get_parent_canvas()->get_file_system() ) return;
+
+	String optimized_filename = filename;
+
+	// Get rid of any %20 crap
+	for(String::size_type n; (n = optimized_filename.find("%20")) != String::npos;)
+		optimized_filename.replace(n,3," ");
+
+	String full_filename = CanvasFileNaming::make_full_filename(get_parent_canvas()->get_file_name(), optimized_filename);
+	String local_filename = CanvasFileNaming::make_local_filename(get_parent_canvas()->get_file_name(), full_filename);
+	String independent_filename = CanvasFileNaming::make_canvas_independent_filename(get_parent_canvas()->get_file_name(), full_filename);
+
+	if (current_filename == independent_filename && !forse) return;
+	current_filename = independent_filename;
 
 	internal->file_monitor.clear();
 	filefields.clear();
 	erase_all();
 
-	if (!filename.empty())
+	if (!full_filename.empty())
 	{
 		// Read papagayo file
-		if ( filename_extension(filename) == ".pgo"
+		if ( CanvasFileNaming::filename_extension_lower(full_filename) == "pgo"
 		  && get_type() == type_string )
 		{
-			FileSystem::ReadStreamHandle rs = get_parent_canvas()->get_identifier().file_system->get_read_stream(filename);
+			FileSystem::ReadStream::Handle rs = get_parent_canvas()->get_file_system()->get_read_stream(full_filename);
+			if (!rs)
+				FileSystem::ReadStream::Handle rs = get_parent_canvas()->get_file_system()->get_read_stream(local_filename);
+
 			map<Time, String> phonemes;
 			if (!rs)
-				error("Cannot open .pgo file: %s", filename.c_str());
+				error("Cannot open .pgo file: %s", full_filename.c_str());
 			else
 			if (Parser::parse_pgo(*rs, phonemes, filefields))
 				for(map<Time, String>::const_iterator i = phonemes.begin(); i != phonemes.end(); ++i)
 					new_waypoint(i->first, i->second);
 		}
 
-		String uri = get_parent_canvas()->get_identifier().file_system->get_real_uri(filename);
+		String uri = get_parent_canvas()->get_identifier().file_system->get_real_uri(full_filename);
 		if (!uri.empty())
 		{
-			String filename_noref = filename;
 			internal->file_monitor = Gio::File::create_for_uri(uri.c_str())->monitor_file();
 			internal->file_monitor->signal_changed().connect(
 				sigc::hide( sigc::hide( sigc::hide(
@@ -225,7 +240,6 @@ ValueNode_AnimatedFile::load_file(const String &filename, bool forse)
 	}
 
 	ValueNode_AnimatedInterfaceConst::on_changed();
-	current_filename = filename;
 }
 
 String

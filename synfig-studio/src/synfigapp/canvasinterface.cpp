@@ -32,49 +32,46 @@
 #	include <config.h>
 #endif
 
-//#include <iostream>
+#include <ETL/clock>
 
 #include <synfig/general.h>
 
-#include <ETL/clock>
-#include <synfig/valuenodes/valuenode_scale.h>
-#include <synfig/valuenodes/valuenode_timedswap.h>
-#include <synfig/valuenodes/valuenode_composite.h>
-#include <synfig/valuenodes/valuenode_subtract.h>
-#include <synfig/valuenodes/valuenode_linear.h>
-#include <synfig/valuenodes/valuenode_reference.h>
-#include <synfig/valuenodes/valuenode_twotone.h>
-#include <synfig/valuenodes/valuenode_stripes.h>
-#include <synfig/valuenodes/valuenode_bline.h>
-#include <synfig/valuenodes/valuenode_wplist.h>
-#include <synfig/valuenodes/valuenode_dilist.h>
-#include <synfig/valuenodes/valuenode_animatedfile.h>
+#include <synfig/canvasfilenaming.h>
+#include <synfig/context.h>
+#include <synfig/gradient.h>
+#include <synfig/guidset.h>
+#include <synfig/importer.h>
+#include <synfig/loadcanvas.h>
 #include <synfig/pair.h>
+#include <synfig/waypoint.h>
 
 #include <synfig/layers/layer_pastecanvas.h>
 
-#include <synfig/waypoint.h>
-#include <synfig/loadcanvas.h>
-#include <synfig/importer.h>
-#include <synfig/guidset.h>
+#include <synfig/valuenodes/valuenode_animatedfile.h>
+#include <synfig/valuenodes/valuenode_bline.h>
+#include <synfig/valuenodes/valuenode_linear.h>
+#include <synfig/valuenodes/valuenode_composite.h>
+#include <synfig/valuenodes/valuenode_dilist.h>
+#include <synfig/valuenodes/valuenode_reference.h>
+#include <synfig/valuenodes/valuenode_scale.h>
+#include <synfig/valuenodes/valuenode_stripes.h>
+#include <synfig/valuenodes/valuenode_subtract.h>
+#include <synfig/valuenodes/valuenode_timedswap.h>
+#include <synfig/valuenodes/valuenode_twotone.h>
+#include <synfig/valuenodes/valuenode_wplist.h>
 
-#include <synfig/context.h>
+#include <synfigapp/localization.h>
 
+#include "action_system.h"
 #include "canvasinterface.h"
 #include "instance.h"
+#include "main.h"
 
+#include "actions/editmodeset.h"
 #include "actions/layeradd.h"
 #include "actions/layerremove.h"
 #include "actions/valuedescconvert.h"
 #include "actions/valuenodeadd.h"
-#include "actions/editmodeset.h"
-#include "action_system.h"
-
-#include "main.h"
-
-#include <synfig/gradient.h>
-
-#include <synfigapp/localization.h>
 
 #endif
 
@@ -698,6 +695,9 @@ CanvasInterface::import(const synfig::String &filename, synfig::String &errors, 
 	if (ext.size()) ext = ext.substr(1); // skip initial '.'
 	std::transform(ext.begin(),ext.end(),ext.begin(),&::tolower);
 
+	String short_filename = CanvasFileNaming::make_short_filename(get_canvas()->get_file_name(), filename);
+	String full_filename = CanvasFileNaming::make_full_filename(get_canvas()->get_file_name(), short_filename);
+
 	if (ext=="pgo")
 	{
 		synfigapp::Action::PassiveGrouper group(get_instance().get(),_("Import Lipsync"));
@@ -712,7 +712,7 @@ CanvasInterface::import(const synfig::String &filename, synfig::String &errors, 
 		layer_switch->set_description(etl::basename(filename));
 
 		ValueNode_AnimatedFile::Handle animatedfile_node = ValueNode_AnimatedFile::create(String());
-		animatedfile_node->set_link("filename", ValueNode_Const::create(filename));
+		animatedfile_node->set_link("filename", ValueNode_Const::create(short_filename));
 		layer_switch->connect_dynamic_param("layer_name", ValueNode::LooseHandle(animatedfile_node));
 
 		if (!layer_add_action(layer_switch))
@@ -723,14 +723,17 @@ CanvasInterface::import(const synfig::String &filename, synfig::String &errors, 
 		String soundfile = animatedfile_node->get_file_field(0, "sound");
 		if (!soundfile.empty())
 		{
-			soundfile = etl::solve_relative_path(etl::dirname(filename), soundfile);
+			soundfile = etl::solve_relative_path(etl::dirname(full_filename), soundfile);
+			String short_soundfile = CanvasFileNaming::make_short_filename(get_canvas()->get_file_name(), soundfile);
+			String full_soundfile = CanvasFileNaming::make_full_filename(get_canvas()->get_file_name(), short_soundfile);
+
 			Layer::Handle layer_sound = layer_create("sound", get_canvas());
 			if(!layer_sound)
 				throw String(_("Unable to create \"Sound\" layer"));
 
 			layer_set_defaults(layer_sound);
-			layer_sound->set_description(etl::basename(soundfile));
-			layer_sound->set_param("filename", ValueBase(soundfile));
+			layer_sound->set_description(etl::basename(filename));
+			layer_sound->set_param("filename", ValueBase(short_soundfile));
 
 			if (!layer_add_action(layer_sound))
 				throw String(_("Unable to add \"Sound\" layer"));
@@ -747,7 +750,7 @@ CanvasInterface::import(const synfig::String &filename, synfig::String &errors, 
 
 		layer_set_defaults(layer);
 		layer->set_description(etl::basename(filename));
-		layer->set_param("filename", ValueBase(filename));
+		layer->set_param("filename", ValueBase(short_filename));
 
 		if (!layer_add_action(layer))
 			throw String(_("Unable to add \"Sound\" layer"));
@@ -760,7 +763,7 @@ CanvasInterface::import(const synfig::String &filename, synfig::String &errors, 
 		Layer::Handle _new_layer(add_layer_to("group",get_canvas()));
 		Layer::Handle _aux_layer(add_layer_to("svg_layer",get_canvas()));
 		if(_aux_layer){
-			_aux_layer->set_param("filename",ValueBase(filename));
+			_aux_layer->set_param("filename",ValueBase(short_filename));
 			_new_layer->set_param("canvas",ValueBase(_aux_layer->get_param("canvas")));
 			//remove aux layer
 			Action::Handle 	action(Action::LayerRemove::create());
@@ -779,14 +782,18 @@ CanvasInterface::import(const synfig::String &filename, synfig::String &errors, 
 				return 0;
 			}
 		}
-		signal_layer_new_description()(_new_layer,filename);
+		signal_layer_new_description()(_new_layer,etl::basename(filename));
 		return true;
 	}
 
 	// If this is a SIF file, then we need to do things slightly differently
 	if (ext=="sif" || ext=="sifz")try
 	{
-		Canvas::Handle outside_canvas(synfig::open_canvas_as(get_canvas()->get_identifier().file_system->get_identifier(filename), filename, errors, warnings));
+		FileSystem::Handle file_system = CanvasFileNaming::make_filesystem(full_filename);
+		if(!file_system)
+			throw String(_("Unable to open container")) + ":\n\n" + errors;
+
+		Canvas::Handle outside_canvas(synfig::open_canvas_as(file_system->get_identifier(CanvasFileNaming::project_file(full_filename)), full_filename, errors, warnings));
 		if(!outside_canvas)
 			throw String(_("Unable to open this composition")) + ":\n\n" + errors;
 
@@ -797,10 +804,10 @@ CanvasInterface::import(const synfig::String &filename, synfig::String &errors, 
 			throw int();
 		if(!layer->set_param("children_lock",true))
 			throw String(_("Could not set children lock of imported canvas"));
-		get_canvas()->register_external_canvas(filename, outside_canvas);
+		get_canvas()->register_external_canvas(full_filename, outside_canvas);
 
 		//layer->set_description(basename(filename));
-		signal_layer_new_description()(layer,filename);
+		signal_layer_new_description()(layer,etl::basename(filename));
 		return true;
 	}
 	catch(String x)
@@ -826,7 +833,7 @@ CanvasInterface::import(const synfig::String &filename, synfig::String &errors, 
 		int w,h;
 		if(!layer)
 			throw int();
-		if(!layer->set_param("filename",ValueBase(filename)))
+		if(!layer->set_param("filename",ValueBase(short_filename)))
 			throw int();
 		w=layer->get_param("_width").get(int());
 		h=layer->get_param("_height").get(int());
@@ -873,8 +880,8 @@ CanvasInterface::import(const synfig::String &filename, synfig::String &errors, 
 				throw int();
 		}
 
-		layer->set_description(basename(filename));
-		signal_layer_new_description()(layer,filename);
+		layer->set_description(etl::basename(filename));
+		signal_layer_new_description()(layer,etl::basename(filename));
 
 		// add imported layer into switch
 		Action::Handle action(Action::create("LayerEncapsulateSwitch"));

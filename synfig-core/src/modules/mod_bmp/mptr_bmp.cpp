@@ -127,7 +127,7 @@ inline short little_endian_short(const short &x)
 bool
 bmp_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc*/, Time /*time*/, synfig::ProgressCallback *cb)
 {
-	FileSystem::ReadStreamHandle stream = identifier.get_read_stream();
+	FileSystem::ReadStream::Handle stream = identifier.get_read_stream();
 	if(!stream)
 	{
 		if(cb)cb->error("bmp_mptr::GetFrame(): "+strprintf(_("Unable to open %s"),identifier.filename.c_str()));

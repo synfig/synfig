@@ -80,8 +80,11 @@ namespace synfig {
 
 	class ZReadStream : public FileSystem::ReadStream
 	{
+	public:
+		typedef etl::handle<ZReadStream> Handle;
+
 	private:
-		FileSystem::ReadStreamHandle stream_;
+		FileSystem::ReadStream::Handle stream_;
 		zstreambuf buf_;
 		std::istream istream_;
 
@@ -90,7 +93,7 @@ namespace synfig {
 			{ return (size_t)istream_.read((char*)buffer, size).gcount(); }
 
 	public:
-		ZReadStream(FileSystem::ReadStreamHandle stream):
+		ZReadStream(FileSystem::ReadStream::Handle stream):
 			FileSystem::ReadStream(stream->file_system()),
 			stream_(stream),
 			buf_(stream_->rdbuf()),
@@ -101,8 +104,11 @@ namespace synfig {
 
 	class ZWriteStream : public FileSystem::WriteStream
 	{
+	public:
+		typedef etl::handle<ZWriteStream> Handle;
+
 	private:
-		FileSystem::WriteStreamHandle stream_;
+		FileSystem::WriteStream::Handle stream_;
 		zstreambuf buf_;
 		std::ostream ostream_;
 
@@ -116,7 +122,7 @@ namespace synfig {
 		}
 
 	public:
-		ZWriteStream(FileSystem::WriteStreamHandle stream):
+		ZWriteStream(FileSystem::WriteStream::Handle stream):
 			FileSystem::WriteStream(stream->file_system()),
 			stream_(stream),
 			buf_(stream_->rdbuf()),

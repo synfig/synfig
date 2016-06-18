@@ -39,13 +39,15 @@
 #include <fontconfig/fontconfig.h>
 #endif
 
+#include <pango/pangocairo.h>
+
 #include "lyr_freetype.h"
 
 #include <synfig/localization.h>
 #include <synfig/general.h>
 
+#include <synfig/canvasfilenaming.h>
 #include <synfig/cairo_renddesc.h>
-#include <pango/pangocairo.h>
 
 #endif
 

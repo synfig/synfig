@@ -31,7 +31,7 @@
 #include <ETL/handle>
 #include <synfig/canvas.h>
 #include <synfig/string.h>
-#include <synfig/filecontainertemporary.h>
+#include <synfig/filesystemtemporary.h>
 #include <synfig/filesystemgroup.h>
 #include <list>
 #include <set>
@@ -90,8 +90,7 @@ private:
 	//! Handle for root canvas
 	synfig::Canvas::Handle canvas_;
 
-	etl::handle< synfig::FileSystemGroup > file_system_;
-	etl::handle< synfig::FileContainerTemporary > container_;
+	synfig::FileSystemTemporary::Handle container_;
 
 	CanvasInterfaceList canvas_interface_list_;
 
@@ -99,20 +98,47 @@ private:
 	sigc::signal<void> signal_saved_;
 	etl::handle<SelectionManager> selection_manager_;
 
-	bool save_canvas_into_container_;
-	std::string save_canvas_reference_directory_;
-	std::string save_canvas_reference_local_directory_;
-	FileReferenceList save_canvas_references_;
 	std::list< synfig::Layer::Handle > layers_to_save;
 
-	static bool save_canvas_callback(void *instance_ptr, synfig::Layer::ConstHandle layer, const std::string &param_name, std::string &filename);
-	void update_references_in_canvas(synfig::Canvas::Handle canvas);
 	bool import_external_canvas(synfig::Canvas::Handle canvas, std::map<synfig::Canvas*, synfig::Canvas::Handle> &imported);
-	void import_external_canvases();
-	void embed_all(synfig::Canvas::Handle canvas, bool &success, bool &restart);
+	etl::handle<Action::Group> import_external_canvases();
+
+	struct ProcessFilenamesParams
+	{
+		synfig::Canvas::Handle canvas;
+		synfig::FileSystem::Handle previous_canvas_filesystem;
+		synfig::String previous_canvas_filename;
+		bool embed_files;
+		bool save_files;
+
+		mutable std::set<synfig::NodeHandle> processed_nodes;
+		mutable std::map<synfig::String, synfig::String> processed_files;
+
+		mutable std::map<std::pair<synfig::Layer::Handle, synfig::String>, synfig::String> processed_params;
+		mutable std::map<synfig::ValueNode_Const::Handle, synfig::String> processed_valuenodes;
+
+		ProcessFilenamesParams(): embed_files(), save_files() { }
+		ProcessFilenamesParams(
+			const synfig::Canvas::Handle &canvas,
+			const synfig::FileSystem::Handle &previous_canvas_filesystem,
+			const synfig::String &previous_canvas_filename,
+			bool embed_files,
+			bool save_files
+		):
+			canvas(canvas),
+			previous_canvas_filesystem(previous_canvas_filesystem),
+			previous_canvas_filename(previous_canvas_filename),
+			embed_files(embed_files),
+			save_files(save_files)
+		{ }
+	};
+
+	void process_filename(const ProcessFilenamesParams &params, const synfig::String &filename, synfig::String &out_filename);
+	void process_filenames(const ProcessFilenamesParams &params, const synfig::NodeHandle &node, bool self = false);
+	void process_filenames_undo(const ProcessFilenamesParams &params);
 
 protected:
-	Instance(etl::handle<synfig::Canvas>, etl::handle< synfig::FileContainerTemporary > container);
+	Instance(etl::handle<synfig::Canvas>, synfig::FileSystemTemporary::Handle container);
 
 	/*
  -- ** -- P U B L I C   M E T H O D S -----------------------------------------
@@ -137,9 +163,8 @@ public:
 	void unset_selection_manager() { selection_manager_=new NullSelectionManager(); }
 	const etl::handle<SelectionManager> &get_selection_manager() { return selection_manager_; }
 
-	etl::handle< synfig::FileSystemGroup > get_file_system() const { return file_system_; };
-	etl::handle< synfig::FileContainerTemporary > get_container() const { return container_; };
-	void save_surface(const synfig::Surface &surface, const synfig::String &filename);
+	synfig::FileSystemTemporary::Handle get_container() const { return container_; };
+	bool save_surface(const synfig::Surface &surface, const synfig::String &filename);
 
 	etl::handle<CanvasInterface> find_canvas_interface(synfig::Canvas::Handle canvas);
 
@@ -178,7 +203,7 @@ public:
 
 
 public:	// Constructor interfaces
-	static etl::handle<Instance> create(etl::handle<synfig::Canvas> canvas, etl::handle< synfig::FileContainerTemporary > container);
+	static etl::handle<Instance> create(etl::handle<synfig::Canvas> canvas, synfig::FileSystemTemporary::Handle container);
 }; // END class Instance
 
 etl::handle<Instance> find_instance(etl::handle<synfig::Canvas> canvas);

@@ -100,7 +100,7 @@ png_mptr::png_mptr(const synfig::FileSystem::Identifier &identifier):
 	Importer(identifier)
 {
 	/* Open the file pointer */
-	FileSystem::ReadStreamHandle stream = identifier.get_read_stream();
+	FileSystem::ReadStream::Handle stream = identifier.get_read_stream();
     if (!stream)
     {
         //! \todo THROW SOMETHING

@@ -29,6 +29,10 @@
 #	include <config.h>
 #endif
 
+#include <glibmm.h>
+
+#include <ETL/stringf>
+
 #include "filesystem.h"
 
 #endif
@@ -50,14 +54,17 @@ using namespace synfig;
 
 // Stream
 
-FileSystem::Stream::Stream(Handle file_system): file_system_(file_system) { }
-FileSystem::Stream::~Stream() { }
+FileSystem::Stream::Stream(FileSystem::Handle file_system):
+	file_system_(file_system) { }
+
+FileSystem::Stream::~Stream()
+	{ }
 
 // ReadStream
 
-FileSystem::ReadStream::ReadStream(Handle file_system):
-Stream(file_system),
-std::istream((std::streambuf*)this)
+FileSystem::ReadStream::ReadStream(FileSystem::Handle file_system):
+	Stream(file_system),
+	std::istream((std::streambuf*)this)
 {
 	setg(&buffer_ + 1, &buffer_ + 1, &buffer_ + 1);
 }
@@ -72,9 +79,9 @@ int FileSystem::ReadStream::underflow()
 
 // WriteStream
 
-FileSystem::WriteStream::WriteStream(Handle file_system):
-Stream(file_system),
-std::ostream((std::streambuf*)this)
+FileSystem::WriteStream::WriteStream(FileSystem::Handle file_system):
+	Stream(file_system),
+	std::ostream((std::streambuf*)this)
 { }
 
 int
@@ -86,10 +93,10 @@ FileSystem::WriteStream::overflow(int character)
 
 // Identifier
 
-FileSystem::ReadStreamHandle FileSystem::Identifier::get_read_stream() const
-	{ return file_system ? file_system->get_read_stream(filename) : ReadStreamHandle(); }
-FileSystem::WriteStreamHandle FileSystem::Identifier::get_write_stream() const
-	{ return file_system ? file_system->get_write_stream(filename) : WriteStreamHandle(); }
+FileSystem::ReadStream::Handle FileSystem::Identifier::get_read_stream() const
+	{ return file_system ? file_system->get_read_stream(filename) : ReadStream::Handle(); }
+FileSystem::WriteStream::Handle FileSystem::Identifier::get_write_stream() const
+	{ return file_system ? file_system->get_write_stream(filename) : WriteStream::Handle(); }
 
 
 // FileSystem
@@ -98,30 +105,89 @@ FileSystem::FileSystem() { }
 
 FileSystem::~FileSystem() { }
 
-bool FileSystem::file_rename(const std::string & /* from_filename */, const std::string & /* to_filename */)
+bool FileSystem::file_rename(const String &from_filename, const String &to_filename)
 {
-	return false;
+	if (fix_slashes(from_filename) == fix_slashes(to_filename))
+		return true;
+	ReadStream::Handle read_stream = get_read_stream(from_filename);
+	if (!read_stream) return false;
+	WriteStream::Handle write_stream = get_write_stream(to_filename);
+	if (!write_stream) return false;
+	return write_stream->write_whole_stream(read_stream)
+		&& file_remove(from_filename);
 }
 
-bool FileSystem::copy(Handle from_file_system, const std::string &from_filename, Handle to_file_system, const std::string &to_filename)
+bool FileSystem::directory_create_recursive(const String &dirname) {
+	return dirname.empty()
+		|| dirname == "."
+		|| (directory_create_recursive(etl::dirname(dirname)) && directory_create(dirname));
+}
+
+bool FileSystem::remove_recursive(const String &filename)
+{
+	assert(!filename.empty());
+
+	if (filename.empty())
+		return false;
+	if (is_file(filename))
+		return file_remove(filename);
+	if (is_directory(filename))
+	{
+		FileList files;
+		directory_scan(filename, files);
+		bool success = true;
+		for(FileList::const_iterator i = files.begin(); i != files.end(); ++i)
+			if (!remove_recursive(filename + ETL_DIRECTORY_SEPARATOR + *i))
+				success = false;
+		return success;
+	}
+	return true;
+}
+
+bool FileSystem::copy(Handle from_file_system, const String &from_filename, Handle to_file_system, const String &to_filename)
 {
 	if (from_file_system.empty() || to_file_system.empty()) return false;
-	ReadStreamHandle read_stream = from_file_system->get_read_stream(from_filename);
+	ReadStream::Handle read_stream = from_file_system->get_read_stream(from_filename);
 	if (read_stream.empty()) return false;
-	WriteStreamHandle write_stream = to_file_system->get_write_stream(to_filename);
+	WriteStream::Handle write_stream = to_file_system->get_write_stream(to_filename);
 	if (write_stream.empty()) return false;
 	return write_stream->write_whole_stream(read_stream);
 }
 
-std::string FileSystem::fix_slashes(const std::string &filename)
+bool FileSystem::copy_recursive(Handle from_file_system, const String &from_filename, Handle to_file_system, const String &to_filename)
 {
-	std::string fixed = filename;
+	if (!from_file_system || !to_file_system) return false;
+	if (from_file_system->is_file(from_filename))
+		return copy(from_file_system, from_filename, to_file_system, to_filename);
+	if (from_file_system->is_directory(from_filename))
+	{
+		if (!to_file_system->directory_create(to_filename))
+			return false;
+		FileList files;
+		bool success = from_file_system->directory_scan(from_filename, files);
+		for(FileList::const_iterator i = files.begin(); i != files.end(); ++i)
+			if (!copy_recursive(
+					from_file_system,
+					from_filename + ETL_DIRECTORY_SEPARATOR + *i,
+					to_file_system,
+					to_filename + ETL_DIRECTORY_SEPARATOR + *i ))
+				success = false;
+		return success;
+	}
+	return false;
+}
+
+String FileSystem::fix_slashes(const String &filename)
+{
+	String fixed = etl::cleanup_path(filename);
+	if (fixed == ".") fixed = "";
 	for(size_t i = 0; i < filename.size(); ++i)
 		if (fixed[i] == '\\') fixed[i] = '/';
 	return fixed;
 }
 
-std::istream& FileSystem::safeGetline(std::istream& is, std::string& t)
+std::istream&
+FileSystem::safe_get_line(std::istream& is, String& t)
 {
 	t.clear();
 	//code from http://stackoverflow.com/questions/6089231/getting-std-ifstream-to-handle-lf-cr-and-crlf
@@ -153,10 +219,17 @@ std::istream& FileSystem::safeGetline(std::istream& is, std::string& t)
 			t += (char)c;
 		}
 	}
+
+	return is;
 }
 
-std::string FileSystem::get_real_uri(const std::string & /* filename */)
-	{ return std::string(); }
+String FileSystem::get_real_uri(const String & /* filename */)
+	{ return String(); }
+
+String FileSystem::get_real_filename(const String &filename) {
+	return Glib::filename_from_uri(get_real_uri(filename));
+}
+
 
 /* === E N T R Y P O I N T ================================================= */
 

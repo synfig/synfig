@@ -145,7 +145,7 @@ Action::LayerCopy::prepare()
 			->generate_new_name(
 					layer,
 					subcanvas,
-					get_canvas_interface()->get_instance()->get_file_system(),
+					get_canvas()->get_file_system(),
 					description,
 					filename,
 					filename_param );
@@ -162,11 +162,6 @@ Action::LayerCopy::prepare()
 		etl::handle<Layer_Bitmap> layer_bitmap = etl::handle<Layer_Bitmap>::cast_dynamic(layer);
 		if (layer_bitmap && !filename.empty())
 		{
-			// TODO: literal '#images'
-			get_canvas_interface()
-				->get_instance()
-				->get_file_system()
-				->directory_create("#images");
 			get_canvas_interface()
 				->get_instance()
 				->save_surface(layer_bitmap->surface, filename);
@@ -187,10 +182,7 @@ Action::LayerCopy::undo() {
 	Action::Super::undo();
 	while(!filenames.empty())
 	{
-		get_canvas_interface()
-			->get_instance()
-			->get_file_system()
-			->file_remove(filenames.back());
+		get_canvas()->get_file_system()->file_remove(filenames.back());
 		filenames.pop_back();
 	}
 }

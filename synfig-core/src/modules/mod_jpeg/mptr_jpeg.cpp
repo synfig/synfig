@@ -105,7 +105,7 @@ jpeg_mptr::jpeg_mptr(const synfig::FileSystem::Identifier &identifier):
 	struct my_error_mgr jerr;
 
 	/* Open the file pointer */
-	FileSystem::ReadStreamHandle stream = identifier.get_read_stream();
+	FileSystem::ReadStream::Handle stream = identifier.get_read_stream();
 	if (!stream)
 	{
 		throw String("Error on jpeg importer, unable to physically open "+identifier.filename);

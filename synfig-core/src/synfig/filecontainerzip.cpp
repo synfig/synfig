@@ -214,7 +214,7 @@ using namespace synfig::FileContainerZip_InternalStructs;
 void FileContainerZip::FileInfo::split_name()
 {
 	size_t pos = name.rfind('/');
-	if (pos == std::string::npos || pos == 0)
+	if (pos == String::npos || pos == 0)
 	{
 		name_part_directory.clear();
 		name_part_localname = name;
@@ -283,7 +283,7 @@ unsigned int FileContainerZip::crc32(unsigned int previous_crc, const void *buff
 	return crc ^ 0xFFFFFFFFUL;
 }
 
-std::string FileContainerZip::encode_history(const FileContainerZip::HistoryRecord &history_record)
+String FileContainerZip::encode_history(const FileContainerZip::HistoryRecord &history_record)
 {
 	xmlpp::Document document;
 	document.
@@ -293,7 +293,7 @@ std::string FileContainerZip::encode_history(const FileContainerZip::HistoryReco
 	return document.write_to_string_formatted();
 }
 
-FileContainerZip::HistoryRecord FileContainerZip::decode_history(const std::string &comment)
+FileContainerZip::HistoryRecord FileContainerZip::decode_history(const String &comment)
 {
 	HistoryRecord history_record;
 	xmlpp::DomParser parser;
@@ -308,7 +308,7 @@ FileContainerZip::HistoryRecord FileContainerZip::decode_history(const std::stri
 			{
 				if ((*i)->get_name() == "prev_storage_size")
 				{
-					std::string s;
+					String s;
 					xmlpp::Element::NodeList list = (*i)->get_children();
 					for(xmlpp::Element::NodeList::iterator j = list.begin(); j != list.end(); j++)
 						if (dynamic_cast<xmlpp::TextNode*>(*j))
@@ -331,7 +331,7 @@ void FileContainerZip::read_history(std::list<HistoryRecord> &list, FILE *f, fil
 	// search "end of central directory" record
 
 	char buffer[(1 << 16) + sizeof(EndOfCentralDirectory)];
-	std::string comment;
+	String comment;
 	size_t read_size = size > (long int)sizeof(buffer)
 					 ? sizeof(buffer) : (size_t)size;
 	fseek(f, (long int)size - (long int)read_size, SEEK_SET);
@@ -348,7 +348,7 @@ void FileContainerZip::read_history(std::list<HistoryRecord> &list, FILE *f, fil
 			// found
 			if (e->comment_length > 0)
 			{
-				comment = std::string(buffer + i + sizeof(EndOfCentralDirectory), e->comment_length);
+				comment = String(buffer + i + sizeof(EndOfCentralDirectory), e->comment_length);
 				history_record = decode_history(comment);
 				history_record.storage_size = size;
 				found = true;
@@ -367,7 +367,7 @@ void FileContainerZip::read_history(std::list<HistoryRecord> &list, FILE *f, fil
 	}
 }
 
-std::list<FileContainerZip::HistoryRecord> FileContainerZip::read_history(const std::string &container_filename)
+std::list<FileContainerZip::HistoryRecord> FileContainerZip::read_history(const String &container_filename)
 {
 	std::list<HistoryRecord> list;
 
@@ -386,7 +386,7 @@ std::list<FileContainerZip::HistoryRecord> FileContainerZip::read_history(const 
 	return list;
 }
 
-bool FileContainerZip::create(const std::string &container_filename)
+bool FileContainerZip::create(const String &container_filename)
 {
 	if (is_opened()) return false;
 	storage_file_ = fopen(fix_slashes(container_filename).c_str(), "w+b");
@@ -394,7 +394,7 @@ bool FileContainerZip::create(const std::string &container_filename)
 	return is_opened();
 }
 
-bool FileContainerZip::open_from_history(const std::string &container_filename, file_size_t truncate_storage_size) {
+bool FileContainerZip::open_from_history(const String &container_filename, file_size_t truncate_storage_size) {
 	if (is_opened()) return false;
 	FILE *f = fopen(fix_slashes(container_filename).c_str(), "r+b");
 	if (f == NULL) return false;
@@ -454,12 +454,12 @@ bool FileContainerZip::open_from_history(const std::string &container_filename, 
 			FileInfo info;
 			if (buffer[cdfh.filename_length - 1] == '/')
 			{
-				info.name = std::string(buffer, buffer + cdfh.filename_length - 1);
+				info.name = String(buffer, buffer + cdfh.filename_length - 1);
 				info.is_directory = true;
 			}
 			else
 			{
-				info.name = std::string(buffer, buffer + cdfh.filename_length);
+				info.name = String(buffer, buffer + cdfh.filename_length);
 			}
 
 			info.directory_saved = info.is_directory;
@@ -501,7 +501,7 @@ bool FileContainerZip::open_from_history(const std::string &container_filename, 
 	return true;
 }
 
-bool FileContainerZip::open(const std::string &container_filename)
+bool FileContainerZip::open(const String &container_filename)
 {
 	return open_from_history(container_filename);
 }
@@ -572,7 +572,7 @@ bool FileContainerZip::save()
 	ecd.offset = central_directory_offset;
 	ecd.current_records = ecd.total_records = files_.size();
 	ecd.size = ftell(storage_file_) - central_directory_offset;
-	std::string comment = encode_history(HistoryRecord(prev_storage_size_));
+	String comment = encode_history(HistoryRecord(prev_storage_size_));
 	ecd.comment_length = comment.size();
 
 	// write header
@@ -616,14 +616,14 @@ bool FileContainerZip::is_opened()
 	return storage_file_ != NULL;
 }
 
-bool FileContainerZip::is_file(const std::string &filename)
+bool FileContainerZip::is_file(const String &filename)
 {
 	if (!is_opened()) return false;
 	FileMap::const_iterator i = files_.find(fix_slashes(filename));
 	return i != files_.end() && !i->second.is_directory;
 }
 
-bool FileContainerZip::is_directory(const std::string &filename)
+bool FileContainerZip::is_directory(const String &filename)
 {
 	if (!is_opened()) return false;
 	if (filename.empty()) return true;
@@ -631,12 +631,12 @@ bool FileContainerZip::is_directory(const std::string &filename)
 	return i != files_.end() && i->second.is_directory;
 }
 
-bool FileContainerZip::directory_check_name(const std::string &dirname)
+bool FileContainerZip::directory_check_name(const String &dirname)
 {
 	return dirname.size() <= (1 << 16) - 2 - sizeof(CentralDirectoryFileHeader);
 }
 
-bool FileContainerZip::directory_create(const std::string &dirname)
+bool FileContainerZip::directory_create(const String &dirname)
 {
 	if (!is_opened()) return false;
 	if (is_file(dirname)) return false;
@@ -656,7 +656,7 @@ bool FileContainerZip::directory_create(const std::string &dirname)
 	return true;
 }
 
-bool FileContainerZip::directory_scan(const std::string &dirname, std::list< std::string > &out_files)
+bool FileContainerZip::directory_scan(const String &dirname, FileList &out_files)
 {
 	out_files.clear();
 	if (!is_directory(dirname)) return false;
@@ -666,11 +666,11 @@ bool FileContainerZip::directory_scan(const std::string &dirname, std::list< std
 	return true;
 }
 
-bool FileContainerZip::file_remove(const std::string &filename)
+bool FileContainerZip::file_remove(const String &filename)
 {
 	if (is_directory(filename))
 	{
-		std::list< std::string > files;
+		FileList files;
 		directory_scan(filename, files);
 		if (!files.empty()) return false;
 		changed_ = true;
@@ -687,7 +687,7 @@ bool FileContainerZip::file_remove(const std::string &filename)
 	return true;
 }
 
-bool FileContainerZip::file_check_name(const std::string &filename)
+bool FileContainerZip::file_check_name(const String &filename)
 {
 	return filename.size() <= (1 << 16) - 1 - sizeof(CentralDirectoryFileHeader);
 }
@@ -701,7 +701,7 @@ bool FileContainerZip::file_open_read_whole_container()
 	return true;
 }
 
-bool FileContainerZip::file_open_read(const std::string &filename)
+bool FileContainerZip::file_open_read(const String &filename)
 {
 	if (!is_opened() || file_is_opened()) return false;
 	file_ = files_.find(fix_slashes(filename));
@@ -723,7 +723,7 @@ bool FileContainerZip::file_open_read(const std::string &filename)
 	return true;
 }
 
-bool FileContainerZip::file_open_write(const std::string &filename)
+bool FileContainerZip::file_open_write(const String &filename)
 {
 	if (!is_opened() || file_is_opened()) return false;
 	if (!file_check_name(filename)) return false;
@@ -831,9 +831,9 @@ size_t FileContainerZip::file_write(const void *buffer, size_t size)
 	return s;
 }
 
-FileContainer::ReadStreamHandle FileContainerZip::get_read_stream(const std::string &filename)
+FileSystem::ReadStream::Handle FileContainerZip::get_read_stream(const String &filename)
 {
-	ReadStreamHandle stream = FileContainer::get_read_stream(filename);
+	FileSystem::ReadStream::Handle stream = FileContainer::get_read_stream(filename);
 	if (stream
 	 && file_is_opened_for_read()
 	 && !file_reading_whole_container_

@@ -34,6 +34,7 @@
 #include <synfig/localization.h>
 #include <synfig/general.h>
 
+#include <synfig/canvasfilenaming.h>
 #include <synfig/string.h>
 #include <synfig/paramdesc.h>
 #include <synfig/value.h>
@@ -72,17 +73,13 @@ svg_layer::set_param(const String & param, const ValueBase &value)
 	if(param=="filename"){
 		Canvas::Handle canvas;
 		//if ext of filename == "svg" then
-		canvas=open_svg(value.get(String()),errors,warnings);
+		filename = value.get(String());
+		canvas=open_svg(CanvasFileNaming::make_full_filename(get_canvas()->get_file_name(), filename),errors,warnings);
 		//else other parsers maybe
-		if(canvas){
+		if(canvas)
 			canvas->set_inline(get_canvas());
-			set_sub_canvas(canvas);
-			if(param=="filename" && value.same_type_as(filename))
-			{
-				value.put(&filename);
-				return true;
-			}
-		}
+		set_sub_canvas(canvas);
+		return true;
 	}
 	return Layer_Group::set_param(param,value);
 }
@@ -108,6 +105,7 @@ svg_layer::get_param_vocab()const
 
 	ret.push_back(ParamDesc("filename")
 		.set_local_name(_("Filename"))
+		.set_hint("filename")
 	);
 	return ret;
 }

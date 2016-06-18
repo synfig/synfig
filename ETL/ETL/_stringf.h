@@ -331,29 +331,78 @@ remove_root_from_path(std::string path)
 inline std::string
 cleanup_path(std::string path)
 {
-	std::string ret;
+    std::string ret;
 
-	while(basename(path)=="."&&path.size()!=1)path=dirname(path);
+    // remove '.'
+    for(int i = 0; i < (int)path.size();)
+    {
+        if ( path[i] == '.'
+          && (i-1 <  0                || is_separator(path[i-1]))
+          && (i+1 >= (int)path.size() || is_separator(path[i+1])) )
+        {
+        	path.erase(i, i+1 < (int)path.size() ? 2 : 1);
+        } else {
+        	++i;
+        }
+    }
 
-	while(!path.empty())
-	{
-		std::string dir(get_root_from_path(path));
-		if((dir.size() == 3 && dir[0] == '.' && dir[1] == '.' && is_separator(dir[2])) && ret.size())
-		{
-			ret=dirname(ret);
-			if (!is_separator(*(ret.end()-1)))
-				ret+=ETL_DIRECTORY_SEPARATOR;
-		}
-		else if((dir!="./" && dir!=".\\") && dir!=".")
-			ret+=dir;
-		path=remove_root_from_path(path);
-	}
-	if (ret.size()==0)ret+='.';
+    // remove double separators
+    for(int i = 0; i < (int)path.size()-1;)
+        if ( is_separator(path[i]) && is_separator(path[i+1]) )
+        	path.erase(i+1, 1); else ++i;
 
-	// Remove any trailing directory separators
-	if(ret.size() && is_separator(ret[ret.size()-1]))
-		ret.erase(ret.begin()+ret.size()-1);
-	return ret;
+    // solve '..'
+    for(int i = 0; i < (int)path.size()-3;)
+    {
+        if ( is_separator(path[i])
+          && path[i+1] == '.'
+          && path[i+2] == '.'
+          && (i+3 >= (int)path.size() || is_separator(path[i+3])) )
+        {
+            // case "/../some/path", remove "../"
+			if (i == 0) {
+				path.erase(i+1, i+3 >= (int)path.size() ? 2 : 3);
+			}
+			else
+            // case "../../some/path", skip
+			if ( i-2 >= 0
+			  && path[i-1] == '.'
+			  && path[i-2] == '.'
+			  && (i-3 < 0 || is_separator(path[i-3])) )
+			{
+				++i;
+			}
+			// case "some/thing/../some/path", remove "thing/../"
+			else
+			{
+				// so now we have:
+				// i > 0, see first case,
+				// path[i-1] is not a separator (double separators removed already),
+				// so path[i-1] is part of valid directory entry,
+				// also is not a special entry ('.' or '..'), see previous case and stage "remove '.'"
+				size_t pos = path.find_last_of(ETL_DIRECTORY_SEPARATORS, i-1);
+				if (pos == std::string::npos) {
+					path.erase(0, i+3 >= (int)path.size() ? i+3 : i+4);
+					i = 0;
+				}
+				else
+				{
+					path.erase(pos + 1, (i+3 >= (int)path.size() ? i+3 : i+4) - (int)pos - 1);
+					i = (int)pos;
+				}
+			}
+        }
+        else
+        {
+        	++i;
+        }
+    }
+
+    // remove separator from end of path
+    if (path.size() > 1u && is_separator(path[path.size() - 1]))
+    	path.erase(path.size() - 1, 1);
+
+    return path;
 }
 
 inline std::string

@@ -42,11 +42,15 @@ namespace synfig
 	class FileContainer : public FileSystem
 	{
 	public:
+		typedef etl::handle<FileContainer> Handle;
+
 		class ReadStream : public FileSystem::ReadStream
 		{
+		public:
+			typedef etl::handle<ReadStream> Handle;
 		protected:
 			friend class FileContainer;
-			ReadStream(Handle file_system);
+			ReadStream(FileSystem::Handle file_system);
 			virtual size_t internal_read(void *buffer, size_t size);
 		public:
 			virtual ~ReadStream();
@@ -54,9 +58,11 @@ namespace synfig
 
 		class WriteStream : public FileSystem::WriteStream
 		{
+		public:
+			typedef etl::handle<WriteStream> Handle;
 		protected:
 			friend class FileContainer;
-			WriteStream(Handle file_system);
+			WriteStream(FileSystem::Handle file_system);
 			virtual size_t internal_write(const void *buffer, size_t size);
 		public:
 			virtual ~WriteStream();
@@ -70,16 +76,14 @@ namespace synfig
 		FileContainer();
 		virtual ~FileContainer();
 
-		virtual bool create(const std::string &container_filename) = 0;
-		virtual bool open(const std::string &container_filename) = 0;
+		virtual bool create(const String &container_filename) = 0;
+		virtual bool open(const String &container_filename) = 0;
 		virtual void close() = 0;
 		virtual bool is_opened() = 0;
 
-		virtual bool directory_scan(const std::string &dirname, std::list< std::string > &out_files) = 0;
-
 		virtual bool file_open_read_whole_container();
-		virtual bool file_open_read(const std::string &filename) = 0;
-		virtual bool file_open_write(const std::string &filename) = 0;
+		virtual bool file_open_read(const String &filename) = 0;
+		virtual bool file_open_write(const String &filename) = 0;
 		virtual void file_close();
 
 		virtual bool file_is_opened_for_read() = 0;
@@ -93,9 +97,9 @@ namespace synfig
 			return file_is_opened_for_read() || file_is_opened_for_write();
 		}
 
-		ReadStreamHandle get_read_stream_whole_container();
-		virtual ReadStreamHandle get_read_stream(const std::string &filename);
-		virtual WriteStreamHandle get_write_stream(const std::string &filename);
+		FileSystem::ReadStream::Handle get_read_stream_whole_container();
+		virtual FileSystem::ReadStream::Handle get_read_stream(const String &filename);
+		virtual FileSystem::WriteStream::Handle get_write_stream(const String &filename);
 	};
 
 }

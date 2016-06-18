@@ -47,7 +47,8 @@
 #include <synfig/value.h>
 #include <synfig/valuenode.h>
 #include <synfig/canvas.h>
-#include <synfig/filesystemnative.h>
+#include <synfig/canvasfilenaming.h>
+#include <synfig/filesystem.h>
 
 #include <synfig/rendering/software/surfacesw.h>
 
@@ -98,58 +99,29 @@ Import::set_param(const String & param, const ValueBase &value)
 	try{
 	IMPORT_VALUE(param_time_offset);
 
-	String filename=param_filename.get(String());
 	IMPORT_VALUE_PLUS_BEGIN(param_filename)
 	{
-		if(!get_canvas())
+		if(!get_canvas() || !get_canvas()->get_file_system())
 		{
-			filename=value.get(filename);
 			importer=0;
 			cimporter=0;
 			surface.clear();
 			csurface.set_cairo_surface(NULL);
-			param_filename.set(filename);
+			param_filename.set(value.get(String()));
 			return true;
 		}
 
-		String newfilename=value.get(string());
-		String filename_with_path;
+		String filename = value.get(String());
+		String fixed_filename = filename;
 
+		// TODO: find source of this sreening of unicode characters
 		// Get rid of any %20 crap
+		for(String::size_type n; (n = fixed_filename.find("%20")) != String::npos;)
+			fixed_filename.replace(n,3," ");
+
+		String full_filename = CanvasFileNaming::make_full_filename(get_canvas()->get_file_name(), fixed_filename);
+		if (full_filename.empty())
 		{
-			String::size_type n;
-			while((n=newfilename.find("%20"))!=String::npos)
-				newfilename.replace(n,3," ");
-		}
-
-		//if(get_canvas()->get_file_path()==dirname(newfilename))
-		//{
-		//	info("Image seems to be in local directory. Adjusting path...");
-		//	newfilename=basename(newfilename);
-		//}
-
-#ifndef _WIN32
-		if(is_absolute_path(newfilename))
-		{
-			string curpath(cleanup_path(absolute_path(get_canvas()->get_file_path())));
-			while(basename(curpath)==".")curpath=dirname(curpath);
-
-			newfilename=relative_path(curpath,newfilename);
-			info("basename(curpath)=%s, Path adjusted to %s",basename(curpath).c_str(),newfilename.c_str());
-		}
-#endif
-
-		// TODO: "images" and "container:" literals
-		String newfilename_orig = newfilename;
-		if (newfilename_orig.substr(0, String("#").size()) == "#")
-			newfilename_orig = "#images/" + newfilename_orig.substr(String("#").size());
-
-		if(filename.empty())
-			filename=newfilename;
-
-		if(newfilename.empty())
-		{
-			filename=newfilename;
 			importer=0;
 			cimporter=0;
 			surface.clear();
@@ -158,128 +130,49 @@ Import::set_param(const String & param, const ValueBase &value)
 			return true;
 		}
 
-		switch (get_method())
+		String independent_filename = CanvasFileNaming::make_canvas_independent_filename(get_canvas()->get_file_name(), full_filename);
+
+		// If we are already loaded, don't reload
+		if(this->independent_filename==independent_filename && importer)
 		{
-		
-		case SOFTWARE:
+			param_filename.set(filename);
+			return true;
+		}
+
+		this->independent_filename = independent_filename;
+
+		handle<Importer> newimporter;
+		newimporter = Importer::open(get_canvas()->get_file_system()->get_identifier(full_filename));
+
+		if (!newimporter)
+		{
+			String local_filename = CanvasFileNaming::make_local_filename(get_canvas()->get_file_name(), full_filename);
+			newimporter = Importer::open(get_canvas()->get_file_system()->get_identifier(local_filename));
+			if(!newimporter)
 			{
-				// If we are already loaded, don't reload
-				if(filename==newfilename && importer)
-				{
-					warning(strprintf(_("Filename seems to already be set to \"%s\" (%s)"),filename.c_str(),newfilename.c_str()));
-					return true;
-				}
-
-				assert(get_canvas());
-
-				FileSystem::Handle file_system = get_canvas()->get_identifier().file_system;
-				if (!file_system) file_system = FileSystemNative::instance();
-
-				// todo: literal "container:"
-				if(is_absolute_path(newfilename_orig)
-				|| newfilename_orig.substr(0, std::string("#").size())=="#")
-					filename_with_path=newfilename_orig;
-				else
-					filename_with_path=absolute_path(get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR+newfilename_orig);
-
-				handle<Importer> newimporter;
-
-				newimporter=Importer::open(file_system->get_identifier(filename_with_path));
-
-				if(!newimporter)
-				{
-					newimporter=Importer::open(file_system->get_identifier(get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR+basename(newfilename_orig)));
-					if(!newimporter)
-					{
-						error(strprintf("Unable to create an importer object with file \"%s\"",filename_with_path.c_str()));
-						importer=0;
-						filename=newfilename;
-						abs_filename=filename_with_path;
-						surface.clear();
-						param_filename.set(filename);
-						rendering_surface.reset();
-						return false;
-					}
-				}
-
-				Time time_offset = param_time_offset.get(Time());
-				Time time = get_time_mark() + time_offset;
-				if (!newimporter->is_animated())
-					time = Time(0);
-
+				error(strprintf("Unable to create an importer object with file \"%s\"", independent_filename.c_str()));
+				importer=0;
 				surface.clear();
-				if(!newimporter->get_frame(surface,get_canvas()->rend_desc(), time, trimmed, width, height, top, left))
-					warning(strprintf("Unable to get frame from \"%s\"",filename_with_path.c_str()));
-				rendering_surface = newimporter->get_frame(get_canvas()->rend_desc(), time);
-
-				importer=newimporter;
-				filename=newfilename;
-				abs_filename=filename_with_path;
 				param_filename.set(filename);
-
+				rendering_surface.reset();
 				return true;
-			}
-		case OPENGL:
-			{
-				return false;
-			}
-		case CAIRO:
-			{
-				
-				if(filename==newfilename && cimporter)
-				{
-					warning(strprintf(_("Filename seems to already be set to \"%s\" (%s)"),filename.c_str(),newfilename.c_str()));
-					return true;
-				}
-				assert(get_canvas());
-				 
-				FileSystem::Handle file_system = get_canvas()->get_identifier().file_system;
-				if (!file_system) file_system = FileSystemNative::instance();
-
-				// todo: literal "container:"
-				if(is_absolute_path(newfilename_orig)
-				|| newfilename_orig.substr(0, std::string("#").size())=="#")
-					filename_with_path=newfilename_orig;
-				else
-					filename_with_path=absolute_path(get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR+newfilename_orig);
-				 
-				handle<CairoImporter> newimporter;
-				 
-				newimporter=CairoImporter::open(file_system->get_identifier(filename_with_path));
-				 
-				if(!newimporter)
-				{
-					newimporter=CairoImporter::open(file_system->get_identifier(get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR+basename(newfilename_orig)));
-					if(!newimporter)
-					{
-						error(strprintf("Unable to create an importer object with file \"%s\"",filename_with_path.c_str()));
-						cimporter=0;
-						filename=newfilename;
-						abs_filename=filename_with_path;
-						csurface.set_cairo_surface(NULL);
-						param_filename.set(filename);
-						return false;
-					}
-				}
-				 
-				cairo_surface_t* cs;
-				if(!newimporter->get_frame(cs, get_canvas()->rend_desc(), Time(0), trimmed, width, height, top, left))
-				{
-					warning(strprintf("Unable to get frame from \"%s\"",filename_with_path.c_str()));
-				}
-				set_cairo_surface(cs);
-				cairo_surface_destroy(cs);
-				 
-				cimporter=newimporter;
-				filename=newfilename;
-				abs_filename=filename_with_path;
-				param_filename.set(filename);
-
-				return true;
-				
-				//return false;
 			}
 		}
+
+		Time time_offset = param_time_offset.get(Time());
+		Time time = get_time_mark() + time_offset;
+		if (!newimporter->is_animated())
+			time = Time(0);
+
+		surface.clear();
+		if(!newimporter->get_frame(surface,get_canvas()->rend_desc(), time, trimmed, width, height, top, left))
+			warning(strprintf("Unable to get frame from \"%s\"", independent_filename.c_str()));
+		rendering_surface = newimporter->get_frame(get_canvas()->rend_desc(), time);
+
+		importer=newimporter;
+		param_filename.set(filename);
+
+		return true;
 	}
 	IMPORT_VALUE_PLUS_END
 	} catch(...) { set_amount(0); return false; }
@@ -291,29 +184,7 @@ ValueBase
 Import::get_param(const String & param)const
 {
 	EXPORT_VALUE(param_time_offset);
-
-	if(get_canvas())
-	{
-		if(param=="filename")
-		{
-			ValueBase ret(type_string);
-			// This line is needed to copy the internals of ValueBase from param_filename
-			ret=param_filename;
-			
-			// todo: literal "container:" and "images"
-			if(ret.get(String()).substr(0, std::string("#").size())!="#") {
-				string curpath(cleanup_path(absolute_path(get_canvas()->get_file_path())));
-				ret=relative_path(curpath,abs_filename);
-			} else
-			if(ret.get(String()).substr(0, std::string("#images/").size())=="#images/") {
-				ret = "#" + ret.get(String()).substr(std::string("#images/").size());
-			}
-
-			return ret;
-		}
-	}
-	else
-		EXPORT_VALUE(param_filename);
+	EXPORT_VALUE(param_filename);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -343,50 +214,10 @@ void
 Import::set_time_vfunc(IndependentContext context, Time time)const
 {
 	Time time_offset=param_time_offset.get(Time());
-	switch (get_method())
+	if(get_amount() && importer && importer->is_animated())
 	{
-	case SOFTWARE:
-		if(get_amount() && importer && importer->is_animated())
-		{
-			importer->get_frame(surface,get_canvas()->rend_desc(), time+time_offset, trimmed, width, height, top, left);
-			rendering_surface = importer->get_frame(get_canvas()->rend_desc(), time+time_offset);
-		}
-		break;
-	case OPENGL:
-		break;
-	case CAIRO:
-		{
-
-			if(get_amount() && cimporter &&
-			   cimporter->is_animated())
-			{
-				cairo_surface_t* cs;
-				cimporter->get_frame(cs, get_canvas()->rend_desc(), time+time_offset, trimmed, width, height, top, left);
-				if(cs)
-				{
-					csurface.set_cairo_surface(cs);
-					csurface.map_cairo_image();
-					cairo_surface_destroy(cs);
-				}
-			}
-			break;
-
-		}
-	
+		importer->get_frame(surface,get_canvas()->rend_desc(), time+time_offset, trimmed, width, height, top, left);
+		rendering_surface = importer->get_frame(get_canvas()->rend_desc(), time+time_offset);
 	}
 	context.set_time(time);
-}
-
-void
-Import::set_render_method(Context context, RenderMethod x)
-{
-	if(get_method() != x) // if the method is different
-	{
-		Layer_Bitmap::set_render_method(context, x); // set the method (and pass to the other layers)
-		importer=0; // invalidate the importer
-		cimporter=0;
-		set_param("filename", param_filename); // this will update the importer to the new type
-	}
-	else
-		context.set_render_method(x); // pass it down.
 }

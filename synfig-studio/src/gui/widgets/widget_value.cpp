@@ -29,18 +29,18 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-
+#include <gtk/gtk.h>
 #include <gtkmm/label.h>
-#include "widgets/widget_value.h"
-#include <ETL/stringf>
 #include <gtkmm/celleditable.h>
 #include <gtkmm/editable.h>
 #include <gtkmm/entry.h>
 #include <gtkmm/eventbox.h>
-#include <gtk/gtk.h>
-#include "app.h"
 
+#include <ETL/stringf>
+
+#include <synfig/general.h>
+
+#include "widgets/widget_value.h"
 
 #include "widgets/widget_vector.h"
 #include "widgets/widget_filename.h"
@@ -50,9 +50,9 @@
 #include "widgets/widget_bonechooser.h"
 #include "widgets/widget_canvaschooser.h"
 #include "widgets/widget_time.h"
+#include "widgets/widget_distance.h"
 
 #include "app.h"
-#include "widgets/widget_distance.h"
 
 #include <gui/localization.h>
 
@@ -350,6 +350,14 @@ Widget_ValueBase::set_value(const synfig::ValueBase &data)
 			label->show();
 		}
 	}catch(...) { synfig::error(__FILE__":%d: Caught something that was thrown",__LINE__); }
+}
+
+void
+Widget_ValueBase::set_canvas(etl::handle<synfig::Canvas> x)
+{
+	assert(x);
+	canvas=x;
+	filename_widget->set_canvas(canvas);
 }
 
 const synfig::ValueBase &

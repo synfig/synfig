@@ -28,11 +28,15 @@
 /* === H E A D E R S ======================================================= */
 
 #include <cstdio>
-#include <string>
-#include <streambuf>
+
 #include <istream>
 #include <ostream>
+#include <streambuf>
+#include <vector>
+
 #include <ETL/handle>
+
+#include "string.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -43,19 +47,23 @@
 namespace synfig
 {
 
-	class FileSystem : public etl::rshared_object
+	class FileSystem : public etl::shared_object
 	{
 	public:
-		typedef etl::handle< FileSystem > Handle;
+		typedef etl::handle<FileSystem> Handle;
+		typedef std::vector<String> FileList;
 
-		class Stream : public etl::rshared_object
+		class Stream : public etl::shared_object
 		{
+		public:
+			typedef etl::handle<Stream> Handle;
+
 		protected:
-			Handle file_system_;
-			Stream(Handle file_system);
+			FileSystem::Handle file_system_;
+			Stream(FileSystem::Handle file_system);
 		public:
 			virtual ~Stream();
-			Handle file_system() const { return file_system_; }
+			FileSystem::Handle file_system() const { return file_system_; }
 		};
 
 		class ReadStream :
@@ -63,10 +71,13 @@ namespace synfig
 			private std::streambuf,
 			public std::istream
 		{
+		public:
+			typedef etl::handle<ReadStream> Handle;
+
 		protected:
 			char buffer_;
 
-			ReadStream(Handle file_system);
+			ReadStream(FileSystem::Handle file_system);
 			virtual int underflow();
 			virtual size_t internal_read(void *buffer, size_t size) = 0;
 
@@ -79,15 +90,16 @@ namespace synfig
 				{ return read_whole_block(&v, sizeof(T)); }
 		};
 
-		typedef etl::handle< ReadStream > ReadStreamHandle;
-
 		class WriteStream :
 			public Stream,
 			private std::streambuf,
 			public std::ostream
 		{
+		public:
+			typedef etl::handle<WriteStream> Handle;
+
 		protected:
-			WriteStream(Handle file_system);
+			WriteStream(FileSystem::Handle file_system);
 	        virtual int overflow(int ch);
 			virtual size_t internal_write(const void *buffer, size_t size) = 0;
 
@@ -105,20 +117,18 @@ namespace synfig
 				{ return (*this << &streambuf).good(); }
 			bool write_whole_stream(std::istream &stream)
 				{ return write_whole_stream(*stream.rdbuf()); }
-			bool write_whole_stream(ReadStreamHandle stream)
+			bool write_whole_stream(ReadStream::Handle stream)
 				{ return !stream || write_whole_stream(*(std::istream*)&(*stream)); }
 			template<typename T> bool write_variable(const T &v)
 				{ return write_whole_block(&v, sizeof(T)); }
 		};
 
-		typedef etl::handle< WriteStream > WriteStreamHandle;
-
 		class Identifier {
 		public:
-			Handle file_system;
-			std::string filename;
+			FileSystem::Handle file_system;
+			String filename;
 			Identifier() { }
-			Identifier(const Handle &file_system, const std::string &filename):
+			Identifier(const FileSystem::Handle &file_system, const String &filename):
 				file_system(file_system), filename(filename) { }
 
 			bool empty() const { return file_system; }
@@ -139,33 +149,40 @@ namespace synfig
 			bool operator == (const Identifier &other) const
 				{ return !(*this != other); }
 
-			ReadStreamHandle get_read_stream() const;
-			WriteStreamHandle get_write_stream() const;
+			ReadStream::Handle get_read_stream() const;
+			WriteStream::Handle get_write_stream() const;
 		};
 
 		FileSystem();
 		virtual ~FileSystem();
 
-		virtual bool is_file(const std::string &filename) = 0;
-		virtual bool is_directory(const std::string &filename) = 0;
+		virtual bool is_file(const String &filename) = 0;
+		virtual bool is_directory(const String &filename) = 0;
 
-		virtual bool directory_create(const std::string &dirname) = 0;
+		virtual bool directory_create(const String &dirname) = 0;
+		virtual bool directory_scan(const String &dirname, FileList &out_files) = 0;
 
-		virtual bool file_remove(const std::string &filename) = 0;
-		virtual bool file_rename(const std::string &from_filename, const std::string &to_filename);
-		virtual ReadStreamHandle get_read_stream(const std::string &filename) = 0;
-		virtual WriteStreamHandle get_write_stream(const std::string &filename) = 0;
-		virtual std::string get_real_uri(const std::string &filename);
+		virtual bool file_remove(const String &filename) = 0;
+		virtual bool file_rename(const String &from_filename, const String &to_filename);
+		virtual ReadStream::Handle get_read_stream(const String &filename) = 0;
+		virtual WriteStream::Handle get_write_stream(const String &filename) = 0;
+		virtual String get_real_uri(const String &filename);
 
-		inline bool is_exists(const std::string filename) { return is_file(filename) || is_directory(filename); }
+		inline bool is_exists(const String filename) { return is_file(filename) || is_directory(filename); }
 
-		Identifier get_identifier(const std::string &filename) { return Identifier(this, filename); }
-		static bool copy(Handle from_file_system, const std::string &from_filename, Handle to_file_system, const std::string &to_filename);
+		String get_real_filename(const String &filename);
+		Identifier get_identifier(const String &filename) { return Identifier(this, filename); }
 
-		static std::string fix_slashes(const std::string &filename);
+		bool directory_create_recursive(const String &dirname);
+		bool remove_recursive(const String &filename);
+
+		static bool copy(Handle from_file_system, const String &from_filename, Handle to_file_system, const String &to_filename);
+		static bool copy_recursive(Handle from_file_system, const String &from_filename, Handle to_file_system, const String &to_filename);
+
+		static String fix_slashes(const String &filename);
 
 		///!@brief Read a stream line by line even '\r\n' ended
-		static std::istream& safeGetline(std::istream& is, std::string& t);
+		static std::istream& safe_get_line(std::istream& is, String& t);
 	};
 
 }

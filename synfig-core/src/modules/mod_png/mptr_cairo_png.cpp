@@ -76,7 +76,7 @@ cairo_png_mptr::read_callback(void *closure, unsigned char *data, unsigned int l
 cairo_png_mptr::cairo_png_mptr(const synfig::FileSystem::Identifier &identifier):
 	CairoImporter(identifier)
 {
-	FileSystem::ReadStreamHandle stream = identifier.get_read_stream();
+	FileSystem::ReadStream::Handle stream = identifier.get_read_stream();
 	csurface_=cairo_image_surface_create_from_png_stream(read_callback, stream.get());
 	stream.reset();
 	if(cairo_surface_status(csurface_))

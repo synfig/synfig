@@ -54,6 +54,7 @@
 #include "docks/dock_toolbox.h"
 #include "onemoment.h"
 #include <synfig/savecanvas.h>
+#include <synfig/canvasfilenaming.h>
 #include <synfig/layers/layer_pastecanvas.h>
 
 #include "autorecover.h"
@@ -87,7 +88,7 @@ int studio::Instance::instance_count_=0;
 
 /* === M E T H O D S ======================================================= */
 
-Instance::Instance(synfig::Canvas::Handle canvas, etl::handle< synfig::FileContainerTemporary > container):
+Instance::Instance(synfig::Canvas::Handle canvas, synfig::FileSystemTemporary::Handle container):
 	synfigapp::Instance		(canvas, container),
 	canvas_tree_store_		(Gtk::TreeStore::create(canvas_tree_model)),
 	history_tree_store_		(HistoryTreeStore::create(this)),
@@ -129,7 +130,7 @@ Instance::get_visible_canvases()const
 }
 
 handle<Instance>
-Instance::create(synfig::Canvas::Handle canvas, etl::handle< synfig::FileContainerTemporary > container)
+Instance::create(synfig::Canvas::Handle canvas, synfig::FileSystemTemporary::Handle container)
 {
 	// Construct a new instance
 	handle<Instance> instance(new Instance(canvas, container));
@@ -1584,7 +1585,7 @@ Instance::gather_uri(std::set<synfig::String> &x, const synfig::ValueNode::Handl
 	LinkableValueNode::Handle linkable_value_node = LinkableValueNode::Handle::cast_dynamic(value_node);
 	if (!linkable_value_node) return;
 
-	FileSystem::Handle file_system = App::get_instance(value_node->get_parent_canvas())->get_file_system();
+	FileSystem::Handle file_system = value_node->get_parent_canvas()->get_file_system();
 	if (!file_system) return;
 
 	Time t = value_node->get_parent_canvas()->get_time();
@@ -1600,9 +1601,7 @@ Instance::gather_uri(std::set<synfig::String> &x, const synfig::ValueNode::Handl
 			ValueBase v = (*child_node)(t);
 			if (v.can_get(String()))
 			{
-				String filename = v.get(String());
-				if (!filename.empty() && filename[0] != '#')
-					filename = etl::absolute_path(value_node->get_parent_canvas()->get_file_path(), filename);
+				String filename = CanvasFileNaming::make_full_filename(value_node->get_parent_canvas()->get_file_name(), v.get(String()));
 				String uri = file_system->get_real_uri(filename);
 				if (!uri.empty()) x.insert(uri);
 			}
@@ -1617,10 +1616,7 @@ Instance::gather_uri(std::set<synfig::String> &x, const synfig::Layer::Handle &l
 {
 	if (!layer || !layer->get_canvas()) return;
 
-	etl::handle<Instance> instance = App::get_instance(layer->get_canvas());
-	if (!instance) return;
-
-	FileSystem::Handle file_system = instance->get_file_system();
+	FileSystem::Handle file_system = layer->get_canvas()->get_file_system();
 	if (!file_system) return;
 
 	ParamVocab vocab = layer->get_param_vocab();
@@ -1631,9 +1627,7 @@ Instance::gather_uri(std::set<synfig::String> &x, const synfig::Layer::Handle &l
 			ValueBase v = layer->get_param(i->get_name());
 			if (v.can_get(String()))
 			{
-				String filename = v.get(String());
-				if (!filename.empty() && filename[0] != '#')
-					filename = etl::absolute_path(layer->get_canvas()->get_file_path(), filename);
+				String filename = CanvasFileNaming::make_full_filename(layer->get_canvas()->get_file_name(), v.get(String()));
 				String uri = file_system->get_real_uri(filename);
 				if (!uri.empty()) x.insert(uri);
 			}
@@ -1653,7 +1647,7 @@ Instance::gather_uri(std::set<synfig::String> &x, const synfig::Canvas::Handle &
 {
 	if (!canvas) return;
 
-	FileSystem::Handle file_system = App::get_instance(canvas)->get_file_system();
+	FileSystem::Handle file_system = canvas->get_file_system();
 	if (!file_system) return;
 
 	for(Canvas::const_iterator i = canvas->begin(); i != canvas->end(); ++i)

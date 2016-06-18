@@ -59,6 +59,7 @@ class PassiveGrouper
 	bool redraw_requested_;
 	int depth_;
 	etl::handle<CanvasInterface> canvas_interface_;
+	bool finished_;
 public:
 
 	PassiveGrouper(etl::loose_handle<System> instance_,synfig::String name_);
@@ -72,6 +73,8 @@ public:
 	etl::loose_handle<System> get_instance() { return instance_; }
 
 	void request_redraw(etl::handle<CanvasInterface>);
+
+	etl::handle<Action::Group> finish();
 
 	void cancel();
 
