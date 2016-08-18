@@ -894,12 +894,13 @@ Layer::build_rendering_task_vfunc(Context context)const
 {
 	rendering::TaskLayer::Handle task = new rendering::TaskLayer();
 	// TODO: This is not thread-safe
-	task->layer = const_cast<Layer*>(this);//clone(NULL);
+	//task->layer = const_cast<Layer*>(this);//clone(NULL);
+	task->layer = clone(NULL);
 
 	Real amount = Context::z_depth_visibility(context.get_params(), *this);
 	if (approximate_not_equal(amount, 1.0) && task->layer.type_is<Layer_Composite>())
 	{
-		task->layer = task->layer->clone(NULL);
+		//task->layer = task->layer->clone(NULL);
 		etl::handle<Layer_Composite> composite = etl::handle<Layer_Composite>::cast_dynamic(task->layer);
 		composite->set_amount( composite->get_amount()*amount );
 	}
