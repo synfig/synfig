@@ -99,7 +99,19 @@ using namespace synfig;
 
 static etl::reference_counter synfig_ref_count_(0);
 Main *Main::instance = NULL;
-Mutex general_io_mutex;
+
+class GeneralIOMutexHolder {
+private:
+	Mutex mutex;
+	bool initialized;
+public:
+	GeneralIOMutexHolder(): initialized(true) { }
+	~GeneralIOMutexHolder() { initialized = false; }
+	void lock() { if (initialized) mutex.lock(); }
+	void unlock() { if (initialized) mutex.unlock(); }
+};
+
+GeneralIOMutexHolder general_io_mutex;
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -451,8 +463,9 @@ synfig::error(const char *format,...)
 void
 synfig::error(const String &str)
 {
-	Mutex::Lock lock(general_io_mutex);
+	general_io_mutex.lock();
 	cerr<<"synfig("<<getpid()<<")"<<current_time().c_str()<<_("error")<<": "<<str.c_str()<<endl;
+	general_io_mutex.unlock();
 }
 
 void
@@ -466,8 +479,9 @@ synfig::warning(const char *format,...)
 void
 synfig::warning(const String &str)
 {
-	Mutex::Lock lock(general_io_mutex);
+	general_io_mutex.lock();
 	cerr<<"synfig("<<getpid()<<")"<<current_time().c_str()<<_("warning")<<": "<<str.c_str()<<endl;
+	general_io_mutex.unlock();
 }
 
 void
@@ -481,8 +495,9 @@ synfig::info(const char *format,...)
 void
 synfig::info(const String &str)
 {
-	Mutex::Lock lock(general_io_mutex);
+	general_io_mutex.lock();
 	cerr<<"synfig("<<getpid()<<")"<<current_time().c_str()<<_("info")<<": "<<str.c_str()<<endl;
+	general_io_mutex.unlock();
 }
 
 // synfig::get_binary_path()
