@@ -44,11 +44,6 @@ class png_mptr : public synfig::Importer
 {
 	SYNFIG_IMPORTER_MODULE_EXT
 private:
-	synfig::Surface surface_buffer;
-
-	bool trim;
-	unsigned int orig_width, orig_height, trimmed_x, trimmed_y;
-
 	static void png_out_error(png_struct *png_data,const char *msg);
 	static void png_out_warning(png_struct *png_data,const char *msg);
 	static void read_callback(png_structp png_ptr, png_bytep out_bytes, png_size_t bytes_count_to_read);
@@ -58,9 +53,6 @@ public:
 	~png_mptr();
 
 	virtual bool get_frame(synfig::Surface &surface, const synfig::RendDesc &renddesc, synfig::Time time, synfig::ProgressCallback *callback);
-	virtual bool get_frame(synfig::Surface &surface, const synfig::RendDesc &renddesc, synfig::Time time,
-						   bool &trimmed, unsigned int &width, unsigned int &height, unsigned int &top, unsigned int &left,
-						   synfig::ProgressCallback *callback);
 };
 
 /* === E N D =============================================================== */
