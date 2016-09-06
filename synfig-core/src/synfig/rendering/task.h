@@ -48,6 +48,16 @@ namespace rendering
 
 class Renderer;
 
+class TackCapabilityInterface
+{
+public:
+	virtual ~TackCapabilityInterface() { }
+	virtual bool is_supported_target(const Surface::Handle &surface);
+	virtual bool is_supported_source(const Surface::Handle &surface);
+	virtual Surface::Handle create_supported_target() { return Surface::Handle(); }
+	virtual Surface::Handle create_supported_source() { return Surface::Handle(); }
+};
+
 class Task: public etl::shared_object
 {
 private:
