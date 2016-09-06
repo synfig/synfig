@@ -48,10 +48,14 @@ namespace synfig {
 		enum {
 			option_bufsize				= 4096,
 			option_method				= Z_DEFLATED,
-			option_compression_level	= 9,
+			option_compression_level	= Z_BEST_COMPRESSION,
 			option_window_bits			= 16+MAX_WBITS,
 			option_mem_level			= 9,
-			option_strategy				= Z_DEFAULT_STRATEGY
+			option_strategy				= Z_DEFAULT_STRATEGY,
+
+			fast_option_compression_level = Z_BEST_SPEED,
+			fast_option_mem_level		= 9,
+			fast_option_strategy		= Z_DEFAULT_STRATEGY
 		};
 
 	private:
@@ -76,6 +80,12 @@ namespace synfig {
 		virtual int sync();
 		virtual int underflow();
 		virtual int overflow(int c = EOF);
+
+	public:
+		static bool pack(std::vector<char> &dest, const void *src, size_t size, bool fast = false);
+		static size_t pack(void *dest, size_t dest_size, const void *src, size_t size, bool fast = false);
+		static bool unpack(std::vector<char> &dest, const void *src, size_t size);
+		static size_t unpack(void *dest, size_t dest_size, const void *src, size_t src_size);
 	};
 
 	class ZReadStream : public FileSystem::ReadStream

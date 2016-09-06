@@ -3,13 +3,15 @@ RENDERING_SOFTWARE_FUNCTION_HH = \
 	rendering/software/function/blur.h \
 	rendering/software/function/blurtemplates.h \
 	rendering/software/function/contour.h \
-	rendering/software/function/fft.h
+	rendering/software/function/fft.h \
+	rendering/software/function/packedsurface.h
 
 RENDERING_SOFTWARE_FUNCTION_CC = \
 	rendering/software/function/blur.cpp \
 	rendering/software/function/blur_iir_coefficients.cpp \
 	rendering/software/function/contour.cpp \
-	rendering/software/function/fft.cpp
+	rendering/software/function/fft.cpp \
+	rendering/software/function/packedsurface.cpp
 
 RENDERING_SOFTWARE_HH += \
     $(RENDERING_SOFTWARE_FUNCTION_HH)

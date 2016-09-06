@@ -62,6 +62,98 @@ zstreambuf::~zstreambuf()
 	if (deflate_initialized) deflateEnd(&deflate_stream_);
 }
 
+bool zstreambuf::pack(std::vector<char> &dest, const void *src, size_t size, bool fast) {
+	z_stream stream;
+	memset(&stream, 0, sizeof(stream));
+	if (Z_OK != deflateInit2(&stream,
+			fast ? fast_option_compression_level : option_compression_level,
+			option_method,
+			option_window_bits,
+			fast ? fast_option_mem_level : option_mem_level,
+			fast ? fast_option_strategy : option_strategy
+	)) return false;
+
+	stream.avail_in = size;
+	stream.next_in = (z_const Bytef*)src;
+	bool result = true;
+	do
+	{
+		if (stream.avail_out < option_bufsize) {
+			size_t s = option_bufsize - stream.avail_out;
+			dest.resize(dest.size() + s);
+			stream.avail_out = option_bufsize;
+			stream.next_out = (Bytef*)&dest[dest.size() - stream.avail_out];
+		}
+		if (Z_STREAM_ERROR == ::deflate(&stream, Z_FINISH))
+			{ result = false; break; }
+	} while (stream.avail_out == 0);
+	if (stream.avail_in != 0) result = false;
+	deflateEnd(&stream);
+	return result;
+}
+
+size_t zstreambuf::pack(void *dest, size_t dest_size, const void *src, size_t src_size, bool fast) {
+	z_stream stream;
+	memset(&stream, 0, sizeof(stream));
+	if (Z_OK != deflateInit2(&stream,
+			fast ? fast_option_compression_level : option_compression_level,
+			option_method,
+			option_window_bits,
+			fast ? fast_option_mem_level : option_mem_level,
+			fast ? fast_option_strategy : option_strategy
+	)) return 0;
+
+	stream.avail_in = src_size;
+	stream.next_in = (z_const Bytef*)src;
+	stream.avail_out = dest_size;
+	stream.next_out = (Bytef*)dest;
+	size_t size = 0;
+	if (Z_STREAM_ERROR != ::deflate(&stream, Z_FINISH))
+		size = dest_size - stream.avail_out;
+	deflateEnd(&stream);
+	return size;
+}
+
+bool zstreambuf::unpack(std::vector<char> &dest, const void *src, size_t size) {
+	z_stream stream;
+	memset(&stream, 0, sizeof(stream));
+	if (Z_OK != inflateInit2(&stream, option_window_bits )) return false;
+
+	stream.avail_in = size;
+	stream.next_in = (z_const Bytef*)src;
+	bool result = true;
+	do
+	{
+		if (stream.avail_out < option_bufsize) {
+			size_t s = option_bufsize - stream.avail_out;
+			dest.resize(dest.size() + s);
+			stream.avail_out = option_bufsize;
+			stream.next_out = (Bytef*)&dest[dest.size() - stream.avail_out];
+		}
+		if (Z_STREAM_ERROR == ::inflate(&stream, Z_NO_FLUSH))
+			{ result = false; break; }
+	} while (stream.avail_out == 0);
+	if (stream.avail_in != 0) result = false;
+	inflateEnd(&stream);
+	return result;
+}
+
+size_t zstreambuf::unpack(void *dest, size_t dest_size, const void *src, size_t src_size) {
+	z_stream stream;
+	memset(&stream, 0, sizeof(stream));
+	if (Z_OK != inflateInit2(&stream, option_window_bits )) return 0;
+
+	stream.avail_in = src_size;
+	stream.next_in = (z_const Bytef*)src;
+	stream.avail_out = dest_size;
+	stream.next_out = (Bytef*)dest;
+	size_t size = 0;
+	if (Z_STREAM_ERROR != ::inflate(&stream, Z_FINISH))
+		size = dest_size - stream.avail_out;
+	inflateEnd(&stream);
+	return size;
+}
+
 bool zstreambuf::inflate_buf()
 {
     // initialize inflate if need

@@ -52,14 +52,14 @@ class Target_Tile;
 class ColorPrep
 {
 public:
-	ColorAccumulator cook(Color x)const
+	static ColorAccumulator cook_static(Color x)
 	{
 		x.set_r(x.get_r()*x.get_a());
 		x.set_g(x.get_g()*x.get_a());
 		x.set_b(x.get_b()*x.get_a());
 		return x;
 	}
-	Color uncook(ColorAccumulator x)const
+	static Color uncook_static(ColorAccumulator x)
 	{
 		if(!x.get_a())
 			return Color::alpha();
@@ -71,6 +71,11 @@ public:
 		x.set_b(x.get_b()*a);
 		return x;
 	}
+
+	ColorAccumulator cook(Color x)const
+		{ return cook_static(x); }
+	Color uncook(ColorAccumulator x)const
+		{ return uncook_static(x); }
 };
 
 class CairoColorPrep
