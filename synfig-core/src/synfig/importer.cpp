@@ -47,6 +47,7 @@
 #include "surface.h"
 
 #include <synfig/rendering/software/surfacesw.h>
+#include <synfig/rendering/software/surfaceswpacked.h>
 
 #endif
 
@@ -165,7 +166,7 @@ Importer::get_frame(const RendDesc & /* renddesc */, const Time &time)
 	if(!get_frame(surface, RendDesc(), time, trimmed, width, height, top, left))
 		warning(strprintf("Unable to get frame from \"%s\"", identifier.filename.c_str()));
 
-	last_surface_ = new rendering::SurfaceSW();
+	last_surface_ = new rendering::SurfaceSWPacked();
 	if (surface.is_valid())
 		last_surface_->assign(surface[0], surface.get_w(), surface.get_h());
 
