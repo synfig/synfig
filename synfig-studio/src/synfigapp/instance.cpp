@@ -64,6 +64,7 @@
 #include <synfig/valuenodes/valuenode_weightedaverage.h>
 #include <synfig/layers/layer_pastecanvas.h>
 #include <synfig/layers/layer_bitmap.h>
+#include <synfig/rendering/software/surfacesw.h>
 #include <synfig/target_scanline.h>
 #include "actions/valuedescexport.h"
 #include "actions/layerparamset.h"
@@ -289,6 +290,16 @@ Instance::import_external_canvases()
 	std::map<Canvas*, Canvas::Handle> imported;
 	while(import_external_canvas(get_canvas(), imported));
 	return group.finish();
+}
+
+bool Instance::save_surface(const synfig::rendering::Surface::Handle &surface, const synfig::String &filename)
+{
+	if (!surface || !surface->is_created())
+		return false;
+
+	rendering::SurfaceSW::Handle surface_sw = rendering::SurfaceSW::Handle::cast_dynamic(surface);
+	if (!surface_sw) surface_sw = new rendering::SurfaceSW(*surface);
+	return save_surface(surface_sw->get_surface(), filename);
 }
 
 bool Instance::save_surface(const synfig::Surface &surface, const synfig::String &filename)
@@ -544,7 +555,7 @@ Instance::save_as(const synfig::String &file_name)
 		ValueBase value = (*i)->get_param("filename");
 		if (!value.same_type_as(String())) continue;
 		String filename = value.get(String());
-		if (!save_surface(layer_bitmap->surface, filename))
+		if (!save_surface(layer_bitmap->rendering_surface, filename))
 			warning("Cannot save image: %s", filename.c_str());
 	}
 

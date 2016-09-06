@@ -76,7 +76,6 @@ public:
 		bool prepared;
 		bool applied;
 
-		void copy_to_cairo_surface(const synfig::Surface &surface, synfig::CairoSurface &csurface);
 		void paint_prev(synfig::Surface &surface);
 		void paint_self(synfig::Surface &surface);
 		void reset(const PaintPoint &point);

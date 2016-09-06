@@ -52,6 +52,8 @@
 #include <synfig/rendering/common/task/tasksurface.h>
 #include <synfig/rendering/common/task/tasksurfaceempty.h>
 #include <synfig/rendering/common/task/tasksurfaceresample.h>
+#include <synfig/rendering/software/surfacesw.h>
+#include <synfig/rendering/software/surfaceswpacked.h>
 
 #endif
 
@@ -74,11 +76,24 @@ synfig::Layer_Bitmap::Layer_Bitmap():
 	param_br				(Point(0.5,-0.5)),
 	param_c				(int(1)),
 	param_gamma_adjust	(Real(1.0)),
-	surface			(128,128), // TODO: may be 1x1 or 0x0 will be better?
 	trimmed			(false)
 {
 	SET_INTERPOLATION_DEFAULTS();
 	SET_STATIC_DEFAULTS();
+}
+
+synfig::Surface&
+Layer_Bitmap::get_surface() const
+{
+	if (!rendering_surface || !rendering_surface->is_created())
+	{
+		rendering_surface = new rendering::SurfaceSW();
+		rendering_surface->set_size(128, 128);
+		rendering_surface->create();
+	}
+	if (!rendering::SurfaceSW::Handle::cast_dynamic(rendering_surface))
+		rendering_surface = new rendering::SurfaceSW(*rendering_surface);
+	return rendering::SurfaceSW::Handle::cast_dynamic(rendering_surface)->get_surface();
 }
 
 bool
@@ -116,16 +131,7 @@ synfig::Layer_Bitmap::get_param(const String & param)const
 		ValueBase ret1(type_integer);
 		ret1=int(width);
 		ValueBase ret2(type_integer);
-		switch (method)
-		{
-				case SOFTWARE:
-				ret2=int(surface.get_w());
-				break;
-				case CAIRO:
-				default:
-				ret2=int(csurface.get_w());
-				break;
-		}
+		ret2=int(rendering_surface ? rendering_surface->get_width() : 0);
 		if (trimmed) return ret1;
 		return ret2;
 	}
@@ -134,16 +140,7 @@ synfig::Layer_Bitmap::get_param(const String & param)const
 		ValueBase ret1(type_integer);
 		ret1=int(height);
 		ValueBase ret2(type_integer);
-		switch (method)
-		{
-			case SOFTWARE:
-				ret2=int(surface.get_h());
-				break;
-			case CAIRO:
-			default:
-				ret2=int(csurface.get_h());
-				break;
-		}
+		ret2=int(rendering_surface ? rendering_surface->get_height() : 0);
 		if (trimmed) return ret1;
 		return ret2;
 	}
@@ -251,10 +248,12 @@ synfig::Layer_Bitmap::get_color(Context context, const Point &pos)const
 
 	Point surface_pos;
 
-	if(!get_amount())
+	if(!get_amount() || !rendering_surface || !rendering_surface->is_created())
 		return context.get_color(pos);
 
 	surface_pos=pos-tl;
+	int w = rendering_surface->get_width();
+	int h = rendering_surface->get_height();
 
 	surface_pos[0]/=br[0]-tl[0];
 	if(surface_pos[0]<=1.0 && surface_pos[0]>=0.0)
@@ -269,7 +268,7 @@ synfig::Layer_Bitmap::get_color(Context context, const Point &pos)const
 				surface_pos[0]*=width;
 				surface_pos[1]*=height;
 
-				if (surface_pos[0] > left+surface.get_w() || surface_pos[0] < left || surface_pos[1] > top+surface.get_h() || surface_pos[1] < top)
+				if (surface_pos[0] > left+w || surface_pos[0] < left || surface_pos[1] > top+h || surface_pos[1] < top)
 					return context.get_color(pos);
 
 				surface_pos[0] -= left;
@@ -277,35 +276,69 @@ synfig::Layer_Bitmap::get_color(Context context, const Point &pos)const
 			}
 			else
 			{
-				surface_pos[0]*=surface.get_w();
-				surface_pos[1]*=surface.get_h();
+				surface_pos[0]*=w;
+				surface_pos[1]*=h;
 			}
 
 			Color ret(Color::alpha());
 
-			switch(c)
+			if (rendering::SurfaceSWPacked::Handle surface_packed = rendering::SurfaceSWPacked::Handle::cast_dynamic(rendering_surface))
 			{
-			case 6:	// Undefined
-			case 5:	// Undefined
-			case 4:	// Undefined
-			case 3:	// Cubic
-				ret=surface.cubic_sample(surface_pos[0],surface_pos[1]);
-				break;
+				reader.open(surface_packed->get_surface());
+				typedef etl::sampler<ColorAccumulator, float, ColorAccumulator, rendering::software::PackedSurface::Reader::reader_cook> Sampler;
 
-			case 2:	// Cosine
-				ret=surface.cosine_sample(surface_pos[0],surface_pos[1]);
-				break;
-			case 1:	// Linear
-				ret=surface.linear_sample(surface_pos[0],surface_pos[1]);
-				break;
-			case 0:	// Nearest Neighbor
-			default:
+				switch(c)
 				{
-					int x(min(surface.get_w()-1,max(0,round_to_int(surface_pos[0]))));
-					int y(min(surface.get_h()-1,max(0,round_to_int(surface_pos[1]))));
-					ret= surface[y][x];
+				case 6:	// Undefined
+				case 5:	// Undefined
+				case 4:	// Undefined
+				case 3:	// Cubic
+					ret = ColorPrep::uncook_static(Sampler::cubic_sample(&reader, w, h, surface_pos[0],surface_pos[1]));
+					break;
+				case 2:	// Cosine
+					ret = ColorPrep::uncook_static(Sampler::cosine_sample(&reader, w, h, surface_pos[0],surface_pos[1]));
+					break;
+				case 1:	// Linear
+					ret = ColorPrep::uncook_static(Sampler::linear_sample(&reader, w, h, surface_pos[0],surface_pos[1]));
+					break;
+				case 0:	// Nearest Neighbor
+				default:
+					{
+						int x(min(w-1,max(0,round_to_int(surface_pos[0]))));
+						int y(min(h-1,max(0,round_to_int(surface_pos[1]))));
+						ret=reader.get_pixel(x, y);
+					}
+				break;
 				}
-			break;
+			}
+			else
+			{
+				Surface &surface = get_surface();
+
+				switch(c)
+				{
+				case 6:	// Undefined
+				case 5:	// Undefined
+				case 4:	// Undefined
+				case 3:	// Cubic
+					ret=surface.cubic_sample(surface_pos[0],surface_pos[1]);
+					break;
+
+				case 2:	// Cosine
+					ret=surface.cosine_sample(surface_pos[0],surface_pos[1]);
+					break;
+				case 1:	// Linear
+					ret=surface.linear_sample(surface_pos[0],surface_pos[1]);
+					break;
+				case 0:	// Nearest Neighbor
+				default:
+					{
+						int x(min(w-1,max(0,round_to_int(surface_pos[0]))));
+						int y(min(h-1,max(0,round_to_int(surface_pos[1]))));
+						ret= surface[y][x];
+					}
+				break;
+				}
 			}
 
 			ret=filter(ret);
@@ -324,77 +357,7 @@ synfig::Layer_Bitmap::get_color(Context context, const Point &pos)const
 CairoColor
 synfig::Layer_Bitmap::get_cairocolor(Context context, const Point &pos)const
 {
-	Point tl(param_tl.get(Point()));
-	Point br(param_br.get(Point()));
-	int c(param_c.get(int()));
-
-	Point surface_pos;
-	
-	if(!get_amount())
-		return context.get_cairocolor(pos);
-	
-	surface_pos=pos-tl;
-	
-	surface_pos[0]/=br[0]-tl[0];
-	if(surface_pos[0]<=1.0 && surface_pos[0]>=0.0)
-	{
-		surface_pos[1]/=br[1]-tl[1];
-		if(surface_pos[1]<=1.0 && surface_pos[1]>=0.0)
-		{
-			Mutex::Lock lock(mutex);
-
-			if (trimmed)
-			{
-				surface_pos[0]*=width;
-				surface_pos[1]*=height;
-				
-				if (surface_pos[0] > left+surface.get_w() || surface_pos[0] < left || surface_pos[1] > top+surface.get_h() || surface_pos[1] < top)
-					return context.get_cairocolor(pos);
-				
-				surface_pos[0] -= left;
-				surface_pos[1] -= top;
-			}
-			else
-			{
-				surface_pos[0]*=csurface.get_w();
-				surface_pos[1]*=csurface.get_h();
-			}
-			
-			CairoColor ret(CairoColor::alpha());
-			
-			switch(c)
-			{
-				case 6:	// Undefined
-				case 5:	// Undefined
-				case 4:	// Undefined
-				case 3:	// Cubic
-					ret=csurface.cubic_sample_cooked(surface_pos[0],surface_pos[1]);
-					break;
-					
-				case 2:	// Cosine
-					ret=csurface.cosine_sample_cooked(surface_pos[0],surface_pos[1]);
-					break;
-				case 1:	// Linear
-					ret=csurface.linear_sample_cooked(surface_pos[0],surface_pos[1]);
-					break;
-				case 0:	// Nearest Neighbor
-				default:
-				{
-					int x(min(csurface.get_w()-1,max(0,round_to_int(surface_pos[0]))));
-					int y(min(csurface.get_h()-1,max(0,round_to_int(surface_pos[1]))));
-					ret= csurface[y][x];
-				}
-					break;
-			}
-			ret=ret.demult_alpha();
-			ret=filter(ret);
-			
-			if(get_amount()==1 && get_blend_method()==Color::BLEND_STRAIGHT)
-				return ret;
-			else
-				return CairoColor::blend(ret,context.get_cairocolor(pos),get_amount(),get_blend_method());
-		}
-	}
+	// no cairo implementation
 	return context.get_cairocolor(pos);
 }
 
@@ -411,6 +374,8 @@ Layer_Bitmap::accelerated_render(Context context,Surface *surface,int quality, c
 	int c(param_c.get(int()));
 	Real gamma_adjust(param_gamma_adjust.get(Real()));
 
+	Surface &layer_surface = get_surface();
+
 	int interp=c;
 	if(quality>=10)
 		interp=0;
@@ -422,7 +387,7 @@ Layer_Bitmap::accelerated_render(Context context,Surface *surface,int quality, c
 	//	return Layer_Composite::accelerated_render(context,surface,quality,renddesc,cb);
 
 	//if we don't actually have a valid surface just skip us
-	if(!this->surface.is_valid())
+	if(!layer_surface.is_valid())
 	{
 		// Render what is behind us
 		return context.accelerated_render(surface,quality,renddesc,cb);
@@ -437,10 +402,10 @@ Layer_Bitmap::accelerated_render(Context context,Surface *surface,int quality, c
 		renddesc.get_br()==br)
 	{
 		// Check for the trivial case
-		if(this->surface.get_w()==renddesc.get_w() && this->surface.get_h()==renddesc.get_h() && gamma_adjust==1.0f)
+		if(layer_surface.get_w()==renddesc.get_w() && layer_surface.get_h()==renddesc.get_h() && gamma_adjust==1.0f)
 		{
 			if(cb && !cb->amount_complete(0,100)) return false;
-			*surface=this->surface;
+			*surface=layer_surface;
 			if(cb && !cb->amount_complete(100,100)) return false;
 			return true;
 		}
@@ -469,8 +434,8 @@ Layer_Bitmap::accelerated_render(Context context,Surface *surface,int quality, c
 	float	outwf = obr[0] - otl[0];
 	float	outhf = obr[1] - otl[1];
 
-	int		inw = this->surface.get_w();
-	int		inh = this->surface.get_h();
+	int		inw = layer_surface.get_w();
+	int		inh = layer_surface.get_h();
 
 	int		outw = renddesc.get_w();
 	int		outh = renddesc.get_h();
@@ -480,8 +445,8 @@ Layer_Bitmap::accelerated_render(Context context,Surface *surface,int quality, c
 
 	if (trimmed)
 	{
-		inwf = (br[0] - tl[0])*this->surface.get_w()/width;
-		inhf = (br[1] - tl[1])*this->surface.get_h()/height;
+		inwf = (br[0] - tl[0])*layer_surface.get_w()/width;
+		inhf = (br[1] - tl[1])*layer_surface.get_h()/height;
 		itl = Point(tl[0] + (br[0]-tl[0])*left/width,
 					tl[1] + (br[1]-tl[1])*top/height);
 		ibr = Point(tl[0] + (br[0]-tl[0])*(left+inw)/width,
@@ -562,7 +527,7 @@ Layer_Bitmap::accelerated_render(Context context,Surface *surface,int quality, c
 				inx = inx_start;//+0.5f;
 				for(x = x_start; x < x_end; x++, pen.inc_x(), inx += indx)
 				{
-					Color rc = this->surface.sample_rect_clip(inx,iny,inx+indx,iny+indy);
+					Color rc = layer_surface.sample_rect_clip(inx,iny,inx+indx,iny+indy);
 					pen.put_value(filter(rc));
 				}
 				pen.dec_x(x_end-x_start);
@@ -591,7 +556,7 @@ Layer_Bitmap::accelerated_render(Context context,Surface *surface,int quality, c
 			for(x = x_start; x < x_end; x++, pen.inc_x(), inx += indx)
 			{
 				int xclamp = min(inw-1, max(0, round_to_int(inx)));
-				Color c = filter(this->surface[yclamp][xclamp]);
+				Color c = filter(layer_surface[yclamp][xclamp]);
 				pen.put_value(c); //must get rid of the clip
 			}
 			pen.dec_x(x_end-x_start);
@@ -616,7 +581,7 @@ Layer_Bitmap::accelerated_render(Context context,Surface *surface,int quality, c
 			inx = inx_start;
 			for(x = x_start; x < x_end; x++, pen.inc_x(), inx += indx)
 			{
-				Color col(this->surface.linear_sample(inx,iny));
+				Color col(layer_surface.linear_sample(inx,iny));
 				pen.put_value(filter(col));
 			}
 			pen.dec_x(x_end-x_start);
@@ -642,7 +607,7 @@ Layer_Bitmap::accelerated_render(Context context,Surface *surface,int quality, c
 			inx = inx_start;
 			for(x = x_start; x < x_end; x++, pen.inc_x(), inx += indx)
 			{
-				Color col(this->surface.cosine_sample(inx,iny));
+				Color col(layer_surface.cosine_sample(inx,iny));
 				pen.put_value(filter(col));
 			}
 			pen.dec_x(x_end-x_start);
@@ -667,7 +632,7 @@ Layer_Bitmap::accelerated_render(Context context,Surface *surface,int quality, c
 			inx = inx_start;
 			for(x = x_start; x < x_end; x++, pen.inc_x(), inx += indx)
 			{
-				Color col(this->surface.cubic_sample(inx,iny));
+				Color col(layer_surface.cubic_sample(inx,iny));
 				pen.put_value(filter(col));
 			}
 			pen.dec_x(x_end-x_start);
@@ -684,119 +649,8 @@ Layer_Bitmap::accelerated_render(Context context,Surface *surface,int quality, c
 bool
 Layer_Bitmap::accelerated_cairorender(Context context, cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)  const
 {
-	Mutex::Lock lock(mutex);
-
-	Point tl(param_tl.get(Point()));
-	Point br(param_br.get(Point()));
-	int c(param_c.get(int()));
-	Real gamma_adjust(param_gamma_adjust.get(Real()));
-	
-	int interp=c;
-	if(quality>=10)
-		interp=0;
-	else if(quality>=5 && interp>1)
-		interp=1;
-	
-	//if we don't actually have a valid surface just skip us
-	if(!csurface.is_mapped())
-	{
-		// Render what is behind us
-		return context.accelerated_cairorender(cr,quality,renddesc,cb);
-	}
-	
-	cairo_surface_t* cs=csurface.get_cairo_image_surface();
-	
-	if(cairo_surface_status(cs) || cairo_surface_get_type(cs)!=CAIRO_SURFACE_TYPE_IMAGE)
-	{
-		// Render what is behind us
-		return context.accelerated_cairorender(cr,quality,renddesc,cb);
-	}
-	
-	SuperCallback subcb(cb,1,10000,10001+renddesc.get_h());
-	
-	Point	obr	= renddesc.get_br();
-	Point   otl = renddesc.get_tl();
-	
-	int		outw = renddesc.get_w();
-	int		outh = renddesc.get_h();
-	
-	int		inw = cairo_image_surface_get_width(cs);
-	int		inh = cairo_image_surface_get_height(cs);
-	
-	
-	if(	get_amount()==1 && // our bitmap is full opaque
-	   get_blend_method()==Color::BLEND_STRAIGHT && // and it doesn't draw the context
-	   otl==tl &&
-	   obr==br) // and the tl and br are the same ...
-	{
-		// Check for the trivial case: the Bitmap and the destiny surface have same dimensions and there is not gamma adjust
-		if(inw==outw && inh==outh && gamma_adjust==1.0f)
-		{
-			if(cb && !cb->amount_complete(0,100)) return false;
-			{
-				cairo_save(cr);
-				cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE); // set operator to ignore destiny
-				cairo_set_source_surface(cr, cs, 0, 0); // set the source our cairosurface
-				cairo_paint(cr); // paint on the destiny
-				cairo_restore(cr);
-			}
-			if(cb && !cb->amount_complete(100,100)) return false;
-			return true;
-		}
-	}
-	else // It is not the trivial case
-	{
-		// Render what is behind us...
-		if(!context.accelerated_cairorender(cr,quality,renddesc,&subcb))
-			return false;
-	}
-	
-	if(cb && !cb->amount_complete(10000,10001+renddesc.get_h())) return false;
-	
-	
-	// Calculate the width and height in pixels of the bitmap in the output surface
-	float wp=(br[0]-tl[0])/renddesc.get_pw();
-	float hp=(br[1]-tl[1])/renddesc.get_ph();
-	// So we need to scale the bitmap by wp/inw in horizontal and hp/inh in vertical.
-	float scalex=wp/inw;
-	float scaley=hp/inh;
-	// Now let's calculate the displacement of the image in the output surface.
-	Point disp=tl-otl;
-	// Calculate the cairo interpolation to do by the interpolation parameter c
-	cairo_filter_t filter;
-	switch(c)
-	{
-		case 3:	// Cubic
-			filter=CAIRO_FILTER_BEST;
-			break;
-		case 2:	// Cosine
-			filter=CAIRO_FILTER_GOOD;
-			break;
-		case 1:	// Linear
-			filter=CAIRO_FILTER_FAST;
-			break;
-		case 0:	// Nearest Neighbor
-		default:
-			filter=CAIRO_FILTER_NEAREST;
-			break;
-	}
-	// TODO: filter the image with gamma_adjust!!
-	cairo_save(cr);
-	// Need to scale down to user coordinates before pass to cr
-	cairo_translate(cr, renddesc.get_tl()[0], renddesc.get_tl()[1]);
-	cairo_scale(cr, renddesc.get_pw(), renddesc.get_ph());
-	// Apply the bitmap scale and tanslate
-	cairo_translate(cr, disp[0]/renddesc.get_pw(), disp[1]/renddesc.get_ph());
-	cairo_scale(cr, scalex, scaley);
-	// set the surface, filter, and paint
-	cairo_pattern_set_filter(cairo_get_source(cr), filter);
-	cairo_set_source_surface(cr, cs, 0,0);
-	cairo_paint_with_alpha_operator(cr, get_amount(), get_blend_method());
-	// we don't need cs anymore
-	cairo_surface_destroy(cs);
-	cairo_restore(cr);
-	
-	return true;
+	// no cairo implementation
+	return context.accelerated_cairorender(cr,quality,renddesc,cb);
 }
 
 /////
@@ -811,23 +665,6 @@ Layer_Bitmap::get_bounding_rect()const
 	return Rect(tl,br);
 }
 
-
-void 
-Layer_Bitmap::set_cairo_surface(cairo_surface_t *cs)
-{
-	if(cs==NULL)
-	{
-		synfig::error("Layer_Bitmap received a NULL cairo_surface_t");
-		return;
-	}
-	if(cairo_surface_status(cs))
-	{
-		synfig::error("Layer_Bitmap received a non valid cairo_surface_t");
-		return;
-	}
-	csurface.set_cairo_surface(cs);
-	csurface.map_cairo_image();
-}
 
 rendering::Task::Handle
 Layer_Bitmap::build_composite_task_vfunc(ContextParams /* context_params */) const

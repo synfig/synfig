@@ -133,29 +133,6 @@ void Action::LayerPaint::PaintStroke::reset(const PaintPoint &point)
 }
 
 void
-Action::LayerPaint::PaintStroke::copy_to_cairo_surface(const synfig::Surface &surface, synfig::CairoSurface &csurface)
-{
-	int stride = cairo_format_stride_for_width(CAIRO_FORMAT_ARGB32, surface.get_w());
-	unsigned char *data = (unsigned char*)malloc(stride * surface.get_h());
-	unsigned char *p = data;
-	for(int y = 0; y < surface.get_h(); ++y, p += stride)
-	{
-		CairoColor *c = (CairoColor*)p;
-		for(int x = 0; x < surface.get_w(); ++x, ++c)
-			*c = CairoColor(surface[y][x]);
-	}
-	cairo_surface_t *cs = cairo_image_surface_create_for_data(
-		data,
-		CAIRO_FORMAT_ARGB32,
-		surface.get_w(),
-		surface.get_h(),
-		stride );
-	csurface.set_cairo_surface(cs);
-	csurface.map_cairo_image();
-	cairo_surface_destroy(cs);
-}
-
-void
 Action::LayerPaint::PaintStroke::add_point_and_apply(const PaintPoint &point)
 {
 	assert(prepared);
@@ -167,7 +144,8 @@ Action::LayerPaint::PaintStroke::add_point_and_apply(const PaintPoint &point)
 	points.push_back(point);
 	applied = true;
 
-	brushlib::SurfaceWrapper wrapper(&layer->surface);
+	Surface surface = layer->get_surface();
+	brushlib::SurfaceWrapper wrapper(&surface);
 	int w = wrapper.surface->get_w();
 	int h = wrapper.surface->get_h();
 	{
@@ -182,10 +160,9 @@ Action::LayerPaint::PaintStroke::add_point_and_apply(const PaintPoint &point)
 		brush_.set_state(STATE_ACTUAL_X, x);
 		brush_.set_state(STATE_ACTUAL_Y, y);
 
-		copy_to_cairo_surface(layer->surface, layer->csurface);
 		// TODO: optimize for hardware
 		layer->rendering_surface = new rendering::SurfaceSW();
-		layer->rendering_surface->assign(layer->surface[0], layer->surface.get_w(), layer->surface.get_h());
+		layer->rendering_surface->assign(surface[0], surface.get_w(), surface.get_h());
 	}
 
 	if (wrapper.extra_left > 0 || wrapper.extra_top > 0) {
@@ -221,7 +198,7 @@ Action::LayerPaint::PaintStroke::prepare()
 			break;
 		}
 
-	if (prevSameLayer == NULL) surface = layer->surface;
+	if (prevSameLayer == NULL) surface = layer->get_surface();
 	new_tl = tl = layer->get_param("tl").get(Point());
 	new_br = br = layer->get_param("br").get(Point());
 
@@ -236,10 +213,10 @@ Action::LayerPaint::PaintStroke::undo()
 	if (!applied) return;
 	{
 		Mutex::Lock lock(layer->mutex);
-		paint_prev(layer->surface);
-		copy_to_cairo_surface(layer->surface, layer->csurface);
+		synfig::Surface surface;
+		paint_prev(surface);
 		layer->rendering_surface = new rendering::SurfaceSW();
-		layer->rendering_surface->assign(layer->surface[0], layer->surface.get_w(), layer->surface.get_h());
+		layer->rendering_surface->assign(surface[0], surface.get_w(), surface.get_h());
 	}
 	applied = false;
 	layer->set_param("tl", ValueBase(tl));
@@ -254,10 +231,10 @@ Action::LayerPaint::PaintStroke::apply()
 	if (applied) return;
 	{
 		Mutex::Lock lock(layer->mutex);
-		paint_self(layer->surface);
-		copy_to_cairo_surface(layer->surface, layer->csurface);
+		synfig::Surface surface;
+		paint_self(surface);
 		layer->rendering_surface = new rendering::SurfaceSW();
-		layer->rendering_surface->assign(layer->surface[0], layer->surface.get_w(), layer->surface.get_h());
+		layer->rendering_surface->assign(surface[0], surface.get_w(), surface.get_h());
 	}
 	applied = true;
 	layer->set_param("tl", ValueBase(new_tl));

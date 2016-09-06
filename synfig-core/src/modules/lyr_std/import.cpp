@@ -103,10 +103,9 @@ Import::set_param(const String & param, const ValueBase &value)
 	{
 		if(!get_canvas() || !get_canvas()->get_file_system())
 		{
-			importer=0;
-			cimporter=0;
-			surface.clear();
-			csurface.set_cairo_surface(NULL);
+			importer.reset();
+			cimporter.reset();
+			rendering_surface.reset();
 			param_filename.set(value.get(String()));
 			return true;
 		}
@@ -122,10 +121,9 @@ Import::set_param(const String & param, const ValueBase &value)
 		String full_filename = CanvasFileNaming::make_full_filename(get_canvas()->get_file_name(), fixed_filename);
 		if (full_filename.empty())
 		{
-			importer=0;
-			cimporter=0;
-			surface.clear();
-			csurface.set_cairo_surface(NULL);
+			importer.reset();
+			cimporter.reset();
+			rendering_surface.reset();
 			param_filename.set(filename);
 			return true;
 		}
@@ -151,8 +149,8 @@ Import::set_param(const String & param, const ValueBase &value)
 			if(!newimporter)
 			{
 				error(strprintf("Unable to create an importer object with file \"%s\"", independent_filename.c_str()));
-				importer=0;
-				surface.clear();
+				importer.reset();
+				cimporter.reset();
 				param_filename.set(filename);
 				rendering_surface.reset();
 				return true;
@@ -164,11 +162,7 @@ Import::set_param(const String & param, const ValueBase &value)
 		if (!newimporter->is_animated())
 			time = Time(0);
 
-		surface.clear();
-		if(!newimporter->get_frame(surface,get_canvas()->rend_desc(), time, trimmed, width, height, top, left))
-			warning(strprintf("Unable to get frame from \"%s\"", independent_filename.c_str()));
 		rendering_surface = newimporter->get_frame(get_canvas()->rend_desc(), time);
-
 		importer=newimporter;
 		param_filename.set(filename);
 
@@ -215,9 +209,6 @@ Import::set_time_vfunc(IndependentContext context, Time time)const
 {
 	Time time_offset=param_time_offset.get(Time());
 	if(get_amount() && importer && importer->is_animated())
-	{
-		importer->get_frame(surface,get_canvas()->rend_desc(), time+time_offset, trimmed, width, height, top, left);
 		rendering_surface = importer->get_frame(get_canvas()->rend_desc(), time+time_offset);
-	}
 	context.set_time(time);
 }

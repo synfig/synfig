@@ -223,7 +223,7 @@ Action::LayerEmbed::prepare()
 			etl::handle<Layer_Bitmap>::cast_dynamic(layer_import);
 		if (layer_bitmap && instance->is_layer_registered_to_save(layer_bitmap)) {
 			// save surface
-			get_canvas_interface()->get_instance()->save_surface(layer_bitmap->surface, new_filename);
+			get_canvas_interface()->get_instance()->save_surface(layer_bitmap->rendering_surface, new_filename);
 		} else {
 			// try to create directory
 			if (!file_system->directory_create_recursive(etl::dirname(new_filename)))

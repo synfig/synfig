@@ -33,6 +33,7 @@
 #include <synfig/target.h> // for RenderMethod
 
 #include <synfig/rendering/surface.h>
+#include <synfig/rendering/software/function/packedsurface.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -59,16 +60,15 @@ public:
 	ValueBase param_gamma_adjust;
 
 	mutable synfig::Mutex mutex;
-	mutable Surface surface;
-	mutable CairoSurface csurface;
+	mutable rendering::software::PackedSurface::Reader reader;
 	mutable rendering::Surface::Handle rendering_surface;
 	mutable bool trimmed;
 	mutable unsigned int width, height, top, left;
 
 
 	Layer_Bitmap();
-	~Layer_Bitmap()	{ 
-	if(csurface.is_mapped()) csurface.unmap_cairo_image(); }
+
+	synfig::Surface& get_surface() const;
 
 	virtual bool set_param(const String & param, const ValueBase & value);
 
@@ -89,8 +89,6 @@ public:
 	virtual void set_render_method(Context context, RenderMethod x);
 	void set_method(RenderMethod x) { method=x;}
 	RenderMethod get_method()const { return method;}
-	
-	void set_cairo_surface(cairo_surface_t* cs);
 
 protected:
 	virtual rendering::Task::Handle build_composite_task_vfunc(ContextParams context_params)const;

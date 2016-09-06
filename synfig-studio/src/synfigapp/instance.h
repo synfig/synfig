@@ -39,6 +39,7 @@
 #include "action_system.h"
 #include "selectionmanager.h"
 #include "cvs.h"
+#include <synfig/rendering/surface.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -164,6 +165,7 @@ public:
 	const etl::handle<SelectionManager> &get_selection_manager() { return selection_manager_; }
 
 	synfig::FileSystemTemporary::Handle get_container() const { return container_; };
+	bool save_surface(const synfig::rendering::Surface::Handle &surface, const synfig::String &filename);
 	bool save_surface(const synfig::Surface &surface, const synfig::String &filename);
 
 	etl::handle<CanvasInterface> find_canvas_interface(synfig::Canvas::Handle canvas);
