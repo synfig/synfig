@@ -206,8 +206,9 @@ RenderQueue::get(int thread_index)
 {
 	Glib::Threads::Mutex::Lock lock(mutex);
 
-	TaskQueue &queue = thread_index == 0 ? gl_ready_tasks     : ready_tasks;
-	TaskSet   &wait  = thread_index == 0 ? gl_not_ready_tasks : not_ready_tasks;
+	TaskQueue &queue  = thread_index == 0 ? gl_ready_tasks     : ready_tasks;
+	TaskQueue &queue2 = thread_index != 0 ? gl_ready_tasks     : ready_tasks;
+	TaskSet   &wait   = thread_index == 0 ? gl_not_ready_tasks : not_ready_tasks;
 	while(started)
 	{
 		if (!queue.empty())
@@ -225,7 +226,7 @@ RenderQueue::get(int thread_index)
 			info("thread %d: rendering wait for task", thread_index);
 		#endif
 
-		assert( wait.empty() || !tasks_in_process.empty() );
+		assert( wait.empty() || !tasks_in_process.empty() || !queue2.empty() );
 
 		(thread_index ? cond : condgl).wait(mutex);
 	}

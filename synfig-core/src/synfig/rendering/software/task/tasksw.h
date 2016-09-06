@@ -28,6 +28,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include "../../task.h"
+#include "../surfacesw.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -40,10 +41,15 @@ namespace synfig
 namespace rendering
 {
 
-class TaskSW
+class TaskSW: public TackCapabilityInterface
 {
 public:
-	virtual ~TaskSW() { }
+	virtual bool is_supported_target(const Surface::Handle &surface)
+		{ return surface.type_is<SurfaceSW>(); }
+	virtual bool is_supported_source(const Surface::Handle &surface)
+		{ return surface.type_is<SurfaceSW>(); }
+	virtual Surface::Handle create_supported_target() { return new SurfaceSW(); }
+	virtual Surface::Handle create_supported_source() { return new SurfaceSW(); }
 };
 
 } /* end namespace rendering */
