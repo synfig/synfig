@@ -55,7 +55,7 @@ namespace synfig {
 
 			fast_option_compression_level = Z_BEST_SPEED,
 			fast_option_mem_level		= 9,
-			fast_option_strategy		= Z_DEFAULT_STRATEGY
+			fast_option_strategy		= Z_FIXED
 		};
 
 	private:
