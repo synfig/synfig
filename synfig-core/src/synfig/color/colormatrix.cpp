@@ -230,7 +230,9 @@ ColorMatrix::BatchProcessor::process(Color *dest, int dest_stride, const Color *
 	int dest_dr = dest_stride - width;
 	int src_dr = src_stride - width;
 	Color *dest_end = dest + dest_stride*height;
+	#ifndef NDEBUG
 	const Color *src_end = src + src_stride*height;
+	#endif
 
 	if (zero_all)
 	{
