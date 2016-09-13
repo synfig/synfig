@@ -35,6 +35,7 @@
 #include <signal.h>
 #endif
 
+#include <cstdlib>
 #include <cstring>
 
 #include <vector>
@@ -305,8 +306,6 @@ PackedSurface::set_pixels(const Color *pixels, int width, int height, int pitch)
 	if (pitch == 0) pitch = sizeof(Color)*width;
 
 	// check format
-	//typedef std::map< Color::value_type, int, RealFunctionWrapper< Color::value_type, approximate_less_lp<Color::value_type> > > DiscreteMap;
-
 	Color constant = *pixels;
 	Color::value_type *constant_channels = (Color::value_type*)(void*)&constant;
 	bool discrete = true;
@@ -406,11 +405,15 @@ PackedSurface::set_pixels(const Color *pixels, int width, int height, int pitch)
 	this->height = height;
 	row_size = width * pixel_size;
 
+	const char *s;
+	bool gzip = (s = getenv("SYNFIG_PACK_IMAGES_GZIP")) && atoi(s) != 0;
+	bool split = (s = getenv("SYNFIG_PACK_IMAGES_SPLIT")) && atoi(s) != 0;
+
 	if (pixel_size == 0) {
 		// do nothing
 	}
 	else
-	if (width < ChunkSize*CacheRows*4 || height < ChunkSize*CacheRows*4)
+	if ((!gzip && !split) || std::max((width-1)/ChunkSize + 1, (height-1)/ChunkSize + 1)*CacheRows*ChunkSize*ChunkSize*16 > width*height)
 	{
 		// no compression
 		data.resize(row_size*height);
@@ -438,18 +441,22 @@ PackedSurface::set_pixels(const Color *pixels, int width, int height, int pitch)
 				int y0 = i/chunks_width*ChunkSize;
 				const Color *color = (const Color*)((const char*)pixels + (y0 + r)*pitch) + x0;
 				for(int c = 0; c < ChunkSize; ++c, pixel += pixel_size, ++color)
-					if (x0+c < width && y0 < height)
+					if (x0+c < width && y0+r < height)
 						set_pixel(pixel, *color);
 					else
 						set_pixel(pixel, Color());
 			}
 
-			void *current_data = &compressed_chunk.front();
-			int size = (int)zstreambuf::pack(current_data, compressed_chunk.size(), &chunk.front(), chunk.size());
-			if (size > (int)chunk.size()*3/4)
-			{
-				current_data = &chunk.front();
-				size = (int)chunk.size();
+			const void* current_data = &chunk.front();
+			int size = (int)chunk.size();
+
+			if (gzip) {
+				int gzip_size = (int)zstreambuf::pack(&compressed_chunk.front(), compressed_chunk.size(), &chunk.front(), chunk.size(), true);
+				if (gzip_size <= (int)chunk.size()/4)
+				{
+					current_data = &compressed_chunk.front();
+					size = gzip_size;
+				}
 			}
 
 			((int*)(void*)&data.front())[i] = data.size();
