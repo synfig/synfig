@@ -896,6 +896,7 @@ Layer::build_rendering_task_vfunc(Context context)const
 	// TODO: This is not thread-safe
 	//task->layer = const_cast<Layer*>(this);//clone(NULL);
 	task->layer = clone(NULL);
+	task->layer->set_canvas(get_canvas());
 
 	Real amount = Context::z_depth_visibility(context.get_params(), *this);
 	if (approximate_not_equal(amount, 1.0) && task->layer.type_is<Layer_Composite>())

@@ -156,6 +156,7 @@ public:
 	Layer_Freetype();
 	virtual ~Layer_Freetype();
 
+	virtual void on_canvas_set();
 	virtual bool set_param(const String & param, const synfig::ValueBase &value);
 	virtual ValueBase get_param(const String & param)const;
 	virtual Color get_color(Context context, const synfig::Point &pos)const;

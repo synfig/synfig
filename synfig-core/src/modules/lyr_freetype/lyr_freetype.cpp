@@ -137,6 +137,15 @@ Layer_Freetype::~Layer_Freetype()
 }
 
 void
+Layer_Freetype::on_canvas_set()
+{
+	synfig::String family=param_family.get(synfig::String());
+	int style=param_style.get(int());
+	int weight=param_weight.get(int());
+	new_font(family,style,weight);
+}
+
+void
 Layer_Freetype::new_font(const synfig::String &family, int style, int weight)
 {
 	if(
