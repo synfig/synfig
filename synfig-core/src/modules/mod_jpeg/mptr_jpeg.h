@@ -48,10 +48,6 @@ class jpeg_mptr : public synfig::Importer
 {
 	SYNFIG_IMPORTER_MODULE_EXT
 private:
-	synfig::Surface surface_buffer;
-
-	struct jpeg_decompress_struct cinfo;
-
 	static void my_error_exit (j_common_ptr cinfo);
 
 public:

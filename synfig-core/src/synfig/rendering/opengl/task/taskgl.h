@@ -43,10 +43,16 @@ namespace synfig
 namespace rendering
 {
 
-class TaskGL
+class TaskGL: public TackCapabilityInterface
 {
 public:
 	virtual ~TaskGL() { }
+	virtual bool is_supported_target(const Surface::Handle &surface)
+		{ return surface.type_is<SurfaceGL>(); }
+	virtual bool is_supported_source(const Surface::Handle &surface)
+		{ return surface.type_is<SurfaceGL>(); }
+	virtual Surface::Handle create_supported_target() { return new SurfaceGL(); }
+	virtual Surface::Handle create_supported_source() { return new SurfaceGL(); }
 protected:
 	gl::Environment& env() const;
 };

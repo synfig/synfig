@@ -97,7 +97,9 @@ Resource::Storage::unref() const
 int
 Resource::Storage::count() const
 {
-	// TODO: read mutex? atomic operation?
+	#ifdef ETL_LOCK_REFCOUNTS
+	etl::mutex::lock lock(mtx);
+	#endif
 	return refcount;
 }
 

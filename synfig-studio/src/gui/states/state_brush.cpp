@@ -785,9 +785,10 @@ StateBrush_Context::event_mouse_down_handler(const Smach::event& x)
 								filename,
 								filename_param );
 
+					// create and save surface
 					get_canvas_interface()
 						->get_instance()
-						->save_surface(layer->surface, filename);
+						->save_surface(layer->get_surface(), filename);
 
 					selected_layer->set_param("filename", filename_param);
 					selected_layer->set_description(description);
@@ -885,8 +886,8 @@ StateBrush_Context::draw_to(Vector pos, Real pressure)
 	Point p = transform_stack.unperform( pos );
 	Point tl = action->stroke.get_layer()->get_param("tl").get(Point());
 	Point br = action->stroke.get_layer()->get_param("br").get(Point());
-	int w = action->stroke.get_layer()->surface.get_w();
-	int h = action->stroke.get_layer()->surface.get_h();
+	int w = action->stroke.get_layer()->rendering_surface ? action->stroke.get_layer()->rendering_surface->get_width() : 0;
+	int h = action->stroke.get_layer()->rendering_surface ? action->stroke.get_layer()->rendering_surface->get_height() : 0;
 
 	action->stroke.add_point_and_apply(
 		synfigapp::Action::LayerPaint::PaintPoint(

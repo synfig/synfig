@@ -52,6 +52,15 @@ using namespace rendering;
 
 const etl::handle<Task> Task::blank;
 
+
+bool
+TackCapabilityInterface::is_supported_target(const Surface::Handle & /* surface */)
+	{ return false; }
+bool
+TackCapabilityInterface::is_supported_source(const Surface::Handle & /* surface */)
+	{ return false; }
+
+
 Task::~Task() { }
 
 bool

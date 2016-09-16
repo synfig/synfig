@@ -85,6 +85,7 @@ public:
 private:
 	const Id id;
 	mutable Storage::Handle alternatives;
+	mutable etl::mutex get_alternative_mtx;
 
 public:
 	Resource(): id(++last_id) { }
@@ -110,6 +111,7 @@ public:
 	template<typename T>
 	etl::handle<T> get_alternative() const
 	{
+		etl::mutex::lock lock(get_alternative_mtx);
 		etl::handle<T> alternative = find_alternative<T>();
 		if (!alternative)
 		{

@@ -110,7 +110,7 @@ Layer_Composite::accelerated_render(Context context,Surface *surface,int quality
 	image.push_back(0);	// Alpha black
 
 	// Render the backdrop on the surface layer's surface.
-	if(!context.accelerated_render(&surfacelayer->surface,quality,renddesc,&stageone))
+	if(!context.accelerated_render(&surfacelayer->get_surface(),quality,renddesc,&stageone))
 		return false;
 	// Sets up the interpolation of the context (now the surface layer is the first one)
 	// depending on the quality
@@ -148,90 +148,10 @@ Layer_Composite::accelerated_render(Context context,Surface *surface,int quality
 
 /////
 bool
-Layer_Composite::accelerated_cairorender(Context context,cairo_t *cr, int quality, const RendDesc &renddesc_, ProgressCallback *cb)  const
+Layer_Composite::accelerated_cairorender(Context context,cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)  const
 {
-	RendDesc renddesc(renddesc_);
-	Real amount(param_amount.get(Real()));
-
-	if(!amount)
-		return context.accelerated_cairorender(cr,quality,renddesc,cb);
-
-	// Untransform the render desc
-	if(!cairo_renddesc_untransform(cr, renddesc))
-		return false;
-	const Real pw(renddesc.get_pw()),ph(renddesc.get_ph());
-	const Point tl(renddesc.get_tl());
-	const int w(renddesc.get_w());
-	const int h(renddesc.get_h());
-	
-	CanvasBase image;
-	
-	SuperCallback stageone(cb,0,50000,100000);
-	SuperCallback stagetwo(cb,50000,100000,100000);
-	
-	Layer_Bitmap::Handle surfacelayer(new class Layer_Bitmap());
-	
-	Context iter;
-	
-	for(iter=context;*iter;iter++)
-		image.push_back(*iter);
-	
-	// Add one Bitmap Layer on top
-	image.push_front(surfacelayer.get());
-	
-	image.push_back(0);	// and Alpha black at end
-	
-	// Render the backdrop on the surface layer's surface.
-	cairo_surface_t* cs=cairo_image_surface_create(CAIRO_FORMAT_ARGB32, w, h);
-	cairo_surface_t* result=cairo_image_surface_create(CAIRO_FORMAT_ARGB32, w, h);
-	cairo_t* cr_cs=cairo_create(cs);
-	cairo_scale(cr_cs, 1/pw, 1/ph);
-	cairo_translate(cr_cs, -tl[0], -tl[1]);
-	if(!context.accelerated_cairorender(cr_cs,quality,renddesc,&stageone))
-	{
-		cairo_surface_destroy(cs);
-		cairo_destroy(cr_cs);
-		return false;
-	}
-	cairo_destroy(cr_cs);
-	surfacelayer->set_cairo_surface(cs);
-	cairo_surface_destroy(cs);
-	// Sets up the interpolation of the context (now the surface layer is the first one)
-	// depending on the quality
-	if(quality<=4)surfacelayer->set_param("c", 3);else
-		if(quality<=5)surfacelayer->set_param("c", 2);
-		else if(quality<=6)surfacelayer->set_param("c", 1);
-		else surfacelayer->set_param("c",0);
-	surfacelayer->set_param("tl",renddesc.get_tl());
-	surfacelayer->set_param("br",renddesc.get_br());
-	// Sets the blend method to straight. See below
-	surfacelayer->set_blend_method(Color::BLEND_STRAIGHT);
-	surfacelayer->set_render_method(context, CAIRO);
-	// Push this layer on the image. The blending result is only this layer
-	// and the surface layer. The rest of the context is ignored by the straight
-	// blend method of surface layer
-	image.push_front(const_cast<synfig::Layer_Composite*>(this));
-	
-	// Render the scene
-	if(!cairorender(Context(image.begin(),context),result,renddesc,&stagetwo))
-	{
-		cairo_surface_destroy(result);
-		return false;
-	}
-	// Put the result on the cairo context
-	cairo_save(cr);
-	cairo_translate(cr, tl[0], tl[1]);
-	cairo_scale(cr, pw, ph);
-	cairo_set_source_surface(cr, result, 0, 0);
-	cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
-	cairo_paint(cr);
-	cairo_restore(cr);
-
-	cairo_surface_destroy(result);
-	// Mark our progress as finished
-	if(cb && !cb->amount_complete(10000,10000))
-		return false;
-	return true;
+	// no cairo implementation
+	return context.accelerated_cairorender(cr,quality,renddesc,cb);
 }
 
 

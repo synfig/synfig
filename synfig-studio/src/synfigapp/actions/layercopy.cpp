@@ -164,7 +164,7 @@ Action::LayerCopy::prepare()
 		{
 			get_canvas_interface()
 				->get_instance()
-				->save_surface(layer_bitmap->surface, filename);
+				->save_surface(layer_bitmap->rendering_surface, filename);
 			filenames.push_back(filename);
 			new_layer->set_param("filename", filename_param);
 		}

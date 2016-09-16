@@ -102,6 +102,16 @@ jpeg_mptr::my_error_exit (j_common_ptr cinfo)
 jpeg_mptr::jpeg_mptr(const synfig::FileSystem::Identifier &identifier):
 	Importer(identifier)
 {
+}
+
+jpeg_mptr::~jpeg_mptr()
+{
+}
+
+bool
+jpeg_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc*/, Time, synfig::ProgressCallback */*cb*/)
+{
+	jpeg_decompress_struct cinfo;
 	struct my_error_mgr jerr;
 
 	/* Open the file pointer */
@@ -109,7 +119,7 @@ jpeg_mptr::jpeg_mptr(const synfig::FileSystem::Identifier &identifier):
 	if (!stream)
 	{
 		throw String("Error on jpeg importer, unable to physically open "+identifier.filename);
-		return;
+		return false;
 	}
 
 	/* Step 1: allocate and initialize JPEG decompression object */
@@ -174,21 +184,21 @@ jpeg_mptr::jpeg_mptr(const synfig::FileSystem::Identifier &identifier):
 
 	int x;
 	int y;
-	surface_buffer.set_wh(cinfo.output_width,cinfo.output_height);
+	surface.set_wh(cinfo.output_width,cinfo.output_height);
 
 	switch(cinfo.output_components)
 	{
 	case 3:
-		for(y=0;y<surface_buffer.get_h();y++)
+		for(y=0;y<surface.get_h();y++)
 		{
 			int x;
 			jpeg_read_scanlines(&cinfo, buffer, 1);
-			for(x=0;x<surface_buffer.get_w();x++)
+			for(x=0;x<surface.get_w();x++)
 			{
 				float r=gamma().g_U8_to_F32((unsigned char)buffer[0][x*3+0]);
 				float g=gamma().g_U8_to_F32((unsigned char)buffer[0][x*3+1]);
 				float b=gamma().g_U8_to_F32((unsigned char)buffer[0][x*3+2]);
-				surface_buffer[y][x]=Color(
+				surface[y][x]=Color(
 					r,
 					g,
 					b,
@@ -207,14 +217,14 @@ jpeg_mptr::jpeg_mptr(const synfig::FileSystem::Identifier &identifier):
 		break;
 
 	case 1:
-		for(y=0;y<surface_buffer.get_h();y++)
+		for(y=0;y<surface.get_h();y++)
 		{
 			jpeg_read_scanlines(&cinfo, buffer, 1);
-			for(x=0;x<surface_buffer.get_w();x++)
+			for(x=0;x<surface.get_w();x++)
 			{
 				float gray=gamma().g_U8_to_F32((unsigned char)buffer[0][x]);
 //				float gray=(float)(unsigned char)buffer[0][x]*(1.0/255.0);
-				surface_buffer[y][x]=Color(
+				surface[y][x]=Color(
 					gray,
 					gray,
 					gray,
@@ -228,7 +238,7 @@ jpeg_mptr::jpeg_mptr(const synfig::FileSystem::Identifier &identifier):
 		synfig::error("Error on jpeg importer, Unsupported color type");
         //! \todo THROW SOMETHING
 		throw String("Error on jpeg importer, Unsupported color type");
-		return;
+		return false;
 	}
 
 	/* Step 7: Finish decompression */
@@ -243,21 +253,5 @@ jpeg_mptr::jpeg_mptr(const synfig::FileSystem::Identifier &identifier):
 	/* This is an important step since it will release a good deal of memory. */
 	jpeg_destroy_decompress(&cinfo);
 
-	/* After finish_decompress, we can close the input file.
-	* Here we postpone it until after no more JPEG errors are possible,
-	* so as to simplify the setjmp error logic above.  (Actually, I don't
-	* think that jpeg_destroy can do an error exit, but why assume anything...)
-	*/
-//	fclose(file);
-}
-
-jpeg_mptr::~jpeg_mptr()
-{
-}
-
-bool
-jpeg_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc*/, Time, synfig::ProgressCallback */*cb*/)
-{
-	surface=surface_buffer;
 	return true;
 }

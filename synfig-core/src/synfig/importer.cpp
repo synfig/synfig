@@ -31,6 +31,7 @@
 #endif
 
 #include <cctype>
+#include <cstdlib>
 
 #include <algorithm>
 #include <functional>
@@ -47,6 +48,7 @@
 #include "surface.h"
 
 #include <synfig/rendering/software/surfacesw.h>
+#include <synfig/rendering/software/surfaceswpacked.h>
 
 #endif
 
@@ -165,7 +167,13 @@ Importer::get_frame(const RendDesc & /* renddesc */, const Time &time)
 	if(!get_frame(surface, RendDesc(), time, trimmed, width, height, top, left))
 		warning(strprintf("Unable to get frame from \"%s\"", identifier.filename.c_str()));
 
-	last_surface_ = new rendering::SurfaceSW();
+
+	const char *s = getenv("SYNFIG_PACK_IMAGES");
+	if (s == NULL || atoi(s) != 0)
+		last_surface_ = new rendering::SurfaceSWPacked();
+	else
+		last_surface_ = new rendering::SurfaceSW();
+
 	if (surface.is_valid())
 		last_surface_->assign(surface[0], surface.get_w(), surface.get_h());
 

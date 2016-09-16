@@ -1,11 +1,11 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file mptr_png.h
-**	\brief Template Header
+/*!	\file synfig/rendering/software/surfaceswpacked.h
+**	\brief SurfaceSWPacked Header
 **
 **	$Id$
 **
 **	\legal
-**	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**	......... ... 2016 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -17,22 +17,19 @@
 **	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 **	General Public License for more details.
 **	\endlegal
-**
-** === N O T E S ===========================================================
-**
-** ========================================================================= */
+*/
+/* ========================================================================= */
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_MPTR_PNG_H
-#define __SYNFIG_MPTR_PNG_H
+#ifndef __SYNFIG_RENDERING_SURFACESWPACKED_H
+#define __SYNFIG_RENDERING_SURFACESWPACKED_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <png.h>
-#include <synfig/importer.h>
-#include <synfig/string.h>
-#include <synfig/surface.h>
+#include "../surface.h"
+
+#include "function/packedsurface.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -40,21 +37,41 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-class png_mptr : public synfig::Importer
+namespace synfig
 {
-	SYNFIG_IMPORTER_MODULE_EXT
+namespace rendering
+{
+
+class SurfaceSWPacked: public Surface
+{
+public:
+	typedef etl::handle<SurfaceSWPacked> Handle;
+
+protected:
+	virtual bool create_vfunc();
+	virtual bool assign_vfunc(const Surface &surface);
+	virtual void destroy_vfunc();
+	virtual bool get_pixels_vfunc(Color *buffer) const;
+
 private:
-	static void png_out_error(png_struct *png_data,const char *msg);
-	static void png_out_warning(png_struct *png_data,const char *msg);
-	static void read_callback(png_structp png_ptr, png_bytep out_bytes, png_size_t bytes_count_to_read);
+	software::PackedSurface surface;
 
 public:
-	png_mptr(const synfig::FileSystem::Identifier &identifier);
-	~png_mptr();
+	SurfaceSWPacked()
+		{ }
 
-	virtual bool get_frame(synfig::Surface &surface, const synfig::RendDesc &renddesc, synfig::Time time, synfig::ProgressCallback *callback);
+	explicit SurfaceSWPacked(const Surface &other)
+		{ assign(other); }
+
+	~SurfaceSWPacked()
+		{ destroy(); }
+
+	const software::PackedSurface& get_surface() const { return surface; }
 };
 
-/* === E N D =============================================================== */
+} /* end namespace rendering */
+} /* end namespace synfig */
+
+/* -- E N D ----------------------------------------------------------------- */
 
 #endif

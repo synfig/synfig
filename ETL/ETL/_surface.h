@@ -52,6 +52,109 @@ public:
 	value_type uncook(const accumulator_type& x)const { return (value_type)x; }
 };
 
+template <typename VT, typename CT, typename ST, ST reader(const void*, int, int)>
+class sampler
+{
+public:
+	typedef VT value_type;
+	typedef CT coord_type;
+	typedef ST source_type;
+	typedef coord_type float_type;
+
+	inline static void prepare_coord(int w, const coord_type x, int &u, float_type &a) {
+		if (x<0) { u=0; a=0; }
+		else if (x>w-1.00001) { u=w-2; a=1; }
+		else {
+			u=floor_to_int(x);
+			a=float_type(x)-float_type(u);
+		}
+	}
+
+	inline static void prepare_coords(int w, int h, const coord_type x, const coord_type y, int &u, int &v, float_type &a, float_type &b)
+	{
+		prepare_coord(w, x, u, a);
+		prepare_coord(h, y, v, b);
+	}
+
+	inline static void fill_cubic_polinomial(float_type x, float_type tx[])
+	{
+		tx[0] = float_type(0.5)*x*(x*(float_type(-1)*x + float_type(2)) - float_type(1));	// -t + 2t^2 -t^3
+		tx[1] = float_type(0.5)*(x*(x*(float_type(3)*x - float_type(5))) + float_type(2)); 	// 2 - 5t^2 + 3t^3
+		tx[2] = float_type(0.5)*x*(x*(float_type(-3)*x + float_type(4)) + float_type(1));	// t + 4t^2 - 3t^3
+		tx[3] = float_type(0.5)*x*x*(x-float_type(1));						                // -t^2 + t^3
+	}
+
+	//! Linear sample
+	static value_type linear_sample(const void *surface, int w, int h, const coord_type x, const coord_type y)
+	{
+		int u, v; float_type a, b;
+		prepare_coords(w, h, x, y, u, v, a, b);
+
+		const float_type c(float_type(1)-a), d(float_type(1)-b);
+
+		return (value_type)(reader(surface, u  ,v  ))*c*d
+			 + (value_type)(reader(surface, u+1,v  ))*a*d
+			 + (value_type)(reader(surface, u  ,v+1))*c*b
+			 + (value_type)(reader(surface, u+1,v+1))*a*b;
+	}
+
+	//! Cosine sample
+	static value_type cosine_sample(const void *surface, int w, int h, const coord_type x, const coord_type y)
+	{
+		int u, v; float_type a, b;
+		prepare_coords(w, h, x, y, u, v, a, b);
+
+		a=(float_type(1) - cos(a*float_type(3.1415927)))*float_type(0.5);
+		b=(float_type(1) - cos(b*float_type(3.1415927)))*float_type(0.5);
+
+		const float_type c(float_type(1)-a), d(float_type(1)-b);
+
+		return (value_type)(reader(surface, u  ,v  ))*c*d
+			 + (value_type)(reader(surface, u+1,v  ))*a*d
+			 + (value_type)(reader(surface, u  ,v+1))*c*b
+			 + (value_type)(reader(surface, u+1,v+1))*a*b;
+	}
+
+	//! Cubic sample
+	static value_type cubic_sample(const void *surface, int w, int h, const coord_type x, const coord_type y)
+	{
+		//Using catmull rom interpolation because it doesn't blur at all
+		//bezier curve with intermediate ctrl pts: 0.5/3(p(i+1) - p(i-1)) and similar
+
+		//precalculate indices (all clamped) and offset
+		const int xi = (int)floor(x);
+		const int yi = (int)floor(y);
+		int xa[] = { xi-1, xi, xi+1, xi+2 };
+		int ya[] = { yi-1, yi, yi+1, yi+2 };
+
+		// clamp all
+		const int ww = w - 1;
+		const int hh = h - 1;
+		xa[0] < 0  && ((xa[1] < 0  && ((xa[2] < 0  && ((xa[3] < 0  && (xa[3] = 0 )), (xa[2] = 0 ))), (xa[1] = 0 ))), (xa[0] = 0 ));
+		ya[0] < 0  && ((ya[1] < 0  && ((ya[2] < 0  && ((ya[3] < 0  && (ya[3] = 0 )), (ya[2] = 0 ))), (ya[1] = 0 ))), (ya[0] = 0 ));
+		xa[3] > ww && ((xa[2] > ww && ((xa[1] > ww && ((xa[0] > ww && (xa[0] = ww)), (xa[1] = ww))), (xa[2] = ww))), (xa[3] = ww));
+		ya[3] > hh && ((ya[2] > hh && ((ya[1] > hh && ((ya[0] > hh && (ya[0] = hh)), (ya[1] = hh))), (ya[2] = hh))), (ya[3] = hh));
+
+		// offset
+		const float_type xf = float_type(x)-float_type(xi);
+		const float_type yf = float_type(y)-float_type(yi);
+
+		float_type txf[4], tyf[4];
+		fill_cubic_polinomial(xf, txf);
+		fill_cubic_polinomial(yf, tyf);
+
+		#define f(i,j)  (value_type)(reader(surface, i, j))
+		#define ff(i,j) f(xa[i], ya[j])*txf[i]
+		#define fff(j)  (ff(0,j) + ff(1,j) + ff(2,j) + ff(3,j))*tyf[j]
+
+		return fff(0) + fff(1) + fff(2) + fff(3);
+
+		#undef fff
+		#undef ff
+		#undef f
+	}
+};
+
 template <typename T, typename AT=T, class VP=value_prep<T,AT> >
 class surface
 {
@@ -382,268 +485,37 @@ public:
 	const_pen get_pen(int x, int y)const { assert(data_); return begin().move(x,y); }
 	const_pen end()const { assert(data_); return get_pen(w_,h_); }
 
+	inline static value_type reader(const void *surf, int x, int y)
+		{ return (*(const surface*)surf)[y][x]; }
+	inline static accumulator_type reader_cook(const void *surf, int x, int y)
+		{ return (*(const surface*)surf).cooker_.cook(reader(surf, x, y)); }
+
+	typedef sampler<accumulator_type, float, accumulator_type, reader_cook> sampler_cook;
+	typedef sampler<accumulator_type, float, value_type, reader> sampler_nocook;
+
 	//! Linear sample
 	value_type linear_sample(const float x, const float y)const
-	{
-		int u(floor_to_int(x)), v(floor_to_int(y));
-		float a, b;
-		static const float epsilon(1.0e-6);
-
-		if(x<0.0f)u=0,a=0.0f;
-		else if(x>w_-1)u=w_-1,a=0.0f;
-		else a=x-u;
-
-		if(y<0.0f)v=0,b=0.0f;
-		else if(y>h_-1)v=h_-1,b=0.0f;
-		else b=y-v;
-
-		const float
-			c(1.0f-a), d(1.0f-b),
-			e(a*d),f(c*b),g(a*b);
-
-		accumulator_type ret(cooker_.cook((*this)[v][u])*(c*d));
-		if(e>=epsilon)ret+=cooker_.cook((*this)[v][u+1])*e;
-		if(f>=epsilon)ret+=cooker_.cook((*this)[v+1][u])*f;
-		if(g>=epsilon)ret+=cooker_.cook((*this)[v+1][u+1])*g;
-		return cooker_.uncook(ret);
-	}
+		{ return cooker_.uncook(sampler_cook::linear_sample(this, w_, h_, x, y)); }
 
 	//! Linear sample for already "cooked" surfaces
 	value_type linear_sample_cooked(const float x, const float y)const
-	{
-#define h(j,i)	(((accumulator_type)((*this)[j][i])))
-		int u(floor_to_int(x)), v(floor_to_int(y));
-		float a, b;
-		static const float epsilon(1.0e-6);
-		
-		if(x<0.0f)u=0,a=0.0f;
-		else if(x>w_-1)u=w_-1,a=0.0f;
-		else a=x-u;
-		
-		if(y<0.0f)v=0,b=0.0f;
-		else if(y>h_-1)v=h_-1,b=0.0f;
-		else b=y-v;
-		
-		const float
-		c(1.0f-a), d(1.0f-b),
-		e(a*d),f(c*b),g(a*b);
-		
-		accumulator_type ret(h(v,u)*(c*d));
-		if(e>=epsilon)ret+=h(v,u+1)*e;
-		if(f>=epsilon)ret+=h(v+1,u)*f;
-		if(g>=epsilon)ret+=h(v+1,u+1)*g;
-
-		return (value_type)(ret);
-#undef h
-	}
+		{ return (value_type)(sampler_nocook::linear_sample(this, w_, h_, x, y)); }
 
 	//! Cosine sample
 	value_type cosine_sample(const float x, const float y)const
-	{
-		int u(floor_to_int(x)), v(floor_to_int(y));
-		float a, b;
-		static const float epsilon(1.0e-6);
-
-		if(x<0.0f)u=0,a=0.0f;
-		else if(x>w_-1)u=w_-1,a=0.0f;
-		else a=x-u;
-
-		if(y<0.0f)v=0,b=0.0f;
-		else if(y>h_-1)v=h_-1,b=0.0f;
-		else b=y-v;
-
-		a=(1.0f-cos(a*3.1415927f))*0.5f;
-		b=(1.0f-cos(b*3.1415927f))*0.5f;
-
-		const float
-			c(1.0f-a), d(1.0f-b),
-			e(a*d),f(c*b),g(a*b);
-
-		accumulator_type ret(cooker_.cook((*this)[v][u])*(c*d));
-		if(e>=epsilon)ret+=cooker_.cook((*this)[v][u+1])*e;
-		if(f>=epsilon)ret+=cooker_.cook((*this)[v+1][u])*f;
-		if(g>=epsilon)ret+=cooker_.cook((*this)[v+1][u+1])*g;
-
-		return cooker_.uncook(ret);
-	}
+		{ return cooker_.uncook(sampler_cook::cosine_sample(this, w_, h_, x, y)); }
 
 	//! Cosine sample for already "cooked" surfaces
 	value_type cosine_sample_cooked(const float x, const float y)const
-	{
-#define h(j,i)	(((accumulator_type)((*this)[j][i])))
-
-		int u(floor_to_int(x)), v(floor_to_int(y));
-		float a, b;
-		static const float epsilon(1.0e-6);
-		
-		if(x<0.0f)u=0,a=0.0f;
-		else if(x>w_-1)u=w_-1,a=0.0f;
-		else a=x-u;
-		
-		if(y<0.0f)v=0,b=0.0f;
-		else if(y>h_-1)v=h_-1,b=0.0f;
-		else b=y-v;
-		
-		a=(1.0f-cos(a*3.1415927f))*0.5f;
-		b=(1.0f-cos(b*3.1415927f))*0.5f;
-		
-		const float
-		c(1.0f-a), d(1.0f-b),
-		e(a*d),f(c*b),g(a*b);
-		
-		accumulator_type ret(h(v,u)*(c*d));
-		if(e>=epsilon)ret+=h(v,u+1)*e;
-		if(f>=epsilon)ret+=h(v+1,u)*f;
-		if(g>=epsilon)ret+=h(v+1,u+1)*g;
-		
-		return (value_type)(ret);
-#undef h
-	}
+		{ return (value_type)(sampler_nocook::cosine_sample(this, w_, h_, x, y)); }
 
 	//! Cubic sample
 	value_type cubic_sample(float x, float y)const
-	{
-		#if 0
-	#define P(x)	(((x)>=0)?((x)*(x)*(x)):0.0f)
-	#define R(x)	( P(x+2) - 4.0f*P(x+1) + 6.0f*P(x) - 4.0f*P(x-1) )*(1.0f/6.0f)
-	#define F(i,j)	(cooker_.cook((*this)[max(min(j+v,h_-1),0)][max(min(i+u,w_-1),0)])*(R((i)-a)*R(b-(j))))
-	#define Z(i,j) ret+=F(i,j)
-	#define X(i,j)	// placeholder... To make box more symmetric
-
-		int u(floor_to_int(x)), v(floor_to_int(y));
-		float a, b;
-
-		// Clamp X
-		if(x<0.0f)u=0,a=0.0f;
-		else if(u>w_-1)u=w_-1,a=0.0f;
-		else a=x-u;
-
-		// Clamp Y
-		if(y<0.0f)v=0,b=0.0f;
-		else if(v>h_-1)v=h_-1,b=0.0f;
-		else b=y-v;
-
-		// Interpolate
-		accumulator_type ret(F(0,0));
-		Z(-1,-1); Z(-1, 0); Z(-1, 1); Z(-1, 2);
-		Z( 0,-1); X( 0, 0); Z( 0, 1); Z( 0, 2);
-		Z( 1,-1); Z( 1, 0); Z( 1, 1); Z( 1, 2);
-		Z( 2,-1); Z( 2, 0); Z( 2, 1); Z( 2, 2);
-
-		return cooker_.uncook(ret);
-
-	#undef X
-	#undef Z
-	#undef F
-	#undef P
-	#undef R
-		#else
-
-		#define f(j,i)	(cooker_.cook((*this)[j][i]))
-		//Using catmull rom interpolation because it doesn't blur at all
-		//bezier curve with intermediate ctrl pts: 0.5/3(p(i+1) - p(i-1)) and similar
-		accumulator_type xfa [4];
-
-		//precalculate indices (all clamped) and offset
-		const int xi = (int)floor(x);
-		const int yi = (int)floor(y);
-		int xa[] = { xi-1, xi, xi+1, xi+2 };
-		int ya[] = { yi-1, yi, yi+1, yi+2 };
-
-		// clamp all
-		const int w = w_ - 1;
-		const int h = h_ - 1;
-		xa[0] < 0 && ((xa[1] < 0 && ((xa[2] < 0 && ((xa[3] < 0 && (xa[3] = 0)), (xa[2] = 0))), (xa[1] = 0))), (xa[0] = 0));
-		ya[0] < 0 && ((ya[1] < 0 && ((ya[2] < 0 && ((ya[3] < 0 && (ya[3] = 0)), (ya[2] = 0))), (ya[1] = 0))), (ya[0] = 0));
-		xa[3] > w && ((xa[2] > w && ((xa[1] > w && ((xa[0] > w && (xa[0] = w)), (xa[1] = w))), (xa[2] = w))), (xa[3] = w));
-		ya[3] > h && ((ya[2] > h && ((ya[1] > h && ((ya[0] > h && (ya[0] = h)), (ya[1] = h))), (ya[2] = h))), (ya[3] = h));
-
-		// offset
-		const float xf = x-xi;
-		const float yf = y-yi;
-
-		//figure polynomials for each point
-		const float txf[] =
-		{
-			0.5f*xf*(xf*(xf*(-1.f) + 2.f) - 1.f),	//-t + 2t^2 -t^3
-			0.5f*(xf*(xf*(3.f*xf - 5.f)) + 2.f), 	//2 - 5t^2 + 3t^3
-			0.5f*xf*(xf*(-3.f*xf + 4.f) + 1.f),		//t + 4t^2 - 3t^3
-			0.5f*xf*xf*(xf-1.f)						//-t^2 + t^3
-		};
-
-		const float tyf[] =
-		{
-			0.5f*yf*(yf*(yf*(-1.f) + 2.f) - 1.f),	//-t + 2t^2 -t^3
-			0.5f*(yf*(yf*(3.f*yf - 5.f)) + 2.f), 	//2 - 5t^2 + 3t^3
-			0.5f*yf*(yf*(-3.f*yf + 4.f) + 1.f),		//t + 4t^2 - 3t^3
-			0.5f*yf*yf*(yf-1.f)						//-t^2 + t^3
-		};
-
-		//evaluate polynomial for each row
-		for(int i = 0; i < 4; ++i)
-		{
-			xfa[i] = f(ya[i],xa[0])*txf[0] + f(ya[i],xa[1])*txf[1] + f(ya[i],xa[2])*txf[2] + f(ya[i],xa[3])*txf[3];
-		}
-
-		//return the cumulative column evaluation
-		return cooker_.uncook(xfa[0]*tyf[0] + xfa[1]*tyf[1] + xfa[2]*tyf[2] + xfa[3]*tyf[3]);
-#undef f
-#endif
-	}
+		{ return cooker_.uncook(sampler_cook::cubic_sample(this, w_, h_, x, y)); }
 
 	//! Cubic sample for already "cooked" surfaces
 	value_type cubic_sample_cooked(float x, float y)const
-	{
-#define f(j,i)	(((accumulator_type)((*this)[j][i])))
-		//Using catmull rom interpolation because it doesn't blur at all
-		//bezier curve with intermediate ctrl pts: 0.5/3(p(i+1) - p(i-1)) and similar
-		accumulator_type xfa [4];
-		
-		//precalculate indices (all clamped) and offset
-		const int xi = (int)floor(x);
-		const int yi = (int)floor(y);
-		int xa[] = { xi-1, xi, xi+1, xi+2 };
-		int ya[] = { yi-1, yi, yi+1, yi+2 };
-
-		// clamp all
-		const int w = w_ - 1;
-		const int h = h_ - 1;
-		xa[0] < 0 && ((xa[1] < 0 && ((xa[2] < 0 && ((xa[3] < 0 && (xa[3] = 0)), (xa[2] = 0))), (xa[1] = 0))), (xa[0] = 0));
-		ya[0] < 0 && ((ya[1] < 0 && ((ya[2] < 0 && ((ya[3] < 0 && (ya[3] = 0)), (ya[2] = 0))), (ya[1] = 0))), (ya[0] = 0));
-		xa[3] > w && ((xa[2] > w && ((xa[1] > w && ((xa[0] > w && (xa[0] = w)), (xa[1] = w))), (xa[2] = w))), (xa[3] = w));
-		ya[3] > h && ((ya[2] > h && ((ya[1] > h && ((ya[0] > h && (ya[0] = h)), (ya[1] = h))), (ya[2] = h))), (ya[3] = h));
-
-		// offset
-		const float xf = x-xi;
-		const float yf = y-yi;
-		
-		//figure polynomials for each point
-		const float txf[] =
-		{
-			0.5f*xf*(xf*(xf*(-1) + 2) - 1),	//-t + 2t^2 -t^3
-			0.5f*(xf*(xf*(3*xf - 5)) + 2), 	//2 - 5t^2 + 3t^3
-			0.5f*xf*(xf*(-3*xf + 4) + 1),	//t + 4t^2 - 3t^3
-			0.5f*xf*xf*(xf-1)				//-t^2 + t^3
-		};
-		
-		const float tyf[] =
-		{
-			0.5f*yf*(yf*(yf*(-1.f) + 2.f) - 1.f),	//-t + 2t^2 -t^3
-			0.5f*(yf*(yf*(3.f*yf - 5.f)) + 2.f), 	//2 - 5t^2 + 3t^3
-			0.5f*yf*(yf*(-3.f*yf + 4.f) + 1.f),		//t + 4t^2 - 3t^3
-			0.5f*yf*yf*(yf-1.f)						//-t^2 + t^3
-		};
-		
-		//evaluate polynomial for each row
-		for(int i = 0; i < 4; ++i)
-		{
-			xfa[i] = f(ya[i],xa[0])*txf[0] + f(ya[i],xa[1])*txf[1] + f(ya[i],xa[2])*txf[2] + f(ya[i],xa[3])*txf[3];
-		}
-		
-		//return the cumulative column evaluation
-		return (value_type)(xfa[0]*tyf[0] + xfa[1]*tyf[1] + xfa[2]*tyf[2] + xfa[3]*tyf[3]);
-#undef f
-	}
+		{ return (value_type)(sampler_nocook::cubic_sample(this, w_, h_, x, y)); }
 
 	//! Rectangle sample
 	value_type	sample_rect(float x0,float y0,float x1,float y1) const

@@ -38,12 +38,6 @@
 #include "optimizersurfaceconvert.h"
 
 #include "../task/tasksurfaceconvert.h"
-#include "../../software/surfacesw.h"
-#include "../../software/task/tasksw.h"
-#ifdef WITH_OPENGL
-#include "../../opengl/surfacegl.h"
-#include "../../opengl/task/taskgl.h"
-#endif
 
 #endif
 
@@ -61,56 +55,52 @@ using namespace rendering;
 void
 OptimizerSurfaceConvert::run(const RunParams& params) const
 {
-#ifdef WITH_OPENGL
 	if (params.ref_task->target_surface)
 	{
+		// remove unneeded TaskSurfaceConvert
 		if (TaskSurfaceConvert::Handle surface_convert = TaskSurfaceConvert::Handle::cast_dynamic(params.ref_task))
 		{
-			// remove unneeded TaskSurfaceConvert
-
-			if (surface_convert->sub_task() && surface_convert->sub_task()->target_surface)
+			if (params.parent && params.parent->ref_task && surface_convert->sub_task())
 			{
-				if ( ( SurfaceSW::Handle::cast_dynamic(surface_convert->target_surface)
-				    && SurfaceSW::Handle::cast_dynamic(surface_convert->sub_task()->target_surface) )
-				  || ( SurfaceGL::Handle::cast_dynamic(surface_convert->target_surface)
-			        && SurfaceGL::Handle::cast_dynamic(surface_convert->sub_task()->target_surface) ) )
-				{
-					apply(params, surface_convert->sub_task());
-				}
+				if (TackCapabilityInterface *capability = params.parent->ref_task.type_pointer<TackCapabilityInterface>())
+					if (capability->is_supported_source(surface_convert->sub_task()->target_surface))
+						{ apply(params, surface_convert->sub_task()); return; }
+				if (TackCapabilityInterface *capability = surface_convert->sub_task().type_pointer<TackCapabilityInterface>())
+					if (capability->is_supported_target(surface_convert->target_surface))
+						{ apply(params, surface_convert->sub_task()); return; }
 			}
 		}
 		else
+		// add TaskSurfaceConvert for target
+		if (TackCapabilityInterface *capability = params.ref_task.type_pointer<TackCapabilityInterface>())
 		{
-			// add surface TaskSurfaceConvert
-
-			bool target_sw = SurfaceSW::Handle::cast_dynamic(params.ref_task->target_surface);
-			bool target_gl = SurfaceGL::Handle::cast_dynamic(params.ref_task->target_surface);
-
-			bool sw = params.ref_task.type_is<TaskSW>();
-			bool gl = params.ref_task.type_is<TaskGL>();
-			if ( (sw && !target_sw) || (gl && !target_gl) )
+			if (!capability->is_supported_target(params.ref_task->target_surface))
 			{
 				Task::Handle task = params.ref_task;
-				TaskSurfaceConvert::Handle surface_convert(new TaskSurfaceConvert());
+				TaskSurfaceConvert::Handle surface_convert;
+				init_and_assign(surface_convert, task);
+				surface_convert->sub_tasks.clear();
 				surface_convert->sub_task() = task;
-				surface_convert->target_surface = surface_convert->sub_task()->target_surface;
-				if (sw) task->target_surface = new SurfaceSW();
-				if (gl) task->target_surface = new SurfaceGL();
+				surface_convert->target_surface = task->target_surface;
+				task->target_surface = capability->create_supported_target();
 				task->target_surface->is_temporary = true;
 				task->target_surface->set_size( surface_convert->target_surface->get_size() );
 				apply(params, surface_convert);
 			}
-
-			if (params.parent && params.parent->ref_task)
+		}
+		else
+		// add TaskSurfaceConvert for source
+		if (params.parent && params.parent->ref_task)
+		{
+			if (TackCapabilityInterface *capability = params.parent->ref_task.type_pointer<TackCapabilityInterface>())
 			{
-				bool parent_sw = params.parent->ref_task.type_is<TaskSW>();
-				bool parent_gl = params.parent->ref_task.type_is<TaskGL>();
-				if ( (parent_sw && !target_sw) || (parent_gl && !target_gl) )
+				if (!capability->is_supported_source(params.ref_task->target_surface))
 				{
 					TaskSurfaceConvert::Handle surface_convert(new TaskSurfaceConvert());
+					init_and_assign(surface_convert, params.ref_task);
+					surface_convert->sub_tasks.clear();
 					surface_convert->sub_task() = params.ref_task;
-					if (parent_sw) surface_convert->target_surface = new SurfaceSW();
-					if (parent_gl) surface_convert->target_surface = new SurfaceGL();
+					surface_convert->target_surface = capability->create_supported_source();
 					surface_convert->target_surface->is_temporary = true;
 					surface_convert->target_surface->set_size( params.ref_task->target_surface->get_size() );
 					apply(params, surface_convert);
@@ -118,7 +108,6 @@ OptimizerSurfaceConvert::run(const RunParams& params) const
 			}
 		}
 	}
-#endif
 }
 
 /* === E N T R Y P O I N T ================================================= */
