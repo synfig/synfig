@@ -1332,14 +1332,16 @@ CanvasView::create_display_bar()
 	displaybar->set_toolbar_style(Gtk::TOOLBAR_BOTH_HORIZ);
 
 	// File
-	displaybar->append( *create_action_toolbutton( App::ui_manager()->get_action("/toolbar-main/new") ) );
-	displaybar->append( *create_action_toolbutton( App::ui_manager()->get_action("/toolbar-main/open") ) );
-	displaybar->append( *create_action_toolbutton( action_group->get_action("save") ) );
-	displaybar->append( *create_action_toolbutton( action_group->get_action("save-as") ) );
-	displaybar->append( *create_action_toolbutton( App::ui_manager()->get_action("/toolbar-main/save-all") ) );
+	if (App::show_file_toolbar) {
+		displaybar->append( *create_action_toolbutton( App::ui_manager()->get_action("/toolbar-main/new") ) );
+		displaybar->append( *create_action_toolbutton( App::ui_manager()->get_action("/toolbar-main/open") ) );
+		displaybar->append( *create_action_toolbutton( action_group->get_action("save") ) );
+		displaybar->append( *create_action_toolbutton( action_group->get_action("save-as") ) );
+		displaybar->append( *create_action_toolbutton( App::ui_manager()->get_action("/toolbar-main/save-all") ) );
 
-	// Separator
-	displaybar->append( *create_tool_separator() );
+		// Separator
+		displaybar->append( *create_tool_separator() );
+	}
 
 	// Edit
 	displaybar->append( *create_action_toolbutton( App::ui_manager()->get_action("/toolbar-main/undo") ) );
