@@ -101,7 +101,7 @@ public:
 	template<typename T>
 	etl::handle<T> find_alternative() const
 	{
-		List &resources = get_alternatives();
+		const List &resources = get_alternatives();
 		for(List::const_iterator i = resources.begin(); i != resources.end(); ++i)
 			if (etl::handle<T> alternative = etl::handle<T>::cast_dynamic(*i))
 				return alternative;
