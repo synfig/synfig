@@ -87,6 +87,7 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	toggle_resize_imported_images(),
 	toggle_enable_experimental_features(),
 	toggle_use_dark_theme(),
+	toggle_show_file_toolbar(),
 	adj_pref_x_size(Gtk::Adjustment::create(480,1,10000,1,10,0)),
 	adj_pref_y_size(Gtk::Adjustment::create(270,1,10000,1,10,0)),
 	adj_pref_fps(Gtk::Adjustment::create(24.0,1.0,100,0.1,1,0))
@@ -602,6 +603,12 @@ Dialog_Setup::create_interface_page(PageInfo pi)
 	attach_label(pi.grid, _("Dark UI theme (if available)"), ++row);
 	pi.grid->attach(toggle_use_dark_theme, 1, row, 1, 1);
 
+	// Interface - Toolbars section
+	attach_label_section(pi.grid, _("Toolbars"), ++row);
+	// Interface - File Toolbar
+	attach_label(pi.grid, _("Show file toolbar (requires restart)"), ++row);
+	pi.grid->attach(toggle_show_file_toolbar, 1, row, 1, 1);
+
 	// Interface - Handle tooltip section
 	attach_label_section(pi.grid, _("Handle Tooltips"), ++row);
 	// Interface - width point tooltip
@@ -703,6 +710,10 @@ Dialog_Setup::on_apply_pressed()
 	// Set the dark theme flag
 	App::use_dark_theme=toggle_use_dark_theme.get_active();
 	App::apply_gtk_settings(App::use_dark_theme);
+
+	// Set file toolbar flag
+	App::show_file_toolbar=toggle_show_file_toolbar.get_active();
+	App::apply_gtk_settings(App::show_file_toolbar);
 
 	// Set the browser_command textbox
 	App::browser_command=textbox_browser_command.get_text();
@@ -951,6 +962,9 @@ Dialog_Setup::refresh()
 
 	// Refresh the status of the theme flag
 	toggle_use_dark_theme.set_active(App::use_dark_theme);
+
+	// Refresh the status of file toolbar flag
+	toggle_show_file_toolbar.set_active(App::show_file_toolbar);
 
 	// Refresh the browser_command textbox
 	textbox_browser_command.set_text(App::browser_command);

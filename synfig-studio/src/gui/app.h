@@ -217,6 +217,7 @@ public:
 	static bool resize_imported_images;
 	static bool enable_experimental_features;
 	static bool use_dark_theme;
+	static bool show_file_toolbar;
 
 	static synfigapp::PluginManager plugin_manager;
 

@@ -298,6 +298,7 @@ bool studio::App::restrict_radius_ducks=true;
 bool studio::App::resize_imported_images=false;
 bool studio::App::enable_experimental_features=false;
 bool studio::App::use_dark_theme=false;
+bool studio::App::show_file_toolbar=true;
 String studio::App::custom_filename_prefix(DEFAULT_FILENAME_PREFIX);
 int studio::App::preferred_x_size=480;
 int studio::App::preferred_y_size=270;
@@ -568,6 +569,11 @@ public:
 				value=strprintf("%i",(int)App::use_dark_theme);
 				return true;
 			}
+			if(key=="show_file_toolbar")
+			{
+				value=strprintf("%i",(int)App::show_file_toolbar);
+				return true;
+			}
 			if(key=="browser_command")
 			{
 				value=App::browser_command;
@@ -732,6 +738,12 @@ public:
 				App::use_dark_theme=i;
 				return true;
 			}
+			if(key=="show_file_toolbar")
+			{
+				int i(atoi(value.c_str()));
+				App::show_file_toolbar=i;
+				return true;
+			}
 			if(key=="browser_command")
 			{
 				App::browser_command=value;
@@ -829,6 +841,7 @@ public:
 		ret.push_back("resize_imported_images");
 		ret.push_back("enable_experimental_features");
 		ret.push_back("use_dark_theme");
+		ret.push_back("show_file_toolbar");
 		ret.push_back("browser_command");
 		ret.push_back("brushes_path");
 		ret.push_back("custom_filename_prefix");
@@ -1447,6 +1460,9 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 
 		load_settings("pref.use_dark_theme");
 		App::apply_gtk_settings(App::use_dark_theme);
+
+		load_settings("pref.show_file_toolbar");
+		App::apply_gtk_settings(App::show_file_toolbar);
 
 		// Set experimental features
 		load_settings("pref.enable_experimental_features");
