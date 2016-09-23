@@ -1213,6 +1213,7 @@ CanvasView::create_time_bar()
 	current_time_widget->set_size_request(0,-1); // request horizontal shrink
 	current_time_widget->set_width_chars(5);
 	current_time_widget->set_tooltip_text(_("Current time"));
+	current_time_widget->override_background_color(Gdk::RGBA("#FFFFFF"));
 	current_time_widget->show();
 
 	//Setup the FrameDial widget
