@@ -64,7 +64,7 @@ using namespace lyr_std;
 SYNFIG_LAYER_INIT(Layer_Stroboscope);
 SYNFIG_LAYER_SET_NAME(Layer_Stroboscope,"stroboscope");
 SYNFIG_LAYER_SET_LOCAL_NAME(Layer_Stroboscope,N_("Stroboscope"));
-SYNFIG_LAYER_SET_CATEGORY(Layer_Stroboscope,N_("Other"));
+SYNFIG_LAYER_SET_CATEGORY(Layer_Stroboscope,N_("Time"));
 SYNFIG_LAYER_SET_VERSION(Layer_Stroboscope,"0.1");
 SYNFIG_LAYER_SET_CVS_ID(Layer_Stroboscope,"$Id$");
 

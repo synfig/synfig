@@ -62,7 +62,7 @@ using namespace lyr_std;
 SYNFIG_LAYER_INIT(Layer_TimeLoop);
 SYNFIG_LAYER_SET_NAME(Layer_TimeLoop,"timeloop");
 SYNFIG_LAYER_SET_LOCAL_NAME(Layer_TimeLoop,N_("Time Loop"));
-SYNFIG_LAYER_SET_CATEGORY(Layer_TimeLoop,N_("Other"));
+SYNFIG_LAYER_SET_CATEGORY(Layer_TimeLoop,N_("Time"));
 SYNFIG_LAYER_SET_VERSION(Layer_TimeLoop,"0.2");
 SYNFIG_LAYER_SET_CVS_ID(Layer_TimeLoop,"$Id$");
 
