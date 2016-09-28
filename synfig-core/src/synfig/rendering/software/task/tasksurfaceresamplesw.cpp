@@ -184,13 +184,13 @@ public:
 			switch(interpolation)
 			{
 			case Color::INTERPOLATION_LINEAR:
-				fill<pen, gamma_func, linear>(antialiasing, p, a); break;
+				fill<pen, gamma_func, Generic::linear>(antialiasing, p, a); break;
 			case Color::INTERPOLATION_COSINE:
-				fill<pen, gamma_func, cosine>(antialiasing, p, a); break;
+				fill<pen, gamma_func, Generic::cosine>(antialiasing, p, a); break;
 			case Color::INTERPOLATION_CUBIC:
-				fill<pen, gamma_func, cubic>(antialiasing, p, a); break;
+				fill<pen, gamma_func, Generic::cubic>(antialiasing, p, a); break;
 			default:
-				fill<pen, gamma_func, nearest>(antialiasing, p, a); break;
+				fill<pen, gamma_func, Generic::nearest>(antialiasing, p, a); break;
 			}
 		}
 
@@ -220,12 +220,12 @@ public:
 
 			if (no_gamma)
 			{
-				fill<pen, nogamma>(interpolation, antialiasing, p, a);
+				fill<pen, Generic::nogamma>(interpolation, antialiasing, p, a);
 			}
 			else
 			{
 				a.gamma_adjust = gamma_adjust;
-				fill<pen, gamma>(interpolation, antialiasing, p, a);
+				fill<pen, Generic::gamma>(interpolation, antialiasing, p, a);
 			}
 		}
 

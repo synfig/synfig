@@ -490,8 +490,8 @@ public:
 	inline static accumulator_type reader_cook(const void *surf, int x, int y)
 		{ return (*(const surface*)surf).cooker_.cook(reader(surf, x, y)); }
 
-	typedef sampler<accumulator_type, float, accumulator_type, reader_cook> sampler_cook;
-	typedef sampler<accumulator_type, float, value_type, reader> sampler_nocook;
+	typedef sampler<accumulator_type, float, accumulator_type, surface::reader_cook> sampler_cook;
+	typedef sampler<accumulator_type, float, value_type, surface::reader> sampler_nocook;
 
 	//! Linear sample
 	value_type linear_sample(const float x, const float y)const
