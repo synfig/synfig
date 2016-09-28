@@ -1,11 +1,12 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file state_rectangle.h
-**	\brief Rectangle creation state
+**	\brief Rectangle tool state (header)
 **
 **	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**	Copyright (c) 2016 caryoscelus
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -28,7 +29,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include "smach.h"
-
+#include "state_shape.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -38,9 +39,44 @@
 
 namespace studio {
 
-class StateRectangle_Context;
+class StateRectangle_Context : public StateShape_Context
+{
+	// expansion
+	Gtk::Label expand_label;
+	Widget_Distance expand_dist;
 
-class StateRectangle : public Smach::state<StateRectangle_Context>
+public:
+
+	synfig::Real get_expand_size() const {
+		return expand_dist.get_value().get(
+			synfig::Distance::SYSTEM_UNITS,
+			get_canvas_view()->get_canvas()->rend_desc()
+		);
+	}
+	void set_expand_size(synfig::Distance x) { return expand_dist.set_value(x);}
+
+protected:
+	virtual const synfig::String get_name_lower() const { return "rectangle"; }
+	virtual const synfig::String get_name() const { return "Rectangle"; }
+	virtual const synfig::String get_local_name() const { return _("Rectangle tool"); }
+
+public:
+	virtual Smach::event_result event_mouse_click_handler(const Smach::event& x);
+
+	virtual void load_settings();
+	virtual void save_settings();
+
+	void make_rectangle(const synfig::Point& p1, const synfig::Point& p2);
+
+	virtual void toggle_layer_creation();
+
+	//constructor destructor
+	StateRectangle_Context(CanvasView* canvas_view);
+	virtual ~StateRectangle_Context();
+
+};	// END of class StateGradient_Context
+
+class StateRectangle : public StateShape<StateRectangle_Context>
 {
 public:
 	StateRectangle();

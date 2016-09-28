@@ -1,13 +1,14 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file state_rectangle.cpp
-**	\brief Template File
+**	\brief Rectangle tool state
 **
 **	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
-**  Copyright (c) 2008 Chris Moore
-**  Copyright (c) 2010 Carlos López
+**	Copyright (c) 2008 Chris Moore
+**	Copyright (c) 2010 Carlos López
+**	Copyright (c) 2016 caryoscelus
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -31,29 +32,11 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-
 #include <synfig/valuenodes/valuenode_dynamiclist.h>
-#include <synfigapp/action_system.h>
-#include <synfig/valuenodes/valuenode_bline.h>
 
 #include "state_rectangle.h"
-#include "state_normal.h"
-#include "canvasview.h"
-#include "workarea.h"
-#include "app.h"
 
-#include <synfigapp/action.h>
-#include "event_mouse.h"
-#include "event_layerclick.h"
 #include "docks/dock_toolbox.h"
-#include "docks/dialog_tooloptions.h"
-#include "duck.h"
-#include "widgets/widget_enum.h"
-#include "widgets/widget_distance.h"
-#include <synfigapp/main.h>
-
-#include <gui/localization.h>
 
 #endif
 
@@ -66,233 +49,17 @@ using namespace studio;
 
 /* === M A C R O S ========================================================= */
 
-#ifndef LAYER_CREATION
-#define LAYER_CREATION(button, stockid, tooltip)	\
-	{ \
-		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID(stockid), \
-			Gtk::ICON_SIZE_SMALL_TOOLBAR)); \
-		button.add(*icon); \
-	} \
-	button.set_relief(Gtk::RELIEF_NONE); \
-	button.set_tooltip_text(tooltip); \
-	button.signal_toggled().connect(sigc::mem_fun(*this, \
-		&studio::StateRectangle_Context::toggle_layer_creation))
-#endif
-
-// indentation for options layout
-#ifndef SPACING
-#define SPACING(name, px) \
-	Gtk::Alignment *name = Gtk::manage(new Gtk::Alignment()); \
-	name->set_size_request(px)
-#endif
-
-#define GAP	(3)
-#define INDENTATION (6)
-
 /* === G L O B A L S ======================================================= */
 
 StateRectangle studio::state_rectangle;
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-class studio::StateRectangle_Context : public sigc::trackable
-{
-	etl::handle<CanvasView> canvas_view_;
-	CanvasView::IsWorking is_working;
-
-	Duckmatic::Push duckmatic_push;
-
-	Point point_holder;
-
-	etl::handle<Duck> point2_duck;
-
-	void refresh_ducks();
-
-	bool prev_workarea_layer_status_;
-
-	//Toolbox settings
-	synfigapp::Settings& settings;
-
-	// holder of options
-	Gtk::Table options_table;
-
-	// title
-	Gtk::Label title_label;
-
-	// layer name:
-	Gtk::Label id_label;
-	Gtk::HBox id_box;
-	Gtk::Entry id_entry;
-
-	// layer types to create:
-	Gtk::Label layer_types_label;
-	Gtk::ToggleButton layer_rectangle_togglebutton;
-	Gtk::ToggleButton layer_region_togglebutton;
-	Gtk::ToggleButton layer_outline_togglebutton;
-	Gtk::ToggleButton layer_advanced_outline_togglebutton;
-	Gtk::ToggleButton layer_curve_gradient_togglebutton;
-	Gtk::ToggleButton layer_plant_togglebutton;
-	Gtk::HBox layer_types_box;
-
-	// blend method
-	Gtk::Label blend_label;
-	Gtk::HBox blend_box;
-	Widget_Enum blend_enum;
-
-	// opacity
-	Gtk::Label opacity_label;
-	Gtk::HScale opacity_hscl;
-
-	// brush size
-	Gtk::Label bline_width_label;
-	Widget_Distance bline_width_dist;
-
-	// invert
-	Gtk::Label invert_label;
-	Gtk::CheckButton invert_checkbutton;
-	Gtk::HBox invert_box;
-
-	// feather size
-	Gtk::Label feather_label;
-	Widget_Distance feather_dist;
-
-	// expansion
-	Gtk::Label expand_label;
-	Widget_Distance expand_dist;
-
-	// link origins
-	Gtk::Label link_origins_label;
-	Gtk::CheckButton layer_link_origins_checkbutton;
-	Gtk::HBox link_origins_box;
-
-public:
-
-	// this only counts the layers which use blines - they're the only
-	// ones we link the origins for
-	int layers_to_create()const
-	{
-		return
-			get_layer_region_flag() +
-			get_layer_outline_flag() +
-			get_layer_advanced_outline_flag() +
-			get_layer_curve_gradient_flag() +
-			get_layer_plant_flag();
-	}
-
-	synfig::String get_id()const { return id_entry.get_text(); }
-	void set_id(const synfig::String& x) { return id_entry.set_text(x); }
-
-	int get_blend()const { return blend_enum.get_value(); }
-	void set_blend(int x) { return blend_enum.set_value(x); }
-
-	Real get_opacity()const { return opacity_hscl.get_value(); }
-	void set_opacity(Real x) { opacity_hscl.set_value(x); }
-
-	Real get_bline_width() const {
-		return bline_width_dist.get_value().get(
-			Distance::SYSTEM_UNITS,
-			get_canvas_view()->get_canvas()->rend_desc()
-		);
-	}
-	void set_bline_width(Distance x) { return bline_width_dist.set_value(x);}
-
-	Real get_feather_size() const {
-		return feather_dist.get_value().get(
-			Distance::SYSTEM_UNITS,
-			get_canvas_view()->get_canvas()->rend_desc()
-		);
-	}
-	void set_feather_size(Distance x) { return feather_dist.set_value(x);}
-
-	Real get_expand_size() const {
-		return expand_dist.get_value().get(
-			Distance::SYSTEM_UNITS,
-			get_canvas_view()->get_canvas()->rend_desc()
-		);
-	}
-	void set_expand_size(Distance x) { return expand_dist.set_value(x);}
-
-	bool get_invert()const { return invert_checkbutton.get_active(); }
-	void set_invert(bool i) { invert_checkbutton.set_active(i); }
-
-	bool get_layer_rectangle_flag()const { return layer_rectangle_togglebutton.get_active(); }
-	void set_layer_rectangle_flag(bool x) { return layer_rectangle_togglebutton.set_active(x); }
-
-	bool get_layer_region_flag()const { return layer_region_togglebutton.get_active(); }
-	void set_layer_region_flag(bool x) { return layer_region_togglebutton.set_active(x); }
-
-	bool get_layer_outline_flag()const { return layer_outline_togglebutton.get_active(); }
-	void set_layer_outline_flag(bool x) { return layer_outline_togglebutton.set_active(x); }
-
-	bool get_layer_advanced_outline_flag()const { return layer_advanced_outline_togglebutton.get_active(); }
-	void set_layer_advanced_outline_flag(bool x) { return layer_advanced_outline_togglebutton.set_active(x); }
-
-	bool get_layer_curve_gradient_flag()const { return layer_curve_gradient_togglebutton.get_active(); }
-	void set_layer_curve_gradient_flag(bool x) { return layer_curve_gradient_togglebutton.set_active(x); }
-
-	bool get_layer_plant_flag()const { return layer_plant_togglebutton.get_active(); }
-	void set_layer_plant_flag(bool x) { return layer_plant_togglebutton.set_active(x); }
-
-	bool get_layer_link_origins_flag()const { return layer_link_origins_checkbutton.get_active(); }
-	void set_layer_link_origins_flag(bool x) { return layer_link_origins_checkbutton.set_active(x); }
-
-  bool layer_rectangle_flag;
-  bool layer_region_flag;
-  bool layer_outline_flag;
-  bool layer_advanced_outline_flag;
-  bool layer_curve_gradient_flag;
-  bool layer_plant_flag;
-
-	void refresh_tool_options(); //to refresh the toolbox
-
-	//events
-	Smach::event_result event_stop_handler(const Smach::event& x);
-	Smach::event_result event_refresh_handler(const Smach::event& x);
-	Smach::event_result event_mouse_click_handler(const Smach::event& x);
-	Smach::event_result event_refresh_tool_options(const Smach::event& x);
-
-	//constructor destructor
-	StateRectangle_Context(CanvasView* canvas_view);
-	~StateRectangle_Context();
-
-	//Canvas interaction
-	const etl::handle<CanvasView>& get_canvas_view()const{return canvas_view_;}
-	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
-	synfig::Canvas::Handle get_canvas()const{return canvas_view_->get_canvas();}
-	WorkArea * get_work_area()const{return canvas_view_->get_work_area();}
-
-	//Modifying settings etc.
-	void load_settings();
-	void save_settings();
-	void reset();
-	void increment_id();
-	bool egress_on_selection_change;
-	Smach::event_result event_layer_selection_changed_handler(const Smach::event& /*x*/)
-	{
-		if(egress_on_selection_change)
-			throw &state_normal;
-		return Smach::RESULT_OK;
-	}
-
-	void make_rectangle(const Point& p1, const Point& p2);
-
-	void toggle_layer_creation();
-
-};	// END of class StateGradient_Context
-
 /* === M E T H O D S ======================================================= */
 
 StateRectangle::StateRectangle():
-	Smach::state<StateRectangle_Context>("rectangle")
+	StateShape<StateRectangle_Context>("rectangle")
 {
-	insert(event_def(EVENT_STOP,&StateRectangle_Context::event_stop_handler));
-	insert(event_def(EVENT_LAYER_SELECTION_CHANGED,&StateRectangle_Context::event_layer_selection_changed_handler));
-	insert(event_def(EVENT_REFRESH,&StateRectangle_Context::event_refresh_handler));
-	insert(event_def(EVENT_REFRESH_DUCKS,&StateRectangle_Context::event_refresh_handler));
-	insert(event_def(EVENT_WORKAREA_MOUSE_BUTTON_DOWN,&StateRectangle_Context::event_mouse_click_handler));
-	insert(event_def(EVENT_WORKAREA_MOUSE_BUTTON_DRAG,&StateRectangle_Context::event_mouse_click_handler));
-	insert(event_def(EVENT_WORKAREA_MOUSE_BUTTON_UP,&StateRectangle_Context::event_mouse_click_handler));
-	insert(event_def(EVENT_REFRESH_TOOL_OPTIONS,&StateRectangle_Context::event_refresh_tool_options));
 }
 
 StateRectangle::~StateRectangle()
@@ -343,10 +110,10 @@ StateRectangle_Context::load_settings()
 		else
 			set_invert(false);
 
-		if(settings.get_value("rectangle.layer_rectangle",value) && value=="0")
-			set_layer_rectangle_flag(false);
+		if(settings.get_value("rectangle.layer_shape",value) && value=="0")
+			set_layer_shape_flag(false);
 		else
-			set_layer_rectangle_flag(true);
+			set_layer_shape_flag(true);
 
 		if(settings.get_value("rectangle.layer_region",value) && value=="1")
 			set_layer_region_flag(true);
@@ -379,7 +146,7 @@ StateRectangle_Context::load_settings()
 			set_layer_link_origins_flag(true);
 
 	  // determine layer flags
-		layer_rectangle_flag = get_layer_rectangle_flag();
+		layer_shape_flag = get_layer_shape_flag();
 	  layer_region_flag = get_layer_region_flag();
 	  layer_outline_flag = get_layer_outline_flag();
 	  layer_advanced_outline_flag = get_layer_outline_flag();
@@ -405,7 +172,7 @@ StateRectangle_Context::save_settings()
 		settings.set_value("rectangle.expand",expand_dist.get_value().get_string());
 		settings.set_value("rectangle.feather", feather_dist.get_value().get_string());
 		settings.set_value("rectangle.invert",get_invert()?"1":"0");
-		settings.set_value("rectangle.layer_rectangle",get_layer_rectangle_flag()?"1":"0");
+		settings.set_value("rectangle.layer_shape",get_layer_shape_flag()?"1":"0");
 		settings.set_value("rectangle.layer_outline",get_layer_outline_flag()?"1":"0");
 		settings.set_value("rectangle.layer_advanced_outline",get_layer_advanced_outline_flag()?"1":"0");
 		settings.set_value("rectangle.layer_region",get_layer_region_flag()?"1":"0");
@@ -419,64 +186,8 @@ StateRectangle_Context::save_settings()
 	}
 }
 
-void
-StateRectangle_Context::reset()
-{
-	refresh_ducks();
-}
-
-void
-StateRectangle_Context::increment_id()
-{
-	String id(get_id());
-	int number=1;
-	int digits=0;
-
-	if(id.empty())
-		id="Rectangle";
-
-	// If there is a number
-	// already at the end of the
-	// id, then remove it.
-	if(id[id.size()-1]<='9' && id[id.size()-1]>='0')
-	{
-		// figure out how many digits it is
-		for (digits = 0;
-			 (int)id.size()-1 >= digits && id[id.size()-1-digits] <= '9' && id[id.size()-1-digits] >= '0';
-			 digits++)
-			;
-
-		String str_number;
-		str_number=String(id,id.size()-digits,id.size());
-		id=String(id,0,id.size()-digits);
-
-		number=atoi(str_number.c_str());
-	}
-	else
-	{
-		number=1;
-		digits=3;
-	}
-
-	number++;
-
-	// Add the number back onto the id
-	{
-		const String format(strprintf("%%0%dd",digits));
-		id+=strprintf(format.c_str(),number);
-	}
-
-	// Set the ID
-	set_id(id);
-}
-
 StateRectangle_Context::StateRectangle_Context(CanvasView* canvas_view):
-	canvas_view_(canvas_view),
-	is_working(*canvas_view),
-	duckmatic_push(get_work_area()),
-	prev_workarea_layer_status_(get_work_area()->get_allow_layer_clicks()),
-	settings(synfigapp::Main::get_selected_input_device()->settings()),
-	opacity_hscl(0.0f, 1.0125f, 0.0125f)
+	StateShape_Context(canvas_view)
 {
 	egress_on_selection_change=true;
 
@@ -503,28 +214,29 @@ StateRectangle_Context::StateRectangle_Context(CanvasView* canvas_view):
 	layer_types_label.set_label(_("Layer Type:"));
 	layer_types_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
-	LAYER_CREATION(layer_rectangle_togglebutton,
+#define LAYER_CREATION_SHAPE(a, b, c) LAYER_CREATION(Rectangle, a, b, c)
+	LAYER_CREATION_SHAPE(layer_shape_togglebutton,
 		("synfig-layer_geometry_rectangle"), _("Create a rectangle layer"));
 
-	LAYER_CREATION(layer_region_togglebutton,
+	LAYER_CREATION_SHAPE(layer_region_togglebutton,
 		("synfig-layer_geometry_region"), _("Create a region layer"));
 
-	LAYER_CREATION(layer_outline_togglebutton,
+	LAYER_CREATION_SHAPE(layer_outline_togglebutton,
 		("synfig-layer_geometry_outline"), _("Create a outline layer"));
 
-	LAYER_CREATION(layer_advanced_outline_togglebutton,
+	LAYER_CREATION_SHAPE(layer_advanced_outline_togglebutton,
 		("synfig-layer_geometry_advanced_outline"), _("Create a advanced outline layer"));
 
-	LAYER_CREATION(layer_plant_togglebutton,
+	LAYER_CREATION_SHAPE(layer_plant_togglebutton,
 		("synfig-layer_other_plant"), _("Create a plant layer"));
 
-	LAYER_CREATION(layer_curve_gradient_togglebutton,
+	LAYER_CREATION_SHAPE(layer_curve_gradient_togglebutton,
 		("synfig-layer_gradient_curve"), _("Create a gradient layer"));
 
 	SPACING(layer_types_indent, INDENTATION);
 
 	layer_types_box.pack_start(*layer_types_indent, Gtk::PACK_SHRINK);
-	layer_types_box.pack_start(layer_rectangle_togglebutton, Gtk::PACK_SHRINK);
+	layer_types_box.pack_start(layer_shape_togglebutton, Gtk::PACK_SHRINK);
 	layer_types_box.pack_start(layer_region_togglebutton, Gtk::PACK_SHRINK);
 	layer_types_box.pack_start(layer_outline_togglebutton, Gtk::PACK_SHRINK);
 	layer_types_box.pack_start(layer_advanced_outline_togglebutton, Gtk::PACK_SHRINK);
@@ -681,54 +393,8 @@ StateRectangle_Context::StateRectangle_Context(CanvasView* canvas_view):
 	App::dock_toolbox->refresh();
 }
 
-void
-StateRectangle_Context::refresh_tool_options()
-{
-	App::dialog_tool_options->clear();
-	App::dialog_tool_options->set_widget(options_table);
-	App::dialog_tool_options->set_local_name(_("Rectangle Tool"));
-	App::dialog_tool_options->set_name("rectangle");
-}
-
-Smach::event_result
-StateRectangle_Context::event_refresh_tool_options(const Smach::event& /*x*/)
-{
-	refresh_tool_options();
-	return Smach::RESULT_ACCEPT;
-}
-
 StateRectangle_Context::~StateRectangle_Context()
 {
-	save_settings();
-
-	// Restore layer clicking
-	get_work_area()->set_allow_layer_clicks(prev_workarea_layer_status_);
-
-	get_work_area()->reset_cursor();
-
-	App::dialog_tool_options->clear();
-
-	// Refresh the work area
-	get_work_area()->queue_draw();
-
-	get_canvas_view()->queue_rebuild_ducks();
-
-	App::dock_toolbox->refresh();
-}
-
-Smach::event_result
-StateRectangle_Context::event_stop_handler(const Smach::event& /*x*/)
-{
-	//throw Smach::egress_exception();
-	throw &state_normal;
-	return Smach::RESULT_OK;
-}
-
-Smach::event_result
-StateRectangle_Context::event_refresh_handler(const Smach::event& /*x*/)
-{
-	refresh_ducks();
-	return Smach::RESULT_ACCEPT;
 }
 
 void
@@ -793,7 +459,7 @@ StateRectangle_Context::make_rectangle(const Point& _p1, const Point& _p2)
 	//   R E C T A N G L E
 	///////////////////////////////////////////////////////////////////////////
 
-	if (get_layer_rectangle_flag())
+	if (get_layer_shape_flag())
 	{
 		egress_on_selection_change=false;
 		layer=get_canvas_interface()->add_layer_to("rectangle",canvas,depth);
@@ -1264,26 +930,18 @@ StateRectangle_Context::event_mouse_click_handler(const Smach::event& x)
 	return Smach::RESULT_OK;
 }
 
-
-void
-StateRectangle_Context::refresh_ducks()
-{
-	get_work_area()->clear_ducks();
-	get_work_area()->queue_draw();
-}
-
 void
 StateRectangle_Context::toggle_layer_creation()
 {
   // don't allow none layer creation
-  if (get_layer_rectangle_flag() +
+  if (get_layer_shape_flag() +
      get_layer_region_flag() +
      get_layer_outline_flag() +
      get_layer_advanced_outline_flag() +
      get_layer_curve_gradient_flag() +
      get_layer_plant_flag() == 0)
   {
-    if(layer_rectangle_flag) set_layer_rectangle_flag(true);
+    if(layer_shape_flag) set_layer_shape_flag(true);
     else if(layer_region_flag) set_layer_region_flag(true);
     else if(layer_outline_flag) set_layer_outline_flag(true);
     else if(layer_advanced_outline_flag) set_layer_advanced_outline_flag(true);
@@ -1306,7 +964,7 @@ StateRectangle_Context::toggle_layer_creation()
 	}
 
 	// invert
-	if (get_layer_rectangle_flag() ||
+	if (get_layer_shape_flag() ||
 		get_layer_region_flag() ||
 		get_layer_outline_flag() ||
 		get_layer_advanced_outline_flag())
@@ -1317,8 +975,8 @@ StateRectangle_Context::toggle_layer_creation()
 		invert_box.set_sensitive(false);
 
 	// feather size
-	if (get_layer_rectangle_flag() ||
-		get_layer_rectangle_flag() ||
+	if (get_layer_shape_flag() ||
+		get_layer_shape_flag() ||
 		get_layer_region_flag() ||
 		get_layer_outline_flag() ||
 		get_layer_advanced_outline_flag())
@@ -1333,7 +991,7 @@ StateRectangle_Context::toggle_layer_creation()
 	}
 
 	// expansion
-	if (get_layer_rectangle_flag())
+	if (get_layer_shape_flag())
 	{
 
 		expand_label.set_sensitive(true);
@@ -1357,7 +1015,7 @@ StateRectangle_Context::toggle_layer_creation()
 	else link_origins_box.set_sensitive(false);
 
   // update layer flags
-  layer_rectangle_flag = get_layer_rectangle_flag();
+  layer_shape_flag = get_layer_shape_flag();
   layer_region_flag = get_layer_region_flag();
   layer_outline_flag = get_layer_outline_flag();
   layer_advanced_outline_flag = get_layer_advanced_outline_flag();
