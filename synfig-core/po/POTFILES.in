@@ -210,8 +210,6 @@ src/synfig/exception.cpp
 src/synfig/exception.h
 src/synfig/filecontainer.cpp
 src/synfig/filecontainer.h
-src/synfig/filecontainertemporary.cpp
-src/synfig/filecontainertemporary.h
 src/synfig/filecontainerzip.cpp
 src/synfig/filecontainerzip.h
 src/synfig/filesystem.cpp
