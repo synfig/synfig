@@ -1,4 +1,5 @@
 STATES_HH = \
+	states/state.h \
 	states/state_bline.h \
 	states/state_circle.h \
 	states/state_draw.h \
@@ -12,6 +13,7 @@ STATES_HH = \
 	states/state_rectangle.h \
 	states/state_rotate.h \
 	states/state_scale.h \
+	states/state_shape.h \
 	states/state_sketch.h \
 	states/state_smoothmove.h \
 	states/state_star.h \
@@ -35,6 +37,7 @@ STATES_CC = \
 	states/state_rectangle.cpp \
 	states/state_rotate.cpp \
 	states/state_scale.cpp \
+	states/state_shape.cpp \
 	states/state_sketch.cpp \
 	states/state_smoothmove.cpp \
 	states/state_star.cpp \
