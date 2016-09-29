@@ -262,6 +262,11 @@ StateShape_Context::StateShape_Context(CanvasView* canvas_view) :
 
 StateShape_Context::~StateShape_Context()
 {
+}
+
+void
+StateShape_Context::leave()
+{
 	save_settings();
 
 	// Restore layer clicking

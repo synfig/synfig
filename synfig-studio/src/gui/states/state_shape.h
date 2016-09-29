@@ -218,6 +218,8 @@ public:
 	virtual Smach::event_result event_mouse_click_handler(const Smach::event& x) = 0;
 	virtual Smach::event_result event_refresh_tool_options(const Smach::event& x);
 
+	virtual void leave();
+
 	//! Load settings safe wrapper
 	//! \see do_load_settings
 	void load_settings();
