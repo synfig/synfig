@@ -126,35 +126,9 @@ StateShape_Context::event_stop_handler(const Smach::event& /*x*/)
 }
 
 void
-StateShape_Context::load_settings()
-{
-	try
-	{
-		do_load_settings();
-	}
-	catch(...)
-	{
-		synfig::warning("State "+get_name()+": Caught exception when attempting to load settings.");
-	}
-}
-
-void
-StateShape_Context::save_settings()
-{
-	try
-	{
-		do_save_settings();
-	}
-	catch(...)
-	{
-		synfig::warning("State "+get_name()+": Caught exception when attempting to save settings.");
-	}
-}
-
-void
 StateShape_Context::do_load_settings()
 {
-	synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
+	State_Context::do_load_settings();
 	String value;
 
 	if(settings.get_value(get_name_lower()+".id",value))
@@ -255,7 +229,6 @@ StateShape_Context::StateShape_Context(CanvasView* canvas_view) :
 	is_working(*canvas_view),
 	prev_workarea_layer_status_(get_work_area()->get_allow_layer_clicks()),
 	duckmatic_push(get_work_area()),
-	settings(synfigapp::Main::get_selected_input_device()->settings()),
 	opacity_hscl(0.0f, 1.0125f, 0.0125f)
 {
 }

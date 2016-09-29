@@ -67,14 +67,40 @@ class State_Context : public StateMinimal_Context
 {
 protected:
 	etl::handle<CanvasView> canvas_view_;
+
+	//Toolbox settings
+	synfigapp::Settings& settings;
+
+protected:
+	virtual const synfig::String get_name_lower() const = 0;
+	virtual const synfig::String get_name() const = 0;
+	virtual const synfig::String get_local_name() const = 0;
+
+	synfig::String get_setting(synfig::String name) const;
+	void set_setting(synfig::String name, synfig::String value);
+
+	//! Load settings unsafe implementation
+	virtual void do_load_settings();
+	//! Save settings unsafe implementation
+	virtual void do_save_settings();
+
 public:
-	State_Context(CanvasView* canvas_view) : canvas_view_(canvas_view) {};
+	//! Load settings safe wrapper
+	//! \see do_load_settings
+	void load_settings();
+	//! Save settings safe wrapper
+	//! \see do_save_settings
+	void save_settings();
 
 	//Canvas interaction
 	const etl::handle<CanvasView>& get_canvas_view()const{return canvas_view_;}
 	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
 	synfig::Canvas::Handle get_canvas()const{return canvas_view_->get_canvas();}
 	WorkArea * get_work_area()const{return canvas_view_->get_work_area();}
+
+public:
+	State_Context(CanvasView* canvas_view);
+	virtual ~State_Context() = default;
 };
 
 }; // END of namespace studio

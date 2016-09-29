@@ -24,6 +24,7 @@ STATES_HH = \
 	states/state_brush.h
 
 STATES_CC = \
+	states/state.cpp \
 	states/state_bline.cpp \
 	states/state_circle.cpp \
 	states/state_draw.cpp \

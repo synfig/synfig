@@ -36,7 +36,6 @@
 #include "app.h"
 
 #include <synfig/vector.h>
-#include <synfigapp/main.h>
 #include <synfigapp/action_system.h>
 #include <synfigapp/action.h>
 #include <synfig/valuenodes/valuenode_bline.h>
@@ -76,9 +75,6 @@ protected:
 	}
 
 	bool prev_workarea_layer_status_;
-
-	//Toolbox settings
-	synfigapp::Settings& settings;
 
 	// holder of options
 	Gtk::Table options_table;
@@ -219,13 +215,6 @@ public:
 	virtual Smach::event_result event_refresh_tool_options(const Smach::event& x);
 
 	virtual void leave();
-
-	//! Load settings safe wrapper
-	//! \see do_load_settings
-	void load_settings();
-	//! Save settings safe wrapper
-	//! \see do_save_settings
-	void save_settings();
 
 	void reset() { refresh_ducks(); }
 	void increment_id();
