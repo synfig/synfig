@@ -58,7 +58,7 @@ using namespace studio;
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-class studio::StateFill_Context
+class studio::StateFill_Context : public StateMinimal_Context
 {
 	CanvasView *canvas_view;
 	CanvasView::IsWorking is_working;

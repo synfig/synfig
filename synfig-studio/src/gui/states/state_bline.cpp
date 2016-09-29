@@ -100,7 +100,7 @@ StateBLine studio::state_bline;
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-class studio::StateBLine_Context : public sigc::trackable
+class studio::StateBLine_Context : public StateMinimal_Context
 {
 	etl::handle<CanvasView> canvas_view_;
 	CanvasView::IsWorking is_working;

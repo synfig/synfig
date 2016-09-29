@@ -83,7 +83,7 @@ StateSketch studio::state_sketch;
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-class studio::StateSketch_Context : public sigc::trackable
+class studio::StateSketch_Context : public StateMinimal_Context
 {
 	Glib::RefPtr<Gtk::ActionGroup> action_group;
 

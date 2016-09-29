@@ -228,12 +228,15 @@ public:
 
 		virtual void* enter_state(context_type* machine_context)const
 		{
-			return new state_context_type(machine_context);
+			auto state_context = new state_context_type(machine_context);
+			state_context->enter();
+			return state_context;
 		}
 
 		virtual bool leave_state(void* x)const
 		{
 			state_context_type* state_context(reinterpret_cast<state_context_type*>(x));
+			state_context->leave();
 			delete state_context;
 			return true;
 		}

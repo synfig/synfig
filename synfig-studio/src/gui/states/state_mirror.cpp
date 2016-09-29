@@ -92,7 +92,7 @@ public:
 	void duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector);
 };
 
-class studio::StateMirror_Context : public sigc::trackable
+class studio::StateMirror_Context : public StateMinimal_Context
 {
 	etl::handle<CanvasView> canvas_view_;
 	CanvasView::IsWorking is_working;

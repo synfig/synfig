@@ -110,7 +110,7 @@ StateLasso studio::state_lasso;
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-class studio::StateLasso_Context : public sigc::trackable
+class studio::StateLasso_Context : public StateMinimal_Context
 {
 	typedef etl::smart_ptr<std::list<synfig::Point> > StrokeData;
 	typedef etl::smart_ptr<std::list<synfig::Real> > WidthData;

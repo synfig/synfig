@@ -90,7 +90,7 @@ StateText studio::state_text;
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-class studio::StateText_Context
+class studio::StateText_Context : public StateMinimal_Context
 {
 	etl::handle<CanvasView> canvas_view;
 	CanvasView::IsWorking is_working;

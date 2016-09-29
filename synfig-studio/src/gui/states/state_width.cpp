@@ -83,7 +83,7 @@ StateWidth studio::state_width;
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-class studio::StateWidth_Context : public sigc::trackable
+class studio::StateWidth_Context : public StateMinimal_Context
 {
 	etl::handle<CanvasView> canvas_view_;
 	CanvasView::IsWorking is_working;

@@ -28,6 +28,7 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include "state_minimal.h"
 #include "canvasview.h"
 #include <synfig/general.h>
 
@@ -62,7 +63,7 @@
 
 namespace studio {
 
-class State_Context : public sigc::trackable
+class State_Context : public StateMinimal_Context
 {
 protected:
 	etl::handle<CanvasView> canvas_view_;

@@ -38,6 +38,7 @@
 #include <synfig/valuenodes/valuenode_dynamiclist.h>
 
 #include "state_stroke.h"
+#include "state_minimal.h"
 #include "canvasview.h"
 #include "workarea.h"
 #include "app.h"
@@ -69,7 +70,7 @@ StateStroke studio::state_stroke;
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-class studio::StateStroke_Context : public sigc::trackable
+class studio::StateStroke_Context : public StateMinimal_Context
 {
 	etl::handle<CanvasView> canvas_view_;
 	CanvasView::IsWorking is_working;

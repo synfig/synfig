@@ -95,7 +95,7 @@ StateStar studio::state_star;
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-class studio::StateStar_Context : public sigc::trackable
+class studio::StateStar_Context : public StateMinimal_Context
 {
 	etl::handle<CanvasView> canvas_view_;
 	CanvasView::IsWorking is_working;

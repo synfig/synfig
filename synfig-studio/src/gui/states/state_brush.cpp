@@ -86,7 +86,7 @@ StateBrush studio::state_brush;
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-class studio::StateBrush_Context : public sigc::trackable
+class studio::StateBrush_Context : public StateMinimal_Context
 {
 public:
 	class BrushConfig {

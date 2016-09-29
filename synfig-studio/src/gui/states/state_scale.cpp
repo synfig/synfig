@@ -94,7 +94,7 @@ public:
 };
 
 
-class studio::StateScale_Context : public sigc::trackable
+class studio::StateScale_Context : public StateMinimal_Context
 {
 	etl::handle<CanvasView> canvas_view_;
 	CanvasView::IsWorking is_working;

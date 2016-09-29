@@ -108,7 +108,7 @@ StateDraw studio::state_draw;
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-class studio::StateDraw_Context : public sigc::trackable
+class studio::StateDraw_Context : public StateMinimal_Context
 {
 	typedef etl::smart_ptr<std::list<synfig::Point> > StrokeData;
 	typedef etl::smart_ptr<std::list<synfig::Real> > WidthData;

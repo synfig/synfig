@@ -126,7 +126,7 @@ public:
 };
 
 
-class studio::StateNormal_Context : public sigc::trackable
+class studio::StateNormal_Context : public StateMinimal_Context
 {
 	CanvasView* canvas_view_;
 

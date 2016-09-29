@@ -1,12 +1,11 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file state_normal.h
-**	\brief Template Header
+/*!	\file state_minimal.h
+**	\brief Transitional state context base class
 **
 **	$Id$
 **
 **	\legal
-**	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
-**	Copyright (c) 2009 Nikita Kitaev
+**	Copyright (c) 2016 caryoscelus
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -23,35 +22,25 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_STUDIO_STATE_NORMAL_H
-#define __SYNFIG_STUDIO_STATE_NORMAL_H
+#ifndef __SYNFIG_STUDIO_STATE_MINIMAL_H
+#define __SYNFIG_STUDIO_STATE_MINIMAL_H
 
 /* === H E A D E R S ======================================================= */
-
-#include "smach.h"
-#include "state_minimal.h"
-
-/* === M A C R O S ========================================================= */
-
-/* === T Y P E D E F S ===================================================== */
+#include "canvasview.h"
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 namespace studio {
 
-class StateNormal_Context;
-
-class StateNormal : public Smach::state<StateNormal_Context>
+//! Transitional class
+//! TODO: When it's not required anymore, merge into State_Context
+class StateMinimal_Context : public sigc::trackable
 {
 public:
-	StateNormal();
-	~StateNormal();
-}; // END of class StateNormal
+	virtual void enter() {}
+	virtual void leave() {}
+};
 
-extern StateNormal state_normal;
-
-}; // END of namespace studio
-
-/* === E N D =============================================================== */
+}
 
 #endif

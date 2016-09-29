@@ -98,7 +98,7 @@ public:
 };
 
 
-class studio::StateSmoothMove_Context : public sigc::trackable
+class studio::StateSmoothMove_Context : public StateMinimal_Context
 {
 	etl::handle<CanvasView> canvas_view_;
 	CanvasView::IsWorking is_working;
