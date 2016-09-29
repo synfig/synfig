@@ -89,13 +89,12 @@ protected:
 	virtual const synfig::String get_name() const { return "Circle"; }
 	virtual const synfig::String get_name_local() const { return _("Circle tool"); }
 
+	virtual void do_load_settings();
+	virtual void do_save_settings();
+
 public:
 	//events
 	virtual Smach::event_result event_mouse_click_handler(const Smach::event& x);
-
-	//Modifying settings etc.
-	virtual void load_settings();
-	virtual void save_settings();
 
 	void make_circle(const synfig::Point& p1, const synfig::Point& p2);
 

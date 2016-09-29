@@ -60,11 +60,11 @@ protected:
 	virtual const synfig::String get_name() const { return "Rectangle"; }
 	virtual const synfig::String get_local_name() const { return _("Rectangle tool"); }
 
+	virtual void do_load_settings();
+	virtual void do_save_settings();
+
 public:
 	virtual Smach::event_result event_mouse_click_handler(const Smach::event& x);
-
-	virtual void load_settings();
-	virtual void save_settings();
 
 	void make_rectangle(const synfig::Point& p1, const synfig::Point& p2);
 
