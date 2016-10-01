@@ -88,9 +88,7 @@ State_Context::do_save_settings()
 String
 State_Context::get_setting(String name) const
 {
-	String value;
-	settings.get_value(get_name_lower()+"."+name, value);
-	return value;
+	return settings.get_value(get_name_lower()+"."+name);
 }
 
 void
