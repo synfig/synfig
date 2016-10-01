@@ -29,6 +29,8 @@
 
 #include "real.h"
 #include "string.h"
+#include <istream>
+#include <ostream>
 
 /* === M A C R O S ========================================================= */
 
@@ -73,6 +75,9 @@ public:
 	Distance(const value_type& value, System system):value_(value),system_(system) { }
 	explicit Distance(const synfig::String& string);
 
+	// TODO: fix this or remove altogether
+	// As it is, we loose measure unit information and comparing
+	// different distances become meaningless.
 	operator Real()const { return value_; }
 
 	Distance& operator=(const Real& rhs) { value_=rhs; return *this; }
@@ -120,6 +125,9 @@ public:
 	Time operator-()const { return -value_; }
 */
 }; // END of class Distance
+
+std::ostream& operator<<(std::ostream& stream, const Distance& distance);
+std::istream& operator>>(std::istream& stream, Distance& distance);
 
 }; // END of namespace synfig
 

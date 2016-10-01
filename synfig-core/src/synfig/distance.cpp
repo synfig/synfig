@@ -110,6 +110,22 @@ Distance::operator=(const synfig::String& str)
 	return *this;
 }
 
+namespace synfig {
+ostream& operator<<(ostream& stream, const Distance& distance)
+{
+	return stream << distance.get_string();
+}
+
+istream& operator>>(istream& stream, Distance& distance)
+{
+	// TODO: take only what we can parse..
+	String str;
+	stream >> str;
+	distance = str;
+	return stream;
+}
+}
+
 synfig::String
 Distance::get_string(int digits)const
 {
