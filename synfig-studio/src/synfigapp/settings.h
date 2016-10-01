@@ -32,6 +32,7 @@
 #include <list>
 #include <ETL/stringf>
 #include <string.h>
+#include <sstream>
 
 /* === M A C R O S ========================================================= */
 
@@ -58,11 +59,38 @@ public:
 	Settings();
 	virtual ~Settings();
 
+	//! new get_value
+	template <typename T>
+	T tget_value(const synfig::String& key, const T default_value) const
+	{
+		synfig::String str;
+		if (!get_value(key, str))
+			return default_value;
+		T result;
+		std::istringstream stream { str };
+		if ((stream >> result) && stream.eof())
+		{
+			return result;
+		}
+		return default_value;
+	}
+	//! new set_value
+	template <typename T>
+	void tset_value(const synfig::String& key, const T value)
+	{
+		std::ostringstream stream;
+		stream << value;
+		set_value(key, stream.str());
+	}
+
+	//! old set&get value
+	//! TODO: get rid or virtuality and make private
 	virtual bool get_value(const synfig::String& key, synfig::String& value)const;
 	virtual bool set_value(const synfig::String& key,const synfig::String& value);
-	virtual KeyList get_key_list()const;
 
 	synfig::String get_value(const synfig::String& key)const;
+	virtual KeyList get_key_list()const;
+
 	void add_domain(Settings* domain, const synfig::String& name);
 	void remove_domain(const synfig::String& name);
 
