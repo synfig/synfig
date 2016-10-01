@@ -88,13 +88,7 @@ State_Context::do_save_settings()
 String
 State_Context::get_setting(String name) const
 {
-	return settings.get_value(get_name_lower()+"."+name);
-}
-
-void
-State_Context::set_setting(String name, String value)
-{
-	settings.set_value(get_name_lower()+"."+name, value);
+	return get_setting(name, String());
 }
 
 State_Context::State_Context(CanvasView* canvas_view) :

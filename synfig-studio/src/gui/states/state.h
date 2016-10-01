@@ -77,7 +77,16 @@ protected:
 	virtual const synfig::String get_local_name() const = 0;
 
 	synfig::String get_setting(synfig::String name) const;
-	void set_setting(synfig::String name, synfig::String value);
+	template <typename T>
+	T get_setting(synfig::String name, T default_value) const
+	{
+		return settings.tget_value(get_name_lower()+"."+name, default_value);
+	}
+	template <typename T>
+	void set_setting(synfig::String name, T value)
+	{
+		settings.tset_value(get_name_lower()+"."+name, value);
+	}
 
 	//! Load settings unsafe implementation
 	virtual void do_load_settings();
