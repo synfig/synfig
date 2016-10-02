@@ -60,6 +60,8 @@ protected:
 	virtual const synfig::String get_name() const { return "Rectangle"; }
 	virtual const synfig::String get_local_name() const { return _("Rectangle tool"); }
 
+	virtual const Gdk::CursorType get_cursor() const { return Gdk::DOTBOX; }
+
 	virtual void do_load_settings();
 	virtual void do_save_settings();
 

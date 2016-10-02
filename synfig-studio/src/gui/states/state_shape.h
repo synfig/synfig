@@ -200,6 +200,8 @@ protected:
 	virtual const synfig::String get_name() const { return "Shape"; }
 	virtual const synfig::String get_local_name() const { return _("Generic Shape tool"); }
 
+	virtual const Gdk::CursorType get_cursor() const { return Gdk::LEFT_PTR; }
+
 	//! Load settings unsafe implementation
 	virtual void do_load_settings();
 	//! Save settings unsafe implementation
@@ -217,6 +219,7 @@ public:
 	virtual void enter();
 	virtual void leave();
 
+	void finalize_init();
 	void reset() { refresh_ducks(); }
 	void increment_id();
 	bool egress_on_selection_change;

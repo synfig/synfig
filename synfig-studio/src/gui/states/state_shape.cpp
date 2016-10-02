@@ -293,6 +293,28 @@ StateShape_Context::enter()
 	load_settings();
 }
 
+void
+StateShape_Context::finalize_init()
+{
+	options_table.show_all();
+
+	refresh_tool_options();
+	App::dialog_tool_options->present();
+
+	// Turn off layer clicking
+	get_work_area()->set_allow_layer_clicks(false);
+
+	// clear out the ducks
+	get_work_area()->clear_ducks();
+
+	// Refresh the work area
+	get_work_area()->queue_draw();
+
+	get_work_area()->set_cursor(get_cursor());
+
+	App::dock_toolbox->refresh();
+}
+
 StateShape_Context::~StateShape_Context()
 {
 }

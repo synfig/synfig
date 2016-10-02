@@ -89,6 +89,8 @@ protected:
 	virtual const synfig::String get_name() const { return "Circle"; }
 	virtual const synfig::String get_name_local() const { return _("Circle tool"); }
 
+	virtual const Gdk::CursorType get_cursor() const { return Gdk::CROSSHAIR; }
+
 	virtual void do_load_settings();
 	virtual void do_save_settings();
 

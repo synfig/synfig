@@ -170,23 +170,7 @@ StateRectangle_Context::enter()
 	options_table.set_row_spacing(2, 1); // row gap between label and icon of layer type
 	options_table.set_row_spacing(11, 0); // the final row using border width of table
 
-	options_table.show_all();
-
-	refresh_tool_options();
-	App::dialog_tool_options->present();
-
-	// Turn off layer clicking
-	get_work_area()->set_allow_layer_clicks(false);
-
-	// clear out the ducks
-	get_work_area()->clear_ducks();
-
-	// Refresh the work area
-	get_work_area()->queue_draw();
-
-	get_work_area()->set_cursor(Gdk::DOTBOX);
-
-	App::dock_toolbox->refresh();
+	finalize_init();
 }
 
 StateRectangle_Context::~StateRectangle_Context()
