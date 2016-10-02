@@ -214,6 +214,7 @@ public:
 	virtual Smach::event_result event_mouse_click_handler(const Smach::event& x) = 0;
 	virtual Smach::event_result event_refresh_tool_options(const Smach::event& x);
 
+	virtual void enter();
 	virtual void leave();
 
 	void reset() { refresh_ducks(); }

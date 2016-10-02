@@ -205,7 +205,6 @@ StateShape_Context::StateShape_Context(CanvasView* canvas_view) :
 	layer_types_label.set_label(_("Layer Type:"));
 	layer_types_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
-// #define layer_creation(a, b, c) LAYER_CREATION(Circle, a, b, c)
 	layer_creation(layer_shape_togglebutton,
 		("synfig-layer_geometry_circle"), _("Create a circle layer"));
 
@@ -257,6 +256,41 @@ StateShape_Context::StateShape_Context(CanvasView* canvas_view) :
 	bline_width_label.set_label(_("Brush Size:"));
 	bline_width_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 	bline_width_label.set_sensitive(false);
+	bline_width_dist.set_tooltip_text(_("Brush size"));
+	bline_width_dist.set_digits(2);
+	bline_width_dist.set_range(0,10000000);
+	bline_width_dist.set_sensitive(false);
+
+	// 6, invert
+	invert_label.set_label(_("Invert"));
+	invert_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+
+	invert_box.pack_start(invert_label);
+	invert_box.pack_end(invert_checkbutton, Gtk::PACK_SHRINK);
+	invert_box.set_sensitive(false);
+
+	// 7, feather
+	feather_label.set_label(_("Feather:"));
+	feather_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	feather_label.set_sensitive(false);
+
+	feather_dist.set_digits(2);
+	feather_dist.set_range(0,10000000);
+	feather_dist.set_sensitive(false);
+
+	// 9, link origins
+	link_origins_label.set_label(_("Link Origins"));
+	link_origins_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+
+	link_origins_box.pack_start(link_origins_label);
+	link_origins_box.pack_end(layer_link_origins_checkbutton, Gtk::PACK_SHRINK);
+	link_origins_box.set_sensitive(false);
+}
+
+void
+StateShape_Context::enter()
+{
+	load_settings();
 }
 
 StateShape_Context::~StateShape_Context()

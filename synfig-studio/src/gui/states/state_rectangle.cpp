@@ -88,27 +88,7 @@ StateRectangle_Context::do_save_settings()
 StateRectangle_Context::StateRectangle_Context(CanvasView* canvas_view):
 	StateShape_Context(canvas_view)
 {
-	bline_width_dist.set_tooltip_text(_("Brush size"));
-	bline_width_dist.set_sensitive(false);
-
-	// 6, invert
-	invert_label.set_label(_("Invert"));
-	invert_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
-
-	invert_box.pack_start(invert_label);
-	invert_box.pack_end(invert_checkbutton, Gtk::PACK_SHRINK);
-	invert_box.set_sensitive(false);
-
-	// 7, feather
-	feather_label.set_label(_("Feather:"));
-	feather_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
-	feather_label.set_sensitive(false);
-
-	feather_dist.set_digits(2);
-	feather_dist.set_range(0,10000000);
-	feather_dist.set_sensitive(false);
-
-	// 8, expansion
+	// expansion
 	expand_label.set_label(_("Expansion:"));
 	expand_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 	expand_label.set_sensitive(false);
@@ -116,17 +96,12 @@ StateRectangle_Context::StateRectangle_Context(CanvasView* canvas_view):
 	expand_dist.set_digits(2);
 	expand_dist.set_range(0, 1000000);
 	expand_dist.set_sensitive(false);
+}
 
-	// 9, link origins
-	link_origins_label.set_label(_("Link Origins"));
-	link_origins_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
-
-	link_origins_box.pack_start(link_origins_label);
-	link_origins_box.pack_end(layer_link_origins_checkbutton, Gtk::PACK_SHRINK);
-	link_origins_box.set_sensitive(false);
-
-	load_settings();
-
+void
+StateRectangle_Context::enter()
+{
+	StateShape_Context::enter();
 	// pack all options to the options_table
 
 	// 0, title

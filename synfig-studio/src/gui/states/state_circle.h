@@ -100,6 +100,8 @@ public:
 
 	virtual void toggle_layer_creation();
 
+	virtual void enter();
+
 	//constructor destructor
 	StateCircle_Context(CanvasView* canvas_view);
 	virtual ~StateCircle_Context();

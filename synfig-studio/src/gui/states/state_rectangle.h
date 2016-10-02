@@ -70,6 +70,8 @@ public:
 
 	virtual void toggle_layer_creation();
 
+	virtual void enter();
+
 	//constructor destructor
 	StateRectangle_Context(CanvasView* canvas_view);
 	virtual ~StateRectangle_Context();
