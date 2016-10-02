@@ -129,72 +129,20 @@ void
 StateShape_Context::do_load_settings()
 {
 	State_Context::do_load_settings();
-	String value;
 
-	if(!(value = get_setting("id")).empty())
-		set_id(value);
-	else
-		set_id(get_name());
-
-	if(!(value = get_setting("blend")).empty())
-		set_blend(atoi(value.c_str()));
-	else
-		set_blend(0);//(int)Color::BLEND_COMPOSITE); //0 should be blend composites value
-
-	if(!(value = get_setting("opacity")).empty())
-		set_opacity(atof(value.c_str()));
-	else
-		set_opacity(1);
-
-	if(!(value = get_setting("bline_width")).empty())
-		set_bline_width(Distance(atof(value.c_str()), App::distance_system));
-	else
-		set_bline_width(Distance(1, App::distance_system)); // default width
-
-	if(!(value = get_setting("feather")).empty())
-		set_feather_size(Distance(atof(value.c_str()), App::distance_system));
-	else
-		set_feather_size(Distance(0, App::distance_system)); // default feather
-
-	if(!(value = get_setting("invert")).empty() && value != "0")
-		set_invert(true);
-	else
-		set_invert(false);
-
-	if(!(value = get_setting("layer_shape")).empty() && value=="0")
-		set_layer_shape_flag(false);
-	else
-		set_layer_shape_flag(true);
-
-	if(!(value = get_setting("layer_region")).empty() && value=="1")
-		set_layer_region_flag(true);
-	else
-		set_layer_region_flag(false);
-
-	if(!(value = get_setting("layer_outline")).empty() && value=="1")
-		set_layer_outline_flag(true);
-	else
-		set_layer_outline_flag(false);
-
-	if(!(value = get_setting("layer_advanced_outline")).empty() && value=="1")
-		set_layer_advanced_outline_flag(true);
-	else
-		set_layer_advanced_outline_flag(false);
-
-	if(!(value = get_setting("layer_curve_gradient")).empty() && value=="1")
-		set_layer_curve_gradient_flag(true);
-	else
-		set_layer_curve_gradient_flag(false);
-
-	if(!(value = get_setting("layer_plant")).empty() && value=="1")
-		set_layer_plant_flag(true);
-	else
-		set_layer_plant_flag(false);
-
-	if(!(value = get_setting("layer_link_origins")).empty() && value=="0")
-		set_layer_link_origins_flag(false);
-	else
-		set_layer_link_origins_flag(true);
+	set_id(get_setting("id", get_name()));
+	set_blend(get_setting("blend", 0));//(int)Color::BLEND_COMPOSITE); //0 should be blend composites value
+	set_opacity(get_setting("opacity", 1.0));
+	set_bline_width(get_setting("bline_width", synfig::Distance(1, App::distance_system))); // default width
+	set_feather_size(get_setting("feather", synfig::Distance(0, App::distance_system))); // default feather
+	set_invert(get_setting("invert", false));
+	set_layer_shape_flag(get_setting("layer_shape", true));
+	set_layer_region_flag(get_setting("layer_region", false));
+	set_layer_outline_flag(get_setting("layer_outline", false));
+	set_layer_advanced_outline_flag(get_setting("layer_advanced_outline", false));
+	set_layer_curve_gradient_flag(get_setting("layer_curve_gradient", false));
+	set_layer_plant_flag(get_setting("layer_plant", false));
+	set_layer_link_origins_flag(get_setting("layer_link_origins", true));
 
 	// determine layer flags
 	layer_shape_flag = get_layer_shape_flag();
@@ -209,19 +157,19 @@ void
 StateShape_Context::do_save_settings()
 {
 	synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
-	set_setting("id",get_id().c_str());
-	set_setting("blend",strprintf("%d",get_blend()));
-	set_setting("opacity",strprintf("%f",(float)get_opacity()));
-	set_setting("bline_width", bline_width_dist.get_value().get_string());
-	set_setting("feather", feather_dist.get_value().get_string());
-	set_setting("invert",get_invert()?"1":"0");
-	set_setting("layer_shape",get_layer_shape_flag()?"1":"0");
-	set_setting("layer_outline",get_layer_outline_flag()?"1":"0");
-	set_setting("layer_advanced_outline",get_layer_advanced_outline_flag()?"1":"0");
-	set_setting("layer_region",get_layer_region_flag()?"1":"0");
-	set_setting("layer_curve_gradient",get_layer_curve_gradient_flag()?"1":"0");
-	set_setting("layer_plant",get_layer_plant_flag()?"1":"0");
-	set_setting("layer_link_origins",get_layer_link_origins_flag()?"1":"0");
+	set_setting("id",get_id());
+	set_setting("blend",get_blend());
+	set_setting("opacity",(float)get_opacity());
+	set_setting("bline_width", bline_width_dist.get_value());
+	set_setting("feather", feather_dist.get_value());
+	set_setting("invert",get_invert());
+	set_setting("layer_shape",get_layer_shape_flag());
+	set_setting("layer_outline",get_layer_outline_flag());
+	set_setting("layer_advanced_outline",get_layer_advanced_outline_flag());
+	set_setting("layer_region",get_layer_region_flag());
+	set_setting("layer_curve_gradient",get_layer_curve_gradient_flag());
+	set_setting("layer_plant",get_layer_plant_flag());
+	set_setting("layer_link_origins",get_layer_link_origins_flag());
 }
 
 StateShape_Context::StateShape_Context(CanvasView* canvas_view) :
