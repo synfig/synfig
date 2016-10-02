@@ -91,6 +91,21 @@ State_Context::get_setting(String name) const
 	return get_setting(name, String());
 }
 
+void
+State_Context::layer_creation(Gtk::ToggleButton& button, const String& stockid, const String& tooltip)
+{
+	Gtk::Image *icon = manage(new Gtk::Image(
+		Gtk::StockID(stockid),
+		Gtk::ICON_SIZE_SMALL_TOOLBAR
+	));
+	button.add(*icon);
+	button.set_relief(Gtk::RELIEF_NONE);
+	button.set_tooltip_text(tooltip);
+	button.signal_toggled().connect([this]() {
+		this->toggle_layer_creation();
+	});
+}
+
 State_Context::State_Context(CanvasView* canvas_view) :
     canvas_view_(canvas_view),
     settings(synfigapp::Main::get_selected_input_device()->settings())

@@ -179,6 +179,84 @@ StateShape_Context::StateShape_Context(CanvasView* canvas_view) :
 	duckmatic_push(get_work_area()),
 	opacity_hscl(0.0f, 1.0125f, 0.0125f)
 {
+	egress_on_selection_change=true;
+
+
+	/* Set up the tool options dialog */
+
+	// 0, title
+	title_label.set_label(_((get_name()+" Creation").c_str()));
+	Pango::AttrList list;
+	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
+	list.insert(attr);
+	title_label.set_attributes(list);
+	title_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+
+	// 1, layer name label and entry
+	id_label.set_label(_("Name:"));
+	id_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	SPACING(id_gap, GAP);
+	id_box.pack_start(id_label, Gtk::PACK_SHRINK);
+	id_box.pack_start(*id_gap, Gtk::PACK_SHRINK);
+
+	id_box.pack_start(id_entry);
+
+	// 2, layer types creation
+	layer_types_label.set_label(_("Layer Type:"));
+	layer_types_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+
+// #define layer_creation(a, b, c) LAYER_CREATION(Circle, a, b, c)
+	layer_creation(layer_shape_togglebutton,
+		("synfig-layer_geometry_circle"), _("Create a circle layer"));
+
+	layer_creation(layer_region_togglebutton,
+		("synfig-layer_geometry_region"), _("Create a region layer"));
+
+	layer_creation(layer_outline_togglebutton,
+		("synfig-layer_geometry_outline"), _("Create a outline layer"));
+
+	layer_creation(layer_advanced_outline_togglebutton,
+		("synfig-layer_geometry_advanced_outline"), _("Create a advanced outline layer"));
+
+	layer_creation(layer_plant_togglebutton,
+		("synfig-layer_other_plant"), _("Create a plant layer"));
+
+	layer_creation(layer_curve_gradient_togglebutton,
+		("synfig-layer_gradient_curve"), _("Create a gradient layer"));
+
+	SPACING(layer_types_indent, INDENTATION);
+
+	layer_types_box.pack_start(*layer_types_indent, Gtk::PACK_SHRINK);
+	layer_types_box.pack_start(layer_shape_togglebutton, Gtk::PACK_SHRINK);
+	layer_types_box.pack_start(layer_region_togglebutton, Gtk::PACK_SHRINK);
+	layer_types_box.pack_start(layer_outline_togglebutton, Gtk::PACK_SHRINK);
+	layer_types_box.pack_start(layer_advanced_outline_togglebutton, Gtk::PACK_SHRINK);
+	layer_types_box.pack_start(layer_plant_togglebutton, Gtk::PACK_SHRINK);
+	layer_types_box.pack_start(layer_curve_gradient_togglebutton, Gtk::PACK_SHRINK);
+
+	// 3, blend method label and dropdown list
+	blend_label.set_label(_("Blend Method:"));
+	blend_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	SPACING(blend_gap, GAP);
+	blend_box.pack_start(blend_label, Gtk::PACK_SHRINK);
+	blend_box.pack_start(*blend_gap, Gtk::PACK_SHRINK);
+
+	blend_enum.set_param_desc(ParamDesc(Color::BLEND_COMPOSITE,"blend_method")
+		.set_local_name(_("Blend Method"))
+		.set_description(_("Defines the blend method to be used for circles")));
+
+	// 4, opacity label and slider
+	opacity_label.set_label(_("Opacity:"));
+	opacity_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+
+	opacity_hscl.set_digits(2);
+	opacity_hscl.set_value_pos(Gtk::POS_LEFT);
+	opacity_hscl.set_tooltip_text(_("Opacity"));
+
+	// 5, brush size
+	bline_width_label.set_label(_("Brush Size:"));
+	bline_width_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	bline_width_label.set_sensitive(false);
 }
 
 StateShape_Context::~StateShape_Context()

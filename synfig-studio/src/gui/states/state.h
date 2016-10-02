@@ -34,19 +34,6 @@
 
 /* === M A C R O S ========================================================= */
 
-#ifndef LAYER_CREATION
-#define LAYER_CREATION(context, button, stockid, tooltip)	\
-	{ \
-		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID(stockid), \
-			Gtk::ICON_SIZE_SMALL_TOOLBAR)); \
-		button.add(*icon); \
-	} \
-	button.set_relief(Gtk::RELIEF_NONE); \
-	button.set_tooltip_text(tooltip); \
-	button.signal_toggled().connect(sigc::mem_fun(*this, \
-		&studio::State ## context ##_Context::toggle_layer_creation))
-#endif
-
 // indentation for options layout
 #ifndef SPACING
 #define SPACING(name, px) \
@@ -106,6 +93,9 @@ public:
 	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
 	synfig::Canvas::Handle get_canvas()const{return canvas_view_->get_canvas();}
 	WorkArea * get_work_area()const{return canvas_view_->get_work_area();}
+
+	void layer_creation(Gtk::ToggleButton &button, const synfig::String& stockid, const synfig::String& tooltip);
+	virtual void toggle_layer_creation() = 0;
 
 public:
 	State_Context(CanvasView* canvas_view);

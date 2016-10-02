@@ -226,8 +226,6 @@ public:
 		return Smach::RESULT_OK;
 	}
 
-	virtual void toggle_layer_creation() = 0;
-
 	StateShape_Context(CanvasView* canvas_view);
 	virtual ~StateShape_Context();
 };
