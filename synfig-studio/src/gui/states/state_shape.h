@@ -222,7 +222,15 @@ public:
 	void finalize_init();
 	void reset() { refresh_ducks(); }
 	void increment_id();
-	bool egress_on_selection_change;
+
+private:
+	bool egress_on_selection_change = false;
+
+public:
+	inline void set_egress_on_selection_change(bool e) { egress_on_selection_change=e; }
+	inline void enable_egress_on_selection_change() { set_egress_on_selection_change(true); }
+	inline void disable_egress_on_selection_change() { set_egress_on_selection_change(false); }
+
 	Smach::event_result event_layer_selection_changed_handler(const Smach::event& /*x*/)
 	{
 		if(egress_on_selection_change)

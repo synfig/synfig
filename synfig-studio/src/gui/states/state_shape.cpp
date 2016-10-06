@@ -179,7 +179,7 @@ StateShape_Context::StateShape_Context(CanvasView* canvas_view) :
 	duckmatic_push(get_work_area()),
 	opacity_hscl(0.0f, 1.0125f, 0.0125f)
 {
-	egress_on_selection_change=true;
+	enable_egress_on_selection_change();
 
 
 	/* Set up the tool options dialog */

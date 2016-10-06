@@ -342,9 +342,9 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 	if (get_layer_shape_flag() &&
 		get_falloff() >= 0 && get_falloff() < CIRCLE_NUM_FALLOFF)
 	{
-		egress_on_selection_change=false;
+		disable_egress_on_selection_change();
 		layer=get_canvas_interface()->add_layer_to("circle",canvas,depth);
-		egress_on_selection_change=true;
+		enable_egress_on_selection_change();
 		if (!layer)
 		{
 			get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
@@ -411,9 +411,9 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 	{
 		synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
 
-		egress_on_selection_change=false;
+		disable_egress_on_selection_change();
 		Layer::Handle layer(get_canvas_interface()->add_layer_to("curve_gradient",canvas,depth));
-		egress_on_selection_change=true;
+		enable_egress_on_selection_change();
 		if (!layer)
 		{
 			get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
@@ -489,9 +489,9 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 	{
 		synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
 
-		egress_on_selection_change=false;
+		disable_egress_on_selection_change();
 		Layer::Handle layer(get_canvas_interface()->add_layer_to("plant",canvas,depth));
-		egress_on_selection_change=true;
+		enable_egress_on_selection_change();
 		if (!layer)
 		{
 			get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
@@ -564,9 +564,9 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 	{
 		synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
 
-		egress_on_selection_change=false;
+		disable_egress_on_selection_change();
 		Layer::Handle layer(get_canvas_interface()->add_layer_to("region",canvas,depth));
-		egress_on_selection_change=true;
+		enable_egress_on_selection_change();
 		if (!layer)
 		{
 			get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
@@ -647,9 +647,9 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 
 	if (get_layer_outline_flag())
 	{
-		egress_on_selection_change=false;
+		disable_egress_on_selection_change();
 		Layer::Handle layer(get_canvas_interface()->add_layer_to("outline",canvas,depth));
-		egress_on_selection_change=true;
+		enable_egress_on_selection_change();
 		if (!layer)
 		{
 			get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
@@ -730,9 +730,9 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 	if (get_layer_advanced_outline_flag())
 	{
 		synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
-		egress_on_selection_change=false;
+		disable_egress_on_selection_change();
 		Layer::Handle layer(get_canvas_interface()->add_layer_to("advanced_outline",canvas,depth));
-		egress_on_selection_change=true;
+		enable_egress_on_selection_change();
 		if (!layer)
 		{
 			get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
@@ -806,10 +806,10 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 		}
 	}
 
-	egress_on_selection_change=false;
+	disable_egress_on_selection_change();
 	get_canvas_interface()->get_selection_manager()->clear_selected_layers();
 	get_canvas_interface()->get_selection_manager()->set_selected_layers(layer_selection);
-	egress_on_selection_change=true;
+	enable_egress_on_selection_change();
 
 	reset();
 	increment_id();
