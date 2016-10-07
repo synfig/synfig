@@ -420,37 +420,34 @@ Dialog_Setup::create_editing_page(PageInfo pi)
 	attach_label_section(pi.grid, _("Imported Image"), row);
 
 	// Editing - Scaling New Imported Images to Fit Canvas
-	pi.grid->attach(toggle_resize_imported_images, 0, ++row, 1, 1);
+	attach_label(pi.grid,_("Scale to fit canvas"), ++row);
+	pi.grid->attach(toggle_resize_imported_images, 1, row, 1, 1);
 	toggle_resize_imported_images.set_tooltip_text(_("When you import images, check this option if you want they fit the Canvas size."));
-	toggle_resize_imported_images.set_halign(Gtk::ALIGN_END);
+	toggle_resize_imported_images.set_halign(Gtk::ALIGN_START);
 	toggle_resize_imported_images.set_hexpand(false);
-	Gtk::Label* label = attach_label(pi.grid,_("Scale to fit canvas"), row, 1, false);
-	label->set_hexpand(true);
 
 	// Editing Other section
 	attach_label_section(pi.grid, _("Other"), ++row);
 
 	// Editing - Visually Linear Color Selection
-	pi.grid->attach(toggle_use_colorspace_gamma, 0, ++row, 1, 1);
-	toggle_use_colorspace_gamma.set_halign(Gtk::ALIGN_END);
+	attach_label(pi.grid,_("Visually linear color selection"), ++row);
+	pi.grid->attach(toggle_use_colorspace_gamma, 1, row, 1, 1);
+	toggle_use_colorspace_gamma.set_halign(Gtk::ALIGN_START);
 	toggle_use_colorspace_gamma.set_hexpand(false);
 	toggle_use_colorspace_gamma.set_tooltip_text(_("Color output is non-linear, if 0 \
 is black and 100 is white, then 50 is only about 22 percent of the brightness \
 of white, rather than 50% as you might expect. \
 Option (ON by default) to make sure that if you ask for 50, you get 50% of the brightness of white."));
-	label = attach_label(pi.grid,_("Visually linear color selection"), row, 1, false);
-	label->set_hexpand(true);
 
 	// Editing - Restrict Really-valued Handles to Top Right Quadrant
-	pi.grid->attach(toggle_restrict_radius_ducks, 0, ++row, 1, 1);
+	attach_label(pi.grid,_("Restrict really-valued handles to top right quadrant"), ++row);
+	pi.grid->attach(toggle_restrict_radius_ducks, 1, row, 1, 1);
 	toggle_restrict_radius_ducks.set_halign(Gtk::ALIGN_END);
 	toggle_restrict_radius_ducks.set_hexpand(false);
 	toggle_restrict_radius_ducks.set_tooltip_text("Restrict the position of the handle \
 (especially for radius) to be in the top right quadrant of the 2D space. Allow to set \
 the real value to any number and also easily reach the value of 0.0 just \
 dragging the handle to the left bottom part of your 2D space.");
-	label = attach_label(pi.grid,_("Restrict really-valued handles to top right quadrant"), row, 1, false);
-	label->set_hexpand(true);
 }
 
 void
