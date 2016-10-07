@@ -218,7 +218,7 @@ class Dialog_Setup : public Dialog_Template
 	Glib::RefPtr<Gtk::Adjustment> adj_recent_files;
 	Glib::RefPtr<Gtk::Adjustment> adj_undo_depth;
 
-	Gtk::CheckButton toggle_use_colorspace_gamma;
+	Gtk::Switch toggle_use_colorspace_gamma;
 #ifdef SINGLE_THREADED
 	Gtk::CheckButton toggle_single_threaded;
 #endif
@@ -230,8 +230,8 @@ class Dialog_Setup : public Dialog_Template
 
 	Widget_Time auto_backup_interval;
 
-	Gtk::CheckButton toggle_restrict_radius_ducks;
-	Gtk::CheckButton toggle_resize_imported_images;
+	Gtk::Switch toggle_restrict_radius_ducks;
+	Gtk::Switch toggle_resize_imported_images;
 	Gtk::CheckButton toggle_enable_experimental_features;
 	Gtk::Switch toggle_use_dark_theme;
 	Gtk::Switch toggle_show_file_toolbar;
