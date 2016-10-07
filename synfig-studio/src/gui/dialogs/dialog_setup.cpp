@@ -602,12 +602,16 @@ Dialog_Setup::create_interface_page(PageInfo pi)
 	// Interface - Dark UI theme
 	attach_label(pi.grid, _("Dark UI theme (if available)"), ++row);
 	pi.grid->attach(toggle_use_dark_theme, 1, row, 1, 1);
+	toggle_use_dark_theme.set_halign(Gtk::ALIGN_START);
+	toggle_use_dark_theme.set_hexpand(false);
 
 	// Interface - Toolbars section
 	attach_label_section(pi.grid, _("Toolbars"), ++row);
 	// Interface - File Toolbar
 	attach_label(pi.grid, _("Show file toolbar (requires restart)"), ++row);
 	pi.grid->attach(toggle_show_file_toolbar, 1, row, 1, 1);
+	toggle_show_file_toolbar.set_halign(Gtk::ALIGN_START);
+	toggle_show_file_toolbar.set_hexpand(false);
 
 	// Interface - Handle tooltip section
 	attach_label_section(pi.grid, _("Handle Tooltips"), ++row);

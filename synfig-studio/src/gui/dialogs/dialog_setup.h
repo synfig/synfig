@@ -233,8 +233,8 @@ class Dialog_Setup : public Dialog_Template
 	Gtk::CheckButton toggle_restrict_radius_ducks;
 	Gtk::CheckButton toggle_resize_imported_images;
 	Gtk::CheckButton toggle_enable_experimental_features;
-	Gtk::CheckButton toggle_use_dark_theme;
-	Gtk::CheckButton toggle_show_file_toolbar;
+	Gtk::Switch toggle_use_dark_theme;
+	Gtk::Switch toggle_show_file_toolbar;
 
 	Gtk::Entry textbox_browser_command;
 	Gtk::Entry textbox_brushe_path;
