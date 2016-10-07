@@ -626,21 +626,21 @@ Dialog_Setup::create_interface_page(PageInfo pi)
 	toggle_handle_tooltip_radius.set_halign(Gtk::ALIGN_START);
 	toggle_handle_tooltip_radius.set_hexpand(false);
 	// Interface - transformation widget tooltip
-	attach_label(pi.grid, _("Transformation widget"), ++row);
+	attach_label_section(pi.grid, _("Transformation widget tooltips"), ++row);
 	pi.grid->attach(toggle_handle_tooltip_transformation, 1, row, 1, 1);
 	toggle_handle_tooltip_transformation.set_halign(Gtk::ALIGN_START);
 	toggle_handle_tooltip_transformation.set_hexpand(false);
 	toggle_handle_tooltip_transformation.property_active().signal_changed().connect(
 			sigc::mem_fun(*this, &Dialog_Setup::on_tooltip_transformation_changed));
 
-	Gtk::Grid* toggle_transfo( manage (new Gtk::Grid()));
-	toggle_transfo->attach(toggle_handle_tooltip_transfo_name, 0, 1, 1, 1);
-	Gtk::Label* tmp = attach_label(toggle_transfo, _("Name"), 1, 1, FALSE);// HANDLE_TOOLTIP_TRANSFO_NAME
-	toggle_transfo->attach(toggle_handle_tooltip_transfo_value, 0, 2, 1, 1);
-	attach_label(toggle_transfo, _("Value"), 2, 1, FALSE);// HANDLE_TOOLTIP_TRANSFO_VALUE
-	pi.grid->attach(*toggle_transfo, 0, ++row, 1,1);
-	toggle_transfo->set_halign(Gtk::ALIGN_END);
-	toggle_transfo->show_all_children();
+	attach_label(pi.grid, _("Name"), ++row);// HANDLE_TOOLTIP_TRANSFO_NAME
+	pi.grid->attach(toggle_handle_tooltip_transfo_name, 1, row, 1, 1);
+	toggle_handle_tooltip_transfo_name.set_halign(Gtk::ALIGN_START);
+	toggle_handle_tooltip_transfo_name.set_hexpand(false);
+	attach_label(pi.grid, _("Value"), ++row);// HANDLE_TOOLTIP_TRANSFO_VALUE
+	pi.grid->attach(toggle_handle_tooltip_transfo_value, 1, row, 1, 1);
+	toggle_handle_tooltip_transfo_value.set_halign(Gtk::ALIGN_START);
+	toggle_handle_tooltip_transfo_value.set_hexpand(false);
 
 	//! change resume signal connexion
 	ui_language_combo.signal_changed().connect(
