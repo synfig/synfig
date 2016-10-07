@@ -245,8 +245,8 @@ class Dialog_Setup : public Dialog_Template
 	Gtk::ComboBoxText* fps_template_combo;
 	Gtk::ComboBoxText ui_language_combo;
 	std::vector<Glib::ustring> _lang_codes;
-	Gtk::CheckButton toggle_handle_tooltip_transfo_value;
-	Gtk::CheckButton toggle_handle_tooltip_transfo_name;
+	Gtk::Switch toggle_handle_tooltip_transfo_value;
+	Gtk::Switch toggle_handle_tooltip_transfo_name;
 
 	Gtk::Entry textbox_custom_filename_prefix;
 	Glib::RefPtr<Gtk::Adjustment> adj_pref_x_size;
