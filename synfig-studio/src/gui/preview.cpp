@@ -55,7 +55,7 @@
 #include <algorithm>
 #include <cstdio>
 #include <ctype.h>
-#include <math.h>
+#include <cmath>
 #include <synfig/string.h>
 
 #endif

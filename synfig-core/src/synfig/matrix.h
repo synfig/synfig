@@ -32,7 +32,7 @@
 #include "vector.h"
 #include "string.h"
 #include <cassert>
-#include <math.h>
+#include <cmath>
 #include <iostream>
 #include <ETL/stringf>
 
