@@ -37,7 +37,7 @@
 
 #include <sstream>
 #include <algorithm>
-#include <math.h>
+#include <cmath>
 
 #include <gtkmm/paned.h>
 #include <gtkmm/scale.h>

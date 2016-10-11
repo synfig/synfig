@@ -30,7 +30,7 @@
 #	include <config.h>
 #endif
 
-#include <math.h>
+#include <cmath>
 #include "widthpoint.h"
 
 #endif

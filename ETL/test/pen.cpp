@@ -31,7 +31,7 @@
 #include <ETL/pen>
 #include <ETL/boxblur>
 //#include <ETL/gaussian>
-#include <math.h>
+#include <cmath>
 
 /* === M A C R O S ========================================================= */
 
