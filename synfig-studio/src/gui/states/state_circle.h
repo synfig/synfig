@@ -94,6 +94,22 @@ protected:
 	virtual void do_load_settings();
 	virtual void do_save_settings();
 
+	// parts of make_circle
+	void make_circle_layer(
+		synfig::Canvas::Handle canvas,
+		int depth,
+		synfigapp::Action::PassiveGrouper& group,
+		synfigapp::SelectionManager::LayerList& layer_selection,
+		const synfig::Point& p1,
+		const synfig::Point& p2,
+		synfig::ValueNode::Handle value_node_origin
+	);
+	void make_curve_gradient_layer();
+	void make_plant_layer();
+	void make_region_layer();
+	void make_outline_layer();
+	void make_advanced_outline_layer();
+
 public:
 	//events
 	virtual Smach::event_result event_mouse_click_handler(const Smach::event& x);

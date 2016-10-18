@@ -260,6 +260,99 @@ StateCircle_Context::~StateCircle_Context()
 }
 
 void
+StateCircle_Context::make_circle_layer(
+	Canvas::Handle canvas,
+	int depth,
+	synfigapp::Action::PassiveGrouper& group,
+	synfigapp::SelectionManager::LayerList& layer_selection,
+	const Point& p1,
+	const Point& p2,
+	ValueNode::Handle value_node_origin
+)
+{
+	disable_egress_on_selection_change();
+	Layer::Handle layer=get_canvas_interface()->add_layer_to("circle",canvas,depth);
+	enable_egress_on_selection_change();
+	if (!layer)
+	{
+		get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
+		group.cancel();
+		return;
+	}
+	layer_selection.push_back(layer);
+
+	layer->set_param("radius",(p2-p1).mag());
+	get_canvas_interface()->signal_layer_param_changed()(layer,"radius");
+
+	layer->set_param("falloff",get_falloff());
+	get_canvas_interface()->signal_layer_param_changed()(layer,"falloff");
+
+	layer->set_param("amount",get_opacity());
+	get_canvas_interface()->signal_layer_param_changed()(layer,"amount");
+
+	layer->set_param("feather",get_feather_size());
+	get_canvas_interface()->signal_layer_param_changed()(layer,"feather");
+
+	layer->set_param("invert",get_invert());
+	get_canvas_interface()->signal_layer_param_changed()(layer,"invert");
+
+	layer->set_param("blend_method",get_blend());
+	get_canvas_interface()->signal_layer_param_changed()(layer,"blend_method");
+
+	layer->set_description(get_id());
+	get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
+
+	// only link the circle's origin parameter if the option is selected, we're putting bline
+	// origins at their centers, and we're creating more than one layer
+	if (get_layer_link_origins_flag() && get_layer_origins_at_center_flag() && layers_to_create() > 1)
+	{
+		synfigapp::Action::Handle action(synfigapp::Action::create("LayerParamConnect"));
+		assert(action);
+
+		action->set_param("canvas",get_canvas());
+		action->set_param("canvas_interface",get_canvas_interface());
+		action->set_param("layer",layer);
+		if(!action->set_param("param",String("origin")))
+			synfig::error("LayerParamConnect didn't like \"param\"");
+		if(!action->set_param("value_node",ValueNode::Handle(value_node_origin)))
+			synfig::error("LayerParamConnect didn't like \"value_node\"");
+
+		if(!get_canvas_interface()->get_instance()->perform_action(action))
+		{
+			group.cancel();
+			throw String(_("Unable to create Circle layer"));
+			return;
+		}
+	}
+	else
+	{
+		layer->set_param("origin",p1);
+		get_canvas_interface()->signal_layer_param_changed()(layer,"origin");
+	}
+}
+
+void
+StateCircle_Context::make_curve_gradient_layer()
+{
+}
+void
+StateCircle_Context::make_plant_layer()
+{
+}
+void
+StateCircle_Context::make_region_layer()
+{
+}
+void
+StateCircle_Context::make_outline_layer()
+{
+}
+void
+StateCircle_Context::make_advanced_outline_layer()
+{
+}
+
+void
 StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 {
 	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("New Circle"));
@@ -276,6 +369,9 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 	{
 		depth=layer->get_depth();
 		canvas=layer->get_canvas();
+	} else
+	{
+		canvas=get_canvas_view()->get_canvas();
 	}
 
 	synfigapp::SelectionManager::LayerList layer_selection;
@@ -307,6 +403,8 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 		y = p1[1];
 	}
 
+	// Calculate bline points
+	// TODO: only do this if we create anything that needs them
 	std::vector<BLinePoint> new_list;
 	for (int i = 0; i < points; i++)
 	{
@@ -327,13 +425,7 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 	// Set the looping flag
 	value_node_bline->set_loop(true);
 
-	if(!canvas)
-		canvas=get_canvas_view()->get_canvas();
-
 	value_node_bline->set_member_canvas(canvas);
-
-	// count how many layers we're going to be creating
-	int layers_to_create = this->layers_to_create();
 
 	///////////////////////////////////////////////////////////////////////////
 	//   C I R C L E
@@ -342,65 +434,7 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 	if (get_layer_shape_flag() &&
 		get_falloff() >= 0 && get_falloff() < CIRCLE_NUM_FALLOFF)
 	{
-		disable_egress_on_selection_change();
-		layer=get_canvas_interface()->add_layer_to("circle",canvas,depth);
-		enable_egress_on_selection_change();
-		if (!layer)
-		{
-			get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
-			group.cancel();
-			return;
-		}
-		layer_selection.push_back(layer);
-
-		layer->set_param("radius",(p2-p1).mag());
-		get_canvas_interface()->signal_layer_param_changed()(layer,"radius");
-
-		layer->set_param("falloff",get_falloff());
-		get_canvas_interface()->signal_layer_param_changed()(layer,"falloff");
-
-		layer->set_param("amount",get_opacity());
-		get_canvas_interface()->signal_layer_param_changed()(layer,"amount");
-
-		layer->set_param("feather",get_feather_size());
-		get_canvas_interface()->signal_layer_param_changed()(layer,"feather");
-
-		layer->set_param("invert",get_invert());
-		get_canvas_interface()->signal_layer_param_changed()(layer,"invert");
-
-		layer->set_param("blend_method",get_blend());
-		get_canvas_interface()->signal_layer_param_changed()(layer,"blend_method");
-
-		layer->set_description(get_id());
-		get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
-
-		// only link the circle's origin parameter if the option is selected, we're putting bline
-		// origins at their centers, and we're creating more than one layer
-		if (get_layer_link_origins_flag() && get_layer_origins_at_center_flag() && layers_to_create > 1)
-		{
-			synfigapp::Action::Handle action(synfigapp::Action::create("LayerParamConnect"));
-			assert(action);
-
-			action->set_param("canvas",get_canvas());
-			action->set_param("canvas_interface",get_canvas_interface());
-			action->set_param("layer",layer);
-			if(!action->set_param("param",String("origin")))
-				synfig::error("LayerParamConnect didn't like \"param\"");
-			if(!action->set_param("value_node",ValueNode::Handle(value_node_origin)))
-				synfig::error("LayerParamConnect didn't like \"value_node\"");
-
-			if(!get_canvas_interface()->get_instance()->perform_action(action))
-			{
-				group.cancel();
-				throw String(_("Unable to create Circle layer"));
-				return;
-			}
-		}
-		else
-		{
-			layer->set_param("origin",p1);
-			get_canvas_interface()->signal_layer_param_changed()(layer,"origin");
-		}
+		make_circle_layer(canvas, depth, group, layer_selection, p1, p2, value_node_origin);
 	}
 
 	///////////////////////////////////////////////////////////////////////////
@@ -454,7 +488,7 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 		}
 
 		// only link the curve gradient's origin parameter if the option is selected and we're creating more than one layer
-		if (get_layer_link_origins_flag() && layers_to_create > 1)
+		if (get_layer_link_origins_flag() && layers_to_create() > 1)
 		{
 			synfigapp::Action::Handle action(synfigapp::Action::create("LayerParamConnect"));
 			assert(action);
@@ -529,7 +563,7 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 		}
 
 		// only link the plant's origin parameter if the option is selected and we're creating more than one layer
-		if (get_layer_link_origins_flag() && layers_to_create > 1)
+		if (get_layer_link_origins_flag() && layers_to_create() > 1)
 		{
 			synfigapp::Action::Handle action(synfigapp::Action::create("LayerParamConnect"));
 			assert(action);
@@ -613,7 +647,7 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 		}
 
 		// only link the region's origin parameter if the option is selected and we're creating more than one layer
-		if (get_layer_link_origins_flag() && layers_to_create > 1)
+		if (get_layer_link_origins_flag() && layers_to_create() > 1)
 		{
 			synfigapp::Action::Handle action(synfigapp::Action::create("LayerParamConnect"));
 			assert(action);
@@ -696,7 +730,7 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 		}
 
 		// only link the outline's origin parameter if the option is selected and we're creating more than one layer
-		if (get_layer_link_origins_flag() && layers_to_create > 1)
+		if (get_layer_link_origins_flag() && layers_to_create() > 1)
 		{
 			synfigapp::Action::Handle action(synfigapp::Action::create("LayerParamConnect"));
 			assert(action);
@@ -779,7 +813,7 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 		}
 
 		// only link the outline's origin parameter if the option is selected and we're creating more than one layer
-		if (get_layer_link_origins_flag() && layers_to_create > 1)
+		if (get_layer_link_origins_flag() && layers_to_create() > 1)
 		{
 			synfigapp::Action::Handle action(synfigapp::Action::create("LayerParamConnect"));
 			assert(action);
