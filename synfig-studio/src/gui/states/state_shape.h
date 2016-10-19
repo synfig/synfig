@@ -185,7 +185,9 @@ protected:
 	bool get_layer_plant_flag()const { return layer_plant_togglebutton.get_active(); }
 	void set_layer_plant_flag(bool x) { return layer_plant_togglebutton.set_active(x); }
 
+public:
 	bool get_layer_link_origins_flag()const { return layer_link_origins_checkbutton.get_active(); }
+protected:
 	void set_layer_link_origins_flag(bool x) { return layer_link_origins_checkbutton.set_active(x); }
 
 	bool layer_shape_flag;

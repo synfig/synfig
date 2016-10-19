@@ -48,6 +48,15 @@ STATES_CC = \
 	states/state_zoom.cpp \
 	states/state_brush.cpp
 
+MAKE_LAYER_HH = \
+	states/make_layer.h \
+	states/make_region_layer.h
+
+MAKE_LAYER_CC = \
+	states/make_region_layer.cpp
+
 synfigstudio_src += \
 	$(STATES_HH) \
-	$(STATES_CC)
+	$(STATES_CC) \
+	$(MAKE_LAYER_HH) \
+	$(MAKE_LAYER_CC)

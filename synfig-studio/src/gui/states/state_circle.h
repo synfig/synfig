@@ -30,7 +30,7 @@
 
 #include "state_shape.h"
 #include "smach.h"
-
+#include "make_region_layer.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -62,6 +62,9 @@ class StateCircle_Context : public StateShape_Context
 	Gtk::Label origins_at_center_label;
 	Gtk::CheckButton layer_origins_at_center_checkbutton;
 	Gtk::HBox origins_at_center_box;
+
+protected:
+	MakeRegionLayer* region_layer_maker;
 
 public:
 
@@ -114,15 +117,6 @@ protected:
 		synfig::ValueNode::Handle value_node_origin
 	);
 	void make_plant_layer(
-		synfig::Canvas::Handle canvas,
-		int depth,
-		synfigapp::Action::PassiveGrouper& group,
-		synfigapp::SelectionManager::LayerList& layer_selection,
-		synfig::ValueNode_BLine::Handle value_node_bline,
-		synfig::Vector& origin,
-		synfig::ValueNode::Handle value_node_origin
-	);
-	void make_region_layer(
 		synfig::Canvas::Handle canvas,
 		int depth,
 		synfigapp::Action::PassiveGrouper& group,
