@@ -33,6 +33,9 @@
 
 #include "make_region_layer.h"
 #include "make_outline_layer.h"
+#include "make_advanced_outline_layer.h"
+#include "make_plant_layer.h"
+#include "make_curve_gradient_layer.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -66,8 +69,11 @@ class StateCircle_Context : public StateShape_Context
 	Gtk::HBox origins_at_center_box;
 
 protected:
-	MakeRegionLayer* region_layer_maker;
-	MakeOutlineLayer* outline_layer_maker;
+	MakeRegionLayer* region_maker;
+	MakeOutlineLayer* outline_maker;
+	MakeAdvancedOutlineLayer* advanced_outline_maker;
+	MakePlantLayer* plant_maker;
+	MakeCurveGradientLayer* curve_gradient_maker;
 
 public:
 
@@ -108,33 +114,6 @@ protected:
 		synfigapp::SelectionManager::LayerList& layer_selection,
 		const synfig::Point& p1,
 		const synfig::Point& p2,
-		synfig::ValueNode::Handle value_node_origin
-	);
-	void make_curve_gradient_layer(
-		synfig::Canvas::Handle canvas,
-		int depth,
-		synfigapp::Action::PassiveGrouper& group,
-		synfigapp::SelectionManager::LayerList& layer_selection,
-		synfig::ValueNode_BLine::Handle value_node_bline,
-		synfig::Vector& origin,
-		synfig::ValueNode::Handle value_node_origin
-	);
-	void make_plant_layer(
-		synfig::Canvas::Handle canvas,
-		int depth,
-		synfigapp::Action::PassiveGrouper& group,
-		synfigapp::SelectionManager::LayerList& layer_selection,
-		synfig::ValueNode_BLine::Handle value_node_bline,
-		synfig::Vector& origin,
-		synfig::ValueNode::Handle value_node_origin
-	);
-	void make_advanced_outline_layer(
-		synfig::Canvas::Handle canvas,
-		int depth,
-		synfigapp::Action::PassiveGrouper& group,
-		synfigapp::SelectionManager::LayerList& layer_selection,
-		synfig::ValueNode_BLine::Handle value_node_bline,
-		synfig::Vector& origin,
 		synfig::ValueNode::Handle value_node_origin
 	);
 
