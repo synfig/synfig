@@ -35,6 +35,12 @@
 #include "state_shape.h"
 #include "docks/dock_toolbox.h"
 
+#include "make_region_layer.h"
+#include "make_outline_layer.h"
+#include "make_advanced_outline_layer.h"
+#include "make_plant_layer.h"
+#include "make_curve_gradient_layer.h"
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -179,6 +185,12 @@ StateShape_Context::StateShape_Context(CanvasView* canvas_view) :
 	duckmatic_push(get_work_area()),
 	opacity_hscl(0.0f, 1.0125f, 0.0125f)
 {
+	region_maker = new MakeRegionLayer(this);
+	outline_maker = new MakeOutlineLayer(this);
+	advanced_outline_maker = new MakeAdvancedOutlineLayer(this);
+	plant_maker = new MakePlantLayer(this);
+	curve_gradient_maker = new MakeCurveGradientLayer(this);
+
 	enable_egress_on_selection_change();
 
 
@@ -337,4 +349,41 @@ StateShape_Context::leave()
 	get_canvas_view()->queue_rebuild_ducks();
 
 	App::dock_toolbox->refresh();
+}
+
+void
+StateShape_Context::generate_shape_layers(
+	synfig::Canvas::Handle canvas,
+	int depth,
+	synfigapp::Action::PassiveGrouper& group,
+	synfigapp::SelectionManager::LayerList& layer_selection,
+	synfig::ValueNode_BLine::Handle value_node_bline,
+	synfig::Vector& origin,
+	synfig::ValueNode::Handle value_node_origin
+)
+{
+	if(get_layer_curve_gradient_flag())
+	{
+		curve_gradient_maker->make_layer(canvas, depth, group, layer_selection, value_node_bline, origin, value_node_origin);
+	}
+
+	if(get_layer_plant_flag())
+	{
+		plant_maker->make_layer(canvas, depth, group, layer_selection, value_node_bline, origin, value_node_origin);
+	}
+
+	if(get_layer_region_flag())
+	{
+		region_maker->make_layer(canvas, depth, group, layer_selection, value_node_bline, origin, value_node_origin);
+	}
+
+	if (get_layer_outline_flag())
+	{
+		outline_maker->make_layer(canvas, depth, group, layer_selection, value_node_bline, origin, value_node_origin);
+	}
+
+	if (get_layer_advanced_outline_flag())
+	{
+		advanced_outline_maker->make_layer(canvas, depth, group, layer_selection, value_node_bline, origin, value_node_origin);
+	}
 }

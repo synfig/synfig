@@ -118,12 +118,6 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	bline_point_angle_offset_adj(Gtk::Adjustment::create(0, -360, 360, 0.1, 1)),
 	bline_point_angle_offset_spin(bline_point_angle_offset_adj, 1, 1)
 {
-	region_maker = new MakeRegionLayer(this);
-	outline_maker = new MakeOutlineLayer(this);
-	advanced_outline_maker = new MakeAdvancedOutlineLayer(this);
-	plant_maker = new MakePlantLayer(this);
-	curve_gradient_maker = new MakeCurveGradientLayer(this);
-
 	// 6, spline points
 	bline_points_label.set_label(_("Spline Points:"));
 	bline_points_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
@@ -422,50 +416,7 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 		make_circle_layer(canvas, depth, group, layer_selection, p1, p2, value_node_origin);
 	}
 
-	///////////////////////////////////////////////////////////////////////////
-	//   C U R V E   G R A D I E N T
-	///////////////////////////////////////////////////////////////////////////
-
-	if(get_layer_curve_gradient_flag())
-	{
-		curve_gradient_maker->make_layer(canvas, depth, group, layer_selection, value_node_bline, origin, value_node_origin);
-	}
-
-	///////////////////////////////////////////////////////////////////////////
-	//   P L A N T
-	///////////////////////////////////////////////////////////////////////////
-
-	if(get_layer_plant_flag())
-	{
-		plant_maker->make_layer(canvas, depth, group, layer_selection, value_node_bline, origin, value_node_origin);
-	}
-
-	///////////////////////////////////////////////////////////////////////////
-	//   R E G I O N
-	///////////////////////////////////////////////////////////////////////////
-
-	if(get_layer_region_flag())
-	{
-		region_maker->make_layer(canvas, depth, group, layer_selection, value_node_bline, origin, value_node_origin);
-	}
-
-	///////////////////////////////////////////////////////////////////////////
-	//   O U T L I N E
-	///////////////////////////////////////////////////////////////////////////
-
-	if (get_layer_outline_flag())
-	{
-		outline_maker->make_layer(canvas, depth, group, layer_selection, value_node_bline, origin, value_node_origin);
-	}
-
-	///////////////////////////////////////////////////////////////////////////
-	//   A D V A N C E D   O U T L I N E
-	///////////////////////////////////////////////////////////////////////////
-
-	if (get_layer_advanced_outline_flag())
-	{
-		advanced_outline_maker->make_layer(canvas, depth, group, layer_selection, value_node_bline, origin, value_node_origin);
-	}
+	generate_shape_layers(canvas, depth, group, layer_selection, value_node_bline, origin, value_node_origin);
 
 	disable_egress_on_selection_change();
 	get_canvas_interface()->get_selection_manager()->clear_selected_layers();

@@ -31,12 +31,6 @@
 #include "state_shape.h"
 #include "smach.h"
 
-#include "make_region_layer.h"
-#include "make_outline_layer.h"
-#include "make_advanced_outline_layer.h"
-#include "make_plant_layer.h"
-#include "make_curve_gradient_layer.h"
-
 /* === M A C R O S ========================================================= */
 
 /* === T Y P E D E F S ===================================================== */
@@ -67,13 +61,6 @@ class StateCircle_Context : public StateShape_Context
 	Gtk::Label origins_at_center_label;
 	Gtk::CheckButton layer_origins_at_center_checkbutton;
 	Gtk::HBox origins_at_center_box;
-
-protected:
-	MakeRegionLayer* region_maker;
-	MakeOutlineLayer* outline_maker;
-	MakeAdvancedOutlineLayer* advanced_outline_maker;
-	MakePlantLayer* plant_maker;
-	MakeCurveGradientLayer* curve_gradient_maker;
 
 public:
 

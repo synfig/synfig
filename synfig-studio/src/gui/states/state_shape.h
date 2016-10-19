@@ -57,6 +57,12 @@
 
 namespace studio {
 
+class MakeRegionLayer;
+class MakeOutlineLayer;
+class MakeAdvancedOutlineLayer;
+class MakeCurveGradientLayer;
+class MakePlantLayer;
+
 class StateShape_Context : public State_Context
 {
 protected:
@@ -124,6 +130,12 @@ protected:
 	Gtk::CheckButton layer_link_origins_checkbutton;
 	Gtk::HBox link_origins_box;
 
+protected:
+	MakeRegionLayer* region_maker;
+	MakeOutlineLayer* outline_maker;
+	MakeAdvancedOutlineLayer* advanced_outline_maker;
+	MakePlantLayer* plant_maker;
+	MakeCurveGradientLayer* curve_gradient_maker;
 
 public:
 	// this only counts the layers which use blines - they're the only
@@ -224,6 +236,16 @@ public:
 	void finalize_init();
 	void reset() { refresh_ducks(); }
 	void increment_id();
+
+	void generate_shape_layers(
+		synfig::Canvas::Handle canvas,
+		int depth,
+		synfigapp::Action::PassiveGrouper& group,
+		synfigapp::SelectionManager::LayerList& layer_selection,
+		synfig::ValueNode_BLine::Handle value_node_bline,
+		synfig::Vector& origin,
+		synfig::ValueNode::Handle value_node_origin
+	);
 
 private:
 	bool egress_on_selection_change = false;
