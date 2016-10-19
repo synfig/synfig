@@ -113,10 +113,42 @@ protected:
 		synfig::Vector& origin,
 		synfig::ValueNode::Handle value_node_origin
 	);
-	void make_plant_layer();
-	void make_region_layer();
-	void make_outline_layer();
-	void make_advanced_outline_layer();
+	void make_plant_layer(
+		synfig::Canvas::Handle canvas,
+		int depth,
+		synfigapp::Action::PassiveGrouper& group,
+		synfigapp::SelectionManager::LayerList& layer_selection,
+		synfig::ValueNode_BLine::Handle value_node_bline,
+		synfig::Vector& origin,
+		synfig::ValueNode::Handle value_node_origin
+	);
+	void make_region_layer(
+		synfig::Canvas::Handle canvas,
+		int depth,
+		synfigapp::Action::PassiveGrouper& group,
+		synfigapp::SelectionManager::LayerList& layer_selection,
+		synfig::ValueNode_BLine::Handle value_node_bline,
+		synfig::Vector& origin,
+		synfig::ValueNode::Handle value_node_origin
+	);
+	void make_outline_layer(
+		synfig::Canvas::Handle canvas,
+		int depth,
+		synfigapp::Action::PassiveGrouper& group,
+		synfigapp::SelectionManager::LayerList& layer_selection,
+		synfig::ValueNode_BLine::Handle value_node_bline,
+		synfig::Vector& origin,
+		synfig::ValueNode::Handle value_node_origin
+	);
+	void make_advanced_outline_layer(
+		synfig::Canvas::Handle canvas,
+		int depth,
+		synfigapp::Action::PassiveGrouper& group,
+		synfigapp::SelectionManager::LayerList& layer_selection,
+		synfig::ValueNode_BLine::Handle value_node_bline,
+		synfig::Vector& origin,
+		synfig::ValueNode::Handle value_node_origin
+	);
 
 public:
 	//events
