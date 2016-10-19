@@ -178,6 +178,50 @@ StateRectangle_Context::~StateRectangle_Context()
 }
 
 void
+StateRectangle_Context::make_rectangle_layer(
+	synfig::Canvas::Handle canvas,
+	int depth,
+	synfigapp::Action::PassiveGrouper& group,
+	synfigapp::SelectionManager::LayerList& layer_selection,
+	const synfig::Point& p1,
+	const synfig::Point& p2,
+	synfig::ValueNode::Handle value_node_origin
+)
+{
+	disable_egress_on_selection_change();
+	Layer::Handle layer=get_canvas_interface()->add_layer_to("rectangle",canvas,depth);
+	enable_egress_on_selection_change();
+	if (!layer)
+	{
+		get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
+		group.cancel();
+		return;
+	}
+	layer_selection.push_back(layer);
+
+	layer->set_param("point1",p1);
+	get_canvas_interface()->signal_layer_param_changed()(layer,"point1");
+
+	layer->set_param("point2",p2);
+	get_canvas_interface()->signal_layer_param_changed()(layer,"point2");
+
+	layer->set_param("expand",get_expand_size());
+	get_canvas_interface()->signal_layer_param_changed()(layer,"expand");
+
+	layer->set_param("invert",get_invert());
+	get_canvas_interface()->signal_layer_param_changed()(layer,"invert");
+
+	layer->set_param("blend_method", get_blend());
+	get_canvas_interface()->signal_layer_param_changed()(layer, "blend_method");
+
+	layer->set_param("amount", get_opacity());
+	get_canvas_interface()->signal_layer_param_changed()(layer, "amount");
+
+	layer->set_description(get_id());
+	get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
+}
+
+void
 StateRectangle_Context::make_rectangle(const Point& _p1, const Point& _p2)
 {
 	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("New Rectangle"));
@@ -194,6 +238,8 @@ StateRectangle_Context::make_rectangle(const Point& _p1, const Point& _p2)
 	{
 		depth=layer->get_depth();
 		canvas=layer->get_canvas();
+	} else {
+		canvas=get_canvas_view()->get_canvas();
 	}
 
 	synfigapp::SelectionManager::LayerList layer_selection;
@@ -203,6 +249,7 @@ StateRectangle_Context::make_rectangle(const Point& _p1, const Point& _p2)
 	const synfig::TransformStack& transform(get_work_area()->get_curr_transform_stack());
 	const Point p1(transform.unperform(_p1));
 	const Point p2(transform.unperform(_p2));
+	Vector origin;
 	Real x_min, x_max, y_min, y_max;
 	if (p1[0] < p2[0]) { x_min = p1[0]; x_max = p2[0]; } else { x_min = p2[0]; x_max = p1[0]; }
 	if (p1[1] < p2[1]) { y_min = p1[1]; y_max = p2[1]; } else { y_min = p2[1]; y_max = p1[1]; }
@@ -227,9 +274,6 @@ StateRectangle_Context::make_rectangle(const Point& _p1, const Point& _p2)
 	// Set the looping flag
 	value_node_bline->set_loop(true);
 
-	if(!canvas)
-		canvas=get_canvas_view()->get_canvas();
-
 	value_node_bline->set_member_canvas(canvas);
 
 	// count how many layers we're going to be creating
@@ -241,422 +285,10 @@ StateRectangle_Context::make_rectangle(const Point& _p1, const Point& _p2)
 
 	if (get_layer_shape_flag())
 	{
-		disable_egress_on_selection_change();
-		layer=get_canvas_interface()->add_layer_to("rectangle",canvas,depth);
-		enable_egress_on_selection_change();
-		if (!layer)
-		{
-			get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
-			group.cancel();
-			return;
-		}
-		layer_selection.push_back(layer);
-
-		layer->set_param("point1",p1);
-		get_canvas_interface()->signal_layer_param_changed()(layer,"point1");
-
-		layer->set_param("point2",p2);
-		get_canvas_interface()->signal_layer_param_changed()(layer,"point2");
-
-		layer->set_param("expand",get_expand_size());
-		get_canvas_interface()->signal_layer_param_changed()(layer,"expand");
-
-		layer->set_param("invert",get_invert());
-		get_canvas_interface()->signal_layer_param_changed()(layer,"invert");
-
-		layer->set_param("blend_method", get_blend());
-		get_canvas_interface()->signal_layer_param_changed()(layer, "blend_method");
-
-		layer->set_param("amount", get_opacity());
-		get_canvas_interface()->signal_layer_param_changed()(layer, "amount");
-
-		layer->set_description(get_id());
-		get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
+		make_rectangle_layer(canvas, depth, group, layer_selection, p1, p2, value_node_origin);
 	}
 
-	///////////////////////////////////////////////////////////////////////////
-	//   C U R V E   G R A D I E N T
-	///////////////////////////////////////////////////////////////////////////
-
-	if(get_layer_curve_gradient_flag())
-	{
-		synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
-
-		disable_egress_on_selection_change();
-		Layer::Handle layer(get_canvas_interface()->add_layer_to("curve_gradient",canvas,depth));
-		enable_egress_on_selection_change();
-		if (!layer)
-		{
-			get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
-			group.cancel();
-			return;
-		}
-		layer_selection.push_back(layer);
-
-		layer->set_param("blend_method", get_blend());
-		get_canvas_interface()->signal_layer_param_changed()(layer, "blend_method");
-
-		layer->set_param("amount", get_opacity());
-		get_canvas_interface()->signal_layer_param_changed()(layer, "amount");
-
-		layer->set_param("width",get_bline_width());
-		get_canvas_interface()->signal_layer_param_changed()(layer,"width");
-
-		layer->set_description(get_id()+_(" Gradient"));
-		get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
-
-		{
-			synfigapp::Action::Handle action(synfigapp::Action::create("LayerParamConnect"));
-			assert(action);
-
-			action->set_param("canvas",get_canvas());
-			action->set_param("canvas_interface",get_canvas_interface());
-			action->set_param("layer",layer);
-			if(!action->set_param("param",String("bline")))
-				synfig::error("LayerParamConnect didn't like \"param\"");
-			if(!action->set_param("value_node",ValueNode::Handle(value_node_bline)))
-				synfig::error("LayerParamConnect didn't like \"value_node\"");
-
-			if(!get_canvas_interface()->get_instance()->perform_action(action))
-			{
-				group.cancel();
-				throw String(_("Unable to create Gradient layer"));
-				return;
-			}
-		}
-
-		// only link the curve gradient's origin parameter if the option is selected and we're creating more than one layer
-		if (get_layer_link_origins_flag() && layers_to_create > 1)
-		{
-			synfigapp::Action::Handle action(synfigapp::Action::create("LayerParamConnect"));
-			assert(action);
-
-			action->set_param("canvas",get_canvas());
-			action->set_param("canvas_interface",get_canvas_interface());
-			action->set_param("layer",layer);
-			if(!action->set_param("param",String("origin")))
-				synfig::error("LayerParamConnect didn't like \"param\"");
-			if(!action->set_param("value_node",ValueNode::Handle(value_node_origin)))
-				synfig::error("LayerParamConnect didn't like \"value_node\"");
-
-			if(!get_canvas_interface()->get_instance()->perform_action(action))
-			{
-				group.cancel();
-				throw String(_("Unable to create Gradient layer"));
-				return;
-			}
-		}
-	}
-
-	///////////////////////////////////////////////////////////////////////////
-	//   P L A N T
-	///////////////////////////////////////////////////////////////////////////
-
-	if(get_layer_plant_flag())
-	{
-		synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
-
-		disable_egress_on_selection_change();
-		Layer::Handle layer(get_canvas_interface()->add_layer_to("plant",canvas,depth));
-		enable_egress_on_selection_change();
-		if (!layer)
-		{
-			get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
-			group.cancel();
-			return;
-		}
-		layer_selection.push_back(layer);
-
-		layer->set_param("blend_method", get_blend());
-		get_canvas_interface()->signal_layer_param_changed()(layer, "blend_method");
-
-		layer->set_param("amount", get_opacity());
-		get_canvas_interface()->signal_layer_param_changed()(layer, "amount");
-
-		layer->set_description(get_id()+_(" Plant"));
-		get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
-
-		{
-			synfigapp::Action::Handle action(synfigapp::Action::create("LayerParamConnect"));
-			assert(action);
-
-			action->set_param("canvas",get_canvas());
-			action->set_param("canvas_interface",get_canvas_interface());
-			action->set_param("layer",layer);
-			if(!action->set_param("param",String("bline")))
-				synfig::error("LayerParamConnect didn't like \"param\"");
-			if(!action->set_param("value_node",ValueNode::Handle(value_node_bline)))
-				synfig::error("LayerParamConnect didn't like \"value_node\"");
-
-			if(!get_canvas_interface()->get_instance()->perform_action(action))
-			{
-				group.cancel();
-				throw String(_("Unable to create Plant layer"));
-				return;
-			}
-		}
-
-		// only link the plant's origin parameter if the option is selected and we're creating more than one layer
-		if (get_layer_link_origins_flag() && layers_to_create > 1)
-		{
-			synfigapp::Action::Handle action(synfigapp::Action::create("LayerParamConnect"));
-			assert(action);
-
-			action->set_param("canvas",get_canvas());
-			action->set_param("canvas_interface",get_canvas_interface());
-			action->set_param("layer",layer);
-			if(!action->set_param("param",String("origin")))
-				synfig::error("LayerParamConnect didn't like \"param\"");
-			if(!action->set_param("value_node",ValueNode::Handle(value_node_origin)))
-				synfig::error("LayerParamConnect didn't like \"value_node\"");
-
-			if(!get_canvas_interface()->get_instance()->perform_action(action))
-			{
-				group.cancel();
-				throw String(_("Unable to create Plant layer"));
-				return;
-			}
-		}
-	}
-
-	///////////////////////////////////////////////////////////////////////////
-	//   R E G I O N
-	///////////////////////////////////////////////////////////////////////////
-
-	if(get_layer_region_flag())
-	{
-		synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
-
-		disable_egress_on_selection_change();
-		Layer::Handle layer(get_canvas_interface()->add_layer_to("region",canvas,depth));
-		enable_egress_on_selection_change();
-		if (!layer)
-		{
-			get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
-			group.cancel();
-			return;
-		}
-		layer_selection.push_back(layer);
-
-		layer->set_param("blend_method", get_blend());
-		get_canvas_interface()->signal_layer_param_changed()(layer, "blend_method");
-
-		layer->set_param("amount", get_opacity());
-		get_canvas_interface()->signal_layer_param_changed()(layer, "amount");
-
-		layer->set_description(get_id()+_(" Region"));
-		get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
-
-		layer->set_param("feather",get_feather_size());
-		get_canvas_interface()->signal_layer_param_changed()(layer,"feather");
-
-		layer->set_param("invert",get_invert());
-		get_canvas_interface()->signal_layer_param_changed()(layer,"invert");
-
-		// I don't know if it's safe to reuse the same LayerParamConnect action, so I'm
-		// using 2 separate ones.
-		{
-			synfigapp::Action::Handle action(synfigapp::Action::create("LayerParamConnect"));
-			assert(action);
-
-			action->set_param("canvas",get_canvas());
-			action->set_param("canvas_interface",get_canvas_interface());
-			action->set_param("layer",layer);
-			if(!action->set_param("param",String("bline")))
-				synfig::error("LayerParamConnect didn't like \"param\"");
-			if(!action->set_param("value_node",ValueNode::Handle(value_node_bline)))
-				synfig::error("LayerParamConnect didn't like \"value_node\"");
-
-			if(!get_canvas_interface()->get_instance()->perform_action(action))
-			{
-				//get_canvas_view()->get_ui_interface()->error(_("Unable to create Region layer"));
-				group.cancel();
-				throw String(_("Unable to create Region layer"));
-				return;
-			}
-		}
-
-		// only link the region's origin parameter if the option is selected and we're creating more than one layer
-		if (get_layer_link_origins_flag() && layers_to_create > 1)
-		{
-			synfigapp::Action::Handle action(synfigapp::Action::create("LayerParamConnect"));
-			assert(action);
-
-			action->set_param("canvas",get_canvas());
-			action->set_param("canvas_interface",get_canvas_interface());
-			action->set_param("layer",layer);
-			if(!action->set_param("param",String("origin")))
-				synfig::error("LayerParamConnect didn't like \"param\"");
-			if(!action->set_param("value_node",ValueNode::Handle(value_node_origin)))
-				synfig::error("LayerParamConnect didn't like \"value_node\"");
-
-			if(!get_canvas_interface()->get_instance()->perform_action(action))
-			{
-				//get_canvas_view()->get_ui_interface()->error(_("Unable to create Region layer"));
-				group.cancel();
-				throw String(_("Unable to create Region layer"));
-				return;
-			}
-		}
-	}
-
-	///////////////////////////////////////////////////////////////////////////
-	//   O U T L I N E
-	///////////////////////////////////////////////////////////////////////////
-
-	if (get_layer_outline_flag())
-	{
-		synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
-
-		disable_egress_on_selection_change();
-		Layer::Handle layer(get_canvas_interface()->add_layer_to("outline",canvas,depth));
-		enable_egress_on_selection_change();
-		if (!layer)
-		{
-			get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
-			group.cancel();
-			return;
-		}
-		layer_selection.push_back(layer);
-		layer->set_description(get_id()+_(" Outline"));
-		get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
-
-		layer->set_param("blend_method", get_blend());
-		get_canvas_interface()->signal_layer_param_changed()(layer, "blend_method");
-
-		layer->set_param("amount", get_opacity());
-		get_canvas_interface()->signal_layer_param_changed()(layer, "amount");
-
-		layer->set_param("width",get_bline_width());
-		get_canvas_interface()->signal_layer_param_changed()(layer,"width");
-
-		layer->set_param("feather",get_feather_size());
-		get_canvas_interface()->signal_layer_param_changed()(layer,"feather");
-
-		layer->set_param("invert",get_invert());
-		get_canvas_interface()->signal_layer_param_changed()(layer,"invert");
-
-		{
-			synfigapp::Action::Handle action(synfigapp::Action::create("LayerParamConnect"));
-			assert(action);
-
-			action->set_param("canvas",get_canvas());
-			action->set_param("canvas_interface",get_canvas_interface());
-			action->set_param("layer",layer);
-			if(!action->set_param("param",String("bline")))
-				synfig::error("LayerParamConnect didn't like \"param\"");
-			if(!action->set_param("value_node",ValueNode::Handle(value_node_bline)))
-				synfig::error("LayerParamConnect didn't like \"value_node\"");
-
-			if(!get_canvas_interface()->get_instance()->perform_action(action))
-			{
-				group.cancel();
-				throw String(_("Unable to create Outline layer"));
-				return;
-			}
-		}
-
-		// only link the outline's origin parameter if the option is selected and we're creating more than one layer
-		if (get_layer_link_origins_flag() && layers_to_create > 1)
-		{
-			synfigapp::Action::Handle action(synfigapp::Action::create("LayerParamConnect"));
-			assert(action);
-
-			action->set_param("canvas",get_canvas());
-			action->set_param("canvas_interface",get_canvas_interface());
-			action->set_param("layer",layer);
-			if(!action->set_param("param",String("origin")))
-				synfig::error("LayerParamConnect didn't like \"param\"");
-			if(!action->set_param("value_node",ValueNode::Handle(value_node_origin)))
-				synfig::error("LayerParamConnect didn't like \"value_node\"");
-
-			if(!get_canvas_interface()->get_instance()->perform_action(action))
-			{
-				group.cancel();
-				throw String(_("Unable to create Outline layer"));
-				return;
-			}
-		}
-	}
-
-
-	///////////////////////////////////////////////////////////////////////////
-	//   A D V A N C E D   O U T L I N E
-	///////////////////////////////////////////////////////////////////////////
-
-	if (get_layer_advanced_outline_flag())
-	{
-		synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
-		disable_egress_on_selection_change();
-		Layer::Handle layer(get_canvas_interface()->add_layer_to("advanced_outline",canvas,depth));
-		enable_egress_on_selection_change();
-		if (!layer)
-		{
-			get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
-			group.cancel();
-			return;
-		}
-		layer_selection.push_back(layer);
-		layer->set_description(get_id()+_(" Advanced Outline"));
-		get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
-
-		layer->set_param("blend_method", get_blend());
-		get_canvas_interface()->signal_layer_param_changed()(layer, "blend_method");
-
-		layer->set_param("amount", get_opacity());
-		get_canvas_interface()->signal_layer_param_changed()(layer, "amount");
-
-		layer->set_param("width",get_bline_width());
-		get_canvas_interface()->signal_layer_param_changed()(layer,"width");
-
-		layer->set_param("feather",get_feather_size());
-		get_canvas_interface()->signal_layer_param_changed()(layer,"feather");
-
-		layer->set_param("invert",get_invert());
-		get_canvas_interface()->signal_layer_param_changed()(layer,"invert");
-
-		{
-			synfigapp::Action::Handle action(synfigapp::Action::create("LayerParamConnect"));
-			assert(action);
-
-			action->set_param("canvas",get_canvas());
-			action->set_param("canvas_interface",get_canvas_interface());
-			action->set_param("layer",layer);
-			if(!action->set_param("param",String("bline")))
-				synfig::error("LayerParamConnect didn't like \"param\"");
-			if(!action->set_param("value_node",ValueNode::Handle(value_node_bline)))
-				synfig::error("LayerParamConnect didn't like \"value_node\"");
-
-			if(!get_canvas_interface()->get_instance()->perform_action(action))
-			{
-				group.cancel();
-				throw String(_("Unable to create Advanced Outline layer"));
-				return;
-			}
-		}
-
-		// only link the outline's origin parameter if the option is selected and we're creating more than one layer
-		if (get_layer_link_origins_flag() && layers_to_create > 1)
-		{
-			synfigapp::Action::Handle action(synfigapp::Action::create("LayerParamConnect"));
-			assert(action);
-
-			action->set_param("canvas",get_canvas());
-			action->set_param("canvas_interface",get_canvas_interface());
-			action->set_param("layer",layer);
-			if(!action->set_param("param",String("origin")))
-				synfig::error("LayerParamConnect didn't like \"param\"");
-			if(!action->set_param("value_node",ValueNode::Handle(value_node_origin)))
-				synfig::error("LayerParamConnect didn't like \"value_node\"");
-
-			if(!get_canvas_interface()->get_instance()->perform_action(action))
-			{
-				group.cancel();
-				throw String(_("Unable to create Advanced Outline layer"));
-				return;
-			}
-		}
-	}
+	generate_shape_layers(canvas, depth, group, layer_selection, value_node_bline, origin, value_node_origin);
 
 	disable_egress_on_selection_change();
 	get_canvas_interface()->get_selection_manager()->clear_selected_layers();
