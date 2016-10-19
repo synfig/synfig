@@ -230,8 +230,8 @@ private:
 
 public:
 	inline void set_egress_on_selection_change(bool e) { egress_on_selection_change=e; }
-	inline void enable_egress_on_selection_change() { set_egress_on_selection_change(true); }
-	inline void disable_egress_on_selection_change() { set_egress_on_selection_change(false); }
+	void enable_egress_on_selection_change() { set_egress_on_selection_change(true); }
+	void disable_egress_on_selection_change() { set_egress_on_selection_change(false); }
 
 	Smach::event_result event_layer_selection_changed_handler(const Smach::event& /*x*/)
 	{

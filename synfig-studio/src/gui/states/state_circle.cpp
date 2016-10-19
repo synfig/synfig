@@ -119,6 +119,7 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	bline_point_angle_offset_spin(bline_point_angle_offset_adj, 1, 1)
 {
 	region_layer_maker = new MakeRegionLayer(this);
+	outline_layer_maker = new MakeOutlineLayer(this);
 
 	// 6, spline points
 	bline_points_label.set_label(_("Spline Points:"));
@@ -497,94 +498,6 @@ StateCircle_Context::make_plant_layer(
 }
 
 void
-StateCircle_Context::make_outline_layer(
-	Canvas::Handle canvas,
-	int depth,
-	synfigapp::Action::PassiveGrouper& group,
-	synfigapp::SelectionManager::LayerList& layer_selection,
-	ValueNode_BLine::Handle value_node_bline,
-	Vector& origin,
-	ValueNode::Handle value_node_origin
-)
-{
-	synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
-	disable_egress_on_selection_change();
-	Layer::Handle layer(get_canvas_interface()->add_layer_to("outline",canvas,depth));
-	enable_egress_on_selection_change();
-	if (!layer)
-	{
-		get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
-		group.cancel();
-		return;
-	}
-	layer_selection.push_back(layer);
-	layer->set_description(get_id()+_(" Outline"));
-	get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
-
-	layer->set_param("blend_method",get_blend());
-	get_canvas_interface()->signal_layer_param_changed()(layer,"blend_method");
-
-	layer->set_param("amount",get_opacity());
-	get_canvas_interface()->signal_layer_param_changed()(layer,"amount");
-
-	layer->set_param("width",get_bline_width());
-	get_canvas_interface()->signal_layer_param_changed()(layer,"width");
-
-	layer->set_param("feather",get_feather_size());
-	get_canvas_interface()->signal_layer_param_changed()(layer,"feather");
-
-	layer->set_param("invert",get_invert());
-	get_canvas_interface()->signal_layer_param_changed()(layer,"invert");
-
-	{
-		synfigapp::Action::Handle action(synfigapp::Action::create("LayerParamConnect"));
-		assert(action);
-
-		action->set_param("canvas",get_canvas());
-		action->set_param("canvas_interface",get_canvas_interface());
-		action->set_param("layer",layer);
-		if(!action->set_param("param",String("bline")))
-			synfig::error("LayerParamConnect didn't like \"param\"");
-		if(!action->set_param("value_node",ValueNode::Handle(value_node_bline)))
-			synfig::error("LayerParamConnect didn't like \"value_node\"");
-
-		if(!get_canvas_interface()->get_instance()->perform_action(action))
-		{
-			group.cancel();
-			throw String(_("Unable to create Outline layer"));
-			return;
-		}
-	}
-
-	// only link the outline's origin parameter if the option is selected and we're creating more than one layer
-	if (get_layer_link_origins_flag() && layers_to_create() > 1)
-	{
-		synfigapp::Action::Handle action(synfigapp::Action::create("LayerParamConnect"));
-		assert(action);
-
-		action->set_param("canvas",get_canvas());
-		action->set_param("canvas_interface",get_canvas_interface());
-		action->set_param("layer",layer);
-		if(!action->set_param("param",String("origin")))
-			synfig::error("LayerParamConnect didn't like \"param\"");
-		if(!action->set_param("value_node",ValueNode::Handle(value_node_origin)))
-			synfig::error("LayerParamConnect didn't like \"value_node\"");
-
-		if(!get_canvas_interface()->get_instance()->perform_action(action))
-		{
-			group.cancel();
-			throw String(_("Unable to create Outline layer"));
-			return;
-		}
-	}
-	else
-	{
-		layer->set_param("origin",origin);
-		get_canvas_interface()->signal_layer_param_changed()(layer,"origin");
-	}
-}
-
-void
 StateCircle_Context::make_advanced_outline_layer(
 	Canvas::Handle canvas,
 	int depth,
@@ -790,7 +703,7 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 
 	if (get_layer_outline_flag())
 	{
-		make_outline_layer(canvas, depth, group, layer_selection, value_node_bline, origin, value_node_origin);
+		outline_layer_maker->make_layer(canvas, depth, group, layer_selection, value_node_bline, origin, value_node_origin);
 	}
 
 	///////////////////////////////////////////////////////////////////////////

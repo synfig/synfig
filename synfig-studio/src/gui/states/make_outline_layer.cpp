@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file make_region_layer.cpp
-**	\brief Make region layer
+/*!	\file make_outline_layer.cpp
+**	\brief Make outline layer
 **
 **	$Id$
 **
@@ -31,7 +31,7 @@
 #	include <config.h>
 #endif
 
-#include "make_region_layer.h"
+#include "make_outline_layer.h"
 
 #endif
 
@@ -45,7 +45,7 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 void
-MakeRegionLayer::make_layer(
+MakeOutlineLayer::make_layer(
 	Canvas::Handle canvas,
 	int depth,
 	synfigapp::Action::PassiveGrouper& group,
@@ -56,9 +56,8 @@ MakeRegionLayer::make_layer(
 )
 {
 	synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
-
 	disable_egress_on_selection_change();
-	Layer::Handle layer(get_canvas_interface()->add_layer_to("region",canvas,depth));
+	Layer::Handle layer(get_canvas_interface()->add_layer_to("outline",canvas,depth));
 	enable_egress_on_selection_change();
 	if (!layer)
 	{
@@ -67,7 +66,7 @@ MakeRegionLayer::make_layer(
 		return;
 	}
 	layer_selection.push_back(layer);
-	layer->set_description(get_id()+_(" Region"));
+	layer->set_description(get_id()+_(" Outline"));
 	get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
 
 	layer->set_param("blend_method",get_blend());
@@ -76,14 +75,15 @@ MakeRegionLayer::make_layer(
 	layer->set_param("amount",get_opacity());
 	get_canvas_interface()->signal_layer_param_changed()(layer,"amount");
 
+	layer->set_param("width",get_bline_width());
+	get_canvas_interface()->signal_layer_param_changed()(layer,"width");
+
 	layer->set_param("feather",get_feather_size());
 	get_canvas_interface()->signal_layer_param_changed()(layer,"feather");
 
 	layer->set_param("invert",get_invert());
 	get_canvas_interface()->signal_layer_param_changed()(layer,"invert");
 
-	// I don't know if it's safe to reuse the same LayerParamConnect action, so I'm
-	// using 2 separate ones.
 	{
 		synfigapp::Action::Handle action(synfigapp::Action::create("LayerParamConnect"));
 		assert(action);
@@ -98,16 +98,14 @@ MakeRegionLayer::make_layer(
 
 		if(!get_canvas_interface()->get_instance()->perform_action(action))
 		{
-			//get_canvas_view()->get_ui_interface()->error(_("Unable to create Region layer"));
 			group.cancel();
-			throw String(_("Unable to create Region layer"));
+			throw String(_("Unable to create Outline layer"));
 			return;
 		}
 	}
 
-	// only link the region's origin parameter if the option is selected and we're creating more than one layer
-	if (   get_layer_link_origins_flag()
-		&& layers_to_create() > 1)
+	// only link the outline's origin parameter if the option is selected and we're creating more than one layer
+	if (get_layer_link_origins_flag() && layers_to_create() > 1)
 	{
 		synfigapp::Action::Handle action(synfigapp::Action::create("LayerParamConnect"));
 		assert(action);
@@ -122,9 +120,8 @@ MakeRegionLayer::make_layer(
 
 		if(!get_canvas_interface()->get_instance()->perform_action(action))
 		{
-			//get_canvas_view()->get_ui_interface()->error(_("Unable to create Region layer"));
 			group.cancel();
-			throw String(_("Unable to create Region layer"));
+			throw String(_("Unable to create Outline layer"));
 			return;
 		}
 	}

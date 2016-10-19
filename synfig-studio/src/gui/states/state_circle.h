@@ -30,7 +30,9 @@
 
 #include "state_shape.h"
 #include "smach.h"
+
 #include "make_region_layer.h"
+#include "make_outline_layer.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -65,6 +67,7 @@ class StateCircle_Context : public StateShape_Context
 
 protected:
 	MakeRegionLayer* region_layer_maker;
+	MakeOutlineLayer* outline_layer_maker;
 
 public:
 
@@ -117,15 +120,6 @@ protected:
 		synfig::ValueNode::Handle value_node_origin
 	);
 	void make_plant_layer(
-		synfig::Canvas::Handle canvas,
-		int depth,
-		synfigapp::Action::PassiveGrouper& group,
-		synfigapp::SelectionManager::LayerList& layer_selection,
-		synfig::ValueNode_BLine::Handle value_node_bline,
-		synfig::Vector& origin,
-		synfig::ValueNode::Handle value_node_origin
-	);
-	void make_outline_layer(
 		synfig::Canvas::Handle canvas,
 		int depth,
 		synfigapp::Action::PassiveGrouper& group,

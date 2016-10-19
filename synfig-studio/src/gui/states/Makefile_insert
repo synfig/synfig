@@ -50,10 +50,12 @@ STATES_CC = \
 
 MAKE_LAYER_HH = \
 	states/make_layer.h \
-	states/make_region_layer.h
+	states/make_region_layer.h \
+	states/make_outline_layer.h
 
 MAKE_LAYER_CC = \
-	states/make_region_layer.cpp
+	states/make_region_layer.cpp \
+	states/make_outline_layer.cpp
 
 synfigstudio_src += \
 	$(STATES_HH) \

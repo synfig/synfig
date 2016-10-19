@@ -38,20 +38,9 @@
 namespace studio {
 
 class MakeRegionLayer : public MakeLayer {
-protected:
-	StateShape_Context* shape_context;
-
-	auto get_canvas_interface() {
-		return shape_context->get_canvas_interface();
-	}
-	auto get_canvas() {
-		return shape_context->get_canvas();
-	}
-
 public:
 	MakeRegionLayer(StateShape_Context* context_) :
-		MakeLayer(context_),
-		shape_context(context_)
+		MakeLayer(context_)
 	{}
 
 	virtual void make_layer(synfig::Canvas::Handle canvas,
