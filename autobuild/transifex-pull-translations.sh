@@ -10,7 +10,7 @@ popd  > /dev/null
 fix_po()
 {
 	for FILE in `ls -1 *.po`; do
-		sed -i '/Report-Msgid-Bugs-To:/c\"Report-Msgid-Bugs-To: http://www.synfig.org/issues/thebuggenie/synfig\\n"' "$FILE" || true
+		sed -i '/Report-Msgid-Bugs-To:/c\"Report-Msgid-Bugs-To: https://github.com/synfig/synfig/issues\\n"' "$FILE" || true
 	done
 }
 

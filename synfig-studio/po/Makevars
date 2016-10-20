@@ -3,5 +3,5 @@ subdir = po
 top_builddir = ..
 XGETTEXT_OPTIONS = --keyword=_ --keyword=N_ --add-comments=TRANSLATORS
 COPYRIGHT_HOLDER = Synfig Contributors
-MSGID_BUGS_ADDRESS = http://www.synfig.org/issues/thebuggenie/synfig
+MSGID_BUGS_ADDRESS = https://github.com/synfig/synfig/issues
 EXTRA_LOCALE_CATEGORIES =
