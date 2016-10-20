@@ -59,6 +59,7 @@ using namespace studio;
 void
 StateShape_Context::increment_id()
 {
+	// TODO: improve code here
 	String id(get_id());
 	int number=1;
 	int digits=0;
@@ -136,6 +137,7 @@ StateShape_Context::do_load_settings()
 {
 	State_Context::do_load_settings();
 
+	// TODO: make this more generic somehow
 	set_id(get_setting("id", get_name()));
 	set_blend(get_setting("blend", 0));//(int)Color::BLEND_COMPOSITE); //0 should be blend composites value
 	set_opacity(get_setting("opacity", 1.0));
@@ -389,6 +391,7 @@ StateShape_Context::generate_shape_layers(
 	}
 }
 
+// TODO: fix this
 synfigapp::Action::PassiveGrouper
 StateShape_Context::init_layer_creation(int& depth, Canvas::Handle& canvas, synfigapp::SelectionManager::LayerList& layer_selection)
 {

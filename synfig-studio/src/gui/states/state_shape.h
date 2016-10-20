@@ -63,6 +63,12 @@ class MakeAdvancedOutlineLayer;
 class MakeCurveGradientLayer;
 class MakePlantLayer;
 
+//! Basic shape tool state context
+//! TODO:
+//! - unified layer creation (i.e. get rid of individual fields & functions
+//!   for each layer type)
+//! - move more generic parts out of specific shape contexts
+//! - make GUI handling decoupled from the rest of logic
 class StateShape_Context : public State_Context
 {
 protected:
