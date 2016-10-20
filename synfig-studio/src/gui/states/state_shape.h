@@ -213,6 +213,8 @@ protected:
 	virtual const synfig::String get_name_lower() const { return "shape"; }
 	virtual const synfig::String get_name() const { return "Shape"; }
 	virtual const synfig::String get_local_name() const { return _("Generic Shape tool"); }
+	virtual const synfig::String get_local_create() const { return _("Create a shape layer"); }
+	virtual const synfig::String get_local_new() const { return _("New Shape"); }
 
 	virtual const Gdk::CursorType get_cursor() const { return Gdk::LEFT_PTR; }
 
@@ -237,6 +239,11 @@ public:
 	void reset() { refresh_ducks(); }
 	void increment_id();
 
+	synfigapp::Action::PassiveGrouper init_layer_creation(
+		int& depth,
+		synfig::Canvas::Handle& canvas,
+		synfigapp::SelectionManager::LayerList& layer_selection
+	);
 	void generate_shape_layers(
 		synfig::Canvas::Handle canvas,
 		int depth,
@@ -246,6 +253,7 @@ public:
 		synfig::Vector& origin,
 		synfig::ValueNode::Handle value_node_origin
 	);
+	void finalize_layer_creation(synfigapp::SelectionManager::LayerList layer_selection);
 
 private:
 	bool egress_on_selection_change = false;

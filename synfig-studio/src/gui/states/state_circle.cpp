@@ -334,28 +334,11 @@ StateCircle_Context::make_circle_layer(
 void
 StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 {
-	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("New Circle"));
-	synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
-
-	Layer::Handle layer;
-
+	int depth;
 	Canvas::Handle canvas;
-	int depth(0);
-
-	// we are temporarily using the layer to hold something
-	layer=get_canvas_view()->get_selection_manager()->get_selected_layer();
-	if(layer)
-	{
-		depth=layer->get_depth();
-		canvas=layer->get_canvas();
-	} else
-	{
-		canvas=get_canvas_view()->get_canvas();
-	}
-
 	synfigapp::SelectionManager::LayerList layer_selection;
-	if (!getenv("SYNFIG_TOOLS_CLEAR_SELECTION"))
-		layer_selection = get_canvas_view()->get_selection_manager()->get_selected_layers();
+
+	synfigapp::Action::PassiveGrouper group = init_layer_creation(depth, canvas, layer_selection);
 
 	const synfig::TransformStack& transform(get_work_area()->get_curr_transform_stack());
 	const Point p1(transform.unperform(_p1));
@@ -417,14 +400,7 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 	}
 
 	generate_shape_layers(canvas, depth, group, layer_selection, value_node_bline, origin, value_node_origin);
-
-	disable_egress_on_selection_change();
-	get_canvas_interface()->get_selection_manager()->clear_selected_layers();
-	get_canvas_interface()->get_selection_manager()->set_selected_layers(layer_selection);
-	enable_egress_on_selection_change();
-
-	reset();
-	increment_id();
+	finalize_layer_creation(layer_selection);
 }
 
 Smach::event_result

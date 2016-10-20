@@ -224,27 +224,13 @@ StateRectangle_Context::make_rectangle_layer(
 void
 StateRectangle_Context::make_rectangle(const Point& _p1, const Point& _p2)
 {
-	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("New Rectangle"));
-	synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
-
-	Layer::Handle layer;
-
+	int depth;
 	Canvas::Handle canvas;
-	int depth(0);
-
-	// we are temporarily using the layer to hold something
-	layer=get_canvas_view()->get_selection_manager()->get_selected_layer();
-	if(layer)
-	{
-		depth=layer->get_depth();
-		canvas=layer->get_canvas();
-	} else {
-		canvas=get_canvas_view()->get_canvas();
-	}
-
 	synfigapp::SelectionManager::LayerList layer_selection;
-	if (!getenv("SYNFIG_TOOLS_CLEAR_SELECTION"))
-		layer_selection = get_canvas_view()->get_selection_manager()->get_selected_layers();
+
+	// TODO: find some better way to initialize everything
+	// Should we just use separate class for building layers?
+	synfigapp::Action::PassiveGrouper group = init_layer_creation(depth, canvas, layer_selection);
 
 	const synfig::TransformStack& transform(get_work_area()->get_curr_transform_stack());
 	const Point p1(transform.unperform(_p1));
@@ -268,16 +254,13 @@ StateRectangle_Context::make_rectangle(const Point& _p1, const Point& _p2)
 	ValueNode_BLine::Handle value_node_bline(ValueNode_BLine::create(new_list));
 	assert(value_node_bline);
 
-	ValueNode::Handle value_node_origin(ValueNode_Const::create(Vector()));
+	ValueNode::Handle value_node_origin(ValueNode_Const::create(origin));
 	assert(value_node_origin);
 
 	// Set the looping flag
 	value_node_bline->set_loop(true);
 
 	value_node_bline->set_member_canvas(canvas);
-
-	// count how many layers we're going to be creating
-	int layers_to_create = this->layers_to_create();
 
 	///////////////////////////////////////////////////////////////////////////
 	//   R E C T A N G L E
@@ -289,15 +272,7 @@ StateRectangle_Context::make_rectangle(const Point& _p1, const Point& _p2)
 	}
 
 	generate_shape_layers(canvas, depth, group, layer_selection, value_node_bline, origin, value_node_origin);
-
-	disable_egress_on_selection_change();
-	get_canvas_interface()->get_selection_manager()->clear_selected_layers();
-	get_canvas_interface()->get_selection_manager()->set_selected_layers(layer_selection);
-	enable_egress_on_selection_change();
-
-	//post clean up stuff...
-	reset();
-	increment_id();
+	finalize_layer_creation(layer_selection);
 }
 
 Smach::event_result

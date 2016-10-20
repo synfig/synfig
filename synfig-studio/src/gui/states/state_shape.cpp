@@ -212,13 +212,18 @@ StateShape_Context::StateShape_Context(CanvasView* canvas_view) :
 	id_box.pack_start(*id_gap, Gtk::PACK_SHRINK);
 
 	id_box.pack_start(id_entry);
+}
+
+void
+StateShape_Context::enter()
+{
 
 	// 2, layer types creation
 	layer_types_label.set_label(_("Layer Type:"));
 	layer_types_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
 	layer_creation(layer_shape_togglebutton,
-		("synfig-layer_geometry_circle"), _("Create a circle layer"));
+		("synfig-layer_geometry_"+get_name_lower()), get_local_create());
 
 	layer_creation(layer_region_togglebutton,
 		("synfig-layer_geometry_region"), _("Create a region layer"));
@@ -254,7 +259,7 @@ StateShape_Context::StateShape_Context(CanvasView* canvas_view) :
 
 	blend_enum.set_param_desc(ParamDesc(Color::BLEND_COMPOSITE,"blend_method")
 		.set_local_name(_("Blend Method"))
-		.set_description(_("Defines the blend method to be used for circles")));
+		.set_description(_("Defines the blend method")));
 
 	// 4, opacity label and slider
 	opacity_label.set_label(_("Opacity:"));
@@ -297,11 +302,7 @@ StateShape_Context::StateShape_Context(CanvasView* canvas_view) :
 	link_origins_box.pack_start(link_origins_label);
 	link_origins_box.pack_end(layer_link_origins_checkbutton, Gtk::PACK_SHRINK);
 	link_origins_box.set_sensitive(false);
-}
 
-void
-StateShape_Context::enter()
-{
 	load_settings();
 }
 
@@ -386,4 +387,45 @@ StateShape_Context::generate_shape_layers(
 	{
 		advanced_outline_maker->make_layer(canvas, depth, group, layer_selection, value_node_bline, origin, value_node_origin);
 	}
+}
+
+synfigapp::Action::PassiveGrouper
+StateShape_Context::init_layer_creation(int& depth, Canvas::Handle& canvas, synfigapp::SelectionManager::LayerList& layer_selection)
+{
+	synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
+
+	Layer::Handle layer = get_canvas_view()->get_selection_manager()->get_selected_layer();
+	if(layer)
+	{
+		depth=layer->get_depth();
+		canvas=layer->get_canvas();
+	} else
+	{
+		depth = 0;
+		canvas=get_canvas_view()->get_canvas();
+	}
+
+	if (!getenv("SYNFIG_TOOLS_CLEAR_SELECTION")) {
+		layer_selection = get_canvas_view()->get_selection_manager()->get_selected_layers();
+	} else
+	{
+		layer_selection = synfigapp::SelectionManager::LayerList();
+	}
+
+	return synfigapp::Action::PassiveGrouper(
+		get_canvas_interface()->get_instance().get(),
+		get_local_new()
+	);
+}
+
+void
+StateShape_Context::finalize_layer_creation(synfigapp::SelectionManager::LayerList layer_selection)
+{
+	disable_egress_on_selection_change();
+	get_canvas_interface()->get_selection_manager()->clear_selected_layers();
+	get_canvas_interface()->get_selection_manager()->set_selected_layers(layer_selection);
+	enable_egress_on_selection_change();
+
+	reset();
+	increment_id();
 }

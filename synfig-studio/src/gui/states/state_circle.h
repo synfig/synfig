@@ -87,6 +87,8 @@ protected:
 	virtual const synfig::String get_name_lower() const { return "circle"; }
 	virtual const synfig::String get_name() const { return "Circle"; }
 	virtual const synfig::String get_name_local() const { return _("Circle tool"); }
+	virtual const synfig::String get_local_create() const { return _("Create a circle layer"); }
+	virtual const synfig::String get_local_new() const { return _("New Circle"); }
 
 	virtual const Gdk::CursorType get_cursor() const { return Gdk::CROSSHAIR; }
 
