@@ -835,7 +835,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	vscrollbar1->show();
 	attach(*vscrollbar1, 2, 3, 1, 2, Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
-	ZoomDial *zoomdial=manage(new class ZoomDial(iconsize));
+	zoomdial = manage(new class ZoomDial(iconsize));
 	zoomdial->signal_zoom_in().connect(sigc::mem_fun(*this, &studio::WorkArea::zoom_in));
 	zoomdial->signal_zoom_out().connect(sigc::mem_fun(*this, &studio::WorkArea::zoom_out));
 	zoomdial->signal_zoom_fit().connect(sigc::mem_fun(*this, &studio::WorkArea::zoom_fit));
@@ -3336,6 +3336,9 @@ studio::WorkArea::set_zoom(float z)
 	if(z==zoom)
 		return;
 	zoom = z;
+
+	zoomdial->set_zoom(zoom);
+
 	refresh_dimension_info();
 	/*if(async_renderer)
 	{

@@ -35,6 +35,8 @@
 #include <gtkmm/image.h>
 #include <gtkmm/stock.h>
 
+#include <boost/format.hpp>
+
 #include <gui/localization.h>
 
 #endif
@@ -52,17 +54,25 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-ZoomDial::ZoomDial(Gtk::IconSize & size): Table(3, 1, false)
+ZoomDial::ZoomDial(Gtk::IconSize & size): Table(5, 1, false)
 {
 	zoom_in = create_icon(size, Gtk::Stock::ZOOM_IN, _("Zoom In"));
 	zoom_out = create_icon(size, Gtk::Stock::ZOOM_OUT, _("Zoom Out"));
 	zoom_fit = create_icon(size, Gtk::Stock::ZOOM_FIT, _("Zoom to Fit"));
 	zoom_norm = create_icon(size, Gtk::Stock::ZOOM_100, _("Zoom to 100%"));
 
+	current_zoom = manage(new Gtk::Entry());
+	set_zoom(1.0);
+	current_zoom->set_max_length(10);
+	current_zoom->set_editable(false);
+	current_zoom->set_width_chars(6);
+	current_zoom->show();
+
 	attach(*zoom_out, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	attach(*zoom_norm, 1, 2, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	attach(*zoom_fit, 2, 3, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	attach(*zoom_in, 3, 4, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	attach(*current_zoom, 1, 2, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	attach(*zoom_in, 2, 3, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	attach(*zoom_norm, 3, 4, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	attach(*zoom_fit, 4, 5, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 }
 
 Gtk::Button *
@@ -81,3 +91,8 @@ ZoomDial::create_icon(Gtk::IconSize size, const Gtk::BuiltinStockID & stockid,
 	return button;
 }
 
+void
+ZoomDial::set_zoom(synfig::Real zoom)
+{
+	current_zoom->set_text((boost::format{"%.1f%%"} % (zoom*100)).str());
+}

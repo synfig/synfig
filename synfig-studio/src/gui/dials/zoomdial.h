@@ -31,6 +31,9 @@
 #include <gtkmm/tooltip.h>
 #include <gtkmm/table.h>
 #include <gtkmm/button.h>
+#include <gtkmm/entry.h>
+
+#include <synfig/real.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -47,6 +50,7 @@ class ZoomDial : public Gtk::Table
 	Gtk::Button *zoom_out;
 	Gtk::Button *zoom_fit;
 	Gtk::Button *zoom_norm;
+	Gtk::Entry *current_zoom;
 
 	Gtk::Button *create_icon(Gtk::IconSize size, const Gtk::BuiltinStockID & stockid,
 			const char * tooltip);
@@ -58,6 +62,8 @@ public:
 	Glib::SignalProxy0<void> signal_zoom_out()  { return zoom_out->signal_clicked(); }
 	Glib::SignalProxy0<void> signal_zoom_fit()  { return zoom_fit->signal_clicked(); }
 	Glib::SignalProxy0<void> signal_zoom_norm() { return zoom_norm->signal_clicked(); }
+
+	void set_zoom(synfig::Real zoom);
 
 }; // END of class ZoomDial
 

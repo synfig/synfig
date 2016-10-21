@@ -245,6 +245,7 @@ private:
 	Widget_Ruler *hruler;
 	Gtk::Button *menubutton;
 	Gtk::Frame *drawing_frame;
+	ZoomDial *zoomdial;
 
 	GdkDevice* curr_input_device;
 
