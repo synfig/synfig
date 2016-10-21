@@ -1,12 +1,13 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file zoomdial.h
-**	\brief Template Header
+**	\brief Zoom widget
 **
 **	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2008 Chris Moore
+**	Copyright (c) 2016 caryoscelus
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -32,6 +33,8 @@
 #include <gtkmm/table.h>
 #include <gtkmm/button.h>
 #include <gtkmm/entry.h>
+
+#include <boost/optional.hpp>
 
 #include <synfig/real.h>
 
@@ -62,8 +65,10 @@ public:
 	Glib::SignalProxy0<void> signal_zoom_out()  { return zoom_out->signal_clicked(); }
 	Glib::SignalProxy0<void> signal_zoom_fit()  { return zoom_fit->signal_clicked(); }
 	Glib::SignalProxy0<void> signal_zoom_norm() { return zoom_norm->signal_clicked(); }
+	Glib::SignalProxy0<void> signal_zoom_edit() { return current_zoom->signal_activate(); }
 
 	void set_zoom(synfig::Real zoom);
+	boost::optional<synfig::Real> get_zoom();
 
 }; // END of class ZoomDial
 

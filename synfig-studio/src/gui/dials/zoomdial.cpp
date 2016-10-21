@@ -1,11 +1,12 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file zoomdial.cpp
-**	\brief Template File
+**	\brief Zoom widget
 **
 **	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**	Copyright (c) 2016 caryoscelus
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -36,6 +37,7 @@
 #include <gtkmm/stock.h>
 
 #include <boost/format.hpp>
+#include <boost/algorithm/string.hpp>
 
 #include <gui/localization.h>
 
@@ -44,6 +46,7 @@
 /* === U S I N G =========================================================== */
 
 using namespace std;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -64,9 +67,16 @@ ZoomDial::ZoomDial(Gtk::IconSize & size): Table(5, 1, false)
 	current_zoom = manage(new Gtk::Entry());
 	set_zoom(1.0);
 	current_zoom->set_max_length(10);
-	current_zoom->set_editable(false);
+	current_zoom->set_editable(true);
 	current_zoom->set_width_chars(6);
 	current_zoom->show();
+	// select everything except for % sign after user clicks widget
+	// using release event here instead of grab_focus because the latter
+	// is emitted before gtk sets cursor selection gets nullified
+	current_zoom->signal_event_after().connect([this](auto event) {
+		if (event->type == Gdk::BUTTON_RELEASE)
+			current_zoom->select_region(0, current_zoom->get_text_length()-1);
+	});
 
 	attach(*zoom_out, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 	attach(*current_zoom, 1, 2, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
@@ -95,4 +105,25 @@ void
 ZoomDial::set_zoom(synfig::Real zoom)
 {
 	current_zoom->set_text((boost::format{"%.1f%%"} % (zoom*100)).str());
+}
+
+boost::optional<Real>
+ZoomDial::get_zoom()
+{
+	std::istringstream input { current_zoom->get_text() };
+	Real zoom;
+	if (input >> zoom) {
+		String suffix;
+		if (input >> suffix) {
+			boost::trim(suffix);
+			if (suffix == "%") {
+				zoom /= 100.0;
+			} else if (suffix != "") {
+				return boost::none;
+			}
+		}
+	} else {
+		return boost::none;
+	}
+	return boost::make_optional(zoom);
 }
