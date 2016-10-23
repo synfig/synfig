@@ -1,13 +1,14 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file canvastreestore.cpp
-**	\brief Template File
+**	\brief Canvas tree store
 **
 **	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2008 Chris Moore
-**  Copyright (c) 2011 Carlos López
+**	Copyright (c) 2011 Carlos López
+**	Copyright (c) 2016 caryoscelus
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -231,7 +232,16 @@ CanvasTreeStore::get_value_vfunc(const Gtk::TreeModel::iterator& iter, int colum
 		Glib::Value<bool> x;
 		g_value_init(x.gobj(),x.value_type());
 
-		x.set(!value_desc.is_value_node() || synfigapp::is_editable(value_desc.get_value_node()));
+		x.set(
+			// Temporary fix crash when trying to edit bline point
+			// https://github.com/synfig/synfig/issues/264
+			// TODO: move this check into a more proper place
+			value_desc.get_value_type() != type_bline_point
+			&& (
+				!value_desc.is_value_node()
+			||	synfigapp::is_editable(value_desc.get_value_node())
+			)
+		);
 
 		g_value_init(value.gobj(),x.value_type());
 		g_value_copy(x.gobj(),value.gobj());
