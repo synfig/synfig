@@ -35,15 +35,11 @@
 
 namespace synfig {
 
-class UniqueIDLessThan;
-
 /*! \class UniqueID
 **	\brief \todo
 */
 class UniqueID
 {
-	friend class UniqueIDLessThan;
-
 	int id_;
 
 	explicit UniqueID(int id_):id_(id_) { }
@@ -72,17 +68,6 @@ public:
 	bool operator!=(const UniqueID &rhs)const { return id_!=rhs.id_; }
 	bool operator<(const UniqueID &rhs)const { return id_<rhs.id_; }
 }; // END of class UniqueID
-
-/*! \class UniqueIDLessThan
-**	\brief A function class used for sorting based on UniqueIDs
-*/
-class UniqueIDLessThan
-{
-public:
-	bool operator()(const UniqueID &lhs, const UniqueID &rhs)const
-	{ return lhs.id_<rhs.id_; }
-};
-
 
 }; // END of namespace synfig
 
