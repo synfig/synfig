@@ -47,14 +47,15 @@ using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
-enum CircleFalloff
+enum class CircleFalloff
 {
-	CIRCLE_SQUARED	=0,
-	CIRCLE_INTERPOLATION_LINEAR	=1,
-	CIRCLE_COSINE	=2,
-	CIRCLE_SIGMOND	=3,
-	CIRCLE_SQRT		=4,
-	CIRCLE_NUM_FALLOFF
+	Squared		= 0,
+	Linear		= 1,
+	Cosine		= 2,
+	Sigmond		= 3,
+	Sqrt		= 4,
+	Count,
+	Default		= Cosine,
 };
 
 /* === G L O B A L S ======================================================= */
@@ -78,37 +79,22 @@ void
 StateCircle_Context::do_load_settings()
 {
 	StateShape_Context::do_load_settings();
-	String value;
 
-	if(settings.get_value("circle.fallofftype",value) && value != "")
-		set_falloff(atoi(value.c_str()));
-	else
-		set_falloff(2);
-
-	if(settings.get_value("circle.number_of_bline_points",value))
-		set_number_of_bline_points(atof(value.c_str()));
-	else
-		set_number_of_bline_points(4);
-
-	if(settings.get_value("circle.bline_point_angle_offset",value))
-		set_bline_point_angle_offset(atof(value.c_str()));
-	else
-		set_bline_point_angle_offset(0);
-
-	if(settings.get_value("circle.layer_origins_at_center",value) && value=="0")
-		set_layer_origins_at_center_flag(false);
-	else
-		set_layer_origins_at_center_flag(true);
+	set_falloff(get_setting("fallofftype", (int)CircleFalloff::Default));
+	set_number_of_bline_points(get_setting("number_of_bline_points", 4));
+	set_bline_point_angle_offset(get_setting("bline_point_angle_offset", 0.0));
+	set_layer_origins_at_center_flag(get_setting("layer_origins_at_center", true));
 }
 
 void
 StateCircle_Context::do_save_settings()
 {
 	StateShape_Context::do_save_settings();
-	settings.set_value("circle.fallofftype",strprintf("%d",get_falloff()));
-	settings.set_value("circle.number_of_bline_points",strprintf("%d",(int)(get_number_of_bline_points() + 0.5)));
-	settings.set_value("circle.bline_point_angle_offset",strprintf("%f",(float)get_bline_point_angle_offset()));
-	settings.set_value("circle.layer_origins_at_center",get_layer_origins_at_center_flag()?"1":"0");
+
+	set_setting("fallofftype", get_falloff());
+	set_setting("number_of_bline_points", get_number_of_bline_points());
+	set_setting("bline_point_angle_offset", get_bline_point_angle_offset());
+	set_setting("layer_origins_at_center", get_layer_origins_at_center_flag());
 }
 
 StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
@@ -146,11 +132,11 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 		.set_local_name(_("Falloff"))
 		.set_description(_("Determines the falloff function for the feather"))
 		.set_hint("enum")
-		.add_enum_value(CIRCLE_INTERPOLATION_LINEAR,"linear",_("Linear"))
-		.add_enum_value(CIRCLE_SQUARED,"squared",_("Squared"))
-		.add_enum_value(CIRCLE_SQRT,"sqrt",_("Square Root"))
-		.add_enum_value(CIRCLE_SIGMOND,"sigmond",_("Sigmond"))
-		.add_enum_value(CIRCLE_COSINE,"cosine",_("Cosine")));
+		.add_enum_value((int)CircleFalloff::Linear,"linear",_("Linear"))
+		.add_enum_value((int)CircleFalloff::Squared,"squared",_("Squared"))
+		.add_enum_value((int)CircleFalloff::Sqrt,"sqrt",_("Square Root"))
+		.add_enum_value((int)CircleFalloff::Sigmond,"sigmond",_("Sigmond"))
+		.add_enum_value((int)CircleFalloff::Cosine,"cosine",_("Cosine")));
 	falloff_enum.set_sensitive(false);
 
 	// 12, spline origins at center
@@ -389,12 +375,9 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 
 	value_node_bline->set_member_canvas(canvas);
 
-	///////////////////////////////////////////////////////////////////////////
-	//   C I R C L E
-	///////////////////////////////////////////////////////////////////////////
-
+	// Maybe make circle layer
 	if (get_layer_shape_flag() &&
-		get_falloff() >= 0 && get_falloff() < CIRCLE_NUM_FALLOFF)
+		get_falloff() >= 0 && get_falloff() < (int)CircleFalloff::Count)
 	{
 		make_circle_layer(canvas, depth, group, layer_selection, p1, p2, value_node_origin);
 	}

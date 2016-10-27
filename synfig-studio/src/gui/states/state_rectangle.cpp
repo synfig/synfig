@@ -70,19 +70,16 @@ void
 StateRectangle_Context::do_load_settings()
 {
 	StateShape_Context::do_load_settings();
-	String value;
 
-	if(settings.get_value("rectangle.expand",value))
-		set_expand_size(Distance(atof(value.c_str()), App::distance_system));
-	else
-		set_expand_size(Distance(0, App::distance_system)); // default expansion
+	set_expand_size(get_setting("expand", Distance(0, App::distance_system)));
 }
 
 void
 StateRectangle_Context::do_save_settings()
 {
 	StateShape_Context::do_save_settings();
-	settings.set_value("rectangle.expand",expand_dist.get_value().get_string());
+
+	set_setting("expand", expand_dist.get_value());
 }
 
 StateRectangle_Context::StateRectangle_Context(CanvasView* canvas_view):
@@ -262,10 +259,7 @@ StateRectangle_Context::make_rectangle(const Point& _p1, const Point& _p2)
 
 	value_node_bline->set_member_canvas(canvas);
 
-	///////////////////////////////////////////////////////////////////////////
-	//   R E C T A N G L E
-	///////////////////////////////////////////////////////////////////////////
-
+	// Rectangle layer
 	if (get_layer_shape_flag())
 	{
 		make_rectangle_layer(canvas, depth, group, layer_selection, p1, p2, value_node_origin);
