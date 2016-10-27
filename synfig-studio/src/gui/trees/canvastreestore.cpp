@@ -236,8 +236,10 @@ CanvasTreeStore::get_value_vfunc(const Gtk::TreeModel::iterator& iter, int colum
 			// Temporary fix crash when trying to edit bline point
 			// https://github.com/synfig/synfig/issues/264
 			// TODO: move this check into a more proper place
-			value_desc.get_value_type() != type_bline_point
-			&& (
+				value_desc.get_value_type() != type_bline_point
+			&&	value_desc.get_value_type() != type_width_point
+			&&	value_desc.get_value_type() != type_dash_item
+			&&	(
 				!value_desc.is_value_node()
 			||	synfigapp::is_editable(value_desc.get_value_node())
 			)
