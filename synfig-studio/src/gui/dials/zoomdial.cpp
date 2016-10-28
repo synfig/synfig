@@ -73,12 +73,24 @@ ZoomDial::ZoomDial(Gtk::IconSize & size):
 	current_zoom->signal_event().connect(
 		sigc::mem_fun(*this, &ZoomDial::current_zoom_event) );
 	current_zoom->show();
+	// select everything except for % sign after user clicks widget
+	// using release event here instead of grab_focus because the latter
+	// is emitted before gtk sets cursor selection gets nullified
+	current_zoom->signal_event_after().connect(
+		sigc::mem_fun(*this, &ZoomDial::after_event) );
 
 	attach(*zoom_out, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 	attach(*current_zoom, 1, 2, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 	attach(*zoom_in, 2, 3, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 	attach(*zoom_norm, 3, 4, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 	attach(*zoom_fit, 4, 5, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+}
+
+void
+ZoomDial::after_event(GdkEvent *event)
+{
+	if (event->type == GDK_BUTTON_RELEASE)
+		current_zoom->select_region(0, current_zoom->get_text_length()-1);
 }
 
 bool
