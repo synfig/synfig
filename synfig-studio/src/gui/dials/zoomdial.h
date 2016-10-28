@@ -55,7 +55,6 @@ class ZoomDial : public Gtk::Table
 
 	Gtk::Button *create_icon(Gtk::IconSize size, const Gtk::BuiltinStockID & stockid,
 			const char * tooltip);
-	void after_event(GdkEvent *event);
 
 public:
 	ZoomDial(Gtk::IconSize &size);
