@@ -69,6 +69,9 @@ ZoomDial::ZoomDial(Gtk::IconSize & size):
 	current_zoom->set_max_length(10);
 	current_zoom->set_editable(true);
 	current_zoom->set_width_chars(6);
+	current_zoom->add_events(Gdk::SCROLL_MASK);
+	current_zoom->signal_event().connect(
+		sigc::mem_fun(*this, &ZoomDial::current_zoom_event) );
 	current_zoom->show();
 
 	attach(*zoom_out, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
@@ -77,6 +80,22 @@ ZoomDial::ZoomDial(Gtk::IconSize & size):
 	attach(*zoom_norm, 3, 4, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 	attach(*zoom_fit, 4, 5, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 }
+
+bool
+ZoomDial::current_zoom_event(GdkEvent* event)
+{
+	if (event->type == GDK_SCROLL)
+	{
+		if(event->scroll.direction==GDK_SCROLL_DOWN || event->scroll.direction==GDK_SCROLL_LEFT)
+			zoom_out->clicked();
+		else
+		if(event->scroll.direction==GDK_SCROLL_UP || event->scroll.direction==GDK_SCROLL_RIGHT)
+			zoom_in->clicked();
+		return true;
+	}
+	return false;
+}
+
 
 Gtk::Button *
 ZoomDial::create_icon(Gtk::IconSize size, const Gtk::BuiltinStockID & stockid,
