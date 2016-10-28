@@ -65,13 +65,13 @@ inline bool approximate_less_custom(const T &a, const T &b, const T &precision)
 	{ return a < b && b - a >= precision; }
 template<typename T>
 inline bool approximate_greater_custom(const T &a, const T &b, const T &precision)
-	{ return approximate_less(b, a, precision); }
+	{ return approximate_less_custom(b, a, precision); }
 template<typename T>
 inline bool approximate_less_or_equal_custom(const T &a, const T &b, const T &precision)
 	{ return a < b || a - b < precision; }
 template<typename T>
 inline bool approximate_greater_or_equal_custom(const T &a, const T &b, const T &precision)
-	{ return approximate_less_or_equal(b, a, precision); }
+	{ return approximate_less_or_equal_custom(b, a, precision); }
 template<typename T>
 inline T approximate_floor_custom(const T &a, const T &precision)
 	{ return std::floor(a + precision); }

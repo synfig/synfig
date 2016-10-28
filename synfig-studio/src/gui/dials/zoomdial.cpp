@@ -30,14 +30,13 @@
 #	include <config.h>
 #endif
 
+#include <ETL/stringf>
+
 #include <synfig/general.h>
 
 #include "zoomdial.h"
 #include <gtkmm/image.h>
 #include <gtkmm/stock.h>
-
-#include <boost/format.hpp>
-#include <boost/algorithm/string.hpp>
 
 #include <gui/localization.h>
 
@@ -57,7 +56,8 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-ZoomDial::ZoomDial(Gtk::IconSize & size): Table(5, 1, false)
+ZoomDial::ZoomDial(Gtk::IconSize & size):
+	Table(5, 1, false)
 {
 	zoom_in = create_icon(size, Gtk::Stock::ZOOM_IN, _("Zoom In"));
 	zoom_out = create_icon(size, Gtk::Stock::ZOOM_OUT, _("Zoom Out"));
@@ -73,16 +73,21 @@ ZoomDial::ZoomDial(Gtk::IconSize & size): Table(5, 1, false)
 	// select everything except for % sign after user clicks widget
 	// using release event here instead of grab_focus because the latter
 	// is emitted before gtk sets cursor selection gets nullified
-	current_zoom->signal_event_after().connect([this](auto event) {
-		if (event->type == Gdk::BUTTON_RELEASE)
-			current_zoom->select_region(0, current_zoom->get_text_length()-1);
-	});
+	current_zoom->signal_event_after().connect(
+		sigc::mem_fun(*this, &ZoomDial::after_event) );
 
 	attach(*zoom_out, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 	attach(*current_zoom, 1, 2, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 	attach(*zoom_in, 2, 3, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 	attach(*zoom_norm, 3, 4, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 	attach(*zoom_fit, 4, 5, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+}
+
+void
+ZoomDial::after_event(GdkEvent *event)
+{
+	if (event->type == GDK_BUTTON_RELEASE)
+		current_zoom->select_region(0, current_zoom->get_text_length()-1);
 }
 
 Gtk::Button *
@@ -102,28 +107,20 @@ ZoomDial::create_icon(Gtk::IconSize size, const Gtk::BuiltinStockID & stockid,
 }
 
 void
-ZoomDial::set_zoom(synfig::Real zoom)
+ZoomDial::set_zoom(synfig::Real value)
 {
-	current_zoom->set_text((boost::format{"%.1f%%"} % (zoom*100)).str());
+	current_zoom->set_text(etl::strprintf("%.1lf%%", value*100.0));
 }
 
-boost::optional<Real>
-ZoomDial::get_zoom()
+synfig::Real
+ZoomDial::get_zoom(synfig::Real default_value)
 {
-	std::istringstream input { current_zoom->get_text() };
-	Real zoom;
-	if (input >> zoom) {
-		String suffix;
-		if (input >> suffix) {
-			boost::trim(suffix);
-			if (suffix == "%") {
-				zoom /= 100.0;
-			} else if (suffix != "") {
-				return boost::none;
-			}
-		}
-	} else {
-		return boost::none;
-	}
-	return boost::make_optional(zoom);
+	std::string s = current_zoom->get_text();
+	char buffer[10] = "";
+	synfig::Real value = 0.0;
+	sscanf(s.c_str(), "%lf%9s", &value, buffer);
+
+	if (std::string(buffer) == "%") value *= 0.01;
+	return approximate_greater(value, 0.0) ? value : default_value;
 }
+
