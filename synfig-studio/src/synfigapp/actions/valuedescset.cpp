@@ -63,6 +63,7 @@
 #include <synfig/valueoperations.h>
 #include <synfig/weightedvalue.h>
 #include <synfig/pair.h>
+#include <synfig/segment.h>
 #include <synfigapp/main.h>
 
 #include <synfigapp/localization.h>

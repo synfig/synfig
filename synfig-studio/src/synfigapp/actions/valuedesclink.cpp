@@ -40,6 +40,8 @@
 #include <synfig/valuenodes/valuenode_scale.h>
 #include <synfig/valuenodes/valuenode_composite.h>
 
+#include <synfig/blinepoint.h>
+
 #include <synfigapp/localization.h>
 #include <zconf.h>
 

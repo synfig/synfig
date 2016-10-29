@@ -46,6 +46,7 @@
 #include <synfig/valuenodes/valuenode_wplist.h>
 #include <synfig/valuenodes/valuenode_bline.h>
 #include <synfig/valuenodes/valuenode_composite.h>
+#include <synfig/transformation.h>
 #include "app.h"
 
 #include <gui/localization.h>

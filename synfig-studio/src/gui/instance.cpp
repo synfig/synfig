@@ -60,6 +60,7 @@
 #include "autorecover.h"
 #include <synfig/valuenodes/valuenode_composite.h>
 #include <synfig/valuenodes/valuenode_duplicate.h>
+#include <synfig/widthpoint.h>
 #include "widgets/widget_waypointmodel.h"
 #include <gtkmm/actiongroup.h>
 #include "iconcontroller.h"

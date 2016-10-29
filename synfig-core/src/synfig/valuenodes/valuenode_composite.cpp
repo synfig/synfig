@@ -45,6 +45,9 @@
 #include <synfig/transformation.h>
 #include <synfig/weightedvalue.h>
 #include <synfig/pair.h>
+#include <synfig/blinepoint.h>
+#include <synfig/widthpoint.h>
+#include <synfig/dashitem.h>
 
 #endif
 

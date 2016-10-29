@@ -64,6 +64,7 @@
 #include "valuenode.h"
 #include "valueoperations.h"
 #include "zstreambuf.h"
+#include "segment.h"
 
 #include "layers/layer_group.h"
 

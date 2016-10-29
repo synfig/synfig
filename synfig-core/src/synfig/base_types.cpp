@@ -48,6 +48,9 @@
 #include "time.h"
 #include "segment.h"
 #include "color.h"
+#include "blinepoint.h"
+#include "widthpoint.h"
+#include "dashitem.h"
 
 #endif
 

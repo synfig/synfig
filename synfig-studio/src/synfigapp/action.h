@@ -28,27 +28,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/string.h>
-#include <synfig/canvas.h>
-#include <ETL/handle>
-#include <ETL/stringf>
-#include <ETL/trivial>
-
-#include <map>
-#include <list>
-
-#include <synfig/layer.h>
-#include <synfig/canvas.h>
-#include <synfig/valuenode.h>
-#include <synfigapp/value_desc.h>
-#include <synfig/value.h>
-#include <synfig/activepoint.h>
-#include <synfig/valuenodes/valuenode_animated.h>
-#include <synfig/string.h>
-#include <synfig/keyframe.h>
-
 #include "action_param.h"
-#include "editmode.h"
 
 /* === M A C R O S ========================================================= */
 

@@ -51,6 +51,7 @@
 #include <synfig/target_cairo.h>
 #include <synfig/target_cairo_tile.h>
 #include <synfig/surface.h>
+#include <synfig/blinepoint.h>
 #include <synfig/valuenodes/valuenode_composite.h>
 #include <synfigapp/canvasinterface.h>
 #include "event_mouse.h"

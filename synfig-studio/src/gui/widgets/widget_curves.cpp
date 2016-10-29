@@ -32,6 +32,8 @@
 #endif
 
 #include <synfig/general.h>
+#include <synfig/blinepoint.h>
+#include <synfig/widthpoint.h>
 
 #include "widgets/widget_curves.h"
 #include <cmath>

@@ -61,6 +61,7 @@
 #include <synfig/valuenodes/valuenode_bone.h>
 #include <synfig/valuenodes/valuenode_boneinfluence.h>
 #include <synfig/valuenodes/valuenode_boneweightpair.h>
+#include <synfig/segment.h>
 #include <synfig/pair.h>
 
 #include <synfig/curve_helper.h>

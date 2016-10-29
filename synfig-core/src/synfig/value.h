@@ -31,21 +31,9 @@
 
 #include "base_types.h"
 
-// TODO: remove following includes
-#include "angle.h"
-#include "segment.h"
-#include "string.h"
-#include <list>
 #include <vector>
-#include <ETL/trivial>
-#include <ETL/handle>
-#include "blinepoint.h"
-#include "bone.h"
-#include "widthpoint.h"
-#include "dashitem.h"
-#include "exception.h"
+#include <list>
 #include "interpolation.h"
-#include "transformation.h"
 
 #ifdef USE_HALF_TYPE
 #include <OpenEXR/half.h>

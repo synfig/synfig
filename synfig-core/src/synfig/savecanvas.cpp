@@ -58,6 +58,8 @@
 #include "paramdesc.h"
 #include "weightedvalue.h"
 #include "pair.h"
+#include "segment.h"
+#include "transformation.h"
 
 #include "zstreambuf.h"
 #include "importer.h"

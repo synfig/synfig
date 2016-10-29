@@ -42,6 +42,7 @@
 #include <synfig/guidset.h>
 #include <synfig/importer.h>
 #include <synfig/loadcanvas.h>
+#include <synfig/bone.h>
 #include <synfig/pair.h>
 #include <synfig/waypoint.h>
 

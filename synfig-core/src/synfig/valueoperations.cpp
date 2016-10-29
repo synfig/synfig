@@ -31,6 +31,9 @@
 
 #include "valueoperations.h"
 #include "weightedvalue.h"
+#include "blinepoint.h"
+#include "segment.h"
+#include "widthpoint.h"
 
 #endif
 
@@ -47,6 +50,165 @@ using namespace synfig;
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
+
+Vector
+ValueVector::get_vector(const ValueBase &value) {
+	Type &type(value.get_type());
+	if (type == type_bline_point)
+		return value.get(BLinePoint()).get_vertex();
+	else
+	if (type == type_matrix)
+		return value.get(Matrix()).get_transformed(Vector(0, 0));
+	else
+	if (type == type_transformation)
+		return value.get(Transformation()).transform(Vector(0,0));
+	else
+	if (type == type_vector)
+		return value.get(Vector());
+	return Vector(0, 0);
+}
+
+
+ValueBase
+ValueTransformation::transform(const Transformation &transformation, const ValueBase &value) {
+	Type &type(value.get_type());
+	if (type == type_angle)
+		return value.get(Angle()) + transformation.angle;
+	else
+	if (type == type_bline_point)
+	{
+		BLinePoint bp(value.get(BLinePoint()));
+		bp.set_vertex( transformation.transform(bp.get_vertex()) );
+		bp.set_tangent1( transformation.transform(bp.get_tangent1(), false) );
+		bp.set_tangent2( transformation.transform(bp.get_tangent2(), false) );
+		return bp;
+	}
+	else
+	if (type == type_matrix)
+		return transformation.transform(value.get(Matrix()));
+	else
+	if (type == type_segment)
+	{
+		Segment s(value.get(Segment()));
+		s.p1 = transformation.transform(s.p1);
+		s.t1 = transformation.transform(s.t1, false);
+		s.p2 = transformation.transform(s.p2);
+		s.t2 = transformation.transform(s.t2, false);
+		return s;
+	}
+	else
+	if (type == type_transformation)
+		return transformation.transform(value.get(Transformation()));
+	else
+	if (type == type_vector)
+		return transformation.transform(value.get(Vector()));
+	else
+	if (type == type_width_point)
+	{
+		WidthPoint wp(value.get(WidthPoint()));
+		wp.set_width( wp.get_width()*transformation.scale[1] );
+		return wp;
+	}
+	return value;
+}
+
+
+ValueBase
+ValueAverage::add(const ValueBase &value_a, const ValueBase &value_b, const ValueBase &default_value)
+{
+	if (value_a.get_type() != value_b.get_type()) return default_value;
+
+	Type &type(value_a.get_type());
+	if (type == type_real)
+		return value_a.get(Real()) + value_b.get(Real());
+	else
+	if (type == type_bline_point)
+	{
+		BLinePoint res(value_a.get(BLinePoint()));
+		const BLinePoint &b = value_b.get(BLinePoint());
+		res.set_vertex( res.get_vertex() + b.get_vertex() );
+		res.set_tangent1( res.get_tangent1() + b.get_tangent1() );
+		res.set_tangent2( res.get_tangent2() + b.get_tangent2() );
+		return res;
+	}
+	else
+	if (type == type_matrix)
+		return value_a.get(Matrix()) + value_b.get(Matrix());
+	else
+	if (type == type_segment)
+	{
+		Segment res(value_a.get(Segment()));
+		const Segment &b = value_b.get(Segment());
+		res.p1 += b.p1;
+		res.t1 += b.t1;
+		res.p2 += b.p2;
+		res.t2 += b.t2;
+		return res;
+	}
+	else
+	if (type == type_transformation)
+		return Transformation(
+			value_a.get(Transformation()).get_matrix()
+			+ value_b.get(Transformation()).get_matrix() );
+	else
+	if (type == type_vector)
+		return value_a.get(Vector()) + value_b.get(Vector());
+	else
+	if (type == type_width_point)
+	{
+		WidthPoint res(value_a.get(WidthPoint()));
+		const WidthPoint &b = value_b.get(WidthPoint());
+		res.set_width( res.get_width() + b.get_width() );
+		return res;
+	}
+
+	return default_value;
+}
+
+ValueBase
+ValueAverage::multiply(const ValueBase &value, Real amplifier)
+{
+	Type &type(value.get_type());
+	if (type == type_real)
+		return value.get(Real()) * amplifier;
+	else
+	if (type == type_bline_point)
+	{
+		BLinePoint res(value.get(BLinePoint()));
+		res.set_vertex( res.get_vertex() * amplifier );
+		res.set_tangent1( res.get_tangent1() * amplifier );
+		res.set_tangent2( res.get_tangent2() * amplifier );
+		return res;
+	}
+	else
+	if (type == type_matrix)
+		return value.get(Matrix()) * amplifier;
+	else
+	if (type == type_segment)
+	{
+		Segment res(value.get(Segment()));
+		res.p1 *= amplifier;
+		res.t1 *= amplifier;
+		res.p2 *= amplifier;
+		res.t2 *= amplifier;
+		return res;
+	}
+	else
+	if (type == type_transformation)
+		return Transformation( value.get(Transformation()).get_matrix() * amplifier );
+	else
+	if (type == type_vector)
+		return value.get(Vector()) * amplifier;
+	else
+	if (type == type_width_point)
+	{
+		WidthPoint res(value.get(WidthPoint()));
+		res.set_width( res.get_width() * amplifier );
+		return res;
+	}
+
+	return value;
+}
 
 types_namespace::TypeWeightedValueBase *ValueAverage::allowed_types[] =
 {
