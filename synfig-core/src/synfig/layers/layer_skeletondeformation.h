@@ -62,6 +62,9 @@ private:
 	static Real distance_to_line(const Vector &p0, const Vector &p1, const Vector &x);
 	void prepare_mask();
 
+protected:
+	virtual rendering::Task::Handle build_rendering_task_vfunc(Context context) const;
+
 public:
 	typedef std::pair<Bone, Bone> BonePair;
 

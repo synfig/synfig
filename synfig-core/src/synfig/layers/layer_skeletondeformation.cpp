@@ -42,6 +42,9 @@
 #include <synfig/value.h>
 #include <synfig/valuenode.h>
 
+#include <synfig/rendering/common/task/taskblend.h>
+#include <synfig/rendering/common/task/tasklayer.h>
+
 #include <vector>
 #include <map>
 #include <algorithm>
@@ -385,5 +388,16 @@ Layer_SkeletonDeformation::get_param(const String& param)const
 	EXPORT_VERSION();
 
 	return Layer_MeshTransform::get_param(param);
+}
+
+rendering::Task::Handle
+Layer_SkeletonDeformation::build_rendering_task_vfunc(Context context)const
+{
+	// TODO: This is not thread-safe
+	rendering::TaskLayer::Handle task = new rendering::TaskLayer();
+	task->layer = const_cast<Layer_SkeletonDeformation*>(this);
+	task->layer->set_canvas(get_canvas());
+	task->sub_task() = context.build_rendering_task();
+	return task;
 }
 
