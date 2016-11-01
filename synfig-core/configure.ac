@@ -393,9 +393,9 @@ PKG_CHECK_MODULES(LIBCAIRO, [cairo >= 1.12.0],[
 
 AC_MSG_CHECKING([for OpenGL])
 AC_ARG_WITH(opengl,
-	AS_HELP_STRING(--with-opengl, [enable OpenGL (default=auto)]),[
+	AS_HELP_STRING(--with-opengl, [enable OpenGL (default=no)]),[
 ],[
-	with_opengl="yes"
+	with_opengl="no"
 ])
 if test $with_opengl != "no" ; then {
 	case "$host" in
