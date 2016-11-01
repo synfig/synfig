@@ -851,7 +851,7 @@ EOF
     popd
 }
 
-initialize()
+get_dependencies()
 {
 	# Make sure we have all dependencies installed
 	echo "Checking dependencies..."
@@ -1076,7 +1076,10 @@ initialize()
 		fi
 	fi
 	echo "Done."
+}
 
+initialize()
+{
 	if [[ $DEBUG == 1 ]]; then
 		DEBUG='--enable-debug --enable-optimization=0'
 	else
@@ -1165,6 +1168,9 @@ initialize()
 
 mk()
 {
+	get_dependencies
+	initialize 
+	
 	if [[ WORKDIR_IS_REPO == 0 ]]; then
 		SYNFIG_REPO_DIR=`pwd`/synfig.git/
 		git clone git://github.com/synfig/synfig.git ${SYNFIG_REPO_DIR}
@@ -1336,21 +1342,19 @@ fi
 case $ARG in
 	full)
 		MODE='full'
-		initialize
 		mk
 		exit;;
 	standart)
 		MODE='standart'
-		initialize
 		mk
 		exit;;
 	quick)
 		MODE='quick'
-		initialize
 		mk
 		exit;;
 	package)
 		MODE='package'
+		get_dependencies
 		initialize
 		mk$ARG
 		exit;;
