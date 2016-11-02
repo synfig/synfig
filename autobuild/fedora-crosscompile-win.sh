@@ -25,7 +25,7 @@ else
     exit 1
 fi
 
-export WORKSPACE=$HOME/synfig-buildroot
+export WORKSPACE=${SCRIPTPATH}/../_build
 export PREFIX=$WORKSPACE/win$ARCH/build
 export DISTPREFIX=$WORKSPACE/win$ARCH/dist
 export SRCPREFIX=$WORKSPACE/win$ARCH/source
@@ -714,7 +714,7 @@ sed -i "s/@VERSION@/$VERSION/g" $PREFIX/synfigstudio.nsi
 cp -f $SCRIPTPATH/win${ARCH}-specific.nsh $PREFIX/arch-specific.nsh
 makensis synfigstudio.nsi
 
-mv synfigstudio-${VERSION}.exe ../../synfigstudio-${VERSION}-${REVISION}-${ARCH}bit.exe
+mv synfigstudio-${VERSION}.exe ${WORKSPACE}/synfigstudio-${VERSION}-${REVISION}-${ARCH}bit.exe
 }
 
 mkall()
