@@ -30,6 +30,7 @@
 #include <vector>
 
 #include <ETL/handle>
+#include <ETL/mutex>
 
 /* === M A C R O S ========================================================= */
 
