@@ -74,7 +74,7 @@ popd > /dev/null
 mkprep()
 {
 
-if [ -z $NOSU ]; then
+if [ ! -z $DEPS ]; then
 	DNF_BINARY=yum
 	if [ -f /usr/bin/dnf ]; then
 		DNF_BINARY=dnf
