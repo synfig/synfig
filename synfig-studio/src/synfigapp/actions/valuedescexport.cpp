@@ -257,7 +257,7 @@ Action::ValueDescExport::prepare()
 		Canvas::Handle prev_canvas = canvas;
 
 		// clone canvas (all code that clones a canvas has this comment)
-		if (canvas) canvas=canvas->clone(GUID(), true);
+		if (canvas) canvas=canvas->clone(synfig::GUID(), true);
 
 		if (external)
 		{
