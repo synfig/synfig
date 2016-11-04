@@ -1,0 +1,12 @@
+target_sources(synfig
+    PRIVATE
+        "${CMAKE_CURRENT_LIST_DIR}/taskblendsw.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/taskblursw.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/taskcontoursw.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/taskexpandsurfacesw.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/tasklayersw.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/taskmeshsw.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/taskpixelcolormatrixsw.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/taskpixelgammasw.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/tasksurfaceresamplesw.cpp"
+)
