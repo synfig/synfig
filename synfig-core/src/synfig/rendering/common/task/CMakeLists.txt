@@ -1,0 +1,11 @@
+target_sources(synfig
+    PRIVATE
+        "${CMAKE_CURRENT_LIST_DIR}/taskblend.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/taskblur.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/tasklayer.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/taskpixelprocessor.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/tasksurfaceconvert.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/tasksurfacecreate.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/tasksurfacedestroy.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/tasksurfaceempty.cpp"
+)

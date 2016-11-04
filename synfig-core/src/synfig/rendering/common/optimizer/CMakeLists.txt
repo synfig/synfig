@@ -1,0 +1,21 @@
+target_sources(synfig
+    PRIVATE
+        "${CMAKE_CURRENT_LIST_DIR}/optimizerblendassociative.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/optimizerblendblend.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/optimizerblendcomposite.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/optimizerblendseparate.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/optimizerblendsplit.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/optimizerblendzero.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/optimizercalcbounds.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/optimizerlinear.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/optimizerlist.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/optimizerpixelprocessorsplit.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/optimizersplit.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/optimizersurface.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/optimizersurfaceconvert.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/optimizersurfacecreate.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/optimizersurfacedestroy.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/optimizersurfaceresample.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/optimizertransformation.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/optimizertransformationaffine.cpp"
+)
