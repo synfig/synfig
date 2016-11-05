@@ -92,6 +92,9 @@ include(layers/CMakeLists.txt)
 include(rendering/CMakeLists.txt)
 include(valuenodes/CMakeLists.txt)
 
+# TODO: check if we need this for release build
+include(debug/CMakeLists.txt)
+
 target_link_libraries(synfig
     ${SIGCPP_LIBRARIES}
     ${GLIBMM_LIBARIES}
@@ -100,9 +103,6 @@ target_link_libraries(synfig
     ${LIBXML_LIBRARIES}
     ${MLT_LIBRARIES}
     ${ZLIB_LIBRARIES}
+    ${FFTW_LIBRARIES}
+    ${CMAKE_THREAD_LIBS_INIT}
 )
-
-## Command line synfig binary
-add_executable(synfig_bin main.cpp)
-set_target_properties(synfig_bin PROPERTIES OUTPUT_NAME synfig)
-target_link_libraries(synfig_bin synfig)

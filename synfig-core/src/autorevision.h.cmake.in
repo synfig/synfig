@@ -1,0 +1,1 @@
+#cmakedefine DEVEL_VERSION "Revision date: ${GIT_DATE}\nBranch: ${GIT_BRANCH}\nRevision ID: ${GIT_HASH}"
