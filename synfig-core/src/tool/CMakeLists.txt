@@ -21,3 +21,8 @@ target_link_libraries(synfig_bin
     # TODO: properly detect ltdl
     ltdl
 )
+
+install (
+    TARGETS synfig_bin
+    DESTINATION bin
+)
