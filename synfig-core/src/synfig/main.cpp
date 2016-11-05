@@ -368,24 +368,15 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 
 	if (i == locations.size())
 	{
-		ValueNode::subsys_stop();
-		CairoImporter::subsys_stop();
-		Importer::subsys_stop();
-		Target::subsys_stop();
-		Layer::subsys_stop();
-		Module::subsys_stop();
-		rendering::Renderer::subsys_stop();
-		Type::subsys_stop();
-		SoundProcessor::subsys_stop();
-		throw std::runtime_error(strprintf(_("Unable to open module list file '%s'"), MODULE_LIST_FILENAME));
+		synfig::warning("Cannot find '%s', trying to load default modules", MODULE_LIST_FILENAME);
+		Module::register_default_modules(cb);
 	}
 
 	std::list<String>::iterator iter;
 
-	Module::register_default_modules(cb);
-
 	for(i=0,iter=modules_to_load.begin();iter!=modules_to_load.end();++iter,i++)
 	{
+		synfig::info("Loading %s..", iter->c_str());
 		Module::Register(*iter,cb);
 		if(cb)cb->amount_complete((i+1)*100,modules_to_load.size()*100);
 	}
