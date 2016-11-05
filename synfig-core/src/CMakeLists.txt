@@ -29,6 +29,9 @@ pkg_check_modules(LIBXML REQUIRED libxml++-2.6)
 pkg_check_modules(MLT REQUIRED mlt++)
 pkg_check_modules(FFTW REQUIRED fftw3)
 
+# TODO: move to module where it is actually required
+pkg_check_modules(PANGO REQUIRED pango)
+
 ##
 ## Configure
 ##
@@ -80,6 +83,7 @@ include_directories(
         ${GLIBMM_INCLUDE_DIRS}
         ${GIOMM_INCLUDE_DIRS}
         ${CAIRO_INCLUDE_DIRS}
+        ${PANGO_INCLUDE_DIRS}
         ${LIBXML_INCLUDE_DIRS}
         ${MLT_INCLUDE_DIRS}
         ${FFTW_INCLUDE_DIRS}
