@@ -91,6 +91,7 @@ include_directories(
 
 add_subdirectory(synfig)
 add_subdirectory(tool)
+add_subdirectory(modules)
 
 ##
 ## Build targets

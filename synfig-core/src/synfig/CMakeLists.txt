@@ -3,7 +3,8 @@
 ##
 
 ## Main target: libsynfig
-add_library(synfig "")
+## TODO: optional static linking?
+add_library(synfig SHARED "")
 
 target_sources(synfig
     PUBLIC
@@ -105,4 +106,9 @@ target_link_libraries(synfig
     ${ZLIB_LIBRARIES}
     ${FFTW_LIBRARIES}
     ${CMAKE_THREAD_LIBS_INIT}
+)
+
+install (
+    TARGETS synfig
+    DESTINATION lib
 )
