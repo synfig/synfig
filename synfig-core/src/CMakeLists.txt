@@ -77,18 +77,6 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
-include_directories(
-    SYSTEM
-        ${SIGCPP_INCLUDE_DIRS}
-        ${GLIBMM_INCLUDE_DIRS}
-        ${GIOMM_INCLUDE_DIRS}
-        ${CAIRO_INCLUDE_DIRS}
-        ${PANGO_INCLUDE_DIRS}
-        ${LIBXML_INCLUDE_DIRS}
-        ${MLT_INCLUDE_DIRS}
-        ${FFTW_INCLUDE_DIRS}
-)
-
 ##
 ## Sub-dirs
 ##
