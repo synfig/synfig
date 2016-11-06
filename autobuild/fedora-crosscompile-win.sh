@@ -25,7 +25,7 @@ else
     exit 1
 fi
 
-export WORKSPACE=${SCRIPTPATH}/../../build
+export WORKSPACE=${SCRIPTPATH}/../../../build
 export PREFIX=$WORKSPACE/win$ARCH/build
 export DISTPREFIX=$WORKSPACE/win$ARCH/dist
 export SRCPREFIX=$WORKSPACE/win$ARCH/source
