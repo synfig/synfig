@@ -1,3 +1,17 @@
+##
+## Includes
+##
+
+include_directories(
+    SYSTEM
+        ${SIGCPP_INCLUDE_DIRS}
+        ${CAIRO_INCLUDE_DIRS}
+)
+
+##
+## Modules
+##
+
 ## TODO: make configurable
 ## TODO: write some macros
 
