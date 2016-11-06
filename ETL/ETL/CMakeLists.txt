@@ -1,9 +1,6 @@
 ## TODO: install headers properly
 
-## Apparently it's not really necessary
-## TODO: get rid of it when it's no longer needed for
-## compatibility with autotools
-file(WRITE etl_profile.h "")
+configure_file(etl_profile.h.cmake.in etl_profile.h)
 
 set(ETL_HEADERS
         "${CMAKE_CURRENT_LIST_DIR}/rect"
@@ -71,8 +68,9 @@ set(ETL_HEADERS
         "${CMAKE_CURRENT_LIST_DIR}/_curve_func.h"
         "${CMAKE_CURRENT_LIST_DIR}/_value.h"
         "${CMAKE_CURRENT_LIST_DIR}/_handle.h"
-        "${CMAKE_CURRENT_LIST_DIR}/etl_profile.h"
         "${CMAKE_CURRENT_LIST_DIR}/_gaussian.h"
+
+        "${CMAKE_CURRENT_BINARY_DIR}/etl_profile.h"
 )
 
 install(
