@@ -1,12 +1,13 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file guidset.h
-**	\brief Template Header
+**	\brief GUIDSet typedef
 **
 **	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2008 Chris Moore
+**	Copyright (c) 2016 caryoscelus
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -30,11 +31,7 @@
 
 #include "guid.h"
 
-#ifdef HASH_SET_H
-#include HASH_SET_H
-#else
 #include <set>
-#endif
 
 /* === M A C R O S ========================================================= */
 
@@ -44,17 +41,9 @@
 
 namespace synfig {
 
-class GUIDSet : public
-#ifdef HASH_SET_H
-std::set<synfig::GUID>
-#else
-#ifndef HAS_SET_CLASS
-#define HASH_SET_CLASS HASH_SET_NAMESPACE::hash_set
-#endif
-HASH_SET_CLASS<synfig::GUID,synfig::GUIDHash>
-#endif
-{
-}; // END of class GUIDSet
+// TODO: It would be better to replace it with typedef/using
+// But that'll break some forward declarations, so leaving it as is for now
+class GUIDSet : public std::set<synfig::GUID> {};
 
 };
 
