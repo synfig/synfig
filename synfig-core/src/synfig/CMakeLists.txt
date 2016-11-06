@@ -7,7 +7,7 @@
 add_library(synfig SHARED "")
 
 target_sources(synfig
-    PUBLIC
+    PRIVATE
         "${CMAKE_CURRENT_LIST_DIR}/activepoint.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/bone.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/blur.cpp"
@@ -62,7 +62,7 @@ target_sources(synfig
 ## these were added seprately in autotools build, preserving this for now
 ## TODO: either merge with main list or create new target
 target_sources(synfig
-    PUBLIC
+    PRIVATE
         "${CMAKE_CURRENT_LIST_DIR}/target_multi.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/target_null.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/target_null_tile.cpp"
@@ -72,12 +72,12 @@ target_sources(synfig
         "${CMAKE_CURRENT_LIST_DIR}/target_cairo_tile.cpp"
 )
 target_sources(synfig
-    PUBLIC
+    PRIVATE
         "${CMAKE_CURRENT_LIST_DIR}/listimporter.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/cairolistimporter.cpp"
 )
 target_sources(synfig
-    PUBLIC
+    PRIVATE
         "${CMAKE_CURRENT_LIST_DIR}/blinepoint.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/widthpoint.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/dashitem.cpp"
@@ -108,7 +108,21 @@ target_link_libraries(synfig
     ${CMAKE_THREAD_LIBS_INIT}
 )
 
-install (
+install(
     TARGETS synfig
-    DESTINATION lib
+    EXPORT synfig-export
+    LIBRARY DESTINATION lib
+)
+
+message(${PROJECT_NAME})
+
+export(
+    EXPORT synfig-export
+    FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}/${PROJECT_NAME}-config.cmake"
+)
+
+install(
+    EXPORT synfig-export
+    FILE "${PROJECT_NAME}-config.cmake"
+    DESTINATION "lib/cmake/${PROJECT_NAME}"
 )
