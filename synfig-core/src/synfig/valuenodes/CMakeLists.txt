@@ -67,3 +67,10 @@ target_sources(synfig
         "${CMAKE_CURRENT_LIST_DIR}/valuenode_derivative.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/valuenode_weightedaverage.cpp"
 )
+
+file(GLOB VALUENODES_HEADERS "${CMAKE_CURRENT_LIST_DIR}/*.h")
+
+install(
+    FILES ${VALUENODES_HEADERS}
+    DESTINATION include/synfig/valuenodes
+)

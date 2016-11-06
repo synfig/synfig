@@ -8,6 +8,13 @@ target_sources(synfig
         "${CMAKE_CURRENT_LIST_DIR}/task.cpp"
 )
 
+file(GLOB RENDERING_HEADERS "${CMAKE_CURRENT_LIST_DIR}/*.h")
+
+install(
+    FILES ${RENDERING_HEADERS}
+    DESTINATION include/synfig/rendering
+)
+
 ## TODO: make configurable
 include(${CMAKE_CURRENT_LIST_DIR}/common/CMakeLists.txt)
 # include(${CMAKE_CURRENT_LIST_DIR}/opengl/CMakeLists.txt)
