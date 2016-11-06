@@ -19,3 +19,10 @@ target_sources(synfig
         "${CMAKE_CURRENT_LIST_DIR}/layer_skeletondeformation.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/layer_switch.cpp"
 )
+
+file(GLOB LAYERS_HEADERS "${CMAKE_CURRENT_LIST_DIR}/*.h")
+
+install(
+    FILES ${LAYERS_HEADERS}
+    DESTINATION include/synfig/layers
+)

@@ -99,35 +99,9 @@ target_sources(synfig
         "${CMAKE_CURRENT_LIST_DIR}/value.cpp"
 )
 
-set(SYNFIG_PUBLIC_HEADERS
-    angle.h
-    base_types.h
-    canvas.h
-    canvasbase.h
-    canvasfilenaming.h
-    color.h
-    distance.h
-    exception.h
-    filecontainer.h
-    filecontainerzip.h
-    filesystem.h
-    general.h
-    guid.h
-    interpolation.h
-    layer.h
-    mutex.h
-    node.h
-    paramdesc.h
-    real.h
-    releases.h
-    string.h
-    type.h
-    vector.h
-    value.h
-    valuenode.h
-    version.h
-    time.h
-)
+##
+## Sub-dirs
+##
 
 ## include sub-dirs
 include(color/CMakeLists.txt)
@@ -135,25 +109,28 @@ include(layers/CMakeLists.txt)
 include(rendering/CMakeLists.txt)
 include(valuenodes/CMakeLists.txt)
 
-# TODO: check if we need this for release build
+## TODO: check if we need this for release build
 include(debug/CMakeLists.txt)
 
 target_link_libraries(synfig
-    ${SIGCPP_LIBRARIES}
-    ${GLIBMM_LIBARIES}
-    ${GIOMM_LIBRARIES}
-    ${CAIRO_LIBRARIES}
-    ${LIBXML_LIBRARIES}
-    ${MLT_LIBRARIES}
-    ${ZLIB_LIBRARIES}
-    ${FFTW_LIBRARIES}
-    ${CMAKE_THREAD_LIBS_INIT}
+    PRIVATE
+        ${SIGCPP_LIBRARIES}
+        ${GLIBMM_LIBARIES}
+        ${GIOMM_LIBRARIES}
+        ${CAIRO_LIBRARIES}
+        ${LIBXML_LIBRARIES}
+        ${MLT_LIBRARIES}
+        ${ZLIB_LIBRARIES}
+        ${FFTW_LIBRARIES}
+        ${CMAKE_THREAD_LIBS_INIT}
 )
 
 ## Install headers
 ## TODO: find a better way to do that, maybe?
+file(GLOB SYNFIG_HEADERS "${CMAKE_CURRENT_LIST_DIR}/*.h")
+
 install(
-    FILES ${SYNFIG_PUBLIC_HEADERS}
+    FILES ${SYNFIG_HEADERS}
     DESTINATION include/synfig
 )
 

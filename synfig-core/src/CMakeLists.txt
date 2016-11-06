@@ -12,10 +12,10 @@ find_package(Boost REQUIRED system filesystem program_options chrono)
 
 find_package(ZLIB REQUIRED)
 
-# TODO: investigate this more closely
+## TODO: investigate these more closely
 set(CMAKE_THREAD_PREFER_PTHREAD ON)
 set(THREADS_PREFER_PTHREAD_FLAG ON)
-find_package (Threads REQUIRED)
+find_package(Threads REQUIRED)
 if (CMAKE_USE_PTHREADS_INIT)
     set(HAVE_LIBPTHREAD ON)
 endif()
