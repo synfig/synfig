@@ -15,10 +15,14 @@
 *.spec
 *.xml
 *~
+build/
+
+.kdev4/
 
 # ------------------------------------------------------------------------
 
 # generated in ETL, core and studio
+# TODO: clean this up when autotools->cmake switch is complete
 *-config
 ABOUT-NLS
 Makefile.in.in
