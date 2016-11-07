@@ -36,8 +36,8 @@ pkg_check_modules(PANGO REQUIRED pango)
 ## Configure
 ##
 
-# set git version
-# TODO: put into separate file
+## set git version
+## TODO: put into separate file
 find_package(Git)
 if (GIT_FOUND)
     execute_process(

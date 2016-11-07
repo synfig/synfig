@@ -123,6 +123,9 @@ target_link_libraries(synfig
         ${ZLIB_LIBRARIES}
         ${FFTW_LIBRARIES}
         ${CMAKE_THREAD_LIBS_INIT}
+
+        # TODO: properly detect ltdl
+        ltdl
 )
 
 ## Install headers
