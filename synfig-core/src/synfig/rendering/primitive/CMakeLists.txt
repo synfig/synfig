@@ -6,3 +6,5 @@ target_sources(synfig
         "${CMAKE_CURRENT_LIST_DIR}/polyspan.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/transformation.cpp"
 )
+
+install_all_headers(rendering/primitive)
