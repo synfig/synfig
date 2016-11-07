@@ -8,3 +8,6 @@ if (CMAKE_USE_PTHREADS_INIT)
 endif()
 
 add_subdirectory(ETL)
+
+enable_testing()
+add_subdirectory(test)
