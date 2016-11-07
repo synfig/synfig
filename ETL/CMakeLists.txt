@@ -7,6 +7,12 @@ if (CMAKE_USE_PTHREADS_INIT)
     set(HAVE_LIBPTHREAD ON)
 endif()
 
+## for tests
+include_directories(${CMAKE_SOURCE_DIR})
+
+## for test to find generated etl_profile.h
+include_directories(${CMAKE_CURRENT_BINARY_DIR}/ETL)
+
 add_subdirectory(ETL)
 
 enable_testing()
