@@ -1,0 +1,2 @@
+#cmakedefine ENABLE_NLS
+#define GETTEXT_PACKAGE "${GETTEXT_PACKAGE}"
