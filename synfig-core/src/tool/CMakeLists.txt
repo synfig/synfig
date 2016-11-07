@@ -17,9 +17,6 @@ target_link_libraries(synfig_bin
     ${Boost_FILESYSTEM_LIBRARIES}
     ${Boost_PROGRAM_OPTIONS_LIBRARIES}
     ${Boost_CHRONO_LIBRARIES}
-
-    # TODO: properly detect ltdl
-    ltdl
 )
 
 install (
