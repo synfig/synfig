@@ -1,0 +1,18 @@
+target_sources(synfigstudio
+    PRIVATE
+        "${CMAKE_CURRENT_LIST_DIR}/about.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/canvasoptions.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/canvasproperties.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/dialog_color.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/dialog_gradient.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/dialog_input.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/dialog_keyframe.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/dialog_preview.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/dialog_setup.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/dialog_soundselect.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/dialog_targetparam.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/dialog_ffmpegparam.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/dialog_spritesheetparam.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/dialog_waypoint.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/dialog_template.cpp"
+)
