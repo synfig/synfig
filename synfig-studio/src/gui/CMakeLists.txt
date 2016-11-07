@@ -54,3 +54,8 @@ target_link_libraries(synfigstudio
     synfig
     synfigapp
 )
+
+install(
+    TARGETS synfigstudio
+    DESTINATION bin
+)

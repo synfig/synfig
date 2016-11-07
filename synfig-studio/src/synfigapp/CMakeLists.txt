@@ -22,3 +22,8 @@ target_sources(synfigapp
 )
 
 include(actions/CMakeLists.txt)
+
+install(
+    TARGETS synfigapp
+    DESTINATION lib
+)
