@@ -6,3 +6,5 @@ target_sources(synfig
         "${CMAKE_CURRENT_LIST_DIR}/fft.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/packedsurface.cpp"
 )
+
+install_all_headers(rendering/software/function)
