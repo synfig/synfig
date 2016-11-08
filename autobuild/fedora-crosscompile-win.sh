@@ -158,6 +158,7 @@ for file in \
    libmlt*.dll \
    libogg*.dll \
    libpango\*.dll \
+   libpcre\*.dll \
    libpixman\*.dll \
    libpng\*.dll \
    libsamplerate*.dll \
