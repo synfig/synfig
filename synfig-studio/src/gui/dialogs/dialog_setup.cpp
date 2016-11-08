@@ -714,7 +714,6 @@ Dialog_Setup::on_apply_pressed()
 
 	// Set file toolbar flag
 	App::show_file_toolbar=toggle_show_file_toolbar.get_active();
-	App::apply_gtk_settings(App::show_file_toolbar);
 
 	// Set the browser_command textbox
 	App::browser_command=textbox_browser_command.get_text();
