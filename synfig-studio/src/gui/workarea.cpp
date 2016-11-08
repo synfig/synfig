@@ -842,7 +842,9 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	zoomdial->signal_zoom_out().connect(sigc::mem_fun(*this, &studio::WorkArea::zoom_out));
 	zoomdial->signal_zoom_fit().connect(sigc::mem_fun(*this, &studio::WorkArea::zoom_fit));
 	zoomdial->signal_zoom_norm().connect(sigc::mem_fun(*this, &studio::WorkArea::zoom_norm));
-	zoomdial->signal_zoom_edit().connect(sigc::mem_fun(*this, &studio::WorkArea::zoom_edit));
+	zoomdial->signal_zoom_edit().connect([this]() {
+		set_zoom(zoomdial->get_zoom().value_or(zoom));
+	});
 
 	hbox->pack_end(*hscrollbar1, Gtk::PACK_EXPAND_WIDGET,0);
 	hscrollbar1->show();
@@ -3209,12 +3211,6 @@ studio::WorkArea::zoom_norm()
 	if (zoom == 1.0) return set_zoom(prev_zoom);
 	prev_zoom = zoom;
 	set_zoom(1.0f);
-}
-
-void
-studio::WorkArea::zoom_edit()
-{
-	set_zoom(zoomdial->get_zoom(zoom));
 }
 
 gboolean

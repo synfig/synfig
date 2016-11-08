@@ -34,6 +34,8 @@
 #include <gtkmm/button.h>
 #include <gtkmm/entry.h>
 
+#include <boost/optional.hpp>
+
 #include <synfig/real.h>
 
 /* === M A C R O S ========================================================= */
@@ -52,11 +54,10 @@ class ZoomDial : public Gtk::Table
 	Gtk::Button *zoom_fit;
 	Gtk::Button *zoom_norm;
 	Gtk::Entry *current_zoom;
+	bool already_selected = false;
 
 	Gtk::Button *create_icon(Gtk::IconSize size, const Gtk::BuiltinStockID & stockid,
 			const char * tooltip);
-	void after_event(GdkEvent *event);
-	bool current_zoom_event(GdkEvent* event);
 
 public:
 	ZoomDial(Gtk::IconSize &size);
@@ -67,8 +68,9 @@ public:
 	Glib::SignalProxy0<void> signal_zoom_norm() { return zoom_norm->signal_clicked(); }
 	Glib::SignalProxy0<void> signal_zoom_edit() { return current_zoom->signal_activate(); }
 
-	void set_zoom(synfig::Real value);
-	synfig::Real get_zoom(synfig::Real default_value = 0.0);
+	void set_zoom(synfig::Real zoom);
+	boost::optional<synfig::Real> get_zoom();
+
 }; // END of class ZoomDial
 
 }; // END of namespace studio

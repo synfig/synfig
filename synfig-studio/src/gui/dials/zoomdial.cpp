@@ -30,13 +30,14 @@
 #	include <config.h>
 #endif
 
-#include <ETL/stringf>
-
 #include <synfig/general.h>
 
 #include "zoomdial.h"
 #include <gtkmm/image.h>
 #include <gtkmm/stock.h>
+
+#include <boost/format.hpp>
+#include <boost/algorithm/string.hpp>
 
 #include <gui/localization.h>
 
@@ -70,14 +71,43 @@ ZoomDial::ZoomDial(Gtk::IconSize & size):
 	current_zoom->set_editable(true);
 	current_zoom->set_width_chars(6);
 	current_zoom->add_events(Gdk::SCROLL_MASK);
-	current_zoom->signal_event().connect(
-		sigc::mem_fun(*this, &ZoomDial::current_zoom_event) );
-	current_zoom->show();
+
+	current_zoom->signal_event().connect([this](GdkEvent* event) -> bool {
+		if (event->type == GDK_SCROLL)
+		{
+			if (event->scroll.direction == GDK_SCROLL_DOWN ||
+				event->scroll.direction == GDK_SCROLL_LEFT)
+			{
+				zoom_out->clicked();
+			}
+			else
+			if (event->scroll.direction == GDK_SCROLL_UP ||
+				event->scroll.direction == GDK_SCROLL_RIGHT)
+			{
+				zoom_in->clicked();
+			}
+			return true;
+		}
+		return false;
+	});
+
 	// select everything except for % sign after user clicks widget
 	// using release event here instead of grab_focus because the latter
 	// is emitted before gtk sets cursor selection gets nullified
-	current_zoom->signal_event_after().connect(
-		sigc::mem_fun(*this, &ZoomDial::after_event) );
+	current_zoom->signal_event_after().connect([this](GdkEvent* event) {
+		if (event->type == Gdk::BUTTON_RELEASE && !already_selected)
+		{
+			already_selected = true;
+			current_zoom->select_region(0, current_zoom->get_text_length()-1);
+		}
+	});
+
+	current_zoom->signal_focus_in_event().connect([this](GdkEventFocus*) -> bool {
+		already_selected = false;
+		return false;
+	});
+
+	current_zoom->show();
 
 	attach(*zoom_out, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 	attach(*current_zoom, 1, 2, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
@@ -85,29 +115,6 @@ ZoomDial::ZoomDial(Gtk::IconSize & size):
 	attach(*zoom_norm, 3, 4, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 	attach(*zoom_fit, 4, 5, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 }
-
-void
-ZoomDial::after_event(GdkEvent *event)
-{
-	if (event->type == GDK_BUTTON_RELEASE)
-		current_zoom->select_region(0, current_zoom->get_text_length()-1);
-}
-
-bool
-ZoomDial::current_zoom_event(GdkEvent* event)
-{
-	if (event->type == GDK_SCROLL)
-	{
-		if(event->scroll.direction==GDK_SCROLL_DOWN || event->scroll.direction==GDK_SCROLL_LEFT)
-			zoom_out->clicked();
-		else
-		if(event->scroll.direction==GDK_SCROLL_UP || event->scroll.direction==GDK_SCROLL_RIGHT)
-			zoom_in->clicked();
-		return true;
-	}
-	return false;
-}
-
 
 Gtk::Button *
 ZoomDial::create_icon(Gtk::IconSize size, const Gtk::BuiltinStockID & stockid,
@@ -126,20 +133,28 @@ ZoomDial::create_icon(Gtk::IconSize size, const Gtk::BuiltinStockID & stockid,
 }
 
 void
-ZoomDial::set_zoom(synfig::Real value)
+ZoomDial::set_zoom(synfig::Real zoom)
 {
-	current_zoom->set_text(etl::strprintf("%.1lf%%", value*100.0));
+	current_zoom->set_text((boost::format{"%.1f%%"} % (zoom*100)).str());
 }
 
-synfig::Real
-ZoomDial::get_zoom(synfig::Real default_value)
+boost::optional<Real>
+ZoomDial::get_zoom()
 {
-	std::string s = current_zoom->get_text();
-	char buffer[10] = "";
-	synfig::Real value = 0.0;
-	sscanf(s.c_str(), "%lf%9s", &value, buffer);
-
-	if (std::string(buffer) == "%") value *= 0.01;
-	return approximate_greater(value, 0.0) ? value : default_value;
+	std::istringstream input { current_zoom->get_text() };
+	Real zoom;
+	if (input >> zoom) {
+		String suffix;
+		if (input >> suffix) {
+			boost::trim(suffix);
+			if (suffix == "%") {
+				zoom /= 100.0;
+			} else if (suffix != "") {
+				return boost::none;
+			}
+		}
+	} else {
+		return boost::none;
+	}
+	return boost::make_optional(zoom);
 }
-

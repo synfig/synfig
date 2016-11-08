@@ -602,7 +602,6 @@ public:
 	void zoom_out();
 	void zoom_fit();
 	void zoom_norm();
-	void zoom_edit();
 	float get_zoom()const { return zoom; } // zoom is declared in Duckmatic
 
 	void set_zoom(float z);
