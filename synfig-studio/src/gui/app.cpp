@@ -1459,7 +1459,7 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		studio_init_cb.task(_("Loading Basic Settings..."));
 
 		load_settings("pref.use_dark_theme");
-		App::apply_gtk_settings(App::use_dark_theme);
+		App::apply_gtk_settings();
 
 		load_settings("pref.show_file_toolbar");
 
@@ -2175,7 +2175,7 @@ App::restore_default_settings()
 }
 
 void
-App::apply_gtk_settings(bool use_dark)
+App::apply_gtk_settings()
 {
 	GtkSettings *gtk_settings;
 	gtk_settings = gtk_settings_get_default ();
@@ -2186,7 +2186,7 @@ App::apply_gtk_settings(bool use_dark)
 	}
 
 	// dark theme
-	g_object_set (G_OBJECT (gtk_settings), "gtk-application-prefer-dark-theme", use_dark, NULL);
+	g_object_set (G_OBJECT (gtk_settings), "gtk-application-prefer-dark-theme", App::use_dark_theme, NULL);
 
 	// enable menu icons
 	g_object_set (G_OBJECT (gtk_settings), "gtk-menu-images", TRUE, NULL);
