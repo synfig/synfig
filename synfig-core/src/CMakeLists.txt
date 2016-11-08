@@ -29,8 +29,11 @@ pkg_check_modules(LIBXML REQUIRED libxml++-2.6)
 pkg_check_modules(MLT REQUIRED mlt++)
 pkg_check_modules(FFTW REQUIRED fftw3)
 
-# TODO: move to module where it is actually required
+## TODO: move to module where it is actually required
 pkg_check_modules(PANGO REQUIRED pango)
+
+## TODO: should we keep it here?
+find_package(ImageMagick COMPONENTS Magick++)
 
 ##
 ## Configure

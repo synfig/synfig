@@ -1,5 +1,7 @@
 add_library(mod_magickpp MODULE "")
 
+include_directories(SYSTEM ${ImageMagick_Magick++_INCLUDE_DIRS})
+
 target_sources(mod_magickpp
     PUBLIC
         "${CMAKE_CURRENT_LIST_DIR}/main.cpp"
