@@ -28,7 +28,7 @@ set(MODS_ENABLED
     mod_imagemagick
     mod_jpeg
 #     mod_libavcodec - build failure
-#     mod_magickpp - missing include
+#     mod_magickpp - made optional
 #     mod_mng - missing include
     mod_noise
 #     mod_openexr - missing include
@@ -39,6 +39,22 @@ set(MODS_ENABLED
 #     mptr_mplayer - "This code has vulnerabilites"
 )
 
+## Magick++ support
+option(WITH_MAGICPP "Enable Magic++ module (output format support)" OFF)
+option(WITHOUT_MAGICPP "Disable Magic++ module (output format support)" OFF)
+
+if (${WITH_MAGICPP} AND ${WITHOUT_MAGICPP})
+    message(FATAL_ERROR "You cannot request both WITH_MAGICPP and WITHOUT_MAGICPP!")
+endif()
+
+if (NOT ${WITHOUT_MAGICPP} AND ImageMagick_Magick++_FOUND)
+    list(APPEND MODS_ENABLED mod_magickpp)
+elseif (${WITH_MAGICPP} AND NOT ImageMagick_Magick++_FOUND)
+    message(SEND_ERROR "Magic++ support is requested, but the package cannot be located.")
+endif()
+## Magick++ support (end)
+
+## Process selected modules
 set(SYNFIG_MODULES_CONTENT "")
 
 message("-- Synfig modules:")
