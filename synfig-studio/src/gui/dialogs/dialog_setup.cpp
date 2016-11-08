@@ -710,7 +710,7 @@ Dialog_Setup::on_apply_pressed()
 
 	// Set the dark theme flag
 	App::use_dark_theme=toggle_use_dark_theme.get_active();
-	App::apply_gtk_settings(App::use_dark_theme);
+	App::apply_gtk_settings();
 
 	// Set file toolbar flag
 	App::show_file_toolbar=toggle_show_file_toolbar.get_active();
