@@ -1462,7 +1462,6 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		App::apply_gtk_settings(App::use_dark_theme);
 
 		load_settings("pref.show_file_toolbar");
-		App::apply_gtk_settings(App::show_file_toolbar);
 
 		// Set experimental features
 		load_settings("pref.enable_experimental_features");
