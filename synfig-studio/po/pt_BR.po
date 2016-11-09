@@ -15,8 +15,8 @@
 # rodolforg <rodolforg@gmail.com>, 2013
 # Sónia Mendes <smoreiramendes@hotmail.com>, 2013
 # Sónia Mendes <smoreiramendes@hotmail.com>, 2013
-# Valessio ValessioBrito <valessio@gmail.com>, 2011
-# Valessio ValessioBrito <valessio@gmail.com>, 2011
+# Valessio Brito <valessio@gmail.com>, 2011
+# Valessio Brito <valessio@gmail.com>, 2011
 msgid ""
 msgstr ""
 "Project-Id-Version: Synfig UI\n"

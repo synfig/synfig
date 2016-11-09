@@ -3,14 +3,14 @@
 # This file is distributed under the same license as the Synfig Studio package.
 # 
 # Translators:
-# Sirius2007 <dugonjicd@gmail.com>, 2015
+# Sirius2007 <dugonjicd@gmail.com>, 2015-2016
 msgid ""
 msgstr ""
 "Project-Id-Version: Synfig UI\n"
 "Report-Msgid-Bugs-To: https://github.com/synfig/synfig/issues\n"
 "POT-Creation-Date: 2016-06-05 14:00+0700\n"
-"PO-Revision-Date: 2016-01-16 14:18+0000\n"
-"Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
+"PO-Revision-Date: 2016-10-10 19:26+0000\n"
+"Last-Translator: Sirius2007 <dugonjicd@gmail.com>\n"
 "Language-Team: Bosnian (http://www.transifex.com/morevnaproject/synfig/language/bs/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -7131,17 +7131,17 @@ msgstr ""
 
 #: ../src/synfigapp/action_system.cpp:117
 msgid "Continue"
-msgstr ""
+msgstr "Nastavak"
 
 #: ../src/synfigapp/action_system.cpp:136
 #: ../src/synfigapp/action_system.cpp:153
 #: ../src/synfigapp/action_system.cpp:164
 msgid "Failed"
-msgstr ""
+msgstr "Neuspješno"
 
 #: ../src/synfigapp/action_system.cpp:197
 msgid "Successful"
-msgstr ""
+msgstr "Uspješno"
 
 #: ../src/synfigapp/action_system.cpp:230
 #: ../src/synfigapp/action_system.cpp:232
@@ -7175,7 +7175,7 @@ msgstr ""
 
 #: ../src/synfigapp/canvasinterface.cpp:357
 msgid "Add Layer To"
-msgstr ""
+msgstr "Dodaj sloj na"
 
 #: ../src/synfigapp/canvasinterface.cpp:406
 #: ../src/synfigapp/canvasinterface.cpp:467
@@ -7210,23 +7210,23 @@ msgstr ""
 
 #: ../src/synfigapp/canvasinterface.cpp:483
 msgid "Empty name!"
-msgstr ""
+msgstr "Bez imena!"
 
 #: ../src/synfigapp/canvasinterface.cpp:689
 msgid "File name must have an extension!"
-msgstr ""
+msgstr "Naziv datoteke treba sadržavati ekstenziju!"
 
 #: ../src/synfigapp/canvasinterface.cpp:700
 msgid "Unable to create \"Sound\" layer"
-msgstr ""
+msgstr "Nije moguće kreirati sloj \"Zvuk\""
 
 #: ../src/synfigapp/canvasinterface.cpp:738
 msgid "Unable to open this composition"
-msgstr ""
+msgstr "Nije moguće otvoriti ovu kompoziciju"
 
 #: ../src/synfigapp/canvasinterface.cpp:742
 msgid "Unable to create \"Group\" layer"
-msgstr ""
+msgstr "Nije moguće kreirati sloj \"Grupa\""
 
 #: ../src/synfigapp/canvasinterface.cpp:746
 msgid "Could not set children lock of imported canvas"
@@ -7240,7 +7240,7 @@ msgstr ""
 
 #: ../src/synfigapp/canvasinterface.cpp:766
 msgid "I don't know how to open images of this type -- "
-msgstr ""
+msgstr "Nije mi poznato kako da otvorim slike ovog tipa -- "
 
 #: ../src/synfigapp/canvasinterface.cpp:946
 #, c-format
@@ -7263,19 +7263,19 @@ msgstr ""
 
 #: ../src/synfigapp/uimanager.cpp:96
 msgid "(no/yes)"
-msgstr ""
+msgstr "(ne/da)"
 
 #: ../src/synfigapp/uimanager.cpp:98
 msgid "(yes/no)"
-msgstr ""
+msgstr "(da/ne)"
 
 #: ../src/synfigapp/uimanager.cpp:130
 msgid "error: "
-msgstr ""
+msgstr "greška: "
 
 #: ../src/synfigapp/uimanager.cpp:138
 msgid "warning: "
-msgstr ""
+msgstr "upozorenje: "
 
 #: ../src/synfigapp/value_desc.cpp:63
 msgid "Layer Parameter"

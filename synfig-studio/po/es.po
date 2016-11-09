@@ -4,6 +4,7 @@
 # 
 # Translators:
 # Adrian Giraudo <cagiraudo@gmail.com>, 2015
+# Alberto Díaz Tormo <albertodiaztormo@gmail.com>, 2016
 # Bazza <bazza@riseup.net>, 2016
 # genete <genetita@gmail.com>, 2008, 2009, 2010, 2011, 2012
 # carlos_tutor <carlos_tutor@hotmail.com>, 2011
@@ -24,8 +25,8 @@ msgstr ""
 "Project-Id-Version: Synfig UI\n"
 "Report-Msgid-Bugs-To: https://github.com/synfig/synfig/issues\n"
 "POT-Creation-Date: 2016-06-05 14:00+0700\n"
-"PO-Revision-Date: 2016-10-02 19:02+0000\n"
-"Last-Translator: Miguel López Casellas <miguellopezcasellas@gmail.com>\n"
+"PO-Revision-Date: 2016-10-19 11:17+0000\n"
+"Last-Translator: Alberto Díaz Tormo <albertodiaztormo@gmail.com>\n"
 "Language-Team: Spanish (http://www.transifex.com/morevnaproject/synfig/language/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -43,7 +44,7 @@ msgstr "Crea y edita composiciones y animaciones 2D"
 
 #: ../synfigstudio.appdata.xml.in.h:1
 msgid "Artist-oriented design"
-msgstr "Diseño orientado para artista"
+msgstr "Diseño orientado al artista"
 
 #: ../synfigstudio.appdata.xml.in.h:2
 msgid "Features:"
@@ -156,7 +157,7 @@ msgid ""
 "This input slowly goes from zero to one while you draw a stroke. It can also"
 " be configured to jump back to zero periodically while you move. Look at the"
 " 'stroke duration' and 'stroke hold time' settings."
-msgstr ""
+msgstr "Esta entrada va lentamente cero a uno mientras dibuja un trazo. También se puede configurar para saltar a cero periódicamente mientras te mueves. Consulta la configuración de 'tiempo de espera del movimiento' y 'duración del movimiento'."
 
 #: ../src/brushlib/brushsettings.py:31
 msgid "Direction"
@@ -166,7 +167,7 @@ msgstr "Dirección"
 msgid ""
 "The angle of the stroke, in degrees. The value will stay between 0.0 and "
 "180.0, effectively ignoring turns of 180 degrees."
-msgstr ""
+msgstr "El ángulo del trazo, en grados. El valor se mantendrá entre 0.0 y 180.0, ignorando giros de 180 grados."
 
 #: ../src/brushlib/brushsettings.py:32
 msgid "Declination"
@@ -176,7 +177,7 @@ msgstr "Declinación"
 msgid ""
 "Declination of stylus tilt. 0 when stylus is parallel to tablet and 90.0 "
 "when it's perpendicular to tablet."
-msgstr ""
+msgstr "Declinación de la inclinación de la aguja. 0 cuando la aguja es paralela a la tableta y 90.0 cuando es perpendicular a la tableta."
 
 #: ../src/brushlib/brushsettings.py:33
 msgid "Ascension"
@@ -187,7 +188,7 @@ msgid ""
 "Right ascension of stylus tilt. 0 when stylus working end points to you, +90"
 " when rotated 90 degrees clockwise, -90 when rotated 90 degrees "
 "counterclockwise."
-msgstr ""
+msgstr "Ascensión correcta de inclinación de la aguja. 0 cuando te apunta a ti, +90 cuando se gira 90 grados hacia la derecha, -90 cuando se gira 90 grados hacia la izquierda."
 
 #: ../src/brushlib/brushsettings.py:35
 msgid "Custom"
@@ -197,7 +198,7 @@ msgstr "Personalizado"
 msgid ""
 "This is a user defined input. Look at the 'custom input' setting for "
 "details."
-msgstr ""
+msgstr "Esta es una entrada definida por el usuario. Consulta los ajustes en 'entrada personalizada' para más detalles."
 
 #: ../src/brushlib/brushsettings.py:44 ../src/gui/states/state_bline.cpp:569
 #: ../src/gui/states/state_circle.cpp:603 ../src/gui/states/state_draw.cpp:673
@@ -223,7 +224,7 @@ msgstr "Múltiple Opacidad"
 msgid ""
 "This gets multiplied with opaque. You should only change the pressure input of this setting. Use 'opaque' instead to make opacity depend on speed.\n"
 "This setting is responsible to stop painting when there is zero pressure. This is just a convention, the behaviour is identical to 'opaque'."
-msgstr ""
+msgstr "Esto se obtiene multiplicado con opaco.  Sólo debe cambiar el nivel de presión de este ajuste. Utilizar 'opaco' en lugar de crear opacidad dependerá de la velocidad.\nEste ajuste es responsable de detener el pintado cuando no hay presión. Esto es solamente una convención, el comportamiento es idéntico a opaco."
 
 #: ../src/brushlib/brushsettings.py:46
 msgid "Opacity linearize"
@@ -234,7 +235,7 @@ msgid ""
 "Correct the nonlinearity introduced by blending multiple dabs on top of each other. This correction should get you a linear (\"natural\") pressure response when pressure is mapped to opaque_multiply, as it is usually done. 0.9 is good for standard strokes, set it smaller if your brush scatters a lot, or higher if you use dabs_per_second.\n"
 "0.0 the opaque value above is for the individual dabs\n"
 "1.0 the opaque value above is for the final brush stroke, assuming each pixel gets (dabs_per_radius*2) brushdabs on average during a stroke"
-msgstr ""
+msgstr "Corrige la no linealidad introducida por la mezcla de múltiples toques encima de otros. Esta corrección debe permitirte una respuesta lineal de presión (\"natural\") cuando la presión se asigna a opaco_multiplicar, como se hace habitualmente. 0.9 es bueno para trazos estándar, conjunto más pequeño si el pincel se esparce mucho, o mayor si utiliza toques_por_segundo.\n0.0 el valor opaco anterior es para el toque_individual.\n1.0 el valor opaco anterior es para la pincelada final, suponiendo que cada píxel se obtiene (toques_por_radio * 2) suaves toques de pincel en promedio durante un trazo."
 
 #: ../src/brushlib/brushsettings.py:47
 #: ../src/gui/states/state_smoothmove.cpp:201
@@ -256,7 +257,7 @@ msgstr "Dureza"
 msgid ""
 "Hard brush-circle borders (setting to zero will draw nothing). To reach the "
 "maximum hardness, you need to disable Anti-aliasing."
-msgstr ""
+msgstr "Bordes duros de pincel del círculo (ajustar a cero no dibuja nada). Para alcanzar la máxima dureza, necesitará desactivar Anti-aliasing."
 
 #: ../src/brushlib/brushsettings.py:49
 msgid "Anti-aliasing"
@@ -268,7 +269,7 @@ msgid ""
 " 0.0 disable (for very strong erasers and pixel brushes)\n"
 " 1.0 blur one pixel (good value)\n"
 " 5.0 notable blur, thin strokes will disappear"
-msgstr ""
+msgstr "Este ajuste disminuye la dureza cuando es necesario para evitar el efecto de pixel escalonado.\n0.0 desactivado (para borradores muy fuertes y pinceles de pixel)\n1.0 desenfoque de un pixel (buen valor)\n5.0 desenfoque notable, los trazos finos desaparecerán"
 
 #: ../src/brushlib/brushsettings.py:50
 msgid "Dabs per basic radius"
@@ -278,7 +279,7 @@ msgstr "Aplica por radio básico"
 msgid ""
 "How many dabs to draw while the pointer moves a distance of one brush radius"
 " (more precise: the base value of the radius)"
-msgstr ""
+msgstr "Cuántos toques para dibujar mientras que el puntero mueve una distancia de radio de un pincel (más exacto: el valor base del radio)"
 
 #: ../src/brushlib/brushsettings.py:51
 msgid "Dabs per actual radius"
@@ -288,7 +289,7 @@ msgstr "Aplica por radio actual"
 msgid ""
 "Same as above, but the radius actually drawn is used, which can change "
 "dynamically"
-msgstr ""
+msgstr "Igual que arriba, pero se utiliza el radio actualmente dibujado, que puede cambiar dinámicamente"
 
 #: ../src/brushlib/brushsettings.py:52
 msgid "Dabs per second"
@@ -307,7 +308,7 @@ msgid ""
 "Alter the radius randomly each dab. You can also do this with the by_random input on the radius setting. If you do it here, there are two differences:\n"
 "1) the opaque value will be corrected such that a big-radius dabs is more transparent\n"
 "2) it will not change the actual radius seen by dabs_per_actual_radius"
-msgstr ""
+msgstr "Altera aleatoriamente el alcance por cada pizca. Usted también puede hacer esto con el by_random introducido en el alcance del ajuste. Si no lo hace aquí, hay dos diferencias:\n1) el valor opaco será corregido como una pizca big-radius que es más transparente\n2) eso no cambiará el alcance actual visto mediante dabs_per_actual_radius"
 
 #: ../src/brushlib/brushsettings.py:54
 msgid "Fine speed filter"
@@ -317,7 +318,7 @@ msgstr "Filtro fino de velocidad"
 msgid ""
 "How slow the input fine speed is following the real speed\n"
 "0.0 change immediately as your speed changes (not recommended, but try it)"
-msgstr ""
+msgstr "Cómo de despacio está siguiendo la excelente velocidad introducida a la velocidad real\n0.0 cambia inmediatamente como sus cambios de velocidad (no recomendado, pero inténtelo)"
 
 #: ../src/brushlib/brushsettings.py:55
 msgid "Gross speed filter"
@@ -325,7 +326,7 @@ msgstr "Filtro bruto de velocidad"
 
 #: ../src/brushlib/brushsettings.py:55
 msgid "Same as 'fine speed filter', but note that the range is different"
-msgstr ""
+msgstr "Igual que 'filtro de linea de velocidad', pero note que el rango es distinto"
 
 #: ../src/brushlib/brushsettings.py:56
 msgid "Fine speed gamma"
@@ -337,7 +338,7 @@ msgid ""
 "-8.0 very fast speed does not increase 'fine speed' much more\n"
 "+8.0 very fast speed increases 'fine speed' a lot\n"
 "For very slow speed the opposite happens."
-msgstr ""
+msgstr "Esto cambia la reacción de la 'estupenda velocidad' introducida en velocidad física extrema. Usted verá la diferencia mejor si la 'estupenda velocidad' es mapeada en el alcance.\n-8.0 velocidad muy rápida no incrementa la 'perfecta velocidad' mucho más\n+8.0 velocidad muy rápida incrementa mucho la 'perfecta velocidad'\nPara una velocidad muy lenta ocurre lo contrario."
 
 #: ../src/brushlib/brushsettings.py:57
 msgid "Gross speed gamma"
@@ -345,7 +346,7 @@ msgstr "Gama de velocidad bruta"
 
 #: ../src/brushlib/brushsettings.py:57
 msgid "Same as 'fine speed gamma' for gross speed"
-msgstr ""
+msgstr "Lo mismo que 'velocidad perfecta gamma' para velocidad bruta"
 
 #: ../src/brushlib/brushsettings.py:58
 msgid "Jitter"
@@ -357,7 +358,7 @@ msgid ""
 " 0.0 disabled\n"
 " 1.0 standard deviation is one basic radius away\n"
 "<0.0 negative values produce no jitter"
-msgstr ""
+msgstr "Añade una compensación aleatoria a la posición a la que cada pizca es deshabilitada\n 0.0 deshabilitado\n 1.0 desviación estándar es un alcance básico\n<0.0 valores negativos producen nervios"
 
 #: ../src/brushlib/brushsettings.py:59
 msgid "Offset by speed"
@@ -369,7 +370,7 @@ msgid ""
 "= 0 disable\n"
 "> 0 draw where the pointer moves to\n"
 "< 0 draw where the pointer comes from"
-msgstr ""
+msgstr "Cambia la posición dependiendo de un puntero de velocidad\n= 0 deshabilitado\n> 0 arrastrar hacia donde está el puntero\n< 0 arrastrar hacia el lugar del que viene el puntero"
 
 #: ../src/brushlib/brushsettings.py:60
 msgid "Offset by speed filter"
@@ -377,7 +378,7 @@ msgstr "Desplazamiento de filtro velocidad"
 
 #: ../src/brushlib/brushsettings.py:60
 msgid "How slow the offset goes back to zero when the cursor stops moving"
-msgstr ""
+msgstr "Cómo ralentizar la compensación que vuelve a cero cuando el cursor deja de moverse"
 
 #: ../src/brushlib/brushsettings.py:61
 msgid "Slow position tracking"
@@ -387,17 +388,17 @@ msgstr "Posición lenta de siguemiento"
 msgid ""
 "Slowdown pointer tracking speed. 0 disables it, higher values remove more "
 "jitter in cursor movements. Useful for drawing smooth, comic-like outlines."
-msgstr ""
+msgstr "Frenar la velocidad de rastreo del puntero. 0 la deshabilita, valores más altos eleminan más nervio en los movimientos del cursor. Útil para dibujar suave ´contornos similares a cómic."
 
 #: ../src/brushlib/brushsettings.py:62
 msgid "Slow tracking per dab"
-msgstr ""
+msgstr "Frenar el rastreo por toque"
 
 #: ../src/brushlib/brushsettings.py:62
 msgid ""
 "Similar as above but at brushdab level (ignoring how much time has past, if "
 "brushdabs do not depend on time)"
-msgstr ""
+msgstr "Similar a lo de arriba pero en livel de brushdab (ignorando cuánto tiempo ha pasado, si brushdab  no depende del tiempo)"
 
 #: ../src/brushlib/brushsettings.py:63
 msgid "Tracking noise"
@@ -407,7 +408,7 @@ msgstr "Siguiendo de ruido"
 msgid ""
 "Add randomness to the mouse pointer; this usually generates many small lines"
 " in random directions; maybe try this together with 'slow tracking'"
-msgstr ""
+msgstr "Añade aleatoriedad al puntero del ratón; esto usualmente genera muchas pequeñas líneas en direcciones aleatorias; quizá intenta esto junto con 'rastreo lento'"
 
 #: ../src/brushlib/brushsettings.py:65
 msgid "Color hue"
@@ -435,7 +436,7 @@ msgid ""
 " 0.0 do not modify the active color when selecting this brush\n"
 " 0.5 change active color towards brush color\n"
 " 1.0 set the active color to the brush color when selected"
-msgstr ""
+msgstr "Cuando se selecciona un pincel, el color puede ser restaurado al color con el que el pincel fue guardado.\n 0.0 no modifica el color activo cuando se selecciona este pincel\n 0.5 cambia el color activo hacia el color del pincel\n 1.0 fija el color activo en el color del pincel cuando se selecciona"
 
 #: ../src/brushlib/brushsettings.py:69
 msgid "Change color hue"
@@ -447,7 +448,7 @@ msgid ""
 "-0.1 small clockwise color hue shift\n"
 " 0.0 disable\n"
 " 0.5 counterclockwise hue shift by 180 degrees"
-msgstr ""
+msgstr "Cambia el tinte del color.\n-0.1 pequeño cambio de tinte de color en el sentido de las agujas del reloj\n 0.0 deshabilitado\n 0.5 cambio de tinte de 180 grados en el sentido contrario a las agujas del reloj"
 
 #: ../src/brushlib/brushsettings.py:70
 msgid "Change color lightness (HSL)"
@@ -459,7 +460,7 @@ msgid ""
 "-1.0 blacker\n"
 " 0.0 disable\n"
 " 1.0 whiter"
-msgstr ""
+msgstr "Cambia la claridad del color (luminosidad) usando el modelo de color HSL.\n-1.0 más negro\n 0.0 deshabilitado\n 1.0 más blanco"
 
 #: ../src/brushlib/brushsettings.py:71
 msgid "Change color satur. (HSL)"
@@ -471,7 +472,7 @@ msgid ""
 "-1.0 more grayish\n"
 " 0.0 disable\n"
 " 1.0 more saturated"
-msgstr ""
+msgstr "Cambie la saturación de color utilizando el modelo de color HSL.\n-1.0 más grisáceo\n 0.0 deshabilitado\n 1.0 más saturado"
 
 #: ../src/brushlib/brushsettings.py:72
 msgid "Change color value (HSV)"
@@ -483,7 +484,7 @@ msgid ""
 "-1.0 darker\n"
 " 0.0 disable\n"
 " 1.0 brighter"
-msgstr ""
+msgstr "Cambie el valor de color (brillo, intensidad) utilizando el modelo de color HSV. Los cambios de HSV se aplican antes que los de HSL.\n-1.0 más oscuro\n 0.0 deshabilitado\n 1.0 más brillante"
 
 #: ../src/brushlib/brushsettings.py:73
 msgid "Change color satur. (HSV)"
@@ -495,7 +496,7 @@ msgid ""
 "-1.0 more grayish\n"
 " 0.0 disable\n"
 " 1.0 more saturated"
-msgstr ""
+msgstr "Cambie la saturación de color utilizando el modelo de color HSV. Los cambios de HSV se aplican antes que los de HSL.\n-1.0 más grisáceo\n 0.0 deshabilitado\n 1.0 más saturado"
 
 #: ../src/brushlib/brushsettings.py:74
 msgid "Smudge"
@@ -507,7 +508,7 @@ msgid ""
 " 0.0 do not use the smudge color\n"
 " 0.5 mix the smudge color with the brush color\n"
 " 1.0 use only the smudge color"
-msgstr ""
+msgstr "Pinte con el color de borrón en lugar de con el color de pincel. El color de borrón cambia lentamente de color al color con el que está pintando.\n 0.0 no utiliza el color de borrón\n 0.5 mezcla el color del borrón con el del pincel\n 1.0 sólo utiliza el color de borrón"
 
 #: ../src/brushlib/brushsettings.py:75
 msgid "Smudge length"
@@ -519,7 +520,7 @@ msgid ""
 "0.0 immediately update the smudge color (requires more CPU cycles because of the frequent color checks)\n"
 "0.5 change the smudge color steadily towards the canvas color\n"
 "1.0 never change the smudge color"
-msgstr ""
+msgstr "Esto controla cómo de rápido se convierte el color del borrón en el color con el que está pintando.\n0.0 carga inmediatamente el color de borrón (requiere más ciclos de CPU debido a las frecuentes comprobaciones de color)\n0.5 cambia el color del borrón contínuamente hacia el color del canvas\n1.0 nunca cambia el color del borrón"
 
 #: ../src/brushlib/brushsettings.py:76
 msgid "Smudge radius"
@@ -532,7 +533,7 @@ msgid ""
 "-0.7 half the brush radius (fast, but not always intuitive)\n"
 "+0.7 twice the brush radius\n"
 "+1.6 five times the brush radius (slow performance)"
-msgstr ""
+msgstr "Esto modifica el radio del círculo donde el color es recogido para el emborronado.\n 0.0 utiliza el radio del pincel\n-0.7 la mitad del radio del pincel (más rápido, pero no siempre intuitivo)\n+0.7 dos veces el radio del pincel\n+1.6 cinco veces el radio del pincel (desempeño lento)"
 
 #: ../src/brushlib/brushsettings.py:77 ../src/gui/states/state_brush.cpp:510
 msgid "Eraser"
@@ -544,7 +545,7 @@ msgid ""
 " 0.0 normal painting\n"
 " 1.0 standard eraser\n"
 " 0.5 pixels go towards 50% transparency"
-msgstr ""
+msgstr "cuánto se comporta esta herramienta como un borrador\n 0.0 pintado normal\n 1.0 borrador estándar\n 0.5 los píxeles van hacia el 50% de transparencia"
 
 #: ../src/brushlib/brushsettings.py:79
 msgid "Stroke threshold"
@@ -564,7 +565,7 @@ msgstr "Duración de trazo"
 msgid ""
 "How far you have to move until the stroke input reaches 1.0. This value is "
 "logarithmic (negative values will not inverse the process)."
-msgstr ""
+msgstr "Cómo de lejos tiene que moverse hasta que la entrada alcance 1.0. Este valor es logarítmico (los valores negativos no invierten el proceso)."
 
 #: ../src/brushlib/brushsettings.py:81
 msgid "Stroke hold time"
@@ -575,7 +576,7 @@ msgid ""
 "This defines how long the stroke input stays at 1.0. After that it will reset to 0.0 and start growing again, even if the stroke is not yet finished.\n"
 "2.0 means twice as long as it takes to go from 0.0 to 1.0\n"
 "9.9 and bigger stands for infinite"
-msgstr ""
+msgstr "Esto define cuándo alcanza la entrada el 1.0. Tras eso se reiniciará a 0.0 y empezará a aumentar de nuevo, incluso si la entrada no está terminada.\n2.0 significa dos veces tan largo como sea necesario para ir de 0.0 a 1.0\n9.9 y aumenta hasta el infinito"
 
 #: ../src/brushlib/brushsettings.py:82
 msgid "Custom input"
@@ -585,7 +586,7 @@ msgstr "Entrada personalizada"
 msgid ""
 "Set the custom input to this value. If it is slowed down, move it towards this value (see below). The idea is that you make this input depend on a mixture of pressure/speed/whatever, and then make other settings depend on this 'custom input' instead of repeating this combination everywhere you need it.\n"
 "If you make it change 'by random' you can generate a slow (smooth) random input."
-msgstr ""
+msgstr "Fije la entrada habitual a su valor. Si está ralentizada, muévala hacia este valor (vea abajo). La idea es que usted haga esta entrada dependiendo de una mezcla de presión/velocidad/lo que sea, y después hacer otros ajustes dependiendo de esta 'entrada habitual' en lugar de repetir esta combinación por todos los lugares en los que la necesite.\nSi usted hace un cambio 'aleatoriamente' puede generar una lenta (lisa) entrada aleatoria."
 
 #: ../src/brushlib/brushsettings.py:83
 msgid "Custom input filter"
@@ -595,21 +596,21 @@ msgstr "Filtro de entrada personalizada"
 msgid ""
 "How slow the custom input actually follows the desired value (the one above). This happens at brushdab level (ignoring how much time has past, if brushdabs do not depend on time).\n"
 "0.0 no slowdown (changes apply instantly)"
-msgstr ""
+msgstr "Cómo de lenta sigue actualmente la entrada habitual el valor deseado (el de arriba). Esto pasa en el nivel de presión del pincel (pasando por alto cuánto tiempo ha pasado, si la presión no depende del tiempo).\n0.0 no se ralentiza (los cambios se aplican instantáneamente)"
 
 #: ../src/brushlib/brushsettings.py:85
 msgid "Elliptical dab: ratio"
-msgstr ""
+msgstr "Presión elíptica: proporción"
 
 #: ../src/brushlib/brushsettings.py:85
 msgid ""
 "Aspect ratio of the dabs; must be >= 1.0, where 1.0 means a perfectly round "
 "dab. TODO: linearize? start at 0.0 maybe, or log?"
-msgstr ""
+msgstr "Proporción de la presión; debe de ser >= 1.0, donde 1.0 significa una perfecta presión circular. TODO: linearize? empieza en 0.0 quizá, o registro?"
 
 #: ../src/brushlib/brushsettings.py:86
 msgid "Elliptical dab: angle"
-msgstr ""
+msgstr "Presión elíptica: ángulo"
 
 #: ../src/brushlib/brushsettings.py:86
 msgid ""
@@ -617,7 +618,7 @@ msgid ""
 " 0.0 horizontal dabs\n"
 " 45.0 45 degrees, turned clockwise\n"
 " 180.0 horizontal again"
-msgstr ""
+msgstr "Ángulo por el que las presiones elípticas son tituladas\n 0.0 presiones horizontales\n 45.0 45 grados, girados en la dirección de las agujas del reloj\n 180.0 horizontal de nuevo"
 
 #: ../src/brushlib/brushsettings.py:87
 msgid "Direction filter"
@@ -639,7 +640,7 @@ msgid ""
 " 0.0 normal painting\n"
 " 0.5 half of the paint gets applied normally\n"
 " 1.0 alpha channel fully locked"
-msgstr ""
+msgstr "No modifica el canal alpha le la capa (pinta sólo donde ya se ha pintado)\n 0.0 pintado normal\n 0.5 la mitad del pintado se aplica normalmente\n 1.0 canal alpha completamente bloqueado"
 
 #: ../src/gui/actionmanagers/groupactionmanager.cpp:175
 #: ../src/gui/actionmanagers/groupactionmanager.cpp:176
@@ -946,7 +947,7 @@ msgstr "Huffyuv / HuffYUV"
 
 #: ../src/gui/dialogs/dialog_ffmpegparam.cpp:73
 msgid "libtheora Theora"
-msgstr ""
+msgstr "libtheora Theora"
 
 #: ../src/gui/dialogs/dialog_ffmpegparam.cpp:74
 msgid "H.264 / AVC / MPEG-4 AVC"
@@ -1333,7 +1334,7 @@ msgstr "Interfaz oscura (si esta disponible)"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:323
 msgid "Single thread only (CPUs)"
-msgstr ""
+msgstr "Sólo hilo único (CPUs)"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:331
 msgid "Document"
@@ -6523,7 +6524,7 @@ msgstr "Origen"
 
 #: ../src/synfigapp/actions/valuedescbonelink.cpp:59
 msgid "Link to Bone"
-msgstr "Enlazar hueso"
+msgstr "Enlazar a hueso"
 
 #: ../src/synfigapp/actions/valuedescbonelink.cpp:87
 msgid "ValueDesc on Bone to link to"

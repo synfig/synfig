@@ -3,7 +3,7 @@
 # This file is distributed under the same license as the Synfig Core package.
 # 
 # Translators:
-# Eva Cerni <mini.muca000@gmail.com>, 2015
+# Eva Černi <mini.muca000@gmail.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: Synfig UI\n"

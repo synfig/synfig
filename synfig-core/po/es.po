@@ -3,6 +3,7 @@
 # This file is distributed under the same license as the Synfig Core package.
 # 
 # Translators:
+# Alberto Díaz Tormo <albertodiaztormo@gmail.com>, 2016
 # Bazza <bazza@riseup.net>, 2016
 # genete <genetita@gmail.com>, 2007, 2008, 2009, 2010, 2011, 2012
 # carlos_tutor <carlos_tutor@hotmail.com>, 2011
@@ -16,8 +17,8 @@ msgstr ""
 "Project-Id-Version: Synfig UI\n"
 "Report-Msgid-Bugs-To: https://github.com/synfig/synfig/issues\n"
 "POT-Creation-Date: 2016-06-05 14:00+0700\n"
-"PO-Revision-Date: 2016-06-21 01:28+0000\n"
-"Last-Translator: Bazza <bazza@riseup.net>\n"
+"PO-Revision-Date: 2016-10-15 20:02+0000\n"
+"Last-Translator: Alberto Díaz Tormo <albertodiaztormo@gmail.com>\n"
 "Language-Team: Spanish (http://www.transifex.com/morevnaproject/synfig/language/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2391,7 +2392,7 @@ msgstr "Contenido del grupo"
 
 #: src/synfig/layers/layer_pastecanvas.cpp:144
 msgid "Multiplier to speed up, slow down, freeze, or reverse time"
-msgstr ""
+msgstr "Multiplicador para acelerar, ralentizar, cogelar, o revertir el tiempo."
 
 #: src/synfig/layers/layer_pastecanvas.cpp:149
 msgid "Time Offset to apply to the context"
@@ -4226,7 +4227,7 @@ msgstr "Segundo Derivado"
 #: src/synfig/valuenodes/valuenode_dilist.cpp:166
 #, c-format
 msgid "DashItem %03d"
-msgstr ""
+msgstr "DashItem %03d"
 
 #: src/synfig/valuenodes/valuenode_dotproduct.cpp:168
 msgid "The left side of the dot product"
@@ -4286,11 +4287,11 @@ msgstr "El momento externo aplicado en el centro de inercia"
 
 #: src/synfig/valuenodes/valuenode_dynamic.cpp:253
 msgid "Damping coefficient"
-msgstr ""
+msgstr "Sofocar coeficiente"
 
 #: src/synfig/valuenodes/valuenode_dynamic.cpp:254
 msgid "Radial damping coefficient of the dynamic system"
-msgstr ""
+msgstr "Apagado radial de coeficiente para el sistema dinámico"
 
 #: src/synfig/valuenodes/valuenode_dynamic.cpp:257
 msgid "Friction coefficient"
@@ -4354,7 +4355,7 @@ msgstr "Origen arrastre"
 
 #: src/synfig/valuenodes/valuenode_dynamic.cpp:286
 msgid "When checked result is origin + tip otherwise result is just tip"
-msgstr ""
+msgstr "Cuando el resultado verificado es origen + final de otro modo el resultado es sólo el final"
 
 #: src/synfig/valuenodes/valuenode_dynamiclist.cpp:669
 #: src/synfig/valuenodes/valuenode_staticlist.cpp:351
