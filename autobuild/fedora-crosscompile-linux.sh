@@ -387,7 +387,7 @@ fi
 for CHECKPATH in ${SYSPREFIX} ${SYSPREFIX}/usr/lib ${SYSPREFIX}/bin; do
 	for LINK in `find -L ${CHECKPATH} -xtype l`; do
 		LINK_TARGET=`readlink "$LINK"`
-		if [[ ${LINK_TARGET::1} == "/" ]]; then
+		if [[ ${LINK_TARGET::1} == "/" ]] && ! (  echo $LINK |grep ssl ); then
 			if [[ "${LINK_TARGET:0:${#SYSPREFIX}}" != "$SYSPREFIX" ]]; then
 				echo "Fixing link: $LINK ($LINK_TARGET)"
 				ln -sf "${SYSPREFIX}/${LINK_TARGET}" "${LINK}" || true
