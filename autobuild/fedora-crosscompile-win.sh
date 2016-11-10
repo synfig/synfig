@@ -612,7 +612,7 @@ make clean || true
 [ ! -e config.cache ] || rm config.cache
 /bin/sh ./bootstrap.sh
 cp ./configure ./configure.real
-echo -e "#/bin/sh \n export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib/pkgconfig/:$PKG_CONFIG_PATH \n " > ./configure
+echo -e "#/bin/sh \n export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib/pkgconfig/:$PKG_CONFIG_PATH \n ./configure.real \$@  \n " > ./configure
 chmod +x ./configure
 ${TOOLCHAIN}-configure \
 --prefix=${PREFIX} \
