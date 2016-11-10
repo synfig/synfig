@@ -1864,38 +1864,6 @@ make clean || true
 	--disable-static --enable-shared \
 	$DEBUG_OPT
 
-cd build_tools
-make
-cd ..
-
-[ -e ${PREFIX}/bin/synfig.bin ] || mv ${PREFIX}/bin/synfig ${PREFIX}/bin/synfig.bin
-cat > ${PREFIX}/bin/synfig <<EOF
-#!/bin/sh
-
-export LD_PRELOAD=""
-export LD_LIBRARY_PATH=""
-export PATH="/usr/local/bin/:/usr/sbin:/usr/bin:/bin"
-export LDFLAGS=""
-export CFLAGS=""
-export CXXFLAGS=""
-export PKG_CONFIG_PATH=""
-export PERL5LIB=""
-
-echo "-----------------!!!-------------"
-
-~/synfig/bin/synfig "\$@"
-EOF
-chmod a+x  ${PREFIX}/bin/synfig || true
-
-cd images
-#mv ${DEPSPREFIX} ${DEPSPREFIX}.off
-make -j${THREADS} install
-#mv ${DEPSPREFIX}.off ${DEPSPREFIX}
-cd ..
-
-rm ${PREFIX}/bin/synfig
-mv ${PREFIX}/bin/synfig.bin ${PREFIX}/bin/synfig
-
 make -j${THREADS} install
 
 #for DIR in build_tools src plugins po brushes; do
