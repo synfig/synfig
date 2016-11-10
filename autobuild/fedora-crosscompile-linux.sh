@@ -2395,7 +2395,7 @@ mkall()
 	mkjack
 	
 	# synfig-core deps
-	mkmesa
+	#mkmesa
 	mklibsigcpp
 	mkglibmm
 	mklibxmlpp
