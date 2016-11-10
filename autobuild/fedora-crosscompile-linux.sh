@@ -1392,7 +1392,7 @@ if [ ! -f ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done ]; then
 	
     cd $SRCPREFIX
     if [ ! -d ${PKG_NAME} ]; then
-        /usr/bin/git clone https://github.com/morevnaproject/mlt
+        /usr/bin/git clone http://github.com/morevnaproject/mlt
     fi
     cd mlt
     /usr/bin/git reset --hard
