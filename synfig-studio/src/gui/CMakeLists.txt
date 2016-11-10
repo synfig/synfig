@@ -1,5 +1,7 @@
 ## TODO
-file(WRITE autorevision.h "#define PACKAGE_NAME \"\"")
+file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/autorevision.h "#define PACKAGE_NAME \"\"")
+
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 ##
 ## Targets
