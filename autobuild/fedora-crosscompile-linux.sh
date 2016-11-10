@@ -2382,6 +2382,7 @@ mkall()
 	mkglib
 	mkharfbuzz
 	mkfontconfig
+	mkgobjectintrospection
 	mkatk
 	mkatspi2atk
 	mkpixman
