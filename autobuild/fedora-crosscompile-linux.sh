@@ -301,8 +301,7 @@ MISSING_PKGS=""
 for PKG in \
 		debootstrap \
 		dpkg \
-		debhelper \
-		gcc-c++ automake autoconf libtool-ltdl-devel intltool \
+		automake autoconf \
 		which \
 		fakeroot \
 		fakechroot \
