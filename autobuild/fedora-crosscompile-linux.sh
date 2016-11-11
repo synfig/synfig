@@ -282,10 +282,10 @@ mkprefix()
 	
 	#popd
 	
-	#for file in `ls -1 ${SYSPREFIX}/var/cache/apt/archives/*.deb`; do
-	#	echo $file
-	#	dpkg -x $file ${SYSPREFIX}
-	#done
+	for file in `ls -1 ${SYSPREFIX}/var/cache/apt/archives/*.deb`; do
+		echo $file
+		dpkg -x $file ${SYSPREFIX}
+	done
 
 	#touch /home/zelgadis/synfig-buildroot/linux64/sys.off/var/lib/dpkg/status
 
