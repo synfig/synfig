@@ -270,26 +270,26 @@ mkprefix()
 	
 	#LD_LIBRARY_PATH=${UBUNTU_LIBDIR}:/${LIBDIR}:${SYSPREFIX}/usr/${LIBDIR} PATH=/usr/local/sbin:/usr/sbin:/sbin:/sbin:/bin:/usr/bin:${SYSPREFIX}/usr/sbin:${SYSPREFIX}/sbin:${SYSPREFIX}/usr/bin:${SYSPREFIX}/bin:$PATH fakeroot fakechroot linux32 chroot ${SYSPREFIX} #${SYSPREFIX}/debootstrap/debootstrap --second-stage
 	
-	pushd ${SYSPREFIX}/var/cache/apt/archives/
+	#pushd ${SYSPREFIX}/var/cache/apt/archives/
 	
-	wget -c https://mirror.hmc.edu/debian/pool/main/libx/libxshmfence/libxshmfence-dev_1.2-1_${SYS_ARCH}.deb
+	#wget -c https://mirror.hmc.edu/debian/pool/main/libx/libxshmfence/libxshmfence-dev_1.2-1_${SYS_ARCH}.deb --no-check-certificate
 
-	wget -c https://mirror.hmc.edu/debian/pool/main/libx/libxshmfence/libxshmfence1_1.2-1_${SYS_ARCH}.deb
+	#wget -c https://mirror.hmc.edu/debian/pool/main/libx/libxshmfence/libxshmfence1_1.2-1_${SYS_ARCH}.deb --no-check-certificate
 	
-	wget -c https://mirror.hmc.edu/debian/pool/main/x/x11proto-dri2/x11proto-dri2-dev_2.8-2_all.deb
+	#wget -c https://mirror.hmc.edu/debian/pool/main/x/x11proto-dri2/x11proto-dri2-dev_2.8-2_all.deb --no-check-certificate
 	
-	wget -c https://mirror.hmc.edu/debian/pool/main/x/x11proto-dri3/x11proto-dri3-dev_1.0-1_all.deb
+	#wget -c https://mirror.hmc.edu/debian/pool/main/x/x11proto-dri3/x11proto-dri3-dev_1.0-1_all.deb --no-check-certificate
 	
-	popd
+	#popd
+	
+	#for file in `ls -1 ${SYSPREFIX}/var/cache/apt/archives/*.deb`; do
+	#	echo $file
+	#	dpkg -x $file ${SYSPREFIX}
+	#done
 
 	#touch /home/zelgadis/synfig-buildroot/linux64/sys.off/var/lib/dpkg/status
 
 	#fakeroot dpkg --log=/home/zelgadis/synfig-buildroot/linux64/sys.off/var/log/dpkg.log --unpack --force-not-root --root=/home/zelgadis/synfig-buildroot/linux64/sys.off --ignore-depends=multiarch-support,libc6 ./libxshmfence-dev_1.2-1_amd64.deb  ./libxshmfence1_1.2-1_amd64.deb 
-
-	for file in `ls -1 ${SYSPREFIX}/var/cache/apt/archives/*.deb`; do
-		echo $file
-		dpkg -x $file ${SYSPREFIX}
-	done
 	
 	echo "Synfig Buildroot v${BUILDROOT_VERSION}" > ${SYSPREFIX}/etc/chroot.id
 }
