@@ -29,7 +29,7 @@ you're welcome to take part in testing and improving it.
 
 - all major components are buildable, installable and runnable
 - building all components without installing ETL & core is not tested
-- no icons yet
+- not all icons are built
 
 Tested to work on (this will be updated as reports come in):
 
@@ -98,6 +98,9 @@ $ popd # synfig-core
 $ pushd synfig-studio
 $ cmake -GNinja ../src -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_CXX_FLAGS="-fdiagnostics-color"
 $ cmake --build . -- all
+# this will take a while; alternatively, you can move/copy required images
+# to build/images directory and skip this step
+$ cmake --build . -- build_images
 $ sudo cmake --build . -- install
 $ popd # synfig-studio
 ```
