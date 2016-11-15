@@ -1,5 +1,13 @@
 target_sources(synfigstudio
     PRIVATE
+
+        "${CMAKE_CURRENT_LIST_DIR}/make_region_layer.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/make_outline_layer.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/make_advanced_outline_layer.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/make_plant_layer.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/make_curve_gradient_layer.cpp"
+
+        "${CMAKE_CURRENT_LIST_DIR}/state.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/state_bline.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/state_circle.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/state_draw.cpp"
@@ -13,6 +21,7 @@ target_sources(synfigstudio
         "${CMAKE_CURRENT_LIST_DIR}/state_rectangle.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/state_rotate.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/state_scale.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/state_shape.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/state_sketch.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/state_smoothmove.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/state_star.cpp"
