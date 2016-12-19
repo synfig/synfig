@@ -7,6 +7,8 @@ EXT = @imageext@
 EXTRA_DIST = \
 	installer_logo.sif \
 	installer_logo_osx.sif \
+	splash_screen.sif \
+	splash_screen-1.2.x.sif \
 	splash_screen-1.0.1.sif \
 	splash_screen-1.0.2.sif \
 	splash_screen-1.0.sif \
@@ -614,7 +616,7 @@ splash_screen.$(EXT): splash_screen_development.sif
 	echo "  File \"images\\$@\"" >>./images.nsh
 	echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 else
-splash_screen.$(EXT): $(srcdir)/splash_screen-$(PACKAGE_VERSION).sif
+splash_screen.$(EXT): $(srcdir)/splash_screen.sif
 	$(SYNFIG) -q $< -o $@ --time 0
 	echo "  File \"images\\$@\"" >>./images.nsh
 	echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
