@@ -4,6 +4,29 @@ More detailed notes are available on the news page:
 
 http://synfig.org/cms/en/news/
 
+ 1.2.0 (git tag "1.2.0") - December 22, 2016 - Major release.
+ 
+  * Feature: Rendering engine completely rewritten and optimized. Thanks to Ivan Mahonin.
+  * Feature: Integration with Papagayo lipsync software. Demonstration - https://www.youtube.com/watch?v=-Y0Ox0cnlL4. Thanks to Ivan Mahonin.
+  * New layer: Free Time. Thanks to Ivan Mahonin.
+  * New converter: Animated File - allows to read waypoints from external files (only PGO files supported right now). Thanks to Ivan Mahonin.
+  * Switch Group now displays "ghost" elements for missing switch elements. Thanks to Ivan Mahonin.
+  * Split and merged tangents now displayed in different way. Thanks to Jerome Blanchi.
+  * Selecting handle on the workarea now highlights the corresponding parameter in the Parameters Panel. Thanks to Jerome Blanchi.
+  * Alt+0 used to show/hide all handles. Thanks to Jerome Blanchi.
+  * Synfig code now compatible with C++11 (see issue #904). Thanks to Jerome Blanchi.
+  * Tooltips for group transformation widget. Thanks to Jerome Blanchi.
+  * Completely reworked preferences dialogue. Thanks to Yu Chen (concept), Jerome Blanchi (implementation) and Caryoscelus (fixes).
+  * Fixed behavior of “Insert Item” action for Splines (it should be different from “Insert item & Keep shape” action). Thanks to Ivan Mahonin.
+  * Fix crash when manipulating with guides. Alow to remove guides by dragging them back to onto rulers. Thanks to Jerome Blanchi.
+  * Zoom level now can be edited via dedicated widget in the bottom-left corner of Canvas Window. Thanks to Caryoscelus.
+  * Now it is possible to hide File buttons on the toolbar to save horizontal space. Available via “Edit” -> “Preferences” -> “Preferences”. Thanks to Caryoscelus.
+  * Fixed readability of “Current Time” text widget when using dark theme. Thanks to Chris London.
+  * Time Loop Layer, Free Time Layer and Stroboscope Layer placed into separate “Time” category. Thanks to Caryoscelus.
+  * Fix HSV color panel not updated when opened. Thanks to Jerome Blanchi.
+  * Fix #234: Objects created with opacity less than 1.0. Thanks to Caryoscelus.
+  * Fixed crash on attempt to edit “spline point”, “width point” or “dash item” in Parameters Panel. Thanks to Caryoscelus.
+
  1.0.2 (git tag "1.0.2") - October 9, 2015 - Bugfix release.
  
   * Dropdown list for Switch Group to choose active layer. Thanks to Max May.
