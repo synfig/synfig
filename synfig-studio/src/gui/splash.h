@@ -52,6 +52,7 @@ class Splash : public Gtk::Window
 
 	SplashProgress *cb;
 
+	Gtk::Label *versionlabel;
 	Gtk::Label *tasklabel;
 	Gtk::ProgressBar *progressbar;
 

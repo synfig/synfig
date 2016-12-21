@@ -44,6 +44,7 @@
 #include <gtkmm/label.h>
 #include <gtkmm/frame.h>
 #include <gtkmm/fixed.h>
+#include <gdkmm/rgba.h>
 
 #include "splash.h"
 #include "app.h"
@@ -204,11 +205,20 @@ Splash::Splash():
 	tasklabel->set_size_request(image_w,24);
 	tasklabel->set_use_underline(false);
 
+	// Create the current task label
+	versionlabel = manage(new class Gtk::Label());
+	versionlabel->set_label("" VERSION);
+	versionlabel->set_size_request(image_w,24);
+	versionlabel->set_use_underline(false);
+	versionlabel->override_color(Gdk::RGBA("fffffff"), (Gtk::StateFlags)(-1));
+	versionlabel->show();
+
 	// Create the Gtk::Fixed container and put all of the widgets into it
 	Gtk::Fixed* fixed = manage(new class Gtk::Fixed());
 	if( pixbuf ) fixed->put(*splash_image, 0, 0);
 	fixed->put(*progressbar, 0, image_h+24);
 	fixed->put(*tasklabel, 0, image_h);
+	fixed->put(*versionlabel, 0, image_h-24);
 
 	// Create shadow around the outside of the window
 	Gtk::Frame* frame = manage(new class Gtk::Frame());
