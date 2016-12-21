@@ -31,6 +31,15 @@ echo "CORE_VERSION=$CORE_VERSION"
 export STUDIO_VERSION=`cat $SRCPREFIX/synfig-studio/configure.ac |egrep "AC_INIT\(\[Synfig Studio\],"| sed "s|.*Studio\],\[||" | sed "s|\],\[.*||"`
 echo "STUDIO_VERSION=$STUDIO_VERSION"
 
+if [ -e /etc/debian_version ] && [ -z $with_boost_libdir ]; then
+	# Debian/Ubuntu multiarch
+	MULTIARCH_LIBDIR="/usr/lib/`uname -m`-linux-gnu/"
+	if [ -e "${MULTIARCH_LIBDIR}/libboost_program_options.so" ]; then
+		export with_boost_libdir=$MULTIARCH_LIBDIR
+	fi
+fi
+
+
 if [ -z $THREADS ]; then
 	export THREADS=4
 fi
@@ -67,12 +76,14 @@ pack-core()
 	libtoolize --ltdl --copy -f
 	autoreconf --install --force
 	./configure --prefix="$PREFIX"
+echo "------------------------------------- pack-core make"
 	make distcheck -j${THREADS}
 	mv synfig-${CORE_VERSION}.tar.gz ../../
 }
 
 test-core()
 {
+echo "------------------------------------- test-core"
 	cd $SRCPREFIX/../
 	tar xf synfig-${CORE_VERSION}.tar.gz
 	cd synfig-${CORE_VERSION}
