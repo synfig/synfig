@@ -2,8 +2,8 @@
 
 # -- I N I T --------------------------------------------------
 
-AC_INIT([Synfig Studio],[1.1.12],[https://github.com/synfig/synfig/issues],[synfigstudio])
-AM_CONDITIONAL(DEVELOPMENT_SNAPSHOT, true)
+AC_INIT([Synfig Studio],[1.2.0],[https://github.com/synfig/synfig/issues],[synfigstudio])
+AM_CONDITIONAL(DEVELOPMENT_SNAPSHOT, false)
 AC_REVISION
 
 AC_CONFIG_AUX_DIR(config)
