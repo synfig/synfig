@@ -42,6 +42,8 @@ src/gui/dialogs/dialog_soundselect.h
 src/gui/dialogs/dialog_spritesheetparam.cpp
 src/gui/dialogs/dialog_targetparam.cpp
 src/gui/dialogs/dialog_targetparam.h
+src/gui/dialogs/dialog_template.cpp
+src/gui/dialogs/dialog_template.h
 src/gui/dialogs/dialog_waypoint.cpp
 src/gui/dialogs/dialog_waypoint.h
 src/gui/dials/framedial.cpp
