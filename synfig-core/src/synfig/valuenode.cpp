@@ -139,11 +139,8 @@ ValueNode::breakpoint()
 bool
 ValueNode::subsys_init()
 {
-#define ADD_VALUENODE_CREATE(class,name,local,version,create)									\
-	ValueNodeRegistry::book()[name].factory=reinterpret_cast<ValueNodeRegistry::Factory>(&class::create);		\
-	ValueNodeRegistry::book()[name].check_type=&class::check_type;												\
-	ValueNodeRegistry::book()[name].local_name=local;															\
-	ValueNodeRegistry::book()[name].release_version=version
+#define ADD_VALUENODE_CREATE(klass,name,local,version,create) \
+	ValueNodeRegistry::register_node_type(name, local, version, reinterpret_cast<ValueNodeRegistry::Factory>(&klass::create), &klass::check_type);
 #define ADD_VALUENODE(class,name,local,version)		ADD_VALUENODE_CREATE(class,name,local,version,create)
 #define ADD_VALUENODE2(class,name,local,version)	ADD_VALUENODE_CREATE(class,name,local,version,create_from)
 

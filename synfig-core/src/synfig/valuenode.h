@@ -488,6 +488,14 @@ public:
 		return *book_;
 	}
 
+	static void register_node_type(String name, String local_name, ReleaseVersion version, Factory factory, CheckType check_type)
+	{
+		book()[name].local_name = local_name;
+		book()[name].release_version = version;
+		book()[name].factory = factory;
+		book()[name].check_type = check_type;
+	}
+
 	static bool cleanup()
 	{
 		book_.reset();
