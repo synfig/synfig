@@ -1,13 +1,12 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file valuenode.h
-**	\brief Header file for implementation of the "Placeholder" valuenode conversion.
-**
-**	$Id$
+**	\brief Valuenodes
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2008 Chris Moore
-**  Copyright (c) 2011 Carlos López
+**	Copyright (c) 2011 Carlos López
+**	Copyright (c) 2016 caryoscelus
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -36,7 +35,6 @@
 #include <ETL/handle>
 #include <ETL/stringf>
 #include "exception.h"
-#include <map>
 #include <sigc++/signal.h>
 #include "guid.h"
 #include <ETL/angle>
@@ -45,7 +43,9 @@
 
 #include "node.h"
 
+#include <map>
 #include <set>
+#include <memory>
 
 /* === M A C R O S ========================================================= */
 
@@ -374,42 +374,10 @@ public:
 
 	typedef etl::rhandle<LinkableValueNode> RHandle;
 
-
-	//! Type that represents a pointer to a ValueNode's constructor
-	/*! As a pointer to the constructor, it represents a "factory" of
-	**  objects of this class.
-	*/
-	typedef LinkableValueNode* (*Factory)(const ValueBase&, etl::loose_handle<Canvas> canvas);
-
-	//! This represents a pointer to a Type check member fucntion
-	/*! As a pointer to the member, it represents a fucntion that checks
-	**  the type of the provided ValueBase
-	*/
-	typedef bool (*CheckType)(Type &type);
-
-	struct BookEntry
-	{
-		String local_name;
-		Factory factory;
-		CheckType check_type;
-		ReleaseVersion release_version; // which version of synfig introduced this valuenode type
-	};
-
-	//! Book of types of linkable value nodes indexed by type name.
-	/*! While the sifz file is read, each time a new LinkableValueNode entry
-	**  is found, the factory constructor that the "factory" pointer member
-	**  of the "BookEntry" struct points to, is called, and a new object of
-	**  that type is created.
-	**  \sa LinkableValueNode::Factory
-	*/
-	typedef std::map<String,BookEntry> Book;
-
 	//! The vocabulary of the children
 	/*! \see synfig::Paramdesc
 	 */
 	typedef ParamVocab Vocab;
-
-	static Book& book();
 
 	//! Creates a Linkable Value Node based on the name and the returned
 	//! value type. Returns a valid Handle if both (name and type) match
@@ -494,6 +462,41 @@ protected:
 
 	virtual void get_values_vfunc(std::map<Time, ValueBase> &x) const;
 }; // END of class LinkableValueNode
+
+class ValueNodeRegistry {
+public:
+	//! Type that represents a pointer to a ValueNode's constructor
+	using Factory = LinkableValueNode* (*)(const ValueBase&, etl::loose_handle<Canvas> canvas);
+	//! Pointer to check_type method
+	using CheckType = bool (*)(Type &type);
+
+	struct BookEntry
+	{
+		String local_name;
+		Factory factory;
+		CheckType check_type;
+		ReleaseVersion release_version; // which version of synfig introduced this valuenode type
+	};
+
+	using Book = std::map<String,BookEntry>;
+
+public:
+	static Book& book()
+	{
+		if (!book_)
+			book_.reset(new Book());
+		return *book_;
+	}
+
+	static bool cleanup()
+	{
+		book_.reset();
+		return true;
+	}
+
+private:
+	static std::unique_ptr<Book> book_;
+}; // END of class ValueNodeRegistry
 
 /*!	\class ValueNodeList
 **	\brief A searchable value_node list container

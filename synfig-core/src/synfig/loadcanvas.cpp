@@ -2665,7 +2665,7 @@ CanvasParser::parse_value_node(xmlpp::Element *element,Canvas::Handle canvas)
 	if(element->get_name()=="weighted_average") // This is not a typo. The dynamic list parser will parse a weighted_average.
 		value_node=parse_dynamic_list(element,canvas);
 	else
-	if(LinkableValueNode::book().count(element->get_name()))
+	if(ValueNodeRegistry::book().count(element->get_name()))
 	{
 		if (getenv("SYNFIG_DEBUG_LOAD_CANVAS")) printf("%s:%d parse_value_node calls parse_linkable_value_node\n", __FILE__, __LINE__);
 		value_node=parse_linkable_value_node(element,canvas);

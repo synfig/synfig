@@ -1195,8 +1195,8 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 			 value_desc.parent_is_value_node()))))
 	{
 		Gtk::Menu *convert_menu=Gtk::manage(new Gtk::Menu());
-		LinkableValueNode::Book::const_iterator iter;
-		for(iter=LinkableValueNode::book().begin();iter!=LinkableValueNode::book().end();++iter)
+		ValueNodeRegistry::Book::const_iterator iter;
+		for(iter=ValueNodeRegistry::book().begin();iter!=ValueNodeRegistry::book().end();++iter)
 		{
 			if(iter->second.check_type(value_desc.get_value_type()))
 			{

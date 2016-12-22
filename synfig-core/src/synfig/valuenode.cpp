@@ -1,13 +1,12 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file valuenode.cpp
-**	\brief Implementation of the "Placeholder" valuenode conversion.
-**
-**	$Id$
+**	\brief Valuenodes
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
-**  Copyright (c) 2008, 2011 Carlos López
+**	Copyright (c) 2008, 2011 Carlos López
+**	Copyright (c) 2016 caryoscelus
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -118,7 +117,7 @@ using namespace synfig;
 
 static int value_node_count(0);
 
-static LinkableValueNode::Book *book_;
+std::unique_ptr<ValueNodeRegistry::Book> ValueNodeRegistry::book_;
 
 
 ValueNode::LooseHandle
@@ -140,13 +139,11 @@ ValueNode::breakpoint()
 bool
 ValueNode::subsys_init()
 {
-	book_=new LinkableValueNode::Book();
-
 #define ADD_VALUENODE_CREATE(class,name,local,version,create)									\
-	(*book_)[name].factory=reinterpret_cast<LinkableValueNode::Factory>(&class::create);		\
-	(*book_)[name].check_type=&class::check_type;												\
-	(*book_)[name].local_name=local;															\
-	(*book_)[name].release_version=version
+	ValueNodeRegistry::book()[name].factory=reinterpret_cast<ValueNodeRegistry::Factory>(&class::create);		\
+	ValueNodeRegistry::book()[name].check_type=&class::check_type;												\
+	ValueNodeRegistry::book()[name].local_name=local;															\
+	ValueNodeRegistry::book()[name].release_version=version
 #define ADD_VALUENODE(class,name,local,version)		ADD_VALUENODE_CREATE(class,name,local,version,create)
 #define ADD_VALUENODE2(class,name,local,version)	ADD_VALUENODE_CREATE(class,name,local,version,create_from)
 
@@ -234,8 +231,7 @@ ValueNode::subsys_init()
 bool
 ValueNode::subsys_stop()
 {
-	delete book_;
-	return true;
+	return ValueNodeRegistry::cleanup();
 }
 
 ValueNode::ValueNode(Type &type):type(&type)
@@ -243,25 +239,20 @@ ValueNode::ValueNode(Type &type):type(&type)
 	value_node_count++;
 }
 
-LinkableValueNode::Book&
-LinkableValueNode::book()
-{
-	return *book_;
-}
-
 LinkableValueNode::Handle
 LinkableValueNode::create(const String &name, const ValueBase& x, Canvas::LooseHandle canvas)
 {
-	if(!book().count(name))
-		return 0;
+	// forbid creating a node if class is not registered
+	if(!ValueNodeRegistry::book().count(name))
+		return nullptr;
 
 	if (!check_type(name, x.get_type()))
 	{
-		error(_("Bad type: ValueNode '%s' doesn't accept type '%s'"), book()[name].local_name.c_str(), x.get_type().description.local_name.c_str());
-		return 0;
+		error(_("Bad type: ValueNode '%s' doesn't accept type '%s'"), ValueNodeRegistry::book()[name].local_name.c_str(), x.get_type().description.local_name.c_str());
+		return nullptr;
 	}
 
-	return book()[name].factory(x,canvas);
+	return ValueNodeRegistry::book()[name].factory(x,canvas);
 }
 
 bool
@@ -274,9 +265,9 @@ LinkableValueNode::check_type(const String &name, Type &x)
 	   (name == "duplicate" && x == type_real))
 		return true;
 
-	if(!book().count(name) || !book()[name].check_type)
+	if(!ValueNodeRegistry::book().count(name) || !ValueNodeRegistry::book()[name].check_type)
 		return false;
-	return book()[name].check_type(x);
+	return ValueNodeRegistry::book()[name].check_type(x);
 }
 
 bool

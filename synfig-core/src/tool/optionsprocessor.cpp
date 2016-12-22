@@ -302,9 +302,9 @@ void OptionsProcessor::process_info_options()
 
 	if (_vm.count("valuenodes"))
 	{
-		synfig::LinkableValueNode::Book::iterator iter =
-			synfig::LinkableValueNode::book().begin();
-		for(; iter != synfig::LinkableValueNode::book().end(); iter++)
+		synfig::ValueNodeRegistry::Book::iterator iter =
+			synfig::ValueNodeRegistry::book().begin();
+		for(; iter != synfig::ValueNodeRegistry::book().end(); iter++)
 			cout << (iter->first).c_str() << endl;
 
 		throw (SynfigToolException(SYNFIGTOOL_HELP));
