@@ -607,7 +607,7 @@ ValueNode_DynamicList::ValueNode_DynamicList(Type &container_type, Type &type, C
 
 
 ValueNode_DynamicList::Handle
-ValueNode_DynamicList::create(Type &type, Canvas::LooseHandle canvas)
+ValueNode_DynamicList::create_on_canvas(Type &type, Canvas::LooseHandle canvas)
 {
 	return new ValueNode_DynamicList(type, canvas);
 }
@@ -618,7 +618,7 @@ ValueNode_DynamicList::~ValueNode_DynamicList()
 }
 
 ValueNode_DynamicList*
-ValueNode_DynamicList::create_from(const ValueBase &value)
+ValueNode_DynamicList::create(const ValueBase &value)
 {
 	//vector<ValueBase> value_list(value.operator vector<ValueBase>());
 	vector<ValueBase> value_list(value.get_list());

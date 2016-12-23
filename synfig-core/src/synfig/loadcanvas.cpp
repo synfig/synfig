@@ -1900,7 +1900,7 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 	}
 
 	if (getenv("SYNFIG_DEBUG_LOAD_CANVAS")) printf("%s:%d creating linkable '%s' type '%s'\n", __FILE__, __LINE__, element->get_name().c_str(), type.description.name.c_str());
-	handle<LinkableValueNode> value_node=LinkableValueNode::create(element->get_name(),type,canvas);
+	handle<LinkableValueNode> value_node=ValueNodeRegistry::create(element->get_name(),type,canvas);
  	//handle<ValueNode> c[value_node->link_count()]; changed because of clang complain
 	std::vector<handle<ValueNode> > c(value_node->link_count());
 
@@ -2207,7 +2207,7 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 	{
 		if (version == "0.1" || version == "0.2" || version == "0.3")
 		{
-			handle<LinkableValueNode> scale_value_node=LinkableValueNode::create("scale",type,canvas);
+			handle<LinkableValueNode> scale_value_node=ValueNodeRegistry::create("scale",type,canvas);
 			scale_value_node->set_link("link", value_node);
 			scale_value_node->set_link("scalar", ValueNode_Const::create(Real(0.5)));
 

@@ -92,7 +92,7 @@ ValueNode_Reverse::ValueNode_Reverse(const ValueBase &x):
 		else if(c_type == type_width_point)
 			set_link("link", ValueNode_WPList::create(x));
 		else
-			set_link("link", ValueNode_DynamicList::create_from(x));
+			set_link("link", ValueNode_DynamicList::create(x));
 	}
 	else
 	if(ValueNode_Composite::check_type(type)) {

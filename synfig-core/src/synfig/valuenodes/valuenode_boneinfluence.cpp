@@ -74,7 +74,7 @@ ValueNode_BoneInfluence::ValueNode_BoneInfluence(const ValueNode::Handle &x, Can
 	Type &type(x->get_type());
 	if (type == type_vector || type == type_bline_point)
 	{
-		ValueNode_StaticList::Handle bone_weight_list(ValueNode_StaticList::create(type_bone_weight_pair, canvas));
+		ValueNode_StaticList::Handle bone_weight_list(ValueNode_StaticList::create_on_canvas(type_bone_weight_pair, canvas));
 		bone_weight_list->add(ValueNode_BoneWeightPair::create(BoneWeightPair(Bone(), 1), canvas));
 		set_link("bone_weight_list",	bone_weight_list);
 		set_link("link",				x);

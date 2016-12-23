@@ -379,15 +379,6 @@ public:
 	 */
 	typedef ParamVocab Vocab;
 
-	//! Creates a Linkable Value Node based on the name and the returned
-	//! value type. Returns a valid Handle if both (name and type) match
-	static Handle create(const String &name, const ValueBase& x, etl::loose_handle<Canvas> canvas /* = 0 */);
-
-	//! Each derived Linkable Value Node has to implement this fucntion and
-	//! should return true only if the type matches. \name is the name of
-	//! the linked value node and \x is the returned value type
-	static bool check_type(const String &name, Type &x);
-
 public:
 	LinkableValueNode(Type &type=type_nil):
 		ValueNode(type) { }
@@ -501,6 +492,15 @@ public:
 		book_.reset();
 		return true;
 	}
+
+public:
+	//! Creates a Linkable Value Node based on the name and the returned
+	//! value type. Returns a valid Handle if both (name and type) match
+	static LinkableValueNode::Handle create(const String &name, const ValueBase& x, etl::loose_handle<Canvas> canvas);
+	//! Each derived Linkable Value Node has to implement this fucntion and
+	//! should return true only if the type matches. \name is the name of
+	//! the linked value node and \x is the returned value type
+	static bool check_type(const String &name, Type &x);
 
 private:
 	static std::unique_ptr<Book> book_;

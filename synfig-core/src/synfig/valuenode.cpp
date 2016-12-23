@@ -142,7 +142,6 @@ ValueNode::subsys_init()
 #define ADD_VALUENODE_CREATE(klass,name,local,version,create) \
 	ValueNodeRegistry::register_node_type(name, local, version, reinterpret_cast<ValueNodeRegistry::Factory>(&klass::create), &klass::check_type);
 #define ADD_VALUENODE(class,name,local,version)		ADD_VALUENODE_CREATE(class,name,local,version,create)
-#define ADD_VALUENODE2(class,name,local,version)	ADD_VALUENODE_CREATE(class,name,local,version,create_from)
 
 	ADD_VALUENODE(ValueNode_Linear,			  "linear",			  _("Linear"),			 RELEASE_VERSION_0_61_06);
 	ADD_VALUENODE(ValueNode_Composite,		  "composite",		  _("Composite"),		 RELEASE_VERSION_0_61_06);
@@ -155,7 +154,7 @@ ValueNode::subsys_init()
 	ADD_VALUENODE(ValueNode_Subtract,		  "subtract",		  _("Subtract"),		 RELEASE_VERSION_0_61_06);
 	ADD_VALUENODE(ValueNode_TwoTone,		  "twotone",		  _("Two-Tone"),		 RELEASE_VERSION_0_61_06);
 	ADD_VALUENODE(ValueNode_BLine,			  "bline",			  _("Spline"),			 RELEASE_VERSION_0_61_06);
-	ADD_VALUENODE2(ValueNode_DynamicList,	  "dynamic_list",	  _("Dynamic List"),	 RELEASE_VERSION_0_61_06);
+	ADD_VALUENODE(ValueNode_DynamicList,	  "dynamic_list",	  _("Dynamic List"),	 RELEASE_VERSION_0_61_06);
 	ADD_VALUENODE(ValueNode_GradientRotate,	  "gradient_rotate",  _("Gradient Rotate"),	 RELEASE_VERSION_0_61_06);
 	ADD_VALUENODE(ValueNode_Sine,			  "sine",			  _("Sine"),			 RELEASE_VERSION_0_61_06);
 
@@ -201,7 +200,7 @@ ValueNode::subsys_init()
 	ADD_VALUENODE(ValueNode_BoneInfluence,	  "boneinfluence",	  _("Bone Influence"),	 RELEASE_VERSION_0_62_00); 
 	ADD_VALUENODE(ValueNode_Bone,			  "bone",			  _("Bone"),			 RELEASE_VERSION_0_62_00); 
 	ADD_VALUENODE(ValueNode_Bone_Root,		  "bone_root",		  _("Root Bone"),		 RELEASE_VERSION_0_62_00); 
-	ADD_VALUENODE2(ValueNode_StaticList,	  "static_list",	  _("Static List"),		 RELEASE_VERSION_0_62_00); 
+	ADD_VALUENODE(ValueNode_StaticList,	  "static_list",	  _("Static List"),		 RELEASE_VERSION_0_62_00); 
 	ADD_VALUENODE(ValueNode_BoneWeightPair,	  "boneweightpair",	  _("Bone Weight Pair"), RELEASE_VERSION_0_62_00); 
 	ADD_VALUENODE(ValueNode_BoneLink,		  "bone_link",		  _("Bone Link"),		 RELEASE_VERSION_1_0);
 
@@ -220,7 +219,6 @@ ValueNode::subsys_init()
 
 #undef ADD_VALUENODE_CREATE
 #undef ADD_VALUENODE
-#undef ADD_VALUENODE2
 
 	return true;
 }
@@ -237,7 +235,7 @@ ValueNode::ValueNode(Type &type):type(&type)
 }
 
 LinkableValueNode::Handle
-LinkableValueNode::create(const String &name, const ValueBase& x, Canvas::LooseHandle canvas)
+ValueNodeRegistry::create(const String &name, const ValueBase& x, Canvas::LooseHandle canvas)
 {
 	// forbid creating a node if class is not registered
 	if(!ValueNodeRegistry::book().count(name))
@@ -253,7 +251,7 @@ LinkableValueNode::create(const String &name, const ValueBase& x, Canvas::LooseH
 }
 
 bool
-LinkableValueNode::check_type(const String &name, Type &x)
+ValueNodeRegistry::check_type(const String &name, Type &x)
 {
 	// the BoneRoot and Duplicate ValueNodes are exceptions - we don't want the
 	// user creating them for themselves, so check_type() fails for

@@ -293,13 +293,13 @@ ValueNode_StaticList::~ValueNode_StaticList()
 }
 
 ValueNode_StaticList::Handle
-ValueNode_StaticList::create(Type &type, Canvas::LooseHandle canvas) // line 557
+ValueNode_StaticList::create_on_canvas(Type &type, Canvas::LooseHandle canvas)
 {
 	return new ValueNode_StaticList(type, canvas);
 }
 
 ValueNode_StaticList*
-ValueNode_StaticList::create_from(const ValueBase &value) // line 568
+ValueNode_StaticList::create(const ValueBase &value)
 {
 	vector<ValueBase> value_list(value.get_list());
 
@@ -484,7 +484,7 @@ ValueNode_StaticList::get_contained_type()const // line 730
 }
 
 LinkableValueNode*
-ValueNode_StaticList::create_new()const // line 736
+ValueNode_StaticList::create_new() const
 {
 	return new ValueNode_StaticList(*container_type);
 }
