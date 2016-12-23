@@ -45,6 +45,7 @@
 #include <synfig/bone.h>
 #include <synfig/pair.h>
 #include <synfig/waypoint.h>
+#include <synfig/valuenode_registry.h>
 
 #include <synfig/layers/layer_pastecanvas.h>
 
@@ -307,7 +308,7 @@ CanvasInterface::layer_set_defaults(const synfig::Layer::Handle &layer)
 					{
 						if (type == type_bline_point)
 						{
-							value_node=ValueNodeRegistry::create("bline",iter->second,canvas);
+							value_node=ValueNodeRegistry::create("bline",iter->second);
 							ValueNode_BLine::Handle::cast_dynamic(value_node)->set_member_canvas(canvas);
 						}
 						else
@@ -315,12 +316,12 @@ CanvasInterface::layer_set_defaults(const synfig::Layer::Handle &layer)
 						{
 							if (getenv("SYNFIG_USE_DYNAMIC_LIST_FOR_BONES"))
 							{
-								value_node=ValueNodeRegistry::create("dynamic_list",iter->second,canvas);
+								value_node=ValueNodeRegistry::create("dynamic_list",iter->second);
 								ValueNode_DynamicList::Handle::cast_dynamic(value_node)->set_member_canvas(canvas);
 							}
 							else // this is the default
 							{
-								value_node=ValueNodeRegistry::create("static_list",iter->second,canvas);
+								value_node=ValueNodeRegistry::create("static_list",iter->second);
 								ValueNode_StaticList::Handle::cast_dynamic(value_node)->set_member_canvas(canvas);
 							}
 						}
@@ -329,12 +330,12 @@ CanvasInterface::layer_set_defaults(const synfig::Layer::Handle &layer)
 						{
 							if (getenv("SYNFIG_USE_DYNAMIC_LIST_FOR_BONES"))
 							{
-								value_node=ValueNodeRegistry::create("dynamic_list",iter->second,canvas);
+								value_node=ValueNodeRegistry::create("dynamic_list",iter->second);
 								ValueNode_DynamicList::Handle::cast_dynamic(value_node)->set_member_canvas(canvas);
 							}
 							else // this is the default
 							{
-								value_node=ValueNodeRegistry::create("static_list",iter->second,canvas);
+								value_node=ValueNodeRegistry::create("static_list",iter->second);
 								ValueNode_StaticList::Handle::cast_dynamic(value_node)->set_member_canvas(canvas);
 							}
 						}
@@ -343,12 +344,12 @@ CanvasInterface::layer_set_defaults(const synfig::Layer::Handle &layer)
 						{
 							if (getenv("SYNFIG_USE_STATIC_LIST_FOR_VECTORS"))
 							{
-								value_node=ValueNodeRegistry::create("static_list",iter->second,canvas);
+								value_node=ValueNodeRegistry::create("static_list",iter->second);
 								ValueNode_StaticList::Handle::cast_dynamic(value_node)->set_member_canvas(canvas);
 							}
 							else // this is the default
 							{
-								value_node=ValueNodeRegistry::create("dynamic_list",iter->second,canvas);
+								value_node=ValueNodeRegistry::create("dynamic_list",iter->second);
 								ValueNode_DynamicList::Handle::cast_dynamic(value_node)->set_member_canvas(canvas);
 							}
 						}
@@ -358,7 +359,7 @@ CanvasInterface::layer_set_defaults(const synfig::Layer::Handle &layer)
 							break;
 					if (iter2 == list.end())
 					{
-						value_node=ValueNodeRegistry::create("wplist",iter->second, canvas);
+						value_node=ValueNodeRegistry::create("wplist",iter->second);
 						ValueNode_WPList::Handle::cast_dynamic(value_node)->set_member_canvas(canvas);
 					}
 					for (iter2 = list.begin(); iter2 != list.end(); iter2++)
@@ -366,13 +367,13 @@ CanvasInterface::layer_set_defaults(const synfig::Layer::Handle &layer)
 							break;
 					if (iter2 == list.end())
 					{
-						value_node=ValueNodeRegistry::create("dilist",iter->second, canvas);
+						value_node=ValueNodeRegistry::create("dilist",iter->second);
 						ValueNode_DIList::Handle::cast_dynamic(value_node)->set_member_canvas(canvas);
 					}
 				}
 				// it has something else so just insert the dynamic list
 				if (!value_node)
-					value_node=ValueNodeRegistry::create("dynamic_list",iter->second,canvas);
+					value_node=ValueNodeRegistry::create("dynamic_list",iter->second);
 			}
 			// otherwise, if it's a type that can be converted to
 			// 'composite' (other than the types that can be radial
@@ -380,7 +381,7 @@ CanvasInterface::layer_set_defaults(const synfig::Layer::Handle &layer)
 			else if (ValueNodeRegistry::check_type("composite",iter->second.get_type()) &&
 					 (iter->second.get_type()!=type_color &&
 					  iter->second.get_type()!=type_vector))
-				value_node=ValueNodeRegistry::create("composite",iter->second,canvas);
+				value_node=ValueNodeRegistry::create("composite",iter->second);
 
 			if(value_node)
 				layer->connect_dynamic_param(iter->first,value_node);

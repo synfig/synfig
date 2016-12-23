@@ -31,6 +31,7 @@
 #endif
 
 #include "valuenode.h"
+#include "valuenode_registry.h"
 #include "general.h"
 #include <synfig/localization.h>
 #include "canvas.h"
@@ -117,16 +118,13 @@ using namespace synfig;
 
 static int value_node_count(0);
 
-std::unique_ptr<ValueNodeRegistry::Book> ValueNodeRegistry::book_;
-
+/* === P R O C E D U R E S ================================================= */
 
 ValueNode::LooseHandle
 synfig::find_value_node(const GUID& guid)
 {
 	return guid_cast<ValueNode>(guid);
 }
-
-/* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
 
@@ -232,37 +230,6 @@ ValueNode::subsys_stop()
 ValueNode::ValueNode(Type &type):type(&type)
 {
 	value_node_count++;
-}
-
-LinkableValueNode::Handle
-ValueNodeRegistry::create(const String &name, const ValueBase& x, Canvas::LooseHandle canvas)
-{
-	// forbid creating a node if class is not registered
-	if(!ValueNodeRegistry::book().count(name))
-		return nullptr;
-
-	if (!check_type(name, x.get_type()))
-	{
-		error(_("Bad type: ValueNode '%s' doesn't accept type '%s'"), ValueNodeRegistry::book()[name].local_name.c_str(), x.get_type().description.local_name.c_str());
-		return nullptr;
-	}
-
-	return ValueNodeRegistry::book()[name].factory(x);
-}
-
-bool
-ValueNodeRegistry::check_type(const String &name, Type &x)
-{
-	// the BoneRoot and Duplicate ValueNodes are exceptions - we don't want the
-	// user creating them for themselves, so check_type() fails for
-	// them even when it is valid
-	if((name == "bone_root" && x == type_bone_object) ||
-	   (name == "duplicate" && x == type_real))
-		return true;
-
-	if(!ValueNodeRegistry::book().count(name) || !ValueNodeRegistry::book()[name].check_type)
-		return false;
-	return ValueNodeRegistry::book()[name].check_type(x);
 }
 
 bool

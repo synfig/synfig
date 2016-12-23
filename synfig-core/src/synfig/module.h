@@ -37,6 +37,7 @@
 #include "color.h"
 #include "layer.h"
 #include "canvas.h"
+#include "valuenode_registry.h"
 
 //#include "value.h"
 

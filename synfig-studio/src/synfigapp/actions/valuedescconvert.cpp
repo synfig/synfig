@@ -44,6 +44,7 @@
 
 #include <synfigapp/canvasinterface.h>
 #include <synfig/valuenodes/valuenode_const.h>
+#include <synfig/valuenode_registry.h>
 
 #include <synfigapp/localization.h>
 
@@ -188,7 +189,7 @@ Action::ValueDescConvert::prepare()
 //	printf("%s:%d canvas = %lx\n", __FILE__, __LINE__, uintptr_t(value_desc.get_value_node()->get_parent_canvas().get()));
 //	printf("%s:%d parent canvas = %lx\n", __FILE__, __LINE__, uintptr_t(value_desc.get_parent_value_node()->get_parent_canvas().get()));
 #endif	// _DEBUG
-	ValueNode::Handle src_value_node(ValueNodeRegistry::create(type,value,value_desc.get_canvas()));
+	ValueNode::Handle src_value_node(ValueNodeRegistry::create(type,value));
 
 	if(!src_value_node)
 		throw Error(_("Unable to create new value node"));

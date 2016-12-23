@@ -46,6 +46,7 @@
 #include <synfig/importer.h>
 #include <synfig/loadcanvas.h>
 #include <synfig/guid.h>
+#include <synfig/valuenode_registry.h>
 #include <synfig/filesystemgroup.h>
 #include <synfig/filesystemnative.h>
 #include <synfig/filecontainerzip.h>

@@ -56,6 +56,7 @@
 #include <synfig/savecanvas.h>
 #include <synfig/canvasfilenaming.h>
 #include <synfig/layers/layer_pastecanvas.h>
+#include <synfig/valuenode_registry.h>
 
 #include "autorecover.h"
 #include <synfig/valuenodes/valuenode_composite.h>

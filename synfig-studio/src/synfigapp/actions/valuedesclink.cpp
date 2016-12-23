@@ -39,6 +39,7 @@
 #include <synfig/valuenodes/valuenode_const.h>
 #include <synfig/valuenodes/valuenode_scale.h>
 #include <synfig/valuenodes/valuenode_composite.h>
+#include <synfig/valuenode_registry.h>
 
 #include <synfig/blinepoint.h>
 
@@ -420,7 +421,7 @@ Action::ValueDescLink::prepare()
 			if( (value_desc.get_scalar()*link_scalar<0 || link_opposite) && (link_is_scaled==false))
 			{
 				//Let's create a Scale Value Node
-				synfig::ValueNode::Handle scale_value_node=synfig::ValueNodeRegistry::create("scale",iter->get_value(time),get_canvas());
+				synfig::ValueNode::Handle scale_value_node=synfig::ValueNodeRegistry::create("scale",iter->get_value(time));
 				if(!scale_value_node)
 					throw Error(Error::TYPE_BUG);
 				scale_value_node->set_parent_canvas(get_canvas());

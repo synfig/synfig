@@ -39,6 +39,7 @@
 #include "general.h"
 #include <synfig/localization.h>
 #include "valuenode.h"
+#include "valuenode_registry.h"
 #include "valuenodes/valuenode_animated.h"
 #include "valuenodes/valuenode_const.h"
 #include "valuenodes/valuenode_linear.h"
