@@ -247,7 +247,7 @@ ValueNodeRegistry::create(const String &name, const ValueBase& x, Canvas::LooseH
 		return nullptr;
 	}
 
-	return ValueNodeRegistry::book()[name].factory(x,canvas);
+	return ValueNodeRegistry::book()[name].factory(x);
 }
 
 bool
