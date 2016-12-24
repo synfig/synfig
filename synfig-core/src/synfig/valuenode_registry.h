@@ -26,17 +26,31 @@
 /* === H E A D E R S ======================================================= */
 
 #include "valuenode.h"
+#include "localization.h"
 
 /* === M A C R O S ========================================================= */
 
-#define VALUENODE_VERSION(klass, version) \
-private: \
-	friend class Registrable<klass>; \
-	static const ReleaseVersion release_version = version; \
-	klass() {}
-
-#define REGISTRABLE_VALUENODE(klass) \
-klass : public LinkableValueNode, public Registrable<klass>
+#define REGISTER_VALUENODE(klass, _version, _name, _local_name)		\
+	class Register_##klass :										\
+		public RegisterValueNode<klass, Register_##klass>			\
+	{																\
+	public:															\
+		static const ReleaseVersion release_version = _version;		\
+		static constexpr const char* name = _name;					\
+		static constexpr const char* local_name = _local_name;		\
+	};																\
+																	\
+	String															\
+	klass::get_name() const											\
+	{																\
+		return _name;												\
+	}																\
+																	\
+	String															\
+	klass::get_local_name()const									\
+	{																\
+		return _local_name;											\
+	}
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
@@ -79,18 +93,18 @@ private:
 
 // Automatically register class
 // See http://stackoverflow.com/questions/401621/best-way-to-for-c-types-to-self-register-in-a-list
-template<class T>
-class Registrable {
+template<class NodeT, class SelfT>
+class RegisterValueNode {
 private:
 	struct do_register {
-		do_register() {
-			T t;
+		do_register()
+		{
 			ValueNodeRegistry::register_node_type(
-				t.get_name(),
-				t.get_local_name(),
-				T::release_version,
-				reinterpret_cast<ValueNodeRegistry::Factory>(&T::create),
-				&T::check_type
+				SelfT::name,
+				_(SelfT::local_name),
+				SelfT::release_version,
+				reinterpret_cast<ValueNodeRegistry::Factory>(&NodeT::create),
+				&NodeT::check_type
 			);
 		}
 	};
@@ -98,10 +112,10 @@ private:
 	template<do_register&> struct register_ref {};
 	static do_register register_obj;
 	static register_ref<register_obj> ref_obj;
-}; // END of class Registrable
+}; // END of class RegisterValueNode
 
-template<class T>
-typename Registrable<T>::do_register Registrable<T>::register_obj;
+template<class NodeT, class SelfT>
+typename RegisterValueNode<NodeT, SelfT>::do_register RegisterValueNode<NodeT, SelfT>::register_obj;
 
 }; // END of namespace synfig
 
