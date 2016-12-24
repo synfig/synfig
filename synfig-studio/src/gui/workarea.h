@@ -128,7 +128,6 @@ public:
 			  top,
 			  left + (surface ? cairo_image_surface_get_width(surface) : 0),
 			  top + (surface ? cairo_image_surface_get_height(surface) : 0) ),
-		pixbuf(pixbuf),
 		surface() { }
 
 	bool operator< (const WorkAreaTile &other) { return refresh_id < other.refresh_id; }
