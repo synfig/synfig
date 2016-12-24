@@ -32,7 +32,8 @@
 #endif
 
 #include "valuenode_random.h"
-#include "synfig/valuenodes/valuenode_const.h"
+#include <synfig/valuenodes/valuenode_const.h>
+#include <synfig/valuenode_registry.h>
 #include <synfig/general.h>
 #include <synfig/localization.h>
 #include "synfig/color.h"
@@ -50,6 +51,8 @@ using namespace synfig;
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
+
+REGISTER_VALUENODE(ValueNode_Random, RELEASE_VERSION_0_61_08, "random", "Random")
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -155,19 +158,6 @@ ValueNode_Random::operator()(Time t)const
 
 	assert(0);
 	return ValueBase();
-}
-
-
-String
-ValueNode_Random::get_name()const
-{
-	return "random";
-}
-
-String
-ValueNode_Random::get_local_name()const
-{
-	return _("Random");
 }
 
 bool
