@@ -37,6 +37,7 @@
 #include <giomm.h>
 
 #include <synfig/localization.h>
+#include <synfig/valuenode_registry.h>
 #include <synfig/general.h>
 #include <synfig/canvasfilenaming.h>
 
@@ -54,6 +55,8 @@ using namespace synfig;
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
+
+REGISTER_VALUENODE(ValueNode_AnimatedFile, RELEASE_VERSION_1_0_2, "animated_file", "Animation from File")
 
 /* === C L A S S E S ======================================================= */
 
@@ -172,13 +175,7 @@ ValueNode_AnimatedFile*
 ValueNode_AnimatedFile::create(const ValueBase &x)
 	{ return new ValueNode_AnimatedFile(x.get_type()); }
 
-String
-ValueNode_AnimatedFile::get_name()const
-	{ return "animated_file"; }
 
-String
-ValueNode_AnimatedFile::get_local_name()const
-	{ return _("Animation from File"); }
 
 void
 ValueNode_AnimatedFile::file_changed()

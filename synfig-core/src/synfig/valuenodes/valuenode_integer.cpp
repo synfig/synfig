@@ -36,6 +36,7 @@
 #include "valuenode_const.h"
 #include <synfig/general.h>
 #include <synfig/localization.h>
+#include <synfig/valuenode_registry.h>
 #include <ETL/misc>
 
 #endif
@@ -49,6 +50,8 @@ using namespace synfig;
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
+
+REGISTER_VALUENODE(ValueNode_Integer, RELEASE_VERSION_0_61_08, "fromint", "Integer")
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -158,17 +161,7 @@ synfig::ValueNode_Integer::get_inverse(Time /*t*/, const synfig::Angle &target_v
 
 
 
-String
-ValueNode_Integer::get_name()const
-{
-	return "fromint";
-}
 
-String
-ValueNode_Integer::get_local_name()const
-{
-	return _("Integer");
-}
 
 bool
 ValueNode_Integer::check_type(Type &type __attribute__ ((unused)))

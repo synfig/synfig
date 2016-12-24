@@ -33,6 +33,7 @@
 
 #include <synfig/general.h>
 #include <synfig/localization.h>
+#include <synfig/valuenode_registry.h>
 #include "valuenode_range.h"
 #include "valuenode_const.h"
 #include <stdexcept>
@@ -51,6 +52,8 @@ using namespace synfig;
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
+
+REGISTER_VALUENODE(ValueNode_Range, RELEASE_VERSION_0_61_07, "range", "Range")
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -247,17 +250,7 @@ ValueNode_Range::get_link_vfunc(int i)const
 	}
 }
 
-String
-ValueNode_Range::get_name()const
-{
-	return "range";
-}
 
-String
-ValueNode_Range::get_local_name()const
-{
-	return _("Range");
-}
 
 bool
 ValueNode_Range::check_type(Type &type)

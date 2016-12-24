@@ -33,6 +33,7 @@
 
 #include <synfig/general.h>
 #include <synfig/localization.h>
+#include <synfig/valuenode_registry.h>
 #include "valuenode_scale.h"
 #include "valuenode_const.h"
 #include <stdexcept>
@@ -53,6 +54,8 @@ using namespace synfig;
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
+
+REGISTER_VALUENODE(ValueNode_Scale, RELEASE_VERSION_0_61_06, "scale", "Scale")
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -214,17 +217,7 @@ ValueNode_Scale::get_link_vfunc(int i)const
 	return 0;
 }
 
-String
-ValueNode_Scale::get_name()const
-{
-	return "scale";
-}
 
-String
-ValueNode_Scale::get_local_name()const
-{
-	return _("Scale");
-}
 
 bool
 ValueNode_Scale::check_type(Type &type)

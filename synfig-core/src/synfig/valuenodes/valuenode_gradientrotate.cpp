@@ -33,6 +33,7 @@
 
 #include <synfig/general.h>
 #include <synfig/localization.h>
+#include <synfig/valuenode_registry.h>
 #include "valuenode_gradientrotate.h"
 #include "valuenode_const.h"
 #include <stdexcept>
@@ -49,6 +50,8 @@ using namespace synfig;
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
+
+REGISTER_VALUENODE(ValueNode_GradientRotate, RELEASE_VERSION_0_61_06, "gradient_rotate", "Gradient Rotate")
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -135,17 +138,7 @@ ValueNode_GradientRotate::get_link_vfunc(int i)const
 	return 0;
 }
 
-String
-ValueNode_GradientRotate::get_name()const
-{
-	return "gradient_rotate";
-}
 
-String
-ValueNode_GradientRotate::get_local_name()const
-{
-	return _("Gradient Rotate");
-}
 
 bool
 ValueNode_GradientRotate::check_type(Type &type)

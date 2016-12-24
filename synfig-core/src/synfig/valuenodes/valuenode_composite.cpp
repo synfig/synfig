@@ -37,6 +37,7 @@
 #include <stdexcept>
 #include <synfig/general.h>
 #include <synfig/localization.h>
+#include <synfig/valuenode_registry.h>
 #include "valuenode_radialcomposite.h"
 #include <synfig/vector.h>
 #include <synfig/color.h>
@@ -60,6 +61,8 @@ using namespace synfig;
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
+
+REGISTER_VALUENODE(ValueNode_Composite, RELEASE_VERSION_0_61_06, "composite", "Composite")
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -592,17 +595,7 @@ ValueNode_Composite::get_link_index_from_name(const String &name)const
 	throw Exception::BadLinkName(name);
 }
 
-String
-ValueNode_Composite::get_name()const
-{
-	return "composite";
-}
 
-String
-ValueNode_Composite::get_local_name()const
-{
-	return _("Composite");
-}
 
 bool
 ValueNode_Composite::check_type(Type &type)

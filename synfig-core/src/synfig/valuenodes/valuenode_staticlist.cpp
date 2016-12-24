@@ -37,6 +37,7 @@
 #include <synfig/boneweightpair.h>
 #include <synfig/general.h>
 #include <synfig/localization.h>
+#include <synfig/valuenode_registry.h>
 #include <synfig/exception.h>
 #include <vector>
 #include <list>
@@ -55,6 +56,8 @@ using namespace synfig;
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
+
+REGISTER_VALUENODE(ValueNode_StaticList, RELEASE_VERSION_0_62_00, "static_list", "Static List")
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -434,17 +437,7 @@ ValueNode_StaticList::get_link_index_from_name(const String &name)const // line 
 	throw Exception::BadLinkName(name);
 }
 
-String
-ValueNode_StaticList::get_name()const // line 705
-{
-	return "static_list";
-}
 
-String
-ValueNode_StaticList::get_local_name()const // line 711
-{
-	return _("Static List");
-}
 
 bool
 ValueNode_StaticList::check_type(Type &type) // line 717

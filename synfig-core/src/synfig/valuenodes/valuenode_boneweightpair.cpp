@@ -37,6 +37,7 @@
 #include <synfig/canvas.h>
 #include <synfig/general.h>
 #include <synfig/localization.h>
+#include <synfig/valuenode_registry.h>
 #include <synfig/boneweightpair.h>
 
 #endif
@@ -50,6 +51,8 @@ using namespace synfig;
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
+
+REGISTER_VALUENODE(ValueNode_BoneWeightPair, RELEASE_VERSION_0_62_00, "boneweightpair", "Bone Weight Pair")
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -108,17 +111,7 @@ ValueNode_BoneWeightPair::operator()(Time t)const
 	return BoneWeightPair(bone, weight);
 }
 
-String
-ValueNode_BoneWeightPair::get_name()const
-{
-	return "boneweightpair";
-}
 
-String
-ValueNode_BoneWeightPair::get_local_name()const
-{
-	return _("Bone Weight Pair");
-}
 
 bool
 ValueNode_BoneWeightPair::check_type(Type &type)

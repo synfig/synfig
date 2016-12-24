@@ -35,6 +35,7 @@
 #include "valuenode_const.h"
 #include <synfig/general.h>
 #include <synfig/localization.h>
+#include <synfig/valuenode_registry.h>
 
 #endif
 
@@ -47,6 +48,8 @@ using namespace synfig;
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
+
+REGISTER_VALUENODE(ValueNode_Atan2, RELEASE_VERSION_0_61_08, "atan2", "aTan2")
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -96,17 +99,7 @@ ValueNode_Atan2::operator()(Time t)const
 }
 
 
-String
-ValueNode_Atan2::get_name()const
-{
-	return "atan2";
-}
 
-String
-ValueNode_Atan2::get_local_name()const
-{
-	return _("aTan2");
-}
 
 bool
 ValueNode_Atan2::check_type(Type &type)

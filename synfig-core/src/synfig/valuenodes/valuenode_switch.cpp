@@ -35,6 +35,7 @@
 #include "valuenode_const.h"
 #include <synfig/general.h>
 #include <synfig/localization.h>
+#include <synfig/valuenode_registry.h>
 
 #endif
 
@@ -47,6 +48,8 @@ using namespace synfig;
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
+
+REGISTER_VALUENODE(ValueNode_Switch, RELEASE_VERSION_0_61_08, "switch", "Switch")
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -122,17 +125,7 @@ ValueNode_Switch::operator()(Time t)const
 }
 
 
-String
-ValueNode_Switch::get_name()const
-{
-	return "switch";
-}
 
-String
-ValueNode_Switch::get_local_name()const
-{
-	return _("Switch");
-}
 
 bool
 ValueNode_Switch::check_type(Type &type)

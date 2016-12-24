@@ -39,6 +39,7 @@
 #include <synfig/canvas.h>
 #include <synfig/general.h>
 #include <synfig/localization.h>
+#include <synfig/valuenode_registry.h>
 #include <synfig/blinepoint.h>
 
 #endif
@@ -54,6 +55,8 @@ using namespace synfig;
 #define epsilon 1e-6
 
 /* === G L O B A L S ======================================================= */
+
+REGISTER_VALUENODE(ValueNode_BoneInfluence, RELEASE_VERSION_0_62_00, "boneinfluence", "Bone Influence")
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -168,17 +171,7 @@ ValueNode_BoneInfluence::operator()(Time t)const
 }
 
 
-String
-ValueNode_BoneInfluence::get_name()const
-{
-	return "boneinfluence";
-}
 
-String
-ValueNode_BoneInfluence::get_local_name()const
-{
-	return _("Bone Influence");
-}
 
 bool
 ValueNode_BoneInfluence::set_link_vfunc(int i,ValueNode::Handle value)

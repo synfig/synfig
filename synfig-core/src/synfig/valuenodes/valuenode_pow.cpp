@@ -36,6 +36,7 @@
 #include "valuenode_const.h"
 #include <synfig/general.h>
 #include <synfig/localization.h>
+#include <synfig/valuenode_registry.h>
 
 #endif
 
@@ -48,6 +49,8 @@ using namespace synfig;
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
+
+REGISTER_VALUENODE(ValueNode_Pow, RELEASE_VERSION_0_62_00, "power", "Power")
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -151,17 +154,7 @@ ValueNode_Pow::operator()(Time t)const
 
 }
 
-String
-ValueNode_Pow::get_name()const
-{
-	return "power";
-}
 
-String
-ValueNode_Pow::get_local_name()const
-{
-	return _("Power");
-}
 
 bool
 ValueNode_Pow::check_type(Type &type)

@@ -36,6 +36,7 @@
 #include <synfig/canvas.h>
 #include <synfig/general.h>
 #include <synfig/localization.h>
+#include <synfig/valuenode_registry.h>
 
 #endif
 
@@ -48,6 +49,8 @@ using namespace synfig;
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
+
+REGISTER_VALUENODE(ValueNode_TimeString, RELEASE_VERSION_0_61_09, "timestring", "Time String")
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -101,17 +104,7 @@ ValueNode_TimeString::operator()(Time t)const
 	return ValueBase();
 }
 
-String
-ValueNode_TimeString::get_name()const
-{
-	return "timestring";
-}
 
-String
-ValueNode_TimeString::get_local_name()const
-{
-	return _("Time String");
-}
 
 bool
 ValueNode_TimeString::set_link_vfunc(int i,ValueNode::Handle value)

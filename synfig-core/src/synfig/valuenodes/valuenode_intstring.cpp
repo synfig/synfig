@@ -36,6 +36,7 @@
 #include <synfig/canvas.h>
 #include <synfig/general.h>
 #include <synfig/localization.h>
+#include <synfig/valuenode_registry.h>
 
 #endif
 
@@ -48,6 +49,8 @@ using namespace synfig;
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
+
+REGISTER_VALUENODE(ValueNode_IntString, RELEASE_VERSION_0_61_09, "intstring", "Int String")
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -106,17 +109,7 @@ ValueNode_IntString::operator()(Time t)const
 	return ValueBase();
 }
 
-String
-ValueNode_IntString::get_name()const
-{
-	return "intstring";
-}
 
-String
-ValueNode_IntString::get_local_name()const
-{
-	return _("Int String");
-}
 
 bool
 ValueNode_IntString::set_link_vfunc(int i,ValueNode::Handle value)
