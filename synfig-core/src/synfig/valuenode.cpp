@@ -35,73 +35,6 @@
 #include "general.h"
 #include <synfig/localization.h>
 #include "canvas.h"
-#include "releases.h"
-
-#include "valuenodes/valuenode_const.h"
-#include "valuenodes/valuenode_linear.h"
-#include "valuenodes/valuenode_composite.h"
-#include "valuenodes/valuenode_reference.h"
-#include "valuenodes/valuenode_boneinfluence.h"
-#include "valuenodes/valuenode_boneweightpair.h"
-#include "valuenodes/valuenode_bone.h"
-#include "valuenodes/valuenode_bonelink.h"
-#include "valuenodes/valuenode_greyed.h"
-#include "valuenodes/valuenode_scale.h"
-#include "valuenodes/valuenode_blinecalctangent.h"
-#include "valuenodes/valuenode_blinecalcvertex.h"
-#include "valuenodes/valuenode_blinecalcwidth.h"
-#include "valuenodes/valuenode_blinereversetangent.h"
-#include "valuenodes/valuenode_segcalctangent.h"
-#include "valuenodes/valuenode_segcalcvertex.h"
-#include "valuenodes/valuenode_repeat_gradient.h"
-#include "valuenodes/valuenode_stripes.h"
-#include "valuenodes/valuenode_range.h"
-#include "valuenodes/valuenode_add.h"
-#include "valuenodes/valuenode_subtract.h"
-#include "valuenodes/valuenode_timedswap.h"
-#include "valuenodes/valuenode_twotone.h"
-#include "valuenodes/valuenode_bline.h"
-#include "valuenodes/valuenode_staticlist.h"
-#include "valuenodes/valuenode_wplist.h"
-#include "valuenodes/valuenode_dilist.h"
-#include "valuenodes/valuenode_dynamiclist.h"
-#include "valuenodes/valuenode_radialcomposite.h"
-#include "valuenodes/valuenode_gradientrotate.h"
-#include "valuenodes/valuenode_sine.h"
-#include "valuenodes/valuenode_cos.h"
-#include "valuenodes/valuenode_atan2.h"
-#include "valuenodes/valuenode_exp.h"
-#include "valuenodes/valuenode_switch.h"
-#include "valuenodes/valuenode_timeloop.h"
-#include "valuenodes/valuenode_reciprocal.h"
-#include "valuenodes/valuenode_duplicate.h"
-#include "valuenodes/valuenode_integer.h"
-#include "valuenodes/valuenode_step.h"
-#include "valuenodes/valuenode_vectorangle.h"
-#include "valuenodes/valuenode_vectorlength.h"
-#include "valuenodes/valuenode_vectorx.h"
-#include "valuenodes/valuenode_vectory.h"
-#include "valuenodes/valuenode_gradientcolor.h"
-#include "valuenodes/valuenode_dotproduct.h"
-#include "valuenodes/valuenode_timestring.h"
-#include "valuenodes/valuenode_realstring.h"
-#include "valuenodes/valuenode_join.h"
-#include "valuenodes/valuenode_anglestring.h"
-#include "valuenodes/valuenode_intstring.h"
-#include "valuenodes/valuenode_log.h"
-#include "valuenodes/valuenode_pow.h"
-#include "valuenodes/valuenode_compare.h"
-#include "valuenodes/valuenode_not.h"
-#include "valuenodes/valuenode_and.h"
-#include "valuenodes/valuenode_or.h"
-#include "valuenodes/valuenode_real.h"
-#include "valuenodes/valuenode_average.h"
-#include "valuenodes/valuenode_dynamic.h"
-#include "valuenodes/valuenode_derivative.h"
-#include "valuenodes/valuenode_weightedaverage.h"
-#include "valuenodes/valuenode_reverse.h"
-#include "valuenodes/valuenode_animatedfile.h"
-
 #include "layer.h"
 
 #endif
@@ -132,18 +65,6 @@ void
 ValueNode::breakpoint()
 {
 	return;
-}
-
-bool
-ValueNode::subsys_init()
-{
-	return true;
-}
-
-bool
-ValueNode::subsys_stop()
-{
-	return ValueNodeRegistry::cleanup();
 }
 
 ValueNode::ValueNode(Type &type):type(&type)

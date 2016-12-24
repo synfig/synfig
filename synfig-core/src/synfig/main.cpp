@@ -316,20 +316,6 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 		throw std::runtime_error(_("Unable to initialize subsystem \"Cairo Importers\""));
 	}
 
-	if(cb)cb->task(_("Starting Subsystem \"ValueNodes\""));
-	if(!ValueNode::subsys_init())
-	{
-		CairoImporter::subsys_stop();
-		Importer::subsys_stop();
-		Target::subsys_stop();
-		Layer::subsys_stop();
-		Module::subsys_stop();
-		rendering::Renderer::subsys_stop();
-		Type::subsys_stop();
-		SoundProcessor::subsys_stop();
-		throw std::runtime_error(_("Unable to initialize subsystem \"ValueNodes\""));
-	}
-
 	// Load up the list importer
 	Importer::book()[String("lst")]=Importer::BookEntry(ListImporter::create, ListImporter::supports_file_system_wrapper__);
 	CairoImporter::book()[String("lst")]=CairoImporter::BookEntry(CairoListImporter::create, CairoListImporter::supports_file_system_wrapper__);
@@ -404,8 +390,6 @@ synfig::Main::~Main()
 		}
 	}
 
-	// synfig::info("ValueNode::subsys_stop()");
-	ValueNode::subsys_stop();
 	// synfig::info("Importer::subsys_stop()");
 	Importer::subsys_stop();
 	CairoImporter::subsys_stop();

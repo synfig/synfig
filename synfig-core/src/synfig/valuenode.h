@@ -112,11 +112,6 @@ public:
 
 	typedef etl::rhandle<ValueNode> RHandle;
 
-	//!Instantiates the book of ValaueNodes and register all the valid valuenodes on it
-	static bool subsys_init();
-	//!Deletes the book of ValueNodes
-	static bool subsys_stop();
-
 	static void breakpoint();
 
 	/*
