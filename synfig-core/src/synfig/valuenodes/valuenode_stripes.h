@@ -37,8 +37,9 @@
 
 namespace synfig {
 
-struct ValueNode_Stripes : public LinkableValueNode
+class ValueNode_Stripes : public LinkableValueNode
 {
+public:
 	typedef etl::handle<ValueNode_Stripes> Handle;
 	typedef etl::handle<const ValueNode_Stripes> ConstHandle;
 

@@ -37,8 +37,9 @@
 
 namespace synfig {
 
-struct ValueNode_GradientRotate : public LinkableValueNode
+class ValueNode_GradientRotate : public LinkableValueNode
 {
+public:
 	typedef etl::handle<ValueNode_GradientRotate> Handle;
 	typedef etl::handle<const ValueNode_GradientRotate> ConstHandle;
 

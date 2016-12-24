@@ -37,8 +37,9 @@
 
 namespace synfig {
 
-struct ValueNode_Subtract : public LinkableValueNode
+class ValueNode_Subtract : public LinkableValueNode
 {
+public:
 	typedef etl::handle<ValueNode_Subtract> Handle;
 	typedef etl::handle<const ValueNode_Subtract> ConstHandle;
 

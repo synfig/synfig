@@ -40,7 +40,7 @@ namespace synfig {
 /*! \class ValueNode_Animated
  *  \brief Virtual class for the ValueNode Animated implementation.
 */
-struct ValueNode_Animated : public ValueNode, public ValueNode_AnimatedInterface
+class ValueNode_Animated : public ValueNode, public ValueNode_AnimatedInterface
 {
 public:
 	typedef etl::handle<ValueNode_Animated> Handle;

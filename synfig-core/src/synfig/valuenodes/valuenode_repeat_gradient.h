@@ -37,8 +37,9 @@
 
 namespace synfig {
 
-struct ValueNode_Repeat_Gradient : public LinkableValueNode
+class ValueNode_Repeat_Gradient : public LinkableValueNode
 {
+public:
 	typedef etl::handle<ValueNode_Repeat_Gradient> Handle;
 	typedef etl::handle<const ValueNode_Repeat_Gradient> ConstHandle;
 
