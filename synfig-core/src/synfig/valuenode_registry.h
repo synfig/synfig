@@ -30,7 +30,13 @@
 
 /* === M A C R O S ========================================================= */
 
+/// This macro automatically registers valuenode and defines its
+/// get_name & get_local_name functions.
+/// NOTE: this relies on valuenode being either in synfig namespace
+/// or in 'used' namespace.
+/// TODO: move all nodes into synfig::valuenodes namespace
 #define REGISTER_VALUENODE(klass, _version, _name, _local_name)		\
+	namespace synfig {												\
 	class Register_##klass :										\
 		public RegisterValueNode<klass, Register_##klass>			\
 	{																\
@@ -50,7 +56,8 @@
 	klass::get_local_name()const									\
 	{																\
 		return _local_name;											\
-	}
+	}																\
+	};
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
