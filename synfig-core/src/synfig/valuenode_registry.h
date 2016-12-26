@@ -59,7 +59,7 @@ namespace synfig {
 class ValueNodeRegistry {
 public:
 	//! Type that represents a pointer to a ValueNode's constructor
-	using Factory = LinkableValueNode* (*)(const ValueBase&);
+	using Factory = LinkableValueNode* (*)(const ValueBase&, etl::loose_handle<Canvas>);
 	//! Pointer to check_type method
 	using CheckType = bool (*)(Type &type);
 

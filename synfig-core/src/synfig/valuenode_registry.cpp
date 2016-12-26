@@ -72,7 +72,7 @@ ValueNodeRegistry::create(const String &name, const ValueBase& x)
 		return nullptr;
 	}
 
-	return ValueNodeRegistry::book()[name].factory(x);
+	return ValueNodeRegistry::book()[name].factory(x, nullptr);
 }
 
 bool
