@@ -207,10 +207,11 @@ public:
 	Type& get_contained_type()const;
 
 
+	// TODO: better type-checking
 	template <typename iterator> static Handle
 	create_from_list(iterator begin, iterator end)
 	{
-		Handle ret=create((*begin)->get_type());
+		Handle ret = create_on_canvas((*begin)->get_type());
 		for(;begin!=end;++begin)
 			ret->add(ListEntry(*begin));
 		return ret;
