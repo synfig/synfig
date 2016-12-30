@@ -2,6 +2,13 @@
 add_executable(synfig_bin main.cpp)
 set_target_properties(synfig_bin PROPERTIES OUTPUT_NAME synfig)
 
+# TODO: more full list of features
+target_compile_features(synfig_bin PUBLIC
+    cxx_auto_type
+    cxx_lambdas
+    cxx_override
+)
+
 target_sources(synfig_bin
     PRIVATE
         "${CMAKE_CURRENT_LIST_DIR}/definitions.cpp"
