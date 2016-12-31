@@ -62,6 +62,7 @@
 #include "layer.h"
 #include "string.h"
 #include "valuenode.h"
+#include "valuenode_registry.h"
 #include "valueoperations.h"
 #include "zstreambuf.h"
 #include "segment.h"
@@ -1900,7 +1901,7 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 	}
 
 	if (getenv("SYNFIG_DEBUG_LOAD_CANVAS")) printf("%s:%d creating linkable '%s' type '%s'\n", __FILE__, __LINE__, element->get_name().c_str(), type.description.name.c_str());
-	handle<LinkableValueNode> value_node=LinkableValueNode::create(element->get_name(),type,canvas);
+	handle<LinkableValueNode> value_node=ValueNodeRegistry::create(element->get_name(),type);
  	//handle<ValueNode> c[value_node->link_count()]; changed because of clang complain
 	std::vector<handle<ValueNode> > c(value_node->link_count());
 
@@ -2207,7 +2208,7 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 	{
 		if (version == "0.1" || version == "0.2" || version == "0.3")
 		{
-			handle<LinkableValueNode> scale_value_node=LinkableValueNode::create("scale",type,canvas);
+			handle<LinkableValueNode> scale_value_node=ValueNodeRegistry::create("scale",type);
 			scale_value_node->set_link("link", value_node);
 			scale_value_node->set_link("scalar", ValueNode_Const::create(Real(0.5)));
 
@@ -2665,7 +2666,7 @@ CanvasParser::parse_value_node(xmlpp::Element *element,Canvas::Handle canvas)
 	if(element->get_name()=="weighted_average") // This is not a typo. The dynamic list parser will parse a weighted_average.
 		value_node=parse_dynamic_list(element,canvas);
 	else
-	if(LinkableValueNode::book().count(element->get_name()))
+	if(ValueNodeRegistry::book().count(element->get_name()))
 	{
 		if (getenv("SYNFIG_DEBUG_LOAD_CANVAS")) printf("%s:%d parse_value_node calls parse_linkable_value_node\n", __FILE__, __LINE__);
 		value_node=parse_linkable_value_node(element,canvas);

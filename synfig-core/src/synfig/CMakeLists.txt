@@ -56,6 +56,7 @@ target_sources(synfig
         "${CMAKE_CURRENT_LIST_DIR}/transform.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/uniqueid.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/valuenode.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/valuenode_registry.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/waypoint.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/matrix.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/filesystem.cpp"

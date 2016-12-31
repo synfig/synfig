@@ -33,6 +33,7 @@
 #include "valuenode_const.h"
 #include <synfig/general.h>
 #include <synfig/localization.h>
+#include <synfig/valuenode_registry.h>
 #include <ETL/misc>
 
 #endif
@@ -136,6 +137,8 @@ using namespace synfig;
 				)/(h*h)                     \
 				)
 /* === G L O B A L S ======================================================= */
+
+REGISTER_VALUENODE(ValueNode_Derivative, RELEASE_VERSION_1_0, "derivative", "Derivative")
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -304,17 +307,7 @@ ValueNode_Derivative::operator()(Time t)const
 	return ValueBase();
 }
 
-String
-ValueNode_Derivative::get_name()const
-{
-	return "derivative";
-}
 
-String
-ValueNode_Derivative::get_local_name()const
-{
-	return _("Derivative");
-}
 
 bool
 ValueNode_Derivative::check_type(Type &type)

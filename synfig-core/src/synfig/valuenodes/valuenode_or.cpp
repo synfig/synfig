@@ -36,6 +36,7 @@
 #include "valuenode_const.h"
 #include <synfig/general.h>
 #include <synfig/localization.h>
+#include <synfig/valuenode_registry.h>
 
 #endif
 
@@ -48,6 +49,8 @@ using namespace synfig;
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
+
+REGISTER_VALUENODE(ValueNode_Or, RELEASE_VERSION_0_62_00, "or", "OR")
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -118,17 +121,7 @@ ValueNode_Or::operator()(Time t)const
 	return (link1 || link2);
 }
 
-String
-ValueNode_Or::get_name()const
-{
-	return "or";
-}
 
-String
-ValueNode_Or::get_local_name()const
-{
-	return _("OR");
-}
 
 bool
 ValueNode_Or::check_type(Type &type)

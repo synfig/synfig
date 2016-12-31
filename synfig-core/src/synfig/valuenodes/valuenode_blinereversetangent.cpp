@@ -37,6 +37,7 @@
 #include "valuenode_composite.h"
 #include <synfig/general.h>
 #include <synfig/localization.h>
+#include <synfig/valuenode_registry.h>
 #include <synfig/exception.h>
 #include <ETL/hermite>
 #include <ETL/calculus>
@@ -52,6 +53,8 @@ using namespace synfig;
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
+
+REGISTER_VALUENODE(ValueNode_BLineRevTangent, RELEASE_VERSION_0_61_08, "blinerevtangent", "Reverse Tangent")
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -108,17 +111,7 @@ ValueNode_BLineRevTangent::operator()(Time t)const
 		return (*reference_)(t);
 }
 
-String
-ValueNode_BLineRevTangent::get_name()const
-{
-	return "blinerevtangent";
-}
 
-String
-ValueNode_BLineRevTangent::get_local_name()const
-{
-	return _("Reverse Tangent");
-}
 
 bool
 ValueNode_BLineRevTangent::set_link_vfunc(int i,ValueNode::Handle value)

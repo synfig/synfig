@@ -33,6 +33,7 @@
 
 #include <synfig/general.h>
 #include <synfig/localization.h>
+#include <synfig/valuenode_registry.h>
 #include "valuenode_twotone.h"
 #include "valuenode_const.h"
 #include <stdexcept>
@@ -50,6 +51,8 @@ using namespace synfig;
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
+
+REGISTER_VALUENODE(ValueNode_TwoTone, RELEASE_VERSION_0_61_06, "twotone", "Two-Tone")
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -124,17 +127,7 @@ ValueNode_TwoTone::get_link_vfunc(int i)const
 	return 0;
 }
 
-String
-ValueNode_TwoTone::get_name()const
-{
-	return "twotone";
-}
 
-String
-ValueNode_TwoTone::get_local_name()const
-{
-	return _("Two-Tone");
-}
 
 bool
 ValueNode_TwoTone::check_type(Type &type)

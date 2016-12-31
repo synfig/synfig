@@ -35,6 +35,7 @@
 #include "valuenode_const.h"
 #include <synfig/general.h>
 #include <synfig/localization.h>
+#include <synfig/valuenode_registry.h>
 
 #endif
 
@@ -47,6 +48,8 @@ using namespace synfig;
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
+
+REGISTER_VALUENODE(ValueNode_Exp, RELEASE_VERSION_0_61_07, "exp", "Exponential")
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -95,17 +98,7 @@ ValueNode_Exp::operator()(Time t)const
 			(*scale_)(t).get(Real()));
 }
 
-String
-ValueNode_Exp::get_name()const
-{
-	return "exp";
-}
 
-String
-ValueNode_Exp::get_local_name()const
-{
-	return _("Exponential");
-}
 
 bool
 ValueNode_Exp::set_link_vfunc(int i,ValueNode::Handle value)

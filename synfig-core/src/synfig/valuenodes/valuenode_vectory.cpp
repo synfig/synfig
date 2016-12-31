@@ -35,6 +35,7 @@
 #include "valuenode_const.h"
 #include <synfig/general.h>
 #include <synfig/localization.h>
+#include <synfig/valuenode_registry.h>
 
 #endif
 
@@ -47,6 +48,8 @@ using namespace synfig;
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
+
+REGISTER_VALUENODE(ValueNode_VectorY, RELEASE_VERSION_0_61_09, "vectory", "Vector Y")
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -112,17 +115,7 @@ ValueNode_VectorY::get_link_vfunc(int i)const
 	return 0;
 }
 
-String
-ValueNode_VectorY::get_name()const
-{
-	return "vectory";
-}
 
-String
-ValueNode_VectorY::get_local_name()const
-{
-	return _("Vector Y");
-}
 
 bool
 ValueNode_VectorY::check_type(Type &type)

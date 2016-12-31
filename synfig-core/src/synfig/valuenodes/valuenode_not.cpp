@@ -36,6 +36,7 @@
 #include "valuenode_const.h"
 #include <synfig/general.h>
 #include <synfig/localization.h>
+#include <synfig/valuenode_registry.h>
 
 #endif
 
@@ -48,6 +49,8 @@ using namespace synfig;
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
+
+REGISTER_VALUENODE(ValueNode_Not, RELEASE_VERSION_0_62_00, "not", "NOT")
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -112,17 +115,7 @@ ValueNode_Not::operator()(Time t)const
 	return !link;
 }
 
-String
-ValueNode_Not::get_name()const
-{
-	return "not";
-}
 
-String
-ValueNode_Not::get_local_name()const
-{
-	return _("NOT");
-}
 
 bool
 ValueNode_Not::check_type(Type &type)

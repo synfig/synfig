@@ -95,10 +95,11 @@ public:
 	Type& get_contained_type()const;
 
 
+	// TODO: better type-checking
 	template <typename iterator> static Handle
-	create(iterator begin, iterator end)
+	create_from_list(iterator begin, iterator end)
 	{
-		Handle ret=create((*begin)->get_type());
+		Handle ret = create_on_canvas((*begin)->get_type());
 		for(;begin!=end;++begin)
 			ret->add(*begin);
 		return ret;
@@ -123,11 +124,11 @@ public:
 	**	contains, rather than the type that it will yield
 	**	(which is type_list)
 	*/
-	static Handle create(Type &type=type_nil, etl::loose_handle<Canvas> canvas = 0);
+	static Handle create_on_canvas(Type &type=type_nil, etl::loose_handle<Canvas> canvas = 0);
 	using synfig::LinkableValueNode::get_link_vfunc;
 	using synfig::LinkableValueNode::set_link_vfunc;
 	static bool check_type(Type &type);
-	static ValueNode_StaticList* create_from(const ValueBase &x=type_gradient);
+	static ValueNode_StaticList* create(const ValueBase &x=type_gradient);
 	virtual Vocab get_children_vocab_vfunc()const;
 
 #ifdef _DEBUG

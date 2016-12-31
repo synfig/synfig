@@ -44,6 +44,7 @@
 
 #include <synfigapp/canvasinterface.h>
 #include <synfig/valuenodes/valuenode_const.h>
+#include <synfig/valuenode_registry.h>
 
 #include <synfigapp/localization.h>
 
@@ -83,7 +84,7 @@ Action::ValueDescConvert::get_local_name()const
 	// TRANSLATORS: This is used in the 'history' dialog when a ValueNode is converted.  The first %s is what is converted, the 2nd is the local name of the ValueNode's type.
 	return strprintf(_("Convert '%s' to ValueNode type '%s'"),
 					 value_desc.get_description().c_str(),
-					 LinkableValueNode::book()[type].local_name.c_str());
+					 ValueNodeRegistry::book()[type].local_name.c_str());
 }
 
 Action::ParamVocab
@@ -188,7 +189,7 @@ Action::ValueDescConvert::prepare()
 //	printf("%s:%d canvas = %lx\n", __FILE__, __LINE__, uintptr_t(value_desc.get_value_node()->get_parent_canvas().get()));
 //	printf("%s:%d parent canvas = %lx\n", __FILE__, __LINE__, uintptr_t(value_desc.get_parent_value_node()->get_parent_canvas().get()));
 #endif	// _DEBUG
-	ValueNode::Handle src_value_node(LinkableValueNode::create(type,value,value_desc.get_canvas()));
+	ValueNode::Handle src_value_node(ValueNodeRegistry::create(type,value));
 
 	if(!src_value_node)
 		throw Error(_("Unable to create new value node"));

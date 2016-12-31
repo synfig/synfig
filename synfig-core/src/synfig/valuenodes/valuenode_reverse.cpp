@@ -47,6 +47,7 @@
 
 #include <synfig/general.h>
 #include <synfig/localization.h>
+#include <synfig/valuenode_registry.h>
 #include <ETL/misc>
 
 #include <algorithm>
@@ -62,6 +63,8 @@ using namespace synfig;
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
+
+REGISTER_VALUENODE(ValueNode_Reverse, RELEASE_VERSION_1_0_2, "reverse", "Reverse")
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -92,7 +95,7 @@ ValueNode_Reverse::ValueNode_Reverse(const ValueBase &x):
 		else if(c_type == type_width_point)
 			set_link("link", ValueNode_WPList::create(x));
 		else
-			set_link("link", ValueNode_DynamicList::create_from(x));
+			set_link("link", ValueNode_DynamicList::create(x));
 	}
 	else
 	if(ValueNode_Composite::check_type(type)) {
@@ -271,17 +274,7 @@ ValueNode_Reverse::operator()(Time t)const
 
 
 
-String
-ValueNode_Reverse::get_name()const
-{
-	return "reverse";
-}
 
-String
-ValueNode_Reverse::get_local_name()const
-{
-	return _("Reverse");
-}
 
 bool
 ValueNode_Reverse::check_type(Type &type __attribute__ ((unused)))

@@ -38,7 +38,7 @@
 namespace synfig {
 
 /** \class ValueNode_AnimatedFile */
-struct ValueNode_AnimatedFile : public LinkableValueNode, public ValueNode_AnimatedInterfaceConst
+class ValueNode_AnimatedFile : public LinkableValueNode, public ValueNode_AnimatedInterfaceConst
 {
 public:
 	typedef etl::handle<ValueNode_AnimatedFile> Handle;

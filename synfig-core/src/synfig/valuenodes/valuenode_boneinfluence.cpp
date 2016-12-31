@@ -39,6 +39,7 @@
 #include <synfig/canvas.h>
 #include <synfig/general.h>
 #include <synfig/localization.h>
+#include <synfig/valuenode_registry.h>
 #include <synfig/blinepoint.h>
 
 #endif
@@ -54,6 +55,8 @@ using namespace synfig;
 #define epsilon 1e-6
 
 /* === G L O B A L S ======================================================= */
+
+REGISTER_VALUENODE(ValueNode_BoneInfluence, RELEASE_VERSION_0_62_00, "boneinfluence", "Bone Influence")
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -74,7 +77,7 @@ ValueNode_BoneInfluence::ValueNode_BoneInfluence(const ValueNode::Handle &x, Can
 	Type &type(x->get_type());
 	if (type == type_vector || type == type_bline_point)
 	{
-		ValueNode_StaticList::Handle bone_weight_list(ValueNode_StaticList::create(type_bone_weight_pair, canvas));
+		ValueNode_StaticList::Handle bone_weight_list(ValueNode_StaticList::create_on_canvas(type_bone_weight_pair, canvas));
 		bone_weight_list->add(ValueNode_BoneWeightPair::create(BoneWeightPair(Bone(), 1), canvas));
 		set_link("bone_weight_list",	bone_weight_list);
 		set_link("link",				x);
@@ -168,17 +171,7 @@ ValueNode_BoneInfluence::operator()(Time t)const
 }
 
 
-String
-ValueNode_BoneInfluence::get_name()const
-{
-	return "boneinfluence";
-}
 
-String
-ValueNode_BoneInfluence::get_local_name()const
-{
-	return _("Bone Influence");
-}
 
 bool
 ValueNode_BoneInfluence::set_link_vfunc(int i,ValueNode::Handle value)

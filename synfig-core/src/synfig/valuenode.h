@@ -1,13 +1,12 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file valuenode.h
-**	\brief Header file for implementation of the "Placeholder" valuenode conversion.
-**
-**	$Id$
+**	\brief Valuenodes
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2008 Chris Moore
-**  Copyright (c) 2011 Carlos López
+**	Copyright (c) 2011 Carlos López
+**	Copyright (c) 2016 caryoscelus
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -33,19 +32,21 @@
 #include "value.h"
 #include "string.h"
 #include "releases.h"
-#include <ETL/handle>
-#include <ETL/stringf>
 #include "exception.h"
-#include <map>
-#include <sigc++/signal.h>
 #include "guid.h"
-#include <ETL/angle>
 #include "paramdesc.h"
 #include "interpolation.h"
-
 #include "node.h"
 
+#include <ETL/angle>
+#include <ETL/handle>
+#include <ETL/stringf>
+
+#include <sigc++/signal.h>
+
+#include <map>
 #include <set>
+#include <memory>
 
 /* === M A C R O S ========================================================= */
 
@@ -110,11 +111,6 @@ public:
 	typedef etl::handle<const ValueNode> ConstHandle;
 
 	typedef etl::rhandle<ValueNode> RHandle;
-
-	//!Instantiates the book of ValaueNodes and register all the valid valuenodes on it
-	static bool subsys_init();
-	//!Deletes the book of ValueNodes
-	static bool subsys_stop();
 
 	static void breakpoint();
 
@@ -374,51 +370,10 @@ public:
 
 	typedef etl::rhandle<LinkableValueNode> RHandle;
 
-
-	//! Type that represents a pointer to a ValueNode's constructor
-	/*! As a pointer to the constructor, it represents a "factory" of
-	**  objects of this class.
-	*/
-	typedef LinkableValueNode* (*Factory)(const ValueBase&, etl::loose_handle<Canvas> canvas);
-
-	//! This represents a pointer to a Type check member fucntion
-	/*! As a pointer to the member, it represents a fucntion that checks
-	**  the type of the provided ValueBase
-	*/
-	typedef bool (*CheckType)(Type &type);
-
-	struct BookEntry
-	{
-		String local_name;
-		Factory factory;
-		CheckType check_type;
-		ReleaseVersion release_version; // which version of synfig introduced this valuenode type
-	};
-
-	//! Book of types of linkable value nodes indexed by type name.
-	/*! While the sifz file is read, each time a new LinkableValueNode entry
-	**  is found, the factory constructor that the "factory" pointer member
-	**  of the "BookEntry" struct points to, is called, and a new object of
-	**  that type is created.
-	**  \sa LinkableValueNode::Factory
-	*/
-	typedef std::map<String,BookEntry> Book;
-
 	//! The vocabulary of the children
 	/*! \see synfig::Paramdesc
 	 */
 	typedef ParamVocab Vocab;
-
-	static Book& book();
-
-	//! Creates a Linkable Value Node based on the name and the returned
-	//! value type. Returns a valid Handle if both (name and type) match
-	static Handle create(const String &name, const ValueBase& x, etl::loose_handle<Canvas> canvas /* = 0 */);
-
-	//! Each derived Linkable Value Node has to implement this fucntion and
-	//! should return true only if the type matches. \name is the name of
-	//! the linked value node and \x is the returned value type
-	static bool check_type(const String &name, Type &x);
 
 public:
 	LinkableValueNode(Type &type=type_nil):

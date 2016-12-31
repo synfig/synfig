@@ -36,6 +36,7 @@
 #include "valuenode_composite.h"
 #include <synfig/general.h>
 #include <synfig/localization.h>
+#include <synfig/valuenode_registry.h>
 #include <synfig/exception.h>
 #include <ETL/hermite>
 #include <synfig/segment.h>
@@ -51,6 +52,8 @@ using namespace synfig;
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
+
+REGISTER_VALUENODE(ValueNode_SegCalcVertex, RELEASE_VERSION_0_61_06, "segcalcvertex", "Segment Vertex")
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -93,17 +96,7 @@ ValueNode_SegCalcVertex::operator()(Time t)const
 }
 
 
-String
-ValueNode_SegCalcVertex::get_name()const
-{
-	return "segcalcvertex";
-}
 
-String
-ValueNode_SegCalcVertex::get_local_name()const
-{
-	return _("Segment Vertex");
-}
 
 bool
 ValueNode_SegCalcVertex::check_type(Type &type)

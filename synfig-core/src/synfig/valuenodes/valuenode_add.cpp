@@ -31,17 +31,21 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-#include <synfig/localization.h>
 #include "valuenode_add.h"
 #include "valuenode_const.h"
-#include <stdexcept>
+
+#include <synfig/general.h>
+#include <synfig/localization.h>
+#include <synfig/valuenode_registry.h>
 #include <synfig/color.h>
 #include <synfig/gradient.h>
 #include <synfig/vector.h>
 #include <synfig/angle.h>
 #include <synfig/real.h>
+
 #include <ETL/misc>
+
+#include <stdexcept>
 
 #endif
 
@@ -54,6 +58,8 @@ using namespace synfig;
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
+
+REGISTER_VALUENODE(ValueNode_Add, RELEASE_VERSION_0_61_07, "add", "Add")
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -204,18 +210,6 @@ ValueNode_Add::get_link_vfunc(int i)const
 		case 2: return scalar;
 		default: return 0;
 	}
-}
-
-String
-ValueNode_Add::get_name()const
-{
-	return "add";
-}
-
-String
-ValueNode_Add::get_local_name()const
-{
-	return _("Add");
 }
 
 bool
