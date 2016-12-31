@@ -99,7 +99,7 @@ $ popd # build
 $ popd # synfig-core
 $ pushd synfig-studio
 $ mkdir build && pushd build
-$ cmake -GNinja ../src -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_CXX_FLAGS="-fdiagnostics-color"
+$ cmake -GNinja .. -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_CXX_FLAGS="-fdiagnostics-color"
 $ cmake --build . -- all
 # this will take a while; alternatively, you can move/copy required images
 # to build/images directory and skip this step

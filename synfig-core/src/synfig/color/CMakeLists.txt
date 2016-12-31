@@ -6,6 +6,7 @@ target_sources(synfig
 )
 
 file(GLOB COLOR_HEADERS "${CMAKE_CURRENT_LIST_DIR}/*.h")
+set(COLOR_HEADERS ${COLOR_HEADERS} "${CMAKE_CURRENT_LIST_DIR}/color.hpp")
 
 install(
     FILES ${COLOR_HEADERS}
