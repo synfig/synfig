@@ -353,12 +353,11 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 		}
 
 	if (i == locations.size())
-	{
-		synfig::warning("Cannot find '%s', trying to load default modules", MODULE_LIST_FILENAME);
-		Module::register_default_modules(cb);
-	}
+		synfig::warning("Cannot find '%s', load default modules only", MODULE_LIST_FILENAME);
 
 	std::list<String>::iterator iter;
+
+	Module::register_default_modules(cb);
 
 	for(i=0,iter=modules_to_load.begin();iter!=modules_to_load.end();++iter,i++)
 	{
