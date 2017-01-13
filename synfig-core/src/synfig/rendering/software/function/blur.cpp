@@ -475,10 +475,17 @@ software::Blur::blur_box(const Params &params)
 		.set_dim(channels, 1);
 	BlurTemplates::surface_read(arr_surface, *params.src, VectorInt(0, 0), params.src_rect);
 
+	Vector size = params.amplified_size;
 	bool cross = false;
+	bool count = 1;
 	switch(params.type)
 	{
 	case rendering::Blur::BOX:
+		break;
+	case rendering::Blur::GAUSSIAN:
+	case rendering::Blur::FASTGAUSSIAN:
+		size *= 1.662155813;
+		count = 2;
 		break;
 	case rendering::Blur::CROSS:
 		cross = true;
@@ -500,23 +507,27 @@ software::Blur::blur_box(const Params &params)
 		arr_surface_cols.pointer = &surface_copy.front();
 	}
 
-	if (true || fabs(params.amplified_size[0] - round(params.amplified_size[0])) < precision)
+	if (true || fabs(size[0] - round(size[0])) < precision)
 		for(Array<ColorReal, 3>::Iterator channel(arr_surface_rows); channel; ++channel)
 			for(Array<ColorReal, 2>::Iterator r(*channel); r; ++r)
-				BlurTemplates::blur_box_discrete(*r, q, (int)round(params.amplified_size[0]));
+				for(int i = 0; i < count; ++i)
+					BlurTemplates::blur_box_discrete(*r, q, (int)round(size[0]));
 	else
 		for(Array<ColorReal, 3>::Iterator channel(arr_surface_rows); channel; ++channel)
 			for(Array<ColorReal, 2>::Iterator r(*channel); r; ++r)
-				BlurTemplates::blur_box_aa(*r, q, (ColorReal)params.amplified_size[0]);
+				for(int i = 0; i < count; ++i)
+					BlurTemplates::blur_box_aa(*r, q, (ColorReal)size[0]);
 
-	if (true || fabs(params.amplified_size[1] - round(params.amplified_size[1])) < precision)
+	if (true || fabs(size[1] - round(size[1])) < precision)
 		for(Array<ColorReal, 3>::Iterator channel(arr_surface_cols); channel; ++channel)
 			for(Array<ColorReal, 2>::Iterator c(*channel); c; ++c)
-				BlurTemplates::blur_box_discrete(*c, q, (int)round(params.amplified_size[1]));
+				for(int i = 0; i < count; ++i)
+					BlurTemplates::blur_box_discrete(*c, q, (int)round(size[1]));
 	else
 		for(Array<ColorReal, 3>::Iterator channel(arr_surface_cols); channel; ++channel)
 			for(Array<ColorReal, 2>::Iterator c(*channel); c; ++c)
-				BlurTemplates::blur_box_aa(*c, q, (ColorReal)params.amplified_size[1]);
+				for(int i = 0; i < count; ++i)
+					BlurTemplates::blur_box_aa(*c, q, (ColorReal)size[1]);
 
 	if (cross)
 		arr_surface_rows
@@ -721,7 +732,7 @@ software::Blur::blur(Params params)
 		{ blur_pattern(params); return; }
 
 	if ( params.type == rendering::Blur::FASTGAUSSIAN )
-		{ blur_iir(params); return; }
+		{ blur_box(params); return; }
 
 	blur_fft(params);
 }
