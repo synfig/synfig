@@ -92,7 +92,7 @@ $ popd # build
 $ popd # ETL
 $ pushd synfig-core
 $ mkdir build && pushd build
-$ cmake -GNinja ../src -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_CXX_FLAGS="-fdiagnostics-color"
+$ cmake -GNinja .. -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_CXX_FLAGS="-fdiagnostics-color"
 $ cmake --build . -- all
 $ sudo cmake --build . -- install
 $ popd # build
