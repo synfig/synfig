@@ -30,6 +30,11 @@
 #include <cstdio>
 
 #include <vector>
+
+#ifdef IMAGEMAGICK_CONFIG
+#include "config.h"
+#endif
+
 #include <Magick++.h>
 
 /* === M A C R O S ========================================================= */
