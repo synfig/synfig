@@ -2394,7 +2394,7 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 		}
 	}
 	else
-		value_node=ValueNode_DynamicList::create(type);
+		value_node=ValueNode_DynamicList::create_on_canvas(type);
 
 	if(!value_node)
 	{
