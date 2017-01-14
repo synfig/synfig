@@ -39,7 +39,7 @@
 #include <gtkmm/treemodelsort.h>
 #include <ETL/misc>
 
-#include <gui/localization.h>
+#include <synfig/localization.h>
 
 #endif
 

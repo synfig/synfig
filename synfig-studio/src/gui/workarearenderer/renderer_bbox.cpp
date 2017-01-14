@@ -36,7 +36,7 @@
 #include "renderer_bbox.h"
 #include "workarea.h"
 #include "canvasview.h"
-#include <gui/localization.h>
+#include <synfig/localization.h>
 
 #endif
 

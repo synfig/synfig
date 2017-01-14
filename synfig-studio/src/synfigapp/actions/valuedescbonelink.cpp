@@ -44,7 +44,7 @@
 #include <synfig/valuenodes/valuenode_bonelink.h>
 #include <synfig/valuetransformation.h>
 
-#include <synfigapp/localization.h>
+#include <synfig/localization.h>
 
 #endif
 

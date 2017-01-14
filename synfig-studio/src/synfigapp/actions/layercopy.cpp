@@ -36,7 +36,7 @@
 #include <synfig/context.h>
 #include <synfigapp/canvasinterface.h>
 #include <synfigapp/instance.h>
-#include <synfigapp/localization.h>
+#include <synfig/localization.h>
 #include <synfig/layers/layer_bitmap.h>
 
 #endif

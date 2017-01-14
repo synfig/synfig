@@ -45,7 +45,7 @@
 #include <gtkmm/scrollbar.h>
 #include "widgets/widget_timeslider.h"
 
-#include <gui/localization.h>
+#include <synfig/localization.h>
 
 #endif
 

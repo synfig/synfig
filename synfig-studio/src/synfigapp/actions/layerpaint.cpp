@@ -33,7 +33,7 @@
 
 #include "layerpaint.h"
 #include <synfigapp/canvasinterface.h>
-#include <synfigapp/localization.h>
+#include <synfig/localization.h>
 #include <synfigapp/instance.h>
 
 #include <synfig/layers/layer_pastecanvas.h>

@@ -43,7 +43,7 @@
 
 #include <synfig/blinepoint.h>
 
-#include <synfigapp/localization.h>
+#include <synfig/localization.h>
 #include <zconf.h>
 
 #endif

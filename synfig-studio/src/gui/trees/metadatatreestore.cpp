@@ -35,7 +35,7 @@
 #include "metadatatreestore.h"
 #include <synfigapp/canvasinterface.h>
 
-#include <gui/localization.h>
+#include <synfig/localization.h>
 
 #endif
 

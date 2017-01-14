@@ -44,7 +44,7 @@
 
 #include <cassert>
 
-#include <synfigapp/localization.h>
+#include <synfig/localization.h>
 
 #endif
 

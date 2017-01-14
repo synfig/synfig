@@ -148,7 +148,7 @@
 #include <fmod.h>
 #endif
 
-#include <gui/localization.h>
+#include <synfig/localization.h>
 
 #endif
 

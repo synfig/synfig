@@ -38,7 +38,7 @@
 #include "widgets/widget_time.h"
 #include "app.h"
 
-#include <gui/localization.h>
+#include <synfig/localization.h>
 
 #endif
 

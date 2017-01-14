@@ -37,7 +37,7 @@
 #include "ipc.h"
 #include <stdexcept>
 
-#include <gui/localization.h>
+#include <synfig/localization.h>
 #include <glibmm/convert.h>
 
 #ifdef _WIN32

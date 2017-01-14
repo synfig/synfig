@@ -46,7 +46,7 @@
 
 #include <list>
 
-#include <synfigapp/localization.h>
+#include <synfig/localization.h>
 
 #endif
 

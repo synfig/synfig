@@ -55,7 +55,7 @@
 #include <synfig/context.h>
 #include <ETL/clock>
 
-#include <gui/localization.h>
+#include <synfig/localization.h>
 
 #endif
 

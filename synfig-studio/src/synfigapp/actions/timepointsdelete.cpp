@@ -43,7 +43,7 @@
 
 #include <typeinfo>
 
-#include <synfigapp/localization.h>
+#include <synfig/localization.h>
 
 #endif
 

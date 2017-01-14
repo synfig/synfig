@@ -47,7 +47,7 @@
 #include <synfigapp/canvasinterface.h>
 #include "instance.h"
 
-#include <gui/localization.h>
+#include <synfig/localization.h>
 
 #include <synfig/layers/layer_pastecanvas.h>
 

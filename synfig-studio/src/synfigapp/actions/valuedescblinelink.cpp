@@ -46,7 +46,7 @@
 #include <synfig/valuenodes/valuenode_blinecalcwidth.h>
 #include <synfig/valuenodes/valuenode_bline.h>
 
-#include <synfigapp/localization.h>
+#include <synfig/localization.h>
 
 #endif
 

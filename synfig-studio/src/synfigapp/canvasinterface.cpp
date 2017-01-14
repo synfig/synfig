@@ -62,7 +62,7 @@
 #include <synfig/valuenodes/valuenode_twotone.h>
 #include <synfig/valuenodes/valuenode_wplist.h>
 
-#include <synfigapp/localization.h>
+#include <synfig/localization.h>
 
 #include "action_system.h"
 #include "canvasinterface.h"

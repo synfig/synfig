@@ -37,7 +37,7 @@
 #include "valuenodedynamiclistremove.h"
 #include <synfigapp/canvasinterface.h>
 
-#include <synfigapp/localization.h>
+#include <synfig/localization.h>
 #include <synfig/valuenodes/valuenode_composite.h>
 
 #endif

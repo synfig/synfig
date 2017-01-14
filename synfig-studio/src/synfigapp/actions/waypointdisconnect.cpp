@@ -36,7 +36,7 @@
 #include <synfigapp/canvasinterface.h>
 #include <synfig/valuenodes/valuenode_const.h>
 
-#include <synfigapp/localization.h>
+#include <synfig/localization.h>
 
 #endif
 

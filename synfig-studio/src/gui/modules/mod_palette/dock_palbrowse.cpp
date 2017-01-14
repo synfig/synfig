@@ -35,7 +35,7 @@
 #include "dock_paledit.h"
 #include "mod_palette.h"
 
-#include <gui/localization.h>
+#include <synfig/localization.h>
 
 #endif
 

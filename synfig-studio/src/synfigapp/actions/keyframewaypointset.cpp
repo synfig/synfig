@@ -38,7 +38,7 @@
 #include "activepointsetsmart.h"
 #include "waypointsetsmart.h"
 
-#include <synfigapp/localization.h>
+#include <synfig/localization.h>
 
 #endif
 

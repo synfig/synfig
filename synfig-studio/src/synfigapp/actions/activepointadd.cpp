@@ -35,7 +35,7 @@
 #include "activepointadd.h"
 #include <synfigapp/canvasinterface.h>
 
-#include <synfigapp/localization.h>
+#include <synfig/localization.h>
 
 #endif
 

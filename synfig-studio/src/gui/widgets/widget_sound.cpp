@@ -37,7 +37,7 @@
 #include "widgets/widget_sound.h"
 #include "audiocontainer.h"
 
-#include <gui/localization.h>
+#include <synfig/localization.h>
 
 #endif
 

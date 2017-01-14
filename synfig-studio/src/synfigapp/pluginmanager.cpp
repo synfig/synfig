@@ -42,7 +42,7 @@
 #include <synfig/savecanvas.h>
 #include <synfigapp/main.h>
 
-#include <synfigapp/localization.h>
+#include <synfig/localization.h>
 
 #endif
 

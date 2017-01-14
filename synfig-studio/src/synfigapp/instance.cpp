@@ -71,7 +71,7 @@
 #include "actions/layerembed.h"
 #include <map>
 
-#include <synfigapp/localization.h>
+#include <synfig/localization.h>
 
 #include <synfig/importer.h>
 

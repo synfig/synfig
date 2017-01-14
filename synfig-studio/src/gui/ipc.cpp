@@ -73,7 +73,7 @@
 #define read	_read
 #endif
 
-#include <gui/localization.h>
+#include <synfig/localization.h>
 
 #endif
 

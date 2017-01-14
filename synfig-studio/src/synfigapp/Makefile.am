@@ -306,8 +306,7 @@ SYNFIGAPPHH = \
 	pluginmanager.h \
 	settings.h \
 	uimanager.h \
-	value_desc.h \
-	localization.h
+	value_desc.h
 
 SYNFIGAPPCC = \
 	$(ACTIONCC) \

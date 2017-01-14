@@ -62,7 +62,7 @@
 
 #include <gdkmm/general.h>
 
-#include <gui/localization.h>
+#include <synfig/localization.h>
 
 #endif
 

@@ -51,7 +51,7 @@
 #include <gdkmm/color.h>
 #include <climits>
 
-#include <gui/localization.h>
+#include <synfig/localization.h>
 
 #endif
 

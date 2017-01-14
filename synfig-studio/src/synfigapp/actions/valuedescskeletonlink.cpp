@@ -49,7 +49,7 @@
 #include <synfig/valueoperations.h>
 #include <synfig/weightedvalue.h>
 
-#include <synfigapp/localization.h>
+#include <synfig/localization.h>
 
 #endif
 

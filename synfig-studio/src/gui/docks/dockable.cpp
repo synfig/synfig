@@ -40,7 +40,7 @@
 #include <gtkmm/table.h>
 #include <gtk/gtk.h>
 
-#include <gui/localization.h>
+#include <synfig/localization.h>
 
 #endif
 

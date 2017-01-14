@@ -38,7 +38,7 @@
 #include "layerembed.h"
 
 #include <synfigapp/canvasinterface.h>
-#include <synfigapp/localization.h>
+#include <synfig/localization.h>
 #include <synfigapp/instance.h>
 
 

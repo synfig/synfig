@@ -40,7 +40,7 @@
 #include <synfig/context.h>
 #include <synfig/layers/layer_pastecanvas.h>
 
-#include <gui/localization.h>
+#include <synfig/localization.h>
 
 #endif
 

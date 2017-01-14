@@ -33,7 +33,7 @@
 
 #include <synfig/general.h>
 
-#include <gui/localization.h>
+#include <synfig/localization.h>
 #include "keyframedial.h"
 #include <gtkmm/image.h>
 #include <gtkmm/stock.h>

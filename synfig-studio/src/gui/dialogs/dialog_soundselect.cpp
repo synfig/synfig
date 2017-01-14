@@ -38,7 +38,7 @@
 #include <gtkmm/label.h>
 #include <gtkmm/table.h>
 
-#include <gui/localization.h>
+#include <synfig/localization.h>
 
 #endif
 

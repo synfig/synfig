@@ -40,7 +40,7 @@
 #include "app.h"
 #include <cassert>
 
-#include <gui/localization.h>
+#include <synfig/localization.h>
 
 #endif
 

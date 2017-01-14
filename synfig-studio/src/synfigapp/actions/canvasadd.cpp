@@ -34,7 +34,7 @@
 
 #include "canvasadd.h"
 
-#include <synfigapp/localization.h>
+#include <synfig/localization.h>
 #include <synfigapp/canvasinterface.h>
 
 #endif

@@ -25,7 +25,7 @@
 
 #include <synfig/general.h>
 
-#include <gui/localization.h>
+#include <synfig/localization.h>
 #include "dialogs/dialog_targetparam.h"
 
 /* === U S I N G =========================================================== */

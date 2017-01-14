@@ -37,7 +37,7 @@
 #include "widgets/widget_gradient.h"
 #include "app.h"
 
-#include <gui/localization.h>
+#include <synfig/localization.h>
 
 #endif
 

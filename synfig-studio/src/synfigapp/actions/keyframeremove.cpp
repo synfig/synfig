@@ -39,7 +39,7 @@
 #include "activepointremove.h"
 #include "waypointremove.h"
 
-#include <synfigapp/localization.h>
+#include <synfig/localization.h>
 
 #endif
 

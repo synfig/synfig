@@ -43,7 +43,7 @@
 #include "widgets/widget_time.h"
 #include "widgets/widget_waypoint.h"
 
-#include <gui/localization.h>
+#include <synfig/localization.h>
 
 #endif
 

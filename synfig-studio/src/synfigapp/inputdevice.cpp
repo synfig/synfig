@@ -38,7 +38,7 @@
 #include <ETL/stringf>
 #include "main.h"
 
-#include <synfigapp/localization.h>
+#include <synfig/localization.h>
 
 #endif
 

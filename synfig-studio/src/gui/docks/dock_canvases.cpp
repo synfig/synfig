@@ -34,7 +34,7 @@
 #include "docks/dock_canvases.h"
 #include "app.h"
 #include "canvasview.h"
-#include <gui/localization.h>
+#include <synfig/localization.h>
 
 #endif
 

@@ -37,7 +37,7 @@
 
 #include <synfig/layers/layer_pastecanvas.h>
 
-#include <synfigapp/localization.h>
+#include <synfig/localization.h>
 
 #endif
 

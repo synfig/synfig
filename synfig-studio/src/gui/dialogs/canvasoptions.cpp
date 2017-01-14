@@ -40,7 +40,7 @@
 #include "canvasview.h"
 #include "workarea.h"
 
-#include <gui/localization.h>
+#include <synfig/localization.h>
 
 #endif
 

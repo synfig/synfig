@@ -53,7 +53,7 @@
 #include "duck.h"
 #include <synfigapp/main.h>
 
-#include <gui/localization.h>
+#include <synfig/localization.h>
 
 #endif
 

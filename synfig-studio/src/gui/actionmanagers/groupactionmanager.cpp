@@ -39,7 +39,7 @@
 #include "instance.h"
 #include <gtkmm/stock.h>
 
-#include <gui/localization.h>
+#include <synfig/localization.h>
 
 #endif
 
