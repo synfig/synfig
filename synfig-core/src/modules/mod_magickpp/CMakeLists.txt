@@ -8,6 +8,8 @@ target_sources(mod_magickpp
         "${CMAKE_CURRENT_LIST_DIR}/trgt_magickpp.cpp"
 )
 
+target_link_libraries(mod_magickpp ${ImageMagick_LIBRARIES})
+
 install (
     TARGETS mod_magickpp
     DESTINATION lib/synfig/modules
