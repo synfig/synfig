@@ -1,6 +1,6 @@
 add_library(synfigapp SHARED "")
 
-target_include_directories(synfigapp PUBLIC ${LIBXML_INCLUDE_DIRS})
+target_include_directories(synfigapp SYSTEM PUBLIC ${LIBXML_INCLUDE_DIRS})
 
 target_sources(synfigapp
     PRIVATE
