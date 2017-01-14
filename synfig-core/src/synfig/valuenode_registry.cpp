@@ -31,7 +31,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-std::unique_ptr<ValueNodeRegistry::Book> ValueNodeRegistry::book_;
+ValueNodeRegistry::Book* ValueNodeRegistry::book_ = NULL;
 
 /* === M E T H O D S ======================================================= */
 
@@ -39,7 +39,7 @@ ValueNodeRegistry::Book&
 ValueNodeRegistry::book()
 {
 	if (!book_)
-		book_.reset(new Book());
+		book_ = new Book();
 	return *book_;
 }
 
@@ -55,7 +55,11 @@ ValueNodeRegistry::register_node_type(String name, String local_name, ReleaseVer
 bool
 ValueNodeRegistry::cleanup()
 {
-	book_.reset();
+	if (book_)
+	{
+		delete book_;
+		book_ = NULL;
+	}
 	return true;
 }
 
@@ -64,15 +68,15 @@ ValueNodeRegistry::create(const String &name, const ValueBase& x)
 {
 	// forbid creating a node if class is not registered
 	if(!ValueNodeRegistry::book().count(name))
-		return nullptr;
+		return NULL;
 
 	if (!check_type(name, x.get_type()))
 	{
 		error(_("Bad type: ValueNode '%s' doesn't accept type '%s'"), ValueNodeRegistry::book()[name].local_name.c_str(), x.get_type().description.local_name.c_str());
-		return nullptr;
+		return NULL;
 	}
 
-	return ValueNodeRegistry::book()[name].factory(x, nullptr);
+	return ValueNodeRegistry::book()[name].factory(x, NULL);
 }
 
 bool

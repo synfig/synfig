@@ -35,29 +35,34 @@
 /// NOTE: this relies on valuenode being either in synfig namespace
 /// or in 'used' namespace.
 /// TODO: move all nodes into synfig::valuenodes namespace
-#define REGISTER_VALUENODE(klass, _version, _name, _local_name)		\
-	namespace synfig {												\
-	class Register_##klass :										\
-		public RegisterValueNode<klass, Register_##klass>			\
-	{																\
-	public:															\
-		static const ReleaseVersion release_version = _version;		\
-		static constexpr const char* name = _name;					\
-		static constexpr const char* local_name = _local_name;		\
-	};																\
-																	\
-	String															\
-	klass::get_name() const											\
-	{																\
-		return _name;												\
-	}																\
-																	\
-	String															\
-	klass::get_local_name()const									\
-	{																\
-		return _local_name;											\
-	}																\
-	};
+#define REGISTER_VALUENODE(klass, _version, _name, _local_name)				\
+	namespace synfig 														\
+	{																		\
+		class Register_##klass:												\
+			public RegisterValueNode<klass, Register_##klass>				\
+		{																	\
+			public:															\
+				static const ReleaseVersion release_version;				\
+				static const char* name;									\
+				static const char* local_name;								\
+		};																	\
+																			\
+		String																\
+		klass::get_name() const												\
+		{																	\
+			return _name;													\
+		}																	\
+																			\
+		String																\
+		klass::get_local_name()const										\
+		{																	\
+			return _local_name;												\
+		}																	\
+																			\
+		const ReleaseVersion Register_##klass::release_version = _version;	\
+		const char* Register_##klass::name = _name;							\
+		const char* Register_##klass::local_name = _local_name;				\
+	}
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
@@ -66,9 +71,9 @@ namespace synfig {
 class ValueNodeRegistry {
 public:
 	//! Type that represents a pointer to a ValueNode's constructor
-	using Factory = LinkableValueNode* (*)(const ValueBase&, etl::loose_handle<Canvas>);
+	typedef LinkableValueNode* (*Factory)(const ValueBase&, etl::loose_handle<Canvas>);
 	//! Pointer to check_type method
-	using CheckType = bool (*)(Type &type);
+	typedef bool (*CheckType)(Type &type);
 
 	struct BookEntry
 	{
@@ -78,7 +83,7 @@ public:
 		ReleaseVersion release_version; // which version of synfig introduced this valuenode type
 	};
 
-	using Book = std::map<String,BookEntry>;
+	typedef std::map<String,BookEntry> Book;
 
 public:
 	static Book& book();
@@ -95,7 +100,7 @@ public:
 	static bool check_type(const String &name, Type &x);
 
 private:
-	static std::unique_ptr<Book> book_;
+	static Book* book_;
 }; // END of class ValueNodeRegistry
 
 // Automatically register class
