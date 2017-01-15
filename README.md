@@ -29,7 +29,6 @@ you're welcome to take part in testing and improving it.
 
 - all major components are buildable, installable and runnable
 - building all components without installing ETL & core is not tested
-- not all icons are built
 
 Tested to work on (this will be updated as reports come in):
 
