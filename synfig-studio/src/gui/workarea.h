@@ -130,7 +130,7 @@ public:
 			  top + (surface ? cairo_image_surface_get_height(surface) : 0) ),
 		surface() { }
 
-	bool operator< (const WorkAreaTile &other) { return refresh_id < other.refresh_id; }
+	bool operator< (const WorkAreaTile &other) const { return refresh_id < other.refresh_id; }
 };
 
 class WorkAreaTileBook
