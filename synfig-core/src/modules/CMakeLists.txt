@@ -22,6 +22,7 @@ set(MODS_ENABLED
     mod_dv
     mod_example
     mod_ffmpeg
+    mod_filter
     mod_geometry
     mod_gif
     mod_gradient
@@ -32,6 +33,7 @@ set(MODS_ENABLED
 #     mod_mng - missing include
     mod_noise
 #     mod_openexr - missing include
+    mod_particle
     mod_png
     mod_ppm
     mod_svg
