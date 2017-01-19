@@ -1,5 +1,5 @@
-Synig Studio
-============
+Synfig Studio
+=============
 
 About
 -----
