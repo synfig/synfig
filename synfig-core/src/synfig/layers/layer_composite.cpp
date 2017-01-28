@@ -50,6 +50,7 @@
 #include <synfig/rendering/common/task/taskblend.h>
 #include <synfig/rendering/common/task/tasklayer.h>
 #include <synfig/rendering/common/task/tasksurfaceempty.h>
+#include <synfig/rendering/software/surfacesw.h>
 
 #endif
 
@@ -90,13 +91,11 @@ Layer_Composite::accelerated_render(Context context,Surface *surface,int quality
 	SuperCallback stageone(cb,0,50000,100000);
 	SuperCallback stagetwo(cb,50000,100000,100000);
 
-	Layer_Bitmap::Handle surfacelayer(new class Layer_Bitmap());
-
 	Context iter;
 
+	Layer_Bitmap::Handle surfacelayer(new class Layer_Bitmap());
 	for(iter=context;*iter;iter++)
 		image.push_back(*iter);
-
 	image.push_front(surfacelayer.get());
 
 	// We want to go ahead and schedule any other
@@ -109,9 +108,17 @@ Layer_Composite::accelerated_render(Context context,Surface *surface,int quality
 
 	image.push_back(0);	// Alpha black
 
+	// sub_surface will destroyed with sub_surface_sw
+	Surface *sub_surface = new Surface();
+
 	// Render the backdrop on the surface layer's surface.
-	if(!context.accelerated_render(&surfacelayer->get_surface(),quality,renddesc,&stageone))
+	if(!context.accelerated_render(sub_surface,quality,renddesc,&stageone))
 		return false;
+
+	rendering::SurfaceSW::Handle sub_surface_sw = new rendering::SurfaceSW();
+	sub_surface_sw->set_surface(*sub_surface, true);
+	surfacelayer->rendering_surface = sub_surface_sw;
+
 	// Sets up the interpolation of the context (now the surface layer is the first one)
 	// depending on the quality
 	if(quality<=4)surfacelayer->set_param("c", 3);else
