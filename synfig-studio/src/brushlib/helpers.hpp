@@ -32,7 +32,7 @@ namespace brushlib {
 
 typedef struct { int x, y, w, h; } Rect;
 // originally from my mass project (mass.sourceforge.net)
-void ExpandRectToIncludePoint(Rect * r, int x, int y) 
+inline void ExpandRectToIncludePoint(Rect * r, int x, int y)
 {
   if (r->w == 0) {
     r->w = 1; r->h = 1;
@@ -50,7 +50,7 @@ void ExpandRectToIncludePoint(Rect * r, int x, int y)
 // adapted from ppmforge.c, which is part of PBMPLUS. The algorithm
 // comes from: 'The Science Of Fractal Images'. Peitgen, H.-O., and
 // Saupe, D. eds.  Springer Verlag, New York, 1988.
-float rand_gauss (GRand * rng)
+inline float rand_gauss (GRand * rng)
 {
   float sum = 0.0;
   uint32_t rand1 = g_rand_int(rng);
@@ -64,7 +64,7 @@ float rand_gauss (GRand * rng)
 
 // stolen from GIMP (gimpcolorspace.c)
 // (from gimp_rgb_to_hsv)
-void
+inline void
 rgb_to_hsv_float (float *r_ /*h*/, float *g_ /*s*/, float *b_ /*v*/)
 {
   float max, min, delta;
@@ -120,7 +120,7 @@ rgb_to_hsv_float (float *r_ /*h*/, float *g_ /*s*/, float *b_ /*v*/)
 }
 
 // (from gimp_hsv_to_rgb)
-void
+inline void
 hsv_to_rgb_float (float *h_, float *s_, float *v_)
 {
   gint    i;
@@ -201,7 +201,7 @@ hsv_to_rgb_float (float *h_, float *s_, float *v_)
 }
 
 // (from gimp_rgb_to_hsl)
-void
+inline void
 rgb_to_hsl_float (float *r_, float *g_, float *b_)
 {
   gdouble max, min, delta;
@@ -266,7 +266,7 @@ rgb_to_hsl_float (float *r_, float *g_, float *b_)
   *b_ = l;
 }
 
-static double
+static inline double
 hsl_value (gdouble n1,
            gdouble n2,
            gdouble hue)
@@ -298,7 +298,7 @@ hsl_value (gdouble n1,
  *
  * Convert a HSL color value to an RGB color value.
  **/
-void
+inline void
 hsl_to_rgb_float (float *h_, float *s_, float *l_)
 {
   float h, s, l;
