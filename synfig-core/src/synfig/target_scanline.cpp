@@ -82,8 +82,25 @@ Target_Scanline::next_frame(Time& time)
 bool
 synfig::Target_Scanline::call_renderer(Context &context, const etl::handle<rendering::SurfaceSW> &surfacesw, int /* quality */, const RendDesc &renddesc, ProgressCallback * /* cb */)
 {
+	rendering::Task::Handle task;
 	surfacesw->set_size(renddesc.get_w(), renddesc.get_h());
-	rendering::Task::Handle task = context.build_rendering_task();
+	{
+		// TODO: quick hack
+		// we need to pass already sorted context to renderer
+		// when old renderer will finally removed
+		CanvasBase sub_queue;
+		Context sub_context;
+		if (*context && (*context)->get_canvas()) {
+			(*context)->get_canvas()->get_context_sorted(context.get_params(), sub_queue, sub_context);
+		}
+		else
+		{
+			sub_context = context;
+		}
+
+		task = sub_context.build_rendering_task();
+	}
+
 	if (task)
 	{
 		rendering::Renderer::Handle renderer = rendering::Renderer::get_renderer(get_engine());
