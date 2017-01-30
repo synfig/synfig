@@ -2241,7 +2241,7 @@ CanvasParser::parse_static_list(xmlpp::Element *element,Canvas::Handle canvas)
 
 	handle<ValueNode_StaticList> value_node;
 
-	value_node=ValueNode_StaticList::create(type);
+	value_node=ValueNode_StaticList::create_on_canvas(type);
 
 	if(!value_node)
 	{
