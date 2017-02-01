@@ -101,7 +101,11 @@ public:
 
 	mutable int index;
 	mutable int deps_count;
+	mutable Set deps; // always empty (deps_count is enough), used inside of Renderer::find_deps only
 	mutable Set back_deps;
+
+	mutable Set tmp_deps;
+	mutable Set tmp_back_deps;
 
 	mutable RunParams params;
 	mutable bool success;

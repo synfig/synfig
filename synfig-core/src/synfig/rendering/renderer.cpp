@@ -478,35 +478,14 @@ Renderer::optimize(Task::List &list) const
 }
 
 void
-Renderer::find_deps(Task::Set &ref_full_deps, const DepTargetMap &target_map, const Task::Handle &task, const Task::Handle &sub_task) const
-{
-	const int &index = task->index;
-	const RectInt &rect = sub_task->get_target_rect();
-	const Surface::Handle &surface = sub_task->target_surface;
-
-	DepTargetMap::const_reverse_iterator rbegin (target_map.upper_bound( DepTargetKey(surface, index) ));
-	DepTargetMap::const_reverse_iterator rend   (target_map.lower_bound( DepTargetKey(surface, 0)     ));
-	for(DepTargetMap::const_reverse_iterator ri = rbegin; ri != rend; ++ri)
-	{
-		const Task::Handle &prev_task = ri->second.first;
-		assert(prev_task);
-		assert(prev_task->target_surface == surface);
-
-		if ( ref_full_deps.count(prev_task) == 0
-		  && etl::intersect(rect, prev_task->get_target_rect()) )
-		{
-			ref_full_deps.insert(prev_task);
-			ref_full_deps.insert(ri->second.second.begin(), ri->second.second.end());
-			prev_task->back_deps.insert(task);
-			++task->deps_count;
-		}
-	}
-}
-
-void
 Renderer::find_deps(const Task::List &list) const
 {
-	DepTargetMap target_map;
+	typedef std::map<Surface::Handle, Task::Handle> DepTargetPrevMap;
+	DepTargetPrevMap target_prev_map;
+	Task::Set tasks_to_process;
+	const int max_iterations = 100000;
+
+	// find dependencies by target surface
 	for(Task::List::const_iterator i = list.begin(); i != list.end(); ++i)
 	{
 		assert((*i)->index == 0);
@@ -516,17 +495,108 @@ Renderer::find_deps(const Task::List &list) const
 		(*i)->deps_count = 0;
 
 		if ((*i)->valid_target()) {
-			Task::Set full_deps;
-
 			for(Task::List::const_iterator j = (*i)->sub_tasks.begin(); j != (*i)->sub_tasks.end(); ++j)
 				if (*j && (*j)->valid_target())
-					find_deps(full_deps, target_map, *i, *j);
-			find_deps(full_deps, target_map, *i, *i);
-
-			target_map.insert( DepTargetPair(
-				DepTargetKey((*i)->target_surface, (*i)->index),
-				DepTargetValue(*i, full_deps) ));
+					if (Task::Handle dep = target_prev_map[(*j)->target_surface])
+					{
+						if ((*i)->tmp_deps.empty()) tasks_to_process.insert(*i);
+						(*i)->tmp_deps.insert(dep);
+						dep->tmp_back_deps.insert(*i);
+					}
+			Task::Handle &dep = target_prev_map[(*i)->target_surface];
+			if (dep)
+			{
+				if ((*i)->tmp_deps.empty()) tasks_to_process.insert(*i);
+				(*i)->tmp_deps.insert(dep);
+				dep->tmp_back_deps.insert(*i);
+			}
+			dep = *i;
 		}
+	}
+
+	// fix dependencies for tasks with non-intersected areas
+	int iterations = 0;
+	while(iterations < max_iterations && !tasks_to_process.empty())
+	{
+		for(Task::Set::iterator i = tasks_to_process.begin(); i != tasks_to_process.end();)
+		{
+			Task::Handle task = *i;
+			assert(!task->tmp_deps.empty());
+
+			Task::Handle dep = *task->tmp_deps.begin();
+			task->tmp_deps.erase( task->tmp_deps.begin() );
+			dep->tmp_back_deps.erase(task);
+
+			bool intersects = dep->target_surface == task->target_surface
+			               && etl::intersect(dep->get_target_rect(), task->get_target_rect());
+			for(Task::List::const_iterator j = task->sub_tasks.begin(); !intersects && j != task->sub_tasks.end(); ++j)
+			{
+				if ( *j && (*j)->valid_target()
+				  && dep->target_surface == (*j)->target_surface
+				  && etl::intersect(dep->get_target_rect(), (*j)->get_target_rect()) )
+					intersects = true;
+				++iterations;
+			}
+
+			if (intersects)
+			{
+				task->deps.insert(dep);
+				dep->back_deps.insert(task);
+				++iterations;
+			}
+			else
+			{
+				iterations += dep->deps.size() + dep->tmp_deps.size() + task->back_deps.size() + task->tmp_back_deps.size();
+				for(Task::Set::iterator j = dep->deps.begin(); j != dep->deps.end(); ++j)
+					if (task->deps.count(*j) == 0)
+					{
+						task->tmp_deps.insert(*j);
+						(*j)->tmp_back_deps.insert(task);
+					}
+				for(Task::Set::iterator j = dep->tmp_deps.begin(); j != dep->tmp_deps.end(); ++j)
+					if (task->deps.count(*j) == 0)
+					{
+						task->tmp_deps.insert(*j);
+						(*j)->tmp_back_deps.insert(task);
+					}
+				for(Task::Set::iterator j = task->back_deps.begin(); j != task->back_deps.end(); ++j)
+					if ((*j)->deps.count(dep) == 0)
+					{
+						if ((*j)->tmp_deps.empty()) tasks_to_process.insert(*j);
+						(*j)->tmp_deps.insert(dep);
+						dep->tmp_back_deps.insert(*j);
+					}
+				for(Task::Set::iterator j = task->tmp_back_deps.begin(); j != task->tmp_back_deps.end(); ++j)
+					if ((*j)->deps.count(dep) == 0)
+					{
+						(*j)->tmp_deps.insert(dep);
+						dep->tmp_back_deps.insert(*j);
+					}
+			}
+
+			Task::Set::iterator j = i;
+			++i;
+			++iterations;
+
+			if (task->tmp_deps.empty())
+				tasks_to_process.erase(j);
+		}
+	}
+
+	#ifdef DEBUG_TASK_MEASURE
+	info("find deps iterations: %d (%d from %d tasks not optimized)", iterations, (int)tasks_to_process.size(), (int)list.size());
+	#endif
+
+	// copy tmp_deps to deps
+	for(Task::List::const_iterator i = list.begin(); i != list.end(); ++i)
+	{
+		Task::Handle task = *i;
+		task->back_deps.insert(task->tmp_back_deps.begin(), task->tmp_back_deps.end());
+		task->deps_count = (int)task->deps.size() + (int)task->tmp_deps.size();
+
+		task->deps.clear();
+		task->tmp_deps.clear();
+		task->tmp_back_deps.clear();
 	}
 }
 
