@@ -123,6 +123,8 @@ target_link_libraries(synfig
         ${MLT_LIBRARIES}
         ${ZLIB_LIBRARIES}
         ${FFTW_LIBRARIES}
+        ${Boost_FILESYSTEM_LIBRARY}
+        ${Boost_SYSTEM_LIBRARY}
         ${CMAKE_THREAD_LIBS_INIT}
 
         # TODO: properly detect ltdl

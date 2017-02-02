@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file synfig/main.cpp
-**	\brief \writeme
+**	\brief Synfig library initialization and helper functions
 **
 **	$Id$
 **
@@ -8,6 +8,7 @@
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **	Copyright (c) 2013 Konstantin Dmitriev
+**	Copyright (c) 2017 caryoscelus
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -31,10 +32,10 @@
 #	include <config.h>
 #endif
 
-#include <synfig/localization.h>
+#include <boost/filesystem.hpp>
+
 #include <synfig/general.h>
 
-#include <iostream>
 #include "version.h"
 #include "general.h"
 #include "module.h"
@@ -81,6 +82,8 @@
 #include <signal.h>
 #endif
 
+#include <synfig/localization.h>
+
 #endif
 
 #ifndef PATH_MAX
@@ -90,6 +93,7 @@
 using namespace std;
 using namespace etl;
 using namespace synfig;
+namespace fs = boost::filesystem;
 
 /* === M A C R O S ========================================================= */
 
@@ -171,13 +175,13 @@ static void broken_pipe_signal (int /*sig*/)  {
 	synfig::warning("Broken Pipe...");
 }
 
-bool retrieve_modules_to_load(String filename,std::list<String> &modules_to_load)
+bool retrieve_modules_to_load(fs::path filename, std::set<std::string> &modules_to_load)
 {
-	std::ifstream file(Glib::locale_from_utf8(filename).c_str());
+	fs::ifstream file(filename);
 
 	if(!file)
 	{
-		synfig::warning("Cannot open "+filename);
+		synfig::warning("Cannot open "+filename.native());
 		return false;
 	}
 
@@ -186,10 +190,67 @@ bool retrieve_modules_to_load(String filename,std::list<String> &modules_to_load
 		String modulename;
 		getline(file,modulename);
 		if(!modulename.empty() && find(modules_to_load.begin(),modules_to_load.end(),modulename)==modules_to_load.end())
-			modules_to_load.push_back(modulename);
+			modules_to_load.insert(modulename);
 	}
 
 	return true;
+}
+
+void load_modules(fs::path root_path, ProgressCallback *cb)
+{
+	std::vector<fs::path> locations;
+	auto home_dir = fs::path(getenv("HOME"));
+
+	if (getenv("SYNFIG_CONFIG_DIR"))
+		locations.emplace_back(getenv("SYNFIG_CONFIG_DIR"));
+	locations.emplace_back(".");
+	if (!home_dir.empty())
+		locations.push_back(home_dir / ".local/share/synfig");
+#ifdef SYSCONFDIR
+	// Is this still used anywhere by anybody?
+	locations.emplace_back(SYSCONFDIR);
+#endif
+	locations.push_back(root_path / "etc/synfig");
+	// TODO: remove this when no longer required
+	locations.push_back(root_path / "etc");
+#ifdef __APPLE__
+	// TODO: check if this is correct
+	locations.emplace_back("/Library/Frameworks/synfig.framework/Resources/");
+	locations.emplace_back("/Library/Synfig/");
+	if (!home_dir.empty())
+		locations.push_back(home_dir / "Library/Synfig/");
+#endif
+	auto found_location = std::find_if(
+		std::begin(locations),
+		std::end(locations),
+		[](fs::path path) -> bool {
+			auto modules_cfg = path / MODULE_LIST_FILENAME;
+			return fs::exists(modules_cfg);
+		}
+	);
+	synfig::info((*found_location).native());
+	if (found_location == std::end(locations))
+	{
+		synfig::warning("Cannot find '%s', trying to load default modules", MODULE_LIST_FILENAME);
+		Module::register_default_modules(cb);
+	}
+	else
+	{
+		auto config_dir = *found_location;
+		std::set<std::string> modules_to_load;
+		retrieve_modules_to_load(config_dir / MODULE_LIST_FILENAME, modules_to_load);
+		auto module_d = config_dir / (MODULE_LIST_FILENAME ".d");
+		if (fs::is_directory(module_d))
+		{
+			for (auto const& file : fs::directory_iterator(module_d))
+				retrieve_modules_to_load(file.path(), modules_to_load);
+		}
+		// TODO: load asynchronously
+		for (auto const& module : modules_to_load)
+		{
+			Module::Register(module, cb);
+		}
+	}
 }
 
 synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
@@ -321,51 +382,7 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 	CairoImporter::book()[String("lst")]=CairoImporter::BookEntry(CairoListImporter::create, CairoListImporter::supports_file_system_wrapper__);
 
 	// Load up the modules
-	std::list<String> modules_to_load;
-	std::vector<String> locations;
-
-	if(getenv("SYNFIG_MODULE_LIST"))
-		locations.push_back(getenv("SYNFIG_MODULE_LIST"));
-	else
-	{
-		locations.push_back("./" MODULE_LIST_FILENAME);
-		if(getenv("HOME"))
-			locations.push_back(strprintf("%s/.local/share/synfig/%s", getenv("HOME"), MODULE_LIST_FILENAME));
-	#ifdef SYSCONFDIR
-		locations.push_back(SYSCONFDIR"/" MODULE_LIST_FILENAME);
-	#endif
-		locations.push_back(root_path + ETL_DIRECTORY_SEPARATOR + "etc" + ETL_DIRECTORY_SEPARATOR + MODULE_LIST_FILENAME);
-		locations.push_back("/usr/local/etc/" MODULE_LIST_FILENAME);
-	#ifdef __APPLE__
-		locations.push_back("/Library/Frameworks/synfig.framework/Resources/" MODULE_LIST_FILENAME);
-		locations.push_back("/Library/Synfig/" MODULE_LIST_FILENAME);
-		if(getenv("HOME"))
-			locations.push_back(strprintf("%s/Library/Synfig/%s", getenv("HOME"), MODULE_LIST_FILENAME));
-	#endif
-	}
-
-	for(i=0;i<locations.size();i++)
-		if(retrieve_modules_to_load(locations[i],modules_to_load))
-		{
-			synfig::info(_("Loading modules from %s"), Glib::locale_from_utf8(locations[i]).c_str());
-			if(cb)cb->task(strprintf(_("Loading modules from %s"),locations[i].c_str()));
-			break;
-		}
-
-	if (i == locations.size())
-	{
-		synfig::warning("Cannot find '%s', trying to load default modules", MODULE_LIST_FILENAME);
-		Module::register_default_modules(cb);
-	}
-
-	std::list<String>::iterator iter;
-
-	for(i=0,iter=modules_to_load.begin();iter!=modules_to_load.end();++iter,i++)
-	{
-		synfig::info("Loading %s..", iter->c_str());
-		Module::Register(*iter,cb);
-		if(cb)cb->amount_complete((i+1)*100,modules_to_load.size()*100);
-	}
+	load_modules(root_path, cb);
 
 	if(cb)cb->amount_complete(100, 100);
 	if(cb)cb->task(_("DONE"));
