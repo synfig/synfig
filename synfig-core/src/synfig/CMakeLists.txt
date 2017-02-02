@@ -140,17 +140,17 @@ install(
 
 install(
     TARGETS synfig
-    EXPORT synfig-export
+    EXPORT synfig
     LIBRARY DESTINATION lib
 )
 
 export(
-    EXPORT synfig-export
+    EXPORT synfig
     FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}/${PROJECT_NAME}-config.cmake"
 )
 
 install(
-    EXPORT synfig-export
+    EXPORT synfig
     FILE "${PROJECT_NAME}-config.cmake"
     DESTINATION "lib/cmake/${PROJECT_NAME}"
 )
