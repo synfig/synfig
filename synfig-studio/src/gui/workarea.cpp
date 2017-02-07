@@ -1658,8 +1658,10 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 
 		double x = 0.0, y = 0.0, p = 0.0;
 		int ox = 0, oy = 0;
+		#ifndef _WIN32
 		Gtk::Container *toplevel = drawing_frame->get_toplevel();
 		if (toplevel) drawing_frame->translate_coordinates(*toplevel, 0, 0, ox, oy);
+		#endif
 
 		if (gdk_device_get_axis(device, event->motion.axes, GDK_AXIS_X, &x))
 			x -= ox; else x = event->motion.x;
@@ -1709,8 +1711,10 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 
 		double x = 0.0, y = 0.0, p = 0.0;
 		int ox = 0, oy = 0;
+		#ifndef _WIN32
 		Gtk::Container *toplevel = drawing_frame->get_toplevel();
 		if (toplevel) drawing_frame->translate_coordinates(*toplevel, 0, 0, ox, oy);
+		#endif
 
 		if (gdk_device_get_axis(device, event->motion.axes, GDK_AXIS_X, &x))
 			x -= ox; else x = event->motion.x;
