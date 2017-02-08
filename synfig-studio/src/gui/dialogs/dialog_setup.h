@@ -220,7 +220,7 @@ class Dialog_Setup : public Dialog_Template
 
 	Gtk::Switch toggle_use_colorspace_gamma;
 #ifdef SINGLE_THREADED
-	Gtk::CheckButton toggle_single_threaded;
+	Gtk::Switch toggle_single_threaded;
 #endif
 
 	synfig::Time::Format time_format;

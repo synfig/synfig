@@ -79,15 +79,6 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	adj_gamma_b(Gtk::Adjustment::create(2.2,0.1,3.0,0.025,0.025,0.025)),
 	adj_recent_files(Gtk::Adjustment::create(15,1,50,1,1,0)),
 	adj_undo_depth(Gtk::Adjustment::create(100,10,5000,1,1,1)),
-	toggle_use_colorspace_gamma(),
-#ifdef SINGLE_THREADED
-	toggle_single_threaded(),
-#endif
-	toggle_restrict_radius_ducks(),
-	toggle_resize_imported_images(),
-	toggle_enable_experimental_features(),
-	toggle_use_dark_theme(),
-	toggle_show_file_toolbar(),
 	adj_pref_x_size(Gtk::Adjustment::create(480,1,10000,1,10,0)),
 	adj_pref_y_size(Gtk::Adjustment::create(270,1,10000,1,10,0)),
 	adj_pref_fps(Gtk::Adjustment::create(24.0,1.0,100,0.1,1,0))
@@ -264,7 +255,7 @@ Dialog_Setup::create_system_page(PageInfo pi)
 		Gtk::ScrolledWindow* scroll(manage (new Gtk::ScrolledWindow()));
 		scroll->add(*listviewtext_brushes_path);
 		listviewtext_brushes_path->set_headers_visible(false);
-		pi.grid->attach(*scroll, 1, row, 1,3);
+		pi.grid->attach(*scroll, 1, row, 1, 3);
 
 		// Brushes path buttons
 		Gtk::Grid* brush_path_btn_grid(manage (new Gtk::Grid()));
@@ -280,8 +271,9 @@ Dialog_Setup::create_system_page(PageInfo pi)
 		brush_path_remove->set_halign(Gtk::ALIGN_END);
 		brush_path_remove->signal_clicked().connect(
 				sigc::mem_fun(*this, &Dialog_Setup::on_brush_path_remove_clicked));
-		pi.grid->attach(*brush_path_btn_grid, 0, ++row, 1,1);
+		pi.grid->attach(*brush_path_btn_grid, 0, ++row, 1, 2);
 		brush_path_btn_grid->set_halign(Gtk::ALIGN_END);
+		++row;
 	}
 	// System - 11 enable_experimental_features
 	//attach_label(pi.grid, _("Experimental features (restart needed)"), ++row);
@@ -290,9 +282,10 @@ Dialog_Setup::create_system_page(PageInfo pi)
 
 #ifdef SINGLE_THREADED
 	// System - 12 single_threaded
-	attach_label(pi.grid, _("Single thread only (CPUs)"), ++row);
+	attach_label_section(pi.grid, _("Single thread only (CPUs)"), ++row);
 	pi.grid->attach(toggle_single_threaded, 1, row, 1, 1);
-	toggle_single_threaded.set_hexpand(true);
+	toggle_single_threaded.set_hexpand(false);
+	toggle_single_threaded.set_halign(Gtk::ALIGN_START);
 #endif
 
 	// signal for change resume
