@@ -240,11 +240,6 @@ Dialog_Setup::create_system_page(PageInfo pi)
 	pi.grid->attach(auto_backup_interval, 1, row, 1, 1);
 	auto_backup_interval.set_hexpand(false);
 
-	// System - Browser_command
-	attach_label_section(pi.grid, _("Browser Command"), ++row);
-	pi.grid->attach(textbox_browser_command, 1, row, 1, 1);
-	textbox_browser_command.set_hexpand(true);
-
 	// System - Brushes path
 	{
 		attach_label_section(pi.grid, _("Brush Presets Path"), ++row);
@@ -708,9 +703,6 @@ Dialog_Setup::on_apply_pressed()
 	// Set file toolbar flag
 	App::show_file_toolbar=toggle_show_file_toolbar.get_active();
 
-	// Set the browser_command textbox
-	App::browser_command=textbox_browser_command.get_text();
-
 	//! TODO Create Change mecanism has Class for being used elsewhere
 	// Set the preferred brush path(s)
 	if (pref_modification_flag&CHANGE_BRUSH_PATH)
@@ -958,9 +950,6 @@ Dialog_Setup::refresh()
 
 	// Refresh the status of file toolbar flag
 	toggle_show_file_toolbar.set_active(App::show_file_toolbar);
-
-	// Refresh the browser_command textbox
-	textbox_browser_command.set_text(App::browser_command);
 
 	// Refresh the brush path(s)
 	Glib::RefPtr<Gtk::ListStore> liststore = Glib::RefPtr<Gtk::ListStore>::cast_dynamic(

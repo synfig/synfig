@@ -236,7 +236,6 @@ class Dialog_Setup : public Dialog_Template
 	Gtk::Switch toggle_use_dark_theme;
 	Gtk::Switch toggle_show_file_toolbar;
 
-	Gtk::Entry textbox_browser_command;
 	Gtk::Entry textbox_brushe_path;
 	Gtk::ListViewText* listviewtext_brushes_path;
 	Glib::RefPtr<Gtk::ListStore> brushpath_refmodel;

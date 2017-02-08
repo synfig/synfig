@@ -306,11 +306,6 @@ String studio::App::predefined_size(DEFAULT_PREDEFINED_SIZE);
 String studio::App::predefined_fps(DEFAULT_PREDEFINED_FPS);
 float studio::App::preferred_fps=24.0;
 synfigapp::PluginManager studio::App::plugin_manager;
-#ifdef USE_OPEN_FOR_URLS
-String studio::App::browser_command("open"); // MacOS only
-#else
-String studio::App::browser_command("xdg-open"); // Linux XDG standard
-#endif
 std::set< String > studio::App::brushes_path;
 String studio::App::sequence_separator(".");
 String studio::App::navigator_renderer;
@@ -574,11 +569,6 @@ public:
 				value=strprintf("%i",(int)App::show_file_toolbar);
 				return true;
 			}
-			if(key=="browser_command")
-			{
-				value=App::browser_command;
-				return true;
-			}
 			//! "Keep brushes_path" preferences entry for backward compatibilty (15/12 - v1.0.3)
 			//! Now brush path(s) are hold by input preferences : brush.path_count & brush.path_%d
 			if(key=="brushes_path")
@@ -744,11 +734,6 @@ public:
 				App::show_file_toolbar=i;
 				return true;
 			}
-			if(key=="browser_command")
-			{
-				App::browser_command=value;
-				return true;
-			}
 			//! "Keep brushes_path" preferences entry for backward compatibilty (15/12 - v1.0.3)
 			//! Now brush path(s) are hold by input preferences : brush.path_count & brush.path_%d
 			if(key=="brushes_path")
@@ -842,7 +827,6 @@ public:
 		ret.push_back("enable_experimental_features");
 		ret.push_back("use_dark_theme");
 		ret.push_back("show_file_toolbar");
-		ret.push_back("browser_command");
 		ret.push_back("brushes_path");
 		ret.push_back("custom_filename_prefix");
 		ret.push_back("ui_language");
