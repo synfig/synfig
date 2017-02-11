@@ -178,7 +178,6 @@ set(ICONS
     snap_grid_icon
     snap_guideline_icon
     swap_colors_icon
-    synfig_icon
     time_track_icon
     tool_brush_icon
     tool_circle_icon
@@ -221,6 +220,7 @@ set(IMAGES
     about_icon
     logo
     splash_screen
+    synfig_icon
     ${ICONS}
 )
 
