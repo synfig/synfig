@@ -153,7 +153,7 @@ public:
 /* === M E T H O D S ======================================================= */
 
 Splash::Splash():
-	Gtk::Window(getenv("SYNFIG_DISABLE_POPUP_WINDOWS") ? Gtk::WINDOW_TOPLEVEL : Gtk::WINDOW_POPUP)
+	Gtk::Window(Gtk::WINDOW_TOPLEVEL)
 {
 	std::string imagepath;
 #ifdef _WIN32
