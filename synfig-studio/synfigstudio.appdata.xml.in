@@ -1,40 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Copyright 2013 Yu Chen <jcomee@gmail.com> -->
-<application>
- <id type="desktop">synfigstudio.desktop</id>
- <licence>CC0</licence>
- <description>
-  <_p>
+<component type="desktop">
+  <id>synfigstudio.desktop</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0</project_license>
+  <name>Synfig Studio</name>
+  <description>
+    <_p>
    Synfig Studio is a free and open-source 2D animation software, designed as powerful industrial-strength solution for creating film-quality animation using a vector and bitmap artwork. It eliminates the need to create animation frame-by frame, allowing you to produce 2D animation of a higher quality with fewer people and resources. 
   </_p>
-  <_p>Features:</_p>
-  <ul>
-   <_li>Spatial resolution-independence</_li>
-   <_li>Temporal resolution independence</_li>
-   <_li>High Dynamic-Range Imaging (HDRI)</_li>
-   <_li>Pentablet-friendly tools</_li>
-   <_li>Artist-oriented design</_li>
-   <_li>Path-based Gradients</_li>
-   <_li>Multitude of layers of various types</_li>
-  </ul>
- </description>
- <screenshots>
-  <screenshot type="default" width="1360" height="768">http://download.tuxfamily.org/synfig/wiki/images/2/2f/Synfigstudio-0.64.0-linux-screenshot_1360x768.png</screenshot>
- </screenshots>
- <url type="homepage">http://www.synfig.org</url>
- <updatecontact>synfig-devl@lists.sourceforge.net</updatecontact>
- <keywords>
-   <keyword>2D</keyword>
-   <keyword>Vector</keyword>
-   <keyword>Animation</keyword>
-   <keyword>Cartoon</keyword>
-   <keyword>Anime</keyword>
-   <keyword>FX</keyword>
-   <keyword>Draw</keyword>
-   <keyword>Cutout</keyword>
-   <keyword>Moho</keyword>
-   <keyword>Toomboon</keyword>
-   <keyword>Flash</keyword>
-   <keyword>ToonBoom</keyword>
- </keywords>
-</application>
+    <_p>Features:</_p>
+    <ul>
+      <_li>Can manipulate vector and bitmap artwork</_li>
+      <_li>Automatic tweening (independent from FPS)</_li>
+      <_li>Multitude of layers of various types (geometry primitives, shapes, gradients, fratals)</_li>
+      <_li>Full-featured bone system</_li>
+      <_li>Filters and effects for compositing (blurs, distortions, color manipulation, masks)</_li>
+      <_li>All color operations use High Dynamic-Range Imaging (HDRI)</_li>
+      <_li>Pentablet-friendly tools</_li>
+      <_li>Sound support</_li>
+      <_li>Linking data on file- or parameter-level</_li>
+      <_li>Automatic animation using mathematical functions</_li>
+    </ul>
+  </description>
+  <screenshots>
+    <screenshot height="693" width="1232" type="default">
+      <image>https://download.tuxfamily.org/morevna/blog/2017/02/screenshot-07-16-9.png</image>
+      <_caption>Synfig Studio workspace</_caption>
+    </screenshot>
+  </screenshots>
+  <url type="homepage">http://www.synfig.org</url>
+  <update_contact>synfig-devl@lists.sourceforge.net</update_contact>
+  <keywords>
+    <keyword>2D</keyword>
+    <keyword>Vector</keyword>
+    <keyword>Animation</keyword>
+    <keyword>Cartoon</keyword>
+    <keyword>Anime</keyword>
+    <keyword>FX</keyword>
+    <keyword>Draw</keyword>
+    <keyword>Cutout</keyword>
+    <keyword>Moho</keyword>
+    <keyword>Toomboon</keyword>
+    <keyword>Flash</keyword>
+    <keyword>ToonBoom</keyword>
+  </keywords>
+
+  <developer_name>Synfig</developer_name>
+  <url type="bugtracker">https://github.com/synfig/synfig/issues</url>
+  <url type="donation">https://gumroad.com/l/synfig-dev</url>
+  <url type="help">http://wiki.synfig.org/Category:Manual</url>
+  <url type="translate">https://www.transifex.com/morevnaproject/synfig/</url>
+</component>
