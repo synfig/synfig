@@ -103,6 +103,7 @@ synfig-core/m4/wint_t.m4
 synfig-core/m4/xsize.m4
 synfig-core/m4/argz.m4
 synfig-core/m4/libtool.m4
+synfig-core/m4/ltargz.m4
 synfig-core/m4/ltdl.m4
 synfig-core/m4/ltoptions.m4
 synfig-core/m4/ltsugar.m4
