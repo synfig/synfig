@@ -863,12 +863,13 @@ get_dependencies()
 		libtool \
 		intltool \
 		gettext \
-		libpng12-dev \
+		libpng-dev \
+		libfftw3-dev \
 		fontconfig \
 		libfreetype6-dev \
 		libfontconfig1-dev \
 		libxml2-dev \
-		libtiff-dev \
+		libtiff4-dev \
 		libmlt-dev libmlt++-dev \
 		libjasper-dev \
 		x11proto-xext-dev libdirectfb-dev libxfixes-dev libxinerama-dev libxdamage-dev libxcomposite-dev libxcursor-dev libxft-dev libxrender-dev libxt-dev libxrandr-dev libxi-dev libxext-dev libx11-dev \
