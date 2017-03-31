@@ -36,7 +36,7 @@
 #include "layerextract.h"
 
 #include <synfigapp/canvasinterface.h>
-#include <synfig/localization.h>
+#include <synfigapp/localization.h>
 
 #endif
 

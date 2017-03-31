@@ -41,7 +41,7 @@
 #include "instance.h"
 #include <synfigapp/selectionmanager.h>
 
-#include <synfig/localization.h>
+#include <gui/localization.h>
 
 #endif
 

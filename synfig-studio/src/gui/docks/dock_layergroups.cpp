@@ -43,7 +43,7 @@
 #include "trees/layergrouptree.h"
 #include "actionmanagers/groupactionmanager.h"
 
-#include <synfig/localization.h>
+#include <gui/localization.h>
 
 #endif
 

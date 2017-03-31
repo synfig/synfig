@@ -42,7 +42,7 @@
 #include "trees/childrentree.h"
 #include "canvasview.h"
 
-#include <synfig/localization.h>
+#include <gui/localization.h>
 
 #endif
 

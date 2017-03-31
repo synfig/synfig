@@ -48,7 +48,7 @@
 #include <algorithm>
 #include "asyncrenderer.h"
 
-#include <synfig/localization.h>
+#include <gui/localization.h>
 
 #include <cmath>
 #include <cassert>

@@ -64,7 +64,7 @@
 #include <gtkmm/checkbutton.h>
 #include <gtkmm/actiongroup.h>
 
-#include <synfig/localization.h>
+#include <gui/localization.h>
 
 #endif
 

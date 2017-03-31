@@ -43,7 +43,7 @@
 #include "dialogs/dialog_ffmpegparam.h"
 #include "dialogs/dialog_spritesheetparam.h"
 
-#include <synfig/localization.h>
+#include <gui/localization.h>
 
 #include <ETL/stringf>
 #include <errno.h>

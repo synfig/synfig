@@ -50,7 +50,7 @@
 #include "../../dialogs/dialog_color.h"
 #include <errno.h>
 
-#include <synfig/localization.h>
+#include <gui/localization.h>
 
 #endif
 

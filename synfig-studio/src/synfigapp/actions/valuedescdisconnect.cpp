@@ -44,7 +44,7 @@
 #include <synfig/valuenodes/valuenode_duplicate.h>
 #include <synfig/valuenodes/valuenode_bone.h>
 
-#include <synfig/localization.h>
+#include <synfigapp/localization.h>
 
 #endif
 

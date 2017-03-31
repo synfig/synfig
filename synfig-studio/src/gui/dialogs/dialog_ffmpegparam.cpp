@@ -35,7 +35,7 @@
 #include <iostream>
 #include "dialogs/dialog_ffmpegparam.h"
 
-#include <synfig/localization.h>
+#include <gui/localization.h>
 
 #endif
 

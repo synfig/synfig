@@ -26,7 +26,7 @@
 #include <synfig/general.h>
 
 #include <gtkmm/grid.h>
-#include <synfig/localization.h>
+#include <gui/localization.h>
 #include "dialogs/dialog_spritesheetparam.h"
 
 namespace studio

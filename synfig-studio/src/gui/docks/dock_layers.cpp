@@ -47,7 +47,7 @@
 #include "actionmanagers/layeractionmanager.h"
 //#include <ETL/ref_count>
 
-#include <synfig/localization.h>
+#include <gui/localization.h>
 
 #endif
 

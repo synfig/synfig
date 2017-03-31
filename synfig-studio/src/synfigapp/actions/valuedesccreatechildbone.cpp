@@ -34,7 +34,7 @@
 #include "valuedesccreatechildbone.h"
 #include "valuenodestaticlistinsertsmart.h"
 #include <synfigapp/canvasinterface.h>
-#include <synfig/localization.h>
+#include <synfigapp/localization.h>
 #include <synfig/valuenodes/valuenode_bone.h>
 
 #endif

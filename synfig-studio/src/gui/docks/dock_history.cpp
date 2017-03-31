@@ -41,7 +41,7 @@
 #include <synfigapp/action.h>
 #include "trees/historytreestore.h"
 
-#include <synfig/localization.h>
+#include <gui/localization.h>
 
 #endif
 

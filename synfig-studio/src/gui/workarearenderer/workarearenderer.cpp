@@ -34,7 +34,7 @@
 #include "workarearenderer.h"
 #include "workarea.h"
 
-#include <synfig/localization.h>
+#include <gui/localization.h>
 
 #endif
 

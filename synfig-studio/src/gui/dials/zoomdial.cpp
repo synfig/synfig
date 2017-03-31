@@ -38,7 +38,7 @@
 #include <gtkmm/image.h>
 #include <gtkmm/stock.h>
 
-#include <synfig/localization.h>
+#include <gui/localization.h>
 
 #endif
 

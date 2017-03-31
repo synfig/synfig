@@ -41,7 +41,7 @@
 #include <gtk/gtk.h>
 #include <synfigapp/main.h>
 
-#include <synfig/localization.h>
+#include <gui/localization.h>
 
 #endif
 

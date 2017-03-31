@@ -37,7 +37,7 @@
 #include <gtkmm/alignment.h>
 #include <gtkmm/frame.h>
 #include <gtkmm/box.h>
-#include <synfig/localization.h>
+#include <gui/localization.h>
 
 #endif
 

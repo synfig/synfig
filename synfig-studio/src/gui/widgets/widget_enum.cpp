@@ -36,7 +36,7 @@
 #include <ETL/stringf>
 #include <synfig/valuenode.h>
 
-#include <synfig/localization.h>
+#include <gui/localization.h>
 
 #endif
 

@@ -43,7 +43,7 @@
 #include <gtkmm/menu.h>
 #include <gtkmm/imagemenuitem.h>
 
-#include <synfig/localization.h>
+#include <gui/localization.h>
 
 #include "canvasview.h"
 

@@ -42,7 +42,7 @@
 #include <map>
 #include <vector>
 #include <ETL/misc>
-#include <synfig/localization.h>
+#include <gui/localization.h>
 
 #endif
 

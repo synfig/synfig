@@ -44,7 +44,7 @@
 #include "workarea.h"
 #include "widgets/widget_timeslider.h"
 #include "widgets/widget_keyframe_list.h"
-#include <synfig/localization.h>
+#include <gui/localization.h>
 #include "trees/layertree.h"
 #include <synfig/timepointcollect.h>
 

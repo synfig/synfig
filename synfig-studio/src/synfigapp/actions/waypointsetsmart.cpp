@@ -44,7 +44,7 @@
 #include <synfig/exception.h>
 #include <synfigapp/main.h>
 
-#include <synfig/localization.h>
+#include <synfigapp/localization.h>
 
 #endif
 

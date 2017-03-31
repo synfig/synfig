@@ -36,7 +36,7 @@
 
 #include "widgets/widget_ruler.h"
 
-#include <synfig/localization.h>
+#include <gui/localization.h>
 
 #endif
 

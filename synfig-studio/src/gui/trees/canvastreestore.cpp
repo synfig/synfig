@@ -48,7 +48,7 @@
 #include <ETL/clock>
 #include <synfig/interpolation.h>
 
-#include <synfig/localization.h>
+#include <gui/localization.h>
 
 #endif
 

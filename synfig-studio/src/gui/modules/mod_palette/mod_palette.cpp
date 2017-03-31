@@ -38,7 +38,7 @@
 #include "../../app.h"
 #include "../../docks/dockmanager.h"
 
-#include <synfig/localization.h>
+#include <gui/localization.h>
 
 #endif
 

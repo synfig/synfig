@@ -37,7 +37,7 @@
 #include <synfig/valuenode.h>
 #include "instance.h"
 
-#include <synfig/localization.h>
+#include <gui/localization.h>
 
 #endif
 

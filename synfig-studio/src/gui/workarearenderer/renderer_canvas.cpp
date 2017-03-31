@@ -37,7 +37,7 @@
 #include <ETL/misc>
 #include <gdkmm/general.h>
 
-#include <synfig/localization.h>
+#include <gui/localization.h>
 #include "app.h"
 
 #endif

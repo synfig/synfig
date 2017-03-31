@@ -41,7 +41,7 @@
 #include <gtk/gtk.h>
 #include <gtkmm/accelmap.h>
 
-#include <synfig/localization.h>
+#include "localization.h"
 
 #include "dock_toolbox.h"
 

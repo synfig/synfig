@@ -44,7 +44,7 @@
 #include "dialog_input.h"
 #include <synfigapp/main.h>
 
-#include <synfig/localization.h>
+#include <gui/localization.h>
 
 #endif
 

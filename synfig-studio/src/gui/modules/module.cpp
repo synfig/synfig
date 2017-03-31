@@ -33,7 +33,7 @@
 
 #include <synfig/general.h>
 
-#include <synfig/localization.h>
+#include <gui/localization.h>
 
 #endif
 

@@ -37,7 +37,7 @@
 #include <synfig/context.h>
 #include <synfigapp/canvasinterface.h>
 #include <synfigapp/instance.h>
-#include <synfig/localization.h>
+#include <synfigapp/localization.h>
 
 #endif
 

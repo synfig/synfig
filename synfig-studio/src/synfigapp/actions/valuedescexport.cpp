@@ -44,7 +44,7 @@
 #include <synfig/valuenodes/valuenode_const.h>
 #include <synfig/context.h>
 
-#include <synfig/localization.h>
+#include <synfigapp/localization.h>
 
 #endif
 

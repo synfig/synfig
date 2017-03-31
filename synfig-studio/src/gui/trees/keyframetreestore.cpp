@@ -49,7 +49,7 @@
 #include "onemoment.h"
 #include <synfig/exception.h>
 
-#include <synfig/localization.h>
+#include <gui/localization.h>
 
 #endif
 

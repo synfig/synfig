@@ -43,7 +43,7 @@
 #include "canvasview.h"
 #include <synfigapp/action.h>
 
-#include <synfig/localization.h>
+#include <gui/localization.h>
 
 #endif
 

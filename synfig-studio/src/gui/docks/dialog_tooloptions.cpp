@@ -35,7 +35,7 @@
 #include <gtkmm/label.h>
 #include <gtkmm/scrolledwindow.h>
 #include "docks/dialog_tooloptions.h"
-#include <synfig/localization.h>
+#include <gui/localization.h>
 
 #endif
 

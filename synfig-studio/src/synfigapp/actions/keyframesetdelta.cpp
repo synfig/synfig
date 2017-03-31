@@ -34,7 +34,7 @@
 #include "keyframesetdelta.h"
 #include "keyframeset.h"
 
-#include <synfig/localization.h>
+#include <synfigapp/localization.h>
 
 #endif
 

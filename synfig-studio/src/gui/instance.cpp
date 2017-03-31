@@ -70,7 +70,7 @@
 #include <errno.h>
 #include <ETL/stringf>
 
-#include <synfig/localization.h>
+#include <gui/localization.h>
 
 #endif
 

@@ -50,7 +50,7 @@
 #include "widgets/widget_enum.h"
 #include "widgets/widget_distance.h"
 
-#include <synfig/localization.h>
+#include <gui/localization.h>
 
 #endif
 

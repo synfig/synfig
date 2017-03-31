@@ -41,7 +41,7 @@
 #include <synfigapp/main.h>
 #include <gdkmm/general.h>
 
-#include <synfig/localization.h>
+#include <gui/localization.h>
 
 #include <gtkmm/paned.h>
 #include <gtkmm/box.h>

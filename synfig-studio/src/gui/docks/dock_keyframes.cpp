@@ -42,7 +42,7 @@
 #include "canvasview.h"
 #include "actionmanagers/keyframeactionmanager.h"
 
-#include <synfig/localization.h>
+#include <gui/localization.h>
 
 #endif
 

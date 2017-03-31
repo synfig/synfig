@@ -37,7 +37,7 @@
 #include <gtkmm/accelmap.h>
 #include <gtk/gtk.h>
 
-#include <synfig/localization.h>
+#include <gui/localization.h>
 
 #endif
 

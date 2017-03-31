@@ -54,7 +54,7 @@
 #include <fmod.h>
 #endif
 
-#include <synfig/localization.h>
+#include <gui/localization.h>
 
 #endif
 

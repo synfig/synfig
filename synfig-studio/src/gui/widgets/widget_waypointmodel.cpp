@@ -40,7 +40,7 @@
 #include <gtkmm/menu.h>
 #include "widgets/widget_time.h"
 #include "widgets/widget_waypointmodel.h"
-#include <synfig/localization.h>
+#include <gui/localization.h>
 
 #endif
 

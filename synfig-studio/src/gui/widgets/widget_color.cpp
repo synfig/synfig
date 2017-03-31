@@ -36,7 +36,7 @@
 #include "app.h"
 #include <gtkmm/drawingarea.h>
 
-#include <synfig/localization.h>
+#include <gui/localization.h>
 
 #endif
 

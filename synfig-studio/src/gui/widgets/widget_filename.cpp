@@ -37,7 +37,7 @@
 
 #include <synfig/canvasfilenaming.h>
 
-#include <synfig/localization.h>
+#include <gui/localization.h>
 
 #include "widgets/widget_filename.h"
 #include "app.h"

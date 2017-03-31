@@ -34,7 +34,7 @@
 #include "adjust_window.h"
 #include "app.h"
 
-#include <synfig/localization.h>
+#include <gui/localization.h>
 
 #endif
 

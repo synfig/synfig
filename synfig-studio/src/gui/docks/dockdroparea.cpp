@@ -30,7 +30,7 @@
 #endif
 
 #include <synfig/general.h>
-#include <synfig/localization.h>
+#include <gui/localization.h>
 
 #include "app.h"
 #include "docks/dockdroparea.h"

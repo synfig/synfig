@@ -35,7 +35,7 @@
 #include "trees/metadatatree.h"
 #include <ETL/misc>
 
-#include <synfig/localization.h>
+#include <gui/localization.h>
 
 #endif
 

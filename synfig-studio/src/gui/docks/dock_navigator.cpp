@@ -45,7 +45,7 @@
 
 #include "docks/dock_navigator.h"
 
-#include <synfig/localization.h>
+#include <gui/localization.h>
 
 #include "workarea.h"
 #include "canvasview.h"

@@ -40,7 +40,7 @@
 #include <gtkmm/scrolledwindow.h>
 #include <synfig/timepointcollect.h>
 
-#include <synfig/localization.h>
+#include <gui/localization.h>
 
 #endif
 

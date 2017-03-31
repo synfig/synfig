@@ -43,7 +43,7 @@
 #include <gtkmm/separator.h>
 #include <gtkmm/invisible.h>
 
-#include <synfig/localization.h>
+#include <gui/localization.h>
 
 #endif
 

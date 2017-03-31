@@ -44,7 +44,7 @@
 #include <synfig/valuenodes/valuenode_blinecalcwidth.h>
 #include <synfig/valuenodes/valuenode_composite.h>
 
-#include <synfig/localization.h>
+#include <gui/localization.h>
 #endif
 
 /* === U S I N G =========================================================== */

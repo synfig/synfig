@@ -42,7 +42,7 @@
 #include <ETL/misc>
 //#include <gtkmm/separator.h>
 
-#include <synfig/localization.h>
+#include <gui/localization.h>
 
 #endif
 

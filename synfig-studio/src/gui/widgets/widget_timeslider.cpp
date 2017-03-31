@@ -39,7 +39,7 @@
 
 #include <cmath>
 
-#include <synfig/localization.h>
+#include <gui/localization.h>
 
 #endif
 

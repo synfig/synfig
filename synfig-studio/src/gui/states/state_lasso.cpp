@@ -68,7 +68,7 @@
 #include <gtkmm/radiobutton.h>
 #include <gtkmm/radiobuttongroup.h>
 
-#include <synfig/localization.h>
+#include <gui/localization.h>
 
 #endif
 

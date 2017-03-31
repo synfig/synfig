@@ -64,7 +64,7 @@
 
 #include "ducktransform_matrix.h"
 
-#include <synfig/localization.h>
+#include <gui/localization.h>
 
 #endif
 

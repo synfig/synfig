@@ -39,7 +39,7 @@
 #include "app.h"
 #include "docks/dock_toolbox.h"
 
-#include <synfig/localization.h>
+#include <gui/localization.h>
 
 #endif
 

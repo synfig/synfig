@@ -40,7 +40,7 @@
 #include <synfig/paramdesc.h>
 #include <ETL/clock>
 
-#include <synfig/localization.h>
+#include <gui/localization.h>
 
 class Profiler : private etl::clock
 {

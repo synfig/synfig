@@ -49,7 +49,7 @@
 #  include <synfig/timepointcollect.h>
 #endif	// TIMETRACK_IN_PARAMS_PANEL
 
-#include <synfig/localization.h>
+#include <gui/localization.h>
 
 #endif
 
