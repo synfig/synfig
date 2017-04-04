@@ -4151,11 +4151,7 @@ CanvasView::on_input_device_changed(GdkDevice* device)
 void
 CanvasView::on_preview_option()
 {
-	Dialog_PreviewOptions *po = dynamic_cast<Dialog_PreviewOptions *>(get_ext_widget("prevoptions"));
-
-	Canvas::Handle	canv = get_canvas();
-
-	if(canv)
+	if(Canvas::Handle canv = get_canvas())
 	{
 		RendDesc &r = canv->rend_desc();
 		if(r.get_frame_rate())
@@ -4164,28 +4160,21 @@ CanvasView::on_preview_option()
 			float beg = r.get_time_start() + r.get_frame_start()*rate;
 			float end = r.get_time_start() + r.get_frame_end()*rate;
 
+			Dialog_PreviewOptions *po = dynamic_cast<Dialog_PreviewOptions *>( get_ext_widget("prevoptions") );
 			if(!po)
 			{
-				po = new Dialog_PreviewOptions;
-				po->set_zoom(work_area->get_zoom()/2);
+				po = new Dialog_PreviewOptions();
 				po->set_fps(r.get_frame_rate()/2);
-				po->set_begintime(beg);
-				po->set_begin_override(false);
-				po->set_endtime(end);
-				po->set_end_override(false);
-				po->set_use_cairo(false);
-
 				set_ext_widget("prevoptions",po);
 			}
-			/*po->set_zoom(work_area->get_zoom()/2);
-			po->set_fps(r.get_frame_rate()/2);
-			po->set_begintime(beg);
-			po->set_begin_override(false);
-			po->set_endtime(end);
-			po->set_end_override(false);*/
+			
+			if (po->get_begin_override())
+				po->set_begintime(beg);
+			if (po->get_end_override())
+				po->set_endtime(end);
 
 			po->set_global_fps(r.get_frame_rate());
-			po->signal_finish().connect(sigc::mem_fun(*this,&CanvasView::on_preview_create));
+			po->signal_finish().connect(sigc::mem_fun(*this, &CanvasView::on_preview_create));
 			po->present();
 		}
 	}
