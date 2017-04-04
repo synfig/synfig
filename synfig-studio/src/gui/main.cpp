@@ -65,11 +65,19 @@ using namespace studio;
 
 int main(int argc, char **argv)
 {
-	
+
 #ifdef _WIN32
 	if (consoleOptionEnabled(argc, argv))
 	{
 		redirectIOToConsole();
+	}
+	else
+	{
+		// QuickHack: to avoid strange bug with stderr
+		freopen("NUL", "w", stdout);
+		freopen("NUL", "w", stderr);
+		freopen("NUL", "r", stdin);
+		ios::sync_with_stdio();
 	}
 #endif
 
