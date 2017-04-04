@@ -419,10 +419,11 @@ public:
 	// (By now it updates the System Units or Time Format for all the canvases).
 	// This fixes bug 1890020
 	static void setup_changed();
+
+	static void process_all_events();
 }; // END of class App
 
 	void delete_widget(Gtk::Widget *widget);
-
 }; // END namespace studio
 
 /* === E N D =============================================================== */

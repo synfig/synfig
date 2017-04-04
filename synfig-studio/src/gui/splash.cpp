@@ -98,12 +98,10 @@ public:
 			splash.tasklabel->set_label(task);
 			splash.tasklabel->show();
 		}
-		else
-		{
-			synfig::info(task);
-		}
 
-		while(studio::App::events_pending()) studio::App::iteration(false);
+		synfig::info(task);
+
+		studio::App::process_all_events();
 		return true;
 	}
 
@@ -117,7 +115,7 @@ public:
 
 		synfig::error(task);
 
-		while(studio::App::events_pending()) studio::App::iteration(false);
+		studio::App::process_all_events();
 		return true;
 	}
 
@@ -131,7 +129,7 @@ public:
 
 		synfig::warning(task);
 
-		while(studio::App::events_pending()) studio::App::iteration(false);
+		studio::App::process_all_events();
 		return true;
 	}
 
@@ -142,10 +140,8 @@ public:
 			splash.progressbar->set_fraction((float)current/(float)total);
 			splash.progressbar->show();
 		}
-		else
-			cerr<<current<<'/'<<total<<endl;
 
-		while(studio::App::events_pending())studio::App::iteration(false);
+		studio::App::process_all_events();
 		return true;
 	}
 }; // END of class SplashProgress

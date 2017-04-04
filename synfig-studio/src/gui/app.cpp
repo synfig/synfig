@@ -62,6 +62,7 @@
 #include <glibmm/miscutils.h>
 #include <glibmm/spawn.h>
 #include <glibmm/thread.h>
+#include <glibmm/timer.h>
 
 #include <gtk/gtk.h>
 #include <gdk/gdk.h>
@@ -3871,5 +3872,16 @@ studio::App::setup_changed()
 			{
 				(*citer)->signal_rend_desc_changed()();
 			}
+	}
+}
+
+void
+studio::App::process_all_events()
+{
+	Glib::usleep(1);
+	while(studio::App::events_pending()) {
+		while(studio::App::events_pending())
+			studio::App::iteration(false);
+		Glib::usleep(1);
 	}
 }
