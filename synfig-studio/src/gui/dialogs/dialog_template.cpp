@@ -34,6 +34,8 @@
 
 #include <gtkmm/eventbox.h>
 
+#include <gui/localization.h>
+
 #endif
 
 /* === U S I N G =========================================================== */

@@ -29,8 +29,6 @@
 /* === H E A D E R S ======================================================= */
 #include <synfig/general.h>
 
-#include <gui/localization.h>
-
 #include <gtkmm/dialog.h>
 #include <gtkmm/grid.h>
 #include <gtkmm/notebook.h>

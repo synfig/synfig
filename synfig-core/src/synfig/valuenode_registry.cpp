@@ -43,8 +43,12 @@ ValueNodeRegistry::book()
 	return *book_;
 }
 
+String
+ValueNodeRegistry::localize_name(const String &local_name)
+	{ return _(local_name.c_str()); }
+
 void
-ValueNodeRegistry::register_node_type(String name, String local_name, ReleaseVersion version, Factory factory, CheckType check_type)
+ValueNodeRegistry::register_node_type(const String &name, const String &local_name, ReleaseVersion version, Factory factory, CheckType check_type)
 {
 	book()[name].local_name = local_name;
 	book()[name].release_version = version;

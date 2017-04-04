@@ -26,7 +26,6 @@
 /* === H E A D E R S ======================================================= */
 
 #include "valuenode.h"
-#include "localization.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -87,8 +86,9 @@ public:
 
 public:
 	static Book& book();
-	static void register_node_type(String name, String local_name, ReleaseVersion version, Factory factory, CheckType check_type);
+	static void register_node_type(const String &name, const String &local_name, ReleaseVersion version, Factory factory, CheckType check_type);
 	static bool cleanup();
+	static String localize_name(const String &local_name);
 
 public:
 	//! Creates a Linkable Value Node based on the name and the returned
@@ -113,7 +113,7 @@ private:
 		{
 			ValueNodeRegistry::register_node_type(
 				SelfT::name,
-				_(SelfT::local_name),
+				ValueNodeRegistry::localize_name(SelfT::local_name),
 				SelfT::release_version,
 				reinterpret_cast<ValueNodeRegistry::Factory>(&NodeT::create),
 				&NodeT::check_type
