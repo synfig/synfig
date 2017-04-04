@@ -109,8 +109,6 @@ MainWindow::MainWindow()
 
 	add(*vbox);
 
-	add_accel_group(App::ui_manager()->get_accel_group());
-
 	init_menus();
 	window_action_group = Gtk::ActionGroup::create("mainwindow-recentfiles");
 	App::ui_manager()->insert_action_group(window_action_group);
