@@ -471,7 +471,7 @@ void
 synfig::info(const String &str)
 {
 	general_io_mutex.lock();
-	cerr<<"synfig("<<getpid()<<")"<<current_time().c_str()<<_("info")<<": "<<str.c_str()<<endl;
+	cout<<"synfig("<<getpid()<<")"<<current_time().c_str()<<_("info")<<": "<<str.c_str()<<endl;
 	general_io_mutex.unlock();
 }
 
