@@ -67,7 +67,7 @@ void studio::Dock_Info::on_mouse_move()
 {
 	etl::loose_handle<CanvasView> canvas_view(get_canvas_view());
 	if(!canvas_view) return;
-	Point pos = canvas_view->work_area->get_cursor_pos();
+	Point pos = canvas_view->get_work_area()->get_cursor_pos();
 
 	Distance xv(pos[0],Distance::SYSTEM_UNITS);
 	xv.convert(App::distance_system, canvas_view->get_canvas()->rend_desc());
@@ -144,6 +144,6 @@ void studio::Dock_Info::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> 
 
 	if(canvas_view && canvas_view->get_work_area())
 	{
-		mousecon = get_canvas_view()->work_area->signal_cursor_moved().connect(sigc::mem_fun(*this,&Dock_Info::on_mouse_move));
+		mousecon = get_canvas_view()->get_work_area()->signal_cursor_moved().connect(sigc::mem_fun(*this,&Dock_Info::on_mouse_move));
 	}
 }

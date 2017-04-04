@@ -37,10 +37,14 @@
 #include <gtkmm/dialog.h>
 #include <gtkmm/scrollbar.h>
 #include <gtkmm/checkbutton.h>
-#include <gui/canvasview.h>
 #include <gtkmm/tooltip.h>
 #include <gtkmm/alignment.h>
 #include <gtkmm/comboboxtext.h>
+#include <gtkmm/hvscale.h>
+#include <gtkmm/scrolledwindow.h>
+#include <gtkmm/liststore.h>
+
+#include <glibmm/dispatcher.h>
 
 #include <synfig/time.h>
 #include <synfig/vector.h>
@@ -67,6 +71,7 @@
 
 namespace studio {
 class AsyncRenderer;
+class CanvasView;
 
 class Preview : public sigc::trackable, public etl::shared_object
 {
@@ -96,9 +101,9 @@ public:
 	typedef std::vector<FlipbookElem>	 FlipBook;
 private:
 
-	FlipBook			frames;
+	FlipBook frames;
 
-	studio::CanvasView::LooseHandle	canvasview;
+	etl::loose_handle<CanvasView> canvasview;
 
 	//synfig::RendDesc		description; //for rendering the preview...
 	float	zoom,fps;
@@ -119,7 +124,7 @@ private:
 
 public:
 
-	Preview(const studio::CanvasView::LooseHandle &h = studio::CanvasView::LooseHandle(),
+	explicit Preview(const etl::loose_handle<CanvasView> &h = etl::loose_handle<CanvasView>(),
 				float zoom = 0.5f, float fps = 15);
 	~Preview();
 
@@ -168,10 +173,10 @@ public:
 	int		get_quality() const {return quality;}
 	void	set_quality(int i)	{quality = i;}
 
-	synfig::Canvas::Handle	get_canvas() const {return canvasview->get_canvas();}
-	studio::CanvasView::Handle	get_canvasview() const {return canvasview;}
+	etl::handle<synfig::Canvas> get_canvas() const;
+	etl::handle<CanvasView> get_canvasview() const;
 
-	void set_canvasview(const studio::CanvasView::LooseHandle &h);
+	void set_canvasview(const etl::loose_handle<CanvasView> &h);
 
 	//signal interface
 	sigc::signal<void, Preview *> &	signal_destroyed() { return signal_destroyed_; }

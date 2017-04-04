@@ -30,7 +30,6 @@
 #include <gtkmm/adjustment.h>
 
 #include <synfig/time.h>
-#include "canvasview.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -39,9 +38,6 @@
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 namespace studio {
-
-void render_time_point_to_window(const Cairo::RefPtr<Cairo::Context> &cr,const Gdk::Rectangle& ca,const synfig::TimePoint &tp,bool selected=false);
-
 
 /* Design for the timeslider...
 
