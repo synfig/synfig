@@ -897,6 +897,8 @@ init_ui_manager()
 #define DEFINE_ACTION(x,stock) { Glib::RefPtr<Gtk::Action> action( Gtk::Action::create(x, stock) ); actions_action_group->add(action); }
 
 // actions in File menu
+DEFINE_ACTION("new", Gtk::StockID("synfig-new"));
+DEFINE_ACTION("open", Gtk::StockID("synfig-open"));
 DEFINE_ACTION("save", Gtk::StockID("synfig-save"));
 DEFINE_ACTION("save-as", Gtk::StockID("synfig-save_as"));
 DEFINE_ACTION("save-all", Gtk::StockID("synfig-save_all"));
