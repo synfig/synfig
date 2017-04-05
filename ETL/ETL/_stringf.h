@@ -82,7 +82,9 @@ _ETL_BEGIN_CDECLS
 
 #ifdef HAVE_VSSCANF
  #ifndef __GLIBC__
-  extern int vsscanf(const char *,const char *,va_list)ETL_NO_THROW;
+  #ifndef _WIN32
+   extern int vsscanf(const char *,const char *,va_list)ETL_NO_THROW;
+  #endif
  #endif
 #else
 #define ETL_NO_VSTRSCANF
