@@ -1055,6 +1055,7 @@ get_dependencies()
 					libboost-system-dev \
 					libboost-filesystem-dev \
 					libboost-chrono-dev \
+					libmagick++-dev \
 				"
 			fi
 		fi
