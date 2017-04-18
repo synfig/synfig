@@ -51,145 +51,146 @@ using namespace synfig;
 
 // Internal
 
-class ColorMatrix::Internal
-{
-public:
-	template<int channel, int mode_r, int mode_g, int mode_b, int mode_a, int mode_o>
-	static inline value_type INRETRNAL_FUNC transform(const ColorMatrix &m, const Color &c)
+namespace {
+	class Internal
 	{
-		value_type x(mode_o ? m[4][channel] : value_type(0.0));
+	public:
+		template<int channel, int mode_r, int mode_g, int mode_b, int mode_a, int mode_o>
+		static inline ColorMatrix::value_type INRETRNAL_FUNC transform(const ColorMatrix &m, const Color &c)
+		{
+			ColorMatrix::value_type x(mode_o ? m[4][channel] : ColorMatrix::value_type(0.0));
 
-		if (mode_r == -1) x -= c.get_r();
-		if (mode_r ==  1) x += c.get_r();
-		if (mode_r ==  2) x += m[0][channel]*c.get_r();
+			if (mode_r == -1) x -= c.get_r();
+			if (mode_r ==  1) x += c.get_r();
+			if (mode_r ==  2) x += m[0][channel]*c.get_r();
 
-		if (mode_g == -1) x -= c.get_g();
-		if (mode_g ==  1) x += c.get_g();
-		if (mode_g ==  2) x += m[1][channel]*c.get_g();
+			if (mode_g == -1) x -= c.get_g();
+			if (mode_g ==  1) x += c.get_g();
+			if (mode_g ==  2) x += m[1][channel]*c.get_g();
 
-		if (mode_b == -1) x -= c.get_b();
-		if (mode_b ==  1) x += c.get_b();
-		if (mode_b ==  2) x += m[2][channel]*c.get_b();
+			if (mode_b == -1) x -= c.get_b();
+			if (mode_b ==  1) x += c.get_b();
+			if (mode_b ==  2) x += m[2][channel]*c.get_b();
 
-		if (mode_a == -1) x -= c.get_a();
-		if (mode_a ==  1) x += c.get_a();
-		if (mode_a ==  2) x += m[3][channel]*c.get_a();
+			if (mode_a == -1) x -= c.get_a();
+			if (mode_a ==  1) x += c.get_a();
+			if (mode_a ==  2) x += m[3][channel]*c.get_a();
 
-		return x;
-	}
+			return x;
+		}
 
-	template<int channel, int mode_r, int mode_g, int mode_b, int mode_a, int mode_o>
-	static inline void INRETRNAL_FUNC batch_transform(const ColorMatrix &m, value_type *dest, const Color *src, const Color *src_end)
-	{
-		for(; src < src_end; dest += 4, ++src)
-			*dest = transform<channel, mode_r, mode_g, mode_b, mode_a, mode_o>(m, *src);
-	}
-
-
-	// transfrom func generator
-
-	template<int channel, int mode_r, int mode_g, int mode_b, int mode_a, int mode_o>
-	static transform_func_ptr INRETRNAL_FUNC get_transform_func_crgbao()
-		{ return transform<channel, mode_r, mode_g, mode_b, mode_a, mode_o>; }
-
-	template<int channel, int mode_r, int mode_g, int mode_b, int mode_a>
-	static transform_func_ptr INRETRNAL_FUNC get_transform_func_crgba(const ColorMatrix &m)
-	{
-		return approximate_equal_lp(m[4][channel], value_type( 0.0)) ? get_transform_func_crgbao<channel, mode_r, mode_g, mode_b, mode_a,  0>()
-		     : approximate_equal_lp(m[4][channel], value_type( 1.0)) ? get_transform_func_crgbao<channel, mode_r, mode_g, mode_b, mode_a,  1>()
-		     : approximate_equal_lp(m[4][channel], value_type(-1.0)) ? get_transform_func_crgbao<channel, mode_r, mode_g, mode_b, mode_a, -1>()
-		                                                             : get_transform_func_crgbao<channel, mode_r, mode_g, mode_b, mode_a,  2>();
-	}
-
-	template<int channel, int mode_r, int mode_g, int mode_b>
-	static transform_func_ptr INRETRNAL_FUNC get_transform_func_crgb(const ColorMatrix &m)
-	{
-		return approximate_equal_lp(m[3][channel], value_type( 0.0)) ? get_transform_func_crgba<channel, mode_r, mode_g, mode_b,  0>(m)
-		     : approximate_equal_lp(m[3][channel], value_type( 1.0)) ? get_transform_func_crgba<channel, mode_r, mode_g, mode_b,  1>(m)
-		     : approximate_equal_lp(m[3][channel], value_type(-1.0)) ? get_transform_func_crgba<channel, mode_r, mode_g, mode_b, -1>(m)
-		                                                             : get_transform_func_crgba<channel, mode_r, mode_g, mode_b,  2>(m);
-	}
-
-	template<int channel, int mode_r, int mode_g>
-	static transform_func_ptr INRETRNAL_FUNC get_transform_func_crg(const ColorMatrix &m)
-	{
-		return approximate_equal_lp(m[2][channel], value_type( 0.0)) ? get_transform_func_crgb<channel, mode_r, mode_g,  0>(m)
-		     : approximate_equal_lp(m[2][channel], value_type( 1.0)) ? get_transform_func_crgb<channel, mode_r, mode_g,  1>(m)
-		     : approximate_equal_lp(m[2][channel], value_type(-1.0)) ? get_transform_func_crgb<channel, mode_r, mode_g, -1>(m)
-		                                                             : get_transform_func_crgb<channel, mode_r, mode_g,  2>(m);
-	}
-
-	template<int channel, int mode_r>
-	static transform_func_ptr INRETRNAL_FUNC get_transform_func_cr(const ColorMatrix &m)
-	{
-		return approximate_equal_lp(m[1][channel], value_type( 0.0)) ? get_transform_func_crg<channel, mode_r,  0>(m)
-		     : approximate_equal_lp(m[1][channel], value_type( 1.0)) ? get_transform_func_crg<channel, mode_r,  1>(m)
-		     : approximate_equal_lp(m[1][channel], value_type(-1.0)) ? get_transform_func_crg<channel, mode_r, -1>(m)
-		                                                             : get_transform_func_crg<channel, mode_r,  2>(m);
-	}
-
-	template<int channel>
-	static transform_func_ptr INRETRNAL_FUNC get_transform_func_c(const ColorMatrix &m)
-	{
-		return approximate_equal_lp(m[0][channel], value_type( 0.0)) ? get_transform_func_cr<channel,  0>(m)
-		     : approximate_equal_lp(m[0][channel], value_type( 1.0)) ? get_transform_func_cr<channel,  1>(m)
-		     : approximate_equal_lp(m[0][channel], value_type(-1.0)) ? get_transform_func_cr<channel, -1>(m)
-		                                                             : get_transform_func_cr<channel,  2>(m);
-	}
+		template<int channel, int mode_r, int mode_g, int mode_b, int mode_a, int mode_o>
+		static inline void INRETRNAL_FUNC batch_transform(const ColorMatrix &m, ColorMatrix::value_type *dest, const Color *src, const Color *src_end)
+		{
+			for(; src < src_end; dest += 4, ++src)
+				*dest = transform<channel, mode_r, mode_g, mode_b, mode_a, mode_o>(m, *src);
+		}
 
 
-	// batch func generator
+		// transfrom func generator
 
-	template<int channel, int mode_r, int mode_g, int mode_b, int mode_a, int mode_o>
-	static batch_func_ptr INRETRNAL_FUNC get_batch_func_crgbao()
-		{ return batch_transform<channel, mode_r, mode_g, mode_b, mode_a, mode_o>; }
+		template<int channel, int mode_r, int mode_g, int mode_b, int mode_a, int mode_o>
+		static ColorMatrix::transform_func_ptr INRETRNAL_FUNC get_transform_func_crgbao()
+			{ return transform<channel, mode_r, mode_g, mode_b, mode_a, mode_o>; }
 
-	template<int channel, int mode_r, int mode_g, int mode_b, int mode_a>
-	static batch_func_ptr INRETRNAL_FUNC get_batch_func_crgba(const ColorMatrix &m)
-	{
-		return approximate_equal_lp(m[4][channel], value_type( 0.0)) ? get_batch_func_crgbao<channel, mode_r, mode_g, mode_b, mode_a,  0>()
-		     : approximate_equal_lp(m[4][channel], value_type( 1.0)) ? get_batch_func_crgbao<channel, mode_r, mode_g, mode_b, mode_a,  1>()
-		     : approximate_equal_lp(m[4][channel], value_type(-1.0)) ? get_batch_func_crgbao<channel, mode_r, mode_g, mode_b, mode_a, -1>()
-		                                                             : get_batch_func_crgbao<channel, mode_r, mode_g, mode_b, mode_a,  2>();
-	}
+		template<int channel, int mode_r, int mode_g, int mode_b, int mode_a>
+		static ColorMatrix::transform_func_ptr INRETRNAL_FUNC get_transform_func_crgba(const ColorMatrix &m)
+		{
+			return approximate_equal_lp(m[4][channel], ColorMatrix::value_type( 0.0)) ? get_transform_func_crgbao<channel, mode_r, mode_g, mode_b, mode_a,  0>()
+				 : approximate_equal_lp(m[4][channel], ColorMatrix::value_type( 1.0)) ? get_transform_func_crgbao<channel, mode_r, mode_g, mode_b, mode_a,  1>()
+				 : approximate_equal_lp(m[4][channel], ColorMatrix::value_type(-1.0)) ? get_transform_func_crgbao<channel, mode_r, mode_g, mode_b, mode_a, -1>()
+				                                                                      : get_transform_func_crgbao<channel, mode_r, mode_g, mode_b, mode_a,  2>();
+		}
 
-	template<int channel, int mode_r, int mode_g, int mode_b>
-	static batch_func_ptr INRETRNAL_FUNC get_batch_func_crgb(const ColorMatrix &m)
-	{
-		return approximate_equal_lp(m[3][channel], value_type( 0.0)) ? get_batch_func_crgba<channel, mode_r, mode_g, mode_b,  0>(m)
-		     : approximate_equal_lp(m[3][channel], value_type( 1.0)) ? get_batch_func_crgba<channel, mode_r, mode_g, mode_b,  1>(m)
-		     : approximate_equal_lp(m[3][channel], value_type(-1.0)) ? get_batch_func_crgba<channel, mode_r, mode_g, mode_b, -1>(m)
-		                                                             : get_batch_func_crgba<channel, mode_r, mode_g, mode_b,  2>(m);
-	}
+		template<int channel, int mode_r, int mode_g, int mode_b>
+		static ColorMatrix::transform_func_ptr INRETRNAL_FUNC get_transform_func_crgb(const ColorMatrix &m)
+		{
+			return approximate_equal_lp(m[3][channel], ColorMatrix::value_type( 0.0)) ? get_transform_func_crgba<channel, mode_r, mode_g, mode_b,  0>(m)
+				 : approximate_equal_lp(m[3][channel], ColorMatrix::value_type( 1.0)) ? get_transform_func_crgba<channel, mode_r, mode_g, mode_b,  1>(m)
+				 : approximate_equal_lp(m[3][channel], ColorMatrix::value_type(-1.0)) ? get_transform_func_crgba<channel, mode_r, mode_g, mode_b, -1>(m)
+				                                                                      : get_transform_func_crgba<channel, mode_r, mode_g, mode_b,  2>(m);
+		}
 
-	template<int channel, int mode_r, int mode_g>
-	static batch_func_ptr INRETRNAL_FUNC get_batch_func_crg(const ColorMatrix &m)
-	{
-		return approximate_equal_lp(m[2][channel], value_type( 0.0)) ? get_batch_func_crgb<channel, mode_r, mode_g,  0>(m)
-		     : approximate_equal_lp(m[2][channel], value_type( 1.0)) ? get_batch_func_crgb<channel, mode_r, mode_g,  1>(m)
-		     : approximate_equal_lp(m[2][channel], value_type(-1.0)) ? get_batch_func_crgb<channel, mode_r, mode_g, -1>(m)
-		                                                             : get_batch_func_crgb<channel, mode_r, mode_g,  2>(m);
-	}
+		template<int channel, int mode_r, int mode_g>
+		static ColorMatrix::transform_func_ptr INRETRNAL_FUNC get_transform_func_crg(const ColorMatrix &m)
+		{
+			return approximate_equal_lp(m[2][channel], ColorMatrix::value_type( 0.0)) ? get_transform_func_crgb<channel, mode_r, mode_g,  0>(m)
+				 : approximate_equal_lp(m[2][channel], ColorMatrix::value_type( 1.0)) ? get_transform_func_crgb<channel, mode_r, mode_g,  1>(m)
+				 : approximate_equal_lp(m[2][channel], ColorMatrix::value_type(-1.0)) ? get_transform_func_crgb<channel, mode_r, mode_g, -1>(m)
+				                                                                      : get_transform_func_crgb<channel, mode_r, mode_g,  2>(m);
+		}
 
-	template<int channel, int mode_r>
-	static batch_func_ptr INRETRNAL_FUNC get_batch_func_cr(const ColorMatrix &m)
-	{
-		return approximate_equal_lp(m[1][channel], value_type( 0.0)) ? get_batch_func_crg<channel, mode_r,  0>(m)
-		     : approximate_equal_lp(m[1][channel], value_type( 1.0)) ? get_batch_func_crg<channel, mode_r,  1>(m)
-		     : approximate_equal_lp(m[1][channel], value_type(-1.0)) ? get_batch_func_crg<channel, mode_r, -1>(m)
-		                                                             : get_batch_func_crg<channel, mode_r,  2>(m);
-	}
+		template<int channel, int mode_r>
+		static ColorMatrix::transform_func_ptr INRETRNAL_FUNC get_transform_func_cr(const ColorMatrix &m)
+		{
+			return approximate_equal_lp(m[1][channel], ColorMatrix::value_type( 0.0)) ? get_transform_func_crg<channel, mode_r,  0>(m)
+				 : approximate_equal_lp(m[1][channel], ColorMatrix::value_type( 1.0)) ? get_transform_func_crg<channel, mode_r,  1>(m)
+				 : approximate_equal_lp(m[1][channel], ColorMatrix::value_type(-1.0)) ? get_transform_func_crg<channel, mode_r, -1>(m)
+				                                                                      : get_transform_func_crg<channel, mode_r,  2>(m);
+		}
 
-	template<int channel>
-	static batch_func_ptr INRETRNAL_FUNC get_batch_func_c(const ColorMatrix &m)
-	{
-		return approximate_equal_lp(m[0][channel], value_type( 0.0)) ? get_batch_func_cr<channel,  0>(m)
-		     : approximate_equal_lp(m[0][channel], value_type( 1.0)) ? get_batch_func_cr<channel,  1>(m)
-		     : approximate_equal_lp(m[0][channel], value_type(-1.0)) ? get_batch_func_cr<channel, -1>(m)
-		                                                             : get_batch_func_cr<channel,  2>(m);
-	}
-};
+		template<int channel>
+		static ColorMatrix::transform_func_ptr INRETRNAL_FUNC get_transform_func_c(const ColorMatrix &m)
+		{
+			return approximate_equal_lp(m[0][channel], ColorMatrix::value_type( 0.0)) ? get_transform_func_cr<channel,  0>(m)
+				 : approximate_equal_lp(m[0][channel], ColorMatrix::value_type( 1.0)) ? get_transform_func_cr<channel,  1>(m)
+				 : approximate_equal_lp(m[0][channel], ColorMatrix::value_type(-1.0)) ? get_transform_func_cr<channel, -1>(m)
+				                                                                      : get_transform_func_cr<channel,  2>(m);
+		}
 
+
+		// batch func generator
+
+		template<int channel, int mode_r, int mode_g, int mode_b, int mode_a, int mode_o>
+		static ColorMatrix::batch_func_ptr INRETRNAL_FUNC get_batch_func_crgbao()
+			{ return batch_transform<channel, mode_r, mode_g, mode_b, mode_a, mode_o>; }
+
+		template<int channel, int mode_r, int mode_g, int mode_b, int mode_a>
+		static ColorMatrix::batch_func_ptr INRETRNAL_FUNC get_batch_func_crgba(const ColorMatrix &m)
+		{
+			return approximate_equal_lp(m[4][channel], ColorMatrix::value_type( 0.0)) ? get_batch_func_crgbao<channel, mode_r, mode_g, mode_b, mode_a,  0>()
+				 : approximate_equal_lp(m[4][channel], ColorMatrix::value_type( 1.0)) ? get_batch_func_crgbao<channel, mode_r, mode_g, mode_b, mode_a,  1>()
+				 : approximate_equal_lp(m[4][channel], ColorMatrix::value_type(-1.0)) ? get_batch_func_crgbao<channel, mode_r, mode_g, mode_b, mode_a, -1>()
+				                                                                      : get_batch_func_crgbao<channel, mode_r, mode_g, mode_b, mode_a,  2>();
+		}
+
+		template<int channel, int mode_r, int mode_g, int mode_b>
+		static ColorMatrix::batch_func_ptr INRETRNAL_FUNC get_batch_func_crgb(const ColorMatrix &m)
+		{
+			return approximate_equal_lp(m[3][channel], ColorMatrix::value_type( 0.0)) ? get_batch_func_crgba<channel, mode_r, mode_g, mode_b,  0>(m)
+				 : approximate_equal_lp(m[3][channel], ColorMatrix::value_type( 1.0)) ? get_batch_func_crgba<channel, mode_r, mode_g, mode_b,  1>(m)
+				 : approximate_equal_lp(m[3][channel], ColorMatrix::value_type(-1.0)) ? get_batch_func_crgba<channel, mode_r, mode_g, mode_b, -1>(m)
+				                                                                      : get_batch_func_crgba<channel, mode_r, mode_g, mode_b,  2>(m);
+		}
+
+		template<int channel, int mode_r, int mode_g>
+		static ColorMatrix::batch_func_ptr INRETRNAL_FUNC get_batch_func_crg(const ColorMatrix &m)
+		{
+			return approximate_equal_lp(m[2][channel], ColorMatrix::value_type( 0.0)) ? get_batch_func_crgb<channel, mode_r, mode_g,  0>(m)
+				 : approximate_equal_lp(m[2][channel], ColorMatrix::value_type( 1.0)) ? get_batch_func_crgb<channel, mode_r, mode_g,  1>(m)
+				 : approximate_equal_lp(m[2][channel], ColorMatrix::value_type(-1.0)) ? get_batch_func_crgb<channel, mode_r, mode_g, -1>(m)
+				                                                                      : get_batch_func_crgb<channel, mode_r, mode_g,  2>(m);
+		}
+
+		template<int channel, int mode_r>
+		static ColorMatrix::batch_func_ptr INRETRNAL_FUNC get_batch_func_cr(const ColorMatrix &m)
+		{
+			return approximate_equal_lp(m[1][channel], ColorMatrix::value_type( 0.0)) ? get_batch_func_crg<channel, mode_r,  0>(m)
+				 : approximate_equal_lp(m[1][channel], ColorMatrix::value_type( 1.0)) ? get_batch_func_crg<channel, mode_r,  1>(m)
+				 : approximate_equal_lp(m[1][channel], ColorMatrix::value_type(-1.0)) ? get_batch_func_crg<channel, mode_r, -1>(m)
+				                                                                      : get_batch_func_crg<channel, mode_r,  2>(m);
+		}
+
+		template<int channel>
+		static ColorMatrix::batch_func_ptr INRETRNAL_FUNC get_batch_func_c(const ColorMatrix &m)
+		{
+			return approximate_equal_lp(m[0][channel], ColorMatrix::value_type( 0.0)) ? get_batch_func_cr<channel,  0>(m)
+				 : approximate_equal_lp(m[0][channel], ColorMatrix::value_type( 1.0)) ? get_batch_func_cr<channel,  1>(m)
+				 : approximate_equal_lp(m[0][channel], ColorMatrix::value_type(-1.0)) ? get_batch_func_cr<channel, -1>(m)
+				                                                                      : get_batch_func_cr<channel,  2>(m);
+		}
+	};
+}
 
 // BatchProcessor
 

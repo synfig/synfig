@@ -56,9 +56,6 @@ namespace software
 
 class TaskSurfaceResampleSW: public TaskSurfaceResample, public TaskComposite, public TaskSW
 {
-private:
-	class Helper;
-
 public:
 	typedef etl::handle<TaskSurfaceResampleSW> Handle;
 	Task::Handle clone() const { return clone_pointer(this); }

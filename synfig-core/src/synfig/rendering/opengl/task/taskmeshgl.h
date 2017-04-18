@@ -43,9 +43,6 @@ namespace rendering
 
 class TaskMeshGL: public Task, public TaskGL
 {
-private:
-	class Internal;
-
 public:
 	typedef etl::handle<TaskMeshGL> Handle;
 
