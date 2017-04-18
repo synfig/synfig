@@ -244,7 +244,7 @@ namespace types_namespace {
 	protected:
 		TypeNil(): Type(NIL) { }
 
-		static String to_string(const InternalPointer) { return "Nil"; }
+		static String to_string(ConstInternalPointer) { return "Nil"; }
 
 		virtual void initialize_vfunc(Description &description)
 		{
@@ -252,7 +252,7 @@ namespace types_namespace {
 			description.name = "nil";
 			description.local_name = local_n("nil");
 			description.aliases.push_back("null");
-			register_default(to_string);
+			register_to_string(to_string);
 		}
 	public:
 		static TypeNil instance;

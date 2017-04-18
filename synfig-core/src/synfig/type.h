@@ -131,6 +131,7 @@ class Operation
 {
 public:
 	typedef void* InternalPointer;
+	typedef const void* ConstInternalPointer;
 
 	enum OperationType {
 		TYPE_NONE,
@@ -146,20 +147,20 @@ public:
 	};
 
 	typedef InternalPointer	(*CreateFunc)	();
-	typedef void			(*DestroyFunc)	(const InternalPointer);
-	typedef void			(*CopyFunc)		(const InternalPointer dest, const InternalPointer src);
-	typedef bool			(*EqualFunc)	(const InternalPointer, const InternalPointer);
-	typedef bool			(*LessFunc)		(const InternalPointer, const InternalPointer);
-	typedef InternalPointer	(*BinaryFunc)	(const InternalPointer, const InternalPointer);
-	typedef String			(*ToStringFunc)	(const InternalPointer);
+	typedef void			(*DestroyFunc)	(ConstInternalPointer);
+	typedef void			(*CopyFunc)		(InternalPointer dest, ConstInternalPointer src);
+	typedef bool			(*EqualFunc)	(ConstInternalPointer, ConstInternalPointer);
+	typedef bool			(*LessFunc)		(ConstInternalPointer, ConstInternalPointer);
+	typedef InternalPointer	(*BinaryFunc)	(ConstInternalPointer, ConstInternalPointer);
+	typedef String			(*ToStringFunc)	(ConstInternalPointer);
 
 	template<typename T>
 	class GenericFuncs
 	{
 	public:
 		typedef void 		(*SetFunc)		(InternalPointer dest, const T &src);
-		typedef void 		(*PutFunc)		(T &dest, const InternalPointer src);
-		typedef const T&	(*GetFunc)		(const InternalPointer);
+		typedef void 		(*PutFunc)		(T &dest, ConstInternalPointer src);
+		typedef const T&	(*GetFunc)		(ConstInternalPointer);
 	private:
 		GenericFuncs() { }
 	};
@@ -171,28 +172,28 @@ public:
 		static InternalPointer create()
 			{ return new Inner(); }
 		template<typename Inner>
-		static void destroy(const InternalPointer x)
+		static void destroy(ConstInternalPointer x)
 			{ return delete (Inner*)x; }
 		template<typename Inner, typename Outer>
 		static void set(InternalPointer dest, const Outer &src)
 			{ *(Inner*)dest = src; }
 		template<typename Inner, typename Outer>
-		static void put(Outer &dest, const InternalPointer src)
+		static void put(Outer &dest, ConstInternalPointer src)
 			{ dest = static_cast<const Outer&>(*(Inner*)src); }
 		template<typename Inner, typename Outer>
-		static const Outer& get(const InternalPointer x)
+		static const Outer& get(ConstInternalPointer x)
 			{ return static_cast<const Outer&>(*(Inner*)x); }
 		template<typename Inner>
-		static void copy(InternalPointer dest, const InternalPointer src)
+		static void copy(InternalPointer dest, ConstInternalPointer src)
 			{ *(Inner*)dest = *(Inner*)src; }
 		template<typename Inner>
-		static bool equal(InternalPointer a, const InternalPointer b)
+		static bool equal(ConstInternalPointer a, ConstInternalPointer b)
 			{ return *(Inner*)a == *(Inner*)b; }
 		template<typename Inner>
-		static bool less(InternalPointer a, const InternalPointer b)
+		static bool less(ConstInternalPointer a, ConstInternalPointer b)
 			{ return *(Inner*)a < *(Inner*)b; }
 		template<typename Inner, String (*Func)(const Inner&)>
-		static String to_string(const InternalPointer x)
+		static String to_string(ConstInternalPointer x)
 			{ return Func(*(const Inner*)x); }
 	private:
 		DefaultFuncs() { }
@@ -264,6 +265,7 @@ class Type
 public:
 	enum { NIL = 0 };
 	typedef Operation::InternalPointer InternalPointer;
+	typedef Operation::ConstInternalPointer ConstInternalPointer;
 
 	struct Description
 	{
@@ -519,13 +521,13 @@ protected:
 		{ register_destroy(identifier, func); }
 	template<typename T>
 	inline void register_set(typename Operation::GenericFuncs<T>::SetFunc func)
-		{ register_set(identifier, func); }
+		{ register_set<T>(identifier, func); }
 	template<typename T>
 	inline void register_put(typename Operation::GenericFuncs<T>::PutFunc func)
-		{ register_put(identifier, func); }
+		{ register_put<T>(identifier, func); }
 	template<typename T>
 	inline void register_get(typename Operation::GenericFuncs<T>::GetFunc func)
-		{ register_get(identifier, func); }
+		{ register_get<T>(identifier, func); }
 	inline void register_copy(Operation::CopyFunc func)
 		{ register_copy(identifier, func); }
 	inline void register_equal(Operation::EqualFunc func)
@@ -535,61 +537,30 @@ protected:
 	inline void register_to_string(Operation::ToStringFunc func)
 		{ register_to_string(identifier, func); }
 
-	// default register
-	inline void register_default(Operation::CreateFunc func)
-		{ register_create(identifier, func); }
-	inline void register_default(Operation::DestroyFunc func)
-		{ register_destroy(identifier, func); }
-	template<typename T>
-	inline void register_default(typename Operation::GenericFuncs<T>::SetFunc func)
-		{ register_set<T>(identifier, func); }
-	template<typename T>
-	inline void register_default(typename Operation::GenericFuncs<T>::PutFunc func)
-		{ register_put<T>(identifier, func); }
-	template<typename T>
-	inline void register_default(typename Operation::GenericFuncs<T>::GetFunc func)
-		{ register_get<T>(identifier, func); }
-	inline void register_default(Operation::CopyFunc func)
-		{ register_copy(identifier, func); }
-	inline void register_default_equal(Operation::EqualFunc func)
-		{ register_equal(identifier, func); }
-	inline void register_default_less(Operation::LessFunc func)
-		{ register_less(identifier, func); }
-	inline void register_default(Operation::ToStringFunc func)
-		{ register_to_string(identifier, func); }
-
-	template<typename Inner, typename Outer, String (*Func)(const Inner&)>
-	inline void register_all()
+	template<typename Inner, typename Outer>
+	inline void register_alias()
 	{
-		register_default(Operation::DefaultFuncs::create<Inner>);
-		register_default(Operation::DefaultFuncs::destroy<Inner>);
-		register_default<Outer>(Operation::DefaultFuncs::set<Inner, Outer>);
-		register_default<Outer>(Operation::DefaultFuncs::put<Inner, Outer>);
-		register_default<Outer>(Operation::DefaultFuncs::get<Inner, Outer>);
-		register_default(Operation::DefaultFuncs::copy<Inner>);
-		register_default_equal(Operation::DefaultFuncs::equal<Inner>);
-		register_default_less(Operation::DefaultFuncs::less<Inner>);
-		register_default(Operation::DefaultFuncs::to_string<Inner, Func>);
+		register_set<Outer> ( Operation::DefaultFuncs::set<Inner, Outer>      );
+		register_put<Outer> ( Operation::DefaultFuncs::put<Inner, Outer>      );
+		register_get<Outer> ( Operation::DefaultFuncs::get<Inner, Outer>      );
 	}
 
 	template<typename Inner, typename Outer, String (*Func)(const Inner&)>
 	inline void register_all_but_compare()
 	{
-		register_default(Operation::DefaultFuncs::create<Inner>);
-		register_default(Operation::DefaultFuncs::destroy<Inner>);
-		register_default<Outer>(Operation::DefaultFuncs::set<Inner, Outer>);
-		register_default<Outer>(Operation::DefaultFuncs::put<Inner, Outer>);
-		register_default<Outer>(Operation::DefaultFuncs::get<Inner, Outer>);
-		register_default(Operation::DefaultFuncs::copy<Inner>);
-		register_default(Operation::DefaultFuncs::to_string<Inner, Func>);
+		register_create     ( Operation::DefaultFuncs::create<Inner>          );
+		register_destroy    ( Operation::DefaultFuncs::destroy<Inner>         );
+		register_copy       ( Operation::DefaultFuncs::copy<Inner>            );
+		register_to_string  ( Operation::DefaultFuncs::to_string<Inner, Func> );
+		register_alias<Inner, Outer>();
 	}
 
-	template<typename Inner, typename Outer>
-	inline void register_alias()
+	template<typename Inner, typename Outer, String (*Func)(const Inner&)>
+	inline void register_all()
 	{
-		register_default<Outer>(Operation::DefaultFuncs::set<Inner, Outer>);
-		register_default<Outer>(Operation::DefaultFuncs::put<Inner, Outer>);
-		register_default<Outer>(Operation::DefaultFuncs::get<Inner, Outer>);
+		register_all_but_compare<Inner, Outer, Func>();
+		register_equal      ( Operation::DefaultFuncs::equal<Inner>           );
+		register_less       ( Operation::DefaultFuncs::less<Inner>            );
 	}
 
 	template<typename Outer, String (*Func)(const Outer&)>

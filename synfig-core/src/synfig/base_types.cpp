@@ -161,9 +161,9 @@ public:
 		operator const Time&() const { return t = r; }
 	};
 private:
-	static bool equal(const InternalPointer a, const InternalPointer b)
+	static bool equal(ConstInternalPointer a, ConstInternalPointer b)
 		{ return abs((*(Inner*)a).r - (*(Inner*)b).r) <= 1e-14; }
-	static bool less(const InternalPointer a, const InternalPointer b)
+	static bool less(ConstInternalPointer a, ConstInternalPointer b)
 		{ return !equal(a, b) && (*(Inner*)a).r < (*(Inner*)b).r; }
 	static String to_string(const Inner &x) { return etl::strprintf("Real (%f)", (Real)x); }
 	void initialize_vfunc(Description &description)
@@ -193,9 +193,9 @@ class TypeTime: public Type
 {
 	typedef TypeReal::Inner Inner;
 	static String to_string(const Inner &x) { return etl::strprintf("Time (%s)", ((const Time&)x).get_string().c_str()); }
-	static bool equal(const InternalPointer a, const InternalPointer b)
+	static bool equal(ConstInternalPointer a, ConstInternalPointer b)
 		{ return (const Time&)*(Inner*)a == (const Time&)*(Inner*)b; }
-	static bool less(const InternalPointer a, const InternalPointer b)
+	static bool less(ConstInternalPointer a, ConstInternalPointer b)
 		{ return !equal(a, b) && (const Time&)*(Inner*)a < (const Time&)*(Inner*)b; }
 	void initialize_vfunc(Description &description)
 	{
@@ -205,8 +205,8 @@ class TypeTime: public Type
 		description.aliases.push_back(_("time"));
 		description.local_name = N_("time");
 		register_all_but_compare<Inner, Time, to_string>();
+		register_alias<Inner, float>();
 		register_alias<Inner, Real>();
-		register_alias<Inner, Time>();
 		register_equal(equal);
 		register_less(less);
 		register_copy(identifier, TypeReal::instance.identifier, Operation::DefaultFuncs::copy<Inner>);
@@ -401,12 +401,14 @@ class TypeCanvas: public Type
 	class Inner
 	{
 	public:
+		typedef Canvas *CanvasPtr;
+
 #ifdef TRY_FIX_FOR_BUG_27
 		bool fake_handle;
 #endif
-		etl::loose_handle<Canvas> lh;
 		etl::handle<Canvas> h;
-		mutable Canvas* p;
+		etl::loose_handle<Canvas> lh;
+		mutable CanvasPtr p;
 #ifdef TRY_FIX_FOR_BUG_27
 		Inner(): fake_handle(false), p(NULL) { }
 		~Inner() { if (fake_handle) h->ref(); }
@@ -428,15 +430,16 @@ class TypeCanvas: public Type
 		}
 		Inner& operator= (const etl::handle<Canvas> &other)
 			{ return *this = etl::loose_handle<Canvas>(other); }
-		Inner& operator= (Canvas* const &other)
+		Inner& operator= (const CanvasPtr &other)
 			{ return *this = etl::loose_handle<Canvas>(other); }
 		Inner& operator= (const Inner &other)
 			{ return *this = other.lh; }
 		bool operator== (const Inner &other) const
 			{ return lh == other.lh; }
+
 		operator const etl::loose_handle<Canvas>&() const { return lh; }
 		operator const etl::handle<Canvas>&() const { return h; }
-		operator Canvas* const&() const { return p = &*lh; }
+		operator const CanvasPtr &() const { return p = &*lh; }
 	};
 	static String to_string(const Inner &x) { return etl::strprintf("Canvas (%s)", x.lh ? x.lh->get_id().c_str() : "NULL"); }
 	void initialize_vfunc(Description &description)
@@ -531,18 +534,22 @@ class TypeBoneValueNode: public Type
 	class Inner
 	{
 	public:
-		ValueNode_Bone::Handle h;
-		mutable ValueNode_Bone::LooseHandle lh;
-		mutable ValueNode_Bone* p;
+		typedef ValueNode_Bone *ValueNode_BonePtr;
+
+		etl::handle<ValueNode_Bone> h;
+		mutable etl::loose_handle<ValueNode_Bone> lh;
+		mutable ValueNode_BonePtr p;
+
 		Inner(): p(NULL) { }
-		Inner& operator= (const ValueNode_Bone::LooseHandle &other) { h = other; return *this; }
-		Inner& operator= (const ValueNode_Bone::Handle &other) { h = other; return *this; }
-		Inner& operator= (ValueNode_Bone* const &other) { h = other; return *this; }
+		Inner& operator= (const etl::handle<ValueNode_Bone> &other) { h = other; return *this; }
+		Inner& operator= (const etl::loose_handle<ValueNode_Bone> &other) { h = other; return *this; }
+		Inner& operator= (const ValueNode_BonePtr &other) { h = other; return *this; }
 		Inner& operator= (const Inner &other) { return *this = other.h; }
 		bool operator== (const Inner &other) const { return h == other.h; }
-		operator const ValueNode_Bone::LooseHandle&() const { return lh = h; }
-		operator ValueNode_Bone* const&() const { return p = &*h; }
+
 		operator const ValueNode_Bone::Handle&() const { return h; }
+		operator const ValueNode_Bone::LooseHandle&() const { return lh = h; }
+		operator const ValueNode_BonePtr &() const { return p = &*h; }
 	};
 	static String to_string(const Inner &x) { return etl::strprintf("ValueNodeBone (%s)", x.lh ? x.lh->get_string().c_str() : "NULL"); }
 	void initialize_vfunc(Description &description)
@@ -550,16 +557,16 @@ class TypeBoneValueNode: public Type
 		Type::initialize_vfunc(description);
 		description.name = "bone_valuenode";
 		description.local_name = N_("bone_valuenode");
-		register_all<Inner, ValueNode_Bone::LooseHandle, to_string>();
-		register_alias<Inner, ValueNode_Bone::Handle>();
+		register_all<Inner, etl::loose_handle<ValueNode_Bone>, to_string>();
+		register_alias< Inner, etl::handle<ValueNode_Bone> >();
 		register_alias<Inner, ValueNode_Bone*>();
 	}
 public:
 	static TypeBoneValueNode instance;
 };
 TypeBoneValueNode TypeBoneValueNode::instance;
-SYNFIG_IMPLEMENT_TYPE_ALIAS(ValueNode_Bone::Handle, TypeBoneValueNode)
-SYNFIG_IMPLEMENT_TYPE_ALIAS(ValueNode_Bone::LooseHandle, TypeBoneValueNode)
+SYNFIG_IMPLEMENT_TYPE_ALIAS(etl::handle<ValueNode_Bone>, TypeBoneValueNode)
+SYNFIG_IMPLEMENT_TYPE_ALIAS(etl::loose_handle<ValueNode_Bone>, TypeBoneValueNode)
 SYNFIG_IMPLEMENT_TYPE_ALIAS(ValueNode_Bone*, TypeBoneValueNode)
 
 
