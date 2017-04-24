@@ -110,7 +110,7 @@ MainWindow::MainWindow()
 	add(*vbox);
 
 	init_menus();
-	window_action_group = Gtk::ActionGroup::create("mainwindow-recentfiles");
+	window_action_group = Gtk::ActionGroup::create("mainwindow-window");
 	App::ui_manager()->insert_action_group(window_action_group);
 
 	App::signal_recent_files_changed().connect(
