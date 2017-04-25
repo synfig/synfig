@@ -506,10 +506,7 @@ fi
 ( [[ $MODE == 'package' ]] || [[ $MODE == 'full' ]] ) && make clean || true
 
 if [[ $MODE != 'quick' ]]; then
-	libtoolize --ltdl --copy --force
-	sed -i 's/^AC_CONFIG_SUBDIRS(libltdl)$/m4_ifdef([_AC_SEEN_TAG(libltdl)], [], [AC_CONFIG_SUBDIRS(libltdl)])/' configure.ac || true
-	sed -i 's/^# AC_CONFIG_SUBDIRS(libltdl)$/m4_ifdef([_AC_SEEN_TAG(libltdl)], [], [AC_CONFIG_SUBDIRS(libltdl)])/' configure.ac || true
-	autoreconf --install --force
+    /bin/sh ./bootstrap.sh
 	if [ -e /etc/debian_version ] && [ -z $BOOST_CONFIGURE_OPTIONS ]; then
 		# Debian/Ubuntu multiarch
 		MULTIARCH_LIBDIR="/usr/lib/`uname -m`-linux-gnu/"

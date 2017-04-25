@@ -62,6 +62,7 @@ ETL/ETL/etl_profile_.h.in
 synfig-core/libltdl
 synfig-core/pkg-info/macosx/synfig-core.info
 synfig-core/po/*.gmo
+synfig-core/po/stamp-it
 synfig-core/po/synfig.pot
 synfig-core/src/modules/synfig_modules.cfg
 synfig-core/src/synfig/proto/nodebase.h

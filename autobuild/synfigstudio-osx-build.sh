@@ -289,21 +289,13 @@ mketl()
 	popd
 }
 
-libtoolize()
-{
-	glibtoolize $@
-}
-
 mksynfig()
 {
 	# building synfig-core
 	pushd ${SYNFIG_REPO_DIR}/synfig-core
 	export CXXFLAGS="$CXXFLAGS -I${SYNFIG_PREFIX}/include/ImageMagick"
 	make clean || true
-	libtoolize --ltdl --copy --force
-	sed -i 's/^AC_CONFIG_SUBDIRS(libltdl)$/m4_ifdef([_AC_SEEN_TAG(libltdl)], [], [AC_CONFIG_SUBDIRS(libltdl)])/' configure.ac || true
-	sed -i 's/^# AC_CONFIG_SUBDIRS(libltdl)$/m4_ifdef([_AC_SEEN_TAG(libltdl)], [], [AC_CONFIG_SUBDIRS(libltdl)])/' configure.ac || true
-	autoreconf --install --force
+    /bin/sh ./bootstrap.sh
 	if [[ ! $UNIVERSAL == 0 ]]; then
 	export DEPTRACK="--disable-dependency-tracking"
 	fi

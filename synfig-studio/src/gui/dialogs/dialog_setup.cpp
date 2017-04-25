@@ -492,113 +492,20 @@ Dialog_Setup::create_interface_page(PageInfo pi)
 	 */
 
 	// Interface - UI Language
-	Glib::ustring lang_names[] = {
-		_("System Language"),
-		_("Arabic"),
-		_("Basque"),
-		_("Basque (Spain)"),
-		_("Catalan"),
-		_("Chinese (China)"),
-		_("Czech"),
-		_("Danish"),
-		_("Dutch "),
-		_("English"),
-		_("English (United Kingdom)"),
-		_("Farsi (Iran)"),
-		_("French "),
-		_("German"),
-		_("Greek (Greece)"),
-		_("Hebrew "),
-		_("Hungarian "),
-		_("Italian "),
-		_("Japanese (Japan)"),
-		_("Lithuanian "),
-		_("Norwegian (Norway)"),
-		_("Polish (Poland)"),
-		_("Portuguese"),
-		_("Portuguese (Brazil)"),
-		_("Romanian"),
-		_("Russian"),
-		_("Spanish"),
-		_("Sinhala"),
-		_("Slovak (Slovakia)"),
-		_("Swedish (Sweden)"),
-		_("Turkish"),
+
+	static const char* languages[][2] = {
+		#include <languages.inc.c>
+		{ NULL, NULL } // final entry without comma to avoid misunderstanding
 	};
 
-   Glib::ustring lang_codes[] = {
-		"os_LANG",		// System Language
-		"ar",			// Arabick
-		"eu",			// Basque
-		"eu_ES",		// Basque (Spain)
-		"ca",			// Catalan
-		"zh_CN",		// Chinese (China)
-		"cs",			// CZech
-		"da",			// Danish
-		"nl",			// Dutch
-		"en",			// English - default of development
-		"en_GB",		// English (United Kingdom)
-		"fa_IR",		// Farsi (Iran)
-		"fr",			// French
-		"de",			// German
-		"el_GR",		// Greek (Greece)
-		"he",			// Hebrew
-		"hu",			// Hungarian
-		"it",			// Italian
-		"ja_JP",		// Japanese (Japan)
-		"lt",			// Lithuanian
-		"no_NO",		// Norwegian (Norway)
-		"pl_PL",		// Polish (Poland)
-		"pt",			// Portuguese
-		"pt_BR",		// Portuguese (Brazil)
-		"ro",			// Romanian
-		"ru",			// Russian
-		"es",			// Spanish
-		"si",			// Sinhala
-		"sk_SK",		// Slovak (Slovakia)
-		"sv_SE",		// Swedish (Sweden)
-		"tr"			// Turkish
-
-		bs.po
-		ca@valencia.po
-		cs_CZ.po
-		da.po
-		de.po
-		en_CZ.po
-		es.po
-		es_PY.po
-		gl.po
-		hi_IN.po
-		ja.po
-		lv.po
-		sk.po
-		sl.po
-		sr_RS.po
-		ur.po
-		uz@Latn.po
-		zh-Hant.po
-		zh_TW.Big5.po
-		zh_TW.po
-   };
-
-	int num_items = G_N_ELEMENTS(lang_names);
-	Glib::ustring default_code;
-	int row(1);
-	Glib::ustring lang_code = App::ui_language;
-
-	for (int i =0 ; i < num_items; ++i)
-	{
-		ui_language_combo.append(lang_names[i]);
-		_lang_codes.push_back(lang_codes[i]);
-			if (lang_code == _lang_codes[i])
-			row = i;
-	}
-
-	ui_language_combo.set_active(row);
+	ui_language_combo.append("os_LANG", Glib::ustring("(") + _("System Language") + ")");
+	for(int i = 0; i < (int)(sizeof(languages)/sizeof(languages[0])) - 1; ++i)
+		ui_language_combo.append(languages[i][0], languages[i][1]);
+	ui_language_combo.set_active_id(App::ui_language);
 	ui_language_combo.signal_changed().connect(sigc::mem_fun(*this, &studio::Dialog_Setup::on_ui_language_combo_change));
 
-	// row is used now for ui construction
-	row = 1;
+	int row = 1;
+
 	// Interface - Language section
 	attach_label_section(pi.grid, _("Language"), row);
 	pi.grid->attach(ui_language_combo, 0, ++row, 4, 1);
@@ -777,7 +684,7 @@ Dialog_Setup::on_apply_pressed()
 
 	// Set ui language
 	if (pref_modification_flag&CHANGE_UI_LANGUAGE)
-		App::ui_language = (_lang_codes[ui_language_combo.get_active_row_number()]).c_str();
+		App::ui_language = ui_language_combo.get_active_id().c_str();
 
 	if (pref_modification_flag&CHANGE_UI_HANDLE_TOOLTIP)
 	{
