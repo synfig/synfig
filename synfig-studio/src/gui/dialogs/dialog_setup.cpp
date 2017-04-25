@@ -500,7 +500,10 @@ Dialog_Setup::create_interface_page(PageInfo pi)
 
 	ui_language_combo.append("os_LANG", Glib::ustring("(") + _("System Language") + ")");
 	for(int i = 0; i < (int)(sizeof(languages)/sizeof(languages[0])) - 1; ++i)
-		ui_language_combo.append(languages[i][0], languages[i][1]);
+		if (languages[i][1] == Glib::ustring())
+			ui_language_combo.append(languages[i][0], Glib::ustring("[") + languages[i][0] + "]");
+		else
+			ui_language_combo.append(languages[i][0], languages[i][1]);
 	ui_language_combo.set_active_id(App::ui_language);
 	ui_language_combo.signal_changed().connect(sigc::mem_fun(*this, &studio::Dialog_Setup::on_ui_language_combo_change));
 
