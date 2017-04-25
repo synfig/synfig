@@ -3,13 +3,14 @@
 # This file is distributed under the same license as the Synfig Studio package.
 # 
 # Translators:
+# mrfun <gmgfreegame1@gmail.com>, 2017
 msgid ""
 msgstr ""
 "Project-Id-Version: Synfig UI\n"
 "Report-Msgid-Bugs-To: https://github.com/synfig/synfig/issues\n"
 "POT-Creation-Date: 2016-06-05 14:00+0700\n"
-"PO-Revision-Date: 2016-01-16 14:18+0000\n"
-"Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
+"PO-Revision-Date: 2017-03-24 15:22+0000\n"
+"Last-Translator: mrfun <gmgfreegame1@gmail.com>\n"
 "Language-Team: Chinese Traditional (http://www.transifex.com/morevnaproject/synfig/language/zh-Hant/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -31,7 +32,7 @@ msgstr ""
 
 #: ../synfigstudio.appdata.xml.in.h:2
 msgid "Features:"
-msgstr ""
+msgstr "特點："
 
 #: ../synfigstudio.appdata.xml.in.h:3
 msgid "High Dynamic-Range Imaging (HDRI)"
@@ -80,7 +81,7 @@ msgstr ""
 
 #: ../synfigstudio-thumbnailer.schemas.in.h:4
 msgid "enable"
-msgstr ""
+msgstr "啟用"
 
 #: ../plugins/add-skeleton-simple/plugin.xml.in.h:1
 msgid "Add Skeleton (Simple)"
@@ -123,7 +124,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:29
 msgid "Random"
-msgstr ""
+msgstr "隨機"
 
 #: ../src/brushlib/brushsettings.py:29
 msgid ""
@@ -244,7 +245,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:49
 msgid "Anti-aliasing"
-msgstr ""
+msgstr "抗鋸齒"
 
 #: ../src/brushlib/brushsettings.py:49
 msgid ""

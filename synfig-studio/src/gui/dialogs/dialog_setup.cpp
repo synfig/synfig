@@ -515,6 +515,7 @@ Dialog_Setup::create_interface_page(PageInfo pi)
 		_("Lithuanian "),
 		_("Norwegian (Norway)"),
 		_("Polish (Poland)"),
+		_("Portuguese"),
 		_("Portuguese (Brazil)"),
 		_("Romanian"),
 		_("Russian"),
@@ -548,6 +549,7 @@ Dialog_Setup::create_interface_page(PageInfo pi)
 		"lt",			// Lithuanian
 		"no_NO",		// Norwegian (Norway)
 		"pl_PL",		// Polish (Poland)
+		"pt",			// Portuguese
 		"pt_BR",		// Portuguese (Brazil)
 		"ro",			// Romanian
 		"ru",			// Russian
@@ -556,6 +558,27 @@ Dialog_Setup::create_interface_page(PageInfo pi)
 		"sk_SK",		// Slovak (Slovakia)
 		"sv_SE",		// Swedish (Sweden)
 		"tr"			// Turkish
+
+		bs.po
+		ca@valencia.po
+		cs_CZ.po
+		da.po
+		de.po
+		en_CZ.po
+		es.po
+		es_PY.po
+		gl.po
+		hi_IN.po
+		ja.po
+		lv.po
+		sk.po
+		sl.po
+		sr_RS.po
+		ur.po
+		uz@Latn.po
+		zh-Hant.po
+		zh_TW.Big5.po
+		zh_TW.po
    };
 
 	int num_items = G_N_ELEMENTS(lang_names);
