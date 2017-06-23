@@ -11,7 +11,7 @@ frame-by frame, allowing you to produce 2D animation of a higher quality with
 fewer people and resources. Synfig Studio is available for Windows, Linux and
 MacOS X.
 
-http://synfig.org/
+https://synfig.org/
 
 (TODO: add more info)
 
