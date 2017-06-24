@@ -614,7 +614,7 @@ fi
 VERSION=`get_version_release_string`
 
 pushd ${SYNFIG_REPO_DIR} >/dev/null
-if [[ WORKDIR_IS_REPO == 0 ]]; then
+if [[ $WORKDIR_IS_REPO == 0 ]]; then
 	git fetch
 	git reset --hard HEAD
 	SELECTEDREVISION=origin/master
