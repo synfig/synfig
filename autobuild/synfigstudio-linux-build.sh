@@ -1284,7 +1284,9 @@ mkpackage()
 			echo "Acquire::http::Proxy \"$http_proxy\";" > $PACKAGES_BUILDROOT.$ARCH/etc/apt/apt.conf
 		fi
 		#fetch sources to cache
-		[ -d $PACKAGES_BUILDROOT.$ARCH/source/synfig.git ] && rm -rf $PACKAGES_BUILDROOT.$ARCH/source/synfig.git || true
+		if [ -d $PACKAGES_BUILDROOT.$ARCH/source/synfig.git ]; then
+		    rm -rf $PACKAGES_BUILDROOT.$ARCH/source/synfig.git || true
+		fi
 		if [ -d $PACKAGES_BUILDROOT/synfig.git ]; then
 			if [[ $WORKDIR_IS_REPO == 1 ]]; then
 				rm -rf "$PACKAGES_BUILDROOT/synfig.git"
