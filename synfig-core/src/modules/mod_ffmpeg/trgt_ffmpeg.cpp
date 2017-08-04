@@ -198,7 +198,8 @@ ffmpeg_trgt::init(ProgressCallback *cb=NULL)
 					result += buffer;
 		}
 		pclose(pipe);
-		if (result.substr(0,1) == "/"){
+		synfig::info(strprintf("\"%s\" --> %s", command.c_str(), result.c_str()));
+		if (result.substr(0,1) == "/" || result.substr(0,2) == "./" ){
 			ffmpeg_binary_path = binary_path;
 			break;
 		}
