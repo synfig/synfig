@@ -190,7 +190,7 @@ private:
 
 	value_prep_type cooker_;
 
-	void swap(const surface &x)
+	void swap(surface &x)
 	{
 		std::swap(data_,x.data_);
 		std::swap(zero_pos_,x.zero_pos_);
