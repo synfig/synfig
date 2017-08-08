@@ -242,7 +242,6 @@ private:
 	Glib::RefPtr<Gtk::Adjustment> scrolly_adjustment;
 	Widget_Ruler *vruler;
 	Widget_Ruler *hruler;
-	Gtk::Button *menubutton;
 	Gtk::Frame *drawing_frame;
 	ZoomDial *zoomdial;
 
