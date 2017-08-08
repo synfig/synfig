@@ -4094,9 +4094,9 @@ CanvasView::on_preview_option()
 				set_ext_widget("prevoptions",po);
 			}
 			
-			if (po->get_begin_override())
+			if (!po->get_begin_override())
 				po->set_begintime(beg);
-			if (po->get_end_override())
+			if (!po->get_end_override())
 				po->set_endtime(end);
 
 			po->set_global_fps(r.get_frame_rate());
