@@ -79,49 +79,6 @@ using namespace studio;
 
 /* === E N T R Y P O I N T ================================================= */
 
-class studio::Preview::Preview_Target_Cairo : public Target_Cairo
-{
-	Preview *prev;
-public:
-	Preview_Target_Cairo(Preview *prev_): prev(prev_)
-	{
-	}
-	
-	virtual bool set_rend_desc(RendDesc *r)
-	{
-		return Target_Cairo::set_rend_desc(r);
-	}
-	
-	virtual bool obtain_surface(cairo_surface_t*& surface)
-	{
-		int w=desc.get_w(), h=desc.get_h();
-		surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, w, h);
-		return true;
-	}
-
-	bool put_surface(cairo_surface_t *surf, synfig::ProgressCallback *cb)
-	{
-		if(!prev)
-			return false;
-		gamma_filter(surf, studio::App::gamma);
-		if(cairo_surface_status(surf))
-		{
-			if(cb) cb->error(_("Cairo Surface bad status"));
-			return false;
-		}
-		FlipbookElem	fe;
-		Preview pr = *prev;
-		float time = get_canvas()->get_time();
-		fe.t = time;
-		fe.surface=cairo_surface_reference(surf);
-		prev->push_back(fe);
-		prev->signal_changed()();
-		
-		cairo_surface_destroy(surf);
-		return true;
-	}
-};
-
 class studio::Preview::Preview_Target : public Target_Scanline
 {
 	Surface	surface;
@@ -207,7 +164,6 @@ studio::Preview::Preview(const etl::loose_handle<CanvasView> &h, float zoom, flo
 	endtime(),
 	overbegin(false),
 	overend(false),
-	use_cairo(),
 	quality(),
 	global_fps()
 { }
@@ -277,19 +233,10 @@ void studio::Preview::render()
 		//TODO: do not use get_time on Preview_Target
 		desc.set_time_end(desc.get_time_end() + 1.000001/fps);
 
-		// Render using a Preview target (cairo or not)
-		etl::handle<Target> target;
-		if(use_cairo)
-		{
-			target = etl::handle<Target>::cast_dynamic(new Preview_Target_Cairo(this));
-		}
-		else
-		{
-			etl::handle<Preview_Target> t_target = new Preview_Target;
-			//connect our information to his...
-			t_target->signal_frame_done().connect(sigc::mem_fun(*this,&Preview::frame_finish));
-			target =etl::handle<Target>::cast_dynamic(t_target);
-		}
+		// Render using a Preview target
+		etl::handle<Preview_Target> target = new Preview_Target;
+		target->signal_frame_done().connect(sigc::mem_fun(*this,&Preview::frame_finish));
+
 		//set the options
 		target->set_canvas(get_canvas());
 		target->set_quality(quality);
@@ -383,7 +330,6 @@ Widget_Preview::Widget_Preview():
 	adj_time_scrub(Gtk::Adjustment::create(0, 0, 1000, 0, 10, 0)),
 	scr_time_scrub(adj_time_scrub),
 	b_loop(/*_("Loop")*/),
-	current_surface(NULL),
 	currentindex(-100000),//TODO get the value from canvas setting or preview option
 	audiotime(0),
 	adj_sound(Gtk::Adjustment::create(0, 0, 4)),
@@ -696,16 +642,12 @@ void studio::Widget_Preview::update()
 				synfig::error("i == end....");
 				//assert(0);
 				currentbuf.clear();
-				current_surface=NULL;
 				currentindex = 0;
 				timedisp = -1;
 			}else
 			{
 				currentbuf = i->buf;
 				currentindex = i-beg;
-				if(current_surface)
-					cairo_surface_destroy(current_surface);
-				current_surface= cairo_surface_reference(i->surface);
 				if(timedisp != i->t)
 				{
 					timedisp = i->t;
@@ -733,21 +675,11 @@ bool studio::Widget_Preview::redraw(const Cairo::RefPtr<Cairo::Context> &cr)
 	//And render the drawing area
 	Glib::RefPtr<Gdk::Pixbuf> pxnew, px = currentbuf;
 	cairo_surface_t* cs;
-	bool use_cairo= preview->get_use_cairo();
-	if(use_cairo)
-	{
-		if(current_surface)
-			cs=cairo_surface_reference(current_surface);
-		else
-			return true;
-	}
 	
 	int dw = draw_area.get_width();
 	int dh = draw_area.get_height();
 	
-	if(use_cairo && !cs)
-		return true;
-	else if(!use_cairo && !px)
+	if(!px)
 		return true;
 	//made not need this line
 	//if ( draw_area.get_height() == 0 || px->get_height() == 0 || px->get_width() == 0)
@@ -760,16 +692,8 @@ bool studio::Widget_Preview::redraw(const Cairo::RefPtr<Cairo::Context> &cr)
 	int w,h;
 	
 	// grab the source dimensions
-	if(use_cairo)
-	{
-		w=cairo_image_surface_get_width(cs);
-		h=cairo_image_surface_get_height(cs);
-	}
-	else
-	{
-		w=px->get_width();
-		h=px->get_height();
-	}
+	w=px->get_width();
+	h=px->get_height();
 
 	Gtk::Entry* entry = zoom_preview.get_entry();
 	String str(entry->get_text());
@@ -810,8 +734,7 @@ bool studio::Widget_Preview::redraw(const Cairo::RefPtr<Cairo::Context> &cr)
 
 	if(nw == 0 || nh == 0)return true;
 
-	if(!use_cairo)
-		pxnew = px->scale_simple(nw, nh, Gdk::INTERP_NEAREST);
+	pxnew = px->scale_simple(nw, nh, Gdk::INTERP_NEAREST);
 
 	//except "Fit" or "fit", we need to set size request for scrolled window
 	if (text != _("Fit") && text != "fit")
@@ -826,39 +749,26 @@ bool studio::Widget_Preview::redraw(const Cairo::RefPtr<Cairo::Context> &cr)
 	Glib::RefPtr<Gdk::Window> wind = draw_area.get_window();
 	if(!wind) synfig::warning("The destination window is broken...");
 
-	if(!use_cairo)
-	{
-		/* Options for drawing...
-			1) store with alpha, then clear and render with alpha every frame
-				- more time consuming
-				+ more expandable
-			2) store with just pixel info
-				- less expandable
-				+ faster
-				+ better memory footprint
-		*/
-		//px->composite(const Glib::RefPtr<Gdk::Pixbuf>& dest, int dest_x, int dest_y, int dest_width, int dest_height, double offset_x, double offset_y, double scale_x, double scale_y, InterpType interp_type, int overall_alpha) const
+	/* Options for drawing...
+		1) store with alpha, then clear and render with alpha every frame
+			- more time consuming
+			+ more expandable
+		2) store with just pixel info
+			- less expandable
+			+ faster
+			+ better memory footprint
+	*/
+	//px->composite(const Glib::RefPtr<Gdk::Pixbuf>& dest, int dest_x, int dest_y, int dest_width, int dest_height, double offset_x, double offset_y, double scale_x, double scale_y, InterpType interp_type, int overall_alpha) const
 
-		cr->save();
-		Gdk::Cairo::set_source_pixbuf(
-			cr, //cairo context
-			pxnew, //pixbuf
-			//coordinates to place center of the preview window
-			(dw - nw) / 2, (dh - nh) / 2
-			);
-		cr->paint();
-		cr->restore();
-	}
-	else
-	{
-		cr->save();
-		cr->scale(sx, sx);
-		cairo_set_source_surface(cr->cobj(), cs, (dw - nw)/(2*sx), (dh - nh)/(2*sx));
-		cairo_pattern_set_filter(cairo_get_source(cr->cobj()), CAIRO_FILTER_NEAREST);
-		cairo_surface_destroy(cs);
-		cr->paint();
-		cr->restore();
-	}
+	cr->save();
+	Gdk::Cairo::set_source_pixbuf(
+		cr, //cairo context
+		pxnew, //pixbuf
+		//coordinates to place center of the preview window
+		(dw - nw) / 2, (dh - nh) / 2
+		);
+	cr->paint();
+	cr->restore();
 
 	//synfig::warning("Refresh the draw area");
 	//make sure the widget refreshes
@@ -1179,9 +1089,6 @@ void studio::Widget_Preview::eraseall()
 	stoprender();
 
 	currentbuf.clear();
-	if(current_surface)
-		cairo_surface_destroy(current_surface);
-	current_surface=NULL;
 	currentindex = 0;
 	timedisp = 0;
 	queue_draw();
