@@ -1206,20 +1206,20 @@ CanvasView::create_time_bar()
 	timebar = Gtk::manage(new class Gtk::Table(11, 2, false));
 
 	//Attach widgets to the timebar
-	//timebar->attach(*manage(disp_audio), 1, 5, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
-	timebar->attach(*timetrackbutton, 0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	timebar->attach(*current_time_widget, 1, 2, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	timebar->attach(*framedial, 2, 4, 1, 2, Gtk::SHRINK, Gtk::SHRINK);
-	timebar->attach(*jackdial, 4, 5, 1, 2, Gtk::SHRINK, Gtk::SHRINK);
-	//timebar->attach(*space2, 5, 6, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::FILL);
-	timebar->attach(*statusbar, 5, 7, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	//timebar->attach(*progressbar, 5, 6, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	timebar->attach(*widget_interpolation_scroll, 7, 8, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	timebar->attach(*keyframedial, 8, 9, 1, 2, Gtk::SHRINK, Gtk::SHRINK);
-	timebar->attach(*space, 9, 10, 1, 2, Gtk::SHRINK, Gtk::FILL);
-	timebar->attach(*animatebutton, 10, 11, 1, 2, Gtk::SHRINK, Gtk::SHRINK);
+	//timebar->attach(*manage(disp_audio),         1,  5, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL);
+	timebar->attach(*timetrackbutton,              0,  1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL);
+	timebar->attach(*current_time_widget,          1,  2, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL);
+	timebar->attach(*framedial,                    2,  4, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL);
+	timebar->attach(*jackdial,                     4,  5, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL);
+    //timebar->attach(*space2,                     5,  6, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL);
+	timebar->attach(*statusbar,                    5,  7, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL);
+    //timebar->attach(*progressbar,                5,  6, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL);
+	timebar->attach(*widget_interpolation_scroll,  7,  8, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL);
+	timebar->attach(*keyframedial,                 8,  9, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL);
+	timebar->attach(*space,                        9, 10, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL);
+	timebar->attach(*animatebutton,               10, 11, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL);
 
-	timebar->attach(*timetrack, 0, 11, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL);
+	timebar->attach(*timetrack,                    0, 11, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL);
 
 	timebar->show();
 
@@ -1493,14 +1493,14 @@ CanvasView::create_display_bar()
 		stopbutton->set_relief(Gtk::RELIEF_NONE);
 		//stopbutton->set_label(_("Stop"));
 		stopbutton->set_tooltip_text( _("Stop current operation"));
-		stopbutton->show();
 		stopbutton->set_sensitive(false);
+		stopbutton->show();
 	}
 
 	Gtk::HBox *hbox = manage(new class Gtk::HBox(false, 0));
-	hbox->pack_start(*displaybar, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0);
-	//hbox->pack_start(*progressbar, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0);
-	hbox->pack_start(*stopbutton, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0);
+	hbox->pack_start(*displaybar, false, true);
+	//hbox->pack_start(*progressbar, true, true);
+	hbox->pack_end(*stopbutton, false, false);
 	hbox->show();
 
 	return hbox;

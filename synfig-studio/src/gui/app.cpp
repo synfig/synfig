@@ -2183,8 +2183,16 @@ App::apply_gtk_settings()
 	// Fix GtkPaned (big margin makes it hard to grab first keyframe))
 	data += "GtkPaned { margin: 2px; }\n";
 	// Fix #348: Synfig's Interface went Too Thick
-	data += ".button { padding: 4px; }\n";
-	data += ".entry, GtkComboBox > .button { padding-top: 0px; padding-bottom: 0px; }\n";
+	data += ".button                            { padding-left: 4px; padding-right: 4px; }\n";
+	data += ".button                            { padding-top: 0px; padding-bottom: 0px; }\n";
+	data += ".button *                          { padding-top: 4px; padding-bottom: 4px; }\n";
+	data += ".button > GtkBox                   { padding-top: 0px; padding-bottom: 0px; }\n";
+	data += ".button > GtkBox > *               { padding-top: 4px; padding-bottom: 4px; }\n";
+	data += ".button > GtkLabel                 { padding-top: 0px; padding-bottom: 0px; }\n";
+	data += "GtkComboBox > .button > GtkBox > * { padding-top: 0px; padding-bottom: 0px; }\n";
+	data += ".entry                             { padding-top: 0px; padding-bottom: 0px; }\n";
+	//data += "GtkComboBox GtkCellView { font-size: 10px; }\n";
+	//data += "GtkComboBox * { margin: 0; }\n";
 	// Fix #810: Insetsetive context menus on OSX
 	g_object_get (G_OBJECT (gtk_settings), "gtk-theme-name", &theme_name, NULL);
 	if ( String(theme_name) == "Adwaita" )
