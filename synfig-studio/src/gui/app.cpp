@@ -2178,20 +2178,23 @@ App::apply_gtk_settings()
 	// enable menu icons
 	g_object_set (G_OBJECT (gtk_settings), "gtk-menu-images", TRUE, NULL);
 
-	// fix checkboxes for Adwaita theme
+	// fix CSS
+	Glib::ustring data;
+	// Fix GtkPaned (big margin makes it hard to grab first keyframe))
+	data += "GtkPaned { margin: 2px; }\n";
+	// Fix #348: Synfig's Interface went Too Thick
+	data += ".button { padding: 4px; }\n";
+	data += ".entry, GtkComboBox > .button { padding-top: 0px; padding-bottom: 0px; }\n";
+	// Fix #810: Insetsetive context menus on OSX
 	g_object_get (G_OBJECT (gtk_settings), "gtk-theme-name", &theme_name, NULL);
-	if ( String(theme_name) == "Adwaita" ){
-		Glib::ustring data;
-		// Fix GtkPaned (big margin makes it hard to grab first keyframe))
-		data = "GtkPaned { margin: 2px; }";
-		//Fix #810: Insetsetive context menus on OSX
-		data += ".window-frame, .window-frame:backdrop { box-shadow: none; margin: 0; }";
+	if ( String(theme_name) == "Adwaita" )
+		data += ".window-frame, .window-frame:backdrop { box-shadow: none; margin: 0; }\n";
+	if (!data.empty()) {
 		Glib::RefPtr<Gtk::CssProvider> css = Gtk::CssProvider::create();
-		if(not css->load_from_data(data)) {
+		if(not css->load_from_data(data))
 			synfig::info("Failed to load css rules.");
-		}
 		Glib::RefPtr<Gdk::Screen> screen = Gdk::Screen::get_default();
-		Gtk::StyleContext::add_provider_for_screen(screen,css, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+		Gtk::StyleContext::add_provider_for_screen(screen,css, GTK_STYLE_PROVIDER_PRIORITY_USER);
 	}
 }
 

@@ -1193,6 +1193,14 @@ CanvasView::create_time_bar()
 		space2->show();
 	}
 #endif
+
+	// fix thickness of statusbar
+	Gtk::Widget *widget = statusbar;
+	while(Gtk::Container *container = dynamic_cast<Gtk::Container*>(widget)) {
+		widget->set_margin_top(0);
+		widget->set_margin_bottom(0);
+		widget = container->get_children().empty() ? NULL : container->get_children().front();
+	}
 	statusbar->show();
 
 	timebar = Gtk::manage(new class Gtk::Table(11, 2, false));
