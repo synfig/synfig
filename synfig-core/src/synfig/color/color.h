@@ -78,8 +78,8 @@ public:
 	// and expects that to give it initialized colors
 	// Otherwise the 'gaussian' blur type is random.
 	inline Color();
-	inline Color(const value_type &f);
-	inline Color(int f);
+	explicit inline Color(const value_type &f);
+	explicit inline Color(int f);
 
 	/*!	\param R Red
 	**	\param G Green
