@@ -169,7 +169,7 @@ Import::set_param(const String & param, const ValueBase &value)
 		return true;
 	}
 	IMPORT_VALUE_PLUS_END
-	} catch(...) { set_amount(0); return false; }
+	} catch(...) { return false; }
 
 	return Layer_Bitmap::set_param(param,value);
 }
