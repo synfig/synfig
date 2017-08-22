@@ -212,18 +212,15 @@ png_trgt::start_frame(synfig::ProgressCallback *callback)
 	char description[] = "Description";
 	char software   [] = "Software";
 	char synfig     [] = "SYNFIG";
-//	char copyright  [] = "Copyright";
-//	char voria      [] = "(c) 2004 Voria Studios, LLC";
 
 	// Output any text info along with the file
 	png_text comments[]=
 	{
 		{ PNG_TEXT_COMPRESSION_NONE, title, const_cast<char *>(get_canvas()->get_name().c_str()),
-		  strlen(get_canvas()->get_name().c_str()) },
+		  strlen(get_canvas()->get_name().c_str()), 0, NULL, NULL },
 		{ PNG_TEXT_COMPRESSION_NONE, description, const_cast<char *>(get_canvas()->get_description().c_str()),
-		  strlen(get_canvas()->get_description().c_str()) },
-//		{ PNG_TEXT_COMPRESSION_NONE, copyright, voria, strlen(voria) },
-		{ PNG_TEXT_COMPRESSION_NONE, software, synfig, strlen(synfig) },
+		  strlen(get_canvas()->get_description().c_str()), 0, NULL, NULL },
+		{ PNG_TEXT_COMPRESSION_NONE, software, synfig, strlen(synfig), 0, NULL, NULL },
 	};
 	png_set_text(png_ptr,info_ptr,comments,sizeof(comments)/sizeof(png_text));
 
