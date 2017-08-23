@@ -110,6 +110,12 @@ Import::set_param(const String & param, const ValueBase &value)
 			return true;
 		}
 
+		if (is_surface_modified())
+		{
+			error("Unable to load new file, already opened file is not saved");
+			return false;
+		}
+
 		String filename = value.get(String());
 		String fixed_filename = filename;
 

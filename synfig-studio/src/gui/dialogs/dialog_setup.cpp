@@ -613,9 +613,9 @@ Dialog_Setup::on_apply_pressed()
 	// TODO catch change event on auto_backup_interval before use CHANGE_AUTOBACKUP
 	{
 		// Set the auto backup status
-		App::auto_recover->enable(toggle_autobackup.get_active());
+		App::auto_recover->set_enabled(toggle_autobackup.get_active());
 		// Set the auto backup interval
-		App::auto_recover->set_timeout(auto_backup_interval.get_value() * 1000);
+		App::auto_recover->set_timeout_ms(auto_backup_interval.get_value() * 1000);
 	}
 
 	App::distance_system=Distance::System(widget_enum->get_value());
@@ -819,7 +819,7 @@ void
 Dialog_Setup::on_autobackup_changed()
 {
 	auto_backup_interval.set_sensitive(toggle_autobackup.get_active());
-	App::auto_recover->enable(toggle_autobackup.get_active());
+	App::auto_recover->set_enabled(toggle_autobackup.get_active());
 }
 
 void
@@ -864,10 +864,10 @@ Dialog_Setup::refresh()
 	// Refresh the status of the single_threaded flag
 	toggle_single_threaded.set_active(App::single_threaded);
 #endif
-	toggle_autobackup.set_active(App::auto_recover->get_enable());
+	toggle_autobackup.set_active(App::auto_recover->get_enabled());
 	// Refresh the value of the auto backup interval
-	auto_backup_interval.set_value(App::auto_recover->get_timeout() / 1000);
-	auto_backup_interval.set_sensitive(App::auto_recover->get_enable());
+	auto_backup_interval.set_value(App::auto_recover->get_timeout_ms() / 1000);
+	auto_backup_interval.set_sensitive(App::auto_recover->get_enabled());
 
 	// Refresh the status of the restrict_radius_ducks flag
 	toggle_restrict_radius_ducks.set_active(App::restrict_radius_ducks);

@@ -30,6 +30,7 @@
 
 #include "layer_composite.h"
 #include <synfig/surface.h>
+#include <synfig/guid.h>
 #include <synfig/target.h> // for RenderMethod
 
 #include <synfig/rendering/surface.h>
@@ -51,6 +52,8 @@ class Layer_Bitmap : public Layer_Composite, public Layer_NoDeform
 	const Color& filter(Color& c)const;
 	const CairoColor& filter(CairoColor& c)const;
 	RenderMethod method;
+
+	GUID surface_modification_id;
 public:
 	typedef etl::handle<Layer_Bitmap> Handle;
 
@@ -69,6 +72,15 @@ public:
 	Layer_Bitmap();
 
 	synfig::Surface& get_surface() const;
+
+	GUID get_surface_modification_id() const
+		{ return surface_modification_id; }
+	bool is_surface_modified() const
+		{ return (bool)get_surface_modification_id(); }
+	void add_surface_modification_id(const GUID &modification_id)
+		{ surface_modification_id ^= modification_id; }
+	void reset_surface_modification_id()
+		{ surface_modification_id = GUID::zero(); }
 
 	virtual bool set_param(const String & param, const ValueBase & value);
 

@@ -301,7 +301,7 @@ AC_COMPILE_IFELSE([
 # -- H E A D E R S --------------------------------------------
 
 AC_CHECK_HEADERS([unistd.h signal.h fcntl.h])
-AC_CHECK_HEADERS([sys/types.h sys/wait.h sys/stat.h sys/time.h sys/resource.h sys/errno.h])
+AC_CHECK_HEADERS([sys/types.h sys/wait.h sys/stat.h sys/errno.h])
 
 # -- T Y P E S & S T R U C T S --------------------------------
 

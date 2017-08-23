@@ -244,9 +244,9 @@ Action::LayerPaint::PaintStroke::apply()
 
 
 
-Action::LayerPaint::LayerPaint()
-{
-}
+Action::LayerPaint::LayerPaint():
+	applied(false)
+{ }
 
 Action::ParamVocab
 Action::LayerPaint::get_param_vocab()
@@ -278,17 +278,17 @@ Action::LayerPaint::is_ready()const
 void
 Action::LayerPaint::perform()
 {
+	assert(!applied);
 	stroke.apply();
-	get_canvas_interface()
-		->get_instance()
-		->register_layer_to_save(stroke.get_layer());
+	if (!applied) stroke.get_layer()->add_surface_modification_id(id);
+	applied = !applied;
 }
 
 void
 Action::LayerPaint::undo()
 {
+	assert(applied);
 	stroke.undo();
-	get_canvas_interface()
-		->get_instance()
-		->unregister_layer_to_save(stroke.get_layer());
+	if (applied) stroke.get_layer()->add_surface_modification_id(id);
+	applied = !applied;
 }

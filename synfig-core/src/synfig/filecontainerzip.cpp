@@ -30,12 +30,16 @@
 #endif
 
 #include <cstring>
-#include <stdint.h>
+#include <cstdint>
 #include <cstddef>
-#include <ETL/stringf>
+
 #include <libxml++/libxml++.h>
-#include "filecontainerzip.h"
+
+#include <ETL/stringf>
+
 #include "zstreambuf.h"
+
+#include "filecontainerzip.h"
 
 #endif
 

@@ -51,6 +51,9 @@ namespace synfig {
 */
 class Layer_PasteCanvas : public Layer_Composite, public Layer_NoDeform
 {
+public:
+	typedef etl::handle<Layer_PasteCanvas> Handle;
+
 private:
 	//! Parameter: (Origin) Position offset
 	ValueBase param_origin;

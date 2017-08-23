@@ -337,11 +337,22 @@ public:
 	static etl::loose_handle<Instance> get_selected_instance() { return selected_instance; }
 	static etl::loose_handle<CanvasView> get_selected_canvas_view() { return selected_canvas_view; }
 
+	static std::string get_temporary_directory();
+
+	static synfig::FileSystemTemporary::Handle wrap_into_temporary_filesystem(
+		synfig::FileSystem::Handle canvas_file_system,
+		std::string filename,
+		std::string as,
+		synfig::FileContainerZip::file_size_t truncate_storage_size = 0 );
+
 	static bool open(std::string filename);
 
-	static bool open_as(std::string filename,std::string as,synfig::FileContainerZip::file_size_t truncate_storage_size = 0);
+	static bool open_as(
+		std::string filename,
+		std::string as,
+		synfig::FileContainerZip::file_size_t truncate_storage_size = 0 );
 
-	static bool open_from_temporary_container_as(std::string container_filename_base,std::string as);
+	static bool open_from_temporary_filesystem(std::string temporary_filename);
 
 	static void new_instance();
 

@@ -537,12 +537,12 @@ public:
 #endif
 			if(key=="auto_recover_backup")
 			{
-				value=strprintf("%i",App::auto_recover->get_enable());
+				value=strprintf("%i",App::auto_recover->get_enabled());
 				return true;
 			}
 			if(key=="auto_recover_backup_interval")
 			{
-				value=strprintf("%i",App::auto_recover->get_timeout());
+				value=strprintf("%i",App::auto_recover->get_timeout_ms());
 				return true;
 			}
 			if(key=="restrict_radius_ducks")
@@ -671,13 +671,13 @@ public:
 			if(key=="auto_recover_backup")
 			{
 				int i(atoi(value.c_str()));
-				App::auto_recover->enable(i);
+				App::auto_recover->set_enabled(i);
 				return true;
 			}
 			if(key=="auto_recover_backup_interval")
 			{
 				int i(atoi(value.c_str()));
-				App::auto_recover->set_timeout(i);
+				App::auto_recover->set_timeout_ms(i);
 				return true;
 			}
 			if(key=="file_history.size")
@@ -1663,6 +1663,10 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 				if (number_recovered)
 					opened_any = true;
 			}
+			else
+			{
+				auto_recover->clear_backups();
+			}
 			splash_screen.show();
 		}
 
@@ -2291,7 +2295,6 @@ App::quit()
 	while(studio::App::events_pending())studio::App::iteration(false);
 
 	Gtk::Main::quit();
-	auto_recover->normal_shutdown();
 
 	get_ui_interface()->task(_("Quit Request sent"));
 }
@@ -3473,6 +3476,26 @@ App::dialog_paragraph(const std::string &title, const std::string &message,std::
 	return true;
 }
 
+std::string
+App::get_temporary_directory()
+{
+	return synfigapp::Main::get_user_app_directory() + ETL_DIRECTORY_SEPARATOR + "tmp";
+}
+
+synfig::FileSystemTemporary::Handle
+App::wrap_into_temporary_filesystem(
+	synfig::FileSystem::Handle canvas_file_system,
+	std::string filename,
+	std::string as,
+	synfig::FileContainerZip::file_size_t truncate_storage_size )
+{
+	FileSystemTemporary::Handle temporary_file_system = new FileSystemTemporary("instance", get_temporary_directory(), canvas_file_system);
+	temporary_file_system->set_meta("filename", filename);
+	temporary_file_system->set_meta("as", as);
+	temporary_file_system->set_meta("truncate", etl::strprintf("%d", truncate_storage_size));
+	return temporary_file_system;
+}
+
 bool
 App::open(std::string filename)
 {
@@ -3503,18 +3526,17 @@ App::open_as(std::string filename,std::string as,synfig::FileContainerZip::file_
 		FileSystem::Handle container = CanvasFileNaming::make_filesystem_container(filename, truncate_storage_size);
 		if (!container)
 			throw (String)strprintf(_("Unable to open container \"%s\"\n\n"),filename.c_str());
-		
-		// wrap container into temporary file-system
-		FileSystemTemporary::Handle container_temporary(new FileSystemTemporary(container));
-		container_temporary->set_meta("canvas-filename", filename);
-		
-		// make canvas file-system
-		FileSystem::Handle canvas_file_system = CanvasFileNaming::make_filesystem(container_temporary);
 
+		// make canvas file system
+		FileSystem::Handle canvas_file_system = CanvasFileNaming::make_filesystem(container);
+
+		// wrap into temporary file system
+		canvas_file_system = wrap_into_temporary_filesystem(canvas_file_system, filename, as, truncate_storage_size);
+		
 		// file to open inside canvas file-system
 		String canvas_filename = CanvasFileNaming::project_file(filename);
 		
-		etl::handle<synfig::Canvas> canvas = open_canvas_as(canvas_file_system->get_identifier(canvas_filename), as, errors, warnings);
+		etl::handle<synfig::Canvas> canvas = open_canvas_as(canvas_file_system ->get_identifier(canvas_filename), as, errors, warnings);
 		if(canvas && get_instance(canvas))
 		{
 			get_instance(canvas)->find_canvas_view(canvas)->present();
@@ -3537,7 +3559,7 @@ App::open_as(std::string filename,std::string as,synfig::FileContainerZip::file_
 			if (as.find(custom_filename_prefix.c_str()) != 0)
 				add_recent_file(as);
 
-			handle<Instance> instance(Instance::create(canvas, container_temporary));
+			handle<Instance> instance(Instance::create(canvas, container));
 
 			if(!instance)
 				throw (String)strprintf(_("Unable to create instance for \"%s\""),filename.c_str());
@@ -3588,11 +3610,9 @@ App::open_as(std::string filename,std::string as,synfig::FileContainerZip::file_
 	return true;
 }
 
-// this is called from autorecover.cpp:
-//   App::open_as(get_shadow_file_name(filename),filename)
-// other than that, 'filename' and 'as' are the same
+// this is called from autorecover.cpp
 bool
-App::open_from_temporary_container_as(std::string container_filename_base, std::string as)
+App::open_from_temporary_filesystem(std::string temporary_filename)
 {
 	try
 	{
@@ -3600,27 +3620,40 @@ App::open_from_temporary_container_as(std::string container_filename_base, std::
 		String errors, warnings;
 
 		// try open temporary container
-		FileSystemTemporary::Handle container_temporary(new FileSystemTemporary());
-		if (!container_temporary->open_temporary(container_filename_base))
-			throw (String)strprintf(_("Unable to open temporary container \"%s\"\n\n"), container_filename_base.c_str());
+		FileSystemTemporary::Handle file_system_temporary(new FileSystemTemporary(""));
+		if (!file_system_temporary->open_temporary(temporary_filename))
+			throw (String)strprintf(_("Unable to open temporary container \"%s\"\n\n"), temporary_filename.c_str());
+
+		// get original filename
+		String filename = file_system_temporary->get_meta("filename");
+		String as = file_system_temporary->get_meta("as");
+		String truncate = file_system_temporary->get_meta("truncate");
+		if (filename.empty() || as.empty() || truncate.empty())
+			throw (String)strprintf(_("Original filename was not set in temporary container \"%s\"\n\n"), temporary_filename.c_str());
+		FileContainerZip::file_size_t truncate_storage_size = stoll(truncate);
 
 		// make canvas file-system
-		FileSystem::Handle canvas_file_system = CanvasFileNaming::make_filesystem(container_temporary);
+		FileSystem::Handle canvas_container = CanvasFileNaming::make_filesystem_container(filename, truncate_storage_size);
+		FileSystem::Handle canvas_file_system = CanvasFileNaming::make_filesystem(canvas_container);
 
-		// file to open inside canvas file-system
+		// wrap into temporary
+		file_system_temporary->set_sub_file_system(canvas_file_system);
+		canvas_file_system = file_system_temporary;
+
+		// file to open inside canvas file system
 		String canvas_filename = CanvasFileNaming::project_file(canvas_file_system);
 
 		etl::handle<synfig::Canvas> canvas(open_canvas_as(canvas_file_system->get_identifier(canvas_filename), as, errors, warnings));
 		if(canvas && get_instance(canvas))
 		{
 			get_instance(canvas)->find_canvas_view(canvas)->present();
-			info("%s is already open", canvas_filename.c_str());
+			info("%s is already open", as.c_str());
 			// throw (String)strprintf(_("\"%s\" appears to already be open!"),filename.c_str());
 		}
 		else
 		{
 			if(!canvas)
-				throw (String)strprintf(_("Unable to load \"%s\":\n\n"),container_filename_base.c_str()) + errors;
+				throw (String)strprintf(_("Unable to load \"%s\":\n\n"), temporary_filename.c_str()) + errors;
 
 			if (warnings != "")
 				dialog_message_1b(
@@ -3632,10 +3665,10 @@ App::open_from_temporary_container_as(std::string container_filename_base, std::
 			if (as.find(custom_filename_prefix.c_str()) != 0)
 				add_recent_file(as);
 
-			handle<Instance> instance(Instance::create(canvas, container_temporary));
+			handle<Instance> instance(Instance::create(canvas, canvas_container));
 
 			if(!instance)
-				throw (String)strprintf(_("Unable to create instance for \"%s\""),container_filename_base.c_str());
+				throw (String)strprintf(_("Unable to create instance for \"%s\""), temporary_filename.c_str());
 
 			one_moment.hide();
 
@@ -3647,6 +3680,9 @@ App::open_from_temporary_container_as(std::string container_filename_base, std::
 				_("Update Anyway"))
 			)
 				instance->dialog_cvs_update();
+
+			// This file isn't saved! mark it as such
+			instance->inc_action_count();
 		}
 	}
 	catch(String &x)
@@ -3689,8 +3725,8 @@ App::new_instance()
 {
 	handle<synfig::Canvas> canvas=synfig::Canvas::create();
 
-	String file_name(strprintf("%s%d", App::custom_filename_prefix.c_str(), Instance::get_count()+1));
-	canvas->set_name(file_name);
+	String filename(strprintf("%s%d", App::custom_filename_prefix.c_str(), Instance::get_count()+1));
+	canvas->set_name(filename);
 
 	canvas->rend_desc().set_frame_rate(preferred_fps);
 	canvas->rend_desc().set_time_start(0.0);
@@ -3705,12 +3741,16 @@ App::new_instance()
 	canvas->rend_desc().set_h(preferred_y_size);
 	canvas->rend_desc().set_antialias(1);
 	canvas->rend_desc().set_flags(RendDesc::PX_ASPECT|RendDesc::IM_SPAN);
-	canvas->set_file_name(file_name);
+	canvas->set_file_name(filename);
 	canvas->keyframe_list().add(synfig::Keyframe());
 
-	FileSystemTemporary::Handle container(new FileSystemTemporary());
+	FileSystem::Handle container = FileSystemNative::instance();
 	FileSystem::Handle file_system = CanvasFileNaming::make_filesystem(container);
-	canvas->set_identifier(file_system->get_identifier(file_name));
+	file_system = wrap_into_temporary_filesystem(file_system, filename, filename);
+
+	// file name inside canvas file-system
+	String canvas_filename = CanvasFileNaming::project_file(filename);
+	canvas->set_identifier(file_system->get_identifier(canvas_filename));
 
 	handle<Instance> instance = Instance::create(canvas, container);
 

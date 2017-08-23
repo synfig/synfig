@@ -91,7 +91,7 @@ private:
 	//! Handle for root canvas
 	synfig::Canvas::Handle canvas_;
 
-	synfig::FileSystemTemporary::Handle container_;
+	synfig::FileSystem::Handle container_;
 
 	CanvasInterfaceList canvas_interface_list_;
 
@@ -134,12 +134,13 @@ private:
 		{ }
 	};
 
+	// embed and refine filenames used in layers and valuenodes in current instance
 	void process_filename(const ProcessFilenamesParams &params, const synfig::String &filename, synfig::String &out_filename);
 	void process_filenames(const ProcessFilenamesParams &params, const synfig::NodeHandle &node, bool self = false);
 	void process_filenames_undo(const ProcessFilenamesParams &params);
 
 protected:
-	Instance(etl::handle<synfig::Canvas>, synfig::FileSystemTemporary::Handle container);
+	Instance(etl::handle<synfig::Canvas>, synfig::FileSystem::Handle container);
 
 	/*
  -- ** -- P U B L I C   M E T H O D S -----------------------------------------
@@ -148,31 +149,22 @@ protected:
 public:
 	~Instance();
 
-	bool is_layer_registered_to_save(synfig::Layer::Handle layer) {
-		for(std::list<synfig::Layer::Handle>::iterator i = layers_to_save.begin(); i != layers_to_save.end(); i++)
-			if (*i == layer) return true;
-		return false;
-	}
-	void register_layer_to_save(synfig::Layer::Handle layer) { layers_to_save.push_back(layer); }
-	void unregister_layer_to_save(synfig::Layer::Handle layer)
-	{
-		for(std::list<synfig::Layer::Handle>::iterator i = layers_to_save.begin(); i != layers_to_save.end(); i++)
-			if (*i == layer) { layers_to_save.erase(i); break; }
-	}
-
 	void set_selection_manager(const etl::handle<SelectionManager> &sm) { assert(sm); selection_manager_=sm; }
 	void unset_selection_manager() { selection_manager_=new NullSelectionManager(); }
 	const etl::handle<SelectionManager> &get_selection_manager() { return selection_manager_; }
 
-	synfig::FileSystemTemporary::Handle get_container() const { return container_; };
+	synfig::FileSystem::Handle get_container() const { return container_; };
 	bool save_surface(const synfig::rendering::Surface::Handle &surface, const synfig::String &filename);
 	bool save_surface(const synfig::Surface &surface, const synfig::String &filename);
+	bool save_layer(const synfig::Layer::Handle &layer);
+	void save_all_layers();
+	void find_unsaved_layers(std::vector<synfig::Layer::Handle> &out_layers, const synfig::Canvas::Handle canvas);
+	void find_unsaved_layers(std::vector<synfig::Layer::Handle> &out_layers)
+		{ find_unsaved_layers(out_layers, get_canvas()); }
 
 	etl::handle<CanvasInterface> find_canvas_interface(synfig::Canvas::Handle canvas);
 
 	synfig::Canvas::Handle get_canvas()const { return canvas_; }
-
-	bool embed_all();
 
 	void convert_animated_filenames(const synfig::Canvas::Handle &canvas, const synfig::String &old_path, const synfig::String &new_path);
 
@@ -180,6 +172,9 @@ public:
 	bool save();
 
 	bool save_as(const synfig::String &filename);
+
+	//! Saves the instance to current temporary container
+	bool backup();
 
 	//! create unique file name for an embedded image layer (if image filename is empty, description layer is used)
 	bool generate_new_name(
@@ -205,7 +200,7 @@ public:
 
 
 public:	// Constructor interfaces
-	static etl::handle<Instance> create(etl::handle<synfig::Canvas> canvas, synfig::FileSystemTemporary::Handle container);
+	static etl::handle<Instance> create(etl::handle<synfig::Canvas> canvas, synfig::FileSystem::Handle container);
 }; // END class Instance
 
 etl::handle<Instance> find_instance(etl::handle<synfig::Canvas> canvas);
