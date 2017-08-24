@@ -9,6 +9,7 @@ target_sources(synfig
         "${CMAKE_CURRENT_LIST_DIR}/optimizercalcbounds.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/optimizerlinear.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/optimizerlist.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/optimizerlowres.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/optimizerpixelprocessorsplit.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/optimizersplit.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/optimizersurface.cpp"

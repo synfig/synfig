@@ -33,35 +33,41 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-
-#include "workarea.h"
-#include "canvasview.h"
+#include <cmath>
 
 #include <gtkmm/arrow.h>
 #include <gtkmm/frame.h>
 #include <gtkmm/scrollbar.h>
 #include <gtkmm/window.h>
 
-#include <cmath>
 #include <ETL/misc>
 
+#include <synfig/general.h>
+
+#include <synfig/blinepoint.h>
+#include <synfig/context.h>
+#include <synfig/distance.h>
 #include <synfig/debug/debugsurface.h>
+#include <synfig/mutex.h>
+#include <synfig/rendering/renderer.h>
+#include <synfig/surface.h>
 #include <synfig/target_scanline.h>
 #include <synfig/target_tile.h>
 #include <synfig/target_cairo.h>
 #include <synfig/target_cairo_tile.h>
-#include <synfig/surface.h>
-#include <synfig/blinepoint.h>
 #include <synfig/valuenodes/valuenode_composite.h>
+
 #include <synfigapp/canvasinterface.h>
+
+#include <gui/localization.h>
+
+#include "asyncrenderer.h"
+#include "canvasview.h"
 #include "event_mouse.h"
 #include "event_layerclick.h"
 #include "event_keyboard.h"
 #include "widgets/widget_color.h"
-#include <synfig/distance.h>
-#include <synfig/context.h>
-
+#include "workarea.h"
 #include "workarearenderer/workarearenderer.h"
 #include "workarearenderer/renderer_background.h"
 #include "workarearenderer/renderer_canvas.h"
@@ -72,11 +78,6 @@
 #include "workarearenderer/renderer_ducks.h"
 #include "workarearenderer/renderer_dragbox.h"
 #include "workarearenderer/renderer_bbox.h"
-#include "asyncrenderer.h"
-
-#include <synfig/mutex.h>
-
-#include <gui/localization.h>
 
 #endif
 
@@ -103,7 +104,6 @@ class studio::WorkAreaTarget : public synfig::Target_Tile
 {
 public:
 	WorkArea *workarea;
-	bool low_res;
 	int w,h;
 	int real_tile_w,real_tile_h;
 	int max_tile_w,max_tile_h;
@@ -165,7 +165,6 @@ public:
 
 	WorkAreaTarget(WorkArea *workarea, int w, int h, int max_tile_w, int max_tile_h, bool force_fullframe):
 		workarea(workarea),
-		low_res(workarea->get_low_resolution_flag()),
 		w(w),
 		h(h),
 		real_tile_w(workarea->get_tile_w()),
@@ -181,17 +180,8 @@ public:
 		//set_remove_alpha();
 		//set_avoid_time_sync();
 		set_clipping(true);
-		if(low_res)
-		{
-			int div = workarea->get_low_res_pixel_size();
-			set_tile_w(workarea->tile_w/div);
-			set_tile_h(workarea->tile_h/div);
-		}
-		else
-		{
-			set_tile_w(workarea->tile_w);
-			set_tile_h(workarea->tile_h);
-		}
+		set_tile_w(workarea->tile_w);
+		set_tile_h(workarea->tile_h);
 		set_canvas(workarea->get_canvas());
 		set_quality(workarea->get_quality());
 	}
@@ -205,12 +195,7 @@ public:
 	{
 		assert(workarea);
 		newdesc->set_flags(RendDesc::PX_ASPECT|RendDesc::IM_SPAN);
-		if(low_res) {
-			int div = workarea->get_low_res_pixel_size();
-			newdesc->set_wh(w/div,h/div);
-		}
-		else
-			newdesc->set_wh(w, h);
+		newdesc->set_wh(w, h);
 
 		if ( workarea->get_w() != w
 		  || workarea->get_h() != h )
@@ -316,17 +301,6 @@ public:
 			sigc::ptr_fun(&WorkAreaTarget::free_buff)
 		);
 
-		if(low_res)
-		{
-			// We need to scale up
-			int div = workarea->get_low_res_pixel_size();
-			pixbuf=pixbuf->scale_simple(
-				surface.get_w()*div,
-				surface.get_h()*div,
-				Gdk::INTERP_NEAREST
-			);
-		}
-
 		RectInt rect(x, y, x + pixbuf->get_width(), y + pixbuf->get_height());
 		WorkAreaTile *tile = workarea->get_tile_book().find_tile(refresh_id - onion_skin_queue.size() - 1, rect);
 
@@ -369,7 +343,6 @@ class studio::WorkAreaTarget_Full : public synfig::Target_Scanline
 {
 public:
 	WorkArea *workarea;
-	bool low_res;
 	int w,h;
 	int real_tile_w,real_tile_h;
 
@@ -428,7 +401,6 @@ public:
 
 	WorkAreaTarget_Full(WorkArea *workarea,int w, int h):
 		workarea(workarea),
-		low_res(workarea->get_low_resolution_flag()),
 		w(w),
 		h(h),
 		real_tile_w(),
@@ -448,22 +420,11 @@ public:
 	virtual bool set_rend_desc(synfig::RendDesc *newdesc)
 	{
 		assert(workarea);
-		newdesc->set_flags(RendDesc::PX_ASPECT|RendDesc::IM_SPAN);
-		if(low_res)
-		{
-			int div = workarea->get_low_res_pixel_size();
-			newdesc->set_wh(w/div,h/div);
-		}
-		else
-			newdesc->set_wh(w,h);
-
-		if(
-			 	workarea->get_w()!=w
-			|| 	workarea->get_h()!=h
-		) workarea->set_wh(w,h,4);
-
+		newdesc->set_flags(RendDesc::PX_ASPECT | RendDesc::IM_SPAN);
+		newdesc->set_wh(w, h);
+		if (workarea->get_w()!=w ||	workarea->get_h()!=h)
+			workarea->set_wh(w, h, 4);
 		surface.set_wh(newdesc->get_w(),newdesc->get_h());
-
 		desc=*newdesc;
 		workarea->full_frame=true;
 		return true;
@@ -473,9 +434,7 @@ public:
 	{
 		if(!onionskin)
 			return synfig::Target_Scanline::next_frame(time);
-
-		onion_first_tile=(onion_layers==(signed)onion_skin_queue.size());
-
+		onion_first_tile = (onion_layers==(signed)onion_skin_queue.size());
 		if(!onion_skin_queue.empty())
 		{
 			time=onion_skin_queue.front();
@@ -543,17 +502,6 @@ public:
 			surface.get_w()*synfig::channels(pf), // stride (pitch)
 			sigc::ptr_fun(&WorkAreaTarget::free_buff)
 		);
-
-		if(low_res)
-		{
-			// We need to scale up
-			int div = workarea->get_low_res_pixel_size();
-			pixbuf=pixbuf->scale_simple(
-				surface.get_w()*div,
-				surface.get_h()*div,
-				Gdk::INTERP_NEAREST
-			);
-		}
 
 		RectInt rect(0, 0, pixbuf->get_width(), pixbuf->get_height());
 		WorkAreaTile *tile = workarea->get_tile_book().find_tile(refresh_id - onion_skin_queue.size() - 1, rect);
@@ -2887,17 +2835,18 @@ studio::WorkArea::async_update_preview()
 	// Create the render target
 	handle<Target> target;
 
-	// if we have lots of pixels to render and the tile renderer isn't disabled, use it
-	int div;
-	div = low_resolution ? low_res_pixel_size : 1;
-
 	// do a tile render
 	handle<WorkAreaTarget> trgt(new class WorkAreaTarget(this,w,h,2048,2048,false));
 
 	trgt->set_rend_desc(&desc);
 	trgt->set_onion_skin(get_onion_skin(), onion_skins);
-	//trgt->set_allow_multithreading(true);
 	trgt->set_engine(App::workarea_renderer);
+	if (get_low_resolution_flag())
+	{
+		String renderer = etl::strprintf("software-low%d", get_low_res_pixel_size());
+		if (synfig::rendering::Renderer::get_renderers().count(renderer))
+			trgt->set_engine(renderer);
+	}
 	target=trgt;
 
 	// We can rest assured that our time has already

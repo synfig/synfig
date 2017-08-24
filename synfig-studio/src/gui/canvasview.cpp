@@ -1012,10 +1012,10 @@ void CanvasView::set_jack_enabled(bool value)
 std::list<int>&
 CanvasView::get_pixel_sizes()
 {
-	// prime factors of 120 are 2, 2, 2, 3, 5 - see TILE_SIZE in synfig-core/trunk/src/synfig/target_tile.h
-	static int pixel_size_array[] = {2,3,4,5,6,8,10,12,15,20,24,30,40,60,120};
+	// prime factors of 64 is 2, 2, 2, 2, 2, 2 - see TILE_SIZE in synfig-core/trunk/src/synfig/target_tile.h
+	// also see available low-res renderer engines in synfig::rendering::Renderer::initialize_renderers()
+	static int pixel_size_array[] = {2, 4, 8, 16};
 	static list<int> pixel_sizes = list<int>(pixel_size_array, pixel_size_array + sizeof(pixel_size_array) / sizeof(int));
-
 	return pixel_sizes;
 }
 

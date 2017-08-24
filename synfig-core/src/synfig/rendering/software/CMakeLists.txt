@@ -1,5 +1,6 @@
 target_sources(synfig
     PRIVATE
+        "${CMAKE_CURRENT_LIST_DIR}/rendererlowressw.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/renderersafe.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/renderersw.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/surfacesw.cpp"

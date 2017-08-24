@@ -50,6 +50,7 @@
 #include "renderqueue.h"
 
 #include "software/renderersw.h"
+#include "software/rendererlowressw.h"
 #include "software/renderersafe.h"
 #include "common/task/taskcallback.h"
 #ifdef WITH_OPENGL
@@ -99,6 +100,10 @@ Renderer::initialize_renderers()
 
 	// register renderers
 	register_renderer("software", new RendererSW());
+	register_renderer("software-low2",  new RendererLowResSW(2));
+	register_renderer("software-low4",  new RendererLowResSW(4));
+	register_renderer("software-low8",  new RendererLowResSW(8));
+	register_renderer("software-low16", new RendererLowResSW(16));
 	register_renderer("safe", new RendererSafe());
 #ifdef WITH_OPENGL
 	register_renderer("gl", new RendererGL());

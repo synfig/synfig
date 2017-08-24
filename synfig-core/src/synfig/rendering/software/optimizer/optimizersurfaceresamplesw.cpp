@@ -93,10 +93,10 @@ OptimizerSurfaceResampleSW::run(const RunParams& params) const
 					    .expand( corners[3] );
 
 			// calculate size of surface of sub-task
-			Real sub_units_per_pixel_x0 = fabs(corners[1][0] - corners[0][0])/Real(target.maxx - target.minx);
-			Real sub_units_per_pixel_x1 = fabs(corners[2][0] - corners[0][0])/Real(target.maxy - target.miny);
-			Real sub_units_per_pixel_y0 = fabs(corners[1][1] - corners[0][1])/Real(target.maxx - target.minx);
-			Real sub_units_per_pixel_y1 = fabs(corners[2][1] - corners[0][1])/Real(target.maxy - target.miny);
+			Real sub_units_per_pixel_x0 = fabs(corners[1][0] - corners[0][0]) / (Real(target.maxx - target.minx) * resample->supersample[0]);
+			Real sub_units_per_pixel_x1 = fabs(corners[2][0] - corners[0][0]) / (Real(target.maxy - target.miny) * resample->supersample[1]);
+			Real sub_units_per_pixel_y0 = fabs(corners[1][1] - corners[0][1]) / (Real(target.maxx - target.minx) * resample->supersample[0]);
+			Real sub_units_per_pixel_y1 = fabs(corners[2][1] - corners[0][1]) / (Real(target.maxy - target.miny) * resample->supersample[1]);
 			Vector sub_units_per_pixel(
 				std::max(sub_units_per_pixel_x0, sub_units_per_pixel_x1),
 				std::max(sub_units_per_pixel_y0, sub_units_per_pixel_y1) );
