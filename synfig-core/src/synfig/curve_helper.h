@@ -165,7 +165,7 @@ public:
 	bool operator()(const etl::bezier<Point> &b1, const etl::bezier<Point> &b2);
 };
 
-}; // END of namespace studio
+}; // END of namespace synfig
 
 /* === E N D =============================================================== */
 
