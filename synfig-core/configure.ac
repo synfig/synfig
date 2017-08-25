@@ -339,7 +339,7 @@ AC_LIB_LTDL
 
 IT_PROG_INTLTOOL([0.35.0])
 
-GETTEXT_PACKAGE=synfigstudio
+GETTEXT_PACKAGE=synfig
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED([GETTEXT_PACKAGE], ["$GETTEXT_PACKAGE"],
                      [The domain to use with gettext])
