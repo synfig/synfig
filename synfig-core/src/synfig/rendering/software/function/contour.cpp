@@ -270,7 +270,8 @@ void
 software::Contour::build_polyspan(
 	const rendering::Contour::ChunkList &chunks,
 	const Matrix &transform_matrix,
-	Polyspan &out_polyspan )
+	Polyspan &out_polyspan,
+	Real detail )
 {
 	Vector p1, pp0, pp1;
 	for(rendering::Contour::ChunkList::const_iterator i = chunks.begin(); i != chunks.end(); ++i)
@@ -291,13 +292,13 @@ software::Contour::build_polyspan(
 			case rendering::Contour::CONIC:
 				p1 = transform_matrix.get_transformed(i->p1);
 				pp0 = transform_matrix.get_transformed(i->pp0);
-				out_polyspan.conic_to(p1[0], p1[1], pp0[0], pp0[1]);
+				out_polyspan.conic_to(p1[0], p1[1], pp0[0], pp0[1], detail);
 				break;
 			case rendering::Contour::CUBIC:
 				p1 = transform_matrix.get_transformed(i->p1);
 				pp0 = transform_matrix.get_transformed(i->pp0);
 				pp1 = transform_matrix.get_transformed(i->pp1);
-				out_polyspan.cubic_to(p1[0], p1[1], pp0[0], pp0[1], pp1[0], pp1[1]);
+				out_polyspan.cubic_to(p1[0], p1[1], pp0[0], pp0[1], pp1[0], pp1[1], detail);
 				break;
 			default:
 				break;

@@ -6,9 +6,9 @@ RENDERING_COMMON_OPTIMIZER_HH = \
 	rendering/common/optimizer/optimizerblendsplit.h \
 	rendering/common/optimizer/optimizerblendzero.h \
 	rendering/common/optimizer/optimizercalcbounds.h \
+	rendering/common/optimizer/optimizerdraft.h \
 	rendering/common/optimizer/optimizerlinear.h \
 	rendering/common/optimizer/optimizerlist.h \
-	rendering/common/optimizer/optimizerlowres.h \
 	rendering/common/optimizer/optimizerpixelprocessorsplit.h \
 	rendering/common/optimizer/optimizersplit.h \
 	rendering/common/optimizer/optimizersurface.h \
@@ -27,9 +27,9 @@ RENDERING_COMMON_OPTIMIZER_CC = \
 	rendering/common/optimizer/optimizerblendsplit.cpp \
 	rendering/common/optimizer/optimizerblendzero.cpp \
 	rendering/common/optimizer/optimizercalcbounds.cpp \
+	rendering/common/optimizer/optimizerdraft.cpp \
 	rendering/common/optimizer/optimizerlinear.cpp \
 	rendering/common/optimizer/optimizerlist.cpp \
-	rendering/common/optimizer/optimizerlowres.cpp \
 	rendering/common/optimizer/optimizerpixelprocessorsplit.cpp \
 	rendering/common/optimizer/optimizersplit.cpp \
 	rendering/common/optimizer/optimizersurface.cpp \

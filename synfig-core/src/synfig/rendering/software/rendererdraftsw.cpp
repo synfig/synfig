@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/software/rendererlowressw.cpp
-**	\brief RendererLowResSW
+/*!	\file synfig/rendering/software/rendererdraftsw.cpp
+**	\brief RendererDraftSW
 **
 **	$Id$
 **
@@ -37,7 +37,7 @@
 
 #include <synfig/localization.h>
 
-#include "rendererlowressw.h"
+#include "rendererdraftsw.h"
 
 #include "../common/optimizer/optimizerblendassociative.h"
 #include "../common/optimizer/optimizerblendblend.h"
@@ -81,13 +81,39 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
-RendererLowResSW::RendererLowResSW(int level):
-	level(level)
+RendererDraftSW::RendererDraftSW()
 {
 	// register optimizers
+	register_optimizer(new OptimizerDraftContour());
+	register_optimizer(new OptimizerDraftBlur());
+	register_optimizer(new OptimizerDraftLayerSkip("MotionBlur"));
+	register_optimizer(new OptimizerDraftLayerSkip("radial_blur"));
+	register_optimizer(new OptimizerDraftLayerSkip("curve_warp"));
+	register_optimizer(new OptimizerDraftLayerSkip("inside_out"));
+	register_optimizer(new OptimizerDraftLayerSkip("noise_distort"));
+	register_optimizer(new OptimizerDraftLayerSkip("spherize"));
+	register_optimizer(new OptimizerDraftLayerSkip("twirl"));
+	register_optimizer(new OptimizerDraftLayerSkip("warp"));
+	register_optimizer(new OptimizerDraftLayerSkip("metaballs"));
+	register_optimizer(new OptimizerDraftLayerSkip("clamp"));
+	register_optimizer(new OptimizerDraftLayerSkip("colorcorrect"));
+	register_optimizer(new OptimizerDraftLayerSkip("halftone2"));
+	register_optimizer(new OptimizerDraftLayerSkip("halftone3"));
+	register_optimizer(new OptimizerDraftLayerSkip("lumakey"));
+	register_optimizer(new OptimizerDraftLayerSkip("julia"));
+	register_optimizer(new OptimizerDraftLayerSkip("mandelbrot"));
+	register_optimizer(new OptimizerDraftLayerSkip("conical_gradient"));
+	register_optimizer(new OptimizerDraftLayerSkip("curve_gradient"));
+	register_optimizer(new OptimizerDraftLayerSkip("noise"));
+	register_optimizer(new OptimizerDraftLayerSkip("spiral_gradient"));
+	register_optimizer(new OptimizerDraftLayerSkip("duplicate"));
+	register_optimizer(new OptimizerDraftLayerSkip("plant"));
+	register_optimizer(new OptimizerDraftLayerSkip("super_sample"));
+	register_optimizer(new OptimizerDraftLayerSkip("text"));
+	register_optimizer(new OptimizerDraftLayerSkip("xor_pattern"));
 	register_optimizer(new OptimizerTransformationAffine());
 	register_optimizer(new OptimizerSurfaceResample());
-	register_optimizer(new OptimizerDraftLowRes(level));
+	register_optimizer(new OptimizerDraftResample());
 	register_optimizer(new OptimizerCalcBounds());
 
 	register_optimizer(new OptimizerBlendSW());
@@ -113,9 +139,9 @@ RendererLowResSW::RendererLowResSW(int level):
 	//register_optimizer(new OptimizerSplit());
 }
 
-String RendererLowResSW::get_name() const
+String RendererDraftSW::get_name() const
 {
-	return _("Cobra LowRes (software)") + etl::strprintf(" x%d", level);
+	return _("Cobra Draft (software)");
 }
 
 /* === E N T R Y P O I N T ================================================= */

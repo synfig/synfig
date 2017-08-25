@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/common/optimizer/optimizerlowres.h
-**	\brief OptimizerLowRes Header
+/*!	\file synfig/rendering/software/rendererdraftsw.h
+**	\brief RendererDraftSW Header
 **
 **	$Id$
 **
@@ -22,14 +22,12 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_RENDERING_OPTIMIZELOWRES_H
-#define __SYNFIG_RENDERING_OPTIMIZELOWRES_H
+#ifndef __SYNFIG_RENDERING_RENDERERDRAFTSW_H
+#define __SYNFIG_RENDERING_RENDERERDRAFTSW_H
 
 /* === H E A D E R S ======================================================= */
 
-#include "../../optimizer.h"
-#include "../../task.h"
-#include "../task/taskblend.h"
+#include "../renderer.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -42,25 +40,16 @@ namespace synfig
 namespace rendering
 {
 
-class OptimizerLowRes: public Optimizer
+class RendererDraftSW: public Renderer
 {
-private:
-	Real scale;
-
 public:
-	explicit OptimizerLowRes(Real scale): scale(scale)
-	{
-		category_id = CATEGORY_ID_PRE_SPECIALIZE;
-		depends_from = CATEGORY_COMMON;
-		for_root_task = true;
-		deep_first = true;
-	}
-
-	virtual void run(const RunParams &params) const;
+	typedef etl::handle<RendererDraftSW> Handle;
+	RendererDraftSW();
+	virtual String get_name() const;
 };
 
-} /* end namespace rendering */
-} /* end namespace synfig */
+}; /* end namespace rendering */
+}; /* end namespace synfig */
 
 /* -- E N D ----------------------------------------------------------------- */
 

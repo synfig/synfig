@@ -80,14 +80,14 @@ TaskContourSW::run(RunParams & /* params */) const
 
 		Polyspan polyspan;
 		polyspan.init(get_target_rect());
-		software::Contour::build_polyspan(contour->get_chunks(), matrix, polyspan);
+		software::Contour::build_polyspan(contour->get_chunks(), matrix, polyspan, detail);
 		polyspan.sort_marks();
 
 		software::Contour::render_polyspan(
 			a,
 			polyspan,
 			contour->invert,
-			contour->antialias,
+			allow_antialias && contour->antialias,
 			contour->winding_style,
 			contour->color,
 			blend ? amount : 1.0,

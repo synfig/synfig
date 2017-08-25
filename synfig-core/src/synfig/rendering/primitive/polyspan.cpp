@@ -415,7 +415,7 @@ Polyspan::subd_conic_stack(Point *arc)
 }
 
 void
-Polyspan::conic_to(Real x, Real y, Real x1, Real y1)
+Polyspan::conic_to(Real x, Real y, Real x1, Real y1, Real detail)
 {
 	Point *current = arc;
 	int		level = 0;
@@ -465,7 +465,7 @@ Polyspan::conic_to(Real x, Real y, Real x1, Real y1)
 			continue;
 		}else
 		//split it again, if it's too big
-		if(max_edges_conic(current) > 0.25) //distance of .5 (cover no more than half the pixel)
+		if(max_edges_conic(current) > detail) //distance of .5 (cover no more than half the pixel)
 		{
 			subd_conic_stack(current);
 			current += 2; 		//cursor on second curve
@@ -567,7 +567,7 @@ Polyspan::subd_cubic_stack(Point *arc)
 
 
 void
-Polyspan::cubic_to(Real x, Real y, Real x1, Real y1, Real x2, Real y2)
+Polyspan::cubic_to(Real x, Real y, Real x1, Real y1, Real x2, Real y2, Real detail)
 {
 	Point *current = arc;
 	int		num = 0;
@@ -620,7 +620,7 @@ Polyspan::cubic_to(Real x, Real y, Real x1, Real y1, Real x2, Real y2)
 		}
 		else
 		//split it again, if it's too big
-		if(max_edges_cubic(current) > 0.25) //could use max_edges<3>
+		if(max_edges_cubic(current) > detail) //could use max_edges<3>
 		{
 			subd_cubic_stack(current);
 			current += 3; 		//cursor on second curve

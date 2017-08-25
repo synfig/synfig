@@ -50,6 +50,7 @@
 #include "renderqueue.h"
 
 #include "software/renderersw.h"
+#include "software/rendererdraftsw.h"
 #include "software/rendererlowressw.h"
 #include "software/renderersafe.h"
 #include "common/task/taskcallback.h"
@@ -100,6 +101,7 @@ Renderer::initialize_renderers()
 
 	// register renderers
 	register_renderer("software", new RendererSW());
+	register_renderer("software-draft", new RendererDraftSW());
 	register_renderer("software-low2",  new RendererLowResSW(2));
 	register_renderer("software-low4",  new RendererLowResSW(4));
 	register_renderer("software-low8",  new RendererLowResSW(8));
