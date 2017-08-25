@@ -553,6 +553,7 @@ public:
 
 	int get_quality()const { return quality; }
 	int get_low_res_pixel_size()const { return low_res_pixel_size; }
+	synfig::String get_renderer() const;
 
 	void set_quality(int x);
 	void set_low_res_pixel_size(int x);

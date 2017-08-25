@@ -2713,6 +2713,17 @@ WorkArea::done_rendering()
 */
 }
 
+String
+WorkArea::get_renderer() const
+{
+	if (get_low_resolution_flag())
+	{
+		String renderer = etl::strprintf("software-low%d", get_low_res_pixel_size());
+		if (synfig::rendering::Renderer::get_renderers().count(renderer))
+			return renderer;
+	}
+	return App::workarea_renderer;
+}
 
 void
 WorkArea::set_quality(int x)
@@ -2840,13 +2851,7 @@ studio::WorkArea::async_update_preview()
 
 	trgt->set_rend_desc(&desc);
 	trgt->set_onion_skin(get_onion_skin(), onion_skins);
-	trgt->set_engine(App::workarea_renderer);
-	if (get_low_resolution_flag())
-	{
-		String renderer = etl::strprintf("software-low%d", get_low_res_pixel_size());
-		if (synfig::rendering::Renderer::get_renderers().count(renderer))
-			trgt->set_engine(renderer);
-	}
+	trgt->set_engine(get_renderer());
 	target=trgt;
 
 	// We can rest assured that our time has already
@@ -2967,8 +2972,7 @@ again:
 	// Create the render target
 	handle<WorkAreaTarget> target = new WorkAreaTarget(this,w,h,2048,2048,true);
 	target->set_rend_desc(&desc);
-	//target->set_allow_multithreading(false);
-	target->set_engine(App::workarea_renderer);
+	target->set_engine(get_renderer());
 
 	// We can rest assured that our time has already
 	// been set, so there is no need to have to
