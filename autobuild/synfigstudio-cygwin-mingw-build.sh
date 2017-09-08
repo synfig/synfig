@@ -991,8 +991,7 @@ mksynfig()
 {
 cd $SRCPREFIX/synfig-core
 [ ! -e config.cache ] || rm config.cache
-libtoolize --copy --force
-autoreconf --install --force
+./bootstrap.sh
 ./configure \
 --prefix=${MINGWPREFIX} \
 --exec-prefix=${MINGWPREFIX} \

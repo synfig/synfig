@@ -37,6 +37,7 @@
 #include "valuenode_composite.h"
 #include <synfig/general.h>
 #include <synfig/localization.h>
+#include <synfig/valuenode_registry.h>
 #include <synfig/exception.h>
 #include <ETL/hermite>
 
@@ -52,6 +53,8 @@ using namespace synfig;
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
+
+REGISTER_VALUENODE(ValueNode_BLineCalcVertex, RELEASE_VERSION_0_61_07, "blinecalcvertex", "Spline Vertex")
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -143,17 +146,7 @@ ValueNode_BLineCalcVertex::operator()(Time t)const
 
 
 
-String
-ValueNode_BLineCalcVertex::get_name()const
-{
-	return "blinecalcvertex";
-}
 
-String
-ValueNode_BLineCalcVertex::get_local_name()const
-{
-	return _("Spline Vertex");
-}
 
 bool
 ValueNode_BLineCalcVertex::set_link_vfunc(int i,ValueNode::Handle value)

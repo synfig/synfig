@@ -180,76 +180,6 @@ using namespace sigc;
 
 /* === C L A S S E S ======================================================= */
 
-class studio::UniversalScrubber
-{
-	CanvasView *canvas_view;
-
-	bool		scrubbing;
-	etl::clock	scrub_timer;
-
-	sigc::connection end_scrub_connection;
-public:
-	UniversalScrubber(CanvasView *canvas_view):
-		canvas_view(canvas_view),
-		scrubbing(false)
-	{
-		canvas_view->canvas_interface()->signal_time_changed().connect(
-			sigc::mem_fun(*this,&studio::UniversalScrubber::on_time_changed)
-		);
-	}
-
-	~UniversalScrubber()
-	{
-		end_scrub_connection.disconnect();
-	}
-
-	void on_time_changed()
-	{
-		// Make sure we are changing the time quickly
-		// before we enable scrubbing
-		if(!scrubbing && scrub_timer()>1)
-		{
-			scrub_timer.reset();
-			return;
-		}
-
-		// If we aren't scrubbing already, enable it
-		if(!scrubbing)
-		{
-			scrubbing=true;
-			audio_container()->start_scrubbing(canvas_view->get_time());
-		}
-
-		// Reset the scrubber ender
-		end_scrub_connection.disconnect();
-		end_scrub_connection=Glib::signal_timeout().connect(
-			sigc::bind_return(
-				sigc::mem_fun(*this,&UniversalScrubber::end_of_scrubbing),
-				false
-			),
-			1000
-		);
-
-		// Scrub!
-		audio_container()->scrub(canvas_view->get_time());
-
-		scrub_timer.reset();
-	}
-
-	void end_of_scrubbing()
-	{
-		scrubbing=false;
-		audio_container()->stop_scrubbing();
-		scrub_timer.reset();
-	}
-
-	handle<AudioContainer> audio_container()
-	{
-		assert(canvas_view->audio);
-		return canvas_view->audio;
-	}
-};
-
 class studio::CanvasViewUIInterface : public synfigapp::UIInterface
 {
 	CanvasView *view;
@@ -675,54 +605,52 @@ CanvasView::ActivationIndex CanvasView::ActivationIndex::last__;
 
 CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigapp::CanvasInterface> canvas_interface_):
 	Dockable(synfig::GUID().get_string(),_("Canvas View")),
-	activation_index_       (true),
-	smach_					(this),
-	instance_				(instance),
-	canvas_interface_		(canvas_interface_),
-	context_params_			(true),
-	//layer_tree_store_		(LayerTreeStore::create(canvas_interface_)),
-	//children_tree_store_	(ChildrenTreeStore::create(canvas_interface_)),
-	//keyframe_tree_store_	(KeyframeTreeStore::create(canvas_interface_)),
-	time_adjustment_		(Gtk::Adjustment::create(0,0,25,0,0,0)),
-	time_window_adjustment_	(new studio::Adjust_Window(0,0,25,0,0,0)),
-	statusbar				(manage(new class Gtk::Statusbar())),
-	jackbutton              (NULL),
-	offset_widget           (NULL),
-	toggleducksdial         (Gtk::IconSize::from_name("synfig-small_icon_16x16")),
-	resolutiondial         	(Gtk::IconSize::from_name("synfig-small_icon_16x16")),
-	quality_adjustment_		(Gtk::Adjustment::create(8,1,10,1,1,0)),
-	future_onion_adjustment_(Gtk::Adjustment::create(0,0,ONION_SKIN_FUTURE,1,1,0)),
-	past_onion_adjustment_  (Gtk::Adjustment::create(1,0,ONION_SKIN_PAST,1,1,0)),
+	work_area                (),
+	activation_index_        (true),
+	smach_                   (this),
+	instance_                (instance),
+	canvas_interface_        (canvas_interface_),
+	context_params_          (true),
+	time_adjustment_         (Gtk::Adjustment::create(0,0,25,0,0,0)),
+	time_window_adjustment_  (new studio::Adjust_Window(0,0,25,0,0,0)),
+	statusbar                (manage(new class Gtk::Statusbar())),
+	jackbutton               (NULL),
+	offset_widget            (NULL),
+	toggleducksdial          (Gtk::IconSize::from_name("synfig-small_icon_16x16")),
+	resolutiondial           (Gtk::IconSize::from_name("synfig-small_icon_16x16")),
+	quality_adjustment_      (Gtk::Adjustment::create(8,1,10,1,1,0)),
+	future_onion_adjustment_ (Gtk::Adjustment::create(0,0,ONION_SKIN_FUTURE,1,1,0)),
+	past_onion_adjustment_   (Gtk::Adjustment::create(1,0,ONION_SKIN_PAST,1,1,0)),
 
-	timeslider				(new Widget_Timeslider),
-	widget_kf_list			(new Widget_Keyframe_List),
+	timeslider               (manage(new Widget_Timeslider)),
+	widget_kf_list           (manage(new Widget_Keyframe_List)),
 
-	ui_interface_			(new CanvasViewUIInterface(this)),
-	selection_manager_		(new CanvasViewSelectionManager(this)),
-	is_playing_				(false),
+	ui_interface_            (new CanvasViewUIInterface(this)),
+	selection_manager_       (new CanvasViewSelectionManager(this)),
+	is_playing_              (false),
 
-	jack_enabled			(false),
-	jack_actual_enabled		(false),
-	jack_locks				(0),
-	jack_enabled_in_preview	(false),
+	jack_enabled             (false),
+	jack_actual_enabled      (false),
+	jack_locks               (0),
+	jack_enabled_in_preview  (false),
 #ifdef WITH_JACK
-	jack_client				(NULL),
-	jack_synchronizing		(true),
-	jack_is_playing			(false),
-	jack_time				(0),
-	toggling_jack			(false),
+	jack_client              (NULL),
+	jack_synchronizing       (true),
+	jack_is_playing          (false),
+	jack_time                (0),
+	toggling_jack            (false),
 #endif
 
-	working_depth			(0),
-	cancel					(false),
+	working_depth            (0),
+	cancel                   (false),
 
-	canvas_properties		(*App::main_window,canvas_interface_),
-	canvas_options			(*App::main_window,this),
-	render_settings			(*App::main_window,canvas_interface_),
-	waypoint_dialog			(*App::main_window,canvas_interface_->get_canvas()),
-	keyframe_dialog			(*App::main_window,canvas_interface_),
-	preview_dialog			(new Dialog_Preview),
-	sound_dialog			(new Dialog_SoundSelect(*App::main_window,canvas_interface_))
+	canvas_properties        (*App::main_window,canvas_interface_),
+	canvas_options           (*App::main_window,this),
+	render_settings          (*App::main_window,canvas_interface_),
+	waypoint_dialog          (*App::main_window,canvas_interface_->get_canvas()),
+	keyframe_dialog          (*App::main_window,canvas_interface_),
+	preview_dialog           (),
+	sound_dialog             (*App::main_window,canvas_interface_)
 {
 	layer_tree=0;
 	children_tree=0;
@@ -883,8 +811,8 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 		//signal connection - since they are all associated with the canvas view
 
 		//hook in signals for sound options box
-		sound_dialog->signal_file_changed().connect(sigc::mem_fun(*this,&CanvasView::on_audio_file_change));
-		sound_dialog->signal_offset_changed().connect(sigc::mem_fun(*this,&CanvasView::on_audio_offset_change));
+		sound_dialog.signal_file_changed().connect(sigc::mem_fun(*this,&CanvasView::on_audio_file_change));
+		sound_dialog.signal_offset_changed().connect(sigc::mem_fun(*this,&CanvasView::on_audio_offset_change));
 
 		//attach to the preview when it's visible
 		//preview_dialog->get_widget().signal_play().connect(sigc::mem_fun(*this,&CanvasView::play_audio));
@@ -893,8 +821,6 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 		//hook to metadata signals
 		get_canvas()->signal_meta_data_changed("audiofile").connect(sigc::mem_fun(*this,&CanvasView::on_audio_file_notify));
 		get_canvas()->signal_meta_data_changed("audiooffset").connect(sigc::mem_fun(*this,&CanvasView::on_audio_offset_notify));
-
-		//universal_scrubber=std::auto_ptr<UniversalScrubber>(new UniversalScrubber(this));
 	}
 
 	//synfig::info("Canvasview: Before Final time set up");
@@ -1295,14 +1221,14 @@ CanvasView::create_time_bar()
 Gtk::Widget *
 CanvasView::create_work_area()
 {
-	work_area=std::auto_ptr<WorkArea>(new class studio::WorkArea(canvas_interface_));
+	work_area = manage(new studio::WorkArea(canvas_interface_));
 	work_area->set_instance(get_instance());
 	work_area->set_canvas(get_canvas());
 	work_area->set_canvas_view(this);
 	work_area->set_progress_callback(get_ui_interface().get());
 	work_area->signal_popup_menu().connect(sigc::mem_fun(*this, &studio::CanvasView::popup_main_menu));
 	work_area->show();
-	return work_area.get();
+	return work_area;
 }
 
 Gtk::ToolButton*
@@ -1861,7 +1787,7 @@ CanvasView::init_menus()
 	);
 
 	action_group->add( Gtk::Action::create("dialog-flipbook", _("Preview Window")),
-		sigc::mem_fun0(*preview_dialog, &studio::Dialog_Preview::present)
+		sigc::mem_fun0(preview_dialog, &studio::Dialog_Preview::present)
 	);
 	// Prevent call to preview window before preview option has created the preview window
 	{
@@ -4151,11 +4077,7 @@ CanvasView::on_input_device_changed(GdkDevice* device)
 void
 CanvasView::on_preview_option()
 {
-	Dialog_PreviewOptions *po = dynamic_cast<Dialog_PreviewOptions *>(get_ext_widget("prevoptions"));
-
-	Canvas::Handle	canv = get_canvas();
-
-	if(canv)
+	if(Canvas::Handle canv = get_canvas())
 	{
 		RendDesc &r = canv->rend_desc();
 		if(r.get_frame_rate())
@@ -4164,28 +4086,21 @@ CanvasView::on_preview_option()
 			float beg = r.get_time_start() + r.get_frame_start()*rate;
 			float end = r.get_time_start() + r.get_frame_end()*rate;
 
+			Dialog_PreviewOptions *po = dynamic_cast<Dialog_PreviewOptions *>( get_ext_widget("prevoptions") );
 			if(!po)
 			{
-				po = new Dialog_PreviewOptions;
-				po->set_zoom(work_area->get_zoom()/2);
+				po = new Dialog_PreviewOptions();
 				po->set_fps(r.get_frame_rate()/2);
-				po->set_begintime(beg);
-				po->set_begin_override(false);
-				po->set_endtime(end);
-				po->set_end_override(false);
-				po->set_use_cairo(false);
-
 				set_ext_widget("prevoptions",po);
 			}
-			/*po->set_zoom(work_area->get_zoom()/2);
-			po->set_fps(r.get_frame_rate()/2);
-			po->set_begintime(beg);
-			po->set_begin_override(false);
-			po->set_endtime(end);
-			po->set_end_override(false);*/
+			
+			if (!po->get_begin_override())
+				po->set_begintime(beg);
+			if (!po->get_end_override())
+				po->set_endtime(end);
 
 			po->set_global_fps(r.get_frame_rate());
-			po->signal_finish().connect(sigc::mem_fun(*this,&CanvasView::on_preview_create));
+			po->signal_finish().connect(sigc::mem_fun(*this, &CanvasView::on_preview_create));
 			po->present();
 		}
 	}
@@ -4213,12 +4128,9 @@ CanvasView::on_preview_create(const PreviewInfo &info)
 	//render it out...
 	prev->render();
 
-	Dialog_Preview *pd = preview_dialog.get();
-	assert(pd);
-
-	pd->set_default_size(700,510);
-	pd->set_preview(prev.get());
-	pd->present();
+	preview_dialog.set_default_size(700,510);
+	preview_dialog.set_preview(prev.get());
+	preview_dialog.present();
 
 	// Preview Window created, the action can be enabled
 	{
@@ -4232,8 +4144,8 @@ void
 CanvasView::on_audio_option()
 {
 	synfig::warning("Launching Audio Options");
-	sound_dialog->set_global_fps(get_canvas()->rend_desc().get_frame_rate());
-	sound_dialog->present();
+	sound_dialog.set_global_fps(get_canvas()->rend_desc().get_frame_rate());
+	sound_dialog.present();
 }
 
 void
@@ -4288,7 +4200,7 @@ CanvasView::on_audio_offset_notify()
 		t = Time(get_canvas()->get_meta_data("audiooffset"),get_canvas()->rend_desc().get_frame_rate());
 	}
 	audio->set_offset(t);
-	sound_dialog->set_offset(t);
+	sound_dialog.set_offset(t);
 	disp_audio->queue_draw();
 
 	// synfig::info("CanvasView::on_audio_offset_notify(): offset time set to %s",t.get_string(get_canvas()->rend_desc().get_frame_rate()).c_str());

@@ -37,6 +37,7 @@
 #include <synfig/canvas.h>
 #include <synfig/general.h>
 #include <synfig/localization.h>
+#include <synfig/valuenode_registry.h>
 #include <synfig/exception.h>
 #include <synfig/blinepoint.h>
 #include <vector>
@@ -60,6 +61,8 @@ using namespace synfig;
 #define EPSILON 0.0000001f
 
 /* === G L O B A L S ======================================================= */
+
+REGISTER_VALUENODE(ValueNode_BLine, RELEASE_VERSION_0_61_06, "bline", "Spline")
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -999,17 +1002,7 @@ ValueNode_BLine::link_local_name(int i)const
 	return etl::strprintf(_("Vertex %03d"),i+1);
 }
 
-String
-ValueNode_BLine::get_name()const
-{
-	return "bline";
-}
 
-String
-ValueNode_BLine::get_local_name()const
-{
-	return _("Spline");
-}
 
 LinkableValueNode*
 ValueNode_BLine::create_new()const

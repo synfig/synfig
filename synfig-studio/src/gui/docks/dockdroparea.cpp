@@ -35,7 +35,7 @@
 #include "app.h"
 #include "docks/dockdroparea.h"
 #include "docks/dockmanager.h"
-#include <gtkmm/button.h>
+#include <gtkmm/frame.h>
 
 #endif
 
@@ -61,10 +61,15 @@ DockDropArea::DockDropArea(Gtk::Widget *target):
 	std::vector<Gtk::TargetEntry> listTargets;
 	listTargets.push_back( Gtk::TargetEntry("SYNFIG_DOCK") );
 
-	Gtk::Button *button_left   = manage(new Gtk::Button());
-	Gtk::Button *button_right  = manage(new Gtk::Button());
-	Gtk::Button *button_top    = manage(new Gtk::Button());
-	Gtk::Button *button_bottom = manage(new Gtk::Button());
+	Gtk::Frame *button_left   = manage(new Gtk::Frame());
+	Gtk::Frame *button_right  = manage(new Gtk::Frame());
+	Gtk::Frame *button_top    = manage(new Gtk::Frame());
+	Gtk::Frame *button_bottom = manage(new Gtk::Frame());
+
+	button_left->set_size_request(20, 10);
+	button_right->set_size_request(20, 10);
+	button_top->set_size_request(20, 10);
+	button_bottom->set_size_request(20, 10);
 
 	button_left->drag_dest_set(listTargets);
 	button_right->drag_dest_set(listTargets);

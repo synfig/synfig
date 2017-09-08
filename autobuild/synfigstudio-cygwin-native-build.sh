@@ -38,8 +38,7 @@ autoreconf --install --force
 make install
 
 cd $SRCPREFIX/synfig-core
-libtoolize --copy --force
-autoreconf --install --force
+./bootstrap.sh
 ./configure --prefix=/usr
 make -j4
 make install

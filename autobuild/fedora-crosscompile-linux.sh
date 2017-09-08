@@ -1835,10 +1835,7 @@ mksynfig()
 cd $SCRIPTPATH/../synfig-core/
 make clean || true
 [ ! -e config.cache ] || rm config.cache
-echo "Running libtoolize ..."
-libtoolize --ltdl --copy --force
-echo "Running autoreconf ..."
-autoreconf --install --force
+/bin/sh ./bootstrap.sh
 ./configure --host=${HOST} --prefix=${PREFIX} \
 	--includedir=${PREFIX}/include \
 	--libdir=${PREFIX}/lib --bindir=${PREFIX}/bin \

@@ -73,8 +73,7 @@ etl()
 pack-core()
 {
 	cd $SRCPREFIX/synfig-core
-	libtoolize --ltdl --copy -f
-	autoreconf --install --force
+    ./bootstrap.sh
 	./configure --prefix="$PREFIX"
 echo "------------------------------------- pack-core make"
 	make distcheck -j${THREADS}

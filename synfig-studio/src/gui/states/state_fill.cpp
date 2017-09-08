@@ -120,7 +120,7 @@ StateFill_Context::StateFill_Context(CanvasView *canvas_view):
 	get_work_area()->set_type_mask(Duck::TYPE_NONE);
 	get_canvas_view()->toggle_duck_mask(Duck::TYPE_NONE);
 
-	canvas_view->work_area->set_cursor(Gdk::CROSSHAIR);
+	canvas_view->get_work_area()->set_cursor(Gdk::CROSSHAIR);
 
 	App::dock_toolbox->refresh();
 }
@@ -128,7 +128,7 @@ StateFill_Context::StateFill_Context(CanvasView *canvas_view):
 StateFill_Context::~StateFill_Context()
 {
 	synfig::info("Left Fill State");
-	canvas_view->work_area->reset_cursor();
+	canvas_view->get_work_area()->reset_cursor();
 	App::dock_toolbox->refresh();
 }
 
@@ -147,7 +147,7 @@ Smach::event_result
 StateFill_Context::event_refresh_handler(const Smach::event& /*x*/)
 {
 	synfig::info("STATE FILL: Received Refresh Event");
-	canvas_view->work_area->queue_render_preview();
+	canvas_view->get_work_area()->queue_render_preview();
 	return Smach::RESULT_ACCEPT;
 }
 

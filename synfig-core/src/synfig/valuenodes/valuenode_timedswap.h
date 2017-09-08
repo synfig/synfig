@@ -37,8 +37,9 @@
 
 namespace synfig {
 
-struct ValueNode_TimedSwap : public LinkableValueNode
+class ValueNode_TimedSwap : public LinkableValueNode
 {
+public:
 	typedef etl::handle<ValueNode_TimedSwap> Handle;
 	typedef etl::handle<const ValueNode_TimedSwap> ConstHandle;
 

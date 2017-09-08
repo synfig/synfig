@@ -33,6 +33,7 @@
 #include "valuenode_const.h"
 #include <synfig/general.h>
 #include <synfig/localization.h>
+#include <synfig/valuenode_registry.h>
 #include <ETL/misc>
 
 #include <boost/numeric/odeint/integrate/integrate.hpp>
@@ -47,6 +48,8 @@ using namespace boost::numeric::odeint;
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
+
+REGISTER_VALUENODE(ValueNode_Dynamic, RELEASE_VERSION_0_61_06, "dynamic", "Dynamic")
 
 
 /* === P R O C E D U R E S ================================================= */
@@ -160,17 +163,7 @@ ValueNode_Dynamic::operator()(Time t)const
 }
 
 
-String
-ValueNode_Dynamic::get_name()const
-{
-	return "dynamic";
-}
 
-String
-ValueNode_Dynamic::get_local_name()const
-{
-	return _("Dynamic");
-}
 
 bool
 ValueNode_Dynamic::check_type(Type &type)

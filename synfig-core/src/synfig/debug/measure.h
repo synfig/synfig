@@ -52,14 +52,19 @@ private:
 	bool hide_subs;
 	long long subs;
 	long long t;
+	long long cpu_subs;
+	long long cpu_t;
 
-	Measure(const Measure&): name(), hide(), hide_subs(), subs(), t() { }
+	Measure(const Measure&):
+		name(), hide(), hide_subs(),
+		subs(), t(), cpu_subs(), cpu_t() { }
 	Measure& operator= (const Measure&) { return *this; }
 	void init();
 
 public:
 	Measure(const String &name, bool hide_subs = false):
-		name(name), hide(), hide_subs(hide_subs), subs(), t()
+		name(name), hide(), hide_subs(hide_subs),
+		subs(), t(), cpu_subs(), cpu_t()
 	{ init(); }
 
 	~Measure();

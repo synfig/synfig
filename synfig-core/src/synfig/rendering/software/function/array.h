@@ -426,29 +426,29 @@ public:
 	};
 
 	void fill(const Type &x) const
-		{ for(Iterator i(*this); i; ++i) i.get_array().fill(x); }
+		{ for(Iterator i(*this); i; ++i) i.get_array().template fill(x); }
 
 	template<typename TT>
 	void assign(const Array<TT, Rank> &x) const
 	{
 		typename Array<TT, Rank>::Iterator j(x);
-		for(Iterator i(*this); i && j; ++i, ++j) i.get_array().assign<TT>(j.get_array());
+		for(Iterator i(*this); i && j; ++i, ++j) i.get_array().template assign<TT>(j.get_array());
 	}
 
 	template<typename function>
 	void process(const Type &x) const
-		{ for(Iterator i(*this); i; ++i) i.get_array().process<function>(x); }
+		{ for(Iterator i(*this); i; ++i) i.get_array().template process<function>(x); }
 
 	template<typename function, typename TT>
 	void process(const Array<TT, Rank> &x) const
 	{
 		typename Array<TT, Rank>::Iterator j(x);
-		for(Iterator i(*this); i && j; ++i, ++j) i.get_array().process<function, TT>(j.get_array());
+		for(Iterator i(*this); i && j; ++i, ++j) i.get_array().template process<function, TT>(j.get_array());
 	}
 
 	template<typename function>
 	void process() const
-		{ for(Iterator i(*this); i; ++i) i.get_array().process<function>(); }
+		{ for(Iterator i(*this); i; ++i) i.get_array().template process<function>(); }
 };
 
 template<typename T>

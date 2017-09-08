@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 set -e
 
@@ -22,3 +22,5 @@ fix_po
 
 cd "$SCRIPTPATH/../synfig-studio/po"
 fix_po
+
+"$SCRIPTPATH/update-languages.sh"

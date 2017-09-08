@@ -1,0 +1,23 @@
+target_sources(synfigstudio
+    PRIVATE
+        "${CMAKE_CURRENT_LIST_DIR}/dialog_tooloptions.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/dock_canvases.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/dock_canvasspecific.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/dock_children.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/dock_curves.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/dock_history.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/dock_info.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/dock_keyframes.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/dock_layergroups.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/dock_layers.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/dock_metadata.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/dock_navigator.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/dock_params.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/dock_timetrack.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/dock_toolbox.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/dockable.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/dockbook.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/dockdialog.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/dockdroparea.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/dockmanager.cpp"
+)

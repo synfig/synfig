@@ -37,6 +37,7 @@
 #include "valuenode_composite.h"
 #include <synfig/general.h>
 #include <synfig/localization.h>
+#include <synfig/valuenode_registry.h>
 #include <synfig/exception.h>
 #include <ETL/hermite>
 #include <ETL/calculus>
@@ -52,6 +53,8 @@ using namespace synfig;
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
+
+REGISTER_VALUENODE(ValueNode_BLineCalcTangent, RELEASE_VERSION_0_61_07, "blinecalctangent", "Spline Tangent")
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -177,17 +180,7 @@ ValueNode_BLineCalcTangent::operator()(Time t)const
 	return (*this)(t, amount);
 }
 
-String
-ValueNode_BLineCalcTangent::get_name()const
-{
-	return "blinecalctangent";
-}
 
-String
-ValueNode_BLineCalcTangent::get_local_name()const
-{
-	return _("Spline Tangent");
-}
 
 bool
 ValueNode_BLineCalcTangent::set_link_vfunc(int i,ValueNode::Handle value)

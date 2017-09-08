@@ -52,9 +52,6 @@ namespace synfig {
 */
 class ColorMatrix
 {
-private:
-	class Internal;
-
 public:
 	typedef Color::value_type value_type;
 	typedef value_type value_row[5];

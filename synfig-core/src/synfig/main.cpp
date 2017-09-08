@@ -316,20 +316,6 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 		throw std::runtime_error(_("Unable to initialize subsystem \"Cairo Importers\""));
 	}
 
-	if(cb)cb->task(_("Starting Subsystem \"ValueNodes\""));
-	if(!ValueNode::subsys_init())
-	{
-		CairoImporter::subsys_stop();
-		Importer::subsys_stop();
-		Target::subsys_stop();
-		Layer::subsys_stop();
-		Module::subsys_stop();
-		rendering::Renderer::subsys_stop();
-		Type::subsys_stop();
-		SoundProcessor::subsys_stop();
-		throw std::runtime_error(_("Unable to initialize subsystem \"ValueNodes\""));
-	}
-
 	// Load up the list importer
 	Importer::book()[String("lst")]=Importer::BookEntry(ListImporter::create, ListImporter::supports_file_system_wrapper__);
 	CairoImporter::book()[String("lst")]=CairoImporter::BookEntry(CairoListImporter::create, CairoListImporter::supports_file_system_wrapper__);
@@ -368,24 +354,15 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 
 	if (i == locations.size())
 	{
-		ValueNode::subsys_stop();
-		CairoImporter::subsys_stop();
-		Importer::subsys_stop();
-		Target::subsys_stop();
-		Layer::subsys_stop();
-		Module::subsys_stop();
-		rendering::Renderer::subsys_stop();
-		Type::subsys_stop();
-		SoundProcessor::subsys_stop();
-		throw std::runtime_error(strprintf(_("Unable to open module list file '%s'"), MODULE_LIST_FILENAME));
+		synfig::warning("Cannot find '%s', trying to load default modules", MODULE_LIST_FILENAME);
+		Module::register_default_modules(cb);
 	}
 
 	std::list<String>::iterator iter;
 
-	Module::register_default_modules(cb);
-
 	for(i=0,iter=modules_to_load.begin();iter!=modules_to_load.end();++iter,i++)
 	{
+		synfig::info("Loading %s..", iter->c_str());
 		Module::Register(*iter,cb);
 		if(cb)cb->amount_complete((i+1)*100,modules_to_load.size()*100);
 	}
@@ -413,8 +390,6 @@ synfig::Main::~Main()
 		}
 	}
 
-	// synfig::info("ValueNode::subsys_stop()");
-	ValueNode::subsys_stop();
 	// synfig::info("Importer::subsys_stop()");
 	Importer::subsys_stop();
 	CairoImporter::subsys_stop();
@@ -496,7 +471,7 @@ void
 synfig::info(const String &str)
 {
 	general_io_mutex.lock();
-	cerr<<"synfig("<<getpid()<<")"<<current_time().c_str()<<_("info")<<": "<<str.c_str()<<endl;
+	cout<<"synfig("<<getpid()<<")"<<current_time().c_str()<<_("info")<<": "<<str.c_str()<<endl;
 	general_io_mutex.unlock();
 }
 

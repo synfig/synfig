@@ -33,6 +33,7 @@
 
 #include <synfig/general.h>
 #include <synfig/localization.h>
+#include <synfig/valuenode_registry.h>
 #include "valuenode_repeat_gradient.h"
 #include "valuenode_const.h"
 #include <stdexcept>
@@ -50,6 +51,8 @@ using namespace synfig;
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
+
+REGISTER_VALUENODE(ValueNode_Repeat_Gradient, RELEASE_VERSION_0_61_07, "repeat_gradient", "Repeat Gradient")
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -174,17 +177,7 @@ ValueNode_Repeat_Gradient::get_link_vfunc(int i)const
 	}
 }
 
-String
-ValueNode_Repeat_Gradient::get_name()const
-{
-	return "repeat_gradient";
-}
 
-String
-ValueNode_Repeat_Gradient::get_local_name()const
-{
-	return _("Repeat Gradient");
-}
 
 bool
 ValueNode_Repeat_Gradient::check_type(Type &type)

@@ -36,6 +36,7 @@
 #include <synfig/gradient.h>
 #include <synfig/general.h>
 #include <synfig/localization.h>
+#include <synfig/valuenode_registry.h>
 
 #endif
 
@@ -48,6 +49,8 @@ using namespace synfig;
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
+
+REGISTER_VALUENODE(ValueNode_GradientColor, RELEASE_VERSION_0_61_09, "gradientcolor", "Gradient Color")
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -129,17 +132,7 @@ ValueNode_GradientColor::get_link_vfunc(int i)const
 	return 0;
 }
 
-String
-ValueNode_GradientColor::get_name()const
-{
-	return "gradientcolor";
-}
 
-String
-ValueNode_GradientColor::get_local_name()const
-{
-	return _("Gradient Color");
-}
 
 bool
 ValueNode_GradientColor::check_type(Type &type)

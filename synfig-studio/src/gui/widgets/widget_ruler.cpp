@@ -153,6 +153,10 @@ Widget_Ruler::on_draw(const ::Cairo::RefPtr< ::Cairo::Context>& cr)
 
 	Gdk::RGBA color = get_style_context()->get_color(Gtk::STATE_FLAG_NORMAL);
 
+	// Make ruler less visually noisy
+	// TODO: this should probably be done via Gtk styling instead
+	color.set_alpha(0.6);
+
 	Real min_text_mark_distance = fabs(distance_from_screen(min_screen_text_mark_distance));
 	int text_degree = (int)round(ceil(log10(min_text_mark_distance)));
 	Real text_mark_distance = exp(log(10)*(Real)text_degree);

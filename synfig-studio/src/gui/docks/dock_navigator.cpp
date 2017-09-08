@@ -104,10 +104,10 @@ cairo_surface(cairo_image_surface_create(CAIRO_FORMAT_ARGB32, 1, 1))
 
 		//get_canvas_view()->canvas_interface()->signal_dirty_preview()
 		//				.connect(sigc::mem_fun(*this,&Widget_NavView::on_dirty_preview));
-		get_canvas_view()->work_area->signal_rendering()
+		get_canvas_view()->get_work_area()->signal_rendering()
 						.connect(sigc::mem_fun(*this,&Widget_NavView::on_dirty_preview));
 
-		get_canvas_view()->work_area->signal_view_window_changed()
+		get_canvas_view()->get_work_area()->signal_view_window_changed()
 						.connect(sigc::mem_fun(*this,&Widget_NavView::on_workarea_view_change));
 
 		//update with this canvas' view
@@ -326,12 +326,12 @@ bool studio::Widget_NavView::on_drawto_draw(const Cairo::RefPtr<Cairo::Context> 
 		}
 		cr->save();
 		//draw fancy red rectangle around focus point
-		const Point &wtl = get_canvas_view()->work_area->get_window_tl(),
-					&wbr = get_canvas_view()->work_area->get_window_br();
+		const Point &wtl = get_canvas_view()->get_work_area()->get_window_tl(),
+					&wbr = get_canvas_view()->get_work_area()->get_window_br();
 
 		//it must be clamped to the drawing area though
 		int l=0,rw=0,t=0,rh=0;
-		const Point fp = -get_canvas_view()->work_area->get_focus_point();
+		const Point fp = -get_canvas_view()->get_work_area()->get_focus_point();
 
 		//get focus point in normal space
 		rw = (int)(abs((wtl[0]-wbr[0])*xaxis));

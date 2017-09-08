@@ -35,8 +35,12 @@
 
 #include <synfig/general.h>
 
-#include "instance.h"
 #include <cassert>
+#include <cerrno>
+#include <iostream>
+
+#include <sys/stat.h>
+#include <sigc++/sigc++.h>
 
 #include <giomm.h>
 
@@ -46,28 +50,28 @@
 #include <gtkmm/imagemenuitem.h>
 #include <gtkmm/separatormenuitem.h>
 #include <gtkmm/button.h>
+#include <gtkmm/actiongroup.h>
 
-#include <iostream>
-#include "canvasview.h"
-#include "app.h"
-#include <sigc++/sigc++.h>
-#include "docks/dock_toolbox.h"
-#include "onemoment.h"
+#include <ETL/stringf>
+
 #include <synfig/savecanvas.h>
 #include <synfig/canvasfilenaming.h>
 #include <synfig/layers/layer_pastecanvas.h>
-
-#include "autorecover.h"
+#include <synfig/valuenode_registry.h>
 #include <synfig/valuenodes/valuenode_composite.h>
 #include <synfig/valuenodes/valuenode_duplicate.h>
 #include <synfig/widthpoint.h>
-#include "widgets/widget_waypointmodel.h"
-#include <gtkmm/actiongroup.h>
+
+#include "instance.h"
+#include "canvasview.h"
+#include "app.h"
+#include "onemoment.h"
+#include "autorecover.h"
 #include "iconcontroller.h"
 #include "workarea.h"
-#include <sys/stat.h>
-#include <errno.h>
-#include <ETL/stringf>
+
+#include "docks/dock_toolbox.h"
+#include "widgets/widget_waypointmodel.h"
 
 #include <gui/localization.h>
 
@@ -1195,8 +1199,8 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 			 value_desc.parent_is_value_node()))))
 	{
 		Gtk::Menu *convert_menu=Gtk::manage(new Gtk::Menu());
-		LinkableValueNode::Book::const_iterator iter;
-		for(iter=LinkableValueNode::book().begin();iter!=LinkableValueNode::book().end();++iter)
+		ValueNodeRegistry::Book::const_iterator iter;
+		for(iter=ValueNodeRegistry::book().begin();iter!=ValueNodeRegistry::book().end();++iter)
 		{
 			if(iter->second.check_type(value_desc.get_value_type()))
 			{

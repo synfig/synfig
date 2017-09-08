@@ -35,6 +35,7 @@
 #include "valuenode_const.h"
 #include <synfig/general.h>
 #include <synfig/localization.h>
+#include <synfig/valuenode_registry.h>
 
 #endif
 
@@ -47,6 +48,8 @@ using namespace synfig;
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
+
+REGISTER_VALUENODE(ValueNode_Cos, RELEASE_VERSION_0_61_08, "cos", "Cos")
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -98,17 +101,7 @@ ValueNode_Cos::operator()(Time t)const
 }
 
 
-String
-ValueNode_Cos::get_name()const
-{
-	return "cos";
-}
 
-String
-ValueNode_Cos::get_local_name()const
-{
-	return _("Cos");
-}
 
 bool
 ValueNode_Cos::check_type(Type &type)

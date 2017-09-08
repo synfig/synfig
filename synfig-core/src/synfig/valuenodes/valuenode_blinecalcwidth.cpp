@@ -37,6 +37,7 @@
 #include "valuenode_composite.h"
 #include <synfig/general.h>
 #include <synfig/localization.h>
+#include <synfig/valuenode_registry.h>
 #include <synfig/exception.h>
 #include <ETL/hermite>
 
@@ -52,6 +53,8 @@ using namespace synfig;
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
+
+REGISTER_VALUENODE(ValueNode_BLineCalcWidth, RELEASE_VERSION_0_61_08, "blinecalcwidth", "Spline Width")
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -146,17 +149,7 @@ ValueNode_BLineCalcWidth::operator()(Time t)const
 	return (*this)(t, amount);
 }
 
-String
-ValueNode_BLineCalcWidth::get_name()const
-{
-	return "blinecalcwidth";
-}
 
-String
-ValueNode_BLineCalcWidth::get_local_name()const
-{
-	return _("Spline Width");
-}
 
 bool
 ValueNode_BLineCalcWidth::set_link_vfunc(int i,ValueNode::Handle value)

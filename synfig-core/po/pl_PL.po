@@ -3,7 +3,7 @@
 # This file is distributed under the same license as the Synfig Core package.
 #
 # Translators:
-# Adam Humienny <adam.humienny@gmail.com>, 2014-2015
+# Adam Humienny <adam.humienny@gmail.com>, 2014-2015,2017
 # Adam Humienny <adam.humienny@gmail.com>, 2014
 # darkhog <rave002@o2.pl>, 2011
 # kajetan <przemw@gmail.com>, 2015
@@ -18,17 +18,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Synfig UI\n"
 "Report-Msgid-Bugs-To: https://github.com/synfig/synfig/issues\n"
-"POT-Creation-Date: 2016-12-21 13:11+0700\n"
-"PO-Revision-Date: 2015-12-25 06:36+0000\n"
-"Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
-"Language-Team: Polish (Poland) (http://www.transifex.com/morevnaproject/"
-"synfig/language/pl_PL/)\n"
-"Language: pl_PL\n"
+"POT-Creation-Date: 2016-06-05 14:00+0700\n"
+"PO-Revision-Date: 2017-02-19 17:45+0000\n"
+"Last-Translator: Adam Humienny <adam.humienny@gmail.com>\n"
+"Language-Team: Polish (Poland) (http://www.transifex.com/morevnaproject/synfig/language/pl_PL/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
-"|| n%100>=20) ? 1 : 2);\n"
+"Language: pl_PL\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>=14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:73
 #: src/modules/lyr_freetype/lyr_freetype.cpp:585
@@ -1390,9 +1388,10 @@ msgstr "Zaokrąglony"
 msgid "Smoothness"
 msgstr "Gładkość"
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1170
-msgid "Determines the interpolation between widthpoints. (0) Linear (1) Smooth"
-msgstr ""
+#: src/modules/mod_geometry/advanced_outline.cpp:1176
+msgid ""
+"Determines the interpolation between widthpoints. (0) Linear (1) Smooth"
+msgstr "Określa interpolację pomiędzy punktami. (0) Liniowy (1) Gładki"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:1173
 #: src/modules/mod_geometry/outline.cpp:859
@@ -2458,15 +2457,15 @@ msgstr "Lista kości"
 
 #: src/synfig/layers/layer_skeletondeformation.cpp:113
 msgid "First corner of the bounds rectangle"
-msgstr ""
+msgstr "Pierwszy róg granicy prostokąta"
 
 #: src/synfig/layers/layer_skeletondeformation.cpp:118
 msgid "Second corner of the bounds rectangle"
-msgstr ""
+msgstr "Drugi róg granicy prostokąta"
 
 #: src/synfig/layers/layer_skeletondeformation.cpp:122
 msgid "Horizontal subdivisions"
-msgstr ""
+msgstr "Poziome podziały"
 
 #: src/synfig/layers/layer_skeletondeformation.cpp:123
 msgid "Count of horizontal subdivisions of the transformation grid"
@@ -2474,7 +2473,7 @@ msgstr ""
 
 #: src/synfig/layers/layer_skeletondeformation.cpp:127
 msgid "Vertical subdivisions"
-msgstr ""
+msgstr "Pionowe podziały"
 
 #: src/synfig/layers/layer_skeletondeformation.cpp:128
 msgid "Count of vertical subdivisions of the transformation grid"
@@ -4777,7 +4776,7 @@ msgstr ""
 
 #: src/synfig/valuenodes/valuenode_timedswap.cpp:269
 msgid "The time when the linear interpolation ends"
-msgstr ""
+msgstr "Czas końca interpolacji liniowej"
 
 #: src/synfig/valuenodes/valuenode_timedswap.cpp:274
 msgid ""

@@ -79,6 +79,8 @@
 
 #include "dialogs/dialog_waypoint.h"
 #include "dialogs/dialog_keyframe.h"
+#include "dialogs/dialog_preview.h"
+#include "dialogs/dialog_soundselect.h"
 #include "dials/framedial.h"
 #include "dials/jackdial.h"
 #include "dials/toggleducksdial.h"
@@ -92,7 +94,6 @@
 
 #include "smach.h"
 
-#include <memory>
 #include <set>
 #include <map>
 #include <gtkmm/toggleaction.h>
@@ -144,7 +145,6 @@ class CanvasViewSelectionManager;
 
 class CellRenderer_TimeTrack;
 class CellRenderer_ValueBase;
-class UniversalScrubber;
 class WorkArea;
 
 class Duckmatic;
@@ -159,9 +159,6 @@ class Widget_Sound;
 class Widget_Timeslider;
 class Widget_Time;
 
-class Dialog_SoundSelect;
-class Dialog_Preview;
-
 class Dock_Layers;
 class Dock_Children;
 class Dock_Keyframes;
@@ -173,7 +170,6 @@ class Dock_Keyframes;
 */
 class CanvasView : public Dockable, public etl::shared_object
 {
-	friend class UniversalScrubber;
 	friend class Dock_Layers;
 	friend class Dock_Children;
 	friend class Dock_Keyframes;
@@ -247,11 +243,11 @@ public:
 	*/
 
 public:
-	std::auto_ptr<WorkArea> work_area;
-
-	WorkArea* get_work_area() { return work_area.get(); }
+	WorkArea* get_work_area() const { return work_area; }
 
 private:
+	WorkArea *work_area;
+
 	synfig::SoundProcessor soundProcessor;
 
 	ActivationIndex activation_index_;
@@ -278,8 +274,6 @@ private:
 	sigc::connection				playcon;
 	sigc::connection				stopcon;
 
-	std::auto_ptr<UniversalScrubber> universal_scrubber;
-
 	// DEBUGPOINT_CLASS(4);
 
 	//! TreeModel for the layers
@@ -287,12 +281,6 @@ private:
 
 	//! TreeModel for the the children
 	ChildrenTreeModel children_tree_model;
-
-	//Glib::RefPtr<LayerTreeStore> layer_tree_store_;
-
-	//Glib::RefPtr<ChildrenTreeStore> children_tree_store_;
-
-	//Glib::RefPtr<KeyframeTreeStore> keyframe_tree_store_;
 
 	// DEBUGPOINT_CLASS(5);
 
@@ -365,10 +353,10 @@ private:
 	void on_current_time_widget_changed();
 
 	//! Time slider class. Same than the Time track panel
-	std::auto_ptr<Widget_Timeslider> timeslider;
+	Widget_Timeslider *timeslider;
 
 	//!Keyframe list slider
-	std::auto_ptr<Widget_Keyframe_List> widget_kf_list;
+	Widget_Keyframe_List *widget_kf_list;
 
 	std::list<sigc::connection> duck_changed_connections;
 
@@ -480,10 +468,8 @@ public:
 	RenderSettings render_settings;
 	Dialog_Waypoint waypoint_dialog;
 	Dialog_Keyframe keyframe_dialog;
-
-	std::auto_ptr<Dialog_Preview>			preview_dialog;
-	//std::auto_ptr<Dialog_PreviewOptions>	previewoption_dialog;
-	std::auto_ptr<Dialog_SoundSelect>		sound_dialog;
+	Dialog_Preview preview_dialog;
+	Dialog_SoundSelect sound_dialog;
 
 	/*
  -- ** -- P R I V A T E   M E T H O D S ---------------------------------------

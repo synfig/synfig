@@ -221,8 +221,6 @@ public:
 
 	static synfigapp::PluginManager plugin_manager;
 
-	static synfig::String browser_command;
-//	static synfig::String brushes_path;
 	static std::set< synfig::String > brushes_path;
 	static synfig::String custom_filename_prefix;
 	static int preferred_x_size;
@@ -324,7 +322,7 @@ public:
 	static void set_workspace_compositing();
 	static void set_workspace_animating();
 	static void restore_default_settings();
-	static void apply_gtk_settings(bool);
+	static void apply_gtk_settings();
 
 	static const std::list<std::string>& get_recent_files();
 
@@ -421,10 +419,11 @@ public:
 	// (By now it updates the System Units or Time Format for all the canvases).
 	// This fixes bug 1890020
 	static void setup_changed();
+
+	static void process_all_events();
 }; // END of class App
 
 	void delete_widget(Gtk::Widget *widget);
-
 }; // END namespace studio
 
 /* === E N D =============================================================== */

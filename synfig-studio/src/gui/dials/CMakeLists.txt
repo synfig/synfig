@@ -1,0 +1,9 @@
+target_sources(synfigstudio
+    PRIVATE
+        "${CMAKE_CURRENT_LIST_DIR}/zoomdial.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/framedial.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/jackdial.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/keyframedial.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/toggleducksdial.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/resolutiondial.cpp"
+)

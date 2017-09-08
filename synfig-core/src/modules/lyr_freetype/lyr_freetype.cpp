@@ -816,27 +816,33 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 		}
 		else
 		{
-			wchar_t wc;
-			size_t converted = mbrtowc(&wc, &(*iter), text.end() - iter, &ps);
-
-			if(converted == (size_t)(-1))
+			// read uft8 char
+			unsigned int c = (unsigned char)*iter;
+			unsigned int code = c;
+			int bytes = 0;
+			while ((c & 0x80) != 0) { c = (c << 1) & 0xff; bytes++; }
+			bool bad_char = (bytes == 1);
+			if (bytes > 1)
 			{
-				synfig::warning("Layer_Freetype: multibyte: %s",
-								_("Invalid multibyte sequence - is the locale set?\n"));
-				continue;
+				bytes--;
+				code = c << (5*bytes - 1);
+				while (bytes > 0) {
+					iter++;
+					bytes--;
+					c = (unsigned char)*iter;
+					if (iter >= text.end() || (c & 0xc0) != 0x80) { bad_char = true; break; }
+					code |= (c & 0x3f) << (6 * bytes);
+				}
 			}
 
-			if(converted == (size_t)(-2))
+			if (bad_char)
 			{
 				synfig::warning("Layer_Freetype: multibyte: %s",
 								_("Can't parse multibyte character.\n"));
 				continue;
 			}
 
-			glyph_index = FT_Get_Char_Index( face, wc );
-
-			if(converted > 1)
-				iter += converted - 1;
+			glyph_index = FT_Get_Char_Index( face, code );
 		}
 
         // retrieve kerning distance and move pen position

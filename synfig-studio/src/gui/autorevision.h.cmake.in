@@ -1,0 +1,8 @@
+#ifndef ___SYNFIG_STUDIO_AUTOREVISION_H
+#define ___SYNFIG_STUDIO_AUTOREVISION_H
+
+#define VERSION "${STUDIO_VERSION}"
+#define PACKAGE_NAME "Synfig Studio"
+#cmakedefine SHOW_EXTRA_INFO
+
+#endif

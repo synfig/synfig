@@ -1,13 +1,12 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file valuenode.cpp
-**	\brief Implementation of the "Placeholder" valuenode conversion.
-**
-**	$Id$
+**	\brief Valuenodes
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
-**  Copyright (c) 2008, 2011 Carlos López
+**	Copyright (c) 2008, 2011 Carlos López
+**	Copyright (c) 2016 caryoscelus
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -32,76 +31,10 @@
 #endif
 
 #include "valuenode.h"
+#include "valuenode_registry.h"
 #include "general.h"
 #include <synfig/localization.h>
 #include "canvas.h"
-#include "releases.h"
-
-#include "valuenodes/valuenode_const.h"
-#include "valuenodes/valuenode_linear.h"
-#include "valuenodes/valuenode_composite.h"
-#include "valuenodes/valuenode_reference.h"
-#include "valuenodes/valuenode_boneinfluence.h"
-#include "valuenodes/valuenode_boneweightpair.h"
-#include "valuenodes/valuenode_bone.h"
-#include "valuenodes/valuenode_bonelink.h"
-#include "valuenodes/valuenode_greyed.h"
-#include "valuenodes/valuenode_scale.h"
-#include "valuenodes/valuenode_blinecalctangent.h"
-#include "valuenodes/valuenode_blinecalcvertex.h"
-#include "valuenodes/valuenode_blinecalcwidth.h"
-#include "valuenodes/valuenode_blinereversetangent.h"
-#include "valuenodes/valuenode_segcalctangent.h"
-#include "valuenodes/valuenode_segcalcvertex.h"
-#include "valuenodes/valuenode_repeat_gradient.h"
-#include "valuenodes/valuenode_stripes.h"
-#include "valuenodes/valuenode_range.h"
-#include "valuenodes/valuenode_add.h"
-#include "valuenodes/valuenode_subtract.h"
-#include "valuenodes/valuenode_timedswap.h"
-#include "valuenodes/valuenode_twotone.h"
-#include "valuenodes/valuenode_bline.h"
-#include "valuenodes/valuenode_staticlist.h"
-#include "valuenodes/valuenode_wplist.h"
-#include "valuenodes/valuenode_dilist.h"
-#include "valuenodes/valuenode_dynamiclist.h"
-#include "valuenodes/valuenode_radialcomposite.h"
-#include "valuenodes/valuenode_gradientrotate.h"
-#include "valuenodes/valuenode_sine.h"
-#include "valuenodes/valuenode_cos.h"
-#include "valuenodes/valuenode_atan2.h"
-#include "valuenodes/valuenode_exp.h"
-#include "valuenodes/valuenode_switch.h"
-#include "valuenodes/valuenode_timeloop.h"
-#include "valuenodes/valuenode_reciprocal.h"
-#include "valuenodes/valuenode_duplicate.h"
-#include "valuenodes/valuenode_integer.h"
-#include "valuenodes/valuenode_step.h"
-#include "valuenodes/valuenode_vectorangle.h"
-#include "valuenodes/valuenode_vectorlength.h"
-#include "valuenodes/valuenode_vectorx.h"
-#include "valuenodes/valuenode_vectory.h"
-#include "valuenodes/valuenode_gradientcolor.h"
-#include "valuenodes/valuenode_dotproduct.h"
-#include "valuenodes/valuenode_timestring.h"
-#include "valuenodes/valuenode_realstring.h"
-#include "valuenodes/valuenode_join.h"
-#include "valuenodes/valuenode_anglestring.h"
-#include "valuenodes/valuenode_intstring.h"
-#include "valuenodes/valuenode_log.h"
-#include "valuenodes/valuenode_pow.h"
-#include "valuenodes/valuenode_compare.h"
-#include "valuenodes/valuenode_not.h"
-#include "valuenodes/valuenode_and.h"
-#include "valuenodes/valuenode_or.h"
-#include "valuenodes/valuenode_real.h"
-#include "valuenodes/valuenode_average.h"
-#include "valuenodes/valuenode_dynamic.h"
-#include "valuenodes/valuenode_derivative.h"
-#include "valuenodes/valuenode_weightedaverage.h"
-#include "valuenodes/valuenode_reverse.h"
-#include "valuenodes/valuenode_animatedfile.h"
-
 #include "layer.h"
 
 #endif
@@ -118,16 +51,13 @@ using namespace synfig;
 
 static int value_node_count(0);
 
-static LinkableValueNode::Book *book_;
-
+/* === P R O C E D U R E S ================================================= */
 
 ValueNode::LooseHandle
 synfig::find_value_node(const GUID& guid)
 {
 	return guid_cast<ValueNode>(guid);
 }
-
-/* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
 
@@ -137,146 +67,9 @@ ValueNode::breakpoint()
 	return;
 }
 
-bool
-ValueNode::subsys_init()
-{
-	book_=new LinkableValueNode::Book();
-
-#define ADD_VALUENODE_CREATE(class,name,local,version,create)									\
-	(*book_)[name].factory=reinterpret_cast<LinkableValueNode::Factory>(&class::create);		\
-	(*book_)[name].check_type=&class::check_type;												\
-	(*book_)[name].local_name=local;															\
-	(*book_)[name].release_version=version
-#define ADD_VALUENODE(class,name,local,version)		ADD_VALUENODE_CREATE(class,name,local,version,create)
-#define ADD_VALUENODE2(class,name,local,version)	ADD_VALUENODE_CREATE(class,name,local,version,create_from)
-
-	ADD_VALUENODE(ValueNode_Linear,			  "linear",			  _("Linear"),			 RELEASE_VERSION_0_61_06);
-	ADD_VALUENODE(ValueNode_Composite,		  "composite",		  _("Composite"),		 RELEASE_VERSION_0_61_06);
-	ADD_VALUENODE(ValueNode_RadialComposite,  "radial_composite", _("Radial Composite"), RELEASE_VERSION_0_61_06);
-	ADD_VALUENODE(ValueNode_Reference,		  "reference",		  _("Reference"),		 RELEASE_VERSION_0_61_06);
-	ADD_VALUENODE(ValueNode_Scale,			  "scale",			  _("Scale"),			 RELEASE_VERSION_0_61_06);
-	ADD_VALUENODE(ValueNode_SegCalcTangent,	  "segcalctangent",	  _("Segment Tangent"),	 RELEASE_VERSION_0_61_06);
-	ADD_VALUENODE(ValueNode_SegCalcVertex,	  "segcalcvertex",	  _("Segment Vertex"),	 RELEASE_VERSION_0_61_06);
-	ADD_VALUENODE(ValueNode_Stripes,		  "stripes",		  _("Stripes"),			 RELEASE_VERSION_0_61_06);
-	ADD_VALUENODE(ValueNode_Subtract,		  "subtract",		  _("Subtract"),		 RELEASE_VERSION_0_61_06);
-	ADD_VALUENODE(ValueNode_TwoTone,		  "twotone",		  _("Two-Tone"),		 RELEASE_VERSION_0_61_06);
-	ADD_VALUENODE(ValueNode_BLine,			  "bline",			  _("Spline"),			 RELEASE_VERSION_0_61_06);
-	ADD_VALUENODE2(ValueNode_DynamicList,	  "dynamic_list",	  _("Dynamic List"),	 RELEASE_VERSION_0_61_06);
-	ADD_VALUENODE(ValueNode_GradientRotate,	  "gradient_rotate",  _("Gradient Rotate"),	 RELEASE_VERSION_0_61_06);
-	ADD_VALUENODE(ValueNode_Sine,			  "sine",			  _("Sine"),			 RELEASE_VERSION_0_61_06);
-
-	ADD_VALUENODE(ValueNode_TimedSwap,		  "timed_swap",		  _("Timed Swap"),		 RELEASE_VERSION_0_61_07); // SVN r610
-	ADD_VALUENODE(ValueNode_Repeat_Gradient,  "repeat_gradient",  _("Repeat Gradient"),	 RELEASE_VERSION_0_61_07); // SVN r666
-	ADD_VALUENODE(ValueNode_Exp,			  "exp",			  _("Exponential"),		 RELEASE_VERSION_0_61_07); // SVN r739
-	ADD_VALUENODE(ValueNode_Add,			  "add",			  _("Add"),				 RELEASE_VERSION_0_61_07); // SVN r742
-	ADD_VALUENODE(ValueNode_BLineCalcTangent, "blinecalctangent", _("Spline Tangent"),	 RELEASE_VERSION_0_61_07); // SVN r744
-	ADD_VALUENODE(ValueNode_BLineCalcVertex,  "blinecalcvertex",  _("Spline Vertex"),	 RELEASE_VERSION_0_61_07); // SVN r744
-	ADD_VALUENODE(ValueNode_Range,			  "range",			  _("Range"),			 RELEASE_VERSION_0_61_07); // SVN r776
-
-	ADD_VALUENODE(ValueNode_Switch,			  "switch",			  _("Switch"),			 RELEASE_VERSION_0_61_08); // SVN r923
-	ADD_VALUENODE(ValueNode_Cos,			  "cos",			  _("Cos"),				 RELEASE_VERSION_0_61_08); // SVN r1111
-	ADD_VALUENODE(ValueNode_Atan2,			  "atan2",			  _("aTan2"),			 RELEASE_VERSION_0_61_08); // SVN r1132
-	ADD_VALUENODE(ValueNode_BLineRevTangent,  "blinerevtangent",  _("Reverse Tangent"),	 RELEASE_VERSION_0_61_08); // SVN r1162
-	ADD_VALUENODE(ValueNode_TimeLoop,		  "timeloop",		  _("Time Loop"),		 RELEASE_VERSION_0_61_08); // SVN r1226
-	ADD_VALUENODE(ValueNode_Reciprocal,		  "reciprocal",		  _("Reciprocal"),		 RELEASE_VERSION_0_61_08); // SVN r1238
-	ADD_VALUENODE(ValueNode_Duplicate,		  "duplicate",		  _("Duplicate"),		 RELEASE_VERSION_0_61_08); // SVN r1267
-	ADD_VALUENODE(ValueNode_Integer,		  "fromint",		  _("Integer"),			 RELEASE_VERSION_0_61_08); // SVN r1267
-	ADD_VALUENODE(ValueNode_Step,			  "step",			  _("Step"),			 RELEASE_VERSION_0_61_08); // SVN r1691
-	ADD_VALUENODE(ValueNode_BLineCalcWidth,	  "blinecalcwidth",	  _("Spline Width"),		 RELEASE_VERSION_0_61_08); // SVN r1694
-
-	ADD_VALUENODE(ValueNode_VectorAngle,	  "vectorangle",	  _("Vector Angle"),	 RELEASE_VERSION_0_61_09); // SVN r1880
-	ADD_VALUENODE(ValueNode_VectorLength,	  "vectorlength",	  _("Vector Length"),	 RELEASE_VERSION_0_61_09); // SVN r1881
-	ADD_VALUENODE(ValueNode_VectorX,		  "vectorx",		  _("Vector X"),		 RELEASE_VERSION_0_61_09); // SVN r1882
-	ADD_VALUENODE(ValueNode_VectorY,		  "vectory",		  _("Vector Y"),		 RELEASE_VERSION_0_61_09); // SVN r1882
-	ADD_VALUENODE(ValueNode_GradientColor,	  "gradientcolor",	  _("Gradient Color"),	 RELEASE_VERSION_0_61_09); // SVN r1885
-	ADD_VALUENODE(ValueNode_DotProduct,		  "dotproduct",		  _("Dot Product"),		 RELEASE_VERSION_0_61_09); // SVN r1891
-	ADD_VALUENODE(ValueNode_TimeString,		  "timestring",		  _("Time String"),		 RELEASE_VERSION_0_61_09); // SVN r2000
-	ADD_VALUENODE(ValueNode_Real,		  	  "fromreal",		  _("Real"),		 	 RELEASE_VERSION_0_64_0); // git 2013-01-12
-	ADD_VALUENODE(ValueNode_RealString,		  "realstring",		  _("Real String"),		 RELEASE_VERSION_0_61_09); // SVN r2003
-	ADD_VALUENODE(ValueNode_Join,			  "join",			  _("Joined List"),		 RELEASE_VERSION_0_61_09); // SVN r2007
-	ADD_VALUENODE(ValueNode_AngleString,	  "anglestring",	  _("Angle String"),	 RELEASE_VERSION_0_61_09); // SVN r2010
-	ADD_VALUENODE(ValueNode_IntString,		  "intstring",		  _("Int String"),		 RELEASE_VERSION_0_61_09); // SVN r2010
-	ADD_VALUENODE(ValueNode_Logarithm,		  "logarithm",		  _("Logarithm"),		 RELEASE_VERSION_0_61_09); // SVN r2034
-	ADD_VALUENODE(ValueNode_Greyed,			  "greyed",			  _("Greyed"),			 RELEASE_VERSION_0_62_00); // SVN r2305
-	ADD_VALUENODE(ValueNode_Pow,		      "power",		      _("Power"),		     RELEASE_VERSION_0_62_00); // SVN r2362
-	ADD_VALUENODE(ValueNode_Compare,		  "compare",  	 	  _("Compare"),			 RELEASE_VERSION_0_62_00); // SVN r2364
-	ADD_VALUENODE(ValueNode_Not,		      "not",			  _("Not"),				 RELEASE_VERSION_0_62_00); // SVN r2364
-	ADD_VALUENODE(ValueNode_And,		      "and",			  _("And"),				 RELEASE_VERSION_0_62_00); // SVN r2364
-	ADD_VALUENODE(ValueNode_Or,		          "or",			  _("Or"),					 RELEASE_VERSION_0_62_00); // SVN r2364
-
-	ADD_VALUENODE(ValueNode_BoneInfluence,	  "boneinfluence",	  _("Bone Influence"),	 RELEASE_VERSION_0_62_00); 
-	ADD_VALUENODE(ValueNode_Bone,			  "bone",			  _("Bone"),			 RELEASE_VERSION_0_62_00); 
-	ADD_VALUENODE(ValueNode_Bone_Root,		  "bone_root",		  _("Root Bone"),		 RELEASE_VERSION_0_62_00); 
-	ADD_VALUENODE2(ValueNode_StaticList,	  "static_list",	  _("Static List"),		 RELEASE_VERSION_0_62_00); 
-	ADD_VALUENODE(ValueNode_BoneWeightPair,	  "boneweightpair",	  _("Bone Weight Pair"), RELEASE_VERSION_0_62_00); 
-	ADD_VALUENODE(ValueNode_BoneLink,		  "bone_link",		  _("Bone Link"),		 RELEASE_VERSION_1_0);
-
-	ADD_VALUENODE(ValueNode_WPList,           "wplist",           _("WPList"),           RELEASE_VERSION_0_63_00);
-	ADD_VALUENODE(ValueNode_DIList,           "dilist",           _("DIList"),           RELEASE_VERSION_0_63_01);
-
-	ADD_VALUENODE(ValueNode_Average,		  "average",		  _("Average"),			 RELEASE_VERSION_1_0);
-	ADD_VALUENODE(ValueNode_WeightedAverage,  "weighted_average", _("Weighted Average"), RELEASE_VERSION_1_0);
-	
-	ADD_VALUENODE(ValueNode_Dynamic,           "dynamic",         _("Dynamic"),          RELEASE_VERSION_1_0);
-	ADD_VALUENODE(ValueNode_Derivative,        "derivative",      _("Derivative"),       RELEASE_VERSION_1_0);
-	
-	ADD_VALUENODE(ValueNode_Reverse,           "reverse",         _("Reverse"),          RELEASE_VERSION_1_0_2);
-
-	ADD_VALUENODE(ValueNode_AnimatedFile,      "animated_file",   _("Animated File"),    RELEASE_VERSION_1_0_2);
-
-#undef ADD_VALUENODE_CREATE
-#undef ADD_VALUENODE
-#undef ADD_VALUENODE2
-
-	return true;
-}
-
-bool
-ValueNode::subsys_stop()
-{
-	delete book_;
-	return true;
-}
-
 ValueNode::ValueNode(Type &type):type(&type)
 {
 	value_node_count++;
-}
-
-LinkableValueNode::Book&
-LinkableValueNode::book()
-{
-	return *book_;
-}
-
-LinkableValueNode::Handle
-LinkableValueNode::create(const String &name, const ValueBase& x, Canvas::LooseHandle canvas)
-{
-	if(!book().count(name))
-		return 0;
-
-	if (!check_type(name, x.get_type()))
-	{
-		error(_("Bad type: ValueNode '%s' doesn't accept type '%s'"), book()[name].local_name.c_str(), x.get_type().description.local_name.c_str());
-		return 0;
-	}
-
-	return book()[name].factory(x,canvas);
-}
-
-bool
-LinkableValueNode::check_type(const String &name, Type &x)
-{
-	// the BoneRoot and Duplicate ValueNodes are exceptions - we don't want the
-	// user creating them for themselves, so check_type() fails for
-	// them even when it is valid
-	if((name == "bone_root" && x == type_bone_object) ||
-	   (name == "duplicate" && x == type_real))
-		return true;
-
-	if(!book().count(name) || !book()[name].check_type)
-		return false;
-	return book()[name].check_type(x);
 }
 
 bool

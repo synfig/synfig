@@ -36,6 +36,7 @@
 #include "valuenode_bline.h"
 #include <synfig/general.h>
 #include <synfig/localization.h>
+#include <synfig/valuenode_registry.h>
 #include <synfig/exception.h>
 #include <synfig/dashitem.h>
 #include <vector>
@@ -52,6 +53,8 @@ using namespace synfig;
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
+
+REGISTER_VALUENODE(ValueNode_DIList, RELEASE_VERSION_0_63_01, "dilist", "DIList")
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -167,17 +170,7 @@ ValueNode_DIList::link_local_name(int i)const
 	return etl::strprintf(_("DashItem %03d"),i+1);
 }
 
-String
-ValueNode_DIList::get_name()const
-{
-	return "dilist";
-}
 
-String
-ValueNode_DIList::get_local_name()const
-{
-	return _("DIList");
-}
 
 LinkableValueNode*
 ValueNode_DIList::create_new()const

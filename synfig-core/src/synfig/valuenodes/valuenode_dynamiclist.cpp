@@ -36,6 +36,7 @@
 #include "valuenode_composite.h"
 #include <synfig/general.h>
 #include <synfig/localization.h>
+#include <synfig/valuenode_registry.h>
 #include <synfig/exception.h>
 #include <vector>
 #include <list>
@@ -53,6 +54,8 @@ using namespace synfig;
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
+
+REGISTER_VALUENODE(ValueNode_DynamicList, RELEASE_VERSION_0_61_06, "dynamic_list", "Dynamic List")
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -607,7 +610,7 @@ ValueNode_DynamicList::ValueNode_DynamicList(Type &container_type, Type &type, C
 
 
 ValueNode_DynamicList::Handle
-ValueNode_DynamicList::create(Type &type, Canvas::LooseHandle canvas)
+ValueNode_DynamicList::create_on_canvas(Type &type, Canvas::LooseHandle canvas)
 {
 	return new ValueNode_DynamicList(type, canvas);
 }
@@ -618,7 +621,7 @@ ValueNode_DynamicList::~ValueNode_DynamicList()
 }
 
 ValueNode_DynamicList*
-ValueNode_DynamicList::create_from(const ValueBase &value)
+ValueNode_DynamicList::create(const ValueBase &value)
 {
 	//vector<ValueBase> value_list(value.operator vector<ValueBase>());
 	vector<ValueBase> value_list(value.get_list());
@@ -760,17 +763,7 @@ ValueNode_DynamicList::get_link_index_from_name(const String &name)const
 	throw Exception::BadLinkName(name);
 }
 
-String
-ValueNode_DynamicList::get_name()const
-{
-	return "dynamic_list";
-}
 
-String
-ValueNode_DynamicList::get_local_name()const
-{
-	return _("Dynamic List");
-}
 
 bool
 ValueNode_DynamicList::check_type(Type &type)

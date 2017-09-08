@@ -129,7 +129,21 @@ synfig::Target_Tile::call_renderer(Context &context, const etl::handle<rendering
 		#ifdef DEBUG_MEASURE
 		debug::Measure t("build rendering task");
 		#endif
-		task = context.build_rendering_task();
+
+		// TODO: quick hack
+		// we need to pass already sorted context to renderer
+		// when old renderer will finally removed
+		CanvasBase sub_queue;
+		Context sub_context;
+		if (*context && (*context)->get_canvas()) {
+			(*context)->get_canvas()->get_context_sorted(context.get_params(), sub_queue, sub_context);
+		}
+		else
+		{
+			sub_context = context;
+		}
+
+		task = sub_context.build_rendering_task();
 	}
 
 	if (task)

@@ -65,18 +65,26 @@ void Measure::init() {
 			  + "\n";
 	stack.push_back(this);
 	t = g_get_real_time();
+	cpu_t = clock();
 }
 
 Measure::~Measure() {
 	long long dt = g_get_real_time() - t;
+	long long cpu_dt = clock() - cpu_t;
+
 	double full_s = (double)dt*0.000001;
 	double subs_s = (double)subs*0.000001;
+
+	double cpu_full_s = (double)cpu_dt/(double)CLOCKS_PER_SEC;
+	double cpu_subs_s = (double)cpu_subs/(double)CLOCKS_PER_SEC;
 
 	if (!hide)
 		text += String((stack.size()-1)*2, ' ')
 		      + "end " + strprintf("%13.6f ", subs ? subs_s : full_s)
 		      + name
-			  + (subs ? strprintf(" (full time: %.6f)", full_s) : String())
+			  + (subs
+				? strprintf(" (cpu time: %.6f, full time: %.6f, full cpu time: %.6f)", cpu_subs_s, full_s, cpu_full_s)
+				: strprintf(" (cpu time: %.6f)", cpu_full_s) )
 		      + "\n";
 
 	stack.pop_back();
@@ -88,5 +96,6 @@ Measure::~Measure() {
 	else
 	{
 		stack.back()->subs += dt;
+		stack.back()->cpu_subs += cpu_dt;
 	}
 }

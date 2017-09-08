@@ -105,7 +105,6 @@ private:
 	typedef std::multimap<DepTargetKey, DepTargetValue> DepTargetMap;
 	typedef DepTargetMap::value_type                    DepTargetPair;
 
-	void find_deps(Task::Set &ref_full_deps, const DepTargetMap &target_map, const Task::Handle &task, const Task::Handle &sub_task) const;
 	void find_deps(const Task::List &list) const;
 
 public:

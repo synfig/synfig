@@ -36,6 +36,7 @@
 #include "valuenode_bline.h"
 #include <synfig/general.h>
 #include <synfig/localization.h>
+#include <synfig/valuenode_registry.h>
 #include <synfig/exception.h>
 #include <synfig/widthpoint.h>
 #include <vector>
@@ -52,6 +53,8 @@ using namespace synfig;
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
+
+REGISTER_VALUENODE(ValueNode_WPList, RELEASE_VERSION_0_63_00, "wplist", "WPList")
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -346,17 +349,7 @@ ValueNode_WPList::link_local_name(int i)const
 	return etl::strprintf(_("WidthPoint %03d"),i+1);
 }
 
-String
-ValueNode_WPList::get_name()const
-{
-	return "wplist";
-}
 
-String
-ValueNode_WPList::get_local_name()const
-{
-	return _("WPList");
-}
 
 LinkableValueNode*
 ValueNode_WPList::create_new()const

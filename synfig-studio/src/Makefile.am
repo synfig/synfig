@@ -16,7 +16,8 @@ EXTRA_DIST = \
 	brushlib/surface.hpp \
 	brushlib.h \
 	template.cpp \
-	template.h
+	template.h \
+	languages.inc.c
 
 SUBDIRS = \
 	synfigapp \

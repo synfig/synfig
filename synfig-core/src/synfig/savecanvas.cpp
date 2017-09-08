@@ -39,6 +39,7 @@
 #include "general.h"
 #include <synfig/localization.h>
 #include "valuenode.h"
+#include "valuenode_registry.h"
 #include "valuenodes/valuenode_animated.h"
 #include "valuenodes/valuenode_const.h"
 #include "valuenodes/valuenode_linear.h"
@@ -671,7 +672,7 @@ xmlpp::Element* encode_linkable_value_node(xmlpp::Element* root,LinkableValueNod
 
 	String name(value_node->get_name());
 	ReleaseVersion saving_version(get_file_version());
-	ReleaseVersion feature_version(LinkableValueNode::book()[name].release_version);
+	ReleaseVersion feature_version(ValueNodeRegistry::book()[name].release_version);
 
 	if (saving_version < feature_version)
 	{

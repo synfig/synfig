@@ -47,6 +47,7 @@
 
 #include <algorithm>
 #include "asyncrenderer.h"
+#include "canvasview.h"
 
 #include <gui/localization.h>
 
@@ -55,7 +56,6 @@
 #include <algorithm>
 #include <cstdio>
 #include <ctype.h>
-#include <cmath>
 #include <synfig/string.h>
 
 #endif
@@ -199,7 +199,7 @@ public:
 	}
 };
 
-studio::Preview::Preview(const studio::CanvasView::LooseHandle &h, float zoom, float f):
+studio::Preview::Preview(const etl::loose_handle<CanvasView> &h, float zoom, float f):
 	canvasview(h),
 	zoom(zoom),
 	fps(f),
@@ -212,7 +212,7 @@ studio::Preview::Preview(const studio::CanvasView::LooseHandle &h, float zoom, f
 	global_fps()
 { }
 
-void studio::Preview::set_canvasview(const studio::CanvasView::LooseHandle &h)
+void studio::Preview::set_canvasview(const etl::loose_handle<CanvasView> &h)
 {
 	canvasview = h;
 
@@ -311,6 +311,11 @@ void studio::Preview::clear()
 	frames.clear();
 }
 
+etl::handle<synfig::Canvas> studio::Preview::get_canvas() const
+	{return canvasview->get_canvas();}
+
+etl::handle<studio::CanvasView> studio::Preview::get_canvasview() const
+	{return canvasview;}
 
 static void free_guint8(const guint8 *mem)
 {

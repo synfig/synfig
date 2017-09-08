@@ -1,9 +1,14 @@
+lyr_std
+lyr_freetype
+mod_geometry
+mod_gradient
+mod_particle
+
 mod_example
 mod_gif
 mod_imagemagick
 mod_magickpp
 mod_mng
-lyr_std
 mod_noise
 mod_filter
 mod_ffmpeg

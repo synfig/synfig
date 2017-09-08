@@ -337,13 +337,19 @@ AM_CONDITIONAL(WITH_JPEG, test $with_jpeg = yes)
 
 AC_LIB_LTDL
 
-# Languages list (alphabetical order, please!)
-ALL_LINGUAS="ar bs ca ca@valencia cs cs_CZ da de el_GR en_CZ en_GB es es_PY eu eu_ES fa_IR fr gl he hi_IN hu it ja ja_JP lt lv nl no_NO pl_PL pt_BR ro ru si sk sk_SK sl sr_RS sv_SE tr uz@Latn zh-Hant zh_CN zh_TW zh_TW.Big5 ur"
+IT_PROG_INTLTOOL([0.35.0])
+
+GETTEXT_PACKAGE=synfigstudio
+AC_SUBST(GETTEXT_PACKAGE)
+AC_DEFINE_UNQUOTED([GETTEXT_PACKAGE], ["$GETTEXT_PACKAGE"],
+                     [The domain to use with gettext])
+
+localedir="$datadir/locale"
+AC_SUBST(localedir)
 
 AM_GNU_GETTEXT([external])
 # This is here so autoreconf will run autopoint
 AM_GNU_GETTEXT_VERSION([0.15])
-localedir="$datadir/locale"
 
 PKG_CHECK_MODULES(ETL, [ETL >= 0.04.21],,[
 	AC_MSG_ERROR([ ** You need to install the ETL (version 0.04.21 or greater).])

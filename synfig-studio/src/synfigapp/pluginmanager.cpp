@@ -72,26 +72,27 @@ PluginLauncher::PluginLauncher(synfig::Canvas::Handle canvas)
 	} else {
 		filename_base = synfigapp::Main::get_user_app_directory()+ETL_DIRECTORY_SEPARATOR+"tmp"+ETL_DIRECTORY_SEPARATOR+filename_original;
 	}
-	
+
 	// Make random filename and ensure there's no file with such name exist
 	struct stat buf;
 
 	// Filename to save the file for processing
 	do {
 		synfig::GUID guid;
-		filename_processed = filename_base+"."+guid.get_string().substr(0,8);
+		filename_processed = filename_base+"."+guid.get_string().substr(0,8)+".sif"; // without .sif suffix it won't be read back
 	} while (stat(filename_processed.c_str(), &buf) != -1);
-	
-	// We need a copy (filename_backup) in case of plugin execution will fail.
-	// The tmp_filename_orig will store original unmodified version of file
-	// If plugin will fail, then tmp_filename can be damaged and we should reopen 
-	// tmp_filename_orig instead.
+
+	/* The plugin could die with nonzero exit code
+	 * synfig could crash loading the modified file (should not happen)
+	 * having a backup file should protect against both cases
+	 */
 	do {
 		synfig::GUID guid;
-		filename_backup = filename_base+"."+guid.get_string().substr(0,8);
+		filename_backup = filename_base+"."+guid.get_string().substr(0,8)+".sif";
 	} while (stat(filename_backup.c_str(), &buf) != -1);
-	
+
 	save_canvas(canvas->get_identifier().file_system->get_identifier(filename_processed),canvas);
+	// copy file would be faster ..
 	save_canvas(canvas->get_identifier().file_system->get_identifier(filename_backup),canvas);
 
 	//canvas=0;

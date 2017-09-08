@@ -33,6 +33,7 @@
 
 #include <synfig/general.h>
 #include <synfig/localization.h>
+#include <synfig/valuenode_registry.h>
 #include "valuenode_stripes.h"
 #include "valuenode_const.h"
 #include <stdexcept>
@@ -50,6 +51,8 @@ using namespace synfig;
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
+
+REGISTER_VALUENODE(ValueNode_Stripes, RELEASE_VERSION_0_61_06, "stripes", "Stripes")
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -160,17 +163,7 @@ ValueNode_Stripes::get_link_vfunc(int i)const
 	return 0;
 }
 
-String
-ValueNode_Stripes::get_name()const
-{
-	return "stripes";
-}
 
-String
-ValueNode_Stripes::get_local_name()const
-{
-	return _("Stripes");
-}
 
 bool
 ValueNode_Stripes::check_type(Type &type)

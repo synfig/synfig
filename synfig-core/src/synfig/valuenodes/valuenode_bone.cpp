@@ -35,6 +35,7 @@
 #include "valuenode_animated.h"
 #include <synfig/general.h>
 #include <synfig/localization.h>
+#include <synfig/valuenode_registry.h>
 #include <synfig/canvas.h>
 
 #endif
@@ -62,6 +63,9 @@ using namespace synfig;
 #define GET_NODE_PARENT_CSTR(node,t) GET_GUID_CSTR(GET_NODE_PARENT(node,t))
 
 /* === G L O B A L S ======================================================= */
+
+REGISTER_VALUENODE(ValueNode_Bone, RELEASE_VERSION_0_62_00, "bone", "Bone")
+REGISTER_VALUENODE(ValueNode_Bone_Root, RELEASE_VERSION_0_62_00, "bone_root", "Root Bone")
 
 static ValueNode_Bone::CanvasMap canvas_map;
 static int bone_counter;
@@ -494,17 +498,7 @@ ValueNode_Bone::clone(Canvas::LooseHandle canvas, const GUID& deriv_guid)const
 	return ret;
 }
 
-String
-ValueNode_Bone::get_name()const
-{
-	return "bone";
-}
 
-String
-ValueNode_Bone::get_local_name()const
-{
-	return _("Bone");
-}
 
 String
 ValueNode_Bone::get_bone_name(Time t)const
@@ -1032,17 +1026,7 @@ ValueNode_Bone_Root::create(const ValueBase &x __attribute__ ((unused)))
 	return get_root_bone().get();
 }
 
-String
-ValueNode_Bone_Root::get_name()const
-{
-	return "bone_root";
-}
 
-String
-ValueNode_Bone_Root::get_local_name()const
-{
-	return _("Root");
-}
 
 String
 ValueNode_Bone_Root::get_bone_name(Time t __attribute__ ((unused)))const

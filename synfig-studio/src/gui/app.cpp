@@ -62,6 +62,7 @@
 #include <glibmm/miscutils.h>
 #include <glibmm/spawn.h>
 #include <glibmm/thread.h>
+#include <glibmm/timer.h>
 
 #include <gtk/gtk.h>
 #include <gdk/gdk.h>
@@ -306,11 +307,6 @@ String studio::App::predefined_size(DEFAULT_PREDEFINED_SIZE);
 String studio::App::predefined_fps(DEFAULT_PREDEFINED_FPS);
 float studio::App::preferred_fps=24.0;
 synfigapp::PluginManager studio::App::plugin_manager;
-#ifdef USE_OPEN_FOR_URLS
-String studio::App::browser_command("open"); // MacOS only
-#else
-String studio::App::browser_command("xdg-open"); // Linux XDG standard
-#endif
 std::set< String > studio::App::brushes_path;
 String studio::App::sequence_separator(".");
 String studio::App::navigator_renderer;
@@ -574,11 +570,6 @@ public:
 				value=strprintf("%i",(int)App::show_file_toolbar);
 				return true;
 			}
-			if(key=="browser_command")
-			{
-				value=App::browser_command;
-				return true;
-			}
 			//! "Keep brushes_path" preferences entry for backward compatibilty (15/12 - v1.0.3)
 			//! Now brush path(s) are hold by input preferences : brush.path_count & brush.path_%d
 			if(key=="brushes_path")
@@ -744,11 +735,6 @@ public:
 				App::show_file_toolbar=i;
 				return true;
 			}
-			if(key=="browser_command")
-			{
-				App::browser_command=value;
-				return true;
-			}
 			//! "Keep brushes_path" preferences entry for backward compatibilty (15/12 - v1.0.3)
 			//! Now brush path(s) are hold by input preferences : brush.path_count & brush.path_%d
 			if(key=="brushes_path")
@@ -842,7 +828,6 @@ public:
 		ret.push_back("enable_experimental_features");
 		ret.push_back("use_dark_theme");
 		ret.push_back("show_file_toolbar");
-		ret.push_back("browser_command");
 		ret.push_back("brushes_path");
 		ret.push_back("custom_filename_prefix");
 		ret.push_back("ui_language");
@@ -912,6 +897,8 @@ init_ui_manager()
 #define DEFINE_ACTION(x,stock) { Glib::RefPtr<Gtk::Action> action( Gtk::Action::create(x, stock) ); actions_action_group->add(action); }
 
 // actions in File menu
+DEFINE_ACTION("new", Gtk::StockID("synfig-new"));
+DEFINE_ACTION("open", Gtk::StockID("synfig-open"));
 DEFINE_ACTION("save", Gtk::StockID("synfig-save"));
 DEFINE_ACTION("save-as", Gtk::StockID("synfig-save_as"));
 DEFINE_ACTION("save-all", Gtk::StockID("synfig-save_all"));
@@ -1459,7 +1446,7 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		studio_init_cb.task(_("Loading Basic Settings..."));
 
 		load_settings("pref.use_dark_theme");
-		App::apply_gtk_settings(App::use_dark_theme);
+		App::apply_gtk_settings();
 
 		load_settings("pref.show_file_toolbar");
 
@@ -1996,7 +1983,7 @@ App::load_file_window_size()
 				std::string recent_file;
 				std::string recent_file_window_size;
 				getline(file,recent_file);
-				if(!recent_file.empty() && std::ifstream(recent_file.c_str()))
+				if(!recent_file.empty() && FileSystemNative::instance()->is_file(recent_file))
 					add_recent_file(recent_file);
 			}
 		}
@@ -2175,7 +2162,7 @@ App::restore_default_settings()
 }
 
 void
-App::apply_gtk_settings(bool use_dark)
+App::apply_gtk_settings()
 {
 	GtkSettings *gtk_settings;
 	gtk_settings = gtk_settings_get_default ();
@@ -2186,7 +2173,7 @@ App::apply_gtk_settings(bool use_dark)
 	}
 
 	// dark theme
-	g_object_set (G_OBJECT (gtk_settings), "gtk-application-prefer-dark-theme", use_dark, NULL);
+	g_object_set (G_OBJECT (gtk_settings), "gtk-application-prefer-dark-theme", App::use_dark_theme, NULL);
 
 	// enable menu icons
 	g_object_set (G_OBJECT (gtk_settings), "gtk-menu-images", TRUE, NULL);
@@ -3887,5 +3874,16 @@ studio::App::setup_changed()
 			{
 				(*citer)->signal_rend_desc_changed()();
 			}
+	}
+}
+
+void
+studio::App::process_all_events()
+{
+	Glib::usleep(1);
+	while(studio::App::events_pending()) {
+		while(studio::App::events_pending())
+			studio::App::iteration(false);
+		Glib::usleep(1);
 	}
 }

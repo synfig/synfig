@@ -125,6 +125,7 @@ SYNFIGHEADERS = \
 	transform.h \
 	uniqueid.h \
 	valuenode.h \
+	valuenode_registry.h \
 	waypoint.h \
 	matrix.h \
 	filesystem.h \
@@ -178,6 +179,7 @@ SYNFIGSOURCES = \
 	transform.cpp \
 	uniqueid.cpp \
 	valuenode.cpp \
+	valuenode_registry.cpp \
 	waypoint.cpp \
 	matrix.cpp \
 	filesystem.cpp \

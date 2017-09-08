@@ -101,7 +101,7 @@ StateEyedrop_Context::StateEyedrop_Context(CanvasView *canvas_view):
 	is_working(*canvas_view)
 {
 	synfig::info("Entered Eyedrop State");
-	canvas_view->work_area->set_cursor(Gdk::Cursor::create(Gdk::CROSSHAIR));
+	canvas_view->get_work_area()->set_cursor(Gdk::Cursor::create(Gdk::CROSSHAIR));
 
 	App::dock_toolbox->refresh();
 }
@@ -109,7 +109,7 @@ StateEyedrop_Context::StateEyedrop_Context(CanvasView *canvas_view):
 StateEyedrop_Context::~StateEyedrop_Context()
 {
 	synfig::info("Left Eyedrop State");
-	canvas_view->work_area->reset_cursor();
+	canvas_view->get_work_area()->reset_cursor();
 	App::dock_toolbox->refresh();
 }
 
@@ -128,7 +128,7 @@ Smach::event_result
 StateEyedrop_Context::event_refresh_handler(const Smach::event& /*x*/)
 {
 	synfig::info("STATE EYEDROP: Received Refresh Event");
-	canvas_view->work_area->queue_render_preview();
+	canvas_view->get_work_area()->queue_render_preview();
 	return Smach::RESULT_ACCEPT;
 }
 

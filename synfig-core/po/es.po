@@ -3,7 +3,7 @@
 # This file is distributed under the same license as the Synfig Core package.
 #
 # Translators:
-# Alberto Díaz Tormo <albertodiaztormo@gmail.com>, 2016
+# Albert, 2016
 # Bazza <bazza@riseup.net>, 2016
 # genete <genetita@gmail.com>, 2007, 2008, 2009, 2010, 2011, 2012
 # carlos_tutor <carlos_tutor@hotmail.com>, 2011

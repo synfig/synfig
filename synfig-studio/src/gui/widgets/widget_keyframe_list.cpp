@@ -77,7 +77,7 @@ Widget_Keyframe_List::Widget_Keyframe_List():
 	queue_draw();
 
 	//! Create the window of the moving tooltip
-	moving_tooltip_ = Gtk::manage(new Gtk::Window(Gtk::WINDOW_POPUP));
+	moving_tooltip_ = new Gtk::Window(Gtk::WINDOW_POPUP);
 	moving_tooltip_->set_resizable(false);
 	moving_tooltip_->set_name("gtk-tooltips");
 	moving_tooltip_->set_border_width (4);
@@ -93,6 +93,7 @@ Widget_Keyframe_List::Widget_Keyframe_List():
 
 Widget_Keyframe_List::~Widget_Keyframe_List()
 {
+	delete moving_tooltip_;
 }
 
 void

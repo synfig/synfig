@@ -36,6 +36,7 @@
 #include <synfig/canvas.h>
 #include <synfig/general.h>
 #include <synfig/localization.h>
+#include <synfig/valuenode_registry.h>
 
 #endif
 
@@ -48,6 +49,8 @@ using namespace synfig;
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
+
+REGISTER_VALUENODE(ValueNode_AngleString, RELEASE_VERSION_0_61_09, "anglestring", "Angle String")
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -111,17 +114,7 @@ ValueNode_AngleString::operator()(Time t)const
 	return ValueBase();
 }
 
-String
-ValueNode_AngleString::get_name()const
-{
-	return "anglestring";
-}
 
-String
-ValueNode_AngleString::get_local_name()const
-{
-	return _("Angle String");
-}
 
 bool
 ValueNode_AngleString::set_link_vfunc(int i,ValueNode::Handle value)

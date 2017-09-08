@@ -5,9 +5,11 @@ host = https://www.transifex.com
 file_filter = synfig-core/po/<lang>.po
 source_file = synfig-core/po/synfig.pot
 source_lang = en
+type = PO
 
 [synfig.synfig-studio]
 file_filter = synfig-studio/po/<lang>.po
 source_file = synfig-studio/po/synfigstudio.pot
 source_lang = en
+type = PO
 

@@ -220,7 +220,7 @@ class Dialog_Setup : public Dialog_Template
 
 	Gtk::Switch toggle_use_colorspace_gamma;
 #ifdef SINGLE_THREADED
-	Gtk::CheckButton toggle_single_threaded;
+	Gtk::Switch toggle_single_threaded;
 #endif
 
 	synfig::Time::Format time_format;
@@ -236,7 +236,6 @@ class Dialog_Setup : public Dialog_Template
 	Gtk::Switch toggle_use_dark_theme;
 	Gtk::Switch toggle_show_file_toolbar;
 
-	Gtk::Entry textbox_browser_command;
 	Gtk::Entry textbox_brushe_path;
 	Gtk::ListViewText* listviewtext_brushes_path;
 	Glib::RefPtr<Gtk::ListStore> brushpath_refmodel;
@@ -244,7 +243,6 @@ class Dialog_Setup : public Dialog_Template
 	Gtk::ComboBoxText* size_template_combo;
 	Gtk::ComboBoxText* fps_template_combo;
 	Gtk::ComboBoxText ui_language_combo;
-	std::vector<Glib::ustring> _lang_codes;
 	Gtk::Switch toggle_handle_tooltip_transfo_value;
 	Gtk::Switch toggle_handle_tooltip_transfo_name;
 

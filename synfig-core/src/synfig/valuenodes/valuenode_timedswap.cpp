@@ -33,6 +33,7 @@
 
 #include <synfig/general.h>
 #include <synfig/localization.h>
+#include <synfig/valuenode_registry.h>
 #include "valuenode_timedswap.h"
 #include "valuenode_const.h"
 #include <stdexcept>
@@ -50,6 +51,8 @@ using namespace synfig;
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
+
+REGISTER_VALUENODE(ValueNode_TimedSwap, RELEASE_VERSION_0_61_07, "timed_swap", "Timed Swap")
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -222,17 +225,7 @@ ValueNode_TimedSwap::get_link_vfunc(int i)const
 	return 0;
 }
 
-String
-ValueNode_TimedSwap::get_name()const
-{
-	return "timed_swap";
-}
 
-String
-ValueNode_TimedSwap::get_local_name()const
-{
-	return _("Timed Swap");
-}
 
 bool
 ValueNode_TimedSwap::check_type(Type &type)

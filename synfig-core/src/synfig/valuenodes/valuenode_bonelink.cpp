@@ -34,6 +34,7 @@
 #include "valuenode_bone.h"
 #include <synfig/general.h>
 #include <synfig/localization.h>
+#include <synfig/valuenode_registry.h>
 #include <synfig/valueoperations.h>
 
 #endif
@@ -47,6 +48,8 @@ using namespace synfig;
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
+
+REGISTER_VALUENODE(ValueNode_BoneLink, RELEASE_VERSION_1_0, "bone_link", "Bone Link")
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -179,17 +182,7 @@ ValueNode_BoneLink::operator()(Time t)const
 		get_bone_transformation(t), (*base_value_)(t) );
 }
 
-String
-ValueNode_BoneLink::get_name()const
-{
-	return "bone_link";
-}
 
-String
-ValueNode_BoneLink::get_local_name()const
-{
-	return _("Bone Link");
-}
 
 bool
 ValueNode_BoneLink::check_type(Type &type)

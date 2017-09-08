@@ -506,10 +506,7 @@ fi
 ( [[ $MODE == 'package' ]] || [[ $MODE == 'full' ]] ) && make clean || true
 
 if [[ $MODE != 'quick' ]]; then
-	libtoolize --ltdl --copy --force
-	sed -i 's/^AC_CONFIG_SUBDIRS(libltdl)$/m4_ifdef([_AC_SEEN_TAG(libltdl)], [], [AC_CONFIG_SUBDIRS(libltdl)])/' configure.ac || true
-	sed -i 's/^# AC_CONFIG_SUBDIRS(libltdl)$/m4_ifdef([_AC_SEEN_TAG(libltdl)], [], [AC_CONFIG_SUBDIRS(libltdl)])/' configure.ac || true
-	autoreconf --install --force
+    /bin/sh ./bootstrap.sh
 	if [ -e /etc/debian_version ] && [ -z $BOOST_CONFIGURE_OPTIONS ]; then
 		# Debian/Ubuntu multiarch
 		MULTIARCH_LIBDIR="/usr/lib/`uname -m`-linux-gnu/"
@@ -863,12 +860,13 @@ get_dependencies()
 		libtool \
 		intltool \
 		gettext \
-		libpng12-dev \
+		libpng-dev \
+		libfftw3-dev \
 		fontconfig \
 		libfreetype6-dev \
 		libfontconfig1-dev \
 		libxml2-dev \
-		libtiff-dev \
+		libtiff5-dev \
 		libmlt-dev libmlt++-dev \
 		libjasper-dev \
 		x11proto-xext-dev libdirectfb-dev libxfixes-dev libxinerama-dev libxdamage-dev libxcomposite-dev libxcursor-dev libxft-dev libxrender-dev libxt-dev libxrandr-dev libxi-dev libxext-dev libx11-dev \
@@ -1054,6 +1052,7 @@ get_dependencies()
 					libboost-system-dev \
 					libboost-filesystem-dev \
 					libboost-chrono-dev \
+					libmagick++-dev \
 				"
 			fi
 		fi

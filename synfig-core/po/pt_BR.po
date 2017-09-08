@@ -15,16 +15,15 @@
 # Ricardo Graça <ricolandia@gmail.com>, 2011,2015
 # rodolforg <rodolforg@gmail.com>, 2013
 # rodolforg <rodolforg@gmail.com>, 2013
+# Rui <xymarior@yandex.com>, 2017
 msgid ""
 msgstr ""
 "Project-Id-Version: Synfig UI\n"
 "Report-Msgid-Bugs-To: https://github.com/synfig/synfig/issues\n"
-"POT-Creation-Date: 2016-12-21 13:11+0700\n"
-"PO-Revision-Date: 2015-12-25 06:36+0000\n"
-"Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
-"Language-Team: Portuguese (Brazil) (http://www.transifex.com/morevnaproject/"
-"synfig/language/pt_BR/)\n"
-"Language: pt_BR\n"
+"POT-Creation-Date: 2016-06-05 14:00+0700\n"
+"PO-Revision-Date: 2017-01-03 16:14+0000\n"
+"Last-Translator: Rui <xymarior@yandex.com>\n"
+"Language-Team: Portuguese (Brazil) (http://www.transifex.com/morevnaproject/synfig/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -1391,9 +1390,10 @@ msgstr "Arredondado"
 msgid "Smoothness"
 msgstr "Suavidade"
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1170
-msgid "Determines the interpolation between widthpoints. (0) Linear (1) Smooth"
-msgstr ""
+#: src/modules/mod_geometry/advanced_outline.cpp:1176
+msgid ""
+"Determines the interpolation between widthpoints. (0) Linear (1) Smooth"
+msgstr "Determina a interpolação entre posições dos pontos. (0) Linear (1) Suave"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:1173
 #: src/modules/mod_geometry/outline.cpp:859
@@ -2366,7 +2366,7 @@ msgstr "Conteúdo do grupo"
 
 #: src/synfig/layers/layer_pastecanvas.cpp:148
 msgid "Multiplier to speed up, slow down, freeze, or reverse time"
-msgstr ""
+msgstr "Multiplicador a aumentar velocidade, reduzir, congelar, ou inverter tempo"
 
 #: src/synfig/layers/layer_pastecanvas.cpp:153
 msgid "Time Offset to apply to the context"
@@ -2374,7 +2374,7 @@ msgstr "Deslocamento de Tempo para aplicar ao contexto"
 
 #: src/synfig/layers/layer_pastecanvas.cpp:157
 msgid "Lock Selection"
-msgstr ""
+msgstr "Bloquear Seleção"
 
 #: src/synfig/layers/layer_pastecanvas.cpp:158
 msgid "When checked prevents to select the children using the mouse click"
@@ -2463,35 +2463,35 @@ msgstr "Ossos"
 #: src/synfig/layers/layer_skeletondeformation.cpp:68
 #: src/synfig/layers/layer_skeletondeformation.cpp:96
 msgid "Skeleton Deformation"
-msgstr ""
+msgstr "Deformação Esqueleto"
 
 #: src/synfig/layers/layer_skeletondeformation.cpp:106
 msgid "List of bones"
-msgstr ""
+msgstr "Lista de ossos"
 
 #: src/synfig/layers/layer_skeletondeformation.cpp:113
 msgid "First corner of the bounds rectangle"
-msgstr ""
+msgstr "Primeiro canto do retângulo de limites"
 
 #: src/synfig/layers/layer_skeletondeformation.cpp:118
 msgid "Second corner of the bounds rectangle"
-msgstr ""
+msgstr "Segundo canto do retângulo de limites"
 
 #: src/synfig/layers/layer_skeletondeformation.cpp:122
 msgid "Horizontal subdivisions"
-msgstr ""
+msgstr "Subdivisões horizontais"
 
 #: src/synfig/layers/layer_skeletondeformation.cpp:123
 msgid "Count of horizontal subdivisions of the transformation grid"
-msgstr ""
+msgstr "Número de subdivisões horizontais da grade de transformação"
 
 #: src/synfig/layers/layer_skeletondeformation.cpp:127
 msgid "Vertical subdivisions"
-msgstr ""
+msgstr "Subdivisões verticais"
 
 #: src/synfig/layers/layer_skeletondeformation.cpp:128
 msgid "Count of vertical subdivisions of the transformation grid"
-msgstr ""
+msgstr "Número de subdivisões verticais da grade de transformação"
 
 #: src/synfig/layers/layer_solidcolor.cpp:60
 msgid "Solid Color"
@@ -2503,27 +2503,27 @@ msgstr "Cor de preenchimento da camada"
 
 #: src/synfig/layers/layer_sound.cpp:58
 msgid "Sound"
-msgstr ""
+msgstr "Som"
 
 #: src/synfig/layers/layer_sound.cpp:109
 msgid "Path to sound file"
-msgstr ""
+msgstr "Caminho para o arquivo de som"
 
 #: src/synfig/layers/layer_sound.cpp:115
 msgid "Delay"
-msgstr ""
+msgstr "Atraso"
 
 #: src/synfig/layers/layer_sound.cpp:116
 msgid "Delay before play"
-msgstr ""
+msgstr "Atraso antes da reprodução"
 
 #: src/synfig/layers/layer_sound.cpp:121
 msgid "Volume"
-msgstr ""
+msgstr "Volume"
 
 #: src/synfig/layers/layer_sound.cpp:122
 msgid "Volume of sound"
-msgstr ""
+msgstr "Volume do som"
 
 #: src/synfig/layers/layer_switch.cpp:62 src/synfig/layers/layer_switch.cpp:86
 #: src/synfig/valuenode.cpp:176 src/synfig/valuenodes/valuenode_switch.cpp:134
@@ -4650,7 +4650,7 @@ msgstr "Usada como o fim do gradiente resultante"
 
 #: src/synfig/valuenodes/valuenode_reverse.cpp:309
 msgid "The value to be reversed"
-msgstr ""
+msgstr "O valor a ser invertido"
 
 #: src/synfig/valuenodes/valuenode_scale.cpp:151
 #: src/synfig/valuenodes/valuenode_scale.cpp:168
@@ -5067,7 +5067,7 @@ msgstr "Testar implementação de sinal"
 
 #: src/tool/main.cpp:247
 msgid "Try 'synfig --help' for more information"
-msgstr ""
+msgstr "Tente 'synfig --help' para maiores informações"
 
 #: src/tool/joblistprocessor.cpp:74
 msgid "Nothing to do!"

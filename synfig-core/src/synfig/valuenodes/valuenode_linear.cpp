@@ -33,9 +33,12 @@
 
 #include "valuenode_linear.h"
 #include "valuenode_const.h"
+
 #include <synfig/general.h>
 #include <synfig/localization.h>
+#include <synfig/valuenode_registry.h>
 #include <synfig/color.h>
+
 #include <ETL/misc>
 
 #endif
@@ -49,6 +52,8 @@ using namespace synfig;
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
+
+REGISTER_VALUENODE(ValueNode_Linear, RELEASE_VERSION_0_61_06, "linear", "Linear")
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -140,19 +145,6 @@ ValueNode_Linear::operator()(Time t)const
 
 	assert(0);
 	return ValueBase();
-}
-
-
-String
-ValueNode_Linear::get_name()const
-{
-	return "linear";
-}
-
-String
-ValueNode_Linear::get_local_name()const
-{
-	return _("Linear");
 }
 
 bool

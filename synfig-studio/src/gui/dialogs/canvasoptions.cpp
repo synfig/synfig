@@ -156,17 +156,17 @@ CanvasOptions::update_title()
 void
 CanvasOptions::refresh()
 {
-	if(canvas_view_->work_area->grid_status())
+	if(canvas_view_->get_work_area()->grid_status())
 		toggle_grid_show.set_active(true);
 	else
 		toggle_grid_show.set_active(false);
 
-	if(canvas_view_->work_area->get_grid_snap())
+	if(canvas_view_->get_work_area()->get_grid_snap())
 		toggle_grid_snap.set_active(true);
 	else
 		toggle_grid_snap.set_active(false);
 
-	vector_grid_size.set_value(canvas_view_->work_area->get_grid_size());
+	vector_grid_size.set_value(canvas_view_->get_work_area()->get_grid_size());
 
 	toggle_time_snap.set_tooltip_text(_("Not yet implemented"));
 	toggle_time_snap.set_sensitive(false);
@@ -189,17 +189,17 @@ CanvasOptions::on_apply_pressed()
 {
 	canvas_view_->set_grid_snap_toggle(toggle_grid_snap.get_active());
 	if(toggle_grid_snap.get_active())
-		canvas_view_->work_area->enable_grid_snap();
+		canvas_view_->get_work_area()->enable_grid_snap();
 	else
-		canvas_view_->work_area->disable_grid_snap();
+		canvas_view_->get_work_area()->disable_grid_snap();
 
 	canvas_view_->set_grid_show_toggle(toggle_grid_show.get_active());
 	if(toggle_grid_show.get_active())
-		canvas_view_->work_area->enable_grid();
+		canvas_view_->get_work_area()->enable_grid();
 	else
-		canvas_view_->work_area->disable_grid();
+		canvas_view_->get_work_area()->disable_grid();
 
-	canvas_view_->work_area->set_grid_size(vector_grid_size.get_value());
+	canvas_view_->get_work_area()->set_grid_size(vector_grid_size.get_value());
 }
 
 void

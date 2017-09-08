@@ -102,13 +102,13 @@ Dock_Params::refresh_selected_param()
 	if(iter)
 	{
 		LayerParamTreeStore::Model model;
-		canvas_view->work_area->set_selected_value_node(
+		canvas_view->get_work_area()->set_selected_value_node(
 			(synfig::ValueNode::Handle)(*iter)[model.value_node]
 		);
 	}
 	else
 	{
-		canvas_view->work_area->set_selected_value_node(0);
+		canvas_view->get_work_area()->set_selected_value_node(0);
 	}
 }
 

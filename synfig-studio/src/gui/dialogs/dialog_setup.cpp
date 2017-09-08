@@ -79,15 +79,6 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	adj_gamma_b(Gtk::Adjustment::create(2.2,0.1,3.0,0.025,0.025,0.025)),
 	adj_recent_files(Gtk::Adjustment::create(15,1,50,1,1,0)),
 	adj_undo_depth(Gtk::Adjustment::create(100,10,5000,1,1,1)),
-	toggle_use_colorspace_gamma(),
-#ifdef SINGLE_THREADED
-	toggle_single_threaded(),
-#endif
-	toggle_restrict_radius_ducks(),
-	toggle_resize_imported_images(),
-	toggle_enable_experimental_features(),
-	toggle_use_dark_theme(),
-	toggle_show_file_toolbar(),
 	adj_pref_x_size(Gtk::Adjustment::create(480,1,10000,1,10,0)),
 	adj_pref_y_size(Gtk::Adjustment::create(270,1,10000,1,10,0)),
 	adj_pref_fps(Gtk::Adjustment::create(24.0,1.0,100,0.1,1,0))
@@ -249,11 +240,6 @@ Dialog_Setup::create_system_page(PageInfo pi)
 	pi.grid->attach(auto_backup_interval, 1, row, 1, 1);
 	auto_backup_interval.set_hexpand(false);
 
-	// System - Browser_command
-	attach_label_section(pi.grid, _("Browser Command"), ++row);
-	pi.grid->attach(textbox_browser_command, 1, row, 1, 1);
-	textbox_browser_command.set_hexpand(true);
-
 	// System - Brushes path
 	{
 		attach_label_section(pi.grid, _("Brush Presets Path"), ++row);
@@ -264,7 +250,7 @@ Dialog_Setup::create_system_page(PageInfo pi)
 		Gtk::ScrolledWindow* scroll(manage (new Gtk::ScrolledWindow()));
 		scroll->add(*listviewtext_brushes_path);
 		listviewtext_brushes_path->set_headers_visible(false);
-		pi.grid->attach(*scroll, 1, row, 1,3);
+		pi.grid->attach(*scroll, 1, row, 1, 3);
 
 		// Brushes path buttons
 		Gtk::Grid* brush_path_btn_grid(manage (new Gtk::Grid()));
@@ -280,8 +266,9 @@ Dialog_Setup::create_system_page(PageInfo pi)
 		brush_path_remove->set_halign(Gtk::ALIGN_END);
 		brush_path_remove->signal_clicked().connect(
 				sigc::mem_fun(*this, &Dialog_Setup::on_brush_path_remove_clicked));
-		pi.grid->attach(*brush_path_btn_grid, 0, ++row, 1,1);
+		pi.grid->attach(*brush_path_btn_grid, 0, ++row, 1, 2);
 		brush_path_btn_grid->set_halign(Gtk::ALIGN_END);
+		++row;
 	}
 	// System - 11 enable_experimental_features
 	//attach_label(pi.grid, _("Experimental features (restart needed)"), ++row);
@@ -290,9 +277,10 @@ Dialog_Setup::create_system_page(PageInfo pi)
 
 #ifdef SINGLE_THREADED
 	// System - 12 single_threaded
-	attach_label(pi.grid, _("Single thread only (CPUs)"), ++row);
+	attach_label_section(pi.grid, _("Single thread only (CPUs)"), ++row);
 	pi.grid->attach(toggle_single_threaded, 1, row, 1, 1);
-	toggle_single_threaded.set_hexpand(true);
+	toggle_single_threaded.set_hexpand(false);
+	toggle_single_threaded.set_halign(Gtk::ALIGN_START);
 #endif
 
 	// signal for change resume
@@ -504,90 +492,23 @@ Dialog_Setup::create_interface_page(PageInfo pi)
 	 */
 
 	// Interface - UI Language
-	Glib::ustring lang_names[] = {
-		_("System Language"),
-		_("Arabic"),
-		_("Basque"),
-		_("Basque (Spain)"),
-		_("Catalan"),
-		_("Chinese (China)"),
-		_("Czech"),
-		_("Danish"),
-		_("Dutch "),
-		_("English"),
-		_("English (United Kingdom)"),
-		_("Farsi (Iran)"),
-		_("French "),
-		_("German"),
-		_("Greek (Greece)"),
-		_("Hebrew "),
-		_("Hungarian "),
-		_("Italian "),
-		_("Japanese (Japan)"),
-		_("Lithuanian "),
-		_("Norwegian (Norway)"),
-		_("Polish (Poland)"),
-		_("Portuguese (Brazil)"),
-		_("Romanian"),
-		_("Russian"),
-		_("Spanish"),
-		_("Sinhala"),
-		_("Slovak (Slovakia)"),
-		_("Swedish (Sweden)"),
-		_("Turkish"),
+
+	static const char* languages[][2] = {
+		#include <languages.inc.c>
+		{ NULL, NULL } // final entry without comma to avoid misunderstanding
 	};
 
-   Glib::ustring lang_codes[] = {
-		"os_LANG",		// System Language
-		"ar",			// Arabick
-		"eu",			// Basque
-		"eu_ES",		// Basque (Spain)
-		"ca",			// Catalan
-		"zh_CN",		// Chinese (China)
-		"cs",			// CZech
-		"da",			// Danish
-		"nl",			// Dutch
-		"en",			// English - default of development
-		"en_GB",		// English (United Kingdom)
-		"fa_IR",		// Farsi (Iran)
-		"fr",			// French
-		"de",			// German
-		"el_GR",		// Greek (Greece)
-		"he",			// Hebrew
-		"hu",			// Hungarian
-		"it",			// Italian
-		"ja_JP",		// Japanese (Japan)
-		"lt",			// Lithuanian
-		"no_NO",		// Norwegian (Norway)
-		"pl_PL",		// Polish (Poland)
-		"pt_BR",		// Portuguese (Brazil)
-		"ro",			// Romanian
-		"ru",			// Russian
-		"es",			// Spanish
-		"si",			// Sinhala
-		"sk_SK",		// Slovak (Slovakia)
-		"sv_SE",		// Swedish (Sweden)
-		"tr"			// Turkish
-   };
-
-	int num_items = G_N_ELEMENTS(lang_names);
-	Glib::ustring default_code;
-	int row(1);
-	Glib::ustring lang_code = App::ui_language;
-
-	for (int i =0 ; i < num_items; ++i)
-	{
-		ui_language_combo.append(lang_names[i]);
-		_lang_codes.push_back(lang_codes[i]);
-			if (lang_code == _lang_codes[i])
-			row = i;
-	}
-
-	ui_language_combo.set_active(row);
+	ui_language_combo.append("os_LANG", Glib::ustring("(") + _("System Language") + ")");
+	for(int i = 0; i < (int)(sizeof(languages)/sizeof(languages[0])) - 1; ++i)
+		if (languages[i][1] == Glib::ustring())
+			ui_language_combo.append(languages[i][0], Glib::ustring("[") + languages[i][0] + "]");
+		else
+			ui_language_combo.append(languages[i][0], languages[i][1]);
+	ui_language_combo.set_active_id(App::ui_language);
 	ui_language_combo.signal_changed().connect(sigc::mem_fun(*this, &studio::Dialog_Setup::on_ui_language_combo_change));
 
-	// row is used now for ui construction
-	row = 1;
+	int row = 1;
+
 	// Interface - Language section
 	attach_label_section(pi.grid, _("Language"), row);
 	pi.grid->attach(ui_language_combo, 0, ++row, 4, 1);
@@ -710,13 +631,10 @@ Dialog_Setup::on_apply_pressed()
 
 	// Set the dark theme flag
 	App::use_dark_theme=toggle_use_dark_theme.get_active();
-	App::apply_gtk_settings(App::use_dark_theme);
+	App::apply_gtk_settings();
 
 	// Set file toolbar flag
 	App::show_file_toolbar=toggle_show_file_toolbar.get_active();
-
-	// Set the browser_command textbox
-	App::browser_command=textbox_browser_command.get_text();
 
 	//! TODO Create Change mecanism has Class for being used elsewhere
 	// Set the preferred brush path(s)
@@ -769,7 +687,7 @@ Dialog_Setup::on_apply_pressed()
 
 	// Set ui language
 	if (pref_modification_flag&CHANGE_UI_LANGUAGE)
-		App::ui_language = (_lang_codes[ui_language_combo.get_active_row_number()]).c_str();
+		App::ui_language = ui_language_combo.get_active_id().c_str();
 
 	if (pref_modification_flag&CHANGE_UI_HANDLE_TOOLTIP)
 	{
@@ -965,9 +883,6 @@ Dialog_Setup::refresh()
 
 	// Refresh the status of file toolbar flag
 	toggle_show_file_toolbar.set_active(App::show_file_toolbar);
-
-	// Refresh the browser_command textbox
-	textbox_browser_command.set_text(App::browser_command);
 
 	// Refresh the brush path(s)
 	Glib::RefPtr<Gtk::ListStore> liststore = Glib::RefPtr<Gtk::ListStore>::cast_dynamic(

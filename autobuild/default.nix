@@ -47,11 +47,7 @@ let
       libtool libxmlxx pango pkgconfig
     ];
 
-    preConfigure = ''
-      libtoolize --copy
-      chmod +w libltdl/configure
-      autoreconf --install
-    '';
+    preConfigure = "./bootstrap.sh";
 
     configureFlags = with pkgs; [ "--with-boost-libdir=${boost}/lib" ];
   };

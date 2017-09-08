@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Synfig UI\n"
 "Report-Msgid-Bugs-To: https://github.com/synfig/synfig/issues\n"
-"POT-Creation-Date: 2016-12-21 13:11+0700\n"
-"PO-Revision-Date: 2015-12-25 06:36+0000\n"
+"POT-Creation-Date: 2016-06-05 14:00+0700\n"
+"PO-Revision-Date: 2017-03-24 15:22+0000\n"
 "Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
 "Language-Team: Chinese Traditional (http://www.transifex.com/morevnaproject/"
 "synfig/language/zh-Hant/)\n"
@@ -1823,7 +1823,7 @@ msgstr ""
 #: src/modules/mod_noise/main.cpp:69
 #: src/modules/mod_noise/valuenode_random.cpp:170
 msgid "Random"
-msgstr ""
+msgstr "隨機"
 
 #: src/modules/mod_noise/noise.cpp:61
 msgid "Noise Gradient"

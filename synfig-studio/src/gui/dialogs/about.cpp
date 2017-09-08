@@ -59,12 +59,11 @@ using namespace studio;
 
 #ifndef VERSION
 #define VERSION	"unknown"
-#define PACKAGE	"synfigstudio"
 #endif
 
 #ifdef _WIN32
+// Do we really need this nested ifdef??
 #	ifdef IMAGE_DIR
-#		undef IMAGE_DIR
 #		define IMAGE_DIR "share\\pixmaps"
 #	endif
 #endif
@@ -77,8 +76,7 @@ using namespace studio;
 #	define IMAGE_EXT	"png"
 #endif
 
-#define stringify_(x) #x
-#define stringify(x) stringify_(x)
+#define stringify(x) #x
 
 /* === G L O B A L S ======================================================= */
 
@@ -89,20 +87,14 @@ using namespace studio;
 About::About()
 {
 	set_transient_for((Gtk::Window&)(*App::main_window));
-#ifdef HAVE_GTK_ABOUTDIALOG_SET_PROGRAM_NAME
 	set_program_name(PACKAGE_NAME);
-#else
-	set_name(PACKAGE_NAME);
-#endif
 	set_version(VERSION);
 	set_comments(_("2D vector animation studio"));
 
-	// TODO: set_url_hook bot works in GTK3
-	//set_url_hook(sigc::mem_fun(*this, &About::on_link_clicked));
 	set_website("http://synfig.org/");
 	set_website_label(_("Visit the Synfig website"));
 
-	set_copyright(_("Copyright 2001-2013\nRobert B. Quattlebaum Jr.,\nAdrian Bentley and Synfig contributors"));
+	set_copyright(_("Copyright (c) 2001-2017\nSynfig developers & contributors"));
 	Glib::ustring license =
 		"This program is free software; you can redistribute it and/or modify "
 		"it under the terms of the GNU General Public License as published by "
@@ -118,9 +110,7 @@ About::About()
 		"with this program; if not, write to the Free Software Foundation, Inc., "
 		"51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA or visit: http://www.gnu.org/";
 	set_license(license);
-#ifdef HAVE_GTK_ABOUTDIALOG_SET_WRAP_LICENSE
 	set_wrap_license(true);
-#endif
 
 	std::vector<Glib::ustring> authors;
 	authors.push_back(_("Original developers:"));
@@ -135,6 +125,7 @@ About::About()
 	authors.push_back("Brendon Higgins");
 	authors.push_back("Carlos López González (genete)");
 	authors.push_back("Carlos A. Sosa Navarro");
+	authors.push_back("caryoscelus");
 	authors.push_back("Chris Moore (dooglus)");
 	authors.push_back("Chris Norman (pixelgeek)");
 	authors.push_back("Cyril Brulebois (KiBi)");
@@ -221,7 +212,7 @@ About::About()
 
 	extra_info += "\n";
 
-	extra_info += strprintf(_("Built with:\n"), ETL_VERSION);
+	extra_info += strprintf(_("Built with:\n"));
 	extra_info += strprintf(_("ETL %s\n"), ETL_VERSION);
 	extra_info += strprintf(_("Synfig API %s\n"), stringify(SYNFIG_VERSION));
 	extra_info += strprintf(_("Synfig library %d\n"), SYNFIG_LIBRARY_VERSION);
@@ -250,9 +241,4 @@ About::About()
 
 void About::close(int){
 	hide();
-}
-
-void About::on_link_clicked(Gtk::AboutDialog&, const Glib::ustring &url)
-{
-	App::open_uri(url);
 }

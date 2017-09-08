@@ -109,10 +109,8 @@ MainWindow::MainWindow()
 
 	add(*vbox);
 
-	add_accel_group(App::ui_manager()->get_accel_group());
-
 	init_menus();
-	window_action_group = Gtk::ActionGroup::create("mainwindow-recentfiles");
+	window_action_group = Gtk::ActionGroup::create("mainwindow-window");
 	App::ui_manager()->insert_action_group(window_action_group);
 
 	App::signal_recent_files_changed().connect(
@@ -353,6 +351,14 @@ MainWindow::on_recent_files_changed()
 		"<ui><popup action='menu-main'>" + ui_info + "</popup></ui>";
 	std::string ui_info_menubar =
 		"<ui><menubar action='menubar-main'>" + ui_info + "</menubar></ui>";
+
+	// remove group if exists
+	typedef std::vector< Glib::RefPtr<Gtk::ActionGroup> > ActionGroupList;
+	ActionGroupList groups = App::ui_manager()->get_action_groups();
+	for(ActionGroupList::const_iterator i = groups.begin(); i != groups.end(); ++i)
+		if ((*i)->get_name() == action_group->get_name())
+			App::ui_manager()->remove_action_group(*i);
+	groups.clear();
 
 	App::ui_manager()->insert_action_group(action_group);
 	App::ui_manager()->add_ui_from_string(ui_info_popup);

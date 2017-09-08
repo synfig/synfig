@@ -33,6 +33,7 @@
 
 #include <synfig/general.h>
 #include <synfig/localization.h>
+#include <synfig/valuenode_registry.h>
 
 #include "valuenode_const.h"
 
@@ -50,6 +51,8 @@ using namespace synfig;
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
+
+REGISTER_VALUENODE(ValueNode_Average, RELEASE_VERSION_1_0, "average", "Average")
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -93,13 +96,7 @@ ValueNode_Average::operator()(Time t)const
 	return ValueAverage::average( ValueNode_DynamicList::operator()(t), ValueBase(), ValueBase(get_type()));
 }
 
-String
-ValueNode_Average::get_name()const
-	{ return "average"; }
 
-String
-ValueNode_Average::get_local_name()const
-	{ return _("Average"); }
 
 LinkableValueNode*
 ValueNode_Average::create_new()const

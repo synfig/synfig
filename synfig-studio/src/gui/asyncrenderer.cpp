@@ -141,7 +141,7 @@ public:
 			return false;
 
 #ifdef SINGLE_THREADED
-		if (single_threaded())
+		if (App::single_threaded)
 			return sync_render_tile(rect, context, tile_desc, cb);
 #endif
 
@@ -274,7 +274,7 @@ public:
 	virtual void end_frame()
 	{
 #ifdef SINGLE_THREADED
-		if (!single_threaded())
+		if (!App::single_threaded)
 		{
 #endif
 			while(alive_flag)
@@ -455,7 +455,7 @@ public:
 	virtual void end_frame()
 	{
 #ifdef SINGLE_THREADED
-		if (!single_threaded())
+		if (!App::single_threaded)
 		{
 #endif
 			while(alive_flag)
@@ -572,7 +572,7 @@ public:
 		}
 
 #ifdef SINGLE_THREADED
-		if (single_threaded())
+		if (App::single_threaded)
 			signal_progress()();
 		else
 #endif
@@ -611,7 +611,7 @@ public:
 		if(alive_flag)
 			alive_flag=warm_target->add_frame(&surface);
 #ifdef SINGLE_THREADED
-		if (!single_threaded())
+		if (!App::single_threaded)
 #endif
 			cond_frame_queue_empty.signal();
 		ready_next=true;
@@ -697,7 +697,7 @@ public:
 		}
 		
 #ifdef SINGLE_THREADED
-		if (single_threaded())
+		if (App::single_threaded)
 			signal_progress()();
 		else
 #endif
@@ -724,7 +724,7 @@ public:
 		if(alive_flag)
 			alive_flag=warm_target->put_surface(surface, callback);
 #ifdef SINGLE_THREADED
-		if (!single_threaded())
+		if (!App::single_threaded)
 #endif
 			cond_frame_queue_empty.signal();
 		ready_next=true;
@@ -826,7 +826,7 @@ AsyncRenderer::stop()
 
 #if REJOIN_ON_STOP
 #ifdef SINGLE_THREADED
-			if (!single_threaded())
+			if (!App::single_threaded)
 #endif
 				render_thread->join();
 #endif
@@ -897,7 +897,7 @@ AsyncRenderer::start_()
 #endif
 
 #ifdef SINGLE_THREADED
-		if (single_threaded())
+		if (App::single_threaded)
 		{
 			//synfig::info("%s:%d rendering in the same thread", __FILE__, __LINE__);
 			target->signal_progress().connect(sigc::mem_fun(this,&AsyncRenderer::rendering_progress));

@@ -34,6 +34,7 @@
 
 #include <synfig/general.h>
 #include <synfig/localization.h>
+#include <synfig/valuenode_registry.h>
 
 #include "valuenode_const.h"
 
@@ -46,6 +47,8 @@ using namespace synfig;
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
+
+REGISTER_VALUENODE(ValueNode_Greyed, RELEASE_VERSION_0_62_00, "greyed", "Greyed")
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -76,17 +79,7 @@ ValueNode_Greyed::create_new()const
 	return new ValueNode_Greyed(get_type());
 }
 
-String
-ValueNode_Greyed::get_name()const
-{
-	return "greyed";
-}
 
-String
-ValueNode_Greyed::get_local_name()const
-{
-	return _("Greyed");
-}
 
 LinkableValueNode::Vocab
 ValueNode_Greyed::get_children_vocab_vfunc()const

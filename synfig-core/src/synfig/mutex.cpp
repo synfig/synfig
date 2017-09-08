@@ -36,6 +36,8 @@
 #else
 #ifdef _WIN32
 #define USING_WIN32_THREADS 1
+#else
+#error Need either libpthread of win32 threads
 #endif
 #endif
 

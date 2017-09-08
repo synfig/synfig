@@ -37,6 +37,7 @@
 #include <synfig/canvas.h>
 #include <synfig/general.h>
 #include <synfig/localization.h>
+#include <synfig/valuenode_registry.h>
 
 #endif
 
@@ -49,6 +50,8 @@ using namespace synfig;
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
+
+REGISTER_VALUENODE(ValueNode_Join, RELEASE_VERSION_0_61_09, "join", "Joined List")
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -67,7 +70,7 @@ ValueNode_Join::ValueNode_Join(const ValueBase &value):
 		// add an extra element at the end to allow the easy insertion of text after the given value's string
 		v.push_back(String());
 
-		set_link("strings",ValueNode_DynamicList::create_from(v));
+		set_link("strings",ValueNode_DynamicList::create(v));
 		set_link("before",ValueNode_Const::create(String("")));
 		set_link("separator",ValueNode_Const::create(String("")));
 		set_link("after",ValueNode_Const::create(String("")));
@@ -126,17 +129,7 @@ ValueNode_Join::operator()(Time t)const
 	return ValueBase();
 }
 
-String
-ValueNode_Join::get_name()const
-{
-	return "join";
-}
 
-String
-ValueNode_Join::get_local_name()const
-{
-	return _("Joined List");
-}
 
 bool
 ValueNode_Join::set_link_vfunc(int i,ValueNode::Handle value)

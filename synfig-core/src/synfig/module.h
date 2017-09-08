@@ -37,6 +37,7 @@
 #include "color.h"
 #include "layer.h"
 #include "canvas.h"
+#include "valuenode_registry.h"
 
 //#include "value.h"
 
@@ -154,19 +155,6 @@
 
 //! Marks the end of the importers in the module's inventory
 #define END_IMPORTERS }
-
-//! Marks the start of the valuenodes in the module's inventory
-#define BEGIN_VALUENODES { synfig::LinkableValueNode::Book &book(synfig::LinkableValueNode::book());
-
-//! Registers a valuenode that is defined in the module's inventory
-#define VALUENODE(class,name,local,version)														\
-	book[name].factory=reinterpret_cast<synfig::LinkableValueNode::Factory>(&class::create);	\
-	book[name].check_type=&class::check_type;													\
-	book[name].local_name=local;																\
-	book[name].release_version=version;
-
-//! Marks the end of the valuenodes in the module's inventory
-#define END_VALUENODES }
 
 //! Marks the start of the optimizers in the module's inventory
 #define BEGIN_OPTIMIZERS {

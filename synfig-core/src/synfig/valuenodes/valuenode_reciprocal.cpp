@@ -35,6 +35,7 @@
 #include "valuenode_const.h"
 #include <synfig/general.h>
 #include <synfig/localization.h>
+#include <synfig/valuenode_registry.h>
 
 #endif
 
@@ -47,6 +48,8 @@ using namespace synfig;
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
+
+REGISTER_VALUENODE(ValueNode_Reciprocal, RELEASE_VERSION_0_61_08, "reciprocal", "Reciprocal")
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -136,17 +139,7 @@ ValueNode_Reciprocal::operator()(Time t)const
 		return 1.0f / link;
 }
 
-String
-ValueNode_Reciprocal::get_name()const
-{
-	return "reciprocal";
-}
 
-String
-ValueNode_Reciprocal::get_local_name()const
-{
-	return _("Reciprocal");
-}
 
 bool
 ValueNode_Reciprocal::check_type(Type &type)
