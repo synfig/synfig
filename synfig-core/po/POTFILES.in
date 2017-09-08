@@ -10,6 +10,7 @@ src/modules/lyr_std/clamp.cpp
 src/modules/lyr_std/clamp.h
 src/modules/lyr_std/curvewarp.cpp
 src/modules/lyr_std/curvewarp.h
+src/modules/lyr_std/freetime.cpp
 src/modules/lyr_std/import.cpp
 src/modules/lyr_std/import.h
 src/modules/lyr_std/insideout.cpp
@@ -239,6 +240,7 @@ src/synfig/layers/layer_composite.cpp
 src/synfig/layers/layer_composite.h
 src/synfig/layers/layer_duplicate.cpp
 src/synfig/layers/layer_duplicate.h
+src/synfig/layers/layer_group.cpp
 src/synfig/layers/layer_mime.cpp
 src/synfig/layers/layer_mime.h
 src/synfig/layers/layer_motionblur.cpp
@@ -290,6 +292,9 @@ src/synfig/renddesc.cpp
 src/synfig/renddesc.h
 src/synfig/render.cpp
 src/synfig/render.h
+src/synfig/rendering/opengl/renderergl.cpp
+src/synfig/rendering/software/renderersafe.cpp
+src/synfig/rendering/software/renderersw.cpp
 src/synfig/savecanvas.cpp
 src/synfig/savecanvas.h
 src/synfig/segment.h
@@ -328,6 +333,7 @@ src/synfig/value.cpp
 src/synfig/value.h
 src/synfig/valuenode.cpp
 src/synfig/valuenode.h
+src/synfig/valuenode_registry.cpp
 src/synfig/valuenodes/valuenode_add.cpp
 src/synfig/valuenodes/valuenode_add.h
 src/synfig/valuenodes/valuenode_and.cpp
@@ -336,6 +342,8 @@ src/synfig/valuenodes/valuenode_anglestring.cpp
 src/synfig/valuenodes/valuenode_anglestring.h
 src/synfig/valuenodes/valuenode_animated.cpp
 src/synfig/valuenodes/valuenode_animated.h
+src/synfig/valuenodes/valuenode_animatedfile.cpp
+src/synfig/valuenodes/valuenode_animatedinterface.cpp
 src/synfig/valuenodes/valuenode_atan2.cpp
 src/synfig/valuenodes/valuenode_atan2.h
 src/synfig/valuenodes/valuenode_average.cpp
@@ -471,9 +479,11 @@ src/synfig/zstreambuf.h
 # Disabled because they are not built
 # src/template.cpp
 # src/template.h
+src/tool/definitions.cpp
 src/tool/main.cpp
 src/tool/joblistprocessor.cpp
 src/tool/optionsprocessor.cpp
 src/tool/printing_functions.cpp
 src/tool/progress.h
+src/tool/renderprogress.cpp
 src/tool/renderprogress.h
