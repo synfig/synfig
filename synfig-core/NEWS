@@ -1,8 +1,13 @@
               synfig releases
 
-More detailed notes are available on the news page:
+ 1.2.1 (git tag "1.2.1") - September 11, 2017 - Bugfix release.
 
-http://synfig.org/cms/en/news/
+  * Fix artifacts of Fast Gaussian Blur. Thanks to Ivan Mahonin.
+  * Fix incorrect rendering of Twirl and Noise Distortion layers (issues #305 and #316). Thanks to Ivan Mahonin.
+  * Basic support for CMake build system. Thanks to Caryoscelus.
+  * Improve performance for complex scenes with more than 1000 vector elements (issue #314). Thanks to Ivan Mahonin.
+  * Fix Z-Depth issues for ungroupped layers (issue #299). Thanks to Ivan Mahonin.
+  * Fixed rendering of text with international characters on Windows  (issue #379). Thanks to Ivan Mahonin.
 
  1.2.0 (git tag "1.2.0") - December 22, 2016 - Major release.
  

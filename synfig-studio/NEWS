@@ -1,8 +1,17 @@
               synfigstudio releases
 
-More detailed notes are available on the news page:
+ 1.2.1 (git tag "1.2.1") - September 11, 2017 - Bugfix release.
 
-http://synfig.org/cms/en/news/
+  * Basic support for CMake build system. Thanks to Caryoscelus.
+  * Fix size of dock area drop buttons for Gtk >= 3.20 (issue #227). Thanks to Caryoscelus.
+  * Fix support for graphic tablets in Windows version (issue #241). Thanks to Ivan Mahonin.
+  * Initial value of quality in Preview Dialog now independent from current zoom level and set to 1.0 by default. Thanks to Ivan Mahonin.
+  * Fixed crash of Skeleton plugin (issue #334). Thanks to Caryoscelus.
+  * Fix: filename with international characters not saved in “Recent Files” menu. Thanks to Ivan Mahonin.
+  * Fix crash with XP-Pen G540 tablet (issue #351).
+  * Fixed “FFmpeg not found” error in Linux AppImages (issue #332).
+  * JACK support is now available for Linux AppImages (issue #395).
+  
 
  1.2.0 (git tag "1.2.0") - December 22, 2016 - Major release.
  
