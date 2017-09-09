@@ -1892,7 +1892,9 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 					     : (modifier & GDK_SHIFT_MASK)   ? DRAG_ROTATE_WINDOW
 						 : DRAG_WINDOW;
 
-				drag_point=mouse_pos;
+				drag_point = (modifier & GDK_CONTROL_MASK) ? synfig::Point(event->motion.x, event->motion.y) :
+							mouse_pos;
+
 				signal_user_click(1)(mouse_pos);
 			}
 
@@ -2056,9 +2058,10 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 
 		if(dragging == DRAG_WINDOW)
 			set_focus_point(get_focus_point() + mouse_pos-drag_point);
-		else if(dragging == DRAG_ZOOM_WINDOW)
-			set_zoom(get_zoom() + mouse_pos[1] - drag_point[1]);
-		else if ((event->motion.state & GDK_BUTTON1_MASK) &&
+		else if(dragging == DRAG_ZOOM_WINDOW) {
+			set_zoom(get_zoom() * (1.0 + (((float) -(event->motion.y - drag_point[1])) / 100)));
+			drag_point = synfig::Point(event->motion.x, event->motion.y);
+		} else if ((event->motion.state & GDK_BUTTON1_MASK) &&
 				canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MOUSE_BUTTON_DRAG, BUTTON_LEFT,
 																  mouse_pos,pressure,modifier)) == Smach::RESULT_ACCEPT)
 			return true;
