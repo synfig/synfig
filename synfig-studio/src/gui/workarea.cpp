@@ -1868,6 +1868,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 						return true;
 					}
 				}
+
 				// All else fails, try making a selection box
 				dragging=DRAG_BOX;
 				curr_point=drag_point=mouse_pos;
@@ -1886,11 +1887,14 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 			if(bezier)
 				bezier->signal_user_click(1)(bezier_click_pos);
 
-			if(canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MOUSE_BUTTON_DOWN,BUTTON_MIDDLE,mouse_pos,pressure,modifier))==Smach::RESULT_OK)
+			if(canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MOUSE_BUTTON_DOWN,BUTTON_MIDDLE,mouse_pos,pressure,modifier))==Smach::RESULT_OK) {
+				dragging = (modifier & GDK_CONTROL_MASK) ? DRAG_ZOOM_WINDOW
+					     : (modifier & GDK_SHIFT_MASK)   ? DRAG_ROTATE_WINDOW
+						 : DRAG_WINDOW;
 
-			dragging=DRAG_WINDOW;
-			drag_point=mouse_pos;
-			signal_user_click(1)(mouse_pos);
+				drag_point=mouse_pos;
+				signal_user_click(1)(mouse_pos);
+			}
 
 			break;
 		}
@@ -2052,6 +2056,8 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 
 		if(dragging == DRAG_WINDOW)
 			set_focus_point(get_focus_point() + mouse_pos-drag_point);
+		else if(dragging == DRAG_ZOOM_WINDOW)
+			set_zoom(get_zoom() + mouse_pos[1] - drag_point[1]);
 		else if ((event->motion.state & GDK_BUTTON1_MASK) &&
 				canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MOUSE_BUTTON_DRAG, BUTTON_LEFT,
 																  mouse_pos,pressure,modifier)) == Smach::RESULT_ACCEPT)

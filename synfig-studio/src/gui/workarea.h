@@ -194,7 +194,9 @@ public:
 		DRAG_DUCK,
 		DRAG_GUIDE,
 		DRAG_BOX,
-		DRAG_BEZIER
+		DRAG_BEZIER,
+		DRAG_ZOOM_WINDOW,
+		DRAG_ROTATE_WINDOW
 	};
 	// Class used to store the cairo surface
 	class SurfaceElement
