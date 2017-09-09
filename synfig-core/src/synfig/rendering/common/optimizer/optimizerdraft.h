@@ -106,7 +106,10 @@ class OptimizerDraftLayerSkip: public OptimizerDraft
 private:
 	String layername;
 public:
-	OptimizerDraftLayerSkip(const String &layername): layername(layername) { }
+	OptimizerDraftLayerSkip(const String &layername): layername(layername)
+	{
+		mode |= MODE_REPEAT_LAST;
+	}
 	virtual void run(const RunParams &params) const;
 };
 
