@@ -190,6 +190,8 @@ private:
 
 	void on_layer_param_changed(synfig::Layer::Handle handle,synfig::String param_name);
 
+	void on_text_changed(synfig::Layer::Handle handle,synfig::String text);
+
 	//void on_value_node_added(synfig::ValueNode::Handle value_node);
 
 	//void on_value_node_deleted(synfig::ValueNode::Handle value_node);
