@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2008 Chris Moore
+**	Copyright (c) 2017 caryoscelus
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -38,9 +39,9 @@
 #include "valuenodereplace.h"
 
 #include "valuedescdisconnect.h"
+#include "valuedescconvert.h"
 #include <synfigapp/canvasinterface.h>
 #include <synfig/valuenodes/valuenode_const.h>
-#include <synfig/valuenodes/valuenode_composite.h>
 #include <synfig/valuenodes/valuenode_duplicate.h>
 #include <synfig/valuenodes/valuenode_bone.h>
 
@@ -169,15 +170,13 @@ Action::ValueDescDisconnect::prepare()
 
 	if(value_desc.get_value_type() == type_transformation)
 	{
-		ValueNode::Handle src_value_node;
-		src_value_node=ValueNode_Composite::create((*value_desc.get_value_node())(time));
-
-		Action::Handle action(ValueNodeReplace::create());
+		Action::Handle action(ValueDescConvert::create());
 
 		action->set_param("canvas",get_canvas());
 		action->set_param("canvas_interface",get_canvas_interface());
-		action->set_param("src",src_value_node);
-		action->set_param("dest",value_desc.get_value_node());
+		action->set_param("value_desc",value_desc);
+		action->set_param("type","composite");
+		action->set_param("time",time);
 
 		assert(action->is_ready());
 		if(!action->is_ready())
