@@ -1421,12 +1421,6 @@ Duckmatic::find_bezier(synfig::Point pos, synfig::Real scale, synfig::Real radiu
         curve[3] = (*iter)->p2->get_trans_point();
         curve.sync();
 
-#if 0
-        // I don't know why this doesn't work
-        time=curve.find_closest(pos,6);
-        d=((curve(time)-pos).mag_squared());
-
-#else
         //set the step size based on the size of the picture
         d = (curve[1] - curve[0]).mag() + (curve[2]-curve[1]).mag() + (curve[3]-curve[2]).mag();
 
@@ -1436,7 +1430,6 @@ Duckmatic::find_bezier(synfig::Point pos, synfig::Real scale, synfig::Real radiu
         step = min(step,0.1); //10 is minimum
 
         d = find_closest(curve,pos,step,&closest,&time);
-#endif
 
         if(d < closest)
         {

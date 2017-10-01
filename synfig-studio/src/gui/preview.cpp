@@ -379,7 +379,6 @@ Widget_Preview::Widget_Preview():
 	Gtk::Button *button = 0;
 	Gtk::Image *icon = 0;
 
-	#if 1
 
 	//2nd row: prevframe play/pause nextframe loop | halt-render re-preview erase-all  
 	toolbar = Gtk::manage(new class Gtk::HBox(false, 0));
@@ -556,7 +555,6 @@ Widget_Preview::Widget_Preview():
 	scr_time_scrub.show_all();
 
 	//if(draw_area.get_window()) gc_area = Gdk::GC::create(draw_area.get_window());
-	#endif
 }
 
 studio::Widget_Preview::~Widget_Preview()

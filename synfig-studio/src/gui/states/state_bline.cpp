@@ -1358,12 +1358,8 @@ StateBLine_Context::refresh_ducks(bool button_down)
 		// First add the duck associated with this vertex
 		duck=new WorkArea::Duck(bline_point.get_vertex());
 		duck->set_editable(true);
-#ifdef DISTINGUISH_FIRST_DUCK
 		if (iter!=bline_point_list.begin())
 			duck->set_type(Duck::TYPE_VERTEX);
-#else
-		duck->set_type(Duck::TYPE_VERTEX);
-#endif
 		duck->set_name(strprintf("%x-vertex",value_node.get()));
 		duck->signal_edited().connect(
 			sigc::bind(sigc::mem_fun(*this,&studio::StateBLine_Context::on_vertex_change),value_node)
@@ -1455,9 +1451,6 @@ StateBLine_Context::refresh_ducks(bool button_down)
 
 		duck=new WorkArea::Duck(bline_point.get_vertex());
 		duck->set_editable(true);
-#ifndef DISTINGUISH_FIRST_DUCK
-		duck->set_type(Duck::TYPE_VERTEX);
-#endif
 		duck->set_name(strprintf("%x-vertex",bline_point_list.front().get()));
 		duck->signal_edited().connect(
 			sigc::bind(sigc::mem_fun(*this,&studio::StateBLine_Context::on_vertex_change),bline_point_list.front())

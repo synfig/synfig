@@ -512,12 +512,6 @@ CurveWarp::accelerated_render(Context context,Surface *surface,int quality, cons
 		src_rect.expand(transform(pos2, &dist, &along)); UPDATE_DIST;
 	}
 
-#if 0
-	// look at each blinepoint
-	std::vector<BLinePoint>::const_iterator iter;
-	for (iter=bline.begin(); iter!=bline.end(); iter++)
-		src_rect.expand(transform(iter->get_vertex()+origin, &dist, &along)); UPDATE_DIST;
-#endif
 
 	Point src_tl(src_rect.get_min());
 	Point src_br(src_rect.get_max());
@@ -698,12 +692,6 @@ if (along > max_along) max_along = along
 		src_rect.expand(transform(pos2, &dist, &along)); UPDATE_DIST;
 	}
 	
-#if 0
-	// look at each blinepoint
-	std::vector<BLinePoint>::const_iterator iter;
-	for (iter=bline.begin(); iter!=bline.end(); iter++)
-		src_rect.expand(transform(iter->get_vertex()+origin, &dist, &along)); UPDATE_DIST;
-#endif
 	
 	Point src_tl(src_rect.get_min());
 	Point src_br(src_rect.get_max());

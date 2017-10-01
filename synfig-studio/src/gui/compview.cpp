@@ -394,9 +394,6 @@ void
 CompView::menu_new_canvas()
 {
 #warning Update Me!
-#if 0
-	get_selected_canvas_view()->new_child_canvas();
-#endif
 }
 
 void

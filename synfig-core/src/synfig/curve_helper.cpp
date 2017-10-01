@@ -57,13 +57,6 @@ const Real ERROR = 1e-11;
 Real synfig::find_closest(const etl::bezier<Point> &curve, const Point &point,
 				float step, Real *dout, float *tout)
 {
-#if 0
-	float time(curve.find_closest(point,4));
-	Real dist((curve(time)-point).mag());
-	if(dout) *dout=dist;
-	if(tout) *tout=time;
-	return time;
-#else
 	Real d,closest = 1.0e50;
 	float t,time,closestt = -1;
 	Vector p0,p1,end;
@@ -100,13 +93,11 @@ Real synfig::find_closest(const etl::bezier<Point> &curve, const Point &point,
 	}
 
 	return closest;
-#endif
 }
 
 // Line and BezHull Definitions
 void BezHull::Bound(const etl::bezier<Point> &b)
 {
-	#if 1
 
 	//with a starting vertex, find the only vertex that has all other vertices on its right
 	int i,j;
@@ -166,98 +157,6 @@ void BezHull::Bound(const etl::bezier<Point> &b)
 		}
 	}while(cur != first);
 
-	#else
-
-	//will work but does not keep winding order
-
-	//convex hull alg.
-	//build set of line segs which have no points on other side...
-	//start with initial normal segments
-
-	//start with single triangle
-	p[0] = b[0];
-	p[1] = b[1];
-	p[2] = b[2];
-	p[3] = b[3];
-
-	//initial reject (if point is inside triangle don't care)
-	{
-		Vector v1,v2,vp;
-
-		v1 = p[1]-p[0];
-		v2 = p[2]-p[0];
-
-		vp = p[3]-p[0];
-
-		float 	s = (vp*v1) / (v1*v1),
-				t = (vp*v2) / (v2*v2);
-
-		//if we're inside the triangle we don't this sissy point
-		if( s >= 0 && s <= 1 && t >= 0 && t <= 1 )
-		{
-			size = 3;
-			return;
-		}
-	}
-
-	//expand triangle based on info...
-	bool line;
-	int index,i,j;
-	float ds,d;
-
-	//distance from point to vertices
-	line = false;
-	index = 0;
-	ds = (p[0]-b[3]).mag_squared();
-	for(i = 1; i < 3; ++i)
-	{
-		d = (p[3]-p[i]).mag_squared();
-		if(d < ds)
-		{
-			index = i;
-			ds = d;
-		}
-	}
-
-	//distance to line
-	float t;
-	j = 2;
-	for(i = 0; i < 3; j = i++)
-	{
-		d = line_point_distsq(p[j],p[i],b[4],t);
-		if(d < ds)
-		{
-			index = j;
-			ds = d;
-			line = true;
-		}
-	}
-
-	//We don't need no stinkin extra vertex, just replace
-	if(!line)
-	{
-		p[index] = p[3];
-		size = 3;
-	}else
-	{
-		//must expand volume to work with point...
-		//	after the index then
-
-		/* Pattern:
-			0 - push 1,2 -> 2,3
-			1 - push 2 -> 3
-			2 - none
-		*/
-		for(i = 3; i > index+1; --i)
-		{
-			p[i] = p[i-1];
-		}
-
-		p[index] = b[3]; //recopy b3
-		size = 4;
-	}
-
-	#endif
 }
 
 //Line Intersection

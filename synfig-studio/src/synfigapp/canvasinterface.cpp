@@ -994,27 +994,6 @@ void
 CanvasInterface::auto_export(const ValueDesc& /*value_desc*/)
 {
 	// THIS FUNCTION IS DEPRECATED, AND IS NOW A STUB.
-#if 0
-	// Check to see if we are already exported.
-	if(value_desc.is_exported())
-		return;
-
-	Action::Handle 	action(Action::create("ValueDescExport"));
-
-	assert(action);
-	if(!action)
-		return;
-
-	String name(strprintf(_("Unnamed%08d"),synfig::UniqueID().get_uid()));
-
-	action->set_param("canvas",get_canvas());
-	action->set_param("canvas_interface",etl::loose_handle<CanvasInterface>(this));
-	action->set_param("value_desc",value_desc);
-	action->set_param("name",name);
-
-	if(!get_instance()->perform_action(action))
-		get_ui_interface()->error(_("Action Failed."));
-#endif
 }
 
 bool

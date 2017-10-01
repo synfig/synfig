@@ -2712,49 +2712,6 @@ App::dialog_open_file_with_history_button(const std::string &title, std::string 
 
 // TODO: Win32 native dialog not ready yet
 //#ifdef USE_WIN32_FILE_DIALOGS
-#if 0
-	static TCHAR szFilter[] = TEXT (_("All Files (*.*)\0*.*\0\0")) ;
-
-	GdkWindow *gdkWinPtr=toolbox->get_window()->gobj();
-	HINSTANCE hInstance=static_cast<HINSTANCE>(GetModuleHandle(NULL));
-	HWND hWnd=static_cast<HWND>(GDK_WINDOW_HWND(gdkWinPtr));
-
-	ofn.lStructSize=sizeof(OPENFILENAME);
-	ofn.hwndOwner = hWnd;
-	ofn.hInstance = hInstance;
-	ofn.lpstrFilter = szFilter;
-//	ofn.lpstrCustomFilter=NULL;
-//	ofn.nMaxCustFilter=0;
-//	ofn.nFilterIndex=0;
-//	ofn.lpstrFile=NULL;
-	ofn.nMaxFile=MAX_PATH;
-//	ofn.lpstrFileTitle=NULL;
-//	ofn.lpstrInitialDir=NULL;
-//	ofn.lpstrTitle=NULL;
-	ofn.Flags=OFN_HIDEREADONLY;
-//	ofn.nFileOffset=0;
-//	ofn.nFileExtension=0;
-	ofn.lpstrDefExt=TEXT("sif");
-//	ofn.lCustData = 0l;
-	ofn.lpfnHook=NULL;
-//	ofn.lpTemplateName=NULL;
-
-	CHAR szFilename[MAX_PATH];
-	CHAR szTitle[500];
-	strcpy(szFilename,filename.c_str());
-	strcpy(szTitle,title.c_str());
-
-	ofn.lpstrFile=szFilename;
-	ofn.lpstrFileTitle=szTitle;
-
-	if(GetOpenFileName(&ofn))
-	{
-		filename=szFilename;
-		return true;
-	}
-	return false;
-
-#else   // not USE_WIN32_FILE_DIALOGS
 	synfig::String prev_path;
 
 	if(!_preferences.get_value(preference, prev_path))
@@ -2812,7 +2769,6 @@ App::dialog_open_file_with_history_button(const std::string &title, std::string 
 	connection_sc.disconnect();
 	delete dialog;
 	return false;
-#endif   // not USE_WIN32_FILE_DIALOGS
 }
 
 bool

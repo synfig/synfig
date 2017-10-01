@@ -348,14 +348,6 @@ Canvas::set_time(Time t)const
 {
 	if(is_dirty_ || !get_time().is_equal(t))
 	{
-#if 0
-		if(is_root())
-		{
-			synfig::info("is_dirty_=%d",is_dirty_);
-			synfig::info("get_time()=%f",(float)get_time());
-			synfig::info("t=%f",(float)t);
-		}
-#endif
 
 		// ...questionable
 		const_cast<Canvas&>(*this).cur_time_=t;
@@ -870,9 +862,6 @@ Canvas::clone(const GUID& deriv_guid, bool for_export)const
 	{
 		name=get_id()+"_CLONE";
 
-#ifndef ALLOW_CLONE_NON_INLINE_CANVASES
-		throw runtime_error("Cloning of non-inline canvases is not yet supported");
-#endif	// ALLOW_CLONE_NON_INLINE_CANVASES
 	}
 
 	Handle canvas(new Canvas(name));
@@ -1255,16 +1244,6 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 			// or the child is lower than a local blur,
 			// or the child is at the same z_depth as a local blur, but later in the context
 
-#if 0 // DEBUG
-			if (seen_motion_blur_in_parent)					synfig::info("seen BLUR in parent\n");
-			else if (seen_motion_blur_locally)
-				if (z_depth > motion_blur_z_depth)			synfig::info("paste is deeper than BLUR\n");
-				else if (z_depth == motion_blur_z_depth) {	synfig::info("paste is same depth as BLUR\n");
-					if (i > motion_blur_i)					synfig::info("paste is physically deeper than BLUR\n");
-					else									synfig::info("paste is less physically deep than BLUR\n");
-				} else										synfig::info("paste is less deep than BLUR\n");
-			else											synfig::info("no BLUR at all\n");
-#endif	// DEBUG
 
 			motion_blurred = (seen_motion_blur_in_parent ||
 							  (seen_motion_blur_locally &&
@@ -1647,36 +1626,6 @@ Canvas::invoke_signal_value_node_child_removed(etl::handle<ValueNode> container,
 	}
 }
 
-#if 0
-void
-Canvas::show_canvas_ancestry(String file, int line, String note)const
-{
-	printf("%s:%d %s:\n", file.c_str(), line, note.c_str());
-	show_canvas_ancestry();
-}
-
-void
-Canvas::show_canvas_ancestry()const
-{
-	String layer;
-	// printf("%s:%d parent set size = %zd\n", __FILE__, __LINE__, parent_set.size());
-	if (parent_set.size() == 1)
-	{
-		Node* node(*(parent_set.begin()));
-		if (dynamic_cast<Layer*>(node))
-		{
-			layer = (dynamic_cast<Layer*>(node))->get_description();
-		}
-	}
-
-	printf("  canvas %lx %6s parent %7lx layer %-10s id %8s name '%8s' desc '%8s'\n",
-		   uintptr_t(this), is_inline_?"inline":"", uintptr_t(parent_.get()),
-		   layer.c_str(),
-		   get_id().c_str(), get_name().c_str(), get_description().c_str());
-	if (parent_) parent_->show_canvas_ancestry();
-	else printf("\n");
-}
-#endif
 
 String
 Canvas::get_string()const

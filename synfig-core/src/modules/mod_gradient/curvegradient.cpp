@@ -70,14 +70,11 @@ SYNFIG_LAYER_SET_CVS_ID(CurveGradient,"$Id$");
 
 inline float calculate_distance(const synfig::BLinePoint& a,const synfig::BLinePoint& b)
 {
-#if 1
 	const Point& c1(a.get_vertex());
 	const Point c2(a.get_vertex()+a.get_tangent2()/3);
 	const Point c3(b.get_vertex()-b.get_tangent1()/3);
 	const Point& c4(b.get_vertex());
 	return (c1-c2).mag()+(c2-c3).mag()+(c3-c4).mag();
-#else
-#endif
 }
 
 inline float calculate_distance(const std::vector<synfig::BLinePoint>& bline, bool bline_loop)

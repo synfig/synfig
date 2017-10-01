@@ -128,7 +128,6 @@ synfig::Target_Cairo::render(ProgressCallback *cb)
 			if(!get_avoid_time_sync() || canvas->get_time()!=t)
 				canvas->set_time(t);
 
-	#ifdef SYNFIG_OPTIMIZE_LAYER_TREE
 			Canvas::Handle op_canvas;
 			if (!getenv("SYNFIG_DISABLE_OPTIMIZE_LAYER_TREE"))
 			{
@@ -139,9 +138,6 @@ synfig::Target_Cairo::render(ProgressCallback *cb)
 			}
 			else
 				context=canvas->get_context(context_params);
-	#else
-			context=canvas->get_context();
-	#endif
 			// Obtain a pointer to the cairo_surface_t given by the Target instance.
 			cairo_surface_t* surface;
 			if(obtain_surface(surface))

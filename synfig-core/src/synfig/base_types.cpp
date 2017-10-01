@@ -403,29 +403,19 @@ class TypeCanvas: public Type
 	public:
 		typedef Canvas *CanvasPtr;
 
-#ifdef TRY_FIX_FOR_BUG_27
 		bool fake_handle;
-#endif
 		etl::handle<Canvas> h;
 		etl::loose_handle<Canvas> lh;
 		mutable CanvasPtr p;
-#ifdef TRY_FIX_FOR_BUG_27
 		Inner(): fake_handle(false), p(NULL) { }
 		~Inner() { if (fake_handle) h->ref(); }
-#else
-		Inner(): p(NULL) { }
-#endif
 		Inner& operator= (const etl::loose_handle<Canvas> &other)
 		{
-#ifdef TRY_FIX_FOR_BUG_27
 			if (fake_handle) h->ref();
-#endif
 			lh = other;
 			h = other;
-#ifdef TRY_FIX_FOR_BUG_27
 			fake_handle = h && !h->is_inline();
 			if (fake_handle) h->unref_inactive();
-#endif
 			return *this;
 		}
 		Inner& operator= (const etl::handle<Canvas> &other)
