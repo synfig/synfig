@@ -91,7 +91,8 @@ About::About()
 	set_version(VERSION);
 	set_comments(_("2D vector animation studio"));
 
-	set_website("http:	set_website_label(_("Visit the Synfig website"));
+	set_website("http://synfig.org/");
+	set_website_label(_("Visit the Synfig website"));
 
 	set_copyright(_("Copyright (c) 2001-2017\nSynfig developers & contributors"));
 	Glib::ustring license =
@@ -107,7 +108,8 @@ About::About()
 
 		"You should have received a copy of the GNU General Public License along "
 		"with this program; if not, write to the Free Software Foundation, Inc., "
-		"51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA or visit: http:	set_license(license);
+		"51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA or visit: http://www.gnu.org/";
+	set_license(license);
 	set_wrap_license(true);
 
 	std::vector<Glib::ustring> authors;

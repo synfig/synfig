@@ -86,7 +86,11 @@ struct TargetParam;
 
 enum TargetAlphaMode
 {
-	TARGET_ALPHA_MODE_KEEP,	TARGET_ALPHA_MODE_FILL,	TARGET_ALPHA_MODE_REDUCE,	TARGET_ALPHA_MODE_EXTRACT}; // END enum TargetAlphaMode
+	TARGET_ALPHA_MODE_KEEP,
+	TARGET_ALPHA_MODE_FILL,
+	TARGET_ALPHA_MODE_REDUCE,
+	TARGET_ALPHA_MODE_EXTRACT
+}; // END enum TargetAlphaMode
 
 /*!	\class Target
 **	\brief Used to produce rendered animations of the documents
