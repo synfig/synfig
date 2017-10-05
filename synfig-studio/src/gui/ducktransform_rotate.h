@@ -49,7 +49,6 @@ private:
 public:
 	Transform_Rotate(const synfig::GUID& guid, const synfig::Angle& angle,const synfig::Vector& origin=synfig::Vector(0,0)):
 		Transform(guid),
-		//angle(angle),
 		origin(origin),
 		sin_val(synfig::Angle::sin(angle).get()),
 		cos_val(synfig::Angle::cos(angle).get())

@@ -61,20 +61,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-/*
-namespace etl {
 
-template <typename T_, typename C_=std::less<T_,T_> >
-class dereferenced_compare
-{
-public:
-	typedef etl::loose_handle<T_> first_argument_type;
-	typedef etl::loose_handle<T_> second_argument_type;
-	typedef bool result_type;
-
-}
-};
-*/
 
 namespace synfigapp { class CanvasInterface; };
 
@@ -263,7 +250,6 @@ private:
 	guint32 last_event_time;
 
 	int bpp;
-	//unsigned char *buffer;
 
 	//! ???
 	synfig::ProgressCallback *progresscallback;
@@ -308,7 +294,6 @@ private:
 	//! This flag is set if the entire frame is rendered rather than using tiles
 	bool full_frame;
 
-	//Glib::RefPtr<Gdk::Pixbuf> pix_buf;
 
 	//! This vector holds all of the tiles for this frame
 	WorkAreaTileBook tile_book;
@@ -317,7 +302,6 @@ private:
 	int refreshes;
 
 	//! This list holds the queue of tiles that need to be rendered
-	//std::list<int> tile_queue;
 
 	int tile_w, tile_h;
 
@@ -376,8 +360,6 @@ public:
 	void stop_updating(bool cancel = false);
 #endif
 	bool get_full_frame()const { return full_frame; }
-	//int get_w()const { return w; }
-	//int get_h()const { return h; }
 
 	synfig::VectorInt get_windows_offset() const;
 	synfig::RectInt get_window_rect(int stepx = 1, int stepy = 1) const;
@@ -411,7 +393,6 @@ public:
 
 private:
 
-	//unsigned char *get_buffer() { return buffer; }
 	bool set_wh(int w, int h,int chan=3);
 
 	/*

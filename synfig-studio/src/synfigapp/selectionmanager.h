@@ -50,7 +50,6 @@ public:
 
 	typedef std::list<synfig::Layer::Handle> LayerList;
 	typedef std::list<ValueDesc> ChildrenList;
-	//typedef std::list<synfig::ValueNode::Handle> ValueNodeList;
 
 	virtual ~SelectionManager() { }
 

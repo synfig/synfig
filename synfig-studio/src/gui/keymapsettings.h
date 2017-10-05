@@ -57,7 +57,6 @@ class KeyMapSettings : public Gtk::Dialog
 	};
 
 	//std::map<const char *,AcKeyInfo>	pathmap; //uses string info from paths set
-	//std::set<std::string>				accelpaths;
 
 	bool unsaved; //Assume as such...
 
@@ -66,7 +65,6 @@ public:
 	KeyMapSettings();
 	~KeyMapSettings();
 
-	//void add_path(const char *path);
 
 	bool set_key(const char *path, guint key, Gdk::ModifierType mod, bool replace = true);
 	bool get_key(const char *path, Gtk::AccelKey *key);

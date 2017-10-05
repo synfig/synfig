@@ -105,7 +105,6 @@ public:
 
 	sigc::signal<void,etl::handle<synfig::Layer> >& signal_popup_layer_menu() { return signal_popup_layer_menu_; }
 
-//	sigc::signal<void,LayerList>& signal_select_layers() { return signal_select_layers_; }
 
 	void set_model(Glib::RefPtr<LayerGroupTreeStore> layer_group_tree_store_);
 

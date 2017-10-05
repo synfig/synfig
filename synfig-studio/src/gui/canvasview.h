@@ -163,11 +163,7 @@ class Dock_Layers;
 class Dock_Children;
 class Dock_Keyframes;
 
-/*!	\class studio::CanvasView
-**	\brief \writeme
-**
-**	\writeme
-*/
+
 class CanvasView : public Dockable, public etl::shared_object
 {
 	friend class Dock_Layers;
@@ -254,18 +250,15 @@ private:
 
 	synfig::Rect bbox;
 
-	// DEBUGPOINT_CLASS(1);
 
 	//! State Machine
 	Smach smach_;
 
-	// DEBUGPOINT_CLASS(2);
 
 	etl::loose_handle<Instance> instance_;
 	etl::handle<synfigapp::CanvasInterface> canvas_interface_;
 	synfig::ContextParams context_params_;
 
-	// DEBUGPOINT_CLASS(3);
 
 	//! Sound and information to play it
 	etl::handle<AudioContainer>		audio;
@@ -274,7 +267,6 @@ private:
 	sigc::connection				playcon;
 	sigc::connection				stopcon;
 
-	// DEBUGPOINT_CLASS(4);
 
 	//! TreeModel for the layers
 	LayerTreeModel layer_tree_model;
@@ -282,9 +274,7 @@ private:
 	//! TreeModel for the the children
 	ChildrenTreeModel children_tree_model;
 
-	// DEBUGPOINT_CLASS(5);
 
-	//std::map<synfig::String,Glib::RefPtr<Gtk::TreeModel> > tree_model_book_;
 	std::map<synfig::String,Glib::RefPtr<Glib::ObjectBase> > ref_obj_book_;
 	std::map<synfig::String,Gtk::Widget*> ext_widget_book_;
 
@@ -292,7 +282,6 @@ private:
 	Glib::RefPtr<Gtk::Adjustment> time_adjustment_;
 
 	//! The time_window adjustment governs the position of the time window on the whole time line
-	//Glib::RefPtr<Gtk::Adjustment> time_window_adjustment_;
 	Glib::RefPtr<studio::Adjust_Window> time_window_adjustment_;
 
 	LayerTree *layer_tree;
@@ -360,42 +349,7 @@ private:
 
 	std::list<sigc::connection> duck_changed_connections;
 
-/*	DEBUGPOINT_CLASS(8);
 
-	Gtk::Menu duckmaskmenu;
-	DEBUGPOINT_CLASS(77);
-	Gtk::Menu qualitymenu;
-	DEBUGPOINT_CLASS(6);
-
-	Gtk::Menu filemenu;
-	DEBUGPOINT_CLASS(777);
-	Gtk::Menu editmenu;
-	DEBUGPOINT_CLASS(71);
-	Gtk::Menu canvasmenu;
-	DEBUGPOINT_CLASS(73);
-public:
-	Gtk::Menu layermenu;
-private:
-	DEBUGPOINT_CLASS(74);
-	Gtk::Menu newlayermenu;
-	DEBUGPOINT_CLASS(76);
-	Gtk::Menu viewmenu;
-
-	DEBUGPOINT_CLASS(99);
-	Gtk::Menu keyframemenu;
-
-	Gtk::Menu parammenu;
-	DEBUGPOINT_CLASS(9);
-	Gtk::Menu trackmenu;
-	DEBUGPOINT_CLASS(7);
-
-	Gtk::CheckMenuItem* duck_mask_position;
-	Gtk::CheckMenuItem* duck_mask_vertex;
-	Gtk::CheckMenuItem* duck_mask_tangent;
-	Gtk::CheckMenuItem* duck_mask_radius;
-	Gtk::CheckMenuItem* duck_mask_width;
-	Gtk::CheckMenuItem* duck_mask_angle;
-*/
 	//! Menu members
 	Gtk::Menu parammenu;
 
@@ -481,13 +435,10 @@ private:
 	CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigapp::CanvasInterface> canvas_interface);
 
 	//! Constructor Helper
-	// Gtk::Widget* create_layer_tree();
 
 	//! Constructor Helper
-	// Gtk::Widget* create_children_tree();
 
 	//! Constructor Helper
-	// Gtk::Widget* create_keyframe_tree();
 
 	//! Constructor Helper - Initializes all of the menus
 	void init_menus();
@@ -588,8 +539,6 @@ public:
 	Gtk::UIManager::ui_merge_id get_toolbar_id();
 	void set_toolbar_id(Gtk::UIManager::ui_merge_id toolbar_id);
 
-	//std::map<synfig::String,Gtk::Widget*>& tree_view_book() { return tree_view_book_; }
-	//std::map<synfig::String,Gtk::Widget*>& ext_widget_book() { return tree_view_book_; }
 
 	//! Pop up menu for the main menu and the caret menu (not tools and not the bezier ones).
 	/*! Signal handler for work_area->signal_popup_menu */
@@ -682,17 +631,8 @@ public:
 	//! Refreshes the data for the tables
 	void refresh_tables();
 
-	//void rebuild_layer_table();
-	//void build_layer_table();
-	//void refresh_layer_table();
 
-//	void rebuild_canvas_table();
-//	void build_canvas_table();
-//	void refresh_canvas_table();
 
-//	void rebuild_valuenode_table();
-//	void build_valuenode_table();
-//	void refresh_valuenode_table();
 
 	//! \writeme
 	void rebuild_ducks();
@@ -750,7 +690,6 @@ public:
 
 	//! Toggle given handle type
 	//! \Param[in]  type The Duckmatic::Type to toggle
-	//! \Sa             DuckMatic::set_type_mask(), DuckMatic::get_type_mask()
 	void toggle_duck_mask(Duckmatic::Type type);
 	//! Toggle between none/last visible handles
 	//! \Sa             DuckMatic::set_type_mask_state(), DuckMatic::get_type_mask_state()
@@ -787,7 +726,6 @@ private:
 
 	bool on_layer_user_click(int, Gtk::TreeRow, LayerTree::ColumnID);
 
-//	void on_layer_toggle(const Glib::ustring& path_string, Gtk::TreeModelColumn<bool> column);
 
 	void on_mode_changed(synfigapp::CanvasInterface::Mode mode);
 
@@ -805,12 +743,7 @@ private:
 
 	void on_time_changed();
 
-	/*
-	void on_layer_raise_pressed();
-	void on_layer_lower_pressed();
-	void on_layer_duplicate_pressed();
-	void on_layer_delete_pressed();
-	*/
+
 
 	void on_keyframe_add_pressed();
 
@@ -840,7 +773,6 @@ private:
 
 	void on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, const Gtk::SelectionData& selection_data, guint info, guint time);
 
-	//void on_audio_play();
 	bool on_audio_scrub();
 
 	void on_play_pause_pressed();

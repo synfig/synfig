@@ -105,7 +105,6 @@ private:
 	//! Unique stamp for this TreeModel.
 	int stamp_;
 
-	//std::map<synfig::Keyframe,TreeRowReferenceHack> path_table_;
 
 	synfig::KeyframeList old_keyframe_list;
 
@@ -137,7 +136,6 @@ private:
 	**	iterators become invalid. */
 	void reset_stamp();
 
-	//void reset_path_table();
 
 	/*
  -- ** -- V I R T U A L   F U N C T I O N S -----------------------------------

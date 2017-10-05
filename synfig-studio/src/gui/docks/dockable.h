@@ -73,10 +73,8 @@ private:
 	synfig::String local_name_;
 	Gtk::Frame frame_;
 	Gtk::Label title_label_;
-	//Gtk::HBox button_box_;
 	Gtk::HBox header_box_;
 
-	//Gtk::HandleBox handle_box_;
 	Gtk::ScrolledWindow *scrolled_;
 	Gtk::Widget *prev_widget_;
 
@@ -107,8 +105,6 @@ public:
 
 	void clear();
 
-	//DialogSettings& settings() { return dialog_settings; }
-	//const DialogSettings& settings()const { return dialog_settings; }
 
 	void add(Gtk::Widget& x);
 

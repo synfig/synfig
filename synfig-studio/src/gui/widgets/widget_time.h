@@ -56,7 +56,6 @@ protected:
 
 	bool on_focus_in_event(GdkEventFocus* event);
 
-	//void on_activate();
 
 	void refresh_text();
 

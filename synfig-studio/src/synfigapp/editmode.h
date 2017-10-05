@@ -43,10 +43,7 @@ enum EditMode
 	MODE_NORMAL			=0,			//!< Normal editing mode. Place holder.
 
 	MODE_ANIMATE		=(1<<0),	//!< Animated editing mode.
-	MODE_ANIMATE_FUTURE	=(1<<1),	//!< Respect <i>future</i> keyframes
-	MODE_ANIMATE_PAST	=(1<<2),	//!< Respect <i>past</i> keyframes
-	MODE_ANIMATE_ALL	=(3<<1),	//!< Respect <i>all</i> keyframes
-
+	MODE_ANIMATE_FUTURE	=(1<<1),	MODE_ANIMATE_PAST	=(1<<2),	MODE_ANIMATE_ALL	=(3<<1),
 	MODE_UNDEFINED		=(~0)	//!< Undefined Mode
 }; // END of enum EditMode
 
@@ -75,8 +72,6 @@ operator&(const EditMode& lhs, const EditMode& rhs)
 /*!	This function will return true of all of the flags
 **	in the \a rhs are set in the \a lhs */
 // inline bool
-// operator<=(const EditMode& lhs, const EditMode& rhs)
-// { return (lhs&rhs)==int(rhs); }
 
 }; // END if namespace synfigapp
 /* === E N D =============================================================== */

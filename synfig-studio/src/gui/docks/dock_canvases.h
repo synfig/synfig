@@ -70,7 +70,6 @@ private:
 	//! give it the focus
 	/*! \see studio::Instance::focus */
 	void on_row_activate(const Gtk::TreeModel::Path &path, Gtk::TreeViewColumn *);
-	//bool on_tree_event(GdkEvent *event);
 
 
 

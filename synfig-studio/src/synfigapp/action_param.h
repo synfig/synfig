@@ -74,28 +74,22 @@ class Param
 public:
 	enum Type
 	{
-		TYPE_NIL,				// 0
-		TYPE_INTEGER,
+		TYPE_NIL,		TYPE_INTEGER,
 		TYPE_REAL,
 		TYPE_BOOL,
-		TYPE_ACTIVEPOINT,		// 4
-		TYPE_WAYPOINT,
+		TYPE_ACTIVEPOINT,		TYPE_WAYPOINT,
 		TYPE_WAYPOINTMODEL,
 		TYPE_KEYFRAME,
-		TYPE_CANVAS,			// 8
-		TYPE_LAYER,
+		TYPE_CANVAS,		TYPE_LAYER,
 		TYPE_VALUENODE,
 		TYPE_VALUEDESC,
-		TYPE_VALUE,				// 12
-		TYPE_STRING,
+		TYPE_VALUE,		TYPE_STRING,
 		TYPE_TIME,
 		TYPE_CANVASINTERFACE,
-		TYPE_EDITMODE,			// 16
-		TYPE_RENDDESC,
+		TYPE_EDITMODE,		TYPE_RENDDESC,
 		TYPE_INTERPOLATION,
 
-		TYPE_END				// 19
-	};
+		TYPE_END	};
 private:
 	Type type_;
 
@@ -127,7 +121,6 @@ public:
 	Param(const Param &x);
 	Param(const etl::handle<synfigapp::CanvasInterface>& x);
 	Param(const etl::loose_handle<synfigapp::CanvasInterface>& x);
-//	Param(synfigapp::CanvasInterface* x);
 	Param(const synfig::Canvas::Handle& x);
 	Param(const synfig::Canvas::LooseHandle& x);
 	Param(const synfig::Layer::Handle& x);
