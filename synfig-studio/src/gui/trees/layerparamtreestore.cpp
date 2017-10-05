@@ -141,22 +141,7 @@ LayerParamTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int 
 		return;
 	}
 
-/*	if(column==model.label.index())
-	{
-		synfig::Layer::Handle layer((*iter)[model.layer]);
 
-		if(!layer)return;
-
-		Glib::Value<Glib::ustring> x;
-		g_value_init(x.gobj(),x.value_type());
-
-		x.set(layer->get_non_empty_description());
-
-		g_value_init(value.gobj(),x.value_type());
-		g_value_copy(x.gobj(),value.gobj());
-	}
-	else
-*/
 	if(column==model.label.index())
 	{
 		synfigapp::ValueDesc value_desc((*iter)[model.value_desc]);
@@ -220,8 +205,6 @@ LayerParamTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int 
 void
 LayerParamTreeStore::set_value_impl(const Gtk::TreeModel::iterator& iter, int column, const Glib::ValueBase& value)
 {
-	//if(!iterator_sane(row))
-	//	return;
 
 	if(column>=get_n_columns_vfunc())
 	{
@@ -274,32 +257,7 @@ LayerParamTreeStore::set_value_impl(const Gtk::TreeModel::iterator& iter, int co
 			return;
 		}
 		else
-/*
-		if(column==model.active.index())
-		{
-			synfig::Layer::Handle layer((*iter)[model.layer]);
 
-			if(!layer)return;
-
-			Glib::Value<bool> x;
-			g_value_init(x.gobj(),model.active.type());
-			g_value_copy(value.gobj(),x.gobj());
-
-			synfigapp::Action::Handle action(synfigapp::Action::create("LayerActivate"));
-
-			if(!action)
-				return;
-
-			action->set_param("canvas",canvas_interface()->get_canvas());
-			action->set_param("canvas_interface",canvas_interface());
-			action->set_param("layer",layer);
-			action->set_param("new_status",bool(x.get()));
-
-			canvas_interface()->get_instance()->perform_action(action);
-			return;
-		}
-		else
-*/
 		CanvasTreeStore::set_value_impl(iter,column, value);
 	}
 	catch(std::exception& x)
@@ -320,7 +278,6 @@ LayerParamTreeStore::set_value_impl(const Gtk::TreeModel::iterator& iter, int co
 void
 LayerParamTreeStore::rebuild()
 {
-	// Profiler profiler("LayerParamTreeStore::rebuild()");
 	if(queued)queued=0;
 	clear();
 	layer_list=layer_tree->get_selected_layers();
@@ -330,7 +287,6 @@ LayerParamTreeStore::rebuild()
 
 	// Get rid of all the connections,
 	// and clear the connection map.
-	//while(!connection_map.empty())connection_map.begin()->second.disconnect(),connection_map.erase(connection_map.begin());
 	while(!changed_connection_list.empty())
 	{
 		changed_connection_list.back().disconnect();
@@ -401,14 +357,7 @@ LayerParamTreeStore::rebuild()
 		if(iter->get_hidden())
 			continue;
 
-		/*
-		if(iter->get_animation_only())
-		{
-			int length(layer_list.front()->get_canvas()->rend_desc().get_frame_end()-layer_list.front()->get_canvas()->rend_desc().get_frame_start());
-			if(!length)
-				continue;
-		}
-		*/
+
 		Gtk::TreeRow row(*(append()));
 		synfigapp::ValueDesc value_desc(layer_list.front(),iter->get_name());
 		CanvasTreeStore::set_row(row,value_desc);
@@ -440,7 +389,6 @@ LayerParamTreeStore::rebuild()
 		row[model.param_desc] = *iter;
 		row[model.canvas] = layer_list.front()->get_canvas();
 		row[model.is_inconsistent] = false;
-		//row[model.is_toplevel] = true;
 
 
 		LayerList::iterator iter2(layer_list.begin());
@@ -529,8 +477,6 @@ LayerParamTreeStore::refresh_row(Gtk::TreeModel::Row &row)
 		}
 	}
 
-	//handle<ValueNode> value_node=row[model.value_node];
-	//if(value_node)
 	{
 		CanvasTreeStore::refresh_row(row);
 		return;
@@ -550,13 +496,11 @@ LayerParamTreeStore::set_row(Gtk::TreeRow row,synfigapp::ValueDesc value_desc)
 void
 LayerParamTreeStore::on_value_node_added(synfig::ValueNode::Handle /*value_node*/)
 {
-//	queue_refresh();
 }
 
 void
 LayerParamTreeStore::on_value_node_deleted(synfig::ValueNode::Handle /*value_node*/)
 {
-//	queue_refresh();
 }
 
 void
@@ -659,7 +603,6 @@ LayerParamTreeStore::find_value_desc(const synfigapp::ValueDesc& value_desc, Gtk
                     )
 // seems to be not necessary to check the ValueNode
 //                     if((ValueNode_Composite::Handle::cast_dynamic(
-//                             ((synfigapp::ValueDesc)(*iter)[model.value_desc]).get_value_node()))
 //                             )
                  {
                      //check iteratively spline point (bline) children for same name.

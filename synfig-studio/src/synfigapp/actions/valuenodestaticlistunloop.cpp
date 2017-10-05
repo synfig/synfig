@@ -155,11 +155,7 @@ Action::ValueNodeStaticListUnLoop::perform()
 	value_node->set_loop(false);
 
 	value_node->changed();
-/*_if(get_canvas_interface())
-	{
-		get_canvas_interface()->signal_value_node_changed()(value_node);
-	}
-	else synfig::warning("CanvasInterface not set on action");*/
+
 }
 
 void
@@ -175,9 +171,5 @@ Action::ValueNodeStaticListUnLoop::undo()
 	value_node->set_loop(old_loop_value);
 
 	value_node->changed();
-/*_if(get_canvas_interface())
-	{
-		get_canvas_interface()->signal_value_node_changed()(value_node);
-	}
-	else synfig::warning("CanvasInterface not set on action");*/
+
 }

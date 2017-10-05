@@ -82,7 +82,7 @@ Widget_Distance::on_output()
 	try{
 	distance_=get_adjustment()->get_value();
 	set_text(distance_.get_string(get_digits()));
-	} catch (...) { /* synfig::error("Widget_Distance::on_output(): Caught something..."); */ }
+	} catch (...) { }
 	return true;
 }
 

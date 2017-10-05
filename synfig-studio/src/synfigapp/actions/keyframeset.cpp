@@ -126,8 +126,6 @@ Action::KeyframeSet::prepare()
 
 
 
-	//synfig::info("new_time: %s",new_time.get_string().c_str());
-	//synfig::info("old_time: %s",old_time.get_string().c_str());
 
 	try { if(get_canvas()->keyframe_list().find(new_time)!=get_canvas()->keyframe_list().end()) throw Error(_("A Keyframe already exists at this point in time"));}
 	catch(...) { }
@@ -172,7 +170,6 @@ Action::KeyframeSet::scale_activepoints(const synfigapp::ValueDesc& value_desc,c
 				list_entry.find(new_time);
 				// If we found a activepoint already at that time, then
 				// we need to abort
-				//throw Exception::BadTime(_("Activepoint Conflict"));
 			}
 			catch(Exception::NotFound) { }
 		}
@@ -229,9 +226,6 @@ Action::KeyframeSet::scale_waypoints(const synfigapp::ValueDesc& value_desc,cons
 				value_node->find(new_time);
 				// If we found a waypoint point already at that time, then
 				// we need to abort
-				//synfig::info(_("old_begin: %s, old_end: %s"),old_begin.get_string().c_str(),old_end.get_string().c_str());
-				//synfig::info(_("new_begin: %s, new_end: %s"),new_begin.get_string().c_str(),new_end.get_string().c_str());
-				//throw Exception::BadTime(strprintf(_("Waypoint Conflict, old: %s, new: %s"),(*iter)->get_time().get_string().c_str(),new_time.get_string().c_str()));
 			}
 			catch(Exception::NotFound) { }
 		}
@@ -274,9 +268,6 @@ Action::KeyframeSet::process_value_desc(const synfigapp::ValueDesc& value_desc)
 	{
 		ValueNode::Handle value_node(value_desc.get_value_node());
 
-		//if(guid_set.count(value_node->get_guid()))
-		//	return;
-		//guid_set.insert(value_node->get_guid());
 
 		// If we are a dynamic list, then we need to update the ActivePoints
 		if(ValueNode_DynamicList::Handle::cast_dynamic(value_node))

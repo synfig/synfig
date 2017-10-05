@@ -98,7 +98,6 @@ KeyframeTree::KeyframeTree()
 		column->set_reorderable();
 		column->set_resizable();
 		column->set_clickable(false);
-		// column->set_sort_column(model.time_delta);
 
 		append_column(*column);
 	}
@@ -235,9 +234,6 @@ KeyframeTree::on_edited_time(const Glib::ustring&path_string,synfig::Time time)
 	if(time!=keyframe.get_time())
 	{
 		row[model.time]=time;
-		//keyframe.set_time(time);
-		//signal_edited_time()(keyframe,time);
-		//signal_edited()(keyframe);
 	}
 }
 
@@ -287,14 +283,11 @@ KeyframeTree::on_event(GdkEvent *event)
 				Gtk::TreeViewColumn *column;
 				int cell_x, cell_y;
 				int wx(round_to_int(event->button.x)),wy(round_to_int(event->button.y));
-				//tree_to_widget_coords (,, wx, wy);
 				send_selection = true;
 
 				if(!get_path_at_pos(
 					wx,wy,	// x, y
-					path, // TreeModel::Path&
-					column, //TreeViewColumn*&
-					cell_x,cell_y //int&cell_x,int&cell_y
+					path,					column,					cell_x,cell_y //int&cell_x,int&cell_y
 					)
 				) break;
 				const Gtk::TreeRow row = *(get_model()->get_iter(path));
@@ -322,9 +315,7 @@ KeyframeTree::on_event(GdkEvent *event)
 			int cell_x, cell_y;
 			if(!get_path_at_pos(
 				int(event->button.x),int(event->button.y),	// x, y
-				path, // TreeModel::Path&
-				column, //TreeViewColumn*&
-				cell_x,cell_y //int&cell_x,int&cell_y
+				path,				column,				cell_x,cell_y //int&cell_x,int&cell_y
 				)
 			) break;
 			const Gtk::TreeRow row = *(get_model()->get_iter(path));
@@ -349,7 +340,6 @@ KeyframeTree::on_selection_changed()
 {
 	//Connected on treeview::selection::changed
 
-	//if(send_selection && has_focus () && get_selection()->count_selected_rows()==1)
 	if(send_selection && get_selection()->count_selected_rows()==1)
 	{
 

@@ -71,11 +71,8 @@ DockBook::DockBook():
 	listTargets.push_back( Gtk::TargetEntry("SYNFIG_DOCK") );
 
 	drag_dest_set(listTargets);
-	//set_sensitive(true);
 	set_receives_default(true);
 	set_can_default(true);
-	//add_events(Gdk::ALL_EVENTS_MASK);
-	//set_extension_events(Gdk::EXTENSION_EVENTS_ALL);
 	set_show_tabs(true);
 	set_scrollable(true);
 	deleting_=false;

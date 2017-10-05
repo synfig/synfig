@@ -37,8 +37,7 @@
 #include "workarea.h"
 
 #include <synfig/canvas.h>
-#include <synfig/color.h>		// for gamma_in()
-#include <synfig/context.h>
+#include <synfig/color.h>#include <synfig/context.h>
 
 #include <gtkmm/separator.h>
 #include <gtkmm/invisible.h>

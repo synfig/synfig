@@ -203,9 +203,5 @@ Action::WaypointRemove::undo()
 
 	value_node->add(waypoint);
 
-/*_if(get_canvas_interface())
-	{
-		get_canvas_interface()->signal_value_node_changed()(value_node);
-	}
-	else synfig::warning("CanvasInterface not set on action");*/
+
 }

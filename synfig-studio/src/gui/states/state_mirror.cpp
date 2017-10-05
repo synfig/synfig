@@ -194,7 +194,6 @@ StateMirror_Context::StateMirror_Context(CanvasView* canvas_view):
 	get_work_area()->set_duck_dragger(duck_dragger_);
 
 	get_work_area()->set_cursor(Gdk::SB_H_DOUBLE_ARROW);
-//	get_work_area()->reset_cursor();
 
 	App::dock_toolbox->refresh();
 
@@ -255,7 +254,6 @@ StateMirror_Context::event_stop_handler(const Smach::event& /*x*/)
 Smach::event_result
 StateMirror_Context::event_mouse_motion_handler(const Smach::event& x)
 {
-	// synfig::info("STATE NORMAL: Received mouse button down Event");
 
 	const EventMouse& event(*reinterpret_cast<const EventMouse*>(&x));
 	bool shift_state = event.modifier&GDK_SHIFT_MASK;

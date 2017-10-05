@@ -401,7 +401,6 @@ public:
 							,0
 						);
 		}
-		//cairo_surface_destroy(surface);
 		return alive_flag;
 	}
 	
@@ -418,12 +417,8 @@ public:
 		{
 			tile_t& tile(tile_queue.front());
 			
-//			if (getenv("SYNFIG_SHOW_TILE_OUTLINES"))
-//			{
-//				Color red(1,0,0);
 //				tile.surface.fill(red, 0, 0, 1, tile.surface.get_h());
 //				tile.surface.fill(red, 0, 0, tile.surface.get_w(), 1);
-//			}
 			
 			alive_flag=warm_target->add_tile(tile.surface,tile.x,tile.y);
 			
@@ -793,7 +788,6 @@ AsyncRenderer::stop()
 
 
 			// Make sure all the dispatch crap is cleared out
-			//Glib::MainContext::get_default()->iteration(false);
 
 			if(success)
 				signal_success_();
@@ -854,7 +848,6 @@ AsyncRenderer::start_()
 #ifdef SINGLE_THREADED
 		if (App::single_threaded)
 		{
-			//synfig::info("%s:%d rendering in the same thread", __FILE__, __LINE__);
 			target->signal_progress().connect(sigc::mem_fun(this,&AsyncRenderer::rendering_progress));
 			render_thread = (Glib::Thread*)1;
 			render_target();

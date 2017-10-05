@@ -141,17 +141,7 @@ Action::ValueNodeLinkDisconnect::perform()
 	if(!parent_value_node->set_link(index,ValueNode_Const::create((*old_value_node)(time))))
 		throw Error(_("Parent would not accept link"));
 
-	/*
-	if(get_canvas()->get_time()!=time)
-		set_dirty(true);
-	else
-		set_dirty(false);
 
-	if(get_canvas_interface())
-	{
-		get_canvas_interface()->signal_value_node_changed()(parent_value_node);
-	}
-	*/
 }
 
 void
@@ -163,13 +153,5 @@ Action::ValueNodeLinkDisconnect::undo()
 	if(!parent_value_node->set_link(index,old_value_node))
 		throw Error(_("Parent would not accept old link"));
 
-	/*if(get_canvas()->get_time()!=time)
-		set_dirty(true);
-	else
-		set_dirty(false);
 
-	if(get_canvas_interface())
-	{
-		get_canvas_interface()->signal_value_node_changed()(parent_value_node);
-	}*/
 }

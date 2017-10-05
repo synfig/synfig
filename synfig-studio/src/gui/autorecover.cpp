@@ -118,8 +118,6 @@ AutoRecover::auto_backup()
 	// Also go ahead and save the settings
 	App::save_settings();
 
-	//if (count)
-	//	synfig::info("AutoRecover::auto_backup(): %d Files backed up.", count);
 	if (count != total)
 		synfig::error("AutoRecover::auto_backup(): %d FILES NOT BACKED UP.", total - count);
 }

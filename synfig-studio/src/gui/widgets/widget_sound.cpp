@@ -70,7 +70,6 @@ studio::Widget_Sound::~Widget_Sound()
 
 void studio::Widget_Sound::set_position(double t)
 {
-	//synfig::info("Setting position to %.2lf s", t);
 	if(adj_timescale && t != adj_timescale->get_value())
 	{
 		float upper = adj_timescale->get_upper();
@@ -186,13 +185,10 @@ bool studio::Widget_Sound::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 			float endf = adj_timescale->get_upper();
 
 			posi = round_to_int((position-beginf)*w/framesize);
-			//posi = (int)((position-beginf)*w/framesize);
 
 			//calculate in sample space from seconds
 			begin = round_to_int((beginf - offset)*samplerate);
 			end = round_to_int((endf - offset)*samplerate);
-			//begin = (int)((beginf - offset)*samplerate);
-			//end = (int)((endf - offset)*samplerate);
 		}
 
 		delta = (end - begin)/(float)w; //samples per pixel
@@ -262,9 +258,6 @@ bool studio::Widget_Sound::on_motion_notify_event(GdkEventMotion* event)
 		// Widget_Timeslider::on_motion_notify_event(),
 		// but that seems to cause the program to halt
 		// for some reason. So for now, let's do the job ourselves
-		//adj_timescale->set_value(t);
-		//adj_timescale->changed();
-		//return true;
 	}
 
 	return Widget_Timeslider::on_motion_notify_event(event);

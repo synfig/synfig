@@ -301,15 +301,11 @@ StateNormal_Context::StateNormal_Context(CanvasView* canvas_view):
 
 	options_table.show_all();
 	refresh_tool_options();
-	//App::dialog_tool_options->set_widget(options_table);
-	//App::dialog_tool_options->present();
 
 	get_work_area()->set_allow_layer_clicks(true);
 	get_work_area()->set_duck_dragger(duck_dragger_);
 
 	//these will segfault
-//	get_work_area()->set_cursor(Gdk::CROSSHAIR);
-//	get_work_area()->reset_cursor();
 
 	App::dock_toolbox->refresh();
 }
@@ -366,7 +362,6 @@ DuckDrag_Combo::begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& offs
 	// Calculate center
 	Point vmin(100000000,100000000);
 	Point vmax(-100000000,-100000000);
-	//std::set<etl::handle<Duck> >::iterator iter;
 	positions.clear();
 	int i;
 	for(i=0,iter=selected_ducks.begin();iter!=selected_ducks.end();++iter,i++)
@@ -539,7 +534,6 @@ DuckDrag_Combo::end_duck_drag(Duckmatic* duckmatic)
 {
 	if(bad_drag)return false;
 
-	//synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Rotate Ducks"));
 
 	if(is_moving)
 	{
@@ -563,7 +557,6 @@ StateNormal_Context::event_refresh_tool_options(const Smach::event& /*x*/)
 Smach::event_result
 StateNormal_Context::event_stop_handler(const Smach::event& /*x*/)
 {
-	// synfig::info("STATE NORMAL: Received Stop Event");
 	canvas_view_->stop();
 	return Smach::RESULT_ACCEPT;
 }
@@ -571,7 +564,6 @@ StateNormal_Context::event_stop_handler(const Smach::event& /*x*/)
 Smach::event_result
 StateNormal_Context::event_refresh_handler(const Smach::event& /*x*/)
 {
-	// synfig::info("STATE NORMAL: Received Refresh Event");
 	canvas_view_->rebuild_tables();
 	canvas_view_->get_work_area()->queue_render_preview();
 	return Smach::RESULT_ACCEPT;
@@ -580,7 +572,6 @@ StateNormal_Context::event_refresh_handler(const Smach::event& /*x*/)
 Smach::event_result
 StateNormal_Context::event_refresh_ducks_handler(const Smach::event& /*x*/)
 {
-	// synfig::info("STATE NORMAL: Received Refresh Ducks");
 	canvas_view_->queue_rebuild_ducks();
 	return Smach::RESULT_ACCEPT;
 }
@@ -588,7 +579,6 @@ StateNormal_Context::event_refresh_ducks_handler(const Smach::event& /*x*/)
 Smach::event_result
 StateNormal_Context::event_undo_handler(const Smach::event& /*x*/)
 {
-	// synfig::info("STATE NORMAL: Received Undo Event");
 	canvas_view_->get_instance()->undo();
 	return Smach::RESULT_ACCEPT;
 }
@@ -596,7 +586,6 @@ StateNormal_Context::event_undo_handler(const Smach::event& /*x*/)
 Smach::event_result
 StateNormal_Context::event_redo_handler(const Smach::event& /*x*/)
 {
-	// synfig::info("STATE NORMAL: Received Redo Event");
 	canvas_view_->get_instance()->redo();
 	return Smach::RESULT_ACCEPT;
 }
@@ -604,7 +593,6 @@ StateNormal_Context::event_redo_handler(const Smach::event& /*x*/)
 Smach::event_result
 StateNormal_Context::event_mouse_button_down_handler(const Smach::event& x)
 {
-	// synfig::info("STATE NORMAL: Received mouse button down Event");
 
 	const EventMouse& event(*reinterpret_cast<const EventMouse*>(&x));
 
@@ -621,7 +609,6 @@ StateNormal_Context::event_mouse_button_down_handler(const Smach::event& x)
 Smach::event_result
 StateNormal_Context::event_mouse_motion_handler(const Smach::event& x)
 {
-	// synfig::info("STATE NORMAL: Received mouse button down Event");
 
 	const EventMouse& event(*reinterpret_cast<const EventMouse*>(&x));
 
@@ -641,7 +628,7 @@ StateNormal_Context::set_ctrl_pressed(bool value)
 	if (ctrl_pressed)
 	{
 		if (get_canvas_view()->get_work_area()->get_selected_ducks().size() <= 1
-		 /* && get_canvas_view()->get_work_area()->get_selected_duck()->get_value_desc().get_value_type() == synfig::type_transformation */ )
+ )
 		{
 			set_rotate_flag(false);
 			set_alternative_flag(true);
@@ -756,11 +743,9 @@ StateNormal_Context::event_layer_click(const Smach::event& x)
 
 	if(event.layer)
 	{
-		// synfig::info("STATE NORMAL: Received layer click Event, \"%s\"",event.layer->get_name().c_str());
 	}
 	else
 	{
-		// synfig::info("STATE NORMAL: Received layer click Event with an empty layer.");
 	}
 
 	switch(event.button)
@@ -796,9 +781,7 @@ StateNormal_Context::event_layer_click(const Smach::event& x)
 Smach::event_result
 StateNormal_Context::event_multiple_ducks_clicked_handler(const Smach::event& x)
 {
-	// synfig::info("STATE NORMAL: Received multiple duck click event");
 
-	//const EventMouse& event(*reinterpret_cast<const EventMouse*>(&x));
 
 	std::list<synfigapp::ValueDesc> value_desc_list;
 

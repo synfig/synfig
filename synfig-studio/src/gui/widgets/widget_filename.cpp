@@ -88,7 +88,6 @@ Widget_Filename::Widget_Filename()
 	label_find->show();
 
 	button_choose->signal_clicked().connect(sigc::mem_fun(*this, &studio::Widget_Filename::on_button_choose_pressed));
-	//entry_filename->signal_value_changed().connect(sigc::mem_fun(*this, &studio::Widget_Filename::on_value_changed));
 	entry_filename->signal_activate().connect(sigc::mem_fun(*this, &studio::Widget_Filename::on_value_changed));
 }
 

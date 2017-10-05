@@ -109,7 +109,6 @@ Widget_BoneChooser::set_value(synfig::ValueNode_Bone::Handle data)
 			parent_set.erase(bone); // erase it from the set so it won't be inserted twice
 			bones.push_back(bone);
 			append(label);
-			// (*(bone->get_link("name")))(time).get(String());
 		}
 		else
 		{

@@ -40,7 +40,6 @@
 #include <gtkmm/box.h>
 #include <gtkmm/grid.h>
 #include <ETL/misc>
-//#include <gtkmm/separator.h>
 
 #include <gui/localization.h>
 
@@ -477,7 +476,6 @@ Widget_RendDesc::create_image_tab()
 	Gtk::Frame *imageSizeFrame = manage(new Gtk::Frame(_("Image Size")));
 	imageSizeFrame->set_shadow_type(Gtk::SHADOW_NONE);
 	((Gtk::Label *) imageSizeFrame->get_label_widget())->set_markup(_("<b>Image Size</b>"));
-//	panelBox->pack_start(*imageSizeFrame, false, false, 0);
 	panelBox->pack_start(*imageSizeFrame, Gtk::PACK_SHRINK);
 
 	Gtk::Alignment *tableSizePadding = manage(new Gtk::Alignment(0, 0, 1, 1));
@@ -537,7 +535,6 @@ Widget_RendDesc::create_image_tab()
 	Gtk::Frame *imageAreaFrame = manage(new Gtk::Frame(_("Image Area")));
 	imageAreaFrame->set_shadow_type(Gtk::SHADOW_NONE);
 	((Gtk::Label *) imageAreaFrame->get_label_widget())->set_markup(_("<b>Image Area</b>"));
-	//panelBox->pack_start(*imageAreaFrame, false, false, 0);
 	panelBox->pack_start(*imageAreaFrame, Gtk::PACK_SHRINK);
 
 	Gtk::Alignment *imageAreaPadding = manage(new Gtk::Alignment(0, 0, 1, 1));

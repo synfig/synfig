@@ -260,7 +260,6 @@ Action::Main::Main()
 	ADD_ACTION(Action::WaypointRemove);
 	ADD_ACTION(Action::WaypointConnect);
 	ADD_ACTION(Action::WaypointDisconnect);
-//	ADD_ACTION(Action::WaypointSimpleAdd);
 
 	ADD_ACTION(Action::ActivepointAdd);
 	ADD_ACTION(Action::ActivepointSet);
@@ -268,7 +267,6 @@ Action::Main::Main()
 	ADD_ACTION(Action::ActivepointSetOn);
 	ADD_ACTION(Action::ActivepointSetOff);
 	ADD_ACTION(Action::ActivepointRemove);
-//	ADD_ACTION(Action::ActivepointSimpleAdd);
 
 	ADD_ACTION(Action::KeyframeAdd);
 	ADD_ACTION(Action::KeyframeSet);
@@ -335,7 +333,6 @@ Action::compile_candidate_list(const ParamList& param_list, Category category)
 
 	Book::const_iterator iter;
 
-	//synfig::info("param_list.size()=%d",param_list.size());
 
 	for(iter=book().begin();iter!=book().end();++iter)
 	{
@@ -343,17 +340,14 @@ Action::compile_candidate_list(const ParamList& param_list, Category category)
 		{
 			if(iter->second.is_candidate(param_list))
 			{
-				//synfig::info("Action \"%s\" is in",iter->second.name.c_str());
 				ret.push_back(iter->second);
 			}
 			else
 			{
-				//synfig::info("Action \"%s\" is not a candidate",iter->second.name.c_str());
 			}
 		}
 		else
 		{
-			//synfig::info("Action \"%s\" has unsuitable category",iter->second.name.c_str());
 		}
 	}
 
@@ -480,10 +474,8 @@ Super::perform()
 		}
 		catch(Error x)
 		{
-			//synfig::info("%s:%d caught exception", __FILE__, __LINE__);
 			throw Error(x.get_type(),((*iter)->get_local_name()+": "+x.get_desc()).c_str());
 		}
-		//synfig::info("%s:%d finished action: '%s'", __FILE__, __LINE__, (*iter)->get_name().c_str());
 	}
 }
 
@@ -623,12 +615,10 @@ CanvasSpecific::get_edit_mode()const
 Undoable::Undoable():
 	active_(true)
 {
-	//DOO printf("%s:%d Undoable::Undoable() (we have %d)\n", __FILE__, __LINE__, ++undoable_count);
 }
 
 #ifdef _DEBUG
 Undoable::~Undoable() {
-	//DOO printf("%s:%d Undoable::~Undoable() (we now have %d)\n", __FILE__, __LINE__, --undoable_count);
 }
 
 void

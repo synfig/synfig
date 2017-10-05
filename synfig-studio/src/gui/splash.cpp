@@ -171,15 +171,7 @@ Splash::Splash():
 
 	// Create the splash image
 	Gtk::Image* splash_image = manage(new class Gtk::Image());
-	/* Dual-splash code:
-	srand(time(NULL));
-	const float ran = rand()/float(RAND_MAX);
-	int number = 1;
-	if(ran >0.499999)
-		number = 2;
-	//synfig::info("%s", strprintf("%d",number).c_str());
-	splash_image->set(imagepath+"splash_screen"+strprintf("%d",number)+"." IMAGE_EXT);
-	*/
+
 	splash_image->set(imagepath+"splash_screen." IMAGE_EXT);
 	splash_image->set_alignment(0.5,0.5);
 	splash_image->set_padding(0,0);

@@ -131,7 +131,6 @@ CanvasProperties::CanvasProperties(Gtk::Window& parent,etl::handle<synfigapp::Ca
 	add_action_widget(*cancel_button,0);
 	cancel_button->signal_clicked().connect(sigc::mem_fun(*this, &studio::CanvasProperties::on_cancel_pressed));
 
-	//set_default_response(1);
 
 	get_vbox()->show_all();
 	refresh();
@@ -139,59 +138,27 @@ CanvasProperties::CanvasProperties(Gtk::Window& parent,etl::handle<synfigapp::Ca
 	update_title();
 }
 
-//Gtk::Widget&
 //CanvasProperties::create_meta_data_view()
-//{
 	//MetaDataTreeStore::Model model;
-	//meta_data_tree_view=(manage(new class Gtk::TreeView()));
 
 	//meta_data_tree_view->append_column(_("Key"),model.key);
 	//meta_data_tree_view->append_column_editable(_("Data"),model.data);
-	//meta_data_tree_view->set_model(MetaDataTreeStore::create(canvas_interface_));
-	//meta_data_tree_view->set_rules_hint();
-	//meta_data_tree_view->show();
-
-	//Gtk::ScrolledWindow *scrolledwindow = manage(new class Gtk::ScrolledWindow());
-	//scrolledwindow->set_can_focus(true);
-	//scrolledwindow->set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
-	//scrolledwindow->add(*meta_data_tree_view);
-	//scrolledwindow->set_shadow_type(Gtk::SHADOW_ETCHED_IN);
-	//scrolledwindow->show();
 
 
 
-	//Gtk::Table *table=manage(new Gtk::Table());
-	//table->attach(*scrolledwindow, 0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
-	//Gtk::Button* button_add(manage(new Gtk::Button(Gtk::StockID("gtk-add"))));
-	//button_add->show();
-	//button_add->signal_clicked().connect(sigc::mem_fun(*this,&CanvasProperties::on_button_meta_data_add));
-	//table->attach(*button_add, 0, 1, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 
-	//Gtk::Button* button_delete(manage(new Gtk::Button(Gtk::StockID("gtk-delete"))));
-	//button_delete->show();
-	//button_delete->signal_clicked().connect(sigc::mem_fun(*this,&CanvasProperties::on_button_meta_data_delete));
-	//table->attach(*button_delete, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 
-	//table->show();
-	//return *table;
-//}
+
 
 //void
 //CanvasProperties::on_button_meta_data_add()
-//{
 	//synfig::String key;
 	//if(App::dialog_entry(_("New MetaData Entry"), _("Please enter the name of the key"),key) && !key.empty())
-	//{
-		//canvas_interface_->set_meta_data(key," ");
-	//}
 
-//}
 
 //void
 //CanvasProperties::on_button_meta_data_delete()
-//{
-//}
 
 void
 CanvasProperties::update_title()

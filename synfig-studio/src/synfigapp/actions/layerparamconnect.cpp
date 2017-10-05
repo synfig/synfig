@@ -155,12 +155,7 @@ Action::LayerParamConnect::perform()
 
 	layer->changed();
 	value_node->changed();
-/*	if(get_canvas_interface())
-	{
-		get_canvas_interface()->signal_layer_param_changed()(layer,param_name);
-		//get_canvas_interface()->signal_value_node_changed()(value_node);
-	}
-*/
+
 }
 
 void
@@ -177,16 +172,10 @@ Action::LayerParamConnect::undo()
 	layer->changed();
 	if(old_value_node)
 		old_value_node->changed();
-	/*
-	if(layer->active())
-		set_dirty(true);
-	else
-		set_dirty(false);
-	*/
+
 
 	if(get_canvas_interface())
 	{
 		get_canvas_interface()->signal_layer_param_changed()(layer,param_name);
-		//if(old_value_node)get_canvas_interface()->signal_value_node_changed()(old_value_node);
 	}
 }

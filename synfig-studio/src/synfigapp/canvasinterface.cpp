@@ -115,7 +115,6 @@ CanvasInterface::set_time(synfig::Time x)
 	{
 		float fps(get_canvas()->rend_desc().get_frame_rate());
 		Time r(x.round(fps));
-		//synfig::info("CanvasInterface::set_time(): %s rounded to %s\n",x.get_string(fps).c_str(),r.get_string(fps).c_str());
 		x=r;
 	}
 	if(cur_time_.is_equal(x))
@@ -178,7 +177,6 @@ CanvasInterface::set_mode(Mode x)
 		get_ui_interface()->error(_("Unable to change mode"));
 
 //	mode_=x;
-//	signal_mode_changed_(x);
 }
 
 CanvasInterface::Mode
@@ -808,7 +806,6 @@ CanvasInterface::import(const synfig::String &filename, synfig::String &errors, 
 			throw String(_("Could not set children lock of imported canvas"));
 		get_canvas()->register_external_canvas(full_filename, outside_canvas);
 
-		//layer->set_description(basename(filename));
 		signal_layer_new_description()(layer,etl::basename(filename));
 		return true;
 	}
@@ -912,7 +909,6 @@ CanvasInterface::import(const synfig::String &filename, synfig::String &errors, 
 void
 CanvasInterface::waypoint_duplicate(synfigapp::ValueDesc value_desc,synfig::Waypoint waypoint)
 {
-	//ValueNode::Handle value_node();
 	waypoint_duplicate(value_desc.get_value_node(), waypoint);
 }
 
@@ -941,7 +937,6 @@ CanvasInterface::waypoint_duplicate(ValueNode::Handle value_node,synfig::Waypoin
 void
 CanvasInterface::waypoint_remove(synfigapp::ValueDesc value_desc,synfig::Waypoint waypoint)
 {
-	//ValueNode::Handle value_node();
 	waypoint_remove(value_desc.get_value_node(), waypoint);
 }
 
@@ -967,27 +962,7 @@ CanvasInterface::waypoint_remove(ValueNode::Handle value_node,synfig::Waypoint w
 void
 CanvasInterface::auto_export(synfig::ValueNode::Handle /*value_node*/)
 {
-/*
-	// Check to see if we are already exported.
-	if(value_node->is_exported())
-		return;
 
-	Action::Handle 	action(Action::create("ValueNodeAdd"));
-
-	assert(action);
-	if(!action)
-		return;
-
-	String name(strprintf(_("Unnamed%08d"),synfig::UniqueID().get_uid()));
-
-	action->set_param("canvas",get_canvas());
-	action->set_param("canvas_interface",etl::loose_handle<CanvasInterface>(this));
-	action->set_param("new",value_node);
-	action->set_param("name",name);
-
-	if(!get_instance()->perform_action(action))
-		get_ui_interface()->error(_("Action Failed."));
-*/
 }
 
 void

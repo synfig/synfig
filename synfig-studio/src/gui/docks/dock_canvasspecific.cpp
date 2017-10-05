@@ -104,7 +104,6 @@ Dock_CanvasSpecific::init_instance(etl::handle<Instance> instance)
 	etl::clock timer;timer.reset();
 	instance->signal_canvas_view_created().connect(sigc::mem_fun(*this,&Dock_CanvasSpecific::init_canvas_view));
 	init_instance_vfunc(instance);
-	// synfig::info("%s init_instance() took %f seconds",get_local_name().c_str(),float(timer()));
 }
 
 void
@@ -116,20 +115,7 @@ Dock_CanvasSpecific::delete_instance(etl::handle<Instance> /*instance*/)
 void
 Dock_CanvasSpecific::init_canvas_view(CanvasView* canvas_view)
 {
-	/*
-	canvas_view->signal_focus_in_event().connect(
-		sigc::hide(
-			sigc::bind_return(
-				sigc::mem_fun(
-					*this,
-					&Dock_CanvasSpecific::canvas_view_changed
-				),
-				false
-			)
-		)
-	);
-	*/
-	// synfig::info("%s init_canvas_view() Starting init...",get_local_name().c_str());
+
 	etl::clock timer;timer.reset();
 	App::signal_canvas_view_focus().connect(
 		sigc::hide(
@@ -140,33 +126,15 @@ Dock_CanvasSpecific::init_canvas_view(CanvasView* canvas_view)
 		)
 	);
 	init_canvas_view_vfunc(canvas_view);
-	// synfig::info("%s init_canvas_view() took %f seconds",get_local_name().c_str(),float(timer()));
 }
 
 void
 Dock_CanvasSpecific::canvas_view_changed()
 {
 	etl::loose_handle<CanvasView> canvas_view(App::get_selected_canvas_view());
-/*	if(canvas_view)
-	{
-		canvas_delete_connection.disconnect();
-		canvas_delete_connection=canvas_view->signal_deleted().connect(
-			sigc::bind(
-				sigc::mem_fun(
-					*this,
-					&Dock_CanvasSpecific::changed_canvas_view
-				),
-				etl::loose_handle<CanvasView>(0)
-			)
-		);
-	}
-*/
+
 
 // #ifdef _DEBUG
-// 	synfig::info("%s canvas_view_changed: start",get_local_name().c_str());
-// #endif
 	changed_canvas_view_vfunc(canvas_view);
 // #ifdef _DEBUG
-// 	synfig::info("%s canvas_view_changed: end",get_local_name().c_str());
-// #endif
 }

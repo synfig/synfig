@@ -91,8 +91,6 @@ trivial<sigc::signal<void> > signal_outline_color_changed_;
 trivial<sigc::signal<void> > signal_fill_color_changed_;
 trivial<sigc::signal<void> > signal_gradient_changed_;
 trivial<sigc::signal<void> > signal_bline_width_changed_;
-//trivial<sigc::signal<void> > signal_blend_method_changed_;
-//trivial<sigc::signal<void> > signal_opacity_changed_;
 trivial<sigc::signal<void> > signal_interpolation_changed_;
 
 trivial<Settings> settings_;
@@ -138,8 +136,6 @@ synfigapp::Main::Main(const synfig::String &basepath, synfig::ProgressCallback *
 	set_fill_color(Color::white());
 	set_gradient_default_colors();
 	set_bline_width(Distance(1,Distance::SYSTEM_POINTS));
-	//set_opacity(1.0);
-	//set_blend_method(Color::BLEND_BY_LAYER);
 }
 
 synfigapp::Main::~Main()
@@ -161,7 +157,6 @@ synfigapp::Main::~Main()
 	signal_fill_color_changed_.destruct();
 	signal_gradient_changed_.destruct();
 
-	//signal_opacity_changed_.destruct();
 	//signal_blend_method_changed_.destruct();
 	signal_interpolation_changed_.destruct();
 }
@@ -196,19 +191,7 @@ synfigapp::Main::signal_bline_width_changed()
 	return signal_bline_width_changed_;
 }
 
-/*
-sigc::signal<void>&
-synfigapp::Main::signal_blend_method_changed()
-{
-	return signal_blend_method_changed_;
-}
 
-sigc::signal<void>&
-synfigapp::Main::signal_opacity_changed()
-{
-	return signal_opacity_changed_;
-}
-*/
 
 sigc::signal<void>&
 synfigapp::Main::signal_interpolation_changed()
@@ -234,13 +217,7 @@ synfigapp::Main::get_gradient()
 	return gradient_;
 }
 
-/*
-const synfig::Real&
-synfigapp::Main::get_opacity()
-{
-	return 1.0;
-}
-*/
+
 
 synfig::Color::BlendMethod
 synfigapp::Main::get_blend_method()
@@ -356,25 +333,7 @@ synfigapp::Main::set_bline_width(synfig::Distance x)
 	}
 }
 
-/*
-void
-synfigapp::Main::set_opacity(synfig::Real x)
-{
-	opacity_=x;
-	if(selected_input_device_)
-		selected_input_device_->set_opacity(opacity_);
-	signal_opacity_changed()();
-}
 
-void
-synfigapp::Main::set_blend_method(synfig::Color::BlendMethod x)
-{
-	blend_method_=x;
-	if(selected_input_device_)
-		selected_input_device_->set_blend_method(x);
-	signal_blend_method_changed()();
-}
-*/
 
 InputDevice::Handle
 synfigapp::Main::add_input_device(const synfig::String id, InputDevice::Type type)
@@ -409,15 +368,12 @@ synfigapp::Main::select_input_device(InputDevice::Handle input_device)
 {
 	assert(input_device);
 
-	// synfig::info("Input device changed to \"%s\"",input_device->get_id().c_str());
 
 	selected_input_device_=input_device;
 
 	set_bline_width(input_device->get_bline_width());
 	set_outline_color(input_device->get_outline_color());
 	set_fill_color(input_device->get_fill_color());
-	//set_opacity(input_device->get_opacity());
-	//set_blend_method(input_device->get_blend_method());
 
 	return true;
 }

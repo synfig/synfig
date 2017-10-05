@@ -240,7 +240,6 @@ synfig::Distance::System App::distance_system;
 studio::Dialog_Setup* App::dialog_setup;
 
 etl::handle< studio::ModPalette > mod_palette_;
-//studio::Dialog_Palette* App::dialog_palette;
 
 std::list<etl::handle<Instance> > App::instance_list;
 
@@ -291,9 +290,6 @@ bool studio::App::use_colorspace_gamma=true;
 #ifdef SINGLE_THREADED
 	//#ifdef	WIN32
 	bool studio::App::single_threaded=true;
-	//#else
-	//bool studio::App::single_threaded=false;
-	//#endif // WIN32
 #endif  // SINGLE THREADED
 bool studio::App::restrict_radius_ducks=true;
 bool studio::App::resize_imported_images=false;
@@ -327,7 +323,6 @@ namespace studio {
 bool
 really_delete_widget(Gtk::Widget *widget)
 {
-	// synfig::info("really delete %p", (void*)widget);
 	delete widget;
 	return false;
 }
@@ -338,7 +333,6 @@ really_delete_widget(Gtk::Widget *widget)
 void
 delete_widget(Gtk::Widget *widget)
 {
-	// synfig::info("delete %p", (void*)widget);
 	Glib::signal_timeout().connect(sigc::bind(sigc::ptr_fun(&really_delete_widget), widget), 50);
 }
 
@@ -443,53 +437,7 @@ public:
 
 /* === P R O C E D U R E S ================================================= */
 
-/*
-void
-studio::UIManager::insert_action_group (const Glib::RefPtr<Gtk::ActionGroup>& action_group, int pos)
-{
-	action_group_list.push_back(action_group);
-	Gtk::UIManager::insert_action_group(action_group, pos);
-}
 
-void
-studio::UIManager::remove_action_group (const Glib::RefPtr<Gtk::ActionGroup>& action_group)
-{
-	std::list<Glib::RefPtr<Gtk::ActionGroup> >::iterator iter;
-	for(iter=action_group_list.begin();iter!=action_group_list.end();++iter)
-		if(*iter==action_group)
-		{
-			action_group_list.erase(iter);
-			Gtk::UIManager::remove_action_group(action_group);
-			return;
-		}
-	synfig::error("Unable to find action group");
-}
-
-void
-studio::add_action_group_to_top(Glib::RefPtr<studio::UIManager> ui_manager, Glib::RefPtr<Gtk::ActionGroup> group)
-{
-	ui_manager->insert_action_group(group,0);
-	return;
-	std::list<Glib::RefPtr<Gtk::ActionGroup> > prev_groups(ui_manager->get_action_groups());
-	std::list<Glib::RefPtr<Gtk::ActionGroup> >::reverse_iterator iter;
-
-	for(iter=prev_groups.rbegin();iter!=prev_groups.rend();++iter)
-	{
-		if(*iter && (*iter)->get_name()!="menus")
-		{
-			synfig::info("Removing action group "+(*iter)->get_name());
-			ui_manager->remove_action_group(*iter);
-		}
-	}
-	ui_manager->insert_action_group(group,0);
-
-	for(;!prev_groups.empty();prev_groups.pop_front())
-	{
-		if(prev_groups.front() && prev_groups.front()!=group && prev_groups.front()->get_name()!="menus")
-			ui_manager->insert_action_group(prev_groups.front(),1);
-	}
-}
-*/
 class Preferences : public synfigapp::Settings
 {
 public:
@@ -1228,7 +1176,6 @@ DEFINE_ACTION("keyframe-properties","Properties");
 		App::ui_manager()->insert_action_group(actions_action_group,1);
 		App::ui_manager()->add_ui_from_string(ui_info);
 
-		//App::ui_manager()->get_accel_group()->unlock();
 	}
 	catch(const Glib::Error& ex)
 	{
@@ -1408,8 +1355,7 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 			"different version of libsynfig than what is currently "
 			"installed. Synfig Studio will now abort. Try downloading "
 			"the latest version from the Synfig website at "
-			"http://www.synfig.org/cms/en/download/"),
-			_("Close"));
+			"http:			_("Close"));
 
 		throw 40;
 	}
@@ -1694,8 +1640,6 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		// If dock dialogs are shown before the settings are loaded,
 		// the windows manager can act over it.
 		// See discussions here:
-		// * http://synfig.org/forums/viewtopic.php?f=1&t=1131&st=0&sk=t&sd=a&start=30
-		// * http://synfig.org/forums/viewtopic.php?f=15&t=1062
 		dock_manager->show_all_dock_dialogs();
 
 		main_window->present();
@@ -2195,7 +2139,6 @@ App::apply_gtk_settings()
 	data += ".button > GtkLabel                 { padding-top: 0px; padding-bottom: 0px; }\n";
 	data += "GtkComboBox > .button > GtkBox > * { padding-top: 0px; padding-bottom: 0px; }\n";
 	data += ".entry                             { padding-top: 0px; padding-bottom: 0px; }\n";
-	//data += "GtkComboBox GtkCellView { font-size: 10px; }\n";
 	//data += "GtkComboBox * { margin: 0; }\n";
 	// Fix #810: Insetsetive context menus on OSX
 	g_object_get (G_OBJECT (gtk_settings), "gtk-theme-name", &theme_name, NULL);
@@ -2241,53 +2184,9 @@ App::quit()
 		if(!(*iter)->safe_close())
 			return;
 
-/*
-		if((*iter)->synfigapp::Instance::get_action_count())
-		{
-			handle<synfigapp::UIInterface> uim;
-			uim=(*iter)->find_canvas_view((*iter)->get_canvas())->get_ui_interface();
-			assert(uim);
-			string str=strprintf(_("Would you like to save your changes to %s?"),(*iter)->get_file_name().c_str() );
-			switch(uim->yes_no_cancel((*iter)->get_canvas()->get_name(),str,synfigapp::UIInterface::RESPONSE_YES))
-			{
-				case synfigapp::UIInterface::RESPONSE_NO:
-					break;
-				case synfigapp::UIInterface::RESPONSE_YES:
-					(*iter)->save();
-					break;
-				case synfigapp::UIInterface::RESPONSE_CANCEL:
-					return;
-				default:
-					assert(0);
-					return;
-			}
-		}
 
-
-		if((*iter)->synfigapp::Instance::is_modified())
-		{
-			handle<synfigapp::UIInterface> uim;
-			uim=(*iter)->find_canvas_view((*iter)->get_canvas())->get_ui_interface();
-			assert(uim);
-			string str=strprintf(_("%s has changes not yet on the CVS repository.\nWould you like to commit these changes?"),(*iter)->get_file_name().c_str() );
-			switch(uim->yes_no_cancel((*iter)->get_canvas()->get_name(),str,synfigapp::UIInterface::RESPONSE_YES))
-			{
-				case synfigapp::UIInterface::RESPONSE_NO:
-					break;
-				case synfigapp::UIInterface::RESPONSE_YES:
-					(*iter)->dialog_cvs_commit();
-					break;
-				case synfigapp::UIInterface::RESPONSE_CANCEL:
-					return;
-				default:
-					assert(0);
-					return;
-			}
-		}
-*/
 
 		// This next line causes things to crash for some reason
-		//(*iter)->close();
 	}
 
 	instance_list.clear();
@@ -2309,9 +2208,7 @@ App::show_setup()
 gint Signal_Open_Ok(GtkWidget */*widget*/, int *val){*val=1;return 0;}
 gint Signal_Open_Cancel(GtkWidget */*widget*/, int *val){*val=2;return 0;}
 
-//#ifdef _WIN32
 //#define USE_WIN32_FILE_DIALOGS 1
-//#endif
 
 #ifdef USE_WIN32_FILE_DIALOGS
 static OPENFILENAME ofn={};
@@ -2324,7 +2221,6 @@ static OPENFILENAME ofn={};
 bool
 App::dialog_open_file(const std::string &title, std::string &filename, std::string preference)
 {
-	// info("App::dialog_open_file('%s', '%s', '%s')", title.c_str(), filename.c_str(), preference.c_str());
 	// TODO: Win32 native dialod not ready yet
 #ifdef USE_WIN32_FILE_DIALOGS
 	static TCHAR szFilter[] = TEXT (_("All Files (*.*)\0*.*\0\0")) ;
@@ -2477,7 +2373,6 @@ App::dialog_open_file(const std::string &title, std::string &filename, std::stri
 
 	if(dialog->run() == GTK_RESPONSE_ACCEPT) {
 		filename = dialog->get_filename();
-		// info("Saving preference %s = '%s' in App::dialog_open_file()", preference.c_str(), dirname(filename).c_str());
 		_preferences.set_value(preference, dirname(filename));
 		delete dialog;
 		return true;
@@ -2708,7 +2603,6 @@ on_open_dialog_with_history_selection_changed(Gtk::FileChooserDialog *dialog, Gt
 bool
 App::dialog_open_file_with_history_button(const std::string &title, std::string &filename, bool &show_history, std::string preference)
 {
-	// info("App::dialog_open_file('%s', '%s', '%s')", title.c_str(), filename.c_str(), preference.c_str());
 
 // TODO: Win32 native dialog not ready yet
 //#ifdef USE_WIN32_FILE_DIALOGS
@@ -2760,7 +2654,6 @@ App::dialog_open_file_with_history_button(const std::string &title, std::string 
 	if (response == Gtk::RESPONSE_ACCEPT || response == RESPONSE_ACCEPT_WITH_HISTORY) {
 		filename = dialog->get_filename();
 		show_history = response == RESPONSE_ACCEPT_WITH_HISTORY;
-		// info("Saving preference %s = '%s' in App::dialog_open_file()", preference.c_str(), dirname(filename).c_str());
 		_preferences.set_value(preference, dirname(filename));
 		delete dialog;
 		return true;
@@ -2803,7 +2696,6 @@ App::dialog_open_folder(const std::string &title, std::string &foldername, std::
 bool
 App::dialog_save_file(const std::string &title, std::string &filename, std::string preference)
 {
-	// info("App::dialog_save_file('%s', '%s', '%s')", title.c_str(), filename.c_str(), preference.c_str());
 
 #if USE_WIN32_FILE_DIALOGS
 	static TCHAR szFilter[] = TEXT (_("All Files (*.*)\0*.*\0\0")) ;
@@ -2863,7 +2755,6 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 
 	// sif share same mime type "application/x-sif" with sifz, so it will mixed .sif and .sifz files. Use only
 	// pattern ("*.sif") for sif file format should be oK.
-	//filter_sif->add_mime_type("application/x-sif");
 	filter_sif->add_pattern("*.sif");
 
 	Glib::RefPtr<Gtk::FileFilter> filter_sifz = Gtk::FileFilter::create();
@@ -2955,7 +2846,6 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 		// file name entry. Right now it still detetes file extension from file name entry, if extension is one
 		// of .sif, sifz and sfg, it will be used otherwise, saved file format will depend on selected file filter.
 		// It should be improved by changing file extension according to selted file type filter, such as:
-		// dialog->property_filter().signal_changed().connect(sigc::mem_fun(*this, &App::on_save_dialog_filter_changed));
 		filename = dialog->get_filename();
 
 		if (filename_extension(filename) != ".sif" &&
@@ -2970,7 +2860,6 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 				filename = dialog->get_filename() + ".sfg";
 		}
 
-	// info("Saving preference %s = '%s' in App::dialog_save_file()", preference.c_str(), dirname(filename).c_str());
 	_preferences.set_value(preference, dirname(filename));
 	delete dialog;
 	return true;
@@ -3421,7 +3310,6 @@ App::dialog_paragraph(const std::string &title, const std::string &message,std::
 	dialog.add_button(_("Cancel"), Gtk::RESPONSE_CANCEL)->set_image_from_icon_name("gtk-cancel", Gtk::ICON_SIZE_BUTTON);
 	dialog.set_default_response(Gtk::RESPONSE_OK);
 
-	//text_entry.signal_activate().connect(sigc::bind(sigc::mem_fun(dialog,&Gtk::Dialog::response),Gtk::RESPONSE_OK));
 	dialog.show();
 
 	if(dialog.run()!=Gtk::RESPONSE_OK)
@@ -3497,7 +3385,6 @@ App::open_as(std::string filename,std::string as,synfig::FileContainerZip::file_
 		{
 			get_instance(canvas)->find_canvas_view(canvas)->present();
 			info("%s is already open", canvas_filename.c_str());
-			// throw (String)strprintf(_("\"%s\" appears to already be open!"),filename.c_str());
 		}
 		else
 		{
@@ -3604,7 +3491,6 @@ App::open_from_temporary_filesystem(std::string temporary_filename)
 		{
 			get_instance(canvas)->find_canvas_view(canvas)->present();
 			info("%s is already open", as.c_str());
-			// throw (String)strprintf(_("\"%s\" appears to already be open!"),filename.c_str());
 		}
 		else
 		{
@@ -3738,7 +3624,6 @@ App::dialog_open(string filename)
 
 		FileContainerZip::file_size_t truncate_storage_size = 0;
 
-		// TODO: ".sfg" literal
 		if (show_history && filename_extension(filename) == ".sfg")
 		{
 			// read history
@@ -3772,15 +3657,7 @@ App::dialog_open(string filename)
 void
 App::set_selected_instance(etl::loose_handle<Instance> instance)
 {
-/*	if(get_selected_instance()==instance)
-	{
-		selected_instance=instance;
-		signal_instance_selected()(instance);
-		return;
-	}
-	else
-	{
-*/
+
 		selected_instance=instance;
 		if(get_selected_canvas_view() && get_selected_canvas_view()->get_instance()!=instance)
 		{
@@ -3813,18 +3690,7 @@ App::set_selected_canvas_view(etl::loose_handle<CanvasView> canvas_view)
 		signal_instance_selected()(selected_instance);
 	}
 
-/*
-	if(get_selected_canvas_view()==canvas_view)
-	{
-		signal_canvas_view_focus()(selected_canvas_view);
-		signal_instance_selected()(canvas_view->get_instance());
-		return;
-	}
-	selected_canvas_view=canvas_view;
-	if(canvas_view && canvas_view->get_instance() != get_selected_instance())
-		set_selected_instance(canvas_view->get_instance());
-	signal_canvas_view_focus()(selected_canvas_view);
-*/
+
 }
 
 etl::loose_handle<Instance>

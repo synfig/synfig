@@ -87,95 +87,43 @@ inline void ThreePointdt(T &df, const T &f1, const T &f2, const T &f3, int bias)
 		df = (f1 - f2*4 + f3*3)*(1/2.0f);
 }
 
-// template < class T >
 // inline void ThreePointddt(T &df, const T &f1, const T &f2, const T &f3, int bias)
-// {
 // 	// a 3 point approximation pretends to have constant acceleration,
 // 	// so only one algorithm needed for left, middle, or right
-// 	df = (f1 -f2*2 + f3)*(1/2.0f);
-// }
 //
 // // WARNING -- totally broken
-// template < class T >
 // inline void FivePointddt(T &df, const T &f1, const T &f2, const T &f3, int bias)
-// {
-// 	if(bias == 0)
-// 	{
-// 		assert(0); // !?
 // 		//middle
-// 		//df = (- f1 + f2*16 - f3*30 +  f4*16 - f5)*(1/12.0f);
-// 	}/*else if(bias < 0)
-// 	{
 // 		//left
-// 		df = (f1*7 - f2*26*4 + f3*19*6 - f4*14*4 + f5*11)*(1/12.0f);
-// 	}else
-// 	{
 // 		//right
-// 		df = (f1*3 - f2*16 + f3*36 - f4*48 + f5*25)*(1/12.0f);
-// 	}*/
 // 	//side ones don't work, use 3 point
-// }
 //
 // //implement an arbitrary derivative
 // //dumb algorithm
-// template < class T >
-// void DerivativeApprox(T &df, const T f[], const Real t[], int npoints, int indexval)
-// {
-// 	/*
-// 	Lj(x) = PI_i!=j (x - xi) / PI_i!=j (xj - xi)
 //
-// 	so Lj'(x) = SUM_k PI_i!=j|k (x - xi) / PI_i!=j (xj - xi)
-// 	*/
 //
 // 	unsigned int i,j,k,i0,i1;
 //
 // 	Real Lpj,mult,div,tj;
-// 	Real tval = t[indexval];
 //
 // 	//sum k
-// 	for(j=0;j<npoints;++j)
-// 	{
-// 		Lpj = 0;
-// 		div = 1;
 // 		tj = t[j];
 //
-// 		for(k=0;k<npoints;++k)
-// 		{
 // 			if(k != j) //because there is no summand for k == j, since that term is missing from the original equation
-// 			{
 // 				//summation for k
-// 				for(i=0;i<npoints;++i)
-// 				{
 // 					if(i != k)
-// 					{
-// 						mult *= tval - t[i];
-// 					}
-// 				}
 //
 // 				Lpj += mult; //add into the summation
 //
 // 				//since the ks follow the exact pattern we need for the divisor (use that too)
-// 				div *= tj - t[k];
-// 			}
-// 		}
 //
 // 		//get the actual coefficient
-// 		Lpj /= div;
 //
 // 		//add it in to the equation
-// 		df += f[j]*Lpj;
-// 	}
-// }
 
 //END numerical derivatives
 
-// template < class T >
 // inline int sign(T f, T tol)
-// {
-// 	if(f < -tol) return -1;
-// 	if(f > tol) return 1;
-// 	return 0;
-// }
 
 void GetFirstDerivatives(const std::vector<synfig::Point> &f, unsigned int left, unsigned int right, char *out, unsigned int dfstride)
 {
@@ -193,7 +141,7 @@ void GetFirstDerivatives(const std::vector<synfig::Point> &f, unsigned int left,
 		*(synfig::Vector*)out = v;
 		out += dfstride;
 	}
-	else if(right - left < 6/*5*/) //should use 3 point
+	else if(right - left < 6) //should use 3 point
 	{
 		//left then middle then right
 		ThreePointdt(*(synfig::Vector*)out,f[left+0], f[left+1], f[left+2], -1);
@@ -234,8 +182,7 @@ void GetSimpleDerivatives(const std::vector<synfig::Point> &f, int left, int rig
 							const std::vector<synfig::Real> &/*di*/)
 {
 	int i1,i2,i;
-	int offset = 2; //df = 1/2 (f[i+o]-f[i-o])
-
+	int offset = 2;
 	assert((int)df.size() >= right-left+outleft); //must be big enough
 
 	for(i = left; i < right; ++i)
@@ -257,7 +204,6 @@ Real CurveError(const synfig::Point *pts, unsigned int n, std::vector<synfig::Po
 
 	//get distances to each point
 	Real d,dtemp,dsum;
-	//synfig::Vector v,vt;
 	//synfig::Point p1,p2;
 	synfig::Point pi;
 	std::vector<synfig::Point>::const_iterator it;//,end = work.begin()+right;
@@ -274,7 +220,7 @@ Real CurveError(const synfig::Point *pts, unsigned int n, std::vector<synfig::Po
 
 		it = work.begin()+left;
 		//p2 = *it++; //put it at left+1
-		for(j = left/*+1*/; j < right; ++j,++it)
+		for(j = left; j < right; ++j,++it)
 		{
 			/*p1 = p2;
 			p2 = *it;
@@ -360,8 +306,7 @@ int tessellate_curves(const std::vector<cpindex> &inds, const std::vector<Point>
 				work[k] = curve(t);
 			}
 
-			work[k] = curve(1); //k == kend, t == 1 -> c(t) == p2
-			++ntess;
+			work[k] = curve(1);			++ntess;
 		}
 	}
 
@@ -401,7 +346,6 @@ synfigapp::BLineConverter::operator()(std::list<synfig::BLinePoint>  &blinepoint
 	unsigned int			numpre=0, numtess=0, numerror=0, numsplit=0;
 	etl::clock_realtime timer,total;*/
 
-	//total.reset();
 	if (points_in.size() < 2)
 		return;
 
@@ -418,7 +362,6 @@ synfigapp::BLineConverter::operator()(std::list<synfig::BLinePoint>  &blinepoint
 
 	//remove duplicate points - very bad for fitting
 
-	//timer.reset();
 
 	{
 		std::list<synfig::Point>::const_iterator point_iter = points_in.begin(), end = points_in.end();
@@ -440,7 +383,6 @@ synfigapp::BLineConverter::operator()(std::list<synfig::BLinePoint>  &blinepoint
 				if(*point_iter != c)		// eliminate duplicate points
 					point_cache.push_back(c = *point_iter);
 	}
-	//initialprocess = timer();
 
 	if (point_cache.size() < 7)
 	{
@@ -449,7 +391,6 @@ synfigapp::BLineConverter::operator()(std::list<synfig::BLinePoint>  &blinepoint
 	}
 
 	//get curvature information
-	//timer.reset();
 
 	{
 		int i_this, i_prev, i_next;
@@ -470,11 +411,8 @@ synfigapp::BLineConverter::operator()(std::list<synfig::BLinePoint>  &blinepoint
 		}
 	}
 
-	//curveval = timer();
-	//synfig::info("calculated curvature");
 
 	//find corner points and interpolate inside those
-	//timer.reset();
 	{
 		//break at sharp derivative points
 		//TODO tolerance should be set based upon digitization resolution (length dependent index selection)
@@ -506,7 +444,6 @@ synfigapp::BLineConverter::operator()(std::list<synfig::BLinePoint>  &blinepoint
 				// don't have 2 corners too close to each other
 				if (sharpest_i >= last + 8) //! \todo make this configurable
 				{
-					//synfig::info("break: %d-%d",sharpest_i+1,curvature.size());
 					break_tangents.push_back(sharpest_i);
 					last = sharpest_i;
 				}
@@ -544,12 +481,9 @@ synfigapp::BLineConverter::operator()(std::list<synfig::BLinePoint>  &blinepoint
 			break_tangents.erase(break_tangents.begin()+i+2,break_tangents.end()); //erase all points that we found... found none if i has not advanced
 		//must not include the one we ended up on
 	}
-	//breakeval = timer();
-	//synfig::info("found break points: %d",break_tangents.size());
 
 	//get the distance calculation of the entire curve (for tangent scaling)
 
-	//timer.reset();
 	{
 		synfig::Point p1,p2;
 
@@ -567,8 +501,6 @@ synfigapp::BLineConverter::operator()(std::list<synfig::BLinePoint>  &blinepoint
 			p2=point_cache[++i];
 		}
 	}
-	//disteval = timer();
-	//synfig::info("calculated distance");
 
 	//now break at every point - calculate new derivatives each time
 
@@ -594,7 +526,6 @@ synfigapp::BLineConverter::operator()(std::list<synfig::BLinePoint>  &blinepoint
 
 		bool breaktan = false, setwidth;
 		a.set_split_tangent_both(false);
-		//a.set_width(width);
 		a.set_width(1.0f);
 
 		setwidth = (point_cache.size() == width_cache.size());
@@ -608,7 +539,6 @@ synfigapp::BLineConverter::operator()(std::list<synfig::BLinePoint>  &blinepoint
 			unsigned int size = i3-i0+1; //must include the end points
 
 			//new derivatives
-			//timer.reset();
 			ftemp.assign(point_cache.begin()+i0, point_cache.begin()+i3+1);
 			for(i=0;i<20;++i)
 				gaussian_blur_3(ftemp.begin(),ftemp.end(),false);
@@ -619,7 +549,6 @@ synfigapp::BLineConverter::operator()(std::list<synfig::BLinePoint>  &blinepoint
 			// using a char* pointer and pointer arithmetric was safe,
 			// I looked it up...
 			//
-			// http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2369.pdf tells me:
 			//
 			//	23.2.5  Class template vector [vector]
 			//
@@ -632,13 +561,10 @@ synfigapp::BLineConverter::operator()(std::list<synfig::BLinePoint>  &blinepoint
 
 			//GetSimpleDerivatives(ftemp,0,size,deriv,0,cum_dist);
 			//< don't have to worry about indexing stuff as it is all being taken care of right now
-			//preproceval += timer();
-			//numpre++;
 
 			work.resize(size*2-1); //guarantee that all points will be tessellated correctly (one point in between every 2 adjacent points)
 
 			//if size of work is size*2-1, the step size should be 1/(size*2 - 2)
-			//Real step = 1/(Real)(size*2 - 1);
 
 			//start off with break points as indices
 			curind.clear();
@@ -654,12 +580,9 @@ synfigapp::BLineConverter::operator()(std::list<synfig::BLinePoint>  &blinepoint
 				//tessellate all curves with invalid error values
 				work[0] = point_cache[i0];
 
-				//timer.reset();
 				/*numtess += */tessellate_curves(curind,point_cache,deriv,work);
-				//tesseval += timer();
 
 				//now get all error values
-				//timer.reset();
 				for(i = 1; i < (int)curind.size(); ++i)
 				{
 					if(curind[i].error < 0) //must have been retessellated, so now recalculate error value
@@ -669,18 +592,9 @@ synfigapp::BLineConverter::operator()(std::list<synfig::BLinePoint>  &blinepoint
 						curind[i].error = CurveError(&point_cache[curind[i-1].curind], size,
 													 work,(curind[i-1].curind - i0)*2,(curind[i].curind - i0)*2+1);
 
-						/*if(curind[i].error > 1.0e5)
-						{
-							synfig::info("Holy crap %d-%d error %f",curind[i-1].curind,curind[i].curind,curind[i].error);
-							curind[i].error = -1;
-							numtess += tessellate_curves(curind,f,deriv,work);
-							curind[i].error = CurveError(&point_cache[curind[i-1].curind], size,
-													 work,0,work.size());//(curind[i-1].curind - i0)*2,(curind[i].curind - i0)*2+1);
-						}*/
-						//numerror++;
+
 					}
 				}
-				//erroreval += timer();
 
 				//assume we're done
 				done = true;
@@ -688,13 +602,10 @@ synfigapp::BLineConverter::operator()(std::list<synfig::BLinePoint>  &blinepoint
 				//check each error to see if it's too big, if so, then subdivide etc.
 				int indsize = (int)curind.size();
 				Real maxrelerror = 0;
-				int maxi = -1;//, numpoints;
-
-				//timer.reset();
+				int maxi = -1;
 				//get the maximum error and split there
 				for(i = 1; i < indsize; ++i)
 				{
-					//numpoints = curind[i].curind - curind[i-1].curind + 1;
 
 					if(curind[i].error > maxrelerror && curind[i].curind - curind[i-1].curind > 2) //only accept if it's valid
 					{
@@ -713,7 +624,6 @@ synfigapp::BLineConverter::operator()(std::list<synfig::BLinePoint>  &blinepoint
 
 					assert(ibreak < point_cache.size());
 
-					//synfig::info("Split %d -%d- %d, error: %f", ibase,ibreak,itop,maxrelerror);
 
 					if(ibase != itop)
 					{
@@ -734,14 +644,10 @@ synfigapp::BLineConverter::operator()(std::list<synfig::BLinePoint>  &blinepoint
 						scale = std::min(cum_dist[ibreak] - cum_dist[ibase], cum_dist[itop] - cum_dist[ibreak]);
 
 						curind.insert(curind.begin()+maxi,cpindex(ibreak, scale, -1));
-						//curind.push_back(cpindex(ibreak, scale, -1));
-						//std::sort(curind.begin(), curind.end());
 
 						done = false;
-						//numsplit++;
 					}
 				}
-				//spliteval += timer();
 
 				dcount++;
 			}
@@ -801,27 +707,7 @@ synfigapp::BLineConverter::operator()(std::list<synfig::BLinePoint>  &blinepoint
 			a.set_width(width_cache[i3]);
 		blinepoints_out.push_back(a);
 
-		/*etl::clock::value_type totaltime = total(),
-							   misctime = totaltime - initialprocess - curveval - breakeval - disteval
-									  - preproceval - tesseval - erroreval - spliteval;
 
-		synfig::info(
-			"Curve Convert Profile:\n"
-			"\tInitial Preprocess:    %f\n"
-			"\tCurvature Calculation: %f\n"
-			"\tBreak Calculation:     %f\n"
-			"\tDistance Calculation:  %f\n"
-			"  Algorithm: (numtimes,totaltime)\n"
-			"\tPreprocess step:      (%d,%f)\n"
-			"\tTessellation step:    (%d,%f)\n"
-			"\tError step:           (%d,%f)\n"
-			"\tSplit step:           (%d,%f)\n"
-			"  Num Input: %d, Num Output: %d\n"
-			"  Total time: %f, Misc time: %f\n",
-			initialprocess, curveval,breakeval,disteval,
-			numpre,preproceval,numtess,tesseval,numerror,erroreval,numsplit,spliteval,
-			points_in.size(),blinepoints_out.size(),
-			totaltime,misctime);*/
 
 		return;
 	}

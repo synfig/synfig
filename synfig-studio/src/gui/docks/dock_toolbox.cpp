@@ -103,14 +103,7 @@ Dock_Toolbox::Dock_Toolbox():
 	Widget_Defaults* widget_defaults(manage(new Widget_Defaults()));
 
 	// pack tools and default widgets
-	//tool_box = manage(new class Gtk::VBox(false, 2));
-	//tool_box->pack_start(*scrolled_window, Gtk::PACK_EXPAND_WIDGET|Gtk::PACK_SHRINK, 3);
-	//tool_box->pack_start(*separator, Gtk::PACK_SHRINK, 3);
-	//tool_box->pack_start(*widget_defaults, Gtk::PACK_EXPAND_WIDGET|Gtk::PACK_SHRINK, 3);
-	//tool_box->set_border_width(2);
-	//tool_box->show_all();
 
-	//add(*tool_box);
 	
 	Gtk::VPaned *tool_box_paned = manage(new class Gtk::VPaned());
 	tool_box_paned->pack1(*scrolled_window, Gtk::PACK_EXPAND_WIDGET|Gtk::PACK_SHRINK, 3);
@@ -128,7 +121,6 @@ Dock_Toolbox::Dock_Toolbox():
 	std::vector<Gtk::TargetEntry> listTargets;
 	listTargets.push_back( Gtk::TargetEntry("text/plain") );
 	listTargets.push_back( Gtk::TargetEntry("image") );
-//	listTargets.push_back( Gtk::TargetEntry("image/x-sif") );
 
 	drag_dest_set(listTargets);
 	signal_drag_data_received().connect( sigc::mem_fun(*this, &studio::Dock_Toolbox::on_drop_drag_data_received) );
@@ -142,7 +134,6 @@ Dock_Toolbox::~Dock_Toolbox()
 {
 	hide();
 	//studio::App::cb.task(_("Toolbox: I was nailed!"));
-	//studio::App::quit();
 
 	if(studio::App::dock_toolbox==this)
 		studio::App::dock_toolbox=NULL;
@@ -336,16 +327,13 @@ Dock_Toolbox::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& c
 				continue;
 
 			// Make sure this URL is of the "file://" type.
-			URI=String(filename.begin(),filename.begin()+sizeof("file://")-1);
-			if(URI!="file://")
-			{
+			URI=String(filename.begin(),filename.begin()+sizeof("file:			if(URI!="file:			{
 				synfig::warning("Unknown URI (%s) in \"%s\"",URI.c_str(),filename.c_str());
 				continue;
 			}
 
 			// Strip the "file://" part from the filename
-			filename=synfig::String(filename.begin()+sizeof("file://")-1,filename.end());
-
+			filename=synfig::String(filename.begin()+sizeof("file:
 			synfig::info("Attempting to open "+filename);
 			if(App::open(filename))
 				success=true;

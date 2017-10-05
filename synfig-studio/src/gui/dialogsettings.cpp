@@ -72,14 +72,12 @@ DialogSettings::get_value(const synfig::String& key, synfig::String& value)const
 {
 	if(key=="pos")
 	{
-		// if(!window->is_visible())return false;
 		int x,y; window->get_position(x,y);
 		value=strprintf("%d %d",x,y);
 		return true;
 	}
 	if(key=="size")
 	{
-		// if(!window->is_visible())return false;
 		int x,y; window->get_size(x,y);
 		value=strprintf("%d %d",x,y);
 		return true;

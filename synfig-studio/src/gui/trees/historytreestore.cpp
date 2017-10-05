@@ -141,7 +141,6 @@ HistoryTreeStore::insert_action(Gtk::TreeRow row,etl::handle<synfigapp::Action::
 		}
 	}
 
-	//row[model.icon] = Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-canvas"),Gtk::ICON_SIZE_SMALL_TOOLBAR);
 }
 
 
@@ -188,7 +187,6 @@ HistoryTreeStore::on_redo_stack_cleared()
 void
 HistoryTreeStore::on_new_action(etl::handle<synfigapp::Action::Undoable> action)
 {
-//	Gtk::TreeRow row = *(append());
 	Gtk::TreeRow row;
 	Gtk::TreeModel::Children::iterator iter;
 	for(iter=children().begin(); iter != children().end(); ++iter)

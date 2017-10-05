@@ -142,17 +142,7 @@ Action::WaypointDisconnect::perform()
 
 	iter->set_value_node(ValueNode_Const::create((*old_value_node)(time_set ? time : waypoint_time)));
 
-	/*
-	if(get_canvas()->get_time()!=time)
-		set_dirty(true);
-	else
-		set_dirty(false);
 
-	if(get_canvas_interface())
-	{
-		get_canvas_interface()->signal_value_node_changed()(parent_value_node);
-	}
-	*/
 }
 
 void
@@ -162,13 +152,5 @@ Action::WaypointDisconnect::undo()
 
 	iter->set_value_node(old_value_node);
 
-	/*if(get_canvas()->get_time()!=time)
-		set_dirty(true);
-	else
-		set_dirty(false);
 
-	if(get_canvas_interface())
-	{
-		get_canvas_interface()->signal_value_node_changed()(parent_value_node);
-	}*/
 }

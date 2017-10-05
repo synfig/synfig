@@ -207,14 +207,12 @@ StateRotate_Context::StateRotate_Context(CanvasView* canvas_view):
 
 	options_table.show_all();
 	refresh_tool_options();
-	//App::dialog_tool_options->set_widget(options_table);
 	App::dialog_tool_options->present();
 
 	get_work_area()->set_allow_layer_clicks(true);
 	get_work_area()->set_duck_dragger(duck_dragger_);
 
 	get_work_area()->set_cursor(Gdk::EXCHANGE);
-//	get_work_area()->reset_cursor();
 
 	App::dock_toolbox->refresh();
 
@@ -275,13 +273,7 @@ DuckDrag_Rotate::begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& off
 	const DuckList selected_ducks(duckmatic->get_selected_ducks());
 	DuckList::const_iterator iter;
 
-/*
-	if(duckmatic->get_selected_ducks().size()<2)
-	{
-		bad_drag=true;
-		return;
-	}
-*/
+
 	bad_drag=false;
 
 		drag_offset=duckmatic->find_duck(offset)->get_trans_point();
@@ -293,7 +285,6 @@ DuckDrag_Rotate::begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& off
 	// Calculate center
 	Point vmin(100000000,100000000);
 	Point vmax(-100000000,-100000000);
-	//std::set<etl::handle<Duck> >::iterator iter;
 	positions.clear();
 	int i;
 	for(i=0,iter=selected_ducks.begin();iter!=selected_ducks.end();++iter,i++)
@@ -324,7 +315,6 @@ DuckDrag_Rotate::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 	if(bad_drag)
 		return;
 
-	//std::set<etl::handle<Duck> >::iterator iter;
 	synfig::Vector vect(duckmatic->snap_point_to_grid(vector)-center+snap);
 
 	const DuckList selected_ducks(duckmatic->get_selected_ducks());
@@ -389,7 +379,6 @@ DuckDrag_Rotate::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 	}
 
 	last_rotate=vect;
-	//snap=Vector(0,0);
 }
 
 bool

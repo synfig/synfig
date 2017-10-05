@@ -186,12 +186,7 @@ Action::ActivepointAdd::perform()
 	value_node->list[index].add(activepoint);
 	value_node->changed();
 
-	/*if(get_canvas_interface())
-	{
-		get_canvas_interface()->signal_value_node_changed()(value_node);
-	}
-	else synfig::warning("CanvasInterface not set on action");
-	*/
+
 }
 
 void

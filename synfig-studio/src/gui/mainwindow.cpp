@@ -162,7 +162,6 @@ MainWindow::init_menus()
 	);
 
 	// View menu
-	//Glib::RefPtr<Gtk::ToggleAction> action;
 	toggle_menubar = Gtk::ToggleAction::create("toggle-mainwin-menubar", _("Show Menubar"));
 	toggle_menubar->set_active(toggling_show_menubar);
 	action_group->add(toggle_menubar, sigc::mem_fun(*this, &studio::MainWindow::toggle_show_menubar));
@@ -183,10 +182,8 @@ MainWindow::init_menus()
 		action_group->add( Gtk::Action::create(action_name, title), \
 			sigc::bind(sigc::ptr_fun(&studio::App::open_uri),url))
 	#define WIKI(action_name,title,page) \
-		URL(action_name,title, "http://synfig.org/wiki" + String(page))
-	#define SITE(action_name,title,page) \
-		URL(action_name,title, "http://synfig.org/cms" + String(page))
-
+		URL(action_name,title, "http:	#define SITE(action_name,title,page) \
+		URL(action_name,title, "http:
 	action_group->add( Gtk::Action::create("help", Gtk::Stock::HELP),
 		sigc::ptr_fun(studio::App::dialog_help)
 	);
@@ -203,7 +200,6 @@ MainWindow::init_menus()
 	);
 
 	// TODO: open recent
-	//filemenu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Open Recent"),*recent_files_menu));
 
 	App::ui_manager()->insert_action_group(action_group);
 }
@@ -249,8 +245,7 @@ MainWindow::make_short_filenames(
 	for(int i = 0; i < count; ++i) {
 		int j = 0;
 		String fullname = fullnames[i];
-		if (fullname.substr(0, 7) == "file://")
-			fullname = fullname.substr(7);
+		if (fullname.substr(0, 7) == "file:			fullname = fullname.substr(7);
 		while(j < (int)fullname.size())
 		{
 			size_t k = fullname.find_first_of(ETL_DIRECTORY_SEPARATORS, j);

@@ -141,11 +141,7 @@ Action::LayerParamSet::perform()
 	if(!layer->set_param(param_name,new_value))
 		throw Error(_("Layer did not accept parameter."));
 
-	/*if(layer->active())
-		set_dirty(true);
-	else
-		set_dirty(false);
-	*/
+
 	layer->changed();
 
 	// Signal that a layer has been inserted
@@ -161,12 +157,7 @@ Action::LayerParamSet::undo()
 	if(!layer->set_param(param_name,old_value))
 		throw Error(_("Layer did not accept parameter."));
 
-	/*
-	if(layer->active())
-		set_dirty(true);
-	else
-		set_dirty(false);
-	*/
+
 
 	layer->changed();
 

@@ -94,7 +94,6 @@ Action::LayerLower::is_candidate(const ParamList &x)
 		return false;
 
 	Layer::Handle layer(x.find("layer")->second.get_layer());
-	//synfig::info("layer->get_depth()= %d ; layer->get_canvas()->size()=%d ;",layer->get_depth(),layer->get_canvas()->size());
 	if(layer->get_depth()+1>=layer->get_canvas()->size())
 		return false;
 	return true;
@@ -144,7 +143,6 @@ Action::LayerLower::prepare()
 		// If the subcanvas isn't the same as the canvas,
 		// then it had better be an inline canvas. If not,
 		// bail
-		//if(get_canvas()!=subcanvas && !subcanvas->is_inline())
 		//	throw Error(_("This layer doesn't belong to this canvas anymore"));
 
 		int new_index=iter-subcanvas->begin();

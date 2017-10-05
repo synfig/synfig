@@ -75,20 +75,7 @@ struct _keyframe_iterator
 	int index;
 };
 
-/*
-Gtk::TreeModel::iterator keyframe_iter_2_model_iter(synfig::KeyframeList::iterator iter,int index)
-{
-	Gtk::TreeModel::iterator ret;
 
-	_keyframe_iterator*& data(static_cast<_keyframe_iterator*&>(ret->gobj()->user_data));
-	data=new _keyframe_iterator();
-	data->ref_count=1;
-	data->iter=iter;
-	data->index=index;
-
-	return ret;
-}
-*/
 
 synfig::KeyframeList::iterator model_iter_2_keyframe_iter(Gtk::TreeModel::iterator iter)
 {
@@ -107,54 +94,7 @@ int get_index_from_model_iter(Gtk::TreeModel::iterator iter)
 }
 
 
-/*
-#ifndef TreeRowReferenceHack
-class TreeRowReferenceHack
-{
-	GtkTreeRowReference *gobject_;
-public:
-	TreeRowReferenceHack():
-		gobject_(0)
-	{
-	}
 
-	TreeRowReferenceHack(const Glib::RefPtr<Gtk::TreeModel>& model, const Gtk::TreeModel::Path& path):
-		gobject_ ( gtk_tree_row_reference_new(model->gobj(), const_cast<GtkTreePath*>(path.gobj())) )
-	{
-	}
-
-	TreeRowReferenceHack(const TreeRowReferenceHack &x):
-		gobject_ ( x.gobject_?gtk_tree_row_reference_copy(x.gobject_):0 )
-	{
-
-	}
-
-	void swap(TreeRowReferenceHack & other)
-	{
-		GtkTreeRowReference *const temp = gobject_;
-		gobject_ = other.gobject_;
-		other.gobject_ = temp;
-	}
-
-	const TreeRowReferenceHack &
-	operator=(const TreeRowReferenceHack &rhs)
-	{
-		TreeRowReferenceHack temp (rhs);
-  		swap(temp);
-		return *this;
-	}
-
-	~TreeRowReferenceHack()
-	{
-		if(gobject_)
-			gtk_tree_row_reference_free(gobject_);
-	}
-
-	Gtk::TreeModel::Path get_path() { return Gtk::TreeModel::Path(gtk_tree_row_reference_get_path(gobject_),false); }
-	GtkTreeRowReference *gobj() { return gobject_; }
-};
-#endif
-*/
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -170,17 +110,14 @@ void clear_iterator(GtkTreeIter* iter)
 KeyframeTreeStore::KeyframeTreeStore(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_):
 	Glib::ObjectBase	("KeyframeTreeStore"),
 	//! \todo what is going on here?  why the need for this KeyframeTreeStore_Class at all?
-	// Glib::Object		(Glib::ConstructParams(keyframe_tree_store_class_.init(), (char*) 0, (char*) 0)),
 	canvas_interface_	(canvas_interface_)
 {
 	reset_stamp();
-	//reset_path_table();
 
 	//connect some events
 	canvas_interface()->signal_keyframe_added().connect(sigc::mem_fun(*this,&studio::KeyframeTreeStore::add_keyframe));
 	canvas_interface()->signal_keyframe_removed().connect(sigc::mem_fun(*this,&studio::KeyframeTreeStore::remove_keyframe));
 	canvas_interface()->signal_keyframe_changed().connect(sigc::mem_fun(*this,&studio::KeyframeTreeStore::change_keyframe));
-	//canvas_interface()->signal_keyframe_selected().connect(sigc::mem_fun(*this,&studio::KeyframeTreeStore::select_keyframe));
 }
 
 KeyframeTreeStore::~KeyframeTreeStore()
@@ -204,20 +141,7 @@ KeyframeTreeStore::reset_stamp()
 	stamp_=time(0)+reinterpret_cast<intptr_t>(this);
 }
 
-/*
-void
-KeyframeTreeStore::reset_path_table()
-{
-	Gtk::TreeModel::Children::iterator iter;
-	const Gtk::TreeModel::Children children(children());
-	path_table_.clear();
-	for(iter = children.begin(); iter != children.end(); ++iter)
-	{
-		Gtk::TreeModel::Row row(*iter);
-		path_table_[(Keyframe)row[model.keyframe]]=TreeRowReferenceHack(Glib::RefPtr<KeyframeTreeStore>(this),Gtk::TreePath(row));
-	}
-}
-*/
+
 
 
 inline bool
@@ -318,9 +242,7 @@ KeyframeTreeStore::set_value_impl(const Gtk::TreeModel::iterator& row, int colum
 				return;
 			}
 			// row(row) on the next line is bad - don't use it, because it leaves 'row' uninitialized
-			//Gtk::TreeModel::iterator row(row);
 			//row++;
-			//if(!row)return;
 
 			Time change_delta(new_delta-old_delta);
 
@@ -468,74 +390,7 @@ KeyframeTreeStore::iter_next_vfunc (const iterator& xiter, iterator& iter_next) 
 	return true;
 }
 
-/*
-bool
-KeyframeTreeStore::iter_next_vfunc (GtkTreeIter* gtk_iter)
-{
-	if(!iterator_sane(gtk_iter)) return false;
 
-	_keyframe_iterator *iter(static_cast<_keyframe_iterator*>(gtk_iter->user_data));
-
-	// If we are already at the end, then we are very invalid
-	if(iter->iter==canvas_interface()->get_canvas()->keyframe_list().end())
-		return false;
-
-	++(iter->iter);
-
-	if(iter->iter==canvas_interface()->get_canvas()->keyframe_list().end())
-	{
-		--(iter->iter);
-		return false;
-	}
-	(iter->index)++;
-	return true;
-}
-
-bool
-KeyframeTreeStore::iter_children_vfunc (GtkTreeIter* gtk_iter, const GtkTreeIter* parent)
-{
-	dump_iterator(gtk_iter,"gtk_iter");
-	dump_iterator(parent,"parent");
-
-	if(!parent || !iterator_sane(parent))
-	{
-		clear_iterator(gtk_iter);
-		return false;
-	}
-
-	_keyframe_iterator *iter(new _keyframe_iterator());
-	iter->ref_count=1;
-	iter->index=0;
-	iter->iter=canvas_interface()->get_canvas()->keyframe_list().begin();
-
-	gtk_iter->user_data=static_cast<gpointer>(iter);
-	gtk_iter->stamp=stamp_;
-
-	return true;
-}
-
-bool
-KeyframeTreeStore::iter_has_child_vfunc (const GtkTreeIter*parent)
-{
-	dump_iterator(parent,"parent");
-
-	if(parent)
-		return false;
-
-	return true;
-}
-
-int
-KeyframeTreeStore::iter_n_children_vfunc (const GtkTreeIter* parent)
-{
-	dump_iterator(parent,"parent");
-
-	if(parent)
-		return 0;
-
-	return canvas_interface()->get_canvas()->keyframe_list().size();
-}
-*/
 
 int
 KeyframeTreeStore::iter_n_root_children_vfunc () const
@@ -581,51 +436,7 @@ KeyframeTreeStore::iter_nth_root_child_vfunc (int n, iterator& xiter)const
 	return true;
 }
 
-/*
-bool
-KeyframeTreeStore::iter_nth_child_vfunc (GtkTreeIter* gtk_iter, const GtkTreeIter* parent, int n)
-{
-	dump_iterator(parent,"parent");
 
-	if(parent)
-	{
-		g_warning("KeyframeTreeStore::iter_nth_child_vfunc: I am a list");
-		clear_iterator(gtk_iter);
-		return false;
-	}
-
-
-
-	_keyframe_iterator *iter(new _keyframe_iterator());
-	iter->ref_count=1;
-	iter->index=n;
-	iter->iter=canvas_interface()->get_canvas()->keyframe_list().begin();
-	while(n--)
-	{
-		if(iter->iter==canvas_interface()->get_canvas()->keyframe_list().end())
-		{
-			g_warning("KeyframeTreeStore::iter_nth_child_vfunc: >>>BUG<<< in %s on line %d",__FILE__,__LINE__);
-			delete iter;
-			clear_iterator(gtk_iter);
-			return false;
-		}
-		++iter->iter;
-	}
-
-	gtk_iter->user_data=static_cast<gpointer>(iter);
-	gtk_iter->stamp=stamp_;
-	return true;
-}
-
-bool
-KeyframeTreeStore::iter_parent_vfunc (GtkTreeIter* gtk_iter, const GtkTreeIter* child)
-{
-	dump_iterator(child,"child");
-	iterator_sane(child);
-	clear_iterator(gtk_iter);
-	return false;
-}
-*/
 
 void
 KeyframeTreeStore::ref_node_vfunc (iterator& xiter)const
@@ -679,7 +490,6 @@ KeyframeTreeStore::get_iter_vfunc (const Gtk::TreeModel::Path& path, iterator& i
 
 	// Error case
 	g_warning("KeyframeTreeStore::get_iter_vfunc(): Bad path \"%s\"",path.to_string().c_str());
-	//clear_iterator(iter);
 	return false;
 }
 
@@ -816,8 +626,6 @@ KeyframeTreeStore::add_keyframe(synfig::Keyframe keyframe)
 		row_inserted(path,row);
 
 		old_keyframe_list=get_canvas()->keyframe_list();
-		//old_keyframe_list.add(keyframe);
-		//old_keyframe_list.sort();
 	}
 	catch(std::exception x)
 	{
@@ -890,7 +698,6 @@ KeyframeTreeStore::change_keyframe(synfig::Keyframe keyframe)
 				new_order.erase(new_order.begin()+new_index);
 				new_order.insert(new_order.begin()+old_index,new_index);
 
-				//new_order[old_index]=
 
 				rows_reordered (Path(), iterator(), &new_order[0]);
 			}

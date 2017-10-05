@@ -476,7 +476,6 @@ studio::valuenode_icon(etl::handle<synfig::ValueNode> value_node)
 Glib::RefPtr<Gdk::Pixbuf>
 studio::get_tree_pixbuf(Type &type)
 {
-	//return Gtk::Button().render_icon_pixbuf(value_icon(type),Gtk::ICON_SIZE_SMALL_TOOLBAR);
 	return _tree_pixbuf_table_value_type[type.identifier];
 }
 

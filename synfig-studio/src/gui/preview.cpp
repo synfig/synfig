@@ -107,9 +107,7 @@ public:
 	{
 		if(Target_Scanline::set_rend_desc(r))
 		{
-			/*synfig::warning("Succeeded in setting the desc to new one: %d x %d, %.2f fps [%.2f,%.2f]",
-							desc.get_w(),desc.get_h(),desc.get_frame_rate(),
-					(float)desc.get_time_start(),(float)desc.get_time_end());*/
+
 
 			surface.set_wh(desc.get_w(),desc.get_h());
 
@@ -207,9 +205,7 @@ void studio::Preview::render()
 			newh = (int)floor(desc.get_h()*zoom+0.5);
 		float newfps = fps;
 
-		/*synfig::warning("Setting the render description: %d x %d, %f fps, [%f,%f]",
-						neww,newh,newfps, overbegin?begintime:(float)desc.get_time_start(),
-						overend?endtime:(float)desc.get_time_end());*/
+
 		desc.set_w(neww);
 		desc.set_h(newh);
 		desc.set_frame_rate(newfps);
@@ -218,12 +214,10 @@ void studio::Preview::render()
 		if(overbegin)
 		{
 			desc.set_time_start(begintime);
-			//synfig::warning("Set start time to %.2f...",(float)desc.get_time_start());
 		}
 		if(overend)
 		{
 			desc.set_time_end(endtime);
-			//synfig::warning("Set end time to %.2f...",(float)desc.get_time_end());
 		}
 
 		//setting the description
@@ -290,13 +284,11 @@ void studio::Preview::frame_finish(const Preview_Target *targ)
 		return;
 
 	//convert all the pixels to the pixbuf... buffer... thing...
-	//synfig::warning("Converting...");
 	convert_color_format(buffer, surf[0], surf.get_w()*surf.get_h(), pf, App::gamma);
 
 	//load time
 	fe.t = time;
 	//uses and manages the memory for the buffer...
-	//synfig::warning("Create a pixmap...");
 	fe.buf =
 	Gdk::Pixbuf::create_from_data(
 		buffer,	// pointer to the data
@@ -310,7 +302,6 @@ void studio::Preview::frame_finish(const Preview_Target *targ)
 	);
 
 	//add the flipbook element to the list (assume time is correct)
-	//synfig::info("Prev: Adding %f s to the list", time);
 	frames.push_back(fe);
 
 	signal_changed()();
@@ -329,7 +320,7 @@ Widget_Preview::Widget_Preview():
 	Gtk::Table(1, 5),
 	adj_time_scrub(Gtk::Adjustment::create(0, 0, 1000, 0, 10, 0)),
 	scr_time_scrub(adj_time_scrub),
-	b_loop(/*_("Loop")*/),
+	b_loop(),
 	currentindex(-100000),//TODO get the value from canvas setting or preview option
 	audiotime(0),
 	adj_sound(Gtk::Adjustment::create(0, 0, 4)),
@@ -351,7 +342,6 @@ Widget_Preview::Widget_Preview():
 	signal_key_press_event().connect(sigc::mem_fun(*this, &Widget_Preview::on_key_pressed));
 
 	//connect to expose events
-	//signal_expose_event().connect(sigc::mem_fun(*this, &studio::Widget_Preview::redraw));
 
 	//manage all the change in values etc...
 
@@ -462,7 +452,7 @@ Widget_Preview::Widget_Preview():
 	toolbar->pack_start(*button, Gtk::PACK_SHRINK, 0);
 
 	//re-preview
-	button = manage(new Gtk::Button(/*_("Re-Preview")*/));
+	button = manage(new Gtk::Button());
 	button->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Preview::repreview));
 	IMAGIFY_BUTTON(button, Gtk::Stock::EDIT, _("Re-preview"));
 
@@ -554,7 +544,6 @@ Widget_Preview::Widget_Preview():
 	preview_window.show_all();
 	scr_time_scrub.show_all();
 
-	//if(draw_area.get_window()) gc_area = Gdk::GC::create(draw_area.get_window());
 }
 
 studio::Widget_Preview::~Widget_Preview()
@@ -601,36 +590,23 @@ void studio::Widget_Preview::update()
 		{
 			//don't bother with binary search it will just be slower...
 
-			//synfig::info("Search for time %f",time);
 
 			//incrementally go in either direction
 			//(bias downward towards beg, because that's what we want)
 			for(;i != end;++i)
 			{
-				//synfig::info("Look at %f",i->t);
 				if(i->t > time) break;
-				//synfig::info("Go past...");
 			}
 
-			//if(i!=beg)--i;
 
 			//bias down, so we can't be at end... and it still is valid...
 			for(;i != beg;)
 			{
 				--i;
-				//synfig::info("Look at %f",i->t);
 				if(i->t <= time) break;
-				//synfig::info("Go past...");
 			}
 
-			/*i = preview->begin(); end = preview->end();
-			if(i == end) return;
 
-			j = i;
-			for(;i != end; j = i++)
-			{
-				if(i->t > time) break;
-			}*/
 
 			//we should be at a valid edge since we biased downward
 
@@ -638,7 +614,6 @@ void studio::Widget_Preview::update()
 			if(i == end)
 			{
 				synfig::error("i == end....");
-				//assert(0);
 				currentbuf.clear();
 				currentindex = 0;
 				timedisp = -1;
@@ -651,7 +626,6 @@ void studio::Widget_Preview::update()
 					timedisp = i->t;
 					//synfig::warning("Update at: %f seconds (%f s)",time,timedisp);
 					preview_draw();
-					//synfig::warning("success!");
 				}
 			}
 		}
@@ -665,8 +639,7 @@ void studio::Widget_Preview::update()
 }
 void studio::Widget_Preview::preview_draw()
 {
-	draw_area.queue_draw();//on_expose_event();
-}
+	draw_area.queue_draw();}
 
 bool studio::Widget_Preview::redraw(const Cairo::RefPtr<Cairo::Context> &cr)
 {
@@ -680,8 +653,6 @@ bool studio::Widget_Preview::redraw(const Cairo::RefPtr<Cairo::Context> &cr)
 	if(!px)
 		return true;
 	//made not need this line
-	//if ( draw_area.get_height() == 0 || px->get_height() == 0 || px->get_width() == 0)
-	//	return true;
 
 	//figure out the scaling factors...
 	float sx, sy;
@@ -703,7 +674,6 @@ bool studio::Widget_Preview::redraw(const Cairo::RefPtr<Cairo::Context> &cr)
 		sx = dw / (float)w;
 		sy = dh/ (float)h;
 
-		//synfig::info("widget_preview redraw: now to scale the bitmap: %.3f x %.3f",sx,sy);
 
 		//round to smallest scale (fit entire thing in window without distortion)
 		if(sx > sy) sx = sy;
@@ -742,7 +712,6 @@ bool studio::Widget_Preview::redraw(const Cairo::RefPtr<Cairo::Context> &cr)
 		dh = draw_area.get_height();
 	}
 
-	//synfig::info("Now to draw to the window...");
 	//copy to window
 	Glib::RefPtr<Gdk::Window> wind = draw_area.get_window();
 	if(!wind) synfig::warning("The destination window is broken...");
@@ -777,7 +746,6 @@ bool studio::Widget_Preview::redraw(const Cairo::RefPtr<Cairo::Context> &cr)
 bool studio::Widget_Preview::play_update()
 {
 	float diff = timer.pop_time();
-	//synfig::info("Play update: diff = %.2f",diff);
 
 	if(playing)
 	{
@@ -812,8 +780,7 @@ bool studio::Widget_Preview::play_update()
 		{
 			if(get_loop_flag())
 			{
-				time = adj_time_scrub->get_lower();// + time-adj_time_scrub.get_upper();
-				currentindex = 0;
+				time = adj_time_scrub->get_lower();				currentindex = 0;
 			}else
 			{
 				time = adj_time_scrub->get_upper();
@@ -821,7 +788,6 @@ bool studio::Widget_Preview::play_update()
 				pause();
 				update();
 
-				//synfig::info("Play Stopped: time set to %f",adj_time_scrub.get_value());
 				return false;
 			}
 		}
@@ -831,18 +797,14 @@ bool studio::Widget_Preview::play_update()
 		adj_time_scrub->value_changed();
 
 		//update the window to the correct image we might want to do this later...
-		//update();
-		//synfig::warning("Did update pu");
 	}
 	return true;
 }
 
 void studio::Widget_Preview::slider_move()
 {
-	//if(!playing)
 	{
 		update();
-		//synfig::warning("Did update sm");
 	}
 }
 
@@ -851,7 +813,6 @@ void studio::Widget_Preview::scrub_updated(double t)
 {
 	if (playing) on_play_pause_pressed();
 
-	//synfig::info("Scrubbing to %.3f, setting adj to %.3f",oldt,t);
 
 	if(adj_time_scrub->get_value() != t)
 	{
@@ -920,7 +881,6 @@ void studio::Widget_Preview::set_preview(etl::handle<Preview>	prev)
 		prevchanged = prev->signal_changed().connect(sigc::mem_fun(*this,&Widget_Preview::whenupdated));
 		prev->signal_destroyed().connect(sigc::mem_fun(*this,&Widget_Preview::disconnect_preview));
 		update();
-		//synfig::warning("Did update sp");
 		queue_draw();
 	}
 }
@@ -948,23 +908,18 @@ void studio::Widget_Preview::play()
 		soundProcessor.set_position(get_position());
 		soundProcessor.set_playing(true);
 
-		//synfig::info("Playing at %lf",adj_time_scrub->get_value());
-		//audiotime = adj_time_scrub->get_value();
 		playing = true;
 
 		play_button->hide();
 		pause_button->show();
 
-		//adj_time_scrub->set_value(adj_time_scrub->get_lower());
 		update(); //we don't want to call play update because that will try to advance the timer
 
 		//approximate length of time in seconds, right?
-		double rate = /*std::min(*/adj_time_scrub->get_step_increment()/*,1/30.0)*/;
+		double rate =adj_time_scrub->get_step_increment();
 		int timeout = (int)floor(1000*rate);
 
-		//synfig::info("	rate = %.3lfs = %d ms",rate,timeout);
 
-		//signal_play_(adj_time_scrub->get_value());
 
 		timecon = Glib::signal_timeout().connect(sigc::mem_fun(*this,&Widget_Preview::play_update),timeout);
 		timer.reset();
@@ -973,7 +928,6 @@ void studio::Widget_Preview::play()
 
 void studio::Widget_Preview::pause()
 {
-	//synfig::warning("stopping");
 	timecon.disconnect();
 	playing = false;
 	pause_button->hide();
@@ -985,10 +939,6 @@ void studio::Widget_Preview::on_play_pause_pressed()
 {
 	bool play_flag;
 	//! Commented out , build warnings
-//	float begin = preview->get_begintime();
-//	float end = preview->get_endtime();
-//	float current = adj_time_scrub->get_value();
-//	Gtk::Image *icon;
 
 	play_flag = !playing;
 	
@@ -1009,7 +959,6 @@ void studio::Widget_Preview::on_play_pause_pressed()
 
 void studio::Widget_Preview::seek_frame(int frames)
 {
-//	if(!frames)	return;
 
 	if(playing) on_play_pause_pressed();	//pause playing when seek frame called
 
@@ -1325,7 +1274,6 @@ void Widget_Preview::set_jack_enabled(bool value) {
 		App::jack_unlock();
 	}
 
-	//jackdial->toggle_enable_jack(jack_enabled);
 
 	Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon_16x16");
 	Gtk::Image *icon;

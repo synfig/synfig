@@ -180,11 +180,7 @@ Action::ActivepointSetSmart::is_ready()const
 void
 Action::ActivepointSetSmart::calc_activepoint()
 {
-/*
-	const Time time(activepoint.get_time());
-	activepoint.set_state(value_node->list[index].status_at_time(time));
-	activepoint.set_priority(0);
-*/
+
 
 	activepoint=value_node->list[index].new_activepoint_at_time(activepoint.get_time());
 

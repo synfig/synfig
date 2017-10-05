@@ -136,7 +136,6 @@ Action::TimepointsMove::set_param(const synfig::String& name, const Action::Para
 	{
 		//add a layer to the list
 		sel_layers.push_back(param.get_layer());
-		//synfig::info("action got layer");
 
 		return true;
 	}
@@ -145,7 +144,6 @@ Action::TimepointsMove::set_param(const synfig::String& name, const Action::Para
 	{
 		//add a layer to the list
 		sel_canvases.push_back(param.get_canvas());
-		//synfig::info("action got canvas");
 
 		return true;
 	}
@@ -154,7 +152,6 @@ Action::TimepointsMove::set_param(const synfig::String& name, const Action::Para
 	{
 		//add a layer to the list
 		sel_values.push_back(param.get_value_desc());
-		//synfig::info("action got valuedesc");
 
 		return true;
 	}
@@ -163,7 +160,6 @@ Action::TimepointsMove::set_param(const synfig::String& name, const Action::Para
 	{
 		//add a layer to the list
 		sel_times.insert(param.get_time());
-		//synfig::info("action got time");
 
 		return true;
 	}
@@ -171,7 +167,6 @@ Action::TimepointsMove::set_param(const synfig::String& name, const Action::Para
 	if(name=="deltatime" && param.get_type()==Param::TYPE_TIME)
 	{
 		timemove = param.get_time();
-		//synfig::info("action got time to move");
 
 		return true;
 	}
@@ -192,20 +187,12 @@ Action::TimepointsMove::prepare()
 {
 	clear();
 
-	//synfig::info("Preparing TimepointsMove by %f secs",(float)timemove);
 
 	if(sel_times.empty()) return;
 
 	//all our lists should be set correctly...
 
-	/*{
-		std::set<synfig::Time>::iterator i = sel_times.begin(), end = sel_times.end();
 
-		for(; i != end; ++i)
-		{
-			synfig::info("Time %f", (float)*i);
-		}
-	}*/
 
 	//build our sub-action list
 	// 	and yes we do need to store it temporarily so we don't duplicate
@@ -214,47 +201,36 @@ Action::TimepointsMove::prepare()
 
 	Time fps = get_canvas()->rend_desc().get_frame_rate();
 
-	//std::vector<synfig::Layer::Handle>
-	//synfig::info("Layers %d", sel_layers.size());
 	{
 		std::vector<synfig::Layer::Handle>::iterator i = sel_layers.begin(),
 													end = sel_layers.end();
 
 		for(; i != end; ++i)
 		{
-			//synfig::info("Recurse through a layer");
 			recurse_layer(*i,sel_times,match);
 		}
 	}
 
-	//std::vector<synfig::Canvas::Handle>	sel_canvases;
-	//synfig::info("Canvases %d", sel_canvases.size());
 	{
 		std::vector<synfig::Canvas::Handle>::iterator 	i = sel_canvases.begin(),
 														end = sel_canvases.end();
 
 		for(; i != end; ++i)
 		{
-			//synfig::info("Recurse through a canvas");
 			recurse_canvas(*i,sel_times,match);
 		}
 	}
 
-	//std::vector<synfigapp::ValueDesc>
-	//synfig::info("ValueBasedescs %d", sel_values.size());
 	{
 		std::vector<synfigapp::ValueDesc>::iterator 	i = sel_values.begin(),
 													end = sel_values.end();
 
 		for(; i != end; ++i)
 		{
-			//synfig::info("Recurse through a valuedesc");
 			recurse_valuedesc(*i,sel_times,match);
 		}
 	}
 
-	//synfig::info("built list of waypoints/activepoints to modify");
-	//synfig::info("\t There are %d waypoint sets and %d activepointsets",
 	//				match.waypointbiglist.size(), match.actpointbiglist.size());
 	//process them...
 	{
@@ -276,7 +252,6 @@ Action::TimepointsMove::prepare()
 														end = i->waypoints.end();
 			for(; j != end; ++j)
 			{
-				//synfig::info("add waypoint mod...");
 				//NOTE: We may want to store the old time for undoing the action...
 				Waypoint w = *j;
 				w.set_time((w.get_time() + dilated_timemove).round(fps));
@@ -310,7 +285,6 @@ Action::TimepointsMove::prepare()
 															jend = i->activepoints.end();
 			for(; j != jend; ++j)
 			{
-				//synfig::info("add activepoint mod...");
 
 				//NOTE: We may want to store the old time for undoing the action...
 				Activepoint a = *j;

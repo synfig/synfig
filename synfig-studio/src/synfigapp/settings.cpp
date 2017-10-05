@@ -257,7 +257,6 @@ Settings::load_from_file(const synfig::String& filename, const synfig::String& k
 			std::string key(line.begin(),equal);
 			std::string value(equal+1,line.end());
 
-			//synfig::info("Settings::load_from_file(): Trying Key \"%s\" with a value of \"%s\".",key.c_str(),value.c_str());
 			try{
 				if (key_filter=="" || (key==key_filter) )
 				{

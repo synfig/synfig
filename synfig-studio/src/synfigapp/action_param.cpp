@@ -56,7 +56,6 @@ Action::candidate_check(const ParamVocab& param_vocab, const ParamList& param_li
 	{
 		int n(param_list.count(iter->get_name()));
 
-//		if(n && !iter->get_mutual_exclusion().empty() && param_list.count(iter->get_mutual_exclusion()))
 //			return false;
 
 		if(!n && !iter->get_mutual_exclusion().empty() && param_list.count(iter->get_mutual_exclusion()))
@@ -187,16 +186,7 @@ Param::Param(const etl::handle<synfigapp::CanvasInterface>& x):
 	data.canvas_interface.get()=x;
 }
 
-/*
-Param::Param(synfigapp::CanvasInterface* x):
 
-	type_(TYPE_CANVASINTERFACE)
-{
-	_ParamCounter::counter++;
-	data.canvas_interface.construct();
-	data.canvas_interface=x;
-}
-*/
 
 Param::Param(const etl::loose_handle<synfigapp::CanvasInterface>& x):
 

@@ -58,7 +58,6 @@
 #include "widgets/widget_distance.h"
 #include "duck.h"
 
-//#include <synfigapp/value_desc.h>
 #include <synfigapp/main.h>
 
 #include <ETL/clock>
@@ -422,7 +421,6 @@ StateWidth_Context::AdjustWidth(handle<Duckmatic::Bezier> c, float t, Real mult,
 		//to truly be changed after everything is said and done
 		changetable[w2] = width;
 	}
-	///////
 	// Change the widths of the affected BLine of Advance Outlines
 	// Parents value nodes of the value node of the p1 and p2 ducks.
 	synfig::ValueNode::Handle p1pvn(p1->get_value_desc().get_parent_value_node());

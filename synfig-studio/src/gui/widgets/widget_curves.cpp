@@ -315,7 +315,6 @@ Widget_Curves::Widget_Curves():
 			&Widget_Curves::queue_draw
 		)
 	);
-	//set_vadjustment(range_adjustment_);
 
 	add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK | Gdk::SCROLL_MASK);
 
@@ -341,7 +340,6 @@ Widget_Curves::set_time_adjustment(const Glib::RefPtr<Gtk::Adjustment> &x)
 			&Widget_Curves::queue_draw
 		)
 	);
-	//set_hadjustment(*time_adjustment_);
 }
 
 void
@@ -456,26 +454,7 @@ Widget_Curves::on_event(GdkEvent *event)
 
 	return true;
 
-/*	switch(event->type)
-	{
-	case GDK_BUTTON_PRESS:
-		if(event->button.button==1)
-		{
-			signal_activate_();
-			return true;
-		}
-		if(event->button.button==3)
-		{
-			signal_secondary_();
-			return true;
-		}
-		break;
 
-	default:
-		break;
-	}
-	return false;
-*/
 }
 
 bool

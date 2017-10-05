@@ -675,7 +675,6 @@ Instance::dialog_cvs_add()
 		string message;
 
 		//if(!App::dialog_entry(_("CVS Add"),_("Enter a log message describing the file"), message))
-		//	return;
 		OneMoment one_moment;
 		cvs_add();
 	}
@@ -749,7 +748,6 @@ Instance::dialog_cvs_update()
 				"details",
 				_("Close"));
 	}
-	//update_all_titles();
 }
 
 void
@@ -805,7 +803,6 @@ Instance::dialog_cvs_revert()
 				"details",
 				_("Close"));
 	}
-	//update_all_titles();
 }
 
 void
@@ -945,7 +942,6 @@ Instance::add_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup>& action_grou
 
 	candidate_list.sort();
 
-	// if(candidate_list.empty())
 	// 	synfig::warning("%s:%d Action CandidateList is empty!", __FILE__, __LINE__);
 
 	for(iter=candidate_list.begin();iter!=candidate_list.end();++iter)
@@ -1138,7 +1134,6 @@ Instance::process_action(synfig::String name, synfigapp::Action::ParamList param
 
 				if(!studio::App::dialog_entry(entry.local_name,
 							label,
-							//iter->get_local_name()+": "+iter->get_desc(),
 							str,
 							_("Cancel"),
 							button2))
@@ -1252,7 +1247,6 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 		param_list.add("value_desc", value_desc);
 		param_list.add("canvas_interface",canvas_interface);
 
-		/////// Default
 		param_list.add("new_value", INTERPOLATION_UNDEFINED);
 		item = Gtk::manage(new Gtk::MenuItem(_("Default")));
 		item->signal_activate().connect(
@@ -1385,7 +1379,6 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 		ADD_IMAGE_MENU_ITEM(TYPE_PEAK, "synfig-peak_interpolation", "Cusp Before: Peak")
 		ADD_IMAGE_MENU_ITEM(TYPE_FLAT, "synfig-flat_interpolation", "Cusp Before: Flat")
 
-		///////
 		item = Gtk::manage(new Gtk::SeparatorMenuItem());
 		item->show();
 		parammenu.append(*item);
@@ -1400,7 +1393,6 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 		ADD_IMAGE_MENU_ITEM(TYPE_PEAK, "synfig-peak_interpolation", "Cusp After: Peak")
 		ADD_IMAGE_MENU_ITEM(TYPE_FLAT, "synfig-flat_interpolation", "Cusp After: Flat")
 
-		///////
 		item = Gtk::manage(new Gtk::SeparatorMenuItem());
 		item->show();
 		parammenu.append(*item);
@@ -1477,12 +1469,10 @@ edit_several_waypoints(etl::handle<CanvasView> canvas_view, std::list<synfigapp:
 			if(compo && compo->get_type() == type_width_point)
 			{
 				value_desc=synfigapp::ValueDesc(compo, compo->get_link_index_from_name("position"));
-				//value_node=ValueNode_Animated::Handle::cast_dynamic(compo->get_link(compo->get_link_index_from_name("position")));
 			}
 			if(compo && compo->get_type() == type_bline_point)
 			{
 				value_desc=synfigapp::ValueDesc(compo, compo->get_link_index_from_name("point"));
-				//value_node=ValueNode_Animated::Handle::cast_dynamic(compo->get_link(compo->get_link_index_from_name("point")));
 			}
 		}
 
@@ -1556,9 +1546,6 @@ edit_several_waypoints(etl::handle<CanvasView> canvas_view, std::list<synfigapp:
 		}
 		else
 		{
-			//get_canvas_view()->get_ui_interface()->error(_("Unable to animate a specific valuedesc"));
-			//group.cancel();
-			//return;
 		}
 
 	}
@@ -1654,8 +1641,6 @@ Instance::gather_uri(std::set<synfig::String> &x, const synfig::Layer::Handle &l
 			gather_uri(x, j->second);
 	}
 
-	//if (etl::handle<Layer_PasteCanvas> paste = etl::handle<Layer_PasteCanvas>::cast_dynamic(layer))
-	//	gather_uri(x, paste->get_param("canvas").get(Canvas::Handle()));
 }
 
 void

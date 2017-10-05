@@ -103,11 +103,8 @@ public:
 			cellrenderer_time_track->property_mode()=Gtk::CELL_RENDERER_MODE_ACTIVATABLE;
 			cellrenderer_time_track->signal_waypoint_clicked_cellrenderer().connect(sigc::mem_fun(*this, &TimeTrackView::on_waypoint_clicked_timetrackview));
 			cellrenderer_time_track->signal_waypoint_changed().connect(sigc::mem_fun(*this, &TimeTrackView::on_waypoint_changed) );
-			//column->add_attribute(cellrenderer_time_track->property_value_desc(), model.value_desc);
 			//column->add_attribute(cellrenderer_time_track->property_canvas(), model.canvas);
-			//column->add_attribute(cellrenderer_time_track->property_visible(), model.is_value_node);
 
-			//column->pack_start(*cellrenderer_time_track);
 
 			// Add a fixed size (same that layer param tree) empty text renderer
 			// to align the rows with params dock when the text is taller than value_type icons height
@@ -131,8 +128,6 @@ public:
 			column->set_resizable();
 			column->set_expand(true);
 // Commented during Align rows fixing
-// http://www.synfig.org/issues/thebuggenie/synfig/issues/161
-// 			column->set_min_width(200);
 			
 			column2->set_resizable();
 			column2->set_fixed_width(1);
@@ -188,9 +183,7 @@ public:
 				int cell_x, cell_y;
 				if(!get_path_at_pos(
 					int(event->button.x),int(event->button.y),	// x, y
-					path, // TreeModel::Path&
-					column, //TreeViewColumn*&
-					cell_x,cell_y //int&cell_x,int&cell_y
+					path,					column,					cell_x,cell_y //int&cell_x,int&cell_y
 					)
 				) break;
 				const Gtk::TreeRow row = *(get_model()->get_iter(path));
@@ -216,9 +209,7 @@ public:
 				int cell_x, cell_y;
 				if(!get_path_at_pos(
 					(int)event->motion.x,(int)event->motion.y,	// x, y
-					path, // TreeModel::Path&
-					column, //TreeViewColumn*&
-					cell_x,cell_y //int&cell_x,int&cell_y
+					path,					column,					cell_x,cell_y //int&cell_x,int&cell_y
 					)
 				) break;
 
@@ -237,22 +228,9 @@ public:
 					cellrenderer_time_track->property_canvas()=row[model.canvas];
 					cellrenderer_time_track->activate(event,*this,path.to_string(),rect,rect,Gtk::CellRendererState());
 					queue_draw();
-					//queue_draw_area(rect.get_x(),rect.get_y(),rect.get_width(),rect.get_height());
 					return true;
 				}
-/*				else
-				if(last_tooltip_path.get_depth()<=0 || path!=last_tooltip_path)
-				{
-					tooltips_.unset_tip(*this);
-					Glib::ustring tooltips_string(row[layer_model.tooltip]);
-					last_tooltip_path=path;
-					if(!tooltips_string.empty())
-					{
-						tooltips_.set_tip(*this,tooltips_string);
-						tooltips_.force_window();
-					}
-				}
-*/
+
 				return true;
 			}
 			break;
@@ -263,9 +241,7 @@ public:
 				int cell_x, cell_y;
 				if(!get_path_at_pos(
 					(int)event->button.x,(int)event->button.y,	// x, y
-					path, // TreeModel::Path&
-					column, //TreeViewColumn*&
-					cell_x,cell_y //int&cell_x,int&cell_y
+					path,					column,					cell_x,cell_y //int&cell_x,int&cell_y
 					)
 				) break;
 
@@ -319,7 +295,6 @@ public:
 		param_list.add("canvas_interface",param_tree_store_->canvas_interface());
 		param_list.add("value_node",value_node);
 		param_list.add("waypoint",waypoint);
-	//	param_list.add("time",canvas_interface()->get_time());
 
 		etl::handle<studio::Instance>::cast_static(param_tree_store_->canvas_interface()->get_instance())->process_action("WaypointSetSmart", param_list);
 	}
@@ -360,16 +335,7 @@ public:
 
 			if(adjustment->get_page_size()>get_height())
 				adjustment->set_page_size(get_height());
-/* Commented during Align rows fixing
-// http://www.synfig.org/issues/thebuggenie/synfig/issues/161
-			int row_height = 0;
-			if(getenv("SYNFIG_TIMETRACK_ROW_HEIGHT"))
-				row_height = atoi(getenv("SYNFIG_TIMETRACK_ROW_HEIGHT"));
-			if (row_height < 3)
-				row_height = 18;
 
-			cellrenderer_time_track->set_fixed_size(-1,row_height);
-*/
 		}
 	}
 
@@ -450,9 +416,7 @@ Dock_Timetrack::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view
 
 	studio::LayerTree* tree_layer(dynamic_cast<studio::LayerTree*>(canvas_view->get_ext_widget("layers_cmp")));
 
-	/*
-	if(!getenv("SYNFIG_TIMETRACK_HEADER_HEIGHT"))
-	*/
+
 	tree_layer->signal_param_tree_header_height_changed().connect(sigc::mem_fun(*this, &studio::Dock_Timetrack::on_update_header_height));
 
 	canvas_view->time_adjustment()->signal_value_changed().connect(sigc::mem_fun(*tree_view,&Gtk::TreeView::queue_draw));
@@ -466,23 +430,7 @@ Dock_Timetrack::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view
 void
 Dock_Timetrack::refresh_selected_param()
 {
-/*	Gtk::TreeView* tree_view(
-		static_cast<Gtk::TreeView*>(get_canvas_view()->get_ext_widget(get_name()))
-	);
-	Gtk::TreeModel::iterator iter(tree_view->get_selection()->get_selected());
 
-	if(iter)
-	{
-		LayerParamTreeStore::Model model;
-		get_canvas_view()->work_area->set_selected_value_node(
-			(synfig::ValueNode::Handle)(*iter)[model.value_node]
-		);
-	}
-	else
-	{
-		get_canvas_view()->work_area->set_selected_value_node(0);
-	}
-*/
 }
 
 /*! \fn Dock_Timetrack::refresh_rend_desc()
@@ -508,7 +456,6 @@ Dock_Timetrack::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_v
 		delete table_;
 		hscrollbar_->unset_adjustment();
 		vscrollbar_->unset_adjustment();
-		//widget_timeslider_->unset_adjustment();
 		table_=0;
 	}
 
@@ -546,25 +493,7 @@ Dock_Timetrack::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_v
 		vscrollbar_->set_adjustment(tree_view->get_vadjustment());
 		hscrollbar_->set_adjustment(canvas_view->time_window_adjustment());
 
-/*
-	0------1------2------3------4
-	|  A   |  KF  |  A   |  v   |
-	|  L   |      |  L   |  s   |
-	1--I---x------x--I---x--c---x
-	|  G   |  TS  |  G   |  r   |
-	|  N1  |      |  N2  |  o   |
-	2------x------x------x--l---x
-	|  TV  |  TV  |  TV  |  l   |
-	|      |      |      |  b   |
-	3------x------x------x------x
-	| hscrollbar
 
-KF = widget_kf_list
-TS = widget_timeslider
-TV = tree_view
-ALIGN1 = align_drawingArea1
-ALIGN2 = align_drawingArea2
-*/
 		table_=new Gtk::Table(3,4);
 		table_->attach(*align_drawingArea1, 0, 1, 0, 2, Gtk::SHRINK, Gtk::FILL);
 		table_->attach(*widget_kf_list_, 1, 2, 0, 1, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::SHRINK);
@@ -578,13 +507,11 @@ ALIGN2 = align_drawingArea2
 		// Should be here, after the widget was attached to table
 		tree_view->add_events(Gdk::SCROLL_MASK);
 
-		//add(*last_widget_curves_);
 		table_->show_all();
 		show_all();
 	}
 	else
 	{
-		//clear_previous();
 	}
 }
 

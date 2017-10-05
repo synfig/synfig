@@ -380,7 +380,6 @@ LayerActionManager::copy()
 
 	action_paste_->set_sensitive(!clipboard_.empty());
 
-	//queue_refresh();
 }
 
 void
@@ -431,7 +430,6 @@ LayerActionManager::paste()
 		etl::handle<Layer_PasteCanvas> paste = etl::handle<Layer_PasteCanvas>::cast_dynamic(layer);
 		if (paste) paste->update_renddesc();
 
-		// synfig::info("DEPTH=%d",depth);
 
 		// Action to move the layer (if necessary)
 		if(depth>0)
@@ -449,15 +447,11 @@ LayerActionManager::paste()
 
 			if(!action->is_ready())
 			{
-				//get_ui_interface()->error(_("Move Action Not Ready"));
-				//return 0;
 				return;
 			}
 
 			if(!get_instance()->perform_action(action))
 			{
-				//get_ui_interface()->error(_("Move Action Not Ready"));
-				//return 0;
 				return;
 			}
 		}

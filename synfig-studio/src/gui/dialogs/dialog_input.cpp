@@ -244,10 +244,6 @@ void Dialog_Input::apply()
 	for(DeviceOptions::DeviceList::const_iterator i = options->devices.begin(); i != options->devices.end(); ++i)
 	{
 		gdk_device_set_mode(i->handle, i->mode);
-		//for(DeviceOptions::AxisList::const_iterator j = i->axes.begin(); j != i->axes.end(); ++j)
-		//	gdk_device_set_axis_use(i->handle, j - i->axes.begin(), j->use);
-		//for(DeviceOptions::KeyList::const_iterator j = i->keys.begin(); j != i->keys.end(); ++j)
-		//	gdk_device_set_key(i->handle, j - i->keys.begin(), j->val, j->modifiers);
 	}
 	signal_apply()();
 }

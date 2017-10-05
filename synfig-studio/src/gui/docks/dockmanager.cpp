@@ -183,7 +183,6 @@ DockManager::~DockManager()
 	while(!dockable_list_.empty())
 	{
 		Dockable* dockable(dockable_list_.back());
-		// synfig::info("DockManager::~DockManager(): Deleting dockable \"%s\"",dockable->get_name().c_str());
 		dockable_list_.pop_back();
 		delete dockable;
 	}
@@ -193,7 +192,6 @@ void
 DockManager::register_dockable(Dockable& x)
 {
 	dockable_list_.push_back(&x);
-	// synfig::info("DockManager::register_dockable(): Registered dockable \"%s\"",dockable_list_.back()->get_name().c_str());
 	signal_dockable_registered()(&x);
 }
 
@@ -421,7 +419,6 @@ Gtk::Widget* DockManager::read_widget(std::string &x)
 	// paned
 	if (hor || vert)
 	{
-		// skip "[hor|" or "[vert|"
 		x = x.substr(1);
 		if (!read_separator(x)) return NULL;
 

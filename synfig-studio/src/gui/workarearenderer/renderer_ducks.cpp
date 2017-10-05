@@ -72,13 +72,7 @@ Renderer_Ducks::~Renderer_Ducks()
 {
 }
 
-/*
-bool
-Renderer_Ducks::get_enabled_vfunc()const
-{
-	return get_work_area()->grid_status();
-}
-*/
+
 
 struct ScreenDuck
 {
@@ -163,19 +157,7 @@ Renderer_Ducks::render_vfunc(
 		cr->move_to(p1[0], p1[1]);
 		cr->curve_to(c1[0], c1[1], c2[0], c2[1], p2[0], p2[1]);
 
-/*
-		if (solid_lines)
-		{
-			cr->set_source_rgb(0,0,0); // DUCK_COLOR_BEZIER_1
-			cr->set_line_width(3.0);
-			cr->stroke_preserve();
 
-			cr->set_source_rgb(175.0/255.0,175.0/255.0,175.0/255.0); //DUCK_COLOR_BEZIER_2
-			cr->set_line_width(1.0);
-			cr->stroke();
-		}
-		else
-*/
 		{
 			//Solid line background
 			cr->set_line_width(1.0);
@@ -183,8 +165,7 @@ Renderer_Ducks::render_vfunc(
 			cr->stroke_preserve();
 
 			//Dashes
-			cr->set_source_rgb(GDK_COLOR_TO_RGB(DUCK_COLOR_BEZIER_2)); //DUCK_COLOR_BEZIER_2 : 175.0/255.0,175.0/255.0,175.0/255.0
-			std::valarray<double> dashes(2);
+			cr->set_source_rgb(GDK_COLOR_TO_RGB(DUCK_COLOR_BEZIER_2));			std::valarray<double> dashes(2);
 			dashes[0]=5.0;
 			dashes[1]=5.0;
 			cr->set_dash(dashes, 0);
@@ -477,24 +458,14 @@ Renderer_Ducks::render_vfunc(
 
 				// Inside
 				cr->set_line_width(1.0);
-				cr->set_source_rgb(GDK_COLOR_TO_RGB(DUCK_COLOR_CONNECT_INSIDE)); //DUCK_COLOR_CONNECT_INSIDE : 159.0/255,239.0/255,239.0/255
-				cr->stroke();
+				cr->set_source_rgb(GDK_COLOR_TO_RGB(DUCK_COLOR_CONNECT_INSIDE));				cr->stroke();
 			}
 //			else
-//			{
 //				// White background
-//				cr->set_line_width(1.0);
-//				cr->set_source_rgb(GDK_COLOR_TO_RGB(DUCK_COLOR_CONNECT_OUTSIDE)); //DUCK_COLOR_CONNECT_OUTSIDE
-//				cr->stroke_preserve();
 //
 //				// Dashes on top of the background
-//				cr->set_source_rgb(GDK_COLOR_TO_RGB(DUCK_COLOR_CONNECT_INSIDE)); //DUCK_COLOR_CONNECT_INSIDE : 159.0/255,239.0/255,239.0/255
-//				std::valarray<double> dashes(2);
 //				dashes[0]=5.0;
 //				dashes[1]=5.0;
-//				cr->set_dash(dashes, 0);
-//				cr->stroke();
-//			}
 
 			cr->restore();
 		}
@@ -766,8 +737,6 @@ Renderer_Ducks::render_vfunc(
 						value += "y" + scaley.get_string(3);
 					}
 //						value += strprintf("y %2.3g",
-//								Distance(transformation.scale[1] * ((*iter)->get_point())[0],
-//										Distance::SYSTEM_UNITS).get(App::distance_system,rend_desc));
 						break;
 					default:
 						break;

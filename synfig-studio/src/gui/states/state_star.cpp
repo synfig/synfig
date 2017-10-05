@@ -1031,9 +1031,7 @@ StateStar_Context::make_star(const Point& _p1, const Point& _p2)
 	// count how many layers we're going to be creating
 	int layers_to_create = this->layers_to_create();
 
-	///////////////////////////////////////////////////////////////////////////
 	//   S T A R
-	///////////////////////////////////////////////////////////////////////////
 
 	if (get_layer_star_flag())
 	{
@@ -1107,9 +1105,7 @@ StateStar_Context::make_star(const Point& _p1, const Point& _p2)
 		}
 	}
 
-	///////////////////////////////////////////////////////////////////////////
 	//   C U R V E   G R A D I E N T
-	///////////////////////////////////////////////////////////////////////////
 
 	if(get_layer_curve_gradient_flag())
 	{
@@ -1152,7 +1148,6 @@ StateStar_Context::make_star(const Point& _p1, const Point& _p2)
 
 			if(!get_canvas_interface()->get_instance()->perform_action(action))
 			{
-				//get_canvas_view()->get_ui_interface()->error(_("Unable to create BLine layer"));
 				group.cancel();
 				throw String(_("Unable to create Gradient layer"));
 				return;
@@ -1187,9 +1182,7 @@ StateStar_Context::make_star(const Point& _p1, const Point& _p2)
 		}
 	}
 
-	///////////////////////////////////////////////////////////////////////////
 	//   P L A N T
-	///////////////////////////////////////////////////////////////////////////
 
 	if(get_layer_plant_flag())
 	{
@@ -1262,9 +1255,7 @@ StateStar_Context::make_star(const Point& _p1, const Point& _p2)
 		}
 	}
 
-	///////////////////////////////////////////////////////////////////////////
 	//   R E G I O N
-	///////////////////////////////////////////////////////////////////////////
 
 	if(get_layer_region_flag())
 	{
@@ -1345,9 +1336,7 @@ StateStar_Context::make_star(const Point& _p1, const Point& _p2)
 		}
 	}
 
-	///////////////////////////////////////////////////////////////////////////
 	//   O U T L I N E
-	///////////////////////////////////////////////////////////////////////////
 
 	if (get_layer_outline_flag())
 	{
@@ -1429,9 +1418,7 @@ StateStar_Context::make_star(const Point& _p1, const Point& _p2)
 		}
 	}
 
-	///////////////////////////////////////////////////////////////////////////
 	//   A D V A N C E D   O U T L I N E
-	///////////////////////////////////////////////////////////////////////////
 
 	if (get_layer_advanced_outline_flag())
 	{

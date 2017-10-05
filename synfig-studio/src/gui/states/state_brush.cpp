@@ -514,7 +514,6 @@ StateBrush_Context::StateBrush_Context(CanvasView* canvas_view):
 {
 	load_settings();
 
-	//refresh_tool_options();
 	App::dialog_tool_options->present();
 
 	// Hide all tangent and width ducks

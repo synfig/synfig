@@ -93,7 +93,6 @@ Action::ValueNodeRemove::is_candidate(const ParamList &x)
 		ValueNode::Handle value_node=x.find("value_node")->second.get_value_node();
 		if(!value_node->is_exported())
 			return false;
-//		if(value_node->rcount()!=1)
 //			return false;
 		return true;
 	}
@@ -133,7 +132,6 @@ Action::ValueNodeRemove::is_ready()const
 void
 Action::ValueNodeRemove::perform()
 {
-//	if(value_node->rcount()!=1)
 //		throw Error(_("ValueNode is still being used by something"));
 
 	old_name=value_node->get_id();
@@ -145,22 +143,7 @@ Action::ValueNodeRemove::perform()
 		get_canvas_interface()->signal_value_node_deleted()(value_node);
 	}
 
-	//throw Error(_("Not yet implemented"));
-/*
-	assert(value_node->is_exported());
 
-	if(get_canvas()->value_node_list().count(new_name))
-		throw Error(_("A ValueNode with this ID already exists in this canvas"));
-
-	old_name=value_node->get_id();
-
-	value_node->set_id(new_name);
-
-	if(get_canvas_interface())
-	{
-		get_canvas_interface()->signal_value_node_changed()(value_node);
-	}
-*/
 }
 
 void
@@ -172,18 +155,5 @@ Action::ValueNodeRemove::undo()
 		get_canvas_interface()->signal_value_node_added()(value_node);
 	}
 
-	//throw Error(_("Not yet implemented"));
-/*
-	assert(value_node->is_exported());
 
-	if(get_canvas()->value_node_list().count(old_name))
-		throw Error(_("A ValueNode with the old ID already exists in this canvas (BUG)"));
-
-	value_node->set_id(old_name);
-
-	if(get_canvas_interface())
-	{
-		get_canvas_interface()->signal_value_node_changed()(value_node);
-	}
-*/
 }

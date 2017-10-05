@@ -55,9 +55,7 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-Renderer_Guides::Renderer_Guides()//:
-	//dragging(false)
-{
+Renderer_Guides::Renderer_Guides(){
 
 }
 

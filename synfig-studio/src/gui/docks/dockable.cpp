@@ -75,7 +75,6 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 Dockable::Dockable(const synfig::String& name,const synfig::String& local_name,Gtk::StockID stock_id_):
-//	Gtk::Window(Gtk::WINDOW_TOPLEVEL),
 	name_(name),
 	local_name_(local_name),
 //	dialog_settings(this,name),
@@ -89,17 +88,14 @@ Dockable::Dockable(const synfig::String& name,const synfig::String& local_name,G
 	attach_dnd_to(title_label_);
 
 	toolbar_=0;
-	//button_box_.show();
 
 	Gtk::Table* table(this);
 
 	{
 		title_label_.set_padding(0,0);
-		//title_label_.show();
 		Gtk::EventBox* event_box(manage(new Gtk::EventBox()));
 		event_box->set_border_width(0);
 		event_box->add(title_label_);
-		//table->attach(*event_box, 0, 1, 0,1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 
 		header_box_.pack_start(*event_box);
 
@@ -109,7 +105,6 @@ Dockable::Dockable(const synfig::String& name,const synfig::String& local_name,G
 
 
 		Gtk::Button* bttn_close(manage(new Gtk::Button(_("X"))));
-		//table->attach(*bttn_close, 1, 2, 0,1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 		header_box_.pack_end(*bttn_close,false,false);
 		bttn_close->show();
 		bttn_close->set_relief(Gtk::RELIEF_NONE);
@@ -121,9 +116,7 @@ Dockable::Dockable(const synfig::String& name,const synfig::String& local_name,G
 
 	prev_widget_=manage(new Gtk::Label(" "));
 
-	//table->attach(header_box_, 0, 1, 0,1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	table->attach(*prev_widget_, 0, 1, 1,2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	//table->attach(*toolbar_, 0, 1, 2,3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	set_toolbar(*manage(new Gtk::Toolbar));
 	table->show();
 
@@ -216,7 +209,6 @@ Dockable::on_drag_data_get(const Glib::RefPtr<Gdk::DragContext>&, Gtk::Selection
 void
 Dockable::set_local_name(const synfig::String& local_name)
 {
-	//set_title(local_name);
 	local_name_ = local_name;
 	title_label_.set_text(local_name);
 	signal_stock_id_changed()();
@@ -225,8 +217,6 @@ Dockable::set_local_name(const synfig::String& local_name)
 void
 Dockable::clear()
 {
-	//if(!toolbar_->children().empty())
-	//	toolbar_->children().clear();
 	set_toolbar(*manage(new Gtk::Toolbar));
 
 }

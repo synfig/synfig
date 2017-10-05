@@ -73,7 +73,7 @@ using namespace studio;
 	button->set_tooltip_text(,tooltip);	\
 	icon->set_padding(0,0);\
 	icon->show();	\
-	/*button->set_relief(Gtk::RELIEF_NONE);*/ \
+ \
 	button->show()
 #endif
 
@@ -149,7 +149,6 @@ ChildrenTree::ChildrenTree()
 		column->add_attribute(cellrenderer_time_track->property_value_desc(), model.value_desc);
 		column->add_attribute(cellrenderer_time_track->property_canvas(), model.canvas);
 
-		//column->pack_start(*cellrenderer_time_track);
 
 		// Finish setting up the column
 		column->set_reorderable();
@@ -183,34 +182,7 @@ ChildrenTree::ChildrenTree()
 	tree_view.set_enable_search(true);
 	tree_view.set_search_column(model.label);
 
-/*  // Buttons to raise/lower/duplicate/delete children valuenodes
-	//   Commented out because these functions are not implemented
-    //   and children sort themselves alphabetically
 
-	Gtk::Image *icon;
-	//Gtk::IconSize iconsize(Gtk::IconSize::from_name("synfig-small_icon"));
-	Gtk::IconSize iconsize(Gtk::ICON_SIZE_SMALL_TOOLBAR);
-
-	SMALL_BUTTON(button_raise,"gtk-go-up",_("Raise"));
-	SMALL_BUTTON(button_lower,"gtk-go-down",_("Lower"));
-	SMALL_BUTTON(button_duplicate,"synfig-duplicate",_("Duplicate"));
-	SMALL_BUTTON(button_delete,"gtk-delete",_("Delete"));
-
-	hbox->pack_start(*button_raise,Gtk::PACK_SHRINK);
-	hbox->pack_start(*button_lower,Gtk::PACK_SHRINK);
-	hbox->pack_start(*button_duplicate,Gtk::PACK_SHRINK);
-	hbox->pack_start(*button_delete,Gtk::PACK_SHRINK);
-
-	button_raise->signal_clicked().connect(sigc::mem_fun(*this, &studio::ChildrenTree::on_raise_pressed));
-	button_lower->signal_clicked().connect(sigc::mem_fun(*this, &studio::ChildrenTree::on_lower_pressed));
-	button_duplicate->signal_clicked().connect(sigc::mem_fun(*this, &studio::ChildrenTree::on_duplicate_pressed));
-	button_delete->signal_clicked().connect(sigc::mem_fun(*this, &studio::ChildrenTree::on_delete_pressed));
-
-	button_raise->set_sensitive(false);
-	button_lower->set_sensitive(false);
-	button_duplicate->set_sensitive(false);
-	button_delete->set_sensitive(false);
-*/
 
 	get_selection()->signal_changed().connect(sigc::mem_fun(*this, &studio::ChildrenTree::on_selection_changed));
 
@@ -221,7 +193,6 @@ ChildrenTree::ChildrenTree()
 
 	tree_view.set_has_tooltip();
 
-	//get_selection()->set_mode(Gtk::SELECTION_MULTIPLE);
 }
 
 ChildrenTree::~ChildrenTree()
@@ -275,7 +246,6 @@ ChildrenTree::on_edited_value(const Glib::ustring&path_string,synfig::ValueBase 
 	const Gtk::TreeRow row = *(tree_view.get_model()->get_iter(path));
 
 	row[model.value]=value;
-//	signal_edited_value()(row[model.value_desc],value);
 }
 
 void
@@ -316,9 +286,7 @@ ChildrenTree::on_tree_event(GdkEvent *event)
 			int cell_x, cell_y;
 			if(!tree_view.get_path_at_pos(
 				int(event->button.x),int(event->button.y),	// x, y
-				path, // TreeModel::Path&
-				column, //TreeViewColumn*&
-				cell_x,cell_y //int&cell_x,int&cell_y
+				path,				column,				cell_x,cell_y //int&cell_x,int&cell_y
 				)
 			) break;
 			const Gtk::TreeRow row = *(tree_view.get_model()->get_iter(path));
@@ -348,9 +316,7 @@ ChildrenTree::on_tree_event(GdkEvent *event)
 			int cell_x, cell_y;
 			if(!tree_view.get_path_at_pos(
 				(int)event->button.x,(int)event->button.y,	// x, y
-				path, // TreeModel::Path&
-				column, //TreeViewColumn*&
-				cell_x,cell_y //int&cell_x,int&cell_y
+				path,				column,				cell_x,cell_y //int&cell_x,int&cell_y
 				)
 			) break;
 
@@ -368,7 +334,6 @@ ChildrenTree::on_tree_event(GdkEvent *event)
 				cellrenderer_time_track->property_canvas()=row[model.canvas];
 				cellrenderer_time_track->activate(event,*this,path.to_string(),rect,rect,Gtk::CellRendererState());
 				queue_draw();
-				//queue_draw_area(rect.get_x(),rect.get_y(),rect.get_width(),rect.get_height());
 				return true;
 			}
 		}
@@ -380,9 +345,7 @@ ChildrenTree::on_tree_event(GdkEvent *event)
 			int cell_x, cell_y;
 			if(!tree_view.get_path_at_pos(
 				   (int)event->button.x,(int)event->button.y,	// x, y
-				   path, // TreeModel::Path&
-				   column, //TreeViewColumn*&
-				   cell_x,cell_y //int&cell_x,int&cell_y
+				   path,				   column,				   cell_x,cell_y //int&cell_x,int&cell_y
 				   )
 				) break;
 

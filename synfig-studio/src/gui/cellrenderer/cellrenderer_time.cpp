@@ -88,7 +88,6 @@ CellRenderer_Time::render_vfunc(
 {
 	if(!cr)
 		return;
-	//int	height = ca.get_height();
 
 	const Time time(property_time_);
 	const float fps((Real)Time(property_fps_));

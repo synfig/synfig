@@ -183,41 +183,32 @@ Action::TimepointsDelete::prepare()
 	//		an operation on a specific valuenode, etc....
 	timepoints_ref	match;
 
-	//std::vector<synfig::Layer::Handle>
-	//synfig::info("Layers %d", sel_layers.size());
 	{
 		std::vector<synfig::Layer::Handle>::iterator i = sel_layers.begin(),
 													end = sel_layers.end();
 
 		for(; i != end; ++i)
 		{
-			//synfig::info("Recurse through a layer");
 			recurse_layer(*i,sel_times,match);
 		}
 	}
 
-	//std::vector<synfig::Canvas::Handle>	sel_canvases;
-	//synfig::info("Canvases %d", sel_canvases.size());
 	{
 		std::vector<synfig::Canvas::Handle>::iterator 	i = sel_canvases.begin(),
 														end = sel_canvases.end();
 
 		for(; i != end; ++i)
 		{
-			//synfig::info("Recurse through a canvas");
 			recurse_canvas(*i,sel_times,match);
 		}
 	}
 
-	//std::vector<synfigapp::ValueDesc>
-	//synfig::info("ValueBasedescs %d", sel_values.size());
 	{
 		std::vector<synfigapp::ValueDesc>::iterator 	i = sel_values.begin(),
 													end = sel_values.end();
 
 		for(; i != end; ++i)
 		{
-			//synfig::info("Recurse through a valuedesc");
 			recurse_valuedesc(*i,sel_times,match);
 		}
 	}

@@ -882,9 +882,7 @@ StateBLine_Context::run_()
 		// count how many layers we're going to be creating
 		int layers_to_create = this->layers_to_create();
 
-		///////////////////////////////////////////////////////////////////////////
 		//   C U R V E   G R A D I E N T
-		///////////////////////////////////////////////////////////////////////////
 
 		if(get_layer_curve_gradient_flag())
 		{
@@ -944,7 +942,6 @@ StateBLine_Context::run_()
 
 				if(!get_canvas_interface()->get_instance()->perform_action(action))
 				{
-					//get_canvas_view()->get_ui_interface()->error(_("Unable to create BLine layer"));
 					group.cancel();
 					throw String(_("Unable to create Gradient layer"));
 					return false;
@@ -952,9 +949,7 @@ StateBLine_Context::run_()
 			}
 		}
 
-		///////////////////////////////////////////////////////////////////////////
 		//   P L A N T
-		///////////////////////////////////////////////////////////////////////////
 
 		if(get_layer_plant_flag())
 		{
@@ -1022,9 +1017,7 @@ StateBLine_Context::run_()
 			}
 		}
 
-		///////////////////////////////////////////////////////////////////////////
 		//   R E G I O N
-		///////////////////////////////////////////////////////////////////////////
 
 		if(get_layer_region_flag())
 		{
@@ -1100,9 +1093,7 @@ StateBLine_Context::run_()
 			}
 		}
 
-		///////////////////////////////////////////////////////////////////////////
 		//   O U T L I N E
-		///////////////////////////////////////////////////////////////////////////
 
 		if(get_layer_outline_flag())
 		{
@@ -1179,9 +1170,7 @@ StateBLine_Context::run_()
 			}
 		}
 
-		///////////////////////////////////////////////////////////////////////////
 		//   A D V A N C E D   O U T L I N E
-		///////////////////////////////////////////////////////////////////////////
 
 		if(get_layer_advanced_outline_flag())
 		{
@@ -1460,23 +1449,7 @@ StateBLine_Context::refresh_ducks(bool button_down)
 		);
 		get_work_area()->add_duck(duck);
 
-		/*
-		tduck1=new WorkArea::Duck(bline_point.get_tangent1());
 
-		// Add the tangent1 duck
-		tduck1->set_editable(true);
-		tduck1->set_name(strprintf("%x-tangent1",bline_point_list.front().get()));
-		tduck1->set_origin(duck);
-		tduck1->set_scalar(-0.33333333333333333);
-		tduck1->set_tangent(true);
-		tduck1->signal_edited().connect(
-			sigc::bind(sigc::mem_fun(*this,&studio::StateBLine_Context::on_tangent1_change),first_tduck2,bline_point_list.front())
-		);
-		tduck1->signal_user_click(2).connect(
-			sigc::bind(sigc::mem_fun(*this,&studio::StateBLine_Context::popup_handle_menu),bline_point_list.front())
-		);
-		get_work_area()->add_duck(tduck1);
-		*/
 		get_work_area()->add_duck(first_tduck1);
 
 		bezier->p2=duck;

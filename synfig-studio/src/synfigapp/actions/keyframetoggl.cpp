@@ -172,11 +172,7 @@ Action::KeyframeToggl::perform()
 void
 Action::KeyframeToggl::undo()
 {
-	//try { get_canvas()->keyframe_list().find(keyframe.get_time()); throw Error(_("A Keyframe already exists at this point in time"));}
-	//catch(synfig::Exception::NotFound) { }
 
-	//try { get_canvas()->keyframe_list().find(keyframe); throw Error(_("This keyframe is already in the ValueNode"));}
-	//catch(synfig::Exception::NotFound) { }
 
 	Action::Super::undo();
 	

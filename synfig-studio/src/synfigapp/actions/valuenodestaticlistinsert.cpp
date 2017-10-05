@@ -111,7 +111,6 @@ Action::ValueNodeStaticListInsert::is_candidate(const ParamList &x)
 //
 //		ValueNodeStaticListRotateOrder::prepare() sets "value_desc", "item"
 //			action->set_param("item",child);									<- sets item=list_entry=child
-//			action->set_param("value_desc",ValueDesc(value_node,0));			<- sets value_node=value_node, index=0, list_entry=item
 //
 //		ValueNodeStaticListInsertSmart::prepare() sets "time", "origin", "value_desc"
 //			action->set_param("time",time);
@@ -186,11 +185,7 @@ Action::ValueNodeStaticListInsert::perform()
 
 	// Signal that a layer has been inserted
 	value_node->changed();
-/*_if(get_canvas_interface())
-	{
-		get_canvas_interface()->signal_value_node_changed()(value_node);
-	}
-	else synfig::warning("CanvasInterface not set on action");*/
+
 }
 
 void
@@ -200,9 +195,5 @@ Action::ValueNodeStaticListInsert::undo()
 
 	// Signal that a layer has been inserted
 	value_node->changed();
-/*_if(get_canvas_interface())
-	{
-		get_canvas_interface()->signal_value_node_changed()(value_node);
-	}
-	else synfig::warning("CanvasInterface not set on action");*/
+
 }

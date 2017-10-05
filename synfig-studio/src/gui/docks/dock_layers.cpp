@@ -45,7 +45,6 @@
 #include "trees/layertree.h"
 #include "canvasview.h"
 #include "actionmanagers/layeractionmanager.h"
-//#include <ETL/ref_count>
 
 #include <gui/localization.h>
 
@@ -64,10 +63,7 @@ using namespace studio;
 
 /* === P R O C E D U R E S ================================================= */
 
-/*static void do_nothing(reference_counter x)
-{
-	synfig::info(__FILE__":%d:ref_count.count()=%d",__LINE__,x.count());
-}*/
+
 
 /* === M E T H O D S ======================================================= */
 
@@ -106,8 +102,6 @@ Dock_Layers::Dock_Layers():
 
 		category_map[lyr.second.category]+=strprintf("<menuitem action='layer-new-%s' />",lyr.first.c_str());
 
-		//(*category_map)[lyr.second.category]->items().push_back(Gtk::Menu_Helpers::MenuElem(lyr.second.local_name,
-		//));
 	}
 
 	{
@@ -178,40 +172,7 @@ Dock_Layers::Dock_Layers():
 
 
 
-	/*
-	reference_counter ref_count;
-	synfig::info(__FILE__":%d:ref_count.count()=%d",__LINE__,ref_count.count());
 
-	{
-		sigc::signal<void> tmp_signal;
-
-		tmp_signal.connect(
-			sigc::bind(
-				sigc::ptr_fun(do_nothing),
-				ref_count
-			)
-		);
-
-	synfig::info(__FILE__":%d:ref_count.count()=%d",__LINE__,ref_count.count());
-		tmp_signal();
-	synfig::info(__FILE__":%d:ref_count.count()=%d",__LINE__,ref_count.count());
-
-		tmp_signal.clear();
-	synfig::info(__FILE__":%d:ref_count.count()=%d",__LINE__,ref_count.count());
-
-		tmp_signal();
-	synfig::info(__FILE__":%d:ref_count.count()=%d",__LINE__,ref_count.count());
-		tmp_signal.connect(
-			sigc::bind(
-				sigc::ptr_fun(do_nothing),
-				ref_count
-			)
-		);
-	synfig::info(__FILE__":%d:ref_count.count()=%d",__LINE__,ref_count.count());
-	}
-	synfig::info(__FILE__":%d:ref_count.count()=%d",__LINE__,ref_count.count());
-	assert(ref_count.count()==1);
-	*/
 }
 
 
@@ -243,18 +204,11 @@ Dock_Layers::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
 	);
 
 	// (a) should be before (b), (b) should be before (c)
-	canvas_view->set_ext_widget(get_name()+"_cmp",layer_tree); // (a)
-	canvas_view->set_ext_widget(get_name(),&layer_tree->get_layer_tree_view());
+	canvas_view->set_ext_widget(get_name()+"_cmp",layer_tree);	canvas_view->set_ext_widget(get_name(),&layer_tree->get_layer_tree_view());
 	canvas_view->set_ext_widget("params",&layer_tree->get_param_tree_view());
 
-	layer_tree->set_model(layer_tree_store); // (b)
-	canvas_view->set_tree_model("params",layer_tree->get_param_tree_view().get_model()); // (c)
+	layer_tree->set_model(layer_tree_store);	canvas_view->set_tree_model("params",layer_tree->get_param_tree_view().get_model());
 
-	/*
-	canvas_view->layermenu.items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("gtk-delete"),Gtk::AccelKey("Delete"),
-		sigc::mem_fun(*layer_tree, &LayerTree::on_delete_pressed))
-	);
-	*/
 
 	// Hide the time bar
 	if(canvas_view->get_canvas()->rend_desc().get_time_start()==canvas_view->get_canvas()->rend_desc().get_time_end())

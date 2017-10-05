@@ -48,7 +48,6 @@
 #include "widgets/widget_waypoint.h"
 #include "widgets/widget_enum.h"
 #include <gui/localization.h>
-//#include <synfig/interpolation.h>
 
 #endif
 

@@ -71,7 +71,6 @@ ACTION_SET_CVS_ID(Action::ValueNodeDynamicListInsertSmartKeepShape,"$Id$");
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
-///////////// VALUENODEDYNAMICLISTINSERTITEMSMART
 Action::ValueNodeDynamicListInsertSmart::ValueNodeDynamicListInsertSmart() :
 	keep_shape(false)
 {
@@ -171,7 +170,6 @@ Action::ValueNodeDynamicListInsertSmart::is_ready()const
 void
 Action::ValueNodeDynamicListInsertSmart::prepare()
 {
-	//clear();
 	// HACK
 	if(!first_time())
 		return;
@@ -436,7 +434,6 @@ Action::ValueNodeDynamicListInsertSmart::prepare()
 	}
 }
 
-///////////// VALUENODEDYNAMICLISTINSERTITEMSMARTKEEPSHAPE
 Action::ValueNodeDynamicListInsertSmartKeepShape::ValueNodeDynamicListInsertSmartKeepShape()
 {
 	keep_shape=true;
