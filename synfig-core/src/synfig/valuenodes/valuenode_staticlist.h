@@ -71,7 +71,6 @@ public:
 
 	void add(const ValueNode::Handle &value_node, int index=-1);
 	void erase(const ListEntry &value_node);
-//	void reindex();
 
 	virtual ValueNode::LooseHandle get_link_vfunc(int i)const;
 
@@ -117,7 +116,6 @@ protected:
 	virtual bool set_link_vfunc(int i,ValueNode::Handle x);
 	LinkableValueNode* create_new()const;
 
-//	virtual void get_times_vfunc(Node::time_set &set) const;
 
 public:
 	/*! \note The construction parameter (\a id) is the type that the list

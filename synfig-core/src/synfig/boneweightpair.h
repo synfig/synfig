@@ -31,7 +31,6 @@
 #include "real.h"
 #include "string.h"
 #include "bone.h"
-// #include <ETL/handle>
 #include <ETL/stringf>
 
 /* === M A C R O S ========================================================= */
@@ -50,7 +49,6 @@ namespace synfig {
 class BoneWeightPair
 {
 private:
-	// etl::handle<ValueNode_Bone> bone;
 	Bone bone;
 	Real weight;
 

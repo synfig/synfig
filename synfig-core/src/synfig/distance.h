@@ -47,15 +47,8 @@ public:
 
 	enum System
 	{
-		SYSTEM_UNITS,		//!<
-		SYSTEM_PIXELS,		//!<
-
-		SYSTEM_POINTS,		//!<
-		SYSTEM_INCHES,		//!<
-		SYSTEM_METERS,		//!<
-		SYSTEM_MILLIMETERS,	//!<
-		SYSTEM_CENTIMETERS,	//!<
-
+		SYSTEM_UNITS,		SYSTEM_PIXELS,
+		SYSTEM_POINTS,		SYSTEM_INCHES,		SYSTEM_METERS,		SYSTEM_MILLIMETERS,		SYSTEM_CENTIMETERS,
 		SYSTEM_END			//!< \internal
 	};
 
@@ -106,19 +99,7 @@ public:
 	const Distance& operator*=(const float &rhs) { value_*=rhs; return *this; }
 	const Distance& operator/=(const float &rhs) { value_/=rhs; return *this; }
 
-/*
-	template<typename U> const Time& operator+=(const U &rhs) { value_+=rhs; return *this; }
-	template<typename U> const Time& operator-=(const U &rhs) { value_-=rhs; return *this; }
-	template<typename U> const Time& operator*=(const U &rhs) { value_*=rhs; return *this; }
-	template<typename U> const Time& operator/=(const U &rhs) { value_/=rhs; return *this; }
 
-	template<typename U> Time operator+(const U &rhs)const { return value_+rhs; }
-	template<typename U> Time operator-(const U &rhs)const { return value_-rhs; }
-	template<typename U> Time operator*(const U &rhs)const { return value_*rhs; }
-	template<typename U> Time operator/(const U &rhs)const { return value_/rhs; }
-
-	Time operator-()const { return -value_; }
-*/
 }; // END of class Distance
 
 }; // END of namespace synfig

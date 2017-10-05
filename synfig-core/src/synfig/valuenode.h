@@ -98,9 +98,7 @@ class ValueNode : public synfig::Node
 	friend class LinkableValueNode;
 	friend class ValueNode_Interface;
 
-	/*
- --	** -- T Y P E S -----------------------------------------------------------
-	*/
+
 
 public:
 
@@ -114,9 +112,7 @@ public:
 
 	static void breakpoint();
 
-	/*
- --	** -- D A T A -------------------------------------------------------------
-	*/
+
 
 private:
 	//! The type of the Value Node

@@ -63,7 +63,6 @@ public:
 	virtual String get_name()const;
 	virtual String get_local_name()const;
 
-//	static bool check_type(Type &type);
 protected:
 	virtual bool set_link_vfunc(int i,ValueNode::Handle x);
 
