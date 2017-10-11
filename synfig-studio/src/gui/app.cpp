@@ -3744,7 +3744,7 @@ App::new_instance()
 	canvas->set_file_name(filename);
 	canvas->keyframe_list().add(synfig::Keyframe());
 
-	FileSystem::Handle container = FileSystemNative::instance();
+	FileSystem::Handle container = new FileSystemEmpty();
 	FileSystem::Handle file_system = CanvasFileNaming::make_filesystem(container);
 	file_system = wrap_into_temporary_filesystem(file_system, filename, filename);
 

@@ -51,6 +51,10 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
+// FileSystemEmpty
+
+FileSystemEmpty::FileSystemEmpty() { }
+FileSystemEmpty::~FileSystemEmpty() { }
 
 // Stream
 
