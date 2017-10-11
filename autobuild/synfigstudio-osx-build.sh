@@ -30,6 +30,8 @@
 #		synfigstudio-osx-build.sh port uninstall glibmm
 # * If you suspect something is wrong with your macports installation you can always start from scratch by removing ~/src/macports dir
 
+# TODO: Don't build into /tmp/skl
+# TODO: Disable 32bit?
 
 
 #======= HEADER ===========
@@ -332,81 +334,134 @@ mksynfigstudio()
 
 mkapp()
 {
-	#VERSION=`eval "synfig" --version 2>&1 | cut -d " " -f 2`
 	VERSION=`get_version_release_string`
 	echo Now trying to build your new SynfigStudio app ...
-
+	
 	DIR=`dirname "$BUILDDIR"`
-	SYNFIGAPP="$DIR/SynfigStudio-new-app/Contents/Resources"
-
+	APPDIR="$DIR/SynfigStudio-new-app"
+	APPCONTENTS="$APPDIR/Contents/Resources"
+	
 	# initial cleanup
 	[ ! -e $DIR/SynfigStudio-new-app ] || rm -rf $DIR/SynfigStudio-new-app
 	[ ! -e $DIR/SynfigStudio.app ] || rm -rf $DIR/SynfigStudio.app
 
-	cp -R "$SCRIPTPATH/app-template" "$DIR/SynfigStudio-new-app"
-	mv $DIR/SynfigStudio-new-app/Contents/MacOS/synfigstudio $DIR/SynfigStudio-new-app/Contents/MacOS/SynfigStudio || true
+	cp -R "$SCRIPTPATH/app-template" "$APPDIR"
+	mv $APPDIR/Contents/MacOS/synfigstudio $APPDIR/Contents/MacOS/SynfigStudio || true
 
-	#cd "$SCRIPTPATH"/LauncherCode
-	#xcodebuild -configuration Deployment
-	#cd -
-	#cp -R "$SCRIPTPATH/LauncherCode/build/Deployment/ScriptExec.app/Contents/Resources"  "$SYNFIGAPP"
-	#mkdir -p "$DIR/SynfigStudio-new-app/Contents/MacOS"
-	#cp -R "$SCRIPTPATH/LauncherCode/build/Deployment/ScriptExec.app/Contents/MacOS/ScriptExec "$SYNFIGAPP/../MacOS/SynfigStudio"
-
-	# copy binaries from gimp-launcher 
-	# In MacPorts 1.7 there will be a config option
-	#cp "$MP/Applications/ScriptExec.app/Contents/MacOS/ScriptExec" "$GIMPAPP/../MacOS/Gimp"
-	#cp -R "$MP/Applications/ScriptExec.app/Contents/Resources/MenuBar.nib" "$GIMPAPP"
-
-	# copy all data
-	echo copying data ...
-	cp -R $MACPORTS/bin "$SYNFIGAPP/bin"
-	cp -R $MACPORTS/etc "$SYNFIGAPP/etc"
-	cp -R $MACPORTS/lib "$SYNFIGAPP/lib"
-	cp -R $MACPORTS/Library "$SYNFIGAPP/Library"
-	cp -R $MACPORTS/synfig "$SYNFIGAPP/synfig"
-	cp -R $MACPORTS/share "$SYNFIGAPP/share"
-
-	# Cleaning
-
-	# remove svn meta data
-	cd "$DIR"
-	find "SynfigStudio-new-app" -name ".svn" -print0 | xargs -0 rm -rf
-	find "SynfigStudio-new-app" -name ".DS_Store" -print0 | xargs -0 rm -rf
-
-	#echo cleaning up some stuff in lib directories ...
-	cd "$SYNFIGAPP"
-	rm -rf lib/gtk-2.0/include
-	rm -rf lib/python2.7/test
-	rm -rf lib/python2.7/*/test
-	rm -rf Library/Frameworks/Python.framework/Versions/2.*
-	find lib \( -name "*.la" -or -name "*.a" \) -not -path "lib/ImageMagick*"  -delete
-	find . -name "*.pyo" -delete
-
-	echo cleaning up some stuff in share ...
-	cd "$SYNFIGAPP/share"
-	rm -rf gutenprint/doc
-	rm -rf gutenprint/samples
-	rm -rf ghostscript/fonts
-	rm -rf ghostscript/*/doc
-	rm -rf ghostscript/*/examples
-
-	echo cleaning up locales ...
-	find locale \( \! -name "gtk*" -and \! -name "synfig*" \! -name "gutenprint*" \) -delete
-
-
+	#mkdir -p "$APPCONTENTS/bin"
+	#cp -R "$MACPORTS/bin/ffmpeg" "$APPCONTENTS/bin"
+	#"$SCRIPTPATH/macos-gather-deps.sh" 	"$APPCONTENTS/bin/ffmpeg"
+	#exit 0
+	
+	#cp -R "$MACPORTS/synfig/bin/synfig" "$APPCONTENTS/bin"
+	mkdir -p "$APPCONTENTS/etc"
+	mkdir -p "$APPCONTENTS/share"
+	
+	# Synfig
+	"$SCRIPTPATH/osx-relocate-binary.sh" "$MACPORTS/synfig/bin/synfig" "$MACPORTS" "$APPCONTENTS"
+	"$SCRIPTPATH/osx-relocate-binary.sh" "$MACPORTS/synfig/bin/synfigstudio" "$MACPORTS" "$APPCONTENTS" 
+	pushd "$MACPORTS/synfig/lib/synfig/modules/"
+	for FILE in `ls -1 *.so`; do
+		"$SCRIPTPATH/osx-relocate-binary.sh" "$MACPORTS/synfig/lib/synfig/modules/$FILE" "$MACPORTS" "$APPCONTENTS"
+	done
+	cp -R $MACPORTS/synfig/lib/synfig/modules/*.la  "$APPCONTENTS/synfig/lib/synfig/modules/"
+	popd
+	cp -R "$MACPORTS/synfig/etc" "$APPCONTENTS/synfig/"
+	cp -R "$MACPORTS/synfig/share" "$APPCONTENTS/synfig/"
+	
+	"$SCRIPTPATH/osx-relocate-binary.sh" "$MACPORTS/bin/ffmpeg" "$MACPORTS" "$APPCONTENTS"
+	"$SCRIPTPATH/osx-relocate-binary.sh" "$MACPORTS/bin/ffprobe" "$MACPORTS" "$APPCONTENTS"
+	
+	"$SCRIPTPATH/osx-relocate-binary.sh" "$MACPORTS/bin/encodedv" "$MACPORTS" "$APPCONTENTS"
+	"$SCRIPTPATH/osx-relocate-binary.sh" "$MACPORTS/bin/sox" "$MACPORTS" "$APPCONTENTS"
+	
+	# Gtk3
+	"$SCRIPTPATH/osx-relocate-binary.sh" "$MACPORTS/bin/gdk-pixbuf-query-loaders" "$MACPORTS" "$APPCONTENTS"
+	"$SCRIPTPATH/osx-relocate-binary.sh" "$MACPORTS/bin/gdk-pixbuf-pixdata" "$MACPORTS" "$APPCONTENTS"
+	"$SCRIPTPATH/osx-relocate-binary.sh" "$MACPORTS/bin/gtk3-demo" "$MACPORTS" "$APPCONTENTS"
+	pushd "$MACPORTS/lib/gdk-pixbuf-2.0/2.10.0/loaders/"
+	for FILE in `ls -1 *.so`; do
+		"$SCRIPTPATH/osx-relocate-binary.sh" "$MACPORTS/lib/gdk-pixbuf-2.0/2.10.0/loaders/$FILE" "$MACPORTS" "$APPCONTENTS"
+	done
+	popd
+	pushd "$MACPORTS/lib/gtk-3.0/3.0.0/immodules/"
+	for FILE in `ls -1 *.so`; do
+		"$SCRIPTPATH/osx-relocate-binary.sh" "$MACPORTS/lib/gtk-3.0/3.0.0/immodules/$FILE" "$MACPORTS" "$APPCONTENTS"
+	done
+	popd
+	pushd "$MACPORTS/lib/gtk-3.0/3.0.0/printbackends/"
+	for FILE in `ls -1 *.so`; do
+		"$SCRIPTPATH/osx-relocate-binary.sh" "$MACPORTS/lib/gtk-3.0/3.0.0/printbackends/$FILE" "$MACPORTS" "$APPCONTENTS"
+	done
+	popd
+	pushd "$MACPORTS/lib/cairo/"
+	for FILE in `ls -1 *.so`; do
+		"$SCRIPTPATH/osx-relocate-binary.sh" "$MACPORTS/lib/cairo/$FILE" "$MACPORTS" "$APPCONTENTS"
+	done
+	cp -R $MACPORTS/lib/cairo/*.la  "$APPCONTENTS/lib/cairo/"
+	popd
+	#pushd "$MACPORTS/lib/engines/"
+	#for FILE in `ls -1 *.so`; do
+	#	"$SCRIPTPATH/osx-relocate-binary.sh" "$MACPORTS/lib/engines/$FILE" "$MACPORTS" "$APPCONTENTS"
+	#done
+	#popd
+	cp -R "$MACPORTS/etc/gtk-3.0"  "$APPCONTENTS/etc/"
+	cp -R "$MACPORTS/lib/girepository-1.0"  "$APPCONTENTS/lib/"
+	mkdir -p "$APPCONTENTS/share/glib-2.0/"
+	cp -R "$MACPORTS/share/glib-2.0/schemas"  "$APPCONTENTS/share/glib-2.0"
+	
+	# Python 3
+	"$SCRIPTPATH/osx-relocate-binary.sh" "$MACPORTS/bin/python3" "$MACPORTS" "$APPCONTENTS"
+	"$SCRIPTPATH/osx-relocate-binary.sh" "$MACPORTS/Library/Frameworks/Python.framework/Versions/3.3/Resources/Python.app/Contents/MacOS/Python" "$MACPORTS" "$APPCONTENTS"
+	mkdir -p "$APPCONTENTS/Library/Frameworks/Python.framework/Versions/3.3/lib/python3.3/"
+	rsync -av --exclude "__pycache__" "$MACPORTS/Library/Frameworks/Python.framework/Versions/3.3/lib/python3.3/" "$APPCONTENTS/Library/Frameworks/Python.framework/Versions/3.3/lib/python3.3/"
+	#cp -R "$MACPORTS/Library/Frameworks/Python.framework/Versions/3.3/lib/python3.3" "$APPCONTENTS/Library/Frameworks/Python.framework/Versions/3.3/lib/"
+	#find $APPCONTENTS/Library/Frameworks/Python.framework/Versions/3.3/lib -name "__pycache__" -exec rm -rf {} \;
+	
+	# MLT
+	"$SCRIPTPATH/osx-relocate-binary.sh" "$MACPORTS/bin/melt" "$MACPORTS" "$APPCONTENTS"
+	pushd "$MACPORTS/lib/mlt/"
+	for FILE in `ls -1 *.dylib`; do
+		"$SCRIPTPATH/osx-relocate-binary.sh" "$MACPORTS/lib/mlt/$FILE" "$MACPORTS" "$APPCONTENTS"
+	done
+	popd
+	cp -R "$MACPORTS/share/mlt"  "$APPCONTENTS/share/"
+	
+	# ImageMagick
+	"$SCRIPTPATH/osx-relocate-binary.sh" "$MACPORTS/bin/animate" "$MACPORTS" "$APPCONTENTS"
+	"$SCRIPTPATH/osx-relocate-binary.sh" "$MACPORTS/bin/composite" "$MACPORTS" "$APPCONTENTS"
+	"$SCRIPTPATH/osx-relocate-binary.sh" "$MACPORTS/bin/convert" "$MACPORTS" "$APPCONTENTS"
+	pushd "$MACPORTS/lib/ImageMagick-6.9.2/modules-Q16/coders/"
+	for FILE in `ls -1 *.so`; do
+		"$SCRIPTPATH/osx-relocate-binary.sh" "$MACPORTS/lib/ImageMagick-6.9.2/modules-Q16/coders/$FILE" "$MACPORTS" "$APPCONTENTS"
+	done
+	cp -R $MACPORTS/lib/ImageMagick-6.9.2/modules-Q16/coders/*.la  "$APPCONTENTS/lib/ImageMagick-6.9.2/modules-Q16/coders/"
+	popd
+	pushd "$MACPORTS/lib/ImageMagick-6.9.2/modules-Q16/filters/"
+	for FILE in `ls -1 *.so`; do
+		"$SCRIPTPATH/osx-relocate-binary.sh" "$MACPORTS/lib/ImageMagick-6.9.2/modules-Q16/filters/$FILE" "$MACPORTS" "$APPCONTENTS"
+	done
+	cp -R $MACPORTS/lib/ImageMagick-6.9.2/modules-Q16/filters/*.la  "$APPCONTENTS/lib/ImageMagick-6.9.2/modules-Q16/filters/"
+	popd
+	cp -R "$MACPORTS/lib/ImageMagick-6.9.2/config-Q16"  "$APPCONTENTS/lib/ImageMagick-6.9.2/"
+	cp -R "$MACPORTS/etc/ImageMagick-6"  "$APPCONTENTS/etc/"
+	
+	cp -R "$MACPORTS/share/icons"  "$APPCONTENTS/share/"
+	cp -R "$MACPORTS/share/themes"  "$APPCONTENTS/share/"
+	cp -R "$MACPORTS/share/mime"  "$APPCONTENTS/share/"
+	
 	# app bundle files
-	echo "*** Please do _NOT_ delete this file. The file script depends on it. ***" > "$SYNFIGAPP/v$VERSION"
-	sed -i "" -e "s/_VERSION_/$VERSION/g" "$SYNFIGAPP/../MacOS/SynfigStudio" 
-	sed -i "" -e "s/_VERSION_/$VERSION/g" "$SYNFIGAPP/../Info.plist" 
+	echo "*** Please do _NOT_ delete this file. The file script depends on it. ***" > "$APPCONTENTS/v$VERSION"
+	sed -i "" -e "s/_VERSION_/$VERSION/g" "$APPDIR/Contents/MacOS/SynfigStudio" 
+	sed -i "" -e "s/_VERSION_/$VERSION/g" "$APPDIR/Contents/Info.plist" 
 
 	# save information about the ports which make up this build
-	echo "Synfig Studio $VERSION for Mac OS X $OSNAME" > "$SYNFIGAPP/build-info.txt"
-	date >> "$SYNFIGAPP/build-info.txt"
-	port installed >> "$SYNFIGAPP/build-info.txt"
-	sed -i "" -e "s/are currently installed:/were used to build this package:/g" "$SYNFIGAPP/build-info.txt"
+	echo "Synfig Studio $VERSION for Mac OS X $OSNAME" > "$APPCONTENTS/build-info.txt"
+	date >> "$APPCONTENTS/build-info.txt"
+	port installed >> "$APPCONTENTS/build-info.txt"
+	sed -i "" -e "s/are currently installed:/were used to build this package:/g" "$APPCONTENTS/build-info.txt"
 
-	mv "$DIR/SynfigStudio-new-app" "$DIR/SynfigStudio.app"
+	mv "$APPDIR" "$DIR/SynfigStudio.app"
 
 	echo
 	echo "Your new Synfig Studio app bundle should now be ready to run."
@@ -441,7 +496,7 @@ mkdmg()
 
 	echo "Creating and attaching disk image..."
 	[ ! -e "$TRANSITORY_FILENAME" ] || rm -rf "$TRANSITORY_FILENAME"
-	/usr/bin/hdiutil create -type SPARSE -size 3072m -fs "HFS+" -volname "$VOLNAME" -attach "$TRANSITORY_FILENAME"
+	/usr/bin/hdiutil create -type SPARSE -size 700m -fs "HFS+" -volname "$VOLNAME" -attach "$TRANSITORY_FILENAME"
 
 	echo "Copying files to disk image..."
 	cp -R $APPDIR /Volumes/"$VOLNAME"/SynfigStudio.app
@@ -627,7 +682,7 @@ echo
 echo "BUILDING synfigstudio-$VERSION"
 echo
 echo
-sleep 5
+#sleep 5
 
 popd > /dev/null
 
