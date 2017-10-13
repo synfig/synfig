@@ -1933,9 +1933,9 @@ export GSETTINGS_SCHEMA_DIR="\${SYSPREFIX}/share/glib-2.0/schemas/"
 export FONTCONFIG_PATH="\${SYSPREFIX}/etc/fonts"
 export MLT_DATA="\${SYSPREFIX}/share/mlt/"
 export MLT_REPOSITORY="\${SYSPREFIX}/lib/mlt/"
-export MAGICK_CODER_FILTER_PATH="\${SYSPREFIX}/lib/ImageMagick-${IMAGEMAGICK_VERSION}/config-Q16/"
+export MAGICK_CONFIGURE_PATH="\${SYSPREFIX}/lib/ImageMagick-${IMAGEMAGICK_VERSION}/config-Q16/"
 export MAGICK_CODER_MODULE_PATH="\${SYSPREFIX}/lib/ImageMagick-${IMAGEMAGICK_VERSION}/modules-Q16/coders/"
-export MAGICK_CONFIGURE_PATH="\${SYSPREFIX}/lib/ImageMagick-${IMAGEMAGICK_VERSION}/modules-Q16/filters/"
+export MAGICK_CODER_FILTER_PATH="\${SYSPREFIX}/lib/ImageMagick-${IMAGEMAGICK_VERSION}/modules-Q16/filters/"
 
 # Create install-location-dependent config files for Pango and GDK image loaders
 # We have to do this every time because its possible that SYSPREFIX has changed
