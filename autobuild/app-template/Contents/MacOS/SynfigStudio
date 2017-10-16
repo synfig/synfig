@@ -6,7 +6,7 @@ DIR=`dirname "$0"`
 cd "$DIR/../Resources"
 CWD=`pwd`
 
-export DYLD_LIBRARY_PATH="$CWD/lib:$CWD/synfig/lib:$CWD/Library/Frameworks/Python.framework/Versions/3.3/:/Volumes/data/SynfigStudio.app/Contents/Resources/Library/Frameworks/Python.framework/Versions/3.3/Resources/Python.app/Contents/MacOS/:$DYLD_LIBRARY_PATH"
+#export DYLD_LIBRARY_PATH="$CWD/lib:$CWD/synfig/lib:$CWD/Library/Frameworks/Python.framework/Versions/3.3/:/Volumes/data/SynfigStudio.app/Contents/Resources/Library/Frameworks/Python.framework/Versions/3.3/Resources/Python.app/Contents/MacOS/:$DYLD_LIBRARY_PATH"
 
 export GTK_EXE_PREFIX="$CWD"
 export GTK_DATA_PREFIX="$CWD/share"
@@ -33,5 +33,5 @@ export GDK_PIXBUF_MODULE_FILE=$HOME/.synfig-gdk-loaders
 [ ! -f $HOME/.synfig-gdk-loaders ] || rm -f  $HOME/.synfig-gdk-loaders
 "$CWD/bin/gdk-pixbuf-query-loaders" > "$GDK_PIXBUF_MODULE_FILE"
 
-cd ~
+cd "$CWD"
 exec "$SYNFIG_ROOT/bin/synfigstudio" "$@"
