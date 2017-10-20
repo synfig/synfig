@@ -524,7 +524,7 @@ struct CurveArray
 
 	int intersect(Real x,Real y, Point *table) const
 	{
-		if((y < aabb.miny) || (y > aabb.maxy) || (x < aabb.minx)) return 0;
+		if((y < aabb.miny) || (y > aabb.maxy) || (x < aabb.minx) || (x > aabb.maxx)) return 0;
 
 		int i, curdeg, intersects = 0;
 		const int numcurves = degrees.size();
