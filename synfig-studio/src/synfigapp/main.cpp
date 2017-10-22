@@ -32,10 +32,6 @@
 #include "main.h"
 #include "action.h"
 
-#ifndef _WIN32
-#include <pwd.h>
-#endif
-
 #include <synfig/general.h>
 
 #include <synfig/color.h>
@@ -440,20 +436,6 @@ synfigapp::Main::get_user_app_directory()
 {
 	String dir;
 	//! \todo do we need something like Glib::locale_from_utf8()?  (bug #1837445)
-#ifdef _WIN32
-	dir = String(getenv("HOMEDRIVE"))+getenv("HOMEPATH");
-#else
-	struct passwd* pwd = getpwuid(getuid());
-	if (pwd)
-	{
-		dir = pwd->pw_dir;
-	}
-	else
-	{
-		// try the $HOME environment variable
-		dir = getenv("HOME");
-	}
-#endif
-	dir = dir+ETL_DIRECTORY_SEPARATOR+SYNFIG_USER_APP_DIR;
+	dir = Glib::get_home_dir()+ETL_DIRECTORY_SEPARATOR+SYNFIG_USER_APP_DIR;
 	return dir;
 }
