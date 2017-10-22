@@ -2372,8 +2372,7 @@ App::dialog_open_file(const std::string &title, std::string &filename, std::stri
 	synfig::String prev_path;
 
 	if(!_preferences.get_value(preference, prev_path))
-		prev_path = ".";
-
+		prev_path = Glib::get_home_dir();
 	prev_path = absolute_path(prev_path);
 
 	Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(*App::main_window,
@@ -2495,8 +2494,7 @@ App::dialog_open_file_spal(const std::string &title, std::string &filename, std:
 	synfig::String prev_path;
 
 	if(!_preferences.get_value(preference, prev_path))
-		prev_path = ".";
-
+		prev_path = Glib::get_home_dir();
 	prev_path = absolute_path(prev_path);
 
 	Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(*App::main_window,
@@ -2549,8 +2547,7 @@ App::dialog_open_file_sketch(const std::string &title, std::string &filename, st
 	synfig::String prev_path;
 
 	if(!_preferences.get_value(preference, prev_path))
-		prev_path = ".";
-
+		prev_path = Glib::get_home_dir();
 	prev_path = absolute_path(prev_path);
 
 	Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(*App::main_window,
@@ -2592,7 +2589,7 @@ App::dialog_open_file_image(const std::string &title, std::string &filename, std
 	synfig::String prev_path;
 
 	if(!_preferences.get_value(preference, prev_path))
-		prev_path = ".";
+		prev_path = Glib::get_home_dir();
 
 	prev_path = absolute_path(prev_path);
 
@@ -2651,7 +2648,7 @@ App::dialog_open_file_audio(const std::string &title, std::string &filename, std
 	synfig::String prev_path;
 
 	if(!_preferences.get_value(preference, prev_path))
-		prev_path = ".";
+		prev_path = Glib::get_home_dir();
 
 	prev_path = absolute_path(prev_path);
 
@@ -2758,7 +2755,7 @@ App::dialog_open_file_with_history_button(const std::string &title, std::string 
 	synfig::String prev_path;
 
 	if(!_preferences.get_value(preference, prev_path))
-		prev_path = ".";
+		prev_path = Glib::get_home_dir();
 
 	prev_path = absolute_path(prev_path);
 
@@ -2895,7 +2892,7 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 	synfig::String prev_path;
 
 	if(!_preferences.get_value(preference, prev_path))
-		prev_path=".";
+		prev_path = Glib::get_home_dir();
 
 	prev_path = absolute_path(prev_path);
 
@@ -3031,7 +3028,7 @@ App::dialog_save_file_spal(const std::string &title, std::string &filename, std:
 {
 	synfig::String prev_path;
 	if(!_preferences.get_value(preference, prev_path))
-		prev_path=".";
+		prev_path=Glib::get_home_dir();
 	prev_path = absolute_path(prev_path);
 
 	Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(*App::main_window, title, Gtk::FILE_CHOOSER_ACTION_SAVE);
@@ -3093,7 +3090,7 @@ App::dialog_save_file_sketch(const std::string &title, std::string &filename, st
 {
 	synfig::String prev_path;
 	if(!_preferences.get_value(preference, prev_path))
-		prev_path=".";
+		prev_path=Glib::get_home_dir();
 	prev_path = absolute_path(prev_path);
 
 	Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(*App::main_window, title, Gtk::FILE_CHOOSER_ACTION_SAVE);
@@ -3156,7 +3153,7 @@ App::dialog_save_file_render(const std::string &title, std::string &filename, st
 {
 	synfig::String prev_path;
 	if(!_preferences.get_value(preference, prev_path))
-		prev_path=".";
+		prev_path=Glib::get_home_dir();
 	prev_path = absolute_path(prev_path);
 
 	Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(*App::main_window, title, Gtk::FILE_CHOOSER_ACTION_SAVE);
