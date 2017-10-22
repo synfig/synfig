@@ -90,7 +90,6 @@ Dialog_Gradient::Dialog_Gradient():
 	widget_gradient->set_editable();
 	widget_gradient->signal_cpoint_selected().connect(sigc::mem_fun(*this,&studio::Dialog_Gradient::on_cpoint_selected));
 	widget_gradient->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Gradient::on_changed));
-	//table->attach(*manage(new Gtk::Label(_("Not yet fully implemented"))), 0, 1, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	table->attach(*widget_gradient, 0, 1, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 	widget_color=manage(new Widget_ColorEdit());
@@ -163,7 +162,6 @@ Dialog_Gradient::on_values_adjusted()
 static void
 dialog_gradient_value_desc_edit(synfig::Gradient /*g*/,synfigapp::ValueDesc /*x*/,handle<synfigapp::CanvasInterface> /*canvas_interface*/)
 {
-//	canvas_interface->connect_value(x,ValueBase(g));
 }
 
 void

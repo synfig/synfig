@@ -148,11 +148,7 @@ ColorSlider::draw_arrow(
 	cr->close_path();
 	if (fill)
 	{
-/*		//! Draw on outline
-		cr->fill_preserve();
-		cr->set_source_rgb(light.get_r(), light.get_g(), light.get_b());
-		cr->stroke();
-*/
+
 		cr->fill();
 	}else cr->stroke();
 
@@ -165,11 +161,7 @@ ColorSlider::draw_arrow(
 	cr->close_path();
 	if (fill)
 	{
-/*		//! Draw on outline
-		cr->fill_preserve();
-		cr->set_source_rgb(dark.get_r(), dark.get_g(), dark.get_b());
-		cr->stroke();
-*/
+
 		cr->fill();
 	}else cr->stroke();
 }
@@ -331,7 +323,6 @@ ColorSlider::on_event(GdkEvent *event)
 
 	case GDK_BUTTON_PRESS:
 	case GDK_MOTION_NOTIFY:
-//		adjust_color(type,color_,pos);
 		signal_slider_moved_(type,pos);
 		queue_draw();
 		return true;
@@ -348,7 +339,6 @@ Widget_ColorEdit::SliderRow(int i,ColorSlider * n, char * l, Pango::AttrList & a
 {
 	Gtk::Label *label;
 	n->signal_slider_moved().connect(sigc::mem_fun(*this,&studio::Widget_ColorEdit::on_slider_moved));
-	//n->signal_activated().connect(sigc::mem_fun(*this,&studio::Widget_ColorEdit::activated));
 	n->signal_activated().connect(sigc::mem_fun(*this,&studio::Widget_ColorEdit::on_value_changed));
 	label=manage(new class Gtk::Label(l,0.0,0.5));
 	label->set_use_markup(false);
@@ -538,11 +528,7 @@ Widget_ColorEdit::on_slider_moved(ColorSlider::Type type, float amount)
 	if(type>ColorSlider::TYPE_B && (color.get_r()<0 ||color.get_g()<0 ||color.get_b()<0))
 		clamp_=true;
 
-	/*
-	if(type==ColorSlider::TYPE_R && color.get_r()<0)clamp_=false;
-	if(type==ColorSlider::TYPE_G && color.get_g()<0)clamp_=false;
-	if(type==ColorSlider::TYPE_B && color.get_b()<0)clamp_=false;
-	*/
+
 	clamp_=false;
 
 	set_value(color);
@@ -701,12 +687,7 @@ Widget_ColorEdit::get_value()
 	if(notebook->get_current_page()!=0)
 		color=color.clamped();
 
-	/*{
-		// Clamp out negative values
-		color.set_r(std::max(0.0f,(float)color.get_r()));
-		color.set_g(std::max(0.0f,(float)color.get_g()));
-		color.set_b(std::max(0.0f,(float)color.get_b()));
-	}*/
+
 
 	return color;
 }

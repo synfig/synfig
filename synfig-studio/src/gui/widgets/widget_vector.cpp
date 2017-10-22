@@ -66,7 +66,6 @@ Widget_Vector::Widget_Vector():
 
 	label=manage(new class Gtk::Label("X:"));
 	label->set_alignment(0, 0.5);
-	//pack_start(*label, Gtk::PACK_SHRINK);
 	
 	entry_x=manage(new class Gtk::Entry());
 	entry_x->set_width_chars(width_chars);
@@ -89,7 +88,6 @@ Widget_Vector::Widget_Vector():
 	label=manage(new class Gtk::Label("Y:"));
 	label->set_alignment(0, 0.5);
 	label->show();
-	//pack_start(*label, Gtk::PACK_SHRINK);
 	
 	entry_y=manage(new class Gtk::Entry());
 	entry_y->set_width_chars(width_chars);
@@ -108,14 +106,9 @@ Widget_Vector::Widget_Vector():
 	distance_y->set_digits(4);
 	distance_y->set_update_policy(Gtk::UPDATE_ALWAYS);
 	distance_y->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Widget_Vector::on_value_changed));
-	//distance_y->signal_activate().connect(sigc::mem_fun(*this,&studio::Widget_Vector::activate));
 	pack_start(*distance_y, Gtk::PACK_EXPAND_WIDGET);
 
-	//spinbutton_x->show();
-	//spinbutton_y->show();
 
-	//spinbutton_x->signal_activate().connect(sigc::mem_fun(*spinbutton_y,&Gtk::SpinButton::grab_focus));
-	//distance_x->signal_activate().connect(sigc::mem_fun(*distance_y,&Gtk::SpinButton::grab_focus));
 	entry_x->signal_activate().connect(sigc::mem_fun(*entry_y,&Gtk::SpinButton::grab_focus));
 	entry_y->signal_activate().connect(sigc::mem_fun(*this,&studio::Widget_Vector::activate));
 }
@@ -127,10 +120,7 @@ Widget_Vector::~Widget_Vector()
 void
 Widget_Vector::on_grab_focus()
 {
-	//if(canvas_)
-	//	distance_x->grab_focus();
 	//else
-	//	spinbutton_x->grab_focus();
 	entry_x->grab_focus();
 }
 
@@ -185,8 +175,6 @@ Widget_Vector::set_value(const synfig::Vector &data)
 		distance_y->set_value(disty);
 		entry_x->set_text(distance_x->get_value().get_string(4));
 		entry_y->set_text(distance_y->get_value().get_string(4));
-		//spinbutton_x->hide();
-		//spinbutton_y->hide();
 	}catch(...) { synfig::error("Widget_Vector::set_value(): Caught something that was thrown"); }}
 	else
 	{
@@ -207,8 +195,6 @@ Widget_Vector::set_value(const synfig::Vector &data)
 			str=str.substr(0, str.size()-1);
 		entry_y->set_text(str);
 		
-		//distance_x->hide();
-		//distance_y->hide();
 	}
 }
 
@@ -219,15 +205,11 @@ Widget_Vector::get_value()
 	{
 		vector[0]=spinbutton_x->get_value();
 		vector[1]=spinbutton_y->get_value();
-		//distance_x->hide();
-		//distance_y->hide();
 	}
 	else try
 	{
 		vector[0]=distance_x->get_value().units(canvas_->rend_desc());
 		vector[1]=distance_y->get_value().units(canvas_->rend_desc());
-		//spinbutton_x->hide();
-		//spinbutton_y->hide();
 	}catch(...) { synfig::error("Widget_Vector::set_value(): Caught something that was thrown"); }
 	return vector;
 }
@@ -272,45 +254,13 @@ void
 Widget_Vector::set_canvas(synfig::Canvas::LooseHandle x)
 {
 	canvas_=x;
-	/*
-	if(x)
-	{
-		if(spinbutton_x)
-		{
-			spinbutton_x->hide();
-			spinbutton_y->hide();
-		}
-		distance_x->show();
-		distance_y->show();
-	}
-	else
-	{
-		if(spinbutton_x)
-		{
-			spinbutton_x->show();
-			spinbutton_y->show();
-		}
-		distance_x->hide();
-		distance_y->hide();
-	}
-	*/
+
 }
 
 void
 Widget_Vector::show_all_vfunc()
 {
-	/*
-	if(canvas_)
-	{
-		distance_x->show();
-		distance_y->show();
-	}
-	else
-	{
-		spinbutton_x->show();
-		spinbutton_y->show();
-	}
-	*/
+
 	entry_x->show();
 	entry_y->show();
 	show();

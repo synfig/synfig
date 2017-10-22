@@ -86,7 +86,6 @@ void Dialog_Preview::set_preview(etl::handle<Preview> prev)
 	if(window) window.clear();
 
 	preview.set_preview(prev);
-	//preview.update();
 }
 
 void Dialog_Preview::on_show()

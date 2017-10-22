@@ -40,7 +40,6 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
-//#include <unistd.h>
 
 #include <cassert>
 
@@ -244,7 +243,6 @@ CVSInfo::get_current_timestamp()const
 		return false;
 	}
 	time_t ret((daylight-1)*3600);
-	//ret+=timezone;
 	ret+=st.st_mtime;
 	return ret;
 }

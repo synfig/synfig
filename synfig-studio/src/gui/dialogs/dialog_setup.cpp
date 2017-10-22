@@ -156,10 +156,8 @@ Dialog_Setup::create_gamma_page(PageInfo pi)
 	black_level_selector.set_hexpand(true);
 	black_level_selector.signal_value_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Setup::on_black_level_change));
 
-	//attach_label(pi.grid,_("Red-Blue Level"), ++row);
 	//pi.grid->attach(red_blue_level_selector, 1, row, 1, 1);
 	//red_blue_level_selector.set_hexpand(true);
-	//red_blue_level_selector.signal_value_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Setup::on_red_blue_level_change));
 }
 
 void
@@ -565,7 +563,6 @@ Dialog_Setup::create_interface_page(PageInfo pi)
 			sigc::bind<int> (sigc::mem_fun(*this, &Dialog_Setup::on_value_change), CHANGE_UI_LANGUAGE));
 	//TODO signal change on value
 	//toggle_use_dark_theme.signal_changed().connect(
-	//		sigc::bind<int> (sigc::mem_fun(*this, &Dialog_Setup::on_value_change), CHANGE_UI_THEME));
 	toggle_handle_tooltip_widthpoint.property_active().signal_changed().connect(
 			sigc::bind<int> (sigc::mem_fun(*this, &Dialog_Setup::on_value_change), CHANGE_UI_HANDLE_TOOLTIP));
 	toggle_handle_tooltip_radius.property_active().signal_changed().connect(
@@ -916,8 +913,6 @@ Dialog_Setup::refresh()
 		(*ui_iter)[prefs_brushpath.path]=*setiter;
 	}
 	// Select the first brush path entry
-	//listviewtext_brushes_path->get_selection()->select(
-	//		listviewtext_brushes_path->get_model()->children().begin());
 
 	// Refresh the preferred filename prefix
 	textbox_custom_filename_prefix.set_text(App::custom_filename_prefix);
@@ -1150,7 +1145,6 @@ bool
 BlackLevelSelector::on_event(GdkEvent *event)
 {
 	int x(round_to_int(event->button.x));
-	//int y(round_to_int(event->button.y));
 
     switch(event->type)
     {
@@ -1264,7 +1258,6 @@ bool
 RedBlueLevelSelector::on_event(GdkEvent *event)
 {
 	int x(round_to_int(event->button.x));
-	//int y(round_to_int(event->button.y));
 
     switch(event->type)
     {

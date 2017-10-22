@@ -172,17 +172,7 @@ Dock_History::create_action_tree()
 
 		action_tree->append_column(*column);
 	}
-	/*{
-		Gtk::TreeView::Column* column = Gtk::manage( new Gtk::TreeView::Column(_("Canvas")) );
-		Gtk::CellRendererText *text_cr=Gtk::manage(new Gtk::CellRendererText());
-		text_cr->property_foreground()=Glib::ustring("#7f7f7f");
 
-		column->pack_start(*text_cr);
-		column->add_attribute(text_cr->property_text(),history_tree_model.canvas_id);
-		column->add_attribute(text_cr->property_foreground_set(),history_tree_model.is_redo);
-
-		action_tree->append_column(*column);
-	}*/
 	{
 		Gtk::TreeView::Column* column = Gtk::manage( new Gtk::TreeView::Column(_("Jump")) );
 
@@ -198,7 +188,6 @@ Dock_History::create_action_tree()
 		column->set_sort_column(COLUMNID_JUMP);
 
 		action_tree->append_column(*column);
-		//column->clicked();
 	}
 	{
 		Gtk::TreeView::Column* column = Gtk::manage( new Gtk::TreeView::Column(_("Action")) );
@@ -221,10 +210,7 @@ Dock_History::create_action_tree()
 	action_tree->set_search_equal_func(sigc::ptr_fun(&studio::HistoryTreeStore::search_func));
 
 	action_tree->set_rules_hint();
-//	action_tree->signal_row_activated().connect(sigc::mem_fun(*this,&Dock_History::on_row_activate));
 	action_tree->signal_event().connect(sigc::mem_fun(*this,&Dock_History::on_action_event));
-//	action_tree->add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK);
-//	action_tree->add_events(Gdk::BUTTON1_MOTION_MASK);
 	action_tree->show();
 
 	Gtk::ScrolledWindow *scrolledwindow = manage(new class Gtk::ScrolledWindow());
@@ -234,14 +220,7 @@ Dock_History::create_action_tree()
 	scrolledwindow->set_shadow_type(Gtk::SHADOW_ETCHED_IN);
 	scrolledwindow->show_all();
 
-/*	{
-		Gtk::Widget& widget(*action_tree);
-		Pango::FontDescription font(widget.get_modifier_style()->get_font());
-		font.set_size(Pango::SCALE*5);
-		widget.get_modifier_style()->set_font(font);
-		widget.modify_font(font);
-	}
-*/
+
 	return scrolledwindow;
 }
 
@@ -407,14 +386,11 @@ Dock_History::on_action_event(GdkEvent *event)
 			int cell_x, cell_y;
 			if(!action_tree->get_path_at_pos(
 				int(event->button.x),int(event->button.y),	// x, y
-				path, // TreeModel::Path&
-				column, //TreeViewColumn*&
-				cell_x,cell_y //int&cell_x,int&cell_y
+				path,				column,				cell_x,cell_y //int&cell_x,int&cell_y
 				)
 			) break;
 			const Gtk::TreeRow row = *(action_tree->get_model()->get_iter(path));
 
-			//signal_user_click()(event->button.button,row,(ColumnID)column->get_sort_column_id());
 			if((ColumnID)column->get_sort_column_id()==COLUMNID_JUMP)
 			{
 				etl::handle<synfigapp::Action::Undoable> action(row[model.action]);

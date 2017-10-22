@@ -123,7 +123,6 @@ Action::WaypointSet::perform()
 {
 	WaypointList::iterator iter;
 
-#if 1
 	vector<WaypointList::iterator>	iters;
 	vector<Waypoint>::iterator i = waypoints.begin(), end = waypoints.end();
 
@@ -186,36 +185,6 @@ Action::WaypointSet::perform()
 		}
 	}
 
-#else
-	try { iter=value_node->find(waypoint); }
-	catch(synfig::Exception::NotFound)
-	{
-		throw Error(_("Unable to find waypoint"));
-	}
-
-	//find the value at the old time before we replace it
-	ValueNode_Animated::findresult timeiter;
-	timeiter = value_node->find_time(waypoint.get_time());
-
-	//we only want to track overwrites (not inplace modifications)
-	if(timeiter.second && waypoint.get_uid() == timeiter.first->get_uid())
-	{
-		timeiter.second = false;
-	}
-
-	//copy and overwrite
-	old_waypoint=*iter;
-	*iter=waypoint;
-
-	//if we've found a unique one then we need to erase it, but store it first
-	if(timeiter.second)
-	{
-		time_overwrite = true;
-		overwritten_wp = *timeiter.first;
-
-		value_node->erase(overwritten_wp);
-	}
-#endif
 
 	// Signal that a valuenode has been changed
 	value_node->changed();
@@ -226,7 +195,6 @@ Action::WaypointSet::undo()
 {
 	WaypointList::iterator iter;
 
-#if 1
 	vector<Waypoint>::iterator i = old_waypoints.begin(), end = old_waypoints.end();
 
 	for(; i != end; ++i)
@@ -251,20 +219,6 @@ Action::WaypointSet::undo()
 		}
 	}
 
-#else
-	try { iter=value_node->find(old_waypoint); }
-	catch(synfig::Exception::NotFound)
-	{
-		throw Error(_("Unable to find waypoint"));
-	}
-
-	*iter=old_waypoint;
-
-	if(time_overwrite)
-	{
-		value_node->add(overwritten_wp);
-	}
-#endif
 
 	// Signal that a valuenode has been changed
 	value_node->changed();

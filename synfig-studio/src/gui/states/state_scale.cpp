@@ -200,7 +200,6 @@ StateScale_Context::StateScale_Context(CanvasView* canvas_view):
 	get_work_area()->set_duck_dragger(duck_dragger_);
 
 	get_work_area()->set_cursor(Gdk::SIZING);
-//	get_work_area()->reset_cursor();
 
 	App::dock_toolbox->refresh();
 
@@ -263,11 +262,7 @@ DuckDrag_Scale::begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& offs
 	const DuckList selected_ducks(duckmatic->get_selected_ducks());
 	DuckList::const_iterator iter;
 
-	//if(duckmatic->get_selected_ducks().size()<2)
-	//{
 	//	bad_drag=true;
-//		return;
-//	}
 	bad_drag=false;
 
 		drag_offset=duckmatic->find_duck(offset)->get_trans_point();
@@ -279,7 +274,6 @@ DuckDrag_Scale::begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& offs
 	// Calculate center
 	Point vmin(100000000,100000000);
 	Point vmax(-100000000,-100000000);
-	//std::set<etl::handle<Duck> >::iterator iter;
 	positions.clear();
 	int i;
 	for(i=0,iter=selected_ducks.begin();iter!=selected_ducks.end();++iter,i++)
@@ -309,7 +303,6 @@ DuckDrag_Scale::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 	if(bad_drag)
 		return;
 
-	//std::set<etl::handle<Duck> >::iterator iter;
 	synfig::Vector vect(duckmatic->snap_point_to_grid(vector)-center);
 	last_scale=vect;
 
@@ -352,7 +345,6 @@ DuckDrag_Scale::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 		}
 	else
 	{
-		//vect[0]=vect[1]=vect.mag()*0.707106781;
 		Real amount(vect.mag()/(drag_offset-center).mag());
 		vect[0]=vect[1]=amount;
 	}
@@ -387,7 +379,6 @@ DuckDrag_Scale::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 	}
 
 	last_scale=vect;
-	//snap=Vector(0,0);
 }
 
 bool

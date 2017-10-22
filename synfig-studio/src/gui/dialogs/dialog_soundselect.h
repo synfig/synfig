@@ -66,7 +66,6 @@ public:
 	Dialog_SoundSelect(Gtk::Window &parent,etl::handle<synfigapp::CanvasInterface> ci );
 	~Dialog_SoundSelect();
 
-	//float get_global_fps() const { return globalfps; }
 	void set_global_fps(float f);
 
 	synfig::Time get_offset() const { return offset.get_value(); }

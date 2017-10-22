@@ -130,7 +130,6 @@ CanvasOptions::CanvasOptions(Gtk::Window &window,etl::loose_handle<CanvasView> c
 	add_action_widget(*cancel_button,0);
 	cancel_button->signal_clicked().connect(sigc::mem_fun(*this, &studio::CanvasOptions::on_cancel_pressed));
 
-	//set_default_response(1);
 
 
 	get_vbox()->pack_start(*dialogPadding);

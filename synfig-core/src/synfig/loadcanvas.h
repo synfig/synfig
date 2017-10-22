@@ -61,9 +61,7 @@ namespace synfig {
 */
 class CanvasParser
 {
-	/*
- --	** -- D A T A -------------------------------------------------------------
-	*/
+
 
 private:
 	//! Maximun number of allowed warnings before fatal error is thrown

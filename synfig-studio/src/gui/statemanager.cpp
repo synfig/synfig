@@ -95,7 +95,7 @@ StateManager::add_state(const Smach::state_base *state)
 			stock_item.get_label()
 		)
 	);
-	/*action->set_sensitive(false);*/
+
 	state_group->add(action);
 
 	action->signal_activate().connect(

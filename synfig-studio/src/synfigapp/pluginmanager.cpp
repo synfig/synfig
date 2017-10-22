@@ -177,7 +177,6 @@ PluginLauncher::execute( std::string script_path, const std::string& /* synfig_r
 	command = command+" \""+script_path+"\" \""+filename_processed+"\" 2>&1";
 #ifdef _WIN32
 	// This covers the dumb cmd.exe behavior.
-	// See: http://eli.thegreenplace.net/2011/01/28/on-spaces-in-the-paths-of-programs-and-files-on-windows/
 	command = "\"" + command + "\"";
 #endif
 	
@@ -271,8 +270,7 @@ PluginManager::load_dir( const std::string &pluginsprefix )
 		
 		closedir(dir);
 	}
-} // END of synfigapp::PluginManager::load_dir()
-
+}
 void
 PluginManager::load_plugin( const std::string &path )
 {
@@ -289,7 +287,6 @@ PluginManager::load_plugin( const std::string &path )
 	try
 	{
 		xmlpp::DomParser parser;
-		//parser.set_validate();
 		parser.set_substitute_entities(); //We just want the text to be resolved/unescaped automatically.
 		parser.parse_file(path);
 		if(parser)

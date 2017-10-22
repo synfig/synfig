@@ -51,7 +51,6 @@ class Layer_Polygon : public Layer_Shape
 
 private:
 
-	//! Parameter: (std::vector<Point>)
 	ValueBase param_vector_list;
 
 protected:

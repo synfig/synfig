@@ -158,14 +158,7 @@ public:
 	System();
 	~System();
 
-	/*
-	template <typename T> bool
-	perform_action(T x)
-	{
-		etl::handle<Action::Base> action((Action::Base*)new T(x));
-		return perform_action(action);
-	}
-	*/
+
 
 	synfig::String get_most_recent_action_name() { return most_recent_action_name_; }
 

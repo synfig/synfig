@@ -87,8 +87,6 @@ cairo_surface(cairo_image_surface_create(CAIRO_FORMAT_ARGB32, 1, 1))
 
 	Gtk::HScale *s = manage(new Gtk::HScale(adj_zoom));
 	s->set_draw_value(false);
-	//s->set_update_policy(Gtk::UPDATE_DELAYED);
-	//s->signal_event().connect(sigc::mem_fun(*this,&Dock_Navigator::on_scroll_event));
 	attach(*s,1,4,2,3,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK|Gtk::FILL);
 
 	show_all();
@@ -102,8 +100,6 @@ cairo_surface(cairo_image_surface_create(CAIRO_FORMAT_ARGB32, 1, 1))
 
 		drawto.add_events(Gdk::BUTTON_MOTION_MASK|Gdk::BUTTON_PRESS_MASK);
 
-		//get_canvas_view()->canvas_interface()->signal_dirty_preview()
-		//				.connect(sigc::mem_fun(*this,&Widget_NavView::on_dirty_preview));
 		get_canvas_view()->get_work_area()->signal_rendering()
 						.connect(sigc::mem_fun(*this,&Widget_NavView::on_dirty_preview));
 
@@ -287,12 +283,9 @@ bool studio::Widget_NavView::on_drawto_draw(const Cairo::RefPtr<Cairo::Context> 
 
 		//round to smallest scale (fit entire thing in window without distortion)
 		if(sx > sy) sx = sy;
-		//else sy = sx;
 
 		//scaling and stuff
 		// the point to navpixel space conversion should be:
-		//		(navpixels / canvpixels) * (canvpixels / canvsize)
-		//	or (navpixels / prevpixels) * (prevpixels / navpixels)
 		xaxis = sx * w / (float)canvw;
 		yaxis = xaxis/ph;
 		xaxis /= pw;
@@ -315,7 +308,6 @@ bool studio::Widget_NavView::on_drawto_draw(const Cairo::RefPtr<Cairo::Context> 
 
 			cr->save();
 
-			//synfig::warning("Nav: Drawing scaled bitmap");
 			Gdk::Cairo::set_source_pixbuf(
 				cr, //cairo context
 				scalepx, //pixbuf
@@ -342,7 +334,6 @@ bool studio::Widget_NavView::on_drawto_draw(const Cairo::RefPtr<Cairo::Context> 
 		t = (int)(drawto.get_height()/2 + fp[1]*yaxis - rh/2);
 
 		//coord system:
-		// tl : (offx,offy)
 		// axis multipliers = xaxis,yaxis
 
 		cr->set_line_width(2.0);
@@ -406,7 +397,6 @@ void studio::Widget_NavView::on_number_modify()
 {
 	double z = unit_to_zoom(adj_zoom->get_value());
 	zoom_print.set_text(strprintf("%.1f%%",z*100.0));
-	//synfig::warning("Updating zoom to %f",adj_zoom->get_value());
 
 	if(get_canvas_view() && z != get_canvas_view()->get_work_area()->get_zoom())
 	{
@@ -425,7 +415,6 @@ void studio::Widget_NavView::on_workarea_view_change()
 	if(!scrolling && z != adj_zoom->get_value())
 	{
 		adj_zoom->set_value(z);
-		//adj_zoom->value_changed();
 	}
 	queue_draw();
 }
@@ -510,6 +499,5 @@ void studio::Dock_Navigator::changed_canvas_view_vfunc(etl::loose_handle<CanvasV
 	}else
 	{
 		clear_previous();
-		//add(dummy);
 	}
 }

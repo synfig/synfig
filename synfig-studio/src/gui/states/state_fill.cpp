@@ -136,11 +136,8 @@ Smach::event_result
 StateFill_Context::event_stop_handler(const Smach::event& /*x*/)
 {
 	synfig::info("STATE FILL: Received Stop Event");
-	//throw Smach::egress_exception();
 	throw &state_normal;
 	return Smach::RESULT_OK;
-//	canvas_view->get_smach().pop_state();
-//	return Smach::RESULT_ACCEPT;
 }
 
 Smach::event_result
@@ -164,7 +161,6 @@ StateFill_Context::event_workarea_layer_clicked_handler(const Smach::event& x)
 	}
 
 
-	//synfigapp::Action::Handle action(synfigapp::Action::create("ValueDescSet"));
 	synfigapp::ValueDesc value_desc(event.layer,"color");
 
 	if(!get_canvas_interface()->change_value(value_desc,ValueBase(synfigapp::Main::get_fill_color())))
@@ -172,25 +168,6 @@ StateFill_Context::event_workarea_layer_clicked_handler(const Smach::event& x)
 		get_canvas_view()->get_ui_interface()->warning(_("Unable to set layer color"));
 		return Smach::RESULT_ERROR;
 	}
-	/*
-	assert(action);
 
-	action->set_param("canvas",get_canvas());
-	action->set_param("canvas_interface",get_canvas_interface());
-	action->set_param("value_desc",value_desc);
-	action->set_param("time",get_canvas_interface()->get_time());
-	//action->set_param("layer",event.layer);
-	//if(!action->set_param("param",String("color")))
-	//	synfig::error("LayerParamConnect didn't like \"param\"");
-	if(!action->set_param("new_value",ValueBase(synfigapp::Main::get_fill_color())))
-		synfig::error("LayerParamConnect didn't like \"fill_color\"");
-
-	if(!get_canvas_interface()->get_instance()->perform_action(action))
-	{
-		get_canvas_view()->get_ui_interface()->warning(_("Unable to set layer color"));
-		return Smach::RESULT_ERROR;
-	}
-	get_canvas_view()->get_ui_interface()->task(_("Idle"));
-	*/
 	return Smach::RESULT_ACCEPT;
 }

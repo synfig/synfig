@@ -54,11 +54,7 @@ class Dock_Keyframes : public Dock_CanvasSpecific
 	//The actions stuff
 	Glib::RefPtr<Gtk::ActionGroup> action_group;
 
-	/*
-	void add_keyframe_pressed();
-	void duplicate_keyframe_pressed();
-	void delete_keyframe_pressed();
-	*/
+
 
 	void show_keyframe_properties();
 	void keyframe_toggle();

@@ -146,7 +146,6 @@ public:
 	*/
 
 private:
-	//static etl::handle<synfigapp::UIInterface> ui_interface_;
 	//static int max_recent_files;
 
 /*      //declated as globals in app.cpp
@@ -174,7 +173,6 @@ private:
 
 	static int jack_locks_;
 
-//	static std::list< etl::handle< Module > > module_list_;
 
 	/*
  -- ** -- P U B L I C   D A T A -----------------------------------------------
@@ -238,26 +236,7 @@ public:
 	/*
  -- ** -- S I G N A L S -------------------------------------------------------
 	*/
-/*      //declated as globals in app.cpp
-	static sigc::signal<
-		void,
-		etl::loose_handle<CanvasView>
-	> signal_canvas_view_focus_;
-	static sigc::signal<
-		void,
-		etl::handle<Instance>
-	> signal_instance_selected_;
-	static sigc::signal<
-		void,
-		etl::handle<Instance>
-	> signal_instance_created_;
-	static sigc::signal<
-		void,
-		etl::handle<Instance>
-	> signal_instance_deleted_;
-	static sigc::signal<void> signal_recent_files_changed_;
-	static sigc::signal<void> signal_present_all_;
-*/
+
 public:
 
 	static sigc::signal<void> &signal_present_all();

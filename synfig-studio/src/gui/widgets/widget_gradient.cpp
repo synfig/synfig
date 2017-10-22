@@ -267,7 +267,6 @@ Widget_Gradient::update_cpoint(const synfig::Gradient::CPoint &x)
 bool
 Widget_Gradient::on_event(GdkEvent *event)
 {
-	//if(editable_)
 	{
 		const int x(static_cast<int>(event->button.x));
 		const int y(static_cast<int>(event->button.y));
@@ -312,7 +311,6 @@ Widget_Gradient::on_event(GdkEvent *event)
 					gradient_.sort();
 				}
 
-//				signal_value_changed_();
 				changed_=true;
 				queue_draw();
 				return true;

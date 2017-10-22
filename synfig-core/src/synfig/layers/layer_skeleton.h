@@ -29,8 +29,6 @@
 
 #include <synfig/bone.h>
 #include "layer_polygon.h"
-// #include <synfig/value.h>
-// #include <vector>
 
 /* === M A C R O S ========================================================= */
 

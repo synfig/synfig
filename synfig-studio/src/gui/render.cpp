@@ -187,7 +187,6 @@ RenderSettings::RenderSettings(Gtk::Window& parent, etl::handle<synfigapp::Canva
 	add_action_widget(*cancel_button,0);
 	cancel_button->signal_clicked().connect(sigc::mem_fun(*this, &studio::RenderSettings::on_cancel_pressed));
 
-	//set_default_response(1);
 
 	set_title(_("Render Settings")+String(" - ")+canvas_interface_->get_canvas()->get_name());
 
@@ -392,28 +391,11 @@ RenderSettings::submit_next_render_pass()
 
 		canvas_interface_->get_ui_interface()->task(_("Rendering ")+pass_filename);
 	
-		/*
-		if(async_renderer)
-		{
-			async_renderer->stop();
-			async_renderer.detach();
-		}
-		*/
+
 		async_renderer=new AsyncRenderer(target);
 		async_renderer->signal_finished().connect( sigc::mem_fun(*this,&RenderSettings::on_finished));
 		async_renderer->start();
-		/*
-		if(!target->render(canvas_interface_->get_ui_interface().get()))
-		{
-			canvas_interface_->get_ui_interface()->error(_("Render Failure"));
-			canvas_interface_->get_ui_interface()->amount_complete(0,10000);
-			return;
-		}
 
-		// Success!
-		canvas_interface_->get_ui_interface()->task(pass_filename+_(" rendered successfully"));
-		canvas_interface_->get_ui_interface()->amount_complete(0,10000);
-		*/
 	}
 	return;
 }

@@ -234,7 +234,6 @@ CanvasTreeStore::get_value_vfunc(const Gtk::TreeModel::iterator& iter, int colum
 
 		x.set(
 			// Temporary fix crash when trying to edit bline point
-			// https://github.com/synfig/synfig/issues/264
 			// TODO: move this check into a more proper place
 				value_desc.get_value_type() != type_bline_point
 			&&	value_desc.get_value_type() != type_width_point
@@ -513,9 +512,6 @@ CanvasTreeStore::set_row(Gtk::TreeRow row,synfigapp::ValueDesc value_desc, bool 
 			assert(value_node);
 
 			row[model.value_node] = value_node;
-			//row[model.is_canvas] = false;
-			//row[model.is_value_node] = true;
-			//row[model.is_editable] = synfigapp::is_editable(value_node);
 			//row[model.id]=value_node->get_id();
 
 			// Set the canvas
@@ -525,10 +521,8 @@ CanvasTreeStore::set_row(Gtk::TreeRow row,synfigapp::ValueDesc value_desc, bool 
 				row[model.canvas]=canvas_interface()->get_canvas();
 
 			LinkableValueNode::Handle linkable;
-			// printf("%s:%d value_node = %s\n", __FILE__, __LINE__, value_node->get_description().c_str());
 			linkable=LinkableValueNode::Handle::cast_dynamic(value_node);
 
-			// printf("linkable: %d; do_children: %d\n", bool(linkable), bool(do_children));
 			if(linkable && do_children)
 			{
 				row[model.link_count] = linkable->link_count();
@@ -552,7 +546,6 @@ CanvasTreeStore::set_row(Gtk::TreeRow row,synfigapp::ValueDesc value_desc, bool 
 		else
 		{
 			//row[model.is_value_node] = false;
-			//row[model.is_editable] = true;
 			//row[model.label] = Glib::ustring(row[model.name]);
 			return;
 		}
@@ -595,21 +588,13 @@ CanvasTreeStore::refresh_row(Gtk::TreeModel::Row &row, bool do_children)
 			//row[model.id]=value_node->get_id();
 
 			// Setup the row's label
-			/*
-			if(value_node->get_id().empty())
-				row[model.label] = Glib::ustring(row[model.name]);
-			else if(Glib::ustring(row[model.name]).empty())
-				row[model.label] = value_node->get_id();
-			else
-				row[model.label] = Glib::ustring(row[model.name])+" ("+value_node->get_id()+')';
-			*/
+
 
 			LinkableValueNode::Handle linkable;
 			linkable=LinkableValueNode::Handle::cast_dynamic(value_node);
 			if(do_children && linkable && ((int)row[model.link_count] != linkable->link_count()))
 			{
 	//			Gtk::TreeModel::Children children = row.children();
-	//			while(!children.empty() && erase(children.begin()));
 
 				set_row(row,value_desc);
 				return;
@@ -619,7 +604,6 @@ CanvasTreeStore::refresh_row(Gtk::TreeModel::Row &row, bool do_children)
 		{
 			//row[model.label] = Glib::ustring(row[model.name]);
 			//row[model.is_value_node] = false;
-			//row[model.is_editable] = true;
 		}
 	}
 	if(!do_children)
@@ -651,7 +635,6 @@ CanvasTreeStore::rebuild_row(Gtk::TreeModel::Row &row, bool do_children)
 		if(value_node && value_node!=(ValueNode::Handle)row[model.value_node])
 		{
 //			Gtk::TreeModel::Children children = row.children();
-//			while(!children.empty() && erase(children.begin()));
 
 			set_row(row,value_desc,do_children);
 			return;
@@ -663,13 +646,11 @@ CanvasTreeStore::rebuild_row(Gtk::TreeModel::Row &row, bool do_children)
 		if( do_children && linkable && (int)row[model.link_count] != linkable->link_count())
 		{
 //			Gtk::TreeModel::Children children = row.children();
-//			while(!children.empty() && erase(children.begin()));
 
 			set_row(row,value_desc);
 			return;
 		}
 
-		//if(!value_node)
 		//	value_node=row[model.value_node];
 
 		row[model.id]=value_node->get_id();
@@ -731,7 +712,6 @@ CanvasTreeStore::add_cell_renderer_value_node(Gtk::TreeView::Column* column)
 	ret = Gtk::manage( new CellRenderer_TimeTrack() );
 
 	column->pack_start(*ret,true);
-	//column->add_attribute(ret->property_visible(), model.is_value_node);
 	column->add_attribute(ret->property_value_desc(), model.value_desc);
 	column->add_attribute(ret->property_canvas(), model.canvas);
 

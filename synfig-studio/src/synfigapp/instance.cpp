@@ -590,8 +590,6 @@ Instance::backup()
 		return false;
 	}
 	// don't save images while backup
-	//if (success)
-	//	save_all_layers();
 	if (success)
 		success = save_canvas(get_canvas()->get_identifier(), get_canvas(), false);
 	if (success)
@@ -653,10 +651,8 @@ Instance::save_as(const synfig::String &file_name)
 			new_canvas_filesystem,
 			CanvasFileNaming::container_prefix ))
 		{
-			//new_canvas_filesystem->remove_recursive(CanvasFileNaming::container_prefix);
 			new_canvas_filesystem.reset();
 			new_container.reset();
-			//FileSystemNative::instance()->file_remove(new_canvas_filename);
 			return false;
 		}
 
@@ -716,10 +712,8 @@ Instance::save_as(const synfig::String &file_name)
 	canvas->set_identifier(previous_canvas_identifier);
 	container_ = previous_container;
 	process_filenames_undo(params);
-	//new_canvas_filesystem->remove_recursive(CanvasFileNaming::container_prefix);
 	new_canvas_filesystem.reset();
 	new_container.reset();
-	//FileSystemNative::instance()->file_remove(new_canvas_filename);
 	if (import_external_canvases_action)
 		import_external_canvases_action->undo();
 

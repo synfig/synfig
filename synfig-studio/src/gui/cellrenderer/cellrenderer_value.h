@@ -51,7 +51,6 @@
 
 #include <gtkmm/colorselection.h>
 
-//#include <synfig/synfig.h>
 #include <synfig/paramdesc.h>
 #include <synfig/value.h>
 

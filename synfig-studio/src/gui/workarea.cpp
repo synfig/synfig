@@ -177,8 +177,6 @@ public:
 		onion_first_tile(),
 		onion_layers(0)
 	{
-		//set_remove_alpha();
-		//set_avoid_time_sync();
 		set_clipping(true);
 		set_tile_w(workarea->tile_w);
 		set_tile_h(workarea->tile_h);
@@ -327,14 +325,12 @@ public:
 			workarea->get_tile_book().sort();
 		}
 
-		//if(index%2)
 			workarea->queue_draw();
 		return true;
 	}
 
 	virtual void end_frame()
 	{
-		//workarea->queue_draw();
 	}
 };
 
@@ -365,8 +361,6 @@ public:
 		if(!onionskin)
 			return;
 		onion_skin_queue.push_back(time);
-		//onion_skin_queue.push_back(time-1);
-		//onion_skin_queue.push_back(time+1);
 		try
 		{
 		Time thistime=time;
@@ -735,21 +729,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 
 	drawing_frame=manage(new Gtk::Frame);
 	drawing_frame->add(*drawing_area);
-	//drawing_frame->set_shadow_type(Gtk::SHADOW_NONE);
-	//drawing_frame->property_border_width()=5;
-	//drawing_frame->modify_fg(Gtk::STATE_NORMAL,Gdk::Color("#00ffff"));
-	//drawing_frame->modify_base(Gtk::STATE_NORMAL,Gdk::Color("#ff00ff"));
-	/*drawing_frame->modify_fg(Gtk::STATE_ACTIVE,Gdk::Color("#00ffff"));
-	drawing_frame->modify_base(Gtk::STATE_ACTIVE,Gdk::Color("#ff00ff"));
-	drawing_frame->modify_bg(Gtk::STATE_ACTIVE,Gdk::Color("#00ff00"));
-	drawing_frame->modify_fg(Gtk::STATE_INSENSITIVE,Gdk::Color("#00ffff"));
-	drawing_frame->modify_base(Gtk::STATE_INSENSITIVE,Gdk::Color("#ff00ff"));
-	drawing_frame->modify_bg(Gtk::STATE_INSENSITIVE,Gdk::Color("#00ff00"));
-	drawing_frame->modify_fg(Gtk::STATE_SELECTED,Gdk::Color("#00ffff"));
-	drawing_frame->modify_base(Gtk::STATE_SELECTED,Gdk::Color("#ff00ff"));
-	drawing_frame->modify_bg(Gtk::STATE_SELECTED,Gdk::Color("#00ff00"));
-	*/
-	//drawing_frame->set_state(Gtk::STATE_NORMAL);
+
 
 	drawing_frame->show();
 
@@ -867,7 +847,6 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 
 WorkArea::~WorkArea()
 {
-//	delete [] buffer;
 
 	// don't leave the render function queued if we are about to vanish;
 	// that causes crashes
@@ -1161,7 +1140,6 @@ WorkArea::load_meta_data()
 		else
 			data=String(iter+1,data.end());
 	}
-	//sort(get_guide_list_x());
 
 	data=canvas->get_meta_data("guide_y");
 	get_guide_list_y().clear();
@@ -1179,7 +1157,6 @@ WorkArea::load_meta_data()
 		else
 			data=String(iter+1,data.end());
 	}
-	//sort(get_guide_list_y());
 
 	data = canvas->get_meta_data("jack_offset");
 	if (!data.empty())
@@ -1453,10 +1430,7 @@ WorkArea::set_focus_point(const synfig::Point &point)
 {
 	// These next three lines try to ensure that we place the
 	// focus on a pixel boundary
-	/*Point adjusted(point[0]/abs(get_pw()),point[1]/abs(get_ph()));
-	adjusted[0]=(abs(adjusted[0]-floor(adjusted[0]))<0.5)?floor(adjusted[0])*abs(get_pw()):ceil(adjusted[0])*abs(get_ph());
-	adjusted[1]=(abs(adjusted[1]-floor(adjusted[1]))<0.5)?floor(adjusted[1])*abs(get_ph()):ceil(adjusted[1])*abs(get_ph());
-	*/
+
 	const synfig::Point& adjusted(point);
 
 	synfig::RendDesc &rend_desc(get_canvas()->rend_desc());
@@ -1746,7 +1720,6 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				}
 			}
 			//else
-			//	clear_selected_ducks();
 
 			if(allow_bezier_clicks)
 			{
@@ -1762,8 +1735,6 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				if (!duck->get_editable(get_alternative_mode()))
 					return true;
 
-				//get_selected_duck()->signal_user_click(0)();
-				//if(clicked_duck)clicked_duck->signal_user_click(0)();
 
 				// if the user is holding shift while clicking on a tangent duck, consider splitting the tangent
 				if ((event->button.state&GDK_SHIFT_MASK) && duck->get_type() == Duck::TYPE_TANGENT)
@@ -1802,14 +1773,12 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 						}
 					} else {
 						// I don't know how to access the vertex from the tangent duck when originally drawing the bline in the bline tool
-						// synfig::ValueNode::Handle vn = value_desc.get_value_node();
 						synfig::info("parent isn't value node?  shift-drag-tangent doesn't work in bline tool yet...");
 					}
 				}
 
 				dragging=DRAG_DUCK;
 				drag_point=mouse_pos;
-				//drawing_area->queue_draw();
 				start_duck_drag(mouse_pos);
 				get_canvas_view()->reset_cancel_status();
 				return true;
@@ -1839,14 +1808,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 // it was causing issues when rotoscoping.
 // At the moment, we don't need it, so
 // this was the easiest way to fix the problem.
-/*
-				else
-				if(selected_bezier)
-				{
-					selected_duck=0;
-					selected_bezier->signal_user_click(0)(bezier_click_pos);
-				}
-*/
+
 
 				// Check for a guide click
 				if (show_guides)
@@ -1927,13 +1889,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 			}
 			else
 				canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MOUSE_BUTTON_DOWN,BUTTON_RIGHT,mouse_pos,pressure,modifier));
-			/*
-			if(canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MOUSE_BUTTON_DOWN,BUTTON_RIGHT,mouse_pos,pressure,modifier))==Smach::RESULT_OK)
-			{
-				//popup_menu();
-				return true;
-			}
-			*/
+
 			break;
 		}
 		case 4:
@@ -1992,17 +1948,8 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				canvas_view->queue_rebuild_ducks();
 				return true;
 			}
-			/*
-			Point point((mouse_pos-selected_duck->get_origin())/selected_duck->get_scalar());
-			if(get_grid_snap())
-			{
-				point[0]=floor(point[0]/grid_size[0]+0.5)*grid_size[0];
-				point[1]=floor(point[1]/grid_size[1]+0.5)*grid_size[1];
-			}
-			selected_duck->set_point(point);
-			*/
 
-			//Point p(mouse_pos);
+
 
 			set_axis_lock(event->motion.state&GDK_SHIFT_MASK);
 
@@ -2151,7 +2098,6 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				canvas_view->queue_rebuild_ducks();
 				return true;
 			}
-			//queue_draw();
 			clicked_duck=0;
 
 			ret=true;
@@ -2187,7 +2133,6 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				canvas_view->queue_rebuild_ducks();
 				return true;
 			}
-			//queue_draw();
 			clicked_duck=0;
 
 			ret=true;
@@ -2229,7 +2174,6 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				if(allow_layer_clicks)
 				{
 					Layer::Handle layer(get_canvas()->find_layer(get_canvas_view()->get_context_params(),drag_point));
-					//if(layer)
 					{
 						if(canvas_view->get_smach().process_event(EventLayerClick(layer,BUTTON_LEFT,mouse_pos,modifier))==Smach::RESULT_OK)
 							signal_layer_selected_(layer);
@@ -2273,7 +2217,6 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 
 			// The zoom is performed while preserving the pointer
 			// position as a fixed point (similarly to Xara Xtreme and
-			// Inkscape).
 
 			// The strategy used below is to scroll to the updated
 			// position, then zoom. This is easy to implement within
@@ -2404,7 +2347,6 @@ WorkArea::on_hruler_event(GdkEvent *event)
 		{
 			dragging=DRAG_NONE;
 			save_meta_data();
-//			get_guide_list_y().erase(curr_guide);
 		}
 		break;
 		return true;
@@ -2448,7 +2390,6 @@ WorkArea::on_vruler_event(GdkEvent *event)
 		{
 			dragging=DRAG_NONE;
 			save_meta_data();
-//			get_guide_list_x().erase(curr_guide);
 		}
 		break;
 		return true;
@@ -2514,10 +2455,6 @@ synfig::Point
 WorkArea::screen_to_comp_coords(synfig::Point pos)const
 {
 	synfig::RendDesc &rend_desc(get_canvas()->rend_desc());
-	//synfig::Vector::value_type canvaswidth=rend_desc.get_br()[0]-rend_desc.get_tl()[0];
-	//synfig::Vector::value_type canvasheight=rend_desc.get_br()[1]-rend_desc.get_tl()[1];
-	//synfig::Vector::value_type pw=canvaswidth/w;
-	//synfig::Vector::value_type ph=canvasheight/h;
 	Vector focus_point=get_focus_point();
 	synfig::Vector::value_type x=focus_point[0]/pw+drawing_area->get_width()/2-w/2;
 	synfig::Vector::value_type y=focus_point[1]/ph+drawing_area->get_height()/2-h/2;
@@ -2586,7 +2523,6 @@ WorkArea::refresh_second_check()
 	if (width==old_window_width && height==old_window_height ) {
 		queue_draw();
 		//GdkEventExpose event;
-		//refresh(&event);
 	}
 }
 #endif
@@ -2603,7 +2539,6 @@ WorkArea::refresh(const Cairo::RefPtr<Cairo::Context> &cr)
 		resize_in_progress = false;
 		width = canvas_view->get_width();
 		height = canvas_view->get_height();
-		//synfig::info("Size: %i, %i",width,height);
 		if (width!=old_window_width || height!=old_window_height ) {
 
 			resize_in_progress = true;
@@ -2635,7 +2570,6 @@ WorkArea::refresh(const Cairo::RefPtr<Cairo::Context> &cr)
 	Glib::RefPtr<Gdk::Window> draw_area_window = drawing_area->get_window();
 	if(!draw_area_window) return false;
 
-	//const synfig::RendDesc &rend_desc(get_canvas()->rend_desc());
 
 	const synfig::Vector focus_point(get_focus_point());
 
@@ -2658,13 +2592,7 @@ WorkArea::refresh(const Cairo::RefPtr<Cairo::Context> &cr)
 	// Calculate the window coordinates of the top-left
 	// corner of the canvas.
 	//const synfig::Vector::value_type
-	//	x(focus_point[0]/pw+drawing_area->get_width()/2-w/2),
-	//	y(focus_point[1]/ph+drawing_area->get_height()/2-h/2);
 
-	//const synfig::Vector::value_type window_startx(window_tl[0]);
-	//const synfig::Vector::value_type window_endx(window_br[0]);
-	//const synfig::Vector::value_type window_starty(window_tl[1]);
-	//const synfig::Vector::value_type window_endy(window_br[1]);
 
 	// If we are in animate mode, draw a red border around the screen
 	if(canvas_interface->get_mode()&synfigapp::MODE_ANIMATE)
@@ -2815,8 +2743,6 @@ studio::WorkArea::async_update_preview()
 	// we are done.
 	//studio::App::Busy busy;
 
-	//WorkAreaProgress callback(this,get_canvas_view()->get_ui_interface().get());
-	//synfig::ProgressCallback *cb=&callback;
 
 	if(!get_visible())return false;
 
@@ -2868,7 +2794,6 @@ studio::WorkArea::async_update_preview()
 	// recalculate that over again.
 	// UPDATE: This is kind of needless with
 	// the way that time is handled now in SYNFIG.
-	//target->set_avoid_time_sync(true);
 	async_renderer=new AsyncRenderer(target);
 	async_renderer->signal_finished().connect(
 		sigc::mem_fun(this,&WorkArea::async_update_finished)
@@ -2917,14 +2842,12 @@ studio::WorkArea::async_update_finished()
 		dirty=true;
 		cb->task(_("Render Failed"));
 	}
-	//get_canvas_view()->reset_cancel_status();
 	done_rendering();
 }
 
 bool
 studio::WorkArea::sync_update_preview()
 {
-	//	const Time &time(cur_time);
 
 	canceled_=false;
 	get_canvas_view()->reset_cancel_status();
@@ -2966,7 +2889,6 @@ again:
 	get_canvas_view()->reset_cancel_status();
 
 	RendDesc desc=get_canvas()->rend_desc();
-	//newdesc->set_flags(RendDesc::PX_ASPECT|RendDesc::IM_SPAN);
 
 	int w=(int)(desc.get_w()*zoom);
 	int h=(int)(desc.get_h()*zoom);
@@ -2974,7 +2896,6 @@ again:
 	// Setup the description parameters
 	desc.set_antialias(1);
 	desc.set_time(cur_time);
-	//desc.set_wh(w,h);
 
 	set_rend_desc(desc);
 
@@ -3024,7 +2945,6 @@ again:
 	}
 	else dirty=true;
 	rendering=false;
-	//get_canvas_view()->reset_cancel_status();
 	done_rendering();
 	return ret;
 }
@@ -3033,7 +2953,6 @@ void
 studio::WorkArea::async_render_preview(synfig::Time time)
 {
 	cur_time=time;
-	//tile_book.clear();
 
 	refreshes+=5;
 	if(!get_visible())return;
@@ -3054,7 +2973,6 @@ bool
 studio::WorkArea::sync_render_preview(synfig::Time time)
 {
 	cur_time=time;
-	//tile_book.clear();
 	refreshes+=5;
 	if(!get_visible())return false;
 	return sync_update_preview();
@@ -3079,7 +2997,6 @@ WorkArea::queue_scroll()
 	Glib::RefPtr<Gdk::Window> draw_area_window = drawing_area->get_window();
 	if(!draw_area_window) return;
 
-//	const synfig::RendDesc &rend_desc(get_canvas()->rend_desc());
 
 	const synfig::Point focus_point(get_focus_point());
 
@@ -3204,18 +3121,15 @@ studio::WorkArea::__render_preview(gpointer data)
 void
 studio::WorkArea::queue_render_preview()
 {
-	//synfig::info("queue_render_preview(): called for %s", get_canvas_view()->get_time().get_string().c_str());
 
 	if(queued==true)
 	{
 		return;
-		//synfig::info("queue_render_preview(): already queued, unqueuing");
 /*		if(render_idle_func_id)
 			g_source_remove(render_idle_func_id);
 		render_idle_func_id=0;
 		queued=false;
 */
-		//async_renderer=0;
 	}
 
 	if(dirty_trap_enabled)
@@ -3233,7 +3147,6 @@ studio::WorkArea::queue_render_preview()
 	if(queued==false)
 	{
 		queued=true;
-		//synfig::info("queue_render_preview(): (re)queuing...");
 		//render_idle_func_id=g_idle_add_full(G_PRIORITY_DEFAULT,__render_preview,this,NULL);
 		render_idle_func_id=g_timeout_add_full(
 			G_PRIORITY_DEFAULT,	// priority -
@@ -3242,13 +3155,7 @@ studio::WorkArea::queue_render_preview()
 			this,				// data     - data to pass to function
 			NULL);				// notify   - function to call when the idle is removed, or NULL
 	}
-/*	else if(rendering)
-	{
-		refreshes+=5;
-		dirty=true;
-		queue_draw();
-	}
-*/
+
 }
 
 DirtyTrap::DirtyTrap(WorkArea *work_area):work_area(work_area)
@@ -3294,7 +3201,6 @@ studio::WorkArea::set_cursor(Gdk::CursorType x)
 void
 studio::WorkArea::refresh_cursor()
 {
-//	set_cursor(IconController::get_tool_cursor(canvas_view->get_smach().get_state_name(),drawing_area->get_window()));
 }
 
 void
@@ -3305,7 +3211,6 @@ studio::WorkArea::reset_cursor()
 	if(!draw_area_window) return;
 
 	draw_area_window->set_cursor(Gdk::Cursor::create(Gdk::TOP_LEFT_ARROW));
-//	set_cursor(Gdk::TOP_LEFT_ARROW);
 }
 
 void
@@ -3318,14 +3223,9 @@ studio::WorkArea::set_zoom(float z)
 	zoom = z;
 
 	refresh_dimension_info();
-	/*if(async_renderer)
-	{
-		async_renderer->stop();
-		async_renderer=0;
-	}*/
+
 	refreshes+=5;
 	async_update_preview();
-	//queue_render_preview();
 	// TODO: FIXME: QuickHack
 	if (canvas_view->get_smach().get_state_name() != std::string("polygon")
 	 && canvas_view->get_smach().get_state_name() != std::string("bline"))

@@ -158,10 +158,6 @@ public:
 
 //	ValueDesc(synfig::LinkableValueNode::Handle parent_value_node,const synfig::String& param_name,const ValueDesc &parent = blank):
 //		parent_value_node(parent_value_node),
-//		index(parent_value_node->get_link_index_from_name(param_name)),
-//		parent_desc(init_parent(parent)),
-//		links_count(0)
-//	{ }
 
 	ValueDesc(synfig::ValueNode_Animated::Handle parent_value_node,synfig::Time waypoint_time,const ValueDesc &parent = blank):
 		parent_value_node(parent_value_node),
@@ -368,7 +364,6 @@ public:
 			return layer->dynamic_param_list().find(name)->second;
 		if(parent_is_linkable_value_node())
 			return (synfig::LinkableValueNode::Handle::cast_reinterpret(parent_value_node))->get_link(index);
-//			return reinterpret_cast<synfig::LinkableValueNode*>(parent_value_node.get())->get_link(index);
 		if(parent_is_value_node_const())
 			return parent_value_node;
 		if(parent_is_waypoint())

@@ -142,7 +142,6 @@ StateSketch::StateSketch():
 	Smach::state<StateSketch_Context>("sketch")
 {
 	insert(event_def(EVENT_STOP,&StateSketch_Context::event_stop_handler));
-	//insert(event_def(EVENT_REFRESH,&StateSketch_Context::event_refresh_handler));
 	insert(event_def(EVENT_REFRESH_DUCKS,&StateSketch_Context::event_refresh_handler));
 	insert(event_def(EVENT_WORKAREA_MOUSE_BUTTON_DOWN,&StateSketch_Context::event_mouse_down_handler));
 	insert(event_def(EVENT_WORKAREA_STROKE,&StateSketch_Context::event_stroke));
@@ -346,20 +345,15 @@ StateSketch_Context::StateSketch_Context(CanvasView* canvas_view):
 	get_work_area()->set_allow_duck_clicks(false);
 
 	// clear out the ducks
-	//get_work_area()->clear_ducks();
 
 	// Refresh the work area
-	//get_work_area()->queue_draw();
 
 	// Hide the tables if they are showing
 	prev_table_status=get_canvas_view()->tables_are_visible();
-	//if(prev_table_status)get_canvas_view()->hide_tables();
 
 	// Disable the time bar
-	//get_canvas_view()->set_sensitive_timebar(false);
 
 	// Connect a signal
-	//get_work_area()->signal_user_click().connect(sigc::mem_fun(*this,&studio::StateSketch_Context::on_user_click));
 
 	App::dock_toolbox->refresh();
 }
@@ -371,13 +365,11 @@ StateSketch_Context::~StateSketch_Context()
 	App::dialog_tool_options->clear();
 
 	// Enable the time bar
-	//get_canvas_view()->set_sensitive_timebar(true);
 
 	// Bring back the tables if they were out before
 	if(prev_table_status)get_canvas_view()->show_tables();
 
 	// Refresh the work area
-	//get_work_area()->queue_draw();
 
 	App::dock_toolbox->refresh();
 }
@@ -400,50 +392,7 @@ StateSketch_Context::refresh_tool_options()
 	App::ui_manager()->insert_action_group(action_group);
 	App::dialog_tool_options->set_toolbar(*dynamic_cast<Gtk::Toolbar*>(App::ui_manager()->get_widget("/toolbar-sketch")));
 
-	/*
-	App::dialog_tool_options->add_button(
-		Gtk::StockID("gtk-undo"),
-		_("Undo Last Stroke")
-	)->signal_clicked().connect(
-		sigc::mem_fun(
-			*this,
-			&studio::StateSketch_Context::undo_stroke
-		)
-	);
-	App::dialog_tool_options->add_button(
-		Gtk::StockID("gtk-clear"),
-		_("Clear Sketch")
-	)->signal_clicked().connect(
-		sigc::mem_fun(
-			*this,
-			&studio::StateSketch_Context::clear_sketch
-		)
-	);
-	App::dialog_tool_options->add_button(
-		Gtk::StockID("gtk-save"),
-		_("Save Sketch to a File")
-	)->signal_clicked().connect(
-		sigc::mem_fun(
-			*this,
-			&studio::StateSketch_Context::save_sketch
-		)
-	);
 
-	App::dialog_tool_options->add_button(
-		Gtk::StockID("gtk-open"),
-		_("Open a Sketch")
-	)->signal_clicked().connect(
-		sigc::mem_fun(
-			*this,
-			&studio::StateSketch_Context::load_sketch
-		)
-	);
-	*/
-	//button_clear_sketch.signal_clicked().connect(sigc::mem_fun(*this,&studio::StateSketch_Context::clear_sketch));
-	//button_undo_stroke.signal_clicked().connect(sigc::mem_fun(*this,&studio::StateSketch_Context::undo_stroke));
-	//button_save_sketch.signal_clicked().connect(sigc::mem_fun(*this,&studio::StateSketch_Context::save_sketch));
-	//button_load_sketch.signal_clicked().connect(sigc::mem_fun(*this,&studio::StateSketch_Context::load_sketch));
-	//checkbutton_show_sketch.signal_clicked().connect(sigc::mem_fun(*this,&studio::StateSketch_Context::toggle_show_sketch));
 }
 
 Smach::event_result
@@ -463,7 +412,6 @@ StateSketch_Context::event_yield_tool_options(const Smach::event& /*x*/)
 Smach::event_result
 StateSketch_Context::event_stop_handler(const Smach::event& /*x*/)
 {
-	//throw Smach::egress_exception();
 	throw &state_normal;
 	return Smach::RESULT_OK;
 }

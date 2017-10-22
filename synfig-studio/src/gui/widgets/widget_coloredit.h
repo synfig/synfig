@@ -180,7 +180,6 @@ public:
 	void on_hex_edited();
 	bool on_hex_focus_out(GdkEventFocus* event);
 
-	//Glib::SignalProxy0<void> signal_activate() { return spinbutton_A->signal_activate(); }
 
 	sigc::signal<void>& signal_value_changed() { return signal_value_changed_; }
 	

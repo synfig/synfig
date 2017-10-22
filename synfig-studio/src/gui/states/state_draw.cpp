@@ -368,7 +368,6 @@ public:
 
 	//void on_user_click(synfig::Point point);
 
-//	bool run();
 
 	void toggle_layer_creation();
 
@@ -496,11 +495,8 @@ StateDraw_Context::load_settings()
 		}
 
 		if(settings.get_value("draw.localize",value) && value == "1")
-			//set_local_error_flag(true);
 			set_local_threshold_flag(true);
 		else
-			//set_local_error_flag(false);
-			//set_local_threshold_flag(false);
 			set_global_threshold_flag(true);
 
 		if(settings.get_value("draw.round_ends", value) && value == "1")
@@ -915,13 +911,11 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 
 	// Hide the tables if they are showing
 	prev_table_status=get_canvas_view()->tables_are_visible();
-	//if(prev_table_status)get_canvas_view()->hide_tables();
 
 	// Disable the time bar
 	get_canvas_view()->set_sensitive_timebar(false);
 
 	// Connect a signal
-	//get_work_area()->signal_user_click().connect(sigc::mem_fun(*this,&studio::StateDraw_Context::on_user_click));
 
 	get_work_area()->set_cursor(Gdk::PENCIL);
 
@@ -1003,7 +997,6 @@ StateDraw_Context::~StateDraw_Context()
 Smach::event_result
 StateDraw_Context::event_stop_handler(const Smach::event& /*x*/)
 {
-	//throw Smach::egress_exception();
 	throw &state_normal;
 	return Smach::RESULT_OK;
 }
@@ -1040,11 +1033,9 @@ struct debugclass
 	synfig::String x;
 	debugclass(const synfig::String &x):x(x)
 	{
-//		synfig::warning(">>>>>>>>>>>>>>>>>>> "+x);
 	}
 	~debugclass()
 	{
-//		synfig::warning("<<<<<<<<<<<<<<<<<<< "+x);
 	}
 };
 
@@ -1058,7 +1049,6 @@ struct DepthCounter
 Smach::event_result
 StateDraw_Context::event_stroke(const Smach::event& x)
 {
-//	debugclass debugger("StateDraw_Context::event_stroke(const Smach::event& x)");
 
 	const EventStroke& event(*reinterpret_cast<const EventStroke*>(&x));
 
@@ -1083,7 +1073,6 @@ StateDraw_Context::event_stroke(const Smach::event& x)
 bool
 StateDraw_Context::process_queue()
 {
-//	debugclass debugger("StateDraw_Context::process_queue()");
 	if(nested)
 		return true;
 	DepthCounter depth_counter(nested);
@@ -1099,11 +1088,9 @@ StateDraw_Context::process_queue()
 Smach::event_result
 StateDraw_Context::process_stroke(StrokeData stroke_data, WidthData width_data, bool region_flag)
 {
-//	debugclass debugger("StateDraw_Context::process_stroke");
 	DepthCounter depth_counter(nested);
 
 	const float radius(
-		// synfigapp::Main::get_bline_width().units(get_canvas()->rend_desc()) +
 		get_bline_width() +
 		(abs(get_work_area()->get_pw())+ abs(get_work_area()->get_ph()))*5);
 
@@ -1123,8 +1110,6 @@ StateDraw_Context::process_stroke(StrokeData stroke_data, WidthData width_data, 
 	bool loop_bline_flag(false);
 
 	//Changed by Adrian - use resident class :)
-	//synfigapp::convert_stroke_to_bline(bline, *event.stroke_data,*event.width_data, synfigapp::Main::get_bline_width());
-	// blineconv.width = synfigapp::Main::get_bline_width().units(get_canvas()->rend_desc());
 	blineconv.width = get_bline_width();
 
 	if (get_local_threshold_flag())
@@ -1156,13 +1141,6 @@ StateDraw_Context::process_stroke(StrokeData stroke_data, WidthData width_data, 
 			iter->set_position(hom_to_std(ValueBase::List(bline.begin(), bline.end()), iter->get_position(), false, false));
 	}
 	// print out resutls
-	//synfig::info("-----------widths");
-	//std::list<synfig::WidthPoint>::iterator iter;
-	//for(iter=wplist.begin();iter!=wplist.end();iter++)
-	//{
-		//if(!iter->get_dash())
-			//synfig::info("Widthpoint W=%f, P=%f", iter->get_width(), iter->get_position());
-	//}
 	// results end
 
 	//Postprocess to require minimum pressure
@@ -1487,9 +1465,6 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,std::list<synfi
 		{
 			/* it's no big deal, is it?  let's keep the shape anyway */
 			// get_canvas_view()->get_ui_interface()->error(_("Unable to add value node"));
-			// group.cancel();
-			// increment_id();
-			// return Smach::RESULT_ERROR;
 		}
 
 	last_stroke=value_node;
@@ -1523,7 +1498,6 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,std::list<synfi
 		else
 			get_canvas_interface()->get_selection_manager()->clear_selected_layers();
 
-		//int number(synfig::UniqueID().get_uid());
 
 		synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
 
@@ -1633,7 +1607,6 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,std::list<synfi
 		if(get_layer_outline_flag()) assert(layer);
 		if(get_layer_advanced_outline_flag()) assert(layer2);
 		//layer->set_description(strprintf("Stroke %d",number));
-		//get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
 
 		if (shift_origin)
 		{
@@ -1660,7 +1633,6 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,std::list<synfi
 				get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
 				group.cancel();
 				increment_id();
-				//refresh_ducks();
 				return Smach::RESULT_ERROR;
 			}
 			layer_list.push_back(layer);
@@ -1683,7 +1655,6 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,std::list<synfi
 				get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
 				group.cancel();
 				increment_id();
-				//refresh_ducks();
 				return Smach::RESULT_ERROR;
 			}
 			synfigapp::Action::Handle action3(synfigapp::Action::create("LayerParamConnect"));
@@ -1700,7 +1671,6 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,std::list<synfi
 				get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
 				group.cancel();
 				increment_id();
-				//refresh_ducks();
 				return Smach::RESULT_ERROR;
 			}
 			layer_list.push_back(layer2);
@@ -1733,16 +1703,12 @@ debug_show_vertex_list(int iteration, std::list<synfigapp::ValueDesc>& vertex_li
 			if(value_desc.parent_is_linkable_value_node())
 			{
 				index = value_desc.get_index();
-				// printf("<%d>", index);
 				if (last == synfig::LinkableValueNode::Handle::cast_reinterpret(value_desc.get_parent_value_node()))
 				{
-					// printf("\n%s:%d\n", __FILE__, __LINE__);
 					if (start != -1)
 					{
-						// printf("\n%s:%d\n", __FILE__, __LINE__);
 						if (c == current)
 						{
-							// printf("\n%s:%d\n", __FILE__, __LINE__);
 							if (dir)
 							{
 								if (started) printf(", "); else started = true;
@@ -1758,16 +1724,13 @@ debug_show_vertex_list(int iteration, std::list<synfigapp::ValueDesc>& vertex_li
 						}
 						else if (dir == 0)
 						{
-							// printf("\n%s:%d\n", __FILE__, __LINE__);
 							if (index == start + 1)
 							{
-								// printf("\n%s:%d\n", __FILE__, __LINE__);
 								dir = 1;
 								prev = index;
 							}
 							else if (index == start - 1)
 							{
-								// printf("\n%s:%d\n", __FILE__, __LINE__);
 								dir = -1;
 								prev = index;
 							}
@@ -1780,25 +1743,21 @@ debug_show_vertex_list(int iteration, std::list<synfigapp::ValueDesc>& vertex_li
 						}
 						else if (index == prev + dir)
 						{
-							// printf("\n%s:%d\n", __FILE__, __LINE__);
 							prev = index;
 						}
 						else
 						{
-							// printf("\n%s:%d\n", __FILE__, __LINE__);
 							if (started) printf(", "); else started = true;
 							if (prev != start)
 								printf("%d--%d", start, prev);
 							else
 								printf("%d", start);
-							// printf("\n%s:%d\n", __FILE__, __LINE__);
 							start = index;
 							dir = 0;
 						}
 					}
 					else
 					{
-						// printf("\n%s:%d\n", __FILE__, __LINE__);
 						if (c == current)
 						{
 							if (started) printf(", "); else started = true;
@@ -1806,7 +1765,6 @@ debug_show_vertex_list(int iteration, std::list<synfigapp::ValueDesc>& vertex_li
 						}
 						else
 						{
-							// printf("\n%s:%d\n", __FILE__, __LINE__);
 							start = index;
 							dir = 0;
 						}
@@ -1814,10 +1772,8 @@ debug_show_vertex_list(int iteration, std::list<synfigapp::ValueDesc>& vertex_li
 				}
 				else
 				{
-					// printf("\n%s:%d\n", __FILE__, __LINE__);
 					if (last)
 					{
-						// printf("\n%s:%d\n", __FILE__, __LINE__);
 						if (start != -1)
 						{
 							if (started) printf(", "); else started = true;
@@ -1826,14 +1782,11 @@ debug_show_vertex_list(int iteration, std::list<synfigapp::ValueDesc>& vertex_li
 							else
 								printf("%d", start);
 						}
-						// printf("\n%s:%d\n", __FILE__, __LINE__);
 						printf(") ");
 					}
-					// printf("\n%s:%d\n", __FILE__, __LINE__);
 					last = synfig::LinkableValueNode::Handle::cast_reinterpret(value_desc.get_parent_value_node());
 					printf("%d:(", synfig::LinkableValueNode::Handle::cast_reinterpret(value_desc.get_parent_value_node())->link_count());
 					started = false;
-					// printf("\n%s:%d\n", __FILE__, __LINE__);
 					if (c == current)
 					{
 						start = -1;
@@ -1841,13 +1794,10 @@ debug_show_vertex_list(int iteration, std::list<synfigapp::ValueDesc>& vertex_li
 					}
 					else
 					{
-						// printf("\n%s:%d\n", __FILE__, __LINE__);
 						start = index;
 						dir = 0;
 					}
-					// printf("\n%s:%d\n", __FILE__, __LINE__);
 				}
-				// printf("\n%s:%d\n", __FILE__, __LINE__);
 			}
 			else if (last)
 				if (last) printf("?!) ");
@@ -1913,7 +1863,6 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 
 			if (value_desc.get_value_type() == synfig::type_bline_point)
 			{
-				//if(vertex_list.empty() || value_desc!=vertex_list.back())
 				vertex_list.push_back(value_desc);
 				assert(vertex_list.back().is_valid());
 			}
@@ -2037,7 +1986,6 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 				iter++;
 			}
 
-			// printf("min %d and max %d\n", min_index, max_index);
 			whole = max_index - min_index >= points_in_line;
 			min_index = (min_index % points_in_line + points_in_line) % points_in_line;
 			max_index = (max_index % points_in_line + points_in_line) % points_in_line;
@@ -2052,7 +2000,6 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 			{
 				if (whole)
 				{
-					// printf("whole (down) (%d) ", min_index);
 					for (int i = min_index; i >= 0; i--)
 					{
 						// printf("%d ", i);
@@ -2066,7 +2013,6 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 				}
 				else
 				{
-					// printf("part (down) (%d -> %d) ", max_index, min_index);
 					for (int i = max_index; i != min_index; i--)
 					{
 						if (i == -1) i = points_in_line - 1;
@@ -2080,7 +2026,6 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 			{
 				if (whole)
 				{
-					// printf("whole (%d) ", min_index);
 					for (int i = min_index; i < points_in_line; i++)
 					{
 						// printf("%d ", i);
@@ -2094,7 +2039,6 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 				}
 				else
 				{
-					// printf("part (%d -> %d) ", min_index, max_index);
 					for (int i = min_index; i != max_index; i++)
 					{
 						if (i == points_in_line) i = 0;
@@ -2104,10 +2048,8 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 					vertex_list.insert(start, synfigapp::ValueDesc(linkable_parent, max_index));
 				}
 			}
-			// printf("\n");
 			// debug_show_vertex_list(0, vertex_list, "after insert", -1);
 			vertex_list.erase(start, iter);
-			// debug_show_vertex_list(0, vertex_list, "after delete", -1);
 		}
 
 		debug_show_vertex_list(0, vertex_list, "continuous vertices", -1);
@@ -2142,10 +2084,6 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 				assert(value_next.is_valid());
 				assert(value_prev.is_valid());
 
-				// synfig::info("-------");
-				// synfig::info(__FILE__":%d: value_prev 0x%08X:%d",__LINE__,value_prev.get_parent_value_node().get(),value_prev.get_index());
-				// synfig::info(__FILE__":%d: value_desc 0x%08X:%d",__LINE__,value_desc.get_parent_value_node().get(),value_desc.get_index());
-				// synfig::info(__FILE__":%d: value_next 0x%08X:%d",__LINE__,value_next.get_parent_value_node().get(),value_next.get_index());
 
 				/*
 				  if(value_prev.parent_is_value_node() && value_desc.parent_is_value_node() && value_next.parent_is_value_node())
@@ -2167,22 +2105,12 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 				// //    current is the same as next, remove current
 				// if(value_prev.get_value_node()==value_desc.get_value_node() ||
 				//    value_desc.get_value_node()==value_next.get_value_node())
-				// {
-				//	vertex_list.erase(iter);
 				//	done=false;
 				//	printf("erased node - i = %d\n", i);
-				//	break;
-				// }
 
 				// // if previous is the same as next, remove previous?  or next?
-				// if(value_prev.get_value_node()==value_next.get_value_node())
-				// {
-				// 	vertex_list.erase(next);
-				// 	// vertex_list.erase(prev);
 				// 	done=false;
 				// 	printf("erased node - i = %d\n", i);
-				// 	break;
-				// }
 
 				// if 'this' and 'next' both have parents
 				if (value_desc.parent_is_value_node() && value_next.parent_is_value_node())
@@ -2190,46 +2118,24 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 					// if they are both on the same bline - this has been handled by new code above
 					if (value_desc.get_parent_value_node() == value_next.get_parent_value_node())
 					{
-						// // if (next != vertex_list.end())
-						// {
 						// 	printf("parent loop is %d and node loop is ??\n",
-						// 		   (*(value_desc.get_parent_value_node()))(get_time()).get_loop()
-						// 		   // value_desc.get_value_node().get_loop(),
-						// 		);
 						//
 						// 	// Fill in missing vertices
 						// 	// \todo take loops into account: seeing (15, 2, 3, 4) probably means that (0, 1) is missing, not 14 through 3
-						// 	if(value_desc.get_index()<value_next.get_index()-1)
-						// 	{
 						// 		debug_show_vertex_list(i, vertex_list,
 						// 							   strprintf("same parent, different points this %d < next-1 %d",
-						// 										 value_desc.get_index(), ((value_next.get_index()-1))),
 						// 							   current);
-						// 		for (int index = value_desc.get_index()+1; index < value_next.get_index(); index++)
-						// 		{
 						// 			printf("inserting up %d\n", index);
 						// 			vertex_list.insert(next, synfigapp::ValueDesc(value_desc.get_parent_value_node(), index));
-						// 		}
 						// 		debug_show_vertex_list(i, vertex_list, "new list", current);
 						// 		done=false;
-						// 		break;
-						// 	}
-						// 	if(value_next.get_index()<value_desc.get_index()-1)
-						// 	{
 						// 		debug_show_vertex_list(i, vertex_list,
 						// 							   strprintf("same parent, different points next %d < this-1 %d",
-						// 										 value_next.get_index(), ((value_desc.get_index()-1))),
 						// 							   current);
-						// 		for (int index = value_desc.get_index()-1; index > value_next.get_index(); index--)
-						// 		{
 						// 			printf("inserting down %d\n", index);
 						// 			vertex_list.insert(next, synfigapp::ValueDesc(value_desc.get_parent_value_node(), index));
-						// 		}
 						// 		debug_show_vertex_list(i, vertex_list, "new list", current);
 						// 		done=false;
-						// 		break;
-						// 	}
-						// }
 					}
 					// 'this' and 'next' have different parents
 					else
@@ -2247,9 +2153,6 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 							BLinePoint vertex(value_desc.get_value(get_time()).get(BLinePoint()));
 							BLinePoint vertex_next(value_next.get_value(get_time()).get(BLinePoint()));
 
-							//synfig::info("--------");
-							//synfig::info(__FILE__":%d: vertex: [%f, %f]",__LINE__,vertex.get_vertex()[0],vertex.get_vertex()[1]);
-							//synfig::info(__FILE__":%d: vertex_next: [%f, %f]",__LINE__,vertex_next.get_vertex()[0],vertex_next.get_vertex()[1]);
 
 							// if this vertex is close to the next one, replace this vertex with a new one
 							// and erase the next one
@@ -2274,7 +2177,6 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 								value_node->set_link("t2",value_node_next->get_link("t2"));
 								value_node->set_link("split",ValueNode_Const::create(true));
 
-								// get_canvas_interface()->auto_export(value_node);
 								printf("exporting\n");
 								get_canvas_interface()->add_value_node(value_node,value_node->get_id() + strprintf("foo %d", rand()));
 
@@ -2359,7 +2261,6 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 			get_canvas_interface()->auto_export(*iter);
 
 			value_node_bline->add(iter->get_value_node());
-			//value_node_bline->add(ValueNode_BLine::ListEntry(iter->get_value_node()));
 		}
 
 		value_node_bline->set_loop(true);
@@ -2427,19 +2328,7 @@ void
 StateDraw_Context::refresh_ducks()
 {
 	get_canvas_view()->queue_rebuild_ducks();
-/*
-	get_work_area()->clear_ducks();
 
-
-	std::list< etl::smart_ptr<std::list<synfig::Point> > >::iterator iter;
-
-	for(iter=stroke_list.begin();iter!=stroke_list.end();++iter)
-	{
-		get_work_area()->add_stroke(*iter);
-	}
-
-	get_work_area()->queue_draw();
-*/
 }
 
 
@@ -2818,7 +2707,6 @@ StateDraw_Context::extend_bline_from_end(ValueNode_BLine::Handle value_node,std:
 		{
 			get_canvas_view()->get_ui_interface()->error(_("Unable to insert item"));
 			group.cancel();
-			//refresh_ducks();
 			return Smach::RESULT_ERROR;
 		}
 	}

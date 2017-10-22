@@ -104,7 +104,6 @@ public:
 class RootFinder
 {
 	std::vector< std::complex<float> >	workcoefs;
-	//int	its;
 
 public:
 	std::vector< std::complex<float> >	coefs; //the number of coefficients determines the degree of polynomial

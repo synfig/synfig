@@ -143,7 +143,6 @@ Action::ActivepointSet::perform()
 	typedef ValueNode_DynamicList::ListEntry::ActivepointList AList;
 	AList::iterator iter;
 
-#if 1
 	vector<AList::iterator>	iters;
 	vector<Activepoint>::iterator i = activepoints.begin(), end = activepoints.end();
 
@@ -206,36 +205,6 @@ Action::ActivepointSet::perform()
 		}
 	}
 
-#else
-	try { iter=value_node->list[index].find(activepoint); }
-	catch(synfig::Exception::NotFound)
-	{
-		throw Error(_("Unable to find activepoint"));
-	}
-
-	//find the value at the old time before we replace it
-	ValueNode_DynamicList::ListEntry::findresult timeiter;
-	timeiter = value_node->list[index].find_time(activepoint.get_time());
-
-	//we only want to track overwrites (not inplace modifications)
-	if(timeiter.second && activepoint.get_uid() == timeiter.first->get_uid())
-	{
-		timeiter.second = false;
-	}
-
-	old_activepoint=*iter;
-	*iter=activepoint;
-
-	if(timeiter.second)
-	{
-		synfig::info("Erasing the found activepoint");
-		time_overwrite = true;
-		overwritten_ap = *timeiter.first;
-
-		value_node->list[index].erase(overwritten_ap);
-	}
-
-#endif
 
 	value_node->list[index].timing_info.sort();
 
@@ -248,7 +217,6 @@ Action::ActivepointSet::undo()
 {
 	ValueNode_DynamicList::ListEntry::ActivepointList::iterator iter;
 
-#if 1
 	vector<Activepoint>::iterator i = old_activepoints.begin(), end = old_activepoints.end();
 
 	for(; i != end; ++i)
@@ -273,20 +241,6 @@ Action::ActivepointSet::undo()
 		}
 	}
 
-#else
-	try { iter=value_node->list[index].find(activepoint); }
-	catch(synfig::Exception::NotFound)
-	{
-		throw Error(_("Unable to find activepoint"));
-	}
-
-	*iter=old_activepoint;
-
-	if(time_overwrite)
-	{
-		value_node->list[index].add(overwritten_ap);
-	}
-#endif
 
 	value_node->list[index].timing_info.sort();
 

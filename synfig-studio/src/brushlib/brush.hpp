@@ -256,7 +256,6 @@ private:
       g_print("press=% 4.3f, speed1=% 4.4f\tspeed2=% 4.4f\tstroke=% 4.3f\tcustom=% 4.3f\n", (double)inputs[INPUT_PRESSURE], (double)inputs[INPUT_SPEED1], (double)inputs[INPUT_SPEED2], (double)inputs[INPUT_STROKE], (double)inputs[INPUT_CUSTOM]);
     }
     // FIXME: this one fails!!!
-    //assert(inputs[INPUT_SPEED1] >= 0.0 && inputs[INPUT_SPEED1] < 1e8); // checking for inf
 
     for (int i=0; i<BRUSH_SETTINGS_COUNT; i++) {
       settings_value[i] = settings[i]->calculate (inputs);
@@ -381,7 +380,6 @@ private:
 
       // see doc/brushdab_saturation.png
       //      beta = beta_dab^dabs_per_pixel
-      // <==> beta_dab = beta^(1/dabs_per_pixel)
       alpha = opaque;
       beta = 1.0-alpha;
       beta_dab = powf(beta, 1.0/dabs_per_pixel);
@@ -531,7 +529,6 @@ private:
       // Equation 1: (new fadeout must be equal to min_fadeout)
       //   min_fadeout_in_pixels = radius_new*(1.0 - hardness_new)
       // Equation 2: (optical radius must remain unchanged)
-      //   current_optical_radius = radius_new - (1.0-hardness_new)*radius_new/2.0
       //
       // Solved Equation 1 for hardness_new, using Equation 2: (thanks to mathomatic)
       float hardness_new = ((current_optical_radius - (min_fadeout_in_pixels/2.0))/(current_optical_radius + (min_fadeout_in_pixels/2.0)));
@@ -566,8 +563,6 @@ private:
     float base_radius = expf(settings[BRUSH_RADIUS_LOGARITHMIC]->base_value);
     if (base_radius < ACTUAL_RADIUS_MIN) base_radius = ACTUAL_RADIUS_MIN;
     if (base_radius > ACTUAL_RADIUS_MAX) base_radius = ACTUAL_RADIUS_MAX;
-    //if (base_radius < 0.5) base_radius = 0.5;
-    //if (base_radius > 500.0) base_radius = 500.0;
 
     xx = x - states[STATE_X];
     yy = y - states[STATE_Y];
@@ -603,7 +598,6 @@ public:
   // returns true if the stroke is finished or empty
   bool stroke_to (Surface * surface, float x, float y, float pressure, float xtilt, float ytilt, double dtime)
   {
-    //printf("%f %f %f %f\n", (double)dtime, (double)x, (double)y, (double)pressure);
 
     float tilt_ascension = 0.0;
     float tilt_declination = 90.0;
@@ -629,13 +623,11 @@ public:
       assert(std::isfinite(tilt_declination));
     }
 
-    // printf("xtilt %f, ytilt %f\n", (double)xtilt, (double)ytilt);
     // printf("ascension %f, declination %f\n", (double)tilt_ascension, (double)tilt_declination);
       
     pressure = CLAMP(pressure, 0.0, 1.0);
     if (!std::isfinite(x) || !std::isfinite(y) ||
         (x > 1e10 || y > 1e10 || x < -1e10 || y < -1e10)) {
-      // workaround attempt for https://gna.org/bugs/?14372
       g_print("Warning: ignoring brush::stroke_to with insane inputs (x = %f, y = %f)\n", (double)x, (double)y);
       x = 0.0;
       y = 0.0;
@@ -678,7 +670,6 @@ public:
     float dist_moved = states[STATE_DIST];
     float dist_todo = count_dabs_to (x, y, pressure, dtime);
 
-    //if (dtime > 5 || dist_todo > 300) {
     if (dtime > 5 || reset_requested) {
       reset_requested = false;
 
@@ -713,7 +704,6 @@ public:
       return true;
     }
 
-    //g_print("dist = %f\n", states[STATE_DIST]);
     enum { UNKNOWN, YES, NO } painted = UNKNOWN;
     double dtime_left = dtime;
 
@@ -772,7 +762,6 @@ public:
 
     // save the fraction of a dab that is already done now
     states[STATE_DIST] = dist_moved + dist_todo;
-    //g_print("dist_final = %f\n", states[STATE_DIST]);
 
     // next seed for the RNG (GRand has no get_state() and states[] must always contain our full state)
     states[STATE_RNG_SEED] = g_rand_int(rng);
@@ -790,7 +779,6 @@ public:
       }
     }
     if (painted == YES) {
-      //if (stroke_current_idling_time > 0) g_print ("idling ==> painting\n");
       stroke_total_painting_time += dtime;
       stroke_current_idling_time = 0;
       // force a stroke split after some time
@@ -803,7 +791,6 @@ public:
         }
       }
     } else if (painted == NO) {
-      //if (stroke_current_idling_time == 0) g_print ("painting ==> idling\n");
       stroke_current_idling_time += dtime;
       if (stroke_total_painting_time == 0) {
         // not yet painted, start a new stroke if we have accumulated a lot of irrelevant motion events

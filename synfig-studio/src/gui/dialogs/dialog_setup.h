@@ -164,15 +164,7 @@ class Dialog_Setup : public Dialog_Template
 		CHANGE_AUTOBACKUP			=	(1 <<  1),	//    2
 		CHANGE_UI_HANDLE_TOOLTIP					=	(1 <<  2),	//    4
 		CHANGE_WIDTH					=	(1 <<  3),	//    8
-		CHANGE_ANGLE					=	(1 <<  4),	//   16
-		CHANGE_VERTEX					=	(1 <<  5),	//   32
-		CHANGE_BONE_RECURSIVE			=	(1 <<  6),	//   64
-		CHANGE_BRUSH_PATH				=	(1 <<  7),	//  128
-		CHANGE_SCALE					=	(1 <<  8),	//  256
-		CHANGE_SCALE_X				=	(1 <<  9),	//  512
-		CHANGE_SCALE_Y				=	(1 << 10),	// 1024
-		CHANGE_SKEW					=	(1 << 11),	// 2048
-
+		CHANGE_ANGLE					=	(1 <<  4),		CHANGE_VERTEX					=	(1 <<  5),		CHANGE_BONE_RECURSIVE			=	(1 <<  6),		CHANGE_BRUSH_PATH				=	(1 <<  7),		CHANGE_SCALE					=	(1 <<  8),		CHANGE_SCALE_X				=	(1 <<  9),		CHANGE_SCALE_Y				=	(1 << 10),		CHANGE_SKEW					=	(1 << 11),
 		CHANGE_ALL					=	(~0)
 	};
 

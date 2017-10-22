@@ -96,15 +96,7 @@ public:
 		TYPE_TANGENT				=	(1 <<  1),	//    2
 		TYPE_RADIUS					=	(1 <<  2),	//    4
 		TYPE_WIDTH					=	(1 <<  3),	//    8
-		TYPE_ANGLE					=	(1 <<  4),	//   16
-		TYPE_VERTEX					=	(1 <<  5),	//   32
-		TYPE_BONE_RECURSIVE			=	(1 <<  6),	//   64
-		TYPE_WIDTHPOINT_POSITION	=	(1 <<  7),	//  128
-		TYPE_SCALE					=	(1 <<  8),	//  256
-		TYPE_SCALE_X				=	(1 <<  9),	//  512
-		TYPE_SCALE_Y				=	(1 << 10),	// 1024
-		TYPE_SKEW					=	(1 << 11),	// 2048
-
+		TYPE_ANGLE					=	(1 <<  4),		TYPE_VERTEX					=	(1 <<  5),		TYPE_BONE_RECURSIVE			=	(1 <<  6),		TYPE_WIDTHPOINT_POSITION	=	(1 <<  7),		TYPE_SCALE					=	(1 <<  8),		TYPE_SCALE_X				=	(1 <<  9),		TYPE_SCALE_Y				=	(1 << 10),		TYPE_SKEW					=	(1 << 11),
 		TYPE_ALL					=	(~0),
 
 		TYPE_DEFAULT				=	0xdefadefa
@@ -117,11 +109,7 @@ public:
 		STRUCT_TRANSFORMATION		=	(1 <<  1),	//    2
 		STRUCT_WIDTHPOINT			=	(1 <<  2),	//    4
 		STRUCT_BONE					=	(1 <<  3),	//    8
-		STRUCT_GRADIENT				=	(1 <<  4),	//   16
-		STRUCT_TEXT					=	(1 <<  5),	//   32
-		STRUCT_RADIUS				=	(1 <<  6),	//   64
-		STRUCT_TRANSFO_BY_VALUE		=	(1 <<  7),	//  128
-
+		STRUCT_GRADIENT				=	(1 <<  4),		STRUCT_TEXT					=	(1 <<  5),		STRUCT_RADIUS				=	(1 <<  6),		STRUCT_TRANSFO_BY_VALUE		=	(1 <<  7),
 		STRUCT_ALL					=	(~0),
 
 		STRUCT_DEFAULT				=	0x44 //STRUCT_RADIUS+STRUCT_WIDTHPOINT

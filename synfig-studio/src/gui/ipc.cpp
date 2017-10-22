@@ -193,7 +193,6 @@ IPC::IPC()
 		if(fd<0)
 		{
 			synfig::error("IPC(): Failed to open fifo \"%s\". (errno=?)",fifo_path().c_str());
-			//synfig::error("IPC(): Failed to open fifo \"%s\". (errno=%d)",fifo_path().c_str(),::errno);
 		}
 		else
 		{
@@ -211,13 +210,9 @@ IPC::IPC()
 
 IPC::~IPC()
 {
-	//if(file)
-	//	fclose(file.get());
 
 	remove(fifo_path().c_str());
 
-	//if(fd>=0)
-	//	close(fd);
 }
 
 synfig::String
@@ -287,8 +282,7 @@ IPC::process_command(const synfig::String& command_line)
 			App::signal_present_all()();
 			App::new_instance();
 			break;
-		case 'O': // Open <arg>
-			App::signal_present_all()();
+		case 'O':			App::signal_present_all()();
 			App::open(args);
 			break;
 		case 'X': // Quit
@@ -345,7 +339,6 @@ IPC::make_connection()
 		ret=SmartFILE(fdopen(fd,"w"));
 
 #ifdef _DEBUG
-	// synfig::info("uplink fd=%d",fd);
 #endif
 
 	return ret;

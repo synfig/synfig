@@ -206,15 +206,10 @@ private:
 
 public:
 
-	// void on_raise_pressed();
 
-	// void on_lower_pressed();
 
-	// void on_duplicate_pressed();
 
-	// void on_encapsulate_pressed();
 
-	// void on_delete_pressed();
 
 	/*
  -- ** -- P U B L I C   M E T H O D S -----------------------------------------
@@ -222,8 +217,6 @@ public:
 
 public:
 
-	//Gtk::TreeView* get_param_tree_view() { return param_tree_view_; }
-	//Gtk::TreeView& param_tree_view() { return *param_tree_view_; }
 	Gtk::HBox& get_hbox() { return *hbox; }
 
 	Gtk::TreeView& get_layer_tree_view() { return *layer_tree_view_; }

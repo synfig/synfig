@@ -124,7 +124,6 @@ Action::ValueNodeConstSet::is_ready()const
 void
 Action::ValueNodeConstSet::perform()
 {
-	//set_dirty(true);
 
 	old_value=value_node->get_value();
 
@@ -134,22 +133,15 @@ Action::ValueNodeConstSet::perform()
 	value_node->set_value(new_value);
 
 	// Signal that a layer has been inserted
-	/*if(get_canvas_interface())
-	{
-		get_canvas_interface()->signal_value_node_changed()(value_node);
-	}*/
+
 }
 
 void
 Action::ValueNodeConstSet::undo()
 {
-	//set_dirty(true);
 
 	value_node->set_value(old_value);
 
 	// Signal that a layer has been inserted
-	/*if(get_canvas_interface())
-	{
-		get_canvas_interface()->signal_value_node_changed()(value_node);
-	}*/
+
 }

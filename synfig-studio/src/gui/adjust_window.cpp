@@ -88,7 +88,6 @@ void Adjust_Window::set_child_adjustment(const Glib::RefPtr<Gtk::Adjustment> &ch
 
 	adj_child = child;
 
-	// synfig::info("Adjust: connecting to child signals");
 
 	if(child)
 	{
@@ -122,7 +121,6 @@ double Adjust_Window::get_sub_upper() const
 	return get_value() + get_page_size();
 }
 
-//---- REFRESH FUNCTIONS -----
 void Adjust_Window::update_child()
 {
 	if(adj_child)

@@ -166,8 +166,6 @@ Action::LayerSetExcludeFromRendering::perform()
 	// If the subcanvas isn't the same as the canvas,
 	// then it had better be an inline canvas. If not,
 	// bail
-	//if(get_canvas()!=subcanvas && !subcanvas->is_inline())
-	//if(get_canvas()->get_root()!=subcanvas->get_root())
 	//	throw Error(_("This layer doesn't belong to this composition"));
 
 	old_state=layer->get_exclude_from_rendering();

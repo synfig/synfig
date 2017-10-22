@@ -190,7 +190,6 @@ StateSmoothMove_Context::save_settings()
 StateSmoothMove_Context::StateSmoothMove_Context(CanvasView* canvas_view):
 	canvas_view_(canvas_view),
 	is_working(*canvas_view),
-//	duckmatic_push(get_work_area()),
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
 	duck_dragger_(new DuckDrag_SmoothMove()),
 	adj_radius(Gtk::Adjustment::create(1,0,100000,0.01,0.1)),
@@ -207,7 +206,6 @@ StateSmoothMove_Context::StateSmoothMove_Context(CanvasView* canvas_view):
 
 	options_table.show_all();
 	refresh_tool_options();
-	//App::dialog_tool_options->set_widget(options_table);
 	App::dialog_tool_options->present();
 
 	get_work_area()->set_allow_layer_clicks(true);
@@ -216,7 +214,6 @@ StateSmoothMove_Context::StateSmoothMove_Context(CanvasView* canvas_view):
 	App::dock_toolbox->refresh();
 
 	get_work_area()->set_cursor(Gdk::FLEUR);
-	//get_work_area()->reset_cursor();
 
 	load_settings();
 }
@@ -334,13 +331,11 @@ DuckDrag_SmoothMove::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vecto
 	duckmatic->update_ducks();
 
 	last_translate_=vect;
-	//snap=Vector(0,0);
 }
 
 bool
 DuckDrag_SmoothMove::end_duck_drag(Duckmatic* duckmatic)
 {
-	//synfig::info("end_duck_drag(): Diff= %f",last_translate_.mag());
 	if(last_translate_.mag()>0.0001)
 	{
 		const DuckList selected_ducks(duckmatic->get_selected_ducks());
@@ -394,8 +389,6 @@ DuckDrag_SmoothMove::end_duck_drag(Duckmatic* duckmatic)
 					}
 				}
 		}
-		//duckmatic->get_selected_ducks()=new_set;
-		//duckmatic->refresh_selected_ducks();
 		return true;
 	}
 	else

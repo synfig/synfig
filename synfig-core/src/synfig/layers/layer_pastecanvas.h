@@ -59,7 +59,6 @@ private:
 	ValueBase param_origin;
 	//! Parameter: (Transfromation) Position, rotation and scale of the paste canvas layer
 	ValueBase param_transformation;
-	//! Parameter: (etl::loose_handle<synfig::Canvas>) The canvas parameter
 	etl::loose_handle<synfig::Canvas> canvas;
 	//! Parameter: (Real) Time dilation of the paste canvas layer
 	ValueBase param_time_dilation;

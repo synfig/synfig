@@ -44,7 +44,6 @@ class LayerTree;
 class LayerActionManager
 {
 	Glib::RefPtr<Gtk::UIManager> ui_manager_;
-	//Glib::RefPtr<Gtk::TreeSelection> tree_selection_;
 	LayerTree* layer_tree_;
 	etl::handle<synfigapp::CanvasInterface> canvas_interface_;
 

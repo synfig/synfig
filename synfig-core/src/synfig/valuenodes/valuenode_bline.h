@@ -95,7 +95,6 @@ protected:
 	LinkableValueNode* create_new()const;
 
 public:
-	//using synfig::LinkableValueNode::set_link_vfunc;
 	static bool check_type(Type &type);
 	static ValueNode_BLine* create(const ValueBase &x=type_list, etl::loose_handle<Canvas> canvas = 0);
 

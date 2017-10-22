@@ -135,11 +135,7 @@ Action::ValueNodeStaticListRemove::perform()
 
 	// Signal that a layer has been inserted
 	value_node->changed();
-/*_if(get_canvas_interface())
-	{
-		get_canvas_interface()->signal_value_node_changed()(value_node);
-	}
-	else synfig::warning("CanvasInterface not set on action");*/
+
 }
 
 void
@@ -149,9 +145,5 @@ Action::ValueNodeStaticListRemove::undo()
 
 	// Signal that a layer has been inserted
 	value_node->changed();
-/*_if(get_canvas_interface())
-	{
-		get_canvas_interface()->signal_value_node_changed()(value_node);
-	}
-	else synfig::warning("CanvasInterface not set on action");*/
+
 }

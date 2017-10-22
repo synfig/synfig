@@ -49,9 +49,7 @@ class Layer_SkeletonDeformation : public Layer_MeshTransform
 private:
 	//! Parameter: (list) Bones
 	ValueBase param_bones;
-	//! Parameter: (Point)
 	synfig::ValueBase param_point1;
-	//! Parameter: (Point)
 	synfig::ValueBase param_point2;
 	//! Parameter: (Integer)
 	synfig::ValueBase param_x_subdivisions;

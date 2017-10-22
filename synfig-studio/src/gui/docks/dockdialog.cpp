@@ -101,7 +101,6 @@ DockDialog::DockDialog():
 		set_transient_for(*App::main_window);
 
 	// Set up the window
-	//set_type_hint(Gdk::WINDOW_TYPE_HINT_UTILITY);
 	set_title(_("Dock Panel"));
 
 	// Register with the dock manager
@@ -159,7 +158,6 @@ DockDialog::close()
 		synfig::info("DockDialog::close(): Deleted");
 
 	empty_sig.disconnect();
-	//get_dock_book().clear();
 	delete this;
 	return true;
 }

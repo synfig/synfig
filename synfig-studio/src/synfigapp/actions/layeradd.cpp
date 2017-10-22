@@ -126,7 +126,6 @@ Action::LayerAdd::perform()
 	get_canvas()->push_front(layer);
 
 	// Mark ourselves as dirty if necessary
-	//set_dirty(layer->active());
 
 	if (etl::handle<Layer_PasteCanvas>::cast_dynamic(layer)
 	 && layer->dynamic_param_list().count("transformation") == 0)
@@ -157,7 +156,6 @@ Action::LayerAdd::undo()
 	get_canvas()->erase(iter);
 
 	// Mark ourselves as dirty if necessary
-	//set_dirty(layer->active());
 
 	// Signal that a layer has been inserted
 	if(get_canvas_interface())

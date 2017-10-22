@@ -70,7 +70,6 @@ public:
 	virtual String get_name()const;
 	virtual String get_local_name()const;
 
-//	static bool check_type(Type &type);
 
 	LinkableValueNode* create_new()const;
 

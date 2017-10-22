@@ -140,7 +140,6 @@ StateZoom_Context::~StateZoom_Context()
 Smach::event_result
 StateZoom_Context::event_stop_handler(const Smach::event& /*x*/)
 {
-	//throw Smach::egress_exception();
 	throw &state_normal;
 	return Smach::RESULT_OK;
 }
@@ -219,13 +218,11 @@ StateZoom_Context::event_mouse_click_handler(const Smach::event& x)
 			if(event.modifier & Gdk::CONTROL_MASK) //zoom out...
 			{
 				v*=ZOOMFACTOR;
-				//get_work_area()->zoom_out();
 				get_work_area()->set_focus_point(evpos + v);
 				get_work_area()->set_zoom(get_work_area()->get_zoom()/ZOOMFACTOR);
 			}else //zoom in
 			{
 				v/=ZOOMFACTOR;
-				//get_work_area()->zoom_in();
 				get_work_area()->set_focus_point(evpos + v);
 				get_work_area()->set_zoom(get_work_area()->get_zoom()*ZOOMFACTOR);
 			}

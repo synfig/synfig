@@ -135,23 +135,7 @@ Dock_Curves::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
 void
 Dock_Curves::refresh_selected_param()
 {
-/*	Gtk::TreeView* tree_view(
-		static_cast<Gtk::TreeView*>(get_canvas_view()->get_ext_widget(get_name()))
-	);
-	Gtk::TreeModel::iterator iter(tree_view->get_selection()->get_selected());
 
-	if(iter)
-	{
-		LayerParamTreeStore::Model model;
-		get_canvas_view()->work_area->set_selected_value_node(
-			(synfig::ValueNode::Handle)(*iter)[model.value_node]
-		);
-	}
-	else
-	{
-		get_canvas_view()->work_area->set_selected_value_node(0);
-	}
-*/
 }
 
 void
@@ -163,7 +147,6 @@ Dock_Curves::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view
 		delete table_;
 		hscrollbar_->unset_adjustment();
 		vscrollbar_->unset_adjustment();
-		//widget_timeslider_->unset_adjustment();
 		table_=0;
 	}
 
@@ -187,14 +170,12 @@ Dock_Curves::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view
 		table_->attach(*vscrollbar_, 1, 2, 0, 2, Gtk::FILL|Gtk::SHRINK, Gtk::FILL|Gtk::EXPAND);
 		add(*table_);
 
-		//add(*last_widget_curves_);
 		last_widget_curves_->show();
 		table_->show_all();
 		show_all();
 	}
 	else
 	{
-		//clear_previous();
 	}
 }
 

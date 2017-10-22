@@ -274,7 +274,6 @@ private:
 	synfig::Vector last_translate_;
 	synfig::Vector drag_offset_;
 
-	//etl::handle<Duck> selected_duck;
 
 	void connect_signals(const Duck::Handle &duck, const synfigapp::ValueDesc& value_desc, CanvasView &canvas_view);
 
@@ -348,7 +347,6 @@ public:
 
 	bool is_duck_group_selectable(const etl::handle<Duck>& x)const;
 
-	//const DuckMap& duck_map()const { return duck_map; }
 	DuckList get_duck_list()const;
 
 	const std::list<etl::handle<Bezier> >& bezier_list()const { return bezier_list_; }
@@ -506,7 +504,6 @@ public:
 
 	//! \note parameter is in canvas coordinates
 	/*!	A radius of "zero" will have an unlimited radius */
-	//etl::handle<Bezier> find_bezier(synfig::Point pos, synfig::Real radius=0);
 
 	//! \note parameter is in canvas coordinates
 	/*!	A radius of "zero" will have an unlimited radius */

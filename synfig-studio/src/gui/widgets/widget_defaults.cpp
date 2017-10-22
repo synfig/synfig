@@ -301,21 +301,8 @@ Widget_Defaults::Widget_Defaults()
 	* NOTE2: Commented out as of 2014-06-24 -- KD.
 	*/
 
-	//widget_blend_method = manage(new Widget_Enum());
-	//widget_blend_method->signal_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::on_blend_method_changed));
-	//widget_blend_method->set_param_desc(
-	//	ParamDesc((int)Color::BLEND_COMPOSITE,"blend_method")
-	//	.add_enum_value(Color::BLEND_BY_LAYER,"bylayer", _("By Layer Default"))
-	//);
-	//widget_blend_method->set_tooltip_text(_("Default Blend Method"));
 
 	// widget opacity
-	//widget_opacity = manage(new Gtk::HScale(0.0f,1.01f,0.01f));
-	//widget_opacity->set_digits(2);
-	//widget_opacity->set_value_pos(Gtk::POS_LEFT);
-	//widget_opacity->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::on_opacity_changed));
-	//widget_opacity->set_tooltip_text(_("Default Opacity"));
-	//widget_opacity->set_value_pos(Gtk::POS_LEFT);
 
 	// widget gradient
 	_widget_gradient = manage(new Widget_Gradient());
@@ -340,20 +327,12 @@ Widget_Defaults::Widget_Defaults()
 		// pack brush and bline width widgets
 		{
 			widget_brush_bline_width = manage(new Gtk::VBox(false, 0));
-			//widget_brush_bline_width->pack_start(*widget_brush, Gtk::PACK_SHRINK, 2);
 			widget_brush_bline_width->pack_start(*widget_bline_width, Gtk::PACK_EXPAND_WIDGET, 2);
 		}
 
-		//pack_start(*widget_colors_gradient, Gtk::PACK_EXPAND_PADDING, 4);
-		//pack_start(*widget_blend_method, Gtk::PACK_EXPAND_PADDING, 4);
-		//pack_start(*widget_opacity, Gtk::PACK_EXPAND_PADDING, 4);
-		//pack_start(*widget_brush, Gtk::PACK_EXPAND_PADDING, 6);
 
 		// show all widgets
 		widget_colors_gradient->show_all();
-		//widget_blend_method->show();
-		//widget_opacity->show();
-		//widget_brush_bline_width->show_all();
 
 		Gtk::ToolItemGroup *tool_item_group = manage(new class Gtk::ToolItemGroup());
 		gtk_tool_item_group_set_label(tool_item_group->gobj(), NULL);
@@ -377,29 +356,21 @@ Widget_Defaults::Widget_Defaults()
 
 		tool_item_group->show_all();
 
-		//Gtk::ScrolledWindow *scrolled_window = manage(new Gtk::ScrolledWindow());
-		//scrolled_window->add(*palette);
-		//scrolled_window->show();
 
-		//pack_start(*scrolled_window, Gtk::PACK_EXPAND_PADDING, 4);
 		pack_start(*palette, Gtk::PACK_EXPAND_WIDGET|Gtk::PACK_SHRINK, 4);
 
 	}
 
 
 	// Signals
-	//synfigapp::Main::signal_opacity_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::opacity_refresh));
 	synfigapp::Main::signal_bline_width_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::bline_width_refresh));
 	synfigapp::Main::signal_outline_color_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::otln_color_refresh));
 	synfigapp::Main::signal_fill_color_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::fill_color_refresh));
 	synfigapp::Main::signal_gradient_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::gradient_refresh));
-	//synfigapp::Main::signal_blend_method_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::blend_method_refresh));
 
 	otln_color_refresh();
 	fill_color_refresh();
 	gradient_refresh();
-	//blend_method_refresh();
-	//opacity_refresh();
 }
 
 Widget_Defaults::~Widget_Defaults()
@@ -431,31 +402,7 @@ Widget_Defaults::bline_width_refresh()
 	brush_entry->set_text(widget_bline_width->get_value().get_string(widget_bline_width->get_digits()));
 }
 
-/*
-void
-Widget_Defaults::blend_method_refresh()
-{
-	widget_blend_method->set_value(synfigapp::Main::get_blend_method());
-}
 
-void
-Widget_Defaults::opacity_refresh()
-{
-	widget_opacity->set_value(synfigapp::Main::get_opacity());
-}
-
-void
-Widget_Defaults::on_opacity_changed()
-{
-	synfigapp::Main::set_opacity(widget_opacity->get_value());
-}
-
-void
-Widget_Defaults::on_blend_method_changed()
-{
-	synfigapp::Main::set_blend_method(Color::BlendMethod(widget_blend_method->get_value()));
-}
-*/
 
 void
 Widget_Defaults::on_bline_width_changed()

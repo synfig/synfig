@@ -719,7 +719,6 @@ StateRectangle_Context::~StateRectangle_Context()
 Smach::event_result
 StateRectangle_Context::event_stop_handler(const Smach::event& /*x*/)
 {
-	//throw Smach::egress_exception();
 	throw &state_normal;
 	return Smach::RESULT_OK;
 }
@@ -789,9 +788,7 @@ StateRectangle_Context::make_rectangle(const Point& _p1, const Point& _p2)
 	// count how many layers we're going to be creating
 	int layers_to_create = this->layers_to_create();
 
-	///////////////////////////////////////////////////////////////////////////
 	//   R E C T A N G L E
-	///////////////////////////////////////////////////////////////////////////
 
 	if (get_layer_rectangle_flag())
 	{
@@ -828,9 +825,7 @@ StateRectangle_Context::make_rectangle(const Point& _p1, const Point& _p2)
 		get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
 	}
 
-	///////////////////////////////////////////////////////////////////////////
 	//   C U R V E   G R A D I E N T
-	///////////////////////////////////////////////////////////////////////////
 
 	if(get_layer_curve_gradient_flag())
 	{
@@ -902,9 +897,7 @@ StateRectangle_Context::make_rectangle(const Point& _p1, const Point& _p2)
 		}
 	}
 
-	///////////////////////////////////////////////////////////////////////////
 	//   P L A N T
-	///////////////////////////////////////////////////////////////////////////
 
 	if(get_layer_plant_flag())
 	{
@@ -973,9 +966,7 @@ StateRectangle_Context::make_rectangle(const Point& _p1, const Point& _p2)
 		}
 	}
 
-	///////////////////////////////////////////////////////////////////////////
 	//   R E G I O N
-	///////////////////////////////////////////////////////////////////////////
 
 	if(get_layer_region_flag())
 	{
@@ -1054,9 +1045,7 @@ StateRectangle_Context::make_rectangle(const Point& _p1, const Point& _p2)
 		}
 	}
 
-	///////////////////////////////////////////////////////////////////////////
 	//   O U T L I N E
-	///////////////////////////////////////////////////////////////////////////
 
 	if (get_layer_outline_flag())
 	{
@@ -1134,9 +1123,7 @@ StateRectangle_Context::make_rectangle(const Point& _p1, const Point& _p2)
 	}
 
 
-	///////////////////////////////////////////////////////////////////////////
 	//   A D V A N C E D   O U T L I N E
-	///////////////////////////////////////////////////////////////////////////
 
 	if (get_layer_advanced_outline_flag())
 	{

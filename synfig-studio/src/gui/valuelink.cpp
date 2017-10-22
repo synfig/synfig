@@ -69,20 +69,7 @@ ValueBaseLink::~ValueBaseLink()
 
 ValueNode::LooseHandle ValueBaseLink::get_link_vfunc(int i)const
 {
-	/*list_type::const_iterator	it = list.begin();
 
-	while(it != list.end() && i-- > 0)
-	{
-		++it;
-	}
-
-	if(it == list.end())
-	{
-		return ValueNode::LooseHandle();
-	}else
-	{
-		return *it;
-	}*/
 	if(i >= 0 && i < (int)list.size())
 	{
 		return list[i];

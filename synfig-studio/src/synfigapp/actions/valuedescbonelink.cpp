@@ -187,26 +187,7 @@ Action::ValueDescBoneLink::prepare()
 		if (value_desc.parent_is_value_node() && bone_value_node == value_desc.get_parent_value_node())
 			continue;
 
-		/*
-		if (value_desc.is_value_node())
-		{
-			ValueNode_BoneLink::Handle bone_link_node = ValueNode_BoneLink::Handle::cast_dynamic(value_desc.get_value_node());
-			if (bone_link_node) {
-				// add bone into existant BoneLink
-				Action::Handle action = ValueNodeStaticListInsert::create();
-				action->set_param("canvas", get_canvas());
-				action->set_param("canvas_interface", get_canvas_interface());
-				action->set_param("value_desc", ValueDesc(ValueNode::Handle(bone_link_node->get_link("bone_weight_list")), 0));
-				action->set_param("item", ValueNode::Handle(bone_weight_pair_node));
 
-				assert(action->is_ready());
-				if (!action->is_ready()) throw Error(Error::TYPE_NOTREADY);
-				add_action_front(action);
-
-				continue;
-			}
-		}
-		*/
 
 		// create new BoneLink
 		ValueNode_BoneLink::Handle bone_link_node = ValueNode_BoneLink::create(value_desc.get_value_type());

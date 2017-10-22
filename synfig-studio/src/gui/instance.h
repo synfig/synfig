@@ -164,7 +164,6 @@ public:
 	//! Returns the number of instances that are currently open in the program
 	static int get_count() { return instance_count_; }
 
-	//etl::handle<synfig::Canvas> get_canvas()const { return synfigapp::Instance::get_canvas(); }
 
 	etl::handle<CanvasView>	find_canvas_view(etl::handle<synfig::Canvas> canvas);
 

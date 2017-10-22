@@ -138,12 +138,7 @@ Action::ValueNodeLinkConnect::perform()
 	if(!parent_value_node->set_link(index,new_value_node))
 		throw Error(_("Parent would not accept link"));
 
-	/*set_dirty(true);
 
-	if(get_canvas_interface())
-	{
-		get_canvas_interface()->signal_value_node_changed()(parent_value_node);
-	}*/
 }
 
 void
@@ -155,10 +150,5 @@ Action::ValueNodeLinkConnect::undo()
 	if(!parent_value_node->set_link(index,old_value_node))
 		throw Error(_("Parent would not accept old link"));
 
-	/*set_dirty(true);
 
-	if(get_canvas_interface())
-	{
-		get_canvas_interface()->signal_value_node_changed()(parent_value_node);
-	}*/
 }

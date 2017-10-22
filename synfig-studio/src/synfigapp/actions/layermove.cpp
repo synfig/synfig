@@ -139,7 +139,6 @@ Action::LayerMove::set_param(const synfig::String& name, const Action::Param &pa
 bool
 Action::LayerMove::is_ready()const
 {
-	// synfig::info(__FILE__":%d: layer->count()=%d",__LINE__,layer.count());
 	if(!layer || (unsigned)new_index==0xdeadbeef)
 		return false;
 	return Action::CanvasSpecific::is_ready();
@@ -148,7 +147,6 @@ Action::LayerMove::is_ready()const
 void
 Action::LayerMove::perform()
 {
-	// synfig::info(__FILE__":%d: layer->count()=%d",__LINE__,layer.count());
 
 	Canvas::Handle subcanvas(layer->get_canvas());
 	src_canvas=subcanvas;
@@ -162,12 +160,10 @@ Action::LayerMove::perform()
 	if(*iter!=layer)
 		throw Error(_("This layer doesn't exist anymore."));
 
-	// synfig::info(__FILE__":%d: layer->count()=%d",__LINE__,layer.count());
 
 	// If the subcanvas isn't the same as the canvas,
 	// then it had better be an inline canvas. If not,
 	// bail
-	//if(get_canvas()!=subcanvas && !subcanvas->is_inline())
 	if(get_canvas()->get_root()!=dest_canvas->get_root() || get_canvas()->get_root()!=src_canvas->get_root())
 		throw Error(_("You cannot directly move layers across compositions"));
 
@@ -181,7 +177,6 @@ Action::LayerMove::perform()
 
 	set_dirty(layer->active());
 
-	// synfig::info(__FILE__":%d: layer->count()=%d",__LINE__,layer.count());
 
 	// If we were to move it to where it is
 	if(old_index==depth && src_canvas==dest_canvas)
@@ -200,7 +195,6 @@ Action::LayerMove::perform()
 	layer->changed();
 	dest_canvas->changed(); if(dest_canvas!=src_canvas) src_canvas->changed();
 
-	// synfig::info(__FILE__":%d: layer->count()=%d",__LINE__,layer.count());
 
 	if(get_canvas_interface())
 	{
@@ -222,7 +216,6 @@ Action::LayerMove::perform()
 	}
 	else synfig::warning("CanvasInterface not set on action");
 
-	// synfig::info(__FILE__":%d: layer->count()=%d",__LINE__,layer.count());
 }
 
 void
@@ -267,8 +260,6 @@ Action::LayerMove::undo()
 		else
 		{
 			get_canvas_interface()->signal_layer_moved()(layer,old_index,src_canvas);
-			//get_canvas_interface()->signal_layer_removed()(layer);
-			//get_canvas_interface()->signal_layer_inserted()(layer,old_index);
 		}
 	}
 	else synfig::warning("CanvasInterface not set on action");

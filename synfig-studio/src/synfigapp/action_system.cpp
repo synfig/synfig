@@ -208,7 +208,6 @@ Action::System::perform_action(etl::handle<Action::Base> action)
 		{
 			handle<CanvasInterface> canvas_interface=static_cast<Instance*>(this)->find_canvas_interface(canvas);
 			assert(canvas_interface);
-			//canvas_interface->signal_dirty_preview()();
 		}
 	}
 
@@ -308,7 +307,6 @@ synfigapp::Action::System::undo()
 		{
 			handle<CanvasInterface> canvas_interface=static_cast<Instance*>(this)->find_canvas_interface(canvas);
 			assert(canvas_interface);
-			//canvas_interface->signal_dirty_preview()();
 		}
 	}
 
@@ -406,7 +404,6 @@ Action::System::redo()
 		{
 			handle<CanvasInterface> canvas_interface=static_cast<Instance*>(this)->find_canvas_interface(canvas);
 			assert(canvas_interface);
-			//canvas_interface->signal_dirty_preview()();
 		}
 	}
 
@@ -518,7 +515,6 @@ Action::System::set_action_status(etl::handle<Action::Undoable> action, bool x)
 			Canvas::Handle canvas=canvas_specific->get_canvas();
 			handle<CanvasInterface> canvas_interface=static_cast<Instance*>(this)->find_canvas_interface(canvas);
 			assert(canvas_interface);
-			//canvas_interface->signal_dirty_preview()();
 		}
 
 		return true;
@@ -538,7 +534,6 @@ Action::System::set_action_status(etl::handle<Action::Undoable> action, bool x)
 			Canvas::Handle canvas=canvas_specific->get_canvas();
 			handle<CanvasInterface> canvas_interface=static_cast<Instance*>(this)->find_canvas_interface(canvas);
 			assert(canvas_interface);
-			//canvas_interface->signal_dirty_preview()();
 		}
 
 		return true;
@@ -561,28 +556,7 @@ Action::PassiveGrouper::PassiveGrouper(etl::loose_handle<System> instance_,synfi
 void
 Action::PassiveGrouper::request_redraw(etl::handle<CanvasInterface> x)
 {
-/*	if(instance_->group_stack_.empty())
-	{
-		if(x!=canvas_interface_)
-		{
-			x->signal_dirty_preview()();
-		}
 
-		redraw_requested_=false;
-	}
-	else
-	{
-		if(instance_->group_stack_.back()==this)
-		{
-			redraw_requested_=true;
-		}
-		else
-		{
-			instance_->group_stack_.back()->request_redraw(x);
-			redraw_requested_=false;
-		}
-	}
-*/
 	if(x)
 	{
 		redraw_requested_=true;
@@ -645,7 +619,6 @@ Action::PassiveGrouper::finish()
 		group=new Action::Group(name_);
 
 		for(int i=0;i<depth_;i++)
-	//	for(;depth_;depth_--)
 		{
 			handle<Action::Undoable> action(instance_->undo_action_stack_.front());
 			Action::CanvasSpecific* canvas_specific(dynamic_cast<Action::CanvasSpecific*>(action.get()));
@@ -669,7 +642,6 @@ Action::PassiveGrouper::finish()
 
 		if(0)if(group->is_dirty())
 			request_redraw(group->get_canvas_interface());
-		//	group->get_canvas_interface()->signal_dirty_preview()();
 
 		if(instance_->group_stack_.empty())
 		{
@@ -706,8 +678,6 @@ Action::PassiveGrouper::cancel()
 	bool error=false;
 
 	// Cancel any groupers that may be on top of us first
-	//while(instance_->group_stack_.front()!=this)
-	//	instance_->group_stack_.front()->cancel();
 
 	synfig::warning("Cancel depth: %d",depth_);
 

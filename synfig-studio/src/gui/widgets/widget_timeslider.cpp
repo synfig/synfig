@@ -70,7 +70,6 @@ Widget_Timeslider::Widget_Timeslider()
 :layout(Pango::Layout::create(get_pango_context())),
 adj_default(Gtk::Adjustment::create(0,0,2,1/defaultfps,10/defaultfps)),
 adj_timescale(),
-//invalidated(false),
 last_event_time(0),
 fps(defaultfps),
 dragscroll(false)
@@ -82,7 +81,6 @@ dragscroll(false)
 				| Gdk::BUTTON_MOTION_MASK | Gdk::SCROLL_MASK );
 
 	set_time_adjustment(adj_default);
-	//update_times();
 }
 
 Widget_Timeslider::~Widget_Timeslider()
@@ -103,7 +101,6 @@ void Widget_Timeslider::set_time_adjustment(const Glib::RefPtr<Gtk::Adjustment> 
 		time_value_change = x->signal_value_changed().connect(sigc::mem_fun(*this,&Widget_Timeslider::queue_draw));
 		time_other_change = x->signal_changed().connect(sigc::mem_fun(*this,&Widget_Timeslider::queue_draw));
 		//invalidated = true;
-		//refresh();
 	}
 }
 
@@ -115,44 +112,16 @@ void Widget_Timeslider::set_global_fps(float d)
 
 		//update everything since we need to redraw already
 		//invalidated = true;
-		//refresh();
 		queue_draw();
 	}
 }
 
-/*void Widget_Timeslider::update_times()
-{
-	if(adj_timescale)
-	{
-		start = adj_timescale->get_lower();
-		end = adj_timescale->get_upper();
-		current = adj_timescale->get_value();
-	}
-}*/
+
 
 void Widget_Timeslider::refresh()
 {
 }
-/*
-{
-	if(invalidated)
-	{
-		queue_draw();
-	}else if(adj_timescale)
-	{
-		double 	l = adj_timescale->get_lower(),
-				u = adj_timescale->get_upper(),
-				v = adj_timescale->get_value();
 
-		bool invalid = (l != start) || (u != end) || (v != current);
-
-		start = l;
-		end = u;
-		current = v;
-
-		if(invalid) queue_draw();
-	}
-}*/
 
 bool Widget_Timeslider::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 {
@@ -291,10 +260,8 @@ bool Widget_Timeslider::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 		sdindex = round_to_int(t); //get how far through the range it is...
 		if (sdindex == subdiv) sdindex = 0;
 
-		//synfig::info("Extracted fr %.2lf -> %d", t, sdindex);
 	}
 
-	//synfig::info("Initial values: %.4lf t, %.1lf pixels, %d i", time,pixel,sdindex);
 
 	//loop to draw
 	const double heightbig = 12;
@@ -325,7 +292,6 @@ bool Widget_Timeslider::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 			layout->set_text(timecode);
 			Pango::AttrList attr_list;
 			// Aproximately a font size of 8 pixels.
-			// Pango::SCALE = 1024
 			// create_attr_size waits a number in 1000th of pixels.
 			// Should be user customizable in the future. Now it is fixed to 10
 			Pango::AttrInt pango_size(Pango::Attribute::create_attr_size(Pango::SCALE*10));
@@ -394,11 +360,9 @@ bool Widget_Timeslider::on_motion_notify_event(GdkEventMotion* event) //for drag
 
 			//update our stuff so we are operating correctly
 			//invalidated = true;
-			//update_times();
 
 			//Note: Use inverse of mouse movement because of conceptual space relationship
-			double diff = lastx - curx; //curx - lastx;
-
+			double diff = lastx - curx;
 			//NOTE: This might be incorrect...
 			//fraction to move...
 			double dpx = (end - start)/get_width();
@@ -429,7 +393,6 @@ bool Widget_Timeslider::on_motion_notify_event(GdkEventMotion* event) //for drag
 				}
 			}
 
-			//synfig::info("Scrolling timerange to (%.4f,%.4f)",start,end);
 
 			adj_timescale->set_lower(start);
 			adj_timescale->set_upper(end);
@@ -439,7 +402,6 @@ bool Widget_Timeslider::on_motion_notify_event(GdkEventMotion* event) //for drag
 		{
 			dragscroll = true;
 			lastx = curx;
-			//lasty = cury;
 		}
 
 		return true;
@@ -485,7 +447,6 @@ bool Widget_Timeslider::on_scroll_event(GdkEventScroll* event) //for zooming
 	if(!adj_timescale) return false;
 
 	//Update so we are calculating based on current values
-	//update_times();
 
 	//figure out if we should center ourselves on the current time
 	bool center = false;
@@ -594,7 +555,6 @@ void Widget_Timeslider::zoom_in(bool centerontime)
 	end = focuspoint + (end-focuspoint)*zoominfactor;
 	start = focuspoint + (start-focuspoint)*zoominfactor;
 
-	//synfig::info("Zooming in timerange to (%.4f,%.4f)",start,end);
 	if(adj_bounds)
 	{
 		if(start < adj_bounds->get_lower())
@@ -630,7 +590,6 @@ void Widget_Timeslider::zoom_out(bool centerontime)
 	end = focuspoint + (end-focuspoint)*zoomoutfactor;
 	start = focuspoint + (start-focuspoint)*zoomoutfactor;
 
-	//synfig::info("Zooming out timerange to (%.4f,%.4f)",start,end);
 	if(adj_bounds)
 	{
 		if(start < adj_bounds->get_lower())
@@ -668,8 +627,7 @@ bool Widget_Timeslider::on_button_press_event(GdkEventButton *event) //for click
 
 			t = floor(t*fps + 0.5)/fps;
 
-			/*synfig::info("Clicking time from %.3lf to %.3lf [(%.2lf,%.2lf) %.2lf / %.2lf ... %.2lf",
-						current, vt, start, end, event->x, w, fps);*/
+
 
 			if(t != current)
 			{
@@ -691,7 +649,6 @@ bool Widget_Timeslider::on_button_press_event(GdkEventButton *event) //for click
 			//start dragging
 			dragscroll = true;
 			lastx = event->x;
-			//lasty = event->y;
 
 			return true;
 		}

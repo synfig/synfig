@@ -94,7 +94,6 @@ DeviceTracker::DeviceTracker()
 				input_device->get_type()==synfigapp::InputDevice::TYPE_CURSOR  )
 			{
 				input_device->set_mode(synfigapp::InputDevice::MODE_DISABLED);
-				//synfigapp::Main::select_input_device(input_device);
 			}
 		}
 

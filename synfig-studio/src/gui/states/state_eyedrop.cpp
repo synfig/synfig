@@ -116,12 +116,8 @@ StateEyedrop_Context::~StateEyedrop_Context()
 Smach::event_result
 StateEyedrop_Context::event_stop_handler(const Smach::event& /*x*/)
 {
-	//synfig::info("STATE EYEDROP: Received Stop Event");
-	//throw Smach::egress_exception();
 	throw &state_normal;
 	return Smach::RESULT_OK;
-//	canvas_view->get_smach().pop_state();
-//	return Smach::RESULT_ACCEPT;
 }
 
 Smach::event_result

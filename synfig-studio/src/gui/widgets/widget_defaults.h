@@ -80,7 +80,6 @@ class Widget_Defaults : public Gtk::VBox
 
 	//Widget_Enum	*widget_blend_method;
 
-	//Gtk::HScale 	*widget_opacity;
 
 	void otln_color_refresh();
 	void fill_color_refresh();
@@ -97,11 +96,7 @@ class Widget_Defaults : public Gtk::VBox
 	void on_reset_color_clicked();
 	void on_gradient_clicked();
 
-	//void blend_method_refresh();
-	//void on_blend_method_changed();
 
-	//void opacity_refresh();
-	//void on_opacity_changed();
 
 public:
 
@@ -111,7 +106,6 @@ public:
 
 //	bool redraw(GdkEventExpose*bleh=NULL);
 
-//	bool on_event(GdkEvent *event);
 }; // END of class BlackLevelSelector
 
 }; // END of namespace studio

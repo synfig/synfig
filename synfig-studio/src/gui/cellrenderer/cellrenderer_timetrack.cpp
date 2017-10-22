@@ -332,7 +332,6 @@ void
 CellRenderer_TimeTrack::set_adjustment(const Glib::RefPtr<Gtk::Adjustment> &x)
 {
 	property_adjustment_=x;
-//	x.signal_value_changed().connect(sigc::mem_fun(*this,&Gtk::Widget::queue_draw));
 }
 
 synfig::Canvas::Handle
@@ -503,8 +502,6 @@ CellRenderer_TimeTrack::render_vfunc(
 		return;
 
 	Glib::RefPtr<Gtk::Adjustment> adjustment=get_adjustment();
-	// Gtk::StateType state = Gtk::STATE_ACTIVE;
-	// Gtk::ShadowType shadow;
 
 	Gdk::Color
 		change_time_color("#008800"),
@@ -520,7 +517,6 @@ CellRenderer_TimeTrack::render_vfunc(
 
 	synfigapp::ValueDesc value_desc = property_value_desc().get_value();
 	synfig::ValueNode *base_value = value_desc.get_value_node().get();
-	// synfig::ValueNode_Animated *value_node=dynamic_cast<synfig::ValueNode_Animated*>(base_value);
 
 	synfig::ValueNode_DynamicList *parent_value_node(0);
 	if(property_value_desc().get_value().parent_is_value_node())
@@ -634,7 +630,6 @@ CellRenderer_TimeTrack::render_vfunc(
 					}
 				}
 
-				//synfig::info("Displaying time: %.3f s",(float)t);
 				const int x = (int)((t-lower)*area.get_width()/(upper-lower));
 
 				//should draw me a grey filled circle...
@@ -662,7 +657,6 @@ CellRenderer_TimeTrack::render_vfunc(
 					if(!t.is_valid())
 						continue;
 
-					//synfig::info("Displaying time: %.3f s",(float)t);
 					const int x = (int)((t-lower)*area.get_width()/(upper-lower));
 
 					//should draw me a grey filled circle...
@@ -738,7 +732,6 @@ CellRenderer_TimeTrack::render_vfunc(
 				cr->rectangle(area.get_x()+x-w/2, area.get_y(), w, area.get_height());
 				cr->fill();
 			}
-			//prevx=x;
 		}
 		if(is_off)
 		{
@@ -842,7 +835,6 @@ CellRenderer_TimeTrack::activate_vfunc(
 	synfig::ValueNode_Animated::WaypointList::iterator iter;
 	Glib::RefPtr<Gtk::Adjustment> adjustment=get_adjustment();
 
-	// synfig::ValueNode_Animated *value_node=dynamic_cast<synfig::ValueNode_Animated*>(property_value_desc().get_value().get_value_node().get());
 
 	synfig::Canvas::Handle canvas(get_canvas());
 
@@ -881,10 +873,9 @@ CellRenderer_TimeTrack::activate_vfunc(
     switch(event->type)
     {
 	case GDK_BUTTON_PRESS:
-		//selected_time=((float)event->button.x-(float)cell_area.get_x())/(float)cell_area.get_width()*(adjustment->get_upper()-adjustment->get_lower())+adjustment->get_lower();
 
 		//Deal with time point selection, but only if they aren't involved in the insanity...
-		if(/*!value_node && */event->button.button == 1)
+		if(event->button.button == 1)
 		{
 			Time stime;
 
@@ -959,28 +950,8 @@ CellRenderer_TimeTrack::activate_vfunc(
 			drag_time=selected_time;
 			actual_dragtime=actual_time;
 		}
-		//selected_time=iter->time;
 
-		/*
-		// Activepoint Selection
-		if(parent_value_node)
-		{
-			const int index(property_value_desc().get_value().get_index());
-			const synfig::ValueNode_DynamicList::ListEntry::ActivepointList& activepoint_list(parent_value_node->list[index].timing_info);
-			synfig::ValueNode_DynamicList::ListEntry::ActivepointList::const_iterator iter;
 
-			for(iter=activepoint_list.begin();iter!=activepoint_list.end();++iter)
-			{
-				Time val=abs(iter->time-selected_time);
-				if(val<nearest)
-				{
-					nearest=val;
-					selected=*iter;
-					selection=true;
-				}
-			}
-			// Perhaps I should signal if we selected this activepoint?
-		}*/
 
 			if(event->button.button==3)
 			{
@@ -998,8 +969,7 @@ CellRenderer_TimeTrack::activate_vfunc(
 				{
 					node=Canvas::Handle(valdesc.get_value(stime).get(Canvas::Handle()));
 				}
-				else //if(valdesc.is_value_node())
-				{
+				else				{
 					node=valdesc.get_value_node();
 				}
 
@@ -1009,22 +979,14 @@ CellRenderer_TimeTrack::activate_vfunc(
 
 		break;
 	case GDK_MOTION_NOTIFY:
-		//if(selection && dragging)
-		//	selected_time=((float)event->motion.x-(float)cell_area.get_x())/(float)cell_area.get_width()*(adjustment->get_upper()-adjustment->get_lower())+adjustment->get_lower();
 		return true;
 
 		break;
 	case GDK_BUTTON_RELEASE:
 		{
-			//selected_time=((float)event->button.x-(float)cell_area.get_x())/(float)cell_area.get_width()*(adjustment->get_upper()-adjustment->get_lower())+adjustment->get_lower();
 			dragging=false;
 
-			/*if(event->button.button==3 && selection)
-			{
-				signal_waypoint_clicked_cellrenderer()(path,*selected_waypoint,event->button.button-1);
-				return true;
-			}
-			*/
+
 
 			//Time point stuff...
 			if(event->button.button == 1)
@@ -1058,7 +1020,6 @@ CellRenderer_TimeTrack::activate_vfunc(
 
 					if(!delmode)
 						param_list.add("deltatime",deltatime);
-				//	param_list.add("time",canvas_interface()->get_time());
 
 					if(mode & COPY_MASK) //copy
 					{
@@ -1081,30 +1042,11 @@ CellRenderer_TimeTrack::activate_vfunc(
 
 
 
-			/*if(value_node && selection)
-			{
-				if(selected_time==drag_time && event->button.button!=3)
-					signal_waypoint_clicked_cellrenderer()(path,*selected_waypoint,event->button.button-1);
-				else
-				if(event->button.button==1)
-				{
-					synfig::Waypoint waypoint(*selected_waypoint);
-					Time newtime((waypoint.get_time()+(selected_time-drag_time)).round(canvas->rend_desc().get_frame_rate()));
-					if(waypoint.get_time()!=newtime)
-					{
-						waypoint.set_time(newtime);
-						signal_waypoint_changed_(waypoint,value_node);
-					}
-				}
-			}*/
 
-			//if(selection)
-			//	selected_time=iter->time;
-			//selected_time=iter->get_time();
+
 			return true;
 		}
 	default:
-		//std::cerr<<"unknown event type "<<event->type<<std::endl;
 		return false;
 		break;
 	}
@@ -1119,7 +1061,6 @@ CellRenderer_TimeTrack::activate_vfunc(
 // The following three functions don't get documented correctly by
 // doxygen 1.5.[23] because of a bug with any function whose name
 // begins with 'property'.  Fixed in doxygen 1.5.4 apparently.  See
-// http://bugzilla.gnome.org/show_bug.cgi?id=471185 .
 Glib::PropertyProxy<synfigapp::ValueDesc>
 CellRenderer_TimeTrack::property_value_desc()
 {

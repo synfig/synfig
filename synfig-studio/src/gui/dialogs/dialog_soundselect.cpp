@@ -120,7 +120,6 @@ void studio::Dialog_SoundSelect::on_ok()
 {
 	hide();
 
-	//signal_finish_(a);
 	signal_file_changed_(soundfile.get_value());
 	signal_offset_changed_(offset.get_value());
 }

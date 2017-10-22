@@ -34,7 +34,6 @@
 
 #include <ETL/stringf>
 #include <ETL/clock>
-//#include <ETL/thread>
 #include <glibmm/thread.h>
 
 #include <synfig/general.h>
@@ -248,7 +247,6 @@ struct scrubinfo;
 #ifdef WITH_FMOD
 static double	buffer_length_sec = 0;
 
-//------- Scrubbing --------------
 /* Scrubbing works as follows:
 
 	The sound is played using PlaySoundEx
@@ -323,12 +321,10 @@ struct scrubinfo
 
 	void Lock()
 	{
-		//lock.lock();
 	}
 
 	void Unlock()
 	{
-		//lock.unlock();
 	}
 
 	//All parameters and state should be set by the time we get here...
@@ -340,14 +336,9 @@ struct scrubinfo
 		if(!FSOUND_IsPlaying(channel)) return;
 
 		//Get rid of all the old samples
-		//flush();
 
 		//Trivial reject #2 - We also go nowhere with no future samples (pause)
-		/*if(queue.size() <= 0)
-		{
-			FSOUND_SetPaused(channel,true);
-			return;
-		}*/
+
 
 		double dt = buffer_length_sec;
 
@@ -396,7 +387,6 @@ struct scrubinfo
 
 		const double p1 = pos;
 
-		//const double pb = p0/3 + p1*2/3;
 
 		//will extrapolate if needed... (could be funky on a curve)
 		double t = 0;
@@ -412,16 +402,11 @@ struct scrubinfo
 		Unlock();
 
 		const double invt = 1-t;
-		//double deltapos = (p1-p0)*t; //linear version
 		double deltapos = invt*invt*p0 + 2*t*invt*pa + t*t*p1 - p0; //quadratic smoothing version
 
 		//Attempted cubic smoothing
 		//const double invt2 = invt*invt;
-		//const double t2 = t*t;
-		//double deltapos = invt2*invt*p0 + 3*t*invt2*pa + 3*t2*invt*pb + t2*t*p1;
-		//double deltapos = p0 + t*(3*(pa-p0) + t*(3*(p0+2*pa+pb) + t*((p1-3*pb+3*ba-p0)))); //unwound cubic
 
-		//printf("\ttime = %.2f; p(%d,%d,%d) dp:%d - delta = %d\n",t,(int)p0,(int)p1,(int)p2,(int)curdp,(int)deltapos);
 
 		//Based on the delta info calculate the stretched frequency
 		const int dest_samplesize = FSOUND_DSP_GetBufferLength();
@@ -432,7 +417,6 @@ struct scrubinfo
 		//NOTE: WE MIGHT WANT TO DO THIS TO BE MORE ACCURATE BUT YEAH... ISSUES WITH SMALL NUMBERS
 		//double newdp = deltapos / t;
 
-		//printf("\tfreq = %d Hz\n", freq);
 
 		// !If I failed... um assume we have to pause it... ?
 		if(abs(freq) < 100)
@@ -440,7 +424,6 @@ struct scrubinfo
 			FSOUND_SetPaused(channel,true);
 		}else
 		{
-			//synfig::info("DSP f = %d Hz", freq);
 			FSOUND_SetPaused(channel,false);
 			if(!FSOUND_SetFrequency(channel,freq))
 			{
@@ -486,7 +469,6 @@ static FSOUND_DSPUNIT	*scrubdspunit = 0;
 
 void * scrubdspwrap(void *originalbuffer, void *newbuffer, int length, void *userdata)
 {
-	//std::string	dsp = "DSP";
 	if(userdata)
 	{
 		scrubuserdata &sd = *(scrubuserdata*)userdata;
@@ -516,18 +498,15 @@ void * scrubdspwrap(void *originalbuffer, void *newbuffer, int length, void *use
 
 		if(sd.scrub && *sd.scrub)
 		{
-			//dsp += " processing...";
 			scrubinfo * info = (*sd.scrub);
 			info->scrub_dsp_process();
 		}
 	}
 
-	//synfig::info(dsp);
 
 	return newbuffer;
 }
 
-//------- Class for loading fmod on demand -------
 
 class FMODInitializer
 {
@@ -551,22 +530,9 @@ public:
 			{
 				FSOUND_SetOutput(AUDIO_OUTPUT);
 
-				/*int numdrivers = FSOUND_GetNumDrivers();
-				synfig::info("Num FMOD drivers = %d",numdrivers);
-				synfig::info("Current Driver is #%d", FSOUND_GetDriver());
 
-				for(int i = 0; i < numdrivers; ++i)
-				{
-					unsigned int caps = 0;
-					FSOUND_GetDriverCaps(i,&caps);
-
-					synfig::info("   Caps for driver %d (%s) = %x",i,FSOUND_GetDriverName(i),caps);
-				}
-
-				FSOUND_SetDriver(0);*/
 
 				//Modify buffer size...
-				//FSOUND_SetBufferSize(100);
 
 				if(!FSOUND_Init(44100, 32, 0))
 				{
@@ -587,7 +553,6 @@ public:
 
 		//add to the refcount
 		++refcount;
-		//synfig::info("Audio: increment fmod refcount %d", refcount);
 	}
 
 	void decref()
@@ -598,7 +563,6 @@ public:
 		}else
 		{
 			--refcount;
-			//synfig::info("Audio: decrement fmod refcount %d", refcount);
 
 			//NOTE: UNCOMMENT THIS IF YOU WANT FMOD TO UNLOAD ITSELF WHEN IT ISN'T NEEDED ANYMORE...
 			flush();
@@ -632,7 +596,6 @@ FMODInitializer		fmodinit;
 
 #endif
 
-//----- AudioProfile Implementation -----------
 void studio::AudioProfile::clear()
 {
 	samplerate = 0;
@@ -813,7 +776,6 @@ public: //forward interface
 			unsigned int pos = FSOUND_GetCurrentPosition(channel);
 
 			//adjust back by 1 frame... HACK....
-			//pos -= FSOUND_DSP_GetBufferLength();
 
 			//set the position
 			out = pos/(double)sfreq + offset;
@@ -876,11 +838,9 @@ handle<studio::AudioProfile> studio::AudioContainer::get_profile(float /*sampler
 	//if we already have done our work, then we're good
 	if(profilevalid && prof)
 	{
-		//synfig::info("Using already built profile");
 		return prof;
 	}
 
-	//synfig::info("Before profile");
 	//make a new profile at current sample rate
 
 	//NOTE: We might want to reuse the structure already there...
@@ -894,7 +854,6 @@ handle<studio::AudioProfile> studio::AudioContainer::get_profile(float /*sampler
 	}
 
 	//setting the info for the sample rate
-	//synfig::info("Setting info...");
 
 	synfig::info("Building Profile...");
 	prof->samplerate = samplerate;
@@ -1056,10 +1015,7 @@ bool studio::AudioContainer::AudioImp::load(const std::string &/*filename*/,
 
 	//synfig::warning("Opened a file as a sample! :)");
 
-	/*{
-		int bufferlen = FSOUND_DSP_GetBufferLength();
-		synfig::info("Buffer length = %d samples, %.3lf s",bufferlen, bufferlen / (double)FSOUND_GetOutputRate());
-	}*/
+
 
 	//set all the variables since everything has worked out...
 	//get the length of the stream
@@ -1069,8 +1025,6 @@ bool studio::AudioContainer::AudioImp::load(const std::string &/*filename*/,
 		int volume = 0;
 		FSOUND_Sample_GetDefaults(sm,&sfreq,&volume,0,0);
 
-		//double len = length / (double)sfreq;
-		//synfig::info("Sound info: %.2lf s long, %d Hz, %d Vol",(double)length,sfreq,volume);
 	}
 
 	//synfig::warning("Got all info, and setting up everything, %.2f sec.", length);
@@ -1117,7 +1071,6 @@ void studio::AudioContainer::AudioImp::play(double /*t*/)
 	if(t < 0)
 	{
 		unsigned int timeout = (int)floor(-t * 1000 + 0.5);
-		//synfig::info("Playing audio delayed by %d ms",timeout);
 		//delay for t seconds...
 		delaycon = Glib::signal_timeout().connect(
 						sigc::mem_fun(*this,&studio::AudioContainer::AudioImp::start_playing_now),timeout);
@@ -1141,7 +1094,6 @@ void studio::AudioContainer::AudioImp::play(double /*t*/)
 	FSOUND_SetCurrentPosition(channel,position);
 	FSOUND_SetPaused(channel,false);
 
-	//synfig::info("Playing audio with position %d samples",position);
 
 	#endif
 }
@@ -1195,7 +1147,6 @@ void studio::AudioContainer::AudioImp::start_scrubbing(double t)
 void studio::AudioContainer::AudioImp::start_scrubbing(double /*t*/)
 #endif
 {
-	//synfig::info("Start scrubbing: %lf", t);
 	if(playing) stop();
 
 	set_scrubbing(true);
@@ -1232,21 +1183,18 @@ void studio::AudioContainer::AudioImp::start_scrubbing(double /*t*/)
 		scrinfo.pos = curscrubpos;
 		scrinfo.delaystart = delay_factor*buffer_length_sec;
 
-		//synfig::info("\tStarting at %d samps, with %d p %.3f delay",
 		//				FSOUND_GetCurrentPosition(channel), (int)scrinfo.pos, scrinfo.delaystart);
 	}
 
 
 
 	//enable the dsp...
-	//synfig::info("\tActivating DSP");
 	FSOUND_DSP_SetActive(scrubdspunit,true);
 	#endif
 }
 
 void studio::AudioContainer::AudioImp::stop_scrubbing()
 {
-	//synfig::info("Stop scrubbing");
 
 	if(is_scrubbing())
 	{
@@ -1256,7 +1204,6 @@ void studio::AudioContainer::AudioImp::stop_scrubbing()
 		g_scrubdata.scrub = 0;
 
 		//stop the dsp...
-		//synfig::info("\tDeactivating DSP");
 		FSOUND_DSP_SetActive(scrubdspunit,false);
 		if(FSOUND_IsPlaying(channel)) FSOUND_SetPaused(channel,true);
 		#endif
@@ -1272,7 +1219,6 @@ void studio::AudioContainer::AudioImp::scrub(double /*t*/)
 #endif
 {
 	#ifdef WITH_FMOD
-	//synfig::info("Scrub to %lf",t);
 	if(is_scrubbing())
 	{
 		//What should we do?
@@ -1293,7 +1239,6 @@ void studio::AudioContainer::AudioImp::scrub(double /*t*/)
 			//Outside so completely stopped...
 			if(newpos < 0 || oldpos >= length)
 			{
-				//synfig::info("\tOut +");
 				if(FSOUND_IsPlaying(channel))
 				{
 					FSOUND_SetPaused(channel,true);
@@ -1309,20 +1254,7 @@ void studio::AudioContainer::AudioImp::scrub(double /*t*/)
 			}
 
 			//going in? - start the sound at the beginning...
-			/*else if(oldpos < 0)
-			{
-				//Set up the sound to be playing paused at the start...
-				init_play();
-				FSOUND_SetCurrentPosition(channel,0);
 
-				synfig::info("\tIn + %d", FSOUND_GetCurrentPosition(channel));
-
-				scrinfo.Lock();
-				scrinfo.pos = 0;
-				scrinfo.delaystart = delay_factor*buffer_length_sec;
-				scrinfo.deltatime = 0;
-				scrinfo.Unlock();
-			}*/
 			//don't need to deal with leaving... automatically dealt with...
 
 			else //We're all inside...
@@ -1334,7 +1266,6 @@ void studio::AudioContainer::AudioImp::scrub(double /*t*/)
 				//should we restart the delay cycle... (is it done?)
 				if(!isRunning() || (scrinfo.delaystart <= 0 && scrinfo.deltatime <= 0 && isPaused()))
 				{
-					//synfig::info("Starting + at %d",(int)newpos);
 					scrinfo.deltatime = 0;
 					scrinfo.delaystart = delay_factor*buffer_length_sec;
 					scrinfo.Unlock();
@@ -1363,7 +1294,6 @@ void studio::AudioContainer::AudioImp::scrub(double /*t*/)
 			//completely stopped...
 			if(newpos >= length || oldpos < 0)
 			{
-				//synfig::info("Out -");
 				if(FSOUND_IsPlaying(channel))
 				{
 					FSOUND_SetPaused(channel,true);
@@ -1377,19 +1307,7 @@ void studio::AudioContainer::AudioImp::scrub(double /*t*/)
 			}
 
 			//going in? - start going backwards at the end...
-			/*else if(oldpos >= length)
-			{
-				synfig::info("In -");
-				//Set up the sound to be playing paused at the start...
-				init_play();
-				FSOUND_SetCurrentPosition(channel,length-1);
 
-				scrinfo.Lock();
-				scrinfo.pos = length-1;
-				scrinfo.delaystart = delay_factor*buffer_length_sec;
-				scrinfo.deltatime = 0;
-				scrinfo.Unlock();
-			}*/
 			//we don't have to worry about the leaving case...
 
 			else //We're all inside...
@@ -1401,7 +1319,6 @@ void studio::AudioContainer::AudioImp::scrub(double /*t*/)
 				//should we restart the delay cycle... (is it done?)
 				if(!isRunning() ||(scrinfo.delaystart <= 0 && scrinfo.deltatime <= 0 && isPaused()))
 				{
-					//synfig::info("Starting - at %d",(int)newpos);
 					scrinfo.deltatime = 0;
 					scrinfo.delaystart = delay_factor*buffer_length_sec;
 					scrinfo.Unlock();

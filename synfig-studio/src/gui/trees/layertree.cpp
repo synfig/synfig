@@ -82,7 +82,7 @@ using namespace studio;
 	button->set_tooltip_text(tooltip);	\
 	icon->set_padding(0,0);\
 	icon->show();	\
-	/*button->set_relief(Gtk::RELIEF_NONE);*/ \
+ \
 	button->show()
 #endif
 
@@ -102,17 +102,10 @@ LayerTree::LayerTree():
 	param_tree_view_=new Gtk::TreeView;
 	layer_tree_view_=new Gtk::TreeView;
 
-	//Gtk::HPaned* hpaned(manage(new Gtk::HPaned()));
-	//hpaned->show();
-	//attach(*hpaned, 0, 3, 0, 1, Gtk::EXPAND|Gtk::FILL,Gtk::EXPAND|Gtk::FILL, 0, 0);
-	//attach(*create_layer_tree(), 0, 3, 0, 1, Gtk::EXPAND|Gtk::FILL,Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 	create_layer_tree();
 	create_param_tree();
 
-	//hpaned->pack1(*create_layer_tree(),false,false);
-	//hpaned->pack2(*create_param_tree(),true,false);
-	//hpaned->set_position(200);
 	hbox=manage(new Gtk::HBox());
 
 	attach(*hbox, 0, 1, 1, 2, Gtk::FILL|Gtk::SHRINK, Gtk::SHRINK, 0, 0);
@@ -126,7 +119,6 @@ LayerTree::LayerTree():
 	layer_amount_adjustment_->signal_value_changed().connect(sigc::mem_fun(*this, &studio::LayerTree::on_amount_value_changed));
 
 	Gtk::Image *icon;
-	//Gtk::IconSize iconsize(Gtk::IconSize::from_name("synfig-small_icon"));
 	Gtk::IconSize iconsize(Gtk::ICON_SIZE_SMALL_TOOLBAR);
 
 	SMALL_BUTTON(button_raise,"gtk-go-up","Raise");
@@ -141,11 +133,6 @@ LayerTree::LayerTree():
 	hbox->pack_start(*button_encapsulate,Gtk::PACK_SHRINK);
 	hbox->pack_start(*button_delete,Gtk::PACK_SHRINK);
 
-	// button_raise->signal_clicked().connect(sigc::mem_fun(*this, &studio::LayerTree::on_raise_pressed));
-	// button_lower->signal_clicked().connect(sigc::mem_fun(*this, &studio::LayerTree::on_lower_pressed));
-	// button_duplicate->signal_clicked().connect(sigc::mem_fun(*this, &studio::LayerTree::on_duplicate_pressed));
-	// button_encapsulate->signal_clicked().connect(sigc::mem_fun(*this, &studio::LayerTree::on_encapsulate_pressed));
-	// button_delete->signal_clicked().connect(sigc::mem_fun(*this, &studio::LayerTree::on_delete_pressed));
 
 	button_raise->set_sensitive(false);
 	button_lower->set_sensitive(false);
@@ -157,7 +144,6 @@ LayerTree::LayerTree():
 
 	get_layer_tree_view().set_reorderable(true);
 	get_selection()->set_mode(Gtk::SELECTION_MULTIPLE);
-	//get_param_tree_view().get_selection()->set_mode(Gtk::SELECTION_MULTIPLE);
 	get_layer_tree_view().show();
 	get_param_tree_view().show();
 
@@ -262,7 +248,6 @@ LayerTree::create_layer_tree()
 	Gtk::ScrolledWindow *scroll = manage(new class Gtk::ScrolledWindow());
 	scroll->set_can_focus(true);
 	scroll->set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
-	//scroll->add(get_layer_tree_view());
 	scroll->set_shadow_type(Gtk::SHADOW_ETCHED_IN);
 	scroll->show();
 
@@ -298,7 +283,6 @@ LayerTree::create_param_tree()
 		column->add_attribute(icon_cellrenderer->property_pixbuf(), param_model.icon);
 
 		// Pack the label into the column
-		//column->pack_start(layer_model.label,true);
 		Gtk::CellRendererText* text_cellrenderer = Gtk::manage( new Gtk::CellRendererText() );
 		column->pack_start(*text_cellrenderer,false);
 		column->add_attribute(text_cellrenderer->property_text(), param_model.label);
@@ -308,7 +292,6 @@ LayerTree::create_param_tree()
 		column->add_attribute(text_cellrenderer->property_foreground_set(),param_model.is_inconsistent);
 
 		// Pack the label into the column
-		//column->pack_start(param_model.label,true);
 
 		// Set up the value-node icon cell-renderer to be on the far right
 		Gtk::CellRendererPixbuf* valuenode_icon_cellrenderer = Gtk::manage( new Gtk::CellRendererPixbuf() );
@@ -434,7 +417,6 @@ LayerTree::create_param_tree()
 	Gtk::ScrolledWindow *scroll = manage(new class Gtk::ScrolledWindow());
 	scroll->set_can_focus(true);
 	scroll->set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
-	//scroll->add(get_param_tree_view());
 	scroll->set_shadow_type(Gtk::SHADOW_ETCHED_IN);
 	scroll->show();
 
@@ -442,7 +424,6 @@ LayerTree::create_param_tree()
 	param_tree_style_changed = true;
 	param_tree_header_height = 0;
 
-	//column_time_track->set_visible(false);
 
 	return scroll;
 }
@@ -455,7 +436,6 @@ LayerTree::on_waypoint_changed( synfig::Waypoint waypoint , synfig::ValueNode::H
 	param_list.add("canvas_interface",layer_tree_store_->canvas_interface());
 	param_list.add("value_node",value_node);
 	param_list.add("waypoint",waypoint);
-//	param_list.add("time",canvas_interface()->get_time());
 
 	etl::handle<studio::Instance>::cast_static(layer_tree_store_->canvas_interface()->get_instance())->process_action("WaypointSetSmart", param_list);
 }
@@ -614,8 +594,6 @@ LayerTree::get_expanded_layers(LayerList &list, const Gtk::TreeNodeChildren &row
 void
 LayerTree::set_show_timetrack(bool x)
 {
-	//column_time_track->set_visible(x);
-//	column_time_track->set_visible(false);
 	column_z_depth->set_visible(x);
 }
 
@@ -653,8 +631,6 @@ LayerTree::set_model(Glib::RefPtr<LayerTreeStore> layer_tree_store)
 
 		sorted_layer_tree_store_->set_default_sort_func(sigc::ptr_fun(&studio::LayerTreeStore::z_sorter));
 
-		//sorted_store->set_sort_func(model.time.index(),sigc::mem_fun(&studio::KeyframeTreeStore::time_sorter));
-		//sorted_store->set_sort_column(model.time.index(), Gtk::SORT_ASCENDING);
 
 		get_layer_tree_view().set_model(sorted_layer_tree_store_);
 	}
@@ -663,7 +639,6 @@ LayerTree::set_model(Glib::RefPtr<LayerTreeStore> layer_tree_store)
 
 	layer_tree_store_->canvas_interface()->signal_dirty_preview().connect(sigc::mem_fun(*this,&studio::LayerTree::on_dirty_preview));
 
-	//layer_tree_store_->canvas_interface()->signal_dirty_preview().connect(sigc::mem_fun(*this,&studio::LayerTree::on_dirty_preview));
 
 	layer_tree_store_->canvas_interface()->signal_time_changed().connect(
 		sigc::mem_fun(
@@ -696,22 +671,7 @@ LayerTree::set_time_adjustment(const Glib::RefPtr<Gtk::Adjustment> &adjustment)
 void
 LayerTree::on_dirty_preview()
 {
-/*
-	if(quick_layer && !disable_amount_changed_signal)
-	{
-		layer_amount_hscale->set_sensitive(true);
-		disable_amount_changed_signal=true;
-		layer_amount_adjustment_->set_value(quick_layer->get_param("amount").get(Real()));
-		disable_amount_changed_signal=false;
-		if(quick_layer->get_param("blend_method").is_valid())
-		{
-			blend_method_widget.set_sensitive(true);
-			disable_amount_changed_signal=true;
-			blend_method_widget.set_value(quick_layer->get_param("blend_method"));
-			disable_amount_changed_signal=false;
-		}
-	}
-*/
+
 }
 
 void
@@ -828,7 +788,6 @@ LayerTree::on_edited_value(const Glib::ustring&path_string,synfig::ValueBase val
 	if(!row)
 		return;
 	row[param_model.value]=value;
-	//signal_edited_value()(row[param_model.value_desc],value);
 }
 
 void
@@ -893,9 +852,7 @@ LayerTree::on_layer_tree_event(GdkEvent *event)
 			int cell_x, cell_y;
 			if(!get_layer_tree_view().get_path_at_pos(
 				int(event->button.x),int(event->button.y),	// x, y
-				path, // TreeModel::Path&
-				column, //TreeViewColumn*&
-				cell_x,cell_y //int&cell_x,int&cell_y
+				path,				column,				cell_x,cell_y //int&cell_x,int&cell_y
 				)
 			) break;
 			const Gtk::TreeRow row = *(get_layer_tree_view().get_model()->get_iter(path));
@@ -920,16 +877,13 @@ LayerTree::on_layer_tree_event(GdkEvent *event)
 			int cell_x, cell_y;
 			if(!get_layer_tree_view().get_path_at_pos(
 				(int)event->button.x,(int)event->button.y,	// x, y
-				path, // TreeModel::Path&
-				column, //TreeViewColumn*&
-				cell_x,cell_y //int&cell_x,int&cell_y
+				path,				column,				cell_x,cell_y //int&cell_x,int&cell_y
 				)
 			) break;
 
 			if(!get_layer_tree_view().get_model()->get_iter(path))
 				break;
 
-			//Gtk::TreeRow row = *(get_layer_tree_view().get_model()->get_iter(path));
 
 #ifdef TIMETRACK_IN_PARAMS_PANEL
 			if(cellrenderer_time_track==column->get_first_cell())
@@ -938,16 +892,7 @@ LayerTree::on_layer_tree_event(GdkEvent *event)
 			//else
 #endif	// TIMETRACK_IN_PARAMS_PANEL
 			//if(last_tooltip_path.get_depth()<=0 || path!=last_tooltip_path)
-			//{
-				//tooltips_.unset_tip(*this);
-				//Glib::ustring tooltips_string(row[layer_model.tooltip]);
 				//last_tooltip_path=path;
-				//if(!tooltips_string.empty())
-				//{
-					//tooltips_.set_tip(*this,tooltips_string);
-					//tooltips_.force_window();
-				//}
-			//}
 		}
 		break;
 	case GDK_BUTTON_RELEASE:
@@ -970,9 +915,7 @@ LayerTree::on_param_tree_event(GdkEvent *event)
 			int cell_x, cell_y;
 			if(!get_param_tree_view().get_path_at_pos(
 				int(event->button.x),int(event->button.y),	// x, y
-				path, // TreeModel::Path&
-				column, //TreeViewColumn*&
-				cell_x,cell_y //int&cell_x,int&cell_y
+				path,				column,				cell_x,cell_y //int&cell_x,int&cell_y
 				)
 			) break;
 			const Gtk::TreeRow row = *(get_param_tree_view().get_model()->get_iter(path));
@@ -1032,9 +975,7 @@ LayerTree::on_param_tree_event(GdkEvent *event)
 			int cell_x, cell_y;
 			if(!get_param_tree_view().get_path_at_pos(
 				(int)event->motion.x,(int)event->motion.y,	// x, y
-				path, // TreeModel::Path&
-				column, //TreeViewColumn*&
-				cell_x,cell_y //int&cell_x,int&cell_y
+				path,				column,				cell_x,cell_y //int&cell_x,int&cell_y
 				)
 			) break;
 
@@ -1052,7 +993,6 @@ LayerTree::on_param_tree_event(GdkEvent *event)
 				cellrenderer_time_track->property_canvas()=row[param_model.canvas];
 				cellrenderer_time_track->activate(event,*this,path.to_string(),rect,rect,Gtk::CellRendererState());
 				get_param_tree_view().queue_draw();
-				//get_param_tree_view().queue_draw_area(rect.get_x(),rect.get_y(),rect.get_width(),rect.get_height());
 				return true;
 			}
 #endif	// TIMETRACK_IN_PARAMS_PANEL
@@ -1065,9 +1005,7 @@ LayerTree::on_param_tree_event(GdkEvent *event)
 			int cell_x, cell_y;
 			if(!get_param_tree_view().get_path_at_pos(
 				(int)event->button.x,(int)event->button.y,	// x, y
-				path, // TreeModel::Path&
-				column, //TreeViewColumn*&
-				cell_x,cell_y //int&cell_x,int&cell_y
+				path,				column,				cell_x,cell_y //int&cell_x,int&cell_y
 				)
 			) break;
 
@@ -1148,203 +1086,30 @@ LayerTree::on_layer_tree_view_query_tooltip(int x, int y, bool keyboard_tooltip,
 }
 
 // void
-// LayerTree::on_raise_pressed()
-// {
-// 	synfigapp::Action::ParamList param_list;
-// 	param_list.add("time",layer_tree_store_->canvas_interface()->get_time());
-// 	param_list.add("canvas",layer_tree_store_->canvas_interface()->get_canvas());
-// 	param_list.add("canvas_interface",layer_tree_store_->canvas_interface());
 //
-// 	{
-// 		synfigapp::SelectionManager::LayerList layer_list(get_selection_manager()->get_selected_layers());
-// 		synfigapp::SelectionManager::LayerList::iterator iter;
 //
-// 		for(iter=layer_list.begin();iter!=layer_list.end();++iter)
-// 			param_list.add("layer",Layer::Handle(*iter));
-// 	}
-// 	synfigapp::Action::Handle action(synfigapp::Action::create("LayerRaise"));
-// 	action->set_param_list(param_list);
-// 	layer_tree_store_->canvas_interface()->get_instance()->perform_action(action);
-// }
 
 // void
-// LayerTree::on_lower_pressed()
-// {
-// 	synfigapp::Action::ParamList param_list;
-// 	param_list.add("time",layer_tree_store_->canvas_interface()->get_time());
-// 	param_list.add("canvas",layer_tree_store_->canvas_interface()->get_canvas());
-// 	param_list.add("canvas_interface",layer_tree_store_->canvas_interface());
 //
-// 	{
-// 		synfigapp::SelectionManager::LayerList layer_list(get_selection_manager()->get_selected_layers());
-// 		synfigapp::SelectionManager::LayerList::iterator iter;
 //
-// 		for(iter=layer_list.begin();iter!=layer_list.end();++iter)
-// 			param_list.add("layer",Layer::Handle(*iter));
-// 	}
 //
-// 	synfigapp::Action::Handle action(synfigapp::Action::create("LayerLower"));
-// 	action->set_param_list(param_list);
-// 	layer_tree_store_->canvas_interface()->get_instance()->perform_action(action);
-// }
 
 // void
-// LayerTree::on_duplicate_pressed()
-// {
-// 	synfigapp::Action::ParamList param_list;
-// 	param_list.add("time",layer_tree_store_->canvas_interface()->get_time());
-// 	param_list.add("canvas",layer_tree_store_->canvas_interface()->get_canvas());
-// 	param_list.add("canvas_interface",layer_tree_store_->canvas_interface());
 //
-// 	{
-// 		synfigapp::SelectionManager::LayerList layer_list(get_selection_manager()->get_selected_layers());
-// 		synfigapp::SelectionManager::LayerList::iterator iter;
 //
-// 		for(iter=layer_list.begin();iter!=layer_list.end();++iter)
-// 			param_list.add("layer",Layer::Handle(*iter));
-// 	}
 //
-// 	synfigapp::Action::Handle action(synfigapp::Action::create("LayerDuplicate"));
-// 	action->set_param_list(param_list);
-// 	layer_tree_store_->canvas_interface()->get_instance()->perform_action(action);
-// }
 
 // void
-// LayerTree::on_encapsulate_pressed()
-// {
-// 	synfigapp::Action::ParamList param_list;
-// 	param_list.add("time",layer_tree_store_->canvas_interface()->get_time());
-// 	param_list.add("canvas",layer_tree_store_->canvas_interface()->get_canvas());
-// 	param_list.add("canvas_interface",layer_tree_store_->canvas_interface());
 //
-// 	{
-// 		synfigapp::SelectionManager::LayerList layer_list(get_selection_manager()->get_selected_layers());
-// 		synfigapp::SelectionManager::LayerList::iterator iter;
 //
-// 		for(iter=layer_list.begin();iter!=layer_list.end();++iter)
-// 			param_list.add("layer",Layer::Handle(*iter));
-// 	}
 //
-// 	synfigapp::Action::Handle action(synfigapp::Action::create("LayerEncapsulate"));
-// 	action->set_param_list(param_list);
-// 	layer_tree_store_->canvas_interface()->get_instance()->perform_action(action);
-// }
 
 // void
-// LayerTree::on_delete_pressed()
-// {
-// 	synfigapp::Action::ParamList param_list;
-// 	param_list.add("time",layer_tree_store_->canvas_interface()->get_time());
-// 	param_list.add("canvas",layer_tree_store_->canvas_interface()->get_canvas());
-// 	param_list.add("canvas_interface",layer_tree_store_->canvas_interface());
 //
-// 	{
-// 		synfigapp::SelectionManager::LayerList layer_list(get_selection_manager()->get_selected_layers());
-// 		synfigapp::SelectionManager::LayerList::iterator iter;
 //
-// 		for(iter=layer_list.begin();iter!=layer_list.end();++iter)
-// 			param_list.add("layer",Layer::Handle(*iter));
-// 	}
 //
-// 	synfigapp::Action::Handle action(synfigapp::Action::create("LayerRemove"));
-// 	action->set_param_list(param_list);
-// 	layer_tree_store_->canvas_interface()->get_instance()->perform_action(action);
-// }
 
-/*
-void
-LayerTree::on_drag_data_get(const Glib::RefPtr<Gdk::DragContext>&context, Gtk::SelectionData& selection_data, guint info, guint time)
-{
-	synfig::info("Dragged data of type \"%s\"",selection_data.get_data_type());
-	synfig::info("Dragged data of target \"%s\"",gdk_atom_name(selection_data->target));
-	synfig::info("Dragged selection=\"%s\"",gdk_atom_name(selection_data->selection));
 
-	Gtk::TreeModel::Path path;
-	Gtk::TreeViewColumn *column;
-	int cell_x, cell_y;
-	if(get_selection()
-	Gtk::TreeRow row = *(get_selection()->get_selected());
-
-	if(synfig::String(gdk_atom_name(selection_data->target))=="LAYER" && (bool)row[model.is_layer])
-	{
-		Layer* layer(((Layer::Handle)row[model.layer]).get());
-		assert(layer);
-		selection_data.set(8, reinterpret_cast<const guchar*>(&layer), sizeof(layer));
-		return;
-	}
-}
-
-void
-LayerTree::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, Gtk::SelectionData& selection_data, guint info, guint time)
-{
-	synfig::info("Dropped data of type \"%s\"",selection_data.get_data_type());
-	synfig::info("Dropped data of target \"%s\"",gdk_atom_name(selection_data->target));
-	synfig::info("Dropped selection=\"%s\"",gdk_atom_name(selection_data->selection));
-	synfig::info("Dropped x=%d, y=%d",x,y);
-	bool success=false;
-	bool dropped_on_specific_row=false;
-
-	Gtk::TreeModel::Path path;
-	Gtk::TreeViewColumn *column;
-	int cell_x, cell_y;
-	if(!get_path_at_pos(
-		x,y,	// x, y
-		path, // TreeModel::Path&
-		column, //TreeViewColumn*&
-		cell_x,cell_y //int&cell_x,int&cell_y
-		)
-	)
-	{
-		dropped_on_specific_row=false;
-	}
-	else
-		dropped_on_specific_row=true;
-
-	Gtk::TreeRow row = *(get_model()->get_iter(path));
-
-	if ((selection_data.get_length() >= 0) && (selection_data.get_format() == 8))
-	{
-		if(synfig::String(selection_data.get_data_type())=="LAYER")do
-		{
-			Layer::Handle src(*reinterpret_cast<Layer**>(selection_data.get_data()));
-			assert(src);
-
-			Canvas::Handle dest_canvas;
-			Layer::Handle dest_layer;
-
-			if(dropped_on_specific_row)
-			{
-				dest_canvas=(Canvas::Handle)(row[model.canvas]);
-				dest_layer=(Layer::Handle)(row[model.layer]);
-				assert(dest_canvas);
-			}
-			else
-				dest_canvas=layer_tree_store_->canvas_interface()->get_canvas();
-
-			// In this case, we are just moving.
-			if(dest_canvas==src->get_canvas())
-			{
-				if(!dest_layer || dest_layer==src)
-					break;
-
-				synfigapp::Action::Handle action(synfigapp::Action::create("LayerMove"));
-				action->set_param("canvas",dest_canvas);
-				action->set_param("canvas_interface",layer_tree_store_->canvas_interface());
-				action->set_param("layer",src);
-				action->set_param("new_index",dest_canvas->get_depth(dest_layer));
-				if(layer_tree_store_->canvas_interface()->get_instance()->perform_action(action))
-					success=true;
-				else
-					success=false;
-				break;
-			}
-		}while(0);
-	}
-
-	// Finish the drag
-	context->drag_finish(success, false, time);
-}
-*/
 
 /*bool
 LayerTree::on_drag_motion(const Glib::RefPtr<Gdk::DragContext>& context,int x, int    y, guint    time)
@@ -1357,35 +1122,7 @@ LayerTree::on_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& context, 
 {
 	get_layer_tree_view().on_drag_data_received(context,x,y,selection_data,info,time);
 */
-/*
-	if(context->gobj()->source_window==context->gobj()->dest_window)
-	{
-		Gtk::TreeView::on_drag_data_received(context,x,y,selection_data,info,time);
-		return;
-	}
 
-	Gtk::TreeModel::Path path;
-	Gtk::TreeViewColumn *column;
-	int cell_x, cell_y;
-	if(!get_path_at_pos(
-		x,y,	// x, y
-		path, // TreeModel::Path&
-		column, //TreeViewColumn*&
-		cell_x,cell_y //int&cell_x,int&cell_y
-		)
-	)
-	{
-		context->drag_finish(false, false, time);
-	}
-
-	if(layer_tree_store_->row_drop_possible(path,selection_data))
-	{
-		if(layer_tree_store_->drag_data_received(path,selection_data))
-			context->drag_finish(true, false, time);
-	}
-	context->drag_finish(false, false, time);
-}
-*/
 
 void
 LayerTree::on_param_column_label_tree_style_updated()

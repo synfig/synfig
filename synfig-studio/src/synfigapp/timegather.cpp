@@ -89,15 +89,11 @@ void synfigapp::timepoints_ref::insert(synfigapp::ValueDesc v, synfig::Activepoi
 	if(i != actpointbiglist.end())
 	{
 		i->activepoints.insert(a);
-		/*{ //if it fails...
-			synfig::info("!!!!For some reason it wasn't able to insert the activepoint in the list (%s,%.4lg)",
-							a.state?"true":"false", (double)a.time);
-		}*/
+
 	}else
 	{
 		vt.activepoints.insert(a);
 		actpointbiglist.insert(vt);
-		//synfig::info("Insert new activept list for valdesc");
 	}
 }
 
@@ -106,7 +102,6 @@ void synfigapp::recurse_canvas(synfig::Canvas::Handle h, const std::set<Time> &t
 								timepoints_ref &vals, synfig::Time time_offset, synfig::Real time_dilation)
 {
 
-	//synfig::info("Canvas...\n Recurse through layers");
 	// iterate through the layers
 
 	synfig::Canvas::iterator i = h->begin(), end = h->end();
@@ -128,11 +123,9 @@ void synfigapp::recurse_layer(synfig::Layer::Handle h, const std::set<Time> &tli
 	//check for special case of paste canvas
 	etl::handle<synfig::Layer_PasteCanvas> p = etl::handle<synfig::Layer_PasteCanvas>::cast_dynamic(h);
 
-	//synfig::info("Layer...");
 
 	if(p)
 	{
-		//synfig::info("We are a paste canvas so go into that");
 		//recurse into the canvas
 		const synfig::Node::time_set &tset = p->get_sub_canvas()->get_times();
 		synfig::Real subcanvas_time_dilation(p->get_time_dilation());
@@ -144,7 +137,6 @@ void synfigapp::recurse_layer(synfig::Layer::Handle h, const std::set<Time> &tli
 	}
 
 	//check all the valuenodes regardless...
-	//synfig::info("Recurse all valuenodes");
 	synfig::Layer::DynamicParamList::const_iterator 	i = h->dynamic_param_list().begin(),
 													end = h->dynamic_param_list().end();
 	for(; i != end; ++i)
@@ -177,7 +169,6 @@ void synfigapp::recurse_valuedesc(synfigapp::ValueDesc h, const std::set<Time> &
 {
 	//special cases for Animated, DynamicList, and Linkable
 
-	//synfig::info("ValueBasenode... %p, %s", h.get_value_node().get(),typeid(*h.get_value_node()).name());
 
 
 	//animated case
@@ -196,7 +187,6 @@ void synfigapp::recurse_valuedesc(synfigapp::ValueDesc h, const std::set<Time> &
 												jend = tlist.end();
 			for(; i != end && j != jend;)
 			{
-				//synfig::info("tpair t(%.3f) = %.3f", (float)*j, (float)(i->get_time()));
 
 				if((*j*time_dilation+time_offset).is_equal(i->get_time()))
 				{
@@ -223,7 +213,6 @@ void synfigapp::recurse_valuedesc(synfigapp::ValueDesc h, const std::set<Time> &
 			//check all the active points in each list...
 			const synfig::ActivepointList &a = p->list[index].timing_info;
 
-			//synfig::info("Our parent = dynamic list, searching in %d activepts",a.size());
 
 			std::set<Time>::const_iterator			i = tlist.begin(),
 													end = tlist.end();
@@ -237,24 +226,19 @@ void synfigapp::recurse_valuedesc(synfigapp::ValueDesc h, const std::set<Time> &
 				double jt = j->get_time();
 				double diff = (double)(it - jt);
 
-				//synfig::info("\ttpair match(%.4lg) - %.4lg (diff = %lg",it,jt,diff);
 
 				//
 				if(abs(diff) < (double)Time::epsilon())
 				{
-					//synfig::info("\tActivepoint to add being referenced (%x,%s,%.4lg)",
-					//				(int)j->get_uid(),j->state?"true":"false", (double)j->time);
 					vals.insert(ValueDesc(p,index),*j,time_dilation);
 					++i,++j;
 				}else if(it < jt)
 				{
 					++i;
-					//synfig::info("\tIncrementing time");
 				}
 				else
 				{
 					++j;
-					//synfig::info("\tIncrementing actpt");
 				}
 			}
 		}
@@ -267,7 +251,6 @@ void synfigapp::recurse_valuedesc(synfigapp::ValueDesc h, const std::set<Time> &
 
 		if(p)
 		{
-			//synfig::info("Process dynamic list valuenode");
 			int index = 0;
 
 			std::vector<synfig::ValueNode_DynamicList::ListEntry>::const_iterator
@@ -293,7 +276,6 @@ void synfigapp::recurse_valuedesc(synfigapp::ValueDesc h, const std::set<Time> &
 
 		if(p)
 		{
-			//synfig::info("Process Linkable ValueBasenode");
 			int i = 0, size = p->link_count();
 
 			for(; i < size; ++i)

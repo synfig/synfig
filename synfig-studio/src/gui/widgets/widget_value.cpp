@@ -110,8 +110,6 @@ Widget_ValueBase::Widget_ValueBase():
 	bool_widget=manage(new class Gtk::CheckButton());
 	pack_start(*bool_widget);
 
-	//color_widget=manage(new class Gtk::ColorSelection());
-	//pack_start(*color_widget);
 
 	string_widget=manage(new class Gtk::Entry());
 	pack_start(*string_widget);
@@ -146,13 +144,7 @@ Widget_ValueBase::Widget_ValueBase():
 	time_widget->signal_activate().connect(sigc::mem_fun(*this,&Widget_ValueBase::activate));
 	distance_widget->signal_activate().connect(sigc::mem_fun(*this,&Widget_ValueBase::activate));
 
-	/*signal_focus_in_event().connect(
-		sigc::bind_return(
-		sigc::hide(
-			sigc::mem_fun(*this,&Widget_ValueBase::grab_focus)
-		),false
-		)
-	);*/
+
 }
 
 Widget_ValueBase::~Widget_ValueBase()
@@ -170,21 +162,15 @@ Widget_ValueBase::inside_cellrenderer()
 {
 	string_widget->set_has_frame(false);
 	// TODO: what is it?
-	//string_widget->gobj()->is_cell_renderer = true; // XXX
 
 	real_widget->set_has_frame(false);
-	//static_cast<Gtk::Entry*>(real_widget)->gobj()->is_cell_renderer = true; // XXX
 
 	distance_widget->set_has_frame(false);
-	//static_cast<Gtk::Entry*>(distance_widget)->gobj()->is_cell_renderer = true; // XXX
 
 	integer_widget->set_has_frame(false);
-	//static_cast<Gtk::Entry*>(integer_widget)->gobj()->is_cell_renderer = true; // XXX
 	vector_widget->set_has_frame(false);
-    //vector_widget->set_digits(10);
 
 	color_widget->set_has_frame(false);
-    //color_widget->set_digits(10);
 	filename_widget->set_has_frame(false);
 	time_widget->set_has_frame(false);
 }
@@ -335,15 +321,7 @@ Widget_ValueBase::set_value(const synfig::ValueBase &data)
 		{
 			color_widget->set_value(value.get(synfig::Color()));
 			color_widget->show();
-	/*
-				Gdk::Color gdkcolor;
-				synfig::Color color=value.get(synfig::Color());
-				gdkcolor.set_rgb_p(color.get_r(),color.get_g(),color.get_b());
-				color_widget->set_current_color(gdkcolor);
-				color_widget->set_has_opacity_control(true);
-				color_widget->set_current_alpha((unsigned short)(color.get_a()*65535.0));
-				color_widget->show();
-	*/
+
 		}
 		else
 		{
@@ -420,17 +398,7 @@ Widget_ValueBase::get_value()
 	if (type == type_color)
 	{
 		value=color_widget->get_value();
-/*
-		Gdk::Color gdkcolor;
-		synfig::Color color;
-		gdkcolor=color_widget->get_current_color();
-		color.set_r(gdkcolor.get_red_p());
-		color.set_g(gdkcolor.get_green_p());
-		color.set_b(gdkcolor.get_blue_p());
-		color.set_a(color_widget->get_current_alpha()/65535.0);
 
-		value=color;
-*/
 	}
 
 	return value;
@@ -498,60 +466,4 @@ Widget_ValueBase::on_grab_focus()
 		color_widget->grab_focus();
 }
 
-/*
-Glib::SignalProxy0<void>
-Widget_ValueBase::signal_activate()
-{
-	Type &type(value.get_type());
-	if (type == type_vector)
-		return vector_widget->signal_activate();
-	else
-	if (type == type_real)
-	{
-		if(param_desc.get_is_distance()&& canvas)
-			return distance_widget->signal_activate();
-		else
-			return real_widget->signal_activate();
-	}
-	else
-	if (type == type_time)
-		return time_widget->signal_activate();
-	else
-	if (type == type_angle)
-		return angle_widget->signal_activate();
-	else
-	if (type == type_bone_valuenode)
-		return bone_widget->signal_activate();
-	else
-	if (type == type_canvas)
-		return canvas_widget->signal_activate();
-	else
-	if (type == type_integer)
-	{
-		if(param_desc.get_hint()!="enum")
-			return integer_widget->signal_activate();
-		else
-			return enum_widget->signal_activate();
-	}
-	else
-	if (type == type_bool)
-		return string_widget->signal_activate();
-	else
-	if (type == type_string)
-	{
-		if(param_desc.get_hint()!="filename")
-		{
-			return string_widget->signal_activate();
-		}
-		else
-		{
-			return filename_widget->signal_activate();
-		}
-	}
-	else
-	if (type == type_color)
-		return color_widget->signal_activate();
 
-	return string_widget->signal_activate();
-}
-*/

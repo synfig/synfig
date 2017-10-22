@@ -150,7 +150,6 @@ Action::ValueNodeStaticListInsertSmart::is_ready()const
 void
 Action::ValueNodeStaticListInsertSmart::prepare()
 {
-	//clear();
 	// HACK
 	if(!first_time())
 		return;

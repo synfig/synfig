@@ -185,7 +185,6 @@ GroupActionManager::refresh()
 		}
 
 
-//		bool multiple_selected(group_tree_->get_selection()->count_selected_rows()>1);
 		LayerGroupTree::LayerList selected_layers(group_tree_->get_selected_layers());
 		std::list<synfig::String> selected_groups(group_tree_->get_selected_groups());
 

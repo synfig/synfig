@@ -86,10 +86,10 @@ struct TargetParam;
 
 enum TargetAlphaMode
 {
-	TARGET_ALPHA_MODE_KEEP,          // 0
-	TARGET_ALPHA_MODE_FILL,          // 1
-	TARGET_ALPHA_MODE_REDUCE,        // 2
-	TARGET_ALPHA_MODE_EXTRACT        // 3
+	TARGET_ALPHA_MODE_KEEP,
+	TARGET_ALPHA_MODE_FILL,
+	TARGET_ALPHA_MODE_REDUCE,
+	TARGET_ALPHA_MODE_EXTRACT
 }; // END enum TargetAlphaMode
 
 /*!	\class Target
@@ -168,9 +168,7 @@ public:
 	RendDesc desc;
 
 	//! Canvas being rendered in this target module
-	/*!
-	 ** \sa set_canvas()
-	 */
+
 	etl::handle<Canvas> canvas;
 
 	//! Render quality used for the render process of the target.

@@ -64,37 +64,7 @@ Dock_Canvases::Dock_Canvases():
 
 	add(*create_canvas_tree());
 
-/*  // \todo Implement canvas management in canvas browser
-	add_button(
-		Gtk::StockID("synfig-canvas_new"),
-		_("Insert a new canvas")
-	)->signal_clicked().connect(
-		sigc::mem_fun(
-			*this,
-			&Dock_Canvases::menu_new_canvas
-		)
-	);
 
-	add_button(
-		Gtk::StockID("gtk-delete"),
-		_("Remove selected canvas")
-	)->signal_clicked().connect(
-		sigc::mem_fun(
-			*this,
-			&Dock_Canvases::menu_delete
-		)
-	);
-
-	add_button(
-		Gtk::StockID("synfig-rename"),
-		_("Rename selected canvas")
-	)->signal_clicked().connect(
-		sigc::mem_fun(
-			*this,
-			&Dock_Canvases::menu_rename
-		)
-	);
-*/
 }
 
 Dock_Canvases::~Dock_Canvases()
@@ -108,21 +78,16 @@ Dock_Canvases::create_canvas_tree()
 	canvas_tree=manage(new class Gtk::TreeView());
 	{
 		Gtk::TreeView::Column* column = Gtk::manage( new Gtk::TreeView::Column(_("ID")) );
-//		Gtk::CellRendererPixbuf* icon_cellrenderer = Gtk::manage( new Gtk::CellRendererPixbuf() );
 
-		//column->pack_start(*icon_cellrenderer,false);
 		column->pack_start(canvas_tree_model.icon, false); //false = don't expand.
 		column->pack_start(canvas_tree_model.label);
 
 //#ifdef NDEBUG
-//		column->add_attribute(icon_cellrenderer->property_pixbuf(), canvas_tree_model.icon);
-//#endif
 
 		canvas_tree->append_column(*column);
 	}
 	canvas_tree->set_rules_hint();
 	canvas_tree->signal_row_activated().connect(sigc::mem_fun(*this,&Dock_Canvases::on_row_activate));
-	//canvas_tree->signal_event().connect(sigc::mem_fun(*this,&Dock_Canvases::on_tree_event));
 	canvas_tree->add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK);
 	canvas_tree->add_events(Gdk::BUTTON1_MOTION_MASK);
 	canvas_tree->show();

@@ -164,11 +164,7 @@ Action::LayerParamDisconnect::undo()
 {
 	layer->connect_dynamic_param(param_name,old_value_node);
 
-/*	if(layer->active() && get_canvas()->get_time()!=time)
-		set_dirty(true);
-	else
-		set_dirty(false);
-*/
+
 	layer->changed();
 	old_value_node->changed();
 

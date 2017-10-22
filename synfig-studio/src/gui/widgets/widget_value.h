@@ -27,29 +27,16 @@
 
 /* === H E A D E R S ======================================================= */
 
-//#include <gtk/gtk.h>
-//#include <gtkmm/arrow.h>
-//#include <gtkmm/image.h>
-//#include <gdkmm/pixbufloader.h>
-//#include <gtkmm/viewport.h>
 #include <gtkmm/adjustment.h>
-//#include <gtkmm/scrolledwindow.h>
 #include <gtkmm/table.h>
-//#include <gtkmm/statusbar.h>
 #include <gtkmm/button.h>
 #include <gtkmm/label.h>
-//#include <gtkmm/paned.h>
-//#include <gtkmm/treeview.h>
-//#include <gtkmm/treestore.h>
 #include <gtkmm/box.h>
 #include <gtkmm/spinbutton.h>
-//#include <gtkmm/cellrenderer/cellrenderer.h>
 #include <gtkmm/checkbutton.h>
 
-//#include <gtkmm/colorselection.h>
 #include <gtkmm/combobox.h>
 
-//#include <synfig/synfig.h>
 #include <synfig/paramdesc.h>
 #include <synfigapp/value_desc.h>
 #include <synfig/value.h>
@@ -89,7 +76,6 @@ class Widget_ValueBase : public Gtk::HBox
 	Glib::RefPtr<Gtk::Adjustment> angle_adjustment;
 
 	Gtk::CheckButton *bool_widget;
-	//Gtk::ColorSelection *color_widget;
 	Widget_BoneChooser *bone_widget;
 	Widget_ColorEdit *color_widget;
 	Widget_CanvasChooser *canvas_widget;
@@ -133,7 +119,6 @@ public:
 	void set_sensitive(bool x);
 
 	//void set_hint(std::string x) { hint=x; }
-//	std::string get_hint() { return hint; }
 
 	void set_canvas(etl::handle<synfig::Canvas> x);
 	void inside_cellrenderer();

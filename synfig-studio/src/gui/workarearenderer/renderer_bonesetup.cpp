@@ -77,7 +77,6 @@ Renderer_BoneSetup::render_vfunc(const Glib::RefPtr<Gdk::Window>& drawable,
 	if(!get_work_area())
 		return;
 
-	//const synfig::Vector focus_point(get_work_area()->get_focus_point());
 	//Warning: unused variable focus_point
 	int drawable_w = drawable->get_width();
 	int drawable_h = drawable->get_height();
@@ -85,7 +84,6 @@ Renderer_BoneSetup::render_vfunc(const Glib::RefPtr<Gdk::Window>& drawable,
 	Cairo::RefPtr<Cairo::Context> cr = drawable->create_cairo_context();
 
 	Canvas::Handle canvas(get_work_area()->get_canvas());
-	//synfig::Time cur_time(canvas->get_time());
 	//Warning: Unused variable cur_time
 	// Print out the bonesetup
 	{

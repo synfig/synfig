@@ -221,8 +221,7 @@ public:
 	Smach::event_result event_layer_selection_changed_handler(const Smach::event& /*x*/)
 	{
 		if(egress_on_selection_change)
-			throw &state_normal; //throw Smach::egress_exception();
-		return Smach::RESULT_OK;
+			throw &state_normal;		return Smach::RESULT_OK;
 	}
 
 	void toggle_layer_linear_gradient();
@@ -507,10 +506,8 @@ StateGradient_Context::StateGradient_Context(CanvasView* canvas_view):
 	get_canvas_view()->hide_tables();
 
 	// Disable the time bar
-	//get_canvas_view()->set_sensitive_timebar(false);
 
 	// Connect a signal
-	//get_work_area()->signal_user_click().connect(sigc::mem_fun(*this,&studio::StateGradient_Context::on_user_click));
 
 	App::dock_toolbox->refresh();
 }
@@ -536,24 +533,20 @@ StateGradient_Context::~StateGradient_Context()
 	save_settings();
 
 	// Restore layer clicking
-//	get_work_area()->set_allow_layer_clicks(prev_workarea_layer_status_);
 	get_work_area()->set_allow_layer_clicks(true);
 	get_work_area()->reset_cursor();
 
 	App::dialog_tool_options->clear();
 
 	// Enable the time bar
-	//get_canvas_view()->set_sensitive_timebar(true);
 
 	// Bring back the tables if they were out before
-	//if(prev_table_status)get_canvas_view()->show_tables();
 
 	// Refresh the work area
 	get_work_area()->queue_draw();
 
 	get_canvas_view()->queue_rebuild_ducks();
 
-	//get_canvas_view()->show_tables();
 
 	get_work_area()->refresh_cursor();
 
@@ -563,7 +556,6 @@ StateGradient_Context::~StateGradient_Context()
 Smach::event_result
 StateGradient_Context::event_stop_handler(const Smach::event& /*x*/)
 {
-	//throw Smach::egress_exception();
 	throw &state_normal;
 	return Smach::RESULT_OK;
 }

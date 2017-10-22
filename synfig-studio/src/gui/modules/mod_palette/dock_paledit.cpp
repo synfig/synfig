@@ -64,59 +64,7 @@ using namespace studio;
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
-/*
-class studio::PaletteSettings : public synfigapp::Settings
-{
-	Dock_PalEdit* dialog_palette;
-	synfig::String name;
-public:
-	PaletteSettings(Dock_PalEdit* window,const synfig::String& name):
-		dialog_palette(window),
-		name(name)
-	{
-		dialog_palette->dialog_settings.add_domain(this,name);
-	}
 
-	virtual ~PaletteSettings()
-	{
-		dialog_palette->dialog_settings.remove_domain(name);
-	}
-
-	virtual bool get_value(const synfig::String& key, synfig::String& value)const
-	{
-		int i(atoi(key.c_str()));
-		if(i<0 || i>=dialog_palette->size())
-			return false;
-		Color c(dialog_palette->get_color(i));
-		value=strprintf("%f %f %f %f",c.get_r(),c.get_g(),c.get_b(),c.get_a());
-		return true;
-	}
-
-	virtual bool set_value(const synfig::String& key,const synfig::String& value)
-	{
-		int i(atoi(key.c_str()));
-		if(i<0)
-			return false;
-		if(i>=dialog_palette->size())
-			dialog_palette->palette_.resize(i+1);
-		float r,g,b,a;
-		if(!strscanf(value,"%f %f %f %f",&r,&g,&b,&a))
-			return false;
-		dialog_palette->set_color(Color(r,g,b,a),i);
-		return true;
-	}
-
-	virtual KeyList get_key_list()const
-	{
-		synfigapp::Settings::KeyList ret(synfigapp::Settings::get_key_list());
-
-		int i;
-		for(i=0;i<dialog_palette->size();i++)
-			ret.push_back(strprintf("%03d",i));
-		return ret;
-	}
-};
-*/
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
@@ -190,17 +138,7 @@ Dock_PalEdit::Dock_PalEdit():
 
 	set_toolbar(*dynamic_cast<Gtk::Toolbar*>(App::ui_manager()->get_widget("/toolbar-palette")));
 
-	/*
-	add_button(
-		Gtk::StockID("gtk-add"),
-		_("Add current outline color\nto the palette")
-	)->signal_clicked().connect(
-		sigc::mem_fun(
-			*this,
-			&Dock_PalEdit::on_add_pressed
-		)
-	);
-	*/
+
 
 	add(table);
 	table.set_homogeneous(true);
@@ -233,7 +171,6 @@ Dock_PalEdit::on_save_pressed()
 {
 	// it would be nice to have initial spal file name same as current canvas name, 
 	// use "My Palette" as temporary spal file name as a hack.
-	//synfig::String filename = selected_instance->get_file_name();
 	synfig::String filename = "My Palette";
 	while (App::dialog_save_file_spal(_("Please choose a file name"), filename, ANIMATION_DIR_PREFERENCE))
 	{
@@ -494,19 +431,7 @@ Dock_PalEdit::set_default_palette()
 	}
 
 
-	/*
-	const int levels(3);
 
-	for(int i=0;i<levels*levels*levels;i++)
-	{
-		Color c(
-			float(i%levels)/(float)(levels-1),
-			float(i/levels%levels)/(float)(levels-1),
-			float(i/(levels*levels))/(float)(levels-1)
-		);
-		palette_.push_back(c);
-	}
-	*/
 	refresh();
 }
 

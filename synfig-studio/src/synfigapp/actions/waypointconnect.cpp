@@ -137,12 +137,7 @@ Action::WaypointConnect::perform()
 	old_value_node=iter->get_value_node();
 	iter->set_value_node(new_value_node);
 
-	/*set_dirty(true);
 
-	if(get_canvas_interface())
-	{
-		get_canvas_interface()->signal_value_node_changed()(parent_value_node);
-	}*/
 }
 
 void
@@ -152,10 +147,5 @@ Action::WaypointConnect::undo()
 
 	iter->set_value_node(old_value_node);
 
-	/*set_dirty(true);
 
-	if(get_canvas_interface())
-	{
-		get_canvas_interface()->signal_value_node_changed()(parent_value_node);
-	}*/
 }

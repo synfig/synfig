@@ -157,29 +157,7 @@ Action::WaypointAdd::calc_waypoint()
 	waypoint.set_before(interp==INTERPOLATION_UNDEFINED?synfigapp::Main::get_interpolation():interp);
 	waypoint.set_after(interp==INTERPOLATION_UNDEFINED?synfigapp::Main::get_interpolation():interp);
 
-/*
-	ValueNode_Animated::WaypointList &waypoint_list(value_node->waypoint_list());
-	ValueNode_Animated::WaypointList::iterator iter;
 
-	if(waypoint_list.empty())
-	{
-		waypoint.set_value((*value_node)(time));
-		return;
-	}
-
-	ValueNode_Animated::WaypointList::iterator closest=waypoint_list.begin();
-
-	for(iter=waypoint_list.begin();iter!=waypoint_list.end();++iter)
-	{
-		const Real dist(abs(iter->get_time()-time));
-		if(dist<abs(closest->get_time()-time))
-			closest=iter;
-	}
-	if(!closest->is_static())
-		waypoint.set_value_node(closest->get_value_node());
-	else
-		waypoint.set_value((*value_node)(time));
-	*/
 }
 
 void
@@ -194,11 +172,7 @@ Action::WaypointAdd::perform()
 	value_node->add(waypoint);
 
 	value_node->changed();
-/*_if(get_canvas_interface())
-	{
-		get_canvas_interface()->signal_value_node_changed()(value_node);
-	}
-	else synfig::warning("CanvasInterface not set on action");*/
+
 }
 
 void
@@ -207,9 +181,5 @@ Action::WaypointAdd::undo()
 	value_node->erase(waypoint);
 
 	value_node->changed();
-/*_if(get_canvas_interface())
-	{
-		get_canvas_interface()->signal_value_node_changed()(value_node);
-	}
-	else synfig::warning("CanvasInterface not set on action");*/
+
 }

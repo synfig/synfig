@@ -180,7 +180,6 @@ Duck::operator==(const Duck &rhs)const
 		scalar_==rhs.scalar_ &&
 		type_==rhs.type_ &&
 		transform_stack_.size()==rhs.transform_stack_.size();
-		//true;
 		//(origin_duck?*origin_duck==*rhs.origin_duck:origin==rhs.origin) &&
 		//(shared_point?*shared_point==*rhs.shared_point:point==rhs.point) ;
 }

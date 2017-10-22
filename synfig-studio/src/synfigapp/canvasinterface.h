@@ -28,7 +28,6 @@
 
 /* === H E A D E R S ======================================================= */
 
-//#include <synfig/canvas.h>
 #include <synfig/value.h>
 #include <sigc++/sigc++.h>
 #include <list>
@@ -103,7 +102,6 @@ private:
 
 	sigc::signal<void,Mode> signal_mode_changed_;
 
-	//sigc::signal<void> signal_dirty_preview_;
 
 	sigc::signal<void,synfig::Layer::Handle,synfig::String> signal_layer_param_changed_;
 
@@ -144,7 +142,6 @@ public:	// Signal Interface
 	sigc::signal<void,synfig::Layer::Handle,synfig::String>& signal_layer_param_changed() { return signal_layer_param_changed_; }
 
 	//! Signal called when the canvas's preview needs to be updated
-	//sigc::signal<void>& signal_dirty_preview() { return signal_dirty_preview_; }
 	sigc::signal<void>& signal_dirty_preview() { return get_canvas()->signal_dirty(); }
 
 	sigc::signal<void,etl::handle<synfig::ValueNode>,etl::handle<synfig::ValueNode> >&

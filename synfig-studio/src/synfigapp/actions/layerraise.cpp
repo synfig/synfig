@@ -141,7 +141,6 @@ Action::LayerRaise::prepare()
 		// If the subcanvas isn't the same as the canvas,
 		// then it had better be an inline canvas. If not,
 		// bail
-		//if(get_canvas()!=subcanvas && !subcanvas->is_inline())
 		//	throw Error(_("This layer doesn't belong to this canvas anymore"));
 
 		int new_index=iter-subcanvas->begin();

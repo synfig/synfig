@@ -102,24 +102,12 @@ public:
 	{
 		parent=0;
 		edit_done_called=false;
-/*
-		  Gtk::HBox *const hbox = new Gtk::HBox(false, 0);
-		  add(*Gtk::manage(hbox));
 
-		  Gtk::Entry *entry_ = new Gtk::Entry();
-			entry_->set_text("bleh");
-		  hbox->pack_start(*Gtk::manage(entry_), Gtk::PACK_EXPAND_WIDGET);
-		  entry_->set_has_frame(false);
-		  entry_->gobj()->is_cell_renderer = true; // XXX
-
-*/
 		valuewidget=manage(new class Widget_ValueBase());
 		valuewidget->inside_cellrenderer();
 		add(*valuewidget);
 		valuewidget->show();
 
-		//set_can_focus(true);
-		//set_events(Gdk::KEY_PRESS_MASK | Gdk::KEY_RELEASE_MASK);
 
 		/*
 		set_events(//(Gdk::ALL_EVENTS_MASK)
@@ -136,12 +124,9 @@ public:
 		)
 		);
 		*/
-		//signal_editing_done().connect(sigc::mem_fun(*this, &studio::ValueBase_Entry::hide));
-		//signal_remove_widget().connect(sigc::mem_fun(*this, &studio::ValueBase_Entry::hide));
 
 		show_all_children();
 
-		//signal_show().connect(sigc::mem_fun(*this, &ValueBase_Entry::grab_focus));
 	}
 	~ValueBase_Entry()
 	{
@@ -173,8 +158,6 @@ public:
 	{
 		valuewidget->signal_activate().connect(sigc::mem_fun(*this, &studio::ValueBase_Entry::editing_done));
 		show();
-		//valuewidget->grab_focus();
-		//get_window()->set_focus(*valuewidget);
 	}
 	bool on_event(GdkEvent *event)
 	{
@@ -201,7 +184,6 @@ public:
 	{
 		if(valuewidget)
 			valuewidget->set_value(data);
-		//valuewidget->grab_focus();
 	}
 	void set_canvas(const etl::handle<synfig::Canvas> &data)
 	{
@@ -491,7 +473,6 @@ CellRenderer_ValueBase::render_vfunc(
 	else
 	if (type == type_nil)
 	{
-		//property_text()=(Glib::ustring)" ";
 		return;
 	}
 	else
@@ -601,11 +582,7 @@ CellRenderer_ValueBase::start_editing_vfunc(
     	return NULL;
 	}
 	//else
-	//if (type == type_time)
-	//{
-	//	property_text()=(Glib::ustring)data.get(Time()).get_string(get_canvas()->rend_desc().get_frame_rate(),App::get_time_format()|Time::FORMAT_FULL);
 	//	return CellRendererText::start_editing_vfunc(event,widget,path,background_area,cell_area,flags);
-	//}
 	else
 	if (type == type_gradient)
 	{
@@ -644,7 +621,6 @@ CellRenderer_ValueBase::start_editing_vfunc(
 			signal_edited_(path,ValueBase(string));
 		return NULL;
 	}
-	// if (type == type_string) && (get_param_desc().get_hint()!="filename")
 		// return CellRendererText::start_editing_vfunc(event,widget,path,background_area,cell_area,flags);
 	else
 	{
@@ -685,6 +661,5 @@ CellRenderer_ValueBase::on_value_editing_done()
 			signal_edited_(value_entry->get_path(),value);
 
 		//delete value_entry;
-		//value_entry=0;
 	}
 }

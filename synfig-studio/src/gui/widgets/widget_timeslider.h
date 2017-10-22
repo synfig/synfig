@@ -83,7 +83,6 @@ protected: //implementation that other interfaces can see
 
 	virtual bool on_draw(const Cairo::RefPtr<Cairo::Context> &cr);
 
-	//void update_times();
 
 	void zoom_in(bool centerontime = false);
 	void zoom_out(bool centerontime = false);

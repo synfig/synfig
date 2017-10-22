@@ -113,7 +113,6 @@ ChildrenTreeStore::create(etl::loose_handle<synfigapp::CanvasInterface> canvas_i
 void
 ChildrenTreeStore::rebuild()
 {
-	// Profiler profiler("ChildrenTreeStore::rebuild()");
 	rebuild_value_nodes();
 	rebuild_canvases();
 }
@@ -121,7 +120,6 @@ ChildrenTreeStore::rebuild()
 void
 ChildrenTreeStore::refresh()
 {
-	// Profiler profiler("ChildrenTreeStore::refresh()");
 	refresh_value_nodes();
 	refresh_canvases();
 }
@@ -206,7 +204,6 @@ ChildrenTreeStore::on_canvas_added(synfig::Canvas::Handle canvas)
 
 	row[model.canvas] = canvas;
 	row[model.type] = _("Canvas");
-	//row[model.is_canvas] = true;
 	//row[model.is_value_node] = false;
 }
 
@@ -219,8 +216,6 @@ ChildrenTreeStore::on_canvas_removed(synfig::Canvas::Handle /*canvas*/)
 void
 ChildrenTreeStore::on_value_node_added(synfig::ValueNode::Handle value_node)
 {
-//	if(value_node->get_id().find("Unnamed")!=String::npos)
-//		return;
 
 	Gtk::TreeRow row = *prepend(value_node_row.children());
 
@@ -231,19 +226,16 @@ void
 ChildrenTreeStore::on_value_node_deleted(synfig::ValueNode::Handle value_node)
 {
 	Gtk::TreeIter iter;
-	//int i(0);
 
 	if(find_first_value_node(value_node,iter))
 	{
 		erase(iter);
 	}
-	//rebuild_value_nodes();
 }
 
 bool
 ChildrenTreeStore::execute_changed_value_nodes()
 {
-	// Profiler profiler("ChildrenTreeStore::execute_changed_value_nodes()");
 	if(!replaced_set_.empty())
 		rebuild_value_nodes();
 
@@ -306,32 +298,10 @@ ChildrenTreeStore::on_value_node_changed(synfig::ValueNode::Handle value_node)
 	if(!value_node->is_exported())
 		return;
 	changed_connection.disconnect();
-//	if(!execute_changed_queued())
-//		changed_connection=Glib::signal_idle().connect(sigc::mem_fun(*this,&ChildrenTreeStore::execute_changed_value_nodes));
 	changed_connection=Glib::signal_timeout().connect(sigc::mem_fun(*this,&ChildrenTreeStore::execute_changed_value_nodes),150);
 
 	changed_set_.insert(value_node);
-	/*
-	try
-	{
-		Gtk::TreeIter iter;
-		int i(0);
-		while(find_next_value_node(value_node,iter))
-		{
-			Gtk::TreeRow row(*iter);
-			i++;
-			refresh_row(row);
-		}
-		if(!i)
-		{
-			refresh_value_nodes();
-		}
-	}
-	catch(...)
-	{
-		rebuild_value_nodes();
-	}
-	*/
+
 }
 
 void
@@ -344,8 +314,6 @@ void
 ChildrenTreeStore::on_value_node_replaced(synfig::ValueNode::Handle replaced_value_node,synfig::ValueNode::Handle /*new_value_node*/)
 {
 	changed_connection.disconnect();
-	//if(!execute_changed_queued())
-//		changed_connection=Glib::signal_idle().connect(sigc::mem_fun(*this,&ChildrenTreeStore::execute_changed_value_nodes));
 		changed_connection=Glib::signal_timeout().connect(sigc::mem_fun(*this,&ChildrenTreeStore::execute_changed_value_nodes),150);
 
 	replaced_set_.insert(replaced_value_node);

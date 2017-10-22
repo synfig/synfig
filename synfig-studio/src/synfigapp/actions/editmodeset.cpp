@@ -86,14 +86,7 @@ Action::EditModeSet::is_candidate(const ParamList &x)
 bool
 Action::EditModeSet::set_param(const synfig::String& name, const Action::Param &param)
 {
-/*
-	if(name=="edit_mode" && param.get_type()==Param::TYPE_EDITMODE)
-	{
-		set_edit_mode(param.get_edit_mode());
 
-		return true;
-	}
-*/
 
 	return Action::CanvasSpecific::set_param(name,param);
 }

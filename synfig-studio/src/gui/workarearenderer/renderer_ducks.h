@@ -95,12 +95,9 @@ public:
 
 	//! \brief	Renderer for the handles (ducks) and associated (tangents, beziers, hover, tooltip ...)
 	//! \TODO immense function !! break into parts and clean
-	//! \Param[in] drawable
-	//! \Param[in] expose_area
 	void render_vfunc(const Glib::RefPtr<Gdk::Window>& drawable,const Gdk::Rectangle& expose_area	);
 
 protected:
-//	bool get_enabled_vfunc()const;
 };
 
 }; // END of namespace studio

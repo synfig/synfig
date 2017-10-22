@@ -189,22 +189,8 @@ Layer_PasteCanvas::set_param(const String & param, const ValueBase &value)
 	// incorrectly without this fix; select the outer layer and drag
 	// the time slider.  The linear waypoints don't take effect until
 	// 5s, but the time slider appears to pass the first one at 3s.
-#if 0
-	if (param=="time_offset" && value.same_type_as(time_offset))
-	{
-		if (time_offset != value.get(Time()))
-		{
-			value.put(&time_offset);
-			// notify that the time_offset has changed so we can update the
-			// waypoint positions in parent layers
-			changed();
-		}
-		return true;
-	}
-#else
 	IMPORT_VALUE(param_time_dilation);
 	IMPORT_VALUE(param_time_offset);
-#endif
 
 	IMPORT_VALUE(param_children_lock);
 	IMPORT_VALUE_PLUS(param_outline_grow,
@@ -495,9 +481,7 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 		 * or the surrounding areas will be blanked, which we don't
 		 * want.
 		 */
-#ifdef SYNFIG_CLIP_PASTECANVAS
 		if (blend_method==Color::BLEND_COMPOSITE) blend_using_straight = true;
-#endif	// SYNFIG_CLIP_PASTECANVAS
 	}
 
 	int w = renddesc.get_w();

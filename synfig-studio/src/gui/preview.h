@@ -176,7 +176,6 @@ public:
 
 	//signal interface
 	sigc::signal<void, Preview *> &	signal_destroyed() { return signal_destroyed_; }
-	//sigc::signal<void, const synfig::RendDesc &>	&signal_desc_change() {return signal_desc_change_;}
 
 	//functions for exposing iterators through the preview
 	FlipBook::iterator	begin() 	{return frames.begin();}
@@ -203,7 +202,6 @@ class Widget_Preview : public Gtk::Table
 	Gtk::HScale		scr_time_scrub;
 	Gtk::ToggleButton	b_loop;
 	Gtk::ScrolledWindow	preview_window;
-	//Glib::RefPtr<Gdk::GC>		gc_area;
 	Glib::RefPtr<Gdk::Pixbuf>	currentbuf;
 	int					currentindex;
 	//double			timeupdate;
@@ -229,7 +227,6 @@ class Widget_Preview : public Gtk::Table
 	//for accurate time tracking
 	etl::clock	timer;
 
-	//int		curindex; //for later
 	sigc::connection	timecon;
 
 	synfig::SoundProcessor soundProcessor;
@@ -237,7 +234,6 @@ class Widget_Preview : public Gtk::Table
 	void slider_move(); //later to be a time_slider that's cooler
 	bool play_update();
 
-	//bool play_frameupdate();
 	void update();
 
 	void scrub_updated(double t);

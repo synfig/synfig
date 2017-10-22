@@ -68,7 +68,6 @@ Dock_Children::Dock_Children():
 	//!       add(*tree_view) causes crashes when
 	//!       Dockable::prev_widget_ is left referencing a
 	//!       ChildrenTree that has already been destroyed.
-	// set_use_scrolled(false);
 }
 
 Dock_Children::~Dock_Children()

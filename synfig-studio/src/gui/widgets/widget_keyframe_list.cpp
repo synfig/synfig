@@ -326,7 +326,6 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 		return true;
 
 	const int x(static_cast<int>(event->button.x));
-	//const int y(static_cast<int>(event->button.y));
 	//!Boundaries of the drawing area in time units.
 	synfig::Time top(adj_timescale->get_upper());
 	synfig::Time bottom(adj_timescale->get_lower());
@@ -512,7 +511,6 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 			bool stat=false;
 			if(dragging_)
 				{
-					//if (event->button.button==3)
 					if(event->button.state & GDK_MOD1_MASK)
 					{
 						stat=perform_move_kf(true);

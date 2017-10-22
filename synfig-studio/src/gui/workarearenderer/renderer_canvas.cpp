@@ -137,19 +137,7 @@ Renderer_Canvas::render_vfunc(
 			cr->paint();
 			cr->restore();
 
-			/*
-			cr->save();
-			cr->set_antialias(Cairo::ANTIALIAS_NONE);
-			cr->set_line_width(1.0);
-			cr->set_source_rgb(0,0,0);
-			cr->rectangle(
-				i->rect.minx + window_offset[0],
-				i->rect.miny + window_offset[1],
-				i->rect.maxx - i->rect.minx,
-				i->rect.maxy - i->rect.miny );
-			cr->stroke();
-			cr->restore();
-			*/
+
 		}
 	}
 
