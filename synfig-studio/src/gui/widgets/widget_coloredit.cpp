@@ -500,9 +500,12 @@ void Widget_ColorEdit::setHVSColor(synfig::Color color)
 	gtkColor.set_red((unsigned short)(r * USHRT_MAX));
 	gtkColor.set_green((unsigned short)(g * USHRT_MAX));
 	gtkColor.set_blue((unsigned short)(b * USHRT_MAX));
-	colorHVSChanged = true;
-	hvsColorWidget->set_previous_color (gtkColor); //We can't use it there, cause color changes in realtime.
-	hvsColorWidget->set_current_color (gtkColor);
+	auto current_color = hvsColorWidget->get_current_color();
+	if (current_color != gtkColor) {
+		colorHVSChanged = true;
+		hvsColorWidget->set_previous_color (gtkColor); //We can't use it there, cause color changes in realtime.
+		hvsColorWidget->set_current_color (gtkColor);
+	}
 	colorHVSChanged = false;
 }
 
