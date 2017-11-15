@@ -34,14 +34,13 @@
 #include <gtkmm/window.h>
 #include <gtkmm/image.h>
 #include <gtkmm/tooltip.h>
-#include <gtkmm/table.h>
+#include <gtkmm/box.h>
 #include <gtkmm/statusbar.h>
 #include <gtkmm/progressbar.h>
 #include <gtkmm/button.h>
 #include <gtkmm/menu.h>
 #include <gtkmm/treeview.h>
 #include <gtkmm/treestore.h>
-#include <gtkmm/scrolledwindow.h>
 #include <gtkmm/notebook.h>
 #include <gdkmm/device.h>
 #include <gtkmm/spinbutton.h>
@@ -314,10 +313,9 @@ private:
 	Gtk::ToolButton *refreshbutton;
 	Gtk::Button *treetogglebutton;  // not used
 	Gtk::Notebook *notebook; // not used
-	Gtk::Table *timebar;
+	Gtk::VBox *timebar;
 	Gtk::Toolbar *displaybar;
 	Widget_Enum *widget_interpolation;
-	Gtk::ScrolledWindow *widget_interpolation_scroll;
 	Gtk::ToggleButton *animatebutton;
 	Gtk::ToggleButton *timetrackbutton;
 	Gtk::VBox *timetrack;
@@ -544,7 +542,6 @@ private:
 	
 	void interpolation_refresh();
 	void on_interpolation_changed();
-	void on_interpolation_event(GdkEvent *event);
 	
 	static void save_all();
 

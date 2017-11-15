@@ -50,6 +50,7 @@
 #include <gtkmm/eventbox.h>
 #include <gtkmm/label.h>
 #include <gtkmm/box.h>
+#include <gtkmm/table.h>
 #include <gtkmm/menu.h>
 #include <gtkmm/menuitem.h>
 #include <gtkmm/imagemenuitem.h>
@@ -1068,23 +1069,8 @@ CanvasView::create_time_bar()
 	widget_interpolation->set_icon(4, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_linear"), Gtk::ICON_SIZE_MENU));
 	widget_interpolation->set_tooltip_text(_("Default Interpolation"));
 	widget_interpolation->set_popup_fixed_width(false);
-	widget_interpolation->set_size_request(120,0);
 	widget_interpolation->show();
-	Gtk::Alignment* widget_interpolation_align=manage(new Gtk::Alignment(1, Gtk::ALIGN_CENTER, 0, 0));
-	widget_interpolation_align->add(*widget_interpolation);
-	widget_interpolation_align->show();
-	widget_interpolation_scroll=manage(new class Gtk::ScrolledWindow());
-	widget_interpolation_scroll->add(*widget_interpolation_align);
-	widget_interpolation_scroll->show();
-	widget_interpolation_scroll->set_shadow_type(Gtk::SHADOW_NONE);
-	widget_interpolation_scroll->set_policy(Gtk::POLICY_ALWAYS,Gtk::POLICY_NEVER);
-	widget_interpolation_scroll->set_size_request(25,0);
-	Gtk::Scrollbar* hscroll=widget_interpolation_scroll->get_hscrollbar();
-	hscroll->hide();
-
 	widget_interpolation->signal_changed().connect(sigc::mem_fun(*this,&studio::CanvasView::on_interpolation_changed));
-	widget_interpolation_scroll->add_events(Gdk::POINTER_MOTION_MASK);
-	widget_interpolation_scroll->signal_event().connect(sigc::bind_return(sigc::mem_fun(*this,&studio::CanvasView::on_interpolation_event),false));
 
 	synfigapp::Main::signal_interpolation_changed().connect(sigc::mem_fun(*this,&studio::CanvasView::interpolation_refresh));
 	synfigapp::Main::set_interpolation(INTERPOLATION_CLAMPED); // Clamped by default.
@@ -1203,24 +1189,26 @@ CanvasView::create_time_bar()
 	}
 	statusbar->show();
 
-	timebar = Gtk::manage(new class Gtk::Table(11, 2, false));
-
 	//Attach widgets to the timebar
-	//timebar->attach(*manage(disp_audio),         1,  5, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL);
-	timebar->attach(*timetrackbutton,              0,  1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL);
-	timebar->attach(*current_time_widget,          1,  2, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL);
-	timebar->attach(*framedial,                    2,  4, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL);
-	timebar->attach(*jackdial,                     4,  5, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL);
-    //timebar->attach(*space2,                     5,  6, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL);
-	timebar->attach(*statusbar,                    5,  7, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL);
-    //timebar->attach(*progressbar,                5,  6, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL);
-	timebar->attach(*widget_interpolation_scroll,  7,  8, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL);
-	timebar->attach(*keyframedial,                 8,  9, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL);
-	timebar->attach(*space,                        9, 10, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL);
-	timebar->attach(*animatebutton,               10, 11, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL);
 
-	timebar->attach(*timetrack,                    0, 11, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL);
+	Gtk::HBox *controls = manage(new Gtk::HBox());
+	//controls->pack_start(*manage(disp_audio),   true, true);
+	controls->pack_start(*timetrackbutton,      false, true);
+	controls->pack_start(*current_time_widget,  false, true);
+	controls->pack_start(*framedial,            false, true);
+	controls->pack_start(*jackdial,             false, true);
+	//controls->pack_start(*space2,               true, true);
+	controls->pack_start(*statusbar,            true, true);
+    //controls->pack_start(*progressbar,          true,  true);
+	controls->pack_start(*widget_interpolation, false, true);
+	controls->pack_start(*keyframedial,         false, true);
+	controls->pack_start(*space,                false, true);
+	controls->pack_start(*animatebutton,        false, true);
+	controls->show();
 
+	timebar = Gtk::manage(new Gtk::VBox());
+	timebar->pack_end(*timetrack, false, true);
+	timebar->pack_end(*controls, false, true);
 	timebar->show();
 
 	return timebar;
@@ -4384,10 +4372,4 @@ void
 CanvasView::on_interpolation_changed()
 {
 	synfigapp::Main::set_interpolation(Waypoint::Interpolation(widget_interpolation->get_value()));
-}
-
-void
-CanvasView::on_interpolation_event(GdkEvent * /* event */)
-{
-	widget_interpolation_scroll->get_hscrollbar()->get_adjustment()->set_value(0);
 }

@@ -80,7 +80,7 @@ ZoomDial::ZoomDial(Gtk::IconSize & size):
 		sigc::mem_fun(*this, &ZoomDial::after_event) );
 
 	attach(*zoom_out, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	attach(*current_zoom, 1, 2, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	attach(*current_zoom, 1, 2, 0, 1, Gtk::SHRINK, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	attach(*zoom_in, 2, 3, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 	attach(*zoom_norm, 3, 4, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 	attach(*zoom_fit, 4, 5, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
