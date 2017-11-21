@@ -600,6 +600,7 @@ void
 LayerParamTreeStore::on_layer_param_changed(synfig::Layer::Handle handle, synfig::String param_name)
 {
 	//when a freetype layer param's text has changed, signal the layer the new text content
+
 	if (param_name == "text")
 	{
 		Gtk::TreeModel::Children children_(children());
@@ -611,7 +612,7 @@ LayerParamTreeStore::on_layer_param_changed(synfig::Layer::Handle handle, synfig
 			{
 				Gtk::TreeRow row=*iter;
 
-				if (row.get_value(model.label) == "Text")
+				if (row.get_value(model.label) == handle->get_local_name())
 				{
 					canvas_interface()->signal_text_changed()(handle, row.get_value(model.value).get(String()));
 					break;
