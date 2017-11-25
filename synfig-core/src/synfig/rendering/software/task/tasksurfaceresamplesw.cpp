@@ -57,8 +57,7 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
-namespace {
-	class Helper
+class TaskSurfaceResampleSW::Helper
 	{
 	public:
 		template<Color reader(const void*,int,int)>
@@ -348,7 +347,6 @@ namespace {
 			}
 		};
 	};
-}
 
 void
 TaskSurfaceResampleSW::resample(

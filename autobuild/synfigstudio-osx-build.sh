@@ -297,7 +297,7 @@ mksynfig()
 	pushd ${SYNFIG_REPO_DIR}/synfig-core
 	export CXXFLAGS="$CXXFLAGS -I${SYNFIG_PREFIX}/include/ImageMagick"
 	make clean || true
-    /bin/sh ./bootstrap.sh
+    	bash -x ./bootstrap.sh
 	if [[ ! $UNIVERSAL == 0 ]]; then
 	export DEPTRACK="--disable-dependency-tracking"
 	fi

@@ -30,7 +30,7 @@
 #endif
 
 #include <cstring>
-#include <cstdint>
+#include <stdint.h>
 #include <cstddef>
 
 #include <libxml++/libxml++.h>
