@@ -2197,10 +2197,18 @@ App::apply_gtk_settings()
 	data += "GtkComboBox > .button > GtkBox > * { padding-top: 0px; padding-bottom: 0px; }\n";
 	data += ".entry                             { padding-top: 0px; padding-bottom: 0px; }\n";
 	// following css works for gtk 3.22:
+#ifdef __APPLE__
+	// This is a temporary fix as we do not have gtk 3.22 on OSX build yet --KD
+	data += "button { padding: 0px; }\n";
+#else
 	data += "button { min-height: 16px; min-width: 16px; padding: 0px; }\n";
+#endif
 	data += "button > box { padding: 5px; }\n";
 	data += "button > image { padding: 5px; }\n";
+#ifndef __APPLE__
+	// This is a temporary fix as we do not have gtk 3.22 on OSX build yet --KD
 	data += "entry, spinbutton { min-height: 16px; }\n";
+#endif
 	data += "combobox > box > button > box { padding-top: 0px; padding-bottom: 0px; }\n";
 	// Fix #810: Insetsetive context menus on OSX
 	g_object_get (G_OBJECT (gtk_settings), "gtk-theme-name", &theme_name, NULL);
@@ -3632,7 +3640,11 @@ App::open_from_temporary_filesystem(std::string temporary_filename)
 		String truncate = file_system_temporary->get_meta("truncate");
 		if (filename.empty() || as.empty() || truncate.empty())
 			throw (String)strprintf(_("Original filename was not set in temporary container \"%s\"\n\n"), temporary_filename.c_str());
+#ifdef __APPLE__
+		FileContainerZip::file_size_t truncate_storage_size = atoll(truncate.c_str());
+#else
 		FileContainerZip::file_size_t truncate_storage_size = stoll(truncate);
+#endif
 
 		// make canvas file-system
 		FileSystem::Handle canvas_container = CanvasFileNaming::make_filesystem_container(filename, truncate_storage_size);
