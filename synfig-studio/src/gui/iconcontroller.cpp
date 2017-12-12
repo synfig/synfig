@@ -281,6 +281,8 @@ IconController::init_icons(const synfig::String& path_to_icons)
 	INIT_STOCK_ICON(encapsulate, "group_icon." IMAGE_EXT, _("Group"));
 	// TODO: icon for 'Group Layer into Switch' action
 	INIT_STOCK_ICON(encapsulate_switch, "layer_other_switch_icon." IMAGE_EXT, _("Group into Switch"));
+	// TODO: icon for 'Group Layer into Filter' action
+	INIT_STOCK_ICON(encapsulate_filter, "layer_other_switch_icon." IMAGE_EXT, _("Group into Filter"));
 	INIT_STOCK_ICON(select_all_child_layers, "select_all_child_layers_icon." IMAGE_EXT, _("Select All Child Layers"));
 
 	INIT_STOCK_ICON(clear_undo, "clear_undo_icon." IMAGE_EXT, _("Clear Undo Stack"));
