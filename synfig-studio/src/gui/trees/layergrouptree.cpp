@@ -102,7 +102,6 @@ LayerGroupTree::LayerGroupTree()
 	set_reorderable(true);
 
 	get_selection()->set_mode(Gtk::SELECTION_MULTIPLE);
-
 }
 
 LayerGroupTree::~LayerGroupTree()
@@ -116,6 +115,11 @@ LayerGroupTree::set_model(Glib::RefPtr<LayerGroupTreeStore> layer_group_tree_sto
 {
 	layer_group_tree_store_=layer_group_tree_store;
 	Gtk::TreeView::set_model(layer_group_tree_store);
+
+	Gtk::TreeView::Column* column = get_column(2);
+	if (column)
+		column->set_sort_column(layer_group_tree_store_->model.label);
+	column->clicked();
 }
 
 void
