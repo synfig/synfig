@@ -733,6 +733,7 @@ LayerGroupTreeStore::rebuild()
 		throw;
 	}
 	rebuilding=false;
+	resort();
 	// synfig::info("LayerGroupTreeStore::rebuild() took %f seconds",float(timer()));
 }
 
@@ -740,6 +741,21 @@ void
 LayerGroupTreeStore::refresh()
 {
 	rebuild();
+}
+
+void
+LayerGroupTreeStore::resort()
+{
+	// For some reason Gtk doesn't seem to have a method that does just that and
+	// ignores calls to set_sort_column if sorting params are unchanged, so we
+	// have to call it twice
+	int sort_column;
+	Gtk::SortType sort_order;
+	if (get_sort_column_id(sort_column, sort_order)) {
+		auto reverse_order = sort_order == Gtk::SORT_DESCENDING ? Gtk::SORT_ASCENDING : Gtk::SORT_DESCENDING;
+		set_sort_column(sort_column, reverse_order);
+		set_sort_column(sort_column, sort_order);
+	}
 }
 
 void
@@ -853,6 +869,9 @@ LayerGroupTreeStore::on_group_pair_added(synfig::String group, etl::handle<synfi
 
 	Gtk::TreeRow layer_row(*(append(iter->children())));
 	set_row_layer(layer_row,layer);
+
+	resort();
+
 	on_activity();
 }
 
@@ -923,6 +942,7 @@ LayerGroupTreeStore::on_layer_new_description(synfig::Layer::Handle handle,synfi
 		else
 			//row[model.label]=layer->get_description();
 			row[model.tooltip]=layer->get_local_name();
+		resort();
 	}
 	else
 	{
