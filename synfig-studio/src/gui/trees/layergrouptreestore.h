@@ -179,6 +179,9 @@ public:
 
 	void refresh();
 
+	/// Re-apply current sorting
+	void resort();
+
 	void refresh_row(Gtk::TreeModel::Row &row);
 
 	void set_row_layer(Gtk::TreeRow &row,synfig::Layer::Handle &handle);
