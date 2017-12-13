@@ -50,7 +50,7 @@ using namespace Action;
 
 ACTION_INIT_NO_GET_LOCAL_NAME(Action::LayerEncapsulateFilter);
 ACTION_SET_NAME(Action::LayerEncapsulateFilter,"LayerEncapsulateFilter");
-ACTION_SET_LOCAL_NAME(Action::LayerEncapsulateFilter,N_("Group Layer into Filter"));
+ACTION_SET_LOCAL_NAME(Action::LayerEncapsulateFilter,N_("Group Layers into Filter"));
 ACTION_SET_TASK(Action::LayerEncapsulateFilter,"encapsulate_filter");
 ACTION_SET_CATEGORY(Action::LayerEncapsulateFilter,Action::CATEGORY_LAYER);
 ACTION_SET_PRIORITY(Action::LayerEncapsulateFilter,0);
