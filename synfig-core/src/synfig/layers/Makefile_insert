@@ -3,6 +3,7 @@ LAYERS_HH = \
 	layers/layer_composite.h \
 	layers/layer_composite_fork.h \
 	layers/layer_duplicate.h \
+	layers/layer_filtergroup.h \
 	layers/layer_group.h \
 	layers/layer_invisible.h \
 	layers/layer_meshtransform.h \
@@ -23,6 +24,7 @@ LAYERS_CC = \
 	layers/layer_composite.cpp \
 	layers/layer_composite_fork.cpp \
 	layers/layer_duplicate.cpp \
+	layers/layer_filtergroup.cpp \
 	layers/layer_group.cpp \
 	layers/layer_invisible.cpp \
 	layers/layer_meshtransform.cpp \

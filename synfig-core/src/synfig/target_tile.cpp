@@ -135,14 +135,10 @@ synfig::Target_Tile::call_renderer(Context &context, const etl::handle<rendering
 		// when old renderer will finally removed
 		CanvasBase sub_queue;
 		Context sub_context;
-		if (*context && (*context)->get_canvas()) {
-			(*context)->get_canvas()->get_context_sorted(context.get_params(), sub_queue, sub_context);
-		}
+		if (*context && (*context)->get_canvas())
+			sub_context = (*context)->get_canvas()->get_context_sorted(context.get_params(), sub_queue);
 		else
-		{
 			sub_context = context;
-		}
-
 		task = sub_context.build_rendering_task();
 	}
 

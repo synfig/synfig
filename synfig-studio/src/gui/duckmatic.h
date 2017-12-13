@@ -514,7 +514,8 @@ public:
 
 	etl::handle<Bezier> find_bezier(synfig::Point pos, synfig::Real scale, synfig::Real radius, float* location=0);
 
-	void add_ducks_layers(synfig::Canvas::Handle canvas, std::set<synfig::Layer::Handle>& selected_layer_set, etl::handle<CanvasView> canvas_view, synfig::TransformStack& transform_stack);
+	//! if transform_count is set function will not restore transporm stack
+	void add_ducks_layers(synfig::Canvas::Handle canvas, std::set<synfig::Layer::Handle>& selected_layer_set, etl::handle<CanvasView> canvas_view, synfig::TransformStack& transform_stack, int *transform_count = NULL);
 
 	bool add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<CanvasView> canvas_view, const synfig::TransformStack& transform_stack_, synfig::ParamDesc *param_desc=0);
 

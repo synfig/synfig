@@ -7,6 +7,7 @@ target_sources(synfigapp
         "${CMAKE_CURRENT_LIST_DIR}/layerduplicate.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/layerembed.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/layerencapsulate.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/layerencapsulatefilter.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/layerencapsulateswitch.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/layerextract.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/layerfit.cpp"

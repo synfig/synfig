@@ -1,12 +1,11 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file layerencapsulate.cpp
+/*!	\file layerencapsulatefilter.cpp
 **	\brief Template File
 **
 **	$Id$
 **
 **	\legal
-**	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
-**	Copyright (c) 2007, 2008 Chris Moore
+**	......... ... 2017 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -32,7 +31,7 @@
 
 #include <synfig/general.h>
 
-#include "layerencapsulate.h"
+#include "layerencapsulatefilter.h"
 #include "layeradd.h"
 #include "layerremove.h"
 #include <synfigapp/canvasinterface.h>
@@ -49,14 +48,14 @@ using namespace Action;
 
 /* === M A C R O S ========================================================= */
 
-ACTION_INIT_NO_GET_LOCAL_NAME(Action::LayerEncapsulate);
-ACTION_SET_NAME(Action::LayerEncapsulate,"LayerEncapsulate");
-ACTION_SET_LOCAL_NAME(Action::LayerEncapsulate,N_("Group Layer"));
-ACTION_SET_TASK(Action::LayerEncapsulate,"encapsulate");
-ACTION_SET_CATEGORY(Action::LayerEncapsulate,Action::CATEGORY_LAYER);
-ACTION_SET_PRIORITY(Action::LayerEncapsulate,0);
-ACTION_SET_VERSION(Action::LayerEncapsulate,"0.0");
-ACTION_SET_CVS_ID(Action::LayerEncapsulate,"$Id$");
+ACTION_INIT_NO_GET_LOCAL_NAME(Action::LayerEncapsulateFilter);
+ACTION_SET_NAME(Action::LayerEncapsulateFilter,"LayerEncapsulateFilter");
+ACTION_SET_LOCAL_NAME(Action::LayerEncapsulateFilter,N_("Group Layers into Filter"));
+ACTION_SET_TASK(Action::LayerEncapsulateFilter,"encapsulate_filter");
+ACTION_SET_CATEGORY(Action::LayerEncapsulateFilter,Action::CATEGORY_LAYER);
+ACTION_SET_PRIORITY(Action::LayerEncapsulateFilter,0);
+ACTION_SET_VERSION(Action::LayerEncapsulateFilter,"0.0");
+ACTION_SET_CVS_ID(Action::LayerEncapsulateFilter,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 
@@ -64,19 +63,18 @@ ACTION_SET_CVS_ID(Action::LayerEncapsulate,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 
-Action::LayerEncapsulate::LayerEncapsulate()
+Action::LayerEncapsulateFilter::LayerEncapsulateFilter()
 {
-    children_lock=false;
 }
 
 synfig::String
-Action::LayerEncapsulate::get_local_name()const
+Action::LayerEncapsulateFilter::get_local_name()const
 {
-	return get_layer_descriptions(layers, _("Group Layer"), _("Group Layers"));
+	return get_layer_descriptions(layers, _("Group Layer into Filter"), _("Group Layers into Filter"));
 }
 
 Action::ParamVocab
-Action::LayerEncapsulate::get_param_vocab()
+Action::LayerEncapsulateFilter::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
 
@@ -87,7 +85,7 @@ Action::LayerEncapsulate::get_param_vocab()
 	);
 	ret.push_back(ParamDesc("description",Param::TYPE_STRING)
 		.set_local_name(_("Description"))
-		.set_desc(_("Description of new group"))
+		.set_desc(_("Description of new filter"))
 		.set_optional()
 	);
 
@@ -95,13 +93,13 @@ Action::LayerEncapsulate::get_param_vocab()
 }
 
 bool
-Action::LayerEncapsulate::is_candidate(const ParamList &x)
+Action::LayerEncapsulateFilter::is_candidate(const ParamList &x)
 {
 	return candidate_check(get_param_vocab(),x);
 }
 
 bool
-Action::LayerEncapsulate::set_param(const synfig::String& name, const Action::Param &param)
+Action::LayerEncapsulateFilter::set_param(const synfig::String& name, const Action::Param &param)
 {
 	if(name=="layer" && param.get_type()==Param::TYPE_LAYER)
 	{
@@ -113,17 +111,12 @@ Action::LayerEncapsulate::set_param(const synfig::String& name, const Action::Pa
 		description = param.get_string();
 		return true;
 	}
-        if(name=="children_lock" && param.get_type()==Param::TYPE_BOOL)
-	{
-		children_lock = param.get_bool();
-		return true;
-	}
 
 	return Action::CanvasSpecific::set_param(name,param);
 }
 
 bool
-Action::LayerEncapsulate::is_ready()const
+Action::LayerEncapsulateFilter::is_ready()const
 {
 	if(layers.empty())
 		return false;
@@ -131,7 +124,7 @@ Action::LayerEncapsulate::is_ready()const
 }
 
 int
-Action::LayerEncapsulate::lowest_depth()const
+Action::LayerEncapsulateFilter::lowest_depth()const
 {
 	std::list<synfig::Layer::Handle>::const_iterator iter;
 	int lowest_depth(0x7fffffff);
@@ -148,7 +141,7 @@ Action::LayerEncapsulate::lowest_depth()const
 }
 
 void
-Action::LayerEncapsulate::prepare()
+Action::LayerEncapsulateFilter::prepare()
 {
 
 	if(!first_time())
@@ -161,12 +154,10 @@ Action::LayerEncapsulate::prepare()
 	if(!child_canvas)
 		child_canvas=Canvas::create_inline(get_canvas());
 
-	Layer::Handle new_layer(Layer::create("group"));
+	Layer::Handle new_layer(Layer::create("filter_group"));
 
 	if (!description.empty()) new_layer->set_description(description);
 	new_layer->set_param("canvas",child_canvas);
-        
-        new_layer->set_param("children_lock",children_lock);
 
 	int target_depth(lowest_depth());
 

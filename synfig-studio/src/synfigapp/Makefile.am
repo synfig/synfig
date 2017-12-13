@@ -15,6 +15,7 @@ LAYER_ACTION_HH = \
 	actions/layerduplicate.h \
 	actions/layerembed.h \
 	actions/layerencapsulate.h \
+	actions/layerencapsulatefilter.h \
 	actions/layerencapsulateswitch.h \
 	actions/layerextract.h \
 	actions/layerfit.h \
@@ -43,6 +44,7 @@ LAYER_ACTION_CC = \
 	actions/layerduplicate.cpp \
 	actions/layerembed.cpp \
 	actions/layerencapsulate.cpp \
+	actions/layerencapsulatefilter.cpp \
 	actions/layerencapsulateswitch.cpp \
 	actions/layerextract.cpp \
 	actions/layerfit.cpp \

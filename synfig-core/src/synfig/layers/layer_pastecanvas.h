@@ -8,6 +8,7 @@
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **	Copyright (c) 2012-2013 Carlos López
+**	......... ... 2014-2017 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -60,7 +61,7 @@ private:
 	//! Parameter: (Transfromation) Position, rotation and scale of the paste canvas layer
 	ValueBase param_transformation;
 	//! Parameter: (etl::loose_handle<synfig::Canvas>) The canvas parameter
-	etl::loose_handle<synfig::Canvas> canvas;
+	etl::loose_handle<synfig::Canvas> sub_canvas;
 	//! Parameter: (Real) Time dilation of the paste canvas layer
 	ValueBase param_time_dilation;
 	//! Parameter: (Time) Time offset of the paste canvas layer
@@ -137,7 +138,7 @@ public:
 
 	//! Gets the canvas parameter. It is called sub_canvas to avoid confusion
 	//! with the get_canvas from the Layer class.
-	etl::handle<synfig::Canvas> get_sub_canvas()const { return canvas; }
+	etl::handle<synfig::Canvas> get_sub_canvas()const { return sub_canvas; }
 	//! Sets the canvas parameter.
 	//! \see get_sub_canvas()
 	void set_sub_canvas(etl::handle<synfig::Canvas> x);
@@ -157,7 +158,7 @@ public:
 	}
 
 	//! Default constructor
-	Layer_PasteCanvas();
+	explicit Layer_PasteCanvas(Real amount = 1.0, Color::BlendMethod blend_method = Color::BLEND_COMPOSITE);
 	//! Destructor
 	virtual ~Layer_PasteCanvas();
 	//! Returns a string with the localized name of this layer
@@ -191,6 +192,8 @@ public:
 	virtual void on_childs_changed() { }
 
 protected:
+	virtual Context build_context_queue(Context context, CanvasBase &out_queue)const;
+
 	//! Sets the time of the Paste Canvas Layer and those under it
 	virtual void set_time_vfunc(IndependentContext context, Time time)const;
 	//! Sets the outline_grow of the Paste Canvas Layer and those under it
@@ -201,7 +204,7 @@ protected:
 	//! Layer time points. \todo clarify all this comments.
 	virtual void get_times_vfunc(Node::time_set &set) const;
 
-	virtual rendering::Task::Handle build_composite_task_vfunc(ContextParams context_params)const;
+	virtual rendering::Task::Handle build_rendering_task_vfunc(Context context)const;
 }; // END of class Layer_PasteCanvas
 
 }; // END of namespace synfig
