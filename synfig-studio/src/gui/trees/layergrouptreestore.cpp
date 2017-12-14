@@ -1,12 +1,11 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file layergrouptreestore.cpp
-**	\brief Template File
-**
-**	$Id$
+**	\brief Layer set tree model
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2008 Chris Moore
+**	Copyright (c) 2017 caryoscelus
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -172,6 +171,22 @@ LayerGroupTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int 
 
 		value.init(x.value_type());
 		value=x;
+	}
+	else if (column == model.z_depth.index())
+	{
+		Glib::Value<float> x;
+		x.init(x.value_type());
+		if ((bool)(*iter)[model.is_layer])
+		{
+			auto layer = (Layer::Handle)(*iter)[model.layer];
+			x.set(layer->get_true_z_depth(canvas_interface()->get_time()));
+		}
+		else
+		{
+			x.set(0.0);
+		}
+		value.init(x.value_type());
+		value = x;
 	}
 	else if(column==model.group_name.index())
 	{
