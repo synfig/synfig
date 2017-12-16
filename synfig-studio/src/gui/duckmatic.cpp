@@ -1654,6 +1654,7 @@ Duckmatic::add_ducks_layers(synfig::Canvas::Handle canvas, std::set<synfig::Laye
             }
             else
             {
+                add_ducks_layers(child_canvas,selected_layer_set,canvas_view,transform_stack);
             	transform_stack.pop();
             }
         }
