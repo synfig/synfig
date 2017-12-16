@@ -54,6 +54,20 @@ SYNFIG_TARGET_SET_CVS_ID(magickpp_trgt,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 
+/*
+ * WORKAROUND
+ *
+ * Mimics the hidden MagickCore's InitializeExceptionInfo() method.
+ */
+namespace MagickCore {
+static void InitializeExceptionInfo(ExceptionInfo *exception)
+{
+	MagickCore::ExceptionInfo* exceptionInfo = AcquireExceptionInfo();
+	*exception = *exceptionInfo; // copy assignment, ExceptionInfo is a struct
+	MagickCore::DestroyExceptionInfo(exceptionInfo);
+}
+}
+
 template <class Container>
 MagickCore::Image* copy_image_list(Container& container)
 {
@@ -61,7 +75,7 @@ MagickCore::Image* copy_image_list(Container& container)
 	MagickCore::Image* previous = 0;
 	MagickCore::Image* first = NULL;
 	MagickCore::ExceptionInfo exceptionInfo;
-	MagickCore::GetExceptionInfo(&exceptionInfo);
+	MagickCore::InitializeExceptionInfo(&exceptionInfo);
 	for (Iter iter = container.begin(); iter != container.end(); ++iter)
 	{
 		MagickCore::Image* current;
@@ -89,7 +103,7 @@ MagickCore::Image* copy_image_list(Container& container)
 magickpp_trgt::~magickpp_trgt()
 {
 	MagickCore::ExceptionInfo exceptionInfo;
-	MagickCore::GetExceptionInfo(&exceptionInfo);
+	MagickCore::InitializeExceptionInfo(&exceptionInfo);
 
 	try
 	{
