@@ -1,12 +1,11 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file layergrouptree.cpp
-**	\brief Template File
-**
-**	$Id$
+**	\brief Layer set tree
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2008 Chris Moore
+**	Copyright (c) 2017 caryoscelus
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -87,6 +86,16 @@ LayerGroupTree::LayerGroupTree()
 		column->set_resizable();
 		column->set_clickable(false);
 		append_column(*column);
+	}
+	{	// --- Z - D E P T H
+		auto index = append_column(_("Z Depth"), model.z_depth)-1;
+
+		auto column_z_depth = get_column(index);
+		column_z_depth->set_reorderable();
+		column_z_depth->set_resizable();
+		column_z_depth->set_clickable();
+
+		column_z_depth->set_sort_column(model.z_depth);
 	}
 
 	set_enable_search(true);
