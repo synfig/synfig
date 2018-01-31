@@ -5,7 +5,7 @@
 **	$Id$
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2015-2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -35,7 +35,7 @@
 #include <signal.h>
 #endif
 
-#include <synfig/rendering/software/surfacesw.h>
+#include "surfacesw.h"
 
 #endif
 
@@ -50,26 +50,37 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
+
+rendering::Surface::Token SurfaceSW::token<SurfaceSW>("SurfaceSW");
+
+
 SurfaceSW::SurfaceSW():
-	own_surface(true), surface(new synfig::Surface())
+	own_surface(true),
+	surface(new synfig::Surface())
 { }
 
-SurfaceSW::SurfaceSW(const Surface &other):
-	own_surface(true), surface(new synfig::Surface())
+SurfaceSW::SurfaceSW(const Surface &other, bool own_surface):
+	own_surface(own_surface),
+	surface(&other)
 {
-	assign(other);
+	assert(surface);
+	set_desc(surface->get_w(), surface->get_h(), false);
+	assert((int)surface->get_pitch() == (int)sizeof(Color)*get_width());
 }
 
 SurfaceSW::~SurfaceSW()
 {
-	if (!own_surface) reset_surface();
-	destroy();
+	if (own_surface)
+		{ assert(surface); delete surface; }
+	surface = NULL;
+	set_desc(0, 0, true);
 }
 
 bool
-SurfaceSW::create_vfunc()
+SurfaceSW::create_vfunc(int width, int height)
 {
-	surface->set_wh(get_width(), get_height());
+	assert(surface);
+	surface->set_wh(width, height);
 	surface->clear();
 	return true;
 }
@@ -77,57 +88,68 @@ SurfaceSW::create_vfunc()
 bool
 SurfaceSW::assign_vfunc(const rendering::Surface &surface)
 {
-	this->surface->set_wh(get_width(), get_height());
+	assert(surface);
+	this->surface->set_wh(surface.get_width(), surface.get_height());
 	if (surface.get_pixels(&(*this->surface)[0][0]))
 		return true;
 	this->surface->set_wh(0, 0);
+	set_desc(0, 0, true);
 	return false;
 }
 
-void
-SurfaceSW::destroy_vfunc()
+bool
+SurfaceSW::clear_vfunc()
 {
 	assert(surface);
-	surface->set_wh(0, 0);
+	surface->clear();
+	return true;
 }
 
 bool
-SurfaceSW::get_pixels_vfunc(Color *buffer) const
+SurfaceSW::reset_vfunc()
+{
+	assert(surface);
+	surface->set_wh(0, 0);
+	return true;
+}
+
+const Color*
+SurfaceSW::get_pixels_pointer_vfunc() const
 {
 	assert(surface);
 	assert((int)surface->get_pitch() == (int)sizeof(Color)*get_width());
-	memcpy(buffer, &(*this->surface)[0][0], get_buffer_size());
-	return true;
+	return &(*this->surface)[0][0];
 }
 
 void
 SurfaceSW::set_surface(synfig::Surface &surface, bool own_surface)
 {
-	this->own_surface = own_surface;
-
-	if (&surface == this->surface)
+	if (&surface == this->surface) {
+		this->own_surface = own_surface;
 		return;
+	}
 
-	unset_alternative();
+	if (this->own_surface) {
+		assert(this->surface);
+		delete(this->surface);
+	}
 
 	this->surface = &surface;
 	assert(this->surface);
-	mark_as_created(false);
-	set_size(this->surface->get_w(), this->surface->get_h());
-	mark_as_created(this->surface->get_w() > 0 && this->surface->get_h() > 0);
+	set_desc(surface.get_w(), surface.get_h(), false);
+	assert((int)this->surface->get_pitch() == (int)sizeof(Color)*get_width());
 }
 
 void
 SurfaceSW::reset_surface()
 {
-	unset_alternative();
-	if (!own_surface)
-	{
-		own_surface = true;
-		surface = new synfig::Surface();
+	if (own_surface) {
+		assert(surface);
+		delete(surface);
 	}
-	surface->set_wh(0, 0);
-	mark_as_created(false);
+	own_surface = true;
+	surface = new synfig::Surface();
+	set_desc(0, 0, true);
 }
 
 /* === E N T R Y P O I N T ================================================= */

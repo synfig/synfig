@@ -5,7 +5,7 @@
 **	$Id$
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2015-2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -44,26 +44,30 @@ class SurfaceMemoryReadWrapper: public Surface
 {
 public:
 	typedef etl::handle<SurfaceMemoryReadWrapper> Handle;
+	static Token token;
+	virtual Token::Handle get_token() const
+		{ return token.handle(); }
 
 private:
 	const Color *buffer;
 
 protected:
-	virtual bool create_vfunc();
-	virtual bool assign_vfunc(const Surface &surface);
-	virtual void destroy_vfunc();
-	virtual bool get_pixels_vfunc(Color *buffer) const;
+	virtual const Color* get_pixels_pointer_vfunc() const
+		{ return get_buffer(); }
 
 public:
-	SurfaceMemoryReadWrapper(): buffer() { }
+	SurfaceMemoryReadWrapper():
+		buffer() { }
 	explicit SurfaceMemoryReadWrapper(const Color *buffer, int width, int height):
 		buffer() { set_buffer(buffer, width, height); }
-	~SurfaceMemoryReadWrapper() { destroy(); }
 
-	const Color* get_buffer() const { return buffer; }
-	void set_buffer(const Color *buffer);
-	void set_buffer(const Color *buffer, int width, int height)
-		{ set_size(width, height); set_buffer(buffer); }
+	virtual bool is_read_only() const
+		{ return true; }
+
+	const Color* get_buffer() const
+		{ return buffer; }
+
+	void set_buffer(const Color *buffer, int width, int height);
 };
 
 } /* end namespace rendering */

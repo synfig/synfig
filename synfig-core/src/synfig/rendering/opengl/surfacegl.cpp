@@ -5,7 +5,7 @@
 **	$Id$
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2015-2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -52,6 +52,10 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
+
+rendering::Surface::Token SurfaceGL::token<SurfaceGL>("SurfaceGL");
+
+
 SurfaceGL::SurfaceGL(): id()
 	{ }
 
@@ -59,18 +63,18 @@ SurfaceGL::SurfaceGL(const Surface &other): id()
 	{ assign(other); }
 
 SurfaceGL::~SurfaceGL()
-	{ destroy(); }
+	{ reset(); }
 
 gl::Environment& SurfaceGL::env() const
 	{ return gl::Environment::get_instance(); }
 
 bool
-SurfaceGL::create_vfunc()
+SurfaceGL::create_vfunc(int width, int height)
 {
 	gl::Context::Lock lock(env().context);
 	glGenTextures(1, &id);
 	glBindTexture(GL_TEXTURE_2D, id);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, get_width(), get_height(), 0, GL_RGBA, GL_FLOAT, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, width, height, 0, GL_RGBA, GL_FLOAT, NULL);
 
 	{
 		// clear texture
@@ -91,20 +95,26 @@ SurfaceGL::create_vfunc()
 bool
 SurfaceGL::assign_vfunc(const rendering::Surface &surface)
 {
-	std::vector<char> data(surface.get_buffer_size());
-	surface.get_pixels((Color*)&data.front());
+	std::vector<Color> data;
+	const Color *pixels = surface.get_pixels_pointer();
+	if (!pixels) {
+		data.resize(get_pixels_count());
+		if (!surface.get_pixels(&data.front()))
+			return false;
+		pixels = &data.front();
+	}
 
 	gl::Context::Lock lock(env().context);
 	glGenTextures(1, &id);
 	glBindTexture(GL_TEXTURE_2D, id);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, get_width(), get_height(), 0, GL_RGBA, GL_FLOAT, &data.front());
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, surface.get_width(), surface.get_height(), 0, GL_RGBA, GL_FLOAT, pixels);
 
 	env().context.check("SurfaceGL::assign_vfunc");
 	return true;
 }
 
 void
-SurfaceGL::destroy_vfunc()
+SurfaceGL::reset_vfunc()
 {
 	gl::Context::Lock lock(env().context);
 	glDeleteTextures(1, &id);

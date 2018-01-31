@@ -5,7 +5,7 @@
 **	$Id$
 **
 **	\legal
-**	......... ... 2016 Ivan Mahonin
+**	......... ... 2016-2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -50,25 +50,30 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
-bool
-SurfaceSWPacked::create_vfunc()
-{
-	return false;
-}
+
+rendering::Surface::Token SurfaceSWPacked::token<SurfaceSWPacked>("SurfaceSWPacked");
+
 
 bool
 SurfaceSWPacked::assign_vfunc(const rendering::Surface &surface)
 {
-	std::vector<Color> pixels(get_pixels_count());
-	surface.get_pixels(&pixels.front());
-	this->surface.set_pixels(&pixels.front(), get_width(), get_height());
+	std::vector<Color> data;
+	const Color *pixels = surface.get_pixels_pointer();
+	if (!pixels) {
+		data.resize(get_pixels_count());
+		if (!surface.get_pixels(&data.front()))
+			return false;
+		pixels = &data.front();
+	}
+	this->surface.set_pixels(pixels, surface.get_width(), surface.get_height());
 	return true;
 }
 
-void
-SurfaceSWPacked::destroy_vfunc()
+bool
+SurfaceSWPacked::reset_vfunc()
 {
 	surface.clear();
+	return true;
 }
 
 bool

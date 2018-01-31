@@ -5,7 +5,7 @@
 **	$Id$
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2015-2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -45,6 +45,9 @@ class SurfaceGL: public Surface
 {
 public:
 	typedef etl::handle<SurfaceGL> Handle;
+	static Token token;
+	virtual Token::Handle get_token() const
+		{ return token.handle(); }
 
 private:
 	gl::Identifier id;
@@ -52,17 +55,18 @@ private:
 protected:
 	gl::Environment& env() const;
 
-	virtual bool create_vfunc();
+	virtual bool create_vfunc(int width, int height);
 	virtual bool assign_vfunc(const Surface &surface);
-	virtual void destroy_vfunc();
+	virtual void reset_vfunc();
 	virtual bool get_pixels_vfunc(Color *buffer) const;
 
 public:
-	gl::Identifier get_id() const { return id; }
-
 	SurfaceGL();
 	explicit SurfaceGL(const Surface &other);
 	~SurfaceGL();
+
+	gl::Identifier get_id() const
+		{ return id; }
 };
 
 } /* end namespace rendering */
