@@ -70,6 +70,7 @@ target_sources(synfig
         "${CMAKE_CURRENT_LIST_DIR}/mesh.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/soundprocessor.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/canvasfilenaming.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/token.cpp"
 )
 
 ## these were added seprately in autotools build, preserving this for now
