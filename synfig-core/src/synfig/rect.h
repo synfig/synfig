@@ -357,6 +357,16 @@ public:
 			|| std::isinf(maxy);
 	}
 
+	bool is_full_infinite()const
+	{
+		return std::isinf(minx)
+			&& std::isinf(miny)
+			&& std::isinf(maxx)
+			&& std::isinf(maxy)
+			&& minx < maxx
+			&& miny < maxy;
+	}
+
 	template<typename List>
 	static void merge(List &list)
 		{ etl::rects_merge(list, approximate_less<Real>); }

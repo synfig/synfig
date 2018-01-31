@@ -184,8 +184,8 @@ public:
 			LockReadBase(resource, Type::token) { }
 		const Type* get() const
 			{ return dynamic_cast<const Type*>(get_surface()); }
-		const Type& operator->() const
-			{ assert(get()); return *get(); }
+		const Type* operator->() const
+			{ assert(get()); return get(); }
 		const Type& operator*() const
 			{ assert(get()); return *get(); }
 	};
@@ -198,8 +198,8 @@ public:
 			LockWriteBase(resource, Type::token) { }
 		Type* get() const
 			{ return dynamic_cast<Type*>(get_surface()); }
-		Type& operator->() const
-			{ assert(get()); return *get(); }
+		Type* operator->() const
+			{ assert(get()); return get(); }
 		Type& operator*() const
 			{ assert(get()); return *get(); }
 	};
@@ -218,8 +218,8 @@ public:
 	SurfaceResource(Surface::Handle surface);
 	virtual ~SurfaceResource();
 
+	void create(int width, int height);
 	void assign(Surface::Handle surface);
-	void set_size(int width, int height);
 	void clear();
 	void reset();
 

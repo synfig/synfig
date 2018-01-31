@@ -5,7 +5,7 @@
 **	$Id$
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2015-2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -48,151 +48,204 @@ namespace rendering
 
 class Renderer;
 
-class TackCapabilityInterface
+
+// TODO: BlendSW - paint at source
+
+
+class Mode {
+public:
+	static synfig::Token mode_token;
+	virtual ~Mode() { }
+};
+
+
+class ModeToken: public synfig::Token
 {
 public:
-	virtual ~TackCapabilityInterface() { }
-	virtual bool is_supported_target(const Surface::Handle &surface);
-	virtual bool is_supported_source(const Surface::Handle &surface);
-	virtual Surface::Handle create_supported_target() { return Surface::Handle(); }
-	virtual Surface::Handle create_supported_source() { return Surface::Handle(); }
+	typedef ConstRef<ModeToken> Handle;
+	const String name;
+	ModeToken(const String &name):
+		synfig::Token(Mode::mode_token.handle()),
+		name(name) { }
+	inline Handle handle() const
+		{ return Handle(*this); }
 };
+
 
 class Task: public etl::shared_object
 {
-private:
-	static const etl::handle<Task> blank;
-
 public:
 	typedef etl::handle<Task> Handle;
 	typedef std::vector<Handle> List;
 	typedef std::set<Handle> Set;
 
+	typedef Task* (*Fabric)();
+	typedef Task* (*CloneFabric)(const Task&);
+
+	class Token: public synfig::Token
+	{
+	public:
+		typedef ConstRef<Token> Handle;
+		typedef std::map<ModeToken::Handle, Token::Handle> Map;
+
+	private:
+		Map alternatives_;
+
+		inline Token& cast_const(Handle handle) const
+			{ return *const_cast<Token*>(this); }
+
+	protected:
+		template<typename Type>
+		Task* create_func()
+			{ return new Type(); }
+
+		template<typename Type, typename TypeAbstract = Type>
+		Task* convert_func(const Task &other)
+		{
+			const TypeAbstract *orig = dynamic_cast<const TypeAbstract*>(&other);
+			if (!orig) return NULL;
+			Type *task = new Type();
+			*task = *orig;
+			return task;
+		}
+
+		virtual void unprepare_vfunc();
+		virtual void prepare_vfunc();
+
+	public:
+		const String name;
+		const ModeToken::Handle mode;
+		const Handle abstract_task;
+		const Fabric create;
+		const CloneFabric clone;
+		const CloneFabric convert;
+
+		//! token for abstract task
+		template<typename Type, typename TypeParent>
+		Token(String name):
+			synfig::Token(TypeParent::token.handle()),
+			name(name),
+			create(&create_func<Type>),
+			clone(&convert_func<Type>),
+			convert()
+		{ }
+
+		//! token for real task
+		template<typename Type, typename TypeParent, typename TypeAbstract>
+		Token(String name):
+			synfig::Token(TypeParent::token.handle()),
+			name(name),
+			mode(Type::mode_token.handle()),
+			abstract_task(TypeAbstract::token.handle()),
+			create(&create_func<Type>),
+			clone(&convert_func<Type>),
+			convert(&convert_func<Type, TypeAbstract>)
+		{ }
+
+		const Map& alternatives() const
+			{ return alternatives_; }
+		inline bool is_abstract() const
+			{ return !mode || !abstract_task || !convert; }
+		inline Handle handle() const
+			{ return Handle(*this); }
+	};
+
 	struct RunParams {
 		const Renderer *renderer;
 		mutable Task::List sub_queue;
-		explicit RunParams(const Renderer *renderer = NULL): renderer(renderer) { }
+		RunParams(): renderer(renderer) { }
 	};
 
+	struct RendererData
+	{
+		int index;
+		int deps_count;
+		Set deps; // always empty (deps_count is enough), used inside of Renderer::find_deps only
+		Set back_deps;
+
+		Set tmp_deps;
+		Set tmp_back_deps;
+
+		RunParams params;
+		bool success;
+
+		RendererData(): index(), deps_count(), success() { }
+	};
+
+	static synfig::Token token;
+	virtual Token::Handle get_token() const = 0;
+
 private:
+	static const etl::handle<Task> blank;
+
+	mutable bool bounds_calculated;
 	mutable Rect bounds;
 
-	Point source_rect_lt;
-	Point source_rect_rb;
-	RectInt target_rect;
-
-protected:
-	template<typename T>
-	static T* clone_pointer(const T *task)
-	{
-		if (!task) return NULL;
-		T *t(new T());
-		*t = *task;
-		return t;
-	}
-
-	template<typename T>
-	static etl::handle<T> clone(const etl::handle<T> &task)
-		{ return clone_pointer(task.get()); }
-
 public:
-	Surface::Handle target_surface;
+	Rect source_rect;
+	RectInt target_rect;
+	SurfaceResource::Handle target_surface;
 	List sub_tasks;
 
-	mutable int index;
-	mutable int deps_count;
-	mutable Set deps; // always empty (deps_count is enough), used inside of Renderer::find_deps only
-	mutable Set back_deps;
+	mutable RendererData renderer_data;
 
-	mutable Set tmp_deps;
-	mutable Set tmp_back_deps;
-
-	mutable RunParams params;
-	mutable bool success;
-
-
-	Task(): index(), deps_count(0), success(true) { }
+	Task();
 	virtual ~Task();
 
-
-	Task::Handle& sub_task(int index)
-	{
+	Task::Handle& sub_task(int index) {
 		assert(index >= 0);
 		if (index >= (int)sub_tasks.size())
 			sub_tasks.resize(index + 1);
 		return sub_tasks[index];
 	}
 
-	const Task::Handle& sub_task(int index) const
-	{
+	const Task::Handle& sub_task(int index) const {
 		assert(index >= 0);
 		return index < (int)sub_tasks.size() ? sub_tasks[index] : blank;
 	}
 
+	bool can_convert_to(ModeToken::Handle mode) const;
+	ModeToken::Handle get_mode() const;
+	Task::Handle convert_to(ModeToken::Handle mode) const;
+	Task::Handle convert_to_any() const;
+	Task::Handle clone() const;
+	Task::Handle clone_recursive() const;
 
-	//! calls from update_bounds()
-	virtual Rect calc_bounds() const { return Rect::infinite(); }
-	//! use OptimizerCalcBounds and to avoid multiple calculation of bounds of same task
-	void update_bounds() const { bounds = calc_bounds(); }
-	void update_bounds_recursive() const;
-	const Rect& get_bounds() const { return bounds; }
+	virtual Rect calc_bounds() const;
+	void reset_bounds()
+		{ bounds_calculated = false; }
+	const Rect& get_bounds() const {
+		if (!bounds_calculated) { bounds = calc_bounds(); bounds_calculated = true; }
+		return bounds;
+	}
 
-
-	void init_target_rect(const RectInt &target_rect, const Point &source_rect_lt, const Point &source_rect_rb);
-	void clear_target_rect();
-
-
-	const RectInt& get_target_rect() const { return target_rect; }
-	const VectorInt get_target_offset() const { return target_rect.get_min(); }
-	const Point& get_source_rect_lt() const { return source_rect_lt; }
-	const Point& get_source_rect_rb() const { return source_rect_rb; }
 	Vector get_pixels_per_unit() const;
 	Vector get_units_per_pixel() const;
 
-	void trunc_target_rect(const RectInt &rect);
+	void trunc_to_zero();
 	void trunc_source_rect(const Rect &rect);
-	void trunc_source_rect(const Point &lt, const Point &rb);
-	void trunc_target_by_bounds();
-
+	void trunc_target_rect(const RectInt &rect);
+	void trunc_by_bounds();
 	void move_target_rect(const VectorInt &offset);
 	void set_target_origin(const VectorInt &origin);
 
-	bool valid_target_surface() const
-	{
-		return target_surface
-			&& !target_surface->empty();
-	}
+	bool Task::is_valid_coords_source() const
+		{ return !source_rect.is_nan_or_inf() && && source_rect.is_valid(); }
+	bool Task::is_valid_coords_target() const
+		{ return !target_rect.is_valid(); }
+	bool Task::is_valid_coords() const
+		{ return is_valid_coords_source() && is_valid_coords_target(); }
+	bool Task::is_valid_surface_size() const
+		{ return target_surface
+			  && target_surface->is_exists()
+			  && etl::contains(RectInt(VectorInt::zero(), target_surface->get_size()), target_rect); }
+	bool Task::is_valid() const
+		{ return is_valid_coords() && is_valid_surface_size(); }
 
-	bool valid_target_rect() const
-	{
-		return target_rect.valid()
-			&& !source_rect_lt.is_nan_or_inf()
-			&& !source_rect_rb.is_nan_or_inf()
-			&& fabs(source_rect_rb[0] - source_rect_lt[0]) >= 1e-10
-			&& fabs(source_rect_rb[1] - source_rect_lt[1]) >= 1e-10;
-	}
-
-	bool valid_target() const
-	{
-		return valid_target_surface()
-			&& valid_target_rect()
-			&& etl::contains(RectInt(VectorInt::zero(), target_surface->get_size()), target_rect);
-	}
-
-	bool check() const
-	{
-		if ( valid_target_surface()
-		  && valid_target_rect()
-		  && !etl::contains(RectInt(VectorInt::zero(), target_surface->get_size()), target_rect) )
-			return false;
-
-		return true;
-	}
-
+	void set_coords(const Rect &source_rect, const VectorInt target_size);
+	void set_coords_zero();
+	virtual void set_coords_sub_tasks();
 	virtual bool run(RunParams &params) const;
-	virtual Task::Handle clone() const { return clone_pointer(this); }
-
-	Task::Handle clone_recursive() const;
 };
 
 } /* end namespace rendering */

@@ -243,6 +243,20 @@ SurfaceResource::get_surface(Surface::Token::Handle token)
 }
 
 void
+SurfaceResource::create(int width, int height)
+{
+	Glib::Threads::RWLock::WriterLock lock(rwlock);
+	if (width > 0 && height > 0) {
+		this->width  = width;
+		this->height = height;
+	} else {
+		this->width  = 0;
+		this->height = 0;
+	}
+	surfaces.clear();
+}
+
+void
 SurfaceResource::assign(Surface::Handle surface)
 {
 	Glib::Threads::RWLock::WriterLock lock(rwlock);
@@ -259,20 +273,6 @@ SurfaceResource::assign(Surface::Handle surface)
 	surfaces[surface->get_token()] = surface;
 	width = surface->get_width();
 	height = surface->get_height();
-}
-
-void
-SurfaceResource::set_size(int width, int height)
-{
-	Glib::Threads::RWLock::WriterLock lock(rwlock);
-	if (width > 0 && height > 0) {
-		this->width  = width;
-		this->height = height;
-	} else {
-		this->width  = 0;
-		this->height = 0;
-	}
-	surfaces.clear();
 }
 
 void
