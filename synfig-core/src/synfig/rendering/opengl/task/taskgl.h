@@ -5,7 +5,7 @@
 **	$Id$
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2015-2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -43,16 +43,10 @@ namespace synfig
 namespace rendering
 {
 
-class TaskGL: public TackCapabilityInterface
+class TaskGL: public Mode
 {
 public:
-	virtual ~TaskGL() { }
-	virtual bool is_supported_target(const Surface::Handle &surface)
-		{ return surface.type_is<SurfaceGL>(); }
-	virtual bool is_supported_source(const Surface::Handle &surface)
-		{ return surface.type_is<SurfaceGL>(); }
-	virtual Surface::Handle create_supported_target() { return new SurfaceGL(); }
-	virtual Surface::Handle create_supported_source() { return new SurfaceGL(); }
+	static ModeToken mode_token;
 protected:
 	gl::Environment& env() const;
 };

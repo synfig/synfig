@@ -5,7 +5,7 @@
 **	$Id$
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2015-2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -28,7 +28,6 @@
 /* === H E A D E R S ======================================================= */
 
 #include "../../task.h"
-#include "../surfacesw.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -41,15 +40,10 @@ namespace synfig
 namespace rendering
 {
 
-class TaskSW: public TackCapabilityInterface
+class TaskSW: public Mode
 {
 public:
-	virtual bool is_supported_target(const Surface::Handle &surface)
-		{ return surface.type_is<SurfaceSW>(); }
-	virtual bool is_supported_source(const Surface::Handle &surface)
-		{ return surface.type_is<SurfaceSW>(); }
-	virtual Surface::Handle create_supported_target() { return new SurfaceSW(); }
-	virtual Surface::Handle create_supported_source() { return new SurfaceSW(); }
+	static ModeToken mode_token;
 };
 
 } /* end namespace rendering */

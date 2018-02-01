@@ -1,11 +1,11 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/opengl/task/taskgl.cpp
-**	\brief TaskGL
+/*!	\file synfig/rendering/opengl/task/tasksw.cpp
+**	\brief TaskSW
 **
 **	$Id$
 **
 **	\legal
-**	......... ... 2015-2018 Ivan Mahonin
+**	......... ... 2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -35,9 +35,10 @@
 #include <signal.h>
 #endif
 
-#include "taskgl.h"
+#include <synfig/general.h>
+#include <synfig/localization.h>
 
-#include "../internal/environment.h"
+#include "tasksw.h"
 
 #endif
 
@@ -52,8 +53,6 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
-ModeToken TaskGL::mode_token("opengl");
-
-gl::Environment& TaskGL::env() const { return gl::Environment::get_instance(); }
+ModeToken TaskSW::mode_token("software");
 
 /* === E N T R Y P O I N T ================================================= */
