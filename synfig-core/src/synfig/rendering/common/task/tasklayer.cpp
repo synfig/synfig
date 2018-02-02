@@ -5,7 +5,7 @@
 **	$Id$
 **
 **	\legal
-**	......... ... 2016 Ivan Mahonin
+**	......... ... 2016-2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -35,10 +35,11 @@
 #include <signal.h>
 #endif
 
-#include "tasklayer.h"
-
 #include <synfig/context.h>
 #include <synfig/layers/layer_rendering_task.h>
+
+#include "tasklayer.h"
+#include "tasktransformation.h"
 
 #endif
 
@@ -53,10 +54,15 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
+
+Task::Token TaskLayer::token<TaskLayer, Task>("Layer");
+
+
 Rect
 TaskLayer::calc_bounds() const
 {
-	if (!layer) return Rect::zero();
+	if (!layer)
+		return Rect::zero();
 
 	etl::handle<Layer_RenderingTask> sub_layer(new Layer_RenderingTask());
 	sub_layer->tasks.push_back(sub_task());
@@ -68,6 +74,62 @@ TaskLayer::calc_bounds() const
 
 	Context context(fake_canvas_base.begin(), ContextParams());
 	return context.get_full_bounding_rect();
+}
+
+bool
+TaskLayer::renddesc_less(const RendDesc &a, const RendDesc &b)
+	{ return fabs(a.get_pw()*a.get_ph()) > fabs(b.get_pw()*b.get_ph()); }
+
+void
+TaskLayer::set_coords_sub_tasks()
+{
+	if (!is_valid_coords() || !sub_task() || !layer)
+		{ sub_task()->set_coords_zero(); return; }
+
+	VectorInt size = target_rect.get_size();
+
+	RendDesc desc;
+	desc.set_wh(size[0], size[1]);
+	desc.set_tl(source_rect.get_min());
+	desc.set_br(source_rect.get_max());
+
+	std::vector<RendDesc> descs;
+	layer->get_sub_renddesc(desc, descs);
+	sort(descs.begin(), descs.end(), renddesc_less);
+
+	Task::Handle task = sub_task();
+	sub_tasks.clear();
+
+	for(std::vector<RendDesc>::const_iterator i = descs.begin(); i != descs.end(); ++i)
+	{
+		if (i->get_w() <= 0 || i->get_h() <= 0)
+			continue;
+
+		Point lt = i->get_tl(), rb = i->get_br();
+		Rect rect(lt, rb);
+		if (!rect.is_valid())
+			continue;
+
+		Matrix matrix;
+		if (approximate_less(rb[0], lt[0]))
+			{ matrix.m00 = -1.0; matrix.m20 = rb[0] - lt[0]; }
+		if (approximate_less(rb[1], lt[1]))
+			{ matrix.m11 = -1.0; matrix.m20 = rb[1] - lt[1]; }
+		matrix = matrix * i->get_transformation_matrix();
+		if (!matrix.is_invertible())
+			continue;
+
+		Task::Handle t = task->clone();
+		if (!matrix.is_identity()) {
+			TaskTransformationAffine::Handle ta = new TaskTransformationAffine();
+			ta->transformation->matrix = matrix;
+			ta->sub_task() = t;
+			t = ta;
+		}
+
+		sub_tasks.push_back(t);
+		t->set_coords(rect, VectorInt(i->get_w(), i->get_h()));
+	}
 }
 
 /* === E N T R Y P O I N T ================================================= */

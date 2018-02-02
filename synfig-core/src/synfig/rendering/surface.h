@@ -223,10 +223,15 @@ public:
 	void clear();
 	void reset();
 
+	void create(const VectorInt &x)
+		{ create(x[0], x[1]); }
+
 	int get_width() const
 		{ Glib::Threads::RWLock::ReaderLock lock(rwlock); return width; }
 	int get_height() const
 		{ Glib::Threads::RWLock::ReaderLock lock(rwlock); return height; }
+	VectorInt get_size() const
+		{ Glib::Threads::RWLock::ReaderLock lock(rwlock); return VectorInt(width, height); }
 	bool is_exists() const
 		{ Glib::Threads::RWLock::ReaderLock lock(rwlock); return width > 0 && height > 0; }
 	bool is_blank() const {
@@ -239,10 +244,9 @@ public:
 		return surfaces.count(token);
 	}
 
-	void set_size(const VectorInt &x)
-		{ set_size(x[0], x[1]); }
-	VectorInt get_size() const
-		{ Glib::Threads::RWLock::ReaderLock lock(rwlock); return VectorInt(width, height); }
+	template<typename T>
+	bool has_surface() const
+		{ return has_surface(T::token.handle()); }
 };
 
 

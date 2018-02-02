@@ -49,7 +49,45 @@ namespace rendering
 class Renderer;
 
 
-// TODO: BlendSW - paint at source
+// Helpers
+
+
+template<typename T>
+class Holder
+{
+public:
+	typedef T Type;
+	typedef etl::handle<Type> Handle;
+
+private:
+	Handle value;
+
+public:
+	Type& get()
+		{ return *value; }
+	const Type& get() const
+		{ return *value; }
+	const Handle& handle() const
+		{ return value; }
+
+	Holder():
+		value(new Type()) { }
+	Holder(const Holder &other):
+		value(new Type(other.get())) { }
+	Holder& operator=(const Holder &other)
+		{ *value = other.get(); return *this; }
+	Type& operator*()
+		{ return get(); }
+	const Type& operator*() const
+		{ return get(); }
+	Type* operator->()
+		{ return &get(); }
+	const Type* operator->() const
+		{ return &get(); }
+};
+
+
+// Mode
 
 
 class Mode {
@@ -70,6 +108,30 @@ public:
 	inline Handle handle() const
 		{ return Handle(*this); }
 };
+
+
+// Interfaces
+
+
+class TaskInterfaceConstant
+{
+public:
+	virtual bool is_constant()
+		{ return true; }
+	virtual ~TaskInterfaceConstant() { }
+};
+
+
+class TaskInterfaceSplit
+{
+public:
+	virtual bool is_splittable()
+		{ return true; }
+	virtual ~TaskInterfaceSplit() { }
+};
+
+
+// Task
 
 
 class Task: public etl::shared_object
@@ -247,6 +309,62 @@ public:
 	virtual void set_coords_sub_tasks();
 	virtual bool run(RunParams &params) const;
 };
+
+
+// Special tasks
+
+
+class TaskSurface: public Task
+{
+public:
+	typedef etl::handle<TaskSurface> Handle;
+	static Token token;
+	virtual Token::Handle get_token() const { return token; }
+};
+
+
+class TaskNone: public Task, public TaskInterfaceConstant
+{
+public:
+	typedef etl::handle<TaskNone> Handle;
+	static Token token;
+	virtual Token::Handle get_token() const { return token; }
+	virtual bool run(RunParams &params) const
+		{ return true; }
+};
+
+
+class TaskList: public Task
+{
+public:
+	typedef etl::handle<TaskList> Handle;
+	static Token token;
+	virtual Token::Handle get_token() const { return token; }
+	virtual bool run(RunParams &params) const
+		{ return true; }
+};
+
+
+class TaskCallbackCond: public Task
+{
+public:
+	typedef etl::handle<TaskCallbackCond> Handle;
+	static Token token;
+	virtual Token::Handle get_token() const { return token; }
+
+	Glib::Threads::Cond *cond;
+	Glib::Threads::Mutex *mutex;
+
+	TaskCallbackCond(): cond(), mutex() { }
+
+	virtual bool run(RunParams & /* params */) const {
+		if (!cond || !mutex) return false;
+		Glib::Threads::Mutex::Lock lock(*mutex);
+		cond->signal();
+		return true;
+	}
+};
+
 
 } /* end namespace rendering */
 } /* end namespace synfig */

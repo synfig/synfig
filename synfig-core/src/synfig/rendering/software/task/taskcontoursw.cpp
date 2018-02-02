@@ -5,7 +5,7 @@
 **	$Id$
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2015-2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -56,45 +56,44 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
-void
-TaskContourSW::split(const RectInt &sub_target_rect)
-{
-	trunc_target_rect(sub_target_rect);
-}
+
+Task::Token TaskContourSW::token<TaskContourSW, TaskContour, TaskContour>("ContourSW");
+
 
 bool
 TaskContourSW::run(RunParams & /* params */) const
 {
-	synfig::Surface &a =
-		SurfaceSW::Handle::cast_dynamic( target_surface )->get_surface();
+	if (!is_valid())
+		return true;
 
-	if (valid_target())
-	{
-		Matrix bounds_transfromation;
-		bounds_transfromation.m00 = get_pixels_per_unit()[0];
-		bounds_transfromation.m11 = get_pixels_per_unit()[1];
-		bounds_transfromation.m20 = -get_source_rect_lt()[0]*bounds_transfromation.m00 + get_target_rect().minx;
-		bounds_transfromation.m21 = -get_source_rect_lt()[1]*bounds_transfromation.m11 + get_target_rect().miny;
+	Vector ppu = get_pixels_per_unit();
 
-		Matrix matrix = transformation * bounds_transfromation;
+	Matrix bounds_transfromation;
+	bounds_transfromation.m00 = ppu[0];
+	bounds_transfromation.m11 = ppu[1];
+	bounds_transfromation.m20 = target_rect.minx - ppu[0]*source_rect.minx;
+	bounds_transfromation.m21 = target_rect.miny - ppu[1]*source_rect.miny;
 
-		Polyspan polyspan;
-		polyspan.init(get_target_rect());
-		software::Contour::build_polyspan(contour->get_chunks(), matrix, polyspan, detail);
-		polyspan.sort_marks();
+	Matrix matrix = transformation * bounds_transfromation;
 
-		software::Contour::render_polyspan(
-			a,
-			polyspan,
-			contour->invert,
-			allow_antialias && contour->antialias,
-			contour->winding_style,
-			contour->color,
-			blend ? amount : 1.0,
-			blend ? blend_method : Color::BLEND_COMPOSITE );
+	Polyspan polyspan;
+	polyspan.init(target_rect);
+	software::Contour::build_polyspan(contour->get_chunks(), matrix, polyspan, detail);
+	polyspan.sort_marks();
 
-		//debug::DebugSurface::save_to_file(a, "TaskContourSW__run");
-	}
+	SurfaceResource::LockWrite<SurfaceSW> la(target_surface);
+	if (!la)
+		return false;
+
+	software::Contour::render_polyspan(
+		la->get_surface(),
+		polyspan,
+		contour->invert,
+		allow_antialias && contour->antialias,
+		contour->winding_style,
+		contour->color,
+		blend ? amount : 1.0,
+		blend ? blend_method : Color::BLEND_COMPOSITE );
 
 	return true;
 }

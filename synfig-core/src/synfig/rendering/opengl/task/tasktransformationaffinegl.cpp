@@ -1,11 +1,11 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/opengl/task/tasksurfaceresamplegl.cpp
-**	\brief TaskSurfaceResampleGL
+/*!	\file synfig/rendering/opengl/task/tasktransfromationaffinegl.cpp
+**	\brief TaskTransformationAffineGL
 **
 **	$Id$
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2015-2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -38,7 +38,7 @@
 #include <synfig/general.h>
 #include <synfig/localization.h>
 
-#include "tasksurfaceresamplegl.h"
+#include "tasktransformationaffinegl.h"
 
 #include "../internal/environment.h"
 #include "../surfacegl.h"
@@ -56,29 +56,35 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
+
+Task::Token TaskTransformationAffineGL::token<
+	TaskTransformationAffineGL,
+	TaskTransformationAffine,
+	TransformationAffine >
+	("TaskTransformationAffineGL");
+
+
 bool
-TaskSurfaceResampleGL::run(RunParams & /* params */) const
+TaskTransformationAffineGL::run(RunParams & /* params */) const
 {
+	// TODO: remove antialiasing
+
+	if (!is_valid || !sub_task() || !sub_task()->is_valid())
+		return true;
+
 	gl::Context::Lock lock(env().context);
 
-	SurfaceGL::Handle a =
-		SurfaceGL::Handle::cast_dynamic(sub_task()->target_surface);
-	SurfaceGL::Handle target =
-		SurfaceGL::Handle::cast_dynamic(target_surface);
-
-	// TODO: gamma
-
-	Vector rect_size = get_source_rect_rb() - get_source_rect_lt();
+	Vector rect_size = source_rect.get_size();
 	Matrix bounds_transfromation;
-	bounds_transfromation.m00 = fabs(rect_size[0]) > 1e-10 ? 2.0/rect_size[0] : 0.0;
-	bounds_transfromation.m11 = fabs(rect_size[1]) > 1e-10 ? 2.0/rect_size[1] : 0.0;
-	bounds_transfromation.m20 = -1.0 - get_source_rect_lt()[0] * bounds_transfromation.m00;
-	bounds_transfromation.m21 = -1.0 - get_source_rect_lt()[1] * bounds_transfromation.m11;
+	bounds_transfromation.m00 = approximate_equal(rect_size[0], 0.0) ? 0.0 : 2.0/rect_size[0];
+	bounds_transfromation.m11 = approximate_equal(rect_size[1], 0.0) ? 0.0 : 2.0/rect_size[1];
+	bounds_transfromation.m20 = -1.0 - source_rect.minx * bounds_transfromation.m00;
+	bounds_transfromation.m21 = -1.0 - source_rect.miny * bounds_transfromation.m11;
 
 	Matrix matrix = transformation * bounds_transfromation;
 
 	// prepare arrays
-	Vector k(target->get_width(), target->get_height());
+	Vector k(target_surface->get_width(), target_surface->get_height());
 	Vector d( matrix.get_axis_x().multiply_coords(k).norm().divide_coords(k).mag() / matrix.get_axis_x().mag(),
 			  matrix.get_axis_y().multiply_coords(k).norm().divide_coords(k).mag() / matrix.get_axis_y().mag() );
 	d *= 4.0;
@@ -91,17 +97,25 @@ TaskSurfaceResampleGL::run(RunParams & /* params */) const
 	}
 	Vector aascale = d.one_divide_coords();
 
+	SurfaceResource::LockWrite<SurfaceGL> ldst(target_surface);
+	if (!ldst)
+		return false;
+
 	gl::Framebuffers::FramebufferLock framebuffer = env().framebuffers.get_framebuffer();
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, framebuffer.get_id());
-	glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, target->get_id(), 0);
+	glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ldst->get_id(), 0);
 	glViewport(
-		get_target_rect().minx,
-		get_target_rect().miny,
-		get_target_rect().maxx - get_target_rect().minx,
-		get_target_rect().maxy - get_target_rect().miny );
+		target_rect.minx,
+		target_rect.miny,
+		target_rect.get_width(),
+		target_rect.get_height() );
 	env().context.check();
 
-	glBindTexture(GL_TEXTURE_2D, a->get_id());
+	SurfaceResource::LockRead<SurfaceGL> lsrc(sub_task()->target_surface);
+	if (!lsrc)
+		return false;
+
+	glBindTexture(GL_TEXTURE_2D, lsrc->get_id());
 	glBindSampler(0, env().samplers.get_interpolation(interpolation));
 	env().context.check();
 

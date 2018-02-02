@@ -5,7 +5,7 @@
 **	$Id$
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2015-2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -39,6 +39,7 @@
 
 #include "../../software/function/blur.h"
 
+
 #endif
 
 using namespace synfig;
@@ -52,6 +53,10 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
+
+Task::Token TaskBlur::token<TaskBlur, Task>("Blur");
+
+
 Rect
 TaskBlur::calc_bounds() const
 {
@@ -62,6 +67,32 @@ TaskBlur::calc_bounds() const
 	bounds.maxx += fabs(size[0]);
 	bounds.maxy += fabs(size[1]);
 	return bounds;
+}
+
+void
+TaskBlur::set_coords_sub_tasks()
+{
+	if (!sub_task())
+		{ trunc_to_zero(); return; }
+	if (!is_valid_coords())
+		{ sub_task()->set_coords_zero(); return; }
+
+	Vector ppu = get_pixels_per_unit();
+	Vector upp = get_units_per_pixel();
+
+	VectorInt target_extra_size(
+		software::Blur::get_extra_size(
+			blur.type,
+			blur.size.multiply_coords(ppu) ));
+	VectorInt sub_target_size = target_rect.get_size() + target_extra_size;
+
+	Vector source_extra_size(
+		target_extra_size[0]*upp[0],
+		target_extra_size[0]*upp[1] );
+	Rect sub_source_rect = source_rect;
+	sub_source_rect.expand(source_extra_size);
+
+	sub_task()->set_coords(sub_source_rect, sub_target_size);
 }
 
 /* === E N T R Y P O I N T ================================================= */

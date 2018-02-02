@@ -5,7 +5,7 @@
 **	$Id$
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2015-2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -55,30 +55,32 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
+
+Task::Token TaskBlurSW::token<TaskBlurSW, TaskBlur, TaskBlur>("BlurSW");
+
+
 bool
 TaskBlurSW::run(RunParams & /* params */) const
 {
-	if (!valid_target() || !sub_task()->valid_target())
+	if (!is_valid() || !sub_task() || !sub_task()->is_valid())
 		return true;
 
-	synfig::Surface &a =
-		SurfaceSW::Handle::cast_dynamic( target_surface )->get_surface();
-	const synfig::Surface &b =
-		SurfaceSW::Handle::cast_dynamic( sub_task()->target_surface )->get_surface();
+	SurfaceResource::LockWrite<SurfaceSW> la(target_surface);
+	SurfaceResource::LockRead<SurfaceSW> lb(sub_task()->target_surface);
+	if (!la || !lb)
+		return false;
 
-	Vector s = blur.size;
-	Vector pixels_per_unit = get_pixels_per_unit();
-	s[0] *= pixels_per_unit[0];
-	s[1] *= pixels_per_unit[1];
+	Vector ppu = get_pixels_per_unit();
+	Vector s = blur.size.multiply_coords(ppu);
 
-	Vector offsetf = (get_source_rect_lt() - sub_task()->get_source_rect_lt()).multiply_coords(pixels_per_unit);
+	Vector offsetf = (source_rect.get_min() - sub_task()->source_rect.get_min()).multiply_coords(ppu);
 	VectorInt offset((int)round(offsetf[0]), (int)round(offsetf[1]));
-	offset += sub_task()->get_target_rect().get_min();
+	offset += sub_task()->target_rect.get_min();
 
 	software::Blur::blur(
 		software::Blur::Params(
-			a, get_target_rect(),
-			b, offset,
+			la->get_surface(), target_rect,
+			lb->get_surface(), offset,
 			blur.type, s,
 			blend, blend_method, amount ));
 

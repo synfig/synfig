@@ -11,10 +11,6 @@ RENDERING_COMMON_OPTIMIZER_HH = \
 	rendering/common/optimizer/optimizerlist.h \
 	rendering/common/optimizer/optimizerpixelprocessorsplit.h \
 	rendering/common/optimizer/optimizersplit.h \
-	rendering/common/optimizer/optimizersurface.h \
-	rendering/common/optimizer/optimizersurfaceconvert.h \
-	rendering/common/optimizer/optimizersurfacecreate.h \
-	rendering/common/optimizer/optimizersurfacedestroy.h \
 	rendering/common/optimizer/optimizersurfaceresample.h \
 	rendering/common/optimizer/optimizertransformation.h \
 	rendering/common/optimizer/optimizertransformationaffine.h
@@ -32,10 +28,6 @@ RENDERING_COMMON_OPTIMIZER_CC = \
 	rendering/common/optimizer/optimizerlist.cpp \
 	rendering/common/optimizer/optimizerpixelprocessorsplit.cpp \
 	rendering/common/optimizer/optimizersplit.cpp \
-	rendering/common/optimizer/optimizersurface.cpp \
-	rendering/common/optimizer/optimizersurfaceconvert.cpp \
-	rendering/common/optimizer/optimizersurfacecreate.cpp \
-	rendering/common/optimizer/optimizersurfacedestroy.cpp \
 	rendering/common/optimizer/optimizersurfaceresample.cpp \
 	rendering/common/optimizer/optimizertransformation.cpp \
 	rendering/common/optimizer/optimizertransformationaffine.cpp

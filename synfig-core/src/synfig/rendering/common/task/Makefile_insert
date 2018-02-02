@@ -1,36 +1,20 @@
 RENDERING_COMMON_TASK_HH = \
 	rendering/common/task/taskblend.h \
 	rendering/common/task/taskblur.h \
-	rendering/common/task/taskcallback.h \
-	rendering/common/task/taskcomposite.h \
 	rendering/common/task/taskcontour.h \
 	rendering/common/task/tasklayer.h \
-	rendering/common/task/tasklist.h \
 	rendering/common/task/taskmesh.h \
-	rendering/common/task/taskpixelcolormatrix.h \
-	rendering/common/task/taskpixelgamma.h \
 	rendering/common/task/taskpixelprocessor.h \
-	rendering/common/task/tasksolid.h \
-	rendering/common/task/tasksplittable.h \
-	rendering/common/task/tasksurface.h \
-	rendering/common/task/tasksurfaceconvert.h \
-	rendering/common/task/tasksurfacecreate.h \
-	rendering/common/task/tasksurfacedestroy.h \
-	rendering/common/task/tasksurfaceempty.h \
-	rendering/common/task/tasksurfaceresample.h \
-	rendering/common/task/tasktransformableaffine.h \
-	rendering/common/task/tasktransformation.h \
-	rendering/common/task/tasktransformationpass.h
+	rendering/common/task/tasktransformation.h
 
 RENDERING_COMMON_TASK_CC = \
 	rendering/common/task/taskblend.cpp \
 	rendering/common/task/taskblur.cpp \
+	rendering/common/task/taskcontour.cpp \
 	rendering/common/task/tasklayer.cpp \
+	rendering/common/task/taskmesh.cpp \
 	rendering/common/task/taskpixelprocessor.cpp \
-	rendering/common/task/tasksurfaceconvert.cpp \
-	rendering/common/task/tasksurfacecreate.cpp \
-	rendering/common/task/tasksurfacedestroy.cpp \
-	rendering/common/task/tasksurfaceempty.cpp
+	rendering/common/task/tasktransformation.cpp
 
 RENDERING_COMMON_HH += \
     $(RENDERING_COMMON_TASK_HH)

@@ -291,6 +291,7 @@ public:
 		{ return approximate_equal((*this-rhs).mag_squared(), value_type(0.0)); }
 
 	static Vector zero() { return Vector(0,0); }
+	static Vector nan() { return Vector(real_nan<value_type>(), real_nan<value_type>()); }
 
 	Vector multiply_coords(const Vector &rhs) const
 		{ return Vector(_x*rhs._x, _y*rhs._y); }

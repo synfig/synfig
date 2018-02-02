@@ -56,6 +56,9 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 
+Task::Token TaskPixelGammaSW::token<TaskPixelGammaSW, TaskPixelGamma, TaskPixelGamma>("PixelGammaSW");
+
+
 class TaskPixelGammaSW::Internal
 	{
 	public:
@@ -200,34 +203,38 @@ class TaskPixelGammaSW::Internal
 bool
 TaskPixelGammaSW::run(RunParams & /* params */) const
 {
+	if (!is_valid() || !sub_task() || !sub_task()->is_valid())
+		return true;
+
 	synfig::Surface &dst =
 		rendering::SurfaceSW::Handle::cast_dynamic( target_surface )->get_surface();
 	const synfig::Surface &src =
 		rendering::SurfaceSW::Handle::cast_dynamic( sub_task()->target_surface )->get_surface();
 
-	RectInt rd = get_target_rect();
-	if (rd.valid())
+	RectInt rd = target_rect;
+	VectorInt offset = get_offset();
+	RectInt rs = sub_task()->target_rect + rd.get_min() + offset;
+	etl::set_intersect(rs, rs, rd);
+	if (rs.is_valid())
 	{
-		VectorInt offset = get_offset();
-		RectInt rs = sub_task()->get_target_rect() + rd.get_min() + offset;
-		if (rs.valid())
-		{
-			etl::set_intersect(rs, rs, rd);
-			if (rs.valid())
-			{
-				Internal::process(Internal::Params(
-					&dst[rs.miny][rs.minx],
-					dst.get_pitch()/sizeof(Color),
-					&src[rs.miny - rd.miny - offset[1]][rs.minx - rd.minx - offset[0]],
-					src.get_pitch()/sizeof(Color),
-					rs.get_width(),
-					rs.get_height(),
-					1.0/gamma_r,
-					1.0/gamma_g,
-					1.0/gamma_b,
-					1.0/gamma_a ));
-			}
-		}
+		SurfaceResource::LockWrite<SurfaceSW> ldst(target_surface);
+		SurfaceResource::LockRead<SurfaceSW> lsrc(target_surface);
+		if (!ldst || !lsrc)
+			return false;
+		synfig::Surface &dst = ldst->get_surface();
+		const synfig::Surface &src = lsrc->get_surface();
+
+		Internal::process(Internal::Params(
+			&dst[rs.miny][rs.minx],
+			dst.get_pitch()/sizeof(Color),
+			&src[rs.miny - rd.miny - offset[1]][rs.minx - rd.minx - offset[0]],
+			src.get_pitch()/sizeof(Color),
+			rs.get_width(),
+			rs.get_height(),
+			1.0/gamma_r,
+			1.0/gamma_g,
+			1.0/gamma_b,
+			1.0/gamma_a ));
 	}
 
 	return true;

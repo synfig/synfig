@@ -1,11 +1,11 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/common/task/tasktransformationpass.h
-**	\brief TaskTransformationPass Header
+/*!	\file synfig/rendering/opengl/task/tasktransfromationaffinegl.h
+**	\brief TaskTransformationAffineGL Header
 **
 **	$Id$
 **
 **	\legal
-**	......... ... 2016 Ivan Mahonin
+**	......... ... 2015-2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -22,10 +22,13 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_RENDERING_TASKTRANSFORMATIONPASS_H
-#define __SYNFIG_RENDERING_TASKTRANSFORMATIONPASS_H
+#ifndef __SYNFIG_RENDERING_TASKTRANSFORMATIONAFFINEGL_H
+#define __SYNFIG_RENDERING_TASKTRANSFORMATIONAFFINEGL_H
 
 /* === H E A D E R S ======================================================= */
+
+#include "taskgl.h"
+#include "../../common/task/tasktransformation.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -38,10 +41,14 @@ namespace synfig
 namespace rendering
 {
 
-class TaskTransformationPass
+class TaskTransformationAffineGL: public TaskTransformationAffine, public TaskGL
 {
 public:
-	virtual ~TaskTransformationPass() { }
+	typedef etl::handle<TaskTransformationAffineGL> Handle;
+	static Token token;
+	virtual Token::Handle get_token() const { return token; }
+
+	virtual bool run(RunParams &params) const;
 };
 
 } /* end namespace rendering */

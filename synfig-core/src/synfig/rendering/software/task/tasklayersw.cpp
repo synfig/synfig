@@ -5,7 +5,7 @@
 **	$Id$
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2015-2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -35,15 +35,14 @@
 #include <signal.h>
 #endif
 
-#include "tasklayersw.h"
-
-#include "../surfacesw.h"
 #include <synfig/guid.h>
 #include <synfig/canvas.h>
 #include <synfig/context.h>
-#include <synfig/debug/debugsurface.h>
 
 #include <synfig/layers/layer_rendering_task.h>
+
+#include "tasklayersw.h"
+#include "../surfacesw.h"
 
 #endif
 
@@ -58,34 +57,32 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
+
+Task::Token TaskLayerSW::token<TaskLayerSW, TaskLayer, TaskLayer>("LayerSW");
+
+
 bool
 TaskLayerSW::run(RunParams & /* params */) const
 {
-	assert(layer);
-
-	synfig::Surface &target =
-		SurfaceSW::Handle::cast_dynamic( target_surface )->get_surface();
+	if (!is_valid() || !layer)
+		return false;
 
 	Vector upp = get_units_per_pixel();
-	Vector lt = get_source_rect_lt();
-	Vector rb = get_source_rect_rb();
-	lt[0] -= get_target_rect().minx*upp[0];
-	lt[1] -= get_target_rect().miny*upp[1];
-	rb[0] += (target.get_w() - get_target_rect().maxx)*upp[0];
-	rb[1] += (target.get_h() - get_target_rect().maxy)*upp[1];
+	Vector lt = source_rect.get_min();
+	Vector rb = source_rect.get_max();
+	lt[0] -= target_rect.minx*upp[0];
+	lt[1] -= target_rect.miny*upp[1];
+	rb[0] += (target_surface->get_width() - target_rect.maxx)*upp[0];
+	rb[1] += (target_surface->get_height() - target_rect.maxy)*upp[1];
 
 	RendDesc desc;
 	desc.set_tl(lt);
 	desc.set_br(rb);
-	desc.set_wh(target.get_w(), target.get_h());
+	desc.set_wh(target_surface->get_width(), target_surface->get_height());
 	desc.set_antialias(1);
 
 	etl::handle<Layer_RenderingTask> sub_layer(new Layer_RenderingTask());
 	sub_layer->tasks = sub_tasks;
-
-	//for(List::const_iterator i = sub_tasks.begin(); i != sub_tasks.end(); ++i)
-	//	if ((*i) && (*i)->valid_target())
-	//		debug::DebugSurface::save_to_file(SurfaceSW::Handle::cast_dynamic( (*i)->target_surface )->get_surface(), "TaskLayerSW__run__sub");
 
 	CanvasBase fake_canvas_base;
 	fake_canvas_base.push_back(layer);
@@ -93,11 +90,12 @@ TaskLayerSW::run(RunParams & /* params */) const
 	fake_canvas_base.push_back(Layer::Handle());
 
 	Context context(fake_canvas_base.begin(), ContextParams());
-	bool result = context.accelerated_render(&target, 4, desc, NULL);
 
-	//debug::DebugSurface::save_to_file(target, "TaskLayerSW__run__target");
+	SurfaceResource::LockWrite<SurfaceSW> ldst(target_surface);
+	if (!ldst)
+		return false;
 
-	return result;
+	return context.accelerated_render(&ldst->get_surface(), 4, desc, NULL);
 }
 
 /* === E N T R Y P O I N T ================================================= */

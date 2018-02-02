@@ -5,7 +5,7 @@
 **	$Id$
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2015-2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -29,7 +29,6 @@
 
 #include "tasksw.h"
 #include "../../common/task/taskblend.h"
-#include "../../common/task/tasksplittable.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -42,12 +41,13 @@ namespace synfig
 namespace rendering
 {
 
-class TaskBlendSW: public TaskBlend, public TaskSW, public TaskSplittable
+class TaskBlendSW: public TaskBlend, public TaskSW
 {
 public:
 	typedef etl::handle<TaskBlendSW> Handle;
-	Task::Handle clone() const { return clone_pointer(this); }
-	virtual void split(const RectInt &sub_target_rect);
+	static Token token;
+	virtual Token::Handle get_token() const { return token; }
+
 	virtual bool run(RunParams &params) const;
 };
 

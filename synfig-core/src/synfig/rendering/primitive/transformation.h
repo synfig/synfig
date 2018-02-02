@@ -5,7 +5,7 @@
 **	$Id$
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2015-2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -40,34 +40,84 @@ namespace synfig
 namespace rendering
 {
 
+
 class Transformation: public etl::shared_object
 {
 public:
 	typedef etl::handle<Transformation> Handle;
 
-	struct TransformedPoint
-	{
-		Point p;
-		Real depth;
-		bool visible;
+	struct Bounds {
+		Rect rect;
+		Vector resolution;
 
-		TransformedPoint(): depth(0.0), visible(true) { }
-		explicit TransformedPoint(const Point &p, Real depth = 0.0, bool visible = true):
-			p(p), depth(depth), visible(visible) { }
+		explicit Bounds(const Rect &rect, const Vector &resolution = Vector(1.0, 1.0)):
+			rect(rect), resolution(resolution) { }
+
+		inline bool is_valid() const {
+			return rect.is_valid()
+				&& !rect.is_nan_or_inf()
+				&& resolution.is_valid()
+				&& !resolution.is_nan_or_inf()
+				&& approximate_greater(resolution[0], 0.0)
+				&& approximate_greater(resolution[1], 0.0);
+		}
 	};
 
 protected:
-	virtual TransformedPoint transform_vfunc(const Point &x) const;
-	virtual TransformedPoint back_transform_vfunc(const Point &x) const;
+	virtual Transformation::Handle create_inverted_vfunc() const
+		{ return Handle(); }
+
+	virtual Point transform_vfunc(const Point &x, bool translate) const = 0;
+	virtual Bounds transform_bounds_vfunc(const Bounds &bounds) const = 0;
+
 	virtual Mesh::Handle build_mesh_vfunc(const Rect &target_rect, const Vector &precision) const;
 
 public:
-	TransformedPoint transform(const Point &x) const;
-	TransformedPoint back_transform(const Point &x) const;
-	Point get_derivation(int level, const Point &x, Real epsilon = 1e-6) const;
+	virtual ~Transformation() { }
+
+	Transformation::Handle create_inverted() const;
+
+	Point transform(const Point &x, bool translate = true) const
+		{ return transform_vfunc(x, translate); }
+	Bounds transform_bounds(const Bounds &bounds) const
+		{ return transform_bounds_vfunc(bounds); }
+	Bounds transform_bounds(const Rect &bounds) const
+		{ return transform_bounds_vfunc(Bounds(bounds)); }
+	Bounds transform_bounds(const Rect &bounds, const Vector &resolution) const
+		{ return transform_bounds_vfunc(Bounds(bounds, resolution)); }
+
 	Mesh::Handle build_mesh(const Rect &target_rect, const Vector &precision) const;
 	Mesh::Handle build_mesh(const Point &target_rect_lt, const Point &target_rect_rb, const Vector &precision) const;
 };
+
+
+//! Transforms all points to NaN
+class TransformationVoid: public Transformation
+{
+public:
+	typedef etl::handle<TransformationVoid> Handle;
+protected:
+	virtual Point transform_vfunc(const Point &/*x*/, bool /*translate*/) const
+		{ return Point::nan(); }
+	virtual Bounds transform_bounds_vfunc(const Bounds &/*bounds*/) const
+		{ return Bounds(); }
+};
+
+
+//! Keeps points unchanged while transformation
+class TransformationNone: public Transformation
+{
+public:
+	typedef etl::handle<TransformationNone> Handle;
+protected:
+	virtual Transformation::Handle create_inverted_vfunc() const
+		{ return new TransformationNone(); }
+	virtual Point transform_vfunc(const Point &x, bool /*translate*/) const
+		{ return x; }
+	virtual Bounds transform_bounds_vfunc(const Bounds &bounds) const
+		{ return bounds; }
+};
+
 
 } /* end namespace rendering */
 } /* end namespace synfig */

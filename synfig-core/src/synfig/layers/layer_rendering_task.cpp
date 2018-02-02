@@ -36,7 +36,7 @@
 
 #include <synfig/context.h>
 #include <synfig/rendering/software/surfacesw.h>
-#include <synfig/rendering/software/task/tasksurfaceresamplesw.h>
+#include <synfig/rendering/software/task/tasktransformationaffinesw.h>
 
 #include <synfig/debug/debugsurface.h>
 

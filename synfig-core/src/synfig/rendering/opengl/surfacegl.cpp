@@ -74,6 +74,8 @@ SurfaceGL::create_vfunc(int width, int height)
 	gl::Context::Lock lock(env().context);
 	glGenTextures(1, &id);
 	glBindTexture(GL_TEXTURE_2D, id);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, width, height, 0, GL_RGBA, GL_FLOAT, NULL);
 
 	{
@@ -107,6 +109,8 @@ SurfaceGL::assign_vfunc(const rendering::Surface &surface)
 	gl::Context::Lock lock(env().context);
 	glGenTextures(1, &id);
 	glBindTexture(GL_TEXTURE_2D, id);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, surface.get_width(), surface.get_height(), 0, GL_RGBA, GL_FLOAT, pixels);
 
 	env().context.check("SurfaceGL::assign_vfunc");

@@ -5,7 +5,7 @@
 **	$Id$
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2015-2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -52,6 +52,10 @@ using namespace rendering;
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
+
+
+Task::Token TaskContourGL::token<TaskContourGL, TaskContour, TaskContour>("ContourGL");
+
 
 void
 TaskContourGL::render_polygon(
@@ -175,64 +179,67 @@ TaskContourGL::render_contour(
 bool
 TaskContourGL::run(RunParams & /* params */) const
 {
-	gl::Context::Lock lock(env().context);
-
-	SurfaceGL::Handle target =
-		SurfaceGL::Handle::cast_dynamic(target_surface);
+	if (!is_valid())
+		return true;
 
 	// transformation
 
-	Vector rect_size = get_source_rect_rb() - get_source_rect_lt();
+	Vector rect_size = source_rect.get_size();
 	Matrix bounds_transfromation;
-	bounds_transfromation.m00 = fabs(rect_size[0]) > 1e-10 ? 2.0/rect_size[0] : 0.0;
-	bounds_transfromation.m11 = fabs(rect_size[1]) > 1e-10 ? 2.0/rect_size[1] : 0.0;
-	bounds_transfromation.m20 = -1.0 - get_source_rect_lt()[0]*bounds_transfromation.m00;
-	bounds_transfromation.m21 = -1.0 - get_source_rect_lt()[1]*bounds_transfromation.m11;
+	bounds_transfromation.m00 = 2.0/rect_size[0];
+	bounds_transfromation.m11 = 2.0/rect_size[1];
+	bounds_transfromation.m20 = -1.0 - source_rect.minx*bounds_transfromation.m00;
+	bounds_transfromation.m21 = -1.0 - source_rect.miny*bounds_transfromation.m11;
 
 	Matrix matrix = transformation * bounds_transfromation;
 
-	if (valid_target())
-	{
-		// check bounds
-		std::vector<Vector> polygon;
-		Rect bounds(-1.0, -1.0, 1.0, 1.0);
-		Vector pixel_size(
-			2.0/(Real)(get_target_rect().maxx - get_target_rect().minx),
-			2.0/(Real)(get_target_rect().maxy - get_target_rect().miny) );
-		contour->split(polygon, bounds, matrix, pixel_size*detail);
+	// apply bounds
 
-		// bind framebuffer
+	std::vector<Vector> polygon;
+	Rect bounds(-1.0, -1.0, 1.0, 1.0);
+	Vector pixel_size(
+		2.0/(Real)target_rect.get_width(),
+		2.0/(Real)target_rect.get_height() );
+	contour->split(polygon, bounds, matrix, pixel_size*detail);
 
-		gl::Framebuffers::RenderbufferLock renderbuffer = env().framebuffers.get_renderbuffer(GL_STENCIL_INDEX8, target->get_width(), target->get_height());
-		gl::Framebuffers::FramebufferLock framebuffer = env().framebuffers.get_framebuffer();
-		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, framebuffer.get_id());
-		glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, renderbuffer.get_id());
-		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, target->get_id(), 0);
-		env().framebuffers.check("TaskContourGL::run bind framebuffer");
-		glViewport(
-			get_target_rect().minx,
-			get_target_rect().miny,
-			get_target_rect().maxx - get_target_rect().minx,
-			get_target_rect().maxy - get_target_rect().miny );
-		env().context.check("TaskContourGL::run viewport");
+	// lock resources
 
-		// render
+	gl::Context::Lock lock(env().context);
+	SurfaceResource::LockWrite<SurfaceGL> la(target_surface);
+	if (!la)
+		return false;
 
-		render_polygon(
-			polygon,
-			bounds,
-			contour->invert,
-			allow_antialias && contour->antialias,
-			contour->winding_style,
-			contour->color );
+	// bind framebuffer
 
-		// release framebuffer
+	gl::Framebuffers::RenderbufferLock renderbuffer = env().framebuffers.get_renderbuffer(GL_STENCIL_INDEX8, la->get_width(), la->get_height());
+	gl::Framebuffers::FramebufferLock framebuffer = env().framebuffers.get_framebuffer();
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, framebuffer.get_id());
+	glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, renderbuffer.get_id());
+	glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, la->get_id(), 0);
+	env().framebuffers.check("TaskContourGL::run bind framebuffer");
+	glViewport(
+		target_rect.minx,
+		target_rect.miny,
+		target_rect.get_width(),
+		target_rect.get_height() );
+	env().context.check("TaskContourGL::run viewport");
 
-		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, 0, 0);
-		glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, 0);
-		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-		env().context.check("TaskContourGL::run release contour");
-	}
+	// render
+
+	render_polygon(
+		polygon,
+		bounds,
+		contour->invert,
+		allow_antialias && contour->antialias,
+		contour->winding_style,
+		contour->color );
+
+	// release framebuffer
+
+	glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, 0, 0);
+	glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, 0);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+	env().context.check("TaskContourGL::run release contour");
 
 	return true;
 }

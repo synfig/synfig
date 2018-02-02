@@ -1,11 +1,11 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/opengl/task/tasksurfaceresamplesw.h
-**	\brief TaskSurfaceResampleSW Header
+/*!	\file synfig/rendering/opengl/task/tasktransformationaffinesw.h
+**	\brief TaskTransformationAffineSW Header
 **
 **	$Id$
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2015-2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -22,16 +22,17 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_RENDERING_TASKSURFACERESAMPLESW_H
-#define __SYNFIG_RENDERING_TASKSURFACERESAMPLESW_H
+#ifndef __SYNFIG_RENDERING_TASKTRANSFORMATIONAFFINESW_H
+#define __SYNFIG_RENDERING_TASKTRANSFORMATIONAFFINESW_H
 
 /* === H E A D E R S ======================================================= */
 
 #include "tasksw.h"
 
 #include "../surfaceswpacked.h"
-#include "../../common/task/tasksurfaceresample.h"
-#include "../../common/task/taskcomposite.h"
+#include "../../common/task/tasktransformation.h"
+#include "../../common/task/taskblend.h"
+#include "../../common/task/taskpixelprocessor.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -39,31 +40,30 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace synfig
-{
-	class Surface;
-}
+namespace synfig { class Surface; }
 
 namespace synfig
 {
 namespace rendering
 {
 
-namespace software
-{
-	class PackedSurface;
-}
+namespace software { class PackedSurface; }
 
-class TaskSurfaceResampleSW: public TaskSurfaceResample, public TaskComposite, public TaskSW
+
+class TaskTransformationAffineSW: public TaskTransformationAffine, public TaskSW,
+	public TaskInterfaceComposite
 {
 private:
 	class Helper;
 public:
-	typedef etl::handle<TaskSurfaceResampleSW> Handle;
-	Task::Handle clone() const { return clone_pointer(this); }
+	typedef etl::handle<TaskTransformationAffineSW> Handle;
+	static Token token;
+	virtual Token::Handle get_token() const { return token; }
+
 	virtual bool run(RunParams &params) const;
-	virtual bool is_supported_source(const Surface::Handle &surface)
-		{ return TaskSW::is_supported_source(surface) || surface.type_is<SurfaceSWPacked>(); }
+
+	virtual Color::BlendMethodFlags get_supported_blend_methods() const
+		{ return Color::BLEND_METHODS_ALL; }
 
 	static void resample(
 		synfig::Surface &dest,
@@ -73,7 +73,6 @@ public:
 		const Matrix &transformation,
 		ColorReal gamma,
 		Color::Interpolation interpolation,
-		bool antialiasing,
 		bool blend,
 		ColorReal blend_amount,
 		Color::BlendMethod blend_method );
@@ -86,11 +85,11 @@ public:
 		const Matrix &transformation,
 		ColorReal gamma,
 		Color::Interpolation interpolation,
-		bool antialiasing,
 		bool blend,
 		ColorReal blend_amount,
 		Color::BlendMethod blend_method );
 };
+
 
 } /* end namespace rendering */
 } /* end namespace synfig */

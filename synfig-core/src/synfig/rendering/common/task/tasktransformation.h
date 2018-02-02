@@ -5,7 +5,7 @@
 **	$Id$
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2015-2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -28,7 +28,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include "../../task.h"
-#include "../../primitive/transformation.h"
+#include "../../primitive/transformationaffine.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -41,18 +41,59 @@ namespace synfig
 namespace rendering
 {
 
-class TaskTransformation: public Task
+
+//! Interface for tasks which works identically while placed before or after transformation
+class TaskInterfaceTransformationPass
+{
+public:
+	virtual ~TaskInterfaceTransformationPass() { }
+};
+
+
+class TaskInterfaceTransformation
+{
+public:
+	virtual ~TaskInterfaceTransformation() { }
+	virtual const Transformation::Handle get_transformation() const
+		{ return Transformation::Handle(); }
+};
+
+
+class TaskTransformation: public Task, public TaskInterfaceTransformation
 {
 public:
 	typedef etl::handle<TaskTransformation> Handle;
+	static Token token;
+	virtual Token::Handle get_token() const { return token; }
 
-	Transformation::Handle transformation;
+	Color::Interpolation interpolation;
+	Vector supersample;
 
-	Task::Handle clone() const { return clone_pointer(this); }
+	TaskTransformation():
+		interpolation(Color::INTERPOLATION_LINEAR),
+		supersample(Vector(1.0, 1.0)) { }
 
 	const Task::Handle& sub_task() const { return Task::sub_task(0); }
 	Task::Handle& sub_task() { return Task::sub_task(0); }
+
+	virtual Rect calc_bounds() const;
+	virtual void set_coords_sub_tasks();
 };
+
+
+class TaskTransformationAffine: public TaskTransformation
+{
+public:
+	typedef etl::handle<TaskTransformationAffine> Handle;
+	static Token token;
+	virtual Token::Handle get_token() const { return token; }
+
+	Holder<TransformationAffine> transformation;
+
+	virtual const Transformation::Handle get_transformation() const
+		{ return transformation.handle(); }
+};
+
 
 } /* end namespace rendering */
 } /* end namespace synfig */

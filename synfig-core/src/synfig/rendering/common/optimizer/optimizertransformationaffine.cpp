@@ -37,7 +37,7 @@
 
 #include "optimizertransformationaffine.h"
 
-#include "../../primitive/affinetransformation.h"
+#include "../../primitive/transformationaffine.h"
 #include "../task/tasktransformationpass.h"
 #include "../task/tasksolid.h"
 #include "../task/tasktransformation.h"

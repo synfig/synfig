@@ -1,11 +1,11 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/common/optimizer/optimizersurfaceresample.cpp
-**	\brief OptimizerSurfaceResample
+/*!	\file synfig/rendering/common/task/taskmesh.cpp
+**	\brief TaskMesh
 **
 **	$Id$
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -35,11 +35,7 @@
 #include <signal.h>
 #endif
 
-#include "optimizersurfaceresample.h"
-
-#include "../../primitive/affinetransformation.h"
-#include "../task/tasktransformation.h"
-#include "../task/tasksurfaceresample.h"
+#include "taskmesh.h"
 
 #endif
 
@@ -54,23 +50,26 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
-void
-OptimizerSurfaceResample::run(const RunParams& params) const
+
+Task::Token TaskMesh::token<TaskMesh, Task>("Mesh");
+
+
+Rect
+TaskMesh::calc_bounds() const
 {
-	if (TaskTransformation::Handle transformation = TaskTransformation::Handle::cast_dynamic(params.ref_task))
-	{
-		if (AffineTransformation::Handle affine = AffineTransformation::Handle::cast_dynamic(transformation->transformation))
-		{
-			TaskSurfaceResample::Handle resample = new TaskSurfaceResample();
-			assign(resample, Task::Handle(transformation));
-			resample->init_target_rect(
-				transformation->get_target_rect(),
-				transformation->get_source_rect_lt(),
-				transformation->get_source_rect_rb() );
-			resample->transformation = affine->matrix;
-			apply(params, resample);
-		}
-	}
+	// TODO:
+	return Rect();
+}
+
+void
+TaskMesh::set_coords_sub_tasks()
+{
+	if (!sub_task())
+		{ trunc_to_zero(); return; }
+	if (!is_valid_coords())
+		{ sub_task()->set_coords_zero(); return; }
+
+	// TODO:
 }
 
 /* === E N T R Y P O I N T ================================================= */

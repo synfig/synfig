@@ -52,7 +52,7 @@
 #include <synfig/segment.h>
 #include <synfig/cairo_renddesc.h>
 
-#include <synfig/rendering/primitive/affinetransformation.h>
+#include <synfig/rendering/primitive/transformationaffine.h>
 
 #include <synfig/rendering/common/task/taskblur.h>
 #include <synfig/rendering/common/task/tasktransformation.h>

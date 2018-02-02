@@ -5,7 +5,7 @@
 **	$Id$
 **
 **	\legal
-**	......... ... 2016 Ivan Mahonin
+**	......... ... 2016-2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -50,6 +50,12 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
+
+Task::Token TaskPixelProcessor::token<TaskPixelProcessor, Task>("PixelProcessor");
+Task::Token TaskPixelGamma::token<TaskPixelGamma, TaskPixelProcessor>("PixelGamma");
+Task::Token TaskPixelColorMatrix::token<TaskPixelColorMatrix, TaskPixelProcessor>("PixelColorMatrix");
+
+
 Rect
 TaskPixelProcessor::calc_bounds() const
 {
@@ -63,8 +69,8 @@ VectorInt
 TaskPixelProcessor::get_offset() const
 {
 	if (!sub_task()) return VectorInt::zero();
-	Vector offset = (sub_task()->get_source_rect_lt() - get_source_rect_lt()).multiply_coords(get_pixels_per_unit());
-	return VectorInt((int)round(offset[0]), (int)round(offset[1])) - sub_task()->get_target_offset();
+	Vector offset = (sub_task()->source_rect.get_min() - source_rect.get_min()).multiply_coords(get_pixels_per_unit());
+	return VectorInt((int)round(offset[0]), (int)round(offset[1])) - sub_task()->target_rect.get_min();
 }
 
 /* === E N T R Y P O I N T ================================================= */

@@ -1,11 +1,11 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/opengl/optimizer/optimizercontourgl.cpp
-**	\brief OptimizerContourGL
+/*!	\file synfig/rendering/common/task/taskcontour.cpp
+**	\brief TaskContour
 **
 **	$Id$
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -35,9 +35,7 @@
 #include <signal.h>
 #endif
 
-#include "optimizercontourgl.h"
-
-#include "../task/taskcontourgl.h"
+#include "taskcontour.h"
 
 #endif
 
@@ -52,16 +50,16 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
-void
-OptimizerContourGL::run(const RunParams& params) const
+
+Task::Token TaskContour::token<TaskContour, Task>("Contour");
+
+
+Rect
+TaskContour::calc_bounds() const
 {
-	TaskContour::Handle contour = TaskContour::Handle::cast_dynamic(params.ref_task);
-	if ( contour
-	  && contour->target_surface
-	  && contour.type_equal<TaskContour>() )
-	{
-		apply(params, create_and_assign<TaskContourGL>(contour));
-	}
+	return !contour        ? Rect::zero()
+	     : contour->invert ? Rect::infinite()
+         :                   contour->calc_bounds(transformation->matrix);
 }
 
 /* === E N T R Y P O I N T ================================================= */

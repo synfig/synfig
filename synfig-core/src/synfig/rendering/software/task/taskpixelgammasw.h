@@ -5,7 +5,7 @@
 **	$Id$
 **
 **	\legal
-**	......... ... 2016 Ivan Mahonin
+**	......... ... 2016-2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -28,7 +28,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include "tasksw.h"
-#include "../../common/task/taskpixelgamma.h"
+#include "../../common/task/taskpixelprocessor.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -47,7 +47,9 @@ private:
 	class Internal;
 public:
 	typedef etl::handle<TaskPixelGammaSW> Handle;
-	Task::Handle clone() const { return clone_pointer(this); }
+	static Token token;
+	virtual Token::Handle get_token() const { return token; }
+
 	virtual bool run(RunParams &params) const;
 };
 

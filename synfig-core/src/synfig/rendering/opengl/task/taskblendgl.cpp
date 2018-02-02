@@ -56,6 +56,10 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
+
+Task::Token TaskBlendGL::token<TaskBlendGL, TaskBlend, TaskBlend>("BlendGL");
+
+
 bool
 TaskBlendGL::run(RunParams & /* params */) const
 {

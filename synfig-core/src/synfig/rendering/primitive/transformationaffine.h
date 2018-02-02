@@ -1,11 +1,11 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/opengl/optimizer/optimizersurfaceresamplegl.h
-**	\brief OptimizerSurfaceResampleGL Header
+/*!	\file synfig/rendering/primitive/affinetransformation.h
+**	\brief AffineTransformation Header
 **
 **	$Id$
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2015-2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -22,12 +22,14 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_RENDERING_OPTIMIZERSURFACERESAMPLEGL_H
-#define __SYNFIG_RENDERING_OPTIMIZERSURFACERESAMPLEGL_H
+#ifndef __SYNFIG_RENDERING_AFFINETRANSFORMATION_H
+#define __SYNFIG_RENDERING_AFFINETRANSFORMATION_H
 
 /* === H E A D E R S ======================================================= */
 
-#include "../../optimizer.h"
+#include <synfig/matrix.h>
+
+#include "transformation.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -40,17 +42,20 @@ namespace synfig
 namespace rendering
 {
 
-class OptimizerSurfaceResampleGL: public Optimizer
+class TransformationAffine: public Transformation
 {
 public:
-	OptimizerSurfaceResampleGL()
-	{
-		category_id = CATEGORY_ID_SPECIALIZE;
-		depends_from = CATEGORY_COMMON & CATEGORY_PRE_SPECIALIZE;
-		for_task = true;
-	}
+	typedef etl::handle<TransformationAffine> Handle;
 
-	virtual void run(const RunParams &params) const;
+	Matrix matrix;
+
+	TransformationAffine() { }
+	explicit TransformationAffine(const Matrix &matrix) { }
+
+protected:
+	virtual Transformation::Handle create_inverted_vfunc() const;
+	virtual Point transform_vfunc(const Point &x, bool direction) const;
+	virtual Bounds transform_bounds_vfunc(const Bounds &bounds) const;
 };
 
 } /* end namespace rendering */

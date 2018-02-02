@@ -5,7 +5,7 @@
 **	$Id$
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2015-2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -28,7 +28,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include "../../task.h"
-#include "tasktransformationpass.h"
+#include "tasktransformation.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -41,17 +41,41 @@ namespace synfig
 namespace rendering
 {
 
-class TaskBlend: public Task, public TaskTransformationPass
+
+class TaskInterfaceComposite
+{
+public:
+	bool blend;
+	Color::BlendMethod blend_method;
+	Color::value_type amount;
+
+	TaskInterfaceComposite():
+		blend(),
+		blend_method(Color::BLEND_COMPOSITE),
+		amount() { }
+	virtual ~TaskInterfaceComposite()
+		{ }
+	virtual Color::BlendMethodFlags get_supported_blend_methods() const
+		{ return 0; }
+	bool is_blend_method_supported(Color::BlendMethod blend_method)
+		{ return get_supported_blend_methods() & (1 << blend_method); }
+};
+
+
+class TaskBlend: public Task,
+	public TaskInterfaceTransformationPass,
+	public TaskInterfaceSplit
 {
 public:
 	typedef etl::handle<TaskBlend> Handle;
+	static Token token;
+	virtual Token::Handle get_token() const { return token; }
 
 	Color::BlendMethod blend_method;
 	Color::value_type amount;
 
 	TaskBlend():
 		blend_method(Color::BLEND_COMPOSITE), amount(1.0) { }
-	Task::Handle clone() const { return clone_pointer(this); }
 
 	const Task::Handle& sub_task_a() const { return sub_task(0); }
 	Task::Handle& sub_task_a() { return sub_task(0); }
@@ -64,6 +88,7 @@ public:
 
 	virtual Rect calc_bounds() const;
 };
+
 
 } /* end namespace rendering */
 } /* end namespace synfig */

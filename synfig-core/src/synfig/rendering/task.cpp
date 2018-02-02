@@ -53,6 +53,10 @@ using namespace rendering;
 
 synfig::Token Mode::mode_token;
 synfig::Token Task::token;
+Task::Token TaskSurface::token<TaskSurface, Task>("Surface");
+Task::Token TaskNone::token<TaskNone, Task>("None");
+Task::Token TaskList::token<TaskList, Task>("List");
+Task::Token TaskCallbackCond::token<TaskCallbackCond, Task>("CallbackCond");
 
 
 void Task::Token::unprepare_vfunc()
@@ -231,6 +235,9 @@ Task::set_coords(const Rect &source_rect, const VectorInt target_size)
 			trunc_to_zero();
 		if (!target_surface)
 			target_surface = new SurfaceResource();
+
+		// allocate surface by incoming target_size without truncation,
+		// it's significant for transformation antialiasing
 		if (!target_surface->is_exists())
 			target_surface->create(target_rect.maxx, target_rect.maxy);
 	} else {

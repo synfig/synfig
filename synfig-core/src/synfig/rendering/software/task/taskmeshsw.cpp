@@ -5,7 +5,7 @@
 **	$Id$
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2015-2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -51,6 +51,10 @@ using namespace rendering;
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
+
+
+Task::Token TaskMeshSW::token<TaskMeshSW, TaskMesh, TaskMesh>("MeshSW");
+
 
 class TaskMeshSW::Internal
 {
@@ -438,31 +442,38 @@ TaskMeshSW::render_mesh(
 	}
 }
 
-
 bool
 TaskMeshSW::run(RunParams & /* params */) const
 {
-	synfig::Surface &a =
-		SurfaceSW::Handle::cast_dynamic( target_surface )->get_surface();
-	const synfig::Surface &b =
-		SurfaceSW::Handle::cast_dynamic( sub_task()->target_surface )->get_surface();
+	if (!is_valid() || !sub_task() || !sub_task()->is_valid())
+		return true;
 
 	// TODO: target_rect
 
+	Vector upp = get_units_per_pixel();
 	Matrix3 transfromation_matrix;
-	transfromation_matrix.m00 = get_units_per_pixel()[0];
-	transfromation_matrix.m11 = get_units_per_pixel()[1];
-	transfromation_matrix.m20 = get_source_rect_lt()[0];
-	transfromation_matrix.m21 = get_source_rect_lt()[1];
+	transfromation_matrix.m00 = upp[0];
+	transfromation_matrix.m11 = upp[1];
+	transfromation_matrix.m20 = source_rect.minx;
+	transfromation_matrix.m21 = source_rect.miny;
 
+	Vector sub_upp = get_units_per_pixel();
 	Matrix3 texture_transfromation_matrix;
-	texture_transfromation_matrix.m00 = sub_task()->get_units_per_pixel()[0];
-	texture_transfromation_matrix.m11 = sub_task()->get_units_per_pixel()[1];
-	texture_transfromation_matrix.m20 = sub_task()->get_source_rect_lt()[0];
-	texture_transfromation_matrix.m21 = sub_task()->get_source_rect_lt()[1];
+	texture_transfromation_matrix.m00 = sub_upp[0];
+	texture_transfromation_matrix.m11 = sub_upp[1];
+	texture_transfromation_matrix.m20 = sub_task()->source_rect.minx;
+	texture_transfromation_matrix.m21 = sub_task()->source_rect.miny;
+
+	if (target_surface == sub_task()->target_surface)
+		return false;
+
+	SurfaceResource::LockWrite<SurfaceSW> la(target_surface);
+	SurfaceResource::LockRead<SurfaceSW> lb(sub_task()->target_surface);
+	if (!la || !lb)
+		return false;
 
 	render_mesh(
-		a,
+		la->get_surface(),
 		&mesh->vertices.front().position,
 		sizeof(mesh->vertices.front()),
 		&mesh->vertices.front().tex_coords,
@@ -470,7 +481,7 @@ TaskMeshSW::run(RunParams & /* params */) const
 		mesh->triangles.front().vertices,
 		sizeof(mesh->triangles.front()),
 		mesh->triangles.size(),
-		b,
+		lb->get_surface(),
 		transfromation_matrix,
 		texture_transfromation_matrix,
 		1.0,

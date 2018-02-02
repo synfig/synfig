@@ -5,7 +5,7 @@
 **	$Id$
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2015-2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -30,11 +30,9 @@
 #include <synfig/surface.h>
 
 #include "tasksw.h"
-#include "../../common/task/taskcontour.h"
-#include "../../common/task/taskcomposite.h"
-#include "../../common/task/tasksplittable.h"
-#include "../../primitive/contour.h"
 #include "../../primitive/polyspan.h"
+#include "../../common/task/taskcontour.h"
+#include "../../common/task/taskblend.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -47,12 +45,15 @@ namespace synfig
 namespace rendering
 {
 
-class TaskContourSW: public TaskContour, public TaskSW, public TaskComposite, public TaskSplittable
+class TaskContourSW: public TaskContour, public TaskSW,
+	public TaskInterfaceComposite,
+	public TaskInterfaceSplit
 {
 public:
 	typedef etl::handle<TaskContourSW> Handle;
-	Task::Handle clone() const { return clone_pointer(this); }
-	virtual void split(const RectInt &sub_target_rect);
+	static Token token;
+	virtual Token::Handle get_token() const { return token; }
+
 	virtual bool run(RunParams &params) const;
 
 	virtual Color::BlendMethodFlags get_supported_blend_methods() const

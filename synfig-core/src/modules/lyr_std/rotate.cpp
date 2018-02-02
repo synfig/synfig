@@ -51,7 +51,7 @@
 #include "rotate.h"
 
 #include <synfig/rendering/common/task/tasktransformation.h>
-#include <synfig/rendering/primitive/affinetransformation.h>
+#include <synfig/rendering/primitive/transformationaffine.h>
 
 #endif
 

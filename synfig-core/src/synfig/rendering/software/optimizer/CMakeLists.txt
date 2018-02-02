@@ -1,11 +1,7 @@
 target_sources(synfig
     PRIVATE
         "${CMAKE_CURRENT_LIST_DIR}/optimizerblendsw.cpp"
-        "${CMAKE_CURRENT_LIST_DIR}/optimizerblursw.cpp"
-        "${CMAKE_CURRENT_LIST_DIR}/optimizercontoursw.cpp"
-        "${CMAKE_CURRENT_LIST_DIR}/optimizerlayersw.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/optimizermeshsw.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/optimizerpixelcolormatrixsw.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/optimizerpixelgammasw.cpp"
-        "${CMAKE_CURRENT_LIST_DIR}/optimizersurfaceresamplesw.cpp"
 )

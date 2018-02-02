@@ -5,7 +5,7 @@
 **	$Id$
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2015-2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -35,7 +35,6 @@
 #include <signal.h>
 #endif
 
-#include <synfig/debug/debugsurface.h>
 #include <synfig/general.h>
 
 #include "taskblendsw.h"
@@ -55,55 +54,36 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
-void
-TaskBlendSW::split(const RectInt &sub_target_rect)
-{
-	trunc_target_rect(sub_target_rect);
-	if (valid_target())
-	{
-		if (sub_task_a() && sub_task_a()->valid_target())
-		{
-			sub_task_a() = sub_task_a()->clone();
-			sub_task_a()->trunc_target_rect(
-				get_target_rect()
-				- get_target_offset()
-				- get_offset_a() );
-		}
-		if (sub_task_b() && sub_task_b()->valid_target())
-		{
-			sub_task_b() = sub_task_b()->clone();
-			sub_task_b()->trunc_target_rect(
-				get_target_rect()
-				- get_target_offset()
-				- get_offset_b() );
-		}
-	}
-}
+
+Task::Token TaskBlendSW::token<TaskBlendSW, TaskBlend, TaskBlend>("BlendSW");
+
 
 bool
 TaskBlendSW::run(RunParams & /* params */) const
 {
-	const synfig::Surface &a =
-		SurfaceSW::Handle::cast_dynamic( sub_task_a()->target_surface )->get_surface();
-	const synfig::Surface &b =
-		SurfaceSW::Handle::cast_dynamic( sub_task_b()->target_surface )->get_surface();
-	synfig::Surface &c =
-		SurfaceSW::Handle::cast_dynamic( target_surface )->get_surface();
+	if (!is_valid()) return true;
 
-	//debug::DebugSurface::save_to_file(a, "TaskBlendSW__run__a");
-	//debug::DebugSurface::save_to_file(b, "TaskBlendSW__run__b");
+	SurfaceResource::LockWrite<SurfaceSW> lc(target_surface);
+	if (!lc) return false;
+	synfig::Surface &c = lc->get_surface();
+	RectInt r = target_rect;
 
-	RectInt r = get_target_rect();
-	if (r.valid())
+	// blit surface a
+	RectInt ra = RectInt::zero();
+	if (sub_task_a() && sub_task_a()->is_valid())
 	{
-		RectInt ra = sub_task_a()->get_target_rect() + r.get_min() + get_offset_a();
-		if (ra.valid())
+		RectInt ra = sub_task_a()->target_rect + r.get_min() + get_offset_a();
+		if (ra.is_valid())
 		{
 			etl::set_intersect(ra, ra, r);
-			if (ra.valid() && &a != &c)
+			if (ra.is_valid() && sub_task_a()->target_surface != target_surface)
 			{
+				SurfaceResource::LockRead<SurfaceSW> la(sub_task_a()->target_surface);
+				if (!la) return false;
+				synfig::Surface &a = la->get_surface();
+
 				synfig::Surface::pen p = c.get_pen(ra.minx, ra.maxx);
-				const_cast<synfig::Surface*>(&a)->blit_to(
+				a.blit_to(
 					p,
 					ra.minx - r.minx - get_offset_a()[0],
 					ra.miny - r.miny - get_offset_a()[1],
@@ -111,25 +91,33 @@ TaskBlendSW::run(RunParams & /* params */) const
 					ra.maxy - ra.miny );
 			}
 		}
+	}
 
-		RectInt fill[] = { ra, RectInt::zero(), RectInt::zero(), RectInt::zero() };
-		RectInt rb = sub_task_b()->get_target_rect() + r.get_min() + get_offset_b();
-		if (rb.valid())
+	// blit surface b
+	RectInt fill[] = { ra, RectInt::zero(), RectInt::zero(), RectInt::zero() };
+	if (sub_task_b() && sub_task_b()->is_valid())
+	{
+		RectInt rb = sub_task_b()->target_rect + r.get_min() + get_offset_b();
+		if (rb.is_valid())
 		{
 			etl::set_intersect(rb, rb, r);
-			if (rb.valid())
+			if (rb.is_valid())
 			{
+				SurfaceResource::LockRead<SurfaceSW> lb(sub_task_b()->target_surface);
+				if (!lb) return false;
+				synfig::Surface &b = lb->get_surface();
+
 				synfig::Surface::alpha_pen ap(c.get_pen(rb.minx, rb.miny));
 				ap.set_blend_method(blend_method);
 				ap.set_alpha(amount);
-				const_cast<synfig::Surface*>(&b)->blit_to(
+				b.blit_to(
 					ap,
 					rb.minx - r.minx - get_offset_b()[0],
 					rb.miny - r.miny - get_offset_b()[1],
 					rb.maxx - rb.minx,
 					rb.maxy - rb.miny );
 
-				if (ra.valid())
+				if (ra.is_valid())
 				{
 					// mark unfilled regions
 					fill[0] = fill[1] = fill[2] = fill[3] = ra;
@@ -140,26 +128,25 @@ TaskBlendSW::run(RunParams & /* params */) const
 				}
 			}
 		}
+	}
 
-		if (Color::is_straight(blend_method))
+	// process unfilled region
+	if (Color::is_straight(blend_method))
+	{
+		for(int i = 0; i < 4; ++i)
 		{
-			for(int i = 0; i < 4; ++i)
+			if (fill[i].valid())
 			{
-				if (fill[i].valid())
-				{
-					synfig::Surface::alpha_pen ap(
-						c.get_pen(fill[i].minx, fill[i].miny) );
-					ap.set_blend_method(blend_method);
-					ap.set_alpha(amount);
-					c.fill( Color(0, 0, 0, 0), ap,
-							fill[i].maxx - fill[i].minx,
-							fill[i].maxy - fill[i].miny );
-				}
+				synfig::Surface::alpha_pen ap(
+					c.get_pen(fill[i].minx, fill[i].miny) );
+				ap.set_blend_method(blend_method);
+				ap.set_alpha(amount);
+				c.fill( Color(0, 0, 0, 0), ap,
+						fill[i].maxx - fill[i].minx,
+						fill[i].maxy - fill[i].miny );
 			}
 		}
 	}
-
-	//debug::DebugSurface::save_to_file(c, "TaskBlendSW__run__c");
 
 	return true;
 }
