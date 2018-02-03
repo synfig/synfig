@@ -234,6 +234,51 @@ public:
 		RendererData(): index(), deps_count(), success() { }
 	};
 
+	class LockReadBase: public SurfaceResource::LockReadBase
+	{
+	public:
+		const Task::Handle task;
+		explicit LockReadBase(
+			const Task::Handle &task,
+			Surface::Token::Handle token = Surface::Token::Handle()
+		):
+			SurfaceResource::LockReadBase(task->target_surface, token, task->target_rect),
+			task(task) { }
+	};
+
+	class LockWriteBase: public SurfaceResource::SemiLockWriteBase
+	{
+	public:
+		const Task::Handle task;
+		explicit LockWriteBase(
+			const Task::Handle &task,
+			Surface::Token::Handle token = Surface::Token::Handle()
+		):
+			SurfaceResource::LockWriteBase(task->target_surface, token, task->target_rect),
+			task(task) { }
+	};
+
+	template<typename T>
+	class LockRead: public SurfaceResource::LockRead<T>
+	{
+	public:
+		const Task::Handle task;
+		explicit LockRead(const Task::Handle &task):
+			SurfaceResource::LockRead<T>(task->target_surface, task->target_rect),
+			task(task) { }
+	};
+
+	template<typename T>
+	class LockWrite: public SurfaceResource::LockWrite<T>
+	{
+	public:
+		const Task::Handle task;
+		explicit LockWrite(const Task::Handle &task):
+			SurfaceResource::LockWrite<T>(task->target_surface, task->target_rect),
+			task(task) { }
+	};
+
+
 	static synfig::Token token;
 	virtual Token::Handle get_token() const = 0;
 
@@ -320,6 +365,33 @@ public:
 	typedef etl::handle<TaskSurface> Handle;
 	static Token token;
 	virtual Token::Handle get_token() const { return token; }
+};
+
+
+class TaskLockSurface: public TaskSurface
+{
+public:
+	typedef etl::handle<TaskLockSurface> Handle;
+	static Token token;
+	virtual Token::Handle get_token() const { return token; }
+
+private:
+	SurfaceResource::LockReadBase *lock_;
+
+public:
+	TaskLockSurface():
+		lock_() { }
+	explicit TaskLockSurface(const SurfaceResource::Handle &surface):
+		lock_() { set_surface(surface); }
+	TaskLockSurface(const TaskLockSurface& other):
+		lock_() { *this = other; }
+	~TaskLockSurface() { unlock(); }
+
+	TaskLockSurface& operator=(const TaskLockSurface& other);
+
+	void set_surface(const SurfaceResource::Handle &surface);
+	void lock();
+	void unlock();
 };
 
 

@@ -266,4 +266,41 @@ bool
 Task::run(RunParams & /* params */) const
 	{ return false; }
 
+
+void
+TaskLockSurface::set_surface(const SurfaceResource::Handle &surface)
+{
+	unlock();
+	target_surface = surface;
+	source_rect = Rect(0.0, 0.0, 1.0, 1.0);
+	target_rect = RectInt(
+		VectorInt::zero(),
+		target_surface ? target_surface->get_size() : VectorInt::zero() );
+	lock();
+}
+
+TaskLockSurface&
+TaskLockSurface::operator=(const TaskLockSurface& other) {
+	(TaskSurface*)this = other;
+	if (other.lock_ && other.lock_->resource != other.target_surface)
+		lock();
+	return *this;
+}
+
+void
+TaskLockSurface::lock() {
+	if (lock_ && lock_->resource != target_surface)
+		unlock();
+	if (target_surface)
+		lock_ = new SurfaceResource::LockReadBase(target_surface);
+}
+
+void
+TaskLockSurface::unlock() {
+	if (lock_) {
+		delete lock_;
+		lock_ = NULL;
+	}
+}
+
 /* === E N T R Y P O I N T ================================================= */

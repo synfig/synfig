@@ -97,7 +97,7 @@ TaskTransformationAffineGL::run(RunParams & /* params */) const
 	}
 	Vector aascale = d.one_divide_coords();
 
-	SurfaceResource::LockWrite<SurfaceGL> ldst(target_surface);
+	LockWrite<SurfaceGL> ldst(target_surface);
 	if (!ldst)
 		return false;
 
@@ -111,7 +111,7 @@ TaskTransformationAffineGL::run(RunParams & /* params */) const
 		target_rect.get_height() );
 	env().context.check();
 
-	SurfaceResource::LockRead<SurfaceGL> lsrc(sub_task()->target_surface);
+	LockRead<SurfaceGL> lsrc(sub_task()->target_surface);
 	if (!lsrc)
 		return false;
 

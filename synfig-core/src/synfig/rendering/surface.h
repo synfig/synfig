@@ -34,6 +34,7 @@
 #include <synfig/color.h>
 #include <synfig/vector.h>
 #include <synfig/token.h>
+#include <synfig/rect.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -143,75 +144,99 @@ public:
 	typedef etl::handle<SurfaceResource> Handle;
 	typedef std::map<Surface::Token::Handle, Surface::Handle> Map;
 
-	class LockReadBase {
+	template<typename TypeLock, typename TypeSurface, bool for_write>
+	class LockBase {
+	public: // keep this order of fields (it's a construction order)
+		const Handle resource;
 	private:
-		Glib::Threads::RWLock::ReaderLock lock;
-		Surface::Handle surface;
+		const TypeLock lock;
 	public:
-		LockReadBase(SurfaceResource &resource, Surface::Token::Handle token):
-			lock(resource.rwlock), surface(resource.get_surface(token)) { }
-		const Surface* get_surface() const
+		const Surface::Handle surface;
+
+		explicit LockBase(
+			const Handle &resource,
+			const Surface::Token::Handle &token = Surface::Token::Handle()
+		):
+			resource(resource),
+			lock(resource->rwlock),
+			surface(resource->get_surface(token, for_write, true, RectInt())) { }
+		LockBase(
+			const Handle &resource,
+			const Surface::Token::Handle &token,
+			const RectInt &rect
+		):
+			lock(resource->rwlock),
+			surface(resource->get_surface(token, for_write, true, rect)) { }
+		const Handle& get_resource() const
+			{ return resource; }
+		TypeSurface* get_surface() const
 			{ return surface.get(); }
 		operator bool () const
 			{ return surface; }
 	};
 
-	class LockWriteBase {
-	private:
-		Glib::Threads::RWLock::WriterLock lock;
-		Surface::Handle surface;
-	public:
-		LockWriteBase(SurfaceResource &resource, Surface::Token::Handle token):
-			lock(resource.rwlock), surface(resource.get_surface(token))
-		{
-			if (surface) {
-				resource.surfaces.clear();
-				resource.surfaces[token] = surface;
-				surface->touch();
-			}
-		}
-		Surface* get_surface() const
-			{ return surface.get(); }
-		operator bool () const
-			{ return surface; }
-	};
+	typedef LockBase<Glib::Threads::RWLock::ReaderLock, const Surface, false> LockReadBase;
+	typedef LockBase<Glib::Threads::RWLock::WriterLock, Surface, true> LockWriteBase;
+	typedef LockBase<Glib::Threads::RWLock::ReaderLock, Surface, true> SemiLockWriteBase;
 
 	template<typename T>
 	class LockRead: public LockReadBase {
 	public:
 		typedef T Type;
-		LockRead(SurfaceResource &resource):
-			LockReadBase(resource, Type::token) { }
-		const Type* get() const
-			{ return dynamic_cast<const Type*>(get_surface()); }
+		explicit LockRead(const Handle &resource):
+			LockReadBase(resource, Type::token.handle()) { }
+		LockRead(const Handle &resource, const RectInt &rect):
+			LockReadBase(resource, Type::token.handle(), rect) { }
+		etl::handle<Type> get() const
+			{ return etl::handle<Type>::cast_dynamic(surface); }
 		const Type* operator->() const
-			{ assert(get()); return get(); }
+			{ assert(get()); return surface.get(); }
 		const Type& operator*() const
-			{ assert(get()); return *get(); }
+			{ assert(get()); return *surface; }
 	};
 
 	template<typename T>
 	class LockWrite: public LockWriteBase {
 	public:
 		typedef T Type;
-		LockWrite(SurfaceResource &resource):
+		explicit LockWrite(const Handle &resource):
 			LockWriteBase(resource, Type::token) { }
-		Type* get() const
-			{ return dynamic_cast<Type*>(get_surface()); }
+		LockWrite(const Handle &resource, const RectInt &rect):
+			LockWriteBase(resource, Type::token) { }
+		etl::handle<Type> get() const
+			{ return etl::handle<Type>::cast_dynamic(surface); }
 		Type* operator->() const
-			{ assert(get()); return get(); }
+			{ assert(get()); return surface.get(); }
 		Type& operator*() const
-			{ assert(get()); return *get(); }
+			{ assert(get()); return *surface; }
+	};
+
+	template<typename T>
+	class SemiLockWrite: public SemiLockWriteBase {
+	public:
+		typedef T Type;
+		explicit SemiLockWrite(const Handle &resource):
+			SemiLockWriteBase(resource, Type::token) { }
+		SemiLockWrite(const Handle &resource, const RectInt &rect):
+			SemiLockWriteBase(resource, Type::token) { }
+		etl::handle<Type> get() const
+			{ return etl::handle<Type>::cast_dynamic(surface); }
+		Type* operator->() const
+			{ assert(get()); return surface.get(); }
+		Type& operator*() const
+			{ assert(get()); return *surface; }
 	};
 
 private:
 	int width;
 	int height;
+	bool blank;
 	Map surfaces;
 
+	Glib::Threads::Mutex mutex;
 	Glib::Threads::RWLock rwlock;
 
-	Surface::Handle get_surface(Surface::Token::Handle token);
+	Surface::Handle get_surface(const Surface::Token::Handle &token, bool exclusive, bool full, const RectInt &rect);
 
 public:
 	SurfaceResource();
@@ -227,23 +252,17 @@ public:
 		{ create(x[0], x[1]); }
 
 	int get_width() const
-		{ Glib::Threads::RWLock::ReaderLock lock(rwlock); return width; }
+		{ Glib::Threads::Mutex::Lock lock(mutex); return width; }
 	int get_height() const
-		{ Glib::Threads::RWLock::ReaderLock lock(rwlock); return height; }
+		{ Glib::Threads::Mutex::Lock lock(mutex); return height; }
 	VectorInt get_size() const
-		{ Glib::Threads::RWLock::ReaderLock lock(rwlock); return VectorInt(width, height); }
+		{ Glib::Threads::Mutex::Lock lock(mutex); return VectorInt(width, height); }
 	bool is_exists() const
-		{ Glib::Threads::RWLock::ReaderLock lock(rwlock); return width > 0 && height > 0; }
-	bool is_blank() const {
-		Glib::Threads::RWLock::ReaderLock lock(rwlock);
-		return surfaces.empty() || surfaces.begin()->second->is_blank();
-	}
-
-	bool has_surface(Surface::Token::Handle token) const {
-		Glib::Threads::RWLock::ReaderLock lock(rwlock);
-		return surfaces.count(token);
-	}
-
+		{ Glib::Threads::Mutex::Lock lock(mutex); return width > 0 && height > 0; }
+	bool is_blank() const
+		{ Glib::Threads::Mutex::Lock lock(mutex); return blank; }
+	bool has_surface(const Surface::Token::Handle &token) const
+		{ Glib::Threads::Mutex::Lock lock(mutex); return surfaces.count(token); }
 	template<typename T>
 	bool has_surface() const
 		{ return has_surface(T::token.handle()); }

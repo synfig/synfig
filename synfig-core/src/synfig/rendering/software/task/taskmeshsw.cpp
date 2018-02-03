@@ -467,8 +467,8 @@ TaskMeshSW::run(RunParams & /* params */) const
 	if (target_surface == sub_task()->target_surface)
 		return false;
 
-	SurfaceResource::LockWrite<SurfaceSW> la(target_surface);
-	SurfaceResource::LockRead<SurfaceSW> lb(sub_task()->target_surface);
+	LockWrite<SurfaceSW> la(target_surface);
+	LockRead<SurfaceSW> lb(sub_task()->target_surface);
 	if (!la || !lb)
 		return false;
 

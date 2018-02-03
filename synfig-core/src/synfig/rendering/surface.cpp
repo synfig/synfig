@@ -196,23 +196,32 @@ Surface::touch()
 
 SurfaceResource::SurfaceResource():
 	width(),
-	height()
+	height(),
+	blank(true)
 { }
 
 SurfaceResource::SurfaceResource(Surface::Handle surface):
 	width(),
-	height()
+	height(),
+	blank(true)
 { assign(surface); }
 
 SurfaceResource::~SurfaceResource()
-{
-	reset();
-}
+	{ reset(); }
 
 Surface::Handle
-SurfaceResource::get_surface(Surface::Token::Handle token)
+SurfaceResource::get_surface(const Surface::Token::Handle &token, bool exclusive, bool full, const RectInt &rect)
 {
-	if (!is_exists())
+	if (!token)
+		return Surface::Handle();
+	if (!full && !rect.is_valid())
+		return Surface::Handle();
+
+	Glib::Threads::Mutex::Lock lock(mutex);
+
+	if (width <= 0 || height <= 0)
+		return Surface::Handle();
+	if (!full && !etl::contains(RectInt(0, 0, width, height), rect))
 		return Surface::Handle();
 
 	Map::const_iterator i = surfaces.find(token);
@@ -238,6 +247,11 @@ SurfaceResource::get_surface(Surface::Token::Handle token)
 			return Surface::Handle();
 	}
 
+	if (exclusive) {
+		surfaces.clear();
+		surface->touch();
+		blank = false;
+	}
 	surfaces[token] = surface;
 	return surface;
 }
@@ -246,6 +260,7 @@ void
 SurfaceResource::create(int width, int height)
 {
 	Glib::Threads::RWLock::WriterLock lock(rwlock);
+	Glib::Threads::Mutex::Lock short_lock(mutex);
 	if (width > 0 && height > 0) {
 		this->width  = width;
 		this->height = height;
@@ -260,6 +275,8 @@ void
 SurfaceResource::assign(Surface::Handle surface)
 {
 	Glib::Threads::RWLock::WriterLock lock(rwlock);
+	Glib::Threads::Mutex::Lock short_lock(mutex);
+
 	for(Map::const_iterator i = surfaces.begin(); i != surfaces.end(); ++i)
 		if (i->second == surface)
 			return;
@@ -279,6 +296,7 @@ void
 SurfaceResource::clear()
 {
 	Glib::Threads::RWLock::WriterLock lock(rwlock);
+	Glib::Threads::Mutex::Lock short_lock(mutex);
 	surfaces.clear();
 }
 
@@ -286,6 +304,7 @@ void
 SurfaceResource::reset()
 {
 	Glib::Threads::RWLock::WriterLock lock(rwlock);
+	Glib::Threads::Mutex::Lock short_lock(mutex);
 	width = 0;
 	height = 0;
 	surfaces.clear();

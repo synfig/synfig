@@ -422,7 +422,7 @@ TaskTransformationAffineSW::run(RunParams & /* params */) const
 	if (!is_valid() || !sub_task() || !sub_task()->is_valid())
 		return true;
 
-	SurfaceResource::LockWrite<SurfaceSW> ldst(target_surface);
+	LockWrite<SurfaceSW> ldst(target_surface);
 	if (!ldst)
 		return false;
 
@@ -447,7 +447,7 @@ TaskTransformationAffineSW::run(RunParams & /* params */) const
 	// resample
 	if (target_surface->has_surface<SurfaceSWPacked>())
 	{
-		SurfaceResource::LockRead<SurfaceSWPacked> lsrc(sub_task()->target_surface);
+		LockRead<SurfaceSWPacked> lsrc(sub_task()->target_surface);
 		if (!lsrc)
 			return false;
 		resample(
@@ -464,7 +464,7 @@ TaskTransformationAffineSW::run(RunParams & /* params */) const
 	}
 	else
 	{
-		SurfaceResource::LockRead<SurfaceSW> lsrc(sub_task()->target_surface);
+		LockRead<SurfaceSW> lsrc(sub_task()->target_surface);
 		if (!lsrc)
 			return false;
 		resample(

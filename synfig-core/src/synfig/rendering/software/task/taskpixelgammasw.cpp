@@ -217,8 +217,8 @@ TaskPixelGammaSW::run(RunParams & /* params */) const
 	etl::set_intersect(rs, rs, rd);
 	if (rs.is_valid())
 	{
-		SurfaceResource::LockWrite<SurfaceSW> ldst(target_surface);
-		SurfaceResource::LockRead<SurfaceSW> lsrc(target_surface);
+		LockWrite<SurfaceSW> ldst(target_surface);
+		LockRead<SurfaceSW> lsrc(target_surface);
 		if (!ldst || !lsrc)
 			return false;
 		synfig::Surface &dst = ldst->get_surface();

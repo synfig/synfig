@@ -81,7 +81,7 @@ TaskContourSW::run(RunParams & /* params */) const
 	software::Contour::build_polyspan(contour->get_chunks(), matrix, polyspan, detail);
 	polyspan.sort_marks();
 
-	SurfaceResource::LockWrite<SurfaceSW> la(target_surface);
+	LockWrite<SurfaceSW> la(target_surface);
 	if (!la)
 		return false;
 

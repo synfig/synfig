@@ -205,7 +205,7 @@ TaskContourGL::run(RunParams & /* params */) const
 	// lock resources
 
 	gl::Context::Lock lock(env().context);
-	SurfaceResource::LockWrite<SurfaceGL> la(target_surface);
+	LockWrite<SurfaceGL> la(target_surface);
 	if (!la)
 		return false;
 
