@@ -63,20 +63,11 @@ using namespace studio;
 
 DeviceTracker::DeviceTracker()
 {
-	GdkDeviceType device_types[] =
-	{
-		GDK_DEVICE_TYPE_MASTER,
-		GDK_DEVICE_TYPE_SLAVE,
-		GDK_DEVICE_TYPE_FLOATING
-	};
-
-	for(int i = 0; i < (int)(sizeof(device_types)/sizeof(device_types[0])); ++i)
-	{
-		GList *device_list = gdk_device_manager_list_devices(
-			gdk_display_get_device_manager(
+		GList *device_list = gdk_seat_get_slaves(
+			gdk_display_get_default_seat(
 				gdk_display_manager_get_default_display(
 					gdk_display_manager_get() )),
-			device_types[i] );
+			GDK_SEAT_CAPABILITY_ALL );
 
 		for(GList *iter=device_list; iter; iter=g_list_next(iter))
 		{
@@ -99,7 +90,6 @@ DeviceTracker::DeviceTracker()
 		}
 
 		g_list_free(device_list);
-	}
 
 	// Once all devices are disabled be sure that the core pointer is the
 	// one selected. The user should decide later whether enable and save the
@@ -119,21 +109,12 @@ DeviceTracker::~DeviceTracker()
 void
 DeviceTracker::save_preferences()
 {
-	GdkDeviceType device_types[] =
-	{
-		GDK_DEVICE_TYPE_MASTER,
-		GDK_DEVICE_TYPE_SLAVE,
-		GDK_DEVICE_TYPE_FLOATING
-	};
-
-	for(int i = 0; i < (int)(sizeof(device_types)/sizeof(device_types[0])); ++i)
-	{
-		GList *device_list = gdk_device_manager_list_devices(
-			gdk_display_get_device_manager(
+		GList *device_list = gdk_seat_get_slaves(
+			gdk_display_get_default_seat(
 				gdk_display_manager_get_default_display(
 					gdk_display_manager_get() )),
-			device_types[i] );
-
+			GDK_SEAT_CAPABILITY_ALL );
+	
 		for(GList *itr=device_list; itr; itr=g_list_next(itr))
 		{
 			GdkDevice * gdk_device = reinterpret_cast<GdkDevice*>(itr->data);
@@ -168,21 +149,16 @@ DeviceTracker::save_preferences()
 		}
 
 		g_list_free(device_list);
-	}
 }
 
 void
 DeviceTracker::load_preferences()
 {
-	GdkDeviceType device_types[] =
-	{
-		GDK_DEVICE_TYPE_MASTER,
-		GDK_DEVICE_TYPE_SLAVE,
-		GDK_DEVICE_TYPE_FLOATING
-	};
-
-	for(int i = 0; i < (int)(sizeof(device_types)/sizeof(device_types[0])); ++i)
-	{
+	GList *device_list = gdk_seat_get_slaves(
+			gdk_display_get_default_seat(
+				gdk_display_manager_get_default_display(
+					gdk_display_manager_get() )),
+			GDK_SEAT_CAPABILITY_ALL );
 		GList *device_list = gdk_device_manager_list_devices(
 			gdk_display_get_device_manager(
 				gdk_display_manager_get_default_display(
@@ -212,5 +188,4 @@ DeviceTracker::load_preferences()
 		}
 
 		g_list_free(device_list);
-	}
 }

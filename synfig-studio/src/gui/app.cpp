@@ -3375,7 +3375,7 @@ App::dialog_message_3b(const std::string &message,
 static bool
 try_open_uri(const std::string &uri)
 {
-	return gtk_show_uri(NULL, uri.c_str(), GDK_CURRENT_TIME, NULL);
+	return gtk_show_uri_on_window(NULL, uri.c_str(), GDK_CURRENT_TIME, NULL);
 }
 
 void

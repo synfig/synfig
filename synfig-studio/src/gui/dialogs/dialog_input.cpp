@@ -137,20 +137,12 @@ void Dialog_Input::take_options()
 {
 	options->devices.clear();
 
-	static const GdkDeviceType device_types[] =
-	{
-		GDK_DEVICE_TYPE_MASTER,
-		GDK_DEVICE_TYPE_SLAVE,
-		GDK_DEVICE_TYPE_FLOATING
-	};
 
-	for(int i = 0; i < (int)(sizeof(device_types)/sizeof(device_types[0])); ++i)
-	{
-		GList *device_list = gdk_device_manager_list_devices(
-			gdk_display_get_device_manager(
+		GList *device_list = gdk_seat_get_slaves(
+			gdk_display_get_default_seat(
 				gdk_display_manager_get_default_display(
 					gdk_display_manager_get() )),
-			device_types[i] );
+			GDK_SEAT_CAPABILITY_ALL );
 
 		for(GList *itr=device_list; itr; itr=g_list_next(itr))
 		{
@@ -180,7 +172,6 @@ void Dialog_Input::take_options()
 		}
 
 		g_list_free(device_list);
-	}
 }
 
 void Dialog_Input::create_widgets()
