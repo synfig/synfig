@@ -18,7 +18,7 @@ endif()
 include(FindPkgConfig)
 pkg_check_modules(SIGCPP REQUIRED sigc++-2.0)
 pkg_check_modules(GTKMM REQUIRED gtkmm-3.0)
-pkg_check_modules(LIBXML REQUIRED libxml++-2.6)
+pkg_check_modules(LIBXML REQUIRED libxml++-3.0)
 
 ##
 ## Config
