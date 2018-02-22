@@ -62,41 +62,41 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 static
-GList* get_auxiliary_devices(GdkSeat** _seat) {
-	GdkSeat* seat = gdk_display_get_default_seat(
+GList* get_auxiliary_devices(GdkSeat*& seat) {
+	seat = gdk_display_get_default_seat(
 		gdk_display_manager_get_default_display(
 			gdk_display_manager_get()));
-	if(_seat) *_seat = seat;
 	return gdk_seat_get_slaves(
 		seat,
 		GDK_SEAT_CAPABILITY_ALL_POINTING );
 }
 			
 static
-GList* get_devices(GdkDevice** pointer) {
+GList* get_devices(GdkDevice*& pointer) {
 	GdkSeat* seat = NULL;
-	GList* device_list = get_auxiliary_devices(&seat);
+	GList* device_list = get_auxiliary_devices(seat);
 
-	*pointer = gdk_seat_get_pointer();
+	pointer = gdk_seat_get_pointer(seat);
 
-	device_list = g_list_prepend(device_list, *pointer);
+	device_list = g_list_prepend(device_list, pointer);
 	return device_list;
 }
 
 static
 GList* get_devices() {
-	GList* device_list = get_auxiliary_devices(NULL);
+	GdkSeat* seat = NULL;
+	GList* device_list = get_auxiliary_devices(seat);
 
-	GdkDevice* ptr = gdk_seat_get_pointer();
+	GdkDevice* pointer = gdk_seat_get_pointer(seat);
 
-	device_list = g_list_prepend(device_list, ptr);
+	device_list = g_list_prepend(device_list, pointer);
 	return device_list;
 }
 
 DeviceTracker::DeviceTracker()
 {
 	GdkDevice* pointer = NULL;
-	GList* device_list = get_devices(&pointer);
+	GList* device_list = get_devices(pointer);
 		for(GList *iter=device_list; iter; iter=g_list_next(iter))
 		{
 			GdkDevice* device=reinterpret_cast<GdkDevice*>(iter->data);
@@ -117,13 +117,14 @@ DeviceTracker::DeviceTracker()
 			}
 		}
 
-		g_list_free(device_list);
-
 	// Once all devices are disabled be sure that the core pointer is the
 	// one selected. The user should decide later whether enable and save the
 	// rest of input devices found.
 	synfigapp::Main::select_input_device(
 		gdk_device_get_name(pointer));
+
+	g_list_free(device_list);
+
 }
 
 DeviceTracker::~DeviceTracker()
