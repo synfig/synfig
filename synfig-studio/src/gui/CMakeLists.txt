@@ -18,7 +18,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 target_compile_definitions(
 	synfigstudio 
 	PRIVATE
-	IMAGE_DIR=${CMAKE_INSTALL_PREFIX}/share/pixmaps)
+	IMAGE_DIR="${CMAKE_INSTALL_PREFIX}/share/pixmaps")
 
 target_sources(synfigstudio
     PRIVATE

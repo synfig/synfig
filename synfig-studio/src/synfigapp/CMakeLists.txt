@@ -6,7 +6,7 @@ target_link_libraries(synfigapp synfig)
 target_compile_definitions(
 	synfigapp
 	PRIVATE
-	IMAGE_DIR=${CMAKE_INSTALL_PREFIX}/share/pixmaps)
+	IMAGE_DIR="${CMAKE_INSTALL_PREFIX}/share/pixmaps")
 
 target_sources(synfigapp
     PRIVATE
