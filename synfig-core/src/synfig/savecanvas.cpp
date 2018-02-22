@@ -477,10 +477,10 @@ xmlpp::Element* encode_animated(xmlpp::Element* root,ValueNode_Animated::ConstHa
 				if (data.get_type() == type_canvas)
 					waypoint_node->set_attribute("use",data.get(Canvas::Handle()).get()->get_relative_id(canvas));
 				else
-					encode_value_node(waypoint_node->add_child_text("value_node"),iter->get_value_node(),canvas);
+					encode_value_node(waypoint_add_child(node, "value_node"),iter->get_value_node(),canvas);
 			}
 			else
-				encode_value_node(waypoint_node->add_child_text("value_node"),iter->get_value_node(),canvas);
+				encode_value_node(waypoint_add_child(node, "value_node"),iter->get_value_node(),canvas);
 		}
 		
 		if (iter->get_before()!=INTERPOLATION_UNDEFINED)
@@ -566,7 +566,7 @@ xmlpp::Element* encode_static_list(xmlpp::Element* root,ValueNode_StaticList::Co
 		else
 		{
 			if (getenv("SYNFIG_DEBUG_SAVE_CANVAS")) printf("%s:%d encode entry %s\n", __FILE__, __LINE__, (*iter)->get_string().c_str());
-			encode_value_node(entry_node->add_child_text("value_node"),*iter,canvas);
+			encode_value_node(entry_add_child(node, "value_node"),*iter,canvas);
 		}
 	}
 
@@ -618,7 +618,7 @@ xmlpp::Element* encode_dynamic_list(xmlpp::Element* root,ValueNode_DynamicList::
 		if(!iter->value_node->get_id().empty())
 			entry_node->set_attribute("use",iter->value_node->get_relative_id(canvas));
 		else
-			encode_value_node(entry_node->add_child_text("value_node"),iter->value_node,canvas);
+			encode_value_node(entry_add_child(node, "value_node"),iter->value_node,canvas);
 
 		// process waypoints
 		{
@@ -863,7 +863,7 @@ xmlpp::Element* encode_layer(xmlpp::Element* root,Layer::ConstHandle layer)
 			// If the valuenode has no ID, then it must be defined in-place
 			if(value_node->get_id().empty())
 			{
-				encode_value_node(node->add_child_text("value_node"),value_node,layer->get_canvas().constant());
+				encode_value_node(add_child(node, "value_node"),value_node,layer->get_canvas().constant());
 			}
 			else
 			{
@@ -927,7 +927,7 @@ xmlpp::Element* encode_layer(xmlpp::Element* root,Layer::ConstHandle layer)
 						value.set(filename);
 			}
 
-			encode_value(node->add_child_text("value"),value,layer->get_canvas().constant());
+			encode_value(add_child(node, "value"),value,layer->get_canvas().constant());
 		}
 	}
 
@@ -1015,13 +1015,13 @@ xmlpp::Element* encode_canvas(xmlpp::Element* root,Canvas::ConstHandle canvas)
 	{
 		xmlpp::Element *node=add_child(root, "bones");
 
-		encode_value_node_bone(node->add_child_text("value_node"),ValueNode_Bone::get_root_bone(),canvas);
+		encode_value_node_bone(add_child(node, "value_node"),ValueNode_Bone::get_root_bone(),canvas);
 
 		ValueNode_Bone::BoneList bone_list(ValueNode_Bone::get_ordered_bones(canvas));
 		for(ValueNode_Bone::BoneList::iterator iter=bone_list.begin();iter!=bone_list.end();++iter)
 		{
 			ValueNode_Bone::Handle bone(*iter);
-			encode_value_node_bone(node->add_child_text("value_node"),bone,canvas);
+			encode_value_node_bone(add_child(node, "value_node"),bone,canvas);
 		}
 	}
 
@@ -1047,16 +1047,16 @@ xmlpp::Element* encode_canvas(xmlpp::Element* root,Canvas::ConstHandle canvas)
 			if(handle<ValueNode_Const>::cast_dynamic(*iter))
 			{
 				ValueNode_Const::Handle value_node(ValueNode_Const::Handle::cast_dynamic(*iter));
-				reinterpret_cast<xmlpp::Element*>(encode_value(node->add_child_text("value"),value_node->get_value(),canvas))->set_attribute("id",value_node->get_id());
+				reinterpret_cast<xmlpp::Element*>(encode_value(add_child(node, "value"),value_node->get_value(),canvas))->set_attribute("id",value_node->get_id());
 				continue;
 			}
-			encode_value_node(node->add_child_text("value_node"),*iter,canvas);
+			encode_value_node(add_child(node, "value_node"),*iter,canvas);
 			// writeme
 		}
 
 		for(Canvas::Children::const_iterator iter=canvas->children().begin();iter!=canvas->children().end();++iter)
 		{
-			encode_canvas(node->add_child_text("canvas"),*iter);
+			encode_canvas(add_child(node, "canvas"),*iter);
 		}
 	}
 
