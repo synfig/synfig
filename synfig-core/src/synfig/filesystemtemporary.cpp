@@ -497,22 +497,22 @@ FileSystemTemporary::save_temporary() const
 	xmlpp::Document document;
 	xmlpp::Element *root = document.create_root_node("temporary-file-system");
 
-	xmlpp::Element *meta_node = root->add_child("meta");
+	xmlpp::Element *meta_node = root->add_child_text("meta");
 	for(map<String, String>::const_iterator i = meta.begin(); i != meta.end(); i++)
 	{
-		xmlpp::Element *entry = meta_node->add_child("entry");
-		entry->add_child("key")->set_child_text(i->first);
-		entry->add_child("value")->set_child_text(i->second);
+		xmlpp::Element *entry = meta_node->add_child_text("entry");
+		entry->add_child_text("key")->set_child_text(i->first);
+		entry->add_child_text("value")->set_child_text(i->second);
 	}
 
-	xmlpp::Element *files_node = root->add_child("files");
+	xmlpp::Element *files_node = root->add_child_text("files");
 	for(FileMap::const_iterator i = files.begin(); i != files.end(); i++)
 	{
-		xmlpp::Element *entry = files_node->add_child("entry");
-		entry->add_child("name")->set_child_text(i->second.name);
-		entry->add_child("tmp-basename")->set_child_text(basename(i->second.tmp_filename));
-		entry->add_child("is-directory")->set_child_text(i->second.is_directory ? "true" : "false");
-		entry->add_child("is-removed")->set_child_text(i->second.is_removed ? "true" : "false");
+		xmlpp::Element *entry = files_node->add_child_text("entry");
+		entry->add_child_text("name")->set_child_text(i->second.name);
+		entry->add_child_text("tmp-basename")->set_child_text(basename(i->second.tmp_filename));
+		entry->add_child_text("is-directory")->set_child_text(i->second.is_directory ? "true" : "false");
+		entry->add_child_text("is-removed")->set_child_text(i->second.is_removed ? "true" : "false");
 	}
 
 	create_temporary_directory();

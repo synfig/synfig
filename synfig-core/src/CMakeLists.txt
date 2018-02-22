@@ -23,7 +23,7 @@ pkg_check_modules(SIGCPP REQUIRED sigc++-2.0)
 pkg_check_modules(GLIBMM REQUIRED glibmm-2.4)
 pkg_check_modules(GIOMM REQUIRED giomm-2.4)
 pkg_check_modules(CAIRO REQUIRED cairo)
-pkg_check_modules(LIBXML REQUIRED libxml++-2.6)
+pkg_check_modules(LIBXML REQUIRED libxml++-3.0)
 pkg_check_modules(MLT REQUIRED mlt++)
 pkg_check_modules(FFTW REQUIRED fftw3)
 
