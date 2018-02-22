@@ -3,6 +3,11 @@ add_library(synfigapp SHARED "")
 target_include_directories(synfigapp SYSTEM PUBLIC ${LIBXML_INCLUDE_DIRS})
 target_link_libraries(synfigapp synfig)
 
+target_compile_definitions(
+	synfigapp
+	PRIVATE
+	IMAGE_DIR=${CMAKE_INSTALL_PREFIX}/share/pixmaps)
+
 target_sources(synfigapp
     PRIVATE
         "${CMAKE_CURRENT_LIST_DIR}/action.cpp"
