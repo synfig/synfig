@@ -293,7 +293,7 @@ String FileContainerZip::encode_history(const FileContainerZip::HistoryRecord &h
 	document.
 		create_root_node("history")->
 		add_child_element("prev_storage_size")->
-		set_child_text(strprintf("%lld", history_record.prev_storage_size));
+		set_first_child_text(strprintf("%lld", history_record.prev_storage_size));
 	return document.write_to_string_formatted();
 }
 

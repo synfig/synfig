@@ -109,7 +109,7 @@ xmlpp::Element* encode_keyframe(xmlpp::Element* root,const Keyframe &kf, float f
 	root->set_name("keyframe");
  	root->set_attribute("time",kf.get_time().get_string(fps));
 	if(!kf.get_description().empty())
-		root->set_child_text(kf.get_description());
+		root->set_first_child_text(kf.get_description());
 	root->set_attribute("active", kf.active()?"true":"false");
 	return root;
 }
@@ -184,25 +184,25 @@ xmlpp::Element* encode_bool(xmlpp::Element* root, bool b)
 xmlpp::Element* encode_string(xmlpp::Element* root,const String &str)
 {
 	root->set_name("string");
-	root->set_child_text(str);
+	root->set_first_child_text(str);
 	return root;
 }
 
 xmlpp::Element* encode_vector(xmlpp::Element* root,Vector vect)
 {
 	root->set_name("vector");
-	root->add_child_element("x")->set_child_text(strprintf(VECTOR_VALUE_TYPE_FORMAT,(float)vect[0]));
-	root->add_child_element("y")->set_child_text(strprintf(VECTOR_VALUE_TYPE_FORMAT,(float)vect[1]));
+	root->add_child_element("x")->set_first_child_text(strprintf(VECTOR_VALUE_TYPE_FORMAT,(float)vect[0]));
+	root->add_child_element("y")->set_first_child_text(strprintf(VECTOR_VALUE_TYPE_FORMAT,(float)vect[1]));
 	return root;
 }
 
 xmlpp::Element* encode_color(xmlpp::Element* root,Color color)
 {
 	root->set_name("color");
-	root->add_child_element("r")->set_child_text(strprintf(COLOR_VALUE_TYPE_FORMAT,(float)color.get_r()));
-	root->add_child_element("g")->set_child_text(strprintf(COLOR_VALUE_TYPE_FORMAT,(float)color.get_g()));
-	root->add_child_element("b")->set_child_text(strprintf(COLOR_VALUE_TYPE_FORMAT,(float)color.get_b()));
-	root->add_child_element("a")->set_child_text(strprintf(COLOR_VALUE_TYPE_FORMAT,(float)color.get_a()));
+	root->add_child_element("r")->set_first_child_text(strprintf(COLOR_VALUE_TYPE_FORMAT,(float)color.get_r()));
+	root->add_child_element("g")->set_first_child_text(strprintf(COLOR_VALUE_TYPE_FORMAT,(float)color.get_g()));
+	root->add_child_element("b")->set_first_child_text(strprintf(COLOR_VALUE_TYPE_FORMAT,(float)color.get_b()));
+	root->add_child_element("a")->set_first_child_text(strprintf(COLOR_VALUE_TYPE_FORMAT,(float)color.get_a()));
 	return root;
 }
 
@@ -987,11 +987,11 @@ xmlpp::Element* encode_canvas(xmlpp::Element* root,Canvas::ConstHandle canvas)
 		);
 
 		if(!canvas->get_name().empty())
-			root->add_child_element("name")->set_child_text(canvas->get_name());
+			root->add_child_element("name")->set_first_child_text(canvas->get_name());
 		if(!canvas->get_description().empty())
-			root->add_child_element("desc")->set_child_text(canvas->get_description());
+			root->add_child_element("desc")->set_first_child_text(canvas->get_description());
 		if(!canvas->get_author().empty())
-			root->add_child_element("author")->set_child_text(canvas->get_description());
+			root->add_child_element("author")->set_first_child_text(canvas->get_description());
 
 		std::list<String> meta_keys(canvas->get_meta_data_keys());
 		while(!meta_keys.empty())
