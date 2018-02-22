@@ -61,14 +61,42 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
+static
+GList* get_auxiliary_devices(GdkSeat** _seat) {
+	GdkSeat* seat = gdk_display_get_default_seat(
+		gdk_display_manager_get_default_display(
+			gdk_display_manager_get()));
+	if(_seat) *_seat = seat;
+	return gdk_seat_get_slaves(
+		seat,
+		GDK_SEAT_CAPABILITY_ALL_POINTING );
+}
+			
+static
+GList* get_devices(GdkDevice** pointer) {
+	GdkSeat* seat = NULL;
+	GList* device_list = get_auxiliary_devices(&seat);
+
+	*pointer = gdk_seat_get_pointer();
+
+	device_list = g_list_prepend(device_list, *pointer);
+	return device_list;
+}
+
+static
+GList* get_devices() {
+	GList* device_list = get_auxiliary_devices(NULL);
+
+	GdkDevice* ptr = gdk_seat_get_pointer();
+
+	device_list = g_list_prepend(device_list, ptr);
+	return device_list;
+}
+
 DeviceTracker::DeviceTracker()
 {
-		GList *device_list = gdk_seat_get_slaves(
-			gdk_display_get_default_seat(
-				gdk_display_manager_get_default_display(
-					gdk_display_manager_get() )),
-			GDK_SEAT_CAPABILITY_ALL_POINTING );
-
+	GdkDevice* pointer = NULL;
+	GList* device_list = get_devices(&pointer);
 		for(GList *iter=device_list; iter; iter=g_list_next(iter))
 		{
 			GdkDevice* device=reinterpret_cast<GdkDevice*>(iter->data);
@@ -95,11 +123,7 @@ DeviceTracker::DeviceTracker()
 	// one selected. The user should decide later whether enable and save the
 	// rest of input devices found.
 	synfigapp::Main::select_input_device(
-		gdk_device_get_name(
-			gdk_seat_get_pointer(
-				gdk_display_get_default_seat(
-					gdk_display_manager_get_default_display(
-						gdk_display_manager_get() )))));
+		gdk_device_get_name(pointer));
 }
 
 DeviceTracker::~DeviceTracker()
@@ -109,11 +133,7 @@ DeviceTracker::~DeviceTracker()
 void
 DeviceTracker::save_preferences()
 {
-		GList *device_list = gdk_seat_get_slaves(
-			gdk_display_get_default_seat(
-				gdk_display_manager_get_default_display(
-					gdk_display_manager_get() )),
-			GDK_SEAT_CAPABILITY_ALL_POINTING );
+		GList* device_list = get_devices();
 	
 		for(GList *itr=device_list; itr; itr=g_list_next(itr))
 		{
@@ -154,11 +174,7 @@ DeviceTracker::save_preferences()
 void
 DeviceTracker::load_preferences()
 {
-	GList *device_list = gdk_seat_get_slaves(
-			gdk_display_get_default_seat(
-				gdk_display_manager_get_default_display(
-					gdk_display_manager_get() )),
-			GDK_SEAT_CAPABILITY_ALL_POINTING );
+	GList* device_list = get_devices();
 
 		for(GList *itr=device_list; itr; itr=g_list_next(itr))
 		{

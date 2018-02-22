@@ -46,6 +46,8 @@
 
 #include <synfigapp/localization.h>
 
+#define IGNORE_RESULT(a) if(a)
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -159,11 +161,11 @@ CVSInfo::calc_repository_info()
 			}
 			else
 			{
-				system(strprintf(
+				IGNORE_RESULT(system(strprintf(
 					"cd '%s' && cvs status '%s'",
 					dirname(file_name_).c_str(),
 					basename(file_name_).c_str()
-				).c_str());
+				).c_str()));
 				synfig::info("UPDATE_AVAILABLE=FALSE");
 				update_available_=false;
 			}
