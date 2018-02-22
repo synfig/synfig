@@ -250,7 +250,7 @@ foreach (IMAGE IN ITEMS ${IMAGES})
     add_custom_command(
         TARGET build_images POST_BUILD
         COMMAND synfig ${SRC}.sif --time ${TIME}f -w ${W} -h ${H}
-        COMMAND mv ${SRC}.png ${CMAKE_CURRENT_BINARY_DIR}/${IMAGE}.png
+        COMMAND ./move.sh ${SRC}.png ${CMAKE_CURRENT_BINARY_DIR}/${IMAGE}.png; exit 0
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
         DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${SRC}.sif
     )

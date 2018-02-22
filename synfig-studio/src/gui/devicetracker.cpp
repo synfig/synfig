@@ -96,8 +96,8 @@ DeviceTracker::DeviceTracker()
 	// rest of input devices found.
 	synfigapp::Main::select_input_device(
 		gdk_device_get_name(
-			gdk_device_manager_get_client_pointer(
-				gdk_display_get_device_manager(
+			gdk_seat_get_pointer(
+				gdk_display_get_default_seat(
 					gdk_display_manager_get_default_display(
 						gdk_display_manager_get() )))));
 }
@@ -141,8 +141,8 @@ DeviceTracker::save_preferences()
 					guint gdk_keyval = 0;
 					GdkModifierType gdk_modifiers = GdkModifierType();
 					gdk_device_get_key(gdk_device, j, &gdk_keyval, &gdk_modifiers);
-					keys[i].keyval = gdk_keyval;
-					keys[i].modifiers = gdk_modifiers;
+					keys[j].keyval = gdk_keyval;
+					keys[j].modifiers = gdk_modifiers;
 				}
 				synfig_device->set_keys(keys);
 			}
@@ -159,11 +159,6 @@ DeviceTracker::load_preferences()
 				gdk_display_manager_get_default_display(
 					gdk_display_manager_get() )),
 			GDK_SEAT_CAPABILITY_ALL );
-		GList *device_list = gdk_device_manager_list_devices(
-			gdk_display_get_device_manager(
-				gdk_display_manager_get_default_display(
-					gdk_display_manager_get() )),
-			device_types[i] );
 
 		for(GList *itr=device_list; itr; itr=g_list_next(itr))
 		{
