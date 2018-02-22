@@ -221,8 +221,8 @@ Svg_parser::parser_canvas (const xmlpp::Node* node){
 		nodeRoot->set_attribute("begin-time","0f");
 		nodeRoot->set_attribute("end-time","5s");
 		nodeRoot->set_attribute("bgcolor","0.500000 0.500000 0.500000 1.000000");
-		if(!id_name.empty()) nodeRoot->add_child("name")->set_child_text(id_name);
-		else nodeRoot->add_child("name")->set_child_text("Synfig Animation 1");
+		if(!id_name.empty()) nodeRoot->add_child_element("name")->set_first_child_text(id_name);
+		else nodeRoot->add_child_element("name")->set_first_child_text("Synfig Animation 1");
 	}
 	set_canvas=1;
 }
@@ -251,7 +251,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String 
 			}
 		}
 		if(nodename.compare("g")==0){
-			parser_layer (node,root->add_child("layer"),parent_style,mtx);
+			parser_layer (node,root->add_child_element("layer"),parent_style,mtx);
 			return;
 		}
 
@@ -295,7 +295,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String 
 
 		//make simple fills
 		if(nodename.compare("rect")==0 && typeFill!=0){
-			if (mtx) child_layer = nodeStartBasicLayer(root->add_child("layer"), id);
+			if (mtx) child_layer = nodeStartBasicLayer(root->add_child_element("layer"), id);
 			child_fill=child_layer;
 			parser_rect(nodeElement,child_fill,fill,fill_opacity,opacity);
 			if(typeFill==2){
@@ -305,7 +305,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String 
 			return;
 		}
 		if ((!(SVG_RESOLVE_BLINE) && mtx) || typeFill==2 || typeStroke==2)
-			child_layer = nodeStartBasicLayer(root->add_child("layer"), id);
+			child_layer = nodeStartBasicLayer(root->add_child_element("layer"), id);
 		child_fill=child_layer;
 		child_stroke=child_layer;
 
@@ -334,27 +334,27 @@ Svg_parser::parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String 
 
 		if(typeFill!=0){//region layer
 			/*if(typeFill==2){
-				child_fill=nodeStartBasicLayer(child_fill->add_child("layer"));
+				child_fill=nodeStartBasicLayer(child_fill->add_child_element("layer"));
 			}*/
 			for (aux = k.begin(); aux!=k.end(); aux++){
-				xmlpp::Element *child_region=child_fill->add_child("layer");
+				xmlpp::Element *child_region=child_fill->add_child_element("layer");
 				child_region->set_attribute("type","region");
 				child_region->set_attribute("active","true");
 				child_region->set_attribute("version","0.1");
 				child_region->set_attribute("desc",id);
-				build_param (child_region->add_child("param"),"z_depth","real","0.0000000000");
-				build_param (child_region->add_child("param"),"amount","real","1.0000000000");
-				build_param (child_region->add_child("param"),"blend_method","integer","0");
-				build_color (child_region->add_child("param"),getRed(fill),getGreen(fill),getBlue(fill),atof(fill_opacity.data())*atof(opacity.data()));
-				build_vector (child_region->add_child("param"),"offset",0,0, *(*aux)->offset_id );
-				build_param (child_region->add_child("param"),"invert","bool","false");
-				build_param (child_region->add_child("param"),"antialias","bool","true");
-				build_param (child_region->add_child("param"),"feather","real","0.0000000000");
-				build_param (child_region->add_child("param"),"blurtype","integer","1");
-				if(fill_rule.compare("evenodd")==0) build_param (child_region->add_child("param"),"winding_style","integer","1");
-				else build_param (child_region->add_child("param"),"winding_style","integer","0");
+				build_param (child_region->add_child_element("param"),"z_depth","real","0.0000000000");
+				build_param (child_region->add_child_element("param"),"amount","real","1.0000000000");
+				build_param (child_region->add_child_element("param"),"blend_method","integer","0");
+				build_color (child_region->add_child_element("param"),getRed(fill),getGreen(fill),getBlue(fill),atof(fill_opacity.data())*atof(opacity.data()));
+				build_vector (child_region->add_child_element("param"),"offset",0,0, *(*aux)->offset_id );
+				build_param (child_region->add_child_element("param"),"invert","bool","false");
+				build_param (child_region->add_child_element("param"),"antialias","bool","true");
+				build_param (child_region->add_child_element("param"),"feather","real","0.0000000000");
+				build_param (child_region->add_child_element("param"),"blurtype","integer","1");
+				if(fill_rule.compare("evenodd")==0) build_param (child_region->add_child_element("param"),"winding_style","integer","1");
+				else build_param (child_region->add_child_element("param"),"winding_style","integer","0");
 
-				build_bline (child_region->add_child("param"),*(*aux)->points,(*aux)->loop,*(*aux)->bline_id); 
+				build_bline (child_region->add_child_element("param"),*(*aux)->points,(*aux)->loop,*(*aux)->bline_id); 
 			}
 		}
 		if(typeFill==2){ //gradient in onto mode (fill)
@@ -366,42 +366,42 @@ Svg_parser::parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String 
 
 		if(typeStroke!=0){//outline layer
 			if(typeStroke==2){
-				child_stroke=nodeStartBasicLayer(child_stroke->add_child("layer"),"stroke");
+				child_stroke=nodeStartBasicLayer(child_stroke->add_child_element("layer"),"stroke");
 			}
 			for (aux=k.begin(); aux!=k.end(); aux++){
-				xmlpp::Element *child_outline=child_stroke->add_child("layer");
+				xmlpp::Element *child_outline=child_stroke->add_child_element("layer");
 				child_outline->set_attribute("type","outline");
 				child_outline->set_attribute("active","true");
 				child_outline->set_attribute("version","0.2");
 				child_outline->set_attribute("desc",id);
-				build_param (child_outline->add_child("param"),"z_depth","real","0.0000000000");
-				build_param (child_outline->add_child("param"),"amount","real","1.0000000000");
-				build_param (child_outline->add_child("param"),"blend_method","integer","0");
-				build_color (child_outline->add_child("param"),getRed(stroke),getGreen(stroke),getBlue(stroke),atof(stroke_opacity.data())*atof(opacity.data()));
-				build_vector (child_outline->add_child("param"),"offset",0,0,*(*aux)->offset_id);
-				build_param (child_outline->add_child("param"),"invert","bool","false");
-				build_param (child_outline->add_child("param"),"antialias","bool","true");
-				build_param (child_outline->add_child("param"),"feather","real","0.0000000000");
-				build_param (child_outline->add_child("param"),"blurtype","integer","1");
+				build_param (child_outline->add_child_element("param"),"z_depth","real","0.0000000000");
+				build_param (child_outline->add_child_element("param"),"amount","real","1.0000000000");
+				build_param (child_outline->add_child_element("param"),"blend_method","integer","0");
+				build_color (child_outline->add_child_element("param"),getRed(stroke),getGreen(stroke),getBlue(stroke),atof(stroke_opacity.data())*atof(opacity.data()));
+				build_vector (child_outline->add_child_element("param"),"offset",0,0,*(*aux)->offset_id);
+				build_param (child_outline->add_child_element("param"),"invert","bool","false");
+				build_param (child_outline->add_child_element("param"),"antialias","bool","true");
+				build_param (child_outline->add_child_element("param"),"feather","real","0.0000000000");
+				build_param (child_outline->add_child_element("param"),"blurtype","integer","1");
 				//outline in nonzero
-				build_param (child_outline->add_child("param"),"winding_style","integer","0");
+				build_param (child_outline->add_child_element("param"),"winding_style","integer","0");
 
-				build_bline (child_outline->add_child("param"),*(*aux)->points,(*aux)->loop,*(*aux)->bline_id);
+				build_bline (child_outline->add_child_element("param"),*(*aux)->points,(*aux)->loop,*(*aux)->bline_id);
 
 				stroke_width=etl::strprintf("%f",getDimension(stroke_width)/kux);
-				build_param (child_outline->add_child("param"),"width","real",stroke_width);
-				build_param (child_outline->add_child("param"),"expand","real","0.0000000000");
-				if(stroke_linejoin.compare("miter")==0) build_param (child_outline->add_child("param"),"sharp_cusps","bool","true");
-				else build_param (child_outline->add_child("param"),"sharp_cusps","bool","false");
+				build_param (child_outline->add_child_element("param"),"width","real",stroke_width);
+				build_param (child_outline->add_child_element("param"),"expand","real","0.0000000000");
+				if(stroke_linejoin.compare("miter")==0) build_param (child_outline->add_child_element("param"),"sharp_cusps","bool","true");
+				else build_param (child_outline->add_child_element("param"),"sharp_cusps","bool","false");
 				if(stroke_linecap.compare("butt")==0){
-					build_param (child_outline->add_child("param"),"round_tip[0]","bool","false");
-					build_param (child_outline->add_child("param"),"round_tip[1]","bool","false");
+					build_param (child_outline->add_child_element("param"),"round_tip[0]","bool","false");
+					build_param (child_outline->add_child_element("param"),"round_tip[1]","bool","false");
 				}else{
-					build_param (child_outline->add_child("param"),"round_tip[0]","bool","true");
-					build_param (child_outline->add_child("param"),"round_tip[1]","bool","true");
+					build_param (child_outline->add_child_element("param"),"round_tip[0]","bool","true");
+					build_param (child_outline->add_child_element("param"),"round_tip[1]","bool","true");
 				}
-				build_param (child_outline->add_child("param"),"loopyness","real","1.0000000000");
-				build_param (child_outline->add_child("param"),"homogeneous_width","bool","true");
+				build_param (child_outline->add_child_element("param"),"loopyness","real","1.0000000000");
+				build_param (child_outline->add_child_element("param"),"homogeneous_width","bool","true");
 			}
 
 			if(typeStroke==2){ //gradient in onto mode (stroke)
@@ -444,16 +444,16 @@ Svg_parser::parser_layer(const xmlpp::Node* node,xmlpp::Element* root,String par
 		if(!label.empty())	root->set_attribute("desc",label);
 		else		root->set_attribute("desc","Inline Canvas");
 
-		build_real(root->add_child("param"),"z_depth",0.0);
-		build_real(root->add_child("param"),"amount",1.0);
-		build_integer(root->add_child("param"),"blend_method",0);
-		build_vector (root->add_child("param"),"origin",0,0);
+		build_real(root->add_child_element("param"),"z_depth",0.0);
+		build_real(root->add_child_element("param"),"amount",1.0);
+		build_integer(root->add_child_element("param"),"blend_method",0);
+		build_vector (root->add_child_element("param"),"origin",0,0);
 
 		//printf(" canvas attributes ");
 		//canvas
-		xmlpp::Element *child_canvas=root->add_child("param");
+		xmlpp::Element *child_canvas=root->add_child_element("param");
 		child_canvas->set_attribute("name","canvas");
-		child_canvas=child_canvas->add_child("canvas");
+		child_canvas=child_canvas->add_child_element("canvas");
 		const xmlpp::ContentNode* nodeContent = dynamic_cast<const xmlpp::ContentNode*>(node);
 		if(!nodeContent){
     		xmlpp::Node::NodeList list = node->get_children();
@@ -475,25 +475,25 @@ Svg_parser::parser_rect(const xmlpp::Element* nodeElement,xmlpp::Element* root,S
 	Glib::ustring rect_width	=nodeElement->get_attribute_value("width");
 	Glib::ustring rect_height	=nodeElement->get_attribute_value("height");
 
-	xmlpp::Element *child_rect=root->add_child("layer");
+	xmlpp::Element *child_rect=root->add_child_element("layer");
 	child_rect->set_attribute("type","rectangle");
 	child_rect->set_attribute("active","true");
 	child_rect->set_attribute("version","0.2");
 	child_rect->set_attribute("desc",rect_id);
 
-	build_real(child_rect->add_child("param"),"z_depth",0.0);
-	build_real(child_rect->add_child("param"),"amount",1.0);
-	build_integer(child_rect->add_child("param"),"blend_method",0);
-	build_color (child_rect->add_child("param"),getRed (fill),getGreen (fill),getBlue(fill),atof(opacity.data())*atof(fill_opacity.data()));
+	build_real(child_rect->add_child_element("param"),"z_depth",0.0);
+	build_real(child_rect->add_child_element("param"),"amount",1.0);
+	build_integer(child_rect->add_child_element("param"),"blend_method",0);
+	build_color (child_rect->add_child_element("param"),getRed (fill),getGreen (fill),getBlue(fill),atof(opacity.data())*atof(fill_opacity.data()));
 
 	float auxx=atof(rect_x.c_str());
 	float auxy=atof(rect_y.c_str());
 	coor2vect(&auxx,&auxy);
-	build_vector (child_rect->add_child("param"),"point1",auxx,auxy);
+	build_vector (child_rect->add_child_element("param"),"point1",auxx,auxy);
 	auxx= atof(rect_x.c_str()) + atof(rect_width.c_str());
 	auxy= atof(rect_y.c_str()) + atof(rect_height.c_str());
 	coor2vect(&auxx,&auxy);
-	build_vector (child_rect->add_child("param"),"point2",auxx,auxy);
+	build_vector (child_rect->add_child_element("param"),"point2",auxx,auxy);
 
 
 }
@@ -892,7 +892,7 @@ Svg_parser::parser_defs(const xmlpp::Node* node){
 void
 Svg_parser::build_transform(xmlpp::Element* root,SVGMatrix* mtx){
 	if (mtx) {
-		xmlpp::Element *child_transform=root->add_child("layer");
+		xmlpp::Element *child_transform=root->add_child_element("layer");
 		child_transform->set_attribute("type","warp");
 		child_transform->set_attribute("active","true");
 		child_transform->set_attribute("version","0.1");
@@ -900,30 +900,30 @@ Svg_parser::build_transform(xmlpp::Element* root,SVGMatrix* mtx){
 
 		float x,y;
 		x=100;y=100;coor2vect(&x,&y);
-		build_vector (child_transform->add_child("param"),"src_tl",x,y);
+		build_vector (child_transform->add_child_element("param"),"src_tl",x,y);
 
 		x=200;y=200;coor2vect(&x,&y);
-		build_vector (child_transform->add_child("param"),"src_br",x,y);
+		build_vector (child_transform->add_child_element("param"),"src_br",x,y);
 		
 
 		x=100;y=100;
 		transformPoint2D(mtx,&x,&y);coor2vect(&x,&y);
-		build_vector (child_transform->add_child("param"),"dest_tl",x,y);
+		build_vector (child_transform->add_child_element("param"),"dest_tl",x,y);
 
 		x=200;y=100;
 		transformPoint2D(mtx,&x,&y);coor2vect(&x,&y);
-		build_vector (child_transform->add_child("param"),"dest_tr",x,y);
+		build_vector (child_transform->add_child_element("param"),"dest_tr",x,y);
 
 		x=200;y=200;
 		transformPoint2D(mtx,&x,&y);coor2vect(&x,&y);
-		build_vector (child_transform->add_child("param"),"dest_br",x,y);
+		build_vector (child_transform->add_child_element("param"),"dest_br",x,y);
 
 		x=100;y=200;
 		transformPoint2D(mtx,&x,&y);coor2vect(&x,&y);
-		build_vector (child_transform->add_child("param"),"dest_bl",x,y);
+		build_vector (child_transform->add_child_element("param"),"dest_bl",x,y);
 
-		build_param (child_transform->add_child("param"),"clip","bool","false");
-		build_param (child_transform->add_child("param"),"horizon","real","4.0");
+		build_param (child_transform->add_child_element("param"),"clip","bool","false");
+		build_param (child_transform->add_child_element("param"),"horizon","real","4.0");
 	}
 }
 
@@ -980,27 +980,27 @@ void
 Svg_parser::build_stop_color(xmlpp::Element* root, std::list<ColorStop*> *stops){
 	std::list<ColorStop*>::iterator aux_stop=stops->begin();
 	while(aux_stop!=stops->end()){
-		xmlpp::Element *child=root->add_child("color");
+		xmlpp::Element *child=root->add_child_element("color");
 		child->set_attribute("pos",etl::strprintf("%f",(*aux_stop)->pos));
-		child->add_child("r")->set_child_text(etl::strprintf("%f",(*aux_stop)->r));
-		child->add_child("g")->set_child_text(etl::strprintf("%f",(*aux_stop)->g));
-		child->add_child("b")->set_child_text(etl::strprintf("%f",(*aux_stop)->b));
-		child->add_child("a")->set_child_text(etl::strprintf("%f",(*aux_stop)->a));
+		child->add_child_element("r")->set_first_child_text(etl::strprintf("%f",(*aux_stop)->r));
+		child->add_child_element("g")->set_first_child_text(etl::strprintf("%f",(*aux_stop)->g));
+		child->add_child_element("b")->set_first_child_text(etl::strprintf("%f",(*aux_stop)->b));
+		child->add_child_element("a")->set_first_child_text(etl::strprintf("%f",(*aux_stop)->a));
 		aux_stop++;
 	}
 }
 void
 Svg_parser::build_linearGradient(xmlpp::Element* root,LinearGradient* data,SVGMatrix* mtx){
 	if(data){
-		xmlpp::Element* gradient=root->add_child("layer");
+		xmlpp::Element* gradient=root->add_child_element("layer");
 
 		gradient->set_attribute("type","linear_gradient");
 		gradient->set_attribute("active","true");
 		gradient->set_attribute("desc",data->name);
-		build_param (gradient->add_child("param"),"z_depth","real","0");
-		build_param (gradient->add_child("param"),"amount","real","1");
+		build_param (gradient->add_child_element("param"),"z_depth","real","0");
+		build_param (gradient->add_child_element("param"),"amount","real","1");
 		//straight onto
-		build_param (gradient->add_child("param"),"blend_method","integer","21");
+		build_param (gradient->add_child_element("param"),"blend_method","integer","21");
 		float x1,y1,x2,y2;
 		x1=data->x1;
 		y1=data->y1;
@@ -1050,15 +1050,15 @@ Svg_parser::build_linearGradient(xmlpp::Element* root,LinearGradient* data,SVGMa
 		coor2vect (&x1,&y1);
 		coor2vect (&x2,&y2);
 
-		build_vector (gradient->add_child("param"),"p1",x1,y1);
-		build_vector (gradient->add_child("param"),"p2",x2,y2);
+		build_vector (gradient->add_child_element("param"),"p1",x1,y1);
+		build_vector (gradient->add_child_element("param"),"p2",x2,y2);
 		//gradient link
-		xmlpp::Element *child_stops=gradient->add_child("param");
+		xmlpp::Element *child_stops=gradient->add_child_element("param");
 		child_stops->set_attribute("name","gradient");
 		child_stops->set_attribute("guid",GUID::hasher(data->name).get_string());
-		build_stop_color (child_stops->add_child("gradient"),data->stops);
-		build_param (gradient->add_child("param"),"loop","bool","false");
-		build_param (gradient->add_child("param"),"zigzag","bool","false");
+		build_stop_color (child_stops->add_child_element("gradient"),data->stops);
+		build_param (gradient->add_child_element("param"),"loop","bool","false");
+		build_param (gradient->add_child_element("param"),"zigzag","bool","false");
 	}
 }
 void
@@ -1067,23 +1067,23 @@ Svg_parser::build_radialGradient(xmlpp::Element* root,RadialGradient* data,SVGMa
 		xmlpp::Element* gradient;
 
 		if (mtx || data->transform) {
-			xmlpp::Element* layer=root->add_child("layer");
+			xmlpp::Element* layer=root->add_child_element("layer");
 
 			layer->set_attribute("type","group");
 			layer->set_attribute("active","true");
 			layer->set_attribute("version","0.1");
 			layer->set_attribute("desc",data->name);
-			build_param (layer->add_child("param"),"z_depth","real","0");
-			build_param (layer->add_child("param"),"amount","real","1");
-			build_param (layer->add_child("param"),"blend_method","integer","21"); //straight onto
-			build_vector (layer->add_child("param"),"origin",0,0);
-			xmlpp::Element *child=layer->add_child("param");
+			build_param (layer->add_child_element("param"),"z_depth","real","0");
+			build_param (layer->add_child_element("param"),"amount","real","1");
+			build_param (layer->add_child_element("param"),"blend_method","integer","21"); //straight onto
+			build_vector (layer->add_child_element("param"),"origin",0,0);
+			xmlpp::Element *child=layer->add_child_element("param");
 			child->set_attribute("name","canvas");
-			xmlpp::Element* child_layer=child->add_child("canvas");
+			xmlpp::Element* child_layer=child->add_child_element("canvas");
 
-			gradient=child_layer->add_child("layer");
+			gradient=child_layer->add_child_element("layer");
 			gradient->set_attribute("desc",data->name);
-			build_param (gradient->add_child("param"),"blend_method","integer","0"); //composite
+			build_param (gradient->add_child_element("param"),"blend_method","integer","0"); //composite
 			SVGMatrix *mtx2=NULL;
 			if (mtx && data->transform){
 				composeSVGMatrix(&mtx2,mtx,data->transform);
@@ -1095,20 +1095,20 @@ Svg_parser::build_radialGradient(xmlpp::Element* root,RadialGradient* data,SVGMa
 			build_transform(child_layer,mtx2);
 			
 		}else {
-			gradient=root->add_child("layer");
+			gradient=root->add_child_element("layer");
 			gradient->set_attribute("desc",data->name);
-			build_param (gradient->add_child("param"),"blend_method","integer","21"); //straight onto
+			build_param (gradient->add_child_element("param"),"blend_method","integer","21"); //straight onto
 		}		
 
 		gradient->set_attribute("type","radial_gradient");
 		gradient->set_attribute("active","true");
-		build_param (gradient->add_child("param"),"z_depth","real","0");
-		build_param (gradient->add_child("param"),"amount","real","1");
+		build_param (gradient->add_child_element("param"),"z_depth","real","0");
+		build_param (gradient->add_child_element("param"),"amount","real","1");
 		//gradient link
-		xmlpp::Element *child_stops=gradient->add_child("param");
+		xmlpp::Element *child_stops=gradient->add_child_element("param");
 		child_stops->set_attribute("name","gradient");
 		child_stops->set_attribute("guid",GUID::hasher(data->name).get_string());
-		build_stop_color (child_stops->add_child("gradient"),data->stops);
+		build_stop_color (child_stops->add_child_element("gradient"),data->stops);
 
 		//here the center point and radius
 		float cx=data->cx;
@@ -1118,11 +1118,11 @@ Svg_parser::build_radialGradient(xmlpp::Element* root,RadialGradient* data,SVGMa
 		//adjust
 		coor2vect (&cx,&cy);
 		r=r/kux;
-		build_vector (gradient->add_child("param"),"center",cx,cy);
-		build_param (gradient->add_child("param"),"radius","real",r);
+		build_vector (gradient->add_child_element("param"),"center",cx,cy);
+		build_param (gradient->add_child_element("param"),"radius","real",r);
 
-		build_param (gradient->add_child("param"),"loop","bool","false");
-		build_param (gradient->add_child("param"),"zigzag","bool","false");
+		build_param (gradient->add_child_element("param"),"loop","bool","false");
+		build_param (gradient->add_child_element("param"),"zigzag","bool","false");
 	}
 }
 
@@ -1296,7 +1296,7 @@ Svg_parser::build_gamma(xmlpp::Element* root,float gamma){
 	root->set_attribute("active","true");
 	root->set_attribute("version","0.1");
 	root->set_attribute("desc","Gamma");
-	build_real (root->add_child("param"),"gamma",gamma);
+	build_real (root->add_child_element("param"),"gamma",gamma);
 }
 
 void
@@ -1304,57 +1304,57 @@ Svg_parser::build_translate(xmlpp::Element* root,float dx,float dy){
 	root->set_attribute("type","translate");
 	root->set_attribute("active","true");
 	root->set_attribute("version","0.1");
-	build_vector (root->add_child("param"),"origin",dx,dy);
+	build_vector (root->add_child_element("param"),"origin",dx,dy);
 }
 void
 Svg_parser::build_rotate(xmlpp::Element* root,float dx,float dy,float angle){
 	root->set_attribute("type","rotate");
 	root->set_attribute("active","true");
 	root->set_attribute("version","0.1");
-	build_vector (root->add_child("param"),"origin",dx,dy);
-	build_real   (root->add_child("param"),"amount",angle);
+	build_vector (root->add_child_element("param"),"origin",dx,dy);
+	build_real   (root->add_child_element("param"),"amount",angle);
 }
 void
 Svg_parser::build_points(xmlpp::Element* root,std::list<Vertex*> p){
 	root->set_attribute("name","vector_list");
-	xmlpp::Element *child=root->add_child("dynamic_list");
+	xmlpp::Element *child=root->add_child_element("dynamic_list");
 	child->set_attribute("type","vector");
 	std::list<Vertex*>::iterator aux = p.begin();
 	while(aux!=p.end()){
-		xmlpp::Element *child_entry=child->add_child("entry");
-		xmlpp::Element *child_vector=child_entry->add_child("vector");
-		child_vector->add_child("x")->set_child_text(etl::strprintf("%f",(*aux)->x));
-		child_vector->add_child("y")->set_child_text(etl::strprintf("%f",(*aux)->y));
+		xmlpp::Element *child_entry=child->add_child_element("entry");
+		xmlpp::Element *child_vector=child_entry->add_child_element("vector");
+		child_vector->add_child_element("x")->set_first_child_text(etl::strprintf("%f",(*aux)->x));
+		child_vector->add_child_element("y")->set_first_child_text(etl::strprintf("%f",(*aux)->y));
 		aux++;
 	}
 }
 void
 Svg_parser::build_vertex(xmlpp::Element* root , Vertex *p){
-	xmlpp::Element *child_comp=root->add_child("composite");
+	xmlpp::Element *child_comp=root->add_child_element("composite");
 	child_comp->set_attribute("type","bline_point");
-	build_vector (child_comp->add_child("param"),"point",p->x,p->y);
-	build_param (child_comp->add_child("width"),"","real","1.0000000000");
-	build_param (child_comp->add_child("origin"),"","real","0.5000000000");
-	if(p->split) build_param (child_comp->add_child("split"),"","bool","true");
-	else build_param (child_comp->add_child("split"),"","bool","false");
+	build_vector (child_comp->add_child_element("param"),"point",p->x,p->y);
+	build_param (child_comp->add_child_element("width"),"","real","1.0000000000");
+	build_param (child_comp->add_child_element("origin"),"","real","0.5000000000");
+	if(p->split) build_param (child_comp->add_child_element("split"),"","bool","true");
+	else build_param (child_comp->add_child_element("split"),"","bool","false");
 	//tangent 1
-	xmlpp::Element *child_t1=child_comp->add_child("t1");
-	xmlpp::Element *child_rc=child_t1->add_child("radial_composite");
+	xmlpp::Element *child_t1=child_comp->add_child_element("t1");
+	xmlpp::Element *child_rc=child_t1->add_child_element("radial_composite");
 	child_rc->set_attribute("type","vector");
-	build_param (child_rc->add_child("radius"),"","real",p->radius1);
-	build_param (child_rc->add_child("theta"),"","angle",p->angle1);
+	build_param (child_rc->add_child_element("radius"),"","real",p->radius1);
+	build_param (child_rc->add_child_element("theta"),"","angle",p->angle1);
 	//tangent 2
-	xmlpp::Element *child_t2=child_comp->add_child("t2");
-	xmlpp::Element *child_rc2=child_t2->add_child("radial_composite");
+	xmlpp::Element *child_t2=child_comp->add_child_element("t2");
+	xmlpp::Element *child_rc2=child_t2->add_child_element("radial_composite");
 	child_rc2->set_attribute("type","vector");
-	build_param (child_rc2->add_child("radius"),"","real",p->radius2);
-	build_param (child_rc2->add_child("theta"),"","angle",p->angle2);
+	build_param (child_rc2->add_child_element("radius"),"","real",p->radius2);
+	build_param (child_rc2->add_child_element("theta"),"","angle",p->angle2);
 
 }
 void
 Svg_parser::build_bline(xmlpp::Element* root,std::list<Vertex*> p,bool loop,String blineguid){
 	root->set_attribute("name","bline");
-	xmlpp::Element *child=root->add_child("bline");
+	xmlpp::Element *child=root->add_child_element("bline");
 	child->set_attribute("type","bline_point");
 	if(loop)
 		child->set_attribute("loop","true");
@@ -1363,7 +1363,7 @@ Svg_parser::build_bline(xmlpp::Element* root,std::list<Vertex*> p,bool loop,Stri
 	if(!blineguid.empty())	child->set_attribute("guid",blineguid);
 	std::list<Vertex*>::iterator aux = p.begin();
 	while(aux!=p.end()){
-		if(*aux) build_vertex (child->add_child("entry"),*aux);
+		if(*aux) build_vertex (child->add_child_element("entry"),*aux);
 		aux++;
 	}
 }
@@ -1372,7 +1372,7 @@ void
 Svg_parser::build_param(xmlpp::Element* root,String name,String type,String value){
 	if(!type.empty() && !value.empty()){
 		if(!name.empty())	root->set_attribute("name",name);
-		xmlpp::Element *child=root->add_child(type);
+		xmlpp::Element *child=root->add_child_element(type);
 		child->set_attribute("value",value);
 	}else{
 		root->get_parent()->remove_child(root);
@@ -1382,7 +1382,7 @@ void
 Svg_parser::build_param(xmlpp::Element* root,String name,String type,float value){
 	if(!type.empty()){
 		if(!name.empty()) root->set_attribute("name",name);
-		xmlpp::Element *child=root->add_child(type);
+		xmlpp::Element *child=root->add_child_element(type);
 		child->set_attribute("value",etl::strprintf ("%f",value));
 	}else{
 		root->get_parent()->remove_child(root);
@@ -1392,7 +1392,7 @@ void
 Svg_parser::build_param(xmlpp::Element* root,String name,String type,int value){
 	if(!type.empty()){
 			if(!name.empty()) root->set_attribute("name",name);
-			xmlpp::Element *child=root->add_child(type);
+			xmlpp::Element *child=root->add_child_element(type);
 			char *enteroc=new char[10];
 			sprintf(enteroc,"%d",value);
 			child->set_attribute("value",enteroc);
@@ -1405,7 +1405,7 @@ Svg_parser::build_param(xmlpp::Element* root,String name,String type,int value){
 void
 Svg_parser::build_integer(xmlpp::Element* root,String name,int value){
 	if(name.compare("")!=0) root->set_attribute("name",name);
-	xmlpp::Element *child=root->add_child("integer");
+	xmlpp::Element *child=root->add_child_element("integer");
 	char *enteroc=new char[10];
 	sprintf(enteroc,"%d",value);
 	child->set_attribute("value",enteroc);
@@ -1413,7 +1413,7 @@ Svg_parser::build_integer(xmlpp::Element* root,String name,int value){
 void
 Svg_parser::build_real(xmlpp::Element* root,String name,float value){
 	if(name.compare("")!=0) root->set_attribute("name",name);
-	xmlpp::Element *child=root->add_child("real");
+	xmlpp::Element *child=root->add_child_element("real");
 	char *realc=new char[20];
 	sprintf(realc,"%f",value);
 	child->set_attribute("value",realc);
@@ -1429,28 +1429,28 @@ Svg_parser::build_color(xmlpp::Element* root,float r,float g,float b,float a){
 	Color ret=adjustGamma(r/255,g/255,b/255,a);
 
 	root->set_attribute("name","color");
-	xmlpp::Element *child=root->add_child("color");
-	child->add_child("r")->set_child_text(etl::strprintf("%f",ret.get_r()));
-	child->add_child("g")->set_child_text(etl::strprintf("%f",ret.get_g()));
-	child->add_child("b")->set_child_text(etl::strprintf("%f",ret.get_b()));
-	child->add_child("a")->set_child_text(etl::strprintf("%f",ret.get_a()));
+	xmlpp::Element *child=root->add_child_element("color");
+	child->add_child_element("r")->set_first_child_text(etl::strprintf("%f",ret.get_r()));
+	child->add_child_element("g")->set_first_child_text(etl::strprintf("%f",ret.get_g()));
+	child->add_child_element("b")->set_first_child_text(etl::strprintf("%f",ret.get_b()));
+	child->add_child_element("a")->set_first_child_text(etl::strprintf("%f",ret.get_a()));
 }
 void
 Svg_parser::build_vector(xmlpp::Element* root,String name,float x,float y){
 
 	if(name.compare("")!=0) root->set_attribute("name",name);
-	xmlpp::Element *child=root->add_child("vector");
-	child->add_child("x")->set_child_text(etl::strprintf("%f",x));
-	child->add_child("y")->set_child_text(etl::strprintf("%f",y));
+	xmlpp::Element *child=root->add_child_element("vector");
+	child->add_child_element("x")->set_first_child_text(etl::strprintf("%f",x));
+	child->add_child_element("y")->set_first_child_text(etl::strprintf("%f",y));
 
 }
 void
 Svg_parser::build_vector (xmlpp::Element* root,String name,float x,float y,String guid){
 	if(name.compare("")!=0) root->set_attribute("name",name);
-	xmlpp::Element *child=root->add_child("vector");
+	xmlpp::Element *child=root->add_child_element("vector");
 	if(!guid.empty()) child->set_attribute("guid",guid);
-	child->add_child("x")->set_child_text(etl::strprintf("%f",x));
-	child->add_child("y")->set_child_text(etl::strprintf("%f",y));
+	child->add_child_element("x")->set_first_child_text(etl::strprintf("%f",x));
+	child->add_child_element("y")->set_first_child_text(etl::strprintf("%f",y));
 }
 
 xmlpp::Element*
@@ -1459,13 +1459,13 @@ Svg_parser::nodeStartBasicLayer(xmlpp::Element* root, String name){
 	root->set_attribute("active","true");
 	root->set_attribute("version","0.1");
 	root->set_attribute("desc",name);
-	build_param (root->add_child("param"),"z_depth","real","0");
-	build_param (root->add_child("param"),"amount","real","1");
-	build_param (root->add_child("param"),"blend_method","integer","0");
-	build_vector (root->add_child("param"),"origin",0,0);
-	xmlpp::Element *child=root->add_child("param");
+	build_param (root->add_child_element("param"),"z_depth","real","0");
+	build_param (root->add_child_element("param"),"amount","real","1");
+	build_param (root->add_child_element("param"),"blend_method","integer","0");
+	build_vector (root->add_child_element("param"),"origin",0,0);
+	xmlpp::Element *child=root->add_child_element("param");
 	child->set_attribute("name","canvas");
-	return child->add_child("canvas");
+	return child->add_child_element("canvas");
 }
 
 /* === COORDINATES & TRANSFORMATIONS ======================================= */
