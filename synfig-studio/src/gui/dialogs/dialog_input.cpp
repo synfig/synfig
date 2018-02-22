@@ -142,7 +142,7 @@ void Dialog_Input::take_options()
 			gdk_display_get_default_seat(
 				gdk_display_manager_get_default_display(
 					gdk_display_manager_get() )),
-			GDK_SEAT_CAPABILITY_ALL );
+			GDK_SEAT_CAPABILITY_ALL_POINTING );
 
 		for(GList *itr=device_list; itr; itr=g_list_next(itr))
 		{

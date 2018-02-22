@@ -67,7 +67,7 @@ DeviceTracker::DeviceTracker()
 			gdk_display_get_default_seat(
 				gdk_display_manager_get_default_display(
 					gdk_display_manager_get() )),
-			GDK_SEAT_CAPABILITY_ALL );
+			GDK_SEAT_CAPABILITY_ALL_POINTING );
 
 		for(GList *iter=device_list; iter; iter=g_list_next(iter))
 		{
@@ -113,7 +113,7 @@ DeviceTracker::save_preferences()
 			gdk_display_get_default_seat(
 				gdk_display_manager_get_default_display(
 					gdk_display_manager_get() )),
-			GDK_SEAT_CAPABILITY_ALL );
+			GDK_SEAT_CAPABILITY_ALL_POINTING );
 	
 		for(GList *itr=device_list; itr; itr=g_list_next(itr))
 		{
@@ -158,7 +158,7 @@ DeviceTracker::load_preferences()
 			gdk_display_get_default_seat(
 				gdk_display_manager_get_default_display(
 					gdk_display_manager_get() )),
-			GDK_SEAT_CAPABILITY_ALL );
+			GDK_SEAT_CAPABILITY_ALL_POINTING );
 
 		for(GList *itr=device_list; itr; itr=g_list_next(itr))
 		{
