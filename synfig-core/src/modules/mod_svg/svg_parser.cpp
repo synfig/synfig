@@ -163,8 +163,8 @@ Svg_parser::parser_node(const xmlpp::Node* node){
 		}
   	}
   	if(!nodeContent){
-    	xmlpp::Node::NodeList list = node->get_children();
-    	for(xmlpp::Node::NodeList::iterator iter = list.begin(); iter != list.end(); ++iter){
+    	xmlpp::Node::const_NodeList list = node->get_children();
+    	for(xmlpp::Node::const_NodeList::iterator iter = list.begin(); iter != list.end(); ++iter){
       		parser_node(*iter); //recursive
     	}
   	}
@@ -456,8 +456,8 @@ Svg_parser::parser_layer(const xmlpp::Node* node,xmlpp::Element* root,String par
 		child_canvas=child_canvas->add_child_element("canvas");
 		const xmlpp::ContentNode* nodeContent = dynamic_cast<const xmlpp::ContentNode*>(node);
 		if(!nodeContent){
-    		xmlpp::Node::NodeList list = node->get_children();
-    		for(xmlpp::Node::NodeList::iterator iter = list.begin(); iter != list.end(); ++iter){
+    		xmlpp::Node::const_NodeList list = node->get_children();
+    		for(xmlpp::Node::const_NodeList::iterator iter = list.begin(); iter != list.end(); ++iter){
 				Glib::ustring name =(*iter)->get_name();
 				parser_graphics (*iter,child_canvas,layer_style,mtx);
     		}
@@ -875,8 +875,8 @@ void
 Svg_parser::parser_defs(const xmlpp::Node* node){
 	const xmlpp::ContentNode* nodeContent = dynamic_cast<const xmlpp::ContentNode*>(node);
 	if(!nodeContent){
-		xmlpp::Node::NodeList list = node->get_children();
-		for(xmlpp::Node::NodeList::iterator iter = list.begin(); iter != list.end(); ++iter){
+		xmlpp::Node::const_NodeList list = node->get_children();
+		for(xmlpp::Node::const_NodeList::iterator iter = list.begin(); iter != list.end(); ++iter){
 			Glib::ustring name =(*iter)->get_name();
 			if(name.compare("linearGradient")==0){
 				parser_linearGradient(*iter);
@@ -1153,8 +1153,8 @@ Svg_parser::parser_linearGradient(const xmlpp::Node* node){
 			stops=new std::list<ColorStop*>();
 			const xmlpp::ContentNode* nodeContent = dynamic_cast<const xmlpp::ContentNode*>(node);
 			if(!nodeContent){
-    			xmlpp::Node::NodeList list = node->get_children();
-    			for(xmlpp::Node::NodeList::iterator iter = list.begin(); iter != list.end(); ++iter){
+    			xmlpp::Node::const_NodeList list = node->get_children();
+    			for(xmlpp::Node::const_NodeList::iterator iter = list.begin(); iter != list.end(); ++iter){
 					Glib::ustring name =(*iter)->get_name();
 					if(name.compare("stop")==0){
 						const xmlpp::Element* nodeIter = dynamic_cast<const xmlpp::Element*>(*iter);
@@ -1375,7 +1375,7 @@ Svg_parser::build_param(xmlpp::Element* root,String name,String type,String valu
 		xmlpp::Element *child=root->add_child_element(type);
 		child->set_attribute("value",value);
 	}else{
-		root->get_parent()->remove_child(root);
+		root->get_parent()->remove_node(root);
 	}
 }
 void
@@ -1385,7 +1385,7 @@ Svg_parser::build_param(xmlpp::Element* root,String name,String type,float value
 		xmlpp::Element *child=root->add_child_element(type);
 		child->set_attribute("value",etl::strprintf ("%f",value));
 	}else{
-		root->get_parent()->remove_child(root);
+		root->get_parent()->remove_node(root);
 	}
 }
 void
@@ -1398,7 +1398,7 @@ Svg_parser::build_param(xmlpp::Element* root,String name,String type,int value){
 			child->set_attribute("value",enteroc);
 			delete [] enteroc;
 	}else{
-		root->get_parent()->remove_child(root);
+		root->get_parent()->remove_node(root);
 	}
 }
 
@@ -1422,7 +1422,7 @@ Svg_parser::build_real(xmlpp::Element* root,String name,float value){
 void
 Svg_parser::build_color(xmlpp::Element* root,float r,float g,float b,float a){
 	if(r>255 || g>255 || b>255 || a>1 || r<0 || g<0 || b<0 || a<0){
-		root->get_parent()->remove_child(root);
+		root->get_parent()->remove_node(root);
 		printf("Color aborted\n");
 		return;
 	}
