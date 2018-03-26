@@ -2216,8 +2216,11 @@ App::apply_gtk_settings()
 		data += ".window-frame, .window-frame:backdrop { box-shadow: none; margin: 0; }\n";
 	if (!data.empty()) {
 		Glib::RefPtr<Gtk::CssProvider> css = Gtk::CssProvider::create();
-		if(not css->load_from_data(data))
-			synfig::info("Failed to load css rules.");
+		try {
+			css->load_from_data(data);
+		} catch (Gtk::CssProviderError &e) {
+			synfig::warning("Failed to load css rules. %s", e.what().c_str()); 
+		}
 		Glib::RefPtr<Gdk::Screen> screen = Gdk::Screen::get_default();
 		Gtk::StyleContext::add_provider_for_screen(screen,css, GTK_STYLE_PROVIDER_PRIORITY_USER);
 	}
