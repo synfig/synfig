@@ -87,8 +87,12 @@ bool
 Action::ValueDescCreateChildBone::is_candidate(const ParamList &x)
 {
 	ParamList::const_iterator i;
+	
+	i = x.find("value_desc");
+	if (i == x.end()) return false;
 
-	ValueDesc value_desc(x.find("value_desc")->second.get_value_desc());
+	ValueDesc value_desc(i->second.get_value_desc());
+	//ValueDesc value_desc(x.find("value_desc")->second.get_value_desc());
 
 	if (!candidate_check(get_param_vocab(),x))
 		return false;
