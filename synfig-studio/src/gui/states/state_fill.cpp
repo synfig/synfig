@@ -105,9 +105,9 @@ StateFill::~StateFill()
 {
 }
 
-StateFill_Context::StateFill_Context(CanvasView *canvas_view):
-	canvas_view(canvas_view),
-	is_working(*canvas_view),
+StateFill_Context::StateFill_Context(CanvasView *canvasView):
+	canvas_view(canvasView),
+	is_working(*canvasView),
 	push_state(get_work_area())
 {
 	synfig::info("Entered Fill State");

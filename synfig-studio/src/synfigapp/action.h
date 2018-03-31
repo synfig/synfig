@@ -111,6 +111,7 @@ public:
 		va_list args;
 		va_start(args,format);
 		desc_=etl::vstrprintf(format,args);
+		va_end(args);
 	}
 
 	Error(const char *format, ...):
@@ -119,6 +120,7 @@ public:
 		va_list args;
 		va_start(args,format);
 		desc_=etl::vstrprintf(format,args);
+		va_end(args);
 	}
 
 	Error(Type type=TYPE_UNABLE):

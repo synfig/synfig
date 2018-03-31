@@ -272,8 +272,11 @@ public:
 
 		unsigned char *buffer((unsigned char*)malloc(total_bytes));
 
-		if(!surface || !buffer)
+		if(!surface || !buffer) {
+			if (buffer) free(buffer); // fix possible memory leak
 			return false;
+		}
+
 		{
 			unsigned char *dest(buffer);
 			const Color *src(surface[0]);
@@ -473,8 +476,10 @@ public:
 
 		unsigned char *buffer((unsigned char*)malloc(total_bytes));
 
-		if(!surface || !buffer)
+		if(!surface || !buffer) {
+			if (buffer) free(buffer); // fix possible memory leak
 			return;
+		}
 		// Copy the content of surface to the buffer
 		{
 			unsigned char *dest(buffer);

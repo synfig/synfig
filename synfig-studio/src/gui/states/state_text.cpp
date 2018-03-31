@@ -373,9 +373,9 @@ StateText_Context::increment_id()
 	set_id(id);
 }
 
-StateText_Context::StateText_Context(CanvasView *canvas_view):
-	canvas_view(canvas_view),
-	is_working(*canvas_view),
+StateText_Context::StateText_Context(CanvasView *canvasView):
+	canvas_view(canvasView),
+	is_working(*canvasView),
 	duckmatic_push(get_work_area()),
 	prev_workarea_layer_status_(get_work_area()->get_allow_layer_clicks()),
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
