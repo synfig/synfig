@@ -105,7 +105,7 @@ MainWindow::MainWindow()
 
 	vbox->pack_end(*bin_, true, true, 0);
 	vbox->show();
-	if(!App::enable_mainwin_menubar) menubar->hide();
+	if(!App::enable_mainwin_menubar && menubar) menubar->hide();
 
 	add(*vbox);
 

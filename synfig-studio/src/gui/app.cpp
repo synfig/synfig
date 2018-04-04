@@ -3293,7 +3293,7 @@ App::dialog_message_1b(
 	const std::string &button1,
 	const std::string &long_details)
 {
-	Gtk::MessageType _type;
+	Gtk::MessageType _type = Gtk::MESSAGE_OTHER; // default
 	if (type == "INFO")
 		_type = Gtk::MESSAGE_INFO;
 	if (type == "WARNING")
