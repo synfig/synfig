@@ -241,8 +241,10 @@ StateRotate_Context::event_refresh_tool_options(const Smach::event& /*x*/)
 Smach::event_result
 StateRotate_Context::event_stop_handler(const Smach::event& /*x*/)
 {
-	throw &state_normal;
-	return Smach::RESULT_OK;
+	canvas_view_->stop();
+	return Smach::RESULT_ACCEPT;
+	//throw &state_normal;
+	//return Smach::RESULT_OK;
 }
 
 StateRotate_Context::~StateRotate_Context()
