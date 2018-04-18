@@ -1,4 +1,3 @@
-#include <cstdio>
 /* === S Y N F I G ========================================================= */
 /*!	\file activepoint.h
 **	\brief Template Header
@@ -29,9 +28,12 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <cstdio>
+
+#include <ETL/handle>
+
 #include "time.h"
 #include "uniqueid.h"
-#include <ETL/handle>
 
 /* === M A C R O S ========================================================= */
 
