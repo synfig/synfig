@@ -148,11 +148,9 @@ Importer::~Importer()
 {
 	// Remove ourselves from the open importer list
 	map<FileSystem::Identifier,Importer::LooseHandle>::iterator iter;
-	for(iter=__open_importers->begin();iter!=__open_importers->end();++iter)
+	for(iter=__open_importers->begin();iter!=__open_importers->end();)
 		if(iter->second==this)
-		{
-			__open_importers->erase(iter);
-		}
+			__open_importers->erase(iter++); else ++iter;
 }
 
 rendering::Surface::Handle
