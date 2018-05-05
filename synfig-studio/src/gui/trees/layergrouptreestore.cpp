@@ -178,7 +178,7 @@ LayerGroupTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int 
 		x.init(x.value_type());
 		if ((bool)(*iter)[model.is_layer])
 		{
-			auto layer = (Layer::Handle)(*iter)[model.layer];
+			Layer::Handle layer = (Layer::Handle)(*iter)[model.layer];
 			x.set(layer->get_true_z_depth(canvas_interface()->get_time()));
 		}
 		else
@@ -761,7 +761,7 @@ LayerGroupTreeStore::resort()
 	int sort_column;
 	Gtk::SortType sort_order;
 	if (get_sort_column_id(sort_column, sort_order)) {
-		auto reverse_order = sort_order == Gtk::SORT_DESCENDING ? Gtk::SORT_ASCENDING : Gtk::SORT_DESCENDING;
+		Gtk::SortType reverse_order = sort_order == Gtk::SORT_DESCENDING ? Gtk::SORT_ASCENDING : Gtk::SORT_DESCENDING;
 		set_sort_column(sort_column, reverse_order);
 		set_sort_column(sort_column, sort_order);
 	}

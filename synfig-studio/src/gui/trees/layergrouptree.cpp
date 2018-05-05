@@ -88,9 +88,9 @@ LayerGroupTree::LayerGroupTree()
 		append_column(*column);
 	}
 	{	// --- Z - D E P T H
-		auto index = append_column(_("Z Depth"), model.z_depth)-1;
+		int index = append_column(_("Z Depth"), model.z_depth)-1;
 
-		auto column_z_depth = get_column(index);
+		Gtk::TreeViewColumn* column_z_depth = get_column(index);
 		column_z_depth->set_reorderable();
 		column_z_depth->set_resizable();
 		column_z_depth->set_clickable();
