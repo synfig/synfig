@@ -169,8 +169,11 @@ void Dialog_Input::take_options()
 			device_options.mode = gdk_device_get_mode(gdk_device);
 
 			// allow to select device axis usage
-			device_options.axes.resize( gdk_device_get_n_axes(gdk_device) );
-			for(int j = 0; j < (int)device_options.axes.size(); ++j)
+
+			int n_axes = 0;
+			if (gdk_device_get_source (gdk_device) != GDK_SOURCE_KEYBOARD) n_axes = gdk_device_get_n_axes(gdk_device);
+			device_options.axes.resize( n_axes );
+			for(int j = 0; j < n_axes; ++j)
 				device_options.axes[j].use = gdk_device_get_axis_use(gdk_device, j);
 
 			// allow to select device keys
