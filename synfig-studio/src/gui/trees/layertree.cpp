@@ -402,8 +402,9 @@ LayerTree::create_param_tree()
 		cellrenderer_time_track->signal_waypoint_clicked_cellrenderer().connect(sigc::mem_fun(*this, &studio::LayerTree::on_waypoint_clicked_layertree) );
 		cellrenderer_time_track->signal_waypoint_changed().connect(sigc::mem_fun(*this, &studio::LayerTree::on_waypoint_changed) );
 		column->add_attribute(cellrenderer_time_track->property_value_desc(), param_model.value_desc);
-		column->add_attribute(cellrenderer_time_track->property_canvas(), param_model.canvas);
-		column->add_attribute(cellrenderer_time_track->property_visible(), param_model.is_value_node);
+		// this already added in constructor
+		//column->add_attribute(cellrenderer_time_track->property_canvas(), param_model.canvas);
+	    column->add_attribute(cellrenderer_time_track->property_visible(), param_model.is_value_node);
 
 		// Finish setting up the column
 		column->set_reorderable();
