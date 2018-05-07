@@ -892,7 +892,7 @@ CanvasInterface::import(const synfig::String &filename, synfig::String &errors, 
 
 		//get_instance()->get_canvas_view(get_canvas());
 
-		get_selection_manager()->set_selected_layer(layer);
+		//get_selection_manager()->set_selected_layer(layer);
 
 		//etl::handle<synfig::Canvas> canvas = get_canvas();
 		//etl::handle<CanvasView> view = get_instance()->find_canvas_view(canvas);
@@ -910,6 +910,11 @@ CanvasInterface::import(const synfig::String &filename, synfig::String &errors, 
 			{ get_ui_interface()->error(_("Action Not Ready")); return false; }
 		if(!get_instance()->perform_action(action))
 			{ get_ui_interface()->error(_("Action Failed.")); return false; }
+
+		Layer::LooseHandle l = layer->get_parent_paste_canvas_layer(); // get parent layer, because image is incapsulated into action switch
+		
+		get_selection_manager()->clear_selected_layers();
+		get_selection_manager()->set_selected_layer(l);
 
 		return true;
 	}
