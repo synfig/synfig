@@ -43,8 +43,8 @@ let
     src = ../synfig-core;
 
     buildInputs = with pkgs; [
-      ETL autoconf automake boost cairo gettext glibmm intltool libsigcxx
-      libtool libxmlxx pango pkgconfig which
+      ETL autoconf automake boost cairo fftw gettext glibmm intltool libsigcxx
+      libtool libxmlxx mlt pango pkgconfig which
     ];
 
     preConfigure = "./bootstrap.sh";
