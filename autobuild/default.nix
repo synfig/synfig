@@ -58,8 +58,8 @@ stdenv.mkDerivation rec {
   src = ../synfig-studio;
 
   buildInputs = with pkgs; [
-    ETL autoconf automake boost cairo gettext glibmm gtk gtkmm
-    imagemagick intltool intltool jackaudio libsigcxx libtool libxmlxx
+    ETL autoconf automake boost cairo gettext glibmm gtk3 gtkmm3
+    imagemagick intltool intltool libjack2 libsigcxx libtool libxmlxx
     pkgconfig synfig which
   ];
 
