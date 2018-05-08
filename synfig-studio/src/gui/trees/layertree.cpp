@@ -104,29 +104,48 @@ using namespace studio;
 */
 bool LayerTree::onKeyPress(GdkEventKey* event)
 {
-	if (event->hardware_keycode == 119) {
-		//get_selection_manager()->set_selected_layer(l);
-		std::cout << "LayerTree::onKeyPress: Got delete!" << std::endl;
 
-		LayerList layers = get_selected_layers();
+	switch (event->hardware_keycode) {
+		case 119: { // 'Del' key pressed
+			std::cout << "LayerTree::onKeyPress: Got delete!" << std::endl;
 
-		if (layers.size() == 0) return true; // nothing to do
-		
+			LayerList layers = get_selected_layers();
 
-		synfigapp::Action::Handle action(synfigapp::Action::LayerRemove::create());
-		assert(action);
-		if (!action)
+			if (layers.size() == 0) return true; // nothing to do
+			
+
+			synfigapp::Action::Handle action(synfigapp::Action::LayerRemove::create());
+			assert(action);
+			if (!action)
+				return true;
+			
+			action->set_param("canvas", layer_tree_store_->canvas_interface()->get_canvas());
+			action->set_param("canvas_interface", layer_tree_store_->canvas_interface());
+
+			for(LayerList::const_iterator i = layers.begin(); i != layers.end(); ++i)
+				action->set_param("layer", *i);
+
+			layer_tree_store_->canvas_interface()->get_instance()->perform_action(action);
 			return true;
-		
-		action->set_param("canvas", layer_tree_store_->canvas_interface()->get_canvas());
-		action->set_param("canvas_interface", layer_tree_store_->canvas_interface());
 
-		for(LayerList::const_iterator i = layers.begin(); i != layers.end(); ++i)
-			action->set_param("layer", *i);
+		} 
+		case 68: { // 'F2' key pressed
+			Glib::RefPtr<Gtk::TreeSelection> selection = get_selection();
+			std::vector<Gtk::TreeModel::Path> pathList = selection->get_selected_rows();
+			if (pathList.size() != 1) return true;
 
-		layer_tree_store_->canvas_interface()->get_instance()->perform_action(action);
-		return true;
+			const Gtk::TreeModel::Path& path = pathList.front();
+			Gtk::TreeView::Column& focus_column = *(layer_tree_view_->get_column(2));
+
+			layer_tree_view_->set_cursor(
+				path, 
+				focus_column, 
+				true
+			);
+			return true;
+		}
 	}
+
     std::cout << "LayerTree::onKeyPress: " << event->keyval << ' ' << event->hardware_keycode << ' ' << event->state << std::endl;
 
     return false;
