@@ -76,7 +76,9 @@ using namespace studio;
 #	define IMAGE_EXT	"png"
 #endif
 
-#define stringify(x) #x
+//#define stringify(x) #x
+#define stringify(x) (x)
+//#define stringify(x) (std::to_string(x).c_str())
 
 /* === G L O B A L S ======================================================= */
 

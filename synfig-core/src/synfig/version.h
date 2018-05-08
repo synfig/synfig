@@ -40,7 +40,8 @@
 **	revision release.
 */
 #ifndef SYNFIG_VERSION
-#define SYNFIG_VERSION (010200)
+//#define SYNFIG_VERSION (010200)
+#define SYNFIG_VERSION ("01.02.00")
 #endif
 
 /*!	Increment this value whenever
