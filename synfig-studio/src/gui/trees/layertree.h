@@ -279,6 +279,8 @@ public:
 private:
 	void get_expanded_layers(LayerList &list, const Gtk::TreeNodeChildren &rows)const;
 
+	bool onKeyPress(GdkEventKey* event);
+
 }; // END of LayerTree
 
 }; // END of namespace studio
