@@ -420,6 +420,7 @@ public:
 	error(const std::string &err)
 	{
 		Gtk::MessageDialog dialog(err, false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_CLOSE, true);
+		dialog.set_transient_for(*App::main_window);
 		dialog.show();
 		dialog.run();
 		return true;
