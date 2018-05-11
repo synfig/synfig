@@ -565,6 +565,7 @@ Instance::save_layer(const synfig::Layer::Handle &layer)
 		}
 	}
 	error("Don't know how to save layer type: %s", layer->get_name().c_str());
+	return false;
 }
 
 void
