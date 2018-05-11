@@ -210,6 +210,7 @@ void emptyfunction(int v)
 {
 	static int stupid = 0;
 	stupid = v;
+	if (stupid == 0) return; // disable unused warning
 	//printf("Called... %d\n",v);
 }
 

@@ -59,6 +59,7 @@ void angle_cos_speed_test(void)
 		tmp2=((typename Angle::cos)(c)).get();
 		tmp2=((typename Angle::cos)(d)).get();
 	}
+	if (tmp2 == 0) return; // disable unused warning
 }
 template <class Angle>
 void angle_sin_speed_test(void)
@@ -77,6 +78,7 @@ void angle_sin_speed_test(void)
 		tmp2=((typename Angle::sin)(c)).get();
 		tmp2=((typename Angle::sin)(d)).get();
 	}
+	if (tmp2 == 0) return; // disable unused warning
 }
 template <class Angle>
 void angle_tan_speed_test(void)
@@ -95,6 +97,7 @@ void angle_tan_speed_test(void)
 		tmp2=((typename Angle::tan)(c)).get();
 		tmp2=((typename Angle::tan)(d)).get();
 	}
+	if (tmp2 == 0) return; // disable unused warning
 }
 template <class Angle, class mytan>
 void angle_atan2_speed_test(void)
