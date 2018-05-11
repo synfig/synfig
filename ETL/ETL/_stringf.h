@@ -147,7 +147,10 @@ strprintf(const char *format, ...)
 {
 	va_list args;
 	va_start(args,format);
-	return vstrprintf(format,args);
+	const std::string buf = vstrprintf(format, args);
+	va_end(args);
+	return buf;
+	
 }
 
 #ifndef ETL_NO_VSTRSCANF
@@ -162,7 +165,9 @@ strscanf(const std::string &data, const char*format, ...)
 {
 	va_list args;
 	va_start(args,format);
-	return vstrscanf(data, format,args);
+	const int buf = vstrscanf(data, format, args);
+	va_end(args);
+	return buf;
 }
 #else
 
