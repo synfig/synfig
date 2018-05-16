@@ -400,7 +400,7 @@ DuckDrag_Combo::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 		return;
 
 	// this is quick-hack mostly, so need to check if nothing broken
-	if (!move_only && !scale && !rotate) return; // nothing to do
+	//if (!move_only && !scale && !rotate) return; // nothing to do
 
 	//Override axis lock set in workarea when holding down the shift key
 	if (!move_only && (scale || rotate))
