@@ -277,7 +277,7 @@ LayerGroupTree::on_toggle(const Glib::ustring& path_string)
 }
 
 void
-LayerGroupTree::on_layer_renamed(const Glib::ustring&path_string,const Glib::ustring& value)
+LayerGroupTree::on_layer_renamed(const Glib::ustring& path_string, const Glib::ustring& value)
 {
 	Gtk::TreePath path(path_string);
 
