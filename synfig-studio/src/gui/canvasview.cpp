@@ -727,11 +727,18 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	/*
  --	** -- Signals -------------------------------------------------------------
 	*/
+#define CONNECT(x, y) x().connect(sigc::mem_fun(*this, y))
 
-	canvas_interface()->signal_dirty_preview().connect(sigc::mem_fun(*this,&studio::CanvasView::on_dirty_preview));
-	canvas_interface()->signal_mode_changed().connect(sigc::mem_fun(*this,&studio::CanvasView::on_mode_changed));
+	CONNECT(canvas_interface()->signal_dirty_preview, &CanvasView::on_dirty_preview);
+	CONNECT(canvas_interface()->signal_mode_changed,  &CanvasView::on_mode_changed);
+	CONNECT(canvas_interface()->signal_time_changed,  &CanvasView::on_time_changed);
 
-	canvas_interface()->signal_time_changed().connect(sigc::mem_fun(*this,&studio::CanvasView::on_time_changed));
+#undef CONNECT
+
+	//canvas_interface()->signal_dirty_preview().connect(sigc::mem_fun(*this,&studio::CanvasView::on_dirty_preview));
+	//canvas_interface()->signal_mode_changed().connect(sigc::mem_fun(*this,&studio::CanvasView::on_mode_changed));
+
+	//canvas_interface()->signal_time_changed().connect(sigc::mem_fun(*this,&studio::CanvasView::on_time_changed));
 
 	//canvas_interface()->signal_time_changed().connect(sigc::mem_fun(*this,&studio::CanvasView::refresh_tables));
 	canvas_interface()->signal_id_changed().connect(sigc::mem_fun(*this,&studio::CanvasView::on_id_changed));
