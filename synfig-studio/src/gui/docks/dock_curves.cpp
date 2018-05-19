@@ -70,16 +70,18 @@ Dock_Curves::Dock_Curves():
 	last_widget_curves_=0;
 	table_=0;
 
-	hscrollbar_=new Gtk::HScrollbar();
-	vscrollbar_=new Gtk::VScrollbar();
-	widget_timeslider_= new Widget_Timeslider();
+	hscrollbar_        = new Gtk::HScrollbar();
+	vscrollbar_        = new Gtk::VScrollbar();
+	widget_timeslider_ = new Widget_Timeslider();
+	widget_kf_list_    = new Widget_Keyframe_List();
 }
 
 Dock_Curves::~Dock_Curves()
 {
-	if(table_)delete table_;
+	if (table_) delete table_;
 	delete hscrollbar_;
 	delete vscrollbar_;
+	delete widget_kf_list_;
 	delete widget_timeslider_;
 }
 
@@ -180,11 +182,16 @@ Dock_Curves::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view
 		widget_timeslider_->set_bounds_adjustment(canvas_view->time_window_adjustment());
 		widget_timeslider_->set_global_fps(canvas_view->get_canvas()->rend_desc().get_frame_rate());
 
-		table_=new Gtk::Table(2,2);
-		table_->attach(*widget_timeslider_, 0, 1, 0, 1, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::SHRINK);
-		table_->attach(*last_widget_curves_, 0, 1, 1, 2, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::EXPAND);
-		table_->attach(*hscrollbar_, 0, 1, 2, 3, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::SHRINK);
-		table_->attach(*vscrollbar_, 1, 2, 0, 2, Gtk::FILL|Gtk::SHRINK, Gtk::FILL|Gtk::EXPAND);
+		widget_kf_list_->set_time_adjustment(canvas_view->time_adjustment());
+		widget_kf_list_->set_canvas_interface(canvas_view->canvas_interface());
+		
+
+		table_=new Gtk::Table(3, 2);
+		table_->attach(*widget_kf_list_,     0, 1, 0, 1, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::SHRINK);
+		table_->attach(*widget_timeslider_,  0, 1, 1, 2, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::SHRINK);
+		table_->attach(*last_widget_curves_, 0, 1, 2, 3, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::EXPAND);
+		table_->attach(*hscrollbar_,         0, 1, 3, 4, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::SHRINK);
+		table_->attach(*vscrollbar_,         1, 2, 0, 3, Gtk::FILL|Gtk::SHRINK, Gtk::FILL|Gtk::EXPAND);
 		add(*table_);
 
 		//add(*last_widget_curves_);
@@ -212,5 +219,9 @@ Dock_Curves::on_update_header_height( int header_height)
 	header_height+=2;
 #endif
 
-	widget_timeslider_->set_size_request(-1,header_height+1);
+	int kf_list_height=10;
+
+	//widget_timeslider_->set_size_request(-1, header_height+1);
+	widget_timeslider_->set_size_request(-1, header_height - kf_list_height + 5);
+	widget_kf_list_->set_size_request(-1, kf_list_height);
 }
