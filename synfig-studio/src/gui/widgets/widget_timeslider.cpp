@@ -77,9 +77,13 @@ dragscroll(false)
 {
 	set_size_request(-1,fullheight);
 
-	//                click                    scroll                     zoom
-	add_events( Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK
-				| Gdk::BUTTON_MOTION_MASK | Gdk::SCROLL_MASK );
+	// click / scroll / zoom
+	add_events(
+		Gdk::BUTTON_PRESS_MASK   |
+		Gdk::BUTTON_RELEASE_MASK |
+		Gdk::BUTTON_MOTION_MASK  | 
+		Gdk::SCROLL_MASK
+	);
 
 	set_time_adjustment(adj_default);
 	//update_times();
@@ -170,8 +174,8 @@ bool Widget_Timeslider::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 	if(!adj_timescale || w == 0) return true;
 
 	//Get the time information since we now know it's valid
-	double 	start = adj_timescale->get_lower(),
-			end = adj_timescale->get_upper(),
+	double 	start   = adj_timescale->get_lower(),
+			end     = adj_timescale->get_upper(),
 			current = adj_timescale->get_value();
 
 	if(end-start < EPSILON) return true;
@@ -659,8 +663,8 @@ bool Widget_Timeslider::on_button_press_event(GdkEventButton *event) //for click
 		//time click...
 		case 1:
 		{
-			double 	start = adj_timescale->get_lower(),
-					end = adj_timescale->get_upper(),
+			double 	start   = adj_timescale->get_lower(),
+					end     = adj_timescale->get_upper(),
 					current = adj_timescale->get_value();
 
 			double w = get_width();
