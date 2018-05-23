@@ -62,7 +62,7 @@ using namespace synfig;
 
 Importer::Book* synfig::Importer::book_;
 
-map<FileSystem::Identifier,Importer::LooseHandle> *__open_importers;
+static map<FileSystem::Identifier,Importer::LooseHandle> *__open_importers;
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -91,8 +91,10 @@ Importer::book()
 }
 
 Importer::Handle
-Importer::open(const FileSystem::Identifier &identifier)
+Importer::open(const FileSystem::Identifier &identifier, bool force)
 {
+	if (force) forget(identifier); // force reload
+
 	if(identifier.filename.empty())
 	{
 		synfig::error(_("Importer::open(): Cannot open empty filename"));
@@ -135,6 +137,11 @@ Importer::open(const FileSystem::Identifier &identifier)
 		synfig::error(str);
 	}
 	return 0;
+}
+
+void Importer::forget(const FileSystem::Identifier &identifier)
+{
+	__open_importers->erase(identifier);
 }
 
 Importer::Importer(const FileSystem::Identifier &identifier):

@@ -66,6 +66,8 @@
 #include "rendering/common/task/tasklayer.h"
 #include "rendering/common/task/tasksurfaceempty.h"
 
+#include "importer.h"
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -83,7 +85,7 @@ struct _LayerCounter
 	static int counter;
 	~_LayerCounter()
 	{
-		if(counter)
+		if (counter)
 			synfig::error("%d layers not yet deleted!",counter);
 	}
 } _layer_counter;
@@ -185,6 +187,8 @@ synfig::Layer::create(const String &name)
 
 synfig::Layer::~Layer()
 {
+	if (monitor_connection) monitor_connection.disconnect(); // disconnect signal handler
+
 	_LayerCounter::counter--;
 
 	while(!dynamic_param_list_.empty())
@@ -1039,3 +1043,32 @@ Layer::get_string()const
 void
 Layer::fill_sound_processor(SoundProcessor & /* soundProcessor */) const
 	{ }
+
+using Glib::RefPtr;
+
+void Layer::on_file_changed(const RefPtr<Gio::File> &/*file*/, const RefPtr<Gio::File> &/*other_file*/, Gio::FileMonitorEvent event) {
+	if (event == Gio::FileMonitorEvent::FILE_MONITOR_EVENT_CHANGES_DONE_HINT)
+	{
+		synfig::warning("file changed! (" + monitored_path + ")");
+		set_param("filename", ValueBase("")); // first clear filename to force image reload
+		Importer::forget(get_canvas()->get_file_system()->get_identifier(monitored_path)); // clear file in list of loaded files
+		set_param("filename", ValueBase(monitored_path));
+		get_canvas()->signal_changed()();
+	}
+}
+
+bool Layer::monitor(const std::string& path) { // append file monitor (returns true on success, false on fail)
+	if (file_monitor)
+	{
+		synfig::warning("File monitor for file '" + path + "' is already attached!");
+		return false;
+	}
+
+	RefPtr<Gio::File> file = Gio::File::create_for_path(path);
+	file_monitor = file->monitor_file(); // defaults to Gio::FileMonitorFlags::FILE_MONITOR_NONE
+	monitor_connection = file_monitor->signal_changed().connect(sigc::mem_fun(*this, &Layer::on_file_changed));
+	monitored_path = path;
+	synfig::info("File monitor attached to file: (" + path + ")");
+
+	return true;
+}

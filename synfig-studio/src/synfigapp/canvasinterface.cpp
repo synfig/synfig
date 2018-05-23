@@ -841,6 +841,7 @@ CanvasInterface::import(const synfig::String &filename, synfig::String &errors, 
 			throw int();
 		w=layer->get_param("_width").get(int());
 		h=layer->get_param("_height").get(int());
+		layer->monitor(filename);
 		if(w&&h)
 		{
 			Vector x, size = get_canvas()->rend_desc().get_br()-get_canvas()->rend_desc().get_tl();

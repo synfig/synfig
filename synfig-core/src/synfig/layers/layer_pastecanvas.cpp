@@ -220,7 +220,10 @@ Layer_PasteCanvas::set_param(const String & param, const ValueBase &value)
 
 void
 Layer_PasteCanvas::childs_changed()
-	{ on_childs_changed(); }
+{
+	if (get_canvas()) get_canvas()->signal_changed()();
+	on_childs_changed();
+}
 
 void
 Layer_PasteCanvas::set_sub_canvas(etl::handle<synfig::Canvas> x)

@@ -137,6 +137,7 @@ Import::set_param(const String & param, const ValueBase &value)
 		String independent_filename = CanvasFileNaming::make_canvas_independent_filename(get_canvas()->get_file_name(), full_filename);
 
 		// If we are already loaded, don't reload
+		// here we need something to force reload if file is changed
 		if(this->independent_filename==independent_filename && importer)
 		{
 			param_filename.set(filename);
