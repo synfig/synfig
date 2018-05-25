@@ -174,12 +174,6 @@ Node::Node():
 	time_last_changed_(__sys_clock()),
 	deleting_(false)
 {
-#ifndef BE_FRUGAL_WITH_GUIDS
-	guid_.make_unique();
-	assert(guid_);
-	assert(!global_node_map().count(guid_));
-	global_node_map()[guid_]=this;
-#endif
 }
 
 Node::~Node()
@@ -212,7 +206,6 @@ Node::child_changed(const Node *x)
 const synfig::GUID&
 Node::get_guid()const
 {
-#ifdef BE_FRUGAL_WITH_GUIDS
 	if(!guid_)
 	{
 		const_cast<synfig::GUID&>(guid_).make_unique();
@@ -220,7 +213,6 @@ Node::get_guid()const
 		assert(!global_node_map().count(guid_));
 		global_node_map()[guid_]=const_cast<Node*>(this);
 	}
-#endif
 
 	return guid_;
 }
@@ -231,7 +223,6 @@ Node::set_guid(const synfig::GUID& x)
 {
 	assert(x);
 
-#ifdef BE_FRUGAL_WITH_GUIDS
 	if(!guid_)
 	{
 		guid_=x;
@@ -239,7 +230,6 @@ Node::set_guid(const synfig::GUID& x)
 		global_node_map()[guid_]=this;
 	}
 	else
-#endif
 	if(guid_!=x)
 	{
 		synfig::GUID oldguid(guid_);

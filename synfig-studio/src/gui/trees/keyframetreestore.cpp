@@ -238,26 +238,6 @@ KeyframeTreeStore::iterator_sane(const Gtk::TreeModel::iterator& iter)const
 inline void
 KeyframeTreeStore::dump_iterator(const GtkTreeIter* /*gtk_iter*/, const Glib::ustring &/*name*/)const
 {
-#if 0
-	if(!gtk_iter)
-	{
-		g_warning("KeyframeTreeStore::dump_iterator: \"%s\" is NULL (Root?)",name.c_str());
-		return;
-	}
-
-	_keyframe_iterator *iter(static_cast<_keyframe_iterator*>(gtk_iter->user_data));
-
-	if(gtk_iter->stamp!=stamp_ || !iter)
-	{
-		g_warning("KeyframeTreeStore::dump_iterator: \"%s\" is INVALID",name.c_str());
-		return;
-	}
-
-	if((unsigned)iter->index>=canvas_interface()->get_canvas()->keyframe_list().size())
-		g_warning("KeyframeTreeStore::dump_iterator: \"%s\"(%p) has bad index(index:%d)",name.c_str(),gtk_iter,iter->index);
-
-	g_warning("KeyframeTreeStore::dump_iterator: \"%s\"(%p) ref:%d, index:%d, time:%s",name.c_str(),gtk_iter,iter->ref_count,iter->index,iter->iter->get_time().get_string().c_str());
-#endif
 }
 
 inline void

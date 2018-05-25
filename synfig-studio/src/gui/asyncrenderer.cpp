@@ -96,9 +96,6 @@ public:
 	bool err;
 	Glib::Mutex mutex;
 
-#ifndef GLIB_DISPATCHER_BROKEN
-	Glib::Dispatcher tile_ready_signal;
-#endif
 	Glib::Cond cond_tile_queue_empty;
 	bool alive_flag;
 
@@ -120,9 +117,6 @@ public:
 		set_rend_desc(&warm_target->rend_desc());
 		set_engine(warm_target->get_engine());
 		alive_flag=true;
-#ifndef GLIB_DISPATCHER_BROKEN
-		ready_connection=tile_ready_signal.connect(sigc::mem_fun(*this,&AsyncTarget_Tile::tile_ready));
-#endif
 	}
 
 	~AsyncTarget_Tile()
@@ -228,7 +222,6 @@ public:
 		tile_queue.push_back(tile_t(surface,gx,gy));
 		if(tile_queue.size()==1)
 		{
-#ifdef GLIB_DISPATCHER_BROKEN
 		ready_connection=Glib::signal_timeout().connect(
 			sigc::bind_return(
 				sigc::mem_fun(*this,&AsyncTarget_Tile::tile_ready),
@@ -236,9 +229,6 @@ public:
 			)
 			,0
 		);
-#else
-		tile_ready_signal();
-#endif
 		}
 
 		return alive_flag;
@@ -340,9 +330,6 @@ public:
 	std::list<tile_t> tile_queue;
 	Glib::Mutex mutex;
 	
-#ifndef GLIB_DISPATCHER_BROKEN
-	Glib::Dispatcher tile_ready_signal;
-#endif
 	Glib::Cond cond_tile_queue_empty;
 	bool alive_flag;
 	
@@ -362,9 +349,6 @@ public:
 		set_clipping(warm_target->get_clipping());
 		set_rend_desc(&warm_target->rend_desc());
 		alive_flag=true;
-#ifndef GLIB_DISPATCHER_BROKEN
-		ready_connection=tile_ready_signal.connect(sigc::mem_fun(*this,&AsyncTarget_Cairo_Tile::tile_ready));
-#endif
 	}
 	
 	~AsyncTarget_Cairo_Tile()
@@ -409,7 +393,6 @@ public:
 		tile_queue.push_back(tile_t(surface,gx,gy));
 		if(tile_queue.size()==1)
 		{
-#ifdef GLIB_DISPATCHER_BROKEN
 			ready_connection=Glib::signal_timeout().connect(
 					sigc::bind_return(
 							sigc::mem_fun(*this,&AsyncTarget_Cairo_Tile::tile_ready),
@@ -417,9 +400,6 @@ public:
 							)
 							,0
 						);
-#else
-			tile_ready_signal();
-#endif
 		}
 		//cairo_surface_destroy(surface);
 		return alive_flag;
@@ -496,9 +476,6 @@ public:
 
 	Glib::Mutex mutex;
 
-#ifndef GLIB_DISPATCHER_BROKEN
-	Glib::Dispatcher frame_ready_signal;
-#endif
 	Glib::Cond cond_frame_queue_empty;
 	bool alive_flag;
 	bool ready_next;
@@ -519,9 +496,6 @@ public:
 		set_threads(warm_target->get_threads());
 		set_rend_desc(&warm_target->rend_desc());
 		alive_flag=true;
-#ifndef GLIB_DISPATCHER_BROKEN
-		ready_connection=frame_ready_signal.connect(sigc::mem_fun(*this,&AsyncTarget_Scanline::frame_ready));
-#endif
 		surface.set_wh(warm_target->rend_desc().get_w(),warm_target->rend_desc().get_h());
 	}
 
@@ -558,7 +532,6 @@ public:
 				return;
 			ready_next=false;
 
-#ifdef GLIB_DISPATCHER_BROKEN
 		ready_connection=Glib::signal_timeout().connect(
 			sigc::bind_return(
 				sigc::mem_fun(*this,&AsyncTarget_Scanline::frame_ready),
@@ -566,9 +539,6 @@ public:
 			)
 			,0
 		);
-#else
-			frame_ready_signal();
-#endif
 		}
 
 #ifdef SINGLE_THREADED
@@ -628,9 +598,6 @@ public:
 	
 	Glib::Mutex mutex;
 	
-#ifndef GLIB_DISPATCHER_BROKEN
-	Glib::Dispatcher frame_ready_signal;
-#endif
 	Glib::Cond cond_frame_queue_empty;
 	bool alive_flag;
 	bool ready_next;
@@ -651,9 +618,6 @@ public:
 		set_alpha_mode(warm_target->get_alpha_mode());
 		set_rend_desc(&warm_target->rend_desc());
 		alive_flag=true;
-#ifndef GLIB_DISPATCHER_BROKEN
-		ready_connection=frame_ready_signal.connect(sigc::mem_fun(*this,&AsyncTarget_Cairo::frame_ready));
-#endif
 	}
 	
 	~AsyncTarget_Cairo()
@@ -686,14 +650,10 @@ public:
 				return false;
 			ready_next=false;
 			
-#ifdef GLIB_DISPATCHER_BROKEN
 			ready_connection=Glib::signal_timeout().connect(
 							sigc::bind_return(sigc::mem_fun(*this,&AsyncTarget_Cairo::frame_ready),false)
 											,0
 											);
-#else
-			frame_ready_signal();
-#endif
 		}
 		
 #ifdef SINGLE_THREADED
@@ -824,12 +784,10 @@ AsyncRenderer::stop()
 		{
 			signal_stop_();
 
-#if REJOIN_ON_STOP
 #ifdef SINGLE_THREADED
 			if (!App::single_threaded)
 #endif
 				render_thread->join();
-#endif
 			finish_time.assign_current_time();
 			finish_clock = ::clock();
 
@@ -892,9 +850,6 @@ AsyncRenderer::start_()
 	error=false;success=false;
 	if(target)
 	{
-#ifndef GLIB_DISPATCHER_BROKEN
-		done_connection=signal_done_.connect(mem_fun(*this,&AsyncRenderer::stop));
-#endif
 
 #ifdef SINGLE_THREADED
 		if (App::single_threaded)
@@ -909,11 +864,7 @@ AsyncRenderer::start_()
 		{
 			render_thread=Glib::Thread::create(
 				sigc::mem_fun(*this,&AsyncRenderer::render_target),
-#if REJOIN_ON_STOP
 				true
-#else
-				false
-#endif
 				);
 			assert(render_thread);
 		}
@@ -936,14 +887,10 @@ AsyncRenderer::render_target()
 	else
 	{
 		error=true;
-#ifndef REJOIN_ON_STOP
-		return;
-#endif
 	}
 
 	if(mutex.trylock())
 	{
-#ifdef GLIB_DISPATCHER_BROKEN
 		done_connection=Glib::signal_timeout().connect(
 			sigc::bind_return(
 				mem_fun(*this,&AsyncRenderer::stop),
@@ -951,9 +898,6 @@ AsyncRenderer::render_target()
 			)
 			,0
 		);
-#else
-		signal_done_.emit();
-#endif
 		mutex.unlock();
 	}
 }

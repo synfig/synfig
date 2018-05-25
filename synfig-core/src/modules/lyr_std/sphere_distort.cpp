@@ -350,7 +350,6 @@ Layer_SphereDistort::get_sub_renddesc_vfunc(const RendDesc &renddesc) const
 	return desc;
 }
 
-#if 1
 bool
 Layer_SphereDistort::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
@@ -810,7 +809,6 @@ Layer_SphereDistort::accelerated_cairorender(Context context, cairo_t *cr, int q
 	return true;
 }
 
-#endif
 
 class lyr_std::Spherize_Trans : public Transform
 {

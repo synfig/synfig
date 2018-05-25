@@ -518,7 +518,6 @@ synfigapp::BLineConverter::operator()(std::list<synfig::BLinePoint>  &blinepoint
 		break_tangents.push_back(i);
 
 // this section causes bug 1892566 if enabled
-#if 1
 		//postprocess for breaks too close to each other
 		Real	fixdistsq = 4*width*width; //the distance to ignore breaks at the end points (for fixing stuff)
 		Real d = 0;
@@ -544,7 +543,6 @@ synfigapp::BLineConverter::operator()(std::list<synfig::BLinePoint>  &blinepoint
 		if(i != break_tangents.size()-2)
 			break_tangents.erase(break_tangents.begin()+i+2,break_tangents.end()); //erase all points that we found... found none if i has not advanced
 		//must not include the one we ended up on
-#endif
 	}
 	//breakeval = timer();
 	//synfig::info("found break points: %d",break_tangents.size());

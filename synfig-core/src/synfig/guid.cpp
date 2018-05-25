@@ -75,7 +75,6 @@ using namespace synfig;
 
 
 
-#ifdef MANUAL_GUID_CALC
 #include <time.h>
 static GUID_RNG _a, _b;
 static void _set_up_rand_long_long(uint64_t &x);
@@ -102,37 +101,6 @@ static void _get_rand_long_long(uint64_t &x)
 	data[3]=_a(65536);
 }
 
-#else
-// Use OS-Dependent method
-
-#ifdef _WIN32
-// Win32
-static void get_rand_long_long(uint64_t &x)
-{
-	_GUID* guid(reinterpret_cast<_GUID*>(&x));
-	CoCreateGuid(guid);
-}
-
-#else
-// Unix
-static int rand_fd;
-static void _set_up_rand_long_long(uint64_t &x);
-static void _get_rand_long_long(uint64_t &x);
-static void (*get_rand_long_long)(uint64_t&)=_set_up_rand_long_long;
-static void _set_up_rand_long_long(uint64_t &x)
-{
-#ifdef _DEBUG
-	// synfig::info("Starting up GUID system...");
-#endif
-	rand_fd=open("/dev/urandom",O_RDONLY);
-	get_rand_long_long=_get_rand_long_long;
-	_get_rand_long_long(x);
-}
-
-static void _get_rand_long_long(uint64_t &x){	read(rand_fd,&x,sizeof(x));}
-
-#endif
-#endif
 
 
 

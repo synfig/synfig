@@ -206,12 +206,6 @@ synfig::find_closest_point(const ValueBase &bline, const Point &pos, Real &radiu
 			curve[2] = curve[3] - (*iter).get_tangent1()/3;
 			curve.sync();
 
-			#if 0
-			// I don't know why this doesn't work
-			time=curve.find_closest(pos,6);
-			d=((curve(time)-pos).mag_squared());
-
-			#else
 			//set the step size based on the size of the picture
 			d = (curve[1] - curve[0]).mag() + (curve[2]-curve[1]).mag()	+ (curve[3]-curve[2]).mag();
 
@@ -221,7 +215,6 @@ synfig::find_closest_point(const ValueBase &bline, const Point &pos, Real &radiu
 			step = min(step,0.1); //10 is minimum
 
 			d = find_closest(curve,pos,step,&closest,&time);
-			#endif
 
 			if(d < closest)
 			{
@@ -247,12 +240,6 @@ synfig::find_closest_point(const ValueBase &bline, const Point &pos, Real &radiu
 		curve[2] = curve[3] - (*first).get_tangent1()/3;
 		curve.sync();
 
-		#if 0
-		// I don't know why this doesn't work
-		time=curve.find_closest(pos,6);
-		d=((curve(time)-pos).mag_squared());
-
-		#else
 		//set the step size based on the size of the picture
 		d = (curve[1] - curve[0]).mag() + (curve[2]-curve[1]).mag()	+ (curve[3]-curve[2]).mag();
 
@@ -262,7 +249,6 @@ synfig::find_closest_point(const ValueBase &bline, const Point &pos, Real &radiu
 		step = min(step,0.1); //10 is minimum
 
 			d = find_closest(curve,pos,step,&closest,&time);
-		#endif
 
 		if(d < closest)
 		{
@@ -892,7 +878,6 @@ ValueNode_BLine::operator()(Time t)const
 
 #define COORD_SYS_RADIAL_TAN_INTERP 1
 
-#ifdef COORD_SYS_RADIAL_TAN_INTERP
 				transform_coords(blp_here_on.get_tangent1(),  trans_on_t1,  Point::zero(), on_coord_sys);
 				transform_coords(blp_here_off.get_tangent1(), trans_off_t1, Point::zero(), off_coord_sys);
 
@@ -901,7 +886,6 @@ ValueNode_BLine::operator()(Time t)const
 					transform_coords(blp_here_on.get_tangent2(),  trans_on_t2,  Point::zero(), on_coord_sys);
 					transform_coords(blp_here_off.get_tangent2(), trans_off_t2, Point::zero(), off_coord_sys);
 				}
-#endif
 
 				{
 					// Interpolate between the 'on' point and the 'off' point and untransform to get our point's location
@@ -914,28 +898,20 @@ ValueNode_BLine::operator()(Time t)const
 #define INTERP_FUNCTION		radial_interpolation
 //#define INTERP_FUNCTION	linear_interpolation
 
-#ifdef COORD_SYS_RADIAL_TAN_INTERP
 				{
 					Vector tmp;
 					untransform_coords(INTERP_FUNCTION(trans_off_t1,trans_on_t1,amount), tmp, Point::zero(), curr_coord_sys);
 					blp_here_now.set_tangent1(tmp);
 				}
-#else
-				blp_here_now.set_tangent1(radial_interpolation(blp_here_off.get_tangent1(),blp_here_on.get_tangent1(),amount));
-#endif
 
 				if (blp_here_on.get_split_tangent_both())
 				{
 					blp_here_now.set_split_tangent_both(true);
-#ifdef COORD_SYS_RADIAL_TAN_INTERP
 					{
 						Vector tmp;
 						untransform_coords(INTERP_FUNCTION(trans_off_t2,trans_on_t2,amount), tmp, Point::zero(), curr_coord_sys);
 						blp_here_now.set_tangent2(tmp);
 					}
-#else
-					blp_here_now.set_tangent2(radial_interpolation(blp_here_off.get_tangent2(),blp_here_on.get_tangent2(),amount));
-#endif
 				}
 				else
 					blp_here_now.set_split_tangent_both(false);

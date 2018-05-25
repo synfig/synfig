@@ -171,38 +171,6 @@ Halftone3::sync()
 
 
 
-#if 0
-	// Insert guass-jordan elimination code here
-	int k=0,i=0,j=0,z_size=3;
-#define A inverse_matrix
-
-	for (k=0;k<z_size;k++)
-  // the pivot element
-    { A[k][k]= -1/A[k][k];
-
-  //the pivot column
-     for (i=0;i<z_size;i++)
-         if (i!=k) A[i][k]*=A[k][k];
-
- //elements not in a pivot row or column
-     for (i=0;i<z_size;i++)
-        if (i!=k)
-            for (j=0;j<z_size;j++)
-                      if (j!=k)
-                          A[i][j]+=A[i][k]*A[k][j];
-
- //elements in a pivot row
-    for (i=0;i<z_size;i++)
-       if (i!=k)
-            A[k][i]*=A[k][k];
-   }
-
- //change sign
-   for (i=0;i<z_size;i++)        /*reverse sign*/
-     for (j=0;j<z_size;j++)
-        A[i][j]=-A[i][j];
-#undef A
-#endif
 }
 
 inline Color

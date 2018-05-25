@@ -172,7 +172,6 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 
 			// If quality is set otherwise, then we use the accelerated renderer
 			{
-				#if USE_PIXELRENDERING_LIMIT
 				if(desc.get_w()*desc.get_h() > PIXEL_RENDERING_LIMIT)
 				{
 					SurfaceSW::Handle surfacesw(new SurfaceSW());
@@ -268,7 +267,6 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 
 				}else //use normal rendering...
 				{
-				#endif
 					SurfaceSW::Handle surfacesw(new SurfaceSW());
 					Surface &surface = surfacesw->get_surface();
 
@@ -286,9 +284,7 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 						if(cb)cb->error(_("Unable to put surface on target"));
 						return false;
 					}
-				#if USE_PIXELRENDERING_LIMIT
 				}
-				#endif
 			}
 		}while(frames);
 	}
@@ -302,7 +298,6 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 
 		// If quality is set otherwise, then we use the accelerated renderer
 		{
-			#if USE_PIXELRENDERING_LIMIT
 			if(desc.get_w()*desc.get_h() > PIXEL_RENDERING_LIMIT)
 			{
 				SurfaceSW::Handle surfacesw(new SurfaceSW());
@@ -401,7 +396,6 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 
 			}else
 			{
-			#endif
 				SurfaceSW::Handle surfacesw(new SurfaceSW());
 				Surface &surface = surfacesw->get_surface();
 
@@ -418,9 +412,7 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 					if(cb)cb->error(_("Unable to put surface on target"));
 					return false;
 				}
-			#if USE_PIXELRENDERING_LIMIT
 			}
-			#endif
 		}
 	}
 

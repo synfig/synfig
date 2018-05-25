@@ -235,7 +235,6 @@ synfig::Target_Cairo_Tile::render(ProgressCallback *cb)
 			if(!get_avoid_time_sync() || canvas->get_time()!=t)
 				canvas->set_time(t);
 
-	#ifdef SYNFIG_OPTIMIZE_LAYER_TREE
 			Canvas::Handle op_canvas;
 			if (!getenv("SYNFIG_DISABLE_OPTIMIZE_LAYER_TREE"))
 			{
@@ -246,9 +245,6 @@ synfig::Target_Cairo_Tile::render(ProgressCallback *cb)
 			}
 			else
 				context=canvas->get_context(context_params);
-	#else
-			context=canvas->get_context(context_params);
-	#endif
 			if(!render_frame_(context,cb))
 			{
 				// For some reason, the accelerated renderer failed.

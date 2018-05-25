@@ -116,13 +116,5 @@ CellRenderer_Time::start_editing_vfunc(
 	const float fps((Real)Time(property_fps_));
 
 	property_text()=(Glib::ustring)time.get_string(fps,App::get_time_format()|Time::FORMAT_FULL);
-#if 0
-	Widget_Time* widget_time(manage(new Widget_Time));
-	widget_time->set_fps(fps);
-	widget_time->set_value(time);
-	widget_time->signal_editing_done().connect(sigc::mem_fun(*this, &CellRenderer_Time::on_value_editing_done));
-	return widget_time;
-#else
 	return CellRendererText::start_editing_vfunc(event,widget,path,background_area,cell_area,flags);
-#endif
 }
