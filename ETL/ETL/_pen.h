@@ -136,7 +136,8 @@ public:
 		typedef int value_type;
 		value_type x,y;
 		difference_type(value_type x, value_type y):x(x),y(y) { }
-		value_type &operator[](int i)const { return i?y:x; }
+		const value_type &operator[](int i) const { return i?y:x; }
+		value_type &operator[](int i) { return i?y:x; }
 	};
 
 protected:
