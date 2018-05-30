@@ -54,9 +54,12 @@ typename T::accumulator_pointer SC3)
 
 	// Setup the row buffers
 	for(x=0;x<w;x++)SC0[x+2]=(typename T::accumulator_type)(pen.x()[x])*24;
-	memset(SC1,0,(w+2)*sizeof(typename T::accumulator_type));
+	memset((void *)SC1,0,(w+2)*sizeof(typename T::accumulator_type));
+	memset((void *)SC2,0,(w+2)*sizeof(typename T::accumulator_type));
+	memset((void *)SC3,0,(w+2)*sizeof(typename T::accumulator_type));
+	/*memset(SC1,0,(w+2)*sizeof(typename T::accumulator_type));
 	memset(SC2,0,(w+2)*sizeof(typename T::accumulator_type));
-	memset(SC3,0,(w+2)*sizeof(typename T::accumulator_type));
+	memset(SC3,0,(w+2)*sizeof(typename T::accumulator_type));*/
 
 	for(y=0;y<h+2;y++,pen.inc_y())
 	{
@@ -146,7 +149,7 @@ gaussian_blur_3x3(T pen,int w, int h)
 
 	// Setup the row buffers
 	for(x=0;x<w;x++)SC0[x+1]=(typename T::accumulator_type)(pen.x()[x])*4;
-	memset(SC1,0,(w+1)*sizeof(typename T::accumulator_type));
+	memset((void *)SC1,0,(w+1)*sizeof(typename T::accumulator_type));
 
 	for(y=0;y<h+1;y++,pen.inc_y())
 	{

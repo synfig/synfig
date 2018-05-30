@@ -130,7 +130,7 @@ int basic_test(void)
 	a=std::abs(a);
 	if(a!=fixed(1))
 	{
-		fprintf(stderr,"fixed: abs() failure on line %d in "__FILE__".\n",__LINE__);
+		fprintf(stderr, "fixed: abs() failure on line %d in " __FILE__ ".\n", __LINE__);
 		ret++;
 	}
 
@@ -139,7 +139,7 @@ int basic_test(void)
 	if(d<0.0)d=-d;
 	if( d>0.0005)
 	{
-		fprintf(stderr,"fixed: Failed test on line %d in "__FILE__".\n",__LINE__);
+		fprintf(stderr, "fixed: Failed test on line %d in " __FILE__ ".\n", __LINE__);
 		ret++;
 	}
 
@@ -157,7 +157,7 @@ int basic_test(void)
 	if( d>0.0025)
 #endif
 	{
-		fprintf(stderr,"fixed: Failed test on line %d in "__FILE__".\n",__LINE__);
+		fprintf(stderr,"fixed: Failed test on line %d in " __FILE__ ".\n", __LINE__);
 		ret++;
 	}
 
