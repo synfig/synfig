@@ -1,7 +1,7 @@
 # $Id$
 
 # -- I N I T --------------------------------------------------
-
+AC_PREREQ(2.59)
 AC_INIT([Extended Template Library],[1.3.8],[https://github.com/synfig/synfig/issues],[ETL])
 AC_REVISION
 
@@ -24,13 +24,18 @@ AC_SUBST(SVN_REPOSITORY)
 
 
 # -- P R O G R A M S ------------------------------------------
-
+AC_LANG([C++])
+AC_REQUIRE_CPP
+AC_PROG_CXX
 AC_PROG_CC
 AC_PROG_CXX
+AC_PROG_CXXCPP
 AC_PROG_INSTALL
 AC_PROG_RANLIB
 
-AC_LANG([C++])
+# that is not working, btw
+test "x$CXX" == "x" && AC_MSG_ERROR([Required program 'c++' not found.])
+
 
 AC_ARG_WARNINGS
 AC_ARG_OPTIMIZATION

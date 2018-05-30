@@ -68,9 +68,9 @@ stats:
 	-@echo  -- Stats
 	-@echo
 	-@$(PRINTF) "Total lines: "
-	-@wc -l $(shell find $(top_srcdir)/ETL -name '*.[ch]*') | $(GREP) total
+	-@wc -l `(find $(top_srcdir)/ETL -name '*.[ch]*')` | $(GREP) total
 	-@$(PRINTF) "Total size: "
-	-@du -hcs $(shell find $(top_srcdir)/ETL -name '*.[ch]*') | $(GREP) total
+	-@du -hcs `find $(top_srcdir)/ETL -name '*.[ch]*'` | $(GREP) total
 	-@echo 
 
 ChangeLog:
@@ -80,14 +80,14 @@ listfixmes:
 	-@echo
 	-@echo  -- List of pending FIXMEs
 	-@echo
-	-@$(GREP) FIXME -n $(shell find $(top_srcdir) -name '*.[ch]*')
+	-@$(GREP) FIXME -n `(find $(top_srcdir) -name '*.[ch]*')`
 	-@echo
 
 listhacks:
 	-@echo
 	-@echo  -- List of pending HACKs
 	-@echo
-	-@$(GREP) HACK -n $(shell find $(top_srcdir) -name '*.[ch]*')
+	-@$(GREP) HACK -n `(find $(top_srcdir) -name '*.[ch]*')`
 	-@echo
 
 run: check
