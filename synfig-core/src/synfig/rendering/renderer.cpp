@@ -540,8 +540,9 @@ Renderer::find_deps(const Task::List &list) const
 			{
 				if ( *j && (*j)->valid_target()
 				  && dep->target_surface == (*j)->target_surface
-				  && etl::intersect(dep->get_target_rect(), (*j)->get_target_rect()) )
-					intersects = true;
+				  && ( etl::intersect(dep->get_target_rect(), (*j)->get_target_rect())
+				    || dep->get_target_token() != (*j)->get_target_token() ))
+						{ intersects = true; break; }
 				++iterations;
 			}
 

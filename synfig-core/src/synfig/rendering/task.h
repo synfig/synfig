@@ -94,6 +94,8 @@ class Mode {
 public:
 	static synfig::Token mode_token;
 	virtual ~Mode() { }
+	virtual Surface::Token::Handle get_mode_target_token() const
+		{ return Surface::Token::Handle(); }
 };
 
 
@@ -250,31 +252,28 @@ public:
 	{
 	public:
 		const Task::Handle task;
-		explicit LockWriteBase(
-			const Task::Handle &task,
-			Surface::Token::Handle token = Surface::Token::Handle()
-		):
-			SurfaceResource::LockWriteBase(task->target_surface, token, task->target_rect),
+		explicit LockWriteBase( const Task::Handle &task ):
+			SurfaceResource::LockWriteBase(task->target_surface, task->get_target_token(), task->target_rect),
 			task(task) { }
 	};
 
 	template<typename T>
-	class LockRead: public SurfaceResource::LockRead<T>
+	class LockReadGeneric: public SurfaceResource::LockRead<T>
 	{
 	public:
 		const Task::Handle task;
-		explicit LockRead(const Task::Handle &task):
+		explicit LockReadGeneric(const Task::Handle &task):
 			SurfaceResource::LockRead<T>(task->target_surface, task->target_rect),
 			task(task) { }
 	};
 
 	template<typename T>
-	class LockWrite: public SurfaceResource::LockWrite<T>
+	class LockWriteGeneric: public SurfaceResource::SemiLockWrite<T>
 	{
 	public:
 		const Task::Handle task;
-		explicit LockWrite(const Task::Handle &task):
-			SurfaceResource::LockWrite<T>(task->target_surface, task->target_rect),
+		explicit LockWriteGeneric(const Task::Handle &task):
+			SurfaceResource::SemiLockWrite<T>(task->target_surface,	task->get_target_token(), task->target_rect),
 			task(task) { }
 	};
 
@@ -298,6 +297,12 @@ public:
 
 	Task();
 	virtual ~Task();
+
+	Surface::Token::Handle get_target_token() const {
+		if (const Mode *mode = dynamic_cast<const Mode*>(this))
+			return mode->get_mode_target_token();
+		return Surface::Token::Handle();
+	}
 
 	Task::Handle& sub_task(int index) {
 		assert(index >= 0);

@@ -28,6 +28,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include "../../task.h"
+#include "../surfacesw.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -43,7 +44,13 @@ namespace rendering
 class TaskSW: public Mode
 {
 public:
+	typedef SurfaceSW TargetSurface;
+	typedef Task::LockReadGeneric<TargetSurface> LockRead;
+	typedef Task::LockWriteGeneric<TargetSurface> LockWrite;
+
 	static ModeToken mode_token;
+	virtual Surface::Token::Handle get_mode_target_token()
+		{ return TargetSurface::token; }
 };
 
 } /* end namespace rendering */

@@ -46,7 +46,13 @@ namespace rendering
 class TaskGL: public Mode
 {
 public:
+	typedef SurfaceGL TargetSurface;
+	typedef Task::LockReadGeneric<TargetSurface> LockRead;
+	typedef Task::LockWriteGeneric<TargetSurface> LockWrite;
+
 	static ModeToken mode_token;
+	virtual Surface::Token::Handle get_mode_target_token()
+		{ return TargetSurface::token; }
 protected:
 	gl::Environment& env() const;
 };

@@ -166,7 +166,7 @@ public:
 			const RectInt &rect
 		):
 			lock(resource->rwlock),
-			surface(resource->get_surface(token, for_write, true, rect)) { }
+			surface(resource->get_surface(token, for_write, false, rect)) { }
 		const Handle& get_resource() const
 			{ return resource; }
 		TypeSurface* get_surface() const
@@ -187,6 +187,10 @@ public:
 			LockReadBase(resource, Type::token.handle()) { }
 		LockRead(const Handle &resource, const RectInt &rect):
 			LockReadBase(resource, Type::token.handle(), rect) { }
+		LockRead(const Handle &resource, const Surface::Token::Handle &token):
+			LockReadBase(resource, token) { }
+		LockRead(const Handle &resource, const Surface::Token::Handle &token, const RectInt &rect):
+			LockReadBase(resource, token, rect) { }
 		etl::handle<Type> get() const
 			{ return etl::handle<Type>::cast_dynamic(surface); }
 		const Type* operator->() const
@@ -202,7 +206,11 @@ public:
 		explicit LockWrite(const Handle &resource):
 			LockWriteBase(resource, Type::token) { }
 		LockWrite(const Handle &resource, const RectInt &rect):
-			LockWriteBase(resource, Type::token) { }
+			LockWriteBase(resource, Type::token, rect) { }
+		LockWrite(const Handle &resource, const Surface::Token::Handle &token):
+			LockWriteBase(resource, token) { }
+		LockWrite(const Handle &resource, const Surface::Token::Handle &token, const RectInt &rect):
+			LockWriteBase(resource, token, rect) { }
 		etl::handle<Type> get() const
 			{ return etl::handle<Type>::cast_dynamic(surface); }
 		Type* operator->() const
@@ -218,7 +226,11 @@ public:
 		explicit SemiLockWrite(const Handle &resource):
 			SemiLockWriteBase(resource, Type::token) { }
 		SemiLockWrite(const Handle &resource, const RectInt &rect):
-			SemiLockWriteBase(resource, Type::token) { }
+			SemiLockWriteBase(resource, Type::token, rect) { }
+		SemiLockWrite(const Handle &resource, const Surface::Token::Handle &token):
+			SemiLockWriteBase(resource, token) { }
+		SemiLockWrite(const Handle &resource, const Surface::Token::Handle &token, const RectInt &rect):
+			SemiLockWriteBase(resource, token, rect) { }
 		etl::handle<Type> get() const
 			{ return etl::handle<Type>::cast_dynamic(surface); }
 		Type* operator->() const

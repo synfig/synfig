@@ -85,7 +85,6 @@ Task::Task():
 Task::~Task()
 { }
 
-
 bool
 Task::can_convert_to(ModeToken::Handle mode) const
 {
