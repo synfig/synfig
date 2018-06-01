@@ -41,8 +41,8 @@
 
 #include <synfig/layers/layer_rendering_task.h>
 
-#include "tasklayersw.h"
-#include "../surfacesw.h"
+#include "../../common/task/tasklayer.h"
+#include "tasksw.h"
 
 #endif
 
@@ -57,45 +57,54 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
+namespace {
+
+class TaskLayerSW: public TaskLayer, public TaskSW
+{
+public:
+	typedef etl::handle<TaskLayerSW> Handle;
+	static Token token;
+	virtual Token::Handle get_token() const { return token; }
+
+	virtual bool run(RunParams &params) const {
+		if (!is_valid() || !layer)
+			return false;
+
+		Vector upp = get_units_per_pixel();
+		Vector lt = source_rect.get_min();
+		Vector rb = source_rect.get_max();
+		lt[0] -= target_rect.minx*upp[0];
+		lt[1] -= target_rect.miny*upp[1];
+		rb[0] += (target_surface->get_width() - target_rect.maxx)*upp[0];
+		rb[1] += (target_surface->get_height() - target_rect.maxy)*upp[1];
+
+		RendDesc desc;
+		desc.set_tl(lt);
+		desc.set_br(rb);
+		desc.set_wh(target_surface->get_width(), target_surface->get_height());
+		desc.set_antialias(1);
+
+		etl::handle<Layer_RenderingTask> sub_layer(new Layer_RenderingTask());
+		sub_layer->tasks = sub_tasks;
+
+		CanvasBase fake_canvas_base;
+		fake_canvas_base.push_back(layer);
+		fake_canvas_base.push_back(sub_layer);
+		fake_canvas_base.push_back(Layer::Handle());
+
+		Context context(fake_canvas_base.begin(), ContextParams());
+
+		LockWrite ldst(target_surface);
+		if (!ldst)
+			return false;
+
+		return context.accelerated_render(&ldst->get_surface(), 4, desc, NULL);
+	}
+};
+
 
 Task::Token TaskLayerSW::token<TaskLayerSW, TaskLayer, TaskLayer>("LayerSW");
 
-
-bool
-TaskLayerSW::run(RunParams & /* params */) const
-{
-	if (!is_valid() || !layer)
-		return false;
-
-	Vector upp = get_units_per_pixel();
-	Vector lt = source_rect.get_min();
-	Vector rb = source_rect.get_max();
-	lt[0] -= target_rect.minx*upp[0];
-	lt[1] -= target_rect.miny*upp[1];
-	rb[0] += (target_surface->get_width() - target_rect.maxx)*upp[0];
-	rb[1] += (target_surface->get_height() - target_rect.maxy)*upp[1];
-
-	RendDesc desc;
-	desc.set_tl(lt);
-	desc.set_br(rb);
-	desc.set_wh(target_surface->get_width(), target_surface->get_height());
-	desc.set_antialias(1);
-
-	etl::handle<Layer_RenderingTask> sub_layer(new Layer_RenderingTask());
-	sub_layer->tasks = sub_tasks;
-
-	CanvasBase fake_canvas_base;
-	fake_canvas_base.push_back(layer);
-	fake_canvas_base.push_back(sub_layer);
-	fake_canvas_base.push_back(Layer::Handle());
-
-	Context context(fake_canvas_base.begin(), ContextParams());
-
-	LockWrite ldst(target_surface);
-	if (!ldst)
-		return false;
-
-	return context.accelerated_render(&ldst->get_surface(), 4, desc, NULL);
-}
+} // end of anonimous namespace
 
 /* === E N T R Y P O I N T ================================================= */

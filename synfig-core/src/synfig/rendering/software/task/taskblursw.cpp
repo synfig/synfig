@@ -35,12 +35,12 @@
 #include <signal.h>
 #endif
 
-#include "taskblursw.h"
-
-#include "../surfacesw.h"
-#include "../function/blur.h"
-
 #include <synfig/general.h>
+
+#include "../../common/task/taskblur.h"
+#include "../../common/task/taskblend.h"
+#include "tasksw.h"
+#include "../function/blur.h"
 
 #endif
 
@@ -55,36 +55,48 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
+namespace {
+
+class TaskBlurSW: public TaskBlur, public TaskSW, public TaskInterfaceComposite
+{
+public:
+	typedef etl::handle<TaskBlurSW> Handle;
+	static Token token;
+	virtual Token::Handle get_token() const { return token; }
+
+	virtual Color::BlendMethodFlags get_supported_blend_methods() const
+		{ return Color::BLEND_METHODS_ALL & ~Color::BLEND_METHODS_STRAIGHT; }
+
+	virtual bool run(RunParams&) const {
+		if (!is_valid() || !sub_task() || !sub_task()->is_valid())
+			return true;
+
+		LockWrite la(target_surface);
+		LockRead lb(sub_task()->target_surface);
+		if (!la || !lb)
+			return false;
+
+		Vector ppu = get_pixels_per_unit();
+		Vector s = blur.size.multiply_coords(ppu);
+
+		Vector offsetf = (source_rect.get_min() - sub_task()->source_rect.get_min()).multiply_coords(ppu);
+		VectorInt offset((int)round(offsetf[0]), (int)round(offsetf[1]));
+		offset += sub_task()->target_rect.get_min();
+
+		software::Blur::blur(
+			software::Blur::Params(
+				la->get_surface(), target_rect,
+				lb->get_surface(), offset,
+				blur.type, s,
+				blend, blend_method, amount ));
+
+		return false;
+	}
+};
+
 
 Task::Token TaskBlurSW::token<TaskBlurSW, TaskBlur, TaskBlur>("BlurSW");
 
-
-bool
-TaskBlurSW::run(RunParams & /* params */) const
-{
-	if (!is_valid() || !sub_task() || !sub_task()->is_valid())
-		return true;
-
-	LockWrite la(target_surface);
-	LockRead lb(sub_task()->target_surface);
-	if (!la || !lb)
-		return false;
-
-	Vector ppu = get_pixels_per_unit();
-	Vector s = blur.size.multiply_coords(ppu);
-
-	Vector offsetf = (source_rect.get_min() - sub_task()->source_rect.get_min()).multiply_coords(ppu);
-	VectorInt offset((int)round(offsetf[0]), (int)round(offsetf[1]));
-	offset += sub_task()->target_rect.get_min();
-
-	software::Blur::blur(
-		software::Blur::Params(
-			la->get_surface(), target_rect,
-			lb->get_surface(), offset,
-			blur.type, s,
-			blend, blend_method, amount ));
-
-	return false;
-}
+} // end of anonimous namespace
 
 /* === E N T R Y P O I N T ================================================= */

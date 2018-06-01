@@ -35,13 +35,13 @@
 #include <signal.h>
 #endif
 
-#include "taskcontoursw.h"
-
-#include "../surfacesw.h"
-#include "../../optimizer.h"
-
-#include "../function/contour.h"
 #include <synfig/debug/debugsurface.h>
+
+#include "../../primitive/polyspan.h"
+#include "../../common/task/taskcontour.h"
+#include "../../common/task/taskblend.h"
+#include "tasksw.h"
+#include "../function/contour.h"
 
 #endif
 
@@ -56,46 +56,60 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
+namespace {
+
+class TaskContourSW: public TaskContour, public TaskSW,
+	public TaskInterfaceComposite,
+	public TaskInterfaceSplit
+{
+public:
+	typedef etl::handle<TaskContourSW> Handle;
+	static Token token;
+	virtual Token::Handle get_token() const { return token; }
+
+	virtual Color::BlendMethodFlags get_supported_blend_methods() const
+		{ return Color::BLEND_METHODS_ALL & ~Color::BLEND_METHODS_STRAIGHT; }
+
+	virtual bool run(RunParams &params) const {
+		if (!is_valid())
+			return true;
+
+		Vector ppu = get_pixels_per_unit();
+
+		Matrix bounds_transfromation;
+		bounds_transfromation.m00 = ppu[0];
+		bounds_transfromation.m11 = ppu[1];
+		bounds_transfromation.m20 = target_rect.minx - ppu[0]*source_rect.minx;
+		bounds_transfromation.m21 = target_rect.miny - ppu[1]*source_rect.miny;
+
+		Matrix matrix = transformation * bounds_transfromation;
+
+		Polyspan polyspan;
+		polyspan.init(target_rect);
+		software::Contour::build_polyspan(contour->get_chunks(), matrix, polyspan, detail);
+		polyspan.sort_marks();
+
+		LockWrite la(target_surface);
+		if (!la)
+			return false;
+
+		software::Contour::render_polyspan(
+			la->get_surface(),
+			polyspan,
+			contour->invert,
+			allow_antialias && contour->antialias,
+			contour->winding_style,
+			contour->color,
+			blend ? amount : 1.0,
+			blend ? blend_method : Color::BLEND_COMPOSITE );
+
+		return true;
+	}
+};
+
 
 Task::Token TaskContourSW::token<TaskContourSW, TaskContour, TaskContour>("ContourSW");
 
-
-bool
-TaskContourSW::run(RunParams & /* params */) const
-{
-	if (!is_valid())
-		return true;
-
-	Vector ppu = get_pixels_per_unit();
-
-	Matrix bounds_transfromation;
-	bounds_transfromation.m00 = ppu[0];
-	bounds_transfromation.m11 = ppu[1];
-	bounds_transfromation.m20 = target_rect.minx - ppu[0]*source_rect.minx;
-	bounds_transfromation.m21 = target_rect.miny - ppu[1]*source_rect.miny;
-
-	Matrix matrix = transformation * bounds_transfromation;
-
-	Polyspan polyspan;
-	polyspan.init(target_rect);
-	software::Contour::build_polyspan(contour->get_chunks(), matrix, polyspan, detail);
-	polyspan.sort_marks();
-
-	LockWrite la(target_surface);
-	if (!la)
-		return false;
-
-	software::Contour::render_polyspan(
-		la->get_surface(),
-		polyspan,
-		contour->invert,
-		allow_antialias && contour->antialias,
-		contour->winding_style,
-		contour->color,
-		blend ? amount : 1.0,
-		blend ? blend_method : Color::BLEND_COMPOSITE );
-
-	return true;
-}
+} // end of anonimous namespace
 
 /* === E N T R Y P O I N T ================================================= */
