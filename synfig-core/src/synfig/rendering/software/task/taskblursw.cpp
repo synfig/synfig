@@ -65,8 +65,8 @@ TaskBlurSW::run(RunParams & /* params */) const
 	if (!is_valid() || !sub_task() || !sub_task()->is_valid())
 		return true;
 
-	LockWrite<SurfaceSW> la(target_surface);
-	LockRead<SurfaceSW> lb(sub_task()->target_surface);
+	LockWrite la(target_surface);
+	LockRead lb(sub_task()->target_surface);
 	if (!la || !lb)
 		return false;
 

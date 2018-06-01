@@ -91,7 +91,7 @@ TaskLayerSW::run(RunParams & /* params */) const
 
 	Context context(fake_canvas_base.begin(), ContextParams());
 
-	LockWrite<SurfaceSW> ldst(target_surface);
+	LockWrite ldst(target_surface);
 	if (!ldst)
 		return false;
 

@@ -69,7 +69,7 @@ TaskPixelColorMatrixSW::run(RunParams & /* params */) const
 	ColorMatrix::BatchProcessor processor(matrix);
 	std::vector<RectInt> constant_rects(1, rd);
 
-	LockWrite<SurfaceSW> ldst(target_surface);
+	LockWrite ldst(target_surface);
 	if (!ldst) return false;
 	synfig::Surface &dst = ldst->get_surface();
 
@@ -80,7 +80,7 @@ TaskPixelColorMatrixSW::run(RunParams & /* params */) const
 		etl::set_intersect(rs, rs, rd);
 		if (rs.is_valid())
 		{
-			LockRead<SurfaceSW> lsrc(target_surface);
+			LockRead lsrc(target_surface);
 			if (!lsrc) return false;
 			const synfig::Surface &src = lsrc->get_surface();
 

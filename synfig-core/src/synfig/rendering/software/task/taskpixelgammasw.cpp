@@ -5,7 +5,7 @@
 **	$Id$
 **
 **	\legal
-**	......... ... 2016 Ivan Mahonin
+**	......... ... 2016-2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -217,8 +217,8 @@ TaskPixelGammaSW::run(RunParams & /* params */) const
 	etl::set_intersect(rs, rs, rd);
 	if (rs.is_valid())
 	{
-		LockWrite<SurfaceSW> ldst(target_surface);
-		LockRead<SurfaceSW> lsrc(target_surface);
+		LockWrite ldst(target_surface);
+		LockRead lsrc(target_surface);
 		if (!ldst || !lsrc)
 			return false;
 		synfig::Surface &dst = ldst->get_surface();

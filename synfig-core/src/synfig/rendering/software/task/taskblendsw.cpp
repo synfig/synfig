@@ -63,7 +63,7 @@ TaskBlendSW::run(RunParams & /* params */) const
 {
 	if (!is_valid()) return true;
 
-	LockWrite<SurfaceSW> lc(target_surface);
+	LockWrite lc(target_surface);
 	if (!lc) return false;
 	synfig::Surface &c = lc->get_surface();
 	RectInt r = target_rect;
@@ -78,7 +78,7 @@ TaskBlendSW::run(RunParams & /* params */) const
 			etl::set_intersect(ra, ra, r);
 			if (ra.is_valid() && sub_task_a()->target_surface != target_surface)
 			{
-				LockRead<SurfaceSW> la(sub_task_a()->target_surface);
+				LockRead la(sub_task_a()->target_surface);
 				if (!la) return false;
 				synfig::Surface &a = la->get_surface();
 
@@ -103,7 +103,7 @@ TaskBlendSW::run(RunParams & /* params */) const
 			etl::set_intersect(rb, rb, r);
 			if (rb.is_valid())
 			{
-				LockRead<SurfaceSW> lb(sub_task_b()->target_surface);
+				LockRead lb(sub_task_b()->target_surface);
 				if (!lb) return false;
 				synfig::Surface &b = lb->get_surface();
 
