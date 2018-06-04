@@ -51,6 +51,10 @@ public:
 	static ModeToken mode_token;
 	virtual Surface::Token::Handle get_mode_target_token()
 		{ return TargetSurface::token; }
+	virtual bool get_mode_allow_source_as_target() const
+		{ return true; }
+	virtual bool get_mode_allow_simultaneous_write() const
+		{ return true; }
 };
 
 } /* end namespace rendering */

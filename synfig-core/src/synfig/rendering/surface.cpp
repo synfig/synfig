@@ -49,6 +49,7 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 synfig::Token Surface::token;
+int SurfaceResource::last_id = 0;
 
 Surface::Surface():
 	blank(true),
@@ -195,6 +196,7 @@ Surface::touch()
 
 
 SurfaceResource::SurfaceResource():
+	id(++last_id),
 	width(),
 	height(),
 	blank(true)
@@ -210,9 +212,15 @@ SurfaceResource::~SurfaceResource()
 	{ reset(); }
 
 Surface::Handle
-SurfaceResource::get_surface(const Surface::Token::Handle &token, bool exclusive, bool full, const RectInt &rect)
+SurfaceResource::get_surface(
+	const Surface::Token::Handle &token,
+	bool exclusive, // for write access
+	bool full,
+	const RectInt &rect,
+	bool create,
+	bool any )
 {
-	if (!token)
+	if (!token && !any)
 		return Surface::Handle();
 	if (!full && !rect.is_valid())
 		return Surface::Handle();
@@ -224,35 +232,48 @@ SurfaceResource::get_surface(const Surface::Token::Handle &token, bool exclusive
 	if (!full && !etl::contains(RectInt(0, 0, width, height), rect))
 		return Surface::Handle();
 
+	Surface::Handle surface;
+
 	Map::const_iterator i = surfaces.find(token);
 	if (i != surfaces.end())
-		return i->second;
-
-	Surface::Handle surface(token->fabric());
-	if (!surface)
+		surface = i->second;
+	else
+	if (any && !surfaces.empty())
+		surface = surfaces.begin()->second;
+	else
+	if (!create)
 		return Surface::Handle();
 
-	if (is_blank()) {
-		if (!surface->create(width, height))
+	if (!surface) {
+		surface = token->fabric();
+		if (!surface)
 			return Surface::Handle();
-	} else {
-		bool found = false;
-		for(Map::const_iterator i = surfaces.begin(); i != surfaces.end() && !found; ++i)
-			if (i->second->get_pixels_pointer() && surface->assign(*i->second))
-				found = true;
-		for(Map::const_iterator i = surfaces.begin(); i != surfaces.end() && !found; ++i)
-			if (!i->second->get_pixels_pointer() && surface->assign(*i->second))
-				found = true;
-		if (!found)
-			return Surface::Handle();
+
+		if (is_blank()) {
+			if (!surface->create(width, height))
+				return Surface::Handle();
+		} else {
+			bool found = false;
+			for(Map::const_iterator i = surfaces.begin(); i != surfaces.end() && !found; ++i)
+				if (i->second->get_pixels_pointer() && surface->assign(*i->second))
+					found = true;
+			for(Map::const_iterator i = surfaces.begin(); i != surfaces.end() && !found; ++i)
+				if (!i->second->get_pixels_pointer() && surface->assign(*i->second))
+					found = true;
+			if (!found)
+				return Surface::Handle();
+		}
+
+		if (exclusive) surfaces.clear(); // all other surfaces invalidated
+		surfaces[token] = surface;
 	}
 
 	if (exclusive) {
-		surfaces.clear();
+		if (surfaces.size() != 1) // keep only current surface in map
+			{ surfaces.clear(); surfaces[token] = surface; }
 		surface->touch();
 		blank = false;
 	}
-	surfaces[token] = surface;
 	return surface;
 }
 

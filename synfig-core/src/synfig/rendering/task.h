@@ -96,6 +96,12 @@ public:
 	virtual ~Mode() { }
 	virtual Surface::Token::Handle get_mode_target_token() const
 		{ return Surface::Token::Handle(); }
+	virtual bool get_mode_allow_multithreading() const
+		{ return true; }
+	virtual bool get_mode_allow_source_as_target() const
+		{ return false; }
+	virtual bool get_mode_allow_simultaneous_write() const //!< allow simultaneous write to the same target
+		{ return false; }
 };
 
 
@@ -240,11 +246,8 @@ public:
 	{
 	public:
 		const Task::Handle task;
-		explicit LockReadBase(
-			const Task::Handle &task,
-			Surface::Token::Handle token = Surface::Token::Handle()
-		):
-			SurfaceResource::LockReadBase(task->target_surface, token, task->target_rect),
+		explicit LockReadBase(const Task::Handle &task):
+			SurfaceResource::LockReadBase(task->target_surface, task->target_rect),
 			task(task) { }
 	};
 
@@ -253,7 +256,7 @@ public:
 	public:
 		const Task::Handle task;
 		explicit LockWriteBase( const Task::Handle &task ):
-			SurfaceResource::LockWriteBase(task->target_surface, task->get_target_token(), task->target_rect),
+			SurfaceResource::SemiLockWriteBase(task->target_surface, task->target_rect, task->get_target_token()),
 			task(task) { }
 	};
 
@@ -273,7 +276,7 @@ public:
 	public:
 		const Task::Handle task;
 		explicit LockWriteGeneric(const Task::Handle &task):
-			SurfaceResource::SemiLockWrite<T>(task->target_surface,	task->get_target_token(), task->target_rect),
+			SurfaceResource::SemiLockWrite<T>(task->target_surface, task->target_rect,	task->get_target_token()),
 			task(task) { }
 	};
 
@@ -298,10 +301,24 @@ public:
 	Task();
 	virtual ~Task();
 
-	Surface::Token::Handle get_target_token() const {
-		if (const Mode *mode = dynamic_cast<const Mode*>(this))
-			return mode->get_mode_target_token();
+	// mode options
+	const Mode *get_mode() const
+		{ return dynamic_cast<const Mode*>(this); }
+	virtual Surface::Token::Handle get_target_token() const {
+		if (const Mode *mode = get_mode()) return mode->get_mode_target_token();
 		return Surface::Token::Handle();
+	}
+	virtual Surface::Token::Handle get_allow_multithreading() const {
+		if (const Mode *mode = get_mode()) return mode->get_mode_allow_multithreading();
+		return true;
+	}
+	virtual bool get_mode_allow_source_as_target() const {
+		if (const Mode *mode = get_mode()) return mode->get_mode_allow_source_as_target();
+		return false;
+	}
+	virtual bool get_mode_allow_simultaneous_write() const { //!< allow simultaneous write to the same target
+		if (const Mode *mode = get_mode()) return mode->get_mode_allow_simultaneous_write();
+		return true;
 	}
 
 	Task::Handle& sub_task(int index) {
@@ -352,7 +369,21 @@ public:
 			  && target_surface->is_exists()
 			  && etl::contains(RectInt(VectorInt::zero(), target_surface->get_size()), target_rect); }
 	bool Task::is_valid() const
-		{ return is_valid_coords() && is_valid_surface_size(); }
+		{ return is_valid_coords() && is_valid_surface_size() && target_surface; }
+
+	bool allow_simultaneous_run_with(Task &other) const {
+		if (!is_valid() || !other.is_valid())
+			return true;
+		if (!get_allow_multithreading() && !other.get_allow_multithreading())
+			return false;
+		if (target_surface != other.target_surface)
+			return true;
+		if ( !get_mode_allow_simultaneous_write()
+		  || !other.get_mode_allow_simultaneous_write()
+		  || get_target_token() != other.get_target_token() )
+			return false;
+		return etl::intersect(target_rect, other.target_rect);
+	}
 
 	void set_coords(const Rect &source_rect, const VectorInt target_size);
 	void set_coords_zero();

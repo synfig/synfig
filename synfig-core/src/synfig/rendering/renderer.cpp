@@ -5,7 +5,7 @@
 **	$Id$
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2015-2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -53,7 +53,6 @@
 #include "software/rendererdraftsw.h"
 #include "software/rendererlowressw.h"
 #include "software/renderersafe.h"
-#include "common/task/taskcallback.h"
 #ifdef WITH_OPENGL
 #include "opengl/renderergl.h"
 #include "opengl/task/taskgl.h"
@@ -210,8 +209,6 @@ Renderer::optimize_recursive(
 				// return when current task removed
 				if (!params.ref_task) return;
 
-				assert( params.ref_task->check() );
-
 				// check dependencies
 				if (params.ref_affects_to & params.depends_from) return;
 			}
@@ -325,8 +322,6 @@ Renderer::optimize_recursive(
 
 				// return when current task removed
 				if (!params.ref_task) return;
-
-				assert( params.ref_task->check() );
 
 				// check dependencies
 				if (params.ref_affects_to & params.depends_from) return;
@@ -495,27 +490,28 @@ Renderer::find_deps(const Task::List &list) const
 	// find dependencies by target surface
 	for(Task::List::const_iterator i = list.begin(); i != list.end(); ++i)
 	{
-		assert((*i)->index == 0);
-		(*i)->index = i - list.begin() + 1;
+		Task::Handle task = *i;
+		Task::RendererData &task_rd = task->renderer_data;
 
-		(*i)->back_deps.clear();
-		(*i)->deps_count = 0;
+		assert(task_rd.index == 0);
+		task_rd.index = i - list.begin() + 1;
 
-		if ((*i)->valid_target()) {
+		task_rd.back_deps.clear();
+		task_rd.deps_count = 0;
+
+		if ((*i)->is_valid()) {
 			for(Task::List::const_iterator j = (*i)->sub_tasks.begin(); j != (*i)->sub_tasks.end(); ++j)
-				if (*j && (*j)->valid_target())
-					if (Task::Handle dep = target_prev_map[(*j)->target_surface])
-					{
-						if ((*i)->tmp_deps.empty()) tasks_to_process.insert(*i);
-						(*i)->tmp_deps.insert(dep);
-						dep->tmp_back_deps.insert(*i);
+				if (*j && (*j)->is_valid())
+					if (Task::Handle dep = target_prev_map[(*j)->target_surface]) {
+						if (task_rd.tmp_deps.empty()) tasks_to_process.insert(*i);
+						task_rd.tmp_deps.insert(dep);
+						dep->renderer_data.tmp_back_deps.insert(*i);
 					}
 			Task::Handle &dep = target_prev_map[(*i)->target_surface];
-			if (dep)
-			{
-				if ((*i)->tmp_deps.empty()) tasks_to_process.insert(*i);
-				(*i)->tmp_deps.insert(dep);
-				dep->tmp_back_deps.insert(*i);
+			if (dep) {
+				if (task_rd.tmp_deps.empty()) tasks_to_process.insert(*i);
+				task_rd.tmp_deps.insert(dep);
+				dep->renderer_data.tmp_back_deps.insert(*i);
 			}
 			dep = *i;
 		}
@@ -528,57 +524,45 @@ Renderer::find_deps(const Task::List &list) const
 		for(Task::Set::iterator i = tasks_to_process.begin(); i != tasks_to_process.end();)
 		{
 			Task::Handle task = *i;
-			assert(!task->tmp_deps.empty());
+			Task::RendererData &task_rd = task->renderer_data;
+			assert(!task_rd.tmp_deps.empty());
 
-			Task::Handle dep = *task->tmp_deps.begin();
-			task->tmp_deps.erase( task->tmp_deps.begin() );
-			dep->tmp_back_deps.erase(task);
+			Task::Handle dep = *task_rd.tmp_deps.begin();
+			Task::RendererData &dep_rd = dep->renderer_data;
+			task_rd.tmp_deps.erase( task_rd.tmp_deps.begin() );
+			dep_rd.tmp_back_deps.erase(task);
 
-			bool intersects = dep->target_surface == task->target_surface
-			               && etl::intersect(dep->get_target_rect(), task->get_target_rect());
-			for(Task::List::const_iterator j = task->sub_tasks.begin(); !intersects && j != task->sub_tasks.end(); ++j)
-			{
-				if ( *j && (*j)->valid_target()
-				  && dep->target_surface == (*j)->target_surface
-				  && ( etl::intersect(dep->get_target_rect(), (*j)->get_target_rect())
-				    || dep->get_target_token() != (*j)->get_target_token() ))
-						{ intersects = true; break; }
+			bool intersects = !dep->allow_simultaneous_run_with(*task);
+			for(Task::List::const_iterator j = task->sub_tasks.begin(); !intersects && j != task->sub_tasks.end(); ++j, ++iterations)
+				if (*j && !dep->allow_simultaneous_run_with(**j))
+					{ intersects = true; break; }
+
+			if (intersects) {
+				task_rd.deps.insert(dep);
+				dep_rd.back_deps.insert(task);
 				++iterations;
-			}
-
-			if (intersects)
-			{
-				task->deps.insert(dep);
-				dep->back_deps.insert(task);
-				++iterations;
-			}
-			else
-			{
-				iterations += dep->deps.size() + dep->tmp_deps.size() + task->back_deps.size() + task->tmp_back_deps.size();
-				for(Task::Set::iterator j = dep->deps.begin(); j != dep->deps.end(); ++j)
-					if (task->deps.count(*j) == 0)
-					{
-						task->tmp_deps.insert(*j);
-						(*j)->tmp_back_deps.insert(task);
+			} else {
+				iterations += dep_rd.deps.size() + dep_rd.tmp_deps.size() + task_rd.back_deps.size() + task_rd.tmp_back_deps.size();
+				for(Task::Set::iterator j = dep_rd.deps.begin(); j != dep_rd.deps.end(); ++j)
+					if (task_rd.deps.count(*j) == 0) {
+						task_rd.tmp_deps.insert(*j);
+						(*j)->renderer_data.tmp_back_deps.insert(task);
 					}
-				for(Task::Set::iterator j = dep->tmp_deps.begin(); j != dep->tmp_deps.end(); ++j)
-					if (task->deps.count(*j) == 0)
-					{
-						task->tmp_deps.insert(*j);
-						(*j)->tmp_back_deps.insert(task);
+				for(Task::Set::iterator j = dep_rd.tmp_deps.begin(); j != dep_rd.tmp_deps.end(); ++j)
+					if (task_rd.deps.count(*j) == 0) {
+						task_rd.tmp_deps.insert(*j);
+						(*j)->renderer_data.tmp_back_deps.insert(task);
 					}
-				for(Task::Set::iterator j = task->back_deps.begin(); j != task->back_deps.end(); ++j)
-					if ((*j)->deps.count(dep) == 0)
-					{
-						if ((*j)->tmp_deps.empty()) tasks_to_process.insert(*j);
-						(*j)->tmp_deps.insert(dep);
-						dep->tmp_back_deps.insert(*j);
+				for(Task::Set::iterator j = task_rd.back_deps.begin(); j != task_rd.back_deps.end(); ++j)
+					if ((*j)->renderer_data.deps.count(dep) == 0) {
+						if ((*j)->renderer_data.tmp_deps.empty()) tasks_to_process.insert(*j);
+						(*j)->renderer_data.tmp_deps.insert(dep);
+						dep_rd.tmp_back_deps.insert(*j);
 					}
-				for(Task::Set::iterator j = task->tmp_back_deps.begin(); j != task->tmp_back_deps.end(); ++j)
-					if ((*j)->deps.count(dep) == 0)
-					{
-						(*j)->tmp_deps.insert(dep);
-						dep->tmp_back_deps.insert(*j);
+				for(Task::Set::iterator j = task_rd.tmp_back_deps.begin(); j != task_rd.tmp_back_deps.end(); ++j)
+					if ((*j)->renderer_data.deps.count(dep) == 0) {
+						(*j)->renderer_data.tmp_deps.insert(dep);
+						dep_rd.tmp_back_deps.insert(*j);
 					}
 			}
 
@@ -586,7 +570,7 @@ Renderer::find_deps(const Task::List &list) const
 			++i;
 			++iterations;
 
-			if (task->tmp_deps.empty())
+			if (task_rd.tmp_deps.empty())
 				tasks_to_process.erase(j);
 		}
 	}
@@ -596,15 +580,16 @@ Renderer::find_deps(const Task::List &list) const
 	#endif
 
 	// copy tmp_deps to deps
-	for(Task::List::const_iterator i = list.begin(); i != list.end(); ++i)
-	{
+	for(Task::List::const_iterator i = list.begin(); i != list.end(); ++i) {
 		Task::Handle task = *i;
-		task->back_deps.insert(task->tmp_back_deps.begin(), task->tmp_back_deps.end());
-		task->deps_count = (int)task->deps.size() + (int)task->tmp_deps.size();
+		Task::RendererData &task_rd = task->renderer_data;
 
-		task->deps.clear();
-		task->tmp_deps.clear();
-		task->tmp_back_deps.clear();
+		task_rd.back_deps.insert(task_rd.tmp_back_deps.begin(), task_rd.tmp_back_deps.end());
+		task_rd.deps_count = (int)task_rd.deps.size() + (int)task_rd.tmp_deps.size();
+
+		task_rd.deps.clear();
+		task_rd.tmp_deps.clear();
+		task_rd.tmp_back_deps.clear();
 	}
 }
 
@@ -615,11 +600,6 @@ Renderer::run(const Task::List &list) const
 	//info("renderer.debug.task_list_log: %s", get_debug_options().task_list_log.c_str());
 	//info("renderer.debug.task_list_optimized_log: %s", get_debug_options().task_list_optimized_log.c_str());
 	//info("renderer.debug.result_image: %s", get_debug_options().result_image.c_str());
-
-	#ifndef NDEBUG
-	for(Task::List::const_iterator j = list.begin(); j != list.end(); ++j)
-		assert( (*j)->check() );
-	#endif
 
 	#ifdef DEBUG_TASK_MEASURE
 	debug::Measure t("Renderer::run");
@@ -669,20 +649,20 @@ Renderer::run(const Task::List &list) const
 		task_cond->cond = &cond;
 		task_cond->mutex = &mutex;
 		for(Task::List::const_iterator i = optimized_list.begin(); i != optimized_list.end(); ++i)
-			if ((*i)->back_deps.insert(task_cond).second)
-				++task_cond->deps_count;
+			if ((*i)->renderer_data.back_deps.insert(task_cond).second)
+				++task_cond->renderer_data.deps_count;
 		optimized_list.push_back(task_cond);
 
 		queue->enqueue(optimized_list, Task::RunParams(this));
 
 		task_cond->cond->wait(mutex);
-		if (!task_cond->success) success = false;
+		if (!task_cond->renderer_data.success) success = false;
 
 		if (!get_debug_options().result_image.empty())
 			debug::DebugSurface::save_to_file(
 				!list.empty() && list.back()
 					? list.back()->target_surface
-					: Surface::Handle(),
+					: SurfaceResource::Handle(),
 				get_debug_options().result_image,
 				true );
 	}
@@ -693,19 +673,14 @@ Renderer::run(const Task::List &list) const
 void
 Renderer::enqueue(const Task::List &list, const Task::Handle &finish_signal_task) const
 {
-	#ifndef NDEBUG
-	for(Task::List::const_iterator j = list.begin(); j != list.end(); ++j)
-		assert( (*j)->check() );
-	#endif
-
 	Task::List optimized_list(list);
 	optimize(optimized_list);
 	find_deps(optimized_list);
 	if (finish_signal_task)
 	{
 		for(Task::List::const_iterator i = optimized_list.begin(); i != optimized_list.end(); ++i)
-			if ((*i)->back_deps.insert(finish_signal_task).second)
-				++finish_signal_task->deps_count;
+			if ((*i)->renderer_data.back_deps.insert(finish_signal_task).second)
+				++finish_signal_task->renderer_data.deps_count;
 		optimized_list.push_back(finish_signal_task);
 	}
 	queue->enqueue(optimized_list, Task::RunParams(this));
@@ -726,12 +701,13 @@ Renderer::log(
 
 	if (t)
 	{
+		const Task::RendererData &trd = t->renderer_data;
 		String back_deps;
-		if (!t->back_deps.empty())
+		if (!trd.back_deps.empty())
 		{
 			std::multiset<int> back_deps_set;
-			for(Task::Set::const_iterator i = t->back_deps.begin(); i != t->back_deps.end(); ++i)
-				back_deps_set.insert((*i)->index);
+			for(Task::Set::const_iterator i = trd.back_deps.begin(); i != trd.back_deps.end(); ++i)
+				back_deps_set.insert((*i)->renderer_data.index);
 			for(std::multiset<int>::const_iterator i = back_deps_set.begin(); i != back_deps_set.end(); ++i)
 				back_deps += etl::strprintf("%d ", *i);
 			back_deps = "(" + back_deps.substr(0, back_deps.size()-1) + ") ";
@@ -740,9 +716,9 @@ Renderer::log(
 		debug::Log::info(logfile,
 		      String(level*2, ' ')
 			+ (use_stack ? "*" : "")
-			+ (t->index ? etl::strprintf("#%d ", t->index): "")
-			+ ( t->deps_count
-			  ? etl::strprintf("%d ", t->deps_count )
+			+ (trd.index ? etl::strprintf("#%d ", trd.index): "")
+			+ ( trd.deps_count
+			  ? etl::strprintf("%d ", trd.deps_count )
 			  : "" )
 			+ back_deps
 			+ (typeid(*t).name() + 19)
@@ -751,12 +727,12 @@ Renderer::log(
 				t->get_bounds().minx, t->get_bounds().miny,
 				t->get_bounds().maxx, t->get_bounds().maxy )
 			  : "" )
-			+ ( t->valid_target()
+			+ ( t->target_surface
               ? etl::strprintf(" source (%f, %f)-(%f, %f) target (%d, %d)-(%d, %d) surface %s (%dx%d) id %d",
-				t->get_source_rect_lt()[0], t->get_source_rect_lt()[1],
-				t->get_source_rect_rb()[0], t->get_source_rect_rb()[1],
-				t->get_target_rect().minx, t->get_target_rect().miny,
-				t->get_target_rect().maxx, t->get_target_rect().maxy,
+				t->source_rect.minx, t->source_rect.miny,
+				t->source_rect.maxx, t->source_rect.maxy,
+				t->target_rect.minx, t->target_rect.miny,
+				t->target_rect.maxx, t->target_rect.maxy,
 				(typeid(*t->target_surface).name() + 19),
 				t->target_surface->get_width(),
 				t->target_surface->get_height(),

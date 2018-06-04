@@ -445,15 +445,14 @@ TaskTransformationAffineSW::run(RunParams & /* params */) const
 	Matrix matrix = src_pixels_to_units * transformation * dst_units_to_pixels;
 
 	// resample
-	if (target_surface->has_surface<SurfaceSWPacked>())
-	{
-		LockReadGeneric<SurfaceSWPacked> lsrc(sub_task()->target_surface);
-		if (!lsrc)
-			return false;
+	LockReadBase lsrc(sub_task());
+	if (lsrc.convert<SurfaceSWPacked>(false)) {
+		SurfaceSWPacked::Handle src = lsrc.cast<SurfaceSWPacked>();
+		if (!src) return false;
 		resample(
 			ldst->get_surface(),
 			target_rect,
-			lsrc->get_surface(),
+			src->get_surface(),
 			sub_task()->target_rect,
 			matrix,
 			1.f,
@@ -461,16 +460,14 @@ TaskTransformationAffineSW::run(RunParams & /* params */) const
 			blend,
 			amount,
 			blend_method );
-	}
-	else
-	{
-		LockRead lsrc(sub_task()->target_surface);
-		if (!lsrc)
-			return false;
+	} else
+	if (lsrc.convert<TargetSurface>(false)) {
+		TargetSurface::Handle src = lsrc.cast<TargetSurface>();
+		if (!src) return false;
 		resample(
 			ldst->get_surface(),
 			target_rect,
-			lsrc->get_surface(),
+			src->get_surface(),
 			sub_task()->target_rect,
 			matrix,
 			1.f,
@@ -478,6 +475,8 @@ TaskTransformationAffineSW::run(RunParams & /* params */) const
 			blend,
 			amount,
 			blend_method );
+	} else {
+		return false;
 	}
 
 	return true;

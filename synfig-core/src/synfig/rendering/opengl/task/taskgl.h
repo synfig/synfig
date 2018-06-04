@@ -53,6 +53,8 @@ public:
 	static ModeToken mode_token;
 	virtual Surface::Token::Handle get_mode_target_token()
 		{ return TargetSurface::token; }
+	virtual bool get_mode_allow_multithreading() const
+		{ return false; }
 protected:
 	gl::Environment& env() const;
 };

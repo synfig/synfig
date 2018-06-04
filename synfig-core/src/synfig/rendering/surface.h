@@ -144,55 +144,95 @@ public:
 	typedef etl::handle<SurfaceResource> Handle;
 	typedef std::map<Surface::Token::Handle, Surface::Handle> Map;
 
-	template<typename TypeLock, typename TypeSurface, bool for_write>
+	template<typename TypeSurface, bool write, bool exclusive>
 	class LockBase {
-	public: // keep this order of fields (it's a construction order)
-		const Handle resource;
-	private:
-		const TypeLock lock;
 	public:
-		const Surface::Handle surface;
+		const Handle resource;
+		const bool full;
+		const RectInt &rect;
 
-		explicit LockBase(
-			const Handle &resource,
-			const Surface::Token::Handle &token = Surface::Token::Handle()
-		):
-			resource(resource),
-			lock(resource->rwlock),
-			surface(resource->get_surface(token, for_write, true, RectInt())) { }
-		LockBase(
-			const Handle &resource,
-			const Surface::Token::Handle &token,
-			const RectInt &rect
-		):
-			lock(resource->rwlock),
-			surface(resource->get_surface(token, for_write, false, rect)) { }
+	private:
+		bool lock_token;
+		Surface::Token::Handle token;
+		Surface::Handle surface;
+
+		void lock() {
+			if (resource)
+				if (write) resource->rwlock.writer_lock();
+				      else resource->rwlock.reader_lock();
+		}
+		void unlock() {
+			if (resource)
+				if (write) resource->rwlock.writer_unlock();
+				      else resource->rwlock.reader_unlock();
+		}
+
+	public:
+		explicit LockBase(const Handle &resource):
+			resource(resource), full(true), lock_token(false)
+			{ lock(); }
+		LockBase(const Handle &resource, const RectInt &rect):
+			resource(resource), full(false), rect(rect), lock_token(false)
+			{ lock(); }
+		LockBase(const Handle &resource, const Surface::Token::Handle &token):
+			resource(resource), full(true), lock_token(true), token(token)
+			{ lock(); }
+		LockBase(const Handle &resource, const RectInt &rect, const Surface::Token::Handle &token):
+			resource(resource), full(false), rect(rect), lock_token(false), token(token)
+			{ lock(); }
+		~LockBase() { unlock(); }
+
+		bool convert(const Surface::Token::Handle &token, bool create = true, bool any = false) {
+			if (!resource) return false;
+			if (lock_token && token != this->token) return false;
+			return surface = resource->get_surface(token, exclusive, full, rect, create, any);
+		}
+
+		template<typename T>
+		bool convert(bool create = true, bool any = false)
+			{ return convert(T::tocken.handle(), create, any); }
+
+		bool is_lock_tocken() const
+			{ return lock_token; }
+		Surface::Token::Handle get_lock_token() const
+			{ return token; }
+		Surface::Token::Handle get_token() const
+			{ return surface ? surface->get_token() : Surface::Token::Handle(); }
 		const Handle& get_resource() const
 			{ return resource; }
+		Surface::Handle get_handle() const
+			{ return surface; }
+		template<typename T>
+		etl::handle<T> cast() const
+			{ return etl::handle<T>::cast_dynamic(surface); }
 		TypeSurface* get_surface() const
 			{ return surface.get(); }
-		operator bool () const
+		operator bool() const
 			{ return surface; }
 	};
 
-	typedef LockBase<Glib::Threads::RWLock::ReaderLock, const Surface, false> LockReadBase;
-	typedef LockBase<Glib::Threads::RWLock::WriterLock, Surface, true> LockWriteBase;
-	typedef LockBase<Glib::Threads::RWLock::ReaderLock, Surface, true> SemiLockWriteBase;
+	typedef LockBase<const Surface, false, false> LockReadBase;
+	typedef LockBase<Surface, true, true> LockWriteBase;
+	typedef LockBase<Surface, false, true> SemiLockWriteBase; //!< helps to avoid crashes but may cause visual artifacts
 
 	template<typename T>
 	class LockRead: public LockReadBase {
 	public:
 		typedef T Type;
 		explicit LockRead(const Handle &resource):
-			LockReadBase(resource, Type::token.handle()) { }
+			LockReadBase(resource, Type::token.handle())
+			{ convert(get_lock_token()); }
 		LockRead(const Handle &resource, const RectInt &rect):
-			LockReadBase(resource, Type::token.handle(), rect) { }
+			LockReadBase(resource, rect, Type::token.handle())
+			{ convert(get_lock_token()); }
 		LockRead(const Handle &resource, const Surface::Token::Handle &token):
-			LockReadBase(resource, token) { }
-		LockRead(const Handle &resource, const Surface::Token::Handle &token, const RectInt &rect):
-			LockReadBase(resource, token, rect) { }
+			LockReadBase(resource, token)
+			{ convert(get_lock_token()); }
+		LockRead(const Handle &resource, const RectInt &rect, const Surface::Token::Handle &token):
+			LockReadBase(resource, rect, token)
+			{ convert(get_lock_token()); }
 		etl::handle<Type> get() const
-			{ return etl::handle<Type>::cast_dynamic(surface); }
+			{ return cast<Type>(); }
 		const Type* operator->() const
 			{ assert(get()); return surface.get(); }
 		const Type& operator*() const
@@ -204,15 +244,19 @@ public:
 	public:
 		typedef T Type;
 		explicit LockWrite(const Handle &resource):
-			LockWriteBase(resource, Type::token) { }
+			LockWriteBase(resource, Type::token.handle())
+			{ convert(get_lock_token()); }
 		LockWrite(const Handle &resource, const RectInt &rect):
-			LockWriteBase(resource, Type::token, rect) { }
+			LockWriteBase(resource, rect, Type::token.handle())
+			{ convert(get_lock_token()); }
 		LockWrite(const Handle &resource, const Surface::Token::Handle &token):
-			LockWriteBase(resource, token) { }
-		LockWrite(const Handle &resource, const Surface::Token::Handle &token, const RectInt &rect):
-			LockWriteBase(resource, token, rect) { }
+			LockWriteBase(resource, token)
+			{ convert(get_lock_token()); }
+		LockWrite(const Handle &resource, const RectInt &rect, const Surface::Token::Handle &token):
+			LockWriteBase(resource, rect, token)
+			{ convert(get_lock_token()); }
 		etl::handle<Type> get() const
-			{ return etl::handle<Type>::cast_dynamic(surface); }
+			{ return cast<Type>(); }
 		Type* operator->() const
 			{ assert(get()); return surface.get(); }
 		Type& operator*() const
@@ -224,15 +268,19 @@ public:
 	public:
 		typedef T Type;
 		explicit SemiLockWrite(const Handle &resource):
-			SemiLockWriteBase(resource, Type::token) { }
+			SemiLockWriteBase(resource, Type::token.handle())
+			{ convert(get_lock_token()); }
 		SemiLockWrite(const Handle &resource, const RectInt &rect):
-			SemiLockWriteBase(resource, Type::token, rect) { }
+			SemiLockWriteBase(resource, rect, Type::token.handle())
+			{ convert(get_lock_token()); }
 		SemiLockWrite(const Handle &resource, const Surface::Token::Handle &token):
-			SemiLockWriteBase(resource, token) { }
-		SemiLockWrite(const Handle &resource, const Surface::Token::Handle &token, const RectInt &rect):
-			SemiLockWriteBase(resource, token, rect) { }
+			SemiLockWriteBase(resource, token)
+			{ convert(get_lock_token()); }
+		SemiLockWrite(const Handle &resource, const RectInt &rect, const Surface::Token::Handle &token):
+			SemiLockWriteBase(resource, rect, token)
+			{ convert(get_lock_token()); }
 		etl::handle<Type> get() const
-			{ return etl::handle<Type>::cast_dynamic(surface); }
+			{ return cast<Type>(); }
 		Type* operator->() const
 			{ assert(get()); return surface.get(); }
 		Type& operator*() const
@@ -240,6 +288,9 @@ public:
 	};
 
 private:
+	static int last_id;
+
+	int id;
 	int width;
 	int height;
 	bool blank;
@@ -248,7 +299,13 @@ private:
 	Glib::Threads::Mutex mutex;
 	Glib::Threads::RWLock rwlock;
 
-	Surface::Handle get_surface(const Surface::Token::Handle &token, bool exclusive, bool full, const RectInt &rect);
+	Surface::Handle get_surface(
+		const Surface::Token::Handle &token,
+		bool exclusive,
+		bool full,
+		const RectInt &rect,
+		bool create,
+		bool any );
 
 public:
 	SurfaceResource();
@@ -263,6 +320,8 @@ public:
 	void create(const VectorInt &x)
 		{ create(x[0], x[1]); }
 
+	int get_id() const //!< helps to debug of renderer optimizers
+		{ return id; }
 	int get_width() const
 		{ Glib::Threads::Mutex::Lock lock(mutex); return width; }
 	int get_height() const
@@ -278,6 +337,12 @@ public:
 	template<typename T>
 	bool has_surface() const
 		{ return has_surface(T::token.handle()); }
+	bool get_tokens(std::vector<Surface::Token::Handle> &outTokens) const {
+		Glib::Threads::Mutex::Lock lock(mutex);
+		for(Map::const_iterator i = surfaces.begin(); i != surfaces.end(); ++i)
+			outTokens.push_back(i->first);
+		return !surfaces.empty();
+	}
 };
 
 
