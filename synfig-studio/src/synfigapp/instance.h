@@ -154,7 +154,7 @@ public:
 	const etl::handle<SelectionManager> &get_selection_manager() { return selection_manager_; }
 
 	synfig::FileSystem::Handle get_container() const { return container_; };
-	bool save_surface(const synfig::rendering::Surface::Handle &surface, const synfig::String &filename);
+	bool save_surface(const synfig::rendering::SurfaceResource::Handle &surface, const synfig::String &filename);
 	bool save_surface(const synfig::Surface &surface, const synfig::String &filename);
 	bool save_layer(const synfig::Layer::Handle &layer);
 	void save_all_layers();
