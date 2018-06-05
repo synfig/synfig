@@ -68,6 +68,12 @@ TaskTransformation::calc_bounds() const
 	Rect bounds = sub_task()->get_bounds();
 	if (!bounds.is_valid())
 		return Rect();
+
+	// transform_bounds() cannot transform infinity,
+	// because transform_bounds() calculates bounds with resolution
+	if (bounds.is_full_infinite())
+		return bounds;
+
 	return transformation->transform_bounds(bounds).rect;
 }
 

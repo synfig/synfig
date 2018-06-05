@@ -51,7 +51,7 @@ public:
 	typedef Task::LockWriteGeneric<TargetSurface> LockWrite;
 
 	static ModeToken mode_token;
-	virtual Surface::Token::Handle get_mode_target_token()
+	virtual Surface::Token::Handle get_mode_target_token() const
 		{ return TargetSurface::token; }
 	virtual bool get_mode_allow_multithreading() const
 		{ return false; }

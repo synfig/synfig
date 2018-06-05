@@ -59,7 +59,7 @@ Token::Token(const Token&):
 
 Token::Token():
 	previous_(), next_(), in_process_(), prepared_()
-{ init(); }
+{ root_exists_ = true; init(); }
 
 Token::Token(const Handle &parent):
 	previous_(last_),

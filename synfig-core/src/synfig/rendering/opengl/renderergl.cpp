@@ -39,6 +39,8 @@
 
 #include "renderergl.h"
 
+#include "task/taskgl.h"
+
 #include "internal/environment.h"
 
 #include "../common/optimizer/optimizertransformation.h"
@@ -59,6 +61,8 @@ using namespace rendering;
 
 RendererGL::RendererGL()
 {
+	register_mode(TaskGL::mode_token.handle());
+
 	// register optimizers
 	register_optimizer(new OptimizerTransformationAffine());
 }

@@ -39,6 +39,8 @@
 
 #include "rendererdraftsw.h"
 
+#include "task/tasksw.h"
+
 #include "../common/optimizer/optimizerblendassociative.h"
 #include "../common/optimizer/optimizerblendblend.h"
 #include "../common/optimizer/optimizerblendcomposite.h"
@@ -67,6 +69,8 @@ using namespace rendering;
 
 RendererDraftSW::RendererDraftSW()
 {
+	register_mode(TaskSW::mode_token.handle());
+
 	// register optimizers
 	register_optimizer(new OptimizerDraftContour());
 	register_optimizer(new OptimizerDraftBlur());

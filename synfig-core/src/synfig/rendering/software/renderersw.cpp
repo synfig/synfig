@@ -39,6 +39,8 @@
 
 #include "renderersw.h"
 
+#include  "task/tasksw.h"
+
 #include "../common/optimizer/optimizerblendassociative.h"
 #include "../common/optimizer/optimizerblendblend.h"
 #include "../common/optimizer/optimizerblendcomposite.h"
@@ -68,6 +70,8 @@ using namespace rendering;
 
 RendererSW::RendererSW()
 {
+	register_mode(TaskSW::mode_token.handle());
+
 	// register optimizers
 	register_optimizer(new OptimizerTransformationAffine());
 

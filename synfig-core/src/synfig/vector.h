@@ -348,11 +348,11 @@ public:
 
 	value_type &
 	operator[](const int& i)
-	{ return i == 0 ? _z : i == 1 ? _y : _z; }
+	{ return i == 0 ? _x : i == 1 ? _y : _z; }
 
 	const value_type &
 	operator[](const int& i) const
-	{ return i == 0 ? _z : i == 1 ? _y : _z; }
+	{ return i == 0 ? _x : i == 1 ? _y : _z; }
 
 	const Vector3 &
 	operator+=(const Vector3 &rhs)

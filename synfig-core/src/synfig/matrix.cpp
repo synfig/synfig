@@ -185,7 +185,7 @@ Matrix3::get_transformed(
 {
 	out_x = x*m00 + y*m10 + z*m20;
 	out_y = x*m01 + y*m11 + z*m21;
-	out_z = x*m01 + y*m11 + z*m21;
+	out_z = x*m02 + y*m12 + z*m22;
 }
 
 bool

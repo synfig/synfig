@@ -39,6 +39,8 @@
 
 #include "renderersafe.h"
 
+#include "task/tasksw.h"
+
 #endif
 
 using namespace synfig;
@@ -52,7 +54,10 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
-RendererSafe::RendererSafe() { }
+RendererSafe::RendererSafe()
+{
+	register_mode(TaskSW::mode_token.handle());
+}
 
 RendererSafe::~RendererSafe() { }
 

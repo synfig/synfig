@@ -249,7 +249,7 @@ SurfaceResource::get_surface(
 		if (!surface)
 			return Surface::Handle();
 
-		if (is_blank()) {
+		if (blank) {
 			if (!surface->create(width, height))
 				return Surface::Handle();
 		} else {

@@ -64,7 +64,7 @@ using namespace synfig;
 using namespace rendering;
 
 
-#ifdef _DEBUG
+#ifndef NDEBUG
 //#define DEBUG_TASK_LIST
 //#define DEBUG_TASK_MEASURE
 //#define DEBUG_OPTIMIZATION
@@ -87,6 +87,7 @@ std::map<String, Renderer::Handle> *Renderer::renderers;
 RenderQueue *Renderer::queue;
 Renderer::DebugOptions Renderer::debug_options;
 long long Renderer::last_registered_optimizer_index = 0;
+long long Renderer::last_batch_index = 0;
 
 
 void
@@ -200,7 +201,7 @@ Renderer::specialize(Task::List &list) const
 			if (!task)
 				task = (*i)->convert_to_any();
 			if (!task)
-				task = task->clone();
+				task = (*i)->clone();
 			*i = task;
 			specialize((*i)->sub_tasks);
 		}
@@ -445,6 +446,19 @@ Renderer::optimize(Task::List &list) const
 
 	while(categories_to_process &= Optimizer::CATEGORY_ALL)
 	{
+		while (prepared_category_id < current_category_id)
+			switch (++prepared_category_id) {
+			case Optimizer::CATEGORY_ID_COORDS:
+				calc_coords(list); break;
+			case Optimizer::CATEGORY_ID_SPECIALIZED:
+				specialize(list); break;
+			case Optimizer::CATEGORY_ID_LIST:
+				linearize(list); break;
+			default:
+				break;
+			}
+		prepared_category_id = current_category_id;
+
 		if (current_category_id >= Optimizer::CATEGORY_ID_COUNT)
 		{
 			current_category_id = 0;
@@ -470,18 +484,6 @@ Renderer::optimize(Task::List &list) const
 			current_affected = 0;
 			continue;
 		}
-
-		while (prepared_category_id < current_category_id)
-			switch (++prepared_category_id) {
-			case Optimizer::CATEGORY_ID_COORDS:
-				calc_coords(list); break;
-			case Optimizer::CATEGORY_ID_SPECIALIZED:
-				specialize(list); break;
-			case Optimizer::CATEGORY_ID_LIST:
-				linearize(list); break;
-			default:
-				break;
-			}
 
 		bool simultaneous_run = Optimizer::categories_info[current_category_id].simultaneous_run;
 		const Optimizer::List &current_optimizers = simultaneous_run ? optimizers[current_category_id] : single;
@@ -591,7 +593,7 @@ Renderer::optimize(Task::List &list) const
 }
 
 void
-Renderer::find_deps(const Task::List &list) const
+Renderer::find_deps(const Task::List &list, long long batch_index) const
 {
 	#ifdef DEBUG_TASK_MEASURE
 	debug::Measure t("Renderer::find_deps");
@@ -609,6 +611,8 @@ Renderer::find_deps(const Task::List &list) const
 		Task::RendererData &task_rd = task->renderer_data;
 
 		assert(task_rd.index == 0);
+		assert(task_rd.batch_index == 0);
+		task_rd.batch_index = batch_index;
 		task_rd.index = i - list.begin() + 1;
 
 		task_rd.back_deps.clear();
@@ -729,7 +733,7 @@ Renderer::run(const Task::List &list) const
 
 	Task::List optimized_list(list);
 	optimize(optimized_list);
-	find_deps(optimized_list);
+	find_deps(optimized_list, ++last_batch_index);
 
 	#ifdef DEBUG_TASK_LIST
 	log("", optimized_list, "optimized list");
@@ -782,7 +786,7 @@ Renderer::enqueue(const Task::List &list, const Task::Handle &finish_signal_task
 {
 	Task::List optimized_list(list);
 	optimize(optimized_list);
-	find_deps(optimized_list);
+	find_deps(optimized_list, ++last_batch_index);
 	if (finish_signal_task)
 	{
 		for(Task::List::const_iterator i = optimized_list.begin(); i != optimized_list.end(); ++i)
@@ -823,27 +827,42 @@ Renderer::log(
 			back_deps = "(" + back_deps.substr(0, back_deps.size()-1) + ") ";
 		}
 
+		String surfaces;
+		if (t->target_surface) {
+			std::vector<Surface::Token::Handle> tokens;
+			t->target_surface->get_tokens(tokens);
+
+			std::set<String> names;
+			for(std::vector<Surface::Token::Handle>::const_iterator i = tokens.begin(); i != tokens.end(); ++i)
+				names.insert( (*i)->name );
+
+			for(std::set<String>::const_iterator i = names.begin(); i != names.end(); ++i) {
+				if (!surfaces.empty()) surfaces += ", ";
+				surfaces += *i;
+			}
+		}
+
 		debug::Log::info(logfile,
 		      String(level*2, ' ')
 			+ (use_stack ? "*" : "")
-			+ (trd.index ? etl::strprintf("#%d ", trd.index): "")
+			+ (trd.index ? etl::strprintf("#%05d-%04d ", trd.batch_index, trd.index): "")
 			+ ( trd.deps_count
 			  ? etl::strprintf("%d ", trd.deps_count )
 			  : "" )
 			+ back_deps
-			+ (typeid(*t).name() + 19)
+			+ t->get_token()->name
 			+ ( t->get_bounds().valid()
 			  ? etl::strprintf(" bounds (%f, %f)-(%f, %f)",
 				t->get_bounds().minx, t->get_bounds().miny,
 				t->get_bounds().maxx, t->get_bounds().maxy )
 			  : "" )
 			+ ( t->target_surface
-              ? etl::strprintf(" source (%f, %f)-(%f, %f) target (%d, %d)-(%d, %d) surface %s (%dx%d) id %d",
+              ? etl::strprintf(" source (%f, %f)-(%f, %f) target (%d, %d)-(%d, %d) surface [%s] (%dx%d) id %d",
 				t->source_rect.minx, t->source_rect.miny,
 				t->source_rect.maxx, t->source_rect.maxy,
 				t->target_rect.minx, t->target_rect.miny,
 				t->target_rect.maxx, t->target_rect.maxy,
-				(typeid(*t->target_surface).name() + 19),
+				surfaces.c_str(),
 				t->target_surface->get_width(),
 				t->target_surface->get_height(),
 				t->target_surface->get_id() )

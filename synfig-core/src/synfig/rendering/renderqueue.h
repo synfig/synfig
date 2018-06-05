@@ -55,6 +55,8 @@ public:
 	typedef std::list<Task::Handle> TaskQueue;
 
 private:
+	static int last_batch_index;
+
 	Glib::Threads::Mutex mutex;
 	Glib::Threads::Mutex threads_mutex;
 	Glib::Threads::Cond cond;

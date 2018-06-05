@@ -285,6 +285,7 @@ public:
 
 	struct RendererData
 	{
+		int batch_index;
 		int index;
 		int deps_count;
 		Set deps; // always empty (deps_count is enough), used inside of Renderer::find_deps only
@@ -296,7 +297,7 @@ public:
 		RunParams params;
 		bool success;
 
-		RendererData(): index(), deps_count(), success() { }
+		RendererData(): batch_index(), index(), deps_count(), success() { }
 	};
 
 	class LockReadBase: public SurfaceResource::LockReadBase
@@ -440,7 +441,7 @@ public:
 	bool is_valid_coords_source() const
 		{ return !source_rect.is_nan_or_inf() && source_rect.is_valid(); }
 	bool is_valid_coords_target() const
-		{ return !target_rect.is_valid(); }
+		{ return target_rect.is_valid(); }
 	bool is_valid_coords() const
 		{ return is_valid_coords_source() && is_valid_coords_target(); }
 	bool is_valid_surface_size() const

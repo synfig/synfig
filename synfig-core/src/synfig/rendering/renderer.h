@@ -64,6 +64,7 @@ private:
 	static RenderQueue *queue;
 	static DebugOptions debug_options;
 	static long long last_registered_optimizer_index;
+	static long long last_batch_index; // TODO: atomic
 
 	ModeList modes;
 	Optimizer::List optimizers[Optimizer::CATEGORY_ID_COUNT];
@@ -119,7 +120,7 @@ private:
 	typedef std::multimap<DepTargetKey, DepTargetValue> DepTargetMap;
 	typedef DepTargetMap::value_type                    DepTargetPair;
 
-	void find_deps(const Task::List &list) const;
+	void find_deps(const Task::List &list, long long batch_index) const;
 
 public:
 	int get_max_simultaneous_threads() const;

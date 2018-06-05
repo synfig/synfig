@@ -58,9 +58,10 @@ using namespace rendering;
 #define SYNFIG_RENDERING_MAX_THREADS 256
 
 
-#ifdef _DEBUG
+#ifndef NDEBUG
 //#define DEBUG_THREAD_TASK
 //#define DEBUG_THREAD_WAIT
+//#define DEBUG_TASK_SURFACE
 #endif
 
 
@@ -142,24 +143,38 @@ RenderQueue::process(int thread_index)
 	while(Task::Handle task = get(thread_index))
 	{
 		#ifdef DEBUG_THREAD_TASK
-		info("thread %d: begin task #%d '%s'", thread_index, task->index, typeid(*task).name());
+		info( "thread %d: begin task #%05d-%04d '%s'",
+			  thread_index,
+			  task->renderer_data.batch_index,
+			  task->renderer_data.index,
+			  task->get_token()->name.c_str() );
 		#endif
 
 		if (TaskSubQueue::Handle task_sub_queue = TaskSubQueue::Handle::cast_dynamic(task))
 		{
 			done(thread_index, task_sub_queue->sub_task());
+			done(thread_index, task_sub_queue);
 			continue;
 		}
 
-		if (!task->is_valid() || !task->run(task->renderer_data.params))
+		if (!task->run(task->renderer_data.params))
 			task->renderer_data.success = false;
 
 		#ifdef DEBUG_TASK_SURFACE
-		debug::DebugSurface::save_to_file(task->target_surface, etl::strprintf("task%d", task->index));
+		debug::DebugSurface::save_to_file(
+			task->target_surface,
+			etl::strprintf(
+				"task-%05d-%04d",
+				task->renderer_data.batch_index,
+				task->renderer_data.index ));
 		#endif
 
 		#ifdef DEBUG_THREAD_TASK
-		info("thread %d: end task #%d '%s'", thread_index, task->index, typeid(*task).name());
+		info( "thread %d: end task #%05d-%04d '%s'",
+			  thread_index,
+			  task->renderer_data.batch_index,
+			  task->renderer_data.index,
+			  task->get_token()->name.c_str() );
 		#endif
 
 		if (!task->renderer_data.params.sub_queue.empty())
@@ -302,9 +317,9 @@ RenderQueue::enqueue(const Task::List &tasks, const Task::RunParams &params)
 			if ((*i)->renderer_data.deps_count == 0) {
 				queue.push_back(*i);
 				if (mt)
-					{ if (single_signals < 1) { single_cond.signal(); ++single_signals; } }
-				else
 					{ if (signals < threads) { cond.signal(); ++signals; } }
+				else
+					{ if (single_signals < 1) { single_cond.signal(); ++single_signals; } }
 			} else {
 				wait.insert(*i);
 			}

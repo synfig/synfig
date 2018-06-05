@@ -202,7 +202,7 @@ public:
 			resource(resource), full(true), lock_token(true), token(token)
 			{ lock(); }
 		LockBase(const Handle &resource, const RectInt &rect, const Surface::Token::Handle &token):
-			resource(resource), full(false), rect(rect), lock_token(false), token(token)
+			resource(resource), full(false), rect(rect), lock_token(true), token(token)
 			{ lock(); }
 		~LockBase() { unlock(); }
 
