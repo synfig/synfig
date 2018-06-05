@@ -169,7 +169,8 @@ Import::set_param(const String & param, const ValueBase &value)
 		if (!newimporter->is_animated())
 			time = Time(0);
 
-		rendering_surface = newimporter->get_frame(get_canvas()->rend_desc(), time);
+		rendering_surface = new rendering::SurfaceResource(
+			newimporter->get_frame(get_canvas()->rend_desc(), time) );
 		importer=newimporter;
 		param_filename.set(filename);
 
@@ -216,6 +217,7 @@ Import::set_time_vfunc(IndependentContext context, Time time)const
 {
 	Time time_offset=param_time_offset.get(Time());
 	if(get_amount() && importer && importer->is_animated())
-		rendering_surface = importer->get_frame(get_canvas()->rend_desc(), time+time_offset);
+		rendering_surface = new rendering::SurfaceResource(
+			importer->get_frame(get_canvas()->rend_desc(), time+time_offset) );
 	context.set_time(time);
 }

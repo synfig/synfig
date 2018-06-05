@@ -54,12 +54,24 @@ public:
 	typedef etl::handle<Surface> Handle;
 	typedef Surface* (*Fabric)();
 
-	class Token: public synfig::Token {
+	class DescBase {
+	protected:
+		template<typename T>
+		static Surface* fabric_template()
+			{ return new T(); }
+	public:
+		const String name;
+		const Fabric fabric;
+
+		DescBase(const String &name, Fabric fabric):
+			name(name),
+			fabric(fabric)
+		{ assert(fabric); }
+	};
+
+	class Token: public synfig::Token, public DescBase {
 	public:
 		typedef ConstRef<Token> Handle;
-
-		const Fabric fabric;
-		const String name;
 
 	private:
 		template<typename T>
@@ -67,16 +79,24 @@ public:
 			{ return new T(); }
 
 	public:
-		template<typename TypeThis>
-		Token(const String &name):
-			synfig::Token(token),
-			fabric(&fabric_template<TypeThis>),
-			name(name)
-		{ assert(fabric); }
+		Token(const DescBase &desc):
+			synfig::Token(token.handle()),
+			DescBase(desc) { }
 
 		inline Handle handle() const
 			{ return Handle(*this); }
 	};
+
+	template<typename Type>
+	class Desc: public DescBase {
+	public:
+		Desc(const String &name):
+			DescBase(
+				name,
+				&DescBase::fabric_template<Type> )
+		{ }
+	};
+
 
 	static synfig::Token token;
 	virtual Token::Handle get_token() const = 0;
@@ -89,9 +109,9 @@ private:
 protected:
 	void set_desc(int width, int height, bool blank);
 
-	virtual bool create_vfunc(int width, int height)
+	virtual bool create_vfunc(int /* width */, int /* height */)
 		{ return false; }
-	virtual bool assign_vfunc(const Surface &other)
+	virtual bool assign_vfunc(const Surface & /* other */)
 		{ return false; }
 	virtual bool clear_vfunc()
 		{ return false; }
@@ -149,7 +169,7 @@ public:
 	public:
 		const Handle resource;
 		const bool full;
-		const RectInt &rect;
+		const RectInt rect;
 
 	private:
 		bool lock_token;
@@ -157,15 +177,19 @@ public:
 		Surface::Handle surface;
 
 		void lock() {
-			if (resource)
+			if (resource) {
 				if (write) resource->rwlock.writer_lock();
 				      else resource->rwlock.reader_lock();
+			}
 		}
 		void unlock() {
-			if (resource)
+			if (resource) {
 				if (write) resource->rwlock.writer_unlock();
 				      else resource->rwlock.reader_unlock();
+			}
 		}
+
+		LockBase(const LockBase&): full(), lock_token() { }
 
 	public:
 		explicit LockBase(const Handle &resource):
@@ -190,7 +214,7 @@ public:
 
 		template<typename T>
 		bool convert(bool create = true, bool any = false)
-			{ return convert(T::tocken.handle(), create, any); }
+			{ return convert(T::token.handle(), create, any); }
 
 		bool is_lock_tocken() const
 			{ return lock_token; }
@@ -200,7 +224,7 @@ public:
 			{ return surface ? surface->get_token() : Surface::Token::Handle(); }
 		const Handle& get_resource() const
 			{ return resource; }
-		Surface::Handle get_handle() const
+		const Surface::Handle& get_handle() const
 			{ return surface; }
 		template<typename T>
 		etl::handle<T> cast() const
@@ -231,12 +255,14 @@ public:
 		LockRead(const Handle &resource, const RectInt &rect, const Surface::Token::Handle &token):
 			LockReadBase(resource, rect, token)
 			{ convert(get_lock_token()); }
-		etl::handle<Type> get() const
+		etl::handle<Type> cast_handle() const
 			{ return cast<Type>(); }
+		const Type* get() const
+			{ return dynamic_cast<Type*>(get_handle().get()); }
 		const Type* operator->() const
-			{ assert(get()); return surface.get(); }
+			{ assert(get()); return get(); }
 		const Type& operator*() const
-			{ assert(get()); return *surface; }
+			{ assert(get()); return *get(); }
 	};
 
 	template<typename T>
@@ -255,12 +281,14 @@ public:
 		LockWrite(const Handle &resource, const RectInt &rect, const Surface::Token::Handle &token):
 			LockWriteBase(resource, rect, token)
 			{ convert(get_lock_token()); }
-		etl::handle<Type> get() const
+		etl::handle<Type> cast_handle() const
 			{ return cast<Type>(); }
+		Type* get() const
+			{ return dynamic_cast<Type*>(get_handle().get()); }
 		Type* operator->() const
-			{ assert(get()); return surface.get(); }
+			{ assert(get()); return get(); }
 		Type& operator*() const
-			{ assert(get()); return *surface; }
+			{ assert(get()); return *get(); }
 	};
 
 	template<typename T>
@@ -279,12 +307,14 @@ public:
 		SemiLockWrite(const Handle &resource, const RectInt &rect, const Surface::Token::Handle &token):
 			SemiLockWriteBase(resource, rect, token)
 			{ convert(get_lock_token()); }
-		etl::handle<Type> get() const
+		etl::handle<Type> cast_handle() const
 			{ return cast<Type>(); }
+		Type* get() const
+			{ return dynamic_cast<Type*>(get_handle().get()); }
 		Type* operator->() const
-			{ assert(get()); return surface.get(); }
+			{ assert(get()); return get(); }
 		Type& operator*() const
-			{ assert(get()); return *surface; }
+			{ assert(get()); return *get(); }
 	};
 
 private:
@@ -296,8 +326,8 @@ private:
 	bool blank;
 	Map surfaces;
 
-	Glib::Threads::Mutex mutex;
-	Glib::Threads::RWLock rwlock;
+	mutable Glib::Threads::Mutex mutex;
+	mutable Glib::Threads::RWLock rwlock;
 
 	Surface::Handle get_surface(
 		const Surface::Token::Handle &token,

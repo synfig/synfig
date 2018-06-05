@@ -46,7 +46,7 @@ public:
 	OptimizerSplit()
 	{
 		category_id = CATEGORY_ID_LIST;
-		depends_from = CATEGORY_LINEAR;
+		depends_from = CATEGORY_SPECIALIZED;
 		for_list = true;
 	}
 

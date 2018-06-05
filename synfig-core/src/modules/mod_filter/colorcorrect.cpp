@@ -44,8 +44,7 @@
 #include <synfig/valuenode.h>
 #include <synfig/cairo_renddesc.h>
 
-#include <synfig/rendering/common/task/taskpixelcolormatrix.h>
-#include <synfig/rendering/common/task/taskpixelgamma.h>
+#include <synfig/rendering/common/task/taskpixelprocessor.h>
 
 #endif
 

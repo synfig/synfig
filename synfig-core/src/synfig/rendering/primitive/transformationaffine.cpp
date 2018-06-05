@@ -77,10 +77,10 @@ TransformationAffine::transform_bounds_vfunc(const Bounds &bounds) const
 			 .expand( corners[3] );
 
 	// calculate units per "pixel"
-	Real upp_x0 = fabs(corners[1][0] - corners[0][0]) / (bounds.resolution * bounds.rect.get_width());
-	Real upp_x1 = fabs(corners[2][0] - corners[0][0]) / (bounds.resolution * bounds.rect.get_height());
-	Real upp_y0 = fabs(corners[1][1] - corners[0][1]) / (bounds.resolution * bounds.rect.get_width());
-	Real upp_y1 = fabs(corners[2][1] - corners[0][1]) / (bounds.resolution * bounds.rect.get_height());
+	Real upp_x0 = fabs(corners[1][0] - corners[0][0]) / (bounds.resolution[0] * bounds.rect.get_width());
+	Real upp_x1 = fabs(corners[2][0] - corners[0][0]) / (bounds.resolution[1] * bounds.rect.get_height());
+	Real upp_y0 = fabs(corners[1][1] - corners[0][1]) / (bounds.resolution[0] * bounds.rect.get_width());
+	Real upp_y1 = fabs(corners[2][1] - corners[0][1]) / (bounds.resolution[1] * bounds.rect.get_height());
 	Vector upp(
 		std::max(upp_x0, upp_x1),
 		std::max(upp_y0, upp_y1) );

@@ -209,10 +209,8 @@ Translate::get_full_bounding_rect(Context context)const
 rendering::Task::Handle
 Translate::build_rendering_task_vfunc(Context context)const
 {
-	rendering::TaskTransformation::Handle task_transformation(new rendering::TaskTransformation());
-	rendering::AffineTransformation::Handle affine_transformation(new rendering::AffineTransformation());
-	affine_transformation->matrix.set_translate(param_origin.get(Vector()));
-	task_transformation->transformation = affine_transformation;
+	rendering::TaskTransformationAffine::Handle task_transformation(new rendering::TaskTransformationAffine());
+	task_transformation->transformation->matrix.set_translate(param_origin.get(Vector()));
 	task_transformation->sub_task() = context.build_rendering_task();
 	return task_transformation;
 }

@@ -50,27 +50,27 @@ public:
 
 	enum CategoryId
 	{
-		CATEGORY_ID_COMMON,		     //! common optimizations of task-tree
-		CATEGORY_ID_PRE_SPECIALIZE,  //! common optimizations, when transformations already applied
-		CATEGORY_ID_SPECIALIZE,      //! renderer-specified optimizations of task-tree
-		CATEGORY_ID_POST_SPECIALIZE, //! optimizations of task-tree, which required assigned surfaces
-		CATEGORY_ID_CONVERT,	     //! OptimizerSurfaceConvert
-		CATEGORY_ID_LINEAR,		     //! OptimizerLinear
-		CATEGORY_ID_LIST		     //! optimizations of plain (linear) list of tasks
+		CATEGORY_ID_BEGIN,		 //! optimizations of pure input tasks-tree
+		CATEGORY_ID_COORDS,      //! optimizations of tasks-tree with calculated coordinates and resolution
+		CATEGORY_ID_SPECIALIZED, //! optimizations of tree of specialized tasks
+		CATEGORY_ID_LIST		 //! optimizations of plain (linear) list of tasks
 	};
 
 	enum
 	{
 		CATEGORY_ID_COUNT        = CATEGORY_ID_LIST + 1,
-		CATEGORY_COMMON          = 1 << CATEGORY_ID_COMMON,          //! --
-		CATEGORY_PRE_SPECIALIZE  = 1 << CATEGORY_ID_PRE_SPECIALIZE,  //! --
-		CATEGORY_SPECIALIZE      = 1 << CATEGORY_ID_SPECIALIZE,      //! --
-		CATEGORY_POST_SPECIALIZE = 1 << CATEGORY_ID_POST_SPECIALIZE, //! --
-		CATEGORY_CONVERT         = 1 << CATEGORY_ID_CONVERT,         //! --
-		CATEGORY_LINEAR          = 1 << CATEGORY_ID_LINEAR,          //! --
-		CATEGORY_LIST            = 1 << CATEGORY_ID_LIST,            //! --
-		CATEGORY_TREE            = CATEGORY_LINEAR - 1,              //! optimizations of task-tree
-		CATEGORY_ALL             = (1 << CATEGORY_ID_COUNT) -1       //! all optimizations
+
+		CATEGORY_BEGIN           = 1 << CATEGORY_ID_BEGIN,
+		CATEGORY_COORDS          = 1 << CATEGORY_ID_COORDS,
+		CATEGORY_SPECIALIZED     = 1 << CATEGORY_ID_SPECIALIZED,
+		CATEGORY_LIST            = 1 << CATEGORY_ID_LIST,
+
+		CATEGORY_ALL_TREE        = CATEGORY_BEGIN
+		                         | CATEGORY_COORDS
+								 | CATEGORY_SPECIALIZED,
+		CATEGORY_ALL_SPECIALIZED = CATEGORY_SPECIALIZED
+								 | CATEGORY_LIST,
+		CATEGORY_ALL             = (1 << CATEGORY_ID_COUNT) - 1
 	};
 
 	enum
@@ -78,7 +78,7 @@ public:
 		MODE_NONE          = 0,	//! do nothing
 		MODE_REPEAT_LAST   = 1, //! repeat optimization for current task
 		MODE_REPEAT_PARENT = 3, //! repeat optimization for parent task (includes MODE_REPEAT_LAST)
-		MODE_REPEAT_BRUNCH = 7, //! repeat optimization for each of parent tasks (includes MODE_REPEAT_PARENT and MODE_REPEAT_LAST)
+		MODE_REPEAT_BRANCH = 7, //! repeat optimization for each of parent tasks (includes MODE_REPEAT_PARENT and MODE_REPEAT_LAST)
 								//! in sequence: current, parent, parent-of-parent, etc
 		MODE_RECURSIVE     = 8,	//! uses with MODE_REPEAT_XXX, and tells what
 		                        //! repeating should be done with recursive call of subtasks
@@ -91,6 +91,33 @@ public:
 		//! false: optimizer1(taskA), optimizer1(taskB), optimizer2(taskA), optimizer2(taskB)
 		bool simultaneous_run;
 		CategoryInfo(bool simultaneous_run): simultaneous_run(simultaneous_run) { }
+	};
+
+	template<typename T>
+	class Holder {
+	public:
+		typedef T Type;
+		const int count;
+		const int owncount;
+		const etl::handle<Type> object;
+
+		Holder(const etl::handle<Type> &object, int owncount = 1):
+			count(object.count()),
+			owncount(owncount),
+			object(object) { }
+		Holder(const Holder &other):
+			count(other.count),
+			owncount(other.owncount),
+			object(other.object) { }
+
+		bool is_own()
+			{ return count == owncount; }
+		etl::handle<Type> clone() {
+			return !object ? etl::handle<Type>()
+			     : etl::handle<Type>( dynamic_cast<Type*>( object->clone() ) );
+		}
+		etl::handle<Type> edit()
+			{ return is_own() ? object : clone(); }
 	};
 
 	struct RunParams
@@ -108,7 +135,7 @@ public:
 		//! Optimizer can read parent tasks via this field
 		const RunParams * const parent;
 
-		const Task::Handle orig_task;
+		const Holder<Task> orig_task;
 
 		//! Task for optimization, optimizer may replace or remove (make null) it,
 		//! (see Optimizer::for_task and Optimizer::for_root_task)
@@ -125,13 +152,14 @@ public:
 			Task::List &list,
 			Category depends_from,
 			const Task::Handle &task = Task::Handle(),
-			const RunParams *parent = NULL
+			const RunParams *parent = NULL,
+			const int owncount = 1
 		):
 			renderer(renderer),
 			list(list),
 			depends_from(depends_from),
 			parent(parent),
-			orig_task(task),
+			orig_task(task, owncount),
 			ref_task(task),
 			ref_affects_to(),
 			ref_mode()
@@ -149,8 +177,8 @@ public:
 		{ }
 
 		//! Creates RunParams structure for sub-task
-		RunParams sub(const Task::Handle &task) const
-			{ return RunParams(renderer, list, depends_from, task, this); }
+		RunParams sub(const Task::Handle &task, int owncount = 1) const
+			{ return RunParams(renderer, list, depends_from, task, this, owncount); }
 
 		const RunParams& root() const
 			{ return parent ? parent->root() : *this; }
@@ -165,6 +193,7 @@ public:
 		const RunParams* get_level(int index) const
 			{ return get_parent(get_current_level_index() - index); }
 	};
+
 
 	static const CategoryInfo categories_info[CATEGORY_ID_COUNT];
 
@@ -215,83 +244,10 @@ public:
 	}
 
 	void apply(const RunParams &params, const Task::Handle &task) const
-	{
-		apply(params);
-		params.ref_task = task;
-	}
+		{ apply(params); params.ref_task = task; }
 
 	void apply_clone(const RunParams &params) const
-	{
-		apply(params, params.ref_task->clone());
-	}
-
-	template<typename T>
-	static void assign_surface(
-		Task::Handle &task,
-		int width, int height,
-		const Vector& rect_lt, const Vector& rect_rb,
-		const RectInt &target_rect )
-	{
-		if (task && !task->target_surface)
-		{
-			task = task->clone();
-			task->target_surface = new T();
-			task->target_surface->is_temporary = true;
-			task->target_surface->set_size(width, height);
-			task->init_target_rect(target_rect, rect_lt, rect_rb);
-			assert( task->check() );
-			task->trunc_target_by_bounds();
-		}
-	}
-
-	template<typename T>
-	static void assign_surface(Task::Handle &task, const Task::Handle &parent)
-	{
-		if (task && parent && parent->target_surface)
-			assign_surface<T>(
-				task,
-				parent->get_target_rect().maxx - parent->get_target_rect().minx,
-				parent->get_target_rect().maxy - parent->get_target_rect().miny,
-				parent->get_source_rect_lt(),
-				parent->get_source_rect_rb(),
-				RectInt( 0, 0,
-					parent->get_target_rect().maxx - parent->get_target_rect().minx,
-					parent->get_target_rect().maxy - parent->get_target_rect().miny ));
-	}
-
-	template<typename T>
-	static void assign_surfaces(const Task::Handle &parent)
-	{
-		if (parent && parent->target_surface)
-		{
-			for(Task::List::iterator i = parent->sub_tasks.begin(); i != parent->sub_tasks.end(); ++i)
-				assign_surface<T>(*i, parent);
-		}
-	}
-
-	template<typename T, typename TT>
-	static void assign(const etl::handle<T> &dest, const etl::handle<TT> &src)
-		{ *(TT*)dest.get() = *src; dest->trunc_target_by_bounds(); }
-
-	template<typename SurfaceType, typename T, typename TT>
-	static void assign_all(const etl::handle<T> &dest, const etl::handle<TT> &src)
-		{ assign(dest, src); assign_surfaces<SurfaceType>(dest); }
-
-	template<typename T, typename TT>
-	static void init_and_assign(etl::handle<T> &dest, const etl::handle<TT> &src)
-		{ dest = new T(); assign(dest, src); }
-
-	template<typename SurfaceType, typename T, typename TT>
-	static void init_and_assign_all(etl::handle<T> &dest, const etl::handle<TT> &src)
-		{ dest = new T(); assign_all<SurfaceType>(dest, src); }
-
-	template<typename T, typename TT>
-	static const etl::handle<T> create_and_assign(const etl::handle<TT> &src)
-		{ const etl::handle<T> dest = new T(); assign(dest, src); return dest; }
-
-	template<typename SurfaceType, typename T, typename TT>
-	static const etl::handle<T> create_and_assign_all(const etl::handle<TT> &src)
-		{ const etl::handle<T> dest = new T(); assign_all<SurfaceType>(dest, src); return dest; }
+		{ apply(params, params.ref_task->clone()); }
 };
 
 } /* end namespace rendering */

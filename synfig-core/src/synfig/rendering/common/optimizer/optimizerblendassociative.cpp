@@ -40,9 +40,7 @@
 
 #include "optimizerblendassociative.h"
 
-#include "../task/tasklist.h"
 #include "../task/taskblend.h"
-#include "../task/taskcomposite.h"
 
 #endif
 
@@ -58,8 +56,29 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 void
-OptimizerBlendAssociative::run(const RunParams& params) const
+OptimizerBlendAssociative::run(const RunParams& /*params*/) const
 {
+	/*
+	// for some cases we can do this transformation:
+	//   blend1(blend0(a, b), c) -> blend1(a, blend0(b, c))
+
+	// bs1<-blend1(bs0<-blend0(sa, sb), sc)
+	// bs1<-blend1(sa, bs0<-blend0(sb, sc))
+
+	TaskBlend::Handle blend = TaskBlend::Handle::cast_dynamic(params.ref_task);
+	if ( blend
+	  && blend->target_surface
+	  && blend->sub_task_a()
+	  && blend->sub_task_a()->target_surface == blend->target_surface
+	  && ((1 << blend->blend_method) & Color::BLEND_METHODS_ASSOCIATIVE)
+	  && approximate_less(0.f, blend->amount)
+	  && approximate_less(blend->amount, 1.f) )
+	{
+
+	}
+
+
+
 	// TODO: optimization works only if surface_a == target_surface
 	TaskBlend::Handle blend = TaskBlend::Handle::cast_dynamic(params.ref_task);
 	if ( blend
@@ -135,6 +154,7 @@ OptimizerBlendAssociative::run(const RunParams& params) const
 			}
 		}
 	}
+	*/
 }
 
 /* === E N T R Y P O I N T ================================================= */

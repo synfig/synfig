@@ -47,7 +47,7 @@ class TaskLayer: public Task
 public:
 	typedef etl::handle<TaskLayer> Handle;
 	static Token token;
-	virtual Token::Handle get_token() const { return token; }
+	virtual Token::Handle get_token() const { return token.handle(); }
 
 	Layer::Handle layer;
 

@@ -168,6 +168,105 @@ Renderer::unregister_optimizer(const Optimizer::Handle &optimizer)
 }
 
 void
+Renderer::register_mode(int index, const ModeToken::Handle &mode)
+	{ modes.insert(modes.begin() + index, mode); }
+
+void
+Renderer::register_mode(const ModeToken::Handle &mode)
+	{ modes.push_back(mode); }
+
+void
+Renderer::unregister_mode(const ModeToken::Handle &mode)
+{
+	for(ModeList::iterator i = modes.begin(); i != modes.end();)
+	if (*i == mode) i = modes.erase(i); else ++i;
+}
+
+void
+Renderer::calc_coords(const Task::List &list) const
+{
+	for(Task::List::const_iterator i = list.begin(); i != list.end(); ++i)
+		if (*i) (*i)->touch_coords();
+}
+
+void
+Renderer::specialize(Task::List &list) const
+{
+	for(Task::List::iterator i = list.begin(); i != list.end(); ++i)
+		if (*i) {
+			Task::Handle task;
+			Task::Token::Handle token = task->get_token();
+			for(ModeList::const_iterator j = modes.begin(); j != modes.end() && !task; ++j)
+				task = (*i)->convert_to(*j);
+			if (!task)
+				task = (*i)->convert_to_any();
+			if (!task)
+				task = task->clone();
+			*i = task;
+			specialize((*i)->sub_tasks);
+		}
+}
+
+void
+Renderer::remove_dummy(Task::List &list) const
+{
+	// remove dummy tasks
+	for(Task::List::iterator i = list.begin(); i != list.end();)
+		if ( !*i
+		  || i->type_is<TaskNone>()
+		  || i->type_is<TaskSurface>()
+		  || i->type_is<TaskList>() )
+			i = list.erase(i); else ++i;
+}
+
+void
+Renderer::linearize(Task::List &list) const
+{
+	// convert task-tree to linear list
+	for(Task::List::iterator i = list.begin(); i != list.end();)
+	{
+		if (*i && !i->type_is<TaskSurface>())
+		{
+			// remember current position
+			int index = i - list.begin();
+			bool found = false;
+
+			for(Task::List::iterator j = (*i)->sub_tasks.begin(); j != (*i)->sub_tasks.end(); ++j)
+			{
+				if ( *j
+				  && !TaskSurface::Handle::cast_dynamic(*j) )
+				{
+					i = list.insert(i, *j);
+					++i;
+
+					if (!found)
+					{
+						// clone task
+						int index = j - (*i)->sub_tasks.begin();
+						*i = (*i)->clone();
+						j = (*i)->sub_tasks.begin() + index;
+						found = true;
+					}
+
+					// replace sub_task by TaskSurface
+					Task::Handle surface(new TaskSurface());
+					*surface = **j;
+					surface->sub_tasks.clear();
+					*j = surface;
+				}
+			}
+
+			// if changed then go back to check inserted tasks
+			if (found)
+				{ i = list.begin() + index; continue; }
+		}
+		++i;
+	}
+
+	remove_dummy(list);
+}
+
+void
 Renderer::optimize_recursive(
 	const Optimizer::List &optimizers,
 	const Optimizer::RunParams& params,
@@ -270,9 +369,9 @@ Renderer::optimize_recursive(
 				params.ref_affects_to |= sub_params.ref_affects_to;
 
 				// if mode is REPEAT_BRUNCH then provide this flag to result
-				if ((sub_params.ref_mode & Optimizer::MODE_REPEAT_BRUNCH) == Optimizer::MODE_REPEAT_BRUNCH)
+				if ((sub_params.ref_mode & Optimizer::MODE_REPEAT_BRANCH) == Optimizer::MODE_REPEAT_BRANCH)
 				{
-					params.ref_mode |= Optimizer::MODE_REPEAT_BRUNCH;
+					params.ref_mode |= Optimizer::MODE_REPEAT_BRANCH;
 					params.ref_mode |= (sub_params.ref_mode & Optimizer::MODE_RECURSIVE);
 				}
 				else
@@ -334,9 +433,12 @@ Renderer::optimize_recursive(
 void
 Renderer::optimize(Task::List &list) const
 {
-	//debug::Measure t("Renderer::optimize");
+	#ifdef DEBUG_TASK_MEASURE
+	debug::Measure t("Renderer::optimize");
+	#endif
 
 	int current_category_id = 0;
+	int prepared_category_id = 0;
 	int current_optimizer_index = 0;
 	Optimizer::Category current_affected = 0;
 	Optimizer::Category categories_to_process = Optimizer::CATEGORY_ALL;
@@ -369,6 +471,18 @@ Renderer::optimize(Task::List &list) const
 			current_affected = 0;
 			continue;
 		}
+
+		while (prepared_category_id < current_category_id)
+			switch (++prepared_category_id) {
+			case Optimizer::CATEGORY_ID_COORDS:
+				calc_coords(list); break;
+			case Optimizer::CATEGORY_ID_SPECIALIZED:
+				specialize(list); break;
+			case Optimizer::CATEGORY_ID_LIST:
+				linearize(list); break;
+			default:
+				break;
+			}
 
 		bool simultaneous_run = Optimizer::categories_info[current_category_id].simultaneous_run;
 		const Optimizer::List &current_optimizers = simultaneous_run ? optimizers[current_category_id] : single;
@@ -474,15 +588,17 @@ Renderer::optimize(Task::List &list) const
 		current_optimizer_index += current_optimizers.size();
 	}
 
-	// remove nulls
-	for(Task::List::iterator j = list.begin(); j != list.end();)
-		if (*j) ++j; else j = list.erase(j);
+	remove_dummy(list);
 }
 
 void
 Renderer::find_deps(const Task::List &list) const
 {
-	typedef std::map<Surface::Handle, Task::Handle> DepTargetPrevMap;
+	#ifdef DEBUG_TASK_MEASURE
+	debug::Measure t("Renderer::find_deps");
+	#endif
+
+	typedef std::map<SurfaceResource::Handle, Task::Handle> DepTargetPrevMap;
 	DepTargetPrevMap target_prev_map;
 	Task::Set tasks_to_process;
 	const int max_iterations = 100000;
@@ -613,19 +729,8 @@ Renderer::run(const Task::List &list) const
 		log(get_debug_options().task_list_log, list, "input list");
 
 	Task::List optimized_list(list);
-	{
-		#ifdef DEBUG_TASK_MEASURE
-		debug::Measure t("optimize");
-		#endif
-		optimize(optimized_list);
-	}
-
-	{
-		#ifdef DEBUG_TASK_MEASURE
-		debug::Measure t("find deps");
-		#endif
-		find_deps(optimized_list);
-	}
+	optimize(optimized_list);
+	find_deps(optimized_list);
 
 	#ifdef DEBUG_TASK_LIST
 	log("", optimized_list, "optimized list");
@@ -653,7 +758,10 @@ Renderer::run(const Task::List &list) const
 				++task_cond->renderer_data.deps_count;
 		optimized_list.push_back(task_cond);
 
-		queue->enqueue(optimized_list, Task::RunParams(this));
+		// try to find existing handle to this renderer instead,
+		// because creation and destruction of handle may cause destruction of renderer
+		// if it never stored in handles before
+		queue->enqueue(optimized_list, Task::RunParams( get_renderer(get_name()) ));
 
 		task_cond->cond->wait(mutex);
 		if (!task_cond->renderer_data.success) success = false;
@@ -683,7 +791,10 @@ Renderer::enqueue(const Task::List &list, const Task::Handle &finish_signal_task
 				++finish_signal_task->renderer_data.deps_count;
 		optimized_list.push_back(finish_signal_task);
 	}
-	queue->enqueue(optimized_list, Task::RunParams(this));
+	// try to find existing handle to this renderer instead,
+	// because creation and destruction of handle may cause destruction of renderer
+	// if it never stored in handles before
+	queue->enqueue(optimized_list, Task::RunParams( get_renderer(get_name()) ));
 }
 
 void
@@ -696,7 +807,7 @@ Renderer::log(
 	bool use_stack = false;
 	const Optimizer::RunParams* p = optimization_stack ? optimization_stack->get_level(level) : NULL;
 	Task::Handle t = task;
-	if (p && p->orig_task == t)
+	if (p && p->orig_task.object == t)
 		{ use_stack = true; t = p->ref_task; }
 
 	if (t)

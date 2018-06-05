@@ -65,12 +65,12 @@ class TaskContourSW: public TaskContour, public TaskSW,
 public:
 	typedef etl::handle<TaskContourSW> Handle;
 	static Token token;
-	virtual Token::Handle get_token() const { return token; }
+	virtual Token::Handle get_token() const { return token.handle(); }
 
 	virtual Color::BlendMethodFlags get_supported_blend_methods() const
 		{ return Color::BLEND_METHODS_ALL & ~Color::BLEND_METHODS_STRAIGHT; }
 
-	virtual bool run(RunParams &params) const {
+	virtual bool run(RunParams&) const {
 		if (!is_valid())
 			return true;
 
@@ -82,14 +82,14 @@ public:
 		bounds_transfromation.m20 = target_rect.minx - ppu[0]*source_rect.minx;
 		bounds_transfromation.m21 = target_rect.miny - ppu[1]*source_rect.miny;
 
-		Matrix matrix = transformation * bounds_transfromation;
+		Matrix matrix = transformation->matrix * bounds_transfromation;
 
 		Polyspan polyspan;
 		polyspan.init(target_rect);
 		software::Contour::build_polyspan(contour->get_chunks(), matrix, polyspan, detail);
 		polyspan.sort_marks();
 
-		LockWrite la(target_surface);
+		LockWrite la(this);
 		if (!la)
 			return false;
 
@@ -108,7 +108,8 @@ public:
 };
 
 
-Task::Token TaskContourSW::token<TaskContourSW, TaskContour, TaskContour>("ContourSW");
+Task::Token TaskContourSW::token(
+	DescReal<TaskContourSW, TaskContour>("ContourSW") );
 
 } // end of anonimous namespace
 

@@ -50,6 +50,7 @@ class Renderer: public etl::shared_object
 {
 public:
 	typedef etl::handle<Renderer> Handle;
+	typedef std::multimap<double, ModeToken::Handle> ModeMap;
 
 	struct DebugOptions {
 		String task_list_log;
@@ -64,6 +65,7 @@ private:
 	static DebugOptions debug_options;
 	static long long last_registered_optimizer_index;
 
+	ModeList modes;
 	Optimizer::List optimizers[Optimizer::CATEGORY_ID_COUNT];
 
 public:
@@ -78,13 +80,25 @@ public:
 	void register_optimizer(const Optimizer::Handle &optimizer);
 	void unregister_optimizer(const Optimizer::Handle &optimizer);
 
+	const ModeList& get_modes() const { return modes; }
+	void register_mode(int index, const ModeToken::Handle &mode);
+	void register_mode(const ModeToken::Handle &mode);
+	void unregister_mode(const ModeToken::Handle &mode);
+
 private:
+	void calc_coords(const Task::List &list) const;
+	void specialize(Task::List &list) const;
+	void remove_dummy(Task::List &list) const;
+	void linearize(Task::List &list) const;
+
 	void optimize_recursive(
 		const Optimizer::List &optimizers,
 		const Optimizer::RunParams& params,
 		int &calls_count,
 		int &optimizations_count,
 		int max_level ) const;
+
+	void optimize(Optimizer::Category category, Task::List &list) const;
 
 	void log(
 		const String &logfile,

@@ -41,7 +41,6 @@
 #include "optimizerblendzero.h"
 
 #include "../task/taskblend.h"
-#include "../task/tasksurfaceempty.h"
 
 #endif
 
@@ -57,8 +56,9 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 void
-OptimizerBlendZero::apply_zero(const RunParams &params, const TaskBlend::Handle &blend, const Task::Handle &task) const
+OptimizerBlendZero::apply_zero(const RunParams &/*params*/, const TaskBlend::Handle &/*blend*/, const Task::Handle &/*task*/) const
 {
+	/*
 	if (!task || !task->valid_target())
 	{
 		Task::Handle empty = new TaskSurfaceEmpty();
@@ -80,11 +80,13 @@ OptimizerBlendZero::apply_zero(const RunParams &params, const TaskBlend::Handle 
 		- task->get_target_offset()
 		+ (task == blend->sub_task_a() ? blend->get_offset_a() : blend->get_offset_b()) );
 	assert( params.ref_task->check() );
+	*/
 }
 
 void
-OptimizerBlendZero::run(const RunParams& params) const
+OptimizerBlendZero::run(const RunParams& /*params*/) const
 {
+	/*
 	TaskBlend::Handle blend = TaskBlend::Handle::cast_dynamic(params.ref_task);
 	if ( blend
 	  && blend->target_surface
@@ -123,6 +125,7 @@ OptimizerBlendZero::run(const RunParams& params) const
 			//	{ apply_zero(params, blend, blend->sub_task_b()); return; }
 		}
 	}
+	*/
 }
 
 /* === E N T R Y P O I N T ================================================= */

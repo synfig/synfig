@@ -45,8 +45,8 @@ class OptimizerBlendBlend: public Optimizer
 public:
 	OptimizerBlendBlend()
 	{
-		category_id = CATEGORY_ID_POST_SPECIALIZE;
-		depends_from = CATEGORY_SPECIALIZE;
+		category_id = CATEGORY_ID_SPECIALIZED;
+		depends_from = CATEGORY_COORDS;
 		mode = MODE_REPEAT_PARENT;
 		deep_first = true;
 		for_task = true;

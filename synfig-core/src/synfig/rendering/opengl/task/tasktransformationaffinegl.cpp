@@ -155,11 +155,10 @@ public:
 };
 
 
-Task::Token TaskTransformationAffineGL::token<
-	TaskTransformationAffineGL,
-	TaskTransformationAffine,
-	TransformationAffine >
-	("TaskTransformationAffineGL");
+Task::Token TaskTransformationAffineGL::token(
+	DescReal< TaskTransformationAffineGL,
+		      TaskTransformationAffine >
+			    ("TransformationAffineGL") );
 
 } // end of anonimous namespace
 

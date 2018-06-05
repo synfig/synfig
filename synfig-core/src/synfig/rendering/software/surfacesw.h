@@ -63,7 +63,7 @@ protected:
 
 public:
 	SurfaceSW();
-	explicit SurfaceSW(const Surface &other, bool own_surface);
+	explicit SurfaceSW(synfig::Surface &surface, bool own_surface);
 	~SurfaceSW();
 
 	void set_surface(synfig::Surface &surface, bool own_surface = false);

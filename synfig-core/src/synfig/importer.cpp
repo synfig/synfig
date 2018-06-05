@@ -163,7 +163,7 @@ Importer::~Importer()
 rendering::Surface::Handle
 Importer::get_frame(const RendDesc & /* renddesc */, const Time &time)
 {
-	if (last_surface_ && last_surface_->is_created())
+	if (last_surface_ && last_surface_->is_exists())
 		return last_surface_;
 
 	Surface surface;

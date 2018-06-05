@@ -36,6 +36,7 @@
 #endif
 
 #include "task.h"
+#include "renderer.h"
 
 #endif
 
@@ -53,10 +54,19 @@ using namespace rendering;
 
 synfig::Token Mode::mode_token;
 synfig::Token Task::token;
-Task::Token TaskSurface::token<TaskSurface, Task>("Surface");
-Task::Token TaskNone::token<TaskNone, Task>("None");
-Task::Token TaskList::token<TaskList, Task>("List");
-Task::Token TaskCallbackCond::token<TaskCallbackCond, Task>("CallbackCond");
+
+const Task::Handle Task::blank;
+
+Task::Token TaskSurface::token(
+	DescSpecial<TaskSurface>("Surface") );
+Task::Token TaskLockSurface::token(
+	DescSpecial<TaskLockSurface>("LoskSurface") );
+Task::Token TaskNone::token(
+	DescSpecial<TaskNone>("None") );
+Task::Token TaskList::token(
+	DescSpecial<TaskList>("List") );
+Task::Token TaskCallbackCond::token(
+	DescSpecial<TaskCallbackCond>("CallbackCond") );
 
 
 void Task::Token::unprepare_vfunc()
@@ -70,16 +80,20 @@ Task::Token::prepare_vfunc()
 		  : mode && abstract_task && abstract_task->is_abstract() && convert );
 	if (!is_abstract() && abstract_task->is_abstract()) {
 		assert(!abstract_task->alternatives_.count(mode));
-		cast_const(abstract_task).alternatives_[mode] = Handle(*this);
+		abstract_task->cast_const().alternatives_[mode] = Handle(*this);
 	}
 }
+
+
+Task::RunParams::RunParams(const Renderer::Handle &renderer):
+	rendererHolder(renderer), renderer(renderer.get()) { }
 
 
 Task::Task():
 	bounds_calculated(false),
 	bounds(Rect::infinite()),
 	source_rect(Rect::infinite()),
-	target_rect(Rect::zero())
+	target_rect(RectInt::zero())
 { }
 
 Task::~Task()
@@ -105,7 +119,7 @@ Task::Handle
 Task::convert_to(ModeToken::Handle mode) const
 {
 	if (!mode)
-		return Token::Handle();
+		return Task::Handle();
 
 	Token::Handle token = get_token();
 	if (!token->is_abstract())
@@ -113,7 +127,7 @@ Task::convert_to(ModeToken::Handle mode) const
 
 	Token::Map::const_iterator i = token->alternatives().find(mode);
 	if (i == token->alternatives().end())
-		return Token::Handle();
+		return Task::Handle();
 
 	return Task::Handle(i->second->convert(*this));
 }
@@ -178,7 +192,7 @@ Task::trunc_to_zero()
 void
 Task::trunc_source_rect(const Rect &rect)
 {
-	if (!rect || !is_valid_coords())
+	if (!rect.is_valid() || !is_valid_coords())
 		{ trunc_to_zero(); return; }
 	Rect sr = source_rect & rect;
 	if (!sr.is_valid())
@@ -195,7 +209,7 @@ Task::trunc_source_rect(const Rect &rect)
 void
 Task::trunc_target_rect(const RectInt &rect)
 {
-	if (!rect || !is_valid_coords())
+	if (!rect.is_valid() || !is_valid_coords())
 		{ trunc_to_zero(); return; }
 	RectInt tr = target_rect & rect;
 	if (!tr.is_valid())
@@ -225,11 +239,11 @@ Task::calc_bounds() const
 	{ return Rect::infinite(); }
 
 void
-Task::set_coords(const Rect &source_rect, const VectorInt target_size)
+Task::set_coords(const Rect &source_rect, const VectorInt &target_size)
 {
 	if (this->source_rect.is_full_infinite()) {
 		this->source_rect = source_rect;
-		this->target_rect = RectInt(Rect::zero(), target_size);
+		this->target_rect = RectInt(VectorInt(), target_size);
 		if (!is_valid_coords())
 			trunc_to_zero();
 		if (!target_surface)
@@ -252,6 +266,11 @@ Task::set_coords(const Rect &source_rect, const VectorInt target_size)
 void
 Task::set_coords_zero()
 	{ set_coords(Rect::zero(), VectorInt::zero()); }
+
+void
+Task::touch_coords()
+	{ set_coords(Rect(source_rect), target_rect.get_size()); }
+
 
 void
 Task::set_coords_sub_tasks()
@@ -280,7 +299,7 @@ TaskLockSurface::set_surface(const SurfaceResource::Handle &surface)
 
 TaskLockSurface&
 TaskLockSurface::operator=(const TaskLockSurface& other) {
-	(TaskSurface*)this = other;
+	*(TaskSurface*)this = other;
 	if (other.lock_ && other.lock_->resource != other.target_surface)
 		lock();
 	return *this;

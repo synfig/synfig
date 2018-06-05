@@ -41,7 +41,6 @@
 #include "optimizerpixelprocessorsplit.h"
 
 #include "../task/taskpixelprocessor.h"
-#include "../task/tasklist.h"
 
 #endif
 
@@ -57,8 +56,9 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 void
-OptimizerPixelProcessorSplit::run(const RunParams& params) const
+OptimizerPixelProcessorSplit::run(const RunParams& /*params*/) const
 {
+	/*
 	TaskPixelProcessor::Handle pixelprocessor = TaskPixelProcessor::Handle::cast_dynamic(params.ref_task);
 	if ( pixelprocessor
 	  && pixelprocessor->target_surface
@@ -151,6 +151,7 @@ OptimizerPixelProcessorSplit::run(const RunParams& params) const
 			}
 		}
 	}
+	*/
 }
 
 /* === E N T R Y P O I N T ================================================= */

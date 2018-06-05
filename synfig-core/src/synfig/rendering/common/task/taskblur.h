@@ -46,7 +46,7 @@ class TaskBlur: public Task
 public:
 	typedef etl::handle<TaskBlur> Handle;
 	static Token token;
-	virtual Token::Handle get_token() const { return token; }
+	virtual Token::Handle get_token() const { return token.handle(); }
 
 	Blur blur;
 

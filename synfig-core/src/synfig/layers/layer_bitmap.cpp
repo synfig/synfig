@@ -49,11 +49,10 @@
 #include <synfig/localization.h>
 #include <synfig/paramdesc.h>
 
-#include <synfig/rendering/common/task/tasksurface.h>
-#include <synfig/rendering/common/task/tasksurfaceempty.h>
-#include <synfig/rendering/common/task/tasksurfaceresample.h>
 #include <synfig/rendering/software/surfacesw.h>
 #include <synfig/rendering/software/surfaceswpacked.h>
+#include <synfig/rendering/common/task/tasktransformation.h>
+#include <synfig/rendering/common/task/taskpixelprocessor.h>
 
 #endif
 
@@ -86,15 +85,11 @@ synfig::Layer_Bitmap::Layer_Bitmap():
 synfig::Surface&
 Layer_Bitmap::get_surface() const
 {
-	if (!rendering_surface || !rendering_surface->is_created())
-	{
-		rendering_surface = new rendering::SurfaceSW();
-		rendering_surface->set_size(128, 128);
-		rendering_surface->create();
-	}
-	if (!rendering::SurfaceSW::Handle::cast_dynamic(rendering_surface))
-		rendering_surface = new rendering::SurfaceSW(*rendering_surface);
-	return rendering::SurfaceSW::Handle::cast_dynamic(rendering_surface)->get_surface();
+	// TODO: not thread safe, return SurfaceResource instread
+	if (!rendering_surface || !rendering_surface->is_exists())
+		rendering_surface->create(128, 128);
+	rendering::SurfaceResource::LockWrite<rendering::SurfaceSW> lock(rendering_surface);
+	return lock->get_surface();
 }
 
 bool
@@ -249,7 +244,7 @@ synfig::Layer_Bitmap::get_color(Context context, const Point &pos)const
 
 	Point surface_pos;
 
-	if(!get_amount() || !rendering_surface || !rendering_surface->is_created())
+	if(!get_amount() || !rendering_surface || !rendering_surface->is_exists())
 		return context.get_color(pos);
 
 	surface_pos=pos-tl;
@@ -671,20 +666,38 @@ rendering::Task::Handle
 Layer_Bitmap::build_composite_task_vfunc(ContextParams /* context_params */) const
 {
 	if ( !rendering_surface
-	  || !rendering_surface->is_created() )
-		return new rendering::TaskSurfaceEmpty();
+	  || !rendering_surface->is_exists() )
+		return new rendering::TaskNone();
+
+	ColorReal gamma = (Color::value_type)param_gamma_adjust.get(Real());
+	Point tl(param_tl.get(Point()));
+	Point br(param_br.get(Point()));
+	Matrix3 m;
+	m.m00 = (br[0] - tl[0]); m.m20 = tl[0];
+	m.m11 = (br[1] - tl[1]); m.m21 = tl[1];
+
+	rendering::Task::Handle task;
 
 	rendering::TaskSurface::Handle task_surface(new rendering::TaskSurface());
 	task_surface->target_surface = rendering_surface;
-	task_surface->init_target_rect(
-		RectInt(0, 0, task_surface->target_surface->get_width(), task_surface->target_surface->get_height()),
-		param_tl.get(Vector()),
-		param_br.get(Vector()) );
+	task_surface->target_rect = RectInt(VectorInt(), rendering_surface->get_size());
+	task_surface->source_rect = Rect(0.0, 0.0, 1.0, 1.0);
+	task = task_surface;
 
-	rendering::TaskSurfaceResample::Handle task_resample(new rendering::TaskSurfaceResample());
-	task_resample->gamma = (Color::value_type)param_gamma_adjust.get(Real());
-	task_resample->interpolation = (Color::Interpolation)param_c.get(int());
-	task_resample->antialiasing = true;
-	task_resample->sub_task() = task_surface;
-	return task_resample;
+	rendering::TaskTransformationAffine::Handle task_transform = new rendering::TaskTransformationAffine();
+	task_transform->interpolation = (Color::Interpolation)param_c.get(int());
+	task_transform->transformation->matrix = m;
+	task_transform->sub_task() = task;
+	task = task_transform;
+
+	rendering::TaskPixelGamma::Handle task_gamma = new rendering::TaskPixelGamma();
+	if (!approximate_equal_lp(gamma, 1.f)) {
+		task_gamma->gamma[0] = gamma;
+		task_gamma->gamma[1] = gamma;
+		task_gamma->gamma[2] = gamma;
+		task_gamma->sub_task() = task;
+		task = task_gamma;
+	}
+
+	return task;
 }

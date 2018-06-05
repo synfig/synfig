@@ -51,7 +51,8 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 
-rendering::Surface::Token SurfaceSWPacked::token<SurfaceSWPacked>("SurfaceSWPacked");
+rendering::Surface::Token SurfaceSWPacked::token(
+	Desc<SurfaceSWPacked>("SurfaceSWPacked") );
 
 
 bool

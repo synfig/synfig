@@ -54,6 +54,9 @@ Mesh::Handle
 Transformation::build_mesh_vfunc(const Rect &target_rect, const Vector &precision) const
 {
 	typedef std::pair<int, Mesh::Vertex> GridPoint;
+	Transformation::Handle back_transform = create_inverted();
+	if (!back_transform)
+		return Mesh::Handle();
 
 	const Vector grid_p0 = target_rect.get_min();
 	const Vector grid_p1 = target_rect.get_max();
@@ -75,7 +78,7 @@ Transformation::build_mesh_vfunc(const Rect &target_rect, const Vector &precisio
 		{
 			Vector p( grid_p0[0] + i*grid_step[0],
 					  grid_p0[1] + j*grid_step[1] );
-			Point tp = back_transform(p);
+			Point tp = back_transform->transform(p);
 			if (tp.is_valid()) {
 				grid.push_back(GridPoint(visible_vertex_count, Mesh::Vertex(p, tp)));
 				++visible_vertex_count;

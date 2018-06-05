@@ -62,7 +62,7 @@ class TaskBlurSW: public TaskBlur, public TaskSW, public TaskInterfaceComposite
 public:
 	typedef etl::handle<TaskBlurSW> Handle;
 	static Token token;
-	virtual Token::Handle get_token() const { return token; }
+	virtual Token::Handle get_token() const { return token.handle(); }
 
 	virtual Color::BlendMethodFlags get_supported_blend_methods() const
 		{ return Color::BLEND_METHODS_ALL & ~Color::BLEND_METHODS_STRAIGHT; }
@@ -71,8 +71,8 @@ public:
 		if (!is_valid() || !sub_task() || !sub_task()->is_valid())
 			return true;
 
-		LockWrite la(target_surface);
-		LockRead lb(sub_task()->target_surface);
+		LockWrite la(this);
+		LockRead lb(sub_task());
 		if (!la || !lb)
 			return false;
 
@@ -95,7 +95,8 @@ public:
 };
 
 
-Task::Token TaskBlurSW::token<TaskBlurSW, TaskBlur, TaskBlur>("BlurSW");
+Task::Token TaskBlurSW::token(
+	DescReal<TaskBlurSW, TaskBlur>("BlurSW") );
 
 } // end of anonimous namespace
 

@@ -64,7 +64,7 @@ public:
 
 	mutable synfig::Mutex mutex;
 	mutable rendering::software::PackedSurface::Reader reader;
-	mutable rendering::Surface::Handle rendering_surface;
+	mutable rendering::SurfaceResource::Handle rendering_surface;
 	mutable bool trimmed;
 	mutable unsigned int width, height, top, left;
 

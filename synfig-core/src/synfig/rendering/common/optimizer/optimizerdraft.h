@@ -47,7 +47,7 @@ class OptimizerDraft: public Optimizer
 public:
 	OptimizerDraft()
 	{
-		category_id = CATEGORY_ID_COMMON;
+		category_id = CATEGORY_ID_BEGIN;
 		for_task = true;
 	}
 };
@@ -60,8 +60,8 @@ private:
 public:
 	explicit OptimizerDraftLowRes(Real scale): scale(scale)
 	{
-		category_id = CATEGORY_ID_PRE_SPECIALIZE;
-		depends_from = CATEGORY_COMMON;
+		category_id = CATEGORY_ID_COORDS;
+		depends_from = CATEGORY_BEGIN;
 		for_root_task = true;
 		for_task = false;
 		deep_first = true;

@@ -64,7 +64,6 @@
 #include "valuenodes/valuenode_const.h"
 
 #include "rendering/common/task/tasklayer.h"
-#include "rendering/common/task/tasksurfaceempty.h"
 
 #include "importer.h"
 
@@ -920,7 +919,7 @@ rendering::Task::Handle
 Layer::build_rendering_task(Context context)const
 {
 	rendering::Task::Handle task = build_rendering_task_vfunc(context);
-	return task ? task : rendering::Task::Handle(new rendering::TaskSurfaceEmpty());
+	return task ? task : rendering::Task::Handle(new rendering::TaskNone());
 }
 
 String

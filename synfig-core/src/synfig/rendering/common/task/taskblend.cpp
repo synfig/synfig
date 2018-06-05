@@ -51,7 +51,8 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 
-Task::Token TaskBlend::token<TaskBlend, Task>("Blend");
+Task::Token TaskBlend::token(
+	DescAbstract<TaskBlend>("Blend") );
 
 
 Rect

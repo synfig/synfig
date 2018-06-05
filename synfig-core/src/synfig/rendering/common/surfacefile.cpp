@@ -51,7 +51,8 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 
-rendering::Surface::Token SurfaceFile::token<SurfaceFile>("SurfaceFile");
+rendering::Surface::Token SurfaceFile::token(
+	Desc<SurfaceFile>("SurfaceFile") );
 
 
 bool

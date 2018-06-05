@@ -72,11 +72,11 @@ Layer_RenderingTask::get_color(Context /* context */, const Point &pos)const
 {
 	for(rendering::Task::List::const_iterator i = tasks.begin(); i != tasks.end(); ++i)
 	{
-		if (*i && (*i)->valid_target() && (*i)->target_surface.type_is<rendering::SurfaceSW>())
+		if (*i && (*i)->is_valid())
 		{
-			RectInt src_target_rect = (*i)->get_target_rect();
-			Vector src_lt = (*i)->get_source_rect_lt();
-			Vector src_rb = (*i)->get_source_rect_rb();
+			RectInt src_target_rect = (*i)->target_rect;
+			Vector src_lt = (*i)->source_rect.get_min();
+			Vector src_rb = (*i)->source_rect.get_max();
 
 			Matrix units_to_src_pixels;
 			units_to_src_pixels.m00 = (src_target_rect.maxx - src_target_rect.minx)/(src_rb[0] - src_lt[0]);
@@ -117,11 +117,11 @@ Layer_RenderingTask::accelerated_render(Context /* context */, Surface *surface,
 
 		for(rendering::Task::List::const_reverse_iterator ri = tasks.rbegin(); ri != tasks.rend(); ++ri)
 		{
-			if (*ri && (*ri)->valid_target() && (*ri)->target_surface.type_is<rendering::SurfaceSW>())
+			if (*ri && (*ri)->is_valid())
 			{
-				RectInt src_target_rect = (*ri)->get_target_rect();
-				Vector src_lt = (*ri)->get_source_rect_lt();
-				Vector src_rb = (*ri)->get_source_rect_rb();
+				RectInt src_target_rect = (*ri)->target_rect;
+				Vector src_lt = (*ri)->source_rect.get_min();
+				Vector src_rb = (*ri)->source_rect.get_max();
 
 				Matrix src_pixels_to_units;
 				src_pixels_to_units.m00 = (src_rb[0] - src_lt[0])/(src_target_rect.maxx - src_target_rect.minx);
@@ -131,18 +131,19 @@ Layer_RenderingTask::accelerated_render(Context /* context */, Surface *surface,
 
 				Matrix transformation = src_pixels_to_units * units_to_dest_pixels;
 
-				rendering::TaskSurfaceResampleSW::resample(
-					*surface,
-					dest_target_rect,
-					rendering::SurfaceSW::Handle::cast_dynamic((*ri)->target_surface)->get_surface(),
-					src_target_rect,
-					transformation,
-					1.f,
-					Color::INTERPOLATION_LINEAR,
-					false,
-					false,
-					1.f,
-					Color::BLEND_COMPOSITE );
+				rendering::SurfaceResource::LockRead<rendering::SurfaceSW> lock((*ri)->target_surface);
+				if (lock)
+					rendering::TaskTransformationAffineSW::resample(
+						*surface,
+						dest_target_rect,
+						lock->get_surface(),
+						src_target_rect,
+						transformation,
+						1.f,
+						Color::INTERPOLATION_LINEAR,
+						false,
+						1.f,
+						Color::BLEND_COMPOSITE );
 			}
 		}
 	}

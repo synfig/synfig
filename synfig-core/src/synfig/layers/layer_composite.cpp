@@ -49,7 +49,6 @@
 #include "layer_bitmap.h"
 #include <synfig/rendering/common/task/taskblend.h>
 #include <synfig/rendering/common/task/tasklayer.h>
-#include <synfig/rendering/common/task/tasksurfaceempty.h>
 #include <synfig/rendering/software/surfacesw.h>
 
 #endif
@@ -115,9 +114,11 @@ Layer_Composite::accelerated_render(Context context,Surface *surface,int quality
 	if(!context.accelerated_render(sub_surface,quality,renddesc,&stageone))
 		return false;
 
-	rendering::SurfaceSW::Handle sub_surface_sw = new rendering::SurfaceSW();
-	sub_surface_sw->set_surface(*sub_surface, true);
-	surfacelayer->rendering_surface = sub_surface_sw;
+	if (!sub_surface->is_valid())
+		return false;
+
+	surfacelayer->rendering_surface->assign(
+		new rendering::SurfaceSW(*sub_surface, true) );
 
 	// Sets up the interpolation of the context (now the surface layer is the first one)
 	// depending on the quality

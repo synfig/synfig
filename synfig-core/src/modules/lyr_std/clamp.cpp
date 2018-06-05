@@ -71,20 +71,11 @@ SYNFIG_LAYER_SET_CVS_ID(Layer_Clamp,"$Id$");
 
 /* === E N T R Y P O I N T ================================================= */
 
+rendering::Task::Token TaskClamp::token(
+	DescAbstract<TaskClamp>("Clamp") );
+rendering::Task::Token TaskClampSW::token(
+	DescReal<TaskClampSW, TaskClamp>("ClampSW") );
 
-void
-TaskClampSW::split(const RectInt &sub_target_rect)
-{
-	trunc_target_rect(sub_target_rect);
-	if (valid_target() && sub_task() && sub_task()->valid_target())
-	{
-		sub_task() = sub_task()->clone();
-		sub_task()->trunc_target_rect(
-			get_target_rect()
-			- get_target_offset()
-			- get_offset() );
-	}
-}
 
 void
 TaskClampSW::clamp_pixel(Color &dst, const Color &src) const
@@ -139,25 +130,26 @@ TaskClampSW::clamp_pixel(Color &dst, const Color &src) const
 }
 
 bool
-TaskClampSW::run(RunParams & /* params */) const
+TaskClampSW::run(RunParams&) const
 {
-	const synfig::Surface &a =
-		rendering::SurfaceSW::Handle::cast_dynamic( sub_task()->target_surface )->get_surface();
-	synfig::Surface &c =
-		rendering::SurfaceSW::Handle::cast_dynamic( target_surface )->get_surface();
-
-	//debug::DebugSurface::save_to_file(a, "TaskClampSW__run__a");
-
-	RectInt r = get_target_rect();
-	if (r.valid())
+	RectInt r = target_rect;
+	if (!r.valid())
 	{
 		VectorInt offset = get_offset();
-		RectInt ra = sub_task()->get_target_rect() + r.get_min() + get_offset();
+		RectInt ra = sub_task()->target_rect + r.get_min() + get_offset();
 		if (ra.valid())
 		{
 			etl::set_intersect(ra, ra, r);
 			if (ra.valid())
 			{
+				LockWrite ldst(this);
+				if (!ldst) return false;
+				LockRead lsrc(sub_task());
+				if (!lsrc) return false;
+
+				const synfig::Surface &a = lsrc->get_surface();
+				synfig::Surface &c = ldst->get_surface();
+
 				synfig::Surface::pen pc = c.get_pen(ra.minx, ra.maxx);
 				synfig::Surface::pen pa = c.get_pen(ra.minx, ra.maxx);
 				for(int y = ra.miny; y < ra.maxy; ++y)
@@ -171,41 +163,7 @@ TaskClampSW::run(RunParams & /* params */) const
 		}
 	}
 
-	//debug::DebugSurface::save_to_file(c, "TaskClampSW__run__c");
-
 	return true;
-}
-
-
-void
-OptimizerClampSW::run(const RunParams& params) const
-{
-	TaskClamp::Handle clamp = TaskClamp::Handle::cast_dynamic(params.ref_task);
-	if ( clamp
-	  && clamp->target_surface
-	  && clamp.type_equal<TaskClamp>() )
-	{
-		TaskClampSW::Handle clamp_sw;
-		init_and_assign_all<rendering::SurfaceSW>(clamp_sw, clamp);
-
-		// TODO: Are we really need to check 'is_temporary' flag?
-		if ( clamp_sw->sub_task()->target_surface->is_temporary )
-		{
-			clamp_sw->sub_task()->target_surface = clamp_sw->target_surface;
-			clamp_sw->sub_task()->move_target_rect(
-					clamp_sw->get_target_offset() );
-		}
-		else
-		{
-			clamp_sw->sub_task()->set_target_origin( VectorInt::zero() );
-			clamp_sw->sub_task()->target_surface->set_size(
-				clamp_sw->sub_task()->get_target_rect().maxx,
-				clamp_sw->sub_task()->get_target_rect().maxy );
-		}
-		assert( clamp_sw->sub_task()->check() );
-
-		apply(params, clamp_sw);
-	}
 }
 
 

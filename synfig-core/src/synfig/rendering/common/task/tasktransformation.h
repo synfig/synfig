@@ -64,7 +64,7 @@ class TaskTransformation: public Task, public TaskInterfaceTransformation
 public:
 	typedef etl::handle<TaskTransformation> Handle;
 	static Token token;
-	virtual Token::Handle get_token() const { return token; }
+	virtual Token::Handle get_token() const { return token.handle(); }
 
 	Color::Interpolation interpolation;
 	Vector supersample;
@@ -86,7 +86,7 @@ class TaskTransformationAffine: public TaskTransformation
 public:
 	typedef etl::handle<TaskTransformationAffine> Handle;
 	static Token token;
-	virtual Token::Handle get_token() const { return token; }
+	virtual Token::Handle get_token() const { return token.handle(); }
 
 	Holder<TransformationAffine> transformation;
 

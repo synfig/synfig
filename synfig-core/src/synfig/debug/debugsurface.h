@@ -48,7 +48,6 @@ public:
 	static void save_to_file(const Surface &surface, const String &filename, bool overwrite = false);
 	static void save_to_file(const rendering::Surface &surface, const String &filename, bool overwrite = false);
 	static void save_to_file(const etl::handle<rendering::Surface> &surface, const String &filename, bool overwrite = false);
-	static void save_to_file(const rendering::SurfaceResource &surface, const String &filename, bool overwrite = false);
 	static void save_to_file(const etl::handle<rendering::SurfaceResource> &surface, const String &filename, bool overwrite = false);
 };
 

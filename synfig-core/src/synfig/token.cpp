@@ -47,12 +47,21 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
+bool Token::ready_ = false;
+bool Token::root_exists_ = false;
+Token *Token::first_ = 0;
+Token *Token::last_ = 0;
+
 Token Token::token;
 
 Token::Token(const Token&):
 	previous_(), next_(), in_process_(), prepared_() { }
 
-Token::Token(Handle parent):
+Token::Token():
+	previous_(), next_(), in_process_(), prepared_()
+{ init(); }
+
+Token::Token(const Handle &parent):
 	previous_(last_),
 	next_(),
 	in_process_()
@@ -103,7 +112,7 @@ Token::fill_all_parents()
 	in_process_ = true;
 	for(Set::iterator i = parents_.begin(); i != parents_.end(); ++i)
 	{
-		Token &t = cast_const(*i);
+		Token &t = (*i)->cast_const();
 		all_parents_.insert( t.handle() );
 		t.fill_all_parents();
 		all_parents_.insert( t.all_parents_.begin(), t.all_parents_.end() );
@@ -160,9 +169,9 @@ Token::rebuild()
 	for(Token* t = first_; t; t = t->next_)
 	{
 		for(Set::iterator i = t->parents_.begin(); i != t->parents_.end(); ++i)
-			cast_const(*i).children_.insert( t->handle() );
+			(*i)->cast_const().children_.insert( t->handle() );
 		for(Set::iterator i = t->all_parents_.begin(); i != t->all_parents_.end(); ++i)
-			cast_const(*i).all_children_.insert( t->handle() );
+			(*i)->cast_const().all_children_.insert( t->handle() );
 	}
 
 	// prepare

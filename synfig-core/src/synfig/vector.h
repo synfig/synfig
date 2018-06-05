@@ -313,6 +313,155 @@ public:
 typedef Vector Point;
 
 
+/*!	\class Vector3
+**	\todo writeme
+*/
+class Vector3
+{
+public:
+	typedef Real value_type;
+
+private:
+	value_type _x, _y, _z;
+
+public:
+	Vector3(): _x(0.0), _y(0.0), _z(0.0) { };
+	Vector3(const value_type &x, const value_type &y, const value_type &z):_x(x),_y(y), _z(z) { };
+	explicit Vector3(const Vector &v, const value_type &z = value_type()):
+	_x(v[0]),
+	_y(v[1]),
+	_z(z)
+	{ };
+
+	bool is_valid()const { return !(std::isnan(_x) || std::isnan(_y) || std::isnan(_z)); }
+	bool is_nan_or_inf()const { return !is_valid() || std::isinf(_x) || std::isinf(_y) || std::isinf(_z); }
+
+	bool
+	operator<(const Vector3 &rhs)const
+	{
+		return _x<rhs._x ? true
+			 : rhs._x<_x ? false
+			 : _z<rhs._z ? true
+			 : rhs._z<_z ? false
+			 : _y<rhs._y;
+	}
+
+	value_type &
+	operator[](const int& i)
+	{ return i == 0 ? _z : i == 1 ? _y : _z; }
+
+	const value_type &
+	operator[](const int& i) const
+	{ return i == 0 ? _z : i == 1 ? _y : _z; }
+
+	const Vector3 &
+	operator+=(const Vector3 &rhs)
+	{
+		_x+=rhs._x;
+		_y+=rhs._y;
+		_z+=rhs._z;
+		return *this;
+	}
+
+	const Vector3 &
+	operator-=(const Vector3 &rhs)
+	{
+		_x-=rhs._x;
+		_y-=rhs._y;
+		_z-=rhs._z;
+		return *this;
+	}
+
+	const Vector3 &
+	operator*=(const value_type &rhs)
+	{
+		_x*=rhs;
+		_y*=rhs;
+		_z*=rhs;
+		return *this;
+	}
+
+	const Vector3 &
+	operator/=(const value_type &rhs)
+	{
+		value_type tmp=1.0/rhs;
+		_x*=tmp;
+		_y*=tmp;
+		_z*=tmp;
+		return *this;
+	}
+
+	Vector3
+	operator+(const Vector3 &rhs)const
+		{ return Vector3(*this)+=rhs; }
+
+	Vector3
+	operator-(const Vector3 &rhs)const
+		{ return Vector3(*this)-=rhs; }
+
+	Vector3
+	operator*(const value_type &rhs)const
+		{ return Vector3(*this)*=rhs; }
+
+	Vector3
+	operator/(const value_type &rhs)const
+		{ return Vector3(*this)/=rhs; }
+
+	Vector3
+	operator-()const
+		{ return Vector3(-_x,-_y,-_z); }
+
+	value_type
+	operator*(const Vector3 &rhs)const
+		{ return _x*rhs._x+_y*rhs._y+_z*rhs._z; }
+
+	bool
+	operator==(const Vector3 &rhs)const
+		{ return is_equal_to(rhs); }
+
+	bool
+	operator!=(const Vector3 &rhs)const
+		{ return !(*this == rhs); }
+
+	//! Returns the squared magnitude of the vector
+	value_type mag_squared()const
+		{ return _x*_x+_y*_y+_z*_z; }
+
+	//! Returns the magnitude of the vector
+	value_type mag()const
+		{ return sqrt(mag_squared()); }
+
+	//! Returns the reciprocal of the magnitude of the vector
+	value_type inv_mag()const
+		{ return 1.0/sqrt(mag_squared()); }
+
+	//! Returns a normalized version of the vector
+	Vector3 norm()const
+		{ return *this * inv_mag(); }
+
+	bool is_equal_to(const Vector3& rhs)const
+		{ return approximate_equal((*this-rhs).mag_squared(), value_type()); }
+
+	static Vector3 zero() { return Vector3(); }
+	static Vector3 nan() { return Vector3(real_nan<value_type>(), real_nan<value_type>(), real_nan<value_type>()); }
+
+	Vector3 multiply_coords(const Vector3 &rhs) const
+		{ return Vector3(_x*rhs._x, _y*rhs._y, _z*rhs._z); }
+	Vector3 divide_coords(const Vector3 &rhs) const
+		{ return Vector3(_x/rhs._x, _y/rhs._y, _z/rhs._z); }
+	Vector3 one_divide_coords() const
+		{ return Vector3(1.0/_x, 1.0/_y, 1.0/_z); }
+	Vector3 divide_z() const
+		{ value_type tmp = 1.0/_z; return Vector3(_x*tmp, _y*tmp, 1.0); }
+	Vector to_2d() const
+		{ return Vector(_x, _y); }
+};
+
+/*!	\typedef Point3
+**	\todo writeme
+*/
+typedef Vector3 Point3;
+
 
 }; // END of namespace synfig
 

@@ -53,7 +53,8 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 
-rendering::Surface::Token SurfaceGL::token<SurfaceGL>("SurfaceGL");
+rendering::Surface::Token SurfaceGL::token(
+	Desc<SurfaceGL>("SurfaceGL") );
 
 
 SurfaceGL::SurfaceGL(): id()

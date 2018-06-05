@@ -54,7 +54,8 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 
-Task::Token TaskContourGL::token<TaskContourGL, TaskContour, TaskContour>("ContourGL");
+Task::Token TaskContourGL::token(
+	DescReal<TaskContourGL, TaskContour>("ContourGL") );
 
 
 void

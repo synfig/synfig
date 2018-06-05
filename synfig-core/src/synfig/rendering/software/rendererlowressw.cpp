@@ -45,28 +45,12 @@
 #include "../common/optimizer/optimizerblendseparate.h"
 #include "../common/optimizer/optimizerblendsplit.h"
 #include "../common/optimizer/optimizerblendzero.h"
-#include "../common/optimizer/optimizercalcbounds.h"
 #include "../common/optimizer/optimizerdraft.h"
-#include "../common/optimizer/optimizerlinear.h"
 #include "../common/optimizer/optimizerlist.h"
 #include "../common/optimizer/optimizerpixelprocessorsplit.h"
 #include "../common/optimizer/optimizersplit.h"
-#include "../common/optimizer/optimizersurface.h"
-#include "../common/optimizer/optimizersurfaceconvert.h"
-#include "../common/optimizer/optimizersurfacecreate.h"
-#include "../common/optimizer/optimizersurfacedestroy.h"
-#include "../common/optimizer/optimizersurfaceresample.h"
 #include "../common/optimizer/optimizertransformation.h"
 #include "../common/optimizer/optimizertransformationaffine.h"
-
-#include "optimizer/optimizerblendsw.h"
-#include "optimizer/optimizerblursw.h"
-#include "optimizer/optimizercontoursw.h"
-#include "optimizer/optimizerlayersw.h"
-#include "optimizer/optimizermeshsw.h"
-#include "optimizer/optimizerpixelcolormatrixsw.h"
-#include "optimizer/optimizerpixelgammasw.h"
-#include "optimizer/optimizersurfaceresamplesw.h"
 
 #endif
 
@@ -86,17 +70,7 @@ RendererLowResSW::RendererLowResSW(int level):
 {
 	// register optimizers
 	register_optimizer(new OptimizerTransformationAffine());
-	register_optimizer(new OptimizerSurfaceResample());
 	register_optimizer(new OptimizerDraftLowRes(level));
-	register_optimizer(new OptimizerCalcBounds());
-
-	register_optimizer(new OptimizerBlendSW());
-	register_optimizer(new OptimizerBlurSW());
-	register_optimizer(new OptimizerContourSW());
-	register_optimizer(new OptimizerLayerSW());
-	register_optimizer(new OptimizerPixelColorMatrixSW());
-	register_optimizer(new OptimizerPixelGammaSW());
-	register_optimizer(new OptimizerSurfaceResampleSW());
 
 	register_optimizer(new OptimizerBlendZero());
 	register_optimizer(new OptimizerBlendBlend());
@@ -106,10 +80,7 @@ RendererLowResSW::RendererLowResSW(int level):
 	register_optimizer(new OptimizerBlendSeparate());
 	register_optimizer(new OptimizerBlendSplit());
 	register_optimizer(new OptimizerPixelProcessorSplit());
-	register_optimizer(new OptimizerSurfaceConvert());
 
-	register_optimizer(new OptimizerLinear());
-	register_optimizer(new OptimizerSurfaceCreate());
 	//register_optimizer(new OptimizerSplit());
 }
 

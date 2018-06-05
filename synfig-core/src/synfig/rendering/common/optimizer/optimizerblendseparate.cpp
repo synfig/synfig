@@ -41,9 +41,6 @@
 #include "optimizerblendseparate.h"
 
 #include "../task/taskblend.h"
-#include "../task/tasklist.h"
-#include "../task/tasksurface.h"
-#include "../task/tasksurfaceempty.h"
 
 #endif
 
@@ -59,8 +56,9 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 void
-OptimizerBlendSeparate::run(const RunParams& params) const
+OptimizerBlendSeparate::run(const RunParams& /*params*/) const
 {
+	/*
 	TaskBlend::Handle blend = TaskBlend::Handle::cast_dynamic(params.ref_task);
 	if ( blend
 	  && blend->target_surface
@@ -108,6 +106,7 @@ OptimizerBlendSeparate::run(const RunParams& params) const
 
 		apply(params, list);
 	}
+	*/
 }
 
 /* === E N T R Y P O I N T ================================================= */

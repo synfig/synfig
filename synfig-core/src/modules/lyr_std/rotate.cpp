@@ -253,13 +253,11 @@ Rotate::build_rendering_task_vfunc(Context context)const
 	Vector origin=param_origin.get(Vector());
 	Angle amount=param_amount.get(Angle());
 
-	rendering::TaskTransformation::Handle task_transformation(new rendering::TaskTransformation());
-	rendering::AffineTransformation::Handle affine_transformation(new rendering::AffineTransformation());
-	affine_transformation->matrix =
+	rendering::TaskTransformationAffine::Handle task_transformation(new rendering::TaskTransformationAffine());
+	task_transformation->transformation->matrix =
 			Matrix().set_translate(-origin)
 		  * Matrix().set_rotate(amount)
 		  * Matrix().set_translate(origin);
-	task_transformation->transformation = affine_transformation;
 	task_transformation->sub_task() = context.build_rendering_task();
 	return task_transformation;
 }

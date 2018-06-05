@@ -53,7 +53,8 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 
-rendering::Surface::Token SurfaceMemoryReadWrapper::token<SurfaceMemoryReadWrapper>("SurfaceMemoryReadWrapper");
+rendering::Surface::Token SurfaceMemoryReadWrapper::token(
+	Desc<SurfaceMemoryReadWrapper>("SurfaceMemoryReadWrapper") );
 
 
 void

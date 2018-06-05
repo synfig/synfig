@@ -60,13 +60,13 @@ class TaskBlendSW: public TaskBlend, public TaskSW
 public:
 	typedef etl::handle<TaskBlendSW> Handle;
 	static Token token;
-	virtual Token::Handle get_token() const { return token; }
+	virtual Token::Handle get_token() const { return token.handle(); }
 
 
-	virtual bool run(RunParams &params) const {
+	virtual bool run(RunParams&) const {
 		if (!is_valid()) return true;
 
-		LockWrite lc(target_surface);
+		LockWrite lc(this);
 		if (!lc) return false;
 		synfig::Surface &c = lc->get_surface();
 		RectInt r = target_rect;
@@ -81,9 +81,9 @@ public:
 				etl::set_intersect(ra, ra, r);
 				if (ra.is_valid() && sub_task_a()->target_surface != target_surface)
 				{
-					LockRead la(sub_task_a()->target_surface);
+					LockRead la(sub_task_a());
 					if (!la) return false;
-					synfig::Surface &a = la->get_surface();
+					synfig::Surface &a = la.cast_handle()->get_surface(); // TODO: make blit_to constant
 
 					synfig::Surface::pen p = c.get_pen(ra.minx, ra.maxx);
 					a.blit_to(
@@ -106,9 +106,9 @@ public:
 				etl::set_intersect(rb, rb, r);
 				if (rb.is_valid())
 				{
-					LockRead lb(sub_task_b()->target_surface);
+					LockRead lb(sub_task_b());
 					if (!lb) return false;
-					synfig::Surface &b = lb->get_surface();
+					synfig::Surface &b = lb.cast_handle()->get_surface(); // TODO: make blit_to constant
 
 					synfig::Surface::alpha_pen ap(c.get_pen(rb.minx, rb.miny));
 					ap.set_blend_method(blend_method);
@@ -156,7 +156,8 @@ public:
 };
 
 
-Task::Token TaskBlendSW::token<TaskBlendSW, TaskBlend, TaskBlend>("BlendSW");
+Task::Token TaskBlendSW::token(
+	DescReal<TaskBlendSW, TaskBlend>("BlendSW") );
 
 } // end of anonimous namespace
 

@@ -46,7 +46,7 @@ class TaskMesh: public Task
 public:
 	typedef etl::handle<TaskMesh> Handle;
 	static Token token;
-	virtual Token::Handle get_token() const { return token; }
+	virtual Token::Handle get_token() const { return token.handle(); }
 
 	Mesh::Handle mesh;
 

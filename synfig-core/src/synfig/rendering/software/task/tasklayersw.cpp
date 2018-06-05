@@ -64,9 +64,9 @@ class TaskLayerSW: public TaskLayer, public TaskSW
 public:
 	typedef etl::handle<TaskLayerSW> Handle;
 	static Token token;
-	virtual Token::Handle get_token() const { return token; }
+	virtual Token::Handle get_token() const { return token.handle(); }
 
-	virtual bool run(RunParams &params) const {
+	virtual bool run(RunParams&) const {
 		if (!is_valid() || !layer)
 			return false;
 
@@ -94,7 +94,7 @@ public:
 
 		Context context(fake_canvas_base.begin(), ContextParams());
 
-		LockWrite ldst(target_surface);
+		LockWrite ldst(this);
 		if (!ldst)
 			return false;
 
@@ -103,7 +103,8 @@ public:
 };
 
 
-Task::Token TaskLayerSW::token<TaskLayerSW, TaskLayer, TaskLayer>("LayerSW");
+Task::Token TaskLayerSW::token(
+	DescReal<TaskLayerSW, TaskLayer>("LayerSW") );
 
 } // end of anonimous namespace
 

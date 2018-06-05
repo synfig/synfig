@@ -58,12 +58,10 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 
-
-Task::Token TaskTransformationAffineSW::token<
-	TaskTransformationAffineSW,
-	TaskTransformationAffine,
-	TransformationAffine >
-	("TransformationAffineSW");
+Task::Token TaskTransformationAffineSW::token(
+	DescReal< TaskTransformationAffineSW,
+		      TaskTransformationAffine >
+			    ("TransformationAffineSW") );
 
 
 class TaskTransformationAffineSW::Helper
@@ -415,14 +413,14 @@ TaskTransformationAffineSW::resample(
 }
 
 bool
-TaskTransformationAffineSW::run(RunParams & /* params */) const
+TaskTransformationAffineSW::run(RunParams&) const
 {
 	// TODO: remove antialiasing
 
 	if (!is_valid() || !sub_task() || !sub_task()->is_valid())
 		return true;
 
-	LockWrite ldst(target_surface);
+	LockWrite ldst(this);
 	if (!ldst)
 		return false;
 
@@ -442,7 +440,7 @@ TaskTransformationAffineSW::run(RunParams & /* params */) const
 	dst_units_to_pixels.m20 = target_rect.minx - dst_ppu[0]*source_rect.minx;
 	dst_units_to_pixels.m21 = target_rect.miny - dst_ppu[1]*source_rect.miny;
 
-	Matrix matrix = src_pixels_to_units * transformation * dst_units_to_pixels;
+	Matrix matrix = src_pixels_to_units * transformation->matrix * dst_units_to_pixels;
 
 	// resample
 	LockReadBase lsrc(sub_task());

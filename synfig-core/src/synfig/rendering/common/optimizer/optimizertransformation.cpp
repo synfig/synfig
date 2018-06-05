@@ -39,8 +39,6 @@
 
 #include "../../primitive/transformationaffine.h"
 #include "../task/tasktransformation.h"
-#include "../task/tasktransformableaffine.h"
-#include "../task/tasksolid.h"
 #include "../task/taskmesh.h"
 
 #endif
@@ -57,8 +55,9 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 bool
-OptimizerTransformation::can_optimize(const Task::Handle &sub_task)
+OptimizerTransformation::can_optimize(const Task::Handle &/*sub_task*/)
 {
+	/*
 	if (!sub_task)
 		return true;
 	if (sub_task.type_is<TaskSolid>())
@@ -68,12 +67,14 @@ OptimizerTransformation::can_optimize(const Task::Handle &sub_task)
 	if (TaskTransformation::Handle transformation = TaskTransformation::Handle::cast_dynamic(sub_task))
 		if (AffineTransformation::Handle::cast_dynamic(transformation->transformation))
 			return true;
+	*/
 	return false;
 }
 
 void
-OptimizerTransformation::calc_unoptimized_blend_brunches(int &ref_count, const Task::Handle &blend_sub_task)
+OptimizerTransformation::calc_unoptimized_blend_brunches(int &/*ref_count*/, const Task::Handle &/*blend_sub_task*/)
 {
+	/*
 	if (ref_count > 1)
 		return;
 	if (can_optimize(blend_sub_task))
@@ -85,11 +86,13 @@ OptimizerTransformation::calc_unoptimized_blend_brunches(int &ref_count, const T
 		return;
 	}
 	++ref_count;
+	*/
 }
 
 void
-OptimizerTransformation::run(const RunParams& params) const
+OptimizerTransformation::run(const RunParams& /*params*/) const
 {
+	/*
 	// TODO: Optimize transformation to transformation
 	if (TaskTransformation::Handle transformation = TaskTransformation::Handle::cast_dynamic(params.ref_task))
 	{
@@ -160,6 +163,7 @@ OptimizerTransformation::run(const RunParams& params) const
 			}
 		}
 	}
+	*/
 }
 
 /* === E N T R Y P O I N T ================================================= */

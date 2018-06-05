@@ -37,10 +37,6 @@
 
 #include "optimizerlist.h"
 
-#include "../task/tasklist.h"
-#include "../task/tasksurface.h"
-#include "../task/tasksurfaceempty.h"
-
 #endif
 
 using namespace synfig;
@@ -55,8 +51,9 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 void
-OptimizerList::clone_list(const RunParams &params, Task::List::iterator &i, TaskList::Handle &list) const
+OptimizerList::clone_list(const RunParams &/*params*/, Task::List::iterator &/*i*/, TaskList::Handle &/*list*/) const
 {
+	/*
 	if (params.ref_task == list)
 	{
 		int index = i - list->sub_tasks.begin();
@@ -64,11 +61,13 @@ OptimizerList::clone_list(const RunParams &params, Task::List::iterator &i, Task
 		i = list->sub_tasks.begin() + index;
 		apply(params, list);
 	}
+	*/
 }
 
 void
-OptimizerList::run(const RunParams& params) const
+OptimizerList::run(const RunParams& /*params*/) const
 {
+	/*
 	if (TaskList::Handle list = TaskList::Handle::cast_dynamic(params.ref_task))
 	{
 		for(Task::List::iterator i = list->sub_tasks.begin(); i != list->sub_tasks.end();)
@@ -96,6 +95,7 @@ OptimizerList::run(const RunParams& params) const
 		if (list->sub_tasks.size() == 1)
 			apply(params, list->sub_tasks[0]);
 	}
+	*/
 }
 
 /* === E N T R Y P O I N T ================================================= */

@@ -52,7 +52,7 @@ class TaskPixelProcessor: public Task,
 public:
 	typedef etl::handle<TaskPixelProcessor> Handle;
 	static Token token;
-	virtual Token::Handle get_token() const { return token; }
+	virtual Token::Handle get_token() const { return token.handle(); }
 
 	const Task::Handle& sub_task() const { return Task::sub_task(0); }
 	Task::Handle& sub_task() { return Task::sub_task(0); }
@@ -75,7 +75,7 @@ class TaskPixelGamma: public TaskPixelProcessor
 public:
 	typedef etl::handle<TaskPixelGamma> Handle;
 	static Token token;
-	virtual Token::Handle get_token() const { return token; }
+	virtual Token::Handle get_token() const { return token.handle(); }
 
 	union {
 		ColorReal gamma[4];
@@ -90,7 +90,7 @@ class TaskPixelColorMatrix: public TaskPixelProcessor
 public:
 	typedef etl::handle<TaskPixelColorMatrix> Handle;
 	static Token token;
-	virtual Token::Handle get_token() const { return token; }
+	virtual Token::Handle get_token() const { return token.handle(); }
 
 	ColorMatrix matrix;
 

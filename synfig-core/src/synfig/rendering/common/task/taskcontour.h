@@ -47,7 +47,7 @@ class TaskContour: public Task, public TaskInterfaceTransformation
 public:
 	typedef etl::handle<TaskContour> Handle;
 	static Token token;
-	virtual Token::Handle get_token() const { return token; }
+	virtual Token::Handle get_token() const { return token.handle(); }
 
 public:
 	Contour::Handle contour;

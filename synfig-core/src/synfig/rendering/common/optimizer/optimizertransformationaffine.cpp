@@ -38,10 +38,7 @@
 #include "optimizertransformationaffine.h"
 
 #include "../../primitive/transformationaffine.h"
-#include "../task/tasktransformationpass.h"
-#include "../task/tasksolid.h"
 #include "../task/tasktransformation.h"
-#include "../task/tasktransformableaffine.h"
 
 #endif
 
@@ -57,8 +54,9 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 void
-OptimizerTransformationAffine::replace(Task::Handle &dest, const Task::Handle &src, bool clonned) const
+OptimizerTransformationAffine::replace(Task::Handle &/*dest*/, const Task::Handle &/*src*/, bool /*clonned*/) const
 {
+	/*
 	if (src && dest && dest->valid_target() && !src->valid_target())
 	{
 		Task::Handle task = clonned ? src : src->clone();
@@ -68,11 +66,13 @@ OptimizerTransformationAffine::replace(Task::Handle &dest, const Task::Handle &s
 		return;
 	}
 	dest = src;
+	*/
 }
 
 void
-OptimizerTransformationAffine::recursive(Task::Handle &ref_task, const Matrix &matrix) const
+OptimizerTransformationAffine::recursive(Task::Handle &/*ref_task*/, const Matrix &/*matrix*/) const
 {
+	/*
 	if (!ref_task)
 		return;
 
@@ -240,16 +240,19 @@ OptimizerTransformationAffine::recursive(Task::Handle &ref_task, const Matrix &m
 		}
 	}
 	return;
+	*/
 }
 
 
 void
-OptimizerTransformationAffine::run(const RunParams& params) const
+OptimizerTransformationAffine::run(const RunParams& /*params*/) const
 {
+	/*
 	Task::Handle task = params.ref_task;
 	recursive(task, Matrix());
 	if (task != params.ref_task)
 		apply(params, task);
+	*/
 }
 
 /* === E N T R Y P O I N T ================================================= */

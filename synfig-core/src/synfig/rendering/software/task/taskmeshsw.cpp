@@ -53,7 +53,8 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 
-Task::Token TaskMeshSW::token<TaskMeshSW, TaskMesh, TaskMesh>("MeshSW");
+Task::Token TaskMeshSW::token(
+	DescReal<TaskMeshSW, TaskMesh>("MeshSW") );
 
 
 class TaskMeshSW::Internal
@@ -467,10 +468,10 @@ TaskMeshSW::run(RunParams & /* params */) const
 	if (target_surface == sub_task()->target_surface)
 		return false;
 
-	LockWrite la(target_surface);
-	LockRead lb(sub_task()->target_surface);
-	if (!la || !lb)
-		return false;
+	LockWrite la(this);
+	if (!la) return false;
+	LockRead lb(sub_task());
+	if (!lb) return false;
 
 	render_mesh(
 		la->get_surface(),

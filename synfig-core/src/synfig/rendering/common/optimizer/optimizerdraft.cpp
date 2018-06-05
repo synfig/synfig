@@ -40,7 +40,7 @@
 #include "../task/taskcontour.h"
 #include "../task/taskblur.h"
 #include "../task/tasklayer.h"
-#include "../task/tasksurfaceresample.h"
+#include "../task/tasktransformation.h"
 
 #endif
 
@@ -57,8 +57,9 @@ using namespace rendering;
 
 
 void
-OptimizerDraftLowRes::run(const RunParams& params) const
+OptimizerDraftLowRes::run(const RunParams& /*params*/) const
 {
+	/*
 	if (params.ref_task && !params.parent)
 	{
 		Task::Handle sub_task = params.ref_task->clone();
@@ -77,12 +78,14 @@ OptimizerDraftLowRes::run(const RunParams& params) const
 
 		apply(params, resample);
 	}
+	*/
 }
 
 
 void
-OptimizerDraftResample::run(const RunParams& params) const
+OptimizerDraftResample::run(const RunParams& /*params*/) const
 {
+	/*
 	if (TaskSurfaceResample::Handle resample = TaskSurfaceResample::Handle::cast_dynamic(params.ref_task))
 	{
 		if ( resample->interpolation != Color::INTERPOLATION_NEAREST
@@ -96,12 +99,14 @@ OptimizerDraftResample::run(const RunParams& params) const
 			apply(params, resample);
 		}
 	}
+	*/
 }
 
 
 void
-OptimizerDraftContour::run(const RunParams& params) const
+OptimizerDraftContour::run(const RunParams& /*params*/) const
 {
+	/*
 	if (TaskContour::Handle contour = TaskContour::Handle::cast_dynamic(params.ref_task))
 	{
 		if ( approximate_less_lp(contour->detail, 4.0)
@@ -113,12 +118,14 @@ OptimizerDraftContour::run(const RunParams& params) const
 			apply(params, contour);
 		}
 	}
+	*/
 }
 
 
 void
-OptimizerDraftBlur::run(const RunParams& params) const
+OptimizerDraftBlur::run(const RunParams& /*params*/) const
 {
+	/*
 	if (TaskBlur::Handle blur = TaskBlur::Handle::cast_dynamic(params.ref_task))
 	{
 		if (blur->blur.type != Blur::BOX)
@@ -128,24 +135,29 @@ OptimizerDraftBlur::run(const RunParams& params) const
 			apply(params, blur);
 		}
 	}
+	*/
 }
 
 
 void
-OptimizerDraftLayerRemove::run(const RunParams& params) const
+OptimizerDraftLayerRemove::run(const RunParams& /*params*/) const
 {
+	/*
 	if (TaskLayer::Handle layer = TaskLayer::Handle::cast_dynamic(params.ref_task))
 		if (layer->layer && layer->layer->get_name() == layername)
 			apply(params, NULL);
+	*/
 }
 
 
 void
-OptimizerDraftLayerSkip::run(const RunParams& params) const
+OptimizerDraftLayerSkip::run(const RunParams& /*params*/) const
 {
+	/*
 	if (TaskLayer::Handle layer = TaskLayer::Handle::cast_dynamic(params.ref_task))
 		if (layer->layer && layer->layer->get_name() == layername)
 			apply(params, layer->sub_task());
+	*/
 }
 
 

@@ -51,8 +51,10 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 
-Task::Token TaskTransformation::token<TaskTransformation, Task>("Transformation");
-Task::Token TaskTransformationAffine::token<TaskTransformationAffine, TaskTransformation>("TransformationAffine");
+Task::Token TaskTransformation::token(
+	DescAbstract<TaskTransformation>("TaskTransformation") );
+Task::Token TaskTransformationAffine::token(
+	DescAbstract<TaskTransformationAffine, TaskTransformation>("TaskTransformationAffine") );
 
 
 Rect
@@ -66,7 +68,7 @@ TaskTransformation::calc_bounds() const
 	Rect bounds = sub_task()->get_bounds();
 	if (!bounds.is_valid())
 		return Rect();
-	return transformation->transform_bounds(bounds);
+	return transformation->transform_bounds(bounds).rect;
 }
 
 void

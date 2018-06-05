@@ -29,6 +29,7 @@
 
 #include <vector>
 #include <set>
+#include <map>
 
 #include <synfig/rect.h>
 #include <synfig/vector.h>
@@ -117,6 +118,7 @@ public:
 		{ return Handle(*this); }
 };
 
+typedef std::vector<ModeToken::Handle> ModeList;
 
 // Interfaces
 
@@ -152,7 +154,53 @@ public:
 	typedef Task* (*Fabric)();
 	typedef Task* (*CloneFabric)(const Task&);
 
-	class Token: public synfig::Token
+	class Token;
+
+	class DescBase {
+	protected:
+		template<typename Type>
+		static Task* create_func()
+			{ return new Type(); }
+
+		template<typename Type, typename TypeAbstract = Type>
+		static Task* convert_func(const Task &other)
+		{
+			const TypeAbstract *orig = dynamic_cast<const TypeAbstract*>(&other);
+			if (!orig) return 0;
+			Type *task = new Type();
+			*(TypeAbstract*)task = *orig;
+			return task;
+		}
+
+	public:
+		const synfig::Token::Handle parent_token;
+		const String name;
+		const ModeToken::Handle mode;
+		const ConstRef<Token> abstract_task;
+		const Fabric create;
+		const CloneFabric clone;
+		const CloneFabric convert;
+
+		DescBase(
+			const synfig::Token::Handle &parent_token,
+			const String &name,
+			const ModeToken::Handle &mode,
+			const ConstRef<Token> &abstract_task,
+			const Fabric create,
+			const CloneFabric clone,
+			const CloneFabric convert
+		):
+			parent_token(parent_token),
+			name(name),
+			mode(mode),
+			abstract_task(abstract_task),
+			create(create),
+			clone(clone),
+			convert(convert)
+		{ }
+	};
+
+	class Token: public synfig::Token, public DescBase
 	{
 	public:
 		typedef ConstRef<Token> Handle;
@@ -161,55 +209,17 @@ public:
 	private:
 		Map alternatives_;
 
-		inline Token& cast_const(Handle handle) const
+		inline Token& cast_const() const
 			{ return *const_cast<Token*>(this); }
 
 	protected:
-		template<typename Type>
-		Task* create_func()
-			{ return new Type(); }
-
-		template<typename Type, typename TypeAbstract = Type>
-		Task* convert_func(const Task &other)
-		{
-			const TypeAbstract *orig = dynamic_cast<const TypeAbstract*>(&other);
-			if (!orig) return NULL;
-			Type *task = new Type();
-			*task = *orig;
-			return task;
-		}
-
 		virtual void unprepare_vfunc();
 		virtual void prepare_vfunc();
 
 	public:
-		const String name;
-		const ModeToken::Handle mode;
-		const Handle abstract_task;
-		const Fabric create;
-		const CloneFabric clone;
-		const CloneFabric convert;
-
-		//! token for abstract task
-		template<typename Type, typename TypeParent>
-		Token(String name):
-			synfig::Token(TypeParent::token.handle()),
-			name(name),
-			create(&create_func<Type>),
-			clone(&convert_func<Type>),
-			convert()
-		{ }
-
-		//! token for real task
-		template<typename Type, typename TypeParent, typename TypeAbstract>
-		Token(String name):
-			synfig::Token(TypeParent::token.handle()),
-			name(name),
-			mode(Type::mode_token.handle()),
-			abstract_task(TypeAbstract::token.handle()),
-			create(&create_func<Type>),
-			clone(&convert_func<Type>),
-			convert(&convert_func<Type, TypeAbstract>)
+		Token(const DescBase &desc):
+			synfig::Token(desc.parent_token),
+			DescBase(desc)
 		{ }
 
 		const Map& alternatives() const
@@ -220,10 +230,57 @@ public:
 			{ return Handle(*this); }
 	};
 
+	//! token for special task
+	template<typename Type>
+	class DescSpecial: public DescBase {
+	public:
+		explicit DescSpecial(const String &name):
+			DescBase(
+				token.handle(),
+				name,
+				ModeToken::Handle(),
+				Token::Handle(),
+				&DescBase::create_func<Type>,
+				&DescBase::convert_func<Type>,
+				0 ) { }
+	};
+
+	//! token for abstract task
+	template<typename Type, typename TypeParent = Task>
+	class DescAbstract: public DescBase {
+	public:
+		explicit DescAbstract(const String &name):
+			DescBase(
+				TypeParent::token.handle(),
+				name,
+				ModeToken::Handle(),
+				Token::Handle(),
+				&DescBase::create_func<Type>,
+				&DescBase::convert_func<Type>,
+				0 ) { }
+	};
+
+	//! token for real task
+	template<typename Type, typename TypeParent, typename TypeAbstract = TypeParent>
+	class DescReal: public DescBase {
+	public:
+		explicit DescReal(const String &name):
+			DescBase(
+				TypeParent::token.handle(),
+				name,
+				Type::mode_token.handle(),
+				TypeAbstract::token.handle(),
+				&DescBase::create_func<Type>,
+				&DescBase::convert_func<Type>,
+				&DescBase::convert_func<Type, TypeAbstract> ) { }
+	};
+
 	struct RunParams {
-		const Renderer *renderer;
+		etl::handle<etl::shared_object> rendererHolder;
+		Renderer *renderer;
 		mutable Task::List sub_queue;
-		RunParams(): renderer(renderer) { }
+		RunParams(): renderer() { }
+		explicit RunParams(const etl::handle<Renderer> &renderer);
 	};
 
 	struct RendererData
@@ -245,39 +302,59 @@ public:
 	class LockReadBase: public SurfaceResource::LockReadBase
 	{
 	public:
-		const Task::Handle task;
+		explicit LockReadBase(const Task *task):
+			SurfaceResource::LockReadBase(
+				task ? task->target_surface : SurfaceResource::Handle(),
+				task ? task->target_rect : RectInt() ) { }
 		explicit LockReadBase(const Task::Handle &task):
-			SurfaceResource::LockReadBase(task->target_surface, task->target_rect),
-			task(task) { }
+			SurfaceResource::LockReadBase(
+				task ? task->target_surface : SurfaceResource::Handle(),
+				task ? task->target_rect : RectInt() ) { }
 	};
 
 	class LockWriteBase: public SurfaceResource::SemiLockWriteBase
 	{
 	public:
-		const Task::Handle task;
-		explicit LockWriteBase( const Task::Handle &task ):
-			SurfaceResource::SemiLockWriteBase(task->target_surface, task->target_rect, task->get_target_token()),
-			task(task) { }
+		explicit LockWriteBase(const Task *task):
+			SurfaceResource::SemiLockWriteBase(
+				task ? task->target_surface : SurfaceResource::Handle(),
+				task ? task->target_rect : RectInt(),
+				task ? task->get_target_token() : Surface::Token::Handle() ) { }
+		explicit LockWriteBase(const Task::Handle &task):
+			SurfaceResource::SemiLockWriteBase(
+				task ? task->target_surface : SurfaceResource::Handle(),
+				task ? task->target_rect : RectInt(),
+				task ? task->get_target_token() : Surface::Token::Handle() ) { }
 	};
 
 	template<typename T>
 	class LockReadGeneric: public SurfaceResource::LockRead<T>
 	{
 	public:
-		const Task::Handle task;
+		explicit LockReadGeneric(const Task *task):
+			SurfaceResource::LockRead<T>(
+				task ? task->target_surface : SurfaceResource::Handle(),
+				task ? task->target_rect : RectInt() ) { }
 		explicit LockReadGeneric(const Task::Handle &task):
-			SurfaceResource::LockRead<T>(task->target_surface, task->target_rect),
-			task(task) { }
+			SurfaceResource::LockRead<T>(
+				task ? task->target_surface : SurfaceResource::Handle(),
+				task ? task->target_rect : RectInt() ) { }
 	};
 
 	template<typename T>
 	class LockWriteGeneric: public SurfaceResource::SemiLockWrite<T>
 	{
 	public:
-		const Task::Handle task;
+		explicit LockWriteGeneric(const Task *task):
+			SurfaceResource::SemiLockWrite<T>(
+				task ? task->target_surface : SurfaceResource::Handle(),
+				task ? task->target_rect : RectInt(),
+				task ? task->get_target_token() : Surface::Token::Handle() ) { }
 		explicit LockWriteGeneric(const Task::Handle &task):
-			SurfaceResource::SemiLockWrite<T>(task->target_surface, task->target_rect,	task->get_target_token()),
-			task(task) { }
+			SurfaceResource::SemiLockWrite<T>(
+				task ? task->target_surface : SurfaceResource::Handle(),
+				task ? task->target_rect : RectInt(),
+				task ? task->get_target_token() : Surface::Token::Handle() ) { }
 	};
 
 
@@ -302,22 +379,24 @@ public:
 	virtual ~Task();
 
 	// mode options
-	const Mode *get_mode() const
-		{ return dynamic_cast<const Mode*>(this); }
 	virtual Surface::Token::Handle get_target_token() const {
-		if (const Mode *mode = get_mode()) return mode->get_mode_target_token();
+		if (const Mode *mode = dynamic_cast<const Mode*>(this))
+			return mode->get_mode_target_token();
 		return Surface::Token::Handle();
 	}
-	virtual Surface::Token::Handle get_allow_multithreading() const {
-		if (const Mode *mode = get_mode()) return mode->get_mode_allow_multithreading();
+	virtual bool get_allow_multithreading() const {
+		if (const Mode *mode = dynamic_cast<const Mode*>(this))
+			return mode->get_mode_allow_multithreading();
 		return true;
 	}
 	virtual bool get_mode_allow_source_as_target() const {
-		if (const Mode *mode = get_mode()) return mode->get_mode_allow_source_as_target();
+		if (const Mode *mode = dynamic_cast<const Mode*>(this))
+			return mode->get_mode_allow_source_as_target();
 		return false;
 	}
 	virtual bool get_mode_allow_simultaneous_write() const { //!< allow simultaneous write to the same target
-		if (const Mode *mode = get_mode()) return mode->get_mode_allow_simultaneous_write();
+		if (const Mode *mode = dynamic_cast<const Mode*>(this))
+			return mode->get_mode_allow_simultaneous_write();
 		return true;
 	}
 
@@ -358,17 +437,17 @@ public:
 	void move_target_rect(const VectorInt &offset);
 	void set_target_origin(const VectorInt &origin);
 
-	bool Task::is_valid_coords_source() const
-		{ return !source_rect.is_nan_or_inf() && && source_rect.is_valid(); }
-	bool Task::is_valid_coords_target() const
+	bool is_valid_coords_source() const
+		{ return !source_rect.is_nan_or_inf() && source_rect.is_valid(); }
+	bool is_valid_coords_target() const
 		{ return !target_rect.is_valid(); }
-	bool Task::is_valid_coords() const
+	bool is_valid_coords() const
 		{ return is_valid_coords_source() && is_valid_coords_target(); }
-	bool Task::is_valid_surface_size() const
+	bool is_valid_surface_size() const
 		{ return target_surface
 			  && target_surface->is_exists()
 			  && etl::contains(RectInt(VectorInt::zero(), target_surface->get_size()), target_rect); }
-	bool Task::is_valid() const
+	bool is_valid() const
 		{ return is_valid_coords() && is_valid_surface_size() && target_surface; }
 
 	bool allow_simultaneous_run_with(Task &other) const {
@@ -385,7 +464,8 @@ public:
 		return etl::intersect(target_rect, other.target_rect);
 	}
 
-	void set_coords(const Rect &source_rect, const VectorInt target_size);
+	void touch_coords();
+	void set_coords(const Rect &source_rect, const VectorInt &target_size);
 	void set_coords_zero();
 	virtual void set_coords_sub_tasks();
 	virtual bool run(RunParams &params) const;
@@ -400,7 +480,7 @@ class TaskSurface: public Task
 public:
 	typedef etl::handle<TaskSurface> Handle;
 	static Token token;
-	virtual Token::Handle get_token() const { return token; }
+	virtual Token::Handle get_token() const { return token.handle(); }
 };
 
 
@@ -409,7 +489,7 @@ class TaskLockSurface: public TaskSurface
 public:
 	typedef etl::handle<TaskLockSurface> Handle;
 	static Token token;
-	virtual Token::Handle get_token() const { return token; }
+	virtual Token::Handle get_token() const { return token.handle(); }
 
 private:
 	SurfaceResource::LockReadBase *lock_;
@@ -436,8 +516,8 @@ class TaskNone: public Task, public TaskInterfaceConstant
 public:
 	typedef etl::handle<TaskNone> Handle;
 	static Token token;
-	virtual Token::Handle get_token() const { return token; }
-	virtual bool run(RunParams &params) const
+	virtual Token::Handle get_token() const { return token.handle(); }
+	virtual bool run(RunParams&) const
 		{ return true; }
 };
 
@@ -447,8 +527,8 @@ class TaskList: public Task
 public:
 	typedef etl::handle<TaskList> Handle;
 	static Token token;
-	virtual Token::Handle get_token() const { return token; }
-	virtual bool run(RunParams &params) const
+	virtual Token::Handle get_token() const { return token.handle(); }
+	virtual bool run(RunParams&) const
 		{ return true; }
 };
 
@@ -458,7 +538,7 @@ class TaskCallbackCond: public Task
 public:
 	typedef etl::handle<TaskCallbackCond> Handle;
 	static Token token;
-	virtual Token::Handle get_token() const { return token; }
+	virtual Token::Handle get_token() const { return token.handle(); }
 
 	Glib::Threads::Cond *cond;
 	Glib::Threads::Mutex *mutex;

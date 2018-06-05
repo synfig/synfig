@@ -40,7 +40,6 @@
 
 #include "optimizersplit.h"
 
-#include "../task/tasksplittable.h"
 #include "../../renderer.h"
 
 #endif

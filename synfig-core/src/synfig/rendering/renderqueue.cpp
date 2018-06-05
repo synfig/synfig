@@ -79,13 +79,14 @@ class TaskSubQueue: public Task
 public:
 	typedef etl::handle<TaskSubQueue> Handle;
 	static Token token;
-	virtual Token::Handle get_token() const { return token; }
+	virtual Token::Handle get_token() const { return token.handle(); }
 	const Task::Handle& sub_task() const { return Task::sub_task(0); }
 	Task::Handle& sub_task() { return Task::sub_task(0); }
-	virtual bool run(RunParams &params) const { return true; }
+	virtual bool run(RunParams&) const { return true; }
 };
 
-Task::Token TaskSubQueue::token<TaskSubQueue, Task>("TaskSubQueue");
+Task::Token TaskSubQueue::token(
+	DescSpecial<TaskSubQueue>("SubQueue") );
 
 } // end of anonimous namespace
 

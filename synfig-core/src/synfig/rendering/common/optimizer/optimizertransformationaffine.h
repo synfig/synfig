@@ -52,7 +52,7 @@ private:
 public:
 	OptimizerTransformationAffine()
 	{
-		category_id = CATEGORY_ID_COMMON;
+		category_id = CATEGORY_ID_BEGIN;
 		for_root_task = true;
 	}
 

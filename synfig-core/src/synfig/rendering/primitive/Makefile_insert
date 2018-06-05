@@ -11,7 +11,7 @@ RENDERING_PRIMITIVE_CC = \
 	rendering/primitive/mesh.cpp \
 	rendering/primitive/polyspan.cpp \
 	rendering/primitive/transformation.cpp \
-	rendering/primitive/transformationaffine.cpp \
+	rendering/primitive/transformationaffine.cpp
 
 RENDERING_HH += \
     $(RENDERING_PRIMITIVE_HH)

@@ -61,7 +61,7 @@ class TaskPixelGammaSW: public TaskPixelGamma, public TaskSW
 public:
 	typedef etl::handle<TaskPixelGammaSW> Handle;
 	static Token token;
-	virtual Token::Handle get_token() const { return token; }
+	virtual Token::Handle get_token() const { return token.handle(); }
 
 private:
 	typedef void Func(ColorReal &dst, const ColorReal &src, const ColorReal &gamma);
@@ -201,14 +201,9 @@ private:
 	}
 
 public:
-	virtual bool run(RunParams &params) const {
+	virtual bool run(RunParams&) const {
 		if (!is_valid() || !sub_task() || !sub_task()->is_valid())
 			return true;
-
-		synfig::Surface &dst =
-			rendering::SurfaceSW::Handle::cast_dynamic( target_surface )->get_surface();
-		const synfig::Surface &src =
-			rendering::SurfaceSW::Handle::cast_dynamic( sub_task()->target_surface )->get_surface();
 
 		RectInt rd = target_rect;
 		VectorInt offset = get_offset();
@@ -216,10 +211,11 @@ public:
 		etl::set_intersect(rs, rs, rd);
 		if (rs.is_valid())
 		{
-			LockWrite ldst(target_surface);
-			LockRead lsrc(target_surface);
-			if (!ldst || !lsrc)
-				return false;
+			LockWrite ldst(this);
+			if (!ldst) return false;
+			LockRead lsrc(sub_task());
+			if (!lsrc) return false;
+
 			synfig::Surface &dst = ldst->get_surface();
 			const synfig::Surface &src = lsrc->get_surface();
 
@@ -241,7 +237,8 @@ public:
 };
 
 
-Task::Token TaskPixelGammaSW::token<TaskPixelGammaSW, TaskPixelGamma, TaskPixelGamma>("PixelGammaSW");
+Task::Token TaskPixelGammaSW::token(
+	DescReal<TaskPixelGammaSW, TaskPixelGamma>("PixelGammaSW") );
 
 } // end of anonimous namespace
 

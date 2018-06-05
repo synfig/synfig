@@ -50,7 +50,7 @@ public:
 	Matrix matrix;
 
 	TransformationAffine() { }
-	explicit TransformationAffine(const Matrix &matrix) { }
+	explicit TransformationAffine(const Matrix &matrix): matrix(matrix) { }
 
 protected:
 	virtual Transformation::Handle create_inverted_vfunc() const;

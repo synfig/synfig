@@ -163,7 +163,8 @@ public:
 };
 
 
-Task::Token TaskBlendGL::token<TaskBlendGL, TaskBlend, TaskBlend>("BlendGL");
+Task::Token TaskBlendGL::token(
+	DescReal<TaskBlendGL, TaskBlend>("BlendGL") );
 
 } // end of anonimous namespace
 

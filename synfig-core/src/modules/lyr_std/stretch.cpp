@@ -260,13 +260,11 @@ Layer_Stretch::build_rendering_task_vfunc(Context context)const
 	Vector amount=param_amount.get(Vector());
 	Point center=param_center.get(Point());
 
-	rendering::TaskTransformation::Handle task_transformation(new rendering::TaskTransformation());
-	rendering::AffineTransformation::Handle affine_transformation(new rendering::AffineTransformation());
-	affine_transformation->matrix =
+	rendering::TaskTransformationAffine::Handle task_transformation(new rendering::TaskTransformationAffine());
+	task_transformation->transformation->matrix =
 			Matrix().set_translate(-center)
 		  * Matrix().set_scale(amount)
 		  * Matrix().set_translate(center);
-	task_transformation->transformation = affine_transformation;
 	task_transformation->sub_task() = context.build_rendering_task();
 	return task_transformation;
 }

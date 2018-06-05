@@ -51,7 +51,8 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 
-rendering::Surface::Token SurfaceSW::token<SurfaceSW>("SurfaceSW");
+rendering::Surface::Token SurfaceSW::token(
+	Desc<SurfaceSW>("SurfaceSW") );
 
 
 SurfaceSW::SurfaceSW():
@@ -59,13 +60,13 @@ SurfaceSW::SurfaceSW():
 	surface(new synfig::Surface())
 { }
 
-SurfaceSW::SurfaceSW(const Surface &other, bool own_surface):
+SurfaceSW::SurfaceSW(synfig::Surface &surface, bool own_surface):
 	own_surface(own_surface),
-	surface(&other)
+	surface(&surface)
 {
-	assert(surface);
-	set_desc(surface->get_w(), surface->get_h(), false);
-	assert((int)surface->get_pitch() == (int)sizeof(Color)*get_width());
+	assert(this->surface);
+	set_desc(this->surface->get_w(), this->surface->get_h(), false);
+	assert((int)this->surface->get_pitch() == (int)sizeof(Color)*get_width());
 }
 
 SurfaceSW::~SurfaceSW()
@@ -88,7 +89,7 @@ SurfaceSW::create_vfunc(int width, int height)
 bool
 SurfaceSW::assign_vfunc(const rendering::Surface &surface)
 {
-	assert(surface);
+	assert(this->surface);
 	this->surface->set_wh(surface.get_width(), surface.get_height());
 	if (surface.get_pixels(&(*this->surface)[0][0]))
 		return true;

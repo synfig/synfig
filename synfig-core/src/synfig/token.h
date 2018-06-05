@@ -47,6 +47,7 @@ public:
 	typedef T Type;
 
 private:
+	friend class ConstRefHelper;
 	const Type *pointer;
 
 public:
@@ -57,7 +58,11 @@ public:
 
 	template<typename TT>
 	inline ConstRef(const ConstRef<TT> &x):
-		pointer(x.pointer) { }
+		pointer() { *this = x.base<Type>(); }
+
+	template<typename TT>
+	inline ConstRef<TT> base() const
+		{ return pointer ? ConstRef<TT>(*pointer) : ConstRef<TT>(); }
 
 	template<typename TT>
 	inline ConstRef<TT> as() const
@@ -74,7 +79,7 @@ public:
 	inline const Type* operator-> () const
 		{ assert(pointer); return pointer; }
 	inline operator bool() const
-		{ return is_valid; }
+		{ return is_valid(); }
 
 	inline bool operator== (const ConstRef& other) const
 		{ return pointer == other.pointer; }
@@ -121,21 +126,21 @@ private:
 	Token(const Token&);
 	Token& operator= (const Token&) { return *this; }
 
-	inline Token& cast_const(Handle handle) const
+	inline Token& cast_const() const
 		{ return *const_cast<Token*>(this); }
 
 	void init();
 	void fill_all_parents();
 
 protected:
-	virtual void prepare_vfunc();
-	virtual void unprepare_vfunc();
+	virtual void prepare_vfunc() { }
+	virtual void unprepare_vfunc() { }
 
 public:
 	static Token token;
 
 	Token();
-	explicit Token(Handle parent);
+	explicit Token(const Handle &parent);
 	explicit Token(const Set &parents);
 	virtual ~Token();
 
@@ -163,6 +168,8 @@ public:
 	void prepare();
 	static void rebuild();
 };
+
+}; // END of namespace synfig
 
 /*
 ===============================================================================
@@ -222,8 +229,6 @@ public:
 MyLayer::Token MyRegion::token<MyRegion, MyLayer>(
 	"region",
 	"common" );
-
-}; // END of namespace synfig
 
 ===============================================================================
 */

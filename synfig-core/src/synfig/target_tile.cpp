@@ -50,7 +50,9 @@
 #include "debug/measure.h"
 
 #include "rendering/renderer.h"
+#include "rendering/surface.h"
 #include "rendering/software/surfacesw.h"
+#include "rendering/common/task/tasktransformation.h"
 
 #endif
 
@@ -117,13 +119,13 @@ Target_Tile::next_tile(RectInt& rect)
 }
 
 bool
-synfig::Target_Tile::call_renderer(Context &context, const etl::handle<rendering::SurfaceSW> &surfacesw, int /* quality */, const RendDesc &renddesc, ProgressCallback * /* cb */)
+synfig::Target_Tile::call_renderer(Context &context, const etl::handle<rendering::SurfaceResource> &surface, int /* quality */, const RendDesc &renddesc, ProgressCallback * /* cb */)
 {
 	#ifdef DEBUG_MEASURE
 	debug::Measure t("Target_Tile::call_renderer");
 	#endif
 
-	surfacesw->set_size(renddesc.get_w(), renddesc.get_h());
+	surface->create(renddesc.get_w(), renddesc.get_h());
 	rendering::Task::Handle task;
 	{
 		#ifdef DEBUG_MEASURE
@@ -148,9 +150,22 @@ synfig::Target_Tile::call_renderer(Context &context, const etl::handle<rendering
 		if (!renderer)
 			throw "Renderer '" + get_engine() + "' not found";
 
-		task->target_surface = surfacesw;
-		task->target_surface->create();
-		task->init_target_rect(RectInt(VectorInt::zero(), surfacesw->get_size()), renddesc.get_tl(), renddesc.get_br());
+		Vector p0 = renddesc.get_tl();
+		Vector p1 = renddesc.get_br();
+		if (p0[0] > p1[0] || p0[1] > p1[1]) {
+			Matrix3 m;
+			if (p0[0] > p1[0]) { m.m00 = -1.0; m.m20 = p0[0] + p1[0]; std::swap(p0[0], p1[0]); }
+			if (p0[1] > p1[1]) { m.m11 = -1.0; m.m21 = p0[1] + p1[1]; std::swap(p0[1], p1[1]); }
+			TaskTransformationAffine::Handle t = new TaskTransformationAffine();
+			t->interpolation = Color::Interpolation::INTERPOLATION_NEAREST;
+			t->transformation->matrix = m;
+			t->sub_task() = task;
+			task = t;
+		}
+
+		task->target_surface = surface;
+		task->target_rect = RectInt( VectorInt(), surface->get_size() );
+		task->source_rect = Rect(p0, p1);
 
 		rendering::Task::List list;
 		list.push_back(task);
@@ -306,45 +321,49 @@ synfig::Target_Tile::render_frame_(Context context,ProgressCallback *cb)
 bool
 synfig::Target_Tile::async_render_tile(RectInt rect, Context context, RendDesc tile_desc, ProgressCallback *cb)
 {
-	SurfaceSW::Handle surfacesw(new rendering::SurfaceSW());
-	Surface &surface = surfacesw->get_surface();
+	SurfaceResource::Handle surface = new rendering::SurfaceResource();
 
-	if (!call_renderer(context, surfacesw, get_quality(), tile_desc, cb))
+	if (!call_renderer(context, surface, get_quality(), tile_desc, cb))
 	{
 		// For some reason, the accelerated renderer failed.
 		if(cb)cb->error(_("Accelerated Renderer Failure"));
 		return false;
 	}
 
-	if(!surface)
+	SurfaceResource::LockWrite<SurfaceSW> lock(surface);
+
+	if(!lock)
 	{
 		if(cb)cb->error(_("Bad surface"));
 		return false;
 	}
 
+	synfig::Surface &s = lock->get_surface();
+	int cnt = s.get_w() * s.get_h();
+
 	switch(get_alpha_mode())
 	{
 		case TARGET_ALPHA_MODE_FILL:
-			for(int i=0; i<surface.get_w()*surface.get_h(); ++i)
-				surface[0][i] = Color::blend(surface[0][i], desc.get_bg_color(), 1.0f);
+			for(int i = 0; i < cnt; ++i)
+				s[0][i] = Color::blend(s[0][i], desc.get_bg_color(), 1.0f);
 			break;
 		case TARGET_ALPHA_MODE_EXTRACT:
-			for(int i=0; i<surface.get_w()*surface.get_h(); ++i)
+			for(int i = 0; i< cnt; ++i)
 			{
-				float a=surface[0][i].get_a();
-				surface[0][i] = Color(a,a,a,a);
+				float a = s[0][i].get_a();
+				s[0][i] = Color(a,a,a,a);
 			}
 			break;
 		case TARGET_ALPHA_MODE_REDUCE:
-			for(int i=0;i<surface.get_w()*surface.get_h(); ++i)
-				surface[0][i].set_a(1.0f);
+			for(int i = 0; i < cnt; ++i)
+				s[0][i].set_a(1.0f);
 			break;
 		default:
 			break;
 	}
 
 	// Add the tile to the target
-	if (!add_tile(surface, rect.minx, rect.miny))
+	if (!add_tile(s, rect.minx, rect.miny))
 	{
 		if(cb)cb->error(_("add_tile():Unable to put surface on target"));
 		return false;

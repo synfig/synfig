@@ -51,7 +51,8 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 
-Task::Token TaskMesh::token<TaskMesh, Task>("Mesh");
+Task::Token TaskMesh::token(
+	DescAbstract<TaskMesh>("Mesh") );
 
 
 Rect

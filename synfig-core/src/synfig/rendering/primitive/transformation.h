@@ -50,7 +50,7 @@ public:
 		Rect rect;
 		Vector resolution;
 
-		explicit Bounds(const Rect &rect, const Vector &resolution = Vector(1.0, 1.0)):
+		explicit Bounds(const Rect &rect = Rect(), const Vector &resolution = Vector(1.0, 1.0)):
 			rect(rect), resolution(resolution) { }
 
 		inline bool is_valid() const {
@@ -75,7 +75,8 @@ protected:
 public:
 	virtual ~Transformation() { }
 
-	Transformation::Handle create_inverted() const;
+	Transformation::Handle create_inverted() const
+		{ return create_inverted_vfunc(); }
 
 	Point transform(const Point &x, bool translate = true) const
 		{ return transform_vfunc(x, translate); }

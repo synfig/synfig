@@ -61,9 +61,9 @@ class TaskPixelColorMatrixSW: public TaskPixelColorMatrix, public TaskSW
 public:
 	typedef etl::handle<TaskPixelColorMatrixSW> Handle;
 	static Token token;
-	virtual Token::Handle get_token() const { return token; }
+	virtual Token::Handle get_token() const { return token.handle(); }
 
-	virtual bool run(RunParams &params) const {
+	virtual bool run(RunParams&) const {
 		if (!is_valid())
 			return true;
 
@@ -71,7 +71,7 @@ public:
 		ColorMatrix::BatchProcessor processor(matrix);
 		std::vector<RectInt> constant_rects(1, rd);
 
-		LockWrite ldst(target_surface);
+		LockWrite ldst(this);
 		if (!ldst) return false;
 		synfig::Surface &dst = ldst->get_surface();
 
@@ -82,7 +82,7 @@ public:
 			etl::set_intersect(rs, rs, rd);
 			if (rs.is_valid())
 			{
-				LockRead lsrc(target_surface);
+				LockRead lsrc(sub_task());
 				if (!lsrc) return false;
 				const synfig::Surface &src = lsrc->get_surface();
 
@@ -105,7 +105,8 @@ public:
 };
 
 
-Task::Token TaskPixelColorMatrixSW::token<TaskPixelColorMatrixSW, TaskPixelColorMatrix, TaskPixelColorMatrix>("PixelColorMatrixSW");
+Task::Token TaskPixelColorMatrixSW::token(
+	DescReal<TaskPixelColorMatrixSW, TaskPixelColorMatrix>("PixelColorMatrixSW") );
 
 } // end of anonimous namespace
 
