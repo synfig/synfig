@@ -74,14 +74,25 @@ public:
 	Matrix2(value_type m00, value_type m01, value_type m10, value_type m11):
 		m00(m00), m01(m01), m10(m10), m11(m11) { }
 
-	Matrix2(const Vector &axis_x, const Vector &axis_y):
-		m00(axis_x[0]), m01(axis_x[1]), m10(axis_y[0]), m11(axis_y[1]) { }
+	Matrix2(const Vector &row_x, const Vector &row_y):
+		m00(row_x[0]), m01(row_x[1]), m10(row_y[0]), m11(row_y[1]) { }
 
-	Vector get_axis_x()const { return Vector(m00, m01); }
-	Vector get_axis_y()const { return Vector(m10, m11); }
+	const Vector& row(int index) const { return *(const Vector*)(m[index]); }
+	const Vector& row_x() const { return row(0); }
+	const Vector& row_y() const { return row(1); }
+	const Vector& axis(int index) const { return row(index); }
+	const Vector& axis_x() const { return row_x(); }
+	const Vector& axis_y() const { return row_y(); }
+
+	Vector& row(int index) { return *(Vector*)(m[index]); }
+	Vector& row_x() { return row(0); }
+	Vector& row_y() { return row(1); }
+	Vector& axis(int index) { return row(index); }
+	Vector& axis_x() { return row_x(); }
+	Vector& axis_y() { return row_y(); }
 
 	//!set_identity member. Set an identity matrix
-	Matrix2 &set_identity()
+	Matrix2& set_identity()
 		{ return *this = Matrix2(); }
 
 	bool is_identity() const
@@ -91,24 +102,24 @@ public:
 	//! @param sx Scale by X axis
 	//! @param sy Scale by Y axis
 	//! @return A matrix reference filled with the sx, sy values
-	Matrix2 &set_scale(const value_type &sx, const value_type &sy);
+	Matrix2& set_scale(const value_type &sx, const value_type &sy);
 
 	//!set_scale member fucntion. Sets a scale matrix
 	//! @param sxy Scale by X and Y axis
 	//! @return A matrix reference filled with the sxy values
-	Matrix2 &set_scale(const value_type &sxy)
+	Matrix2& set_scale(const value_type &sxy)
 		{ return set_scale(sxy, sxy); }
 
 	//!set_scale member fucntion. Sets a scale matrix
 	//! @param s Vector that defines the scale
 	//! @return A matrix reference filled with the proper scale parameters
-	Matrix2 &set_scale(const Vector &s)
+	Matrix2& set_scale(const Vector &s)
 		{ return set_scale(s[0], s[1]); }
 
 	//!set_rotate member function. Sets a rotate matrix
 	//! @param a Rotation angle counter clockwise
 	//! @return A matrix reference filled with the proper rotation parameters
-	Matrix2 &set_rotate(const Angle &a);
+	Matrix2& set_rotate(const Angle &a);
 
 	void get_transformed(value_type &out_x, value_type &out_y, const value_type x, const value_type y)const;
 
@@ -122,32 +133,37 @@ public:
 	bool operator!=(const Matrix2 &rhs) const
 		{ return !(*this == rhs); }
 
+	Vector operator*(const Vector &v)
+		{ return get_transformed(v); }
+
 	//! operator*=. Multiplication and assignment of one matrix by another
 	//! @param rhs the right hand side of the multiplication operation
 	//! @return the modified resulting matrix
-	Matrix2 operator*=(const Matrix2 &rhs);
+	Matrix2& operator*=(const Matrix2 &rhs)
+		{ return *this = *this * rhs; }
 
 	//! operator*=. Multiplication and assignment of one matrix by a scalar
 	//! @param rhs the number to multiply by
 	//! @return the modifed resulting matrix
-	Matrix2 operator*=(const value_type &rhs);
+	Matrix2& operator*=(const value_type &rhs);
 
 	//! operator+=. Sum and assignment of two matrixes
 	//! @param rhs the matrix to sum
 	//! @return modified matrix with the summed matrix
-	Matrix2 operator+=(const Matrix2 &rhs);
+	Matrix2& operator+=(const Matrix2 &rhs);
 
 	//! operator*. Multiplication of one matrix by another
 	//! @param rhs the right hand side of the multiplication operation
 	//! @return the resulting matrix
-	Matrix2 operator*(const Matrix2 &rhs)const
-		{ return Matrix2(*this) *= rhs; }
+	Matrix2 operator*(const Matrix2 &rhs)const;
+
+	Vector operator*(const Vector &v)const
+		{ return get_transformed(v); }
 
 	//! operator*. Multiplication of one matrix by a number
 	//! @param rhs the number to multiply by
 	//! @return the resulting matrix
-	Matrix2 operator*(const value_type &rhs)const
-		{ return Matrix2(*this) *= rhs; }
+	Matrix2 operator*(const value_type &rhs)const;
 
 	//! operator+. Sum two matrixes
 	//! @param rhs the matrix to sum
@@ -157,7 +173,7 @@ public:
 
 	bool is_invertible()const;
 
-	Matrix2 &invert();
+	Matrix2& invert();
 
 	//!Get the string of the Matrix
 	//!@return String type. A string representation of the matrix
@@ -213,18 +229,46 @@ public:
 		m20(m20), m21(m21), m22(m22)
 	{ }
 
-	Matrix3(Vector axis_x, Vector axis_y, Vector offset):
+	Matrix3(
+		const Vector &axis_x,
+		const Vector &axis_y,
+		const Vector &offset
+	):
 		m00(axis_x[0]), m01(axis_x[1]), m02(0.0),
 		m10(axis_y[0]), m11(axis_y[1]), m12(0.0),
 		m20(offset[0]), m21(offset[1]), m22(1.0)
 	{ }
 
-	Vector get_axis_x()const { return Vector(m00, m01); }
-	Vector get_axis_y()const { return Vector(m10, m11); }
-	Vector get_offset()const { return Vector(m20, m21); }
+	Matrix3(
+		const Vector3 &row_x,
+		const Vector3 &row_y,
+		const Vector3 &row_z
+	):
+		m00(row_x[0]), m01(row_x[1]), m02(row_x[2]),
+		m10(row_y[0]), m11(row_y[1]), m12(row_y[2]),
+		m20(row_z[0]), m21(row_z[1]), m22(row_z[2])
+	{ }
+
+	const Vector3& row(int index) const { return *(const Vector3*)(m[index]); }
+	const Vector3& row_x() const { return row(0); }
+	const Vector3& row_y() const { return row(1); }
+	const Vector3& row_z() const { return row(2); }
+	const Vector& axis(int index) const { return *(const Vector*)(m[index]); }
+	const Vector& axis_x() const { return axis(0); }
+	const Vector& axis_y() const { return axis(1); }
+	const Vector& offset() const { return axis(2); }
+
+	Vector3& row(int index) { return *(Vector3*)(m[index]); }
+	Vector3& row_x() { return row(0); }
+	Vector3& row_y() { return row(1); }
+	Vector3& row_z() { return row(2); }
+	Vector& axis(int index) { return *(Vector*)(m[index]); }
+	Vector& axis_x() { return axis(0); }
+	Vector& axis_y() { return axis(1); }
+	Vector& offset() { return axis(2); }
 
 	//!set_identity member. Set an identity matrix
-	Matrix3 &set_identity()
+	Matrix3& set_identity()
 		{ return *this = Matrix3(); }
 
 	bool is_identity() const
@@ -234,38 +278,46 @@ public:
 	//! @param sx Scale by X axis
 	//! @param sy Scale by Y axis
 	//! @return A matrix reference filled with the sx, sy values
-	Matrix3 &set_scale(const value_type &sx, const value_type &sy);
+	Matrix3& set_scale(const value_type &sx, const value_type &sy);
 
 	//!set_scale member fucntion. Sets a scale matrix
 	//! @param sxy Scale by X and Y axis
 	//! @return A matrix reference filled with the sxy values
-	Matrix3 &set_scale(const value_type &sxy)
+	Matrix3& set_scale(const value_type &sxy)
 		{ return set_scale(sxy, sxy); }
 
 	//!set_scale member fucntion. Sets a scale matrix
 	//! @param s Vector that defines the scale
 	//! @return A matrix reference filled with the proper scale parameters
-	Matrix3 &set_scale(const Vector &s)
+	Matrix3& set_scale(const Vector &s)
 		{ return set_scale(s[0], s[1]); }
 
 	//!set_rotate member function. Sets a rotate matrix
 	//! @param a Rotation angle counter clockwise
 	//! @return A matrix reference filled with the proper rotation parameters
-	Matrix3 &set_rotate(const Angle &a);
+	Matrix3& set_rotate(const Angle &a);
 
 	//!translate member function. Sets a translate matrix
 	//! @param t Vector that defines the translation
 	//! @return A matrix reference filled with the proper translation parameters
-	Matrix3 &set_translate(const Vector &t)
+	Matrix3& set_translate(const Vector &t)
 		{ return set_translate(t[0], t[1]); }
 
 	//!translate member function. Sets a translate matrix
 	//! @param x Scalar that defines the x component of the translation
 	//! @param y Scalar that defines the y component of the translation
 	//! @return A matrix reference filled with the proper translation parameters
-	Matrix3 &set_translate(value_type x, value_type y);
+	Matrix3& set_translate(value_type x, value_type y);
 
-	void get_transformed(value_type &out_x, value_type &out_y, const value_type x, const value_type y, bool translate = true)const;
+	void get_transformed(
+		value_type &out_x, value_type &out_y, value_type &out_z,
+		const value_type x, const value_type y, const value_type z )const;
+
+	void get_transformed(value_type &out_x, value_type &out_y, const value_type x, const value_type y, bool translate = true)const
+		{ value_type z; get_transformed(out_x, out_y, z, x, y, translate ? 1.0 : 0.0); }
+
+	Vector3 get_transformed(const Vector3 &v)const
+		{ Vector3 vv; get_transformed(vv[0], vv[1], vv[2], v[0], v[1], v[2]); return vv; }
 
 	//!get_transformed member function.
 	//! @param v 2D Vector to transform
@@ -280,23 +332,26 @@ public:
 	//! operator*=. Multiplication and assignment of one matrix by another
 	//! @param rhs the right hand side of the multiplication operation
 	//! @return the modified resulting matrix
-	Matrix3 operator*=(const Matrix3 &rhs);
+	Matrix3& operator*=(const Matrix3 &rhs)
+		{ return *this = *this * rhs; }
 
 	//! operator*=. Multiplication and assignment of one matrix by a scalar
 	//! @param rhs the number to multiply by
 	//! @return the modifed resulting matrix
-	Matrix3 operator*=(const value_type &rhs);
+	Matrix3& operator*=(const value_type &rhs);
 
 	//! operator+=. Sum and assignment of two matrixes
 	//! @param rhs the matrix to sum
 	//! @return modified matrix with the summed matrix
-	Matrix3 operator+=(const Matrix3 &rhs);
+	Matrix3& operator+=(const Matrix3 &rhs);
 
 	//! operator*. Multiplication of one matrix by another
 	//! @param rhs the right hand side of the multiplication operation
 	//! @return the resulting matrix
-	Matrix3 operator*(const Matrix3 &rhs)const
-		{ return Matrix3(*this) *= rhs; }
+	Matrix3 operator*(const Matrix3 &rhs)const;
+
+	Vector3 operator*(const Vector3 &v)const
+		{ return get_transformed(v); }
 
 	//! operator*. Multiplication of one matrix by a number
 	//! @param rhs the number to multiply by
@@ -312,10 +367,7 @@ public:
 
 	bool is_invertible()const;
 
-	//         (m00 m01 0)       1               (     m11     )   (    -m01     )   (      0      )
-	// inverse (m10 m11 0)  =  -----          x  (    -m10     )   (     m00     )   (      0      )
-	//         (m20 m21 1)     m00m11-m01m10     (m10m21-m11m20)   (m01m20-m00m21)   (m00m11-m01m10)
-	Matrix3 &invert();
+	Matrix3& invert();
 
 	//!Get the string of the Matrix
 	//!@return String type. A string representation of the matrix
