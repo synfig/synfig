@@ -195,7 +195,6 @@ Renderer::specialize(Task::List &list) const
 	for(Task::List::iterator i = list.begin(); i != list.end(); ++i)
 		if (*i) {
 			Task::Handle task;
-			Task::Token::Handle token = task->get_token();
 			for(ModeList::const_iterator j = modes.begin(); j != modes.end() && !task; ++j)
 				task = (*i)->convert_to(*j);
 			if (!task)

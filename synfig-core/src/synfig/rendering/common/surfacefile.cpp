@@ -64,7 +64,7 @@ SurfaceFile::reload()
 }
 
 bool
-SurfaceFile::get_pixels_vfunc(Color *buffer) const
+SurfaceFile::get_pixels_vfunc(Color * /* buffer */) const
 {
 	// TODO: load file
 	return false;
