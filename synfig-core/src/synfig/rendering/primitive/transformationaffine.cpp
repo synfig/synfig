@@ -67,8 +67,8 @@ TransformationAffine::transform_bounds_vfunc(const Bounds &bounds) const
 	// calculate bounds rect
 	Vector corners[] = {
 		matrix.get_transformed( bounds.rect.get_min() ),
-		matrix.get_transformed( Vector(bounds.rect.minx, bounds.rect.maxy) ),
 		matrix.get_transformed( Vector(bounds.rect.maxx, bounds.rect.miny) ),
+		matrix.get_transformed( Vector(bounds.rect.minx, bounds.rect.maxy) ),
 		matrix.get_transformed( bounds.rect.get_max() ) };
 
 	Rect rect = Rect( corners[0] )
