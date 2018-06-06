@@ -286,7 +286,7 @@ public:
 				args.pos_dx = back_transformation.get_transformed( dx, false );
 				args.pos_dy = back_transformation.get_transformed( dy, false );
 
-				bool aa = antialiasing;
+				bool aa = false && antialiasing;
 
 				if (aa)
 				{
@@ -313,18 +313,10 @@ public:
 
 				if (aa)
 				{
-					Real sx = (corners[1] - corners[0]).mag()/Real(src_bounds.maxx - src_bounds.minx);
-					Real sy = (corners[2] - corners[0]).mag()/Real(src_bounds.maxy - src_bounds.miny);
-
-					Matrix aa0_matrix = Matrix().set_translate(0.5, 0.5)
-									  * Matrix().set_scale(sx, sy)
-				                      * back_transformation;
-					Matrix aa1_matrix = Matrix().set_translate(0.5, 0.5)
-					                  * Matrix().set_scale(-sx, -sy)
-									  * Matrix().set_translate(
-											-Real(src_bounds.maxx - src_bounds.minx),
-											-Real(src_bounds.maxy - src_bounds.miny) )
-					                  * back_transformation;
+					Vector axis_x = (corners[1] - corners[0]).norm();
+					Vector axis_y = (corners[2] - corners[0]).norm();
+					Matrix aa0_matrix = Matrix( axis_x,  axis_y, corners[0]);
+					Matrix aa1_matrix = Matrix(-axis_x, -axis_y, corners[3]);
 
 					args.aa0    = aa0_matrix.get_transformed( start );
 					args.aa0_dx = aa0_matrix.get_transformed( dx, false );

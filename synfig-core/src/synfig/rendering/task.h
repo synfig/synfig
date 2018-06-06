@@ -449,7 +449,7 @@ public:
 			  && target_surface->is_exists()
 			  && etl::contains(RectInt(VectorInt::zero(), target_surface->get_size()), target_rect); }
 	bool is_valid() const
-		{ return is_valid_coords() && is_valid_surface_size() && target_surface; }
+		{ return is_valid_coords() && is_valid_surface_size(); }
 
 	bool allow_simultaneous_run_with(Task &other) const {
 		if (!is_valid() || !other.is_valid())
@@ -518,6 +518,7 @@ public:
 	typedef etl::handle<TaskNone> Handle;
 	static Token token;
 	virtual Token::Handle get_token() const { return token.handle(); }
+	virtual Rect calc_bounds() const { return Rect(); }
 	virtual bool run(RunParams&) const
 		{ return true; }
 };

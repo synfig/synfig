@@ -61,7 +61,7 @@ using namespace rendering;
 #ifndef NDEBUG
 //#define DEBUG_THREAD_TASK
 //#define DEBUG_THREAD_WAIT
-//#define DEBUG_TASK_SURFACE
+#define DEBUG_TASK_SURFACE
 #endif
 
 
@@ -164,9 +164,10 @@ RenderQueue::process(int thread_index)
 		debug::DebugSurface::save_to_file(
 			task->target_surface,
 			etl::strprintf(
-				"task-%05d-%04d",
+				"task-%05d-%04d-%05d",
 				task->renderer_data.batch_index,
-				task->renderer_data.index ));
+				task->renderer_data.index,
+				task->target_surface ? task->target_surface->get_id() : 0 ));
 		#endif
 
 		#ifdef DEBUG_THREAD_TASK
@@ -197,7 +198,8 @@ void
 RenderQueue::done(int thread_index, const Task::Handle &task)
 {
 	assert(task);
-	bool found = false;
+	int single_signals = 0;
+	int signals = 0;
 	Glib::Threads::Mutex::Lock lock(mutex);
 	for(Task::Set::iterator i = task->renderer_data.back_deps.begin(); i != task->renderer_data.back_deps.end(); ++i)
 	{
@@ -210,19 +212,25 @@ RenderQueue::done(int thread_index, const Task::Handle &task)
 			TaskSet   &wait  = mt ? not_ready_tasks : single_not_ready_tasks;
 			wait.erase(*i);
 			queue.push_back(*i);
-
-			// current process will take one task,
-			// so we don't need to call signal by first time
-			if (!found)
-				found = true;
-			else
-				(mt ? cond : single_cond).signal();
+			++(mt ? signals : single_signals);
 		}
 	}
 	task->renderer_data.back_deps.clear();
 	assert( tasks_in_process.count(thread_index) == 1 );
 	tasks_in_process.erase(thread_index);
 	//info("rendering threads used %d", tasks_in_process.size());
+
+	// limit signals count
+	int threads = get_threads_count() - 1;
+	if (signals > threads) signals = threads;
+	if (single_signals > 1) single_signals = 1;
+
+	// we don't need to wakeup the current thread
+	--(thread_index ? signals : single_signals);
+
+	// wake up
+	while(signals-- > 0) cond.signal();
+	while(single_signals-- > 0) single_cond.signal();
 }
 
 Task::Handle
@@ -306,7 +314,6 @@ RenderQueue::enqueue(const Task::List &tasks, const Task::RunParams &params)
 	Glib::Threads::Mutex::Lock lock(mutex);
 	int single_signals = 0;
 	int signals = 0;
-	int threads = get_threads_count() - 1;
 	for(Task::List::const_iterator i = tasks.begin(); i != tasks.end(); ++i)
 	{
 		if (*i)
@@ -316,15 +323,21 @@ RenderQueue::enqueue(const Task::List &tasks, const Task::RunParams &params)
 			TaskSet   &wait  = mt ? not_ready_tasks : single_not_ready_tasks;
 			if ((*i)->renderer_data.deps_count == 0) {
 				queue.push_back(*i);
-				if (mt)
-					{ if (signals < threads) { cond.signal(); ++signals; } }
-				else
-					{ if (single_signals < 1) { single_cond.signal(); ++single_signals; } }
+				++(mt ? signals : single_signals);
 			} else {
 				wait.insert(*i);
 			}
 		}
 	}
+
+	// limit signals count
+	int threads = get_threads_count() - 1;
+	if (signals > threads) signals = threads;
+	if (single_signals > 1) single_signals = 1;
+
+	// wake up
+	while(signals-- > 0) cond.signal();
+	while(single_signals-- > 0) single_cond.signal();
 }
 
 void

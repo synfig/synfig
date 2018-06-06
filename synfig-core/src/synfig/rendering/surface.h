@@ -184,6 +184,7 @@ public:
 		}
 		void unlock() {
 			if (resource) {
+				surface.reset();
 				if (write) resource->rwlock.writer_unlock();
 				      else resource->rwlock.reader_unlock();
 			}

@@ -65,7 +65,7 @@ using namespace rendering;
 
 
 #ifndef NDEBUG
-//#define DEBUG_TASK_LIST
+#define DEBUG_TASK_LIST
 //#define DEBUG_TASK_MEASURE
 //#define DEBUG_OPTIMIZATION
 //#define DEBUG_OPTIMIZATION_EACH_CHANGE

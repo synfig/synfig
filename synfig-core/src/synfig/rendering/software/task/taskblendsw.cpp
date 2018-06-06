@@ -37,6 +37,8 @@
 
 #include <synfig/general.h>
 
+#include <synfig/debug/debugsurface.h>
+
 #include "../../common/task/taskblend.h"
 #include "tasksw.h"
 
@@ -75,7 +77,8 @@ public:
 		RectInt ra = RectInt::zero();
 		if (sub_task_a() && sub_task_a()->is_valid())
 		{
-			RectInt ra = sub_task_a()->target_rect + r.get_min() + get_offset_a();
+			VectorInt oa = get_offset_a();
+			ra = sub_task_a()->target_rect + r.get_min() + oa;
 			if (ra.is_valid())
 			{
 				etl::set_intersect(ra, ra, r);
@@ -85,11 +88,16 @@ public:
 					if (!la) return false;
 					synfig::Surface &a = la.cast_handle()->get_surface(); // TODO: make blit_to constant
 
-					synfig::Surface::pen p = c.get_pen(ra.minx, ra.maxx);
+					assert( 0 <= ra.minx && ra.minx < ra.maxx && ra.maxx <= c.get_w()
+						 && 0 <= ra.miny && ra.miny < ra.maxy && ra.miny <= c.get_h() );
+					assert( 0 <= ra.minx - r.minx - oa[0] && ra.maxx - r.minx - oa[0] <= a.get_w()
+						 && 0 <= ra.miny - r.miny - oa[1] && ra.maxy - r.miny - oa[1] <= a.get_h() );
+
+					synfig::Surface::pen p = c.get_pen(ra.minx, ra.miny);
 					a.blit_to(
 						p,
-						ra.minx - r.minx - get_offset_a()[0],
-						ra.miny - r.miny - get_offset_a()[1],
+						ra.minx - r.minx - oa[0],
+						ra.miny - r.miny - oa[1],
 						ra.maxx - ra.minx,
 						ra.maxy - ra.miny );
 				}
@@ -100,7 +108,8 @@ public:
 		RectInt fill[] = { ra, RectInt::zero(), RectInt::zero(), RectInt::zero() };
 		if (sub_task_b() && sub_task_b()->is_valid())
 		{
-			RectInt rb = sub_task_b()->target_rect + r.get_min() + get_offset_b();
+			VectorInt ob = get_offset_b();
+			RectInt rb = sub_task_b()->target_rect + r.get_min() + ob;
 			if (rb.is_valid())
 			{
 				etl::set_intersect(rb, rb, r);
@@ -110,13 +119,18 @@ public:
 					if (!lb) return false;
 					synfig::Surface &b = lb.cast_handle()->get_surface(); // TODO: make blit_to constant
 
+					assert( 0 <= rb.minx && rb.minx < rb.maxx && rb.maxx <= c.get_w()
+						 && 0 <= rb.miny && rb.miny < rb.maxy && rb.miny <= c.get_h() );
+					assert( 0 <= rb.minx - r.minx - ob[0] && rb.maxx - r.minx - ob[0] <= b.get_w()
+						 && 0 <= rb.miny - r.miny - ob[1] && rb.maxy - r.miny - ob[1] <= b.get_h() );
+
 					synfig::Surface::alpha_pen ap(c.get_pen(rb.minx, rb.miny));
 					ap.set_blend_method(blend_method);
 					ap.set_alpha(amount);
 					b.blit_to(
 						ap,
-						rb.minx - r.minx - get_offset_b()[0],
-						rb.miny - r.miny - get_offset_b()[1],
+						rb.minx - r.minx - ob[0],
+						rb.miny - r.miny - ob[1],
 						rb.maxx - rb.minx,
 						rb.maxy - rb.miny );
 
@@ -140,6 +154,9 @@ public:
 			{
 				if (fill[i].valid())
 				{
+					assert( 0 <= fill[i].minx && fill[i].minx < fill[i].maxx && fill[i].maxx <= c.get_w()
+						 && 0 <= fill[i].miny && fill[i].miny < fill[i].maxy && fill[i].miny <= c.get_h() );
+
 					synfig::Surface::alpha_pen ap(
 						c.get_pen(fill[i].minx, fill[i].miny) );
 					ap.set_blend_method(blend_method);
