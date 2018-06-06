@@ -34,6 +34,7 @@
 
 #include <cassert>
 #include <typeinfo>
+#include <atomic>
 
 /* === M A C R O S ========================================================= */
 
@@ -67,10 +68,7 @@ template <class T> class rhandle;
 class shared_object
 {
 private:
-	mutable int refcount;
-#ifdef ETL_LOCK_REFCOUNTS
-	mutable etl::mutex mtx;
-#endif
+	mutable std::atomic<int> refcount;
 
 protected:
 	shared_object():refcount(0) { }
@@ -86,33 +84,13 @@ protected:
 public:
 	virtual void ref()const
 	{
-#ifdef ETL_LOCK_REFCOUNTS
-		etl::mutex::lock lock(mtx);
-#endif
-		assert(refcount>=0);
-		refcount++;
+		++refcount;
 	}
 
 	//! Returns \c false if object needs to be deleted
 	virtual bool unref()const
 	{
-		bool ret = true;
-		{
-#ifdef ETL_LOCK_REFCOUNTS
-			etl::mutex::lock lock(mtx);
-#endif
-			assert(refcount>0);
-
-			refcount--;
-
-			if(refcount==0) {
-				ret = false;
-#ifdef ETL_SELF_DELETING_SHARED_OBJECT
-				refcount=-666;
-#endif
-			}
-		}
-
+		bool ret = (bool)(--refcount);
 #ifdef ETL_SELF_DELETING_SHARED_OBJECT
 		if (!ret)
 			delete this;
@@ -124,20 +102,7 @@ public:
 	//! Returns \c false if references exeed and object should be deleted
 	virtual bool unref_inactive()const
 	{
-		bool ret = true;
-		{
-#ifdef ETL_LOCK_REFCOUNTS
-			etl::mutex::lock lock(mtx);
-#endif
-			assert(refcount>0);
-
-			refcount--;
-
-			if(refcount==0)
-				ret = false;
-		}
-
-		return ret;
+		return (bool)(--refcount);
 	}
 
 	int count()const { return refcount; }
@@ -236,11 +201,11 @@ public:
 	{
 		if(x.get()==obj)
 			return *this;
-
+		// add referense before detach
+		pointer xobj(x.get());
+		if(xobj) xobj->ref();
 		detach();
-
-		obj=x.get();
-		if(obj)obj->ref();
+		obj=xobj;
 		return *this;
 	}
 
