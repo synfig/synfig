@@ -257,7 +257,7 @@ TaskMeshSW::render_triangle(
 		p0[0], p0[1], 1.0 );
 	matrix_of_target_triangle.invert();
 
-	Matrix matrix = matrix_of_target_triangle * matrix_of_texture_triangle;
+	Matrix matrix = matrix_of_texture_triangle * matrix_of_target_triangle;
 	Vector tdx = matrix.get_transformed(Vector(1.0, 0.0), false);
 	//Vector tdy = matrix.get_transformed(Vector(0.0, 1.0), false);
 
@@ -452,14 +452,14 @@ TaskMeshSW::run(RunParams & /* params */) const
 	// TODO: target_rect
 
 	Vector upp = get_units_per_pixel();
-	Matrix3 transfromation_matrix;
+	Matrix transfromation_matrix;
 	transfromation_matrix.m00 = upp[0];
 	transfromation_matrix.m11 = upp[1];
 	transfromation_matrix.m20 = source_rect.minx;
 	transfromation_matrix.m21 = source_rect.miny;
 
 	Vector sub_upp = get_units_per_pixel();
-	Matrix3 texture_transfromation_matrix;
+	Matrix texture_transfromation_matrix;
 	texture_transfromation_matrix.m00 = sub_upp[0];
 	texture_transfromation_matrix.m11 = sub_upp[1];
 	texture_transfromation_matrix.m20 = sub_task()->source_rect.minx;

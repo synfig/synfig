@@ -192,7 +192,7 @@ TaskContourGL::run(RunParams & /* params */) const
 	bounds_transfromation.m20 = -1.0 - source_rect.minx*bounds_transfromation.m00;
 	bounds_transfromation.m21 = -1.0 - source_rect.miny*bounds_transfromation.m11;
 
-	Matrix matrix = transformation * bounds_transfromation;
+	Matrix matrix = bounds_transfromation * transformation;
 
 	// apply bounds
 

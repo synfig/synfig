@@ -166,8 +166,8 @@ Translate::accelerated_render(Context context,Surface *surface,int quality, cons
 	RendDesc transformed_renddesc(renddesc);
 	transformed_renddesc.clear_flags();
 	transformed_renddesc.set_transformation_matrix(
-		Matrix().set_translate(origin)
-	  * renddesc.get_transformation_matrix() );
+	    renddesc.get_transformation_matrix()
+	  * Matrix().set_translate(origin) );
 
 	// Render the scene
 	if(!context.accelerated_render(surface,quality,transformed_renddesc,cb))

@@ -153,7 +153,7 @@ synfig::Target_Tile::call_renderer(Context &context, const etl::handle<rendering
 		Vector p0 = renddesc.get_tl();
 		Vector p1 = renddesc.get_br();
 		if (p0[0] > p1[0] || p0[1] > p1[1]) {
-			Matrix3 m;
+			Matrix m;
 			if (p0[0] > p1[0]) { m.m00 = -1.0; m.m20 = p0[0] + p1[0]; std::swap(p0[0], p1[0]); }
 			if (p0[1] > p1[1]) { m.m11 = -1.0; m.m21 = p0[1] + p1[1]; std::swap(p0[1], p1[1]); }
 			TaskTransformationAffine::Handle t = new TaskTransformationAffine();

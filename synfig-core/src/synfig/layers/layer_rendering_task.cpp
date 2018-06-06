@@ -129,7 +129,7 @@ Layer_RenderingTask::accelerated_render(Context /* context */, Surface *surface,
 				src_pixels_to_units.m20 = src_lt[0] - src_target_rect.minx*src_pixels_to_units.m00;
 				src_pixels_to_units.m21 = src_lt[1] - src_target_rect.miny*src_pixels_to_units.m11;
 
-				Matrix transformation = src_pixels_to_units * units_to_dest_pixels;
+				Matrix transformation = units_to_dest_pixels * src_pixels_to_units;
 
 				rendering::SurfaceResource::LockRead<rendering::SurfaceSW> lock((*ri)->target_surface);
 				if (lock)

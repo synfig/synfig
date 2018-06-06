@@ -177,10 +177,10 @@ Zoom::accelerated_render(Context context,Surface *surface,int quality, const Ren
 	RendDesc transformed_renddesc(renddesc);
 	transformed_renddesc.clear_flags();
 	transformed_renddesc.set_transformation_matrix(
-		Matrix().set_translate(-center)
+	    renddesc.get_transformation_matrix()
+	  * Matrix().set_translate(center)
 	  *	Matrix().set_scale(exp(amount))
-	  *	Matrix().set_translate(center)
-	  * renddesc.get_transformation_matrix() );
+	  *	Matrix().set_translate(-center) );
 
 	// Render the scene
 	return context.accelerated_render(surface,quality,transformed_renddesc,cb);
@@ -227,9 +227,9 @@ Zoom::build_rendering_task_vfunc(Context context)const
 
 	rendering::TaskTransformationAffine::Handle task_transformation(new rendering::TaskTransformationAffine());
 	task_transformation->transformation->matrix =
-			Matrix().set_translate(-center)
+			Matrix().set_translate(center)
 		  * Matrix().set_scale(exp(amount))
-		  * Matrix().set_translate(center);
+		  * Matrix().set_translate(-center);
 	task_transformation->sub_task() = context.build_rendering_task();
 	return task_transformation;
 }

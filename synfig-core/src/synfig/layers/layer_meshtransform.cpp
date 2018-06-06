@@ -293,8 +293,8 @@ Layer_MeshTransform::accelerated_render(Context context,Surface *surface,int qua
 
 	// prepare transformation matrices
 	Matrix world_to_pixels_matrix =
-		renddesc.get_transformation_matrix()
-	  * renddesc.get_world_to_pixels_matrix();
+		renddesc.get_world_to_pixels_matrix()
+	  * renddesc.get_transformation_matrix();
 	Matrix texture_to_texels_matrix =
 		texture_renddesc.get_world_to_pixels_matrix();
 

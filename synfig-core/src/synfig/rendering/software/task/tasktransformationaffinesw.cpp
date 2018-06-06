@@ -316,15 +316,15 @@ public:
 					Real sx = (corners[1] - corners[0]).mag()/Real(src_bounds.maxx - src_bounds.minx);
 					Real sy = (corners[2] - corners[0]).mag()/Real(src_bounds.maxy - src_bounds.miny);
 
-					Matrix aa0_matrix = back_transformation
+					Matrix aa0_matrix = Matrix().set_translate(0.5, 0.5)
 									  * Matrix().set_scale(sx, sy)
-									  * Matrix().set_translate(0.5, 0.5);
-					Matrix aa1_matrix = back_transformation
+				                      * back_transformation;
+					Matrix aa1_matrix = Matrix().set_translate(0.5, 0.5)
+					                  * Matrix().set_scale(-sx, -sy)
 									  * Matrix().set_translate(
 											-Real(src_bounds.maxx - src_bounds.minx),
 											-Real(src_bounds.maxy - src_bounds.miny) )
-									  * Matrix().set_scale(-sx, -sy)
-									  * Matrix().set_translate(0.5, 0.5);
+					                  * back_transformation;
 
 					args.aa0    = aa0_matrix.get_transformed( start );
 					args.aa0_dx = aa0_matrix.get_transformed( dx, false );
@@ -440,7 +440,7 @@ TaskTransformationAffineSW::run(RunParams&) const
 	dst_units_to_pixels.m20 = target_rect.minx - dst_ppu[0]*source_rect.minx;
 	dst_units_to_pixels.m21 = target_rect.miny - dst_ppu[1]*source_rect.miny;
 
-	Matrix matrix = src_pixels_to_units * transformation->matrix * dst_units_to_pixels;
+	Matrix matrix = dst_units_to_pixels * transformation->matrix * src_pixels_to_units;
 
 	// resample
 	LockReadBase lsrc(sub_task());

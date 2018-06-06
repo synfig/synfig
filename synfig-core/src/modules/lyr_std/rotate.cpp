@@ -201,10 +201,10 @@ Rotate::accelerated_render(Context context,Surface *surface,int quality, const R
 	RendDesc transformed_renddesc(renddesc);
 	transformed_renddesc.clear_flags();
 	transformed_renddesc.set_transformation_matrix(
-		Matrix().set_translate(-origin)
-	  * Matrix().set_rotate(amount)
+	    renddesc.get_transformation_matrix()
 	  * Matrix().set_translate(origin)
-	  * renddesc.get_transformation_matrix() );
+	  * Matrix().set_rotate(amount)
+	  * Matrix().set_translate(-origin) );
 	return context.accelerated_render(surface,quality,transformed_renddesc,cb);
 }
 
@@ -255,9 +255,9 @@ Rotate::build_rendering_task_vfunc(Context context)const
 
 	rendering::TaskTransformationAffine::Handle task_transformation(new rendering::TaskTransformationAffine());
 	task_transformation->transformation->matrix =
-			Matrix().set_translate(-origin)
+			Matrix().set_translate(origin)
 		  * Matrix().set_rotate(amount)
-		  * Matrix().set_translate(origin);
+		  * Matrix().set_translate(-origin);
 	task_transformation->sub_task() = context.build_rendering_task();
 	return task_transformation;
 }

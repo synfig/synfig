@@ -372,19 +372,19 @@ ValueNode_Bone::get_animated_matrix(Time t, Point child_origin)const
 	Angle  angle	((*angle_	)(t).get(Angle()));
 	Point  origin	((*origin_	)(t).get(Point()));
 
-	return (Matrix().set_translate(child_origin[0]*scalelx, child_origin[1]) *
-			Matrix().set_scale(scalex,1.0) *
-			Matrix().set_rotate(angle) *
-			get_parent(t)->get_animated_matrix(t, origin));
+	return get_parent(t)->get_animated_matrix(t, origin)
+		 * Matrix().set_rotate(angle)
+		 * Matrix().set_scale(scalex,1.0)
+		 * Matrix().set_translate(child_origin[0]*scalelx, child_origin[1]);
 }
 
 Matrix
 ValueNode_Bone::get_animated_matrix(Time t, Real scalex, Real scaley, Angle angle, Point origin, ValueNode_Bone::ConstHandle parent)const
 {
 	Matrix parent_matrix(parent->get_animated_matrix(t, origin));
-	Matrix ret(Matrix().set_scale(scalex,scaley) *
-			   Matrix().set_rotate(angle) *
-			   parent_matrix);
+	Matrix ret = parent_matrix
+			   * Matrix().set_rotate(angle)
+			   * Matrix().set_scale(scalex,scaley);
 
 	if (getenv("SYNFIG_DEBUG_ANIMATED_MATRIX_CALCULATION"))
 	{

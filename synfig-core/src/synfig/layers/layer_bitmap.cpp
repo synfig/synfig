@@ -672,7 +672,7 @@ Layer_Bitmap::build_composite_task_vfunc(ContextParams /* context_params */) con
 	ColorReal gamma = (Color::value_type)param_gamma_adjust.get(Real());
 	Point tl(param_tl.get(Point()));
 	Point br(param_br.get(Point()));
-	Matrix3 m;
+	Matrix m;
 	m.m00 = (br[0] - tl[0]); m.m20 = tl[0];
 	m.m11 = (br[1] - tl[1]); m.m21 = tl[1];
 

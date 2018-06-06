@@ -116,7 +116,7 @@ TaskLayer::set_coords_sub_tasks()
 			{ matrix.m00 = -1.0; matrix.m20 = rb[0] - lt[0]; }
 		if (approximate_less(rb[1], lt[1]))
 			{ matrix.m11 = -1.0; matrix.m20 = rb[1] - lt[1]; }
-		matrix = matrix * i->get_transformation_matrix();
+		matrix = i->get_transformation_matrix() * matrix;
 		if (!matrix.is_invertible())
 			continue;
 

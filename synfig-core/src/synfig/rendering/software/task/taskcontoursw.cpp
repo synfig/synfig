@@ -82,7 +82,7 @@ public:
 		bounds_transfromation.m20 = target_rect.minx - ppu[0]*source_rect.minx;
 		bounds_transfromation.m21 = target_rect.miny - ppu[1]*source_rect.miny;
 
-		Matrix matrix = transformation->matrix * bounds_transfromation;
+		Matrix matrix = bounds_transfromation * transformation->matrix;
 
 		Polyspan polyspan;
 		polyspan.init(target_rect);

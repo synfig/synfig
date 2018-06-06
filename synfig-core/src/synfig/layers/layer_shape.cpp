@@ -1247,9 +1247,9 @@ Layer_Shape::render_shape(Surface *surface, bool useblend, const RendDesc &rendd
 	Matrix translate;
 	translate.set_translate(origin);
 	Matrix world_to_pixels_matrix =
-		translate
+	    renddesc.get_world_to_pixels_matrix()
 	  * renddesc.get_transformation_matrix()
-	  * renddesc.get_world_to_pixels_matrix();
+	  * translate;
 
 	rendering::software::Contour::render_contour(
 		*surface,
