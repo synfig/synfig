@@ -64,19 +64,29 @@ public:
 	};
 
 protected:
-	virtual Transformation::Handle create_inverted_vfunc() const
-		{ return Handle(); }
+	virtual Transformation* clone_vfunc() const
+		{ return 0; }
+	virtual Transformation* create_inverted_vfunc() const
+		{ return 0; }
 
 	virtual Point transform_vfunc(const Point &x, bool translate) const = 0;
 	virtual Bounds transform_bounds_vfunc(const Bounds &bounds) const = 0;
 
 	virtual Mesh::Handle build_mesh_vfunc(const Rect &target_rect, const Vector &precision) const;
 
+	virtual bool can_merge_outer_vfunc(const Transformation &other) const;
+	virtual bool can_merge_inner_vfunc(const Transformation &other) const;
+	virtual void merge_outer_vfunc(const Transformation &other);
+	virtual void merge_inner_vfunc(const Transformation &other);
+
 public:
 	virtual ~Transformation() { }
 
-	Transformation::Handle create_inverted() const
+	Transformation* clone() const
+		{ return clone_vfunc(); }
+	Transformation* create_inverted() const
 		{ return create_inverted_vfunc(); }
+	Transformation* create_merged(const Transformation& other) const;
 
 	Point transform(const Point &x, bool translate = true) const
 		{ return transform_vfunc(x, translate); }
@@ -86,6 +96,21 @@ public:
 		{ return transform_bounds_vfunc(Bounds(bounds)); }
 	Bounds transform_bounds(const Rect &bounds, const Vector &resolution) const
 		{ return transform_bounds_vfunc(Bounds(bounds, resolution)); }
+
+	bool can_merge_outer(const Transformation& other) const;
+	bool can_merge_inner(const Transformation& other) const;
+	bool merge_outer(const Transformation& other);
+	bool merge_inner(const Transformation& other);
+
+	bool can_merge_outer(const Transformation::Handle& other) const
+		{ return other && can_merge_outer(*other); }
+	bool can_merge_inner(const Transformation::Handle& other) const
+		{ return other && can_merge_inner(*other); }
+
+	bool merge_outer(const Transformation::Handle& other)
+		{ return other && merge_outer(*other); }
+	bool merge_inner(const Transformation::Handle& other)
+		{ return other && merge_inner(*other); }
 
 	Mesh::Handle build_mesh(const Rect &target_rect, const Vector &precision) const;
 	Mesh::Handle build_mesh(const Point &target_rect_lt, const Point &target_rect_rb, const Vector &precision) const;
@@ -98,10 +123,16 @@ class TransformationVoid: public Transformation
 public:
 	typedef etl::handle<TransformationVoid> Handle;
 protected:
-	virtual Point transform_vfunc(const Point &/*x*/, bool /*translate*/) const
+	virtual Transformation* clone_vfunc() const
+		{ return new TransformationVoid(); }
+	virtual Point transform_vfunc(const Point& /* x */, bool /* translate */) const
 		{ return Point::nan(); }
-	virtual Bounds transform_bounds_vfunc(const Bounds &/*bounds*/) const
+	virtual Bounds transform_bounds_vfunc(const Bounds& /* bounds */) const
 		{ return Bounds(); }
+	virtual bool can_merge_outer_vfunc(const Transformation& /* other */) const
+		{ return true; }
+	virtual bool can_merge_inner_vfunc(const Transformation& /* other */) const
+		{ return true; }
 };
 
 
@@ -111,9 +142,11 @@ class TransformationNone: public Transformation
 public:
 	typedef etl::handle<TransformationNone> Handle;
 protected:
-	virtual Transformation::Handle create_inverted_vfunc() const
+	virtual Transformation* clone_vfunc() const
 		{ return new TransformationNone(); }
-	virtual Point transform_vfunc(const Point &x, bool /*translate*/) const
+	virtual Transformation* create_inverted_vfunc() const
+		{ return clone_vfunc(); }
+	virtual Point transform_vfunc(const Point &x, bool /* translate */) const
 		{ return x; }
 	virtual Bounds transform_bounds_vfunc(const Bounds &bounds) const
 		{ return bounds; }

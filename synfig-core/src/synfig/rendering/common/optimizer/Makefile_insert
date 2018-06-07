@@ -9,8 +9,7 @@ RENDERING_COMMON_OPTIMIZER_HH = \
 	rendering/common/optimizer/optimizerlist.h \
 	rendering/common/optimizer/optimizerpixelprocessorsplit.h \
 	rendering/common/optimizer/optimizersplit.h \
-	rendering/common/optimizer/optimizertransformation.h \
-	rendering/common/optimizer/optimizertransformationaffine.h
+	rendering/common/optimizer/optimizertransformation.h
 
 RENDERING_COMMON_OPTIMIZER_CC = \
 	rendering/common/optimizer/optimizerblendassociative.cpp \
@@ -23,8 +22,7 @@ RENDERING_COMMON_OPTIMIZER_CC = \
 	rendering/common/optimizer/optimizerlist.cpp \
 	rendering/common/optimizer/optimizerpixelprocessorsplit.cpp \
 	rendering/common/optimizer/optimizersplit.cpp \
-	rendering/common/optimizer/optimizertransformation.cpp \
-	rendering/common/optimizer/optimizertransformationaffine.cpp
+	rendering/common/optimizer/optimizertransformation.cpp
 
 RENDERING_COMMON_HH += \
     $(RENDERING_COMMON_OPTIMIZER_HH)

@@ -5,7 +5,7 @@
 **	$Id$
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2015-2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -28,8 +28,6 @@
 /* === H E A D E R S ======================================================= */
 
 #include "../../optimizer.h"
-#include "../../task.h"
-#include "../task/taskblend.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -44,19 +42,8 @@ namespace rendering
 
 class OptimizerTransformation: public Optimizer
 {
-private:
-	static bool can_optimize(const Task::Handle &sub_task);
-	static void calc_unoptimized_blend_brunches(int &ref_count, const Task::Handle &blend_sub_task);
-
 public:
-	OptimizerTransformation()
-	{
-		category_id = CATEGORY_ID_BEGIN;
-		// TODO: is MODE_RECURSIVE actually needs?
-		mode = MODE_REPEAT_LAST | MODE_RECURSIVE;
-		for_task = true;
-	}
-
+	OptimizerTransformation();
 	virtual void run(const RunParams &params) const;
 };
 

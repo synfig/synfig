@@ -58,7 +58,7 @@ public:
 
 	enum
 	{
-		CATEGORY_ID_COUNT        = CATEGORY_ID_LIST + 1,
+		CATEGORIES_COUNT         = CATEGORY_ID_LIST + 1,
 
 		CATEGORY_BEGIN           = 1 << CATEGORY_ID_BEGIN,
 		CATEGORY_COORDS          = 1 << CATEGORY_ID_COORDS,
@@ -70,7 +70,7 @@ public:
 								 | CATEGORY_SPECIALIZED,
 		CATEGORY_ALL_SPECIALIZED = CATEGORY_SPECIALIZED
 								 | CATEGORY_LIST,
-		CATEGORY_ALL             = (1 << CATEGORY_ID_COUNT) - 1
+		CATEGORY_ALL             = (1 << CATEGORIES_COUNT) - 1
 	};
 
 	enum
@@ -110,13 +110,13 @@ public:
 			owncount(other.owncount),
 			object(other.object) { }
 
-		bool is_own()
+		bool is_own() const
 			{ return count == owncount; }
-		etl::handle<Type> clone() {
+		etl::handle<Type> clone() const {
 			return !object ? etl::handle<Type>()
 			     : etl::handle<Type>( dynamic_cast<Type*>( object->clone() ) );
 		}
-		etl::handle<Type> edit()
+		etl::handle<Type> edit() const
 			{ return is_own() ? object : clone(); }
 	};
 
@@ -195,7 +195,7 @@ public:
 	};
 
 
-	static const CategoryInfo categories_info[CATEGORY_ID_COUNT];
+	static const CategoryInfo categories_info[CATEGORIES_COUNT];
 
 	//! Category of this optimizer,
 	//! see enum Optimizer::CategoryId (CATEGORY_ID_XXX)

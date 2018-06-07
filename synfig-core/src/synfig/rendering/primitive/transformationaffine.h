@@ -53,9 +53,14 @@ public:
 	explicit TransformationAffine(const Matrix &matrix): matrix(matrix) { }
 
 protected:
-	virtual Transformation::Handle create_inverted_vfunc() const;
+	virtual Transformation* clone_vfunc() const;
+	virtual Transformation* create_inverted_vfunc() const;
 	virtual Point transform_vfunc(const Point &x, bool direction) const;
 	virtual Bounds transform_bounds_vfunc(const Bounds &bounds) const;
+	virtual bool can_merge_outer_vfunc(const Transformation &other) const;
+	virtual bool can_merge_inner_vfunc(const Transformation &other) const;
+	virtual void merge_outer_vfunc(const Transformation &other);
+	virtual void merge_inner_vfunc(const Transformation &other);
 };
 
 } /* end namespace rendering */

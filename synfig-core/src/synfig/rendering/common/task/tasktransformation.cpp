@@ -57,6 +57,17 @@ Task::Token TaskTransformationAffine::token(
 	DescAbstract<TaskTransformationAffine, TaskTransformation>("TaskTransformationAffine") );
 
 
+TaskTransformation::TaskTransformation():
+	interpolation(Color::INTERPOLATION_CUBIC),
+	supersample(Vector(1.0, 1.0)) { }
+
+
+bool
+TaskTransformation::is_simple() const {
+	return interpolation != Color::INTERPOLATION_NEAREST
+		&& supersample.is_equal_to(Vector(1.0, 1.0));
+}
+
 Rect
 TaskTransformation::calc_bounds() const
 {

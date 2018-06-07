@@ -50,6 +50,22 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
+bool
+Transformation::can_merge_outer_vfunc(const Transformation&) const
+	{ return false; }
+
+bool
+Transformation::can_merge_inner_vfunc(const Transformation&) const
+	{ return false; }
+
+void
+Transformation::merge_outer_vfunc(const Transformation&)
+	{ }
+
+void
+Transformation::merge_inner_vfunc(const Transformation&)
+	{ }
+
 Mesh::Handle
 Transformation::build_mesh_vfunc(const Rect &target_rect, const Vector &precision) const
 {
@@ -135,6 +151,52 @@ Transformation::build_mesh_vfunc(const Rect &target_rect, const Vector &precisio
 	}
 
 	return mesh;
+}
+
+Transformation*
+Transformation::create_merged(const Transformation& other) const
+{
+	if (can_merge_inner(other)) {
+		Transformation *t = clone();
+		if (!t) return 0;
+		if (!t->can_merge_inner(other)) return 0;
+		t->merge_inner(other);
+		return t;
+	} else
+	if (other.can_merge_outer(*this)) {
+		Transformation *t = other.clone();
+		if (!t) return 0;
+		if (!t->can_merge_outer(*this)) return 0;
+		t->merge_outer(*this);
+		return t;
+	}
+	return 0;
+}
+
+bool
+Transformation::can_merge_outer(const Transformation& other) const {
+	return (bool)dynamic_cast<const TransformationNone*>(&other)
+		 || can_merge_outer_vfunc(other);
+}
+
+bool
+Transformation::can_merge_inner(const Transformation& other) const {
+	return (bool)dynamic_cast<const TransformationNone*>(&other)
+		 || can_merge_inner_vfunc(other);
+}
+
+bool
+Transformation::merge_outer(const Transformation& other) {
+	if (!can_merge_outer(other)) return false;
+	merge_outer_vfunc(other);
+	return true;
+}
+
+bool
+Transformation::merge_inner(const Transformation& other) {
+	if (!can_merge_inner(other)) return false;
+	merge_inner_vfunc(other);
+	return true;
 }
 
 Mesh::Handle

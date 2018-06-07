@@ -99,6 +99,20 @@ Task::Task():
 Task::~Task()
 { }
 
+void
+Task::assign_target(const Task &other) {
+	source_rect = other.source_rect;
+	target_rect = other.target_rect;
+	target_surface = other.target_surface;
+}
+
+void
+Task::assign(const Task &other) {
+	assign_target(other);
+	sub_tasks = other.sub_tasks;
+	renderer_data = other.renderer_data; // TODO: remove renderer_data from task
+}
+
 bool
 Task::can_convert_to(ModeToken::Handle mode) const
 {
@@ -123,7 +137,7 @@ Task::convert_to(ModeToken::Handle mode) const
 
 	Token::Handle token = get_token();
 	if (!token->is_abstract())
-		token = token->abstract_task;
+		return Task::Handle();
 
 	Token::Map::const_iterator i = token->alternatives().find(mode);
 	if (i == token->alternatives().end())
@@ -137,7 +151,7 @@ Task::convert_to_any() const
 {
 	Token::Handle token = get_token();
 	if (!token->is_abstract())
-		token = token->abstract_task;
+		return Task::Handle();
 
 	Task::Handle task;
 	for(Token::Map::const_iterator i = token->alternatives().begin(); i != token->alternatives().end(); ++i) {
@@ -149,8 +163,11 @@ Task::convert_to_any() const
 }
 
 Task::Handle
-Task::clone() const
-	{ return Task::Handle(get_token()->clone(*this)); }
+Task::clone() const {
+	Task *t = get_token()->clone(*this);
+	assert(t);
+	return Task::Handle(t);
+}
 
 Task::Handle
 Task::clone_recursive() const

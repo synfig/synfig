@@ -113,7 +113,6 @@ synfig::Target_Scanline::call_renderer(Context &context, const etl::handle<rende
 			if (p0[0] > p1[0]) { m.m00 = -1.0; m.m20 = p0[0] + p1[0]; std::swap(p0[0], p1[0]); }
 			if (p0[1] > p1[1]) { m.m11 = -1.0; m.m21 = p0[1] + p1[1]; std::swap(p0[1], p1[1]); }
 			TaskTransformationAffine::Handle t = new TaskTransformationAffine();
-			t->interpolation = Color::Interpolation::INTERPOLATION_NEAREST;
 			t->transformation->matrix = m;
 			t->sub_task() = task;
 			task = t;

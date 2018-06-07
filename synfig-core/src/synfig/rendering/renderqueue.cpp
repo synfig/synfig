@@ -61,7 +61,7 @@ using namespace rendering;
 #ifndef NDEBUG
 //#define DEBUG_THREAD_TASK
 //#define DEBUG_THREAD_WAIT
-#define DEBUG_TASK_SURFACE
+//#define DEBUG_TASK_SURFACE
 #endif
 
 

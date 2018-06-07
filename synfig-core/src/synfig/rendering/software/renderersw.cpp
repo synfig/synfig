@@ -51,7 +51,6 @@
 #include "../common/optimizer/optimizerpixelprocessorsplit.h"
 #include "../common/optimizer/optimizersplit.h"
 #include "../common/optimizer/optimizertransformation.h"
-#include "../common/optimizer/optimizertransformationaffine.h"
 
 #include "function/fft.h"
 
@@ -73,7 +72,7 @@ RendererSW::RendererSW()
 	register_mode(TaskSW::mode_token.handle());
 
 	// register optimizers
-	register_optimizer(new OptimizerTransformationAffine());
+	register_optimizer(new OptimizerTransformation());
 
 	register_optimizer(new OptimizerBlendZero());
 	register_optimizer(new OptimizerBlendBlend());

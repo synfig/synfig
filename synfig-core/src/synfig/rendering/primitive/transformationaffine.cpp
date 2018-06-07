@@ -50,7 +50,11 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
-Transformation::Handle
+Transformation*
+TransformationAffine::clone_vfunc() const
+	{ return new TransformationAffine(matrix); }
+
+Transformation*
 TransformationAffine::create_inverted_vfunc() const
 	{ return new TransformationAffine(Matrix(matrix).invert()); }
 
@@ -91,5 +95,22 @@ TransformationAffine::transform_bounds_vfunc(const Bounds &bounds) const
 
 	return Bounds(rect, Vector(1.0/upp[0], 1.0/upp[1]));
 }
+
+bool
+TransformationAffine::can_merge_outer_vfunc(const Transformation &other) const
+	{ return (bool)dynamic_cast<const TransformationAffine*>(&other); }
+
+bool
+TransformationAffine::can_merge_inner_vfunc(const Transformation &other) const
+	{ return can_merge_outer_vfunc(other); }
+
+void
+TransformationAffine::merge_outer_vfunc(const Transformation &other)
+	{ matrix = dynamic_cast<const TransformationAffine*>(&other)->matrix * matrix; }
+
+void
+TransformationAffine::merge_inner_vfunc(const Transformation &other)
+	{ matrix *= dynamic_cast<const TransformationAffine*>(&other)->matrix; }
+
 
 /* === E N T R Y P O I N T ================================================= */

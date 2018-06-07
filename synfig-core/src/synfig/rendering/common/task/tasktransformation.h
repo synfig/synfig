@@ -69,9 +69,12 @@ public:
 	Color::Interpolation interpolation;
 	Vector supersample;
 
-	TaskTransformation():
-		interpolation(Color::INTERPOLATION_LINEAR),
-		supersample(Vector(1.0, 1.0)) { }
+	TaskTransformation();
+
+	//! returns true then task just do transformation of first sub-task only
+	//! without supersampling and any drawings.
+	//! so this task may be fully merged into other suitable transformation task
+	virtual bool is_simple() const;
 
 	const Task::Handle& sub_task() const { return Task::sub_task(0); }
 	Task::Handle& sub_task() { return Task::sub_task(0); }

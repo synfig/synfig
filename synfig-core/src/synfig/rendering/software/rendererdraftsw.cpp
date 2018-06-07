@@ -52,7 +52,6 @@
 #include "../common/optimizer/optimizerpixelprocessorsplit.h"
 #include "../common/optimizer/optimizersplit.h"
 #include "../common/optimizer/optimizertransformation.h"
-#include "../common/optimizer/optimizertransformationaffine.h"
 
 #endif
 
@@ -72,6 +71,8 @@ RendererDraftSW::RendererDraftSW()
 	register_mode(TaskSW::mode_token.handle());
 
 	// register optimizers
+	register_optimizer(new OptimizerTransformation());
+
 	register_optimizer(new OptimizerDraftContour());
 	register_optimizer(new OptimizerDraftBlur());
 	register_optimizer(new OptimizerDraftLayerSkip("MotionBlur"));
@@ -99,7 +100,6 @@ RendererDraftSW::RendererDraftSW()
 	register_optimizer(new OptimizerDraftLayerSkip("super_sample"));
 	register_optimizer(new OptimizerDraftLayerSkip("text"));
 	register_optimizer(new OptimizerDraftLayerSkip("xor_pattern"));
-	register_optimizer(new OptimizerTransformationAffine());
 	register_optimizer(new OptimizerDraftResample());
 
 	register_optimizer(new OptimizerBlendZero());

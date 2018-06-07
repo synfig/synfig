@@ -459,7 +459,7 @@ Renderer::optimize(Task::List &list) const
 			}
 		prepared_category_id = current_category_id;
 
-		if (current_category_id >= Optimizer::CATEGORY_ID_COUNT)
+		if (current_category_id >= Optimizer::CATEGORIES_COUNT)
 		{
 			current_category_id = 0;
 			current_optimizer_index = 0;
@@ -766,6 +766,9 @@ Renderer::run(const Task::List &list) const
 		// if it never stored in handles before
 		queue->enqueue(optimized_list, Task::RunParams( get_renderer(get_name()) ));
 
+		// unref tasks so surfaces will removed immediatelly when their tasks will complete
+		optimized_list.clear();
+
 		task_cond->cond->wait(mutex);
 		if (!task_cond->renderer_data.success) success = false;
 
@@ -781,7 +784,7 @@ Renderer::run(const Task::List &list) const
 	return success;
 }
 
-void
+bool
 Renderer::enqueue(const Task::List &list, const Task::Handle &finish_signal_task) const
 {
 	Task::List optimized_list(list);
@@ -798,6 +801,7 @@ Renderer::enqueue(const Task::List &list, const Task::Handle &finish_signal_task
 	// because creation and destruction of handle may cause destruction of renderer
 	// if it never stored in handles before
 	queue->enqueue(optimized_list, Task::RunParams( get_renderer(get_name()) ));
+	return true;
 }
 
 void

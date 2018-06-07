@@ -67,7 +67,7 @@ private:
 	static long long last_batch_index; // TODO: atomic
 
 	ModeList modes;
-	Optimizer::List optimizers[Optimizer::CATEGORY_ID_COUNT];
+	Optimizer::List optimizers[Optimizer::CATEGORIES_COUNT];
 
 public:
 
@@ -75,13 +75,15 @@ public:
 
 	virtual String get_name() const = 0;
 
-	const Optimizer::List& get_optimizers(Optimizer::CategoryId category_id) const { return optimizers[category_id]; }
+	const Optimizer::List& get_optimizers(Optimizer::CategoryId category_id) const
+		{ return optimizers[category_id]; }
 	bool is_optimizer_registered(const Optimizer::Handle &optimizer) const;
 	void register_optimizer(Real order, const Optimizer::Handle &optimizer);
 	void register_optimizer(const Optimizer::Handle &optimizer);
 	void unregister_optimizer(const Optimizer::Handle &optimizer);
 
-	const ModeList& get_modes() const { return modes; }
+	const ModeList& get_modes() const
+		{ return modes; }
 	void register_mode(int index, const ModeToken::Handle &mode);
 	void register_mode(const ModeToken::Handle &mode);
 	void unregister_mode(const ModeToken::Handle &mode);
@@ -125,8 +127,11 @@ private:
 public:
 	int get_max_simultaneous_threads() const;
 	void optimize(Task::List &list) const;
+
 	bool run(const Task::List &list) const;
-	void enqueue(const Task::List &list, const Task::Handle &finish_signal_task = Task::Handle()) const;
+	bool enqueue(
+		const Task::List &list,
+		const Task::Handle &finish_signal_task = Task::Handle() ) const;
 
 	static void initialize();
 	static void deinitialize();

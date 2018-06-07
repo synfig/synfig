@@ -50,7 +50,7 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
-const Optimizer::CategoryInfo Optimizer::categories_info[CATEGORY_ID_COUNT] = {
+const Optimizer::CategoryInfo Optimizer::categories_info[CATEGORIES_COUNT] = {
 	CategoryInfo(false),   // CATEGORY_ID_BEGIN
 	CategoryInfo(false),   // CATEGORY_ID_COORDS
 	CategoryInfo(true),    // CATEGORY_ID_SPECIALIZED

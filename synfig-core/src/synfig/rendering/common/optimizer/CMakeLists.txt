@@ -13,5 +13,4 @@ target_sources(synfig
         "${CMAKE_CURRENT_LIST_DIR}/optimizerpixelprocessorsplit.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/optimizersplit.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/optimizertransformation.cpp"
-        "${CMAKE_CURRENT_LIST_DIR}/optimizertransformationaffine.cpp"
 )

@@ -379,6 +379,11 @@ public:
 	Task();
 	virtual ~Task();
 
+	void assign_target(const Task &other);
+	void assign(const Task &other);
+	Task& operator=(const Task &other)
+		{ assign(other); return *this; }
+
 	// mode options
 	virtual Surface::Token::Handle get_target_token() const {
 		if (const Mode *mode = dynamic_cast<const Mode*>(this))
