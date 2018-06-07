@@ -788,7 +788,7 @@ StateBrush_Context::event_mouse_down_handler(const Smach::event& x)
 					// create and save surface
 					get_canvas_interface()
 						->get_instance()
-						->save_surface(layer->get_surface(), filename);
+						->save_surface(layer->rendering_surface, filename);
 
 					selected_layer->set_param("filename", filename_param);
 					selected_layer->set_description(description);

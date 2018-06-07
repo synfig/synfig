@@ -82,6 +82,7 @@ synfig::Layer_Bitmap::Layer_Bitmap():
 	SET_STATIC_DEFAULTS();
 }
 
+/*
 synfig::Surface&
 Layer_Bitmap::get_surface() const
 {
@@ -91,6 +92,7 @@ Layer_Bitmap::get_surface() const
 	rendering::SurfaceResource::LockWrite<rendering::SurfaceSW> lock(rendering_surface);
 	return lock->get_surface();
 }
+*/
 
 bool
 synfig::Layer_Bitmap::set_param(const String & param, const ValueBase & value)
@@ -278,11 +280,14 @@ synfig::Layer_Bitmap::get_color(Context context, const Point &pos)const
 
 			Color ret(Color::alpha());
 
-			if (rendering::SurfaceSWPacked::Handle surface_packed = rendering::SurfaceSWPacked::Handle::cast_dynamic(rendering_surface))
+			rendering::SurfaceResource::LockReadBase lsurf(rendering_surface);
+			if (lsurf.convert<rendering::SurfaceSWPacked>(false))
 			{
-				reader.open(surface_packed->get_surface());
-				typedef etl::sampler<ColorAccumulator, float, ColorAccumulator, rendering::software::PackedSurface::Reader::reader_cook> Sampler;
+				typedef rendering::software::PackedSurface PackedSurface;
+				typedef PackedSurface::Sampler Sampler;
 
+				assert(lsurf.get_handle().type_is<rendering::SurfaceSWPacked>());
+				reader.open( lsurf.cast<rendering::SurfaceSWPacked>()->get_surface() );
 				switch(c)
 				{
 				case 6:	// Undefined
@@ -308,9 +313,10 @@ synfig::Layer_Bitmap::get_color(Context context, const Point &pos)const
 				}
 			}
 			else
+			if (lsurf.convert<rendering::SurfaceSW>())
 			{
-				Surface &surface = get_surface();
-
+				assert(lsurf.get_handle().type_is<rendering::SurfaceSW>());
+				const Surface &surface = lsurf.cast<rendering::SurfaceSW>()->get_surface();
 				switch(c)
 				{
 				case 6:	// Undefined
@@ -370,7 +376,10 @@ Layer_Bitmap::accelerated_render(Context context,Surface *surface,int quality, c
 	int c(param_c.get(int()));
 	Real gamma_adjust(param_gamma_adjust.get(Real()));
 
-	Surface &layer_surface = get_surface();
+	rendering::SurfaceResource::LockRead<rendering::SurfaceSW> lsurf(rendering_surface);
+	if (!lsurf)
+		return false;
+	Surface &layer_surface = lsurf.cast<rendering::SurfaceSW>()->get_surface(); // const cast
 
 	int interp=c;
 	if(quality>=10)

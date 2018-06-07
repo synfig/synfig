@@ -451,7 +451,7 @@ TaskTransformationAffineSW::run(RunParams&) const
 			amount,
 			blend_method );
 	} else
-	if (lsrc.convert<TargetSurface>(false)) {
+	if (lsrc.convert<TargetSurface>()) {
 		TargetSurface::Handle src = lsrc.cast<TargetSurface>();
 		if (!src) return false;
 		resample(

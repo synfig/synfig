@@ -202,7 +202,10 @@ Action::LayerPaint::PaintStroke::prepare()
 			break;
 		}
 
-	if (prevSameLayer == NULL) surface = layer->get_surface();
+	if (prevSameLayer == NULL) {
+		rendering::SurfaceResource::LockRead<rendering::SurfaceSW> lock(layer->rendering_surface);
+		if (lock) surface = lock->get_surface();
+	}
 	new_tl = tl = layer->get_param("tl").get(Point());
 	new_br = br = layer->get_param("br").get(Point());
 

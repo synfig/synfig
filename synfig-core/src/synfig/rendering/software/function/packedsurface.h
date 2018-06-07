@@ -113,6 +113,8 @@ public:
 			{ return min <= c && c <= max; }
 	};
 
+	typedef etl::sampler<ColorAccumulator, float, ColorAccumulator, Reader::reader_cook> Sampler;
+
 private:
 	mutable synfig::Mutex mutex;
 	mutable std::set<Reader*> readers;

@@ -71,8 +71,6 @@ public:
 
 	Layer_Bitmap();
 
-	synfig::Surface& get_surface() const;
-
 	GUID get_surface_modification_id() const
 		{ return surface_modification_id; }
 	bool is_surface_modified() const
