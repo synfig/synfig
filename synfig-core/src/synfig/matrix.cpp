@@ -246,38 +246,39 @@ Matrix3::operator+=(const Matrix3 &rhs)
 	return *this;
 }
 
+Matrix3::value_type
+Matrix3::det()const
+{
+	return m00*(m11*m22 - m12*m21)
+		 - m01*(m10*m22 - m12*m20)
+		 + m02*(m10*m21 - m11*m20);
+}
+
+
 bool
 Matrix3::is_invertible()const
-	{ return approximate_not_equal(m00*m11, m01*m10); }
+	{ return approximate_not_equal(det(), 0.0); }
 
-Matrix3&
-Matrix3::invert()
+Matrix3
+Matrix3::get_inverted()const
 {
-	if (is_invertible())
-	{
-		// TODO: use all coords
-		value_type det(m00*m11-m01*m10);
-		value_type tmp(m20);
-		m20=(m10*m21-m11*m20)/det;
-		m21=(m01*tmp-m00*m21)/det;
-		tmp=m00;
-		m00=m11/det;
-		m11=tmp/det;
-		m01=-m01/det;
-		m10=-m10/det;
-	}
-	else
-	if (m00*m00+m01*m01 > m10*m10+m11*m11)
-	{
-		m10=m01; m20=-m20*m00-m21*m01;
-		m01=0; m11=0; m21=0;
-	}
-	else
-	{
-		m01=m10; m21=-m20*m10-m21*m11;
-		m00=0; m10=0; m20=0;
-	}
-	return *this;
+	value_type d = det();
+	if (approximate_equal(d, 0.0))
+		return Matrix3( 0.0, 0.0, 0.0,
+				        0.0, 0.0, 0.0,
+						0.0, 0.0, 0.0 );
+	value_type p = 1.0/d;
+	value_type m = -p;
+	return Matrix3(
+		p*(m11*m22 - m12*m21), // row0
+		m*(m01*m22 - m02*m21),
+		p*(m01*m12 - m02*m11),
+		m*(m10*m22 - m12*m20), // row1
+		p*(m00*m22 - m02*m20),
+		m*(m00*m12 - m02*m10),
+		p*(m10*m21 - m11*m20), // row2
+		m*(m00*m21 - m01*m20),
+		p*(m00*m11 - m01*m10) );
 }
 
 String

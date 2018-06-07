@@ -365,9 +365,14 @@ public:
 	Matrix3 operator+(const Matrix3 &rhs)const
 		{ return Matrix3(*this) += rhs; }
 
+	value_type det() const;
+
 	bool is_invertible()const;
 
-	Matrix3& invert();
+	Matrix3 get_inverted() const;
+
+	Matrix3& invert()
+		{ return *this = get_inverted(); }
 
 	//!Get the string of the Matrix
 	//!@return String type. A string representation of the matrix
