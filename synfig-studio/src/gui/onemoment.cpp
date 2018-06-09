@@ -84,18 +84,28 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-OneMoment::OneMoment():
-	Gtk::Window(Gtk::WINDOW_TOPLEVEL)
+Gtk::Window *OneMoment::wnd = NULL;
+
+OneMoment::OneMoment()//:
+	//Gtk::Window(Gtk::WINDOW_TOPLEVEL)
 {
+
+	if (wnd) {
+		wnd->show();
+		return;
+	}
+
+	wnd = new Gtk::Window(Gtk::WINDOW_TOPLEVEL);
+
 	// Create the Label
 	Gtk::Label *label = manage(new class Gtk::Label(_("One Moment, Please...")));
 
-	set_title(_("Working..."));
-	set_modal(true);
-	set_decorated(0);
-	property_window_position().set_value(Gtk::WIN_POS_CENTER);
-	set_resizable(false);
-	add(*label);
+	wnd->set_title(_("Working..."));
+	wnd->set_modal(true);
+	wnd->set_decorated(0);
+	wnd->property_window_position().set_value(Gtk::WIN_POS_CENTER);
+	wnd->set_resizable(false);
+	wnd->add(*label);
 
 	Pango::AttrList attr_list;
 	Pango::AttrInt pango_size(Pango::Attribute::create_attr_size(Pango::SCALE*16));
@@ -107,16 +117,16 @@ OneMoment::OneMoment():
 
 	label->set_size_request(400,60);
 
-	set_transient_for((Gtk::Window&)(*App::main_window));
+	wnd->set_transient_for((Gtk::Window&)(*App::main_window));
 	
 	// show everything off
-	show_all();
+	wnd->show_all();
 
-	present();
+	wnd->present();
 	while(studio::App::events_pending())studio::App::iteration(false);
 }
 
 OneMoment::~OneMoment()
 {
-	hide();
+	wnd->hide();
 }
