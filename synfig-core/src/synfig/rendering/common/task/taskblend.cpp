@@ -75,20 +75,4 @@ TaskBlend::calc_bounds() const
 	return bounds;
 }
 
-VectorInt
-TaskBlend::get_offset_a() const
-{
-	if (!sub_task_a()) return VectorInt::zero();
-	Vector offset = (sub_task_a()->source_rect.get_min() - source_rect.get_min()).multiply_coords(get_pixels_per_unit());
-	return VectorInt((int)round(offset[0]), (int)round(offset[1])) - sub_task_a()->target_rect.get_min();
-}
-
-VectorInt
-TaskBlend::get_offset_b() const
-{
-	if (!sub_task_b()) return VectorInt::zero();
-	Vector offset = (sub_task_b()->source_rect.get_min() - source_rect.get_min()).multiply_coords(get_pixels_per_unit());
-	return VectorInt((int)round(offset[0]), (int)round(offset[1])) - sub_task_b()->target_rect.get_min();
-}
-
 /* === E N T R Y P O I N T ================================================= */

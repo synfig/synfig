@@ -578,6 +578,10 @@ Renderer::optimize(Task::List &list) const
 			#endif
 		}
 
+		#ifdef DEBUG_OPTIMIZATION
+		log("", list, etl::strprintf("after optimize category %d index %d", current_category_id, current_optimizer_index));
+		#endif
+
 		if (categories_to_process & depends_from)
 		{
 			current_category_id = 0;

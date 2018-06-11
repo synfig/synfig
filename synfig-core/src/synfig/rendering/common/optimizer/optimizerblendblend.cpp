@@ -58,6 +58,9 @@ using namespace rendering;
 void
 OptimizerBlendBlend::run(const RunParams& /*params*/) const
 {
+	// merge blend
+	// convert blend( x, blend(0, y) ) to blend(x, y)
+
 	/*
 	TaskBlend::Handle blend = TaskBlend::Handle::cast_dynamic(params.ref_task);
 	if ( blend

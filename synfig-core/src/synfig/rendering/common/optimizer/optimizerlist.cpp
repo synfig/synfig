@@ -5,7 +5,7 @@
 **	$Id$
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2015-2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -50,52 +50,116 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
-void
-OptimizerList::clone_list(const RunParams &/*params*/, Task::List::iterator &/*i*/, TaskList::Handle &/*list*/) const
+// these tasks should be removed from list
+static bool
+can_be_skipped(const Task::Handle &task)
+	{ return !task || task.type_is<TaskNone>() || task.type_is<TaskSurface>(); }
+
+// can we make list with two or more elements?
+static bool
+can_build_list(const Task::Handle &task)
 {
-	/*
-	if (params.ref_task == list)
-	{
-		int index = i - list->sub_tasks.begin();
-		list = TaskList::Handle::cast_dynamic(list->clone());
-		i = list->sub_tasks.begin() + index;
-		apply(params, list);
+	TaskInterfaceTargetAsSource *interface = task.type_pointer<TaskInterfaceTargetAsSource>();
+	return interface
+		&& interface->is_allowed_target_as_source()
+	    && !task->sub_tasks.empty()
+	    && !can_be_skipped(task->sub_tasks.front());
+}
+
+static bool
+can_be_modified(const Task::Handle &task)
+{
+	if (can_be_skipped(task)) return false; // don't try to modify empty tasks
+	if (task.type_is<TaskList>())
+	{ // can we modify any task in list?
+		for(Task::List::const_iterator i = task->sub_tasks.begin(); i != task->sub_tasks.end(); ++i)
+			if (can_be_skipped(*i) || can_build_list(*i))
+				return true;
+		return false;
 	}
-	*/
+	return can_build_list(task); // or can we build a new list?
+}
+
+static Task::Handle
+replace_target(
+	const TaskList::Handle &list,
+	const SurfaceResource::Handle &surface,
+	const Task::Handle &task,
+	int skip_sub_tasks = 0 )
+{
+	if (!task) return Task::Handle();
+
+	Task::Handle new_task = task;
+	if (task->target_surface == surface) {
+		new_task = task->clone();
+		new_task->target_rect -= TaskList::calc_target_offset(*list, *new_task);
+		new_task->trunc_target_rect(list->target_rect);
+		new_task->target_surface = list->target_surface;
+	}
+
+	// be carefull - here we need 'less' operator instead of 'non-equal'
+	for(Task::List::iterator i = new_task->sub_tasks.begin() + skip_sub_tasks; i < new_task->sub_tasks.end(); ++i) {
+		if (new_task != task) {
+			*i = replace_target(list, surface, *i, false);
+		} else {
+			Task::Handle sub_task = replace_target(list, surface, *i, false);
+			if (sub_task != *i) {
+				new_task = task->clone();
+				i = new_task->sub_tasks.begin() + (i - task->sub_tasks.begin());
+				*i = sub_task;
+			}
+		}
+	}
+
+	return new_task;
+}
+
+static void
+add_task(
+	const TaskList::Handle &list,
+	const Task::Handle &task )
+{
+	if (task.type_is<TaskList>()) {
+		for(Task::List::const_iterator i = task->sub_tasks.begin(); i != task->sub_tasks.end(); ++i)
+			if (!can_be_skipped(*i)) add_task(list, *i);
+		return;
+	}
+
+	bool recursive = can_build_list(task);
+
+	Task::Handle new_task = replace_target(list, task->target_surface, task, recursive ? 1 : 0);
+	if (recursive)
+	{
+		add_task(list, new_task->sub_tasks.front());
+
+		if (new_task == task) new_task = task->clone();
+		new_task->sub_tasks.front() = new TaskSurface();
+		new_task->sub_tasks.front()->assign_target(*new_task);
+		if (TaskInterfaceTargetAsSource *interface = task.type_pointer<TaskInterfaceTargetAsSource>())
+			interface->on_target_set_as_source(); else assert(false);
+	}
+	list->sub_tasks.push_back(new_task);
+}
+
+OptimizerList::OptimizerList()
+{
+	category_id = CATEGORY_ID_SPECIALIZED;
+	depends_from = CATEGORY_COORDS;
+	deep_first = true;
+	for_task = true;
 }
 
 void
-OptimizerList::run(const RunParams& /*params*/) const
+OptimizerList::run(const RunParams& params) const
 {
-	/*
-	if (TaskList::Handle list = TaskList::Handle::cast_dynamic(params.ref_task))
+	const Task::Handle &task = params.ref_task;
+	if (can_be_modified(task))
 	{
-		for(Task::List::iterator i = list->sub_tasks.begin(); i != list->sub_tasks.end();)
-		{
-			if (!(*i) || !(*i)->valid_target() || i->type_is<TaskSurface>() || i->type_is<TaskSurfaceEmpty>())
-			{
-				clone_list(params, i, list);
-				i = list->sub_tasks.erase(i);
-				continue;
-			}
-
-			if (TaskList::Handle sub_list = TaskList::Handle::cast_dynamic(*i))
-			{
-				clone_list(params, i, list);
-				i = list->sub_tasks.erase(i);
-				int index = i - list->sub_tasks.begin();
-				list->sub_tasks.insert(i, sub_list->sub_tasks.begin(), sub_list->sub_tasks.end());
-				i = list->sub_tasks.begin() + index;
-				continue;
-			}
-
-			++i;
-		}
-
-		if (list->sub_tasks.size() == 1)
-			apply(params, list->sub_tasks[0]);
+		TaskList::Handle list = new TaskList();
+		list->assign_target(*task);
+		add_task(list, task);
+		apply(params, list);
 	}
-	*/
 }
 
 /* === E N T R Y P O I N T ================================================= */

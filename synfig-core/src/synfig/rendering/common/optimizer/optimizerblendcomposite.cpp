@@ -58,6 +58,8 @@ using namespace rendering;
 void
 OptimizerBlendComposite::run(const RunParams& /*params*/) const
 {
+	// apply blending for task that supports it
+
 	/*
 	TaskBlend::Handle blend = TaskBlend::Handle::cast_dynamic(params.ref_task);
 	if ( blend

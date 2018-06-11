@@ -301,6 +301,12 @@ bool
 Task::run(RunParams & /* params */) const
 	{ return false; }
 
+VectorInt
+TaskList::calc_target_offset(const Task &a, const Task &b)
+{
+	Vector offset = (b.source_rect.get_min() - a.source_rect.get_min()).multiply_coords(a.get_pixels_per_unit());
+	return b.target_rect.get_min() - a.target_rect.get_min() - VectorInt((int)round(offset[0]), (int)round(offset[1]));
+}
 
 void
 TaskLockSurface::set_surface(const SurfaceResource::Handle &surface)

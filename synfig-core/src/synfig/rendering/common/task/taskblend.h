@@ -83,8 +83,10 @@ public:
 	const Task::Handle& sub_task_b() const { return sub_task(1); }
 	Task::Handle& sub_task_b() { return sub_task(1); }
 
-	VectorInt get_offset_a() const;
-	VectorInt get_offset_b() const;
+	VectorInt get_offset_a() const
+		{ return sub_task_a() ? TaskList::calc_target_offset(*this, *sub_task_a()) : VectorInt(); }
+	VectorInt get_offset_b() const
+		{ return sub_task_b() ? TaskList::calc_target_offset(*this, *sub_task_b()) : VectorInt(); }
 
 	virtual Rect calc_bounds() const;
 };

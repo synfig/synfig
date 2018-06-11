@@ -57,13 +57,25 @@ using namespace rendering;
 
 namespace {
 
-class TaskBlendSW: public TaskBlend, public TaskSW
+class TaskBlendSW: public TaskBlend,
+                   public TaskSW,
+                   public TaskInterfaceTargetAsSource
 {
 public:
 	typedef etl::handle<TaskBlendSW> Handle;
 	static Token token;
 	virtual Token::Handle get_token() const { return token.handle(); }
 
+	virtual void on_target_set_as_source() {
+		if ( sub_task_a()
+		  && sub_task_a()->target_surface == target_surface
+		  && !Color::is_straight(blend_method) )
+		{
+			//trunc_source_rect(sub_task_b() ? sub_task_b()->source_rect : Rect());
+			//sub_task_a()->source_rect = source_rect;
+			//sub_task_a()->target_rect = target_rect;
+		}
+	}
 
 	virtual bool run(RunParams&) const {
 		if (!is_valid()) return true;
@@ -78,7 +90,7 @@ public:
 		if (sub_task_a() && sub_task_a()->is_valid())
 		{
 			VectorInt oa = get_offset_a();
-			ra = sub_task_a()->target_rect + r.get_min() + oa;
+			ra = sub_task_a()->target_rect - oa;
 			if (ra.is_valid())
 			{
 				etl::set_intersect(ra, ra, r);
@@ -90,14 +102,14 @@ public:
 
 					assert( 0 <= ra.minx && ra.minx < ra.maxx && ra.maxx <= c.get_w()
 						 && 0 <= ra.miny && ra.miny < ra.maxy && ra.miny <= c.get_h() );
-					assert( 0 <= ra.minx - r.minx - oa[0] && ra.maxx - r.minx - oa[0] <= a.get_w()
-						 && 0 <= ra.miny - r.miny - oa[1] && ra.maxy - r.miny - oa[1] <= a.get_h() );
+					assert( 0 <= ra.minx + oa[0] && ra.maxx + oa[0] <= a.get_w()
+						 && 0 <= ra.miny + oa[1] && ra.maxy + oa[1] <= a.get_h() );
 
 					synfig::Surface::pen p = c.get_pen(ra.minx, ra.miny);
 					a.blit_to(
 						p,
-						ra.minx - r.minx - oa[0],
-						ra.miny - r.miny - oa[1],
+						ra.minx + oa[0],
+						ra.miny + oa[1],
 						ra.maxx - ra.minx,
 						ra.maxy - ra.miny );
 				}
@@ -109,7 +121,7 @@ public:
 		if (sub_task_b() && sub_task_b()->is_valid())
 		{
 			VectorInt ob = get_offset_b();
-			RectInt rb = sub_task_b()->target_rect + r.get_min() + ob;
+			RectInt rb = sub_task_b()->target_rect - ob;
 			if (rb.is_valid())
 			{
 				etl::set_intersect(rb, rb, r);
@@ -121,16 +133,16 @@ public:
 
 					assert( 0 <= rb.minx && rb.minx < rb.maxx && rb.maxx <= c.get_w()
 						 && 0 <= rb.miny && rb.miny < rb.maxy && rb.miny <= c.get_h() );
-					assert( 0 <= rb.minx - r.minx - ob[0] && rb.maxx - r.minx - ob[0] <= b.get_w()
-						 && 0 <= rb.miny - r.miny - ob[1] && rb.maxy - r.miny - ob[1] <= b.get_h() );
+					assert( 0 <= rb.minx + ob[0] && rb.maxx + ob[0] <= b.get_w()
+						 && 0 <= rb.miny + ob[1] && rb.maxy + ob[1] <= b.get_h() );
 
 					synfig::Surface::alpha_pen ap(c.get_pen(rb.minx, rb.miny));
 					ap.set_blend_method(blend_method);
 					ap.set_alpha(amount);
 					b.blit_to(
 						ap,
-						rb.minx - r.minx - ob[0],
-						rb.miny - r.miny - ob[1],
+						rb.minx + ob[0],
+						rb.miny + ob[1],
 						rb.maxx - rb.minx,
 						rb.maxy - rb.miny );
 

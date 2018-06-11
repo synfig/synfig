@@ -40,26 +40,12 @@ namespace synfig
 namespace rendering
 {
 
-class TaskList;
-
-//! Optimizer runs for task.
-//! OptimizerList transforms TaskList, which contains other TaskList
-//! into linear (single level) list.
+//! OptimizerList generates TaskList from sequence of TaskInterfaceTargetAsSource,
+//! also merges sub-lists into parent list
 class OptimizerList: public Optimizer
 {
-private:
-	void clone_list(const RunParams &params, Task::List::iterator &i, etl::handle<TaskList> &list) const;
-
 public:
-	OptimizerList()
-	{
-		category_id = CATEGORY_ID_SPECIALIZED;
-		depends_from = CATEGORY_COORDS;
-		mode = MODE_REPEAT_PARENT;
-		deep_first = true;
-		for_task = true;
-	}
-
+	OptimizerList();
 	virtual void run(const RunParams &params) const;
 };
 

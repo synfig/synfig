@@ -120,26 +120,6 @@ public:
 
 typedef std::vector<ModeToken::Handle> ModeList;
 
-// Interfaces
-
-
-class TaskInterfaceConstant
-{
-public:
-	virtual bool is_constant()
-		{ return true; }
-	virtual ~TaskInterfaceConstant() { }
-};
-
-
-class TaskInterfaceSplit
-{
-public:
-	virtual bool is_splittable()
-		{ return true; }
-	virtual ~TaskInterfaceSplit() { }
-};
-
 
 // Task
 
@@ -478,6 +458,39 @@ public:
 };
 
 
+// Interfaces
+
+
+class TaskInterfaceConstant
+{
+public:
+	virtual bool is_constant() const
+		{ return true; }
+	virtual ~TaskInterfaceConstant() { }
+};
+
+
+class TaskInterfaceSplit
+{
+public:
+	virtual bool is_splittable() const
+		{ return true; }
+	virtual ~TaskInterfaceSplit() { }
+};
+
+
+class TaskInterfaceTargetAsSource
+{
+public:
+	virtual bool is_allowed_target_as_source() const
+		{ return true; }
+	//! sometimes when source replaced task may reduce self draw bounds (TaskBlendSW for example)
+	virtual void on_target_set_as_source()
+		{ }
+	virtual ~TaskInterfaceTargetAsSource() { }
+};
+
+
 // Special tasks
 
 
@@ -517,6 +530,7 @@ public:
 };
 
 
+//! TaskNone does nothing. You may use it as placeholder, when null is not allowed.
 class TaskNone: public Task, public TaskInterfaceConstant
 {
 public:
@@ -529,6 +543,9 @@ public:
 };
 
 
+//! Tasks in TaskList executes sequentially and all of them draws at TaskList target surface.
+//! So all tasks inside TaskList should to have the same target surface
+//! which should be same as TaskList target surface.
 class TaskList: public Task
 {
 public:
@@ -537,6 +554,7 @@ public:
 	virtual Token::Handle get_token() const { return token.handle(); }
 	virtual bool run(RunParams&) const
 		{ return true; }
+	static VectorInt calc_target_offset(const Task &a, const Task &b);
 };
 
 

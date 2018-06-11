@@ -58,12 +58,14 @@ using namespace rendering;
 void
 OptimizerBlendAssociative::run(const RunParams& /*params*/) const
 {
-	/*
 	// for some cases we can do this transformation:
 	//   blend1(blend0(a, b), c) -> blend1(a, blend0(b, c))
+	// so we will bake long blend chains
 
 	// bs1<-blend1(bs0<-blend0(sa, sb), sc)
 	// bs1<-blend1(sa, bs0<-blend0(sb, sc))
+
+	/*
 
 	TaskBlend::Handle blend = TaskBlend::Handle::cast_dynamic(params.ref_task);
 	if ( blend
