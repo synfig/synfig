@@ -1047,7 +1047,7 @@ Layer::fill_sound_processor(SoundProcessor & /* soundProcessor */) const
 using Glib::RefPtr;
 
 void Layer::on_file_changed(const RefPtr<Gio::File> &/*file*/, const RefPtr<Gio::File> &/*other_file*/, Gio::FileMonitorEvent event) {
-	if (event == Gio::FileMonitorEvent::FILE_MONITOR_EVENT_CHANGES_DONE_HINT)
+	if (event == Gio::FILE_MONITOR_EVENT_CHANGES_DONE_HINT)
 	{
 		synfig::warning("file changed! (" + monitored_path + ")");
 		set_param("filename", ValueBase("")); // first clear filename to force image reload
