@@ -65,9 +65,9 @@ using namespace rendering;
 
 
 #ifndef NDEBUG
-#define DEBUG_TASK_LIST
+//#define DEBUG_TASK_LIST
 //#define DEBUG_TASK_MEASURE
-#define DEBUG_OPTIMIZATION
+//#define DEBUG_OPTIMIZATION
 //#define DEBUG_OPTIMIZATION_EACH_CHANGE
 //#define DEBUG_OPTIMIZATION_MEASURE
 //#define DEBUG_OPTIMIZATION_COUNTERS
@@ -446,7 +446,7 @@ Renderer::optimize(Task::List &list) const
 
 	while(categories_to_process &= Optimizer::CATEGORY_ALL)
 	{
-		while (prepared_category_id < current_category_id)
+		while (prepared_category_id < current_category_id) {
 			switch (++prepared_category_id) {
 			case Optimizer::CATEGORY_ID_COORDS:
 				calc_coords(list); break;
@@ -457,6 +457,10 @@ Renderer::optimize(Task::List &list) const
 			default:
 				break;
 			}
+			#ifdef DEBUG_OPTIMIZATION
+			log("", list, etl::strprintf("after category %d prepared", prepared_category_id));
+			#endif
+		}
 		prepared_category_id = current_category_id;
 
 		if (current_category_id >= Optimizer::CATEGORIES_COUNT)

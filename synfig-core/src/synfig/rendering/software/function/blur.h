@@ -62,7 +62,6 @@ public:
 		Vector size;
 		Vector amplified_size;
 		VectorInt extra_size;
-		VectorInt offset;
 		bool blend;
 		Color::BlendMethod blend_method;
 		ColorReal amount;

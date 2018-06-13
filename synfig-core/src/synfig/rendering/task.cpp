@@ -35,6 +35,8 @@
 #include <signal.h>
 #endif
 
+#include <synfig/general.h>
+
 #include "task.h"
 #include "renderer.h"
 
@@ -175,7 +177,7 @@ Task::clone_recursive() const
 	Task::Handle task = clone();
 	if (task)
 		for(List::iterator i = task->sub_tasks.begin(); i != task->sub_tasks.end(); ++i)
-			(*i) = (*i)->clone();
+			(*i) = (*i)->clone_recursive();
 	return task;
 }
 
@@ -304,6 +306,12 @@ Task::run(RunParams & /* params */) const
 VectorInt
 TaskList::calc_target_offset(const Task &a, const Task &b)
 {
+	Vector ppuA = a.get_pixels_per_unit();
+	Vector ppuB = b.get_pixels_per_unit();
+	if (ppuA != ppuB)
+		warning( "Different pixel-per-unit value while calculation of target offset. a: %s, b: %s",
+				 a.get_token()->name.c_str(),
+				 b.get_token()->name.c_str() );
 	Vector offset = (b.source_rect.get_min() - a.source_rect.get_min()).multiply_coords(a.get_pixels_per_unit());
 	return b.target_rect.get_min() - a.target_rect.get_min() - VectorInt((int)round(offset[0]), (int)round(offset[1]));
 }

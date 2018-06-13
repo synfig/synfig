@@ -81,9 +81,8 @@ public:
 		Vector ppu = get_pixels_per_unit();
 		Vector s = blur.size.multiply_coords(ppu);
 
-		Vector offsetf = (source_rect.get_min() - sub_task()->source_rect.get_min()).multiply_coords(ppu);
-		VectorInt offset((int)round(offsetf[0]), (int)round(offsetf[1]));
-		offset += sub_task()->target_rect.get_min();
+		VectorInt offset = TaskList::calc_target_offset(*this, *sub_task());
+		offset += target_rect.get_min();
 
 		software::Blur::blur(
 			software::Blur::Params(
