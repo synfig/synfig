@@ -86,9 +86,10 @@ Layer_RenderingTask::get_color(Context /* context */, const Point &pos)const
 
 			Vector p = units_to_src_pixels.get_transformed(pos);
 			Rect src_target_rectf(src_target_rect.minx, src_target_rect.miny, src_target_rect.maxx, src_target_rect.maxy);
-			if (src_target_rectf.is_inside(p))
-				return rendering::SurfaceSW::Handle::cast_dynamic((*i)->target_surface)
-					->get_surface().linear_sample(p[0], p[1]);
+			if (src_target_rectf.is_inside(p)) {
+				rendering::SurfaceResource::LockRead<rendering::SurfaceSW> lock((*i)->target_surface);
+				if (lock) return lock->get_surface().linear_sample(p[0], p[1]);
+			}
 		}
 	}
 	return Color(0.0, 0.0, 0.0, 0.0);

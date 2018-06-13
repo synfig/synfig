@@ -117,7 +117,7 @@ Layer_Composite::accelerated_render(Context context,Surface *surface,int quality
 	if (!sub_surface->is_valid())
 		return false;
 
-	surfacelayer->rendering_surface->assign(
+	surfacelayer->rendering_surface = new rendering::SurfaceResource(
 		new rendering::SurfaceSW(*sub_surface, true) );
 
 	// Sets up the interpolation of the context (now the surface layer is the first one)
