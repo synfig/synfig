@@ -42,19 +42,19 @@ namespace rendering
 {
 
 
-class TaskInterfaceComposite
+//! Tasks with this interface can paint at target with selected blending mode.
+//! In this case target of sub_task(0) should be equal the task target
+class TaskInterfaceBlendToTarget: public TaskInterfaceTargetAsSource
 {
 public:
 	bool blend;
 	Color::BlendMethod blend_method;
 	Color::value_type amount;
 
-	TaskInterfaceComposite():
+	TaskInterfaceBlendToTarget():
 		blend(),
 		blend_method(Color::BLEND_COMPOSITE),
 		amount() { }
-	virtual ~TaskInterfaceComposite()
-		{ }
 	virtual Color::BlendMethodFlags get_supported_blend_methods() const
 		{ return 0; }
 	bool is_blend_method_supported(Color::BlendMethod blend_method)

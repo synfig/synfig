@@ -1,11 +1,11 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/common/optimizer/optimizerblendblend.h
-**	\brief OptimizerBlendBlend Header
+/*!	\file synfig/rendering/common/optimizer/optimizerblendmerge.h
+**	\brief OptimizerBlendMerge Header
 **
 **	$Id$
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2015-2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -22,8 +22,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_RENDERING_OPTIMIZERBLENDBLEND_H
-#define __SYNFIG_RENDERING_OPTIMIZERBLENDBLEND_H
+#ifndef __SYNFIG_RENDERING_OPTIMIZERBLENDMERGE_H
+#define __SYNFIG_RENDERING_OPTIMIZERBLENDMERGE_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -40,18 +40,10 @@ namespace synfig
 namespace rendering
 {
 
-class OptimizerBlendBlend: public Optimizer
+class OptimizerBlendMerge: public Optimizer
 {
 public:
-	OptimizerBlendBlend()
-	{
-		category_id = CATEGORY_ID_SPECIALIZED;
-		depends_from = CATEGORY_COORDS;
-		mode = MODE_REPEAT_PARENT;
-		deep_first = true;
-		for_task = true;
-	}
-
+	OptimizerBlendMerge();
 	virtual void run(const RunParams &params) const;
 };
 

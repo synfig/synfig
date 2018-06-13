@@ -42,8 +42,8 @@
 #include "task/tasksw.h"
 
 #include "../common/optimizer/optimizerblendassociative.h"
-#include "../common/optimizer/optimizerblendblend.h"
-#include "../common/optimizer/optimizerblendcomposite.h"
+#include "../common/optimizer/optimizerblendmerge.h"
+#include "../common/optimizer/optimizerblendtotarget.h"
 #include "../common/optimizer/optimizerblendseparate.h"
 #include "../common/optimizer/optimizerblendsplit.h"
 #include "../common/optimizer/optimizerblendzero.h"
@@ -76,8 +76,8 @@ RendererLowResSW::RendererLowResSW(int level):
 	register_optimizer(new OptimizerDraftLowRes(level));
 
 	register_optimizer(new OptimizerBlendZero());
-	register_optimizer(new OptimizerBlendBlend());
-	register_optimizer(new OptimizerBlendComposite());
+	register_optimizer(new OptimizerBlendMerge());
+	register_optimizer(new OptimizerBlendToTarget());
 	register_optimizer(new OptimizerList());
 	register_optimizer(new OptimizerBlendAssociative());
 	register_optimizer(new OptimizerBlendSeparate());

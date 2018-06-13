@@ -342,9 +342,9 @@ public:
 	static synfig::Token token;
 	virtual Token::Handle get_token() const = 0;
 
-private:
 	static const etl::handle<Task> blank;
 
+private:
 	mutable bool bounds_calculated;
 	mutable Rect bounds;
 
@@ -482,12 +482,24 @@ public:
 class TaskInterfaceTargetAsSource
 {
 public:
+	virtual int get_target_subtask_index() const
+		{ return 0; }
 	virtual bool is_allowed_target_as_source() const
 		{ return true; }
 	//! sometimes when source replaced task may reduce self draw bounds (TaskBlendSW for example)
 	virtual void on_target_set_as_source()
 		{ }
 	virtual ~TaskInterfaceTargetAsSource() { }
+
+	Task::Handle& target_subtask() {
+		Task *task = dynamic_cast<Task*>(this);
+		assert(task);
+		return task->sub_task(get_target_subtask_index());
+	}
+	const Task::Handle& target_subtask() const {
+		const Task *task = dynamic_cast<const Task*>(this);
+		return task ? task->sub_task(get_target_subtask_index()) : Task::blank;
+	}
 };
 
 

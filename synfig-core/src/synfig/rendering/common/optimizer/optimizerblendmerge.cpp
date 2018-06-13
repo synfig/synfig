@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/software/task/taskblursw.cpp
-**	\brief TaskBlurSW
+/*!	\file synfig/rendering/common/optimizer/optimizerblendblend.cpp
+**	\brief OptimizerBlendBlend
 **
 **	$Id$
 **
@@ -36,11 +36,11 @@
 #endif
 
 #include <synfig/general.h>
+#include <synfig/localization.h>
 
-#include "../../common/task/taskblur.h"
-#include "../../common/task/taskblend.h"
-#include "tasksw.h"
-#include "../function/blur.h"
+#include "optimizerblendmerge.h"
+
+#include "../task/taskblend.h"
 
 #endif
 
@@ -55,51 +55,50 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
-namespace {
 
-class TaskBlurSW: public TaskBlur, public TaskSW, public TaskInterfaceBlendToTarget
+OptimizerBlendMerge::OptimizerBlendMerge()
 {
-public:
-	typedef etl::handle<TaskBlurSW> Handle;
-	static Token token;
-	virtual Token::Handle get_token() const { return token.handle(); }
+	category_id = CATEGORY_ID_SPECIALIZED;
+	depends_from = CATEGORY_COORDS;
+	mode = MODE_REPEAT_PARENT;
+	deep_first = true;
+	for_task = true;
+}
 
-	virtual int get_target_subtask_index() const
-		{ return 1; }
-	virtual Color::BlendMethodFlags get_supported_blend_methods() const
-		{ return Color::BLEND_METHODS_ALL & ~Color::BLEND_METHODS_STRAIGHT; }
+void
+OptimizerBlendMerge::run(const RunParams& params) const
+{
+	//
+	// merge blend (only for BLEND_COMPOSITE)
+	//
+	//  blendA(targetA)
+	//  - taskB(targetB)
+	//  - blendC(targetC)
+	//    - none
+	//    - taskD(targetD)
+	//
+	// converts to:
+	//
+	//  blendAC(targetA)
+	//  - taskB(targetB)
+	//  - taskD(targetD)
+	//
 
-	virtual bool run(RunParams&) const {
-		if (!is_valid() || !sub_task() || !sub_task()->is_valid())
-			return true;
-
-		LockWrite la(this);
-		LockRead lb(sub_task());
-		if (!la || !lb)
-			return false;
-
-		Vector ppu = get_pixels_per_unit();
-		Vector s = blur.size.multiply_coords(ppu);
-
-		Vector offsetf = (source_rect.get_min() - sub_task()->source_rect.get_min()).multiply_coords(ppu);
-		VectorInt offset((int)round(offsetf[0]), (int)round(offsetf[1]));
-		offset += sub_task()->target_rect.get_min();
-
-		software::Blur::blur(
-			software::Blur::Params(
-				la->get_surface(), target_rect,
-				lb->get_surface(), offset,
-				blur.type, s,
-				blend, blend_method, amount ));
-
-		return false;
+	TaskBlend::Handle blend = TaskBlend::Handle::cast_dynamic(params.ref_task);
+	if ( blend
+	  && blend->blend_method == Color::BLEND_COMPOSITE )
+	{
+		TaskBlend::Handle sub_blend = TaskBlend::Handle::cast_dynamic(blend->sub_task_b());
+		if ( sub_blend
+		  && (!sub_blend->sub_task_a() || sub_blend->sub_task_a().type_is<TaskNone>())
+		  && blend->blend_method == sub_blend->blend_method )
+		{
+			TaskBlend::Handle new_blend = TaskBlend::Handle::cast_dynamic(blend->clone());
+			new_blend->amount *= sub_blend->amount;
+			new_blend->sub_task_b() = sub_blend->sub_task_b();
+			apply(params, new_blend);
+		}
 	}
-};
-
-
-Task::Token TaskBlurSW::token(
-	DescReal<TaskBlurSW, TaskBlur>("BlurSW") );
-
-} // end of anonimous namespace
+}
 
 /* === E N T R Y P O I N T ================================================= */

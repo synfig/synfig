@@ -59,7 +59,7 @@ using namespace rendering;
 namespace {
 
 class TaskContourSW: public TaskContour, public TaskSW,
-	public TaskInterfaceComposite,
+	public TaskInterfaceBlendToTarget,
 	public TaskInterfaceSplit
 {
 public:

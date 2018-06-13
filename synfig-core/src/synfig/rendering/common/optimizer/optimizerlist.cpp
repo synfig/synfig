@@ -59,11 +59,10 @@ can_be_skipped(const Task::Handle &task)
 static bool
 can_build_list(const Task::Handle &task)
 {
-	TaskInterfaceTargetAsSource *interface = task.type_pointer<TaskInterfaceTargetAsSource>();
+	const TaskInterfaceTargetAsSource *interface = task.type_pointer<TaskInterfaceTargetAsSource>();
 	return interface
 		&& interface->is_allowed_target_as_source()
-	    && !task->sub_tasks.empty()
-	    && !can_be_skipped(task->sub_tasks.front());
+	    && !can_be_skipped( interface->target_subtask() );
 }
 
 static bool
@@ -85,7 +84,7 @@ replace_target(
 	const TaskList::Handle &list,
 	const SurfaceResource::Handle &surface,
 	const Task::Handle &task,
-	int skip_sub_tasks = 0 )
+	int skip_index = -1 )
 {
 	if (!task) return Task::Handle();
 
@@ -98,18 +97,21 @@ replace_target(
 	}
 
 	// be carefull - here we need 'less' operator instead of 'non-equal'
-	for(Task::List::iterator i = new_task->sub_tasks.begin() + skip_sub_tasks; i < new_task->sub_tasks.end(); ++i) {
+	int index = 0;
+	for(Task::List::iterator i = new_task->sub_tasks.begin(); i < new_task->sub_tasks.end(); ++i, ++index)
+		if (index == skip_index) {
+			continue;
+		} else
 		if (new_task != task) {
-			*i = replace_target(list, surface, *i, false);
+			*i = replace_target(list, surface, *i);
 		} else {
-			Task::Handle sub_task = replace_target(list, surface, *i, false);
+			Task::Handle sub_task = replace_target(list, surface, *i);
 			if (sub_task != *i) {
 				new_task = task->clone();
 				i = new_task->sub_tasks.begin() + (i - task->sub_tasks.begin());
 				*i = sub_task;
 			}
 		}
-	}
 
 	return new_task;
 }
@@ -127,16 +129,22 @@ add_task(
 
 	bool recursive = can_build_list(task);
 
-	Task::Handle new_task = replace_target(list, task->target_surface, task, recursive ? 1 : 0);
+	const TaskInterfaceTargetAsSource *interface = task.type_pointer<TaskInterfaceTargetAsSource>();
+	int index = recursive && interface ? interface->get_target_subtask_index() : -1;
+
+	Task::Handle new_task = replace_target(list, task->target_surface, task, index);
 	if (recursive)
 	{
-		add_task(list, new_task->sub_tasks.front());
-
 		if (new_task == task) new_task = task->clone();
-		new_task->sub_tasks.front() = new TaskSurface();
-		new_task->sub_tasks.front()->assign_target(*new_task);
-		if (TaskInterfaceTargetAsSource *interface = task.type_pointer<TaskInterfaceTargetAsSource>())
-			interface->on_target_set_as_source(); else assert(false);
+		TaskInterfaceTargetAsSource *new_interface = new_task.type_pointer<TaskInterfaceTargetAsSource>();
+		assert(new_interface);
+
+		Task::Handle &target_subtask = new_interface->target_subtask();
+		add_task(list, target_subtask);
+
+		target_subtask = new TaskSurface();
+		target_subtask->assign_target(*new_task);
+		new_interface->on_target_set_as_source();
 	}
 	list->sub_tasks.push_back(new_task);
 }
@@ -145,13 +153,47 @@ OptimizerList::OptimizerList()
 {
 	category_id = CATEGORY_ID_SPECIALIZED;
 	depends_from = CATEGORY_COORDS;
-	deep_first = true;
+	mode = MODE_REPEAT_LAST;
 	for_task = true;
 }
 
 void
 OptimizerList::run(const RunParams& params) const
 {
+	//
+	// task    - any Task
+	// none    - null or TaskNone
+	// surface - TaskSurface
+	// list    - TaskList
+	// tas     - Task derived from TaskInterfaceTargetAsSource
+	//
+	//  tasA(targetA)
+	//  - tasB(targetB)
+	//    - listC(targetC)
+	//      - tasD(targetC)
+	//      - tasE(targetC)
+	//       - surfaceF(targetC)
+	//       - taskG(targetG)
+	//         - taskH(targetH)
+	//      - taskI(targetI)
+	//  - taskJ(targetJ)
+	//
+	// converts to:
+	//
+	//  list(targetA)
+	//  - tasD(targetA)
+	//  - tasE(targetA)
+	//   - surfaceF(targetA)
+	//   - taskG(targetG)
+	//     - taskH(targetH)
+	//  - taskI(targetA)
+	//  - tasB(targetA)
+	//    - surface(targetA)
+	//  - tasA(targetA)
+	//    - surface(targetA)
+	//    - taskJ(targetJ)
+	//
+
 	const Task::Handle &task = params.ref_task;
 	if (can_be_modified(task))
 	{

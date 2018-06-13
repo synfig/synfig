@@ -1,10 +1,10 @@
 target_sources(synfig
     PRIVATE
         "${CMAKE_CURRENT_LIST_DIR}/optimizerblendassociative.cpp"
-        "${CMAKE_CURRENT_LIST_DIR}/optimizerblendblend.cpp"
-        "${CMAKE_CURRENT_LIST_DIR}/optimizerblendcomposite.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/optimizerblendmerge.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/optimizerblendseparate.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/optimizerblendsplit.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/optimizerblendtotarget.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/optimizerblendzero.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/optimizercalcbounds.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/optimizerdraft.cpp"

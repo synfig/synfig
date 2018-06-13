@@ -51,7 +51,7 @@ namespace software { class PackedSurface; }
 
 
 class TaskTransformationAffineSW: public TaskTransformationAffine, public TaskSW,
-	public TaskInterfaceComposite
+	public TaskInterfaceBlendToTarget
 {
 private:
 	class Helper;
@@ -62,6 +62,8 @@ public:
 
 	virtual bool run(RunParams &params) const;
 
+	virtual int get_target_subtask_index() const
+		{ return 1; }
 	virtual Color::BlendMethodFlags get_supported_blend_methods() const
 		{ return Color::BLEND_METHODS_ALL; }
 
