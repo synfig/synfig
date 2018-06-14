@@ -92,7 +92,7 @@ magickpp_trgt::~magickpp_trgt()
 
 	try
 	{
-		bool multiple_images = images.size() != 1;
+		bool multiple_images = images.size() > 1;
 		bool can_adjoin = false;
 
 		if (multiple_images)
