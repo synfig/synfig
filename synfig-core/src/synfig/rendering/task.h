@@ -361,8 +361,7 @@ public:
 
 	void assign_target(const Task &other);
 	void assign(const Task &other);
-	Task& operator=(const Task &other)
-		{ assign(other); return *this; }
+	Task& operator=(const Task &other);
 
 	// mode options
 	virtual Surface::Token::Handle get_target_token() const {

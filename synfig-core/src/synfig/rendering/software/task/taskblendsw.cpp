@@ -71,9 +71,9 @@ public:
 		  && sub_task_a()->target_surface == target_surface
 		  && !Color::is_straight(blend_method) )
 		{
-			//trunc_source_rect(sub_task_b() ? sub_task_b()->source_rect : Rect());
-			//sub_task_a()->source_rect = source_rect;
-			//sub_task_a()->target_rect = target_rect;
+			trunc_source_rect(sub_task_b() ? sub_task_b()->source_rect : Rect());
+			sub_task_a()->source_rect = source_rect;
+			sub_task_a()->target_rect = target_rect;
 		}
 	}
 

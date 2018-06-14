@@ -67,6 +67,18 @@ public:
 	static Token token;
 	virtual Token::Handle get_token() const { return token.handle(); }
 
+	virtual void on_target_set_as_source() {
+		Task::Handle &subtask = sub_task(0);
+		if ( subtask
+		  && subtask->target_surface == target_surface
+		  && !Color::is_straight(blend_method) )
+		{
+			trunc_by_bounds();
+			subtask->source_rect = source_rect;
+			subtask->target_rect = target_rect;
+		}
+	}
+
 	virtual Color::BlendMethodFlags get_supported_blend_methods() const
 		{ return Color::BLEND_METHODS_ALL & ~Color::BLEND_METHODS_STRAIGHT; }
 

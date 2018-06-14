@@ -115,6 +115,14 @@ Task::assign(const Task &other) {
 	renderer_data = other.renderer_data; // TODO: remove renderer_data from task
 }
 
+Task&
+Task::operator=(const Task &other) {
+	assign(other);
+	bounds = other.bounds;
+	bounds_calculated = other.bounds_calculated;
+	return *this;
+}
+
 bool
 Task::can_convert_to(ModeToken::Handle mode) const
 {
