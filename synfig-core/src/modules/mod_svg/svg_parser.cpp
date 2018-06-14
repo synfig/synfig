@@ -1802,7 +1802,7 @@ Svg_parser::get_tokens_path(String path){ //mini path lexico-parser
 					else if(a==','){ e=19; i++;}
 					else if(a==' '){i++;}
 					else {
-						synfig::error("unknown token in path '%c'", a);
+						synfig::warning("unknown token in SVG path '%c'", a);
 						i++;
 					}
 					break;
