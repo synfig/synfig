@@ -665,7 +665,8 @@ StateBLine_Context::StateBLine_Context(CanvasView* canvas_view):
 	options_table.set_row_spacings(GAP); // row gap
 	options_table.set_row_spacing(0, GAP*2); // the gap between first and second row.
 	options_table.set_row_spacing(2, 1); // row gap between label and icon of layer type
-	options_table.set_row_spacing(10, 0); //// the final row using border width of table
+	//options_table.set_row_spacing(10, 0); //// the final row using border width of table
+	options_table.set_margin_bottom(0);
 	options_table.show_all();
 
 	refresh_tool_options();
