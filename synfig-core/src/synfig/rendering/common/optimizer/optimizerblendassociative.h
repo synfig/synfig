@@ -5,7 +5,7 @@
 **	$Id$
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2015-2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -43,15 +43,7 @@ namespace rendering
 class OptimizerBlendAssociative: public Optimizer
 {
 public:
-	OptimizerBlendAssociative()
-	{
-		category_id = CATEGORY_ID_SPECIALIZED;
-		depends_from = CATEGORY_COORDS;
-		mode = MODE_REPEAT_PARENT;
-		deep_first = true;
-		for_task = true;
-	}
-
+	OptimizerBlendAssociative();
 	virtual void run(const RunParams &params) const;
 };
 

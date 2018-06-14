@@ -286,6 +286,25 @@ Task::set_coords(const Rect &source_rect, const VectorInt &target_size)
 	set_coords_sub_tasks();
 }
 
+bool
+Task::allow_run_before(Task &other) const {
+	if (!is_valid() || !other.is_valid())
+		return true;
+	if (!get_allow_multithreading() && !other.get_allow_multithreading())
+		return false;
+	if (target_surface == other.target_surface)
+		if ( !get_mode_allow_simultaneous_write()
+		  || !other.get_mode_allow_simultaneous_write()
+		  || get_target_token() != other.get_target_token()
+		  || etl::intersect(target_rect, other.target_rect) )
+			return false;
+	for(Task::List::const_iterator i = sub_tasks.begin(); i != sub_tasks.end(); ++i)
+		if ( *i && (*i)->is_valid()
+		  && (*i)->target_surface == other.target_surface
+		  && etl::intersect((*i)->target_rect, other.target_rect) ) return false;
+	return true;
+}
+
 void
 Task::set_coords_zero()
 	{ set_coords(Rect::zero(), VectorInt::zero()); }

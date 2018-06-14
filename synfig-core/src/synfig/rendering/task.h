@@ -441,19 +441,7 @@ public:
 	bool is_valid() const
 		{ return is_valid_coords() && is_valid_surface_size(); }
 
-	bool allow_simultaneous_run_with(Task &other) const {
-		if (!is_valid() || !other.is_valid())
-			return true;
-		if (!get_allow_multithreading() && !other.get_allow_multithreading())
-			return false;
-		if (target_surface != other.target_surface)
-			return true;
-		if ( !get_mode_allow_simultaneous_write()
-		  || !other.get_mode_allow_simultaneous_write()
-		  || get_target_token() != other.get_target_token() )
-			return false;
-		return etl::intersect(target_rect, other.target_rect);
-	}
+	bool allow_run_before(Task &other) const;
 
 	virtual int get_pass_subtask_index() const
 		{ return PASSTO_THIS_TASK; }

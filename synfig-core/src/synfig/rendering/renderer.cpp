@@ -659,12 +659,7 @@ Renderer::find_deps(const Task::List &list, long long batch_index) const
 			task_rd.tmp_deps.erase( task_rd.tmp_deps.begin() );
 			dep_rd.tmp_back_deps.erase(task);
 
-			bool intersects = !dep->allow_simultaneous_run_with(*task);
-			for(Task::List::const_iterator j = task->sub_tasks.begin(); !intersects && j != task->sub_tasks.end(); ++j, ++iterations)
-				if (*j && !dep->allow_simultaneous_run_with(**j))
-					{ intersects = true; break; }
-
-			if (intersects) {
+			if (!task->allow_run_before(*dep)) {
 				task_rd.deps.insert(dep);
 				dep_rd.back_deps.insert(task);
 				++iterations;
