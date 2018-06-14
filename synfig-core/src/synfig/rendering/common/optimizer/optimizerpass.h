@@ -1,11 +1,11 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/common/optimizer/optimizerblendseparate.h
-**	\brief OptimizerBlendSeparate Header
+/*!	\file synfig/rendering/common/optimizer/optimizerpass.h
+**	\brief OptimizerPass Header
 **
 **	$Id$
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2015-2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -22,8 +22,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_RENDERING_OPTIMIZERBLENDSEPARATE_H
-#define __SYNFIG_RENDERING_OPTIMIZERBLENDSEPARATE_H
+#ifndef __SYNFIG_RENDERING_OPTIMIZERPASS_H
+#define __SYNFIG_RENDERING_OPTIMIZERPASS_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -40,18 +40,11 @@ namespace synfig
 namespace rendering
 {
 
-class OptimizerBlendSeparate: public Optimizer
+//! Remove tasks which does nothing from tree
+class OptimizerPass: public Optimizer
 {
 public:
-	OptimizerBlendSeparate()
-	{
-		category_id = CATEGORY_ID_SPECIALIZED;
-		depends_from = CATEGORY_COORDS;
-		mode = MODE_REPEAT_PARENT;
-		deep_first = true;
-		for_task = true;
-	}
-
+	OptimizerPass();
 	virtual void run(const RunParams &params) const;
 };
 

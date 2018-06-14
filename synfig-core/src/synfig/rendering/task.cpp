@@ -116,12 +116,8 @@ Task::assign(const Task &other) {
 }
 
 Task&
-Task::operator=(const Task &other) {
-	assign(other);
-	bounds = other.bounds;
-	bounds_calculated = other.bounds_calculated;
-	return *this;
-}
+Task::operator=(const Task &other)
+	{ assign(other); return *this; }
 
 bool
 Task::can_convert_to(ModeToken::Handle mode) const

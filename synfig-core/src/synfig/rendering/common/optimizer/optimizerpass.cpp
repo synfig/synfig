@@ -1,11 +1,11 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/software/rendererlowressw.cpp
-**	\brief RendererLowResSW
+/*!	\file synfig/rendering/common/optimizer/optimizerpass.cpp
+**	\brief OptimizerPass
 **
 **	$Id$
 **
 **	\legal
-**	......... ... 2017 Ivan Mahonin
+**	......... ... 2015-2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -35,20 +35,12 @@
 #include <signal.h>
 #endif
 
+#include <synfig/general.h>
 #include <synfig/localization.h>
 
-#include "rendererlowressw.h"
+#include "optimizerpass.h"
 
-#include "task/tasksw.h"
-
-#include "../common/optimizer/optimizerblendassociative.h"
-#include "../common/optimizer/optimizerblendmerge.h"
-#include "../common/optimizer/optimizerblendtotarget.h"
-#include "../common/optimizer/optimizerdraft.h"
-#include "../common/optimizer/optimizerlist.h"
-#include "../common/optimizer/optimizersplit.h"
-#include "../common/optimizer/optimizertransformation.h"
-#include "../common/optimizer/optimizerpass.h"
+#include "../task/taskblend.h"
 
 #endif
 
@@ -63,26 +55,55 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
-RendererLowResSW::RendererLowResSW(int level):
-	level(level)
+OptimizerPass::OptimizerPass()
 {
-	register_mode(TaskSW::mode_token.handle());
-
-	// register optimizers
-	register_optimizer(new OptimizerTransformation());
-	register_optimizer(new OptimizerDraftLowRes(level));
-
-	register_optimizer(new OptimizerPass());
-	register_optimizer(new OptimizerBlendMerge());
-	register_optimizer(new OptimizerBlendToTarget());
-	register_optimizer(new OptimizerList());
-	register_optimizer(new OptimizerBlendAssociative());
-	register_optimizer(new OptimizerSplit());
+	category_id = CATEGORY_ID_SPECIALIZED;
+	depends_from = CATEGORY_COORDS;
+	mode = MODE_REPEAT_PARENT;
+	deep_first = true;
+	for_task = true;
 }
 
-String RendererLowResSW::get_name() const
+void
+OptimizerPass::run(const RunParams& params) const
 {
-	return _("Cobra LowRes (software)") + etl::strprintf(" x%d", level);
+	if (params.ref_task.type_is<TaskNone>())
+		return;
+	if (!params.ref_task->is_valid())
+		{ apply(params, new TaskNone()); return; }
+
+	int index = params.ref_task->get_pass_subtask_index();
+
+	// keep unchanged
+	if (index == Task::PASSTO_THIS_TASK)
+		return;
+
+	// remove
+	if (index == Task::PASSTO_NO_TASK)
+		{ apply(params, new TaskNone()); return; }
+
+	// remove sub-tasks
+	if (index == Task::PASSTO_THIS_TASK_WITHOUT_SUBTASKS)
+	{
+		for(Task::List::const_iterator i = params.ref_task->sub_tasks.begin(); i != params.ref_task->sub_tasks.end(); ++i)
+			if (*i && !i->type_is<TaskNone>()) {
+				Task::Handle new_task = params.ref_task->clone();
+				new_task->sub_tasks.clear();
+				apply(params, new_task);
+				return;
+			}
+		return;
+	}
+
+	// replace to sub-task
+
+	if (index < 0) return;
+
+	const Task::Handle &task = params.ref_task.get()->sub_task(index);
+	if (!task || task.type_is<TaskNone>() || !task->is_valid())
+		{ apply(params, new TaskNone()); return; }
+
+	apply(params, replace_target(params.ref_task, task));
 }
 
 /* === E N T R Y P O I N T ================================================= */

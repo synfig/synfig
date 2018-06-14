@@ -57,7 +57,6 @@ using namespace rendering;
 Task::Token TaskBlur::token(
 	DescAbstract<TaskBlur>("Blur") );
 
-
 Rect
 TaskBlur::calc_bounds() const
 {

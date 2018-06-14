@@ -54,6 +54,25 @@ using namespace rendering;
 Task::Token TaskBlend::token(
 	DescAbstract<TaskBlend>("Blend") );
 
+int
+TaskBlend::get_pass_subtask_index() const
+{
+	bool a = sub_task_a() && !sub_task_a().type_is<TaskNone>();
+	bool b = sub_task_b() && !sub_task_b().type_is<TaskNone>();
+	if (!a && !b)
+		return PASSTO_NO_TASK;
+	if (!a && Color::is_onto(blend_method))
+		return PASSTO_NO_TASK;
+	if (blend_method == Color::BLEND_COMPOSITE) {
+		if (!b)
+			return 0;
+		if (approximate_equal_lp(amount, ColorReal(0.0)))
+			return a ? 0 : PASSTO_NO_TASK;
+		if (!a && approximate_equal_lp(amount, ColorReal(1.0)))
+			return 1;
+	}
+	return PASSTO_THIS_TASK;
+}
 
 Rect
 TaskBlend::calc_bounds() const

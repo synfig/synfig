@@ -1,28 +1,22 @@
 RENDERING_COMMON_OPTIMIZER_HH = \
 	rendering/common/optimizer/optimizerblendassociative.h \
 	rendering/common/optimizer/optimizerblendmerge.h \
-	rendering/common/optimizer/optimizerblendseparate.h \
-	rendering/common/optimizer/optimizerblendsplit.h \
 	rendering/common/optimizer/optimizerblendtotarget.h \
-	rendering/common/optimizer/optimizerblendzero.h \
 	rendering/common/optimizer/optimizerdraft.h \
 	rendering/common/optimizer/optimizerlist.h \
-	rendering/common/optimizer/optimizerpixelprocessorsplit.h \
 	rendering/common/optimizer/optimizersplit.h \
-	rendering/common/optimizer/optimizertransformation.h
+	rendering/common/optimizer/optimizertransformation.h \
+	rendering/common/optimizer/optimizerpass.h
 
 RENDERING_COMMON_OPTIMIZER_CC = \
 	rendering/common/optimizer/optimizerblendassociative.cpp \
 	rendering/common/optimizer/optimizerblendmerge.cpp \
-	rendering/common/optimizer/optimizerblendseparate.cpp \
-	rendering/common/optimizer/optimizerblendsplit.cpp \
 	rendering/common/optimizer/optimizerblendtotarget.cpp \
-	rendering/common/optimizer/optimizerblendzero.cpp \
 	rendering/common/optimizer/optimizerdraft.cpp \
 	rendering/common/optimizer/optimizerlist.cpp \
-	rendering/common/optimizer/optimizerpixelprocessorsplit.cpp \
 	rendering/common/optimizer/optimizersplit.cpp \
-	rendering/common/optimizer/optimizertransformation.cpp
+	rendering/common/optimizer/optimizertransformation.cpp \
+	rendering/common/optimizer/optimizerpass.cpp
 
 RENDERING_COMMON_HH += \
     $(RENDERING_COMMON_OPTIMIZER_HH)

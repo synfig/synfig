@@ -77,6 +77,8 @@ public:
 	TaskBlend():
 		blend_method(Color::BLEND_COMPOSITE), amount(1.0) { }
 
+	virtual int get_pass_subtask_index() const;
+
 	const Task::Handle& sub_task_a() const { return sub_task(0); }
 	Task::Handle& sub_task_a() { return sub_task(0); }
 

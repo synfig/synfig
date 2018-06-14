@@ -61,6 +61,11 @@ public:
 	Real floor;
 	Real ceiling;
 
+	bool is_transparent() const
+		{ return !invert_negative && !clamp_floor && !clamp_ceiling; }
+	bool is_constant() const
+		{ return clamp_floor && clamp_ceiling && !approximate_less(floor, ceiling); }
+
 	TaskClamp():
 		invert_negative(false),
 		clamp_floor(true),

@@ -235,6 +235,15 @@ public:
 			 : a->index < b->index;
 	}
 
+	static Task::Handle replace_target(
+		const Task::Handle &parent,
+		const SurfaceResource::Handle &surface,
+		const Task::Handle &task );
+	static Task::Handle replace_target(
+		const Task::Handle &parent,
+		const Task::Handle &task )
+			{ return replace_target(parent, task->target_surface, task); }
+
 	virtual void run(const RunParams &params) const = 0;
 
 	void apply(const RunParams &params) const
@@ -245,9 +254,6 @@ public:
 
 	void apply(const RunParams &params, const Task::Handle &task) const
 		{ apply(params); params.ref_task = task; }
-
-	void apply_clone(const RunParams &params) const
-		{ apply(params, params.ref_task->clone()); }
 };
 
 } /* end namespace rendering */

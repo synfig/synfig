@@ -61,6 +61,23 @@ public:
 
 	virtual Rect calc_bounds() const;
 
+	virtual int get_pass_subtask_index() const
+	{
+		bool no_subtask = !sub_task() || sub_task().type_is<TaskNone>();
+
+		if (is_zero())
+			return PASSTO_NO_TASK;
+		if (!is_affects_transparent() && no_subtask)
+			return PASSTO_NO_TASK;
+		if (is_transparent())
+			return no_subtask ? PASSTO_NO_TASK : 0;
+		if (is_constant())
+			return PASSTO_THIS_TASK_WITHOUT_SUBTASKS;
+		return PASSTO_THIS_TASK;
+	}
+
+	virtual bool is_zero() const
+		{ return false; }
 	virtual bool is_transparent() const
 		{ return false; }
 	virtual bool is_constant() const
@@ -82,6 +99,14 @@ public:
 		struct { ColorReal gamma_r, gamma_g, gamma_b, gamma_a; };
 	};
 	TaskPixelGamma(): gamma_r(1.0), gamma_g(1.0), gamma_b(1.0), gamma_a(1.0) { }
+
+	virtual bool is_transparent() const
+	{
+		return approximate_equal_lp(gamma_r, ColorReal(1.0))
+			&& approximate_equal_lp(gamma_g, ColorReal(1.0))
+			&& approximate_equal_lp(gamma_b, ColorReal(1.0))
+			&& approximate_equal_lp(gamma_a, ColorReal(1.0));
+	}
 };
 
 
@@ -94,8 +119,10 @@ public:
 
 	ColorMatrix matrix;
 
-	virtual bool is_transparent() const
+	virtual bool is_zero() const
 		{ return matrix.is_transparent(); }
+	virtual bool is_transparent() const
+		{ return matrix.is_identity(); }
 	virtual bool is_constant() const
 		{ return matrix.is_constant(); }
 	virtual bool is_affects_transparent() const

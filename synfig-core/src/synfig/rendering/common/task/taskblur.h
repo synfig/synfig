@@ -50,6 +50,12 @@ public:
 
 	Blur blur;
 
+	virtual int get_pass_subtask_index() const
+	{
+		return !sub_task() || sub_task().type_is<TaskNone>()
+			 ? PASSTO_NO_TASK : PASSTO_THIS_TASK;
+	}
+
 	const Task::Handle& sub_task() const { return Task::sub_task(0); }
 	Task::Handle& sub_task() { return Task::sub_task(0); }
 

@@ -58,4 +58,37 @@ const Optimizer::CategoryInfo Optimizer::categories_info[CATEGORIES_COUNT] = {
 
 Optimizer::~Optimizer() { }
 
+Task::Handle
+Optimizer::replace_target(
+	const Task::Handle &parent,
+	const SurfaceResource::Handle &surface,
+	const Task::Handle &task )
+{
+	if (!task) return Task::Handle();
+
+	Task::Handle new_task = task;
+	if (task->target_surface == surface && task->is_valid()) {
+		new_task = task->clone();
+		new_task->target_rect -= TaskList::calc_target_offset(*parent, *new_task);
+		new_task->trunc_target_rect(parent->target_rect);
+		new_task->target_surface = parent->target_surface;
+	}
+
+	int index = 0;
+	for(Task::List::iterator i = new_task->sub_tasks.begin(); i != new_task->sub_tasks.end(); ++i, ++index)
+		if (new_task != task) {
+			*i = replace_target(parent, surface, *i);
+		} else {
+			Task::Handle sub_task = replace_target(parent, surface, *i);
+			if (sub_task != *i) {
+				new_task = task->clone();
+				i = new_task->sub_tasks.begin() + (i - task->sub_tasks.begin());
+				*i = sub_task;
+			}
+		}
+
+	return new_task;
+}
+
+
 /* === E N T R Y P O I N T ================================================= */

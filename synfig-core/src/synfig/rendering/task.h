@@ -136,6 +136,12 @@ public:
 
 	class Token;
 
+	enum {
+		PASSTO_THIS_TASK                  = -1,
+		PASSTO_THIS_TASK_WITHOUT_SUBTASKS = -2,
+		PASSTO_NO_TASK                    = -3
+	};
+
 	class DescBase {
 	protected:
 		template<typename Type>
@@ -448,6 +454,9 @@ public:
 			return false;
 		return etl::intersect(target_rect, other.target_rect);
 	}
+
+	virtual int get_pass_subtask_index() const
+		{ return PASSTO_THIS_TASK; }
 
 	void touch_coords();
 	void set_coords(const Rect &source_rect, const VectorInt &target_size);

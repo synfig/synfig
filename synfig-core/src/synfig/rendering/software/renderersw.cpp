@@ -44,13 +44,10 @@
 #include "../common/optimizer/optimizerblendassociative.h"
 #include "../common/optimizer/optimizerblendmerge.h"
 #include "../common/optimizer/optimizerblendtotarget.h"
-#include "../common/optimizer/optimizerblendseparate.h"
-#include "../common/optimizer/optimizerblendsplit.h"
-#include "../common/optimizer/optimizerblendzero.h"
 #include "../common/optimizer/optimizerlist.h"
-#include "../common/optimizer/optimizerpixelprocessorsplit.h"
 #include "../common/optimizer/optimizersplit.h"
 #include "../common/optimizer/optimizertransformation.h"
+#include "../common/optimizer/optimizerpass.h"
 
 #include "function/fft.h"
 
@@ -74,16 +71,12 @@ RendererSW::RendererSW()
 	// register optimizers
 	register_optimizer(new OptimizerTransformation());
 
-	register_optimizer(new OptimizerBlendZero());
+	register_optimizer(new OptimizerPass());
 	register_optimizer(new OptimizerBlendMerge());
 	register_optimizer(new OptimizerBlendToTarget());
 	register_optimizer(new OptimizerList());
 	register_optimizer(new OptimizerBlendAssociative());
-	register_optimizer(new OptimizerBlendSeparate());
-	register_optimizer(new OptimizerBlendSplit());
-	register_optimizer(new OptimizerPixelProcessorSplit());
-
-	//register_optimizer(new OptimizerSplit());
+	register_optimizer(new OptimizerSplit());
 }
 
 RendererSW::~RendererSW() { }
@@ -93,7 +86,6 @@ String RendererSW::get_name() const { return _("Cobra (software)"); }
 void RendererSW::initialize()
 {
 	software::FFT::initialize();
-
 }
 
 void RendererSW::deinitialize()

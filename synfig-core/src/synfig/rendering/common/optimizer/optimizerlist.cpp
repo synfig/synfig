@@ -79,43 +79,6 @@ can_be_modified(const Task::Handle &task)
 	return can_build_list(task); // or can we build a new list?
 }
 
-static Task::Handle
-replace_target(
-	const TaskList::Handle &list,
-	const SurfaceResource::Handle &surface,
-	const Task::Handle &task,
-	int skip_index = -1 )
-{
-	if (!task) return Task::Handle();
-
-	Task::Handle new_task = task;
-	if (task->target_surface == surface) {
-		new_task = task->clone();
-		new_task->target_rect -= TaskList::calc_target_offset(*list, *new_task);
-		new_task->trunc_target_rect(list->target_rect);
-		new_task->target_surface = list->target_surface;
-	}
-
-	// be carefull - here we need 'less' operator instead of 'non-equal'
-	int index = 0;
-	for(Task::List::iterator i = new_task->sub_tasks.begin(); i < new_task->sub_tasks.end(); ++i, ++index)
-		if (index == skip_index) {
-			continue;
-		} else
-		if (new_task != task) {
-			*i = replace_target(list, surface, *i);
-		} else {
-			Task::Handle sub_task = replace_target(list, surface, *i);
-			if (sub_task != *i) {
-				new_task = task->clone();
-				i = new_task->sub_tasks.begin() + (i - task->sub_tasks.begin());
-				*i = sub_task;
-			}
-		}
-
-	return new_task;
-}
-
 static void
 add_task(
 	const TaskList::Handle &list,
@@ -127,13 +90,8 @@ add_task(
 		return;
 	}
 
-	bool recursive = can_build_list(task);
-
-	const TaskInterfaceTargetAsSource *interface = task.type_pointer<TaskInterfaceTargetAsSource>();
-	int index = recursive && interface ? interface->get_target_subtask_index() : -1;
-
-	Task::Handle new_task = replace_target(list, task->target_surface, task, index);
-	if (recursive)
+	Task::Handle new_task = Optimizer::replace_target(list, task);
+	if (can_build_list(task))
 	{
 		if (new_task == task) new_task = task->clone();
 		TaskInterfaceTargetAsSource *new_interface = new_task.type_pointer<TaskInterfaceTargetAsSource>();
