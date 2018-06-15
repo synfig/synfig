@@ -111,7 +111,7 @@ OptimizerList::OptimizerList()
 {
 	category_id = CATEGORY_ID_SPECIALIZED;
 	depends_from = CATEGORY_COORDS;
-	mode = MODE_REPEAT_LAST;
+	mode = MODE_REPEAT_LAST | MODE_RECURSIVE;
 	for_task = true;
 }
 

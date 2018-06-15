@@ -68,9 +68,7 @@ RendererDraftSW::RendererDraftSW()
 	register_mode(TaskSW::mode_token.handle());
 
 	// register optimizers
-	register_optimizer(new OptimizerTransformation());
-
-	register_optimizer(new OptimizerDraftContour());
+	register_optimizer(new OptimizerDraftContour(2.0, true));
 	register_optimizer(new OptimizerDraftBlur());
 	register_optimizer(new OptimizerDraftLayerSkip("MotionBlur"));
 	register_optimizer(new OptimizerDraftLayerSkip("radial_blur"));
@@ -97,7 +95,9 @@ RendererDraftSW::RendererDraftSW()
 	register_optimizer(new OptimizerDraftLayerSkip("super_sample"));
 	register_optimizer(new OptimizerDraftLayerSkip("text"));
 	register_optimizer(new OptimizerDraftLayerSkip("xor_pattern"));
-	register_optimizer(new OptimizerDraftResample());
+
+	register_optimizer(new OptimizerTransformation());
+	register_optimizer(new OptimizerDraftTransformation());
 
 	register_optimizer(new OptimizerPass());
 	register_optimizer(new OptimizerBlendMerge());

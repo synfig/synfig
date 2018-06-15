@@ -67,10 +67,9 @@ OptimizerPass::OptimizerPass()
 void
 OptimizerPass::run(const RunParams& params) const
 {
-	if (params.ref_task.type_is<TaskNone>())
-		return;
-	if (!params.ref_task->is_valid())
-		{ apply(params, new TaskNone()); return; }
+	if ( params.ref_task.type_is<TaskNone>()
+	  || !params.ref_task->is_valid() )
+		{ apply(params, Task::Handle()); return; }
 
 	int index = params.ref_task->get_pass_subtask_index();
 
@@ -80,7 +79,7 @@ OptimizerPass::run(const RunParams& params) const
 
 	// remove
 	if (index == Task::PASSTO_NO_TASK)
-		{ apply(params, new TaskNone()); return; }
+		{ apply(params, Task::Handle()); return; }
 
 	// remove sub-tasks
 	if (index == Task::PASSTO_THIS_TASK_WITHOUT_SUBTASKS)
@@ -101,7 +100,7 @@ OptimizerPass::run(const RunParams& params) const
 
 	const Task::Handle &task = params.ref_task.get()->sub_task(index);
 	if (!task || task.type_is<TaskNone>() || !task->is_valid())
-		{ apply(params, new TaskNone()); return; }
+		{ apply(params, Task::Handle()); return; }
 
 	apply(params, replace_target(params.ref_task, task));
 }

@@ -63,6 +63,8 @@ Polyspan::Polyspan():
 	open_index(0),
 	cur_x(0.0),
 	cur_y(0.0),
+	cur_line_x(0.0),
+	cur_line_y(0.0),
 	close_x(0.0),
 	close_y(0.0),
 	flags(NotSorted)
@@ -106,11 +108,12 @@ Polyspan::move_pen(int x, int y)
 void
 Polyspan::close()
 {
+	finish_line();
 	if(flags & NotClosed)
 	{
 		if(cur_x != close_x || cur_y != close_y)
 		{
-			line_to(close_x,close_y);
+			line_to(close_x, close_y, 0.0);
 			addcurrent();
 			current.setcover(0,0);
 		}
@@ -122,6 +125,7 @@ Polyspan::close()
 void
 Polyspan::merge_all()
 {
+	finish_line();
 	sort(covers.begin(),covers.end());
 	open_index = 0;
 }
@@ -130,6 +134,7 @@ Polyspan::merge_all()
 void
 Polyspan::sort_marks()
 {
+	finish_line();
 	if(flags & NotSorted)
 	{
 		//only sort the open index
@@ -162,17 +167,32 @@ Polyspan::move_to(Real x, Real y)
 	close_x = cur_x = x;
 }
 
+void
+Polyspan::finish_line()
+{
+	if (flags & NotFinishedLine)
+		line_to(cur_line_x, cur_line_y, 0.0);
+}
+
 //primitive_to functions
 void
-Polyspan::line_to(Real x, Real y)
+Polyspan::line_to(Real x, Real y, Real detail)
 {
-	Real n[4] = {0,0,0,0};
-	bool afterx = false;
-
-	const Real xin(x), yin(y);
-
 	Real dx = x - cur_x;
 	Real dy = y - cur_y;
+
+	if (detail && fabs(dx) < detail && fabs(dy) < detail)
+	{
+		cur_line_x = x;
+		cur_line_y = y;
+		flags |= NotFinishedLine;
+		return;
+	}
+	flags &= ~NotFinishedLine;
+
+	Real n[4] = {0,0,0,0};
+	bool afterx = false;
+	const Real xin(x), yin(y);
 
 	//CLIP IT!!!!
 	try {
@@ -417,6 +437,19 @@ Polyspan::subd_conic_stack(Point *arc)
 void
 Polyspan::conic_to(Real x, Real y, Real x1, Real y1, Real detail)
 {
+	if ( fabs(cur_x - x) < detail
+	  && fabs(cur_y - y) < detail
+	  && fabs(cur_x - x1) < detail
+	  && fabs(cur_y - y1) < detail )
+	{
+		cur_line_x = x;
+		cur_line_y = y;
+		flags |= NotFinishedLine;
+		return;
+	}
+	finish_line();
+	detail *= 0.5; // more accurate coefficient for spline subdivisions
+
 	Point *current = arc;
 	int		level = 0;
 	int 	num = 0;
@@ -427,9 +460,9 @@ Polyspan::conic_to(Real x, Real y, Real x1, Real y1, Real detail)
 	arc[2] = Point(cur_x,cur_y);
 
 	//just draw the line if it's outside
-	if(clip_conic(arc,window))
+	if(true || clip_conic(arc,window))
 	{
-		line_to(x,y);
+		line_to(x, y, detail);
 		return;
 	}
 
@@ -447,7 +480,7 @@ Polyspan::conic_to(Real x, Real y, Real x1, Real y1, Real detail)
 		//if the curve is clipping then draw degenerate
 		if(clip_conic(current,window))
 		{
-			line_to(current[0][0],current[0][1]); //backwards so front is destination
+			line_to(current[0][0], current[0][1], 0.0); //backwards so front is destination
 			current -= 2;
 			if(onsecond) level--;
 			onsecond = true;
@@ -476,8 +509,8 @@ Polyspan::conic_to(Real x, Real y, Real x1, Real y1, Real detail)
 		else	//NOT TOO BIG? RENDER!!!
 		{
 			//cur_x,cur_y = current[2], so we need to go 1,0
-			line_to(current[1][0],current[1][1]);
-			line_to(current[0][0],current[0][1]);
+			line_to(current[1][0], current[1][1], 0.0);
+			line_to(current[0][0], current[0][1], 0.0);
 
 			current -= 2;
 			if(onsecond) level--;
@@ -569,6 +602,21 @@ Polyspan::subd_cubic_stack(Point *arc)
 void
 Polyspan::cubic_to(Real x, Real y, Real x1, Real y1, Real x2, Real y2, Real detail)
 {
+	if ( fabs(cur_x - x) < detail
+	  && fabs(cur_y - y) < detail
+	  && fabs(cur_x - x1) < detail
+	  && fabs(cur_y - y1) < detail
+	  && fabs(cur_x - x2) < detail
+	  && fabs(cur_y - y2) < detail )
+	{
+		cur_line_x = x;
+		cur_line_y = y;
+		flags |= NotFinishedLine;
+		return;
+	}
+	finish_line();
+	detail *= 0.5; // more accurate coefficient for spline subdivisions
+
 	Point *current = arc;
 	int		num = 0;
 	int		level = 0;
@@ -580,9 +628,9 @@ Polyspan::cubic_to(Real x, Real y, Real x1, Real y1, Real x2, Real y2, Real deta
 	arc[3] = Point(cur_x,cur_y);
 
 	//just draw the line if it's outside
-	if(clip_cubic(arc,window))
+	if(true || clip_cubic(arc,window))
 	{
-		line_to(x,y);
+		line_to(x, y, detail);
 		return;
 	}
 
@@ -611,7 +659,7 @@ Polyspan::cubic_to(Real x, Real y, Real x1, Real y1, Real x2, Real y2, Real deta
 		//if the curve is clipping then draw degenerate
 		if(clip_cubic(current,window))
 		{
-			line_to(current[0][0],current[0][1]); //backwards so front is destination
+			line_to(current[0][0], current[0][1], 0.0); //backwards so front is destination
 			current -= 3;
 			if(onsecond) level--;
 			onsecond = true;
@@ -631,9 +679,9 @@ Polyspan::cubic_to(Real x, Real y, Real x1, Real y1, Real x2, Real y2, Real deta
 		else //NOT TOO BIG? RENDER!!!
 		{
 			//cur_x,cur_y = current[3], so we need to go 2,1,0
-			line_to(current[2][0],current[2][1]);
-			line_to(current[1][0],current[1][1]);
-			line_to(current[0][0],current[0][1]);
+			line_to(current[2][0], current[2][1], 0.0);
+			line_to(current[1][0], current[1][1], 0.0);
+			line_to(current[0][0], current[0][1], 0.0);
 
 			current -= 3;
 			if(onsecond) level--;
