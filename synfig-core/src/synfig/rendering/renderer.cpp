@@ -186,12 +186,15 @@ Renderer::unregister_mode(const ModeToken::Handle &mode)
 void
 Renderer::calc_coords(const Task::List &list) const
 {
+	#ifdef DEBUG_OPTIMIZATION_MEASURE
+	debug::Measure t("calc coords");
+	#endif
 	for(Task::List::const_iterator i = list.begin(); i != list.end(); ++i)
 		if (*i) (*i)->touch_coords();
 }
 
 void
-Renderer::specialize(Task::List &list) const
+Renderer::specialize_recursive(Task::List &list) const
 {
 	for(Task::List::iterator i = list.begin(); i != list.end(); ++i)
 		if (*i) {
@@ -203,8 +206,17 @@ Renderer::specialize(Task::List &list) const
 			if (!task)
 				task = (*i)->clone();
 			*i = task;
-			specialize((*i)->sub_tasks);
+			specialize_recursive((*i)->sub_tasks);
 		}
+}
+
+void
+Renderer::specialize(Task::List &list) const
+{
+	#ifdef DEBUG_OPTIMIZATION_MEASURE
+	debug::Measure t("specialize");
+	#endif
+	specialize_recursive(list);
 }
 
 void
@@ -222,6 +234,10 @@ Renderer::remove_dummy(Task::List &list) const
 void
 Renderer::linearize(Task::List &list) const
 {
+	#ifdef DEBUG_OPTIMIZATION_MEASURE
+	debug::Measure t("linearize");
+	#endif
+
 	// convert task-tree to linear list
 	for(Task::List::iterator i = list.begin(); i != list.end();)
 	{
@@ -313,6 +329,10 @@ Renderer::optimize_recursive(
 			}
 		}
 	}
+
+	if ( (params.ref_mode & Optimizer::MODE_REPEAT_BRANCH) == Optimizer::MODE_REPEAT_LAST
+	  && (params.ref_mode & Optimizer::MODE_RECURSIVE) )
+		return;
 
 	// process sub-tasks, only for non-for-root-task optimizers (see Optimizer::for_root_task)
 	if (max_level > 0)

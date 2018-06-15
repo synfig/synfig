@@ -90,6 +90,7 @@ public:
 
 private:
 	void calc_coords(const Task::List &list) const;
+	void specialize_recursive(Task::List &list) const;
 	void specialize(Task::List &list) const;
 	void remove_dummy(Task::List &list) const;
 	void linearize(Task::List &list) const;
