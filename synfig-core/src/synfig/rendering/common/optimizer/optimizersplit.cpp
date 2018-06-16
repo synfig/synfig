@@ -5,7 +5,7 @@
 **	$Id$
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2015-2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -55,44 +55,44 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
-void
-OptimizerSplit::run(const RunParams& /* params */) const
+OptimizerSplit::OptimizerSplit()
 {
-	// TODO: this version of split don't keep coordinates
-	/*
+	category_id = CATEGORY_ID_LIST;
+	depends_from = CATEGORY_SPECIALIZED;
+	for_list = true;
+}
+
+void
+OptimizerSplit::run(const RunParams &params) const
+{
 	const int min_area = 256*256;
 	int threads = params.renderer.get_max_simultaneous_threads();
 	for(Task::List::iterator i = params.list.begin(); i != params.list.end(); ++i)
 	{
-		if ( i->type_is<TaskSplittable>()
-		 &&  !i->type_pointer<TaskSplittable>()->splitted )
+		if (TaskInterfaceSplit *split = i->type_pointer<TaskInterfaceSplit>())
+		if (split->is_splittable())
 		{
-			RectInt r = (*i)->get_target_rect();
+			RectInt r = (*i)->target_rect;
 			int w = r.maxx - r.minx;
 			int h = r.maxy - r.miny;
-			int t = std::min(h, std::min(w*h/min_area, threads));
+			int t = std::min(10*h, std::min(w*h/min_area, threads));
 			if (t >= 2)
 			{
 				int hh = h/t;
-				int offset = r.miny;
-				for(int j = 1; j < t; ++j)
+				int y = r.miny;
+				for(int j = 1; j < t; ++j, y += hh)
 				{
 					Task::Handle task = (*i)->clone();
-					task.type_pointer<TaskSplittable>()->split(
-						RectInt(r.minx, offset, r.maxx, offset + hh) );
-					task.type_pointer<TaskSplittable>()->splitted = true;
+					task->trunc_target_rect( RectInt(r.minx, y, r.maxx, y + hh) );
 					i = params.list.insert(i, task);
 					++i;
-					offset += hh;
 				}
 				*i = (*i)->clone();
-				i->type_pointer<TaskSplittable>()->split(
-					RectInt(r.minx, offset, r.maxx, r.maxy) );
-				i->type_pointer<TaskSplittable>()->splitted = true;
+				(*i)->trunc_target_rect( RectInt(r.minx, y, r.maxx, r.maxy) );
+				apply(params);
 			}
 		}
 	}
-	*/
 }
 
 /* === E N T R Y P O I N T ================================================= */

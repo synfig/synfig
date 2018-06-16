@@ -5,7 +5,7 @@
 **	$Id$
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2015-2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -43,13 +43,7 @@ namespace rendering
 class OptimizerSplit: public Optimizer
 {
 public:
-	OptimizerSplit()
-	{
-		category_id = CATEGORY_ID_LIST;
-		depends_from = CATEGORY_SPECIALIZED;
-		for_list = true;
-	}
-
+	OptimizerSplit();
 	virtual void run(const RunParams &params) const;
 };
 
