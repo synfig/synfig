@@ -77,6 +77,15 @@ OptimizerBlendAssociative::run(const RunParams& params) const
 	// if each task in list suits for this optimization
 	//
 
+	int max_count = 50;
+
+	if ( !params.parent
+	  || !params.parent->ref_task.type_is<TaskList>()
+	  || (int)params.parent->ref_task->sub_tasks.size() >= max_count )
+		return;
+
+	max_count -= params.parent->ref_task->sub_tasks.size();
+
 	TaskBlend::Handle blend = TaskBlend::Handle::cast_dynamic(params.ref_task);
 	if ( blend
 	  && ( !blend->sub_task_a()
@@ -86,6 +95,7 @@ OptimizerBlendAssociative::run(const RunParams& params) const
 	  && approximate_equal_lp(blend->amount, ColorReal(1.0)) )
 	{
 		if (TaskList::Handle list = TaskList::Handle::cast_dynamic(blend->sub_task_b()))
+		if ((int)list->sub_tasks.size() <= max_count)
 		{
 			// check each task in list
 			for(Task::List::iterator i = list->sub_tasks.begin(); i != list->sub_tasks.end(); ++i)
