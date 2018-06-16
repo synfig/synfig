@@ -299,7 +299,7 @@ software::Blur::blur_pattern(const Params &params)
 		*params.dest,
 		arr_dst_surface,
 		params.dest_rect,
-		params.src_offset,
+		params.src_offset - params.src_rect.get_min(),
 		params.blend,
 		params.blend_method,
 		params.amount );
@@ -459,7 +459,7 @@ software::Blur::blur_fft(const Params &params)
 		*params.dest,
 		arr_surface.reorder(0, 1, 2),
 		params.dest_rect,
-		params.src_offset,
+		params.src_offset - params.src_rect.get_min(),
 		params.blend,
 		params.blend_method,
 		params.amount );
@@ -544,7 +544,7 @@ software::Blur::blur_box(const Params &params)
 		*params.dest,
 		arr_surface,
 		params.dest_rect,
-		params.src_offset,
+		params.src_offset - params.src_rect.get_min(),
 		params.blend,
 		params.blend_method,
 		params.amount );
@@ -708,7 +708,7 @@ software::Blur::blur_iir(const Params &params)
 		*params.dest,
 		arr_surface,
 		params.dest_rect,
-		params.src_offset,
+		params.src_offset - params.src_rect.get_min(),
 		params.blend,
 		params.blend_method,
 		params.amount );
