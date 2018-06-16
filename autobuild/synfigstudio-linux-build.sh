@@ -492,6 +492,8 @@ fi
 make -j$MAKE_THREADS
 make install
 
+sed -i "s|^includedir=.*$|includedir=$SYNFIG_REPO_DIR\/ETL|" ${PREFIX}/lib/pkgconfig/ETL.pc
+
 popd
 }
 
