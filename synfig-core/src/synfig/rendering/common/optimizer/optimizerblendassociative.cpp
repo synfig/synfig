@@ -98,29 +98,57 @@ OptimizerBlendAssociative::run(const RunParams& params) const
 		if ((int)list->sub_tasks.size() <= max_count)
 		{
 			// check each task in list
+			bool fix_list = false;
 			for(Task::List::iterator i = list->sub_tasks.begin(); i != list->sub_tasks.end(); ++i)
 			{
-				if (!*i) continue;
+				if (!*i) { fix_list = true; continue; }
 				if (TaskBlend::Handle sub_blend = TaskBlend::Handle::cast_dynamic(*i))
-					if ( sub_blend->blend_method == blend->blend_method
-					  && approximate_equal_lp(sub_blend->amount, ColorReal(1.0)) )
+					if ( sub_blend->blend_method == blend->blend_method )
 						continue;
-				if (TaskInterfaceBlendToTarget *interface = i->type_pointer<TaskInterfaceBlendToTarget>())
-					if ( interface->blend
-					  && interface->blend_method == blend->blend_method
-					  && approximate_equal_lp(interface->amount, ColorReal(1.0)) )
+				if (TaskInterfaceBlendToTarget *interface = i->type_pointer<TaskInterfaceBlendToTarget>()) {
+					if (!interface->blend) { fix_list = true; continue; }
+					if (interface->blend_method == blend->blend_method )
 						continue;
+				}
 				return;
 			}
 
 			Task::Handle new_list = replace_target(blend, list);
+
+			// enable blending for TaskInterfaceBlendToTarget
+			if (fix_list)
+			{
+				if (new_list == list) new_list = list->clone();
+				new_list->sub_tasks.insert(new_list->sub_tasks.begin(), blend->sub_task_a());
+				for(Task::List::iterator i = new_list->sub_tasks.begin(); i != new_list->sub_tasks.end();)
+				{
+					if (!*i) { i = list->sub_tasks.erase(i); continue; }
+					if (!i->type_is<TaskBlend>())
+						if (TaskInterfaceBlendToTarget *interface = i->type_pointer<TaskInterfaceBlendToTarget>())
+							if (!interface->blend) {
+								*i = (*i)->clone();
+								interface = i->type_pointer<TaskInterfaceBlendToTarget>();
+								interface->blend = true;
+								interface->blend_method = blend->blend_method;
+								interface->amount = 1.0;
+								Task::Handle surface = new TaskSurface();
+								surface->assign_target(**i);
+								interface->target_subtask() = surface;
+								interface->on_target_set_as_source();
+							}
+					++i;
+				}
+			}
+
+			// insert sub-task A in front
 			if ( blend->sub_task_a()
 			 && !blend->sub_task_a().type_is<TaskNone>()
 			 && !blend->sub_task_a().type_is<TaskSurface>() )
 			{
-				if (new_list != list) new_list = list->clone();
+				if (new_list == list) new_list = list->clone();
 				new_list->sub_tasks.insert(new_list->sub_tasks.begin(), blend->sub_task_a());
 			}
+
 			apply(params, new_list);
 		}
 	}
