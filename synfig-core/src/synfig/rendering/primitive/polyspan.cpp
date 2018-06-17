@@ -460,7 +460,7 @@ Polyspan::conic_to(Real x, Real y, Real x1, Real y1, Real detail)
 	arc[2] = Point(cur_x,cur_y);
 
 	//just draw the line if it's outside
-	if(true || clip_conic(arc,window))
+	if(clip_conic(arc,window))
 	{
 		line_to(x, y, detail);
 		return;
@@ -628,7 +628,7 @@ Polyspan::cubic_to(Real x, Real y, Real x1, Real y1, Real x2, Real y2, Real deta
 	arc[3] = Point(cur_x,cur_y);
 
 	//just draw the line if it's outside
-	if(true || clip_cubic(arc,window))
+	if(clip_cubic(arc,window))
 	{
 		line_to(x, y, detail);
 		return;
