@@ -70,7 +70,6 @@ const unsigned int	DEF_TILE_HEIGHT = TILE_SIZE / 2;
 
 #ifdef _DEBUG
 //#define DEBUG_MEASURE
-//#define SYNFIG_DISPLAY_EFFICIENCY
 #endif
 
 /* === G L O B A L S ======================================================= */
@@ -184,12 +183,6 @@ synfig::Target_Tile::render_frame_(Context context,ProgressCallback *cb)
 {
 	const RendDesc &rend_desc(desc);
 
-	etl::clock total_time;
-	etl::clock::value_type work_time(0);
-	etl::clock::value_type find_tile_time(0);
-	etl::clock::value_type add_tile_time(0);
-	total_time.reset();
-
 	// If the quality is set to zero, then we
 	// use the parametric scanline-renderer.
 	if(get_quality()==0)
@@ -203,8 +196,6 @@ synfig::Target_Tile::render_frame_(Context context,ProgressCallback *cb)
 		tile_timer.reset();
 		while(next_tile(rect))
 		{
-			find_tile_time+=tile_timer();
-
 			SuperCallback super(cb,i,i+1,10000);
 			if(!super.amount_complete(0,1000))
 				return false;
@@ -275,7 +266,6 @@ synfig::Target_Tile::render_frame_(Context context,ProgressCallback *cb)
 					continue;
 			tiles.push_back(rect);
 		}
-		find_tile_time += tile_timer();
 
 		// Render tiles
 		for(std::vector<RectInt>::iterator i = tiles.begin(); i != tiles.end(); ++i)
@@ -310,10 +300,6 @@ synfig::Target_Tile::render_frame_(Context context,ProgressCallback *cb)
 	if(cb && !cb->amount_complete(10000,10000))
 		return false;
 
-#ifdef SYNFIG_DISPLAY_EFFICIENCY
-	synfig::info(">>>>>> Render Time: %fsec, Find Tile Time: %fsec, Add Tile Time: %fsec, Total Time: %fsec",work_time,find_tile_time,add_tile_time,total_time());
-	synfig::info(">>>>>> FRAME EFFICIENCY: %f%%",(100.0f*work_time/total_time()));
-#endif
 	return true;
 }
 

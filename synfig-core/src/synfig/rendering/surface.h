@@ -27,6 +27,9 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <map>
+#include <vector>
+
 #include <glibmm/threads.h>
 
 #include <ETL/handle>

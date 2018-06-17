@@ -58,7 +58,7 @@ public:
 
 	template<typename TT>
 	inline ConstRef(const ConstRef<TT> &x):
-		pointer() { *this = x.base<Type>(); }
+		pointer() { *this = x.template base<Type>(); }
 
 	template<typename TT>
 	inline ConstRef<TT> base() const
