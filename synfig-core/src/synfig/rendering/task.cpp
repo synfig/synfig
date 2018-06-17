@@ -63,8 +63,6 @@ Task::Token TaskSurface::token(
 	DescSpecial<TaskSurface>("Surface") );
 Task::Token TaskLockSurface::token(
 	DescSpecial<TaskLockSurface>("LoskSurface") );
-Task::Token TaskNone::token(
-	DescSpecial<TaskNone>("None") );
 Task::Token TaskList::token(
 	DescSpecial<TaskList>("List") );
 Task::Token TaskCallbackCond::token(
@@ -181,7 +179,7 @@ Task::clone_recursive() const
 	Task::Handle task = clone();
 	if (task)
 		for(List::iterator i = task->sub_tasks.begin(); i != task->sub_tasks.end(); ++i)
-			(*i) = (*i)->clone_recursive();
+			if (*i) (*i) = (*i)->clone_recursive();
 	return task;
 }
 

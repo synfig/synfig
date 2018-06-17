@@ -59,9 +59,7 @@ OptimizerPass::OptimizerPass(bool deep_first)
 {
 	category_id = CATEGORY_ID_SPECIALIZED;
 	depends_from = CATEGORY_COORDS;
-	mode = deep_first
-		 ? MODE_REPEAT_PARENT
-		 : MODE_REPEAT_PARENT | MODE_RECURSIVE;
+	mode = MODE_REPEAT_PARENT;
 	this->deep_first = deep_first;
 	for_task = true;
 }
@@ -69,11 +67,11 @@ OptimizerPass::OptimizerPass(bool deep_first)
 void
 OptimizerPass::run(const RunParams& params) const
 {
-	if ( params.ref_task.type_is<TaskNone>()
-	  || !params.ref_task->is_valid() )
+	if ( !params.ref_task->is_valid() )
 		{ apply(params, Task::Handle()); return; }
 
 	int index = params.ref_task->get_pass_subtask_index();
+	if (!deep_first && index >= 0) return;
 
 	// keep unchanged
 	if (index == Task::PASSTO_THIS_TASK)
@@ -87,7 +85,7 @@ OptimizerPass::run(const RunParams& params) const
 	if (index == Task::PASSTO_THIS_TASK_WITHOUT_SUBTASKS)
 	{
 		for(Task::List::const_iterator i = params.ref_task->sub_tasks.begin(); i != params.ref_task->sub_tasks.end(); ++i)
-			if (*i && !i->type_is<TaskNone>()) {
+			if (*i) {
 				Task::Handle new_task = params.ref_task->clone();
 				new_task->sub_tasks.clear();
 				apply(params, new_task);
@@ -98,10 +96,10 @@ OptimizerPass::run(const RunParams& params) const
 
 	// replace to sub-task
 
-	if (index < 0 || !deep_first) return;
+	if (index < 0) return;
 
 	const Task::Handle &task = params.ref_task.get()->sub_task(index);
-	if (!task || task.type_is<TaskNone>() || !task->is_valid())
+	if (!task || !task->is_valid())
 		{ apply(params, Task::Handle()); return; }
 
 	apply(params, replace_target(params.ref_task, task));

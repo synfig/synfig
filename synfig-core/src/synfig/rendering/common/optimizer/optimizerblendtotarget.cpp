@@ -86,13 +86,12 @@ OptimizerBlendToTarget::run(const RunParams& params) const
 	{
 		if ( sourcetarget->get_target_subtask_index() == 0
 		  && ( !blend->sub_task_a()
-		    || blend->sub_task_a().type_is<TaskNone>()
 			|| blend->sub_task_a()->target_surface == blend->target_surface ))
 		{
 			TaskInterfaceBlendToTarget *interface = blend->sub_task_b().type_pointer<TaskInterfaceBlendToTarget>();
 			if ( interface
 			  && interface->is_blend_method_supported(blend->blend_method)
-			  && (!interface->target_subtask() || interface->target_subtask().type_is<TaskNone>())
+			  && (!interface->target_subtask())
 			  && ( !interface->blend
 				|| (blend->blend_method == Color::BLEND_COMPOSITE && interface->blend_method == blend->blend_method) ))
 			{

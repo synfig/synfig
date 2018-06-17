@@ -720,10 +720,6 @@ Layer_PasteCanvas::build_rendering_task_vfunc(Context context)const
 		task_transformation->sub_task() = sub_context.build_rendering_task();
 		sub_task = task_transformation;
 	}
-	else
-	{
-		sub_task = new rendering::TaskNone();
-	}
 
 	rendering::TaskBlend::Handle task_blend(new rendering::TaskBlend());
 	task_blend->amount = get_amount() * Context::z_depth_visibility(context.get_params(), *this);

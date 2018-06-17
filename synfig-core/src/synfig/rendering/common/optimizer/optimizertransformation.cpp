@@ -70,9 +70,8 @@ OptimizerTransformation::run(const RunParams& params) const
 
 	// transformation of none in none
 	Task::Handle sub_task = transformation->sub_task();
-	if (!sub_task || sub_task.type_is<TaskNone>())
+	if (!sub_task)
 		{ apply(params, Task::Handle()); return; }
-	if (!sub_task) return;
 
 	// transformation of solid is solid
 	if (TaskInterfaceConstant *constant = sub_task.type_pointer<TaskInterfaceConstant>())

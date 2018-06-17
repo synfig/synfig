@@ -53,7 +53,7 @@ using namespace rendering;
 // these tasks should be removed from list
 static bool
 can_be_skipped(const Task::Handle &task)
-	{ return !task || task.type_is<TaskNone>() || task.type_is<TaskSurface>(); }
+	{ return !task || task.type_is<TaskSurface>(); }
 
 // can we make list with two or more elements?
 static bool
@@ -121,7 +121,6 @@ OptimizerList::run(const RunParams& params) const
 {
 	//
 	// task    - any Task
-	// none    - null or TaskNone
 	// surface - TaskSurface
 	// list    - TaskList
 	// tas     - Task derived from TaskInterfaceTargetAsSource

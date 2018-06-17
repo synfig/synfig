@@ -538,19 +538,6 @@ public:
 };
 
 
-//! TaskNone does nothing. You may use it as placeholder, when null is not allowed.
-class TaskNone: public Task, public TaskInterfaceConstant
-{
-public:
-	typedef etl::handle<TaskNone> Handle;
-	static Token token;
-	virtual Token::Handle get_token() const { return token.handle(); }
-	virtual Rect calc_bounds() const { return Rect(); }
-	virtual bool run(RunParams&) const
-		{ return true; }
-};
-
-
 //! Tasks in TaskList executes sequentially and all of them draws at TaskList target surface.
 //! So all tasks inside TaskList should to have the same target surface
 //! which should be same as TaskList target surface.

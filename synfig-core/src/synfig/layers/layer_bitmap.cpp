@@ -676,7 +676,7 @@ Layer_Bitmap::build_composite_task_vfunc(ContextParams /* context_params */) con
 {
 	if ( !rendering_surface
 	  || !rendering_surface->is_exists() )
-		return new rendering::TaskNone();
+		return rendering::Task::Handle();
 
 	ColorReal gamma = (Color::value_type)param_gamma_adjust.get(Real());
 	Point tl(param_tl.get(Point()));

@@ -63,14 +63,12 @@ public:
 
 	virtual int get_pass_subtask_index() const
 	{
-		bool no_subtask = !sub_task() || sub_task().type_is<TaskNone>();
-
 		if (is_zero())
 			return PASSTO_NO_TASK;
-		if (!is_affects_transparent() && no_subtask)
+		if (!is_affects_transparent() && !sub_task())
 			return PASSTO_NO_TASK;
 		if (is_transparent())
-			return no_subtask ? PASSTO_NO_TASK : 0;
+			return sub_task() ? 0 : PASSTO_NO_TASK;
 		if (is_constant())
 			return PASSTO_THIS_TASK_WITHOUT_SUBTASKS;
 		return PASSTO_THIS_TASK;

@@ -512,6 +512,6 @@ Context::build_rendering_task() const
 
 	return *context
 		 ? (*context)->build_rendering_task(context.get_next())
-		 : rendering::Task::Handle(new rendering::TaskNone());
+		 : rendering::Task::Handle();
 }
 

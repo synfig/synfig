@@ -57,8 +57,8 @@ Task::Token TaskBlend::token(
 int
 TaskBlend::get_pass_subtask_index() const
 {
-	bool a = sub_task_a() && !sub_task_a().type_is<TaskNone>();
-	bool b = sub_task_b() && !sub_task_b().type_is<TaskNone>();
+	bool a = (bool)sub_task_a();
+	bool b = (bool)sub_task_b();
 	if (!a && !b)
 		return PASSTO_NO_TASK;
 	if (!a && Color::is_onto(blend_method))

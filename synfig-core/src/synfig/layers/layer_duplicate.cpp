@@ -267,7 +267,7 @@ Layer_Duplicate::build_rendering_task_vfunc(Context context) const
 	ColorReal amount = get_amount() * Context::z_depth_visibility(context.get_params(), *this);
 	Color::BlendMethod blend_method = get_blend_method();
 
-	rendering::Task::Handle task = new rendering::TaskNone();
+	rendering::Task::Handle task;
 
 	Mutex::Lock lock(mutex);
 	duplicate_param->reset_index(time_cur);

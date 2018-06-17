@@ -78,8 +78,8 @@ public:
 
 	virtual int get_pass_subtask_index() const
 	{
-		return !sub_task() || sub_task().type_is<TaskNone>() || !get_transformation()
-			 ? PASSTO_NO_TASK : PASSTO_THIS_TASK;
+		return sub_task() && get_transformation()
+			 ? PASSTO_THIS_TASK : PASSTO_NO_TASK;
 	}
 
 	const Task::Handle& sub_task() const { return Task::sub_task(0); }

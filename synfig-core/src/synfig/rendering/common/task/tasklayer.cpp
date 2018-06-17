@@ -84,7 +84,9 @@ TaskLayer::renddesc_less(const RendDesc &a, const RendDesc &b)
 void
 TaskLayer::set_coords_sub_tasks()
 {
-	if (!is_valid_coords() || !sub_task() || !layer)
+	if (!sub_task())
+		return;
+	if (!is_valid_coords() || !layer)
 		{ sub_task()->set_coords_zero(); return; }
 
 	VectorInt size = target_rect.get_size();

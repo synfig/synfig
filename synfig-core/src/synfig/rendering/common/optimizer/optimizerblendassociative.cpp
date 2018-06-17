@@ -89,7 +89,6 @@ OptimizerBlendAssociative::run(const RunParams& params) const
 	TaskBlend::Handle blend = TaskBlend::Handle::cast_dynamic(params.ref_task);
 	if ( blend
 	  && ( !blend->sub_task_a()
-		|| blend->sub_task_a().type_is<TaskNone>()
 		|| blend->sub_task_a()->target_surface == blend->target_surface )
 	  && ((1 << blend->blend_method) & Color::BLEND_METHODS_ASSOCIATIVE)
 	  && approximate_equal_lp(blend->amount, ColorReal(1.0)) )
@@ -142,7 +141,6 @@ OptimizerBlendAssociative::run(const RunParams& params) const
 
 			// insert sub-task A in front
 			if ( blend->sub_task_a()
-			 && !blend->sub_task_a().type_is<TaskNone>()
 			 && !blend->sub_task_a().type_is<TaskSurface>() )
 			{
 				if (new_list == list) new_list = list->clone();

@@ -451,7 +451,7 @@ Layer_MotionBlur::build_rendering_task_vfunc(Context context) const
 	}
 
 	Real k = 1.0/sum;
-	rendering::Task::Handle task = new rendering::TaskNone();
+	rendering::Task::Handle task;
 	for(int i = 0; i < samples; i++)
 	{
 		if (fabs(scales[i]*k) < 1e-8)

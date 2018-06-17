@@ -242,7 +242,6 @@ Renderer::remove_dummy(Task::List &list) const
 	// remove dummy tasks
 	for(Task::List::iterator i = list.begin(); i != list.end();)
 		if ( !*i
-		  || i->type_is<TaskNone>()
 		  || i->type_is<TaskSurface>()
 		  || i->type_is<TaskList>() )
 			i = list.erase(i); else ++i;

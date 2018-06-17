@@ -90,7 +90,7 @@ OptimizerBlendMerge::run(const RunParams& params) const
 	{
 		TaskBlend::Handle sub_blend = TaskBlend::Handle::cast_dynamic(blend->sub_task_b());
 		if ( sub_blend
-		  && (!sub_blend->sub_task_a() || sub_blend->sub_task_a().type_is<TaskNone>())
+		  && (!sub_blend->sub_task_a())
 		  && blend->blend_method == sub_blend->blend_method )
 		{
 			TaskBlend::Handle new_blend = TaskBlend::Handle::cast_dynamic(blend->clone());
