@@ -44,7 +44,7 @@ namespace rendering
 class OptimizerPass: public Optimizer
 {
 public:
-	OptimizerPass();
+	OptimizerPass(bool deep_first);
 	virtual void run(const RunParams &params) const;
 };
 

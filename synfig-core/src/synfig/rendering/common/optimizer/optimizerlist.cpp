@@ -71,9 +71,10 @@ can_be_modified(const Task::Handle &task)
 	if (can_be_skipped(task)) return false; // don't try to modify empty tasks
 	if (task.type_is<TaskList>())
 	{ // can we modify any task in list?
-		for(Task::List::const_iterator i = task->sub_tasks.begin(); i != task->sub_tasks.end(); ++i)
-			if (can_be_skipped(*i) || can_build_list(*i))
-				return true;
+		if ((int)task->sub_tasks.size() < 50)
+			for(Task::List::const_iterator i = task->sub_tasks.begin(); i != task->sub_tasks.end(); ++i)
+				if (can_be_skipped(*i) || can_build_list(*i))
+					return true;
 		return false;
 	}
 	return can_build_list(task); // or can we build a new list?

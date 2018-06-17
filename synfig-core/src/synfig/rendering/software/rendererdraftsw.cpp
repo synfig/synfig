@@ -99,7 +99,8 @@ RendererDraftSW::RendererDraftSW()
 	register_optimizer(new OptimizerTransformation());
 	register_optimizer(new OptimizerDraftTransformation());
 
-	register_optimizer(new OptimizerPass());
+	register_optimizer(new OptimizerPass(false));
+	register_optimizer(new OptimizerPass(true));
 	register_optimizer(new OptimizerBlendMerge());
 	register_optimizer(new OptimizerBlendToTarget());
 	register_optimizer(new OptimizerList());

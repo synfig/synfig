@@ -89,6 +89,8 @@ public:
 	void unregister_mode(const ModeToken::Handle &mode);
 
 private:
+	int count_tasks_recursive(Task::List &list) const;
+	int count_tasks(Task::List &list) const;
 	void calc_coords(const Task::List &list) const;
 	void specialize_recursive(Task::List &list) const;
 	void specialize(Task::List &list) const;

@@ -89,25 +89,25 @@ OptimizerBlendToTarget::run(const RunParams& params) const
 		    || blend->sub_task_a().type_is<TaskNone>()
 			|| blend->sub_task_a()->target_surface == blend->target_surface ))
 		{
-			TaskInterfaceBlendToTarget *composite = blend->sub_task_b().type_pointer<TaskInterfaceBlendToTarget>();
-			if ( composite
-			  && composite->is_blend_method_supported(blend->blend_method)
-			  && (!composite->target_subtask() || composite->target_subtask().type_is<TaskNone>())
-			  && ( !composite->blend
-				|| (blend->blend_method == Color::BLEND_COMPOSITE && composite->blend_method == blend->blend_method) ))
+			TaskInterfaceBlendToTarget *interface = blend->sub_task_b().type_pointer<TaskInterfaceBlendToTarget>();
+			if ( interface
+			  && interface->is_blend_method_supported(blend->blend_method)
+			  && (!interface->target_subtask() || interface->target_subtask().type_is<TaskNone>())
+			  && ( !interface->blend
+				|| (blend->blend_method == Color::BLEND_COMPOSITE && interface->blend_method == blend->blend_method) ))
 			{
 				Task::Handle new_task = blend->sub_task_b()->clone();
 
-				composite = new_task.type_pointer<TaskInterfaceBlendToTarget>();
-				assert(composite);
-				if (!composite->blend) composite->amount = 1.0;
-				composite->amount *= blend->amount;
-				composite->blend_method = blend->blend_method;
-				composite->blend = true;
-				composite->target_subtask() = blend->sub_task_a();
+				interface = new_task.type_pointer<TaskInterfaceBlendToTarget>();
+				assert(interface);
+				if (!interface->blend) interface->amount = 1.0;
+				interface->amount *= blend->amount;
+				interface->blend_method = blend->blend_method;
+				interface->blend = true;
+				interface->target_subtask() = blend->sub_task_a();
 				new_task->assign_target(*blend);
 
-				composite->on_target_set_as_source();
+				interface->on_target_set_as_source();
 
 				apply(params, new_task);
 			}

@@ -55,12 +55,14 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
-OptimizerPass::OptimizerPass()
+OptimizerPass::OptimizerPass(bool deep_first)
 {
 	category_id = CATEGORY_ID_SPECIALIZED;
 	depends_from = CATEGORY_COORDS;
-	mode = MODE_REPEAT_PARENT;
-	deep_first = true;
+	mode = deep_first
+		 ? MODE_REPEAT_PARENT
+		 : MODE_REPEAT_PARENT | MODE_RECURSIVE;
+	this->deep_first = deep_first;
 	for_task = true;
 }
 
@@ -96,7 +98,7 @@ OptimizerPass::run(const RunParams& params) const
 
 	// replace to sub-task
 
-	if (index < 0) return;
+	if (index < 0 || !deep_first) return;
 
 	const Task::Handle &task = params.ref_task.get()->sub_task(index);
 	if (!task || task.type_is<TaskNone>() || !task->is_valid())

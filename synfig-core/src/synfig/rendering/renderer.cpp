@@ -183,6 +183,23 @@ Renderer::unregister_mode(const ModeToken::Handle &mode)
 	if (*i == mode) i = modes.erase(i); else ++i;
 }
 
+int
+Renderer::count_tasks_recursive(Task::List &list) const {
+	int count = 0;
+	for(Task::List::const_iterator i = list.begin(); i != list.end(); ++i)
+		if (*i) count += 1 + count_tasks_recursive((*i)->sub_tasks);
+	return count;
+}
+
+int
+Renderer::count_tasks(Task::List &list) const
+{
+	#ifdef DEBUG_OPTIMIZATION_MEASURE
+	debug::Measure t("count tasks");
+	#endif
+	return count_tasks_recursive(list);
+}
+
 void
 Renderer::calc_coords(const Task::List &list) const
 {
@@ -330,7 +347,7 @@ Renderer::optimize_recursive(
 		}
 	}
 
-	if ( (params.ref_mode & Optimizer::MODE_REPEAT_BRANCH) == Optimizer::MODE_REPEAT_LAST
+	if ( (params.ref_mode & Optimizer::MODE_REPEAT_BRANCH)
 	  && (params.ref_mode & Optimizer::MODE_RECURSIVE) )
 		return;
 
@@ -457,6 +474,10 @@ Renderer::optimize(Task::List &list) const
 	debug::Measure t("Renderer::optimize");
 	#endif
 
+	#ifdef DEBUG_OPTIMIZATION_COUNTERS
+	debug::Log::info("", "optimize %d tasks", count_tasks(list));
+	#endif
+
 	int current_category_id = 0;
 	int prepared_category_id = 0;
 	int current_optimizer_index = 0;
@@ -543,6 +564,9 @@ Renderer::optimize(Task::List &list) const
 		debug::Measure t(etl::strprintf("optimize category %d index %d", current_category_id, current_optimizer_index));
 		#endif
 
+		int calls_count = 0;
+		int optimizations_count = 0;
+
 		if (for_list)
 		{
 			for(Optimizer::List::const_iterator i = current_optimizers.begin(); !(categories_to_process & depends_from) && i != current_optimizers.end(); ++i)
@@ -552,15 +576,15 @@ Renderer::optimize(Task::List &list) const
 					Optimizer::RunParams params(*this, list, depends_from);
 					(*i)->run(params);
 					categories_to_process |= current_affected |= params.ref_affects_to;
+
+					++calls_count;
+					if (params.ref_affects_to) ++optimizations_count;
 				}
 			}
 		}
 
 		if (for_task || for_root_task)
 		{
-			int calls_count = 0;
-			int optimizations_count = 0;
-
 			bool nonrecursive = false;
 			for(Task::List::iterator j = list.begin(); !(categories_to_process & depends_from) && j != list.end();)
 			{
@@ -595,12 +619,12 @@ Renderer::optimize(Task::List &list) const
 					j = list.erase(j);
 				}
 			}
-
-			#ifdef DEBUG_OPTIMIZATION_COUNTERS
-			debug::Log::info("", "optimize category %d index %d: calls %d, changes %d",
-				current_category_id, current_optimizer_index, calls_count, optimizations_count );
-			#endif
 		}
+
+		#ifdef DEBUG_OPTIMIZATION_COUNTERS
+		debug::Log::info("", "optimize category %d index %d: calls %d, changes %d",
+			current_category_id, current_optimizer_index, calls_count, optimizations_count );
+		#endif
 
 		#ifdef DEBUG_OPTIMIZATION
 		log("", list, etl::strprintf("after optimize category %d index %d", current_category_id, current_optimizer_index));
@@ -630,7 +654,7 @@ Renderer::find_deps(const Task::List &list, long long batch_index) const
 	typedef std::map<SurfaceResource::Handle, Task::Handle> DepTargetPrevMap;
 	DepTargetPrevMap target_prev_map;
 	Task::Set tasks_to_process;
-	const int max_iterations = 100000;
+	const int max_iterations = 50000;
 
 	// find dependencies by target surface
 	for(Task::List::const_iterator i = list.begin(); i != list.end(); ++i)
