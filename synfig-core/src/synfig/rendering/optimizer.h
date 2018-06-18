@@ -93,49 +93,19 @@ public:
 		CategoryInfo(bool simultaneous_run): simultaneous_run(simultaneous_run) { }
 	};
 
-	template<typename T>
-	class Holder {
-	public:
-		typedef T Type;
-		const int count;
-		const int owncount;
-		const etl::handle<Type> object;
-
-		Holder(const etl::handle<Type> &object, int owncount = 1):
-			count(object.count()),
-			owncount(owncount),
-			object(object) { }
-		Holder(const Holder &other):
-			count(other.count),
-			owncount(other.owncount),
-			object(other.object) { }
-
-		bool is_own() const
-			{ return count == owncount; }
-		etl::handle<Type> clone() const {
-			return !object ? etl::handle<Type>()
-			     : etl::handle<Type>( dynamic_cast<Type*>( object->clone() ) );
-		}
-		etl::handle<Type> edit() const
-			{ return is_own() ? object : clone(); }
-	};
-
 	struct RunParams
 	{
-		//! current renderer
-		const Renderer &renderer;
+		Category depends_from;
 
 		//! List of tasks for optimization,
 		//! (see Optimizer::for_list)
-		Task::List &list;
-
-		const Category depends_from;
+		Task::List *list;
 
 		//! Parent optimization params.
 		//! Optimizer can read parent tasks via this field
-		const RunParams * const parent;
+		const RunParams * parent;
 
-		const Holder<Task> orig_task;
+		Task::Handle orig_task;
 
 		//! Task for optimization, optimizer may replace or remove (make null) it,
 		//! (see Optimizer::for_task and Optimizer::for_root_task)
@@ -147,38 +117,42 @@ public:
 		//! (see Optimizater::MODE_XXX)
 		mutable Mode ref_mode;
 
+		RunParams():
+			depends_from(),
+			list(),
+			parent(),
+			ref_affects_to(),
+			ref_mode()
+		{ }
+
 		RunParams(
-			const Renderer &renderer,
-			Task::List &list,
 			Category depends_from,
-			const Task::Handle &task = Task::Handle(),
-			const RunParams *parent = NULL,
-			const int owncount = 1
+			const Task::Handle &task,
+			const RunParams *parent = NULL
 		):
-			renderer(renderer),
-			list(list),
 			depends_from(depends_from),
+			list(),
 			parent(parent),
-			orig_task(task, owncount),
+			orig_task(task),
 			ref_task(task),
 			ref_affects_to(),
 			ref_mode()
 		{ }
 
-		RunParams(const RunParams &other):
-			renderer(other.renderer),
-			list(other.list),
-			depends_from(other.depends_from),
-			parent(other.parent),
-			orig_task(other.orig_task),
-			ref_task(other.ref_task),
+		RunParams(
+			Category depends_from,
+			Task::List &list
+		):
+			depends_from(depends_from),
+			list(&list),
+			parent(),
 			ref_affects_to(),
 			ref_mode()
 		{ }
 
 		//! Creates RunParams structure for sub-task
-		RunParams sub(const Task::Handle &task, int owncount = 1) const
-			{ return RunParams(renderer, list, depends_from, task, this, owncount); }
+		RunParams sub(int index) const
+			{ return RunParams(depends_from, ref_task->sub_task(index), this); }
 
 		const RunParams& root() const
 			{ return parent ? parent->root() : *this; }

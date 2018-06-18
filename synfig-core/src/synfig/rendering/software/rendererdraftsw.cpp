@@ -105,7 +105,7 @@ RendererDraftSW::RendererDraftSW()
 	register_optimizer(new OptimizerBlendToTarget());
 	register_optimizer(new OptimizerList());
 	register_optimizer(new OptimizerBlendAssociative());
-	register_optimizer(new OptimizerSplit());
+	//register_optimizer(new OptimizerSplit());
 }
 
 String RendererDraftSW::get_name() const

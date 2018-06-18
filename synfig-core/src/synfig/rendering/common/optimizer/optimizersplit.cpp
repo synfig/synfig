@@ -40,8 +40,6 @@
 
 #include "optimizersplit.h"
 
-#include "../../renderer.h"
-
 #endif
 
 using namespace synfig;
@@ -65,9 +63,9 @@ OptimizerSplit::OptimizerSplit()
 void
 OptimizerSplit::run(const RunParams &params) const
 {
+	if (!params.list) return;
 	const int min_area = 256*256;
-	int threads = params.renderer.get_max_simultaneous_threads();
-	for(Task::List::iterator i = params.list.begin(); i != params.list.end(); ++i)
+	for(Task::List::iterator i = params.list->begin(); i != params.list->end(); ++i)
 	{
 		if (TaskInterfaceSplit *split = i->type_pointer<TaskInterfaceSplit>())
 		if (split->is_splittable())
@@ -75,7 +73,7 @@ OptimizerSplit::run(const RunParams &params) const
 			RectInt r = (*i)->target_rect;
 			int w = r.maxx - r.minx;
 			int h = r.maxy - r.miny;
-			int t = std::min(10*h, std::min(w*h/min_area, threads));
+			int t = std::min(h/10, w*h/min_area);
 			if (t >= 2)
 			{
 				int hh = h/t;
@@ -84,7 +82,7 @@ OptimizerSplit::run(const RunParams &params) const
 				{
 					Task::Handle task = (*i)->clone();
 					task->trunc_target_rect( RectInt(r.minx, y, r.maxx, y + hh) );
-					i = params.list.insert(i, task);
+					i = params.list->insert(i, task);
 					++i;
 				}
 				*i = (*i)->clone();

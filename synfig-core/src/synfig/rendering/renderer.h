@@ -30,6 +30,7 @@
 #include <cstdio>
 
 #include <map>
+#include <atomic>
 
 #include "optimizer.h"
 
@@ -97,11 +98,22 @@ private:
 	void remove_dummy(Task::List &list) const;
 	void linearize(Task::List &list) const;
 
-	void optimize_recursive(
+	int subtasks_count(const Task::Handle &task, int max_count) const;
+
+	bool
+	call_optimizers(
 		const Optimizer::List &optimizers,
 		const Optimizer::RunParams& params,
-		int &calls_count,
-		int &optimizations_count,
+		std::atomic<int> *calls_count,
+		std::atomic<int> *optimizations_count,
+		bool deep_first ) const;
+
+	void optimize_recursive(
+		const Optimizer::List *optimizers,  // pass by pointer for use with sigc::bind
+		const Optimizer::RunParams *params, // pass by pointer for use with sigc::bind
+		std::atomic<int> *calls_count,
+		std::atomic<int> *optimizations_count,
+		int parallel_tasks_count,
 		int max_level ) const;
 
 	void optimize(Optimizer::Category category, Task::List &list) const;

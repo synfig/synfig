@@ -78,7 +78,7 @@ RendererLowResSW::RendererLowResSW(int level):
 	register_optimizer(new OptimizerBlendToTarget());
 	register_optimizer(new OptimizerList());
 	register_optimizer(new OptimizerBlendAssociative());
-	register_optimizer(new OptimizerSplit());
+	//register_optimizer(new OptimizerSplit());
 }
 
 String RendererLowResSW::get_name() const
