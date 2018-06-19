@@ -46,44 +46,26 @@ public:
 	typedef sigc::slot<void> Slot;
 
 	class Group {
+	public:
+	typedef std::pair<double, Slot> Entry;
+	typedef std::vector<Entry> List;
+
 	private:
 		bool multithreading;
 		std::atomic<int> running_threads;
 		Glib::Threads::Mutex mutex;
 		Glib::Threads::Cond cond;
 
-		void wrap(const Slot &slot) {
-			try { slot(); } catch(...) { }
-			Glib::Threads::Mutex::Lock lock(mutex);
-			if (!--running_threads) cond.signal();
-		}
+		List tasks;
+		double sum_weight;
 
+		void process(int begin, int end);
 	public:
-		Group(): multithreading(), running_threads(0) { }
-		~Group() { wait(); }
+		Group();
+		~Group();
 
-		void enqueue(const Slot &slot) {
-			multithreading = true;
-			++running_threads;
-			instance.enqueue(sigc::bind( sigc::mem_fun(this, &Group::wrap), slot ));
-		}
-
-		void call(const Slot &slot) {
-			if (instance.pre_push()) {
-				multithreading = true;
-				++running_threads;
-				instance.push(sigc::bind( sigc::mem_fun(this, &Group::wrap), slot ));
-			} else {
-				slot();
-			}
-		}
-
-		void wait() {
-			if (multithreading) {
-				Glib::Threads::Mutex::Lock lock(mutex);
-				while(running_threads) instance.wait(cond, mutex);
-			}
-		}
+		void enqueue(const Slot &slot, double weight = 1.0);
+		void run(bool force_thread = false);
 	};
 
 private:
@@ -92,29 +74,12 @@ private:
 	int max_running_threads;
 	std::atomic<int> running_threads;
 	std::atomic<int> ready_threads;
+	std::atomic<int> queue_size;
 	std::queue<Slot> queue;
-	std::list<Glib::Threads::Thread*> threads;
+	std::vector<Glib::Threads::Thread*> threads;
 	bool stopped;
 
-	void thread_loop();
-	void stop();
-
-	bool pre_push() {
-		if (++running_threads <= max_running_threads)
-			return true;
-		--running_threads;
-		return false;
-	}
-
-	void push(const Slot &slot) {
-		Glib::Threads::Mutex::Lock lock(mutex);
-		queue.push(slot);
-		if (ready_threads < (int)queue.size())
-			threads.push_back(
-				Glib::Threads::Thread::create(
-						sigc::mem_fun(this, &ThreadPool::thread_loop) ));
-		cond.signal();
-	}
+	void thread_loop(int index);
 
 	ThreadPool();
 	ThreadPool(const ThreadPool&);
@@ -124,21 +89,15 @@ public:
 
 	~ThreadPool();
 
-	void enqueue(const Slot &slot)
-		{ ++running_threads; push(slot); }
-	void call(const Slot &slot)
-		{ if (pre_push()) push(slot); else slot(); }
+	void enqueue(const Slot &slot);
+	void wait(Glib::Threads::Cond &cond, Glib::Threads::Mutex &mutex);
 
 	int get_max_threads() const
 		{ return max_running_threads; }
 	int get_running_threads() const
 		{ return running_threads; }
-
-	void wait(Glib::Threads::Cond &cond, Glib::Threads::Mutex &mutex) {
-		--instance.running_threads;
-		cond.wait(mutex);
-		++instance.running_threads;
-	}
+	int get_queue_size() const
+		{ return queue_size + running_threads; }
 };
 
 }; // END of namespace synfig

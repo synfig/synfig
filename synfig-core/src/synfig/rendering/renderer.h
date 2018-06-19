@@ -113,7 +113,6 @@ private:
 		const Optimizer::RunParams *params, // pass by pointer for use with sigc::bind
 		std::atomic<int> *calls_count,
 		std::atomic<int> *optimizations_count,
-		int parallel_tasks_count,
 		int max_level ) const;
 
 	void optimize(Optimizer::Category category, Task::List &list) const;

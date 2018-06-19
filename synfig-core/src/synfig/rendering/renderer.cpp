@@ -65,13 +65,14 @@ using namespace synfig;
 using namespace rendering;
 
 
-#ifndef NDEBUG
-//#define DEBUG_TASK_LIST
 //#define DEBUG_TASK_MEASURE
-//#define DEBUG_OPTIMIZATION
-//#define DEBUG_OPTIMIZATION_EACH_CHANGE
 //#define DEBUG_OPTIMIZATION_MEASURE
 //#define DEBUG_OPTIMIZATION_COUNTERS
+
+#ifndef NDEBUG
+//#define DEBUG_TASK_LIST
+//#define DEBUG_OPTIMIZATION
+//#define DEBUG_OPTIMIZATION_EACH_CHANGE
 #endif
 
 
@@ -371,7 +372,6 @@ Renderer::optimize_recursive(
 	const Optimizer::RunParams *params, // pass by pointer for use with sigc::bind
 	std::atomic<int> *calls_count,
 	std::atomic<int> *optimizations_count,
-	int parallel_tasks_count,
 	int max_level ) const
 {
 	if (!params || !params->ref_task) return;
@@ -385,74 +385,45 @@ Renderer::optimize_recursive(
 	int count = max_level > 0 ? params->ref_task->sub_tasks.size() : 0;
 	if (count > 0)
 	{
+		int counter_limit = 32;
+		int counter_prophecy = 256;
+		double counter_weight = (double)optimizers->size()/(double)1024;
+		if (counter_prophecy * counter_weight < 0.75)
+			{ counter_limit = 0; counter_prophecy = 0; }
+
 		// prepare params
 		bool task_clonned = false;
 		Optimizer::RunParams sub_params[count];
-		bool parallel[count];
 		int jumps[count+1]; // initial jump stored after last element
 		jumps[count] = 0;
 		for(int i = 0; i < count; ++i)
-			{ sub_params[i] = params->sub(i); parallel[i] = false; jumps[i] = i+1; }
+			{ sub_params[i] = params->sub(i); jumps[i] = i+1; }
+		for(int j = count, i = jumps[j]; i < count; i = jumps[i])
+			if (sub_params[i].ref_task) j = i; else jumps[j] = jumps[i];
 
 		// run optimizers
 		bool first_pass = true;
+		ThreadPool::Group group;
 		while (jumps[count] != count) {
-			// analyze tasks difficulty to make parallel threads
-			const int min_tasks_count = 16;
-			const int counter_limit = 8;
-			int last_parallel = 0;
-			if ( optimizers->size() > 1
-			  && ThreadPool::instance.get_running_threads() < ThreadPool::instance.get_max_threads() )
-			{
-				for(int j = count, i = jumps[j]; i < count; i = jumps[i]) {
-					Optimizer::RunParams &sp = sub_params[i];
-					if (sp.ref_task) {
-						int c = subtasks_count(sp.ref_task, counter_limit);
-						if (c >= counter_limit) {
-							parallel[i] = true;
-							last_parallel = i;
-						} else {
-							parallel[i] = false;
-							parallel_tasks_count += c;
-						}
-						j = i;
-					} else {
-						jumps[j] = jumps[i];
-					}
-				}
+			for(int j = count, i = jumps[j]; i < count; i = jumps[i]) {
+				Optimizer::RunParams &sp = sub_params[i];
 
-				if (parallel_tasks_count < min_tasks_count)
-					parallel[last_parallel] = false;
+				int sub_level = first_pass ? max_level-1
+							  : (sp.ref_mode & Optimizer::MODE_RECURSIVE) ? INT_MAX : 0;
+				sp.ref_mode = 0;
+
+				int cnt = subtasks_count(sp.ref_task, counter_limit);
+				if (cnt >= counter_limit && cnt < counter_prophecy) cnt = counter_prophecy;
+				double weight = (double)cnt*counter_weight;
+
+				group.enqueue( sigc::bind( sigc::mem_fun(this, &Renderer::optimize_recursive),
+					optimizers,
+					&sp,
+					calls_count,
+					optimizations_count,
+					sub_level ), weight );
 			}
-
-			{ // run group of parallel tasks
-				ThreadPool::Group group;
-				for(int j = count, i = jumps[j]; i < count; i = jumps[i]) {
-					Optimizer::RunParams &sp = sub_params[i];
-					int sub_level = first_pass ? max_level-1
-								  : (sp.ref_mode & Optimizer::MODE_RECURSIVE) ? INT_MAX : 0;
-					sp.ref_mode = 0;
-
-					if (parallel[i])
-					{
-						group.call( sigc::bind( sigc::mem_fun(this, &Renderer::optimize_recursive),
-							optimizers,
-							&sp,
-							calls_count,
-							optimizations_count,
-							0,
-							sub_level ));
-					} else {
-						Renderer::optimize_recursive(
-							optimizers,
-							&sp,
-							calls_count,
-							optimizations_count,
-							parallel_tasks_count,
-							sub_level );
-					}
-				}
-			}
+			group.run();
 
 			// merge results
 			for(int j = count, i = jumps[j]; i < count; i = jumps[i]) {
@@ -641,12 +612,11 @@ Renderer::optimize(Task::List &list) const
 				if (*j)
 				{
 					Optimizer::RunParams params(depends_from, *j);
-					optimize_recursive(
+					Renderer::optimize_recursive(
 						&current_optimizers,
 						&params,
 						calls_count_ptr,
 						optimizations_count_ptr,
-						0,
 						!for_task ? 0 : nonrecursive ? 1 : INT_MAX );
 					nonrecursive = false;
 

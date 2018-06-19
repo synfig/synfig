@@ -64,12 +64,12 @@ void Measure::init() {
 		      + name
 			  + "\n";
 	stack.push_back(this);
-	t = g_get_real_time();
+	t = g_get_monotonic_time();
 	cpu_t = clock();
 }
 
 Measure::~Measure() {
-	long long dt = g_get_real_time() - t;
+	long long dt = g_get_monotonic_time() - t;
 	long long cpu_dt = clock() - cpu_t;
 
 	double full_s = (double)dt*0.000001;
