@@ -23,45 +23,65 @@ To run the newly compiled synfigstudio:
 $ ./result/bin/synfigstudio
 */
 
-let
-  pkgs = import <nixpkgs> {};
-  stdenv = pkgs.stdenv; 
+with import <nixpkgs> {};
 
-  ETL = stdenv.mkDerivation {
-    name = "ETL-git";
+let
+  version = "git";
+
+  ETL = stdenv.mkDerivation rec {
+    name = "ETL-${version}";
 
     src = ../ETL;
 
-    preConfigure = "autoreconf --install --force";
-
-    buildInputs = with pkgs; [ autoconf automake ];
+    nativeBuildInputs = [ autoreconfHook ];
   };
 
-  synfig = stdenv.mkDerivation  {
-    name = "synfig-git";
+  synfig = stdenv.mkDerivation rec {
+    name = "synfig-${version}";
 
     src = ../synfig-core;
 
-    buildInputs = with pkgs; [
-      ETL autoconf automake boost cairo fftw gettext glibmm intltool libsigcxx
-      libtool libxmlxx mlt pango pkgconfig which
+    configureFlags = [
+      "--with-boost=${boost.dev}"
+      "--with-boost-libdir=${boost.out}/lib"
     ];
 
+    nativeBuildInputs = [ pkgconfig autoreconfHook gettext ];
+
+    buildInputs = [
+      ETL boost cairo fftw glibmm intltool libsigcxx libxmlxx mlt pango which
+    ];
+    
     preConfigure = "./bootstrap.sh";
 
-    configureFlags = with pkgs; [ "--with-boost-libdir=${boost}/lib" ];
   };
-in 
+in
 stdenv.mkDerivation rec {
-  name = "synfig-studio-git";
+  name = "synfigstudio-${version}";
 
   src = ../synfig-studio;
 
-  buildInputs = with pkgs; [
-    ETL autoconf automake boost cairo fftw gettext glibmm gtk3 gtkmm3
-    imagemagick intltool intltool libjack2 libsigcxx libtool libxmlxx mlt
-    pkgconfig synfig which
+  preConfigure = "./bootstrap.sh";
+
+  nativeBuildInputs = [ pkgconfig autoreconfHook gettext ];
+  buildInputs = [
+    ETL boost cairo fftw glibmm gnome3.defaultIconTheme gtk3 gtkmm3
+    imagemagick intltool libjack2 libsigcxx libxmlxx makeWrapper mlt
+    synfig which
   ];
 
-  preConfigure = "./bootstrap.sh";
+  postInstall = ''
+    wrapProgram "$out/bin/synfigstudio" \
+      --prefix XDG_DATA_DIRS : "$XDG_ICON_DIRS:$GSETTINGS_SCHEMAS_PATH"
+  '';
+
+  enableParallelBuilding = true;
+
+  meta = with stdenv.lib; {
+    description = "A 2D animation program";
+    homepage = http://www.synfig.org;
+    license = licenses.gpl2Plus;
+    maintainers = [ maintainers.goibhniu ];
+    platforms = platforms.linux;
+  };
 }
