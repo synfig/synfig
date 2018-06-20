@@ -78,7 +78,7 @@ AC_DEFUN([AC_ARG_DEBUG],
 	case "$debug" in
 		yes)
 			debug_flags="-D_DEBUG -g -O0"
-			CXXFLAGS="`echo $CXXFLAGS | sed s:-O.::` $debug_flags -fno-inline -Wa,-mbig-obj"
+			CXXFLAGS="`echo $CXXFLAGS | sed s:-O.::` $debug_flags -fno-inline"
 			CFLAGS="`echo $CFLAGS | sed s:-O.::` $debug_flags"
 		;;
 		no|*)
