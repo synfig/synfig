@@ -32,7 +32,6 @@
 
 //#define DEBUG_PTHREAD_MEASURE
 
-
 #ifdef DEBUG_PTHREAD_MEASURE
 #include <pthread.h>
 #include <time.h>
@@ -172,10 +171,11 @@ ThreadPool::~ThreadPool() {
 
 void
 ThreadPool::thread_loop(int index) {
-	info("started new thread in ThreadPool, %d", index);
 	++running_threads;
 
 	#ifdef DEBUG_PTHREAD_MEASURE
+	info("started new thread in ThreadPool, %d", index);
+
 	clockid_t clock_id;
 	pthread_getcpuclockid(pthread_self(), &clock_id);
 	#endif
@@ -187,7 +187,9 @@ ThreadPool::thread_loop(int index) {
 			while(queue.empty() || running_threads > max_running_threads) {
 				if (stopped) return;
 				++ready_threads;
-				wait(cond, mutex);
+				--running_threads;
+				cond.wait(mutex);
+				++running_threads;
 				--ready_threads;
 			}
 			slot = queue.front();
@@ -222,8 +224,24 @@ ThreadPool::thread_loop(int index) {
 		#endif
 	}
 
-	--running_threads;
+	#ifdef DEBUG_PTHREAD_MEASURE
 	info("thread in ThreadPool stopped, %d", index);
+	#endif
+
+	--running_threads;
+}
+
+void
+ThreadPool::wakeup() {
+	int to_wakeup = std::max(0, std::min((int)queue_size, max_running_threads - (int)running_threads));
+	int to_create = std::max(0, to_wakeup - (int)ready_threads);
+	to_wakeup     = std::max(0, to_wakeup - to_create);
+	while(to_create-- > 0)
+		threads.push_back(
+			Glib::Threads::Thread::create(
+				sigc::bind( sigc::mem_fun(this, &ThreadPool::thread_loop), (int)threads.size() )));
+	while(to_wakeup-- > 0)
+		cond.signal();
 }
 
 void
@@ -231,16 +249,14 @@ ThreadPool::enqueue(const Slot &slot) {
 	Glib::Threads::Mutex::Lock lock(mutex);
 	++queue_size;
 	queue.push(slot);
-	if (ready_threads <= 0 && running_threads < max_running_threads)
-		threads.push_back(
-			Glib::Threads::Thread::create(
-				sigc::bind( sigc::mem_fun(this, &ThreadPool::thread_loop), (int)threads.size() )));
-	cond.signal();
+	wakeup();
 }
 
 void
 ThreadPool::wait(Glib::Threads::Cond &cond, Glib::Threads::Mutex &mutex) {
-	--running_threads;
+	if (--running_threads < max_running_threads)
+		if (queue_size) // wakeup or create ready thread if we have tasks in queue
+			{ Glib::Threads::Mutex::Lock lock(this->mutex); wakeup(); }
 	cond.wait(mutex);
 	++running_threads;
 }

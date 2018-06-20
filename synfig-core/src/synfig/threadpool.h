@@ -80,6 +80,7 @@ private:
 	bool stopped;
 
 	void thread_loop(int index);
+	void wakeup();
 
 	ThreadPool();
 	ThreadPool(const ThreadPool&);
