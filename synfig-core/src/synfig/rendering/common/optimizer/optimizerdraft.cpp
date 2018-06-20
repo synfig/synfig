@@ -69,17 +69,14 @@ OptimizerDraft::OptimizerDraft()
 
 OptimizerDraftLowRes::OptimizerDraftLowRes(Real scale): scale(scale)
 {
-	category_id = CATEGORY_ID_COORDS;
-	depends_from = CATEGORY_BEGIN;
 	for_root_task = true;
 	for_task = false;
-	deep_first = true;
 }
 
 void
 OptimizerDraftLowRes::run(const RunParams &params) const
 {
-	if (params.ref_task && !params.parent)
+	if (!params.parent && params.ref_task && !params.ref_task.type_is<TaskSurface>())
 	{
 		Task::Handle sub_task = params.ref_task->clone();
 
@@ -89,7 +86,11 @@ OptimizerDraftLowRes::run(const RunParams &params) const
 		affine->interpolation = Color::INTERPOLATION_NEAREST;
 		affine->sub_task() = sub_task;
 
-		affine->target_surface.swap( sub_task->target_surface );
+		// swap target
+		affine->assign_target(*sub_task);
+		sub_task->target_surface.reset();
+		sub_task->source_rect = Rect::infinite();
+		sub_task->target_rect = RectInt::zero();
 
 		apply(params, affine);
 	}

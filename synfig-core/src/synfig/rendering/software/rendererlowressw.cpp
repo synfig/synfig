@@ -69,8 +69,8 @@ RendererLowResSW::RendererLowResSW(int level):
 	register_mode(TaskSW::mode_token.handle());
 
 	// register optimizers
-	register_optimizer(new OptimizerTransformation());
 	register_optimizer(new OptimizerDraftLowRes(level));
+	register_optimizer(new OptimizerTransformation());
 
 	register_optimizer(new OptimizerPass(false));
 	register_optimizer(new OptimizerPass(true));

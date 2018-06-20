@@ -68,6 +68,14 @@ TaskTransformation::is_simple() const {
 		&& supersample.is_equal_to(Vector(1.0, 1.0));
 }
 
+int
+TaskTransformation::get_pass_subtask_index() const
+{
+	return sub_task() && get_transformation()
+		 ? PASSTO_THIS_TASK : PASSTO_NO_TASK;
+}
+
+
 Rect
 TaskTransformation::calc_bounds() const
 {
@@ -131,4 +139,12 @@ TaskTransformation::set_coords_sub_tasks()
 	trunc_to_zero();
 }
 
+
+int
+TaskTransformationAffine::get_pass_subtask_index() const
+{
+	if (is_simple() && transformation->matrix.is_identity())
+		return 0;
+	return TaskTransformation::get_pass_subtask_index();
+}
 /* === E N T R Y P O I N T ================================================= */

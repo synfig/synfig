@@ -267,18 +267,17 @@ Task::set_coords(const Rect &source_rect, const VectorInt &target_size)
 		this->target_rect = RectInt(VectorInt(), target_size);
 		if (!is_valid_coords())
 			trunc_to_zero();
-		if (!target_surface)
-			target_surface = new SurfaceResource();
-
-		// allocate surface by incoming target_size without truncation,
-		// it's significant for transformation antialiasing
-		if (!target_surface->is_exists())
-			target_surface->create(target_rect.maxx, target_rect.maxy);
 	} else {
 		trunc_source_rect(source_rect);
-		if (!target_surface)
-			target_surface = new SurfaceResource();
 	}
+
+	if (!target_surface)
+		target_surface = new SurfaceResource();
+
+	// allocate surface by incoming target_size without truncation,
+	// it's significant for transformation antialiasing
+	if (!target_surface->is_exists())
+		target_surface->create(target_rect.maxx, target_rect.maxy);
 
 	trunc_by_bounds();
 	set_coords_sub_tasks();

@@ -76,11 +76,7 @@ public:
 	//! so this task may be fully merged into other suitable transformation task
 	virtual bool is_simple() const;
 
-	virtual int get_pass_subtask_index() const
-	{
-		return sub_task() && get_transformation()
-			 ? PASSTO_THIS_TASK : PASSTO_NO_TASK;
-	}
+	virtual int get_pass_subtask_index() const;
 
 	const Task::Handle& sub_task() const { return Task::sub_task(0); }
 	Task::Handle& sub_task() { return Task::sub_task(0); }
@@ -102,12 +98,7 @@ public:
 	virtual const Transformation::Handle get_transformation() const
 		{ return transformation.handle(); }
 
-	virtual int get_pass_subtask_index() const
-	{
-		if (transformation->matrix.is_identity())
-			return 0;
-		return TaskTransformation::get_pass_subtask_index();
-	}
+	virtual int get_pass_subtask_index() const;
 };
 
 

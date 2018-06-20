@@ -340,7 +340,7 @@ Renderer::call_optimizers(
 				{
 					if (optimizations_count) ++(*optimizations_count);
 					#ifdef DEBUG_OPTIMIZATION_EACH_CHANGE
-					log("", params.list, (typeid(**i).name() + 19), &p);
+					log("", *params.list, (typeid(**i).name() + 19), &p);
 					#endif
 				}
 
@@ -396,8 +396,10 @@ Renderer::optimize_recursive(
 		Optimizer::RunParams sub_params[count];
 		int jumps[count+1]; // initial jump stored after last element
 		jumps[count] = 0;
-		for(int i = 0; i < count; ++i)
-			{ sub_params[i] = params->sub(i); jumps[i] = i+1; }
+		for(int i = 0; i < count; ++i) {
+			sub_params[i] = params->sub( params->ref_task->sub_task(i) );
+			jumps[i] = i+1;
+		}
 		for(int j = count, i = jumps[j]; i < count; i = jumps[i])
 			if (sub_params[i].ref_task) j = i; else jumps[j] = jumps[i];
 
@@ -611,7 +613,7 @@ Renderer::optimize(Task::List &list) const
 			{
 				if (*j)
 				{
-					Optimizer::RunParams params(depends_from, *j);
+					Optimizer::RunParams params(depends_from, *j, &list);
 					Renderer::optimize_recursive(
 						&current_optimizers,
 						&params,

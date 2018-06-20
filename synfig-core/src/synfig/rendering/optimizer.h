@@ -125,20 +125,7 @@ public:
 			ref_mode()
 		{ }
 
-		RunParams(
-			Category depends_from,
-			const Task::Handle &task,
-			const RunParams *parent = NULL
-		):
-			depends_from(depends_from),
-			list(),
-			parent(parent),
-			orig_task(task),
-			ref_task(task),
-			ref_affects_to(),
-			ref_mode()
-		{ }
-
+		// for list optimizers
 		RunParams(
 			Category depends_from,
 			Task::List &list
@@ -150,9 +137,38 @@ public:
 			ref_mode()
 		{ }
 
+		// for task optimizers
+		RunParams(
+			Category depends_from,
+			const Task::Handle &task,
+			Task::List *list
+		):
+			depends_from(depends_from),
+			list(list),
+			parent(),
+			orig_task(task),
+			ref_task(task),
+			ref_affects_to(),
+			ref_mode()
+		{ }
+
+		// sub-params for task optimizers
+		RunParams(
+			const RunParams *parent,
+			const Task::Handle &task
+		):
+			depends_from(parent->depends_from),
+			list(parent->list),
+			parent(parent),
+			orig_task(task),
+			ref_task(task),
+			ref_affects_to(),
+			ref_mode()
+		{ }
+
 		//! Creates RunParams structure for sub-task
-		RunParams sub(int index) const
-			{ return RunParams(depends_from, ref_task->sub_task(index), this); }
+		RunParams sub(const Task::Handle &task) const
+			{ return RunParams(this, task); }
 
 		const RunParams& root() const
 			{ return parent ? parent->root() : *this; }

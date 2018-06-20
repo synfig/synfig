@@ -170,7 +170,11 @@ ThreadPool::~ThreadPool() {
 }
 
 void
-ThreadPool::thread_loop(int index) {
+ThreadPool::thread_loop(int
+	#ifdef DEBUG_PTHREAD_MEASURE
+	index
+	#endif
+) {
 	++running_threads;
 
 	#ifdef DEBUG_PTHREAD_MEASURE
