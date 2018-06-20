@@ -49,7 +49,8 @@ let
     nativeBuildInputs = [ pkgconfig autoreconfHook gettext ];
 
     buildInputs = [
-      ETL boost cairo fftw glibmm intltool libsigcxx libxmlxx mlt pango which
+      ETL boost cairo fftw glibmm intltool libjpeg libsigcxx libxmlxx
+      mlt imagemagick pango which
     ];
     
     preConfigure = "./bootstrap.sh";
