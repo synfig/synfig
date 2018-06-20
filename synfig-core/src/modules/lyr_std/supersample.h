@@ -69,6 +69,7 @@ public:
 
 protected:
 	virtual RendDesc get_sub_renddesc_vfunc(const RendDesc &renddesc) const;
+	virtual rendering::Task::Handle build_rendering_task_vfunc(Context context)const;
 };
 
 }; // END of namespace lyr_std

@@ -35,20 +35,21 @@
 #include <synfig/localization.h>
 #include <synfig/general.h>
 
-#include "supersample.h"
-#include <synfig/string.h>
-#include <synfig/time.h>
 #include <synfig/context.h>
+#include <synfig/cairo_renddesc.h>
 #include <synfig/paramdesc.h>
 #include <synfig/renddesc.h>
+#include <synfig/render.h>
+#include <synfig/rendering/common/task/tasktransformation.h>
+#include <synfig/string.h>
 #include <synfig/surface.h>
-#include <synfig/value.h>
-#include <synfig/valuenode.h>
-#include <synfig/cairo_renddesc.h>
-
 #include <synfig/target.h>
 #include <synfig/target_scanline.h>
-#include <synfig/render.h>
+#include <synfig/time.h>
+#include <synfig/value.h>
+#include <synfig/valuenode.h>
+
+#include "supersample.h"
 
 #endif
 
@@ -379,4 +380,23 @@ Rect
 SuperSample::get_bounding_rect(Context context)const
 {
 	return context.get_full_bounding_rect();
+}
+
+rendering::Task::Handle
+SuperSample::build_rendering_task_vfunc(Context context)const
+{
+	int width = param_width.get(int());
+	int height = param_height.get(int());
+	if (width < 1) width = 1;
+	if (height < 1) height = 1;
+
+	rendering::Task::Handle sub_task = context.build_rendering_task();
+	if (width == 1 && height == 1)
+		return sub_task;
+
+	rendering::TaskTransformationAffine::Handle task_transformation(new rendering::TaskTransformationAffine());
+	task_transformation->supersample[0] = width;
+	task_transformation->supersample[1] = height;
+	task_transformation->sub_task() = sub_task;
+	return task_transformation;
 }

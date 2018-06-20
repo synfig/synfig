@@ -92,7 +92,6 @@ RendererDraftSW::RendererDraftSW()
 	register_optimizer(new OptimizerDraftLayerSkip("spiral_gradient"));
 	register_optimizer(new OptimizerDraftLayerSkip("duplicate"));
 	register_optimizer(new OptimizerDraftLayerSkip("plant"));
-	register_optimizer(new OptimizerDraftLayerSkip("super_sample"));
 	register_optimizer(new OptimizerDraftLayerSkip("text"));
 	register_optimizer(new OptimizerDraftLayerSkip("xor_pattern"));
 
