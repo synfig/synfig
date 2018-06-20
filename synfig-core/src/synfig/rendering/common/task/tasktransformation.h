@@ -5,7 +5,7 @@
 **	$Id$
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2015-2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -28,7 +28,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include "../../task.h"
-#include "../../primitive/transformation.h"
+#include "../../primitive/transformationaffine.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -41,18 +41,75 @@ namespace synfig
 namespace rendering
 {
 
-class TaskTransformation: public Task
+
+//! Interface for tasks which works identically while placed before or after transformation
+class TaskInterfaceTransformationPass
+{
+public:
+	virtual ~TaskInterfaceTransformationPass() { }
+};
+
+
+class TaskInterfaceTransformation
+{
+public:
+	virtual ~TaskInterfaceTransformation() { }
+	virtual const Transformation::Handle get_transformation() const
+		{ return Transformation::Handle(); }
+};
+
+
+class TaskTransformation: public Task, public TaskInterfaceTransformation
 {
 public:
 	typedef etl::handle<TaskTransformation> Handle;
+	static Token token;
+	virtual Token::Handle get_token() const { return token.handle(); }
 
-	Transformation::Handle transformation;
+	Color::Interpolation interpolation;
+	Vector supersample;
 
-	Task::Handle clone() const { return clone_pointer(this); }
+	TaskTransformation();
+
+	//! returns true then task just do transformation of first sub-task only
+	//! without supersampling and any drawings.
+	//! so this task may be fully merged into other suitable transformation task
+	virtual bool is_simple() const;
+
+	virtual int get_pass_subtask_index() const
+	{
+		return sub_task() && get_transformation()
+			 ? PASSTO_THIS_TASK : PASSTO_NO_TASK;
+	}
 
 	const Task::Handle& sub_task() const { return Task::sub_task(0); }
 	Task::Handle& sub_task() { return Task::sub_task(0); }
+
+	virtual Rect calc_bounds() const;
+	virtual void set_coords_sub_tasks();
 };
+
+
+class TaskTransformationAffine: public TaskTransformation
+{
+public:
+	typedef etl::handle<TaskTransformationAffine> Handle;
+	static Token token;
+	virtual Token::Handle get_token() const { return token.handle(); }
+
+	Holder<TransformationAffine> transformation;
+
+	virtual const Transformation::Handle get_transformation() const
+		{ return transformation.handle(); }
+
+	virtual int get_pass_subtask_index() const
+	{
+		if (transformation->matrix.is_identity())
+			return 0;
+		return TaskTransformation::get_pass_subtask_index();
+	}
+};
+
 
 } /* end namespace rendering */
 } /* end namespace synfig */

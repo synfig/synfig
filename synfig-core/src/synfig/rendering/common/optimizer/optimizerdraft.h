@@ -5,7 +5,7 @@
 **	$Id$
 **
 **	\legal
-**	......... ... 2017 Ivan Mahonin
+**	......... ... 2017-2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -45,32 +45,20 @@ namespace rendering
 class OptimizerDraft: public Optimizer
 {
 public:
-	OptimizerDraft()
-	{
-		category_id = CATEGORY_ID_COMMON;
-		for_task = true;
-	}
+	OptimizerDraft();
 };
 
 
 class OptimizerDraftLowRes: public OptimizerDraft
 {
-private:
-	Real scale;
 public:
-	explicit OptimizerDraftLowRes(Real scale): scale(scale)
-	{
-		category_id = CATEGORY_ID_PRE_SPECIALIZE;
-		depends_from = CATEGORY_COMMON;
-		for_root_task = true;
-		for_task = false;
-		deep_first = true;
-	}
+	const Real scale;
+	explicit OptimizerDraftLowRes(Real scale);
 	virtual void run(const RunParams &params) const;
 };
 
 
-class OptimizerDraftResample: public OptimizerDraft
+class OptimizerDraftTransformation: public OptimizerDraft
 {
 public:
 	virtual void run(const RunParams &params) const;
@@ -80,6 +68,9 @@ public:
 class OptimizerDraftContour: public OptimizerDraft
 {
 public:
+	const Real detail;
+	const bool antialias;
+	OptimizerDraftContour(Real detail, bool antialias);
 	virtual void run(const RunParams &params) const;
 };
 
@@ -93,23 +84,18 @@ public:
 
 class OptimizerDraftLayerRemove: public OptimizerDraft
 {
-private:
-	String layername;
 public:
-	OptimizerDraftLayerRemove(const String &layername): layername(layername) { }
+	const String layername;
+	explicit OptimizerDraftLayerRemove(const String &layername);
 	virtual void run(const RunParams &params) const;
 };
 
 
 class OptimizerDraftLayerSkip: public OptimizerDraft
 {
-private:
-	String layername;
 public:
-	OptimizerDraftLayerSkip(const String &layername): layername(layername)
-	{
-		mode |= MODE_REPEAT_LAST;
-	}
+	const String layername;
+	explicit OptimizerDraftLayerSkip(const String &layername);
 	virtual void run(const RunParams &params) const;
 };
 

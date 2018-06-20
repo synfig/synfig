@@ -32,7 +32,6 @@
 
 #include <synfig/rendering/optimizer.h>
 #include <synfig/rendering/common/task/taskpixelprocessor.h>
-#include <synfig/rendering/common/task/tasksplittable.h>
 #include <synfig/rendering/software/task/tasksw.h>
 
 /* === M A C R O S ========================================================= */
@@ -53,6 +52,8 @@ class TaskClamp: public rendering::TaskPixelProcessor
 {
 public:
 	typedef etl::handle<TaskClamp> Handle;
+	static Token token;
+	virtual Token::Handle get_token() const { return token.handle(); }
 
 	bool invert_negative;
 	bool clamp_floor;
@@ -60,40 +61,30 @@ public:
 	Real floor;
 	Real ceiling;
 
+	bool is_transparent() const
+		{ return !invert_negative && !clamp_floor && !clamp_ceiling; }
+	bool is_constant() const
+		{ return clamp_floor && clamp_ceiling && !approximate_less(floor, ceiling); }
+
 	TaskClamp():
 		invert_negative(false),
 		clamp_floor(true),
 		clamp_ceiling(true),
 		floor(0.0),
 		ceiling(1.0) { }
-	Task::Handle clone() const { return clone_pointer(this); }
 };
 
 
-class TaskClampSW: public TaskClamp, public rendering::TaskSW, public rendering::TaskSplittable
+class TaskClampSW: public TaskClamp, public rendering::TaskSW
 {
-private:
-	void clamp_pixel(Color &dst, const Color &src) const;
-
 public:
 	typedef etl::handle<TaskClampSW> Handle;
-	Task::Handle clone() const { return clone_pointer(this); }
-	virtual void split(const RectInt &sub_target_rect);
+	static Token token;
+	virtual Token::Handle get_token() const { return token.handle(); }
+
 	virtual bool run(RunParams &params) const;
-};
-
-
-class OptimizerClampSW: public rendering::Optimizer
-{
-public:
-	OptimizerClampSW()
-	{
-		category_id = CATEGORY_ID_SPECIALIZE;
-		depends_from = CATEGORY_COMMON & CATEGORY_PRE_SPECIALIZE;
-		for_task = true;
-	}
-
-	virtual void run(const RunParams &params) const;
+private:
+	void clamp_pixel(Color &dst, const Color &src) const;
 };
 
 

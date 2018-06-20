@@ -140,7 +140,9 @@ SYNFIGHEADERS = \
 	mesh.h \
 	soundprocessor.h \
 	polygon.h \
-	canvasfilenaming.h
+	canvasfilenaming.h \
+	token.h \
+	threadpool.h
 
 SYNFIGSOURCES = \
 	activepoint.cpp \
@@ -192,7 +194,9 @@ SYNFIGSOURCES = \
 	valueoperations.cpp \
 	mesh.cpp \
 	soundprocessor.cpp \
-	canvasfilenaming.cpp
+	canvasfilenaming.cpp \
+	token.cpp \
+	threadpool.cpp
 
 
 libsynfig_src = \

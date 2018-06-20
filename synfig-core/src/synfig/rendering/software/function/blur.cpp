@@ -81,7 +81,8 @@ software::Blur::Params::validate()
 	etl::set_intersect(dest_rect, dest_rect, RectInt(0, 0, dest->get_w(), dest->get_h()));
 	if (!dest_rect.valid()) return false;
 
-	src_rect = dest_rect - dest_rect.get_min() + src_offset;
+	VectorInt offset = src_offset - dest_rect.get_min();
+	src_rect = dest_rect + offset;
 	src_rect.minx -= extra_size[0];
 	src_rect.miny -= extra_size[1];
 	src_rect.maxx += extra_size[0];
@@ -89,9 +90,14 @@ software::Blur::Params::validate()
 	if (!src_rect.valid()) return false;
 	etl::set_intersect(src_rect, src_rect, RectInt(0, 0, src->get_w(), src->get_h()));
 	if (!src_rect.valid()) return false;
-	etl::set_intersect(dest_rect, dest_rect, src_rect - src_offset + dest_rect.get_min());
+
+	dest_rect = src_rect - offset;
+	dest_rect.minx += extra_size[0];
+	dest_rect.miny += extra_size[1];
+	dest_rect.maxx -= extra_size[0];
+	dest_rect.maxy -= extra_size[1];
 	if (!dest_rect.valid()) return false;
-	offset = src_offset - src_rect.get_min();
+	if (!etl::contains(RectInt(0, 0, dest->get_w(), dest->get_h()), dest_rect)) return false;
 
 	return true;
 }
@@ -293,7 +299,7 @@ software::Blur::blur_pattern(const Params &params)
 		*params.dest,
 		arr_dst_surface,
 		params.dest_rect,
-		params.offset,
+		params.src_offset - params.src_rect.get_min(),
 		params.blend,
 		params.blend_method,
 		params.amount );
@@ -453,7 +459,7 @@ software::Blur::blur_fft(const Params &params)
 		*params.dest,
 		arr_surface.reorder(0, 1, 2),
 		params.dest_rect,
-		params.offset,
+		params.src_offset - params.src_rect.get_min(),
 		params.blend,
 		params.blend_method,
 		params.amount );
@@ -538,7 +544,7 @@ software::Blur::blur_box(const Params &params)
 		*params.dest,
 		arr_surface,
 		params.dest_rect,
-		params.offset,
+		params.src_offset - params.src_rect.get_min(),
 		params.blend,
 		params.blend_method,
 		params.amount );
@@ -702,7 +708,7 @@ software::Blur::blur_iir(const Params &params)
 		*params.dest,
 		arr_surface,
 		params.dest_rect,
-		params.offset,
+		params.src_offset - params.src_rect.get_min(),
 		params.blend,
 		params.blend_method,
 		params.amount );

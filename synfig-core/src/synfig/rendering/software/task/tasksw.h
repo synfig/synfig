@@ -5,7 +5,7 @@
 **	$Id$
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2015-2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -41,15 +41,20 @@ namespace synfig
 namespace rendering
 {
 
-class TaskSW: public TackCapabilityInterface
+class TaskSW: public Mode
 {
 public:
-	virtual bool is_supported_target(const Surface::Handle &surface)
-		{ return surface.type_is<SurfaceSW>(); }
-	virtual bool is_supported_source(const Surface::Handle &surface)
-		{ return surface.type_is<SurfaceSW>(); }
-	virtual Surface::Handle create_supported_target() { return new SurfaceSW(); }
-	virtual Surface::Handle create_supported_source() { return new SurfaceSW(); }
+	typedef SurfaceSW TargetSurface;
+	typedef Task::LockReadGeneric<TargetSurface> LockRead;
+	typedef Task::LockWriteGeneric<TargetSurface> LockWrite;
+
+	static ModeToken mode_token;
+	virtual Surface::Token::Handle get_mode_target_token() const
+		{ return TargetSurface::token.handle(); }
+	virtual bool get_mode_allow_source_as_target() const
+		{ return true; }
+	virtual bool get_mode_allow_simultaneous_write() const
+		{ return true; }
 };
 
 } /* end namespace rendering */

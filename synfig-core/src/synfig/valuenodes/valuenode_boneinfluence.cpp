@@ -231,7 +231,7 @@ Matrix
 ValueNode_BoneInfluence::calculate_transform(Time t)const
 {
 	Matrix transform;
-	transform *= 0;
+	transform *= 0.0;
 	vector<ValueBase> bone_weight_list((*bone_weight_list_)(t).get_list());
 	Real total_weight = 0;
 	for (vector<ValueBase>::iterator iter = bone_weight_list.begin(); iter != bone_weight_list.end(); iter++)
@@ -245,9 +245,8 @@ ValueNode_BoneInfluence::calculate_transform(Time t)const
 			printf("%s  =\n", bone.get_animated_matrix().get_string(15, "animated", strprintf("* %.2f (weight)", weight)).c_str());
 		}
 
-		transform += (Matrix().set_scale(bone.get_local_scale()) *
-					  bone.get_animated_matrix() *
-					  weight);
+		transform += ( bone.get_animated_matrix()
+				     * Matrix().set_scale(bone.get_local_scale()) ) * weight;
 		total_weight += weight;
 	}
 
@@ -258,7 +257,7 @@ ValueNode_BoneInfluence::calculate_transform(Time t)const
 	}
 
 	if (abs(total_weight) > epsilon)
-		transform *= (1/total_weight);
+		transform *= (1.0/total_weight);
 	else
 		transform = Matrix();
 

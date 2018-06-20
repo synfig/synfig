@@ -5,7 +5,7 @@
 **	$Id$
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2015-2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -29,7 +29,7 @@
 
 #include "../../task.h"
 #include "../../primitive/contour.h"
-#include "tasktransformableaffine.h"
+#include "tasktransformation.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -42,21 +42,25 @@ namespace synfig
 namespace rendering
 {
 
-class TaskContour: public Task, public TaskTransformableAffine
+class TaskContour: public Task, public TaskInterfaceTransformation
 {
 public:
 	typedef etl::handle<TaskContour> Handle;
+	static Token token;
+	virtual Token::Handle get_token() const { return token.handle(); }
+
+public:
 	Contour::Handle contour;
 	Real detail;
 	bool allow_antialias;
+	Holder<TransformationAffine> transformation;
 
-	TaskContour(): detail(0.25), allow_antialias(true) { }
-	Task::Handle clone() const { return clone_pointer(this); }
-	virtual Rect calc_bounds() const
-		{ return !contour ? Rect::zero()
-			   : contour->invert ? Rect::infinite()
-		       : contour->calc_bounds(transformation); }
+	TaskContour(): detail(0.5), allow_antialias(true) { }
 
+	virtual Rect calc_bounds() const;
+
+	virtual const Transformation::Handle get_transformation() const
+		{ return transformation.handle(); }
 };
 
 } /* end namespace rendering */

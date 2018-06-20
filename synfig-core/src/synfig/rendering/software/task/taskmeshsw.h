@@ -5,7 +5,7 @@
 **	$Id$
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2015-2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -30,7 +30,7 @@
 #include <synfig/surface.h>
 
 #include "tasksw.h"
-#include "../../primitive/mesh.h"
+#include "../../common/task/taskmesh.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -43,20 +43,15 @@ namespace synfig
 namespace rendering
 {
 
-class TaskMeshSW: public Task, public TaskSW
+class TaskMeshSW: public TaskMesh, public TaskSW
 {
 private:
 	class Internal;
 
 public:
 	typedef etl::handle<TaskMeshSW> Handle;
-
-	Mesh::Handle mesh;
-
-	Task::Handle clone() const { return clone_pointer(this); }
-
-	const Task::Handle& sub_task() const { return Task::sub_task(0); }
-	Task::Handle& sub_task() { return Task::sub_task(0); }
+	static Token token;
+	virtual Token::Handle get_token() const { return token.handle(); }
 
 	virtual bool run(RunParams &params) const;
 

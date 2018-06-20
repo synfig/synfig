@@ -1,7 +1,9 @@
 RENDERING_COMMON_HH = \
+	rendering/common/surfacefile.h \
 	rendering/common/surfacememoryreadwrapper.h
 
 RENDERING_COMMON_CC = \
+	rendering/common/surfacefile.cpp \
 	rendering/common/surfacememoryreadwrapper.cpp
 
 include rendering/common/optimizer/Makefile_insert

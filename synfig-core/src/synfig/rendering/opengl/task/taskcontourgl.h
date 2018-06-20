@@ -5,7 +5,7 @@
 **	$Id$
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2015-2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -46,7 +46,9 @@ class TaskContourGL: public TaskContour, public TaskGL
 {
 public:
 	typedef etl::handle<TaskContourGL> Handle;
-	Task::Handle clone() const { return clone_pointer(this); }
+	static Token token;
+	virtual Token::Handle get_token() const { return token; }
+
 	virtual bool run(RunParams &params) const;
 
 	static void render_polygon(

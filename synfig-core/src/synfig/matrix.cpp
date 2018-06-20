@@ -72,19 +72,10 @@ Matrix2::get_transformed(value_type &out_x, value_type &out_y, const value_type 
 	{ out_x = x*m00+y*m10; out_y = x*m01+y*m11; }
 
 Matrix2
-Matrix2::operator*=(const Matrix2 &rhs)
+Matrix2::operator*(const Matrix2 &rhs) const
 {
-	value_type x, y;
-
-	x = m00;    y = m01;
-	m00=x*rhs.m00 + y*rhs.m10;
-	m01=x*rhs.m01 + y*rhs.m11;
-
-	x = m10;    y = m11;;
-	m10=x*rhs.m00 + y*rhs.m10;
-	m11=x*rhs.m01 + y*rhs.m11;
-
-	return *this;
+	return Matrix2( *this * rhs.row_x(),
+					*this * rhs.row_y() );
 }
 
 bool
@@ -96,7 +87,7 @@ Matrix2::operator==(const Matrix2 &rhs) const
 		&& approximate_equal(m11, rhs.m11);
 }
 
-Matrix2
+Matrix2&
 Matrix2::operator*=(const value_type &rhs)
 {
 	m00*=rhs;
@@ -108,7 +99,7 @@ Matrix2::operator*=(const value_type &rhs)
 	return *this;
 }
 
-Matrix2
+Matrix2&
 Matrix2::operator+=(const Matrix2 &rhs)
 {
 	m00+=rhs.m00;
@@ -158,7 +149,7 @@ Matrix2::get_string(int spaces, String before, String after)const
 
 // Matrix3
 
-Matrix3 &
+Matrix3&
 Matrix3::set_scale(const value_type &sx, const value_type &sy)
 {
 	m00=sx;  m01=0.0; m02=0.0;
@@ -167,7 +158,7 @@ Matrix3::set_scale(const value_type &sx, const value_type &sy)
 	return *this;
 }
 
-Matrix3 &
+Matrix3&
 Matrix3::set_rotate(const Angle &a)
 {
 	value_type c(Angle::cos(a).get());
@@ -178,7 +169,7 @@ Matrix3::set_rotate(const Angle &a)
 	return *this;
 }
 
-Matrix3 &
+Matrix3&
 Matrix3::set_translate(value_type x, value_type y)
 {
 	m00=1.0; m01=0.0; m02=0.0;
@@ -188,18 +179,13 @@ Matrix3::set_translate(value_type x, value_type y)
 }
 
 void
-Matrix3::get_transformed(value_type &out_x, value_type &out_y, const value_type x, const value_type y, bool translate)const
+Matrix3::get_transformed(
+	value_type &out_x, value_type &out_y, value_type &out_z,
+	const value_type x, const value_type y, const value_type z )const
 {
-	if (translate)
-	{
-		out_x = x*m00+y*m10+m20;
-		out_y = x*m01+y*m11+m21;
-	}
-	else
-	{
-		out_x = x*m00+y*m10;
-		out_y = x*m01+y*m11;
-	}
+	out_x = x*m00 + y*m10 + z*m20;
+	out_y = x*m01 + y*m11 + z*m21;
+	out_z = x*m02 + y*m12 + z*m22;
 }
 
 bool
@@ -217,29 +203,14 @@ Matrix3::operator==(const Matrix3 &rhs) const
 }
 
 Matrix3
-Matrix3::operator*=(const Matrix3 &rhs)
+Matrix3::operator*(const Matrix3 &rhs) const
 {
-	value_type x, y, z;
-
-	x = m00;    y = m01;    z = m02;
-	m00=x*rhs.m00 + y*rhs.m10 + z*rhs.m20;
-	m01=x*rhs.m01 + y*rhs.m11 + z*rhs.m21;
-	m02=x*rhs.m02 + y*rhs.m12 + z*rhs.m22;
-
-	x = m10;    y = m11;    z = m12;
-	m10=x*rhs.m00 + y*rhs.m10 + z*rhs.m20;
-	m11=x*rhs.m01 + y*rhs.m11 + z*rhs.m21;
-	m12=x*rhs.m02 + y*rhs.m12 + z*rhs.m22;
-
-	x = m20;    y = m21;    z = m22;
-	m20=x*rhs.m00 + y*rhs.m10 + z*rhs.m20;
-	m21=x*rhs.m01 + y*rhs.m11 + z*rhs.m21;
-	m22=x*rhs.m02 + y*rhs.m12 + z*rhs.m22;
-
-	return *this;
+	return Matrix3( *this * rhs.row_x(),
+			        *this * rhs.row_y(),
+					*this * rhs.row_z() );
 }
 
-Matrix3
+Matrix3&
 Matrix3::operator*=(const value_type &rhs)
 {
 	m00*=rhs;
@@ -257,7 +228,7 @@ Matrix3::operator*=(const value_type &rhs)
 	return *this;
 }
 
-Matrix3
+Matrix3&
 Matrix3::operator+=(const Matrix3 &rhs)
 {
 	m00+=rhs.m00;
@@ -275,37 +246,39 @@ Matrix3::operator+=(const Matrix3 &rhs)
 	return *this;
 }
 
+Matrix3::value_type
+Matrix3::det()const
+{
+	return m00*(m11*m22 - m12*m21)
+		 - m01*(m10*m22 - m12*m20)
+		 + m02*(m10*m21 - m11*m20);
+}
+
+
 bool
 Matrix3::is_invertible()const
-	{ return approximate_not_equal(m00*m11, m01*m10); }
+	{ return approximate_not_equal(det(), 0.0); }
 
-Matrix3&
-Matrix3::invert()
+Matrix3
+Matrix3::get_inverted()const
 {
-	if (is_invertible())
-	{
-		value_type det(m00*m11-m01*m10);
-		value_type tmp(m20);
-		m20=(m10*m21-m11*m20)/det;
-		m21=(m01*tmp-m00*m21)/det;
-		tmp=m00;
-		m00=m11/det;
-		m11=tmp/det;
-		m01=-m01/det;
-		m10=-m10/det;
-	}
-	else
-	if (m00*m00+m01*m01 > m10*m10+m11*m11)
-	{
-		m10=m01; m20=-m20*m00-m21*m01;
-		m01=0; m11=0; m21=0;
-	}
-	else
-	{
-		m01=m10; m21=-m20*m10-m21*m11;
-		m00=0; m10=0; m20=0;
-	}
-	return *this;
+	value_type d = det();
+	if (approximate_equal(d, 0.0))
+		return Matrix3( 0.0, 0.0, 0.0,
+				        0.0, 0.0, 0.0,
+						0.0, 0.0, 0.0 );
+	value_type p = 1.0/d;
+	value_type m = -p;
+	return Matrix3(
+		p*(m11*m22 - m12*m21), // row0
+		m*(m01*m22 - m02*m21),
+		p*(m01*m12 - m02*m11),
+		m*(m10*m22 - m12*m20), // row1
+		p*(m00*m22 - m02*m20),
+		m*(m00*m12 - m02*m10),
+		p*(m10*m21 - m11*m20), // row2
+		m*(m00*m21 - m01*m20),
+		p*(m00*m11 - m01*m10) );
 }
 
 String

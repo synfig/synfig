@@ -5,7 +5,7 @@
 **	$Id$
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2015-2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -50,6 +50,30 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
+
+Task::Token TaskBlend::token(
+	DescAbstract<TaskBlend>("Blend") );
+
+int
+TaskBlend::get_pass_subtask_index() const
+{
+	bool a = (bool)sub_task_a();
+	bool b = (bool)sub_task_b();
+	if (!a && !b)
+		return PASSTO_NO_TASK;
+	if (!a && Color::is_onto(blend_method))
+		return PASSTO_NO_TASK;
+	if (blend_method == Color::BLEND_COMPOSITE) {
+		if (!b)
+			return 0;
+		if (approximate_equal_lp(amount, ColorReal(0.0)))
+			return a ? 0 : PASSTO_NO_TASK;
+		if (!a && approximate_equal_lp(amount, ColorReal(1.0)))
+			return 1;
+	}
+	return PASSTO_THIS_TASK;
+}
+
 Rect
 TaskBlend::calc_bounds() const
 {
@@ -69,22 +93,5 @@ TaskBlend::calc_bounds() const
 		bounds = rb;
 	return bounds;
 }
-
-VectorInt
-TaskBlend::get_offset_a() const
-{
-	if (!sub_task_a()) return VectorInt::zero();
-	Vector offset = (sub_task_a()->get_source_rect_lt() - get_source_rect_lt()).multiply_coords(get_pixels_per_unit());
-	return VectorInt((int)round(offset[0]), (int)round(offset[1])) - sub_task_a()->get_target_offset();
-}
-
-VectorInt
-TaskBlend::get_offset_b() const
-{
-	if (!sub_task_b()) return VectorInt::zero();
-	Vector offset = (sub_task_b()->get_source_rect_lt() - get_source_rect_lt()).multiply_coords(get_pixels_per_unit());
-	return VectorInt((int)round(offset[0]), (int)round(offset[1])) - sub_task_b()->get_target_offset();
-}
-
 
 /* === E N T R Y P O I N T ================================================= */

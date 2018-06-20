@@ -39,29 +39,11 @@
 
 #include "renderergl.h"
 
+#include "task/taskgl.h"
+
 #include "internal/environment.h"
 
-#include "../common/optimizer/optimizercalcbounds.h"
-#include "../common/optimizer/optimizerlinear.h"
-#include "../common/optimizer/optimizersplit.h"
-#include "../common/optimizer/optimizersurface.h"
-#include "../common/optimizer/optimizersurfaceconvert.h"
-#include "../common/optimizer/optimizersurfacecreate.h"
-#include "../common/optimizer/optimizersurfacedestroy.h"
 #include "../common/optimizer/optimizertransformation.h"
-#include "../common/optimizer/optimizertransformationaffine.h"
-
-#include "optimizer/optimizercontourgl.h"
-#include "optimizer/optimizerblendgl.h"
-#include "optimizer/optimizersurfaceresamplegl.h"
-
-#include "../software/optimizer/optimizerblendsw.h"
-#include "../software/optimizer/optimizerblursw.h"
-#include "../software/optimizer/optimizercontoursw.h"
-#include "../software/optimizer/optimizerlayersw.h"
-#include "../software/optimizer/optimizermeshsw.h"
-#include "../software/optimizer/optimizerpixelcolormatrixsw.h"
-#include "../software/optimizer/optimizerpixelgammasw.h"
 
 #endif
 
@@ -78,23 +60,10 @@ using namespace rendering;
 
 RendererGL::RendererGL()
 {
+	register_mode(TaskGL::mode_token.handle());
+
 	// register optimizers
-	register_optimizer(new OptimizerTransformationAffine());
-	register_optimizer(new OptimizerCalcBounds());
-
-	register_optimizer(new OptimizerBlendGL());
-	register_optimizer(new OptimizerBlurSW());
-	register_optimizer(new OptimizerContourGL());
-	register_optimizer(new OptimizerLayerSW());
-	register_optimizer(new OptimizerPixelColorMatrixSW());
-	register_optimizer(new OptimizerPixelGammaSW());
-	register_optimizer(new OptimizerSurfaceResampleGL());
-
-	register_optimizer(new OptimizerSurfaceConvert());
-
-	register_optimizer(new OptimizerLinear());
-	register_optimizer(new OptimizerSurfaceCreate());
-	register_optimizer(new OptimizerSplit());
+	register_optimizer(new OptimizerTransformation(true));
 }
 
 RendererGL::~RendererGL() { }

@@ -49,7 +49,7 @@
 #include "translate.h"
 
 #include <synfig/rendering/common/task/tasktransformation.h>
-#include <synfig/rendering/primitive/affinetransformation.h>
+#include <synfig/rendering/primitive/transformationaffine.h>
 
 #endif
 
@@ -166,8 +166,8 @@ Translate::accelerated_render(Context context,Surface *surface,int quality, cons
 	RendDesc transformed_renddesc(renddesc);
 	transformed_renddesc.clear_flags();
 	transformed_renddesc.set_transformation_matrix(
-		Matrix().set_translate(origin)
-	  * renddesc.get_transformation_matrix() );
+	    renddesc.get_transformation_matrix()
+	  * Matrix().set_translate(origin) );
 
 	// Render the scene
 	if(!context.accelerated_render(surface,quality,transformed_renddesc,cb))
@@ -209,10 +209,8 @@ Translate::get_full_bounding_rect(Context context)const
 rendering::Task::Handle
 Translate::build_rendering_task_vfunc(Context context)const
 {
-	rendering::TaskTransformation::Handle task_transformation(new rendering::TaskTransformation());
-	rendering::AffineTransformation::Handle affine_transformation(new rendering::AffineTransformation());
-	affine_transformation->matrix.set_translate(param_origin.get(Vector()));
-	task_transformation->transformation = affine_transformation;
+	rendering::TaskTransformationAffine::Handle task_transformation(new rendering::TaskTransformationAffine());
+	task_transformation->transformation->matrix.set_translate(param_origin.get(Vector()));
 	task_transformation->sub_task() = context.build_rendering_task();
 	return task_transformation;
 }

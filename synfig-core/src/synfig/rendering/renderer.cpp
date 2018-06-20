@@ -5,7 +5,7 @@
 **	$Id$
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2015-2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -42,6 +42,7 @@
 
 #include <synfig/general.h>
 #include <synfig/localization.h>
+#include <synfig/threadpool.h>
 #include <synfig/debug/debugsurface.h>
 #include <synfig/debug/log.h>
 #include <synfig/debug/measure.h>
@@ -53,7 +54,6 @@
 #include "software/rendererdraftsw.h"
 #include "software/rendererlowressw.h"
 #include "software/renderersafe.h"
-#include "common/task/taskcallback.h"
 #ifdef WITH_OPENGL
 #include "opengl/renderergl.h"
 #include "opengl/task/taskgl.h"
@@ -65,13 +65,14 @@ using namespace synfig;
 using namespace rendering;
 
 
-#ifdef _DEBUG
-//#define DEBUG_TASK_LIST
 //#define DEBUG_TASK_MEASURE
-//#define DEBUG_OPTIMIZATION
-//#define DEBUG_OPTIMIZATION_EACH_CHANGE
 //#define DEBUG_OPTIMIZATION_MEASURE
 //#define DEBUG_OPTIMIZATION_COUNTERS
+
+#ifndef NDEBUG
+//#define DEBUG_TASK_LIST
+//#define DEBUG_OPTIMIZATION
+//#define DEBUG_OPTIMIZATION_EACH_CHANGE
 #endif
 
 
@@ -88,6 +89,7 @@ std::map<String, Renderer::Handle> *Renderer::renderers;
 RenderQueue *Renderer::queue;
 Renderer::DebugOptions Renderer::debug_options;
 long long Renderer::last_registered_optimizer_index = 0;
+long long Renderer::last_batch_index = 0;
 
 
 void
@@ -169,34 +171,174 @@ Renderer::unregister_optimizer(const Optimizer::Handle &optimizer)
 }
 
 void
-Renderer::optimize_recursive(
+Renderer::register_mode(int index, const ModeToken::Handle &mode)
+	{ modes.insert(modes.begin() + index, mode); }
+
+void
+Renderer::register_mode(const ModeToken::Handle &mode)
+	{ modes.push_back(mode); }
+
+void
+Renderer::unregister_mode(const ModeToken::Handle &mode)
+{
+	for(ModeList::iterator i = modes.begin(); i != modes.end();)
+	if (*i == mode) i = modes.erase(i); else ++i;
+}
+
+int
+Renderer::count_tasks_recursive(Task::List &list) const {
+	int count = 0;
+	for(Task::List::const_iterator i = list.begin(); i != list.end(); ++i)
+		if (*i) count += 1 + count_tasks_recursive((*i)->sub_tasks);
+	return count;
+}
+
+int
+Renderer::count_tasks(Task::List &list) const
+{
+	#ifdef DEBUG_OPTIMIZATION_MEASURE
+	debug::Measure t("count tasks");
+	#endif
+	return count_tasks_recursive(list);
+}
+
+void
+Renderer::calc_coords(const Task::List &list) const
+{
+	#ifdef DEBUG_OPTIMIZATION_MEASURE
+	debug::Measure t("calc coords");
+	#endif
+	for(Task::List::const_iterator i = list.begin(); i != list.end(); ++i)
+		if (*i) (*i)->touch_coords();
+}
+
+void
+Renderer::specialize_recursive(Task::List &list) const
+{
+	for(Task::List::iterator i = list.begin(); i != list.end(); ++i)
+		if (*i) {
+			Task::Handle task;
+			for(ModeList::const_iterator j = modes.begin(); j != modes.end() && !task; ++j)
+				task = (*i)->convert_to(*j);
+			if (!task)
+				task = (*i)->convert_to_any();
+			if (!task)
+				task = (*i)->clone();
+			*i = task;
+			specialize_recursive((*i)->sub_tasks);
+		}
+}
+
+void
+Renderer::specialize(Task::List &list) const
+{
+	#ifdef DEBUG_OPTIMIZATION_MEASURE
+	debug::Measure t("specialize");
+	#endif
+	specialize_recursive(list);
+}
+
+void
+Renderer::remove_dummy(Task::List &list) const
+{
+	// remove dummy tasks
+	for(Task::List::iterator i = list.begin(); i != list.end();)
+		if ( !*i
+		  || i->type_is<TaskSurface>()
+		  || i->type_is<TaskList>() )
+			i = list.erase(i); else ++i;
+}
+
+void
+Renderer::linearize(Task::List &list) const
+{
+	#ifdef DEBUG_OPTIMIZATION_MEASURE
+	debug::Measure t("linearize");
+	#endif
+
+	// convert task-tree to linear list
+	for(Task::List::iterator i = list.begin(); i != list.end();)
+	{
+		if (*i && !i->type_is<TaskSurface>())
+		{
+			// remember current position
+			int index = i - list.begin();
+			bool found = false;
+
+			for(Task::List::iterator j = (*i)->sub_tasks.begin(); j != (*i)->sub_tasks.end(); ++j)
+			{
+				if ( *j
+				  && !TaskSurface::Handle::cast_dynamic(*j) )
+				{
+					i = list.insert(i, *j);
+					++i;
+
+					if (!found)
+					{
+						// clone task
+						int index = j - (*i)->sub_tasks.begin();
+						*i = (*i)->clone();
+						j = (*i)->sub_tasks.begin() + index;
+						found = true;
+					}
+
+					// replace sub_task by TaskSurface
+					Task::Handle surface(new TaskSurface());
+					*surface = **j;
+					surface->sub_tasks.clear();
+					*j = surface;
+				}
+			}
+
+			// if changed then go back to check inserted tasks
+			if (found)
+				{ i = list.begin() + index; continue; }
+		}
+		++i;
+	}
+
+	remove_dummy(list);
+}
+
+int
+Renderer::subtasks_count(const Task::Handle &task, int max_count) const {
+	int count = 1 + (int)task->sub_tasks.size();
+	if (count >= max_count) return count;
+
+	for(Task::List::const_iterator i = task->sub_tasks.begin(); i != task->sub_tasks.end(); ++i)
+		if (*i) {
+			count += subtasks_count(*i, max_count - count);
+			if (count >= max_count) return count;
+		}
+
+	return count;
+}
+
+
+bool
+Renderer::call_optimizers(
 	const Optimizer::List &optimizers,
 	const Optimizer::RunParams& params,
-	int &calls_count,
-	int &optimizations_count,
-	int max_level ) const
+	std::atomic<int> *calls_count,
+	std::atomic<int> *optimizations_count,
+	bool deep_first ) const
 {
-	if (!params.ref_task) return;
-
-	// check dependencies
-	if (params.ref_affects_to & params.depends_from) return;
-
-	// run all non-deep-first optimizers for current task
-	// before processing of sub-tasks (see Optimizer::deep_first)
 	for(Optimizer::List::const_iterator i = optimizers.begin(); i != optimizers.end(); ++i)
 	{
-		if (!(*i)->deep_first)
+		if ((*i)->deep_first == deep_first)
 		{
 			if ((*i)->for_task || ((*i)->for_root_task && !params.parent))
 			{
 				// run
 				Optimizer::RunParams p(params);
+				p.ref_mode = 0;
+				p.ref_affects_to = 0;
 				(*i)->run(p);
 
-				++calls_count;
+				if (calls_count) ++(*calls_count);
 				if (params.ref_task != p.ref_task)
 				{
-					++optimizations_count;
+					if (optimizations_count) ++(*optimizations_count);
 					#ifdef DEBUG_OPTIMIZATION_EACH_CHANGE
 					log("", params.list, (typeid(**i).name() + 19), &p);
 					#endif
@@ -208,140 +350,152 @@ Renderer::optimize_recursive(
 				params.ref_task = p.ref_task;
 
 				// return when current task removed
-				if (!params.ref_task) return;
-
-				assert( params.ref_task->check() );
+				if (!params.ref_task) return false;
 
 				// check dependencies
-				if (params.ref_affects_to & params.depends_from) return;
+				if (params.ref_affects_to & params.depends_from) return false;
+
+				// return when recursive re-optimization required
+				// anyway function will re-called again in the same mode
+				if ( (params.ref_mode & Optimizer::MODE_REPEAT_BRANCH)
+				  && (params.ref_mode & Optimizer::MODE_RECURSIVE) )
+					return false;
 			}
 		}
 	}
+	return true;
+}
+
+void
+Renderer::optimize_recursive(
+	const Optimizer::List *optimizers,  // pass by pointer for use with sigc::bind
+	const Optimizer::RunParams *params, // pass by pointer for use with sigc::bind
+	std::atomic<int> *calls_count,
+	std::atomic<int> *optimizations_count,
+	int max_level ) const
+{
+	if (!params || !params->ref_task) return;
+
+	// run all non-deep-first optimizers for current task
+	// before processing of sub-tasks (see Optimizer::deep_first)
+	if (!call_optimizers(*optimizers, *params, calls_count, optimizations_count, false))
+		return;
 
 	// process sub-tasks, only for non-for-root-task optimizers (see Optimizer::for_root_task)
-	if (max_level > 0)
+	int count = max_level > 0 ? params->ref_task->sub_tasks.size() : 0;
+	if (count > 0)
 	{
-		bool task_clonned = false;
-		bool nonrecursive = false;
-		bool recursive = false;
-		Optimizer::RunParams initial_params(params);
-		for(Task::List::iterator i = params.ref_task->sub_tasks.begin(); i != params.ref_task->sub_tasks.end();)
-		{
-			if (*i)
-			{
-				// recursive run
-				initial_params.ref_task = params.ref_task;
-				Optimizer::RunParams sub_params = initial_params.sub(*i);
-				optimize_recursive(optimizers, sub_params, calls_count, optimizations_count, nonrecursive ? 0 : recursive ? INT_MAX : max_level-1);
-				nonrecursive = false;
-				recursive = false;
+		int counter_limit = 32;
+		int counter_prophecy = 256;
+		double counter_weight = (double)optimizers->size()/(double)1024;
+		if (counter_prophecy * counter_weight < 0.75)
+			{ counter_limit = 0; counter_prophecy = 0; }
 
-				// replace sub-task if optimized
-				if (sub_params.ref_task != *i)
-				{
-					// before replacement clone current task (if it not already cloned)
-					if (!task_clonned)
-					{
-						int index = i - params.ref_task->sub_tasks.begin();
-						params.ref_task = params.ref_task->clone();
-						i = params.ref_task->sub_tasks.begin() + index; // validate iterator
+		// prepare params
+		bool task_clonned = false;
+		Optimizer::RunParams sub_params[count];
+		int jumps[count+1]; // initial jump stored after last element
+		jumps[count] = 0;
+		for(int i = 0; i < count; ++i)
+			{ sub_params[i] = params->sub(i); jumps[i] = i+1; }
+		for(int j = count, i = jumps[j]; i < count; i = jumps[i])
+			if (sub_params[i].ref_task) j = i; else jumps[j] = jumps[i];
+
+		// run optimizers
+		bool first_pass = true;
+		ThreadPool::Group group;
+		while (jumps[count] != count) {
+			for(int j = count, i = jumps[j]; i < count; i = jumps[i]) {
+				Optimizer::RunParams &sp = sub_params[i];
+
+				int sub_level = first_pass ? max_level-1
+							  : (sp.ref_mode & Optimizer::MODE_RECURSIVE) ? INT_MAX : 0;
+				sp.ref_mode = 0;
+
+				int cnt = subtasks_count(sp.ref_task, counter_limit);
+				if (cnt >= counter_limit && cnt < counter_prophecy) cnt = counter_prophecy;
+				double weight = (double)cnt*counter_weight;
+
+				group.enqueue( sigc::bind( sigc::mem_fun(this, &Renderer::optimize_recursive),
+					optimizers,
+					&sp,
+					calls_count,
+					optimizations_count,
+					sub_level ), weight );
+			}
+			group.run();
+
+			// merge results
+			for(int j = count, i = jumps[j]; i < count; i = jumps[i]) {
+				Optimizer::RunParams &sp = sub_params[i];
+
+				if (Task::Handle &sub_task = params->ref_task->sub_task(i))
+				if (sp.ref_task != sub_task) {
+					if (task_clonned) {
+						sub_task = sp.ref_task;
+					} else {
+						params->ref_task = params->ref_task->clone();
+						params->ref_task->sub_task(i) = sp.ref_task;
 						task_clonned = true;
 					}
-					*i = sub_params.ref_task;
-
-					// go to next sub-task if we don't need to repeat optimization (see Optimizer::MODE_REPEAT)
-					if ((sub_params.ref_mode & Optimizer::MODE_REPEAT_LAST) == Optimizer::MODE_REPEAT_LAST)
-					{
-						// check recursive flag (see Optimizer::MODE_RECURSIVE)
-						if (sub_params.ref_mode & Optimizer::MODE_RECURSIVE)
-							recursive = true;
-						else
-							nonrecursive = true;
-					}
-					else
-					{
-						++i;
-					}
-				}
-				else
-				{
-					// go to next sub-task, when sub-task not unchanged
-					++i;
 				}
 
 				// apply affected categories
-				params.ref_affects_to |= sub_params.ref_affects_to;
+				params->ref_affects_to |= sp.ref_affects_to;
 
 				// if mode is REPEAT_BRUNCH then provide this flag to result
-				if ((sub_params.ref_mode & Optimizer::MODE_REPEAT_BRUNCH) == Optimizer::MODE_REPEAT_BRUNCH)
-				{
-					params.ref_mode |= Optimizer::MODE_REPEAT_BRUNCH;
-					params.ref_mode |= (sub_params.ref_mode & Optimizer::MODE_RECURSIVE);
-				}
-				else
+				if ((sp.ref_mode & Optimizer::MODE_REPEAT_BRANCH) == Optimizer::MODE_REPEAT_BRANCH) {
+					params->ref_mode |= Optimizer::MODE_REPEAT_BRANCH;
+					params->ref_mode |= (sp.ref_mode & Optimizer::MODE_RECURSIVE);
+				} else
 				// if mode is REPEAT_PARENT then provide flag REPEAT_LAST to result (repeat only one upper level)
-				if ((sub_params.ref_mode & Optimizer::MODE_REPEAT_PARENT) == Optimizer::MODE_REPEAT_PARENT)
-				{
-					params.ref_mode |= Optimizer::MODE_REPEAT_LAST;
-					params.ref_mode |= (sub_params.ref_mode & Optimizer::MODE_RECURSIVE);
+				if ((sp.ref_mode & Optimizer::MODE_REPEAT_PARENT) == Optimizer::MODE_REPEAT_PARENT) {
+					params->ref_mode |= Optimizer::MODE_REPEAT_LAST;
+					params->ref_mode |= (sp.ref_mode & Optimizer::MODE_RECURSIVE);
 				}
 
-				// check dependencies
-				if (params.ref_affects_to & params.depends_from) return;
+				// reset ref_affects_to flags
+				// and keep sp.ref_mode we still need MODE_RECURSIVE flag
+				sp.ref_affects_to = 0;
+				sp.orig_task = sp.ref_task;
+
+				// mark to skip
+				if (!sp.ref_task || !(sp.ref_mode & Optimizer::MODE_REPEAT_LAST))
+					jumps[j] = jumps[i]; else j = i;
 			}
-			else
-			{
-				// skip nulls
-				++i;
-			}
+
+			// check dependencies
+			if (params->ref_affects_to & params->depends_from) return;
+
+			// return when recursive re-optimization required
+			// anyway function will re-called again in the same mode
+			if ( (params->ref_mode & Optimizer::MODE_REPEAT_BRANCH)
+			  && (params->ref_mode & Optimizer::MODE_RECURSIVE) )
+				return;
+
+			first_pass = false;
 		}
 	}
 
 	// run deep-first optimizers for current task
 	// when all sub-tasks are processed (see Optimizer::deep_first)
-	for(Optimizer::List::const_iterator i = optimizers.begin(); i != optimizers.end(); ++i)
-	{
-		if ((*i)->deep_first)
-		{
-			if ((*i)->for_task || ((*i)->for_root_task && !params.parent))
-			{
-				// run
-				Optimizer::RunParams p(params);
-				(*i)->run(p);
-
-				++calls_count;
-				if (params.ref_task != p.ref_task)
-				{
-					++optimizations_count;
-					#ifdef DEBUG_OPTIMIZATION_EACH_CHANGE
-					log("", params.list, (typeid(**i).name() + 19), &p);
-					#endif
-				}
-
-				// apply params
-				params.ref_affects_to |= p.ref_affects_to;
-				params.ref_mode |= p.ref_mode;
-				params.ref_task = p.ref_task;
-
-				// return when current task removed
-				if (!params.ref_task) return;
-
-				assert( params.ref_task->check() );
-
-				// check dependencies
-				if (params.ref_affects_to & params.depends_from) return;
-			}
-		}
-	}
-
+	if (!call_optimizers(*optimizers, *params, calls_count, optimizations_count, true))
+		return;
 }
 
 void
 Renderer::optimize(Task::List &list) const
 {
-	//debug::Measure t("Renderer::optimize");
+	#ifdef DEBUG_TASK_MEASURE
+	debug::Measure t("Renderer::optimize");
+	#endif
+
+	#ifdef DEBUG_OPTIMIZATION_COUNTERS
+	debug::Log::info("", "optimize %d tasks", count_tasks(list));
+	#endif
 
 	int current_category_id = 0;
+	int prepared_category_id = 0;
 	int current_optimizer_index = 0;
 	Optimizer::Category current_affected = 0;
 	Optimizer::Category categories_to_process = Optimizer::CATEGORY_ALL;
@@ -349,7 +503,24 @@ Renderer::optimize(Task::List &list) const
 
 	while(categories_to_process &= Optimizer::CATEGORY_ALL)
 	{
-		if (current_category_id >= Optimizer::CATEGORY_ID_COUNT)
+		while (prepared_category_id < current_category_id) {
+			switch (++prepared_category_id) {
+			case Optimizer::CATEGORY_ID_COORDS:
+				calc_coords(list); break;
+			case Optimizer::CATEGORY_ID_SPECIALIZED:
+				specialize(list); break;
+			case Optimizer::CATEGORY_ID_LIST:
+				linearize(list); break;
+			default:
+				break;
+			}
+			#ifdef DEBUG_OPTIMIZATION
+			log("", list, etl::strprintf("after category %d prepared", prepared_category_id));
+			#endif
+		}
+		prepared_category_id = current_category_id;
+
+		if (current_category_id >= Optimizer::CATEGORIES_COUNT)
 		{
 			current_category_id = 0;
 			current_optimizer_index = 0;
@@ -409,31 +580,44 @@ Renderer::optimize(Task::List &list) const
 		debug::Measure t(etl::strprintf("optimize category %d index %d", current_category_id, current_optimizer_index));
 		#endif
 
+		#ifdef DEBUG_OPTIMIZATION_COUNTERS
+		std::atomic<int> calls_count(0), *calls_count_ptr = &calls_count;
+		std::atomic<int> optimizations_count(0), *optimizations_count_ptr = &optimizations_count;
+		#else
+		std::atomic<int> *calls_count_ptr = NULL;
+		std::atomic<int> *optimizations_count_ptr = NULL;
+		#endif
+
 		if (for_list)
 		{
 			for(Optimizer::List::const_iterator i = current_optimizers.begin(); !(categories_to_process & depends_from) && i != current_optimizers.end(); ++i)
 			{
 				if ((*i)->for_list)
 				{
-					Optimizer::RunParams params(*this, list, depends_from);
+					Optimizer::RunParams params(depends_from, list);
 					(*i)->run(params);
 					categories_to_process |= current_affected |= params.ref_affects_to;
+
+					if (calls_count_ptr) ++(*calls_count_ptr);
+					if (optimizations_count_ptr && params.ref_affects_to) ++(*optimizations_count_ptr);
 				}
 			}
 		}
 
 		if (for_task || for_root_task)
 		{
-			int calls_count = 0;
-			int optimizations_count = 0;
-
 			bool nonrecursive = false;
 			for(Task::List::iterator j = list.begin(); !(categories_to_process & depends_from) && j != list.end();)
 			{
 				if (*j)
 				{
-					Optimizer::RunParams params(*this, list, depends_from, *j);
-					optimize_recursive(current_optimizers, params, calls_count, optimizations_count, !for_task ? 0 : nonrecursive ? 1 : INT_MAX);
+					Optimizer::RunParams params(depends_from, *j);
+					Renderer::optimize_recursive(
+						&current_optimizers,
+						&params,
+						calls_count_ptr,
+						optimizations_count_ptr,
+						!for_task ? 0 : nonrecursive ? 1 : INT_MAX );
 					nonrecursive = false;
 
 					if (*j != params.ref_task)
@@ -461,12 +645,16 @@ Renderer::optimize(Task::List &list) const
 					j = list.erase(j);
 				}
 			}
-
-			#ifdef DEBUG_OPTIMIZATION_COUNTERS
-			debug::Log::info("", "optimize category %d index %d: calls %d, changes %d",
-				current_category_id, current_optimizer_index, calls_count, optimizations_count );
-			#endif
 		}
+
+		#ifdef DEBUG_OPTIMIZATION_COUNTERS
+		debug::Log::info("", "optimize category %d index %d: calls %d, changes %d",
+			current_category_id, current_optimizer_index, (int)calls_count, (int)optimizations_count );
+		#endif
+
+		#ifdef DEBUG_OPTIMIZATION
+		log("", list, etl::strprintf("after optimize category %d index %d", current_category_id, current_optimizer_index));
+		#endif
 
 		if (categories_to_process & depends_from)
 		{
@@ -479,43 +667,48 @@ Renderer::optimize(Task::List &list) const
 		current_optimizer_index += current_optimizers.size();
 	}
 
-	// remove nulls
-	for(Task::List::iterator j = list.begin(); j != list.end();)
-		if (*j) ++j; else j = list.erase(j);
+	remove_dummy(list);
 }
 
 void
-Renderer::find_deps(const Task::List &list) const
+Renderer::find_deps(const Task::List &list, long long batch_index) const
 {
-	typedef std::map<Surface::Handle, Task::Handle> DepTargetPrevMap;
+	#ifdef DEBUG_TASK_MEASURE
+	debug::Measure t("Renderer::find_deps");
+	#endif
+
+	typedef std::map<SurfaceResource::Handle, Task::Handle> DepTargetPrevMap;
 	DepTargetPrevMap target_prev_map;
 	Task::Set tasks_to_process;
-	const int max_iterations = 100000;
+	const int max_iterations = 50000;
 
 	// find dependencies by target surface
 	for(Task::List::const_iterator i = list.begin(); i != list.end(); ++i)
 	{
-		assert((*i)->index == 0);
-		(*i)->index = i - list.begin() + 1;
+		Task::Handle task = *i;
+		Task::RendererData &task_rd = task->renderer_data;
 
-		(*i)->back_deps.clear();
-		(*i)->deps_count = 0;
+		assert(task_rd.index == 0);
+		assert(task_rd.batch_index == 0);
+		task_rd.batch_index = batch_index;
+		task_rd.index = i - list.begin() + 1;
 
-		if ((*i)->valid_target()) {
+		task_rd.back_deps.clear();
+		task_rd.deps_count = 0;
+
+		if ((*i)->is_valid()) {
 			for(Task::List::const_iterator j = (*i)->sub_tasks.begin(); j != (*i)->sub_tasks.end(); ++j)
-				if (*j && (*j)->valid_target())
-					if (Task::Handle dep = target_prev_map[(*j)->target_surface])
-					{
-						if ((*i)->tmp_deps.empty()) tasks_to_process.insert(*i);
-						(*i)->tmp_deps.insert(dep);
-						dep->tmp_back_deps.insert(*i);
+				if (*j && (*j)->is_valid())
+					if (Task::Handle dep = target_prev_map[(*j)->target_surface]) {
+						if (task_rd.tmp_deps.empty()) tasks_to_process.insert(*i);
+						task_rd.tmp_deps.insert(dep);
+						dep->renderer_data.tmp_back_deps.insert(*i);
 					}
 			Task::Handle &dep = target_prev_map[(*i)->target_surface];
-			if (dep)
-			{
-				if ((*i)->tmp_deps.empty()) tasks_to_process.insert(*i);
-				(*i)->tmp_deps.insert(dep);
-				dep->tmp_back_deps.insert(*i);
+			if (dep) {
+				if (task_rd.tmp_deps.empty()) tasks_to_process.insert(*i);
+				task_rd.tmp_deps.insert(dep);
+				dep->renderer_data.tmp_back_deps.insert(*i);
 			}
 			dep = *i;
 		}
@@ -528,56 +721,40 @@ Renderer::find_deps(const Task::List &list) const
 		for(Task::Set::iterator i = tasks_to_process.begin(); i != tasks_to_process.end();)
 		{
 			Task::Handle task = *i;
-			assert(!task->tmp_deps.empty());
+			Task::RendererData &task_rd = task->renderer_data;
+			assert(!task_rd.tmp_deps.empty());
 
-			Task::Handle dep = *task->tmp_deps.begin();
-			task->tmp_deps.erase( task->tmp_deps.begin() );
-			dep->tmp_back_deps.erase(task);
+			Task::Handle dep = *task_rd.tmp_deps.begin();
+			Task::RendererData &dep_rd = dep->renderer_data;
+			task_rd.tmp_deps.erase( task_rd.tmp_deps.begin() );
+			dep_rd.tmp_back_deps.erase(task);
 
-			bool intersects = dep->target_surface == task->target_surface
-			               && etl::intersect(dep->get_target_rect(), task->get_target_rect());
-			for(Task::List::const_iterator j = task->sub_tasks.begin(); !intersects && j != task->sub_tasks.end(); ++j)
-			{
-				if ( *j && (*j)->valid_target()
-				  && dep->target_surface == (*j)->target_surface
-				  && etl::intersect(dep->get_target_rect(), (*j)->get_target_rect()) )
-					intersects = true;
+			if (!task->allow_run_before(*dep)) {
+				task_rd.deps.insert(dep);
+				dep_rd.back_deps.insert(task);
 				++iterations;
-			}
-
-			if (intersects)
-			{
-				task->deps.insert(dep);
-				dep->back_deps.insert(task);
-				++iterations;
-			}
-			else
-			{
-				iterations += dep->deps.size() + dep->tmp_deps.size() + task->back_deps.size() + task->tmp_back_deps.size();
-				for(Task::Set::iterator j = dep->deps.begin(); j != dep->deps.end(); ++j)
-					if (task->deps.count(*j) == 0)
-					{
-						task->tmp_deps.insert(*j);
-						(*j)->tmp_back_deps.insert(task);
+			} else {
+				iterations += dep_rd.deps.size() + dep_rd.tmp_deps.size() + task_rd.back_deps.size() + task_rd.tmp_back_deps.size();
+				for(Task::Set::iterator j = dep_rd.deps.begin(); j != dep_rd.deps.end(); ++j)
+					if (task_rd.deps.count(*j) == 0) {
+						task_rd.tmp_deps.insert(*j);
+						(*j)->renderer_data.tmp_back_deps.insert(task);
 					}
-				for(Task::Set::iterator j = dep->tmp_deps.begin(); j != dep->tmp_deps.end(); ++j)
-					if (task->deps.count(*j) == 0)
-					{
-						task->tmp_deps.insert(*j);
-						(*j)->tmp_back_deps.insert(task);
+				for(Task::Set::iterator j = dep_rd.tmp_deps.begin(); j != dep_rd.tmp_deps.end(); ++j)
+					if (task_rd.deps.count(*j) == 0) {
+						task_rd.tmp_deps.insert(*j);
+						(*j)->renderer_data.tmp_back_deps.insert(task);
 					}
-				for(Task::Set::iterator j = task->back_deps.begin(); j != task->back_deps.end(); ++j)
-					if ((*j)->deps.count(dep) == 0)
-					{
-						if ((*j)->tmp_deps.empty()) tasks_to_process.insert(*j);
-						(*j)->tmp_deps.insert(dep);
-						dep->tmp_back_deps.insert(*j);
+				for(Task::Set::iterator j = task_rd.back_deps.begin(); j != task_rd.back_deps.end(); ++j)
+					if ((*j)->renderer_data.deps.count(dep) == 0) {
+						if ((*j)->renderer_data.tmp_deps.empty()) tasks_to_process.insert(*j);
+						(*j)->renderer_data.tmp_deps.insert(dep);
+						dep_rd.tmp_back_deps.insert(*j);
 					}
-				for(Task::Set::iterator j = task->tmp_back_deps.begin(); j != task->tmp_back_deps.end(); ++j)
-					if ((*j)->deps.count(dep) == 0)
-					{
-						(*j)->tmp_deps.insert(dep);
-						dep->tmp_back_deps.insert(*j);
+				for(Task::Set::iterator j = task_rd.tmp_back_deps.begin(); j != task_rd.tmp_back_deps.end(); ++j)
+					if ((*j)->renderer_data.deps.count(dep) == 0) {
+						(*j)->renderer_data.tmp_deps.insert(dep);
+						dep_rd.tmp_back_deps.insert(*j);
 					}
 			}
 
@@ -585,7 +762,7 @@ Renderer::find_deps(const Task::List &list) const
 			++i;
 			++iterations;
 
-			if (task->tmp_deps.empty())
+			if (task_rd.tmp_deps.empty())
 				tasks_to_process.erase(j);
 		}
 	}
@@ -595,15 +772,16 @@ Renderer::find_deps(const Task::List &list) const
 	#endif
 
 	// copy tmp_deps to deps
-	for(Task::List::const_iterator i = list.begin(); i != list.end(); ++i)
-	{
+	for(Task::List::const_iterator i = list.begin(); i != list.end(); ++i) {
 		Task::Handle task = *i;
-		task->back_deps.insert(task->tmp_back_deps.begin(), task->tmp_back_deps.end());
-		task->deps_count = (int)task->deps.size() + (int)task->tmp_deps.size();
+		Task::RendererData &task_rd = task->renderer_data;
 
-		task->deps.clear();
-		task->tmp_deps.clear();
-		task->tmp_back_deps.clear();
+		task_rd.back_deps.insert(task_rd.tmp_back_deps.begin(), task_rd.tmp_back_deps.end());
+		task_rd.deps_count = (int)task_rd.deps.size() + (int)task_rd.tmp_deps.size();
+
+		task_rd.deps.clear();
+		task_rd.tmp_deps.clear();
+		task_rd.tmp_back_deps.clear();
 	}
 }
 
@@ -614,11 +792,6 @@ Renderer::run(const Task::List &list) const
 	//info("renderer.debug.task_list_log: %s", get_debug_options().task_list_log.c_str());
 	//info("renderer.debug.task_list_optimized_log: %s", get_debug_options().task_list_optimized_log.c_str());
 	//info("renderer.debug.result_image: %s", get_debug_options().result_image.c_str());
-
-	#ifndef NDEBUG
-	for(Task::List::const_iterator j = list.begin(); j != list.end(); ++j)
-		assert( (*j)->check() );
-	#endif
 
 	#ifdef DEBUG_TASK_MEASURE
 	debug::Measure t("Renderer::run");
@@ -632,19 +805,8 @@ Renderer::run(const Task::List &list) const
 		log(get_debug_options().task_list_log, list, "input list");
 
 	Task::List optimized_list(list);
-	{
-		#ifdef DEBUG_TASK_MEASURE
-		debug::Measure t("optimize");
-		#endif
-		optimize(optimized_list);
-	}
-
-	{
-		#ifdef DEBUG_TASK_MEASURE
-		debug::Measure t("find deps");
-		#endif
-		find_deps(optimized_list);
-	}
+	optimize(optimized_list);
+	find_deps(optimized_list, ++last_batch_index);
 
 	#ifdef DEBUG_TASK_LIST
 	log("", optimized_list, "optimized list");
@@ -668,20 +830,26 @@ Renderer::run(const Task::List &list) const
 		task_cond->cond = &cond;
 		task_cond->mutex = &mutex;
 		for(Task::List::const_iterator i = optimized_list.begin(); i != optimized_list.end(); ++i)
-			if ((*i)->back_deps.insert(task_cond).second)
-				++task_cond->deps_count;
+			if ((*i)->renderer_data.back_deps.insert(task_cond).second)
+				++task_cond->renderer_data.deps_count;
 		optimized_list.push_back(task_cond);
 
-		queue->enqueue(optimized_list, Task::RunParams(this));
+		// try to find existing handle to this renderer instead,
+		// because creation and destruction of handle may cause destruction of renderer
+		// if it never stored in handles before
+		queue->enqueue(optimized_list, Task::RunParams( get_renderer(get_name()) ));
+
+		// unref tasks so surfaces will removed immediatelly when their tasks will complete
+		optimized_list.clear();
 
 		task_cond->cond->wait(mutex);
-		if (!task_cond->success) success = false;
+		if (!task_cond->renderer_data.success) success = false;
 
 		if (!get_debug_options().result_image.empty())
 			debug::DebugSurface::save_to_file(
 				!list.empty() && list.back()
 					? list.back()->target_surface
-					: Surface::Handle(),
+					: SurfaceResource::Handle(),
 				get_debug_options().result_image,
 				true );
 	}
@@ -689,25 +857,24 @@ Renderer::run(const Task::List &list) const
 	return success;
 }
 
-void
+bool
 Renderer::enqueue(const Task::List &list, const Task::Handle &finish_signal_task) const
 {
-	#ifndef NDEBUG
-	for(Task::List::const_iterator j = list.begin(); j != list.end(); ++j)
-		assert( (*j)->check() );
-	#endif
-
 	Task::List optimized_list(list);
 	optimize(optimized_list);
-	find_deps(optimized_list);
+	find_deps(optimized_list, ++last_batch_index);
 	if (finish_signal_task)
 	{
 		for(Task::List::const_iterator i = optimized_list.begin(); i != optimized_list.end(); ++i)
-			if ((*i)->back_deps.insert(finish_signal_task).second)
-				++finish_signal_task->deps_count;
+			if ((*i)->renderer_data.back_deps.insert(finish_signal_task).second)
+				++finish_signal_task->renderer_data.deps_count;
 		optimized_list.push_back(finish_signal_task);
 	}
-	queue->enqueue(optimized_list, Task::RunParams(this));
+	// try to find existing handle to this renderer instead,
+	// because creation and destruction of handle may cause destruction of renderer
+	// if it never stored in handles before
+	queue->enqueue(optimized_list, Task::RunParams( get_renderer(get_name()) ));
+	return true;
 }
 
 void
@@ -725,38 +892,54 @@ Renderer::log(
 
 	if (t)
 	{
+		const Task::RendererData &trd = t->renderer_data;
 		String back_deps;
-		if (!t->back_deps.empty())
+		if (!trd.back_deps.empty())
 		{
 			std::multiset<int> back_deps_set;
-			for(Task::Set::const_iterator i = t->back_deps.begin(); i != t->back_deps.end(); ++i)
-				back_deps_set.insert((*i)->index);
+			for(Task::Set::const_iterator i = trd.back_deps.begin(); i != trd.back_deps.end(); ++i)
+				back_deps_set.insert((*i)->renderer_data.index);
 			for(std::multiset<int>::const_iterator i = back_deps_set.begin(); i != back_deps_set.end(); ++i)
 				back_deps += etl::strprintf("%d ", *i);
 			back_deps = "(" + back_deps.substr(0, back_deps.size()-1) + ") ";
 		}
 
+		String surfaces;
+		if (t->target_surface) {
+			std::vector<Surface::Token::Handle> tokens;
+			t->target_surface->get_tokens(tokens);
+
+			std::set<String> names;
+			for(std::vector<Surface::Token::Handle>::const_iterator i = tokens.begin(); i != tokens.end(); ++i)
+				names.insert( (*i)->name );
+
+			for(std::set<String>::const_iterator i = names.begin(); i != names.end(); ++i) {
+				if (!surfaces.empty()) surfaces += ", ";
+				surfaces += *i;
+			}
+		}
+
 		debug::Log::info(logfile,
 		      String(level*2, ' ')
 			+ (use_stack ? "*" : "")
-			+ (t->index ? etl::strprintf("#%d ", t->index): "")
-			+ ( t->deps_count
-			  ? etl::strprintf("%d ", t->deps_count )
+			+ (trd.index ? etl::strprintf("#%05d-%04d ", trd.batch_index, trd.index): "")
+			+ ( trd.deps_count
+			  ? etl::strprintf("%d ", trd.deps_count )
 			  : "" )
 			+ back_deps
-			+ (typeid(*t).name() + 19)
+			+ t->get_token()->name
 			+ ( t->get_bounds().valid()
 			  ? etl::strprintf(" bounds (%f, %f)-(%f, %f)",
 				t->get_bounds().minx, t->get_bounds().miny,
 				t->get_bounds().maxx, t->get_bounds().maxy )
 			  : "" )
-			+ ( t->valid_target()
-              ? etl::strprintf(" source (%f, %f)-(%f, %f) target (%d, %d)-(%d, %d) surface %s (%dx%d) id %d",
-				t->get_source_rect_lt()[0], t->get_source_rect_lt()[1],
-				t->get_source_rect_rb()[0], t->get_source_rect_rb()[1],
-				t->get_target_rect().minx, t->get_target_rect().miny,
-				t->get_target_rect().maxx, t->get_target_rect().maxy,
-				(typeid(*t->target_surface).name() + 19),
+			+ ( t->target_surface
+              ? etl::strprintf(" source (%f, %f)-(%f, %f) target (%d, %d)-(%d, %d) surface [%s] (%dx%d) id %d",
+				t->source_rect.minx, t->source_rect.miny,
+				t->source_rect.maxx, t->source_rect.maxy,
+				t->target_rect.minx, t->target_rect.miny,
+				t->target_rect.maxx, t->target_rect.maxy,
+				surfaces.c_str(),
 				t->target_surface->get_width(),
 				t->target_surface->get_height(),
 				t->target_surface->get_id() )

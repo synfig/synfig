@@ -144,8 +144,13 @@ Action::LayerPaint::PaintStroke::add_point_and_apply(const PaintPoint &point)
 	points.push_back(point);
 	applied = true;
 
-	Surface surface = layer->get_surface();
-	brushlib::SurfaceWrapper wrapper(&surface);
+	Surface *surface = new Surface();
+	{
+		rendering::SurfaceResource::LockRead<rendering::SurfaceSW> lock(layer->rendering_surface);
+		if (lock) surface->copy( lock->get_surface() );
+	}
+
+	brushlib::SurfaceWrapper wrapper(surface);
 	int w = wrapper.surface->get_w();
 	int h = wrapper.surface->get_h();
 	{
@@ -160,9 +165,8 @@ Action::LayerPaint::PaintStroke::add_point_and_apply(const PaintPoint &point)
 		brush_.set_state(STATE_ACTUAL_X, x);
 		brush_.set_state(STATE_ACTUAL_Y, y);
 
-		// TODO: optimize for hardware
-		layer->rendering_surface = new rendering::SurfaceSW();
-		layer->rendering_surface->assign(surface[0], surface.get_w(), surface.get_h());
+		layer->rendering_surface = new rendering::SurfaceResource(
+				new rendering::SurfaceSW(*surface, true) );
 	}
 
 	if (wrapper.extra_left > 0 || wrapper.extra_top > 0) {
@@ -198,7 +202,10 @@ Action::LayerPaint::PaintStroke::prepare()
 			break;
 		}
 
-	if (prevSameLayer == NULL) surface = layer->get_surface();
+	if (prevSameLayer == NULL) {
+		rendering::SurfaceResource::LockRead<rendering::SurfaceSW> lock(layer->rendering_surface);
+		if (lock) surface = lock->get_surface();
+	}
 	new_tl = tl = layer->get_param("tl").get(Point());
 	new_br = br = layer->get_param("br").get(Point());
 
@@ -213,10 +220,10 @@ Action::LayerPaint::PaintStroke::undo()
 	if (!applied) return;
 	{
 		Mutex::Lock lock(layer->mutex);
-		synfig::Surface surface;
-		paint_prev(surface);
-		layer->rendering_surface = new rendering::SurfaceSW();
-		layer->rendering_surface->assign(surface[0], surface.get_w(), surface.get_h());
+		Surface *surface = new Surface();
+		paint_prev(*surface);
+		layer->rendering_surface = new rendering::SurfaceResource(
+				new rendering::SurfaceSW(*surface, true) );
 	}
 	applied = false;
 	layer->set_param("tl", ValueBase(tl));
@@ -231,10 +238,10 @@ Action::LayerPaint::PaintStroke::apply()
 	if (applied) return;
 	{
 		Mutex::Lock lock(layer->mutex);
-		synfig::Surface surface;
-		paint_self(surface);
-		layer->rendering_surface = new rendering::SurfaceSW();
-		layer->rendering_surface->assign(surface[0], surface.get_w(), surface.get_h());
+		Surface *surface = new Surface();
+		paint_self(*surface);
+		layer->rendering_surface = new rendering::SurfaceResource(
+				new rendering::SurfaceSW(*surface, true) );
 	}
 	applied = true;
 	layer->set_param("tl", ValueBase(new_tl));

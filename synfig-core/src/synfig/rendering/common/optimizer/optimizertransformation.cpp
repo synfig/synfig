@@ -5,7 +5,7 @@
 **	$Id$
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2015-2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -37,11 +37,8 @@
 
 #include "optimizertransformation.h"
 
-#include "../../primitive/affinetransformation.h"
 #include "../task/tasktransformation.h"
-#include "../task/tasktransformableaffine.h"
-#include "../task/tasksolid.h"
-#include "../task/taskmesh.h"
+#include "../../primitive/transformationaffine.h"
 
 #endif
 
@@ -56,110 +53,76 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
-bool
-OptimizerTransformation::can_optimize(const Task::Handle &sub_task)
+
+OptimizerTransformation::OptimizerTransformation()
 {
-	if (!sub_task)
-		return true;
-	if (sub_task.type_is<TaskSolid>())
-		return true;
-	if (sub_task.type_is<TaskTransformableAffine>())
-		return true;
-	if (TaskTransformation::Handle transformation = TaskTransformation::Handle::cast_dynamic(sub_task))
-		if (AffineTransformation::Handle::cast_dynamic(transformation->transformation))
-			return true;
-	return false;
+	category_id = CATEGORY_ID_BEGIN;
+	mode = MODE_REPEAT_LAST | MODE_RECURSIVE;
+	for_task = true;
 }
 
-void
-OptimizerTransformation::calc_unoptimized_blend_brunches(int &ref_count, const Task::Handle &blend_sub_task)
-{
-	if (ref_count > 1)
-		return;
-	if (can_optimize(blend_sub_task))
-		return;
-	if (TaskBlend::Handle blend = TaskBlend::Handle::cast_dynamic(blend_sub_task))
-	{
-		calc_unoptimized_blend_brunches(ref_count, blend->sub_task_a());
-		calc_unoptimized_blend_brunches(ref_count, blend->sub_task_b());
-		return;
-	}
-	++ref_count;
-}
 
 void
 OptimizerTransformation::run(const RunParams& params) const
 {
-	// TODO: Optimize transformation to transformation
-	if (TaskTransformation::Handle transformation = TaskTransformation::Handle::cast_dynamic(params.ref_task))
+	TaskTransformation::Handle transformation = TaskTransformation::Handle::cast_dynamic(params.ref_task);
+	if (!transformation || !transformation->is_simple()) return;
+
+	// transformation of none in none
+	Task::Handle sub_task = transformation->sub_task();
+	if (!sub_task)
+		{ apply(params, Task::Handle()); return; }
+
+	// transformation of solid is solid
+	if (TaskInterfaceConstant *constant = sub_task.type_pointer<TaskInterfaceConstant>())
 	{
-		// transformation of TaskSolid or null-task is meaningless
-		if ( !transformation->sub_task()
-		  || transformation->sub_task().type_is<TaskSolid>())
+		if (constant->is_constant())
 		{
-			apply(params, transformation->sub_task());
+			sub_task = sub_task->clone();
+			sub_task->assign_target(*transformation);
+			apply(params, sub_task);
 			return;
 		}
+	}
 
-		// optimize affine transformation
-		if (AffineTransformation::Handle affine_transformation = AffineTransformation::Handle::cast_dynamic(transformation->transformation))
+	// merge with sub-task
+	if (TaskInterfaceTransformation *interface = sub_task.type_pointer<TaskInterfaceTransformation>())
+	{
+		if ( interface->get_transformation()
+		  && interface->get_transformation()->can_merge_outer( transformation->get_transformation() ) )
 		{
-			if (affine_transformation->matrix.is_identity())
-			{
-				apply(params, transformation->sub_task());
-				return;
-			}
-			else
-			if (transformation->sub_task().type_is<TaskTransformableAffine>())
-			{
-				// apply affine transformation to sub-task
-				Task::Handle task = transformation->sub_task()->clone();
-				TaskTransformableAffine *transformable_affine = task.type_pointer<TaskTransformableAffine>();
-				transformable_affine->transformation *=
-					affine_transformation->matrix;
-				apply(params, task);
-				return;
-			}
-			else
-			if (TaskTransformation::Handle sub_transformation = TaskTransformation::Handle::cast_dynamic(transformation->sub_task()))
-			{
-				// optimize affine transformation of affine transformation
-				if (AffineTransformation::Handle sub_affine_transformation = AffineTransformation::Handle::cast_dynamic(sub_transformation->transformation))
-				{
-					transformation = TaskTransformation::Handle::cast_dynamic(transformation->clone());
-					AffineTransformation::Handle new_affine_transformation = new AffineTransformation();
-					new_affine_transformation->matrix =
-						sub_affine_transformation->matrix
-					  * affine_transformation->matrix;
-					transformation->transformation = new_affine_transformation;
-					transformation->sub_task() = sub_transformation->sub_task();
+			sub_task = sub_task->clone();
+			sub_task->assign_target(*transformation);
 
-					apply(params, transformation);
-					return;
+			interface = sub_task.type_pointer<TaskInterfaceTransformation>();
+			assert( interface
+			     && interface->get_transformation()->can_merge_outer( transformation->get_transformation()) );
+			interface->get_transformation()->merge_outer( transformation->get_transformation() );
+
+			apply(params, sub_task);
+			return;
+		}
+	}
+
+	// fall deeper in tree to make a chance to merge with others (for affine only)
+	if ( transformation->get_transformation().type_is<TransformationAffine>() )
+	{
+		if ( sub_task.type_is<TaskInterfaceTransformationPass>() )
+		{
+			sub_task = sub_task->clone();
+			sub_task->assign_target(*transformation);
+			for(Task::List::iterator i = sub_task->sub_tasks.begin(); i != sub_task->sub_tasks.end(); ++i)
+				if (*i) {
+					Task::Handle t = transformation->clone();
+					t->assign_target(**i);
+					t->sub_task(0) = *i;
+					*i = t;
 				}
-			}
-			else
-			if (TaskBlend::Handle blend = TaskBlend::Handle::cast_dynamic(transformation->sub_task()))
-			{
-				// optimize transfromation of TaskBlend
-				//int count = 0;
-				//calc_unoptimized_blend_brunches(count, blend->sub_task_a());
-				//calc_unoptimized_blend_brunches(count, blend->sub_task_b());
-				//if (count < 2)
-				//{
-					blend = TaskBlend::Handle::cast_dynamic(blend->clone());
-					TaskTransformation::Handle transformation_a = TaskTransformation::Handle::cast_dynamic(transformation->clone());
-					transformation_a->sub_task() = blend->sub_task_a();
-					blend->sub_task_a() = transformation_a;
-					TaskTransformation::Handle transformation_b = TaskTransformation::Handle::cast_dynamic(transformation->clone());
-					transformation_b->sub_task() = blend->sub_task_b();
-					blend->sub_task_b() = transformation_b;
-					apply(params, blend);
-					return;
-				//}
-			}
+			apply(params, sub_task);
+			return;
 		}
 	}
 }
+
 
 /* === E N T R Y P O I N T ================================================= */

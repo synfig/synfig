@@ -15,7 +15,6 @@ RENDERING_SOFTWARE_CC = \
 	rendering/software/surfaceswpacked.cpp
 
 include rendering/software/function/Makefile_insert
-include rendering/software/optimizer/Makefile_insert
 include rendering/software/task/Makefile_insert
 
 RENDERING_HH += \

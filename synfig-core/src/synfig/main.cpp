@@ -54,6 +54,7 @@
 #include <unistd.h>
 #endif
 
+#include "token.h"
 #include "target.h"
 #include <ETL/stringf>
 #include "cairolistimporter.h"
@@ -315,6 +316,9 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 		SoundProcessor::subsys_stop();
 		throw std::runtime_error(_("Unable to initialize subsystem \"Cairo Importers\""));
 	}
+
+	// Rebuild tokens data
+	Token::rebuild();
 
 	// Load up the list importer
 	Importer::book()[String("lst")]=Importer::BookEntry(ListImporter::create, ListImporter::supports_file_system_wrapper__);

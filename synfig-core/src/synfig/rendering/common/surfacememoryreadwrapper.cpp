@@ -5,7 +5,7 @@
 **	$Id$
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2015-2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -52,31 +52,17 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
-bool
-SurfaceMemoryReadWrapper::create_vfunc()
-	{ return false; }
 
-bool
-SurfaceMemoryReadWrapper::assign_vfunc(const Surface & /* surface */)
-	{ return false; }
+rendering::Surface::Token SurfaceMemoryReadWrapper::token(
+	Desc<SurfaceMemoryReadWrapper>("SurfaceMemoryReadWrapper") );
+
 
 void
-SurfaceMemoryReadWrapper::destroy_vfunc()
-	{ buffer = NULL; }
-
-bool
-SurfaceMemoryReadWrapper::get_pixels_vfunc(Color *buffer) const
-	{ memcpy(buffer, this->buffer, get_buffer_size()); return true; }
-
-void
-SurfaceMemoryReadWrapper::set_buffer(const Color *buffer)
+SurfaceMemoryReadWrapper::set_buffer(const Color *buffer, int width, int height)
 {
-	if (!empty() && this->buffer != buffer)
-	{
-		unset_alternative();
-		this->buffer = buffer;
-		mark_as_created(this->buffer);
-	}
+	this->buffer = buffer;
+	set_desc(width, height, false);
+	assert(!is_exists() || buffer);
 }
 
 /* === E N T R Y P O I N T ================================================= */

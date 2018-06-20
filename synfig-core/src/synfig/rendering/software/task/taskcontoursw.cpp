@@ -5,7 +5,7 @@
 **	$Id$
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2015-2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -35,13 +35,13 @@
 #include <signal.h>
 #endif
 
-#include "taskcontoursw.h"
-
-#include "../surfacesw.h"
-#include "../../optimizer.h"
-
-#include "../function/contour.h"
 #include <synfig/debug/debugsurface.h>
+
+#include "../../primitive/polyspan.h"
+#include "../../common/task/taskcontour.h"
+#include "../../common/task/taskblend.h"
+#include "tasksw.h"
+#include "../function/contour.h"
 
 #endif
 
@@ -56,35 +56,57 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
-void
-TaskContourSW::split(const RectInt &sub_target_rect)
-{
-	trunc_target_rect(sub_target_rect);
-}
+namespace {
 
-bool
-TaskContourSW::run(RunParams & /* params */) const
+class TaskContourSW: public TaskContour, public TaskSW,
+	public TaskInterfaceBlendToTarget,
+	public TaskInterfaceSplit
 {
-	synfig::Surface &a =
-		SurfaceSW::Handle::cast_dynamic( target_surface )->get_surface();
+public:
+	typedef etl::handle<TaskContourSW> Handle;
+	static Token token;
+	virtual Token::Handle get_token() const { return token.handle(); }
 
-	if (valid_target())
-	{
+	virtual void on_target_set_as_source() {
+		Task::Handle &subtask = sub_task(0);
+		if ( subtask
+		  && subtask->target_surface == target_surface
+		  && !Color::is_straight(blend_method) )
+		{
+			trunc_by_bounds();
+			subtask->source_rect = source_rect;
+			subtask->target_rect = target_rect;
+		}
+	}
+
+	virtual Color::BlendMethodFlags get_supported_blend_methods() const
+		{ return Color::BLEND_METHODS_ALL & ~Color::BLEND_METHODS_STRAIGHT; }
+
+	virtual bool run(RunParams&) const {
+		if (!is_valid())
+			return true;
+
+		Vector ppu = get_pixels_per_unit();
+
 		Matrix bounds_transfromation;
-		bounds_transfromation.m00 = get_pixels_per_unit()[0];
-		bounds_transfromation.m11 = get_pixels_per_unit()[1];
-		bounds_transfromation.m20 = -get_source_rect_lt()[0]*bounds_transfromation.m00 + get_target_rect().minx;
-		bounds_transfromation.m21 = -get_source_rect_lt()[1]*bounds_transfromation.m11 + get_target_rect().miny;
+		bounds_transfromation.m00 = ppu[0];
+		bounds_transfromation.m11 = ppu[1];
+		bounds_transfromation.m20 = target_rect.minx - ppu[0]*source_rect.minx;
+		bounds_transfromation.m21 = target_rect.miny - ppu[1]*source_rect.miny;
 
-		Matrix matrix = transformation * bounds_transfromation;
+		Matrix matrix = bounds_transfromation * transformation->matrix;
 
 		Polyspan polyspan;
-		polyspan.init(get_target_rect());
+		polyspan.init(target_rect);
 		software::Contour::build_polyspan(contour->get_chunks(), matrix, polyspan, detail);
 		polyspan.sort_marks();
 
+		LockWrite la(this);
+		if (!la)
+			return false;
+
 		software::Contour::render_polyspan(
-			a,
+			la->get_surface(),
 			polyspan,
 			contour->invert,
 			allow_antialias && contour->antialias,
@@ -93,10 +115,14 @@ TaskContourSW::run(RunParams & /* params */) const
 			blend ? amount : 1.0,
 			blend ? blend_method : Color::BLEND_COMPOSITE );
 
-		//debug::DebugSurface::save_to_file(a, "TaskContourSW__run");
+		return true;
 	}
+};
 
-	return true;
-}
+
+Task::Token TaskContourSW::token(
+	DescReal<TaskContourSW, TaskContour>("ContourSW") );
+
+} // end of anonimous namespace
 
 /* === E N T R Y P O I N T ================================================= */

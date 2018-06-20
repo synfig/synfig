@@ -41,6 +41,10 @@ typedef double Real;
 
 
 template<typename T>
+inline T real_nan()
+	{ return T(0.0)/T(0.0); }
+
+template<typename T>
 inline T real_low_precision()
 	{ return T(1e-6); }
 template<typename T>

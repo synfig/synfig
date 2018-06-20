@@ -5,7 +5,7 @@
 **	$Id$
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2015-2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -35,12 +35,12 @@
 #include <signal.h>
 #endif
 
-#include "taskblursw.h"
-
-#include "../surfacesw.h"
-#include "../function/blur.h"
-
 #include <synfig/general.h>
+
+#include "../../common/task/taskblur.h"
+#include "../../common/task/taskblend.h"
+#include "tasksw.h"
+#include "../function/blur.h"
 
 #endif
 
@@ -55,34 +55,50 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
-bool
-TaskBlurSW::run(RunParams & /* params */) const
+namespace {
+
+class TaskBlurSW: public TaskBlur, public TaskSW, public TaskInterfaceBlendToTarget
 {
-	if (!valid_target() || !sub_task()->valid_target())
-		return true;
+public:
+	typedef etl::handle<TaskBlurSW> Handle;
+	static Token token;
+	virtual Token::Handle get_token() const { return token.handle(); }
 
-	synfig::Surface &a =
-		SurfaceSW::Handle::cast_dynamic( target_surface )->get_surface();
-	const synfig::Surface &b =
-		SurfaceSW::Handle::cast_dynamic( sub_task()->target_surface )->get_surface();
+	virtual int get_target_subtask_index() const
+		{ return 1; }
+	virtual Color::BlendMethodFlags get_supported_blend_methods() const
+		{ return Color::BLEND_METHODS_ALL & ~Color::BLEND_METHODS_STRAIGHT; }
 
-	Vector s = blur.size;
-	Vector pixels_per_unit = get_pixels_per_unit();
-	s[0] *= pixels_per_unit[0];
-	s[1] *= pixels_per_unit[1];
+	virtual bool run(RunParams&) const {
+		if (!is_valid() || !sub_task() || !sub_task()->is_valid())
+			return true;
 
-	Vector offsetf = (get_source_rect_lt() - sub_task()->get_source_rect_lt()).multiply_coords(pixels_per_unit);
-	VectorInt offset((int)round(offsetf[0]), (int)round(offsetf[1]));
-	offset += sub_task()->get_target_rect().get_min();
+		LockWrite la(this);
+		LockRead lb(sub_task());
+		if (!la || !lb)
+			return false;
 
-	software::Blur::blur(
-		software::Blur::Params(
-			a, get_target_rect(),
-			b, offset,
-			blur.type, s,
-			blend, blend_method, amount ));
+		Vector ppu = get_pixels_per_unit();
+		Vector s = blur.size.multiply_coords(ppu);
 
-	return false;
-}
+		VectorInt offset = TaskList::calc_target_offset(*this, *sub_task());
+		offset += target_rect.get_min();
+
+		software::Blur::blur(
+			software::Blur::Params(
+				la->get_surface(), target_rect,
+				lb->get_surface(), offset,
+				blur.type, s,
+				blend, blend_method, amount ));
+
+		return false;
+	}
+};
+
+
+Task::Token TaskBlurSW::token(
+	DescReal<TaskBlurSW, TaskBlur>("BlurSW") );
+
+} // end of anonimous namespace
 
 /* === E N T R Y P O I N T ================================================= */

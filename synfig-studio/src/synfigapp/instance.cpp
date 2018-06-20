@@ -292,14 +292,11 @@ Instance::import_external_canvases()
 	return group.finish();
 }
 
-bool Instance::save_surface(const synfig::rendering::Surface::Handle &surface, const synfig::String &filename)
+bool Instance::save_surface(const rendering::SurfaceResource::Handle &surface, const synfig::String &filename)
 {
-	if (!surface || !surface->is_created())
-		return false;
-
-	rendering::SurfaceSW::Handle surface_sw = rendering::SurfaceSW::Handle::cast_dynamic(surface);
-	if (!surface_sw) surface_sw = new rendering::SurfaceSW(*surface);
-	return save_surface(surface_sw->get_surface(), filename);
+	rendering::SurfaceResource::LockRead<rendering::SurfaceSW> lock(surface);
+	if (!lock) return false;
+	return save_surface(lock->get_surface(), filename);
 }
 
 bool Instance::save_surface(const synfig::Surface &surface, const synfig::String &filename)

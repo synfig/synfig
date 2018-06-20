@@ -49,9 +49,8 @@
 #include <synfig/valuenode.h>
 
 #include <synfig/rendering/common/task/taskblend.h>
-#include <synfig/rendering/common/task/tasksurfaceempty.h>
 #include <synfig/rendering/common/task/tasktransformation.h>
-#include <synfig/rendering/primitive/affinetransformation.h>
+#include <synfig/rendering/primitive/transformationaffine.h>
 
 #endif
 
@@ -716,16 +715,10 @@ Layer_PasteCanvas::build_rendering_task_vfunc(Context context)const
 		CanvasBase sub_queue;
 		Context sub_context = build_context_queue(context, sub_queue);
 
-		rendering::TaskTransformation::Handle task_transformation(new rendering::TaskTransformation());
-		rendering::AffineTransformation::Handle affine_transformation(new rendering::AffineTransformation());
-		affine_transformation->matrix = get_summary_transformation().get_matrix();
-		task_transformation->transformation = affine_transformation;
+		rendering::TaskTransformationAffine::Handle task_transformation(new rendering::TaskTransformationAffine());
+		task_transformation->transformation->matrix = get_summary_transformation().get_matrix();
 		task_transformation->sub_task() = sub_context.build_rendering_task();
 		sub_task = task_transformation;
-	}
-	else
-	{
-		sub_task = new rendering::TaskSurfaceEmpty();
 	}
 
 	rendering::TaskBlend::Handle task_blend(new rendering::TaskBlend());

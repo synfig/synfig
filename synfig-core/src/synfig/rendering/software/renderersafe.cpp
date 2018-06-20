@@ -39,23 +39,7 @@
 
 #include "renderersafe.h"
 
-#include "../common/optimizer/optimizercalcbounds.h"
-#include "../common/optimizer/optimizerlinear.h"
-#include "../common/optimizer/optimizersurface.h"
-#include "../common/optimizer/optimizersurfaceconvert.h"
-#include "../common/optimizer/optimizersurfacecreate.h"
-#include "../common/optimizer/optimizersurfacedestroy.h"
-#include "../common/optimizer/optimizersurfaceresample.h"
-#include "../common/optimizer/optimizertransformationaffine.h"
-
-#include "optimizer/optimizerblendsw.h"
-#include "optimizer/optimizerblursw.h"
-#include "optimizer/optimizercontoursw.h"
-#include "optimizer/optimizerlayersw.h"
-#include "optimizer/optimizermeshsw.h"
-#include "optimizer/optimizerpixelcolormatrixsw.h"
-#include "optimizer/optimizerpixelgammasw.h"
-#include "optimizer/optimizersurfaceresamplesw.h"
+#include "task/tasksw.h"
 
 #endif
 
@@ -72,23 +56,7 @@ using namespace rendering;
 
 RendererSafe::RendererSafe()
 {
-	// register optimizers
-	register_optimizer(new OptimizerTransformationAffine());
-	register_optimizer(new OptimizerSurfaceResample());
-	register_optimizer(new OptimizerCalcBounds());
-
-	register_optimizer(new OptimizerBlendSW());
-	register_optimizer(new OptimizerBlurSW());
-	register_optimizer(new OptimizerContourSW());
-	register_optimizer(new OptimizerLayerSW());
-	register_optimizer(new OptimizerPixelColorMatrixSW());
-	register_optimizer(new OptimizerPixelGammaSW());
-	register_optimizer(new OptimizerSurfaceResampleSW());
-
-	register_optimizer(new OptimizerSurfaceConvert());
-
-	register_optimizer(new OptimizerLinear());
-	register_optimizer(new OptimizerSurfaceCreate());
+	register_mode(TaskSW::mode_token.handle());
 }
 
 RendererSafe::~RendererSafe() { }

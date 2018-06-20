@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set +e
+set -e
 
 AUTORECONF=`which autoreconf`
 if test -z $AUTORECONF; then

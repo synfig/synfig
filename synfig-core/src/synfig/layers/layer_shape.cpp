@@ -1247,9 +1247,9 @@ Layer_Shape::render_shape(Surface *surface, bool useblend, const RendDesc &rendd
 	Matrix translate;
 	translate.set_translate(origin);
 	Matrix world_to_pixels_matrix =
-		translate
+	    renddesc.get_world_to_pixels_matrix()
 	  * renddesc.get_transformation_matrix()
-	  * renddesc.get_world_to_pixels_matrix();
+	  * translate;
 
 	rendering::software::Contour::render_contour(
 		*surface,
@@ -1273,7 +1273,7 @@ Layer_Shape::build_composite_task_vfunc(ContextParams /*context_params*/)const
 
 	rendering::TaskContour::Handle task_contour(new rendering::TaskContour());
 	// TODO: multithreading without this copying
-	task_contour->transformation.set_translate( param_origin.get(Vector()) );
+	task_contour->transformation->matrix.set_translate( param_origin.get(Vector()) );
 	task_contour->contour = new rendering::Contour();
 	task_contour->contour->assign(*contour);
 	task_contour->contour->color = param_color.get(Color());

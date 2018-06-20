@@ -214,15 +214,25 @@ png_trgt::start_frame(synfig::ProgressCallback *callback)
 	char synfig     [] = "SYNFIG";
 
 	// Output any text info along with the file
-	png_text comments[]=
-	{
-		{ PNG_TEXT_COMPRESSION_NONE, title, const_cast<char *>(get_canvas()->get_name().c_str()),
-		  strlen(get_canvas()->get_name().c_str()) },
-		{ PNG_TEXT_COMPRESSION_NONE, description, const_cast<char *>(get_canvas()->get_description().c_str()),
-		  strlen(get_canvas()->get_description().c_str()) },
-		{ PNG_TEXT_COMPRESSION_NONE, software, synfig, strlen(synfig) },
-	};
-	png_set_text(png_ptr,info_ptr,comments,sizeof(comments)/sizeof(png_text));
+	png_text comments[3];
+	memset(comments, 0, sizeof(comments));
+
+	comments[0].compression = PNG_TEXT_COMPRESSION_NONE;
+	comments[0].key         = title;
+	comments[0].text        = const_cast<char *>(get_canvas()->get_name().c_str());
+	comments[0].text_length = strlen(comments[0].text);
+
+	comments[1].compression = PNG_TEXT_COMPRESSION_NONE;
+	comments[1].key         = description;
+	comments[1].text        = const_cast<char *>(get_canvas()->get_description().c_str());
+	comments[1].text_length = strlen(comments[1].text);
+
+	comments[2].compression = PNG_TEXT_COMPRESSION_NONE;
+	comments[2].key         = software;
+	comments[2].text        = synfig;
+	comments[2].text_length = strlen(comments[2].text);
+
+	png_set_text(png_ptr, info_ptr, comments, sizeof(comments)/sizeof(png_text));
 
 	png_write_info_before_PLTE(png_ptr, info_ptr);
 	png_write_info(png_ptr, info_ptr);

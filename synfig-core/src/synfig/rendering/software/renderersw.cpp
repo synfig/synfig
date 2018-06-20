@@ -39,33 +39,15 @@
 
 #include "renderersw.h"
 
-#include "../common/optimizer/optimizerblendassociative.h"
-#include "../common/optimizer/optimizerblendblend.h"
-#include "../common/optimizer/optimizerblendcomposite.h"
-#include "../common/optimizer/optimizerblendseparate.h"
-#include "../common/optimizer/optimizerblendsplit.h"
-#include "../common/optimizer/optimizerblendzero.h"
-#include "../common/optimizer/optimizercalcbounds.h"
-#include "../common/optimizer/optimizerlinear.h"
-#include "../common/optimizer/optimizerlist.h"
-#include "../common/optimizer/optimizerpixelprocessorsplit.h"
-#include "../common/optimizer/optimizersplit.h"
-#include "../common/optimizer/optimizersurface.h"
-#include "../common/optimizer/optimizersurfaceconvert.h"
-#include "../common/optimizer/optimizersurfacecreate.h"
-#include "../common/optimizer/optimizersurfacedestroy.h"
-#include "../common/optimizer/optimizersurfaceresample.h"
-#include "../common/optimizer/optimizertransformation.h"
-#include "../common/optimizer/optimizertransformationaffine.h"
+#include  "task/tasksw.h"
 
-#include "optimizer/optimizerblendsw.h"
-#include "optimizer/optimizerblursw.h"
-#include "optimizer/optimizercontoursw.h"
-#include "optimizer/optimizerlayersw.h"
-#include "optimizer/optimizermeshsw.h"
-#include "optimizer/optimizerpixelcolormatrixsw.h"
-#include "optimizer/optimizerpixelgammasw.h"
-#include "optimizer/optimizersurfaceresamplesw.h"
+#include "../common/optimizer/optimizerblendassociative.h"
+#include "../common/optimizer/optimizerblendmerge.h"
+#include "../common/optimizer/optimizerblendtotarget.h"
+#include "../common/optimizer/optimizerlist.h"
+#include "../common/optimizer/optimizersplit.h"
+#include "../common/optimizer/optimizertransformation.h"
+#include "../common/optimizer/optimizerpass.h"
 
 #include "function/fft.h"
 
@@ -84,31 +66,17 @@ using namespace rendering;
 
 RendererSW::RendererSW()
 {
+	register_mode(TaskSW::mode_token.handle());
+
 	// register optimizers
-	register_optimizer(new OptimizerTransformationAffine());
-	register_optimizer(new OptimizerSurfaceResample());
-	register_optimizer(new OptimizerCalcBounds());
+	register_optimizer(new OptimizerTransformation());
 
-	register_optimizer(new OptimizerBlendSW());
-	register_optimizer(new OptimizerBlurSW());
-	register_optimizer(new OptimizerContourSW());
-	register_optimizer(new OptimizerLayerSW());
-	register_optimizer(new OptimizerPixelColorMatrixSW());
-	register_optimizer(new OptimizerPixelGammaSW());
-	register_optimizer(new OptimizerSurfaceResampleSW());
-
-	register_optimizer(new OptimizerBlendZero());
-	register_optimizer(new OptimizerBlendBlend());
-	register_optimizer(new OptimizerBlendComposite());
+	register_optimizer(new OptimizerPass(false));
+	register_optimizer(new OptimizerPass(true));
+	register_optimizer(new OptimizerBlendMerge());
 	register_optimizer(new OptimizerList());
+	register_optimizer(new OptimizerBlendToTarget());
 	register_optimizer(new OptimizerBlendAssociative());
-	register_optimizer(new OptimizerBlendSeparate());
-	register_optimizer(new OptimizerBlendSplit());
-	register_optimizer(new OptimizerPixelProcessorSplit());
-	register_optimizer(new OptimizerSurfaceConvert());
-
-	register_optimizer(new OptimizerLinear());
-	register_optimizer(new OptimizerSurfaceCreate());
 	//register_optimizer(new OptimizerSplit());
 }
 
@@ -119,7 +87,6 @@ String RendererSW::get_name() const { return _("Cobra (software)"); }
 void RendererSW::initialize()
 {
 	software::FFT::initialize();
-
 }
 
 void RendererSW::deinitialize()

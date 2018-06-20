@@ -133,13 +133,11 @@ DebugSurface::save_to_file(const Surface &surface, const String &filename, bool 
 void
 DebugSurface::save_to_file(const rendering::Surface &surface, const String &filename, bool overwrite)
 {
-	if (surface.is_created())
-	{
+	if (surface.is_exists()) {
 		std::vector<Color> buffer(surface.get_pixels_count());
 		surface.get_pixels(&buffer.front());
 		save_to_file(&buffer.front(), surface.get_width(), surface.get_height(), 0, filename, overwrite);
-	}
-	else
+	} else
 		save_to_file(NULL, 0, 0, 0, filename, overwrite);
 }
 
@@ -150,4 +148,19 @@ DebugSurface::save_to_file(const rendering::Surface::Handle &surface, const Stri
 		save_to_file(*surface, filename, overwrite);
 	else
 		save_to_file(NULL, 0, 0, 0, filename, overwrite);
+}
+
+void
+DebugSurface::save_to_file(const rendering::SurfaceResource::Handle &surface, const String &filename, bool overwrite) {
+	rendering::SurfaceResource::LockReadBase lock(surface);
+	if (lock.convert(rendering::Surface::Token::Handle(), false, true)) {
+		save_to_file(*lock.get_surface(), filename, overwrite);
+	} else
+	if (surface && surface->is_exists()) {
+		VectorInt size = surface->get_size();
+		std::vector<Color> buffer(size[0] * size[1]);
+		save_to_file(&buffer.front(), size[0], size[1], 0, filename, overwrite);
+	} else {
+		save_to_file(NULL, 0, 0, 0, filename, overwrite);
+	}
 }

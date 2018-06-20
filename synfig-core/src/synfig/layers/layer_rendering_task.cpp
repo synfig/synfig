@@ -36,7 +36,7 @@
 
 #include <synfig/context.h>
 #include <synfig/rendering/software/surfacesw.h>
-#include <synfig/rendering/software/task/tasksurfaceresamplesw.h>
+#include <synfig/rendering/software/task/tasktransformationaffinesw.h>
 
 #include <synfig/debug/debugsurface.h>
 
@@ -72,11 +72,11 @@ Layer_RenderingTask::get_color(Context /* context */, const Point &pos)const
 {
 	for(rendering::Task::List::const_iterator i = tasks.begin(); i != tasks.end(); ++i)
 	{
-		if (*i && (*i)->valid_target() && (*i)->target_surface.type_is<rendering::SurfaceSW>())
+		if (*i && (*i)->is_valid())
 		{
-			RectInt src_target_rect = (*i)->get_target_rect();
-			Vector src_lt = (*i)->get_source_rect_lt();
-			Vector src_rb = (*i)->get_source_rect_rb();
+			RectInt src_target_rect = (*i)->target_rect;
+			Vector src_lt = (*i)->source_rect.get_min();
+			Vector src_rb = (*i)->source_rect.get_max();
 
 			Matrix units_to_src_pixels;
 			units_to_src_pixels.m00 = (src_target_rect.maxx - src_target_rect.minx)/(src_rb[0] - src_lt[0]);
@@ -86,9 +86,10 @@ Layer_RenderingTask::get_color(Context /* context */, const Point &pos)const
 
 			Vector p = units_to_src_pixels.get_transformed(pos);
 			Rect src_target_rectf(src_target_rect.minx, src_target_rect.miny, src_target_rect.maxx, src_target_rect.maxy);
-			if (src_target_rectf.is_inside(p))
-				return rendering::SurfaceSW::Handle::cast_dynamic((*i)->target_surface)
-					->get_surface().linear_sample(p[0], p[1]);
+			if (src_target_rectf.is_inside(p)) {
+				rendering::SurfaceResource::LockRead<rendering::SurfaceSW> lock((*i)->target_surface);
+				if (lock) return lock->get_surface().linear_sample(p[0], p[1]);
+			}
 		}
 	}
 	return Color(0.0, 0.0, 0.0, 0.0);
@@ -117,11 +118,11 @@ Layer_RenderingTask::accelerated_render(Context /* context */, Surface *surface,
 
 		for(rendering::Task::List::const_reverse_iterator ri = tasks.rbegin(); ri != tasks.rend(); ++ri)
 		{
-			if (*ri && (*ri)->valid_target() && (*ri)->target_surface.type_is<rendering::SurfaceSW>())
+			if (*ri && (*ri)->is_valid())
 			{
-				RectInt src_target_rect = (*ri)->get_target_rect();
-				Vector src_lt = (*ri)->get_source_rect_lt();
-				Vector src_rb = (*ri)->get_source_rect_rb();
+				RectInt src_target_rect = (*ri)->target_rect;
+				Vector src_lt = (*ri)->source_rect.get_min();
+				Vector src_rb = (*ri)->source_rect.get_max();
 
 				Matrix src_pixels_to_units;
 				src_pixels_to_units.m00 = (src_rb[0] - src_lt[0])/(src_target_rect.maxx - src_target_rect.minx);
@@ -129,20 +130,21 @@ Layer_RenderingTask::accelerated_render(Context /* context */, Surface *surface,
 				src_pixels_to_units.m20 = src_lt[0] - src_target_rect.minx*src_pixels_to_units.m00;
 				src_pixels_to_units.m21 = src_lt[1] - src_target_rect.miny*src_pixels_to_units.m11;
 
-				Matrix transformation = src_pixels_to_units * units_to_dest_pixels;
+				Matrix transformation = units_to_dest_pixels * src_pixels_to_units;
 
-				rendering::TaskSurfaceResampleSW::resample(
-					*surface,
-					dest_target_rect,
-					rendering::SurfaceSW::Handle::cast_dynamic((*ri)->target_surface)->get_surface(),
-					src_target_rect,
-					transformation,
-					1.f,
-					Color::INTERPOLATION_LINEAR,
-					false,
-					false,
-					1.f,
-					Color::BLEND_COMPOSITE );
+				rendering::SurfaceResource::LockRead<rendering::SurfaceSW> lock((*ri)->target_surface);
+				if (lock)
+					rendering::TaskTransformationAffineSW::resample(
+						*surface,
+						dest_target_rect,
+						lock->get_surface(),
+						src_target_rect,
+						transformation,
+						1.f,
+						Color::INTERPOLATION_LINEAR,
+						false,
+						1.f,
+						Color::BLEND_COMPOSITE );
 			}
 		}
 	}

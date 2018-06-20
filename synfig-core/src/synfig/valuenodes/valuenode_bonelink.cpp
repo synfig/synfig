@@ -159,9 +159,8 @@ ValueNode_BoneLink::get_bone_transformation(Time t)const
 		bool scale_y   = (*scale_y_)  (t).get(true);
 
 		transformation.set_matrix(
-			    Matrix().set_scale(bone.get_local_scale())
-			  * bone.get_animated_matrix()
-		);
+			bone.get_animated_matrix()
+		  * Matrix().set_scale(bone.get_local_scale()) );
 
 		if (!translate) transformation.offset = Vector(0.0, 0.0);
 		if (!rotate) transformation.angle = Angle::zero();

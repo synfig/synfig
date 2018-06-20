@@ -5,7 +5,7 @@
 **	$Id$
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2015-2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -45,16 +45,19 @@ class TaskBlur: public Task
 {
 public:
 	typedef etl::handle<TaskBlur> Handle;
+	static Token token;
+	virtual Token::Handle get_token() const { return token.handle(); }
 
 	Blur blur;
 
-	TaskBlur() { }
-	Task::Handle clone() const { return clone_pointer(this); }
+	virtual int get_pass_subtask_index() const
+		{ return sub_task() ? PASSTO_THIS_TASK : PASSTO_NO_TASK; }
 
 	const Task::Handle& sub_task() const { return Task::sub_task(0); }
 	Task::Handle& sub_task() { return Task::sub_task(0); }
 
 	virtual Rect calc_bounds() const;
+	virtual void set_coords_sub_tasks();
 };
 
 } /* end namespace rendering */

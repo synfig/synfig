@@ -5,7 +5,7 @@
 **	$Id$
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2015-2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -50,22 +50,29 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
-Transformation::TransformedPoint
-Transformation::transform_vfunc(const Point &x) const
-{
-	return TransformedPoint(x);
-}
+bool
+Transformation::can_merge_outer_vfunc(const Transformation&) const
+	{ return false; }
 
-Transformation::TransformedPoint
-Transformation::back_transform_vfunc(const Point &x) const
-{
-	return TransformedPoint(x);
-}
+bool
+Transformation::can_merge_inner_vfunc(const Transformation&) const
+	{ return false; }
+
+void
+Transformation::merge_outer_vfunc(const Transformation&)
+	{ }
+
+void
+Transformation::merge_inner_vfunc(const Transformation&)
+	{ }
 
 Mesh::Handle
 Transformation::build_mesh_vfunc(const Rect &target_rect, const Vector &precision) const
 {
 	typedef std::pair<int, Mesh::Vertex> GridPoint;
+	Transformation::Handle back_transform = create_inverted();
+	if (!back_transform)
+		return Mesh::Handle();
 
 	const Vector grid_p0 = target_rect.get_min();
 	const Vector grid_p1 = target_rect.get_max();
@@ -87,9 +94,9 @@ Transformation::build_mesh_vfunc(const Rect &target_rect, const Vector &precisio
 		{
 			Vector p( grid_p0[0] + i*grid_step[0],
 					  grid_p0[1] + j*grid_step[1] );
-			TransformedPoint tp = back_transform_vfunc(p);
-			if (tp.visible) {
-				grid.push_back(GridPoint(visible_vertex_count, Mesh::Vertex(p, tp.p)));
+			Point tp = back_transform->transform(p);
+			if (tp.is_valid()) {
+				grid.push_back(GridPoint(visible_vertex_count, Mesh::Vertex(p, tp)));
 				++visible_vertex_count;
 			} else {
 				grid.push_back(GridPoint(-1, Mesh::Vertex()));
@@ -146,63 +153,71 @@ Transformation::build_mesh_vfunc(const Rect &target_rect, const Vector &precisio
 	return mesh;
 }
 
-/*
-Point
-Transformation::get_derivation_vfunc(int level, const Point &x, Real epsilon) const
+Transformation*
+Transformation::create_merged(const Transformation& other) const
 {
-	if (level <= 0) return transform_vfunc(x).p;
-	return Point(
-		( get_derivation_vfunc(level-1, Point(x[0] + epsilon, x[1]), epsilon)[0]
-		- get_derivation_vfunc(level-1, Point(x[0] - epsilon, x[1]), epsilon)[0] ) / (2.0*epsilon),
-		( get_derivation_vfunc(level-1, Point(x[0], x[1] + epsilon), epsilon)[1]
-		- get_derivation_vfunc(level-1, Point(x[0], x[1] - epsilon), epsilon)[1] ) / (2.0*epsilon) );
+	if (can_merge_inner(other)) {
+		Transformation *t = clone();
+		if (!t) return 0;
+		if (!t->can_merge_inner(other)) return 0;
+		t->merge_inner(other);
+		return t;
+	} else
+	if (other.can_merge_outer(*this)) {
+		Transformation *t = other.clone();
+		if (!t) return 0;
+		if (!t->can_merge_outer(*this)) return 0;
+		t->merge_outer(*this);
+		return t;
+	}
+	return 0;
 }
-*/
 
-Transformation::TransformedPoint
-Transformation::transform(const Point &x) const
-	{ return transform_vfunc(x); }
+bool
+Transformation::can_merge_outer(const Transformation& other) const {
+	return (bool)dynamic_cast<const TransformationNone*>(&other)
+		 || can_merge_outer_vfunc(other);
+}
 
-Transformation::TransformedPoint
-Transformation::back_transform(const Point &x) const
-	{ return back_transform_vfunc(x); }
+bool
+Transformation::can_merge_inner(const Transformation& other) const {
+	return (bool)dynamic_cast<const TransformationNone*>(&other)
+		 || can_merge_inner_vfunc(other);
+}
 
+bool
+Transformation::merge_outer(const Transformation& other) {
+	if (!can_merge_outer(other)) return false;
+	merge_outer_vfunc(other);
+	return true;
+}
+
+bool
+Transformation::merge_inner(const Transformation& other) {
+	if (!can_merge_inner(other)) return false;
+	merge_inner_vfunc(other);
+	return true;
+}
 
 Mesh::Handle
 Transformation::build_mesh(const Rect &target_rect, const Vector &precision) const
 {
-	const Real epsilon = 1e-6;
+	const Real epsilon = real_low_precision<Real>();
 
-	if ( target_rect.get_min().is_nan_or_inf()
-	  || target_rect.get_max().is_nan_or_inf()
-	  || fabs(target_rect.maxx - target_rect.minx) < epsilon
-	  || fabs(target_rect.maxy - target_rect.miny) < epsilon )
+	if (!target_rect.is_valid())
 		return Mesh::Handle();
-
-	Rect valid_target_rect(target_rect);
-	if (valid_target_rect.maxx < valid_target_rect.minx)
-		std::swap(valid_target_rect.maxx, valid_target_rect.minx);
-	if (valid_target_rect.maxy < valid_target_rect.miny)
-		std::swap(valid_target_rect.maxy, valid_target_rect.miny);
 
 	Vector valid_precision(fabs(precision[0]), fabs(precision[1]));
 	if (std::isnan(valid_precision[0]) || std::isinf(valid_precision[0]))
-		valid_precision[0] = valid_target_rect.maxx - valid_target_rect.minx;
+		valid_precision[0] = target_rect.get_width();
 	if (std::isnan(valid_precision[1]) || std::isinf(valid_precision[1]))
-		valid_precision[1] = valid_target_rect.maxx - valid_target_rect.minx;
+		valid_precision[1] = target_rect.get_height();
 	if (valid_precision[0] < epsilon)
 		valid_precision[0] = epsilon;
 	if (valid_precision[1] < epsilon)
 		valid_precision[1] = epsilon;
 
-	return build_mesh_vfunc(valid_target_rect, valid_precision);
+	return build_mesh_vfunc(target_rect, valid_precision);
 }
-
-Mesh::Handle
-Transformation::build_mesh(const Point &target_rect_lt, const Point &target_rect_rb, const Vector &precision) const
-{
-	return build_mesh(Rect(target_rect_lt, target_rect_rb), precision);
-}
-
 
 /* === E N T R Y P O I N T ================================================= */

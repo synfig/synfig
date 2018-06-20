@@ -5,7 +5,7 @@
 **	$Id$
 **
 **	\legal
-**	......... ... 2016 Ivan Mahonin
+**	......... ... 2016-2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -46,11 +46,13 @@ class SurfaceSWPacked: public Surface
 {
 public:
 	typedef etl::handle<SurfaceSWPacked> Handle;
+	static Token token;
+	virtual Token::Handle get_token() const
+		{ return token.handle(); }
 
 protected:
-	virtual bool create_vfunc();
 	virtual bool assign_vfunc(const Surface &surface);
-	virtual void destroy_vfunc();
+	virtual bool reset_vfunc();
 	virtual bool get_pixels_vfunc(Color *buffer) const;
 
 private:
@@ -59,14 +61,10 @@ private:
 public:
 	SurfaceSWPacked()
 		{ }
-
 	explicit SurfaceSWPacked(const Surface &other)
 		{ assign(other); }
-
-	~SurfaceSWPacked()
-		{ destroy(); }
-
-	const software::PackedSurface& get_surface() const { return surface; }
+	const software::PackedSurface& get_surface() const
+		{ return surface; }
 };
 
 } /* end namespace rendering */

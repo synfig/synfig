@@ -5,7 +5,7 @@
 **	$Id$
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2015-2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -40,26 +40,12 @@ namespace synfig
 namespace rendering
 {
 
-class TaskList;
-
-//! Optimizer runs for task.
-//! OptimizerList transforms TaskList, which contains other TaskList
-//! into linear (single level) list.
+//! OptimizerList generates TaskList from sequence of TaskInterfaceTargetAsSource,
+//! also merges sub-lists into parent list
 class OptimizerList: public Optimizer
 {
-private:
-	void clone_list(const RunParams &params, Task::List::iterator &i, etl::handle<TaskList> &list) const;
-
 public:
-	OptimizerList()
-	{
-		category_id = CATEGORY_ID_POST_SPECIALIZE;
-		depends_from = CATEGORY_SPECIALIZE;
-		mode = MODE_REPEAT_PARENT;
-		deep_first = true;
-		for_task = true;
-	}
-
+	OptimizerList();
 	virtual void run(const RunParams &params) const;
 };
 

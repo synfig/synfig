@@ -1,0 +1,246 @@
+/* === S Y N F I G ========================================================= */
+/*!	\file threadpool.cpp
+**	\brief ThreadPool File
+**
+**	$Id$
+**
+**	\legal
+**	......... ... 2018 Ivan Mahonin
+**
+**	This package is free software; you can redistribute it and/or
+**	modify it under the terms of the GNU General Public License as
+**	published by the Free Software Foundation; either version 2 of
+**	the License, or (at your option) any later version.
+**
+**	This package is distributed in the hope that it will be useful,
+**	but WITHOUT ANY WARRANTY; without even the implied warranty of
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+**	General Public License for more details.
+**	\endlegal
+*/
+/* ========================================================================= */
+
+/* === H E A D E R S ======================================================= */
+
+#ifdef USING_PCH
+#	include "pch.h"
+#else
+#ifdef HAVE_CONFIG_H
+#	include <config.h>
+#endif
+
+
+//#define DEBUG_PTHREAD_MEASURE
+
+
+#ifdef DEBUG_PTHREAD_MEASURE
+#include <pthread.h>
+#include <time.h>
+#endif
+
+#include <synfig/localization.h>
+#include <synfig/general.h>
+
+#include "threadpool.h"
+#include "real.h"
+
+#endif
+
+/* === U S I N G =========================================================== */
+
+using namespace std;
+using namespace synfig;
+
+/* === M A C R O S ========================================================= */
+
+/* === G L O B A L S ======================================================= */
+
+/* === M E T H O D S ======================================================= */
+
+ThreadPool ThreadPool::instance;
+
+
+// ThreadPool::Group
+
+ThreadPool::Group::Group():
+	multithreading(), running_threads(0), sum_weight() { }
+
+ThreadPool::Group::~Group()
+	{ run(); }
+
+void
+ThreadPool::Group::process(int begin, int end) {
+	for(int i = begin; i < end; ++i)
+		try { tasks[i].second(); } catch(...) { }
+	Glib::Threads::Mutex::Lock lock(mutex);
+	if (!--running_threads) cond.signal();
+}
+
+void
+ThreadPool::Group::enqueue(const Slot &slot, double weight) {
+	weight = std::max(real_precision<double>(), std::min(1.0/real_precision<double>(), weight));
+	tasks.push_back(Entry(weight, slot));
+	sum_weight += weight;
+}
+
+void
+ThreadPool::Group::run(bool force_thread) {
+	// enqueue parallel tasks
+	double sum = 0.0;
+	int begin = 0;
+	int end = 0;
+
+	for(int i = 0; i < (int)tasks.size(); ++i) {
+		end = i + 1;
+		sum += tasks[i].first;
+		if (sum_weight - sum < 0.75) break;
+		if (sum >= 0.75) {
+			multithreading = true;
+			++running_threads;
+			instance.enqueue( sigc::bind( sigc::mem_fun(this, &Group::process), begin, end ));
+			sum_weight -= sum;
+			sum = 0.0;
+			begin = end;
+		}
+	}
+	end = (int)tasks.size();
+
+	// run in current thread
+	if (begin < end) {
+		if (force_thread) {
+			multithreading = true;
+			++running_threads;
+			instance.enqueue( sigc::bind( sigc::mem_fun(this, &Group::process), begin, end ));
+		} else {
+			for(int i = begin; i < end; ++i)
+				try { tasks[i].second(); } catch(...) { }
+		}
+	}
+
+	// wait
+	if (multithreading) {
+		Glib::Threads::Mutex::Lock lock(mutex);
+		while(running_threads > 0) instance.wait(cond, mutex);
+	}
+
+	// reset
+	multithreading = false;
+	tasks.clear();
+	sum_weight = 0.0;
+}
+
+
+// ThreadPool
+
+ThreadPool::ThreadPool():
+	max_running_threads(0),
+	running_threads(0),
+	ready_threads(0),
+	stopped(false)
+{
+	max_running_threads = g_get_num_processors();
+	if (max_running_threads < 1) max_running_threads = 1;
+	if (max_running_threads > 2) --max_running_threads;
+	++running_threads;
+}
+
+ThreadPool::ThreadPool(const ThreadPool&):
+	max_running_threads(0),
+	running_threads(0),
+	ready_threads(0),
+	queue_size(0),
+	stopped(false) { }
+
+ThreadPool::~ThreadPool() {
+	{
+		Glib::Threads::Mutex::Lock lock(mutex);
+		stopped = true;
+		cond.broadcast();
+	}
+
+	while(true) {
+		Glib::Threads::Thread *thread = 0;
+		{
+			Glib::Threads::Mutex::Lock lock(mutex);
+			if (threads.empty()) break;
+			thread = threads.back();
+			threads.pop_back();
+		}
+		thread->join();
+	}
+}
+
+void
+ThreadPool::thread_loop(int index) {
+	info("started new thread in ThreadPool, %d", index);
+	++running_threads;
+
+	#ifdef DEBUG_PTHREAD_MEASURE
+	clockid_t clock_id;
+	pthread_getcpuclockid(pthread_self(), &clock_id);
+	#endif
+
+	while(true) {
+		Slot slot;
+		{
+			Glib::Threads::Mutex::Lock lock(mutex);
+			while(queue.empty() || running_threads > max_running_threads) {
+				if (stopped) return;
+				++ready_threads;
+				wait(cond, mutex);
+				--ready_threads;
+			}
+			slot = queue.front();
+			queue.pop();
+			--queue_size;
+		}
+
+		#ifdef DEBUG_PTHREAD_MEASURE
+		struct timespec spec;
+		clock_gettime(clock_id, &spec);
+		long long time0 = spec.tv_sec*1000000000ll + spec.tv_nsec;
+		long long rtime0 = g_get_monotonic_time();
+
+		info( "ThreadPool thread %d: begin, running threads: %d, ready threads: %d, queue size: %d",
+			  index,
+			  (int)running_threads,
+			  (int)ready_threads,
+			  (int)queue_size );
+		#endif
+
+		slot();
+
+		#ifdef DEBUG_PTHREAD_MEASURE
+		clock_gettime(clock_id, &spec);
+		long long time1 = spec.tv_sec*1000000000ll + spec.tv_nsec;
+		long long rtime1 = g_get_monotonic_time();
+
+		info( "ThreadPool thread %d: processed task for %.6f (real %.6f)",
+			  index,
+			  (double)(time1 - time0)*1e-9,
+			  (double)(rtime1 - rtime0)*1e-6 );
+		#endif
+	}
+
+	--running_threads;
+	info("thread in ThreadPool stopped, %d", index);
+}
+
+void
+ThreadPool::enqueue(const Slot &slot) {
+	Glib::Threads::Mutex::Lock lock(mutex);
+	++queue_size;
+	queue.push(slot);
+	if (ready_threads <= 0 && running_threads < max_running_threads)
+		threads.push_back(
+			Glib::Threads::Thread::create(
+				sigc::bind( sigc::mem_fun(this, &ThreadPool::thread_loop), (int)threads.size() )));
+	cond.signal();
+}
+
+void
+ThreadPool::wait(Glib::Threads::Cond &cond, Glib::Threads::Mutex &mutex) {
+	--running_threads;
+	cond.wait(mutex);
+	++running_threads;
+}

@@ -30,14 +30,6 @@
 
 #include "etl_config.h"
 
-#ifdef HAVE_LIBPTHREAD
-#define ETL_LOCK_REFCOUNTS
-#endif
-
-#ifdef ETL_LOCK_REFCOUNTS
-#  include "mutex"
-#endif
-
 #include "_handle.h"
 
 /* === E N D =============================================================== */

@@ -287,7 +287,7 @@ software::Contour::build_polyspan(
 				break;
 			case rendering::Contour::LINE:
 				p1 = transform_matrix.get_transformed(i->p1);
-				out_polyspan.line_to(p1[0], p1[1]);
+				out_polyspan.line_to(p1[0], p1[1], detail);
 				break;
 			case rendering::Contour::CONIC:
 				p1 = transform_matrix.get_transformed(i->p1);

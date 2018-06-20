@@ -38,7 +38,7 @@
 
 namespace synfig {
 
-namespace rendering { class SurfaceSW; }
+namespace rendering { class SurfaceResource; }
 
 /*!	\class Target_Scanline
 **	\brief This is a Target class that implements the render fucntion
@@ -51,7 +51,7 @@ class Target_Scanline : public Target
 
 	String engine_;
 
-	bool call_renderer(Context &context, const etl::handle<rendering::SurfaceSW> &surfacesw, int quality, const RendDesc &renddesc, ProgressCallback *cb);
+	bool call_renderer(Context &context, const etl::handle<rendering::SurfaceResource> &surface, int quality, const RendDesc &renddesc, ProgressCallback *cb);
 
 public:
 	typedef etl::handle<Target_Scanline> Handle;

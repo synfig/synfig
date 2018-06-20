@@ -5,7 +5,7 @@
 **	$Id$
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2015-2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -51,6 +51,8 @@ using namespace rendering;
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
+
+ModeToken TaskGL::mode_token("opengl");
 
 gl::Environment& TaskGL::env() const { return gl::Environment::get_instance(); }
 

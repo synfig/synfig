@@ -30,6 +30,7 @@
 #include <cstdio>
 
 #include <map>
+#include <atomic>
 
 #include "optimizer.h"
 
@@ -50,6 +51,7 @@ class Renderer: public etl::shared_object
 {
 public:
 	typedef etl::handle<Renderer> Handle;
+	typedef std::multimap<double, ModeToken::Handle> ModeMap;
 
 	struct DebugOptions {
 		String task_list_log;
@@ -63,8 +65,10 @@ private:
 	static RenderQueue *queue;
 	static DebugOptions debug_options;
 	static long long last_registered_optimizer_index;
+	static long long last_batch_index; // TODO: atomic
 
-	Optimizer::List optimizers[Optimizer::CATEGORY_ID_COUNT];
+	ModeList modes;
+	Optimizer::List optimizers[Optimizer::CATEGORIES_COUNT];
 
 public:
 
@@ -72,19 +76,46 @@ public:
 
 	virtual String get_name() const = 0;
 
-	const Optimizer::List& get_optimizers(Optimizer::CategoryId category_id) const { return optimizers[category_id]; }
+	const Optimizer::List& get_optimizers(Optimizer::CategoryId category_id) const
+		{ return optimizers[category_id]; }
 	bool is_optimizer_registered(const Optimizer::Handle &optimizer) const;
 	void register_optimizer(Real order, const Optimizer::Handle &optimizer);
 	void register_optimizer(const Optimizer::Handle &optimizer);
 	void unregister_optimizer(const Optimizer::Handle &optimizer);
 
+	const ModeList& get_modes() const
+		{ return modes; }
+	void register_mode(int index, const ModeToken::Handle &mode);
+	void register_mode(const ModeToken::Handle &mode);
+	void unregister_mode(const ModeToken::Handle &mode);
+
 private:
-	void optimize_recursive(
+	int count_tasks_recursive(Task::List &list) const;
+	int count_tasks(Task::List &list) const;
+	void calc_coords(const Task::List &list) const;
+	void specialize_recursive(Task::List &list) const;
+	void specialize(Task::List &list) const;
+	void remove_dummy(Task::List &list) const;
+	void linearize(Task::List &list) const;
+
+	int subtasks_count(const Task::Handle &task, int max_count) const;
+
+	bool
+	call_optimizers(
 		const Optimizer::List &optimizers,
 		const Optimizer::RunParams& params,
-		int &calls_count,
-		int &optimizations_count,
+		std::atomic<int> *calls_count,
+		std::atomic<int> *optimizations_count,
+		bool deep_first ) const;
+
+	void optimize_recursive(
+		const Optimizer::List *optimizers,  // pass by pointer for use with sigc::bind
+		const Optimizer::RunParams *params, // pass by pointer for use with sigc::bind
+		std::atomic<int> *calls_count,
+		std::atomic<int> *optimizations_count,
 		int max_level ) const;
+
+	void optimize(Optimizer::Category category, Task::List &list) const;
 
 	void log(
 		const String &logfile,
@@ -105,13 +136,16 @@ private:
 	typedef std::multimap<DepTargetKey, DepTargetValue> DepTargetMap;
 	typedef DepTargetMap::value_type                    DepTargetPair;
 
-	void find_deps(const Task::List &list) const;
+	void find_deps(const Task::List &list, long long batch_index) const;
 
 public:
 	int get_max_simultaneous_threads() const;
 	void optimize(Task::List &list) const;
+
 	bool run(const Task::List &list) const;
-	void enqueue(const Task::List &list, const Task::Handle &finish_signal_task = Task::Handle()) const;
+	bool enqueue(
+		const Task::List &list,
+		const Task::Handle &finish_signal_task = Task::Handle() ) const;
 
 	static void initialize();
 	static void deinitialize();

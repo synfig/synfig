@@ -1,25 +1,18 @@
 RENDERING_SOFTWARE_TASK_HH = \
-	rendering/software/task/taskblendsw.h \
-	rendering/software/task/taskblursw.h \
-	rendering/software/task/taskcontoursw.h \
-	rendering/software/task/taskexpandsurfacesw.h \
-	rendering/software/task/tasklayersw.h \
 	rendering/software/task/taskmeshsw.h \
-	rendering/software/task/taskpixelcolormatrixsw.h \
-	rendering/software/task/taskpixelgammasw.h \
-	rendering/software/task/tasksurfaceresamplesw.h \
-	rendering/software/task/tasksw.h
+	rendering/software/task/tasksw.h \
+	rendering/software/task/tasktransformationaffinesw.h
 
 RENDERING_SOFTWARE_TASK_CC = \
 	rendering/software/task/taskblendsw.cpp \
 	rendering/software/task/taskblursw.cpp \
 	rendering/software/task/taskcontoursw.cpp \
-	rendering/software/task/taskexpandsurfacesw.cpp \
 	rendering/software/task/tasklayersw.cpp \
 	rendering/software/task/taskmeshsw.cpp \
 	rendering/software/task/taskpixelcolormatrixsw.cpp \
 	rendering/software/task/taskpixelgammasw.cpp \
-	rendering/software/task/tasksurfaceresamplesw.cpp
+	rendering/software/task/tasksw.cpp \
+	rendering/software/task/tasktransformationaffinesw.cpp
 
 RENDERING_SOFTWARE_HH += \
     $(RENDERING_SOFTWARE_TASK_HH)

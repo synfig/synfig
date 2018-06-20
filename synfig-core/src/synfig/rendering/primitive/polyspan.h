@@ -75,8 +75,9 @@ public:
 	//for assignment to flags value
 	enum PolySpanFlags
 	{
-		NotSorted = 0x8000,
-		NotClosed =	0x4000
+		NotSorted       = 0x8000,
+		NotClosed       = 0x4000,
+		NotFinishedLine = 0x2000
 	};
 
 	enum {
@@ -95,6 +96,11 @@ private:
 	//ending position of last primitive
 	Real			cur_x;
 	Real			cur_y;
+
+	//ending position of not-finished line
+	Real			cur_line_x;
+	Real			cur_line_y;
+
 
 	//starting position of current primitive list
 	Real			close_x;
@@ -119,6 +125,8 @@ private:
 	static bool clip_cubic(const Point *const p, const RectInt &r);
 	static Real max_edges_cubic(const Point *const p);
 	static void subd_cubic_stack(Point *arc);
+
+	void finish_line();
 
 public:
 	Polyspan();
@@ -158,9 +166,9 @@ public:
 	void move_to(Real x, Real y);
 
 	//primitive_to functions
-	void line_to(Real x, Real y);
-	void conic_to(Real x, Real y, Real x1, Real y1, Real detail = 0.25);
-	void cubic_to(Real x, Real y, Real x1, Real y1, Real x2, Real y2, Real detail = 0.25);
+	void line_to(Real x, Real y, Real detail = 0.5);
+	void conic_to(Real x, Real y, Real x1, Real y1, Real detail = 0.5);
+	void cubic_to(Real x, Real y, Real x1, Real y1, Real x2, Real y2, Real detail = 0.5);
 
 	void draw_scanline(int y, Real x1, Real y1, Real x2, Real y2);
 	void draw_line(Real x1, Real y1, Real x2, Real y2);

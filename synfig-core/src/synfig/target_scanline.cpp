@@ -41,8 +41,10 @@
 #include "render.h"
 #include "string.h"
 #include "surface.h"
-#include "rendering/software/surfacesw.h"
 #include "rendering/renderer.h"
+#include "rendering/surface.h"
+#include "rendering/software/surfacesw.h"
+#include "rendering/common/task/tasktransformation.h"
 
 #endif
 
@@ -80,10 +82,10 @@ Target_Scanline::next_frame(Time& time)
 }
 
 bool
-synfig::Target_Scanline::call_renderer(Context &context, const etl::handle<rendering::SurfaceSW> &surfacesw, int /* quality */, const RendDesc &renddesc, ProgressCallback * /* cb */)
+synfig::Target_Scanline::call_renderer(Context &context, const etl::handle<rendering::SurfaceResource> &surface, int /* quality */, const RendDesc &renddesc, ProgressCallback * /* cb */)
 {
 	rendering::Task::Handle task;
-	surfacesw->set_size(renddesc.get_w(), renddesc.get_h());
+	surface->create(renddesc.get_w(), renddesc.get_h());
 	{
 		// TODO: quick hack
 		// we need to pass already sorted context to renderer
@@ -104,9 +106,21 @@ synfig::Target_Scanline::call_renderer(Context &context, const etl::handle<rende
 		if (!renderer)
 			throw "Renderer '" + get_engine() + "' not found";
 
-		task->target_surface = surfacesw;
-		task->target_surface->create();
-		task->init_target_rect(RectInt(VectorInt::zero(), surfacesw->get_size()), renddesc.get_tl(), renddesc.get_br());
+		Vector p0 = renddesc.get_tl();
+		Vector p1 = renddesc.get_br();
+		if (p0[0] > p1[0] || p0[1] > p1[1]) {
+			Matrix m;
+			if (p0[0] > p1[0]) { m.m00 = -1.0; m.m20 = p0[0] + p1[0]; std::swap(p0[0], p1[0]); }
+			if (p0[1] > p1[1]) { m.m11 = -1.0; m.m21 = p0[1] + p1[1]; std::swap(p0[1], p1[1]); }
+			TaskTransformationAffine::Handle t = new TaskTransformationAffine();
+			t->transformation->matrix = m;
+			t->sub_task() = task;
+			task = t;
+		}
+
+		task->target_surface = surface;
+		task->target_rect = RectInt( VectorInt(), surface->get_size() );
+		task->source_rect = Rect(p0, p1);
 
 		rendering::Task::List list;
 		list.push_back(task);
@@ -175,8 +189,7 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 				#if USE_PIXELRENDERING_LIMIT
 				if(desc.get_w()*desc.get_h() > PIXEL_RENDERING_LIMIT)
 				{
-					SurfaceSW::Handle surfacesw(new SurfaceSW());
-					Surface &surface = surfacesw->get_surface();
+					SurfaceResource::Handle surface = new SurfaceResource();
 
 					int rowheight = PIXEL_RENDERING_LIMIT/desc.get_w();
 					if (!rowheight) rowheight = 1; // TODO: render partial lines to stay within the limit?
@@ -210,15 +223,22 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 							blockrd.set_subwindow(0,i*rowheight,desc.get_w(),rowheight);
 						}
 
-						if(!call_renderer(context,surfacesw,quality,blockrd,0))
+						if(!call_renderer(context,surface,quality,blockrd,0))
 						{
 							if(cb)cb->error(_("Accelerated Renderer Failure"));
 							return false;
-						}else
-						{
+						} else {
+							SurfaceResource::LockRead<SurfaceSW> lock(surface);
+							if (!lock) {
+								if(cb)cb->error(_("Accelerated Renderer Failure"));
+								return false;
+							}
+
+							const synfig::Surface &s = lock->get_surface();
+
 							int y;
-							int rowspan=sizeof(Color)*surface.get_w();
-							Surface::pen pen = surface.begin();
+							int rowspan=sizeof(Color)*s.get_w();
+							Surface::const_pen pen = s.begin();
 
 							int yoff = i*rowheight;
 
@@ -234,22 +254,22 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 								switch(get_alpha_mode())
 								{
 									case TARGET_ALPHA_MODE_FILL:
-										for(int i = 0; i < surface.get_w(); i++)
-											colordata[i] = Color::blend(surface[y][i],desc.get_bg_color(),1.0f);
+										for(int i = 0; i < s.get_w(); i++)
+											colordata[i] = Color::blend(s[y][i], desc.get_bg_color(), 1.0f);
 										break;
 									case TARGET_ALPHA_MODE_EXTRACT:
-										for(int i = 0; i < surface.get_w(); i++)
+										for(int i = 0; i < s.get_w(); i++)
 										{
-											float a=surface[y][i].get_a();
+											float a=s[y][i].get_a();
 											colordata[i] = Color(a,a,a,a);
 										}
 										break;
 									case TARGET_ALPHA_MODE_REDUCE:
-										for(int i = 0; i < surface.get_w(); i++)
-											colordata[i] = Color(surface[y][i].get_r(),surface[y][i].get_g(),surface[y][i].get_b(),1.0f);
+										for(int i = 0; i < s.get_w(); i++)
+											colordata[i] = Color(s[y][i].get_r(), s[y][i].get_g(), s[y][i].get_b(), 1.f);
 										break;
 									case TARGET_ALPHA_MODE_KEEP:
-										memcpy(colordata,surface[y],rowspan);
+										memcpy(colordata, s[y], rowspan);
 										break;
 								}
 
@@ -260,7 +280,7 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 								}
 							}
 
-							surfacesw->destroy();
+							surface->reset();
 						}
 					}
 
@@ -269,19 +289,25 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 				}else //use normal rendering...
 				{
 				#endif
-					SurfaceSW::Handle surfacesw(new SurfaceSW());
-					Surface &surface = surfacesw->get_surface();
+					SurfaceResource::Handle surface = new SurfaceResource();
 
-					if(!call_renderer(context,surfacesw,quality,desc,0))
+					if(!call_renderer(context,surface,quality,desc,0))
 					{
 						// For some reason, the accelerated renderer failed.
 						if(cb)cb->error(_("Accelerated Renderer Failure"));
 						return false;
 					}
 
+					SurfaceResource::LockRead<SurfaceSW> lock(surface);
+					if(!lock)
+					{
+						if(cb)cb->error(_("Bad surface"));
+						return false;
+					}
+
 					// Put the surface we renderer
 					// onto the target.
-					if(!add_frame(&surface))
+					if(!add_frame(&lock->get_surface()))
 					{
 						if(cb)cb->error(_("Unable to put surface on target"));
 						return false;
@@ -305,8 +331,7 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 			#if USE_PIXELRENDERING_LIMIT
 			if(desc.get_w()*desc.get_h() > PIXEL_RENDERING_LIMIT)
 			{
-				SurfaceSW::Handle surfacesw(new SurfaceSW());
-				Surface &surface = surfacesw->get_surface();
+				SurfaceResource::Handle surface(new SurfaceResource());
 
 				int totalheight = desc.get_h();
 				int rowheight = PIXEL_RENDERING_LIMIT/desc.get_w();
@@ -343,15 +368,25 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 
 					SuperCallback	sc(cb, i*rowheight, (i+1)*rowheight, totalheight);
 
-					if(!call_renderer(context,surfacesw,quality,blockrd,&sc))
+					if(!call_renderer(context,surface,quality,blockrd,&sc))
 					{
 						if(cb)cb->error(_("Accelerated Renderer Failure"));
 						return false;
 					}
 
+					SurfaceResource::LockRead<SurfaceSW> lock(surface);
+
+					if(!lock)
+					{
+						if(cb)cb->error(_("Bad surface"));
+						return false;
+					}
+
+					const synfig::Surface &s = lock->get_surface();
+
 					int y;
-					int rowspan=sizeof(Color)*surface.get_w();
-					Surface::pen pen = surface.begin();
+					int rowspan=sizeof(Color)*s.get_w();
+					Surface::const_pen pen = s.begin();
 
 					int yoff = i*rowheight;
 
@@ -367,22 +402,22 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 						switch(get_alpha_mode())
 						{
 							case TARGET_ALPHA_MODE_FILL:
-								for(int i = 0; i < surface.get_w(); i++)
-									colordata[i] = Color::blend(surface[y][i],desc.get_bg_color(),1.0f);
+								for(int i = 0; i < s.get_w(); i++)
+									colordata[i] = Color::blend(s[y][i], desc.get_bg_color(), 1.0f);
 								break;
 							case TARGET_ALPHA_MODE_EXTRACT:
-								for(int i = 0; i < surface.get_w(); i++)
+								for(int i = 0; i < s.get_w(); i++)
 								{
-									float a=surface[y][i].get_a();
+									float a=s[y][i].get_a();
 									colordata[i] = Color(a,a,a,a);
 								}
 								break;
 							case TARGET_ALPHA_MODE_REDUCE:
-								for(int i = 0; i < surface.get_w(); i++)
-									colordata[i] = Color(surface[y][i].get_r(),surface[y][i].get_g(),surface[y][i].get_b(),1.0f);
+								for(int i = 0; i < s.get_w(); i++)
+									colordata[i] = Color(s[y][i].get_r(), s[y][i].get_g(), s[y][i].get_b(), 1.0f);
 								break;
 							case TARGET_ALPHA_MODE_KEEP:
-								memcpy(colordata,surface[y],rowspan);
+								memcpy(colordata,s[y], rowspan);
 								break;
 						}
 
@@ -402,18 +437,25 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 			}else
 			{
 			#endif
-				SurfaceSW::Handle surfacesw(new SurfaceSW());
-				Surface &surface = surfacesw->get_surface();
+				SurfaceResource::Handle surface = new SurfaceResource();
 
-				if(!call_renderer(context,surfacesw,quality,desc,cb))
+				if(!call_renderer(context,surface,quality,desc,cb))
 				{
 					if(cb)cb->error(_("Accelerated Renderer Failure"));
 					return false;
 				}
 
+				SurfaceResource::LockRead<SurfaceSW> lock(surface);
+
+				if(!lock)
+				{
+					if(cb)cb->error(_("Bad surface"));
+					return false;
+				}
+
 				// Put the surface we renderer
 				// onto the target.
-				if(!add_frame(&surface))
+				if(!add_frame(&lock->get_surface()))
 				{
 					if(cb)cb->error(_("Unable to put surface on target"));
 					return false;

@@ -7,7 +7,6 @@ RENDERING_OPENGL_CC = \
 	rendering/opengl/surfacegl.cpp
 
 include rendering/opengl/internal/Makefile_insert
-include rendering/opengl/optimizer/Makefile_insert
 include rendering/opengl/task/Makefile_insert
 
 RENDERING_HH += \

@@ -275,7 +275,7 @@ ColorMatrix::BatchProcessor::process(Color *dest, int dest_stride, const Color *
 	if (dest != src)
 	{
 		assert(src_end <= dest || dest_end <= src);
-		for(; dest != dest_end; dest += dest_dr, src += src_dr)
+		for(; dest != dest_end; dest += dest_stride, src += src_stride)
 		{
 			const Color *src_end = src + width;
 			batch_func_r(matrix, (value_type*)dest + 0, src, src_end);
