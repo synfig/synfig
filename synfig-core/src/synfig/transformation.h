@@ -175,18 +175,18 @@ public:
 	Vector transform(const Vector &v, bool translate = true) const
 		{ return get_matrix().get_transformed(v, translate); }
 	Transformation transform(const Transformation &transformation) const
-		{ return Transformation( transformation.get_matrix()*get_matrix() ); }
+		{ return Transformation( get_matrix()*transformation.get_matrix() ); }
 	Matrix transform(const Matrix &matrix) const
-		{ return matrix*get_matrix(); }
+		{ return get_matrix()*matrix; }
 	Rect transform_bounds(const Rect &bounds) const
 		{ return transform_bounds(get_matrix(), bounds); }
 
 	Vector back_transform(const Vector &v, bool translate = true) const
 		{ return get_inverted_matrix().get_transformed(v, translate); }
 	Transformation back_transform(const Transformation &transformation) const
-		{ return Transformation( transformation.get_matrix()*get_inverted_matrix() ); }
+		{ return Transformation( get_inverted_matrix()*transformation.get_matrix() ); }
 	Matrix back_transform(const Matrix &matrix) const
-		{ return matrix*get_inverted_matrix(); }
+		{ return get_inverted_matrix()*matrix; }
 	Rect back_transform_bounds(const Rect &bounds) const
 		{ return transform_bounds(get_inverted_matrix(), bounds); }
 
