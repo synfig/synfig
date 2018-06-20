@@ -55,7 +55,7 @@ public:
 	bool allow_antialias;
 	Holder<TransformationAffine> transformation;
 
-	TaskContour(): detail(0.5), allow_antialias(true) { }
+	TaskContour(): detail(1.0), allow_antialias(true) { }
 
 	virtual Rect calc_bounds() const;
 

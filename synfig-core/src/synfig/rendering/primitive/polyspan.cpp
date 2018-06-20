@@ -181,13 +181,21 @@ Polyspan::line_to(Real x, Real y, Real detail)
 	Real dx = x - cur_x;
 	Real dy = y - cur_y;
 
-	if (detail && fabs(dx) < detail && fabs(dy) < detail)
-	{
-		cur_line_x = x;
-		cur_line_y = y;
-		flags |= NotFinishedLine;
-		return;
+	if (detail) {
+		if (fabs(dx) < detail && fabs(dy) < detail) {
+			cur_line_x = x;
+			cur_line_y = y;
+			flags |= NotFinishedLine;
+			return;
+		}
+
+		if (flags & NotFinishedLine) {
+			line_to(cur_line_x, cur_line_y, 0.0);
+			line_to(x, y, detail);
+			return;
+		}
 	}
+
 	flags &= ~NotFinishedLine;
 
 	Real n[4] = {0,0,0,0};

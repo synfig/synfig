@@ -166,9 +166,9 @@ public:
 	void move_to(Real x, Real y);
 
 	//primitive_to functions
-	void line_to(Real x, Real y, Real detail = 0.5);
-	void conic_to(Real x, Real y, Real x1, Real y1, Real detail = 0.5);
-	void cubic_to(Real x, Real y, Real x1, Real y1, Real x2, Real y2, Real detail = 0.5);
+	void line_to(Real x, Real y, Real detail = 1.0);
+	void conic_to(Real x, Real y, Real x1, Real y1, Real detail = 1.0);
+	void cubic_to(Real x, Real y, Real x1, Real y1, Real x2, Real y2, Real detail = 1.0);
 
 	void draw_scanline(int y, Real x1, Real y1, Real x2, Real y2);
 	void draw_line(Real x1, Real y1, Real x2, Real y2);
