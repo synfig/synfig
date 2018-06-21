@@ -490,9 +490,8 @@ if [[ $MODE != 'quick' ]]; then
 fi
 
 make -j$MAKE_THREADS
+sed -i "s|^Cflags: -I\\\${includedir}|Cflags: -I$REPO_DIR\/ETL -I\\\${includedir}|" ETL.pc
 make install
-
-sed -i "s|^includedir=.*$|includedir=$SYNFIG_REPO_DIR\/ETL|" ${PREFIX}/lib/pkgconfig/ETL.pc
 
 popd
 }
@@ -541,9 +540,8 @@ fi
 #fi
 
 make -j$MAKE_THREADS
+sed -i "s|^includedir=.*$|includedir=$SYNFIG_REPO_DIR\/synfig-core\/src|" synfig.pc
 make install
-
-sed -i "s|^includedir=.*$|includedir=$SYNFIG_REPO_DIR\/synfig-core\/src|" ${PREFIX}/lib/pkgconfig/synfig.pc
 
 popd
 }

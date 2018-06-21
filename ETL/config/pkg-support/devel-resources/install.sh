@@ -28,7 +28,7 @@ s:@exec_prefix@:/usr/local:g;
 s:@prefix@:/usr/local:g;
 s:@bindir@:$exec_prefix/bin:g;
 s:@libdir@:$exec_prefix/lib:g;
-s:@includedir@:$prefix/include:g;
+s:@includedir@:$prefix/include/ETL:g;
 s:@VERSION@:@_VERSION_@:g;
 s:@PACKAGE@:@_PACKAGE_@:g;
 s:@LIBS@::g;

@@ -70,6 +70,9 @@ ETL_DEPS
 
 # -- O U T P U T ----------------------------------------------
 
+etlincludedir=$includedir/ETL
+AC_SUBST(etlincludedir)
+
 AC_SUBST(CFLAGS)
 AC_SUBST(CPPFLAGS)
 AC_SUBST(LDFLAGS)

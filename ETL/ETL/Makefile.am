@@ -7,7 +7,7 @@ CLEANFILES = \
 	$(top_builddir)/ETL/etl_profile.h
 
 
-etldir = $(includedir)/ETL
+etldir = $(etlincludedir)/ETL
 
 etl_HEADERS = \
 	value \

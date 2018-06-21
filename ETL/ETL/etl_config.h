@@ -3,7 +3,7 @@
 #ifndef __ETL_CONFIG_H
 #define __ETL_CONFIG_H
 
-#include "etl_profile.h"
+#include <ETL/etl_profile.h>
 #include <utility>
 
 #ifndef ETL_NAMESPACE
