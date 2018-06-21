@@ -84,6 +84,8 @@ public:
 			const void *surface;
 			const RectInt &bounds;
 			Vector pos, pos_dx, pos_dy;
+			Vector aa0, aa0_dx, aa0_dy;
+			Vector aa1, aa1_dx, aa1_dy;
 			Iterator(const void *surface, const RectInt &bounds):
 				surface(surface), bounds(bounds) { }
 		};
@@ -108,8 +110,74 @@ public:
 			}
 		}
 
+		template<typename pen, SamplerFunc sampler_func>
+		static inline void fill_cut(pen &p, Iterator &i)
+		{
+			const Real threshold = 0.5 - 1e-4;
+			int idx = i.bounds.maxx - i.bounds.minx;
+			int idy = i.bounds.maxy - i.bounds.miny;
+			for(int y = idy; y; --y) {
+				for(int x = idx; x; --x) {
+					if ( i.aa0[0] > threshold && i.aa0[1] > threshold
+					  && i.aa1[0] > threshold && i.aa1[1] > threshold )
+						p.put_value( sampler_func(i.surface, i.pos[0], i.pos[1]) );
+					i.pos += i.pos_dx;
+					i.aa0 += i.aa0_dx;
+					i.aa1 += i.aa1_dx;
+					p.inc_x();
+				}
+				p.dec_x(idx); p.inc_y();
+				i.pos += i.pos_dy;
+				i.aa0 += i.aa0_dy;
+				i.aa1 += i.aa1_dy;
+			}
+		}
+
+		template<typename pen, SamplerFunc sampler_func>
+		static inline void fill_aa(pen &p, Iterator &i)
+		{
+			int idx = i.bounds.maxx - i.bounds.minx;
+			int idy = i.bounds.maxy - i.bounds.miny;
+			for(int y = idy; y; --y) {
+				for(int x = idx; x; --x) {
+					if ( i.aa0[0] > 1 && i.aa0[1] > 1
+					  && i.aa1[0] > 1 && i.aa1[1] > 1 )
+					{
+						p.put_value( sampler_func(i.surface, i.pos[0], i.pos[1]) );
+					} else
+					if ( i.aa0[0] > 0 && i.aa0[1] > 0
+					  && i.aa1[0] > 0 && i.aa1[1] > 0 )
+					{
+						Color c = sampler_func(i.surface, i.pos[0], i.pos[1]);
+						c.set_a( c.get_a()
+							   * std::min(i.aa0[0], 1.0)
+							   * std::min(i.aa0[1], 1.0)
+							   * std::min(i.aa1[0], 1.0)
+							   * std::min(i.aa1[1], 1.0) );
+						p.put_value(c);
+					}
+					i.pos += i.pos_dx;
+					i.aa0 += i.aa0_dx;
+					i.aa1 += i.aa1_dx;
+					p.inc_x();
+				}
+				p.dec_x(idx); p.inc_y();
+				i.pos += i.pos_dy;
+				i.aa0 += i.aa0_dy;
+				i.aa1 += i.aa1_dy;
+			}
+		}
+
+		template<typename pen, SamplerFunc sampler_func>
+		static inline void fill(bool cut, bool antialiasing, pen &p, Iterator &i)
+		{
+			if (!cut) fill<pen, sampler_func>(p, i); else
+				if (antialiasing) fill_aa<pen, sampler_func>(p, i); else
+					fill_cut<pen, sampler_func>(p, i);
+		}
+
 		template<typename pen>
-		static inline void fill(Color::Interpolation interpolation, pen &p, Iterator &i)
+		static inline void fill(Color::Interpolation interpolation, bool cut, pen &p, Iterator &i)
 		{
 			bool no_transform =
 				 approximate_equal(fabs(i.pos_dx[0]), 0.0)
@@ -125,13 +193,13 @@ public:
 			switch(interpolation)
 			{
 			case Color::INTERPOLATION_LINEAR:
-				fill< pen, uncook<SamplerCook::linear_sample> >(p, i); break;
+				fill< pen, uncook<SamplerCook::linear_sample> >(cut, true, p, i); break;
 			case Color::INTERPOLATION_COSINE:
-				fill< pen, uncook<SamplerCook::cosine_sample> >(p, i); break;
+				fill< pen, uncook<SamplerCook::cosine_sample> >(cut, true, p, i); break;
 			case Color::INTERPOLATION_CUBIC:
-				fill< pen, uncook<SamplerCook::cubic_sample> >(p, i); break;
+				fill< pen, uncook<SamplerCook::cubic_sample> >(cut, true, p, i); break;
 			default:
-				fill< pen, Sampler::nearest_sample >(p, i); break;
+				fill< pen, Sampler::nearest_sample >(cut, false, p, i); break;
 			}
 		}
 
@@ -175,23 +243,62 @@ public:
 
 				Iterator i(src, bounds);
 
-				Vector start((Real)bounds.minx + 0.5, (Real)bounds.miny + 0.5);
+				Vector start((Real)bounds.minx, (Real)bounds.miny);
 				Vector dx(1.0, 0.0);
 				Vector dy((Real)(bounds.minx - bounds.maxx), 1.0);
 
-				i.pos    = back_transformation.get_transformed( start );
+				i.pos    = back_transformation.get_transformed( start ) - Vector(0.5, 0.5);
 				i.pos_dx = back_transformation.get_transformed( dx, false );
 				i.pos_dy = back_transformation.get_transformed( dy, false );
+
+				bool cut = true;
+
+				if (cut) {
+					Vector sub_corners[] = {
+						back_transformation.get_transformed(Vector( Real(bounds.minx), Real(bounds.miny) )),
+						back_transformation.get_transformed(Vector( Real(bounds.maxx), Real(bounds.miny) )),
+						back_transformation.get_transformed(Vector( Real(bounds.minx), Real(bounds.maxy) )),
+						back_transformation.get_transformed(Vector( Real(bounds.maxx), Real(bounds.maxy) )) };
+
+					Rect sub_boundsf(   sub_corners[0] );
+					sub_boundsf.expand( sub_corners[1] );
+					sub_boundsf.expand( sub_corners[2] );
+					sub_boundsf.expand( sub_corners[3] );
+
+					RectInt sub_bounds(
+						(int)approximate_floor(sub_boundsf.minx) - 1,
+						(int)approximate_floor(sub_boundsf.miny) - 1,
+						(int)approximate_ceil (sub_boundsf.maxx) + 1,
+						(int)approximate_ceil (sub_boundsf.maxy) + 1 );
+
+					if (src_bounds.contains(sub_bounds))
+						cut = false;
+				}
+
+				if (cut) {
+					Vector axis_x = (corners[1] - corners[0]).norm();
+					Vector axis_y = (corners[2] - corners[0]).norm();
+					Matrix aa0_matrix = Matrix( axis_x,  axis_y, corners[0] - (axis_x + axis_y)*0.5).get_inverted();
+					Matrix aa1_matrix = Matrix(-axis_x, -axis_y, corners[3] + (axis_x + axis_y)*0.5).get_inverted();
+
+					i.aa0    = aa0_matrix.get_transformed( start );
+					i.aa0_dx = aa0_matrix.get_transformed( dx, false );
+					i.aa0_dy = aa0_matrix.get_transformed( dy, false );
+
+					i.aa1    = aa1_matrix.get_transformed( start );
+					i.aa1_dx = aa1_matrix.get_transformed( dx, false );
+					i.aa1_dy = aa1_matrix.get_transformed( dy, false );
+				}
 
 				if (blend) {
 					if (approximate_equal_lp(blend_amount, ColorReal(0))) return;
 					synfig::Surface::alpha_pen p(dest.get_pen(bounds.minx, bounds.miny));
 					p.set_blend_method(blend_method);
 					p.set_alpha(blend_amount);
-					fill(interpolation, p, i);
+					fill(interpolation, cut, p, i);
 				} else {
 					synfig::Surface::pen p(dest.get_pen(bounds.minx, bounds.miny));
-					fill(interpolation, p, i);
+					fill(interpolation, cut, p, i);
 				}
 			}
 		}
@@ -337,7 +444,7 @@ public:
 			Color::BlendMethod blend_method )
 		{
 			if (interpolation != Color::INTERPOLATION_NEAREST) {
-				const double threshold = 1.2;
+				const Real threshold = 1.2;
 
 				Transformation::Bounds bounds =
 					TransformationAffine( transformation.get_inverted() )
@@ -471,8 +578,6 @@ TaskTransformationAffineSW::resample(
 bool
 TaskTransformationAffineSW::run(RunParams&) const
 {
-	// TODO: remove antialiasing (calculate border transparency via sampler)
-
 	if (!is_valid() || !sub_task() || !sub_task()->is_valid())
 		return true;
 

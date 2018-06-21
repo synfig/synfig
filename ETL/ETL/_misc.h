@@ -89,8 +89,8 @@ inline int round_to_int(const double x) {
 inline int ceil_to_int(const float x) { return static_cast<int>(ceil(x)); }
 inline int ceil_to_int(const double x) { return static_cast<int>(ceil(x)); }
 
-inline int floor_to_int(const float x) { return static_cast<int>(x); }
-inline int floor_to_int(const double x) { return static_cast<int>(x); }
+inline int floor_to_int(const float x) { return static_cast<int>(floor(x)); }
+inline int floor_to_int(const double x) { return static_cast<int>(floor(x)); }
 
 _ETL_END_NAMESPACE
 

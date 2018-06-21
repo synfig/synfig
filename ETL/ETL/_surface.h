@@ -55,27 +55,27 @@ public:
 	inline static bool truncate(int &x, int bound)
 		{ return x >= 0 && x < bound; }
 
-	inline static bool clamp(int x, int bound) {
+	inline static bool clamp(int &x, int bound) {
 		if (bound <= 0) return false;
 		if (x < 0) x = 0; else
 			if (x >= bound) x = bound - 1;
 		return true;
 	}
 
-	inline static int repeat(int x, int bound) {
+	inline static int repeat(int &x, int bound) {
 		if (bound <= 0) return false;
 		x %= bound;
 		if (x < 0) x += bound;
 		return true;
 	}
 
-	inline static int mirror(int x, int bound) {
+	inline static int mirror(int &x, int bound) {
 		if (bound <= 0) return false;
 		x = abs(x);
 		return x < bound;
 	}
 
-	inline static int mirror_repeat(int x, int bound) {
+	inline static int mirror_repeat(int &x, int bound) {
 		if (bound <= 0) return false;
 		x = abs((abs(x) + bound)%(2*bound) - bound);
 		return true;
@@ -129,7 +129,7 @@ public:
 
 	//! Nearest sample
 	static value_type nearest_sample(const void *surface, const coord_type x, const coord_type y)
-		{ return (value_type)reader(surface, floor_to_int(x), floor_to_int(y)); }
+		{ return (value_type)reader(surface, round_to_int(x), round_to_int(y)); }
 
 	//! Linear sample
 	static value_type linear_sample(const void *surface, const coord_type x, const coord_type y)
@@ -524,15 +524,15 @@ public:
 	const_pen get_pen(int x, int y)const { assert(data_); return begin().move(x,y); }
 	const_pen end()const { assert(data_); return get_pen(w_,h_); }
 
-	template< clamping::func clamp_x = clamping::truncate,
-			  clamping::func clamp_y = clamping::truncate >
+	template< clamping::func clamp_x = clamping::clamp,
+			  clamping::func clamp_y = clamping::clamp >
 	inline static value_type reader(const void *surf, int x, int y) {
 		const surface &s = *(const surface*)surf;
 		return clamp_x(x, s.get_w()) && clamp_y(y, s.get_h()) ? s[y][x] : value_type();
 	}
 
-	template< clamping::func clamp_x = clamping::truncate,
-			  clamping::func clamp_y = clamping::truncate >
+	template< clamping::func clamp_x = clamping::clamp,
+			  clamping::func clamp_y = clamping::clamp >
 	inline static accumulator_type reader_cook(const void *surf, int x, int y) {
 		const surface &s = *(const surface*)surf;
 		return clamp_x(x, s.get_w()) && clamp_y(y, s.get_h()) ? s.cooker_.cook(s[y][x]) : value_type();

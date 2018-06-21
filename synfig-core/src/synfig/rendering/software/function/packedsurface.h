@@ -91,8 +91,8 @@ public:
 
 		Color get_pixel(int x, int y) const;
 
-		template< etl::clamping::func clamp_x = etl::clamping::truncate,
-				  etl::clamping::func clamp_y = etl::clamping::truncate >
+		template< etl::clamping::func clamp_x = etl::clamping::clamp,
+				  etl::clamping::func clamp_y = etl::clamping::clamp >
 		inline static Color reader(const void *surf, int x, int y)
 		{
 			const Reader &r = *(const Reader*)surf;
@@ -100,8 +100,8 @@ public:
 			     ? r.get_pixel(x, y) : Color();
 		}
 
-		template< etl::clamping::func clamp_x = etl::clamping::truncate,
-				  etl::clamping::func clamp_y = etl::clamping::truncate >
+		template< etl::clamping::func clamp_x = etl::clamping::clamp,
+				  etl::clamping::func clamp_y = etl::clamping::clamp >
 		inline static ColorAccumulator reader_cook(const void *surf, int x, int y)
 		{
 			const Reader &r = *(const Reader*)surf;
