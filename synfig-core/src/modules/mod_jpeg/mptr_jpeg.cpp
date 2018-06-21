@@ -89,7 +89,11 @@ jpeg_mptr::my_error_exit (j_common_ptr cinfo)
 
   /* Always display the message. */
   /* We could postpone this until after returning, if we chose. */
-  (*cinfo->err->output_message) (cinfo);
+  //(*cinfo->err->output_message) (cinfo);
+
+  char jpegLastErrorMsg[JMSG_LENGTH_MAX];
+  ( *(cinfo->err->format_message) ) (cinfo, jpegLastErrorMsg);
+  error(String("Jpeg error: ") + jpegLastErrorMsg);
 
   /* Return control to the setjmp point */
   longjmp(myerr->setjmp_buffer, 1);
