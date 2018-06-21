@@ -294,21 +294,18 @@ synfig::Layer_Bitmap::get_color(Context context, const Point &pos)const
 				case 5:	// Undefined
 				case 4:	// Undefined
 				case 3:	// Cubic
-					ret = ColorPrep::uncook_static(Sampler::cubic_sample(&reader, w, h, surface_pos[0],surface_pos[1]));
+					ret = ColorPrep::uncook_static(Sampler::cubic_sample(&reader, surface_pos[0], surface_pos[1]));
 					break;
 				case 2:	// Cosine
-					ret = ColorPrep::uncook_static(Sampler::cosine_sample(&reader, w, h, surface_pos[0],surface_pos[1]));
+					ret = ColorPrep::uncook_static(Sampler::cosine_sample(&reader, surface_pos[0], surface_pos[1]));
 					break;
 				case 1:	// Linear
-					ret = ColorPrep::uncook_static(Sampler::linear_sample(&reader, w, h, surface_pos[0],surface_pos[1]));
+					ret = ColorPrep::uncook_static(Sampler::linear_sample(&reader, surface_pos[0], surface_pos[1]));
 					break;
 				case 0:	// Nearest Neighbor
 				default:
-					{
-						int x(min(w-1,max(0,round_to_int(surface_pos[0]))));
-						int y(min(h-1,max(0,round_to_int(surface_pos[1]))));
-						ret=reader.get_pixel(x, y);
-					}
+					ret = ColorPrep::uncook_static(Sampler::nearest_sample(&reader, surface_pos[0], surface_pos[1]));
+					break;
 				break;
 				}
 			}
@@ -506,44 +503,6 @@ Layer_Bitmap::accelerated_render(Context context,Surface *surface,int quality, c
 	Surface::alpha_pen pen(surface->get_pen(x_start,y_start));
 	pen.set_alpha(get_amount());
 	pen.set_blend_method(get_blend_method());
-
-	//check if we should use the downscale filtering
-	if(quality <= 7)
-	{
-		//the stride of the value should be inverted because we want to downsample
-		//when the stride is small, not big
-		//int multw = (int)ceil(indx);
-		//int multh = (int)ceil(indy);
-
-		if(indx > 1.7 || indy > 1.7)
-		{
-			/*synfig::info("Decided to downsample? ratios - (%f,%f) -> (%d,%d)",
-						indx, indy, multw, multh);	*/
-
-			//use sample rect here...
-
-			float iny, inx;
-			int x,y;
-
-			//Point sample - truncate
-			iny = iny_start;//+0.5f;
-			for(y = y_start; y < y_end; ++y, pen.inc_y(), iny += indy)
-			{
-				inx = inx_start;//+0.5f;
-				for(x = x_start; x < x_end; x++, pen.inc_x(), inx += indx)
-				{
-					Color rc = layer_surface.sample_rect_clip(inx,iny,inx+indx,iny+indy);
-					pen.put_value(filter(rc));
-				}
-				pen.dec_x(x_end-x_start);
-			}
-
-			//Color c = (*surface)[0][0];
-			//synfig::info("ValueBase of first pixel = (%f,%f,%f,%f)",c.get_r(),c.get_g(),c.get_b(),c.get_a());
-
-			return true;
-		}
-	}
 
 	//perform normal interpolation
 	if(interp==0)

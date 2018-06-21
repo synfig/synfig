@@ -67,13 +67,26 @@ public:
 	virtual Color::BlendMethodFlags get_supported_blend_methods() const
 		{ return Color::BLEND_METHODS_ALL; }
 
+	static void downscale(
+		synfig::Surface &dest,
+		const RectInt &dest_bounds,
+		const synfig::Surface &src,
+		const RectInt &src_bounds,
+		bool keep_cooked = false );
+
+	static void downscale(
+		synfig::Surface &dest,
+		const RectInt &dest_bounds,
+		const software::PackedSurface &src,
+		const RectInt &src_bounds,
+		bool keep_cooked = false );
+
 	static void resample(
 		synfig::Surface &dest,
 		const RectInt &dest_bounds,
 		const synfig::Surface &src,
 		const RectInt &src_bounds,
 		const Matrix &transformation,
-		ColorReal gamma,
 		Color::Interpolation interpolation,
 		bool blend,
 		ColorReal blend_amount,
@@ -85,7 +98,6 @@ public:
 		const software::PackedSurface &src,
 		const RectInt &src_bounds,
 		const Matrix &transformation,
-		ColorReal gamma,
 		Color::Interpolation interpolation,
 		bool blend,
 		ColorReal blend_amount,
