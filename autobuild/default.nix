@@ -75,7 +75,7 @@ stdenv.mkDerivation rec {
     wrapProgram "$out/bin/synfigstudio" \
       --prefix XDG_DATA_DIRS : "$XDG_ICON_DIRS:$GSETTINGS_SCHEMAS_PATH" \
       --prefix XCURSOR_PATH : "${gnome3.adwaita-icon-theme.out}/share/icons" \
-      --set XCURSOR_THEME : "Adwaita"
+      --set XCURSOR_THEME "Adwaita"
   '';
 
   enableParallelBuilding = true;
