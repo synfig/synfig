@@ -107,7 +107,7 @@ RendDesc::set_w(int x)
 {
 	if(FLAGS(flags,LINK_IM_ASPECT)) // "Width and Height ratio"
 	{
-		double new_h = h_ratio_*x/w_ratio_;
+		Real new_h = h_ratio_*x/w_ratio_;
 		if(FLAGS(flags,PX_ASPECT))
 		{
 			br_[1]-=focus[1];
@@ -193,7 +193,7 @@ RendDesc::set_h(int y)
 {
 	if(FLAGS(flags,LINK_IM_ASPECT)) // "Width and Height ratio"
 	{
-		double new_w = w_ratio_*y/h_ratio_;
+		Real new_w = w_ratio_*y/h_ratio_;
 		if(FLAGS(flags,PX_ASPECT))
 		{
 			br_[0]-=focus[0];

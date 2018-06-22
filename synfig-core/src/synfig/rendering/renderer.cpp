@@ -387,7 +387,7 @@ Renderer::optimize_recursive(
 	{
 		int counter_limit = 32;
 		int counter_prophecy = 256;
-		double counter_weight = (double)optimizers->size()/(double)1024;
+		Real counter_weight = (Real)optimizers->size()/(Real)1024;
 		if (counter_prophecy * counter_weight < 0.75)
 			{ counter_limit = 0; counter_prophecy = 0; }
 
@@ -416,7 +416,7 @@ Renderer::optimize_recursive(
 
 				int cnt = subtasks_count(sp.ref_task, counter_limit);
 				if (cnt >= counter_limit && cnt < counter_prophecy) cnt = counter_prophecy;
-				double weight = (double)cnt*counter_weight;
+				Real weight = (Real)cnt*counter_weight;
 
 				group.enqueue( sigc::bind( sigc::mem_fun(this, &Renderer::optimize_recursive),
 					optimizers,

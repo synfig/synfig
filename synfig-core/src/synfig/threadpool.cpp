@@ -41,7 +41,6 @@
 #include <synfig/general.h>
 
 #include "threadpool.h"
-#include "real.h"
 
 #endif
 
@@ -76,8 +75,8 @@ ThreadPool::Group::process(int begin, int end) {
 }
 
 void
-ThreadPool::Group::enqueue(const Slot &slot, double weight) {
-	weight = std::max(real_precision<double>(), std::min(1.0/real_precision<double>(), weight));
+ThreadPool::Group::enqueue(const Slot &slot, Real weight) {
+	weight = std::max(real_precision<Real>(), std::min(1.0/real_precision<Real>(), weight));
 	tasks.push_back(Entry(weight, slot));
 	sum_weight += weight;
 }
@@ -85,7 +84,7 @@ ThreadPool::Group::enqueue(const Slot &slot, double weight) {
 void
 ThreadPool::Group::run(bool force_thread) {
 	// enqueue parallel tasks
-	double sum = 0.0;
+	Real sum = 0.0;
 	int begin = 0;
 	int end = 0;
 

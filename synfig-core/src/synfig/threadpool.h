@@ -33,6 +33,8 @@
 #include <sigc++/signal.h>
 #include <glibmm/threads.h>
 
+#include "real.h"
+
 /* === M A C R O S ========================================================= */
 
 /* === T Y P E D E F S ===================================================== */
@@ -47,7 +49,7 @@ public:
 
 	class Group {
 	public:
-	typedef std::pair<double, Slot> Entry;
+	typedef std::pair<Real, Slot> Entry;
 	typedef std::vector<Entry> List;
 
 	private:
@@ -57,14 +59,14 @@ public:
 		Glib::Threads::Cond cond;
 
 		List tasks;
-		double sum_weight;
+		Real sum_weight;
 
 		void process(int begin, int end);
 	public:
 		Group();
 		~Group();
 
-		void enqueue(const Slot &slot, double weight = 1.0);
+		void enqueue(const Slot &slot, Real weight = 1.0);
 		void run(bool force_thread = false);
 	};
 

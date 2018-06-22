@@ -51,7 +51,7 @@ class Renderer: public etl::shared_object
 {
 public:
 	typedef etl::handle<Renderer> Handle;
-	typedef std::multimap<double, ModeToken::Handle> ModeMap;
+	typedef std::multimap<Real, ModeToken::Handle> ModeMap;
 
 	struct DebugOptions {
 		String task_list_log;
