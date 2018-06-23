@@ -263,10 +263,50 @@ Matrix3
 Matrix3::get_inverted()const
 {
 	value_type d = det();
-	if (approximate_equal(d, 0.0))
+	if (approximate_equal(d, value_type(0))) {
+		// result of transformation is not 3d
+		// all points always transforms into one plane (2d), or line (1d), or dot (0d)
+
+		// we cannot do thre real back transform, but we will try
+		// to make valid matrix for X-axis only or for Y-axis only
+
+		// try to make back transform for X-axis
+		if ( approximate_equal(row_x()[2], value_type(0))
+		  && row_y().is_equal_to(Vector3::zero())
+		  && approximate_equal(row_z()[2], value_type(1)) )
+		{
+			d = axis_x().mag_squared();
+			if (d > real_precision<value_type>()) {
+				d = 1.0/d;
+				return Matrix3(
+				    d*m00,                 0.0, 0.0,
+				    d*m01,                 0.0, 0.0,
+				   -d*(m20*m00 + m21*m01), 0.0, 1.0 );
+			}
+		}
+
+		// try to make back transform for Y-axis
+		if ( row_x().is_equal_to(Vector3::zero())
+		  && approximate_equal(row_y()[2], value_type(0))
+		  && approximate_equal(row_z()[2], value_type(1)) )
+		{
+			d = axis_y().mag_squared();
+			if (d > real_precision<value_type>()) {
+				d = 1.0/d;
+				return Matrix3(
+				    0.0,  d*m10,                 0.0,
+					0.0,  d*m11,                 0.0,
+					0.0, -d*(m20*m10 + m21*m11), 1.0 );
+			}
+		}
+
+		// give up
 		return Matrix3( 0.0, 0.0, 0.0,
 				        0.0, 0.0, 0.0,
 						0.0, 0.0, 0.0 );
+	}
+
+	// proper inversion
 	value_type p = 1.0/d;
 	value_type m = -p;
 	return Matrix3(
