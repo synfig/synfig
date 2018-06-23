@@ -83,11 +83,11 @@ RadialGradient::RadialGradient():
 bool
 RadialGradient::set_param(const String & param, const ValueBase &value)
 {
-	IMPORT_VALUE(param_gradient);
+	IMPORT_VALUE_PLUS(param_gradient, compile());
 	IMPORT_VALUE(param_center);
 	IMPORT_VALUE(param_radius);
-	IMPORT_VALUE(param_loop);
-	IMPORT_VALUE(param_zigzag);
+	IMPORT_VALUE_PLUS(param_loop, compile());
+	IMPORT_VALUE_PLUS(param_zigzag, compile());
 
 	return Layer_Composite::set_param(param,value);
 }
@@ -142,55 +142,30 @@ RadialGradient::get_param_vocab()const
 	return ret;
 }
 
-inline Color
-RadialGradient::color_func(const Point &point, float supersample)const
+void
+RadialGradient::compile()
 {
-	Gradient gradient=param_gradient.get(Gradient());
-	Point center=param_center.get(Point());
-	Real radius=param_radius.get(Real());
-	bool loop=param_loop.get(bool());
-	bool zigzag=param_zigzag.get(bool());
+	compiled_gradient.set(
+		param_gradient.get(Gradient()),
+		param_loop.get(bool()),
+		param_zigzag.get(bool()) );
+}
+
+inline Color
+RadialGradient::color_func(const Point &point, Real supersample)const
+{
+	Point center = param_center.get(Point());
+	Real radius = param_radius.get(Real());
 
 	Real dist((point-center).mag()/radius);
 
-	if(loop)
-		dist-=floor(dist);
-	
-	if(zigzag)
-	{
-		dist*=2.0;
-		supersample*=2.0;
-		if(dist>1)dist=2.0-dist;
-	}
-
-	if(loop)
-	{
-		if(dist+supersample*0.5>1.0)
-		{
-			float  left(supersample*0.5-(dist-1.0));
-			float right(supersample*0.5+(dist-1.0));
-			Color pool(gradient(1.0-(left*0.5),left).premult_alpha()*left/supersample);
-			if (zigzag) pool+=gradient(1.0-right*0.5,right).premult_alpha()*right/supersample;
-			else		pool+=gradient(right*0.5,right).premult_alpha()*right/supersample;
-			return pool.demult_alpha();
-		}
-		if(dist-supersample*0.5<0.0)
-		{
-			float  left(supersample*0.5-dist);
-			float right(supersample*0.5+dist);
-			Color pool(gradient(right*0.5,right).premult_alpha()*right/supersample);
-			if (zigzag) pool+=gradient(left*0.5,left).premult_alpha()*left/supersample;
-			else		pool+=gradient(1.0-left*0.5,left).premult_alpha()*left/supersample;
-			return pool.demult_alpha();
-		}
-	}
-
-	return gradient(dist,supersample);
+	supersample *= 0.5;
+	return compiled_gradient.average(dist - supersample, dist + supersample);
 }
 
 
-float
-RadialGradient::calc_supersample(const synfig::Point &/*x*/, float pw,float /*ph*/)const
+Real
+RadialGradient::calc_supersample(const synfig::Point &/*x*/, Real pw, Real /*ph*/)const
 {
 	Real radius=param_radius.get(Real());
 //	return sqrt(pw*pw+ph*ph)/radius;

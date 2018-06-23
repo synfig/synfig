@@ -250,17 +250,12 @@ Widget_Gradient::set_selected_cpoint(const synfig::Gradient::CPoint &x)
 void
 Widget_Gradient::update_cpoint(const synfig::Gradient::CPoint &x)
 {
-	try
-	{
-		Gradient::iterator iter(gradient_.find(x));
+	Gradient::iterator iter(gradient_.find(x));
+	if (iter != gradient_.end()) {
 		iter->pos=x.pos;
 		iter->color=x.color;
 		gradient_.sort();
 		queue_draw();
-	}
-	catch(synfig::Exception::NotFound)
-	{
-		// Yotta...
 	}
 }
 
@@ -281,8 +276,8 @@ Widget_Gradient::on_event(GdkEvent *event)
 		case GDK_MOTION_NOTIFY:
 			if(editable_ && y>get_height()-CONTROL_HEIGHT)
 			{
-				if(!gradient_.size()) return true;
 				Gradient::iterator iter(gradient_.find(selected_cpoint));
+				if (iter == gradient_.end()) return true;
 				//! Use SHIFT to stack two CPoints together.
 				if(event->button.state&GDK_SHIFT_MASK)
 				{

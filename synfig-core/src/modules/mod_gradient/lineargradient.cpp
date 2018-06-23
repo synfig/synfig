@@ -89,49 +89,18 @@ LinearGradient::fill_params(Params &params)const
 {
 	params.p1=param_p1.get(Point());
 	params.p2=param_p2.get(Point());
-	params.gradient=param_gradient.get(Gradient());
 	params.loop=param_loop.get(bool());
 	params.zigzag=param_zigzag.get(bool());
+	params.gradient.set(param_gradient.get(Gradient()), params.loop, params.zigzag);
 	params.calc_diff();
 }
 
 inline Color
 LinearGradient::color_func(const Params &params, const Point &point, synfig::Real supersample)const
 {
-	Real dist(point*params.diff-params.p1*params.diff);
-
-	if(params.loop)
-		dist-=floor(dist);
-
-	if(params.zigzag)
-	{
-		dist*=2.0;
-		supersample*=2.0;
-		if(dist>1)dist=2.0-dist;
-	}
-
-	if(params.loop)
-	{
-		if(dist+supersample*0.5>1.0)
-		{
-			synfig::Real  left(supersample*0.5-(dist-1.0));
-			synfig::Real right(supersample*0.5+(dist-1.0));
-			Color pool(params.gradient(1.0-(left*0.5),left).premult_alpha()*left/supersample);
-			if (params.zigzag) pool+=params.gradient(1.0-right*0.5,right).premult_alpha()*right/supersample;
-			else		       pool+=params.gradient(right*0.5,right).premult_alpha()*right/supersample;
-			return pool.demult_alpha();
-		}
-		if(dist-supersample*0.5<0.0)
-		{
-			synfig::Real  left(supersample*0.5-dist);
-			synfig::Real right(supersample*0.5+dist);
-			Color pool(params.gradient(right*0.5,right).premult_alpha()*right/supersample);
-			if (params.zigzag) pool+=params.gradient(left*0.5,left).premult_alpha()*left/supersample;
-			else		       pool+=params.gradient(1.0-left*0.5,left).premult_alpha()*left/supersample;
-			return pool.demult_alpha();
-		}
-	}
-	return params.gradient(dist,supersample);
+	Real dist(point*params.diff - params.p1*params.diff);
+	supersample *= 0.5;
+	return params.gradient.average(dist - supersample, dist + supersample);
 }
 
 inline synfig::Real

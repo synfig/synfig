@@ -70,11 +70,12 @@ private:
 	Real curve_length_;
 	bool bline_loop;
 
+	CompiledGradient compiled_gradient;
+
+	void compile();
 	void sync();
-
-	Color color_func(const Point &x, int quality=10, float supersample=0)const;
-
-	float calc_supersample(const Point &x, float pw,float ph)const;
+	Color color_func(const Point &x, int quality=10, Real supersample=0)const;
+	Real calc_supersample(const Point &x, Real pw, Real ph)const;
 
 public:
 	CurveGradient();

@@ -68,24 +68,21 @@ SYNFIG_LAYER_SET_CVS_ID(CurveGradient,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
 
-inline float calculate_distance(const synfig::BLinePoint& a,const synfig::BLinePoint& b)
+inline Real calculate_distance(const synfig::BLinePoint& a,const synfig::BLinePoint& b)
 {
-#if 1
 	const Point& c1(a.get_vertex());
 	const Point c2(a.get_vertex()+a.get_tangent2()/3);
 	const Point c3(b.get_vertex()-b.get_tangent1()/3);
 	const Point& c4(b.get_vertex());
 	return (c1-c2).mag()+(c2-c3).mag()+(c3-c4).mag();
-#else
-#endif
 }
 
-inline float calculate_distance(const std::vector<synfig::BLinePoint>& bline, bool bline_loop)
+inline Real calculate_distance(const std::vector<synfig::BLinePoint>& bline, bool bline_loop)
 {
 	std::vector<synfig::BLinePoint>::const_iterator iter,next,ret;
 	std::vector<synfig::BLinePoint>::const_iterator end(bline.end());
 
-	float dist(0);
+	Real dist(0);
 
 	if (bline.empty()) return dist;
 
@@ -113,20 +110,20 @@ inline float calculate_distance(const std::vector<synfig::BLinePoint>& bline, bo
 }
 
 std::vector<synfig::BLinePoint>::const_iterator
-find_closest(bool fast, const std::vector<synfig::BLinePoint>& bline,const Point& p,float& t,bool loop=false,float *bline_dist_ret=0)
+find_closest(bool fast, const std::vector<synfig::BLinePoint>& bline,const Point& p, Real& t, bool loop=false, Real *bline_dist_ret=0)
 {
 	std::vector<synfig::BLinePoint>::const_iterator iter,next,ret;
 	std::vector<synfig::BLinePoint>::const_iterator end(bline.end());
 
 	ret=bline.end();
-	float dist(100000000000.0);
+	Real dist(100000000000.0);
 
 	next=bline.begin();
 
-	float best_bline_dist(0);
-	//float best_bline_len(0);
-	float total_bline_dist(0);
-	float best_pos(0);
+	Real best_bline_dist(0);
+	//Real best_bline_len(0);
+	Real total_bline_dist(0);
+	Real best_pos(0);
 	etl::hermite<Vector> best_curve;
 
 	if(loop)
@@ -150,8 +147,8 @@ find_closest(bool fast, const std::vector<synfig::BLinePoint>& bline,const Point
 		bp=curve(t);if((bp-p).mag_squared()<dist) { ret=iter; dist=(bp-p).mag_squared(); ret_t=t; }
 		*/
 
-		float thisdist(0);
-		float len(0);
+		Real thisdist(0);
+		Real len(0);
 		if(bline_dist_ret)
 		{
 			//len=calculate_distance(*iter,*next);
@@ -171,7 +168,7 @@ find_closest(bool fast, const std::vector<synfig::BLinePoint>& bline,const Point
 		}
 		else
 		{
-			float pos = curve.find_closest(fast, p);
+			Real pos = curve.find_closest(fast, p);
 			thisdist=(curve(pos)-p).mag_squared();
 			if(thisdist<dist)
 			{
@@ -209,6 +206,15 @@ CurveGradient::sync()
 	curve_length_=calculate_distance(bline, bline_loop);
 }
 
+void
+CurveGradient::compile()
+{
+	compiled_gradient.set(
+		param_gradient.get(Gradient()),
+		param_loop.get(bool()),
+		param_zigzag.get(bool()) );
+}
+
 
 CurveGradient::CurveGradient():
 	Layer_Composite(1.0,Color::BLEND_COMPOSITE),
@@ -244,14 +250,12 @@ CurveGradient::CurveGradient():
 }
 
 inline Color
-CurveGradient::color_func(const Point &point_, int quality, float supersample)const
+CurveGradient::color_func(const Point &point_, int quality, Real supersample)const
 {
 	Point origin=param_origin.get(Point());
 	Real width=param_width.get(Real());
 	std::vector<synfig::BLinePoint> bline(param_bline.get_list_of(BLinePoint()));
-	Gradient gradient=param_gradient.get(Gradient());
 	bool loop=param_loop.get(bool());
-	bool zigzag=param_zigzag.get(bool());
 	bool perpendicular=param_perpendicular.get(bool());
 	bool fast=param_fast.get(bool());
 
@@ -261,7 +265,7 @@ CurveGradient::color_func(const Point &point_, int quality, float supersample)co
 	Real thickness;
 	Real dist;
 
-	float perp_dist;
+	Real perp_dist;
 	bool edge_case = false;
 
 	if(bline.size()==0)
@@ -274,7 +278,7 @@ CurveGradient::color_func(const Point &point_, int quality, float supersample)co
 	}
 	else
 	{
-		float t;
+		Real t;
 		Point point(point_-origin);
 
 		std::vector<synfig::BLinePoint>::const_iterator iter,next;
@@ -448,42 +452,12 @@ CurveGradient::color_func(const Point &point_, int quality, float supersample)co
 		dist=(point_-origin - p1)*diff;
 	}
 
-	if(loop)
-		dist-=floor(dist);
-
-	if(zigzag)
-	{
-		dist*=2.0;
-		supersample*=2.0;
-		if(dist>1)dist=2.0-dist;
-	}
-
-	if(loop)
-	{
-		if(dist+supersample*0.5>1.0)
-		{
-			float  left(supersample*0.5-(dist-1.0));
-			float right(supersample*0.5+(dist-1.0));
-			Color pool(gradient(1.0-(left*0.5),left).premult_alpha()*left/supersample);
-			if (zigzag) pool+=gradient(1.0-right*0.5,right).premult_alpha()*right/supersample;
-			else		pool+=gradient(right*0.5,right).premult_alpha()*right/supersample;
-			return pool.demult_alpha();
-		}
-		if(dist-supersample*0.5<0.0)
-		{
-			float  left(supersample*0.5-dist);
-			float right(supersample*0.5+dist);
-			Color pool(gradient(right*0.5,right).premult_alpha()*right/supersample);
-			if (zigzag) pool+=gradient(left*0.5,left).premult_alpha()*left/supersample;
-			else		pool+=gradient(1.0-left*0.5,left).premult_alpha()*left/supersample;
-			return pool.demult_alpha();
-		}
-	}
-	return gradient(dist,supersample);
+	supersample *= 0.5;
+	return compiled_gradient.average(dist - supersample, dist + supersample);
 }
 
-float
-CurveGradient::calc_supersample(const synfig::Point &/*x*/, float pw,float /*ph*/)const
+Real
+CurveGradient::calc_supersample(const synfig::Point &/*x*/, Real pw, Real /*ph*/)const
 {
 	return pw;
 }
@@ -514,9 +488,9 @@ CurveGradient::set_param(const String & param, const ValueBase &value)
 		sync();
 		return true;
 	}
-	IMPORT_VALUE(param_gradient);
-	IMPORT_VALUE(param_loop);
-	IMPORT_VALUE(param_zigzag);
+	IMPORT_VALUE_PLUS(param_gradient, compile());
+	IMPORT_VALUE_PLUS(param_loop, compile());
+	IMPORT_VALUE_PLUS(param_zigzag, compile());
 	IMPORT_VALUE(param_perpendicular);
 	IMPORT_VALUE(param_fast);
 

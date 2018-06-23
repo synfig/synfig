@@ -67,8 +67,10 @@ private:
 	//!Parameter: (bool)
 	synfig::ValueBase param_super_sample;
 
-	synfig::Color color_func(const synfig::Point &x, float supersample,synfig::Context context)const;
+	synfig::CompiledGradient compiled_gradient;
 
+	void compile();
+	synfig::Color color_func(const synfig::Point &x, float supersample,synfig::Context context)const;
 	float calc_supersample(const synfig::Point &x, float pw,float ph)const;
 
 public:

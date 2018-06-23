@@ -59,10 +59,10 @@ private:
 	ValueBase param_zigzag;
 
 	struct Params {
-		synfig::Point p1;
-		synfig::Point p2;
-		synfig::Point diff;
-		synfig::Gradient gradient;
+		Point p1;
+		Point p2;
+		Point diff;
+		CompiledGradient gradient;
 		bool loop;
 		bool zigzag;
 		inline Params(): loop(false), zigzag(false) { }
@@ -72,7 +72,6 @@ private:
 	void fill_params(Params &params)const;
 	synfig::Color color_func(const Params &params, const synfig::Point &x, synfig::Real supersample = 0.0)const;
 	synfig::Real calc_supersample(const Params &params, synfig::Real pw, synfig::Real ph)const;
-
 	bool compile_gradient(cairo_pattern_t* pattern, Gradient gradient)const;
 
 public:

@@ -59,9 +59,11 @@ private:
 	//! Parameter: (bool)
 	ValueBase param_symmetric;
 
-	Color color_func(const Point &x, float supersample=0)const;
+	CompiledGradient compiled_gradient;
 
-	float calc_supersample(const Point &x, float pw,float ph)const;
+	void compile();
+	Color color_func(const Point &x, Real supersample=0)const;
+	Real calc_supersample(const Point &x, Real pw, Real ph)const;
 	bool compile_mesh(cairo_pattern_t* pattern, Gradient gradient, Real radius)const;
 
 public:

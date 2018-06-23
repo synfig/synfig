@@ -82,10 +82,10 @@ ConicalGradient::ConicalGradient():
 bool
 ConicalGradient::set_param(const String & param, const ValueBase &value)
 {
-	IMPORT_VALUE(param_gradient);
+	IMPORT_VALUE_PLUS(param_gradient, compile());
 	IMPORT_VALUE(param_center);
 	IMPORT_VALUE(param_angle);
-	IMPORT_VALUE(param_symmetric);
+	IMPORT_VALUE_PLUS(param_symmetric, compile());
 	return Layer_Composite::set_param(param,value);
 }
 
@@ -132,77 +132,32 @@ ConicalGradient::get_param_vocab()const
 	return ret;
 }
 
-inline Color
-ConicalGradient::color_func(const Point &pos, float supersample)const
+void
+ConicalGradient::compile()
 {
-	Gradient gradient=param_gradient.get(Gradient());
-	Point center=param_center.get(Point());
-	Angle angle=param_angle.get(Angle());
-	bool symmetric=param_symmetric.get(bool());
-	
-	const Point centered(pos-center);
-	Angle::rot a=Angle::tan(-centered[1],centered[0]).mod();
-	a+=angle;
-	Real dist(a.mod().get());
-
-	dist-=floor(dist);
-
-	if(symmetric)
-	{
-		dist*=2.0;
-		supersample*=2.0;
-		if(dist>1)dist=2.0-dist;
-	}
-/*	if(dist+supersample*0.5>1.0)
-	{
-		Color pool(gradient(dist,supersample*0.5)*(1.0-(dist-supersample*0.5)));
-		pool+=gradient((dist+supersample*0.5)-1.0,supersample*0.5)*((dist+supersample*0.5)-1.0);
-		if(pool.get_a() && pool.is_valid())
-		{
-			pool.set_r(pool.get_r()/pool.get_a());
-			pool.set_g(pool.get_g()/pool.get_a());
-			pool.set_b(pool.get_b()/pool.get_a());
-			pool.set_a(pool.get_a()/supersample);
-		}
-		return pool;
-	}
-
-	if(dist-supersample*0.5<0.0)
-	{
-		Color pool(gradient(dist,supersample*0.5)*(dist+supersample*0.5));
-		pool+=gradient(1.0-(dist-supersample*0.5),supersample*0.5)*(-(dist-supersample*0.5));
-		if(pool.get_a() && pool.is_valid())
-		{
-			pool.set_r(pool.get_r()/pool.get_a());
-			pool.set_g(pool.get_g()/pool.get_a());
-			pool.set_b(pool.get_b()/pool.get_a());
-			pool.set_a(pool.get_a()/supersample);
-			return pool;
-		}
-	}
-*/
-	if(dist+supersample*0.5>1.0)
-	{
-		float  left(supersample*0.5-(dist-1.0));
-		float right(supersample*0.5+(dist-1.0));
-		Color pool(gradient(1.0-(left*0.5),left).premult_alpha()*left/supersample);
-		pool+=gradient(right*0.5,right).premult_alpha()*right/supersample;
-		return pool.demult_alpha();
-	}
-	if(dist-supersample*0.5<0.0)
-	{
-		float  left(supersample*0.5-dist);
-		float right(supersample*0.5+dist);
-		Color pool(gradient(right*0.5,right).premult_alpha()*right/supersample);
-		pool+=gradient(1.0-left*0.5,left).premult_alpha()*left/supersample;
-		return pool.demult_alpha();
-	}
-
-	return gradient(dist,supersample);
+	compiled_gradient.set(
+		param_gradient.get(Gradient()),
+		true,
+		param_symmetric.get(bool()) );
 }
 
-float
-ConicalGradient::calc_supersample(const synfig::Point &x, float pw,float ph)const
+inline Color
+ConicalGradient::color_func(const Point &pos, Real supersample)const
+{
+	Point center = param_center.get(Point());
+	Angle angle = param_angle.get(Angle());
+	
+	const Point centered(pos-center);
+	Angle::rot a = Angle::tan(-centered[1],centered[0]).mod();
+	a += angle;
+	Real dist(a.mod().get());
+
+	supersample *= 0.5;
+	return compiled_gradient.average(dist - supersample, dist + supersample);
+}
+
+Real
+ConicalGradient::calc_supersample(const synfig::Point &x, Real pw, Real ph)const
 {
 	Point center=param_center.get(Point());
 
