@@ -120,6 +120,12 @@ private:
 		return x > ColorReal(0.0) ? std::max(min, x) : std::min(-min, x);
 	}
 
+	static inline ColorReal positive(const ColorReal &x)
+	{
+		const ColorReal min = real_low_precision<ColorReal>();
+		return std::max(min, x);
+	}
+
 	static inline void func_none(ColorReal&, const ColorReal&, const ColorReal&) { }
 	static inline void func_copy(ColorReal &dst, const ColorReal &src, const ColorReal&)
 		{ dst = src; }
@@ -128,9 +134,9 @@ private:
 	static inline void func_div(ColorReal &dst, const ColorReal &src, const ColorReal&)
 		{ dst = clamp(ColorReal(1.0)/non_zero(src)); }
 	static inline void func_pow_positive(ColorReal &dst, const ColorReal &src, const ColorReal &gamma)
-		{ dst = clamp(pow(src, gamma)); }
+		{ dst = clamp(pow(positive(src), gamma)); }
 	static inline void func_pow_negative(ColorReal &dst, const ColorReal &src, const ColorReal &gamma)
-		{ dst = clamp(pow(non_zero(src), gamma)); }
+		{ dst = clamp(pow(positive(src), gamma)); }
 
 	template<Func fr, Func fg, Func fb, Func fa>
 	static void process_rgba(const Params &p) {
