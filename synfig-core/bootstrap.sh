@@ -14,7 +14,7 @@ if test -z $INTLTOOLIZE; then
         exit 1
 fi
 
-LIBTOOLIZE=`which libtoolize`
+LIBTOOLIZE=`which libtoolize || true`
 if test -z $LIBTOOLIZE; then
         LIBTOOLIZE=`which glibtoolize`
         if ! test -z $LIBTOOLIZE; then
