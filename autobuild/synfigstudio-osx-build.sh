@@ -481,9 +481,9 @@ mkdmg()
 
 	ARCH=`uname -m`
 	if [[ ! $UNIVERSAL == 0 ]]; then
-	export FINAL_FILENAME=synfigstudio-"$VERSION"
+	export FINAL_FILENAME=SynfigStudio-"$VERSION"
 	else
-	export FINAL_FILENAME=synfigstudio-"$VERSION"."$ARCH"
+	export FINAL_FILENAME=SynfigStudio-"$VERSION"."$ARCH"
 	fi
 	
 
