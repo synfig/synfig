@@ -32,6 +32,7 @@ AC_PROG_CXX
 AC_PROG_CXXCPP
 AC_PROG_INSTALL
 AC_PROG_RANLIB
+AX_CXX_COMPILE_STDCXX([11], [noext])
 
 # that is not working, btw
 test "x$CXX" == "x" && AC_MSG_ERROR([Required program 'c++' not found.])
