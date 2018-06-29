@@ -66,6 +66,7 @@
 #include "rendering/common/task/tasklayer.h"
 
 #include "importer.h"
+#include <atomic>
 
 #endif
 
@@ -79,17 +80,18 @@ using namespace synfig;
 
 static Layer::Book* _layer_book;
 
-struct _LayerCounter
+static struct _LayerCounter
 {
-	static int counter;
+	std::atomic<int> counter;
+	_LayerCounter(): counter(0) {}
 	~_LayerCounter()
 	{
 		if (counter)
-			synfig::error("%d layers not yet deleted!",counter);
+			synfig::error("%d layers not yet deleted!", (int)counter);
 	}
 } _layer_counter;
 
-int _LayerCounter::counter(0);
+//int _LayerCounter::counter(0);
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -167,7 +169,7 @@ Layer::Layer():
 	time_mark(Time::end()),
 	outline_grow_mark(0.0)
 {
-	_LayerCounter::counter++;
+	_layer_counter.counter++;
 	SET_INTERPOLATION_DEFAULTS();
 	SET_STATIC_DEFAULTS();
 }
@@ -188,7 +190,7 @@ synfig::Layer::~Layer()
 {
 	if (monitor_connection) monitor_connection.disconnect(); // disconnect signal handler
 
-	_LayerCounter::counter--;
+	_layer_counter.counter--;
 
 	while(!dynamic_param_list_.empty())
 	{
