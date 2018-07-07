@@ -311,6 +311,7 @@ private:
 	Gtk::Button *closebutton;
 	Gtk::Button *stopbutton;
 	Gtk::ToolButton *refreshbutton;
+	Gtk::ToggleToolButton *draft_button;
 	Gtk::Button *treetogglebutton;  // not used
 	Gtk::Notebook *notebook; // not used
 	Gtk::VBox *timebar;
@@ -537,6 +538,8 @@ private:
 
 	void toggle_animatebutton();
 	void toggle_timetrackbutton();
+
+	void toggle_draft_render();
 
 	void on_play_timeout();
 	

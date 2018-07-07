@@ -1251,6 +1251,30 @@ CanvasView::create_tool_separator()
 	return separator;
 }
 
+void CanvasView::toggle_draft_render()
+{
+	//if (App::workarea_renderer.empty()) return;
+
+	bool toggled = this->draft_button->get_active();
+	if (toggled) {
+		App::workarea_renderer = "software-draft";
+		this->draft_button->set_tooltip_text( _("Disable draft rendering"));
+	} else {
+		App::workarea_renderer = "";
+		this->draft_button->set_tooltip_text( _("Enable draft rendering"));
+	}
+		
+
+	/*std::string test22 = "";
+	if (!App::workarea_renderer.empty()) test22 = App::workarea_renderer;
+	App::workarea_renderer = "software-draft";
+
+	test22 = App::workarea_renderer;*/
+
+	App::save_settings();
+	App::setup_changed();
+}
+
 Gtk::Widget*
 CanvasView::create_display_bar()
 {
@@ -1458,6 +1482,23 @@ CanvasView::create_display_bar()
 
 	// Separator
 	displaybar->append( *create_tool_separator() );
+
+	{ // Setup draft rendering mode button
+		Gtk::Image *icon = Gtk::manage(new Gtk::Image(Gtk::StockID("synfig-layer_other_duplicate"), iconsize));
+		icon->set_padding(0, 0);
+		icon->show();
+
+		draft_button = Gtk::manage(new class Gtk::ToggleToolButton());
+		draft_button->set_icon_widget(*icon);
+		draft_button->signal_clicked().connect(sigc::mem_fun(*this, &studio::CanvasView::toggle_draft_render));
+		draft_button->set_label(_("Draft"));
+		draft_button->set_tooltip_text( _("Enable draft rendering"));
+		draft_button->set_active(App::workarea_renderer == "software-draft");
+		draft_button->show();
+
+		displaybar->append(*draft_button);
+	}
+
 
 	// Set up the ResolutionDial widget
 	resolutiondial.update_lowres(work_area->get_low_resolution_flag());
