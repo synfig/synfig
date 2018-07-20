@@ -6,7 +6,7 @@
 # Jiří Vírava <appukonrad@gmail.com>, 2012
 # Zdeněk Chalupský <chalzd@gmail.com>, 2013
 # Zdeněk Chalupský <chalzd@gmail.com>, 2012
-# Frederik Látka <frederik.latka@gmail.com>, 2015
+# Frederik Látka <frederik.latka@gmail.com>, 2015,2017
 # Jiří Vírava <appukonrad@gmail.com>, 2012
 # Lubomir Vaculik <transifex.com@low-clan.net>, 2016
 # Michal Hlavatý <hlavaty.michal@gmail.com>, 2011
@@ -17,14 +17,14 @@ msgstr ""
 "Project-Id-Version: Synfig UI\n"
 "Report-Msgid-Bugs-To: https://github.com/synfig/synfig/issues\n"
 "POT-Creation-Date: 2016-06-05 14:00+0700\n"
-"PO-Revision-Date: 2016-10-13 15:49+0000\n"
-"Last-Translator: Lubomir Vaculik <transifex.com@low-clan.net>\n"
+"PO-Revision-Date: 2017-09-19 10:35+0000\n"
+"Last-Translator: Frederik Látka <frederik.latka@gmail.com>\n"
 "Language-Team: Czech (http://www.transifex.com/morevnaproject/synfig/language/cs/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: cs\n"
-"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
 
 #: ../synfigstudio.desktop.in.h:1 ../src/gui/dialogs/about.cpp:98
 msgid "2D vector animation studio"
@@ -56,7 +56,7 @@ msgstr "Strohý překlad:\nCesta na bázi Přechody"
 
 #: ../synfigstudio.appdata.xml.in.h:6
 msgid "Pentablet-friendly tools"
-msgstr ""
+msgstr "Grafický tablet - Nástroje"
 
 #: ../synfigstudio.appdata.xml.in.h:7
 msgid "Spatial resolution-independence"
@@ -69,15 +69,15 @@ msgid ""
 "using a vector and bitmap artwork. It eliminates the need to create "
 "animation frame-by frame, allowing you to produce 2D animation of a higher "
 "quality with fewer people and resources."
-msgstr ""
+msgstr "Synfig Studio je bezplatný a otevřený 2D animační software, který je navržen jako výkonné průmyslové řešení pro vytváření animací s vysokou kvalitou, pomocí vektorového a bitmapového systému. To eliminuje potřebu vytvářet jednotlivé snímky animace ručně, to umožňuje vytvářet 2D animaci vyšší kvality s menším počtem lidí a zdrojů."
 
 #: ../synfigstudio.appdata.xml.in.h:9
 msgid "Temporal resolution independence"
-msgstr ""
+msgstr "Nezávislost na časové ose "
 
 #: ../synfigstudio-thumbnailer.schemas.in.h:1
 msgid "Enable this thumbnailer."
-msgstr ""
+msgstr "Povolit miniatury."
 
 #: ../synfigstudio-thumbnailer.schemas.in.h:2
 msgid "Invoke Synfig as Thumbnailer"
@@ -93,21 +93,21 @@ msgstr "povolit"
 
 #: ../plugins/add-skeleton-simple/plugin.xml.in.h:1
 msgid "Add Skeleton (Simple)"
-msgstr ""
+msgstr "Přidat kostru (základní)"
 
 #: ../plugins/view-unhide-all-layers/plugin.xml.in.h:1
 msgid "Unhide All Layers"
-msgstr ""
+msgstr "Zobrazit všechny vrstvy"
 
 #: ../src/brushlib/brushsettings.py:26
 msgid "Pressure"
-msgstr ""
+msgstr "Stisknout"
 
 #: ../src/brushlib/brushsettings.py:26
 msgid ""
 "The pressure reported by the tablet, between 0.0 and 1.0. If you use the "
 "mouse, it will be 0.5 when a button is pressed and 0.0 otherwise."
-msgstr ""
+msgstr "Tlak, který tablet udává, je mezi 0,0 a 1,0. Používáte-li myš, bude tlak při stisknutí 0,5 jinak 0,0."
 
 #: ../src/brushlib/brushsettings.py:27
 msgid "Fine speed"
@@ -118,7 +118,7 @@ msgid ""
 "How fast you currently move. This can change very quickly. Try 'print input "
 "values' from the 'help' menu to get a feeling for the range; negative values"
 " are rare but possible for very low speed."
-msgstr ""
+msgstr "Jak rychle se v současné době pohybujete. To se může změnit velmi rychle. Z nabídky \"help\" zkuste \"tisknout vstupní hodnoty\", abyste získali pocit z dosahu; Záporné hodnoty jsou vzácné, ale možné pro velmi nízkou rychlost."
 
 #: ../src/brushlib/brushsettings.py:28
 msgid "Gross speed"
@@ -132,7 +132,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:29
 msgid "Random"
-msgstr ""
+msgstr "Náhodný"
 
 #: ../src/brushlib/brushsettings.py:29
 msgid ""
@@ -149,11 +149,11 @@ msgid ""
 "This input slowly goes from zero to one while you draw a stroke. It can also"
 " be configured to jump back to zero periodically while you move. Look at the"
 " 'stroke duration' and 'stroke hold time' settings."
-msgstr ""
+msgstr "Nastavení pera: pomalu přechází z 0 na 1, zatímco snižujete snižujete tlak. Může být také nakonfigurován tak, aby se při snížení tlaku hodnota pohybovala na 0. Podívejte se na nastavení \"trvání zdvihu\" a \"doby trvání zdvihu\"\nTento vstup pomalu přechází z nuly na jeden, zatímco kreslíte zdvih. Může být také nakonfigurován tak, aby se při pohybu pohyboval zpátky na nulu. Podívejte se na nastavení \"trvání zdvihu\" a \"doby trvání zdvihu\"."
 
 #: ../src/brushlib/brushsettings.py:31
 msgid "Direction"
-msgstr ""
+msgstr "Směr"
 
 #: ../src/brushlib/brushsettings.py:31
 msgid ""
@@ -163,17 +163,17 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:32
 msgid "Declination"
-msgstr ""
+msgstr "Sklon"
 
 #: ../src/brushlib/brushsettings.py:32
 msgid ""
 "Declination of stylus tilt. 0 when stylus is parallel to tablet and 90.0 "
 "when it's perpendicular to tablet."
-msgstr ""
+msgstr "Naklonění stylusu: Když je stylus paralelně k tabletu 0. Když je kolmý k tabletu 90.0"
 
 #: ../src/brushlib/brushsettings.py:33
 msgid "Ascension"
-msgstr ""
+msgstr "Vzestup"
 
 #: ../src/brushlib/brushsettings.py:33
 msgid ""
@@ -190,7 +190,7 @@ msgstr ""
 msgid ""
 "This is a user defined input. Look at the 'custom input' setting for "
 "details."
-msgstr ""
+msgstr "Toto je uživatelsky definovaný vstup. Podívejte se na nastavení \"vlastní vstup\" pro podrobnosti."
 
 #: ../src/brushlib/brushsettings.py:44 ../src/gui/states/state_bline.cpp:569
 #: ../src/gui/states/state_circle.cpp:603 ../src/gui/states/state_draw.cpp:673
@@ -200,17 +200,17 @@ msgstr ""
 #: ../src/gui/states/state_rectangle.cpp:549
 #: ../src/gui/states/state_star.cpp:672 ../src/gui/states/state_text.cpp:433
 msgid "Opacity"
-msgstr ""
+msgstr "Průhlednost"
 
 #: ../src/brushlib/brushsettings.py:44
 msgid ""
 "0 means brush is transparent, 1 fully visible\n"
 "(also known as alpha or opacity)"
-msgstr ""
+msgstr "0 znamená, že štětec je průhledný, 1 je plně viditelný\n(Také známý jako alfa nebo opacity)"
 
 #: ../src/brushlib/brushsettings.py:45
 msgid "Opacity multiply"
-msgstr ""
+msgstr "Průhlednost se násobý"
 
 #: ../src/brushlib/brushsettings.py:45
 msgid ""
@@ -243,7 +243,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:48
 msgid "Hardness"
-msgstr ""
+msgstr "Tvrdost"
 
 #: ../src/brushlib/brushsettings.py:48
 msgid ""
@@ -3055,11 +3055,11 @@ msgstr "RGB"
 
 #: ../src/gui/widgets/widget_coloredit.cpp:389
 msgid "YUV"
-msgstr ""
+msgstr "YUV"
 
 #: ../src/gui/widgets/widget_coloredit.cpp:390
 msgid "HSV"
-msgstr ""
+msgstr "HSV"
 
 #: ../src/gui/widgets/widget_coloredit.cpp:430
 msgid "HTML code"
@@ -3101,28 +3101,28 @@ msgstr "Barva výplně"
 msgid ""
 "Swap Fill and\n"
 "Outline Colors"
-msgstr ""
+msgstr "Změňte výplň a\nObrysové barvy"
 
 #: ../src/gui/widgets/widget_defaults.cpp:228
 msgid "Reset Colors to Black and White"
-msgstr ""
+msgstr "Obnovit barvy na černobílé"
 
 #: ../src/gui/widgets/widget_defaults.cpp:247
 msgid "Brush Preview"
-msgstr ""
+msgstr "Náhled štětce"
 
 #: ../src/gui/widgets/widget_defaults.cpp:250
 msgid "Decrease brush size"
-msgstr ""
+msgstr "Zmenšete velikost štětce"
 
 #: ../src/gui/widgets/widget_defaults.cpp:256
 msgid "Increase brush size"
-msgstr ""
+msgstr "Zvětšete velikost štětce"
 
 #: ../src/gui/widgets/widget_defaults.cpp:265
 #: ../src/gui/widgets/widget_defaults.cpp:287
 msgid "Brush Size"
-msgstr ""
+msgstr "Šířka štětce"
 
 #: ../src/gui/widgets/widget_defaults.cpp:322
 msgid "Default Gradient"
@@ -3130,15 +3130,15 @@ msgstr "Výchozí gradient"
 
 #: ../src/gui/widgets/widget_filename.cpp:142
 msgid "Please choose an audio file"
-msgstr ""
+msgstr "Zvolte prosím zvukový soubor"
 
 #: ../src/gui/widgets/widget_filename.cpp:149
 msgid "Please choose an image file"
-msgstr ""
+msgstr "Zvolte prosím obrázek"
 
 #: ../src/gui/widgets/widget_filename.cpp:155
 msgid "Please choose a file"
-msgstr ""
+msgstr "Zvolte prosím soubor"
 
 #: ../src/gui/widgets/widget_gradient.cpp:209
 msgid "Insert Color Stop"
@@ -3158,7 +3158,7 @@ msgstr ""
 
 #: ../src/gui/widgets/widget_keyframe_list.cpp:360
 msgid "Time : "
-msgstr ""
+msgstr "Čas :"
 
 #: ../src/gui/widgets/widget_keyframe_list.cpp:363
 msgid "Old Time : "
@@ -3166,12 +3166,12 @@ msgstr ""
 
 #: ../src/gui/widgets/widget_keyframe_list.cpp:391
 msgid "Click and drag keyframes"
-msgstr ""
+msgstr "Klepněte a přetáhněte klíčové snímky"
 
 #: ../src/gui/widgets/widget_keyframe_list.cpp:397
 #: ../src/gui/widgets/widget_keyframe_list.cpp:403
 msgid "No name"
-msgstr ""
+msgstr "Bez názvu"
 
 #: ../src/gui/widgets/widget_link.h:55
 msgid "Link Values"
@@ -3199,7 +3199,7 @@ msgstr ""
 #: ../src/gui/widgets/widget_waypointmodel.cpp:95
 #: ../src/gui/canvasview.cpp:1123 ../src/gui/instance.cpp:1264
 msgid "TCB"
-msgstr ""
+msgstr "TCB"
 
 #: ../src/gui/widgets/widget_waypoint.cpp:91
 #: ../src/gui/widgets/widget_waypoint.cpp:108
@@ -3223,19 +3223,19 @@ msgstr ""
 #: ../src/synfigapp/actions/waypointsimpleadd.cpp:79
 #: ../src/synfigapp/value_desc.cpp:84
 msgid "Waypoint"
-msgstr ""
+msgstr "Trasový bod"
 
 #: ../src/gui/widgets/widget_waypoint.cpp:134
 msgid "<b>Waypoint</b>"
-msgstr ""
+msgstr "Trasový bod"
 
 #: ../src/gui/widgets/widget_waypoint.cpp:146
 msgid "_Value"
-msgstr ""
+msgstr "_Hodnota"
 
 #: ../src/gui/widgets/widget_waypoint.cpp:153
 msgid "_Time"
-msgstr ""
+msgstr "_Čas"
 
 #: ../src/gui/widgets/widget_waypoint.cpp:159 ../src/gui/instance.cpp:1272
 #: ../src/synfigapp/actions/valuedescsetinterpolation.cpp:90
@@ -3256,11 +3256,11 @@ msgstr ""
 
 #: ../src/gui/widgets/widget_waypoint.cpp:185
 msgid "TCB Parameters"
-msgstr ""
+msgstr "TCB Paramaetry"
 
 #: ../src/gui/widgets/widget_waypoint.cpp:187
 msgid "<b>TCB Parameter</b>"
-msgstr ""
+msgstr "TCB Parametr"
 
 #: ../src/gui/widgets/widget_waypoint.cpp:199
 msgid "T_ension"
@@ -3268,7 +3268,7 @@ msgstr ""
 
 #: ../src/gui/widgets/widget_waypoint.cpp:206
 msgid "_Continuity"
-msgstr ""
+msgstr "_Kontinuita"
 
 #: ../src/gui/widgets/widget_waypoint.cpp:213
 msgid "_Bias"
@@ -3308,7 +3308,7 @@ msgstr ""
 
 #: ../src/gui/app.cpp:832
 msgid "_File"
-msgstr ""
+msgstr "_Soubor"
 
 #: ../src/gui/app.cpp:833
 msgid "Open Recent"
@@ -3316,11 +3316,11 @@ msgstr "Otevřít nedávný"
 
 #: ../src/gui/app.cpp:835 ../src/gui/canvasview.cpp:3647
 msgid "_Edit"
-msgstr ""
+msgstr "_Úpravy"
 
 #: ../src/gui/app.cpp:837
 msgid "_View"
-msgstr ""
+msgstr "_Zobrazení"
 
 #: ../src/gui/app.cpp:838
 msgid "Show/Hide Handles"
@@ -3336,11 +3336,11 @@ msgstr ""
 
 #: ../src/gui/app.cpp:842
 msgid "_Canvas"
-msgstr ""
+msgstr "_Vlasnosti"
 
 #: ../src/gui/app.cpp:844
 msgid "_Layer"
-msgstr ""
+msgstr "_Vrstva"
 
 #: ../src/gui/app.cpp:845 ../src/gui/canvasview.cpp:2542
 #: ../src/synfigapp/actions/layeradd.cpp:83
@@ -3353,31 +3353,31 @@ msgstr ""
 
 #: ../src/gui/app.cpp:849
 msgid "_Window"
-msgstr ""
+msgstr "_Okna"
 
 #: ../src/gui/app.cpp:850
 msgid "_Arrange"
-msgstr ""
+msgstr "_Uspořádat"
 
 #: ../src/gui/app.cpp:851
 msgid "Work_space"
-msgstr ""
+msgstr "Pracovní prostor"
 
 #: ../src/gui/app.cpp:853
 msgid "_Help"
-msgstr ""
+msgstr "_Pomoc"
 
 #: ../src/gui/app.cpp:878 ../src/gui/canvasview.cpp:1721
 msgid "Import..."
-msgstr ""
+msgstr "Importovat..."
 
 #: ../src/gui/app.cpp:879 ../src/gui/canvasview.cpp:1724
 msgid "Render..."
-msgstr ""
+msgstr "Rendrovat..."
 
 #: ../src/gui/app.cpp:880 ../src/gui/canvasview.cpp:1727
 msgid "Preview..."
-msgstr ""
+msgstr "Náhled..."
 
 #: ../src/gui/app.cpp:881 ../src/gui/canvasview.cpp:1736
 msgid "Close Document"
@@ -3385,11 +3385,11 @@ msgstr "Zavřít dokument"
 
 #: ../src/gui/app.cpp:890 ../src/gui/canvasview.cpp:1743
 msgid "Select All Handles"
-msgstr ""
+msgstr "Vybrat všechny táhla"
 
 #: ../src/gui/app.cpp:891 ../src/gui/canvasview.cpp:1747
 msgid "Unselect All Handles"
-msgstr ""
+msgstr "Odznačit všechna táhla"
 
 #: ../src/gui/app.cpp:892 ../src/gui/canvasview.cpp:1751
 msgid "Select All Layers"
@@ -3405,15 +3405,15 @@ msgstr "Vstupní zařízení..."
 
 #: ../src/gui/app.cpp:895 ../src/gui/mainwindow.cpp:158
 msgid "Preferences..."
-msgstr ""
+msgstr "Nastavení..."
 
 #: ../src/gui/app.cpp:899
 msgid "Menubar"
-msgstr ""
+msgstr "Lišta menu"
 
 #: ../src/gui/app.cpp:900
 msgid "Toolbar"
-msgstr ""
+msgstr "Panel nástrojů"
 
 #: ../src/gui/app.cpp:902 ../src/gui/canvasview.cpp:1938
 msgid "Toggle None/Last visible Handles"
@@ -3421,15 +3421,15 @@ msgstr ""
 
 #: ../src/gui/app.cpp:903 ../src/gui/canvasview.cpp:1950
 msgid "Show Position Handles"
-msgstr ""
+msgstr "Zobrazit táhla objektů"
 
 #: ../src/gui/app.cpp:904 ../src/gui/canvasview.cpp:1952
 msgid "Show Vertex Handles"
-msgstr ""
+msgstr "Zobrazit táhla vextrů"
 
 #: ../src/gui/app.cpp:905 ../src/gui/canvasview.cpp:1951
 msgid "Show Tangent Handles"
-msgstr ""
+msgstr "Zobrazit táhla úhlu vextrů"
 
 #: ../src/gui/app.cpp:906 ../src/gui/canvasview.cpp:1953
 msgid "Show Radius Handles"
@@ -7052,12 +7052,12 @@ msgstr ""
 
 #: ../src/synfigapp/actions/waypointconnect.cpp:50
 msgid "Connect Waypoint"
-msgstr ""
+msgstr "Spojit body"
 
 #: ../src/synfigapp/actions/waypointconnect.cpp:78
 #: ../src/synfigapp/actions/waypointdisconnect.cpp:80
 msgid "Waypoint Time"
-msgstr ""
+msgstr "Bod časové osy"
 
 #: ../src/synfigapp/actions/waypointdisconnect.cpp:51
 msgid "Disconnect Waypoint"
@@ -7154,7 +7154,7 @@ msgstr "úspěšný"
 #: ../src/synfigapp/action_system.cpp:230
 #: ../src/synfigapp/action_system.cpp:232
 msgid " (Undo): "
-msgstr ""
+msgstr "(Zpět):"
 
 #: ../src/synfigapp/action_system.cpp:292
 msgid "Failed to undo."
@@ -7167,15 +7167,15 @@ msgstr "(Znovu):"
 
 #: ../src/synfigapp/action_system.cpp:390
 msgid "Failed to redo."
-msgstr ""
+msgstr "Nepodařilo se vrátit zpět."
 
 #: ../src/synfigapp/action_system.cpp:706
 msgid "State restore failure"
-msgstr ""
+msgstr "Obnovení selhalo"
 
 #: ../src/synfigapp/canvasinterface.cpp:168
 msgid "Action Not Ready, unable to change mode"
-msgstr ""
+msgstr "Akce není připravena, nelze změnit režim-mode"
 
 #: ../src/synfigapp/canvasinterface.cpp:174
 msgid "Unable to change mode"
@@ -7191,7 +7191,7 @@ msgstr "Přidat vrstvu k"
 #: ../src/synfigapp/canvasinterface.cpp:721
 #: ../src/synfigapp/canvasinterface.cpp:835
 msgid "Action Not Ready"
-msgstr ""
+msgstr "Akce není připravená"
 
 #: ../src/synfigapp/canvasinterface.cpp:412
 #: ../src/synfigapp/canvasinterface.cpp:474

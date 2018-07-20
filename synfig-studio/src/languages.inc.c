@@ -10,6 +10,7 @@
 //
 //
 
+{ "aa_DJ",       "Afar",                             },
 { "ar",          "Arabick",                          },
 { "bs",          "Bosnian",                          },
 { "ca",          "Catalan",                          },
@@ -35,8 +36,10 @@
 { "it",          "Italian",                          },
 { "ja",          "Japanese",                         },
 { "ja_JP",       "Japanese (Japan)",                 },
+{ "kab",         "Kabyle",                           },
 { "lt",          "Lithuanian",                       },
 { "lv",          "Latvian",                          },
+{ "ne",          "Nepali",                           },
 { "nl",          "Dutch",                            },
 { "no_NO",       "Norwegian (Norway)",               },
 { "pl_PL",       "Polish (Poland)",                  },
@@ -53,7 +56,7 @@
 { "tr",          "Turkish",                          },
 { "ur",          "Urdu",                             },
 { "uz@Latn",     "Urdu (Latn)",                      },
-{ "zh_CN",       "Chinese (China)",                  },
 { "zh-Hant",     "Chinese Traditional",              },
+{ "zh_CN",       "Chinese (China)",                  },
 { "zh_TW",       "Chinese (Taiwan)",                 },
 { "zh_TW.Big5",  "Chinese (Taiwan) big5",            },
