@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 set -e
 
@@ -31,6 +31,8 @@ fix-pot()
 }
 
 cd "$SCRIPTPATH/../synfig-core/po"
+rm synfig.pot || true
+intltool-update --pot
 fix-pot synfig.pot
 
 cd "$SCRIPTPATH/../synfig-studio/po"
