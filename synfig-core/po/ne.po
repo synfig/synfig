@@ -3,25 +3,24 @@
 # This file is distributed under the same license as the Synfig Core package.
 # 
 # Translators:
-# Joe Hansen <joedalton2@yahoo.dk>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: Synfig UI\n"
 "Report-Msgid-Bugs-To: https://github.com/synfig/synfig/issues\n"
 "POT-Creation-Date: 2016-06-05 14:00+0700\n"
-"PO-Revision-Date: 2017-09-19 17:09+0000\n"
-"Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
-"Language-Team: Danish (http://www.transifex.com/morevnaproject/synfig/language/da/)\n"
+"PO-Revision-Date: 2011-04-15 07:43+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Nepali (http://www.transifex.com/morevnaproject/synfig/language/ne/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: da\n"
+"Language: ne\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:66
 #: src/modules/lyr_freetype/lyr_freetype.cpp:569
 msgid "Text"
-msgstr "Tekst"
+msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:67
 #: src/modules/lyr_std/import.cpp:61 src/modules/lyr_std/stroboscope.cpp:61
@@ -31,23 +30,23 @@ msgstr "Tekst"
 #: src/synfig/layers/layer_skeleton.cpp:55
 #: src/synfig/layers/layer_sound.cpp:52 src/synfig/layers/layer_switch.cpp:59
 msgid "Other"
-msgstr "Andre"
+msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:97
 msgid "Text Layer"
-msgstr "Tekstlag"
+msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:398
 msgid "unable to initialize"
-msgstr "kunne ikke initialisere"
+msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:417
 msgid "empty font set"
-msgstr "tomt skriftsæt"
+msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:570
 msgid "Text to Render"
-msgstr "Tekst at optegne"
+msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:575
 #: src/modules/lyr_std/shade.cpp:622
@@ -59,25 +58,25 @@ msgstr "Tekst at optegne"
 #: src/synfig/layers/layer_shape.cpp:1225
 #: src/synfig/layers/layer_solidcolor.cpp:114 src/synfig/paramdesc.cpp:83
 msgid "Color"
-msgstr "Farve"
+msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:576
 msgid "Color of the text"
-msgstr "Farvetekst"
+msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:580
 msgid "Font Family"
-msgstr "Skriftfamilie"
+msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:585
 msgid "Style"
-msgstr "Stil"
+msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:587
 #: src/modules/lyr_freetype/lyr_freetype.cpp:597
 #: src/synfig/valuenodes/valuenode_derivative.cpp:379
 msgid "Normal"
-msgstr "Normal"
+msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:588
 msgid "Oblique"
@@ -85,7 +84,7 @@ msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:589
 msgid "Italic"
-msgstr "Kursiv"
+msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:593
 #: src/synfig/valuenodes/valuenode_composite.cpp:817
@@ -102,11 +101,11 @@ msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:598
 msgid "Bold"
-msgstr "Fed"
+msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:599
 msgid "Ultrabold"
-msgstr "Ultrafed"
+msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:600
 msgid "Heavy"
@@ -135,19 +134,19 @@ msgstr ""
 #: src/modules/mod_geometry/checkerboard.cpp:154
 #: src/modules/mod_noise/distort.cpp:227 src/modules/mod_noise/noise.cpp:276
 msgid "Size"
-msgstr "Størrelse"
+msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:614
 msgid "Size of the text"
-msgstr "Tekststørrelse"
+msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:621
 msgid "Orientation"
-msgstr "Retning"
+msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:622
 msgid "Text Orientation"
-msgstr "Tekstretning"
+msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:627
 #: src/modules/lyr_std/curvewarp.cpp:398 src/modules/lyr_std/insideout.cpp:162
@@ -169,11 +168,11 @@ msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:628
 msgid "Text Position"
-msgstr "Tekstposition"
+msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:632
 msgid "Font"
-msgstr "Skrift"
+msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:633
 msgid "Filename of the font to use"
@@ -207,7 +206,7 @@ msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:742
 msgid "Text too small, no text will be rendered."
-msgstr "Tekst for lille, ingen tekst vil blive optegnet"
+msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:766
 msgid "Unable to set face size."
@@ -219,7 +218,7 @@ msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:816
 msgid "Can't parse multibyte character.\n"
-msgstr "Kan ikke fortolke multibyte-tegn.\n"
+msgstr ""
 
 #: src/modules/lyr_std/bevel.cpp:69 src/modules/mod_example/filledrect.cpp:157
 #: src/modules/mod_geometry/advanced_outline.cpp:1172
@@ -234,7 +233,7 @@ msgstr ""
 #: src/modules/mod_filter/blur.cpp:419
 #: src/modules/mod_filter/halftone2.cpp:174
 msgid "Type"
-msgstr "Type"
+msgstr ""
 
 #: src/modules/lyr_std/bevel.cpp:627 src/modules/lyr_std/shade.cpp:635
 #: src/modules/mod_filter/blur.cpp:420
@@ -417,38 +416,38 @@ msgstr ""
 
 #: src/modules/lyr_std/import.cpp:60
 msgid "Import Image"
-msgstr "Importer billede"
+msgstr ""
 
 #: src/modules/lyr_std/import.cpp:161 src/modules/lyr_std/import.cpp:218
 #, c-format
 msgid "Filename seems to already be set to \"%s\" (%s)"
-msgstr "Filnavn er allerede sat til »%s« (%s)"
+msgstr ""
 
 #: src/modules/lyr_std/import.cpp:317 src/modules/mod_svg/layer_svg.cpp:107
 #: src/synfig/layers/layer_sound.cpp:101
 msgid "Filename"
-msgstr "Filnavn"
+msgstr ""
 
 #: src/modules/lyr_std/import.cpp:318
 msgid "File to import"
-msgstr "Fil at importere"
+msgstr ""
 
 #: src/modules/lyr_std/import.cpp:322
 #: src/synfig/layers/layer_pastecanvas.cpp:148
 msgid "Time Offset"
-msgstr "Tidsforskydning"
+msgstr ""
 
 #: src/modules/lyr_std/import.cpp:323
 msgid "Time Offset to apply to the imported file"
-msgstr "Tidsforskydning at anvende for importeret fil"
+msgstr ""
 
 #: src/modules/lyr_std/insideout.cpp:55
 msgid "Inside Out"
-msgstr "Indefra ud"
+msgstr ""
 
 #: src/modules/lyr_std/insideout.cpp:163
 msgid "Defines where the center will be"
-msgstr "Definerer hvor centrum vil være"
+msgstr ""
 
 #: src/modules/lyr_std/julia.cpp:56
 msgid "Julia Set"
@@ -627,7 +626,7 @@ msgstr ""
 #: src/synfig/valuenodes/valuenode_segcalctangent.cpp:161
 #: src/synfig/valuenodes/valuenode_segcalcvertex.cpp:159
 msgid "Amount"
-msgstr "Antal"
+msgstr ""
 
 #: src/modules/lyr_std/rotate.cpp:123
 msgid "Amount of rotation"
@@ -989,7 +988,7 @@ msgstr ""
 
 #: src/modules/mod_bmp/trgt_bmp.cpp:197 src/modules/mod_bmp/trgt_bmp.cpp:198
 msgid "Unable to open file"
-msgstr "Kan ikke åbne fil"
+msgstr ""
 
 #: src/modules/mod_bmp/trgt_bmp.cpp:228 src/modules/mod_bmp/trgt_bmp.cpp:229
 msgid "Unable to write file header to file"
@@ -1601,7 +1600,7 @@ msgstr ""
 
 #: src/modules/mod_geometry/star.cpp:190 src/synfig/distance.cpp:260
 msgid "Points"
-msgstr "Punkter"
+msgstr ""
 
 #: src/modules/mod_geometry/star.cpp:191
 msgid "The number of points in the star"
@@ -1609,7 +1608,7 @@ msgstr ""
 
 #: src/modules/mod_geometry/star.cpp:195
 msgid "Regular Polygon"
-msgstr "Regulær polygon"
+msgstr ""
 
 #: src/modules/mod_geometry/star.cpp:196
 msgid "Whether to draw a star or a regular polygon"
@@ -1682,7 +1681,7 @@ msgstr ""
 #: src/synfig/valuenodes/valuenode_blinecalcwidth.cpp:211
 #: src/synfig/valuenodes/valuenode_gradientcolor.cpp:168
 msgid "Loop"
-msgstr "Loop"
+msgstr ""
 
 #: src/modules/mod_gradient/curvegradient.cpp:573
 #: src/modules/mod_gradient/lineargradient.cpp:207
@@ -1879,7 +1878,7 @@ msgstr ""
 #: src/modules/mod_noise/main.cpp:66
 #: src/modules/mod_noise/valuenode_random.cpp:169
 msgid "Random"
-msgstr "Vilkårlig"
+msgstr ""
 
 #: src/modules/mod_noise/noise.cpp:58
 msgid "Noise Gradient"
@@ -2094,7 +2093,7 @@ msgstr ""
 
 #: src/modules/mod_png/trgt_cairo_png.cpp:117 src/synfig/target_cairo.cpp:201
 msgid "Cairo Surface bad status"
-msgstr "Cairo overflade i dårlig tilstand"
+msgstr ""
 
 #: src/modules/mod_png/trgt_png_spritesheet.cpp:176
 #, c-format
@@ -2142,7 +2141,7 @@ msgstr ""
 
 #: src/synfig/base_types.cpp:258
 msgid "segment"
-msgstr "Segment"
+msgstr ""
 
 #: src/synfig/base_types.cpp:278
 msgid "spline_point"
@@ -2216,27 +2215,27 @@ msgstr ""
 
 #: src/synfig/distance.cpp:258
 msgid "Units"
-msgstr "Enheder"
+msgstr ""
 
 #: src/synfig/distance.cpp:259
 msgid "Pixels"
-msgstr "Billedpunkter"
+msgstr ""
 
 #: src/synfig/distance.cpp:261
 msgid "Inches"
-msgstr "Tommer"
+msgstr ""
 
 #: src/synfig/distance.cpp:262
 msgid "Meters"
-msgstr "Meter"
+msgstr ""
 
 #: src/synfig/distance.cpp:263
 msgid "Millimeters"
-msgstr "Millimeter"
+msgstr ""
 
 #: src/synfig/distance.cpp:264
 msgid "Centimeters"
-msgstr "Centimeter"
+msgstr ""
 
 #: src/synfig/importer.cpp:88
 msgid "Importer::open(): Cannot open empty filename"
@@ -2256,7 +2255,7 @@ msgstr ""
 
 #: src/synfig/layer.cpp:791
 msgid "Z Depth"
-msgstr "Z-dybde"
+msgstr ""
 
 #: src/synfig/layer.cpp:793
 msgid "Modifies the position of the layer in the layer stack"
@@ -2376,7 +2375,7 @@ msgstr ""
 
 #: src/synfig/layers/layer_pastecanvas.cpp:138
 msgid "Canvas"
-msgstr "Lærred"
+msgstr ""
 
 #: src/synfig/layers/layer_pastecanvas.cpp:139
 msgid "Group content"
@@ -2469,7 +2468,7 @@ msgstr ""
 #: src/synfig/layers/layer_skeleton.cpp:142
 #: src/synfig/valuenodes/valuenode_bone.cpp:587
 msgid "Name"
-msgstr "Navn"
+msgstr ""
 
 #: src/synfig/layers/layer_skeleton.cpp:145
 #: src/synfig/layers/layer_skeletondeformation.cpp:98
@@ -2637,7 +2636,7 @@ msgstr ""
 #: src/synfig/loadcanvas.cpp:1882
 #, c-format
 msgid "Missing attribute \"type\" in <%s>"
-msgstr "Manglende »attributtype« i <%s>"
+msgstr ""
 
 #: src/synfig/loadcanvas.cpp:1891
 #, c-format
@@ -2657,7 +2656,7 @@ msgstr ""
 #: src/synfig/loadcanvas.cpp:1945 src/synfig/loadcanvas.cpp:2032
 #, c-format
 msgid "'%s' was already defined in <%s>"
-msgstr "»%s« var allerede defineret i <%s>"
+msgstr ""
 
 #: src/synfig/loadcanvas.cpp:1958
 #, c-format
@@ -2820,11 +2819,11 @@ msgstr ""
 
 #: src/synfig/loadcanvas.cpp:3277
 msgid "<meta> must have a name"
-msgstr "<meta> skal have et navn"
+msgstr ""
 
 #: src/synfig/loadcanvas.cpp:3283
 msgid "<meta> must have content"
-msgstr "<meta> skal have indhold"
+msgstr ""
 
 #: src/synfig/loadcanvas.cpp:3323
 msgid "blank \"name\" entity"
@@ -3028,17 +3027,17 @@ msgstr ""
 #: src/synfig/palette.cpp:306
 #, c-format
 msgid "Unable to open %s for write"
-msgstr "Kan ikke åbne %s for skrivning"
+msgstr ""
 
 #: src/synfig/palette.cpp:328
 #, c-format
 msgid "Unable to open %s for read"
-msgstr "Kan ikke åbne %s for læsning"
+msgstr ""
 
 #: src/synfig/palette.cpp:340 src/synfig/palette.cpp:382
 #, c-format
 msgid "%s does not appear to be a valid %s palette file"
-msgstr "%s ligner ikke en gyldig %s-paletfil"
+msgstr ""
 
 #: src/synfig/palette.cpp:437
 #, c-format
@@ -3623,7 +3622,7 @@ msgstr ""
 
 #: src/synfig/valuenodes/valuenode_atan2.cpp:148
 msgid "X"
-msgstr "X"
+msgstr ""
 
 #: src/synfig/valuenodes/valuenode_atan2.cpp:149
 msgid "Cosine of the angle"
@@ -3917,7 +3916,7 @@ msgstr ""
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:629
 msgid "Red"
-msgstr "Rød"
+msgstr ""
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:630
 msgid "The red component of the color"
@@ -3925,7 +3924,7 @@ msgstr ""
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:633
 msgid "Green"
-msgstr "Grøn"
+msgstr ""
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:634
 msgid "The green component of the color"
@@ -3933,7 +3932,7 @@ msgstr ""
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:637
 msgid "Blue"
-msgstr "Blå"
+msgstr ""
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:638
 msgid "The blue component of the color"
@@ -4096,7 +4095,7 @@ msgstr ""
 #: src/synfig/valuenodes/valuenode_composite.cpp:768
 #: src/synfig/valuenodes/valuenode_timedswap.cpp:272
 msgid "Length"
-msgstr "Længde"
+msgstr ""
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:769
 msgid "The length of the Dash Item"
@@ -4133,7 +4132,7 @@ msgstr ""
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:821
 msgid "Value"
-msgstr "Værdi"
+msgstr ""
 
 #: src/synfig/valuenodes/valuenode_composite.cpp:822
 msgid "The Value"
@@ -4521,7 +4520,7 @@ msgstr ""
 
 #: src/synfig/valuenodes/valuenode_radialcomposite.cpp:255
 msgid "Luma"
-msgstr "Luma"
+msgstr ""
 
 #: src/synfig/valuenodes/valuenode_radialcomposite.cpp:273
 msgid "The length of the vector"
@@ -4653,7 +4652,7 @@ msgstr ""
 #: src/synfig/valuenodes/valuenode_segcalctangent.cpp:156
 #: src/synfig/valuenodes/valuenode_segcalcvertex.cpp:154
 msgid "Segment"
-msgstr "Segment"
+msgstr ""
 
 #: src/synfig/valuenodes/valuenode_segcalctangent.cpp:157
 msgid "The Segment where the tangent is linked to"
@@ -4777,7 +4776,7 @@ msgstr ""
 #: src/synfig/valuenodes/valuenode_timedswap.cpp:267
 #: src/synfig/valuenodes/valuenode_timestring.cpp:156
 msgid "Time"
-msgstr "Tid"
+msgstr ""
 
 #: src/synfig/valuenodes/valuenode_timedswap.cpp:268
 msgid "The time when the linear interpolation ends"
@@ -4884,7 +4883,7 @@ msgstr ""
 
 #: src/tool/main.cpp:151
 msgid "Gamma"
-msgstr "Gamma"
+msgstr ""
 
 #: src/tool/main.cpp:152
 msgid "Enable multithreaded renderer using the specified number of threads"
@@ -5113,7 +5112,7 @@ msgstr ""
 
 #: src/tool/joblistprocessor.cpp:252
 msgid "Done."
-msgstr "Færdig."
+msgstr ""
 
 #: src/tool/optionsprocessor.cpp:138
 msgid "Unrecognised canvas variable: "
