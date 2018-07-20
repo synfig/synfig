@@ -2,7 +2,7 @@
 ## Configure
 ##
 
-set(STUDIO_VERSION "1.3.9")
+set(STUDIO_VERSION "1.3.10")
 set(SHOW_EXTRA_INFO OFF) # this needs some fixes to work
 configure_file(autorevision.h.cmake.in autorevision.h)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
