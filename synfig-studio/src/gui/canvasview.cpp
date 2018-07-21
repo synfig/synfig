@@ -1415,6 +1415,54 @@ CanvasView::create_display_bar()
 	// Separator
 	displaybar->append( *create_tool_separator() );
 
+	{ // Setup refresh button
+		Gtk::Image *icon = Gtk::manage(new Gtk::Image(Gtk::StockID("gtk-refresh"), iconsize));
+		icon->set_padding(0, 0);
+		icon->show();
+
+		refreshbutton = Gtk::manage(new class Gtk::ToolButton());
+		refreshbutton->set_icon_widget(*icon);
+		refreshbutton->signal_clicked().connect(SLOT_EVENT(EVENT_REFRESH));
+		refreshbutton->set_label(_("Refresh"));
+		refreshbutton->set_tooltip_text( _("Refresh workarea"));
+		refreshbutton->show();
+
+		displaybar->append(*refreshbutton);
+	}
+
+	{ // Setup draft rendering mode button
+		Gtk::Image *icon = Gtk::manage(new Gtk::Image(Gtk::StockID("synfig-layer_other_duplicate"), iconsize));
+		icon->set_padding(0, 0);
+		icon->show();
+
+		draft_button = Gtk::manage(new class Gtk::ToggleToolButton());
+		draft_button->set_icon_widget(*icon);
+		draft_button->signal_clicked().connect(sigc::mem_fun(*this, &studio::CanvasView::toggle_draft_render));
+		draft_button->set_label(_("Draft"));
+		draft_button->set_tooltip_text( _("Enable draft rendering"));
+		draft_button->set_active(App::workarea_renderer == "software-draft");
+		draft_button->show();
+
+		displaybar->append(*draft_button);
+	}
+	
+	
+	// Separator
+	displaybar->append( *create_tool_separator() );
+
+	// Set up the ResolutionDial widget
+	resolutiondial.update_lowres(work_area->get_low_resolution_flag());
+	resolutiondial.signal_increase_resolution().connect(
+		sigc::mem_fun(*this, &studio::CanvasView::decrease_low_res_pixel_size));
+	resolutiondial.signal_decrease_resolution().connect(
+		sigc::mem_fun(*this, &studio::CanvasView::increase_low_res_pixel_size));
+	resolutiondial.signal_use_low_resolution().connect(
+		sigc::mem_fun(*this, &studio::CanvasView::toggle_low_res_pixel_flag));
+	resolutiondial.insert_to_toolbar(*displaybar);
+	
+	// Separator
+	displaybar->append( *create_tool_separator() );
+
 	{ // Set up the onion skin toggle button
 		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-toggle_onion_skin"), iconsize));
 		icon->set_padding(0, 0);
@@ -1461,54 +1509,6 @@ CanvasView::create_display_bar()
 
 		displaybar->append(*toolitem);
 	}
-
-	// Separator
-	displaybar->append( *create_tool_separator() );
-
-	{ // Setup refresh button
-		Gtk::Image *icon = Gtk::manage(new Gtk::Image(Gtk::StockID("gtk-refresh"), iconsize));
-		icon->set_padding(0, 0);
-		icon->show();
-
-		refreshbutton = Gtk::manage(new class Gtk::ToolButton());
-		refreshbutton->set_icon_widget(*icon);
-		refreshbutton->signal_clicked().connect(SLOT_EVENT(EVENT_REFRESH));
-		refreshbutton->set_label(_("Refresh"));
-		refreshbutton->set_tooltip_text( _("Refresh workarea"));
-		refreshbutton->show();
-
-		displaybar->append(*refreshbutton);
-	}
-
-	// Separator
-	displaybar->append( *create_tool_separator() );
-
-	{ // Setup draft rendering mode button
-		Gtk::Image *icon = Gtk::manage(new Gtk::Image(Gtk::StockID("synfig-layer_other_duplicate"), iconsize));
-		icon->set_padding(0, 0);
-		icon->show();
-
-		draft_button = Gtk::manage(new class Gtk::ToggleToolButton());
-		draft_button->set_icon_widget(*icon);
-		draft_button->signal_clicked().connect(sigc::mem_fun(*this, &studio::CanvasView::toggle_draft_render));
-		draft_button->set_label(_("Draft"));
-		draft_button->set_tooltip_text( _("Enable draft rendering"));
-		draft_button->set_active(App::workarea_renderer == "software-draft");
-		draft_button->show();
-
-		displaybar->append(*draft_button);
-	}
-
-
-	// Set up the ResolutionDial widget
-	resolutiondial.update_lowres(work_area->get_low_resolution_flag());
-	resolutiondial.signal_increase_resolution().connect(
-		sigc::mem_fun(*this, &studio::CanvasView::decrease_low_res_pixel_size));
-	resolutiondial.signal_decrease_resolution().connect(
-		sigc::mem_fun(*this, &studio::CanvasView::increase_low_res_pixel_size));
-	resolutiondial.signal_use_low_resolution().connect(
-		sigc::mem_fun(*this, &studio::CanvasView::toggle_low_res_pixel_flag));
-	resolutiondial.insert_to_toolbar(*displaybar);
 
 	displaybar->show();
 
