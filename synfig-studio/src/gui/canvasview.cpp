@@ -1431,7 +1431,7 @@ CanvasView::create_display_bar()
 	}
 
 	{ // Setup draft rendering mode button
-		Gtk::Image *icon = Gtk::manage(new Gtk::Image(Gtk::StockID("synfig-layer_other_duplicate"), iconsize));
+		Gtk::Image *icon = Gtk::manage(new Gtk::Image(Gtk::StockID("synfig-layer_other_supersample"), iconsize));
 		icon->set_padding(0, 0);
 		icon->show();
 
