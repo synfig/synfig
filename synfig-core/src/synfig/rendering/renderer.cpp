@@ -828,13 +828,13 @@ Renderer::run(const Task::List &list) const
 		Glib::Threads::Mutex mutex;
 		Glib::Threads::Mutex::Lock lock(mutex);
 
-		TaskCallbackCond::Handle task_cond = new TaskCallbackCond();
-		task_cond->cond = &cond;
-		task_cond->mutex = &mutex;
+		TaskEvent::Handle task_event = new TaskEvent();
+		task_event->cond = &cond;
+		task_event->mutex = &mutex;
 		for(Task::List::const_iterator i = optimized_list.begin(); i != optimized_list.end(); ++i)
-			if ((*i)->renderer_data.back_deps.insert(task_cond).second)
-				++task_cond->renderer_data.deps_count;
-		optimized_list.push_back(task_cond);
+			if ((*i)->renderer_data.back_deps.insert(task_event).second)
+				++task_event->renderer_data.deps_count;
+		optimized_list.push_back(task_event);
 
 		// try to find existing handle to this renderer instead,
 		// because creation and destruction of handle may cause destruction of renderer
@@ -844,8 +844,8 @@ Renderer::run(const Task::List &list) const
 		// unref tasks so surfaces will removed immediatelly when their tasks will complete
 		optimized_list.clear();
 
-		task_cond->cond->wait(mutex);
-		if (!task_cond->renderer_data.success) success = false;
+		task_event->cond->wait(mutex);
+		if (!task_event->renderer_data.success) success = false;
 
 		if (!get_debug_options().result_image.empty())
 			debug::DebugSurface::save_to_file(
@@ -859,8 +859,8 @@ Renderer::run(const Task::List &list) const
 	return success;
 }
 
-bool
-Renderer::enqueue(const Task::List &list, const Task::Handle &finish_signal_task) const
+void
+Renderer::enqueue(const Task::List &list, const TaskEvent::Handle &finish_signal_task) const
 {
 	Task::List optimized_list(list);
 	optimize(optimized_list);
@@ -876,7 +876,6 @@ Renderer::enqueue(const Task::List &list, const Task::Handle &finish_signal_task
 	// because creation and destruction of handle may cause destruction of renderer
 	// if it never stored in handles before
 	queue->enqueue(optimized_list, Task::RunParams( get_renderer(get_name()) ));
-	return true;
 }
 
 void

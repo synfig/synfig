@@ -80,6 +80,8 @@ private:
 	Task::Handle get(int thread_index);
 
 	static void fix_task(const Task &task, const Task::RunParams &params);
+	bool remove_if_orphan(const Task::Handle &task, bool in_queue);
+	void remove_orphans();
 
 public:
 	RenderQueue();
@@ -88,6 +90,7 @@ public:
 	int get_threads_count() const;
 	void enqueue(const Task::Handle &task, const Task::RunParams &params);
 	void enqueue(const Task::List &tasks, const Task::RunParams &params);
+	void cancel(const Task::Handle &task);
 	void clear();
 };
 

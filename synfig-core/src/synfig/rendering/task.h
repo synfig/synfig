@@ -552,23 +552,39 @@ public:
 	static VectorInt calc_target_offset(const Task &a, const Task &b);
 };
 
-
-class TaskCallbackCond: public Task
+//! Significant task for RenderQueue.
+//! Signals to caller when enqueued tasks are complete
+//! Also TaskEvent holds the tasks in queue each task in queue
+//! should be a dependency for any TaskEvent, or it be removed from queue
+class TaskEvent: public Task
 {
 public:
-	typedef etl::handle<TaskCallbackCond> Handle;
+	typedef etl::handle<TaskEvent> Handle;
+	typedef std::vector<Handle> List;
 	static Token token;
 	virtual Token::Handle get_token() const { return token.handle(); }
 
 	Glib::Threads::Cond *cond;
 	Glib::Threads::Mutex *mutex;
+	sigc::signal<void> signal_done;
+	sigc::signal<void> signal_cancelled;
 
-	TaskCallbackCond(): cond(), mutex() { }
+	TaskEvent(): cond(), mutex() { }
+
+	virtual void cancel() {
+		if (cond && mutex) {
+			Glib::Threads::Mutex::Lock lock(*mutex);
+			cond->signal();
+		}
+		signal_cancelled();
+	}
 
 	virtual bool run(RunParams & /* params */) const {
-		if (!cond || !mutex) return false;
-		Glib::Threads::Mutex::Lock lock(*mutex);
-		cond->signal();
+		if (cond && mutex) {
+			Glib::Threads::Mutex::Lock lock(*mutex);
+			cond->signal();
+		}
+		signal_done();
 		return true;
 	}
 };

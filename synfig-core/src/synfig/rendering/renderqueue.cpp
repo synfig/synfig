@@ -75,7 +75,7 @@ using namespace rendering;
 
 namespace {
 
-class TaskSubQueue: public Task
+class TaskSubQueue: public TaskEvent
 {
 public:
 	typedef etl::handle<TaskSubQueue> Handle;
@@ -83,7 +83,6 @@ public:
 	virtual Token::Handle get_token() const { return token.handle(); }
 	const Task::Handle& sub_task() const { return Task::sub_task(0); }
 	Task::Handle& sub_task() { return Task::sub_task(0); }
-	virtual bool run(RunParams&) const { return true; }
 };
 
 Task::Token TaskSubQueue::token(
@@ -204,7 +203,7 @@ RenderQueue::done(int thread_index, const Task::Handle &task)
 	for(Task::Set::iterator i = task->renderer_data.back_deps.begin(); i != task->renderer_data.back_deps.end(); ++i)
 	{
 		assert(*i);
-		--(*i)->renderer_data.deps_count;
+		(*i)->renderer_data.deps_count--;
 		if ((*i)->renderer_data.deps_count == 0)
 		{
 			bool mt = (*i)->get_allow_multithreading();
@@ -281,6 +280,67 @@ RenderQueue::get_threads_count() const
 	return threads.size();
 }
 
+bool
+RenderQueue::remove_if_orphan(const Task::Handle &task, bool in_queue)
+{
+	// mutex must be already locked
+
+	if (!task)
+		return true;
+
+	TaskSet *tasks = NULL;
+	TaskSet::iterator ii;
+	if (!in_queue) {
+		bool mt = task->get_allow_multithreading();
+		tasks = mt ? &not_ready_tasks : &single_not_ready_tasks;
+		TaskSet::iterator ii = tasks->find(task);
+		if (ii == tasks->end())
+			return true;
+	}
+
+	if (TaskEvent::Handle::cast_dynamic(task))
+		return false;
+
+	for(TaskSet::iterator i = task->renderer_data.back_deps.begin(); i != task->renderer_data.back_deps.end();)
+		if (remove_if_orphan(*i, false)) {
+			if (*i) {
+				(*i)->renderer_data.deps.erase(task);
+				(*i)->renderer_data.deps_count--;
+			}
+			task->renderer_data.back_deps.erase(i++);
+		} else ++i;
+
+	if (!task->renderer_data.back_deps.empty())
+		return false;
+
+	// usually deps is empty and only back_deps is used, but it's easy to check it anyway
+	for(TaskSet::iterator i = task->renderer_data.deps.begin(); i != task->renderer_data.deps.end(); ++i)
+		if (*i) (*i)->renderer_data.back_deps.erase(task);
+	task->renderer_data.deps_count -= (int)task->renderer_data.deps.size();
+	task->renderer_data.deps.clear();
+
+	// don't remove task if 'in_queue' is set (it will removed by caller)
+	if (tasks) tasks->erase(ii);
+	return true;
+}
+
+void
+RenderQueue::remove_orphans()
+{
+	// mutex must be already locked
+
+	for(TaskQueue::iterator i = ready_tasks.begin(); i != ready_tasks.end();)
+		if (remove_if_orphan(*i, true)) ready_tasks.erase(i++); else ++i;
+	for(TaskQueue::iterator i = single_ready_tasks.begin(); i != single_ready_tasks.end();)
+		if (remove_if_orphan(*i, true)) single_ready_tasks.erase(i++); else ++i;
+
+	for(TaskSet::iterator i = not_ready_tasks.begin(); i != not_ready_tasks.end();)
+		if (remove_if_orphan(*i, true)) not_ready_tasks.erase(i++); else ++i;
+	for(TaskSet::iterator i = single_not_ready_tasks.begin(); i != single_not_ready_tasks.end();)
+		if (remove_if_orphan(*i, true)) single_not_ready_tasks.erase(i++); else ++i;
+}
+
+
 void
 RenderQueue::enqueue(const Task::Handle &task, const Task::RunParams &params)
 {
@@ -299,6 +359,8 @@ RenderQueue::enqueue(const Task::Handle &task, const Task::RunParams &params)
 	{
 		wait.insert(task);
 	}
+
+	remove_orphans();
 }
 
 void
@@ -338,6 +400,31 @@ RenderQueue::enqueue(const Task::List &tasks, const Task::RunParams &params)
 	// wake up
 	while(signals-- > 0) cond.signal();
 	while(single_signals-- > 0) single_cond.signal();
+
+	remove_orphans();
+}
+
+void
+RenderQueue::cancel(const Task::Handle &task)
+{
+	if (!task) return;
+
+	Glib::Threads::Mutex::Lock lock(mutex);
+	bool found = false;
+
+	bool mt = task->get_allow_multithreading();
+	TaskQueue &queue = mt ? ready_tasks     : single_ready_tasks;
+	TaskSet   &wait  = mt ? not_ready_tasks : single_not_ready_tasks;
+
+	for(TaskQueue::iterator i = queue.begin(); i != queue.end();)
+		if (*i == task) found = true, queue.erase(i++); else ++i;
+	if (wait.erase(task)) found = true;
+
+	remove_orphans();
+
+	if (found)
+		if (TaskEvent::Handle task_event = TaskEvent::Handle::cast_dynamic(task))
+			task_event->cancel();
 }
 
 void

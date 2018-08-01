@@ -65,8 +65,8 @@ Task::Token TaskLockSurface::token(
 	DescSpecial<TaskLockSurface>("LoskSurface") );
 Task::Token TaskList::token(
 	DescSpecial<TaskList>("List") );
-Task::Token TaskCallbackCond::token(
-	DescSpecial<TaskCallbackCond>("CallbackCond") );
+Task::Token TaskEvent::token(
+	DescSpecial<TaskEvent>("Event") );
 
 
 void Task::Token::unprepare_vfunc()

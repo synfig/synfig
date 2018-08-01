@@ -143,9 +143,9 @@ public:
 	void optimize(Task::List &list) const;
 
 	bool run(const Task::List &list) const;
-	bool enqueue(
+	void enqueue(
 		const Task::List &list,
-		const Task::Handle &finish_signal_task = Task::Handle() ) const;
+		const TaskEvent::Handle &finish_signal_task ) const;
 
 	static void initialize();
 	static void deinitialize();
