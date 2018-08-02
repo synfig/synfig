@@ -162,7 +162,7 @@ public:
 	};
 private:
 	static bool equal(ConstInternalPointer a, ConstInternalPointer b)
-		{ return abs((*(Inner*)a).r - (*(Inner*)b).r) <= 1e-14; }
+		{ return fabs((*(Inner*)a).r - (*(Inner*)b).r) <= 1e-14; }
 	static bool less(ConstInternalPointer a, ConstInternalPointer b)
 		{ return !equal(a, b) && (*(Inner*)a).r < (*(Inner*)b).r; }
 	static String to_string(const Inner &x) { return etl::strprintf("Real (%f)", (Real)x); }
