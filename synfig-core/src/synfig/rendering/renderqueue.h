@@ -82,6 +82,7 @@ private:
 	static void fix_task(const Task &task, const Task::RunParams &params);
 	bool remove_if_orphan(const Task::Handle &task, bool in_queue);
 	void remove_orphans();
+	bool remove_task(const Task::Handle &task);
 
 public:
 	RenderQueue();
@@ -91,6 +92,7 @@ public:
 	void enqueue(const Task::Handle &task, const Task::RunParams &params);
 	void enqueue(const Task::List &tasks, const Task::RunParams &params);
 	void cancel(const Task::Handle &task);
+	void cancel(const Task::List &list);
 	void clear();
 };
 

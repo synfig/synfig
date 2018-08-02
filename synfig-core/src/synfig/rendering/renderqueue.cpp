@@ -156,7 +156,11 @@ RenderQueue::process(int thread_index)
 			continue;
 		}
 
-		if (!task->run(task->renderer_data.params))
+		bool success = false;
+		try {
+			success = task->run(task->renderer_data.params);
+		} catch(...) { }
+		if (!success)
 			task->renderer_data.success = false;
 
 		#ifdef DEBUG_TASK_SURFACE
@@ -183,7 +187,7 @@ RenderQueue::process(int thread_index)
 			{
 				TaskSubQueue::Handle task_sub_queue(new TaskSubQueue());
 				task_sub_queue->sub_task() = task;
-				task->renderer_data.params.renderer->enqueue(task->renderer_data.params.sub_queue, task_sub_queue);
+				task->renderer_data.params.renderer->enqueue(task->renderer_data.params.sub_queue, task_sub_queue, true);
 				continue;
 			}
 			task->renderer_data.success = false;
@@ -246,6 +250,7 @@ RenderQueue::get(int thread_index)
 		{
 			Task::Handle task = queue.front();
 			queue.pop_front();
+			if (task) continue;
 			assert( tasks_in_process.count(thread_index) == 0 );
 			tasks_in_process[thread_index] = task;
 			//info("rendering threads used %d", tasks_in_process.size());
@@ -404,27 +409,61 @@ RenderQueue::enqueue(const Task::List &tasks, const Task::RunParams &params)
 	remove_orphans();
 }
 
+bool
+RenderQueue::remove_task(const Task::Handle &task)
+{
+	bool found = false;
+	if (task) {
+		bool mt = task->get_allow_multithreading();
+		TaskQueue &queue = mt ? ready_tasks     : single_ready_tasks;
+		TaskSet   &wait  = mt ? not_ready_tasks : single_not_ready_tasks;
+
+		for(TaskQueue::iterator i = queue.begin(); i != queue.end();)
+			if (*i == task) found = true, queue.erase(i++); else ++i;
+		if (wait.erase(task)) found = true;
+	}
+	return found;
+}
+
 void
 RenderQueue::cancel(const Task::Handle &task)
 {
 	if (!task) return;
 
-	Glib::Threads::Mutex::Lock lock(mutex);
 	bool found = false;
+	{
+		Glib::Threads::Mutex::Lock lock(mutex);
+		found = remove_task(task);
+	}
 
-	bool mt = task->get_allow_multithreading();
-	TaskQueue &queue = mt ? ready_tasks     : single_ready_tasks;
-	TaskSet   &wait  = mt ? not_ready_tasks : single_not_ready_tasks;
-
-	for(TaskQueue::iterator i = queue.begin(); i != queue.end();)
-		if (*i == task) found = true, queue.erase(i++); else ++i;
-	if (wait.erase(task)) found = true;
-
-	remove_orphans();
-
-	if (found)
+	if (found) {
+		remove_orphans();
 		if (TaskEvent::Handle task_event = TaskEvent::Handle::cast_dynamic(task))
 			task_event->cancel();
+	}
+}
+
+void
+RenderQueue::cancel(const Task::List &list)
+{
+	if (list.empty()) return;
+
+	bool found;
+	TaskEvent::List events;
+
+	Glib::Threads::Mutex::Lock lock(mutex);
+	for(Task::List::const_iterator i = list.begin(); i != list.end(); ++i)
+		if (remove_task(*i)) {
+			found = true;
+			if (TaskEvent::Handle task_event = TaskEvent::Handle::cast_dynamic(*i))
+				events.push_back(task_event);
+		}
+
+	if (found) {
+		remove_orphans();
+		for(TaskEvent::List::const_iterator i = events.begin(); i != events.end(); ++i)
+			(*i)->cancel();
+	}
 }
 
 void

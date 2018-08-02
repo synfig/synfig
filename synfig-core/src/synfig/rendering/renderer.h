@@ -142,10 +142,16 @@ public:
 	int get_max_simultaneous_threads() const;
 	void optimize(Task::List &list) const;
 
-	bool run(const Task::List &list) const;
+	bool run(
+		const Task::List &list,
+		bool quiet = false ) const;
 	void enqueue(
 		const Task::List &list,
-		const TaskEvent::Handle &finish_signal_task ) const;
+		const TaskEvent::Handle &finish_event_task = TaskEvent::Handle(),
+		bool quiet = false ) const;
+
+	static void cancel(const Task::Handle &task);
+	static void cancel(const Task::List &list);
 
 	static void initialize();
 	static void deinitialize();
@@ -158,16 +164,9 @@ public:
 		{ return debug_options; }
 
 	static bool subsys_init()
-	{
-		initialize();
-		return true;
-	}
-
+		{ initialize(); return true; }
 	static bool subsys_stop()
-	{
-		deinitialize();
-		return false;
-	}
+		{ deinitialize(); return false; }
 };
 
 } /* end namespace rendering */

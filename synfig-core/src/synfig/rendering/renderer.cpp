@@ -788,22 +788,52 @@ Renderer::find_deps(const Task::List &list, long long batch_index) const
 }
 
 bool
-Renderer::run(const Task::List &list) const
+Renderer::run(const Task::List &list, bool quiet) const
 {
-	//info("renderer: %s", get_name().c_str());
-	//info("renderer.debug.task_list_log: %s", get_debug_options().task_list_log.c_str());
-	//info("renderer.debug.task_list_optimized_log: %s", get_debug_options().task_list_optimized_log.c_str());
-	//info("renderer.debug.result_image: %s", get_debug_options().result_image.c_str());
+	//if (!quiet) info("renderer.debug.result_image: %s", get_debug_options().result_image.c_str());
 
 	#ifdef DEBUG_TASK_MEASURE
-	debug::Measure t("Renderer::run");
+	if (!quiet) debug::Measure t("Renderer::run");
+	#endif
+
+	TaskEvent::Handle task_event = new TaskEvent();
+	enqueue(list, task_event, quiet);
+
+	{
+		#ifdef DEBUG_TASK_MEASURE
+		if (!quiet) debug::Measure t("run tasks");
+		#endif
+
+		task_event->wait();
+	}
+
+	if (!quiet && !get_debug_options().result_image.empty())
+		debug::DebugSurface::save_to_file(
+			!list.empty() && list.back()
+				? list.back()->target_surface
+				: SurfaceResource::Handle(),
+			get_debug_options().result_image,
+			true );
+
+	return task_event->is_done();
+}
+
+void
+Renderer::enqueue(const Task::List &list, const TaskEvent::Handle &finish_event_task, bool quiet) const
+{
+	//if (!quiet) info("renderer: %s", get_name().c_str());
+	//if (!quiet) info("renderer.debug.task_list_log: %s", get_debug_options().task_list_log.c_str());
+	//if (!quiet) info("renderer.debug.task_list_optimized_log: %s", get_debug_options().task_list_optimized_log.c_str());
+
+	#ifdef DEBUG_TASK_MEASURE
+	if (!quiet) debug::Measure t("Renderer::enqueue");
 	#endif
 
 	#ifdef DEBUG_TASK_LIST
-	log("", list, "input list");
+	if (!quiet) log("", list, "input list");
 	#endif
 
-	if (!get_debug_options().task_list_log.empty())
+	if (!quiet && !get_debug_options().task_list_log.empty())
 		log(get_debug_options().task_list_log, list, "input list");
 
 	Task::List optimized_list(list);
@@ -811,72 +841,31 @@ Renderer::run(const Task::List &list) const
 	find_deps(optimized_list, ++last_batch_index);
 
 	#ifdef DEBUG_TASK_LIST
-	log("", optimized_list, "optimized list");
+	if (!quiet) log("", optimized_list, "optimized list");
 	#endif
 
-	if (!get_debug_options().task_list_optimized_log.empty())
+	if (!quiet && !get_debug_options().task_list_optimized_log.empty())
 		log(get_debug_options().task_list_optimized_log, optimized_list, "optimized list");
 
-	bool success = true;
-
-	{
-		#ifdef DEBUG_TASK_MEASURE
-		debug::Measure t("run tasks");
-		#endif
-
-		Glib::Threads::Cond cond;
-		Glib::Threads::Mutex mutex;
-		Glib::Threads::Mutex::Lock lock(mutex);
-
-		TaskEvent::Handle task_event = new TaskEvent();
-		task_event->cond = &cond;
-		task_event->mutex = &mutex;
-		for(Task::List::const_iterator i = optimized_list.begin(); i != optimized_list.end(); ++i)
-			if ((*i)->renderer_data.back_deps.insert(task_event).second)
-				++task_event->renderer_data.deps_count;
-		optimized_list.push_back(task_event);
-
-		// try to find existing handle to this renderer instead,
-		// because creation and destruction of handle may cause destruction of renderer
-		// if it never stored in handles before
-		queue->enqueue(optimized_list, Task::RunParams( get_renderer(get_name()) ));
-
-		// unref tasks so surfaces will removed immediatelly when their tasks will complete
-		optimized_list.clear();
-
-		task_event->cond->wait(mutex);
-		if (!task_event->renderer_data.success) success = false;
-
-		if (!get_debug_options().result_image.empty())
-			debug::DebugSurface::save_to_file(
-				!list.empty() && list.back()
-					? list.back()->target_surface
-					: SurfaceResource::Handle(),
-				get_debug_options().result_image,
-				true );
-	}
-
-	return success;
-}
-
-void
-Renderer::enqueue(const Task::List &list, const TaskEvent::Handle &finish_signal_task) const
-{
-	Task::List optimized_list(list);
-	optimize(optimized_list);
-	find_deps(optimized_list, ++last_batch_index);
-	if (finish_signal_task)
+	if (finish_event_task)
 	{
 		for(Task::List::const_iterator i = optimized_list.begin(); i != optimized_list.end(); ++i)
-			if ((*i)->renderer_data.back_deps.insert(finish_signal_task).second)
-				++finish_signal_task->renderer_data.deps_count;
-		optimized_list.push_back(finish_signal_task);
+			if ((*i)->renderer_data.back_deps.insert(finish_event_task).second)
+				++finish_event_task->renderer_data.deps_count;
+		optimized_list.push_back(finish_event_task);
 	}
+
 	// try to find existing handle to this renderer instead,
 	// because creation and destruction of handle may cause destruction of renderer
 	// if it never stored in handles before
 	queue->enqueue(optimized_list, Task::RunParams( get_renderer(get_name()) ));
 }
+
+void Renderer::cancel(const Task::Handle &task)
+	{ if (queue) queue->cancel(task); }
+
+void Renderer::cancel(const Task::List &list)
+	{ if (queue) queue->cancel(list); }
 
 void
 Renderer::log(

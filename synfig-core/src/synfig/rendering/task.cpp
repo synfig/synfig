@@ -69,6 +69,8 @@ Task::Token TaskEvent::token(
 	DescSpecial<TaskEvent>("Event") );
 
 
+// Task
+
 void Task::Token::unprepare_vfunc()
 	{ alternatives_.clear(); }
 
@@ -323,6 +325,9 @@ bool
 Task::run(RunParams & /* params */) const
 	{ return false; }
 
+
+// TaskList
+
 VectorInt
 TaskList::calc_target_offset(const Task &a, const Task &b)
 {
@@ -335,6 +340,9 @@ TaskList::calc_target_offset(const Task &a, const Task &b)
 	Vector offset = (b.source_rect.get_min() - a.source_rect.get_min()).multiply_coords(a.get_pixels_per_unit());
 	return b.target_rect.get_min() - a.target_rect.get_min() - VectorInt((int)round(offset[0]), (int)round(offset[1]));
 }
+
+
+// TaskLockSurface
 
 void
 TaskLockSurface::set_surface(const SurfaceResource::Handle &surface)
@@ -370,6 +378,51 @@ TaskLockSurface::unlock() {
 		delete lock_;
 		lock_ = NULL;
 	}
+}
+
+
+// TaskEvent
+
+TaskEvent&
+TaskEvent::operator=(const TaskEvent &other)
+{
+	*(Task*)(this) = other;
+	done = (bool)other.done;
+	cancelled = (bool)other.cancelled;
+	signal_done = other.signal_done;
+	signal_cancelled = other.signal_cancelled;
+	return *this;
+}
+
+void
+TaskEvent::complete() {
+	Glib::Threads::Mutex::Lock lock(mutex);
+	if (done || cancelled) return;
+	cancelled = true;
+	signal_done();
+	cond.signal();
+}
+
+void
+TaskEvent::cancel() {
+	Glib::Threads::Mutex::Lock lock(mutex);
+	if (done || cancelled) return;
+	done = true;
+	signal_cancelled();
+	cond.signal();
+}
+
+void
+TaskEvent::wait() {
+	Glib::Threads::Mutex::Lock lock(mutex);
+	if (done || cancelled) return;
+	cond.wait(mutex);
+}
+
+bool
+TaskEvent::run(RunParams & /* params */) const {
+	const_cast<TaskEvent*>(this)->complete();
+	return true;
 }
 
 /* === E N T R Y P O I N T ================================================= */

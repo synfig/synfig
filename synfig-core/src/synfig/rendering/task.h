@@ -30,6 +30,7 @@
 #include <vector>
 #include <set>
 #include <map>
+#include <atomic>
 
 #include <synfig/rect.h>
 #include <synfig/vector.h>
@@ -564,29 +565,28 @@ public:
 	static Token token;
 	virtual Token::Handle get_token() const { return token.handle(); }
 
-	Glib::Threads::Cond *cond;
-	Glib::Threads::Mutex *mutex;
+private:
+	Glib::Threads::Mutex mutex;
+	Glib::Threads::Cond cond;
+	std::atomic<bool> done, cancelled;
+
+public:
 	sigc::signal<void> signal_done;
 	sigc::signal<void> signal_cancelled;
 
-	TaskEvent(): cond(), mutex() { }
+	TaskEvent(): done(), cancelled() { }
 
-	virtual void cancel() {
-		if (cond && mutex) {
-			Glib::Threads::Mutex::Lock lock(*mutex);
-			cond->signal();
-		}
-		signal_cancelled();
-	}
+	TaskEvent& operator=(const TaskEvent &other);
 
-	virtual bool run(RunParams & /* params */) const {
-		if (cond && mutex) {
-			Glib::Threads::Mutex::Lock lock(*mutex);
-			cond->signal();
-		}
-		signal_done();
-		return true;
-	}
+	bool is_done() const { return done; }
+	bool is_cancelled() const { return cancelled; }
+	bool is_finished() const { return done || cancelled; }
+
+	virtual void complete();
+	virtual void cancel();
+	virtual void wait();
+
+	virtual bool run(RunParams & /* params */) const;
 };
 
 
