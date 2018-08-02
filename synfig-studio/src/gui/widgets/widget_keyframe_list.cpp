@@ -143,6 +143,7 @@ Widget_Keyframe_List::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 	Color drag_new_position(1.0, 1.0, 1.0, 1.0);
 
 	//! Draw a background
+	cr->save();
 	cr->set_source_rgba(background.get_r(), background.get_g(), background.get_b(), background.get_a());
 	cr->rectangle(0.0, 0.0, w, h);
 	cr->fill();
