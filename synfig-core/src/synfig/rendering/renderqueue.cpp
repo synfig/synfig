@@ -250,7 +250,7 @@ RenderQueue::get(int thread_index)
 		{
 			Task::Handle task = queue.front();
 			queue.pop_front();
-			if (task) continue;
+			if (!task) continue;
 			assert( tasks_in_process.count(thread_index) == 0 );
 			tasks_in_process[thread_index] = task;
 			//info("rendering threads used %d", tasks_in_process.size());
