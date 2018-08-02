@@ -868,7 +868,13 @@ CanvasView::~CanvasView()
 	App::dock_manager->unregister_dockable(*this);
 	signal_deleted()();
 
-	App::ui_manager()->remove_action_group(action_group);
+	// I didn't find a proper way to check if actiongroup is already removed on CanvasView::deactivate
+	// So here is a quick-hack. This error is mostly invisible because it fails on App exiting
+	// but i didn't think it worth to spend time to it, because remove_action_group is deprecated
+	// and this code is required to rewrite.
+	
+	if (!this->_action_group_removed) 
+		App::ui_manager()->remove_action_group(action_group);
 
 	// Shut down the smach
 	smach_.egress();
@@ -909,6 +915,7 @@ void CanvasView::activate()
 	activation_index_.activate();
 	get_smach().process_event(EVENT_REFRESH_TOOL_OPTIONS);
 	App::ui_manager()->insert_action_group(action_group);
+	this->_action_group_removed = false;
 	update_title();
 	present();
 }
@@ -917,6 +924,7 @@ void CanvasView::deactivate()
 {
 	get_smach().process_event(EVENT_YIELD_TOOL_OPTIONS);
 	App::ui_manager()->remove_action_group(action_group);
+	this->_action_group_removed = true;
 	update_title();
 }
 

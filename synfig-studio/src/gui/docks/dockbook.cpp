@@ -87,15 +87,30 @@ DockBook::DockBook():
 
 DockBook::~DockBook()
 {
-	DockManager::containers_to_remove_.erase(this);
 	deleting_=true;
 	clear();
+	DockManager::containers_to_remove_.erase(this);
 }
 
 void
 DockBook::clear()
 {
-	while(get_n_pages())
+	// here the point: get_n_pages is fails because this is not notebook type
+	// i didn't know why this happens, possibly because clear() is called from destructor
+	// and 'this' is already deleted. Or, this function maybe never work right.
+	// So here quick-hack again. Btw, as you can see from commented code later newly created 
+	// dockbook is works fine, so this situation is reqired more detailed investigation.
+	if (!GTK_IS_NOTEBOOK (this)) return; // because we always fail if 'this' is not notebook
+
+	/*Gtk::Notebook note;
+	int x = note.get_n_pages();
+
+	DockBook db;
+	x = db.get_n_pages();
+
+	const Gtk::Notebook* nb = (const Gtk::Notebook*)this;*/
+	//assert(GTK_IS_NOTEBOOK (nb));
+	while (this->get_n_pages())
 		remove(static_cast<Dockable&>(*get_nth_page(get_n_pages()-1)));
 }
 
