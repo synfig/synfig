@@ -28,6 +28,8 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <cmath>
+
 #include "string.h"
 
 /* === M A C R O S ========================================================= */
@@ -116,7 +118,7 @@ public:
 
 	//! The discrete representation to use in std::map and std::set
 	ticks_type ticks() const
-		{ return (long long)round(value_/(tick())); }
+		{ return (long long)::round(value_/(tick())); }
 
 	bool is_equal(const Time& rhs) const { return ticks() == rhs.ticks(); }
 	bool is_less_than(const Time& rhs) const { return ticks() < rhs.ticks(); }
