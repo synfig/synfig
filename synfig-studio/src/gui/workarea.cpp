@@ -342,202 +342,6 @@ public:
 };
 
 
-class studio::WorkAreaTarget_Full : public synfig::Target_Scanline
-{
-public:
-	WorkArea *workarea;
-	int w,h;
-	int real_tile_w,real_tile_h;
-
-	int refresh_id;
-
-	bool onionskin;
-	bool onion_first_tile;
-	int onion_layers;
-
-	Surface surface;
-
-	std::list<synfig::Time> onion_skin_queue;
-
-	void set_onion_skin(bool x, int *onions)
-	{
-		onionskin=x;
-
-		Time time(rend_desc().get_time_start());
-
-		if(!onionskin)
-			return;
-		onion_skin_queue.push_back(time);
-		//onion_skin_queue.push_back(time-1);
-		//onion_skin_queue.push_back(time+1);
-		try
-		{
-		Time thistime=time;
-		for(int i=0; i<onions[0]; i++)
-			{
-				Time keytime=get_canvas()->keyframe_list().find_prev(thistime)->get_time();
-				onion_skin_queue.push_back(keytime);
-				thistime=keytime;
-			}
-		}
-		catch(...)
-		{  }
-
-		try
-		{
-		Time thistime=time;
-		for(int i=0; i<onions[1]; i++)
-			{
-				Time keytime=get_canvas()->keyframe_list().find_next(thistime)->get_time();
-				onion_skin_queue.push_back(keytime);
-				thistime=keytime;
-			}
-		}
-		catch(...)
-		{  }
-
-		onion_layers=onion_skin_queue.size();
-
-		onion_first_tile=false;
-	}
-public:
-
-	WorkAreaTarget_Full(WorkArea *workarea,int w, int h):
-		workarea(workarea),
-		w(w),
-		h(h),
-		real_tile_w(),
-		real_tile_h(),
-		refresh_id(workarea->refreshes),
-		onionskin(false),
-		onion_first_tile(),
-		onion_layers(0)
-	{
-		set_canvas(workarea->get_canvas());
-		set_quality(workarea->get_quality());
-	}
-
-	~WorkAreaTarget_Full()
-	{ }
-
-	virtual bool set_rend_desc(synfig::RendDesc *newdesc)
-	{
-		assert(workarea);
-		newdesc->set_flags(RendDesc::PX_ASPECT | RendDesc::IM_SPAN);
-		newdesc->set_wh(w, h);
-		if (workarea->get_w()!=w ||	workarea->get_h()!=h)
-			workarea->set_wh(w, h, 4);
-		surface.set_wh(newdesc->get_w(),newdesc->get_h());
-		desc=*newdesc;
-		workarea->full_frame=true;
-		return true;
-	}
-
-	virtual int next_frame(Time& time)
-	{
-		if(!onionskin)
-			return synfig::Target_Scanline::next_frame(time);
-		onion_first_tile = (onion_layers==(signed)onion_skin_queue.size());
-		if(!onion_skin_queue.empty())
-		{
-			time=onion_skin_queue.front();
-			onion_skin_queue.pop_front();
-		}
-		else
-			return 0;
-		return onion_skin_queue.size()+1;
-	}
-
-
-	virtual bool start_frame(synfig::ProgressCallback */*cb*/)
-	{
-		return true;
-	}
-
-	virtual Color * start_scanline(int scanline)
-	{
-		return surface[scanline];
-	}
-
-	virtual bool end_scanline()
-	{
-		return true;
-	}
-
-	static void free_buff(const guint8 *x) { free(const_cast<guint8*>(x)); }
-
-	virtual void end_frame()
-	{
-		assert(surface);
-
-		PixelFormat pf(PF_RGB|PF_A);
-
-		const int total_bytes(surface.get_w()*surface.get_h()*synfig::channels(pf));
-
-		unsigned char *buffer((unsigned char*)malloc(total_bytes));
-
-		if(!surface || !buffer) {
-			if (buffer) free(buffer); // fix possible memory leak
-			return;
-		}
-		// Copy the content of surface to the buffer
-		{
-			unsigned char *dest(buffer);
-			const Color *src(surface[0]);
-			int w(surface.get_w());
-			int x(w*surface.get_h());
-			for(int i=0;i<x;i++)
-				dest=Color2PixelFormat(
-									   (*(src++)).clamped(),
-									   pf,
-									   dest,
-									   App::gamma
-									   );
-		}
-
-		Glib::RefPtr<Gdk::Pixbuf> pixbuf;
-
-		pixbuf=Gdk::Pixbuf::create_from_data(
-			buffer,	// pointer to the data
-			Gdk::COLORSPACE_RGB, // the colorspace
-			((pf&PF_A)==PF_A), // has alpha?
-			8, // bits per sample
-			surface.get_w(),	// width
-			surface.get_h(),	// height
-			surface.get_w()*synfig::channels(pf), // stride (pitch)
-			sigc::ptr_fun(&WorkAreaTarget::free_buff)
-		);
-
-		RectInt rect(0, 0, pixbuf->get_width(), pixbuf->get_height());
-		WorkAreaTile *tile = workarea->get_tile_book().find_tile(refresh_id - onion_skin_queue.size() - 1, rect);
-
-		if(!onionskin || onion_first_tile || !tile || !tile->pixbuf)
-		{
-			workarea->get_tile_book().add(refresh_id - onion_skin_queue.size(), 0, 0, pixbuf);
-		}
-		else
-		{
-			pixbuf->composite(
-				tile->pixbuf, // Dest
-				0,//int dest_x
-				0,//int dest_y
-				pixbuf->get_width(), // dest width
-				pixbuf->get_height(), // dest_height,
-				0, // double offset_x
-				0, // double offset_y
-				1, // double scale_x
-				1, // double scale_y
-				Gdk::INTERP_NEAREST, // interp
-				255/(onion_layers-onion_skin_queue.size()+1) //int overall_alpha
-			);
-			tile->refresh_id = refresh_id - onion_skin_queue.size();
-			workarea->get_tile_book().sort();
-		}
-
-		workarea->queue_draw();
-	}
-};
-
 /* === M E T H O D S ======================================================= */
 
 WorkAreaTile*
@@ -2827,45 +2631,17 @@ public:
 bool
 studio::WorkArea::async_update_preview()
 {
-#ifdef SINGLE_THREADED
-	if (get_updating())
-	{
-		stop_updating();
-		queue_render_preview();
-		return false;
-	}
-#endif
-
 	async_renderer=0;
 
 	queued=false;
 	canceled_=false;
 	get_canvas_view()->reset_cancel_status();
 
-	// This object will mark us as busy until
-	// we are done.
-	//studio::App::Busy busy;
-
-	//WorkAreaProgress callback(this,get_canvas_view()->get_ui_interface().get());
-	//synfig::ProgressCallback *cb=&callback;
-
 	if(!get_visible())return false;
-
-	/*
-	// If we are queued to render the scene at the next idle
-	// go ahead and de-queue it.
-	if(render_idle_func_id)
-	{
-		g_source_remove(render_idle_func_id);
-		//queued=false;
-		render_idle_func_id=0;
-	}
-	*/
 
 	dirty=false;
 	get_canvas_view()->reset_cancel_status();
 
-	//bool ret=false;
 	RendDesc desc=get_canvas()->rend_desc();
 
 	int w=(int)(desc.get_w()*zoom);

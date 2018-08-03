@@ -8,6 +8,7 @@
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **  Copyright (c) 2011 Nikita Kitaev
+**  ......... ... 2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -59,36 +60,64 @@ using namespace studio;
 
 Renderer_Canvas::~Renderer_Canvas()
 {
+	cancel_render();
+#error // TODO: cancel background threads
 }
 
-bool
-Renderer_Canvas::get_full_frame()const
+void
+Renderer_Canvas::cancel_render()
 {
-	return get_work_area()->get_full_frame();
+	rendering::Task::List list;
+	while(true) {
+		{
+			Glib::Threads::Mutex::Lock lock(mutex);
+			if (events.empty()) return;
+			list.clear();
+			list.reserve(events.size());
+			list.insert(list.end(), events.begin(), events.end());
+		}
+		rendering::Renderer::cancel(list);
+		Glib::usleep(1);
+	}
 }
 
-int Renderer_Canvas::get_refreshes()const
+void
+Renderer_Canvas::enqueue_render(bool after_current_task_complete)
 {
-	return get_work_area()->get_refreshes();
+	rendering::Task::List tasks_to_cancel;
+
+	{
+		Glib::Threads::Mutex::Lock lock(mutex);
+		if (after_current_task_complete && !events.empty())
+			{ render_after_current_task_complete = true; return; }
+
+		tasks_to_cancel.reserve(events.size());
+		tasks_to_cancel.insert(tasks_to_cancel.end(), events.begin(), events.end());
+
+		#error // TODO: build tasks for rendering
+	}
+
+	rendering::Renderer::cancel(tasks_to_cancel);
 }
 
-bool
-Renderer_Canvas::get_canceled()const
+void
+Renderer_Canvas::wait_render()
 {
-	return get_work_area()->get_canceled();
+	EventList list;
+	while(true) {
+		{
+			Glib::Threads::Mutex::Lock lock(mutex);
+			if (events.empty()) return;
+			list.clear();
+			list.reserve(events.size());
+			list.insert(list.end(), events.begin(), events.end());
+		}
+		for(EventList::iterator i = list.begin(); i != list.end(); ++i)
+			(*i)->wait();
+		Glib::usleep(1);
+	}
 }
 
-bool
-Renderer_Canvas::get_queued()const
-{
-	return get_work_area()->get_queued();
-}
-
-bool
-Renderer_Canvas::get_rendering()const
-{
-	return get_work_area()->get_rendering();
-}
 
 void
 Renderer_Canvas::render_vfunc(

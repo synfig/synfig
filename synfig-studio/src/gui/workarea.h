@@ -61,21 +61,6 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-/*
-namespace etl {
-
-template <typename T_, typename C_=std::less<T_,T_> >
-class dereferenced_compare
-{
-public:
-	typedef etl::loose_handle<T_> first_argument_type;
-	typedef etl::loose_handle<T_> second_argument_type;
-	typedef bool result_type;
-
-}
-};
-*/
-
 namespace synfigapp { class CanvasInterface; };
 
 namespace synfig { class Layer; };
@@ -84,8 +69,6 @@ namespace Gtk { class Frame; };
 namespace studio
 {
 class WorkAreaTarget;
-class WorkAreaTarget_Full;
-class WorkAreaTarget_GL;
 
 class Instance;
 class CanvasView;
