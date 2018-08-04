@@ -27,10 +27,15 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <climits>
+
 #include <vector>
 #include <map>
 
 #include <glibmm/threads.h>
+
+#include <synfig/time.h>
+#include <synfig/rendering/task.h>
 
 #include "workarearenderer.h"
 #include "workarea.h"
@@ -46,9 +51,6 @@ namespace studio {
 class Renderer_Canvas : public studio::WorkAreaRenderer
 {
 public:
-	typedef synfig::rendering::TaskEvent Event;
-	typedef std::vector<Event::Handle> EventList;
-
 	class FrameDesc {
 	public:
 		synfig::Time time;
@@ -59,29 +61,21 @@ public:
 				time(time), alpha(alpha) { }
 	};
 
-	class Tile {
+	class Tile: public etl::shared_object {
 	public:
-		long long refresh_id;
-		synfig::Time time;
-		synfig::RectInt rect;
+		typedef etl::handle<Tile> Handle;
+
+		const long long refresh_id;
+		const synfig::Time time;
+		const synfig::RectInt rect;
+
+		synfig::rendering::TaskEvent::Handle event;
+		synfig::rendering::SurfaceResource::Handle surface;
 		Glib::RefPtr<Gdk::Pixbuf> pixbuf;
 
 		Tile(): refresh_id() { }
-		Tile(
-			int refresh_id,
-			const synfig::Time &time,
-			int left,
-			int top,
-			const Glib::RefPtr<Gdk::Pixbuf> &pixbuf
-		):
-			refresh_id(refresh_id),
-			time(time),
-			rect( left,
-				  top,
-				  left + (pixbuf ? pixbuf->get_width() : 0),
-				  top + (pixbuf ? pixbuf->get_height() : 0) ),
-			pixbuf(pixbuf)
-		{ }
+		Tile(int refresh_id, const synfig::Time &time, synfig::RectInt &rect):
+			refresh_id(refresh_id), time(time), rect(rect) { }
 
 		bool operator< (const Tile &other) const {
 			if (refresh_id < other.refresh_id) return true;
@@ -91,46 +85,55 @@ public:
 	};
 
 	typedef std::vector<FrameDesc> FrameList;
-	typedef std::set<Tile> TileSet;
+	typedef std::vector<Tile::Handle> TileList;
+	typedef std::multiset<Tile::Handle> TileSet;
 	typedef std::map<synfig::Time, TileSet> TileMap;
 
 private:
+	//! controls access to fields: tiles, onion_frames, refresh_id
 	Glib::Threads::Mutex mutex;
 
+	//! stored tiles may be actual/outdated and rendered/not-rendered
 	TileMap tiles;
+
+	//! all currently visible frames (onion skin feature allows to see more than one frame)
 	FrameList onion_frames;
 
+	//! increment of this field makes all tiles outdated
 	long long refresh_id;
-	EventList events;
-	bool render_after_current_task_complete;
 
-	void apply_onion_skin(int past, int future);
-	void enqueue_thread();
-	void remove_old_tiles();
+	//! require to call renderer after current rendering complete
+	bool render_queued;
+
+	// don't try to pass arguments to callbacks by reference, it cannot be properly saved in signal
+	// Renderer_Canvas is non-thread-safe sigc::trackable, so use static callback methods only in signals
+
+	static void enqueue_rendering_task_callback(
+		synfig::rendering::Renderer::Handle renderer,
+		synfig::rendering::Task::Handle task,
+		synfig::rendering::TaskEvent::Handle event );
+	static void free_pixbuf_data_callback(const guint8 *x);
+	static void on_tile_finished_callback(bool success, Renderer_Canvas *obj, Tile::Handle tile);
+	static void post_tile_finished_callback(etl::handle<Renderer_Canvas> obj);
+
+	void on_tile_finished(bool success, const Tile::Handle &tile);
+	void cancel_render(long long keep_refresh_id);
 
 public:
+	Renderer_Canvas();
 	~Renderer_Canvas();
 
-	int get_refresh_id() const
-		{ return refresh_id; }
-	void inc_refresh_id()
-		{ ++refresh_id; }
+	// functions to render canvas in background
 
-	bool in_process() const
-		{ return !events.empty(); }
-	void cancel_render();
-	void enqueue_render(bool after_current_task_complete);
+	void inc_refresh_id();
+	void enqueue_render(bool force = false);
 	void wait_render();
+	void cancel_render()
+		{ cancel_render(LLONG_MAX); }
+	void sync_render()
+		{ inc_refresh_id(); enqueue_render(true); wait_render(); }
 
-	void render() {
-		inc_refresh_id();
-		enqueue_render(false);
-		wait_render();
-	}
-
-	void draw_frame(const Cairo::RefPtr<Cairo::Context> &context, const FrameDesc &frame);
-	void draw(const Cairo::RefPtr<Cairo::Context> &context);
-
+	// just paint already rendered tiles at window
 	void render_vfunc(
 		const Glib::RefPtr<Gdk::Window>& drawable,
 		const Gdk::Rectangle& expose_area );

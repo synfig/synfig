@@ -676,6 +676,9 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 
 WorkArea::~WorkArea()
 {
+	while(!renderer_set_.empty())
+		erase_renderer(*renderer_set_.begin());
+
 //	delete [] buffer;
 
 	if (async_renderer)
