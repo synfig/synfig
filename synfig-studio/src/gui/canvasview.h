@@ -332,13 +332,10 @@ private:
 	bool toggling_ducks_;
 	ResolutionDial resolutiondial;
 	bool changing_resolution_;
-	Glib::RefPtr<Gtk::Adjustment> quality_adjustment_;
-	Gtk::SpinButton *quality_spin;
 	Glib::RefPtr<Gtk::Adjustment> future_onion_adjustment_;
 	Glib::RefPtr<Gtk::Adjustment> past_onion_adjustment_;
 	Gtk::SpinButton *past_onion_spin;
 	Gtk::SpinButton *future_onion_spin;
-	bool updating_quality_;
 	Gtk::ToggleToolButton *show_grid;
 	Gtk::ToggleToolButton *snap_grid;
 	Gtk::ToggleToolButton *onion_skin;
@@ -363,8 +360,6 @@ private:
 
 	Gtk::Menu duckmaskmenu;
 	DEBUGPOINT_CLASS(77);
-	Gtk::Menu qualitymenu;
-	DEBUGPOINT_CLASS(6);
 
 	Gtk::Menu filemenu;
 	DEBUGPOINT_CLASS(777);
@@ -405,7 +400,6 @@ private:
 	Glib::RefPtr<Gtk::ToggleAction> grid_show_toggle;
 	Glib::RefPtr<Gtk::ToggleAction> onion_skin_toggle;
 
-	Gtk::RadioButtonGroup quality_group;
 	Gtk::RadioButtonGroup low_res_pixel_size_group;
 
 	Glib::RefPtr<Gtk::ActionGroup> action_group;
@@ -531,7 +525,6 @@ private:
 	void decrease_low_res_pixel_size();
 	void increase_low_res_pixel_size();
 	void toggle_low_res_pixel_flag();
-	void set_quality(int x);
 	void set_onion_skins();
 	void toggle_show_grid();
 	void toggle_snap_grid();
@@ -746,8 +739,6 @@ public:
 	void preview_option() {on_preview_option();}
 
 	bool is_playing() { return is_playing_; }
-
-	void update_quality();
 
 	//! Toggle given handle type
 	//! \Param[in]  type The Duckmatic::Type to toggle

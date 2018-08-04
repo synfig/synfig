@@ -155,7 +155,6 @@ void studio::Widget_NavView::on_start_render()
 		targ->set_canvas(get_canvas_view()->get_canvas());
 		targ->set_alpha_mode(TARGET_ALPHA_MODE_FILL);
 		targ->set_avoid_time_sync();
-		targ->set_quality(get_canvas_view()->get_work_area()->get_quality());
 		targ->set_rend_desc(&r);
 		// Sets up a Asynchronous renderer
 		renderer = new AsyncRenderer(targ);

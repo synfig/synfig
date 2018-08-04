@@ -84,6 +84,14 @@ public:
 		}
 	};
 
+	class TimeMeasure {
+	public:
+		long long time_us;
+		long long cpu_time_us;
+		TimeMeasure(): time_us(), cpu_time_us() { }
+		static TimeMeasure now();
+	};
+
 	typedef std::vector<FrameDesc> FrameList;
 	typedef std::vector<Tile::Handle> TileList;
 	typedef std::multiset<Tile::Handle> TileSet;
@@ -105,6 +113,8 @@ private:
 	//! require to call renderer after current rendering complete
 	bool render_queued;
 
+	TimeMeasure rendering_start_time;
+
 	// don't try to pass arguments to callbacks by reference, it cannot be properly saved in signal
 	// Renderer_Canvas is non-thread-safe sigc::trackable, so use static callback methods only in signals
 
@@ -117,6 +127,8 @@ private:
 	static void post_tile_finished_callback(etl::handle<Renderer_Canvas> obj);
 
 	void on_tile_finished(bool success, const Tile::Handle &tile);
+	void pre_tile_started();
+	void post_tile_finished();
 	void cancel_render(long long keep_refresh_id);
 
 public:
@@ -130,8 +142,6 @@ public:
 	void wait_render();
 	void cancel_render()
 		{ cancel_render(LLONG_MAX); }
-	void sync_render()
-		{ inc_refresh_id(); enqueue_render(true); wait_render(); }
 
 	// just paint already rendered tiles at window
 	void render_vfunc(

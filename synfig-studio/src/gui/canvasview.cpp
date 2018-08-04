@@ -630,7 +630,6 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	offset_widget            (NULL),
 	toggleducksdial          (Gtk::IconSize::from_name("synfig-small_icon_16x16")),
 	resolutiondial           (Gtk::IconSize::from_name("synfig-small_icon_16x16")),
-	quality_adjustment_      (Gtk::Adjustment::create(8,1,10,1,1,0)),
 	future_onion_adjustment_ (Gtk::Adjustment::create(0,0,ONION_SKIN_FUTURE,1,1,0)),
 	past_onion_adjustment_   (Gtk::Adjustment::create(1,0,ONION_SKIN_PAST,1,1,0)),
 
@@ -670,7 +669,6 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	toggling_ducks_=false;
 	toggling_animate_mode_=false;
 	changing_resolution_=false;
-	updating_quality_=false;
 	toggling_show_grid=false;
 	toggling_snap_grid=false;
 	toggling_onion_skin=false;
@@ -795,7 +793,7 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	**	This should be performed at the first time the window
 	** 	becomes visible.
 	*/
-	work_area->queue_render_preview();
+	work_area->queue_render();
 
 	std::vector<Gtk::TargetEntry> listTargets;
 	listTargets.push_back( Gtk::TargetEntry("text/uri-list") );
@@ -1377,26 +1375,6 @@ CanvasView::create_display_bar()
 	// Separator
 	displaybar->append( *create_tool_separator() );
 
-	/* QUALITY_SPIN_DISABLED see also CanvasView::set_quality
-	{ // Set up quality spin button
-		quality_spin=Gtk::manage(new class Gtk::SpinButton(quality_adjustment_));
-		quality_spin->signal_value_changed().connect(
-			sigc::mem_fun(*this, &studio::CanvasView::update_quality));
-		quality_spin->set_tooltip_text( _("Quality (lower is better)"));
-		quality_spin->show();
-
-		Gtk::ToolItem *toolitem = Gtk::manage(new Gtk::ToolItem());
-		toolitem->add(*quality_spin);
-		toolitem->set_is_important(true);
-		toolitem->show();
-
-		displaybar->append(*toolitem);
-	}
-
-	// Separator
-	displaybar->append( *create_tool_separator() );
-	*/
-
 	{ // Set up the show grid toggle button
 		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-toggle_show_grid"), iconsize));
 		icon->set_padding(0, 0);
@@ -1679,36 +1657,6 @@ CanvasView::init_menus()
 					plugin.path
 				)
 		);
-	}
-
-	// Preview Quality Menu
-	{
-		int i;
-		action_group->add( Gtk::RadioAction::create(quality_group,"quality-00", _("Use Parametric Renderer")),
-			sigc::bind(
-				sigc::mem_fun(*work_area, &studio::WorkArea::set_quality),
-				0
-			)
-		);
-		for(i=1;i<=10;i++)
-		{
-			String note;
-			if (i == 1) note = _(" (best)");
-			if (i == 10) note = _(" (fastest)");
-			Glib::RefPtr<Gtk::RadioAction> action(Gtk::RadioAction::create(quality_group,strprintf("quality-%02d",i),
-																		   strprintf(_("Set Quality to %d"),i) + note));
-			if (i==8)			// default quality
-			{
-				action->set_active();
-				work_area->set_quality(i);
-			}
-			action_group->add( action,
-				sigc::bind(
-					sigc::mem_fun(*this, &studio::CanvasView::set_quality),
-					i
-				)
-			);
-		}
 	}
 
 	// Low-Res Quality Menu
@@ -2014,7 +1962,7 @@ CanvasView::on_refresh_pressed()
 {
 	rebuild_tables();
 	rebuild_ducks();
-	work_area->queue_render_preview();
+	work_area->queue_render();
 }
 
 void
@@ -2152,7 +2100,7 @@ CanvasView::refresh_rend_desc()
 				time_adjustment_->get_value()
 	);*/
 
-	work_area->queue_render_preview();
+	work_area->queue_render();
 }
 
 bool
@@ -2179,22 +2127,10 @@ static bool _close_instance(etl::handle<Instance> instance)
 bool
 CanvasView::close_instance()
 {
-#ifdef SINGLE_THREADED
-	if (get_work_area()->get_updating())
-	{
-		get_work_area()->stop_updating(true); // stop and mark as cancelled
-
-		// give the workarea chances to stop updating
-		Glib::signal_timeout().connect(
-			sigc::mem_fun(*this, &CanvasView::close_instance),
-			250);
-	}
-	else
-#endif
-		Glib::signal_timeout().connect(
-			sigc::bind(sigc::ptr_fun(_close_instance),
-					   (etl::handle<Instance>)get_instance()),
-			250);
+	Glib::signal_timeout().connect(
+		sigc::bind(sigc::ptr_fun(_close_instance),
+				   (etl::handle<Instance>)get_instance()),
+		250);
 	return false;
 }
 
@@ -2923,7 +2859,7 @@ CanvasView::rebuild_ducks()
 		}
 	}while(0);
 	work_area->refresh_selected_ducks();
-	work_area->queue_draw_preview();
+	work_area->queue_draw();
 }
 
 void
@@ -3014,36 +2950,6 @@ CanvasView::toggle_low_res_pixel_flag()
 }
 
 void
-CanvasView::update_quality()
-{
-	//if(working_depth)
-	//		return;
-	if(updating_quality_)
-		return;
-	updating_quality_=true;
-	work_area->set_quality((int) quality_spin->get_value());
-	// Update Quality Radio actions
-	Glib::RefPtr<Gtk::RadioAction> action=Glib::RefPtr<Gtk::RadioAction>::cast_dynamic(
-		action_group->get_action(strprintf("quality-%02d",(int) quality_spin->get_value()))
-		);
-	action->set_active();
-
-	updating_quality_=false;
-}
-
-void
-CanvasView::set_quality(int x)
-{
-	if(updating_quality_)
-		return;
-	work_area->set_quality(x);
-
-	// quality_spin creation is commented at QUALITY_SPIN_DISABLED in CanvasView::create_display_bar
-	// Update the quality spin button
-	// quality_spin->set_value(x);
-}
-
-void
 CanvasView::set_onion_skins()
 {
 	if(toggling_onion_skin)
@@ -3103,7 +3009,7 @@ CanvasView::on_dirty_preview()
 	{
 		IsWorking is_working(*this);
 
-		work_area->queue_render_preview();
+		work_area->queue_render();
 	}
 }
 
@@ -3210,8 +3116,7 @@ CanvasView::on_play_timeout()
 	time_adjustment()->set_value(time);
 	time_adjustment()->value_changed();
 
-	if(!work_area->sync_render_preview())
-		stop_async();
+	work_area->sync_render();
 }
 
 
@@ -3273,8 +3178,7 @@ CanvasView::play()
 		time_adjustment()->set_value(time+timer());
 		time_adjustment()->value_changed();
 
-		if(!work_area->sync_render_preview())
-			break;
+		work_area->sync_render();
 
 		// wait for the workarea to refresh itself
 		while (studio::App::events_pending())
@@ -4079,7 +3983,6 @@ CanvasView::on_preview_create(const PreviewInfo &info)
 	prev->set_begintime(info.begintime);
 	prev->set_overend(info.overend);
 	prev->set_endtime(info.endtime);
-	prev->set_quality(work_area->get_quality());
 #ifdef WITH_JACK
 	prev->set_jack_offset(get_jack_offset());
 #endif

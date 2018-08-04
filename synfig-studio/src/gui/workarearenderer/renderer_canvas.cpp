@@ -32,6 +32,10 @@
 #	include <config.h>
 #endif
 
+#include <ctime>
+
+#include <glib.h>
+
 #include <gdkmm/general.h>
 
 #include <ETL/misc>
@@ -81,6 +85,18 @@ int_ceil(int x, int base)
 
 /* === M E T H O D S ======================================================= */
 
+Renderer_Canvas::TimeMeasure
+Renderer_Canvas::TimeMeasure::now() {
+	const long long cpu_step_us = 1000000000ll/(long long)(CLOCKS_PER_SEC);
+	assert(cpu_step_us*(long long)(CLOCKS_PER_SEC) == 1000000000ll);
+
+	TimeMeasure t;
+	t.time_us = g_get_monotonic_time()*1000;
+	t.cpu_time_us = clock()*cpu_step_us;
+	return t;
+}
+
+
 Renderer_Canvas::Renderer_Canvas():
 	refresh_id(), render_queued() { }
 
@@ -114,10 +130,9 @@ void
 Renderer_Canvas::post_tile_finished_callback(etl::handle<Renderer_Canvas> obj) {
 	// this function should be called in main thread
 	// Handle will protect 'obj' from deletion before this call
-	if (obj->get_work_area()) {
-		obj->get_work_area()->queue_draw();
-		if (obj->render_queued) obj->enqueue_render();
-	}
+	// zero 'work_area' means that 'work_area' is destructed and here is a last Handle of 'obj'
+	if (obj->get_work_area())
+		obj->post_tile_finished();
 }
 
 void
@@ -244,6 +259,50 @@ Renderer_Canvas::on_tile_finished(bool success, const Tile::Handle &tile)
 }
 
 void
+Renderer_Canvas::pre_tile_started()
+{
+	// remember time update statusbar
+	if (rendering_start_time.time_us == 0) {
+		rendering_start_time = TimeMeasure::now();
+		if (ProgressCallback *cb = get_work_area()->get_progress_callback())
+			cb->task(_("Rendering..."));
+	}
+}
+
+void
+Renderer_Canvas::post_tile_finished()
+{
+	// NB: this function locks the mutex (but pre_tile_started() don't)
+
+	if (!render_queued && rendering_start_time.time_us != 0) {
+		// check if rendering finished
+		bool all_finished = true;
+		{
+			Glib::Threads::Mutex::Lock lock(mutex);
+			for(TileMap::const_iterator i = tiles.begin(); all_finished && i != tiles.end(); ++i)
+				for(TileSet::const_iterator j = i->second.begin(); all_finished && j != i->second.end(); ++j)
+					if (*j && (*j)->event && !(*j)->event->is_finished())
+						all_finished = false;
+		}
+
+		if (all_finished) {
+			// measure rendering time and update statusbar
+			TimeMeasure time = TimeMeasure::now();
+			if (ProgressCallback *cb = get_work_area()->get_progress_callback())
+				cb->task( strprintf("%s %f (%f) %s",
+					_("Rendered:"),
+					1e-9*(time.time_us - rendering_start_time.time_us),
+					1e-9*(time.cpu_time_us - rendering_start_time.cpu_time_us),
+					_("sec") ));
+			rendering_start_time = TimeMeasure();
+		}
+	}
+
+	get_work_area()->queue_draw();
+	if (render_queued) enqueue_render();
+}
+
+void
 Renderer_Canvas::enqueue_render(bool force)
 {
 	ColorReal base_onion_alpha = 0.75;
@@ -285,7 +344,7 @@ Renderer_Canvas::enqueue_render(bool force)
 		onion_frames.clear();
 		if (get_work_area()->get_onion_skin() && approximate_not_equal_lp(fps, 0.f)) {
 			Time frame_duration(1.0/(double)fps);
-			int past = get_work_area()->get_onion_skins()[0];
+			int past   = get_work_area()->get_onion_skins()[0];
 			int future = get_work_area()->get_onion_skins()[1];
 			for(int i = 0; i < past; ++i) {
 				Time time = base_time - frame_duration*(past - i);
@@ -323,6 +382,9 @@ Renderer_Canvas::enqueue_render(bool force)
 				rects_merge(rects);
 
 				if (!rects.empty()) {
+					// this function don't locks mutex, so we may use it here with locked mutex
+					pre_tile_started();
+
 					// build rendering task
 					canvas->set_time(frame_time);
 					canvas->set_outline_grow(rend_desc.get_outline_grow());

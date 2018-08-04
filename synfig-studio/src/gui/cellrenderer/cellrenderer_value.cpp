@@ -90,9 +90,9 @@ class studio::ValueBase_Entry : public Gtk::EventBox, public Gtk::CellEditable
 public:
 #if GLIB_CHECK_VERSION(2, 37, 5)
 	ValueBase_Entry():
+		Glib::ObjectBase  (typeid(ValueBase_Entry)),
 		Gtk::CellEditable (),
-		Gtk::EventBox     (),
-		Glib::ObjectBase  (typeid(ValueBase_Entry))
+		Gtk::EventBox     ()
 #else
 	ValueBase_Entry():
 		Glib::ObjectBase  (typeid(ValueBase_Entry)),

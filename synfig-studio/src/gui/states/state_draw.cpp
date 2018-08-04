@@ -601,7 +601,7 @@ StateDraw_Context::increment_id()
 StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	canvas_view_(canvas_view),
 	is_working(*canvas_view),
-	push_state(get_work_area()),
+	push_state(*get_work_area()),
 	loop_(false),
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
 	opacity_hscl(0.0f, 1.0125f, 0.0125f),
@@ -1069,7 +1069,7 @@ StateDraw_Context::event_stroke(const Smach::event& x)
 
 	if(nested==0)
 	{
-		DirtyTrap dirty_trap(get_work_area());
+		WorkArea::DirtyTrap dirty_trap(*get_work_area());
 		Smach::event_result result;
 		result = process_stroke(event.stroke_data, event.width_data, (event.modifier&Gdk::CONTROL_MASK) || (event.modifier&Gdk::BUTTON2_MASK));
 		process_queue();

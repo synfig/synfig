@@ -237,7 +237,7 @@ StateSketch_Context::StateSketch_Context(CanvasView* canvas_view):
 	action_group(Gtk::ActionGroup::create("action_group_state_sketch")),
 	canvas_view_(canvas_view),
 	is_working(*canvas_view),
-	push_state(get_work_area()),
+	push_state(*get_work_area()),
 	button_clear_sketch(_("Clear Sketch")),
 	button_undo_stroke(_("Undo Stroke")),
 	button_save_sketch(_("Save Sketch")),

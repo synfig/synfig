@@ -577,7 +577,7 @@ StateNormal_Context::event_refresh_handler(const Smach::event& /*x*/)
 {
 	// synfig::info("STATE NORMAL: Received Refresh Event");
 	canvas_view_->rebuild_tables();
-	canvas_view_->get_work_area()->queue_render_preview();
+	canvas_view_->get_work_area()->queue_render();
 	return Smach::RESULT_ACCEPT;
 }
 

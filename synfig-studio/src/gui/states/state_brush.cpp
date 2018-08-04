@@ -507,7 +507,7 @@ StateBrush_Context::save_settings()
 StateBrush_Context::StateBrush_Context(CanvasView* canvas_view):
 	canvas_view_(canvas_view),
 	is_working(*canvas_view),
-	push_state(get_work_area()),
+	push_state(*get_work_area()),
 	selected_brush_button(NULL),
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
 	eraser_checkbox(_("Eraser"))

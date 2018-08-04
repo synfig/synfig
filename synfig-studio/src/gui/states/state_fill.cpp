@@ -108,7 +108,7 @@ StateFill::~StateFill()
 StateFill_Context::StateFill_Context(CanvasView *canvasView):
 	canvas_view(canvasView),
 	is_working(*canvasView),
-	push_state(get_work_area())
+	push_state(*get_work_area())
 {
 	synfig::info("Entered Fill State");
 
@@ -147,7 +147,7 @@ Smach::event_result
 StateFill_Context::event_refresh_handler(const Smach::event& /*x*/)
 {
 	synfig::info("STATE FILL: Received Refresh Event");
-	canvas_view->get_work_area()->queue_render_preview();
+	canvas_view->get_work_area()->queue_render();
 	return Smach::RESULT_ACCEPT;
 }
 

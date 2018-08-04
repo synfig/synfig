@@ -61,114 +61,27 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace synfigapp { class CanvasInterface; };
-
-namespace synfig { class Layer; };
 namespace Gtk { class Frame; };
+namespace synfig { class Layer; };
+namespace synfigapp { class CanvasInterface; };
 
 namespace studio
 {
-class WorkAreaTarget;
 
 class Instance;
 class CanvasView;
 class WorkArea;
 class WorkAreaRenderer;
 class AsyncRenderer;
-
-class DirtyTrap
-{
-	friend class WorkArea;
-	WorkArea *work_area;
-public:
-	DirtyTrap(WorkArea *work_area);
-	~DirtyTrap();
-};
-
-class WorkAreaTile
-{
-public:
-	typedef std::list<WorkAreaTile> List;
-
-	int refresh_id;
-	synfig::RectInt rect;
-	Glib::RefPtr<Gdk::Pixbuf> pixbuf;
-	cairo_surface_t* surface;
-
-	WorkAreaTile(): refresh_id(), surface()
-		{ }
-	WorkAreaTile(int refresh_id, int left, int top, const Glib::RefPtr<Gdk::Pixbuf> &pixbuf):
-		refresh_id(refresh_id),
-		rect( left,
-			  top,
-			  left + (pixbuf ? pixbuf->get_width() : 0),
-			  top + (pixbuf ? pixbuf->get_height() : 0) ),
-		pixbuf(pixbuf),
-		surface() { }
-	WorkAreaTile(int refresh_id, int left, int top, cairo_surface_t *surface):
-		refresh_id(refresh_id),
-		rect( left,
-			  top,
-			  left + (surface ? cairo_image_surface_get_width(surface) : 0),
-			  top + (surface ? cairo_image_surface_get_height(surface) : 0) ),
-		surface() { }
-
-	bool operator< (const WorkAreaTile &other) const { return refresh_id < other.refresh_id; }
-};
-
-class WorkAreaTileBook
-{
-private:
-	WorkAreaTile::List tiles;
-
-public:
-	const WorkAreaTile::List& get_tiles() const { return tiles; }
-
-	WorkAreaTile* find_tile(int refresh_id, const synfig::RectInt &rect);
-
-	void clear() { tiles.clear(); }
-
-	void sort();
-
-	void add(const WorkAreaTile &tile);
-
-	void add(int refresh_id, int left, int top, const Glib::RefPtr<Gdk::Pixbuf> &pixbuf)
-		{ add(WorkAreaTile(refresh_id, left, top, pixbuf)); }
-	void add(int refresh_id, int left, int top, cairo_surface_t *surface)
-		{ add(WorkAreaTile(refresh_id, left, top, surface)); }
-
-	void get_dirty_rects(
-		std::vector<synfig::RectInt> &out_rects,
-		int refresh_id,
-		const synfig::RectInt &bounds,
-		const synfig::VectorInt &max_size = synfig::VectorInt(INT_MAX, INT_MAX) ) const;
-};
+class Renderer_Canvas;
 
 
 class WorkArea : public Gtk::Table, public Duckmatic
 {
-	friend class WorkAreaTarget;
-	friend class WorkAreaTarget_Full;
-	friend class WorkAreaTarget_Cairo;
-	friend class WorkAreaTarget_Cairo_Tile;
-	friend class WorkAreaTarget_GL;
-	friend class DirtyTrap;
-	friend class WorkAreaRenderer;
-	friend class WorkAreaProgress;
-
+public:
 	/*
  -- ** -- P U B L I C   T Y P E S ---------------------------------------------
 	*/
-
-public:
-
-	class PushState;
-	friend class PushState;
-
-	void insert_renderer(const etl::handle<WorkAreaRenderer> &x);
-	void insert_renderer(const etl::handle<WorkAreaRenderer> &x,int priority);
-	void erase_renderer(const etl::handle<WorkAreaRenderer> &x);
-	void resort_render_set();
 
 	enum DragMode
 	{
@@ -181,53 +94,57 @@ public:
 		DRAG_ZOOM_WINDOW,
 		DRAG_ROTATE_WINDOW
 	};
-	// Class used to store the cairo surface
-	class SurfaceElement
+
+	/*! \class WorkArea::PushState
+	**	Saves the current duck view and editing options
+	**  Should be used by tools that hide ducks or change clickability settings */
+	class PushState
 	{
 	public:
-		cairo_surface_t* surface;
-		int refreshes;
-		SurfaceElement()
-		{
-			surface=NULL;
-			refreshes=0;
-		}
-		//Copy constructor
-		SurfaceElement(const SurfaceElement& other): surface(cairo_surface_reference(other.surface)), refreshes(other.refreshes)
-		{
-		}
-		~SurfaceElement()
-		{
-			if(surface)
-				cairo_surface_destroy(surface);
-		}
+		WorkArea &workarea;
+		const Type type_mask;
+		const bool allow_duck_clicks;
+		const bool allow_bezier_clicks;
+		const bool allow_layer_clicks;
+		PushState(WorkArea &workarea);
+		~PushState();
+	}; // END of class WorkArea::PushState
+
+	/*! \class WorkArea::DirtyTrap
+	**  While any DirtyTrap exists it accumulates WorkArea::queue_render() calls and blocks them.
+	**  WorkArea::queue_render() will called once after all DirtyTrap's for this WorkArea destroyed. */
+	class DirtyTrap
+	{
+	public:
+		WorkArea &work_area;
+		DirtyTrap(WorkArea &work_area);
+		~DirtyTrap();
 	};
 
-	typedef std::vector<SurfaceElement>	 SurfaceBook;
+	friend class DirtyTrap;
+	friend class WorkAreaRenderer;
+	friend class WorkAreaProgress;
 
+private:
 	/*
  -- ** -- P R I V A T E   D A T A ---------------------------------------------
 	*/
 
-private:
-
 	std::set<etl::handle<WorkAreaRenderer> > renderer_set_;
-
-	etl::handle<studio::AsyncRenderer> async_renderer;
-
 
 	etl::loose_handle<synfigapp::CanvasInterface> canvas_interface;
 	etl::handle<synfig::Canvas> canvas;
 	etl::loose_handle<studio::Instance> instance;
 	etl::loose_handle<studio::CanvasView> canvas_view;
+	etl::handle<Renderer_Canvas> renderer_canvas;
 
 	// Widgets
 	Gtk::DrawingArea *drawing_area;
+	Gtk::Frame *drawing_frame;
+	Widget_Ruler *hruler;
+	Widget_Ruler *vruler;
 	Glib::RefPtr<Gtk::Adjustment> scrollx_adjustment;
 	Glib::RefPtr<Gtk::Adjustment> scrolly_adjustment;
-	Widget_Ruler *vruler;
-	Widget_Ruler *hruler;
-	Gtk::Frame *drawing_frame;
 	ZoomDial *zoomdial;
 
 	GdkDevice* curr_input_device;
@@ -246,7 +163,6 @@ private:
 	guint32 last_event_time;
 
 	int bpp;
-	//unsigned char *buffer;
 
 	//! ???
 	synfig::ProgressCallback *progresscallback;
@@ -288,34 +204,12 @@ private:
 
 	bool meta_data_lock;
 
-	//! This flag is set if the entire frame is rendered rather than using tiles
-	bool full_frame;
-
-	//Glib::RefPtr<Gdk::Pixbuf> pix_buf;
-
-	//! This vector holds all of the tiles for this frame
-	WorkAreaTileBook tile_book;
-
-	//! This integer describes the total times that the work area has been refreshed
-	int refreshes;
-
-	//! This list holds the queue of tiles that need to be rendered
-	//std::list<int> tile_queue;
-
-	int tile_w, tile_h;
-
-	gint render_idle_func_id;
-
 	//! The coordinates of the focus the last time a part of the screen was refreshed
 	synfig::Point last_focus_point;
 
-	bool canceled_;
-
-	int quality;
 	int low_res_pixel_size;
 
-	bool dirty_trap_enabled;
-
+	int dirty_trap_count;
 	int dirty_trap_queued;
 
 	// This flag is set if onion skin is visible
@@ -328,53 +222,12 @@ private:
 	bool allow_duck_clicks;
 	bool allow_bezier_clicks;
 	bool allow_layer_clicks;
-	bool cancel;
 	bool curr_guide_is_x;
-	bool dirty;
-	bool queued;
-	bool rendering;
-	
-#ifdef SINGLE_THREADED
-	/* resize bug workaround */
-	int old_window_width;
-	int old_window_height;
-#endif
 
+public:
 	/*
  -- ** -- P U B L I C   D A T A -----------------------------------------------
 	*/
-
-public:
-
-	const etl::loose_handle<synfig::ValueNode>& get_selected_value_node() { return  selected_value_node_; }
-	const synfig::Point& get_drag_point()const { return drag_point; }
-	const WorkAreaTileBook& get_tile_book() const { return tile_book; }
-	WorkAreaTileBook& get_tile_book() { return tile_book; }
-	int get_refreshes()const { return refreshes; }
-	bool get_canceled()const { return canceled_; }
-	bool get_queued()const { return queued; }
-	bool get_rendering()const { return rendering; }
-#ifdef SINGLE_THREADED
-	bool get_updating()const;
-	void stop_updating(bool cancel = false);
-#endif
-	bool get_full_frame()const { return full_frame; }
-	//int get_w()const { return w; }
-	//int get_h()const { return h; }
-
-	synfig::VectorInt get_windows_offset() const;
-	synfig::RectInt get_window_rect(int stepx = 1, int stepy = 1) const;
-	int get_tile_w()const { return tile_w; }
-	int get_tile_h()const { return tile_h; }
-
-	bool get_allow_layer_clicks() { return allow_layer_clicks; }
-	void set_allow_layer_clicks(bool value) { allow_layer_clicks=value; }
-
-	bool get_allow_duck_clicks() { return allow_duck_clicks; }
-	void set_allow_duck_clicks(bool value) { allow_duck_clicks=value; }
-
-	bool get_allow_bezier_clicks() { return allow_bezier_clicks; }
-	void set_allow_bezier_clicks(bool value) { allow_bezier_clicks=value; }
 
 	// used in renderer_ducks.cpp
 	bool solid_lines;
@@ -388,78 +241,77 @@ public:
 	// used in renderer_bonesetup.cpp
 	int bonesetup_width, bonesetup_height;
 
+private:
 	/*
  -- ** -- P R I V A T E   M E T H O D S ---------------------------------------
 	*/
 
-private:
-
 	//unsigned char *get_buffer() { return buffer; }
-	bool set_wh(int w, int h,int chan=3);
+	bool set_wh(int w, int h, int chan=3);
 
 	/*
  -- ** -- S I G N A L S -------------------------------------------------------
 	*/
-
 private:
-
-	sigc::signal<void,GdkDevice* > signal_input_device_changed_;
-
-	//! One signal per button
-	sigc::signal<void,synfig::Point> signal_user_click_[5];
-
-	sigc::signal<void> signal_popup_menu_;
-
-	sigc::signal<void> signal_cursor_moved_;
 	sigc::signal<void> signal_rendering_;
-
-	//! Signal for when the user clicks on a layer
-	sigc::signal<void, etl::handle<synfig::Layer> > signal_layer_selected_;
-
+	sigc::signal<void> signal_cursor_moved_;
 	sigc::signal<void> signal_view_window_changed_;
-
 	sigc::signal<void> signal_meta_data_changed_;
+	sigc::signal<void, GdkDevice*> signal_input_device_changed_;
+	sigc::signal<void> signal_popup_menu_;
+	sigc::signal<void, synfig::Point> signal_user_click_[5]; //!< One signal per button
+	sigc::signal<void, etl::handle<synfig::Layer> > signal_layer_selected_; //!< Signal for when the user clicks on a layer
 
 public:
-
 	sigc::signal<void>& signal_rendering() { return signal_rendering_; }
-
 	sigc::signal<void>& signal_cursor_moved() { return signal_cursor_moved_; }
-
 	sigc::signal<void>& signal_view_window_changed() { return signal_view_window_changed_; }
-
 	sigc::signal<void>& signal_meta_data_changed() { return signal_meta_data_changed_; }
-
-	void view_window_changed() { signal_view_window_changed()(); }
-
-	sigc::signal<void,GdkDevice* >& signal_input_device_changed() { return signal_input_device_changed_; }
-
+	sigc::signal<void, GdkDevice*>& signal_input_device_changed() { return signal_input_device_changed_; }
 	sigc::signal<void> &signal_popup_menu() { return signal_popup_menu_; }
-
-	//! One signal per button (5 buttons)
-	sigc::signal<void,synfig::Point> &signal_user_click(int button=0){ return signal_user_click_[button]; }
-
+	sigc::signal<void, synfig::Point> &signal_user_click(int button=0){ return signal_user_click_[button]; } //!< One signal per button (5 buttons)
 	sigc::signal<void, etl::handle<synfig::Layer> >& signal_layer_selected() { return signal_layer_selected_; }
 
+public:
 	/*
  -- ** -- P U B L I C   M E T H O D S -----------------------------------------
 	*/
 
-public:
+	WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface);
+	virtual ~WorkArea();
+
+	void view_window_changed() { signal_view_window_changed()(); }
+
+	const etl::loose_handle<synfig::ValueNode>& get_selected_value_node() { return  selected_value_node_; }
+	const synfig::Point& get_drag_point()const { return drag_point; }
+
+	synfig::VectorInt get_windows_offset() const;
+	synfig::RectInt get_window_rect() const;
+
+	bool get_allow_layer_clicks() { return allow_layer_clicks; }
+	void set_allow_layer_clicks(bool value) { allow_layer_clicks=value; }
+
+	bool get_allow_duck_clicks() { return allow_duck_clicks; }
+	void set_allow_duck_clicks(bool value) { allow_duck_clicks=value; }
+
+	bool get_allow_bezier_clicks() { return allow_bezier_clicks; }
+	void set_allow_bezier_clicks(bool value) { allow_bezier_clicks=value; }
+
+	void insert_renderer(const etl::handle<WorkAreaRenderer> &x);
+	void insert_renderer(const etl::handle<WorkAreaRenderer> &x,int priority);
+	void erase_renderer(const etl::handle<WorkAreaRenderer> &x);
+	void resort_render_set();
+
 	void set_onion_skin(bool x);
-	bool get_onion_skin()const;
+	bool get_onion_skin() const { return onion_skin; }
 	void toggle_onion_skin() { set_onion_skin(!get_onion_skin()); }
 	void set_onion_skins(int *onions);
-	int const * get_onion_skins()const;
+	int const * get_onion_skins() const { return onion_skins; }
 
 	void set_selected_value_node(etl::loose_handle<synfig::ValueNode> x);
 
 	bool is_dragging() { return dragging!=DRAG_NONE; }
-
 	DragMode get_dragging_mode() { return dragging; }
-
-	WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface);
-	virtual ~WorkArea();
 
 	void set_cursor(const Glib::RefPtr<Gdk::Cursor> &x);
 	void set_cursor(Gdk::CursorType x);
@@ -536,13 +388,10 @@ public:
 	//! ??
 	void popup_menu();
 
-	int get_quality()const { return quality; }
 	int get_low_res_pixel_size()const { return low_res_pixel_size; }
 	synfig::String get_renderer() const;
 
-	void set_quality(int x);
 	void set_low_res_pixel_size(int x);
-
 
 	int get_w()const { return w; }
 	int get_h()const { return h; }
@@ -566,21 +415,11 @@ public:
 	const synfig::Point &get_window_tl()const { return window_tl; }
 	const synfig::Point &get_window_br()const { return window_br; }
 
+	//! initiate background rendering of canvas and wait
+	void sync_render();
 
-	bool async_update_preview();
-	void async_update_finished();
-	void async_render_preview(synfig::Time time);
-	void async_render_preview();
-
-	bool sync_update_preview();
-	bool sync_render_preview(synfig::Time time);
-	bool sync_render_preview();
-	void sync_render_preview_hook();
-
-	void queue_render_preview();
-
-
-	void queue_draw_preview();
+	//! initiate background rendering of canvas
+	void queue_render();
 
 	void zoom_in();
 	void zoom_out();
@@ -588,23 +427,14 @@ public:
 	void zoom_norm();
 	void zoom_edit();
 	float get_zoom()const { return zoom; } // zoom is declared in Duckmatic
-
 	void set_zoom(float z);
-
 
 	void set_progress_callback(synfig::ProgressCallback *x)	{ progresscallback=x; }
 	synfig::ProgressCallback *get_progress_callback() { return progresscallback; }
 
 	void set_focus_point(const synfig::Point &x);
-
 	synfig::Point get_focus_point()const;
 
-	void done_rendering();
-
-#ifdef SINGLE_THREADED
-	/* resize bug workaround */
-	void refresh_second_check();
-#endif
 	bool refresh(const Cairo::RefPtr<Cairo::Context> &cr);
 
 	void reset_cursor();
@@ -615,56 +445,19 @@ public:
 	//! Test initial meta data values
 	bool have_meta_data();
 
+private:
 	/*
  -- ** -- S I G N A L   T E R M I N A L S -------------------------------------
 	*/
 
-private:
 	bool on_key_press_event(GdkEventKey* event);
 	bool on_key_release_event(GdkEventKey* event);
 	bool on_drawing_area_event(GdkEvent* event);
 	bool on_hruler_event(GdkEvent* event);
 	bool on_vruler_event(GdkEvent* event);
 	void on_duck_selection_single(const etl::handle<Duck>& duck_guid);
-
-	/*
- -- ** -- S T A T I C   P U B L I C   M E T H O D S ---------------------------
-	*/
-
-public:
-
-	/*
- -- ** -- S T A T I C   P R I V A T E   M E T H O D S -------------------------
-	*/
-
-private:
-
-	static gboolean __render_preview(gpointer data);
-#ifdef SINGLE_THREADED
-	/* resize bug workaround */
-	static gboolean __refresh_second_check(gpointer data);
-#endif
-
 }; // END of class WorkArea
 
-/*! \class WorkArea::PushState
-**	Saves the current duck view and editing options
-**  Should be used by tools that hide ducks or change clickability settings */
-class WorkArea::PushState
-{
-	WorkArea *workarea_;
-	Type type_mask;
-	bool allow_duck_clicks;
-	bool allow_bezier_clicks;
-	bool allow_layer_clicks;
-
-	bool needs_restore;
-
-public:
-	PushState(WorkArea *workarea_);
-	~PushState();
-	void restore();
-}; // END of class WorkArea::PushState
 
 }; // END of namespace studio
 

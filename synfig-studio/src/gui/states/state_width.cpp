@@ -229,7 +229,7 @@ StateWidth_Context::StateWidth_Context(CanvasView* canvas_view):
 	canvas_view_(canvas_view),
 	is_working(*canvas_view),
 
-	push_state(get_work_area()),
+	push_state(*get_work_area()),
 
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
 
