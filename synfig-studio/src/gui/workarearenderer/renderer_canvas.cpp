@@ -44,8 +44,8 @@
 #include <synfig/canvas.h>
 #include <synfig/context.h>
 #include <synfig/threadpool.h>
-#include <synfig/rendering/common/task/tasktransformation.h>
 #include <synfig/rendering/renderer.h>
+#include <synfig/rendering/common/task/tasktransformation.h>
 
 #include <gui/localization.h>
 #include <gui/app.h>
@@ -114,10 +114,6 @@ Renderer_Canvas::enqueue_rendering_task_callback(
 }
 
 void
-Renderer_Canvas::free_pixbuf_data_callback(const guint8 *x)
-	{ delete[] x; }
-
-void
 Renderer_Canvas::on_tile_finished_callback(bool success, Renderer_Canvas *obj, Tile::Handle tile)
 {
 	// Handle will protect 'tile' from deletion before this call
@@ -172,69 +168,18 @@ Renderer_Canvas::on_tile_finished(bool success, const Tile::Handle &tile)
 
 	Glib::Threads::Mutex::Lock lock(mutex);
 
-	// release event
 	tile->event.reset();
+	if (!success) tile->surface.reset();
 
-	// convert surface
-	if (success && tile->surface) {
-		rendering::SurfaceResource::LockReadBase surface_lock(tile->surface);
-		if (surface_lock) {
-			const rendering::Surface &surface = *surface_lock.get_surface();
-			int w = surface.get_width();
-			int h = surface.get_height();
-			int count = w*h;
-
-			if ( w > 0 && w == tile->rect.get_width()
-			  && h > 0 && h == tile->rect.get_height() )
-			{
-				const Color *pixels = surface.get_pixels_pointer();
-				std::vector<Color> pixels_copy;
-				if (!pixels) {
-					pixels_copy.resize(count);
-					if (surface.get_pixels(&pixels_copy.front()))
-						pixels = &pixels_copy.front();
-				}
-
-				if (pixels) {
-					// convert to RGBA32
-					PixelFormat pf(PF_RGB | PF_A);
-					int pixel_size = synfig::channels(pf);
-					unsigned char *buffer = new unsigned char[count*pixel_size];
-					unsigned char *dest(buffer);
-					const Color *src = pixels;
-					const Color *end = src + surface.get_pixels_count();
-					while(src < end)
-						dest = Color2PixelFormat(
-								(src++)->clamped(),
-								pf,
-								dest,
-								App::gamma );
-
-					// create Gdk::PixBuf
-					tile->pixbuf = Gdk::Pixbuf::create_from_data(
-							buffer, Gdk::COLORSPACE_RGB, pf & PF_A,
-							8, w, h, count*pixel_size,
-							sigc::ptr_fun(&free_pixbuf_data_callback) );
-				}
-			}
-		}
-	}
-
-	// release surface
-	tile->surface.reset();
-
-	// new tile is ready
-	// let's now remove old tiles
+	// remove old tiles
 	for(TileMap::iterator i = tiles.begin(); i != tiles.end(); ++i) {
 		bool is_frame_visible = false;
 		for(FrameList::const_iterator j = onion_frames.begin(); j != onion_frames.end(); ++j)
 			if (j->time == i->first) { is_frame_visible = true; break; }
 
-		// remove bad tiles
+		// remove nulls (if any) and outdated tiles at invisible frame
 		for(TileSet::iterator j = i->second.begin(); j != i->second.end(); )
-			if ( !*j                                                    // remove nulls (possible bug)
-			  || (!(*j)->event && !(*j)->surface)                       // remove tiles which was fail to render
-			  || (!is_frame_visible && (*j)->refresh_id < refresh_id) ) // remove outdated tiles at invisible frame
+			if (!*j || (!is_frame_visible && (*j)->refresh_id < refresh_id))
 					i->second.erase(j++); else ++j;
 
 		// remove overlapped and partially overlapped tiles
@@ -243,7 +188,7 @@ Renderer_Canvas::on_tile_finished(bool success, const Tile::Handle &tile)
 			bool overlapped = false;
 			TileSet::iterator k = j;
 			while(++k != i->second.end())
-				if ((*k)->pixbuf && etl::intersect((*j)->rect, (*k)->rect))
+				if (((*k)->surface || (*k)->cairo_surface) && etl::intersect((*j)->rect, (*k)->rect))
 					{ overlapped = true; break; }
 			if (overlapped)
 				i->second.erase(j++); else ++j;
@@ -390,6 +335,7 @@ Renderer_Canvas::enqueue_render(bool force)
 					canvas->set_outline_grow(rend_desc.get_outline_grow());
 					Context context = canvas->get_context_sorted(context_params, sub_queue);
 					rendering::Task::Handle task = context.build_rendering_task();
+					if (!task) task = new rendering::TaskSurface();
 					sub_queue.clear();
 
 					// add transformation task to flip result if needed
@@ -421,6 +367,7 @@ Renderer_Canvas::enqueue_render(bool force)
 
 						rendering::Task::Handle tile_task = task->clone_recursive();
 						tile_task->target_surface = new rendering::SurfaceResource();
+						tile_task->target_surface->create(tile_desc.get_w(), tile_desc.get_h());
 						tile_task->target_rect = RectInt( 0, 0, tile_desc.get_w(), tile_desc.get_h() );
 						tile_task->source_rect = Rect(p0, p1);
 
@@ -436,7 +383,7 @@ Renderer_Canvas::enqueue_render(bool force)
 						// Renderer::enqueue contains the expensive 'optimization' stage, so call it async
 						ThreadPool::instance.enqueue( sigc::bind(
 							sigc::ptr_fun(&enqueue_rendering_task_callback),
-							renderer, task, event ));
+							renderer, tile_task, event ));
 					}
 				}
 			}
@@ -466,6 +413,43 @@ Renderer_Canvas::wait_render()
 		list.clear();
 		Glib::usleep(1);
 	}
+}
+
+Cairo::RefPtr<Cairo::ImageSurface>
+Renderer_Canvas::convert(const synfig::rendering::SurfaceResource::Handle &surface) const
+{
+	Cairo::RefPtr<Cairo::ImageSurface> cairo_surface;
+
+	if (!surface)
+		return cairo_surface;
+
+	rendering::SurfaceResource::LockReadBase surface_lock(surface);
+	if (!surface_lock.convert(rendering::Surface::Token::Handle(), false, true))
+		return cairo_surface;
+
+	const rendering::Surface &s = *surface_lock.get_surface();
+	int w = s.get_width();
+	int h = s.get_height();
+
+	const Color *pixels = s.get_pixels_pointer();
+	std::vector<Color> pixels_copy;
+	if (!pixels) {
+		pixels_copy.resize(w*h);
+		if (s.get_pixels(&pixels_copy.front()))
+			pixels = &pixels_copy.front();
+	}
+	if (!pixels)
+		return cairo_surface;
+
+	cairo_surface = Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, w, h);
+	const Color *src = pixels;
+	unsigned char *data = cairo_surface->get_data();
+	int stride = cairo_surface->get_stride();
+	int image_size = stride*cairo_surface->get_height();
+	for(unsigned char *row = data, *image_end = data + image_size; row < image_end; row += stride)
+		for(unsigned char *pixel = row, *row_end = row + stride; pixel < row_end; )
+			pixel = Color2PixelFormat((src++)->clamped(), PF_RGB | PF_A, pixel, App::gamma);
+	return cairo_surface;
 }
 
 void
@@ -508,17 +492,20 @@ Renderer_Canvas::render_vfunc(
 
 	// draw tiles
 	onion_context->save();
+	onion_context->set_source_rgba(0.0, 1.0, 1.0, 1.0);
+	onion_context->reset_clip();
 	onion_context->translate((double)window_offset[0], (double)window_offset[1]);
 	for(FrameList::const_iterator i = onion_frames.begin(); i != onion_frames.end(); ++i) {
 		TileMap::const_iterator ii = tiles.find(i->time);
 		if (ii == tiles.end()) continue;
 		for(TileSet::const_iterator j = ii->second.begin(); j != ii->second.end(); ++j) {
-			if (*j && (*j)->pixbuf) {
-				Gdk::Cairo::set_source_pixbuf(
-					onion_context,
-					(*j)->pixbuf,
-					(*j)->rect.minx,
-					(*j)->rect.miny );
+			if (!*j) continue;
+			if ((*j)->surface) {
+				(*j)->cairo_surface = convert((*j)->surface);
+				(*j)->surface.reset();
+			}
+			if ((*j)->cairo_surface) {
+				onion_context->set_source((*j)->cairo_surface, (*j)->rect.minx, (*j)->rect.miny);
 				onion_context->paint_with_alpha(i->alpha);
 			}
 		}
@@ -553,10 +540,10 @@ Renderer_Canvas::render_vfunc(
 	context->set_line_join(Cairo::LINE_JOIN_MITER);
 	context->set_antialias(Cairo::ANTIALIAS_NONE);
 	context->set_line_width(1.0);
-	context->set_source_rgb(0,0,0);
+	context->set_source_rgba(0.0, 0.0, 0.0, 1.0);
 	context->rectangle(
-		(double)window_offset[0],
-		(double)window_offset[1],
+		(double)window_offset[0] + 1,
+		(double)window_offset[1] + 1,
 		(double)get_w(),
 		(double)get_h() );
 	context->stroke();

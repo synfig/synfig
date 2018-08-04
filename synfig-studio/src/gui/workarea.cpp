@@ -10,6 +10,7 @@
 **	Copyright (c) 2007, 2008 Chris Moore
 **	Copyright (c) 2011 Nikita Kitaev
 **	Copyright (c) 2016 caryoscelus
+**  ......... ... 2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -885,19 +886,21 @@ WorkArea::get_focus_point()const
 }
 
 bool
-WorkArea::set_wh(int w, int h, int chan)
+WorkArea::update_wh()
 {
-	if (w <= 0 || h <= 0 || chan <= 0)
-		return false;
+	RendDesc desc = get_canvas()->rend_desc();
+	int new_w = (int)(desc.get_w()*zoom);
+	int new_h = (int)(desc.get_h()*zoom);
+	int new_bpp = 4;
 
-	// If our size is already set, don't set it again
-	if (w == this->w && h == this->h && chan == bpp)
+	if (new_w <= 0 || new_h <= 0 || new_bpp <= 0)
+		return false;
+	if (new_w == w && new_h == h && new_bpp == bpp)
 		return true;
 
-	// Set all of the parameters
-	this->w = w;
-	this->h = h;
-	bpp = chan;
+	w = new_w;
+	h = new_h;
+	bpp = new_bpp;
 
 	refresh_dimension_info();
 	return true;
@@ -2163,6 +2166,7 @@ void
 WorkArea::sync_render()
 {
 	dirty_trap_queued = 0;
+	update_wh();
 	renderer_canvas->inc_refresh_id();
 	renderer_canvas->enqueue_render(true);
 	renderer_canvas->wait_render();
@@ -2175,6 +2179,7 @@ studio::WorkArea::queue_render()
 	if (dirty_trap_count > 0)
 		{ dirty_trap_queued++; return; }
 	dirty_trap_queued = 0;
+	update_wh();
 	renderer_canvas->inc_refresh_id();
 	renderer_canvas->enqueue_render(true);
 }

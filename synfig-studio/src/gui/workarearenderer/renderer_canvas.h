@@ -6,6 +6,7 @@
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**  ......... ... 2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -71,7 +72,7 @@ public:
 
 		synfig::rendering::TaskEvent::Handle event;
 		synfig::rendering::SurfaceResource::Handle surface;
-		Glib::RefPtr<Gdk::Pixbuf> pixbuf;
+		Cairo::RefPtr<Cairo::ImageSurface> cairo_surface;
 
 		Tile(): refresh_id() { }
 		Tile(int refresh_id, const synfig::Time &time, synfig::RectInt &rect):
@@ -84,6 +85,12 @@ public:
 		}
 	};
 
+	class TileLess {
+	public:
+		bool operator() (const Tile::Handle &a, const Tile::Handle &b)
+			{ return a && b ? *a < *b : a < b; }
+	};
+
 	class TimeMeasure {
 	public:
 		long long time_us;
@@ -94,7 +101,7 @@ public:
 
 	typedef std::vector<FrameDesc> FrameList;
 	typedef std::vector<Tile::Handle> TileList;
-	typedef std::multiset<Tile::Handle> TileSet;
+	typedef std::multiset<Tile::Handle, TileLess> TileSet;
 	typedef std::map<synfig::Time, TileSet> TileMap;
 
 private:
@@ -122,7 +129,6 @@ private:
 		synfig::rendering::Renderer::Handle renderer,
 		synfig::rendering::Task::Handle task,
 		synfig::rendering::TaskEvent::Handle event );
-	static void free_pixbuf_data_callback(const guint8 *x);
 	static void on_tile_finished_callback(bool success, Renderer_Canvas *obj, Tile::Handle tile);
 	static void post_tile_finished_callback(etl::handle<Renderer_Canvas> obj);
 
@@ -130,6 +136,7 @@ private:
 	void pre_tile_started();
 	void post_tile_finished();
 	void cancel_render(long long keep_refresh_id);
+	Cairo::RefPtr<Cairo::ImageSurface> convert(const synfig::rendering::SurfaceResource::Handle &surface) const;
 
 public:
 	Renderer_Canvas();

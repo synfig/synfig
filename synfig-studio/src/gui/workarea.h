@@ -8,6 +8,7 @@
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **  Copyright (c) 2011 Nikita Kitaev
+**  ......... ... 2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -246,8 +247,7 @@ private:
  -- ** -- P R I V A T E   M E T H O D S ---------------------------------------
 	*/
 
-	//unsigned char *get_buffer() { return buffer; }
-	bool set_wh(int w, int h, int chan=3);
+	bool update_wh();
 
 	/*
  -- ** -- S I G N A L S -------------------------------------------------------
