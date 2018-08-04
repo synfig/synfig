@@ -160,7 +160,7 @@ WPListConverter::calculate_ek2(unsigned int k1, unsigned int k2, bool first_time
 		{
 			wp_prev=work_out[find_prev(i)];
 			wp_next=work_out[find_next(i)];
-			g=widths[i]-widthpoint_interpolate(wp_prev, wp_next, norm_distances[i], false);
+			g=widths[i]-widthpoint_interpolate(wp_prev, wp_next, norm_distances[i], 0.0);
 		}
 		else
 			g=widths[i]-work_out[i].get_width(); // should be zero.

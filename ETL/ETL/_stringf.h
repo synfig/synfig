@@ -196,7 +196,8 @@ basename(const std::string &str)
 	if(str.size() == 1 && is_separator(str[0]))
 		return str;
 
-	if(is_separator((&*str.end())[-1]))
+	//if(is_separator((&*str.end())[-1]))
+	if (is_separator(*str.rbegin()))
 		iter=str.end()-2;
 	else
 		iter=str.end()-1;
@@ -225,7 +226,8 @@ dirname(const std::string &str)
 	if(str.size() == 1 && is_separator(str[0]))
 		return str;
 
-	if(is_separator((&*str.end())[-1]))
+	//if(is_separator((&*str.end())[-1]))
+	if (is_separator(*str.rbegin()))
 		iter=str.end()-2;
 	else
 		iter=str.end()-1;

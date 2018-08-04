@@ -187,11 +187,11 @@ Action::LayerEncapsulateSwitch::prepare()
 		add_action(action);
 	}
 
-	std::list<synfig::Layer::Handle>::reverse_iterator iter;
+	std::list<synfig::Layer::Handle>::reverse_iterator i;
 
-	for(iter=layers.rbegin();iter!=layers.rend();++iter)
+	for(i=layers.rbegin();i!=layers.rend();++i)
 	{
-		Layer::Handle layer(*iter);
+		Layer::Handle layer(*i);
 
 		Canvas::Handle subcanvas(layer->get_canvas());
 

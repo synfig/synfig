@@ -157,7 +157,8 @@ LayerGroupTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int 
 			for(;child_iter;++child_iter)
 			{
 				LayerList layer_list2((LayerList)(*child_iter)[model.all_layers]);
-				for(;layer_list2.size();layer_list2.pop_front())
+				//for(;layer_list2.size();layer_list2.pop_front())
+				for(;!layer_list2.empty();layer_list2.pop_front())
 					layer_list.push_back(layer_list2.front());
 			}
 			x.set(layer_list);
@@ -716,13 +717,13 @@ LayerGroupTreeStore::rebuild()
 		clear();
 		Canvas::Handle canvas(canvas_interface()->get_canvas());
 		std::set<String> groups(canvas->get_groups());
-		for(;groups.size();groups.erase(groups.begin()))
+		for(;!groups.empty();groups.erase(groups.begin()))
 		{
 			String group(*groups.begin());
 			Gtk::TreeRow row(on_group_added(group));
 			std::set<Layer::Handle> layers(canvas->get_layers_in_group(group));
 
-			for(;layers.size();layers.erase(layers.begin()))
+			for(;!layers.empty();layers.erase(layers.begin()))
 			{
 				Gtk::TreeRow layer_row(*(prepend(row.children())));
 				Layer::Handle layer(*layers.begin());

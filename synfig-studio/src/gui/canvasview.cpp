@@ -538,19 +538,30 @@ public:
 
 		LayerParamList ret;
 
-		Gtk::TreeModel::Children children = const_cast<CanvasView*>(view)->layer_tree_store()->children();
-		Gtk::TreeModel::Children::iterator iter;
-		for(iter = children.begin(); iter != children.end(); ++iter)
+		Gtk::TreeModel::Children children = view->layer_tree_store()->children();
+		for(Gtk::TreeModel::Children::const_iterator i = children.begin(); i != children.end(); ++i)
 		{
-			Gtk::TreeModel::Row row = *iter;
-			Gtk::TreeModel::Children::iterator iter;
-			for(iter=row.children().begin();iter!=row.children().end();iter++)
+			for(Gtk::TreeModel::Children::const_iterator j = i->children().begin(); j != i->children().end(); ++j)
 			{
-				Gtk::TreeModel::Row row = *iter;
+				if(selection->is_selected(*j))
+					ret.push_back(LayerParam((*j)[layer_tree_model.layer], (Glib::ustring)(*j)[layer_tree_model.id]));
+
+			}
+		}
+
+		/*Gtk::TreeModel::Children children = const_cast<CanvasView*>(view)->layer_tree_store()->children();
+		Gtk::TreeModel::Children::iterator i;
+		for(i = children.begin(); i != children.end(); ++i)
+		{
+			Gtk::TreeModel::Row row = *i;
+			Gtk::TreeModel::Children::iterator j;
+			for(j=row.children().begin();j!=row.children().end();j++)
+			{
+				Gtk::TreeModel::Row row = *j;
 				if(selection->is_selected(row))
 					ret.push_back(LayerParam(row[layer_tree_model.layer],(Glib::ustring)row[layer_tree_model.id]));
 			}
-		}
+		}*/
 		return ret;
 	}
 
@@ -4118,7 +4129,7 @@ void
 CanvasView::on_audio_file_notify()
 {
 	std::string file(get_canvas()->get_meta_data("audiofile"));
-	if(!file.c_str()) return;
+	if(file.empty()) return;
 
 	if(!audio->load(file,dirname(get_canvas()->get_file_name())+string("/")))
 	{

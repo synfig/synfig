@@ -1525,7 +1525,7 @@ StateCircle_Context::toggle_layer_creation()
 
 	// feather size
 	if (get_layer_circle_flag() ||
-		get_layer_circle_flag() ||
+		//get_layer_circle_flag() ||
 		get_layer_region_flag() ||
 		get_layer_outline_flag() ||
 		get_layer_advanced_outline_flag())

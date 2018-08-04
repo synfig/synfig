@@ -124,13 +124,13 @@ Action::LayerLower::is_ready()const
 void
 Action::LayerLower::prepare()
 {
-	std::list<synfig::Layer::Handle>::const_iterator iter;
+	std::list<synfig::Layer::Handle>::const_iterator i;
 
 	clear();
 
-	for(iter=layers.begin();iter!=layers.end();++iter)
+	for(i=layers.begin();i!=layers.end();++i)
 	{
-		Layer::Handle layer(*iter);
+		Layer::Handle layer(*i);
 
 		Canvas::Handle subcanvas(layer->get_canvas());
 

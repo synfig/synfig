@@ -714,8 +714,8 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 
 	meta_data_lock=false;
 
-	insert_renderer(new Renderer_Background, 000);
-	insert_renderer(new Renderer_Canvas,     010);
+	insert_renderer(new Renderer_Background,   0);
+	insert_renderer(new Renderer_Canvas,      10);
 	insert_renderer(new Renderer_Grid,       100);
 	insert_renderer(new Renderer_Guides,     200);
 	insert_renderer(new Renderer_Ducks,      300);
@@ -2437,8 +2437,8 @@ WorkArea::on_hruler_event(GdkEvent *event)
 			save_meta_data();
 //			get_guide_list_y().erase(curr_guide);
 		}
-		break;
 		return true;
+		break;
 	default:
 		break;
 	}
@@ -2481,8 +2481,8 @@ WorkArea::on_vruler_event(GdkEvent *event)
 			save_meta_data();
 //			get_guide_list_x().erase(curr_guide);
 		}
-		break;
 		return true;
+		break;
 	default:
 		break;
 	}
@@ -2502,6 +2502,9 @@ WorkArea::on_duck_selection_single(const etl::handle<Duck>& duck)
 void
 WorkArea::refresh_dimension_info()
 {
+	if(drawing_area->get_width()<=0 || drawing_area->get_height()<=0 || w==0 || h==0)
+		return;
+
 	synfig::RendDesc &rend_desc(get_canvas()->rend_desc());
 
 	canvaswidth=rend_desc.get_br()[0]-rend_desc.get_tl()[0];
@@ -2518,9 +2521,6 @@ WorkArea::refresh_dimension_info()
 	scrolly_adjustment->set_upper(abs(canvasheight));
 	scrolly_adjustment->set_step_increment(abs(ph));
 	scrolly_adjustment->set_page_increment(abs(get_grid_size()[1]));
-
-	if(drawing_area->get_width()<=0 || drawing_area->get_height()<=0 || w==0 || h==0)
-		return;
 
 	const synfig::Point focus_point(get_focus_point());
 	const synfig::Real x(focus_point[0]/pw+drawing_area->get_width()/2-w/2);
@@ -3261,7 +3261,7 @@ studio::WorkArea::queue_render_preview()
 		queue_time+=250;
 
 
-	if(queued==false)
+	//if(queued==false)
 	{
 		queued=true;
 		//synfig::info("queue_render_preview(): (re)queuing...");

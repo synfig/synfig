@@ -1337,7 +1337,7 @@ Duckmatic::find_duck(synfig::Point point, synfig::Real radius, Duck::Type type)
                 ret_vector.push_back(duck);
             }
             // we have another closer duck then discard the stored
-            else if (!equal && ret_vector.size())
+            else if (ret_vector.size())
                 ret_vector.clear();
             closest=dist;
             ret=duck;

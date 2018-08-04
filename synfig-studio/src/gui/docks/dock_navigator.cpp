@@ -455,12 +455,10 @@ bool studio::Widget_NavView::on_mouse_event(GdkEvent * e)
 	{
 		const Point &tl = get_canvas_view()->get_canvas()->rend_desc().get_tl();
 		const Point &br = get_canvas_view()->get_canvas()->rend_desc().get_br();
-		int w,h;
-		if(prev)
-		{
-			w = prev->get_width();
-			h = prev->get_height();
-		}
+
+		int w = prev->get_width();
+		int h = prev->get_height();
+		
 		float max = abs((br[0]-tl[0]) / drawto.get_width());
 
 		if((float(w) / drawto.get_width()) < (float(h) / drawto.get_height()))

@@ -920,7 +920,8 @@ private:
 			for (i = lb; i <= ub; i++)
 			{
 				j = k - i;
-				w[i+j][1] += cdTable[j][i] * z[j][i];
+				w[k][1] += cdTable[j][i] * z[j][i];
+				//w[i+j][1] += cdTable[j][i] * z[j][i];
 			}
 		}
 	}

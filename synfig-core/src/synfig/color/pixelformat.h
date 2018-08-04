@@ -167,7 +167,7 @@ inline unsigned char * Color2PixelFormat(const Color &color, const PixelFormat &
         }
     }
 
-    if(FLAGS(pf, PF_ZA))
+    //if(FLAGS(pf, PF_ZA))
     {
         if(!FLAGS(pf, PF_Z_START) && FLAGS(pf, PF_Z))
         {
@@ -178,7 +178,7 @@ inline unsigned char * Color2PixelFormat(const Color &color, const PixelFormat &
             *out++ = static_cast<unsigned char>(alpha);
         }
     }
-    else
+    /*else
     {
         if(!FLAGS(pf, PF_Z_START) && FLAGS(pf, PF_Z))
         {
@@ -188,7 +188,7 @@ inline unsigned char * Color2PixelFormat(const Color &color, const PixelFormat &
         {
             *out++ = static_cast<unsigned char>(alpha);
         }
-    }
+    }*/
 
     return out;
 }

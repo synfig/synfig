@@ -303,6 +303,8 @@ ColorSlider::on_event(GdkEvent *event)
 			case GDK_SCROLL_LEFT:
 				x-=1.0;
 				break;
+			default:
+				break;
 		}
 	} else {
 		x = float(event->button.x);
@@ -546,8 +548,8 @@ Widget_ColorEdit::on_slider_moved(ColorSlider::Type type, float amount)
 
 	// If a non-primary colorslider is adjusted,
 	// we want to make sure that we clamp
-	if(type>ColorSlider::TYPE_B && (color.get_r()<0 ||color.get_g()<0 ||color.get_b()<0))
-		clamp_=true;
+	//if(type>ColorSlider::TYPE_B && (color.get_r()<0 ||color.get_g()<0 ||color.get_b()<0))
+	//	clamp_=true;
 
 	/*
 	if(type==ColorSlider::TYPE_R && color.get_r()<0)clamp_=false;

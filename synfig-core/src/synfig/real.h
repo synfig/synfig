@@ -28,6 +28,7 @@
 #include <cmath>
 
 #include <functional>
+#include <limits>
 
 /* === T Y P E D E F S ===================================================== */
 
@@ -42,7 +43,8 @@ typedef double Real;
 
 template<typename T>
 inline T real_nan()
-	{ return T(0.0)/T(0.0); }
+	//{ return T(0.0)/T(0.0); }
+	{return std::numeric_limits<T>::quiet_NaN();}
 
 template<typename T>
 inline T real_low_precision()

@@ -287,9 +287,9 @@ Action::WaypointSetSmart::enclose_waypoint(const synfig::Waypoint& waypoint)
 			}
 		}
 	}
-	catch(Error x) { throw x; }
-	catch(synfig::Exception::NotFound) { }
-	catch(int) { }
+	catch(Error &x) { throw x; }
+	catch(synfig::Exception::NotFound&) { }
+	catch(int&) { }
 	catch(...) { }
 
 	if(get_edit_mode()&MODE_ANIMATE_FUTURE)try
@@ -346,9 +346,9 @@ Action::WaypointSetSmart::enclose_waypoint(const synfig::Waypoint& waypoint)
 			}
 		}
 	}
-	catch(Error x) { throw x; }
-	catch(synfig::Exception::NotFound) { }
-	catch(int) { }
+	catch(Error& x) { throw x; }
+	catch(synfig::Exception::NotFound&) { }
+	catch(int&) { }
 	catch(...) { }
 }
 

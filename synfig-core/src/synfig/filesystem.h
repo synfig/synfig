@@ -136,6 +136,27 @@ namespace synfig
 
 			bool operator < (const Identifier &other) const
 			{
+				if (file_system < other.file_system) return true;
+				if (other.file_system < file_system) return false;
+				if (filename < other.filename) return true;
+				if (other.filename < filename) return false;
+				return false;
+			}
+
+			bool operator > (const Identifier &other) const
+				{ return other < *this; }
+				
+			bool operator == (const Identifier &other) const
+			{
+				return file_system == other.file_system
+				    && filename == other.filename;
+			}
+
+			bool operator != (const Identifier &other) const
+				{ return !(*this == other); }			
+
+			/*bool operator < (const Identifier &other) const
+			{
 				if (file_system.get() < other.file_system.get()) return true;
 				if (other.file_system.get() < file_system.get()) return false;
 				if (filename < other.filename) return true;
@@ -145,9 +166,9 @@ namespace synfig
 			bool operator > (const Identifier &other) const
 				{ return other < *this; }
 			bool operator != (const Identifier &other) const
-				{ return *this > other || other < *this; }
+				{ return *this > other || *this < other; }
 			bool operator == (const Identifier &other) const
-				{ return !(*this != other); }
+				{ return !(*this != other); }*/
 
 			ReadStream::Handle get_read_stream() const;
 			WriteStream::Handle get_write_stream() const;
