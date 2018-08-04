@@ -251,14 +251,14 @@ Action::TimepointsCopy::prepare()
 	{
 		//must build from both lists
 		timepoints_ref::waytracker::const_iterator 	i = match.waypointbiglist.begin(),
-													end = match.waypointbiglist.end();
-		for(; i != end; ++i)
+													iend = match.waypointbiglist.end();
+		for(; i != iend; ++i)
 		{
 			synfig::Time dilated_timedelta(timedelta * i->time_dilation);
 			//iterate through each waypoint for this specific valuenode
 			std::set<synfig::Waypoint>::const_iterator 	j = i->waypoints.begin(),
-														end = i->waypoints.end();
-			for(; j != end; ++j)
+														jend = i->waypoints.end();
+			for(; j != jend; ++j)
 			{
 				Action::Handle action(WaypointSimpleAdd::create());
 

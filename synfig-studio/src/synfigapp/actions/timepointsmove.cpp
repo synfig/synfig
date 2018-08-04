@@ -260,8 +260,8 @@ Action::TimepointsMove::prepare()
 	{
 		//must build from both lists
 		timepoints_ref::waytracker::const_iterator 	i = match.waypointbiglist.begin(),
-													end = match.waypointbiglist.end();
-		for(; i != end; ++i)
+													iend = match.waypointbiglist.end();
+		for(; i != iend; ++i)
 		{
 			Action::Handle action(WaypointSet::create());
 
@@ -273,8 +273,8 @@ Action::TimepointsMove::prepare()
 
 			//iterate through each waypoint for this specific valuenode
 			std::set<synfig::Waypoint>::const_iterator 	j = i->waypoints.begin(),
-														end = i->waypoints.end();
-			for(; j != end; ++j)
+														jend = i->waypoints.end();
+			for(; j != jend; ++j)
 			{
 				//synfig::info("add waypoint mod...");
 				//NOTE: We may want to store the old time for undoing the action...
