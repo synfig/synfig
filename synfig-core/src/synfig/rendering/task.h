@@ -571,8 +571,7 @@ private:
 	std::atomic<bool> done, cancelled;
 
 public:
-	sigc::signal<void> signal_done;
-	sigc::signal<void> signal_cancelled;
+	sigc::signal<void, bool> signal_finished;
 
 	TaskEvent(): done(), cancelled() { }
 
@@ -582,8 +581,7 @@ public:
 	bool is_cancelled() const { return cancelled; }
 	bool is_finished() const { return done || cancelled; }
 
-	virtual void complete();
-	virtual void cancel();
+	virtual void finish(bool success);
 	virtual void wait();
 
 	virtual bool run(RunParams & /* params */) const;

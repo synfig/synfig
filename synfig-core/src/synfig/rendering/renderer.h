@@ -145,10 +145,20 @@ public:
 	bool run(
 		const Task::List &list,
 		bool quiet = false ) const;
+	bool run(
+		const Task::Handle &task,
+		bool quiet = false ) const
+			{ return run(Task::List(1, task), quiet); }
+
 	void enqueue(
 		const Task::List &list,
-		const TaskEvent::Handle &finish_event_task = TaskEvent::Handle(),
+		const TaskEvent::Handle &finish_event_task,
 		bool quiet = false ) const;
+	void enqueue(
+		const Task::Handle &task,
+		const TaskEvent::Handle &finish_event_task,
+		bool quiet = false ) const
+			{ return enqueue(Task::List(1, task), finish_event_task, quiet); }
 
 	static void cancel(const Task::Handle &task);
 	static void cancel(const Task::List &list);

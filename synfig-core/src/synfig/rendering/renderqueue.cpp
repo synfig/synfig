@@ -303,8 +303,9 @@ RenderQueue::remove_if_orphan(const Task::Handle &task, bool in_queue)
 			return true;
 	}
 
-	if (TaskEvent::Handle::cast_dynamic(task))
-		return false;
+	if (TaskEvent::Handle task_event = TaskEvent::Handle::cast_dynamic(task))
+		if (!task_event->is_finished())
+			return false;
 
 	for(TaskSet::iterator i = task->renderer_data.back_deps.begin(); i != task->renderer_data.back_deps.end();)
 		if (remove_if_orphan(*i, false)) {
@@ -430,17 +431,14 @@ RenderQueue::cancel(const Task::Handle &task)
 {
 	if (!task) return;
 
-	bool found = false;
 	{
 		Glib::Threads::Mutex::Lock lock(mutex);
-		found = remove_task(task);
+		if (remove_task(task))
+			remove_orphans();
 	}
 
-	if (found) {
-		remove_orphans();
-		if (TaskEvent::Handle task_event = TaskEvent::Handle::cast_dynamic(task))
-			task_event->cancel();
-	}
+	if (TaskEvent::Handle task_event = TaskEvent::Handle::cast_dynamic(task))
+		task_event->finish(false);
 }
 
 void
@@ -448,22 +446,22 @@ RenderQueue::cancel(const Task::List &list)
 {
 	if (list.empty()) return;
 
-	bool found;
 	TaskEvent::List events;
 
-	Glib::Threads::Mutex::Lock lock(mutex);
-	for(Task::List::const_iterator i = list.begin(); i != list.end(); ++i)
-		if (remove_task(*i)) {
-			found = true;
+	{
+		Glib::Threads::Mutex::Lock lock(mutex);
+		bool found = false;
+		for(Task::List::const_iterator i = list.begin(); i != list.end(); ++i) {
+			if (remove_task(*i))
+				found = true;
 			if (TaskEvent::Handle task_event = TaskEvent::Handle::cast_dynamic(*i))
 				events.push_back(task_event);
 		}
-
-	if (found) {
-		remove_orphans();
-		for(TaskEvent::List::const_iterator i = events.begin(); i != events.end(); ++i)
-			(*i)->cancel();
+		if (found) remove_orphans();
 	}
+
+	for(TaskEvent::List::const_iterator i = events.begin(); i != events.end(); ++i)
+		(*i)->finish(false);
 }
 
 void

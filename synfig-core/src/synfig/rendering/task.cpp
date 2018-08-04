@@ -389,26 +389,16 @@ TaskEvent::operator=(const TaskEvent &other)
 	*(Task*)(this) = other;
 	done = (bool)other.done;
 	cancelled = (bool)other.cancelled;
-	signal_done = other.signal_done;
-	signal_cancelled = other.signal_cancelled;
+	signal_finished = other.signal_finished;
 	return *this;
 }
 
 void
-TaskEvent::complete() {
+TaskEvent::finish(bool success) {
 	Glib::Threads::Mutex::Lock lock(mutex);
 	if (done || cancelled) return;
-	cancelled = true;
-	signal_done();
-	cond.signal();
-}
-
-void
-TaskEvent::cancel() {
-	Glib::Threads::Mutex::Lock lock(mutex);
-	if (done || cancelled) return;
-	done = true;
-	signal_cancelled();
+	(success ? done : cancelled) = true;
+	signal_finished(success);
 	cond.signal();
 }
 
@@ -421,7 +411,7 @@ TaskEvent::wait() {
 
 bool
 TaskEvent::run(RunParams & /* params */) const {
-	const_cast<TaskEvent*>(this)->complete();
+	const_cast<TaskEvent*>(this)->finish(true);
 	return true;
 }
 

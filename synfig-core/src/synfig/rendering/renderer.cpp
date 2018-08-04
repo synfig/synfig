@@ -821,6 +821,9 @@ Renderer::run(const Task::List &list, bool quiet) const
 void
 Renderer::enqueue(const Task::List &list, const TaskEvent::Handle &finish_event_task, bool quiet) const
 {
+	assert(finish_event_task);
+	if (!finish_event_task || finish_event_task->is_finished()) return;
+
 	//if (!quiet) info("renderer: %s", get_name().c_str());
 	//if (!quiet) info("renderer.debug.task_list_log: %s", get_debug_options().task_list_log.c_str());
 	//if (!quiet) info("renderer.debug.task_list_optimized_log: %s", get_debug_options().task_list_optimized_log.c_str());
