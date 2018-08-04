@@ -122,7 +122,7 @@ class studio::StateRotate_Context : public sigc::trackable
 public:
 
 	bool get_scale_flag()const { return checkbutton_scale.get_active(); }
-	void set_scale_flag(bool x) { return checkbutton_scale.set_active(x); refresh_scale_flag(); }
+	void set_scale_flag(bool x) { checkbutton_scale.set_active(x); refresh_scale_flag(); }
 
 	Smach::event_result event_stop_handler(const Smach::event& x);
 	Smach::event_result event_refresh_tool_options(const Smach::event& x);

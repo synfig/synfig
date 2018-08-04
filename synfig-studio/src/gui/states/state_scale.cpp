@@ -111,7 +111,7 @@ class studio::StateScale_Context : public sigc::trackable
 public:
 
 	bool get_aspect_lock_flag()const { return checkbutton_aspect_lock.get_active(); }
-	void set_aspect_lock_flag(bool x) { return checkbutton_aspect_lock.set_active(x); refresh_aspect_lock_flag(); }
+	void set_aspect_lock_flag(bool x) { checkbutton_aspect_lock.set_active(x); refresh_aspect_lock_flag(); }
 
 	void refresh_aspect_lock_flag() { if(duck_dragger_)duck_dragger_->lock_aspect=get_aspect_lock_flag(); }
 
