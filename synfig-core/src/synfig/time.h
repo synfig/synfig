@@ -72,8 +72,10 @@ private:
 public:
 	Time(): value_() { }
 
+	#warning "declare this constructor explicit (with fixing a raised compilation error)"
 	Time(const value_type &x):value_(x) { }
 
+	#warning "declare this constructor explicit (with fixing a raised compilation error)"
 	Time(int x):value_(x) { }
 
 	Time(int hour, int minute, float second):value_(static_cast<value_type>(second+hour*3600+minute*60)) { }
@@ -85,6 +87,7 @@ public:
 	**	of the current Canvas)
 	**	The frame count will be ignored if the
 	**	FPS is not given. */
+	#warning "declare this constructor explicit (with fixing a raised compilation error)"
 	Time(const String &string, float fps=0);
 
 	//! Marks the exclusive negative boundary of time
