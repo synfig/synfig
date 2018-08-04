@@ -29,7 +29,7 @@
       <_caption>Synfig Studio workspace</_caption>
     </screenshot>
   </screenshots>
-  <url type="homepage">http://www.synfig.org</url>
+  <url type="homepage">https://www.synfig.org</url>
   <update_contact>synfig-devl@lists.sourceforge.net</update_contact>
   <keywords>
     <keyword>2D</keyword>
@@ -49,7 +49,7 @@
   <developer_name>Synfig</developer_name>
   <url type="bugtracker">https://github.com/synfig/synfig/issues</url>
   <url type="donation">https://www.synfig.org/donate/</url>
-  <url type="help">http://wiki.synfig.org/Category:Manual</url>
+  <url type="help">https://wiki.synfig.org/Category:Manual</url>
   <url type="translate">https://www.transifex.com/morevnaproject/synfig/</url>
   <content_rating type="oars-1.0">
     <content_attribute id="violence-cartoon">none</content_attribute>
