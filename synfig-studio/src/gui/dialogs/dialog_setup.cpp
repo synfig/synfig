@@ -1186,9 +1186,7 @@ void
 Dialog_Setup::set_time_format(synfig::Time::Format x)
 {
 	time_format=x;
-	if (x <= Time::FORMAT_VIDEO)
-		timestamp_comboboxtext.set_active(0);
-	else if (x == (Time::FORMAT_NORMAL))
+	if (x == (Time::FORMAT_NORMAL))
 		timestamp_comboboxtext.set_active(1);
 	else if (x == (Time::FORMAT_NORMAL | Time::FORMAT_NOSPACES))
 		timestamp_comboboxtext.set_active(2);
@@ -1198,6 +1196,8 @@ Dialog_Setup::set_time_format(synfig::Time::Format x)
 		timestamp_comboboxtext.set_active(4);
 	else if (x == (Time::FORMAT_FRAMES))
 		timestamp_comboboxtext.set_active(5);
+	else if (x <= Time::FORMAT_VIDEO)
+		timestamp_comboboxtext.set_active(0);
 	else
 		timestamp_comboboxtext.set_active(1);
 }
