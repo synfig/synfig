@@ -107,6 +107,9 @@ public:
 
 	ValueDesc& operator=(const ValueDesc &other)
 	{
+		if (this == &other)
+			return *this;
+			
 		layer = other.layer;
 		name = other.name;
 		parent_value_node = other.parent_value_node;
