@@ -604,7 +604,7 @@ Renderer_Ducks::render_vfunc(
 			}
 			//! Tooltip time : width point position
 			if( (App::ui_handle_tooltip_flag&Duck::STRUCT_WIDTHPOINT) &&
-					(*iter)->get_type()&&Duck::TYPE_WIDTHPOINT_POSITION)
+					(*iter)->get_type() & Duck::TYPE_WIDTHPOINT_POSITION)
 			{
 				synfig::Canvas::Handle canvas_h(get_work_area()->get_canvas());
 				synfig::Time time(canvas_h?canvas_h->get_time():synfig::Time(0));
