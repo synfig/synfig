@@ -401,7 +401,7 @@ Widget_Curves::set_value_descs(std::list<synfigapp::ValueDesc> value_descs)
 					)
 				);
 			}
-		}catch(synfig::Exception::BadType)
+		} catch (synfig::Exception::BadType&)
 		{
 			continue;
 		}

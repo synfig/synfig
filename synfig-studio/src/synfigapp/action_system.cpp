@@ -150,12 +150,12 @@ Action::System::perform_action(etl::handle<Action::Base> action)
 		// not add the action onto the list
 		return false;
 	}
-	catch(std::exception err)
+	catch(std::exception& err)
 	{
-		uim->task(action->get_local_name()+' '+_("Failed"));
+		uim->task(action->get_local_name() + ' ' + _("Failed"));
 		inuse=false;
 
-		uim->error(action->get_local_name()+": "+err.what());
+		uim->error(action->get_local_name() + ": " + err.what());
 
 		// If action failed for whatever reason, just return false and do
 		// not add the action onto the list
@@ -163,7 +163,7 @@ Action::System::perform_action(etl::handle<Action::Base> action)
 	}
 	catch(...)
 	{
-		uim->task(action->get_local_name()+' '+_("Failed"));
+		uim->task(action->get_local_name() + ' ' + _("Failed"));
 		inuse=false;
 
 		// If action failed for whatever reason, just return false and do
@@ -212,7 +212,7 @@ Action::System::perform_action(etl::handle<Action::Base> action)
 		}
 	}
 
-	}catch(...) { inuse=false; throw; }
+	} catch(...) { inuse=false; throw; }
 
 	return true;
 }
@@ -224,7 +224,7 @@ synfigapp::Action::System::undo_(etl::handle<UIInterface> uim)
 	most_recent_action_name_=action->get_name();
 
 	try { if(action->is_active()) action->undo(); }
-	catch(Action::Error err)
+	catch (Action::Error &err)
 	{
 		if(err.get_type()!=Action::Error::TYPE_UNABLE)
 		{
@@ -236,12 +236,12 @@ synfigapp::Action::System::undo_(etl::handle<UIInterface> uim)
 
 		return false;
 	}
-	catch(std::runtime_error x)
+	catch (std::runtime_error &x)
 	{
 		uim->error(x.what());
 		return false;
 	}
-	catch(...)
+	catch (...)
 	{
 		return false;
 	}
@@ -334,7 +334,7 @@ Action::System::redo_(etl::handle<UIInterface> uim)
 
 		return false;
 	}
-	catch(std::runtime_error x)
+	catch(std::runtime_error &x)
 	{
 		uim->error(x.what());
 		return false;

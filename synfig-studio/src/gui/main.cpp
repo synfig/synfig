@@ -129,12 +129,12 @@ int main(int argc, char **argv)
 		std::cerr<<"Application shutdown with errors ("<<ret<<')'<<std::endl;
 		return ret;
 	}
-	catch(string str)
+	catch(string& str)
 	{
 		std::cerr<<"Uncaught Exception:string: "<<str.c_str()<<std::endl;
 		throw;
 	}
-	catch(std::exception x)
+	catch(std::exception& x)
 	{
 		std::cerr<<"Standard Exception: "<<x.what()<<std::endl;
 		throw;

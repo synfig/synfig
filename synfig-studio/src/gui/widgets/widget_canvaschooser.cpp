@@ -165,7 +165,7 @@ Widget_CanvasChooser::chooser_menu()
 		new_canvas=parent_canvas->find_canvas(canvas_name, warnings);
 		set_value_(new_canvas);
 	}
-	catch(std::runtime_error x)
+	catch(std::runtime_error& x)
 	{
 		App::dialog_message_1b(
 				"ERROR",

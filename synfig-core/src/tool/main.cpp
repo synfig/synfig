@@ -241,7 +241,7 @@ int main(int argc, char* argv[])
         try{
             po::store(po::command_line_parser(argc, argv).options(po_all).
                     positional(po_positional).run(), vm);
-        }catch(std::exception &e)
+        }catch(std::exception& e)
         {
             std::cout << std::endl << e.what() << std::endl;
             std::cout << _("Try 'synfig --help' for more information") << std::endl;

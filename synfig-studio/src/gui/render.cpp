@@ -313,7 +313,7 @@ RenderSettings::on_render_pressed()
 				synfig::info("unknown extension");
 			}
 		}
-		catch(std::runtime_error x)
+		catch(std::runtime_error& x)
 		{
 			canvas_interface_->get_ui_interface()->error(_("Unable to determine proper target from filename."));
 			return;

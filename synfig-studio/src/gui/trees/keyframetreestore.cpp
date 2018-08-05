@@ -439,7 +439,7 @@ KeyframeTreeStore::set_value_impl(const Gtk::TreeModel::iterator& row, int colum
 			assert(0);
 		}
 	}
-	catch(std::exception x)
+	catch(std::exception& x)
 	{
 		g_warning("%s", x.what());
 	}
@@ -839,7 +839,7 @@ KeyframeTreeStore::add_keyframe(synfig::Keyframe keyframe)
 		//old_keyframe_list.add(keyframe);
 		//old_keyframe_list.sort();
 	}
-	catch(std::exception x)
+	catch(std::exception &x)
 	{
 		g_warning("%s", x.what());
 	}
@@ -876,7 +876,7 @@ KeyframeTreeStore::remove_keyframe(synfig::Keyframe keyframe)
 			g_warning("KeyframeTreeStore::remove_keyframe: Keyframe not in table");
 		}
 	}
-	catch(std::exception x)
+	catch(std::exception &x)
 	{
 		g_warning("%s", x.what());
 	}
@@ -936,12 +936,12 @@ KeyframeTreeStore::change_keyframe(synfig::Keyframe keyframe)
 			}
 		}
 
-		catch(Exception::NotFound x)
+		catch(Exception::NotFound &x)
 		{
 			g_warning("%s", x.what());
 		}
 	}
-	catch(std::exception x)
+	catch(std::exception &x)
 	{
 		g_warning("%s", x.what());
 	}

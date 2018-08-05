@@ -480,7 +480,7 @@ Super::perform()
 				throw;
 			}
 		}
-		catch(Error x)
+		catch(Error& x)
 		{
 			//synfig::info("%s:%d caught exception", __FILE__, __LINE__);
 			throw Error(x.get_type(),((*iter)->get_local_name()+": "+x.get_desc()).c_str());
