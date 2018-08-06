@@ -70,9 +70,9 @@ using namespace rendering;
 //#define DEBUG_OPTIMIZATION_COUNTERS
 
 #ifndef NDEBUG
-#define DEBUG_TASK_LIST
-#define DEBUG_OPTIMIZATION
-#define DEBUG_OPTIMIZATION_EACH_CHANGE
+//#define DEBUG_TASK_LIST
+//#define DEBUG_OPTIMIZATION
+//#define DEBUG_OPTIMIZATION_EACH_CHANGE
 #endif
 
 

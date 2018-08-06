@@ -298,7 +298,7 @@ RenderQueue::remove_if_orphan(const Task::Handle &task, bool in_queue)
 	if (!in_queue) {
 		bool mt = task->get_allow_multithreading();
 		tasks = mt ? &not_ready_tasks : &single_not_ready_tasks;
-		TaskSet::iterator ii = tasks->find(task);
+		ii = tasks->find(task);
 		if (ii == tasks->end())
 			return true;
 	}

@@ -566,9 +566,9 @@ public:
 	virtual Token::Handle get_token() const { return token.handle(); }
 
 private:
-	Glib::Threads::Mutex mutex;
+	mutable Glib::Threads::Mutex mutex;
 	Glib::Threads::Cond cond;
-	std::atomic<bool> done, cancelled;
+	bool done, cancelled;
 
 public:
 	sigc::signal<void, bool> signal_finished;
@@ -577,9 +577,9 @@ public:
 
 	TaskEvent& operator=(const TaskEvent &other);
 
-	bool is_done() const { return done; }
-	bool is_cancelled() const { return cancelled; }
-	bool is_finished() const { return done || cancelled; }
+	bool is_done() const;
+	bool is_cancelled() const;
+	bool is_finished() const;
 
 	virtual void finish(bool success);
 	virtual void wait();
