@@ -450,21 +450,26 @@ Renderer_Canvas::convert(
 					pixels = &pixels_copy.front();
 			}
 
+			// check endianess
+		    union { int i; char c[4]; } checker = {0x01020304};
+		    bool big_endian = checker.c[0] == 1;
+
+			PixelFormat pf = big_endian
+				           ? (PF_A_START | PF_RGB | PF_A_PREMULT)
+				           : (PF_BGR | PF_A | PF_A_PREMULT);
+
+			// do conversion
 			cairo_surface->flush();
 			const Color *src = pixels;
-			unsigned int *data = (unsigned int *)cairo_surface->get_data();
-			int stride = cairo_surface->get_stride()/sizeof(*data);
-			int image_size = stride*cairo_surface->get_height();
-			for(unsigned int *row = data, *image_end = data + image_size; row < image_end; row += stride)
-				for(unsigned int *pixel = row, *row_end = row + stride; pixel < row_end; ++pixel) {
-					const Color &c = *(src++);
-					*pixel = (unsigned int)round( 255.f*c.get_a()                                                          ) << 24
-						   | (unsigned int)round( 255.f*max(0.f, min(1.f, App::gamma.r_F32_to_F32( c.get_r() )))*c.get_a() ) << 16
-						   | (unsigned int)round( 255.f*max(0.f, min(1.f, App::gamma.g_F32_to_F32( c.get_g() )))*c.get_a() ) << 8
-						   | (unsigned int)round( 255.f*max(0.f, min(1.f, App::gamma.b_F32_to_F32( c.get_b() )))*c.get_a() );
-				}
+			unsigned char *begin = cairo_surface->get_data();
+			int stride = cairo_surface->get_stride();
+			unsigned char *end = begin + stride*cairo_surface->get_height();
+			for(unsigned char *row = begin; row < end; row += stride)
+				for(unsigned char *pixel = row, *pixel_end = row + stride; pixel < pixel_end; )
+					pixel = Color2PixelFormat(*src++, pf, pixel, App::gamma);
 			cairo_surface->mark_dirty();
 			cairo_surface->flush();
+
 			success = true;
 		} else synfig::error("Renderer_Canvas::convert: surface with wrong size");
 	} else synfig::error("Renderer_Canvas::convert: surface not exists");
