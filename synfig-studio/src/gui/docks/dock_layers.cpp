@@ -136,7 +136,7 @@ Dock_Layers::Dock_Layers():
 			        + "</menu></menu></menubar></ui>";
 			App::ui_manager()->add_ui_from_string(ui_info);
 		}
-		catch(Glib::MarkupError x)
+		catch(Glib::MarkupError& x)
 		{
 			error("%s:%d caught MarkupError code %d: %s", __FILE__, __LINE__, x.code(), x.what().c_str());
 			error("%s:%d with markup: \"%s\"", __FILE__, __LINE__, layer_ui_info.c_str());

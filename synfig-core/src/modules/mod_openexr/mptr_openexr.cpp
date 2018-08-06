@@ -105,7 +105,7 @@ exr_mptr::get_frame(synfig::Surface &out_surface, const synfig::RendDesc &/*rend
 		}
 #endif
 	}
-	catch (const std::exception &e)
+	catch (const std::exception& e)
     {
 		if(cb)cb->error(e.what());
 		else synfig::error(e.what());
