@@ -504,8 +504,7 @@ public:
 				value=strprintf("%f %f %f %f",
 					App::gamma.get_gamma_r(),
 					App::gamma.get_gamma_g(),
-					App::gamma.get_gamma_b(),
-					App::gamma.get_black_level()
+					App::gamma.get_gamma_b()
 				);
 				return true;
 			}
@@ -652,14 +651,13 @@ public:
 			{
 				float r,g,b,blk;
 
-				strscanf(value,"%f %f %f %f",
+				strscanf(value,"%f %f %f",
 					&r,
 					&g,
-					&b,
-					&blk
+					&b
 				);
 
-				App::gamma.set_all(r,g,b,blk);
+				App::gamma.set_all(r,g,b);
 
 				return true;
 			}

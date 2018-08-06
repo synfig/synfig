@@ -73,12 +73,12 @@ using namespace studio;
 Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	Dialog_Template(parent,_("Synfig Studio Preferences")),
 	input_settings(synfigapp::Main::get_selected_input_device()->settings()),
-	listviewtext_brushes_path(manage (new Gtk::ListViewText(1, true, Gtk::SELECTION_BROWSE))),
 	adj_gamma_r(Gtk::Adjustment::create(2.2,0.1,3.0,0.025,0.025,0.025)),
 	adj_gamma_g(Gtk::Adjustment::create(2.2,0.1,3.0,0.025,0.025,0.025)),
 	adj_gamma_b(Gtk::Adjustment::create(2.2,0.1,3.0,0.025,0.025,0.025)),
 	adj_recent_files(Gtk::Adjustment::create(15,1,50,1,1,0)),
 	adj_undo_depth(Gtk::Adjustment::create(100,10,5000,1,1,1)),
+	listviewtext_brushes_path(manage (new Gtk::ListViewText(1, true, Gtk::SELECTION_BROWSE))),
 	adj_pref_x_size(Gtk::Adjustment::create(480,1,10000,1,10,0)),
 	adj_pref_y_size(Gtk::Adjustment::create(270,1,10000,1,10,0)),
 	adj_pref_fps(Gtk::Adjustment::create(24.0,1.0,100,0.1,1,0))
@@ -150,16 +150,6 @@ Dialog_Setup::create_gamma_page(PageInfo pi)
 	pi.grid->attach(*scale_gamma_b, 1, row, 1, 1);
 	scale_gamma_b->set_hexpand(true);
 	adj_gamma_b->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Setup::on_gamma_b_change));
-
-	attach_label(pi.grid, _("Black Level"), ++row);
-	pi.grid->attach(black_level_selector, 1, row, 1, 1);
-	black_level_selector.set_hexpand(true);
-	black_level_selector.signal_value_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Setup::on_black_level_change));
-
-	//attach_label(pi.grid,_("Red-Blue Level"), ++row);
-	//pi.grid->attach(red_blue_level_selector, 1, row, 1, 1);
-	//red_blue_level_selector.set_hexpand(true);
-	//red_blue_level_selector.signal_value_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Setup::on_red_blue_level_change));
 }
 
 void
@@ -592,9 +582,7 @@ Dialog_Setup::on_apply_pressed()
 	App::gamma.set_all(
 		1.0/adj_gamma_r->get_value(),
 		1.0/adj_gamma_g->get_value(),
-		1.0/adj_gamma_b->get_value(),
-		black_level_selector.get_value(),
-		red_blue_level_selector.get_value());
+		1.0/adj_gamma_b->get_value() );
 
 	App::set_max_recent_files((int)adj_recent_files->get_value());
 
@@ -746,22 +734,6 @@ Dialog_Setup::on_gamma_b_change()
 }
 
 void
-Dialog_Setup::on_black_level_change()
-{
-	gamma_pattern.set_black_level(black_level_selector.get_value());
-	gamma_pattern.refresh();
-	gamma_pattern.queue_draw();
-}
-
-void
-Dialog_Setup::on_red_blue_level_change()
-{
-	gamma_pattern.set_red_blue_level(red_blue_level_selector.get_value());
-	gamma_pattern.refresh();
-	gamma_pattern.queue_draw();
-}
-
-void
 Dialog_Setup::on_size_template_combo_change()
 {
 	String selection(size_template_combo->get_active_text());
@@ -839,14 +811,10 @@ Dialog_Setup::refresh()
 	gamma_pattern.set_gamma_r(App::gamma.get_gamma_r());
 	gamma_pattern.set_gamma_g(App::gamma.get_gamma_g());
 	gamma_pattern.set_gamma_b(App::gamma.get_gamma_b());
-	gamma_pattern.set_black_level(App::gamma.get_black_level());
-	gamma_pattern.set_red_blue_level(App::gamma.get_red_blue_level());
 
 	adj_gamma_r->set_value(1.0/App::gamma.get_gamma_r());
 	adj_gamma_g->set_value(1.0/App::gamma.get_gamma_g());
 	adj_gamma_b->set_value(1.0/App::gamma.get_gamma_b());
-	black_level_selector.set_value(App::gamma.get_black_level());
-	red_blue_level_selector.set_value(App::gamma.get_red_blue_level());
 
 	gamma_pattern.refresh();
 
@@ -974,8 +942,6 @@ GammaPattern::GammaPattern():
 	gamma_r(),
 	gamma_g(),
 	gamma_b(),
-	black_level(),
-	red_blue_level(),
 	tile_w(80),
 	tile_h(80)
 {
@@ -1089,99 +1055,6 @@ GammaPattern::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 	return true;
 }
 
-
-BlackLevelSelector::BlackLevelSelector():
-	level()
-{
-	set_size_request(-1,24);
-
-	add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK);
-	add_events(Gdk::BUTTON1_MOTION_MASK);
-	add_events(Gdk::BUTTON1_MOTION_MASK);
-}
-
-BlackLevelSelector::~BlackLevelSelector()
-{
-}
-
-bool
-BlackLevelSelector::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
-{
-	const int w(get_width()),h(get_height());
-
-	Gdk::Color color;
-
-	int i;
-
-	// Draw the gradient
-	for(i=0;i<w;i++)
-	{
-		double c = (double)i/(double)(w-1);
-        cr->set_source_rgb(c,c,c);
-        cr->rectangle(i, 0, 1, h);
-        cr->fill();
-	}
-
-	// Draw a frame
-	cr->set_source_rgb(0,0,0);
-	cr->rectangle(0, 0, w-1, h-1);
-	cr->stroke();
-
-	// Draw the position of the current value
-	i=(int)(level*w+0.5);
-	cr->set_source_rgb(1,0,0);
-	cr->rectangle(i, 1, 1, h-1);
-	cr->fill();
-
-	// Print out the value
-	Glib::RefPtr<Pango::Layout> layout(Pango::Layout::create(get_pango_context()));
-	layout->set_text(etl::strprintf("%0.01f%%",level*100.0f));
-	layout->set_alignment(Pango::ALIGN_CENTER);
-	cr->set_source_rgb(0.627,1,0);
-	cr->move_to(w/2, 4);
-	layout->show_in_cairo_context(cr);
-
-	return true;
-}
-
-
-
-bool
-BlackLevelSelector::on_event(GdkEvent *event)
-{
-	int x(round_to_int(event->button.x));
-	//int y(round_to_int(event->button.y));
-
-    switch(event->type)
-    {
-	case GDK_MOTION_NOTIFY:
-		level=(float)x/(float)get_width();
-		if(level<0.0f)level=0.0f;
-		if(level>1.0f)level=1.0f;
-		signal_value_changed_();
-		queue_draw();
-		return true;
-		break;
-	case GDK_BUTTON_PRESS:
-	case GDK_BUTTON_RELEASE:
-		if(event->button.button==1)
-		{
-			level=(float)x/(float)get_width();
-			if(level<0.0f)level=0.0f;
-			if(level>1.0f)level=1.0f;
-			signal_value_changed_();
-			queue_draw();
-			return true;
-		}
-		break;
-	default:
-		break;
-	}
-
-	return false;
-}
-
-
 void
 Dialog_Setup::set_time_format(synfig::Time::Format x)
 {
@@ -1200,99 +1073,6 @@ Dialog_Setup::set_time_format(synfig::Time::Format x)
 		timestamp_comboboxtext.set_active(0);
 	else
 		timestamp_comboboxtext.set_active(1);
-}
-
-RedBlueLevelSelector::RedBlueLevelSelector():
-	level()
-{
-	set_size_request(-1,24);
-
-	add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK);
-	add_events(Gdk::BUTTON1_MOTION_MASK);
-	add_events(Gdk::BUTTON1_MOTION_MASK);
-}
-
-RedBlueLevelSelector::~RedBlueLevelSelector()
-{
-}
-
-bool
-RedBlueLevelSelector::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
-{
-	const int w(get_width()),h(get_height());
-
-	Gdk::Color color;
-
-	int i;
-
-	// Draw the gradient
-	for(i=0;i<w;i++)
-	{
-		float red_blue(((float(i)/float(w)+0.5f)-1.0f)/2.0f+1.0f);
-		float blue_red(2.0f-(red_blue));
-		if(red_blue>1.0f)red_blue=1.0f;
-		if(blue_red>1.0f)blue_red=1.0f;
-
-		cr->set_source_rgb(red_blue, sqrt(min(red_blue,blue_red)), blue_red);
-		cr->rectangle(i, 0, 1, h);
-		cr->fill();
-	}
-
-	// Draw a frame
-	cr->set_source_rgb(0,0,0);
-	cr->rectangle(0, 0, w-1, h-1);
-	cr->stroke();
-
-	// Draw the position of the current value
-	i=(int)(((level-1.0f)*2.0f+1.0f-0.5f)*w+0.5);
-	cr->set_source_rgb(0,1,0);
-	cr->rectangle(i, 1, 1, h-1);
-	cr->fill();
-
-	// Print out the value
-	Glib::RefPtr<Pango::Layout> layout(Pango::Layout::create(get_pango_context()));
-	layout->set_text(etl::strprintf("%0.02f",level));
-	layout->set_alignment(Pango::ALIGN_CENTER);
-	cr->set_source_rgb(0.627,1,0);
-	cr->move_to(w/2, 4);
-	layout->show_in_cairo_context(cr);
-
-	return true;
-}
-
-bool
-RedBlueLevelSelector::on_event(GdkEvent *event)
-{
-	int x(round_to_int(event->button.x));
-	//int y(round_to_int(event->button.y));
-
-    switch(event->type)
-    {
-	case GDK_MOTION_NOTIFY:
-		level=(((float)(x)/(float)get_width()+0.5)-1.0f)/2.0f+1.0f;
-		if(level<0.5f)level=0.5f;
-		if(level>1.5f)level=1.5f;
-		signal_value_changed_();
-		queue_draw();
-		return true;
-		break;
-	case GDK_BUTTON_PRESS:
-	case GDK_BUTTON_RELEASE:
-		if(event->button.button==1)
-		{
-			level=(((float)(x)/(float)get_width()+0.5)-1.0f)/2.0f+1.0f;
-			if(level<0.5f)level=0.5f;
-			if(level>1.5f)level=1.5f;
-			signal_value_changed_();
-			queue_draw();
-			return true;
-		}
-		break;
-	default:
-		break;
-	}
-
-	return false;
 }
 
 void

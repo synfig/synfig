@@ -72,85 +72,31 @@ class GammaPattern : public Gtk::DrawingArea
 	float gamma_r;
 	float gamma_g;
 	float gamma_b;
-	float black_level;
-	float red_blue_level;
 
 	int tile_w, tile_h;
 
 	Gdk::Color black[4],white[4],gray50[4],gray25[4];
 
-	float r_F32_to_F32(float x)const { float f((pow(x,gamma_r)*std::min(red_blue_level,1.0f)*(1.0f-black_level)+black_level)); if(f<0)f=0; if(f>1)f=1; return f; }
-	float g_F32_to_F32(float x)const { float f((pow(x,gamma_g)*sqrt(std::min(2.0f-red_blue_level,red_blue_level))*(1.0f-black_level)+black_level)); if(f<0)f=0; if(f>1)f=1; return f; }
-	float b_F32_to_F32(float x)const { float f((pow(x,gamma_b)*std::min(2.0f-red_blue_level,1.0f)*(1.0f-black_level)+black_level)); if(f<0)f=0; if(f>1)f=1; return f; }
+	float r_F32_to_F32(float x) const { return std::max(0.f, std::min(1.f, synfig::Gamma::calculate(x, gamma_r))); }
+	float g_F32_to_F32(float x) const { return std::max(0.f, std::min(1.f, synfig::Gamma::calculate(x, gamma_g))); }
+	float b_F32_to_F32(float x) const { return std::max(0.f, std::min(1.f, synfig::Gamma::calculate(x, gamma_b))); }
 
 public:
+	GammaPattern();
+	~GammaPattern();
 
 	void refresh();
 
 	void set_gamma_r(float x) { gamma_r=x; }
 	void set_gamma_g(float x) { gamma_g=x; };
 	void set_gamma_b(float x) { gamma_b=x; };
-	void set_black_level(float x) { black_level=x; };
-	void set_red_blue_level(float x) { red_blue_level=x; };
 
 	float get_gamma_r()const { return gamma_r; }
 	float get_gamma_g()const { return gamma_g; }
 	float get_gamma_b()const { return gamma_b; }
-	float get_black_level()const { return black_level; }
-	float get_red_blue_level()const { return red_blue_level; }
-
-	GammaPattern();
-
-	~GammaPattern();
 
 	virtual bool on_draw(const Cairo::RefPtr<Cairo::Context> &cr);
 }; // END of class GammaPattern
-
-class BlackLevelSelector : public Gtk::DrawingArea
-{
-	float level;
-
-	sigc::signal<void> signal_value_changed_;
-
-public:
-
-	BlackLevelSelector();
-
-	~BlackLevelSelector();
-
-	sigc::signal<void>& signal_value_changed() { return signal_value_changed_; }
-
-	void set_value(float x) { level=x; queue_draw(); }
-
-	const float &get_value()const { return level; }
-
-	virtual bool on_draw(const Cairo::RefPtr<Cairo::Context> &cr);
-
-	bool on_event(GdkEvent *event);
-}; // END of class BlackLevelSelector
-
-class RedBlueLevelSelector : public Gtk::DrawingArea
-{
-	float level;
-
-	sigc::signal<void> signal_value_changed_;
-
-public:
-
-	RedBlueLevelSelector();
-
-	~RedBlueLevelSelector();
-
-	sigc::signal<void>& signal_value_changed() { return signal_value_changed_; }
-
-	void set_value(float x) { level=x; queue_draw(); }
-
-	const float &get_value()const { return level; }
-
-	virtual bool on_draw(const Cairo::RefPtr<Cairo::Context> &cr);
-
-	bool on_event(GdkEvent *event);
-}; // END of class RedBlueSelector
 
 class Widget_Enum;
 
@@ -183,8 +129,6 @@ class Dialog_Setup : public Dialog_Template
 	void on_gamma_r_change();
 	void on_gamma_g_change();
 	void on_gamma_b_change();
-	void on_black_level_change();
-	void on_red_blue_level_change();
 	void on_size_template_combo_change();
 	void on_fps_template_combo_change();
 	void on_ui_language_combo_change();
@@ -206,8 +150,6 @@ class Dialog_Setup : public Dialog_Template
 
 	// Widget for pages
 	GammaPattern gamma_pattern;
-	BlackLevelSelector black_level_selector;
-	RedBlueLevelSelector red_blue_level_selector;
 	Gtk::ComboBoxText timestamp_comboboxtext;
 	std::map<std::string, synfig::Time::Format> time_formats;
 
@@ -287,15 +229,13 @@ public:
 
 public:
 
-	void set_time_format(synfig::Time::Format time_format);
-
-	const synfig::Time::Format& get_time_format()const { return time_format; }
-
 	Dialog_Setup(Gtk::Window& parent);
 	~Dialog_Setup();
 
-    void refresh();
+	void set_time_format(synfig::Time::Format time_format);
+	const synfig::Time::Format& get_time_format()const { return time_format; }
 
+    void refresh();
 }; // END of Dialog_Waypoint
 
 }; // END of namespace studio

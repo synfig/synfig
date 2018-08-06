@@ -29,15 +29,19 @@
 #	include <config.h>
 #endif
 
-#include "gamma.h"
 #include <cmath>
+#include <cassert>
+#include <cstring>
+
 #include <algorithm>
+
+#include "real.h"
+#include "gamma.h"
+
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-//using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
@@ -46,148 +50,44 @@ using namespace synfig;
 
 /* === P R O C E D U R E S ================================================= */
 
+static void
+build_table(float *table_U16_to_F32, unsigned short *table_U16_to_U16, float gamma)
+{
+	const float k = 1.f/65535.f;
+	for(int i = 0; i < 65536; ++i) {
+		float f = Gamma::calculate(k*float(i), gamma);
+		table_U16_to_F32[i] = f;
+		table_U16_to_U16[i] = (unsigned short)(f*65535.9f);
+	}
+}
+
 /* === M E T H O D S ======================================================= */
 
-void
-Gamma::set_gamma(float x)
-{
-	gamma_r=gamma_g=gamma_b=x;
-	int i;
-	red_blue_level=1.0f;
-	for(i=0;i<65536;i++)
-	{
-		float f(float(i)/65536.0f);
-		f=pow(f,gamma_r);
-		table_r_U16_to_U8[i]=table_g_U16_to_U8[i]=table_b_U16_to_U8[i]=(unsigned char)(f*(255.0f-(black_level*255))+0.5f + black_level*255.0f);
-	}
-
-	for(i=0;i<256;i++)
-		table_r_U8_to_F32[i]=table_g_U8_to_F32[i]=table_b_U8_to_F32[i]=pow((float(i)/255.0f)*(1.0f-black_level)+black_level,gamma_r);
+Gamma::Gamma(float x) {
+	gamma[0] = gamma[1] = gamma[2] = -1.f;
+	memset(table_U16_to_F32, 0, sizeof(table_U16_to_F32));
+	memset(table_U16_to_U16, 0, sizeof(table_U16_to_U16));
+	set_gamma(x);
 }
 
-
-void
-Gamma::refresh_gamma_r()
-{
-	int i;
-//	const float scalar(min(red_blue_level,1.0f));
-	const float scalar(1.0f);
-	for(i=0;i<65536;i++)
-	{
-		float f(float(i)/65536.0f);
-		f=pow(f,gamma_r)*scalar;
-		table_r_U16_to_U8[i]=(unsigned char)(f*(255.0f-(black_level*255))+0.5f + black_level*255.0f);
-	}
-
-	for(i=0;i<256;i++)
-		table_r_U8_to_F32[i]=pow((float(i)/255.0f)*(1.0f-black_level)+black_level,gamma_r)*scalar;
+Gamma::Gamma(float r, float g, float b) {
+	gamma[0] = gamma[1] = gamma[2] = -1.f;
+	set_all(r, g, b);
 }
 
 void
-Gamma::refresh_gamma_g()
+Gamma::set_gamma(int channel, float x)
 {
-	int i;
-//	const float scalar(sqrt(min(red_blue_level,2.0f-red_blue_level)));
-	const float scalar(1.0f);
-	for(i=0;i<65536;i++)
-	{
-		float f(float(i)/65536.0f);
-		f=pow(f,gamma_g)*scalar;
-		table_g_U16_to_U8[i]=(unsigned char)(f*(255.0f-(black_level*255))+0.5f + black_level*255.0f);
-	}
-	for(i=0;i<256;i++)
-		table_g_U8_to_F32[i]=pow((float(i)/255.0f)*(1.0f-black_level)+black_level,gamma_g)*scalar;
+	if (gamma[channel] == x) return;
+
+	assert(x > 0.f);
+	gamma[channel] = x;
+	for(int i = 0; i < 3; ++i)
+		if (i != channel && gamma[i] == gamma[channel]) {
+			memcpy(table_U16_to_F32[channel], table_U16_to_F32[i], sizeof(table_U16_to_F32[channel]));
+			memcpy(table_U16_to_U16[channel], table_U16_to_U16[i], sizeof(table_U16_to_U16[channel]));
+			return;
+		}
+	build_table(table_U16_to_F32[channel], table_U16_to_U16[channel], gamma[channel]);
 }
 
-void
-Gamma::refresh_gamma_b()
-{
-	int i;
-//	const float scalar(min(2.0f-red_blue_level,1.0f));
-	const float scalar(1.0f);
-	for(i=0;i<65536;i++)
-	{
-		float f(float(i)/65536.0f);
-		f=pow(f,gamma_b)*scalar;
-		table_b_U16_to_U8[i]=(unsigned char)(f*(255.0f-(black_level*255))+0.5f + black_level*255.0f);
-	}
-	for(i=0;i<256;i++)
-		table_b_U8_to_F32[i]=pow((float(i)/255.0f)*(1.0f-black_level)+black_level,gamma_b)*scalar;
-}
-
-void
-Gamma::set_gamma_r(float x)
-{
-	// If the gamma hasn't changed, then don't recompute the tables
-	if(x==gamma_r) return;
-
-	gamma_r=x;
-	refresh_gamma_r();
-}
-
-void
-Gamma::set_gamma_g(float x)
-{
-	// If the gamma hasn't changed, then don't recompute the tables
-	if(x==gamma_g) return;
-
-	gamma_g=x;
-	refresh_gamma_g();
-}
-
-void
-Gamma::set_gamma_b(float x)
-{
-	// If the gamma hasn't changed, then don't recompute the tables
-	if(x==gamma_b) return;
-
-	gamma_b=x;
-	refresh_gamma_b();
-}
-
-void
-Gamma::set_black_level(float x)
-{
-	// If the black_level hasn't changed, then don't recompute the tables
-	if(x==black_level) return;
-
-	black_level=x;
-
-	// Rebuild tables
-	refresh_gamma_r();
-	refresh_gamma_g();
-	refresh_gamma_b();
-}
-
-void
-Gamma::set_red_blue_level(float x)
-{
-	// If the black_level hasn't changed, then don't recompute the tables
-	if(x==red_blue_level) return;
-
-	red_blue_level=x;
-
-	// Rebuild tables
-	refresh_gamma_r();
-	refresh_gamma_g();
-	refresh_gamma_b();
-}
-
-void
-Gamma::set_all(float r, float g, float b, float black, float red_blue)
-{
-	// If nothing has changed, then don't recompute the tables
-	if(gamma_r==r && gamma_g==g && gamma_b==b && black_level==black && red_blue_level==red_blue)
-		return;
-
-	gamma_r=r;
-	gamma_g=g;
-	gamma_b=b;
-	black_level=black;
-	red_blue_level=red_blue;
-
-	// Rebuild tables
-	refresh_gamma_r();
-	refresh_gamma_g();
-	refresh_gamma_b();
-}
