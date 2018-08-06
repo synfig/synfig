@@ -136,7 +136,9 @@ private:
 	void pre_tile_started();
 	void post_tile_finished();
 	void cancel_render(long long keep_refresh_id);
-	Cairo::RefPtr<Cairo::ImageSurface> convert(const synfig::rendering::SurfaceResource::Handle &surface) const;
+	Cairo::RefPtr<Cairo::ImageSurface> convert(
+		const synfig::rendering::SurfaceResource::Handle &surface,
+		int width, int height ) const;
 
 public:
 	Renderer_Canvas();

@@ -75,18 +75,9 @@ Renderer_Background::render_vfunc(
     if(!get_work_area())
         return;
 
-    int drawable_w = drawable->get_width();
-    int drawable_h = drawable->get_height();
-	
+    VectorInt offset = get_work_area()->get_windows_offset();
     int w=get_w();
     int h=get_h();
-
-    const synfig::Vector focus_point(get_work_area()->get_focus_point());
-    // Calculate the window coordinates of the top-left
-    // corner of the canvas.
-    const float
-    x(focus_point[0]/get_pw()+drawable_w/2-w/2),
-    y(focus_point[1]/get_ph()+drawable_h/2-h/2);
 
     Cairo::RefPtr<Cairo::Context> cr = drawable->create_cairo_context();
 
@@ -95,7 +86,7 @@ Renderer_Background::render_vfunc(
 
     cr->save();
 
-    cr->set_source(surface_background, focus_point[0]/get_pw()+drawable_w/2, focus_point[1]/get_ph()+drawable_h/2);
+    cr->set_source(surface_background, offset[0] + w/2, offset[1] - h/2);
 
     Cairo::RefPtr<Cairo::SurfacePattern> sp_ptr = Cairo::SurfacePattern::create(surface_background);
     sp_ptr->set_filter(Cairo::FILTER_NEAREST);
@@ -103,7 +94,7 @@ Renderer_Background::render_vfunc(
 
     cr->set_source(sp_ptr);
 
-    cr->rectangle(round_to_int(x), round_to_int(y), w, h);
+    cr->rectangle(offset[0], offset[1], w, h);
     cr->clip();
     cr->paint();
 

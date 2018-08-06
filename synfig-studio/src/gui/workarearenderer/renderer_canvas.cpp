@@ -33,9 +33,9 @@
 #endif
 
 #include <ctime>
+#include <valarray>
 
 #include <glib.h>
-
 #include <gdkmm/general.h>
 
 #include <ETL/misc>
@@ -62,6 +62,8 @@ using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
+
+#define DEBUG_TILES
 
 /* === G L O B A L S ======================================================= */
 
@@ -168,8 +170,10 @@ Renderer_Canvas::on_tile_finished(bool success, const Tile::Handle &tile)
 
 	Glib::Threads::Mutex::Lock lock(mutex);
 
+	assert(tile->event);
 	tile->event.reset();
-	if (!success) tile->surface.reset();
+	if (!success)
+		tile->surface.reset();
 
 	// remove old tiles
 	for(TileMap::iterator i = tiles.begin(); i != tiles.end(); ++i) {
@@ -278,11 +282,11 @@ Renderer_Canvas::enqueue_render(bool force)
 		Canvas::Handle canvas         = get_work_area()->get_canvas();
 		RendDesc       rend_desc      = get_work_area()->get_rend_desc();
 		Time           base_time      = get_work_area()->get_time();
-		VectorInt      window_offset  = get_work_area()->get_windows_offset();
 		RectInt        window_rect    = get_work_area()->get_window_rect();
-		RectInt        tile_rect      = window_rect + window_offset;
+		RectInt        full_rect      = RectInt(0, 0, get_work_area()->get_w(), get_work_area()->get_h());
 		float          fps            = rend_desc.get_frame_rate();
 
+		rend_desc.set_wh(full_rect.get_width(), full_rect.get_height());
 		ContextParams context_params(rend_desc.get_render_excluded_contexts());
 
 		// apply onion skin
@@ -309,7 +313,7 @@ Renderer_Canvas::enqueue_render(bool force)
 		}
 
 		// generate rendering tasks
-		if (canvas && tile_rect.is_valid()) {
+		if (canvas && window_rect.is_valid()) {
 			Time orig_time = canvas->get_time();
 
 			CanvasBase sub_queue;
@@ -320,7 +324,7 @@ Renderer_Canvas::enqueue_render(bool force)
 
 				// find not actual regions
 				rects.clear();
-				rects.push_back(tile_rect);
+				rects.push_back(window_rect);
 				for(TileSet::const_iterator j = frame_tiles.begin(); j != frame_tiles.end(); ++j)
 					if (*j && (*j)->refresh_id == current_refresh_id)
 						etl::rects_subtract(rects, (*j)->rect);
@@ -345,6 +349,7 @@ Renderer_Canvas::enqueue_render(bool force)
 						Matrix m;
 						if (p0[0] > p1[0]) { m.m00 = -1.0; m.m20 = p0[0] + p1[0]; std::swap(p0[0], p1[0]); }
 						if (p0[1] > p1[1]) { m.m11 = -1.0; m.m21 = p0[1] + p1[1]; std::swap(p0[1], p1[1]); }
+						rend_desc.set_tl_br(p0, p1);
 						rendering::TaskTransformationAffine::Handle t = new rendering::TaskTransformationAffine();
 						t->transformation->matrix = m;
 						t->sub_task() = task;
@@ -361,21 +366,22 @@ Renderer_Canvas::enqueue_render(bool force)
 						rect.miny = int_floor(rect.miny, tile_grid_step);
 						rect.maxx = int_ceil (rect.maxx, tile_grid_step);
 						rect.maxy = int_ceil (rect.maxy, tile_grid_step);
+						rect &= full_rect;
 
 						RendDesc tile_desc=rend_desc;
-						tile_desc.set_subwindow(rect.minx, rect.miny, rect.maxx - rect.minx, rect.maxy - rect.miny);
+						tile_desc.set_subwindow(rect.minx, rect.miny, rect.get_width(), rect.get_height());
 
 						rendering::Task::Handle tile_task = task->clone_recursive();
 						tile_task->target_surface = new rendering::SurfaceResource();
 						tile_task->target_surface->create(tile_desc.get_w(), tile_desc.get_h());
-						tile_task->target_rect = RectInt( 0, 0, tile_desc.get_w(), tile_desc.get_h() );
-						tile_task->source_rect = Rect(p0, p1);
+						tile_task->target_rect = RectInt( VectorInt(), tile_task->target_surface->get_size() );
+						tile_task->source_rect = Rect(tile_desc.get_tl(), tile_desc.get_br());
 
 						Tile::Handle tile = new Tile(current_refresh_id, frame_time, *j);
 						tile->surface = tile_task->target_surface;
 
-						rendering::TaskEvent::Handle event = new rendering::TaskEvent();
-						event->signal_finished.connect( sigc::bind(
+						tile->event = new rendering::TaskEvent();
+						tile->event->signal_finished.connect( sigc::bind(
 							sigc::ptr_fun(&on_tile_finished_callback), this, tile ));
 
 						frame_tiles.insert(tile);
@@ -383,7 +389,7 @@ Renderer_Canvas::enqueue_render(bool force)
 						// Renderer::enqueue contains the expensive 'optimization' stage, so call it async
 						ThreadPool::instance.enqueue( sigc::bind(
 							sigc::ptr_fun(&enqueue_rendering_task_callback),
-							renderer, tile_task, event ));
+							renderer, tile_task, tile->event ));
 					}
 				}
 			}
@@ -416,39 +422,83 @@ Renderer_Canvas::wait_render()
 }
 
 Cairo::RefPtr<Cairo::ImageSurface>
-Renderer_Canvas::convert(const synfig::rendering::SurfaceResource::Handle &surface) const
+Renderer_Canvas::convert(
+	const synfig::rendering::SurfaceResource::Handle &surface,
+	int width, int height ) const
 {
-	Cairo::RefPtr<Cairo::ImageSurface> cairo_surface;
+	assert(width > 0 && height > 0);
 
-	if (!surface)
-		return cairo_surface;
+	Cairo::RefPtr<Cairo::ImageSurface> cairo_surface =
+		Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, width, height);
+
+	bool success = false;
 
 	rendering::SurfaceResource::LockReadBase surface_lock(surface);
-	if (!surface_lock.convert(rendering::Surface::Token::Handle(), false, true))
-		return cairo_surface;
+	if (surface_lock.get_resource() && surface_lock.get_resource()->is_blank()) {
+		success = true;
+	} else
+	if (surface_lock.convert(rendering::Surface::Token::Handle(), false, true)) {
+		const rendering::Surface &s = *surface_lock.get_surface();
+		int w = s.get_width();
+		int h = s.get_height();
+		if (w == width && h == height) {
+			const Color *pixels = s.get_pixels_pointer();
+			std::vector<Color> pixels_copy;
+			if (!pixels) {
+				pixels_copy.resize(w*h);
+				if (s.get_pixels(&pixels_copy.front()))
+					pixels = &pixels_copy.front();
+			}
 
-	const rendering::Surface &s = *surface_lock.get_surface();
-	int w = s.get_width();
-	int h = s.get_height();
+			cairo_surface->flush();
+			const Color *src = pixels;
+			unsigned int *data = (unsigned int *)cairo_surface->get_data();
+			int stride = cairo_surface->get_stride()/sizeof(*data);
+			int image_size = stride*cairo_surface->get_height();
+			for(unsigned int *row = data, *image_end = data + image_size; row < image_end; row += stride)
+				for(unsigned int *pixel = row, *row_end = row + stride; pixel < row_end; ++pixel) {
+					const Color &c = *(src++);
+					*pixel = (unsigned int)round( 255.f*c.get_a()                                                          ) << 24
+						   | (unsigned int)round( 255.f*max(0.f, min(1.f, App::gamma.r_F32_to_F32( c.get_r() )))*c.get_a() ) << 16
+						   | (unsigned int)round( 255.f*max(0.f, min(1.f, App::gamma.g_F32_to_F32( c.get_g() )))*c.get_a() ) << 8
+						   | (unsigned int)round( 255.f*max(0.f, min(1.f, App::gamma.b_F32_to_F32( c.get_b() )))*c.get_a() );
+				}
+			cairo_surface->mark_dirty();
+			cairo_surface->flush();
+			success = true;
+		} else synfig::error("Renderer_Canvas::convert: surface with wrong size");
+	} else synfig::error("Renderer_Canvas::convert: surface not exists");
 
-	const Color *pixels = s.get_pixels_pointer();
-	std::vector<Color> pixels_copy;
-	if (!pixels) {
-		pixels_copy.resize(w*h);
-		if (s.get_pixels(&pixels_copy.front()))
-			pixels = &pixels_copy.front();
+
+	#ifdef DEBUG_TILES
+	const bool debug_tiles = true;
+	#else
+	const bool debug_tiles = false;
+	#endif
+
+	// paint tile
+	if (debug_tiles || !success) {
+		Cairo::RefPtr<Cairo::Context> context = Cairo::Context::create(cairo_surface);
+
+		if (!success) {
+			// draw cross
+			context->move_to(0.0, 0.0);
+			context->line_to((double)width, (double)height);
+			context->move_to((double)width, 0.0);
+			context->line_to(0.0, (double)height);
+			context->stroke();
+		}
+
+		// draw border
+		context->rectangle(0, 0, width, height);
+		context->stroke();
+		std::valarray<double> dash(2); dash[0] = 2.0; dash[1] = 2.0;
+		context->set_dash(dash, 0.0);
+		context->rectangle(4, 4, width-8, height-8);
+		context->stroke();
+
+		cairo_surface->flush();
 	}
-	if (!pixels)
-		return cairo_surface;
-
-	cairo_surface = Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, w, h);
-	const Color *src = pixels;
-	unsigned char *data = cairo_surface->get_data();
-	int stride = cairo_surface->get_stride();
-	int image_size = stride*cairo_surface->get_height();
-	for(unsigned char *row = data, *image_end = data + image_size; row < image_end; row += stride)
-		for(unsigned char *pixel = row, *row_end = row + stride; pixel < row_end; )
-			pixel = Color2PixelFormat((src++)->clamped(), PF_RGB | PF_A, pixel, App::gamma);
 	return cairo_surface;
 }
 
@@ -478,6 +528,8 @@ Renderer_Canvas::render_vfunc(
 	if (approximate_less_or_equal_lp(summary_alpha, 0.f)) return;
 
 	Cairo::RefPtr<Cairo::Context> context = drawable->create_cairo_context();
+	context->save();
+	context->translate((double)window_offset[0], (double)window_offset[1]);
 
 	// context for tiles
 	Cairo::RefPtr<Cairo::ImageSurface> onion_surface;
@@ -493,15 +545,13 @@ Renderer_Canvas::render_vfunc(
 	// draw tiles
 	onion_context->save();
 	onion_context->set_source_rgba(0.0, 1.0, 1.0, 1.0);
-	onion_context->reset_clip();
-	onion_context->translate((double)window_offset[0], (double)window_offset[1]);
 	for(FrameList::const_iterator i = onion_frames.begin(); i != onion_frames.end(); ++i) {
 		TileMap::const_iterator ii = tiles.find(i->time);
 		if (ii == tiles.end()) continue;
 		for(TileSet::const_iterator j = ii->second.begin(); j != ii->second.end(); ++j) {
 			if (!*j) continue;
-			if ((*j)->surface) {
-				(*j)->cairo_surface = convert((*j)->surface);
+			if (!(*j)->event && (*j)->surface) {
+				(*j)->cairo_surface = convert((*j)->surface, (*j)->rect.get_width(), (*j)->rect.get_height());
 				(*j)->surface.reset();
 			}
 			if ((*j)->cairo_surface) {
@@ -541,11 +591,9 @@ Renderer_Canvas::render_vfunc(
 	context->set_antialias(Cairo::ANTIALIAS_NONE);
 	context->set_line_width(1.0);
 	context->set_source_rgba(0.0, 0.0, 0.0, 1.0);
-	context->rectangle(
-		(double)window_offset[0] + 1,
-		(double)window_offset[1] + 1,
-		(double)get_w(),
-		(double)get_h() );
+	context->rectangle(0.0, 0.0, (double)get_w(), (double)get_h());
 	context->stroke();
+	context->restore();
+
 	context->restore();
 }
