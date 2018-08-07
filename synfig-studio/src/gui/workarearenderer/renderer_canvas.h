@@ -52,14 +52,49 @@ namespace studio {
 class Renderer_Canvas : public studio::WorkAreaRenderer
 {
 public:
-	class FrameDesc {
+	class FrameId {
 	public:
 		synfig::Time time;
-		synfig::ColorReal alpha;
-		explicit FrameDesc(
+		int width;
+		int height;
+
+		explicit FrameId(
 			const synfig::Time &time = synfig::Time(),
-			synfig::ColorReal alpha = synfig::ColorReal() ):
-				time(time), alpha(alpha) { }
+			int width = 0,
+			int height = 0
+		):
+			time(time), width(width), height(height) { }
+
+		bool operator< (const FrameId &other) const {
+			if (time < other.time) return true;
+			if (other.time < time) return false;
+			if (width < other.width) return true;
+			if (other.width < width) return false;
+			return height < other.height;
+		}
+
+		bool operator== (const FrameId &other) const
+			{ return time == other.time && width == other.width && height == other.height; }
+
+		bool operator!= (const FrameId &other) const
+			{ return !(*this == other); }
+	};
+
+	class FrameDesc {
+	public:
+		FrameId id;
+		synfig::ColorReal alpha;
+		FrameDesc(): alpha() { }
+		FrameDesc(
+			const FrameId &id,
+			synfig::ColorReal alpha ):
+				id(id), alpha(alpha) { }
+		FrameDesc(
+			const synfig::Time &time,
+			int width,
+			int height,
+			synfig::ColorReal alpha ):
+				id(time, width, height), alpha(alpha) { }
 	};
 
 	class Tile: public etl::shared_object {
@@ -102,7 +137,7 @@ public:
 	typedef std::vector<FrameDesc> FrameList;
 	typedef std::vector<Tile::Handle> TileList;
 	typedef std::multiset<Tile::Handle, TileLess> TileSet;
-	typedef std::map<synfig::Time, TileSet> TileMap;
+	typedef std::map<FrameId, TileSet> TileMap;
 
 private:
 	//! controls access to fields: tiles, onion_frames, refresh_id
@@ -135,7 +170,11 @@ private:
 	void on_tile_finished(bool success, const Tile::Handle &tile);
 	void pre_tile_started();
 	void post_tile_finished();
+
 	void cancel_render(long long keep_refresh_id);
+
+	void remove_old_tiles();
+
 	Cairo::RefPtr<Cairo::ImageSurface> convert(
 		const synfig::rendering::SurfaceResource::Handle &surface,
 		int width, int height ) const;

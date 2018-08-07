@@ -49,6 +49,7 @@
 #include "loadcanvas.h"
 #include "valuenode_registry.h"
 
+#include "debug/measure.h"
 #include "layers/layer_pastecanvas.h"
 #include "valuenodes/valuenode_const.h"
 #include "valuenodes/valuenode_scale.h"
@@ -62,6 +63,10 @@ using namespace std;
 namespace synfig { extern Canvas::Handle open_canvas_as(const FileSystem::Identifier &identifier, const String &as, String &errors, String &warnings); };
 
 /* === M A C R O S ========================================================= */
+
+#ifndef NDEBUG
+//#define DEBUG_SET_TIME_MEASURE
+#endif
 
 #define ALLOW_CLONE_NON_INLINE_CANVASES
 
@@ -348,6 +353,10 @@ Canvas::set_time(Time t)const
 {
 	if(is_dirty_ || !get_time().is_equal(t))
 	{
+		#ifdef DEBUG_SET_TIME_MEASURE
+		debug::Measure measure("Canvas::set_time", true);
+		#endif
+
 #if 0
 		if(is_root())
 		{

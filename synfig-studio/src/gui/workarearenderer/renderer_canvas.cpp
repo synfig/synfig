@@ -44,6 +44,7 @@
 #include <synfig/canvas.h>
 #include <synfig/context.h>
 #include <synfig/threadpool.h>
+#include <synfig/debug/measure.h>
 #include <synfig/rendering/renderer.h>
 #include <synfig/rendering/common/task/tasktransformation.h>
 
@@ -63,7 +64,9 @@ using namespace studio;
 
 /* === M A C R O S ========================================================= */
 
-#define DEBUG_TILES
+#ifndef NDEBUG
+//#define DEBUG_TILES
+#endif
 
 /* === G L O B A L S ======================================================= */
 
@@ -161,29 +164,23 @@ Renderer_Canvas::cancel_render(long long keep_refresh_id)
 }
 
 void
-Renderer_Canvas::on_tile_finished(bool success, const Tile::Handle &tile)
+Renderer_Canvas::remove_old_tiles()
 {
-	// this method must be called from on_tile_finished_callback()
-	// only this non-static method may be called in other threads
+	// mutex must be already locked
+	// this method may be called from other threads
 
-	// 'tiles', 'onion_frames' and 'refresh_id' are controlled by mutex
-
-	Glib::Threads::Mutex::Lock lock(mutex);
-
-	assert(tile->event);
-	tile->event.reset();
-	if (!success)
-		tile->surface.reset();
-
-	// remove old tiles
 	for(TileMap::iterator i = tiles.begin(); i != tiles.end(); ++i) {
 		bool is_frame_visible = false;
 		for(FrameList::const_iterator j = onion_frames.begin(); j != onion_frames.end(); ++j)
-			if (j->time == i->first) { is_frame_visible = true; break; }
+			if (j->id == i->first) { is_frame_visible = true; break; }
 
-		// remove nulls (if any) and outdated tiles at invisible frame
+		RectInt frame_rect(0, 0, i->first.width, i->first.height);
+
+		// remove "bad" tiles
 		for(TileSet::iterator j = i->second.begin(); j != i->second.end(); )
-			if (!*j || (!is_frame_visible && (*j)->refresh_id < refresh_id))
+			if ( !*j                                                  // remove nulls (if any),
+			  || (!is_frame_visible && (*j)->refresh_id < refresh_id) // outdated tiles at invisible frame,
+			  || (!frame_rect.contains((*j)->rect)) )                 // and tiles that are outside of frame
 					i->second.erase(j++); else ++j;
 
 		// remove overlapped and partially overlapped tiles
@@ -198,6 +195,24 @@ Renderer_Canvas::on_tile_finished(bool success, const Tile::Handle &tile)
 				i->second.erase(j++); else ++j;
 		}
 	}
+}
+
+void
+Renderer_Canvas::on_tile_finished(bool success, const Tile::Handle &tile)
+{
+	// this method must be called from on_tile_finished_callback()
+	// this method may be called from other threads
+
+	// 'tiles', 'onion_frames' and 'refresh_id' are controlled by mutex
+
+	Glib::Threads::Mutex::Lock lock(mutex);
+
+	assert(tile->event);
+	tile->event.reset();
+	if (!success)
+		tile->surface.reset();
+
+	remove_old_tiles();
 
 	// don't create handle if ref-count is zero
 	// it means that object was nether had a handles and will removed with handle
@@ -283,11 +298,13 @@ Renderer_Canvas::enqueue_render(bool force)
 		RendDesc       rend_desc      = canvas->rend_desc();
 		Time           base_time      = canvas->get_time();
 		RectInt        window_rect    = get_work_area()->get_window_rect();
-		RectInt        full_rect      = RectInt(0, 0, get_work_area()->get_w(), get_work_area()->get_h());
+		int            w              = get_work_area()->get_w();
+		int            h              = get_work_area()->get_h();
+		RectInt        full_rect      = RectInt(0, 0, w, h);
 		float          fps            = rend_desc.get_frame_rate();
 
 		rend_desc.clear_flags();
-		rend_desc.set_wh(full_rect.get_width(), full_rect.get_height());
+		rend_desc.set_wh(w, h);
 		ContextParams context_params(rend_desc.get_render_excluded_contexts());
 
 		// apply onion skin
@@ -300,18 +317,20 @@ Renderer_Canvas::enqueue_render(bool force)
 				Time time = base_time - frame_duration*(past - i);
 				ColorReal alpha = base_onion_alpha*(double)(i + 1)/(double)(past + 1);
 				if (time >= rend_desc.get_time_start() && time <= rend_desc.get_time_end())
-					onion_frames.push_back(FrameDesc(base_time, alpha));
+					onion_frames.push_back(FrameDesc(time, w, h, alpha));
 			}
 			for(int i = 0; i < future; ++i) {
 				Time time = base_time + frame_duration*(future - i);
 				ColorReal alpha = base_onion_alpha*(double)(i + 1)/(double)(future + 1);
 				if (time >= rend_desc.get_time_start() && time <= rend_desc.get_time_end())
-					onion_frames.push_back(FrameDesc(base_time, alpha));
+					onion_frames.push_back(FrameDesc(time, w, h, alpha));
 			}
-			onion_frames.push_back(FrameDesc(base_time, base_onion_alpha));
+			onion_frames.push_back(FrameDesc(base_time, w, h, base_onion_alpha));
 		} else {
-			onion_frames.push_back(FrameDesc(base_time, 1.f));
+			onion_frames.push_back(FrameDesc(base_time, w, h, 1.f));
 		}
+
+		remove_old_tiles();
 
 		// generate rendering tasks
 		if (canvas && window_rect.is_valid()) {
@@ -320,8 +339,8 @@ Renderer_Canvas::enqueue_render(bool force)
 			CanvasBase sub_queue;
 			std::vector<synfig::RectInt> rects;
 			for(FrameList::const_iterator i = onion_frames.begin(); i != onion_frames.end(); ++i) {
-				Time frame_time = i->time;
-				TileSet &frame_tiles = tiles[frame_time];
+				Time frame_time = i->id.time;
+				TileSet &frame_tiles = tiles[i->id];
 
 				// find not actual regions
 				rects.clear();
@@ -552,7 +571,7 @@ Renderer_Canvas::render_vfunc(
 	onion_context->save();
 	onion_context->set_source_rgba(0.0, 1.0, 1.0, 1.0);
 	for(FrameList::const_iterator i = onion_frames.begin(); i != onion_frames.end(); ++i) {
-		TileMap::const_iterator ii = tiles.find(i->time);
+		TileMap::const_iterator ii = tiles.find(i->id);
 		if (ii == tiles.end()) continue;
 		for(TileSet::const_iterator j = ii->second.begin(); j != ii->second.end(); ++j) {
 			if (!*j) continue;
