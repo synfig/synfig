@@ -390,7 +390,6 @@ inline RendDesc::Lock operator|(RendDesc::Lock lhs, RendDesc::Lock rhs)
 /*!	\see RendDesc::Lock, RendDesc */
 inline RendDesc::Lock operator&(RendDesc::Lock lhs, RendDesc::Lock rhs)
 {
-	#warning V1016 The value '~(int) rhs' is out of range of enum values. This causes unspecified or undefined behavior.
 	return static_cast<RendDesc::Lock>((int)lhs&(int)rhs);
 }
 
@@ -398,6 +397,7 @@ inline RendDesc::Lock operator&(RendDesc::Lock lhs, RendDesc::Lock rhs)
 /*!	\see RendDesc::Lock, RendDesc */
 inline RendDesc::Lock operator~(RendDesc::Lock rhs)
 {
+	#warning V1016 The value '~(int) rhs' is out of range of enum values. This causes unspecified or undefined behavior.
 	return static_cast<RendDesc::Lock>(~(int)rhs);
 }
 
