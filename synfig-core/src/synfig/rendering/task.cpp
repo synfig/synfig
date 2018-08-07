@@ -430,7 +430,7 @@ void
 TaskEvent::wait()
 {
 	Glib::Threads::Mutex::Lock lock(mutex);
-	if (is_finished()) return;
+	if (done || cancelled) return;
 	cond.wait(mutex);
 }
 

@@ -280,12 +280,13 @@ Renderer_Canvas::enqueue_render(bool force)
 		if (!renderer) return;
 
 		Canvas::Handle canvas         = get_work_area()->get_canvas();
-		RendDesc       rend_desc      = get_work_area()->get_rend_desc();
-		Time           base_time      = get_work_area()->get_time();
+		RendDesc       rend_desc      = canvas->rend_desc();
+		Time           base_time      = canvas->get_time();
 		RectInt        window_rect    = get_work_area()->get_window_rect();
 		RectInt        full_rect      = RectInt(0, 0, get_work_area()->get_w(), get_work_area()->get_h());
 		float          fps            = rend_desc.get_frame_rate();
 
+		rend_desc.clear_flags();
 		rend_desc.set_wh(full_rect.get_width(), full_rect.get_height());
 		ContextParams context_params(rend_desc.get_render_excluded_contexts());
 
