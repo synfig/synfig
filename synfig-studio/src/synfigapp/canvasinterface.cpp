@@ -130,7 +130,6 @@ CanvasInterface::set_time(synfig::Time x)
 			interface->set_time(interface->get_canvas()->get_time());
 
 	signal_time_changed()();
-	signal_dirty_preview()();
 }
 
 synfig::Time

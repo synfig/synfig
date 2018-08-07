@@ -3116,7 +3116,7 @@ CanvasView::on_play_timeout()
 	time_adjustment()->set_value(time);
 	time_adjustment()->value_changed();
 
-	work_area->sync_render();
+	work_area->sync_render(false);
 }
 
 
@@ -3178,7 +3178,7 @@ CanvasView::play()
 		time_adjustment()->set_value(time+timer());
 		time_adjustment()->value_changed();
 
-		work_area->sync_render();
+		work_area->sync_render(false);
 
 		// wait for the workarea to refresh itself
 		while (studio::App::events_pending())

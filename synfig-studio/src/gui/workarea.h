@@ -153,17 +153,14 @@ private:
 	// Bleh!
 	int	w;						//!< Width of the image (in pixels)
 	int	h;						//!< Height of the image (in pixels)
-	synfig::Real	canvaswidth;	//!< Width of the canvas
-	synfig::Real	canvasheight;	//!< Height of the canvas
-	synfig::Real	pw;				//!< The width of a pixel
-	synfig::Real	ph;				//!< The height of a pixel
-	// float zoom and prev_zoom are declared in Duckmatic
-	synfig::Point window_tl;		//!< The (theoretical) top-left corner of the view window
-	synfig::Point window_br;		//!< The (theoretical) bottom-right corner of the view window
+	synfig::Real canvaswidth;	//!< Width of the canvas
+	synfig::Real canvasheight;	//!< Height of the canvas
+	synfig::Real pw;			//!< The width of a pixel
+	synfig::Real ph;			//!< The height of a pixel
+	synfig::Point window_tl;	//!< The (theoretical) top-left corner of the view window
+	synfig::Point window_br;	//!< The (theoretical) bottom-right corner of the view window
 
 	guint32 last_event_time;
-
-	int bpp;
 
 	//! ???
 	synfig::ProgressCallback *progresscallback;
@@ -241,13 +238,6 @@ public:
 
 	// used in renderer_bonesetup.cpp
 	int bonesetup_width, bonesetup_height;
-
-private:
-	/*
- -- ** -- P R I V A T E   M E T H O D S ---------------------------------------
-	*/
-
-	bool update_wh();
 
 	/*
  -- ** -- S I G N A L S -------------------------------------------------------
@@ -395,7 +385,6 @@ public:
 
 	int get_w()const { return w; }
 	int get_h()const { return h; }
-	int get_bpp()const { return bpp; }
 
 	//! ??
 	const synfig::RendDesc &get_rend_desc()const { return desc; }
@@ -416,10 +405,10 @@ public:
 	const synfig::Point &get_window_br()const { return window_br; }
 
 	//! initiate background rendering of canvas and wait
-	void sync_render();
+	void sync_render(bool refresh = true);
 
 	//! initiate background rendering of canvas
-	void queue_render();
+	void queue_render(bool refresh = true);
 
 	void zoom_in();
 	void zoom_out();

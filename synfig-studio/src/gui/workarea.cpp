@@ -149,7 +149,6 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	pw(0.001),
 	ph(0.001),
 	last_event_time(0),
-	bpp(0),
 	progresscallback(0),
 	dragging(DRAG_NONE),
 	show_grid(false),
@@ -273,6 +272,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	drawing_area->signal_size_allocate().connect(sigc::hide(sigc::mem_fun(*this, &WorkArea::refresh_dimension_info)));
 
 	canvas_interface->signal_rend_desc_changed().connect(sigc::mem_fun(*this, &WorkArea::refresh_dimension_info));
+	canvas_interface->signal_time_changed().connect(sigc::mem_fun(*this, &WorkArea::queue_draw));
 	// When either of the scrolling adjustments change, then redraw.
 	get_scrollx_adjustment()->signal_value_changed().connect(sigc::mem_fun(*this, &WorkArea::queue_scroll));
 	get_scrolly_adjustment()->signal_value_changed().connect(sigc::mem_fun(*this, &WorkArea::queue_scroll));
@@ -883,27 +883,6 @@ WorkArea::get_focus_point()const
 	Real x_factor=(rend_desc.get_br()[0]-rend_desc.get_tl()[0]>0)?-1:1;
 	Real y_factor=(rend_desc.get_br()[1]-rend_desc.get_tl()[1]>0)?-1:1;
 	return synfig::Point(get_scrollx_adjustment()->get_value()*x_factor, get_scrolly_adjustment()->get_value()*y_factor);
-}
-
-bool
-WorkArea::update_wh()
-{
-	RendDesc desc = get_canvas()->rend_desc();
-	int new_w = (int)(desc.get_w()*zoom);
-	int new_h = (int)(desc.get_h()*zoom);
-	int new_bpp = 4;
-
-	if (new_w <= 0 || new_h <= 0 || new_bpp <= 0)
-		return false;
-	if (new_w == w && new_h == h && new_bpp == bpp)
-		return true;
-
-	w = new_w;
-	h = new_h;
-	bpp = new_bpp;
-
-	refresh_dimension_info();
-	return true;
 }
 
 bool
@@ -1890,7 +1869,11 @@ WorkArea::on_duck_selection_single(const etl::handle<Duck>& duck)
 void
 WorkArea::refresh_dimension_info()
 {
-	if(drawing_area->get_width()<=0 || drawing_area->get_height()<=0 || w==0 || h==0)
+	const RendDesc &desc = get_canvas()->rend_desc();
+	w = (int)(desc.get_w()*zoom);
+	h = (int)(desc.get_h()*zoom);
+
+	if (drawing_area->get_width()<=0 || drawing_area->get_height()<=0 || w<=0 || h<=0)
 		return;
 
 	synfig::RendDesc &rend_desc(get_canvas()->rend_desc());
@@ -2163,24 +2146,22 @@ studio::WorkArea::zoom_edit()
 }
 
 void
-WorkArea::sync_render()
+WorkArea::sync_render(bool refresh)
 {
 	dirty_trap_queued = 0;
-	update_wh();
-	renderer_canvas->inc_refresh_id();
+	if (refresh) renderer_canvas->inc_refresh_id();
 	renderer_canvas->enqueue_render(true);
 	renderer_canvas->wait_render();
 }
 
 void
-studio::WorkArea::queue_render()
+studio::WorkArea::queue_render(bool refresh)
 {
 	assert(dirty_trap_count >= 0);
 	if (dirty_trap_count > 0)
 		{ dirty_trap_queued++; return; }
 	dirty_trap_queued = 0;
-	update_wh();
-	renderer_canvas->inc_refresh_id();
+	if (refresh) renderer_canvas->inc_refresh_id();
 	renderer_canvas->enqueue_render(true);
 }
 
@@ -2228,7 +2209,7 @@ studio::WorkArea::set_zoom(float z)
 	zoom = z;
 
 	refresh_dimension_info();
-	queue_render();
+	queue_draw();
 
 	// TODO: FIXME: QuickHack
 	if (canvas_view->get_smach().get_state_name() != std::string("polygon")
