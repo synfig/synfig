@@ -165,7 +165,8 @@ studio::Preview::Preview(const etl::loose_handle<CanvasView> &h, float zoom, flo
 	overbegin(false),
 	overend(false),
 	quality(),
-	global_fps()
+	global_fps(),
+	jack_offset(0.f)
 { }
 
 void studio::Preview::set_canvasview(const etl::loose_handle<CanvasView> &h)

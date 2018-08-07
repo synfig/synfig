@@ -100,7 +100,8 @@ studio::render_gradient_to_window(const Cairo::RefPtr<Cairo::Context>& cr,const 
 /* === M E T H O D S ======================================================= */
 
 Widget_Gradient::Widget_Gradient():
-	editable_(false)
+	editable_(false),
+	changed_(false)
 {
 	set_size_request(-1,64);
 	add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK);

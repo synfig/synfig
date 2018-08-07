@@ -108,8 +108,8 @@ public:
 	operator bool()const { return (bool)data_; }
 	bool operator!()const { return !data_; }
 
-	generic_pen_row_iterator(pointer data, int pitch):data_(data),pitch_(pitch) { }
-	generic_pen_row_iterator():data_(NULL) { }
+	generic_pen_row_iterator(pointer data, int pitch):data_(data), pitch_(pitch) { }
+	generic_pen_row_iterator():data_(NULL), pitch_(0) { }
 };
 
 template<typename T, typename AT=T>

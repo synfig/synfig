@@ -146,7 +146,11 @@ public:
 		time_begin	(0),
 		time_end	(0),
 		outline_grow(0),
-		AntialiasFilter(ANTIALIAS_UNIFORM)
+		AntialiasFilter(ANTIALIAS_UNIFORM),
+		w_ratio_(1), 
+		h_ratio_(1), 
+		x_res_ratio_(1), 
+		y_res_ratio_(1)
 	{ }
 
 	static RendDesc zero()
@@ -386,6 +390,7 @@ inline RendDesc::Lock operator|(RendDesc::Lock lhs, RendDesc::Lock rhs)
 /*!	\see RendDesc::Lock, RendDesc */
 inline RendDesc::Lock operator&(RendDesc::Lock lhs, RendDesc::Lock rhs)
 {
+	#warning V1016 The value '~(int) rhs' is out of range of enum values. This causes unspecified or undefined behavior.
 	return static_cast<RendDesc::Lock>((int)lhs&(int)rhs);
 }
 

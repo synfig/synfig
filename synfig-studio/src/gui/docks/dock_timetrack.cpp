@@ -409,6 +409,7 @@ public:
 Dock_Timetrack::Dock_Timetrack():
 	Dock_CanvasSpecific("timetrack",_("Timetrack"),Gtk::StockID("synfig-timetrack"))
 {
+	mimic_tree_view = NULL;
 	table_=0;
 	widget_timeslider_= new Widget_Timeslider();
 	widget_kf_list_= new Widget_Keyframe_List();
