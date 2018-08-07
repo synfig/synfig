@@ -54,7 +54,7 @@
 
 #endif
 
-using namespace etl;
+using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
@@ -78,7 +78,7 @@ SYNFIG_LAYER_SET_CVS_ID(Region,"$Id$");
 Region::Region()
 {
 	clear();
-	vector<BLinePoint> bline_point_list;
+	std::vector<BLinePoint> bline_point_list;
 	bline_point_list.push_back(BLinePoint());
 	bline_point_list.push_back(BLinePoint());
 	bline_point_list.push_back(BLinePoint());
@@ -102,36 +102,68 @@ Region::sync_vfunc()
 {
 	clear();
 
-	bool looped = param_bline.get_loop();
-
-	// get segments
-	std::vector<synfig::Segment> segments;
-	if (param_bline.get_contained_type() == type_bline_point) {
-		segments = convert_bline_to_segment_list(param_bline).get_list_of(synfig::Segment());
-	} else
-	if (param_bline.get_contained_type() == type_segment) {
-		segments = vector<synfig::Segment>(param_bline.get_list_of(synfig::Segment()));
-	} else {
-		synfig::warning("Region: incorrect type on bline, layer disabled");
-		return;
-	}
-
-	if (segments.empty()) {
-		synfig::warning("Region: segment_list is empty, layer disabled");
-		clear();
-		return;
-	}
-
 	const Real k = 1.0/3.0;
-	Vector prev = segments.front().p1;
-	move_to(prev);
-	for(vector<Segment>::const_iterator i = segments.begin(); i != segments.end(); ++i) {
-		if (!i->p1.is_equal_to(prev)) line_to(i->p1);
-		if (i->t1.is_equal_to(Vector::zero()) && i->t2.is_equal_to(Vector::zero()))
-			line_to(i->p2);
-		else
-			cubic_to(i->p2, i->p1 + i->t1*k, i->p2 - i->t2*k);
-		prev = i->p2;
+	const BLinePoint blank_point;
+	const Segment blank_segment;
+
+	// build splines
+	bool first = true;
+	bool first_warning = true;
+	Vector prev;
+	Vector prev_tangent;
+	const ValueBase::List &list = param_bline.get_list();
+	for(ValueBase::List::const_iterator i = list.begin(); i != list.end(); ++i) {
+		if (i->get_type() == type_bline_point) {
+			// process BLinePoint
+			const BLinePoint &point = i->get(blank_point);
+			const Vector &p = point.get_vertex();
+
+			if (first)
+				{ first = false; move_to(p); }
+			else
+			if (prev_tangent.is_equal_to(Vector::zero()) && point.get_tangent1().is_equal_to(Vector::zero()))
+				line_to(p);
+			else
+				cubic_to(p, prev + prev_tangent*k, p - point.get_tangent1()*k);
+
+			prev = point.get_vertex();
+			prev_tangent = point.get_tangent2();
+		} else
+		if (i->get_type() == type_segment) {
+			// process Segment
+			const Segment &segment = i->get(blank_segment);
+
+			if (first)
+				{ first = false; move_to(segment.p1); }
+			else
+			if (!segment.p1.is_equal_to(prev))
+				line_to(segment.p1);
+
+			if (segment.t1.is_equal_to(Vector::zero()) && segment.t2.is_equal_to(Vector::zero()))
+				line_to(segment.p2);
+			else
+				cubic_to(segment.p2, segment.p1 + segment.t1*k, segment.p2 - segment.t2*k);
+
+			prev = segment.p2;
+			prev_tangent = Vector();
+		} else
+		if (first_warning) {
+			// warning
+			first_warning = false;
+			synfig::warning("Region: incorrect type on bline");
+		}
+	}
+
+	// close loop
+	if ( !first
+	  && param_bline.get_loop()
+	  && list.front().get_type() == type_bline_point )
+	{
+		const BLinePoint &point = list.front().get(blank_point);
+		const Vector &p = point.get_vertex();
+		if ( !prev_tangent.is_equal_to(Vector::zero())
+		  || !point.get_tangent1().is_equal_to(Vector::zero()) )
+			cubic_to(p, prev + prev_tangent*k, p - point.get_tangent1()*k);
 	}
 
 	close();

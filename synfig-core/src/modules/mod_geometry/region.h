@@ -43,22 +43,18 @@
 
 namespace synfig { struct Segment; }
 
-using namespace synfig;
-using namespace std;
-using namespace etl;
-
 class Region : protected synfig::Layer_Shape
 {
 	SYNFIG_LAYER_MODULE_EXT
 private:
 	//! Parameter: list of type BlinePoint
-	ValueBase param_bline;
+	synfig::ValueBase param_bline;
 
 public:
 	Region();
 
-	virtual bool set_shape_param(const String & param, const synfig::ValueBase &value);
-	virtual ValueBase get_param(const String & param)const;
+	virtual bool set_shape_param(const synfig::String & param, const synfig::ValueBase &value);
+	virtual synfig::ValueBase get_param(const synfig::String & param)const;
 	virtual Vocab get_param_vocab()const;
 
 protected:
