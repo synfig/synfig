@@ -157,6 +157,8 @@ private:
 
 	TimeMeasure rendering_start_time;
 
+	synfig::PixelFormat pixel_format;
+
 	// don't try to pass arguments to callbacks by reference, it cannot be properly saved in signal
 	// Renderer_Canvas is non-thread-safe sigc::trackable, so use static callback methods only in signals
 
