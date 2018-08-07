@@ -82,10 +82,6 @@ public:
 	virtual bool set_param(const String & param, const synfig::ValueBase &value);
 	virtual ValueBase get_param(const String & param)const;
 	virtual Vocab get_param_vocab()const;
-
-private:
-	class 		PolySpan;
-	bool render_polyspan(Surface *surface,PolySpan &polyspan)const;
 }; // END of Layer_Polygon
 
 }; // END of namespace synfig

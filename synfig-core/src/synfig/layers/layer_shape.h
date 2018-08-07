@@ -96,6 +96,15 @@ protected:
 	void cubic_to(Real x, Real y, Real x1, Real y1, Real x2, Real y2);
 	void close();
 
+	void move_to(const Vector &p)
+		{ move_to(p[0], p[1]); }
+	void line_to(const Vector &p)
+		{ line_to(p[0], p[1]); }
+	void conic_to(const Vector &p, const Vector &p1)
+		{ conic_to(p[0], p[1], p1[0], p1[1]); }
+	void cubic_to(const Vector &p, const Vector &p1, const Vector &p2)
+		{ cubic_to(p[0], p[1], p1[0], p1[1], p2[0], p2[1]); }
+
 	Vector get_feather() const { return feather; }
 	void set_feather(const Vector &x) { feather = x; }
 

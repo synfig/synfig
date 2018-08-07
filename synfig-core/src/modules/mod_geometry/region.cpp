@@ -100,83 +100,47 @@ Region::Region()
 void
 Region::sync_vfunc()
 {
-	ValueBase bline=param_bline;
-	
-	if(bline.get_contained_type()==type_bline_point)
-		segment_list=convert_bline_to_segment_list(bline).get_list_of(synfig::Segment());
-	else if(bline.get_contained_type()==type_segment)
-		segment_list=vector<synfig::Segment>(bline.get_list_of(synfig::Segment()));
-	else
-	{
+	clear();
+
+	bool looped = param_bline.get_loop();
+
+	// get segments
+	std::vector<synfig::Segment> segments;
+	if (param_bline.get_contained_type() == type_bline_point) {
+		segments = convert_bline_to_segment_list(param_bline).get_list_of(synfig::Segment());
+	} else
+	if (param_bline.get_contained_type() == type_segment) {
+		segments = vector<synfig::Segment>(param_bline.get_list_of(synfig::Segment()));
+	} else {
 		synfig::warning("Region: incorrect type on bline, layer disabled");
-		clear();
 		return;
 	}
 
-	if(segment_list.empty())
-	{
+	if (segments.empty()) {
 		synfig::warning("Region: segment_list is empty, layer disabled");
 		clear();
 		return;
 	}
 
-	bool looped = bline.get_loop();
-
-	Vector::value_type n;
-	etl::hermite<Vector> curve;
-	vector<Point> vector_list;
-
-	vector<Segment>::const_iterator iter=segment_list.begin();
-	//Vector							last = iter->p1;
-
-	//make sure the shape has a clean slate for writing
-	//clear();
-
-	//and start off at the first point
-	//move_to(last[0],last[1]);
-
-	for(;iter!=segment_list.end();++iter)
-	{
-		//connect them with a line if they aren't already joined
-		/*if(iter->p1 != last)
-		{
-			line_to(iter->p1[0],iter->p1[1]);
-		}
-
-		//curve to the next end point
-		cubic_to(iter->p2[0],iter->p2[1],
-				 iter->p1[0] + iter->t1[0]/3.0,iter->p1[1] + iter->t1[1]/3.0,
-				 iter->p2[0] - iter->t2[0]/3.0,iter->p2[1] - iter->t2[1]/3.0);
-
-		last = iter->p2;*/
-
-		if(iter->t1.is_equal_to(Vector(0,0)) && iter->t2.is_equal_to(Vector(0,0)))
-		{
-			vector_list.push_back(iter->p2);
-		}
+	const Real k = 1.0/3.0;
+	Vector prev = segments.front().p1;
+	move_to(prev);
+	for(vector<Segment>::const_iterator i = segments.begin(); i != segments.end(); ++i) {
+		if (!i->p1.is_equal_to(prev)) line_to(i->p1);
+		if (i->t1.is_equal_to(Vector::zero()) && i->t2.is_equal_to(Vector::zero()))
+			line_to(i->p2);
 		else
-		{
-			curve.p1()=iter->p1;
-			curve.t1()=iter->t1;
-			curve.p2()=iter->p2;
-			curve.t2()=iter->t2;
-			curve.sync();
-
-			for(n=0.0;n<1.0;n+=1.0/SAMPLES)
-				vector_list.push_back(curve(n));
-		}
+			cubic_to(i->p2, i->p1 + i->t1*k, i->p2 - i->t2*k);
+		prev = i->p2;
 	}
 
-	//add the starting point onto the end so it actually fits the shape, so we can be extra awesome...
-	if(!looped)
-		vector_list.push_back(segment_list[0].p1);
-
-	set_stored_polygon(vector_list);
+	close();
 }
 
 bool
 Region::set_shape_param(const String & param, const ValueBase &value)
 {
+	// TODO: move this backward compatibility code to load_canvas
 	if(param=="segment_list")
 	{
 		if(dynamic_param_list().count("segment_list"))
@@ -189,42 +153,17 @@ Region::set_shape_param(const String & param, const ValueBase &value)
 			synfig::warning("Region::set_param(): The parameter \"segment_list\" is deprecated. Use \"bline\" instead.");
 	}
 
-	if(	(param=="segment_list" || param=="bline") && value.get_type()==type_list)
+	if (param=="segment_list" || param=="bline")
 	{
-		//if(value.get_contained_type()!=type_bline_point)
-		//	return false;
-
-		param_bline=value;
-
-		return true;
-	}
-
-/*	if(	param=="segment_list" && value.get_type()==type_list)
-	{
-		if(value.get_contained_type()==type_bline_point)
-			segment_list=convert_bline_to_segment_list(value);
-		else
-		if(value.get_contained_type()==type_segment)
-			segment_list=value;
-		else
-		if(value.empty())
-			segment_list.clear();
-		else
+		if (value.get_type() != type_list)
 			return false;
-		sync();
+		//if (value.get_contained_type()!=type_bline_point)
+		//	return false;
+		param_bline=value;
 		return true;
 	}
-	*/
 
-	// Skip polygon parameters
 	return Layer_Shape::set_shape_param(param, value);
-}
-
-bool
-Region::set_param(const String & param, const ValueBase &value)
-{
-	// Skip polygon parameters
-	return Layer_Shape::set_param(param,value);
 }
 
 ValueBase
@@ -234,7 +173,6 @@ Region::get_param(const String& param)const
 	EXPORT_NAME();
 	EXPORT_VERSION();
 
-	// Skip polygon parameters
 	return Layer_Shape::get_param(param);
 }
 
