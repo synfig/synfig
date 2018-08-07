@@ -546,6 +546,7 @@ Renderer_Canvas::render_vfunc(
 			                           expose_area.get_y(),
 									   expose_area.get_x() + expose_area.get_width(),
 									   expose_area.get_y() + expose_area.get_height() );
+	expose_rect -= window_offset;
 	expose_rect &= window_rect;
 	if (!expose_rect.is_valid()) return;
 
