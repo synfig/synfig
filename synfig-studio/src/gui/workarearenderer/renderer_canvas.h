@@ -159,6 +159,11 @@ private:
 
 	synfig::PixelFormat pixel_format;
 
+	//! uses to normalize alpha value after blending of onion surfaces
+	Cairo::RefPtr<Cairo::ImageSurface> alpha_src_surface;
+	Cairo::RefPtr<Cairo::ImageSurface> alpha_dst_surface;
+	Cairo::RefPtr<Cairo::Context> alpha_context;
+
 	// don't try to pass arguments to callbacks by reference, it cannot be properly saved in signal
 	// Renderer_Canvas is non-thread-safe sigc::trackable, so use static callback methods only in signals
 

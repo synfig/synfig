@@ -112,6 +112,23 @@ Renderer_Canvas::Renderer_Canvas():
     pixel_format = big_endian
 		         ? (PF_A_START | PF_RGB | PF_A_PREMULT)
 		         : (PF_BGR | PF_A | PF_A_PREMULT);
+
+	alpha_src_surface = Cairo::ImageSurface::create(
+		Cairo::FORMAT_ARGB32, 256, 1);
+	alpha_dst_surface = Cairo::ImageSurface::create(
+		Cairo::FORMAT_ARGB32, 256, 1);
+
+	//! fill alpha_src_surface with alpha gradient
+	//! do it manually by pixels to assign exact values
+	//! it's will used as conversion table
+	//! white color, alpha premulted - so all four channels have the same value
+	unsigned char *data = alpha_src_surface->get_data();
+	for(int i = 0; i < 256; ++i, data += 4)
+		data[0] = data[1] = data[2] = data[3] = (unsigned char)i;
+	alpha_src_surface->mark_dirty();
+	alpha_src_surface->flush();
+
+	alpha_context = Cairo::Context::create(alpha_dst_surface);
 }
 
 Renderer_Canvas::~Renderer_Canvas()
@@ -278,7 +295,9 @@ Renderer_Canvas::post_tile_finished()
 void
 Renderer_Canvas::enqueue_render(bool force)
 {
-	ColorReal base_onion_alpha = 0.75;
+	const ColorReal current_onion_alpha = 0.5;
+	const ColorReal other_onion_alpha = 0.25;
+	const ColorReal other_onion_alpha_k = 0.8;
 	const int tile_grid_step = 64;
 
 	assert(get_work_area());
@@ -317,25 +336,29 @@ Renderer_Canvas::enqueue_render(bool force)
 		ContextParams context_params(rend_desc.get_render_excluded_contexts());
 
 		// apply onion skin
-		// use alpha^2 to make better difference
 		onion_frames.clear();
 		if (get_work_area()->get_onion_skin() && approximate_not_equal_lp(fps, 0.f)) {
 			Time frame_duration(1.0/(double)fps);
 			int past   = get_work_area()->get_onion_skins()[0];
 			int future = get_work_area()->get_onion_skins()[1];
-			for(int i = 0; i < past; ++i) {
-				Time time = base_time - frame_duration*(past - i);
-				ColorReal alpha = base_onion_alpha*(double)(i + 1)/(double)(past + 1);
-				if (time >= rend_desc.get_time_start() && time <= rend_desc.get_time_end())
-					onion_frames.push_back(FrameDesc(time, w, h, alpha*alpha));
+			int far    = std::max(past, future);
+			ColorReal alpha = other_onion_alpha;
+			ColorReal k = other_onion_alpha_k;
+			for(int i = far; i > 0; --i) {
+				if (i <= past) {
+					Time time = base_time - frame_duration*i;
+					if (time >= rend_desc.get_time_start() && time <= rend_desc.get_time_end())
+						onion_frames.push_back(FrameDesc(time, w, h, alpha));
+					alpha *= k; k = sqrt(k);
+				}
+				if (i <= future) {
+					Time time = base_time + frame_duration*i;
+					if (time >= rend_desc.get_time_start() && time <= rend_desc.get_time_end())
+						onion_frames.push_back(FrameDesc(time, w, h, alpha));
+					alpha *= k; k = sqrt(k);
+				}
 			}
-			for(int i = 0; i < future; ++i) {
-				Time time = base_time + frame_duration*(future - i);
-				ColorReal alpha = base_onion_alpha*(double)(i + 1)/(double)(future + 1);
-				if (time >= rend_desc.get_time_start() && time <= rend_desc.get_time_end())
-					onion_frames.push_back(FrameDesc(time, w, h, alpha*alpha));
-			}
-			onion_frames.push_back(FrameDesc(base_time, w, h, base_onion_alpha*base_onion_alpha));
+			onion_frames.push_back(FrameDesc(base_time, w, h, current_onion_alpha));
 		} else {
 			onion_frames.push_back(FrameDesc(base_time, w, h, 1.f));
 		}
@@ -485,20 +508,21 @@ Renderer_Canvas::convert(
 				if (s.get_pixels(&pixels_copy.front()))
 					pixels = &pixels_copy.front();
 			}
+			if (pixels) {
+				// do conversion
+				cairo_surface->flush();
+				const Color *src = pixels;
+				unsigned char *begin = cairo_surface->get_data();
+				int stride = cairo_surface->get_stride();
+				unsigned char *end = begin + stride*cairo_surface->get_height();
+				for(unsigned char *row = begin; row < end; row += stride)
+					for(unsigned char *pixel = row, *pixel_end = row + stride; pixel < pixel_end; )
+						pixel = Color2PixelFormat(*src++, pixel_format, pixel, App::gamma);
+				cairo_surface->mark_dirty();
+				cairo_surface->flush();
 
-			// do conversion
-			cairo_surface->flush();
-			const Color *src = pixels;
-			unsigned char *begin = cairo_surface->get_data();
-			int stride = cairo_surface->get_stride();
-			unsigned char *end = begin + stride*cairo_surface->get_height();
-			for(unsigned char *row = begin; row < end; row += stride)
-				for(unsigned char *pixel = row, *pixel_end = row + stride; pixel < pixel_end; )
-					pixel = Color2PixelFormat(*src++, pixel_format, pixel, App::gamma);
-			cairo_surface->mark_dirty();
-			cairo_surface->flush();
-
-			success = true;
+				success = true;
+			} else synfig::error("Renderer_Canvas::convert: cannot access surface pixels - that really strange");
 		} else synfig::error("Renderer_Canvas::convert: surface with wrong size");
 	} else synfig::error("Renderer_Canvas::convert: surface not exists");
 
@@ -555,11 +579,7 @@ Renderer_Canvas::render_vfunc(
 
 	Glib::Threads::Mutex::Lock lock(mutex);
 
-	ColorReal summary_alpha = 0.f;
 	if (onion_frames.empty()) return;
-	for(FrameList::const_iterator i = onion_frames.begin(); i != onion_frames.end(); ++i)
-		summary_alpha = summary_alpha*(1.f - i->alpha) + i->alpha;
-	if (approximate_less_or_equal_lp(summary_alpha, 0.f)) return;
 
 	Cairo::RefPtr<Cairo::Context> context = drawable->create_cairo_context();
 	context->save();
@@ -568,18 +588,30 @@ Renderer_Canvas::render_vfunc(
 	// context for tiles
 	Cairo::RefPtr<Cairo::ImageSurface> onion_surface;
 	Cairo::RefPtr<Cairo::Context> onion_context = context;
-	if (approximate_less(summary_alpha, 1.f)) {
+	if ( onion_frames.size() > 1
+	  || !approximate_equal_lp(onion_frames.front().alpha, ColorReal(1.f)))
+	{
 		// create surface to merge onion skin
 		onion_surface = Cairo::ImageSurface::create(
-				Cairo::FORMAT_ARGB32, expose_rect.get_width(), expose_rect.get_height() );
+			Cairo::FORMAT_ARGB32, expose_rect.get_width(), expose_rect.get_height() );
 		onion_context = Cairo::Context::create(onion_surface);
 		onion_context->translate(-(double)expose_rect.minx, -(double)expose_rect.miny);
+
+		// clear alpha surface
+		alpha_context->set_operator(Cairo::OPERATOR_CLEAR);
+		alpha_context->paint();
+		alpha_context->set_operator(onion_context->get_operator());
+		alpha_context->set_source(alpha_src_surface, 0, 0);
 	}
 
 	// draw tiles
 	onion_context->save();
 	onion_context->set_source_rgba(0.0, 1.0, 1.0, 1.0);
 	for(FrameList::const_iterator i = onion_frames.begin(); i != onion_frames.end(); ++i) {
+		// paint to alpha surface
+		alpha_context->paint_with_alpha(i->alpha);
+
+		// paint tiles
 		TileMap::const_iterator ii = tiles.find(i->id);
 		if (ii == tiles.end()) continue;
 		for(TileSet::const_iterator j = ii->second.begin(); j != ii->second.end(); ++j) {
@@ -602,15 +634,52 @@ Renderer_Canvas::render_vfunc(
 		onion_context.clear(); // release onion context
 		onion_surface->flush();
 
+		int alpha_offset = FLAGS(pixel_format, PF_A_START) ? 0 : 3;
+
+		// coefficients to normalize alpha
+		alpha_dst_surface->flush();
+		int alpha_table[256];
+		for(int i = 0; i < 256; ++i)
+			alpha_table[i] = -1;
+		unsigned char *data = alpha_dst_surface->get_data() + alpha_offset;
+		for(int i = 0; i < 256; ++i, data += 4)
+			alpha_table[*data] = i;
+		// fill empty space
+		for(int i0 = -1, i1 = 0; i1 < 256; ++i1) {
+			if (alpha_table[i1] >= 0) {
+				if (i0 < 0) {
+					for(int j = i1-1; j >= 0; --j) alpha_table[j] = alpha_table[i1];
+				} else {
+					int k = (i0 + i1)/2;
+					for(int j = i1-1; j >= k; --j) alpha_table[j] = alpha_table[i1];
+					for(int j = i0; j < k; ++j) alpha_table[j] = alpha_table[i0];
+				}
+				i0 = i1;
+			} else
+			if (i1 == 255) {
+				for(int j = i0+1; j < 256; ++j) alpha_table[j] = alpha_table[i0];
+			}
+		}
+		// div to i
+		for(int i = 0; i < 256; ++i)
+			alpha_table[i] = i == 0 ? 0 : (alpha_table[i] << 8)/i + 1;
+
 		// normalize alpha
 		// color is alpha-premulted, so multiply all channels
-		int k = (int)(255.9f/summary_alpha) + 1;
-		unsigned char *data = onion_surface->get_data();
+		data = onion_surface->get_data();
 		int stride = onion_surface->get_stride();
 		int image_size = stride*onion_surface->get_height();
-		for(unsigned char *row = data, *image_end = data + image_size; row < image_end; row += stride)
-			for(unsigned char *pixel = row, *row_end = row + stride; pixel < row_end; ++pixel)
-				*pixel = (unsigned char)(((int)(*pixel)*k) >> 8);
+		for(unsigned char *row = data, *image_end = data + image_size; row < image_end; row += stride) {
+			for(unsigned char *pixel = row, *row_end = row + stride; pixel < row_end; pixel += 4) {
+				int k = alpha_table[pixel[alpha_offset]];
+				pixel[0] = (unsigned char)(((int)pixel[0]*k) >> 8);
+				pixel[1] = (unsigned char)(((int)pixel[1]*k) >> 8);
+				pixel[2] = (unsigned char)(((int)pixel[2]*k) >> 8);
+				pixel[3] = (unsigned char)(((int)pixel[3]*k) >> 8);
+			}
+		}
+		onion_surface->mark_dirty();
+		onion_surface->flush();
 
 		// put merged onion to context
 		context->save();
