@@ -156,8 +156,6 @@ Action::ActivepointSetSmart::set_param(const synfig::String& name, const Action:
 	}
 
 	return Action::CanvasSpecific::set_param(name,param);
-
-	return Action::CanvasSpecific::set_param(name,param);
 }
 
 bool

@@ -224,7 +224,8 @@ Action::LayerEmbed::prepare()
 		if (layer_bitmap && layer_bitmap->is_surface_modified()) {
 			// save surface to new place
 			instance->save_surface(layer_bitmap->rendering_surface, new_filename);
-			layer_bitmap->is_surface_modified();
+			//layer_bitmap->is_surface_modified();
+			layer_bitmap->reset_surface_modification_id();
 		} else {
 			// try to create directory
 			if (!file_system->directory_create_recursive(etl::dirname(new_filename)))

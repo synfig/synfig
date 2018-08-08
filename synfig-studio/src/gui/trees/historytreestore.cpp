@@ -97,15 +97,17 @@ HistoryTreeStore::rebuild()
 
 	clear();
 
-	for(iter=instance()->undo_action_stack().begin();iter!=instance()->undo_action_stack().end();++iter)
-	{
-		insert_action(*(prepend()),*iter,true,true,false);
-	}
+	const synfigapp::Action::Stack& undo_stack = instance()->undo_action_stack();
+
+	for (iter = undo_stack.begin(); iter != undo_stack.end(); ++iter)
+		insert_action(*(prepend()), *iter, true, true, false);
+
 	curr_row=*children().end();
-	for(iter=instance()->redo_action_stack().begin();iter!=instance()->redo_action_stack().end();++iter)
-	{
-		insert_action(*(append()),*iter,true,false,true);
-	}
+
+	const synfigapp::Action::Stack& redo_stack = instance()->redo_action_stack();
+
+	for(iter = redo_stack.begin(); iter != redo_stack.end(); ++iter)
+		insert_action(*(append()), *iter, true, false, true);
 
 	signal_undo_tree_changed()();
 }

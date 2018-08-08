@@ -695,8 +695,10 @@ CellRenderer_TimeTrack::render_vfunc(
 		int xstart(0);
 
 		int x=0 /*,prevx=0*/;
-		for(next=activepoint_list.begin(),iter=next++;iter!=activepoint_list.end();iter=next++)
+		//for(next=activepoint_list.begin(),iter=next++;iter!=activepoint_list.end();iter=next++)
+		for (next = iter = activepoint_list.begin(); iter != activepoint_list.end(); iter = next)
 		{
+			++next;
 			x=((int)((float)area.get_width()/(adjustment->get_upper()-adjustment->get_lower())*(iter->time-adjustment->get_lower())));
 			if(x<0)x=0;
 			if(x>area.get_width())x=area.get_width();

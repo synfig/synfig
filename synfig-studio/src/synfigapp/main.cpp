@@ -327,7 +327,7 @@ synfigapp::Main::set_interpolation(synfig::Waypoint::Interpolation x)
 	{
 		interpolation_=x;
 
-		signal_interpolation_changed();
+		signal_interpolation_changed()();
 	}
 }
 

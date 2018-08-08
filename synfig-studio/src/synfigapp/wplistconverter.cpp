@@ -144,9 +144,8 @@ WPListConverter::calculate_ek2(unsigned int k1, unsigned int k2, bool first_time
 {
 	// remember: k2 is at the interval end
 	unsigned int i;
-	Real curr_max_err2(0);
-	unsigned int ret_kem;
 	WidthPoint wp_prev, wp_next;
+
 	if(!first_time)
 		se=se*n;
 	else
@@ -178,6 +177,10 @@ WPListConverter::calculate_ek2(unsigned int k1, unsigned int k2, bool first_time
 		ek2[i]=gg;
 	}
 	se=se/n;
+	
+	unsigned int ret_kem = 0;
+	Real curr_max_err2(-1);
+
 	for(i=0;i<n;i++)
 	{
 		if(curr_max_err2 < ek2[i])
