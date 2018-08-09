@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2012-2013 Carlos López
+**	......... ... 2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -30,7 +31,7 @@
 
 #include <list>
 #include <vector>
-#include <synfig/layers/layer_polygon.h>
+#include <synfig/layers/layer_shape.h>
 #include <synfig/segment.h>
 #include <synfig/value.h>
 
@@ -40,30 +41,26 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-using namespace synfig;
-using namespace std;
-using namespace etl;
-
-class Outline : public synfig::Layer_Polygon
+class Outline : public synfig::Layer_Shape
 {
 	SYNFIG_LAYER_MODULE_EXT
 private:
 	//! Parameter: type list of BLinePoints
-	ValueBase param_bline;
+	synfig::ValueBase param_bline;
 	//! Parameter: (bool)
-	ValueBase param_round_tip[2];
+	synfig::ValueBase param_round_tip[2];
 	//! Parameter: (bool)
-	ValueBase param_sharp_cusps;
+	synfig::ValueBase param_sharp_cusps;
 	//! Parameter: (bool)
-	ValueBase param_loop;
+	synfig::ValueBase param_loop;
 	//! Parameter: (Real)
-	ValueBase param_width;
+	synfig::ValueBase param_width;
 	//! Parameter: (Real)
-	ValueBase param_expand;
+	synfig::ValueBase param_expand;
 	//! Parameter: (Real)
-	ValueBase param_loopyness;
+	synfig::ValueBase param_loopyness;
 	//! Parameter: (bool)
-	ValueBase param_homogeneous_width;
+	synfig::ValueBase param_homogeneous_width;
 
 	bool old_version;
 
@@ -75,12 +72,13 @@ private:
 public:
 	Outline();
 
-	virtual bool set_shape_param(const String & param, const synfig::ValueBase &value);
-	virtual bool set_param(const String & param, const synfig::ValueBase &value);
-	virtual ValueBase get_param(const String & param)const;
+	virtual bool set_shape_param(const synfig::String & param, const synfig::ValueBase &value);
+	virtual synfig::ValueBase get_param(const synfig::String & param)const;
 	virtual Vocab get_param_vocab()const;
-	virtual bool set_version(const String &ver){if(ver=="0.1")old_version=true; return true;}
-	virtual void reset_version(){old_version=false;}
+	virtual bool set_version(const synfig::String &ver)
+		{ if (ver=="0.1") old_version = true; return true; }
+	virtual void reset_version()
+		{ old_version = false; }
 
 protected:
 	virtual void sync_vfunc();

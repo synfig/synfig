@@ -808,8 +808,7 @@ Polyspan::draw_line(Real x1, Real y1, Real x2, Real y2)
 	Real fy1 = y1 - iy1;
 	Real fy2 = y2 - iy2;
 
-	assert(!std::isnan(fy1));
-	assert(!std::isnan(fy2));
+	if (std::isnan(fy1) || std::isnan(fy2)) return;
 
 	Real dx,dy,dxdy,mult,x_from,x_to;
 

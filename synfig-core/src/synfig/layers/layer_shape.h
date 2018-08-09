@@ -51,6 +51,25 @@ namespace synfig {
 class Layer_Shape : public Layer_Composite, public Layer_NoDeform
 {
 	SYNFIG_LAYER_MODULE_EXT
+public:
+	class CurvePoint {
+	public:
+		int level; // 0 - move, 1 - line, 2 - conic, 3 - cubic
+		Vector p;
+		Vector p1;
+		Vector p2;
+		explicit CurvePoint(int level = 0, const Vector &p = Vector(), const Vector &p1 = Vector(), const Vector &p2 = Vector()):
+			level(level), p(p), p1(p1), p2(p2) { }
+		explicit CurvePoint(const Vector &p):
+			level(1), p(p) { }
+		CurvePoint(const Vector &p, const Vector &p1):
+			level(2), p(p), p1(p1) { }
+		CurvePoint(const Vector &p, const Vector &p1, const Vector &p2):
+			level(3), p(p), p1(p1), p2(p2) { }
+	};
+
+	typedef std::vector<CurvePoint> CurveList;
+
 
 protected:
 	//!Parameter: (Color) Color of the shape
@@ -86,9 +105,7 @@ public:
 	~Layer_Shape();
 
 protected:
-	//! Clears out any data
-	/*!	Also clears out the Intersector
-	*/
+	//! Clears out any data. Also clears out the Intersector
 	void clear();
 	void move_to(Real x, Real y);
 	void line_to(Real x, Real y);
@@ -104,6 +121,13 @@ protected:
 		{ conic_to(p[0], p[1], p1[0], p1[1]); }
 	void cubic_to(const Vector &p, const Vector &p1, const Vector &p2)
 		{ cubic_to(p[0], p[1], p1[0], p1[1], p2[0], p2[1]); }
+
+	void add(const CurvePoint &cp);
+	void add(const CurveList &list);
+
+	//! list will attached as line
+	//! curve information for first segment of incoming list will ignored
+	void add_reverse(const CurveList &list);
 
 	Vector get_feather() const { return feather; }
 	void set_feather(const Vector &x) { feather = x; }

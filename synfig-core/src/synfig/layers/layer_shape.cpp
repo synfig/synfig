@@ -1046,6 +1046,35 @@ void Layer_Shape::cubic_to(Real x, Real y, Real x1, Real y1, Real x2, Real y2)
 }
 
 void
+Layer_Shape::add(const CurvePoint &cp)
+{
+	switch(cp.level) {
+	case 1: line_to(cp.p); break;
+	case 2: conic_to(cp.p, cp.p1); break;
+	case 3: cubic_to(cp.p, cp.p1, cp.p2); break;
+	default: move_to(cp.p);
+	}
+}
+
+void
+Layer_Shape::add(const CurveList &list)
+	{ for(CurveList::const_iterator i = list.begin(); i != list.end(); ++i) add(*i); }
+
+void
+Layer_Shape::add_reverse(const CurveList &list) {
+	if (list.empty()) return;
+	line_to(list.back().p);
+	for(CurveList::const_reverse_iterator rj = list.rbegin(), ri = rj++; rj != list.rend(); ri = rj++) {
+		switch(ri->level) {
+		case 1: line_to(rj->p); break;
+		case 2: conic_to(rj->p, ri->p1); break;
+		case 3: cubic_to(rj->p, ri->p2, ri->p1); break;
+		default: move_to(rj->p);
+		}
+	}
+}
+
+void
 Layer_Shape::set_time_vfunc(IndependentContext context, Time time)const
 {
 	sync();
