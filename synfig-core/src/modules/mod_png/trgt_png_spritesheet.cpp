@@ -345,8 +345,8 @@ png_trgt_spritesheet::read_png_file()
 
     if (png_get_color_type(in_image.png_ptr, in_image.info_ptr) != PNG_COLOR_TYPE_RGBA)
 	{
-        synfig::error(strprintf("[process_file] color_type of input file must be PNG_COLOR_TYPE_RGBA (%d) (is %d)",
-			PNG_COLOR_TYPE_RGBA, png_get_color_type(in_image.png_ptr, in_image.info_ptr)));
+        synfig::error("[process_file] color_type of input file must be PNG_COLOR_TYPE_RGBA (%d) (is %d)",
+			PNG_COLOR_TYPE_RGBA, png_get_color_type(in_image.png_ptr, in_image.info_ptr));
 		return false;
 	}
 
@@ -375,7 +375,8 @@ png_trgt_spritesheet::read_png_file()
 	
     for (unsigned int y = 0; y < in_image.height; y++)
             delete []row_pointers[y];
-    delete row_pointers;
+    
+	delete[] row_pointers;
 	cout << "row_pointers deleted" << endl;
 	return true;
 }
