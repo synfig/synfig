@@ -49,6 +49,8 @@ private:
 	unsigned short table_U16_to_U16[3][65536];
 
 public:
+	static const Gamma no_gamma;
+
 	static float calculate(float f, float gamma) { return powf(f, gamma); }
 
 	explicit Gamma(float x = 1.f);

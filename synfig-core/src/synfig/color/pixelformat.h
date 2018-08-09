@@ -86,7 +86,7 @@ Color2PixelFormat(
 	const Color &color,
 	const PixelFormat &pf,
 	unsigned char *out,
-	const Gamma &gamma )
+	const Gamma &gamma = Gamma::no_gamma )
 {
 	static int yuv_r = (int)(EncodeYUV[0][0]*256.f);
 	static int yuv_g = (int)(EncodeYUV[0][1]*256.f);

@@ -50,6 +50,8 @@ using namespace synfig;
 
 /* === P R O C E D U R E S ================================================= */
 
+const Gamma Gamma::no_gamma;
+
 static void
 build_table(float *table_U16_to_F32, unsigned short *table_U16_to_U16, float gamma)
 {
