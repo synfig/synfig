@@ -117,22 +117,16 @@ private:
 	Real outline_grow;
 
 public:
-	//! Anti alias filers types. Seems never implemented
-	enum
-	{
-		ANTIALIAS_UNIFORM,
-		ANTIALIAS_MONTE_CARLO,
-		ANTIALIAS_JITTERED,
-		ANTIALIAS_ADAPTIVE,
-		ANTIALIAS_QUINTCUNX
-	} AntialiasFilter;
-
 	//! Default Constructor
 	RendDesc():
 		w_			(480),
 		h_			(270),
+		w_ratio_    (1),
+		h_ratio_    (1),
 		x_res		(DPI2DPM(72.0f)),
 		y_res		(DPI2DPM(72.0f)),
+		x_res_ratio_(1),
+		y_res_ratio_(1),
 		tl_			(-4,2.25),
 		br_			(4,-2.25),
 		focus		(0,0),
@@ -145,12 +139,7 @@ public:
 		frame_rate	(24),
 		time_begin	(0),
 		time_end	(0),
-		outline_grow(0),
-		AntialiasFilter(ANTIALIAS_UNIFORM),
-		w_ratio_(1), 
-		h_ratio_(1), 
-		x_res_ratio_(1), 
-		y_res_ratio_(1)
+		outline_grow(0)
 	{ }
 
 	static RendDesc zero()
@@ -378,28 +367,6 @@ public:
 	void set_outline_grow(Real x) { outline_grow = x; }
 
 };	// END of class RendDesc
-
-//! This operator allows the combining of RendDesc::Lock flags using the '|' operator
-/*!	\see RendDesc::Lock, RendDesc */
-inline RendDesc::Lock operator|(RendDesc::Lock lhs, RendDesc::Lock rhs)
-{
-	return static_cast<RendDesc::Lock>((int)lhs|(int)rhs);
-}
-
-//! This operator allows the masking of RendDesc::Lock flags using the '&' operator
-/*!	\see RendDesc::Lock, RendDesc */
-inline RendDesc::Lock operator&(RendDesc::Lock lhs, RendDesc::Lock rhs)
-{
-	return static_cast<RendDesc::Lock>((int)lhs&(int)rhs);
-}
-
-//! This operator allows the inverting of RendDesc::Lock flags using the '~' operator
-/*!	\see RendDesc::Lock, RendDesc */
-inline RendDesc::Lock operator~(RendDesc::Lock rhs)
-{
-	#warning V1016 The value '~(int) rhs' is out of range of enum values. This causes unspecified or undefined behavior.
-	return static_cast<RendDesc::Lock>(~(int)rhs);
-}
 
 }; /* end namespace synfig */
 

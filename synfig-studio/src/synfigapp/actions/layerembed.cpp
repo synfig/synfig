@@ -206,8 +206,6 @@ Action::LayerEmbed::prepare()
 
 		get_canvas_interface()->get_instance()->generate_new_name(
 			layer_import,
-			get_canvas(),
-			get_canvas()->get_file_system(),
 			new_description,
 			new_filename,
 			new_filename_param );

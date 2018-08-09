@@ -417,8 +417,6 @@ Widget_ColorEdit::Widget_ColorEdit():
 	attach(widget_color, 0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	attach(*notebook, 0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
-	Gtk::Label *label;
-
 	//This defines are used for code below simplification.
 	#define SLIDER_ROW(i,n,l) SliderRow(i, slider_##n = manage(new ColorSlider(ColorSlider::TYPE_##n)), l,attr_list,table);
 	#define ATTACH_SPIN_BUTTON(i,n) AttachSpinButton(i, spinbutton_##n = manage(new class Gtk::SpinButton(n##_adjustment, 1, 0)),table);

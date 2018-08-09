@@ -724,42 +724,33 @@ Instance::save_as(const synfig::String &file_name)
 	return false;
 }
 
-bool
+void
 Instance::generate_new_name(
-		synfig::Layer::Handle layer,
-		synfig::Canvas::Handle canvas,
-		synfig::FileSystem::Handle file_system,
-		synfig::String &out_description,
-		synfig::String &out_filename,
-		synfig::String &out_filename_param)
+	const Layer::Handle &layer,
+	String &out_description,
+	String &out_filename,
+	String &out_filename_param )
 {
-	out_description.clear();
-	out_filename.clear();
-	out_filename_param.clear();
-
-	String description = layer->get_description();
-	if (description.empty()) description = layer->get_local_name();
-
 	String filename;
-	if (layer->get_param_list().count("filename"))
-	{
+	if (layer->get_param_list().count("filename")) {
 		ValueBase value = layer->get_param("filename");
 		if (value.same_type_as(String()))
 			filename = basename(value.get(String()));
 	}
 
-	if (filename.empty()) filename = description;
+	if (filename.empty())
+		filename = !layer->get_description().empty()
+        		 ? layer->get_description()
+        		 : layer->get_local_name();
 	if (CanvasFileNaming::filename_extension_lower(filename) != "png")
 		filename += ".png";
 
-	assert(canvas->get_file_system());
-	String short_filename = CanvasFileNaming::generate_container_filename(canvas->get_file_system(), filename);
-	String full_filename = CanvasFileNaming::make_full_filename(canvas->get_file_name(), short_filename);
+	assert(get_canvas()->get_file_system());
+	String short_filename = CanvasFileNaming::generate_container_filename(get_canvas()->get_file_system(), filename);
+	String full_filename = CanvasFileNaming::make_full_filename(get_canvas()->get_file_name(), short_filename);
 	String base = etl::filename_sans_extension(CanvasFileNaming::filename_base(short_filename));
 
 	out_description = base;
 	out_filename = full_filename;
 	out_filename_param = short_filename;
-
-	return true;
 }

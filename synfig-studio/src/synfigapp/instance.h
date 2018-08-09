@@ -176,14 +176,15 @@ public:
 	//! Saves the instance to current temporary container
 	bool backup();
 
+	//! generate layer name (also known in code as 'description')
+	synfig::String generate_new_description(const synfig::Layer::Handle &layer);
+
 	//! create unique file name for an embedded image layer (if image filename is empty, description layer is used)
-	bool generate_new_name(
-			synfig::Layer::Handle layer,
-			synfig::Canvas::Handle canvas,
-			synfig::FileSystem::Handle file_system,
-			synfig::String &out_description,
-			synfig::String &out_filename,
-			synfig::String &out_filename_param);
+	void generate_new_name(
+		const synfig::Layer::Handle &layer,
+		synfig::String &out_description,
+		synfig::String &out_filename,
+		synfig::String &out_filename_param );
 
 public:	// Interfaces to internal information
 	sigc::signal<void>& signal_filename_changed() { return signal_filename_changed_; }

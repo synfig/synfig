@@ -143,12 +143,10 @@ Action::LayerCopy::prepare()
 		get_canvas_interface()
 			->get_instance()
 			->generate_new_name(
-					layer,
-					subcanvas,
-					get_canvas()->get_file_system(),
-					description,
-					filename,
-					filename_param );
+				layer,
+				description,
+				filename,
+				filename_param );
 
 		// make copy
 		Layer::Handle new_layer = Layer::create(layer->get_name()).get();

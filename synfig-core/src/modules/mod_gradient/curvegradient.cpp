@@ -413,7 +413,7 @@ CurveGradient::color_func(const Point &point_, int quality, Real supersample)con
 			thickness=(next->get_width()-iter->get_width())*t+iter->get_width();
 	}
 
-	if (perpendicular && line.size() > 1)
+	if (perpendicular && bline.size() > 1)
 	{
 		if(quality>7)
 		{

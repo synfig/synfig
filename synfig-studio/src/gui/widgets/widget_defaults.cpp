@@ -152,11 +152,13 @@ public:
 						case GDK_SCROLL_UP:
 						case GDK_SCROLL_RIGHT:
 							dist+=DEFAULT_INCREMENT;
-						break;
+							break;
 						case GDK_SCROLL_DOWN:
 						case GDK_SCROLL_LEFT:
 							dist-=DEFAULT_INCREMENT;
-						break;
+							break;
+						default:
+							break;
 					}
 					synfigapp::Main::set_bline_width(dist);
 					return true;

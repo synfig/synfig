@@ -649,7 +649,7 @@ public:
 			synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 			if(key=="gamma")
 			{
-				float r,g,b,blk;
+				float r,g,b;
 
 				strscanf(value,"%f %f %f",
 					&r,

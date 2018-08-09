@@ -263,8 +263,8 @@ StateRotate_Context::~StateRotate_Context()
 
 
 DuckDrag_Rotate::DuckDrag_Rotate():
-	original_mag(),
 	original_angle(),
+	original_mag(),
 	bad_drag(),
 	move_only(),
 	use_magnitude(true)

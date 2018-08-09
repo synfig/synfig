@@ -87,9 +87,9 @@ UIInterface::Response
 ConsoleUIInterface::yes_no_cancel(
 			const std::string &message,
 			const std::string &details,
-			const std::string &button1,
-			const std::string &button2,
-			const std::string &button3,
+			const std::string &/*button1*/,
+			const std::string &/*button2*/,
+			const std::string &/*button3*/,
 			Response dflt
 )
 {

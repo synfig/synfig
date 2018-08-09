@@ -590,7 +590,7 @@ ALIGN2 = align_drawingArea2
 }
 
 void
-Dock_Timetrack::on_update_header_height( int header_height)
+Dock_Timetrack::on_update_header_height( int /*header_height*/)
 {
 	int width=0;
 	int height=0;

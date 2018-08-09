@@ -252,25 +252,15 @@ bool get_paragraph(synfig::String& text)
 
 /* === M E T H O D S ======================================================= */
 
-#if GLIB_CHECK_VERSION(2, 37, 5)
 CellRenderer_ValueBase::CellRenderer_ValueBase():
-	Gtk::CellRendererText	(),
+	Glib::ObjectBase(typeid(CellRenderer_ValueBase)),
 	property_value_	(*this,"value",synfig::ValueBase()),
 	property_canvas_(*this,"canvas",etl::handle<synfig::Canvas>()),
 	property_param_desc_(*this,"param_desc",synfig::ParamDesc()),
 	property_value_desc_(*this,"value_desc",synfigapp::ValueDesc()),
 	property_child_param_desc_(*this,"child_param_desc", synfig::ParamDesc()),
-	Glib::ObjectBase	(typeid(CellRenderer_ValueBase))
-#else
-CellRenderer_ValueBase::CellRenderer_ValueBase():
-	Glib::ObjectBase	(typeid(CellRenderer_ValueBase)),
-	Gtk::CellRendererText	(),
-	property_value_	(*this,"value",synfig::ValueBase()),
-	property_canvas_(*this,"canvas",etl::handle<synfig::Canvas>()),
-	property_param_desc_(*this,"param_desc",synfig::ParamDesc()),
-	property_value_desc_(*this,"value_desc",synfigapp::ValueDesc()),
-	property_child_param_desc_(*this,"child_param_desc", synfig::ParamDesc())
-#endif
+	edit_value_done_called(),
+	value_entry()
 {
 	CellRendererText::signal_edited().connect(sigc::mem_fun(*this,&CellRenderer_ValueBase::string_edited_));
 
@@ -323,8 +313,6 @@ CellRenderer_ValueBase::render_vfunc(
 
 	Gdk::Rectangle aligned_area;
 	get_aligned_area(widget, flags, cell_area, aligned_area);
-
-	int	height = cell_area.get_height();
 
 	/*
 	TODO: is widget state equals this state variable?

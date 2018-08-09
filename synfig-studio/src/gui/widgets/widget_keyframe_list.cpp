@@ -132,7 +132,6 @@ Widget_Keyframe_List::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 
 	//! The style of the widget.
 	Glib::RefPtr<Gtk::StyleContext> style = get_style_context();
-	Gtk::StateFlags state = style->get_state();
 
 	//TODO hardcoded colors
 	//! Colors

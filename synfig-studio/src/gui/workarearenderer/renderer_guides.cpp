@@ -84,7 +84,7 @@ Renderer_Guides::get_guide_list_y()
 }
 
 bool
-Renderer_Guides::event_vfunc(GdkEvent* event)
+Renderer_Guides::event_vfunc(GdkEvent* /*event*/)
 {
 	// TODO : All the guides stuff done in WorkArea::on_drawing_area_event(GdkEvent *event)
 	// could be done here for better code maintenance (or not).

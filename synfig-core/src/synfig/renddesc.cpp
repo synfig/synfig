@@ -107,21 +107,21 @@ RendDesc::set_w(int x)
 {
 	if(FLAGS(flags,LINK_IM_ASPECT)) // "Width and Height ratio"
 	{
-		Real new_h = h_ratio_*x/w_ratio_;
+		int new_h = h_ratio_*x/w_ratio_;
 		if(FLAGS(flags,PX_ASPECT))
 		{
 			br_[1]-=focus[1];
-			br_[1]=br_[1]/h_*new_h;
+			br_[1]=h_?br_[1]/h_*new_h:0.0;
 			br_[1]+=focus[1];
 			tl_[1]-=focus[1];
-			tl_[1]=tl_[1]/h_*new_h;
+			tl_[1]=h_?tl_[1]/h_*new_h:0.0;
 			tl_[1]+=focus[1];
 
 			br_[0]-=focus[0];
-			br_[0]=br_[0]/w_*x;
+			br_[0]=w_?br_[0]/w_*x:0.0;
 			br_[0]+=focus[0];
 			tl_[0]-=focus[0];
-			tl_[0]=tl_[0]/w_*x;
+			tl_[0]=w_?tl_[0]/w_*x:0.0;
 			tl_[0]+=focus[0];
 		}
 		h_=new_h;
@@ -132,7 +132,7 @@ RendDesc::set_w(int x)
 
 	if(FLAGS(flags,LINK_PX_ASPECT)) // never set
 	{
-		h_=h_*x/w_;
+		h_=w_?h_*x/w_:0.0;
 		w_=x;
 	}
 	else if(FLAGS(flags,LINK_PX_AREA)) // never set
@@ -147,22 +147,22 @@ RendDesc::set_w(int x)
 
 		// If we should preserve image width
 		if(		FLAGS(flags,IM_W)							// "Image Width"
-			|| (FLAGS(flags,IM_ZOOMIN) && d[1]>d[1]/x*w_)	// never set
-			|| (FLAGS(flags,IM_ZOOMOUT) && d[1]<d[1]/x*w_)) // never set
+			|| (FLAGS(flags,IM_ZOOMIN)  && x && d[1]>d[1]/x*w_)	// never set
+			|| (FLAGS(flags,IM_ZOOMOUT) && x && d[1]<d[1]/x*w_)) // never set
 		{
 			br_[1]-=focus[1];
-			br_[1]=br_[1]/x*w_;
+			br_[1]=x?br_[1]/x*w_:0.0;
 			br_[1]+=focus[1];
 			tl_[1]-=focus[1];
-			tl_[1]=tl_[1]/x*w_;
+			tl_[1]=x?tl_[1]/x*w_:0.0;
 			tl_[1]+=focus[1];
 		} else
 		{
 			br_[0]-=focus[0];
-			br_[0]=br_[0]/w_*x;
+			br_[0]=w_?br_[0]/w_*x:0.0;
 			br_[0]+=focus[0];
 			tl_[0]-=focus[0];
-			tl_[0]=tl_[0]/w_*x;
+			tl_[0]=w_?tl_[0]/w_*x:0.0;
 			tl_[0]+=focus[0];
 		}
 
@@ -193,21 +193,21 @@ RendDesc::set_h(int y)
 {
 	if(FLAGS(flags,LINK_IM_ASPECT)) // "Width and Height ratio"
 	{
-		Real new_w = w_ratio_*y/h_ratio_;
+		int new_w = w_ratio_*y/h_ratio_;
 		if(FLAGS(flags,PX_ASPECT))
 		{
 			br_[0]-=focus[0];
-			br_[0]=br_[0]/w_*new_w;
+			br_[0]=w_?br_[0]/w_*new_w:0.0;
 			br_[0]+=focus[0];
 			tl_[0]-=focus[0];
-			tl_[0]=tl_[0]/w_*new_w;
+			tl_[0]=w_?tl_[0]/w_*new_w:0.0;
 			tl_[0]+=focus[0];
 
 			br_[1]-=focus[1];
-			br_[1]=br_[1]/h_*y;
+			br_[1]=h_?br_[1]/h_*y:0.0;
 			br_[1]+=focus[1];
 			tl_[1]-=focus[1];
-			tl_[1]=tl_[1]/h_*y;
+			tl_[1]=h_?tl_[1]/h_*y:0.0;
 			tl_[1]+=focus[1];
 		}
 		w_=new_w;
@@ -218,7 +218,7 @@ RendDesc::set_h(int y)
 
 	if(FLAGS(flags,LINK_PX_ASPECT)) // never set
 	{
-		w_=w_*y/h_;
+		w_=h_?w_*y/h_:0.0;
 		h_=y;
 	}
 	else if(FLAGS(flags,LINK_PX_AREA)) // never set
@@ -233,22 +233,22 @@ RendDesc::set_h(int y)
 
 		// If we should preserve image width
 		if(		FLAGS(flags,IM_W)							// "Image Width"
-			|| (FLAGS(flags,IM_ZOOMIN) && d[0]>d[0]/y*h_)	// never set
-			|| (FLAGS(flags,IM_ZOOMOUT) && d[0]<d[0]/y*h_)) // never set
+			|| (FLAGS(flags,IM_ZOOMIN)  && y && d[0]>d[0]/y*h_)	// never set
+			|| (FLAGS(flags,IM_ZOOMOUT) && y && d[0]<d[0]/y*h_)) // never set
 		{
 			br_[0]-=focus[0];
-			br_[0]=br_[0]/y*h_;
+			br_[0]=y?br_[0]/y*h_:0.0;
 			br_[0]+=focus[0];
 			tl_[0]-=focus[0];
-			tl_[0]=tl_[0]/y*h_;
+			tl_[0]=y?tl_[0]/y*h_:0.0;
 			tl_[0]+=focus[0];
 		} else
 		{
 			br_[1]-=focus[1];
-			br_[1]=br_[1]/h_*y;
+			br_[1]=h_?br_[1]/h_*y:0.0;
 			br_[1]+=focus[1];
 			tl_[1]-=focus[1];
-			tl_[1]=tl_[1]/h_*y;
+			tl_[1]=h_?tl_[1]/h_*y:0.0;
 			tl_[1]+=focus[1];
 		}
 
@@ -445,9 +445,10 @@ RendDesc::get_flags()const
 Real
 RendDesc::get_pixel_aspect()const
 {
+	if (!w_ || !h_) return 1.0;
 	Vector tmp=br_-tl_;
-	tmp[0]/=w_;
-	tmp[1]/=h_;
+	tmp[0]/=tmp[0];
+	tmp[1]/=tmp[1];
 	tmp[0]/=tmp[1];
 	if(tmp[0]<0.0)
 		return -tmp[0];
@@ -675,13 +676,13 @@ RendDesc::set_viewport(Vector::value_type a, Vector::value_type b, Vector::value
 Real
 RendDesc::get_pw()const
 {
-	return (br_[0] - tl_[0]) / w_;
+	return w_ ? (br_[0] - tl_[0]) / w_ : 0;
 }
 
 Real
 RendDesc::get_ph()const
 {
-	return (br_[1] - tl_[1]) / h_;
+	return h_ ? (br_[1] - tl_[1]) / h_ : 0;
 }
 
 RendDesc &

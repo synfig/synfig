@@ -162,11 +162,11 @@ studio::Preview::Preview(const etl::loose_handle<CanvasView> &h, float zoom, flo
 	fps(f),
 	begintime(),
 	endtime(),
+	jack_offset(),
 	overbegin(false),
 	overend(false),
 	quality(),
-	global_fps(),
-	jack_offset(0.f)
+	global_fps()
 { }
 
 void studio::Preview::set_canvasview(const etl::loose_handle<CanvasView> &h)
@@ -332,21 +332,30 @@ Widget_Preview::Widget_Preview():
 	scr_time_scrub(adj_time_scrub),
 	b_loop(/*_("Loop")*/),
 	currentindex(-100000),//TODO get the value from canvas setting or preview option
+	timedisp(-1),
 	audiotime(0),
+	jackbutton(),
+	offset_widget(),
 	adj_sound(Gtk::Adjustment::create(0, 0, 4)),
 	l_lasttime("0s"),
 	playing(false),
+	singleframe(),
+	toolbarisshown(),
+	zoom_preview(true),
+	toolbar(),
+	play_button(),
+	pause_button(),
 	jackdial(NULL),
 	jack_enabled(false),
 	jack_is_playing(false),
 	jack_time(0),
-	jack_initial_time(0),
 	jack_offset(0),
+	jack_initial_time(0)
 #ifdef WITH_JACK
+	,
 	jack_client(NULL),
-	jack_synchronizing(false),
+	jack_synchronizing(false)
 #endif
-	zoom_preview(true)
 {
 	//catch key press event for shortcut keys
 	signal_key_press_event().connect(sigc::mem_fun(*this, &Widget_Preview::on_key_pressed));
@@ -374,8 +383,6 @@ Widget_Preview::Widget_Preview():
 	draw_area.signal_draw().connect(sigc::mem_fun(*this,&Widget_Preview::redraw));
 	
 	scr_time_scrub.set_draw_value(0);
-
-	timedisp = -1;
 
 	Gtk::Button *button = 0;
 	Gtk::Image *icon = 0;
@@ -675,7 +682,6 @@ bool studio::Widget_Preview::redraw(const Cairo::RefPtr<Cairo::Context> &cr)
 {
 	//And render the drawing area
 	Glib::RefPtr<Gdk::Pixbuf> pxnew, px = currentbuf;
-	cairo_surface_t* cs;
 	
 	int dw = draw_area.get_width();
 	int dh = draw_area.get_height();
@@ -786,9 +792,6 @@ bool studio::Widget_Preview::play_update()
 	{
 		//we go to the next one...
 		double time = adj_time_scrub->get_value() + diff;
-#ifdef WITH_JACK
-		bool stop_on_end = true;
-#endif
 
 		if (jack_enabled)
 		{
@@ -799,7 +802,6 @@ bool studio::Widget_Preview::play_update()
 				{ on_jack_sync(); return true; }
 			jack_time = Time((Time::value_type)pos.frame/(Time::value_type)pos.frame_rate);
 			time = jack_time - jack_offset;
-			stop_on_end = false;
 #endif
 		}
 		else

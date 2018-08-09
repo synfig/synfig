@@ -336,8 +336,8 @@ StateNormal_Context::~StateNormal_Context()
 }
 
 DuckDrag_Combo::DuckDrag_Combo():
-	original_mag(),
 	original_angle(),
+	original_mag(),
 	bad_drag(),
 	move_only(),
 	is_moving(false),

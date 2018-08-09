@@ -787,7 +787,7 @@ void CellRenderer_TimeTrack::draw_activepoint_off(
 
 	cr->set_line_width(line_width);
 	cr->move_to(from_x, from_y);
-	cr->line_to(to_y, to_y);
+	cr->line_to(to_x, to_y);
 	cr->stroke();
 
 }

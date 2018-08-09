@@ -322,7 +322,6 @@ MainWindow::on_recent_files_changed()
 	vector<String> shortnames;
 	make_short_filenames(fullnames, shortnames);
 
-	int index = 0;
 	std::string menu_items;
 	for(int i = 0; i < (int)fullnames.size(); ++i)
 	{

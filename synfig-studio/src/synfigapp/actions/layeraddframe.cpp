@@ -158,12 +158,10 @@ Action::LayerAddFrame::prepare()
 	get_canvas_interface()
 		->get_instance()
 		->generate_new_name(
-				layer_base,
-				subcanvas,
-				get_canvas()->get_file_system(),
-				description,
-				filename,
-				filename_param );
+			layer_base,
+			description,
+			filename,
+			filename_param );
 
 	{
 		Action::Handle action(Action::create("LayerCopy"));

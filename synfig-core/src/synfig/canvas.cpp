@@ -64,9 +64,7 @@ namespace synfig { extern Canvas::Handle open_canvas_as(const FileSystem::Identi
 
 /* === M A C R O S ========================================================= */
 
-#ifndef NDEBUG
 //#define DEBUG_SET_TIME_MEASURE
-#endif
 
 #define ALLOW_CLONE_NON_INLINE_CANVASES
 

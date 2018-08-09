@@ -236,8 +236,6 @@ Dock_Toolbox::change_state_(const Smach::state_base *state)
 void
 Dock_Toolbox::add_state(const Smach::state_base *state)
 {
-	Gtk::Image *icon;
-
 	assert(state);
 
 	String name=state->get_name();
