@@ -718,7 +718,7 @@ WorkArea::set_onion_skin(bool x)
 		return;
 	onion_skin = x;
 	save_meta_data();
-	queue_render();
+	queue_draw();
 }
 
 void WorkArea::set_onion_skins(int *onions)
@@ -726,7 +726,7 @@ void WorkArea::set_onion_skins(int *onions)
 	onion_skins[0] = onions[0];
 	onion_skins[1] = onions[1];
 	if (onion_skin)
-		queue_render();
+		queue_draw();
 	save_meta_data();
 }
 
