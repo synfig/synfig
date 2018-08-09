@@ -507,7 +507,7 @@ ValueNode_DynamicList::ListEntry::status_at_time(const Time &t)const
 
 
 
-void
+/*void
 ValueNode_DynamicList::add(const ValueNode::Handle &value_node, int index)
 {
 	ListEntry list_entry(value_node);
@@ -530,7 +530,7 @@ ValueNode_DynamicList::add(const ValueNode::Handle &value_node, int index)
 		get_parent_canvas()->signal_value_node_child_added()(this,value_node);
 	else if(get_root_canvas() && get_parent_canvas())
 		get_root_canvas()->signal_value_node_child_added()(this,value_node);
-}
+}*/
 
 void
 ValueNode_DynamicList::add(const ListEntry &list_entry, int index)

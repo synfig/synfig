@@ -277,7 +277,7 @@ synfig::Target_Cairo_Tile::render(ProgressCallback *cb)
 }
 
 void
-Target_Cairo_Tile::gamma_filter(cairo_surface_t *surface, const synfig::Gamma gamma)
+Target_Cairo_Tile::gamma_filter(cairo_surface_t *surface, const synfig::Gamma &gamma)
 {
 	CairoSurface cairo_s;
 	cairo_s.set_cairo_surface(surface);

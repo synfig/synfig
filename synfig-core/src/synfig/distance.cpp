@@ -61,7 +61,7 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-Distance::Distance(const synfig::String& str)
+Distance::Distance(const synfig::String& str): value_(), system_()
 {
 	(*this)=str;
 /*	int i(0);
@@ -232,17 +232,16 @@ Distance::system_name(Distance::System system)
 {
 	switch(system)
 	{
-		case SYSTEM_UNITS:		return "u";
-		case SYSTEM_PIXELS:		return "px";
-		case SYSTEM_POINTS:		return "pt";
-		case SYSTEM_INCHES:		return "in";
-		case SYSTEM_METERS:		return "m";
-		case SYSTEM_MILLIMETERS:	return "mm";
-		case SYSTEM_CENTIMETERS:	return "cm";
+		case SYSTEM_UNITS:		 return "u";
+		case SYSTEM_PIXELS:		 return "px";
+		case SYSTEM_POINTS:		 return "pt";
+		case SYSTEM_INCHES:		 return "in";
+		case SYSTEM_METERS:		 return "m";
+		case SYSTEM_MILLIMETERS: return "mm";
+		case SYSTEM_CENTIMETERS: return "cm";
 
-		default:				throw BadSystem();
+		default:				 throw BadSystem();
 	}
-	return synfig::String();
 }
 
 synfig::String  // (static)

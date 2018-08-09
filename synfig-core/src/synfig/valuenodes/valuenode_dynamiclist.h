@@ -175,7 +175,7 @@ public:
 
 public:
 
-	void add(const ValueNode::Handle &value_node, int index=-1);
+	void add(const ValueNode::Handle &value_node, int index=-1) { add(ListEntry(value_node), index); }
 	void add(const ListEntry &value_node, int index=-1);
 	void erase(const ValueNode::Handle &value_node);
 	void reindex();

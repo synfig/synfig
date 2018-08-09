@@ -211,7 +211,7 @@ Target_Cairo::put_surface(cairo_surface_t *surface, ProgressCallback *cb)
 }
 
 void
-Target_Cairo::gamma_filter(cairo_surface_t *surface, const synfig::Gamma gamma)
+Target_Cairo::gamma_filter(cairo_surface_t *surface, const synfig::Gamma &gamma)
 {
 	CairoSurface cairo_s;
 	cairo_s.set_cairo_surface(surface);

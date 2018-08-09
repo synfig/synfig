@@ -265,7 +265,7 @@ CurveGradient::color_func(const Point &point_, int quality, Real supersample)con
 	Real thickness;
 	Real dist;
 
-	Real perp_dist;
+	Real perp_dist = 0;
 	bool edge_case = false;
 
 	if(bline.size()==0)
@@ -413,7 +413,7 @@ CurveGradient::color_func(const Point &point_, int quality, Real supersample)con
 			thickness=(next->get_width()-iter->get_width())*t+iter->get_width();
 	}
 
-	if(perpendicular)
+	if (perpendicular && line.size() > 1)
 	{
 		if(quality>7)
 		{

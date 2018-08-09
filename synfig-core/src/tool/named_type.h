@@ -36,9 +36,10 @@ template<typename T>
 struct named_type
     : public boost::program_options::typed_value<T>
 {
-    named_type(std::string const& name)
-        : boost::program_options::typed_value<T>(&value)
-        , _name(name)
+    named_type(std::string const& name) :
+        boost::program_options::typed_value<T>(&value),
+        _name(name),
+        value()
     {
     }
     std::string name() const { return _name; }
