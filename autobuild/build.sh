@@ -205,6 +205,14 @@ for n in AUTHORS COPYING NEWS README
 do
   	cp -f ${REPO_DIR}/synfig-studio/$n ${PREFIX}
 done
+
+if [ ! -z "$NIX_BUILD_CORES" ]; then
+	wrapProgram "/home/konstantin/sources/synfig.render/_debug/build/bin/synfigstudio" \
+		  --prefix XDG_DATA_DIRS : "$XDG_ICON_DIRS:$GSETTINGS_SCHEMAS_PATH" \
+		  --prefix XCURSOR_PATH : "$ADWAITA_PATH/share/icons" \
+		  --set XCURSOR_THEME "Adwaita"
+fi
+
 cd ..
 msg_done
 }
