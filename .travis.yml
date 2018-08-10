@@ -8,6 +8,7 @@ env:
   global:
     - BUILD_FILENAME="build-$TRAVIS_OS_NAME.$TRAVIS_BUILD_NUMBER-$(date '+%Y-%m-%d_%H_%M_%S').tgz"
     - DEBUG=1
+    - MAKE_THREADS=8
 
 matrix:
   include:
