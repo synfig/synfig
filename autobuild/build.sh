@@ -206,6 +206,7 @@ do
   	cp -f ${REPO_DIR}/synfig-studio/$n ${PREFIX}
 done
 cd ..
+msg_done
 }
 
 studio_build()
@@ -242,7 +243,6 @@ all_make()
 etl_make
 core_make
 studio_make
-msg_done
 }
 
 all_build()
@@ -250,7 +250,6 @@ all_build()
 etl_build
 core_build
 studio_build
-msg_done
 }
 
 all_full()
@@ -258,7 +257,6 @@ all_full()
 etl_full
 core_full
 studio_full
-msg_done
 }
 
 msg_done()
