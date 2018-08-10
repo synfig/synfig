@@ -5,23 +5,27 @@ git:
   submodules: false
   
 env:
-  - BUILD_FILENAME="build-$TRAVIS_OS_NAME.$TRAVIS_BUILD_NUMBER-$(date '+%Y-%m-%d_%H_%M_%S').tgz"
-  - DEBUG=1
+  global:
+    - BUILD_FILENAME="build-$TRAVIS_OS_NAME.$TRAVIS_BUILD_NUMBER-$(date '+%Y-%m-%d_%H_%M_%S').tgz"
+    - DEBUG=1
 
 matrix:
   include:
+  
   - os: linux
     name: "Synfig Studio Ubuntu 16.04 (Xenial)"
     sudo: required
     dist: xenial
+    script: autobuild/synfigstudio-linux-build.sh
         
   - os: osx
     name: "Synfig Studio OS X 10.10 (Yosemite)"
     sudo: required
     osx_image: xcode6.4
+    script: sudo autobuild/synfigstudio-osx-build.sh
+    
   allow_failures:
     - os: osx
     
-script:
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then autobuild/synfigstudio-linux-build.sh; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then sudo autobuild/synfigstudio-osx-build.sh; fi
+after_failure:
+  - cat $TRAVIS_BUILD_DIR/config.log
