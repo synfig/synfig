@@ -1,0 +1,14 @@
+language: cpp
+matrix:
+  include:
+  - os: linux
+    sudo: enabled
+    dist: xenial
+env:
+  matrix:
+  - BUILD_FILENAME="build-$TRAVIS_OS_NAME.$TRAVIS_BUILD_NUMBER-$(date '+%Y-%m-%d_%H_%M_%S').tgz"
+script:
+  - autobuild/synfigstudio-linux-build.sh
+git:
+  depth: 1
+  submodules: false
