@@ -10,31 +10,6 @@ matrix:
     name: "Synfig Studio Ubuntu 16.04 (Xenial)"
     sudo: required
     dist: xenial
-    addons:
-      coverity_scan:
-
-        # GitHub project metadata
-        # ** specific to your project **
-        project:
-          name: synfig/synfig
-          version: 1.3.10
-          description: Synfig Studio
-
-        # Where email notification of build analysis results will be sent
-        notification_email: konoplin@gmail.com
-
-        # Commands to prepare for build_command
-        # ** likely specific to your build **
-        # build_command_prepend: ./configure
-
-        # The command that will be added as an argument to "cov-build" to compile your project for analysis,
-        # ** likely specific to your build **
-        build_command: autobuild/synfigstudio-linux-build.sh
-
-        # Pattern to match selecting branches that will run analysis. We recommend leaving this set to 'coverity_scan'.
-        # Take care in resource usage, and consider the build frequency allowances per
-        #   https://scan.coverity.com/faq#frequency
-        branch_pattern: master
         
   - os: osx
     name: "Synfig Studio OS X 10.10 (Yosemite)"
