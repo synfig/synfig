@@ -13,6 +13,8 @@ MacOS X.
 
 https://synfig.org/
 
+[![Build Status](https://travis-ci.org/synfig/synfig.svg?branch=master)](https://travis-ci.org/synfig/synfig)
+
 (TODO: add more info)
 
 
