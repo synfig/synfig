@@ -3,6 +3,10 @@ language: cpp
 git:
   depth: 1
   submodules: false
+  
+env:
+  - BUILD_FILENAME="build-$TRAVIS_OS_NAME.$TRAVIS_BUILD_NUMBER-$(date '+%Y-%m-%d_%H_%M_%S').tgz"
+  - DEBUG=1
 
 matrix:
   include:
@@ -18,9 +22,6 @@ matrix:
   allow_failures:
     - os: osx
     
-env:
-  - BUILD_FILENAME="build-$TRAVIS_OS_NAME.$TRAVIS_BUILD_NUMBER-$(date '+%Y-%m-%d_%H_%M_%S').tgz"
-  
 script:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then autobuild/synfigstudio-linux-build.sh; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then sudo autobuild/synfigstudio-osx-build.sh; fi
