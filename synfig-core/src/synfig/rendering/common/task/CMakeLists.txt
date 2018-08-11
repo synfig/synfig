@@ -8,3 +8,5 @@ target_sources(synfig
         "${CMAKE_CURRENT_LIST_DIR}/taskpixelprocessor.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/tasktransformation.cpp"
 )
+
+install_all_headers(rendering/common/task)
