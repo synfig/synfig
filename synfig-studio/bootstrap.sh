@@ -27,6 +27,6 @@ AUTOPOINT='intltoolize --automake --copy' autoreconf --force --install --verbose
 #       is fixed in intltool
 
 sed 's/itlocaledir = $(prefix)\/$(DATADIRNAME)\/locale/itlocaledir = $(datarootdir)\/locale/' < po/Makefile.in.in > po/Makefile.in.in.tmp
-mv po/Makefile.in.in.tmp po/Makefile.in.in
+mv --force po/Makefile.in.in.tmp po/Makefile.in.in
 
 echo "Done! Please run ./configure now."

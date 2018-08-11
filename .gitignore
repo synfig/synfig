@@ -52,6 +52,11 @@ test-driver
 compile
 .dirstamp
 
+/_debug/
+/_production/
+/_release/
+/build.conf
+
 # ------------------------------------------------------------------------
 
 ETL/ETL.pc.in
