@@ -10,6 +10,9 @@ env:
     - DEBUG=1
     - MAKE_THREADS=8
 
+cache:
+ - ccache
+ 
 matrix:
   include:
   
