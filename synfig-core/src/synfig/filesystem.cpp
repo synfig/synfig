@@ -68,7 +68,8 @@ FileSystem::Stream::~Stream()
 
 FileSystem::ReadStream::ReadStream(FileSystem::Handle file_system):
 	Stream(file_system),
-	std::istream((std::streambuf*)this)
+	std::istream((std::streambuf*)this),
+	buffer_(0)
 {
 	setg(&buffer_ + 1, &buffer_ + 1, &buffer_ + 1);
 }

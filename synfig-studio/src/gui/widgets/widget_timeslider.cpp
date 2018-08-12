@@ -66,16 +66,18 @@ const double zoomoutfactor = 1/zoominfactor;
 double defaultfps = 24;
 const int fullheight = 20;
 
-Widget_Timeslider::Widget_Timeslider()
-:layout(Pango::Layout::create(get_pango_context())),
-adj_default(Gtk::Adjustment::create(0,0,2,1/defaultfps,10/defaultfps)),
-adj_timescale(),
-//invalidated(false),
-last_event_time(0),
-fps(defaultfps),
-dragscroll(false)
+Widget_Timeslider::Widget_Timeslider():
+	layout(Pango::Layout::create(get_pango_context())),
+	adj_default(Gtk::Adjustment::create(0,0,2,1/defaultfps,10/defaultfps)),
+	adj_timescale(),
+	//invalidated(false),
+	last_event_time(0),
+	fps(defaultfps),
+	dragscroll(false),
+	lastx(0),
+	time_per_tickmark(0)
 {
-	set_size_request(-1,fullheight);
+	set_size_request(-1, fullheight);
 
 	// click / scroll / zoom
 	add_events(

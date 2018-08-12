@@ -105,7 +105,7 @@ class DuckDrag_Translate : public DuckDrag_Base
 	synfig::Vector drag_offset_;
 	synfig::Vector snap;
 	std::vector<synfig::Vector> positions;
-	bool is_moving;
+	bool is_moving = false;
 
 public:
 	void begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& begin);

@@ -69,14 +69,18 @@ using namespace etl;
 /* === M E T H O D S ======================================================= */
 
 synfig::Layer_Bitmap::Layer_Bitmap():
-    Layer_Composite	(1.0,Color::BLEND_COMPOSITE),
+	Layer_Composite	(1.0,Color::BLEND_COMPOSITE),
 	method                  (SOFTWARE),
 	surface_modification_id (0),
 	param_tl                (Point(-0.5,0.5)),
 	param_br                (Point(0.5,-0.5)),
 	param_c                 (int(1)),
 	param_gamma_adjust      (Real(1.0)),
-	trimmed                 (false)
+	trimmed                 (false),
+	left(0),
+	top(0),
+	width(0),
+	height(0)
 {
 	SET_INTERPOLATION_DEFAULTS();
 	SET_STATIC_DEFAULTS();

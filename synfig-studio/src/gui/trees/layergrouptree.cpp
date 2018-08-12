@@ -55,7 +55,7 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-LayerGroupTree::LayerGroupTree()
+LayerGroupTree::LayerGroupTree() : editable_(false)
 {
 	const LayerGroupTreeStore::Model model;
 

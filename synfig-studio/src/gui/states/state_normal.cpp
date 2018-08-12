@@ -289,7 +289,8 @@ StateNormal_Context::StateNormal_Context(CanvasView* canvas_view):
 	duck_dragger_(new DuckDrag_Combo()),
 	ctrl_pressed(),
 	alt_pressed(),
-	shift_pressed()
+	shift_pressed(),
+	space_pressed(false)
 {
 	duck_dragger_->canvas_view_=get_canvas_view();
 

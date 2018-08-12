@@ -64,7 +64,8 @@ Token::Token():
 Token::Token(const Handle &parent):
 	previous_(last_),
 	next_(),
-	in_process_()
+	in_process_(),
+	prepared_(false)
 {
 	parents_.insert(parent);
 	init();
@@ -74,7 +75,8 @@ Token::Token(const Set &parents):
 	previous_(last_),
 	next_(),
 	in_process_(),
-	parents_(parents)
+	parents_(parents),
+	prepared_(false)
 { init(); }
 
 void

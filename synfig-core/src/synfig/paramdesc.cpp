@@ -64,7 +64,8 @@ ParamDesc::ParamDesc(const ValueBase&, const String &a):
 	is_distance_	(false),
 	animation_only_	(false),
 	static_			(false),
-	interpolation_	(INTERPOLATION_UNDEFINED)
+	interpolation_	(INTERPOLATION_UNDEFINED),
+	exponential_    (false)
 {
 	if(a == "blend_method")
 	{

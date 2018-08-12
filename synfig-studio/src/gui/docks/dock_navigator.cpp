@@ -70,12 +70,14 @@ const double log_10_2 = log(2.0);
 /* === M E T H O D S ======================================================= */
 
 /* === E N T R Y P O I N T ================================================= */
-studio::Widget_NavView::Widget_NavView(CanvasView::LooseHandle cv)
-:canvview(cv),
-adj_zoom(Gtk::Adjustment::create(0,-4,4,1,2)),
-scrolling(false),
-surface(new synfig::Surface),
-cairo_surface(cairo_image_surface_create(CAIRO_FORMAT_ARGB32, 1, 1))
+studio::Widget_NavView::Widget_NavView(CanvasView::LooseHandle cv):
+	canvview(cv),
+	adj_zoom(Gtk::Adjustment::create(0, -4, 4, 1, 2)),
+	scrolling(false),
+	surface(new synfig::Surface),
+	cairo_surface(cairo_image_surface_create(CAIRO_FORMAT_ARGB32, 1, 1)),
+	dirty(false),
+	rendering(false)
 {
 	attach(drawto,0,4,0,1);
 
@@ -268,11 +270,13 @@ bool studio::Widget_NavView::on_drawto_draw(const Cairo::RefPtr<Cairo::Context> 
 	
 		float pw = get_canvas_view()->get_canvas()->rend_desc().get_pw();
 		float ph = get_canvas_view()->get_canvas()->rend_desc().get_ph();
-		if(prev)
-		{
-			w = prev->get_width();
-			h = prev->get_height();
-		}
+		
+		// TODO: rewrite this
+		
+		if (!prev) return false;
+
+		w = prev->get_width();
+		h = prev->get_height();
 
 		//scale up/down to the nearest pixel ratio...
 		//and center in center

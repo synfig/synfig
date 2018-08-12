@@ -81,7 +81,10 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	listviewtext_brushes_path(manage (new Gtk::ListViewText(1, true, Gtk::SELECTION_BROWSE))),
 	adj_pref_x_size(Gtk::Adjustment::create(480,1,10000,1,10,0)),
 	adj_pref_y_size(Gtk::Adjustment::create(270,1,10000,1,10,0)),
-	adj_pref_fps(Gtk::Adjustment::create(24.0,1.0,100,0.1,1,0))
+	adj_pref_fps(Gtk::Adjustment::create(24.0,1.0,100,0.1,1,0)),
+	refreshing(false),
+	pref_modification_flag(false),
+	time_format(Time::FORMAT_NORMAL)
 {
 	synfig::String interface_str(_("Interface")),
 			document_str(_("Document")),

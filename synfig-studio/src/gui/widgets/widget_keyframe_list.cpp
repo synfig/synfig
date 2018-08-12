@@ -63,7 +63,11 @@ using namespace studio;
 Widget_Keyframe_List::Widget_Keyframe_List():
 	adj_default(Gtk::Adjustment::create(0,0,2,1/WIDGET_KEYFRAME_LIST_DEFAULT_FPS,10/WIDGET_KEYFRAME_LIST_DEFAULT_FPS)),
 	kf_list_(&default_kf_list_),
-	time_ratio("4f", WIDGET_KEYFRAME_LIST_DEFAULT_FPS)
+	time_ratio("4f", WIDGET_KEYFRAME_LIST_DEFAULT_FPS),
+	dragging_(false),
+	changed_(false),
+	selected_(false),
+	moving_tooltip_y_(0)
 {
 	editable_=true;
 	fps=WIDGET_KEYFRAME_LIST_DEFAULT_FPS;

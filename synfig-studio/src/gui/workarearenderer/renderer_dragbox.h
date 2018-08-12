@@ -68,7 +68,7 @@ private:
     synfig::GUIDSet handles_selected_guid_;
 
 	//! Used to catch a new drag box sequence
-	bool drag_paused;
+	bool drag_paused = false;
 
 protected:
 	bool get_enabled_vfunc()const;

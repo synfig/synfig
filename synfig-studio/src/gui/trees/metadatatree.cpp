@@ -54,7 +54,7 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-MetaDataTree::MetaDataTree()
+MetaDataTree::MetaDataTree() : editable_(false)
 {
 	{
 		Gtk::TreeView::Column* column = Gtk::manage( new Gtk::TreeView::Column(_("Key")) );
