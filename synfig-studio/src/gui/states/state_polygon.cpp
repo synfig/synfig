@@ -779,7 +779,8 @@ StatePolygon_Context::run()
 	for(i=0,iter=polygon_point_list.begin();iter!=polygon_point_list.end();++iter,++i)
 	{
 		*iter = transform.unperform(*iter);
-		new_list.push_back(*(new BLinePoint));
+		//new_list.push_back(*(new BLinePoint));
+		new_list.push_back(BLinePoint());
 		new_list[i].set_width(1);
 		new_list[i].set_vertex(*iter);
 		new_list[i].set_tangent(Point(0,0));

@@ -251,6 +251,21 @@ PluginManager::load_dir( const std::string &pluginsprefix )
 					struct dirent *plugindirentry;
 					
 					plugindir = opendir(pluginpath.c_str());
+					if(plugindir) {
+						while ( (plugindirentry = readdir(plugindir)) != NULL) {
+							if ( std::string(plugindirentry->d_name) == std::string("plugin.xml") ){
+								std::string pluginfilepath;
+								pluginfilepath = pluginpath+ETL_DIRECTORY_SEPARATOR+plugindirentry->d_name;
+								
+								load_plugin(pluginfilepath);
+							}
+						}
+						closedir(plugindir);
+					} 
+					else 
+						synfig::warning("Can't read plugin directory!");
+
+					/*plugindir = opendir(pluginpath.c_str());
 					if(!plugindir) {
 						synfig::warning("Can't read plugin directory!");
 						return;
@@ -263,7 +278,7 @@ PluginManager::load_dir( const std::string &pluginsprefix )
 							
 							load_plugin(pluginfilepath);
 						}
-					}
+					}*/
 					
 				}
 			}
