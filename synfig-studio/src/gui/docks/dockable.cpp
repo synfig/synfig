@@ -234,16 +234,13 @@ Dockable::clear()
 void
 Dockable::set_toolbar(Gtk::Toolbar& toolbar)
 {
-	if(toolbar_)remove(*toolbar_);
-	toolbar_=0;
-	toolbar_=&toolbar;
-	if(toolbar_)
-	{
-		attach(*toolbar_, 0, 1, 2,3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-		gtk_toolbar_set_icon_size(toolbar_->gobj(),GtkIconSize(1)/*GTK_ICON_SIZE_MENU*/);
-		toolbar_->set_property("toolbar-style", Gtk::TOOLBAR_ICONS);
-		toolbar_->show();
-	}
+	if (toolbar_) remove(*toolbar_);
+	toolbar_ = &toolbar;
+
+	attach(*toolbar_, 0, 1, 2, 3, Gtk::EXPAND | Gtk::FILL, Gtk::SHRINK | Gtk::FILL, 0, 0);
+	gtk_toolbar_set_icon_size(toolbar_->gobj(),GtkIconSize(1)/*GTK_ICON_SIZE_MENU*/);
+	toolbar_->set_property("toolbar-style", Gtk::TOOLBAR_ICONS);
+	toolbar_->show();
 }
 
 bool

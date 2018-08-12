@@ -1823,9 +1823,9 @@ CanvasParser::parse_animated(xmlpp::Element *element,Canvas::Handle canvas)
 				waypoint->set_after(parse_interpolation(child,"after"));
 			}
 			}
-			catch(Exception::BadTime x)
+			catch(Exception::BadTime& x)
 			{
-				warning(child,x.what());
+				warning(child, x.what());
 			}
 			continue;
 
@@ -3512,7 +3512,7 @@ CanvasParser::parse_from_file_as(const FileSystem::Identifier &identifier,const 
 	catch(Exception::FileNotFound) { synfig::error("FileNotFound Thrown"); }
 	catch(Exception::IDNotFound) { synfig::error("IDNotFound Thrown"); }
 	catch(Exception::IDAlreadyExists) { synfig::error("IDAlreadyExists Thrown"); }
-	catch(xmlpp::internal_error x)
+	catch(xmlpp::internal_error &x)
 	{
 		if (!strcmp(x.what(), "Couldn't create parsing context"))
 			throw runtime_error(String("  * ") + _("Can't open file") + " \"" + identifier.filename + "\"");
@@ -3568,7 +3568,7 @@ CanvasParser::parse_as(xmlpp::Element* node,String &errors)
 	catch(Exception::FileNotFound) { synfig::error("FileNotFound Thrown"); }
 	catch(Exception::IDNotFound) { synfig::error("IDNotFound Thrown"); }
 	catch(Exception::IDAlreadyExists) { synfig::error("IDAlreadyExists Thrown"); }
-	catch(xmlpp::internal_error x)
+	catch(xmlpp::internal_error &x)
 	{
 		if (!strcmp(x.what(), "Couldn't create parsing context"))
 			throw runtime_error(String("  * ") + _("Can't open file") + " \"" + "\"");

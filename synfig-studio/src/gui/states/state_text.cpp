@@ -632,11 +632,7 @@ StateText_Context::make_text(const Point& _point)
 	if (get_paragraph_flag())
 		App::dialog_paragraph(_("Text Paragraph"), _("Enter text here:"), text);
 	else
-		App::dialog_entry(_("Input text"),
-				_("Text: "),
-				text,
-				_("Cancel"),
-				_("Ok"));
+		if (!App::dialog_entry(_("Input text"), _("Text: "), text, _("Cancel"), _("Ok"))) return;
 
 	egress_on_selection_change=false;
 	layer=get_canvas_interface()->add_layer_to("text",canvas,depth);

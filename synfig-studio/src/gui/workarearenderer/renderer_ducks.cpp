@@ -800,7 +800,7 @@ Renderer_Ducks::render_vfunc(
 
 	}
 
-	for(;screen_duck_list.size();screen_duck_list.pop_front())
+	for(;!screen_duck_list.empty();screen_duck_list.pop_front())
 	{
 		Gdk::Color color(screen_duck_list.front().color);
 		double radius = 4;

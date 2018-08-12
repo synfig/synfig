@@ -77,7 +77,7 @@ MagickCore::Image* copy_image_list(Container& container)
 			if ( previous != 0) previous->next = current;
 			previous = current;
 		}
-		catch(Magick::Warning warning) {
+		catch(Magick::Warning &warning) {
 			synfig::warning("exception '%s'", warning.what());
 		}
 	}
@@ -105,7 +105,7 @@ magickpp_trgt::~magickpp_trgt()
 				SetImageInfo(image.imageInfo(),Magick::MagickTrue,exceptionInfo);
 				can_adjoin = image.adjoin();
 			}
-			catch(Magick::Warning warning) {
+			catch(Magick::Warning &warning) {
 				synfig::warning("exception '%s'", warning.what());
 			}
 		}
@@ -138,7 +138,7 @@ magickpp_trgt::~magickpp_trgt()
 				{
 					RemoveDuplicateLayers(&image_list, exceptionInfo);
 				}
-				catch(Magick::Warning warning) {
+				catch(Magick::Warning &warning) {
 					synfig::warning("exception '%s'", warning.what());
 				}
 			}
@@ -150,7 +150,7 @@ magickpp_trgt::~magickpp_trgt()
 				{
 					image_list = OptimizeImageLayers(image_list,exceptionInfo);
 				}
-				catch(Magick::Warning warning) {
+				catch(Magick::Warning &warning) {
 					synfig::warning("exception '%s'", warning.what());
 				}
 			}
@@ -162,7 +162,7 @@ magickpp_trgt::~magickpp_trgt()
 				{
 					OptimizeImageTransparency(image_list,exceptionInfo);
 				}
-				catch(Magick::Warning warning) {
+				catch(Magick::Warning &warning) {
 					synfig::warning("exception '%s'", warning.what());
 				}
 			}
@@ -185,14 +185,14 @@ magickpp_trgt::~magickpp_trgt()
 			Magick::writeImages(images.begin(), images.end(), filename);
 			synfig::info("done");
 		}
-		catch(Magick::Warning warning) {
+		catch(Magick::Warning &warning) {
 			synfig::warning("exception '%s'", warning.what());
 		}
 	}
-	catch(Magick::Warning warning) {
+	catch(Magick::Warning &warning) {
 		synfig::warning("exception '%s'", warning.what());
 	}
-	catch(Magick::Error error) {
+	catch(Magick::Error &error) {
 		synfig::error("exception '%s'", error.what());
 	}
 	catch(...) {
@@ -202,7 +202,8 @@ magickpp_trgt::~magickpp_trgt()
 	if (buffer1 != NULL) delete [] buffer1;
 	if (buffer2 != NULL) delete [] buffer2;
 	if (color_buffer != NULL) delete [] color_buffer;
-	exceptionInfo = MagickCore::DestroyExceptionInfo(exceptionInfo);
+	//exceptionInfo = MagickCore::DestroyExceptionInfo(exceptionInfo);
+	MagickCore::DestroyExceptionInfo(exceptionInfo);
 }
 
 bool

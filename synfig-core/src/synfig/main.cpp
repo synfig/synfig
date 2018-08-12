@@ -529,7 +529,8 @@ synfig::get_binary_path(const String &fallback_path)
 	FILE *f;
 
 	/* Read from /proc/self/exe (symlink) */
-	char* path2 = (char*)malloc(buf_size);
+	//char* path2 = (char*)malloc(buf_size);
+	char* path2 = new char[buf_size];
 	strncpy(path2, "/proc/self/exe", buf_size - 1);
 
 	while (1) {
@@ -565,7 +566,8 @@ synfig::get_binary_path(const String &fallback_path)
 		strncpy(path, path2, buf_size - 1);
 	}
 	
-	free(path2);
+	//free(path2);
+	delete[] path2;
 
 	if (result == "")
 	{

@@ -2247,7 +2247,9 @@ WorkArea::erase_renderer(const etl::handle<WorkAreaRenderer> &x)
 {
 	x->set_work_area(0);
 	renderer_set_.erase(x);
-	queue_draw();
+	// queue_draw();
+	// because erase_renderer is called only form destructor, we do not need to
+	// queue draw widget update (GTK error is produced)
 }
 
 void

@@ -154,12 +154,9 @@ Distance::meters()const
 Real
 Distance::meters(const RendDesc& rend_desc)const
 {
-	if(system_>SYSTEM_PIXELS)
-		return meters();
-	if(system_==SYSTEM_UNITS)
-		return value_*METERS_PER_UNIT;
-	if(system_==SYSTEM_PIXELS)
-		return value_/rend_desc.get_x_res();
+	if (system_ == SYSTEM_UNITS)  return value_*METERS_PER_UNIT;
+	if (system_ == SYSTEM_PIXELS) return value_/rend_desc.get_x_res();
+	if (system_ > SYSTEM_PIXELS)  return meters();
 
 	throw BadSystem();
 }

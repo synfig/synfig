@@ -70,10 +70,10 @@ namespace bfs=boost::filesystem;
 
 void process_job_list(std::list<Job>& job_list, const TargetParam& target_params)
 {
-	if(!job_list.size())
+	if (job_list.empty())
 		throw (SynfigToolException(SYNFIGTOOL_BORED, _("Nothing to do!")));
 
-	for(; job_list.size(); job_list.pop_front())
+	for(; !job_list.empty(); job_list.pop_front())
 	{
 		if (setup_job(job_list.front(), target_params))
 			process_job(job_list.front());

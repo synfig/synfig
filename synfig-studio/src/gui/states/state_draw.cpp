@@ -1967,12 +1967,11 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 		}
 	}
 
-	if(!value_node_bline)
-		if(vertex_list.size()<=2)
-		{
-			synfig::info(__FILE__":%d: Vertex list too small to make region.",__LINE__);
-			return Smach::RESULT_OK;
-		}
+	if(!value_node_bline && vertex_list.size() <= 2)
+	{
+		synfig::info(__FILE__":%d: Vertex list too small to make region.",__LINE__);
+		return Smach::RESULT_OK;
+	}
 
 	// Now we need to clean the list of vertices up
 	// a bit. This includes inserting missing vertices
