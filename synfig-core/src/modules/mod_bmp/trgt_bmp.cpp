@@ -56,7 +56,7 @@ SYNFIG_TARGET_SET_CVS_ID(bmp,"$Id$");
 /* === C L A S S E S & S T R U C T S ======================================= */
 namespace synfig {
 
-struct BITMAPFILEHEADER
+/*struct BITMAPFILEHEADER
 {
 	unsigned char	bfType[2];
 	unsigned long	bfSize;
@@ -78,7 +78,42 @@ struct BITMAPINFOHEADER
 	long			biYPelsPerMeter;
 	unsigned long	biClrUsed;
 	unsigned long	biClrImportant;
-};
+};*/
+
+#pragma pack(push,1)
+namespace BITMAP
+{
+	typedef unsigned char uint8_t;
+	typedef unsigned short int uint16_t;
+	typedef int int32_t;
+	typedef unsigned int uint32_t;
+
+	struct FILEHEADER
+	{
+		uint8_t		bfType[2];
+		uint32_t	bfSize;
+		uint16_t	bfReserved1;
+		uint16_t	bfReserved2;
+		uint32_t	bfOffsetBits;
+	};
+
+	struct INFOHEADER
+	{
+		uint32_t	biSize;
+		int32_t		biWidth;
+		int32_t		biHeight;
+		uint16_t	biPlanes;
+		uint16_t	biBitCount;
+		uint32_t	biCompression;
+		uint32_t	biSizeImage;
+		int32_t		biXPelsPerMeter;
+		int32_t		biYPelsPerMeter;
+		uint32_t	biClrUsed;
+		uint32_t	biClrImportant;
+	};
+}
+#pragma pack(pop)
+
 
 }
 /* === M E T H O D S ======================================================= */
@@ -200,17 +235,17 @@ bmp::start_frame(synfig::ProgressCallback *callback)
 		return false;
 	}
 
-	synfig::BITMAPFILEHEADER fileheader;
-	synfig::BITMAPINFOHEADER infoheader;
+	synfig::BITMAP::FILEHEADER fileheader;
+	synfig::BITMAP::INFOHEADER infoheader;
 
 	fileheader.bfType[0]='B';
 	fileheader.bfType[1]='M';
-	fileheader.bfSize=little_endian(sizeof(synfig::BITMAPFILEHEADER)+sizeof(synfig::BITMAPINFOHEADER)+rowspan*h);
+	fileheader.bfSize=little_endian(sizeof(synfig::BITMAP::FILEHEADER)+sizeof(synfig::BITMAP::INFOHEADER)+rowspan*h);
 	fileheader.bfReserved1=0;
 	fileheader.bfReserved2=0;
-	fileheader.bfOffsetBits=little_endian(sizeof(synfig::BITMAPFILEHEADER)+sizeof(synfig::BITMAPINFOHEADER)-2);
+	fileheader.bfOffsetBits=little_endian(sizeof(synfig::BITMAP::FILEHEADER)+sizeof(synfig::BITMAP::INFOHEADER));
 
-	infoheader.biSize=little_endian(40);
+	infoheader.biSize=little_endian(sizeof(synfig::BITMAP::INFOHEADER));
 	infoheader.biWidth=little_endian(w);
 	infoheader.biHeight=little_endian(h);
 	infoheader.biPlanes=little_endian_short((short)1);
@@ -222,16 +257,17 @@ bmp::start_frame(synfig::ProgressCallback *callback)
 	infoheader.biClrUsed=little_endian(0);
 	infoheader.biClrImportant=little_endian(0);
 
-	fprintf(file,"BM");
+	//fprintf(file,"BM");
 
-	if(!fwrite(&fileheader.bfSize,sizeof(synfig::BITMAPFILEHEADER)-4,1,file))
+	//if (!fwrite(&fileheader.bfSize,sizeof(synfig::BITMAPFILEHEADER)-4,1,file))
+	if (!fwrite(&fileheader, sizeof(synfig::BITMAP::FILEHEADER), 1, file))
 	{
 		if(callback)callback->error(_("Unable to write file header to file"));
 		else synfig::error(_("Unable to write file header to file"));
 		return false;
 	}
 
-	if(!fwrite(&infoheader,sizeof(synfig::BITMAPINFOHEADER),1,file))
+	if (!fwrite(&infoheader, sizeof(synfig::BITMAP::INFOHEADER), 1, file))
 	{
 		if(callback)callback->error(_("Unable to write info header"));
 		else synfig::error(_("Unable to write info header"));
