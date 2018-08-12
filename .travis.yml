@@ -13,6 +13,8 @@ env:
 cache:
  - ccache
  
+#test
+ 
 matrix:
   include:
   
