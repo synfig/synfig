@@ -163,6 +163,16 @@ public:
 	static void cancel(const Task::Handle &task);
 	static void cancel(const Task::List &list);
 
+	// function to use in signals
+	static void enqueue_task_func(Renderer::Handle renderer, Task::Handle task, TaskEvent::Handle finish_event_task, bool quiet)
+		{ renderer->enqueue(task, finish_event_task, quiet); }
+	static void enqueue_list_func(Renderer::Handle renderer, Task::List list, TaskEvent::Handle finish_event_task, bool quiet)
+		{ renderer->enqueue(list, finish_event_task, quiet); }  // list will passed as copy
+	static void cancel_task_func(Task::Handle task)
+		{ cancel(task); }
+	static void cancel_list_func(Task::List list)
+		{ cancel(list); } // list will passed as copy
+
 	static void initialize();
 	static void deinitialize();
 	static void register_renderer(const String &name, const Renderer::Handle &renderer);

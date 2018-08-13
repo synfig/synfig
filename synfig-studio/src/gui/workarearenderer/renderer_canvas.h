@@ -52,6 +52,13 @@ namespace studio {
 class Renderer_Canvas : public studio::WorkAreaRenderer
 {
 public:
+	enum FrameStatus {
+		FS_None,
+		FS_PartiallyDone,
+		FS_InProcess,
+		FS_Done
+	};
+
 	class FrameId {
 	public:
 		synfig::Time time;
@@ -101,46 +108,34 @@ public:
 	public:
 		typedef etl::handle<Tile> Handle;
 
-		const long long refresh_id;
-		const synfig::Time time;
+		const FrameId frame_id;
 		const synfig::RectInt rect;
 
 		synfig::rendering::TaskEvent::Handle event;
 		synfig::rendering::SurfaceResource::Handle surface;
 		Cairo::RefPtr<Cairo::ImageSurface> cairo_surface;
 
-		Tile(): refresh_id() { }
-		Tile(int refresh_id, const synfig::Time &time, synfig::RectInt &rect):
-			refresh_id(refresh_id), time(time), rect(rect) { }
-
-		bool operator< (const Tile &other) const {
-			if (refresh_id < other.refresh_id) return true;
-			if (other.refresh_id < refresh_id) return false;
-			return time < other.time;
-		}
+		Tile() { }
+		Tile(const FrameId &frame_id, synfig::RectInt &rect):
+			frame_id(frame_id), rect(rect) { }
 	};
 
-	class TileLess {
-	public:
-		bool operator() (const Tile::Handle &a, const Tile::Handle &b)
-			{ return a && b ? *a < *b : a < b; }
-	};
-
-	class TimeMeasure {
-	public:
-		long long time_us;
-		long long cpu_time_us;
-		TimeMeasure(): time_us(), cpu_time_us() { }
-		static TimeMeasure now();
-	};
-
+	typedef std::map<FrameId, FrameStatus> StatusMap;
+	typedef std::set<FrameId> FrameSet;
 	typedef std::vector<FrameDesc> FrameList;
 	typedef std::vector<Tile::Handle> TileList;
-	typedef std::multiset<Tile::Handle, TileLess> TileSet;
-	typedef std::map<FrameId, TileSet> TileMap;
+	typedef std::map<FrameId, TileList> TileMap;
 
 private:
-	//! controls access to fields: tiles, onion_frames, refresh_id
+	// cache options
+	const long long max_tiles_size_soft; //!< threshold for creation of new tiles
+	const long long max_tiles_size_hard; //!< threshold for removing already created tiles
+	const synfig::Real weight_future;    //!< will multiply to frames count
+	const synfig::Real weight_past;
+	const synfig::Real weight_zoom_in;   //!< will multiply to log(zoom)
+	const synfig::Real weight_zoom_out;
+
+	//! controls access to fields: tiles, onion_frames, visible_frames, current_frame, frame_duration, tiles_size
 	Glib::Threads::Mutex mutex;
 
 	//! stored tiles may be actual/outdated and rendered/not-rendered
@@ -148,16 +143,16 @@ private:
 
 	//! all currently visible frames (onion skin feature allows to see more than one frame)
 	FrameList onion_frames;
+	FrameSet visible_frames;
+	FrameId current_frame;
+	synfig::Time frame_duration;
 
 	//! increment of this field makes all tiles outdated
-	long long refresh_id;
-
-	//! require to call renderer after current rendering complete
-	bool render_queued;
-
-	TimeMeasure rendering_start_time;
+	long long tiles_size;
 
 	synfig::PixelFormat pixel_format;
+
+	bool draw_queued;
 
 	//! uses to normalize alpha value after blending of onion surfaces
 	Cairo::RefPtr<Cairo::ImageSurface> alpha_src_surface;
@@ -165,26 +160,39 @@ private:
 	Cairo::RefPtr<Cairo::Context> alpha_context;
 
 	// don't try to pass arguments to callbacks by reference, it cannot be properly saved in signal
-	// Renderer_Canvas is non-thread-safe sigc::trackable, so use static callback methods only in signals
-
-	static void enqueue_rendering_task_callback(
-		synfig::rendering::Renderer::Handle renderer,
-		synfig::rendering::Task::Handle task,
-		synfig::rendering::TaskEvent::Handle event );
+	// Renderer_Canvas is non-thread-safe sigc::trackable, so use static callback methods in signals
 	static void on_tile_finished_callback(bool success, Renderer_Canvas *obj, Tile::Handle tile);
-	static void post_tile_finished_callback(etl::handle<Renderer_Canvas> obj);
+	static void on_post_tile_finished_callback(etl::handle<Renderer_Canvas> obj);
 
+	//! this method may be called from the other threads
 	void on_tile_finished(bool success, const Tile::Handle &tile);
-	void pre_tile_started();
-	void post_tile_finished();
 
-	void cancel_render(long long keep_refresh_id);
+	void on_post_tile_finished();
 
-	void remove_old_tiles();
-
+	//! this method may be called from the other threads
 	Cairo::RefPtr<Cairo::ImageSurface> convert(
 		const synfig::rendering::SurfaceResource::Handle &surface,
 		int width, int height ) const;
+
+	//! mutex must be locked before call
+	void insert_tile(TileList &list, const Tile::Handle &tile);
+
+	//! mutex must be locked before call
+	void erase_tile(TileList &list, TileList::iterator i, synfig::rendering::Task::List &events);
+
+	//! mutex must be locked before call
+	void remove_extra_tiles(synfig::rendering::Task::List &events);
+
+	//! mutex must be locked before call
+	void build_onion_frames();
+
+	//! mutex must be locked before call
+	FrameStatus calc_frame_status(const FrameId &id, const synfig::RectInt &window_rect);
+
+	//! mutex must be locked before call
+	//! returns true if rendering task actually enqueued
+	//! function can change the canvas time
+	bool enqueue_render_frame(const synfig::rendering::Renderer::Handle &renderer, const FrameId &id);
 
 public:
 	Renderer_Canvas();
@@ -192,11 +200,11 @@ public:
 
 	// functions to render canvas in background
 
-	void inc_refresh_id();
-	void enqueue_render(bool force = false);
+	void enqueue_render();
 	void wait_render();
-	void cancel_render()
-		{ cancel_render(LLONG_MAX); }
+	void clear_render();
+
+	void get_render_status(StatusMap &out_map);
 
 	// just paint already rendered tiles at window
 	void render_vfunc(

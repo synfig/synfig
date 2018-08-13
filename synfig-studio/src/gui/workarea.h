@@ -165,9 +165,6 @@ private:
 	//! ???
 	synfig::ProgressCallback *progresscallback;
 
-	//! ???
-	synfig::RendDesc desc;
-
 	//! This flag is set if the user is dragging the video window
 	/*! \see drag_point */
 	DragMode dragging;
@@ -385,12 +382,6 @@ public:
 
 	int get_w()const { return w; }
 	int get_h()const { return h; }
-
-	//! ??
-	const synfig::RendDesc &get_rend_desc()const { return desc; }
-
-	//! ??
-	void set_rend_desc(const synfig::RendDesc &x) { desc=x; }
 
 	//! Converts screen coords (ie: pixels) to composition coordinates
 	synfig::Point screen_to_comp_coords(synfig::Point pos)const;

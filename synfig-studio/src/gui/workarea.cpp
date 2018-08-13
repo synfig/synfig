@@ -2149,8 +2149,8 @@ void
 WorkArea::sync_render(bool refresh)
 {
 	dirty_trap_queued = 0;
-	if (refresh) renderer_canvas->inc_refresh_id();
-	renderer_canvas->enqueue_render(true);
+	if (refresh) renderer_canvas->clear_render();
+	renderer_canvas->enqueue_render();
 	renderer_canvas->wait_render();
 }
 
@@ -2161,8 +2161,8 @@ studio::WorkArea::queue_render(bool refresh)
 	if (dirty_trap_count > 0)
 		{ dirty_trap_queued++; return; }
 	dirty_trap_queued = 0;
-	if (refresh) renderer_canvas->inc_refresh_id();
-	renderer_canvas->enqueue_render(true);
+	if (refresh) renderer_canvas->clear_render();
+	renderer_canvas->enqueue_render();
 }
 
 void

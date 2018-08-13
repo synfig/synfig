@@ -75,36 +75,28 @@ using namespace studio;
 
 static int
 int_floor(int x, int base)
-{
-	int m = x % base;
-	return m < 0 ? x - base - m
-		 : m > 0 ? x - m : x;
-}
+	{ int m = x % base; return m < 0 ? x - base - m : m > 0 ? x - m : x; }
 
 static int
 int_ceil(int x, int base)
-{
-	int m = x % base;
-	return m > 0 ? x + base - m
-		 : m < 0 ? x - m : x;
-}
+	{ int m = x % base; return m > 0 ? x + base - m : m < 0 ? x - m : x; }
+
+static long long
+image_rect_size(const RectInt &rect)
+	{ return 4ll*rect.get_width()*rect.get_height(); }
 
 /* === M E T H O D S ======================================================= */
 
-Renderer_Canvas::TimeMeasure
-Renderer_Canvas::TimeMeasure::now() {
-	const long long cpu_step_us = 1000000000ll/(long long)(CLOCKS_PER_SEC);
-	assert(cpu_step_us*(long long)(CLOCKS_PER_SEC) == 1000000000ll);
-
-	TimeMeasure t;
-	t.time_us = g_get_monotonic_time()*1000;
-	t.cpu_time_us = clock()*cpu_step_us;
-	return t;
-}
-
-
 Renderer_Canvas::Renderer_Canvas():
-	refresh_id(), render_queued(), pixel_format()
+	max_tiles_size_soft(512*1024*1024),
+	max_tiles_size_hard(max_tiles_size_soft + 128*1024*1024),
+	weight_future  (   1.0), // high priority
+	weight_past    (   2.0), // low priority
+	weight_zoom_in (1024.0), // very very low priority
+	weight_zoom_out(1024.0),
+	tiles_size(),
+	pixel_format(),
+	draw_queued()
 {
 	// check endianess
     union { int i; char c[4]; } checker = {0x01020304};
@@ -130,21 +122,12 @@ Renderer_Canvas::Renderer_Canvas():
 }
 
 Renderer_Canvas::~Renderer_Canvas()
-	{ cancel_render(); }
-
-void
-Renderer_Canvas::enqueue_rendering_task_callback(
-	synfig::rendering::Renderer::Handle renderer,
-	synfig::rendering::Task::Handle task,
-	synfig::rendering::TaskEvent::Handle event )
-{
-	// Handles will protect objects from deletion before this call
-	renderer->enqueue(task, event);
-}
+	{ clear_render(); }
 
 void
 Renderer_Canvas::on_tile_finished_callback(bool success, Renderer_Canvas *obj, Tile::Handle tile)
 {
+	// This method may be called from the other threads
 	// Handle will protect 'tile' from deletion before this call
 	// This callback will called only once for each tile
 	// And will called before deletion of 'obj', by calling cancel_render() from destructor
@@ -152,338 +135,12 @@ Renderer_Canvas::on_tile_finished_callback(bool success, Renderer_Canvas *obj, T
 }
 
 void
-Renderer_Canvas::post_tile_finished_callback(etl::handle<Renderer_Canvas> obj) {
+Renderer_Canvas::on_post_tile_finished_callback(etl::handle<Renderer_Canvas> obj) {
 	// this function should be called in main thread
 	// Handle will protect 'obj' from deletion before this call
 	// zero 'work_area' means that 'work_area' is destructed and here is a last Handle of 'obj'
 	if (obj->get_work_area())
-		obj->post_tile_finished();
-}
-
-void
-Renderer_Canvas::inc_refresh_id()
-{
-	Glib::Threads::Mutex::Lock lock(mutex);
-	++refresh_id;
-}
-
-void
-Renderer_Canvas::cancel_render(long long keep_refresh_id)
-{
-	rendering::Task::List list;
-	while(true) {
-		{
-			Glib::Threads::Mutex::Lock lock(mutex);
-			render_queued = false;
-			for(TileMap::const_iterator i = tiles.begin(); i != tiles.end(); ++i)
-				for(TileSet::const_iterator j = i->second.begin(); j != i->second.end(); ++j)
-					if (*j && (*j)->event && !(*j)->event->is_finished() && (*j)->refresh_id < keep_refresh_id)
-						list.push_back((*j)->event);
-		}
-		if (list.empty()) return;
-		rendering::Renderer::cancel(list);
-		list.clear();
-		Glib::usleep(1);
-	}
-}
-
-void
-Renderer_Canvas::remove_old_tiles()
-{
-	// mutex must be already locked
-	// this method may be called from other threads
-
-	for(TileMap::iterator i = tiles.begin(); i != tiles.end(); ++i) {
-		bool is_frame_visible = false;
-		for(FrameList::const_iterator j = onion_frames.begin(); j != onion_frames.end(); ++j)
-			if (j->id == i->first) { is_frame_visible = true; break; }
-
-		RectInt frame_rect(0, 0, i->first.width, i->first.height);
-
-		// remove "bad" tiles
-		for(TileSet::iterator j = i->second.begin(); j != i->second.end(); )
-			if ( !*j                                                  // remove nulls (if any),
-			  || (!is_frame_visible && (*j)->refresh_id < refresh_id) // outdated tiles at invisible frame,
-			  || (!frame_rect.contains((*j)->rect)) )                 // and tiles that are outside of frame
-					i->second.erase(j++); else ++j;
-
-		// remove overlapped and partially overlapped tiles
-		// note: tiles are sorted by refresh_id - older first
-		for(TileSet::iterator j = i->second.begin(); j != i->second.end(); ) {
-			bool overlapped = false;
-			TileSet::iterator k = j;
-			while(++k != i->second.end())
-				if (((*k)->surface || (*k)->cairo_surface) && etl::intersect((*j)->rect, (*k)->rect))
-					{ overlapped = true; break; }
-			if (overlapped)
-				i->second.erase(j++); else ++j;
-		}
-	}
-}
-
-void
-Renderer_Canvas::on_tile_finished(bool success, const Tile::Handle &tile)
-{
-	// this method must be called from on_tile_finished_callback()
-	// this method may be called from other threads
-
-	// 'tiles', 'onion_frames' and 'refresh_id' are controlled by mutex
-
-	Glib::Threads::Mutex::Lock lock(mutex);
-
-	assert(tile->event);
-	tile->event.reset();
-	if (!success)
-		tile->surface.reset();
-
-	remove_old_tiles();
-
-	// don't create handle if ref-count is zero
-	// it means that object was nether had a handles and will removed with handle
-	// or object is already in destruction phase
-	if (shared_object::count())
-		Glib::signal_timeout().connect_once(
-			sigc::bind(sigc::ptr_fun(&post_tile_finished_callback), etl::handle<Renderer_Canvas>(this)), 0);
-}
-
-void
-Renderer_Canvas::pre_tile_started()
-{
-	// remember time update statusbar
-	if (rendering_start_time.time_us == 0) {
-		rendering_start_time = TimeMeasure::now();
-		if (ProgressCallback *cb = get_work_area()->get_progress_callback())
-			cb->task(_("Rendering..."));
-	}
-}
-
-void
-Renderer_Canvas::post_tile_finished()
-{
-	// NB: this function locks the mutex (but pre_tile_started() don't)
-
-	if (!render_queued && rendering_start_time.time_us != 0) {
-		// check if rendering finished
-		bool all_finished = true;
-		{
-			Glib::Threads::Mutex::Lock lock(mutex);
-			for(TileMap::const_iterator i = tiles.begin(); all_finished && i != tiles.end(); ++i)
-				for(TileSet::const_iterator j = i->second.begin(); all_finished && j != i->second.end(); ++j)
-					if (*j && (*j)->event && !(*j)->event->is_finished())
-						all_finished = false;
-		}
-
-		if (all_finished) {
-			// measure rendering time and update statusbar
-			TimeMeasure time = TimeMeasure::now();
-			if (ProgressCallback *cb = get_work_area()->get_progress_callback())
-				cb->task( strprintf("%s %f (%f) %s",
-					_("Rendered:"),
-					1e-9*(time.time_us - rendering_start_time.time_us),
-					1e-9*(time.cpu_time_us - rendering_start_time.cpu_time_us),
-					_("sec") ));
-			rendering_start_time = TimeMeasure();
-		}
-	}
-
-	get_work_area()->queue_draw();
-	if (render_queued) enqueue_render();
-}
-
-void
-Renderer_Canvas::enqueue_render(bool force)
-{
-	const int tile_grid_step = 64;
-
-	assert(get_work_area());
-	rendering::Task::List tasks_to_cancel;
-	long long current_refresh_id;
-
-	{
-		Glib::Threads::Mutex::Lock lock(mutex);
-		current_refresh_id = refresh_id;
-
-		if (!force) {
-			render_queued = true;
-			// if any outdated tile still in process, then return
-			for(TileMap::const_iterator i = tiles.begin(); i != tiles.end(); ++i)
-				for(TileSet::const_iterator j = i->second.begin(); j != i->second.end(); ++j)
-					if (*j && (*j)->refresh_id < current_refresh_id && (*j)->event && !(*j)->event->is_finished())
-						return;
-		}
-		render_queued = false;
-
-		String renderer_name = get_work_area()->get_renderer();
-		rendering::Renderer::Handle renderer = rendering::Renderer::get_renderer(renderer_name);
-		if (!renderer) return;
-
-		Canvas::Handle canvas         = get_work_area()->get_canvas();
-		RendDesc       rend_desc      = canvas->rend_desc();
-		Time           base_time      = canvas->get_time();
-		RectInt        window_rect    = get_work_area()->get_window_rect();
-		int            w              = get_work_area()->get_w();
-		int            h              = get_work_area()->get_h();
-		RectInt        full_rect      = RectInt(0, 0, w, h);
-		float          fps            = rend_desc.get_frame_rate();
-
-		rend_desc.clear_flags();
-		rend_desc.set_wh(w, h);
-		ContextParams context_params(rend_desc.get_render_excluded_contexts());
-
-		// apply onion skin
-		onion_frames.clear();
-		int past   = std::max(0, get_work_area()->get_onion_skins()[0]);
-		int future = std::max(0, get_work_area()->get_onion_skins()[1]);
-		if ( get_work_area()->get_onion_skin()
-		  && approximate_not_equal_lp(fps, 0.f)
-		  && (past > 0 || future > 0) )
-		{
-			const Color color_past  (1.f, 0.f, 0.f, 0.2f);
-			const Color color_future(0.f, 1.f, 0.f, 0.2f);
-			const ColorReal base_alpha = 1.f;
-			const ColorReal current_alpha = 0.5f;
-			// make onion levels
-			Time frame_duration(1.0/(double)fps);
-			for(int i = past; i > 0; --i) {
-				Time time = base_time - frame_duration*i;
-				ColorReal alpha = base_alpha + (ColorReal)(past - i + 1)/(ColorReal)(past + 1);
-				if (time >= rend_desc.get_time_start() && time <= rend_desc.get_time_end())
-					onion_frames.push_back(FrameDesc(time, w, h, alpha));
-			}
-			for(int i = future; i > 0; --i) {
-				Time time = base_time + frame_duration*i;
-				ColorReal alpha = base_alpha + (ColorReal)(future - i + 1)/(ColorReal)(future + 1);
-				if (time >= rend_desc.get_time_start() && time <= rend_desc.get_time_end())
-					onion_frames.push_back(FrameDesc(time, w, h, alpha));
-			}
-			onion_frames.push_back(FrameDesc(base_time, w, h, base_alpha + 1.f + current_alpha));
-
-			// normalize
-			ColorReal summary = 0.f;
-			for(FrameList::const_iterator i = onion_frames.begin(); i != onion_frames.end(); ++i)
-				summary += i->alpha;
-			ColorReal k = approximate_greater(summary, ColorReal(1.f)) ? 1.f/summary : 1.f;
-			for(FrameList::iterator i = onion_frames.begin(); i != onion_frames.end(); ++i)
-				i->alpha *= k;
-		} else {
-			onion_frames.push_back(FrameDesc(base_time, w, h, 1.f));
-		}
-
-		remove_old_tiles();
-
-		// generate rendering tasks
-		if (canvas && window_rect.is_valid()) {
-			Time orig_time = canvas->get_time();
-
-			// create transformation matrix to flip result if needed
-			bool transform = false;
-			Matrix matrix;
-			Vector p0 = rend_desc.get_tl();
-			Vector p1 = rend_desc.get_br();
-			if (p0[0] > p1[0] || p0[1] > p1[1]) {
-				if (p0[0] > p1[0]) { matrix.m00 = -1.0; matrix.m20 = p0[0] + p1[0]; std::swap(p0[0], p1[0]); }
-				if (p0[1] > p1[1]) { matrix.m11 = -1.0; matrix.m21 = p0[1] + p1[1]; std::swap(p0[1], p1[1]); }
-				rend_desc.set_tl_br(p0, p1);
-				transform = true;
-			}
-
-			CanvasBase sub_queue;
-			std::vector<synfig::RectInt> rects;
-			for(FrameList::const_iterator i = onion_frames.begin(); i != onion_frames.end(); ++i) {
-				Time frame_time = i->id.time;
-				TileSet &frame_tiles = tiles[i->id];
-
-				// find not actual regions
-				rects.clear();
-				rects.push_back(window_rect);
-				for(TileSet::const_iterator j = frame_tiles.begin(); j != frame_tiles.end(); ++j)
-					if (*j && (*j)->refresh_id == current_refresh_id)
-						etl::rects_subtract(rects, (*j)->rect);
-				rects_merge(rects);
-
-				if (!rects.empty()) {
-					// this function don't locks mutex, so we may use it here with locked mutex
-					pre_tile_started();
-
-					// build rendering task
-					canvas->set_time(frame_time);
-					canvas->set_outline_grow(rend_desc.get_outline_grow());
-					Context context = canvas->get_context_sorted(context_params, sub_queue);
-					rendering::Task::Handle task = context.build_rendering_task();
-					if (!task) task = new rendering::TaskSurface();
-					sub_queue.clear();
-
-					// add transformation task to flip result if needed
-					if (transform) {
-						rendering::TaskTransformationAffine::Handle t = new rendering::TaskTransformationAffine();
-						t->transformation->matrix = matrix;
-						t->sub_task() = task;
-						task = t;
-					}
-
-					rendering::Task::List list;
-					list.push_back(task);
-
-					for(std::vector<synfig::RectInt>::iterator j = rects.begin(); j != rects.end(); ++j) {
-						// snap rect corners to tile grid
-						RectInt &rect = *j;
-						rect.minx = int_floor(rect.minx, tile_grid_step);
-						rect.miny = int_floor(rect.miny, tile_grid_step);
-						rect.maxx = int_ceil (rect.maxx, tile_grid_step);
-						rect.maxy = int_ceil (rect.maxy, tile_grid_step);
-						rect &= full_rect;
-
-						RendDesc tile_desc=rend_desc;
-						tile_desc.set_subwindow(rect.minx, rect.miny, rect.get_width(), rect.get_height());
-
-						rendering::Task::Handle tile_task = task->clone_recursive();
-						tile_task->target_surface = new rendering::SurfaceResource();
-						tile_task->target_surface->create(tile_desc.get_w(), tile_desc.get_h());
-						tile_task->target_rect = RectInt( VectorInt(), tile_task->target_surface->get_size() );
-						tile_task->source_rect = Rect(tile_desc.get_tl(), tile_desc.get_br());
-
-						Tile::Handle tile = new Tile(current_refresh_id, frame_time, *j);
-						tile->surface = tile_task->target_surface;
-
-						tile->event = new rendering::TaskEvent();
-						tile->event->signal_finished.connect( sigc::bind(
-							sigc::ptr_fun(&on_tile_finished_callback), this, tile ));
-
-						frame_tiles.insert(tile);
-
-						// Renderer::enqueue contains the expensive 'optimization' stage, so call it async
-						ThreadPool::instance.enqueue( sigc::bind(
-							sigc::ptr_fun(&enqueue_rendering_task_callback),
-							renderer, tile_task, tile->event ));
-					}
-				}
-			}
-			canvas->set_time(orig_time);
-		}
-	}
-
-	// cancel all previous tasks
-	cancel_render(current_refresh_id);
-}
-
-void
-Renderer_Canvas::wait_render()
-{
-	rendering::TaskEvent::List list;
-	while(true) {
-		{
-			Glib::Threads::Mutex::Lock lock(mutex);
-			for(TileMap::const_iterator i = tiles.begin(); i != tiles.end(); ++i)
-				for(TileSet::const_iterator j = i->second.begin(); j != i->second.end(); ++j)
-					if (*j && (*j)->event && !(*j)->event->is_finished())
-						list.push_back((*j)->event);
-		}
-		if (list.empty()) return;
-		for(rendering::TaskEvent::List::iterator i = list.begin(); i != list.end(); ++i)
-			(*i)->wait();
-		list.clear();
-		Glib::usleep(1);
-	}
+		obj->on_post_tile_finished();
 }
 
 Cairo::RefPtr<Cairo::ImageSurface>
@@ -491,6 +148,8 @@ Renderer_Canvas::convert(
 	const synfig::rendering::SurfaceResource::Handle &surface,
 	int width, int height ) const
 {
+	// this method may be called from the other threads
+
 	assert(width > 0 && height > 0);
 
 	Cairo::RefPtr<Cairo::ImageSurface> cairo_surface =
@@ -566,10 +225,430 @@ Renderer_Canvas::convert(
 }
 
 void
+Renderer_Canvas::on_tile_finished(bool success, const Tile::Handle &tile)
+{
+	// this method must be called from on_tile_finished_callback()
+	// this method may be called from other threads
+
+	// 'tiles', 'onion_frames', 'refresh_id', and 'tiles_size' are controlled by mutex
+
+	Glib::Threads::Mutex::Lock lock(mutex);
+
+	if (!tile->event && !tile->surface && !tile->cairo_surface)
+		return; // tile is already removed
+
+	tile->event.reset();
+	if (success && tile->surface)
+		tile->cairo_surface = convert(tile->surface, tile->rect.get_width(), tile->rect.get_height());
+	tile->surface.reset();
+
+	// don't create handle if ref-count is zero
+	// it means that object was nether had a handles and will removed with handle
+	// or object is already in destruction phase
+	if (shared_object::count())
+		Glib::signal_timeout().connect_once(
+			sigc::bind(sigc::ptr_fun(&on_post_tile_finished_callback), etl::handle<Renderer_Canvas>(this)), 0);
+}
+
+void
+Renderer_Canvas::on_post_tile_finished()
+{
+	// this method must be called from on_post_tile_finished_callback()
+	// check if rendering is finished
+	bool all_finished = true;
+	{
+		Glib::Threads::Mutex::Lock lock(mutex);
+		for(TileMap::const_iterator i = tiles.begin(); all_finished && i != tiles.end(); ++i)
+			for(TileList::const_iterator j = i->second.begin(); all_finished && j != i->second.end(); ++j)
+				if (*j && (*j)->event)
+					all_finished = false;
+	}
+	if (all_finished) enqueue_render();
+
+	if (!draw_queued)
+		{ get_work_area()->queue_draw(); draw_queued = true; }
+}
+
+void
+Renderer_Canvas::insert_tile(TileList &list, const Tile::Handle &tile)
+{
+	// this method may be called from other threads
+	// mutex must be already locked
+	list.push_back(tile);
+	tiles_size += image_rect_size(tile->rect);
+}
+
+void
+Renderer_Canvas::erase_tile(TileList &list, TileList::iterator i, rendering::Task::List &events)
+{
+	// this method may be called from other threads
+	// mutex must be already locked
+	if ((*i)->event) events.push_back((*i)->event);
+	tiles_size -= image_rect_size((*i)->rect);
+	(*i)->event.reset();
+	(*i)->surface.reset();
+	(*i)->cairo_surface.clear();
+	list.erase(i);
+}
+
+void
+Renderer_Canvas::remove_extra_tiles(synfig::rendering::Task::List &events)
+{
+	// mutex must be already locked
+
+	typedef std::multimap<Real, TileMap::iterator> WeightMap;
+	WeightMap sorted_frames;
+
+	Real current_zoom = sqrt((Real)(current_frame.width * current_frame.height));
+
+	// calc weight
+	for(TileMap::iterator i = tiles.begin(); i != tiles.end(); ++i) {
+		if (!visible_frames.count(i->first) && tiles_size > max_tiles_size_hard) {
+			Real weight = 0.0;
+			if (frame_duration) {
+				Time dt = i->first.time - current_frame.time;
+				Real df = ((double)dt)/(double)frame_duration;
+				weight += df*(df > 0.0 ? weight_future : weight_past);
+			}
+			if (current_zoom) {
+				Real zoom = sqrt((Real)(i->first.width * i->first.height));
+				Real zoom_step = log(zoom/current_zoom);
+				weight += zoom_step*(zoom_step > 0.0 ? weight_zoom_in : weight_zoom_out);
+			}
+			sorted_frames.insert( WeightMap::value_type(weight, i) );
+		}
+	}
+
+	// remove some extra tiles to free the memory
+	for(WeightMap::reverse_iterator ri = sorted_frames.rbegin(); ri != sorted_frames.rend() && tiles_size > max_tiles_size_hard; ++ri)
+		for(TileList::iterator j = ri->second->second.begin(); j != ri->second->second.end() && tiles_size > max_tiles_size_hard; )
+			erase_tile(ri->second->second, j++, events);
+
+	// remove empty entries from tiles map
+	for(TileMap::iterator i = tiles.begin(); i != tiles.end(); )
+		if (i->second.empty()) tiles.erase(i++); else ++i;
+}
+
+void
+Renderer_Canvas::build_onion_frames()
+{
+	// mutex must be already locked
+
+	Canvas::Handle canvas    = get_work_area()->get_canvas();
+	int            w         = get_work_area()->get_w();
+	int            h         = get_work_area()->get_h();
+	int            past      = std::max(0, get_work_area()->get_onion_skins()[0]);
+	int            future    = std::max(0, get_work_area()->get_onion_skins()[1]);
+	Time           base_time = canvas->get_time();
+	RendDesc       rend_desc = canvas->rend_desc();
+	float          fps       = rend_desc.get_frame_rate();
+
+	current_frame = FrameId(base_time, w, h);
+	frame_duration = Time(approximate_greater_lp(fps, 0.f) ? 1.0/(double)fps : 0.0);
+
+	// set onion_frames
+	onion_frames.clear();
+	if ( get_work_area()->get_onion_skin()
+	  && frame_duration
+	  && (past > 0 || future > 0) )
+	{
+		const Color color_past  (1.f, 0.f, 0.f, 0.2f);
+		const Color color_future(0.f, 1.f, 0.f, 0.2f);
+		const ColorReal base_alpha = 1.f;
+		const ColorReal current_alpha = 0.5f;
+		// make onion levels
+		for(int i = past; i > 0; --i) {
+			Time time = base_time - frame_duration*i;
+			ColorReal alpha = base_alpha + (ColorReal)(past - i + 1)/(ColorReal)(past + 1);
+			if (time >= rend_desc.get_time_start() && time <= rend_desc.get_time_end())
+				onion_frames.push_back(FrameDesc(time, w, h, alpha));
+		}
+		for(int i = future; i > 0; --i) {
+			Time time = base_time + frame_duration*i;
+			ColorReal alpha = base_alpha + (ColorReal)(future - i + 1)/(ColorReal)(future + 1);
+			if (time >= rend_desc.get_time_start() && time <= rend_desc.get_time_end())
+				onion_frames.push_back(FrameDesc(time, w, h, alpha));
+		}
+		onion_frames.push_back(FrameDesc(current_frame, base_alpha + 1.f + current_alpha));
+
+		// normalize
+		ColorReal summary = 0.f;
+		for(FrameList::const_iterator i = onion_frames.begin(); i != onion_frames.end(); ++i)
+			summary += i->alpha;
+		ColorReal k = approximate_greater(summary, ColorReal(1.f)) ? 1.f/summary : 1.f;
+		for(FrameList::iterator i = onion_frames.begin(); i != onion_frames.end(); ++i)
+			i->alpha *= k;
+	} else {
+		onion_frames.push_back(FrameDesc(current_frame, 1.f));
+	}
+
+	// set visible_frames
+	visible_frames.clear();
+	for(FrameList::const_iterator i = onion_frames.begin(); i != onion_frames.end(); ++i)
+		visible_frames.insert(i->id);
+}
+
+bool
+Renderer_Canvas::enqueue_render_frame(const rendering::Renderer::Handle &renderer, const FrameId &id)
+{
+	// mutex must be already locked
+
+	const int tile_grid_step = 64;
+
+	Canvas::Handle canvas      = get_work_area()->get_canvas();
+	RendDesc       rend_desc   = canvas->rend_desc();
+	RectInt        window_rect = get_work_area()->get_window_rect();
+	int            w           = get_work_area()->get_w();
+	int            h           = get_work_area()->get_h();
+	RectInt        full_rect   = RectInt(0, 0, w, h);
+
+	rend_desc.clear_flags();
+	rend_desc.set_wh(w, h);
+	ContextParams context_params(rend_desc.get_render_excluded_contexts());
+	TileList &frame_tiles = tiles[id];
+
+	// create transformation matrix to flip result if needed
+	bool transform = false;
+	Matrix matrix;
+	Vector p0 = rend_desc.get_tl();
+	Vector p1 = rend_desc.get_br();
+	if (p0[0] > p1[0] || p0[1] > p1[1]) {
+		if (p0[0] > p1[0]) { matrix.m00 = -1.0; matrix.m20 = p0[0] + p1[0]; std::swap(p0[0], p1[0]); }
+		if (p0[1] > p1[1]) { matrix.m11 = -1.0; matrix.m21 = p0[1] + p1[1]; std::swap(p0[1], p1[1]); }
+		rend_desc.set_tl_br(p0, p1);
+		transform = true;
+	}
+
+	// find not actual regions
+	std::vector<synfig::RectInt> rects;
+	rects.reserve(20);
+	rects.push_back(window_rect);
+	for(TileList::const_iterator j = frame_tiles.begin(); j != frame_tiles.end(); ++j)
+		if (*j) etl::rects_subtract(rects, (*j)->rect);
+	rects_merge(rects);
+
+	if (rects.empty()) return false;
+
+	// build rendering task
+	canvas->set_time(id.time);
+	canvas->set_outline_grow(rend_desc.get_outline_grow());
+	CanvasBase sub_queue;
+	Context context = canvas->get_context_sorted(context_params, sub_queue);
+	rendering::Task::Handle task = context.build_rendering_task();
+	if (!task) task = new rendering::TaskSurface();
+	sub_queue.clear();
+
+	// add transformation task to flip result if needed
+	if (transform) {
+		rendering::TaskTransformationAffine::Handle t = new rendering::TaskTransformationAffine();
+		t->transformation->matrix = matrix;
+		t->sub_task() = task;
+		task = t;
+	}
+
+	rendering::Task::List list;
+	list.push_back(task);
+
+	for(std::vector<synfig::RectInt>::iterator j = rects.begin(); j != rects.end(); ++j) {
+		// snap rect corners to tile grid
+		RectInt &rect = *j;
+		rect.minx = int_floor(rect.minx, tile_grid_step);
+		rect.miny = int_floor(rect.miny, tile_grid_step);
+		rect.maxx = int_ceil (rect.maxx, tile_grid_step);
+		rect.maxy = int_ceil (rect.maxy, tile_grid_step);
+		rect &= full_rect;
+
+		RendDesc tile_desc=rend_desc;
+		tile_desc.set_subwindow(rect.minx, rect.miny, rect.get_width(), rect.get_height());
+
+		rendering::Task::Handle tile_task = task->clone_recursive();
+		tile_task->target_surface = new rendering::SurfaceResource();
+		tile_task->target_surface->create(tile_desc.get_w(), tile_desc.get_h());
+		tile_task->target_rect = RectInt( VectorInt(), tile_task->target_surface->get_size() );
+		tile_task->source_rect = Rect(tile_desc.get_tl(), tile_desc.get_br());
+
+		Tile::Handle tile = new Tile(id, *j);
+		tile->surface = tile_task->target_surface;
+
+		tile->event = new rendering::TaskEvent();
+		tile->event->signal_finished.connect( sigc::bind(
+			sigc::ptr_fun(&on_tile_finished_callback), this, tile ));
+
+		insert_tile(frame_tiles, tile);
+
+		// Renderer::enqueue contains the expensive 'optimization' stage, so call it async
+		ThreadPool::instance.enqueue( sigc::bind(
+			sigc::ptr_fun(&rendering::Renderer::enqueue_task_func),
+			renderer, tile_task, tile->event, false ));
+	}
+
+	return true;
+}
+
+void
+Renderer_Canvas::enqueue_render()
+{
+	assert(get_work_area());
+
+	rendering::Task::List events;
+
+	{
+		Glib::Threads::Mutex::Lock lock(mutex);
+
+		String         renderer_name  = get_work_area()->get_renderer();
+		RectInt        window_rect    = get_work_area()->get_window_rect();
+		Canvas::Handle canvas         = get_work_area()->get_canvas();
+		RendDesc       rend_desc      = canvas->rend_desc();
+
+		build_onion_frames();
+
+		rendering::Renderer::Handle renderer = rendering::Renderer::get_renderer(renderer_name);
+		if (renderer) {
+			bool enqueued = false;
+			if (canvas && window_rect.is_valid()) {
+				// generate rendering tasks for visible areas
+				Time orig_time = canvas->get_time();
+				for(FrameList::const_iterator i = onion_frames.begin(); i != onion_frames.end(); ++i)
+					if (enqueue_render_frame(renderer, i->id))
+						enqueued = true;
+
+				remove_extra_tiles(events);
+
+				for(TileMap::const_iterator i = tiles.begin(); i != tiles.end() && !enqueued; ++i)
+					for(TileList::const_iterator j = i->second.begin(); j != i->second.end() && !enqueued; ++j)
+						if (!*j || (*j)->event)
+							enqueued = true;
+
+				if (!enqueued && frame_duration) {
+					// generate rendering tasks for future or past frames
+					int future = 0, past = 0;
+					long long frame_size = image_rect_size(window_rect);
+					while(tiles_size + frame_size < max_tiles_size_soft) {
+						Time future_time = current_frame.time + frame_duration*future;
+						bool future_exists = future_time >= rend_desc.get_time_start()
+										  && future_time <= rend_desc.get_time_end();
+						Time past_time = current_frame.time - frame_duration*past;
+						bool past_exists = past_time >= rend_desc.get_time_start()
+										&& past_time <= rend_desc.get_time_end();
+						if (!future_exists && !past_exists) break;
+
+						if (!past_exists || weight_future*future < weight_past*past) {
+							// queue future
+							if (enqueue_render_frame(renderer, FrameId(future_time, current_frame.width, current_frame.height))) break;
+							++future;
+						} else {
+							// queue past
+							if (enqueue_render_frame(renderer, FrameId(past_time, current_frame.width, current_frame.height))) break;
+							++past;
+						}
+					}
+				}
+
+				canvas->set_time(orig_time);
+			}
+		}
+	}
+
+	rendering::Renderer::cancel(events);
+}
+
+void
+Renderer_Canvas::wait_render()
+{
+	rendering::TaskEvent::List events;
+	{
+		Glib::Threads::Mutex::Lock lock(mutex);
+		for(FrameList::const_iterator i = onion_frames.begin(); i != onion_frames.end(); ++i) {
+			TileMap::const_iterator ii = tiles.find(i->id);
+			if (ii != tiles.end())
+				for(TileList::const_iterator j = ii->second.begin(); j != ii->second.end(); ++j)
+					if (*j && (*j)->event)
+						events.push_back((*j)->event);
+		}
+	}
+	for(rendering::TaskEvent::List::const_iterator i = events.begin(); i != events.end(); ++i)
+		(*i)->wait();
+}
+
+void
+Renderer_Canvas::clear_render()
+{
+	rendering::Task::List events;
+	{
+		Glib::Threads::Mutex::Lock lock(mutex);
+		for(TileMap::iterator i = tiles.begin(); i != tiles.end(); ++i)
+			while(!i->second.empty()) {
+				TileList::iterator j = i->second.end(); --j;
+				erase_tile(i->second, j++, events);
+			}
+		tiles.clear();
+	}
+	rendering::Renderer::cancel(events);
+}
+
+Renderer_Canvas::FrameStatus
+Renderer_Canvas::calc_frame_status(const FrameId &id, const synfig::RectInt &window_rect)
+{
+	// mutex must be already locked
+
+	TileMap::const_iterator i = tiles.find(id);
+	if (i == tiles.end() || i->second.empty())
+		return FS_None;
+
+	std::vector<synfig::RectInt> rects;
+	rects.reserve(20);
+	rects.push_back(window_rect);
+	for(TileList::const_iterator j = i->second.begin(); j != i->second.end(); ++j)
+		if (*j) {
+			if ((*j)->event)
+				return FS_InProcess;
+			if ((*j)->cairo_surface)
+				etl::rects_subtract(rects, (*j)->rect);
+		}
+	rects_merge(rects);
+
+	if (rects.size() == 1 && rects.front() == window_rect)
+		return FS_None;
+	if (rects.empty())
+		return FS_Done;
+	return FS_PartiallyDone;
+}
+
+void
+Renderer_Canvas::get_render_status(StatusMap &out_map)
+{
+	Glib::Threads::Mutex::Lock lock(mutex);
+
+	Canvas::Handle canvas      = get_work_area()->get_canvas();
+	RectInt        window_rect = get_work_area()->get_window_rect();
+	RendDesc       rend_desc   = canvas->rend_desc();
+
+	out_map.clear();
+
+	out_map[current_frame] = calc_frame_status(current_frame, window_rect);
+
+	if (frame_duration) {
+		int frame = (int)floor((double)(rend_desc.get_time_start() - current_frame.time)/(double)frame_duration);
+		while(true) {
+			Time time = current_frame.time + frame_duration*frame;
+			if (time > rend_desc.get_time_end())
+				break;
+			if (frame && time >= rend_desc.get_time_start()) {
+				FrameId id(time, current_frame.width, current_frame.height);
+				out_map[id] = calc_frame_status(id, window_rect);
+			}
+			++frame;
+		}
+	}
+}
+
+void
 Renderer_Canvas::render_vfunc(
 	const Glib::RefPtr<Gdk::Window>& drawable,
 	const Gdk::Rectangle& expose_area )
 {
+	draw_queued = false;
+
 	VectorInt window_offset = get_work_area()->get_windows_offset();
 	RectInt   window_rect   = get_work_area()->get_window_rect();
 	RectInt   expose_rect   = RectInt( expose_area.get_x(),
@@ -582,6 +661,10 @@ Renderer_Canvas::render_vfunc(
 
 	// enqueue rendering if not all of visible tiles are exists and actual
 	enqueue_render();
+
+	// query frames status
+	StatusMap status_map;
+	get_render_status(status_map);
 
 	Glib::Threads::Mutex::Lock lock(mutex);
 
@@ -635,12 +718,8 @@ Renderer_Canvas::render_vfunc(
 	for(FrameList::const_iterator i = onion_frames.begin(); i != onion_frames.end(); ++i) {
 		TileMap::const_iterator ii = tiles.find(i->id);
 		if (ii == tiles.end()) continue;
-		for(TileSet::const_iterator j = ii->second.begin(); j != ii->second.end(); ++j) {
+		for(TileList::const_iterator j = ii->second.begin(); j != ii->second.end(); ++j) {
 			if (!*j) continue;
-			if (!(*j)->event && (*j)->surface) {
-				(*j)->cairo_surface = convert((*j)->surface, (*j)->rect.get_width(), (*j)->rect.get_height());
-				(*j)->surface.reset();
-			}
 			if ((*j)->cairo_surface) {
 				onion_context->set_source((*j)->cairo_surface, (*j)->rect.minx, (*j)->rect.miny);
 				onion_context->paint_with_alpha(i->alpha);
@@ -668,9 +747,37 @@ Renderer_Canvas::render_vfunc(
 	context->set_antialias(Cairo::ANTIALIAS_NONE);
 	context->set_line_width(1.0);
 	context->set_source_rgba(0.0, 0.0, 0.0, 1.0);
-	context->rectangle(0.0, 0.0, (double)get_w(), (double)get_h());
+	context->rectangle(0.0, 0.0, (double)current_frame.width, (double)current_frame.height);
 	context->stroke();
 	context->restore();
+
+	// draw frames status
+	if (!status_map.empty()) {
+		context->save();
+		context->translate(0.0, (double)current_frame.height);
+		double scale = (double)current_frame.width/(double)status_map.size();
+		context->scale(scale, scale);
+		context->set_line_width(1.0/scale);
+		for(StatusMap::const_iterator i = status_map.begin(); i != status_map.end(); ++i) {
+			switch(i->second) {
+			case FS_PartiallyDone:
+				context->set_source_rgba(0.5, 0.5, 0.5, 1.0); break;
+			case FS_InProcess:
+				context->set_source_rgba(1.0, 1.0, 0.0, 1.0); break;
+			case FS_Done:
+				context->set_source_rgba(0.0, 0.0, 0.0, 1.0); break;
+			default:
+				context->set_source_rgba(1.0, 1.0, 1.0, 1.0); break;
+			}
+			context->begin_new_path();
+			context->arc(0.5, 0.5, 0.4, 0.0, 2*M_PI);
+			context->fill_preserve();
+			context->set_source_rgba(0.0, 0.0, 0.0, 1.0);
+			context->stroke_preserve();
+			context->translate(1.0, 0.0);
+		}
+		context->restore();
+	}
 
 	context->restore();
 }
