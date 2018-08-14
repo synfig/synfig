@@ -162,12 +162,13 @@ private:
 	// don't try to pass arguments to callbacks by reference, it cannot be properly saved in signal
 	// Renderer_Canvas is non-thread-safe sigc::trackable, so use static callback methods in signals
 	static void on_tile_finished_callback(bool success, Renderer_Canvas *obj, Tile::Handle tile);
-	static void on_post_tile_finished_callback(etl::handle<Renderer_Canvas> obj);
+	static void on_post_tile_finished_callback(etl::handle<Renderer_Canvas> obj, Tile::Handle tile);
 
 	//! this method may be called from the other threads
 	void on_tile_finished(bool success, const Tile::Handle &tile);
 
-	void on_post_tile_finished();
+	//! this method may be called from the main thread only
+	void on_post_tile_finished(const Tile::Handle &tile);
 
 	//! this method may be called from the other threads
 	Cairo::RefPtr<Cairo::ImageSurface> convert(

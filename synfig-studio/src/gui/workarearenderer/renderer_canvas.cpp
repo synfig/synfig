@@ -135,12 +135,12 @@ Renderer_Canvas::on_tile_finished_callback(bool success, Renderer_Canvas *obj, T
 }
 
 void
-Renderer_Canvas::on_post_tile_finished_callback(etl::handle<Renderer_Canvas> obj) {
+Renderer_Canvas::on_post_tile_finished_callback(etl::handle<Renderer_Canvas> obj, Tile::Handle tile) {
 	// this function should be called in main thread
 	// Handle will protect 'obj' from deletion before this call
 	// zero 'work_area' means that 'work_area' is destructed and here is a last Handle of 'obj'
 	if (obj->get_work_area())
-		obj->on_post_tile_finished();
+		obj->on_post_tile_finished(tile);
 }
 
 Cairo::RefPtr<Cairo::ImageSurface>
@@ -149,7 +149,6 @@ Renderer_Canvas::convert(
 	int width, int height ) const
 {
 	// this method may be called from the other threads
-
 	assert(width > 0 && height > 0);
 
 	Cairo::RefPtr<Cairo::ImageSurface> cairo_surface =
@@ -162,6 +161,8 @@ Renderer_Canvas::convert(
 		success = true;
 	} else
 	if (surface_lock.convert(rendering::Surface::Token::Handle(), false, true)) {
+		debug::Measure measure("Renderer_Canvas::convert");
+
 		const rendering::Surface &s = *surface_lock.get_surface();
 		int w = s.get_width();
 		int h = s.get_height();
@@ -233,7 +234,6 @@ Renderer_Canvas::on_tile_finished(bool success, const Tile::Handle &tile)
 	// 'tiles', 'onion_frames', 'refresh_id', and 'tiles_size' are controlled by mutex
 
 	Glib::Threads::Mutex::Lock lock(mutex);
-
 	if (!tile->event && !tile->surface && !tile->cairo_surface)
 		return; // tile is already removed
 
@@ -246,26 +246,29 @@ Renderer_Canvas::on_tile_finished(bool success, const Tile::Handle &tile)
 	// it means that object was nether had a handles and will removed with handle
 	// or object is already in destruction phase
 	if (shared_object::count())
-		Glib::signal_timeout().connect_once(
-			sigc::bind(sigc::ptr_fun(&on_post_tile_finished_callback), etl::handle<Renderer_Canvas>(this)), 0);
+		Glib::signal_idle().connect_once(
+			sigc::bind(sigc::ptr_fun(&on_post_tile_finished_callback), etl::handle<Renderer_Canvas>(this), tile), Glib::PRIORITY_HIGH);
 }
 
 void
-Renderer_Canvas::on_post_tile_finished()
+Renderer_Canvas::on_post_tile_finished(const Tile::Handle &tile)
 {
 	// this method must be called from on_post_tile_finished_callback()
 	// check if rendering is finished
+	bool tile_visible = false;
 	bool all_finished = true;
 	{
 		Glib::Threads::Mutex::Lock lock(mutex);
+		if (visible_frames.count(tile->frame_id))
+			tile_visible = true;
 		for(TileMap::const_iterator i = tiles.begin(); all_finished && i != tiles.end(); ++i)
 			for(TileList::const_iterator j = i->second.begin(); all_finished && j != i->second.end(); ++j)
 				if (*j && (*j)->event)
 					all_finished = false;
 	}
-	if (all_finished) enqueue_render();
 
-	if (!draw_queued)
+	if (all_finished) enqueue_render();
+	if (!draw_queued /*&& tile_visible*/)
 		{ get_work_area()->queue_draw(); draw_queued = true; }
 }
 
@@ -435,16 +438,20 @@ Renderer_Canvas::enqueue_render_frame(const rendering::Renderer::Handle &rendere
 	CanvasBase sub_queue;
 	Context context = canvas->get_context_sorted(context_params, sub_queue);
 	rendering::Task::Handle task = context.build_rendering_task();
-	if (!task) task = new rendering::TaskSurface();
 	sub_queue.clear();
 
 	// add transformation task to flip result if needed
-	if (transform) {
+	if (task && transform) {
 		rendering::TaskTransformationAffine::Handle t = new rendering::TaskTransformationAffine();
 		t->transformation->matrix = matrix;
 		t->sub_task() = task;
 		task = t;
 	}
+
+	// TaskSurface assumed as valid non-trivial task by renderer
+	// and TaskTransformationAffine of TaskSurface will not be optimized.
+	// To avoid this construction place creation of dummy TaskSurface here.
+	if (!task) task = new rendering::TaskSurface();
 
 	rendering::Task::List list;
 	list.push_back(task);
@@ -504,43 +511,43 @@ Renderer_Canvas::enqueue_render()
 
 		rendering::Renderer::Handle renderer = rendering::Renderer::get_renderer(renderer_name);
 		if (renderer) {
-			bool enqueued = false;
+			int enqueued = 0;
 			if (canvas && window_rect.is_valid()) {
 				// generate rendering tasks for visible areas
 				Time orig_time = canvas->get_time();
 				for(FrameList::const_iterator i = onion_frames.begin(); i != onion_frames.end(); ++i)
 					if (enqueue_render_frame(renderer, i->id))
-						enqueued = true;
+						++enqueued;
 
 				remove_extra_tiles(events);
 
-				for(TileMap::const_iterator i = tiles.begin(); i != tiles.end() && !enqueued; ++i)
-					for(TileList::const_iterator j = i->second.begin(); j != i->second.end() && !enqueued; ++j)
+				for(TileMap::const_iterator i = tiles.begin(); i != tiles.end(); ++i)
+					for(TileList::const_iterator j = i->second.begin(); j != i->second.end(); ++j)
 						if (!*j || (*j)->event)
-							enqueued = true;
+							++enqueued;
 
-				if (!enqueued && frame_duration) {
-					// generate rendering tasks for future or past frames
-					int future = 0, past = 0;
-					long long frame_size = image_rect_size(window_rect);
-					while(tiles_size + frame_size < max_tiles_size_soft) {
-						Time future_time = current_frame.time + frame_duration*future;
-						bool future_exists = future_time >= rend_desc.get_time_start()
-										  && future_time <= rend_desc.get_time_end();
-						Time past_time = current_frame.time - frame_duration*past;
-						bool past_exists = past_time >= rend_desc.get_time_start()
-										&& past_time <= rend_desc.get_time_end();
-						if (!future_exists && !past_exists) break;
+				// generate rendering tasks for future or past frames
+				int future = 0, past = 0;
+				long long frame_size = image_rect_size(window_rect);
+				while(tiles_size + frame_size < max_tiles_size_soft && enqueued < 1) {
+					Time future_time = current_frame.time + frame_duration*future;
+					bool future_exists = future_time >= rend_desc.get_time_start()
+									  && future_time <= rend_desc.get_time_end();
+					Time past_time = current_frame.time - frame_duration*past;
+					bool past_exists = past_time >= rend_desc.get_time_start()
+									&& past_time <= rend_desc.get_time_end();
+					if (!future_exists && !past_exists) break;
 
-						if (!past_exists || weight_future*future < weight_past*past) {
-							// queue future
-							if (enqueue_render_frame(renderer, FrameId(future_time, current_frame.width, current_frame.height))) break;
-							++future;
-						} else {
-							// queue past
-							if (enqueue_render_frame(renderer, FrameId(past_time, current_frame.width, current_frame.height))) break;
-							++past;
-						}
+					if (!past_exists || weight_future*future < weight_past*past) {
+						// queue future
+						if (enqueue_render_frame(renderer, FrameId(future_time, current_frame.width, current_frame.height)))
+							++enqueued;
+						++future;
+					} else {
+						// queue past
+						if (enqueue_render_frame(renderer, FrameId(past_time, current_frame.width, current_frame.height)))
+							++enqueued;
+						++past;
 					}
 				}
 
@@ -714,15 +721,21 @@ Renderer_Canvas::render_vfunc(
 
 	// draw tiles
 	onion_context->save();
-	onion_context->set_source_rgba(0.0, 1.0, 1.0, 1.0);
 	for(FrameList::const_iterator i = onion_frames.begin(); i != onion_frames.end(); ++i) {
 		TileMap::const_iterator ii = tiles.find(i->id);
 		if (ii == tiles.end()) continue;
 		for(TileList::const_iterator j = ii->second.begin(); j != ii->second.end(); ++j) {
 			if (!*j) continue;
 			if ((*j)->cairo_surface) {
+				onion_context->save();
+				onion_context->rectangle((*j)->rect.minx, (*j)->rect.miny, (*j)->rect.get_width(), (*j)->rect.get_height());
+				onion_context->clip();
 				onion_context->set_source((*j)->cairo_surface, (*j)->rect.minx, (*j)->rect.miny);
-				onion_context->paint_with_alpha(i->alpha);
+				if (onion_surface)
+					onion_context->paint_with_alpha(i->alpha);
+				else
+					onion_context->paint();
+				onion_context->restore();
 			}
 		}
 	}
@@ -757,7 +770,6 @@ Renderer_Canvas::render_vfunc(
 		context->translate(0.0, (double)current_frame.height);
 		double scale = (double)current_frame.width/(double)status_map.size();
 		context->scale(scale, scale);
-		context->set_line_width(1.0/scale);
 		for(StatusMap::const_iterator i = status_map.begin(); i != status_map.end(); ++i) {
 			switch(i->second) {
 			case FS_PartiallyDone:
@@ -769,11 +781,8 @@ Renderer_Canvas::render_vfunc(
 			default:
 				context->set_source_rgba(1.0, 1.0, 1.0, 1.0); break;
 			}
-			context->begin_new_path();
-			context->arc(0.5, 0.5, 0.4, 0.0, 2*M_PI);
-			context->fill_preserve();
-			context->set_source_rgba(0.0, 0.0, 0.0, 1.0);
-			context->stroke_preserve();
+			context->rectangle(0.0, 0.0, 1.0, 1.0);
+			context->fill();
 			context->translate(1.0, 0.0);
 		}
 		context->restore();

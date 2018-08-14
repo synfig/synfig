@@ -29,6 +29,8 @@
 
 #include <vector>
 
+#include <glibmm/threads.h>
+
 #include <synfig/string.h>
 
 /* === M A C R O S ========================================================= */
@@ -44,6 +46,7 @@ namespace debug {
 
 class Measure {
 private:
+	static Glib::Threads::Mutex mutex;
 	static std::vector<Measure*> stack;
 	static String text;
 
