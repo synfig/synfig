@@ -66,7 +66,6 @@
 #endif
 
 using namespace synfig;
-namespace bfs=boost::filesystem;
 
 void process_job_list(std::list<Job>& job_list, const TargetParam& target_params)
 {
@@ -80,6 +79,27 @@ void process_job_list(std::list<Job>& job_list, const TargetParam& target_params
 	}
 }
 
+std::string get_extension(const std::string &filename)
+{
+	std::size_t found = filename.rfind(".");
+	if (found == std::string::npos) return ""; // extension not found
+
+	return filename.substr(found);
+}
+
+std::string replace_extension(const std::string &filename, const std::string &new_extension)
+{
+	std::size_t found = filename.rfind(".");
+	if (found == std::string::npos) return filename + "." + new_extension; // extension not found
+	
+	return filename.substr(0, found) + "." + new_extension;
+}
+
+std::string get_absolute_path(std::string relative_path) {
+  Glib::RefPtr<Gio::File> file = Gio::File::create_for_path(relative_path);
+  return file->get_path();
+}
+
 bool setup_job(Job& job, const TargetParam& target_parameters)
 {
 	VERBOSE_OUT(4) << _("Attempting to determine target/outfile...") << std::endl;
@@ -90,7 +110,8 @@ bool setup_job(Job& job, const TargetParam& target_parameters)
 	{
 		VERBOSE_OUT(3) << _("Target name undefined, attempting to figure it out")
 					   << std::endl;
-		std::string ext = bfs::path(job.outfilename).extension().string();
+		//std::string ext = bfs::path(job.outfilename).extension().string();
+		std::string ext = get_extension(job.outfilename);
 		if (ext.length())
 			ext = ext.substr(1);
 
@@ -133,14 +154,17 @@ bool setup_job(Job& job, const TargetParam& target_parameters)
 		else
 			new_extension = job.target_name;
 
-        job.outfilename = bfs::path(job.filename).replace_extension(new_extension).string();
+        //job.outfilename = bfs::path(job.filename).replace_extension(new_extension).string();
+		job.outfilename = replace_extension(job.filename, new_extension);
 	}
 
 	VERBOSE_OUT(4) << "Target name = " << job.target_name.c_str() << std::endl;
 	VERBOSE_OUT(4) << "Outfilename = " << job.outfilename.c_str() << std::endl;
 
 	// Check permissions
-	if (access(bfs::canonical(bfs::path(job.outfilename).parent_path()).string().c_str(), W_OK) == -1)
+	//if (access(bfs::canonical(bfs::path(job.outfilename).parent_path()).string().c_str(), W_OK) == -1)
+	// az: fixme
+	if (access(get_absolute_path(job.outfilename + "/../").c_str(), W_OK) == -1)
 	{
 	    const std::string message =
             (boost::format(_("Unable to create output for \"%s\": %s"))

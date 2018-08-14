@@ -28,11 +28,12 @@
 
 #include <synfig/main.h>
 
-boost::shared_ptr<SynfigToolGeneralOptions> SynfigToolGeneralOptions::_instance;
+
+std::shared_ptr<SynfigToolGeneralOptions> SynfigToolGeneralOptions::_instance;
 
 void SynfigToolGeneralOptions::create_singleton_instance(const char* argv0)
 {
-	_instance = boost::shared_ptr<SynfigToolGeneralOptions>(
+	_instance = std::shared_ptr<SynfigToolGeneralOptions>(
 					new SynfigToolGeneralOptions(argv0));
 }
 
@@ -57,7 +58,7 @@ SynfigToolGeneralOptions::SynfigToolGeneralOptions(const char* argv0)
 	_threads = 1;
 }
 
-boost::filesystem::path SynfigToolGeneralOptions::get_binary_path() const
+std::string SynfigToolGeneralOptions::get_binary_path() const
 {
 	return _binary_path;
 }

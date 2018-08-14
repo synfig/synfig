@@ -73,8 +73,7 @@ enum exit_code
 };
 
 #include <string>
-#include <boost/smart_ptr.hpp>
-#include <boost/filesystem.hpp>
+#include <memory>
 
 class SynfigToolGeneralOptions
 {
@@ -84,7 +83,7 @@ public:
 
 	static SynfigToolGeneralOptions* instance();
 
-	boost::filesystem::path get_binary_path() const;
+	std::string get_binary_path() const;
 
 	size_t get_threads() const;
 
@@ -105,13 +104,13 @@ public:
 private:
 	SynfigToolGeneralOptions(const char* argv0);
 
-	boost::filesystem::path _binary_path;
+	std::string _binary_path;
 	int _verbosity;
 	size_t _threads;
 	bool _should_be_quiet,
 		 _should_print_benchmarks;
 
-	static boost::shared_ptr<SynfigToolGeneralOptions> _instance;
+	static std::shared_ptr<SynfigToolGeneralOptions> _instance;
 };
 
 #endif

@@ -30,7 +30,7 @@
 #endif
 
 #include <iostream>
-#include <boost/filesystem.hpp>
+//#include <boost/filesystem.hpp>
 #include <boost/format.hpp>
 
 #include <autorevision.h>
@@ -61,7 +61,7 @@
 
 using namespace std;
 using namespace synfig;
-namespace bfs=boost::filesystem;
+//namespace bfs=boost::filesystem;
 
 OptionsProcessor::OptionsProcessor(
 	boost::program_options::variables_map& vm,

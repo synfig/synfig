@@ -28,7 +28,6 @@
 #include <string>
 #include <vector>
 #include <synfig/canvas.h>
-#include <boost/filesystem.hpp>
 #include <boost/program_options.hpp>
 
 // TODO rename to CommandLineHandler and move the options creation inside.

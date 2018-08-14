@@ -71,14 +71,19 @@
 #endif
 
 namespace po=boost::program_options;
-namespace bfs=boost::filesystem;
 
 std::string _appendAlphaToFilename(std::string input_filename)
 {
-    bfs::path filename(input_filename);
+
+	std::size_t found = input_filename.rfind(".");
+	if (found == std::string::npos) return input_filename + "-alpha"; // extension not found, just add to the end
+	
+	return input_filename.substr(0, found) + "-alpha" + input_filename.substr(found);
+
+    /*bfs::path filename(input_filename);
     bfs::path alpha_filename(filename.stem().string() + "-alpha" +
         filename.extension().string());
-    return bfs::path(filename.parent_path() / alpha_filename).string();
+    return bfs::path(filename.parent_path() / alpha_filename).string();*/
 }
 
 int main(int argc, char* argv[])
@@ -87,14 +92,16 @@ int main(int argc, char* argv[])
 
 	SynfigToolGeneralOptions::create_singleton_instance(argv[0]);
 
-	bfs::path binary_path =
+	std::string binary_path =
 		SynfigToolGeneralOptions::instance()->get_binary_path();
 
 #ifdef ENABLE_NLS
-	boost::filesystem::path locale_path =
-		binary_path.parent_path().parent_path();
-	locale_path = locale_path/"share"/"locale";
-	bindtextdomain("synfig", Glib::locale_from_utf8(locale_path.string()).c_str() );
+	/*boost::filesystem::path locale_path =
+		binary_path.parent_path().parent_path();*/
+	std::string locale_path = get_absolute_path(binary_path + "../../share/locale");
+	//locale_path = locale_path/"share"/"locale";
+	//bindtextdomain("synfig", Glib::locale_from_utf8(locale_path.string()).c_str() );
+	bindtextdomain("synfig", Glib::locale_from_utf8(locale_path).c_str() );
 	bind_textdomain_codeset("synfig", "UTF-8");
 	textdomain("synfig");
 #endif
@@ -261,8 +268,9 @@ int main(int argc, char* argv[])
 		// TODO: Optional load of main only if needed. i.e. not needed to display help
 		// Synfig Main initialization needs to be after verbose and
 		// before any other where it's used
-		Progress p(binary_path.string().c_str());
-		synfig::Main synfig_main(binary_path.parent_path().string(), &p);
+		Progress p(binary_path.c_str());
+		//synfig::Main synfig_main(binary_path.parent_path().string(), &p);
+		synfig::Main synfig_main(binary_path + "../", &p);
 
         // Info options -----------------------------------------------
         op.process_info_options();
