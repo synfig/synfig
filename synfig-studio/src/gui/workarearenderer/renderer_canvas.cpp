@@ -45,7 +45,6 @@
 #include <synfig/canvas.h>
 #include <synfig/context.h>
 #include <synfig/threadpool.h>
-#include <synfig/debug/measure.h>
 #include <synfig/rendering/renderer.h>
 #include <synfig/rendering/common/task/tasktransformation.h>
 
@@ -161,8 +160,6 @@ Renderer_Canvas::convert(
 		success = true;
 	} else
 	if (surface_lock.convert(rendering::Surface::Token::Handle(), false, true)) {
-		debug::Measure measure("Renderer_Canvas::convert");
-
 		const rendering::Surface &s = *surface_lock.get_surface();
 		int w = s.get_width();
 		int h = s.get_height();
@@ -177,16 +174,16 @@ Renderer_Canvas::convert(
 			if (pixels) {
 				// do conversion
 				cairo_surface->flush();
-				const Color *src = pixels;
-				unsigned char *begin = cairo_surface->get_data();
-				int stride = cairo_surface->get_stride();
-				unsigned char *end = begin + stride*cairo_surface->get_height();
-				for(unsigned char *row = begin; row < end; row += stride)
-					for(unsigned char *pixel = row, *pixel_end = row + stride; pixel < pixel_end; )
-						pixel = Color2PixelFormat(*src++, pixel_format, pixel, App::gamma);
+				color_to_pixelformat(
+					cairo_surface->get_data(),
+					pixels,
+					pixel_format,
+					&App::gamma,
+					cairo_surface->get_width(),
+					cairo_surface->get_height(),
+					cairo_surface->get_stride() );
 				cairo_surface->mark_dirty();
 				cairo_surface->flush();
-
 				success = true;
 			} else synfig::error("Renderer_Canvas::convert: cannot access surface pixels - that really strange");
 		} else synfig::error("Renderer_Canvas::convert: surface with wrong size");

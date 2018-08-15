@@ -193,7 +193,8 @@ jpeg_trgt::end_scanline()
 	if(!file || !ready)
 		return false;
 
-	convert_color_format(buffer, color_buffer, desc.get_w(), PF_RGB,gamma());
+	color_to_pixelformat(buffer, color_buffer, PF_RGB, &gamma(), desc.get_w());
+
 	JSAMPROW *row_pointer(&buffer);
 	jpeg_write_scanlines(&cinfo, row_pointer, 1);
 

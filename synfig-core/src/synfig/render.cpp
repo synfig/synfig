@@ -99,7 +99,7 @@ synfig::parametric_render(
 		pool;		// Alpha pool (for correct alpha antialiasing)
 
 	// Calculate the number of channels
-	//chan=channels(desc.get_pixel_format());
+	//chan=pixel_size(desc.get_pixel_format());
 
 	// Calculate the distance between pixels
 	du=(br[0]-tl[0])/(Point::value_type)w;
@@ -224,7 +224,7 @@ synfig::render(
 		return false;
 
 	// Calculate the number of channels
-	//chan=channels(desc.get_pixel_format());
+	//chan=pixel_size(desc.get_pixel_format());
 
 	// Calculate the distance between pixels
 	du=(br[0]-tl[0])/(Point::value_type)w;
@@ -360,7 +360,7 @@ synfig::cairorender(
 	pool;		// Alpha pool (for correct alpha antialiasing)
 	
 	// Calculate the number of channels
-	//chan=channels(desc.get_pixel_format());
+	//chan=pixel_size(desc.get_pixel_format());
 	
 	// Calculate the distance between pixels
 	du=(br[0]-tl[0])/(Point::value_type)w;

@@ -212,7 +212,7 @@ bmp::start_frame(synfig::ProgressCallback *callback)
 {
 	int w=desc.get_w(),h=desc.get_h();
 
-	rowspan=4*((w*(channels(pf)*8)+31)/32);
+	rowspan=4*((w*(pixel_size(pf)*8)+31)/32);
 	if(multi_image)
 	{
 		String newfilename(filename_sans_extension(filename) +
@@ -249,7 +249,7 @@ bmp::start_frame(synfig::ProgressCallback *callback)
 	infoheader.biWidth=little_endian(w);
 	infoheader.biHeight=little_endian(h);
 	infoheader.biPlanes=little_endian_short((short)1);
-	infoheader.biBitCount=little_endian_short((short)(channels(pf)*8));
+	infoheader.biBitCount=little_endian_short((short)(pixel_size(pf)*8));
 	infoheader.biCompression=little_endian(0);
 	infoheader.biSizeImage=little_endian(0);
 	infoheader.biXPelsPerMeter=little_endian((int)rend_desc().get_x_res());
@@ -295,7 +295,7 @@ bmp::end_scanline()
 	if(!file)
 		return false;
 
-	convert_color_format(buffer, color_buffer, desc.get_w(), pf, gamma());
+	color_to_pixelformat(buffer, color_buffer, pf, &gamma(), desc.get_w());
 
 	if(!fwrite(buffer,1,rowspan,file))
 		return false;

@@ -506,7 +506,7 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 	//Figure out maximum number of channels
 	for(curve_iter=curve_list_.begin();curve_iter!=curve_list_.end();++curve_iter)
 	{
-		int channels(curve_iter->channels.size());
+		int channels = curve_iter->channels.size();
 		if(channels>MAX_CHANNELS)
 		{
 			channels=MAX_CHANNELS;
@@ -562,7 +562,7 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 	{
 		Real t;
 		int i;
-		int channels(curve_iter->channels.size());
+		int channels = curve_iter->channels.size();
 		for(i=0;i<channels;i++)
 			points[i].clear();
 

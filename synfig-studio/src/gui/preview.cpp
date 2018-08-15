@@ -282,7 +282,7 @@ void studio::Preview::frame_finish(const Preview_Target *targ)
 
 	//copy EVERYTHING!
 	PixelFormat pf(PF_RGB);
-	const int total_bytes(r.get_w()*r.get_h()*synfig::channels(pf));
+	const int total_bytes(r.get_w()*r.get_h()*synfig::pixel_size(pf));
 
 	//synfig::warning("Creating a buffer");
 	unsigned char *buffer((unsigned char*)malloc(total_bytes));
@@ -292,7 +292,7 @@ void studio::Preview::frame_finish(const Preview_Target *targ)
 
 	//convert all the pixels to the pixbuf... buffer... thing...
 	//synfig::warning("Converting...");
-	convert_color_format(buffer, surf[0], surf.get_w()*surf.get_h(), pf, App::gamma);
+	color_to_pixelformat(buffer, surf[0], pf, &App::gamma, surf.get_w(), surf.get_h());
 
 	//load time
 	fe.t = time;
@@ -306,7 +306,7 @@ void studio::Preview::frame_finish(const Preview_Target *targ)
 		8, // bits per sample
 		surf.get_w(),	// width
 		surf.get_h(),	// height
-		surf.get_w()*synfig::channels(pf), // stride (pitch)
+		surf.get_w()*synfig::pixel_size(pf), // stride (pitch)
 		sigc::ptr_fun(free_guint8)
 	);
 

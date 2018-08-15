@@ -478,13 +478,13 @@ png_trgt_spritesheet::write_png_file()
     //Writing spritesheet into png image
 	for (cur_out_image_row = 0; cur_out_image_row < sheet_height; cur_out_image_row++)
 	{
-		convert_color_format(buffer, 
-		                     color_data[cur_out_image_row],
-		                     sheet_width, 
-		                     //PF_RGB|(get_alpha_mode()==TARGET_ALPHA_MODE_KEEP)?PF_A:PF_RGB, //Note: PF_RGB == 0
-							 (get_alpha_mode() == TARGET_ALPHA_MODE_KEEP) ? PF_RGB | PF_A : PF_RGB, //Note: PF_RGB == 0
-		                     gamma());
-	
+		color_to_pixelformat(
+			buffer,
+			color_data[cur_out_image_row],
+            //PF_RGB|(get_alpha_mode()==TARGET_ALPHA_MODE_KEEP)?PF_A:PF_RGB, //Note: PF_RGB == 0
+			(get_alpha_mode() == TARGET_ALPHA_MODE_KEEP) ? PF_RGB | PF_A : PF_RGB, //Note: PF_RGB == 0
+			&gamma(),
+			sheet_width );
 		setjmp(png_jmpbuf(png_ptr));
 		png_write_row(png_ptr,buffer);
 	}

@@ -160,7 +160,7 @@ static void convert_surface_frame(AVFrame *pic, const Surface &s, const Gamma &g
 	{
 		uint8_t *tptr = ptr;
 
-		//use convert_color_format instead...
+		//use color_to_pixelformat instead...
 		#if 0
 		const int channels = 3;
 
@@ -198,7 +198,7 @@ static void convert_surface_frame(AVFrame *pic, const Surface &s, const Gamma &g
 		p.dec_x(w);
 		#else
 
-		convert_color_format((unsigned char *)tptr,&p.get_value(),w,PF_RGB,gamma);
+		color_to_pixelformat((unsigned char *)tptr, &p.get_value(), PF_RGB, &gamma(), w);
 
 		#endif
 	}

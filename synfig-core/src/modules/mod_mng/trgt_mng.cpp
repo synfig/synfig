@@ -330,7 +330,7 @@ mng_trgt::end_scanline()
 	}
 
 	*buffer = MNG_FILTER_NONE;
-	convert_color_format(buffer+1, color_buffer, desc.get_w(), PF_RGB|PF_A, gamma());
+	color_to_pixelformat(buffer+1, color_buffer, PF_RGB|PF_A, &gamma(), desc.get_w());
 
 	zstream.next_in = buffer;
 	zstream.avail_in = (4*w)+1;

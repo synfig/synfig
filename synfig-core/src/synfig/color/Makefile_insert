@@ -11,7 +11,8 @@ COLOR_HH = \
 COLOR_CC = \
 	color/color.cpp \
 	color/colormatrix.cpp \
-	color/cairocolor.cpp
+	color/cairocolor.cpp \
+	color/pixelformat.cpp
 
 libsynfig_include_HH += \
     $(COLOR_HH)

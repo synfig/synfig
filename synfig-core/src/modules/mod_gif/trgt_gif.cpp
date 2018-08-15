@@ -324,7 +324,7 @@ gif::end_frame()
 
 	for(int cur_scanline=0;cur_scanline<desc.get_h();cur_scanline++)
 	{
-		//convert_color_format(curr_frame[cur_scanline], curr_surface[cur_scanline], desc.get_w(), PF_GRAY, gamma());
+		//color_to_pixelformat(curr_frame[cur_scanline], curr_surface[cur_scanline], PF_GRAY, &gamma(), desc.get_w());
 
 		// Now we compress it!
 		for(i=0;i<w;i++)

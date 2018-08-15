@@ -252,10 +252,8 @@ png_trgt::end_scanline()
 	if(!file || !ready)
 		return false;
 
-	if (get_alpha_mode()==TARGET_ALPHA_MODE_KEEP)
-		convert_color_format(buffer, color_buffer, desc.get_w(), PF_RGB|PF_A, gamma());
-	else
-		convert_color_format(buffer, color_buffer, desc.get_w(), PF_RGB, gamma());
+	PixelFormat pf = get_alpha_mode()==TARGET_ALPHA_MODE_KEEP ? PF_RGB|PF_A : PF_RGB;
+	color_to_pixelformat(buffer, color_buffer, pf, &gamma(), desc.get_w());
 
 	setjmp(png_jmpbuf(png_ptr));
 	png_write_row(png_ptr,buffer);

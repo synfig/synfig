@@ -78,19 +78,15 @@ DebugSurface::save_to_file(const void *buffer, int width, int height, int pitch,
 			pitch = width * sizeof(Color);
 
 		PixelFormat pf(PF_BGR|PF_A);
-		size_t total_bytes = width * height * synfig::channels(pf);
-		unsigned char *byte_buffer = (unsigned char*)malloc(total_bytes);
-		if (!byte_buffer) return;
+		int ps = pixel_size(pf);
+		int row_bytes = ps*width;
+		int total_bytes = row_bytes*height;
+		unsigned char *byte_buffer = new unsigned char[total_bytes];
 
 		// write rows in reverse order (for TGA format)
-		unsigned char *dest(byte_buffer);
-		Gamma gamma;
-		for(int y = height-1; y >= 0; --y)
-		{
-			const Color *src = (const Color *)((const unsigned char*)buffer + pitch*y);
-			for(int x = 0; x < width; ++x, ++src)
-				dest = Color2PixelFormat( src->clamped(), pf, dest, gamma );
-		}
+		color_to_pixelformat(
+			byte_buffer + total_bytes - row_bytes,
+			(const Color*)buffer, pf, NULL, width, height, -row_bytes, pitch );
 
 		// create file
 		FileSystem::WriteStream::Handle ws =
@@ -117,7 +113,7 @@ DebugSurface::save_to_file(const void *buffer, int width, int height, int pitch,
 		// write data
 		ws->write_whole_block(byte_buffer, total_bytes);
 
-		free(byte_buffer);
+		delete[] byte_buffer;
 	}
 }
 

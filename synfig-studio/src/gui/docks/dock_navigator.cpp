@@ -193,7 +193,7 @@ void studio::Widget_NavView::on_finish_render()
 
 	if(w != dw || h != dh || !prev)
 	{
-		const int total_bytes(dw*dh*synfig::channels(pf));
+		const int total_bytes(dw*dh*synfig::pixel_size(pf));
 
 		//synfig::warning("Nav: Updating the pixbuf to be the right size, etc. (%d bytes)", total_bytes);
 
@@ -202,7 +202,7 @@ void studio::Widget_NavView::on_finish_render()
 
 		//convert into our buffered dataS
 		//synfig::warning("Nav: converting color format into buffer");
-		convert_color_format((unsigned char *)bytes, (*surface)[0], dw*dh, pf, App::gamma);
+		color_to_pixelformat((unsigned char *)bytes, (*surface)[0], pf, &App::gamma, dw, dh);
 
 		prev =
 		Gdk::Pixbuf::create_from_data(
@@ -212,16 +212,14 @@ void studio::Widget_NavView::on_finish_render()
 			8, // bits per sample
 			dw,	// width
 			dh,	// height
-			dw*synfig::channels(pf), // stride (pitch)
+			dw*synfig::pixel_size(pf), // stride (pitch)
 			sigc::ptr_fun(freegu8)
 		);
 	}
 	else
 	{
 		if(prev) //just in case we're stupid
-		{
-			convert_color_format((unsigned char *)prev->get_pixels(), (*surface)[0], dw*dh, pf, App::gamma);
-		}
+			color_to_pixelformat((unsigned char*)prev->get_pixels(), (*surface)[0], pf, &App::gamma, dw, dh);
 	}
 
 	queue_draw();

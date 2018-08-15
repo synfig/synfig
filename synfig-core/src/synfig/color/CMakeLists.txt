@@ -3,6 +3,7 @@ target_sources(synfig
         "${CMAKE_CURRENT_LIST_DIR}/color.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/colormatrix.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/cairocolor.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/pixelformat.cpp"
 )
 
 file(GLOB COLOR_HEADERS "${CMAKE_CURRENT_LIST_DIR}/*.h")

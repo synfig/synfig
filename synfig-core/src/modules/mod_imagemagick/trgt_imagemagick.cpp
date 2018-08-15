@@ -129,7 +129,7 @@ imagemagick_trgt::init(synfig::ProgressCallback * /* cb */)
 		multi_image=true;
 
 	delete [] buffer;
-	buffer=new unsigned char[channels(pf)*desc.get_w()];
+	buffer=new unsigned char[pixel_size(pf)*desc.get_w()];
 	delete [] color_buffer;
 	color_buffer=new Color[desc.get_w()];
 	return true;
@@ -175,7 +175,7 @@ imagemagick_trgt::start_frame(synfig::ProgressCallback *cb)
 
 	command=strprintf("convert -depth 8 -size %dx%d rgb%s:-[0] -density %dx%d \"%s\"\n",
 	                  desc.get_w(), desc.get_h(),                                   // size
-	                  ((channels(pf) == 4) ? "a" : ""),                             // rgba or rgb?
+	                  ((pixel_size(pf) == 4) ? "a" : ""),                             // rgba or rgb?
 	                  round_to_int(desc.get_x_res()/39.3700787402), // density
 	                  round_to_int(desc.get_y_res()/39.3700787402),
 	                  newfilename.c_str());
@@ -215,7 +215,7 @@ imagemagick_trgt::start_frame(synfig::ProgressCallback *cb)
 		execlp("convert", "convert",
 			"-depth", "8",
 			"-size", strprintf("%dx%d", desc.get_w(), desc.get_h()).c_str(),
-			((channels(pf) == 4) ? "rgba:-[0]" : "rgb:-[0]"),
+			((pixel_size(pf) == 4) ? "rgba:-[0]" : "rgb:-[0]"),
 			"-density", strprintf("%dx%d", round_to_int(desc.get_x_res()/39.3700787402), round_to_int(desc.get_y_res()/39.3700787402)).c_str(),
 			newfilename.c_str(),
 			(const char *)NULL);
@@ -259,9 +259,9 @@ imagemagick_trgt::end_scanline(void)
 	if(!file)
 		return false;
 
-	convert_color_format(buffer, color_buffer, desc.get_w(), pf, gamma());
+	color_to_pixelformat(buffer, color_buffer, pf, &gamma(), desc.get_w());
 
-	if(!fwrite(buffer,channels(pf),desc.get_w(),file))
+	if(!fwrite(buffer,pixel_size(pf),desc.get_w(),file))
 		return false;
 
 	return true;
