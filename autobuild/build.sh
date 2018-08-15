@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 # SynfigStudio build script
 # Copyright (c) 2008-2018 Konstantin Dmitriev
