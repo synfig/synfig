@@ -89,6 +89,7 @@ std::string _appendAlphaToFilename(std::string input_filename)
 int main(int argc, char* argv[])
 {
 	setlocale(LC_ALL, "");
+	Glib::init(); // need to use Gio functions before app is started
 
 	SynfigToolGeneralOptions::create_singleton_instance(argv[0]);
 

@@ -1348,6 +1348,7 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 	IconController(basepath)
 {
 
+	Glib::init(); // need to use Gio functions before app is started
 	app_base_path_=etl::dirname(basepath);
 
 	// Set ui language
