@@ -7,14 +7,8 @@ git:
 env:
   global:
     - BUILD_FILENAME="build-$TRAVIS_OS_NAME.$TRAVIS_BUILD_NUMBER-$(date '+%Y-%m-%d_%H_%M_%S').tgz"
-    - DEBUG=1
     - MAKE_THREADS=8
 
-cache:
- - ccache
- 
-#test
- 
 matrix:
   include:
   
@@ -22,7 +16,10 @@ matrix:
     name: "Synfig Studio Ubuntu 16.04 (Xenial)"
     sudo: required
     dist: xenial
+    cache: ccache
+    before_script: ccache -s
     script: autobuild/synfigstudio-linux-build.sh
+    after_script: ccache -s # show ccache stats
         
   - os: osx
     name: "Synfig Studio OS X 10.10 (Yosemite)"
