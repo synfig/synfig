@@ -627,7 +627,7 @@ done
 #fi
 
 popd
-travis_fold_start synfigstudio.1
+travis_fold_end synfigstudio.1
 }
 
 mkpack()
