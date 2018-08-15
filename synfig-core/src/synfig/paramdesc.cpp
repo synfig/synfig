@@ -55,17 +55,17 @@ using namespace synfig;
 const ParamDesc ParamVocab::blank;
 
 ParamDesc::ParamDesc(const ValueBase&, const String &a):
-	name_			(a),
-	local_name_		(a),
-	scalar_			(1.0),
-	critical_		(true),
-	hidden_			(false),
-	invisible_duck_	(false),
-	is_distance_	(false),
-	animation_only_	(false),
-	static_			(false),
-	interpolation_	(INTERPOLATION_UNDEFINED),
-	exponential_    (false)
+	name_           (a),
+	local_name_     (a),
+	scalar_         (1.0),
+	exponential_    (false),
+	critical_       (true),
+	hidden_         (false),
+	invisible_duck_ (false),
+	is_distance_    (false),
+	animation_only_ (false),
+	static_         (false),
+	interpolation_  (INTERPOLATION_UNDEFINED)
 {
 	if(a == "blend_method")
 	{

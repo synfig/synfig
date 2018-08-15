@@ -66,7 +66,7 @@ public:
 	mutable rendering::software::PackedSurface::Reader reader;
 	mutable rendering::SurfaceResource::Handle rendering_surface;
 	mutable bool trimmed;
-	mutable unsigned int width, height, top, left;
+	mutable unsigned int left, top, width, height;
 
 
 	Layer_Bitmap();

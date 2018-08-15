@@ -97,17 +97,17 @@ private:
 public:
 
    	ParamDesc(const String &a="IM_A_BUG_SO_REPORT_ME"):
-		name_			(a),
-		local_name_		(a),
-		scalar_			(1.0),
-		exponential_		(false),
-		critical_		(true),
-		hidden_			(false),
-		invisible_duck_	(false),
-		is_distance_	(false),
-		animation_only_	(false),
-		static_			(false),
-		interpolation_	(INTERPOLATION_UNDEFINED)
+		name_           (a),
+		local_name_     (a),
+		scalar_         (1.0),
+		exponential_    (false),
+		critical_       (true),
+		hidden_         (false),
+		invisible_duck_ (false),
+		is_distance_    (false),
+		animation_only_ (false),
+		static_         (false),
+		interpolation_  (INTERPOLATION_UNDEFINED)
 	{ }
 
    	ParamDesc(const ValueBase&, const String &a);

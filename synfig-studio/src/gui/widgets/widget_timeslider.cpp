@@ -63,19 +63,19 @@ const double zoomoutfactor = 1/zoominfactor;
 
 /* === E N T R Y P O I N T ================================================= */
 
-double defaultfps = 24;
+const double defaultfps = 24;
 const int fullheight = 20;
 
 Widget_Timeslider::Widget_Timeslider():
 	layout(Pango::Layout::create(get_pango_context())),
 	adj_default(Gtk::Adjustment::create(0,0,2,1/defaultfps,10/defaultfps)),
 	adj_timescale(),
+	time_per_tickmark(0),
 	//invalidated(false),
 	last_event_time(0),
 	fps(defaultfps),
 	dragscroll(false),
-	lastx(0),
-	time_per_tickmark(0)
+	lastx(0)
 {
 	set_size_request(-1, fullheight);
 

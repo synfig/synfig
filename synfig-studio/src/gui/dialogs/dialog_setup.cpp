@@ -78,13 +78,13 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	adj_gamma_b(Gtk::Adjustment::create(2.2,0.1,3.0,0.025,0.025,0.025)),
 	adj_recent_files(Gtk::Adjustment::create(15,1,50,1,1,0)),
 	adj_undo_depth(Gtk::Adjustment::create(100,10,5000,1,1,1)),
+	time_format(Time::FORMAT_NORMAL),
 	listviewtext_brushes_path(manage (new Gtk::ListViewText(1, true, Gtk::SELECTION_BROWSE))),
 	adj_pref_x_size(Gtk::Adjustment::create(480,1,10000,1,10,0)),
 	adj_pref_y_size(Gtk::Adjustment::create(270,1,10000,1,10,0)),
 	adj_pref_fps(Gtk::Adjustment::create(24.0,1.0,100,0.1,1,0)),
-	refreshing(false),
 	pref_modification_flag(false),
-	time_format(Time::FORMAT_NORMAL)
+	refreshing(false)
 {
 	synfig::String interface_str(_("Interface")),
 			document_str(_("Document")),

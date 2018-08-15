@@ -77,10 +77,10 @@ synfig::Layer_Bitmap::Layer_Bitmap():
 	param_c                 (int(1)),
 	param_gamma_adjust      (Real(1.0)),
 	trimmed                 (false),
-	left(0),
-	top(0),
-	width(0),
-	height(0)
+	left                    (0),
+	top                     (0),
+	width                   (0),
+	height                  (0)
 {
 	SET_INTERPOLATION_DEFAULTS();
 	SET_STATIC_DEFAULTS();
