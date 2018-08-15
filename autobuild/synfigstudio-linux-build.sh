@@ -46,6 +46,20 @@
 # - debuginfo packages
 
 RELEASE=8
+
+# enable ccache for speedup
+if which ccache > /dev/null; then
+    echo "ccache found! Enabling ccache..."
+    export CC="ccache $CC"
+    export CXX="ccache $CXX"
+    echo "CC=$CC"
+    echo "CXX=$CXX"
+else
+    echo "ccache not found..."
+fi
+
+MAKE_SILENT=--silent LIBTOOLFLAGS=--silent
+
 if [ -z "$PREFIX" ]; then
 PREFIX=$HOME/synfig/
 fi
@@ -539,7 +553,7 @@ fi
 #	export LDFLAGS=''
 #fi
 
-make -j$MAKE_THREADS
+make -j$MAKE_THREADS $MAKE_SILENT
 sed -i "s|^includedir=.*$|includedir=$SYNFIG_REPO_DIR\/synfig-core\/src|" synfig.pc
 make install
 
@@ -567,7 +581,7 @@ if [[ $MODE != 'quick' ]]; then
 	/bin/sh ./configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared --enable-jack --enable-warnings=max $DEBUG $CONFIGURE_PACKAGE_OPTIONS
 fi
 
-make -j$MAKE_THREADS
+make -j$MAKE_THREADS $MAKE_SILENT
 make install
 
 for n in AUTHORS COPYING NEWS README
