@@ -509,7 +509,7 @@ cp /usr/local/lib/libboost_program_options.so.1.53.0 $PREFIX/lib/
 
 mkETL()
 {
-travis_fold_start ETL.1 "Building ETL"
+travis_fold_start ETL "Building ETL"
 
 if [ -f ${SYNFIG_REPO_DIR}/ETL/trunk/configure.ac ]; then
 	pushd ${SYNFIG_REPO_DIR}/ETL/trunk
@@ -535,12 +535,12 @@ sed -i "s|^Cflags: -I\\\${includedir}|Cflags: -I$REPO_DIR\/ETL -I\\\${includedir
 make install
 
 popd
-travis_fold_end ETL.1
+travis_fold_end ETL
 }
 
 mksynfig()
 {
-travis_fold_start synfigcore.1 "Building Synfig Core"
+travis_fold_start SynfigCore "Building Synfig Core"
 if [ -d ${SYNFIG_REPO_DIR}/synfig-core/trunk/configure.ac ]; then
 	pushd ${SYNFIG_REPO_DIR}/synfig-core/trunk
 else
@@ -588,12 +588,12 @@ sed -i "s|^includedir=.*$|includedir=$SYNFIG_REPO_DIR\/synfig-core\/src|" synfig
 make install
 
 popd
-travis_fold_end synfigcore.1
+travis_fold_end SynfigCore
 }
 
 mksynfigstudio()
 {
-travis_fold_start synfigstudio.1 "Building Synfig Studio"
+travis_fold_start SynfigStudio "Building Synfig Studio"
 if [ -d ${SYNFIG_REPO_DIR}/synfig-studio/trunk/configure.ac ]; then
 	pushd ${SYNFIG_REPO_DIR}/synfig-studio/trunk
 else
@@ -627,7 +627,7 @@ done
 #fi
 
 popd
-travis_fold_end synfigstudio.1
+travis_fold_end SynfigStudio
 }
 
 mkpack()

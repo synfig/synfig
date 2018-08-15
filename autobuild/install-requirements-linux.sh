@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 # Make sure we have all dependencies installed
 echo "Checking dependencies..."
 DEB_LIST_MINIMAL="\
@@ -208,7 +210,7 @@ elif which apt-get >/dev/null; then
     fi
     echo "Running apt-get (you need root privelegies to do that)..."
     echo
-    #sudo apt-get update || true
+    sudo apt-get update -qq || true
     sudo apt-get install -y -q $PKG_LIST
     sudo apt-get install -y -q autopoint || true # Ubuntu special case
 else
