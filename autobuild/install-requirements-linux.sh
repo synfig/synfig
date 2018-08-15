@@ -208,9 +208,9 @@ elif which apt-get >/dev/null; then
     fi
     echo "Running apt-get (you need root privelegies to do that)..."
     echo
-    sudo apt-get update || true
-    sudo apt-get install -y $PKG_LIST
-    sudo apt-get install -y autopoint || true # Ubuntu special case
+    #sudo apt-get update || true
+    sudo apt-get install -y -q $PKG_LIST
+    sudo apt-get install -y -q autopoint || true # Ubuntu special case
 else
     if [[ $MODE == 'package' ]]; then
         if ! ( which git && which debootstrap ) ; then
