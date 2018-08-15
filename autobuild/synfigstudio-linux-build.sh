@@ -144,14 +144,14 @@ CXXFLAGS="-fdiagnostics-color=always $CXXFLAGS"
 set -e
 
 travis_fold_start() {
-	if [ -n "TRAVIS" ]; then
+	if [ -n "$TRAVIS" ]; then
 		echo -e "travis_fold:start:$1\033[33;1m$2\033[0m"
 	fi
 }
 
 travis_fold_end() {
 
-	if [ -n "TRAVIS" ]; then
+	if [ -n "$TRAVIS" ]; then
 		echo -e "\ntravis_fold:end:$1\r"
 	fi
 }
