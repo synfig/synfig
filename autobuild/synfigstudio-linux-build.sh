@@ -143,6 +143,19 @@ CXXFLAGS="-fdiagnostics-color=always $CXXFLAGS"
 
 set -e
 
+travis_fold_start() {
+	if [ -n "TRAVIS" ]; then
+		echo -e "travis_fold:start:$1\033[33;1m$2\033[0m"
+	fi
+}
+
+travis_fold_end() {
+
+	if [ -n "TRAVIS" ]; then
+		echo -e "\ntravis_fold:end:$1\r"
+	fi
+}
+
 if (test "$2"); then
 	SELECTEDREVISION=$2
 else
@@ -496,6 +509,8 @@ cp /usr/local/lib/libboost_program_options.so.1.53.0 $PREFIX/lib/
 
 mkETL()
 {
+travis_fold_start ETL.1 "Building ETL"
+
 if [ -f ${SYNFIG_REPO_DIR}/ETL/trunk/configure.ac ]; then
 	pushd ${SYNFIG_REPO_DIR}/ETL/trunk
 else
@@ -520,10 +535,12 @@ sed -i "s|^Cflags: -I\\\${includedir}|Cflags: -I$REPO_DIR\/ETL -I\\\${includedir
 make install
 
 popd
+travis_fold_end ETL.1
 }
 
 mksynfig()
 {
+travis_fold_start synfigcore.1 "Building Synfig Core"
 if [ -d ${SYNFIG_REPO_DIR}/synfig-core/trunk/configure.ac ]; then
 	pushd ${SYNFIG_REPO_DIR}/synfig-core/trunk
 else
@@ -571,10 +588,12 @@ sed -i "s|^includedir=.*$|includedir=$SYNFIG_REPO_DIR\/synfig-core\/src|" synfig
 make install
 
 popd
+travis_fold_end synfigcore.1
 }
 
 mksynfigstudio()
 {
+travis_fold_start synfigstudio.1 "Building Synfig Studio"
 if [ -d ${SYNFIG_REPO_DIR}/synfig-studio/trunk/configure.ac ]; then
 	pushd ${SYNFIG_REPO_DIR}/synfig-studio/trunk
 else
@@ -608,6 +627,7 @@ done
 #fi
 
 popd
+travis_fold_start synfigstudio.1
 }
 
 mkpack()
