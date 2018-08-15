@@ -2,27 +2,27 @@
 
 set -e
 
-AUTORECONF=`which autoreconf`
-if test -z $AUTORECONF; then
+AUTORECONF=`command -v autoreconf || true` #if don't set true, script fails with no messages
+if [ -z $AUTORECONF ]; then
         echo "*** No autoreconf found, please install it ***"
         exit 1
 fi
 
-INTLTOOLIZE=`which intltoolize`
-if test -z $INTLTOOLIZE; then
+INTLTOOLIZE=`command -v intltoolize || true`
+if [ -z $INTLTOOLIZE ]; then
         echo "*** No intltoolize found, please install the intltool package ***"
         exit 1
 fi
 
-LIBTOOLIZE=`which libtoolize || true`
-if test -z $LIBTOOLIZE; then
-        LIBTOOLIZE=`which glibtoolize`
-        if ! test -z $LIBTOOLIZE; then
+LIBTOOLIZE=`command -v libtoolize || true`
+if [ -z $LIBTOOLIZE ]; then
+        LIBTOOLIZE=`command -v glibtoolize || true`
+        if ! [ -z $LIBTOOLIZE ]; then
                 echo "Using glibtoolize. Is it OSX?"
         fi
 fi
 
-if test -z $LIBTOOLIZE; then
+if [ -z $LIBTOOLIZE ]; then
         echo "*** No libtoolize nor glibtoolize found, please install the intltool package ***"
         exit 1
 fi

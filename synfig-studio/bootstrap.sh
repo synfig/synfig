@@ -2,13 +2,13 @@
 
 set -e
 
-AUTORECONF=`which autoreconf`
+AUTORECONF=`command -v autoreconf || true`
 if test -z $AUTORECONF; then
         echo "*** No autoreconf found, please install it ***"
         exit 1
 fi
 
-INTLTOOLIZE=`which intltoolize`
+INTLTOOLIZE=`command -v intltoolize || true`
 if test -z $INTLTOOLIZE; then
         echo "*** No intltoolize found, please install the intltool package ***"
         exit 1
