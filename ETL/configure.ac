@@ -92,7 +92,7 @@ AC_OUTPUT
 echo "
 $PACKAGE_NAME v.$VERSION
 Configuration Summary
-- - - - - -
+- - - - - - - - - - - - - - - - - - - - - - - - -
 
 Install Prefix -------------------> $prefix
 Target Platform ------------------> $host
