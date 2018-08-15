@@ -270,7 +270,7 @@ int main(int argc, char* argv[])
 		// before any other where it's used
 		Progress p(binary_path.c_str());
 		//synfig::Main synfig_main(binary_path.parent_path().string(), &p);
-		synfig::Main synfig_main(binary_path + "../", &p);
+		synfig::Main synfig_main(get_absolute_path(binary_path + "../"), &p);
 
         // Info options -----------------------------------------------
         op.process_info_options();
