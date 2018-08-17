@@ -6,9 +6,11 @@ cmake_minimum_required(VERSION 3.1)
 ##
 
 # TODO: check if we really need all of them
-find_package(Boost REQUIRED system filesystem program_options chrono)
+find_package(Boost REQUIRED system program_options chrono)
 
 find_package(ZLIB REQUIRED)
+find_package(ETL REQUIRED)
+
 
 ## TODO: investigate these more closely
 set(CMAKE_THREAD_PREFER_PTHREAD ON)
