@@ -26,10 +26,10 @@ stdenv.mkDerivation rec {
 
   src = "../";
 
-  nativeBuildInputs = [ pkgconfig autoreconfHook gettext gnumake ];
+  nativeBuildInputs = [ pkgconfig autoreconfHook gettext gnumake makeWrapper ];
   buildInputs = [
     boost cairo fftw intltool glibmm gnome3.defaultIconTheme gtk3 gtkmm3
-    imagemagick intltool libjpeg libjack2 libsigcxx libxmlxx makeWrapper mlt
+    imagemagick intltool libjpeg libjack2 libsigcxx libxmlxx mlt
     pango which
   ];
   

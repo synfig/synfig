@@ -17,7 +17,7 @@
 #    ./build.sh all full
 # Quick rebuild (without configure):
 #    ./build.sh all make
-# Quick rebuild od synfig-core (without configure):
+# Quick rebuild of synfig-core (without configure):
 #    ./build.sh core make
 
 set -e
@@ -36,4 +36,4 @@ cp -f "${WORKDIR}/build.conf" "${WORKDIR}/${TYPE}/build.conf"
 
 cd "${WORKDIR}/${TYPE}"
 
-bash ${WORKDIR}/autobuild/build.sh "$1" "$2"
+/usr/bin/env bash ${WORKDIR}/autobuild/build.sh "$1" "$2"
