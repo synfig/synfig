@@ -38,6 +38,7 @@ stdenv.mkDerivation rec {
   
   BOOST_CONFIGURE_OPTIONS = " --with-boost=${boost.dev} --with-boost-libdir=${boost.out}/lib ";
   ADWAITA_PATH = "${gnome3.adwaita-icon-theme.out}";
+  MAKE_WRAPPER_PATH = "${makeWrapper.out}";
   
   buildPhase = ''
     ./build-production.sh
