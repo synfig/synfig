@@ -431,6 +431,8 @@ current_time()
 	return String(b);
 }
 
+bool synfig::synfig_quiet_mode = false;
+
 void
 synfig::error(const char *format,...)
 {
@@ -474,6 +476,9 @@ synfig::info(const char *format,...)
 void
 synfig::info(const String &str)
 {
+	//if (SynfigToolGeneralOptions::instance()->should_be_quiet()) return; // don't show info messages in quiet mode
+	if (synfig::synfig_quiet_mode) return;
+
 	general_io_mutex.lock();
 	cout<<"synfig("<<getpid()<<")"<<current_time().c_str()<<_("info")<<": "<<str.c_str()<<endl;
 	general_io_mutex.unlock();

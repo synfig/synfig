@@ -91,6 +91,7 @@ bool SynfigToolGeneralOptions::should_be_quiet() const
 void SynfigToolGeneralOptions::set_should_be_quiet(bool be_quiet)
 {
 	_should_be_quiet = be_quiet;
+	synfig::synfig_quiet_mode = be_quiet;
 }
 
 bool SynfigToolGeneralOptions::should_print_benchmarks() const
