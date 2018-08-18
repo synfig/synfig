@@ -75,8 +75,8 @@ Token::Token(const Set &parents):
 	previous_(last_),
 	next_(),
 	in_process_(),
-	parents_(parents),
-	prepared_(false)
+	prepared_(false),
+	parents_(parents)
 { init(); }
 
 void
