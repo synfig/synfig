@@ -89,8 +89,8 @@ Widget_CanvasTimeslider::set_canvas_view(const CanvasView::LooseHandle &x)
 	queue_draw();
 }
 
-bool
-Widget_CanvasTimeslider::on_motion_notify_event(GdkEventMotion* event)
+void
+Widget_CanvasTimeslider::show_tooltip(const synfig::Point &p, const synfig::Point &root)
 {
 	Cairo::RefPtr<Cairo::ImageSurface> surface;
 	if ( get_width()
@@ -100,7 +100,7 @@ Widget_CanvasTimeslider::on_motion_notify_event(GdkEventMotion* event)
 	  && canvas_view->get_work_area()
 	  && canvas_view->get_work_area()->get_renderer_canvas() )
 	{
-		double x     = event->x;
+		double x     = p[0];
 		double w     = (double)get_width();
 		double start = adj_timescale->get_lower();
 		double end   = adj_timescale->get_upper();
@@ -122,12 +122,12 @@ Widget_CanvasTimeslider::on_motion_notify_event(GdkEventMotion* event)
 
 		int w    = get_width();
 		int h    = get_height();
-		int left = (int)round(event->x_root - event->x);
-		int top  = (int)round(event->y_root - event->y);
+		int left = (int)round(root[0] - p[0]);
+		int top  = (int)round(root[1] - p[1]);
 
 		int x = left;
 		if (w > tooltip_w)
-			x += (int)round(event->x/(double)w*(w - tooltip_w));
+			x += (int)round(p[0]/(double)w*(w - tooltip_w));
 
 		int y = 0;
 		bool visible = false;
@@ -146,8 +146,31 @@ Widget_CanvasTimeslider::on_motion_notify_event(GdkEventMotion* event)
 			tooltip.show();
 		} else tooltip.hide();
 	} else tooltip.hide();
+}
 
-	return true;
+bool
+Widget_CanvasTimeslider::on_button_press_event(GdkEventButton *event)
+{
+	if (event->button == 1 || event->button == 2)
+		tooltip.hide();
+	return Widget_Timeslider::on_button_press_event(event);
+}
+
+bool
+Widget_CanvasTimeslider::on_button_release_event(GdkEventButton *event)
+{
+	if ( (event->button == 1 && !(event->state & Gdk::BUTTON2_MASK))
+	  || (event->button == 2 && !(event->state & Gdk::BUTTON1_MASK)) )
+		show_tooltip(Point(event->x, event->y), Point(event->x_root, event->y_root));
+	return Widget_Timeslider::on_button_release_event(event);
+}
+
+bool
+Widget_CanvasTimeslider::on_motion_notify_event(GdkEventMotion* event)
+{
+	if ((event->state & (Gdk::BUTTON1_MASK | Gdk::BUTTON2_MASK)) == 0)
+		show_tooltip(Point(event->x, event->y), Point(event->x_root, event->y_root));
+	return Widget_Timeslider::on_motion_notify_event(event);
 }
 
 bool

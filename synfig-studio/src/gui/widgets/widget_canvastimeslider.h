@@ -51,7 +51,11 @@ protected:
 
 	virtual void draw_background(const Cairo::RefPtr<Cairo::Context> &cr);
 
+	void show_tooltip(const synfig::Point &p, const synfig::Point &root);
+
 	virtual bool on_motion_notify_event(GdkEventMotion* event);
+	virtual bool on_button_press_event(GdkEventButton *event);
+	virtual bool on_button_release_event(GdkEventButton *event);
 	virtual bool on_leave_notify_event(GdkEventCrossing* event);
 
 public:
