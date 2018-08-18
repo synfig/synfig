@@ -155,7 +155,7 @@ struct PreviewInfo;
 class AudioContainer;
 
 class Widget_Sound;
-class Widget_Timeslider;
+class Widget_CanvasTimeslider;
 class Widget_Time;
 
 class Dock_Layers;
@@ -349,7 +349,7 @@ private:
 	void on_current_time_widget_changed();
 
 	//! Time slider class. Same than the Time track panel
-	Widget_Timeslider *timeslider;
+	Widget_CanvasTimeslider *timeslider;
 
 	//!Keyframe list slider
 	Widget_Keyframe_List *widget_kf_list;

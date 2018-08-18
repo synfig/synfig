@@ -72,11 +72,11 @@ const double log_10_2 = log(2.0);
 /* === E N T R Y P O I N T ================================================= */
 studio::Widget_NavView::Widget_NavView(CanvasView::LooseHandle cv):
 	canvview(cv),
+	dirty(false),
 	adj_zoom(Gtk::Adjustment::create(0, -4, 4, 1, 2)),
 	scrolling(false),
 	surface(new synfig::Surface),
 	cairo_surface(cairo_image_surface_create(CAIRO_FORMAT_ARGB32, 1, 1)),
-	dirty(false),
 	rendering(false)
 {
 	attach(drawto,0,4,0,1);

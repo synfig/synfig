@@ -37,9 +37,10 @@
 
 #include <synfig/time.h>
 #include <synfig/rendering/task.h>
+#include <synfig/rendering/renderer.h>
 
+#include "../workarea.h"
 #include "workarearenderer.h"
-#include "workarea.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -52,12 +53,16 @@ namespace studio {
 class Renderer_Canvas : public studio::WorkAreaRenderer
 {
 public:
+	typedef etl::handle<Renderer_Canvas> Handle;
+	typedef etl::loose_handle<Renderer_Canvas> LooseHandle;
+
 	enum FrameStatus {
 		FS_None,
 		FS_PartiallyDone,
 		FS_InProcess,
 		FS_Done
 	};
+	enum { FS_Count = FS_Done + 1 };
 
 	class FrameId {
 	public:
@@ -85,6 +90,11 @@ public:
 
 		bool operator!= (const FrameId &other) const
 			{ return !(*this == other); }
+
+		FrameId with_time(const synfig::Time &time) const
+			{ return FrameId(time, width, height); }
+		synfig::RectInt rect() const
+			{ return synfig::RectInt(0, 0, width, height); }
 	};
 
 	class FrameDesc {
@@ -120,7 +130,7 @@ public:
 			frame_id(frame_id), rect(rect) { }
 	};
 
-	typedef std::map<FrameId, FrameStatus> StatusMap;
+	typedef std::map<synfig::Time, FrameStatus> StatusMap;
 	typedef std::set<FrameId> FrameSet;
 	typedef std::vector<FrameDesc> FrameList;
 	typedef std::vector<Tile::Handle> TileList;
@@ -144,6 +154,7 @@ private:
 	//! all currently visible frames (onion skin feature allows to see more than one frame)
 	FrameList onion_frames;
 	FrameSet visible_frames;
+	FrameId current_thumb;
 	FrameId current_frame;
 	synfig::Time frame_duration;
 
@@ -151,8 +162,6 @@ private:
 	long long tiles_size;
 
 	synfig::PixelFormat pixel_format;
-
-	bool draw_queued;
 
 	//! uses to normalize alpha value after blending of onion surfaces
 	Cairo::RefPtr<Cairo::ImageSurface> alpha_src_surface;
@@ -193,7 +202,11 @@ private:
 	//! mutex must be locked before call
 	//! returns true if rendering task actually enqueued
 	//! function can change the canvas time
-	bool enqueue_render_frame(const synfig::rendering::Renderer::Handle &renderer, const FrameId &id);
+	bool enqueue_render_frame(
+		const synfig::rendering::Renderer::Handle &renderer,
+		const synfig::Canvas::Handle &canvas,
+		const synfig::RectInt &window_rect,
+		const FrameId &id );
 
 public:
 	Renderer_Canvas();
@@ -211,6 +224,12 @@ public:
 	void render_vfunc(
 		const Glib::RefPtr<Gdk::Window>& drawable,
 		const Gdk::Rectangle& expose_area );
+
+	Cairo::RefPtr<Cairo::ImageSurface> get_thumb(const synfig::Time &time);
+
+	static FrameStatus merge_status(FrameStatus a, FrameStatus b);
+	static FrameStatus& merge_status_to(FrameStatus &dst, FrameStatus src)
+		{ return dst = merge_status(dst, src); }
 };
 
 }; // END of namespace studio

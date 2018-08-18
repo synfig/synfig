@@ -123,7 +123,7 @@
 
 #include "preview.h"
 #include "audiocontainer.h"
-#include "widgets/widget_timeslider.h"
+#include "widgets/widget_canvastimeslider.h"
 #include "widgets/widget_enum.h"
 #include "dials/keyframedial.h"
 #include "dials/jackdial.h"
@@ -633,7 +633,7 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	future_onion_adjustment_ (Gtk::Adjustment::create(0,0,ONION_SKIN_FUTURE,1,1,0)),
 	past_onion_adjustment_   (Gtk::Adjustment::create(1,0,ONION_SKIN_PAST,1,1,0)),
 
-	timeslider               (manage(new Widget_Timeslider)),
+	timeslider               (manage(new Widget_CanvasTimeslider)),
 	widget_kf_list           (manage(new Widget_Keyframe_List)),
 
 	ui_interface_            (new CanvasViewUIInterface(this)),
@@ -1047,27 +1047,24 @@ CanvasView::get_pixel_sizes()
 Gtk::Widget *
 CanvasView::create_time_bar()
 {
-	//Setup the Time Slider and the Time window scroll
-	Gtk::HScrollbar *time_window_scroll = manage(new class Gtk::HScrollbar(time_window_adjustment()));
-	//Gtk::HScrollbar *time_scroll = manage(new class Gtk::HScrollbar(time_adjustment()));
-	//TIME BAR TEMPORARY POSITION
-	//Widget_Timeslider *time_scroll = manage(new Widget_Timeslider);
-	timeslider->set_time_adjustment(time_adjustment());
-	timeslider->set_bounds_adjustment(time_window_adjustment());
-	//layout_table->attach(*timeslider, 0, 1, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL);
 	//Setup the keyframe list widget
 	widget_kf_list->set_time_adjustment(time_adjustment());
 	widget_kf_list->set_canvas_interface(canvas_interface());
 	widget_kf_list->show();
 
-	time_window_scroll->set_tooltip_text(_("Moves the time window"));
+	// Setup Time Slider
+	timeslider->set_time_adjustment(time_adjustment());
+	timeslider->set_bounds_adjustment(time_window_adjustment());
+	timeslider->set_canvas_view(this);
 	timeslider->set_tooltip_text(_("Changes the current time"));
-	time_window_scroll->show();
-	timeslider->show();
-	//time_window_scroll->set_can_focus(true); // Uncomment this produce bad render of the HScroll
 	timeslider->set_can_focus(true);
-	//time_scroll->signal_value_changed().connect(sigc::mem_fun(*work_area, &studio::WorkArea::render_preview_hook));
-	//time_scroll->set_update_policy(Gtk::UPDATE_DISCONTINUOUS);
+	timeslider->show();
+
+	// Setup Time Scroll
+	Gtk::HScrollbar *time_window_scroll = manage(new class Gtk::HScrollbar(time_window_adjustment()));
+	time_window_scroll->set_tooltip_text(_("Moves the time window"));
+	//time_window_scroll->set_can_focus(true); // Uncomment this produce bad render of the HScroll
+	time_window_scroll->show();
 
 	timetrack = manage(new class Gtk::VBox());
 	timetrack->pack_start(*widget_kf_list);

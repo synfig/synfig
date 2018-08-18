@@ -97,6 +97,8 @@ Widget_Timeslider::~Widget_Timeslider()
 
 void Widget_Timeslider::set_time_adjustment(const Glib::RefPtr<Gtk::Adjustment> &x)
 {
+	if (adj_timescale == x) return;
+
 	//disconnect old connections
 	time_value_change.disconnect();
 	time_other_change.disconnect();
@@ -104,10 +106,9 @@ void Widget_Timeslider::set_time_adjustment(const Glib::RefPtr<Gtk::Adjustment> 
 	//connect update function to new adjustment
 	adj_timescale = x;
 
-	if(x)
-	{
-		time_value_change = x->signal_value_changed().connect(sigc::mem_fun(*this,&Widget_Timeslider::queue_draw));
-		time_other_change = x->signal_changed().connect(sigc::mem_fun(*this,&Widget_Timeslider::queue_draw));
+	if (adj_timescale) {
+		time_value_change = adj_timescale->signal_value_changed().connect(sigc::mem_fun(*this,&Widget_Timeslider::queue_draw));
+		time_other_change = adj_timescale->signal_changed().connect(sigc::mem_fun(*this,&Widget_Timeslider::queue_draw));
 		//invalidated = true;
 		//refresh();
 	}
@@ -160,20 +161,23 @@ void Widget_Timeslider::refresh()
 	}
 }*/
 
-bool Widget_Timeslider::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
+void Widget_Timeslider::draw_background(const Cairo::RefPtr<Cairo::Context> &cr)
 {
-	Glib::RefPtr<Gdk::Window> window = get_window();
-
-	int w = get_width(), h = get_height();
 	//draw grey rectangle
 	cr->save();
 	cr->set_source_rgb(0.5, 0.5, 0.5);
-	cr->rectangle(0.0,0.0,w,h);
+	cr->rectangle(0.0, 0.0, (double)get_width(), (double)get_height());
 	cr->fill();
 	cr->restore();
+}
 
+bool Widget_Timeslider::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
+{
 	const double EPSILON = 1e-6;
-	if(!adj_timescale || w == 0) return true;
+
+	draw_background(cr);
+
+	if(!adj_timescale || get_width() == 0 || get_height() == 0) return true;
 
 	//Get the time information since we now know it's valid
 	double 	start   = adj_timescale->get_lower(),

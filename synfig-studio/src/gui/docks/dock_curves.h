@@ -43,19 +43,19 @@ namespace Gtk { class Table; class HScrollbar; class VScrollbar; };
 namespace studio {
 
 class Widget_Curves;
-class Widget_Timeslider;
+class Widget_CanvasTimeslider;
 class Widget_Keyframe_List;
 
 
 class Dock_Curves : public Dock_CanvasSpecific
 {
-	Gtk::Table* table_;
 	Gtk::HScrollbar* hscrollbar_;
 	Gtk::VScrollbar* vscrollbar_;
 
-	Widget_Timeslider* widget_timeslider_;
+	Widget_CanvasTimeslider* widget_timeslider_;
 	Widget_Keyframe_List* widget_kf_list_;
 	
+	Gtk::Table* table_;
 	Widget_Curves* last_widget_curves_;
 
 protected:

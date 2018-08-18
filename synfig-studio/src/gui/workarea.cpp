@@ -91,6 +91,8 @@ using namespace studio;
 
 /* === M A C R O S ========================================================= */
 
+#define THUMB_SIZE 128;
+
 #ifndef stratof
 #define stratof(X) (atof((X).c_str()))
 #define stratoi(X) (atoi((X).c_str()))
@@ -144,6 +146,8 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	curr_input_device(0),
 	w(1),
 	h(1),
+	thumb_w(1),
+	thumb_h(1),
 	canvaswidth(0.0),
 	canvasheight(0.0),
 	pw(0.001),
@@ -314,6 +318,8 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	}
 
 	drawing_area->set_can_focus(true);
+	refresh_dimension_info();
+	queue_draw();
 }
 
 WorkArea::~WorkArea()
@@ -1875,6 +1881,9 @@ WorkArea::refresh_dimension_info()
 
 	if (drawing_area->get_width()<=0 || drawing_area->get_height()<=0 || w<=0 || h<=0)
 		return;
+
+	thumb_w = THUMB_SIZE;
+	thumb_h = (thumb_w*desc.get_h() + desc.get_w()/2)/desc.get_w(); // add desc.get_w()/2 for valid rounding
 
 	synfig::RendDesc &rend_desc(get_canvas()->rend_desc());
 

@@ -1,6 +1,7 @@
 target_sources(synfigstudio
     PRIVATE
         "${CMAKE_CURRENT_LIST_DIR}/widget_canvaschooser.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/widget_canvastimeslider.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/widget_color.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/widget_coloredit.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/widget_compselect.cpp"

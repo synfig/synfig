@@ -43,7 +43,7 @@
 #include "widgets/widget_curves.h"
 #include <gtkmm/table.h>
 #include <gtkmm/scrollbar.h>
-#include "widgets/widget_timeslider.h"
+#include "widgets/widget_canvastimeslider.h"
 
 #include <gui/localization.h>
 
@@ -65,24 +65,22 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 Dock_Curves::Dock_Curves():
-	Dock_CanvasSpecific("curves",_("Graphs"),Gtk::StockID("synfig-curves"))
-{
-	last_widget_curves_=0;
-	table_=0;
-
-	hscrollbar_        = new Gtk::HScrollbar();
-	vscrollbar_        = new Gtk::VScrollbar();
-	widget_timeslider_ = new Widget_Timeslider();
-	widget_kf_list_    = new Widget_Keyframe_List();
-}
+	Dock_CanvasSpecific("curves",_("Graphs"),Gtk::StockID("synfig-curves")),
+	hscrollbar_       (new Gtk::HScrollbar()),
+	vscrollbar_       (new Gtk::VScrollbar()),
+	widget_timeslider_(new Widget_CanvasTimeslider()),
+	widget_kf_list_   (new Widget_Keyframe_List()),
+	table_(),
+	last_widget_curves_()
+{ }
 
 Dock_Curves::~Dock_Curves()
 {
 	if (table_) delete table_;
 	delete hscrollbar_;
 	delete vscrollbar_;
-	delete widget_kf_list_;
 	delete widget_timeslider_;
+	delete widget_kf_list_;
 }
 
 static void
@@ -161,30 +159,37 @@ Dock_Curves::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view
 {
 	if(table_)
 	{
-		table_->hide();
 		delete table_;
+		table_ = 0;
+
+		last_widget_curves_ = 0;
+
 		hscrollbar_->unset_adjustment();
 		vscrollbar_->unset_adjustment();
-		//widget_timeslider_->unset_adjustment();
-		table_=0;
+
+		widget_timeslider_->set_time_adjustment( Glib::RefPtr<Gtk::Adjustment>() );
+		widget_timeslider_->set_bounds_adjustment( Glib::RefPtr<Gtk::Adjustment>() );
+		widget_timeslider_->set_canvas_view( CanvasView::Handle() );
+
+		widget_kf_list_->set_time_adjustment( Glib::RefPtr<Gtk::Adjustment>() );
+		widget_kf_list_->set_canvas_interface( etl::loose_handle<synfigapp::CanvasInterface>() );
 	}
 
 
 	if(canvas_view)
 	{
-		last_widget_curves_=dynamic_cast<Widget_Curves*>(
-			canvas_view->get_ext_widget(get_name())
-		);
+		last_widget_curves_=dynamic_cast<Widget_Curves*>( canvas_view->get_ext_widget(get_name()) );
 
 		vscrollbar_->set_adjustment(last_widget_curves_->get_range_adjustment());
 		hscrollbar_->set_adjustment(canvas_view->time_window_adjustment());
+
 		widget_timeslider_->set_time_adjustment(canvas_view->time_adjustment());
 		widget_timeslider_->set_bounds_adjustment(canvas_view->time_window_adjustment());
 		widget_timeslider_->set_global_fps(canvas_view->get_canvas()->rend_desc().get_frame_rate());
+		widget_timeslider_->set_canvas_view(canvas_view);
 
 		widget_kf_list_->set_time_adjustment(canvas_view->time_adjustment());
 		widget_kf_list_->set_canvas_interface(canvas_view->canvas_interface());
-		
 
 		table_=new Gtk::Table(3, 2);
 		table_->attach(*widget_kf_list_,     0, 1, 0, 1, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::SHRINK);
@@ -194,7 +199,6 @@ Dock_Curves::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view
 		table_->attach(*vscrollbar_,         1, 2, 0, 3, Gtk::FILL|Gtk::SHRINK, Gtk::FILL|Gtk::EXPAND);
 		add(*table_);
 
-		//add(*last_widget_curves_);
 		last_widget_curves_->show();
 		table_->show_all();
 		show_all();

@@ -153,6 +153,8 @@ private:
 	// Bleh!
 	int	w;						//!< Width of the image (in pixels)
 	int	h;						//!< Height of the image (in pixels)
+	int	thumb_w;				//!< Width of the thumbnail image (in pixels)
+	int	thumb_h;				//!< Height of the thumbnail image (in pixels)
 	synfig::Real canvaswidth;	//!< Width of the canvas
 	synfig::Real canvasheight;	//!< Height of the canvas
 	synfig::Real pw;			//!< The width of a pixel
@@ -241,6 +243,7 @@ public:
 	*/
 private:
 	sigc::signal<void> signal_rendering_;
+	sigc::signal<void, synfig::Time> signal_rendering_tile_finished_;
 	sigc::signal<void> signal_cursor_moved_;
 	sigc::signal<void> signal_view_window_changed_;
 	sigc::signal<void> signal_meta_data_changed_;
@@ -251,6 +254,7 @@ private:
 
 public:
 	sigc::signal<void>& signal_rendering() { return signal_rendering_; }
+	sigc::signal<void, synfig::Time>& signal_rendering_tile_finished() { return signal_rendering_tile_finished_; }
 	sigc::signal<void>& signal_cursor_moved() { return signal_cursor_moved_; }
 	sigc::signal<void>& signal_view_window_changed() { return signal_view_window_changed_; }
 	sigc::signal<void>& signal_meta_data_changed() { return signal_meta_data_changed_; }
@@ -313,9 +317,10 @@ public:
 	void set_instance(etl::loose_handle<studio::Instance> x) { instance=x; }
 	void set_canvas(etl::handle<synfig::Canvas> x) { canvas=x; }
 	void set_canvas_view(etl::loose_handle<studio::CanvasView> x) { canvas_view=x; }
-	etl::handle<synfig::Canvas> get_canvas()const { return canvas; }
-	etl::handle<studio::Instance> get_instance()const { return instance; }
-	etl::loose_handle<studio::CanvasView> get_canvas_view()const { return canvas_view; }
+	etl::handle<synfig::Canvas> get_canvas() const { return canvas; }
+	etl::handle<studio::Instance> get_instance() const { return instance; }
+	etl::loose_handle<studio::CanvasView> get_canvas_view() const { return canvas_view; }
+	const etl::handle<Renderer_Canvas>& get_renderer_canvas() const { return renderer_canvas; }
 
 	void refresh_dimension_info();
 
@@ -382,6 +387,8 @@ public:
 
 	int get_w()const { return w; }
 	int get_h()const { return h; }
+	int get_thumb_w()const { return thumb_w; }
+	int get_thumb_h()const { return thumb_h; }
 
 	//! Converts screen coords (ie: pixels) to composition coordinates
 	synfig::Point screen_to_comp_coords(synfig::Point pos)const;

@@ -26,8 +26,11 @@
 #define __SYNFIG_WIDGET_TIMESLIDER_H
 
 /* === H E A D E R S ======================================================= */
+
 #include <gtkmm/drawingarea.h>
 #include <gtkmm/adjustment.h>
+
+#include <ETL/handle>
 
 #include <synfig/time.h>
 
@@ -82,6 +85,8 @@ protected: //implementation that other interfaces can see
 	virtual bool on_button_release_event(GdkEventButton *event); //for clicking
 
 	virtual bool on_draw(const Cairo::RefPtr<Cairo::Context> &cr);
+
+	virtual void draw_background(const Cairo::RefPtr<Cairo::Context> &cr);
 
 	//void update_times();
 

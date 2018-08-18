@@ -94,8 +94,7 @@ Renderer_Canvas::Renderer_Canvas():
 	weight_zoom_in (1024.0), // very very low priority
 	weight_zoom_out(1024.0),
 	tiles_size(),
-	pixel_format(),
-	draw_queued()
+	pixel_format()
 {
 	// check endianess
     union { int i; char c[4]; } checker = {0x01020304};
@@ -244,7 +243,8 @@ Renderer_Canvas::on_tile_finished(bool success, const Tile::Handle &tile)
 	// or object is already in destruction phase
 	if (shared_object::count())
 		Glib::signal_idle().connect_once(
-			sigc::bind(sigc::ptr_fun(&on_post_tile_finished_callback), etl::handle<Renderer_Canvas>(this), tile), Glib::PRIORITY_HIGH);
+			sigc::bind(sigc::ptr_fun(&on_post_tile_finished_callback), etl::handle<Renderer_Canvas>(this), tile),
+			visible_frames.count(tile->frame_id) ? Glib::PRIORITY_DEFAULT : Glib::PRIORITY_DEFAULT_IDLE );
 }
 
 void
@@ -254,8 +254,10 @@ Renderer_Canvas::on_post_tile_finished(const Tile::Handle &tile)
 	// check if rendering is finished
 	bool tile_visible = false;
 	bool all_finished = true;
+	synfig::Time time;
 	{
 		Glib::Threads::Mutex::Lock lock(mutex);
+		time = tile->frame_id.time;
 		if (visible_frames.count(tile->frame_id))
 			tile_visible = true;
 		for(TileMap::const_iterator i = tiles.begin(); all_finished && i != tiles.end(); ++i)
@@ -264,9 +266,15 @@ Renderer_Canvas::on_post_tile_finished(const Tile::Handle &tile)
 					all_finished = false;
 	}
 
-	if (all_finished) enqueue_render();
-	if (!draw_queued /*&& tile_visible*/)
-		{ get_work_area()->queue_draw(); draw_queued = true; }
+	if (get_work_area()) {
+		get_work_area()->signal_rendering()();
+		get_work_area()->signal_rendering_tile_finished()(time);
+		if (tile_visible)
+			get_work_area()->queue_draw(); // enqueue_render will called while draw
+		else
+		if (all_finished)
+			enqueue_render();
+	}
 }
 
 void
@@ -337,6 +345,8 @@ Renderer_Canvas::build_onion_frames()
 	Canvas::Handle canvas    = get_work_area()->get_canvas();
 	int            w         = get_work_area()->get_w();
 	int            h         = get_work_area()->get_h();
+	int            thumb_w   = get_work_area()->get_w();
+	int            thumb_h   = get_work_area()->get_h();
 	int            past      = std::max(0, get_work_area()->get_onion_skins()[0]);
 	int            future    = std::max(0, get_work_area()->get_onion_skins()[1]);
 	Time           base_time = canvas->get_time();
@@ -344,6 +354,7 @@ Renderer_Canvas::build_onion_frames()
 	float          fps       = rend_desc.get_frame_rate();
 
 	current_frame = FrameId(base_time, w, h);
+	current_thumb = FrameId(base_time, thumb_w, thumb_h);
 	frame_duration = Time(approximate_greater_lp(fps, 0.f) ? 1.0/(double)fps : 0.0);
 
 	// set onion_frames
@@ -389,18 +400,19 @@ Renderer_Canvas::build_onion_frames()
 }
 
 bool
-Renderer_Canvas::enqueue_render_frame(const rendering::Renderer::Handle &renderer, const FrameId &id)
+Renderer_Canvas::enqueue_render_frame(
+	const synfig::rendering::Renderer::Handle &renderer,
+	const synfig::Canvas::Handle &canvas,
+	const synfig::RectInt &window_rect,
+	const FrameId &id )
 {
 	// mutex must be already locked
 
 	const int tile_grid_step = 64;
 
-	Canvas::Handle canvas      = get_work_area()->get_canvas();
 	RendDesc       rend_desc   = canvas->rend_desc();
-	RectInt        window_rect = get_work_area()->get_window_rect();
-	int            w           = get_work_area()->get_w();
-	int            h           = get_work_area()->get_h();
-	RectInt        full_rect   = RectInt(0, 0, w, h);
+	int            w           = id.width;
+	int            h           = id.height;
 
 	rend_desc.clear_flags();
 	rend_desc.set_wh(w, h);
@@ -460,7 +472,7 @@ Renderer_Canvas::enqueue_render_frame(const rendering::Renderer::Handle &rendere
 		rect.miny = int_floor(rect.miny, tile_grid_step);
 		rect.maxx = int_ceil (rect.maxx, tile_grid_step);
 		rect.maxy = int_ceil (rect.maxy, tile_grid_step);
-		rect &= full_rect;
+		rect &= id.rect();
 
 		RendDesc tile_desc=rend_desc;
 		tile_desc.set_subwindow(rect.minx, rect.miny, rect.get_width(), rect.get_height());
@@ -510,10 +522,16 @@ Renderer_Canvas::enqueue_render()
 		if (renderer) {
 			int enqueued = 0;
 			if (canvas && window_rect.is_valid()) {
-				// generate rendering tasks for visible areas
 				Time orig_time = canvas->get_time();
+
+				// generate rendering task for thumbnail
+				// do it first to be sure that thmubnails will always fully covered by the single tile
+				if (enqueue_render_frame(renderer, canvas, current_thumb.rect(), current_thumb))
+					++enqueued;
+
+				// generate rendering tasks for visible areas
 				for(FrameList::const_iterator i = onion_frames.begin(); i != onion_frames.end(); ++i)
-					if (enqueue_render_frame(renderer, i->id))
+					if (enqueue_render_frame(renderer, canvas, window_rect, i->id))
 						++enqueued;
 
 				remove_extra_tiles(events);
@@ -537,18 +555,21 @@ Renderer_Canvas::enqueue_render()
 
 					if (!past_exists || weight_future*future < weight_past*past) {
 						// queue future
-						if (enqueue_render_frame(renderer, FrameId(future_time, current_frame.width, current_frame.height)))
+						if (enqueue_render_frame(renderer, canvas, window_rect, current_frame.with_time(future_time)))
 							++enqueued;
 						++future;
 					} else {
 						// queue past
-						if (enqueue_render_frame(renderer, FrameId(past_time, current_frame.width, current_frame.height)))
+						if (enqueue_render_frame(renderer, canvas, window_rect, current_frame.with_time(past_time)))
 							++enqueued;
 						++past;
 					}
 				}
 
+				// restore canvas time
 				canvas->set_time(orig_time);
+
+				if (enqueued) get_work_area()->signal_rendering()();
 			}
 		}
 	}
@@ -578,8 +599,10 @@ void
 Renderer_Canvas::clear_render()
 {
 	rendering::Task::List events;
+	bool cleared = false;
 	{
 		Glib::Threads::Mutex::Lock lock(mutex);
+		cleared = !tiles.empty();
 		for(TileMap::iterator i = tiles.begin(); i != tiles.end(); ++i)
 			while(!i->second.empty()) {
 				TileList::iterator j = i->second.end(); --j;
@@ -588,7 +611,25 @@ Renderer_Canvas::clear_render()
 		tiles.clear();
 	}
 	rendering::Renderer::cancel(events);
+	if (cleared && get_work_area())
+		get_work_area()->signal_rendering()();
 }
+
+Renderer_Canvas::FrameStatus
+Renderer_Canvas::merge_status(FrameStatus a, FrameStatus b) {
+	static FrameStatus map[FS_Count][FS_Count] = {
+	// FS_None          | FS_PartiallyDone | FS_InProcess     | FS_Done              //
+	// -----------------|------------------|------------------|-----------------     //
+	 { FS_None          , FS_PartiallyDone , FS_InProcess     , FS_PartiallyDone },  // FS_None
+	 { FS_PartiallyDone , FS_PartiallyDone , FS_InProcess     , FS_PartiallyDone },  // FS_PartiallyDone
+	 { FS_InProcess     , FS_InProcess     , FS_InProcess     , FS_InProcess     },  // FS_InProcess
+	 { FS_PartiallyDone , FS_PartiallyDone , FS_InProcess     , FS_Done          }}; // FS_Done
+
+	if ((int)a < 0 || (int)a > (int)FS_Count) a = FS_None;
+	if ((int)b < 0 || (int)b > (int)FS_Count) b = FS_None;
+	return map[a][b];
+}
+
 
 Renderer_Canvas::FrameStatus
 Renderer_Canvas::calc_frame_status(const FrameId &id, const synfig::RectInt &window_rect)
@@ -623,26 +664,20 @@ Renderer_Canvas::get_render_status(StatusMap &out_map)
 {
 	Glib::Threads::Mutex::Lock lock(mutex);
 
-	Canvas::Handle canvas      = get_work_area()->get_canvas();
-	RectInt        window_rect = get_work_area()->get_window_rect();
-	RendDesc       rend_desc   = canvas->rend_desc();
+	RectInt window_rect = get_work_area()->get_window_rect();
 
 	out_map.clear();
+	for(TileMap::const_iterator i = tiles.begin(); i != tiles.end(); ++i)
+		if ( !i->second.empty()
+		  && ( (i->first.width == current_thumb.width && i->first.height == current_thumb.height)
+			|| (i->first.width == current_frame.width && i->first.height == current_frame.height) ))
+				out_map[i->first.time] = FS_None;
 
-	out_map[current_frame] = calc_frame_status(current_frame, window_rect);
-
-	if (frame_duration) {
-		int frame = (int)floor((double)(rend_desc.get_time_start() - current_frame.time)/(double)frame_duration);
-		while(true) {
-			Time time = current_frame.time + frame_duration*frame;
-			if (time > rend_desc.get_time_end())
-				break;
-			if (frame && time >= rend_desc.get_time_start()) {
-				FrameId id(time, current_frame.width, current_frame.height);
-				out_map[id] = calc_frame_status(id, window_rect);
-			}
-			++frame;
-		}
+	for(StatusMap::iterator i = out_map.begin(); i != out_map.end(); ) {
+		i->second = merge_status(
+			calc_frame_status(current_frame.with_time(i->first), window_rect),
+			calc_frame_status(current_thumb.with_time(i->first), current_thumb.rect()) );
+		if (i->second == FS_None) out_map.erase(i++); else ++i;
 	}
 }
 
@@ -651,8 +686,6 @@ Renderer_Canvas::render_vfunc(
 	const Glib::RefPtr<Gdk::Window>& drawable,
 	const Gdk::Rectangle& expose_area )
 {
-	draw_queued = false;
-
 	VectorInt window_offset = get_work_area()->get_windows_offset();
 	RectInt   window_rect   = get_work_area()->get_window_rect();
 	RectInt   expose_rect   = RectInt( expose_area.get_x(),
@@ -665,10 +698,6 @@ Renderer_Canvas::render_vfunc(
 
 	// enqueue rendering if not all of visible tiles are exists and actual
 	enqueue_render();
-
-	// query frames status
-	StatusMap status_map;
-	get_render_status(status_map);
 
 	Glib::Threads::Mutex::Lock lock(mutex);
 
@@ -761,29 +790,15 @@ Renderer_Canvas::render_vfunc(
 	context->stroke();
 	context->restore();
 
-	// draw frames status
-	if (!status_map.empty()) {
-		context->save();
-		context->translate(0.0, (double)current_frame.height);
-		double scale = (double)current_frame.width/(double)status_map.size();
-		context->scale(scale, scale);
-		for(StatusMap::const_iterator i = status_map.begin(); i != status_map.end(); ++i) {
-			switch(i->second) {
-			case FS_PartiallyDone:
-				context->set_source_rgba(0.5, 0.5, 0.5, 1.0); break;
-			case FS_InProcess:
-				context->set_source_rgba(1.0, 1.0, 0.0, 1.0); break;
-			case FS_Done:
-				context->set_source_rgba(0.0, 0.0, 0.0, 1.0); break;
-			default:
-				context->set_source_rgba(1.0, 1.0, 1.0, 1.0); break;
-			}
-			context->rectangle(0.0, 0.0, 1.0, 1.0);
-			context->fill();
-			context->translate(1.0, 0.0);
-		}
-		context->restore();
-	}
-
 	context->restore();
+}
+
+Cairo::RefPtr<Cairo::ImageSurface>
+Renderer_Canvas::get_thumb(const synfig::Time &time)
+{
+	Glib::Threads::Mutex::Lock lock(mutex);
+	TileMap::const_iterator i = tiles.find( current_thumb.with_time(time) );
+	return i == tiles.end() || i->second.empty() || !*(i->second.begin())
+		 ? Cairo::RefPtr<Cairo::ImageSurface>()
+		 : (*(i->second.begin()))->cairo_surface;
 }
