@@ -159,9 +159,9 @@ Widget_CanvasTimeslider::on_button_press_event(GdkEventButton *event)
 bool
 Widget_CanvasTimeslider::on_button_release_event(GdkEventButton *event)
 {
-	if ( (event->button == 1 && !(event->state & Gdk::BUTTON2_MASK))
-	  || (event->button == 2 && !(event->state & Gdk::BUTTON1_MASK)) )
-		show_tooltip(Point(event->x, event->y), Point(event->x_root, event->y_root));
+	//if ( (event->button == 1 && !(event->state & Gdk::BUTTON2_MASK))
+	//  || (event->button == 2 && !(event->state & Gdk::BUTTON1_MASK)) )
+	//	show_tooltip(Point(event->x, event->y), Point(event->x_root, event->y_root));
 	return Widget_Timeslider::on_button_release_event(event);
 }
 
