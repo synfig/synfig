@@ -120,6 +120,7 @@ Widget_NavView::set_canvas_view(const etl::loose_handle<CanvasView> &x)
 
 	view_window_changed.disconnect();
 	rendering_tile_finished.disconnect();
+	time_changed.disconnect();
 
 	canvas_view = x;
 
@@ -129,6 +130,8 @@ Widget_NavView::set_canvas_view(const etl::loose_handle<CanvasView> &x)
 			sigc::mem_fun(*this, &Widget_NavView::on_view_window_changed) );
 		rendering_tile_finished = work_area->signal_rendering_tile_finished().connect(
 			sigc::mem_fun(*this, &Widget_NavView::on_rendering_tile_finished) );
+		time_changed = canvas_view->time_adjustment()->signal_value_changed().connect(
+			sigc::mem_fun(*this, &Widget_NavView::queue_draw) );
 	}
 
 	queue_draw();

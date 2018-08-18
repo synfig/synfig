@@ -62,6 +62,7 @@ class Widget_NavView : public Gtk::Table
 
 	sigc::connection view_window_changed;
 	sigc::connection rendering_tile_finished;
+	sigc::connection time_changed;
 
 	void on_number_modify();
 	bool on_mouse_event(GdkEvent *event);
