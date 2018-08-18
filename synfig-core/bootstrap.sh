@@ -47,6 +47,8 @@ AUTOPOINT='intltoolize --automake --copy' autoreconf --force --install --verbose
 
 echo "patching po/Makefile.in.in..."
 sed 's/itlocaledir = $(prefix)\/$(DATADIRNAME)\/locale/itlocaledir = $(datarootdir)\/locale/' < po/Makefile.in.in > po/Makefile.in.in.tmp
-mv --force po/Makefile.in.in.tmp po/Makefile.in.in
+# -- force didn't work under MacOS
+mv -f po/Makefile.in.in.tmp po/Makefile.in.in
+
 
 echo "Done! Please run ./configure now."

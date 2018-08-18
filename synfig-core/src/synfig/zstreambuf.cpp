@@ -74,7 +74,8 @@ bool zstreambuf::pack(std::vector<char> &dest, const void *src, size_t size, boo
 	)) return false;
 
 	stream.avail_in = size;
-	stream.next_in = (z_const Bytef*)src;
+	//stream.next_in = (z_const Bytef*)src;
+	stream.next_in = (Bytef*)const_cast<void*>(src);
 	bool result = true;
 	do
 	{
@@ -104,7 +105,8 @@ size_t zstreambuf::pack(void *dest, size_t dest_size, const void *src, size_t sr
 	)) return 0;
 
 	stream.avail_in = src_size;
-	stream.next_in = (z_const Bytef*)src;
+	//stream.next_in = (z_const Bytef*)src;
+	stream.next_in = (Bytef*)const_cast<void*>(src);
 	stream.avail_out = dest_size;
 	stream.next_out = (Bytef*)dest;
 	size_t size = 0;
@@ -120,7 +122,8 @@ bool zstreambuf::unpack(std::vector<char> &dest, const void *src, size_t size) {
 	if (Z_OK != inflateInit2(&stream, option_window_bits )) return false;
 
 	stream.avail_in = size;
-	stream.next_in = (z_const Bytef*)src;
+	//stream.next_in = (z_const Bytef*)src;
+	stream.next_in = (Bytef*)const_cast<void*>(src);
 	bool result = true;
 	do
 	{
@@ -144,7 +147,8 @@ size_t zstreambuf::unpack(void *dest, size_t dest_size, const void *src, size_t 
 	if (Z_OK != inflateInit2(&stream, option_window_bits )) return 0;
 
 	stream.avail_in = src_size;
-	stream.next_in = (z_const Bytef*)src;
+	//stream.next_in = (z_const Bytef*)src;
+	stream.next_in = (Bytef*)const_cast<void*>(src);
 	stream.avail_out = dest_size;
 	stream.next_out = (Bytef*)dest;
 	size_t size = 0;
