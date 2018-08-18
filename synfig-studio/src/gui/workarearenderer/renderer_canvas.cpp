@@ -345,8 +345,8 @@ Renderer_Canvas::build_onion_frames()
 	Canvas::Handle canvas    = get_work_area()->get_canvas();
 	int            w         = get_work_area()->get_w();
 	int            h         = get_work_area()->get_h();
-	int            thumb_w   = get_work_area()->get_w();
-	int            thumb_h   = get_work_area()->get_h();
+	int            thumb_w   = get_work_area()->get_thumb_w();
+	int            thumb_h   = get_work_area()->get_thumb_h();
 	int            past      = std::max(0, get_work_area()->get_onion_skins()[0]);
 	int            future    = std::max(0, get_work_area()->get_onion_skins()[1]);
 	Time           base_time = canvas->get_time();
@@ -544,7 +544,7 @@ Renderer_Canvas::enqueue_render()
 				// generate rendering tasks for future or past frames
 				int future = 0, past = 0;
 				long long frame_size = image_rect_size(window_rect);
-				while(tiles_size + frame_size < max_tiles_size_soft && enqueued < 1) {
+				while(tiles_size + frame_size < max_tiles_size_soft && enqueued < 2*1) { // render only one frame in background
 					Time future_time = current_frame.time + frame_duration*future;
 					bool future_exists = future_time >= rend_desc.get_time_start()
 									  && future_time <= rend_desc.get_time_end();
@@ -555,11 +555,15 @@ Renderer_Canvas::enqueue_render()
 
 					if (!past_exists || weight_future*future < weight_past*past) {
 						// queue future
+						if (enqueue_render_frame(renderer, canvas, current_thumb.rect(), current_thumb.with_time(future_time)))
+							++enqueued;
 						if (enqueue_render_frame(renderer, canvas, window_rect, current_frame.with_time(future_time)))
 							++enqueued;
 						++future;
 					} else {
 						// queue past
+						if (enqueue_render_frame(renderer, canvas, current_thumb.rect(), current_thumb.with_time(past_time)))
+							++enqueued;
 						if (enqueue_render_frame(renderer, canvas, window_rect, current_frame.with_time(past_time)))
 							++enqueued;
 						++past;

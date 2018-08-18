@@ -1056,7 +1056,6 @@ CanvasView::create_time_bar()
 	timeslider->set_time_adjustment(time_adjustment());
 	timeslider->set_bounds_adjustment(time_window_adjustment());
 	timeslider->set_canvas_view(this);
-	timeslider->set_tooltip_text(_("Changes the current time"));
 	timeslider->set_can_focus(true);
 	timeslider->show();
 
