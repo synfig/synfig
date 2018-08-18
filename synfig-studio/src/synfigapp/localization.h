@@ -48,7 +48,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-inline const char* synfiggui_localize(const char *x)
+inline const char* synfigapp_localize(const char *x)
 	{ return _(x); }
 
 /* === E N D =============================================================== */
