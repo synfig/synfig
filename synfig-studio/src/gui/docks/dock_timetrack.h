@@ -46,10 +46,10 @@ class Widget_Keyframe_List;
 
 class Dock_Timetrack : public Dock_CanvasSpecific
 {
-	Gtk::HScrollbar* hscrollbar_;
-	Gtk::VScrollbar* vscrollbar_;
-	Widget_CanvasTimeslider* widget_timeslider_;
-	Widget_Keyframe_List* widget_kf_list_;
+	Gtk::HScrollbar hscrollbar_;
+	Gtk::VScrollbar vscrollbar_;
+	Widget_CanvasTimeslider widget_timeslider_;
+	Widget_Keyframe_List widget_kf_list_;
 	Gtk::Table* table_;
 	Gtk::TreeView *mimic_tree_view;
 
@@ -62,8 +62,6 @@ protected:
 	void refresh_rend_desc();
 
 public:
-
-
 	Dock_Timetrack();
 	~Dock_Timetrack();
 

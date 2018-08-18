@@ -411,10 +411,6 @@ public:
 
 Dock_Timetrack::Dock_Timetrack():
 	Dock_CanvasSpecific("timetrack",_("Timetrack"),Gtk::StockID("synfig-timetrack")),
-	hscrollbar_       (new Gtk::HScrollbar()),
-	vscrollbar_       (new Gtk::VScrollbar()),
-	widget_timeslider_(new Widget_CanvasTimeslider()),
-	widget_kf_list_   (new Widget_Keyframe_List()),
 	table_(),
 	mimic_tree_view()
 {
@@ -424,10 +420,6 @@ Dock_Timetrack::Dock_Timetrack():
 Dock_Timetrack::~Dock_Timetrack()
 {
 	if (table_) delete table_;
-	delete hscrollbar_;
-	delete vscrollbar_;
-	delete widget_timeslider_;
-	delete widget_kf_list_;
 }
 
 void
@@ -495,7 +487,7 @@ Dock_Timetrack::refresh_rend_desc()
 {
 	if(App::get_selected_canvas_view())
 	{
-		widget_timeslider_->set_global_fps(App::get_selected_canvas_view()->get_canvas()->rend_desc().get_frame_rate());
+		widget_timeslider_.set_global_fps(App::get_selected_canvas_view()->get_canvas()->rend_desc().get_frame_rate());
 	}
 }
 
@@ -506,15 +498,15 @@ Dock_Timetrack::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_v
 	{
 		clear_previous();
 
-		hscrollbar_->unset_adjustment();
-		vscrollbar_->unset_adjustment();
+		hscrollbar_.unset_adjustment();
+		vscrollbar_.unset_adjustment();
 
-		widget_timeslider_->set_time_adjustment( Glib::RefPtr<Gtk::Adjustment>() );
-		widget_timeslider_->set_bounds_adjustment( Glib::RefPtr<Gtk::Adjustment>() );
-		widget_timeslider_->set_canvas_view( CanvasView::Handle() );
+		widget_timeslider_.set_time_adjustment( Glib::RefPtr<Gtk::Adjustment>() );
+		widget_timeslider_.set_bounds_adjustment( Glib::RefPtr<Gtk::Adjustment>() );
+		widget_timeslider_.set_canvas_view( CanvasView::Handle() );
 
-		widget_kf_list_->set_time_adjustment( Glib::RefPtr<Gtk::Adjustment>() );
-		widget_kf_list_->set_canvas_interface( etl::loose_handle<synfigapp::CanvasInterface>() );
+		widget_kf_list_.set_time_adjustment( Glib::RefPtr<Gtk::Adjustment>() );
+		widget_kf_list_.set_canvas_interface( etl::loose_handle<synfigapp::CanvasInterface>() );
 
 		delete table_;
 		table_=0;
@@ -545,16 +537,16 @@ Dock_Timetrack::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_v
 		align_drawingArea2->set_size_request(9,-1);
 #endif
 
-		widget_timeslider_->set_time_adjustment(canvas_view->time_adjustment());
-		widget_timeslider_->set_bounds_adjustment(canvas_view->time_window_adjustment());
-		widget_timeslider_->set_global_fps(canvas_view->get_canvas()->rend_desc().get_frame_rate());
-		widget_timeslider_->set_canvas_view(canvas_view);
+		widget_timeslider_.set_time_adjustment(canvas_view->time_adjustment());
+		widget_timeslider_.set_bounds_adjustment(canvas_view->time_window_adjustment());
+		widget_timeslider_.set_global_fps(canvas_view->get_canvas()->rend_desc().get_frame_rate());
+		widget_timeslider_.set_canvas_view(canvas_view);
 
-		widget_kf_list_->set_time_adjustment(canvas_view->time_adjustment());
-		widget_kf_list_->set_canvas_interface(canvas_view->canvas_interface());
+		widget_kf_list_.set_time_adjustment(canvas_view->time_adjustment());
+		widget_kf_list_.set_canvas_interface(canvas_view->canvas_interface());
 
-		vscrollbar_->set_adjustment(tree_view->get_vadjustment());
-		hscrollbar_->set_adjustment(canvas_view->time_window_adjustment());
+		vscrollbar_.set_adjustment(tree_view->get_vadjustment());
+		hscrollbar_.set_adjustment(canvas_view->time_window_adjustment());
 
 		//  0------1------2------3------4
 		//  |  A   |  KF  |  A   |  v   |
@@ -576,12 +568,12 @@ Dock_Timetrack::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_v
 
 		table_=new Gtk::Table(3,4);
 		table_->attach(*align_drawingArea1, 0, 1, 0, 2, Gtk::SHRINK, Gtk::FILL);
-		table_->attach(*widget_kf_list_,    1, 2, 0, 1, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::SHRINK);
-		table_->attach(*widget_timeslider_, 1, 2, 1, 2, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::SHRINK);
+		table_->attach(widget_kf_list_,     1, 2, 0, 1, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::SHRINK);
+		table_->attach(widget_timeslider_,  1, 2, 1, 2, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::SHRINK);
 		table_->attach(*align_drawingArea2, 2, 3, 0, 2, Gtk::SHRINK, Gtk::FILL);
 		table_->attach(*scrolled,           0, 3, 2, 3, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::EXPAND);
-		table_->attach(*hscrollbar_,        0, 3, 3, 4, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::SHRINK);
-		table_->attach(*vscrollbar_,        3, 4, 0, 3, Gtk::FILL|Gtk::SHRINK, Gtk::FILL|Gtk::EXPAND);
+		table_->attach(hscrollbar_,         0, 3, 3, 4, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::SHRINK);
+		table_->attach(vscrollbar_,         3, 4, 0, 3, Gtk::FILL|Gtk::SHRINK, Gtk::FILL|Gtk::EXPAND);
 		add(*table_);
 		
 		// Should be here, after the widget was attached to table
@@ -604,6 +596,6 @@ Dock_Timetrack::on_update_header_height( int /*header_height*/)
 	int height=0;
 	int kf_list_height=10;
 	mimic_tree_view->convert_bin_window_to_widget_coords(0, 0, width, height);
-	widget_timeslider_->set_size_request(-1,height-kf_list_height);
-	widget_kf_list_->set_size_request(-1,kf_list_height);
+	widget_timeslider_.set_size_request(-1,height-kf_list_height);
+	widget_kf_list_.set_size_request(-1,kf_list_height);
 }

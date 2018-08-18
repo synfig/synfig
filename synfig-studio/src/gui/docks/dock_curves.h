@@ -27,10 +27,13 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include "docks/dockable.h"
-#include <gtkmm/treeview.h>
-#include "instance.h"
-#include "docks/dock_canvasspecific.h"
+#include <gtkmm/scrollbar.h>
+
+#include <instance.h>
+#include <widgets/widget_canvastimeslider.h>
+#include <widgets/widget_keyframe_list.h>
+
+#include "dock_canvasspecific.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -38,22 +41,17 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace Gtk { class Table; class HScrollbar; class VScrollbar; };
-
 namespace studio {
 
 class Widget_Curves;
-class Widget_CanvasTimeslider;
-class Widget_Keyframe_List;
-
 
 class Dock_Curves : public Dock_CanvasSpecific
 {
-	Gtk::HScrollbar* hscrollbar_;
-	Gtk::VScrollbar* vscrollbar_;
+	Gtk::HScrollbar hscrollbar_;
+	Gtk::VScrollbar vscrollbar_;
 
-	Widget_CanvasTimeslider* widget_timeslider_;
-	Widget_Keyframe_List* widget_kf_list_;
+	Widget_CanvasTimeslider widget_timeslider_;
+	Widget_Keyframe_List widget_kf_list_;
 	
 	Gtk::Table* table_;
 	Widget_Curves* last_widget_curves_;

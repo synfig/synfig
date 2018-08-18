@@ -6,6 +6,7 @@
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**  ......... ... 2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -26,20 +27,18 @@
 #define __SYNFIG_DOCK_NAVIGATOR_H
 
 /* === H E A D E R S ======================================================= */
+
 #include "sigc++/signal.h"
 
+#include <cairomm/surface.h>
+
 #include <gtkmm/drawingarea.h>
-#include <gdkmm/pixbuf.h>
 #include <gtkmm/adjustment.h>
 #include <gtkmm/label.h>
 
-#include <synfig/renddesc.h>
+#include <widgets/widget_distance.h>
 
-#include "canvasview.h"
-#include "docks/dock_canvasspecific.h"
-#include "widgets/widget_distance.h"
-
-#include <ETL/smart_ptr>
+#include "dock_canvasspecific.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -48,71 +47,45 @@
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 namespace studio {
-class AsyncRenderer;
+
+class CanvasView;
 
 class Widget_NavView : public Gtk::Table
 {
-	//handle to out parent canvas
-	CanvasView::LooseHandle canvview;
+	etl::loose_handle<CanvasView> canvas_view;
+	Cairo::RefPtr<Cairo::ImageSurface> surface;
 
-	Glib::RefPtr<Gdk::Pixbuf> prev;
-	bool dirty;
-
-	//The drawing stuff
 	Gtk::DrawingArea drawto;
-
-	//The input stuff
 	Glib::RefPtr<Gtk::Adjustment> adj_zoom;
 	Gtk::Label zoom_print;
+	int scrolling;
 
-	//zoom window stuff
-	bool	scrolling;
+	sigc::connection view_window_changed;
+	sigc::connection rendering_tile_finished;
 
-	//asynchronous rendering stuff
-	etl::handle<AsyncRenderer>	renderer;
-	etl::smart_ptr<synfig::Surface> surface;
-	cairo_surface_t* cairo_surface;
-	bool rendering;
-
-	//drawing functionality
-	void on_start_render(); //breaks out into asynchronous rendering
-	void on_finish_render();
-	void on_draw(); //renders the small thing we have
-	void on_dirty_preview(); //dirties the preview for rerender
-
-	//for the zoom buttons
-	void on_zoom_in();
-	void on_zoom_out();
-
-	//handles the zoom scroller
-	using Gtk::Widget::on_scroll_event;
-	bool on_scroll_event(GdkEvent *event);
 	void on_number_modify();
-
-	//
-	bool on_mouse_event(GdkEvent * e);
-
-	//draws the gotten bitmap on the draw area
+	bool on_mouse_event(GdkEvent *event);
 	bool on_drawto_draw(const Cairo::RefPtr<Cairo::Context> &cr);
 
-	//for when the canvasview view changes (boolean value scrolling solves cyclic problems)
-	void on_workarea_view_change();
+	void on_view_window_changed();
+	void on_rendering_tile_finished(synfig::Time time);
 
 public:
-	Widget_NavView(CanvasView::LooseHandle cv = CanvasView::LooseHandle());
+	Widget_NavView();
 	~Widget_NavView();
 
-	etl::loose_handle<studio::CanvasView> get_canvas_view() {return canvview;}
+	const etl::loose_handle<CanvasView>& get_canvas_view() const { return canvas_view; }
+	void set_canvas_view(const etl::loose_handle<CanvasView> &x);
 };
+
 
 class Dock_Navigator : public Dock_CanvasSpecific
 {
-	Widget_NavView	dummy;
-
+private:
+	Widget_NavView navview;
 public:
 	Dock_Navigator();
 	~Dock_Navigator();
-
 	virtual void changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view);
 };
 

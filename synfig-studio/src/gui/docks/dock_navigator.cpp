@@ -8,6 +8,7 @@
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007 Chris Moore
 **  Copyright (c) 2011 Nikita Kitaev
+**  ......... ... 2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -32,483 +33,277 @@
 #endif
 
 #include <cassert>
+#include <algorithm>
 
-#include <gtkmm/separator.h>
 #include <gdkmm/general.h>
+#include <gtkmm/separator.h>
 
 #include <synfig/general.h>
 
-#include <synfig/canvas.h>
-#include <synfig/context.h>
-#include <synfig/target_scanline.h>
-#include <synfig/surface.h>
-
-#include "docks/dock_navigator.h"
-
 #include <gui/localization.h>
+#include <workarea.h>
+#include <canvasview.h>
+#include <workarearenderer/renderer_canvas.h>
 
-#include "workarea.h"
-#include "canvasview.h"
-#include "asyncrenderer.h"
+#include "dock_navigator.h"
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
+using namespace studio;
 
 /* === M A C R O S ========================================================= */
-
-const double log_10_2 = log(2.0);
 
 /* === G L O B A L S ======================================================= */
 
 /* === P R O C E D U R E S ================================================= */
 
+namespace {
+	class IntLock {
+	private:
+		int &counter;
+	public:
+		IntLock(int &counter): counter(counter) { ++counter; }
+		~IntLock() { --counter; }
+	};
+
+	// zoom slider is on exponential scale
+	// map: -4,4 -> small number,1600 with 100 at 0
+	// f(x) = 100*2^x
+	double unit_to_zoom(double f)
+		{ return pow(2.0, f); }
+
+	double zoom_to_unit(double f)
+		{ return approximate_greater_lp(f, 0.0) ? log(f)/log(2.0) : -999999.0; }
+}
+
 /* === M E T H O D S ======================================================= */
 
 /* === E N T R Y P O I N T ================================================= */
-studio::Widget_NavView::Widget_NavView(CanvasView::LooseHandle cv):
-	canvview(cv),
-	dirty(false),
+
+
+Widget_NavView::Widget_NavView():
 	adj_zoom(Gtk::Adjustment::create(0, -4, 4, 1, 2)),
-	scrolling(false),
-	surface(new synfig::Surface),
-	cairo_surface(cairo_image_surface_create(CAIRO_FORMAT_ARGB32, 1, 1)),
-	rendering(false)
+	scrolling(0)
 {
-	attach(drawto,0,4,0,1);
-
-	attach(*manage(new Gtk::HSeparator),0,4,1,2,Gtk::SHRINK|Gtk::FILL,Gtk::SHRINK|Gtk::FILL);
-
 	//zooming stuff
-	attach(zoom_print,0,1,2,3,Gtk::SHRINK|Gtk::FILL,Gtk::SHRINK|Gtk::FILL);
 	zoom_print.set_size_request(40,-1);
+	Gtk::HScale *hs = manage(new Gtk::HScale(adj_zoom));
+	hs->set_draw_value(false);
 
-	Gtk::HScale *s = manage(new Gtk::HScale(adj_zoom));
-	s->set_draw_value(false);
-	//s->set_update_policy(Gtk::UPDATE_DELAYED);
-	//s->signal_event().connect(sigc::mem_fun(*this,&Dock_Navigator::on_scroll_event));
-	attach(*s,1,4,2,3,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK|Gtk::FILL);
+	Gtk::HSeparator *sep = manage(new Gtk::HSeparator());
 
+	attach(drawto,     0, 4, 0, 1);
+	attach(*sep,       0, 4, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL);
+	attach(zoom_print, 0, 1, 2, 3, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL);
+	attach(*hs,        1, 4, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL);
 	show_all();
 
-	adj_zoom->signal_value_changed().connect(sigc::mem_fun(*this,&Widget_NavView::on_number_modify));
+	adj_zoom->signal_value_changed().connect(sigc::mem_fun(*this, &Widget_NavView::on_number_modify));
 
-	if(cv)
-	{
-		drawto.signal_draw().connect(sigc::mem_fun(*this,&Widget_NavView::on_drawto_draw));
-		drawto.signal_event().connect(sigc::mem_fun(*this,&Widget_NavView::on_mouse_event));
-
-		drawto.add_events(Gdk::BUTTON_MOTION_MASK|Gdk::BUTTON_PRESS_MASK);
-
-		//get_canvas_view()->canvas_interface()->signal_dirty_preview()
-		//				.connect(sigc::mem_fun(*this,&Widget_NavView::on_dirty_preview));
-		get_canvas_view()->get_work_area()->signal_rendering()
-						.connect(sigc::mem_fun(*this,&Widget_NavView::on_dirty_preview));
-
-		get_canvas_view()->get_work_area()->signal_view_window_changed()
-						.connect(sigc::mem_fun(*this,&Widget_NavView::on_workarea_view_change));
-
-		//update with this canvas' view
-		on_workarea_view_change();
-
-		dirty = true;
-		queue_draw();
-	}
+	drawto.signal_draw().connect(sigc::mem_fun(*this, &Widget_NavView::on_drawto_draw));
+	drawto.signal_event().connect(sigc::mem_fun(*this, &Widget_NavView::on_mouse_event));
+	drawto.add_events(Gdk::BUTTON_MOTION_MASK | Gdk::BUTTON_PRESS_MASK);
 
 	adj_zoom->set_value(0);
 }
 
-studio::Widget_NavView::~Widget_NavView()
+Widget_NavView::~Widget_NavView()
+	{ set_canvas_view( CanvasView::LooseHandle() ); }
+
+void
+Widget_NavView::set_canvas_view(const etl::loose_handle<CanvasView> &x)
 {
-	cairo_surface_destroy(cairo_surface);
-}
+	if (canvas_view == x) return;
 
+	view_window_changed.disconnect();
+	rendering_tile_finished.disconnect();
 
-static void freegu8(const guint8 *p)
-{
-	delete [] p;
-}
+	canvas_view = x;
 
-void studio::Widget_NavView::on_start_render()
-{
-	if(dirty)
-	{
-		//this should set it to render a single frame
-		RendDesc	r = get_canvas_view()->get_canvas()->rend_desc();
-		r.set_time(get_canvas_view()->canvas_interface()->get_time());
-
-		//this changes the size of the canvas to the closest thing we can find
-		int sw = r.get_w(), sh = r.get_h();
-		
-		//resize so largest dimension is 128
-		int dw = sw > sh ? 128 : sw*128/sh,
-		dh = sh > sw ? 128 : sh*128/sw;
-		
-		r.set_w(dw);
-		r.set_h(dh);
-
-		// Create a surface_target
-		etl::handle<Target_Tile> targ = surface_target(surface.get(), studio::App::navigator_renderer);
-		// Fill the target with the proper information
-		targ->set_canvas(get_canvas_view()->get_canvas());
-		targ->set_alpha_mode(TARGET_ALPHA_MODE_FILL);
-		targ->set_avoid_time_sync();
-		targ->set_rend_desc(&r);
-		// Sets up a Asynchronous renderer
-		renderer = new AsyncRenderer(targ);
-
-		// connnect the renderer success to the finish render handler
-		renderer->signal_success().connect(sigc::mem_fun(*this,&Widget_NavView::on_finish_render));
-		// Mark it as clean since we are to start to render
-		dirty = false;
-		// start the asynchronous rendering
-		renderer->start();
-	}
-}
-
-void studio::Widget_NavView::on_finish_render()
-{
-	//convert it into our pixmap
-	PixelFormat pf(PF_RGB);
-
-	if(!*surface)
-	{
-		synfig::warning("dock_navigator: Bad surface");
-		return;
-	}
-
-	int w = 0, h = 0;
-	int dw = surface->get_w();
-	int dh = surface->get_h();
-
-	if(prev)
-	{
-		w = prev->get_width();
-		h = prev->get_height();
-	}
-
-	if(w != dw || h != dh || !prev)
-	{
-		const int total_bytes(dw*dh*synfig::pixel_size(pf));
-
-		//synfig::warning("Nav: Updating the pixbuf to be the right size, etc. (%d bytes)", total_bytes);
-
-		prev.clear();
-		guint8 *bytes = new guint8[total_bytes]; //24 bits per pixel
-
-		//convert into our buffered dataS
-		//synfig::warning("Nav: converting color format into buffer");
-		color_to_pixelformat((unsigned char *)bytes, (*surface)[0], pf, &App::gamma, dw, dh);
-
-		prev =
-		Gdk::Pixbuf::create_from_data(
-			bytes,	// pointer to the data
-			Gdk::COLORSPACE_RGB, // the colorspace
-			((pf&PF_A)==PF_A), // has alpha?
-			8, // bits per sample
-			dw,	// width
-			dh,	// height
-			dw*synfig::pixel_size(pf), // stride (pitch)
-			sigc::ptr_fun(freegu8)
-		);
-	}
-	else
-	{
-		if(prev) //just in case we're stupid
-			color_to_pixelformat((unsigned char*)prev->get_pixels(), (*surface)[0], pf, &App::gamma, dw, dh);
+	if (canvas_view)
+	if (WorkArea *work_area = canvas_view->get_work_area()) {
+		view_window_changed = work_area->signal_view_window_changed().connect(
+			sigc::mem_fun(*this, &Widget_NavView::on_view_window_changed) );
+		rendering_tile_finished = work_area->signal_rendering_tile_finished().connect(
+			sigc::mem_fun(*this, &Widget_NavView::on_rendering_tile_finished) );
 	}
 
 	queue_draw();
 }
 
-/*	zoom slider is on exponential scale
-
-	map: -4,4 -> small number,1600 with 100 at 0
-
-	f(x) = 100*2^x
-*/
-
-static double unit_to_zoom(double f)
+bool
+Widget_NavView::on_drawto_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 {
-	return pow(2.0,f);
-}
+	if (!canvas_view) return false;
+	Canvas::Handle canvas = canvas_view->get_canvas();
+	if (!canvas) return false;
+	WorkArea *work_area = canvas_view->get_work_area();
+	if (!work_area) return false;
+	Renderer_Canvas::Handle renderer_canvas = work_area->get_renderer_canvas();
+	if (!renderer_canvas) return false;
 
-static double zoom_to_unit(double f)
-{
-	if(f > 0)
-	{
-		return log(f) / log_10_2;
-	}else return -999999.0;
-}
-
-bool studio::Widget_NavView::on_drawto_draw(const Cairo::RefPtr<Cairo::Context> &cr)
-{
-#ifdef SINGLE_THREADED
-	// don't redraw if the previous redraw is still running single-threaded
-	// or we end up destroying the renderer that's rendering it
-	if (App::single_threaded && renderer && renderer->updating)
+	synfig::Time time = canvas_view->get_time();
+	Cairo::RefPtr<Cairo::ImageSurface> new_surface = renderer_canvas->get_thumb(time);
+	if (new_surface) surface = new_surface;
+	if (!surface)
 		return false;
-#endif
 
-	//draw the good stuff
-	on_start_render();
+	//axis transform from units to pixel coords
+	const RendDesc &desc = canvas->rend_desc();
+	int canvw = desc.get_w();
+	Real pw   = desc.get_pw();
+	Real ph   = desc.get_ph();
+	int w     = surface->get_width();
+	int h     = surface->get_height();
+	if (w == 0 || h == 0)
+		return false;
 
-	//if we've got a preview etc. display it...
-	if(get_canvas_view())
-	{
-		//axis transform from units to pixel coords
-		float xaxis = 0, yaxis = 0;
+	// round to smallest scale (fit entire thing in window without distortion)
+	Real scale = std::min( drawto.get_width()/(Real)w, drawto.get_height()/(Real)h );
 
-		int canvw = get_canvas_view()->get_canvas()->rend_desc().get_w();
-		int w=0, h=0;
-	
-		float pw = get_canvas_view()->get_canvas()->rend_desc().get_pw();
-		float ph = get_canvas_view()->get_canvas()->rend_desc().get_ph();
-		
-		// TODO: rewrite this
-		
-		if (!prev) return false;
+	//scale to a new pixmap and then copy over to the window
+	int nw = (int)(w*scale);
+	int nh = (int)(h*scale);
+	if (nw == 0 || nh == 0)
+		return false;
 
-		w = prev->get_width();
-		h = prev->get_height();
+	// scaling and stuff
+	// the point to navpixel space conversion should be:
+	//      (navpixels / canvpixels) * (canvpixels / canvsize)
+	//   or (navpixels / prevpixels) * (prevpixels / navpixels)
+	Real xaxis = scale*w/(Real)canvw;
+	Real yaxis = xaxis/ph;
+	xaxis /= pw;
 
-		//scale up/down to the nearest pixel ratio...
-		//and center in center
-		float offx=0, offy=0;
+	//must now center to be cool
+	Real offx = 0.5*(drawto.get_width() - nw);
+	Real offy = 0.5*(drawto.get_height() - nh);
 
-		float sx, sy;
-		int nw,nh;
+	// draw surface
+	cr->save();
+	cr->translate((int)offx, (int)offy);
+	cr->scale(nw/(Real)w, nh/(Real)h);
+	cr->set_source(surface, 0.0, 0.0);
+	cr->paint();
+	cr->restore();
 
-		sx = drawto.get_width() / (float)w;
-		sy = drawto.get_height() / (float)h;
+	// draw fancy red rectangle around focus point
+	const Point &wtl = get_canvas_view()->get_work_area()->get_window_tl(),
+				&wbr = get_canvas_view()->get_work_area()->get_window_br();
 
-		//round to smallest scale (fit entire thing in window without distortion)
-		if(sx > sy) sx = sy;
-		//else sy = sx;
+	// it must be clamped to the drawing area though
+	const Point fp = -get_canvas_view()->get_work_area()->get_focus_point();
 
-		//scaling and stuff
-		// the point to navpixel space conversion should be:
-		//		(navpixels / canvpixels) * (canvpixels / canvsize)
-		//	or (navpixels / prevpixels) * (prevpixels / navpixels)
-		xaxis = sx * w / (float)canvw;
-		yaxis = xaxis/ph;
-		xaxis /= pw;
+	// get focus point in normal space
+	int rw = (int)(fabs((wtl[0] - wbr[0])*xaxis));
+	int rh = (int)(fabs((wtl[1] - wbr[1])*yaxis));
 
-		//scale to a new pixmap and then copy over to the window
-		nw = (int)(w*sx);
-		nh = (int)(h*sx);
+	// transform into pixel space
+	int l = (int)(0.5*drawto.get_width()  + fp[0]*xaxis - 0.5*rw);
+	int t = (int)(0.5*drawto.get_height() + fp[1]*yaxis - 0.5*rh);
 
-		//must now center to be cool
-		offx = (drawto.get_width() - nw)/2;
-		offy = (drawto.get_height() - nh)/2;
+	// coord system:
+	//   tl : (offx,offy)
+	//   axis multipliers = xaxis,yaxis
+	cr->save();
+	cr->set_line_width(2.0);
+	cr->set_line_cap(Cairo::LINE_CAP_BUTT);
+	cr->set_line_join(Cairo::LINE_JOIN_MITER);
+	cr->set_antialias(Cairo::ANTIALIAS_NONE);
+	cr->set_source_rgb(1.0, 0.0, 0.0);
+	cr->rectangle(l, t, rw, rh);
+	cr->stroke();
 
-		//trivial escape
-		if(nw == 0 || nh == 0)return true;
+	cr->restore();
 
-		//draw to drawing area
-		if(prev)
-		{
-			Glib::RefPtr<Gdk::Pixbuf> scalepx = prev->scale_simple(nw,nh,Gdk::INTERP_NEAREST);
-
-			cr->save();
-
-			//synfig::warning("Nav: Drawing scaled bitmap");
-			Gdk::Cairo::set_source_pixbuf(
-				cr, //cairo context
-				scalepx, //pixbuf
-				(int)offx, (int)offy //coordinates to place upper left corner of pixbuf
-				);
-			cr->paint();
-			cr->restore();
-		}
-		cr->save();
-		//draw fancy red rectangle around focus point
-		const Point &wtl = get_canvas_view()->get_work_area()->get_window_tl(),
-					&wbr = get_canvas_view()->get_work_area()->get_window_br();
-
-		//it must be clamped to the drawing area though
-		int l=0,rw=0,t=0,rh=0;
-		const Point fp = -get_canvas_view()->get_work_area()->get_focus_point();
-
-		//get focus point in normal space
-		rw = (int)(abs((wtl[0]-wbr[0])*xaxis));
-		rh = (int)(abs((wtl[1]-wbr[1])*yaxis));
-
-		//transform into pixel space
-		l = (int)(drawto.get_width()/2 + fp[0]*xaxis - rw/2);
-		t = (int)(drawto.get_height()/2 + fp[1]*yaxis - rh/2);
-
-		//coord system:
-		// tl : (offx,offy)
-		// axis multipliers = xaxis,yaxis
-
-		cr->set_line_width(2.0);
-		cr->set_line_cap(Cairo::LINE_CAP_BUTT);
-		cr->set_line_join(Cairo::LINE_JOIN_MITER);
-		cr->set_antialias(Cairo::ANTIALIAS_NONE);
-		cr->set_source_rgb(1,0,0);
-		cr->rectangle(l,t,rw,rh);
-		cr->stroke();
-
-		cr->restore();
-	}
-	return false; //draw everything else too
-}
-
-void studio::Widget_NavView::on_dirty_preview()
-{
-	dirty = true;
-	queue_draw();
-}
-
-bool studio::Widget_NavView::on_scroll_event(GdkEvent *event)
-{
-	if(get_canvas_view() && get_canvas_view()->get_work_area())
-	{
-		double z = unit_to_zoom(adj_zoom->get_value());
-
-		switch(event->type)
-		{
-			case GDK_BUTTON_PRESS:
-			{
-				if(event->button.button == 1)
-				{
-					scrolling = true;
-					get_canvas_view()->get_work_area()->set_zoom(z);
-					scrolling = false;
-				}
-				break;
-			}
-
-			case GDK_MOTION_NOTIFY:
-			{
-				if(Gdk::ModifierType(event->motion.state) & Gdk::BUTTON1_MASK)
-				{
-					scrolling = true;
-					get_canvas_view()->get_work_area()->set_zoom(z);
-					scrolling = false;
-				}
-				break;
-			}
-
-			default:
-				break;
-		}
-	}
-
+	// draw everything else too
 	return false;
 }
 
-void studio::Widget_NavView::on_number_modify()
+void
+Widget_NavView::on_number_modify()
 {
 	double z = unit_to_zoom(adj_zoom->get_value());
-	zoom_print.set_text(strprintf("%.1f%%",z*100.0));
-	//synfig::warning("Updating zoom to %f",adj_zoom->get_value());
-
-	if(get_canvas_view() && z != get_canvas_view()->get_work_area()->get_zoom())
-	{
-		scrolling = true;
+	zoom_print.set_text(etl::strprintf("%.1f%%", z*100.0));
+	if(get_canvas_view() && z != get_canvas_view()->get_work_area()->get_zoom()) {
+		IntLock lock(scrolling);
 		get_canvas_view()->get_work_area()->set_zoom(z);
-		scrolling = false;
 	}
 }
 
-void studio::Widget_NavView::on_workarea_view_change()
+void
+Widget_NavView::on_view_window_changed()
 {
 	double wz = get_canvas_view()->get_work_area()->get_zoom();
 	double z = zoom_to_unit(wz);
-
-	//synfig::warning("Updating zoom to %f -> %f",wz,z);
-	if(!scrolling && z != adj_zoom->get_value())
-	{
+	if (!scrolling && z != adj_zoom->get_value())
 		adj_zoom->set_value(z);
-		//adj_zoom->value_changed();
-	}
 	queue_draw();
 }
 
-bool studio::Widget_NavView::on_mouse_event(GdkEvent * e)
+void
+Widget_NavView::on_rendering_tile_finished(synfig::Time time)
 {
+	if (canvas_view && canvas_view->get_time() == time)
+		queue_draw();
+}
+
+bool
+studio::Widget_NavView::on_mouse_event(GdkEvent * e)
+{
+	int dw = drawto.get_width();
+	int dh = drawto.get_height();
+
 	Point p;
-	bool	setpos = false;
-
-	if(e->type == GDK_BUTTON_PRESS && e->button.button == 1)
-	{
-		p[0] = e->button.x - drawto.get_width()/2;
-		p[1] = e->button.y - drawto.get_height()/2;
-
+	bool setpos = false;
+	if(e->type == GDK_BUTTON_PRESS && e->button.button == 1) {
+		p[0] = e->button.x - 0.5*dw;
+		p[1] = e->button.y - 0.5*dh;
+		setpos = true;
+	}
+	if(e->type == GDK_MOTION_NOTIFY && (Gdk::ModifierType(e->motion.state) & Gdk::BUTTON1_MASK)) {
+		p[0] = e->motion.x - 0.5*dw;
+		p[1] = e->motion.y - 0.5*dh;
 		setpos = true;
 	}
 
-	if(e->type == GDK_MOTION_NOTIFY && (Gdk::ModifierType(e->motion.state) & Gdk::BUTTON1_MASK))
-	{
-		p[0] = e->motion.x - drawto.get_width()/2;
-		p[1] = e->motion.y - drawto.get_height()/2;
-
-		setpos = true;
-	}
-
-	if(setpos && prev && get_canvas_view())
-	{
+	if(setpos && surface && get_canvas_view()) {
 		const Point &tl = get_canvas_view()->get_canvas()->rend_desc().get_tl();
 		const Point &br = get_canvas_view()->get_canvas()->rend_desc().get_br();
+		if (tl[0] < br[0]) p[0] = -p[0];
+		if (tl[1] < br[1]) p[1] = -p[1];
 
-		int w = prev->get_width();
-		int h = prev->get_height();
+		int w = surface->get_width();
+		int h = surface->get_height();
+		Real max = dw*h < dh*w
+				 ? fabs((br[0] - tl[0])/(Real)dw)
+				 : fabs((br[1] - tl[1])/(Real)dh);
 		
-		float max = abs((br[0]-tl[0]) / drawto.get_width());
-
-		if((float(w) / drawto.get_width()) < (float(h) / drawto.get_height()))
-			max = abs((br[1]-tl[1]) / drawto.get_height());
-
-		float signx = (br[0]-tl[0]) < 0 ? -1 : 1;
-		float signy = (br[1]-tl[1]) < 0 ? -1 : 1;
-
-		Point pos;
-
-		pos[0] = p[0] * max * signx;
-		pos[1] = p[1] * max * signy;
-
-		get_canvas_view()->get_work_area()->set_focus_point(-pos);
-
+		get_canvas_view()->get_work_area()->set_focus_point(p*max);
 		return true;
 	}
 
 	return false;
 }
 
-//Navigator Dock Definitions
 
-studio::Dock_Navigator::Dock_Navigator()
-:Dock_CanvasSpecific("navigator",_("Navigator"),Gtk::StockID("synfig-navigator"))
+// Navigator Dock Definitions
+
+Dock_Navigator::Dock_Navigator():
+	Dock_CanvasSpecific("navigator", _("Navigator"),Gtk::StockID("synfig-navigator"))
 {
-	add(dummy);
+	add(navview);
 }
 
-studio::Dock_Navigator::~Dock_Navigator()
+Dock_Navigator::~Dock_Navigator()
+{ }
+
+void
+Dock_Navigator::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
 {
-}
-
-void studio::Dock_Navigator::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
-{
-	if(canvas_view)
-	{
-		Widget *v = canvas_view->get_ext_widget("navview");
-
-		if(!v)
-		{
-			v = new Widget_NavView(canvas_view);
-			canvas_view->set_ext_widget("navview",v);
-		}
-
-		add(*v);
-	}else
-	{
-		clear_previous();
-		//add(dummy);
-	}
+	navview.set_canvas_view(canvas_view);
+	if (!canvas_view) clear_previous();
 }
