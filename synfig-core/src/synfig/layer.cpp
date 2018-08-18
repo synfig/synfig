@@ -116,7 +116,7 @@ Layer::subsys_init()
 	synfig::Layer::book() [synfig::String(class::name__)] =		\
 		BookEntry(class::create,								\
 				  class::name__,								\
-				  dgettext("synfig", class::local_name__),		\
+				   _(class::local_name__),		\
 				  class::category__,							\
 				  class::cvs_id__,								\
 				  class::version__)

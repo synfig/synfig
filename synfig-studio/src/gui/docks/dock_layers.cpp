@@ -118,7 +118,12 @@ Dock_Layers::Dock_Layers():
 		for(iter=category_map.begin();iter!=category_map.end();++iter)
 		{
 			layer_ui_info+=strprintf("<menu action='%s'>%s</menu>",iter->first.c_str(),iter->second.c_str());
-			action_group_categories->add(Gtk::Action::create(iter->first.c_str(),dgettext("synfig", iter->first.c_str())));
+			//action_group_categories->add(Gtk::Action::create(iter->first.c_str(),dgettext("synfig", iter->first.c_str())));
+			#ifdef ENABLE_NLS
+				action_group_categories->add(Gtk::Action::create(iter->first.c_str(), dgettext("synfig", iter->first.c_str())));
+			#else
+				action_group_categories->add(Gtk::Action::create(iter->first.c_str(), iter->first.c_str()));
+			#endif
 		}
 
 		App::ui_manager()->insert_action_group(action_group_categories);

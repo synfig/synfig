@@ -60,9 +60,13 @@
 	Action::Base* class::create() { return new class(); } \
 	synfig::String class::get_name()const { return name__; }
 
+//#define ACTION_INIT(class)				 \
+//	ACTION_INIT_NO_GET_LOCAL_NAME(class) \
+//	synfig::String class::get_local_name()const { return dgettext("synfigstudio",local_name__); }
+
 #define ACTION_INIT(class)				 \
 	ACTION_INIT_NO_GET_LOCAL_NAME(class) \
-	synfig::String class::get_local_name()const { return dgettext("synfigstudio",local_name__); }
+	synfig::String class::get_local_name()const { return synfiggui_localize(local_name__); }
 
 /* === T Y P E D E F S ===================================================== */
 

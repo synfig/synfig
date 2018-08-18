@@ -101,7 +101,7 @@
 	synfig::Layer::register_in_book(															\
 		synfig::Layer::BookEntry(class::create,													\
 								 class::name__,													\
-								 dgettext("synfig", class::local_name__),						\
+								 synfigcore_localize(class::local_name__),		\
 								 class::category__,												\
 								 class::cvs_id__,												\
 								 class::version__));

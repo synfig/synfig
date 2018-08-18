@@ -133,7 +133,7 @@
 	if (param=="Name" || param=="name" || param=="name__")								\
 		return name__;																	\
 	else if (param=="local_name__")														\
-		return dgettext("synfig",local_name__);
+		return synfigcore_localize(local_name__);
 
 //! Exports the version of the layer
 #define EXPORT_VERSION()																\
