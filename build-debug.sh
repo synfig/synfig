@@ -32,7 +32,7 @@ popd > /dev/null
 
 [ -d "${WORKDIR}/${TYPE}" ] || mkdir "${WORKDIR}/${TYPE}"
 
-cp -f "${WORKDIR}/build.conf" "${WORKDIR}/${TYPE}/build.conf"
+[ -f "${WORKDIR}/build.conf" ] && cp -f "${WORKDIR}/build.conf" "${WORKDIR}/${TYPE}/build.conf"
 
 cd "${WORKDIR}/${TYPE}"
 
