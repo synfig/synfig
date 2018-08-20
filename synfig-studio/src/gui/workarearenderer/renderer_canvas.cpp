@@ -48,17 +48,16 @@
 #include <synfig/rendering/renderer.h>
 #include <synfig/rendering/common/task/tasktransformation.h>
 
-#include <gui/localization.h>
 #include <gui/app.h>
 
 #include "renderer_canvas.h"
+
+#include <gui/localization.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 
