@@ -2589,6 +2589,7 @@ CanvasView::time_was_changed()
 {
 	synfig::Time time((synfig::Time)(double)time_adjustment()->get_value());
 	set_time(time);
+	queue_rebuild_ducks();
 }
 
 void
