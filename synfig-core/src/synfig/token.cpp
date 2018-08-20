@@ -62,20 +62,20 @@ Token::Token():
 { root_exists_ = true; init(); }
 
 Token::Token(const Handle &parent):
-	previous_(last_),
+	previous_(),
 	next_(),
 	in_process_(),
-	prepared_(false)
+	prepared_()
 {
 	parents_.insert(parent);
 	init();
 }
 
 Token::Token(const Set &parents):
-	previous_(last_),
+	previous_(),
 	next_(),
 	in_process_(),
-	prepared_(false),
+	prepared_(),
 	parents_(parents)
 { init(); }
 
@@ -83,6 +83,7 @@ void
 Token::init()
 {
 	ready_ = false;
+	previous_ = last_;
 	(previous_ ? previous_->next_ : first_) = this;
 	last_ = this;
 }
