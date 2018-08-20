@@ -27,10 +27,15 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include "action.h"
+#include <set>
+
 #include <sigc++/sigc++.h>
+
 #include <ETL/handle>
+
 #include <synfig/canvas.h>
+
+#include "action.h"
 #include "uimanager.h"
 
 /* === M A C R O S ========================================================= */
@@ -54,14 +59,15 @@ class System;
 //! Passive action grouping class
 class PassiveGrouper
 {
+	typedef std::set< etl::handle<CanvasInterface> > RedrawSet;
+
 	etl::loose_handle<System> instance_;
 	synfig::String name_;
-	bool redraw_requested_;
 	int depth_;
-	etl::handle<CanvasInterface> canvas_interface_;
+	RedrawSet redraw_set_;
 	bool finished_;
-public:
 
+public:
 	PassiveGrouper(etl::loose_handle<System> instance_,synfig::String name_);
 
 	~PassiveGrouper();
@@ -172,6 +178,8 @@ public:
 	bool get_clear_redo_stack_on_new_action()const { return clear_redo_stack_on_new_action_; }
 
 	void set_clear_redo_stack_on_new_action(bool x) { clear_redo_stack_on_new_action_=x; }
+
+	void request_redraw(etl::handle<CanvasInterface>);
 
 	bool perform_action(etl::handle<Action::Base> action);
 
