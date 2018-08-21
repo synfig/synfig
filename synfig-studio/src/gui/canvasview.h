@@ -602,6 +602,8 @@ public:
 	/*! \see create_work_area(), popup_param_menu(), popup_param_menu_bezier() */
 	void popup_main_menu();
 
+	bool is_ducks_locked() { return ducks_locks > 0; }
+
 	Smach& get_smach() { return smach_; }
 
 	const Smach& get_smach()const { return smach_; }

@@ -40,12 +40,14 @@
 namespace studio {
 
 class CanvasView;
+class LockDucks;
 
 class Widget_CanvasTimeslider : public Widget_Timeslider
 {
 protected:
 	sigc::connection rendering_change;
 	etl::loose_handle<CanvasView> canvas_view;
+	etl::handle<LockDucks> lock_ducks;
 	Gtk::Window tooltip;
 	Gtk::Image thumb;
 

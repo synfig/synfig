@@ -2778,7 +2778,7 @@ CanvasView::queue_rebuild_ducks()
 {
 	queue_rebuild_ducks_connection.disconnect();
 
-	if (ducks_locks)
+	if (is_ducks_locked())
 		{ ducks_rebuild_queue_requested = true; return; }
 
 	queue_rebuild_ducks_connection = Glib::signal_timeout().connect(
@@ -2793,7 +2793,7 @@ CanvasView::queue_rebuild_ducks()
 void
 CanvasView::rebuild_ducks()
 {
-	if (ducks_locks)
+	if (is_ducks_locked())
 		{ ducks_rebuild_requested = true; return; }
 
 	ducks_rebuild_queue_requested = true;

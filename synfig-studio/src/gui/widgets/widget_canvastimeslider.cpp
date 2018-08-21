@@ -81,6 +81,7 @@ Widget_CanvasTimeslider::set_canvas_view(const CanvasView::LooseHandle &x)
 	if (canvas_view == x) return;
 
 	rendering_change.disconnect();
+	lock_ducks.reset();
 	canvas_view = x;
 	if (canvas_view && canvas_view->get_work_area())
 		rendering_change = canvas_view->get_work_area()->signal_rendering().connect(
@@ -151,6 +152,11 @@ Widget_CanvasTimeslider::show_tooltip(const synfig::Point &p, const synfig::Poin
 bool
 Widget_CanvasTimeslider::on_button_press_event(GdkEventButton *event)
 {
+	if (event->button == 1 && canvas_view && canvas_view->get_work_area()) {
+		lock_ducks = new LockDucks(etl::handle<CanvasView>(canvas_view));
+		canvas_view->get_work_area()->clear_ducks();
+		canvas_view->queue_rebuild_ducks();
+	}
 	if (event->button == 1 || event->button == 2)
 		tooltip.hide();
 	return Widget_Timeslider::on_button_press_event(event);
@@ -159,6 +165,8 @@ Widget_CanvasTimeslider::on_button_press_event(GdkEventButton *event)
 bool
 Widget_CanvasTimeslider::on_button_release_event(GdkEventButton *event)
 {
+	if (event->button == 1 && canvas_view)
+		lock_ducks.reset();
 	//if ( (event->button == 1 && !(event->state & Gdk::BUTTON2_MASK))
 	//  || (event->button == 2 && !(event->state & Gdk::BUTTON1_MASK)) )
 	//	show_tooltip(Point(event->x, event->y), Point(event->x_root, event->y_root));
