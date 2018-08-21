@@ -2040,7 +2040,9 @@ studio::WorkArea::queue_render(bool refresh)
 		{ dirty_trap_queued++; return; }
 	dirty_trap_queued = 0;
 	if (refresh) renderer_canvas->clear_render();
-	renderer_canvas->enqueue_render();
+	Glib::signal_idle().connect_once(
+		sigc::mem_fun(*renderer_canvas, &Renderer_Canvas::enqueue_render),
+		Glib::PRIORITY_DEFAULT );
 }
 
 void
