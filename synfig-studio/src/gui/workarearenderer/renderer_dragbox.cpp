@@ -76,9 +76,7 @@ Renderer_Dragbox::get_curr_point()const
 
 bool
 Renderer_Dragbox::get_enabled_vfunc()const
-{
-	return get_work_area()->get_dragging_mode()==WorkArea::DRAG_BOX;
-}
+	{ return get_work_area()->get_drag_mode() == WorkArea::DRAG_BOX; }
 
 bool
 Renderer_Dragbox::event_vfunc(GdkEvent* event)
@@ -93,7 +91,7 @@ Renderer_Dragbox::event_vfunc(GdkEvent* event)
     case GDK_MOTION_NOTIFY:
     {
         //!TODO : Make HARDCODED shortcut key access configure ready.
-        if(get_work_area()->get_dragging_mode() == WorkArea::DRAG_BOX)
+        if(get_work_area()->get_drag_mode() == WorkArea::DRAG_BOX)
         {
             if (drag_paused)
             {

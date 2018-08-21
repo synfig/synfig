@@ -162,6 +162,16 @@ class Dock_Layers;
 class Dock_Children;
 class Dock_Keyframes;
 
+class LockDucks: public etl::shared_object {
+private:
+	etl::handle<CanvasView> canvas_view_handle;
+	CanvasView *canvas_view;
+public:
+	explicit LockDucks(const etl::handle<CanvasView> &canvas_view);
+	explicit LockDucks(CanvasView &canvas_view);
+	~LockDucks();
+};
+
 /*!	\class studio::CanvasView
 **	\brief \writeme
 **
@@ -177,6 +187,8 @@ class CanvasView : public Dockable, public etl::shared_object
 	friend class CanvasViewSelectionManager;
 
 	friend class Duckmatic;
+
+	friend class LockDucks;
 
 	/*
  -- ** -- P U B L I C   T Y P E S ---------------------------------------------
@@ -408,14 +420,13 @@ private:
 	etl::handle<synfigapp::UIInterface> ui_interface_;
 	etl::handle<synfigapp::SelectionManager> selection_manager_;
 
-	bool is_playing_;
+	etl::handle<LockDucks> ducks_playing_lock;
 	sigc::connection playing_connection;
 	etl::clock playing_timer;
 	synfig::Time playing_time;
 
 	sigc::signal<void> signal_deleted_;
 
-	bool rebuild_ducks_queued;
 	sigc::connection queue_rebuild_ducks_connection;
 
 	bool jack_enabled;
@@ -433,6 +444,10 @@ private:
 
 	Glib::RefPtr<Gtk::ToggleAction> action_mask_bone_setup_ducks, action_mask_bone_recursive_ducks;
 
+	int ducks_locks;
+	bool ducks_rebuild_requested;
+	bool ducks_rebuild_queue_requested;
+
 	/*
  -- ** -- P U B L I C   D A T A -----------------------------------------------
 	*/
@@ -442,9 +457,6 @@ public:
 	sigc::signal<void>& signal_deleted() { return signal_deleted_; }
 
 	Gtk::Menu mainmenu;
-
-	bool duck_refresh_flag;
-	bool duck_refresh_needed;
 
 	//! This is for the IsWorking class.
 	int working_depth;
@@ -693,9 +705,6 @@ public:
 
 	//bool add_to_ducks(synfigapp::ValueDesc value_desc, synfig::ParamDesc *param_desc=NULL);
 
-	//! Starts "playing" the animation in real-time
-	void play();
-
 	void play_async();
 	void stop_async();
 
@@ -738,7 +747,7 @@ public:
 
 	void preview_option() {on_preview_option();}
 
-	bool is_playing() { return is_playing_; }
+	bool is_playing() { return ducks_playing_lock; }
 
 	//! Toggle given handle type
 	//! \Param[in]  type The Duckmatic::Type to toggle
@@ -872,6 +881,7 @@ private:
 #endif
 
 }; // END of class CanvasView
+
 
 }; // END of namespace studio
 

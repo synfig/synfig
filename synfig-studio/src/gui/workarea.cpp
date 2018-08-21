@@ -154,7 +154,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	ph(0.001),
 	last_event_time(0),
 	progresscallback(0),
-	dragging(DRAG_NONE),
+	drag_mode(DRAG_NONE),
 	show_grid(false),
 	show_guides(true),
 	background_size(15,15),
@@ -324,8 +324,23 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 
 WorkArea::~WorkArea()
 {
+	set_drag_mode(DRAG_NONE);
 	while(!renderer_set_.empty())
 		erase_renderer(*renderer_set_.begin());
+}
+
+void
+WorkArea::set_drag_mode(DragMode mode)
+{
+	if (drag_mode == mode) return;
+
+	drag_mode = mode;
+
+	if (lock_ducks && drag_mode == DRAG_NONE)
+		lock_ducks.reset();
+	else
+	if (!lock_ducks && drag_mode != DRAG_NONE)
+		lock_ducks = new LockDucks(get_canvas_view());
 }
 
 void
@@ -933,15 +948,11 @@ WorkArea::on_key_press_event(GdkEventKey* event)
 	bool guide_snap_holder(get_guide_snap());
 	set_grid_snap(false);
 
-	try {
+	{
+		LockDucks lock(get_canvas_view());
 		start_duck_drag(get_selected_duck()->get_trans_point());
 		translate_selected_ducks(get_selected_duck()->get_trans_point()+nudge*multiplier);
 		end_duck_drag();
-	}
-	catch(String)
-	{
-		canvas_view->duck_refresh_flag=true;
-		canvas_view->queue_rebuild_ducks();
 	}
 
 	set_grid_snap(grid_snap_holder);
@@ -1116,31 +1127,24 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 	}
 
 	// Event hasn't been handled, pass it down
-	switch(event->type)
-    {
-	case GDK_BUTTON_PRESS:
-		{
-		switch(button_pressed)
-		{
-		case 1:	// Attempt to click on a duck
-		{
+	switch(event->type) {
+	case GDK_BUTTON_PRESS: {
+		switch(button_pressed) {
+		case 1:	{ // Attempt to click on a duck
 			etl::handle<Duck> duck;
-			dragging=DRAG_NONE;
+			set_drag_mode(DRAG_NONE);
 
-			if(allow_duck_clicks)
-			{
+			if(allow_duck_clicks) {
 				duck=find_duck(mouse_pos,radius);
 
 				//!TODO Remove HARDCODE Ui Specification, make it config ready
 
 				// Single click duck selection on WorkArea [Part I] (Part II lower in code)
-				if(duck)
-				{
+				if (duck) {
 					// make a note of whether the duck we click on was selected or not
-					if(duck_is_selected(duck))
+					if(duck_is_selected(duck)) {
 						clicked_duck=duck;
-					else
-					{
+					} else {
 						clicked_duck=0;
 						// if CTRL or SHIFT isn't pressed, clicking an unselected duck will unselect all other ducks
 						if(!(modifier&(GDK_CONTROL_MASK|GDK_SHIFT_MASK)))
@@ -1153,16 +1157,11 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 			//	clear_selected_ducks();
 
 			if(allow_bezier_clicks)
-			{
 				selected_bezier=find_bezier(mouse_pos,radius,&bezier_click_pos);
-			}
 			else
-			{
 				selected_bezier=0;
-			}
 
-			if(duck)
-			{
+			if (duck) {
 				if (!duck->get_editable(get_alternative_mode()))
 					return true;
 
@@ -1170,18 +1169,15 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				//if(clicked_duck)clicked_duck->signal_user_click(0)();
 
 				// if the user is holding shift while clicking on a tangent duck, consider splitting the tangent
-				if ((event->button.state&GDK_SHIFT_MASK) && duck->get_type() == Duck::TYPE_TANGENT)
-				{
+				if ((event->button.state&GDK_SHIFT_MASK) && duck->get_type() == Duck::TYPE_TANGENT) {
 					synfigapp::ValueDesc value_desc = duck->get_value_desc();
 
 					// we have the tangent, but need the vertex - that's the parent
 					if (value_desc.is_value_node()) {
-						if (ValueNode_Composite::Handle value_node = ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node()))
-						{
+						if (ValueNode_Composite::Handle value_node = ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node())) {
 							BLinePoint bp((*value_node)(get_time()).get(BLinePoint()));
 							// if the tangent isn't split, then split it
-							if (!bp.get_split_tangent_both())
-							{
+							if (!bp.get_split_tangent_both()) {
 								if (get_canvas_view()->canvas_interface()->change_value(synfigapp::ValueDesc(
 										value_node,
 										value_node->get_link_index_from_name("split_radius")),
@@ -1189,8 +1185,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 								 && get_canvas_view()->canvas_interface()->change_value(synfigapp::ValueDesc(
 										value_node,
 										value_node->get_link_index_from_name("split_angle")),
-										true )
-								)
+										true ) )
 								{
 									// rebuild the ducks from scratch, so the tangents ducks aren't connected
 									get_canvas_view()->rebuild_ducks();
@@ -1198,12 +1193,9 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 									// reprocess the mouse click
 									return on_drawing_area_event(event);
 								}
-								else
-									return true;
+								return true;
 							}
-						} else {
-							synfig::info("parent isn't composite value node?");
-						}
+						} else synfig::info("parent isn't composite value node?");
 					} else {
 						// I don't know how to access the vertex from the tangent duck when originally drawing the bline in the bline tool
 						// synfig::ValueNode::Handle vn = value_desc.get_value_node();
@@ -1211,133 +1203,112 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 					}
 				}
 
-				dragging=DRAG_DUCK;
+				set_drag_mode(DRAG_DUCK);
 				drag_point=mouse_pos;
 				//drawing_area->queue_draw();
 				start_duck_drag(mouse_pos);
 				get_canvas_view()->reset_cancel_status();
 				return true;
-			}
-			else
-			if(canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MOUSE_BUTTON_DOWN,BUTTON_LEFT,mouse_pos,pressure,modifier))==Smach::RESULT_OK)
-			{
-				if (selected_bezier)
-				{
+			} else
+			if (canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MOUSE_BUTTON_DOWN,BUTTON_LEFT,mouse_pos,pressure,modifier))==Smach::RESULT_OK) {
+				if (selected_bezier) {
 					synfig::Point distance_1 = selected_bezier->p1->get_trans_point() - mouse_pos;
 					synfig::Point distance_2 = selected_bezier->p2->get_trans_point() - mouse_pos;
-					if( distance_1.mag() > radius*2
-					    && distance_2.mag() > radius*2
-						)
-					// If we click a selected bezier
-					// not too close to the endpoints
+					if ( distance_1.mag() > radius*2
+					  && distance_2.mag() > radius*2 )
 					{
+						// If we click a selected bezier
+						// not too close to the endpoints
 						// We give the states first priority to process the
 						// event so as not to interfere with the bline tool
-						dragging=DRAG_BEZIER;
+						set_drag_mode(DRAG_BEZIER);
 						drag_point=mouse_pos;
 						start_bezier_drag(mouse_pos, bezier_click_pos);
 						return true;
 					}
 				}
-// I commented out this section because
-// it was causing issues when rotoscoping.
-// At the moment, we don't need it, so
-// this was the easiest way to fix the problem.
-/*
-				else
-				if(selected_bezier)
-				{
-					selected_duck=0;
-					selected_bezier->signal_user_click(0)(bezier_click_pos);
-				}
-*/
+				// I commented out this section because
+				// it was causing issues when rotoscoping.
+				// At the moment, we don't need it, so
+				// this was the easiest way to fix the problem.
+				//else
+				//if(selected_bezier)
+				//{
+				//	selected_duck=0;
+				//	selected_bezier->signal_user_click(0)(bezier_click_pos);
+				//}
 
 				// Check for a guide click
-				if (show_guides)
-				{
-					GuideList::iterator iter;
-
-					iter=find_guide_x(mouse_pos,radius);
-					if(iter==get_guide_list_x().end())
-					{
-						curr_guide_is_x=false;
-						iter=find_guide_y(mouse_pos,radius);
+				if (show_guides) {
+					GuideList::iterator iter = find_guide_x(mouse_pos,radius);
+					if (iter == get_guide_list_x().end()) {
+						curr_guide_is_x = false;
+						iter = find_guide_y(mouse_pos,radius);
+					} else {
+						curr_guide_is_x = true;
 					}
-					else
-						curr_guide_is_x=true;
-					if(iter!=get_guide_list_x().end() && iter!=get_guide_list_y().end())
-					{
-						dragging=DRAG_GUIDE;
-						curr_guide=iter;
+
+					if (iter != get_guide_list_x().end() && iter != get_guide_list_y().end()) {
+						set_drag_mode(DRAG_GUIDE);
+						curr_guide = iter;
 						return true;
 					}
 				}
 
 				// All else fails, try making a selection box
-				dragging=DRAG_BOX;
-				curr_point=drag_point=mouse_pos;
+				set_drag_mode(DRAG_BOX);
+				curr_point = drag_point = mouse_pos;
 				return true;
 			}
 			selected_bezier=0;
 			break;
 		}
-		case 2:	// Attempt to drag and move the window
-		{
-			etl::handle<Duck> duck=find_duck(mouse_pos,radius);
-			etl::handle<Bezier> bezier=find_bezier(mouse_pos,radius,&bezier_click_pos);
-			if(duck)
+		case 2:	{ // Attempt to drag and move the window
+			etl::handle<Duck> duck = find_duck(mouse_pos, radius);
+			etl::handle<Bezier> bezier = find_bezier(mouse_pos, radius, &bezier_click_pos);
+			if (duck)
 				duck->signal_user_click(1)();
 			else
 			if(bezier)
 				bezier->signal_user_click(1)(bezier_click_pos);
 
-			if(canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MOUSE_BUTTON_DOWN,BUTTON_MIDDLE,mouse_pos,pressure,modifier))==Smach::RESULT_OK) {
-				dragging = (modifier & GDK_CONTROL_MASK) ? DRAG_ZOOM_WINDOW
-					     : (modifier & GDK_SHIFT_MASK)   ? DRAG_ROTATE_WINDOW
-						 : DRAG_WINDOW;
-
+			if (canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MOUSE_BUTTON_DOWN,BUTTON_MIDDLE,mouse_pos,pressure,modifier))==Smach::RESULT_OK) {
+				set_drag_mode(
+					(modifier & GDK_CONTROL_MASK) ? DRAG_ZOOM_WINDOW
+				  : (modifier & GDK_SHIFT_MASK)   ? DRAG_ROTATE_WINDOW
+				  : DRAG_WINDOW );
 				drag_point = (modifier & GDK_CONTROL_MASK) ? synfig::Point(event->motion.x, event->motion.y) :
 							mouse_pos;
-
 				signal_user_click(1)(mouse_pos);
 			}
-
 			break;
 		}
-		case 3:	// Attempt to either get info on a duck, or open the menu
-		{
-			etl::handle<Duck> duck=find_duck(mouse_pos,radius);
-			etl::handle<Bezier> bezier=find_bezier(mouse_pos,radius,&bezier_click_pos);
-
-			Layer::Handle layer(get_canvas()->find_layer(get_canvas_view()->get_context_params(),mouse_pos));
-			if(duck)
-			{
-				if(get_selected_ducks().size()<=1)
+		case 3:	{ // Attempt to either get info on a duck, or open the menu
+			if (etl::handle<Duck> duck = find_duck(mouse_pos, radius)) {
+				if (get_selected_ducks().size() <= 1)
 					duck->signal_user_click(2)();
 				else
 					canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MULTIPLE_DUCKS_CLICKED,BUTTON_RIGHT,mouse_pos,pressure,modifier,duck));
 				return true;
 			}
-			else if(bezier)
-			{
+
+			if (etl::handle<Bezier> bezier = find_bezier(mouse_pos, radius, &bezier_click_pos)) {
 				bezier->signal_user_click(2)(bezier_click_pos);
 				return true;
 			}
-			else if (layer)
-			{
-				if(canvas_view->get_smach().process_event(EventLayerClick(layer,BUTTON_RIGHT,mouse_pos))==Smach::RESULT_OK)
+
+			if (Layer::Handle layer = get_canvas()->find_layer(get_canvas_view()->get_context_params(), mouse_pos)) {
+				if (canvas_view->get_smach().process_event(EventLayerClick(layer, BUTTON_RIGHT, mouse_pos)) == Smach::RESULT_OK)
 					return false;
 				return true;
 			}
-			else
-				canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MOUSE_BUTTON_DOWN,BUTTON_RIGHT,mouse_pos,pressure,modifier));
-			/*
-			if(canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MOUSE_BUTTON_DOWN,BUTTON_RIGHT,mouse_pos,pressure,modifier))==Smach::RESULT_OK)
-			{
-				//popup_menu();
-				return true;
-			}
-			*/
+
+			canvas_view->get_smach().process_event(EventMouse(
+				EVENT_WORKAREA_MOUSE_BUTTON_DOWN, BUTTON_RIGHT, mouse_pos, pressure, modifier ));
+			//if(canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MOUSE_BUTTON_DOWN,BUTTON_RIGHT,mouse_pos,pressure,modifier))==Smach::RESULT_OK) {
+			//	//popup_menu();
+			//	return true;
+			//}
 			break;
 		}
 		case 4:
@@ -1349,258 +1320,181 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 		default:
 			break;
 		}
-		}
 		break;
-	case GDK_MOTION_NOTIFY:
-		curr_point=mouse_pos;
-
-		if(event->motion.time-last_event_time<25)
+	}
+	case GDK_MOTION_NOTIFY: {
+		if (event->motion.time - last_event_time < 25)
 			return true;
-		else
-			last_event_time=event->motion.time;
+		last_event_time = event->motion.time;
+		curr_point = mouse_pos;
 
 		signal_cursor_moved_();
 
 		// Guide/Duck highlights on hover
-		switch(dragging)
-		{
-		case DRAG_NONE:
-		   {
-            GuideList::iterator iter;
+		switch(get_drag_mode()) {
+		case DRAG_NONE: {
+            GuideList::iterator iter = find_guide_x(mouse_pos,radius);
+            if (iter == get_guide_list_x().end())
+                iter = find_guide_y(mouse_pos, radius);
 
-            iter=find_guide_x(mouse_pos,radius);
-            if(iter==get_guide_list_x().end())
-                iter=find_guide_y(mouse_pos,radius);
-
-            if(iter!=curr_guide)
-            {
-                curr_guide=iter;
+            if (iter != curr_guide) {
+                curr_guide = iter;
                 drawing_area->queue_draw();
             }
 
-            etl::handle<Duck> duck;
-            duck=find_duck(mouse_pos,radius);
-            if(duck!=hover_duck)
-            {
-                hover_duck=duck;
+            etl::handle<Duck> duck = find_duck(mouse_pos, radius);
+            if (duck != hover_duck) {
+                hover_duck = duck;
                 drawing_area->queue_draw();
             }
-		   }
-		break;
-
-		case DRAG_DUCK :
-		{
-			if(canvas_view->get_cancel_status())
-			{
-				dragging=DRAG_NONE;
+    		break;
+		}
+		case DRAG_DUCK: {
+			if (canvas_view->get_cancel_status()) {
+				set_drag_mode(DRAG_NONE);
 				canvas_view->queue_rebuild_ducks();
 				return true;
 			}
-			/*
-			Point point((mouse_pos-selected_duck->get_origin())/selected_duck->get_scalar());
-			if(get_grid_snap())
-			{
-				point[0]=floor(point[0]/grid_size[0]+0.5)*grid_size[0];
-				point[1]=floor(point[1]/grid_size[1]+0.5)*grid_size[1];
-			}
-			selected_duck->set_point(point);
-			*/
 
-			//Point p(mouse_pos);
+			//Point point((mouse_pos-selected_duck->get_origin())/selected_duck->get_scalar());
+			//if(get_grid_snap()) {
+			//	point[0]=floor(point[0]/grid_size[0]+0.5)*grid_size[0];
+			//	point[1]=floor(point[1]/grid_size[1]+0.5)*grid_size[1];
+			//}
+			//selected_duck->set_point(point);
 
-			set_axis_lock(event->motion.state&GDK_SHIFT_MASK);
-
+			set_axis_lock(event->motion.state & GDK_SHIFT_MASK);
 			translate_selected_ducks(mouse_pos);
-
 			drawing_area->queue_draw();
+			break;
 		}
-		break;
-
-		case DRAG_BEZIER :
-		{
-			if(canvas_view->get_cancel_status())
-			{
-				dragging=DRAG_NONE;
+		case DRAG_BEZIER: {
+			if (canvas_view->get_cancel_status()) {
+				set_drag_mode(DRAG_NONE);
 				canvas_view->queue_rebuild_ducks();
 				return true;
 			}
-
 			translate_selected_bezier(mouse_pos);
-
 			drawing_area->queue_draw();
+	        break;
 		}
-        break;
-
-		case DRAG_BOX:
-		{
+		case DRAG_BOX: {
 			curr_point=mouse_pos;
 			drawing_area->queue_draw();
+	        break;
 		}
-        break;
-
-		case DRAG_GUIDE :
-		{
+		case DRAG_GUIDE: {
 			if(curr_guide_is_x)
-				*curr_guide=mouse_pos[0];
+				*curr_guide = mouse_pos[0];
 			else
-				*curr_guide=mouse_pos[1];
+				*curr_guide = mouse_pos[1];
 			drawing_area->queue_draw();
+	        break;
 		}
-        break;
-		default:
-		{
+		default: break;
+		} // end switch dragging
 
-		}
-		}//end switch dragging
-
-		if(dragging!=DRAG_WINDOW)
-		{	// Update those triangle things on the rulers
+		if (get_drag_mode() != DRAG_WINDOW) {
+			// Update those triangle things on the rulers
 			const synfig::Point point(mouse_pos);
-			hruler->set_position( Distance(point[0],Distance::SYSTEM_UNITS).get(App::distance_system,get_canvas()->rend_desc()) );
-			vruler->set_position( Distance(point[1],Distance::SYSTEM_UNITS).get(App::distance_system,get_canvas()->rend_desc()) );
+			hruler->set_position( Distance(point[0], Distance::SYSTEM_UNITS).get(App::distance_system, get_canvas()->rend_desc()) );
+			vruler->set_position( Distance(point[1], Distance::SYSTEM_UNITS).get(App::distance_system, get_canvas()->rend_desc()) );
 		}
 
-		if(dragging == DRAG_WINDOW)
+		if (get_drag_mode() == DRAG_WINDOW) {
 			set_focus_point(get_focus_point() + mouse_pos-drag_point);
-		else if(dragging == DRAG_ZOOM_WINDOW) {
+    	} else
+		if (get_drag_mode() == DRAG_ZOOM_WINDOW) {
 			set_zoom(get_zoom() * (1.0 + (drag_point[1] - event->motion.y) / 100.0));
 			drag_point = synfig::Point(event->motion.x, event->motion.y);
-		} else if ((event->motion.state & GDK_BUTTON1_MASK) &&
-				canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MOUSE_BUTTON_DRAG, BUTTON_LEFT,
-																  mouse_pos,pressure,modifier)) == Smach::RESULT_ACCEPT)
-			return true;
-		else if ((event->motion.state & GDK_BUTTON2_MASK) &&
-				 canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MOUSE_BUTTON_DRAG, BUTTON_MIDDLE,
-																   mouse_pos, pressure, modifier)) == Smach::RESULT_ACCEPT)
-			return true;
-		else if ((event->motion.state & GDK_BUTTON3_MASK) &&
-				 canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MOUSE_BUTTON_DRAG, BUTTON_RIGHT,
-																   mouse_pos, pressure, modifier)) == Smach::RESULT_ACCEPT)
-			return true;
-		else if(canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MOUSE_MOTION, BUTTON_NONE,
-																  mouse_pos, pressure,modifier)) == Smach::RESULT_ACCEPT)
-			return true;
+		} else {
+			MouseButton button = event->motion.state & GDK_BUTTON1_MASK ? BUTTON_LEFT
+					           : event->motion.state & GDK_BUTTON2_MASK ? BUTTON_MIDDLE
+					           : event->motion.state & GDK_BUTTON3_MASK ? BUTTON_RIGHT
+					           : BUTTON_NONE;
+			Smach::event_result er = canvas_view->get_smach().process_event(
+				EventMouse(EVENT_WORKAREA_MOUSE_MOTION, button, mouse_pos, pressure, modifier) );
+			if (er == Smach::RESULT_ACCEPT)
+				return true;
+		}
 
 		break;
-
-	case GDK_BUTTON_RELEASE:
-	{
-		bool ret(false);
-
-		switch(dragging)
-		{
-		case DRAG_GUIDE :
-		{
-			double y(event->button.y),x(event->button.x);
+	}
+	case GDK_BUTTON_RELEASE: {
+		bool ret = false;
+		switch (get_drag_mode()) {
+		case DRAG_GUIDE: {
+			double y(event->button.y), x(event->button.x);
 
 			// Erase the guides if dragged into the rulers
 			if(curr_guide_is_x && !std::isnan(x) && x<0.0 )
-			{
 				get_guide_list_x().erase(curr_guide);
-			}
-			else if(!curr_guide_is_x && !std::isnan(y) && y<0.0 )
-			{
+			else
+			if(!curr_guide_is_x && !std::isnan(y) && y<0.0 )
 				get_guide_list_y().erase(curr_guide);
-			}
 
 			drawing_area->queue_draw();
-
-			dragging=DRAG_NONE;
+			set_drag_mode(DRAG_NONE);
 			save_meta_data();
 			return true;
 		}
-		break;
-		case DRAG_DUCK :
-		{
+		case DRAG_DUCK: {
 			synfigapp::Action::PassiveGrouper grouper(instance.get(),_("Move"));
-			dragging=DRAG_NONE;
+
+			LockDucks lock(get_canvas_view()); // don't rebuild ducks until end_duck_drag will called
+			set_drag_mode(DRAG_NONE);
+
 			//translate_selected_ducks(mouse_pos);
 			set_axis_lock(false);
 
-			try{
-			get_canvas_view()->duck_refresh_flag=false;
-			get_canvas_view()->duck_refresh_needed=false;
-			const bool drag_did_anything(end_duck_drag());
-			get_canvas_view()->duck_refresh_flag=true;
-			if(!drag_did_anything)
-			{
-		        //!TODO Remove HARDCODED UI SPECIFICATION, make it config ready
-
-                // Single click duck selection on WorkArea [Part II]
+			if (!end_duck_drag()) {
+				//!TODO Remove HARDCODED UI SPECIFICATION, make it config ready
+				// Single click duck selection on WorkArea [Part II]
 				// if we originally clicked on a selected duck ...
-				if(clicked_duck)
-				{
+				if (clicked_duck) {
 					// ... and CTRL is pressed, then just toggle the clicked duck
 					//     or not SHIFT is pressed, make the clicked duck the
-				    //     only selected duck. (Nota : SHIFT just add to the selection)
-					if(modifier&GDK_CONTROL_MASK)
+					//     only selected duck. (Nota : SHIFT just add to the selection)
+					if (modifier & GDK_CONTROL_MASK) {
 						unselect_duck(clicked_duck);
-					else if (!(modifier&GDK_SHIFT_MASK))
-					{
+					} else
+					if (!(modifier & GDK_SHIFT_MASK)) {
 						clear_selected_ducks();
 						select_duck(clicked_duck);
 					}
 					clicked_duck->signal_user_click(0)();
 				}
 			}
-			else
-			{
-				if(canvas_view->duck_refresh_needed)
-					canvas_view->queue_rebuild_ducks();
-				return true;
-			}
-			}catch(String)
-			{
-				canvas_view->duck_refresh_flag=true;
-				canvas_view->queue_rebuild_ducks();
-				return true;
-			}
+
 			//queue_draw();
 			clicked_duck=0;
-
-			ret=true;
+			ret = true;
+			break;
 		}
-		break;
-		case DRAG_BEZIER :
-		{
+		case DRAG_BEZIER: {
 			synfigapp::Action::PassiveGrouper grouper(instance.get(),_("Move"));
-			dragging=DRAG_NONE;
+
+			LockDucks lock(get_canvas_view()); // don't rebuild ducks until end_duck_drag will called
+			set_drag_mode(DRAG_NONE);
+
 			//translate_selected_ducks(mouse_pos);
 			set_axis_lock(false);
 
-			try{
-			get_canvas_view()->duck_refresh_flag=false;
-			get_canvas_view()->duck_refresh_needed=false;
-			const bool drag_did_anything(end_bezier_drag());
-			get_canvas_view()->duck_refresh_flag=true;
-			if(!drag_did_anything)
-			{
+			if (!end_bezier_drag()) {
 				// We didn't move the bezier, just clicked on it
-				canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MOUSE_BUTTON_DOWN,BUTTON_LEFT,mouse_pos,pressure,modifier));
-				canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MOUSE_BUTTON_UP,BUTTON_LEFT,mouse_pos,pressure,modifier));
+				canvas_view->get_smach().process_event(EventMouse(
+					EVENT_WORKAREA_MOUSE_BUTTON_DOWN, BUTTON_LEFT, mouse_pos, pressure, modifier ));
+				canvas_view->get_smach().process_event(EventMouse(
+					EVENT_WORKAREA_MOUSE_BUTTON_UP, BUTTON_LEFT, mouse_pos, pressure, modifier ));
 			}
-			else
-			{
-				if(canvas_view->duck_refresh_needed)
-					canvas_view->queue_rebuild_ducks();
-				return true;
-			}
-			}catch(String)
-			{
-				canvas_view->duck_refresh_flag=true;
-				canvas_view->queue_rebuild_ducks();
-				return true;
-			}
+
 			//queue_draw();
-			clicked_duck=0;
-
-			ret=true;
+			clicked_duck = 0;
+			ret = true;
+			break;
 		}
-		break;
-
-		case DRAG_BOX:
-		{
-			dragging=DRAG_NONE;
+		case DRAG_BOX: {
+			set_drag_mode(DRAG_NONE);
 			if((drag_point-mouse_pos).mag()>radius/2.0f)
 			{
 				if(canvas_view->get_smach().process_event(EventBox(drag_point,mouse_pos,MouseButton(event->button.button),modifier))==Smach::RESULT_ACCEPT)
@@ -1646,23 +1540,25 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				}
 			}
 			drawing_area->queue_draw();
+			break;
 		}
-		break;
-		default:
-		{
-		}
+		default: break;
 		} //end switch dragging
 
-		dragging=DRAG_NONE;
+		set_drag_mode(DRAG_NONE);
 
-		if(canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MOUSE_BUTTON_UP,MouseButton(event->button.button),mouse_pos,pressure,modifier))==Smach::RESULT_ACCEPT)
-			ret=true;
-
+		Smach::event_result er = canvas_view->get_smach().process_event(
+			EventMouse(
+				EVENT_WORKAREA_MOUSE_BUTTON_UP,
+				MouseButton(event->button.button),
+				mouse_pos,
+				pressure,
+				modifier ));
+		if (er == Smach::RESULT_ACCEPT)
+			ret = true;
 		return ret;
 	}
-		break;
-	case GDK_SCROLL:
-	{
+	case GDK_SCROLL: {
 		// Handle a mouse scrolling event like Xara Xtreme and
 		// Inkscape:
 
@@ -1672,9 +1568,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 		// Shift + scroll up/down: scroll left/right
 		// Control + scroll up/down: zoom in/out
 
-		if(modifier&GDK_CONTROL_MASK)
-		{
-
+		if (modifier & GDK_CONTROL_MASK) {
 			// The zoom is performed while preserving the pointer
 			// position as a fixed point (similarly to Xara Xtreme and
 			// Inkscape).
@@ -1694,26 +1588,24 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 			const synfig::Point scroll_point(get_scrollx_adjustment()->get_value(),get_scrolly_adjustment()->get_value());
 			const double drift = 0.052;
 
-			switch(event->scroll.direction)
-			{
-				case GDK_SCROLL_UP:
-				case GDK_SCROLL_RIGHT:
-					get_scrollx_adjustment()->set_value(scroll_point[0]+(mouse_pos[0]-scroll_point[0])*(1.25-(1+drift)));
-					get_scrolly_adjustment()->set_value(scroll_point[1]-(mouse_pos[1]+scroll_point[1])*(1.25-(1+drift)));
-					zoom_in();
-					break;
-				case GDK_SCROLL_DOWN:
-				case GDK_SCROLL_LEFT:
-					get_scrollx_adjustment()->set_value(scroll_point[0]+(mouse_pos[0]-scroll_point[0])*(1/1.25-(1+drift)));
-					get_scrolly_adjustment()->set_value(scroll_point[1]-(mouse_pos[1]+scroll_point[1])*(1/1.25-(1+drift)));
-					zoom_out();
-					break;
-				default:
-					break;
+			switch(event->scroll.direction) {
+			case GDK_SCROLL_UP:
+			case GDK_SCROLL_RIGHT:
+				get_scrollx_adjustment()->set_value(scroll_point[0]+(mouse_pos[0]-scroll_point[0])*(1.25-(1+drift)));
+				get_scrolly_adjustment()->set_value(scroll_point[1]-(mouse_pos[1]+scroll_point[1])*(1.25-(1+drift)));
+				zoom_in();
+				break;
+			case GDK_SCROLL_DOWN:
+			case GDK_SCROLL_LEFT:
+				get_scrollx_adjustment()->set_value(scroll_point[0]+(mouse_pos[0]-scroll_point[0])*(1/1.25-(1+drift)));
+				get_scrolly_adjustment()->set_value(scroll_point[1]-(mouse_pos[1]+scroll_point[1])*(1/1.25-(1+drift)));
+				zoom_out();
+				break;
+			default:
+				break;
 			}
-		}
-		else if(modifier&GDK_SHIFT_MASK)
-		{
+		} else
+		if (modifier & GDK_SHIFT_MASK) {
 			// Scroll in either direction by 20 pixels. Ideally, the
 			// amount of pixels per scrolling event should be
 			// configurable. Xara Xtreme currently uses an (hard
@@ -1721,26 +1613,23 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 
 			const int scroll_pixel = 20;
 
-			switch(event->scroll.direction)
-			{
-				case GDK_SCROLL_UP:
-					get_scrollx_adjustment()->set_value(get_scrollx_adjustment()->get_value()-scroll_pixel*pw);
-					break;
-				case GDK_SCROLL_DOWN:
-					get_scrollx_adjustment()->set_value(get_scrollx_adjustment()->get_value()+scroll_pixel*pw);
-					break;
-				case GDK_SCROLL_LEFT:
-					get_scrolly_adjustment()->set_value(get_scrolly_adjustment()->get_value()+scroll_pixel*ph);
-					break;
-				case GDK_SCROLL_RIGHT:
-					get_scrolly_adjustment()->set_value(get_scrolly_adjustment()->get_value()-scroll_pixel*ph);
-					break;
-				default:
-					break;
+			switch(event->scroll.direction) {
+			case GDK_SCROLL_UP:
+				get_scrollx_adjustment()->set_value(get_scrollx_adjustment()->get_value()-scroll_pixel*pw);
+				break;
+			case GDK_SCROLL_DOWN:
+				get_scrollx_adjustment()->set_value(get_scrollx_adjustment()->get_value()+scroll_pixel*pw);
+				break;
+			case GDK_SCROLL_LEFT:
+				get_scrolly_adjustment()->set_value(get_scrolly_adjustment()->get_value()+scroll_pixel*ph);
+				break;
+			case GDK_SCROLL_RIGHT:
+				get_scrolly_adjustment()->set_value(get_scrolly_adjustment()->get_value()-scroll_pixel*ph);
+				break;
+			default:
+				break;
 			}
-		}
-		else
-		{
+		} else {
 			// Scroll in either direction by 20 pixels. Ideally, the
 			// amount of pixels per scrolling event should be
 			// configurable. Xara Xtreme currently uses an (hard
@@ -1748,51 +1637,45 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 
 			const int scroll_pixel = 20;
 
-			switch(event->scroll.direction)
-			{
-				case GDK_SCROLL_UP:
-					get_scrolly_adjustment()->set_value(get_scrolly_adjustment()->get_value()+scroll_pixel*ph);
-					break;
-				case GDK_SCROLL_DOWN:
-					get_scrolly_adjustment()->set_value(get_scrolly_adjustment()->get_value()-scroll_pixel*ph);
-					break;
-				case GDK_SCROLL_LEFT:
-					get_scrollx_adjustment()->set_value(get_scrollx_adjustment()->get_value()-scroll_pixel*pw);
-					break;
-				case GDK_SCROLL_RIGHT:
-					get_scrollx_adjustment()->set_value(get_scrollx_adjustment()->get_value()+scroll_pixel*pw);
-					break;
-				default:
-					break;
+			switch(event->scroll.direction) {
+			case GDK_SCROLL_UP:
+				get_scrolly_adjustment()->set_value(get_scrolly_adjustment()->get_value()+scroll_pixel*ph);
+				break;
+			case GDK_SCROLL_DOWN:
+				get_scrolly_adjustment()->set_value(get_scrolly_adjustment()->get_value()-scroll_pixel*ph);
+				break;
+			case GDK_SCROLL_LEFT:
+				get_scrollx_adjustment()->set_value(get_scrollx_adjustment()->get_value()-scroll_pixel*pw);
+				break;
+			case GDK_SCROLL_RIGHT:
+				get_scrollx_adjustment()->set_value(get_scrollx_adjustment()->get_value()+scroll_pixel*pw);
+				break;
+			default:
+				break;
 			}
 		}
-	}
-		break;
-	default:
 		break;
 	}
-		return false;
+	default: break;
+	}
+
+	return false;
 }
 
 bool
 WorkArea::on_hruler_event(GdkEvent *event)
 {
-	switch(event->type)
-    {
+	switch(event->type) {
 	case GDK_BUTTON_PRESS:
-		if(dragging==DRAG_NONE && show_guides)
-		{
-			dragging=DRAG_GUIDE;
-			curr_guide=get_guide_list_y().insert(get_guide_list_y().begin(), 0.0);
-			curr_guide_is_x=false;
+		if (get_drag_mode() == DRAG_NONE && show_guides) {
+			set_drag_mode(DRAG_GUIDE);
+			curr_guide = get_guide_list_y().insert(get_guide_list_y().begin(), 0.0);
+			curr_guide_is_x = false;
 		}
 		return true;
-		break;
-
 	case GDK_MOTION_NOTIFY:
 		// Guide movement
-		if(dragging==DRAG_GUIDE && curr_guide_is_x==false)
-		{
+		if (get_drag_mode() == DRAG_GUIDE && !curr_guide_is_x) {
 			// Event is in the hruler, which has a slightly different
 			// coordinate system from the canvas.
 			event->motion.y -= hruler->get_height()+2;
@@ -1801,17 +1684,13 @@ WorkArea::on_hruler_event(GdkEvent *event)
 			on_drawing_area_event(event);
 		}
 		return true;
-		break;
-
 	case GDK_BUTTON_RELEASE:
-		if(dragging==DRAG_GUIDE && curr_guide_is_x==false)
-		{
-			dragging=DRAG_NONE;
+		if (get_drag_mode() == DRAG_GUIDE && !curr_guide_is_x) {
+			set_drag_mode(DRAG_NONE);
 			save_meta_data();
 			//get_guide_list_y().erase(curr_guide);
 		}
 		return true;
-		break;
 	default:
 		break;
 	}
@@ -1821,22 +1700,17 @@ WorkArea::on_hruler_event(GdkEvent *event)
 bool
 WorkArea::on_vruler_event(GdkEvent *event)
 {
-	switch(event->type)
-    {
+	switch(event->type) {
 	case GDK_BUTTON_PRESS:
-		if(dragging==DRAG_NONE && show_guides)
-		{
-			dragging=DRAG_GUIDE;
+		if (get_drag_mode() == DRAG_NONE && show_guides) {
+			set_drag_mode(DRAG_GUIDE);
 			curr_guide=get_guide_list_x().insert(get_guide_list_x().begin(),0.0);
 			curr_guide_is_x=true;
 		}
 		return true;
-		break;
-
 	case GDK_MOTION_NOTIFY:
 		// Guide movement
-		if(dragging==DRAG_GUIDE && curr_guide_is_x==true)
-		{
+		if (get_drag_mode() == DRAG_GUIDE && curr_guide_is_x) {
 			// Event is in the vruler, which has a slightly different
 			// coordinate system from the canvas.
 			event->motion.x -= vruler->get_width()+2;
@@ -1845,17 +1719,13 @@ WorkArea::on_vruler_event(GdkEvent *event)
 			on_drawing_area_event(event);
 		}
 		return true;
-		break;
-
 	case GDK_BUTTON_RELEASE:
-		if(dragging==DRAG_GUIDE && curr_guide_is_x==true)
-		{
-			dragging=DRAG_NONE;
+		if (get_drag_mode() == DRAG_GUIDE && curr_guide_is_x) {
+			set_drag_mode(DRAG_NONE);
 			save_meta_data();
 			//get_guide_list_x().erase(curr_guide);
 		}
 		return true;
-		break;
 	default:
 		break;
 	}
@@ -1865,8 +1735,7 @@ WorkArea::on_vruler_event(GdkEvent *event)
 void
 WorkArea::on_duck_selection_single(const etl::handle<Duck>& duck)
 {
-	if(dragging == DRAG_NONE)
-	{
+	if (get_drag_mode() == DRAG_NONE) {
 		studio::LayerTree* tree_layer(dynamic_cast<studio::LayerTree*>(canvas_view->get_ext_widget("layers_cmp")));
 		tree_layer->select_param(duck->get_value_desc());
 	}

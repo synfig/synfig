@@ -75,6 +75,7 @@ class WorkArea;
 class WorkAreaRenderer;
 class AsyncRenderer;
 class Renderer_Canvas;
+class LockDucks;
 
 
 class WorkArea : public Gtk::Table, public Duckmatic
@@ -169,7 +170,7 @@ private:
 
 	//! This flag is set if the user is dragging the video window
 	/*! \see drag_point */
-	DragMode dragging;
+	DragMode drag_mode;
 
 	etl::handle<Duckmatic::Duck> clicked_duck;
 	etl::handle<Duckmatic::Duck> hover_duck;
@@ -221,6 +222,8 @@ private:
 	bool allow_layer_clicks;
 	bool curr_guide_is_x;
 
+	etl::handle<LockDucks> lock_ducks;
+
 public:
 	/*
  -- ** -- P U B L I C   D A T A -----------------------------------------------
@@ -263,6 +266,13 @@ public:
 	sigc::signal<void, synfig::Point> &signal_user_click(int button=0){ return signal_user_click_[button]; } //!< One signal per button (5 buttons)
 	sigc::signal<void, etl::handle<synfig::Layer> >& signal_layer_selected() { return signal_layer_selected_; }
 
+private:
+	/*
+ -- ** -- P R I V A T E   M E T H O D S -----------------------------------------
+	*/
+
+	void set_drag_mode(DragMode mode);
+
 public:
 	/*
  -- ** -- P U B L I C   M E T H O D S -----------------------------------------
@@ -301,8 +311,8 @@ public:
 
 	void set_selected_value_node(etl::loose_handle<synfig::ValueNode> x);
 
-	bool is_dragging() { return dragging!=DRAG_NONE; }
-	DragMode get_dragging_mode() { return dragging; }
+	DragMode get_drag_mode() { return drag_mode; }
+	bool is_dragging() { return get_drag_mode() != DRAG_NONE; }
 
 	void set_cursor(const Glib::RefPtr<Gdk::Cursor> &x);
 	void set_cursor(Gdk::CursorType x);
