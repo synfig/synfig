@@ -78,6 +78,10 @@ Renderer_BBox::render_vfunc(
 	assert(get_work_area());
 	if(!get_work_area())
 		return;
+	if (!get_work_area()->get_canvas_view())
+		return;
+	if (get_work_area()->get_canvas_view()->is_ducks_locked())
+		return;
 
 	Cairo::RefPtr<Cairo::Context> cr = drawable->create_cairo_context();
 
