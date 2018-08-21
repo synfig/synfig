@@ -3016,7 +3016,7 @@ CanvasView::play_async()
 	if(is_playing())return;
 
 	playing_timer.reset();
-	playing_time = work_area->get_time();
+	playing_time = get_time();
 
 	// If we are already at the end of time, start over
 	if(playing_time == get_canvas()->rend_desc().get_time_end())
