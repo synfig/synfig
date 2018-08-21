@@ -163,6 +163,8 @@ private:
 
 	synfig::PixelFormat pixel_format;
 
+	bool in_process;
+
 	//! uses to normalize alpha value after blending of onion surfaces
 	Cairo::RefPtr<Cairo::ImageSurface> alpha_src_surface;
 	Cairo::RefPtr<Cairo::ImageSurface> alpha_dst_surface;
