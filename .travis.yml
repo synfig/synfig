@@ -30,7 +30,8 @@ matrix:
       - HOMEBREW_NO_AUTO_UPDATE=1
       - HOMEBREW_NO_ANALYTICS=1
     cache: ccache
-    before_install: autobuild/osx/brew/install-requirements-osx.sh
+    before_install: brew reinstall libtool # fix no sed
+    install: autobuild/osx/brew/install-requirements-osx.sh
     before_script: ccache -s
     script: autobuild/osx/brew/synfigstudio-osx-build.sh
     after_script: ccache -s # show ccache stats
@@ -43,7 +44,8 @@ matrix:
       - HOMEBREW_NO_AUTO_UPDATE=1
       - HOMEBREW_NO_ANALYTICS=1
     cache: ccache
-    before_install: autobuild/osx/brew/install-requirements-osx.sh
+    before_install: brew cask uninstall oclint # fix gcc installing
+    install: autobuild/osx/brew/install-requirements-osx.sh
     before_script: ccache -s
     script: autobuild/osx/brew/synfigstudio-osx-build.sh
     after_script: ccache -s # show ccache stats
