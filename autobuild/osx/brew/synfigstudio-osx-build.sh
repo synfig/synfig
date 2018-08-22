@@ -6,11 +6,14 @@
 # autopoint is not in PATH after install (conflicting with system gettext https://github.com/Homebrew/legacy-homebrew/issues/24070)
 # so we can do `brew link --force gettext` or just add it to PATH before configuring
 
-export PATH=/usr/local/opt/gettext/bin:$PATH
+#export PATH=/usr/local/opt/gettext/bin:$PATH
+# assume we have ccache and gettext already installed
+export PATH="/usr/local/opt/ccache/libexec:/usr/local/opt/gettext/bin:$PATH"
 SCRIPT_PATH=$(cd `dirname "$0"`; pwd)
 
 MAKE_THREADS=2
 MAKE_OPTIONS="-j$MAKE_THREADS --silent LIBTOOLFLAGS=--silent"
+#CONFIGURE_FLAGS="--enable-optimization=0"
 
 set -e
 
@@ -60,27 +63,27 @@ pushd "$SCRIPT_PATH/../../../"
 
 travis_fold_start ETL "Building ETL"
 pushd ETL
-./bootstrap.sh
-./configure
-make install $MAKE_OPTIONS
+  ./bootstrap.sh
+  ./configure
+  make install $MAKE_OPTIONS
 popd # ETL
 travis_fold_end ETL
 
 travis_fold_start synfig-core "Building synfig-core"
 pushd synfig-core
-./bootstrap.sh
-./configure
-make install $MAKE_OPTIONS
+  ./bootstrap.sh
+  ./configure
+  make install $MAKE_OPTIONS
 popd # synfig-core
 travis_fold_end synfig-core
 
 travis_fold_start synfig-studio "Building Synfig Studio"
 pushd synfig-studio
-./bootstrap.sh
-./configure
-pushd src # enter src directory to skip image building
-make install $MAKE_OPTIONS
-popd #src
+  ./bootstrap.sh
+  ./configure
+  pushd src # enter src directory to skip image building
+    make install $MAKE_OPTIONS
+  popd #src
 popd # synfig-studio
 travis_fold_end synfig-studio
 
