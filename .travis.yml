@@ -27,6 +27,9 @@ matrix:
     sudo: required
     osx_image: xcode6.4
     before_install: autobuild/osx/brew/install-requirements-osx.sh
+    install:
+      - brew install ccache
+      - export PATH="/usr/local/opt/ccache/libexec:$PATH"    
     before_script: ccache -s
     script: autobuild/osx/brew/synfigstudio-osx-build.sh
     after_script: ccache -s # show ccache stats

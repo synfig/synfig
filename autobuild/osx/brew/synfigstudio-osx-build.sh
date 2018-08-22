@@ -53,7 +53,7 @@ travis_fold_end()
 
 
 
-enable_ccache
+# enable_ccache
 
 # move to synfig root dir
 pushd "$SCRIPT_PATH/../../../"
