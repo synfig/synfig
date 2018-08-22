@@ -647,7 +647,7 @@ LockDucks::~LockDucks() {
 CanvasView::ActivationIndex CanvasView::ActivationIndex::last__;
 
 CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<CanvasInterface> canvas_interface_):
-	Dockable(GUID().get_string(),_("Canvas View")),
+	Dockable(synfig::GUID().get_string(),_("Canvas View")),
 	work_area                (),
 	activation_index_        (true),
 	smach_                   (this),
