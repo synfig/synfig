@@ -1412,8 +1412,9 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 					           : event->motion.state & GDK_BUTTON2_MASK ? BUTTON_MIDDLE
 					           : event->motion.state & GDK_BUTTON3_MASK ? BUTTON_RIGHT
 					           : BUTTON_NONE;
+			EventKey event = button == BUTTON_NONE ? EVENT_WORKAREA_MOUSE_MOTION : EVENT_WORKAREA_MOUSE_BUTTON_DRAG;
 			Smach::event_result er = canvas_view->get_smach().process_event(
-				EventMouse(EVENT_WORKAREA_MOUSE_MOTION, button, mouse_pos, pressure, modifier) );
+				EventMouse(event, button, mouse_pos, pressure, modifier) );
 			if (er == Smach::RESULT_ACCEPT)
 				return true;
 		}
