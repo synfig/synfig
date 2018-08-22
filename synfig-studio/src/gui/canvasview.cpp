@@ -1677,10 +1677,10 @@ CanvasView::init_menus()
 			sigc::bind( sigc::mem_fun(*get_instance().get(), &Instance::run_plugin), p->path ) );
 
 	// Low-Res Quality Menu
-	for(std::list<int>::iterator i = get_pixel_sizes().begin(); i != get_pixel_sizes().end(); i++) {
+	for(std::list<int>::iterator i = get_pixel_sizes().begin(); i != get_pixel_sizes().end(); ++i) {
 		Glib::RefPtr<Gtk::RadioAction> action = Gtk::RadioAction::create(
 			low_res_pixel_size_group,
-			etl::strprintf("lowres-pixel-%d", i),
+			etl::strprintf("lowres-pixel-%d", *i),
 			etl::strprintf(_("Set Low-Res pixel size to %d"), *i) );
 		if (*i == 2) { // default pixel size
 			action->set_active();
@@ -2829,16 +2829,15 @@ CanvasView::decrease_low_res_pixel_size()
 	changing_resolution_=true;
 	std::list<int> sizes = CanvasView::get_pixel_sizes();
 	int pixel_size = work_area->get_low_res_pixel_size();
-	for (std::list<int>::iterator iter = sizes.begin(); iter != sizes.end(); iter++)
-		if (*iter == pixel_size)
-		{
-			if (iter == sizes.begin())
+	for (std::list<int>::iterator iter = sizes.begin(); iter != sizes.end(); ++iter)
+		if (*iter == pixel_size) {
+			if (iter == sizes.begin()) {
 				// we already have the smallest low-res pixels possible - turn off low-res instead
 				work_area->set_low_resolution_flag(false);
-			else
-			{
-				iter--;
+			} else {
+				--iter;
 				Glib::RefPtr<Gtk::Action> action = action_group->get_action(etl::strprintf("lowres-pixel-%d", *iter));
+				assert(action);
 				action->activate(); // to make sure the radiobutton in the menu is updated too
 				work_area->set_low_resolution_flag(true);
 			}
@@ -2874,12 +2873,10 @@ CanvasView::increase_low_res_pixel_size()
 	}
 
 	for (std::list<int>::iterator iter = sizes.begin(); iter != sizes.end(); iter++)
-		if (*iter == pixel_size)
-		{
-			iter++;
-			if (iter != sizes.end())
-			{
+		if (*iter == pixel_size) {
+			if (++iter != sizes.end()) {
 				Glib::RefPtr<Gtk::Action> action = action_group->get_action(etl::strprintf("lowres-pixel-%d", *iter));
+				assert(action);
 				action->activate(); // to make sure the radiobutton in the menu is updated too
 				work_area->set_low_resolution_flag(true);
 			}
