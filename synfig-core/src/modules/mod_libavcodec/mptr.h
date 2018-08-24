@@ -46,7 +46,7 @@ private:
 	synfig::String filename;
 
 public:
-	Importer_LibAVCodec(const char *filename);
+	Importer_LibAVCodec(const synfig::FileSystem::Identifier &identifier); 
 	~Importer_LibAVCodec();
 
 	virtual bool get_frame(synfig::Surface &surface, const synfig::RendDesc &renddesc, synfig::Time time, synfig::ProgressCallback *callback);

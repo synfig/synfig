@@ -58,7 +58,6 @@ extern "C"
 #	include <ffmpeg/swscale.h>
 #endif
 #endif
-
 }
 
 #ifndef DISABLE_MODULE
@@ -74,15 +73,21 @@ extern "C"
 
 #ifndef DISABLE_MODULE
 
-// AV_ prefixes was introduced from libavutil version 51.42.0
-// libav repositiory commit: 78071a1420b425dfb787ac739048f523007b8139
-#if LIBAVUTIL_VERSION_MAJOR < 51 || (LIBAVUTIL_VERSION_MAJOR == 51 && LIBAVUTIL_VERSION_MINOR < 42)
-#define AV_PIX_FMT_RGB24   PIX_FMT_RGB24
-#define AV_PIX_FMT_BGR24   PIX_FMT_BGR24
-#define AV_PIX_FMT_RGBA32  PIX_FMT_RGBA32
-#define AV_PIX_FMT_RGBA32  PIX_FMT_RGBA32
-#define AV_PIX_FMT_YUV420P PIX_FMT_YUV420P
-#endif
+static int encode_frame(AVCodecContext *c, AVFrame *frame)
+{
+    AVPacket pkt = { 0 };
+    int ret, got_output;
+
+    av_init_packet(&pkt);
+    av_init_packet(&pkt);
+    ret = avcodec_encode_video2(c, &pkt, frame, &got_output);
+    if (ret < 0)
+	return ret;
+
+    ret = pkt.size;
+    av_free_packet(&pkt);
+    return ret;
+}
 
 #ifdef _WIN32
 #define snprintf	_snprintf
@@ -129,17 +134,17 @@ AVFrame *alloc_picture(int pix_fmt, int width, int height)
     uint8_t *picture_buf;
     int size;
 
-    picture = avcodec_alloc_frame();
+    picture = av_frame_alloc();
     if (!picture)
         return NULL;
-    size = avpicture_get_size(pix_fmt, width, height);
+    size = avpicture_get_size((AVPixelFormat)pix_fmt, width, height);
     picture_buf = (uint8_t *)malloc(size);
     if (!picture_buf) {
         av_free(picture);
         return NULL;
     }
     avpicture_fill((AVPicture *)picture, picture_buf,
-                   pix_fmt, width, height);
+                   (AVPixelFormat)pix_fmt, width, height);
     return picture;
 }
 
@@ -261,10 +266,10 @@ public:
 		if (context->frame_size <= 1) {
 			audio_input_frame_size = audiobuffer.size() / context->channels;
 			switch(stream->codec.codec_id) {
-			case CODEC_ID_PCM_S16LE:
-			case CODEC_ID_PCM_S16BE:
-			case CODEC_ID_PCM_U16LE:
-			case CODEC_ID_PCM_U16BE:
+			case AV_CODEC_ID_PCM_S16LE:
+			case AV_CODEC_ID_PCM_S16BE:
+			case AV_CODEC_ID_PCM_U16LE:
+			case AV_CODEC_ID_PCM_U16BE:
 				audio_input_frame_size >>= 1;
 				break;
 			default:
@@ -357,7 +362,7 @@ public:
 		}
 
 		//try to open the codec
-		if(avcodec_open(context, codec) < 0)
+		if(avcodec_open2(context, codec, NULL) < 0)
 		{
 			synfig::warning("open_video: could not open desired codec");
 			return 0;
@@ -371,7 +376,7 @@ public:
 		}
 
 		//allocate the base picture which will be used to encode
-		/*picture = alloc_picture(AV_PIX_FMT_RGBA32, context->width, context->height);
+		/*picture = alloc_picture(PIX_FMT_RGBA32, context->width, context->height);
 		if(!picture)
 		{
 			synfig::warning("open_video: could not allocate the picture to be encoded");
@@ -382,9 +387,9 @@ public:
 
 		/*	Should use defaults of RGB
 			Possible formats:
-				AV_PIX_FMT_RGB24
-				AV_PIX_FMT_BGR24
-				AV_PIX_FMT_RGBA32 //stored in cpu endianness (!!!!)
+				PIX_FMT_RGB24
+				PIX_FMT_BGR24
+				PIX_FMT_RGBA32 //stored in cpu endianness (!!!!)
 
 			(possibly translate directly to required coordinate systems later on... less error)
 		*/
@@ -457,7 +462,7 @@ public:
 		if( context->coded_frame )
 			pkt.pts = context->coded_frame->pts;
 		if( context->coded_frame && context->coded_frame->key_frame)
-			pkt.flags |= PKT_FLAG_KEY;
+			pkt.flags |= AV_PKT_FLAG_KEY;
 
 		//kluge for raw picture format (they said they'd fix)
 		if (formatc->oformat->flags & AVFMT_RAWPICTURE)
@@ -467,7 +472,7 @@ public:
 		else
 		{
 			//encode our given image
-			size = avcodec_encode_video(context, &videobuffer[0], videobuffer.size(), pict);
+			size = encode_frame(context, pict);
 
 			//if greater than zero we've got stuff to write
 			if (size > 0)
@@ -479,7 +484,7 @@ public:
 				if( context->coded_frame )
 					pkt.pts = context->coded_frame->pts;
 				if( context->coded_frame && context->coded_frame->key_frame)
-					pkt.flags |= PKT_FLAG_KEY;
+					pkt.flags |= AV_PKT_FLAG_KEY;
 
 				ret = av_write_frame(formatc, &pkt);
 
@@ -582,18 +587,18 @@ public:
 		//guess if we have a type string, otherwise use filename
 		if (typestring)
 		{
-			//formatptr guess_format(type, filename, MIME type)
-			format = guess_format(typestring,NULL,NULL);
+			//formatptr av_guess_format(type, filename, MIME type)
+			format = av_guess_format(typestring,NULL,NULL);
 		}
 		else
 		{
-			format = guess_format(NULL, filename, NULL);
+			format = av_guess_format(NULL, filename, NULL);
 		}
 
 		if(!format)
 		{
 			synfig::warning("Unable to Guess the output, defaulting to mpeg");
-			format = guess_format("mpeg", NULL, NULL);
+			format = av_guess_format("mpeg", NULL, NULL);
 		}
 
 		if(!format)
@@ -620,7 +625,7 @@ public:
 		//audio_st = NULL;
 
 		//video stream
-		if(format->video_codec != CODEC_ID_NONE)
+		if(format->video_codec != AV_CODEC_ID_NONE)
 		{
 			video_st = add_video_stream(format->video_codec,vInfo);
 			if(!video_st)
@@ -630,7 +635,7 @@ public:
 		}
 
 		//audio stream
-		/*if(format->audio_codec != CODEC_ID_NONE)
+		/*if(format->audio_codec != AV_CODEC_ID_NONE)
 		{
 			audio_st = add_audio_stream(format->audio_codec,aInfo);
 		}*/
@@ -643,7 +648,7 @@ public:
 		video_st->codec->pix_fmt = AV_PIX_FMT_YUV420P;
 
 		//dump the formatting information as the file header
-		dump_format(formatc, 0, filename, 1);
+		av_dump_format(formatc, 0, filename, 1);
 
 		//open codecs and allocate buffers
 		if(video_st)
@@ -667,7 +672,7 @@ public:
 		if(!(format->flags & AVFMT_NOFILE))
 		{
 			//use libav's file open function (what does it do differently????)
-			if(url_fopen(&formatc->pb, filename, URL_WRONLY) < 0)
+			if(avio_open(&formatc->pb, filename, AVIO_FLAG_WRITE) < 0)
 			{
 				synfig::warning("Unable to open file: %s", filename);
 				return 0;
@@ -688,7 +693,7 @@ public:
 		//vInfo.h = video_st->codec.height;
 
 		//write the stream header
-		av_write_header(formatc);
+		avformat_write_header(formatc, NULL);
 
 		return true;
 	}
@@ -728,9 +733,9 @@ public:
 			{
 				/* close the output file */
 #if LIBAVFORMAT_VERSION_INT >= (52<<16)
-				url_fclose(formatc->pb);
+				avio_close(formatc->pb);
 #else
-				url_fclose(&formatc->pb);
+				avio_close(&formatc->pb);
 #endif
 			}
 
@@ -760,16 +765,17 @@ public:
 		AVCodecContext *context;
 		AVStream *st;
 
-		st = av_new_stream(formatc, 0);
+		st = avformat_new_stream(formatc, NULL);
 		if(!st)
 		{
 			synfig::warning("video-add_stream: Unable to allocate stream");
 			return 0;
 		}
+		st->id = 0;
 
 		context = st->codec;
-		context->codec_id = (CodecID)codec_id;
-		context->codec_type = CODEC_TYPE_VIDEO;
+		context->codec_id = (AVCodecID)codec_id;
+		context->codec_type = AVMEDIA_TYPE_VIDEO;
 
 		//PARAMETERS MUST BE PASSED IN SOMEHOW (ANOTHER FUNCTION PARAMETER???)
 
@@ -791,8 +797,8 @@ public:
 		context->gop_size = info.fps/4; /* emit one intra frame every twelve frames at most */
 
 		//HACK: MPEG requires b frames be set... any better way to do this?
-		if (context->codec_id == CODEC_ID_MPEG1VIDEO ||
-			context->codec_id == CODEC_ID_MPEG2VIDEO)
+		if (context->codec_id == AV_CODEC_ID_MPEG1VIDEO ||
+			context->codec_id == AV_CODEC_ID_MPEG2VIDEO)
 		{
 			/* just for testing, we also add B frames */
 			context->max_b_frames = 2;
@@ -807,16 +813,17 @@ public:
 		AVCodecContext *context;
 		AVStream *stream;
 
-		stream = av_new_stream(formatc, 1);
+		stream = avformat_new_stream(formatc, NULL);
 		if(!stream)
 		{
 			synfig::warning("could not alloc stream");
 			return 0;
 		}
+		stream->id = 1;
 
 		context = stream->codec;
-		context->codec_id = (CodecID)codec_id;
-		context->codec_type = CODEC_TYPE_AUDIO;
+		context->codec_id = (AVCodecID)codec_id;
+		context->codec_type = AVMEDIA_TYPE_AUDIO;
 
 		/* put sample parameters */
 		context->bit_rate = 64000;
@@ -838,7 +845,7 @@ Target_LibAVCodec::Target_LibAVCodec(const char *Filename,
 		registered = true;
 		av_register_all();
 	}
-	set_remove_alpha();
+	//set_remove_alpha();
 
 	data = new LibAVEncoder;
 }
