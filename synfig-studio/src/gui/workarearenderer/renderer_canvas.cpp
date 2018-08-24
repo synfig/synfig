@@ -49,6 +49,7 @@
 #include <synfig/rendering/common/task/tasktransformation.h>
 
 #include <gui/app.h>
+#include <gui/canvasview.h>
 
 #include "renderer_canvas.h"
 
@@ -349,7 +350,11 @@ Renderer_Canvas::build_onion_frames()
 	int            thumb_h   = get_work_area()->get_thumb_h();
 	int            past      = std::max(0, get_work_area()->get_onion_skins()[0]);
 	int            future    = std::max(0, get_work_area()->get_onion_skins()[1]);
-	Time           base_time = canvas->get_time();
+
+	Time base_time;
+	if (CanvasView::Handle canvas_view = get_work_area()->get_canvas_view())
+		base_time = Time(canvas_view->time_adjustment()->get_value());
+
 	RendDesc       rend_desc = canvas->rend_desc();
 	float          fps       = rend_desc.get_frame_rate();
 
