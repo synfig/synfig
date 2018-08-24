@@ -284,8 +284,8 @@ public:
 	bool get_loop_flag() const {return b_loop.get_active();}
 	void set_loop_flag(bool b) {return b_loop.set_active(b);}
 
-	virtual void on_show();
-	virtual void on_hide();
+	void on_dialog_show();
+	void on_dialog_hide();
 
 protected:
 

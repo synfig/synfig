@@ -870,7 +870,7 @@ void studio::Widget_Preview::disconnect_preview(Preview *prev)
 	if(prev == preview)
 	{
 		preview = 0;
-		prevchanged.disconnect();
+		//prevchanged.disconnect();
 		soundProcessor.clear();
 	}
 }
@@ -886,37 +886,31 @@ void studio::Widget_Preview::set_preview(etl::handle<Preview>	prev)
 	//stop playing the mini animation...
 	pause();
 
-	if(preview)
-	{
+	if (preview) {
 		//set the internal values
 		float rate = preview->get_fps();
 		jackdial->set_fps(rate);
 		jackdial->set_offset(preview->get_jack_offset());
 		synfig::info("	FPS = %f",rate);
-		if(rate)
-		{
+		if (rate) {
 			float start = preview->get_begintime();
 			float end = preview->get_endtime();
 
 			rate = 1/rate;
 
-			adj_time_scrub->set_lower(start);
-			adj_time_scrub->set_upper(end);
-			adj_time_scrub->set_value(start);
-			adj_time_scrub->set_step_increment(rate);
-			adj_time_scrub->set_page_increment(10*rate);
+			adj_time_scrub->configure(start, start, end, rate, 10.0*rate, 0.0);
 
 			//if the begin time and the end time are the same there is only a single frame
 			singleframe = end==start;
-		}else
-		{
-			adj_time_scrub->set_lower(0);
-			adj_time_scrub->set_upper(0);
-			adj_time_scrub->set_value(0);
-			adj_time_scrub->set_step_increment(0);
-			adj_time_scrub->set_page_increment(0);
+		} else {
+			adj_time_scrub->configure(0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 			singleframe = true;
 		}
+		scr_time_scrub.unset_adjustment();
+		scr_time_scrub.hide();
+		scr_time_scrub.set_adjustment(adj_time_scrub);
+		scr_time_scrub.show();
+		scr_time_scrub.show_all();
 
 		preview->get_canvas()->fill_sound_processor(soundProcessor);
 		set_jack_enabled( preview && preview->get_canvasview()->get_jack_enabled_in_preview() );
@@ -1269,15 +1263,13 @@ Widget_Preview::is_time_equal_to_current_frame(const synfig::Time &time)
 	return t0.is_equal(t1);
 }
 
-void Widget_Preview::on_show()
+void Widget_Preview::on_dialog_show()
 {
-	Table::on_show();
 	set_jack_enabled( preview && preview->get_canvasview()->get_jack_enabled_in_preview() );
 }
 
-void Widget_Preview::on_hide()
+void Widget_Preview::on_dialog_hide()
 {
-	Table::on_hide();
 	if (preview)
 	{
 		bool enabled = get_jack_enabled();
