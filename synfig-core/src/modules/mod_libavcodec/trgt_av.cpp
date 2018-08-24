@@ -74,6 +74,16 @@ extern "C"
 
 #ifndef DISABLE_MODULE
 
+// AV_ prefixes was introduced from libavutil version 51.42.0
+// libav repositiory commit: 78071a1420b425dfb787ac739048f523007b8139
+#if LIBAVUTIL_VERSION_MAJOR < 51 || (LIBAVUTIL_VERSION_MAJOR == 51 && LIBAVUTIL_VERSION_MINOR < 42)
+#define AV_PIX_FMT_RGB24   PIX_FMT_RGB24
+#define AV_PIX_FMT_BGR24   PIX_FMT_BGR24
+#define AV_PIX_FMT_RGBA32  PIX_FMT_RGBA32
+#define AV_PIX_FMT_RGBA32  PIX_FMT_RGBA32
+#define AV_PIX_FMT_YUV420P PIX_FMT_YUV420P
+#endif
+
 #ifdef _WIN32
 #define snprintf	_snprintf
 #endif
@@ -361,7 +371,7 @@ public:
 		}
 
 		//allocate the base picture which will be used to encode
-		/*picture = alloc_picture(PIX_FMT_RGBA32, context->width, context->height);
+		/*picture = alloc_picture(AV_PIX_FMT_RGBA32, context->width, context->height);
 		if(!picture)
 		{
 			synfig::warning("open_video: could not allocate the picture to be encoded");
@@ -372,14 +382,14 @@ public:
 
 		/*	Should use defaults of RGB
 			Possible formats:
-				PIX_FMT_RGB24
-				PIX_FMT_BGR24
-				PIX_FMT_RGBA32 //stored in cpu endianness (!!!!)
+				AV_PIX_FMT_RGB24
+				AV_PIX_FMT_BGR24
+				AV_PIX_FMT_RGBA32 //stored in cpu endianness (!!!!)
 
 			(possibly translate directly to required coordinate systems later on... less error)
 		*/
 		encodable = NULL;
-		if(context->pix_fmt != PIX_FMT_RGB24)
+		if(context->pix_fmt != AV_PIX_FMT_RGB24)
 		{
 			encodable = alloc_picture(context->pix_fmt, context->width, context->height);
 			if(!encodable)
@@ -415,12 +425,12 @@ public:
 		}
 
 
-		if ( pict && context->pix_fmt != PIX_FMT_RGB24 )
+		if ( pict && context->pix_fmt != AV_PIX_FMT_RGB24 )
 		{
 			//We're using RGBA at the moment, write custom conversion code later (get less accuracy errors)
 #ifdef WITH_LIBSWSCALE
 			struct SwsContext* img_convert_ctx =
-				sws_getContext(context->width, context->height, PIX_FMT_RGB24,
+				sws_getContext(context->width, context->height, AV_PIX_FMT_RGB24,
 					context->width, context->height, context->pix_fmt,
 					SWS_BICUBIC, NULL, NULL, NULL);
 
@@ -432,7 +442,7 @@ public:
 			sws_freeContext (img_convert_ctx);
 #else
 			img_convert((AVPicture *)encodable, context->pix_fmt,
-						(AVPicture *)pict, PIX_FMT_RGB24,
+						(AVPicture *)pict, AV_PIX_FMT_RGB24,
 						context->width, context->height);
 #endif
 
@@ -630,7 +640,7 @@ public:
 		video_st->codec->time_base= (AVRational){1,vInfo.fps};
 		video_st->codec->width = vInfo.w;
 		video_st->codec->height = vInfo.h;
-		video_st->codec->pix_fmt = PIX_FMT_YUV420P;
+		video_st->codec->pix_fmt = AV_PIX_FMT_YUV420P;
 
 		//dump the formatting information as the file header
 		dump_format(formatc, 0, filename, 1);
@@ -666,7 +676,7 @@ public:
 
 		//allocate the picture to render to
 		//may have to retrieve the width, height from the codec... for resizing...
-		picture = alloc_picture(PIX_FMT_RGB24,vInfo.w,vInfo.h);//video_st->codec.width, video_st->codec.height);
+		picture = alloc_picture(AV_PIX_FMT_RGB24,vInfo.w,vInfo.h);//video_st->codec.width, video_st->codec.height);
 		if(!picture)
 		{
 			synfig::warning("Unable to allocate the temporary AVFrame surface");
