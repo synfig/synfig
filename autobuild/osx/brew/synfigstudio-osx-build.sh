@@ -3,8 +3,8 @@
 # libtool for synfig-core glibtoolize
 # gettext for autopoint
 
-# autopoint is not in PATH after install (conflicting with system gettext https://github.com/Homebrew/legacy-homebrew/issues/24070)
-# so we can do `brew link --force gettext` or just add it to PATH before configuring
+# autopoint is not in PATH after install via brew (conflicting with system gettext https://github.com/Homebrew/legacy-homebrew/issues/24070)
+# so we can do `brew link --force gettext` or just add it to PATH before configuring which is preferable because we need it only for compiling
 
 #export PATH=/usr/local/opt/gettext/bin:$PATH
 # assume we have ccache and gettext already installed
@@ -16,29 +16,6 @@ MAKE_OPTIONS="-j$MAKE_THREADS --silent LIBTOOLFLAGS=--silent"
 #CONFIGURE_FLAGS="--enable-optimization=0"
 
 set -e
-
-# enable ccache for speedup
-enable_ccache()
-{
-    if which ccache > /dev/null; then
-        echo "ccache found! Enabling ccache..."
-        
-        # set CC/CXX variables if it is not already
-        if [ -z $CC ]; then
-            export CC=gcc
-        fi
-        if [ -z $CXX ]; then
-            export CXX=g++
-        fi
-
-        export CC="ccache $CC"
-        export CXX="ccache $CXX"
-        echo "CC=$CC"
-        echo "CXX=$CXX"
-    else
-        echo "ccache not found..."
-    fi
-}
 
 travis_fold_start()
 {
@@ -55,9 +32,6 @@ travis_fold_end()
 }
 
 
-
-# enable_ccache
-
 # move to synfig root dir
 pushd "$SCRIPT_PATH/../../../"
 
@@ -69,7 +43,7 @@ pushd ETL
 popd # ETL
 travis_fold_end ETL
 
-travis_fold_start synfig-core "Building synfig-core"
+travis_fold_start synfig-core "Building Synfig Core"
 pushd synfig-core
   ./bootstrap.sh
   ./configure
@@ -81,9 +55,13 @@ travis_fold_start synfig-studio "Building Synfig Studio"
 pushd synfig-studio
   ./bootstrap.sh
   ./configure
+  pushd build_tools # enter src directory to skip image building
+    make install $MAKE_OPTIONS
+  popd # build_tools
+
   pushd src # enter src directory to skip image building
     make install $MAKE_OPTIONS
-  popd #src
+  popd # src
 popd # synfig-studio
 travis_fold_end synfig-studio
 

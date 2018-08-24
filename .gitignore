@@ -19,6 +19,9 @@ build/
 
 .kdev4/
 
+# ---- MacOS thumbnails ------------
+.DS_Store
+
 # ------------------------------------------------------------------------
 
 # generated in ETL, core and studio
