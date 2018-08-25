@@ -43,18 +43,16 @@ class Target_LibAVCodec : public synfig::Target_Scanline
 {
 	SYNFIG_TARGET_MODULE_EXT
 private:
+	class Internal;
+	Internal *internal;
+
 	synfig::String filename;
-
-	class LibAVEncoder;
-	LibAVEncoder	*data;
-
-	static bool registered;
-
 	synfig::Surface	surface;
 
 public:
-	Target_LibAVCodec(const char *filename,
-					  const synfig::TargetParam& /* params */);
+	Target_LibAVCodec(
+		const char *filename,
+		const synfig::TargetParam &params );
 	virtual ~Target_LibAVCodec();
 
 	virtual bool init(synfig::ProgressCallback *cb);
