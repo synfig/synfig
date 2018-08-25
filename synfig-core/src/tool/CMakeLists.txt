@@ -21,10 +21,8 @@ target_sources(synfig_bin
 target_link_libraries(synfig_bin synfig)
 target_link_libraries(synfig_bin
     ${Boost_SYSTEM_LIBRARIES}
-#    ${Boost_FILESYSTEM_LIBRARIES}
     ${GIOMM_LIBRARIES}
     ${Boost_PROGRAM_OPTIONS_LIBRARIES}
-    ${Boost_CHRONO_LIBRARIES}
 )
 
 install (

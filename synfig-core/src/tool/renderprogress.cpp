@@ -22,6 +22,7 @@
 #include <iostream>
 #include "renderprogress.h"
 #include <boost/format.hpp>
+#include <sstream>
 
 RenderProgress::RenderProgress()
     : last_frame_(0), last_printed_line_length_(0),

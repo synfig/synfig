@@ -27,7 +27,7 @@
 
 #include <string>
 #include <iosfwd>
-#include <boost/chrono.hpp>
+#include <chrono>
 #include <synfig/progresscallback.h>
 #include "definitions.h"
 
@@ -51,8 +51,8 @@ private:
     int last_frame_;
     size_t last_printed_line_length_;
 
-    typedef boost::chrono::system_clock Clock;
-    typedef boost::chrono::duration<double> Duration;
+    typedef std::chrono::system_clock Clock;
+    typedef std::chrono::duration<double> Duration;
     Clock::time_point start_timepoint_;
     Clock::time_point last_timepoint_;
     double remaining_rendered_proportion_;

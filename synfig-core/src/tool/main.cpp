@@ -40,7 +40,6 @@
 #include <boost/program_options/variables_map.hpp>
 #include <boost/tokenizer.hpp>
 #include <boost/token_functions.hpp>
-#include <boost/filesystem.hpp>
 #include <boost/format.hpp>
 
 #include <glibmm.h>

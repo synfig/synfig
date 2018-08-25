@@ -202,8 +202,6 @@ elif which apt-get >/dev/null; then
                 libxml++2.6-dev \
                 libboost-program-options-dev \
                 libboost-system-dev \
-                libboost-filesystem-dev \
-                libboost-chrono-dev \
                 libmagick++-dev \
             "
         fi

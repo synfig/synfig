@@ -35,11 +35,10 @@
 #include <errno.h>
 #include <cstring>
 
-#include <boost/filesystem.hpp>
 #include <boost/program_options/options_description.hpp>
 #include <boost/program_options/variables_map.hpp>
 #include <boost/format.hpp>
-#include <boost/chrono.hpp>
+#include <chrono>
 
 #include <autorevision.h>
 #include <synfig/general.h>
@@ -255,8 +254,8 @@ void process_job (Job& job)
 	else
 	{
 		VERBOSE_OUT(1) << _("Rendering...") << std::endl;
-		boost::chrono::system_clock::time_point start_timepoint =
-            boost::chrono::system_clock::now();
+		std::chrono::system_clock::time_point start_timepoint =
+            std::chrono::system_clock::now();
 
 		// Call the render member of the target
 		if(!job.target->render(&p))
@@ -264,8 +263,8 @@ void process_job (Job& job)
 
 		if(SynfigToolGeneralOptions::instance()->should_print_benchmarks())
         {
-            boost::chrono::duration<double> duration =
-                boost::chrono::system_clock::now() - start_timepoint;
+            std::chrono::duration<double> duration =
+                std::chrono::system_clock::now() - start_timepoint;
 
             std::cout << job.filename.c_str()
                       << _(": Rendered in ")
