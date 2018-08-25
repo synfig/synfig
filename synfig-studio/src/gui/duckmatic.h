@@ -50,33 +50,7 @@
 
 /* === M A C R O S ========================================================= */
 
-#ifdef HASH_MAP_H
-#include HASH_MAP_H
-#include FUNCTIONAL_H
-
-#ifndef __STRING_HASH__
-#define __STRING_HASH__
-class StringHash
-{
-# ifdef FUNCTIONAL_HASH_ON_STRING
-	HASH_MAP_NAMESPACE::hash<synfig::String> hasher_;
-# else  // FUNCTIONAL_HASH_ON_STRING
-	HASH_MAP_NAMESPACE::hash<const char*> hasher_;
-# endif  // FUNCTIONAL_HASH_ON_STRING
-public:
-	size_t operator()(const synfig::String& x)const
-	{
-# ifdef FUNCTIONAL_HASH_ON_STRING
-		return hasher_(x);
-# else  // FUNCTIONAL_HASH_ON_STRING
-		return hasher_(x.c_str());
-# endif  // FUNCTIONAL_HASH_ON_STRING
-	}
-};
-#endif
-#else
 #include <map>
-#endif
 
 /* === T Y P E D E F S ===================================================== */
 
@@ -159,11 +133,7 @@ class Duckmatic
 
 public:
 
-#ifdef HASH_MAP_H
-typedef HASH_MAP_CLASS<synfig::GUID,etl::smart_ptr<synfig::Point>,synfig::GUIDHash> DuckDataMap;
-#else
-typedef std::map<synfig::GUID,etl::smart_ptr<synfig::Point> > DuckDataMap;
-#endif
+	typedef std::map<synfig::GUID,etl::smart_ptr<synfig::Point> > DuckDataMap;
 
 	typedef studio::DuckMap DuckMap;
 

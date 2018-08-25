@@ -35,22 +35,6 @@
 #include <glibmm/thread.h>
 #include <glibmm/dispatcher.h>
 
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
-
-#ifdef HAVE_SYS_TYPES_H
-#include <sys/types.h>
-#endif
-
-#ifdef HAVE_SYS_WAIT_H
-#include <sys/wait.h>
-#endif
-
-#ifdef HAVE_SIGNAL_H
-#include <signal.h>
-#endif
-
 #include <synfig/general.h>
 #include <synfig/context.h>
 #include <ETL/clock>

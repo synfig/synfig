@@ -145,10 +145,6 @@
 
 #include "ipc.h"
 
-#ifdef WITH_FMOD
-#include <fmod.h>
-#endif
-
 #include <gui/localization.h>
 
 #endif

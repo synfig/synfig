@@ -45,34 +45,7 @@
 
 /* === M A C R O S ========================================================= */
 
-#ifdef HASH_MAP_H
-#include HASH_MAP_H
-#include FUNCTIONAL_H
-
-#ifndef __STRING_HASH__
-#define __STRING_HASH__
-class StringHash
-{
-# ifdef FUNCTIONAL_HASH_ON_STRING
-	HASH_MAP_NAMESPACE::hash<synfig::String> hasher_;
-# else  // FUNCTIONAL_HASH_ON_STRING
-	HASH_MAP_NAMESPACE::hash<const char*> hasher_;
-# endif  // FUNCTIONAL_HASH_ON_STRING
-public:
-	size_t operator()(const synfig::String& x)const
-	{
-# ifdef FUNCTIONAL_HASH_ON_STRING
-		return hasher_(x);
-# else  // FUNCTIONAL_HASH_ON_STRING
-		return hasher_(x.c_str());
-# endif  // FUNCTIONAL_HASH_ON_STRING
-	}
-};
-#endif
-#else
 #include <map>
-#endif
-
 #include <set>
 
 /* === T Y P E D E F S ===================================================== */
@@ -487,16 +460,9 @@ inline Duck::Type
 operator&(const Duck::Type lhs, const Duck::Type rhs)
 { return static_cast<Duck::Type>(int(lhs)&int(rhs)); }
 
-class DuckMap : public
-#ifdef HASH_MAP_H
-HASH_MAP_CLASS<synfig::GUID,etl::handle<studio::Duck>,synfig::GUIDHash>
-{
-	typedef HASH_MAP_CLASS<synfig::GUID,etl::handle<studio::Duck>,synfig::GUIDHash> PARENT_TYPE;
-#else
-std::map<synfig::GUID,etl::handle<studio::Duck> >
+class DuckMap : public std::map<synfig::GUID,etl::handle<studio::Duck> >
 {
 	typedef std::map<synfig::GUID,etl::handle<studio::Duck> > PARENT_TYPE;
-#endif
 public:
 	void insert(const Duck::Handle& x) { operator[](x->get_guid())=x;  }
 }; // END of class DuckMap

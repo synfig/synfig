@@ -83,7 +83,6 @@ GREP=grep
 PRINTF=printf
 SH=sh
 DOXYGEN=doxygen
-#SVN_REPOSITORY=@SVN_REPOSITORY@
 
 SVN=svn
 TAG=@PACKAGE_TARNAME@_@VERSION_MAJ@_@VERSION_MIN@_@VERSION_REV@
@@ -96,23 +95,23 @@ stats:
 	-@echo  -- Stats
 	-@echo
 	-@$(PRINTF) "Total lines: "
-	-@wc -l $(shell find $(top_srcdir)/src -name '*.[ch]*' | $(GREP) -v libavcodec) | $(GREP) total
+	-@wc -l `shell find $(top_srcdir)/src -name '*.[ch]*' | $(GREP) -v libavcodec` | $(GREP) total
 	-@$(PRINTF) "Total size: "
-	-@du -hcs $(shell find $(top_srcdir)/src -name '*.[ch]*' | $(GREP) -v libavcodec) | $(GREP) total
+	-@du -hcs `shell find $(top_srcdir)/src -name '*.[ch]*' | $(GREP) -v libavcodec` | $(GREP) total
 	-@echo 
 
 listfixmes:
 	-@echo
 	-@echo  -- List of pending FIXMEs
 	-@echo
-	-@$(GREP) FIXME -n $(shell find $(top_srcdir) -name '*.[ch]*' | grep -v svn)
+	-@$(GREP) FIXME -n `shell find $(top_srcdir) -name '*.[ch]*' | grep -v svn`
 	-@echo
 
 listhacks:
 	-@echo
 	-@echo  -- List of pending HACKs
 	-@echo
-	-@$(GREP) HACK -n $(shell find $(top_srcdir) -name '*.[ch]*' | grep -v svn)
+	-@$(GREP) HACK -n `shell find $(top_srcdir) -name '*.[ch]*' | grep -v svn`
 	-@echo
 
 run: check

@@ -110,7 +110,6 @@ synfigstudio_LDADD = \
 	../synfigapp/libsynfigapp.la \
 	@SYNFIG_LIBS@ \
 	@GTKMM_LIBS@ \
-	@FMOD_LIBS@ \
 	@JACK_LIBS@
 
 synfigstudio_LDFLAGS = \
