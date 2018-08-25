@@ -166,6 +166,15 @@ Widget_NavView::on_drawto_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 	Real offx = 0.5*(drawto.get_width() - nw);
 	Real offy = 0.5*(drawto.get_height() - nh);
 
+	// draw background
+    cr->save();
+    cr->rectangle((int)offx, (int)offy, nw, nh);
+    cr->clip();
+	cr->translate(nw/2, nh/2);
+    cr->set_source(work_area->get_background_pattern());
+    cr->paint();
+    cr->restore();
+
 	// draw surface
 	cr->save();
 	cr->translate((int)offx, (int)offy);
@@ -176,7 +185,7 @@ Widget_NavView::on_drawto_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 	cr->paint();
 	cr->restore();
 
-	// draw fancy red rectangle around focus point
+	// draw fancy red rectangles around focus point and image
 	const Point &wtl = get_canvas_view()->get_work_area()->get_window_tl(),
 				&wbr = get_canvas_view()->get_work_area()->get_window_br();
 
@@ -201,8 +210,8 @@ Widget_NavView::on_drawto_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 	cr->set_antialias(Cairo::ANTIALIAS_NONE);
 	cr->set_source_rgb(1.0, 0.0, 0.0);
 	cr->rectangle(l, t, rw, rh);
+    cr->rectangle((int)offx, (int)offy, nw, nh);
 	cr->stroke();
-
 	cr->restore();
 
 	// draw everything else too
