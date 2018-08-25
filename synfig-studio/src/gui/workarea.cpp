@@ -854,34 +854,54 @@ WorkArea::set_grid_color(const synfig::Color &c)
 void
 WorkArea::set_background_size(const synfig::Vector &s)
 {
-	if (background_size != s)
-	{
-	   background_size = s;
-       save_meta_data();
-	}
+	if (background_size == s) return;
+	background_size = s;
+	background_pattern.clear();
+	save_meta_data();
 	queue_draw();
 }
 
 void
 WorkArea::set_background_first_color(const synfig::Color &c)
 {
-	if(background_first_color != c)
-	{
-		background_first_color = c;
-		save_meta_data();
-	}
+	if (background_first_color == c) return;
+	background_first_color = c;
+	background_pattern.clear();
+	save_meta_data();
 	queue_draw();
 }
 
 void
 WorkArea::set_background_second_color(const synfig::Color &c)
 {
-	if(background_second_color != c)
-	{
-		background_second_color = c;
-		save_meta_data();
-	}
+	if (background_second_color == c) return;
+	background_second_color = c;
+	background_pattern.clear();
+	save_meta_data();
 	queue_draw();
+}
+
+const Cairo::RefPtr<Cairo::SurfacePattern>&
+WorkArea::get_background_pattern() const
+{
+	if (!background_pattern) {
+		int w = std::max(1, std::min(1000, (int)round(background_size[0])));
+		int h = std::max(1, std::min(1000, (int)round(background_size[1])));
+	    Cairo::RefPtr<Cairo::ImageSurface> surface = Cairo::ImageSurface::create(Cairo::FORMAT_RGB24, w*2, h*2);
+	    Cairo::RefPtr<Cairo::Context> context = Cairo::Context::create(surface);
+	    context->set_source_rgb(background_first_color.get_r(), background_first_color.get_g(), background_first_color.get_b());
+	    context->paint();
+	    context->set_source_rgb(background_second_color.get_r(), background_second_color.get_g(), background_second_color.get_b());
+	    context->rectangle(w, 0, w, h);
+	    context->rectangle(0, h, w, h);
+	    context->fill();
+	    surface->flush();
+
+	    background_pattern = Cairo::SurfacePattern::create(surface);
+	    background_pattern->set_filter(Cairo::FILTER_NEAREST);
+	    background_pattern->set_extend(Cairo::EXTEND_REPEAT);
+	}
+	return background_pattern;
 }
 
 void

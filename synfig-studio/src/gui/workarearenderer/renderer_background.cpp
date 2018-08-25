@@ -56,20 +56,16 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 Renderer_Background::~Renderer_Background()
-{
-}
+	{ }
 
 bool
 Renderer_Background::get_enabled_vfunc()const
-{
-	return true;
-}
+	{ return true; }
 
 void
 Renderer_Background::render_vfunc(
-							const Glib::RefPtr<Gdk::Window>& drawable,
-							const Gdk::Rectangle& /*expose_area*/
-							)
+	const Glib::RefPtr<Gdk::Window>& drawable,
+	const Gdk::Rectangle& /*expose_area*/ )
 {
     assert(get_work_area());
     if(!get_work_area())
@@ -80,42 +76,10 @@ Renderer_Background::render_vfunc(
     int h=get_h();
 
     Cairo::RefPtr<Cairo::Context> cr = drawable->create_cairo_context();
-
-    synfig::Vector grid_size(get_work_area()->get_background_size());
-    Cairo::RefPtr<Cairo::Surface> surface_background = draw_check_pattern(grid_size[0], grid_size[1]);
-
     cr->save();
-
-    cr->set_source(surface_background, offset[0] + w/2, offset[1] - h/2);
-
-    Cairo::RefPtr<Cairo::SurfacePattern> sp_ptr = Cairo::SurfacePattern::create(surface_background);
-    sp_ptr->set_filter(Cairo::FILTER_NEAREST);
-    sp_ptr->set_extend(Cairo::EXTEND_REPEAT);
-
-    cr->set_source(sp_ptr);
-
+    cr->set_source(get_work_area()->get_background_pattern());
     cr->rectangle(offset[0], offset[1], w, h);
     cr->clip();
     cr->paint();
-
     cr->restore();
-}
-
-Cairo::RefPtr<Cairo::Surface>
-Renderer_Background::draw_check_pattern(int width, int height)
-{
-    Cairo::RefPtr<Cairo::Surface> surface_ptr =  Cairo::ImageSurface::create (Cairo::FORMAT_RGB24, width*2, height*2);
-    Cairo::RefPtr<Cairo::Context> cr_ptr = Cairo::Context::create (surface_ptr);
-
-    synfig::Color first_color(get_work_area()->get_background_first_color());
-    cr_ptr->set_source_rgb(first_color.get_r(), first_color.get_g(), first_color.get_b());
-    cr_ptr->paint();
-
-    synfig::Color second_color(get_work_area()->get_background_second_color());
-    cr_ptr->set_source_rgb(second_color.get_r(), second_color.get_g(), second_color.get_b());
-    cr_ptr->rectangle(int(width), 0 , width, height);
-    cr_ptr->rectangle(0, int(height), width , height);
-    cr_ptr->fill();
-
-    return surface_ptr;
 }

@@ -63,6 +63,7 @@ using namespace studio;
 Widget_CanvasTimeslider::Widget_CanvasTimeslider():
 	tooltip(Gtk::WINDOW_POPUP)
 {
+	thumb.signal_draw().connect(sigc::mem_fun(*this, &Widget_CanvasTimeslider::draw_thumb));
 	thumb.show();
 
 	tooltip.set_type_hint(Gdk::WINDOW_TYPE_HINT_TOOLTIP);
@@ -93,6 +94,10 @@ Widget_CanvasTimeslider::set_canvas_view(const CanvasView::LooseHandle &x)
 void
 Widget_CanvasTimeslider::show_tooltip(const synfig::Point &p, const synfig::Point &root)
 {
+	thumb_background.clear();
+	thumb_surface.clear();
+
+	Cairo::RefPtr<Cairo::SurfacePattern> pattern;
 	Cairo::RefPtr<Cairo::ImageSurface> surface;
 	if ( get_width()
 	  && adj_timescale
@@ -110,11 +115,11 @@ Widget_CanvasTimeslider::show_tooltip(const synfig::Point &p, const synfig::Poin
 			synfig::Time time(x/w*(end - start) + start);
 			time = time.round(fps);
 			surface = canvas_view->get_work_area()->get_renderer_canvas()->get_thumb(time);
+			pattern = canvas_view->get_work_area()->get_background_pattern();
 		}
 	}
 
-	thumb.set(surface);
-	if (surface && get_screen() && get_width() > 0) {
+	if (pattern && surface && get_screen() && get_width() > 0) {
 		const int space = 20;
 		int tooltip_w = surface->get_width();
 		int tooltip_h = surface->get_height();
@@ -142,6 +147,10 @@ Widget_CanvasTimeslider::show_tooltip(const synfig::Point &p, const synfig::Poin
 		}
 
 		if (visible) {
+			thumb_background = pattern;
+			thumb_surface = surface;
+			thumb.set_size_request(thumb_surface->get_width(), thumb_surface->get_height());
+			thumb.queue_draw();
 			tooltip.set_screen(get_screen());
 			tooltip.move(x, y);
 			tooltip.show();
@@ -188,6 +197,25 @@ Widget_CanvasTimeslider::on_leave_notify_event(GdkEventCrossing*)
 	return true;
 }
 
+bool
+Widget_CanvasTimeslider::draw_thumb(const Cairo::RefPtr<Cairo::Context> &cr)
+{
+	if (!thumb_background || !thumb_surface)
+		return false;
+
+	cr->save();
+	cr->translate(tooltip.get_width()/2, tooltip.get_height()/2);
+	cr->set_source(thumb_background);
+	cr->paint();
+	cr->restore();
+
+	cr->save();
+	cr->set_source(thumb_surface, 0, 0);
+	cr->paint();
+	cr->restore();
+
+	return true;
+}
 
 void
 Widget_CanvasTimeslider::draw_background(const Cairo::RefPtr<Cairo::Context> &cr)

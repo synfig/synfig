@@ -40,16 +40,12 @@ namespace studio {
 	
 class Renderer_Background : public studio::WorkAreaRenderer
 {
-private:
-    Cairo::RefPtr<Cairo::Surface> draw_check_pattern(int width, int height);
+protected:
+    bool get_enabled_vfunc()const;
 
 public:
     ~Renderer_Background();
-			
     void render_vfunc(const Glib::RefPtr<Gdk::Window>& drawable,const Gdk::Rectangle& expose_area	);
-	
-protected:
-    bool get_enabled_vfunc()const;
 };
 	
 }; // END of namespace studio

@@ -27,7 +27,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/image.h>
+#include <gtkmm/drawingarea.h>
 
 #include "widget_timeslider.h"
 
@@ -49,10 +49,13 @@ protected:
 	etl::loose_handle<CanvasView> canvas_view;
 	etl::handle<LockDucks> lock_ducks;
 	Gtk::Window tooltip;
-	Gtk::Image thumb;
+	Gtk::DrawingArea thumb;
+	Cairo::RefPtr<Cairo::SurfacePattern> thumb_background;
+	Cairo::RefPtr<Cairo::ImageSurface> thumb_surface;
 
 	virtual void draw_background(const Cairo::RefPtr<Cairo::Context> &cr);
 
+	bool draw_thumb(const Cairo::RefPtr<Cairo::Context> &cr);
 	void show_tooltip(const synfig::Point &p, const synfig::Point &root);
 
 	virtual bool on_motion_notify_event(GdkEventMotion* event);
