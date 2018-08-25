@@ -2,7 +2,7 @@
 
 # -- I N I T --------------------------------------------------
 
-AC_PREREQ([2.69])
+AC_PREREQ([2.59])
 AC_INIT([Synfig Studio],[1.3.10],[https://github.com/synfig/synfig/issues],[synfigstudio])
 AM_CONDITIONAL(DEVELOPMENT_SNAPSHOT, true)
 AC_REVISION()

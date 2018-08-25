@@ -2,6 +2,7 @@
 
 # -- I N I T --------------------------------------------------
 
+AC_PREREQ([2.59])
 AC_INIT([Synfig Core],[1.3.10],[https://github.com/synfig/synfig/issues],[synfig])
 AC_REVISION
 
@@ -181,13 +182,15 @@ AM_CONDITIONAL(WITH_LIBDV, test $with_libdv = yes)
 # LIBAVCODEC CHECK--------------------
 
 AC_ARG_WITH(libavcodec,
-	AS_HELP_STRING(--with-libavcodec, [support libavcodec (default=no)]),[
+	AS_HELP_STRING(--without-libavcodec, [do not support libavcodec]),[
 ],[
-	with_libavcodec="no"
+	with_libavcodec="yes"
 ])
 
 if test $with_libavcodec != "no" ; then {
-	PKG_CHECK_MODULES(LIBAVCODEC, [libavcodec libavformat],[],[echo no; with_libavcodec="no"])
+	PKG_CHECK_MODULES(LIBAVCODEC, [libavcodec >= 51.42 libavformat >= 54.0 libswscale >= 2.1.2],
+		[CONFIG_DEPS="$CONFIG_DEPS libavcodec libavformat libswscale"],
+		[echo no; with_libavcodec="no"])
 } ; fi
 if test $with_libavcodec = "yes" ; then {
 	AC_DEFINE(WITH_LIBAVCODEC,[],[enable libavcodec support])
@@ -196,52 +199,25 @@ if test $with_libavcodec = "yes" ; then {
 	AM_CONDITIONAL(WITH_LIBAVCODEC,false)
 } ; fi
 
-
 if test $with_libavcodec = "yes" ; then {
-
-	# Need to check both the new and old locations for the avformat header
-	# Need to save flags, add avformat flags, check headers and restore flags
+	# save flags
 	ac_save_CPPFLAGS="$CPPFLAGS"
 	ac_save_CFLAGS="$CFLAGS"
-	CPPFLAGS="${CPPFLAGS} ${LIBAVCODEC_CFLAGS}"
-	CFLAGS="${CFLAGS} ${LIBAVCODEC_CFLAGS}"
+
+	# Need to check both the new and old locations for the avformat header
+	CPPFLAGS="${ac_save_CPPFLAGS} ${LIBAVCODEC_CFLAGS}"
+	CFLAGS="${ac_save_CFLAGS} ${LIBAVCODEC_CFLAGS}"
 	AC_CHECK_HEADERS(libavformat/avformat.h avformat.h ffmpeg/avformat.h)
+
+	# Need to check both the new and old locations for the swscale header
+	CPPFLAGS="${ac_save_CPPFLAGS} ${LIBSWSCALE_CFLAGS}"
+	CFLAGS="${ac_save_CFLAGS} ${LIBSWSCALE_CFLAGS}"
+	AC_CHECK_HEADERS(libswscale/swscale.h swscale.h ffmpeg/swscale.h)
+
+	# restore flags
 	CPPFLAGS="${ac_save_CPPFLAGS}"
 	CFLAGS="${ac_save_CFLAGS}"
-
-	AC_ARG_WITH(libswscale,
-		[AS_HELP_STRING([--without-libswscale],
-			[do not support libswscale (default=auto)])],
-		[],
-		[with_libswscale="yes"]
-	)
-
-	if test $with_libswscale != "no" ; then {
-		PKG_CHECK_MODULES(LIBSWSCALE, [libswscale], [], [echo no; with_libswscale="no"])
-	} ; fi
-
-	if test $with_libswscale = "yes" ; then {
-		AC_DEFINE(WITH_LIBSWSCALE, [], [enable libswscale support])
-		CONFIG_DEPS="$CONFIG_DEPS libswscale"
-
-		# Need to check both the new and old locations for the swscale header
-		# Need to save flags, add swscale flags, check headers and restore flags
-		ac_save_CPPFLAGS="$CPPFLAGS"
-		ac_save_CFLAGS="$CFLAGS"
-		CPPFLAGS="${CPPFLAGS} ${LIBSWSCALE_CFLAGS}"
-		CFLAGS="${CFLAGS} ${LIBSWSCALE_CFLAGS}"
-		AC_CHECK_HEADERS(libswscale/swscale.h swscale.h ffmpeg/swscale.h)
-		CPPFLAGS="${ac_save_CPPFLAGS}"
-		CFLAGS="${ac_save_CFLAGS}"
-	} else {
-		AC_CHECK_LIB(avcodec, img_convert,
-			[AC_MSG_RESULT([ *** Using deprecated function img_convert.])],
-			[AC_MSG_FAILURE([Neither libswscale nor function img_convert was found.])],
-			[]
-		)
-	} ; fi
 } ; fi
-AM_CONDITIONAL(WITH_LIBSWSCALE, test "x$with_libswscale" = "xyes")
 
 
 # FREETYPE2 CHECK--------------------
@@ -812,7 +788,6 @@ ETL_CFLAGS -----------------------> $ETL_CFLAGS
 FreeType2 ------------------------> $with_freetype
 fontconfig -----------------------> $with_fontconfig
 libavcodec -----------------------> $with_libavcodec
-libswscale -----------------------> $with_libswscale
 vImage ---------------------------> $with_vimage
 ImageMagick ----------------------> $with_imagemagick
 Magick++ -------------------------> $with_magickpp

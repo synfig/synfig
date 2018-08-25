@@ -27,14 +27,12 @@ libmod_libavcodec_la_LDFLAGS = \
 libmod_libavcodec_la_CXXFLAGS = \
 	@SYNFIG_CFLAGS@ \
 	@LIBAVCODEC_CFLAGS@ \
-	@LIBSWSCALE_CFLAGS@ \
 	-D__STDC_CONSTANT_MACROS
 
 libmod_libavcodec_la_LIBADD = \
 	../../synfig/libsynfig.la \
 	@SYNFIG_LIBS@ \
-	@LIBAVCODEC_LIBS@ \
-	@LIBSWSCALE_LIBS@
+	@LIBAVCODEC_LIBS@
 
 endif
 
