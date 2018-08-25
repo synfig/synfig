@@ -62,10 +62,10 @@ public:
 	Mlt::Profile profile;
 	Mlt::Producer *last_track;
 	Mlt::Consumer *consumer;
+	bool playing;
 	Time position;
 
-	void clear()
-	{
+	void clear() {
 		if (last_track != NULL) { delete last_track; last_track = NULL; }
 		if (consumer != NULL) { consumer->stop(); delete consumer; consumer = NULL; }
 		stack.clear();
@@ -80,19 +80,14 @@ bool SoundProcessor::Internal::initialized = false;
 
 SoundProcessor::SoundProcessor()
 {
-	if (!Internal::initialized)
-	{
-		Mlt::Factory::init();
-		Internal::initialized = true;
-	}
+	assert(Internal::initialized);
 	internal = new Internal();
 }
+
 SoundProcessor::~SoundProcessor() { delete internal; }
 
 void SoundProcessor::clear()
-{
-	internal->clear();
-}
+	{ internal->clear(); }
 
 void SoundProcessor::beginGroup(const PlayOptions &playOptions)
 {
@@ -166,36 +161,27 @@ Time SoundProcessor::get_position() const
 
 void SoundProcessor::set_position(Time value)
 {
-	if (internal->last_track != NULL)
-	{
+	if (internal->last_track != NULL) {
 		internal->last_track->seek( (int)round(value*internal->profile.fps()) );
 		internal->last_track->set_speed(1.0);
 	}
 }
 
 bool SoundProcessor::get_playing() const
-{
-	return internal->consumer != NULL;
-}
+	{ return internal->playing; }
 
 void SoundProcessor::set_playing(bool value)
 {
-	if (value)
-	{
-		if (internal->consumer == NULL)
-		{
+	if (value == internal->playing) return;
+	internal->playing = value;
+	if (internal->playing) {
+		if (internal->last_track != NULL) {
 			internal->consumer = new Mlt::Consumer(internal->profile, "sdl_audio");
-			if (internal->last_track != NULL)
-			{
-				internal->consumer->connect(*internal->last_track);
-				internal->consumer->start();
-			}
+			internal->consumer->connect(*internal->last_track);
+			internal->consumer->start();
 		}
-	}
-	else
-	{
-		if (internal->consumer != NULL)
-		{
+	} else {
+		if (internal->consumer) {
 			internal->consumer->stop();
 			delete internal->consumer;
 			internal->consumer = NULL;
@@ -203,8 +189,14 @@ void SoundProcessor::set_playing(bool value)
 	}
 }
 
-bool SoundProcessor::subsys_init() { return Mlt::Factory::init(); }
-bool SoundProcessor::subsys_stop() { return true; }
+bool SoundProcessor::subsys_init() {
+	if (!Internal::initialized)
+		Internal::initialized = Mlt::Factory::init();
+	return Internal::initialized;
+}
+
+bool SoundProcessor::subsys_stop()
+	{ return true; }
 
 
 /* === E N T R Y P O I N T ================================================= */
