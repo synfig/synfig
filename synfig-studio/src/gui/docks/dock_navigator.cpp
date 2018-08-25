@@ -60,25 +60,6 @@ using namespace studio;
 
 /* === P R O C E D U R E S ================================================= */
 
-namespace {
-	class IntLock {
-	private:
-		int &counter;
-	public:
-		IntLock(int &counter): counter(counter) { ++counter; }
-		~IntLock() { --counter; }
-	};
-
-	// zoom slider is on exponential scale
-	// map: -4,4 -> small number,1600 with 100 at 0
-	// f(x) = 100*2^x
-	double unit_to_zoom(double f)
-		{ return pow(2.0, f); }
-
-	double zoom_to_unit(double f)
-		{ return approximate_greater_lp(f, 0.0) ? log(f)/log(2.0) : -999999.0; }
-}
-
 /* === M E T H O D S ======================================================= */
 
 /* === E N T R Y P O I N T ================================================= */
@@ -189,6 +170,8 @@ Widget_NavView::on_drawto_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 	cr->save();
 	cr->translate((int)offx, (int)offy);
 	cr->scale(nw/(Real)w, nh/(Real)h);
+	cr->rectangle(0.0, 0.0, w, h);
+	cr->clip();
 	cr->set_source(surface, 0.0, 0.0);
 	cr->paint();
 	cr->restore();
@@ -229,10 +212,17 @@ Widget_NavView::on_drawto_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 void
 Widget_NavView::on_number_modify()
 {
-	double z = unit_to_zoom(adj_zoom->get_value());
+	// zoom slider is on exponential scale
+	// map: -4,4 -> small number,1600 with 100 at 0
+	// f(x) = 100*2^x
+	double z = pow(2.0, adj_zoom->get_value());
 	zoom_print.set_text(etl::strprintf("%.1f%%", z*100.0));
 	if(get_canvas_view() && z != get_canvas_view()->get_work_area()->get_zoom()) {
-		IntLock lock(scrolling);
+		struct Lock {
+			int &i;
+			Lock(int &i): i(i) { ++i; }
+			~Lock() { --i; }
+		} lock(scrolling);
 		get_canvas_view()->get_work_area()->set_zoom(z);
 	}
 }
@@ -240,8 +230,9 @@ Widget_NavView::on_number_modify()
 void
 Widget_NavView::on_view_window_changed()
 {
+	// inverted calculations of on_number_modify()
 	double wz = get_canvas_view()->get_work_area()->get_zoom();
-	double z = zoom_to_unit(wz);
+	double z = approximate_greater_lp(wz, 0.0) ? log(wz)/log(2.0) : -999999.0;
 	if (!scrolling && z != adj_zoom->get_value())
 		adj_zoom->set_value(z);
 	queue_draw();
