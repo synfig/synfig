@@ -437,8 +437,9 @@ void
 synfig::error(const char *format,...)
 {
 	va_list args;
-	va_start(args,format);
-	error(vstrprintf(format,args));
+	va_start(args, format);
+	error(vstrprintf(format, args));
+	va_end(args);
 }
 
 void
@@ -455,6 +456,7 @@ synfig::warning(const char *format,...)
 	va_list args;
 	va_start(args,format);
 	warning(vstrprintf(format,args));
+	va_end(args);
 }
 
 void
@@ -469,8 +471,9 @@ void
 synfig::info(const char *format,...)
 {
 	va_list args;
-	va_start(args,format);
-	info(vstrprintf(format,args));
+	va_start(args, format);
+	info(vstrprintf(format, args));
+	va_end(args);
 }
 
 void

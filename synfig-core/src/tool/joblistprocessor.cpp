@@ -37,7 +37,7 @@
 
 #include <boost/program_options/options_description.hpp>
 #include <boost/program_options/variables_map.hpp>
-#include <boost/format.hpp>
+//#include <boost/format.hpp>
 #include <chrono>
 
 #include <autorevision.h>
@@ -165,10 +165,11 @@ bool setup_job(Job& job, const TargetParam& target_parameters)
 	// az: fixme
 	if (access(get_absolute_path(job.outfilename + "/../").c_str(), W_OK) == -1)
 	{
-	    const std::string message =
+	    /*const std::string message =
             (boost::format(_("Unable to create output for \"%s\": %s"))
                            % job.filename % strerror(errno)).str();
-		synfig::error(message.c_str());
+		synfig::error(message.c_str());*/
+		synfig::error(_("Unable to create output for \"%s\": %s"), job.filename, strerror(errno));
 		synfig::error(_("Throwing out job..."));
 		return false;
 	}
@@ -185,12 +186,14 @@ bool setup_job(Job& job, const TargetParam& target_parameters)
 	{
 		if(!job.target)
 		{
-		    const std::string message =
+		    /*const std::string message =
                 (boost::format(_("Unknown target for \"%s\": %s"))
                                % job.filename % strerror(errno)).str();
-		    synfig::error(message.c_str());
-                    synfig::error(_("Throwing out job..."));
-                    return false;
+		    synfig::error(message.c_str());*/
+
+			synfig::error(_("Unknown target for \"%s\": %s"), job.filename, strerror(errno));
+			synfig::error(_("Throwing out job..."));
+			return false;
 		}
 
 		job.sifout=false;
@@ -222,7 +225,10 @@ bool setup_job(Job& job, const TargetParam& target_parameters)
 void process_job (Job& job)
 {
 	VERBOSE_OUT(3) << job.filename.c_str() << " -- " << std::endl;
-	VERBOSE_OUT(3) << '\t'
+	synfig::info("\tw: %d, h: %d, a: %d, pxaspect: %f, imaspect: %f, span: %f", 
+		job.desc.get_w(), job.desc.get_h(), job.desc.get_antialias(),
+		job.desc.get_pixel_aspect(), job.desc.get_image_aspect(), job.desc.get_span());
+	/*VERBOSE_OUT(3) << '\t'
 				   << boost::format("w:%d, h:%d, a:%d, pxaspect:%f, imaspect:%f, span:%f")
                                     % job.desc.get_w()
                                     % job.desc.get_h()
@@ -230,9 +236,15 @@ void process_job (Job& job)
                                     % job.desc.get_pixel_aspect()
                                     % job.desc.get_image_aspect()
                                     % job.desc.get_span()
-                    << std::endl;
+                    << std::endl;*/
 
-	VERBOSE_OUT(3) << '\t'
+	synfig::info("\ttl: [%f,%f], br: [%f,%f], focus: [%f,%f]",
+				job.desc.get_tl()[0], job.desc.get_tl()[1],
+				job.desc.get_br()[0], job.desc.get_br()[1],
+				job.desc.get_focus()[0], job.desc.get_focus()[1]
+	);
+
+	/*VERBOSE_OUT(3) << '\t'
 				   << boost::format("tl:[%f,%f], br:[%f,%f], focus:[%f,%f]")
                                     % job.desc.get_tl()[0]
                                     % job.desc.get_tl()[1]
@@ -240,7 +252,7 @@ void process_job (Job& job)
                                     % job.desc.get_br()[1]
                                     % job.desc.get_focus()[0]
                                     % job.desc.get_focus()[1]
-                    << std::endl;
+                    << std::endl;*/
 
 	RenderProgress p;
 	p.task(job.filename + " ==> " + job.outfilename);

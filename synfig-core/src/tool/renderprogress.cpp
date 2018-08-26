@@ -21,7 +21,8 @@
 #include <cmath>
 #include <iostream>
 #include "renderprogress.h"
-#include <boost/format.hpp>
+//#include <boost/format.hpp>
+#include <ETL/stringf>
 #include <sstream>
 
 RenderProgress::RenderProgress()
@@ -74,8 +75,8 @@ bool RenderProgress::amount_complete(int current_frame, int frames_count)
         }
 
         outputStream << "\r"
-                     << boost::format(_("%1%: Frame %2% of %3% (%4%%%). Remaining time: "))
-                        % taskname_ % current_frame % frames_count % percentage_completed;
+                     << etl::strprintf(_("%s: Frame %d of %d (%d%%). Remaining time: "), 
+                        taskname_, current_frame, frames_count, percentage_completed);
 
         if (current_frame != last_frame_)
         {

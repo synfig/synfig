@@ -30,7 +30,7 @@
 #endif
 
 #include <iostream>
-#include <boost/format.hpp>
+//#include <boost/format.hpp>
 
 #include <autorevision.h>
 #include <synfig/general.h>
@@ -339,23 +339,28 @@ RendDesc OptionsProcessor::extract_renddesc(const RendDesc& renddesc)
 		int a;
 		a = _vm["antialias"].as<int>();
 		desc.set_antialias(a);
-		VERBOSE_OUT(1) << boost::format(_("Antialiasing set to %d, "
+		synfig::info(_("Antialiasing set to %d, "
+					"(%d samples per pixel)"), a, (a*a));
+		/*VERBOSE_OUT(1) << boost::format(_("Antialiasing set to %d, "
 										  "(%d samples per pixel)")) % a % (a*a)
-						<< std::endl;
+						<< std::endl;*/
 	}
 	if (_vm.count("span"))
 	{
 	    span = _vm["span"].as<int>();
-		VERBOSE_OUT(1) << boost::format(_("Span set to %d units")) % span
-                       << std::endl;
+		synfig::info(_("Span set to %d units"), span);
+		/*VERBOSE_OUT(1) << boost::format(_("Span set to %d units")) % span
+                       << std::endl;*/
 	}
 	if (_vm.count("fps"))
 	{
 		float fps;
 		fps = _vm["fps"].as<float>();
 		desc.set_frame_rate(fps);
-		VERBOSE_OUT(1) << boost::format(_("Frame rate set to %d frames per "
-										   "second")) % fps << std::endl;
+		synfig::info(_("Frame rate set to %d frames per "
+										   "second"), fps);
+		/*VERBOSE_OUT(1) << boost::format(_("Frame rate set to %d frames per "
+										   "second")) % fps << std::endl;*/
 	}
 	if (_vm.count("dpi"))
 	{
@@ -364,8 +369,10 @@ RendDesc OptionsProcessor::extract_renddesc(const RendDesc& renddesc)
 		dots_per_meter = dpi * 39.3700787402;
 		desc.set_x_res(dots_per_meter);
 		desc.set_y_res(dots_per_meter);
-		VERBOSE_OUT(1) << boost::format(_("Physical resolution set to %f "
-                                          "dpi")) % dpi << std::endl;
+		synfig::info(_("Physical resolution set to %f "
+                                          "dpi"), dpi);
+		/*VERBOSE_OUT(1) << boost::format(_("Physical resolution set to %f "
+                                          "dpi")) % dpi << std::endl;*/
 	}
 	if (_vm.count("dpi-x"))
 	{
@@ -373,8 +380,10 @@ RendDesc OptionsProcessor::extract_renddesc(const RendDesc& renddesc)
 		dpi = _vm["dpi-x"].as<float>();
 		dots_per_meter = dpi * 39.3700787402;
 		desc.set_x_res(dots_per_meter);
-		VERBOSE_OUT(1) << boost::format(_("Physical X resolution set to %f "
-										  "dpi")) % dpi << std::endl;
+		synfig::info(_("Physical X resolution set to %f "
+										  "dpi"), dpi);
+		/*VERBOSE_OUT(1) << boost::format(_("Physical X resolution set to %f "
+										  "dpi")) % dpi << std::endl;*/
 	}
 	if (_vm.count("dpi-y"))
 	{
@@ -382,8 +391,10 @@ RendDesc OptionsProcessor::extract_renddesc(const RendDesc& renddesc)
 		dpi = _vm["dpi-y"].as<float>();
 		dots_per_meter = dpi * 39.3700787402;
 		desc.set_y_res(dots_per_meter);
-		VERBOSE_OUT(1) << boost::format(_("Physical Y resolution set to %f "
-                                          "dpi")) % dpi << std::endl;
+		synfig::info(_("Physical Y resolution set to %f "
+                                          "dpi"), dpi);
+		/*VERBOSE_OUT(1) << boost::format(_("Physical Y resolution set to %f "
+                                          "dpi")) % dpi << std::endl;*/
 	}
 	if (_vm.count("start-time"))
 	{
@@ -426,8 +437,7 @@ RendDesc OptionsProcessor::extract_renddesc(const RendDesc& renddesc)
 			h = desc.get_h() * w / desc.get_w();
 
 		desc.set_wh(w, h);
-		VERBOSE_OUT(1) << boost::format(_("Resolution set to %dx%d.")) % w % h
-                       << std::endl;
+		VERBOSE_OUT(1) << etl::strprintf(_("Resolution set to %dx%d."), w, h) << std::endl;
 	}
 
 	if(span)
@@ -469,12 +479,10 @@ TargetParam OptionsProcessor::extract_targetparam()
 		if (!found)
 		{
 		    throw SynfigToolException(SYNFIGTOOL_UNKNOWNARGUMENT,
-                                      (boost::format(_("Video codec \"%s\" is not supported."))
-                                                      % params.video_codec).str());
+                                      etl::strprintf(_("Video codec \"%s\" is not supported."), params.video_codec));
 		}
 
-		VERBOSE_OUT(1) << _("Target video codec set to: ") << params.video_codec
-                       << std::endl;
+		VERBOSE_OUT(1) << _("Target video codec set to: ") << params.video_codec << std::endl;
 	}
 	if(_vm.count("video-bitrate"))
 	{
@@ -529,7 +537,7 @@ Job OptionsProcessor::extract_job()
 		if(!job.canvas)
 		{
 		    throw SynfigToolException(SYNFIGTOOL_FILENOTFOUND,
-                                      (boost::format(_("Unable to load file '%s'.")) % job.filename).str());
+                                      etl::strprintf(_("Unable to load file '%s'."), job.filename));
 		}
 
 		job.root->set_time(0);
@@ -581,16 +589,16 @@ Job OptionsProcessor::extract_job()
 		catch(Exception::IDNotFound&)
 		{
 			throw SynfigToolException(SYNFIGTOOL_INVALIDJOB,
-                    (boost::format(_("Unable to find canvas with ID \"%s\" in %s.\n"
-                                     "Throwing out job..."))
-                                   % canvasid % job.filename).str());
+					etl::strprintf(_("Unable to find canvas with ID \"%s\" in %s.\n"
+                                    "Throwing out job..."), 
+									canvasid, job.filename));
 		}
 		catch(Exception::BadLinkName&)
 		{
 		    throw SynfigToolException(SYNFIGTOOL_INVALIDJOB,
-                    (boost::format(_("Invalid canvas name \"%s\" in %s.\n"
-                                     "Throwing out job..."))
-                                   % canvasid % job.filename).str());
+                    etl::strprintf(_("Invalid canvas name \"%s\" in %s.\n"
+                                    "Throwing out job..."),
+                                   	canvasid, job.filename)); // FIXME: is here must be canvasid nor canvasname?
 		}
 
 		// Later we need to set the other parameters for the jobs
