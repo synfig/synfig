@@ -484,7 +484,7 @@ Blur_Layer::build_composite_fork_task_vfunc(ContextParams /* context_params */, 
 	rendering::TaskBlur::Handle task_blur(new rendering::TaskBlur());
 	task_blur->blur.size = size;
 	task_blur->blur.type = type;
-	task_blur->sub_task() = sub_task->clone_recursive();
+	task_blur->sub_task() = sub_task ? sub_task->clone_recursive() : rendering::Task::Handle();
 
 	return task_blur;
 }
