@@ -169,7 +169,7 @@ bool setup_job(Job& job, const TargetParam& target_parameters)
             (boost::format(_("Unable to create output for \"%s\": %s"))
                            % job.filename % strerror(errno)).str();
 		synfig::error(message.c_str());*/
-		synfig::error(_("Unable to create output for \"%s\": %s"), job.filename, strerror(errno));
+		synfig::error(_("Unable to create output for \"%s\": %s"), job.filename.c_str(), strerror(errno));
 		synfig::error(_("Throwing out job..."));
 		return false;
 	}
@@ -191,7 +191,7 @@ bool setup_job(Job& job, const TargetParam& target_parameters)
                                % job.filename % strerror(errno)).str();
 		    synfig::error(message.c_str());*/
 
-			synfig::error(_("Unknown target for \"%s\": %s"), job.filename, strerror(errno));
+			synfig::error(_("Unknown target for \"%s\": %s"), job.filename.c_str(), strerror(errno));
 			synfig::error(_("Throwing out job..."));
 			return false;
 		}

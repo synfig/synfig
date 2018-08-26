@@ -479,7 +479,7 @@ TargetParam OptionsProcessor::extract_targetparam()
 		if (!found)
 		{
 		    throw SynfigToolException(SYNFIGTOOL_UNKNOWNARGUMENT,
-                                      etl::strprintf(_("Video codec \"%s\" is not supported."), params.video_codec));
+                                      etl::strprintf(_("Video codec \"%s\" is not supported."), params.video_codec.c_str()));
 		}
 
 		VERBOSE_OUT(1) << _("Target video codec set to: ") << params.video_codec << std::endl;
@@ -537,7 +537,7 @@ Job OptionsProcessor::extract_job()
 		if(!job.canvas)
 		{
 		    throw SynfigToolException(SYNFIGTOOL_FILENOTFOUND,
-                                      etl::strprintf(_("Unable to load file '%s'."), job.filename));
+                                      etl::strprintf(_("Unable to load file '%s'."), job.filename.c_str()));
 		}
 
 		job.root->set_time(0);
@@ -591,14 +591,14 @@ Job OptionsProcessor::extract_job()
 			throw SynfigToolException(SYNFIGTOOL_INVALIDJOB,
 					etl::strprintf(_("Unable to find canvas with ID \"%s\" in %s.\n"
                                     "Throwing out job..."), 
-									canvasid, job.filename));
+									canvasid.c_str(), job.filename.c_str()));
 		}
 		catch(Exception::BadLinkName&)
 		{
 		    throw SynfigToolException(SYNFIGTOOL_INVALIDJOB,
                     etl::strprintf(_("Invalid canvas name \"%s\" in %s.\n"
                                     "Throwing out job..."),
-                                   	canvasid, job.filename)); // FIXME: is here must be canvasid nor canvasname?
+                                   	canvasid.c_str(), job.filename.c_str())); // FIXME: is here must be canvasid nor canvasname?
 		}
 
 		// Later we need to set the other parameters for the jobs

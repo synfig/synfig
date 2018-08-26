@@ -76,7 +76,7 @@ bool RenderProgress::amount_complete(int current_frame, int frames_count)
 
         outputStream << "\r"
                      << etl::strprintf(_("%s: Frame %d of %d (%d%%). Remaining time: "), 
-                        taskname_, current_frame, frames_count, percentage_completed);
+                        taskname_.c_str(), current_frame, frames_count, percentage_completed);
 
         if (current_frame != last_frame_)
         {
