@@ -50,5 +50,5 @@ matrix:
     script: autobuild/osx/brew/synfigstudio-osx-build.sh
     after_script: ccache -s # show ccache stats
     
-  allow_failures:
-    - os: osx
+  #allow_failures:
+  #  - os: osx
