@@ -13,6 +13,8 @@ SCRIPT_PATH=$(cd `dirname "$0"`; pwd)
 
 MAKE_THREADS=2
 MAKE_OPTIONS="-j$MAKE_THREADS --silent LIBTOOLFLAGS=--silent"
+export CFLAGS="-fdiagnostics-color=always $CFLAGS"
+export CXXFLAGS="-fdiagnostics-color=always $CXXFLAGS"
 #CONFIGURE_FLAGS="--enable-optimization=0"
 
 set -e
