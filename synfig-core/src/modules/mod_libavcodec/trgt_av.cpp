@@ -157,66 +157,29 @@ void free_picture(AVFrame *pic)
 //the frame must be RGB24
 static void convert_surface_frame(AVFrame *pic, const Surface &s, const Gamma &gamma)
 {
-	unsigned int j;
-	Surface::const_pen p = s.begin();
-	unsigned int w,h;
-	Color c;
+        unsigned int j;
+        Surface::const_pen p = s.begin();
+        unsigned int w,h;
+        Color c;
 
-	uint8_t *ptr;
-	int stride;
+        uint8_t *ptr;
+        int stride;
 
-	w = s.size().x;
-	h = s.size().y;
+        w = s.size().x;
+        h = s.size().y;
 
-	ptr = pic->data[0];
-	stride = pic->linesize[0];
+        ptr = pic->data[0];
+        stride = pic->linesize[0];
 
-	for(j = 0; j < h; j++, p.inc_y(), ptr += stride)
-	{
-		uint8_t *tptr = ptr;
-
-		//use color_to_pixelformat instead...
-		#if 0
-		const int channels = 3;
-
-		for(int i = 0; i < w; i++, p.inc_x(), tptr += channels)
-		{
-			c = p.get_value();
-
-			Color::value_type r = c.get_r();
-			Color::value_type g = c.get_g();
-			Color::value_type b = c.get_b();
-			Color::value_type a = c.get_a();
-
-			//premultiply alpha
-			r *= a;
-			g *= a;
-			b *= a;
-
-			//essentially treats it as if it has a background color of black
-
-			//we must also clamp the rgb values [0,1]
-			r = min(1.0f,r);
-			g = min(1.0f,g);
-			b = min(1.0f,b);
-
-			r = max(0.0f,r);
-			g = max(0.0f,g);
-			b = max(0.0f,b);
-
-			//now scale to range of char [0,255]
-			tptr[0] = (int)(r*255);
-			tptr[1] = (int)(g*255);
-			tptr[2] = (int)(b*255);
-		}
-
-		p.dec_x(w);
-		#else
-
-		color_to_pixelformat((unsigned char *)tptr, &p.get_value(), PF_RGB, &gamma(), w);
-
-		#endif
-	}
+        color_to_pixelformat(
+                (unsigned char *)ptr,
+                s[0],
+                PF_RGB,
+                &gamma,
+                w,
+                h,
+                stride,
+                s.get_pitch() );
 }
 
 //Audio Streamer (abstracts the open, write and close operations for audio streams)
