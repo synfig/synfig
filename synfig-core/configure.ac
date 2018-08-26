@@ -771,7 +771,7 @@ AC_OUTPUT
 echo "
 $PACKAGE_NAME v.$VERSION
 Configuration Summary
-- - - - - -
+- - - - - - - - - - - - - - - - - -
 
 Install Prefix -------------------> $prefix
 Module directory -----------------> $moduledir
@@ -796,7 +796,7 @@ OpenGL ---------------------------> $with_opengl
 OpenCL ---------------------------> $with_opencl
 libdv ----------------------------> $with_libdv
 OpenEXR --------------------------> $with_openexr
-Using OpenEXR's \"half\" type ------> $use_openexr_half
+Using OpenEXR's \"half\" type ----> $use_openexr_half
 
 "'$'"CXX -----------------------------> '$CXX'
 "'$'"CXXFLAGS ------------------------> '$CXXFLAGS'

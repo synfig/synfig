@@ -96,9 +96,9 @@ stats:
 	-@echo  -- Stats
 	-@echo
 	-@$(PRINTF) "Total lines: "
-	-@wc -l $(shell find $(top_srcdir)/src -name '*.[ch]*') | $(GREP) total
+	-@wc -l `shell find $(top_srcdir)/src -name '*.[ch]*'` | $(GREP) total
 	-@$(PRINTF) "Total size: "
-	-@du -hcs $(shell find $(top_srcdir)/src -name '*.[ch]*') | $(GREP) total
+	-@du -hcs `shell find $(top_srcdir)/src -name '*.[ch]*'` | $(GREP) total
 	-@echo 
 
 ChangeLog:
@@ -108,35 +108,35 @@ listfixmes:
 	-@echo
 	-@echo  -- List of pending FIXMEs
 	-@echo
-	-@$(GREP) -e FIXME -e "\\fixme" -n $(shell find $(top_srcdir) -name '*.[ch]*')
+	-@$(GREP) -e FIXME -e "\\fixme" -n `shell find $(top_srcdir) -name '*.[ch]*'`
 	-@echo
 
 listhacks:
 	-@echo
 	-@echo  -- List of pending HACKs
 	-@echo
-	-@$(GREP) -e HACK -e "\\hack" -n $(shell find $(top_srcdir) -name '*.[ch]*')
+	-@$(GREP) -e HACK -e "\\hack" -n `shell find $(top_srcdir) -name '*.[ch]*'`
 	-@echo
 
 listtodos:
 	-@echo
 	-@echo  -- List of pending TODOs
 	-@echo
-	-@$(GREP) -e TODO -e "\\todo" -n $(shell find $(top_srcdir) -name '*.[ch]*')
+	-@$(GREP) -e TODO -e "\\todo" -n `shell find $(top_srcdir) -name '*.[ch]*'`
 	-@echo
 
 listoptimizes:
 	-@echo
 	-@echo  -- List of pending optimizations
 	-@echo
-	-@$(GREP) -e OPTIMIZE -e "\\optimize" -n $(shell find $(top_srcdir) -name '*.[ch]*')
+	-@$(GREP) -e OPTIMIZE -e "\\optimize" -n `shell find $(top_srcdir) -name '*.[ch]*'`
 	-@echo
 
 listwritemes:
 	-@echo
 	-@echo  -- List of pending WRITEMEs
 	-@echo
-	-@$(GREP) -e WRITEME -e "\\writeme" -n $(shell find $(top_srcdir) -name '*.[ch]*')
+	-@$(GREP) -e WRITEME -e "\\writeme" -n `shell find $(top_srcdir) -name '*.[ch]*'`
 	-@echo
 
 install-bin:
