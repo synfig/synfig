@@ -58,12 +58,6 @@ extern bool cairorender(Context context, cairo_t* cr, const RendDesc &desc, Prog
 
 extern bool parametric_render(Context context, Surface &surface, const RendDesc &desc,ProgressCallback *);
 
-extern bool render_threaded(	Context context,
-	Target_Scanline::Handle target,
-	const RendDesc &desc,
-	ProgressCallback *callback,
-	int threads);
-
 }; /* end namespace synfig */
 
 /* -- E N D ----------------------------------------------------------------- */

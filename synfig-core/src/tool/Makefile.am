@@ -35,7 +35,6 @@ synfig_SOURCES = \
 synfig_LDADD = \
 	../synfig/libsynfig.la \
 	@SYNFIG_LIBS@ \
-	@OPENEXR_HALF_LIBS@ \
 	@BOOST_LDFLAGS@ \
 	@BOOST_PROGRAM_OPTIONS_LIB@ \
 	@BOOST_SYSTEM_LIB@

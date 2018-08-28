@@ -150,7 +150,6 @@ Layer_Composite::accelerated_render(Context context,Surface *surface,int quality
 
 	// Render the scene
 	return render(Context(image.begin(),context),target,desc,&stagetwo);
-	//return render_threaded(Context(image.begin()),target,desc,&stagetwo,2);
 }
 
 

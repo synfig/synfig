@@ -35,11 +35,7 @@
 #include "node.h"
 // #include "nodebase.h"		// this defines a bunch of sigc::slots that are never used
 
-#ifdef HASH_MAP_H
-#include HASH_MAP_H
-#else
-#include <map>
-#endif
+#include <unordered_map>
 
 #endif
 
@@ -82,11 +78,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-#ifdef HASH_MAP_H
-typedef HASH_MAP_CLASS<synfig::GUID,Node*,GUIDHash> GlobalNodeMap;
-#else
-typedef map<synfig::GUID,Node*> GlobalNodeMap;
-#endif
+typedef std::unordered_map<synfig::GUID,Node*> GlobalNodeMap;
 
 //! A map to store all the GUIDs with a pointer to the Node.
 static GlobalNodeMap* global_node_map_;

@@ -4,7 +4,7 @@
 
 AC_PREREQ([2.59])
 AC_INIT([Synfig Core],[1.3.10],[https://github.com/synfig/synfig/issues],[synfig])
-AC_REVISION
+AC_REVISION()
 
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_HEADERS([config.h])
@@ -17,19 +17,13 @@ AC_LIBLTDL_CONVENIENCE
 AC_SUBST(INCLTDL)
 AC_SUBST(LIBLTDL)
 
-API_VERSION=1.0
-
-
 AC_DEFINE(LT_SCOPE,[extern],[LibLTDL is linked staticly])
-
-
-
 
 # -- V A R I A B L E S ----------------------------------------
 
-SVN_REPOSITORY=https://synfig.svn.sourceforge.net/svnroot/synfig/synfig-core
-AC_SUBST(SVN_REPOSITORY)
-
+API_VERSION=1.0
+MODULE_DIR='${libdir}/synfig/modules'
+SYNFIGLIB_DIR=${libdir}/synfig
 
 # -- P R O G R A M S ------------------------------------------
 
@@ -291,9 +285,6 @@ if test $with_openexr = "no" ; then {
 if test $use_openexr_half = yes ; then {
 	AC_MSG_RESULT([ ** Using OpenEXR Half.])
 	CONFIG_CFLAGS="$CONFIG_CFLAGS -DUSE_HALF_TYPE"
-	OPENEXR_HALF_LIBS="-lHalf"
-} else {
-	OPENEXR_HALF_LIBS=""
 } ; fi
 
 
@@ -530,98 +521,8 @@ if test $with_jpeg = "yes" ; then {
 } ; fi
 
 
-
-MODULE_DIR='${libdir}/synfig/modules'
-moduledir=$libdir/synfig/modules
 AC_SUBST(MODULE_DIR)
-SYNFIGLIB_DIR=$libdir/synfig
 AC_SUBST(SYNFIGLIB_DIR)
-
-# Check for unordered_map or hash_map headers
-AC_MSG_CHECKING([for unordered_map<int,int>::const_iterator])
-AC_COMPILE_IFELSE([
-	AC_LANG_PROGRAM([
-		[#include <unordered_map>]
-	],[
-		[std::unordered_map<int,int>::const_iterator iter;]
-	])],[
-	AC_MSG_RESULT([yes])
-	AC_DEFINE([HASH_MAP_CLASS],[HASH_MAP_NAMESPACE::unordered_map],[The template name for unordered maps.])
-	AC_DEFINE([HASH_MAP_H],[<unordered_map>],[The header file to include for unordered maps.])
-	AC_DEFINE([HASH_MAP_NAMESPACE],[std],[The namespace for unordered maps.])
-	AC_DEFINE([FUNCTIONAL_H],[<functional>],[The header file for hash<T>.])
-	AC_DEFINE([FUNCTIONAL_HASH_ON_STRING],[1],[Define to 1 if hash<T> needs to use T=String rather than T=char* to hash strings.])
-],[
-	AC_MSG_RESULT([no])
-	AC_MSG_CHECKING([for tr1/unordered_map<int,int>::const_iterator])
-	AC_COMPILE_IFELSE([
-		AC_LANG_PROGRAM([
-			[#include <tr1/unordered_map>]
-		],[
-			[std::tr1::unordered_map<int,int>::const_iterator iter;]
-		])],[
-		AC_MSG_RESULT([yes])
-		AC_DEFINE([HASH_MAP_CLASS],[HASH_MAP_NAMESPACE::unordered_map],[The template name for unordered maps.])
-		AC_DEFINE([HASH_MAP_H],[<tr1/unordered_map>],[The header file to include for unordered maps.])
-		AC_DEFINE([HASH_MAP_NAMESPACE],[std::tr1],[The namespace for unordered maps.])
-		AC_DEFINE([FUNCTIONAL_H],[<tr1/functional>],[The header file for hash<T>.])
-		AC_DEFINE([FUNCTIONAL_HASH_ON_STRING],[1],[Define to 1 if hash<T> needs to use T=String rather than T=char* to hash strings.])
-	],[
-		AC_MSG_RESULT([no])
-		AC_CHECK_HEADERS([ext/hash_map],[
-			AC_DEFINE([HASH_MAP_CLASS],[HASH_MAP_NAMESPACE::hash_map],[The template name for unordered maps.])
-			AC_DEFINE([HASH_MAP_H],[<ext/hash_map>],[The header file to include for unordered maps.])
-			AC_DEFINE([HASH_MAP_NAMESPACE],[__gnu_cxx],[The namespace for unordered maps.])
-			AC_DEFINE([FUNCTIONAL_H],[<ext/functional>],[The header file for hash<T>.])
-		],[
-			AC_MSG_ERROR([C++ compiler does not seem to support unordered containers])
-		])
-	])
-])
-
-# Check for unordered_set or hash_set headers
-AC_MSG_CHECKING([for unordered_set<int,int>::const_iterator])
-AC_COMPILE_IFELSE([
-	AC_LANG_PROGRAM([
-		[#include <unordered_set>]
-	],[
-		[std::unordered_set<int,int>::const_iterator iter;]
-	])],[
-	AC_MSG_RESULT([yes])
-	AC_DEFINE([HASH_SET_CLASS],[HASH_SET_NAMESPACE::unordered_set],[The template name for unordered sets.])
-	AC_DEFINE([HASH_SET_H],[<unordered_set>],[The header file to include for unordered sets.])
-	AC_DEFINE([HASH_SET_NAMESPACE],[std],[The namespace for unordered sets.])
-],[
-	AC_MSG_RESULT([no])
-	AC_MSG_CHECKING([for tr1/unordered_set<int,int>::const_iterator])
-	AC_COMPILE_IFELSE([
-		AC_LANG_PROGRAM([
-			[#include <tr1/unordered_set>]
-		],[
-			[std::tr1::unordered_set<int,int>::const_iterator iter;]
-		])],[
-		AC_MSG_RESULT([yes])
-		AC_DEFINE([HASH_SET_CLASS],[HASH_SET_NAMESPACE::unordered_set],[The template name for unordered sets.])
-		AC_DEFINE([HASH_SET_H],[<tr1/unordered_set>],[The header file to include for unordered sets.])
-		AC_DEFINE([HASH_SET_NAMESPACE],[std::tr1],[The namespace for unordered sets.])
-	],[
-		AC_MSG_RESULT([no])
-		AC_CHECK_HEADERS([ext/hash_set],[
-			AC_DEFINE([HASH_SET_CLASS],[HASH_SET_NAMESPACE::hash_set],[The template name for unordered sets.])
-			AC_DEFINE([HASH_SET_H],[<ext/hash_set>],[The header file to include for unordered sets.])
-			AC_DEFINE([HASH_SET_NAMESPACE],[__gnu_cxx],[The namespace for unordered sets.])
-		],[
-			AC_MSG_ERROR([C++ compiler does not seem to support unordered containers])
-		])
-	])
-])
-
-
-
-
-
-AC_CHECK_HEADERS(signal.h termios.h sys/errno.h)
-
 
 case "$host" in
 	*mingw* | *cygwin*)
@@ -643,48 +544,16 @@ esac
 # -- H E A D E R S --------------------------------------------
 
 AC_HEADER_SYS_WAIT
-AC_CHECK_HEADERS([process.h io.h fcntl.h])
+AC_CHECK_HEADERS([signal.h termios.h process.h io.h fcntl.h])
 
 # -- T Y P E S & S T R U C T S --------------------------------
 
 # -- F U N C T I O N S ----------------------------------------
 
 AC_CHECK_FUNCS([fork])
-AC_CHECK_FUNCS([kill])
 AC_CHECK_FUNCS([pipe])
 AC_CHECK_FUNCS([waitpid])
-
-AC_CHECK_FUNCS(
-	[isnan],
-	[],
-	[
-		AC_CHECK_FUNCS(
-			[_isnan]
-		)
-	]
-)
-
-AC_CHECK_FUNCS(
-	[isnanf],
-	[],
-	[
-		AC_CHECK_FUNCS(
-			[_isnanf]
-		)
-	]
-)
-
-AC_CHECK_FUNCS(
-	[floorl],
-	[],
-	[
-		AC_CHECK_FUNCS(
-			[_floorl]
-		)
-	]
-)
-
-AC_CHECK_LIB([pthread],[pthread_create])
+AC_CHECK_LIB([pthread],[pthread_create]) # TODO: used for deprecated synfig::Mutex only
 
 # -- O U T P U T ----------------------------------------------
 
@@ -717,7 +586,6 @@ AC_SUBST(LIBADD_DL)
 
 AC_SUBST(SYNFIG_LIBS)
 AC_SUBST(SYNFIG_CFLAGS)
-AC_SUBST(OPENEXR_HALF_LIBS)
 
 AC_SUBST(API_VERSION)
 
@@ -774,7 +642,7 @@ Configuration Summary
 - - - - - - - - - - - - - - - - - -
 
 Install Prefix -------------------> $prefix
-Module directory -----------------> $moduledir
+Module directory -----------------> $MODULE_DIR
 Build Platform -------------------> $build
 Host Platform --------------------> $host
 Arc Profiling --------------------> $profile_arcs

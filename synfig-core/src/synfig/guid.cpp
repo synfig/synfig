@@ -43,11 +43,6 @@
 #include <synfig/localization.h>
 #endif
 
-#ifdef HASH_MAP_H
-#include HASH_MAP_H
-#include FUNCTIONAL_H
-#endif
-
 #ifdef _WIN32
 #include <windows.h>
 #endif
@@ -146,7 +141,6 @@ synfig::GUID::make_unique()
 synfig::GUID
 synfig::GUID::hasher(const String& str)
 {
-#ifdef HASH_MAP_H
 	/* http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2003/n1456.html says:
 	 *
 	 *   "Some earlier hash table implementations gave char* special
@@ -157,21 +151,8 @@ synfig::GUID::hasher(const String& str)
 	 * Unfortunately, the older implementation doesn't seem to want to
 	 * accept Strings, so we're left with this conditional compilation.
 	 */
-# ifdef FUNCTIONAL_HASH_ON_STRING
-	HASH_MAP_NAMESPACE::hash<String> string_hash_;
+	std::hash<String> string_hash_;
 	const unsigned int seed(string_hash_(str));
-# else  // FUNCTIONAL_HASH_ON_STRING
-	HASH_MAP_NAMESPACE::hash<const char*> string_hash_;
-	const unsigned int seed(string_hash_(str.c_str()));
-# endif  // FUNCTIONAL_HASH_ON_STRING
-#else  // HASH_MAP_H
-	unsigned int seed(0x3B642879);
-	for(unsigned int i=0;i<str.size();i++)
-	{
-		seed^=(seed*str[i])*i;
-		seed=(seed>>(32-(i%24)))^(seed<<(i%24));
-	}
-#endif  // HASH_MAP_H
 
 	GUID_RNG random(seed);
 	GUID ret(0);

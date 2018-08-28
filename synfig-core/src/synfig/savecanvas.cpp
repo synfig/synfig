@@ -31,10 +31,6 @@
 #	include <config.h>
 #endif
 
-#ifdef HAVE_SYS_ERRNO_H
-#	include <sys/errno.h>
-#endif
-
 #include "savecanvas.h"
 #include "general.h"
 #include <synfig/localization.h>
@@ -69,7 +65,6 @@
 #include <libxml++/libxml++.h>
 #include <ETL/stringf>
 #include "gradient.h"
-#include <errno.h>
 
 extern "C" {
 #include <libxml/tree.h>

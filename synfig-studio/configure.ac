@@ -4,8 +4,9 @@
 
 AC_PREREQ([2.59])
 AC_INIT([Synfig Studio],[1.3.10],[https://github.com/synfig/synfig/issues],[synfigstudio])
-AM_CONDITIONAL(DEVELOPMENT_SNAPSHOT, true)
 AC_REVISION()
+
+AM_CONDITIONAL(DEVELOPMENT_SNAPSHOT, true)
 
 AC_CONFIG_AUX_DIR([config])
 AC_CONFIG_HEADERS([config.h])
@@ -14,9 +15,9 @@ AC_CANONICAL_HOST
 AM_INIT_AUTOMAKE([subdir-objects])
 AM_MAINTAINER_MODE
 
-API_VERSION=1.0
-
 # -- V A R I A B L E S ----------------------------------------
+
+API_VERSION=1.0
 
 imageext=png
 imagedir="${datadir}/pixmaps/synfigstudio"

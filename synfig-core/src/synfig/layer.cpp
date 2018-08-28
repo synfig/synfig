@@ -851,7 +851,6 @@ Layer::accelerated_render(Context context,Surface *surface,int quality, const Re
 	--context;
 
 	return render(context,target,desc,cb);
-	//return render_threaded(context,target,desc,cb,2);
 }
 
 

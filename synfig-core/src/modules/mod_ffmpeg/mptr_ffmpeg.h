@@ -35,7 +35,6 @@
 #include "string.h"
 #ifdef HAVE_TERMIOS_H
 #include <termios.h>
-
 #endif
 
 #include <synfig/surface.h>
