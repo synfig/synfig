@@ -54,9 +54,7 @@ private:
 	Imf::RgbaOutputFile *exr_file;
 	Imf::Rgba *buffer;
 	etl::surface<Imf::Rgba> out_surface;
-#ifndef USE_HALF_TYPE
 	synfig::Color *buffer_color;
-#endif
 
 	bool ready();
 	synfig::String sequence_separator;

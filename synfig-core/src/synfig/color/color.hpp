@@ -35,9 +35,6 @@
 #include <synfig/angle.h>
 
 
-#ifdef USE_HALF_TYPE
-#include <OpenEXR/half.h>
-#endif
 #ifdef USING_PCH
 #	include "pch.h"
 #else
@@ -165,23 +162,6 @@ Color::Color(const Color& c):
 	g_(c.g_),
 	b_(c.b_),
 	a_(c.a_) { }
-
-#ifdef USE_HALF_TYPE
-	friend class ColorAccumulator;
-	//!	Convert constructor
-	Color(const ColorAccumulator& c);
-#endif
-
-	//!	Copy constructor
-	//Color(const Color &c) { memcpy((void*)this, (const void*)&c, sizeof(Color)); }
-
-	/*const Color &operator=(const value_type &i)
-	{
-		r_ = g_ = b_ = a_ = i;
-		return *this;
-	}*/
-	//Color& operator=(const Color &c) { memcpy((void*)this, (const void*)&c, sizeof(Color)); return *this; }
-
 
 const String Color::get_hex()const
 {
@@ -312,24 +292,6 @@ Color& Color::set_yuv(const float& y, const float& s, const Angle& theta)
 Color Color::YUV(const float& y, const float& s, const Angle& theta, const value_type& a)
 	{ return Color().set_yuv(y,s,theta).set_a(a); }
 
-
-
-/*protected:
-
-	value_type& operator[](const int i)
-	{
-		assert(i>=0);
-		assert(i<(signed)(sizeof(Color)/sizeof(value_type)));
-		return (&r_)[i];
-	}
-
-	const value_type& operator[](const int i)const
-	{
-		assert(i>=0);
-		assert(i<(signed)(sizeof(Color)/sizeof(value_type)));
-		return (&r_)[i];
-	}
-*/
 
 } // synfig namespace
 

@@ -83,16 +83,6 @@ AC_CHECK_LIB(c, dlopen,
 
 AC_SUBST(DYNAMIC_LD_LIBS)
 
-AC_ARG_ENABLE(half,
-	AS_HELP_STRING(--enable-half, [use OpenEXR "half" type for color]),[
-	use_openexr_half=$enableval
-],
-[
-	use_openexr_half="no"
-])
-
-
-
 AC_ARG_ENABLE(layer-profiling,
 	AS_HELP_STRING(--enable-layer-profiling, [enable layer profiling]),[
 	use_layerprofiling=$enableval
@@ -270,22 +260,13 @@ AC_ARG_WITH(openexr,
 ])
 if test $with_openexr = "yes" ; then {
 	PKG_CHECK_MODULES(OPENEXR, OpenEXR,[
-		AC_DEFINE(HAVE_OPENEXR,[], [ Define if OpenEXR is available ] )
-		AM_CONDITIONAL(WITH_OPENEXR,true)
 		CONFIG_DEPS="$CONFIG_DEPS OpenEXR"
 	],
 	[
 		with_openexr="no"
 	])
 } ; fi
-if test $with_openexr = "no" ; then {
-	AM_CONDITIONAL(WITH_OPENEXR,false)
-	use_openexr_half="no"
-} ; fi
-if test $use_openexr_half = yes ; then {
-	AC_MSG_RESULT([ ** Using OpenEXR Half.])
-	CONFIG_CFLAGS="$CONFIG_CFLAGS -DUSE_HALF_TYPE"
-} ; fi
+AM_CONDITIONAL(WITH_OPENEXR, test $with_openexr = yes)
 
 
 # JPEG CHECK (commandline switch) ------------------------
@@ -664,7 +645,6 @@ OpenGL ---------------------------> $with_opengl
 OpenCL ---------------------------> $with_opencl
 libdv ----------------------------> $with_libdv
 OpenEXR --------------------------> $with_openexr
-Using OpenEXR's \"half\" type ----> $use_openexr_half
 
 "'$'"CXX -----------------------------> '$CXX'
 "'$'"CXXFLAGS ------------------------> '$CXXFLAGS'

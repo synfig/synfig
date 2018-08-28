@@ -55,21 +55,9 @@ inline CairoColor::CairoColor(const CairoColorAccumulator& c)
 
 }
 
-#ifdef USE_HALF_TYPE
-#include <synfig/color/coloraccumulator.h>
-
-namespace synfig {
-inline Color::Color(const ColorAccumulator& c):
-	a_(c.a_),
-	r_(c.r_),
-	g_(c.g_),
-	b_(c.b_) { }
-}
-#else
 namespace synfig {
 typedef Color ColorAccumulator;
 }
-#endif
 
 #include <synfig/color/pixelformat.h>
 

@@ -98,22 +98,6 @@ public:
 	//! Convert from CairoColor to Color
 	inline Color(const CairoColor& c);
 	
-#ifdef USE_HALF_TYPE
-	friend class ColorAccumulator;
-	//!	Convert constructor
-	inline Color(const ColorAccumulator& c);
-#endif
-
-	//!	Copy constructor
-	//Color(const Color &c) { memcpy((void*)this, (const void*)&c, sizeof(Color)); }
-
-	/*const Color &operator=(const value_type &i)
-	{
-		r_ = g_ = b_ = a_ = i;
-		return *this;
-	}*/
-	//Color& operator=(const Color &c) { memcpy((void*)this, (const void*)&c, sizeof(Color)); return *this; }
-
 	//! Returns the RED component
 	const value_type& get_r()const { return r_; }
 
@@ -345,23 +329,6 @@ public:
 	//! a blending method is considered 'straight' if transparent pixels in the upper layer can affect the result of the blend
 	static bool is_straight(BlendMethod x)
 		{ return BLEND_METHODS_STRAIGHT & (1 << x); }
-
-/*protected:
-
-	value_type& operator[](const int i)
-	{
-		assert(i>=0);
-		assert(i<(signed)(sizeof(Color)/sizeof(value_type)));
-		return (&r_)[i];
-	}
-
-	const value_type& operator[](const int i)const
-	{
-		assert(i>=0);
-		assert(i<(signed)(sizeof(Color)/sizeof(value_type)));
-		return (&r_)[i];
-	}
-*/
 }; // END of class Color
 
 } // synfig namespace

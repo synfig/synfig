@@ -67,11 +67,8 @@ exr_trgt::exr_trgt(const char *Filename, const synfig::TargetParam &params):
 	scanline(),
 	filename(Filename),
 	exr_file(NULL),
-	buffer(NULL)
-#ifndef USE_HALF_TYPE
-	,
+	buffer(NULL),
 	buffer_color(NULL)
-#endif
 {
 	// OpenEXR uses linear gamma
 	gamma().set_gamma(1.0);
@@ -80,13 +77,9 @@ exr_trgt::exr_trgt(const char *Filename, const synfig::TargetParam &params):
 
 exr_trgt::~exr_trgt()
 {
-	if(exr_file)
-		delete exr_file;
-
+	if(exr_file) delete exr_file;
 	if(buffer) delete [] buffer;
-#ifndef USE_HALF_TYPE
 	if(buffer_color) delete [] buffer_color;
-#endif
 }
 
 bool
@@ -125,10 +118,8 @@ exr_trgt::start_frame(synfig::ProgressCallback *cb)
 		if(cb)cb->task(filename);
 	}
 	exr_file=new Imf::RgbaOutputFile(frame_name.c_str(),w,h,Imf::WRITE_RGBA,desc.get_pixel_aspect());
-#ifndef USE_HALF_TYPE
 	if(buffer_color) delete [] buffer_color;
 	buffer_color=new Color[w];
-#endif
 	//if(buffer) delete [] buffer;
 	//buffer=new Imf::Rgba[w];
 	out_surface.set_wh(w,h);
@@ -156,12 +147,7 @@ Color *
 exr_trgt::start_scanline(int i)
 {
 	scanline=i;
-#ifndef USE_HALF_TYPE
 	return reinterpret_cast<Color *>(buffer_color);
-#else
-	return reinterpret_cast<Color *>(out_surface[scanline]);
-//	return reinterpret_cast<unsigned char *>(buffer);
-#endif
 }
 
 bool
@@ -170,7 +156,6 @@ exr_trgt::end_scanline()
 	if(!ready())
 		return false;
 
-#ifndef USE_HALF_TYPE
 	int i;
 	for(i=0;i<desc.get_w();i++)
 	{
@@ -182,7 +167,6 @@ exr_trgt::end_scanline()
 		rgba.b=color.get_b();
 		rgba.a=color.get_a();
 	}
-#endif
 
     //exr_file->setFrameBuffer(buffer,1,desc.get_w());
 	//exr_file->writePixels(1);

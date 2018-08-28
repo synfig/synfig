@@ -35,10 +35,6 @@
 #include <list>
 #include "interpolation.h"
 
-#ifdef USE_HALF_TYPE
-#include <OpenEXR/half.h>
-#endif
-
 #include <ETL/ref_count>
 
 /* === M A C R O S ========================================================= */

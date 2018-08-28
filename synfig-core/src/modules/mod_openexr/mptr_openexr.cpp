@@ -77,13 +77,6 @@ exr_mptr::get_frame(synfig::Surface &out_surface, const synfig::RendDesc &/*rend
     //int dx = in.dataWindow().min.x;
     //int dy = in.dataWindow().min.y;
 
-#ifdef USE_HALF_TYPE
-    out_surface.set_wh(w,h);
-	in.setFrameBuffer (reinterpret_cast<Imf::Rgba *>(out_surface[0]), 1, w);
-
-	in.readPixels (in.dataWindow().min.y, in.dataWindow().max.y);
-
-#else
 	etl::surface<Imf::Rgba> in_surface;
 	in_surface.set_wh(w,h);
 	in.setFrameBuffer (reinterpret_cast<Imf::Rgba *>(in_surface[0]), 1, w);
@@ -103,7 +96,6 @@ exr_mptr::get_frame(synfig::Surface &out_surface, const synfig::RendDesc &/*rend
 			color.set_b(rgba.b);
 			color.set_a(rgba.a);
 		}
-#endif
 	}
 	catch (const std::exception& e)
     {

@@ -36,10 +36,6 @@
 #include <synfig/string.h>
 #include <synfig/angle.h>
 
-#ifdef USE_HALF_TYPE
-#include <OpenEXR/half.h>
-#endif
-
 /* === M A C R O S ========================================================= */
 
 #define use_colorspace_gamma()	App::use_colorspace_gamma
@@ -49,11 +45,7 @@
 
 namespace synfig {
 
-#ifdef USE_HALF_TYPE
-typedef half ColorReal;
-#else
 typedef float ColorReal;
-#endif
 
 static const float EncodeYUV[3][3]=
 {
