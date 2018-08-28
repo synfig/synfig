@@ -312,10 +312,10 @@ Layer_Shade::accelerated_render(Context context,Surface *surface,int quality, co
 		//be sure the surface is of the correct size
 		surface->set_wh(renddesc.get_w(),renddesc.get_h());
 
-		int u = halfsizex-(origin_u<0?origin_u:0), v = halfsizey-(origin_v<0?origin_v:0);
+		int v = halfsizey-(origin_v<0?origin_v:0);
 		for(y=0;y<renddesc.get_h();y++,v++)
 		{
-			u = halfsizex-(origin_u<0?origin_u:0);
+			int u = halfsizex-(origin_u<0?origin_u:0);
 			for(x=0;x<renddesc.get_w();x++,u++)
 			{
 				Color a(color);
@@ -385,10 +385,10 @@ Layer_Shade::accelerated_render(Context context,Surface *surface,int quality, co
 		Blur(size,type,&stagetwo)(blurred,workdesc.get_br()-workdesc.get_tl(),blurred);
 
 
-		int u = halfsizex-(origin_u<0?origin_u:0), v = halfsizey-(origin_v<0?origin_v:0);
+		int v = halfsizey-(origin_v<0?origin_v:0);
 		for(y=0;y<renddesc.get_h();y++,v++)
 		{
-			u = halfsizex-(origin_u<0?origin_u:0);
+			int u = halfsizex-(origin_u<0?origin_u:0);
 			for(x=0;x<renddesc.get_w();x++,u++)
 			{
 				Color a(color);

@@ -147,25 +147,22 @@ struct ipoint
 	{
 		ipoint *search = this;
 
-		if(*i < *this)
+		if (*i < *this)
 		{
 			//we go forward
-			search = this;
 			do
 			{
 				search = search->next;
-			}while(*i < *search && search != this); //ending conditions...
+			} while (*i < *search && search != this); //ending conditions...
 
 			//now we insert previously...
 			search->insert_before(i);
-		}else if(*i > *this)
-		{
+		} else if (*i > *this) {
 			//we go backwards...
-			search = this;
 			do
 			{
 				search = search->prev;
-			}while(*i > *search && search != this); //ending conditions...
+			} while (*i > *search && search != this); //ending conditions...
 
 			//now we insert previously...
 			search->insert_after(i);

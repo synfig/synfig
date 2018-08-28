@@ -579,22 +579,20 @@ Instance::backup()
 {
 	if (!get_action_count())
 		return true;
-	bool success = true;
 	FileSystemTemporary::Handle temporary_filesystem = FileSystemTemporary::Handle::cast_dynamic(get_canvas()->get_file_system());
-	if (success && !temporary_filesystem)
+
+	if (!temporary_filesystem)
 	{
 		warning("Cannot backup, canvas was not attached to temporary file system: %s", get_file_name().c_str());
-		success = false;
 		return false;
 	}
 	// don't save images while backup
 	//if (success)
 	//	save_all_layers();
-	if (success)
-		success = save_canvas(get_canvas()->get_identifier(), get_canvas(), false);
-	if (success)
-		success = temporary_filesystem->save_temporary();
-	return success;
+	if (!save_canvas(get_canvas()->get_identifier(), get_canvas(), false))
+		return false;
+	
+	return temporary_filesystem->save_temporary();
 }
 
 bool

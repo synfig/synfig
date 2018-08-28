@@ -377,7 +377,7 @@ FileSystemTemporary::save_changes(
 		{
 			if (!remove_files)
 				file_system->file_remove(i->second.tmp_filename);
-			processed = true;
+				
 			files.erase(i++);
 		}
 		else i++;

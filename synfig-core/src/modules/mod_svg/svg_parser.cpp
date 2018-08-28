@@ -1675,11 +1675,8 @@ Svg_parser::newSVGMatrix(const String mvector){
 }
 void
 Svg_parser::transformPoint2D(SVGMatrix *mtx,float *a,float *b){
-	float auxa,auxb;
-	auxa=0;
-	auxb=0;
-	auxa= (*a)*(mtx->a) + (*b)*(mtx->c) + (mtx->e);
-	auxb= (*a)*(mtx->b) + (*b)*(mtx->d) + (mtx->f);
+	float auxa= (*a)*(mtx->a) + (*b)*(mtx->c) + (mtx->e);
+	float auxb= (*a)*(mtx->b) + (*b)*(mtx->d) + (mtx->f);
 	*a=auxa;
 	*b=auxb;
 	return;

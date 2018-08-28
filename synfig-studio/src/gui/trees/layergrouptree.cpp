@@ -127,8 +127,10 @@ LayerGroupTree::set_model(Glib::RefPtr<LayerGroupTreeStore> layer_group_tree_sto
 
 	Gtk::TreeView::Column* column = get_column(2);
 	if (column)
+	{
 		column->set_sort_column(layer_group_tree_store_->model.label);
-	column->clicked();
+		column->clicked();
+	}
 }
 
 void

@@ -209,10 +209,10 @@ bool Widget_Timeslider::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 
 	std::vector<double> ranges;
 
-	unsigned int pos = 0;
+	//unsigned int pos = 0;
 
 	// build a list of all the factors of the frame rate
-	for (int i = 1; i*i <= ifps; i++)
+	for (int i = 1, pos = 0; i*i <= ifps; i++)
 		if ((ifps%i) == 0)
 		{
 			ranges.insert(ranges.begin()+pos, i/fps);
@@ -223,8 +223,8 @@ bool Widget_Timeslider::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 
 	// fill in any gaps where one factor is more than 2 times the previous
 	std::vector<double>::iterator iter, next;
-	pos = 0;
-	for (pos = 0; pos < ranges.size()-1; pos++)
+	
+	for (unsigned int pos = 0; pos < ranges.size()-1; pos++)
 	{
 		iter = ranges.begin()+pos;
 		next = iter+1;

@@ -1229,6 +1229,8 @@ CanvasView::create_time_bar()
 #endif
 
 	// fix thickness of statusbar
+	assert(statusbar);
+	
 	Gtk::Widget *widget = statusbar;
 	while(Gtk::Container *container = dynamic_cast<Gtk::Container*>(widget)) {
 		widget->set_margin_top(0);

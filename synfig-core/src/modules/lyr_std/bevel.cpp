@@ -576,10 +576,10 @@ Layer_Bevel::accelerated_cairorender(Context context, cairo_t *cr,int quality, c
 	Blur(size,type,&stagetwo)(blurred,workdesc.get_br()-workdesc.get_tl(),blurred);
 
 	// Add the bevel effect
-	int u = halfsizex+abs(offset_u), v = halfsizey+abs(offset_v);	
+	int v = halfsizey+abs(offset_v);	
 	for(y=0;y<h;y++,v++)
 	{
-		u = halfsizex+abs(offset_u);
+		int u = halfsizex+abs(offset_u);
 		for(x=0;x<w;x++,u++)
 		{
 			Real alpha(0);

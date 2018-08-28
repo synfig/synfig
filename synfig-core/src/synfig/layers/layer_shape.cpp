@@ -1237,10 +1237,10 @@ Layer_Shape::accelerated_render(Context context,Surface *surface,int quality, co
 		Blur(feather,feather,blurtype,&stagethree)(shapesurface,workdesc.get_br()-workdesc.get_tl(),shapesurface);
 
 		//blend with stuff below it...
-		unsigned int u = halfsizex, v = halfsizey, x = 0, y = 0;
+		unsigned int v = halfsizey, x = 0, y = 0;
 		for(y = 0; y < h; y++,v++)
 		{
-			u = halfsizex;
+			unsigned int u = halfsizex;
 			for(x = 0; x < w; x++,u++)
 			{
 				Color::value_type a = shapesurface[v][u].get_a();
