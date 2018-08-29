@@ -193,23 +193,15 @@ public:
 
 	CanvasViewUIInterface(CanvasView *view):
 		view(view)
-	{
-		view->statusbar->push(_("Idle"));
-	}
-
-	~CanvasViewUIInterface()
-	{
-		//view->statusbar->pop();
-		//view->progressbar->set_fraction(0);
-	}
+		{ view->statusbar->push(_("Idle")); }
+	~CanvasViewUIInterface() { }
 
 	virtual Response confirmation(
 			const std::string &message,
 			const std::string &details,
 			const std::string &cancel,
 			const std::string &confirm,
-			Response dflt = RESPONSE_OK
-	)
+			Response dflt = RESPONSE_OK )
 	{
 		view->present();
 		//while(App::events_pending())App::iteration(false);
@@ -233,15 +225,13 @@ public:
 		return (Response) dialog.run();
 	}
 
-
 	virtual Response yes_no_cancel(
 				const std::string &message,
 				const std::string &details,
 				const std::string &button1,
 				const std::string &button2,
 				const std::string &button3,
-				Response dflt=RESPONSE_YES
-	)
+				Response dflt=RESPONSE_YES )
 	{
 		view->present();
 		//while(App::events_pending())App::iteration(false);
@@ -263,7 +253,6 @@ public:
 		dialog.show();
 		return (Response)dialog.run();
 	}
-
 
 	virtual bool
 	task(const std::string &task)
@@ -320,7 +309,6 @@ public:
 			float x((float)current/(float)total);
 			if(x<0)x=0;
 			else if(x>1)x=1;
-			view->progressbar->set_fraction(x);
 		}
 		//while(App::events_pending())App::iteration(false);
 		if(view->cancel){/*view->cancel=false;*/return false;}
@@ -329,10 +317,9 @@ public:
 
 	void
 	not_implemented()
-	{
-		error(_("Feature not yet implemented"));
-	}
+		{ error(_("Feature not yet implemented")); }
 };
+
 
 class studio::CanvasViewSelectionManager : public SelectionManager
 {
@@ -345,53 +332,16 @@ public:
 
 private:
 	void _set_selected_layer(const Layer::Handle &layer)
-	{
-		view->layer_tree->select_layer(layer);
-/*
-		// Don't change the selection while we are busy
-		// I cannot remember exactly why I put this here...
-		// It musta been for some reason, but I cannot recall.
-		//if(App::Busy::count)
-		//	return;
+		{ view->layer_tree->select_layer(layer); }
 
-		if(view->layer_tree->get_selection()->get_selected())
-		{
-			const Gtk::TreeRow row = *(view->layer_tree->get_selection()->get_selected());
-
-			// Don't do anything if that layer is already selected
-			if(layer == static_cast<Layer::Handle>(row[layer_tree_model.layer]))
-				return;
-		}
-		Gtk::TreeModel::Children::iterator iter;
-		if(view->layer_tree_store()->find_layer_row(layer,iter))
-		{
-			Gtk::TreePath path(iter);
-			for(int i=path.get_depth();i;i--)
-			{
-				int j;
-				path=Gtk::TreePath(iter);
-				for(j=i;j;j--)
-					path.up();
-				view->layer_tree->get_tree_view().expand_row(path,false);
-			}
-			view->layer_tree->get_tree_view().scroll_to_row(Gtk::TreePath(iter));
-			view->layer_tree->get_selection()->select(iter);
-		}
-*/
-	}
 public:
-
 	//! Returns the number of layers selected.
 	virtual int get_selected_layer_count()const
-	{
-		return get_selected_layers().size();
-	}
+		{ return get_selected_layers().size(); }
 
 	//! Returns a list of the currently selected layers.
 	virtual LayerList get_selected_layers()const
 	{
-//		assert(view->layer_tree);
-
 		if(!view->layer_tree) { error("%s:%d canvas_view.layer_tree not defined!?", __FILE__, __LINE__); return LayerList(); }
 		return view->layer_tree->get_selected_layers();
 	}
@@ -399,8 +349,6 @@ public:
 	//! Returns the first layer selected or an empty handle if none are selected.
 	virtual Layer::Handle get_selected_layer()const
 	{
-//		assert(view->layer_tree);
-
 		if(!view->layer_tree) { error("%s:%d canvas_view.layer_tree not defined!?", __FILE__, __LINE__); return 0; }
 		return view->layer_tree->get_selected_layer();
 	}
@@ -408,23 +356,15 @@ public:
 	//! Sets which layers should be selected
 	virtual void set_selected_layers(const LayerList &layer_list)
 	{
-//		assert(view->layer_tree);
-
 		if(!view->layer_tree) { error("%s:%d canvas_view.layer_tree not defined!?", __FILE__, __LINE__); return; }
 		view->layer_tree->select_layers(layer_list);
-		//view->get_smach().process_event(EVENT_REFRESH_DUCKS);
-
-		//view->queue_rebuild_ducks();
 	}
 
 	//! Sets which layer should be selected.
 	virtual void set_selected_layer(const Layer::Handle &layer)
 	{
-//		assert(view->layer_tree);
-
 		if(!view->layer_tree) { error("canvas_view.layer_tree not defined!?"); return; }
 		view->layer_tree->select_layer(layer);
-		//view->queue_rebuild_ducks();
 	}
 
 	//! Clears the layer selection list
@@ -448,9 +388,7 @@ public:
 
 	//! Returns the number of value_nodes selected.
 	virtual int get_selected_children_count()const
-	{
-		return get_selected_children().size();
-	}
+		{ return get_selected_children().size(); }
 
 	static inline void __child_grabber(const Gtk::TreeModel::iterator& iter, ChildrenList* ret)
 	{
@@ -464,34 +402,13 @@ public:
 	virtual ChildrenList get_selected_children()const
 	{
 		if(!view->children_tree) return ChildrenList();
-
 		Glib::RefPtr<Gtk::TreeSelection> selection=view->children_tree->get_selection();
-
 		if(!selection)
 			return ChildrenList();
-
 		ChildrenList ret;
-
-		selection->selected_foreach_iter(
-			sigc::bind(
-				sigc::ptr_fun(
-					&CanvasViewSelectionManager::__child_grabber
-				),
-				&ret
-			)
-		);
-
-		/*
-		Gtk::TreeModel::Children::iterator iter(view->children_tree_store()->children().begin());
-		iter++;
-		Gtk::TreeModel::Children children = iter->children();
-		for(iter = children.begin(); iter != children.end(); ++iter)
-		{
-			Gtk::TreeModel::Row row = *iter;
-			if(selection->is_selected(row))
-				ret.push_back((ValueDesc)row[children_tree_model.value_desc]);
-		}
-		*/
+		selection->selected_foreach_iter( sigc::bind(
+				sigc::ptr_fun( &CanvasViewSelectionManager::__child_grabber ),
+				&ret ));
 		return ret;
 	}
 
@@ -499,73 +416,36 @@ public:
 	virtual ChildrenList::value_type get_selected_child()const
 	{
 		if(!view->children_tree) return ChildrenList::value_type();
-
 		ChildrenList children(get_selected_children());
-
 		if(children.empty())
 			return ChildrenList::value_type();
-
 		return children.front();
 	}
 
 	//! Sets which value_nodes should be selected
-	virtual void set_selected_children(const ChildrenList &/*children_list*/)
-	{
-		return;
-	}
+	virtual void set_selected_children(const ChildrenList &/*children_list*/) { }
 
 	//! Sets which value_node should be selected. Empty handle if none.
-	virtual void set_selected_child(const ChildrenList::value_type &/*child*/)
-	{
-		return;
-	}
+	virtual void set_selected_child(const ChildrenList::value_type &/*child*/) { }
 
 	//! Clears the value_node selection list
-	virtual void clear_selected_children()
-	{
-		return;
-	}
+	virtual void clear_selected_children() { }
 
 	int get_selected_layer_parameter_count()const
-	{
-		return get_selected_layer_parameters().size();
-	}
+		{ return get_selected_layer_parameters().size(); }
 
 	LayerParamList get_selected_layer_parameters()const
 	{
 		if(!view->layer_tree) return LayerParamList();
-
 		Glib::RefPtr<Gtk::TreeSelection> selection=view->layer_tree->get_selection();
-
 		if(!selection)
 			return LayerParamList();
-
 		LayerParamList ret;
-
 		Gtk::TreeModel::Children children = view->layer_tree_store()->children();
 		for(Gtk::TreeModel::Children::const_iterator i = children.begin(); i != children.end(); ++i)
-		{
 			for(Gtk::TreeModel::Children::const_iterator j = i->children().begin(); j != i->children().end(); ++j)
-			{
 				if(selection->is_selected(*j))
 					ret.push_back(LayerParam((*j)[layer_tree_model.layer], (Glib::ustring)(*j)[layer_tree_model.id]));
-
-			}
-		}
-
-		/*Gtk::TreeModel::Children children = const_cast<CanvasView*>(view)->layer_tree_store()->children();
-		Gtk::TreeModel::Children::iterator i;
-		for(i = children.begin(); i != children.end(); ++i)
-		{
-			Gtk::TreeModel::Row row = *i;
-			Gtk::TreeModel::Children::iterator j;
-			for(j=row.children().begin();j!=row.children().end();j++)
-			{
-				Gtk::TreeModel::Row row = *j;
-				if(selection->is_selected(row))
-					ret.push_back(LayerParam(row[layer_tree_model.layer],(Glib::ustring)row[layer_tree_model.id]));
-			}
-		}*/
 		return ret;
 	}
 
@@ -575,22 +455,13 @@ public:
 		return get_selected_layer_parameters().front();
 	}
 
-	void set_selected_layer_parameters(const LayerParamList &/*layer_param_list*/)
-	{
-		return;
-	}
+	void set_selected_layer_parameters(const LayerParamList &/*layer_param_list*/) { }
 
-	void set_selected_layer_param(const LayerParam &/*layer_param*/)
-	{
-		return;
-	}
+	void set_selected_layer_param(const LayerParam &/*layer_param*/) { }
 
-	void clear_selected_layer_parameters()
-	{
-		return;
-	}
-
+	void clear_selected_layer_parameters() { }
 }; // END of class SelectionManager
+
 
 CanvasView::IsWorking::IsWorking(CanvasView &canvas_view_):
 	canvas_view_(canvas_view_)
@@ -694,8 +565,7 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<CanvasIn
 	render_settings          (*App::main_window,canvas_interface_),
 	waypoint_dialog          (*App::main_window,canvas_interface_->get_canvas()),
 	keyframe_dialog          (*App::main_window,canvas_interface_),
-	preview_dialog           (),
-	sound_dialog             (*App::main_window,canvas_interface_)
+	preview_dialog           ()
 {
 	layer_tree=0;
 	children_tree=0;
@@ -706,8 +576,6 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<CanvasIn
 	toggling_snap_grid=false;
 	toggling_onion_skin=false;
 
-	disp_audio = new Widget_Sound();
-
 	//info("Canvasview: Entered constructor");
 	// Minor hack
 	get_canvas()->set_time(0);
@@ -717,42 +585,24 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<CanvasIn
 	canvas_interface()->set_ui_interface(get_ui_interface());
 	canvas_interface()->set_selection_manager(get_selection_manager());
 
-	//notebook=manage(new class Gtk::Notebook());
-	//Gtk::VPaned *vpaned = manage(new class Gtk::VPaned());
-	//vpaned->pack1(*create_work_area(), Gtk::EXPAND|Gtk::SHRINK);
-	//vpaned->pack2(*notebook, Gtk::SHRINK);
-	//vpaned->show_all();
-
-	//notebook->show();
-
-	//notebook->append_page(*create_layer_tree(),_("Layers"));
-	//notebook->append_page(*create_children_tree(),_("Children"));
-	//notebook->append_page(*create_keyframe_tree(),_("Keyframes"));
-
 	//info("Canvasview: Before big chunk of allocation and tabling stuff");
 	//create all allocated stuff for this canvas
-	audio = new AudioContainer();
-
 	Gtk::Alignment *space = Gtk::manage(new Gtk::Alignment());
 	space->set_size_request(4,4);
         space->show();
 
 	Gtk::Table *layout_table= manage(new class Gtk::Table(4, 1, false));
-	//layout_table->attach(*vpaned, 0, 1, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	layout_table->attach(*create_work_area(),   0, 1, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	layout_table->attach(*space, 0, 1, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	init_menus();
 	layout_table->attach(*create_display_bar(), 0, 1, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	//layout_table->attach(*App::ui_manager()->get_widget("/menu-main"), 0, 1, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	layout_table->attach(*create_time_bar(),    0, 1, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	//layout_table->attach(*create_status_bar(),  0, 1, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 
 	update_title();
 
 	layout_table->show();
 
 	Gtk::EventBox *event_box = manage(new Gtk::EventBox());
-	//event_box->set_above_child(true);
 	event_box->add(*layout_table);
 	event_box->show();
 	event_box->signal_button_press_event().connect(sigc::mem_fun(*this,&CanvasView::on_button_press_event));
@@ -760,28 +610,16 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<CanvasIn
 	set_use_scrolled(false);
 	add(*event_box);
 
-	//set_transient_for(*App::toolbox);
-
 	smach_.set_default_state(&state_normal);
 
 	//info("Canvasview: Before Signals");
-	/*
- --	** -- Signals -------------------------------------------------------------
-	*/
-#define CONNECT(x, y) x().connect(sigc::mem_fun(*this, y))
-
+	//SIGNALS
+	#define CONNECT(x, y) x().connect(sigc::mem_fun(*this, y))
 	CONNECT(canvas_interface()->signal_dirty_preview, &CanvasView::on_dirty_preview);
 	CONNECT(canvas_interface()->signal_mode_changed,  &CanvasView::on_mode_changed);
 	CONNECT(canvas_interface()->signal_time_changed,  &CanvasView::on_time_changed);
+	#undef CONNECT
 
-#undef CONNECT
-
-	//canvas_interface()->signal_dirty_preview().connect(sigc::mem_fun(*this,&CanvasView::on_dirty_preview));
-	//canvas_interface()->signal_mode_changed().connect(sigc::mem_fun(*this,&CanvasView::on_mode_changed));
-
-	//canvas_interface()->signal_time_changed().connect(sigc::mem_fun(*this,&CanvasView::on_time_changed));
-
-	//canvas_interface()->signal_time_changed().connect(sigc::mem_fun(*this,&CanvasView::refresh_tables));
 	canvas_interface()->signal_id_changed().connect(sigc::mem_fun(*this,&CanvasView::on_id_changed));
 	canvas_interface()->signal_rend_desc_changed().connect(sigc::mem_fun(*this,&CanvasView::refresh_rend_desc));
 	waypoint_dialog.signal_changed().connect(sigc::mem_fun(*this,&CanvasView::on_waypoint_changed));
@@ -831,43 +669,6 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<CanvasIn
 	drag_dest_set(listTargets);
 	signal_drag_data_received().connect( sigc::mem_fun(*this, &CanvasView::on_drop_drag_data_received) );
 
-	/*
-	Time length(get_canvas()->rend_desc().get_time_end()-get_canvas()->rend_desc().get_time_start());
-	if(length<10.0)
-	{
-		time_window_adjustment()->set_page_increment(length);
-		time_window_adjustment()->set_page_size(length);
-	}
-	else
-	{
-		time_window_adjustment()->set_page_increment(10.0);
-		time_window_adjustment()->set_page_size(10.0);
-	}
-	*/
-
-	//info("Canvasview: Before Sound Hookup");
-	//load sound info from meta data
-	{
-		//warning("Should load Audio: %s with %s offset",apath.c_str(),aoffset.c_str());
-
-		on_audio_file_notify(); //redundant setting of the metadata, but oh well, it's no big deal :)
-		on_audio_offset_notify();
-
-		//signal connection - since they are all associated with the canvas view
-
-		//hook in signals for sound options box
-		sound_dialog.signal_file_changed().connect(sigc::mem_fun(*this,&CanvasView::on_audio_file_change));
-		sound_dialog.signal_offset_changed().connect(sigc::mem_fun(*this,&CanvasView::on_audio_offset_change));
-
-		//attach to the preview when it's visible
-		//preview_dialog->get_widget().signal_play().connect(sigc::mem_fun(*this,&CanvasView::play_audio));
-		//preview_dialog->get_widget().signal_stop().connect(sigc::mem_fun(*this,&CanvasView::stop_audio));
-
-		//hook to metadata signals
-		get_canvas()->signal_meta_data_changed("audiofile").connect(sigc::mem_fun(*this,&CanvasView::on_audio_file_notify));
-		get_canvas()->signal_meta_data_changed("audiooffset").connect(sigc::mem_fun(*this,&CanvasView::on_audio_offset_notify));
-	}
-
 	//info("Canvasview: Before Final time set up");
 	//MORE TIME STUFF
 	time_window_adjustment()->set_value(get_canvas()->rend_desc().get_time_start());
@@ -886,9 +687,9 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<CanvasIn
 	if (App::jack_is_locked())
 		jack_lock();
 
-#ifdef WITH_JACK
+	#ifdef WITH_JACK
 	jack_dispatcher.connect(sigc::mem_fun(*this, &CanvasView::on_jack_sync));
-#endif
+	#endif
 
 	App::dock_manager->register_dockable(*this);
 	App::main_window->main_dock_book().add(*this);
@@ -898,9 +699,9 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<CanvasIn
 
 CanvasView::~CanvasView()
 {
-#ifdef WITH_JACK
+	#ifdef WITH_JACK
 	set_jack_enabled(false);
-#endif
+	#endif
 
 	App::dock_manager->unregister_dockable(*this);
 	signal_deleted()();
@@ -928,9 +729,6 @@ CanvasView::~CanvasView()
 		if(ext_widget_book_.begin()->second)
 			delete ext_widget_book_.begin()->second;
 	}
-
-	//delete preview
-	audio.reset();
 
 	// don't be calling on_dirty_preview once this object has been deleted;
 	// this was causing a crash before
@@ -978,20 +776,20 @@ void CanvasView::present()
 void CanvasView::jack_lock()
 {
 	++jack_locks;
-#ifdef WITH_JACK
+	#ifdef WITH_JACK
 	if (jack_locks == 1)
 		set_jack_enabled(get_jack_enabled());
-#endif
+	#endif
 }
 
 void CanvasView::jack_unlock()
 {
 	--jack_locks;
 	assert(jack_locks >= 0);
-#ifdef WITH_JACK
+	#ifdef WITH_JACK
 	if (jack_locks == 0)
 		set_jack_enabled(get_jack_enabled());
-#endif
+	#endif
 }
 
 #ifdef WITH_JACK
@@ -1151,18 +949,6 @@ CanvasView::create_time_bar()
 		timetrackbutton->show();
 	}
 
-	//Setup the audio display
-	disp_audio->set_size_request(-1,32); //disp_audio->show();
-	disp_audio->set_time_adjustment(time_adjustment());
-	disp_audio->signal_start_scrubbing().connect(
-		sigc::mem_fun(*audio,&AudioContainer::start_scrubbing)
-	);
-	disp_audio->signal_scrub().connect(
-		sigc::mem_fun(*audio,&AudioContainer::scrub)
-	);
-	disp_audio->signal_stop_scrubbing().connect(
-		sigc::mem_fun(*audio,&AudioContainer::stop_scrubbing)
-	);
 	//Setup the current time widget
 	current_time_widget=manage(new Widget_Time);
 	current_time_widget->set_value(get_time());
@@ -1211,22 +997,17 @@ CanvasView::create_time_bar()
 	space->set_size_request(4);
         space->show();
 
-	Gtk::Alignment *space2 = Gtk::manage(new Gtk::Alignment());
-	space2->set_size_request(4);
-
 	jackdial = manage(new class JackDial());
-#ifdef WITH_JACK
+
+	#ifdef WITH_JACK
 	jackbutton = jackdial->get_toggle_jackbutton();
 	jackdial->signal_toggle_jack().connect(sigc::mem_fun(*this, &CanvasView::toggle_jack_button));
 	jackdial->signal_offset_changed().connect(sigc::mem_fun(*this, &CanvasView::on_jack_offset_changed));
 	jackdial->set_fps(get_canvas()->rend_desc().get_frame_rate());
 	jackdial->set_offset(get_jack_offset());
 	if ( !getenv("SYNFIG_DISABLE_JACK") )
-	{
 		jackdial->show();
-		space2->show();
-	}
-#endif
+	#endif
 
 	// fix thickness of statusbar
 	assert(statusbar);
@@ -1242,12 +1023,10 @@ CanvasView::create_time_bar()
 	//Attach widgets to the timebar
 
 	Gtk::HBox *controls = manage(new Gtk::HBox());
-	//controls->pack_start(*manage(disp_audio),   true, true);
 	controls->pack_start(*timetrackbutton,      false, true);
 	controls->pack_start(*current_time_widget,  false, true);
 	controls->pack_start(*framedial,            false, true);
 	controls->pack_start(*jackdial,             false, true);
-	//controls->pack_start(*space2,               true, true);
 	controls->pack_start(*statusbar,            true, true);
     //controls->pack_start(*progressbar,          true,  true);
 	controls->pack_start(*widget_interpolation, false, true);
@@ -1534,11 +1313,6 @@ CanvasView::create_display_bar()
 	}
 
 	displaybar->show();
-
-	progressbar =manage(new class Gtk::ProgressBar());
-	//progressbar->set_text("Idle");
-	//progressbar->set_show_text(true);
-	progressbar->show();
 	cancel=false;
 
 	{
@@ -1550,7 +1324,6 @@ CanvasView::create_display_bar()
 		stopbutton->set_image(*icon);
 		stopbutton->signal_clicked().connect(SLOT_EVENT(EVENT_STOP));
 		stopbutton->set_relief(Gtk::RELIEF_NONE);
-		//stopbutton->set_label(_("Stop"));
 		stopbutton->set_tooltip_text( _("Stop current operation"));
 		stopbutton->set_sensitive(false);
 		stopbutton->show();
@@ -1558,7 +1331,6 @@ CanvasView::create_display_bar()
 
 	Gtk::HBox *hbox = manage(new class Gtk::HBox(false, 0));
 	hbox->pack_start(*displaybar, false, true);
-	//hbox->pack_start(*progressbar, true, true);
 	hbox->pack_end(*stopbutton, false, false);
 	hbox->show();
 
@@ -1951,7 +1723,6 @@ CanvasView::build_new_layer_menu(Gtk::Menu &/*menu*/)
 void
 CanvasView::popup_main_menu()
 {
-	//mainmenu.popup(0,gtk_get_current_event_time());
 	Gtk::Menu* menu = dynamic_cast<Gtk::Menu*>(App::ui_manager()->get_widget("/menu-main"));
 	if(menu)
 	{
@@ -3071,60 +2842,10 @@ CanvasView::on_play_timeout()
 }
 
 void
-CanvasView::show_tables()
-{
-/*
-	Smach::event_result x(process_event_key(EVENT_TABLES_SHOW));
-	if(x==Smach::RESULT_OK || x==Smach::RESULT_ACCEPT)
-	{
-		Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon");
-		treetogglebutton->remove();
-		treetogglebutton->add(*manage(new Gtk::Image(Gtk::StockID("gtk-go-down"),iconsize)));
-		treetogglebutton->show_all();
-		notebook->show();
-	}
-*/
-}
-
-void
-CanvasView::hide_tables()
-{
-/*
-	Smach::event_result x(process_event_key(EVENT_TABLES_HIDE));
-	if(x==Smach::RESULT_OK || x==Smach::RESULT_ACCEPT)
-	{
-		Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon");
-		treetogglebutton->remove();
-		treetogglebutton->add(*manage(new Gtk::Image(Gtk::StockID("gtk-go-up"),iconsize)));
-		treetogglebutton->show_all();
-		notebook->hide();
-	}
-*/
-}
-
-bool
-CanvasView::tables_are_visible()
-{
-//	return notebook->is_visible();
-	return false;
-}
-
-void
-CanvasView::toggle_tables()
-{
-//	if(tables_are_visible())
-//		hide_tables();
-//	else
-//		show_tables();
-}
-
-void
 CanvasView::show_timebar()
 {
 	timebar->show();
-	//current_time_widget->show(); // not needed now that belongs to the timebar
 
-	//keyframe_tab_child->show();
 	if(layer_tree)
 		layer_tree->set_show_timetrack(true);
 	if(children_tree)
@@ -3135,8 +2856,6 @@ void
 CanvasView::hide_timebar()
 {
 	timebar->hide();
-	//current_time_widget->hide(); // not needed now that belongs to the timebar
-	//keyframe_tab_child->hide();
 	if(layer_tree)
 		layer_tree->set_show_timetrack(false);
 	if(children_tree)
@@ -3147,8 +2866,6 @@ void
 CanvasView::set_sensitive_timebar(bool sensitive)
 {
 	timebar->set_sensitive(sensitive);
-	//current_time_widget->set_sensitive(sensitive); //not needed now that belongs to timebar
-	//keyframe_tab_child->set_sensitive(sensitive);
 	if(layer_tree)
 		layer_tree->set_sensitive(sensitive);
 	if(children_tree)
@@ -3872,95 +3589,6 @@ CanvasView::on_preview_create(const PreviewInfo &info)
 
 }
 
-void
-CanvasView::on_audio_option()
-{
-	warning("Launching Audio Options");
-	sound_dialog.set_global_fps(get_canvas()->rend_desc().get_frame_rate());
-	sound_dialog.present();
-}
-
-void
-CanvasView::on_audio_file_change(const std::string &f)
-{
-	//save in meta data - always even when not valid...
-	canvas_interface()->set_meta_data("audiofile",f);
-}
-
-void
-CanvasView::on_audio_offset_change(const Time &t)
-{
-    String s;
-    {
-    	ChangeLocale change_locale(LC_NUMERIC, "C");
-    	s = t.get_string();
-    }
-	canvas_interface()->set_meta_data("audiooffset",s);
-}
-
-void
-CanvasView::on_audio_file_notify()
-{
-	std::string file(get_canvas()->get_meta_data("audiofile"));
-	if(file.empty()) return;
-
-	if (!audio->load(file, etl::dirname(get_canvas()->get_file_name()) + String("/"))) {
-		if (!file.empty())
-			warning("Could not load the file: %s", file.c_str());
-		get_canvas()->erase_meta_data("audiofile");
-		disp_audio->hide();
-		disp_audio->set_profile(etl::handle<AudioProfile>());
-	} else {
-		//save in canvasview
-		warning("Getting the profile of the music stuff");
-		disp_audio->set_profile(audio->get_profile());
-		disp_audio->show();
-		warning("successfully set the profiles and stuff");
-	}
-	disp_audio->queue_draw();
-}
-
-void
-CanvasView::on_audio_offset_notify()
-{
-	Time t;
-	{
-		ChangeLocale change_locale(LC_NUMERIC, "C");
-		t = Time(get_canvas()->get_meta_data("audiooffset"),get_canvas()->rend_desc().get_frame_rate());
-	}
-	audio->set_offset(t);
-	sound_dialog.set_offset(t);
-	disp_audio->queue_draw();
-
-	// info("CanvasView::on_audio_offset_notify(): offset time set to %s",t.get_string(get_canvas()->rend_desc().get_frame_rate()).c_str());
-}
-
-void
-CanvasView::play_audio(float t)
-{
-	if(audio.get())
-	{
-		info("Playing audio at %f s",t);
-		audio->play(t);
-	}
-}
-
-void
-CanvasView::stop_audio()
-{
-	if(audio.get())
-	{
-		audio->stop();
-	}
-}
-
-bool
-CanvasView::on_audio_scrub()
-{
-	disp_audio->draw();
-	return true;
-}
-
 Glib::RefPtr<Glib::ObjectBase>
 CanvasView::get_ref_obj(const String& x)
 {
@@ -4070,14 +3698,14 @@ CanvasView::on_play_pause_pressed()
 {
 	if (jack_enabled)
 	{
-#ifdef WITH_JACK
+		#ifdef WITH_JACK
 		if (jack_is_playing) {
 			jack_transport_stop(jack_client);
 			on_jack_sync();
 			stop_async();
 		} else
 			jack_transport_start(jack_client);
-#endif
+		#endif
 	}
 	else
 	{

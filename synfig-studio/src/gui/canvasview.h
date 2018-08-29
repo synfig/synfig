@@ -29,6 +29,14 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <set>
+#include <map>
+
+#ifdef WITH_JACK
+#include <jack/jack.h>
+#include <jack/transport.h>
+#endif
+
 #include <glibmm/dispatcher.h>
 
 #include <gtkmm/window.h>
@@ -36,12 +44,10 @@
 #include <gtkmm/tooltip.h>
 #include <gtkmm/box.h>
 #include <gtkmm/statusbar.h>
-#include <gtkmm/progressbar.h>
 #include <gtkmm/button.h>
 #include <gtkmm/menu.h>
 #include <gtkmm/treeview.h>
 #include <gtkmm/treestore.h>
-#include <gtkmm/notebook.h>
 #include <gdkmm/device.h>
 #include <gtkmm/spinbutton.h>
 #include <gtkmm/alignment.h>
@@ -50,10 +56,10 @@
 #include <gtkmm/toolbutton.h>
 #include <gtkmm/toggletoolbutton.h>
 #include <gtkmm/separatortoolitem.h>
-
-
-#include <synfigapp/canvasinterface.h>
-#include <synfigapp/selectionmanager.h>
+#include <gtkmm/scale.h>
+#include <gtkmm/uimanager.h>
+#include <gtkmm/toggleaction.h>
+#include <gtkmm/radioaction.h>
 
 #include <ETL/clock>
 
@@ -61,62 +67,44 @@
 #include <synfig/context.h>
 #include <synfig/string.h>
 #include <synfig/time.h>
+#include <synfig/rect.h>
+#include <synfig/transform.h>
+#include <synfig/soundprocessor.h>
 
-#include "instance.h"
-#include "dialogs/canvasproperties.h"
-#include "dialogs/canvasoptions.h"
-#include "render.h"
-#include "cellrenderer/cellrenderer_timetrack.h"
+#include <synfigapp/canvasinterface.h>
+#include <synfigapp/selectionmanager.h>
+
 #include "app.h"
-
-#include "trees/layertreestore.h"
-#include "trees/layertree.h"
-#include "trees/childrentreestore.h"
-#include "trees/childrentree.h"
-#include "trees/keyframetreestore.h"
-#include "trees/keyframetree.h"
-
-#include "dialogs/dialog_waypoint.h"
+#include "instance.h"
+#include "smach.h"
+#include "render.h"
+#include "duckmatic.h"
+#include "adjust_window.h"
+#include "cellrenderer/cellrenderer_timetrack.h"
+#include "docks/dockable.h"
+#include "dialogs/canvasoptions.h"
+#include "dialogs/canvasproperties.h"
 #include "dialogs/dialog_keyframe.h"
 #include "dialogs/dialog_preview.h"
-#include "dialogs/dialog_soundselect.h"
+#include "dialogs/dialog_waypoint.h"
 #include "dials/framedial.h"
 #include "dials/jackdial.h"
 #include "dials/toggleducksdial.h"
 #include "dials/resolutiondial.h"
+#include "trees/layertree.h"
+#include "trees/layertreestore.h"
+#include "trees/childrentreestore.h"
+#include "trees/childrentree.h"
+#include "trees/keyframetreestore.h"
+#include "trees/keyframetree.h"
 #include "widgets/widget_keyframe_list.h"
 
-#include "duckmatic.h"
-#include <gtkmm/scale.h>
-
-#include <gtkmm/uimanager.h>
-
-#include "smach.h"
-
-#include <set>
-#include <map>
-#include <gtkmm/toggleaction.h>
-#include <gtkmm/radioaction.h>
-#include <synfig/rect.h>
-
-#include "adjust_window.h"
-
-#include <synfig/transform.h>
-#include <synfig/soundprocessor.h>
-
-#include "docks/dockable.h"
-
-#ifdef WITH_JACK
-#include <jack/jack.h>
-#include <jack/transport.h>
-#endif
-
 #ifndef ONION_SKIN_PAST
-	#define ONION_SKIN_PAST 10
+#define ONION_SKIN_PAST 10
 #endif
 
 #ifndef ONION_SKIN_FUTURE
-	#define ONION_SKIN_FUTURE 10
+#define ONION_SKIN_FUTURE 10
 #endif
 
 /* === M A C R O S ========================================================= */
@@ -141,23 +129,15 @@ namespace studio {
 
 class CanvasViewUIInterface;
 class CanvasViewSelectionManager;
-
 class CellRenderer_TimeTrack;
 class CellRenderer_ValueBase;
 class WorkArea;
-
 class Duckmatic;
-
 class Widget_Enum;
-
 class Preview;
 struct PreviewInfo;
-class AudioContainer;
-
-class Widget_Sound;
 class Widget_CanvasTimeslider;
 class Widget_Time;
-
 class Dock_Layers;
 class Dock_Children;
 class Dock_Keyframes;
@@ -182,28 +162,19 @@ class CanvasView : public Dockable, public etl::shared_object
 	friend class Dock_Layers;
 	friend class Dock_Children;
 	friend class Dock_Keyframes;
-
 	friend class CanvasViewUIInterface;
 	friend class CanvasViewSelectionManager;
-
 	friend class Duckmatic;
-
 	friend class LockDucks;
 
 	/*
  -- ** -- P U B L I C   T Y P E S ---------------------------------------------
 	*/
-
 public:
-
 	typedef etl::handle<CanvasView> Handle;
-
 	typedef etl::handle<const CanvasView> ConstHandle;
-
 	typedef etl::loose_handle<CanvasView> LooseHandle;
-
 	typedef LayerTreeStore::Model LayerTreeModel;
-
 	typedef ChildrenTreeStore::Model ChildrenTreeModel;
 
 	//! Create an instance of this class whenever doing a longer task.
@@ -211,8 +182,8 @@ public:
 	**	to make sure the action has not been canceled. */
 	class IsWorking
 	{
+	private:
 		CanvasView &canvas_view_;
-
 	public:
 		IsWorking(CanvasView &canvas_view_);
 		~IsWorking();
@@ -231,9 +202,7 @@ public:
 		void activate() { activation_index = ++last__.activation_index; }
 
 		explicit ActivationIndex(bool create = false): activation_index(0), creation_index(0)
-		{
-			if (create) this->create();
-		}
+			{ if (create) this->create(); }
 
 		bool operator < (const ActivationIndex &other) const
 		{
@@ -252,7 +221,6 @@ public:
 	/*
  -- ** -- P R I V A T E   D A T A ---------------------------------------------
 	*/
-
 public:
 	WorkArea* get_work_area() const { return work_area; }
 
@@ -276,15 +244,6 @@ private:
 	etl::handle<synfigapp::CanvasInterface> canvas_interface_;
 	synfig::ContextParams context_params_;
 
-	// DEBUGPOINT_CLASS(3);
-
-	//! Sound and information to play it
-	etl::handle<AudioContainer>		audio;
-	studio::Widget_Sound			*disp_audio; //should this be put into thing too?
-
-	sigc::connection				playcon;
-	sigc::connection				stopcon;
-
 	// DEBUGPOINT_CLASS(4);
 
 	//! TreeModel for the layers
@@ -295,7 +254,6 @@ private:
 
 	// DEBUGPOINT_CLASS(5);
 
-	//std::map<synfig::String,Glib::RefPtr<Gtk::TreeModel> > tree_model_book_;
 	std::map<synfig::String,Glib::RefPtr<Glib::ObjectBase> > ref_obj_book_;
 	std::map<synfig::String,Gtk::Widget*> ext_widget_book_;
 
@@ -303,29 +261,20 @@ private:
 	Glib::RefPtr<Gtk::Adjustment> time_adjustment_;
 
 	//! The time_window adjustment governs the position of the time window on the whole time line
-	//Glib::RefPtr<Gtk::Adjustment> time_window_adjustment_;
 	Glib::RefPtr<studio::Adjust_Window> time_window_adjustment_;
 
 	LayerTree *layer_tree;
-
 	ChildrenTree *children_tree;
-
 	KeyframeTree *keyframe_tree;
-
-	Gtk::Widget *keyframe_tab_child;
-
-	Gtk::ProgressBar *progressbar;
-	Gtk::Statusbar *statusbar;
 
 	Gtk::TreeRow children_canvas_row;
 	Gtk::TreeRow children_valuenode_row;
 
+	Gtk::Statusbar *statusbar;
 	Gtk::Button *closebutton;
 	Gtk::Button *stopbutton;
 	Gtk::ToolButton *refreshbutton;
 	Gtk::ToggleToolButton *draft_button;
-	Gtk::Button *treetogglebutton;  // not used
-	Gtk::Notebook *notebook; // not used
 	Gtk::VBox *timebar;
 	Gtk::Toolbar *displaybar;
 	Widget_Enum *widget_interpolation;
@@ -368,40 +317,6 @@ private:
 
 	std::list<sigc::connection> duck_changed_connections;
 
-/*	DEBUGPOINT_CLASS(8);
-
-	Gtk::Menu duckmaskmenu;
-	DEBUGPOINT_CLASS(77);
-
-	Gtk::Menu filemenu;
-	DEBUGPOINT_CLASS(777);
-	Gtk::Menu editmenu;
-	DEBUGPOINT_CLASS(71);
-	Gtk::Menu canvasmenu;
-	DEBUGPOINT_CLASS(73);
-public:
-	Gtk::Menu layermenu;
-private:
-	DEBUGPOINT_CLASS(74);
-	Gtk::Menu newlayermenu;
-	DEBUGPOINT_CLASS(76);
-	Gtk::Menu viewmenu;
-
-	DEBUGPOINT_CLASS(99);
-	Gtk::Menu keyframemenu;
-
-	Gtk::Menu parammenu;
-	DEBUGPOINT_CLASS(9);
-	Gtk::Menu trackmenu;
-	DEBUGPOINT_CLASS(7);
-
-	Gtk::CheckMenuItem* duck_mask_position;
-	Gtk::CheckMenuItem* duck_mask_vertex;
-	Gtk::CheckMenuItem* duck_mask_tangent;
-	Gtk::CheckMenuItem* duck_mask_radius;
-	Gtk::CheckMenuItem* duck_mask_width;
-	Gtk::CheckMenuItem* duck_mask_angle;
-*/
 	//! Menu members
 	Gtk::Menu parammenu;
 
@@ -456,8 +371,7 @@ public:
 	void queue_rebuild_ducks();
 	sigc::signal<void>& signal_deleted() { return signal_deleted_; }
 
-	Gtk::Menu mainmenu;
-
+private:
 	//! This is for the IsWorking class.
 	int working_depth;
 
@@ -475,7 +389,6 @@ public:
 	Dialog_Waypoint waypoint_dialog;
 	Dialog_Keyframe keyframe_dialog;
 	Dialog_Preview preview_dialog;
-	Dialog_SoundSelect sound_dialog;
 
 	/*
  -- ** -- P R I V A T E   M E T H O D S ---------------------------------------
@@ -485,15 +398,6 @@ private:
 
 	// Constructor is private to force the use of the "create()" constructor
 	CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigapp::CanvasInterface> canvas_interface);
-
-	//! Constructor Helper
-	// Gtk::Widget* create_layer_tree();
-
-	//! Constructor Helper
-	// Gtk::Widget* create_children_tree();
-
-	//! Constructor Helper
-	// Gtk::Widget* create_keyframe_tree();
 
 	//! Constructor Helper - Initializes all of the menus
 	void init_menus();
@@ -570,11 +474,12 @@ public:
 	void jack_unlock();
 	bool get_jack_enabled_in_preview() const { return jack_enabled_in_preview; }
 	void set_jack_enabled_in_preview(bool x) { jack_enabled_in_preview = x; }
-#ifdef WITH_JACK
+
+	#ifdef WITH_JACK
 	bool get_jack_enabled() const { return jack_enabled; }
 	bool get_jack_actual_enabled() const { return jack_actual_enabled; }
 	void set_jack_enabled(bool value);
-#endif
+	#endif
 
 	synfig::Rect& get_bbox() { return bbox; }
 
@@ -690,37 +595,16 @@ public:
 	//! Refreshes the data for the tables
 	void refresh_tables();
 
-	//void rebuild_layer_table();
-	//void build_layer_table();
-	//void refresh_layer_table();
-
-//	void rebuild_canvas_table();
-//	void build_canvas_table();
-//	void refresh_canvas_table();
-
-//	void rebuild_valuenode_table();
-//	void build_valuenode_table();
-//	void refresh_valuenode_table();
-
 	//! \writeme
 	void rebuild_ducks();
-
-	//bool add_to_ducks(synfigapp::ValueDesc value_desc, synfig::ParamDesc *param_desc=NULL);
 
 	void play_async();
 	void stop_async();
 
-	//! Shows the tables (Layer/Children)
-	void show_tables();
-
-	//! Hides the tables (Layer/Children)
-	void hide_tables();
-
-	//! Toggles the tables
-	void toggle_tables();
-
-	//! Gets the table status
-	bool tables_are_visible();
+	//! Show/hide the tables (Layer/Children). TODO: seems deprecated
+	void show_tables() { }
+	void hide_tables() { }
+	bool tables_are_visible() { return false; }
 
 	//! Shows the time bar
 	void show_timebar();
@@ -739,9 +623,6 @@ public:
 	void show_keyframe_dialog();
 	void on_keyframe_toggle();
 	void on_keyframe_description_set();
-
-	void play_audio(float t);
-	void stop_audio();
 
 	void image_import();
 
@@ -778,11 +659,7 @@ private:
 
 	bool on_button_press_event(GdkEventButton *event);
 
-	//bool on_children_tree_event(GdkEvent *event);
-
 	bool on_keyframe_tree_event(GdkEvent *event);
-
-	//void on_children_edited_value(const Glib::ustring&path_string,synfig::ValueBase value);
 
 	void on_dirty_preview();
 
@@ -790,13 +667,7 @@ private:
 
 	bool on_layer_user_click(int, Gtk::TreeRow, LayerTree::ColumnID);
 
-//	void on_layer_toggle(const Glib::ustring& path_string, Gtk::TreeModelColumn<bool> column);
-
 	void on_mode_changed(synfigapp::CanvasInterface::Mode mode);
-
-//	void on_layer_waypoint_clicked(const Glib::ustring &, synfig::ValueNode_Animated::WaypointList::iterator);
-
-	//void on_children_waypoint_clicked(const Glib::ustring &, synfig::ValueNode_Animated::WaypointList::iterator);
 
 	void on_waypoint_changed();
 
@@ -807,13 +678,6 @@ private:
 	void on_id_changed();
 
 	void on_time_changed();
-
-	/*
-	void on_layer_raise_pressed();
-	void on_layer_lower_pressed();
-	void on_layer_duplicate_pressed();
-	void on_layer_delete_pressed();
-	*/
 
 	void on_keyframe_add_pressed();
 
@@ -830,21 +694,11 @@ private:
 	void on_preview_option();
 	void on_preview_create(const PreviewInfo &);
 
-	void on_audio_option();
-	void on_audio_file_change(const std::string &f);
-	void on_audio_offset_change(const synfig::Time &t);
-
-	void on_audio_file_notify();
-	void on_audio_offset_notify();
-
 	void on_layer_toggle(synfig::Layer::Handle);
 
 	void on_edited_value(synfigapp::ValueDesc,synfig::ValueBase);
 
 	void on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, const Gtk::SelectionData& selection_data, guint info, guint time);
-
-	//void on_audio_play();
-	bool on_audio_scrub();
 
 	void on_play_pause_pressed();
 
