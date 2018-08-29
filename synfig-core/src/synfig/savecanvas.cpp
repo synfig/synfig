@@ -66,9 +66,9 @@
 #include <ETL/stringf>
 #include "gradient.h"
 
-extern "C" {
+/*extern "C" {
 #include <libxml/tree.h>
-}
+}*/
 
 #endif
 
