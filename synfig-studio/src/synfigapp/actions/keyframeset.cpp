@@ -178,7 +178,7 @@ Action::KeyframeSet::scale_activepoints(const synfigapp::ValueDesc& value_desc,c
 				// we need to abort
 				//throw Exception::BadTime(_("Activepoint Conflict"));
 			}
-			catch(Exception::NotFound) { }
+			catch(Exception::NotFound&) { }
 		}
 
 		int ret(0);
@@ -237,7 +237,7 @@ Action::KeyframeSet::scale_waypoints(const synfigapp::ValueDesc& value_desc,cons
 				//synfig::info(_("new_begin: %s, new_end: %s"),new_begin.get_string().c_str(),new_end.get_string().c_str());
 				//throw Exception::BadTime(strprintf(_("Waypoint Conflict, old: %s, new: %s"),(*iter)->get_time().get_string().c_str(),new_time.get_string().c_str()));
 			}
-			catch(Exception::NotFound) { }
+			catch(Exception::NotFound&) { }
 		}
 
 		int ret(0);
@@ -394,7 +394,7 @@ Action::KeyframeSet::perform()
 			get_canvas()->keyframe_list().find(new_time);
 			throw Error(_("Cannot change keyframe time because another keyframe already exists with that time."));
 		}
-		catch(Exception::NotFound) { }
+		catch(Exception::NotFound&) { }
 	}
 	try { keyframe_next=get_canvas()->keyframe_list().find_next(old_time)->get_time(); }
 	catch(...) { keyframe_next=Time::end(); }

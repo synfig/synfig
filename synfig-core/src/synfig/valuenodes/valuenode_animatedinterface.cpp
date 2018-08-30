@@ -348,7 +348,7 @@ public:
 
 		virtual WaypointList::iterator new_waypoint(Time t, ValueBase value)
 		{
-			try { animated.find(t); throw Exception::BadTime(_("A waypoint already exists at this point in time")); } catch(Exception::NotFound) { };
+			try { animated.find(t); throw Exception::BadTime(_("A waypoint already exists at this point in time")); } catch(Exception::NotFound&) { };
 			Waypoint waypoint(value, t);
 			waypoint.set_parent_value_node(&animated.node());
 
@@ -369,7 +369,7 @@ public:
 
 		virtual WaypointList::iterator new_waypoint(Time t, ValueNode::Handle value_node)
 		{
-			try { animated.find(t); throw Exception::BadTime(_("A waypoint already exists at this point in time")); } catch(Exception::NotFound) { };
+			try { animated.find(t); throw Exception::BadTime(_("A waypoint already exists at this point in time")); } catch(Exception::NotFound&) { };
 
 			Waypoint waypoint(value_node,t);
 			waypoint.set_parent_value_node(&animated.node());
@@ -684,7 +684,7 @@ public:
 			// Make sure we are getting data of the correct type
 			//if(data.type!=type)
 			//	return waypoint_list_type::iterator();
-			try { animated.find(t); throw Exception::BadTime(_("A waypoint already exists at this point in time")); } catch(Exception::NotFound) { };
+			try { animated.find(t); throw Exception::BadTime(_("A waypoint already exists at this point in time")); } catch(Exception::NotFound&) { };
 
 			Waypoint waypoint(value,t);
 			waypoint.set_parent_value_node(&animated.node());
@@ -702,7 +702,7 @@ public:
 			// Make sure we are getting data of the correct type
 			//if(data.type!=type)
 			//	return waypoint_list_type::iterator();
-			try { animated.find(t); throw Exception::BadTime(_("A waypoint already exists at this point in time")); } catch(Exception::NotFound) { };
+			try { animated.find(t); throw Exception::BadTime(_("A waypoint already exists at this point in time")); } catch(Exception::NotFound&) { };
 
 			Waypoint waypoint(value_node,t);
 			waypoint.set_parent_value_node(&animated.node());
@@ -774,7 +774,7 @@ public:
 			// Make sure we are getting data of the correct type
 			//if(data.type!=type)
 			//	return waypoint_list_type::iterator();
-			try { animated.find(t); throw Exception::BadTime(_("A waypoint already exists at this point in time")); } catch(Exception::NotFound) { };
+			try { animated.find(t); throw Exception::BadTime(_("A waypoint already exists at this point in time")); } catch(Exception::NotFound&) { };
 
 
 			Waypoint waypoint(value,t);
@@ -793,7 +793,7 @@ public:
 			// Make sure we are getting data of the correct type
 			//if(data.type!=type)
 			//	return waypoint_list_type::iterator();
-			try { animated.find(t); throw Exception::BadTime(_("A waypoint already exists at this point in time")); } catch(Exception::NotFound) { };
+			try { animated.find(t); throw Exception::BadTime(_("A waypoint already exists at this point in time")); } catch(Exception::NotFound&) { };
 
 			Waypoint waypoint(value_node,t);
 			waypoint.set_parent_value_node(&animated.node());
@@ -1272,7 +1272,7 @@ ValueNode_AnimatedInterfaceConst::insert_time(const Time& location, const Time& 
 		}
 		animated_changed();
 	}
-	catch(Exception::NotFound) { }
+	catch(Exception::NotFound&) { }
 }
 
 void

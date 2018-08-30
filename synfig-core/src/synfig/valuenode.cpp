@@ -428,7 +428,7 @@ ValueNodeList::surefind(const String &id)
 	{
 		value_node=find(id, true);
 	}
-	catch(Exception::IDNotFound)
+	catch(Exception::IDNotFound&)
 	{
 		value_node=PlaceholderValueNode::create();
 		value_node->set_id(id);
@@ -477,7 +477,7 @@ ValueNodeList::add(ValueNode::Handle value_node)
 
 		return false;
 	}
-	catch(Exception::IDNotFound)
+	catch(Exception::IDNotFound&)
 	{
 		push_back(value_node);
 		return true;

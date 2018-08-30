@@ -128,7 +128,7 @@ Action::ValueNodeAdd::perform()
 	{
 		get_canvas()->add_value_node(value_node,name);
 	}
-	catch(Exception::IDAlreadyExists)
+	catch (Exception::IDAlreadyExists&)
 	{
 		throw Error(_("Another exported ValueBase with this name already exists"));
 	}

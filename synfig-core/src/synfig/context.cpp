@@ -393,7 +393,7 @@ Context::accelerated_render(Surface *surface,int quality, const RendDesc &rendde
 #endif	// SYNFIG_PROFILE_LAYERS
 		return ret;
 	}
-	catch(std::bad_alloc)
+	catch(std::bad_alloc&)
 	{
 		synfig::error("Context::accelerated_render(): Layer \"%s\" threw a bad_alloc exception!",(*context)->get_name().c_str());
 #ifdef _DEBUG
@@ -480,7 +480,7 @@ Context::accelerated_cairorender(cairo_t *cr,int quality, const RendDesc &rendde
 #endif	// SYNFIG_PROFILE_LAYERS
 		return ret;
 	}
-	catch(std::bad_alloc)
+	catch(std::bad_alloc&)
 	{
 		synfig::error("Context::accelerated_cairorender(): Layer \"%s\" threw a bad_alloc exception!",(*context)->get_name().c_str());
 #ifdef _DEBUG

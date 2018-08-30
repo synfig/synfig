@@ -315,7 +315,7 @@ Action::ActivepointSetSmart::prepare()
 		return;
 	}
 	catch(int){}
-	catch(Exception::NotFound){}
+	catch(Exception::NotFound&){}
 
 	try
 	{
@@ -340,7 +340,7 @@ Action::ActivepointSetSmart::prepare()
 		return;
 	}
 	catch(int){}
-	catch(Exception::NotFound){}
+	catch(Exception::NotFound&){}
 
 	try
 	{
@@ -362,7 +362,7 @@ Action::ActivepointSetSmart::prepare()
 		return;
 	}
 	catch(int){}
-	catch(Exception::NotFound){}
+	catch(Exception::NotFound&){}
 
 	throw Error(_("Unable to determine how to proceed. This is a bug."));
 }

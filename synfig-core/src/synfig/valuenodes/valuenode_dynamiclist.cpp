@@ -952,7 +952,7 @@ ValueNode_DynamicList::insert_time(const Time& location, const Time& delta)
 				iter->set_time(iter->get_time()+delta);
 			}
 		}
-		catch(Exception::NotFound) { }
+		catch(Exception::NotFound&) { }
 	}
 	changed();
 }

@@ -280,5 +280,5 @@ KeyframeList::insert_time(const Time& location, const Time& delta)
 		}
 		sync();
 	}
-	catch(Exception::NotFound) { }
+	catch(Exception::NotFound&) { }
 }

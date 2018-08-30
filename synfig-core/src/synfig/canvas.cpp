@@ -539,7 +539,7 @@ Canvas::add_value_node(ValueNode::Handle x, const String &id)
 
 		throw Exception::IDAlreadyExists(id);
 	}
-	catch(Exception::IDNotFound)
+	catch(Exception::IDNotFound&)
 	{
 		x->set_id(id);
 
@@ -571,7 +571,7 @@ Canvas::rename_value_node(ValueNode::Handle x, const String &id)
 			throw Exception::IDNotFound("rename_value_node");
 		throw Exception::IDAlreadyExists(id);
 	}
-	catch(Exception::IDNotFound)
+	catch(Exception::IDNotFound&)
 	{
 		x->set_id(id);
 
@@ -1014,7 +1014,7 @@ Canvas::add_child_canvas(Canvas::Handle child_canvas, const synfig::String& id)
 		find_canvas(id, warnings);
 		throw Exception::IDAlreadyExists(id);
 	}
-	catch(Exception::IDNotFound)
+	catch(Exception::IDNotFound&)
 	{
 		if(child_canvas->is_inline())
 			child_canvas->is_inline_=false;
