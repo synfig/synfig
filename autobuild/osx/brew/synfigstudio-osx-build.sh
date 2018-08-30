@@ -57,13 +57,7 @@ travis_fold_start synfig-studio "Building Synfig Studio"
 pushd synfig-studio
   ./bootstrap.sh
   ./configure
-  pushd build_tools # enter src directory to skip image building
-    make install $MAKE_OPTIONS
-  popd # build_tools
-
-  pushd src # enter src directory to skip image building
-    make install $MAKE_OPTIONS
-  popd # src
+  make install $MAKE_OPTIONS
 popd # synfig-studio
 travis_fold_end synfig-studio
 

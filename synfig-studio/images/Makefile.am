@@ -416,7 +416,7 @@ SUFFIXES = .sif .tif .png
 
 #.SUFFIXES: $(SUFFIXES)
 
-.sif.ico:
+.sif.ico .sifz.ico:
 	bash ../build_tools/sif2ico.sh $<
 	echo "  File \"images\\$@\"" >>./icons.nsh
 	echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unicons.nsh
@@ -424,17 +424,7 @@ SUFFIXES = .sif .tif .png
 clean-local:
 	$(RM) -r $(CLEANDIRS)
 
-.sif.bmp:
-	$(SYNFIG) -q $< -o $@.png --time 0
-	convert $@.png $@
-	rm -f $@.png
-
-.sif.$(EXT):
-	$(SYNFIG) -q $< -o $@ --time 0
-	echo "  File \"images\\$@\"" >>./images.nsh
-	echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
-
-.sifz.$(EXT):
+.sif.$(EXT) .sifz.$(EXT) .sif.bmp .sifz.bmp:
 	$(SYNFIG) -q $< -o $@ --time 0
 	echo "  File \"images\\$@\"" >>./images.nsh
 	echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
