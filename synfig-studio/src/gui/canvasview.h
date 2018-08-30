@@ -79,7 +79,7 @@
 #include "smach.h"
 #include "render.h"
 #include "duckmatic.h"
-#include "adjust_window.h"
+#include "timemodel.h"
 #include "cellrenderer/cellrenderer_timetrack.h"
 #include "docks/dockable.h"
 #include "dialogs/canvasoptions.h"
@@ -110,7 +110,7 @@
 /* === M A C R O S ========================================================= */
 
 #ifndef DEBUGPOINT_CLASS
-#if	_DEBUG
+#ifdef _DEBUG
 #define DEBUGPOINT_CLASS(x)		struct debugpointclass_ ## x { debugpointclass_ ## x () { DEBUGPOINT(); } ~debugpointclass_ ## x () { DEBUGPOINT(); } } badfthguae_ ## x ;
 #else
 #define DEBUGPOINT_CLASS(x)
@@ -257,11 +257,8 @@ private:
 	std::map<synfig::String,Glib::RefPtr<Glib::ObjectBase> > ref_obj_book_;
 	std::map<synfig::String,Gtk::Widget*> ext_widget_book_;
 
-	//! The time adjustment's scope is defined by the time_window adjustment
-	Glib::RefPtr<Gtk::Adjustment> time_adjustment_;
-
 	//! The time_window adjustment governs the position of the time window on the whole time line
-	Glib::RefPtr<studio::Adjust_Window> time_window_adjustment_;
+	etl::handle<TimeModel> time_model_;
 
 	LayerTree *layer_tree;
 	ChildrenTree *children_tree;
@@ -348,14 +345,15 @@ private:
 	bool jack_actual_enabled;
 	int jack_locks;
 	bool jack_enabled_in_preview;
-#ifdef WITH_JACK
+
+	#ifdef WITH_JACK
 	Glib::Dispatcher jack_dispatcher;
 	jack_client_t *jack_client;
 	bool jack_synchronizing;
 	bool jack_is_playing;
 	synfig::Time jack_time;
 	bool toggling_jack;
-#endif
+	#endif
 
 	Glib::RefPtr<Gtk::ToggleAction> action_mask_bone_setup_ducks, action_mask_bone_recursive_ducks;
 
@@ -510,7 +508,6 @@ public:
 	bool is_ducks_locked() { return ducks_locks > 0; }
 
 	Smach& get_smach() { return smach_; }
-
 	const Smach& get_smach()const { return smach_; }
 
 	Smach::event_result process_event_key(EventKey x);
@@ -520,45 +517,33 @@ public:
 	virtual ~CanvasView();
 
 	const synfig::ContextParams& get_context_params()const { return context_params_; }
-
 	void set_context_params(const synfig::ContextParams &x) { context_params_ = x; }
 
 	void set_mode(Mode x) { canvas_interface()->set_mode(x); }
-
 	Mode get_mode()const { return canvas_interface()->get_mode(); }
 
-	Glib::RefPtr<Gtk::Adjustment> time_adjustment() { return time_adjustment_; }
-	Glib::RefPtr<const Gtk::Adjustment> time_adjustment()const { return time_adjustment_; }
-
-	Glib::RefPtr<studio::Adjust_Window> time_window_adjustment() { return time_window_adjustment_; }
-	Glib::RefPtr<const studio::Adjust_Window> time_window_adjustment()const { return time_window_adjustment_; }
+	etl::handle<TimeModel> time_model() { return time_model_; }
 
 	etl::handle<synfigapp::UIInterface> get_ui_interface() { return ui_interface_;}
 
 	etl::handle<synfigapp::SelectionManager> get_selection_manager() { return selection_manager_; }
 
 	Glib::RefPtr<Gtk::TreeModel> layer_tree_store() { return get_tree_model("layers"); }
-
 	Glib::RefPtr<const Gtk::TreeModel> layer_tree_store()const { return get_tree_model("layers"); }
 
 	Glib::RefPtr<Gtk::TreeModel> children_tree_store() { return get_tree_model("children"); }
-
 	Glib::RefPtr<const Gtk::TreeModel> children_tree_store()const { return get_tree_model("children"); }
 
 	Glib::RefPtr<Gtk::TreeModel> keyframe_tree_store() { return get_tree_model("keyframes"); }
-
 	Glib::RefPtr<const Gtk::TreeModel> keyframe_tree_store()const { return get_tree_model("keyframes"); }
 
-	void set_time(synfig::Time t) { canvas_interface_->set_time(t); }
-
-	synfig::Time get_time() { return canvas_interface_->get_time(); }
+	void set_time(synfig::Time t) { time_model()->set_time(t); }
+	synfig::Time get_time() { return time_model()->get_time(); }
 
 	etl::handle<synfig::Canvas> get_canvas()const { return canvas_interface_->get_canvas(); }
-
 	etl::handle<Instance> get_instance()const { return instance_; }
 
 	etl::handle<synfigapp::CanvasInterface> canvas_interface() { return canvas_interface_; }
-
 	etl::handle<const synfigapp::CanvasInterface> canvas_interface()const { return canvas_interface_; }
 
 	void add_actions_to_menu(Gtk::Menu *menu,   const synfigapp::Action::ParamList &param_list, synfigapp::Action::Category category=synfigapp::Action::CATEGORY_ALL)const;
@@ -640,102 +625,63 @@ public:
 	//! \Sa             DuckMatic::set_type_mask_state(), DuckMatic::get_type_mask_state()
 	void toggle_duck_mask_all();
 
-	bool is_time_equal_to_current_frame(const synfig::Time &time, const synfig::Time &range = synfig::Time(0.0));
-
 	/*
  -- ** -- S I G N A L   T E R M I N A L S -------------------------------------
 	*/
 
-private:
-
+protected:
 	void on_select_layers();
 	void on_unselect_layers();
-
 	void on_input_device_changed(GdkDevice*);
-
 	void on_hide();
-
-	Gtk::Widget* create_tab_label();
-
 	bool on_button_press_event(GdkEventButton *event);
-
 	bool on_keyframe_tree_event(GdkEvent *event);
-
 	void on_dirty_preview();
-
 	bool on_children_user_click(int, Gtk::TreeRow, ChildrenTree::ColumnID);
-
 	bool on_layer_user_click(int, Gtk::TreeRow, LayerTree::ColumnID);
-
 	void on_mode_changed(synfigapp::CanvasInterface::Mode mode);
-
 	void on_waypoint_changed();
-
 	void on_waypoint_delete();
-
 	void on_refresh_pressed();
-
 	void on_id_changed();
-
-	void on_time_changed();
-
+	void on_interface_time_changed();
 	void on_keyframe_add_pressed();
-
 	void on_keyframe_duplicate_pressed();
-
 	void on_keyframe_remove_pressed();
-
 	void on_animate_button_pressed();
-
 	void on_keyframe_button_pressed();
-	void toggle_past_keyframe_button();
-	void toggle_future_keyframe_button();
-
 	void on_preview_option();
 	void on_preview_create(const PreviewInfo &);
-
 	void on_layer_toggle(synfig::Layer::Handle);
-
 	void on_edited_value(synfigapp::ValueDesc,synfig::ValueBase);
-
 	void on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, const Gtk::SelectionData& selection_data, guint info, guint time);
-
 	void on_play_pause_pressed();
-
-#ifdef WITH_JACK
-	void on_jack_offset_changed();
-	void toggle_jack_button();
-
-	synfig::Time get_jack_offset()const;
-	void set_jack_offset(const synfig::Time &value);
-#endif
-
 	void on_meta_data_changed();
-
-	//! Keyboard event dispatcher following window priority
-	bool on_key_press_event(GdkEventKey* event);
-	bool focused_widget_has_priority(Gtk::Widget * focused);
-
-
-protected:
-	bool close_instance_when_safe();
+	bool on_key_press_event(GdkEventKey* event); //!< Keyboard event dispatcher following window priority
 	bool on_delete_event(GdkEventAny* event);
+
+	Gtk::Widget* create_tab_label();
+	void toggle_past_keyframe_button();
+	void toggle_future_keyframe_button();
+	bool focused_widget_has_priority(Gtk::Widget * focused);
+	bool close_instance_when_safe();
 
 	/*
  -- ** -- S T A T I C   P U B L I C   M E T H O D S ---------------------------
 	*/
-
 public:
-
 	static etl::handle<studio::CanvasView> create(etl::loose_handle<Instance> instance,etl::handle<synfig::Canvas> canvas);
 	static std::list<int>& get_pixel_sizes();
 
 private:
-#ifdef WITH_JACK
+	#ifdef WITH_JACK
 	void on_jack_sync();
+	void on_jack_offset_changed();
+	void toggle_jack_button();
+	synfig::Time get_jack_offset()const;
+	void set_jack_offset(const synfig::Time &value);
 	static int jack_sync_callback(jack_transport_state_t state, jack_position_t *pos, void *arg);
-#endif
-
+	#endif
 }; // END of class CanvasView
 
 

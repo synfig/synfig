@@ -79,7 +79,7 @@ public:
 
 	void set_canvas_view(handle<CanvasView> canvas_view)
 	{
-		cellrenderer_time_track->set_adjustment(canvas_view->time_adjustment());
+		cellrenderer_time_track->set_adjustment(canvas_view->time_model()->visible_time_adjustment());
 	}
 
 	TimeTrackView()
@@ -449,8 +449,7 @@ Dock_Timetrack::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view
 	*/
 	tree_layer->signal_param_tree_header_height_changed().connect(sigc::mem_fun(*this, &studio::Dock_Timetrack::on_update_header_height));
 
-	canvas_view->time_adjustment()->signal_value_changed().connect(sigc::mem_fun(*tree_view,&Gtk::TreeView::queue_draw));
-	canvas_view->time_adjustment()->signal_changed().connect(sigc::mem_fun(*tree_view,&Gtk::TreeView::queue_draw));
+	canvas_view->time_model()->signal_time_changed().connect(sigc::mem_fun(*tree_view,&Gtk::TreeView::queue_draw));
 
 	canvas_view->set_ext_widget(get_name(),tree_view);
 	// widget_timeslider fps connection to animation render description change
@@ -537,16 +536,16 @@ Dock_Timetrack::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_v
 		align_drawingArea2->set_size_request(9,-1);
 #endif
 
-		widget_timeslider_.set_time_adjustment(canvas_view->time_adjustment());
-		widget_timeslider_.set_bounds_adjustment(canvas_view->time_window_adjustment());
+		widget_timeslider_.set_time_adjustment(canvas_view->time_model()->visible_time_adjustment());
+		widget_timeslider_.set_bounds_adjustment(canvas_view->time_model()->scroll_time_adjustment());
 		widget_timeslider_.set_global_fps(canvas_view->get_canvas()->rend_desc().get_frame_rate());
 		widget_timeslider_.set_canvas_view(canvas_view);
 
-		widget_kf_list_.set_time_adjustment(canvas_view->time_adjustment());
+		widget_kf_list_.set_time_adjustment(canvas_view->time_model()->visible_time_adjustment());
 		widget_kf_list_.set_canvas_interface(canvas_view->canvas_interface());
 
 		vscrollbar_.set_adjustment(tree_view->get_vadjustment());
-		hscrollbar_.set_adjustment(canvas_view->time_window_adjustment());
+		hscrollbar_.set_adjustment(canvas_view->time_model()->scroll_time_adjustment());
 
 		//  0------1------2------3------4
 		//  |  A   |  KF  |  A   |  v   |

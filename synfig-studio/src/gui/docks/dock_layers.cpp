@@ -238,7 +238,7 @@ Dock_Layers::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
 	//! \see CanvasView::set_ext_widget
 	//! \see CanvasView::~CanvasView
 	LayerTree* layer_tree(new LayerTree());
-	layer_tree->set_time_adjustment(canvas_view->time_adjustment());
+	layer_tree->set_time_adjustment(canvas_view->time_model()->visible_time_adjustment());
 
 	layer_tree->signal_edited_value().connect(
 		sigc::hide_return(

@@ -57,6 +57,7 @@ protected: //implementation that other interfaces can see
 
 	Glib::RefPtr<Gtk::Adjustment> adj_default;
 	Glib::RefPtr<Gtk::Adjustment> adj_timescale;
+	Glib::RefPtr<Gtk::Adjustment> adj_timebounds;
 
 	//HACK - I should not have to see this...
 	Glib::RefPtr<Gtk::Adjustment> adj_bounds;

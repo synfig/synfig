@@ -30,9 +30,9 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/tooltip.h>
-#include <gtkmm/table.h>
+#include <gtkmm/box.h>
 #include <gtkmm/button.h>
+#include <gtkmm/togglebutton.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -43,8 +43,9 @@
 namespace studio
 {
 
-class FrameDial : public Gtk::Table
+class FrameDial : public Gtk::HBox
 {
+private:
 	Gtk::Button *seek_begin;
 	Gtk::Button *seek_prev_keyframe;
 	Gtk::Button *seek_prev_frame;
@@ -53,22 +54,40 @@ class FrameDial : public Gtk::Table
 	Gtk::Button *seek_next_frame;
 	Gtk::Button *seek_next_keyframe;
 	Gtk::Button *seek_end;
+	Gtk::ToggleButton *repeat;
+	Gtk::ToggleButton *bounds_enable;
+	Gtk::Button *bound_lower;
+	Gtk::Button *bound_upper;
 
-	Gtk::Button *create_icon(Gtk::IconSize iconsize, const char * stockid, const char * tooltip);
+	sigc::signal<void, bool> signal_repeat_;
+	sigc::signal<void, bool> signal_bounds_enable_;
+
+	void init_button(Gtk::Button &button, const char *stockid, const char *tooltip);
+	Gtk::Button *create_button(const char *stockid, const char *tooltip);
+	Gtk::ToggleButton *create_toggle(const char *stockid, const char *tooltip);
+
+	void on_repeat_toggled();
+	void on_bounds_toggled();
 
 public:
 	FrameDial();
-	Glib::SignalProxy0<void> signal_seek_begin()          { return seek_begin->signal_clicked(); }
-	Glib::SignalProxy0<void> signal_seek_prev_keyframe()  { return seek_prev_keyframe->signal_clicked(); }
-	Glib::SignalProxy0<void> signal_seek_prev_frame()     { return seek_prev_frame->signal_clicked(); }
-	Glib::SignalProxy0<void> signal_play()                { return play->signal_clicked(); }
-	Glib::SignalProxy0<void> signal_pause()               { return pause->signal_clicked();}
-	Glib::SignalProxy0<void> signal_seek_next_frame()     { return seek_next_frame->signal_clicked(); }
-	Glib::SignalProxy0<void> signal_seek_next_keyframe()  { return seek_next_keyframe->signal_clicked(); }
-	Glib::SignalProxy0<void> signal_seek_end()            { return seek_end->signal_clicked(); }
+
+	Glib::SignalProxy0<void> signal_seek_begin()         { return seek_begin->signal_clicked(); }
+	Glib::SignalProxy0<void> signal_seek_prev_keyframe() { return seek_prev_keyframe->signal_clicked(); }
+	Glib::SignalProxy0<void> signal_seek_prev_frame()    { return seek_prev_frame->signal_clicked(); }
+	Glib::SignalProxy0<void> signal_play()               { return play->signal_clicked(); }
+	Glib::SignalProxy0<void> signal_pause()              { return pause->signal_clicked();}
+	Glib::SignalProxy0<void> signal_seek_next_frame()    { return seek_next_frame->signal_clicked(); }
+	Glib::SignalProxy0<void> signal_seek_next_keyframe() { return seek_next_keyframe->signal_clicked(); }
+	Glib::SignalProxy0<void> signal_seek_end()           { return seek_end->signal_clicked(); }
+	sigc::signal<void, bool> signal_repeat()             { return signal_repeat_; }
+	sigc::signal<void, bool> signal_bounds_enable()      { return signal_bounds_enable_; }
+	Glib::SignalProxy0<void> signal_bound_lower()        { return bound_lower->signal_clicked(); }
+	Glib::SignalProxy0<void> signal_bound_upper()        { return bound_upper->signal_clicked(); }
 
 	void toggle_play_pause_button(bool is_playing);
-
+	void toggle_repeat(bool enable);
+	void toggle_bounds_enable(bool enable);
 }; // END of class FrameDial
 
 }; // END of namespace studio

@@ -100,7 +100,7 @@ Dock_Curves::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
 	//! \see CanvasView::set_ext_widget
 	//! \see CanvasView::~CanvasView
 	Widget_Curves* curves(new Widget_Curves());
-	curves->set_time_adjustment(canvas_view->time_adjustment());
+	curves->set_time_adjustment(canvas_view->time_model()->visible_time_adjustment());
 
 	Gtk::TreeView* param_tree_view(
 		static_cast<Gtk::TreeView*>(canvas_view->get_ext_widget("params"))
@@ -171,14 +171,14 @@ Dock_Curves::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view
 		last_widget_curves_=dynamic_cast<Widget_Curves*>( canvas_view->get_ext_widget(get_name()) );
 
 		vscrollbar_.set_adjustment(last_widget_curves_->get_range_adjustment());
-		hscrollbar_.set_adjustment(canvas_view->time_window_adjustment());
+		hscrollbar_.set_adjustment(canvas_view->time_model()->scroll_time_adjustment());
 
-		widget_timeslider_.set_time_adjustment(canvas_view->time_adjustment());
-		widget_timeslider_.set_bounds_adjustment(canvas_view->time_window_adjustment());
+		widget_timeslider_.set_time_adjustment(canvas_view->time_model()->visible_time_adjustment());
+		widget_timeslider_.set_bounds_adjustment(canvas_view->time_model()->scroll_time_adjustment());
 		widget_timeslider_.set_global_fps(canvas_view->get_canvas()->rend_desc().get_frame_rate());
 		widget_timeslider_.set_canvas_view(canvas_view);
 
-		widget_kf_list_.set_time_adjustment(canvas_view->time_adjustment());
+		widget_kf_list_.set_time_adjustment(canvas_view->time_model()->visible_time_adjustment());
 		widget_kf_list_.set_canvas_interface(canvas_view->canvas_interface());
 
 		table_=new Gtk::Table(3, 2);

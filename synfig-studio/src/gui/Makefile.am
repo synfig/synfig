@@ -41,7 +41,7 @@ OTHER_HH = \
 	compview.h \
 	eventkey.h \
 	smach.h \
-	adjust_window.h \
+	timemodel.h \
 	app.h \
 	asyncrenderer.h \
 	audiocontainer.h \
@@ -67,7 +67,7 @@ OTHER_HH = \
 	mainwindow.h
 
 OTHER_CC = \
-	adjust_window.cpp \
+	timemodel.cpp \
 	app.cpp \
 	asyncrenderer.cpp \
 	audiocontainer.cpp \

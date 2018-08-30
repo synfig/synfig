@@ -83,7 +83,7 @@ Dock_Children::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
 
 	ChildrenTree* children_tree(new ChildrenTree());
 	children_tree->set_model(children_tree_store);
-	children_tree->set_time_adjustment(canvas_view->time_adjustment());
+	children_tree->set_time_adjustment(canvas_view->time_model()->visible_time_adjustment());
 
 	canvas_view->set_tree_model(get_name(),children_tree_store);
 	canvas_view->set_ext_widget(get_name(),children_tree);

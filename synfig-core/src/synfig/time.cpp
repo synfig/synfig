@@ -32,16 +32,22 @@
 #	include <config.h>
 #endif
 
-#include "time.h"
+#include <cassert>
+#include <cctype>
+#include <cmath>
+#include <cstdio>
+
+#include <algorithm>
+
 #include <ETL/stringf>
 #include <ETL/misc>
+
 #include "general.h"
+#include "real.h"
+
+#include "time.h"
+
 #include <synfig/localization.h>
-#include <cmath>
-#include <cassert>
-#include <algorithm>
-#include <cstdio>
-#include <ctype.h>
 
 #endif
 
@@ -282,16 +288,10 @@ Time::get_string(float fps, Time::Format format)const
 Time
 Time::round(float fps)const
 {
-	assert(fps>0);
-
-	value_type time(*this);
-
-	time*=fps;
-
-	if(abs(time-floor(time))<0.5)
-		return floor(time)/fps;
-	else
-		return ceil(time)/fps;
+	// the aim is to make results for the same frame are absolutelly idential
+	assert(approximate_greater_lp(fps, 0.f));
+	if (!approximate_greater_lp(fps, 0.f)) return *this;
+	return Time(floor(value_*fps + 0.5)/fps);
 }
 
 #ifdef _DEBUG

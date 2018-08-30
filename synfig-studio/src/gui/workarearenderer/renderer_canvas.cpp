@@ -353,7 +353,7 @@ Renderer_Canvas::build_onion_frames()
 
 	Time base_time;
 	if (CanvasView::Handle canvas_view = get_work_area()->get_canvas_view())
-		base_time = Time(canvas_view->time_adjustment()->get_value());
+		base_time = Time(canvas_view->get_time());
 
 	RendDesc       rend_desc = canvas->rend_desc();
 	float          fps       = rend_desc.get_frame_rate();

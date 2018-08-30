@@ -54,55 +54,83 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-FrameDial::FrameDial(): Gtk::Table(8, 1, false)
+FrameDial::FrameDial():
+	seek_begin         (create_button("synfig-animate_seek_begin"         , _("Seek to begin")            )),
+	seek_prev_keyframe (create_button("synfig-animate_seek_prev_keyframe" , _("Seek to previous keyframe"))),
+	seek_prev_frame    (create_button("synfig-animate_seek_prev_frame"    , _("Seek to previous frame")   )),
+	play               (create_button("synfig-animate_play"               , _("Play")                     )),
+	pause              (create_button("synfig-animate_pause"              , _("Pause")                    )),
+	seek_next_frame    (create_button("synfig-animate_seek_next_frame"    , _("Seek to next frame")       )),
+	seek_next_keyframe (create_button("synfig-animate_seek_next_keyframe" , _("Seek to next keyframe")    )),
+	seek_end           (create_button("synfig-animate_seek_end"           , _("Seek to end")              )),
+	repeat             (create_toggle("synfig-animate_repeat"             , _("Repeat")                   )),
+	bounds_enable      (create_toggle("synfig-animate_bounds_enable"      , _("Enable playback bounds")   )),
+	bound_lower        (create_button("synfig-animate_bound_lower"        , _("Left bound")               )),
+	bound_upper        (create_button("synfig-animate_bound_upper"        , _("Right bound")              ))
 {
-	seek_begin         = create_icon(Gtk::ICON_SIZE_BUTTON, "synfig-animate_seek_begin", _("Seek to begin"));
-	seek_prev_keyframe = create_icon(Gtk::ICON_SIZE_BUTTON, "synfig-animate_seek_prev_keyframe", _("Seek to previous keyframe"));
-	seek_prev_frame    = create_icon(Gtk::ICON_SIZE_BUTTON, "synfig-animate_seek_prev_frame", _("Seek to previous frame"));
-	play               = create_icon(Gtk::ICON_SIZE_BUTTON, "synfig-animate_play", _("Play"));
-	pause              = create_icon(Gtk::ICON_SIZE_BUTTON, "synfig-animate_pause", _("Pause"));
-	seek_next_frame    = create_icon(Gtk::ICON_SIZE_BUTTON, "synfig-animate_seek_next_frame", _("Seek to next frame"));
-	seek_next_keyframe = create_icon(Gtk::ICON_SIZE_BUTTON, "synfig-animate_seek_next_keyframe", _("Seek to next keyframe"));
-	seek_end           = create_icon(Gtk::ICON_SIZE_BUTTON, "synfig-animate_seek_end", _("Seek to end"));
-
-	attach(*seek_begin,			0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	attach(*seek_prev_keyframe, 1, 2, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	attach(*seek_prev_frame,	2, 3, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	attach(*play,				3, 4, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	attach(*pause,				3, 4, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	attach(*seek_next_frame,	4, 5, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	attach(*seek_next_keyframe,	5, 6, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	attach(*seek_end,			6, 7, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	pause->hide();
+	repeat->signal_toggled().connect(
+		sigc::mem_fun(*this, &FrameDial::on_repeat_toggled) );
+	bounds_enable->signal_toggled().connect(
+		sigc::mem_fun(*this, &FrameDial::on_bounds_toggled) );
+	toggle_play_pause_button(false);
 }
 
-Gtk::Button *
-FrameDial::create_icon(Gtk::IconSize iconsize, const char * stockid, const char * tooltip)
+void
+FrameDial::on_repeat_toggled()
+	{ signal_repeat()(repeat->get_active()); }
+
+void
+FrameDial::on_bounds_toggled()
+	{ signal_bounds_enable()(bounds_enable->get_active()); }
+
+void
+FrameDial::init_button(Gtk::Button &button, const char *stockid, const char *tooltip)
 {
-	iconsize = Gtk::IconSize::from_name("synfig-small_icon_16x16");
+	Gtk::IconSize iconsize = Gtk::IconSize::from_name("synfig-small_icon_16x16");
+
 	Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID(stockid), iconsize));
-	Gtk::Button *button = manage(new class Gtk::Button());
-	button->add(*icon);
-	button->set_tooltip_text(tooltip);
 	icon->set_padding(0, 0);
 	icon->show();
-	button->set_relief(Gtk::RELIEF_NONE);
-	button->show();
 
+	button.add(*icon);
+	button.set_tooltip_text(tooltip);
+	button.set_relief(Gtk::RELIEF_NONE);
+	button.show();
+	add(button);
+}
+
+Gtk::Button*
+FrameDial::create_button(const char *stockid, const char *tooltip)
+{
+	Gtk::Button *button = manage(new class Gtk::Button());
+	init_button(*button, stockid, tooltip);
 	return button;
+}
+
+Gtk::ToggleButton*
+FrameDial::create_toggle(const char *stockid, const char *tooltip)
+{
+	Gtk::ToggleButton *toggle = manage(new class Gtk::ToggleButton());
+	init_button(*toggle, stockid, tooltip);
+	return toggle;
 }
 
 void
 FrameDial::toggle_play_pause_button(bool is_playing)
 {
-	if(is_playing)
-	{
+	if (is_playing) {
+		play->hide();
+		pause->show();
+	} else {
 		pause->hide();
 		play->show();
 	}
-	else
-	{
-		play->hide();
-		pause->show();
-	}
 }
+
+void
+FrameDial::toggle_repeat(bool enable)
+	{ repeat->set_active(enable); }
+
+void
+FrameDial::toggle_bounds_enable(bool enable)
+	{ bounds_enable->set_active(enable); }

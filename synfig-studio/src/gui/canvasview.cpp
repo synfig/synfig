@@ -525,8 +525,7 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<CanvasIn
 	instance_                (instance),
 	canvas_interface_        (canvas_interface_),
 	context_params_          (true),
-	time_adjustment_         (Gtk::Adjustment::create(0,0,25,0,0,0)),
-	time_window_adjustment_  (new Adjust_Window(0,0,25,0,0,0)),
+	time_model_              (new TimeModel()),
 	statusbar                (manage(new class Gtk::Statusbar())),
 	jackbutton               (NULL),
 	offset_widget            (NULL),
@@ -545,13 +544,14 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<CanvasIn
 	jack_actual_enabled      (false),
 	jack_locks               (0),
 	jack_enabled_in_preview  (false),
-#ifdef WITH_JACK
+
+	#ifdef WITH_JACK
 	jack_client              (NULL),
 	jack_synchronizing       (true),
 	jack_is_playing          (false),
 	jack_time                (0),
 	toggling_jack            (false),
-#endif
+	#endif
 
 	ducks_locks              (0),
 	ducks_rebuild_requested  (false),
@@ -617,7 +617,7 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<CanvasIn
 	#define CONNECT(x, y) x().connect(sigc::mem_fun(*this, y))
 	CONNECT(canvas_interface()->signal_dirty_preview, &CanvasView::on_dirty_preview);
 	CONNECT(canvas_interface()->signal_mode_changed,  &CanvasView::on_mode_changed);
-	CONNECT(canvas_interface()->signal_time_changed,  &CanvasView::on_time_changed);
+	CONNECT(canvas_interface()->signal_time_changed,  &CanvasView::on_interface_time_changed);
 	#undef CONNECT
 
 	canvas_interface()->signal_id_changed().connect(sigc::mem_fun(*this,&CanvasView::on_id_changed));
@@ -626,40 +626,27 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<CanvasIn
 	waypoint_dialog.signal_delete().connect(sigc::mem_fun(*this,&CanvasView::on_waypoint_delete));
 
 	//MODIFIED TIME ADJUSTMENT STUFF....
-	time_window_adjustment()->set_child_adjustment(time_adjustment());
-	time_window_adjustment()->signal_value_changed().connect(sigc::mem_fun(*this,&CanvasView::refresh_time_window));
-	time_adjustment()->signal_value_changed().connect(sigc::mem_fun(*this,&CanvasView::time_was_changed));
+	time_model()->signal_time_changed().connect(
+		sigc::mem_fun(*this, &CanvasView::time_was_changed) );
+	time_model()->signal_visible_changed().connect(
+		sigc::mem_fun(*this, &CanvasView::refresh_time_window) );
 
 	work_area->signal_layer_selected().connect(sigc::mem_fun(*this,&CanvasView::workarea_layer_selected));
 	work_area->signal_input_device_changed().connect(sigc::mem_fun(*this,&CanvasView::on_input_device_changed));
 	work_area->signal_meta_data_changed().connect(sigc::mem_fun(*this,&CanvasView::on_meta_data_changed));
 
 	canvas_interface()->signal_canvas_added().connect(
-		sigc::hide(
-			sigc::mem_fun(*instance,&Instance::refresh_canvas_tree)
-		)
-	);
+		sigc::hide( sigc::mem_fun(*instance,&Instance::refresh_canvas_tree) ));
 	canvas_interface()->signal_canvas_removed().connect(
-		sigc::hide(
-			sigc::mem_fun(*instance,&Instance::refresh_canvas_tree)
-		)
-	);
-
+		sigc::hide( sigc::mem_fun(*instance,&Instance::refresh_canvas_tree) ));
 	canvas_interface()->signal_layer_param_changed().connect(
-		sigc::hide(	sigc::hide(
-			SLOT_EVENT(EVENT_REFRESH_DUCKS) )));
-
-	canvas_interface()->signal_keyframe_properties().connect(sigc::mem_fun(*this,&CanvasView::show_keyframe_dialog));
+		sigc::hide(sigc::hide( SLOT_EVENT(EVENT_REFRESH_DUCKS) )));
+	canvas_interface()->signal_keyframe_properties().connect(
+		sigc::mem_fun(*this,&CanvasView::show_keyframe_dialog) );
 
 	//MUCH TIME STUFF TAKES PLACE IN HERE
 	refresh_rend_desc();
 	refresh_time_window();
-
-	/*! \todo We shouldn't need to do this at construction --
-	**	This should be performed at the first time the window
-	** 	becomes visible.
-	*/
-	work_area->queue_render();
 
 	std::vector<Gtk::TargetEntry> listTargets;
 	listTargets.push_back( Gtk::TargetEntry("text/uri-list") );
@@ -669,15 +656,7 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<CanvasIn
 	drag_dest_set(listTargets);
 	signal_drag_data_received().connect( sigc::mem_fun(*this, &CanvasView::on_drop_drag_data_received) );
 
-	//info("Canvasview: Before Final time set up");
-	//MORE TIME STUFF
-	time_window_adjustment()->set_value(get_canvas()->rend_desc().get_time_start());
-	time_window_adjustment()->value_changed();
-
-	refresh_rend_desc();
 	hide_tables();
-
-	on_time_changed();
 	show();
 
 	instance->canvas_view_list().push_front(this);
@@ -693,6 +672,8 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<CanvasIn
 
 	App::dock_manager->register_dockable(*this);
 	App::main_window->main_dock_book().add(*this);
+
+	time_model()->changed();
 	present();
 	App::set_selected_canvas_view(this);
 }
@@ -874,19 +855,19 @@ Gtk::Widget*
 CanvasView::create_time_bar()
 {
 	//Setup the keyframe list widget
-	widget_kf_list->set_time_adjustment(time_adjustment());
+	widget_kf_list->set_time_adjustment(time_model()->visible_time_adjustment());
 	widget_kf_list->set_canvas_interface(canvas_interface());
 	widget_kf_list->show();
 
 	// Setup Time Slider
-	timeslider->set_time_adjustment(time_adjustment());
-	timeslider->set_bounds_adjustment(time_window_adjustment());
+	timeslider->set_time_adjustment(time_model()->visible_time_adjustment());
+	timeslider->set_bounds_adjustment(time_model()->scroll_time_adjustment());
 	timeslider->set_canvas_view(this);
 	timeslider->set_can_focus(true);
 	timeslider->show();
 
 	// Setup Time Scroll
-	Gtk::HScrollbar *time_window_scroll = manage(new class Gtk::HScrollbar(time_window_adjustment()));
+	Gtk::HScrollbar *time_window_scroll = manage(new class Gtk::HScrollbar(time_model()->scroll_time_adjustment()));
 	time_window_scroll->set_tooltip_text(_("Moves the time window"));
 	//time_window_scroll->set_can_focus(true); // Uncomment this produce bad render of the HScroll
 	time_window_scroll->show();
@@ -964,16 +945,29 @@ CanvasView::create_time_bar()
 	//Setup the FrameDial widget
 	framedial = manage(new class FrameDial());
 	framedial->signal_seek_begin().connect(
-			sigc::bind(sigc::mem_fun(*canvas_interface().get(), &CanvasInterface::seek_time), Time::begin())
-	);
-
-	framedial->signal_seek_prev_keyframe().connect(sigc::mem_fun(*canvas_interface().get(), &CanvasInterface::jump_to_prev_keyframe));
-	framedial->signal_seek_prev_frame().connect(sigc::bind(sigc::mem_fun(*canvas_interface().get(), &CanvasInterface::seek_frame), -1));
-	framedial->signal_play().connect(sigc::mem_fun(*this, &CanvasView::on_play_pause_pressed));
-	framedial->signal_pause().connect(sigc::mem_fun(*this, &CanvasView::on_play_pause_pressed));
-	framedial->signal_seek_next_frame().connect(sigc::bind(sigc::mem_fun(*canvas_interface().get(), &CanvasInterface::seek_frame), 1));
-	framedial->signal_seek_next_keyframe().connect(sigc::mem_fun(*canvas_interface().get(), &CanvasInterface::jump_to_next_keyframe));
-	framedial->signal_seek_end().connect(sigc::bind(sigc::mem_fun(*canvas_interface().get(), &CanvasInterface::seek_time), Time::end()));
+		sigc::bind(sigc::mem_fun(*canvas_interface().get(), &CanvasInterface::seek_time), Time::begin()) );
+	framedial->signal_seek_prev_keyframe().connect(
+		sigc::mem_fun(*canvas_interface().get(), &CanvasInterface::jump_to_prev_keyframe) );
+	framedial->signal_seek_prev_frame().connect(
+		sigc::bind(sigc::mem_fun(*canvas_interface().get(), &CanvasInterface::seek_frame), -1) );
+	framedial->signal_play().connect(
+		sigc::mem_fun(*this, &CanvasView::on_play_pause_pressed) );
+	framedial->signal_pause().connect(
+		sigc::mem_fun(*this, &CanvasView::on_play_pause_pressed) );
+	framedial->signal_seek_next_frame().connect(
+		sigc::bind(sigc::mem_fun(*canvas_interface().get(), &CanvasInterface::seek_frame), 1) );
+	framedial->signal_seek_next_keyframe().connect(
+		sigc::mem_fun(*canvas_interface().get(), &CanvasInterface::jump_to_next_keyframe) );
+	framedial->signal_seek_end().connect(
+		sigc::bind(sigc::mem_fun(*canvas_interface().get(), &CanvasInterface::seek_time), Time::end()) );
+	framedial->signal_repeat().connect(
+		sigc::mem_fun(*time_model(), &TimeModel::set_play_repeat) );
+	framedial->signal_bounds_enable().connect(
+		sigc::mem_fun(*time_model(), &TimeModel::set_play_bounds_enabled) );
+	framedial->signal_bound_lower().connect(
+		sigc::mem_fun(*time_model(), &TimeModel::set_play_bounds_lower_to_current) );
+	framedial->signal_bound_upper().connect(
+		sigc::mem_fun(*time_model(), &TimeModel::set_play_bounds_upper_to_current) );
 	framedial->show();
 
 	//Setup the KeyFrameDial widget
@@ -1751,129 +1745,27 @@ CanvasView::workarea_layer_selected(Layer::Handle layer)
 void
 CanvasView::refresh_rend_desc()
 {
+	Time begin_time =get_canvas()->rend_desc().get_time_start();
+	Time end_time = get_canvas()->rend_desc().get_time_end();
 	float current_frame_rate = get_canvas()->rend_desc().get_frame_rate();
-	current_time_widget->set_fps(current_frame_rate);
 
 	// "responsive" current time widget width on time format
+	const int current_time_min_lenght = 6;
 	int current_time_lenght = current_time_widget->get_value().get_string(current_frame_rate, App::get_time_format()).length();
-#define CURRENT_TIME_MIN_LENGHT 6
-	current_time_lenght = current_time_lenght < CURRENT_TIME_MIN_LENGHT ? CURRENT_TIME_MIN_LENGHT : current_time_lenght;
+	current_time_lenght = current_time_lenght < current_time_min_lenght ? current_time_min_lenght : current_time_lenght;
 	current_time_widget->set_width_chars(current_time_lenght);
-#undef CURRENT_TIME_MIN_LENGHT
 
+	current_time_widget->set_fps(current_frame_rate);
 	jackdial->set_fps(current_frame_rate);
 	widget_kf_list->set_fps(current_frame_rate);
-
-	//????
-	//info("Canvasview: Refreshing render desc info");
-	if(!get_time().is_equal(time_adjustment()->get_value()))
-	{
-		time_adjustment()->set_value(get_time());
-		time_adjustment()->value_changed();
-	}
-
-	Time length(get_canvas()->rend_desc().get_time_end()-get_canvas()->rend_desc().get_time_start());
-	if(length<DEFAULT_TIME_WINDOW_SIZE)
-	{
-		time_window_adjustment()->set_page_increment(length);
-		time_window_adjustment()->set_page_size(length);
-	}
-	else
-	{
-		time_window_adjustment()->set_page_increment(DEFAULT_TIME_WINDOW_SIZE);
-		time_window_adjustment()->set_page_size(DEFAULT_TIME_WINDOW_SIZE);
-	}
-
-	//set the FPS of the timeslider
 	timeslider->set_global_fps(current_frame_rate);
 
-	//set the beginning and ending time of the time slider
-	Time begin_time=get_canvas()->rend_desc().get_time_start();
-	Time end_time=get_canvas()->rend_desc().get_time_end();
+	time_model()->set_bounds(begin_time, end_time, current_frame_rate);
+	time_model()->set_visible_bounds(
+		time_model()->get_time() - Time(DEFAULT_TIME_WINDOW_SIZE)*0.5,
+		time_model()->get_time() + Time(DEFAULT_TIME_WINDOW_SIZE)*0.5 );
 
-	// Setup the time_window adjustment
-	time_window_adjustment()->set_lower(begin_time);
-	time_window_adjustment()->set_upper(end_time);
-	time_window_adjustment()->set_step_increment(Time(1.0/current_frame_rate));
-
-	//Time length(get_canvas()->rend_desc().get_time_end()-get_canvas()->rend_desc().get_time_start());
-	if(length < time_window_adjustment()->get_page_size())
-	{
-		time_window_adjustment()->set_page_increment(length);
-		time_window_adjustment()->set_page_size(length);
-	}
-
-	/*info("w: %p - [%.3f,%.3f] (%.3f,%.3f) child: %p\n",
-				&time_window_adjustment_, time_window_adjustment_->get_lower(),
-				time_window_adjustment_.get_upper(),time_window_adjustment_->get_value(),
-				time_window_adjustment_.get_page_size(),time_window_adjustment_->get_child_adjustment()
-	);*/
-
-	time_window_adjustment()->changed(); //only non-value stuff was changed
-
-	// Setup the time adjustment
-
-	//NOTE THESE TWO SHOULD BE CHANGED BY THE changed() CALL ABOVE
-	//time_adjustment()->set_lower(time_window_adjustment()->get_value());
-	//time_adjustment()->set_upper(time_window_adjustment()->get_value()+time_window_adjustment()->get_page_size());
-
-//	time_adjustment()->set_lower(get_canvas()->rend_desc().get_time_start());
-//	time_adjustment()->set_upper(get_canvas()->rend_desc().get_time_end());
-	time_adjustment()->set_step_increment(Time(1.0/current_frame_rate));
-	time_adjustment()->set_page_increment(Time(1.0));
-	time_adjustment()->set_page_size(0);
-
-	time_adjustment()->changed();
-
-	/*info("w: %p - [%.3f,%.3f] (%.3f,%.3f) child: %p\n",
-				&time_window_adjustment_, time_window_adjustment_->get_lower(),
-				time_window_adjustment_.get_upper(),time_window_adjustment_->get_value(),
-				time_window_adjustment_.get_page_size(),time_window_adjustment_->get_child_adjustment()
-	);	*/
-
-	if(begin_time==end_time)
-	{
-		hide_timebar();
-	}
-	else
-	{
-		show_timebar();
-	}
-
-	//clamp time to big bounds...
-	if(time_window_adjustment()->get_value() < begin_time)
-	{
-		time_window_adjustment()->set_value(begin_time);
-		time_window_adjustment()->value_changed();
-	}
-
-	if(time_window_adjustment()->get_value() + time_window_adjustment()->get_page_size() > end_time)
-	{
-		time_window_adjustment()->set_value(end_time - time_window_adjustment()->get_page_size());
-		time_window_adjustment()->value_changed();
-	}
-
-	if(time_adjustment()->get_value() < begin_time)
-	{
-		time_adjustment()->set_value(begin_time);
-		time_adjustment()->value_changed();
-	}
-
-	if(time_adjustment()->get_value() > end_time)
-	{
-		time_adjustment()->set_value(end_time);
-		time_adjustment()->value_changed();
-	}
-
-	/*info("Time stats: \n"
-				"w: %p - [%.3f,%.3f] (%.3f,%.3f) child: %p\n"
-				"t: %p - [%.3f,%.3f] %.3f",
-				&time_window_adjustment_, time_window_adjustment_->get_lower(),
-				time_window_adjustment_.get_upper(),time_window_adjustment_->get_value(),
-				time_window_adjustment_.get_page_size(),time_window_adjustment_->get_child_adjustment(),
-				&time_adjustment_,time_adjustment_.get_lower(),time_adjustment_->get_upper(),
-				time_adjustment_->get_value()
-	);*/
+	if (begin_time == end_time) hide_timebar(); else show_timebar();
 
 	work_area->queue_render();
 }
@@ -2266,135 +2158,67 @@ CanvasView::on_keyframe_tree_event(GdkEvent *event)
 void
 CanvasView::refresh_time_window()
 {
-	//THESE SHOULD AUTOMATICALLY BE TAKEN CARE OF
-	//time_adjustment()->set_lower(time_window_adjustment()->get_value());
-	//time_adjustment()->set_upper(time_window_adjustment()->get_value()+time_window_adjustment()->get_page_size());
-
-	time_adjustment()->set_page_increment(1.0); // One second
-	time_adjustment()->set_page_size(0);
-
-	if(get_canvas())
-		time_adjustment()->set_step_increment(1.0/get_canvas()->rend_desc().get_frame_rate());
-	time_adjustment()->changed();
-
 	//NOTE THIS SHOULD HOOK INTO THE CORRECT SIGNALS...
-	if(children_tree)
+	if (children_tree)
 		children_tree->queue_draw();
 }
 
 void
-CanvasView::on_time_changed()
-{
-	Time time(get_time());
+CanvasView::on_interface_time_changed()
+	{ time_model()->set_time(canvas_interface_->get_time()); }
 
-	if (!is_time_equal_to_current_frame(soundProcessor.get_position(), 0.5))
+void
+CanvasView::time_zoom_in()
+	{ time_model()->zoom(1.0/0.75); }
+
+void
+CanvasView::time_zoom_out()
+	{ time_model()->zoom(0.75); }
+
+void
+CanvasView::time_was_changed()
+{
+	Time time = time_model()->get_time();
+
+	if (canvas_interface_->get_time() != time)
+		canvas_interface_->set_time(time);
+
+	if (time_model()->almost_equal_to_current(soundProcessor.get_position(), Time(0.5)))
 		soundProcessor.set_position(time);
 
-#ifdef WITH_JACK
-	if (jack_enabled && !jack_synchronizing && !is_time_equal_to_current_frame(jack_time - get_jack_offset()))
+	#ifdef WITH_JACK
+	if ( jack_enabled
+	 && !jack_synchronizing
+	 && !time_model()->almost_equal_to_current(jack_time - get_jack_offset()) )
 	{
-		float fps = get_canvas()->rend_desc().get_frame_rate();
 		jack_nframes_t sr = jack_get_sample_rate(jack_client);
-		jack_nframes_t nframes = ((double)sr * (time + get_jack_offset()).round(fps));
+		jack_nframes_t nframes = (jack_nframes_t)((time + get_jack_offset())*(double)sr);
 		jack_transport_locate(jack_client, nframes);
 	}
-#endif
+	#endif
 
 	current_time_widget->set_value(time);
 	try {
 		get_canvas()->keyframe_list().find(time);
 		current_time_widget->override_color(Gdk::RGBA("#FF0000"));
-	}catch(...){
+	} catch(...) {
 		current_time_widget->override_color(Gdk::RGBA(0));
 	}
 
-	if(get_time() != time_adjustment()->get_value())
-	{
-		//Recenters the window, causing it to jump (possibly undesirably... but whatever)
-		if(time < time_window_adjustment()->get_value() ||
-			time > time_window_adjustment()->get_value()+time_window_adjustment()->get_page_size())
-		{
-			time_window_adjustment()->set_value(
-				time-time_window_adjustment()->get_page_size()/2
-			);
-		}
-		time_adjustment()->set_value(time);
-		time_adjustment()->value_changed();
-
-		// Shouldn't these trees just hook into
-		// the time changed signal...?
-		//YES THEY SHOULD...
-		if(layer_tree)layer_tree->queue_draw();
-		if(children_tree)children_tree->queue_draw();
-	}
-}
-
-void
-CanvasView::time_zoom_in()
-{
-	float frame_rate = get_canvas()->rend_desc().get_frame_rate();
-	Time min_page_size = 2/frame_rate;
-
-	time_window_adjustment()->set_page_size(time_window_adjustment()->get_page_size()*0.75);
-	if (time_window_adjustment()->get_page_size() < min_page_size)
-		time_window_adjustment()->set_page_size(min_page_size);
-	time_window_adjustment()->set_page_increment(time_window_adjustment()->get_page_size());
-	time_window_adjustment()->changed();
-
-	refresh_time_window();
-}
-
-void
-CanvasView::time_zoom_out()
-{
-	Time length = (get_canvas()->rend_desc().get_time_end() -
-				   get_canvas()->rend_desc().get_time_start());
-
-	time_window_adjustment()->set_page_size(time_window_adjustment()->get_page_size()/0.75);
-	if (time_window_adjustment()->get_page_size() > length)
-		time_window_adjustment()->set_page_size(length);
-	time_window_adjustment()->set_page_increment(time_window_adjustment()->get_page_size());
-	time_window_adjustment()->changed();
-
-	refresh_time_window();
-}
-
-void
-CanvasView::time_was_changed()
-{
-	Time time((Time)(double)time_adjustment()->get_value());
-	set_time(time);
+	// Shouldn't these trees just hook into
+	// the time changed signal...?
+	if (layer_tree) layer_tree->queue_draw();
+	if (children_tree) children_tree->queue_draw();
 	queue_rebuild_ducks();
 }
 
 void
 CanvasView::on_edited_value(ValueDesc value_desc,ValueBase new_value)
-{
-	canvas_interface()->change_value(value_desc,new_value);
-}
-
-/*
-void
-CanvasView::on_children_edited_value(const Glib::ustring&path_string,ValueBase value)
-{
-	Gtk::TreePath path(path_string);
-
-	const Gtk::TreeRow row = *(children_tree->get_model()->get_iter(path));
-
-	assert((bool)row[children_tree_model.is_value_node]);
-
-	ValueDesc value_desc=row[children_tree_model.value_desc];
-	assert(value_desc);
-
-	on_edited_value(value_desc,value);
-}
-*/
+	{ canvas_interface()->change_value(value_desc,new_value); }
 
 void
 CanvasView::on_id_changed()
-{
-	update_title();
-}
+	{ update_title(); }
 
 void
 CanvasView::on_mode_changed(CanvasInterface::Mode mode)
@@ -2746,11 +2570,11 @@ CanvasView::play_async()
 	if (is_playing()) return;
 
 	playing_timer.reset();
-	playing_time = get_time();
+	playing_time = time_model()->get_actual_play_time();
 
 	// If we are already at the end of time, start over
-	if (playing_time == get_canvas()->rend_desc().get_time_end())
-		playing_time = get_canvas()->rend_desc().get_time_start();
+	if (playing_time >= time_model()->get_actual_play_bounds_lower())
+		playing_time = time_model()->get_actual_play_bounds_upper();
 
 	ducks_playing_lock = new LockDucks(*this);
 
@@ -2760,11 +2584,11 @@ CanvasView::play_async()
 	int timeout = fps <= 0.f ? 0 : (int)roundf(500.f/fps);
 	if (timeout < 10) timeout = 10;
 
-	framedial->toggle_play_pause_button(!is_playing());
+	framedial->toggle_play_pause_button(is_playing());
 
 	soundProcessor.clear();
 	canvas_interface()->get_canvas()->fill_sound_processor(soundProcessor);
-	soundProcessor.set_position(canvas_interface()->get_canvas()->get_time());
+	soundProcessor.set_position(playing_time);
 	soundProcessor.set_playing(true);
 
 	playing_connection = Glib::signal_timeout().connect(
@@ -2779,64 +2603,62 @@ CanvasView::stop_async()
 	playing_connection.disconnect();
 	soundProcessor.set_playing(false);
 	ducks_playing_lock.reset();
-	framedial->toggle_play_pause_button(!is_playing());
+	framedial->toggle_play_pause_button(is_playing());
 }
 
 void
 CanvasView::on_play_timeout()
 {
-	Time time;
 	// Used ifdef WITH_JACK
-	Time starttime = get_canvas()->rend_desc().get_time_start();
-	Time endtime = get_canvas()->rend_desc().get_time_end();
+	bool repeat = time_model()->get_play_repeat();
+	Time lower = time_model()->get_actual_play_bounds_lower();
+	Time upper = time_model()->get_actual_play_bounds_upper();
 
-	if (jack_enabled)
-	{
-#ifdef WITH_JACK
+	Time time;
+	if (jack_enabled) {
+		#ifdef WITH_JACK
 		jack_position_t pos;
 		jack_transport_query(jack_client, &pos);
 		jack_time = Time((Time::value_type)pos.frame/(Time::value_type)pos.frame_rate);
-		time = jack_time - get_jack_offset();
-		if (time > endtime) time = endtime;
-		if (time < starttime) time = starttime;
-#endif
-	}
-	else
-	{
-		time = playing_time + playing_timer();
-		if (time >= endtime) {
-			time_adjustment()->set_value(endtime);
-			time_adjustment()->value_changed();
+		time = time_model()->round_time(jack_time - get_jack_offset());
+		if (repeat) {
+			if (time > upper) {
+				time = time_model()->round_time(time - upper + lower);
+				jack_nframes_t sr = jack_get_sample_rate(jack_client);
+				jack_nframes_t nframes = (jack_nframes_t)round((double)(time + get_jack_offset())/(double)sr);
+				jack_transport_locate(jack_client, nframes);
+			}
+		}
+		time = std::max(lower, std::min(upper, time));
+		#endif
+	} else {
+		time = time_model()->round_time(playing_time + playing_timer());
+		if (repeat) {
+			if (time > upper) {
+				playing_timer.pop_time();
+				time = time_model()->round_time(time - upper + lower);
+			}
+		} else
+		if (time >= upper) {
+			time_model()->set_time(upper);
 			stop_async();
 			return;
 		}
 	}
 
-	//Clamp the time window so we can see the time value as it races across the horizon
-	bool timewindreset = false;
-
-	while( time > Time(time_window_adjustment()->get_sub_upper()) ) {
-		time_window_adjustment()->set_value(
-			std::min(
-				time_window_adjustment()->get_value()+time_window_adjustment()->get_page_size()/2,
-				time_window_adjustment()->get_upper()-time_window_adjustment()->get_page_size() ));
-		timewindreset = true;
+	// scroll the time window so we can see the time value as it races across the horizon
+	Time::value_type step = (Time::value_type)(time_model()->get_page_size())*0.5;
+	if (time < time_model()->get_visible_lower()) {
+		Time::value_type dist = (Time::value_type)(time_model()->get_visible_lower() - time);
+		time_model()->move_by( -Time(ceil(dist/step)*step) );
+	} else
+	if (time > time_model()->get_visible_upper()) {
+		Time::value_type dist = (Time::value_type)(time - time_model()->get_visible_upper());
+		time_model()->move_by( Time(ceil(dist/step)*step) );
 	}
 
-	while( time < Time(time_window_adjustment()->get_sub_lower()) ) {
-		time_window_adjustment()->set_value(
-			std::max(
-				time_window_adjustment()->get_value()-time_window_adjustment()->get_page_size()/2,
-				time_window_adjustment()->get_lower() ));
-		timewindreset = true;
-	}
-
-	//we need to tell people that the value changed
-	if(timewindreset) time_window_adjustment()->value_changed();
-
-	//update actual time to next step
-	time_adjustment()->set_value(time);
-	time_adjustment()->value_changed();
+	// update actual time to next step
+	time_model()->set_time(time);
 
 	work_area->sync_render(false);
 }
@@ -3716,30 +3538,6 @@ CanvasView::on_play_pause_pressed()
 	}
 }
 
-bool
-CanvasView::is_time_equal_to_current_frame(const Time &time, const Time &range)
-{
-	float fps(get_canvas()->rend_desc().get_frame_rate());
-	Time starttime = get_canvas()->rend_desc().get_time_start();
-	Time endtime = get_canvas()->rend_desc().get_time_end();
-
-	Time t0 = get_time();
-	Time t1 = time;
-
-	if (fps != 0.f) {
-		t0 = t0.round(fps);
-		t1 = t1.round(fps);
-	}
-
-	t0 = std::max(starttime, std::min(endtime, t0));
-	t1 = std::max(starttime, std::min(endtime, t1));
-	double epsilon = std::max(range, Time::epsilon());
-	double dt0 = t0;
-	double dt1 = t1;
-
-	return fabs(dt0 - dt1) <= epsilon;
-}
-
 #ifdef WITH_JACK
 void
 CanvasView::toggle_jack_button()
@@ -3799,22 +3597,16 @@ CanvasView::on_jack_sync()
 	jack_is_playing = state == JackTransportRolling || state == JackTransportStarting;
 	jack_time = Time((Time::value_type)pos.frame/(Time::value_type)pos.frame_rate);
 
-	if (is_playing() != jack_is_playing)
-	{
+	if (is_playing() != jack_is_playing) {
 		if (jack_is_playing)
 			play_async();
 		else
 			stop_async();
 	}
 
-	if (!is_time_equal_to_current_frame(jack_time - get_jack_offset()))
-	{
-		jack_synchronizing = true;
-		set_time(jack_time - get_jack_offset());
-		time_adjustment()->set_value(get_time());
-		time_adjustment()->value_changed();
-		jack_synchronizing = false;
-	}
+	jack_synchronizing = true;
+	time_model()->set_time(jack_time - get_jack_offset());
+	jack_synchronizing = false;
 }
 
 
