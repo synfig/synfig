@@ -241,7 +241,7 @@ Time::get_string(float fps, Time::Format format)const
 			if (!(format<=FORMAT_NOSPACES) && started)
 				ret += " ";
 
-			if(abs(frame-floor(frame) >= epsilon_()))
+			if (fabs(frame-floor(frame)) >= epsilon_())
 				ret += strprintf("%0.3ff", frame);
 			else
 				ret += strprintf("%0.0ff", frame);
