@@ -27,6 +27,8 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <vector>
+
 #include <synfig/string.h>
 #include <synfigapp/inputdevice.h>
 
@@ -36,13 +38,20 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
+namespace Glib { template<class T> class RefPtr; }
+namespace Gdk { class Device; }
+
 namespace studio {
+
+typedef std::vector< Glib::RefPtr<Gdk::Device> > DeviceList;
 
 class DeviceTracker
 {
 public:
 	DeviceTracker();
 	~DeviceTracker();
+
+	static void list_devices(DeviceList &out_devices);
 
 	void save_preferences();
 	void load_preferences();

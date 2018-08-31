@@ -34,12 +34,16 @@
 #	include <config.h>
 #endif
 
+#include <gdkmm/device.h>
+#include <gdkmm/display.h>
+#include <gdkmm/displaymanager.h>
+#include <gdkmm/seat.h>
+
 #include <synfig/general.h>
 
-#include "devicetracker.h"
-#include <gdk/gdk.h>
-#include <gtk/gtk.h>
 #include <synfigapp/main.h>
+
+#include "devicetracker.h"
 
 #include <gui/localization.h>
 
@@ -47,9 +51,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
-using namespace synfig;
 using namespace synfigapp;
 using namespace studio;
 
@@ -61,157 +62,146 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
+void
+DeviceTracker::list_devices(DeviceList &out_devices)
+{
+	out_devices.clear();
+	Glib::RefPtr<Gdk::Seat> seat = Gdk::DisplayManager::get()->get_default_display()->get_default_seat();
+	if (seat->get_keyboard())
+		out_devices.push_back(seat->get_keyboard());
+	if (seat->get_pointer())
+		out_devices.push_back(seat->get_pointer());
+	DeviceList slaves = seat->get_slaves(Gdk::SEAT_CAPABILITY_NONE);
+	out_devices.reserve(out_devices.size() + slaves.size());
+	out_devices.insert(out_devices.end(), slaves.begin(), slaves.end());
+}
+
 DeviceTracker::DeviceTracker()
 {
-	GdkDeviceType device_types[] =
-	{
-		GDK_DEVICE_TYPE_MASTER,
-		GDK_DEVICE_TYPE_SLAVE,
-		GDK_DEVICE_TYPE_FLOATING
-	};
+	DeviceList devices;
+	list_devices(devices);
+	for(DeviceList::const_iterator i = devices.begin(); i != devices.end(); ++i) {
+		const Glib::RefPtr<Gdk::Device> &device = *i;
 
-	for(int i = 0; i < (int)(sizeof(device_types)/sizeof(device_types[0])); ++i)
-	{
-		GList *device_list = gdk_device_manager_list_devices(
-			gdk_display_get_device_manager(
-				gdk_display_manager_get_default_display(
-					gdk_display_manager_get() )),
-			device_types[i] );
-
-		for(GList *iter=device_list; iter; iter=g_list_next(iter))
-		{
-			GdkDevice* device=reinterpret_cast<GdkDevice*>(iter->data);
-
-			synfigapp::InputDevice::Handle input_device;
-			input_device=synfigapp::Main::add_input_device(
-				gdk_device_get_name(device),
-				synfigapp::InputDevice::Type(gdk_device_get_source(device)) );
-			//Disable all extended devices by default. This tries to fix several
-			// bugs reported in track and forums
-			if(	input_device->get_type()==synfigapp::InputDevice::TYPE_MOUSE  ||
-				input_device->get_type()==synfigapp::InputDevice::TYPE_PEN    ||
-				input_device->get_type()==synfigapp::InputDevice::TYPE_ERASER ||
-				input_device->get_type()==synfigapp::InputDevice::TYPE_CURSOR  )
-			{
-				input_device->set_mode(synfigapp::InputDevice::MODE_DISABLED);
-				//synfigapp::Main::select_input_device(input_device);
-			}
+		bool unknown_type = false;
+		InputDevice::Type type = InputDevice::TYPE_MOUSE;
+		switch(device->get_source()) {
+		case Gdk::SOURCE_MOUSE:  type = InputDevice::TYPE_MOUSE;  break;
+		case Gdk::SOURCE_PEN:    type = InputDevice::TYPE_PEN;    break;
+		case Gdk::SOURCE_ERASER: type = InputDevice::TYPE_ERASER; break;
+		case Gdk::SOURCE_CURSOR: type = InputDevice::TYPE_CURSOR; break;
+		default: unknown_type = true; break;
 		}
 
-		g_list_free(device_list);
+		InputDevice::Handle input_device;
+		input_device = synfigapp::Main::add_input_device(device->get_name(), type);
+
+		// Disable all extended devices by default.
+		// This tries to fix several bugs reported in track and forums
+		if (!unknown_type) {
+			input_device->set_mode(InputDevice::MODE_DISABLED);
+			//synfigapp::Main::select_input_device(input_device);
+		}
 	}
 
 	// Once all devices are disabled be sure that the core pointer is the
 	// one selected. The user should decide later whether enable and save the
 	// rest of input devices found.
-	synfigapp::Main::select_input_device(
-		gdk_device_get_name(
-			gdk_device_manager_get_client_pointer(
-				gdk_display_get_device_manager(
-					gdk_display_manager_get_default_display(
-						gdk_display_manager_get() )))));
+	Glib::RefPtr<Gdk::Seat> seat = Gdk::DisplayManager::get()->get_default_display()->get_default_seat();
+	if (seat->get_pointer())
+		synfigapp::Main::select_input_device(seat->get_pointer()->get_name());
 }
 
 DeviceTracker::~DeviceTracker()
-{
-}
+	{ }
 
 void
 DeviceTracker::save_preferences()
 {
-	GdkDeviceType device_types[] =
-	{
-		GDK_DEVICE_TYPE_MASTER,
-		GDK_DEVICE_TYPE_SLAVE,
-		GDK_DEVICE_TYPE_FLOATING
-	};
+	DeviceList devices;
+	list_devices(devices);
+	for(DeviceList::const_iterator i = devices.begin(); i != devices.end(); ++i) {
+		const Glib::RefPtr<Gdk::Device> &device = *i;
 
-	for(int i = 0; i < (int)(sizeof(device_types)/sizeof(device_types[0])); ++i)
-	{
-		GList *device_list = gdk_device_manager_list_devices(
-			gdk_display_get_device_manager(
-				gdk_display_manager_get_default_display(
-					gdk_display_manager_get() )),
-			device_types[i] );
+		InputDevice::Handle synfig_device = synfigapp::Main::find_input_device(device->get_name());
+		if (!synfig_device)
+			continue;
 
-		for(GList *itr=device_list; itr; itr=g_list_next(itr))
-		{
-			GdkDevice * gdk_device = reinterpret_cast<GdkDevice*>(itr->data);
+		InputDevice::Mode mode = InputDevice::MODE_DISABLED;
+		switch(device->get_mode()) {
+		case Gdk::MODE_SCREEN: mode = InputDevice::MODE_SCREEN;  break;
+		case Gdk::MODE_WINDOW: mode = InputDevice::MODE_WINDOW;  break;
+		default: break;
+		}
+		synfig_device->set_mode(mode);
 
-			InputDevice::Handle synfig_device =
-				synfigapp::Main::find_input_device(
-					gdk_device_get_name(gdk_device) );
-			if (!synfig_device)
-				continue;
-
-			synfig_device->set_mode(InputDevice::Mode(gdk_device_get_mode(gdk_device)));
-			int n_axes = 0;
-			if (gdk_device_get_source (gdk_device) != GDK_SOURCE_KEYBOARD) n_axes = gdk_device_get_n_axes(gdk_device);
-			if (n_axes > 0) {
-				vector<synfigapp::InputDevice::AxisUse> axes(n_axes);
-				for(int j = 0; j < n_axes; ++j)
-					axes[j] = InputDevice::AxisUse(gdk_device_get_axis_use(gdk_device, j));
-				synfig_device->set_axes(axes);
-			}
-
-			int n_keys = gdk_device_get_n_keys(gdk_device);
-			if (n_keys > 0) {
-				vector<synfigapp::InputDevice::DeviceKey> keys(n_keys);
-				for(int j = 0; j < n_keys; ++j) {
-					guint gdk_keyval = 0;
-					GdkModifierType gdk_modifiers = GdkModifierType();
-					gdk_device_get_key(gdk_device, j, &gdk_keyval, &gdk_modifiers);
-					keys[i].keyval = gdk_keyval;
-					keys[i].modifiers = gdk_modifiers;
+		int n_axes = device->get_source() == Gdk::SOURCE_KEYBOARD ? 0 : device->get_axes();
+		if (n_axes > 0) {
+			std::vector<InputDevice::AxisUse> axes(n_axes);
+			for(int j = 0; j < n_axes; ++j)
+				switch(device->get_axis_use(j)) {
+				case Gdk::AXIS_X:        axes[j] = InputDevice::AXIS_X; break;
+				case Gdk::AXIS_Y:        axes[j] = InputDevice::AXIS_Y; break;
+				case Gdk::AXIS_PRESSURE: axes[j] = InputDevice::AXIS_PRESSURE; break;
+				case Gdk::AXIS_XTILT:    axes[j] = InputDevice::AXIS_XTILT; break;
+				case Gdk::AXIS_YTILT:    axes[j] = InputDevice::AXIS_YTILT; break;
+				case Gdk::AXIS_WHEEL:    axes[j] = InputDevice::AXIS_WHEEL; break;
+				case Gdk::AXIS_LAST:     axes[j] = InputDevice::AXIS_LAST; break;
+				default:                 axes[j] = InputDevice::AXIS_IGNORE; break;
 				}
-				synfig_device->set_keys(keys);
-			}
+			synfig_device->set_axes(axes);
 		}
 
-		g_list_free(device_list);
+		int n_keys = device->get_n_keys();
+		if (n_keys > 0) {
+			std::vector<InputDevice::DeviceKey> keys(n_keys);
+			for(int j = 0; j < n_keys; ++j) {
+				guint gdk_keyval = 0;
+				Gdk::ModifierType gdk_modifiers = Gdk::ModifierType();
+				device->get_key(j, gdk_keyval, gdk_modifiers);
+				keys[j].keyval = gdk_keyval;
+				keys[j].modifiers = gdk_modifiers;
+			}
+			synfig_device->set_keys(keys);
+		}
 	}
 }
 
 void
 DeviceTracker::load_preferences()
 {
-	GdkDeviceType device_types[] =
-	{
-		GDK_DEVICE_TYPE_MASTER,
-		GDK_DEVICE_TYPE_SLAVE,
-		GDK_DEVICE_TYPE_FLOATING
-	};
+	DeviceList devices;
+	list_devices(devices);
+	for(DeviceList::const_iterator i = devices.begin(); i != devices.end(); ++i) {
+		const Glib::RefPtr<Gdk::Device> &device = *i;
 
-	for(int i = 0; i < (int)(sizeof(device_types)/sizeof(device_types[0])); ++i)
-	{
-		GList *device_list = gdk_device_manager_list_devices(
-			gdk_display_get_device_manager(
-				gdk_display_manager_get_default_display(
-					gdk_display_manager_get() )),
-			device_types[i] );
+		InputDevice::Handle synfig_device = synfigapp::Main::find_input_device(device->get_name());
+		if (!synfig_device)
+			continue;
 
-		for(GList *itr=device_list; itr; itr=g_list_next(itr))
-		{
-			GdkDevice * gdk_device = reinterpret_cast<GdkDevice*>(itr->data);
-
-			InputDevice::Handle synfig_device =
-				synfigapp::Main::find_input_device(
-					gdk_device_get_name(gdk_device) );
-			if (!synfig_device)
-				continue;
-
-			gdk_device_set_mode(gdk_device, GdkInputMode(synfig_device->get_mode()));
-
-			const std::vector<synfigapp::InputDevice::AxisUse> axes = synfig_device->get_axes();
-			for (int axis = 0; axis < (int) axes.size(); axis++)
-				gdk_device_set_axis_use(gdk_device, axis, GdkAxisUse(axes[axis]));
-
-			const std::vector<synfigapp::InputDevice::DeviceKey> keys = synfig_device->get_keys();
-			for (int key = 0; key < (int) keys.size(); key++)
-				gdk_device_set_key(gdk_device, key, keys[key].keyval,
-						GdkModifierType(keys[key].modifiers));
+		Gdk::InputMode gdk_mode = Gdk::MODE_DISABLED;
+		switch(synfig_device->get_mode()) {
+		case InputDevice::MODE_SCREEN: gdk_mode = Gdk::MODE_SCREEN;  break;
+		case InputDevice::MODE_WINDOW: gdk_mode = Gdk::MODE_WINDOW;  break;
+		default: break;
 		}
+		device->set_mode(gdk_mode);
 
-		g_list_free(device_list);
+		const std::vector<InputDevice::AxisUse> axes = synfig_device->get_axes();
+		for(int axis = 0; axis < (int)axes.size(); ++axis)
+			switch(axes[axis]) {
+			case InputDevice::AXIS_X:        device->set_axis_use(axis, Gdk::AXIS_X);        break;
+			case InputDevice::AXIS_Y:        device->set_axis_use(axis, Gdk::AXIS_Y);        break;
+			case InputDevice::AXIS_PRESSURE: device->set_axis_use(axis, Gdk::AXIS_PRESSURE); break;
+			case InputDevice::AXIS_XTILT:    device->set_axis_use(axis, Gdk::AXIS_XTILT);    break;
+			case InputDevice::AXIS_YTILT:    device->set_axis_use(axis, Gdk::AXIS_YTILT);    break;
+			case InputDevice::AXIS_WHEEL:    device->set_axis_use(axis, Gdk::AXIS_WHEEL);    break;
+			case InputDevice::AXIS_LAST:     device->set_axis_use(axis, Gdk::AXIS_LAST);     break;
+			default:                         device->set_axis_use(axis, Gdk::AXIS_IGNORE);   break;
+			}
+
+		const std::vector<InputDevice::DeviceKey> keys = synfig_device->get_keys();
+		for (int key = 0; key < (int) keys.size(); key++)
+			device->set_key(key, keys[key].keyval, Gdk::ModifierType(keys[key].modifiers));
 	}
 }

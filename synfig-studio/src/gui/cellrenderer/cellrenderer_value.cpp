@@ -443,21 +443,13 @@ CellRenderer_ValueBase::render_vfunc(
 		Glib::RefPtr<Gtk::StyleContext> context = widget.get_style_context();
 		context->context_save();
 		Gtk::StateFlags state = get_state(widget, flags);
-#if (GTKMM_MAJOR_VERSION == 3 && GTKMM_MINOR_VERSION >= 14)
 		state &= ~(Gtk::STATE_FLAG_INCONSISTENT | Gtk::STATE_FLAG_ACTIVE | Gtk::STATE_FLAG_CHECKED);
-#else
-		state &= ~(Gtk::STATE_FLAG_INCONSISTENT | Gtk::STATE_FLAG_ACTIVE);
-#endif
 		if ((flags & Gtk::CELL_RENDERER_SELECTED) != 0 && widget.has_focus())
 			state |= Gtk::STATE_FLAG_SELECTED;
 		if (!property_editable())
 			state |= Gtk::STATE_FLAG_INSENSITIVE;
 		if (data.get(bool()))
-#if (GTKMM_MAJOR_VERSION == 3 && GTKMM_MINOR_VERSION >= 14)
 			state |= Gtk::STATE_FLAG_CHECKED;
-#else
-			state |= Gtk::STATE_FLAG_ACTIVE;
-#endif
 
 		cr->save();
 		Gdk::Cairo::add_rectangle_to_path(cr, cell_area);

@@ -2184,7 +2184,7 @@ App::apply_gtk_settings()
 	// Fix GtkPaned (big margin makes it hard to grab first keyframe))
 	data += "GtkPaned { margin: 2px; }\n";
 	// Fix #348: Synfig's Interface went Too Thick
-	// following css works for gtk 3.14:
+	// following css works in gtk since 3.14:
 	data += ".button                            { padding-left: 4px; padding-right: 4px; }\n";
 	data += ".button                            { padding-top: 0px; padding-bottom: 0px; }\n";
 	data += ".button *                          { padding-top: 4px; padding-bottom: 4px; }\n";
@@ -2193,19 +2193,11 @@ App::apply_gtk_settings()
 	data += ".button > GtkLabel                 { padding-top: 0px; padding-bottom: 0px; }\n";
 	data += "GtkComboBox > .button > GtkBox > * { padding-top: 0px; padding-bottom: 0px; }\n";
 	data += ".entry                             { padding-top: 0px; padding-bottom: 0px; }\n";
-	// following css works for gtk 3.22:
-#ifdef __APPLE__
-	// This is a temporary fix as we do not have gtk 3.22 on OSX build yet --KD
-	data += "button { padding: 0px; }\n";
-#else
+	// following css works in gtk since 3.22:
 	data += "button { min-height: 16px; min-width: 16px; padding: 0px; }\n";
-#endif
 	data += "button > box { padding: 5px; }\n";
 	data += "button > image { padding: 5px; }\n";
-#ifndef __APPLE__
-	// This is a temporary fix as we do not have gtk 3.22 on OSX build yet --KD
 	data += "entry, spinbutton { min-height: 16px; }\n";
-#endif
 	data += "combobox > box > button > box { padding-top: 0px; padding-bottom: 0px; }\n";
 	// Fix #810: Insetsetive context menus on OSX
 	g_object_get (G_OBJECT (gtk_settings), "gtk-theme-name", &theme_name, NULL);
@@ -3375,7 +3367,9 @@ App::dialog_message_3b(const std::string &message,
 static bool
 try_open_uri(const std::string &uri)
 {
-	return gtk_show_uri(NULL, uri.c_str(), GDK_CURRENT_TIME, NULL);
+	return gtk_show_uri_on_window(
+		App::main_window ? App::main_window->gobj() : NULL,
+		uri.c_str(), GDK_CURRENT_TIME, NULL );
 }
 
 void

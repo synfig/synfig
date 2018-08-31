@@ -29,11 +29,9 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-
 #include <vector>
 
-#include <gtk/gtk.h>
+#include <gdkmm/device.h>
 
 #include <gtkmm/scrolledwindow.h>
 #include <gtkmm/table.h>
@@ -41,8 +39,13 @@
 #include <gtkmm/comboboxtext.h>
 #include <gtkmm/separator.h>
 
-#include "dialog_input.h"
+#include <synfig/general.h>
+
 #include <synfigapp/main.h>
+
+#include <gui/devicetracker.h>
+
+#include "dialog_input.h"
 
 #include <gui/localization.h>
 
@@ -50,8 +53,8 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
+using namespace synfig;
+using namespace synfigapp;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -63,49 +66,38 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 struct Dialog_Input::DeviceOptions {
-	struct Axis
-	{
-		GdkAxisUse use;
-		Axis(): use() { }
+	struct Axis {
+		Gdk::AxisUse use;
+		Axis(): use(Gdk::AXIS_IGNORE) { }
 	};
-
 	typedef std::vector<Axis> AxisList;
 
-	struct Key
-	{
+	struct Key {
 		guint val;
-		GdkModifierType modifiers;
+		Gdk::ModifierType modifiers;
 		Key(): val(), modifiers() { }
 	};
-
 	typedef std::vector<Key> KeyList;
 
-	struct Device
-	{
-		GdkDevice *handle;
+	struct Device {
+		Glib::RefPtr<Gdk::Device> device;
 		std::string name;
-		GdkInputMode mode;
+		Gdk::InputMode mode;
 		AxisList axes;
 		KeyList keys;
-		Device(): handle(), mode() { }
+		Device(): mode(Gdk::MODE_DISABLED) { }
 	};
-
 	typedef std::vector<Device> DeviceList;
 
 	DeviceList devices;
 
-	void on_mode_comboboxtext_changed(Gtk::ComboBoxText *comboboxtext, Device *device)
-	{
-		int i = comboboxtext->get_active_row_number();
-		switch(i) {
-		case GDK_MODE_SCREEN:
-		case GDK_MODE_WINDOW:
-			device->mode = (GdkInputMode)i;
-			break;
-		default:
-			device->mode = GDK_MODE_DISABLED;
-			break;
-		}
+	void on_mode_comboboxtext_changed(Gtk::ComboBoxText *comboboxtext, int device_index) {
+		if (device_index < 0 || device_index >= (int)devices.size()) return;
+		Device &device = devices[device_index];
+		std::string id = comboboxtext->get_active_id();
+		device.mode = id == "screen" ? Gdk::MODE_SCREEN
+				    : id == "window" ? Gdk::MODE_WINDOW
+				    :                  Gdk::MODE_DISABLED;
 	}
 };
 
@@ -137,66 +129,44 @@ void Dialog_Input::take_options()
 {
 	options->devices.clear();
 
-	static const GdkDeviceType device_types[] =
-	{
-		GDK_DEVICE_TYPE_MASTER,
-		GDK_DEVICE_TYPE_SLAVE,
-		GDK_DEVICE_TYPE_FLOATING
-	};
+	DeviceList devices;
+	DeviceTracker::list_devices(devices);
+	for(DeviceList::const_iterator i = devices.begin(); i != devices.end(); ++i) {
+		const Glib::RefPtr<Gdk::Device> &device = *i;
 
-	for(int i = 0; i < (int)(sizeof(device_types)/sizeof(device_types[0])); ++i)
-	{
-		GList *device_list = gdk_device_manager_list_devices(
-			gdk_display_get_device_manager(
-				gdk_display_manager_get_default_display(
-					gdk_display_manager_get() )),
-			device_types[i] );
+		if (!synfigapp::Main::find_input_device(device->get_name()))
+			continue;
 
-		for(GList *itr=device_list; itr; itr=g_list_next(itr))
-		{
-			GdkDevice * gdk_device = reinterpret_cast<GdkDevice*>(itr->data);
+		options->devices.push_back(DeviceOptions::Device());
+		DeviceOptions::Device &device_options = options->devices.back();
 
-			if (!synfigapp::Main::find_input_device(gdk_device_get_name(gdk_device)))
-				continue;
+		device_options.device = device;
+		device_options.name = device->get_name();
 
-			options->devices.push_back(DeviceOptions::Device());
-			DeviceOptions::Device &device_options = options->devices.back();
+		// allow to select device mode
+		device_options.mode = device->get_mode();
 
-			device_options.handle = gdk_device;
-			device_options.name = gdk_device_get_name(gdk_device);
+		// allow to select device axis usage (ignore axes of keyboard devices, why?)
+		device_options.axes.resize(device->get_source() == Gdk::SOURCE_KEYBOARD ? 0 : device->get_n_axes());
+		for(int j = 0; j < (int)device_options.axes.size(); ++j)
+			device_options.axes[j].use = device->get_axis_use(j);
 
-			// allow to select device mode
-			device_options.mode = gdk_device_get_mode(gdk_device);
-
-			// allow to select device axis usage
-
-			int n_axes = 0;
-			if (gdk_device_get_source (gdk_device) != GDK_SOURCE_KEYBOARD) n_axes = gdk_device_get_n_axes(gdk_device);
-			device_options.axes.resize( n_axes );
-			for(int j = 0; j < n_axes; ++j)
-				device_options.axes[j].use = gdk_device_get_axis_use(gdk_device, j);
-
-			// allow to select device keys
-			device_options.keys.resize( gdk_device_get_n_keys(gdk_device) );
-			for(int j = 0; j < (int)device_options.keys.size(); ++j)
-				gdk_device_get_key(gdk_device, j, &device_options.keys[j].val, &device_options.keys[j].modifiers);
-		}
-
-		g_list_free(device_list);
+		// allow to select device keys
+		device_options.keys.resize( device->get_n_keys() );
+		for(int j = 0; j < (int)device_options.keys.size(); ++j)
+			device->get_key(j, device_options.keys[j].val, device_options.keys[j].modifiers);
 	}
 }
 
 void Dialog_Input::create_widgets()
 {
-	if (scrolled_window != NULL)
-	{
+	if (scrolled_window != NULL) {
 		get_content_area()->remove(*scrolled_window);
 		scrolled_window = NULL;
 	}
 
 	// Devices
-	if (!options->devices.empty())
-	{
+	if (!options->devices.empty()) {
 		scrolled_window = Gtk::manage(new Gtk::ScrolledWindow());
 		Gtk::Table *table = Gtk::manage(new Gtk::Table((int)options->devices.size() + 1, 2));
 
@@ -209,14 +179,18 @@ void Dialog_Input::create_widgets()
 			table->attach(*label, 0, 1, row, row+1, Gtk::EXPAND | Gtk::FILL, Gtk::SHRINK | Gtk::FILL);
 
 			Gtk::ComboBoxText *comboboxtext = Gtk::manage(new Gtk::ComboBoxText());
-			comboboxtext->append(_("Disabled"));
-			comboboxtext->append(_("Screen"));
-			comboboxtext->append(_("Window"));
-			comboboxtext->set_active(i->mode);
+			comboboxtext->append("disabled", _("Disabled"));
+			comboboxtext->append("screen", _("Screen"));
+			comboboxtext->append("window", _("Window"));
+			switch(i->mode) {
+			case Gdk::MODE_SCREEN: comboboxtext->set_active(1); break;
+			case Gdk::MODE_WINDOW: comboboxtext->set_active(2); break;
+			default:               comboboxtext->set_active(0); break;
+			}
 			comboboxtext->signal_changed().connect(
 				sigc::bind(
 					sigc::mem_fun(options, &DeviceOptions::on_mode_comboboxtext_changed),
-					comboboxtext, &*i ));
+					comboboxtext, options->devices.begin() - i ));
 			comboboxtext->show();
 			table->attach(*comboboxtext, 1, 2, row, row+1, Gtk::EXPAND | Gtk::FILL, Gtk::SHRINK | Gtk::FILL);
 		}
@@ -244,13 +218,12 @@ void Dialog_Input::reset()
 
 void Dialog_Input::apply()
 {
-	for(DeviceOptions::DeviceList::const_iterator i = options->devices.begin(); i != options->devices.end(); ++i)
-	{
-		gdk_device_set_mode(i->handle, i->mode);
+	for(DeviceOptions::DeviceList::const_iterator i = options->devices.begin(); i != options->devices.end(); ++i) {
+		i->device->set_mode(i->mode);
 		//for(DeviceOptions::AxisList::const_iterator j = i->axes.begin(); j != i->axes.end(); ++j)
-		//	gdk_device_set_axis_use(i->handle, j - i->axes.begin(), j->use);
+		//	i->device->set_axis_use(j - i->axes.begin(), j->use);
 		//for(DeviceOptions::KeyList::const_iterator j = i->keys.begin(); j != i->keys.end(); ++j)
-		//	gdk_device_set_key(i->handle, j - i->keys.begin(), j->val, j->modifiers);
+		//	i->device->set_key(j - i->keys.begin(), j->val, j->modifiers);
 	}
 	signal_apply()();
 }
