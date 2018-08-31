@@ -62,6 +62,11 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
+namespace Glib {
+	template<class T> class RefPtr;
+	class ObjectBase;
+}
+
 namespace synfig {
 
 class ChangeLocale {
@@ -79,6 +84,22 @@ public:
 		// This restores the locale
 		setlocale(category,previous.c_str());
 	}
+};
+
+//! Temoraly freezes all notifications from Glib object
+//! All notifications will raised immediately when GlibFreezeNotify is destroyed
+//! see: Glib::ObjectBase::freeze_notify(), Glib::ObjectBase::thaw_notify()
+class GlibFreezeNotify {
+private:
+	Glib::ObjectBase *obj;
+	Glib::RefPtr<Glib::ObjectBase> *obj_ref;
+	GlibFreezeNotify(const GlibFreezeNotify &other);
+	GlibFreezeNotify& operator=(const GlibFreezeNotify&) { return *this; }
+public:
+	explicit GlibFreezeNotify(Glib::ObjectBase &obj);
+	explicit GlibFreezeNotify(Glib::ObjectBase *obj);
+	explicit GlibFreezeNotify(const Glib::RefPtr<Glib::ObjectBase> &obj_ref);
+	~GlibFreezeNotify();
 };
 
 /*

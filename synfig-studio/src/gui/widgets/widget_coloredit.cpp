@@ -399,12 +399,6 @@ Widget_ColorEdit::Widget_ColorEdit():
 
 	set_size_request(200,-1);
 	hold_signals=true;
-
-	R_adjustment->set_lower(-10000000);
-	G_adjustment->set_lower(-10000000);
-	B_adjustment->set_lower(-10000000);
-	A_adjustment->set_lower(-10000000);
-
 	clamp_=true;
 
 	Pango::AttrList attr_list;

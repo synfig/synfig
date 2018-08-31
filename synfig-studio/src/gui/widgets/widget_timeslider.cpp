@@ -422,17 +422,14 @@ bool Widget_Timeslider::on_motion_notify_event(GdkEventMotion* event) //for drag
 
 			//But clamp to bounds if they exist...
 			//HACK - bounds should not be required for this slider
-			if(adj_bounds)
-			{
-				if(start < adj_bounds->get_lower())
-				{
+			if (adj_bounds) {
+				GlibFreezeNotify freeze(adj_bounds);
+				if(start < adj_bounds->get_lower()) {
 					diff = adj_bounds->get_lower() - start;
 					start += diff;
 					end += diff;
 				}
-
-				if(end > adj_bounds->get_upper())
-				{
+				if(end > adj_bounds->get_upper()) {
 					diff = adj_bounds->get_upper() - end;
 					start += diff;
 					end += diff;
@@ -441,10 +438,9 @@ bool Widget_Timeslider::on_motion_notify_event(GdkEventMotion* event) //for drag
 
 			//synfig::info("Scrolling timerange to (%.4f,%.4f)",start,end);
 
+			GlibFreezeNotify freeze(adj_timescale);
 			adj_timescale->set_lower(start);
 			adj_timescale->set_upper(end);
-
-			adj_timescale->changed();
 		}else
 		{
 			dragscroll = true;
@@ -460,29 +456,17 @@ bool Widget_Timeslider::on_motion_notify_event(GdkEventMotion* event) //for drag
 		double curx = event->x;
 
 		//get time from drag...
-		double 	start = adj_timescale->get_lower(),
-				end = adj_timescale->get_upper(),
-				current = adj_timescale->get_value();
-		double t = start + curx*(end - start)/get_width();
+		double start = adj_timescale->get_lower();
+		double end = adj_timescale->get_upper();
+		double current = adj_timescale->get_value();
+		Time t(start + curx*(end - start)/get_width());
 
 		//snap it to fps - if they exist...
-		if(fps)
-		{
-			t = floor(t*fps + 0.5)/fps;
-		}
+		if (fps) t = t.round(fps);
 
 		//set time if needed
-		if(current != t)
-		{
-			adj_timescale->set_value(t);
-
-			//Fixed this to actually do what it's supposed to...
-			if(event->time-last_event_time>50)
-			{
-				adj_timescale->value_changed();
-				last_event_time = event->time;
-			}
-		}
+		if (current != t)
+			adj_timescale->set_value((double)t);
 
 		return true;
 	}
@@ -538,14 +522,13 @@ bool Widget_Timeslider::on_scroll_event(GdkEventScroll* event) //for zooming
 				if ((t-start)*2 > (end-start))
 				{
 					// if we can't scroll the background left one whole tick, scroll it to the end
-					if (end > upper - (t-orig_t))
-					{
+					if (end > upper - (t-orig_t)) {
+						GlibFreezeNotify freeze(adj_timescale);
 						adj_timescale->set_lower(upper - (end-start));
 						adj_timescale->set_upper(upper);
-					}
-					// else scroll the background left
-					else
-					{
+					} else {
+						// else scroll the background left
+						GlibFreezeNotify freeze(adj_timescale);
 						adj_timescale->set_lower(start + (t-orig_t));
 						adj_timescale->set_upper(start + (t-orig_t) + (end-start));
 					}
@@ -564,25 +547,22 @@ bool Widget_Timeslider::on_scroll_event(GdkEventScroll* event) //for zooming
 				if ((t-start)*2 < (end-start))
 				{
 					// if we can't scroll the background right one whole tick, scroll it to the beginning
-					if (start < lower + (orig_t-t))
-					{
+					if (start < lower + (orig_t-t)) {
+						GlibFreezeNotify freeze(adj_timescale);
 						adj_timescale->set_lower(lower);
 						adj_timescale->set_upper(lower + (end-start));
-					}
-					// else scroll the background right
-					else
-					{
+					} else {
+						// else scroll the background left
+						GlibFreezeNotify freeze(adj_timescale);
 						adj_timescale->set_lower(start - (orig_t-t));
 						adj_timescale->set_upper(start - (orig_t-t) + (end-start));
 					}
 				}
 			}
 
-			if(adj_timescale)
-			{
+			if (adj_timescale)
 				adj_timescale->set_value(t);
-				adj_timescale->value_changed();
-			}
+
 			return true;
 		}
 		default:
@@ -605,25 +585,18 @@ void Widget_Timeslider::zoom_in(bool centerontime)
 	start = focuspoint + (start-focuspoint)*zoominfactor;
 
 	//synfig::info("Zooming in timerange to (%.4f,%.4f)",start,end);
-	if(adj_bounds)
-	{
+	if (adj_bounds) {
+		GlibFreezeNotify freeze(adj_bounds);
 		if(start < adj_bounds->get_lower())
-		{
 			start = adj_bounds->get_lower();
-		}
-
 		if(end > adj_bounds->get_upper())
-		{
 			end = adj_bounds->get_upper();
-		}
 	}
 
 	//reset values
+	GlibFreezeNotify freeze(adj_timescale);
 	adj_timescale->set_lower(start);
 	adj_timescale->set_upper(end);
-
-	//call changed function
-	adj_timescale->changed();
 }
 
 void Widget_Timeslider::zoom_out(bool centerontime)
@@ -641,25 +614,18 @@ void Widget_Timeslider::zoom_out(bool centerontime)
 	start = focuspoint + (start-focuspoint)*zoomoutfactor;
 
 	//synfig::info("Zooming out timerange to (%.4f,%.4f)",start,end);
-	if(adj_bounds)
-	{
+	if(adj_bounds) {
+		GlibFreezeNotify freeze(adj_bounds);
 		if(start < adj_bounds->get_lower())
-		{
 			start = adj_bounds->get_lower();
-		}
-
 		if(end > adj_bounds->get_upper())
-		{
 			end = adj_bounds->get_upper();
-		}
 	}
 
 	//reset values
+	GlibFreezeNotify freeze(adj_timescale);
 	adj_timescale->set_lower(start);
 	adj_timescale->set_upper(end);
-
-	//call changed function
-	adj_timescale->changed();
 }
 
 bool Widget_Timeslider::on_button_press_event(GdkEventButton *event) //for clicking
@@ -669,28 +635,19 @@ bool Widget_Timeslider::on_button_press_event(GdkEventButton *event) //for click
 		//time click...
 		case 1:
 		{
-			double 	start   = adj_timescale->get_lower(),
-					end     = adj_timescale->get_upper(),
-					current = adj_timescale->get_value();
-
+			double start   = adj_timescale->get_lower();
+			double end     = adj_timescale->get_upper();
+			double current = adj_timescale->get_value();
 			double w = get_width();
-			double t = start + (end - start) * event->x / w;
-
-			t = floor(t*fps + 0.5)/fps;
+			Time t(start + (end - start)*event->x/w);
+			if (fps) t = t.round(fps);
 
 			/*synfig::info("Clicking time from %.3lf to %.3lf [(%.2lf,%.2lf) %.2lf / %.2lf ... %.2lf",
 						current, vt, start, end, event->x, w, fps);*/
 
-			if(t != current)
-			{
-				current = t;
-
+			if (t != Time(current))
 				if(adj_timescale)
-				{
-					adj_timescale->set_value(current);
-					adj_timescale->value_changed();
-				}
-			}
+					adj_timescale->set_value((double)t);
 
 			break;
 		}

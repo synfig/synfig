@@ -169,7 +169,6 @@ public:
 							mimic_tree_view->get_vadjustment()->get_page_size()
 						)
 					);
-					mimic_tree_view->get_vadjustment()->value_changed();
 				}
 				else if(event->scroll.direction==GDK_SCROLL_UP)
 				{
@@ -180,7 +179,6 @@ public:
 							mimic_tree_view->get_vadjustment()->get_lower()
 						)
 					);
-					mimic_tree_view->get_vadjustment()->value_changed();
 				}
 			}
 			break;

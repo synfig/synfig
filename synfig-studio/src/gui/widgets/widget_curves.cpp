@@ -418,33 +418,29 @@ Widget_Curves::on_event(GdkEvent *event)
 		switch(event->scroll.direction)
 		{
 			case GDK_SCROLL_UP:
-			case GDK_SCROLL_RIGHT:
-				if (Gdk::ModifierType(event->scroll.state)&GDK_CONTROL_MASK)
-				{
+			case GDK_SCROLL_RIGHT: {
+				GlibFreezeNotify freeze(range_adjustment_);
+				if (Gdk::ModifierType(event->scroll.state)&GDK_CONTROL_MASK) {
 					// Ctrl+scroll , perform zoom in
 					range_adjustment_->set_page_size(range_adjustment_->get_page_size()/1.25);
-				}
-				else
-				{
+				} else {
 					// Scroll up
 					range_adjustment_->set_value(range_adjustment_->get_value()-range_adjustment_->get_step_increment ());
 				}
-				range_adjustment_->changed();
 				break;
+			}
 			case GDK_SCROLL_DOWN:
-			case GDK_SCROLL_LEFT:
-				if (Gdk::ModifierType(event->scroll.state)&GDK_CONTROL_MASK)
-				{
+			case GDK_SCROLL_LEFT: {
+				GlibFreezeNotify freeze(range_adjustment_);
+				if (Gdk::ModifierType(event->scroll.state)&GDK_CONTROL_MASK) {
 					// Ctrl+scroll , perform zoom out
 					range_adjustment_->set_page_size(range_adjustment_->get_page_size()*1.25);
-				}
-				else
-				{
+				} else {
 					// Scroll down
 					range_adjustment_->set_value(range_adjustment_->get_value()+range_adjustment_->get_step_increment ());
 				}
-				range_adjustment_->changed();
 				break;
+			}
 			default:
 				break;
 		}
@@ -455,27 +451,6 @@ Widget_Curves::on_event(GdkEvent *event)
 	}
 
 	return true;
-
-/*	switch(event->type)
-	{
-	case GDK_BUTTON_PRESS:
-		if(event->button.button==1)
-		{
-			signal_activate_();
-			return true;
-		}
-		if(event->button.button==3)
-		{
-			signal_secondary_();
-			return true;
-		}
-		break;
-
-	default:
-		break;
-	}
-	return false;
-*/
 }
 
 bool
@@ -613,6 +588,7 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 
 	if(!curve_list_.empty())
 	{
+		GlibFreezeNotify freeze(range_adjustment_);
 		range_adjustment_->set_upper(r_max+range_adjustment_->get_page_size()/2);
 		range_adjustment_->set_lower(r_min-range_adjustment_->get_page_size()/2);
 	}

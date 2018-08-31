@@ -80,8 +80,6 @@ private:
 
 	void configure_adjustment(
 		const Glib::RefPtr<Gtk::Adjustment> &adjustment,
-		bool &is_changed,
-		bool &is_value_changed,
 		synfig::Time value,
 		synfig::Time lower,
 		synfig::Time upper,

@@ -31,12 +31,13 @@
 
 #include <gtkmm/adjustment.h>
 
-#include <synfig/general.h>
 #include <ETL/clock>
 #include <ETL/misc>
 
-#include "widgets/widget_sound.h"
+#include <synfig/general.h>
+
 #include "audiocontainer.h"
+#include "widget_sound.h"
 
 #include <gui/localization.h>
 
@@ -44,11 +45,8 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
-//using namespace synfig;
-
-using studio::AudioProfile;
+using namespace synfig;
+using namespace studio;
 
 /* === M A C R O S ========================================================= */
 
@@ -60,47 +58,44 @@ using studio::AudioProfile;
 
 /* === E N T R Y P O I N T ================================================= */
 
-studio::Widget_Sound::Widget_Sound()
-{
-}
+Widget_Sound::Widget_Sound()
+	{ }
 
-studio::Widget_Sound::~Widget_Sound()
-{
-}
+Widget_Sound::~Widget_Sound()
+	{ }
 
-void studio::Widget_Sound::set_position(double t)
+void
+Widget_Sound::set_position(double t)
 {
-	//synfig::info("Setting position to %.2lf s", t);
-	if(adj_timescale && t != adj_timescale->get_value())
-	{
+	//info("Setting position to %.2lf s", t);
+	if(adj_timescale && t != adj_timescale->get_value()) {
 		float upper = adj_timescale->get_upper();
 		float lower = adj_timescale->get_lower();
 		float framesize =  upper - lower;
 
-		if(t < lower)
-		{
+		if (t < lower) {
 			lower -= ceil((lower-t)/framesize)*framesize;
 			upper = lower + framesize;
-			adj_timescale->set_lower(lower); adj_timescale->set_upper(upper);
+			GlibFreezeNotify freeze(adj_timescale);
+			adj_timescale->set_lower(lower);
+			adj_timescale->set_upper(upper);
 			adj_timescale->set_value(t);
-			adj_timescale->changed(); adj_timescale->value_changed();
-		}else
-		if(t > upper)
-		{
+		} else
+		if (t > upper) {
 			lower += ceil((t-upper)/framesize)*framesize;
 			upper = lower + framesize;
-			adj_timescale->set_lower(lower); adj_timescale->set_upper(upper);
+			GlibFreezeNotify freeze(adj_timescale);
+			adj_timescale->set_lower(lower);
+			adj_timescale->set_upper(upper);
 			adj_timescale->set_value(t);
-			adj_timescale->changed(); adj_timescale->value_changed();
-		}else
-		{
+		} else {
 			adj_timescale->set_value(t);
-			adj_timescale->value_changed();
 		}
 	}
 }
 
-double studio::Widget_Sound::get_position() const
+double
+Widget_Sound::get_position() const
 {
 	if(adj_timescale)
 	{
@@ -109,15 +104,15 @@ double studio::Widget_Sound::get_position() const
 	return 0;
 }
 
-bool studio::Widget_Sound::set_profile(etl::handle<AudioProfile>	p)
+bool
+Widget_Sound::set_profile(etl::handle<AudioProfile>	p)
 {
 	clear();
 
 	//set the profile
 	audioprof = p;
 
-	if(!audioprof)
-	{
+	if (!audioprof) {
 		clear();
 		return false;
 	}
@@ -125,22 +120,20 @@ bool studio::Widget_Sound::set_profile(etl::handle<AudioProfile>	p)
 	return true;
 }
 
-etl::handle<AudioProfile>	studio::Widget_Sound::get_profile() const
-{
-	return audioprof;
-}
+etl::handle<AudioProfile>
+Widget_Sound::get_profile() const
+	{ return audioprof; }
 
-void studio::Widget_Sound::clear()
-{
-	audioprof.detach();
-}
+void
+Widget_Sound::clear()
+	{ audioprof.detach(); }
 
-void studio::Widget_Sound::draw()
-{
-	queue_draw();
-}
+void
+Widget_Sound::draw()
+	{ queue_draw(); }
 
-bool studio::Widget_Sound::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
+bool
+Widget_Sound::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 {
 	Gdk::RGBA c("#3f3f3f");
 
@@ -158,7 +151,7 @@ bool studio::Widget_Sound::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 
 	//redraw all the samples from begin to end, but only if we have samples to draw (or there is no space to draw)
 
-	//synfig::warning("Ok rendered everything, now must render actual sound wave");
+	//warning("Ok rendered everything, now must render actual sound wave");
 	if(!audioprof || !adj_timescale || !w)
 		return true;
 
@@ -185,20 +178,20 @@ bool studio::Widget_Sound::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 			float beginf = adj_timescale->get_lower();
 			float endf = adj_timescale->get_upper();
 
-			posi = round_to_int((position-beginf)*w/framesize);
+			posi = etl::round_to_int((position-beginf)*w/framesize);
 			//posi = (int)((position-beginf)*w/framesize);
 
 			//calculate in sample space from seconds
-			begin = round_to_int((beginf - offset)*samplerate);
-			end = round_to_int((endf - offset)*samplerate);
+			begin = etl::round_to_int((beginf - offset)*samplerate);
+			end = etl::round_to_int((endf - offset)*samplerate);
 			//begin = (int)((beginf - offset)*samplerate);
 			//end = (int)((endf - offset)*samplerate);
 		}
 
 		delta = (end - begin)/(float)w; //samples per pixel
 
-		/*synfig::warning("Rendering a framesize of %f secs from [%d,%d) samples to %d samples, took %f sec",
-						framesize, begin, end, w, check());*/
+		//warning("Rendering a framesize of %f secs from [%d,%d) samples to %d samples, took %f sec",
+		//	framesize, begin, end, w, check());
 
 		cur = begin;
 		cum = 0;
@@ -227,7 +220,7 @@ bool studio::Widget_Sound::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 			}
 		}
 
-		//synfig::warning("Drawing audio line");
+		//warning("Drawing audio line");
 		cr->set_source_rgb(1.0, 0.0, 0.0);
 		cr->move_to(posi,0);
 		cr->line_to(posi,get_height());
@@ -239,7 +232,8 @@ bool studio::Widget_Sound::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 
 //--- Handle the single clicking and dragging for scrubbing
 
-bool studio::Widget_Sound::on_motion_notify_event(GdkEventMotion* event)
+bool
+Widget_Sound::on_motion_notify_event(GdkEventMotion* event)
 {
 	Gdk::ModifierType	mod = Gdk::ModifierType(event->state);
 
@@ -257,20 +251,19 @@ bool studio::Widget_Sound::on_motion_notify_event(GdkEventMotion* event)
 		//signal that we are scrubbing to this new value...
 		signal_scrub()(t);
 
-
 		// We should be able to just call
 		// Widget_Timeslider::on_motion_notify_event(),
 		// but that seems to cause the program to halt
 		// for some reason. So for now, let's do the job ourselves
 		//adj_timescale->set_value(t);
-		//adj_timescale->changed();
 		//return true;
 	}
 
 	return Widget_Timeslider::on_motion_notify_event(event);
 }
 
-bool studio::Widget_Sound::on_button_press_event(GdkEventButton *event)
+bool
+Widget_Sound::on_button_press_event(GdkEventButton *event)
 {
 	//Assume button PRESS
 
@@ -293,16 +286,15 @@ bool studio::Widget_Sound::on_button_press_event(GdkEventButton *event)
 	return Widget_Timeslider::on_button_press_event(event);
 }
 
-bool studio::Widget_Sound::on_button_release_event(GdkEventButton *event)
+bool
+Widget_Sound::on_button_release_event(GdkEventButton *event)
 {
 	//Assume button RELEASE
 
 	//if we are ending... using left click
-	if(event->button == 1)
-	{
+	if (event->button == 1) {
 		//signal the scrubbing device... to stop
 		signal_stop_scrubbing()();
-
 		return true;
 	}
 

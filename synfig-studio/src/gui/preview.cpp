@@ -833,7 +833,6 @@ bool studio::Widget_Preview::play_update()
 
 		//set the new time...
 		adj_time_scrub->set_value(time);
-		adj_time_scrub->value_changed();
 
 		//update the window to the correct image we might want to do this later...
 		//update();
@@ -859,10 +858,7 @@ void studio::Widget_Preview::scrub_updated(double t)
 	//synfig::info("Scrubbing to %.3f, setting adj to %.3f",oldt,t);
 
 	if(adj_time_scrub->get_value() != t)
-	{
 		adj_time_scrub->set_value(t);
-		adj_time_scrub->value_changed();
-	}
 }
 
 void studio::Widget_Preview::disconnect_preview(Preview *prev)

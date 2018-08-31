@@ -111,8 +111,6 @@ TimeModel::on_value_changed(Glib::RefPtr<Gtk::Adjustment> *source)
 void
 TimeModel::configure_adjustment(
 	const Glib::RefPtr<Gtk::Adjustment> &adjustment,
-	bool &is_changed,
-	bool &is_value_changed,
 	synfig::Time value,
 	synfig::Time lower,
 	synfig::Time upper,
@@ -120,13 +118,6 @@ TimeModel::configure_adjustment(
 	synfig::Time page_increment,
 	synfig::Time page_size )
 {
-	is_value_changed = !approximate_equal(adjustment->get_value(), (double)value);
-	is_changed = !approximate_equal(adjustment->get_lower(),          (double)lower)
-			  || !approximate_equal(adjustment->get_upper(),          (double)upper)
-			  || !approximate_equal(adjustment->get_step_increment(), (double)step_increment)
-			  || !approximate_equal(adjustment->get_page_increment(), (double)page_increment)
-			  || !approximate_equal(adjustment->get_page_size(),      (double)page_size);
-
 	adjustment->set_lower((double)lower);
 	adjustment->set_upper((double)upper);
 	adjustment->set_step_increment((double)step_increment);
@@ -139,24 +130,18 @@ TimeModel::configure_adjustment(
 void
 TimeModel::sync()
 {
-	bool is_full_changed = false;
-	bool is_scroll_changed = false;
-	bool is_visible_changed = false;
-	bool is_play_changed = false;
-
-	bool is_full_value_changed = false;
-	bool is_scroll_value_changed = false;
-	bool is_visible_value_changed = false;
-	bool is_play_value_changed = false;
-
 	Time step_increment = get_step_increment();
 	Time page_increment = get_page_increment();
 	Time page_size = get_page_size();
 
+	// raise events only when all changes will done
+	GlibFreezeNotify freeze_full_time(full_time_adjustment());
+	GlibFreezeNotify freeze_scroll_time(scroll_time_adjustment());
+	GlibFreezeNotify freeze_visible_time(visible_time_adjustment());
+	GlibFreezeNotify freeze_play_bounds(play_bounds_adjustment());
+
 	configure_adjustment(
 		full_time_adjustment(),
-		is_full_changed,
-		is_full_value_changed,
 		time,
 		lower,
 		upper,
@@ -166,8 +151,6 @@ TimeModel::sync()
 
 	configure_adjustment(
 		scroll_time_adjustment(),
-		is_scroll_changed,
-		is_scroll_value_changed,
 		visible_lower,
 		lower,
 		upper,
@@ -177,8 +160,6 @@ TimeModel::sync()
 
 	configure_adjustment(
 		visible_time_adjustment(),
-		is_visible_changed,
-		is_visible_value_changed,
 		time,
 		visible_lower,
 		visible_upper,
@@ -188,26 +169,12 @@ TimeModel::sync()
 
 	configure_adjustment(
 		play_bounds_adjustment(),
-		is_play_changed,
-		is_play_value_changed,
 		time,
 		play_bounds_lower,
 		play_bounds_upper,
 		step_increment,
 		page_increment,
 		page_size );
-
-	if (is_full_changed) full_time_adjustment()->changed(); else
-		if (is_full_value_changed) full_time_adjustment()->value_changed();
-
-	if (is_scroll_changed) scroll_time_adjustment()->changed(); else
-		if (is_scroll_value_changed) scroll_time_adjustment()->value_changed();
-
-	if (is_visible_changed) visible_time_adjustment()->changed(); else
-		if (is_visible_value_changed) visible_time_adjustment()->value_changed();
-
-	if (is_play_changed) play_bounds_adjustment()->changed(); else
-		if (is_play_value_changed) play_bounds_adjustment()->value_changed();
 }
 
 bool

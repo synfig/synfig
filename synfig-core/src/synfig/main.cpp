@@ -77,6 +77,7 @@
 #include "mutex.h"
 
 #include <giomm.h>
+#include <glibmm/objectbase.h>
 
 #ifdef HAVE_SIGNAL_H
 #include <signal.h>
@@ -117,6 +118,33 @@ GeneralIOMutexHolder general_io_mutex;
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
+
+GlibFreezeNotify::GlibFreezeNotify(Glib::ObjectBase &obj):
+	obj(&obj), obj_ref()
+	{ if (this->obj) this->obj->freeze_notify(); }
+
+GlibFreezeNotify::GlibFreezeNotify(Glib::ObjectBase *obj):
+	obj(obj), obj_ref()
+	{ if (this->obj) this->obj->freeze_notify(); }
+
+GlibFreezeNotify::GlibFreezeNotify(const Glib::RefPtr<Glib::ObjectBase> &obj_ref):
+	obj(), obj_ref()
+{
+	if (obj_ref) {
+		this->obj_ref = new Glib::RefPtr<Glib::ObjectBase>(obj_ref);
+		(*this->obj_ref)->freeze_notify();
+	}
+}
+
+GlibFreezeNotify::~GlibFreezeNotify()
+{
+	if (obj) obj->thaw_notify();
+	if (obj_ref) {
+		if (*obj_ref) (*obj_ref)->thaw_notify();
+		delete obj_ref;
+	}
+}
+
 
 const char *
 synfig::get_version()

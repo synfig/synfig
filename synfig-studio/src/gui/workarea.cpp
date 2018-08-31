@@ -1783,14 +1783,15 @@ WorkArea::refresh_dimension_info()
 	pw=canvaswidth/w;
 	ph=canvasheight/h;
 
-	scrollx_adjustment->set_page_increment(abs(get_grid_size()[0]));
-	scrollx_adjustment->set_step_increment(abs(pw));
-	scrollx_adjustment->set_lower(-abs(canvaswidth));
-	scrollx_adjustment->set_upper(abs(canvaswidth));
-	scrolly_adjustment->set_lower(-abs(canvasheight));
-	scrolly_adjustment->set_upper(abs(canvasheight));
-	scrolly_adjustment->set_step_increment(abs(ph));
-	scrolly_adjustment->set_page_increment(abs(get_grid_size()[1]));
+	{
+		GlibFreezeNotify freeze(scrollx_adjustment);
+		scrollx_adjustment->set_page_increment(abs(get_grid_size()[0]));
+		scrollx_adjustment->set_step_increment(abs(pw));
+		scrollx_adjustment->set_lower(-abs(canvaswidth));
+		scrollx_adjustment->set_upper(abs(canvaswidth));
+		scrolly_adjustment->set_step_increment(abs(ph));
+		scrolly_adjustment->set_page_increment(abs(get_grid_size()[1]));
+	}
 
 	const synfig::Point focus_point(get_focus_point());
 	const synfig::Real x(focus_point[0]/pw+drawing_area->get_width()/2-w/2);
