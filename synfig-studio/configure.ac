@@ -171,6 +171,14 @@ AC_ARG_ENABLE(update-mimedb,
     enable_update_mimedb=yes)
 AM_CONDITIONAL(ENABLE_UPDATE_MIMEDB, (test x$enable_update_mimedb = xyes) && (test x$UPDATE_MIME_DATABASE != xno))
 
+AC_ARG_WITH([images], 
+    AS_HELP_STRING([--without-images], [skip building images]),
+    [],
+    [with_images=yes]
+)
+
+AM_CONDITIONAL([WITH_IMAGES], [test "x$with_images" != "xno"])
+
 AC_CONFIG_FILES([
     Makefile
     build_tools/Makefile
@@ -207,6 +215,7 @@ Debug Mode -----------------------> $debug
 Profiling Mode -------------------> $profiling
 Optimizations --------------------> $optimization
 JACK Enabled ---------------------> $enable_jack
+Build images ---------------------> $with_images
 
 "'$'"CXX ------------------------------> '$CXX'
 "'$'"CXXFLAGS -------------------------> '$CXXFLAGS'

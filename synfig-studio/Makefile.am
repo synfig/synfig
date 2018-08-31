@@ -28,11 +28,15 @@ DISTCLEANFILES = \
 	synfigstudio.desktop \
 	$(appdata_DATA)
 
+if WITH_IMAGES
+IMAGE_DIR = images
+endif
+
 SUBDIRS = \
 	build_tools \
 	brushes \
 	src \
-	images \
+	$(IMAGE_DIR) \
 	plugins \
 	po
 
@@ -71,8 +75,10 @@ appdata_DATA = synfigstudio.appdata.xml
 @INTLTOOL_XML_RULE@
 
 # Icon
+if WITH_IMAGES
 icondir                 = $(datadir)/pixmaps
 icon_DATA               = images/synfig_icon.png images/sif_icon.png
+endif
 
 mimedir              = $(prefix)/share/mime/packages
 mime_DATA            = synfigstudio.xml
