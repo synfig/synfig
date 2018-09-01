@@ -643,7 +643,6 @@ bool Widget_Timeslider::on_button_press_event(GdkEventButton *event) //for click
 		{
 			double start   = adj_timescale->get_lower();
 			double end     = adj_timescale->get_upper();
-			double current = adj_timescale->get_value();
 			double w = get_width();
 			Time t(start + (end - start)*event->x/w);
 			if (fps) t = t.round(fps);
@@ -651,9 +650,8 @@ bool Widget_Timeslider::on_button_press_event(GdkEventButton *event) //for click
 			/*synfig::info("Clicking time from %.3lf to %.3lf [(%.2lf,%.2lf) %.2lf / %.2lf ... %.2lf",
 						current, vt, start, end, event->x, w, fps);*/
 
-			if (t != Time(current))
-				if(adj_timescale)
-					adj_timescale->set_value((double)t);
+			if(adj_timescale)
+				adj_timescale->set_value((double)t);
 
 			break;
 		}

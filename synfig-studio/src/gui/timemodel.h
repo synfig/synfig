@@ -52,6 +52,8 @@ namespace studio {
 class TimeModel: public etl::shared_object, public sigc::trackable
 {
 private:
+	bool in_sync;
+
 	float fps;
 	bool play_bounds_enabled;
 	bool play_repeat;
@@ -184,7 +186,7 @@ public:
 	void visible_changed()
 		{ sync(); signal_visible_changed()(); }
 	void play_bounds_changed()
-		{ sync(); signal_play_bounds_changed(); play_time_changed(); }
+		{ sync(); signal_play_bounds_changed()(); play_time_changed(); }
 	void time_changed()
 		{ sync(); signal_time_changed()(); }
 	void play_time_changed()

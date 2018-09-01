@@ -630,6 +630,8 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<CanvasIn
 		sigc::mem_fun(*this, &CanvasView::time_was_changed) );
 	time_model()->signal_visible_changed().connect(
 		sigc::mem_fun(*this, &CanvasView::refresh_time_window) );
+	time_model()->signal_play_bounds_changed().connect(
+		sigc::mem_fun(*this, &CanvasView::refresh_time_window) );
 
 	work_area->signal_layer_selected().connect(sigc::mem_fun(*this,&CanvasView::workarea_layer_selected));
 	work_area->signal_input_device_changed().connect(sigc::mem_fun(*this,&CanvasView::on_input_device_changed));
@@ -965,7 +967,11 @@ CanvasView::create_time_bar()
 	framedial->signal_bounds_enable().connect(
 		sigc::mem_fun(*time_model(), &TimeModel::set_play_bounds_enabled) );
 	framedial->signal_bound_lower().connect(
+		sigc::bind(sigc::mem_fun(*time_model(), &TimeModel::set_play_bounds_enabled), true) );
+	framedial->signal_bound_lower().connect(
 		sigc::mem_fun(*time_model(), &TimeModel::set_play_bounds_lower_to_current) );
+	framedial->signal_bound_upper().connect(
+		sigc::bind(sigc::mem_fun(*time_model(), &TimeModel::set_play_bounds_enabled), true) );
 	framedial->signal_bound_upper().connect(
 		sigc::mem_fun(*time_model(), &TimeModel::set_play_bounds_upper_to_current) );
 	framedial->show();
@@ -2158,6 +2164,9 @@ CanvasView::on_keyframe_tree_event(GdkEvent *event)
 void
 CanvasView::refresh_time_window()
 {
+	framedial->toggle_repeat(time_model()->get_play_repeat());
+	framedial->toggle_bounds_enable(time_model()->get_play_bounds_enabled());
+
 	//NOTE THIS SHOULD HOOK INTO THE CORRECT SIGNALS...
 	if (children_tree)
 		children_tree->queue_draw();
@@ -2573,8 +2582,8 @@ CanvasView::play_async()
 	playing_time = time_model()->get_actual_play_time();
 
 	// If we are already at the end of time, start over
-	if (playing_time >= time_model()->get_actual_play_bounds_lower())
-		playing_time = time_model()->get_actual_play_bounds_upper();
+	if (playing_time >= time_model()->get_actual_play_bounds_upper())
+		playing_time = time_model()->get_actual_play_bounds_lower();
 
 	ducks_playing_lock = new LockDucks(*this);
 
@@ -2635,8 +2644,9 @@ CanvasView::on_play_timeout()
 		time = time_model()->round_time(playing_time + playing_timer());
 		if (repeat) {
 			if (time > upper) {
+				playing_time = lower;
 				playing_timer.pop_time();
-				time = time_model()->round_time(time - upper + lower);
+				time = time_model()->round_time(lower);
 			}
 		} else
 		if (time >= upper) {

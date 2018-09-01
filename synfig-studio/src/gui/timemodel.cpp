@@ -59,8 +59,10 @@ using namespace studio;
 /* === E N T R Y P O I N T ================================================= */
 
 TimeModel::TimeModel():
+	in_sync(),
 	fps(),
 	play_bounds_enabled(),
+	play_repeat(),
 	full_time_adjustment_(Gtk::Adjustment::create(0.0, 0.0, 0.0)),
 	scroll_time_adjustment_(Gtk::Adjustment::create(0.0, 0.0, 0.0)),
 	visible_time_adjustment_(Gtk::Adjustment::create(0.0, 0.0, 0.0)),
@@ -90,6 +92,7 @@ TimeModel::TimeModel():
 void
 TimeModel::on_changed(Glib::RefPtr<Gtk::Adjustment> *source)
 {
+	if (in_sync) return;
 	if (source == &visible_time_adjustment_)
 		set_visible_bounds(Time((*source)->get_lower()), Time((*source)->get_upper()));
 	if (source == &play_bounds_adjustment_)
@@ -100,10 +103,17 @@ TimeModel::on_changed(Glib::RefPtr<Gtk::Adjustment> *source)
 void
 TimeModel::on_value_changed(Glib::RefPtr<Gtk::Adjustment> *source)
 {
+	if (in_sync) return;
 	if (source == &scroll_time_adjustment_) {
 		Time lower((*source)->get_value());
 		Time upper = lower + get_page_size();
 		set_visible_bounds(lower, upper);
+	} else
+	if (source == &play_bounds_adjustment_) {
+		Time t = round_time( Time((*source)->get_value()) );
+		if (play_time == play_bounds_lower && t <= play_bounds_lower) return;
+		if (play_time == play_bounds_upper && t >= play_bounds_upper) return;
+		set_time(t);
 	} else {
 		set_time(Time((*source)->get_value()));
 	}
@@ -113,51 +123,64 @@ TimeModel::on_value_changed(Glib::RefPtr<Gtk::Adjustment> *source)
 void
 TimeModel::sync()
 {
-	Time step_increment = get_step_increment();
-	Time page_increment = get_page_increment();
-	Time page_size = get_page_size();
+	in_sync = true;
+	try {
+		double precision = real_low_precision<double>();
 
-	// raise events only when all changes will done
-	FreezeNotify freeze_full_time(full_time_adjustment());
-	FreezeNotify freeze_scroll_time(scroll_time_adjustment());
-	FreezeNotify freeze_visible_time(visible_time_adjustment());
-	FreezeNotify freeze_play_bounds(play_bounds_adjustment());
+		Time step_increment = get_step_increment();
+		Time page_increment = get_page_increment();
+		Time page_size = get_page_size();
 
-	configure_adjustment(
-		full_time_adjustment(),
-		(double)time,
-		(double)lower,
-		(double)upper,
-		(double)step_increment,
-		(double)page_increment,
-		(double)page_size );
+		// raise events only when all changes will done
+		FreezeNotify freeze_full_time(full_time_adjustment());
+		FreezeNotify freeze_scroll_time(scroll_time_adjustment());
+		FreezeNotify freeze_visible_time(visible_time_adjustment());
+		FreezeNotify freeze_play_bounds(play_bounds_adjustment());
 
-	configure_adjustment(
-		scroll_time_adjustment(),
-		(double)visible_lower,
-		(double)lower,
-		(double)upper,
-		(double)step_increment,
-		(double)page_increment,
-		(double)page_size );
+		configure_adjustment(
+			full_time_adjustment(),
+			(double)time,
+			(double)lower,
+			(double)upper,
+			(double)step_increment,
+			(double)page_increment,
+			(double)page_size,
+			precision );
 
-	configure_adjustment(
-		visible_time_adjustment(),
-		(double)time,
-		(double)visible_lower,
-		(double)visible_upper,
-		(double)step_increment,
-		(double)page_increment,
-		(double)page_size );
+		configure_adjustment(
+			scroll_time_adjustment(),
+			(double)visible_lower,
+			(double)lower,
+			(double)upper,
+			(double)step_increment,
+			(double)page_increment,
+			(double)page_size,
+			precision );
 
-	configure_adjustment(
-		play_bounds_adjustment(),
-		(double)time,
-		(double)play_bounds_lower,
-		(double)play_bounds_upper,
-		(double)step_increment,
-		(double)page_increment,
-		(double)page_size );
+		configure_adjustment(
+			visible_time_adjustment(),
+			(double)time,
+			(double)visible_lower,
+			(double)visible_upper,
+			(double)step_increment,
+			(double)step_increment,
+			0.0,
+			precision );
+
+		configure_adjustment(
+			play_bounds_adjustment(),
+			(double)time,
+			(double)play_bounds_lower,
+			(double)play_bounds_upper,
+			(double)step_increment,
+			(double)step_increment,
+			0.0,
+			precision );
+	} catch(...) {
+		in_sync = false;
+		throw;
+	}
+	in_sync = false;
 }
 
 bool
