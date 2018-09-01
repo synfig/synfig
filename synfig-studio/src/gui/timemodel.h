@@ -78,15 +78,6 @@ private:
 	void on_changed(Glib::RefPtr<Gtk::Adjustment> *source);
 	void on_value_changed(Glib::RefPtr<Gtk::Adjustment> *source);
 
-	void configure_adjustment(
-		const Glib::RefPtr<Gtk::Adjustment> &adjustment,
-		synfig::Time value,
-		synfig::Time lower,
-		synfig::Time upper,
-		synfig::Time step_increment,
-		synfig::Time page_increment,
-		synfig::Time page_size );
-
 	//! put internal values to adjustments and emit the adjustments signals if need
 	void sync();
 

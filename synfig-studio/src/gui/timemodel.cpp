@@ -35,6 +35,8 @@
 #include <synfig/general.h>
 
 #include "app.h"
+#include "helpers.h"
+
 #include "timemodel.h"
 
 #include <gui/localization.h>
@@ -109,25 +111,6 @@ TimeModel::on_value_changed(Glib::RefPtr<Gtk::Adjustment> *source)
 }
 
 void
-TimeModel::configure_adjustment(
-	const Glib::RefPtr<Gtk::Adjustment> &adjustment,
-	synfig::Time value,
-	synfig::Time lower,
-	synfig::Time upper,
-	synfig::Time step_increment,
-	synfig::Time page_increment,
-	synfig::Time page_size )
-{
-	adjustment->set_lower((double)lower);
-	adjustment->set_upper((double)upper);
-	adjustment->set_step_increment((double)step_increment);
-	adjustment->set_page_increment((double)page_increment);
-	adjustment->set_page_size((double)page_size);
-
-	adjustment->set_value((double)value);
-}
-
-void
 TimeModel::sync()
 {
 	Time step_increment = get_step_increment();
@@ -135,46 +118,46 @@ TimeModel::sync()
 	Time page_size = get_page_size();
 
 	// raise events only when all changes will done
-	GlibFreezeNotify freeze_full_time(full_time_adjustment());
-	GlibFreezeNotify freeze_scroll_time(scroll_time_adjustment());
-	GlibFreezeNotify freeze_visible_time(visible_time_adjustment());
-	GlibFreezeNotify freeze_play_bounds(play_bounds_adjustment());
+	FreezeNotify freeze_full_time(full_time_adjustment());
+	FreezeNotify freeze_scroll_time(scroll_time_adjustment());
+	FreezeNotify freeze_visible_time(visible_time_adjustment());
+	FreezeNotify freeze_play_bounds(play_bounds_adjustment());
 
 	configure_adjustment(
 		full_time_adjustment(),
-		time,
-		lower,
-		upper,
-		step_increment,
-		page_increment,
-		page_size );
+		(double)time,
+		(double)lower,
+		(double)upper,
+		(double)step_increment,
+		(double)page_increment,
+		(double)page_size );
 
 	configure_adjustment(
 		scroll_time_adjustment(),
-		visible_lower,
-		lower,
-		upper,
-		step_increment,
-		page_increment,
-		page_size );
+		(double)visible_lower,
+		(double)lower,
+		(double)upper,
+		(double)step_increment,
+		(double)page_increment,
+		(double)page_size );
 
 	configure_adjustment(
 		visible_time_adjustment(),
-		time,
-		visible_lower,
-		visible_upper,
-		step_increment,
-		page_increment,
-		page_size );
+		(double)time,
+		(double)visible_lower,
+		(double)visible_upper,
+		(double)step_increment,
+		(double)page_increment,
+		(double)page_size );
 
 	configure_adjustment(
 		play_bounds_adjustment(),
-		time,
-		play_bounds_lower,
-		play_bounds_upper,
-		step_increment,
-		page_increment,
-		page_size );
+		(double)time,
+		(double)play_bounds_lower,
+		(double)play_bounds_upper,
+		(double)step_increment,
+		(double)page_increment,
+		(double)page_size );
 }
 
 bool

@@ -31,17 +31,24 @@
 #	include <config.h>
 #endif
 
+#include <cmath>
+
+#include <map>
+#include <vector>
+
+#include <gtkmm/drawingarea.h>
+
+#include <ETL/misc>
+
 #include <synfig/general.h>
 #include <synfig/blinepoint.h>
 #include <synfig/widthpoint.h>
 
-#include "widgets/widget_curves.h"
-#include <cmath>
-#include "app.h"
-#include <gtkmm/drawingarea.h>
-#include <map>
-#include <vector>
-#include <ETL/misc>
+#include <gui/app.h>
+#include <gui/helpers.h>
+
+#include "widget_curves.h"
+
 #include <gui/localization.h>
 
 #endif
@@ -419,7 +426,6 @@ Widget_Curves::on_event(GdkEvent *event)
 		{
 			case GDK_SCROLL_UP:
 			case GDK_SCROLL_RIGHT: {
-				GlibFreezeNotify freeze(range_adjustment_);
 				if (Gdk::ModifierType(event->scroll.state)&GDK_CONTROL_MASK) {
 					// Ctrl+scroll , perform zoom in
 					range_adjustment_->set_page_size(range_adjustment_->get_page_size()/1.25);
@@ -431,7 +437,6 @@ Widget_Curves::on_event(GdkEvent *event)
 			}
 			case GDK_SCROLL_DOWN:
 			case GDK_SCROLL_LEFT: {
-				GlibFreezeNotify freeze(range_adjustment_);
 				if (Gdk::ModifierType(event->scroll.state)&GDK_CONTROL_MASK) {
 					// Ctrl+scroll , perform zoom out
 					range_adjustment_->set_page_size(range_adjustment_->get_page_size()*1.25);
@@ -586,12 +591,11 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 		}
 	}
 
-	if(!curve_list_.empty())
-	{
-		GlibFreezeNotify freeze(range_adjustment_);
-		range_adjustment_->set_upper(r_max+range_adjustment_->get_page_size()/2);
-		range_adjustment_->set_lower(r_min-range_adjustment_->get_page_size()/2);
-	}
+	if (!curve_list_.empty())
+		ConfigureAdjustment(range_adjustment_)
+			.set_lower(r_max + 0.5*range_adjustment_->get_page_size())
+			.set_upper(r_min - 0.5*range_adjustment_->get_page_size())
+			.finish();
 
 	return true;
 }

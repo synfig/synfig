@@ -41,6 +41,7 @@ target_sources(synfigstudio
         "${CMAKE_CURRENT_LIST_DIR}/workarea.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/main_win32.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/mainwindow.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/helpers.cpp"
 )
 
 include(actionmanagers/CMakeLists.txt)

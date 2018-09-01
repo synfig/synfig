@@ -64,7 +64,8 @@ OTHER_HH = \
 	valuelink.h \
 	workarea.h \
 	main_win32.h \
-	mainwindow.h
+	mainwindow.h \
+	helpers.h
 
 OTHER_CC = \
 	timemodel.cpp \
@@ -89,7 +90,8 @@ OTHER_CC = \
 	valuelink.cpp \
 	workarea.cpp \
 	main_win32.cpp \
-	mainwindow.cpp
+	mainwindow.cpp \
+	helpers.cpp
 
 AM_CPPFLAGS = \
 	-I$(top_srcdir)/src

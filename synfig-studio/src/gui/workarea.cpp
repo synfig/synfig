@@ -62,7 +62,7 @@
 
 #include <gui/localization.h>
 
-#include "asyncrenderer.h"
+#include "helpers.h"
 #include "canvasview.h"
 #include "event_mouse.h"
 #include "event_layerclick.h"
@@ -1783,15 +1783,19 @@ WorkArea::refresh_dimension_info()
 	pw=canvaswidth/w;
 	ph=canvasheight/h;
 
-	{
-		GlibFreezeNotify freeze(scrollx_adjustment);
-		scrollx_adjustment->set_page_increment(abs(get_grid_size()[0]));
-		scrollx_adjustment->set_step_increment(abs(pw));
-		scrollx_adjustment->set_lower(-abs(canvaswidth));
-		scrollx_adjustment->set_upper(abs(canvaswidth));
-		scrolly_adjustment->set_step_increment(abs(ph));
-		scrolly_adjustment->set_page_increment(abs(get_grid_size()[1]));
-	}
+	ConfigureAdjustment(scrollx_adjustment)
+		.set_lower(-fabs(canvaswidth))
+		.set_upper(fabs(canvaswidth))
+		.set_step_increment(fabs(pw))
+		.set_page_increment(fabs(get_grid_size()[0]))
+		.finish();
+
+	ConfigureAdjustment(scrolly_adjustment)
+		.set_lower(-fabs(canvasheight))
+		.set_upper(fabs(canvasheight))
+		.set_step_increment(fabs(ph))
+		.set_page_increment(fabs(get_grid_size()[1]))
+		.finish();
 
 	const synfig::Point focus_point(get_focus_point());
 	const synfig::Real x(focus_point[0]/pw+drawing_area->get_width()/2-w/2);

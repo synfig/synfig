@@ -31,13 +31,16 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-
 #include <cmath>
+
 #include <ETL/misc>
 
-#include "widgets/widget_timeslider.h"
-#include "app.h"
+#include <synfig/general.h>
+
+#include <gui/app.h>
+#include <gui/helpers.h>
+
+#include "widget_timeslider.h"
 
 #include <gui/localization.h>
 
@@ -423,7 +426,6 @@ bool Widget_Timeslider::on_motion_notify_event(GdkEventMotion* event) //for drag
 			//But clamp to bounds if they exist...
 			//HACK - bounds should not be required for this slider
 			if (adj_bounds) {
-				GlibFreezeNotify freeze(adj_bounds);
 				if(start < adj_bounds->get_lower()) {
 					diff = adj_bounds->get_lower() - start;
 					start += diff;
@@ -438,9 +440,10 @@ bool Widget_Timeslider::on_motion_notify_event(GdkEventMotion* event) //for drag
 
 			//synfig::info("Scrolling timerange to (%.4f,%.4f)",start,end);
 
-			GlibFreezeNotify freeze(adj_timescale);
-			adj_timescale->set_lower(start);
-			adj_timescale->set_upper(end);
+			ConfigureAdjustment(adj_timescale)
+				.set_lower(start)
+				.set_upper(end)
+				.finish();
 		}else
 		{
 			dragscroll = true;
@@ -519,18 +522,19 @@ bool Widget_Timeslider::on_scroll_event(GdkEventScroll* event) //for zooming
 					t = upper;
 
 				// if we are already in the right half of the slider
-				if ((t-start)*2 > (end-start))
-				{
+				if ((t-start)*2 > (end-start)) {
 					// if we can't scroll the background left one whole tick, scroll it to the end
 					if (end > upper - (t-orig_t)) {
-						GlibFreezeNotify freeze(adj_timescale);
-						adj_timescale->set_lower(upper - (end-start));
-						adj_timescale->set_upper(upper);
+						ConfigureAdjustment(adj_timescale)
+							.set_lower(upper - (end-start))
+							.set_upper(upper)
+							.finish();
 					} else {
 						// else scroll the background left
-						GlibFreezeNotify freeze(adj_timescale);
-						adj_timescale->set_lower(start + (t-orig_t));
-						adj_timescale->set_upper(start + (t-orig_t) + (end-start));
+						ConfigureAdjustment(adj_timescale)
+							.set_lower(start + (t-orig_t))
+							.set_upper(start + (t-orig_t) + (end-start))
+							.finish();
 					}
 				}
 			}
@@ -548,14 +552,16 @@ bool Widget_Timeslider::on_scroll_event(GdkEventScroll* event) //for zooming
 				{
 					// if we can't scroll the background right one whole tick, scroll it to the beginning
 					if (start < lower + (orig_t-t)) {
-						GlibFreezeNotify freeze(adj_timescale);
-						adj_timescale->set_lower(lower);
-						adj_timescale->set_upper(lower + (end-start));
+						ConfigureAdjustment(adj_timescale)
+							.set_lower(lower)
+							.set_upper(lower + (end-start))
+							.finish();
 					} else {
 						// else scroll the background left
-						GlibFreezeNotify freeze(adj_timescale);
-						adj_timescale->set_lower(start - (orig_t-t));
-						adj_timescale->set_upper(start - (orig_t-t) + (end-start));
+						ConfigureAdjustment(adj_timescale)
+							.set_lower(start - (orig_t-t))
+							.set_upper(start - (orig_t-t) + (end-start))
+							.finish();
 					}
 				}
 			}
@@ -586,7 +592,6 @@ void Widget_Timeslider::zoom_in(bool centerontime)
 
 	//synfig::info("Zooming in timerange to (%.4f,%.4f)",start,end);
 	if (adj_bounds) {
-		GlibFreezeNotify freeze(adj_bounds);
 		if(start < adj_bounds->get_lower())
 			start = adj_bounds->get_lower();
 		if(end > adj_bounds->get_upper())
@@ -594,9 +599,10 @@ void Widget_Timeslider::zoom_in(bool centerontime)
 	}
 
 	//reset values
-	GlibFreezeNotify freeze(adj_timescale);
-	adj_timescale->set_lower(start);
-	adj_timescale->set_upper(end);
+	ConfigureAdjustment(adj_timescale)
+		.set_lower(start)
+		.set_upper(end)
+		.finish();
 }
 
 void Widget_Timeslider::zoom_out(bool centerontime)
@@ -615,7 +621,6 @@ void Widget_Timeslider::zoom_out(bool centerontime)
 
 	//synfig::info("Zooming out timerange to (%.4f,%.4f)",start,end);
 	if(adj_bounds) {
-		GlibFreezeNotify freeze(adj_bounds);
 		if(start < adj_bounds->get_lower())
 			start = adj_bounds->get_lower();
 		if(end > adj_bounds->get_upper())
@@ -623,9 +628,10 @@ void Widget_Timeslider::zoom_out(bool centerontime)
 	}
 
 	//reset values
-	GlibFreezeNotify freeze(adj_timescale);
-	adj_timescale->set_lower(start);
-	adj_timescale->set_upper(end);
+	ConfigureAdjustment(adj_timescale)
+		.set_lower(start)
+		.set_upper(end)
+		.finish();
 }
 
 bool Widget_Timeslider::on_button_press_event(GdkEventButton *event) //for clicking

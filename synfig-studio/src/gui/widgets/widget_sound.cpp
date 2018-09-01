@@ -36,6 +36,8 @@
 
 #include <synfig/general.h>
 
+#include <gui/helpers.h>
+
 #include "audiocontainer.h"
 #include "widget_sound.h"
 
@@ -76,18 +78,20 @@ Widget_Sound::set_position(double t)
 		if (t < lower) {
 			lower -= ceil((lower-t)/framesize)*framesize;
 			upper = lower + framesize;
-			GlibFreezeNotify freeze(adj_timescale);
-			adj_timescale->set_lower(lower);
-			adj_timescale->set_upper(upper);
-			adj_timescale->set_value(t);
+			ConfigureAdjustment(adj_timescale)
+				.set_lower(lower)
+				.set_upper(upper)
+				.set_value(t)
+				.finish();
 		} else
 		if (t > upper) {
 			lower += ceil((t-upper)/framesize)*framesize;
 			upper = lower + framesize;
-			GlibFreezeNotify freeze(adj_timescale);
-			adj_timescale->set_lower(lower);
-			adj_timescale->set_upper(upper);
-			adj_timescale->set_value(t);
+			ConfigureAdjustment(adj_timescale)
+				.set_lower(lower)
+				.set_upper(upper)
+				.set_value(t)
+				.finish();
 		} else {
 			adj_timescale->set_value(t);
 		}
