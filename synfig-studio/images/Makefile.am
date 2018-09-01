@@ -415,23 +415,15 @@ all: $(IMAGES)
 SUFFIXES = .sif .tif .png .sifz .bmp
 #.SUFFIXES: $(SUFFIXES)
 
-define build_ico =
-bash ../build_tools/sif2ico.sh $<
-echo "  File \"images\\$@\"" >>./icons.nsh
-echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unicons.nsh
-endef
-
-define render_image =
-$(SYNFIG) -q $< -o $@ --time 0
-echo "  File \"images\\$@\"" >>./images.nsh
-echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
-endef
-
 .sifz.ico:
-	$(build_ico)
+	bash ../build_tools/sif2ico.sh $<
+	echo "  File \"images\\$@\"" >>./icons.nsh
+	echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unicons.nsh
 
 .sif.ico:
-	$(build_ico)
+	bash ../build_tools/sif2ico.sh $<
+	echo "  File \"images\\$@\"" >>./icons.nsh
+	echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unicons.nsh
 
 clean-local:
 	$(RM) -r $(CLEANDIRS)
@@ -443,16 +435,24 @@ clean-local:
 #	echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 #
 .sifz.bmp:
-	$(render_image)
+	$(SYNFIG) -q $< -o $@ --time 0
+	echo "  File \"images\\$@\"" >>./images.nsh
+	echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
 .sif.bmp:
-	$(render_image)
+	$(SYNFIG) -q $< -o $@ --time 0
+	echo "  File \"images\\$@\"" >>./images.nsh
+	echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
 .sifz.$(EXT):
-	$(render_image)
+	$(SYNFIG) -q $< -o $@ --time 0
+	echo "  File \"images\\$@\"" >>./images.nsh
+	echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
 .sif.$(EXT):
-	$(render_image)
+	$(SYNFIG) -q $< -o $@ --time 0
+	echo "  File \"images\\$@\"" >>./images.nsh
+	echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
 keyframe_lock_past_on_icon.$(EXT): $(srcdir)/keyframe_lock_icons.sif
 	$(SYNFIG) -q $< -o $@ --time 0
