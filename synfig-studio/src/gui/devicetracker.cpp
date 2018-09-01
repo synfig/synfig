@@ -71,7 +71,7 @@ DeviceTracker::list_devices(DeviceList &out_devices)
 		out_devices.push_back(seat->get_keyboard());
 	if (seat->get_pointer())
 		out_devices.push_back(seat->get_pointer());
-	DeviceList slaves = seat->get_slaves(Gdk::SEAT_CAPABILITY_NONE);
+	DeviceList slaves = seat->get_slaves(Gdk::SEAT_CAPABILITY_ALL);
 	out_devices.reserve(out_devices.size() + slaves.size());
 	out_devices.insert(out_devices.end(), slaves.begin(), slaves.end());
 }
