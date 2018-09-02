@@ -241,15 +241,13 @@ ChildrenTree::set_model(Glib::RefPtr<ChildrenTreeStore> children_tree_store)
 {
 	children_tree_store_=children_tree_store;
 	tree_view.set_model(children_tree_store_);
-	cellrenderer_time_track->set_canvas_interface(children_tree_store_->canvas_interface()); // am I smart people?  (cellrenderer/cellrenderer_timetrack.h:176)
+	cellrenderer_time_track->set_canvas_interface(children_tree_store_->canvas_interface());
 	children_tree_store_->canvas_interface()->signal_dirty_preview().connect(sigc::mem_fun(*this,&studio::ChildrenTree::on_dirty_preview));
 }
 
 void
-ChildrenTree::set_time_adjustment(const Glib::RefPtr<Gtk::Adjustment> &adjustment)
-{
-	cellrenderer_time_track->set_adjustment(adjustment);
-}
+ChildrenTree::set_time_model(const etl::handle<TimeModel> &x)
+	{ cellrenderer_time_track->set_time_model(x); }
 
 void
 ChildrenTree::on_dirty_preview()

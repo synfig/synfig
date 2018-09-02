@@ -226,9 +226,7 @@ Widget_Keyframe_List::set_selected_keyframe(const Keyframe &x)
 
 void
 Widget_Keyframe_List::on_keyframe_selected(Keyframe keyframe)
-{
-	set_selected_keyframe(keyframe);
-}
+	{ set_selected_keyframe(keyframe); }
 
 bool
 Widget_Keyframe_List::perform_move_kf(bool delta)

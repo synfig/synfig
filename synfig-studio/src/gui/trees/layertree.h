@@ -37,13 +37,16 @@
 #include <gtkmm/scale.h>
 #include <gtkmm/button.h>
 
-#include <synfigapp/canvasinterface.h>
-#include <synfigapp/value_desc.h>
-#include "layertreestore.h"
-#include "layerparamtreestore.h"
 #include <synfig/valuenodes/valuenode_animated.h>
 
-#include "widgets/widget_value.h"
+#include <synfigapp/value_desc.h>
+#include <synfigapp/canvasinterface.h>
+
+#include <widgets/widget_value.h>
+#include <gui/timemodel.h>
+
+#include "layertreestore.h"
+#include "layerparamtreestore.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -240,7 +243,7 @@ public:
 
 	void set_model(Glib::RefPtr<LayerTreeStore> layer_tree_store_);
 
-	void set_time_adjustment(const Glib::RefPtr<Gtk::Adjustment> &adjustment);
+	void set_time_model(const etl::handle<TimeModel> &x);
 
 	void set_show_timetrack(bool x=true);
 

@@ -33,16 +33,18 @@
 #include <gtkmm/tooltip.h>
 #include <gtkmm/table.h>
 #include <gtkmm/box.h>
-#include <gtkmm/adjustment.h>
 #include <gtkmm/scale.h>
 #include <gtkmm/button.h>
 
-#include <synfigapp/canvasinterface.h>
-#include <synfigapp/value_desc.h>
-#include "trees/childrentreestore.h"
 #include <synfig/valuenodes/valuenode_animated.h>
 
-#include "widgets/widget_value.h"
+#include <synfigapp/value_desc.h>
+#include <synfigapp/canvasinterface.h>
+
+#include <gui/timemodel.h>
+#include <widgets/widget_value.h>
+
+#include "childrentreestore.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -155,7 +157,7 @@ public:
 
 	void set_model(Glib::RefPtr<ChildrenTreeStore> children_tree_store_);
 
-	void set_time_adjustment(const Glib::RefPtr<Gtk::Adjustment> &adjustment);
+	void set_time_model(const etl::handle<TimeModel> &x);
 
 	void set_show_timetrack(bool x=true);
 

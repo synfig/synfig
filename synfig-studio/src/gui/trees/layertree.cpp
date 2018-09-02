@@ -743,13 +743,12 @@ LayerTree::set_model(Glib::RefPtr<LayerTreeStore> layer_tree_store)
 }
 
 void
-LayerTree::set_time_adjustment(const Glib::RefPtr<Gtk::Adjustment> &adjustment)
+LayerTree::set_time_model(const etl::handle<TimeModel> &x)
 {
-#ifdef TIMETRACK_IN_PARAMS_PANEL
-	cellrenderer_time_track->set_adjustment(adjustment);
-#endif	// TIMETRACK_IN_PARAMS_PANEL
-	adjustment->signal_value_changed().connect(sigc::mem_fun(get_param_tree_view(),&Gtk::TreeView::queue_draw));
-	adjustment->signal_changed().connect(sigc::mem_fun(get_param_tree_view(),&Gtk::TreeView::queue_draw));
+	#ifdef TIMETRACK_IN_PARAMS_PANEL
+	cellrenderer_time_track->set_time_model(x);
+	#endif
+	x->signal_time_changed().connect(sigc::mem_fun(get_param_tree_view(),&Gtk::TreeView::queue_draw));
 }
 
 void

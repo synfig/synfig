@@ -79,7 +79,8 @@ public:
 
 	void set_canvas_view(handle<CanvasView> canvas_view)
 	{
-		cellrenderer_time_track->set_adjustment(canvas_view->time_model()->visible_time_adjustment());
+		cellrenderer_time_track->set_time_model(canvas_view->time_model());
+		cellrenderer_time_track->set_canvas_interface(canvas_view->canvas_interface());
 	}
 
 	TimeTrackView()
