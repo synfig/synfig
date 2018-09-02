@@ -100,7 +100,7 @@ Dock_Curves::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
 	//! \see CanvasView::set_ext_widget
 	//! \see CanvasView::~CanvasView
 	Widget_Curves* curves(new Widget_Curves());
-	curves->set_time_adjustment(canvas_view->time_model()->visible_time_adjustment());
+	curves->set_time_model(canvas_view->time_model());
 
 	Gtk::TreeView* param_tree_view(
 		static_cast<Gtk::TreeView*>(canvas_view->get_ext_widget("params"))

@@ -6,6 +6,7 @@
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**	......... ... 2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -27,15 +28,14 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/box.h>
-#include <gtkmm/table.h>
-#include <gtkmm/spinbutton.h>
-#include <gtkmm/adjustment.h>
-#include <gtkmm/drawingarea.h>
-#include <gtkmm/layout.h>
-#include <synfig/color.h>
-#include <synfigapp/value_desc.h>
 #include <list>
+
+#include <gtkmm/drawingarea.h>
+#include <gtkmm/adjustment.h>
+
+#include <synfigapp/value_desc.h>
+
+#include <gui/timemodel.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -45,33 +45,36 @@
 
 namespace studio {
 
-class Widget_Curves : public Gtk::DrawingArea
+class Widget_Curves: public Gtk::DrawingArea
 {
+private:
 	struct Channel;
 	struct CurveStruct;
 
-	Glib::RefPtr<Gtk::Adjustment> time_adjustment_;
-	Glib::RefPtr<Gtk::Adjustment> range_adjustment_;
+	Glib::RefPtr<Gtk::Adjustment> range_adjustment;
 
-	std::list<CurveStruct> curve_list_;
+	etl::handle<TimeModel> time_model;
+	std::list<CurveStruct> curve_list;
+
+	sigc::connection time_changed;
+	std::list<sigc::connection> value_desc_changed;
 
 public:
-
 	Widget_Curves();
 	~Widget_Curves();
 
-	void set_value_descs(std::list<synfigapp::ValueDesc> value_descs);
+	const Glib::RefPtr<Gtk::Adjustment>& get_range_adjustment() const { return range_adjustment; }
+
+	const etl::handle<TimeModel>& get_time_model() const { return time_model; }
+	void set_time_model(const etl::handle<TimeModel> &x);
+
+	void set_value_descs(const std::list<synfigapp::ValueDesc> &value_descs);
 	void clear();
 	void refresh();
 
-	Glib::RefPtr<Gtk::Adjustment> get_range_adjustment() { return range_adjustment_; }
-	Glib::RefPtr<Gtk::Adjustment> get_time_adjustment() { return time_adjustment_; }
-	void set_time_adjustment(const Glib::RefPtr<Gtk::Adjustment>&);
-
-private:
+protected:
 	bool on_draw(const Cairo::RefPtr<Cairo::Context> &cr);
 	bool on_event(GdkEvent *event);
-
 }; // END of class Widget_Curves
 
 }; // END of namespace studio
