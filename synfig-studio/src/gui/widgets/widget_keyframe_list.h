@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2009 Carlos López
+**	......... ... 2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -28,14 +29,17 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <sigc++/sigc++.h>
+
 #include <gtkmm/drawingarea.h>
-#include <gtkmm/adjustment.h>
 #include <gtkmm/tooltip.h>
 #include <gtkmm/window.h>
-#include <synfig/keyframe.h>
-#include <sigc++/sigc++.h>
-#include <synfigapp/canvasinterface.h>
 
+#include <synfig/keyframe.h>
+
+#include <gui/timemodel.h>
+
+#include <synfigapp/canvasinterface.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -47,83 +51,77 @@ namespace studio {
 
 class Widget_Keyframe_List : public Gtk::DrawingArea
 {
+	//! The list of keyframes to be drawn on the widget and moved with mouse
+	synfig::KeyframeList* kf_list;
+
 	//! The canvas interface being watched
-	etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_;
+	etl::loose_handle<synfigapp::CanvasInterface> canvas_interface;
 
-	//! Time adjustment window
-	Glib::RefPtr<Gtk::Adjustment> adj_default;
-	Glib::RefPtr<Gtk::Adjustment> adj_timescale;
+	//! Time model
+	etl::handle<TimeModel> time_model;
 
-	//!The list of keyframes to be drawn on the widget and moved with mouse
-	synfig::KeyframeList default_kf_list_;
-	mutable synfig::KeyframeList* kf_list_;
+	//! True if it is editable. Keyframes can be moved.
+	bool editable;
 
-	//! The frames per second of the canvas
-	float fps;
+	//! True if a keyframe is being dragged.
+	bool dragging;
 
-	//! Time radius to click a keyframe
+	//! True if a keyframe has been moved
+	bool changed;
+
 	synfig::Time time_ratio;
 
-	//!True if it is editable. Keyframes can be moved.
-	bool editable_;
-
-	//!True if a keyframe is being dragged.
-	bool dragging_;
-
-	//!True if a keyframe has been moved
-	bool changed_;
-
-	//!Holds the selected keyframe of the keyframe list
+	//! Holds the selected keyframe of the keyframe list
 	synfig::Keyframe selected_kf;
-	synfig::Keyframe selected_none;
-	bool selected_;
+	bool selected;
 
-	//!The time of the selected keyframe
+	//! The time of the selected keyframe
 	synfig::Time selected_kf_time;
 
-	//!The time of the selected keyframe during draging
+	//! The time of the selected keyframe during draging
 	synfig::Time dragging_kf_time;
 
-	//!Connectors for handling the signals of the time adjustment
-	sigc::connection time_value_change;
-	sigc::connection time_other_change;
+	//! The Moving handmade tooltip window
+	Gtk::Window moving_tooltip;
+	//! The Moving handmade tooltip label
+	Gtk::Label moving_tooltip_label;
+	//! The Moving handmade tooltip y fixed coordinate
+	int moving_tooltip_y;
+
+	//! Connectors for handling the signal of the time model
+	sigc::connection time_model_change;
+
+	//! Connectors for handling the signal of the time model
+	sigc::connection keyframe_added;
+	sigc::connection keyframe_changed;
+	sigc::connection keyframe_removed;
+	sigc::connection keyframe_selected;
 
 public:
-
-	//!Default constructor
 	Widget_Keyframe_List();
-
-	//!Destructror
 	~Widget_Keyframe_List();
 
 	//!Loads a new keyframe list on the widget.
-	void set_kf_list(synfig::KeyframeList* x);
-
-	//!Member for private data.
-	synfig::KeyframeList* get_kf_list()const { return kf_list_; }
-
-	//!Member for private data
-	void set_editable(bool x=true) { editable_=x; }
-
-	//!Member for private data
-	bool get_editable()const { return editable_; }
-
-	//!Store the selected keyframe value and fired keyframe selected signal
-	void set_selected_keyframe(const synfig::Keyframe &x);
-
-	//!Returns the selected keyframe
-	// \return The selected keyframe
-	const synfig::Keyframe& get_selected_keyframe() { return selected_kf; }
-
-	//! Set the time adjustment and proper connects its change signals
-	void set_time_adjustment(const Glib::RefPtr<Gtk::Adjustment> &x);
-
-	//! Affect the global frames per second
-	// \param x[in] Value for the frames per second
-	void set_fps(float x);
+	void set_kf_list(synfig::KeyframeList *x);
+	synfig::KeyframeList* get_kf_list() const { return kf_list; }
 
 	//! Set the canvas interface, it's the place where signals are connected
-	void set_canvas_interface(etl::loose_handle<synfigapp::CanvasInterface>	h);
+	//! This function also replaces the keyframe list (see: set_fk_list())
+	void set_canvas_interface(const etl::loose_handle<synfigapp::CanvasInterface> &x);
+	const etl::loose_handle<synfigapp::CanvasInterface>& get_canvas_interface() const { return canvas_interface; }
+
+	//! Set the time model and proper connects its change signals
+	void set_time_model(const etl::handle<TimeModel> &x);
+	const etl::handle<TimeModel>& get_time_model() const { return time_model; }
+
+	void set_editable(bool x = true) { editable = x; }
+	bool get_editable() const { return editable; }
+
+	//!Store the selected keyframe value and fired keyframe selected signal
+	void reset_selected_keyframe();
+	void set_selected_keyframe(const synfig::Keyframe &x);
+	bool is_keyframe_selected() const { return selected; }
+	const synfig::Keyframe& get_selected_keyframe() const { return selected_kf; }
 
 	//! Performs the keyframe movement. Returns true if it was sucessful
 	//! \param[in] delta If false permorm normal move. If true perform delta movement.
@@ -137,31 +135,10 @@ public:
 		bool fill,
 		const synfig::Color &color );
 
-
-/* ======================= EVENTS HANDLERS ===========================*/
+	// Events handlers
 	bool on_draw(const Cairo::RefPtr<Cairo::Context> &cr);
-
-	//! Gtk Widget main loop event, catch the Mouse events.
 	bool on_event(GdkEvent *event);
-
-	//! Signal handler for the selected keyframe from the canvas interface
-	// \param[in] keyframe The selected keyframe
-	// \param[in] emitter The widget who emit the signal
-	void on_keyframe_selected(synfig::Keyframe keyframe, void* emitter);
-
-	/*
- -- ** -- P R I V A T E   D A T A ---------------------------------------------
-	*/
-
-private:
-
-	//! The Moving handmade tooltip window
-	Gtk::Window *moving_tooltip_;
-	//! The Moving handmade tooltip label
-	Gtk::Label *moving_tooltip_label_;
-	//! The Moving handmade tooltip y fixed coordinate
-	int moving_tooltip_y_;
-
+	void on_keyframe_selected(synfig::Keyframe keyframe);
 }; // END of class Keyframe_List
 
 }; // END of namespace studio

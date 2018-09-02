@@ -161,7 +161,7 @@ Dock_Curves::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view
 		widget_timeslider_.set_bounds_adjustment( Glib::RefPtr<Gtk::Adjustment>() );
 		widget_timeslider_.set_canvas_view( CanvasView::Handle() );
 
-		widget_kf_list_.set_time_adjustment( Glib::RefPtr<Gtk::Adjustment>() );
+		widget_kf_list_.set_time_model( etl::handle<TimeModel>() );
 		widget_kf_list_.set_canvas_interface( etl::loose_handle<synfigapp::CanvasInterface>() );
 	}
 
@@ -178,7 +178,7 @@ Dock_Curves::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view
 		widget_timeslider_.set_global_fps(canvas_view->get_canvas()->rend_desc().get_frame_rate());
 		widget_timeslider_.set_canvas_view(canvas_view);
 
-		widget_kf_list_.set_time_adjustment(canvas_view->time_model()->visible_time_adjustment());
+		widget_kf_list_.set_time_model(canvas_view->time_model());
 		widget_kf_list_.set_canvas_interface(canvas_view->canvas_interface());
 
 		table_=new Gtk::Table(3, 2);

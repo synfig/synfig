@@ -857,7 +857,7 @@ Gtk::Widget*
 CanvasView::create_time_bar()
 {
 	//Setup the keyframe list widget
-	widget_kf_list->set_time_adjustment(time_model()->visible_time_adjustment());
+	widget_kf_list->set_time_model(time_model());
 	widget_kf_list->set_canvas_interface(canvas_interface());
 	widget_kf_list->show();
 
@@ -1763,7 +1763,6 @@ CanvasView::refresh_rend_desc()
 
 	current_time_widget->set_fps(current_frame_rate);
 	jackdial->set_fps(current_frame_rate);
-	widget_kf_list->set_fps(current_frame_rate);
 	timeslider->set_global_fps(current_frame_rate);
 
 	time_model()->set_bounds(begin_time, end_time, current_frame_rate);

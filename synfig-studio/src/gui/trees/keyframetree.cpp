@@ -350,28 +350,20 @@ KeyframeTree::on_selection_changed()
 	//Connected on treeview::selection::changed
 
 	//if(send_selection && has_focus () && get_selection()->count_selected_rows()==1)
-	if(send_selection && get_selection()->count_selected_rows()==1)
-	{
-
+	if(send_selection && get_selection()->count_selected_rows()==1) {
 		Keyframe keyframe((*get_selection()->get_selected())[model.keyframe]);
-		if(keyframe && keyframe != selected_kf && keyframe_tree_store_)
-		{
+		if(keyframe && keyframe != selected_kf && keyframe_tree_store_) {
 			selected_kf = keyframe;
-			keyframe_tree_store_->canvas_interface()->signal_keyframe_selected()(keyframe, (void*)this);
+			keyframe_tree_store_->canvas_interface()->signal_keyframe_selected()(keyframe);
 		}
-
 	}
 }
 
 void
-KeyframeTree::on_keyframe_selected(synfig::Keyframe keyframe, void* emitter)
+KeyframeTree::on_keyframe_selected(synfig::Keyframe keyframe)
 {
 	Gtk::TreeModel::Path path;
-
-	if((void*)this == emitter)	return;
-
-	if(keyframe && keyframe != selected_kf)
-	{
+	if (keyframe && keyframe != selected_kf) {
 		selected_kf = keyframe;
 		send_selection = false;
 		if(keyframe_tree_store_ && keyframe_tree_store_->find_keyframe_path(keyframe,path))

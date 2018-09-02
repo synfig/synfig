@@ -126,7 +126,7 @@ private:
 	void on_selection_changed();
 
 	//! Signal handler for select keyframe signal from canvas interface
-	void on_keyframe_selected(synfig::Keyframe, void* emitter);
+	void on_keyframe_selected(synfig::Keyframe);
 	sigc::connection	keyframeselected;
 
 	/*
