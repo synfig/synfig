@@ -506,8 +506,13 @@ Dock_Timetrack::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_v
 		Gtk::DrawingArea* align_drawingArea1 = Gtk::manage(new Gtk::DrawingArea);
 		// TODO ?: one align_drawingArea.(2, 3, 0, 1) modify_bg KF's color another (2, 3, 1, 2) modify_bg TS's color
 		Gtk::DrawingArea* align_drawingArea2 = Gtk::manage(new Gtk::DrawingArea);
+#if GTKMM_MAJOR_VERSION < 3 || (GTKMM_MAJOR_VERSION == 3 && GTKMM_MINOR_VERSION < 14)
+		align_drawingArea1->set_size_request(4,-1);
+		align_drawingArea2->set_size_request(9,-1);
+#else
 		align_drawingArea1->set_size_request(2,-1);
 		align_drawingArea2->set_size_request(4,-1);
+#endif
 
 		widget_timeslider_.set_canvas_view(canvas_view);
 

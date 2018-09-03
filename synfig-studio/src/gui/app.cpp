@@ -2193,11 +2193,16 @@ App::apply_gtk_settings()
 	data += ".button > GtkLabel                 { padding-top: 0px; padding-bottom: 0px; }\n";
 	data += "GtkComboBox > .button > GtkBox > * { padding-top: 0px; padding-bottom: 0px; }\n";
 	data += ".entry                             { padding-top: 0px; padding-bottom: 0px; }\n";
-	// following css works in gtk since 3.22:
+#if GTKMM_MAJOR_VERSION < 3 || (GTKMM_MAJOR_VERSION == 3 && GTKMM_MINOR_VERSION < 22)
+	// following css works in old versions of gtk
+	data += "button { padding: 0px; }\n";
+#else
+	// following css works for gtk 3.22:
+	data += "entry, spinbutton { min-height: 16px; }\n";
 	data += "button { min-height: 16px; min-width: 16px; padding: 0px; }\n";
+#endif
 	data += "button > box { padding: 5px; }\n";
 	data += "button > image { padding: 5px; }\n";
-	data += "entry, spinbutton { min-height: 16px; }\n";
 	data += "combobox > box > button > box { padding-top: 0px; padding-bottom: 0px; }\n";
 	// Fix #810: Insetsetive context menus on OSX
 	g_object_get (G_OBJECT (gtk_settings), "gtk-theme-name", &theme_name, NULL);
