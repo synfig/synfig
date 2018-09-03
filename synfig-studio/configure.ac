@@ -94,12 +94,13 @@ esac
 
 # -- L I B R A R I E S ----------------------------------------
 
-# Some our hacks for GUI decorations works fine since 3.14 
-# Since 3.14 for checkboxes STATE_FLAG_ACTIVE replaced with STATE_FLAG_CHECKED  
-# Since 3.18 changed bahavor of Gtk::Adjustment
+# Gtk compatibility hacks:
+# Since 3.14 some our hacks for GUI decorations works in other way
+# Since 3.14 for checkboxes STATE_FLAG_ACTIVE replaced with STATE_FLAG_CHECKED
+# Since 3.18 changed bahavor of Gtk::Adjustment (in new version signals emits automatically)
 # Since 3.20 Gdk::Seat has been introduced that supersedes Gdk::DeviceManager
-# Since 3.22 Gtk CSS supports fields min-width, min-height
-PKG_CHECK_MODULES(GTKMM, gtkmm-3.0 >= 3.22,,[
+# Since 3.22 To fix artefacts with widgets placement we use new CSS fields: min-width, min-height
+PKG_CHECK_MODULES(GTKMM, gtkmm-3.0,,[
     AC_MSG_ERROR([ ** You need to install Gtkmm-3.0 ])
 ])
 AC_SUBST(GTKMM_CFLAGS)
