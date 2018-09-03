@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **  Copyright (c) 2009 Gerco Ballintijn
+**  ......... ... 2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -21,10 +22,6 @@
 */
 /* ========================================================================= */
 
-// FIXME: The code here doesn't use the GTKmm layer but uses GTK+ directly
-// since the GTKmm wrapper for Gdk::Device is incomplete. When the wrapper
-// gets fixed, this code should be updated accoordingly.
-
 /* === H E A D E R S ======================================================= */
 
 #ifdef USING_PCH
@@ -37,7 +34,13 @@
 #include <gdkmm/device.h>
 #include <gdkmm/display.h>
 #include <gdkmm/displaymanager.h>
-#include <gdkmm/seat.h>
+
+#if GDKMM_MAJOR_VERSION < 3 || (GDKMM_MAJOR_VERSION == 3 && GDKMM_MINOR_VERSION < 20)
+	#define OLD_GDKMM_DEVICE_FUNCTIONALITY
+	#include <gdkmm/devicemanager.h>
+#else
+	#include <gdkmm/seat.h>
+#endif
 
 #include <synfig/general.h>
 
@@ -66,6 +69,22 @@ void
 DeviceTracker::list_devices(DeviceList &out_devices)
 {
 	out_devices.clear();
+
+#ifdef OLD_GDKMM_DEVICE_FUNCTIONALITY
+	Gdk::DeviceType types[] = {
+		Gdk::DEVICE_TYPE_MASTER,
+		Gdk::DEVICE_TYPE_SLAVE,
+		Gdk::DEVICE_TYPE_FLOATING };
+	int count = (int)(sizeof(types)/sizeof(types[0]));
+	for(int i = 0; i < count; ++i) {
+		DeviceList list =
+			Gdk::DisplayManager::get()->
+				get_default_display()->
+					get_device_manager()->
+						list_devices(types[i]);
+		out_devices.insert(out_devices.end(), list.begin(), list.end());
+	}
+#else
 	Glib::RefPtr<Gdk::Seat> seat = Gdk::DisplayManager::get()->get_default_display()->get_default_seat();
 	if (seat->get_keyboard())
 		out_devices.push_back(seat->get_keyboard());
@@ -74,6 +93,7 @@ DeviceTracker::list_devices(DeviceList &out_devices)
 	DeviceList slaves = seat->get_slaves(Gdk::SEAT_CAPABILITY_ALL);
 	out_devices.reserve(out_devices.size() + slaves.size());
 	out_devices.insert(out_devices.end(), slaves.begin(), slaves.end());
+#endif
 }
 
 DeviceTracker::DeviceTracker()
