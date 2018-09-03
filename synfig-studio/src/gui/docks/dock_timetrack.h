@@ -58,8 +58,6 @@ protected:
 	virtual void changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view);
 
 	void refresh_selected_param();
-	//animation render description change signal handler
-	void refresh_rend_desc();
 
 public:
 	Dock_Timetrack();

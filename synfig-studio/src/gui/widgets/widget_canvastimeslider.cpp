@@ -84,6 +84,9 @@ Widget_CanvasTimeslider::set_canvas_view(const CanvasView::LooseHandle &x)
 	rendering_change.disconnect();
 	lock_ducks.reset();
 	canvas_view = x;
+
+	set_time_model(canvas_view ? canvas_view->time_model() : etl::handle<TimeModel>());
+
 	if (canvas_view && canvas_view->get_work_area())
 		rendering_change = canvas_view->get_work_area()->signal_rendering().connect(
 			sigc::mem_fun(*this, &Widget_CanvasTimeslider::queue_draw) );
@@ -100,20 +103,19 @@ Widget_CanvasTimeslider::show_tooltip(const synfig::Point &p, const synfig::Poin
 	Cairo::RefPtr<Cairo::SurfacePattern> pattern;
 	Cairo::RefPtr<Cairo::ImageSurface> surface;
 	if ( get_width()
-	  && adj_timescale
+	  && time_model
 	  && canvas_view
 	  && canvas_view->get_canvas()
 	  && canvas_view->get_work_area()
 	  && canvas_view->get_work_area()->get_renderer_canvas() )
 	{
-		double x     = p[0];
-		double w     = (double)get_width();
-		double start = adj_timescale->get_lower();
-		double end   = adj_timescale->get_upper();
-		float  fps   = canvas_view->get_canvas()->rend_desc().get_frame_rate();
-		if (approximate_less_lp(start, end) && approximate_greater_lp(fps, 0.f)) {
-			synfig::Time time(x/w*(end - start) + start);
-			time = time.round(fps);
+		double x   = p[0];
+		double w   = (double)get_width();
+		Time lower = time_model->get_visible_lower();
+		Time upper = time_model->get_visible_upper();
+		if (lower < upper) {
+			synfig::Time time(x/w*(upper - lower) + lower);
+			time = time_model->round_time(time);
 			surface = canvas_view->get_work_area()->get_renderer_canvas()->get_thumb(time);
 			pattern = canvas_view->get_work_area()->get_background_pattern();
 		}
@@ -222,32 +224,32 @@ Widget_CanvasTimeslider::draw_background(const Cairo::RefPtr<Cairo::Context> &cr
 {
 	Widget_Timeslider::draw_background(cr);
 
-	if (!canvas_view || !canvas_view->get_work_area()) return;
-	Canvas::Handle canvas = canvas_view->get_canvas();
+	if (!time_model || !canvas_view || !canvas_view->get_work_area()) return;
 	Renderer_Canvas::Handle renderer_canvas = canvas_view->get_work_area()->get_renderer_canvas();
-	if (!canvas || !renderer_canvas) return;
+	if (!renderer_canvas) return;
 
-	Glib::RefPtr<Gdk::Window> window = get_window();
 	int w = get_width(), h = get_height();
-	if (w == 0 || h == 0) return;
+	if (w <= 0 || h <= 0) return;
 
-	if (!adj_timescale) return;
-	double start = adj_timescale->get_lower();
-	double end   = adj_timescale->get_upper();
-	if (approximate_less_or_equal_lp(end, start)) return;
+	Time lower = time_model->get_visible_lower();
+	Time upper = time_model->get_visible_upper();
+	Time frame_duration = time_model->get_frame_duration();
+	if (lower >= upper) return;
 
-	RendDesc desc = canvas->rend_desc();
-	float fps = desc.get_frame_rate();
-	if (approximate_less_or_equal_lp(fps, 0.f)) return;
-	double frame_duration = 1.0/(double)fps;
+	double k = (double)w/(double)(upper - lower);
+	double extra_pixels = 1.0;
+	Time extra_time = extra_pixels*k;
+	Time lower_ex = lower - frame_duration - 2.0*extra_time;
+	Time upper_ex = upper + 2.0*extra_time;
 
-	Renderer_Canvas::StatusMap status_map;
-	renderer_canvas->get_render_status(status_map);
-	double k = (double)w/(end - start);
 	double top = 0.0;
 	double width = frame_duration*k + 1.0;
 	double height = (double)h;
+
+	Renderer_Canvas::StatusMap status_map;
+	renderer_canvas->get_render_status(status_map);
 	for(Renderer_Canvas::StatusMap::const_iterator i = status_map.begin(); i != status_map.end(); ++i) {
+		if (i->first < lower_ex || i->first > upper_ex) continue;
 		cr->save();
 		switch(i->second) {
 		case Renderer_Canvas::FS_PartiallyDone : cr->set_source_rgba(0.4, 0.4, 0.4, 1.0); break;
@@ -255,7 +257,7 @@ Widget_CanvasTimeslider::draw_background(const Cairo::RefPtr<Cairo::Context> &cr
 		case Renderer_Canvas::FS_Done          : cr->set_source_rgba(0.0, 0.8, 0.0, 1.0); break;
 		default                                : cr->set_source_rgba(0.0, 0.0, 0.0, 0.0); break;
 		}
-		cr->rectangle(((double)i->first - start)*k, top, width, height);
+		cr->rectangle(((double)i->first - lower)*k, top, width, height);
 		cr->fill();
 		cr->restore();
 	}

@@ -443,16 +443,9 @@ Dock_Timetrack::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view
 
 	studio::LayerTree* tree_layer(dynamic_cast<studio::LayerTree*>(canvas_view->get_ext_widget("layers_cmp")));
 
-	/*
-	if(!getenv("SYNFIG_TIMETRACK_HEADER_HEIGHT"))
-	*/
 	tree_layer->signal_param_tree_header_height_changed().connect(sigc::mem_fun(*this, &studio::Dock_Timetrack::on_update_header_height));
-
 	canvas_view->time_model()->signal_time_changed().connect(sigc::mem_fun(*tree_view,&Gtk::TreeView::queue_draw));
-
 	canvas_view->set_ext_widget(get_name(),tree_view);
-	// widget_timeslider fps connection to animation render description change
-	canvas_view->canvas_interface()->signal_rend_desc_changed().connect(sigc::mem_fun(*this,&studio::Dock_Timetrack::refresh_rend_desc));
 }
 
 void
@@ -477,18 +470,6 @@ Dock_Timetrack::refresh_selected_param()
 */
 }
 
-/*! \fn Dock_Timetrack::refresh_rend_desc()
-**	\brief Signal handler for animation render description change
-*/
-void
-Dock_Timetrack::refresh_rend_desc()
-{
-	if(App::get_selected_canvas_view())
-	{
-		widget_timeslider_.set_global_fps(App::get_selected_canvas_view()->get_canvas()->rend_desc().get_frame_rate());
-	}
-}
-
 void
 Dock_Timetrack::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
 {
@@ -499,8 +480,6 @@ Dock_Timetrack::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_v
 		hscrollbar_.unset_adjustment();
 		vscrollbar_.unset_adjustment();
 
-		widget_timeslider_.set_time_adjustment( Glib::RefPtr<Gtk::Adjustment>() );
-		widget_timeslider_.set_bounds_adjustment( Glib::RefPtr<Gtk::Adjustment>() );
 		widget_timeslider_.set_canvas_view( CanvasView::Handle() );
 
 		widget_kf_list_.set_time_model( etl::handle<TimeModel>() );
@@ -530,9 +509,6 @@ Dock_Timetrack::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_v
 		align_drawingArea1->set_size_request(2,-1);
 		align_drawingArea2->set_size_request(4,-1);
 
-		widget_timeslider_.set_time_adjustment(canvas_view->time_model()->visible_time_adjustment());
-		widget_timeslider_.set_bounds_adjustment(canvas_view->time_model()->scroll_time_adjustment());
-		widget_timeslider_.set_global_fps(canvas_view->get_canvas()->rend_desc().get_frame_rate());
 		widget_timeslider_.set_canvas_view(canvas_view);
 
 		widget_kf_list_.set_time_model(canvas_view->time_model());

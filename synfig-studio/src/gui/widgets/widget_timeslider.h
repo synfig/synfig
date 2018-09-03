@@ -6,6 +6,7 @@
 **
 **	\legal
 **	Copyright (c) 2004 Adrian Bentley
+**	......... ... 2018 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -28,11 +29,10 @@
 /* === H E A D E R S ======================================================= */
 
 #include <gtkmm/drawingarea.h>
-#include <gtkmm/adjustment.h>
-
-#include <ETL/handle>
 
 #include <synfig/time.h>
+
+#include <gui/timemodel.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -42,88 +42,41 @@
 
 namespace studio {
 
-/* Design for the timeslider...
-
-	Concept: Scalable ruler
-		Ticks are done every so often (30 s, 10 frames, 5 frames, etc.)
-		Print out frame numbers next to the big ticks
-		Show blue pills in separate area (above or below)
-*/
-
-class Widget_Timeslider : public Gtk::DrawingArea
+//! Design for the timeslider...
+//! Concept: Scalable ruler
+//!     Ticks are done every so often (30 s, 10 frames, 5 frames, etc.)
+//!     Print out frame numbers next to the big ticks
+//!     Show blue pills in separate area (above or below)
+class Widget_Timeslider: public Gtk::DrawingArea
 {
-protected: //implementation that other interfaces can see
-	Glib::RefPtr<Pango::Layout> layout; //implementation awesomeness for text drawing
+protected: // implementation that other interfaces can see
+	Glib::RefPtr<Pango::Layout> layout; // implementation awesomeness for text drawing
 
-	Glib::RefPtr<Gtk::Adjustment> adj_default;
-	Glib::RefPtr<Gtk::Adjustment> adj_timescale;
-	Glib::RefPtr<Gtk::Adjustment> adj_timebounds;
+	etl::handle<TimeModel> time_model;
 
-	//HACK - I should not have to see this...
-	Glib::RefPtr<Gtk::Adjustment> adj_bounds;
-	double time_per_tickmark;
+	// last mouse position for dragging
+	double lastx;
 
-	//Statistics used for drawing stuff (and making sure we don't if we don't need to)
-	/*double start,end;
-	double current;
+	// distance between two small marks, also uses for left/right scroll
+	synfig::Time step;
 
-	bool invalidated;*/
+	sigc::connection time_change;
+	sigc::connection time_bounds_change;
 
-	guint32 last_event_time;
-
-	float fps;
-
-	sigc::connection time_value_change;
-	sigc::connection time_other_change;
-
-	//TODO: fill out blue pill stuff
-
-	//input functions
-
-	virtual bool on_motion_notify_event(GdkEventMotion* event); //for dragging
-	virtual bool on_scroll_event(GdkEventScroll* event); //for zooming
 	virtual bool on_button_press_event(GdkEventButton *event); //for clicking
 	virtual bool on_button_release_event(GdkEventButton *event); //for clicking
-
+	virtual bool on_motion_notify_event(GdkEventMotion* event); //for dragging
+	virtual bool on_scroll_event(GdkEventScroll* event); //for zooming
 	virtual bool on_draw(const Cairo::RefPtr<Cairo::Context> &cr);
 
 	virtual void draw_background(const Cairo::RefPtr<Cairo::Context> &cr);
 
-	//void update_times();
-
-	void zoom_in(bool centerontime = false);
-	void zoom_out(bool centerontime = false);
-
-	//Drag the Frame
-	bool dragscroll;
-
-	/*NOTE: if we can set the mouse position to the original position
-			this would only have to be set once (and it would be good otherwise too)
-	*/
-	double lastx; //last mouse position for dragging
-
-public: //structors
+public:
 	Widget_Timeslider();
 	~Widget_Timeslider();
 
-public: //Normal Interface
-
-	void draw() {queue_draw();}
-	virtual void refresh(); //reget bluepills, time values and queue_draw if need be
-
-public: //Time Interface
-
-	//Run FPS stuff through it to the MAX
-	double get_global_fps() const {return fps;}
-	void set_global_fps(float d);
-
-	//accessors for the time adjustment
-	Glib::RefPtr<Gtk::Adjustment> get_time_adjustment() const { return adj_timescale; }
-	void set_time_adjustment(const Glib::RefPtr<Gtk::Adjustment> &x);
-
-	//HACK - I should not have to see these bounds (should be boundless)
-	Glib::RefPtr<Gtk::Adjustment> get_bounds_adjustment() const { return adj_bounds; }
-	void set_bounds_adjustment(const Glib::RefPtr<Gtk::Adjustment> &x) { adj_bounds = x; }
+	const etl::handle<TimeModel>& get_time_model() const { return time_model; }
+	void set_time_model(const etl::handle<TimeModel> &x);
 };
 
 }; // END of namespace studio

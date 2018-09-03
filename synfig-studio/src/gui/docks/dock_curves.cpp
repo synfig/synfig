@@ -157,8 +157,6 @@ Dock_Curves::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view
 		hscrollbar_.unset_adjustment();
 		vscrollbar_.unset_adjustment();
 
-		widget_timeslider_.set_time_adjustment( Glib::RefPtr<Gtk::Adjustment>() );
-		widget_timeslider_.set_bounds_adjustment( Glib::RefPtr<Gtk::Adjustment>() );
 		widget_timeslider_.set_canvas_view( CanvasView::Handle() );
 
 		widget_kf_list_.set_time_model( etl::handle<TimeModel>() );
@@ -173,9 +171,6 @@ Dock_Curves::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view
 		vscrollbar_.set_adjustment(last_widget_curves_->get_range_adjustment());
 		hscrollbar_.set_adjustment(canvas_view->time_model()->scroll_time_adjustment());
 
-		widget_timeslider_.set_time_adjustment(canvas_view->time_model()->visible_time_adjustment());
-		widget_timeslider_.set_bounds_adjustment(canvas_view->time_model()->scroll_time_adjustment());
-		widget_timeslider_.set_global_fps(canvas_view->get_canvas()->rend_desc().get_frame_rate());
 		widget_timeslider_.set_canvas_view(canvas_view);
 
 		widget_kf_list_.set_time_model(canvas_view->time_model());

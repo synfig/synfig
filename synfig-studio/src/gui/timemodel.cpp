@@ -334,6 +334,7 @@ TimeModel::zoom(Real x, const Time &center)
 {
 	// relative zoom in/out
 	x = std::max(real_low_precision<Real>(), x);
+	x = 1.0/x;
 	Time lower = (visible_lower - center)*x + center;
 	Time upper = (visible_upper - center)*x + center;
 	set_visible_bounds(lower, upper);
@@ -341,10 +342,10 @@ TimeModel::zoom(Real x, const Time &center)
 
 bool
 TimeModel::almost_equal(const synfig::Time &a, const synfig::Time &b, const synfig::Time &range) const
-	{ return (a < b ? b - a : a - b) <= std::max(Time(), range) + get_step_increment()*0.49999; }
+	{ return (a < b ? b - a : a - b) <= std::max(Time(), range) + get_frame_duration()*0.49999; }
 
 Time
-TimeModel::get_step_increment() const
+TimeModel::get_frame_duration() const
 	{ return fps ? Time(1.0/fps).round(fps) : Time(); }
 
 Time

@@ -862,8 +862,6 @@ CanvasView::create_time_bar()
 	widget_kf_list->show();
 
 	// Setup Time Slider
-	timeslider->set_time_adjustment(time_model()->visible_time_adjustment());
-	timeslider->set_bounds_adjustment(time_model()->scroll_time_adjustment());
 	timeslider->set_canvas_view(this);
 	timeslider->set_can_focus(true);
 	timeslider->show();
@@ -1763,7 +1761,6 @@ CanvasView::refresh_rend_desc()
 
 	current_time_widget->set_fps(current_frame_rate);
 	jackdial->set_fps(current_frame_rate);
-	timeslider->set_global_fps(current_frame_rate);
 
 	time_model()->set_bounds(begin_time, end_time, current_frame_rate);
 	time_model()->set_visible_bounds(

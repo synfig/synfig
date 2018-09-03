@@ -122,8 +122,10 @@ public:
 	void set_zoom(synfig::Real x, const synfig::Time &center);
 	void zoom(synfig::Real x, const synfig::Time &center); //!< relative zoom in/out
 
-	synfig::Time get_step_increment() const; //!< duration of one frame
+	synfig::Time get_frame_duration() const; //!< duration of one frame
 	synfig::Time get_page_increment() const; //!< depends on visible duration
+	synfig::Time get_step_increment() const
+		{ return get_frame_duration(); }
 	synfig::Time get_page_size() const //!< visible duration
 		{ return get_visible_upper() - get_visible_lower(); }
 	synfig::Time get_size() const //!< full duration
