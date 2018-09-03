@@ -68,7 +68,6 @@ private:
 
 	Glib::RefPtr<Gtk::Adjustment> full_time_adjustment_;
 	Glib::RefPtr<Gtk::Adjustment> scroll_time_adjustment_;
-	Glib::RefPtr<Gtk::Adjustment> visible_time_adjustment_;
 	Glib::RefPtr<Gtk::Adjustment> play_bounds_adjustment_;
 
 	sigc::signal<void> signal_changed_;
@@ -174,7 +173,6 @@ public:
 
 	const Glib::RefPtr<Gtk::Adjustment>& full_time_adjustment()    { return full_time_adjustment_; }
 	const Glib::RefPtr<Gtk::Adjustment>& scroll_time_adjustment()  { return scroll_time_adjustment_; }
-	const Glib::RefPtr<Gtk::Adjustment>& visible_time_adjustment() { return visible_time_adjustment_; }
 	const Glib::RefPtr<Gtk::Adjustment>& play_bounds_adjustment()  { return play_bounds_adjustment_; }
 
 	sigc::signal<void> signal_changed()             { return signal_changed_; }

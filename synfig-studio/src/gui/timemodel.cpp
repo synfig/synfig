@@ -65,7 +65,6 @@ TimeModel::TimeModel():
 	play_repeat(),
 	full_time_adjustment_(Gtk::Adjustment::create(0.0, 0.0, 0.0)),
 	scroll_time_adjustment_(Gtk::Adjustment::create(0.0, 0.0, 0.0)),
-	visible_time_adjustment_(Gtk::Adjustment::create(0.0, 0.0, 0.0)),
 	play_bounds_adjustment_(Gtk::Adjustment::create(0.0, 0.0, 0.0))
 {
 	full_time_adjustment_->signal_changed().connect(
@@ -78,11 +77,6 @@ TimeModel::TimeModel():
 	scroll_time_adjustment_->signal_value_changed().connect(
 		sigc::bind(sigc::mem_fun(*this, &TimeModel::on_value_changed), &scroll_time_adjustment_) );
 
-	visible_time_adjustment_->signal_changed().connect(
-		sigc::bind(sigc::mem_fun(*this, &TimeModel::on_changed), &visible_time_adjustment_) );
-	visible_time_adjustment_->signal_value_changed().connect(
-		sigc::bind(sigc::mem_fun(*this, &TimeModel::on_value_changed), &visible_time_adjustment_) );
-
 	play_bounds_adjustment_->signal_changed().connect(
 		sigc::bind(sigc::mem_fun(*this, &TimeModel::on_changed), &play_bounds_adjustment_) );
 	play_bounds_adjustment_->signal_value_changed().connect(
@@ -93,8 +87,6 @@ void
 TimeModel::on_changed(Glib::RefPtr<Gtk::Adjustment> *source)
 {
 	if (in_sync) return;
-	if (source == &visible_time_adjustment_)
-		set_visible_bounds(Time((*source)->get_lower()), Time((*source)->get_upper()));
 	if (source == &play_bounds_adjustment_)
 		set_play_bounds(Time((*source)->get_lower()), Time((*source)->get_upper()));
 	sync();
@@ -134,7 +126,6 @@ TimeModel::sync()
 		// raise events only when all changes will done
 		FreezeNotify freeze_full_time(full_time_adjustment());
 		FreezeNotify freeze_scroll_time(scroll_time_adjustment());
-		FreezeNotify freeze_visible_time(visible_time_adjustment());
 		FreezeNotify freeze_play_bounds(play_bounds_adjustment());
 
 		configure_adjustment(
@@ -155,16 +146,6 @@ TimeModel::sync()
 			(double)step_increment,
 			(double)page_increment,
 			(double)page_size,
-			precision );
-
-		configure_adjustment(
-			visible_time_adjustment(),
-			(double)time,
-			(double)visible_lower,
-			(double)visible_upper,
-			(double)step_increment,
-			(double)step_increment,
-			0.0,
 			precision );
 
 		configure_adjustment(
