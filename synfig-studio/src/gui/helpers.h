@@ -81,6 +81,12 @@ public:
 
 	double precision;
 
+private:
+	// for compatibility with old gtk
+	void emit_changed();
+	void emit_value_changed();
+
+public:
 	explicit ConfigureAdjustment(const Glib::RefPtr<Gtk::Adjustment> &adjustment = Glib::RefPtr<Gtk::Adjustment>()):
 		adjustment(adjustment),
 		value(),
@@ -155,10 +161,14 @@ public:
 		  || !is_equal(step_increment, adjustment->get_step_increment())
 		  || !is_equal(page_increment, adjustment->get_page_increment())
 		  || !is_equal(page_size,      adjustment->get_page_size()) )
+		{
 			adjustment->configure(value, lower, upper, step_increment, page_increment, page_size);
-		else
-		if (!is_equal(value, adjustment->get_value()))
+			emit_changed();
+		} else
+		if (!is_equal(value, adjustment->get_value())) {
 			adjustment->set_value(value);
+			emit_value_changed();
+		}
 		adjustment.reset();
 	}
 

@@ -29,6 +29,8 @@
 #	include <config.h>
 #endif
 
+#include <gtk/gtk.h>
+
 #include <synfig/general.h>
 
 #include "helpers.h"
@@ -48,5 +50,18 @@ using namespace studio;
 
 /* === P R O C E D U R E S ================================================= */
 
+static bool
+is_old_gtk_adjustment() {
+	static bool is_old = gtk_check_version(3, 18, 0) != NULL;
+	return is_old;
+}
+
 /* === M E T H O D S ======================================================= */
 
+void
+ConfigureAdjustment::emit_changed()
+	{ if (is_old_gtk_adjustment()) adjustment->changed(); }
+
+void
+ConfigureAdjustment::emit_value_changed()
+{ if (is_old_gtk_adjustment()) adjustment->value_changed(); }

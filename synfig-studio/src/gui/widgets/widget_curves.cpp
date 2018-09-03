@@ -307,10 +307,14 @@ Widget_Curves::on_event(GdkEvent *event)
 			case GDK_SCROLL_RIGHT: {
 				if (event->scroll.state & GDK_CONTROL_MASK) {
 					// Ctrl+scroll , perform zoom in
-					range_adjustment->set_page_size(range_adjustment->get_page_size()/1.25);
+					ConfigureAdjustment(range_adjustment)
+						.set_page_size(range_adjustment->get_page_size()/1.25)
+						.finish();
 				} else {
 					// Scroll up
-					range_adjustment->set_value(range_adjustment->get_value() - range_adjustment->get_step_increment());
+					ConfigureAdjustment(range_adjustment)
+						.set_value(range_adjustment->get_value() - range_adjustment->get_step_increment())
+						.finish();
 				}
 				return true;
 			}
@@ -318,10 +322,14 @@ Widget_Curves::on_event(GdkEvent *event)
 			case GDK_SCROLL_LEFT: {
 				if (event->scroll.state & GDK_CONTROL_MASK) {
 					// Ctrl+scroll , perform zoom out
-					range_adjustment->set_page_size(range_adjustment->get_page_size()*1.25);
+					ConfigureAdjustment(range_adjustment)
+						.set_page_size(range_adjustment->get_page_size()*1.25)
+						.finish();
 				} else {
 					// Scroll down
-					range_adjustment->set_value(range_adjustment->get_value() + range_adjustment->get_step_increment());
+					ConfigureAdjustment(range_adjustment)
+						.set_value(range_adjustment->get_value() + range_adjustment->get_step_increment())
+						.finish();
 				}
 				return true;
 			}

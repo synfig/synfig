@@ -49,14 +49,15 @@
 #include "asyncrenderer.h"
 #include "canvasview.h"
 
-#include <gui/localization.h>
-
 #include <cmath>
 #include <cassert>
 #include <algorithm>
 #include <cstdio>
 #include <ctype.h>
 #include <synfig/string.h>
+#include <gui/helpers.h>
+
+#include <gui/localization.h>
 
 #endif
 
@@ -832,7 +833,9 @@ bool studio::Widget_Preview::play_update()
 		}
 
 		//set the new time...
-		adj_time_scrub->set_value(time);
+		ConfigureAdjustment(adj_time_scrub)
+			.set_value(time)
+			.finish();
 
 		//update the window to the correct image we might want to do this later...
 		//update();
@@ -857,8 +860,9 @@ void studio::Widget_Preview::scrub_updated(double t)
 
 	//synfig::info("Scrubbing to %.3f, setting adj to %.3f",oldt,t);
 
-	if(adj_time_scrub->get_value() != t)
-		adj_time_scrub->set_value(t);
+	ConfigureAdjustment(adj_time_scrub)
+		.set_value(t)
+		.finish();
 }
 
 void studio::Widget_Preview::disconnect_preview(Preview *prev)

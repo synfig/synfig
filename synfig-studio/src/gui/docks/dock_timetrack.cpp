@@ -38,7 +38,7 @@
 #include <synfig/general.h>
 #include <synfig/timepointcollect.h>
 
-#include <gui/localization.h>
+#include <gui/helpers.h>
 #include <app.h>
 #include <instance.h>
 #include <canvasview.h>
@@ -50,6 +50,7 @@
 
 #include "dock_timetrack.h"
 
+#include <gui/localization.h>
 
 #endif
 
@@ -158,29 +159,23 @@ public:
 		switch(event->type)
 		{
 		case GDK_SCROLL:
-			if(mimic_tree_view)
-			{
+			if (mimic_tree_view) {
 				if(event->scroll.direction==GDK_SCROLL_DOWN)
-				{
-					mimic_tree_view->get_vadjustment()->set_value(
-						std::min(
-							mimic_tree_view->get_vadjustment()->get_value()+
-							mimic_tree_view->get_vadjustment()->get_step_increment(),
-							mimic_tree_view->get_vadjustment()->get_upper()-
-							mimic_tree_view->get_vadjustment()->get_page_size()
-						)
-					);
-				}
-				else if(event->scroll.direction==GDK_SCROLL_UP)
-				{
-					mimic_tree_view->get_vadjustment()->set_value(
-						std::max(
-							mimic_tree_view->get_vadjustment()->get_value()-
-							mimic_tree_view->get_vadjustment()->get_step_increment(),
-							mimic_tree_view->get_vadjustment()->get_lower()
-						)
-					);
-				}
+					ConfigureAdjustment(mimic_tree_view->get_vadjustment())
+						.set_value( std::min(
+							mimic_tree_view->get_vadjustment()->get_value()
+						  +	mimic_tree_view->get_vadjustment()->get_step_increment(),
+							mimic_tree_view->get_vadjustment()->get_upper()
+						  - mimic_tree_view->get_vadjustment()->get_page_size() ))
+						.finish();
+				else
+				if(event->scroll.direction==GDK_SCROLL_UP)
+					ConfigureAdjustment(mimic_tree_view->get_vadjustment())
+						.set_value( std::max(
+							mimic_tree_view->get_vadjustment()->get_value()
+						  -	mimic_tree_view->get_vadjustment()->get_step_increment(),
+							mimic_tree_view->get_vadjustment()->get_lower() ))
+						.finish();
 			}
 			break;
 		case GDK_BUTTON_PRESS:
@@ -360,8 +355,10 @@ public:
 			Glib::RefPtr<Gtk::Adjustment> adjustment(mimic_tree_view->get_vadjustment());
 			set_vadjustment(adjustment);
 
-			if(adjustment->get_page_size()>get_height())
-				adjustment->set_page_size(get_height());
+			if (adjustment->get_page_size()>get_height())
+				ConfigureAdjustment(adjustment)
+					.set_page_size(get_height())
+					.finish();
 /* Commented during Align rows fixing
 // http://www.synfig.org/issues/thebuggenie/synfig/issues/161
 			int row_height = 0;

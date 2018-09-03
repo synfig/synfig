@@ -3372,7 +3372,7 @@ App::dialog_message_3b(const std::string &message,
 static bool
 try_open_uri(const std::string &uri)
 {
-#ifdef GTK_CHECK_VERSION(3, 22, 0)
+#if GTK_CHECK_VERSION(3, 22, 0)
 	return gtk_show_uri_on_window(
 		App::main_window ? App::main_window->gobj() : NULL,
 		uri.c_str(), GDK_CURRENT_TIME, NULL );
