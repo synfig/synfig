@@ -325,8 +325,12 @@ Widget_Timeslider::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 				cr->restore();
 
 				cr->save();
+				cr->set_line_width(1.0);
 				cr->set_source_rgba(0.0, 0.0, 0.0, 0.25);
-				cr->rectangle(x0, 0.0, w, (double)get_height());
+				cr->rectangle(x0 + 1.0, 1.0, w - 2.0, (double)get_height() - 2.0);
+				cr->stroke();
+				cr->set_source_rgba(0.0, 0.0, 0.0, 0.3);
+				cr->rectangle(x0 + 0.5, 0.5, w - 1.0, (double)get_height() - 1.0);
 				cr->stroke();
 				cr->restore();
 			}
