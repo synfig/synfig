@@ -29,6 +29,9 @@ set(IMG_SOURCE_animate_play_icon framedial_icons 6)
 set(IMG_SOURCE_animate_stop_icon framedial_icons 7)
 set(IMG_SOURCE_animate_pause_icon framedial_icons 8)
 set(IMG_SOURCE_animate_loop_icon framedial_icons 9)
+set(IMG_SOURCE_animate_bounds_icon framedial_icons 10)
+set(IMG_SOURCE_animate_bound_lower_icon framedial_icons 11)
+set(IMG_SOURCE_animate_bound_upper_icon framedial_icons 12)
 
 set(IMG_SOURCE_keyframe_lock_past_on_icon keyframe_lock_icons 0)
 set(IMG_SOURCE_keyframe_lock_past_off_icon keyframe_lock_icons 1)
@@ -69,6 +72,9 @@ set(ICONS
     animate_stop_icon
     animate_pause_icon
     animate_loop_icon
+    animate_bounds_icon
+    animate_bound_lower_icon
+    animate_bound_upper_icon
 
     keyframe_lock_past_on_icon
     keyframe_lock_past_off_icon
