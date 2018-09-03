@@ -531,7 +531,7 @@ if [[ $MODE != 'quick' ]]; then
 	./configure --prefix=${PREFIX} --includedir=${PREFIX}/include $DEBUG CFLAGS=$CFLAGS CXXFLAGS=$CXXFLAGS
 fi
 make $MAKE_OPTIONS
-sed -i "s|^Cflags: -I\\\${includedir}|Cflags: -I$REPO_DIR\/ETL -I\\\${includedir}|" ETL.pc
+sed -i "s|^Cflags: -I\\\${includedir}|Cflags: -I$SYNFIG_REPO_DIR\/ETL -I\\\${includedir}|" ETL.pc
 make install
 
 popd
