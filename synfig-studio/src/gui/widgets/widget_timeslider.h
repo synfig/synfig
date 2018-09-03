@@ -54,6 +54,8 @@ protected: // implementation that other interfaces can see
 
 	etl::handle<TimeModel> time_model;
 
+	Cairo::RefPtr<Cairo::SurfacePattern> play_bounds_pattern;
+
 	// last mouse position for dragging
 	double lastx;
 

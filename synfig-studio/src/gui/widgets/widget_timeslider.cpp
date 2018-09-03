@@ -142,9 +142,29 @@ calc_divisions(float fps, double range, double sub_range, double &out_step, int 
 
 Widget_Timeslider::Widget_Timeslider():
 	layout(Pango::Layout::create(get_pango_context())),
-	lastx(0)
+	lastx()
 {
 	set_size_request(-1, fullheight);
+
+	{ // prepare pattern for play bounds
+		const int pattern_step = 32;
+		Cairo::RefPtr<Cairo::ImageSurface> surface = Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, pattern_step, pattern_step);
+		Cairo::RefPtr<Cairo::Context> cr = Cairo::Context::create(surface);
+		cr->set_source_rgba(0.0, 0.0, 0.0, 0.25);
+		cr->scale((double)pattern_step, (double)pattern_step);
+		cr->set_line_width(0.375);
+		cr->move_to(1.75, -1.0);
+		cr->line_to(-1.0, 1.75);
+		cr->stroke();
+		cr->move_to(2.0, -0.25);
+		cr->line_to(-0.25, 2.0);
+		cr->stroke();
+		surface->flush();
+
+		play_bounds_pattern = Cairo::SurfacePattern::create(surface);
+		play_bounds_pattern->set_filter(Cairo::FILTER_NEAREST);
+		play_bounds_pattern->set_extend(Cairo::EXTEND_REPEAT);
+	}
 
 	// click / scroll / zoom
 	add_events( Gdk::BUTTON_PRESS_MASK
@@ -156,7 +176,8 @@ Widget_Timeslider::Widget_Timeslider():
 Widget_Timeslider::~Widget_Timeslider()
 	{ set_time_model( etl::handle<TimeModel>() ); }
 
-void Widget_Timeslider::set_time_model(const etl::handle<TimeModel> &x)
+void
+Widget_Timeslider::set_time_model(const etl::handle<TimeModel> &x)
 {
 	if (time_model == x) return;
 
@@ -175,7 +196,8 @@ void Widget_Timeslider::set_time_model(const etl::handle<TimeModel> &x)
 	queue_draw();
 }
 
-void Widget_Timeslider::draw_background(const Cairo::RefPtr<Cairo::Context> &cr)
+void
+Widget_Timeslider::draw_background(const Cairo::RefPtr<Cairo::Context> &cr)
 {
 	//draw grey rectangle
 	cr->save();
@@ -185,7 +207,8 @@ void Widget_Timeslider::draw_background(const Cairo::RefPtr<Cairo::Context> &cr)
 	cr->restore();
 }
 
-bool Widget_Timeslider::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
+bool
+Widget_Timeslider::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 {
 	const double mark_height = 12.0;
 	const double sub_mark_height = 4.0;
@@ -198,10 +221,6 @@ bool Widget_Timeslider::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 	Time time = time_model->get_time();
 	Time lower = time_model->get_visible_lower();
 	Time upper = time_model->get_visible_upper();
-
-	//bool play_bounds_enabled = time_model->get_play_bounds_enabled();
-	//Time play_lower = time_model->get_play_bounds_lower();
-	//Time play_upper = time_model->get_play_bounds_upper();
 
 	if (lower >= upper) return true;
 	double k = (double)get_width()/(double)(upper - lower);
@@ -277,7 +296,7 @@ bool Widget_Timeslider::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 	}
 	cr->restore();
 
-	// Draw the time line afer all
+	// Draw the time line
 	Gdk::Cairo::set_source_color(cr, Gdk::Color("#ffaf00"));
 	cr->set_line_width(3.0);
 	double x = round((double)(time - lower)*k);
@@ -285,10 +304,40 @@ bool Widget_Timeslider::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 	cr->line_to(x, fullheight);
 	cr->stroke();
 
+	// Draw play bounds
+	if (time_model->get_play_bounds_enabled()) {
+		double offset = -round((double)lower*k);
+		Time bounds[2][2] {
+			{ lower_ex, time_model->get_play_bounds_lower() },
+			{ time_model->get_play_bounds_upper(), upper_ex } };
+		for(int i = 0; i < 2; ++i) {
+			if (bounds[i][0] < bounds[i][1]) {
+				double x0 = round((double)(bounds[i][0] - lower)*k);
+				double x1 = round((double)(bounds[i][1] - lower)*k);
+				double w = x1 - x0;
+
+				cr->save();
+				cr->rectangle(x0, 0.0, w, (double)get_height());
+				cr->clip();
+				cr->translate(offset, 0.0);
+				cr->set_source(play_bounds_pattern);
+				cr->paint();
+				cr->restore();
+
+				cr->save();
+				cr->set_source_rgba(0.0, 0.0, 0.0, 0.25);
+				cr->rectangle(x0, 0.0, w, (double)get_height());
+				cr->stroke();
+				cr->restore();
+			}
+		}
+	}
+
 	return true;
 }
 
-bool Widget_Timeslider::on_button_press_event(GdkEventButton *event) //for clicking
+bool
+Widget_Timeslider::on_button_press_event(GdkEventButton *event) //for clicking
 {
 	lastx = (double)event->x;
 
@@ -309,12 +358,14 @@ bool Widget_Timeslider::on_button_press_event(GdkEventButton *event) //for click
 	return event->button == 1 || event->button == 2;
 }
 
-bool Widget_Timeslider::on_button_release_event(GdkEventButton *event){
+bool
+Widget_Timeslider::on_button_release_event(GdkEventButton *event){
 	lastx = (double)event->x;
 	return event->button == 1 || event->button == 2;
 }
 
-bool Widget_Timeslider::on_motion_notify_event(GdkEventMotion* event) //for dragging
+bool
+Widget_Timeslider::on_motion_notify_event(GdkEventMotion* event) //for dragging
 {
 	double dx = (double)event->x - lastx;
 	lastx = (double)event->x;
@@ -345,7 +396,8 @@ bool Widget_Timeslider::on_motion_notify_event(GdkEventMotion* event) //for drag
 	return false;
 }
 
-bool Widget_Timeslider::on_scroll_event(GdkEventScroll* event) //for zooming
+bool
+Widget_Timeslider::on_scroll_event(GdkEventScroll* event) //for zooming
 {
 	if (!time_model || get_width() <= 0 || get_height() <= 0)
 		return false;
