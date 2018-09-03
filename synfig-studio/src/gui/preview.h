@@ -51,7 +51,6 @@
 #include <synfig/renddesc.h>
 #include <synfig/canvas.h>
 
-#include "widgets/widget_sound.h"
 #include "dials/jackdial.h"
 
 #include <vector>

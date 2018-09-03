@@ -12,7 +12,6 @@ WIDGETS_HH = \
 	widgets/widget_filename.h \
 	widgets/widget_gradient.h \
 	widgets/widget_link.h \
-	widgets/widget_sound.h \
 	widgets/widget_time.h \
 	widgets/widget_timeslider.h \
 	widgets/widget_value.h \
@@ -37,7 +36,6 @@ WIDGETS_CC = \
 	widgets/widget_filename.cpp \
 	widgets/widget_gradient.cpp \
 	widgets/widget_link.cpp \
-	widgets/widget_sound.cpp \
 	widgets/widget_time.cpp \
 	widgets/widget_timeslider.cpp \
 	widgets/widget_value.cpp \
