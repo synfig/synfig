@@ -127,9 +127,15 @@ DeviceTracker::DeviceTracker()
 	// Once all devices are disabled be sure that the core pointer is the
 	// one selected. The user should decide later whether enable and save the
 	// rest of input devices found.
+#ifdef OLD_GDKMM_DEVICE_FUNCTIONALITY
+	Glib::RefPtr<Gdk::DeviceManager> manager = Gdk::DisplayManager::get()->get_default_display()->get_device_manager();
+	if (manager && manager->get_client_pointer())
+		synfigapp::Main::select_input_device(manager->get_client_pointer()->get_name());
+#else
 	Glib::RefPtr<Gdk::Seat> seat = Gdk::DisplayManager::get()->get_default_display()->get_default_seat();
 	if (seat->get_pointer())
 		synfigapp::Main::select_input_device(seat->get_pointer()->get_name());
+#endif
 }
 
 DeviceTracker::~DeviceTracker()
@@ -155,7 +161,7 @@ DeviceTracker::save_preferences()
 		}
 		synfig_device->set_mode(mode);
 
-		int n_axes = device->get_source() == Gdk::SOURCE_KEYBOARD ? 0 : device->get_axes();
+		int n_axes = device->get_source() == Gdk::SOURCE_KEYBOARD ? 0 : device->get_n_axes();
 		if (n_axes > 0) {
 			std::vector<InputDevice::AxisUse> axes(n_axes);
 			for(int j = 0; j < n_axes; ++j)
