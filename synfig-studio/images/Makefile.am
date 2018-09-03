@@ -219,6 +219,9 @@ IMAGES = \
 	animate_stop_icon.$(EXT) \
 	animate_pause_icon.$(EXT) \
 	animate_loop_icon.$(EXT) \
+	animate_bounds_icon.$(EXT) \
+	animate_bound_lower_icon.$(EXT) \
+	animate_bound_upper_icon.$(EXT) \
 	animate_mode_off_icon.$(EXT) \
 	animate_mode_on_icon.$(EXT) \
 	\
@@ -521,6 +524,21 @@ animate_pause_icon.$(EXT): $(srcdir)/framedial_icons.sif
 
 animate_loop_icon.$(EXT): $(srcdir)/framedial_icons.sif
 	$(SYNFIG) -q $< -o $@ --time 9
+	echo " File \"images\\$@\"" >>./images.nsh
+	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
+
+animate_bounds_icon.$(EXT): $(srcdir)/framedial_icons.sif
+	$(SYNFIG) -q $< -o $@ --time 10
+	echo " File \"images\\$@\"" >>./images.nsh
+	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
+
+animate_bound_lower_icon.$(EXT): $(srcdir)/framedial_icons.sif
+	$(SYNFIG) -q $< -o $@ --time 11
+	echo " File \"images\\$@\"" >>./images.nsh
+	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
+
+animate_bound_upper_icon.$(EXT): $(srcdir)/framedial_icons.sif
+	$(SYNFIG) -q $< -o $@ --time 12
 	echo " File \"images\\$@\"" >>./images.nsh
 	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 

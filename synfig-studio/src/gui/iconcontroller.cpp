@@ -321,6 +321,9 @@ IconController::init_icons(const synfig::String& path_to_icons)
 	INIT_STOCK_ICON(animate_seek_next_keyframe, "animate_seek_next_keyframe_icon." IMAGE_EXT, _("Seek to Next Keyframe"));
 	INIT_STOCK_ICON(animate_seek_end, "animate_seek_end_icon." IMAGE_EXT, _("Seek to End"));
 	INIT_STOCK_ICON(animate_loop, "animate_loop_icon." IMAGE_EXT, _("Animate Loop"));
+	INIT_STOCK_ICON(animate_bounds, "animate_bounds_icon." IMAGE_EXT, _("Play Bounds"));
+	INIT_STOCK_ICON(animate_bound_lower, "animate_bound_lower_icon." IMAGE_EXT, _("Lower Bound"));
+	INIT_STOCK_ICON(animate_bound_upper, "animate_bound_upper_icon." IMAGE_EXT, _("Upper Bound"));
 
 	INIT_STOCK_ICON(add_to_group, "action_add_to_set_icon." IMAGE_EXT, _("Add Layer to Set"));
 	INIT_STOCK_ICON(remove_from_group, "action_remove_from_set_icon." IMAGE_EXT, _("Remove Layer from Set"));

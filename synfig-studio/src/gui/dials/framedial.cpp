@@ -63,8 +63,8 @@ FrameDial::FrameDial():
 	seek_next_frame    (create_button("synfig-animate_seek_next_frame"    , _("Seek to next frame")       )),
 	seek_next_keyframe (create_button("synfig-animate_seek_next_keyframe" , _("Seek to next keyframe")    )),
 	seek_end           (create_button("synfig-animate_seek_end"           , _("Seek to end")              )),
-	repeat             (create_toggle("synfig-animate_repeat"             , _("Repeat")                   )),
-	bounds_enable      (create_toggle("synfig-animate_bounds_enable"      , _("Enable playback bounds")   )),
+	repeat             (create_toggle("synfig-animate_loop"               , _("Repeat")                   )),
+	bounds_enable      (create_toggle("synfig-animate_bounds"             , _("Enable playback bounds")   )),
 	bound_lower        (create_button("synfig-animate_bound_lower"        , _("Left bound")               )),
 	bound_upper        (create_button("synfig-animate_bound_upper"        , _("Right bound")              ))
 {
