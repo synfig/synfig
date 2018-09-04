@@ -170,6 +170,10 @@ private:
 	Cairo::RefPtr<Cairo::ImageSurface> alpha_dst_surface;
 	Cairo::RefPtr<Cairo::Context> alpha_context;
 
+	synfig::Vector previous_tl;
+	synfig::Vector previous_br;
+	Cairo::RefPtr<Cairo::ImageSurface> previous_surface;
+
 	// don't try to pass arguments to callbacks by reference, it cannot be properly saved in signal
 	// Renderer_Canvas is non-thread-safe sigc::trackable, so use static callback methods in signals
 	static void on_tile_finished_callback(bool success, Renderer_Canvas *obj, Tile::Handle tile);

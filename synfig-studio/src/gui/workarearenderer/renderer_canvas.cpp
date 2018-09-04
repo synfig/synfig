@@ -144,7 +144,7 @@ Renderer_Canvas::on_post_tile_finished_callback(etl::handle<Renderer_Canvas> obj
 
 Cairo::RefPtr<Cairo::ImageSurface>
 Renderer_Canvas::convert(
-	const synfig::rendering::SurfaceResource::Handle &surface,
+	const rendering::SurfaceResource::Handle &surface,
 	int width, int height ) const
 {
 	// this method may be called from the other threads
@@ -185,9 +185,9 @@ Renderer_Canvas::convert(
 				cairo_surface->mark_dirty();
 				cairo_surface->flush();
 				success = true;
-			} else synfig::error("Renderer_Canvas::convert: cannot access surface pixels - that really strange");
-		} else synfig::error("Renderer_Canvas::convert: surface with wrong size");
-	} else synfig::error("Renderer_Canvas::convert: surface not exists");
+			} else error("Renderer_Canvas::convert: cannot access surface pixels - that really strange");
+		} else error("Renderer_Canvas::convert: surface with wrong size");
+	} else error("Renderer_Canvas::convert: surface not exists");
 
 
 	#ifdef DEBUG_TILES
@@ -255,7 +255,7 @@ Renderer_Canvas::on_post_tile_finished(const Tile::Handle &tile)
 	// check if rendering is finished
 	bool tile_visible = false;
 	in_process = false;
-	synfig::Time time;
+	Time time;
 	{
 		Glib::Threads::Mutex::Lock lock(mutex);
 		time = tile->frame_id.time;
@@ -301,7 +301,7 @@ Renderer_Canvas::erase_tile(TileList &list, TileList::iterator i, rendering::Tas
 }
 
 void
-Renderer_Canvas::remove_extra_tiles(synfig::rendering::Task::List &events)
+Renderer_Canvas::remove_extra_tiles(rendering::Task::List &events)
 {
 	// mutex must be already locked
 
@@ -406,18 +406,18 @@ Renderer_Canvas::build_onion_frames()
 
 bool
 Renderer_Canvas::enqueue_render_frame(
-	const synfig::rendering::Renderer::Handle &renderer,
-	const synfig::Canvas::Handle &canvas,
-	const synfig::RectInt &window_rect,
+	const rendering::Renderer::Handle &renderer,
+	const Canvas::Handle &canvas,
+	const RectInt &window_rect,
 	const FrameId &id )
 {
 	// mutex must be already locked
 
 	const int tile_grid_step = 64;
 
-	RendDesc       rend_desc   = canvas->rend_desc();
-	int            w           = id.width;
-	int            h           = id.height;
+	RendDesc rend_desc = canvas->rend_desc();
+	int      w         = id.width;
+	int      h         = id.height;
 
 	rend_desc.clear_flags();
 	rend_desc.set_wh(w, h);
@@ -437,12 +437,12 @@ Renderer_Canvas::enqueue_render_frame(
 	}
 
 	// find not actual regions
-	std::vector<synfig::RectInt> rects;
+	std::vector<RectInt> rects;
 	rects.reserve(20);
 	rects.push_back(window_rect);
 	for(TileList::const_iterator j = frame_tiles.begin(); j != frame_tiles.end(); ++j)
 		if (*j) etl::rects_subtract(rects, (*j)->rect);
-	rects_merge(rects);
+	etl::rects_merge(rects);
 
 	if (rects.empty()) return false;
 
@@ -467,7 +467,7 @@ Renderer_Canvas::enqueue_render_frame(
 	// To avoid this construction place creation of dummy TaskSurface here.
 	if (!task) task = new rendering::TaskSurface();
 
-	for(std::vector<synfig::RectInt>::iterator j = rects.begin(); j != rects.end(); ++j) {
+	for(std::vector<RectInt>::iterator j = rects.begin(); j != rects.end(); ++j) {
 		// snap rect corners to tile grid
 		RectInt &rect = *j;
 		rect.minx = int_floor(rect.minx, tile_grid_step);
@@ -643,7 +643,7 @@ Renderer_Canvas::merge_status(FrameStatus a, FrameStatus b) {
 
 
 Renderer_Canvas::FrameStatus
-Renderer_Canvas::calc_frame_status(const FrameId &id, const synfig::RectInt &window_rect)
+Renderer_Canvas::calc_frame_status(const FrameId &id, const RectInt &window_rect)
 {
 	// mutex must be already locked
 
@@ -651,7 +651,7 @@ Renderer_Canvas::calc_frame_status(const FrameId &id, const synfig::RectInt &win
 	if (i == tiles.end() || i->second.empty())
 		return FS_None;
 
-	std::vector<synfig::RectInt> rects;
+	std::vector<RectInt> rects;
 	rects.reserve(20);
 	rects.push_back(window_rect);
 	for(TileList::const_iterator j = i->second.begin(); j != i->second.end(); ++j)
@@ -661,7 +661,7 @@ Renderer_Canvas::calc_frame_status(const FrameId &id, const synfig::RectInt &win
 			if ((*j)->cairo_surface)
 				etl::rects_subtract(rects, (*j)->rect);
 		}
-	rects_merge(rects);
+	etl::rects_merge(rects);
 
 	if (rects.size() == 1 && rects.front() == window_rect)
 		return FS_None;
@@ -707,88 +707,156 @@ Renderer_Canvas::render_vfunc(
 	expose_rect &= window_rect;
 	if (!expose_rect.is_valid()) return;
 
+	// calculate world coordinates of expose_rect corners
+	if (!get_work_area()->get_canvas()) return;
+	const RendDesc &rend_desc = get_work_area()->get_canvas()->rend_desc();
+	int w = get_work_area()->get_w();
+	int h = get_work_area()->get_h();
+	Vector tl = rend_desc.get_tl();
+	Vector br = rend_desc.get_br();
+	if ( w <= 0 || h <= 0
+	  || approximate_equal(tl[0], br[0])
+	  || approximate_equal(tl[1], br[1]) ) return;
+
+	Real pw = (br[0] - tl[0])/(Real)w;
+	Real ph = (br[1] - tl[1])/(Real)h;
+	tl[0] += pw*(double)expose_rect.minx;
+	tl[1] += ph*(double)expose_rect.miny;
+	br[0] += pw*(double)(expose_rect.maxx - w);
+	br[1] += ph*(double)(expose_rect.maxy - h);
+
+	// calculate pixel coordinates of previous surface
+	RectInt previous_rect;
+	if ( previous_surface
+	  && previous_surface->get_width() > 0
+	  && previous_surface->get_height() > 0
+	  && approximate_not_equal(previous_tl[0], previous_br[0])
+	  && approximate_not_equal(previous_tl[1], previous_br[1]) )
+	{
+		previous_rect.minx = (int)round((previous_tl[0] - tl[0])/pw);
+		previous_rect.miny = (int)round((previous_tl[1] - tl[1])/ph);
+		previous_rect.maxx = (int)round((previous_br[0] - tl[0])/pw);
+		previous_rect.maxy = (int)round((previous_br[1] - tl[1])/ph);
+		previous_rect = expose_rect;
+	}
+
 	// enqueue rendering if not all of visible tiles are exists and actual
 	enqueue_render();
 
-	Glib::Threads::Mutex::Lock lock(mutex);
+	Cairo::RefPtr<Cairo::Context> canvas_context;
+	Cairo::RefPtr<Cairo::ImageSurface> canvas_surface;
+	std::vector<RectInt> empty_rects;
+	empty_rects.reserve(20);
+	empty_rects.push_back(previous_rect);
 
-	if (onion_frames.empty()) return;
+	{ // merge all tiles into single surface
+		Glib::Threads::Mutex::Lock lock(mutex);
+
+		if (onion_frames.empty()) return;
+
+		// create surface and context to merge tiles
+		canvas_surface = Cairo::ImageSurface::create(
+			Cairo::FORMAT_ARGB32, expose_rect.get_width(), expose_rect.get_height() );
+		canvas_context = Cairo::Context::create(canvas_surface);
+		canvas_context->translate(-(double)expose_rect.minx, -(double)expose_rect.miny);
+		canvas_context->set_operator(Cairo::OPERATOR_SOURCE);
+
+		if ( onion_frames.size() > 1
+		  || !approximate_equal_lp(onion_frames.front().alpha, ColorReal(1.f)) )
+		{
+			canvas_context->set_operator(Cairo::OPERATOR_ADD);
+
+			// prepare background to tune alpha
+			alpha_context->set_operator(canvas_context->get_operator());
+			alpha_context->set_source(alpha_src_surface, 0, 0);
+			int alpha_offset = FLAGS(pixel_format, PF_A_START) ? 0 : 3;
+			unsigned char base[] = {0, 0, 0, 0};
+			memcpy(alpha_dst_surface->get_data(), base, sizeof(base));
+			alpha_dst_surface->mark_dirty();
+			alpha_dst_surface->flush();
+			for(FrameList::const_iterator j = onion_frames.begin(), i = j++; j != onion_frames.end(); i = j++)
+				alpha_context->paint_with_alpha(i->alpha);
+			alpha_dst_surface->flush();
+			memcpy(base, alpha_dst_surface->get_data(), sizeof(base));
+
+			// tune alpha
+			while(true) {
+				memcpy(alpha_dst_surface->get_data(), base, sizeof(base));
+				alpha_dst_surface->mark_dirty();
+				alpha_dst_surface->flush();
+				alpha_context->paint_with_alpha(onion_frames.back().alpha);
+				int alpha = alpha_dst_surface->get_data()[alpha_offset];
+				if (alpha >= 255) break;
+				onion_frames.back().alpha += (ColorReal)(255 - alpha)/ColorReal(128.f);
+			}
+		}
+
+		// draw tiles
+		canvas_context->save();
+		for(FrameList::const_iterator i = onion_frames.begin(); i != onion_frames.end(); ++i) {
+			TileMap::const_iterator ii = tiles.find(i->id);
+			if (ii == tiles.end()) continue;
+			for(TileList::const_iterator j = ii->second.begin(); j != ii->second.end(); ++j) {
+				if (!*j) continue;
+				if ((*j)->cairo_surface) {
+					etl::rects_subtract(empty_rects, (*j)->rect); // mark area as not empty
+					canvas_context->save();
+					canvas_context->rectangle((*j)->rect.minx, (*j)->rect.miny, (*j)->rect.get_width(), (*j)->rect.get_height());
+					canvas_context->clip();
+					canvas_context->set_source((*j)->cairo_surface, (*j)->rect.minx, (*j)->rect.miny);
+					if (canvas_surface)
+						canvas_context->paint_with_alpha(i->alpha);
+					else
+						canvas_context->paint();
+					canvas_context->restore();
+				}
+			}
+		}
+		canvas_context->restore();
+		canvas_surface->flush();
+	}
+
+	// fill empty areas with previous surface
+	etl::rects_merge(empty_rects);
+	if (!empty_rects.empty()) {
+		canvas_context->save();
+
+		for(std::vector<RectInt>::const_iterator i = empty_rects.begin(); i != empty_rects.end(); ++i)
+			canvas_context->rectangle(i->minx, i->miny, i->get_width(), i->get_height());
+		canvas_context->clip();
+
+		Real previous_pw = (previous_br[0] - previous_tl[0])/(Real)previous_surface->get_width();
+		Real previous_ph = (previous_br[1] - previous_tl[1])/(Real)previous_surface->get_height();
+		canvas_context->translate(
+			(previous_tl[0] - rend_desc.get_tl()[0])/pw,
+			(previous_tl[1] - rend_desc.get_tl()[1])/ph );
+		canvas_context->scale(
+			previous_pw/pw,
+			previous_ph/ph );
+		canvas_context->set_operator(Cairo::OPERATOR_SOURCE);
+		canvas_context->set_source(previous_surface, 0.0, 0.0);
+		canvas_context->paint();
+
+		canvas_context->restore();
+		canvas_surface->flush();
+	}
+
+	// remember surface with merged tiles for the future
+	previous_tl = tl;
+	previous_br = br;
+	previous_surface = canvas_surface;
 
 	Cairo::RefPtr<Cairo::Context> context = drawable->create_cairo_context();
 	context->save();
 	context->translate((double)window_offset[0], (double)window_offset[1]);
 
-	// context for tiles
-	Cairo::RefPtr<Cairo::ImageSurface> onion_surface;
-	Cairo::RefPtr<Cairo::Context> onion_context = context;
-	if ( onion_frames.size() > 1
-	  || !approximate_equal_lp(onion_frames.front().alpha, ColorReal(1.f)) )
-	{
-		// create surface to merge onion skin
-		onion_surface = Cairo::ImageSurface::create(
-			Cairo::FORMAT_ARGB32, expose_rect.get_width(), expose_rect.get_height() );
-		onion_context = Cairo::Context::create(onion_surface);
-		onion_context->translate(-(double)expose_rect.minx, -(double)expose_rect.miny);
-		onion_context->set_operator(Cairo::OPERATOR_ADD);
-
-		// prepare background to tune alpha
-		alpha_context->set_operator(onion_context->get_operator());
-		alpha_context->set_source(alpha_src_surface, 0, 0);
-		int alpha_offset = FLAGS(pixel_format, PF_A_START) ? 0 : 3;
-		unsigned char base[] = {0, 0, 0, 0};
-		memcpy(alpha_dst_surface->get_data(), base, sizeof(base));
-		alpha_dst_surface->mark_dirty();
-		alpha_dst_surface->flush();
-		for(FrameList::const_iterator j = onion_frames.begin(), i = j++; j != onion_frames.end(); i = j++)
-			alpha_context->paint_with_alpha(i->alpha);
-		alpha_dst_surface->flush();
-		memcpy(base, alpha_dst_surface->get_data(), sizeof(base));
-
-		// tune alpha
-		while(true) {
-			memcpy(alpha_dst_surface->get_data(), base, sizeof(base));
-			alpha_dst_surface->mark_dirty();
-			alpha_dst_surface->flush();
-			alpha_context->paint_with_alpha(onion_frames.back().alpha);
-			int alpha = alpha_dst_surface->get_data()[alpha_offset];
-			if (alpha >= 255) break;
-			onion_frames.back().alpha += (ColorReal)(255 - alpha)/ColorReal(128.f);
-		}
-	}
-
-	// draw tiles
-	onion_context->save();
-	for(FrameList::const_iterator i = onion_frames.begin(); i != onion_frames.end(); ++i) {
-		TileMap::const_iterator ii = tiles.find(i->id);
-		if (ii == tiles.end()) continue;
-		for(TileList::const_iterator j = ii->second.begin(); j != ii->second.end(); ++j) {
-			if (!*j) continue;
-			if ((*j)->cairo_surface) {
-				onion_context->save();
-				onion_context->rectangle((*j)->rect.minx, (*j)->rect.miny, (*j)->rect.get_width(), (*j)->rect.get_height());
-				onion_context->clip();
-				onion_context->set_source((*j)->cairo_surface, (*j)->rect.minx, (*j)->rect.miny);
-				if (onion_surface)
-					onion_context->paint_with_alpha(i->alpha);
-				else
-					onion_context->paint();
-				onion_context->restore();
-			}
-		}
-	}
-	onion_context->restore();
-
-	// finish with onion skin
-	if (onion_surface) {
-		assert(onion_context != context);
-		onion_surface->flush();
-
-		// put merged onion to context
-		context->save();
-		context->set_source(onion_surface, (double)expose_rect.minx, (double)expose_rect.miny);
-		context->paint();
-		context->restore();
-	}
+	// put merged tiles to context
+	context->save();
+	context->rectangle(expose_rect.minx, expose_rect.miny, expose_rect.get_width(), expose_rect.get_height());
+	context->clip();
+	context->set_source(canvas_surface, (double)expose_rect.minx, (double)expose_rect.miny);
+	context->paint();
+	context->restore();
 
 	// draw the border around the rendered region
 	context->save();
@@ -805,7 +873,7 @@ Renderer_Canvas::render_vfunc(
 }
 
 Cairo::RefPtr<Cairo::ImageSurface>
-Renderer_Canvas::get_thumb(const synfig::Time &time)
+Renderer_Canvas::get_thumb(const Time &time)
 {
 	Glib::Threads::Mutex::Lock lock(mutex);
 	TileMap::const_iterator i = tiles.find( current_thumb.with_time(time) );
