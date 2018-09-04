@@ -24,7 +24,7 @@ in
 stdenv.mkDerivation rec {
   name = "synfigstudio-${version}";
 
-  src = "../";
+  src = [ ../autobuild ../ETL  ../synfig-core ../synfig-studio ] ;
 
   nativeBuildInputs = [ pkgconfig autoreconfHook gettext gnumake makeWrapper ];
   buildInputs = [
@@ -40,8 +40,18 @@ stdenv.mkDerivation rec {
   ADWAITA_PATH = "${gnome3.adwaita-icon-theme.out}";
   MAKE_WRAPPER_PATH = "${makeWrapper.out}";
   
+  sourceRoot = ".";
+  
+  postUnpack = ''
+    touch configure.ac
+  '';
+  
   buildPhase = ''
-    ./build-production.sh
+    PREFIX=$out ./autobuild/build.sh
+  '';
+  
+  installPhase = ''
+    echo
   '';
 
   postInstall = ''
