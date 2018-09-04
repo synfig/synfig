@@ -32,12 +32,14 @@
 #	include <config.h>
 #endif
 
+#include <gtkmm/stock.h>
+#include <gtkmm/separator.h>
+
 #include <synfig/general.h>
-#include <gui/localization.h>
 
 #include "framedial.h"
-#include <gtkmm/image.h>
-#include <gtkmm/stock.h>
+
+#include <gui/localization.h>
 
 #endif
 
@@ -63,9 +65,9 @@ FrameDial::FrameDial():
 	seek_next_frame    (create_button("synfig-animate_seek_next_frame"    , _("Seek to next frame")       )),
 	seek_next_keyframe (create_button("synfig-animate_seek_next_keyframe" , _("Seek to next keyframe")    )),
 	seek_end           (create_button("synfig-animate_seek_end"           , _("Seek to end")              )),
-	repeat             (create_toggle("synfig-animate_loop"               , _("Repeat")                   )),
+	repeat             (create_toggle("synfig-animate_loop"               , _("Repeat")                   , true)),
+	bound_lower        (create_button("synfig-animate_bound_lower"        , _("Left bound")               , true)),
 	bounds_enable      (create_toggle("synfig-animate_bounds"             , _("Enable playback bounds")   )),
-	bound_lower        (create_button("synfig-animate_bound_lower"        , _("Left bound")               )),
 	bound_upper        (create_button("synfig-animate_bound_upper"        , _("Right bound")              ))
 {
 	repeat->signal_toggled().connect(
@@ -84,6 +86,14 @@ FrameDial::on_bounds_toggled()
 	{ signal_bounds_enable()(bounds_enable->get_active()); }
 
 void
+FrameDial::create_separator()
+{
+	Gtk::HSeparator *separator = manage(new Gtk::HSeparator());
+	separator->show();
+	add(*separator);
+}
+
+void
 FrameDial::init_button(Gtk::Button &button, const char *stockid, const char *tooltip)
 {
 	Gtk::IconSize iconsize = Gtk::IconSize::from_name("synfig-small_icon_16x16");
@@ -100,16 +110,18 @@ FrameDial::init_button(Gtk::Button &button, const char *stockid, const char *too
 }
 
 Gtk::Button*
-FrameDial::create_button(const char *stockid, const char *tooltip)
+FrameDial::create_button(const char *stockid, const char *tooltip, bool separator)
 {
+	if (separator) create_separator();
 	Gtk::Button *button = manage(new class Gtk::Button());
 	init_button(*button, stockid, tooltip);
 	return button;
 }
 
 Gtk::ToggleButton*
-FrameDial::create_toggle(const char *stockid, const char *tooltip)
+FrameDial::create_toggle(const char *stockid, const char *tooltip, bool separator)
 {
+	if (separator) create_separator();
 	Gtk::ToggleButton *toggle = manage(new class Gtk::ToggleButton());
 	init_button(*toggle, stockid, tooltip);
 	return toggle;

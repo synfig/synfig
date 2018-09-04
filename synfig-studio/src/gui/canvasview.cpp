@@ -974,6 +974,9 @@ CanvasView::create_time_bar()
 		sigc::mem_fun(*time_model(), &TimeModel::set_play_bounds_upper_to_current) );
 	framedial->show();
 
+	Gtk::HSeparator *separator = manage(new Gtk::HSeparator());
+	separator->show();
+
 	//Setup the KeyFrameDial widget
 	KeyFrameDial *keyframedial = Gtk::manage(new class KeyFrameDial());
 	keyframedial->signal_toggle_keyframe_past().connect(sigc::mem_fun(*this, &CanvasView::toggle_past_keyframe_button));
@@ -1024,6 +1027,7 @@ CanvasView::create_time_bar()
 	controls->pack_start(*timetrackbutton,      false, true);
 	controls->pack_start(*current_time_widget,  false, true);
 	controls->pack_start(*framedial,            false, true);
+	controls->pack_start(*separator,            false, true);
 	controls->pack_start(*jackdial,             false, true);
 	controls->pack_start(*statusbar,            true, true);
     //controls->pack_start(*progressbar,          true,  true);

@@ -55,16 +55,17 @@ private:
 	Gtk::Button *seek_next_keyframe;
 	Gtk::Button *seek_end;
 	Gtk::ToggleButton *repeat;
-	Gtk::ToggleButton *bounds_enable;
 	Gtk::Button *bound_lower;
+	Gtk::ToggleButton *bounds_enable;
 	Gtk::Button *bound_upper;
 
 	sigc::signal<void, bool> signal_repeat_;
 	sigc::signal<void, bool> signal_bounds_enable_;
 
 	void init_button(Gtk::Button &button, const char *stockid, const char *tooltip);
-	Gtk::Button *create_button(const char *stockid, const char *tooltip);
-	Gtk::ToggleButton *create_toggle(const char *stockid, const char *tooltip);
+	void create_separator();
+	Gtk::Button *create_button(const char *stockid, const char *tooltip, bool separator = false);
+	Gtk::ToggleButton *create_toggle(const char *stockid, const char *tooltip, bool separator = false);
 
 	void on_repeat_toggled();
 	void on_bounds_toggled();
