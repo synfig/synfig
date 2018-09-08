@@ -101,7 +101,11 @@ Action::ValueDescBoneLink::is_candidate(const ParamList &x)
 {
 	ParamList::const_iterator iter;
 
-	ValueDesc value_desc(x.find("value_desc")->second.get_value_desc());
+	// Artem: check if we find something usable
+	ParamList::const_iterator found = x.find("value_desc");
+	if (found == x.end()) return false;
+	ValueDesc value_desc(found->second.get_value_desc());
+	//ValueDesc value_desc(x.find("value_desc")->second.get_value_desc());
 
 	bool selected_value_desc_is_bone = false;
 	pair<ParamList::const_iterator, ParamList::const_iterator> selected_vd_range = x.equal_range("selected_value_desc");

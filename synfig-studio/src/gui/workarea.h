@@ -194,7 +194,9 @@ public:
 		DRAG_DUCK,
 		DRAG_GUIDE,
 		DRAG_BOX,
-		DRAG_BEZIER
+		DRAG_BEZIER,
+		DRAG_ZOOM_WINDOW,
+		DRAG_ROTATE_WINDOW
 	};
 	// Class used to store the cairo surface
 	class SurfaceElement
@@ -242,7 +244,6 @@ private:
 	Glib::RefPtr<Gtk::Adjustment> scrolly_adjustment;
 	Widget_Ruler *vruler;
 	Widget_Ruler *hruler;
-	Gtk::Button *menubutton;
 	Gtk::Frame *drawing_frame;
 	ZoomDial *zoomdial;
 
@@ -554,6 +555,7 @@ public:
 
 	int get_quality()const { return quality; }
 	int get_low_res_pixel_size()const { return low_res_pixel_size; }
+	synfig::String get_renderer() const;
 
 	void set_quality(int x);
 	void set_low_res_pixel_size(int x);

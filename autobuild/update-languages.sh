@@ -71,8 +71,8 @@ update_languages_inc() {
             NAME_LEN=${#NAME_MAP[$i]}
         fi
     done
-    CODE_LEN=$(($CODE_LEN+3))
-    NAME_LEN=$(($NAME_LEN+3))
+    CODE_LEN=$((CODE_LEN+3))
+    NAME_LEN=$((NAME_LEN+3))
 
     # sort
     SORTED=$(for i in ${!CODE_MAP[@]}; do echo $i; done | sort | while read l; do echo -n "$l "; done)

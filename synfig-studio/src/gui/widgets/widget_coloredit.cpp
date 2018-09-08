@@ -491,6 +491,15 @@ Widget_ColorEdit::~Widget_ColorEdit()
 
 #define CLIP_VALUE(value, min, max) (value <= min ? min : (value > max ? max : value))
 
+bool are_close_colors(Gdk::Color const& a, Gdk::Color const& b) {
+	static const int eps = 1;
+	if (a == b)
+		return true;
+	return std::abs(a.get_red()-b.get_red()) <= eps
+		&& std::abs(a.get_green()-b.get_green()) <= eps
+		&& std::abs(a.get_blue()-b.get_blue()) <= eps;
+}
+
 void Widget_ColorEdit::setHVSColor(synfig::Color color)
 {
 	Gdk::Color gtkColor;
@@ -500,9 +509,11 @@ void Widget_ColorEdit::setHVSColor(synfig::Color color)
 	gtkColor.set_red((unsigned short)(r * USHRT_MAX));
 	gtkColor.set_green((unsigned short)(g * USHRT_MAX));
 	gtkColor.set_blue((unsigned short)(b * USHRT_MAX));
-	colorHVSChanged = true;
-	hvsColorWidget->set_previous_color (gtkColor); //We can't use it there, cause color changes in realtime.
-	hvsColorWidget->set_current_color (gtkColor);
+	if (!are_close_colors(hvsColorWidget->get_current_color(), gtkColor)) {
+		colorHVSChanged = true;
+		hvsColorWidget->set_current_color(gtkColor);
+	}
+	hvsColorWidget->set_previous_color(hvsColorWidget->get_current_color()); //We can't use it there, cause color changes in realtime.
 	colorHVSChanged = false;
 }
 

@@ -135,7 +135,7 @@ mng_trgt::~mng_trgt()
 		}
 		mng_cleanup (&mng);
 	}
-	if (file != NULL) fclose(file); file=NULL;
+	if (file != NULL) { fclose(file); file=NULL; }
 	if (buffer != NULL) { delete [] buffer; buffer = NULL; }
 	if (color_buffer != NULL) { delete [] color_buffer; color_buffer = NULL; }
 	if (zbuffer != NULL) { free(zbuffer); zbuffer = NULL; zbuffer_len = 0; }

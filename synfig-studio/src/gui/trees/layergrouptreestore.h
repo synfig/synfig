@@ -1,11 +1,10 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file trees/layergrouptreestore.h
-**	\brief Template Header
-**
-**	$Id$
+**	\brief Layer set tree model
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**	Copyright (c) 2017 caryoscelus
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -70,6 +69,8 @@ public:
 		Gtk::TreeModelColumn<LayerList>		all_layers;
 		Gtk::TreeModelColumn<LayerList>		child_layers;
 
+		Gtk::TreeModelColumn<float> z_depth;
+
 		Model()
 		{
 			add(icon);
@@ -84,6 +85,7 @@ public:
 			add(is_group);
 			add(all_layers);
 			add(child_layers);
+			add(z_depth);
 		}
 	};
 
@@ -178,6 +180,9 @@ public:
 	void rebuild();
 
 	void refresh();
+
+	/// Re-apply current sorting
+	void resort();
 
 	void refresh_row(Gtk::TreeModel::Row &row);
 

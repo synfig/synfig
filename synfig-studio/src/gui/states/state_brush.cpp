@@ -422,7 +422,7 @@ StateBrush_Context::BrushConfig::load(const String &filename)
 
 	const char *pos = buffer;
 	if (pos != NULL) while(read_row(&pos)) { }
-	free(buffer);
+	if (buffer) delete[] buffer;
 	this->filename = filename;
 }
 

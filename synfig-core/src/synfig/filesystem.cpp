@@ -51,6 +51,10 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
+// FileSystemEmpty
+
+FileSystemEmpty::FileSystemEmpty() { }
+FileSystemEmpty::~FileSystemEmpty() { }
 
 // Stream
 
@@ -118,8 +122,7 @@ bool FileSystem::file_rename(const String &from_filename, const String &to_filen
 }
 
 bool FileSystem::directory_create_recursive(const String &dirname) {
-	return dirname.empty()
-		|| dirname == "."
+	return is_directory(dirname)
 		|| (directory_create_recursive(etl::dirname(dirname)) && directory_create(dirname));
 }
 

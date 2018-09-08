@@ -44,6 +44,8 @@ namespace studio {
 
 class Widget_Curves;
 class Widget_Timeslider;
+class Widget_Keyframe_List;
+
 
 class Dock_Curves : public Dock_CanvasSpecific
 {
@@ -52,6 +54,8 @@ class Dock_Curves : public Dock_CanvasSpecific
 	Gtk::VScrollbar* vscrollbar_;
 
 	Widget_Timeslider* widget_timeslider_;
+	Widget_Keyframe_List* widget_kf_list_;
+	
 	Widget_Curves* last_widget_curves_;
 
 protected:

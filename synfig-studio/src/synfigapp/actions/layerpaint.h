@@ -27,8 +27,11 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <synfig/guid.h>
 #include <synfig/layers/layer_bitmap.h>
+
 #include <synfigapp/action.h>
+
 #include <brushlib.h>
 
 /* === M A C R O S ========================================================= */
@@ -59,6 +62,7 @@ public:
 	class PaintStroke {
 	private:
 		static PaintStroke *first, *last;
+
 		PaintStroke *prev, *next;
 		PaintStroke *prevSameLayer, *nextSameLayer;
 
@@ -98,6 +102,11 @@ public:
 		void add_point_and_apply(const PaintPoint &point);
 	};
 
+private:
+	synfig::GUID id;
+	bool applied;
+
+public:
 	PaintStroke stroke;
 
 	LayerPaint();

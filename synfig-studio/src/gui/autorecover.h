@@ -42,34 +42,30 @@ namespace studio {
 
 class AutoRecover
 {
-	int timeout;
 	bool enabled;
-	sigc::connection auto_backup_connect;
+	int timeout_ms;
+	sigc::connection connection;
+
+	void set_timer(bool enabled, int timeout_ms);
 public:
 	AutoRecover();
 	~AutoRecover();
 
-	static int pid();
-	static synfig::String get_shadow_file_name(const synfig::String& filename);
+	bool get_enabled() const
+		{ return enabled; }
+	void set_enabled(bool value)
+		{ set_timer(value, get_timeout_ms()); }
 
-	static bool auto_backup();
+	int get_timeout_ms() const
+		{ return timeout_ms; }
+	void set_timeout_ms(int value)
+		{ set_timer(get_enabled(), value); }
 
-	static bool cleanup_pid(int pid);
-
-	void enable(bool ok = true);
-	bool get_enable(){return enabled;}
-
-	void set_timeout(int milliseconds);
-	int get_timeout()const { return timeout; }
-
-	static synfig::String get_shadow_directory();
+	void auto_backup();
 
 	bool recovery_needed()const;
 	bool recover(int& number_recovered);
-
-	void normal_shutdown();
-
-	void clear_backup(synfig::Canvas::Handle canvas);
+	bool clear_backups();
 }; // END of class AutoRecover
 
 }; // END of namespace studio

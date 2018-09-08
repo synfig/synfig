@@ -60,15 +60,14 @@ MagickCore::Image* copy_image_list(Container& container)
 	typedef typename Container::iterator Iter;
 	MagickCore::Image* previous = 0;
 	MagickCore::Image* first = NULL;
-	MagickCore::ExceptionInfo exceptionInfo;
-	MagickCore::GetExceptionInfo(&exceptionInfo);
+	MagickCore::ExceptionInfo* exceptionInfo = MagickCore::AcquireExceptionInfo();
 	for (Iter iter = container.begin(); iter != container.end(); ++iter)
 	{
 		MagickCore::Image* current;
 
 		try
 		{
-			current = CloneImage(iter->image(), 0, 0, Magick::MagickTrue, &exceptionInfo);
+			current = CloneImage(iter->image(), 0, 0, Magick::MagickTrue, exceptionInfo);
 
 			if (!first) first = current;
 
@@ -83,17 +82,17 @@ MagickCore::Image* copy_image_list(Container& container)
 		}
 	}
 
+	exceptionInfo = MagickCore::DestroyExceptionInfo(exceptionInfo);
 	return first;
 }
 
 magickpp_trgt::~magickpp_trgt()
 {
-	MagickCore::ExceptionInfo exceptionInfo;
-	MagickCore::GetExceptionInfo(&exceptionInfo);
+	MagickCore::ExceptionInfo* exceptionInfo = MagickCore::AcquireExceptionInfo();
 
 	try
 	{
-		bool multiple_images = images.size() != 1;
+		bool multiple_images = images.size() > 1;
 		bool can_adjoin = false;
 
 		if (multiple_images)
@@ -103,7 +102,7 @@ magickpp_trgt::~magickpp_trgt()
 			image.fileName(filename);
 			try
 			{
-				SetImageInfo(image.imageInfo(),Magick::MagickTrue,&exceptionInfo);
+				SetImageInfo(image.imageInfo(),Magick::MagickTrue,exceptionInfo);
 				can_adjoin = image.adjoin();
 			}
 			catch(Magick::Warning warning) {
@@ -137,7 +136,7 @@ magickpp_trgt::~magickpp_trgt()
 				synfig::info("removing duplicate frames");
 				try
 				{
-					RemoveDuplicateLayers(&image_list, &exceptionInfo);
+					RemoveDuplicateLayers(&image_list, exceptionInfo);
 				}
 				catch(Magick::Warning warning) {
 					synfig::warning("exception '%s'", warning.what());
@@ -149,7 +148,7 @@ magickpp_trgt::~magickpp_trgt()
 				synfig::info("optimizing layers");
 				try
 				{
-					image_list = OptimizeImageLayers(image_list,&exceptionInfo);
+					image_list = OptimizeImageLayers(image_list,exceptionInfo);
 				}
 				catch(Magick::Warning warning) {
 					synfig::warning("exception '%s'", warning.what());
@@ -161,7 +160,7 @@ magickpp_trgt::~magickpp_trgt()
 				synfig::info("optimizing layer transparency");
 				try
 				{
-					OptimizeImageTransparency(image_list,&exceptionInfo);
+					OptimizeImageTransparency(image_list,exceptionInfo);
 				}
 				catch(Magick::Warning warning) {
 					synfig::warning("exception '%s'", warning.what());
@@ -203,6 +202,7 @@ magickpp_trgt::~magickpp_trgt()
 	if (buffer1 != NULL) delete [] buffer1;
 	if (buffer2 != NULL) delete [] buffer2;
 	if (color_buffer != NULL) delete [] color_buffer;
+	exceptionInfo = MagickCore::DestroyExceptionInfo(exceptionInfo);
 }
 
 bool

@@ -154,7 +154,8 @@ TaskContourGL::render_contour(
 	bool invert,
 	bool antialias,
 	Contour::WindingStyle winding_style,
-	const Color &color )
+	const Color &color,
+	Real detail )
 {
 	GLint vp[4] = { };
 	glGetIntegerv(GL_VIEWPORT, vp);
@@ -165,7 +166,7 @@ TaskContourGL::render_contour(
 	Rect bounds = full_bounds;
 	Vector pixel_size(2.0/(Real)vp[2], 2.0/(Real)vp[3]);
 
-	contour.split(polygon, bounds, transform_matrix, pixel_size);
+	contour.split(polygon, bounds, transform_matrix, pixel_size*detail);
 
 	if (invert) bounds = full_bounds;
 	render_polygon(polygon, bounds, invert, antialias, winding_style, color);
@@ -198,7 +199,7 @@ TaskContourGL::run(RunParams & /* params */) const
 		Vector pixel_size(
 			2.0/(Real)(get_target_rect().maxx - get_target_rect().minx),
 			2.0/(Real)(get_target_rect().maxy - get_target_rect().miny) );
-		contour->split(polygon, bounds, matrix, pixel_size);
+		contour->split(polygon, bounds, matrix, pixel_size*detail);
 
 		// bind framebuffer
 
@@ -221,7 +222,7 @@ TaskContourGL::run(RunParams & /* params */) const
 			polygon,
 			bounds,
 			contour->invert,
-			contour->antialias,
+			allow_antialias && contour->antialias,
 			contour->winding_style,
 			contour->color );
 

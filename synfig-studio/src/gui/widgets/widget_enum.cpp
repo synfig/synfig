@@ -61,7 +61,10 @@ Widget_Enum::Widget_Enum():
 	enum_TreeModel = Gtk::ListStore::create(enum_model);
 	set_model(enum_TreeModel);
 	pack_start(enum_model.icon, false);
-	pack_start(enum_model.local_name);
+	pack_start(enum_model.local_name, true);
+
+	Gtk::CellRendererText *text = dynamic_cast<Gtk::CellRendererText*>(this->get_cells()[1]);
+	text->property_ellipsize().set_value(Pango::ELLIPSIZE_END);
 }
 
 Widget_Enum::~Widget_Enum()

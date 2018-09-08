@@ -111,11 +111,11 @@ imagemagick_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &re
 
 	bool is_temporary_file = false;
 	string filename=identifier.file_system->get_real_filename(identifier.filename);
-	string target_filename=FileSystemTemporary::generate_temporary_filename();
+	string target_filename=FileSystemTemporary::generate_system_temporary_filename("imagemagick");
 
 	if (filename.empty()) {
 		is_temporary_file = true;
-		filename = FileSystemTemporary::generate_temporary_filename();
+		filename = FileSystemTemporary::generate_system_temporary_filename("imagemagick");
 
 		// try to copy file to a temp file
 		if (!FileSystem::copy(identifier.file_system, identifier.filename, identifier.file_system, filename))

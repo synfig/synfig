@@ -55,37 +55,65 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-FileSystemTemporary::FileSystemTemporary(const FileSystem::Handle &sub_file_system):
+FileSystemTemporary::FileSystemTemporary(const String &tag, const String &temporary_directory, const FileSystem::Handle &sub_file_system):
 	file_system(FileSystemNative::instance()),
-	temporary_filename_base(generate_temporary_filename()),
+	tag(tag),
+	temporary_directory(temporary_directory.empty() ? get_system_temporary_directory() : temporary_directory),
+	temporary_filename_base(generate_temporary_filename_base(tag)),
 	autosave(true)
 {
 	set_sub_file_system(sub_file_system);
 }
 
-FileSystemTemporary::~FileSystemTemporary() { }
+FileSystemTemporary::~FileSystemTemporary()
+{
+	discard_changes();
+}
 
 String
-FileSystemTemporary::get_temporary_directory()
+FileSystemTemporary::get_system_temporary_directory()
 {
     const char *tmpdir;
     if ((tmpdir = getenv("TEMP")) == NULL)
     if ((tmpdir = getenv("TMP")) == NULL)
     if ((tmpdir = getenv("TMPDIR")) == NULL)
     	 tmpdir = "/tmp";
-    return String(tmpdir) + ETL_DIRECTORY_SEPARATOR;
+    return String(tmpdir);
 }
 
 String
-FileSystemTemporary::generate_temporary_filename_base()
+FileSystemTemporary::generate_temporary_filename_base(const String &tag)
 {
-    return "synfig_" + GUID().get_string();
+    return "synfig_" + tag + "_" + GUID().get_string();
+}
+
+bool
+FileSystemTemporary::scan_temporary_directory(const String &tag, FileList &out_files, const String &dirname)
+{
+	String tmpdir = dirname.empty() ? get_system_temporary_directory() : dirname;
+
+	FileList files;
+	if (!FileSystemNative::instance()->directory_scan(dirname, files))
+		return false;
+
+	String prefix = "synfig_" + tag + "_";
+	for(FileList::const_iterator i = files.begin(); i != files.end(); ++i)
+		if (i->substr(0, prefix.size()) == prefix)
+			if (FileSystemNative::instance()->is_file(tmpdir + ETL_DIRECTORY_SEPARATOR + *i))
+				out_files.push_back(*i);
+	return true;
 }
 
 String
-FileSystemTemporary::generate_temporary_filename()
+FileSystemTemporary::generate_system_temporary_filename(const String &tag)
 {
-    return get_temporary_directory() + generate_temporary_filename_base();
+    return get_system_temporary_directory() + ETL_DIRECTORY_SEPARATOR + generate_temporary_filename_base(tag);
+}
+
+bool
+FileSystemTemporary::create_temporary_directory() const
+{
+	return file_system->directory_create_recursive(get_temporary_directory());
 }
 
 bool
@@ -239,9 +267,12 @@ FileSystemTemporary::get_write_stream(const String &filename)
 	if (i == files.end())
 	{
 		// create new file
+		create_temporary_directory();
 		FileInfo new_info;
 		new_info.name = fix_slashes(filename);
-		new_info.tmp_filename = generate_temporary_filename();
+		new_info.tmp_filename = get_temporary_directory()
+				              + ETL_DIRECTORY_SEPARATOR
+							  + generate_temporary_filename_base(tag + ".file");
 		stream = file_system->get_write_stream(new_info.tmp_filename);
 		if (stream)
 		{
@@ -252,8 +283,11 @@ FileSystemTemporary::get_write_stream(const String &filename)
 	else
 	if (!i->second.is_directory || i->second.is_removed)
 	{
+		create_temporary_directory();
 		String tmp_filename = i->second.tmp_filename.empty()
-				            ? generate_temporary_filename()
+				            ? get_temporary_directory()
+							  + ETL_DIRECTORY_SEPARATOR
+							  + generate_temporary_filename_base(tag + ".file")
 				            : i->second.tmp_filename;
 		stream = file_system->get_write_stream(tmp_filename);
 		if (stream)
@@ -403,12 +437,14 @@ FileSystemTemporary::discard_changes()
 }
 
 void
-FileSystemTemporary::reset_temporary_filename_base()
+FileSystemTemporary::reset_temporary_filename_base(const String &tag, const String &temporary_directory)
 {
 	// remove previous file
 	assert(empty());
 	save_temporary();
-	temporary_filename_base = generate_temporary_filename_base();
+	this->tag = tag;
+	this->temporary_directory = temporary_directory;
+	temporary_filename_base = generate_temporary_filename_base(this->tag);
 }
 
 String
@@ -454,7 +490,7 @@ FileSystemTemporary::save_temporary() const
 {
 	if (empty())
 	{
-		file_system->file_remove(get_temporary_directory() + get_temporary_filename_base());
+		file_system->file_remove(get_temporary_directory() + ETL_DIRECTORY_SEPARATOR + get_temporary_filename_base());
 		return true;
 	}
 
@@ -479,9 +515,11 @@ FileSystemTemporary::save_temporary() const
 		entry->add_child("is-removed")->set_child_text(i->second.is_removed ? "true" : "false");
 	}
 
+	create_temporary_directory();
 	FileSystem::WriteStream::Handle stream =
 		file_system->get_write_stream(
 			get_temporary_directory()
+		  + ETL_DIRECTORY_SEPARATOR
 		  + get_temporary_filename_base() );
 	if (!stream) return false;
 
@@ -515,16 +553,21 @@ FileSystemTemporary::get_xml_node_text(xmlpp::Node *node)
 }
 
 bool
-FileSystemTemporary::open_temporary(const String &filename_base)
+FileSystemTemporary::open_temporary(const String &filename)
 {
 	assert(empty());
-
 	discard_changes();
 
-	FileSystem::ReadStream::Handle stream =
-		file_system->get_read_stream(
-			get_temporary_directory()
-		  + filename_base);
+	String tag;
+	String temporary_directory = etl::dirname(filename);
+	String temporary_filename_base = etl::basename(filename);
+
+	size_t tag_begin = temporary_filename_base.find_first_of("_");
+	size_t tag_end   = temporary_filename_base.find_last_of("_");
+	if (tag_begin != String::npos && tag_end != String::npos && tag_end - tag_begin > 1)
+		tag = temporary_filename_base.substr(tag_begin + 1, tag_end - tag_begin - 1);
+
+	FileSystem::ReadStream::Handle stream = file_system->get_read_stream(filename);
 	if (!stream) return false;
 	stream = new ZReadStream(stream);
 
@@ -581,14 +624,16 @@ FileSystemTemporary::open_temporary(const String &filename_base)
 							info.is_removed = get_xml_node_text(*k) == "true";
 					}
 					if (!info.tmp_filename.empty())
-						info.tmp_filename = get_temporary_directory() + info.tmp_filename;
+						info.tmp_filename = temporary_directory + ETL_DIRECTORY_SEPARATOR + info.tmp_filename;
 					files[info.name] = info;
 				}
 			}
 		}
 	}
 
-	temporary_filename_base = filename_base;
+	this->tag = tag;
+	this->temporary_directory = temporary_directory;
+	this->temporary_filename_base = temporary_filename_base;
 	return true;
 }
 

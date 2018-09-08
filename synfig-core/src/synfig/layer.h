@@ -49,6 +49,7 @@
 #include "time.h"
 #include "vector.h"
 #include "value.h"
+#include <giomm.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -316,6 +317,15 @@ private:
 	//! Instead of that it connects to a zero canvas
 	//! \see Layer::set_canvas()
 	sigc::connection parent_death_connect_;
+
+	// added ability to monitor file changes
+	Glib::RefPtr<Gio::FileMonitor> file_monitor;
+	void on_file_changed(const Glib::RefPtr<Gio::File>&, const Glib::RefPtr<Gio::File>&, Gio::FileMonitorEvent);
+	sigc::connection monitor_connection;
+	std::string monitored_path;
+public:
+	bool monitor(const std::string& path); // append file monitor (returns true on success, false on fail)
+
 
 	/*
  -- ** -- S I G N A L S -------------------------------------------------------

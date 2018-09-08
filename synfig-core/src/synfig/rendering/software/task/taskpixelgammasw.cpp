@@ -55,8 +55,8 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
-namespace {
-	class Internal
+
+class TaskPixelGammaSW::Internal
 	{
 	public:
 		typedef void Func(ColorReal &dst, const ColorReal &src, const ColorReal &gamma);
@@ -195,7 +195,6 @@ namespace {
 																   process_r<func_copy>(p);
 		}
 	};
-}
 
 
 bool

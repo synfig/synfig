@@ -66,6 +66,8 @@ namespace synfig
 		FileSystemNative::Handle file_system;
 		FileSystem::Handle sub_file_system;
 
+		String tag;
+		String temporary_directory;
 		String temporary_filename_base;
 
 		std::map<String, String> meta;
@@ -78,12 +80,13 @@ namespace synfig
 			FileMap &files,
 			bool remove_files);
 
+		bool create_temporary_directory() const;
 		bool autosave_temporary() const;
 
 		static String get_xml_node_text(xmlpp::Node *node);
 
 	public:
-		explicit FileSystemTemporary(const FileSystem::Handle &sub_file_system = FileSystem::Handle());
+		explicit FileSystemTemporary(const String &tag, const String &temporary_directory = String(), const FileSystem::Handle &sub_file_system = FileSystem::Handle());
 		~FileSystemTemporary();
 
 		virtual bool is_file(const String &filename);
@@ -102,15 +105,18 @@ namespace synfig
 		void set_sub_file_system(const FileSystem::Handle &file_system)
 			{ this->sub_file_system = file_system; }
 
-		bool empty() const { return files.empty() && meta.empty(); }
+		bool empty() const { return files.empty(); }
 
 		bool save_changes(const FileSystem::Handle &sub_file_system, bool as_copy);
 		bool save_changes_copy(const FileSystem::Handle &sub_file_system) const;
 		bool save_changes();
 		void discard_changes();
 
-		void reset_temporary_filename_base();
+		const String& get_tag() const { return tag; }
+		const String& get_temporary_directory() const { return temporary_directory; }
 		const String& get_temporary_filename_base() const { return temporary_filename_base; }
+		void reset_temporary_filename_base() { reset_temporary_filename_base(get_tag(), get_temporary_directory()); }
+		void reset_temporary_filename_base(const String &tag, const String &temporary_directory);
 
 		String get_meta(const String &key) const;
 		void set_meta(const String &key, const String &value);
@@ -125,13 +131,13 @@ namespace synfig
 			{ autosave = value; }
 
 		bool save_temporary() const;
-		bool open_temporary(const String &filename_base);
+		bool open_temporary(const String &filename);
 
-		static String get_temporary_directory();
-		static String generate_temporary_filename_base();
-		static String generate_temporary_filename();
-
+		static String get_system_temporary_directory();
+		static String generate_temporary_filename_base(const String &tag);
+		static String generate_system_temporary_filename(const String &tag);
 		static String generate_indexed_temporary_filename(const FileSystem::Handle &fs, const String &filename);
+		static bool scan_temporary_directory(const String &tag, FileList &out_files, const String &dirname = String());
 	};
 
 }

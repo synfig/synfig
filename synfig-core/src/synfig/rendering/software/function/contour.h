@@ -61,7 +61,8 @@ public:
 	static void build_polyspan(
 		const rendering::Contour::ChunkList &chunks,
 		const Matrix &transform_matrix,
-		Polyspan &out_polyspan );
+		Polyspan &out_polyspan,
+		Real detail = 0.25 );
 
 	static void render_contour(
 		synfig::Surface &target_surface,

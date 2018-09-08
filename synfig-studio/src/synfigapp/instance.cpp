@@ -127,7 +127,7 @@ synfigapp::find_instance(etl::handle<synfig::Canvas> canvas)
 
 /* === M E T H O D S ======================================================= */
 
-Instance::Instance(etl::handle<synfig::Canvas> canvas, synfig::FileSystemTemporary::Handle container):
+Instance::Instance(etl::handle<synfig::Canvas> canvas, synfig::FileSystem::Handle container):
 	CVSInfo(canvas->get_file_name()),
 	canvas_(canvas),
 	container_(container)
@@ -140,7 +140,7 @@ Instance::Instance(etl::handle<synfig::Canvas> canvas, synfig::FileSystemTempora
 } // END of synfigapp::Instance::Instance()
 
 handle<Instance>
-Instance::create(etl::handle<synfig::Canvas> canvas, synfig::FileSystemTemporary::Handle container)
+Instance::create(etl::handle<synfig::Canvas> canvas, synfig::FileSystem::Handle container)
 {
 	// Construct a new instance
 	handle<Instance> instance(new Instance(canvas, container));
@@ -312,7 +312,7 @@ bool Instance::save_surface(const synfig::Surface &surface, const synfig::String
 		return false;
 
 	ext.erase(0, 1);
-	String tmpfile = FileSystemTemporary::generate_temporary_filename();
+	String tmpfile = FileSystemTemporary::generate_system_temporary_filename("surface");
 
 	etl::handle<Target_Scanline> target =
 		etl::handle<Target_Scanline>::cast_dynamic(
@@ -525,6 +525,20 @@ Instance::process_filenames_undo(const ProcessFilenamesParams &params)
 		i->first->set_value(i->second);
 }
 
+void
+Instance::find_unsaved_layers(std::vector<synfig::Layer::Handle> &out_layers, const synfig::Canvas::Handle canvas)
+{
+	for(Canvas::const_iterator i = canvas->begin(); i != canvas->end(); ++i)
+	{
+		if (Layer_PasteCanvas::Handle layer_pastecanvas = Layer_PasteCanvas::Handle::cast_dynamic(*i))
+			if (Canvas::Handle sub_canvas = layer_pastecanvas->get_sub_canvas())
+				find_unsaved_layers(out_layers, sub_canvas);
+		if (Layer_Bitmap::Handle layer_bitmap = Layer_Bitmap::Handle::cast_dynamic(*i))
+			if (layer_bitmap->is_surface_modified())
+				out_layers.push_back(layer_bitmap);
+	}
+}
+
 bool
 Instance::save()
 {
@@ -532,54 +546,105 @@ Instance::save()
 }
 
 bool
+Instance::save_layer(const synfig::Layer::Handle &layer)
+{
+	if (Layer_Bitmap::Handle layer_bitmap = Layer_Bitmap::Handle::cast_dynamic(layer))
+	{
+		if ( layer_bitmap->is_surface_modified()
+		  && layer_bitmap->get_param_list().count("filename"))
+		{
+			ValueBase value = layer_bitmap->get_param("filename");
+			if (value.same_type_as(String()))
+			{
+				String filename = value.get(String());
+				if (save_surface(layer_bitmap->rendering_surface, filename))
+					return true;
+				error("Cannot save image: %s", filename.c_str());
+				return false;
+			}
+		}
+	}
+	error("Don't know how to save layer type: %s", layer->get_name().c_str());
+	return false;
+}
+
+void
+Instance::save_all_layers()
+{
+	std::vector<Layer::Handle> layers;
+	find_unsaved_layers(layers);
+	for(std::vector<Layer::Handle>::const_iterator i = layers.begin(); i != layers.end(); ++i)
+		save_layer(*i);
+}
+
+bool
+Instance::backup()
+{
+	if (!get_action_count())
+		return true;
+	bool success = true;
+	FileSystemTemporary::Handle temporary_filesystem = FileSystemTemporary::Handle::cast_dynamic(get_canvas()->get_file_system());
+	if (success && !temporary_filesystem)
+	{
+		warning("Cannot backup, canvas was not attached to temporary file system: %s", get_file_name().c_str());
+		success = false;
+		return false;
+	}
+	// don't save images while backup
+	//if (success)
+	//	save_all_layers();
+	if (success)
+		success = save_canvas(get_canvas()->get_identifier(), get_canvas(), false);
+	if (success)
+		success = temporary_filesystem->save_temporary();
+	return success;
+}
+
+bool
 Instance::save_as(const synfig::String &file_name)
 {
 	Canvas::Handle canvas = get_canvas();
-	bool is_filename_changed = file_name != canvas->get_file_name();
 
-	FileSystem::Identifier previous_canvas_identifier = get_canvas()->get_identifier();
+	FileSystem::Identifier previous_canvas_identifier = canvas->get_identifier();
 	FileSystem::Handle previous_canvas_filesystem = previous_canvas_identifier.file_system;
-	FileSystemTemporary::Handle previous_container = get_container();
-	String previous_canvas_filename = get_canvas()->get_file_name();
-
-	// save bitmaps
-	std::set<Layer::Handle> layers_to_save_set;
-	for(std::list<Layer::Handle>::iterator i = layers_to_save.begin(); i != layers_to_save.end(); i++)
-		layers_to_save_set.insert(*i);
-	for(std::set<Layer::Handle>::iterator i = layers_to_save_set.begin(); i != layers_to_save_set.end(); i++)
-	{
-		etl::handle<Layer_Bitmap> layer_bitmap = etl::handle<Layer_Bitmap>::cast_dynamic(*i);
-		if (!layer_bitmap) continue;
-		if (!layer_bitmap->get_canvas()) continue;
-		if (!(*i)->get_param_list().count("filename")) continue;
-		ValueBase value = (*i)->get_param("filename");
-		if (!value.same_type_as(String())) continue;
-		String filename = value.get(String());
-		if (!save_surface(layer_bitmap->rendering_surface, filename))
-			warning("Cannot save image: %s", filename.c_str());
-	}
+	FileSystem::Handle previous_container = get_container();
+	String previous_canvas_filename = canvas->get_file_name();
 
 	FileSystem::Identifier new_canvas_identifier = previous_canvas_identifier;
 	FileSystem::Handle new_canvas_filesystem = previous_canvas_filesystem;
-	FileSystemTemporary::Handle new_container = previous_container;
+	FileSystem::Handle new_container = previous_container;
 	String new_canvas_filename = file_name;
+	bool is_filename_changed = previous_canvas_filename != new_canvas_filename;
 
 	if (is_filename_changed)
 	{
 		// new canvas filesystem
-		FileSystem::Handle container = CanvasFileNaming::make_filesystem_container(new_canvas_filename, 0, true);
-		if (!container)
+		FileSystem::Handle new_container = CanvasFileNaming::make_filesystem_container(new_canvas_filename, 0, true);
+		if (!new_container)
 		{
 			warning("Cannot create container: %s", new_canvas_filename.c_str());
 			return false;
 		}
-		new_container = new FileSystemTemporary(container);
 		new_canvas_filesystem = CanvasFileNaming::make_filesystem(new_container);
 		if (!new_canvas_filesystem)
 		{
 			warning("Cannot create canvas filesysem for: %s", new_canvas_filename.c_str());
 			return false;
 		}
+
+		// wrap into temporary file system
+		if (FileSystemTemporary::Handle previous_temporary_filesystem = FileSystemTemporary::Handle::cast_dynamic(previous_canvas_filesystem))
+		{
+			FileSystemTemporary::Handle new_temporary_filesystem = new FileSystemTemporary(
+				previous_temporary_filesystem->get_tag(),
+				previous_temporary_filesystem->get_temporary_directory(),
+				new_canvas_filesystem );
+			new_temporary_filesystem->set_meta("filename", new_canvas_filename);
+			new_temporary_filesystem->set_meta("as", new_canvas_filename);
+			new_temporary_filesystem->set_meta("truncate", "0");
+			new_canvas_filesystem = new_temporary_filesystem;
+		}
+
 		new_canvas_identifier = new_canvas_filesystem->get_identifier(CanvasFileNaming::project_file(new_canvas_filename));
 
 		// copy embedded files
@@ -589,11 +654,10 @@ Instance::save_as(const synfig::String &file_name)
 			new_canvas_filesystem,
 			CanvasFileNaming::container_prefix ))
 		{
-			new_canvas_filesystem->remove_recursive(CanvasFileNaming::container_prefix);
+			//new_canvas_filesystem->remove_recursive(CanvasFileNaming::container_prefix);
 			new_canvas_filesystem.reset();
 			new_container.reset();
-			container.reset();
-			FileSystemNative::instance()->file_remove(new_canvas_filename);
+			//FileSystemNative::instance()->file_remove(new_canvas_filename);
 			return false;
 		}
 
@@ -607,8 +671,11 @@ Instance::save_as(const synfig::String &file_name)
 		container_ = new_container;
 	}
 
+	// save bitmaps
+	save_all_layers();
+
 	// find zip-container
-	FileContainerZip::Handle new_container_zip = FileContainerZip::Handle::cast_dynamic(new_container->get_sub_file_system());
+	FileContainerZip::Handle new_container_zip = FileContainerZip::Handle::cast_dynamic(new_container);
 	bool embed_files = (bool)new_container_zip;
 	bool save_files = true;
 
@@ -630,32 +697,34 @@ Instance::save_as(const synfig::String &file_name)
 	if (success)
 		success = save_canvas(new_canvas_identifier, canvas, false);
 	if (success)
-		success = new_container->save_changes();
+		if (FileSystemTemporary::Handle temporary_filesystem = FileSystemTemporary::Handle::cast_dynamic(new_canvas_filesystem))
+			success = temporary_filesystem->save_changes();
 	if (success && new_container_zip)
 		success = new_container_zip->save();
 	if (success)
 		reset_action_count();
-	if (success)
-		signal_saved_();
 
-	if (!success)
+	if (success)
 	{
-		// undo
-		canvas->set_file_name(previous_canvas_filename);
-		canvas->set_identifier(previous_canvas_identifier);
-		container_ = previous_container;
-		process_filenames_undo(params);
-		new_canvas_filesystem->remove_recursive(CanvasFileNaming::container_prefix);
-		new_canvas_filesystem.reset();
-		new_container.reset();
-		FileSystemNative::instance()->file_remove(new_canvas_filename);
-		if (import_external_canvases_action)
-			import_external_canvases_action->undo();
+		signal_saved_();
+		signal_filename_changed_();
+		if (is_filename_changed) CVSInfo::set_file_name(new_canvas_filename);
+		return true;
 	}
 
-	signal_filename_changed_();
+	// undo
+	canvas->set_file_name(previous_canvas_filename);
+	canvas->set_identifier(previous_canvas_identifier);
+	container_ = previous_container;
+	process_filenames_undo(params);
+	//new_canvas_filesystem->remove_recursive(CanvasFileNaming::container_prefix);
+	new_canvas_filesystem.reset();
+	new_container.reset();
+	//FileSystemNative::instance()->file_remove(new_canvas_filename);
+	if (import_external_canvases_action)
+		import_external_canvases_action->undo();
 
-	return success;
+	return false;
 }
 
 bool

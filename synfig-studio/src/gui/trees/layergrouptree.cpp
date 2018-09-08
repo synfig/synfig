@@ -1,12 +1,11 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file layergrouptree.cpp
-**	\brief Template File
-**
-**	$Id$
+**	\brief Layer set tree
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2008 Chris Moore
+**	Copyright (c) 2017 caryoscelus
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -88,6 +87,16 @@ LayerGroupTree::LayerGroupTree()
 		column->set_clickable(false);
 		append_column(*column);
 	}
+	{	// --- Z - D E P T H
+		int index = append_column(_("Z Depth"), model.z_depth)-1;
+
+		Gtk::TreeViewColumn* column_z_depth = get_column(index);
+		column_z_depth->set_reorderable();
+		column_z_depth->set_resizable();
+		column_z_depth->set_clickable();
+
+		column_z_depth->set_sort_column(model.z_depth);
+	}
 
 	set_enable_search(true);
 	set_search_column(model.label);
@@ -102,7 +111,6 @@ LayerGroupTree::LayerGroupTree()
 	set_reorderable(true);
 
 	get_selection()->set_mode(Gtk::SELECTION_MULTIPLE);
-
 }
 
 LayerGroupTree::~LayerGroupTree()
@@ -116,6 +124,11 @@ LayerGroupTree::set_model(Glib::RefPtr<LayerGroupTreeStore> layer_group_tree_sto
 {
 	layer_group_tree_store_=layer_group_tree_store;
 	Gtk::TreeView::set_model(layer_group_tree_store);
+
+	Gtk::TreeView::Column* column = get_column(2);
+	if (column)
+		column->set_sort_column(layer_group_tree_store_->model.label);
+	column->clicked();
 }
 
 void
@@ -264,7 +277,7 @@ LayerGroupTree::on_toggle(const Glib::ustring& path_string)
 }
 
 void
-LayerGroupTree::on_layer_renamed(const Glib::ustring&path_string,const Glib::ustring& value)
+LayerGroupTree::on_layer_renamed(const Glib::ustring& path_string, const Glib::ustring& value)
 {
 	Gtk::TreePath path(path_string);
 

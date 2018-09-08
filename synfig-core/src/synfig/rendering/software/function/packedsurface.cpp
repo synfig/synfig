@@ -394,13 +394,13 @@ PackedSurface::set_pixels(const Color *pixels, int width, int height, int pitch)
 			if (channels_equality[i][j])
 				{ channels[i] = channels[j]; break; }
 		if (constant_equality[i])
-		{
 			channels[i] = -1;
-			this->constant = constant_channels[i];
-		}
+		else
+			constant_channels[i] = 0;
 		if (channels[i] >= 0 && channels[i] + channel_size > pixel_size)
 			pixel_size = channels[i] + channel_size;
 	}
+	this->constant = constant;
 	this->width = width;
 	this->height = height;
 	row_size = width * pixel_size;

@@ -41,12 +41,16 @@ namespace synfig { class ProgressCallback; };
 
 namespace studio {
 
-class OneMoment : public Gtk::Window
+class OneMoment// : public Gtk::Window
 {
+private:
+	static Gtk::Window *wnd;
 public:
 
 	OneMoment();
 	~OneMoment();
+	void show() { wnd->show(); }
+	void hide() { wnd->hide(); }
 };
 
 }

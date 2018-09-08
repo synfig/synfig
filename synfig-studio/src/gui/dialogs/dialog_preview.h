@@ -49,7 +49,6 @@ struct PreviewInfo
 {
 	float zoom,fps,begintime,endtime;
 	bool overbegin,overend;
-	bool use_cairo;
 };
 
 class Dialog_Preview : public Gtk::Window
@@ -90,8 +89,6 @@ class Dialog_PreviewOptions : public Gtk::Dialog
 
 	Glib::RefPtr<Gtk::Adjustment>	adj_fps;	// how often to take samples of the animation
 	
-	Gtk::CheckButton check_use_cairo;
-
 	studio::Widget_Time time_begin;
 	studio::Widget_Time time_end;
 
@@ -136,9 +133,6 @@ public:
 	bool get_end_override() const { return check_overend.get_active(); }
 	void set_end_override(bool o) { check_overend.set_active(o); }
 	
-	bool get_use_cairo() const { return check_use_cairo.get_active(); }
-	void set_use_cairo(bool u) { check_use_cairo.set_active(u); }
-
 	sigc::signal<void,const PreviewInfo &>	&signal_finish() {return signal_finish_;}
 };
 

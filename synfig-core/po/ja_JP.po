@@ -5,17 +5,15 @@
 # Translators:
 # Henrik Berglund <cyaoeu@gmail.com>, 2013
 # Henrik Berglund <cyaoeu@gmail.com>, 2013
-# Tou Omiya, 2014
+# Tou Omiya, 2014,2018
 msgid ""
 msgstr ""
 "Project-Id-Version: Synfig UI\n"
 "Report-Msgid-Bugs-To: https://github.com/synfig/synfig/issues\n"
-"POT-Creation-Date: 2016-12-21 13:11+0700\n"
-"PO-Revision-Date: 2015-12-25 06:36+0000\n"
-"Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
-"Language-Team: Japanese (Japan) (http://www.transifex.com/morevnaproject/"
-"synfig/language/ja_JP/)\n"
-"Language: ja_JP\n"
+"POT-Creation-Date: 2016-06-05 14:00+0700\n"
+"PO-Revision-Date: 2018-07-05 15:39+0000\n"
+"Last-Translator: Tou Omiya\n"
+"Language-Team: Japanese (Japan) (http://www.transifex.com/morevnaproject/synfig/language/ja_JP/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -41,7 +39,7 @@ msgstr "テキストレイヤー"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:414
 msgid "unable to initialize"
-msgstr ""
+msgstr "初期化できません"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:433
 msgid "empty font set"
@@ -366,7 +364,7 @@ msgstr ""
 #: src/synfig/valuenodes/valuenode_stripes.cpp:205
 #: src/tool/printing_functions.cpp:113
 msgid "Width"
-msgstr ""
+msgstr "幅"
 
 #: src/modules/lyr_std/curvewarp.cpp:413
 msgid "How much is expanded the result perpendicular to the source line"

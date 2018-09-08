@@ -373,9 +373,9 @@ StateText_Context::increment_id()
 	set_id(id);
 }
 
-StateText_Context::StateText_Context(CanvasView *canvas_view):
-	canvas_view(canvas_view),
-	is_working(*canvas_view),
+StateText_Context::StateText_Context(CanvasView *canvasView):
+	canvas_view(canvasView),
+	is_working(*canvasView),
 	duckmatic_push(get_work_area()),
 	prev_workarea_layer_status_(get_work_area()->get_allow_layer_clicks()),
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
@@ -518,7 +518,8 @@ StateText_Context::StateText_Context(CanvasView *canvas_view):
 	options_table.set_row_spacings(GAP); // row gap
 	options_table.set_row_spacing(0, GAP*2); // the gap between first and second row.
 	options_table.set_row_spacing(2, 1); // row gap between label and icon of layer type
-	options_table.set_row_spacing(10, 0); // the final row using border width of table
+	//options_table.set_row_spacing(9, 0); // the final row using border width of table
+	options_table.set_margin_bottom(0);
 
 	options_table.show_all();
 

@@ -63,7 +63,8 @@ public:
 		bool invert,
 		bool antialias,
 		Contour::WindingStyle winding_style,
-		const Color &color );
+		const Color &color,
+		Real detail = 0.25 );
 };
 
 } /* end namespace rendering */

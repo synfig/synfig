@@ -43,8 +43,8 @@ let
     src = ../synfig-core;
 
     buildInputs = with pkgs; [
-      ETL autoconf automake boost cairo gettext glibmm libsigcxx
-      libtool libxmlxx pango pkgconfig
+      ETL autoconf automake boost cairo fftw gettext glibmm intltool libsigcxx
+      libtool libxmlxx mlt pango pkgconfig which
     ];
 
     preConfigure = "./bootstrap.sh";
@@ -58,8 +58,8 @@ stdenv.mkDerivation rec {
   src = ../synfig-studio;
 
   buildInputs = with pkgs; [
-    ETL autoconf automake boost cairo gettext glibmm gtk gtkmm
-    imagemagick intltool intltool jackaudio libsigcxx libtool libxmlxx
+    ETL autoconf automake boost cairo fftw gettext glibmm gtk3 gtkmm3
+    imagemagick intltool intltool libjack2 libsigcxx libtool libxmlxx mlt
     pkgconfig synfig which
   ];
 

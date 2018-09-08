@@ -40,6 +40,7 @@
 
 #include <synfig/general.h>
 #include <synfig/savecanvas.h>
+#include <synfig/filesystemnative.h>
 #include <synfigapp/main.h>
 
 #include <synfigapp/localization.h>
@@ -91,9 +92,9 @@ PluginLauncher::PluginLauncher(synfig::Canvas::Handle canvas)
 		filename_backup = filename_base+"."+guid.get_string().substr(0,8)+".sif";
 	} while (stat(filename_backup.c_str(), &buf) != -1);
 
-	save_canvas(canvas->get_identifier().file_system->get_identifier(filename_processed),canvas);
+	save_canvas(FileSystemNative::instance()->get_identifier(filename_processed),canvas);
 	// copy file would be faster ..
-	save_canvas(canvas->get_identifier().file_system->get_identifier(filename_backup),canvas);
+	save_canvas(FileSystemNative::instance()->get_identifier(filename_backup),canvas);
 
 	//canvas=0;
 	exitcode=-1;

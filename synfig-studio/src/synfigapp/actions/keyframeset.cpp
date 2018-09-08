@@ -132,6 +132,10 @@ Action::KeyframeSet::prepare()
 	try { if(get_canvas()->keyframe_list().find(new_time)!=get_canvas()->keyframe_list().end()) throw Error(_("A Keyframe already exists at this point in time"));}
 	catch(...) { }
 
+	/*try { keyframe_next=get_canvas()->keyframe_list().find_next(old_time)->get_time(); }
+	catch(...) { keyframe_next=Time::end(); }
+	try { keyframe_prev=get_canvas()->keyframe_list().find_prev(old_time)->get_time(); }
+	catch(...) { keyframe_prev=Time::begin(); }*/
 
 	// If the times are different and keyframe is not disabled, then we
 	// will need to romp through the valuenodes

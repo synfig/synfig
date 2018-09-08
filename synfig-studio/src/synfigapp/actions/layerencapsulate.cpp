@@ -87,7 +87,7 @@ Action::LayerEncapsulate::get_param_vocab()
 	);
 	ret.push_back(ParamDesc("description",Param::TYPE_STRING)
 		.set_local_name(_("Description"))
-		.set_desc(_("Description of new switch"))
+		.set_desc(_("Description of new group"))
 		.set_optional()
 	);
 

@@ -50,6 +50,7 @@
 #include <gtkmm/eventbox.h>
 #include <gtkmm/label.h>
 #include <gtkmm/box.h>
+#include <gtkmm/table.h>
 #include <gtkmm/menu.h>
 #include <gtkmm/menuitem.h>
 #include <gtkmm/imagemenuitem.h>
@@ -726,11 +727,18 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	/*
  --	** -- Signals -------------------------------------------------------------
 	*/
+#define CONNECT(x, y) x().connect(sigc::mem_fun(*this, y))
 
-	canvas_interface()->signal_dirty_preview().connect(sigc::mem_fun(*this,&studio::CanvasView::on_dirty_preview));
-	canvas_interface()->signal_mode_changed().connect(sigc::mem_fun(*this,&studio::CanvasView::on_mode_changed));
+	CONNECT(canvas_interface()->signal_dirty_preview, &CanvasView::on_dirty_preview);
+	CONNECT(canvas_interface()->signal_mode_changed,  &CanvasView::on_mode_changed);
+	CONNECT(canvas_interface()->signal_time_changed,  &CanvasView::on_time_changed);
 
-	canvas_interface()->signal_time_changed().connect(sigc::mem_fun(*this,&studio::CanvasView::on_time_changed));
+#undef CONNECT
+
+	//canvas_interface()->signal_dirty_preview().connect(sigc::mem_fun(*this,&studio::CanvasView::on_dirty_preview));
+	//canvas_interface()->signal_mode_changed().connect(sigc::mem_fun(*this,&studio::CanvasView::on_mode_changed));
+
+	//canvas_interface()->signal_time_changed().connect(sigc::mem_fun(*this,&studio::CanvasView::on_time_changed));
 
 	//canvas_interface()->signal_time_changed().connect(sigc::mem_fun(*this,&studio::CanvasView::refresh_tables));
 	canvas_interface()->signal_id_changed().connect(sigc::mem_fun(*this,&studio::CanvasView::on_id_changed));
@@ -1012,10 +1020,10 @@ void CanvasView::set_jack_enabled(bool value)
 std::list<int>&
 CanvasView::get_pixel_sizes()
 {
-	// prime factors of 120 are 2, 2, 2, 3, 5 - see TILE_SIZE in synfig-core/trunk/src/synfig/target_tile.h
-	static int pixel_size_array[] = {2,3,4,5,6,8,10,12,15,20,24,30,40,60,120};
+	// prime factors of 64 is 2, 2, 2, 2, 2, 2 - see TILE_SIZE in synfig-core/trunk/src/synfig/target_tile.h
+	// also see available low-res renderer engines in synfig::rendering::Renderer::initialize_renderers()
+	static int pixel_size_array[] = {2, 4, 8, 16};
 	static list<int> pixel_sizes = list<int>(pixel_size_array, pixel_size_array + sizeof(pixel_size_array) / sizeof(int));
-
 	return pixel_sizes;
 }
 
@@ -1068,23 +1076,8 @@ CanvasView::create_time_bar()
 	widget_interpolation->set_icon(4, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_linear"), Gtk::ICON_SIZE_MENU));
 	widget_interpolation->set_tooltip_text(_("Default Interpolation"));
 	widget_interpolation->set_popup_fixed_width(false);
-	widget_interpolation->set_size_request(120,0);
 	widget_interpolation->show();
-	Gtk::Alignment* widget_interpolation_align=manage(new Gtk::Alignment(1, Gtk::ALIGN_CENTER, 0, 0));
-	widget_interpolation_align->add(*widget_interpolation);
-	widget_interpolation_align->show();
-	widget_interpolation_scroll=manage(new class Gtk::ScrolledWindow());
-	widget_interpolation_scroll->add(*widget_interpolation_align);
-	widget_interpolation_scroll->show();
-	widget_interpolation_scroll->set_shadow_type(Gtk::SHADOW_NONE);
-	widget_interpolation_scroll->set_policy(Gtk::POLICY_ALWAYS,Gtk::POLICY_NEVER);
-	widget_interpolation_scroll->set_size_request(25,0);
-	Gtk::Scrollbar* hscroll=widget_interpolation_scroll->get_hscrollbar();
-	hscroll->hide();
-
 	widget_interpolation->signal_changed().connect(sigc::mem_fun(*this,&studio::CanvasView::on_interpolation_changed));
-	widget_interpolation_scroll->add_events(Gdk::POINTER_MOTION_MASK);
-	widget_interpolation_scroll->signal_event().connect(sigc::bind_return(sigc::mem_fun(*this,&studio::CanvasView::on_interpolation_event),false));
 
 	synfigapp::Main::signal_interpolation_changed().connect(sigc::mem_fun(*this,&studio::CanvasView::interpolation_refresh));
 	synfigapp::Main::set_interpolation(INTERPOLATION_CLAMPED); // Clamped by default.
@@ -1193,26 +1186,36 @@ CanvasView::create_time_bar()
 		space2->show();
 	}
 #endif
+
+	// fix thickness of statusbar
+	Gtk::Widget *widget = statusbar;
+	while(Gtk::Container *container = dynamic_cast<Gtk::Container*>(widget)) {
+		widget->set_margin_top(0);
+		widget->set_margin_bottom(0);
+		widget = container->get_children().empty() ? NULL : container->get_children().front();
+	}
 	statusbar->show();
 
-	timebar = Gtk::manage(new class Gtk::Table(11, 2, false));
-
 	//Attach widgets to the timebar
-	//timebar->attach(*manage(disp_audio), 1, 5, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
-	timebar->attach(*timetrackbutton, 0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	timebar->attach(*current_time_widget, 1, 2, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	timebar->attach(*framedial, 2, 4, 1, 2, Gtk::SHRINK, Gtk::SHRINK);
-	timebar->attach(*jackdial, 4, 5, 1, 2, Gtk::SHRINK, Gtk::SHRINK);
-	//timebar->attach(*space2, 5, 6, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::FILL);
-	timebar->attach(*statusbar, 5, 7, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	//timebar->attach(*progressbar, 5, 6, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	timebar->attach(*widget_interpolation_scroll, 7, 8, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	timebar->attach(*keyframedial, 8, 9, 1, 2, Gtk::SHRINK, Gtk::SHRINK);
-	timebar->attach(*space, 9, 10, 1, 2, Gtk::SHRINK, Gtk::FILL);
-	timebar->attach(*animatebutton, 10, 11, 1, 2, Gtk::SHRINK, Gtk::SHRINK);
 
-	timebar->attach(*timetrack, 0, 11, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL);
+	Gtk::HBox *controls = manage(new Gtk::HBox());
+	//controls->pack_start(*manage(disp_audio),   true, true);
+	controls->pack_start(*timetrackbutton,      false, true);
+	controls->pack_start(*current_time_widget,  false, true);
+	controls->pack_start(*framedial,            false, true);
+	controls->pack_start(*jackdial,             false, true);
+	//controls->pack_start(*space2,               true, true);
+	controls->pack_start(*statusbar,            true, true);
+    //controls->pack_start(*progressbar,          true,  true);
+	controls->pack_start(*widget_interpolation, false, true);
+	controls->pack_start(*keyframedial,         false, true);
+	controls->pack_start(*space,                false, true);
+	controls->pack_start(*animatebutton,        false, true);
+	controls->show();
 
+	timebar = Gtk::manage(new Gtk::VBox());
+	timebar->pack_end(*timetrack, false, true);
+	timebar->pack_end(*controls, false, true);
 	timebar->show();
 
 	return timebar;
@@ -1246,6 +1249,30 @@ CanvasView::create_tool_separator()
 	Gtk::SeparatorToolItem *separator = Gtk::manage(new Gtk::SeparatorToolItem());
 	separator->show();
 	return separator;
+}
+
+void CanvasView::toggle_draft_render()
+{
+	//if (App::workarea_renderer.empty()) return;
+
+	bool toggled = this->draft_button->get_active();
+	if (toggled) {
+		App::workarea_renderer = "software-draft";
+		this->draft_button->set_tooltip_text( _("Disable draft rendering"));
+	} else {
+		App::workarea_renderer = "";
+		this->draft_button->set_tooltip_text( _("Enable draft rendering"));
+	}
+		
+
+	/*std::string test22 = "";
+	if (!App::workarea_renderer.empty()) test22 = App::workarea_renderer;
+	App::workarea_renderer = "software-draft";
+
+	test22 = App::workarea_renderer;*/
+
+	App::save_settings();
+	App::setup_changed();
 }
 
 Gtk::Widget*
@@ -1388,6 +1415,54 @@ CanvasView::create_display_bar()
 	// Separator
 	displaybar->append( *create_tool_separator() );
 
+	{ // Setup refresh button
+		Gtk::Image *icon = Gtk::manage(new Gtk::Image(Gtk::StockID("gtk-refresh"), iconsize));
+		icon->set_padding(0, 0);
+		icon->show();
+
+		refreshbutton = Gtk::manage(new class Gtk::ToolButton());
+		refreshbutton->set_icon_widget(*icon);
+		refreshbutton->signal_clicked().connect(SLOT_EVENT(EVENT_REFRESH));
+		refreshbutton->set_label(_("Refresh"));
+		refreshbutton->set_tooltip_text( _("Refresh workarea"));
+		refreshbutton->show();
+
+		displaybar->append(*refreshbutton);
+	}
+
+	{ // Setup draft rendering mode button
+		Gtk::Image *icon = Gtk::manage(new Gtk::Image(Gtk::StockID("synfig-layer_other_supersample"), iconsize));
+		icon->set_padding(0, 0);
+		icon->show();
+
+		draft_button = Gtk::manage(new class Gtk::ToggleToolButton());
+		draft_button->set_icon_widget(*icon);
+		draft_button->signal_clicked().connect(sigc::mem_fun(*this, &studio::CanvasView::toggle_draft_render));
+		draft_button->set_label(_("Draft"));
+		draft_button->set_tooltip_text( _("Enable draft rendering"));
+		draft_button->set_active(App::workarea_renderer == "software-draft");
+		draft_button->show();
+
+		displaybar->append(*draft_button);
+	}
+	
+	
+	// Separator
+	displaybar->append( *create_tool_separator() );
+
+	// Set up the ResolutionDial widget
+	resolutiondial.update_lowres(work_area->get_low_resolution_flag());
+	resolutiondial.signal_increase_resolution().connect(
+		sigc::mem_fun(*this, &studio::CanvasView::decrease_low_res_pixel_size));
+	resolutiondial.signal_decrease_resolution().connect(
+		sigc::mem_fun(*this, &studio::CanvasView::increase_low_res_pixel_size));
+	resolutiondial.signal_use_low_resolution().connect(
+		sigc::mem_fun(*this, &studio::CanvasView::toggle_low_res_pixel_flag));
+	resolutiondial.insert_to_toolbar(*displaybar);
+	
+	// Separator
+	displaybar->append( *create_tool_separator() );
+
 	{ // Set up the onion skin toggle button
 		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-toggle_onion_skin"), iconsize));
 		icon->set_padding(0, 0);
@@ -1435,37 +1510,6 @@ CanvasView::create_display_bar()
 		displaybar->append(*toolitem);
 	}
 
-	// Separator
-	displaybar->append( *create_tool_separator() );
-
-	{ // Setup refresh button
-		Gtk::Image *icon = Gtk::manage(new Gtk::Image(Gtk::StockID("gtk-refresh"), iconsize));
-		icon->set_padding(0, 0);
-		icon->show();
-
-		refreshbutton = Gtk::manage(new class Gtk::ToolButton());
-		refreshbutton->set_icon_widget(*icon);
-		refreshbutton->signal_clicked().connect(SLOT_EVENT(EVENT_REFRESH));
-		refreshbutton->set_label(_("Refresh"));
-		refreshbutton->set_tooltip_text( _("Refresh workarea"));
-		refreshbutton->show();
-
-		displaybar->append(*refreshbutton);
-	}
-
-	// Separator
-	displaybar->append( *create_tool_separator() );
-
-	// Set up the ResolutionDial widget
-	resolutiondial.update_lowres(work_area->get_low_resolution_flag());
-	resolutiondial.signal_increase_resolution().connect(
-		sigc::mem_fun(*this, &studio::CanvasView::decrease_low_res_pixel_size));
-	resolutiondial.signal_decrease_resolution().connect(
-		sigc::mem_fun(*this, &studio::CanvasView::increase_low_res_pixel_size));
-	resolutiondial.signal_use_low_resolution().connect(
-		sigc::mem_fun(*this, &studio::CanvasView::toggle_low_res_pixel_flag));
-	resolutiondial.insert_to_toolbar(*displaybar);
-
 	displaybar->show();
 
 	progressbar =manage(new class Gtk::ProgressBar());
@@ -1485,14 +1529,14 @@ CanvasView::create_display_bar()
 		stopbutton->set_relief(Gtk::RELIEF_NONE);
 		//stopbutton->set_label(_("Stop"));
 		stopbutton->set_tooltip_text( _("Stop current operation"));
-		stopbutton->show();
 		stopbutton->set_sensitive(false);
+		stopbutton->show();
 	}
 
 	Gtk::HBox *hbox = manage(new class Gtk::HBox(false, 0));
-	hbox->pack_start(*displaybar, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0);
-	//hbox->pack_start(*progressbar, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0);
-	hbox->pack_start(*stopbutton, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0);
+	hbox->pack_start(*displaybar, false, true);
+	//hbox->pack_start(*progressbar, true, true);
+	hbox->pack_end(*stopbutton, false, false);
 	hbox->show();
 
 	return hbox;
@@ -1510,109 +1554,6 @@ CanvasView::on_current_time_widget_changed()
 	current_time_widget->set_value(get_time());
 	current_time_widget->set_position(-1); // leave the cursor at the end
 }
-
-//	Gtk::Widget*
-//	CanvasView::create_children_tree()
-//	{
-//		// Create the layer tree
-//		children_tree=manage(new class ChildrenTree());
-//
-//		// Set up the layer tree
-//		//children_tree->set_model(children_tree_store());
-//		if(children_tree)children_tree->set_time_adjustment(time_adjustment());
-//		if(children_tree)children_tree->show();
-//
-//		// Connect Signals
-//		if(children_tree)children_tree->signal_edited_value().connect(sigc::mem_fun(*this, &studio::CanvasView::on_edited_value));
-//		if(children_tree)children_tree->signal_user_click().connect(sigc::mem_fun(*this, &studio::CanvasView::on_children_user_click));
-//		if(children_tree)children_tree->signal_waypoint_clicked_childrentree().connect(sigc::mem_fun(*this, &studio::CanvasView::on_waypoint_clicked_canvasview));
-//		if(children_tree)children_tree->get_selection()->signal_changed().connect(SLOT_EVENT(EVENT_REFRESH_DUCKS));
-//
-//		return children_tree;
-//	}
-
-//	Gtk::Widget*
-//	CanvasView::create_keyframe_tree()
-//	{
-//		keyframe_tree=manage(new KeyframeTree());
-//
-//		//keyframe_tree->get_selection()->set_mode(Gtk::SELECTION_MULTIPLE);
-//		//keyframe_tree->show();
-//		//keyframe_tree->set_model(keyframe_tree_store());
-//		keyframe_tree->set_editable(true);
-//		//keyframe_tree->signal_edited().connect(sigc::hide_return(sigc::mem_fun(*canvas_interface(), &synfigapp::CanvasInterface::update_keyframe)));
-//
-//		keyframe_tree->signal_event().connect(sigc::mem_fun(*this, &studio::CanvasView::on_keyframe_tree_event));
-//
-//		Gtk::ScrolledWindow *scroll_layer_tree = manage(new class Gtk::ScrolledWindow());
-//		scroll_layer_tree->set_can_focus(true);
-//		scroll_layer_tree->set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
-//		scroll_layer_tree->add(*keyframe_tree);
-//		scroll_layer_tree->set_shadow_type(Gtk::SHADOW_ETCHED_IN);
-//		//scroll_layer_tree->show();
-//
-//
-//		Gtk::Table *layout_table= manage(new Gtk::Table(1, 2, false));
-//		layout_table->attach(*scroll_layer_tree, 0, 1, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-//
-//		Gtk::Image *icon;
-//		Gtk::IconSize iconsize(Gtk::IconSize::from_name("synfig-small_icon"));
-//
-//		NEW_SMALL_BUTTON(button_add,"gtk-add",_("New Keyframe"));
-//		NEW_SMALL_BUTTON(button_duplicate,"synfig-duplicate",_("Duplicate Keyframe"));
-//		NEW_SMALL_BUTTON(button_delete,"gtk-delete",_("Delete Keyframe"));
-//
-//		Gtk::HBox *hbox(manage(new Gtk::HBox()));
-//		layout_table->attach(*hbox, 0, 1, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK, 0, 0);
-//
-//		hbox->pack_start(*button_add,Gtk::PACK_SHRINK);
-//		hbox->pack_start(*button_duplicate,Gtk::PACK_SHRINK);
-//		hbox->pack_start(*button_delete,Gtk::PACK_SHRINK);
-//
-//		/*
-//		button_raise->set_relief(Gtk::RELIEF_HALF);
-//		button_lower->set_relief(Gtk::RELIEF_HALF);
-//		button_duplicate->set_relief(Gtk::RELIEF_HALF);
-//		button_delete->set_relief(Gtk::RELIEF_HALF);
-//		*/
-//
-//		button_add->signal_clicked().connect(sigc::mem_fun(*this, &studio::CanvasView::on_keyframe_add_pressed));
-//		button_duplicate->signal_clicked().connect(sigc::mem_fun(*this, &studio::CanvasView::on_keyframe_duplicate_pressed));
-//		button_delete->signal_clicked().connect(sigc::mem_fun(*this, &studio::CanvasView::on_keyframe_remove_pressed));
-//
-//		//layout_table->show_all();
-//
-//		keyframe_tab_child=layout_table;
-//
-//
-//		layout_table->hide();
-//
-//		return layout_table;
-//	}
-
-//	Gtk::Widget*
-//	CanvasView::create_layer_tree()
-//	{
-//		// Create the layer tree
-//		printf("CanvasView::create_layer_tree()\n");
-//		layer_tree=manage(new class LayerTree());
-//
-//		// Set up the layer tree
-//		//layer_tree->set_model(layer_tree_store());
-//		layer_tree->set_time_adjustment(time_adjustment());
-//		layer_tree->show();
-//
-//		// Connect Signals
-//		layer_tree->signal_layer_toggle().connect(sigc::mem_fun(*this, &studio::CanvasView::on_layer_toggle));
-//		layer_tree->signal_edited_value().connect(sigc::mem_fun(*this, &studio::CanvasView::on_edited_value));
-//		layer_tree->signal_layer_user_click().connect(sigc::mem_fun(*this, &studio::CanvasView::on_layer_user_click));
-//		layer_tree->signal_param_user_click().connect(sigc::mem_fun(*this, &studio::CanvasView::on_children_user_click));
-//		layer_tree->signal_waypoint_clicked_layertree().connect(sigc::mem_fun(*this, &studio::CanvasView::on_waypoint_clicked_canvasview));
-//		layer_tree->get_selection()->signal_changed().connect(SLOT_EVENT(EVENT_REFRESH_DUCKS));
-//
-//		layer_tree->hide();
-//		return layer_tree;
-//	}
 
 void
 CanvasView::init_menus()
@@ -4120,7 +4061,6 @@ CanvasView::on_preview_create(const PreviewInfo &info)
 	prev->set_overend(info.overend);
 	prev->set_endtime(info.endtime);
 	prev->set_quality(work_area->get_quality());
-	prev->set_use_cairo(info.use_cairo);
 #ifdef WITH_JACK
 	prev->set_jack_offset(get_jack_offset());
 #endif
@@ -4480,10 +4420,4 @@ void
 CanvasView::on_interpolation_changed()
 {
 	synfigapp::Main::set_interpolation(Waypoint::Interpolation(widget_interpolation->get_value()));
-}
-
-void
-CanvasView::on_interpolation_event(GdkEvent * /* event */)
-{
-	widget_interpolation_scroll->get_hscrollbar()->get_adjustment()->set_value(0);
 }

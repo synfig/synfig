@@ -190,7 +190,8 @@ public:
 	virtual bool is_animated() { return false; }
 
 	//! Attempts to open \a filename, and returns a handle to the associated Importer
-	static Handle open(const FileSystem::Identifier &identifier);
+	static Handle open(const FileSystem::Identifier &identifier, bool force=false);
+	static void forget(const FileSystem::Identifier &identifier);
 };
 
 }; // END of namespace synfig

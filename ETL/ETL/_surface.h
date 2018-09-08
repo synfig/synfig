@@ -663,7 +663,7 @@ public:
 
 		//local variable madness
 		//all things that want to inter-operate should provide a default value constructor for = 0
-		accumulator_type acum = 0;
+		accumulator_type acum = accumulator_type();
 		int xi=0,yi=0;
 
 		int	xib=(int)floor(x0),

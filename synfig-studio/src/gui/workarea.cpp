@@ -33,34 +33,41 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
+#include <cmath>
 
-#include "workarea.h"
-#include "canvasview.h"
 #include <gtkmm/arrow.h>
 #include <gtkmm/frame.h>
 #include <gtkmm/scrollbar.h>
 #include <gtkmm/window.h>
 
-#include <cmath>
 #include <ETL/misc>
 
+#include <synfig/general.h>
+
+#include <synfig/blinepoint.h>
+#include <synfig/context.h>
+#include <synfig/distance.h>
 #include <synfig/debug/debugsurface.h>
+#include <synfig/mutex.h>
+#include <synfig/rendering/renderer.h>
+#include <synfig/surface.h>
 #include <synfig/target_scanline.h>
 #include <synfig/target_tile.h>
 #include <synfig/target_cairo.h>
 #include <synfig/target_cairo_tile.h>
-#include <synfig/surface.h>
-#include <synfig/blinepoint.h>
 #include <synfig/valuenodes/valuenode_composite.h>
+
 #include <synfigapp/canvasinterface.h>
+
+#include <gui/localization.h>
+
+#include "asyncrenderer.h"
+#include "canvasview.h"
 #include "event_mouse.h"
 #include "event_layerclick.h"
 #include "event_keyboard.h"
 #include "widgets/widget_color.h"
-#include <synfig/distance.h>
-#include <synfig/context.h>
-
+#include "workarea.h"
 #include "workarearenderer/workarearenderer.h"
 #include "workarearenderer/renderer_background.h"
 #include "workarearenderer/renderer_canvas.h"
@@ -71,11 +78,6 @@
 #include "workarearenderer/renderer_ducks.h"
 #include "workarearenderer/renderer_dragbox.h"
 #include "workarearenderer/renderer_bbox.h"
-#include "asyncrenderer.h"
-
-#include <synfig/mutex.h>
-
-#include <gui/localization.h>
 
 #endif
 
@@ -102,7 +104,6 @@ class studio::WorkAreaTarget : public synfig::Target_Tile
 {
 public:
 	WorkArea *workarea;
-	bool low_res;
 	int w,h;
 	int real_tile_w,real_tile_h;
 	int max_tile_w,max_tile_h;
@@ -164,14 +165,13 @@ public:
 
 	WorkAreaTarget(WorkArea *workarea, int w, int h, int max_tile_w, int max_tile_h, bool force_fullframe):
 		workarea(workarea),
-		low_res(workarea->get_low_resolution_flag()),
 		w(w),
 		h(h),
 		real_tile_w(workarea->get_tile_w()),
 		real_tile_h(workarea->get_tile_h()),
-		force_fullframe(force_fullframe),
 		max_tile_w(max_tile_w),
 		max_tile_h(max_tile_h),
+		force_fullframe(force_fullframe),
 		refresh_id(workarea->get_refreshes()),
 		onionskin(false),
 		onion_first_tile(),
@@ -180,17 +180,8 @@ public:
 		//set_remove_alpha();
 		//set_avoid_time_sync();
 		set_clipping(true);
-		if(low_res)
-		{
-			int div = workarea->get_low_res_pixel_size();
-			set_tile_w(workarea->tile_w/div);
-			set_tile_h(workarea->tile_h/div);
-		}
-		else
-		{
-			set_tile_w(workarea->tile_w);
-			set_tile_h(workarea->tile_h);
-		}
+		set_tile_w(workarea->tile_w);
+		set_tile_h(workarea->tile_h);
 		set_canvas(workarea->get_canvas());
 		set_quality(workarea->get_quality());
 	}
@@ -204,12 +195,7 @@ public:
 	{
 		assert(workarea);
 		newdesc->set_flags(RendDesc::PX_ASPECT|RendDesc::IM_SPAN);
-		if(low_res) {
-			int div = workarea->get_low_res_pixel_size();
-			newdesc->set_wh(w/div,h/div);
-		}
-		else
-			newdesc->set_wh(w, h);
+		newdesc->set_wh(w, h);
 
 		if ( workarea->get_w() != w
 		  || workarea->get_h() != h )
@@ -286,8 +272,11 @@ public:
 
 		unsigned char *buffer((unsigned char*)malloc(total_bytes));
 
-		if(!surface || !buffer)
+		if(!surface || !buffer) {
+			if (buffer) free(buffer); // fix possible memory leak
 			return false;
+		}
+
 		{
 			unsigned char *dest(buffer);
 			const Color *src(surface[0]);
@@ -314,17 +303,6 @@ public:
 			surface.get_w()*synfig::channels(pf), // stride (pitch)
 			sigc::ptr_fun(&WorkAreaTarget::free_buff)
 		);
-
-		if(low_res)
-		{
-			// We need to scale up
-			int div = workarea->get_low_res_pixel_size();
-			pixbuf=pixbuf->scale_simple(
-				surface.get_w()*div,
-				surface.get_h()*div,
-				Gdk::INTERP_NEAREST
-			);
-		}
 
 		RectInt rect(x, y, x + pixbuf->get_width(), y + pixbuf->get_height());
 		WorkAreaTile *tile = workarea->get_tile_book().find_tile(refresh_id - onion_skin_queue.size() - 1, rect);
@@ -368,7 +346,6 @@ class studio::WorkAreaTarget_Full : public synfig::Target_Scanline
 {
 public:
 	WorkArea *workarea;
-	bool low_res;
 	int w,h;
 	int real_tile_w,real_tile_h;
 
@@ -427,7 +404,6 @@ public:
 
 	WorkAreaTarget_Full(WorkArea *workarea,int w, int h):
 		workarea(workarea),
-		low_res(workarea->get_low_resolution_flag()),
 		w(w),
 		h(h),
 		real_tile_w(),
@@ -447,22 +423,11 @@ public:
 	virtual bool set_rend_desc(synfig::RendDesc *newdesc)
 	{
 		assert(workarea);
-		newdesc->set_flags(RendDesc::PX_ASPECT|RendDesc::IM_SPAN);
-		if(low_res)
-		{
-			int div = workarea->get_low_res_pixel_size();
-			newdesc->set_wh(w/div,h/div);
-		}
-		else
-			newdesc->set_wh(w,h);
-
-		if(
-			 	workarea->get_w()!=w
-			|| 	workarea->get_h()!=h
-		) workarea->set_wh(w,h,4);
-
+		newdesc->set_flags(RendDesc::PX_ASPECT | RendDesc::IM_SPAN);
+		newdesc->set_wh(w, h);
+		if (workarea->get_w()!=w ||	workarea->get_h()!=h)
+			workarea->set_wh(w, h, 4);
 		surface.set_wh(newdesc->get_w(),newdesc->get_h());
-
 		desc=*newdesc;
 		workarea->full_frame=true;
 		return true;
@@ -472,9 +437,7 @@ public:
 	{
 		if(!onionskin)
 			return synfig::Target_Scanline::next_frame(time);
-
-		onion_first_tile=(onion_layers==(signed)onion_skin_queue.size());
-
+		onion_first_tile = (onion_layers==(signed)onion_skin_queue.size());
 		if(!onion_skin_queue.empty())
 		{
 			time=onion_skin_queue.front();
@@ -513,8 +476,10 @@ public:
 
 		unsigned char *buffer((unsigned char*)malloc(total_bytes));
 
-		if(!surface || !buffer)
+		if(!surface || !buffer) {
+			if (buffer) free(buffer); // fix possible memory leak
 			return;
+		}
 		// Copy the content of surface to the buffer
 		{
 			unsigned char *dest(buffer);
@@ -542,17 +507,6 @@ public:
 			surface.get_w()*synfig::channels(pf), // stride (pitch)
 			sigc::ptr_fun(&WorkAreaTarget::free_buff)
 		);
-
-		if(low_res)
-		{
-			// We need to scale up
-			int div = workarea->get_low_res_pixel_size();
-			pixbuf=pixbuf->scale_simple(
-				surface.get_w()*div,
-				surface.get_h()*div,
-				Gdk::INTERP_NEAREST
-			);
-		}
 
 		RectInt rect(0, 0, pixbuf->get_width(), pixbuf->get_height());
 		WorkAreaTile *tile = workarea->get_tile_book().find_tile(refresh_id - onion_skin_queue.size() - 1, rect);
@@ -821,14 +775,17 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	vruler->add_events(Gdk::BUTTON1_MOTION_MASK | Gdk::BUTTON2_MOTION_MASK |Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK|Gdk::POINTER_MOTION_MASK);
 
 	// Create the menu button
-	menubutton=manage(new class Gtk::Button());
-	//Gtk::Arrow *arrow1 = manage(new class Gtk::Arrow(Gtk::ARROW_RIGHT, Gtk::SHADOW_OUT));
-	//arrow1->set_size_request(3,3);
-	//menubutton->add(*arrow1);
-	menubutton->show_all();
+	Gtk::Arrow *menubutton = manage(new Gtk::Arrow(Gtk::ARROW_RIGHT, Gtk::SHADOW_OUT));
 	menubutton->set_size_request(18, 18);
-	menubutton->signal_pressed().connect(sigc::mem_fun(*this, &WorkArea::popup_menu));
-	attach(*menubutton, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	Gtk::EventBox *menubutton_box = manage(new Gtk::EventBox());
+	menubutton_box->add(*menubutton);
+	menubutton_box->add_events(Gdk::BUTTON_RELEASE_MASK);
+	menubutton_box->signal_button_release_event().connect(
+		sigc::bind_return(
+			sigc::hide(
+				sigc::mem_fun(*this, &WorkArea::popup_menu) ), true));
+	menubutton_box->show_all();
+	attach(*menubutton_box, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 
 	Gtk::HBox *hbox = manage(new class Gtk::HBox(false, 0));
 
@@ -917,10 +874,19 @@ WorkArea::~WorkArea()
 {
 //	delete [] buffer;
 
+	if (async_renderer)
+	{
+		async_renderer->signal_finished().clear();
+		async_renderer->signal_success().clear();
+		async_renderer->stop();
+	}
+
 	// don't leave the render function queued if we are about to vanish;
 	// that causes crashes
-	if(render_idle_func_id)
+	if(render_idle_func_id) {
+		g_source_remove(render_idle_func_id);
 		render_idle_func_id=0;
+	}
 }
 
 #ifdef SINGLE_THREADED
@@ -1622,7 +1588,7 @@ bool
 WorkArea::on_drawing_area_event(GdkEvent *event)
 {
 	synfig::Point mouse_pos;
-    float bezier_click_pos;
+    float bezier_click_pos(0);
 	const float radius((abs(pw)+abs(ph))*4);
 	int button_pressed(0);
 	float pressure(0);
@@ -1634,27 +1600,17 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 		GdkDevice *device = event->motion.device;
 		modifier = Gdk::ModifierType(event->motion.state);
 
-		// Make sure we recognize the device
-		if(curr_input_device)
-		{
-			if(curr_input_device!=device)
-			{
-				assert(device);
-				curr_input_device=device;
-				signal_input_device_changed()(curr_input_device);
-			}
-		}
-		else
-		if(device)
-		{
-			curr_input_device=device;
-			signal_input_device_changed()(curr_input_device);
-		}
-
-		assert(curr_input_device);
-
 		// Calculate the position of the
 		// input device in canvas coordinates
+
+		/*std::string axes_str;
+		int n_axes = gdk_device_get_n_axes(device);
+		for (int i=0; i < n_axes; i++)
+		{
+			axes_str += etl::strprintf(" %f", event->motion.axes[i]);
+		}
+		synfig::warning("axes info: %s", axes_str.c_str());*/
+		//for(...) axesstr += etl::strprintf(" %f", event->motion.axes[i])
 
 		double x = 0.0, y = 0.0, p = 0.0;
 		int ox = 0, oy = 0;
@@ -1667,6 +1623,30 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 			x -= ox; else x = event->motion.x;
 		if (gdk_device_get_axis(device, event->motion.axes, GDK_AXIS_Y, &y))
 			y -= oy; else y = event->motion.y;
+
+		// Make sure we recognize the device
+		if(curr_input_device)
+		{
+			if(curr_input_device!=device)
+			{
+				assert(device);
+				curr_input_device=device;
+				//synfig::error("device changed: %s", gdk_device_get_name(device));
+				signal_input_device_changed()(curr_input_device);
+			}
+		}
+		else
+		if(device)
+		{
+			curr_input_device=device;
+			//synfig::error("device set: %s", gdk_device_get_name(device));
+			signal_input_device_changed()(curr_input_device);
+		}
+
+		assert(curr_input_device);
+
+
+		//synfig::warning("coord (%3.f, %3.f) \t motion (%3.f, %3.f) / %s / axes(%d)", x, y, event->motion.x, event->motion.y, gdk_device_get_name(device), gdk_device_get_n_axes(device));
 		if (gdk_device_get_axis(device, event->motion.axes, GDK_AXIS_PRESSURE, &p))
 			p = std::max(0.0, (p - 0.04)/(1.0 - 0.04)); else p = 1.0;
 
@@ -1686,6 +1666,26 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 		modifier = Gdk::ModifierType(event->button.state);
 		drawing_area->grab_focus();
 
+		// Calculate the position of the
+		// input device in canvas coordinates
+		// and the buttons
+
+		double x = 0.0, y = 0.0, p = 0.0;
+		int ox = 0, oy = 0;
+		#ifndef _WIN32
+		Gtk::Container *toplevel = drawing_frame->get_toplevel();
+		if (toplevel) drawing_frame->translate_coordinates(*toplevel, 0, 0, ox, oy);
+		#endif
+
+		if (gdk_device_get_axis(device, event->button.axes, GDK_AXIS_X, &x))
+			x -= ox; else x = event->button.x;
+		if (gdk_device_get_axis(device, event->button.axes, GDK_AXIS_Y, &y))
+			y -= oy; else y = event->button.y;
+		
+		//synfig::warning("coord2 (%3.f, %3.f) \t motion (%3.f, %3.f) / %s / axes(%d)", x, y, event->button.x, event->button.y, gdk_device_get_name(device), gdk_device_get_n_axes(device));
+		if (gdk_device_get_axis(device, event->button.axes, GDK_AXIS_PRESSURE, &p))
+			p = std::max(0.0, (p - 0.04)/(1.0 - 0.04)); else p = 1.0;
+
 		// Make sure we recognize the device
 		if(curr_input_device)
 		{
@@ -1704,24 +1704,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 		}
 
 		assert(curr_input_device);
-
-		// Calculate the position of the
-		// input device in canvas coordinates
-		// and the buttons
-
-		double x = 0.0, y = 0.0, p = 0.0;
-		int ox = 0, oy = 0;
-		#ifndef _WIN32
-		Gtk::Container *toplevel = drawing_frame->get_toplevel();
-		if (toplevel) drawing_frame->translate_coordinates(*toplevel, 0, 0, ox, oy);
-		#endif
-
-		if (gdk_device_get_axis(device, event->motion.axes, GDK_AXIS_X, &x))
-			x -= ox; else x = event->motion.x;
-		if (gdk_device_get_axis(device, event->motion.axes, GDK_AXIS_Y, &y))
-			y -= oy; else y = event->motion.y;
-		if (gdk_device_get_axis(device, event->motion.axes, GDK_AXIS_PRESSURE, &p))
-			p = std::max(0.0, (p - 0.04)/(1.0 - 0.04)); else p = 1.0;
+			
 
 		if(std::isnan(x) || std::isnan(y) || std::isnan(p))
 			return false;
@@ -1916,6 +1899,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 						return true;
 					}
 				}
+
 				// All else fails, try making a selection box
 				dragging=DRAG_BOX;
 				curr_point=drag_point=mouse_pos;
@@ -1934,11 +1918,16 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 			if(bezier)
 				bezier->signal_user_click(1)(bezier_click_pos);
 
-			if(canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MOUSE_BUTTON_DOWN,BUTTON_MIDDLE,mouse_pos,pressure,modifier))==Smach::RESULT_OK)
+			if(canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MOUSE_BUTTON_DOWN,BUTTON_MIDDLE,mouse_pos,pressure,modifier))==Smach::RESULT_OK) {
+				dragging = (modifier & GDK_CONTROL_MASK) ? DRAG_ZOOM_WINDOW
+					     : (modifier & GDK_SHIFT_MASK)   ? DRAG_ROTATE_WINDOW
+						 : DRAG_WINDOW;
 
-			dragging=DRAG_WINDOW;
-			drag_point=mouse_pos;
-			signal_user_click(1)(mouse_pos);
+				drag_point = (modifier & GDK_CONTROL_MASK) ? synfig::Point(event->motion.x, event->motion.y) :
+							mouse_pos;
+
+				signal_user_click(1)(mouse_pos);
+			}
 
 			break;
 		}
@@ -2100,7 +2089,10 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 
 		if(dragging == DRAG_WINDOW)
 			set_focus_point(get_focus_point() + mouse_pos-drag_point);
-		else if ((event->motion.state & GDK_BUTTON1_MASK) &&
+		else if(dragging == DRAG_ZOOM_WINDOW) {
+			set_zoom(get_zoom() * (1.0 + (drag_point[1] - event->motion.y) / 100.0));
+			drag_point = synfig::Point(event->motion.x, event->motion.y);
+		} else if ((event->motion.state & GDK_BUTTON1_MASK) &&
 				canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MOUSE_BUTTON_DRAG, BUTTON_LEFT,
 																  mouse_pos,pressure,modifier)) == Smach::RESULT_ACCEPT)
 			return true;
@@ -2761,6 +2753,17 @@ WorkArea::done_rendering()
 */
 }
 
+String
+WorkArea::get_renderer() const
+{
+	if (get_low_resolution_flag())
+	{
+		String renderer = etl::strprintf("software-low%d", get_low_res_pixel_size());
+		if (synfig::rendering::Renderer::get_renderers().count(renderer))
+			return renderer;
+	}
+	return App::workarea_renderer;
+}
 
 void
 WorkArea::set_quality(int x)
@@ -2883,17 +2886,12 @@ studio::WorkArea::async_update_preview()
 	// Create the render target
 	handle<Target> target;
 
-	// if we have lots of pixels to render and the tile renderer isn't disabled, use it
-	int div;
-	div = low_resolution ? low_res_pixel_size : 1;
-
 	// do a tile render
 	handle<WorkAreaTarget> trgt(new class WorkAreaTarget(this,w,h,2048,2048,false));
 
 	trgt->set_rend_desc(&desc);
 	trgt->set_onion_skin(get_onion_skin(), onion_skins);
-	//trgt->set_allow_multithreading(true);
-	trgt->set_engine(App::workarea_renderer);
+	trgt->set_engine(get_renderer());
 	target=trgt;
 
 	// We can rest assured that our time has already
@@ -3014,8 +3012,7 @@ again:
 	// Create the render target
 	handle<WorkAreaTarget> target = new WorkAreaTarget(this,w,h,2048,2048,true);
 	target->set_rend_desc(&desc);
-	//target->set_allow_multithreading(false);
-	target->set_engine(App::workarea_renderer);
+	target->set_engine(get_renderer());
 
 	// We can rest assured that our time has already
 	// been set, so there is no need to have to

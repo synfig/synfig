@@ -130,9 +130,8 @@ void Dialog_Preview::close_window_handler()
 //dialog_previewoptions stuff
 Dialog_PreviewOptions::Dialog_PreviewOptions()
 :Dialog(_("Preview Options")),
-adj_zoom(Gtk::Adjustment::create(1.0,0.1,5.0,0.1,0.2)),
+adj_zoom(Gtk::Adjustment::create(0.5,0.1,5.0,0.1,0.2)),
 adj_fps(Gtk::Adjustment::create(12,1,120,1,5)),
-check_use_cairo(_("Use _Cairo render"), false),
 check_overbegin(_("_Begin time"),false),
 check_overend(_("_End time"),false),
 settings(this,"prevoptions")
@@ -179,10 +178,6 @@ settings(this,"prevoptions")
 	fpsSpinner->set_alignment(1);
 	generalTable->attach(*fpsLabel, 0, 1, 1, 2, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
 	generalTable->attach(*fpsSpinner, 1, 2, 1, 2, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-
-	check_use_cairo.set_alignment(0, 0.5);
-	check_use_cairo.set_use_underline(TRUE);
-	generalTable->attach(check_use_cairo, 0, 1, 2, 3, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
 
 	Gtk::Frame *timeFrame = manage(new Gtk::Frame(_("Time settings")));
 	timeFrame->set_shadow_type(Gtk::SHADOW_NONE);
@@ -239,7 +234,6 @@ void Dialog_PreviewOptions::on_ok_pressed()
 	i.fps = get_fps();
 	i.overbegin = get_begin_override();
 	i.overend = get_end_override();
-	i.use_cairo = get_use_cairo();
 	if(i.overbegin) i.begintime = (float)get_begintime();
 	if(i.overend)	i.endtime = (float)get_endtime();
 

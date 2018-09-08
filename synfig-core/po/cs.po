@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Synfig UI\n"
 "Report-Msgid-Bugs-To: https://github.com/synfig/synfig/issues\n"
-"POT-Creation-Date: 2016-12-21 13:11+0700\n"
-"PO-Revision-Date: 2015-12-25 06:36+0000\n"
+"POT-Creation-Date: 2016-06-05 14:00+0700\n"
+"PO-Revision-Date: 2017-09-19 14:00+0000\n"
 "Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
 "Language-Team: Czech (http://www.transifex.com/morevnaproject/synfig/"
 "language/cs/)\n"
@@ -18,7 +18,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"Language: cs\n"
+"Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:73
 #: src/modules/lyr_freetype/lyr_freetype.cpp:585
@@ -1825,7 +1826,7 @@ msgstr ""
 #: src/modules/mod_noise/main.cpp:69
 #: src/modules/mod_noise/valuenode_random.cpp:170
 msgid "Random"
-msgstr ""
+msgstr "Náhodný"
 
 #: src/modules/mod_noise/noise.cpp:61
 msgid "Noise Gradient"

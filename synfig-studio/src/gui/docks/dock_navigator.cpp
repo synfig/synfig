@@ -265,7 +265,7 @@ bool studio::Widget_NavView::on_drawto_draw(const Cairo::RefPtr<Cairo::Context> 
 		float xaxis = 0, yaxis = 0;
 
 		int canvw = get_canvas_view()->get_canvas()->rend_desc().get_w();
-		int w, h;
+		int w=0, h=0;
 	
 		float pw = get_canvas_view()->get_canvas()->rend_desc().get_pw();
 		float ph = get_canvas_view()->get_canvas()->rend_desc().get_ph();

@@ -44,10 +44,11 @@ int generic_pen_test(int w, int h)
 {
 	printf("generic_pen(w:%d,h:%d): ",w,h);
 
-	auto_ptr<float> data(new float[w*h]);
+	//auto_ptr<float> data(new float[w*h]);
+	unique_ptr<float> data(new float[w*h]);
 	if(!data.get())
 	{
-		printf("Um..... malloc failure on line %d of "__FILE__"...\n",__LINE__);
+		printf("Um..... malloc failure on line %d of " __FILE__ "...\n", __LINE__);
 		abort();
 	}
 
@@ -56,19 +57,19 @@ int generic_pen_test(int w, int h)
 
 	if(!pen)
 	{
-		printf("FAILURE! "__FILE__"@%d: On pen bool test\n",__LINE__);
+		printf("FAILURE! " __FILE__ "@%d: On pen bool test\n", __LINE__);
 		return 1;
 	}
 
 	if(&pen.x()[2]!=&pen[0][2])
 	{
-		printf("FAILURE! "__FILE__"@%d: On request for horizontal iterator\n",__LINE__);
+		printf("FAILURE! " __FILE__ "@%d: On request for horizontal iterator\n", __LINE__);
 		return 1;
 	}
 
 	if(&pen.y()[2]!=&pen[2][0])
 	{
-		printf("FAILURE! "__FILE__"@%d: On request for vertical iterator\n",__LINE__);
+		printf("FAILURE! " __FILE__ "@%d: On request for vertical iterator\n", __LINE__);
 		return 1;
 	}
 
@@ -77,7 +78,7 @@ int generic_pen_test(int w, int h)
 
 	if(pen!=pen2)
 	{
-		printf("FAILURE! "__FILE__"@%d: On pen assignment or pen comparison\n",__LINE__);
+		printf("FAILURE! " __FILE__ "@%d: On pen assignment or pen comparison\n", __LINE__);
 		return 1;
 	}
 
@@ -86,31 +87,31 @@ int generic_pen_test(int w, int h)
 
 	if(diff.x!=w || diff.y!=h)
 	{
-		printf("FAILURE! "__FILE__"@%d: pen difference inconsistency ([%d,%d]!=[%d,%d])\n",__LINE__,diff.x,diff.y,w,h);
+		printf("FAILURE! " __FILE__ "@%d: pen difference inconsistency ([%d,%d]!=[%d,%d])\n", __LINE__, diff.x, diff.y, w, h);
 		return 1;
 	}
 
 	if(pen.end_x()-pen.x()!=w-1)
 	{
-		printf("FAILURE! "__FILE__"@%d: iterator_x inconsistency (%ld!=%d)\n",__LINE__,pen.end_x()-pen.x(),w);
+		printf("FAILURE! " __FILE__ "@%d: iterator_x inconsistency (%ld!=%d)\n", __LINE__, pen.end_x()-pen.x(), w);
 		return 1;
 	}
 
 	if(pen.end_y()-pen.y()!=h-1)
 	{
-		printf("FAILURE! "__FILE__"@%d: iterator_y inconsistency (%d!=%d)\n",__LINE__,pen.end_y()-pen.y(),h);
+		printf("FAILURE! " __FILE__ "@%d: iterator_y inconsistency (%d!=%d)\n", __LINE__, pen.end_y()-pen.y(), h);
 		return 1;
 	}
 
 	if(&pen.end_y()[-1]!=&pen.y()[(h-2)])
 	{
-		printf("FAILURE! "__FILE__"@%d: iterator_y inconsistency\n",__LINE__);
+		printf("FAILURE! " __FILE__ "@%d: iterator_y inconsistency\n", __LINE__);
 		return 1;
 	}
 
 	if(&pen.end_x()[-1]!=&pen.x()[(w-2)])
 	{
-		printf("FAILURE! "__FILE__"@%d: iterator_x inconsistency\n",__LINE__);
+		printf("FAILURE! " __FILE__ "@%d: iterator_x inconsistency\n", __LINE__);
 		return 1;
 	}
 
@@ -210,6 +211,7 @@ void emptyfunction(int v)
 {
 	static int stupid = 0;
 	stupid = v;
+	if (stupid == 0) return; // disable unused warning
 	//printf("Called... %d\n",v);
 }
 
@@ -221,11 +223,13 @@ int box_blur_test(void)
 
 	int w=25,h=25;
 
-	auto_ptr<boxblur_float> data(new boxblur_float[w*h]);
-	auto_ptr<boxblur_float> data2(new boxblur_float[w*h]);
+	unique_ptr<boxblur_float> data(new boxblur_float[w*h]);
+	unique_ptr<boxblur_float> data2(new boxblur_float[w*h]);
+	//auto_ptr<boxblur_float> data(new boxblur_float[w*h]);
+	//auto_ptr<boxblur_float> data2(new boxblur_float[w*h]);
 	if(!data.get())
 	{
-		printf("Um..... malloc failure on line %d of "__FILE__"...\n",__LINE__);
+		printf("Um..... malloc failure on line %d of " __FILE__ "...\n", __LINE__);
 		abort();
 	}
 
@@ -281,7 +285,7 @@ int box_blur_test(void)
 
 	if(bad_values)
 	{
-		printf("FAILURE! "__FILE__"@%d: blur result contained %d bad values\n",__LINE__,bad_values);
+		printf("FAILURE! " __FILE__ "@%d: blur result contained %d bad values\n", __LINE__, bad_values);
 		return 1;
 	}
 
@@ -415,7 +419,7 @@ int gaussian_blur_test(void)
 	auto_ptr<float> data(new float[w*h]);
 	if(!data.get())
 	{
-		printf("Um..... malloc failure on line %d of "__FILE__"...\n",__LINE__);
+		printf("Um..... malloc failure on line %d of " __FILE__ "...\n",__LINE__);
 		abort();
 	}
 
@@ -519,7 +523,7 @@ int gaussian_blur_test(void)
 
 	if(bad_values)
 	{
-		printf("FAILURE! "__FILE__"@%d: blur result contained bad values\n",__LINE__);
+		printf("FAILURE! " __FILE__ "@%d: blur result contained bad values\n",__LINE__);
 		return 1;
 	}
 #endif

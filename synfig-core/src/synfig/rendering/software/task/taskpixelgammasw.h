@@ -43,6 +43,8 @@ namespace rendering
 
 class TaskPixelGammaSW: public TaskPixelGamma, public TaskSW
 {
+private:
+	class Internal;
 public:
 	typedef etl::handle<TaskPixelGammaSW> Handle;
 	Task::Handle clone() const { return clone_pointer(this); }

@@ -145,7 +145,8 @@ DeviceTracker::save_preferences()
 				continue;
 
 			synfig_device->set_mode(InputDevice::Mode(gdk_device_get_mode(gdk_device)));
-			int n_axes = gdk_device_get_n_axes(gdk_device);
+			int n_axes = 0;
+			if (gdk_device_get_source (gdk_device) != GDK_SOURCE_KEYBOARD) n_axes = gdk_device_get_n_axes(gdk_device);
 			if (n_axes > 0) {
 				vector<synfigapp::InputDevice::AxisUse> axes(n_axes);
 				for(int j = 0; j < n_axes; ++j)

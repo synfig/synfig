@@ -1,12 +1,11 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file layergrouptreestore.cpp
-**	\brief Template File
-**
-**	$Id$
+**	\brief Layer set tree model
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2008 Chris Moore
+**	Copyright (c) 2017 caryoscelus
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -128,7 +127,7 @@ LayerGroupTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int 
 	if(column==model.child_layers.index())
 	{
 		Glib::Value<LayerList> x;
-		g_value_init(x.gobj(),x.value_type());
+		x.init(x.value_type());
 
 		if((bool)(*iter)[model.is_group])
 		{
@@ -143,13 +142,13 @@ LayerGroupTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int 
 			x.set(layer_list);
 		}
 
-		g_value_init(value.gobj(),x.value_type());
+		value.init(x.value_type());
 		value=x;
 	}
 	else if(column==model.all_layers.index())
 	{
 		Glib::Value<LayerList> x;
-		g_value_init(x.gobj(),x.value_type());
+		x.init(x.value_type());
 
 		if((bool)(*iter)[model.is_group])
 		{
@@ -170,8 +169,24 @@ LayerGroupTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int 
 			x.set(layer_list);
 		}
 
-		g_value_init(value.gobj(),x.value_type());
+		value.init(x.value_type());
 		value=x;
+	}
+	else if (column == model.z_depth.index())
+	{
+		Glib::Value<float> x;
+		x.init(x.value_type());
+		if ((bool)(*iter)[model.is_layer])
+		{
+			Layer::Handle layer = (Layer::Handle)(*iter)[model.layer];
+			x.set(layer->get_true_z_depth(canvas_interface()->get_time()));
+		}
+		else
+		{
+			x.set(0.0);
+		}
+		value.init(x.value_type());
+		value = x;
 	}
 	else if(column==model.group_name.index())
 	{
@@ -184,9 +199,9 @@ LayerGroupTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int 
 		if(iter->parent())
 			return get_value_vfunc(iter->parent(),model.group_name.index(),value);
 		Glib::Value<Glib::ustring> x;
-		g_value_init(x.gobj(),x.value_type());
+		x.init(x.value_type());
 		x.set(Glib::ustring());
-		g_value_init(value.gobj(),x.value_type());
+		value.init(x.value_type());
 		value=x;
 	}
 	else if(column==model.label.index())
@@ -194,7 +209,7 @@ LayerGroupTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int 
 		if((bool)(*iter)[model.is_group])
 		{
 			Glib::Value<Glib::ustring> x;
-			g_value_init(x.gobj(),x.value_type());
+			x.init(x.value_type());
 
 			Glib::ustring group_name((*iter)[model.group_name]);
 
@@ -204,8 +219,7 @@ LayerGroupTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int 
 
 			x.set(group_name);
 
-			g_value_init(value.gobj(),x.value_type());
-
+			value.init(x.value_type());
 			value=x;
 		}
 		else if((bool)(*iter)[model.is_layer])
@@ -215,12 +229,11 @@ LayerGroupTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int 
 			if(!layer)return;
 
 			Glib::Value<Glib::ustring> x;
-			g_value_init(x.gobj(),x.value_type());
+			x.init(x.value_type());
 
 			x.set(layer->get_non_empty_description());
 
-			g_value_init(value.gobj(),x.value_type());
-			//g_value_copy(x.gobj(),value.gobj());
+			value.init(x.value_type());
 			value=x;
 		}
 	}
@@ -232,13 +245,11 @@ LayerGroupTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int 
 		if(!layer)return;
 
 		Glib::Value<Glib::ustring> x;
-		g_value_init(x.gobj(),x.value_type());
-
+		x.init(x.value_type());
 
 		x.set(layer->get_local_name());
 
-		g_value_init(value.gobj(),x.value_type());
-		//g_value_copy(x.gobj(),value.gobj());
+		value.init(x.value_type());
 		value=x;
 	}
 	else
@@ -249,20 +260,18 @@ LayerGroupTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int 
 		if(!layer)return;
 
 		Glib::Value<Canvas::Handle> x;
-		g_value_init(x.gobj(),x.value_type());
-
+		x.init(x.value_type());
 
 		x.set(layer->get_canvas());
 
-		g_value_init(value.gobj(),x.value_type());
-		//g_value_copy(x.gobj(),value.gobj());
+		value.init(x.value_type());
 		value=x;
 	}
 	else
 	if(column==model.active.index())
 	{
 		Glib::Value<bool> x;
-		g_value_init(x.gobj(),x.value_type());
+		x.init(x.value_type());
 
 		if((bool)(*iter)[model.is_layer])
 		{
@@ -284,14 +293,14 @@ LayerGroupTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int 
 		else
 			x.set(false);
 
-		g_value_init(value.gobj(),x.value_type());
+		value.init(x.value_type());
 		g_value_copy(x.gobj(),value.gobj());
 	}
 	else
 	if(column==model.icon.index())
 	{
 		Glib::Value<Glib::RefPtr<Gdk::Pixbuf> > x;
-		g_value_init(x.gobj(),x.value_type());
+		x.init(x.value_type());
 
 		if((bool)(*iter)[model.is_layer])
 		{
@@ -303,7 +312,7 @@ LayerGroupTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int 
 		if((bool)(*iter)[model.is_group])
 			x.set(group_icon);
 
-		g_value_init(value.gobj(),x.value_type());
+		value.init(x.value_type());
 		g_value_copy(x.gobj(),value.gobj());
 	}
 	else
@@ -333,7 +342,7 @@ LayerGroupTreeStore::set_value_impl(const Gtk::TreeModel::iterator& iter, int co
 		if(column==model.label.index())
 		{
 			Glib::Value<Glib::ustring> x;
-			g_value_init(x.gobj(),model.label.type());
+			x.init(model.label.type());
 			g_value_copy(value.gobj(),x.gobj());
 
 			if((bool)(*iter)[model.is_layer])
@@ -412,7 +421,7 @@ LayerGroupTreeStore::set_value_impl(const Gtk::TreeModel::iterator& iter, int co
 		if(column==model.active.index())
 		{
 			Glib::Value<bool> x;
-			g_value_init(x.gobj(),model.active.type());
+			x.init(model.active.type());
 			g_value_copy(value.gobj(),x.gobj());
 
 			if((bool)(*iter)[model.is_layer])
@@ -733,6 +742,7 @@ LayerGroupTreeStore::rebuild()
 		throw;
 	}
 	rebuilding=false;
+	resort();
 	// synfig::info("LayerGroupTreeStore::rebuild() took %f seconds",float(timer()));
 }
 
@@ -740,6 +750,21 @@ void
 LayerGroupTreeStore::refresh()
 {
 	rebuild();
+}
+
+void
+LayerGroupTreeStore::resort()
+{
+	// For some reason Gtk doesn't seem to have a method that does just that and
+	// ignores calls to set_sort_column if sorting params are unchanged, so we
+	// have to call it twice
+	int sort_column;
+	Gtk::SortType sort_order;
+	if (get_sort_column_id(sort_column, sort_order)) {
+		Gtk::SortType reverse_order = sort_order == Gtk::SORT_DESCENDING ? Gtk::SORT_ASCENDING : Gtk::SORT_DESCENDING;
+		set_sort_column(sort_column, reverse_order);
+		set_sort_column(sort_column, sort_order);
+	}
 }
 
 void
@@ -853,6 +878,9 @@ LayerGroupTreeStore::on_group_pair_added(synfig::String group, etl::handle<synfi
 
 	Gtk::TreeRow layer_row(*(append(iter->children())));
 	set_row_layer(layer_row,layer);
+
+	resort();
+
 	on_activity();
 }
 
@@ -923,6 +951,7 @@ LayerGroupTreeStore::on_layer_new_description(synfig::Layer::Handle handle,synfi
 		else
 			//row[model.label]=layer->get_description();
 			row[model.tooltip]=layer->get_local_name();
+		resort();
 	}
 	else
 	{

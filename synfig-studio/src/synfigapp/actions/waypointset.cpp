@@ -182,7 +182,10 @@ Action::WaypointSet::perform()
 									oend = overwritten_waypoints.end();
 		for(; oi != oend; ++oi)
 		{
-			value_node->erase(*oi);
+			// possible earlier waypoints removed and added again, but for now
+			// we do not need to delete them, because we move them in rescaling function
+			// and that function cannot find waypoint to move
+			//value_node->erase(*oi);
 		}
 	}
 

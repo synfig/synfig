@@ -297,7 +297,7 @@ mksynfig()
 	pushd ${SYNFIG_REPO_DIR}/synfig-core
 	export CXXFLAGS="$CXXFLAGS -I${SYNFIG_PREFIX}/include/ImageMagick"
 	make clean || true
-    /bin/sh ./bootstrap.sh
+    	bash -x ./bootstrap.sh
 	if [[ ! $UNIVERSAL == 0 ]]; then
 	export DEPTRACK="--disable-dependency-tracking"
 	fi
@@ -669,7 +669,7 @@ fi
 VERSION=`get_version_release_string`
 
 pushd ${SYNFIG_REPO_DIR} >/dev/null
-if [[ WORKDIR_IS_REPO == 0 ]]; then
+if [[ $WORKDIR_IS_REPO == 0 ]]; then
 	git fetch
 	git reset --hard HEAD
 	SELECTEDREVISION=origin/master

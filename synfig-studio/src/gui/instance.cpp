@@ -57,6 +57,7 @@
 #include <synfig/savecanvas.h>
 #include <synfig/canvasfilenaming.h>
 #include <synfig/layers/layer_pastecanvas.h>
+#include <synfig/layers/layer_bitmap.h>
 #include <synfig/valuenode_registry.h>
 #include <synfig/valuenodes/valuenode_composite.h>
 #include <synfig/valuenodes/valuenode_duplicate.h>
@@ -93,7 +94,7 @@ int studio::Instance::instance_count_=0;
 
 /* === M E T H O D S ======================================================= */
 
-Instance::Instance(synfig::Canvas::Handle canvas, synfig::FileSystemTemporary::Handle container):
+Instance::Instance(synfig::Canvas::Handle canvas, synfig::FileSystem::Handle container):
 	synfigapp::Instance		(canvas, container),
 	canvas_tree_store_		(Gtk::TreeStore::create(canvas_tree_model)),
 	history_tree_store_		(HistoryTreeStore::create(this)),
@@ -107,14 +108,6 @@ Instance::Instance(synfig::Canvas::Handle canvas, synfig::FileSystemTemporary::H
 	signal_unsaved_status_changed().connect(sigc::hide(sigc::mem_fun(*this,&studio::Instance::update_all_titles)));
 	signal_undo_status().connect(sigc::mem_fun(*this,&studio::Instance::set_undo_status));
 	signal_redo_status().connect(sigc::mem_fun(*this,&studio::Instance::set_redo_status));
-
-	signal_saved().connect(
-		sigc::hide_return(
-			sigc::ptr_fun(
-				studio::AutoRecover::auto_backup
-			)
-		)
-	);
 
 	refresh_canvas_tree();
 }
@@ -135,7 +128,7 @@ Instance::get_visible_canvases()const
 }
 
 handle<Instance>
-Instance::create(synfig::Canvas::Handle canvas, synfig::FileSystemTemporary::Handle container)
+Instance::create(synfig::Canvas::Handle canvas, synfig::FileSystem::Handle container)
 {
 	// Construct a new instance
 	handle<Instance> instance(new Instance(canvas, container));
@@ -286,10 +279,32 @@ studio::Instance::save_as(const synfig::String &file_name)
 	if(synfigapp::Instance::save_as(file_name))
 	{
 		// after changing the filename, update the render settings with the new filename
-		list<handle<CanvasView> >::iterator iter;
-		for(iter=canvas_view_list().begin();iter!=canvas_view_list().end();iter++)
+		for(list<handle<CanvasView> >::iterator iter = canvas_view_list().begin(); iter!=canvas_view_list().end(); iter++)
 			(*iter)->render_settings.set_entry_filename();
 		App::add_recent_file(etl::handle<Instance>(this));
+
+		// check for unsaved layers (external bitmaps, etc)
+		std::vector<Layer::Handle> layers;
+		find_unsaved_layers(layers);
+		if (!layers.empty())
+		{
+			String message = _("Current canvas saved, but unable to save data for following layers:");
+			String details;
+			for(std::vector<Layer::Handle>::const_iterator i = layers.begin(); i != layers.end(); ++i)
+			{
+				details.append((*i)->get_description());
+				if ( Layer_Bitmap::Handle::cast_dynamic(*i)
+			  	  && (*i)->get_param_list().count("filename") )
+			  	{
+			  		ValueBase value = (*i)->get_param("filename");
+			  		if (value.same_type_as(String()))
+			  			details.append(" (" + value.get(String()) + ")");
+			  	}
+				details.append("\n");
+			}
+			App::dialog_message_1b("WARNING", message, "details", _("Close"), details);
+		}
+
 		return true;
 	}
 	return false;
@@ -313,19 +328,18 @@ studio::Instance::save()
 			return STATUS_CANCEL;
 	}
 
-	if (synfigapp::Instance::save())
+	if (!save_as(get_canvas()->get_file_name()))
 	{
-		App::add_recent_file(etl::handle<Instance>(this));
-		return STATUS_OK;
+		string msg(strprintf(_("Unable to save to '%s'"), get_file_name().c_str()));
+		App::dialog_message_1b(
+				"ERROR",
+				msg.c_str(),
+				"details",
+				_("Close"));
+		return STATUS_ERROR;
 	}
-	string msg(strprintf(_("Unable to save to '%s'"), get_file_name().c_str()));
-	App::dialog_message_1b(
-			"ERROR",
-			msg.c_str(),
-			"details",
-			_("Close"));
 
-	return STATUS_ERROR;
+	return STATUS_OK;
 }
 
 // the filename will be set to "Synfig Animation 1" or some such when first created
@@ -501,9 +515,6 @@ Instance::close()
 	// Make sure we aren't selected as the current instance
 	if(studio::App::get_selected_instance()==this)
 		studio::App::set_selected_instance(0);
-
-	// Turn-off/clean-up auto recovery
-	studio::App::auto_recover->clear_backup(get_canvas());
 
 	// Remove us from the active instance list
 	std::list<etl::handle<studio::Instance> >::iterator iter;

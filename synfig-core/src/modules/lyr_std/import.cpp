@@ -110,6 +110,12 @@ Import::set_param(const String & param, const ValueBase &value)
 			return true;
 		}
 
+		if (is_surface_modified())
+		{
+			error("Unable to load new file, already opened file is not saved");
+			return false;
+		}
+
 		String filename = value.get(String());
 		String fixed_filename = filename;
 
@@ -131,6 +137,7 @@ Import::set_param(const String & param, const ValueBase &value)
 		String independent_filename = CanvasFileNaming::make_canvas_independent_filename(get_canvas()->get_file_name(), full_filename);
 
 		// If we are already loaded, don't reload
+		// here we need something to force reload if file is changed
 		if(this->independent_filename==independent_filename && importer)
 		{
 			param_filename.set(filename);
@@ -169,7 +176,7 @@ Import::set_param(const String & param, const ValueBase &value)
 		return true;
 	}
 	IMPORT_VALUE_PLUS_END
-	} catch(...) { set_amount(0); return false; }
+	} catch(...) { return false; }
 
 	return Layer_Bitmap::set_param(param,value);
 }

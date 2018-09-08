@@ -1,5 +1,13 @@
               synfigstudio releases
 
+ 1.2.2 (git tag "1.2.2") - Bugfix release.
+ 
+  * Make UI more compact (issue #348). Thanks to Ivan Mahonin.
+  * Auto-recovery now works again (issue #363). Thanks to Ivan Mahonin.
+  * Fix Low-Res rendering mode (issue #401). Thanks to Ivan Mahonin.
+  * Allow to zoom canvas by holding Ctrl and middle mouse button. Thanks to Alyssa Rosenzweig.
+  * ...
+
  1.2.1 (git tag "1.2.1") - September 11, 2017 - Bugfix release.
 
   * Basic support for CMake build system. Thanks to Caryoscelus.

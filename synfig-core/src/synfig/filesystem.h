@@ -185,6 +185,34 @@ namespace synfig
 		static std::istream& safe_get_line(std::istream& is, String& t);
 	};
 
+	//! Always empty filesystem (dummy)
+	class FileSystemEmpty : public FileSystem
+	{
+	public:
+		typedef etl::handle<FileSystemEmpty> Handle;
+
+		FileSystemEmpty();
+		virtual ~FileSystemEmpty();
+
+		virtual bool is_file(const String & /*filename*/)
+			{ return false; }
+		virtual bool is_directory(const String &filename)
+			{ return fix_slashes(filename).empty(); }
+
+		virtual bool directory_create(const String &dirname)
+			{ return is_directory(dirname); }
+		virtual bool directory_scan(const String &dirname, FileList &out_files)
+			{ out_files.clear(); return is_directory(dirname); }
+
+		virtual bool file_remove(const String &filename)
+			{ return !is_directory(filename); }
+		virtual bool file_rename(const String &from_filename, const String &to_filename)
+			{ return is_directory(from_filename) && is_directory(to_filename); }
+		virtual FileSystem::ReadStream::Handle get_read_stream(const String &/*filename*/)
+			{ return ReadStream::Handle(); }
+		virtual FileSystem::WriteStream::Handle get_write_stream(const String &/*filename*/)
+			{ return WriteStream::Handle(); }
+	};
 }
 
 /* === E N D =============================================================== */

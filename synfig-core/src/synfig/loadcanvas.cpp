@@ -2812,7 +2812,7 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 		layer->set_exclude_from_rendering(element->get_attribute("exclude_from_rendering")->get_value()=="false"?false:true);
 
 	// Load old groups
-	etl::handle<Layer_PasteCanvas> layer_pastecanvas = etl::handle<Layer_PasteCanvas>::cast_dynamic(layer);
+	etl::handle<Layer_PasteCanvas> layer_pastecanvas = etl::handle<Layer_Group>::cast_dynamic(layer);
 	bool old_pastecanvas = layer_pastecanvas && version=="0.1";
 	ValueNode::Handle origin_node;
 	ValueNode_Composite::Handle transformation_node;
@@ -2994,6 +2994,7 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 				ValueNode::Handle node = value_node ? value_node : ValueNode_Const::create(data,canvas);
 				if (param_name == "origin")
 				{
+					// ice0: check here 
 					if (!is_const) origin_const = false;
 					offset_node->set_link("lhs", node);
 				}

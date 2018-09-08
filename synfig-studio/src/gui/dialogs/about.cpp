@@ -76,7 +76,9 @@ using namespace studio;
 #	define IMAGE_EXT	"png"
 #endif
 
-#define stringify(x) #x
+//#define stringify(x) #x
+#define stringify(x) (x)
+//#define stringify(x) (std::to_string(x).c_str())
 
 /* === G L O B A L S ======================================================= */
 
@@ -91,10 +93,10 @@ About::About()
 	set_version(VERSION);
 	set_comments(_("2D vector animation studio"));
 
-	set_website("http://synfig.org/");
+	set_website("https://synfig.org/");
 	set_website_label(_("Visit the Synfig website"));
 
-	set_copyright(_("Copyright (c) 2001-2017\nSynfig developers & contributors"));
+	set_copyright(_("Copyright (c) 2001-2018\nSynfig developers & contributors"));
 	Glib::ustring license =
 		"This program is free software; you can redistribute it and/or modify "
 		"it under the terms of the GNU General Public License as published by "

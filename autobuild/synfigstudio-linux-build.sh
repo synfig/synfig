@@ -492,6 +492,8 @@ fi
 make -j$MAKE_THREADS
 make install
 
+sed -i "s|^includedir=.*$|includedir=$SYNFIG_REPO_DIR\/ETL|" ${PREFIX}/lib/pkgconfig/ETL.pc
+
 popd
 }
 
@@ -503,7 +505,9 @@ else
 	pushd ${SYNFIG_REPO_DIR}/synfig-core
 fi
 
-( [[ $MODE == 'package' ]] || [[ $MODE == 'full' ]] ) && make clean || true
+if [[ $MODE == 'package' ]] || [[ $MODE == 'full' ]]; then
+    make clean || true
+fi
 
 if [[ $MODE != 'quick' ]]; then
     /bin/sh ./bootstrap.sh
@@ -552,7 +556,9 @@ else
 	pushd ${SYNFIG_REPO_DIR}/synfig-studio
 fi
 
-( [[ $MODE == 'package' ]] || [[ $MODE == 'full' ]] ) && make clean || true
+if [[ $MODE == 'package' ]] || [[ $MODE == 'full' ]]; then
+    make clean || true
+fi
 
 if [[ $MODE == 'package' ]]; then
 	CONFIGURE_PACKAGE_OPTIONS='--disable-update-mimedb'
@@ -1170,7 +1176,7 @@ mk()
 	get_dependencies
 	initialize 
 	
-	if [[ WORKDIR_IS_REPO == 0 ]]; then
+	if [[ $WORKDIR_IS_REPO == 0 ]]; then
 		SYNFIG_REPO_DIR=`pwd`/synfig.git/
 		git clone git://github.com/synfig/synfig.git ${SYNFIG_REPO_DIR}
 	fi
@@ -1280,7 +1286,9 @@ mkpackage()
 			echo "Acquire::http::Proxy \"$http_proxy\";" > $PACKAGES_BUILDROOT.$ARCH/etc/apt/apt.conf
 		fi
 		#fetch sources to cache
-		[ -d $PACKAGES_BUILDROOT.$ARCH/source/synfig.git ] && rm -rf $PACKAGES_BUILDROOT.$ARCH/source/synfig.git || true
+		if [ -d $PACKAGES_BUILDROOT.$ARCH/source/synfig.git ]; then
+		    rm -rf $PACKAGES_BUILDROOT.$ARCH/source/synfig.git || true
+		fi
 		if [ -d $PACKAGES_BUILDROOT/synfig.git ]; then
 			if [[ $WORKDIR_IS_REPO == 1 ]]; then
 				rm -rf "$PACKAGES_BUILDROOT/synfig.git"

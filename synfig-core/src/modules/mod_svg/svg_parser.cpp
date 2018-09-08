@@ -1801,6 +1801,10 @@ Svg_parser::get_tokens_path(String path){ //mini path lexico-parser
 					else if(a=='-' || a=='.' || a=='e' || a=='E' || isdigit (a)){ e=18;}
 					else if(a==','){ e=19; i++;}
 					else if(a==' '){i++;}
+					else {
+						synfig::warning("unknown token in SVG path '%c'", a);
+						i++;
+					}
 					break;
 			//relative
 			case 1 : tokens.push_back("m"); e=0; break;//move

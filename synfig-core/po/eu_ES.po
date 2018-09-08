@@ -3,13 +3,13 @@
 # This file is distributed under the same license as the Synfig Core package.
 #
 # Translators:
-# Alexander Gabilondo <alexgabi@openmailbox.org>, 2013
+# Alexander Gabilondo <alexgabilondo@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: Synfig UI\n"
 "Report-Msgid-Bugs-To: https://github.com/synfig/synfig/issues\n"
-"POT-Creation-Date: 2016-12-21 13:11+0700\n"
-"PO-Revision-Date: 2015-12-25 06:36+0000\n"
+"POT-Creation-Date: 2016-06-05 14:00+0700\n"
+"PO-Revision-Date: 2017-09-19 19:00+0000\n"
 "Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
 "Language-Team: Basque (Spain) (http://www.transifex.com/morevnaproject/"
 "synfig/language/eu_ES/)\n"

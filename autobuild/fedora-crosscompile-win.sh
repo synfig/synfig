@@ -5,7 +5,7 @@ set -e
 export SCRIPTPATH=$(cd `dirname "$0"`; pwd)
 
 if [ -z $ARCH ]; then
-	export ARCH="32"
+	export ARCH="64"
 fi
 
 if [ -z $THREADS ]; then
@@ -418,11 +418,11 @@ fi
 
 mkffmpeg()
 {
-    export FFMPEG_VERSION=2.5.2
+    export FFMPEG_VERSION=3.4.2
     if ! pkg-config libswscale --exact-version=${FFMPEG_VERSION}  --print-errors; then
         cd $CACHEDIR
-        [ -e ffmpeg-${FFMPEG_VERSION}-win${ARCH}-dev.7z ] || wget http://ffmpeg.zeranoe.com/builds/win${ARCH}/dev/ffmpeg-${FFMPEG_VERSION}-win${ARCH}-dev.7z
-        [ -e ffmpeg-${FFMPEG_VERSION}-win${ARCH}-shared.7z ] || wget http://ffmpeg.zeranoe.com/builds/win${ARCH}/shared/ffmpeg-${FFMPEG_VERSION}-win${ARCH}-shared.7z
+        [ -e ffmpeg-${FFMPEG_VERSION}-win${ARCH}-dev.zip ] || wget http://ffmpeg.zeranoe.com/builds/win${ARCH}/dev/ffmpeg-${FFMPEG_VERSION}-win${ARCH}-dev.zip
+        [ -e ffmpeg-${FFMPEG_VERSION}-win${ARCH}-shared.zip ] || wget http://ffmpeg.zeranoe.com/builds/win${ARCH}/shared/ffmpeg-${FFMPEG_VERSION}-win${ARCH}-shared.zip
         [ ! -d ffmpeg ] || rm -rf ffmpeg
         cd $SRCPREFIX
         mkdir -p ffmpeg
@@ -436,10 +436,10 @@ mkffmpeg()
 	fi
 		
 	
-        $SZIP_BINARY x -y $CACHEDIR/ffmpeg-${FFMPEG_VERSION}-win${ARCH}-dev.7z
+        $SZIP_BINARY x -y $CACHEDIR/ffmpeg-${FFMPEG_VERSION}-win${ARCH}-dev.zip
         cp -rf ffmpeg-${FFMPEG_VERSION}-win${ARCH}-dev/include/* ${PREFIX}/include/
         cp -rf ffmpeg-${FFMPEG_VERSION}-win${ARCH}-dev/lib/* ${PREFIX}/lib/
-        $SZIP_BINARY x -y $CACHEDIR/ffmpeg-${FFMPEG_VERSION}-win${ARCH}-shared.7z
+        $SZIP_BINARY x -y $CACHEDIR/ffmpeg-${FFMPEG_VERSION}-win${ARCH}-shared.zip
         cp -rf ffmpeg-${FFMPEG_VERSION}-win${ARCH}-shared/bin/ffmpeg.exe ${PREFIX}/bin
         cp -rf ffmpeg-${FFMPEG_VERSION}-win${ARCH}-shared/bin/*.dll ${PREFIX}/bin
         mkdir -p ${PREFIX}/share/ffmpeg/presets/ || true
@@ -471,8 +471,9 @@ mklibvorbis
 mksox
 	
 PKG_NAME=mlt
-PKG_VERSION=0.9.6
+PKG_VERSION=6.4.0
 TAREXT=gz
+# version 6.6.0 build failed, TODO
 
 if ! pkg-config ${PKG_NAME}\+\+ --exact-version=${PKG_VERSION}  --print-errors; then
 
@@ -484,16 +485,26 @@ if ! pkg-config ${PKG_NAME}\+\+ --exact-version=${PKG_VERSION}  --print-errors; 
     #    tar -xzf ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
     #fi
     #cd ${PKG_NAME}-${PKG_VERSION}
-    cd $SRCPREFIX
-    if [ ! -d ${PKG_NAME} ]; then
-        git clone https://github.com/morevnaproject/mlt
+
+    [ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget https://github.com/mltframework/mlt/releases/download/v${PKG_VERSION}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    if [ ! -d ${PKG_NAME}-${PKG_VERSION} ]; then
+        tar -xzf ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
     fi
-    cd mlt
-    git reset --hard
-    git checkout master
-    git reset --hard
-    git pull
-    git clean -f -d
+    cd ${PKG_NAME}-${PKG_VERSION}
+
+    
+    #https://github.com/mltframework/mlt/releases/download/v6.8.0/mlt-6.8.0.tar.gz
+    
+    #cd $SRCPREFIX
+    #if [ ! -d ${PKG_NAME} ]; then
+    #    git clone https://github.com/morevnaproject/mlt
+    #fi
+    #cd mlt
+    #git reset --hard
+    #git checkout master
+    #git reset --hard
+    #git pull
+    #git clean -f -d
     [ ! -e config.cache ] || rm config.cache
     rm -rf ${PREFIX}/lib/libmlt* || true
     rm -rf ${PREFIX}/bin/libmlt* || true
@@ -584,8 +595,10 @@ make clean || true
 [ ! -e config.cache ] || rm config.cache
 /bin/sh ./bootstrap.sh
 cp ./configure ./configure.real
-echo -e "#/bin/sh \n export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib/pkgconfig/:$PKG_CONFIG_PATH \n ./configure.real \$@  \n " > ./configure
+echo -e "#!/bin/sh \n export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib/pkgconfig/:$PKG_CONFIG_PATH \n ./configure.real \$@  \n " > ./configure
 chmod +x ./configure
+#this need for debug version for now
+#export CXXFLAGS="-mbig-obj"
 ${TOOLCHAIN}-configure \
 --prefix=${PREFIX} \
 --exec-prefix=${PREFIX} \
@@ -613,6 +626,7 @@ make clean || true
 cp ./configure ./configure.real
 echo -e "#/bin/sh \n export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib/pkgconfig/:$PKG_CONFIG_PATH \n ./configure.real \$@  \n " > ./configure
 chmod +x ./configure
+#export CPPFLAGS="$CPPFLAGS -std=c++11"
 ${TOOLCHAIN}-configure \
 --prefix=${PREFIX} \
 --exec-prefix=${PREFIX} \

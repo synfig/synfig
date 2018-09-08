@@ -686,14 +686,16 @@ CanvasInterface::import(const synfig::String &filename, synfig::String &errors, 
 	Action::PassiveGrouper group(get_instance().get(),_("Import"));
 
 	synfig::info("Attempting to import " + filename);
-
-	if (filename_extension(filename) == "")
+	
+	String ext(filename_extension(filename));
+	//if (filename_extension(filename) == "")
+	if (ext == "")
 	{
 		get_ui_interface()->error(_("File name must have an extension!"));
 		return false;
 	}
 
-	String ext(filename_extension(filename));
+	
 	if (ext.size()) ext = ext.substr(1); // skip initial '.'
 	std::transform(ext.begin(),ext.end(),ext.begin(),&::tolower);
 
@@ -839,6 +841,7 @@ CanvasInterface::import(const synfig::String &filename, synfig::String &errors, 
 			throw int();
 		w=layer->get_param("_width").get(int());
 		h=layer->get_param("_height").get(int());
+		layer->monitor(filename);
 		if(w&&h)
 		{
 			Vector x, size = get_canvas()->rend_desc().get_br()-get_canvas()->rend_desc().get_tl();
@@ -885,6 +888,17 @@ CanvasInterface::import(const synfig::String &filename, synfig::String &errors, 
 		layer->set_description(etl::basename(filename));
 		signal_layer_new_description()(layer,etl::basename(filename));
 
+		//get_instance()->set_selected_layer(get_canvas(), layer);
+		//get_instance()->set_selected_layer(layer, get_canvas());
+
+		//get_instance()->get_canvas_view(get_canvas());
+
+		//get_selection_manager()->set_selected_layer(layer);
+
+		//etl::handle<synfig::Canvas> canvas = get_canvas();
+		//etl::handle<CanvasView> view = get_instance()->find_canvas_view(canvas);
+		//view->layer_tree->select_layer(layer);
+
 		// add imported layer into switch
 		Action::Handle action(Action::create("LayerEncapsulateSwitch"));
 		assert(action);
@@ -897,6 +911,11 @@ CanvasInterface::import(const synfig::String &filename, synfig::String &errors, 
 			{ get_ui_interface()->error(_("Action Not Ready")); return false; }
 		if(!get_instance()->perform_action(action))
 			{ get_ui_interface()->error(_("Action Failed.")); return false; }
+
+		Layer::LooseHandle l = layer->get_parent_paste_canvas_layer(); // get parent layer, because image is incapsulated into action switch
+		
+		get_selection_manager()->clear_selected_layers();
+		get_selection_manager()->set_selected_layer(l);
 
 		return true;
 	}

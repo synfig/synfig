@@ -6,6 +6,7 @@
 # Adam Humienny <adam.humienny@gmail.com>, 2014-2015,2017
 # Adam Humienny <adam.humienny@gmail.com>, 2014
 # darkhog <rave002@o2.pl>, 2011
+# Dorota Nicewicz-Modrzewska <dorotanm@gmail.com>, 2018
 # kajetan <przemw@gmail.com>, 2015
 # szamanx01 <szamanx01@gmail.com>, 2012-2013
 # Piotr Woznicki <wozniax1@wp.pl>, 2013
@@ -19,14 +20,14 @@ msgstr ""
 "Project-Id-Version: Synfig UI\n"
 "Report-Msgid-Bugs-To: https://github.com/synfig/synfig/issues\n"
 "POT-Creation-Date: 2016-06-05 14:00+0700\n"
-"PO-Revision-Date: 2017-02-19 17:45+0000\n"
-"Last-Translator: Adam Humienny <adam.humienny@gmail.com>\n"
+"PO-Revision-Date: 2018-04-27 12:56+0000\n"
+"Last-Translator: Dorota Nicewicz-Modrzewska <dorotanm@gmail.com>\n"
 "Language-Team: Polish (Poland) (http://www.transifex.com/morevnaproject/synfig/language/pl_PL/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: pl_PL\n"
-"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>=14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:73
 #: src/modules/lyr_freetype/lyr_freetype.cpp:585
@@ -2354,7 +2355,7 @@ msgstr "Grupa treści"
 
 #: src/synfig/layers/layer_pastecanvas.cpp:148
 msgid "Multiplier to speed up, slow down, freeze, or reverse time"
-msgstr ""
+msgstr "Współczynnik dla przyspieszenia, spowolnienia, zastygnięcia lub odwrócenia czasu"
 
 #: src/synfig/layers/layer_pastecanvas.cpp:153
 msgid "Time Offset to apply to the context"
@@ -2469,7 +2470,7 @@ msgstr "Poziome podziały"
 
 #: src/synfig/layers/layer_skeletondeformation.cpp:123
 msgid "Count of horizontal subdivisions of the transformation grid"
-msgstr ""
+msgstr "Ilość poziomych części siatki transformacji"
 
 #: src/synfig/layers/layer_skeletondeformation.cpp:127
 msgid "Vertical subdivisions"
@@ -2477,7 +2478,7 @@ msgstr "Pionowe podziały"
 
 #: src/synfig/layers/layer_skeletondeformation.cpp:128
 msgid "Count of vertical subdivisions of the transformation grid"
-msgstr ""
+msgstr "Ilość pionowych częsci siatki transformacji"
 
 #: src/synfig/layers/layer_solidcolor.cpp:60
 msgid "Solid Color"
@@ -4768,11 +4769,11 @@ msgstr ""
 
 #: src/synfig/valuenodes/valuenode_timedswap.cpp:259
 msgid "The value node returned when current time is before 'time' - 'length'"
-msgstr ""
+msgstr "Węzeł zwracany gdy bieżący czas jest mniejszy niż różnica 'czas' - 'długość'"
 
 #: src/synfig/valuenodes/valuenode_timedswap.cpp:264
 msgid "The value node returned when current time is after 'time'"
-msgstr ""
+msgstr "Węzeł zwracany kiedy bieżący czas jest poza parametrem 'czas'"
 
 #: src/synfig/valuenodes/valuenode_timedswap.cpp:269
 msgid "The time when the linear interpolation ends"
@@ -4782,7 +4783,7 @@ msgstr "Czas końca interpolacji liniowej"
 msgid ""
 "The length of time when the linear interpolation between 'Before' and "
 "'After' is made"
-msgstr ""
+msgstr "Długość czasu, w którym wykonywana jest interpolacja liniowa."
 
 #: src/synfig/valuenodes/valuenode_timeloop.cpp:176
 msgid "The value node to time loop"
@@ -4790,7 +4791,7 @@ msgstr "Wartość węzła w pętli czasu"
 
 #: src/synfig/valuenodes/valuenode_timeloop.cpp:181
 msgid "Start time of the loop for the value node Timeline"
-msgstr ""
+msgstr "Czas rozpoczęcia pętli dla węzła na Osi czasu"
 
 #: src/synfig/valuenodes/valuenode_timeloop.cpp:191
 msgid "Length of the loop"
@@ -4798,7 +4799,7 @@ msgstr "Długość pętli"
 
 #: src/synfig/valuenodes/valuenode_timestring.cpp:158
 msgid "The time that is converted to string"
-msgstr ""
+msgstr "Czas, który jest konwertowany na ciąg znaków"
 
 #: src/synfig/valuenodes/valuenode_twotone.cpp:155
 msgid "The start color of the gradient"
@@ -4838,7 +4839,7 @@ msgstr "Średnia ważona"
 #: src/synfig/valuenodes/valuenode_wplist.cpp:346
 #, c-format
 msgid "WidthPoint %03d"
-msgstr ""
+msgstr "Punkt Szerokości %03d"
 
 #: src/tool/main.cpp:104
 msgid "FATAL: Synfig Version Mismatch"
@@ -4894,11 +4895,11 @@ msgstr "Określ nazwę pliku wyjściowego"
 msgid ""
 "Output file sequence separator string (Use double quotes if you want to use "
 "spaces)"
-msgstr ""
+msgstr "Ciąg znaków separujący nazwy plików wynikowych (Użyj cudzysłowów jeśli chcesz użyć spacji)"
 
 #: src/tool/main.cpp:156
 msgid "Render the canvas with the given id instead of the root."
-msgstr ""
+msgstr "Renderuj kanwę o podanym Id zamiast głównej kanwy"
 
 #: src/tool/main.cpp:157
 msgid "Set the frame rate"
@@ -4934,7 +4935,7 @@ msgstr "Opcje warstwy przełączania"
 
 #: src/tool/main.cpp:169
 msgid "Output verbosity level"
-msgstr ""
+msgstr "Poziom ilości komunikatów"
 
 #: src/tool/main.cpp:170
 msgid "Quiet mode (No progress/time-remaining display)"
@@ -4946,7 +4947,7 @@ msgstr "Drukuj benchmarki"
 
 #: src/tool/main.cpp:172
 msgid "Extract alpha"
-msgstr ""
+msgstr "Pomiń alfę"
 
 #: src/tool/main.cpp:175
 msgid "Misc options"
@@ -5077,7 +5078,7 @@ msgstr "Nieznany cel dla \"%s\": %s"
 
 #: src/tool/joblistprocessor.cpp:179
 msgid "Setting the canvas on the target..."
-msgstr ""
+msgstr "Ustawianie kanwy docelowej..."
 
 #: src/tool/joblistprocessor.cpp:182
 msgid "Setting the quality of the target..."
@@ -5085,7 +5086,7 @@ msgstr "Ustawienie jakości celu..."
 
 #: src/tool/joblistprocessor.cpp:187
 msgid "Setting the alpha mode of the target..."
-msgstr ""
+msgstr "Ustawianie docelowego kanału alfa..."
 
 #: src/tool/joblistprocessor.cpp:229 src/tool/joblistprocessor.cpp:239
 msgid "Render Failure."
@@ -5109,7 +5110,7 @@ msgstr "Gotowe"
 
 #: src/tool/optionsprocessor.cpp:140
 msgid "Unrecognised canvas variable: "
-msgstr ""
+msgstr "Nierozpoznana zmienna kanwy:"
 
 #: src/tool/optionsprocessor.cpp:141
 msgid "Recognized variables are:"
@@ -5117,11 +5118,11 @@ msgstr "Rozpoznane zmienne:"
 
 #: src/tool/optionsprocessor.cpp:158
 msgid "verbosity set to "
-msgstr ""
+msgstr "Poziom ilości komunikatów ustawiono na"
 
 #: src/tool/optionsprocessor.cpp:178
 msgid "Threads set to "
-msgstr ""
+msgstr "Wątki ustawiono na"
 
 #: src/tool/optionsprocessor.cpp:257
 msgid "Layer Name: "
@@ -5196,7 +5197,7 @@ msgstr "Argument Gamma jest obecnie ignorowany"
 #: src/tool/optionsprocessor.cpp:429
 #, c-format
 msgid "Resolution set to %dx%d."
-msgstr ""
+msgstr "Rozdzielczość ustawiono na %dx%d."
 
 #: src/tool/optionsprocessor.cpp:446
 msgid "Both video codec and bitrate parameters are necessary."
@@ -5217,7 +5218,7 @@ msgstr "Docelowy bitrate ustawić na:"
 
 #: src/tool/optionsprocessor.cpp:488
 msgid "Output file sequence separator set to: '"
-msgstr ""
+msgstr "Separator nazw plików wynikowych ustawiono na: '"
 
 #: src/tool/optionsprocessor.cpp:532
 #, c-format
@@ -5241,14 +5242,14 @@ msgstr "Jakość ustawiona na"
 msgid ""
 "Unable to find canvas with ID \"%s\" in %s.\n"
 "Throwing out job..."
-msgstr ""
+msgstr "Nie można odnaleźć kanwy z ID  \"%s\" w %s.\nZadanie przerwane..."
 
 #: src/tool/optionsprocessor.cpp:591
 #, c-format
 msgid ""
 "Invalid canvas name \"%s\" in %s.\n"
 "Throwing out job..."
-msgstr ""
+msgstr "Niepoprawna nazwa kanwy \"%s\" w %s.\nZadanie przerwane..."
 
 #: src/tool/optionsprocessor.cpp:620
 msgid "Unable to append '"

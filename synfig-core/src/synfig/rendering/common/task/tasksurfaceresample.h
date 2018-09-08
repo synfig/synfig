@@ -51,11 +51,13 @@ public:
 	Color::value_type gamma;
 	Color::Interpolation interpolation;
 	bool antialiasing;
+	Vector supersample;
 
 	TaskSurfaceResample():
 		gamma(1.f),
 		interpolation(Color::INTERPOLATION_LINEAR),
-		antialiasing(false)
+		antialiasing(false),
+		supersample(1.0, 1.0)
 	{ }
 
 	Task::Handle clone() const { return clone_pointer(this); }

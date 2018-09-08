@@ -8,7 +8,7 @@
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **	Copyright (c) 2011-2013 Carlos López
-**	......... ... 2014 Ivan Mahonin
+**	......... ... 2014-2017 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -86,7 +86,8 @@ public:
 
 /* === M E T H O D S ======================================================= */
 
-Layer_PasteCanvas::Layer_PasteCanvas():
+Layer_PasteCanvas::Layer_PasteCanvas(Real amount, Color::BlendMethod blend_method):
+	Layer_Composite(amount, blend_method),
 	param_origin(Point()),
 	param_transformation(Transformation()),
 	param_time_dilation(Real(1)),
@@ -102,25 +103,25 @@ Layer_PasteCanvas::Layer_PasteCanvas():
 
 Layer_PasteCanvas::~Layer_PasteCanvas()
 {
-/*	if(canvas)
-		canvas->parent_set.erase(this);
+/*	if(sub_canvas)
+		sub_canvas->parent_set.erase(this);
 */
 
-	//if(canvas)DEBUGINFO(strprintf("%d",canvas->count()));
+	//if(sub_canvas)DEBUGINFO(strprintf("%d",sub_canvas->count()));
 
 	set_sub_canvas(0);
 
-	//if(canvas && (canvas->is_inline() || !get_canvas() || get_canvas()->get_root()!=canvas->get_root()))
+	//if(sub_canvas && (sub_canvas->is_inline() || !get_canvas() || get_canvas()->get_root()!=sub_canvas->get_root()))
 	//if(extra_reference)
-	//	canvas->unref();
+	//	sub_canvas->unref();
 }
 
 String
 Layer_PasteCanvas::get_local_name()const
 {
-	if(!canvas || canvas->is_inline()) return String();
-	if(canvas->get_root()==get_canvas()->get_root()) return canvas->get_id();
-	return canvas->get_file_name();
+	if(!sub_canvas || sub_canvas->is_inline()) return String();
+	if(sub_canvas->get_root()==get_canvas()->get_root()) return sub_canvas->get_id();
+	return sub_canvas->get_file_name();
 }
 
 Layer::Vocab
@@ -163,7 +164,7 @@ Layer_PasteCanvas::get_param_vocab()const
 		.set_local_name(_("Outline Grow"))
 		.set_description(_("Exponential value to grow children Outline layers width"))
 	);
-	if(canvas && !(canvas->is_inline()))
+	if(sub_canvas && !(sub_canvas->is_inline()))
 	{
 		ret.back().hidden();
 	}
@@ -208,10 +209,10 @@ Layer_PasteCanvas::set_param(const String & param, const ValueBase &value)
 
 	IMPORT_VALUE(param_children_lock);
 	IMPORT_VALUE_PLUS(param_outline_grow,
-		if (canvas)
+		if (sub_canvas)
 		{
 			Real sub_outline_grow = param_outline_grow.get(Real());
-			canvas->set_outline_grow(get_outline_grow_mark() + sub_outline_grow);
+			sub_canvas->set_outline_grow(get_outline_grow_mark() + sub_outline_grow);
 		}
 	);
 	return Layer_Composite::set_param(param,value);
@@ -219,40 +220,43 @@ Layer_PasteCanvas::set_param(const String & param, const ValueBase &value)
 
 void
 Layer_PasteCanvas::childs_changed()
-	{ on_childs_changed(); }
+{
+	if (get_canvas()) get_canvas()->signal_changed()();
+	on_childs_changed();
+}
 
 void
 Layer_PasteCanvas::set_sub_canvas(etl::handle<synfig::Canvas> x)
 {
-	if (canvas)
-		remove_child(canvas.get());
+	if (sub_canvas)
+		remove_child(sub_canvas.get());
 
-	// if(canvas && (canvas->is_inline() || !get_canvas() || get_canvas()->get_root()!=canvas->get_root()))
+	// if(sub_canvas && (sub_canvas->is_inline() || !get_canvas() || get_canvas()->get_root()!=sub_canvas->get_root()))
 	if (extra_reference)
-		canvas->unref();
+		sub_canvas->unref();
 
 	childs_changed_connection.disconnect();
 
-	if (canvas != x) signal_subcanvas_changed()();
+	if (sub_canvas != x) signal_subcanvas_changed()();
 
-	canvas=x;
+	sub_canvas=x;
 
-	if (canvas)
-		childs_changed_connection=canvas->signal_changed().connect(
+	if (sub_canvas)
+		childs_changed_connection=sub_canvas->signal_changed().connect(
 			sigc::mem_fun(*this, &Layer_PasteCanvas::childs_changed) );
 
-	if (canvas)
-		add_child(canvas.get());
+	if (sub_canvas)
+		add_child(sub_canvas.get());
 
-	if (canvas && (canvas->is_inline() || !get_canvas() || get_canvas()->get_root()!=canvas->get_root()))
+	if (sub_canvas && (sub_canvas->is_inline() || !get_canvas() || get_canvas()->get_root()!=sub_canvas->get_root()))
 	{
-		canvas->ref();
+		sub_canvas->ref();
 		extra_reference = true;
 	}
 	else
 		extra_reference = false;
 
-	if (canvas)
+	if (sub_canvas)
 		on_canvas_set();
 }
 
@@ -264,10 +268,10 @@ Layer_PasteCanvas::set_sub_canvas(etl::handle<synfig::Canvas> x)
 void
 Layer_PasteCanvas::update_renddesc()
 {
-	if(!get_canvas() || !canvas || !canvas->is_inline()) return;
+	if(!get_canvas() || !sub_canvas || !sub_canvas->is_inline()) return;
 
-	canvas->rend_desc()=get_canvas()->rend_desc();
-	for (IndependentContext iter = canvas->get_independent_context(); !iter->empty(); iter++)
+	sub_canvas->rend_desc()=get_canvas()->rend_desc();
+	for (IndependentContext iter = sub_canvas->get_independent_context(); !iter->empty(); iter++)
 	{
 		etl::handle<Layer_PasteCanvas> paste = etl::handle<Layer_PasteCanvas>::cast_dynamic(*iter);
 		if (paste) paste->update_renddesc();
@@ -278,9 +282,9 @@ Layer_PasteCanvas::update_renddesc()
 void
 Layer_PasteCanvas::on_canvas_set()
 {
-	if(get_canvas() && canvas && canvas->is_inline() && canvas->parent()!=get_canvas())
+	if(get_canvas() && sub_canvas && sub_canvas->is_inline() && sub_canvas->parent()!=get_canvas())
 	{
-		canvas->set_inline(get_canvas());
+		sub_canvas->set_inline(get_canvas());
 	}
 }
 
@@ -291,7 +295,7 @@ Layer_PasteCanvas::get_param(const String& param)const
 	EXPORT_VALUE(param_transformation);
 	if (param=="canvas")
 	{
-		synfig::ValueBase ret(canvas);
+		synfig::ValueBase ret(sub_canvas);
 		return ret;
 	}
 	EXPORT_VALUE(param_time_dilation);
@@ -305,30 +309,32 @@ Layer_PasteCanvas::get_param(const String& param)const
 void
 Layer_PasteCanvas::set_time_vfunc(IndependentContext context, Time time)const
 {
-	if (depth==MAX_DEPTH) return;
+	context.set_time(time);
+
+	if (!sub_canvas)
+		return;
+	if (depth == MAX_DEPTH)
+		return;
 	depth_counter counter(depth);
 
-	context.set_time(time);
-	if (canvas)
-	{
-		Real time_dilation=param_time_dilation.get(Real());
-		Time time_offset=param_time_offset.get(Time());
-		canvas->set_time(time*time_dilation + time_offset);
-	}
+	Real time_dilation = param_time_dilation.get(Real());
+	Time time_offset = param_time_offset.get(Time());
+	sub_canvas->set_time(time*time_dilation + time_offset);
 }
 
 void
 Layer_PasteCanvas::set_outline_grow_vfunc(IndependentContext context, Real outline_grow)const
 {
-	if (depth==MAX_DEPTH) return;
+	context.set_outline_grow(outline_grow);
+
+	if (!sub_canvas)
+		return;
+	if (depth == MAX_DEPTH)
+		return;
 	depth_counter counter(depth);
 
-	context.set_outline_grow(outline_grow);
-	if (canvas)
-	{
-		Real sub_outline_grow = param_outline_grow.get(Real());
-		canvas->set_outline_grow(outline_grow + sub_outline_grow);
-	}
+	Real sub_outline_grow = param_outline_grow.get(Real());
+	sub_canvas->set_outline_grow(outline_grow + sub_outline_grow);
 }
 
 void
@@ -344,67 +350,71 @@ Layer_PasteCanvas::apply_z_range_to_params(ContextParams &cp)const
 synfig::Layer::Handle
 Layer_PasteCanvas::hit_check(synfig::Context context, const synfig::Point &pos)const
 {
-	if(depth==MAX_DEPTH)return 0;depth_counter counter(depth);
+	if(!sub_canvas || !get_amount())
+		return context.hit_check(pos);
+	if (depth == MAX_DEPTH)
+		return 0;
+	depth_counter counter(depth);
 
 	Transformation transformation(get_summary_transformation());
+	Point target_pos = transformation.back_transform(pos);
 
-	bool children_lock=param_children_lock.get(bool(true));
-	ContextParams cp(context.get_params());
-	apply_z_range_to_params(cp);
-	if (canvas) {
-		Point target_pos = transformation.back_transform(pos);
-
-		if(canvas && get_amount() && canvas->get_context(cp).get_color(target_pos).get_a()>=0.25)
-		{
-			if(!children_lock)
-			{
-				return canvas->get_context(cp).hit_check(target_pos);
-			}
-			return const_cast<Layer_PasteCanvas*>(this);
-		}
-	}
+	CanvasBase queue;
+	Context subcontext = build_context_queue(context, queue);
+	if (subcontext.get_color(target_pos).get_a() >= 0.25)
+		return param_children_lock.get(bool(true))
+			 ? const_cast<Layer_PasteCanvas*>(this)
+			 : subcontext.hit_check(target_pos);
 	return context.hit_check(pos);
 }
 
 Color
 Layer_PasteCanvas::get_color(Context context, const Point &pos)const
 {
-	Transformation transformation(get_summary_transformation());
-
-	ContextParams cp(context.get_params());
-	apply_z_range_to_params(cp);
-	if(!canvas || !get_amount())
+	if(!sub_canvas || !get_amount())
 		return context.get_color(pos);
+	if (depth == MAX_DEPTH)
+		return Color::alpha();
+	depth_counter counter(depth);
 
-	if(depth==MAX_DEPTH)return Color::alpha();depth_counter counter(depth);
-
+	Transformation transformation(get_summary_transformation());
 	Point target_pos = transformation.back_transform(pos);
 
-	return Color::blend(canvas->get_context(cp).get_color(target_pos),context.get_color(pos),get_amount(),get_blend_method());
+	CanvasBase queue;
+	Context subcontext = build_context_queue(context, queue);
+	return Color::blend( subcontext.get_color(target_pos),
+			             context.get_color(pos),
+						 get_amount(),
+						 get_blend_method() );
 }
 
 Rect
 Layer_PasteCanvas::get_bounding_rect_context_dependent(const ContextParams &context_params)const
 {
-	if (canvas)
-	{
-		ContextParams cp(context_params);
-		apply_z_range_to_params(cp);
+	if (!sub_canvas)
+		return Rect::zero();
 
-		return get_summary_transformation()
-			.transform_bounds(
-				canvas->get_context(cp).get_full_bounding_rect() );
-	}
-	return Rect::zero();
+	ContextParams subparams(context_params);
+	apply_z_range_to_params(subparams);
+
+	CanvasBase queue;
+	Context subcontext = sub_canvas->get_context_sorted(subparams, queue);
+
+	return get_summary_transformation().transform_bounds(
+			subcontext.get_full_bounding_rect() );
 }
 
 Rect
 Layer_PasteCanvas::get_full_bounding_rect(Context context)const
 {
-	if(is_disabled() || Color::is_onto(get_blend_method()))
+	if (is_disabled() || Color::is_onto(get_blend_method()) || !sub_canvas)
 		return context.get_full_bounding_rect();
 
-	return context.get_full_bounding_rect()|get_bounding_rect_context_dependent(context.get_params());
+	CanvasBase queue;
+	Rect rect = get_summary_transformation().transform_bounds(
+		build_context_queue(context, queue).get_full_bounding_rect() );
+
+	return rect | context.get_full_bounding_rect();
 }
 
 bool
@@ -423,14 +433,15 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 
 	depth_counter counter(depth);
 
-	if(!canvas || !get_amount())
+	if(!sub_canvas || !get_amount())
 		return context.accelerated_render(surface,quality,renddesc,cb);
 
 	SuperCallback stageone(cb,0,4500,10000);
 	SuperCallback stagetwo(cb,4500,9000,10000);
 	SuperCallback stagethree(cb,9000,9999,10000);
 
-	Context canvasContext = canvas->get_context(context);
+	CanvasBase queue;
+	Context canvasContext = build_context_queue(context, queue);
 
 	if (is_solid_color())
 	{
@@ -577,7 +588,7 @@ Layer_PasteCanvas::accelerated_cairorender(Context context,cairo_t *cr, int qual
 
 	depth_counter counter(depth);
 
-	if(!canvas || !get_amount())
+	if(!sub_canvas || !get_amount())
 		return context.accelerated_cairorender(cr,quality,renddesc,cb);
 
 	SuperCallback stageone(cb,0,4500,10000);
@@ -617,7 +628,8 @@ Layer_PasteCanvas::accelerated_cairorender(Context context,cairo_t *cr, int qual
 	cairo_transform(subcr, &cairo_transformation_matrix);
 
 	// Effectively render the canvas content
-	ret=canvas->get_context(context).accelerated_cairorender(subcr, quality, workdesc, &stagetwo);
+	CanvasBase queue;
+	ret=build_context_queue(context, queue).accelerated_cairorender(subcr, quality, workdesc, &stagetwo);
 	// we are done apply the result to the source
 	cairo_destroy(subcr);
 
@@ -655,7 +667,7 @@ void Layer_PasteCanvas::get_times_vfunc(Node::time_set &set) const
 	Time time_offset=param_time_offset.get(Time());
 
 	Node::time_set tset;
-	if(canvas) tset = canvas->get_times();
+	if(sub_canvas) tset = sub_canvas->get_times();
 
 	Node::time_set::iterator i = tset.begin(), end = tset.end();
 
@@ -682,9 +694,9 @@ void Layer_PasteCanvas::get_times_vfunc(Node::time_set &set) const
 void
 Layer_PasteCanvas::set_render_method(Context context, RenderMethod x)
 {
-	if(canvas) // if there is a canvas pass down to it
-		canvas->get_context(context).set_render_method(x);
-
+	// if there is a sub_canvas pass down to it
+	if (sub_canvas)
+		sub_canvas->get_context(context.get_params()).set_render_method(x);
 	// in any case pass it down
 	context.set_render_method(x);
 }
@@ -692,26 +704,47 @@ Layer_PasteCanvas::set_render_method(Context context, RenderMethod x)
 void
 Layer_PasteCanvas::fill_sound_processor(SoundProcessor &soundProcessor) const
 {
-	if (active() && canvas) canvas->fill_sound_processor(soundProcessor);
+	if (active() && sub_canvas) sub_canvas->fill_sound_processor(soundProcessor);
 }
 
 rendering::Task::Handle
-Layer_PasteCanvas::build_composite_task_vfunc(ContextParams context_params) const
+Layer_PasteCanvas::build_rendering_task_vfunc(Context context)const
 {
-	if (!canvas)
-		return new rendering::TaskSurfaceEmpty();
+	rendering::Task::Handle sub_task;
+	if (sub_canvas)
+	{
+		CanvasBase sub_queue;
+		Context sub_context = build_context_queue(context, sub_queue);
 
-	CanvasBase sub_queue;
-	Context sub_context;
-	apply_z_range_to_params(context_params);
-	canvas->get_context_sorted(context_params, sub_queue, sub_context);
+		rendering::TaskTransformation::Handle task_transformation(new rendering::TaskTransformation());
+		rendering::AffineTransformation::Handle affine_transformation(new rendering::AffineTransformation());
+		affine_transformation->matrix = get_summary_transformation().get_matrix();
+		task_transformation->transformation = affine_transformation;
+		task_transformation->sub_task() = sub_context.build_rendering_task();
+		sub_task = task_transformation;
+	}
+	else
+	{
+		sub_task = new rendering::TaskSurfaceEmpty();
+	}
 
-	rendering::TaskTransformation::Handle task_transformation(new rendering::TaskTransformation());
-	rendering::AffineTransformation::Handle affine_transformation(new rendering::AffineTransformation());
-	affine_transformation->matrix = get_summary_transformation().get_matrix();
-	task_transformation->transformation = affine_transformation;
-	task_transformation->sub_task() = sub_context.build_rendering_task();
-	return task_transformation;
+	rendering::TaskBlend::Handle task_blend(new rendering::TaskBlend());
+	task_blend->amount = get_amount() * Context::z_depth_visibility(context.get_params(), *this);
+	task_blend->blend_method = get_blend_method();
+	task_blend->sub_task_a() = context.build_rendering_task();
+	task_blend->sub_task_b() = sub_task;
+	return task_blend;
 }
 
+Context
+Layer_PasteCanvas::build_context_queue(Context context, CanvasBase &out_queue)const
+{
+	ContextParams params(context.get_params());
+	apply_z_range_to_params(params);
 
+	if (sub_canvas)
+		return sub_canvas->get_context_sorted(params, out_queue);
+
+	out_queue.push_back(Layer::Handle());
+	return Context(out_queue.begin(), params);
+}

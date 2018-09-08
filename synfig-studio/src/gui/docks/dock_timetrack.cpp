@@ -567,12 +567,12 @@ ALIGN2 = align_drawingArea2
 */
 		table_=new Gtk::Table(3,4);
 		table_->attach(*align_drawingArea1, 0, 1, 0, 2, Gtk::SHRINK, Gtk::FILL);
-		table_->attach(*widget_kf_list_, 1, 2, 0, 1, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::SHRINK);
+		table_->attach(*widget_kf_list_,    1, 2, 0, 1, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::SHRINK);
 		table_->attach(*widget_timeslider_, 1, 2, 1, 2, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::SHRINK);
 		table_->attach(*align_drawingArea2, 2, 3, 0, 2, Gtk::SHRINK, Gtk::FILL);
-		table_->attach(*scrolled, 0, 3, 2, 3, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::EXPAND);
-		table_->attach(*hscrollbar_, 0, 3, 3, 4, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::SHRINK);
-		table_->attach(*vscrollbar_, 3, 4, 0, 3, Gtk::FILL|Gtk::SHRINK, Gtk::FILL|Gtk::EXPAND);
+		table_->attach(*scrolled,           0, 3, 2, 3, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::EXPAND);
+		table_->attach(*hscrollbar_,        0, 3, 3, 4, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::SHRINK);
+		table_->attach(*vscrollbar_,        3, 4, 0, 3, Gtk::FILL|Gtk::SHRINK, Gtk::FILL|Gtk::EXPAND);
 		add(*table_);
 		
 		// Should be here, after the widget was attached to table

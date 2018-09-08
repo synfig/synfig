@@ -38,6 +38,8 @@
 #include "cellrenderer/cellrenderer_value.h"
 #include "cellrenderer/cellrenderer_timetrack.h"
 #include <synfigapp/action.h>
+#include <synfigapp/action_system.h>
+#include <synfigapp/actions/layerremove.h>
 #include <synfigapp/instance.h>
 #include <gtkmm/scrolledwindow.h>
 #include <gtkmm/paned.h>
@@ -96,11 +98,67 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
+/*
+	Return true if we process event,
+	False to pass it
+*/
+bool LayerTree::onKeyPress(GdkEventKey* event)
+{
+
+	switch (event->hardware_keycode) {
+		case 119: { // 'Del' key pressed
+			std::cout << "LayerTree::onKeyPress: Got delete!" << std::endl;
+
+			LayerList layers = get_selected_layers();
+
+			if (layers.size() == 0) return true; // nothing to do
+			
+
+			synfigapp::Action::Handle action(synfigapp::Action::LayerRemove::create());
+			assert(action);
+			if (!action)
+				return true;
+			
+			action->set_param("canvas", layer_tree_store_->canvas_interface()->get_canvas());
+			action->set_param("canvas_interface", layer_tree_store_->canvas_interface());
+
+			for(LayerList::const_iterator i = layers.begin(); i != layers.end(); ++i)
+				action->set_param("layer", *i);
+
+			layer_tree_store_->canvas_interface()->get_instance()->perform_action(action);
+			return true;
+
+		} 
+		case 68: { // 'F2' key pressed
+			Glib::RefPtr<Gtk::TreeSelection> selection = get_selection();
+			std::vector<Gtk::TreeModel::Path> pathList = selection->get_selected_rows();
+			if (pathList.size() != 1) return true;
+
+			const Gtk::TreeModel::Path& path = pathList.front();
+			Gtk::TreeView::Column& focus_column = *(layer_tree_view_->get_column(2));
+
+			layer_tree_view_->set_cursor(
+				path, 
+				focus_column, 
+				true
+			);
+			return true;
+		}
+	}
+
+    std::cout << "LayerTree::onKeyPress: " << event->keyval << ' ' << event->hardware_keycode << ' ' << event->state << std::endl;
+
+    return false;
+}
+
+
 LayerTree::LayerTree():
 	layer_amount_adjustment_(Gtk::Adjustment::create(1,0,1,0.01,0.01,0))
 {
 	param_tree_view_=new Gtk::TreeView;
 	layer_tree_view_=new Gtk::TreeView;
+
+	layer_tree_view_->signal_key_press_event().connect(sigc::mem_fun(*this, &LayerTree::onKeyPress));
 
 	//Gtk::HPaned* hpaned(manage(new Gtk::HPaned()));
 	//hpaned->show();
@@ -402,8 +460,9 @@ LayerTree::create_param_tree()
 		cellrenderer_time_track->signal_waypoint_clicked_cellrenderer().connect(sigc::mem_fun(*this, &studio::LayerTree::on_waypoint_clicked_layertree) );
 		cellrenderer_time_track->signal_waypoint_changed().connect(sigc::mem_fun(*this, &studio::LayerTree::on_waypoint_changed) );
 		column->add_attribute(cellrenderer_time_track->property_value_desc(), param_model.value_desc);
-		column->add_attribute(cellrenderer_time_track->property_canvas(), param_model.canvas);
-		column->add_attribute(cellrenderer_time_track->property_visible(), param_model.is_value_node);
+		// this already added in constructor
+		//column->add_attribute(cellrenderer_time_track->property_canvas(), param_model.canvas);
+	    column->add_attribute(cellrenderer_time_track->property_visible(), param_model.is_value_node);
 
 		// Finish setting up the column
 		column->set_reorderable();

@@ -147,7 +147,9 @@ ChildrenTree::ChildrenTree()
 		cellrenderer_time_track->property_mode()=Gtk::CELL_RENDERER_MODE_ACTIVATABLE;
 		cellrenderer_time_track->signal_waypoint_clicked_cellrenderer().connect(sigc::mem_fun(*this, &studio::ChildrenTree::on_waypoint_clicked_childrentree) );
 		column->add_attribute(cellrenderer_time_track->property_value_desc(), model.value_desc);
-		column->add_attribute(cellrenderer_time_track->property_canvas(), model.canvas);
+		// ice0: already added in constructor.
+		// if we need to change it, then we need to rewrite this code
+		//column->add_attribute(cellrenderer_time_track->property_canvas(), model.canvas);
 
 		//column->pack_start(*cellrenderer_time_track);
 

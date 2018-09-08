@@ -110,7 +110,6 @@ private:
 	float	begintime,endtime;
 	float	jack_offset;
 	bool 	overbegin,overend;
-	bool	use_cairo;
 	int		quality;
 
 	float	global_fps;
@@ -167,9 +166,6 @@ public:
 	bool get_overend() const {return overend;}
 	void set_overend(bool b) {overend = b;}
 
-	bool get_use_cairo() const {return use_cairo;}
-	void set_use_cairo(bool b) {use_cairo = b;}
-
 	int		get_quality() const {return quality;}
 	void	set_quality(int i)	{quality = i;}
 
@@ -209,7 +205,6 @@ class Widget_Preview : public Gtk::Table
 	Gtk::ScrolledWindow	preview_window;
 	//Glib::RefPtr<Gdk::GC>		gc_area;
 	Glib::RefPtr<Gdk::Pixbuf>	currentbuf;
-	cairo_surface_t* 	current_surface;
 	int					currentindex;
 	//double			timeupdate;
 	double				timedisp;

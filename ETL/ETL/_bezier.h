@@ -82,7 +82,7 @@ protected:
 	affine_combo<value_type,time_type> affine_func;
 
 public:
-	bezier_base():r(0.0),s(1.0) { }
+	bezier_base(): r(0.0), s(1.0) { }
 	bezier_base(
 		const value_type &a, const value_type &b, const value_type &c, const value_type &d,
 		const time_type &r=0.0, const time_type &s=1.0):
@@ -744,7 +744,7 @@ private:
 	static int ControlPolygonFlatEnough(value_type *VT)
 	{
 		int 			i;					/* Index variable					*/
-		distance_type 	distance[W_DEGREE];	/* Distances from pts to line		*/
+		distance_type 	distance[W_DEGREE] = {};	/* Distances from pts to line		*/
 		distance_type 	max_distance_above;	/* maximum of these					*/
 		distance_type 	max_distance_below;
 		time_type 		intercept_1, intercept_2, left_intercept, right_intercept;

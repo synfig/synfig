@@ -224,8 +224,8 @@ Canvas::get_context(const Context &parent_context)const
 	return get_context(parent_context.get_params());
 }
 
-void
-Canvas::get_context_sorted(const ContextParams &params, CanvasBase &out_queue, Context &out_context) const
+Context
+Canvas::get_context_sorted(const ContextParams &params, CanvasBase &out_queue) const
 {
 	multimap<Real, Layer::Handle> layers;
 	int index = 0;
@@ -242,7 +242,7 @@ Canvas::get_context_sorted(const ContextParams &params, CanvasBase &out_queue, C
 		out_queue.push_back(i->second);
 	out_queue.push_back(Layer::Handle());
 
-	out_context = Context(out_queue.begin(), params);
+	return Context(out_queue.begin(), params);
 }
 
 const ValueNodeList &
