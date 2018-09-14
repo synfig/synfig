@@ -42,4 +42,4 @@ git add \
 	synfig-studio/synfigstudio.appdata.xml.in \
 	# end
 
-git commit -m "Development version ${VERSION_NEW}"
+git commit -m "Release version ${VERSION_NEW}"
