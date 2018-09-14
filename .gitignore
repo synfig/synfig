@@ -15,7 +15,8 @@
 *.spec
 *.xml
 *~
-build/
+_debug/
+_production/
 
 .kdev4/
 
