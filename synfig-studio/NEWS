@@ -2,11 +2,25 @@
 
  1.2.2 (git tag "1.2.2") - Bugfix release.
  
-  * Make UI more compact (issue #348). Thanks to Ivan Mahonin.
+  * Remove cairo-rendering from preview dialog (issue #370). Thanks to Ivan Mahonin.
+  * Fix issue with interface elements consuming too much space on Windows (issue #348). Thanks to Ivan Mahonin.
   * Auto-recovery now works again (issue #363). Thanks to Ivan Mahonin.
   * Fix Low-Res rendering mode (issue #401). Thanks to Ivan Mahonin.
   * Allow to zoom canvas by holding Ctrl and middle mouse button. Thanks to Alyssa Rosenzweig.
-  * ...
+  * New feature: Draft rendering mode (issue #409). Thanks to Ivan Mahonin.
+  * Fix disconnect of Transformation Parameter - it was impossible to disconnect linked (as opposed to converted) nodes of transformation type using "disconnect" action (issue #438). Thanks to Caryoscelus.
+  * Fix color wheel being stuck to red on zero saturation (issue #452). Thanks to Caryoscelus.
+  * New feature: Filter Groups (issue #462). Thanks to Ivan Mahonin.
+  * Implemented correct sorting in Sets Panel (issue #372). Thanks to Caryoscelus.
+  * Fixed crash when user press Esc key during the rotation of the object (issue #470). Thanks to Artem Konoplin.
+  * Fixed crash with Spline Tool tangent menu (issue #485). Thanks to Artem Konoplin.
+  * Fix crash on attempt to run plugin (issue #502). Thanks to Artem Konoplin.
+  * Fixed error preventing user to move keyframe at certain circumstances (issue #503). Thanks to Artem Konoplin.
+  * Automatically select new layer when image is imported (issue #368). Thanks to Artem Konoplin. Thanks to Artem Konoplin.
+  * Allow to rename layers with F2 key (issue #465).  Thanks to Artem Konoplin.
+  * Allow to delete layers by pressing Del key. Thanks to Artem Konoplin.
+  * New feature: Live image reloading (issue #513). Thanks to Artem Konoplin.
+  * Keyframe widget now available in Curves Panel (issues #504, #505). Thanks to Artem Konoplin.
 
  1.2.1 (git tag "1.2.1") - September 11, 2017 - Bugfix release.
 

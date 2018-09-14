@@ -7,7 +7,14 @@
   * Auto-recovery now works again (issue #363). Thanks to Ivan Mahonin.
   * Fix Low-Res rendering mode (issue #401). Thanks to Ivan Mahonin.
   * Introduced Draft rendering mode (issue #409). Thanks to Ivan Mahonin.
-  * ...
+  * Fix broken localization (issue #408). Thanks to Ivan Mahonin.
+  * Automatically choose "ffmpeg" target when rendering to "mp4" files. Thanks to Konstantin Dmitriev.
+  * Fix wrong selection area for Circle Layer (issue #442). Thanks to Olivier Jolly.
+  * New feature: Filter Groups (issue #462). Thanks to Ivan Mahonin.
+  * Fix compatibility with ImageMagick 7 (issue #478). Thanks to Matthew White.
+  * Fixed crash on Windows when closed file is re-loaded (issue #521). Thanks to Artem Konoplin.
+  * New feature: Live image reloading (issue #513). Thanks to Artem Konoplin.
+  * Fixed freeze on SVG import (issue #290). Thanks to Artem Konoplin.
 
  1.2.1 (git tag "1.2.1") - September 11, 2017 - Bugfix release.
 
