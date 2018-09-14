@@ -240,6 +240,7 @@ src/synfig/layers/layer_composite.cpp
 src/synfig/layers/layer_composite.h
 src/synfig/layers/layer_duplicate.cpp
 src/synfig/layers/layer_duplicate.h
+src/synfig/layers/layer_filtergroup.cpp
 src/synfig/layers/layer_group.cpp
 src/synfig/layers/layer_mime.cpp
 src/synfig/layers/layer_mime.h
@@ -293,6 +294,8 @@ src/synfig/renddesc.h
 src/synfig/render.cpp
 src/synfig/render.h
 src/synfig/rendering/opengl/renderergl.cpp
+src/synfig/rendering/software/rendererdraftsw.cpp
+src/synfig/rendering/software/rendererlowressw.cpp
 src/synfig/rendering/software/renderersafe.cpp
 src/synfig/rendering/software/renderersw.cpp
 src/synfig/savecanvas.cpp
