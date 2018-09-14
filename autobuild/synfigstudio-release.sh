@@ -13,6 +13,8 @@
 #    synfigstudio-release.sh core
 # * Run procedures for synfig-studio:
 #    synfigstudio-release.sh studio
+# * Run check for localization files:
+#    synfigstudio-release.sh l10n
 #
 
 set -e
@@ -43,6 +45,19 @@ fi
 if [ -z $THREADS ]; then
 	export THREADS=4
 fi
+
+l10n()
+{
+	cd $SRCPREFIX/synfig-core/po
+	OUTPUT=`intltool-update -m 2>&1`
+	cd $SRCPREFIX/synfig-studio/po
+	OUTPUT=`intltool-update -m 2>&1`
+	
+	if [ ! -z "${OUTPUT}" ]; then
+	echo "${OUTPUT}"
+	exit 1
+fi
+}
 
 pack-etl()
 {
@@ -126,6 +141,7 @@ studio()
 
 mkall()
 {
+	l10n
 	etl
 	core
 	studio
