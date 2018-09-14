@@ -370,6 +370,7 @@ src/synfigapp/actions/layerembed.cpp
 src/synfigapp/actions/layerembed.h
 src/synfigapp/actions/layerencapsulate.cpp
 src/synfigapp/actions/layerencapsulate.h
+src/synfigapp/actions/layerencapsulatefilter.cpp
 src/synfigapp/actions/layerencapsulateswitch.cpp
 src/synfigapp/actions/layerencapsulateswitch.h
 src/synfigapp/actions/layerextract.cpp
