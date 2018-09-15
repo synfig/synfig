@@ -2459,12 +2459,20 @@ App::dialog_open_file(const std::string &title, std::string &filename, std::stri
 	filter_audio->add_pattern("*.mp3");
 	filter_audio->add_pattern("*.wav");
 
-	// 4 Lipsync files
+	// 4 Video files
+	Glib::RefPtr<Gtk::FileFilter> filter_video = Gtk::FileFilter::create();
+	filter_video->set_name(_("Video (*.avi, *.mp4)"));
+	filter_video->add_mime_type("video/x-msvideo");
+	filter_video->add_mime_type("video/mp4");
+	filter_video->add_pattern("*.avi");
+	filter_video->add_pattern("*.mp4");
+
+	// 5 Lipsync files
 	Glib::RefPtr<Gtk::FileFilter> filter_lipsync = Gtk::FileFilter::create();
 	filter_lipsync->set_name(_("Lipsync (*.pgo)"));
 	filter_lipsync->add_pattern("*.pgo");
 
-	// 5 Any files
+	// 6 Any files
 	Glib::RefPtr<Gtk::FileFilter> filter_any = Gtk::FileFilter::create();
 	filter_any->set_name(_("Any files"));
 	filter_any->add_pattern("*");
@@ -2474,6 +2482,7 @@ App::dialog_open_file(const std::string &title, std::string &filename, std::stri
 	dialog->add_filter(filter_image);
 	dialog->add_filter(filter_image_list);
 	dialog->add_filter(filter_audio);
+	dialog->add_filter(filter_video);
 	dialog->add_filter(filter_lipsync);
 	dialog->add_filter(filter_any);
 
