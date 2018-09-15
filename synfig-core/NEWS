@@ -2,8 +2,8 @@
 
  1.2.2 (git tag "1.2.2") - Bugfix release.
  
-  * Fixed issue #373: Amount set to 0 for missing images (issue ). Thanks to Ivan Mahonin.
-  * Fixed issue #366: PNG file imported with incorrect color. Thanks to Ivan Mahonin.
+  * Amount set to 0 for missing images (issue #373). Thanks to Ivan Mahonin.
+  * Fix for the cases when PNG file imported with incorrect color (issue #366). Thanks to Ivan Mahonin.
   * Auto-recovery now works again (issue #363). Thanks to Ivan Mahonin.
   * Fix Low-Res rendering mode (issue #401). Thanks to Ivan Mahonin.
   * Introduced Draft rendering mode (issue #409). Thanks to Ivan Mahonin.

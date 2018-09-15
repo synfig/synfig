@@ -16,7 +16,7 @@
   * Fixed crash with Spline Tool tangent menu (issue #485). Thanks to Artem Konoplin.
   * Fix crash on attempt to run plugin (issue #502). Thanks to Artem Konoplin.
   * Fixed error preventing user to move keyframe at certain circumstances (issue #503). Thanks to Artem Konoplin.
-  * Automatically select new layer when image is imported (issue #368). Thanks to Artem Konoplin. Thanks to Artem Konoplin.
+  * Automatically select new layer when image is imported (issue #368). Thanks to Artem Konoplin.
   * Allow to rename layers with F2 key (issue #465).  Thanks to Artem Konoplin.
   * Allow to delete layers by pressing Del key. Thanks to Artem Konoplin.
   * New feature: Live image reloading (issue #513). Thanks to Artem Konoplin.
