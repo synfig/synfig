@@ -327,6 +327,7 @@ src/synfig/time.cpp
 src/synfig/time.h
 src/synfig/timepointcollect.cpp
 src/synfig/timepointcollect.h
+src/synfig/token.cpp
 src/synfig/transform.cpp
 src/synfig/transform.h
 src/synfig/types.h

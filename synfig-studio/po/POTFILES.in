@@ -196,8 +196,6 @@ src/gui/widgets/widget_gradient.h
 src/gui/widgets/widget_keyframe_list.cpp
 src/gui/widgets/widget_keyframe_list.h
 src/gui/widgets/widget_link.h
-src/gui/widgets/widget_sound.cpp
-src/gui/widgets/widget_sound.h
 src/gui/widgets/widget_sublayer.cpp
 src/gui/widgets/widget_sublayer.h
 src/gui/widgets/widget_time.cpp
@@ -231,8 +229,6 @@ src/gui/workarearenderer/renderer_timecode.cpp
 src/gui/workarearenderer/renderer_timecode.h
 src/gui/workarearenderer/workarearenderer.cpp
 src/gui/workarearenderer/workarearenderer.h
-src/gui/adjust_window.cpp
-src/gui/adjust_window.h
 src/gui/app.cpp
 src/gui/app.h
 src/gui/asyncrenderer.cpp
