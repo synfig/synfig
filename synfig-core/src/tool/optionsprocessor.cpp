@@ -60,13 +60,169 @@
 
 using namespace std;
 using namespace synfig;
-//namespace bfs=boost::filesystem;
 
-OptionsProcessor::OptionsProcessor(
-	boost::program_options::variables_map& vm,
-	const boost::program_options::options_description& po_visible)
-		: _vm(vm), _po_visible(po_visible)
+template<typename T>
+void SynfigCommandLineParser::add_option(Glib::OptionGroup& og, const std::string& name, const gchar& short_name, 
+	T& entry, const std::string& description, const Glib::ustring& arg_description) {
+
+	    Glib::OptionEntry new_entry;
+		new_entry.set_long_name(name);
+		if (short_name != ' ') new_entry.set_short_name(short_name);
+		new_entry.set_description(description);
+		new_entry.set_arg_description(arg_description);
+		og.add_entry(new_entry, entry);
+}
+
+// we need explicit method in case of different string/filename encodings
+void SynfigCommandLineParser::add_option_filename(Glib::OptionGroup& og, const std::string& name, const gchar& short_name, std::string& entry, const std::string& description, const Glib::ustring& arg_description) {
+	    Glib::OptionEntry new_entry;
+		new_entry.set_long_name(name);
+		if (short_name != ' ') new_entry.set_short_name(short_name);
+		new_entry.set_description(description);
+		new_entry.set_arg_description(arg_description);
+		og.add_entry_filename(new_entry, entry);
+}
+
+
+SynfigCommandLineParser::SynfigCommandLineParser() :
+	og_set("settings", _("Settings"), _("Show settings help")),
+	og_switch("switch", _("Switch options"), _("Show switch help")),
+	og_misc("misc", _("Misc options"), _("Show Misc options help")),
+	og_ffmpeg("ffmpeg", _("FFMPEG target options"), _("Show FFMPEG target options help")),
+	og_info("info", _("Synfig info options"), _("Show Synfig info options help")),
+#ifdef _DEBUG
+	og_debug("debug", _("Synfig debug flags"), _("Show Synfig debug flags help"))
+#endif
+	set_target(),
+	set_width(),
+	set_height(),
+	set_span(),
+	set_antialias(),
+	set_quality(),
+	set_gamma(),
+	set_num_threads(),
+	set_input_file(),
+	set_output_file(),
+	set_sequence_separator(),
+	set_canvas_id(),
+	set_fps(),
+	set_time(),
+	set_begin_time(),
+	set_start_time(),
+	set_end_time(),
+	set_dpi(),
+	set_dpi_x(),
+	set_dpi_y(),
+
+	// Switch group
+	sw_verbosity(),
+	sw_quiet(),
+	sw_print_benchmarks(),
+	sw_extract_alpha(),
+
+	// Misc group
+	misc_append_filename(),
+	misc_canvas_info(),
+	misc_canvases(),
+
+	//FFMPEG group
+	video_codec(),
+	video_bitrate(),
+
+	// Debug group
+#ifdef _DEBUG
+	debug_guid(),
+	debug_signal(),
+#endif
+
+	// Synfig info group
+	show_help(),
+	show_importers(),
+	show_build_info(),
+	show_layers_list(),
+	show_layer_info(),
+	show_license(),
+	show_modules(),
+	show_targets(),
+	show_codecs(),
+	show_value_nodes(),
+	show_version()
 {
+	Glib::init();
+
+	//og_set("settings", "Settings", "Show settings help");
+	add_option(og_set, "target",      't', set_target,		_("Specify output target (Default: PNG)"), "module");
+	add_option(og_set, "width",       'w', set_width,		_("Set the image width in pixels (Use zero for file default)"), "NUM");
+	add_option(og_set, "height",      'h', set_height,		_("Set the image height in pixels (Use zero for file default)"), "NUM");
+	add_option(og_set, "span",        's', set_span,		_("Set the diagonal size of image window (Span)"), "NUM");
+	add_option(og_set, "antialias",   'a', set_antialias,	_("Set antialias amount for parametric renderer."), "1..30");
+	//og_set.add_option("quality",     'Q', quality_arg_desc, etl::strprintf(_("Specify image quality for accelerated renderer (Default: %d)"), DEFAULT_QUALITY).c_str(), "NUM");
+	add_option(og_set, "gamma",       'g', set_gamma,		_("Gamma"), "2.2");
+	add_option(og_set, "threads",     'T', set_num_threads, _("Enable multithreaded renderer using the specified number of threads"), "NUM");
+	add_option(og_set, "input-file",  'i', set_input_file, 	_("Specify input filename"), "filename");
+	add_option(og_set, "output-file", 'o', set_output_file, _("Specify output filename"), "filename");
+	add_option(og_set, "sequence-separator", ' ', set_sequence_separator, _("Output file sequence separator string (Use double quotes if you want to use spaces)"), "string");
+	add_option(og_set, "canvas",      'c', set_canvas_id, 	_("Render the canvas with the given id instead of the root."), "id");
+	add_option(og_set, "fps",         ' ', set_fps, 		_("Set the frame rate"), "NUM");
+	add_option(og_set, "time",        ' ', set_time, 		_("Render a single frame at <seconds>"), "seconds");
+	add_option(og_set, "begin-time",  ' ', set_begin_time, 	_("Set the starting time"), "seconds");
+	add_option(og_set, "start-time",  ' ', set_start_time,	_("Set the starting time"), "seconds");
+	add_option(og_set, "end-time",    ' ', set_end_time, 	_("Set the ending time"), "seconds");
+	add_option(og_set, "dpi",         ' ', set_dpi, 		_("Set the physical resolution (Dots-per-inch)"), "NUM");
+	add_option(og_set, "dpi-x",       ' ', set_dpi_x, 		_("Set the physical X resolution (Dots-per-inch)"), "NUM");
+	add_option(og_set, "dpi-y",       ' ', set_dpi_y, 		_("Set the physical Y resolution (Dots-per-inch)"), "NUM");
+
+	// Switch options
+	//og_switch("switch", _("Switch options"), "Show switch help");
+	add_option(og_switch, "verbose",       'v', sw_verbosity, 			_("Output verbosity level"), "NUM");
+	add_option(og_switch, "quiet",         'q', sw_quiet, 				_("Quiet mode (No progress/time-remaining display)"), "");
+	add_option(og_switch, "benchmarks",    'b', sw_print_benchmarks,	_("Print benchmarks"), "");
+	add_option(og_switch, "extract-alpha", 'x', sw_extract_alpha, 		_("Extract alpha"), "");
+
+	//SynfigOptionGroup og_misc("misc", _("Misc options"), "Show Misc options help");
+	add_option_filename(og_misc, "append", ' ', misc_append_filename, 	_("Append layers in <filename> to composition"), _("filename"));
+	add_option(og_misc, "canvas-info",     ' ', misc_canvas_info, 			_("Print out specified details of the root canvas"), _("fields"));
+	add_option(og_misc, "canvases",		   ' ', misc_canvases,				_("Print out the list of exported canvases in the composition"), "");
+
+	//SynfigOptionGroup og_ffmpeg("ffmpeg", _("FFMPEG target options"), "Show FFMPEG target options help");
+	add_option(og_ffmpeg, "video-codec",   ' ', video_codec, 	_("Set the codec for the video. See --target-video-codecs"), _("codec"));
+	add_option(og_ffmpeg, "video-bitrate", ' ', video_bitrate,	_("Set the bitrate for the output video"), _("bitrate"));
+
+	//SynfigOptionGroup og_info("info", _("Synfig info options"), "Show Synfig info options help");
+	add_option(og_info, "help",       ' ', show_help, 			_("Produce this help message"), "");
+	add_option(og_info, "importers",  ' ', show_importers, 		_("Print out the list of available importers"), "");
+	add_option(og_info, "info",       ' ', show_build_info, 	_("Print out misc build information"), "");
+	add_option(og_info, "layers",     ' ', show_layers_list, 	_("Print out the list of available layers"), "");
+	add_option(og_info, "layer-info", ' ', show_layer_info, 	_("Print out layer's description, parameter info, etc."), _("layer-name"));
+	add_option(og_info, "license",    ' ', show_license, 		_("Print out license information"), "");
+	add_option(og_info, "modules",    ' ', show_modules, 		_("Print out the list of loaded modules"), "");
+	add_option(og_info, "targets",    ' ', show_targets, 		_("Print out the list of available targets"), "");
+	add_option(og_info, "target-video-codecs",' ', show_codecs, _("Print out the list of available video codecs when encoding through FFMPEG"), "");
+	add_option(og_info, "valuenodes", ' ', show_value_nodes, 	_("Print out the list of available ValueNodes"), "");
+	add_option(og_info, "version",    ' ', show_version, 		_("Print out version information"), "");
+
+#ifdef _DEBUG
+	//SynfigOptionGroup og_debug("debug", _("Synfig debug flags"), "Show Synfig debug flags help");
+	add_option(og_debug, "guid-test",    ' ', debug_guid, 		_("Test GUID generation"), "");
+	add_option(og_debug, "signal-test",  ' ', debug_signal, 	_("Test signal implementation"), "");
+#endif
+
+	// remaining options
+	Glib::OptionEntry entry_remaining;
+	entry_remaining.set_long_name(G_OPTION_REMAINING);
+	entry_remaining.set_arg_description(G_OPTION_REMAINING);
+	og_info.add_entry(entry_remaining, remaining_options_list);
+
+	context.add_group(og_set);
+	context.add_group(og_switch);
+	context.add_group(og_misc);
+	context.add_group(og_ffmpeg);
+	//context.add_group(og_info);
+	context.set_main_group(og_info); // remaining args works only in main group (OMG!)
+#ifdef _DEBUG	
+	context.add_group(og_debug);
+#endif
+
 	_allowed_video_codecs.push_back(VideoCodec("flv", "Flash Video (FLV) / Sorenson Spark / Sorenson H.263."));
 	_allowed_video_codecs.push_back(VideoCodec("h263p", "H.263+ / H.263-1998 / H.263 version 2."));
 	_allowed_video_codecs.push_back(VideoCodec("huffyuv", "Huffyuv / HuffYUV."));
@@ -82,13 +238,45 @@ OptionsProcessor::OptionsProcessor(
 	_allowed_video_codecs.push_back(VideoCodec("msmpeg4v2", "MPEG-4 part 2 Microsoft variant version 2."));
 	_allowed_video_codecs.push_back(VideoCodec("wmv1", "Windows Media Video 7."));
 	_allowed_video_codecs.push_back(VideoCodec("wmv2", "Windows Media Video 8."));
+
 }
 
-void OptionsProcessor::extract_canvas_info(Job& job)
+bool SynfigCommandLineParser::parse(int argc, char* argv[])
+{
+
+#ifdef GLIBMM_EXCEPTIONS_ENABLED
+	try
+	{
+		context.parse(argc, argv);
+	}
+	catch(const Glib::Error& ex)
+	{
+		std::cout << "Exception: " << ex.what() << std::endl;
+		return false;
+	}
+#else
+	std::auto_ptr<Glib::Error> ex;
+	context.parse(argc, argv, ex);
+	if(ex.get())
+	{
+		std::cout << "Exception: " << ex->what() << std::endl;
+		return false;
+	}
+#endif //GLIBMM_EXCEPTIONS_ENABLED
+	
+	// set input filename from remaining options if it not already filled
+	if (!remaining_options_list.empty() && set_input_file.empty()) set_input_file = remaining_options_list.front();
+
+	return true;
+}
+
+void OptionsProcessor::extract_canvas_info(Job&) {}
+
+void SynfigCommandLineParser::extract_canvas_info(Job& job)
 {
 	job.canvas_info = true;
 	string value;
-	string values = _vm["canvas-info"].as<string>();
+	string values = misc_canvas_info;//_vm["canvas-info"].as<string>();
 
 	std::string::size_type pos;
 	while (!values.empty())
@@ -150,46 +338,48 @@ void OptionsProcessor::extract_canvas_info(Job& job)
 	};
 }
 
-void OptionsProcessor::process_settings_options()
+void OptionsProcessor::process_settings_options() {};
+void SynfigCommandLineParser::process_settings_options()
 {
-	if (_vm.count("verbose"))
+	if (sw_verbosity > 0)
 	{
-		SynfigToolGeneralOptions::instance()->set_verbosity(_vm["verbose"].as<int>());
+		SynfigToolGeneralOptions::instance()->set_verbosity(sw_verbosity);
 		VERBOSE_OUT(1) << _("verbosity set to ")
 					   << SynfigToolGeneralOptions::instance()->get_verbosity()
 					   << std::endl;
 	}
 
-	if (_vm.count("benchmarks"))
+	if (sw_print_benchmarks)
 	{
 		SynfigToolGeneralOptions::instance()->set_should_print_benchmarks(true);
 	}
 
-	if (_vm.count("quiet"))
+	if (sw_quiet)
 	{
 		SynfigToolGeneralOptions::instance()->set_should_be_quiet(true);
 	}
 
-	if (_vm.count("threads"))
+	if (set_num_threads > 0)
 	{
-		SynfigToolGeneralOptions::instance()->set_threads(_vm["threads"].as<int>());
+		SynfigToolGeneralOptions::instance()->set_threads(set_num_threads);
 	}
 
 	VERBOSE_OUT(1) << _("Threads set to ")
 				   << SynfigToolGeneralOptions::instance()->get_threads() << std::endl;
 }
 
-void OptionsProcessor::process_info_options()
+//void OptionsProcessor::process_info_options()
+void SynfigCommandLineParser::process_info_options()
 {
-	if (_vm.count("help"))
+	if (show_help)
 	{
 		print_usage();
-		cout << _po_visible;
+		//cout << _po_visible;
 
 		throw (SynfigToolException(SYNFIGTOOL_HELP));
 	}
 
-	if (_vm.count("info"))
+	if (show_build_info)
 	{
 		cout << PACKAGE "-" VERSION << endl;
 #ifdef DEVEL_VERSION
@@ -215,14 +405,14 @@ void OptionsProcessor::process_info_options()
 		throw (SynfigToolException(SYNFIGTOOL_HELP));
 	}
 
-	if (_vm.count("version"))
+	if (show_version)
 	{
 		cerr << PACKAGE << " " << VERSION << endl;
 
 		throw (SynfigToolException(SYNFIGTOOL_HELP));
 	}
 
-	if (_vm.count("license"))
+	if (show_license)
 	{
 		cerr << PACKAGE << " " << VERSION << endl;
 		cout << SYNFIG_COPYRIGHT << endl << endl;
@@ -231,14 +421,14 @@ void OptionsProcessor::process_info_options()
 		throw (SynfigToolException(SYNFIGTOOL_HELP));
 	}
 
-	if (_vm.count("target-video-codecs"))
+	if (show_codecs)
 	{
 		print_target_video_codecs_help();
 
 		throw (SynfigToolException(SYNFIGTOOL_HELP));
 	}
 
-	if (_vm.count("layers"))
+	if (show_layers_list)
 	{
 		synfig::Layer::Book::iterator iter =
 			synfig::Layer::book().begin();
@@ -249,10 +439,9 @@ void OptionsProcessor::process_info_options()
 		throw (SynfigToolException(SYNFIGTOOL_HELP));
 	}
 
-	if (_vm.count("layer-info"))
+	if (!show_layer_info.empty())
 	{
-		Layer::Handle layer =
-			synfig::Layer::create(_vm["layer-info"].as<string>());
+		Layer::Handle layer = synfig::Layer::create(show_layer_info.c_str());
 
 		cout << _("Layer Name: ") << layer->get_name() << endl;
 		cout << _("Localized Layer Name: ")
@@ -280,7 +469,7 @@ void OptionsProcessor::process_info_options()
 		throw (SynfigToolException(SYNFIGTOOL_HELP));
 	}
 
-	if (_vm.count("modules"))
+	if (show_modules)
 	{
 		synfig::Module::Book::iterator iter =
 			synfig::Module::book().begin();
@@ -290,7 +479,7 @@ void OptionsProcessor::process_info_options()
 		throw (SynfigToolException(SYNFIGTOOL_HELP));
 	}
 
-	if (_vm.count("targets"))
+	if (show_targets)
 	{
 		synfig::Target::Book::iterator iter =
 			synfig::Target::book().begin();
@@ -300,7 +489,7 @@ void OptionsProcessor::process_info_options()
 		throw (SynfigToolException(SYNFIGTOOL_HELP));
 	}
 
-	if (_vm.count("valuenodes"))
+	if (show_value_nodes)
 	{
 		synfig::ValueNodeRegistry::Book::iterator iter =
 			synfig::ValueNodeRegistry::book().begin();
@@ -310,7 +499,7 @@ void OptionsProcessor::process_info_options()
 		throw (SynfigToolException(SYNFIGTOOL_HELP));
 	}
 
-	if (_vm.count("importers"))
+	if (show_importers)
 	{
 		synfig::Importer::Book::iterator iter =
 			synfig::Importer::book().begin();
@@ -321,23 +510,21 @@ void OptionsProcessor::process_info_options()
 	}
 }
 
-RendDesc OptionsProcessor::extract_renddesc(const RendDesc& renddesc)
+//RendDesc OptionsProcessor::extract_renddesc(const RendDesc& renddesc)
+RendDesc SynfigCommandLineParser::extract_renddesc(const RendDesc& renddesc)
 {
 	RendDesc desc = renddesc;
 	int w, h;
 	float span;
 	span = w = h = 0;
 
-	if (_vm.count("width"))
-		w = _vm["width"].as<int>();
+	w = set_width;
 
-	if (_vm.count("height"))
-		h = _vm["height"].as<int>();
+	h = set_height;
 
-	if (_vm.count("antialias"))
+	if (set_antialias > 0)
 	{
-		int a;
-		a = _vm["antialias"].as<int>();
+		int a = set_antialias;
 		desc.set_antialias(a);
 		synfig::info(_("Antialiasing set to %d, "
 					"(%d samples per pixel)"), a, (a*a));
@@ -345,28 +532,27 @@ RendDesc OptionsProcessor::extract_renddesc(const RendDesc& renddesc)
 										  "(%d samples per pixel)")) % a % (a*a)
 						<< std::endl;*/
 	}
-	if (_vm.count("span"))
+	if (set_span > 0)
 	{
-	    span = _vm["span"].as<int>();
+	    span = set_span;
 		synfig::info(_("Span set to %d units"), span);
 		/*VERBOSE_OUT(1) << boost::format(_("Span set to %d units")) % span
                        << std::endl;*/
 	}
-	if (_vm.count("fps"))
+	if (set_fps > 0)
 	{
-		float fps;
-		fps = _vm["fps"].as<float>();
+		float fps = (float)set_fps;
 		desc.set_frame_rate(fps);
 		synfig::info(_("Frame rate set to %d frames per "
 										   "second"), fps);
 		/*VERBOSE_OUT(1) << boost::format(_("Frame rate set to %d frames per "
 										   "second")) % fps << std::endl;*/
 	}
-	if (_vm.count("dpi"))
+	if (set_dpi > 0)
 	{
 		float dpi, dots_per_meter;
-		dpi = _vm["dpi"].as<float>();
-		dots_per_meter = dpi * 39.3700787402;
+		dpi = (float)set_dpi;
+		dots_per_meter = dpi * 39.3700787402; // TODO: ???
 		desc.set_x_res(dots_per_meter);
 		desc.set_y_res(dots_per_meter);
 		synfig::info(_("Physical resolution set to %f "
@@ -374,10 +560,10 @@ RendDesc OptionsProcessor::extract_renddesc(const RendDesc& renddesc)
 		/*VERBOSE_OUT(1) << boost::format(_("Physical resolution set to %f "
                                           "dpi")) % dpi << std::endl;*/
 	}
-	if (_vm.count("dpi-x"))
+	if (set_dpi_x)
 	{
 		float dpi, dots_per_meter;
-		dpi = _vm["dpi-x"].as<float>();
+		dpi = (float)set_dpi_x;
 		dots_per_meter = dpi * 39.3700787402;
 		desc.set_x_res(dots_per_meter);
 		synfig::info(_("Physical X resolution set to %f "
@@ -385,10 +571,10 @@ RendDesc OptionsProcessor::extract_renddesc(const RendDesc& renddesc)
 		/*VERBOSE_OUT(1) << boost::format(_("Physical X resolution set to %f "
 										  "dpi")) % dpi << std::endl;*/
 	}
-	if (_vm.count("dpi-y"))
+	if (set_dpi_y)
 	{
 		float dpi, dots_per_meter;
-		dpi = _vm["dpi-y"].as<float>();
+		dpi = (float)set_dpi_x;
 		dots_per_meter = dpi * 39.3700787402;
 		desc.set_y_res(dots_per_meter);
 		synfig::info(_("Physical Y resolution set to %f "
@@ -396,31 +582,27 @@ RendDesc OptionsProcessor::extract_renddesc(const RendDesc& renddesc)
 		/*VERBOSE_OUT(1) << boost::format(_("Physical Y resolution set to %f "
                                           "dpi")) % dpi << std::endl;*/
 	}
-	if (_vm.count("start-time"))
+	if (!set_start_time.empty())
 	{
-		std::string seconds = _vm["start-time"].as<std::string>();
-		desc.set_time_start(Time(seconds.c_str(), desc.get_frame_rate()));
+		desc.set_time_start(Time(set_start_time.c_str(), desc.get_frame_rate()));
 	}
-	if (_vm.count("begin-time"))
+	if (!set_begin_time.empty())
 	{
-		std::string seconds = _vm["begin-time"].as<std::string>();
-		desc.set_time_start(Time(seconds.c_str(), desc.get_frame_rate()));
+		desc.set_time_start(Time(set_begin_time.c_str(), desc.get_frame_rate()));
 	}
-	if (_vm.count("end-time"))
+	if (!set_end_time.empty())
 	{
-		std::string seconds = _vm["end-time"].as<std::string>();
-		desc.set_time_end(Time(seconds.c_str(), desc.get_frame_rate()));
+		desc.set_time_end(Time(set_end_time.c_str(), desc.get_frame_rate()));
 	}
-	if (_vm.count("time"))
+	if (!set_time.empty())
 	{
-		std::string seconds = _vm["time"].as<std::string>();
-		desc.set_time(Time(seconds.c_str(), desc.get_frame_rate()));
+		desc.set_time(Time(set_time.c_str(), desc.get_frame_rate()));
 
 		VERBOSE_OUT(1) << _("Rendering frame at ")
 					   << desc.get_time_start().get_string(desc.get_frame_rate())
 					   << endl;
 	}
-	if (_vm.count("gamma"))
+	if (set_gamma > 0)
 	{
 		synfig::warning(_("Gamma argument is currently ignored"));
 		//int gamma;
@@ -446,18 +628,19 @@ RendDesc OptionsProcessor::extract_renddesc(const RendDesc& renddesc)
 	return desc;
 }
 
-TargetParam OptionsProcessor::extract_targetparam()
+//TargetParam OptionsProcessor::extract_targetparam()
+TargetParam SynfigCommandLineParser::extract_targetparam()
 {
 	TargetParam params;
 
 	// Both parameters are co-dependent
-	if (_vm.count("video-codec") ^ _vm.count("video-bitrate"))
+	if (!(video_codec.empty() && video_bitrate == 0))
 		throw (SynfigToolException(SYNFIGTOOL_MISSINGARGUMENT,
 									_("Both video codec and bitrate parameters are necessary.")));
 
-	if (_vm.count("video-codec"))
+	if (!video_codec.empty())
 	{
-		params.video_codec = _vm["video-codec"].as<std::string>();
+		params.video_codec = video_codec;
 
 		// video_codec string to lowercase
 		transform (params.video_codec.begin(),
@@ -484,15 +667,15 @@ TargetParam OptionsProcessor::extract_targetparam()
 
 		VERBOSE_OUT(1) << _("Target video codec set to: ") << params.video_codec << std::endl;
 	}
-	if(_vm.count("video-bitrate"))
+	if (video_bitrate > 0)
 	{
-		params.bitrate = _vm["video-bitrate"].as<int>();
+		params.bitrate = video_bitrate;
 		VERBOSE_OUT(1) << _("Target bitrate set to: ") << params.bitrate << "k."
 					   << std::endl;
 	}
-	if(_vm.count("sequence-separator"))
+	if (!set_sequence_separator.empty())
 	{
-		params.sequence_separator = _vm["sequence-separator"].as<std::string>();
+		params.sequence_separator = set_sequence_separator;
 		VERBOSE_OUT(1) << _("Output file sequence separator set to: '")
                        << params.sequence_separator
                        << "'."
@@ -502,14 +685,15 @@ TargetParam OptionsProcessor::extract_targetparam()
 	return params;
 }
 
-Job OptionsProcessor::extract_job()
+//Job OptionsProcessor::extract_job()
+Job SynfigCommandLineParser::extract_job()
 {
 	Job job;
 
 	// Common input file loading
-	if (_vm.count("input-file"))
+	if (!set_input_file.empty())
 	{
-		job.filename = _vm["input-file"].as<string>();
+		job.filename = set_input_file;
 
 		// Open the composition
 		string errors, warnings;
@@ -548,25 +732,25 @@ Job OptionsProcessor::extract_job()
                                   _("No input file provided."));
 	}
 
-	if (_vm.count("target"))
+	if (!set_target.empty())
 	{
-		job.target_name = _vm["target"].as<std::string>();
+		job.target_name = set_target;
 		VERBOSE_OUT(1) << _("Target set to ") << job.target_name << std::endl;
 	}
 
 	// Determine output
-	if (_vm.count("output-file"))
+	if (!set_output_file.empty())
 	{
-		job.outfilename = _vm["output-file"].as<std::string>();
+		job.outfilename = set_output_file;
 	}
 
-	if (_vm.count("extract-alpha"))
+	if (sw_extract_alpha)
 	{
 		job.extract_alpha = true;
 	}
 
-	if (_vm.count("quality"))
-		job.quality = _vm["quality"].as<int>();
+	if (set_quality > 0)
+		job.quality = set_quality;
 	else
 		job.quality = DEFAULT_QUALITY;
 
@@ -574,10 +758,9 @@ Job OptionsProcessor::extract_job()
 
 	// WARNING: canvas must be before append
 
-	if (_vm.count("canvas"))
+	if (!set_canvas_id.empty())
 	{
-		std::string canvasid;
-		canvasid = _vm["canvas"].as<std::string>();
+		std::string canvasid = set_canvas_id;
 
 		try
 		{
@@ -606,10 +789,10 @@ Job OptionsProcessor::extract_job()
 
 	// WARNING: append must be before list-canvases
 
-	if (_vm.count("append"))
+	if (!misc_append_filename.empty())
 	{
 		// TODO: Enable multi-appending. Disabled in the previous CLI version
-		std::string composite_file = _vm["append"].as<std::string>();
+		std::string composite_file = misc_append_filename;
 
 		std::string errors, warnings;
 		Canvas::Handle composite;
@@ -642,7 +825,8 @@ Job OptionsProcessor::extract_job()
 		VERBOSE_OUT(2) << _("Appended contents of ") << composite_file << endl;
 	}
 
-	if (_vm.count("list-canvases") || _vm.count("canvases"))
+	//if (_vm.count("list-canvases") || misc_canvases)
+	if (misc_canvases)
 	{
 		print_child_canvases(job.filename + "#", job.root);
 		std::cerr << std::endl;
@@ -650,7 +834,7 @@ Job OptionsProcessor::extract_job()
 		throw SynfigToolException(SYNFIGTOOL_OK);
 	}
 
-	if (_vm.count("canvas-info"))
+	if (!misc_canvas_info.empty())
 	{
 		extract_canvas_info(job);
 		print_canvas_info(job);
@@ -661,7 +845,8 @@ Job OptionsProcessor::extract_job()
 	return job;
 }
 
-void OptionsProcessor::print_target_video_codecs_help() const
+//void OptionsProcessor::print_target_video_codecs_help() const
+void SynfigCommandLineParser::print_target_video_codecs_help() const
 {
 	for (std::vector<VideoCodec>::const_iterator itr = _allowed_video_codecs.begin();
 		 itr != _allowed_video_codecs.end(); ++itr)
@@ -704,13 +889,13 @@ void signal_test()
 // DEBUG options ----------------------------------------------
 void OptionsProcessor::process_debug_options() throw (SynfigToolException&)
 {
-	if (_vm.count("signal-test"))
+	if (debug_signal)
 	{
 		signal_test();
 		throw (SynfigToolException(SYNFIGTOOL_HELP));
 	}
 
-	if (_vm.count("guid-test"))
+	if (debug_guid)
 	{
 		guid_test();
 		throw (SynfigToolException(SYNFIGTOOL_HELP));

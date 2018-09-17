@@ -96,7 +96,7 @@ int main(int argc, char* argv[])
 		SynfigToolGeneralOptions::instance()->get_binary_path();
 
 #ifdef ENABLE_NLS
-	/*boost::filesystem::path locale_path =
+	/*bst::filesystem::path locale_path =
 		binary_path.parent_path().parent_path();*/
 	std::string locale_path = get_absolute_path(binary_path + "../../share/locale");
 	//locale_path = locale_path/"share"/"locale";
@@ -120,7 +120,7 @@ int main(int argc, char* argv[])
 		}
 
 
-		named_type<std::string>* target_arg_desc = new named_type<std::string>("module");
+/*		named_type<std::string>* target_arg_desc = new named_type<std::string>("module");
 		named_type<int>* width_arg_desc = new named_type<int>("NUM");
 		named_type<int>* height_arg_desc = new named_type<int>("NUM");
 		named_type<int>* span_arg_desc = new named_type<int>("NUM");
@@ -253,16 +253,18 @@ int main(int argc, char* argv[])
             std::cout << std::endl << e.what() << std::endl;
             std::cout << _("Try 'synfig --help' for more information") << std::endl;
             return SYNFIGTOOL_UNKNOWNARGUMENT;
-        }
+        }*/
 
-        OptionsProcessor op(vm, po_visible);
+        //OptionsProcessor op(vm, po_visible);
+		SynfigCommandLineParser parser;
+		parser.parse(argc, argv);
 
         // Switch options ---------------------------------------------
-        op.process_settings_options();
+        parser.process_settings_options();
 
 #ifdef _DEBUG
 		// DEBUG options ----------------------------------------------
-		op.process_debug_options();
+		parser.process_debug_options();
 #endif
 
 		// TODO: Optional load of main only if needed. i.e. not needed to display help
@@ -273,14 +275,14 @@ int main(int argc, char* argv[])
 		synfig::Main synfig_main(get_absolute_path(binary_path + "../"), &p);
 
         // Info options -----------------------------------------------
-        op.process_info_options();
+        parser.process_info_options();
 
 		std::list<Job> job_list;
 
 		// Processing --------------------------------------------------
 		Job job;
-		job = op.extract_job();
-		job.desc = job.canvas->rend_desc() = op.extract_renddesc(job.canvas->rend_desc());
+		job = parser.extract_job();
+		job.desc = job.canvas->rend_desc() = parser.extract_renddesc(job.canvas->rend_desc());
 
 		if (job.extract_alpha) {
 			job.alpha_mode = synfig::TARGET_ALPHA_MODE_REDUCE;
@@ -292,7 +294,7 @@ int main(int argc, char* argv[])
 			job_list.push_front(job);
 		}
 
-		process_job_list(job_list, op.extract_targetparam());
+		process_job_list(job_list, parser.extract_targetparam());
 
 		return SYNFIGTOOL_OK;
 
