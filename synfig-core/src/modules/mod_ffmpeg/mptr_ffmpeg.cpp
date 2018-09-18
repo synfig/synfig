@@ -110,7 +110,7 @@ ffmpeg_mptr::seek_to(int frame)
 			binary_path = etl::dirname(binary_path)+ETL_DIRECTORY_SEPARATOR;
 		binary_path += "ffmpeg.exe";
 
-		command=strprintf("\"%s\" -ss 00:00:00.%d -i \"%s\" -an -f image2pipe -vcodec ppm -\n",binary_path.c_str(),frame,identifier.filename.c_str());
+		command=strprintf("\"%s\" -ss 00:00:00.%d -i \"%s\" -vframes 1 -an -f image2pipe -vcodec ppm -\n",binary_path.c_str(),frame,identifier.filename.c_str());
 		
 		// This covers the dumb cmd.exe behavior.
 		// See: http://eli.thegreenplace.net/2011/01/28/on-spaces-in-the-paths-of-programs-and-files-on-windows/
@@ -146,7 +146,7 @@ ffmpeg_mptr::seek_to(int frame)
 			// Close the unneeded pipein
 			close(p[1]);
 			string time = strprintf("00:00:00.%d",frame);
-			execlp("ffmpeg", "ffmpeg", "-ss", time.c_str(), "-i", identifier.filename.c_str(), "-an", "-f", "image2pipe", "-vcodec", "ppm", "-", (const char *)NULL);
+			execlp("ffmpeg", "ffmpeg", "-ss", time.c_str(), "-i", identifier.filename.c_str(), "-vframes 1","-an", "-f", "image2pipe", "-vcodec", "ppm", "-", (const char *)NULL);
 			// We should never reach here unless the exec failed
 			cerr<<"Unable to open pipe to ffmpeg (exec failed)"<<endl;
 			_exit(1);
