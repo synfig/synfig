@@ -148,7 +148,7 @@ ffmpeg_mptr::seek_to(int frame)
 			}
 			// Close the unneeded pipein
 			close(p[1]);
-			execlp("ffmpeg", "ffmpeg", "-ss", strprintf("%.2f",position).c_str(), "-i", identifier.filename.c_str(), "-vframes 1","-an", "-f", "image2pipe", "-vcodec", "ppm", "-", (const char *)NULL);
+			execlp("ffmpeg", "ffmpeg", "-ss", strprintf("%.2f",position).c_str(), "-i", identifier.filename.c_str(), "-vframes", "1","-an", "-f", "image2pipe", "-vcodec", "ppm", "-", (const char *)NULL);
 			// We should never reach here unless the exec failed
 			cerr<<"Unable to open pipe to ffmpeg (exec failed)"<<endl;
 			_exit(1);
