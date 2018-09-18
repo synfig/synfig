@@ -88,8 +88,8 @@ bool ffmpeg_mptr::is_animated()
 bool
 ffmpeg_mptr::seek_to(int frame)
 {
-	if(frame<cur_frame || !file)
-	{
+	//if(frame<cur_frame || !file)
+	//{
 		if(file)
 		{
 #if defined(WIN32_PIPE_TO_PROCESSES)
@@ -100,6 +100,9 @@ ffmpeg_mptr::seek_to(int frame)
 			waitpid(pid,&status,0);
 #endif
 		}
+		
+		// FIXME: 24 fps is hardcoded now, but in fact we have to get it from canvas
+		float position = frame/24;
 
 #if defined(WIN32_PIPE_TO_PROCESSES)
 
@@ -110,7 +113,7 @@ ffmpeg_mptr::seek_to(int frame)
 			binary_path = etl::dirname(binary_path)+ETL_DIRECTORY_SEPARATOR;
 		binary_path += "ffmpeg.exe";
 
-		command=strprintf("\"%s\" -ss 00:00:00.%d -i \"%s\" -vframes 1 -an -f image2pipe -vcodec ppm -\n",binary_path.c_str(),frame,identifier.filename.c_str());
+		command=strprintf("\"%s\" -ss %.2f -i \"%s\" -vframes 1 -an -f image2pipe -vcodec ppm -\n",binary_path.c_str(),position,identifier.filename.c_str());
 		
 		// This covers the dumb cmd.exe behavior.
 		// See: http://eli.thegreenplace.net/2011/01/28/on-spaces-in-the-paths-of-programs-and-files-on-windows/
@@ -145,8 +148,7 @@ ffmpeg_mptr::seek_to(int frame)
 			}
 			// Close the unneeded pipein
 			close(p[1]);
-			string time = strprintf("00:00:00.%d",frame);
-			execlp("ffmpeg", "ffmpeg", "-ss", time.c_str(), "-i", identifier.filename.c_str(), "-vframes 1","-an", "-f", "image2pipe", "-vcodec", "ppm", "-", (const char *)NULL);
+			execlp("ffmpeg", "ffmpeg", "-ss", strprintf("%.2f",position).c_str(), "-i", identifier.filename.c_str(), "-vframes 1","-an", "-f", "image2pipe", "-vcodec", "ppm", "-", (const char *)NULL);
 			// We should never reach here unless the exec failed
 			cerr<<"Unable to open pipe to ffmpeg (exec failed)"<<endl;
 			_exit(1);
@@ -168,14 +170,14 @@ ffmpeg_mptr::seek_to(int frame)
 			return false;
 		}
 		cur_frame=-1;
-	}
+	//}
 
-	while(cur_frame<frame-1)
-	{
-		cerr<<"Seeking to..."<<frame<<'('<<cur_frame<<')'<<endl;
-		if(!grab_frame())
-			return false;
-	}
+	//while(cur_frame<frame-1)
+	//{
+	//	cerr<<"Seeking to..."<<frame<<'('<<cur_frame<<')'<<endl;
+	//	if(!grab_frame())
+	//		return false;
+	//}
 	return true;
 }
 
@@ -273,13 +275,10 @@ bool
 ffmpeg_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc*/, Time time, synfig::ProgressCallback *)
 {
 	int i=(int)(time*fps);
-	if(i!=cur_frame)
-	{
-		if(!seek_to(i))
-			return false;
-		if(!grab_frame())
-			return false;
-	}
+	if(!seek_to(i))
+		return false;
+	if(!grab_frame())
+		return false;
 
 	surface=frame;
 	return true;
