@@ -28,11 +28,11 @@
 #include <string>
 #include <vector>
 #include <synfig/canvas.h>
-#include <boost/program_options.hpp>
+//#include <boost/program_options.hpp>
 
 // TODO rename to CommandLineHandler and move the options creation inside.
 /// Class to process all the command line options
-class OptionsProcessor
+/*class OptionsProcessor
 {
 public:
 	OptionsProcessor(boost::program_options::variables_map& vm,
@@ -82,9 +82,9 @@ private:
 	};
 	/*! \warning These codecs are linked to the filename extensions for
 	 *  mod_ffmpeg. If you change this you must change the others accordingly.
-	 */
+	 *//*
 	std::vector<VideoCodec> _allowed_video_codecs;
-};
+};*/
 
 class SynfigCommandLineParser
 {

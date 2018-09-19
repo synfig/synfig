@@ -35,9 +35,9 @@
 #include <string>
 #include <list>
 
-#include <boost/program_options/options_description.hpp>
-#include <boost/program_options/parsers.hpp>
-#include <boost/program_options/variables_map.hpp>
+//#include <boost/program_options/options_description.hpp>
+//#include <boost/program_options/parsers.hpp>
+//#include <boost/program_options/variables_map.hpp>
 #include <boost/tokenizer.hpp>
 #include <boost/token_functions.hpp>
 //#include <boost/format.hpp>
@@ -66,10 +66,10 @@
 #include "joblistprocessor.h"
 #include "printing_functions.h"
 
-#include "named_type.h"
+//#include "named_type.h"
 #endif
 
-namespace po=boost::program_options;
+//namespace po=boost::program_options;
 
 std::string _appendAlphaToFilename(std::string input_filename)
 {

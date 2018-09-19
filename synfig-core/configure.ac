@@ -408,10 +408,6 @@ PKG_CHECK_MODULES(MLTPP, mlt++,,[
 CONFIG_DEPS="$CONFIG_DEPS mlt++"
 
 AX_BOOST_BASE([1.53.0],,AC_MSG_ERROR([ ** You need to install Boost >= 1.53.0]))
-AX_BOOST_PROGRAM_OPTIONS
-if test "x$ax_cv_boost_program_options" != "xyes" ; then
-	AC_MSG_ERROR([ ** You need to install Boost program-options library])
-fi
 AX_BOOST_SYSTEM
 if test "x$ax_cv_boost_system" != "xyes" ; then
 	AC_MSG_ERROR([ ** You need to install Boost system library])
@@ -661,7 +657,6 @@ OpenEXR --------------------------> $with_openexr
 "'$'"SYNFIG_CFLAGS -------------------> '$SYNFIG_CFLAGS'
 "'$'"BOOST_CPPFLAGS ------------------> '$BOOST_CPPFLAGS'
 "'$'"BOOST_LDFLAGS -------------------> '$BOOST_LDFLAGS'
-"'$'"BOOST_PROGRAM_OPTIONS_LIB -------> '$BOOST_PROGRAM_OPTIONS_LIB'
 "'$'"BOOST_SYSTEM_LIB ----------------> '$BOOST_SYSTEM_LIB'
 "'$'"LIBADD_DL -----------------------> '$LIBADD_DL'
 "

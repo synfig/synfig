@@ -47,7 +47,7 @@ you are recommended to uninstall that.
 
 You need development & library packages of the following libs:
 
-- boost (system, program_options)
+- boost (system)
 - zlib
 - libsigc++-2.0
 - glibmm-2.4

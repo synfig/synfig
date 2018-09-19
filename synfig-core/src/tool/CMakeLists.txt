@@ -22,7 +22,6 @@ target_link_libraries(synfig_bin synfig)
 target_link_libraries(synfig_bin
     ${Boost_SYSTEM_LIBRARIES}
     ${GIOMM_LIBRARIES}
-    ${Boost_PROGRAM_OPTIONS_LIBRARIES}
 )
 
 install (

@@ -56,7 +56,6 @@ if which dnf >/dev/null; then
             libtool \
             libtool-ltdl-devel \
             boost-devel \
-            boost-program-options \
             shared-mime-info \
             OpenEXR-devel \
             libmng-devel \
@@ -102,7 +101,6 @@ elif which yum >/dev/null; then
             libtool \
             libtool-ltdl-devel \
             boost-devel \
-            boost-program-options \
             shared-mime-info \
             OpenEXR-devel \
             libmng-devel \
@@ -128,7 +126,7 @@ elif which zypper >/dev/null; then
             debootstrap \
             rsync"
     else
-        PKG_LIST="${PKG_LIST} libpng-devel libjpeg-devel freetype-devel fontconfig-devel atk-devel pango-devel cairo-devel gtk3-devel gettext-devel libxml2-devel libxml++-devel gcc-c++ autoconf automake libtool libtool-ltdl-devel boost-devel boost-program-options shared-mime-info"
+        PKG_LIST="${PKG_LIST} libpng-devel libjpeg-devel freetype-devel fontconfig-devel atk-devel pango-devel cairo-devel gtk3-devel gettext-devel libxml2-devel libxml++-devel gcc-c++ autoconf automake libtool libtool-ltdl-devel boost-devel shared-mime-info"
         PKG_LIST="${PKG_LIST} OpenEXR-devel libmng-devel ImageMagick-c++-devel gtkmm3-devel glibmm2-devel"
     fi
     if ! ( rpm -qv $PKG_LIST ); then
@@ -151,7 +149,6 @@ elif which apt-get >/dev/null; then
             #
             PKG_LIST=" \
                 rpm-build \
-                boost-program_options-devel \
                 git-core \
                 shared-mime-info \
                 libltdl3-devel \
@@ -200,7 +197,6 @@ elif which apt-get >/dev/null; then
                 libglibmm-2.4-dev \
                 libsigc++-2.0-dev \
                 libxml++2.6-dev \
-                libboost-program-options-dev \
                 libboost-system-dev \
                 libmagick++-dev \
             "

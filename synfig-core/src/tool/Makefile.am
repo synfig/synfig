@@ -16,7 +16,6 @@ bin_PROGRAMS = \
 	synfig
 
 synfig_SOURCES = \
-	named_type.h \
 	definitions.h \
 	progress.h \
 	renderprogress.h   \
@@ -36,7 +35,6 @@ synfig_LDADD = \
 	../synfig/libsynfig.la \
 	@SYNFIG_LIBS@ \
 	@BOOST_LDFLAGS@ \
-	@BOOST_PROGRAM_OPTIONS_LIB@ \
 	@BOOST_SYSTEM_LIB@
 
 synfig_CXXFLAGS = \

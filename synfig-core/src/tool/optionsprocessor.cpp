@@ -270,8 +270,6 @@ bool SynfigCommandLineParser::parse(int argc, char* argv[])
 	return true;
 }
 
-void OptionsProcessor::extract_canvas_info(Job&) {}
-
 void SynfigCommandLineParser::extract_canvas_info(Job& job)
 {
 	job.canvas_info = true;
@@ -338,7 +336,6 @@ void SynfigCommandLineParser::extract_canvas_info(Job& job)
 	};
 }
 
-void OptionsProcessor::process_settings_options() {};
 void SynfigCommandLineParser::process_settings_options()
 {
 	if (sw_verbosity > 0)

@@ -6,7 +6,7 @@ cmake_minimum_required(VERSION 3.1)
 ##
 
 # TODO: check if we really need all of them
-find_package(Boost REQUIRED system program_options)
+find_package(Boost REQUIRED system)
 
 find_package(ZLIB REQUIRED)
 find_package(ETL REQUIRED)
