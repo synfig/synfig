@@ -2419,7 +2419,10 @@ App::dialog_open_file(const std::string &title, std::string &filename, std::stri
 	filter_supported->add_pattern("*.ogg");
 	filter_supported->add_pattern("*.mp3");
 	filter_supported->add_pattern("*.wav");
-	// 0.4 lipsync files
+	// 0.4 Video files
+	filter_supported->add_pattern("*.avi");
+	filter_supported->add_pattern("*.mp4");
+	// 0.5 lipsync files
 	filter_supported->add_pattern("*.pgo");
 
 	// Sub fileters
