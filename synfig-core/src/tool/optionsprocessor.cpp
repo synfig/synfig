@@ -91,7 +91,7 @@ SynfigCommandLineParser::SynfigCommandLineParser() :
 	og_ffmpeg("ffmpeg", _("FFMPEG target options"), _("Show FFMPEG target options help")),
 	og_info("info", _("Synfig info options"), _("Show Synfig info options help")),
 #ifdef _DEBUG
-	og_debug("debug", _("Synfig debug flags"), _("Show Synfig debug flags help"))
+	og_debug("debug", _("Synfig debug flags"), _("Show Synfig debug flags help")),
 #endif
 	set_target(),
 	set_width(),
@@ -887,7 +887,8 @@ void signal_test()
 }
 
 // DEBUG options ----------------------------------------------
-void OptionsProcessor::process_debug_options() throw (SynfigToolException&)
+//void OptionsProcessor::process_debug_options() throw (SynfigToolException&)
+void SynfigCommandLineParser::process_debug_options() throw (SynfigToolException&)
 {
 	if (debug_signal)
 	{

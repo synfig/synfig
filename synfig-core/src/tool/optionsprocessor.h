@@ -118,6 +118,9 @@ public:
 
 	void print_target_video_codecs_help() const;
 
+#ifdef _DEBUG
+	void process_debug_options() throw (SynfigToolException&);
+#endif
 
 private:
 
