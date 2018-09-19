@@ -165,7 +165,7 @@ Import::set_param(const String & param, const ValueBase &value)
 		}
 
 		Time time_offset = param_time_offset.get(Time());
-		Time time = get_time_mark() + time_offset;
+		Time time = (get_time_mark() == Time::end()) ? time_offset : get_time_mark() + time_offset;
 		if (!newimporter->is_animated())
 			time = Time(0);
 
