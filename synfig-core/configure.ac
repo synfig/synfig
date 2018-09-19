@@ -408,10 +408,10 @@ PKG_CHECK_MODULES(MLTPP, mlt++,,[
 CONFIG_DEPS="$CONFIG_DEPS mlt++"
 
 AX_BOOST_BASE([1.53.0],,AC_MSG_ERROR([ ** You need to install Boost >= 1.53.0]))
-AX_BOOST_SYSTEM
-if test "x$ax_cv_boost_system" != "xyes" ; then
-	AC_MSG_ERROR([ ** You need to install Boost system library])
-fi
+#AX_BOOST_SYSTEM
+#if test "x$ax_cv_boost_system" != "xyes" ; then
+#	AC_MSG_ERROR([ ** You need to install Boost system library])
+#fi
 # Boost program options and system libraries are just dependencies
 # of the synfig cli and therefore
 # not required to link against the synfig library.

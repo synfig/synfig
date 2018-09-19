@@ -34,8 +34,7 @@ synfig_SOURCES = \
 synfig_LDADD = \
 	../synfig/libsynfig.la \
 	@SYNFIG_LIBS@ \
-	@BOOST_LDFLAGS@ \
-	@BOOST_SYSTEM_LIB@
+	@BOOST_LDFLAGS@
 
 synfig_CXXFLAGS = \
 	@SYNFIG_CFLAGS@
