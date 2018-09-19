@@ -155,7 +155,8 @@ Noise::color_func(const Point &point, float pixel_size,Context /*context*/)const
 			if(do_alpha)
 			{
 				alpha=random(RandomNoise::SmoothType(smooth),3+(detail-i)*5,x,y,ftime)+alpha*0.5;
-				if(alpha<-1)alpha=-1;if(alpha>1)alpha=1;
+				if (alpha < -1) alpha = -1;
+				if (alpha > 1) alpha = 1;
 			}
 
 			if(turbulent)
