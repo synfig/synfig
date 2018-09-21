@@ -66,6 +66,7 @@ MODULE_INVENTORY_BEGIN(mod_ffmpeg)
 	END_TARGETS
 	BEGIN_IMPORTERS
 		IMPORTER_EXT(ffmpeg_mptr,"avi")
+		IMPORTER_EXT(ffmpeg_mptr,"mp4")
 		IMPORTER_EXT(ffmpeg_mptr,"mpg")
 		IMPORTER_EXT(ffmpeg_mptr,"mpeg")
 		IMPORTER_EXT(ffmpeg_mptr,"mov")
