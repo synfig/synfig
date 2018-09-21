@@ -108,14 +108,12 @@ vstrprintf(const char *format, va_list args)
 {
 #ifdef HAVE_VASPRINTF	// This is the preferred method (and safest)
 	char *buffer;
-	std::string ret;
-	int i=vasprintf(&buffer,format,args);
-	if (i>-1)
-	{
-		ret=buffer;
-		free(buffer);
-	}
-	return ret;
+	int count = vasprintf(&buffer,format,args);
+	if (count < 0) return ""; // error occured
+
+	std::string rv(buffer, count); // passing size (count) for faster copying
+	free(buffer);
+	return rv;
 #else
 #ifdef HAVE_VSNPRINTF	// This is the secondary method (Safe, but bulky)
 #warning etl::vstrprintf() has a maximum size of ETL_STRPRINTF_MAX_LENGTH in this configuration.
@@ -147,6 +145,7 @@ strprintf(const char *format, ...)
 {
 	va_list args;
 	va_start(args,format);
+	//TODO: use g_vasprintf (available on all platforms)
 	const std::string buf = vstrprintf(format, args);
 	va_end(args);
 	return buf;
