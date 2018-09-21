@@ -162,6 +162,44 @@ Time::Time(const String &str_, float fps):
 	}
 }
 
+// This functions suggests what time is in seconds
+std::string Time::get_string(Time::Format format) const
+{
+	Time time(*this);
+	if (time <= begin())
+		return "SOT";	// Start Of Time
+	if (time >= end())
+		return "EOT";	// End Of Time
+
+	if(format <= FORMAT_NORMAL)
+	{
+		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
+		return strprintf("%.3f", (float)time);
+	}
+
+
+	if(format<=FORMAT_VIDEO)
+	{
+		int hours, minutes, seconds, microseconds;
+		hours = time / 3600;
+		time -= hours*3600;
+
+		minutes = time / 60;
+		time -= minutes*60;
+
+		seconds=time;
+		time -= seconds;
+
+		microseconds = time*1000;
+
+		return strprintf("%02d:%02d:%02d.%02d", hours, minutes, seconds, microseconds);
+	}
+
+	synfig::error(_("Translating Time to unknown format (not implemented)"));
+
+	return "";
+}
+
 String
 Time::get_string(float fps, Time::Format format)const
 {

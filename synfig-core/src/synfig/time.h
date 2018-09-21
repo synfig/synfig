@@ -76,7 +76,7 @@ public:
 
 	Time(int x):value_(x) { }
 
-	Time(int hour, int minute, float second):value_(static_cast<value_type>(second+hour*3600+minute*60)) { }
+	Time(int hour, int minute, float second):value_(static_cast<value_type>(hour*3600 + minute*60 + second)) { }
 
 	//! Constructs Time from the given string.
 	/*!	\note If the string references frames, then the
@@ -104,7 +104,8 @@ public:
 
 	//! Returns a string describing the current time value
 	/*!	\see Format */
-	String get_string(float fps=0, Time::Format format=FORMAT_NORMAL)const;
+	String get_string(float fps=0, Time::Format format=FORMAT_NORMAL) const;
+	std::string get_string(Time::Format format) const;
 
 #ifdef _DEBUG
 	const char *c_str()const;
