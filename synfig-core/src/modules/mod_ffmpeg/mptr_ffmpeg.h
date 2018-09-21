@@ -58,7 +58,7 @@ private:
 	struct termios oldtty;
 #endif
 
-	bool seek_to(int frame);
+	bool seek_to(const synfig::Time& time);
 	bool grab_frame(void);
 
 public:

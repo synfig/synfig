@@ -73,7 +73,7 @@ using namespace etl;
 
 SYNFIG_IMPORTER_INIT(ffmpeg_mptr);
 SYNFIG_IMPORTER_SET_NAME(ffmpeg_mptr,"ffmpeg");
-SYNFIG_IMPORTER_SET_EXT(ffmpeg_mptr,"avi");
+SYNFIG_IMPORTER_SET_EXT(ffmpeg_mptr,"avi"); // not working look at the main.cpp for list opf available extensions
 SYNFIG_IMPORTER_SET_VERSION(ffmpeg_mptr,"0.1");
 SYNFIG_IMPORTER_SET_CVS_ID(ffmpeg_mptr,"$Id$");
 SYNFIG_IMPORTER_SET_SUPPORTS_FILE_SYSTEM_WRAPPER(ffmpeg_mptr, false);
@@ -86,7 +86,7 @@ bool ffmpeg_mptr::is_animated()
 }
 
 bool
-ffmpeg_mptr::seek_to(int frame)
+ffmpeg_mptr::seek_to(const Time& time)
 {
 	//if(frame<cur_frame || !file)
 	//{
@@ -102,7 +102,9 @@ ffmpeg_mptr::seek_to(int frame)
 		}
 		
 		// FIXME: 24 fps is hardcoded now, but in fact we have to get it from canvas
-		float position = frame/24;
+		//float position = (frame+1)/24; // ffmpeg didn't work with 0 frame
+		//float position = 1000/24; // ffmpeg didn't work with 0 frame
+		const char* position = time.get_string(Time::FORMAT_NORMAL).c_str();
 
 #if defined(WIN32_PIPE_TO_PROCESSES)
 
@@ -113,7 +115,7 @@ ffmpeg_mptr::seek_to(int frame)
 			binary_path = etl::dirname(binary_path)+ETL_DIRECTORY_SEPARATOR;
 		binary_path += "ffmpeg.exe";
 
-		command=strprintf("\"%s\" -ss %.2f -i \"%s\" -vframes 1 -an -f image2pipe -vcodec ppm -\n",binary_path.c_str(),position,identifier.filename.c_str());
+		command=strprintf("\"%s\" -ss %s -i \"%s\" -vframes 1 -an -f image2pipe -vcodec ppm -\n", binary_path.c_str(), position, identifier.filename.c_str());
 		
 		// This covers the dumb cmd.exe behavior.
 		// See: http://eli.thegreenplace.net/2011/01/28/on-spaces-in-the-paths-of-programs-and-files-on-windows/
@@ -148,7 +150,9 @@ ffmpeg_mptr::seek_to(int frame)
 			}
 			// Close the unneeded pipein
 			close(p[1]);
-			execlp("ffmpeg", "ffmpeg", "-ss", strprintf("%.2f",position).c_str(), "-i", identifier.filename.c_str(), "-vframes", "1","-an", "-f", "image2pipe", "-vcodec", "ppm", "-", (const char *)NULL);
+			/*std::string command = strprintf("\"%s\" -ss '%s' -i \"%s\" -vframes 1 -an -f image2pipe -vcodec ppm -\n", "ffmpeg", position2, identifier.filename.c_str());
+			synfig::warning("ffmpeg command: '%s'", command.c_str());*/
+			execlp("ffmpeg", "ffmpeg", "-ss", position, "-i", identifier.filename.c_str(), "-vframes", "1","-an", "-f", "image2pipe", "-vcodec", "ppm", "-", (const char *)NULL);
 			// We should never reach here unless the exec failed
 			cerr<<"Unable to open pipe to ffmpeg (exec failed)"<<endl;
 			_exit(1);
@@ -274,8 +278,8 @@ ffmpeg_mptr::~ffmpeg_mptr()
 bool
 ffmpeg_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc*/, Time time, synfig::ProgressCallback *)
 {
-	int i=(int)(time*fps);
-	if(!seek_to(i))
+	synfig::warning("time: %f", (float)time);
+	if(!seek_to(time))
 		return false;
 	if(!grab_frame())
 		return false;
