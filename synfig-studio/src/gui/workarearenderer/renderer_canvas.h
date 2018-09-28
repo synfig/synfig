@@ -146,9 +146,12 @@ private:
 	const synfig::Real weight_past_extra;
 	const synfig::Real weight_zoom_in;   //!< will multiply to log(zoom)
 	const synfig::Real weight_zoom_out;
+	const int max_enqueued_tasks;
 
-	//! controls access to fields: tiles, onion_frames, visible_frames, current_frame, frame_duration, tiles_size
+	//! controls access to fields: enqueued_tasks, tiles, onion_frames, visible_frames, current_frame, frame_duration, tiles_size
 	Glib::Threads::Mutex mutex;
+
+	int enqueued_tasks;
 
 	//! stored tiles may be actual/outdated and rendered/not-rendered
 	TileMap tiles;
@@ -164,8 +167,6 @@ private:
 	long long tiles_size;
 
 	synfig::PixelFormat pixel_format;
-
-	bool in_process;
 
 	//! uses to normalize alpha value after blending of onion surfaces
 	Cairo::RefPtr<Cairo::ImageSurface> alpha_src_surface;

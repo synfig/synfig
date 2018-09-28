@@ -96,9 +96,10 @@ Renderer_Canvas::Renderer_Canvas():
 	weight_past_extra  (  32.0),
 	weight_zoom_in     (1024.0), // very very low priority
 	weight_zoom_out    (1024.0),
+	max_enqueued_tasks (6),
+	enqueued_tasks(),
 	tiles_size(),
-	pixel_format(),
-	in_process()
+	pixel_format()
 {
 	// check endianess
     union { int i; char c[4]; } checker = {0x01020304};
@@ -234,6 +235,9 @@ Renderer_Canvas::on_tile_finished(bool success, const Tile::Handle &tile)
 	// 'tiles', 'onion_frames', 'refresh_id', and 'tiles_size' are controlled by mutex
 
 	Glib::Threads::Mutex::Lock lock(mutex);
+
+	--enqueued_tasks;
+
 	if (!tile->event && !tile->surface && !tile->cairo_surface)
 		return; // tile is already removed
 
@@ -257,17 +261,12 @@ Renderer_Canvas::on_post_tile_finished(const Tile::Handle &tile)
 	// this method must be called from on_post_tile_finished_callback()
 	// check if rendering is finished
 	bool tile_visible = false;
-	in_process = false;
 	Time time;
 	{
 		Glib::Threads::Mutex::Lock lock(mutex);
 		time = tile->frame_id.time;
 		if (visible_frames.count(tile->frame_id))
 			tile_visible = true;
-		for(TileMap::const_iterator i = tiles.begin(); !in_process && i != tiles.end(); ++i)
-			for(TileList::const_iterator j = i->second.begin(); !in_process && j != i->second.end(); ++j)
-				if (*j && (*j)->event)
-					in_process = true;
 	}
 
 	if (get_work_area()) {
@@ -276,7 +275,7 @@ Renderer_Canvas::on_post_tile_finished(const Tile::Handle &tile)
 		if (tile_visible)
 			get_work_area()->queue_draw(); // enqueue_render will called while draw
 		else
-		if (!in_process)
+		if (!enqueued_tasks)
 			enqueue_render();
 	}
 }
@@ -497,6 +496,8 @@ Renderer_Canvas::enqueue_render_frame(
 
 		insert_tile(frame_tiles, tile);
 
+		++enqueued_tasks;
+
 		// Renderer::enqueue contains the expensive 'optimization' stage, so call it async
 		ThreadPool::instance.enqueue( sigc::bind(
 			sigc::ptr_fun(&rendering::Renderer::enqueue_task_func),
@@ -524,10 +525,10 @@ Renderer_Canvas::enqueue_render()
 		build_onion_frames();
 
 		rendering::Renderer::Handle renderer = rendering::Renderer::get_renderer(renderer_name);
-		if (renderer) {
-			int enqueued = 0;
+		if (renderer && enqueued_tasks < max_enqueued_tasks) {
 			if (canvas && window_rect.is_valid()) {
 				Time orig_time = canvas->get_time();
+				int enqueued = 0;
 
 				// generate rendering task for thumbnail
 				// do it first to be sure that thmubnails will always fully covered by the single tile
@@ -541,18 +542,13 @@ Renderer_Canvas::enqueue_render()
 
 				remove_extra_tiles(events);
 
-				for(TileMap::const_iterator i = tiles.begin(); i != tiles.end(); ++i)
-					for(TileList::const_iterator j = i->second.begin(); j != i->second.end(); ++j)
-						if (!*j || (*j)->event)
-							++enqueued;
-
 				// generate rendering tasks for future or past frames
 				// render only one frame in background
 				int future = 0, past = 0;
 				long long frame_size = image_rect_size(window_rect);
 				bool time_in_repeat_range = time_model->get_time() >= time_model->get_play_bounds_lower()
 						                 && time_model->get_time() <= time_model->get_play_bounds_upper();
-				while(!in_process && !enqueued && tiles_size + frame_size < max_tiles_size_soft) {
+				while(enqueued_tasks < max_enqueued_tasks && tiles_size + frame_size < max_tiles_size_soft) {
 					Time future_time = current_frame.time + frame_duration*future;
 					bool future_exists = future_time >= time_model->get_lower()
 									  && future_time <= time_model->get_upper();
@@ -593,10 +589,8 @@ Renderer_Canvas::enqueue_render()
 				// restore canvas time
 				canvas->set_time(orig_time);
 
-				if (enqueued) {
-					in_process = true;
+				if (enqueued)
 					get_work_area()->signal_rendering()();
-				}
 			}
 		}
 	}
@@ -638,6 +632,8 @@ Renderer_Canvas::clear_render()
 		tiles.clear();
 	}
 	rendering::Renderer::cancel(events);
+	assert(enqueued_tasks == 0);
+	enqueued_tasks = 0;
 	if (cleared && get_work_area())
 		get_work_area()->signal_rendering()();
 }
