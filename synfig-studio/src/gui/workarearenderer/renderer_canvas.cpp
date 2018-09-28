@@ -50,6 +50,7 @@
 
 #include <gui/app.h>
 #include <gui/canvasview.h>
+#include <gui/timemodel.h>
 
 #include "renderer_canvas.h"
 
@@ -89,10 +90,12 @@ image_rect_size(const RectInt &rect)
 Renderer_Canvas::Renderer_Canvas():
 	max_tiles_size_soft(512*1024*1024),
 	max_tiles_size_hard(max_tiles_size_soft + 128*1024*1024),
-	weight_future  (   1.0), // high priority
-	weight_past    (   2.0), // low priority
-	weight_zoom_in (1024.0), // very very low priority
-	weight_zoom_out(1024.0),
+	weight_future      (   1.0), // high priority
+	weight_past        (   2.0), // low priority
+	weight_future_extra(  16.0),
+	weight_past_extra  (  32.0),
+	weight_zoom_in     (1024.0), // very very low priority
+	weight_zoom_out    (1024.0),
 	tiles_size(),
 	pixel_format(),
 	in_process()
@@ -516,7 +519,7 @@ Renderer_Canvas::enqueue_render()
 		String         renderer_name  = get_work_area()->get_renderer();
 		RectInt        window_rect    = get_work_area()->get_window_rect();
 		Canvas::Handle canvas         = get_work_area()->get_canvas();
-		RendDesc       rend_desc      = canvas->rend_desc();
+		etl::handle<TimeModel> time_model = get_work_area()->get_canvas_view()->time_model();
 
 		build_onion_frames();
 
@@ -547,15 +550,28 @@ Renderer_Canvas::enqueue_render()
 				// render only one frame in background
 				int future = 0, past = 0;
 				long long frame_size = image_rect_size(window_rect);
+				bool time_in_repeat_range = time_model->get_time() >= time_model->get_play_bounds_lower()
+						                 && time_model->get_time() <= time_model->get_play_bounds_upper();
 				while(!in_process && !enqueued && tiles_size + frame_size < max_tiles_size_soft) {
 					Time future_time = current_frame.time + frame_duration*future;
-					bool future_exists = future_time >= rend_desc.get_time_start()
-									  && future_time <= rend_desc.get_time_end();
+					bool future_exists = future_time >= time_model->get_lower()
+									  && future_time <= time_model->get_upper();
+					Real weight_future_current = !time_in_repeat_range
+							                  || ( future_time >= time_model->get_play_bounds_lower()
+							                    && future_time <= time_model->get_play_bounds_upper() )
+											   ? weight_future : weight_future_extra;
+
 					Time past_time = current_frame.time - frame_duration*past;
-					bool past_exists = past_time >= rend_desc.get_time_start()
-									&& past_time <= rend_desc.get_time_end();
+					bool past_exists = past_time >= time_model->get_lower()
+									&& past_time <= time_model->get_upper();
+					Real weight_past_current = !time_in_repeat_range
+							                || ( past_time >= time_model->get_play_bounds_lower()
+							                  && past_time <= time_model->get_play_bounds_upper() )
+											 ? weight_past : weight_past_extra;
+
 					if (!future_exists && !past_exists) break;
-					bool future_priority = weight_future*future < weight_past*past;
+
+					bool future_priority = weight_future_current*future < weight_past_current*past;
 
 					if (future_exists && (!past_exists || future_priority)) {
 						// queue future

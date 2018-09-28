@@ -142,6 +142,8 @@ private:
 	const long long max_tiles_size_hard; //!< threshold for removing already created tiles
 	const synfig::Real weight_future;    //!< will multiply to frames count
 	const synfig::Real weight_past;
+	const synfig::Real weight_future_extra;
+	const synfig::Real weight_past_extra;
 	const synfig::Real weight_zoom_in;   //!< will multiply to log(zoom)
 	const synfig::Real weight_zoom_out;
 
