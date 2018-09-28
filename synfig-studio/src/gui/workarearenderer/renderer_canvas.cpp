@@ -234,6 +234,10 @@ Renderer_Canvas::on_tile_finished(bool success, const Tile::Handle &tile)
 
 	// 'tiles', 'onion_frames', 'refresh_id', and 'tiles_size' are controlled by mutex
 
+	Cairo::RefPtr<Cairo::ImageSurface> cairo_surface;
+	if (success && tile->surface)
+		cairo_surface = convert(tile->surface, tile->rect.get_width(), tile->rect.get_height());
+
 	Glib::Threads::Mutex::Lock lock(mutex);
 
 	--enqueued_tasks;
@@ -242,8 +246,7 @@ Renderer_Canvas::on_tile_finished(bool success, const Tile::Handle &tile)
 		return; // tile is already removed
 
 	tile->event.reset();
-	if (success && tile->surface)
-		tile->cairo_surface = convert(tile->surface, tile->rect.get_width(), tile->rect.get_height());
+	tile->cairo_surface = cairo_surface;
 	tile->surface.reset();
 
 	// don't create handle if ref-count is zero
@@ -261,12 +264,14 @@ Renderer_Canvas::on_post_tile_finished(const Tile::Handle &tile)
 	// this method must be called from on_post_tile_finished_callback()
 	// check if rendering is finished
 	bool tile_visible = false;
+	int local_enqueued_tasks;
 	Time time;
 	{
 		Glib::Threads::Mutex::Lock lock(mutex);
 		time = tile->frame_id.time;
 		if (visible_frames.count(tile->frame_id))
 			tile_visible = true;
+		local_enqueued_tasks = enqueued_tasks; // field should be protected by mutex
 	}
 
 	if (get_work_area()) {
@@ -275,7 +280,7 @@ Renderer_Canvas::on_post_tile_finished(const Tile::Handle &tile)
 		if (tile_visible)
 			get_work_area()->queue_draw(); // enqueue_render will called while draw
 		else
-		if (!enqueued_tasks)
+		if (!local_enqueued_tasks)
 			enqueue_render();
 	}
 }
