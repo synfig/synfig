@@ -441,7 +441,7 @@ Dock_Timetrack::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view
 	studio::LayerTree* tree_layer(dynamic_cast<studio::LayerTree*>(canvas_view->get_ext_widget("layers_cmp")));
 
 	tree_layer->signal_param_tree_header_height_changed().connect(sigc::mem_fun(*this, &studio::Dock_Timetrack::on_update_header_height));
-	canvas_view->time_model()->signal_time_changed().connect(sigc::mem_fun(*tree_view,&Gtk::TreeView::queue_draw));
+	canvas_view->time_model()->signal_changed().connect(sigc::mem_fun(*tree_view,&Gtk::TreeView::queue_draw));
 	canvas_view->set_ext_widget(get_name(),tree_view);
 }
 

@@ -70,11 +70,12 @@ private:
 	Glib::RefPtr<Gtk::Adjustment> scroll_time_adjustment_;
 	Glib::RefPtr<Gtk::Adjustment> play_bounds_adjustment_;
 
-	sigc::signal<void> signal_changed_;
+	sigc::signal<void> signal_bounds_changed_;
 	sigc::signal<void> signal_visible_changed_;
 	sigc::signal<void> signal_play_bounds_changed_;
 	sigc::signal<void> signal_time_changed_;
 	sigc::signal<void> signal_play_time_changed_;
+	sigc::signal<void> signal_changed_;
 
 	void on_changed(Glib::RefPtr<Gtk::Adjustment> *source);
 	void on_value_changed(Glib::RefPtr<Gtk::Adjustment> *source);
@@ -110,7 +111,7 @@ public:
 	const synfig::Time& get_lower() const { return lower; }
 	const synfig::Time& get_upper() const { return upper; }
 	void set_bounds(const synfig::Time &lower, const synfig::Time &upper, float fps)
-		{ if (set_bounds_silent(lower, upper, fps)) changed(); }
+		{ if (set_bounds_silent(lower, upper, fps)) bounds_changed(); }
 
 	const synfig::Time& get_visible_lower() const { return visible_lower; }
 	const synfig::Time& get_visible_upper() const { return visible_upper; }
@@ -175,22 +176,50 @@ public:
 	const Glib::RefPtr<Gtk::Adjustment>& scroll_time_adjustment()  { return scroll_time_adjustment_; }
 	const Glib::RefPtr<Gtk::Adjustment>& play_bounds_adjustment()  { return play_bounds_adjustment_; }
 
-	sigc::signal<void> signal_changed()             { return signal_changed_; }
-	sigc::signal<void> signal_visible_changed()     { return signal_visible_changed_; }
-	sigc::signal<void> signal_play_bounds_changed() { return signal_play_bounds_changed_; }
-	sigc::signal<void> signal_time_changed()        { return signal_time_changed_; }
-	sigc::signal<void> signal_play_time_changed()   { return signal_play_time_changed_; }
+	sigc::signal<void> signal_bounds_changed()      { return signal_bounds_changed_; }      // raises on bounds changed
+	sigc::signal<void> signal_visible_changed()     { return signal_visible_changed_; }     // raises on visible bounds changed
+	sigc::signal<void> signal_play_bounds_changed() { return signal_play_bounds_changed_; } // raises on play bounsd changed
+	sigc::signal<void> signal_time_changed()        { return signal_time_changed_; }        // raises on current time changed
+	sigc::signal<void> signal_play_time_changed()   { return signal_play_time_changed_; }   // raises on play time changed
 
-	void changed()
-		{ sync(); signal_changed()(); visible_changed(); play_bounds_changed(); time_changed(); }
-	void visible_changed()
-		{ sync(); signal_visible_changed()(); }
-	void play_bounds_changed()
-		{ sync(); signal_play_bounds_changed()(); play_time_changed(); }
-	void time_changed()
-		{ sync(); signal_time_changed()(); }
-	void play_time_changed()
-		{ sync(); signal_play_time_changed()(); }
+	sigc::signal<void> signal_changed()             { return signal_changed_; }             // raises on any change
+
+	void bounds_changed() {
+		sync();
+		signal_bounds_changed()();
+		visible_changed();
+		play_bounds_changed();
+		time_changed();
+		signal_changed()();
+	}
+
+	void visible_changed() {
+		sync();
+		signal_visible_changed()();
+		signal_changed()();
+	}
+
+	void play_bounds_changed() {
+		sync();
+		signal_play_bounds_changed()();
+		play_time_changed();
+		signal_changed()();
+	}
+
+	void time_changed() {
+		sync();
+		signal_time_changed()();
+		signal_changed()();
+	}
+
+	void play_time_changed() {
+		sync();
+		signal_play_time_changed()();
+		signal_changed()();
+	}
+
+	void all_changed()
+		{ bounds_changed(); }
 };
 
 }; // END of namespace studio
