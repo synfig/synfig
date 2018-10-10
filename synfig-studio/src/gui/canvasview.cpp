@@ -575,6 +575,7 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<CanvasIn
 	toggling_show_grid=false;
 	toggling_snap_grid=false;
 	toggling_onion_skin=false;
+	toggling_background_rendering=false;
 
 	//info("Canvasview: Entered constructor");
 	// Minor hack
@@ -1250,6 +1251,25 @@ CanvasView::create_display_bar()
 		displaybar->append(*draft_button);
 	}
 	
+	// Separator
+	displaybar->append( *create_tool_separator() );
+
+	{ // Set up the background rendering button
+		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-toggle_background_rendering"), iconsize));
+		icon->set_padding(0, 0);
+		icon->show();
+
+		background_rendering_button = Gtk::manage(new class Gtk::ToggleToolButton());
+		background_rendering_button->set_active(work_area->get_background_rendering());
+		background_rendering_button->set_icon_widget(*icon);
+		background_rendering_button->signal_toggled().connect(
+			sigc::mem_fun(*this, &CanvasView::toggle_background_rendering));
+		background_rendering_button->set_label(_("Background rendering"));
+		background_rendering_button->set_tooltip_text( _("Render future and past frames in background when enabled"));
+		background_rendering_button->show();
+
+		displaybar->append(*background_rendering_button);
+	}
 	
 	// Separator
 	displaybar->append( *create_tool_separator() );
@@ -1503,10 +1523,13 @@ CanvasView::init_menus()
 		action->set_active(work_area->get_guide_snap());
 		action_group->add(action, sigc::mem_fun(*work_area, &WorkArea::toggle_guide_snap));
 
-
 		action = Gtk::ToggleAction::create("toggle-low-res", _("Use Low-Res"));
 		action->set_active(work_area->get_low_resolution_flag());
 		action_group->add(action, sigc::mem_fun(*this, &CanvasView::toggle_low_res_pixel_flag));
+
+		background_rendering_toggle = Gtk::ToggleAction::create("toggle-background-rendering", _("Enable rendering in background"));
+		background_rendering_toggle->set_active(work_area->get_background_rendering());
+		action_group->add(background_rendering_toggle, sigc::mem_fun(*this, &CanvasView::toggle_background_rendering));
 
 		onion_skin_toggle = Gtk::ToggleAction::create("toggle-onion-skin", _("Show Onion Skin"));
 		onion_skin_toggle->set_active(work_area->get_onion_skin());
@@ -2556,12 +2579,26 @@ CanvasView::toggle_onion_skin()
 	if(toggling_onion_skin)
 		return;
 	toggling_onion_skin=true;
-	work_area->toggle_onion_skin();
+	work_area->set_onion_skin(!work_area->get_onion_skin());
 	// Update the toggle onion skin action
 	set_onion_skin_toggle(work_area->get_onion_skin());
-	// Update the toggle grid snap check button
+	// Update the toggle onion skin button
 	onion_skin->set_active(work_area->get_onion_skin());
 	toggling_onion_skin=false;
+}
+
+void
+CanvasView::toggle_background_rendering()
+{
+	if(toggling_background_rendering)
+		return;
+	toggling_background_rendering=true;
+	work_area->set_background_rendering(!work_area->get_background_rendering());
+	// Update the toggle background rendering action
+	set_background_rendering_toggle(work_area->get_background_rendering());
+	// Update the toggle background rendering button
+	background_rendering_button->set_active(work_area->get_background_rendering());
+	toggling_background_rendering=false;
 }
 
 void
@@ -3289,6 +3326,7 @@ CanvasView::on_meta_data_changed()
 	toggling_show_grid=true;
 	toggling_snap_grid=true;
 	toggling_onion_skin=true;
+	toggling_background_rendering=true;
 	try
 	{
 		// Update the toggle ducks actions
@@ -3312,10 +3350,12 @@ CanvasView::on_meta_data_changed()
 		toggling_show_grid=false;
 		toggling_snap_grid=false;
 		toggling_onion_skin=false;
+		toggling_background_rendering=false;
 	}
 	toggling_show_grid=false;
 	toggling_snap_grid=false;
 	toggling_onion_skin=false;
+	toggling_background_rendering=false;
 }
 
 void

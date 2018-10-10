@@ -960,6 +960,7 @@ DEFINE_ACTION("toggle-guide-snap", _("Toggle Guide Snap"));
 DEFINE_ACTION("toggle-low-res", _("Toggle Low-Res"));
 DEFINE_ACTION("decrease-low-res-pixel-size", _("Decrease Low-Res Pixel Size"));
 DEFINE_ACTION("increase-low-res-pixel-size", _("Increase Low-Res Pixel Size"));
+DEFINE_ACTION("toggle-background-rendering", _("Toggle Background Rendering"));
 DEFINE_ACTION("toggle-onion-skin", _("Toggle Onion Skin"));
 DEFINE_ACTION("canvas-zoom-in", Gtk::StockID("gtk-zoom-in"));
 DEFINE_ACTION("canvas-zoom-out", Gtk::StockID("gtk-zoom-out"));
@@ -1104,6 +1105,7 @@ DEFINE_ACTION("keyframe-properties","Properties");
 "		<menuitem action='toggle-guide-show'/>"
 "		<menuitem action='toggle-guide-snap'/>"
 "		<menuitem action='toggle-low-res'/>"
+"		<menuitem action='toggle-background-rendering'/>"
 "		<menuitem action='toggle-onion-skin'/>"
 "		<separator name='sep-view3'/>"
 "		<menuitem action='canvas-zoom-in'/>"

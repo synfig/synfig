@@ -168,6 +168,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	dirty_trap_count(0),
 	dirty_trap_queued(0),
 	onion_skin(false),
+	background_rendering(true),
 	allow_duck_clicks(true),
 	allow_bezier_clicks(true),
 	allow_layer_clicks(true),
@@ -357,22 +358,23 @@ WorkArea::save_meta_data()
 	Color c(get_grid_color());
 	canvas_interface->set_meta_data("grid_color",strprintf("%f %f %f",c.get_r(),c.get_g(),c.get_b()));
 	c = get_guides_color();
-	canvas_interface->set_meta_data("guide_color",strprintf("%f %f %f",c.get_r(),c.get_g(),c.get_b()));
-	canvas_interface->set_meta_data("grid_snap",get_grid_snap()?"1":"0");
-	canvas_interface->set_meta_data("guide_snap",get_guide_snap()?"1":"0");
-	canvas_interface->set_meta_data("guide_show",get_show_guides()?"1":"0");
-	canvas_interface->set_meta_data("grid_show",show_grid?"1":"0");
-	canvas_interface->set_meta_data("jack_offset",strprintf("%f", (double)jack_offset));
-	canvas_interface->set_meta_data("onion_skin",onion_skin?"1":"0");
+	canvas_interface->set_meta_data("guide_color", strprintf("%f %f %f", c.get_r(), c.get_g(), c.get_b()));
+	canvas_interface->set_meta_data("grid_snap", get_grid_snap() ? "1" : "0");
+	canvas_interface->set_meta_data("guide_snap", get_guide_snap() ? "1" : "0");
+	canvas_interface->set_meta_data("guide_show", get_show_guides() ? "1" : "0");
+	canvas_interface->set_meta_data("grid_show", show_grid ? "1" : "0");
+	canvas_interface->set_meta_data("jack_offset", strprintf("%f", (double)jack_offset));
+	canvas_interface->set_meta_data("onion_skin", onion_skin ? "1" : "0");
 	canvas_interface->set_meta_data("onion_skin_past", strprintf("%d", onion_skins[0]));
 	canvas_interface->set_meta_data("onion_skin_future", strprintf("%d", onion_skins[1]));
+	canvas_interface->set_meta_data("background_rendering", background_rendering ? "1" : "0");
 
 	s = get_background_size();
-	canvas_interface->set_meta_data("background_size",strprintf("%f %f",s[0],s[1]));
+	canvas_interface->set_meta_data("background_size", strprintf("%f %f", s[0], s[1]));
 	c = get_background_first_color();
-	canvas_interface->set_meta_data("background_first_color",strprintf("%f %f %f",c.get_r(),c.get_g(),c.get_b()));
+	canvas_interface->set_meta_data("background_first_color", strprintf("%f %f %f", c.get_r(), c.get_g(), c.get_b()));
 	c = get_background_second_color();
-	canvas_interface->set_meta_data("background_second_color",strprintf("%f %f %f",c.get_r(),c.get_g(),c.get_b()));
+	canvas_interface->set_meta_data("background_second_color", strprintf("%f %f %f", c.get_r(), c.get_g(), c.get_b()));
 
 	{
 		String data;
@@ -596,6 +598,12 @@ WorkArea::load_meta_data()
 	// Update the canvas
 	if (onion_skin && render_required) queue_render();
 
+	data=canvas->get_meta_data("background_rendering");
+	if(data.size() && (data=="1" || data[0]=='t' || data[0]=='T'))
+		set_background_rendering(true);
+	if(data.size() && (data=="0" || data[0]=='f' || data[0]=='F'))
+		set_background_rendering(false);
+
 	data=canvas->get_meta_data("guide_x");
 	get_guide_list_x().clear();
 	while(!data.empty())
@@ -749,6 +757,16 @@ void WorkArea::set_onion_skins(int *onions)
 	if (onion_skin)
 		queue_draw();
 	save_meta_data();
+}
+
+void
+WorkArea::set_background_rendering(bool x)
+{
+	if (background_rendering == x)
+		return;
+	background_rendering = x;
+	save_meta_data();
+	queue_draw();
 }
 
 void

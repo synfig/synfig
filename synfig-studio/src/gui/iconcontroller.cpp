@@ -350,6 +350,8 @@ IconController::init_icons(const synfig::String& path_to_icons)
 
 	INIT_STOCK_ICON(toggle_onion_skin, "onion_skin_icon." IMAGE_EXT, _("Toggle onion skin"));
 
+	INIT_STOCK_ICON(toggle_background_rendering, "background_rendering_icon." IMAGE_EXT, _("Toggle background rendering"));
+
 	INIT_STOCK_ICON(increase_resolution, "incr_resolution_icon." IMAGE_EXT, _("Increase resolution"));
 	INIT_STOCK_ICON(decrease_resolution, "decr_resolution_icon." IMAGE_EXT, _("Decrease resolution"));
 

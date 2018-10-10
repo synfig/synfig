@@ -217,6 +217,9 @@ private:
 	//! stores the future [1] and past [0] onion skins based on keyframes
 	int onion_skins[2];
 
+	// render future and past frames in background
+	bool background_rendering;
+
 	etl::loose_handle<synfig::ValueNode> selected_value_node_;
 
 	bool allow_duck_clicks;
@@ -307,9 +310,11 @@ public:
 
 	void set_onion_skin(bool x);
 	bool get_onion_skin() const { return onion_skin; }
-	void toggle_onion_skin() { set_onion_skin(!get_onion_skin()); }
 	void set_onion_skins(int *onions);
 	int const * get_onion_skins() const { return onion_skins; }
+
+	void set_background_rendering(bool x);
+	bool get_background_rendering() const { return background_rendering; }
 
 	void set_selected_value_node(etl::loose_handle<synfig::ValueNode> x);
 

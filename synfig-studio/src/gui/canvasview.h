@@ -218,6 +218,8 @@ public:
 	void set_grid_show_toggle(bool flag) { grid_show_toggle->set_active(flag); }
 	void set_onion_skin_toggle(bool flag) { onion_skin_toggle->set_active(flag); }
 
+	void set_background_rendering_toggle(bool flag) { background_rendering_toggle->set_active(flag); }
+
 	/*
  -- ** -- P R I V A T E   D A T A ---------------------------------------------
 	*/
@@ -270,6 +272,7 @@ private:
 	Gtk::Statusbar *statusbar;
 	Gtk::Button *closebutton;
 	Gtk::Button *stopbutton;
+	Gtk::ToggleToolButton *background_rendering_button;
 	Gtk::ToolButton *refreshbutton;
 	Gtk::ToggleToolButton *draft_button;
 	Gtk::VBox *timebar;
@@ -302,6 +305,7 @@ private:
 	bool toggling_show_grid;
 	bool toggling_snap_grid;
 	bool toggling_onion_skin;
+	bool toggling_background_rendering;
 	//! Shows current time and allows edition
 	Widget_Time *current_time_widget;
 	void on_current_time_widget_changed();
@@ -323,6 +327,8 @@ private:
 	Glib::RefPtr<Gtk::ToggleAction> grid_snap_toggle;
 	Glib::RefPtr<Gtk::ToggleAction> grid_show_toggle;
 	Glib::RefPtr<Gtk::ToggleAction> onion_skin_toggle;
+
+	Glib::RefPtr<Gtk::ToggleAction> background_rendering_toggle;
 
 	Gtk::RadioButtonGroup low_res_pixel_size_group;
 
@@ -443,6 +449,7 @@ private:
 	void toggle_show_grid();
 	void toggle_snap_grid();
 	void toggle_onion_skin();
+	void toggle_background_rendering();
 
 	void toggle_animatebutton();
 	void toggle_timetrackbutton();

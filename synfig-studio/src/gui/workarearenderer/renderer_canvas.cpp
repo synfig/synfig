@@ -524,6 +524,7 @@ Renderer_Canvas::enqueue_render()
 
 		String         renderer_name  = get_work_area()->get_renderer();
 		RectInt        window_rect    = get_work_area()->get_window_rect();
+		bool           bg_rendering   = get_work_area()->get_background_rendering();
 		Canvas::Handle canvas         = get_work_area()->get_canvas();
 		etl::handle<TimeModel> time_model = get_work_area()->get_canvas_view()->time_model();
 
@@ -553,7 +554,8 @@ Renderer_Canvas::enqueue_render()
 				long long frame_size = image_rect_size(window_rect);
 				bool time_in_repeat_range = time_model->get_time() >= time_model->get_play_bounds_lower()
 						                 && time_model->get_time() <= time_model->get_play_bounds_upper();
-				while(enqueued_tasks < max_enqueued_tasks && tiles_size + frame_size < max_tiles_size_soft) {
+				while(bg_rendering && enqueued_tasks < max_enqueued_tasks && tiles_size + frame_size < max_tiles_size_soft)
+				{
 					Time future_time = current_frame.time + frame_duration*future;
 					bool future_exists = future_time >= time_model->get_lower()
 									  && future_time <= time_model->get_upper();

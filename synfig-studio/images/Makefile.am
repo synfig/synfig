@@ -69,6 +69,7 @@ EXTRA_DIST = \
 	decr_resolution_icon.sif \
 	render_options_icon.sif \
 	preview_options_icon.sif \
+	background_rendering_icon.sif \
 	action_set_layer_description_icon.sif \
 	action_add_to_set_icon.sif \
 	action_remove_from_set_icon.sif \
@@ -243,6 +244,7 @@ IMAGES = \
 	decr_resolution_icon.$(EXT) \
 	render_options_icon.$(EXT) \
 	preview_options_icon.$(EXT) \
+	background_rendering_icon.$(EXT) \
 	action_set_layer_description_icon.$(EXT) \
 	action_add_to_set_icon.$(EXT) \
 	action_remove_from_set_icon.$(EXT) \
