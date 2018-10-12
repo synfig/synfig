@@ -45,6 +45,8 @@
 #include <synfig/value.h>
 #include <synfig/valuenode.h>
 
+#include <synfig/rendering/common/task/taskpixelprocessor.h>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -240,3 +242,11 @@ Layer_SolidColor::accelerated_cairorender(Context context, cairo_t *cr, int qual
 }
 
 //////
+
+rendering::Task::Handle
+Layer_SolidColor::build_composite_task_vfunc(ContextParams /*context_params*/)const
+{
+	rendering::TaskPixelColorMatrix::Handle task(new rendering::TaskPixelColorMatrix());
+	task->matrix.set_constant( param_color.get(Color()) );
+	return task;
+}

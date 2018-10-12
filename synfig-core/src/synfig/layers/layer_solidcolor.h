@@ -44,12 +44,10 @@ class Layer_SolidColor : public Layer_Composite, public Layer_NoDeform
 	SYNFIG_LAYER_MODULE_EXT
 
 private:
-
 	//!Parameter: (Color) color of the solid
 	ValueBase param_color;
 
 public:
-
 	Layer_SolidColor();
 
 	virtual bool set_param(const String & param, const synfig::ValueBase &value);
@@ -64,6 +62,8 @@ public:
 
 	virtual synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;
 
+protected:
+	virtual rendering::Task::Handle build_composite_task_vfunc(ContextParams context_params)const;
 }; // END of class Layer_SolidColor
 
 }; // END of namespace synfig
