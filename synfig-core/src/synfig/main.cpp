@@ -371,6 +371,9 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 		if(cb)cb->amount_complete((i+1)*100,modules_to_load.size()*100);
 	}
 
+	// Rebuild tokens data again to include new tokens from modules
+	Token::rebuild();
+
 	if(cb)cb->amount_complete(100, 100);
 	if(cb)cb->task(_("DONE"));
 }
