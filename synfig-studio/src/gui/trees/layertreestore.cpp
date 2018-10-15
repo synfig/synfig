@@ -104,8 +104,6 @@ LayerTreeStore::LayerTreeStore(etl::loose_handle<synfigapp::CanvasInterface> can
 
 	set_default_sort_func(sigc::ptr_fun(index_sorter));
 
-	canvas_interface()->signal_text_changed().connect(sigc::mem_fun(*this,&studio::LayerTreeStore::on_text_changed));
-
 //	rebuild();
 }
 
@@ -1105,12 +1103,6 @@ LayerTreeStore::on_layer_moved(synfig::Layer::Handle layer,int depth, synfig::Ca
 {
 	on_layer_removed(layer);
 	on_layer_inserted(layer,depth);
-}
-
-void
-LayerTreeStore::on_text_changed(synfig::Layer::Handle handle,synfig::String text)
-{
-	handle->set_description(text);
 }
 
 void
