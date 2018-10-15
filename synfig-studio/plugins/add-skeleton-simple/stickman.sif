@@ -16,50 +16,50 @@
       <y>0.1974468678</y>
     </vector>
     <vector id="(stk)-hip2">
-      <x>-0.2442805469</x>
-      <y>-0.0407134257</y>
+      <x>0.3085641563</x>
+      <y>-0.0691470280</y>
     </vector>
-    <real value="1.0970030253" id="(stk)-knee2-r"/>
-    <angle value="-112.594246" id="(stk)-knee2-t"/>
-    <real value="0.9361337137" id="(stk)-heel2-r"/>
-    <angle value="24.987129" id="(stk)-heel2-t"/>
-    <real value="0.5296658386" id="(stk)-toe2-r"/>
-    <angle value="-90.190285" id="(stk)-toe2-t"/>
+    <real value="1.0489872794" id="(stk)-knee2-r"/>
+    <angle value="-72.423866" id="(stk)-knee2-t"/>
+    <real value="0.8959912803" id="(stk)-heel2-r"/>
+    <angle value="-7.273115" id="(stk)-heel2-t"/>
+    <real value="0.4726336483" id="(stk)-toe2-r"/>
+    <angle value="71.256737" id="(stk)-toe2-t"/>
     <vector id="(stk)-hip1">
-      <x>0.3216030002</x>
-      <y>-0.0454874001</y>
+      <x>-0.2618843317</x>
+      <y>-0.0419455916</y>
     </vector>
-    <real value="0.8987684386" id="(stk)-heel1-r"/>
-    <angle value="-14.550631" id="(stk)-heel1-t"/>
-    <real value="0.5058991674" id="(stk)-toe1-r"/>
+    <real value="0.8760995310" id="(stk)-heel1-r"/>
+    <angle value="4.504314" id="(stk)-heel1-t"/>
+    <real value="0.4861895191" id="(stk)-toe1-r"/>
     <vector id="(stk)-head">
       <x>0.2231597453</x>
       <y>-0.0279710144</y>
     </vector>
     <vector id="(stk)-shoulder1">
-      <x>-0.1409048438</x>
-      <y>-0.4890227020</y>
+      <x>-0.1388232261</x>
+      <y>0.4997465611</y>
     </vector>
-    <angle value="-24.257536" id="(stk)-wrist1-t"/>
-    <real value="0.3466623282" id="(stk)-palm1-r"/>
-    <angle value="-13.646892" id="(stk)-palm1-t"/>
+    <angle value="28.279217" id="(stk)-wrist1-t"/>
+    <real value="0.4140958747" id="(stk)-palm1-r"/>
+    <angle value="15.899072" id="(stk)-palm1-t"/>
     <vector id="(stk)-shoulder2">
-      <x>-0.1397183239</x>
-      <y>0.5595002174</y>
+      <x>-0.0993307382</x>
+      <y>-0.4921427369</y>
     </vector>
-    <real value="0.7914743074" id="(stk)-elbow2-r"/>
-    <angle value="-218.996719" id="(stk)-elbow2-t"/>
-    <real value="0.7133086109" id="(stk)-wrist2-r"/>
-    <angle value="15.119938" id="(stk)-wrist2-t"/>
-    <real value="0.3261906387" id="(stk)-palm2-r"/>
-    <angle value="10.523929" id="(stk)-palm2-t"/>
+    <real value="0.8344531890" id="(stk)-elbow2-r"/>
+    <angle value="-132.317841" id="(stk)-elbow2-t"/>
+    <real value="0.7407660797" id="(stk)-wrist2-r"/>
+    <angle value="-18.273602" id="(stk)-wrist2-t"/>
+    <real value="0.3279214504" id="(stk)-palm2-r"/>
+    <angle value="-25.085297" id="(stk)-palm2-t"/>
     <real value="0.5000000000" id="(stk)-stickman-amount"/>
-    <real value="1.0591824416" id="(stk)-knee1-r"/>
-    <angle value="-75.240005" id="(stk)-knee1-t"/>
-    <real value="0.8117041881" id="(stk)-elbow1-r"/>
-    <angle value="-140.343704" id="(stk)-elbow1-t"/>
-    <angle value="95.118828" id="(stk)-toe1-t"/>
-    <real value="0.7988911066" id="(stk)-wrist1-r"/>
+    <real value="1.0632171371" id="(stk)-knee1-r"/>
+    <angle value="-105.509598" id="(stk)-knee1-t"/>
+    <real value="0.9023251256" id="(stk)-elbow1-r"/>
+    <angle value="-227.208099" id="(stk)-elbow1-t"/>
+    <angle value="-66.652039" id="(stk)-toe1-t"/>
+    <real value="0.7773025138" id="(stk)-wrist1-r"/>
     <angle value="-0.306362" id="(stk)-head-t"/>
     <real value="0.9983095318" id="(stk)-head-r"/>
     <real value="0.7000000000" id="(stk)-fillers-amount"/>
@@ -72,7 +72,7 @@
     <bool value="false" id="(stk)-children-lock"/>
     <string id="(stk)-version">1</string>
   </defs>
-  <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="(stk)">
+  <layer type="group" active="true" exclude_from_rendering="false" version="0.2" desc="(stk)">
     <param name="z_depth">
       <real value="0.0000000000"/>
     </param>
@@ -84,13 +84,35 @@
     </param>
     <param name="origin">
       <vector>
-        <x>-0.1500000060</x>
-        <y>-0.3666666746</y>
+        <x>0.0000000000</x>
+        <y>0.0000000000</y>
       </vector>
+    </param>
+    <param name="transformation">
+      <composite type="transformation">
+        <offset>
+          <vector>
+            <x>-0.1500000060</x>
+            <y>-0.3666666746</y>
+          </vector>
+        </offset>
+        <angle>
+          <angle value="0.000000"/>
+        </angle>
+        <skew_angle>
+          <angle value="0.000000"/>
+        </skew_angle>
+        <scale>
+          <vector>
+            <x>0.8187307715</x>
+            <y>0.8187307715</y>
+          </vector>
+        </scale>
+      </composite>
     </param>
     <param name="canvas">
       <canvas>
-        <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="(stk)-forearm2">
+        <layer type="group" active="true" exclude_from_rendering="false" version="0.2" desc="(stk)-forearm2">
           <param name="z_depth">
             <real value="0.0000000000"/>
           </param>
@@ -106,9 +128,31 @@
               <y>0.0000000000</y>
             </vector>
           </param>
+          <param name="transformation">
+            <composite type="transformation">
+              <offset>
+                <vector>
+                  <x>0.0000000000</x>
+                  <y>0.0000000000</y>
+                </vector>
+              </offset>
+              <angle>
+                <angle value="0.000000"/>
+              </angle>
+              <skew_angle>
+                <angle value="0.000000"/>
+              </skew_angle>
+              <scale>
+                <vector>
+                  <x>1.0000000000</x>
+                  <y>1.0000000000</y>
+                </vector>
+              </scale>
+            </composite>
+          </param>
           <param name="canvas">
             <canvas>
-              <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="(?) content">
+              <layer type="group" active="true" exclude_from_rendering="false" version="0.2" desc="(?) content">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -123,6 +167,28 @@
                     <x>0.0000000000</x>
                     <y>0.0000000000</y>
                   </vector>
+                </param>
+                <param name="transformation">
+                  <composite type="transformation">
+                    <offset>
+                      <vector>
+                        <x>0.0000000000</x>
+                        <y>0.0000000000</y>
+                      </vector>
+                    </offset>
+                    <angle>
+                      <angle value="0.000000"/>
+                    </angle>
+                    <skew_angle>
+                      <angle value="0.000000"/>
+                    </skew_angle>
+                    <scale>
+                      <vector>
+                        <x>1.0000000000</x>
+                        <y>1.0000000000</y>
+                      </vector>
+                    </scale>
+                  </composite>
                 </param>
                 <param name="canvas">
                   <canvas>
@@ -253,20 +319,14 @@
                     </layer>
                   </canvas>
                 </param>
-                <param name="zoom">
-                  <real value="0.0000000000"/>
+                <param name="time_dilation">
+                  <real value="1.0000000000"/>
                 </param>
                 <param name="time_offset">
                   <time value="0s"/>
                 </param>
                 <param name="children_lock">
                   <bool value="false"/>
-                </param>
-                <param name="focus">
-                  <vector>
-                    <x>0.0000000000</x>
-                    <y>0.0000000000</y>
-                  </vector>
                 </param>
                 <param name="outline_grow">
                   <real value="0.0000000000"/>
@@ -513,19 +573,13 @@
               </layer>
             </canvas>
           </param>
-          <param name="zoom">
-            <real value="0.0000000000"/>
+          <param name="time_dilation">
+            <real value="1.0000000000"/>
           </param>
           <param name="time_offset">
             <time value="0s"/>
           </param>
           <param name="children_lock" use=":(stk)-children-lock"/>
-          <param name="focus">
-            <vector>
-              <x>0.0000000000</x>
-              <y>0.0000000000</y>
-            </vector>
-          </param>
           <param name="outline_grow">
             <real value="0.0000000000"/>
           </param>
@@ -542,7 +596,7 @@
             <real value="0.0000000000"/>
           </param>
         </layer>
-        <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="(stk)-arm2">
+        <layer type="group" active="true" exclude_from_rendering="false" version="0.2" desc="(stk)-arm2">
           <param name="z_depth">
             <real value="0.0000000000"/>
           </param>
@@ -558,9 +612,31 @@
               <y>0.0000000000</y>
             </vector>
           </param>
+          <param name="transformation">
+            <composite type="transformation">
+              <offset>
+                <vector>
+                  <x>0.0000000000</x>
+                  <y>0.0000000000</y>
+                </vector>
+              </offset>
+              <angle>
+                <angle value="0.000000"/>
+              </angle>
+              <skew_angle>
+                <angle value="0.000000"/>
+              </skew_angle>
+              <scale>
+                <vector>
+                  <x>1.0000000000</x>
+                  <y>1.0000000000</y>
+                </vector>
+              </scale>
+            </composite>
+          </param>
           <param name="canvas">
             <canvas>
-              <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="(?) content">
+              <layer type="group" active="true" exclude_from_rendering="false" version="0.2" desc="(?) content">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -575,6 +651,28 @@
                     <x>0.0000000000</x>
                     <y>0.0000000000</y>
                   </vector>
+                </param>
+                <param name="transformation">
+                  <composite type="transformation">
+                    <offset>
+                      <vector>
+                        <x>0.0000000000</x>
+                        <y>0.0000000000</y>
+                      </vector>
+                    </offset>
+                    <angle>
+                      <angle value="0.000000"/>
+                    </angle>
+                    <skew_angle>
+                      <angle value="0.000000"/>
+                    </skew_angle>
+                    <scale>
+                      <vector>
+                        <x>1.0000000000</x>
+                        <y>1.0000000000</y>
+                      </vector>
+                    </scale>
+                  </composite>
                 </param>
                 <param name="canvas">
                   <canvas>
@@ -705,20 +803,14 @@
                     </layer>
                   </canvas>
                 </param>
-                <param name="zoom">
-                  <real value="0.0000000000"/>
+                <param name="time_dilation">
+                  <real value="1.0000000000"/>
                 </param>
                 <param name="time_offset">
                   <time value="0s"/>
                 </param>
                 <param name="children_lock">
                   <bool value="false"/>
-                </param>
-                <param name="focus">
-                  <vector>
-                    <x>0.0000000000</x>
-                    <y>0.0000000000</y>
-                  </vector>
                 </param>
                 <param name="outline_grow">
                   <real value="0.0000000000"/>
@@ -983,19 +1075,13 @@
               </layer>
             </canvas>
           </param>
-          <param name="zoom">
-            <real value="0.0000000000"/>
+          <param name="time_dilation">
+            <real value="1.0000000000"/>
           </param>
           <param name="time_offset">
             <time value="0s"/>
           </param>
           <param name="children_lock" use=":(stk)-children-lock"/>
-          <param name="focus">
-            <vector>
-              <x>0.0000000000</x>
-              <y>0.0000000000</y>
-            </vector>
-          </param>
           <param name="outline_grow">
             <real value="0.0000000000"/>
           </param>
@@ -1012,7 +1098,7 @@
             <real value="0.0000000000"/>
           </param>
         </layer>
-        <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="(stk)-palm2">
+        <layer type="group" active="true" exclude_from_rendering="false" version="0.2" desc="(stk)-palm2">
           <param name="z_depth">
             <real value="0.0000000000"/>
           </param>
@@ -1028,9 +1114,31 @@
               <y>0.0000000000</y>
             </vector>
           </param>
+          <param name="transformation">
+            <composite type="transformation">
+              <offset>
+                <vector>
+                  <x>0.0000000000</x>
+                  <y>0.0000000000</y>
+                </vector>
+              </offset>
+              <angle>
+                <angle value="0.000000"/>
+              </angle>
+              <skew_angle>
+                <angle value="0.000000"/>
+              </skew_angle>
+              <scale>
+                <vector>
+                  <x>1.0000000000</x>
+                  <y>1.0000000000</y>
+                </vector>
+              </scale>
+            </composite>
+          </param>
           <param name="canvas">
             <canvas>
-              <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="(?) content">
+              <layer type="group" active="true" exclude_from_rendering="false" version="0.2" desc="(?) content">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -1045,6 +1153,28 @@
                     <x>0.0000000000</x>
                     <y>0.0000000000</y>
                   </vector>
+                </param>
+                <param name="transformation">
+                  <composite type="transformation">
+                    <offset>
+                      <vector>
+                        <x>0.0000000000</x>
+                        <y>0.0000000000</y>
+                      </vector>
+                    </offset>
+                    <angle>
+                      <angle value="0.000000"/>
+                    </angle>
+                    <skew_angle>
+                      <angle value="0.000000"/>
+                    </skew_angle>
+                    <scale>
+                      <vector>
+                        <x>1.0000000000</x>
+                        <y>1.0000000000</y>
+                      </vector>
+                    </scale>
+                  </composite>
                 </param>
                 <param name="canvas">
                   <canvas>
@@ -1175,20 +1305,14 @@
                     </layer>
                   </canvas>
                 </param>
-                <param name="zoom">
-                  <real value="0.0000000000"/>
+                <param name="time_dilation">
+                  <real value="1.0000000000"/>
                 </param>
                 <param name="time_offset">
                   <time value="0s"/>
                 </param>
                 <param name="children_lock">
                   <bool value="false"/>
-                </param>
-                <param name="focus">
-                  <vector>
-                    <x>0.0000000000</x>
-                    <y>0.0000000000</y>
-                  </vector>
                 </param>
                 <param name="outline_grow">
                   <real value="0.0000000000"/>
@@ -1270,7 +1394,7 @@
                 </param>
                 <param name="amount" use=":(stk)-palm2-t"/>
               </layer>
-              <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1">
+              <layer type="group" active="true" exclude_from_rendering="false" version="0.2">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -1286,6 +1410,28 @@
                     <y>0.0000000000</y>
                   </vector>
                 </param>
+                <param name="transformation">
+                  <composite type="transformation">
+                    <offset>
+                      <vector>
+                        <x>0.0000000000</x>
+                        <y>0.0000000000</y>
+                      </vector>
+                    </offset>
+                    <angle>
+                      <angle value="0.000000"/>
+                    </angle>
+                    <skew_angle>
+                      <angle value="0.000000"/>
+                    </skew_angle>
+                    <scale>
+                      <vector>
+                        <x>1.0000000000</x>
+                        <y>1.0000000000</y>
+                      </vector>
+                    </scale>
+                  </composite>
+                </param>
                 <param name="canvas">
                   <canvas>
                     <layer type="translate" active="true" exclude_from_rendering="false" version="0.1" desc="palm2" group="(stk)-control">
@@ -1295,20 +1441,14 @@
                     </layer>
                   </canvas>
                 </param>
-                <param name="zoom">
-                  <real value="0.0000000000"/>
+                <param name="time_dilation">
+                  <real value="1.0000000000"/>
                 </param>
                 <param name="time_offset">
                   <time value="0s"/>
                 </param>
                 <param name="children_lock">
                   <bool value="false" static="true"/>
-                </param>
-                <param name="focus">
-                  <vector>
-                    <x>0.0000000000</x>
-                    <y>0.0000000000</y>
-                  </vector>
                 </param>
                 <param name="outline_grow">
                   <real value="0.0000000000"/>
@@ -1527,19 +1667,13 @@
               </layer>
             </canvas>
           </param>
-          <param name="zoom">
-            <real value="0.0000000000"/>
+          <param name="time_dilation">
+            <real value="1.0000000000"/>
           </param>
           <param name="time_offset">
             <time value="0s"/>
           </param>
           <param name="children_lock" use=":(stk)-children-lock"/>
-          <param name="focus">
-            <vector>
-              <x>0.0000000000</x>
-              <y>0.0000000000</y>
-            </vector>
-          </param>
           <param name="outline_grow">
             <real value="0.0000000000"/>
           </param>
@@ -1556,7 +1690,7 @@
             <real value="0.0000000000"/>
           </param>
         </layer>
-        <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="(stk)-forearm1">
+        <layer type="group" active="true" exclude_from_rendering="false" version="0.2" desc="(stk)-forearm1">
           <param name="z_depth">
             <real value="0.0000000000"/>
           </param>
@@ -1572,9 +1706,31 @@
               <y>0.0000000000</y>
             </vector>
           </param>
+          <param name="transformation">
+            <composite type="transformation">
+              <offset>
+                <vector>
+                  <x>0.0000000000</x>
+                  <y>0.0000000000</y>
+                </vector>
+              </offset>
+              <angle>
+                <angle value="0.000000"/>
+              </angle>
+              <skew_angle>
+                <angle value="0.000000"/>
+              </skew_angle>
+              <scale>
+                <vector>
+                  <x>1.0000000000</x>
+                  <y>1.0000000000</y>
+                </vector>
+              </scale>
+            </composite>
+          </param>
           <param name="canvas">
             <canvas>
-              <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="(?) content">
+              <layer type="group" active="true" exclude_from_rendering="false" version="0.2" desc="(?) content">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -1589,6 +1745,28 @@
                     <x>0.0000000000</x>
                     <y>0.0000000000</y>
                   </vector>
+                </param>
+                <param name="transformation">
+                  <composite type="transformation">
+                    <offset>
+                      <vector>
+                        <x>0.0000000000</x>
+                        <y>0.0000000000</y>
+                      </vector>
+                    </offset>
+                    <angle>
+                      <angle value="0.000000"/>
+                    </angle>
+                    <skew_angle>
+                      <angle value="0.000000"/>
+                    </skew_angle>
+                    <scale>
+                      <vector>
+                        <x>1.0000000000</x>
+                        <y>1.0000000000</y>
+                      </vector>
+                    </scale>
+                  </composite>
                 </param>
                 <param name="canvas">
                   <canvas>
@@ -1719,20 +1897,14 @@
                     </layer>
                   </canvas>
                 </param>
-                <param name="zoom">
-                  <real value="0.0000000000"/>
+                <param name="time_dilation">
+                  <real value="1.0000000000"/>
                 </param>
                 <param name="time_offset">
                   <time value="0s"/>
                 </param>
                 <param name="children_lock">
                   <bool value="false"/>
-                </param>
-                <param name="focus">
-                  <vector>
-                    <x>0.0000000000</x>
-                    <y>0.0000000000</y>
-                  </vector>
                 </param>
                 <param name="outline_grow">
                   <real value="0.0000000000"/>
@@ -1979,19 +2151,13 @@
               </layer>
             </canvas>
           </param>
-          <param name="zoom">
-            <real value="0.0000000000"/>
+          <param name="time_dilation">
+            <real value="1.0000000000"/>
           </param>
           <param name="time_offset">
             <time value="0s"/>
           </param>
           <param name="children_lock" use=":(stk)-children-lock"/>
-          <param name="focus">
-            <vector>
-              <x>0.0000000000</x>
-              <y>0.0000000000</y>
-            </vector>
-          </param>
           <param name="outline_grow">
             <real value="0.0000000000"/>
           </param>
@@ -2008,7 +2174,7 @@
             <real value="0.0000000000"/>
           </param>
         </layer>
-        <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="(stk)-arm1">
+        <layer type="group" active="true" exclude_from_rendering="false" version="0.2" desc="(stk)-arm1">
           <param name="z_depth">
             <real value="0.0000000000"/>
           </param>
@@ -2024,9 +2190,31 @@
               <y>0.0000000000</y>
             </vector>
           </param>
+          <param name="transformation">
+            <composite type="transformation">
+              <offset>
+                <vector>
+                  <x>0.0000000000</x>
+                  <y>0.0000000000</y>
+                </vector>
+              </offset>
+              <angle>
+                <angle value="0.000000"/>
+              </angle>
+              <skew_angle>
+                <angle value="0.000000"/>
+              </skew_angle>
+              <scale>
+                <vector>
+                  <x>1.0000000000</x>
+                  <y>1.0000000000</y>
+                </vector>
+              </scale>
+            </composite>
+          </param>
           <param name="canvas">
             <canvas>
-              <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="(?) content">
+              <layer type="group" active="true" exclude_from_rendering="false" version="0.2" desc="(?) content">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -2041,6 +2229,28 @@
                     <x>0.0000000000</x>
                     <y>0.0000000000</y>
                   </vector>
+                </param>
+                <param name="transformation">
+                  <composite type="transformation">
+                    <offset>
+                      <vector>
+                        <x>0.0000000000</x>
+                        <y>0.0000000000</y>
+                      </vector>
+                    </offset>
+                    <angle>
+                      <angle value="0.000000"/>
+                    </angle>
+                    <skew_angle>
+                      <angle value="0.000000"/>
+                    </skew_angle>
+                    <scale>
+                      <vector>
+                        <x>1.0000000000</x>
+                        <y>1.0000000000</y>
+                      </vector>
+                    </scale>
+                  </composite>
                 </param>
                 <param name="canvas">
                   <canvas>
@@ -2171,20 +2381,14 @@
                     </layer>
                   </canvas>
                 </param>
-                <param name="zoom">
-                  <real value="0.0000000000"/>
+                <param name="time_dilation">
+                  <real value="1.0000000000"/>
                 </param>
                 <param name="time_offset">
                   <time value="0s"/>
                 </param>
                 <param name="children_lock">
                   <bool value="false"/>
-                </param>
-                <param name="focus">
-                  <vector>
-                    <x>0.0000000000</x>
-                    <y>0.0000000000</y>
-                  </vector>
                 </param>
                 <param name="outline_grow">
                   <real value="0.0000000000"/>
@@ -2449,19 +2653,13 @@
               </layer>
             </canvas>
           </param>
-          <param name="zoom">
-            <real value="0.0000000000"/>
+          <param name="time_dilation">
+            <real value="1.0000000000"/>
           </param>
           <param name="time_offset">
             <time value="0s"/>
           </param>
           <param name="children_lock" use=":(stk)-children-lock"/>
-          <param name="focus">
-            <vector>
-              <x>0.0000000000</x>
-              <y>0.0000000000</y>
-            </vector>
-          </param>
           <param name="outline_grow">
             <real value="0.0000000000"/>
           </param>
@@ -2478,7 +2676,7 @@
             <real value="0.0000000000"/>
           </param>
         </layer>
-        <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="(stk)-palm1">
+        <layer type="group" active="true" exclude_from_rendering="false" version="0.2" desc="(stk)-palm1">
           <param name="z_depth">
             <real value="0.0000000000"/>
           </param>
@@ -2494,9 +2692,31 @@
               <y>0.0000000000</y>
             </vector>
           </param>
+          <param name="transformation">
+            <composite type="transformation">
+              <offset>
+                <vector>
+                  <x>0.0000000000</x>
+                  <y>0.0000000000</y>
+                </vector>
+              </offset>
+              <angle>
+                <angle value="0.000000"/>
+              </angle>
+              <skew_angle>
+                <angle value="0.000000"/>
+              </skew_angle>
+              <scale>
+                <vector>
+                  <x>1.0000000000</x>
+                  <y>1.0000000000</y>
+                </vector>
+              </scale>
+            </composite>
+          </param>
           <param name="canvas">
             <canvas>
-              <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="(?) content">
+              <layer type="group" active="true" exclude_from_rendering="false" version="0.2" desc="(?) content">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -2511,6 +2731,28 @@
                     <x>0.0000000000</x>
                     <y>0.0000000000</y>
                   </vector>
+                </param>
+                <param name="transformation">
+                  <composite type="transformation">
+                    <offset>
+                      <vector>
+                        <x>0.0000000000</x>
+                        <y>0.0000000000</y>
+                      </vector>
+                    </offset>
+                    <angle>
+                      <angle value="0.000000"/>
+                    </angle>
+                    <skew_angle>
+                      <angle value="0.000000"/>
+                    </skew_angle>
+                    <scale>
+                      <vector>
+                        <x>1.0000000000</x>
+                        <y>1.0000000000</y>
+                      </vector>
+                    </scale>
+                  </composite>
                 </param>
                 <param name="canvas">
                   <canvas>
@@ -2641,20 +2883,14 @@
                     </layer>
                   </canvas>
                 </param>
-                <param name="zoom">
-                  <real value="0.0000000000"/>
+                <param name="time_dilation">
+                  <real value="1.0000000000"/>
                 </param>
                 <param name="time_offset">
                   <time value="0s"/>
                 </param>
                 <param name="children_lock">
                   <bool value="false"/>
-                </param>
-                <param name="focus">
-                  <vector>
-                    <x>0.0000000000</x>
-                    <y>0.0000000000</y>
-                  </vector>
                 </param>
                 <param name="outline_grow">
                   <real value="0.0000000000"/>
@@ -2725,7 +2961,7 @@
                 </param>
                 <param name="amount" use=":(stk)-palm1-t"/>
               </layer>
-              <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1">
+              <layer type="group" active="true" exclude_from_rendering="false" version="0.2">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -2741,6 +2977,28 @@
                     <y>0.0000000000</y>
                   </vector>
                 </param>
+                <param name="transformation">
+                  <composite type="transformation">
+                    <offset>
+                      <vector>
+                        <x>0.0000000000</x>
+                        <y>0.0000000000</y>
+                      </vector>
+                    </offset>
+                    <angle>
+                      <angle value="0.000000"/>
+                    </angle>
+                    <skew_angle>
+                      <angle value="0.000000"/>
+                    </skew_angle>
+                    <scale>
+                      <vector>
+                        <x>1.0000000000</x>
+                        <y>1.0000000000</y>
+                      </vector>
+                    </scale>
+                  </composite>
+                </param>
                 <param name="canvas">
                   <canvas>
                     <layer type="translate" active="true" exclude_from_rendering="false" version="0.1" desc="palm1" group="(stk)-control">
@@ -2750,20 +3008,14 @@
                     </layer>
                   </canvas>
                 </param>
-                <param name="zoom">
-                  <real value="0.0000000000"/>
+                <param name="time_dilation">
+                  <real value="1.0000000000"/>
                 </param>
                 <param name="time_offset">
                   <time value="0s"/>
                 </param>
                 <param name="children_lock">
                   <bool value="false" static="true"/>
-                </param>
-                <param name="focus">
-                  <vector>
-                    <x>0.0000000000</x>
-                    <y>0.0000000000</y>
-                  </vector>
                 </param>
                 <param name="outline_grow">
                   <real value="0.0000000000"/>
@@ -2982,19 +3234,13 @@
               </layer>
             </canvas>
           </param>
-          <param name="zoom">
-            <real value="0.0000000000"/>
+          <param name="time_dilation">
+            <real value="1.0000000000"/>
           </param>
           <param name="time_offset">
             <time value="0s"/>
           </param>
           <param name="children_lock" use=":(stk)-children-lock"/>
-          <param name="focus">
-            <vector>
-              <x>0.0000000000</x>
-              <y>0.0000000000</y>
-            </vector>
-          </param>
           <param name="outline_grow">
             <real value="0.0000000000"/>
           </param>
@@ -3011,7 +3257,7 @@
             <real value="0.0000000000"/>
           </param>
         </layer>
-        <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="(stk)-head">
+        <layer type="group" active="true" exclude_from_rendering="false" version="0.2" desc="(stk)-head">
           <param name="z_depth">
             <real value="0.0000000000"/>
           </param>
@@ -3027,9 +3273,31 @@
               <y>0.0000000000</y>
             </vector>
           </param>
+          <param name="transformation">
+            <composite type="transformation">
+              <offset>
+                <vector>
+                  <x>0.0000000000</x>
+                  <y>0.0000000000</y>
+                </vector>
+              </offset>
+              <angle>
+                <angle value="0.000000"/>
+              </angle>
+              <skew_angle>
+                <angle value="0.000000"/>
+              </skew_angle>
+              <scale>
+                <vector>
+                  <x>1.0000000000</x>
+                  <y>1.0000000000</y>
+                </vector>
+              </scale>
+            </composite>
+          </param>
           <param name="canvas">
             <canvas>
-              <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="(?) content">
+              <layer type="group" active="true" exclude_from_rendering="false" version="0.2" desc="(?) content">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -3044,6 +3312,28 @@
                     <x>0.0000000000</x>
                     <y>0.0000000000</y>
                   </vector>
+                </param>
+                <param name="transformation">
+                  <composite type="transformation">
+                    <offset>
+                      <vector>
+                        <x>0.0000000000</x>
+                        <y>0.0000000000</y>
+                      </vector>
+                    </offset>
+                    <angle>
+                      <angle value="0.000000"/>
+                    </angle>
+                    <skew_angle>
+                      <angle value="0.000000"/>
+                    </skew_angle>
+                    <scale>
+                      <vector>
+                        <x>1.0000000000</x>
+                        <y>1.0000000000</y>
+                      </vector>
+                    </scale>
+                  </composite>
                 </param>
                 <param name="canvas">
                   <canvas>
@@ -3664,20 +3954,14 @@
                     </layer>
                   </canvas>
                 </param>
-                <param name="zoom">
-                  <real value="0.0000000000"/>
+                <param name="time_dilation">
+                  <real value="1.0000000000"/>
                 </param>
                 <param name="time_offset">
                   <time value="0s"/>
                 </param>
                 <param name="children_lock">
                   <bool value="false"/>
-                </param>
-                <param name="focus">
-                  <vector>
-                    <x>0.0000000000</x>
-                    <y>0.0000000000</y>
-                  </vector>
                 </param>
                 <param name="outline_grow">
                   <real value="0.0000000000"/>
@@ -3715,7 +3999,7 @@
                 </param>
                 <param name="amount" use=":(stk)-head-t"/>
               </layer>
-              <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1">
+              <layer type="group" active="true" exclude_from_rendering="false" version="0.2">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -3731,6 +4015,28 @@
                     <y>0.0000000000</y>
                   </vector>
                 </param>
+                <param name="transformation">
+                  <composite type="transformation">
+                    <offset>
+                      <vector>
+                        <x>0.0000000000</x>
+                        <y>0.0000000000</y>
+                      </vector>
+                    </offset>
+                    <angle>
+                      <angle value="0.000000"/>
+                    </angle>
+                    <skew_angle>
+                      <angle value="0.000000"/>
+                    </skew_angle>
+                    <scale>
+                      <vector>
+                        <x>1.0000000000</x>
+                        <y>1.0000000000</y>
+                      </vector>
+                    </scale>
+                  </composite>
+                </param>
                 <param name="canvas">
                   <canvas>
                     <layer type="translate" active="true" exclude_from_rendering="false" version="0.1" desc="head-angle" group="(stk)-control">
@@ -3740,20 +4046,14 @@
                     </layer>
                   </canvas>
                 </param>
-                <param name="zoom">
-                  <real value="0.0000000000"/>
+                <param name="time_dilation">
+                  <real value="1.0000000000"/>
                 </param>
                 <param name="time_offset">
                   <time value="0s"/>
                 </param>
                 <param name="children_lock">
                   <bool value="false"/>
-                </param>
-                <param name="focus">
-                  <vector>
-                    <x>0.0000000000</x>
-                    <y>0.0000000000</y>
-                  </vector>
                 </param>
                 <param name="outline_grow">
                   <real value="0.0000000000"/>
@@ -3801,19 +4101,13 @@
               </layer>
             </canvas>
           </param>
-          <param name="zoom">
-            <real value="0.0000000000"/>
+          <param name="time_dilation">
+            <real value="1.0000000000"/>
           </param>
           <param name="time_offset">
             <time value="0s"/>
           </param>
           <param name="children_lock" use=":(stk)-children-lock"/>
-          <param name="focus">
-            <vector>
-              <x>0.0000000000</x>
-              <y>0.0000000000</y>
-            </vector>
-          </param>
           <param name="outline_grow">
             <real value="0.0000000000"/>
           </param>
@@ -3830,7 +4124,7 @@
             <real value="0.0000000000"/>
           </param>
         </layer>
-        <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="(stk)-body">
+        <layer type="group" active="true" exclude_from_rendering="false" version="0.2" desc="(stk)-body">
           <param name="z_depth">
             <real value="0.0000000000"/>
           </param>
@@ -3846,9 +4140,31 @@
               <y>0.0000000000</y>
             </vector>
           </param>
+          <param name="transformation">
+            <composite type="transformation">
+              <offset>
+                <vector>
+                  <x>0.0000000000</x>
+                  <y>0.0000000000</y>
+                </vector>
+              </offset>
+              <angle>
+                <angle value="0.000000"/>
+              </angle>
+              <skew_angle>
+                <angle value="0.000000"/>
+              </skew_angle>
+              <scale>
+                <vector>
+                  <x>1.0000000000</x>
+                  <y>1.0000000000</y>
+                </vector>
+              </scale>
+            </composite>
+          </param>
           <param name="canvas">
             <canvas>
-              <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="(?) content">
+              <layer type="group" active="true" exclude_from_rendering="false" version="0.2" desc="(?) content">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -3863,6 +4179,28 @@
                     <x>0.0000000000</x>
                     <y>0.0000000000</y>
                   </vector>
+                </param>
+                <param name="transformation">
+                  <composite type="transformation">
+                    <offset>
+                      <vector>
+                        <x>0.0000000000</x>
+                        <y>0.0000000000</y>
+                      </vector>
+                    </offset>
+                    <angle>
+                      <angle value="0.000000"/>
+                    </angle>
+                    <skew_angle>
+                      <angle value="0.000000"/>
+                    </skew_angle>
+                    <scale>
+                      <vector>
+                        <x>1.0000000000</x>
+                        <y>1.0000000000</y>
+                      </vector>
+                    </scale>
+                  </composite>
                 </param>
                 <param name="canvas">
                   <canvas>
@@ -3993,20 +4331,14 @@
                     </layer>
                   </canvas>
                 </param>
-                <param name="zoom">
-                  <real value="0.0000000000"/>
+                <param name="time_dilation">
+                  <real value="1.0000000000"/>
                 </param>
                 <param name="time_offset">
                   <time value="0s"/>
                 </param>
                 <param name="children_lock">
                   <bool value="false"/>
-                </param>
-                <param name="focus">
-                  <vector>
-                    <x>0.0000000000</x>
-                    <y>0.0000000000</y>
-                  </vector>
                 </param>
                 <param name="outline_grow">
                   <real value="0.0000000000"/>
@@ -4223,7 +4555,7 @@
                   <bool value="true"/>
                 </param>
               </layer>
-              <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1">
+              <layer type="group" active="true" exclude_from_rendering="false" version="0.2">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -4239,6 +4571,28 @@
                     <y>0.0000000000</y>
                   </vector>
                 </param>
+                <param name="transformation">
+                  <composite type="transformation">
+                    <offset>
+                      <vector>
+                        <x>0.0000000000</x>
+                        <y>0.0000000000</y>
+                      </vector>
+                    </offset>
+                    <angle>
+                      <angle value="0.000000"/>
+                    </angle>
+                    <skew_angle>
+                      <angle value="0.000000"/>
+                    </skew_angle>
+                    <scale>
+                      <vector>
+                        <x>1.0000000000</x>
+                        <y>1.0000000000</y>
+                      </vector>
+                    </scale>
+                  </composite>
+                </param>
                 <param name="canvas">
                   <canvas>
                     <layer type="translate" active="true" exclude_from_rendering="false" version="0.1" desc="shoulders" group="(stk)-control">
@@ -4252,20 +4606,14 @@
                     </layer>
                   </canvas>
                 </param>
-                <param name="zoom">
-                  <real value="0.0000000000"/>
+                <param name="time_dilation">
+                  <real value="1.0000000000"/>
                 </param>
                 <param name="time_offset">
                   <time value="0s"/>
                 </param>
                 <param name="children_lock">
                   <bool value="false" static="true"/>
-                </param>
-                <param name="focus">
-                  <vector>
-                    <x>0.0000000000</x>
-                    <y>0.0000000000</y>
-                  </vector>
                 </param>
                 <param name="outline_grow">
                   <real value="0.0000000000"/>
@@ -4288,19 +4636,13 @@
               </layer>
             </canvas>
           </param>
-          <param name="zoom">
-            <real value="0.0000000000"/>
+          <param name="time_dilation">
+            <real value="1.0000000000"/>
           </param>
           <param name="time_offset">
             <time value="0s"/>
           </param>
           <param name="children_lock" use=":(stk)-children-lock"/>
-          <param name="focus">
-            <vector>
-              <x>0.0000000000</x>
-              <y>0.0000000000</y>
-            </vector>
-          </param>
           <param name="outline_grow">
             <real value="0.0000000000"/>
           </param>
@@ -4317,7 +4659,7 @@
             <real value="0.0000000000"/>
           </param>
         </layer>
-        <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="(stk)-hip1">
+        <layer type="group" active="true" exclude_from_rendering="false" version="0.2" desc="(stk)-hip1">
           <param name="z_depth">
             <real value="0.0000000000"/>
           </param>
@@ -4333,9 +4675,31 @@
               <y>0.0000000000</y>
             </vector>
           </param>
+          <param name="transformation">
+            <composite type="transformation">
+              <offset>
+                <vector>
+                  <x>0.0000000000</x>
+                  <y>0.0000000000</y>
+                </vector>
+              </offset>
+              <angle>
+                <angle value="0.000000"/>
+              </angle>
+              <skew_angle>
+                <angle value="0.000000"/>
+              </skew_angle>
+              <scale>
+                <vector>
+                  <x>1.0000000000</x>
+                  <y>1.0000000000</y>
+                </vector>
+              </scale>
+            </composite>
+          </param>
           <param name="canvas">
             <canvas>
-              <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="(?) content">
+              <layer type="group" active="true" exclude_from_rendering="false" version="0.2" desc="(?) content">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -4350,6 +4714,28 @@
                     <x>0.0000000000</x>
                     <y>0.0000000000</y>
                   </vector>
+                </param>
+                <param name="transformation">
+                  <composite type="transformation">
+                    <offset>
+                      <vector>
+                        <x>0.0000000000</x>
+                        <y>0.0000000000</y>
+                      </vector>
+                    </offset>
+                    <angle>
+                      <angle value="0.000000"/>
+                    </angle>
+                    <skew_angle>
+                      <angle value="0.000000"/>
+                    </skew_angle>
+                    <scale>
+                      <vector>
+                        <x>1.0000000000</x>
+                        <y>1.0000000000</y>
+                      </vector>
+                    </scale>
+                  </composite>
                 </param>
                 <param name="canvas">
                   <canvas>
@@ -4480,20 +4866,14 @@
                     </layer>
                   </canvas>
                 </param>
-                <param name="zoom">
-                  <real value="0.0000000000"/>
+                <param name="time_dilation">
+                  <real value="1.0000000000"/>
                 </param>
                 <param name="time_offset">
                   <time value="0s"/>
                 </param>
                 <param name="children_lock">
                   <bool value="false"/>
-                </param>
-                <param name="focus">
-                  <vector>
-                    <x>0.0000000000</x>
-                    <y>0.0000000000</y>
-                  </vector>
                 </param>
                 <param name="outline_grow">
                   <real value="0.0000000000"/>
@@ -4718,19 +5098,13 @@
               </layer>
             </canvas>
           </param>
-          <param name="zoom">
-            <real value="0.0000000000"/>
+          <param name="time_dilation">
+            <real value="1.0000000000"/>
           </param>
           <param name="time_offset">
             <time value="0s"/>
           </param>
           <param name="children_lock" use=":(stk)-children-lock"/>
-          <param name="focus">
-            <vector>
-              <x>0.0000000000</x>
-              <y>0.0000000000</y>
-            </vector>
-          </param>
           <param name="outline_grow">
             <real value="0.0000000000"/>
           </param>
@@ -4747,7 +5121,7 @@
             <real value="0.0000000000"/>
           </param>
         </layer>
-        <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="(stk)-leg1">
+        <layer type="group" active="true" exclude_from_rendering="false" version="0.2" desc="(stk)-leg1">
           <param name="z_depth">
             <real value="0.0000000000"/>
           </param>
@@ -4763,9 +5137,31 @@
               <y>0.0000000000</y>
             </vector>
           </param>
+          <param name="transformation">
+            <composite type="transformation">
+              <offset>
+                <vector>
+                  <x>0.0000000000</x>
+                  <y>0.0000000000</y>
+                </vector>
+              </offset>
+              <angle>
+                <angle value="0.000000"/>
+              </angle>
+              <skew_angle>
+                <angle value="0.000000"/>
+              </skew_angle>
+              <scale>
+                <vector>
+                  <x>1.0000000000</x>
+                  <y>1.0000000000</y>
+                </vector>
+              </scale>
+            </composite>
+          </param>
           <param name="canvas">
             <canvas>
-              <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="(?) content">
+              <layer type="group" active="true" exclude_from_rendering="false" version="0.2" desc="(?) content">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -4780,6 +5176,28 @@
                     <x>0.0000000000</x>
                     <y>0.0000000000</y>
                   </vector>
+                </param>
+                <param name="transformation">
+                  <composite type="transformation">
+                    <offset>
+                      <vector>
+                        <x>0.0000000000</x>
+                        <y>0.0000000000</y>
+                      </vector>
+                    </offset>
+                    <angle>
+                      <angle value="0.000000"/>
+                    </angle>
+                    <skew_angle>
+                      <angle value="0.000000"/>
+                    </skew_angle>
+                    <scale>
+                      <vector>
+                        <x>1.0000000000</x>
+                        <y>1.0000000000</y>
+                      </vector>
+                    </scale>
+                  </composite>
                 </param>
                 <param name="canvas">
                   <canvas>
@@ -4910,20 +5328,14 @@
                     </layer>
                   </canvas>
                 </param>
-                <param name="zoom">
-                  <real value="0.0000000000"/>
+                <param name="time_dilation">
+                  <real value="1.0000000000"/>
                 </param>
                 <param name="time_offset">
                   <time value="0s"/>
                 </param>
                 <param name="children_lock">
                   <bool value="false"/>
-                </param>
-                <param name="focus">
-                  <vector>
-                    <x>0.0000000000</x>
-                    <y>0.0000000000</y>
-                  </vector>
                 </param>
                 <param name="outline_grow">
                   <real value="0.0000000000"/>
@@ -5166,19 +5578,13 @@
               </layer>
             </canvas>
           </param>
-          <param name="zoom">
-            <real value="0.0000000000"/>
+          <param name="time_dilation">
+            <real value="1.0000000000"/>
           </param>
           <param name="time_offset">
             <time value="0s"/>
           </param>
           <param name="children_lock" use=":(stk)-children-lock"/>
-          <param name="focus">
-            <vector>
-              <x>0.0000000000</x>
-              <y>0.0000000000</y>
-            </vector>
-          </param>
           <param name="outline_grow">
             <real value="0.0000000000"/>
           </param>
@@ -5195,7 +5601,7 @@
             <real value="0.0000000000"/>
           </param>
         </layer>
-        <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="(stk)-foot1">
+        <layer type="group" active="true" exclude_from_rendering="false" version="0.2" desc="(stk)-foot1">
           <param name="z_depth">
             <real value="0.0000000000"/>
           </param>
@@ -5211,9 +5617,31 @@
               <y>0.0000000000</y>
             </vector>
           </param>
+          <param name="transformation">
+            <composite type="transformation">
+              <offset>
+                <vector>
+                  <x>0.0000000000</x>
+                  <y>0.0000000000</y>
+                </vector>
+              </offset>
+              <angle>
+                <angle value="0.000000"/>
+              </angle>
+              <skew_angle>
+                <angle value="0.000000"/>
+              </skew_angle>
+              <scale>
+                <vector>
+                  <x>1.0000000000</x>
+                  <y>1.0000000000</y>
+                </vector>
+              </scale>
+            </composite>
+          </param>
           <param name="canvas">
             <canvas>
-              <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="(?) content">
+              <layer type="group" active="true" exclude_from_rendering="false" version="0.2" desc="(?) content">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -5228,6 +5656,28 @@
                     <x>0.0000000000</x>
                     <y>0.0000000000</y>
                   </vector>
+                </param>
+                <param name="transformation">
+                  <composite type="transformation">
+                    <offset>
+                      <vector>
+                        <x>0.0000000000</x>
+                        <y>0.0000000000</y>
+                      </vector>
+                    </offset>
+                    <angle>
+                      <angle value="0.000000"/>
+                    </angle>
+                    <skew_angle>
+                      <angle value="0.000000"/>
+                    </skew_angle>
+                    <scale>
+                      <vector>
+                        <x>1.0000000000</x>
+                        <y>1.0000000000</y>
+                      </vector>
+                    </scale>
+                  </composite>
                 </param>
                 <param name="canvas">
                   <canvas>
@@ -5358,20 +5808,14 @@
                     </layer>
                   </canvas>
                 </param>
-                <param name="zoom">
-                  <real value="0.0000000000"/>
+                <param name="time_dilation">
+                  <real value="1.0000000000"/>
                 </param>
                 <param name="time_offset">
                   <time value="0s"/>
                 </param>
                 <param name="children_lock">
                   <bool value="false"/>
-                </param>
-                <param name="focus">
-                  <vector>
-                    <x>0.0000000000</x>
-                    <y>0.0000000000</y>
-                  </vector>
                 </param>
                 <param name="outline_grow">
                   <real value="0.0000000000"/>
@@ -5442,7 +5886,7 @@
                 </param>
                 <param name="amount" use=":(stk)-toe1-t"/>
               </layer>
-              <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1">
+              <layer type="group" active="true" exclude_from_rendering="false" version="0.2">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -5458,6 +5902,28 @@
                     <y>0.0000000000</y>
                   </vector>
                 </param>
+                <param name="transformation">
+                  <composite type="transformation">
+                    <offset>
+                      <vector>
+                        <x>0.0000000000</x>
+                        <y>0.0000000000</y>
+                      </vector>
+                    </offset>
+                    <angle>
+                      <angle value="0.000000"/>
+                    </angle>
+                    <skew_angle>
+                      <angle value="0.000000"/>
+                    </skew_angle>
+                    <scale>
+                      <vector>
+                        <x>1.0000000000</x>
+                        <y>1.0000000000</y>
+                      </vector>
+                    </scale>
+                  </composite>
+                </param>
                 <param name="canvas">
                   <canvas>
                     <layer type="translate" active="true" exclude_from_rendering="false" version="0.1" desc="toe1" group="(stk)-control">
@@ -5467,20 +5933,14 @@
                     </layer>
                   </canvas>
                 </param>
-                <param name="zoom">
-                  <real value="0.0000000000"/>
+                <param name="time_dilation">
+                  <real value="1.0000000000"/>
                 </param>
                 <param name="time_offset">
                   <time value="0s"/>
                 </param>
                 <param name="children_lock">
                   <bool value="false" static="true"/>
-                </param>
-                <param name="focus">
-                  <vector>
-                    <x>0.0000000000</x>
-                    <y>0.0000000000</y>
-                  </vector>
                 </param>
                 <param name="outline_grow">
                   <real value="0.0000000000"/>
@@ -5677,19 +6137,13 @@
               </layer>
             </canvas>
           </param>
-          <param name="zoom">
-            <real value="0.0000000000"/>
+          <param name="time_dilation">
+            <real value="1.0000000000"/>
           </param>
           <param name="time_offset">
             <time value="0s"/>
           </param>
           <param name="children_lock" use=":(stk)-children-lock"/>
-          <param name="focus">
-            <vector>
-              <x>0.0000000000</x>
-              <y>0.0000000000</y>
-            </vector>
-          </param>
           <param name="outline_grow">
             <real value="0.0000000000"/>
           </param>
@@ -5706,7 +6160,7 @@
             <real value="0.0000000000"/>
           </param>
         </layer>
-        <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="(stk)-hip2">
+        <layer type="group" active="true" exclude_from_rendering="false" version="0.2" desc="(stk)-hip2">
           <param name="z_depth">
             <real value="0.0000000000"/>
           </param>
@@ -5722,9 +6176,31 @@
               <y>0.0000000000</y>
             </vector>
           </param>
+          <param name="transformation">
+            <composite type="transformation">
+              <offset>
+                <vector>
+                  <x>0.0000000000</x>
+                  <y>0.0000000000</y>
+                </vector>
+              </offset>
+              <angle>
+                <angle value="0.000000"/>
+              </angle>
+              <skew_angle>
+                <angle value="0.000000"/>
+              </skew_angle>
+              <scale>
+                <vector>
+                  <x>1.0000000000</x>
+                  <y>1.0000000000</y>
+                </vector>
+              </scale>
+            </composite>
+          </param>
           <param name="canvas">
             <canvas>
-              <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="(?) content">
+              <layer type="group" active="true" exclude_from_rendering="false" version="0.2" desc="(?) content">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -5739,6 +6215,28 @@
                     <x>0.0000000000</x>
                     <y>0.0000000000</y>
                   </vector>
+                </param>
+                <param name="transformation">
+                  <composite type="transformation">
+                    <offset>
+                      <vector>
+                        <x>0.0000000000</x>
+                        <y>0.0000000000</y>
+                      </vector>
+                    </offset>
+                    <angle>
+                      <angle value="0.000000"/>
+                    </angle>
+                    <skew_angle>
+                      <angle value="0.000000"/>
+                    </skew_angle>
+                    <scale>
+                      <vector>
+                        <x>1.0000000000</x>
+                        <y>1.0000000000</y>
+                      </vector>
+                    </scale>
+                  </composite>
                 </param>
                 <param name="canvas">
                   <canvas>
@@ -5869,20 +6367,14 @@
                     </layer>
                   </canvas>
                 </param>
-                <param name="zoom">
-                  <real value="0.0000000000"/>
+                <param name="time_dilation">
+                  <real value="1.0000000000"/>
                 </param>
                 <param name="time_offset">
                   <time value="0s"/>
                 </param>
                 <param name="children_lock">
                   <bool value="false"/>
-                </param>
-                <param name="focus">
-                  <vector>
-                    <x>0.0000000000</x>
-                    <y>0.0000000000</y>
-                  </vector>
                 </param>
                 <param name="outline_grow">
                   <real value="0.0000000000"/>
@@ -6107,19 +6599,13 @@
               </layer>
             </canvas>
           </param>
-          <param name="zoom">
-            <real value="0.0000000000"/>
+          <param name="time_dilation">
+            <real value="1.0000000000"/>
           </param>
           <param name="time_offset">
             <time value="0s"/>
           </param>
           <param name="children_lock" use=":(stk)-children-lock"/>
-          <param name="focus">
-            <vector>
-              <x>0.0000000000</x>
-              <y>0.0000000000</y>
-            </vector>
-          </param>
           <param name="outline_grow">
             <real value="0.0000000000"/>
           </param>
@@ -6136,7 +6622,7 @@
             <real value="0.0000000000"/>
           </param>
         </layer>
-        <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="(stk)-leg2">
+        <layer type="group" active="true" exclude_from_rendering="false" version="0.2" desc="(stk)-leg2">
           <param name="z_depth">
             <real value="0.0000000000"/>
           </param>
@@ -6152,9 +6638,31 @@
               <y>0.0000000000</y>
             </vector>
           </param>
+          <param name="transformation">
+            <composite type="transformation">
+              <offset>
+                <vector>
+                  <x>0.0000000000</x>
+                  <y>0.0000000000</y>
+                </vector>
+              </offset>
+              <angle>
+                <angle value="0.000000"/>
+              </angle>
+              <skew_angle>
+                <angle value="0.000000"/>
+              </skew_angle>
+              <scale>
+                <vector>
+                  <x>1.0000000000</x>
+                  <y>1.0000000000</y>
+                </vector>
+              </scale>
+            </composite>
+          </param>
           <param name="canvas">
             <canvas>
-              <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="(?) content">
+              <layer type="group" active="true" exclude_from_rendering="false" version="0.2" desc="(?) content">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -6169,6 +6677,28 @@
                     <x>0.0000000000</x>
                     <y>0.0000000000</y>
                   </vector>
+                </param>
+                <param name="transformation">
+                  <composite type="transformation">
+                    <offset>
+                      <vector>
+                        <x>0.0000000000</x>
+                        <y>0.0000000000</y>
+                      </vector>
+                    </offset>
+                    <angle>
+                      <angle value="0.000000"/>
+                    </angle>
+                    <skew_angle>
+                      <angle value="0.000000"/>
+                    </skew_angle>
+                    <scale>
+                      <vector>
+                        <x>1.0000000000</x>
+                        <y>1.0000000000</y>
+                      </vector>
+                    </scale>
+                  </composite>
                 </param>
                 <param name="canvas">
                   <canvas>
@@ -6299,20 +6829,14 @@
                     </layer>
                   </canvas>
                 </param>
-                <param name="zoom">
-                  <real value="0.0000000000"/>
+                <param name="time_dilation">
+                  <real value="1.0000000000"/>
                 </param>
                 <param name="time_offset">
                   <time value="0s"/>
                 </param>
                 <param name="children_lock">
                   <bool value="false"/>
-                </param>
-                <param name="focus">
-                  <vector>
-                    <x>0.0000000000</x>
-                    <y>0.0000000000</y>
-                  </vector>
                 </param>
                 <param name="outline_grow">
                   <real value="0.0000000000"/>
@@ -6555,19 +7079,13 @@
               </layer>
             </canvas>
           </param>
-          <param name="zoom">
-            <real value="0.0000000000"/>
+          <param name="time_dilation">
+            <real value="1.0000000000"/>
           </param>
           <param name="time_offset">
             <time value="0s"/>
           </param>
           <param name="children_lock" use=":(stk)-children-lock"/>
-          <param name="focus">
-            <vector>
-              <x>0.0000000000</x>
-              <y>0.0000000000</y>
-            </vector>
-          </param>
           <param name="outline_grow">
             <real value="0.0000000000"/>
           </param>
@@ -6584,7 +7102,7 @@
             <real value="0.0000000000"/>
           </param>
         </layer>
-        <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="(stk)-foot2">
+        <layer type="group" active="true" exclude_from_rendering="false" version="0.2" desc="(stk)-foot2">
           <param name="z_depth">
             <real value="0.0000000000"/>
           </param>
@@ -6600,9 +7118,31 @@
               <y>0.0000000000</y>
             </vector>
           </param>
+          <param name="transformation">
+            <composite type="transformation">
+              <offset>
+                <vector>
+                  <x>0.0000000000</x>
+                  <y>0.0000000000</y>
+                </vector>
+              </offset>
+              <angle>
+                <angle value="0.000000"/>
+              </angle>
+              <skew_angle>
+                <angle value="0.000000"/>
+              </skew_angle>
+              <scale>
+                <vector>
+                  <x>1.0000000000</x>
+                  <y>1.0000000000</y>
+                </vector>
+              </scale>
+            </composite>
+          </param>
           <param name="canvas">
             <canvas>
-              <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="(?) content">
+              <layer type="group" active="true" exclude_from_rendering="false" version="0.2" desc="(?) content">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -6617,6 +7157,28 @@
                     <x>0.0000000000</x>
                     <y>0.0000000000</y>
                   </vector>
+                </param>
+                <param name="transformation">
+                  <composite type="transformation">
+                    <offset>
+                      <vector>
+                        <x>0.0000000000</x>
+                        <y>0.0000000000</y>
+                      </vector>
+                    </offset>
+                    <angle>
+                      <angle value="0.000000"/>
+                    </angle>
+                    <skew_angle>
+                      <angle value="0.000000"/>
+                    </skew_angle>
+                    <scale>
+                      <vector>
+                        <x>1.0000000000</x>
+                        <y>1.0000000000</y>
+                      </vector>
+                    </scale>
+                  </composite>
                 </param>
                 <param name="canvas">
                   <canvas>
@@ -6747,20 +7309,14 @@
                     </layer>
                   </canvas>
                 </param>
-                <param name="zoom">
-                  <real value="0.0000000000"/>
+                <param name="time_dilation">
+                  <real value="1.0000000000"/>
                 </param>
                 <param name="time_offset">
                   <time value="0s"/>
                 </param>
                 <param name="children_lock">
                   <bool value="false"/>
-                </param>
-                <param name="focus">
-                  <vector>
-                    <x>0.0000000000</x>
-                    <y>0.0000000000</y>
-                  </vector>
                 </param>
                 <param name="outline_grow">
                   <real value="0.0000000000"/>
@@ -6842,7 +7398,7 @@
                 </param>
                 <param name="amount" use=":(stk)-toe2-t"/>
               </layer>
-              <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1">
+              <layer type="group" active="true" exclude_from_rendering="false" version="0.2">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -6858,6 +7414,28 @@
                     <y>0.0000000000</y>
                   </vector>
                 </param>
+                <param name="transformation">
+                  <composite type="transformation">
+                    <offset>
+                      <vector>
+                        <x>0.0000000000</x>
+                        <y>0.0000000000</y>
+                      </vector>
+                    </offset>
+                    <angle>
+                      <angle value="0.000000"/>
+                    </angle>
+                    <skew_angle>
+                      <angle value="0.000000"/>
+                    </skew_angle>
+                    <scale>
+                      <vector>
+                        <x>1.0000000000</x>
+                        <y>1.0000000000</y>
+                      </vector>
+                    </scale>
+                  </composite>
+                </param>
                 <param name="canvas">
                   <canvas>
                     <layer type="translate" active="true" exclude_from_rendering="false" version="0.1" desc="toe2" group="(stk)-control">
@@ -6867,20 +7445,14 @@
                     </layer>
                   </canvas>
                 </param>
-                <param name="zoom">
-                  <real value="0.0000000000"/>
+                <param name="time_dilation">
+                  <real value="1.0000000000"/>
                 </param>
                 <param name="time_offset">
                   <time value="0s"/>
                 </param>
                 <param name="children_lock">
                   <bool value="false" static="true"/>
-                </param>
-                <param name="focus">
-                  <vector>
-                    <x>0.0000000000</x>
-                    <y>0.0000000000</y>
-                  </vector>
                 </param>
                 <param name="outline_grow">
                   <real value="0.0000000000"/>
@@ -7077,19 +7649,13 @@
               </layer>
             </canvas>
           </param>
-          <param name="zoom">
-            <real value="0.0000000000"/>
+          <param name="time_dilation">
+            <real value="1.0000000000"/>
           </param>
           <param name="time_offset">
             <time value="0s"/>
           </param>
           <param name="children_lock" use=":(stk)-children-lock"/>
-          <param name="focus">
-            <vector>
-              <x>0.0000000000</x>
-              <y>0.0000000000</y>
-            </vector>
-          </param>
           <param name="outline_grow">
             <real value="0.0000000000"/>
           </param>
@@ -7108,20 +7674,14 @@
         </layer>
       </canvas>
     </param>
-    <param name="zoom">
-      <real value="-0.2000000000"/>
+    <param name="time_dilation">
+      <real value="1.0000000000"/>
     </param>
     <param name="time_offset">
       <time value="0s"/>
     </param>
     <param name="children_lock">
       <bool value="false"/>
-    </param>
-    <param name="focus">
-      <vector>
-        <x>0.0000000000</x>
-        <y>0.0000000000</y>
-      </vector>
     </param>
     <param name="outline_grow">
       <real value="0.0000000000"/>
