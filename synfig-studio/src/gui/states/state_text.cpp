@@ -668,10 +668,10 @@ StateText_Context::make_text(const Point& _point)
 
 	layer->set_param("family",get_family());
 	get_canvas_interface()->signal_layer_param_changed()(layer,"family");
-
+	/*
 	layer->set_description(get_id());
 	get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
-
+	*/
 	egress_on_selection_change=false;
 	get_canvas_interface()->get_selection_manager()->clear_selected_layers();
 	get_canvas_interface()->get_selection_manager()->set_selected_layers(layer_selection);

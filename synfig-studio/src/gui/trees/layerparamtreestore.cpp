@@ -603,21 +603,10 @@ LayerParamTreeStore::on_layer_param_changed(synfig::Layer::Handle handle, synfig
 
 	if (param_name == "text")
 	{
-		Gtk::TreeModel::Children children_(children());
-
-		Gtk::TreeModel::Children::iterator iter;
-
-		if(!children_.empty())
-			for(iter = children_.begin(); iter && iter != children_.end(); ++iter)
-			{
-				Gtk::TreeRow row=*iter;
-
-				if (row.get_value(model.label) == handle->get_local_name())
-				{
-					canvas_interface()->signal_text_changed()(handle, row.get_value(model.value).get(String()));
-					break;
-				}
-			}
+		const String &temp = String();
+		const String textContent = handle->get_param("text").get(temp);
+		handle->set_description(textContent);
+		canvas_interface()->signal_layer_new_description()(handle, textContent);
 	}
 
 	queue_refresh();

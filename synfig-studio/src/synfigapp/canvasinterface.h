@@ -107,8 +107,6 @@ private:
 
 	sigc::signal<void,synfig::Layer::Handle,synfig::String> signal_layer_param_changed_;
 
-	sigc::signal<void,synfig::Layer::Handle,synfig::String> signal_text_changed_;
-
 public:	// Signal Interface
 
 	sigc::signal<void,synfig::Layer::Handle,int,synfig::Canvas::Handle>& signal_layer_moved() { return signal_layer_moved_; }
@@ -135,10 +133,7 @@ public:	// Signal Interface
 
 	//! Signal called when the layer's zdepth range has changed. This layer has to be Layer_PasteCanvas
 	sigc::signal<void,synfig::Layer::Handle,bool>& signal_layer_z_range_changed() { return signal_layer_z_range_changed_; }
-
-	//! Signal called when a freetype layer's text has changed
-	sigc::signal<void,synfig::Layer::Handle,synfig::String>& signal_text_changed() { return signal_text_changed_; }
-
+	
 	//! Signal called when a canvas has been added.
 	sigc::signal<void,etl::handle<synfig::Canvas> >& signal_canvas_added() { return signal_canvas_added_; }
 
