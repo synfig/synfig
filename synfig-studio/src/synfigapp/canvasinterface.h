@@ -133,7 +133,7 @@ public:	// Signal Interface
 
 	//! Signal called when the layer's zdepth range has changed. This layer has to be Layer_PasteCanvas
 	sigc::signal<void,synfig::Layer::Handle,bool>& signal_layer_z_range_changed() { return signal_layer_z_range_changed_; }
-
+	
 	//! Signal called when a canvas has been added.
 	sigc::signal<void,etl::handle<synfig::Canvas> >& signal_canvas_added() { return signal_canvas_added_; }
 
