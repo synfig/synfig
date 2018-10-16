@@ -1374,6 +1374,14 @@ Duckmatic::find_duck(synfig::Point point, synfig::Real radius, Duck::Type type)
                 }
         if(!found)
             for(i=0; i<ret_vector.size();i++)
+                if(ret_vector[i]->get_type() & Duck::TYPE_VERTEX)
+                {
+                    ret=ret_vector[i];
+                    found=true;
+                    break;
+                }
+        if(!found)
+            for(i=0; i<ret_vector.size();i++)
                 if(ret_vector[i]->get_type() & Duck::TYPE_TANGENT)
                 {
                     ret=ret_vector[i];
