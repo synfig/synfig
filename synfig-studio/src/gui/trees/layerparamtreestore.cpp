@@ -600,8 +600,18 @@ LayerParamTreeStore::on_value_node_replaced(synfig::ValueNode::Handle /*replaced
 }
 
 void
-LayerParamTreeStore::on_layer_param_changed(synfig::Layer::Handle /*handle*/,synfig::String /*param_name*/)
+LayerParamTreeStore::on_layer_param_changed(synfig::Layer::Handle handle, synfig::String param_name)
 {
+	//when a freetype layer param's text has changed, signal the layer the new text content
+
+	if (param_name == "text")
+	{
+		const String &temp = String();
+		const String textContent = handle->get_param("text").get(temp);
+		handle->set_description(textContent);
+		canvas_interface()->signal_layer_new_description()(handle, textContent);
+	}
+
 	queue_refresh();
 }
 

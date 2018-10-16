@@ -128,6 +128,8 @@ Layer_Freetype::Layer_Freetype()
 
 	SET_INTERPOLATION_DEFAULTS();
 	SET_STATIC_DEFAULTS();
+
+	set_description(param_text.get(String()));
 }
 
 Layer_Freetype::~Layer_Freetype()
@@ -495,7 +497,7 @@ Layer_Freetype::set_param(const String & param, const ValueBase &value)
 			new_font(family,style,weight);
 		}
 		);
-		
+
 	IMPORT_VALUE_PLUS(param_weight,
 		{
 			synfig::String family=param_family.get(synfig::String());
@@ -545,7 +547,7 @@ Layer_Freetype::set_param(const String & param, const ValueBase &value)
 	IMPORT_VALUE_PLUS(param_vcompress,needs_sync_=true);
 	IMPORT_VALUE_PLUS(param_use_kerning,needs_sync_=true);
 	IMPORT_VALUE_PLUS(param_grid_fit,needs_sync_=true);
-	
+
 	if(param=="pos")
 		return set_param("origin", value);
 
@@ -1024,7 +1026,7 @@ Layer_Freetype::accelerated_cairorender(Context context, cairo_t *cr, int qualit
 	synfig::Vector orient=param_orient.get(Vector());
 	synfig::String font=param_font.get(synfig::String());
 	synfig::String text=param_text.get(synfig::String());
-	
+
 	if(!is_solid_color())
 	{
 		// Initially render what's behind us
@@ -1034,9 +1036,9 @@ Layer_Freetype::accelerated_cairorender(Context context, cairo_t *cr, int qualit
 			return false;
 		}
 	}
-	
+
 	RendDesc workdesc(renddesc);
-	
+
 	// Untransform the render desc
 	if(!cairo_renddesc_untransform(cr, workdesc))
 		return false;
@@ -1052,7 +1054,7 @@ Layer_Freetype::accelerated_cairorender(Context context, cairo_t *cr, int qualit
 	const double wsy=1/wph;
 	const double wtx=(-wtlx+origin[0])*wsx;
 	const double wty=(-wtly+origin[1])*wsy;
-	
+
 	// Cairo context
 	cairo_surface_t* subimage = NULL;
 	cairo_surface_t* inverted = NULL;
@@ -1066,7 +1068,7 @@ Layer_Freetype::accelerated_cairorender(Context context, cairo_t *cr, int qualit
 		cairo_set_source_rgba(invertcr, color.get_r(), color.get_g(), color.get_b(), color.get_a());
 		cairo_paint_with_alpha(invertcr, get_amount());
 	}
-	
+
 	// Pango
 	PangoLayout *layout;
 	PangoFontDescription *font_description;
@@ -1080,10 +1082,10 @@ Layer_Freetype::accelerated_cairorender(Context context, cairo_t *cr, int qualit
 	Real sizey=1.75*fabs(size[1])*fabs(wsy);
 	Real vscale=sizey/sizex;
 	pango_font_description_set_absolute_size (font_description, sizex * PANGO_SCALE );
-	
+
 	//Pango Layout
 	layout = pango_cairo_create_layout (subcr);
-	
+
 	pango_layout_set_font_description (layout, font_description);
 	pango_layout_set_text (layout, text.c_str(), -1);
 	if(orient[0]<0.4)
@@ -1092,14 +1094,14 @@ Layer_Freetype::accelerated_cairorender(Context context, cairo_t *cr, int qualit
 		pango_layout_set_alignment(layout, PANGO_ALIGN_RIGHT);
 	else
 		pango_layout_set_alignment(layout, PANGO_ALIGN_CENTER);
-	
+
 	pango_layout_set_single_paragraph_mode(layout, false);
-	
+
 	// Calculate the logical and ink rectangles of the layout before add spacing
 	PangoRectangle ink_layout, logical_layout;
 	PangoRectangle ink_rect, logical_rect;
 	pango_layout_get_pixel_extents(layout, &ink_layout, &logical_layout);
-	
+
 	// Spacing
 	// Horizontal
 	PangoAttrList* attrlist=pango_attr_list_new();
@@ -1107,7 +1109,7 @@ Layer_Freetype::accelerated_cairorender(Context context, cairo_t *cr, int qualit
 	PangoAttribute* spacing=pango_attr_letter_spacing_new(hspace*PANGO_SCALE);
 	pango_attr_list_insert_before(attrlist, spacing);
 	pango_layout_set_attributes(layout, attrlist);
-	
+
 	// Vertical
 	int total_lines=pango_layout_get_line_count(layout);
 	Real vspace_total=vcompress>1.0?0.4*logical_layout.height*(vcompress-1.0):(vcompress<1.0)?0.6*logical_layout.height*(vcompress-1.0):0;
@@ -1115,10 +1117,10 @@ Layer_Freetype::accelerated_cairorender(Context context, cairo_t *cr, int qualit
 	if(total_lines>1)
 		vspace=vspace_total/(total_lines-1);
 	pango_layout_set_spacing(layout, vspace*PANGO_SCALE);
-	
+
 	// Recalculate extents due to spacing changes
 	pango_layout_get_pixel_extents(layout, &ink_layout, &logical_layout);
-	
+
 	// Render text
 	cairo_save(subcr);
 	cairo_set_source_rgba(subcr, color.get_r(), color.get_g(), color.get_b(), color.get_a());
@@ -1126,7 +1128,7 @@ Layer_Freetype::accelerated_cairorender(Context context, cairo_t *cr, int qualit
 	pango_cairo_update_layout(subcr, layout);
 	cairo_move_to(subcr, wtx-logical_layout.width*orient[0], (wty-(logical_layout.height+vspace_total)*vscale*orient[1])/vscale);
 	pango_cairo_show_layout(subcr, layout);
-	
+
 	// Debug ink and logical lines
 	if(0)
 	{
@@ -1141,7 +1143,7 @@ Layer_Freetype::accelerated_cairorender(Context context, cairo_t *cr, int qualit
 						ink_rect.height);
 		cairo_stroke(subcr);
 		cairo_restore(subcr);
-		
+
 		cairo_save(subcr);
 		cairo_set_line_width(subcr, 1.0);
 		cairo_set_source_rgb(subcr, 0.0, 0.0, 1.0);
@@ -1156,7 +1158,7 @@ Layer_Freetype::accelerated_cairorender(Context context, cairo_t *cr, int qualit
 		cairo_restore(subcr);
 	}
 	cairo_restore(subcr);
-	
+
 	cairo_save(cr);
 	// Render the text on the target surface with the proper operator
 	if(invert)
@@ -1182,7 +1184,7 @@ Layer_Freetype::accelerated_cairorender(Context context, cairo_t *cr, int qualit
 		cairo_paint_with_alpha_operator(cr, get_amount(), get_blend_method());
 	}
 	cairo_restore(cr);
-	
+
 	// Destroy and return
 	cairo_surface_destroy(subimage);
 	cairo_destroy(subcr);
