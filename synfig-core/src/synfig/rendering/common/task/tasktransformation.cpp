@@ -46,9 +46,9 @@ using namespace rendering;
 
 
 Task::Token TaskTransformation::token(
-	DescAbstract<TaskTransformation>("TaskTransformation") );
+	DescAbstract<TaskTransformation>("Transformation") );
 Task::Token TaskTransformationAffine::token(
-	DescAbstract<TaskTransformationAffine, TaskTransformation>("TaskTransformationAffine") );
+	DescAbstract<TaskTransformationAffine, TaskTransformation>("TransformationAffine") );
 
 
 TaskTransformation::TaskTransformation():
