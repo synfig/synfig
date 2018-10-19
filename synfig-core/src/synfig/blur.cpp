@@ -163,17 +163,20 @@ inline CairoColorAccumulator zero<CairoColorAccumulator>()
 template <typename T,typename AT,class VP>
 static void GaussianBlur_2x2(etl::surface<T,AT,VP> &surface)
 {
-	int x,y;
+	int x,y,w,h;
 	AT Tmp1,Tmp2,SR0;
 
-	AT *SC0=new AT[surface.get_w()];
+	w=surface.get_w();
+	h=surface.get_h();
+	
+	AT *SC0=new AT[w];
 
-	memcpy(SC0,surface[0],surface.get_w()*sizeof(AT));
+	memcpy(SC0,surface[0],w*sizeof(AT));
 
-	for(y=0;y<surface.get_h();y++)
+	for(y=0;y<h;y++)
 	{
 		SR0=surface[y][0];
-		for(x=0;x<surface.get_w();x++)
+		for(x=0;x<w;x++)
 		{
 			Tmp1=(AT)(surface[y][x]);
 			Tmp2=SR0+Tmp1;
@@ -292,12 +295,12 @@ inline static void GaussianBlur_5x5_(etl::surface<T,AT,VP> &surface,AT *SC0,AT *
 template <typename T,typename AT,class VP>
 inline static void GaussianBlur_5x5(etl::surface<T,AT,VP> &surface)
 {
-	int w=surface.get_w();
+	int w2=surface.get_w() + 2;
 
-	AT *SC0=new AT[w+2];
-	AT *SC1=new AT[w+2];
-	AT *SC2=new AT[w+2];
-	AT *SC3=new AT[w+2];
+	AT *SC0=new AT[w2];
+	AT *SC1=new AT[w2];
+	AT *SC2=new AT[w2];
+	AT *SC3=new AT[w2];
 
 	GaussianBlur_5x5_(surface,SC0,SC1,SC2,SC3);
 
@@ -318,13 +321,13 @@ static void GaussianBlur_nxn(etl::surface<T,AT,VP> &surface,int n)
 
 	w=surface.get_w();
 	h=surface.get_h();
-
+	int w_half_n=w+half_n;
     AT SR[n-1];
 	AT *SC[n-1];
 
 	for(i=0;i<n-1;i++)
 	{
-		SC[i]=new AT[w+half_n];
+		SC[i]=new AT[w_half_n];
 		if(!SC[i])
 		{
 			throw(runtime_error(strprintf(__FILE__":%d:Malloc failure",__LINE__)));
@@ -347,7 +350,7 @@ static void GaussianBlur_nxn(etl::surface<T,AT,VP> &surface,int n)
 
 //		SR[0]=surface[v][0]*(2.0-1.9/n);
 
-		for(x=0;x<w+half_n;x++)
+		for(x=0;x<w_half_n;x++)
 		{
 			if(x>=w)
 				u=w-1;
@@ -358,19 +361,21 @@ static void GaussianBlur_nxn(etl::surface<T,AT,VP> &surface,int n)
 			// Row Machine
 			for(i=0;i<half_n;i++)
 			{
-				Tmp2=SR[i*2]+Tmp1;
-				SR[i*2]=Tmp1;
-				Tmp1=SR[i*2+1]+Tmp2;
-				SR[i*2+1]=Tmp2;
+				int idouble = i*2;
+				Tmp2=SR[idouble]+Tmp1;
+				SR[idouble]=Tmp1;
+				Tmp1=SR[idouble+1]+Tmp2;
+				SR[idouble+1]=Tmp2;
 			}
 
 			// Column Machine
 			for(i=0;i<half_n-1;i++)
 			{
-				Tmp2=SC[i*2][x]+Tmp1;
-				SC[i*2][x]=Tmp1;
-				Tmp1=SC[i*2+1][x]+Tmp2;
-				SC[i*2+1][x]=Tmp2;
+				int idouble = i*2;
+				Tmp2=SC[idouble][x]+Tmp1;
+				SC[idouble][x]=Tmp1;
+				Tmp1=SC[idouble][x]+Tmp2;
+				SC[idouble+1][x]=Tmp2;
 			}
 			Tmp2=SC[n-3][x]+Tmp1;
 			SC[n-3][x]=Tmp1;
@@ -387,13 +392,16 @@ static void GaussianBlur_nxn(etl::surface<T,AT,VP> &surface,int n)
 template <typename T,typename AT,class VP>
 static void GaussianBlur_2x1(etl::surface<T,AT,VP> &surface)
 {
-	int x,y;
+	int x,y,w,h;
 	AT Tmp1,Tmp2,SR0;
 
-	for(y=0;y<surface.get_h();y++)
+	w = surface.get_w();
+	h = surface.get_h();
+	
+	for(y=0;y<h;y++)
 	{
 		SR0=surface[y][0];
-		for(x=0;x<surface.get_w();x++)
+		for(x=0;x<w;x++)
 		{
 			Tmp1=surface[y][x];
 			Tmp2=SR0+Tmp1;
@@ -406,13 +414,15 @@ static void GaussianBlur_2x1(etl::surface<T,AT,VP> &surface)
 template <typename T,typename AT,class VP>
 static void GaussianBlur_3x1(etl::surface<T,AT,VP> &surface)
 {
-	int x,y;
+	int x,y,w,h;
 	AT Tmp1,Tmp2,SR0,SR1;
-
-	for(y=0;y<surface.get_h();y++)
+	w = surface.get_w();
+	h = surface.get_h();
+	
+	for(y=0;y<h;y++)
 	{
 		SR0=SR1=surface[y][0];
-		for(x=0;x<surface.get_w();x++)
+		for(x=0;x<w;x++)
 		{
 			// Row Machine
 			Tmp1=surface[y][x];
@@ -500,9 +510,10 @@ bool Blur::operator()(const Surface &surface,
 		for(x=0;x<w;x++)
 		{
 			Color a = surface[y][x];
-			a.set_r(a.get_r()*a.get_a());
-			a.set_g(a.get_g()*a.get_a());
-			a.set_b(a.get_b()*a.get_a());
+			int aa = a.get_a();
+			a.set_r(a.get_r()*aa);
+			a.set_g(a.get_g()*aa);
+			a.set_b(a.get_b()*aa);
 			worksurface[y][x] = a;
 		}
 	}
