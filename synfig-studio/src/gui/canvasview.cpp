@@ -1794,7 +1794,7 @@ CanvasView::refresh_rend_desc()
 		time_model()->get_time() - Time(DEFAULT_TIME_WINDOW_SIZE)*0.5,
 		time_model()->get_time() + Time(DEFAULT_TIME_WINDOW_SIZE)*0.5 );
 
-	if (begin_time == end_time) hide_timebar(); else show_timebar();
+	//if (begin_time == end_time) hide_timebar(); else show_timebar();
 
 	work_area->queue_render();
 }
