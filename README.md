@@ -26,6 +26,17 @@ Old autotools instructions can be found [here][autotools].
 We're currently in the [process of switching to CMake build system][cmake] and
 you're welcome to take part in testing and improving it.
 
+#### Debian/Ubuntu
+1. Download the appimage file from the website.
+2. In your terminal, run `sudo apt-get install synfigstudio`
+
+#### Windows
+1. Download the `.exe` file from the website.
+2. Run the file. A wizard will then guide you through the rest of the installation.
+
+#### Mac OS
+1. Download the `.dmg` file from the website.
+2. Run the file. A wizard will then guide you through the rest of the installation.
 
 ### CMake status
 
