@@ -20,8 +20,7 @@ matrix:
     before_install: autobuild/install-requirements-linux.sh
     before_script: ccache -s
     script: autobuild/synfigstudio-linux-build.sh
-    after_install: autobuild/synfigrenderer-regression-test.sh
-    after_script: ccache -s # show ccache stats
+    after_script: autobuild/synfigrenderer-regression-test.sh
         
   - os: osx
     name: "Synfig Studio OS X 10.10 Yosemite (Clang/Autotools/Brew)"
