@@ -61,8 +61,8 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 AutoRecover::AutoRecover():
-	enabled(),
-	timeout_ms()
+	enabled(1),
+	timeout_ms(15000)
 { }
 
 AutoRecover::~AutoRecover()

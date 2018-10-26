@@ -2138,7 +2138,6 @@ App::set_workspace_animating()
 void
 App::restore_default_settings()
 {
-	// TODO autorecover default auto_recover_backup_interval
 	synfigapp::Main::settings().set_value("pref.distance_system","pt");
 	synfigapp::Main::settings().set_value("pref.use_colorspace_gamma","1");
 #ifdef SINGLE_THREADED
@@ -2162,6 +2161,7 @@ App::restore_default_settings()
 	temp << Duck::STRUCT_DEFAULT;
 	synfigapp::Main::settings().set_value("pref.ui_handle_tooltip_flag", temp.str());
 	synfigapp::Main::settings().set_value("pref.auto_recover_backup", "1");
+	synfigapp::Main::settings().set_value("pref.auto_recover_backup_interval", "15000");
 }
 
 void
