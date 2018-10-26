@@ -222,7 +222,7 @@ Dialog_Setup::create_system_page(PageInfo pi)
 	pi.grid->attach(*recent_files_spinbutton, 1, row, 1, 1);
 
 	// System - Auto backup interval
-	attach_label_section(pi.grid, _("Auto Backup"), ++row);
+	attach_label_section(pi.grid, _("Autosave"), ++row);
 	pi.grid->attach(toggle_autobackup, 1, row, 1, 1);
 	toggle_autobackup.set_hexpand(false);
 	toggle_autobackup.set_halign(Gtk::ALIGN_START);
