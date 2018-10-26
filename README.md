@@ -28,15 +28,15 @@ you're welcome to take part in testing and improving it.
 
 #### Debian/Ubuntu
 1. Download the appimage file from the website.
-2. In your terminal, run `sudo apt-get install synfigstudio`
+2. Left-click on the file and select `properties`. Navigate to `permissions` and check the box that says `Allow executing file as program`. Finally, run the  file.
 
 #### Windows
 1. Download the `.exe` file from the website.
 2. Run the file. A wizard will then guide you through the rest of the installation.
 
-#### Mac OS
+#### OSX
 1. Download the `.dmg` file from the website.
-2. Run the file. A wizard will then guide you through the rest of the installation.
+2. Drag the file into your applications directory, then run it. A wizard will then guide you through the rest of the installation.
 
 ### CMake status
 
