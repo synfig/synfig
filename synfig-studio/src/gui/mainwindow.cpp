@@ -184,8 +184,6 @@ MainWindow::init_menus()
 			sigc::bind(sigc::ptr_fun(&studio::App::open_uri),url))
 	#define WIKI(action_name,title,page) \
 		URL(action_name,title, "http://synfig.org/wiki" + String(page))
-	#define SITE(action_name,title,page) \
-		URL(action_name,title, "http://synfig.org/cms" + String(page))
 
 	action_group->add( Gtk::Action::create("help", Gtk::Stock::HELP),
 		sigc::ptr_fun(studio::App::dialog_help)
@@ -195,7 +193,7 @@ MainWindow::init_menus()
 	WIKI("help-tutorials",	_("Tutorials"),					_("/Category:Tutorials"));
 	WIKI("help-reference",	_("Reference"),					_("/Category:Reference"));
 	WIKI("help-faq",		_("Frequently Asked Questions"),_("/FAQ")				);
-	SITE("help-support",	_("Get Support"),				_("/en/support")		);
+	URL("help-support",		_("Get Support"),				_("https://forums.synfig.org/")	);
 
 	action_group->add( Gtk::Action::create(
 			"help-about", Gtk::StockID("synfig-about"), _("About Synfig Studio")),
