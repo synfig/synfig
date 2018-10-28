@@ -531,12 +531,12 @@ public:
 				return true;
 			}
 #endif
-			if(key=="auto_recover_backup")
+			if(key=="autosave_backup")
 			{
 				value=strprintf("%i",App::auto_recover->get_enabled());
 				return true;
 			}
-			if(key=="auto_recover_backup_interval")
+			if(key=="autosave_backup_interval")
 			{
 				value=strprintf("%i",App::auto_recover->get_timeout_ms());
 				return true;
@@ -663,13 +663,13 @@ public:
 				App::set_time_format(static_cast<synfig::Time::Format>(i));
 				return true;
 			}
-			if(key=="auto_recover_backup")
+			if(key=="autosave_backup")
 			{
 				int i(atoi(value.c_str()));
 				App::auto_recover->set_enabled(i);
 				return true;
 			}
-			if(key=="auto_recover_backup_interval")
+			if(key=="autosave_backup_interval")
 			{
 				int i(atoi(value.c_str()));
 				App::auto_recover->set_timeout_ms(i);
@@ -816,8 +816,8 @@ public:
 #ifdef SINGLE_THREADED
 		ret.push_back("use_single_threaded");
 #endif
-		ret.push_back("auto_recover_backup");
-		ret.push_back("auto_recover_backup_interval");
+		ret.push_back("autosave_backup");
+		ret.push_back("autosave_backup_interval");
 		ret.push_back("restrict_radius_ducks");
 		ret.push_back("resize_imported_images");
 		ret.push_back("enable_experimental_features");
@@ -2160,8 +2160,8 @@ App::restore_default_settings()
 	ostringstream temp;
 	temp << Duck::STRUCT_DEFAULT;
 	synfigapp::Main::settings().set_value("pref.ui_handle_tooltip_flag", temp.str());
-	synfigapp::Main::settings().set_value("pref.auto_recover_backup", "1");
-	synfigapp::Main::settings().set_value("pref.auto_recover_backup_interval", "15000");
+	synfigapp::Main::settings().set_value("pref.autosave_backup", "1");
+	synfigapp::Main::settings().set_value("pref.autosave_backup_interval", "15000");
 }
 
 void
