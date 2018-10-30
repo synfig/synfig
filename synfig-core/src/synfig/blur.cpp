@@ -374,7 +374,7 @@ static void GaussianBlur_nxn(etl::surface<T,AT,VP> &surface,int n)
 				int idouble = i*2;
 				Tmp2=SC[idouble][x]+Tmp1;
 				SC[idouble][x]=Tmp1;
-				Tmp1=SC[idouble][x]+Tmp2;
+				Tmp1=SC[idouble+1][x]+Tmp2;
 				SC[idouble+1][x]=Tmp2;
 			}
 			Tmp2=SC[n-3][x]+Tmp1;
@@ -510,7 +510,7 @@ bool Blur::operator()(const Surface &surface,
 		for(x=0;x<w;x++)
 		{
 			Color a = surface[y][x];
-			int aa = a.get_a();
+			float aa = a.get_a();
 			a.set_r(a.get_r()*aa);
 			a.set_g(a.get_g()*aa);
 			a.set_b(a.get_b()*aa);
