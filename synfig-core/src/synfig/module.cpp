@@ -83,7 +83,6 @@ Module::subsys_init(const String &prefix)
 #ifdef __APPLE__
 	lt_dladdsearchdir("/Library/Frameworks/synfig.framework/Resources/modules");
 #endif
-	lt_dladdsearchdir("/usr/local/lib/synfig/modules");
 	lt_dladdsearchdir(".");
 #endif
 	book_=new Book;
