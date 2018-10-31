@@ -71,7 +71,6 @@ Module::subsys_init(const String &prefix)
 		return false;
 	}
 
-	lt_dladdsearchdir(".");
 	if(getenv("HOME"))
 		lt_dladdsearchdir(strprintf("%s/.local/share/synfig/modules", getenv("HOME")).c_str());
 	lt_dladdsearchdir((Glib::locale_from_utf8(prefix) + \
