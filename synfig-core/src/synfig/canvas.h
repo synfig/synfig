@@ -465,6 +465,9 @@ public:
 
 	//! Sets the time for all the layers in the canvas
 	void set_time(Time t)const;
+	
+	//! Loads resources (frames) for all the external layers in the canvas
+	void load_resources(Time t)const;
 
 	//! Returns the current time of the Canvas
 	Time get_time()const { return cur_time_; }

@@ -322,6 +322,22 @@ Layer_PasteCanvas::set_time_vfunc(IndependentContext context, Time time)const
 }
 
 void
+Layer_PasteCanvas::load_resources_vfunc(IndependentContext context, Time time)const
+{
+	context.load_resources(time);
+
+	if (!sub_canvas)
+		return;
+	if (depth == MAX_DEPTH)
+		return;
+	depth_counter counter(depth);
+
+	Real time_dilation = param_time_dilation.get(Real());
+	Time time_offset = param_time_offset.get(Time());
+	sub_canvas->load_resources(time*time_dilation + time_offset);
+}
+
+void
 Layer_PasteCanvas::set_outline_grow_vfunc(IndependentContext context, Real outline_grow)const
 {
 	context.set_outline_grow(outline_grow);

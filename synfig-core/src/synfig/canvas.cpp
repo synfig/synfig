@@ -373,6 +373,12 @@ Canvas::set_time(Time t)const
 	is_dirty_=false;
 }
 
+void
+Canvas::load_resources(Time t)const
+{
+	get_independent_context().load_resources(t);
+}
+
 Canvas::LooseHandle
 Canvas::get_root()const
 {

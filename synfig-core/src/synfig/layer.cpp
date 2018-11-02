@@ -616,9 +616,21 @@ Layer::set_time(IndependentContext context, Time time)const
 }
 
 void
+Layer::load_resources(IndependentContext context, Time time)const
+{
+	load_resources_vfunc(context, time);
+}
+
+void
 Layer::set_time_vfunc(IndependentContext context, Time time)const
 {
 	context.set_time(time);
+}
+
+void
+Layer::load_resources_vfunc(IndependentContext context, Time time)const
+{
+	context.load_resources(time);
 }
 
 void

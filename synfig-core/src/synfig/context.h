@@ -73,6 +73,9 @@ public:
 
 	//! Sets the context to the Time \time. It is done recursively.
 	void set_time(Time time, bool force = false) const;
+	
+	//! Loads resources (frames from external files) for Time \time. It is done recursively.
+	void load_resources(Time time, bool force = false) const;
 
 	//! Sets the context outline grow to \outline_grow. It is done recursively.
 	void set_outline_grow(Real outline_grow) const;

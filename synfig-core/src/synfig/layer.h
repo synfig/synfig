@@ -570,6 +570,13 @@ public:
 	**	\see Context::set_time()
 	*/
 	void set_time(IndependentContext context, Time time)const;
+	
+	//! Loads external resources (frames) for the Layer recursively
+	/*!	\param context		Context iterator referring to next Layer.
+	**	\param time			writeme
+	**	\see Context::load_resources()
+	*/
+	void load_resources(IndependentContext context, Time time)const;
 
 	//! Sets the \a outline_grow for the Layer and those under it
 	/*!	\param context		Context iterator referring to next Layer.
@@ -606,6 +613,7 @@ public:
 
 protected:
 	virtual void set_time_vfunc(IndependentContext context, Time time) const;
+	virtual void load_resources_vfunc(IndependentContext context, Time time) const;
 	virtual void set_outline_grow_vfunc(IndependentContext context, Real outline_grow) const;
 	virtual rendering::Task::Handle build_rendering_task_vfunc(Context context) const;
 

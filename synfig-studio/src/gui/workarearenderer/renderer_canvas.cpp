@@ -455,6 +455,7 @@ Renderer_Canvas::enqueue_render_frame(
 
 	// build rendering task
 	canvas->set_time(id.time);
+	canvas->load_resources(id.time);
 	canvas->set_outline_grow(rend_desc.get_outline_grow());
 	CanvasBase sub_queue;
 	Context context = canvas->get_context_sorted(context_params, sub_queue);

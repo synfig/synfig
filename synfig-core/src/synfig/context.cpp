@@ -111,6 +111,23 @@ IndependentContext::set_time(Time time, bool force)const
 }
 
 void
+IndependentContext::load_resources(Time time, bool force)const
+{
+	IndependentContext context(*this);
+	while(*context)
+	{
+		if ( (*context)->active() )
+			break;
+		++context;
+	}
+	if (!*context) return;
+
+	// Set up a writer lock
+	//RWLock::WriterLock lock((*context)->get_rw_lock());
+	(*context)->load_resources(context+1,time);
+}
+
+void
 IndependentContext::set_outline_grow(Real outline_grow)const
 {
 	IndependentContext context(*this);
