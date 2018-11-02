@@ -74,7 +74,7 @@ RenderSettings::RenderSettings(Gtk::Window& parent, etl::handle<synfigapp::Canva
 	entry_antialias(adjustment_antialias,1,0),
 	toggle_single_frame(_("Render _current frame only"), true),
 	toggle_extract_alpha(_("Extract alpha"), true),
-	tparam("libx264-lossless",2000)
+	tparam("mpeg4",6000)
 {
 	tparam.sequence_separator=App::sequence_separator;
 	widget_rend_desc.show();
@@ -217,7 +217,7 @@ RenderSettings::set_entry_filename()
 			filename+=" ("+canvas->get_name()+')';
 	}
 
-	filename += ".png";
+	filename += ".avi";
 
 	try
 	{
@@ -226,7 +226,7 @@ RenderSettings::set_entry_filename()
 	catch(...)
 	{
 		synfig::warning("Averted crash!");
-		entry_filename.set_text("output.png");
+		entry_filename.set_text("output.avi");
 	}
 }
 
