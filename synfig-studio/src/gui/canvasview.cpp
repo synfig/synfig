@@ -628,7 +628,7 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<CanvasIn
 
 	//MODIFIED TIME ADJUSTMENT STUFF....
 	time_model()->signal_time_changed().connect(
-		sigc::mem_fun(*this, &CanvasView::time_was_changed) );
+		sigc::mem_fun(*this, &CanvasView::on_time_changed) );
 	time_model()->signal_visible_changed().connect(
 		sigc::mem_fun(*this, &CanvasView::refresh_time_window) );
 	time_model()->signal_play_bounds_changed().connect(
@@ -2208,12 +2208,15 @@ CanvasView::time_zoom_out()
 	{ time_model()->zoom(0.75); }
 
 void
-CanvasView::time_was_changed()
+CanvasView::on_time_changed()
 {
 	Time time = time_model()->get_time();
 
-	if (canvas_interface_->get_time() != time)
+	if (!is_playing() && canvas_interface_->get_time() != time)
 		canvas_interface_->set_time(time);
+	else {
+		work_area->queue_draw();
+	}
 
 	if (time_model()->almost_equal_to_current(soundProcessor.get_position(), Time(0.5)))
 		soundProcessor.set_position(time);
@@ -2230,18 +2233,26 @@ CanvasView::time_was_changed()
 	#endif
 
 	current_time_widget->set_value(time);
-	try {
-		get_canvas()->keyframe_list().find(time);
-		current_time_widget->override_color(Gdk::RGBA("#FF0000"));
-	} catch(...) {
-		current_time_widget->override_color(Gdk::RGBA(0));
-	}
+	if (!is_playing())
+	{
+		try {
+			get_canvas()->keyframe_list().find(time);
+			// Widget::override_color() is deprecated since Gtkmm 3.16: Use a custom style provider and style classes instead.
+			// This function is very slow!
+			current_time_widget->override_color(Gdk::RGBA("#FF0000"));
+		} catch(...) {
+			// Widget::override_color() is deprecated since Gtkmm 3.16: Use a custom style provider and style classes instead.
+			// This function is very slow!
+			current_time_widget->override_color(Gdk::RGBA(0));
+		}
 
-	// Shouldn't these trees just hook into
-	// the time changed signal...?
-	if (layer_tree) layer_tree->queue_draw();
-	if (children_tree) children_tree->queue_draw();
-	queue_rebuild_ducks();
+		// Shouldn't these trees just hook into
+		// the time changed signal...?
+		if (layer_tree) layer_tree->queue_draw();
+		if (children_tree) children_tree->queue_draw();
+		// Do we need this here?
+		queue_rebuild_ducks();
+	}
 }
 
 void
@@ -2631,6 +2642,9 @@ CanvasView::play_async()
 	if (timeout < 10) timeout = 10;
 
 	framedial->toggle_play_pause_button(is_playing());
+	// Widget::override_color() is deprecated since Gtkmm 3.16: Use a custom style provider and style classes instead.
+	// Also, this function is heavily slowdowns playback.
+	//current_time_widget->override_color(Gdk::RGBA(0));
 
 	soundProcessor.clear();
 	canvas_interface()->get_canvas()->fill_sound_processor(soundProcessor);
@@ -2650,6 +2664,8 @@ CanvasView::stop_async()
 	soundProcessor.set_playing(false);
 	ducks_playing_lock.reset();
 	framedial->toggle_play_pause_button(is_playing());
+	
+	on_time_changed();
 }
 
 void

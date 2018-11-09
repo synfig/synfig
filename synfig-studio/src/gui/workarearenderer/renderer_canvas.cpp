@@ -527,12 +527,19 @@ Renderer_Canvas::enqueue_render()
 		RectInt        window_rect    = get_work_area()->get_window_rect();
 		bool           bg_rendering   = get_work_area()->get_background_rendering();
 		Canvas::Handle canvas         = get_work_area()->get_canvas();
-		etl::handle<TimeModel> time_model = get_work_area()->get_canvas_view()->time_model();
+		etl::handle<CanvasView> canvas_view = get_work_area()->get_canvas_view();
+		etl::handle<TimeModel> time_model = canvas_view->time_model();
+		bool			is_playing = canvas_view->is_playing();
 
 		build_onion_frames();
 
 		rendering::Renderer::Handle renderer = rendering::Renderer::get_renderer(renderer_name);
-		if (renderer && enqueued_tasks < max_enqueued_tasks) {
+		
+		int max_tasks = max_enqueued_tasks;
+		if (is_playing)
+			max_tasks = 2;
+		
+		if (renderer && enqueued_tasks < max_tasks) {
 			if (canvas && window_rect.is_valid()) {
 				Time orig_time = canvas->get_time();
 				int enqueued = 0;
@@ -555,7 +562,8 @@ Renderer_Canvas::enqueue_render()
 				long long frame_size = image_rect_size(window_rect);
 				bool time_in_repeat_range = time_model->get_time() >= time_model->get_play_bounds_lower()
 						                 && time_model->get_time() <= time_model->get_play_bounds_upper();
-				while(bg_rendering && enqueued_tasks < max_enqueued_tasks && tiles_size + frame_size < max_tiles_size_soft)
+				
+				while(bg_rendering && enqueued_tasks < max_tasks && tiles_size + frame_size < max_tiles_size_soft)
 				{
 					Time future_time = current_frame.time + frame_duration*future;
 					bool future_exists = future_time >= time_model->get_lower()
@@ -566,7 +574,9 @@ Renderer_Canvas::enqueue_render()
 											   ? weight_future : weight_future_extra;
 
 					Time past_time = current_frame.time - frame_duration*past;
-					bool past_exists = past_time >= time_model->get_lower()
+					bool past_exists = false;
+					if (!is_playing)
+						past_exists = past_time >= time_model->get_lower()
 									&& past_time <= time_model->get_upper();
 					Real weight_past_current = !time_in_repeat_range
 							                || ( past_time >= time_model->get_play_bounds_lower()
@@ -595,7 +605,8 @@ Renderer_Canvas::enqueue_render()
 				}
 
 				// restore canvas time
-				canvas->set_time(orig_time);
+				if (!is_playing)
+					canvas->set_time(orig_time);
 
 				if (enqueued)
 					get_work_area()->signal_rendering()();
