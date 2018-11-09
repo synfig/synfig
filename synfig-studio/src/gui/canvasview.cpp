@@ -628,7 +628,7 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<CanvasIn
 
 	//MODIFIED TIME ADJUSTMENT STUFF....
 	time_model()->signal_time_changed().connect(
-		sigc::mem_fun(*this, &CanvasView::time_was_changed) );
+		sigc::mem_fun(*this, &CanvasView::on_time_changed) );
 	time_model()->signal_visible_changed().connect(
 		sigc::mem_fun(*this, &CanvasView::refresh_time_window) );
 	time_model()->signal_play_bounds_changed().connect(
@@ -2208,7 +2208,7 @@ CanvasView::time_zoom_out()
 	{ time_model()->zoom(0.75); }
 
 void
-CanvasView::time_was_changed()
+CanvasView::on_time_changed()
 {
 	Time time = time_model()->get_time();
 
@@ -2657,7 +2657,7 @@ CanvasView::stop_async()
 	ducks_playing_lock.reset();
 	framedial->toggle_play_pause_button(is_playing());
 	
-	time_was_changed();
+	on_time_changed();
 }
 
 void

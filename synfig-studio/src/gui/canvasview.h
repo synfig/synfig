@@ -410,7 +410,7 @@ private:
 
 	void refresh_time_window();
 
-	void time_was_changed();
+	void on_time_changed();
 
 	void refresh_rend_desc();
 
