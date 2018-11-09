@@ -2237,8 +2237,12 @@ CanvasView::on_time_changed()
 	{
 		try {
 			get_canvas()->keyframe_list().find(time);
+			// Widget::override_color() is deprecated since Gtkmm 3.16: Use a custom style provider and style classes instead.
+			// This function is very slow!
 			current_time_widget->override_color(Gdk::RGBA("#FF0000"));
 		} catch(...) {
+			// Widget::override_color() is deprecated since Gtkmm 3.16: Use a custom style provider and style classes instead.
+			// This function is very slow!
 			current_time_widget->override_color(Gdk::RGBA(0));
 		}
 
@@ -2637,7 +2641,9 @@ CanvasView::play_async()
 	if (timeout < 10) timeout = 10;
 
 	framedial->toggle_play_pause_button(is_playing());
-	current_time_widget->override_color(Gdk::RGBA(0));
+	// Widget::override_color() is deprecated since Gtkmm 3.16: Use a custom style provider and style classes instead.
+	// Also, this function is heavily slowdowns playback.
+	//current_time_widget->override_color(Gdk::RGBA(0));
 
 	soundProcessor.clear();
 	canvas_interface()->get_canvas()->fill_sound_processor(soundProcessor);
