@@ -2233,18 +2233,21 @@ CanvasView::time_was_changed()
 	#endif
 
 	current_time_widget->set_value(time);
-	try {
-		get_canvas()->keyframe_list().find(time);
-		current_time_widget->override_color(Gdk::RGBA("#FF0000"));
-	} catch(...) {
-		current_time_widget->override_color(Gdk::RGBA(0));
-	}
+	if (!is_playing())
+	{
+		try {
+			get_canvas()->keyframe_list().find(time);
+			current_time_widget->override_color(Gdk::RGBA("#FF0000"));
+		} catch(...) {
+			current_time_widget->override_color(Gdk::RGBA(0));
+		}
 
-	// Shouldn't these trees just hook into
-	// the time changed signal...?
-	if (layer_tree) layer_tree->queue_draw();
-	if (children_tree) children_tree->queue_draw();
-	queue_rebuild_ducks();
+		// Shouldn't these trees just hook into
+		// the time changed signal...?
+		if (layer_tree) layer_tree->queue_draw();
+		if (children_tree) children_tree->queue_draw();
+		queue_rebuild_ducks();
+	}
 }
 
 void
@@ -2654,9 +2657,7 @@ CanvasView::stop_async()
 	ducks_playing_lock.reset();
 	framedial->toggle_play_pause_button(is_playing());
 	
-	Time time = time_model()->get_time();
-	if (canvas_interface_->get_time() != time)
-		canvas_interface_->set_time(time);
+	time_was_changed();
 }
 
 void
