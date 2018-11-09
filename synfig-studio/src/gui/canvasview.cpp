@@ -2250,6 +2250,7 @@ CanvasView::on_time_changed()
 		// the time changed signal...?
 		if (layer_tree) layer_tree->queue_draw();
 		if (children_tree) children_tree->queue_draw();
+		// Do we need this here?
 		queue_rebuild_ducks();
 	}
 }
