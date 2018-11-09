@@ -527,7 +527,9 @@ Renderer_Canvas::enqueue_render()
 		RectInt        window_rect    = get_work_area()->get_window_rect();
 		bool           bg_rendering   = get_work_area()->get_background_rendering();
 		Canvas::Handle canvas         = get_work_area()->get_canvas();
-		etl::handle<TimeModel> time_model = get_work_area()->get_canvas_view()->time_model();
+		etl::handle<CanvasView> canvas_view = get_work_area()->get_canvas_view();
+		etl::handle<TimeModel> time_model = canvas_view->time_model();
+		bool			is_playing = canvas_view->is_playing();
 
 		build_onion_frames();
 
@@ -595,7 +597,8 @@ Renderer_Canvas::enqueue_render()
 				}
 
 				// restore canvas time
-				canvas->set_time(orig_time);
+				if (!is_playing)
+					canvas->set_time(orig_time);
 
 				if (enqueued)
 					get_work_area()->signal_rendering()();

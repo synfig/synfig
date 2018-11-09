@@ -2212,8 +2212,11 @@ CanvasView::time_was_changed()
 {
 	Time time = time_model()->get_time();
 
-	if (canvas_interface_->get_time() != time)
+	if (!is_playing() && canvas_interface_->get_time() != time)
 		canvas_interface_->set_time(time);
+	else {
+		work_area->queue_draw();
+	}
 
 	if (time_model()->almost_equal_to_current(soundProcessor.get_position(), Time(0.5)))
 		soundProcessor.set_position(time);
@@ -2650,6 +2653,10 @@ CanvasView::stop_async()
 	soundProcessor.set_playing(false);
 	ducks_playing_lock.reset();
 	framedial->toggle_play_pause_button(is_playing());
+	
+	Time time = time_model()->get_time();
+	if (canvas_interface_->get_time() != time)
+		canvas_interface_->set_time(time);
 }
 
 void
