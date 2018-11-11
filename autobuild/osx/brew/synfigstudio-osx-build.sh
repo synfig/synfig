@@ -11,8 +11,15 @@
 export PATH="/usr/local/opt/ccache/libexec:/usr/local/opt/gettext/bin:$PATH"
 SCRIPT_PATH=$(cd `dirname "$0"`; pwd)
 
+if [[ $DEBUG == 1 ]]; then
+  DEBUG_FLAGS="--enable-debug --enable-optimization=0"
+else
+  DEBUG_FLAGS=""
+fi
+
 MAKE_THREADS=2
 MAKE_OPTIONS="-j$MAKE_THREADS --silent LIBTOOLFLAGS=--silent"
+
 export CFLAGS="-fdiagnostics-color=always $CFLAGS"
 export CXXFLAGS="-fdiagnostics-color=always $CXXFLAGS"
 #CONFIGURE_FLAGS="--enable-optimization=0"
@@ -40,7 +47,7 @@ pushd "$SCRIPT_PATH/../../../"
 travis_fold_start ETL "Building ETL"
 pushd ETL
   ./bootstrap.sh
-  ./configure
+  ./configure $DEBUG_FLAGS
   make install $MAKE_OPTIONS
 popd # ETL
 travis_fold_end ETL
@@ -48,7 +55,7 @@ travis_fold_end ETL
 travis_fold_start synfig-core "Building Synfig Core"
 pushd synfig-core
   ./bootstrap.sh
-  ./configure
+  ./configure $DEBUG_FLAGS
   make install $MAKE_OPTIONS
 popd # synfig-core
 travis_fold_end synfig-core
@@ -56,7 +63,7 @@ travis_fold_end synfig-core
 travis_fold_start synfig-studio "Building Synfig Studio"
 pushd synfig-studio
   ./bootstrap.sh
-  ./configure
+  ./configure $DEBUG_FLAGS
   make install $MAKE_OPTIONS
 popd # synfig-studio
 travis_fold_end synfig-studio
