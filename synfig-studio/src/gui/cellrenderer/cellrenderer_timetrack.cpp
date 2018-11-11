@@ -721,11 +721,11 @@ CellRenderer_TimeTrack::activate_vfunc(
 
 	switch(event->type) {
 	case GDK_MOTION_NOTIFY:
-		actual_time = ((double)event->motion.x - (double)cell_area.get_x())*k;
+		actual_time = ((double)event->motion.x - (double)cell_area.get_x())*k + (double)lower;
 		break;
 	case GDK_BUTTON_PRESS:
 	case GDK_BUTTON_RELEASE:
-		actual_time = ((double)event->button.x - (double)cell_area.get_x())*k;
+		actual_time = ((double)event->button.x - (double)cell_area.get_x())*k + (double)lower;
 		break;
 	default:
 		return false;
