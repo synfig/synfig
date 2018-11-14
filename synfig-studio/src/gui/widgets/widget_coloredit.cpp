@@ -477,6 +477,8 @@ Widget_ColorEdit::Widget_ColorEdit():
 	set_value(color);
 
 	hold_signals=false;
+	notebook->set_current_page(2);
+
 }
 
 Widget_ColorEdit::~Widget_ColorEdit()
