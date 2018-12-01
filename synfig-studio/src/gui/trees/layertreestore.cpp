@@ -879,12 +879,12 @@ LayerTreeStore::set_row_layer(Gtk::TreeRow &row, const synfig::Layer::Handle &ha
 				set_row_ghost(row_, *i, --index);
 			}
 
-			for(Canvas::reverse_iterator iter = canvas->rbegin(); iter != canvas->rend(); ++iter)
+			for(Canvas::reverse_iterator i = canvas->rbegin(); i != canvas->rend(); ++i)
 			{
 				Gtk::TreeRow row_(*(prepend(row.children())));
-				bool xx = (bool)impossible_existant_layers.count((*iter)->get_description());
+				bool xx = (bool)impossible_existant_layers.count((*i)->get_description());
 				row_[model.layer_impossible] = xx;
-				set_row_layer(row_,*iter);
+				set_row_layer(row_,*i);
 			}
 
 			continue;
