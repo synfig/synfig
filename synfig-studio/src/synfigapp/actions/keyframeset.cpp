@@ -382,18 +382,17 @@ void
 Action::KeyframeSet::perform()
 {
 	KeyframeList::iterator iter;
+	if (!get_canvas()->keyframe_list().find(keyframe, iter)) {
+		throw Error(_("Unable to find the given keyframe"));
+	}
+
 
 	//old_time=get_canvas()->keyframe_list().find(keyframe)->get_time();
-	if (get_canvas()->keyframe_list().find(keyframe, iter)) {
-		old_time = iter->get_time(); // TODO: throw error?
-	}
+	old_time = iter->get_time();
 	new_time=keyframe.get_time();
 
 	//try { get_canvas()->keyframe_list().find(keyframe);}
 	//catch(synfig::Exception::NotFound)
-	if (!get_canvas()->keyframe_list().find(keyframe, iter)) {
-		throw Error(_("Unable to find the given keyframe"));
-	}
 
 	// Check for collisions
 	if(old_time!=new_time)
@@ -434,7 +433,7 @@ Action::KeyframeSet::perform()
 			*iter = old_keyframe;
 			get_canvas()->keyframe_list().sync();
 		}
-				
+
 		throw;
 	}
 
