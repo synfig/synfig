@@ -129,8 +129,12 @@ Action::KeyframeSet::prepare()
 	//synfig::info("new_time: %s",new_time.get_string().c_str());
 	//synfig::info("old_time: %s",old_time.get_string().c_str());
 
-	try { if(get_canvas()->keyframe_list().find(new_time)!=get_canvas()->keyframe_list().end()) throw Error(_("A Keyframe already exists at this point in time"));}
-	catch(...) { }
+	//try { if(get_canvas()->keyframe_list().find(new_time)!=get_canvas()->keyframe_list().end()) throw Error(_("A Keyframe already exists at this point in time"));}
+	//catch(...) { }
+	KeyframeList::iterator iter;
+	if (get_canvas()->keyframe_list().find(new_time, iter)) {
+		if (iter != get_canvas()->keyframe_list().end()) throw Error(_("A Keyframe already exists at this point in time"));
+	}
 
 	/*try { keyframe_next=get_canvas()->keyframe_list().find_next(old_time)->get_time(); }
 	catch(...) { keyframe_next=Time::end(); }
@@ -377,32 +381,47 @@ Action::KeyframeSet::process_value_desc(const synfigapp::ValueDesc& value_desc)
 void
 Action::KeyframeSet::perform()
 {
+	KeyframeList::iterator iter;
 
-	old_time=get_canvas()->keyframe_list().find(keyframe)->get_time();
+	//old_time=get_canvas()->keyframe_list().find(keyframe)->get_time();
+	if (get_canvas()->keyframe_list().find(keyframe, iter)) {
+		old_time = iter->get_time(); // TODO: throw error?
+	}
 	new_time=keyframe.get_time();
 
-	try { get_canvas()->keyframe_list().find(keyframe);}
-	catch(synfig::Exception::NotFound)
-	{
+	//try { get_canvas()->keyframe_list().find(keyframe);}
+	//catch(synfig::Exception::NotFound)
+	if (!get_canvas()->keyframe_list().find(keyframe, iter)) {
 		throw Error(_("Unable to find the given keyframe"));
 	}
 
 	// Check for collisions
 	if(old_time!=new_time)
 	{
-		try {
+		/*try {
 			get_canvas()->keyframe_list().find(new_time);
 			throw Error(_("Cannot change keyframe time because another keyframe already exists with that time."));
 		}
-		catch(Exception::NotFound&) { }
+		catch(Exception::NotFound&) { }*/
+		if (get_canvas()->keyframe_list().find(new_time, iter)) {
+			throw Error(_("Cannot change keyframe time because another keyframe already exists with that time."));
+		}
 	}
-	try { keyframe_next=get_canvas()->keyframe_list().find_next(old_time)->get_time(); }
-	catch(...) { keyframe_next=Time::end(); }
-	try { keyframe_prev=get_canvas()->keyframe_list().find_prev(old_time)->get_time(); }
-	catch(...) { keyframe_prev=Time::begin(); }
+	//try { keyframe_next=get_canvas()->keyframe_list().find_next(old_time)->get_time(); }
+	//catch(...) { keyframe_next=Time::end(); }
 
-	old_keyframe=*get_canvas()->keyframe_list().find(keyframe);
-	*get_canvas()->keyframe_list().find(keyframe)=keyframe;
+	//try { keyframe_prev=get_canvas()->keyframe_list().find_prev(old_time)->get_time(); }
+	//catch(...) { keyframe_prev=Time::begin(); }
+	get_canvas()->keyframe_list().find_prev_next(old_time, keyframe_prev, keyframe_next);
+
+
+	//old_keyframe=*get_canvas()->keyframe_list().find(keyframe);
+	//*get_canvas()->keyframe_list().find(keyframe)=keyframe;
+	if (get_canvas()->keyframe_list().find(keyframe, iter)) {
+		old_keyframe = *iter;
+		*iter = keyframe;
+		// TODO: do we need to throw error from here?
+	}
 
 	get_canvas()->keyframe_list().sync();
 
@@ -410,9 +429,12 @@ Action::KeyframeSet::perform()
 		Action::Super::perform();
 	} catch(...)
 	{
-		*get_canvas()->keyframe_list().find(old_keyframe)=old_keyframe;
-
-		get_canvas()->keyframe_list().sync();
+		//*get_canvas()->keyframe_list().find(old_keyframe)=old_keyframe;
+		if (get_canvas()->keyframe_list().find(old_keyframe, iter)) {
+			*iter = old_keyframe;
+			get_canvas()->keyframe_list().sync();
+		}
+				
 		throw;
 	}
 
@@ -429,14 +451,18 @@ Action::KeyframeSet::undo()
 {
 	Action::Super::undo();
 
-	*get_canvas()->keyframe_list().find(old_keyframe)=old_keyframe;
+	KeyframeList::iterator iter;
+	//*get_canvas()->keyframe_list().find(old_keyframe)=old_keyframe;
+	if (get_canvas()->keyframe_list().find(old_keyframe, iter)) {
+		*iter = old_keyframe;
 
-	get_canvas()->keyframe_list().sync();
+		get_canvas()->keyframe_list().sync();
 
-	// Signal that a layer has been inserted
-	if(get_canvas_interface())
-	{
-		get_canvas_interface()->signal_keyframe_changed()(keyframe);
+		// Signal that a layer has been inserted
+		if(get_canvas_interface())
+		{
+			get_canvas_interface()->signal_keyframe_changed()(keyframe);
+		}
+		else synfig::warning("CanvasInterface not set on action");
 	}
-	else synfig::warning("CanvasInterface not set on action");
 }

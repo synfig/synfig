@@ -237,53 +237,57 @@ Action::WaypointSetSmart::enclose_waypoint(const synfig::Waypoint& waypoint)
 		//while(value_node->waypoint_list().front().get_time()<=curr_time)
 		{
 			// Try to find prev keyframe
-			Keyframe keyframe(*get_canvas()->keyframe_list().find_prev(curr_time));
-			curr_time=keyframe.get_time();
+			KeyframeList::iterator iter;
+			if (get_canvas()->keyframe_list().find_prev(curr_time, iter)) {
+				//Keyframe keyframe(*get_canvas()->keyframe_list().find_prev(curr_time));
+				Keyframe keyframe(*iter);
+				curr_time=keyframe.get_time();
 
-//			synfig::info(__FILE__":%d: prev_keyframe->time=%s",__LINE__,keyframe.get_time().get_string().c_str());
-//			synfig::info(__FILE__":%d: waypoint->time=%s",__LINE__,waypoint.get_time().get_string().c_str());
+	//			synfig::info(__FILE__":%d: prev_keyframe->time=%s",__LINE__,keyframe.get_time().get_string().c_str());
+	//			synfig::info(__FILE__":%d: waypoint->time=%s",__LINE__,waypoint.get_time().get_string().c_str());
 
-			if(times.count(keyframe.get_time()))
-			{
-				throw int();
-			}
-			if(waypoint.get_time().is_equal(keyframe.get_time()))
-			{
-				throw int();
-			}
-
-			times.insert(keyframe.get_time());
-			try
-			{
-				value_node->find(keyframe.get_time());
-//				synfig::info(__FILE__":%d: waypointtime=%s",__LINE__,value_node->find(keyframe.get_time())->get_time().get_string().c_str());
-			}
-			catch(synfig::Exception::NotFound)
-			{
-				Action::Handle action(WaypointAdd::create());
-
-				action->set_param("canvas",get_canvas());
-				action->set_param("canvas_interface",get_canvas_interface());
-				action->set_param("value_node",ValueNode::Handle(value_node));
-
-				if(!value_node->waypoint_list().empty())
+				if(times.count(keyframe.get_time()))
 				{
-					action->set_param("time",keyframe.get_time());
+					throw int();
 				}
-				else
+				if(waypoint.get_time().is_equal(keyframe.get_time()))
 				{
-					synfig::Waypoint tmp;
-
-					tmp.set_value(waypoint.get_value());
-					tmp.set_time(keyframe.get_time());
-					action->set_param("waypoint",tmp);
+					throw int();
 				}
 
-				assert(action->is_ready());
-				if(!action->is_ready())
-					throw Error(Error::TYPE_NOTREADY);
+				times.insert(keyframe.get_time());
+				try
+				{
+					value_node->find(keyframe.get_time());
+	//				synfig::info(__FILE__":%d: waypointtime=%s",__LINE__,value_node->find(keyframe.get_time())->get_time().get_string().c_str());
+				}
+				catch(synfig::Exception::NotFound)
+				{
+					Action::Handle action(WaypointAdd::create());
 
-				add_action(action);
+					action->set_param("canvas",get_canvas());
+					action->set_param("canvas_interface",get_canvas_interface());
+					action->set_param("value_node",ValueNode::Handle(value_node));
+
+					if(!value_node->waypoint_list().empty())
+					{
+						action->set_param("time",keyframe.get_time());
+					}
+					else
+					{
+						synfig::Waypoint tmp;
+
+						tmp.set_value(waypoint.get_value());
+						tmp.set_time(keyframe.get_time());
+						action->set_param("waypoint",tmp);
+					}
+
+					assert(action->is_ready());
+					if(!action->is_ready())
+						throw Error(Error::TYPE_NOTREADY);
+
+					add_action(action);
+				}
 			}
 		}
 	}
@@ -301,48 +305,52 @@ Action::WaypointSetSmart::enclose_waypoint(const synfig::Waypoint& waypoint)
 
 			// Try to find next keyframe
 			//synfig::info("FUTURE waypoint.get_time()=%s",waypoint.get_time().get_string().c_str());
-			Keyframe keyframe(*get_canvas()->keyframe_list().find_next(curr_time));
-			//synfig::info("FUTURE keyframe.get_time()=%s",keyframe.get_time().get_string().c_str());
-			curr_time=keyframe.get_time();
+			KeyframeList::iterator iter;
+			if (get_canvas()->keyframe_list().find_next(curr_time, iter)) {
+				//Keyframe keyframe(*get_canvas()->keyframe_list().find_next(curr_time));
+				Keyframe keyframe(*iter);
+				//synfig::info("FUTURE keyframe.get_time()=%s",keyframe.get_time().get_string().c_str());
+				curr_time=keyframe.get_time();
 
-			if(times.count(keyframe.get_time())|| waypoint.get_time().is_equal(keyframe.get_time()))
-				throw int();
-			else
-				times.insert(keyframe.get_time());
-
-			try
-			{
-				value_node->find(keyframe.get_time());
-				//synfig::info(__FILE__":%d: time=%s",__LINE__,keyframe.get_time().get_string().c_str());
-				//synfig::info(__FILE__":%d: waypointtime=%s",__LINE__,value_node->find(keyframe.get_time())->get_time().get_string().c_str());
-
-			}
-			catch(synfig::Exception::NotFound)
-			{
-				Action::Handle action(WaypointAdd::create());
-
-				action->set_param("canvas",get_canvas());
-				action->set_param("canvas_interface",get_canvas_interface());
-				action->set_param("value_node",ValueNode::Handle(value_node));
-
-				if(!value_node->waypoint_list().empty())
-				{
-					action->set_param("time",keyframe.get_time());
-				}
+				if(times.count(keyframe.get_time())|| waypoint.get_time().is_equal(keyframe.get_time()))
+					throw int();
 				else
+					times.insert(keyframe.get_time());
+
+				try
 				{
-					synfig::Waypoint tmp;
+					value_node->find(keyframe.get_time());
+					//synfig::info(__FILE__":%d: time=%s",__LINE__,keyframe.get_time().get_string().c_str());
+					//synfig::info(__FILE__":%d: waypointtime=%s",__LINE__,value_node->find(keyframe.get_time())->get_time().get_string().c_str());
 
-					tmp.set_value(waypoint.get_value());
-					tmp.set_time(keyframe.get_time());
-					action->set_param("waypoint",tmp);
 				}
+				catch(synfig::Exception::NotFound)
+				{
+					Action::Handle action(WaypointAdd::create());
 
-				assert(action->is_ready());
-				if(!action->is_ready())
-					throw Error(Error::TYPE_NOTREADY);
+					action->set_param("canvas",get_canvas());
+					action->set_param("canvas_interface",get_canvas_interface());
+					action->set_param("value_node",ValueNode::Handle(value_node));
 
-				add_action(action);
+					if(!value_node->waypoint_list().empty())
+					{
+						action->set_param("time",keyframe.get_time());
+					}
+					else
+					{
+						synfig::Waypoint tmp;
+
+						tmp.set_value(waypoint.get_value());
+						tmp.set_time(keyframe.get_time());
+						action->set_param("waypoint",tmp);
+					}
+
+					assert(action->is_ready());
+					if(!action->is_ready())
+						throw Error(Error::TYPE_NOTREADY);
+
+					add_action(action);
+				}
 			}
 		}
 	}

@@ -118,7 +118,8 @@ void
 Action::KeyframeSetDelta::prepare()
 {
 	KeyframeList &list = get_canvas()->keyframe_list();
-	KeyframeList::iterator next = list.find(keyframe);
+	KeyframeList::iterator next;
+	if (!list.find(keyframe, next)) throw Error(_("Unable to find the given keyframe")); // ???
 	++next;
 	if (next != list.end() && fabs(delta) > 0.00000001)
 	{

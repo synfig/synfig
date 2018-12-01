@@ -143,9 +143,10 @@ Action::KeyframeToggl::prepare()
 {
 	clear();
 
-	try { get_canvas()->keyframe_list().find(keyframe);}
-	catch(synfig::Exception::NotFound)
-	{
+	KeyframeList::iterator iter;
+	//try { get_canvas()->keyframe_list().find(keyframe);}
+	//catch(synfig::Exception::NotFound)
+	if (!get_canvas()->keyframe_list().find(keyframe, iter)) {
 		throw Error(_("Unable to find the given keyframe"));
 	}
 }
@@ -158,9 +159,12 @@ Action::KeyframeToggl::perform()
 	
 	keyframe.set_active(new_status);
 	
-	*get_canvas()->keyframe_list().find(keyframe)=keyframe;
-
-	get_canvas()->keyframe_list().sync();
+	KeyframeList::iterator iter;
+	//*get_canvas()->keyframe_list().find(keyframe)=keyframe;
+	if (get_canvas()->keyframe_list().find(keyframe, iter)) {
+		*iter = keyframe;
+		get_canvas()->keyframe_list().sync();
+	}
 
 	if(get_canvas_interface())
 	{
@@ -182,7 +186,9 @@ Action::KeyframeToggl::undo()
 	
 	keyframe.set_active(!new_status);
 	
-	*get_canvas()->keyframe_list().find(keyframe)=keyframe;
+	//*get_canvas()->keyframe_list().find(keyframe)=keyframe;
+	KeyframeList::iterator iter;
+	if (get_canvas()->keyframe_list().find(keyframe, iter)) *iter = keyframe;
 
 	get_canvas()->keyframe_list().sync();
 

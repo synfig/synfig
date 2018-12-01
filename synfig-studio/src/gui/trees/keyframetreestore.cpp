@@ -925,20 +925,15 @@ KeyframeTreeStore::change_keyframe(synfig::Keyframe keyframe)
 		row_changed(get_path(row),row);
 
 		// If exist, previous row should be updated too (length value)
-		try
+		if (new_index != 0)
 		{
-			if (new_index != 0)
-			{
-				synfig::Keyframe keyframe_prev = *(get_canvas()->keyframe_list().find_prev(keyframe.get_time(),false));
-				Gtk::TreeRow row_prev(find_row(keyframe_prev));
+			KeyframeList::iterator keyframe_prev;
+			if (get_canvas()->keyframe_list().find_prev(keyframe.get_time(), keyframe_prev, false)) {
+				//synfig::Keyframe keyframe_prev = *(get_canvas()->keyframe_list().find_prev(keyframe.get_time(),false));
+				Gtk::TreeRow row_prev(find_row(*keyframe_prev));
 				dump_iterator(row_prev,"change_keyframe,row_prev");
 				row_changed(get_path(row_prev),row_prev);
 			}
-		}
-
-		catch(Exception::NotFound &x)
-		{
-			g_warning("%s", x.what());
 		}
 	}
 	catch(std::exception &x)

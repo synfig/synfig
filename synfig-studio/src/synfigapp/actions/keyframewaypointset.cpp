@@ -125,9 +125,10 @@ Action::KeyframeWaypointSet::prepare()
 {
 	clear();
 
-	try { get_canvas()->keyframe_list().find(keyframe);}
-	catch(synfig::Exception::NotFound)
-	{
+	KeyframeList::iterator iter;
+	//try { get_canvas()->keyframe_list().find(keyframe);}
+	//catch(synfig::Exception::NotFound)
+	if (!get_canvas()->keyframe_list().find(keyframe, iter)) {
 		throw Error(_("Unable to find the given keyframe"));
 	}
 
@@ -169,7 +170,9 @@ Action::KeyframeWaypointSet::process_value_desc(const synfigapp::ValueDesc& valu
 			}
 
 			keyframe.apply_model(waypoint_model);
-			*get_canvas()->keyframe_list().find(keyframe)=keyframe;
+			//*get_canvas()->keyframe_list().find(keyframe)=keyframe;
+			KeyframeList::iterator iter;
+			if (get_canvas()->keyframe_list().find(keyframe, iter)) *iter = keyframe;
 
 			waypoint.apply_model(waypoint_model);
 

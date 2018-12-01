@@ -139,14 +139,22 @@ Action::KeyframeDuplicate::prepare()
 	const synfig::Time old_time=keyframe.get_time();
 	const synfig::Time new_time=new_keyframe.get_time();
 
-	try { get_canvas()->keyframe_list().find(keyframe);}
-	catch(synfig::Exception::NotFound)
-	{
+	KeyframeList::iterator iter;
+	
+	//try { get_canvas()->keyframe_list().find(keyframe);}
+	//catch(synfig::Exception::NotFound)
+	if (!get_canvas()->keyframe_list().find(keyframe, iter)) {
 		throw Error(_("Unable to find the given keyframe"));
 	}
 
-	try { if(get_canvas()->keyframe_list().find(new_time)!=get_canvas()->keyframe_list().end()) throw Error(_("A Keyframe already exists at this point in time"));}
-	catch(...) { }
+	if (get_canvas()->keyframe_list().find(new_time, iter)) {
+		if (iter != get_canvas()->keyframe_list().end()) {
+			throw Error(_("A Keyframe already exists at this point in time"));
+		}		
+	}
+
+	//try { if(get_canvas()->keyframe_list().find(new_time)!=get_canvas()->keyframe_list().end()) throw Error(_("A Keyframe already exists at this point in time"));}
+	//catch(...) { }
 
 	// If the times are different, then we
 	// will need to romp through the valuenodes
@@ -224,11 +232,18 @@ Action::KeyframeDuplicate::process_value_desc(const synfigapp::ValueDesc& value_
 void
 Action::KeyframeDuplicate::perform()
 {
-	try { get_canvas()->keyframe_list().find(new_keyframe.get_time()); throw Error(_("A Keyframe already exists at this point in time"));}
-	catch(synfig::Exception::NotFound) { }
+	KeyframeList::iterator iter;
+	//try { get_canvas()->keyframe_list().find(new_keyframe.get_time()); throw Error(_("A Keyframe already exists at this point in time"));}
+	//catch(synfig::Exception::NotFound) { }
+	if (get_canvas()->keyframe_list().find(new_keyframe.get_time(), iter)) {
+		throw Error(_("A Keyframe already exists at this point in time"));
+	}
 
-	try { get_canvas()->keyframe_list().find(new_keyframe); throw Error(_("This keyframe is already in the ValueNode"));}
-	catch(synfig::Exception::NotFound) { }
+	//try { get_canvas()->keyframe_list().find(new_keyframe); throw Error(_("This keyframe is already in the ValueNode"));}
+	//catch(synfig::Exception::NotFound) { }
+	if (get_canvas()->keyframe_list().find(new_keyframe, iter)) {
+		throw Error(_("This keyframe is already in the ValueNode"));
+	}
 
 	Action::Super::perform();
 

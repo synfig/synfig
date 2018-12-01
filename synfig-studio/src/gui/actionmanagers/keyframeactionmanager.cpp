@@ -266,8 +266,15 @@ KeyframeActionManager::refresh()
 	//activate actions depending on context
 	{
 		//get the keyframe at current time
-		bool kf_at_current_time = true;
-		try
+		bool kf_at_current_time = false;
+		KeyframeList::iterator iter;
+		if (canvas_interface_->get_canvas()->keyframe_list().find(canvas_interface_->get_time(), iter)) {
+			kf_at_current_time = true;
+			if (action_group_->get_action("action-KeyframeDuplicate"))
+				action_group_->get_action("action-KeyframeDuplicate")->set_sensitive(false);
+		}
+
+		/*try
 		{
 			canvas_interface_->get_canvas()->keyframe_list().find(canvas_interface_->get_time());
 			if(action_group_->get_action("action-KeyframeDuplicate"))
@@ -276,7 +283,7 @@ KeyframeActionManager::refresh()
 		catch(synfig::Exception::NotFound)
 		{
 			kf_at_current_time = false;
-		}
+		}*/
 		//get the beginning and ending time of the time slider
 		Time begin_time=canvas_interface_->get_canvas()->rend_desc().get_time_start();
 		Time end_time=canvas_interface_->get_canvas()->rend_desc().get_time_end();

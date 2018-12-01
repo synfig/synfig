@@ -133,24 +133,24 @@ public:
 
 	void erase(const UniqueID &x);
 
-	iterator find(const UniqueID &x);
+	bool find(const UniqueID &x, KeyframeList::iterator &out);
 
-	const_iterator find(const UniqueID &x)const;
+	//const_iterator find(const UniqueID &x)const;
 
 	//! Finds the keyframe at an exact point in time
-	iterator find(const Time &x);
+	bool find(const Time &x, KeyframeList::iterator &out);
 
 	//! Finds the keyframe after that point in time
-	iterator find_next(const Time &x, bool ignore_disabled = true);
+	bool find_next(const Time &x, KeyframeList::iterator &out, bool ignore_disabled = true);
 
 	//! Finds the keyframe before that point in time
-	iterator find_prev(const Time &x, bool ignore_disabled = true);
+	bool find_prev(const Time &x, KeyframeList::iterator &out, bool ignore_disabled = true);
 
-	const_iterator find(const Time &x)const;
+/*	const_iterator find(const Time &x)const;
 	const_iterator find_next(const Time &x, bool ignore_disabled = true)const;
-	const_iterator find_prev(const Time &x, bool ignore_disabled = true)const;
+	const_iterator find_prev(const Time &x, bool ignore_disabled = true)const;*/
 
-	void find_prev_next(const Time& time, Time &prev, Time &next, bool ignore_disabled = true)const;
+	void find_prev_next(const Time& time, Time &prev, Time &next, bool ignore_disabled = true);
 
 	void insert_time(const Time& location, const Time& delta);
 

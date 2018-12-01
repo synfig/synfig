@@ -99,7 +99,11 @@ Action::KeyframeRemove::set_param(const synfig::String& name, const Action::Para
 		keyframe=param.get_keyframe();
 		// For some reason the state of the keyframe is not always passed correctly
 		// Make sure to get it right:
-		keyframe.set_active(get_canvas()->keyframe_list().find(keyframe)->active());
+		KeyframeList::iterator iter;
+		//keyframe.set_active(get_canvas()->keyframe_list().find(keyframe)->active());
+		if (get_canvas()->keyframe_list().find(keyframe, iter)) {
+			keyframe.set_active(iter->active());
+		}
 		return true;
 	}
 
@@ -119,9 +123,10 @@ Action::KeyframeRemove::prepare()
 {
 	clear();
 
-	try { get_canvas()->keyframe_list().find(keyframe);}
-	catch(synfig::Exception::NotFound)
-	{
+	KeyframeList::iterator iter;
+	//try { get_canvas()->keyframe_list().find(keyframe);}
+	//catch(synfig::Exception::NotFound)
+	if (!get_canvas()->keyframe_list().find(keyframe, iter)) {
 		throw Error(_("Unable to find the given keyframe"));
 	}
 
@@ -221,11 +226,19 @@ Action::KeyframeRemove::perform()
 void
 Action::KeyframeRemove::undo()
 {
-	try { get_canvas()->keyframe_list().find(keyframe.get_time()); throw Error(_("A Keyframe already exists at this point in time"));}
-	catch(synfig::Exception::NotFound) { }
+	KeyframeList::iterator iter;
 
-	try { get_canvas()->keyframe_list().find(keyframe); throw Error(_("This keyframe is already in the ValueNode"));}
-	catch(synfig::Exception::NotFound) { }
+	//try { get_canvas()->keyframe_list().find(keyframe.get_time()); throw Error(_("A Keyframe already exists at this point in time"));}
+	//catch(synfig::Exception::NotFound) { }
+	if (get_canvas()->keyframe_list().find(keyframe.get_time(), iter)) {
+		throw Error(_("A Keyframe already exists at this point in time"));
+	}
+
+	//try { get_canvas()->keyframe_list().find(keyframe); throw Error(_("This keyframe is already in the ValueNode"));}
+	//catch(synfig::Exception::NotFound) { }
+	if (get_canvas()->keyframe_list().find(keyframe, iter)) {
+		throw Error(_("This keyframe is already in the ValueNode"));
+	}
 
 	Action::Super::undo();
 

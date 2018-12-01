@@ -129,17 +129,19 @@ KeyframeList::sync()
 	//dump();
 }
 
-KeyframeList::iterator
-KeyframeList::find(const UniqueID &x)
+bool
+KeyframeList::find(const UniqueID &x, KeyframeList::iterator &out)
 {
-	KeyframeList::iterator iter;
+	out = std::find(begin(), end(), x);
+	return out != end();
+	/*KeyframeList::iterator iter;
 	iter=std::find(begin(),end(),x);
 	if(iter==end())
 		throw Exception::NotFound(strprintf("KeyframeList::find(): Can't find UniqueID %d",x.get_uid()));
-	return iter;
+	return iter;*/
 }
 
-KeyframeList::const_iterator
+/*KeyframeList::const_iterator
 KeyframeList::find(const UniqueID &x)const
 {
 	KeyframeList::const_iterator iter;
@@ -147,7 +149,7 @@ KeyframeList::find(const UniqueID &x)const
 	if(iter==end())
 		throw Exception::NotFound(strprintf("KeyframeList::find(): Can't find UniqueID %d",x.get_uid()));
 	return iter;
-}
+}*/
 
 KeyframeList::iterator
 KeyframeList::add(const Keyframe &x)
@@ -163,25 +165,26 @@ KeyframeList::add(const Keyframe &x)
 void
 KeyframeList::erase(const UniqueID &x)
 {
-	std::vector<Keyframe>::erase(find(x));
+	KeyframeList::iterator iter;
+	if (find(x, iter)) std::vector<Keyframe>::erase(iter);
 }
 
-KeyframeList::iterator
-KeyframeList::find(const Time &x)
+bool
+KeyframeList::find(const Time &x, KeyframeList::iterator &out)
 {
 	KeyframeList::iterator iter;
 	iter=binary_find(begin(),end(),x);
-	if(iter!=end() && iter->get_time().is_equal(x))
-		return iter;
-/*	iter++;
-	if(iter!=end() && iter->get_time().is_equal(x))
-		return iter;
-*/
-	throw Exception::NotFound(strprintf("KeyframeList::find(): Can't find Keyframe %s",x.get_string().c_str()));
+	if(iter!=end() && iter->get_time().is_equal(x)) {
+		out = iter;
+		return true;
+	}
+
+	//throw Exception::NotFound(strprintf("KeyframeList::find(): Can't find Keyframe %s",x.get_string().c_str()));
+	return false;
 }
 
-KeyframeList::iterator
-KeyframeList::find_next(const Time &x, bool ignore_disabled)
+bool
+KeyframeList::find_next(const Time &x, KeyframeList::iterator &out, bool ignore_disabled)
 {
 	KeyframeList::iterator iter(binary_find(begin(),end(),x));
 
@@ -192,17 +195,20 @@ KeyframeList::find_next(const Time &x, bool ignore_disabled)
 			iter->get_time().is_more_than(x)
 			&& 
 			( !ignore_disabled || iter->active() )
-		)
-			return iter;
+		) {
+			out = iter;
+			return true;
+		}
 		++iter;
 	}
 
-	throw Exception::NotFound(strprintf("KeyframeList::find(): Can't find next Keyframe %s",x.get_string().c_str()));
+	//throw Exception::NotFound(strprintf("KeyframeList::find(): Can't find next Keyframe %s",x.get_string().c_str()));
+	return false;
 }
 
 
-KeyframeList::iterator
-KeyframeList::find_prev(const Time &x, bool ignore_disabled)
+bool 
+KeyframeList::find_prev(const Time &x, KeyframeList::iterator &out, bool ignore_disabled)
 {
 	KeyframeList::iterator iter(binary_find(begin(),end(),x));
 
@@ -215,8 +221,10 @@ KeyframeList::find_prev(const Time &x, bool ignore_disabled)
 				iter->get_time().is_less_than(x)
 				&&
 				( !ignore_disabled || iter->active() ) 
-			)
-				return iter;
+			) {
+				out = iter;
+				return true;
+			}
 			--iter;
 		};
 		if
@@ -224,16 +232,20 @@ KeyframeList::find_prev(const Time &x, bool ignore_disabled)
 			iter->get_time().is_less_than(x)
 			&&
 			( !ignore_disabled || iter->active() ) 
-		)
-			return iter;
+		) {
+				out = iter;
+				return true;
+		}
 	}
-	throw Exception::NotFound(strprintf("KeyframeList::find(): Can't find prev Keyframe %s",x.get_string().c_str()));
+
+	return false;
+	//throw Exception::NotFound(strprintf("KeyframeList::find(): Can't find prev Keyframe %s",x.get_string().c_str()));
 
 }
 
 
 
-KeyframeList::const_iterator
+/*KeyframeList::const_iterator
 KeyframeList::find(const Time &x)const
 {
 	return const_cast<KeyframeList*>(this)->find(x);
@@ -253,15 +265,21 @@ KeyframeList::find_prev(const Time &x, bool ignore_disabled)const
 {
 	return const_cast<KeyframeList*>(this)->find_prev(x, ignore_disabled);
 
-}
+}*/
 
 void
-KeyframeList::find_prev_next(const Time& time, Time &prev, Time &next, bool ignore_disabled)const
+KeyframeList::find_prev_next(const Time& time, Time &prev, Time &next, bool ignore_disabled)
 {
-	try { prev=find_prev(time, ignore_disabled)->get_time(); }
-	catch(...) { prev=Time::begin(); }
-	try { next=find_next(time, ignore_disabled)->get_time(); }
-	catch(...) { next=Time::end(); }
+	KeyframeList::iterator iter;
+	if (find_prev(time, iter, ignore_disabled))
+		prev = iter->get_time();
+	else
+		prev=Time::begin();
+	
+	if (find_next(time, iter, ignore_disabled))
+		next = iter->get_time();
+	else
+		next=Time::end();
 }
 
 void
@@ -270,15 +288,13 @@ KeyframeList::insert_time(const Time& location, const Time& delta)
 //	synfig::info("KeyframeList::insert_time(): loc=%s, delta=%s",location.get_string().c_str(),delta.get_string().c_str());
 	if(!delta)
 		return;
-	try
-	{
-		// find next from time (location) including deactivated kf
-		iterator iter(find_next(location, false));
+
+	KeyframeList::iterator iter;
+	if (find_next(location, iter, false)) {
 		for(;iter!=end();++iter)
 		{
 			iter->set_time(iter->get_time()+delta);
 		}
 		sync();
 	}
-	catch(Exception::NotFound&) { }
 }

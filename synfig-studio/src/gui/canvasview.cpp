@@ -2236,7 +2236,9 @@ CanvasView::on_time_changed()
 	if (!is_playing())
 	{
 		try {
-			get_canvas()->keyframe_list().find(time);
+			//get_canvas()->keyframe_list().find(time);
+			KeyframeList::iterator iter;
+			get_canvas()->keyframe_list().find(time, iter); // not sure this is needed? O_o
 			// Widget::override_color() is deprecated since Gtkmm 3.16: Use a custom style provider and style classes instead.
 			// This function is very slow!
 			current_time_widget->override_color(Gdk::RGBA("#FF0000"));

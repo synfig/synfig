@@ -263,25 +263,30 @@ Widget_Keyframe_List::perform_move_kf(bool delta)
 		} catch(...) { return false; }
 	} else {
 		// find prev from selected kf time including deactivated kf
-		Keyframe prev_kf(*kf_list->find_prev(selected_kf_time, false));
-		Time prev_kf_time(prev_kf.get_time());
-		if (prev_kf_time >= dragging_kf_time) { // Not allowed
-			warning(_("Delta set not allowed"));
-			info("Widget_Keyframe_List::perform_move_kf(%i)::prev_kf_time=%s", delta, prev_kf_time.get_string().c_str());
-			info("Widget_Keyframe_List::perform_move_kf(%i)::dragging_kf_time=%s", delta, dragging_kf_time.get_string().c_str());
-			return false;
-		} else {
-			Time old_delta_time(selected_kf_time-prev_kf_time);
-			Time new_delta_time(dragging_kf_time-prev_kf_time);
-			Time change_delta(new_delta_time-old_delta_time);
-			Action::Handle action(Action::create("KeyframeSetDelta"));
-			if (!action)
+		KeyframeList::iterator iter;
+		if (kf_list->find_prev(selected_kf_time, iter, false)) {
+			//Keyframe prev_kf(*kf_list->find_prev(selected_kf_time, false));
+			Keyframe prev_kf(*iter);
+			Time prev_kf_time(prev_kf.get_time());
+			if (prev_kf_time >= dragging_kf_time) { // Not allowed
+				warning(_("Delta set not allowed"));
+				info("Widget_Keyframe_List::perform_move_kf(%i)::prev_kf_time=%s", delta, prev_kf_time.get_string().c_str());
+				info("Widget_Keyframe_List::perform_move_kf(%i)::dragging_kf_time=%s", delta, dragging_kf_time.get_string().c_str());
 				return false;
-			action->set_param("canvas", canvas_interface->get_canvas());
-			action->set_param("canvas_interface", canvas_interface);
-			action->set_param("keyframe", prev_kf);
-			action->set_param("delta", change_delta);
-			canvas_interface->get_instance()->perform_action(action);
+			} else {
+				Time old_delta_time(selected_kf_time-prev_kf_time);
+				Time new_delta_time(dragging_kf_time-prev_kf_time);
+				Time change_delta(new_delta_time-old_delta_time);
+				Action::Handle action(Action::create("KeyframeSetDelta"));
+				if (!action)
+					return false;
+				action->set_param("canvas", canvas_interface->get_canvas());
+				action->set_param("canvas_interface", canvas_interface);
+				action->set_param("keyframe", prev_kf);
+				action->set_param("delta", change_delta);
+				canvas_interface->get_instance()->perform_action(action);
+			}
+
 		}
 	}
 
@@ -348,11 +353,23 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 				ttip = _("Click and drag keyframes");
 			} else
 			if (t - p_t < n_t - t) {
-				Keyframe kf = *kf_list->find_prev(t);
-				ttip = kf.get_description().empty() ? String(_("No name")) : kf.get_description();
+				//Keyframe kf = *kf_list->find_prev(t);
+				//ttip = kf.get_description().empty() ? String(_("No name")) : kf.get_description();
+				KeyframeList::iterator iter;
+				if (kf_list->find_prev(t, iter)) {
+					Keyframe kf(*iter);
+					ttip = kf.get_description().empty() ? String(_("No name")) : kf.get_description();
+				}
+					
+				
 			} else {
-				Keyframe kf(*kf_list->find_next(t));
-				ttip = kf.get_description().empty() ? String(_("No name")) : kf.get_description();
+				//Keyframe kf(*kf_list->find_next(t));
+				//ttip = kf.get_description().empty() ? String(_("No name")) : kf.get_description();
+				KeyframeList::iterator iter;
+				if (kf_list->find_next(t, iter)) {
+					Keyframe kf(*iter);
+					ttip = kf.get_description().empty() ? String(_("No name")) : kf.get_description();
+				}
 			}
 			set_tooltip_text(ttip);
 			dragging = false;
@@ -368,11 +385,19 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 		Time prev_t, next_t;
 		kf_list->find_prev_next(t, prev_t, next_t, false);
 		if (t - prev_t < next_t - t) {
-			if (t - prev_t <= time_ratio)
-				kf = &*kf_list->find_prev(t, false);
+			if (t - prev_t <= time_ratio) {
+				//kf = &*kf_list->find_prev(t, false);
+				KeyframeList::iterator iter;
+				if (kf_list->find_prev(t, iter, false))
+					kf = &*iter;
+			}
 		} else {
-			if (next_t - t <= time_ratio)
-				kf = &*kf_list->find_next(t, false);
+			if (next_t - t <= time_ratio) {
+				//kf = &*kf_list->find_next(t, false);
+				KeyframeList::iterator iter;
+				if (kf_list->find_next(t, iter, false))
+					kf = &*iter;
+			}
 		}
 
 		switch(event->button.button) {
