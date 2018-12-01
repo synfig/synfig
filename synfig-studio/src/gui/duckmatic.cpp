@@ -980,7 +980,8 @@ Duckmatic::signal_edited_selected_ducks(bool moving)
         catch (String)
         {
             selected_ducks=old_set;
-            throw;
+            // signals must not throw exceptions!!!
+            //throw;
         }
     }
     selected_ducks=old_set;
