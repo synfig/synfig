@@ -114,7 +114,7 @@ synfig::String
 Distance::get_string(int digits)const
 {
 	digits=min(9,max(0,digits));
-	String fmt(strprintf("%%.%01dg",digits));
+	String fmt(strprintf("%%.%01df",digits));
 	String str(strprintf(fmt.c_str(),value_));
 	return strprintf("%s%s",str.c_str(),system_name(system_).c_str());
 }
