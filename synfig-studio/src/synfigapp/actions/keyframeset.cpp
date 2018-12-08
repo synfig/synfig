@@ -122,34 +122,16 @@ Action::KeyframeSet::prepare()
 	clear();
 	guid_set.clear();
 
-
-
-
-
 	//synfig::info("new_time: %s",new_time.get_string().c_str());
 	//synfig::info("old_time: %s",old_time.get_string().c_str());
-
-	//try { if(get_canvas()->keyframe_list().find(new_time)!=get_canvas()->keyframe_list().end()) throw Error(_("A Keyframe already exists at this point in time"));}
-	//catch(...) { }
-	KeyframeList::iterator iter;
-	if (get_canvas()->keyframe_list().find(new_time, iter)) {
-		if (iter != get_canvas()->keyframe_list().end()) throw Error(_("A Keyframe already exists at this point in time"));
-	}
-
-	/*try { keyframe_next=get_canvas()->keyframe_list().find_next(old_time)->get_time(); }
-	catch(...) { keyframe_next=Time::end(); }
-	try { keyframe_prev=get_canvas()->keyframe_list().find_prev(old_time)->get_time(); }
-	catch(...) { keyframe_prev=Time::begin(); }*/
 
 	// If the times are different and keyframe is not disabled, then we
 	// will need to romp through the valuenodes
 	// and add actions to update their values.
-	if(new_time!=old_time && keyframe.active())
-	{
+	if (new_time != old_time && keyframe.active()) {
 		std::vector<synfigapp::ValueDesc> value_desc_list;
 		get_canvas_interface()->find_important_value_descs(value_desc_list);
-		while(!value_desc_list.empty())
-		{
+		while (!value_desc_list.empty()) {
 			process_value_desc(value_desc_list.back());
 			value_desc_list.pop_back();
 		}
@@ -382,67 +364,40 @@ void
 Action::KeyframeSet::perform()
 {
 	KeyframeList::iterator iter;
-	if (!get_canvas()->keyframe_list().find(keyframe, iter)) {
+	if (!get_canvas()->keyframe_list().find(keyframe, iter))
 		throw Error(_("Unable to find the given keyframe"));
-	}
-
-
-	//old_time=get_canvas()->keyframe_list().find(keyframe)->get_time();
 	old_time = iter->get_time();
 	new_time=keyframe.get_time();
 
-	//try { get_canvas()->keyframe_list().find(keyframe);}
-	//catch(synfig::Exception::NotFound)
-
 	// Check for collisions
-	if(old_time!=new_time)
-	{
-		/*try {
-			get_canvas()->keyframe_list().find(new_time);
-			throw Error(_("Cannot change keyframe time because another keyframe already exists with that time."));
-		}
-		catch(Exception::NotFound&) { }*/
-		if (get_canvas()->keyframe_list().find(new_time, iter)) {
-			throw Error(_("Cannot change keyframe time because another keyframe already exists with that time."));
-		}
-	}
-	//try { keyframe_next=get_canvas()->keyframe_list().find_next(old_time)->get_time(); }
-	//catch(...) { keyframe_next=Time::end(); }
-
-	//try { keyframe_prev=get_canvas()->keyframe_list().find_prev(old_time)->get_time(); }
-	//catch(...) { keyframe_prev=Time::begin(); }
+	KeyframeList::iterator i;
+	if (old_time != new_time && get_canvas()->keyframe_list().find(new_time, i))
+		throw Error(_("Cannot change keyframe time because another keyframe already exists with that time."));
+	keyframe_prev = get_canvas()->keyframe_list().find_prev(old_time, i)
+	              ? i->get_time() : Time::begin();
+	keyframe_next = get_canvas()->keyframe_list().find_next(old_time, i)
+	              ? i->get_time() : Time::end();
 	get_canvas()->keyframe_list().find_prev_next(old_time, keyframe_prev, keyframe_next);
 
-
-	//old_keyframe=*get_canvas()->keyframe_list().find(keyframe);
-	//*get_canvas()->keyframe_list().find(keyframe)=keyframe;
-	if (get_canvas()->keyframe_list().find(keyframe, iter)) {
-		old_keyframe = *iter;
-		*iter = keyframe;
-		// TODO: do we need to throw error from here?
-	}
-
+	old_keyframe = *iter;
+	*iter = keyframe;
 	get_canvas()->keyframe_list().sync();
 
-	try{
+	try {
 		Action::Super::perform();
-	} catch(...)
-	{
-		//*get_canvas()->keyframe_list().find(old_keyframe)=old_keyframe;
+	} catch(...) {
 		if (get_canvas()->keyframe_list().find(old_keyframe, iter)) {
 			*iter = old_keyframe;
 			get_canvas()->keyframe_list().sync();
 		}
-
 		throw;
 	}
 
 	// Signal that a keyframe was changed
-	if(get_canvas_interface())
-	{
+	if (get_canvas_interface())
 		get_canvas_interface()->signal_keyframe_changed()(keyframe);
-	}
-	else synfig::warning("CanvasInterface not set on action");
+	else
+		synfig::warning("CanvasInterface not set on action");
 }
 
 void
