@@ -160,11 +160,11 @@ Widget_Keyframe_List::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 	if (!kf_list || kf_list->empty()) return true;
 
 	// draw all keyframes
-	bool selected_visible = NULL;
+	Time selected_time = Time::end();
 	for(KeyframeList::const_iterator i = kf_list->begin(); i != kf_list->end(); ++i)
 		if (lower_ex < i->get_time() && i->get_time() < upper_ex) {
 			if (*i == selected_kf) {
-				selected_visible = true;
+				selected_time = i->get_time();
 			} else {
 				const double x = k*(double)(i->get_time() - lower);
 				draw_arrow(cr, x, y, aw, ah, i->active(), normal);
@@ -173,8 +173,8 @@ Widget_Keyframe_List::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 
 	// we do this so that we can be sure that
 	// the selected keyframe is shown on top
-	if (selected_visible) {
-		const double x = k*(double)(selected_kf.get_time() - lower);
+	if (selected_time != Time::end()) {
+		const double x = k*(double)(selected_time - lower);
 		if (dragging) {
 			const double new_x = k*(double)(dragging_kf_time - lower);
 			draw_arrow(cr, x, y, aw, ah, selected_kf.active(), drag_old_position);
