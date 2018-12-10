@@ -233,3 +233,11 @@ synfig-studio/doc
 /.project
 /.cproject
 /.settings/
+
+# ------------------------------------------------------------------------
+# Netbeans projects
+# ------------------------------------------------------------------------
+/nbproject/
+/ETL/nbproject/
+/synfig-core/nbproject/
+/synfig-studio/nbproject/
