@@ -22,7 +22,7 @@ API_VERSION=1.0
 imageext=png
 imagedir="${datadir}/pixmaps/synfigstudio"
 plugindir="${datadir}/synfig/plugins"
-sounddir="$(datadir)/synfig/sounds"
+sounddir="${datadir}/synfig/sounds"
 
 GETTEXT_PACKAGE=synfigstudio
 LOCALEDIR=[${prefix}/${DATADIRNAME}/locale]
