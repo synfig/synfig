@@ -48,6 +48,9 @@
 #include <ETL/stringf>
 #include <errno.h>
 
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -169,7 +172,7 @@ RenderSettings::RenderSettings(Gtk::Window& parent, etl::handle<synfigapp::Canva
 	toggle_single_frame.set_alignment(0, 0.5);
 	settings_table->attach(toggle_single_frame, 2, 3, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	toggle_single_frame.set_active(false);
-	
+
 	toggle_extract_alpha.set_alignment(0, 0.5);
 	settings_table->attach(toggle_extract_alpha, 2, 3, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	toggle_extract_alpha.set_active(false);
@@ -327,38 +330,38 @@ RenderSettings::on_render_pressed()
 	}
 
 	hide();
-	
+
 	render_passes.clear();
 	if (toggle_extract_alpha.get_active())
 	{
 		String filename_alpha(filename_sans_extension(filename)+"-alpha"+filename_extension(filename));
-		
+
 		render_passes.push_back(make_pair(TARGET_ALPHA_MODE_EXTRACT, filename_alpha));
 		render_passes.push_back(make_pair(TARGET_ALPHA_MODE_REDUCE, filename));
-		
+
 	} else {
 		render_passes.push_back(make_pair(TARGET_ALPHA_MODE_KEEP, filename));
 	}
-	
+
 	submit_next_render_pass();
-	
+
 	return;
 }
-	
+
 void
 RenderSettings::submit_next_render_pass()
 {
 	if (render_passes.size()>0) {
 		pair<TargetAlphaMode,String> pass_info = render_passes.back();
 		render_passes.pop_back();
-		
+
 		TargetAlphaMode pass_alpha_mode = pass_info.first;
 #ifdef _WIN32
 		String pass_filename = Glib::locale_from_utf8(pass_info.second);
 #else
 		String pass_filename = pass_info.second;
 #endif
-		
+
 		Target::Handle target=Target::create(calculated_target_name,pass_filename, tparam);
 		if(!target)
 		{
@@ -380,7 +383,7 @@ RenderSettings::submit_next_render_pass()
 		// If we are to only render the current frame
 		if(toggle_single_frame.get_active())
 			rend_desc.set_time(canvas_interface_->get_time());
-	
+
 		target->set_rend_desc(&rend_desc);
 		target->set_quality((int)adjustment_quality->get_value());
 		if( !target->init(canvas_interface_->get_ui_interface().get()) ){
@@ -391,7 +394,7 @@ RenderSettings::submit_next_render_pass()
 			target->set_alpha_mode(pass_alpha_mode);
 
 		canvas_interface_->get_ui_interface()->task(_("Rendering ")+pass_filename);
-	
+
 		/*
 		if(async_renderer)
 		{
@@ -427,8 +430,11 @@ RenderSettings::on_finished()
 
 	canvas_interface_->get_ui_interface()->task(text);
 	canvas_interface_->get_ui_interface()->amount_complete(0,10000);
-	
+
 	submit_next_render_pass();
+
+	//Sound effect - RenderDone (-1 : play on first free channel, 0 : no repeat)
+	Mix_PlayChannel( -1, App::gRenderDone, 0 );
 }
 
 void

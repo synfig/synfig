@@ -49,6 +49,9 @@
 #include "iconcontroller.h"
 #include "mainwindow.h"
 
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
+
 /* === M A C R O S ========================================================= */
 
 #define MISC_DIR_PREFERENCE			"misc_dir"
@@ -234,6 +237,9 @@ public:
 	static bool enable_mainwin_menubar;
 	static synfig::String ui_language;
 	static long ui_handle_tooltip_flag;
+
+  //The sound effects that will be used
+  static Mix_Chunk* gRenderDone;
 
 	/*
  -- ** -- S I G N A L S -------------------------------------------------------
