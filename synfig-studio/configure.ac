@@ -97,8 +97,8 @@ esac
 
 #AC_INIT
 #m4_include([m4/sdl.m4])
-#m4_include([m4/sdl2.m4])
-#AC_CONFIG_MACRO_DIR([m4])
+m4_include([m4/sdl2.m4])
+AC_CONFIG_MACRO_DIR([m4])
 
 dnl Check for SDL
 #SDL_VERSION=1.2.0
