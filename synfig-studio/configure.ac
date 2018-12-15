@@ -22,6 +22,7 @@ API_VERSION=1.0
 imageext=png
 imagedir="${datadir}/pixmaps/synfigstudio"
 plugindir="${datadir}/synfig/plugins"
+sounddir="${datadir}/synfig/sounds"
 
 GETTEXT_PACKAGE=synfigstudio
 LOCALEDIR=[${prefix}/${DATADIRNAME}/locale]
@@ -93,6 +94,26 @@ case "$host" in
 esac
 
 # -- L I B R A R I E S ----------------------------------------
+
+#AC_INIT
+#m4_include([m4/sdl.m4])
+m4_include([m4/sdl2.m4])
+AC_CONFIG_MACRO_DIR([m4])
+
+dnl Check for SDL
+#SDL_VERSION=1.2.0
+#AM_PATH_SDL($SDL_VERSION,:,AC_MSG_ERROR([*** SDL version $SDL_VERSION not found! ***]))
+#SDL_CFLAGS=$(sdl-config --cflags)
+#SDL_LIBS=$(sdl-config --libs)
+
+SDL_VERSION=2.0
+AM_PATH_SDL2($SDL_VERSION,:,AC_MSG_ERROR([*** SDL version $SDL_VERSION not found! ***]))
+
+SDL_CFLAGS=$(sdl2-config --cflags)
+SDL_LIBS=$(sdl2-config --libs)
+
+CFLAGS="$CFLAGS $SDL_CFLAGS"
+LIBS="$LIBS $SDL_LIBS -lSDL2_mixer"
 
 # Gtk compatibility hacks:
 # Since 3.14 some our hacks for GUI decorations works in other way
@@ -169,6 +190,7 @@ AC_SUBST(API_VERSION)
 AC_SUBST(imageext)
 AC_SUBST(imagedir)
 AC_SUBST(plugindir)
+AC_SUBST(sounddir)
 
 AC_PATH_PROG(UPDATE_MIME_DATABASE, update-mime-database, no)
 AC_ARG_ENABLE(update-mimedb,
@@ -177,7 +199,7 @@ AC_ARG_ENABLE(update-mimedb,
     enable_update_mimedb=yes)
 AM_CONDITIONAL(ENABLE_UPDATE_MIMEDB, (test x$enable_update_mimedb = xyes) && (test x$UPDATE_MIME_DATABASE != xno))
 
-AC_ARG_WITH([images], 
+AC_ARG_WITH([images],
     AS_HELP_STRING([--without-images], [skip building images]),
     [],
     [with_images=yes]
@@ -204,6 +226,7 @@ AC_CONFIG_FILES([
     plugins/Makefile
     plugins/add-skeleton-simple/Makefile
     plugins/view-unhide-all-layers/Makefile
+    sounds/Makefile
 ])
 AC_OUTPUT
 
@@ -226,6 +249,8 @@ Build images ---------------------> $with_images
 "'$'"CXX ------------------------------> '$CXX'
 "'$'"CXXFLAGS -------------------------> '$CXXFLAGS'
 "'$'"LDFLAGS --------------------------> '$LDFLAGS'
+"'$'"SDL_CFLAGS -----------------------> '$SDL_CFLAGS'
+"'$'"SDL_LIBS -------------------------> '$SDL_LIBS'
 "'$'"SYNFIG_CFLAGS --------------------> '$SYNFIG_CFLAGS'
 "'$'"SYNFIG_LIBS ----------------------> '$SYNFIG_LIBS'
 "'$'"GTKMM_CFLAGS ---------------------> '$GTKMM_CFLAGS'

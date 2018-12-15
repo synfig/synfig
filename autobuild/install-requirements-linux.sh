@@ -24,6 +24,8 @@ DEB_LIST_MINIMAL="\
     libatk1.0-dev \
     libgl1-mesa-dev \
     imagemagick \
+    libsdl2-dev \
+    libsdl2-mixer-dev \
     bzip2"
 if which dnf >/dev/null; then
     #
@@ -64,7 +66,9 @@ if which dnf >/dev/null; then
             ocl-icd-devel \
             opencl-headers \
             gtkmm30-devel \
-            glibmm24-devel"
+            glibmm24-devel \
+            SDL2-devel \
+            SDL2_mixer-devel"
     fi
     if ! ( rpm -qv $PKG_LIST ); then
         echo "Running dnf (you need root privelegies to do that)..."
@@ -109,7 +113,9 @@ elif which yum >/dev/null; then
             ocl-icd-devel \
             opencl-headers \
             gtkmm30-devel \
-            glibmm24-devel"
+            glibmm24-devel \
+            SDL2-devel \
+            SDL2_mixer-devel"
     fi
     if ! ( rpm -qv $PKG_LIST ); then
         echo "Running yum (you need root privelegies to do that)..."

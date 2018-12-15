@@ -23,7 +23,7 @@ MAINTAINERCLEANFILES = \
 	config.status \
 	.doc_stamp \
 	.DS_Store
-	
+
 DISTCLEANFILES = \
 	synfigstudio.desktop \
 	$(appdata_DATA)
@@ -32,11 +32,16 @@ if WITH_IMAGES
 IMAGE_DIR = images
 endif
 
+#if WITH_SOUNDS
+SOUND_DIR = sounds
+#endif
+
 SUBDIRS = \
 	build_tools \
 	brushes \
 	src \
 	$(IMAGE_DIR) \
+	$(SOUND_DIR) \
 	plugins \
 	po
 
@@ -56,7 +61,6 @@ EXTRA_DIST = \
 	synfigstudio.appdata.xml.in \
 	synfigstudio.xml.in \
 	synfigstudio-thumbnailer.schemas.in
-
 
 DISTCHECK_CONFIGURE_FLAGS = --disable-update-mimedb
 
@@ -104,7 +108,7 @@ stats:
 	-@wc -l `shell find $(top_srcdir)/src -name '*.[ch]*' | $(GREP) -v libavcodec` | $(GREP) total
 	-@$(PRINTF) "Total size: "
 	-@du -hcs `shell find $(top_srcdir)/src -name '*.[ch]*' | $(GREP) -v libavcodec` | $(GREP) total
-	-@echo 
+	-@echo
 
 listfixmes:
 	-@echo

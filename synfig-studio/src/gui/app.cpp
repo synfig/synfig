@@ -147,6 +147,9 @@
 
 #include <gui/localization.h>
 
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -187,6 +190,17 @@ using namespace studio;
 
 #ifndef PLUGIN_DIR
 #	define PLUGIN_DIR "/usr/local/share/synfig/plugins"
+#endif
+
+#ifdef _WIN32
+#	ifdef SOUND_DIR
+#		undef SOUND_DIR
+#		define SOUND_DIR "share\\synfig\\sounds"
+#	endif
+#endif
+
+#ifndef SOUND_DIR
+#	define SOUND_DIR "/usr/local/share/synfig/sounds"
 #endif
 
 #include <synfigapp/main.h>
@@ -337,6 +351,9 @@ delete_widget(Gtk::Widget *widget)
 	// synfig::info("delete %p", (void*)widget);
 	Glib::signal_timeout().connect(sigc::bind(sigc::ptr_fun(&really_delete_widget), widget), 50);
 }
+
+//Static members need to be initialized outside of class declaration
+Mix_Chunk* App::gRenderDone = NULL;
 
 }; // END of namespace studio
 studio::StateManager* state_manager;
@@ -1739,6 +1756,48 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 	{
 		get_ui_interface()->error(_("Unknown exception caught when constructing App.\nThis software may be unstable."));
 	}
+
+	//<!- ----- SDL2 - Sound effects -----
+	//Initialize SDL
+	if( SDL_Init( SDL_INIT_AUDIO ) < 0 )
+	{
+		synfig::error( _("SDL could not initialize! SDL Error: %s\n"), SDL_GetError() );
+	}
+
+	//Initialize SDL_mixer
+	if( Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, 2, 2048 ) == -1 )
+	{
+		synfig::error( _("SDL_mixer could not initialize! SDL_mixer Error: %s\n"), Mix_GetError() );
+	}
+
+	// system sounds path
+	std::string path_to_sounds;
+	#ifdef _WIN32
+    path_to_sounds = basepath + ETL_DIRECTORY_SEPARATOR + ".." + ETL_DIRECTORY_SEPARATOR + SOUND_DIR;
+  #else
+		path_to_sounds = SOUND_DIR;
+	#endif
+
+	//char* synfig_root = getenv("SYNFIG_ROOT"); //Already declared before
+	synfig_root = getenv("SYNFIG_ROOT"); //Already declared before
+	if(synfig_root) {
+		path_to_sounds = std::string(synfig_root)
+			+ ETL_DIRECTORY_SEPARATOR + "share"
+			+ ETL_DIRECTORY_SEPARATOR + "synfig"
+			+ ETL_DIRECTORY_SEPARATOR + "sounds";
+	}
+
+  path_to_sounds += ETL_DIRECTORY_SEPARATOR;
+
+  //Load sound effects
+	App::gRenderDone = Mix_LoadWAV( (path_to_sounds + "renderdone.wav").c_str() );
+	if ( App::gRenderDone == NULL ) {
+		synfig::error( _("SDL_mixer could not load gRenderDone : %s\n"), Mix_GetError() );
+	}  else {
+    Mix_VolumeChunk(App::gRenderDone, MIX_MAX_VOLUME/2);
+  }
+	//----- SDL2 - Sound effects ----- ->
+
 }
 
 StateManager* App::get_state_manager() { return state_manager; }
@@ -1780,6 +1839,16 @@ App::~App()
 	delete dock_manager;
 
 	instance_list.clear();
+
+	//<!- ----- SDL2 - Sound effects -----
+	//Free the sound effects
+	Mix_FreeChunk( App::gRenderDone );
+	App::gRenderDone = NULL;
+
+	//Quit SDL subsystems
+	Mix_Quit();
+	SDL_Quit();
+	//----- SDL2 - Sound effects ----- ->
 }
 
 synfig::String
@@ -2215,7 +2284,7 @@ App::apply_gtk_settings()
 		try {
 			css->load_from_data(data);
 		} catch (Gtk::CssProviderError &e) {
-			synfig::warning("Failed to load css rules. %s", e.what().c_str()); 
+			synfig::warning("Failed to load css rules. %s", e.what().c_str());
 		}
 		Glib::RefPtr<Gdk::Screen> screen = Gdk::Screen::get_default();
 		Gtk::StyleContext::add_provider_for_screen(screen,css, GTK_STYLE_PROVIDER_PRIORITY_USER);
@@ -3560,10 +3629,10 @@ App::open_as(std::string filename,std::string as,synfig::FileContainerZip::file_
 
 		// wrap into temporary file system
 		canvas_file_system = wrap_into_temporary_filesystem(canvas_file_system, filename, as, truncate_storage_size);
-		
+
 		// file to open inside canvas file-system
 		String canvas_filename = CanvasFileNaming::project_file(filename);
-		
+
 		etl::handle<synfig::Canvas> canvas = open_canvas_as(canvas_file_system ->get_identifier(canvas_filename), as, errors, warnings);
 		if(canvas && get_instance(canvas))
 		{
