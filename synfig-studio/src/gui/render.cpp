@@ -434,7 +434,7 @@ RenderSettings::on_finished()
 	submit_next_render_pass();
 
 	//Sound effect - RenderDone (-1 : play on first free channel, 0 : no repeat)
-	Mix_PlayChannel( -1, App::gRenderDone, 0 );
+	if (App::use_render_done_sound) Mix_PlayChannel( -1, App::gRenderDone, 0 );
 }
 
 void

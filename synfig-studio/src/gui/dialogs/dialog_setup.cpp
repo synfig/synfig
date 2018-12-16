@@ -439,7 +439,7 @@ Dialog_Setup::create_render_page(PageInfo pi)
 	 *  sequence separator _________
 	 *   navigator [ Legacy ]
 	 *   workarea  [ Legacy ]
-	 *
+	 *   play sound on render done  [x| ]
 	 *
 	 */
 
@@ -454,6 +454,14 @@ Dialog_Setup::create_render_page(PageInfo pi)
 	// Render - WorkArea
 	attach_label(pi.grid, _("WorkArea renderer"), ++row);
 	pi.grid->attach(workarea_renderer_combo, 1, row, 1, 1);
+	// Render - Render Done sound
+	attach_label(pi.grid, _("Chime on render done"), ++row);
+	pi.grid->attach(toggle_play_sound_on_render_done, 1, row, 1, 1);
+	toggle_play_sound_on_render_done.set_halign(Gtk::ALIGN_START);
+	toggle_play_sound_on_render_done.set_hexpand(false);
+	toggle_play_sound_on_render_done.set_tooltip_text(_("A chime is played when render has finished."));
+	toggle_play_sound_on_render_done.property_active().signal_changed().connect(
+			sigc::mem_fun(*this, &Dialog_Setup::on_play_sound_on_render_done_changed));
 
 	synfig::rendering::Renderer::Handle default_renderer = synfig::rendering::Renderer::get_renderer("");
 	navigator_renderer_combo.append("", String() + _("Default") + " - " + default_renderer->get_name());
@@ -676,6 +684,9 @@ Dialog_Setup::on_apply_pressed()
 	// Set the workarea render flag
 	App::workarea_renderer=workarea_renderer_combo.get_active_id();
 
+	// Set the use of a render done sound
+	App::use_render_done_sound = toggle_play_sound_on_render_done.get_active();
+
 	// Set ui language
 	if (pref_modification_flag&CHANGE_UI_LANGUAGE)
 		App::ui_language = ui_language_combo.get_active_id().c_str();
@@ -798,6 +809,12 @@ Dialog_Setup::on_autobackup_changed()
 }
 
 void
+Dialog_Setup::on_play_sound_on_render_done_changed()
+{
+	App::use_render_done_sound = toggle_play_sound_on_render_done.get_active();
+}
+
+void
 Dialog_Setup::on_tooltip_transformation_changed()
 {
 	toggle_handle_tooltip_transfo_name.set_sensitive(toggle_handle_tooltip_transformation.get_active());
@@ -851,6 +868,9 @@ Dialog_Setup::refresh()
 
 	// Refresh the status of the theme flag
 	toggle_use_dark_theme.set_active(App::use_dark_theme);
+
+	// Refresh the status of the render done sound flag
+	toggle_play_sound_on_render_done.set_active(App::use_render_done_sound);
 
 	// Refresh the status of file toolbar flag
 	toggle_show_file_toolbar.set_active(App::show_file_toolbar);

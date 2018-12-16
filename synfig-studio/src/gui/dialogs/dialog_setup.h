@@ -135,6 +135,7 @@ class Dialog_Setup : public Dialog_Template
 	void on_time_format_changed();
 	void on_autobackup_changed();
 	void on_tooltip_transformation_changed();
+	void on_play_sound_on_render_done_changed();
 
 	void on_brush_path_add_clicked();
 	void on_brush_path_remove_clicked();
@@ -196,9 +197,10 @@ class Dialog_Setup : public Dialog_Template
 	Gtk::SpinButton* pref_y_size_spinbutton;
 	Gtk::SpinButton* pref_x_size_spinbutton;
 
-	Gtk::Entry image_sequence_separator;
+	Gtk::Entry        image_sequence_separator;
 	Gtk::ComboBoxText navigator_renderer_combo;
 	Gtk::ComboBoxText workarea_renderer_combo;
+	Gtk::Switch       toggle_play_sound_on_render_done;
 
 	Gtk::Switch toggle_handle_tooltip_widthpoint;
 	Gtk::Switch toggle_handle_tooltip_radius;

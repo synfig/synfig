@@ -238,8 +238,9 @@ public:
 	static synfig::String ui_language;
 	static long ui_handle_tooltip_flag;
 
-  //The sound effects that will be used
-  static Mix_Chunk* gRenderDone;
+	//The sound effects that will be used
+	static Mix_Chunk* gRenderDone;
+	static bool       use_render_done_sound;
 
 	/*
  -- ** -- S I G N A L S -------------------------------------------------------

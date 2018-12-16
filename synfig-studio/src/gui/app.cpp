@@ -353,7 +353,8 @@ delete_widget(Gtk::Widget *widget)
 }
 
 //Static members need to be initialized outside of class declaration
-Mix_Chunk* App::gRenderDone = NULL;
+Mix_Chunk* App::gRenderDone           = NULL;
+bool       App::use_render_done_sound = true;
 
 }; // END of namespace studio
 studio::StateManager* state_manager;
@@ -637,6 +638,11 @@ public:
 				value=App::workarea_renderer;
 				return true;
 			}
+			if(key=="use_render_done_sound")
+			{
+				value=strprintf("%i",(int)App::use_render_done_sound);
+				return true;
+			}
 			if(key=="enable_mainwin_menubar")
 			{
 				value=strprintf("%i", (int)App::enable_mainwin_menubar);
@@ -802,6 +808,12 @@ public:
 				App::workarea_renderer=value;
 				return true;
 			}
+			if(key=="use_render_done_sound")
+			{
+				int i(atoi(value.c_str()));
+				App::use_render_done_sound=i;
+				return true;
+			}
 			if(key=="enable_mainwin_menubar")
 			{
 				int i(atoi(value.c_str()));
@@ -851,6 +863,7 @@ public:
 		ret.push_back("sequence_separator");
 		ret.push_back("navigator_renderer");
 		ret.push_back("workarea_renderer");
+		ret.push_back("use_render_done_sound");
 		ret.push_back("enable_mainwin_menubar");
 		ret.push_back("ui_handle_tooltip_flag");
 
