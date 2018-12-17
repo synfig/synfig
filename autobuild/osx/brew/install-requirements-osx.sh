@@ -13,7 +13,7 @@
 
 set -e
 
-PACKAGES="autoconf automake ccache libtool intltool gettext pkg-config glibmm libxml++ cairo fftw pango mlt boost gtkmm3 ывд2 sdl2_mixer"
+PACKAGES="autoconf automake ccache libtool intltool gettext pkg-config glibmm libxml++ cairo fftw pango mlt boost gtkmm3 sdl2 sdl2_mixer"
 
 export HOMEBREW_NO_AUTO_UPDATE=1
 export HOMEBREW_NO_ANALYTICS=1
