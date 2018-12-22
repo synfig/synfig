@@ -2238,6 +2238,7 @@ App::restore_default_settings()
 	synfigapp::Main::settings().set_value("sequence_separator", ".");
 	synfigapp::Main::settings().set_value("navigator_renderer", "");
 	synfigapp::Main::settings().set_value("workarea_renderer", "");
+	synfigapp::Main::settings().set_value("use_render_done_sound", "1");
 	synfigapp::Main::settings().set_value("pref.enable_mainwin_menubar", "1");
 	ostringstream temp;
 	temp << Duck::STRUCT_DEFAULT;
