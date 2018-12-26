@@ -34,6 +34,13 @@
 #include <gtkmm/adjustment.h>
 #include <gtkmm/button.h>
 #include <gtkmm/checkbutton.h>
+#include <gtkmm/colorbutton.h>
+#include <gtkmm/radiobutton.h>
+#include <gtkmm/filechooser.h>
+#include <gtkmm/filechooserbutton.h>
+#include <gtkmm/filechooserdialog.h>
+#include <gtkmm/filechooserwidget.h>
+#include <gtkmm/filefilter.h>
 #include <gtkmm/comboboxtext.h>
 #include <gtkmm/drawingarea.h>
 #include <gtkmm/listviewtext.h>
@@ -105,21 +112,21 @@ class Dialog_Setup : public Dialog_Template
 	/* Draft for change resume */
 	enum Change
 	{
-		CHANGE_NONE					=	(0),		//    0
-		CHANGE_UI_LANGUAGE			=	(1 <<  0),	//    1
-		CHANGE_AUTOBACKUP			=	(1 <<  1),	//    2
-		CHANGE_UI_HANDLE_TOOLTIP					=	(1 <<  2),	//    4
-		CHANGE_WIDTH					=	(1 <<  3),	//    8
-		CHANGE_ANGLE					=	(1 <<  4),	//   16
-		CHANGE_VERTEX					=	(1 <<  5),	//   32
-		CHANGE_BONE_RECURSIVE			=	(1 <<  6),	//   64
-		CHANGE_BRUSH_PATH				=	(1 <<  7),	//  128
-		CHANGE_SCALE					=	(1 <<  8),	//  256
-		CHANGE_SCALE_X				=	(1 <<  9),	//  512
-		CHANGE_SCALE_Y				=	(1 << 10),	// 1024
-		CHANGE_SKEW					=	(1 << 11),	// 2048
+		CHANGE_NONE              = (0),       //    0
+		CHANGE_UI_LANGUAGE       = (1 <<  0), //    1
+		CHANGE_AUTOBACKUP        = (1 <<  1), //    2
+		CHANGE_UI_HANDLE_TOOLTIP = (1 <<  2), //    4
+		CHANGE_WIDTH             = (1 <<  3), //    8
+		CHANGE_ANGLE             = (1 <<  4), //   16
+		CHANGE_VERTEX            = (1 <<  5), //   32
+		CHANGE_BONE_RECURSIVE    = (1 <<  6), //   64
+		CHANGE_BRUSH_PATH        = (1 <<  7), //  128
+		CHANGE_SCALE             = (1 <<  8), //  256
+		CHANGE_SCALE_X           = (1 <<  9), //  512
+		CHANGE_SCALE_Y           = (1 << 10), // 1024
+		CHANGE_SKEW              = (1 << 11), // 2048
 
-		CHANGE_ALL					=	(~0)
+		CHANGE_ALL               = (~0)
 	};
 
 	// Change mechanism
@@ -136,7 +143,10 @@ class Dialog_Setup : public Dialog_Template
 	void on_autobackup_changed();
 	void on_tooltip_transformation_changed();
 	void on_play_sound_on_render_done_changed();
-
+	void on_def_background_type_changed(); //bound on clicked
+	void on_def_background_color_changed();
+	void on_def_background_image_set();
+	void on_preview_background_color_changed();
 	void on_brush_path_add_clicked();
 	void on_brush_path_remove_clicked();
 
@@ -196,6 +206,16 @@ class Dialog_Setup : public Dialog_Template
 	Gtk::SpinButton* pref_fps_spinbutton;
 	Gtk::SpinButton* pref_y_size_spinbutton;
 	Gtk::SpinButton* pref_x_size_spinbutton;
+
+	Gtk::RadioButton::Group group_def_background;
+	Gtk::RadioButton        def_background_none;
+	Gtk::RadioButton        def_background_color;
+	Gtk::RadioButton        def_background_image;
+	Gtk::ColorButton        def_background_color_button;
+	Gtk::FileChooserButton  fcbutton_image;
+	Gtk::ColorButton        preview_background_color_button;
+	//Gtk::FileFilter         filter_images;
+	//Gtk::FileFilter         filter_any;
 
 	Gtk::Entry        image_sequence_separator;
 	Gtk::ComboBoxText navigator_renderer_combo;

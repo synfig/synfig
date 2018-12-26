@@ -39,12 +39,14 @@
 #include <synfig/distance.h>
 #include <synfig/string.h>
 #include <synfig/time.h>
+#include <synfig/color.h>
 
 #include <synfig/filecontainerzip.h>
 
 #include <gtkmm/uimanager.h>
 
 #include <synfigapp/instance.h>
+#include <synfigapp/canvasinterface.h>
 #include <synfigapp/pluginmanager.h>
 #include "iconcontroller.h"
 #include "mainwindow.h"
@@ -54,11 +56,11 @@
 
 /* === M A C R O S ========================================================= */
 
-#define MISC_DIR_PREFERENCE			"misc_dir"
-#define ANIMATION_DIR_PREFERENCE	"animation_dir"
-#define IMAGE_DIR_PREFERENCE		"image_dir"
-#define SKETCH_DIR_PREFERENCE		"sketch_dir"
-#define RENDER_DIR_PREFERENCE		"render_dir"
+#define MISC_DIR_PREFERENCE       "misc_dir"
+#define ANIMATION_DIR_PREFERENCE  "animation_dir"
+#define IMAGE_DIR_PREFERENCE      "image_dir"
+#define SKETCH_DIR_PREFERENCE     "sketch_dir"
+#define RENDER_DIR_PREFERENCE     "render_dir"
 
 // uncomment define SINGLE_THREADED to use a single thread, and hopefully get more stability (dooglus) - changed to be default if using windows (Nov 2009 pixelgeek)
 #ifdef _WIN32
@@ -237,6 +239,10 @@ public:
 	static bool enable_mainwin_menubar;
 	static synfig::String ui_language;
 	static long ui_handle_tooltip_flag;
+	static synfig::String default_background_layer_type;
+	static synfig::Color  default_background_layer_color;
+	static synfig::String default_background_layer_image;
+	static synfig::Color  preview_background_color;
 
 	//The sound effects that will be used
 	static Mix_Chunk* gRenderDone;
