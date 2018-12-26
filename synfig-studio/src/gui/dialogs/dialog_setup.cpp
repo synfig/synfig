@@ -291,6 +291,10 @@ Dialog_Setup::create_document_page(PageInfo pi)
 	 *  prefix  ___________________
 	 *  fps   [_]                    [FPS]
 	 *  size  H[_]xW[_]      [resolutions]
+	 * DEFAULT BACKGROUND
+	 * (*) None (Transparent)
+	 * ( ) Solid Color         [colorbutton]
+	 * ( ) Image               [file path  ]
 	 *
 	 *
 	 *
@@ -381,6 +385,63 @@ Dialog_Setup::create_document_page(PageInfo pi)
 	size_template_combo->prepend(DEFAULT_PREDEFINED_SIZE);
 
 	fps_template_combo->prepend(DEFAULT_PREDEFINED_FPS);
+
+	attach_label_section(pi.grid, _("Default Background"), ++row);
+	//attach_label(pi.grid, _("Name prefix"), ++row);
+	//pi.grid->attach(textbox_custom_filename_prefix, 1, row, 2, 1);
+	//textbox_custom_filename_prefix.set_tooltip_text( _("File name prefix for the new created document"));
+	//textbox_custom_filename_prefix.set_hexpand(true);
+
+	//Gtk::RadioButton::Group group_def_background;
+	def_background_none.set_label(_("None (Transparent)"));
+	def_background_none.set_group(group_def_background);
+	pi.grid->attach(def_background_none,  0, ++row, 1, 1);
+	def_background_none.signal_clicked().connect(sigc::mem_fun(*this, &studio::Dialog_Setup::on_def_background_type_changed) );
+
+	def_background_color.set_label(_("Solid Color"));
+	def_background_color.set_group(group_def_background);
+	pi.grid->attach(def_background_color, 0, ++row, 1, 1);
+    def_background_color.signal_clicked().connect(sigc::mem_fun(*this, &studio::Dialog_Setup::on_def_background_type_changed) );
+
+	Gdk::RGBA m_color;
+	m_color.set_rgba( App::default_background_layer_color.get_r(),
+					  App::default_background_layer_color.get_g(),
+					  App::default_background_layer_color.get_b(),
+					  App::default_background_layer_color.get_a());
+	def_background_color_button.set_rgba(m_color);
+	pi.grid->attach(def_background_color_button, 1,   row, 1, 1);
+	def_background_color_button.signal_color_set().connect(sigc::mem_fun(*this, &studio::Dialog_Setup::on_def_background_color_changed) );
+
+	def_background_image.set_label(_("Image"));
+	def_background_image.set_group(group_def_background);
+	pi.grid->attach(def_background_image,      0, ++row, 1, 1);
+	def_background_image.signal_clicked().connect(sigc::mem_fun(*this, &studio::Dialog_Setup::on_def_background_type_changed) );
+	//<!- Button to select the image
+	fcbutton_image.set_title(_("Select"));
+	fcbutton_image.set_action(Gtk::FILE_CHOOSER_ACTION_OPEN);
+	fcbutton_image.set_filename(App::default_background_layer_image);
+	/*
+	filter_images.set_name(_("Images (*.bmp,*.jpg,*.jpeg,*.png,*.svg,*.lst)"));
+		filter_images.add_pattern("*.bmp");
+		filter_images.add_pattern("*.jpg");
+		filter_images.add_pattern("*.jpeg");
+		filter_images.add_pattern("*.png");
+		filter_images.add_pattern("*.svg");
+		filter_images.add_pattern("*.lst");
+		filter_any.set_name(_("Any file (*.*)"));
+		filter_any.add_pattern("*.*");
+
+	fcbutton_image.add_filter(filter_images);
+	fcbutton_image.add_filter(filter_any);
+	*/
+	//-> Button to select the image
+	pi.grid->attach(fcbutton_image,            1,   row, 2, 1);
+	fcbutton_image.signal_file_set().connect(sigc::mem_fun(*this, &studio::Dialog_Setup::on_def_background_image_set) );
+
+	if (App::default_background_layer_type == "none")        def_background_none.set_active();
+	if (App::default_background_layer_type == "solid_color") def_background_color.set_active();
+	if (App::default_background_layer_type == "image")       def_background_image.set_active();
+
 }
 
 void
@@ -474,6 +535,19 @@ Dialog_Setup::create_render_page(PageInfo pi)
 		navigator_renderer_combo.append(i->first, i->second->get_name());
 		workarea_renderer_combo.append(i->first, i->second->get_name());
 	}
+
+	attach_label(pi.grid, _("Preview Background Color"), ++row);
+
+	Gdk::RGBA m_color;
+	m_color.set_rgba( App::preview_background_color.get_r(),
+	                  App::preview_background_color.get_g(),
+	                  App::preview_background_color.get_b(),
+	                  App::preview_background_color.get_a());
+	preview_background_color_button.set_rgba(m_color);
+	pi.grid->attach(preview_background_color_button, 1, row, 1, 1);
+	preview_background_color_button.signal_color_set().connect(
+		sigc::mem_fun(*this, &studio::Dialog_Setup::on_preview_background_color_changed) );
+
 }
 
 void
@@ -496,6 +570,7 @@ Dialog_Setup::create_interface_page(PageInfo pi)
 
 	static const char* languages[][2] = {
 		#include <languages.inc.c>
+		#include <gdkmm-3.0/gdkmm/rgba.h>
 		{ NULL, NULL } // final entry without comma to avoid misunderstanding
 	};
 
@@ -550,7 +625,7 @@ Dialog_Setup::create_interface_page(PageInfo pi)
 	toggle_handle_tooltip_transformation.set_halign(Gtk::ALIGN_START);
 	toggle_handle_tooltip_transformation.set_hexpand(false);
 	toggle_handle_tooltip_transformation.property_active().signal_changed().connect(
-			sigc::mem_fun(*this, &Dialog_Setup::on_tooltip_transformation_changed));
+		sigc::mem_fun(*this, &Dialog_Setup::on_tooltip_transformation_changed));
 
 	attach_label(pi.grid, _("Name"), ++row);// HANDLE_TOOLTIP_TRANSFO_NAME
 	pi.grid->attach(toggle_handle_tooltip_transfo_name, 1, row, 1, 1);
@@ -566,17 +641,17 @@ Dialog_Setup::create_interface_page(PageInfo pi)
 			sigc::bind<int> (sigc::mem_fun(*this, &Dialog_Setup::on_value_change), CHANGE_UI_LANGUAGE));
 	//TODO signal change on value
 	//toggle_use_dark_theme.signal_changed().connect(
-	//		sigc::bind<int> (sigc::mem_fun(*this, &Dialog_Setup::on_value_change), CHANGE_UI_THEME));
+	//	sigc::bind<int> (sigc::mem_fun(*this, &Dialog_Setup::on_value_change), CHANGE_UI_THEME));
 	toggle_handle_tooltip_widthpoint.property_active().signal_changed().connect(
-			sigc::bind<int> (sigc::mem_fun(*this, &Dialog_Setup::on_value_change), CHANGE_UI_HANDLE_TOOLTIP));
+		sigc::bind<int> (sigc::mem_fun(*this, &Dialog_Setup::on_value_change), CHANGE_UI_HANDLE_TOOLTIP));
 	toggle_handle_tooltip_radius.property_active().signal_changed().connect(
-			sigc::bind<int> (sigc::mem_fun(*this, &Dialog_Setup::on_value_change), CHANGE_UI_HANDLE_TOOLTIP));
+		sigc::bind<int> (sigc::mem_fun(*this, &Dialog_Setup::on_value_change), CHANGE_UI_HANDLE_TOOLTIP));
 	toggle_handle_tooltip_transformation.property_active().signal_changed().connect(
-			sigc::bind<int> (sigc::mem_fun(*this, &Dialog_Setup::on_value_change), CHANGE_UI_HANDLE_TOOLTIP));
+		sigc::bind<int> (sigc::mem_fun(*this, &Dialog_Setup::on_value_change), CHANGE_UI_HANDLE_TOOLTIP));
 	toggle_handle_tooltip_transfo_name.property_active().signal_changed().connect(
-			sigc::bind<int> (sigc::mem_fun(*this, &Dialog_Setup::on_value_change), CHANGE_UI_HANDLE_TOOLTIP));
+		sigc::bind<int> (sigc::mem_fun(*this, &Dialog_Setup::on_value_change), CHANGE_UI_HANDLE_TOOLTIP));
 	toggle_handle_tooltip_transfo_value.property_active().signal_changed().connect(
-			sigc::bind<int> (sigc::mem_fun(*this, &Dialog_Setup::on_value_change), CHANGE_UI_HANDLE_TOOLTIP));
+		sigc::bind<int> (sigc::mem_fun(*this, &Dialog_Setup::on_value_change), CHANGE_UI_HANDLE_TOOLTIP));
 }
 
 void
@@ -601,7 +676,7 @@ Dialog_Setup::on_apply_pressed()
 	App::set_time_format(get_time_format());
 
 	// Set the use_colorspace_gamma flag
-	App::use_colorspace_gamma=toggle_use_colorspace_gamma.get_active();
+	App::use_colorspace_gamma = toggle_use_colorspace_gamma.get_active();
 
 #ifdef SINGLE_THREADED
 	// Set the single_threaded flag
@@ -617,19 +692,19 @@ Dialog_Setup::on_apply_pressed()
 		App::auto_recover->set_timeout_ms(auto_backup_interval.get_value() * 1000);
 	}
 
-	App::distance_system=Distance::System(widget_enum->get_value());
+	App::distance_system              = Distance::System(widget_enum->get_value());
 
 	// Set the restrict_radius_ducks flag
-	App::restrict_radius_ducks=toggle_restrict_radius_ducks.get_active();
+	App::restrict_radius_ducks        = toggle_restrict_radius_ducks.get_active();
 
 	// Set the resize_imported_images flag
-	App::resize_imported_images=toggle_resize_imported_images.get_active();
+	App::resize_imported_images       = toggle_resize_imported_images.get_active();
 
 	// Set the experimental features flag
-	App::enable_experimental_features=toggle_enable_experimental_features.get_active();
+	App::enable_experimental_features = toggle_enable_experimental_features.get_active();
 
 	// Set the dark theme flag
-	App::use_dark_theme=toggle_use_dark_theme.get_active();
+	App::use_dark_theme               = toggle_use_dark_theme.get_active();
 	App::apply_gtk_settings();
 
 	// Set file toolbar flag
@@ -643,10 +718,10 @@ Dialog_Setup::on_apply_pressed()
 		int path_count = 0;
 
 		Glib::RefPtr<Gtk::ListStore> liststore = Glib::RefPtr<Gtk::ListStore>::cast_dynamic(
-				listviewtext_brushes_path->get_model());
+			listviewtext_brushes_path->get_model());
 
 		for(Gtk::TreeIter ui_iter = liststore->children().begin();
-				ui_iter!=liststore->children().end();ui_iter++)
+			ui_iter!=liststore->children().end();ui_iter++)
 		{
 			const Gtk::TreeRow row = *(ui_iter);
 			// TODO utf_8 path : care to other locale than english ?
@@ -658,55 +733,55 @@ Dialog_Setup::on_apply_pressed()
 	}
 
 	// Set the preferred file name prefix
-	App::custom_filename_prefix=textbox_custom_filename_prefix.get_text();
+	App::custom_filename_prefix = textbox_custom_filename_prefix.get_text();
 
 	// Set the preferred new Document X dimension
-	App::preferred_x_size=int(adj_pref_x_size->get_value());
+	App::preferred_x_size       = int(adj_pref_x_size->get_value());
 
 	// Set the preferred new Document Y dimension
-	App::preferred_y_size=int(adj_pref_y_size->get_value());
+	App::preferred_y_size       = int(adj_pref_y_size->get_value());
 
 	// Set the preferred Predefined size
-	App::predefined_size=size_template_combo->get_active_text();
+	App::predefined_size        = size_template_combo->get_active_text();
 
 	// Set the preferred Predefined fps
-	App::predefined_fps=fps_template_combo->get_active_text();
+	App::predefined_fps         = fps_template_combo->get_active_text();
 
 	// Set the preferred FPS
-	App::preferred_fps=Real(adj_pref_fps->get_value());
+	App::preferred_fps          = Real(adj_pref_fps->get_value());
 
 	// Set the preferred image sequence separator
-	App::sequence_separator=image_sequence_separator.get_text();
+	App::sequence_separator     = image_sequence_separator.get_text();
 
 	// Set the navigator render flag
-	App::navigator_renderer=navigator_renderer_combo.get_active_id();
+	App::navigator_renderer     = navigator_renderer_combo.get_active_id();
 
 	// Set the workarea render flag
-	App::workarea_renderer=workarea_renderer_combo.get_active_id();
+	App::workarea_renderer      = workarea_renderer_combo.get_active_id();
 
 	// Set the use of a render done sound
-	App::use_render_done_sound = toggle_play_sound_on_render_done.get_active();
+	App::use_render_done_sound  = toggle_play_sound_on_render_done.get_active();
 
 	// Set ui language
-	if (pref_modification_flag&CHANGE_UI_LANGUAGE)
+	if (pref_modification_flag & CHANGE_UI_LANGUAGE)
 		App::ui_language = ui_language_combo.get_active_id().c_str();
 
-	if (pref_modification_flag&CHANGE_UI_HANDLE_TOOLTIP)
+	if (pref_modification_flag & CHANGE_UI_HANDLE_TOOLTIP)
 	{
 		// Set ui tooltip on widht point
-		App::ui_handle_tooltip_flag=toggle_handle_tooltip_widthpoint.get_active()?Duck::STRUCT_WIDTHPOINT:Duck::STRUCT_NONE;
+		App::ui_handle_tooltip_flag  = toggle_handle_tooltip_widthpoint.get_active()?Duck::STRUCT_WIDTHPOINT:Duck::STRUCT_NONE;
 		// Set ui tooltip on radius
-		App::ui_handle_tooltip_flag|=toggle_handle_tooltip_radius.get_active()?Duck::STRUCT_RADIUS:Duck::STRUCT_NONE;
+		App::ui_handle_tooltip_flag |= toggle_handle_tooltip_radius.get_active()?Duck::STRUCT_RADIUS:Duck::STRUCT_NONE;
 		// Set ui tooltip on transformation
 		if(toggle_handle_tooltip_transformation.get_active())
 		{
 			if(toggle_handle_tooltip_transfo_name.get_active())
 			{
-				App::ui_handle_tooltip_flag|=Duck::STRUCT_TRANSFORMATION;
+				App::ui_handle_tooltip_flag |= Duck::STRUCT_TRANSFORMATION;
 			}
 			if(toggle_handle_tooltip_transfo_value.get_active())
 			{
-				App::ui_handle_tooltip_flag|=Duck::STRUCT_TRANSFO_BY_VALUE;
+				App::ui_handle_tooltip_flag |= Duck::STRUCT_TRANSFO_BY_VALUE;
 			}
 		}
 	}
@@ -812,6 +887,45 @@ void
 Dialog_Setup::on_play_sound_on_render_done_changed()
 {
 	App::use_render_done_sound = toggle_play_sound_on_render_done.get_active();
+}
+
+void
+Dialog_Setup::on_def_background_type_changed()
+{
+	if (def_background_none.get_active())  App::default_background_layer_type = "none";
+	if (def_background_color.get_active()) App::default_background_layer_type = "solid_color";
+	if (def_background_image.get_active()) App::default_background_layer_type = "image";
+}
+
+void
+Dialog_Setup::on_def_background_color_changed()
+{
+	Gdk::RGBA m_color = def_background_color_button.get_rgba();
+
+	App::default_background_layer_color =
+		synfig::Color(m_color.get_red(),
+		              m_color.get_green(),
+		              m_color.get_blue(),
+		              m_color.get_alpha());
+}
+
+void
+Dialog_Setup::on_def_background_image_set()
+{
+	App::default_background_layer_image = fcbutton_image.get_filename();
+}
+
+void
+Dialog_Setup::on_preview_background_color_changed()
+{
+	Gdk::RGBA m_color = preview_background_color_button.get_rgba();
+
+	App::preview_background_color =
+		synfig::Color(m_color.get_red(),
+		              m_color.get_green(),
+		              m_color.get_blue(),
+		              m_color.get_alpha());
+	//studio::Widget_Preview::
 }
 
 void
