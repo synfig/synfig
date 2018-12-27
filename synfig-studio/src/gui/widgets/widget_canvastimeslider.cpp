@@ -168,6 +168,10 @@ Widget_CanvasTimeslider::on_button_press_event(GdkEventButton *event)
 		canvas_view->get_work_area()->clear_ducks();
 		canvas_view->queue_rebuild_ducks();
 	}
+
+	//Clicking on the timeline while the animation is playing should stop the playback #415
+	if (canvas_view->is_playing()) canvas_view->stop_async();
+
 	if (event->button == 1 || event->button == 2)
 		tooltip.hide();
 	return Widget_Timeslider::on_button_press_event(event);
