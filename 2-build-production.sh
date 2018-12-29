@@ -36,4 +36,8 @@ popd > /dev/null
 
 cd "${WORKDIR}/${TYPE}"
 
+if [[ `uname` == "Darwin" ]]; then
+export PREFIX="/usr/local/opt/synfig-production"
+fi
+
 bash ${WORKDIR}/autobuild/build.sh "$1" "$2"

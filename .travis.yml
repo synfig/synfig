@@ -31,9 +31,9 @@ matrix:
       - HOMEBREW_NO_ANALYTICS=1
     cache: ccache
     before_install: brew reinstall libtool # fix no sed
-    install: autobuild/osx/brew/install-requirements-osx.sh
+    install: 1-setup-brew.sh
     before_script: ccache -s
-    script: autobuild/osx/brew/synfigstudio-osx-build.sh
+    script: 2-build-production.sh
     after_script: ccache -s # show ccache stats
     
   - os: osx
