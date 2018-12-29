@@ -16,11 +16,12 @@ export FONTCONFIG_PATH="$CWD/etc/fonts"
 export MLT_DATA="$CWD/share/mlt/"
 export MLT_REPOSITORY="$CWD/lib/mlt/"
 
-export PATH="$CWD/bin:$CWD/synfig/bin:$PATH"
-export SYNFIG_ROOT="$CWD/synfig/"
-export SYNFIG_MODULE_LIST="$CWD/synfig/etc/synfig_modules.cfg"
+export PATH="$CWD/bin:$CWD/synfig-production/bin:$PATH"
+export SYNFIG_ROOT="$CWD/synfig-production/"
+export SYNFIG_MODULE_LIST="$CWD/synfig-production/etc/synfig_modules.cfg"
 
-
+#pushd 
+#`ls -1d ImageMagick* |head -n 1`
 export MAGICK_DIR=`ls -1 -d ${CWD}/lib/ImageMagick-* | head -n 1`
 export MAGICK_DIR=`basename $MAGICK_DIR`
 export MAGICK_CONFIGURE_PATH="${CWD}/lib/${MAGICK_DIR}/config-Q16/"
