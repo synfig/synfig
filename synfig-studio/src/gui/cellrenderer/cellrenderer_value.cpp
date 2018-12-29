@@ -79,16 +79,16 @@ using namespace studio;
 
 class studio::ValueBase_Entry : public Gtk::CellEditable, public Gtk::EventBox
 {
-	Glib::ustring path;
+	Glib::ustring     path;
 	Widget_ValueBase *valuewidget;
-	bool edit_done_called;
-	Gtk::Widget *parent;
+	bool              edit_done_called;
+	Gtk::Widget      *parent;
 public:
 	ValueBase_Entry():
 		Glib::ObjectBase(typeid(ValueBase_Entry))
 	{
-		parent=0;
-		edit_done_called=false;
+		parent           = 0;
+		edit_done_called = false;
 /*
 		  Gtk::HBox *const hbox = new Gtk::HBox(false, 0);
 		  add(*Gtk::manage(hbox));
@@ -100,7 +100,7 @@ public:
 		  entry_->gobj()->is_cell_renderer = true; // XXX
 
 */
-		valuewidget=manage(new class Widget_ValueBase());
+		valuewidget = manage(new class Widget_ValueBase());
 		valuewidget->inside_cellrenderer();
 		add(*valuewidget);
 		valuewidget->show();
@@ -137,10 +137,10 @@ public:
 	void on_editing_done()
 	{
 		hide();
-		if(parent)parent->grab_focus();
-		if(!edit_done_called)
+		if (parent) parent->grab_focus();
+		if (!edit_done_called)
 		{
-			edit_done_called=true;
+			edit_done_called = true;
 			Gtk::CellEditable::on_editing_done();
 		}
 		else
@@ -148,75 +148,85 @@ public:
 			synfig::error("on_editing_done(): Called twice!");
 		}
 	}
-	void set_parent(Gtk::Widget*x) { parent=x; }
+
+	void set_parent(Gtk::Widget* x) { parent = x; }
+
 	void on_remove_widget()
 	{
 		hide();
-		edit_done_called=true;
-		if(parent)parent->grab_focus();
+		edit_done_called = true;
+		if (parent) parent->grab_focus();
 		Gtk::CellEditable::on_remove_widget();
 	}
+
 	void start_editing_vfunc(GdkEvent */*event*/)
 	{
-		valuewidget->signal_activate().connect(sigc::mem_fun(*this, &studio::ValueBase_Entry::editing_done));
+		valuewidget->signal_activate().connect(sigc::mem_fun(*this,
+			&studio::ValueBase_Entry::editing_done));
 		show();
 		//valuewidget->grab_focus();
 		//get_window()->set_focus(*valuewidget);
 	}
+
 	bool on_event(GdkEvent *event)
 	{
-		if(event->any.type==GDK_BUTTON_PRESS ||
-			event->any.type==GDK_2BUTTON_PRESS ||
-			event->any.type==GDK_KEY_PRESS ||
-			event->any.type==GDK_KEY_RELEASE ||
-			event->any.type==GDK_SCROLL ||
-			event->any.type==GDK_3BUTTON_PRESS)
+		if (event->any.type == GDK_BUTTON_PRESS
+		 || event->any.type == GDK_2BUTTON_PRESS
+		 || event->any.type == GDK_KEY_PRESS
+		 || event->any.type == GDK_KEY_RELEASE
+		 || event->any.type == GDK_SCROLL
+		 || event->any.type == GDK_3BUTTON_PRESS )
 			return true;
 		return Gtk::EventBox::on_event(event);
 	}
+
 	void on_grab_focus()
 	{
 		Gtk::EventBox::on_grab_focus();
-		if(valuewidget)
+		if (valuewidget)
 			valuewidget->grab_focus();
 	}
+
 	void set_path(const Glib::ustring &p)
 	{
-		path=p;
+		path = p;
 	}
+
 	void set_value(const synfig::ValueBase &data)
 	{
-		if(valuewidget)
+		if (valuewidget)
 			valuewidget->set_value(data);
 		//valuewidget->grab_focus();
 	}
+
 	void set_canvas(const etl::handle<synfig::Canvas> &data)
 	{
 		assert(data);
-		if(valuewidget)
+		if (valuewidget)
 			valuewidget->set_canvas(data);
 	}
+
 	void set_param_desc(const synfig::ParamDesc &data)
 	{
-		if(valuewidget)
+		if (valuewidget)
 			valuewidget->set_param_desc(data);
 	}
 
 	void set_value_desc(const synfigapp::ValueDesc &data)
 	{
-		if(valuewidget)
+		if (valuewidget)
 			valuewidget->set_value_desc(data);
 	}
 
 	void set_child_param_desc(const synfig::ParamDesc &data)
 	{
-		if(valuewidget)
+		if (valuewidget)
 			valuewidget->set_child_param_desc(data);
 	}
 
 	const synfig::ValueBase &get_value()
 	{
-		if(valuewidget)
+		if (valuewidget)
 			return valuewidget->get_value();
 
 		warning("%s:%d this code shouldn't be reached", __FILE__, __LINE__);
@@ -240,16 +250,17 @@ bool get_paragraph(synfig::String& text)
 /* === M E T H O D S ======================================================= */
 
 CellRenderer_ValueBase::CellRenderer_ValueBase():
-	Glib::ObjectBase(typeid(CellRenderer_ValueBase)),
-	property_value_	(*this,"value",synfig::ValueBase()),
-	property_canvas_(*this,"canvas",etl::handle<synfig::Canvas>()),
-	property_param_desc_(*this,"param_desc",synfig::ParamDesc()),
-	property_value_desc_(*this,"value_desc",synfigapp::ValueDesc()),
-	property_child_param_desc_(*this,"child_param_desc", synfig::ParamDesc()),
-	edit_value_done_called(),
+	Glib::ObjectBase          (typeid(CellRenderer_ValueBase)),
+	property_value_	          (*this, "value",                   synfig::ValueBase()),
+	property_canvas_          (*this, "canvas",      etl::handle<synfig::Canvas>()),
+	property_param_desc_      (*this, "param_desc",              synfig::ParamDesc()),
+	property_value_desc_      (*this, "value_desc",           synfigapp::ValueDesc()),
+	property_child_param_desc_(*this, "child_param_desc",        synfig::ParamDesc()),
+	edit_value_done_called    (false),
 	value_entry()
 {
-	CellRendererText::signal_edited().connect(sigc::mem_fun(*this,&CellRenderer_ValueBase::string_edited_));
+	CellRendererText::signal_edited().connect(sigc::mem_fun(*this,
+		&CellRenderer_ValueBase::string_edited_));
 
 	Pango::AttrList attr_list;
 	{
@@ -258,10 +269,10 @@ CellRenderer_ValueBase::CellRenderer_ValueBase():
 		pango_size.set_end_index(64);
 		attr_list.change(pango_size);
 	}
-	property_attributes()=attr_list;
+	property_attributes()   = attr_list;
 
-	property_foreground()=Glib::ustring("#7f7f7f");
-	property_inconsistent()=false;
+	property_foreground()   = Glib::ustring("#7f7f7f");
+	property_inconsistent() = false;
 }
 
 CellRenderer_ValueBase::~CellRenderer_ValueBase()
@@ -271,31 +282,31 @@ CellRenderer_ValueBase::~CellRenderer_ValueBase()
 }
 
 void
-CellRenderer_ValueBase::string_edited_(const Glib::ustring&path,const Glib::ustring&str)
+CellRenderer_ValueBase::string_edited_(const Glib::ustring& path, const Glib::ustring& str)
 {
-	ValueBase old_value=property_value_.get_value();
+	ValueBase old_value = property_value_.get_value();
 	ValueBase value;
 
-	if(old_value.get_type()==type_time)
+	if (old_value.get_type() == type_time)
 	{
-		value=ValueBase(Time((String)str,get_canvas()->rend_desc().get_frame_rate()));
+		value = ValueBase( Time( (String)str, get_canvas()->rend_desc().get_frame_rate() ) );
 	}
 	else
-		value=ValueBase((String)str);
+		value = ValueBase( (String)str );
 
-	if(old_value!=value)
-		signal_edited_(path,value);
+	if (old_value != value)
+		signal_edited_(path, value);
 }
 
 void
 CellRenderer_ValueBase::render_vfunc(
-	const ::Cairo::RefPtr< ::Cairo::Context>& cr,
-	Gtk::Widget& widget,
-	const Gdk::Rectangle& background_area,
-	const Gdk::Rectangle& cell_area,
-	Gtk::CellRendererState flags)
+	const    ::Cairo::RefPtr< ::Cairo::Context>& cr,
+	      Gtk::Widget&           widget,
+	const Gdk::Rectangle&        background_area,
+	const Gdk::Rectangle&        cell_area,
+	      Gtk::CellRendererState flags)
 {
-	if(!cr)
+	if (!cr)
 		return;
 
 	Gdk::Rectangle aligned_area;
@@ -311,57 +322,62 @@ CellRenderer_ValueBase::render_vfunc(
 		state = (widget.has_focus()) ? Gtk::STATE_SELECTED : Gtk::STATE_ACTIVE;
 	*/
 
-	ValueBase data=property_value_.get_value();
+	ValueBase data = property_value_.get_value();
 
 	Type &type(data.get_type());
+
 	if (type == type_real)
 	{
-		if(((synfig::ParamDesc)property_param_desc_).get_is_distance())
+		if ( ((synfig::ParamDesc)property_param_desc_).get_is_distance() )
 		{
-			Distance x(data.get(Real()),Distance::SYSTEM_UNITS);
-			x.convert(App::distance_system,get_canvas()->rend_desc());
-			property_text()=(Glib::ustring)x.get_string(6).c_str();
+			Distance x( data.get(Real()), Distance::SYSTEM_UNITS);
+			x.convert( App::distance_system, get_canvas()->rend_desc() );
+			property_text() = (Glib::ustring) x.get_string(6).c_str();
 		}
 		else
-			property_text()=(Glib::ustring)strprintf("%.6f",data.get(Real()));
+			property_text() = (Glib::ustring) strprintf("%.6f", data.get(Real()));
 	}
 	else
 	if (type == type_time)
 	{
-		property_text()=(Glib::ustring)data.get(Time()).get_string(get_canvas()->rend_desc().get_frame_rate(),App::get_time_format());
+		property_text() =
+			(Glib::ustring) data.get(Time()).get_string( get_canvas()->rend_desc().get_frame_rate(),
+				                                         App::get_time_format());
 	}
 	else
 	if (type == type_angle)
 	{
-		property_text()=(Glib::ustring)strprintf("%.2fᵒ",(Real)Angle::deg(data.get(Angle())).get());
+		property_text() = (Glib::ustring) strprintf( "%.2fᵒ", (Real) Angle::deg( data.get(Angle()) ).get() );
 	}
 	else
 	if (type == type_integer)
 	{
 		String param_hint, child_param_hint;
-		param_hint=get_param_desc().get_hint();
-		child_param_hint=get_child_param_desc().get_hint();
-		if(param_hint!="enum" && child_param_hint!="enum")
+		param_hint       =       get_param_desc().get_hint();
+		child_param_hint = get_child_param_desc().get_hint();
+		if ( param_hint != "enum" && child_param_hint != "enum" )
 		{
-			property_text()=(Glib::ustring)strprintf("%i",data.get(int()));
+			property_text() = (Glib::ustring) strprintf("%i", data.get(int()));
 		}
 		else
 		{
-			property_text()=(Glib::ustring)strprintf("(%i)",data.get(int()));
+			property_text() = (Glib::ustring) strprintf("(%i)",data.get(int()));
+
 			std::list<synfig::ParamDesc::EnumData> enum_list;
-			if(param_hint=="enum")
-				enum_list=((synfig::ParamDesc)property_param_desc_).get_enum_list();
-			else if(child_param_hint=="enum")
-				enum_list=((synfig::ParamDesc)property_child_param_desc_).get_enum_list();
+			if (param_hint == "enum")
+				enum_list = ((synfig::ParamDesc) property_param_desc_).get_enum_list();
+			else if (child_param_hint == "enum")
+				enum_list = ((synfig::ParamDesc) property_child_param_desc_).get_enum_list();
+
 			std::list<synfig::ParamDesc::EnumData>::iterator iter;
-			for(iter=enum_list.begin();iter!=enum_list.end();iter++)
-				if(iter->value==data.get(int()))
+			for (iter = enum_list.begin(); iter != enum_list.end(); iter++)
+				if (iter->value == data.get(int()))
 				{
 					// don't show the key_board s_hortcut under_scores
 					String local_name = iter->local_name;
 					String::size_type pos = local_name.find_first_of('_');
 					if (pos != String::npos)
-						property_text() = local_name.substr(0,pos) + local_name.substr(pos+1);
+						property_text() = local_name.substr(0, pos) + local_name.substr(pos+1);
 					else
 						property_text() = local_name;
 					break;
@@ -371,57 +387,64 @@ CellRenderer_ValueBase::render_vfunc(
 	else
 	if (type == type_vector)
 	{
-		Vector vector=data.get(Vector());
-		Distance x(vector[0],Distance::SYSTEM_UNITS),y(vector[1],Distance::SYSTEM_UNITS);
-		x.convert(App::distance_system,get_canvas()->rend_desc());
-		y.convert(App::distance_system,get_canvas()->rend_desc());
-		property_text()=static_cast<Glib::ustring>(strprintf("%s,%s",x.get_string(6).c_str(),y.get_string(6).c_str()));
+		Vector vector = data.get(Vector());
+		Distance x( vector[0], Distance::SYSTEM_UNITS ), y( vector[1], Distance::SYSTEM_UNITS );
+		x.convert( App::distance_system, get_canvas()->rend_desc() );
+		y.convert( App::distance_system, get_canvas()->rend_desc() );
+		property_text() = static_cast<Glib::ustring>(strprintf("%s,%s",
+		                                                       x.get_string(6).c_str(),
+		                                                       y.get_string(6).c_str()) );
 	}
 	else
 	if (type == type_transformation)
 	{
-		const Transformation &transformation=data.get(Transformation());
-		const Vector &offset = transformation.offset;
-		const Angle::deg angle(transformation.angle);
-		const Vector &scale = transformation.scale;
-		Distance x(offset[0],Distance::SYSTEM_UNITS),y(offset[1],Distance::SYSTEM_UNITS);
-		x.convert(App::distance_system,get_canvas()->rend_desc());
-		y.convert(App::distance_system,get_canvas()->rend_desc());
-		Distance sx(scale[0],Distance::SYSTEM_UNITS),sy(scale[1],Distance::SYSTEM_UNITS);
-		sx.convert(App::distance_system,get_canvas()->rend_desc());
-		sy.convert(App::distance_system,get_canvas()->rend_desc());
-		property_text()=static_cast<Glib::ustring>(strprintf(
+		const Transformation &transformation = data.get(Transformation());
+		const Vector         &offset         = transformation.offset;
+		const Angle::deg     angle            (transformation.angle);
+		const Vector         &scale          = transformation.scale;
+
+		Distance x( offset[0], Distance::SYSTEM_UNITS ), y( offset[1], Distance::SYSTEM_UNITS );
+		x.convert( App::distance_system, get_canvas()->rend_desc() );
+		y.convert( App::distance_system, get_canvas()->rend_desc() );
+
+		Distance sx( scale[0], Distance::SYSTEM_UNITS ), sy( scale[1], Distance::SYSTEM_UNITS );
+		sx.convert( App::distance_system, get_canvas()->rend_desc() );
+		sy.convert( App::distance_system, get_canvas()->rend_desc() );
+
+		property_text() = static_cast<Glib::ustring>(strprintf(
 			"%s,%s,%.2fᵒ,%s,%s",
-			x.get_string(6).c_str(), y.get_string(6).c_str(),
-			(Real)angle.get(),
-			sx.get_string(6).c_str(), sy.get_string(6).c_str()
+			x.get_string(6).c_str(),
+			y.get_string(6).c_str(),
+			(Real) angle.get(),
+			sx.get_string(6).c_str(),
+			sy.get_string(6).c_str()
 		));
 	}
 	else
 	if (type == type_string)
 	{
-		if(!data.get(synfig::String()).empty())
-			property_text()=static_cast<Glib::ustring>(data.get(synfig::String()));
+		if ( !data.get(synfig::String()).empty() )
+			property_text() = static_cast<Glib::ustring>( data.get(synfig::String()) );
 		else
-			property_text()=Glib::ustring("<empty>");
+			property_text() = Glib::ustring("<empty>");
 	}
 	else
 	if (type == type_canvas)
 	{
-		if(data.get(etl::handle<synfig::Canvas>()))
+		if ( data.get(etl::handle<synfig::Canvas>()) )
 		{
-			if(data.get(etl::handle<synfig::Canvas>())->is_inline())
-				property_text()=_("<Group>");
+			if (data.get( etl::handle<synfig::Canvas>())->is_inline() )
+				property_text() = _("<Group>");
 			else
-				property_text()=(Glib::ustring)data.get(etl::handle<synfig::Canvas>())->get_id();
+				property_text() = (Glib::ustring) data.get(etl::handle<synfig::Canvas>())->get_id();
 		}
 		else
-			property_text()=_("<No Image Selected>");
+			property_text() = _("<No Image Selected>");
 	}
 	else
 	if (type == type_color)
 	{
-		render_color_to_window(cr,cell_area,data.get(Color()));
+		render_color_to_window(cr, cell_area, data.get(Color()));
 		return;
 	}
 	else
@@ -472,7 +495,7 @@ CellRenderer_ValueBase::render_vfunc(
 	else
 	if (type == type_gradient)
 	{
-		render_gradient_to_window(cr,cell_area,data.get(Gradient()));
+		render_gradient_to_window(cr, cell_area, data.get(Gradient()));
 		return;
 	}
 	else
@@ -483,7 +506,7 @@ CellRenderer_ValueBase::render_vfunc(
 	 || type == type_width_point
 	 || type == type_dash_item)
 	{
-		property_text()=(Glib::ustring)(data.get_type().description.local_name);
+		property_text() = (Glib::ustring)(data.get_type().description.local_name);
 	}
 	else
 	if (type == type_bone_valuenode)
@@ -498,14 +521,14 @@ CellRenderer_ValueBase::render_vfunc(
 				name = bone_node->get_guid().get_string();
 		}
 
-		property_text()=(Glib::ustring)(name);
+		property_text() = (Glib::ustring)(name);
 	}
 	else
 	{
-		property_text()=static_cast<Glib::ustring>(type.description.local_name);
+		property_text() = static_cast<Glib::ustring>(type.description.local_name);
 	}
 
-	CellRendererText::render_vfunc(cr,widget,background_area,cell_area,flags);
+	CellRendererText::render_vfunc(cr, widget, background_area, cell_area, flags);
 }
 
 
@@ -540,8 +563,8 @@ CellRenderer_ValueBase::gradient_edited(synfig::Gradient gradient, Glib::ustring
 {
 	ValueBase old_value(property_value_.get_value());
 	ValueBase value(gradient);
-	if(old_value!=value)
-		signal_edited_(path,value);
+	if (old_value != value)
+		signal_edited_(path, value);
 }
 
 void
@@ -549,31 +572,32 @@ CellRenderer_ValueBase::color_edited(synfig::Color color, Glib::ustring path)
 {
 	ValueBase old_value(property_value_.get_value());
 	ValueBase value(color);
-	if(old_value!=value)
-		signal_edited_(path,value);
+	if (old_value != value)
+		signal_edited_(path, value);
 }
 
 Gtk::CellEditable*
 CellRenderer_ValueBase::start_editing_vfunc(
-	GdkEvent* event __attribute__ ((unused)),
-	Gtk::Widget& widget,
-	const Glib::ustring& path,
-	const Gdk::Rectangle& background_area __attribute__ ((unused)),
-	const Gdk::Rectangle& cell_area __attribute__ ((unused)),
-	Gtk::CellRendererState flags __attribute__ ((unused)))
+	GdkEvent*              event           __attribute__ ((unused)),
+	Gtk::Widget&           widget,
+	const Glib::ustring&   path,
+	const Gdk::Rectangle&  background_area __attribute__ ((unused)),
+	const Gdk::Rectangle&  cell_area       __attribute__ ((unused)),
+	Gtk::CellRendererState flags           __attribute__ ((unused)))
 {
 	edit_value_done_called = false;
 	// If we aren't editable, then there is nothing to do
-	if(!property_editable())
+	if (!property_editable())
 		return 0;
 
-	ValueBase data=property_value_.get_value();
+	ValueBase data = property_value_.get_value();
 
 	Type &type(data.get_type());
+
 	if (type == type_bool)
 	{
-		signal_edited_(path,ValueBase(!data.get(bool())));
-    	return NULL;
+		signal_edited_( path, ValueBase(!data.get(bool())) );
+		return NULL;
 	}
 	//else
 	//if (type == type_time)
@@ -585,10 +609,10 @@ CellRenderer_ValueBase::start_editing_vfunc(
 	if (type == type_gradient)
 	{
 		App::dialog_gradient->reset();
-		App::dialog_gradient->set_gradient(data.get(Gradient()));
+		App::dialog_gradient->set_gradient( data.get(Gradient()) );
 		App::dialog_gradient->signal_edited().connect(
 			sigc::bind(
-				sigc::mem_fun(*this,&studio::CellRenderer_ValueBase::gradient_edited),
+				sigc::mem_fun(*this, &studio::CellRenderer_ValueBase::gradient_edited),
 				path
 			)
 		);
@@ -600,10 +624,10 @@ CellRenderer_ValueBase::start_editing_vfunc(
 	if (type == type_color)
 	{
 		App::dialog_color->reset();
-		App::dialog_color->set_color(data.get(Color()));
+		App::dialog_color->set_color( data.get(Color()) );
 		App::dialog_color->signal_edited().connect(
 			sigc::bind(
-				sigc::mem_fun(*this,&studio::CellRenderer_ValueBase::color_edited),
+				sigc::mem_fun(*this, &studio::CellRenderer_ValueBase::color_edited),
 				path
 			)
 		);
@@ -611,12 +635,13 @@ CellRenderer_ValueBase::start_editing_vfunc(
 		return NULL;
 	}
 	else
-	if (type == type_string && get_param_desc().get_hint()=="paragraph")
+	if (type == type_string
+	 && get_param_desc().get_hint() == "paragraph")
 	{
 		synfig::String string;
-		string=data.get(string);
-		if(get_paragraph(string))
-			signal_edited_(path,ValueBase(string));
+		string = data.get(string);
+		if (get_paragraph(string))
+			signal_edited_(path, ValueBase(string));
 		return NULL;
 	}
 	// if (type == type_string) && (get_param_desc().get_hint()!="filename")
@@ -625,7 +650,9 @@ CellRenderer_ValueBase::start_editing_vfunc(
 	{
 		assert(get_canvas());
 		//delete value_entry;
-		value_entry=manage(new ValueBase_Entry());
+		saved_data = data;
+
+		value_entry = manage(new ValueBase_Entry());
 		value_entry->set_path(path);
 		value_entry->set_canvas(get_canvas());
 		value_entry->set_param_desc(get_param_desc());
@@ -646,18 +673,20 @@ CellRenderer_ValueBase::on_value_editing_done()
 	if (edit_value_done_called)
 	{
 		synfig::error("on_value_editing_done(): Called twice!");
-		return;
+//		return;
 	}
 
 	edit_value_done_called = true;
 
-	if(value_entry)
+	if (value_entry)
 	{
-		ValueBase old_value(property_value_.get_value());
-		ValueBase value(value_entry->get_value());
 
-		if(old_value!=value)
-			signal_edited_(value_entry->get_path(),value);
+		//ValueBase old_value(property_value_.get_value());
+		ValueBase     value(value_entry->get_value());
+
+		//if (old_value != value)
+		if (saved_data != value)
+			signal_edited_(value_entry->get_path(), value);
 
 		//delete value_entry;
 		//value_entry=0;

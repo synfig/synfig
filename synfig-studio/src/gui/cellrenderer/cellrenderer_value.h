@@ -68,21 +68,23 @@ class ValueBase_Entry;
 
 class CellRenderer_ValueBase : public Gtk::CellRendererText
 {
-	sigc::signal<void, const Glib::ustring&> signal_secondary_click_;
+	sigc::signal<void, const Glib::ustring&>                    signal_secondary_click_;
 	sigc::signal<void, const Glib::ustring&, synfig::ValueBase> signal_edited_;
 
-	Glib::Property<synfig::ValueBase> property_value_;
+	Glib::Property<synfig::ValueBase>            property_value_;
 	Glib::Property<etl::handle<synfig::Canvas> > property_canvas_;
-	Glib::Property<synfig::ParamDesc> property_param_desc_;
-	Glib::Property<synfigapp::ValueDesc> property_value_desc_;
-	Glib::Property<synfig::ParamDesc> property_child_param_desc_;
+	Glib::Property<synfig::ParamDesc>            property_param_desc_;
+	Glib::Property<synfigapp::ValueDesc>         property_value_desc_;
+	Glib::Property<synfig::ParamDesc>            property_child_param_desc_;
 
-	void string_edited_(const Glib::ustring&,const Glib::ustring&);
+	void string_edited_ (const Glib::ustring&, const Glib::ustring&);
 
-	void gradient_edited(synfig::Gradient gradient, Glib::ustring path);
-	void color_edited(synfig::Color color, Glib::ustring path);
+	void gradient_edited(synfig::Gradient gradient,  Glib::ustring path);
+	void color_edited   (synfig::Color    color,     Glib::ustring path);
 
 	bool edit_value_done_called;
+
+	synfig::ValueBase saved_data; //Issues 659, 526, 520
 public:
 	sigc::signal<void, const Glib::ustring&> &signal_secondary_click()
 	{return signal_secondary_click_; }
@@ -90,17 +92,17 @@ public:
 	sigc::signal<void, const Glib::ustring&, synfig::ValueBase> &signal_edited()
 	{return signal_edited_; }
 
-	Glib::PropertyProxy<synfig::ValueBase> property_value() { return property_value_.get_proxy();}
-	Glib::PropertyProxy<etl::handle<synfig::Canvas> > property_canvas() { return property_canvas_.get_proxy();}
-	Glib::PropertyProxy<synfig::ParamDesc> property_param_desc() { return property_param_desc_.get_proxy(); }
-	Glib::PropertyProxy<synfigapp::ValueDesc> property_value_desc() { return property_value_desc_.get_proxy(); }
-	Glib::PropertyProxy<synfig::ParamDesc> property_child_param_desc() { return property_child_param_desc_.get_proxy(); }
-	Glib::PropertyProxy<bool> property_inconsistent() { return property_foreground_set(); }
+	Glib::PropertyProxy<synfig::ValueBase>            property_value()            { return property_value_.get_proxy();}
+	Glib::PropertyProxy<etl::handle<synfig::Canvas> > property_canvas()           { return property_canvas_.get_proxy();}
+	Glib::PropertyProxy<synfig::ParamDesc>            property_param_desc()       { return property_param_desc_.get_proxy(); }
+	Glib::PropertyProxy<synfigapp::ValueDesc>         property_value_desc()       { return property_value_desc_.get_proxy(); }
+	Glib::PropertyProxy<synfig::ParamDesc>            property_child_param_desc() { return property_child_param_desc_.get_proxy(); }
+	Glib::PropertyProxy<bool>                         property_inconsistent()     { return property_foreground_set(); }
 
-	etl::handle<synfig::Canvas> get_canvas()const { return property_canvas_; }
-	synfig::ParamDesc get_param_desc()const { return property_param_desc_; }
-	synfigapp::ValueDesc get_value_desc()const { return property_value_desc_; }
-	synfig::ParamDesc get_child_param_desc()const { return property_child_param_desc_; }
+	etl::handle<synfig::Canvas> get_canvas()const           { return property_canvas_; }
+	synfig::ParamDesc           get_param_desc()const       { return property_param_desc_; }
+	synfigapp::ValueDesc        get_value_desc()const       { return property_value_desc_; }
+	synfig::ParamDesc           get_child_param_desc()const { return property_child_param_desc_; }
 
 	CellRenderer_ValueBase();
 	~CellRenderer_ValueBase();
@@ -114,15 +116,17 @@ public:
 		const ::Cairo::RefPtr< ::Cairo::Context>& cr,
 		Gtk::Widget& widget,
 		const Gdk::Rectangle& background_area,
-		const Gdk::Rectangle& cell_area,
+		const Gdk::Rectangle&  cell_area,
 		Gtk::CellRendererState flags);
 
-	virtual Gtk::CellEditable* start_editing_vfunc(GdkEvent* event,
-                                                 Gtk::Widget& widget,
-                                                 const Glib::ustring& path,
-                                                 const Gdk::Rectangle& background_area,
-                                                 const Gdk::Rectangle& cell_area,
-                                                 Gtk::CellRendererState flags);
+	virtual Gtk::CellEditable*
+	start_editing_vfunc(
+		GdkEvent* event,
+		Gtk::Widget& widget,
+		const Glib::ustring& path,
+		const Gdk::Rectangle& background_area,
+		const Gdk::Rectangle& cell_area,
+		Gtk::CellRendererState flags);
 
 }; // END of class CellRenderer_ValueBase
 
