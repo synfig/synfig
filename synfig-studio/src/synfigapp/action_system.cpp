@@ -133,8 +133,10 @@ Action::System::perform_action(etl::handle<Action::Base> action)
 		if (err.get_type() != Action::Error::TYPE_UNABLE) {
 			if (err.get_desc().empty())
 				uim->error(action->get_local_name() + ": " + etl::strprintf("%d", err.get_type()));
-			else
+			else {
+				if (err.get_desc() == "DONT_SHOW_ERROR") return true; //Issue #693
 				uim->error(action->get_local_name() + ": " + err.get_desc());
+			}
 		}
 		// If action failed for whatever reason, just return false and do
 		// not add the action onto the list

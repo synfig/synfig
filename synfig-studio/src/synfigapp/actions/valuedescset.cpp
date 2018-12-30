@@ -1129,6 +1129,7 @@ Action::ValueDescSet::prepare()
 								 synfigapp::UIInterface::RESPONSE_OK ))
 						{
 							//throw Error(_("Cancelled by user")); //Issue  #693
+							throw Error("DONT_SHOW_ERROR"); //Issue  #693
 						}
 					}
 
