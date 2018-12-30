@@ -86,7 +86,6 @@ mkapp()
 	"$SCRIPTPATH/autobuild/osx-relocate-binary.sh" "`smart_find $MACPORTS/gdk-pixbuf/bin/gdk-pixbuf-pixdata`" "$MACPORTS" "$APPCONTENTS"
 	"$SCRIPTPATH/autobuild/osx-relocate-binary.sh" "`smart_find $MACPORTS/gtk+3/bin/gtk3-demo`" "$MACPORTS" "$APPCONTENTS"
 	
-	
 	if [ -d "$MACPORTS/gdk-pixbuf" ]; then
 		PKG_PREFIX="/gdk-pixbuf"
 	else
@@ -129,7 +128,7 @@ mkapp()
 		PKG_PREFIX=""
 	fi
 	cp -R "${MACPORTS}${PKG_PREFIX}/share/glib-2.0"  "${APPCONTENTS}/share/"
-	
+	glib-compile-schemas "${APPCONTENTS}/share/glib-2.0/schemas/"
 	
 	if [ -d "$MACPORTS/hicolor-icon-theme" ]; then
 		PKG_PREFIX="/hicolor-icon-theme"
@@ -264,7 +263,7 @@ mkapp()
 
 mkdmg()
 {
-	cd ~
+	cd "${SCRIPTPATH}/_production/"
 
 	# get OS major version
 	OSXVER=`uname -r | cut -f 1 -d '.'`
@@ -302,8 +301,8 @@ mkdmg()
 	/usr/bin/hdiutil detach /Volumes/"$VOLNAME"
 
 	echo "Compressing disk image..."
-	[ ! -f "$FINAL_FILENAME" ] || rm -rf "$FINAL_FILENAME"
-	/usr/bin/hdiutil convert -imagekey zlib-level=9 -format UDBZ "$TRANSITORY_FILENAME" -o ./"$FINAL_FILENAME"
+	[ ! -e "./${FINAL_FILENAME}.dmg" ] || rm -rf "./${FINAL_FILENAME}.dmg"
+	/usr/bin/hdiutil convert -imagekey zlib-level=9 -format UDBZ "$TRANSITORY_FILENAME" -o ./"${FINAL_FILENAME}"
 
 	echo "Removing uncompressed transitory dmg..."
 	/bin/rm -f "$TRANSITORY_FILENAME"
@@ -353,5 +352,5 @@ main()  # dummy for navigation
 	true
 }
 
-mkapp
+#mkapp
 mkdmg
