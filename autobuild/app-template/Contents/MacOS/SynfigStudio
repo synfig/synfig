@@ -17,16 +17,19 @@ export MLT_DATA="$CWD/share/mlt/"
 export MLT_REPOSITORY="$CWD/lib/mlt/"
 
 export PATH="$CWD/bin:$CWD/synfig-production/bin:$PATH"
-export SYNFIG_ROOT="$CWD/synfig-production/"
-export SYNFIG_MODULE_LIST="$CWD/synfig-production/etc/synfig_modules.cfg"
+export SYNFIG_ROOT="$CWD/"
+export SYNFIG_MODULE_LIST="$CWD/etc/synfig_modules.cfg"
 
-#pushd 
-#`ls -1d ImageMagick* |head -n 1`
-export MAGICK_DIR=`ls -1 -d ${CWD}/lib/ImageMagick-* | head -n 1`
+
+export MAGICK_DIR=`ls -1 -d ${CWD}/lib/ImageMagick* | head -n 1`
 export MAGICK_DIR=`basename $MAGICK_DIR`
-export MAGICK_CONFIGURE_PATH="${CWD}/lib/${MAGICK_DIR}/config-Q16/"
-export MAGICK_CODER_MODULE_PATH="${CWD}/lib/${MAGICK_DIR}/modules-Q16/coders/"
-export MAGICK_CODER_FILTER_PATH="${CWD}/lib/${MAGICK_DIR}/modules-Q16/filters/"
+export MAGICK_DIR_CONFIG=`ls -1 -d ${CWD}/lib/${MAGICK_DIR}/config-* | head -n 1`
+export MAGICK_DIR_CONFIG=`basename $MAGICK_DIR_CONFIG`
+export MAGICK_DIR_MODULES=`ls -1 -d ${CWD}/lib/${MAGICK_DIR}/modules-* | head -n 1`
+export MAGICK_DIR_MODULES=`basename $MAGICK_DIR_MODULES`
+export MAGICK_CONFIGURE_PATH="${CWD}/lib/${MAGICK_DIR}/${MAGICK_DIR_CONFIG}/"
+export MAGICK_CODER_MODULE_PATH="${CWD}/lib/${MAGICK_DIR}/${MAGICK_DIR_MODULES}/coders/"
+export MAGICK_CODER_FILTER_PATH="${CWD}/lib/${MAGICK_DIR}/${MAGICK_DIR_MODULES}/filters/"
 
 export XDG_DATA_DIRS="$CWD/share/:$XDG_DATA_DIRS"
 export GDK_PIXBUF_MODULEDIR="$CWD/lib/gdk-pixbuf-2.0/2.10.0/loaders/"

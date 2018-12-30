@@ -1,6 +1,7 @@
 #!/bin/bash
 
 set -e
+#set -x
 
 [ -z "$2" ] && echo "usage: \"$0\" <file> <source-prefix> <destination-dir>" && echo "This utility relocates binary <file> from <source-prefix> to <destonation-dir> together with all dependencies and adds rpath support." && exit 1
 
@@ -25,15 +26,52 @@ readlink_f() {
 	echo $RESULT
 }
 
+remove_prefix() {
+	local INPUT="$1"
+	local OUTPUT=""
+	if [[ "$INPUT" == /usr/local/Cellar/* ]]; then
+		TMP="${INPUT#*/}" # usr/local/Cellar/pkgname/pkgversion/path
+		TMP="${TMP#*/}"  # local/Cellar/pkgname/pkgversion/path
+		TMP="${TMP#*/}"  # Cellar/pkgname/pkgversion/path
+		TMP="${TMP#*/}"  # pkgname/pkgversion/path
+		TMP="${TMP#*/}"  # pkgversion/path
+		TMP="${TMP#*/}"  # path
+		OUTPUT="${TMP}"
+	elif [[ "$INPUT" == /usr/local/opt/* ]]; then
+		TMP="${INPUT#*/}" # usr/local/opt/pkgname/path
+		TMP="${TMP#*/}"  # local/opt/pkgname/path
+		TMP="${TMP#*/}"  # opt/pkgname/path
+		TMP="${TMP#*/}"  # pkgname/path
+		TMP="${TMP#*/}"  # path
+		OUTPUT="${TMP}"
+	elif [[ "$INPUT" == /usr/local/lib/* ]]; then
+		TMP="${INPUT#*/}" # usr/local/lib/file
+		TMP="${TMP#*/}"  # local/lib/file
+		TMP="${TMP#*/}"  # lib/file = path
+		OUTPUT="${TMP}"
+	elif [[ "$INPUT" == /usr/local/share/* ]]; then
+		TMP="${INPUT#*/}" # usr/local/share/file
+		TMP="${TMP#*/}"  # local/share/file
+		TMP="${TMP#*/}"  # share/file = path
+		OUTPUT="${TMP}"
+	elif [[ "$INPUT" == $PREFIX* ]]; then
+		#LINE2=`echo "${INPUT}" | cut -c1-$PREFIXLEN`
+		OUTPUT="${INPUT:$PREFIXLEN}"
+	fi
+	echo "$OUTPUT"
+}
+
 process_lib() {
 
-FILESRC="$1"
+local FILESRC="$1"
+local FILEDEST_SHORT="$2"
+
+#local FILE_PARENT="$2"
 
 
-	#FILEDEST_SHORT=`echo "${FILESRC}" | cut -c1-$PREFIXLEN`
-	local FILEDEST_SHORT="$2"
+
 	local FILEDEST="${DEST}/${FILEDEST_SHORT}"
-	
+
 	if [ ! -f "${FILEDEST}" ]; then
 		
 		
@@ -43,6 +81,8 @@ FILESRC="$1"
 		REALPATH=`readlink_f "${FILESRC}"`
 		cp "${REALPATH}" "${FILEDEST}"
 		chmod a+rw "$FILEDEST"
+		
+		
 		install_name_tool -add_rpath ./ "$FILEDEST" > /dev/null 2>&1 || true
 		
 		
@@ -61,45 +101,14 @@ FILESRC="$1"
 				#A=$(basename "$FILEDEST")
 				#B=$(basename "$LINE")
 				if [ ! "$LINE" == "$FILESRC" ]; then
-					LINE2=""
-					if [[ "$LINE" == /usr/local/Cellar/* ]]; then
-						TMP="${LINE#*/}" # usr/local/Cellar/pkgname/pkgversion/path
-						TMP="${TMP#*/}"  # local/Cellar/pkgname/pkgversion/path
-						TMP="${TMP#*/}"  # Cellar/pkgname/pkgversion/path
-						TMP="${TMP#*/}"  # pkgname/pkgversion/path
-						TMP="${TMP#*/}"  # pkgversion/path
-						TMP="${TMP#*/}"  # path
-						LINE2="${TMP}"
+					LINE2=`remove_prefix "$LINE"`
+					if [ ! -z "$LINE2" ]; then
+					#if [ ! -z "$FILE_PARENT" ]; then
+						#echo "   install_name_tool -change \"$LINE\" \"@rpath/$LINE2\" \"$FILEDEST\""
 						install_name_tool -change "$LINE" "@rpath/$LINE2" "$FILEDEST"
-						process_lib "$LINE" "${LINE2}"
-					elif [[ "$LINE" == /usr/local/opt/* ]]; then
-						TMP="${LINE#*/}" # usr/local/opt/pkgname/path
-						TMP="${TMP#*/}"  # local/opt/pkgname/path
-						TMP="${TMP#*/}"  # opt/pkgname/path
-						TMP="${TMP#*/}"  # pkgname/path
-						TMP="${TMP#*/}"  # path
-						LINE2="${TMP}"
-						install_name_tool -change "$LINE" "@rpath/$LINE2" "$FILEDEST"
-						process_lib "$LINE" "${LINE2}"
-					elif [[ "$LINE" == /usr/local/lib/* ]]; then
-						TMP="${LINE#*/}" # usr/local/lib/file
-						TMP="${TMP#*/}"  # local/lib/file
-						TMP="${TMP#*/}"  # lib/file = path
-						LINE2="${TMP}"
-						install_name_tool -change "$LINE" "@rpath/$LINE2" "$FILEDEST"
-						process_lib "$LINE" "${LINE2}"
-					elif [[ "$LINE" == /usr/local/share/* ]]; then
-						TMP="${LINE#*/}" # usr/local/share/file
-						TMP="${TMP#*/}"  # local/share/file
-						TMP="${TMP#*/}"  # share/file = path
-						LINE2="${TMP}"
-						install_name_tool -change "$LINE" "@rpath/$LINE2" "$FILEDEST"
-						process_lib "$LINE" "${LINE2}"
-					elif [[ "$LINE" == $PREFIX* ]]; then
-						#LINE2=`echo "${LINE}" | cut -c1-$PREFIXLEN`
-						LINE2="${LINE:$PREFIXLEN}"
-						install_name_tool -change "$LINE" "@rpath/$LINE2" "$FILEDEST"
-						process_lib "$LINE" "${LINE:$PREFIXLEN}"
+						process_lib "$LINE" "$LINE2"
+					#fi
+					
 					fi
 				fi
             	
@@ -124,8 +133,15 @@ export DEST="$3"
 export PREFIX="$2"
 export PREFIXLEN=${#PREFIX}
 
+if [ ! -f "${TARGET_FILE}" ]; then
+	echo "ERROR: File not found."
+	exit 1
+fi
+
+FILEDEST_SHORT=`remove_prefix "${TARGET_FILE}"`
+
 if [[ "${TARGET_FILE}" == ${PREFIX}* ]]; then
-	process_lib "${TARGET_FILE}" "${TARGET_FILE:$PREFIXLEN}"
+	process_lib "${TARGET_FILE}" "${FILEDEST_SHORT}"
 fi
 
 echo "Success."
