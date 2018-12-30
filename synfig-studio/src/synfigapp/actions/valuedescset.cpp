@@ -1128,7 +1128,7 @@ Action::ValueDescSet::prepare()
 								 _("Yes"),
 								 synfigapp::UIInterface::RESPONSE_OK ))
 						{
-							throw Error(_("Cancelled by user"));
+							//throw Error(_("Cancelled by user")); //Issue  #693
 						}
 					}
 
@@ -1187,5 +1187,5 @@ Action::ValueDescSet::prepare()
 		throw Error(_("Unsupported ValueDesc type"));
 	}
 
-	
+
 }
