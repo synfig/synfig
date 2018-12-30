@@ -1128,7 +1128,7 @@ Action::ValueDescSet::prepare()
 								 _("Yes"),
 								 synfigapp::UIInterface::RESPONSE_OK ))
 						{
-							//throw Error(_("Cancelled by user")); //Issue  #693
+							throw Error::create_silent_error(); //Issue #693
 						}
 					}
 

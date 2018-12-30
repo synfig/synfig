@@ -129,12 +129,14 @@ Action::System::perform_action(etl::handle<Action::Base> action)
 	// Perform the action
 	try { action->perform(); }
 	catch(Action::Error err) {
-		uim->task(action->get_local_name()+' '+_("Failed"));
-		if (err.get_type() != Action::Error::TYPE_UNABLE) {
-			if (err.get_desc().empty())
-				uim->error(action->get_local_name() + ": " + etl::strprintf("%d", err.get_type()));
-			else
-				uim->error(action->get_local_name() + ": " + err.get_desc());
+		if (!err.is_silent()) {
+			uim->task(action->get_local_name()+' '+_("Failed"));
+			if (err.get_type() != Action::Error::TYPE_UNABLE) {
+				if (err.get_desc().empty())
+					uim->error(action->get_local_name() + ": " + etl::strprintf("%d", err.get_type()));
+				else
+					uim->error(action->get_local_name() + ": " + err.get_desc());
+			}
 		}
 		// If action failed for whatever reason, just return false and do
 		// not add the action onto the list

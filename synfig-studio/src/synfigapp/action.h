@@ -102,11 +102,13 @@ private:
 
 	Type type_;
 	synfig::String desc_;
+	bool silent_;
 
 public:
 
 	Error(Type type, const char *format, ...):
-		type_(type)
+		type_(type),
+		silent_(false)
 	{
 		va_list args;
 		va_start(args,format);
@@ -115,7 +117,8 @@ public:
 	}
 
 	Error(const char *format, ...):
-		type_(TYPE_UNKNOWN)
+		type_(TYPE_UNKNOWN),
+		silent_(false)
 	{
 		va_list args;
 		va_start(args,format);
@@ -124,12 +127,20 @@ public:
 	}
 
 	Error(Type type=TYPE_UNABLE):
-		type_(type)
+		type_(type),
+		silent_(false)
 	{
 	}
 
+	Error(bool silent):
+		silent_(true)
+	{
+	}
+
+	static inline Error create_silent_error() { return Error(true); };
 	Type get_type()const { return type_; }
 	synfig::String get_desc()const { return desc_; }
+	bool is_silent()const { return silent_; }
 
 }; // END of class Action::Error
 
