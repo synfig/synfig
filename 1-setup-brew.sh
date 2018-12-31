@@ -13,6 +13,11 @@
 
 set -e
 
+WORKDIR=`dirname "$0"`
+pushd "${WORKDIR}" > /dev/null
+WORKDIR=`pwd`
+popd > /dev/null
+
 PACKAGES="adwaita-icon-theme autoconf automake ccache libtool intltool imagemagick gettext pkg-config glibmm libxml++ cairo fftw pango mlt boost gtkmm3 sdl2 sdl2_mixer"
 
 export HOMEBREW_NO_AUTO_UPDATE=1
@@ -21,9 +26,8 @@ export HOMEBREW_NO_ANALYTICS=1
 export OS=`uname -r | cut -d "." -f1`
 
 if [ $OS -lt 15 ]; then #For OSX < 10.11
-    # Workaround to compile 'rust' (required by adwaita-icon-theme) on OSX < 10.11
-    # https://github.com/rust-lang/rust/issues/51838#issuecomment-430804450
-    ulimit -Hs 8192
+    brew install "${WORKDIR}/autobuild/osx/librsvg-2.40.20.rb"
+    brew install "${WORKDIR}/autobuild/osx/adwaita-icon-theme.rb"
 fi
 
 for pkg in $PACKAGES;

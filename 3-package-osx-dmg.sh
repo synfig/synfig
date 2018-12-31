@@ -99,6 +99,19 @@ mkapp()
 	cp -R "${MACPORTS}${PKG_PREFIX}/share/gir-1.0"  "${APPCONTENTS}/share/"
 	cp -R "${MACPORTS}${PKG_PREFIX}/share/locale"  "${APPCONTENTS}/share/"
 	
+	if [ -d "$MACPORTS/librsvg-2.40.20" ]; then
+		PKG_PREFIX="/librsvg-2.40.20"
+	elif [ -d "$MACPORTS/librsvg" ]; then
+		PKG_PREFIX="/librsvg"
+	else
+		PKG_PREFIX=""
+	fi
+	pushd "${MACPORTS}${PKG_PREFIX}/lib/gdk-pixbuf-2.0/2.10.0/loaders/"
+	for FILE in `ls -1 *.so`; do
+		"$SCRIPTPATH/autobuild/osx-relocate-binary.sh" "${MACPORTS}${PKG_PREFIX}/lib/gdk-pixbuf-2.0/2.10.0/loaders/$FILE" "$MACPORTS" "$APPCONTENTS"
+	done
+	popd
+	
 	if [ -d "$MACPORTS/gtk+3" ]; then
 		PKG_PREFIX="/gtk+3"
 	else
@@ -142,7 +155,7 @@ mkapp()
 	else
 		PKG_PREFIX=""
 	fi
-	#cp -R "${MACPORTS}${PKG_PREFIX}/share/icons"  "${APPCONTENTS}/share/"
+	cp -R "${MACPORTS}${PKG_PREFIX}/share/icons/Adwaita"  "${APPCONTENTS}/share/icons/"
 	
 	if [ -d "$MACPORTS/cairo" ]; then
 		PKG_PREFIX="/cairo"
