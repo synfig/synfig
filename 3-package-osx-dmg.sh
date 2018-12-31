@@ -365,5 +365,5 @@ main()  # dummy for navigation
 	true
 }
 
-#mkapp
+mkapp
 mkdmg
