@@ -133,7 +133,7 @@ public:
 	}
 
 	Error(bool silent):
-		silent_(true)
+		silent_(silent)
 	{
 	}
 
