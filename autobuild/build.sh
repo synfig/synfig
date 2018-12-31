@@ -77,11 +77,13 @@ if [[ `uname` == "Darwin" ]]; then
 	# autopoint is not in PATH after install via brew (conflicting with system gettext https://github.com/Homebrew/legacy-homebrew/issues/24070)
 	# so we can do `brew link --force gettext` or just add it to PATH before configuring which is preferable because we need it only for compiling
 	export PATH="/usr/local/opt/ccache/libexec:/usr/local/opt/gettext/bin:${PATH}"
+	export LDFLAGS="-L/usr/local/opt/gettext/lib ${LDFLAGS}"
+	export CPPFLAGS="-I/usr/local/opt/gettext/include ${CPPFLAGS}"
 fi
 export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:${PKG_CONFIG_PATH}
 export PATH=${PREFIX}/bin:$PATH
 export LD_LIBRARY_PATH=${PREFIX}/lib:${PREFIX}/lib64:/usr/local/lib:$LD_LIBRARY_PATH
-export LDFLAGS="-Wl,-rpath -Wl,\\\$\$ORIGIN/lib"
+export LDFLAGS="-Wl,-rpath -Wl,\\\$\$ORIGIN/lib ${LDFLAGS}"
 export CFLAGS="-fdiagnostics-color=always $CFLAGS"
 export CXXFLAGS="-fdiagnostics-color=always $CXXFLAGS"
 
