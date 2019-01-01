@@ -13,6 +13,11 @@
 
 set -e
 
+if ! ( which brew >/dev/null ); then
+    echo "No brew found. Installing..."
+    /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+fi
+
 WORKDIR=`dirname "$0"`
 pushd "${WORKDIR}" > /dev/null
 WORKDIR=`pwd`
