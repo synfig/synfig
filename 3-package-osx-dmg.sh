@@ -63,28 +63,28 @@ mkapp()
 
 #if false; then
 	# Synfig
-	"$SCRIPTPATH/autobuild/osx-relocate-binary.sh" "`smart_find $MACPORTS/synfig-production/bin/synfig`" "$MACPORTS/synfig-production" "$APPCONTENTS"
+	"$SCRIPTPATH/autobuild/osx/relocate-binary.sh" "`smart_find $MACPORTS/synfig-production/bin/synfig`" "$MACPORTS/synfig-production" "$APPCONTENTS"
 
-	"$SCRIPTPATH/autobuild/osx-relocate-binary.sh" "`smart_find $MACPORTS/synfig-production/bin/synfigstudio`" "$MACPORTS/synfig-production" "$APPCONTENTS"
+	"$SCRIPTPATH/autobuild/osx/relocate-binary.sh" "`smart_find $MACPORTS/synfig-production/bin/synfigstudio`" "$MACPORTS/synfig-production" "$APPCONTENTS"
 	pushd "$MACPORTS/synfig-production/lib/synfig/modules/"
 	for FILE in `ls -1 *.so`; do
-		"$SCRIPTPATH/autobuild/osx-relocate-binary.sh" "`smart_find $MACPORTS/synfig-production/lib/synfig/modules/$FILE`" "$MACPORTS" "$APPCONTENTS"
+		"$SCRIPTPATH/autobuild/osx/relocate-binary.sh" "`smart_find $MACPORTS/synfig-production/lib/synfig/modules/$FILE`" "$MACPORTS" "$APPCONTENTS"
 	done
 	cp -R $MACPORTS/synfig-production/lib/synfig/modules/*.la  "$APPCONTENTS/lib/synfig/modules/"
 	popd
 	cp -R "$MACPORTS/synfig-production/etc" "$APPCONTENTS/"
 	cp -R "$MACPORTS/synfig-production/share" "$APPCONTENTS/"
 
-	"$SCRIPTPATH/autobuild/osx-relocate-binary.sh" "`smart_find $MACPORTS/ffmpeg/bin/ffmpeg`" "$MACPORTS" "$APPCONTENTS"
-	"$SCRIPTPATH/autobuild/osx-relocate-binary.sh" "`smart_find $MACPORTS/ffmpeg/bin/ffprobe`" "$MACPORTS" "$APPCONTENTS"
+	"$SCRIPTPATH/autobuild/osx/relocate-binary.sh" "`smart_find $MACPORTS/ffmpeg/bin/ffmpeg`" "$MACPORTS" "$APPCONTENTS"
+	"$SCRIPTPATH/autobuild/osx/relocate-binary.sh" "`smart_find $MACPORTS/ffmpeg/bin/ffprobe`" "$MACPORTS" "$APPCONTENTS"
 
-	"$SCRIPTPATH/autobuild/osx-relocate-binary.sh" "`smart_find $MACPORTS/libdv/bin/encodedv`" "$MACPORTS" "$APPCONTENTS"
-	"$SCRIPTPATH/autobuild/osx-relocate-binary.sh" "`smart_find $MACPORTS/sox/bin/sox`" "$MACPORTS" "$APPCONTENTS"
+	"$SCRIPTPATH/autobuild/osx/relocate-binary.sh" "`smart_find $MACPORTS/libdv/bin/encodedv`" "$MACPORTS" "$APPCONTENTS"
+	"$SCRIPTPATH/autobuild/osx/relocate-binary.sh" "`smart_find $MACPORTS/sox/bin/sox`" "$MACPORTS" "$APPCONTENTS"
 
 	# Gtk3
-	"$SCRIPTPATH/autobuild/osx-relocate-binary.sh" "`smart_find $MACPORTS/gdk-pixbuf/bin/gdk-pixbuf-query-loaders`" "$MACPORTS" "$APPCONTENTS"
-	"$SCRIPTPATH/autobuild/osx-relocate-binary.sh" "`smart_find $MACPORTS/gdk-pixbuf/bin/gdk-pixbuf-pixdata`" "$MACPORTS" "$APPCONTENTS"
-	"$SCRIPTPATH/autobuild/osx-relocate-binary.sh" "`smart_find $MACPORTS/gtk+3/bin/gtk3-demo`" "$MACPORTS" "$APPCONTENTS"
+	"$SCRIPTPATH/autobuild/osx/relocate-binary.sh" "`smart_find $MACPORTS/gdk-pixbuf/bin/gdk-pixbuf-query-loaders`" "$MACPORTS" "$APPCONTENTS"
+	"$SCRIPTPATH/autobuild/osx/relocate-binary.sh" "`smart_find $MACPORTS/gdk-pixbuf/bin/gdk-pixbuf-pixdata`" "$MACPORTS" "$APPCONTENTS"
+	"$SCRIPTPATH/autobuild/osx/relocate-binary.sh" "`smart_find $MACPORTS/gtk+3/bin/gtk3-demo`" "$MACPORTS" "$APPCONTENTS"
 	
 	if [ -d "$MACPORTS/gdk-pixbuf" ]; then
 		PKG_PREFIX="/gdk-pixbuf"
@@ -93,7 +93,7 @@ mkapp()
 	fi
 	pushd "${MACPORTS}${PKG_PREFIX}/lib/gdk-pixbuf-2.0/2.10.0/loaders/"
 	for FILE in `ls -1 *.so`; do
-		"$SCRIPTPATH/autobuild/osx-relocate-binary.sh" "${MACPORTS}${PKG_PREFIX}/lib/gdk-pixbuf-2.0/2.10.0/loaders/$FILE" "$MACPORTS" "$APPCONTENTS"
+		"$SCRIPTPATH/autobuild/osx/relocate-binary.sh" "${MACPORTS}${PKG_PREFIX}/lib/gdk-pixbuf-2.0/2.10.0/loaders/$FILE" "$MACPORTS" "$APPCONTENTS"
 	done
 	popd
 	cp -R "${MACPORTS}${PKG_PREFIX}/share/gir-1.0"  "${APPCONTENTS}/share/"
@@ -108,7 +108,7 @@ mkapp()
 	fi
 	pushd "${MACPORTS}${PKG_PREFIX}/lib/gdk-pixbuf-2.0/2.10.0/loaders/"
 	for FILE in `ls -1 *.so`; do
-		"$SCRIPTPATH/autobuild/osx-relocate-binary.sh" "${MACPORTS}${PKG_PREFIX}/lib/gdk-pixbuf-2.0/2.10.0/loaders/$FILE" "$MACPORTS" "$APPCONTENTS"
+		"$SCRIPTPATH/autobuild/osx/relocate-binary.sh" "${MACPORTS}${PKG_PREFIX}/lib/gdk-pixbuf-2.0/2.10.0/loaders/$FILE" "$MACPORTS" "$APPCONTENTS"
 	done
 	popd
 	
@@ -119,12 +119,12 @@ mkapp()
 	fi
 	pushd "${MACPORTS}${PKG_PREFIX}/lib/gtk-3.0/3.0.0/immodules/"
 	for FILE in `ls -1 *.so`; do
-		"$SCRIPTPATH/autobuild/osx-relocate-binary.sh" "${MACPORTS}${PKG_PREFIX}/lib/gtk-3.0/3.0.0/immodules/$FILE" "$MACPORTS" "$APPCONTENTS"
+		"$SCRIPTPATH/autobuild/osx/relocate-binary.sh" "${MACPORTS}${PKG_PREFIX}/lib/gtk-3.0/3.0.0/immodules/$FILE" "$MACPORTS" "$APPCONTENTS"
 	done
 	popd
 	pushd "${MACPORTS}${PKG_PREFIX}/lib/gtk-3.0/3.0.0/printbackends/"
 	for FILE in `ls -1 *.so`; do
-		"$SCRIPTPATH/autobuild/osx-relocate-binary.sh" "${MACPORTS}${PKG_PREFIX}/lib/gtk-3.0/3.0.0/printbackends/$FILE" "$MACPORTS" "$APPCONTENTS"
+		"$SCRIPTPATH/autobuild/osx/relocate-binary.sh" "${MACPORTS}${PKG_PREFIX}/lib/gtk-3.0/3.0.0/printbackends/$FILE" "$MACPORTS" "$APPCONTENTS"
 	done
 	popd
 	cp -R "${MACPORTS}${PKG_PREFIX}/etc/gtk-3.0"  "${APPCONTENTS}/etc/"
@@ -164,7 +164,7 @@ mkapp()
 	fi
 	pushd "${MACPORTS}${PKG_PREFIX}/lib/cairo/"
 	for FILE in `ls -1 *.so`; do
-		"$SCRIPTPATH/autobuild/osx-relocate-binary.sh" "${MACPORTS}${PKG_PREFIX}/lib/cairo/$FILE" "$MACPORTS" "$APPCONTENTS"
+		"$SCRIPTPATH/autobuild/osx/relocate-binary.sh" "${MACPORTS}${PKG_PREFIX}/lib/cairo/$FILE" "$MACPORTS" "$APPCONTENTS"
 	done
 
 	mkdir -p "${APPCONTENTS}/lib/cairo/" || true
@@ -173,7 +173,7 @@ mkapp()
 	popd
 	#pushd "$MACPORTS/lib/engines/"
 	#for FILE in `ls -1 *.so`; do
-	#	"$SCRIPTPATH/autobuild/osx-relocate-binary.sh" "`smart_find $MACPORTS/lib/engines/$FILE`" "$MACPORTS" "$APPCONTENTS"
+	#	"$SCRIPTPATH/autobuild/osx/relocate-binary.sh" "`smart_find $MACPORTS/lib/engines/$FILE`" "$MACPORTS" "$APPCONTENTS"
 	#done
 	#popd
 	if [ -d "$MACPORTS/glib" ]; then
@@ -194,8 +194,8 @@ mkapp()
 	pushd "${MACPORTS}${PKG_PREFIX}/Frameworks/Python.framework/Versions/"
 	PYTHON_VERSION=`ls -1 | head -n 1`
 	popd
-	"$SCRIPTPATH/autobuild/osx-relocate-binary.sh" "`smart_find $MACPORTS/python3/bin/python3`" "$MACPORTS" "$APPCONTENTS"
-	"$SCRIPTPATH/autobuild/osx-relocate-binary.sh" "${MACPORTS}${PKG_PREFIX}/Frameworks/Python.framework/Versions/${PYTHON_VERSION}/Resources/Python.app/Contents/MacOS/Python" "$MACPORTS" "$APPCONTENTS"
+	"$SCRIPTPATH/autobuild/osx/relocate-binary.sh" "`smart_find $MACPORTS/python3/bin/python3`" "$MACPORTS" "$APPCONTENTS"
+	"$SCRIPTPATH/autobuild/osx/relocate-binary.sh" "${MACPORTS}${PKG_PREFIX}/Frameworks/Python.framework/Versions/${PYTHON_VERSION}/Resources/Python.app/Contents/MacOS/Python" "$MACPORTS" "$APPCONTENTS"
 	mkdir -p "${APPCONTENTS}/Frameworks/Python.framework/Versions/${PYTHON_VERSION}/lib/python${PYTHON_VERSION}/"
 	rsync -av --exclude "__pycache__" "${MACPORTS}${PKG_PREFIX}/Frameworks/Python.framework/Versions/${PYTHON_VERSION}/lib/python${PYTHON_VERSION}/" "${APPCONTENTS}/Frameworks/Python.framework/Versions/${PYTHON_VERSION}/lib/python${PYTHON_VERSION}/"
 	#cp -R "${MACPORTS}${PKG_PREFIX}/Frameworks/Python.framework/Versions/${PYTHON_VERSION}/lib/python3.3" "${APPCONTENTS}/Frameworks/Python.framework/Versions/${PYTHON_VERSION}/lib/"
@@ -207,19 +207,19 @@ mkapp()
 	else
 		PKG_PREFIX=""
 	fi
-	"$SCRIPTPATH/autobuild/osx-relocate-binary.sh" "${MACPORTS}${PKG_PREFIX}/bin/melt" "$MACPORTS" "$APPCONTENTS"
+	"$SCRIPTPATH/autobuild/osx/relocate-binary.sh" "${MACPORTS}${PKG_PREFIX}/bin/melt" "$MACPORTS" "$APPCONTENTS"
 	pushd "${MACPORTS}${PKG_PREFIX}/lib/mlt/"
 	for FILE in `ls -1 *.dylib`; do
-		"$SCRIPTPATH/autobuild/osx-relocate-binary.sh" "${MACPORTS}${PKG_PREFIX}/lib/mlt/$FILE" "$MACPORTS" "$APPCONTENTS"
+		"$SCRIPTPATH/autobuild/osx/relocate-binary.sh" "${MACPORTS}${PKG_PREFIX}/lib/mlt/$FILE" "$MACPORTS" "$APPCONTENTS"
 	done
 	popd
 	mkdir -p "${APPCONTENTS}/share/"
 	cp -R "${MACPORTS}${PKG_PREFIX}/share/mlt" "${APPCONTENTS}/share/"
 
 	# ImageMagick
-	"$SCRIPTPATH/autobuild/osx-relocate-binary.sh" "`smart_find $MACPORTS/imagemagick/bin/animate`" "$MACPORTS" "$APPCONTENTS"
-	"$SCRIPTPATH/autobuild/osx-relocate-binary.sh" "`smart_find $MACPORTS/imagemagick/bin/composite`" "$MACPORTS" "$APPCONTENTS"
-	"$SCRIPTPATH/autobuild/osx-relocate-binary.sh" "`smart_find $MACPORTS/imagemagick/bin/convert`" "$MACPORTS" "$APPCONTENTS"
+	"$SCRIPTPATH/autobuild/osx/relocate-binary.sh" "`smart_find $MACPORTS/imagemagick/bin/animate`" "$MACPORTS" "$APPCONTENTS"
+	"$SCRIPTPATH/autobuild/osx/relocate-binary.sh" "`smart_find $MACPORTS/imagemagick/bin/composite`" "$MACPORTS" "$APPCONTENTS"
+	"$SCRIPTPATH/autobuild/osx/relocate-binary.sh" "`smart_find $MACPORTS/imagemagick/bin/convert`" "$MACPORTS" "$APPCONTENTS"
 	if [ -d "$MACPORTS/imagemagick" ]; then
 		PKG_PREFIX="/imagemagick"
 	else
@@ -239,13 +239,13 @@ mkapp()
 	popd
 	pushd "${MACPORTS}${PKG_PREFIX}/lib/${IMAGEMAGICK_DIR}/${IMAGEMAGICK_MODULES_DIR}/coders/"
 	for FILE in `ls -1 *.so`; do
-		"$SCRIPTPATH/autobuild/osx-relocate-binary.sh" "${MACPORTS}${PKG_PREFIX}/lib/${IMAGEMAGICK_DIR}/${IMAGEMAGICK_MODULES_DIR}/coders/$FILE" "$MACPORTS" "$APPCONTENTS"
+		"$SCRIPTPATH/autobuild/osx/relocate-binary.sh" "${MACPORTS}${PKG_PREFIX}/lib/${IMAGEMAGICK_DIR}/${IMAGEMAGICK_MODULES_DIR}/coders/$FILE" "$MACPORTS" "$APPCONTENTS"
 	done
 	cp -R ${MACPORTS}${PKG_PREFIX}/lib/${IMAGEMAGICK_DIR}/${IMAGEMAGICK_MODULES_DIR}/coders/*.la "${APPCONTENTS}/lib/${IMAGEMAGICK_DIR}/${IMAGEMAGICK_MODULES_DIR}/coders/"
 	popd
 	pushd "${MACPORTS}${PKG_PREFIX}/lib/${IMAGEMAGICK_DIR}/${IMAGEMAGICK_MODULES_DIR}/filters/"
 	for FILE in `ls -1 *.so`; do
-		"$SCRIPTPATH/autobuild/osx-relocate-binary.sh" "${MACPORTS}${PKG_PREFIX}/lib/${IMAGEMAGICK_DIR}/${IMAGEMAGICK_MODULES_DIR}/filters/$FILE" "$MACPORTS" "$APPCONTENTS"
+		"$SCRIPTPATH/autobuild/osx/relocate-binary.sh" "${MACPORTS}${PKG_PREFIX}/lib/${IMAGEMAGICK_DIR}/${IMAGEMAGICK_MODULES_DIR}/filters/$FILE" "$MACPORTS" "$APPCONTENTS"
 	done
 	cp -R ${MACPORTS}${PKG_PREFIX}/lib/${IMAGEMAGICK_DIR}/${IMAGEMAGICK_MODULES_DIR}/filters/*.la  "${APPCONTENTS}/lib/${IMAGEMAGICK_DIR}/${IMAGEMAGICK_MODULES_DIR}/filters/"
 	popd
