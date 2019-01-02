@@ -3972,8 +3972,7 @@ App::new_instance()
 		}
 
 	}
-
-	if (App::default_background_layer_type == "image")
+	else if (App::default_background_layer_type == "image")
 	{
 		String errors, warnings;
 		instance->find_canvas_interface(canvas)->import(App::default_background_layer_image,
