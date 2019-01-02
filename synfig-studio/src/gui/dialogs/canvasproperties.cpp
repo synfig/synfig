@@ -106,9 +106,9 @@ CanvasProperties::CanvasProperties(Gtk::Window& parent,etl::handle<synfigapp::Ca
 	Gtk::Label *descriptionLabel = manage(new Gtk::Label(_("_Description"), true));
 	descriptionLabel->set_alignment(0, 0.5);
 	descriptionLabel->set_mnemonic_widget(entry_description);
-	info_table->attach(*nameLabel, 0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	info_table->attach(*nameLabel,        0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	info_table->attach(*descriptionLabel, 0, 1, 2, 3, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	info_table->attach(entry_name, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	info_table->attach(entry_name,        1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	info_table->attach(entry_description, 1, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 
 	dialogBox->pack_start(widget_rend_desc, false, false, 0);

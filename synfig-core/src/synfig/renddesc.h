@@ -57,24 +57,24 @@ class RendDesc
 public:
 	enum Lock
 	{
-		PX_ASPECT=(1<<0),		// "Pixel Aspect" in Locks and Links
-		PX_AREA=(1<<1),			// not used
-		PX_W=(1<<2),			// "Pixel Width" in Locks and Links - not used
-		PX_H=(1<<3),			// "Pixel Height" in Locks and Links - not used
+		PX_ASPECT      = (1<< 0), // "Pixel Aspect" in Locks and Links
+		PX_AREA        = (1<< 1), // not used
+		PX_W           = (1<< 2), // "Pixel Width" in Locks and Links - not used
+		PX_H           = (1<< 3), // "Pixel Height" in Locks and Links - not used
 
-		IM_ASPECT=(1<<4),		// "Image Aspect" in Locks and Links
-		IM_SPAN=(1<<5),			// "Image Span" in Locks and Links
-		IM_W=(1<<6),			// "Image Width" in Locks and Links
-		IM_H=(1<<7),			// "Image Height" in Locks and Links
-		IM_ZOOMIN=(1<<8),		// not used
-		IM_ZOOMOUT=(1<<9),		// not used
+		IM_ASPECT      = (1<< 4), // "Image Aspect" in Locks and Links
+		IM_SPAN        = (1<< 5), // "Image Span" in Locks and Links
+		IM_W           = (1<< 6), // "Image Width" in Locks and Links
+		IM_H           = (1<< 7), // "Image Height" in Locks and Links
+		IM_ZOOMIN      = (1<< 8), // not used
+		IM_ZOOMOUT     = (1<< 9), // not used
 
-		LINK_PX_ASPECT=(1<<10),	// not used
-		LINK_PX_AREA=(1<<11),	// not used
-		LINK_IM_ASPECT=(1<<12),	// "Width and Height pixel ratio" in Image Size
-		LINK_IM_SPAN=(1<<13),	// not used
-		LINK_IM_CENTER=(1<<14),	// not used
-		LINK_RES=(1<<15)		// Resolution ratio in Image Size
+		LINK_PX_ASPECT = (1<<10), // not used
+		LINK_PX_AREA   = (1<<11), // not used
+		LINK_IM_ASPECT = (1<<12), // "Width and Height pixel ratio" in Image Size
+		LINK_IM_SPAN   = (1<<13), // not used
+		LINK_IM_CENTER = (1<<14), // not used
+		LINK_RES       = (1<<15)  // Resolution ratio in Image Size
 	};
 
 private:
@@ -119,27 +119,27 @@ private:
 public:
 	//! Default Constructor
 	RendDesc():
-		w_			(480),
-		h_			(270),
-		w_ratio_    (1),
-		h_ratio_    (1),
-		x_res		(DPI2DPM(72.0f)),
-		y_res		(DPI2DPM(72.0f)),
-		x_res_ratio_(1),
-		y_res_ratio_(1),
-		tl_			(-4,2.25),
-		br_			(4,-2.25),
-		focus		(0,0),
-		a			(2),
-		background	(Color::gray()),
-		flags		(0),
-		interlaced	(false),
-		clamp		(false),
+		w_                      (480),
+		h_                      (270),
+		w_ratio_                (1),
+		h_ratio_                (1),
+		x_res                   (DPI2DPM(72.0f)),
+		y_res                   (DPI2DPM(72.0f)),
+		x_res_ratio_            (1),
+		y_res_ratio_            (1),
+		tl_                     (-4,  2.25),
+		br_                     ( 4, -2.25),
+		focus                   (0, 0),
+		a                       (2),
+		background              (Color::gray()),
+		flags                   (0),
+		interlaced              (false),
+		clamp                   (false),
 		render_excluded_contexts(false),
-		frame_rate	(24),
-		time_begin	(0),
-		time_end	(0),
-		outline_grow(0)
+		frame_rate              (24),
+		time_begin              (0),
+		time_end                (0),
+		outline_grow            (0)
 	{ }
 
 	static RendDesc zero()
@@ -332,7 +332,7 @@ public:
 	Real get_ph()const;
 	//! Sets viewport to represent the screen at the given pixel coordinates
 	RendDesc &set_subwindow(int x, int y, int w, int h);
-	//! Sets the duration of the animation. 
+	//! Sets the duration of the animation.
 	// Keeps the start time and modifies the end time to match the duration
 	RendDesc &set_duration(Time t);
 	//! Gets the duration of the animation

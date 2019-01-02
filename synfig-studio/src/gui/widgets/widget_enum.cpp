@@ -62,6 +62,7 @@ Widget_Enum::Widget_Enum():
 	set_model(enum_TreeModel);
 	pack_start(enum_model.icon, false);
 	pack_start(enum_model.local_name, true);
+	this->set_wrap_width(1); // https://github.com/synfig/synfig/issues/650
 
 	Gtk::CellRendererText *text = dynamic_cast<Gtk::CellRendererText*>(this->get_cells()[1]);
 	text->property_ellipsize().set_value(Pango::ELLIPSIZE_END);
