@@ -30,9 +30,13 @@ export HOMEBREW_NO_ANALYTICS=1
 
 export OS=`uname -r | cut -d "." -f1`
 
-if [ $OS -lt 15 ]; then #For OSX < 10.11
-    brew install "${WORKDIR}/autobuild/osx/librsvg-2.40.20.rb"
-    brew install "${WORKDIR}/autobuild/osx/adwaita-icon-theme.rb"
+if [ $OS -lt 15 ] && [ -z "$TRAVIS_BUILD_DIR" ]; then # For OSX < 10.11
+    cd /usr/local/Homebrew/Library/Taps/homebrew/homebrew-core/
+    git fetch --unshallow || true
+    git checkout a91becd6afc177b0cada2cf9cce2e3bde514053b # librsvg 2.40.20 (wothout rust) 2017.12.16
+    cd /usr/local/Homebrew/
+    git checkout 1.4.1
+    brew info gobject-introspection | grep --quiet 'Not installed' && brew install ${WORKDIR}/autobuild/osx/gobject-introspection.rb
 fi
 
 for pkg in $PACKAGES;
