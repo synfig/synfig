@@ -249,7 +249,8 @@ synfig::Gamma App::gamma;
 
 Glib::RefPtr<studio::UIManager>	App::ui_manager_;
 
-int  App::jack_locks_ = 0;
+int        App::jack_locks_ = 0;
+Dock_Info* App::dock_info_  = 0;
 
 synfig::Distance::System  App::distance_system;
 
@@ -1879,6 +1880,8 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
     Mix_VolumeChunk(App::gRenderDone, MIX_MAX_VOLUME/2);
   }
 	//----- SDL2 - Sound effects ----- ->
+	
+	App::dock_info_ = dock_info;
 
 }
 

@@ -248,6 +248,8 @@ public:
 	static Mix_Chunk* gRenderDone;
 	static bool       use_render_done_sound;
 
+	static Dock_Info* dock_info_; //For Render ProgressBar
+
 	/*
  -- ** -- S I G N A L S -------------------------------------------------------
 	*/
