@@ -1128,7 +1128,7 @@ Action::ValueDescSet::prepare()
 								 _("Yes"),
 								 synfigapp::UIInterface::RESPONSE_OK ))
 						{
-							throw Error(_("Cancelled by user"));
+							throw Error(Error::TYPE_UNABLE); // Issue  #693
 						}
 					}
 
