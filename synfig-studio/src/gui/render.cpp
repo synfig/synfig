@@ -51,6 +51,9 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
 
+#include "docks/dockmanager.h"
+#include "docks/dock_info.h"
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -342,7 +345,12 @@ RenderSettings::on_render_pressed()
 	} else {
 		render_passes.push_back(make_pair(TARGET_ALPHA_MODE_KEEP, filename));
 	}
-
+	
+	App::dock_info_->set_n_passes_requested(render_passes.size());
+	App::dock_info_->set_n_passes_pending(render_passes.size());
+	App::dock_info_->set_render_progress(0.0);
+	App::dock_manager->find_dockable("info").present(); //Bring Dock_Info to front
+	
 	submit_next_render_pass();
 
 	return;
@@ -355,6 +363,9 @@ RenderSettings::submit_next_render_pass()
 		pair<TargetAlphaMode,String> pass_info = render_passes.back();
 		render_passes.pop_back();
 
+		App::dock_info_->set_n_passes_pending(render_passes.size()); //! Decrease until 0
+		App::dock_info_->set_render_progress(0.0); //For this pass
+		
 		TargetAlphaMode pass_alpha_mode = pass_info.first;
 #ifdef _WIN32
 		String pass_filename = Glib::locale_from_utf8(pass_info.second);
@@ -431,10 +442,15 @@ RenderSettings::on_finished()
 	canvas_interface_->get_ui_interface()->task(text);
 	canvas_interface_->get_ui_interface()->amount_complete(0,10000);
 
+	bool really_finished = (render_passes.size() == 0); //Must be checked BEFORE submit_next_render_pass();
+	
 	submit_next_render_pass();
 
-	//Sound effect - RenderDone (-1 : play on first free channel, 0 : no repeat)
-	if (App::use_render_done_sound) Mix_PlayChannel( -1, App::gRenderDone, 0 );
+	if (really_finished) { //Because of multi-pass render
+		//Sound effect - RenderDone (-1 : play on first free channel, 0 : no repeat)
+		if (App::use_render_done_sound) Mix_PlayChannel( -1, App::gRenderDone, 0 );
+		App::dock_info_->set_render_progress(1.0);
+	}
 }
 
 void

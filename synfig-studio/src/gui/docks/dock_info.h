@@ -30,6 +30,7 @@
 #include "sigc++/signal.h"
 
 #include "widgets/widget_distance.h"
+#include <gtkmm/progressbar.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -41,8 +42,14 @@ namespace studio {
 
 class Dock_Info : public Dock_CanvasSpecific
 {
-	Gtk::Label  r,g,b,a;
-	Gtk::Label	x,y;
+	Gtk::Label       r,g,b,a;
+	Gtk::Label       x,y;
+	Gtk::ProgressBar render_progress;
+
+	//! Number of passes request - 1 or 2 (if alpha)
+	int              n_passes_requested;
+	//! Number of passes pending - 2,1,0
+	int              n_passes_pending;
 
 	sigc::connection mousecon;
 
@@ -53,6 +60,12 @@ public:
 	~Dock_Info();
 
 	virtual void changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view);
+
+	//! Current render progress - 0.0 to 1.0
+	//  depends on n_passes_requested and current_pass
+	void set_render_progress   (float value);
+	void set_n_passes_requested(int   value);
+	void set_n_passes_pending  (int   value);
 };
 
 }; // END of namespace studio
