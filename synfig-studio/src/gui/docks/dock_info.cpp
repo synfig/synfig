@@ -30,6 +30,7 @@
 #	include <config.h>
 #endif
 
+#include "app.h"
 #include <synfig/general.h>
 
 #include "docks/dock_info.h"
@@ -42,6 +43,7 @@
 
 #include <gtkmm/separator.h>
 #include <gtkmm/invisible.h>
+#include <gtkmm/progressbar.h>
 
 #include <gui/localization.h>
 
@@ -129,9 +131,24 @@ studio::Dock_Info::Dock_Info()
 
 	table->attach(*manage(new Gtk::Label),0,5,4,5);
 
+	//Render Progress Bar
+	table->attach(*manage(new Gtk::Label(_("Render Progress: "))),0,1,5,6,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK|Gtk::FILL);
+	table->attach(render_progress,                                0,5,6,7,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK|Gtk::FILL);
+	
+	render_progress.set_show_text(true);
+	render_progress.set_text(strprintf("%.1f%%", 0.0));
+	render_progress.set_fraction(0.0);
+	//Another spacer
+	table->attach(*manage(new Gtk::Label),0,5,7,8);
+	
 	table->show_all();
 
 	add(*table);
+	
+	//Render progress
+	set_n_passes_requested(1); //Default
+	set_n_passes_pending  (1); //Default
+	set_render_progress (0.0); //Default, 0.0%
 }
 
 studio::Dock_Info::~Dock_Info()
@@ -146,4 +163,24 @@ void studio::Dock_Info::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> 
 	{
 		mousecon = get_canvas_view()->get_work_area()->signal_cursor_moved().connect(sigc::mem_fun(*this,&Dock_Info::on_mouse_move));
 	}
+}
+
+void studio::Dock_Info::set_n_passes_requested(int value)
+{
+	n_passes_requested = value;
+}
+
+void studio::Dock_Info::set_n_passes_pending(int value)
+{
+	n_passes_pending = value;
+}
+
+void studio::Dock_Info::set_render_progress(float value)
+{
+	float coeff        = (1.000 / (float)n_passes_requested);  //% of fraction for 1 pass if more than 1 pass
+	float already_done = coeff * (float)(n_passes_requested - n_passes_pending -1); 
+	float r            = ( coeff * value ) + already_done;
+
+	render_progress.set_text( strprintf( "%.1f%%", r*100 ));
+	render_progress.set_fraction(r);
 }

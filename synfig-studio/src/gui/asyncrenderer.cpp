@@ -40,6 +40,7 @@
 #include <ETL/clock>
 
 #include <gui/localization.h>
+#include <docks/dock_info.h>
 
 #endif
 
@@ -599,6 +600,15 @@ public:
 #endif
 			cond_frame_queue_empty.signal();
 		ready_next=true;
+		
+		int n_total_frames_to_render = warm_target->desc.get_frame_end()        //120
+		                             - warm_target->desc.get_frame_start()      //0
+		                             + 1;                                       //->121
+		int current_rendered_frames_count = warm_target->curr_frame_
+		                                  - warm_target->desc.get_frame_start();
+		float r = (float) current_rendered_frames_count 
+		        / (float) n_total_frames_to_render;
+		App::dock_info_->set_render_progress(r);		
 	}
 };
 
@@ -712,6 +722,15 @@ public:
 #endif
 			cond_frame_queue_empty.signal();
 		ready_next=true;
+		
+		int n_total_frames_to_render = warm_target->desc.get_frame_end()        //120
+		                             - warm_target->desc.get_frame_start()      //0
+		                             + 1;                                       //->121
+		int current_rendered_frames_count = warm_target->curr_frame_
+		                                  - warm_target->desc.get_frame_start();
+		float r = (float) current_rendered_frames_count 
+		        / (float) n_total_frames_to_render;
+		App::dock_info_->set_render_progress(r);
 	}
 
 	virtual bool obtain_surface(cairo_surface_t*& s)
@@ -847,6 +866,7 @@ AsyncRenderer::resume()
 void
 AsyncRenderer::start()
 {
+	App::dock_info_->set_render_progress(0.0);
 	start_time.assign_current_time();
 	finish_time = start_time;
 	start_clock = ::clock();
