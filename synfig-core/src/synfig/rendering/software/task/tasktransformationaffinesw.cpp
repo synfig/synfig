@@ -61,6 +61,9 @@ Task::Token TaskTransformationAffineSW::token(
 class TaskTransformationAffineSW::Helper
 {
 public:
+	struct MapPixelFull { int src; int dst; };
+	struct MapPixelPart { int src; int dst; ColorReal k0; ColorReal k1; };
+
 	template< Color reader(const void*,int,int),
 		      ColorAccumulator reader_cook(const void*,int,int) >
 	class Generic {
@@ -70,9 +73,6 @@ public:
 		typedef typename Sampler::coord_type Coord;
 		typedef typename Sampler::func SamplerFunc;
 		typedef typename SamplerCook::func SamplerCookFunc;
-
-		struct MapPixelFull { int src; int dst; };
-		struct MapPixelPart { int src; int dst; ColorReal k0; ColorReal k1; };
 
 		struct Iterator {
 			const void *surface;
