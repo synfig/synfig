@@ -61,19 +61,18 @@ mkapp()
 	mkdir -p "${APPCONTENTS}/etc"
 	mkdir -p "${APPCONTENTS}/share"
 
-#if false; then
 	# Synfig
-	"$SCRIPTPATH/autobuild/osx/relocate-binary.sh" "`smart_find $MACPORTS/synfig-production/bin/synfig`" "$MACPORTS/synfig-production" "$APPCONTENTS"
+	"$SCRIPTPATH/autobuild/osx/relocate-binary.sh" "`smart_find ${SCRIPTPATH}/_production/build/bin/synfig`" "${SCRIPTPATH}/_production/build" "$APPCONTENTS"
 
-	"$SCRIPTPATH/autobuild/osx/relocate-binary.sh" "`smart_find $MACPORTS/synfig-production/bin/synfigstudio`" "$MACPORTS/synfig-production" "$APPCONTENTS"
-	pushd "$MACPORTS/synfig-production/lib/synfig/modules/"
+	"$SCRIPTPATH/autobuild/osx/relocate-binary.sh" "`smart_find ${SCRIPTPATH}/_production/build/bin/synfigstudio`" "${SCRIPTPATH}/_production/build" "$APPCONTENTS"
+	pushd "${SCRIPTPATH}/_production/build/lib/synfig/modules/"
 	for FILE in `ls -1 *.so`; do
-		"$SCRIPTPATH/autobuild/osx/relocate-binary.sh" "`smart_find $MACPORTS/synfig-production/lib/synfig/modules/$FILE`" "$MACPORTS" "$APPCONTENTS"
+		"$SCRIPTPATH/autobuild/osx/relocate-binary.sh" "${SCRIPTPATH}/_production/build/lib/synfig/modules/$FILE" "${SCRIPTPATH}/_production/build" "$APPCONTENTS"
 	done
-	cp -R $MACPORTS/synfig-production/lib/synfig/modules/*.la  "$APPCONTENTS/lib/synfig/modules/"
+	cp -R ${SCRIPTPATH}/_production/build/lib/synfig/modules/*.la  "$APPCONTENTS/lib/synfig/modules/"
 	popd
-	cp -R "$MACPORTS/synfig-production/etc" "$APPCONTENTS/"
-	cp -R "$MACPORTS/synfig-production/share" "$APPCONTENTS/"
+	cp -R "${SCRIPTPATH}/_production/build/etc" "$APPCONTENTS/"
+	cp -R "${SCRIPTPATH}/_production/build/share" "$APPCONTENTS/"
 
 	"$SCRIPTPATH/autobuild/osx/relocate-binary.sh" "`smart_find $MACPORTS/ffmpeg/bin/ffmpeg`" "$MACPORTS" "$APPCONTENTS"
 	"$SCRIPTPATH/autobuild/osx/relocate-binary.sh" "`smart_find $MACPORTS/ffmpeg/bin/ffprobe`" "$MACPORTS" "$APPCONTENTS"
