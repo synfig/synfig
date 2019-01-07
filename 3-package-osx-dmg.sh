@@ -303,6 +303,7 @@ mkdmg()
 	echo "Copying files to disk image..."
 	cp -R $APPDIR /Volumes/"$VOLNAME"/SynfigStudio.app
 	cp -R ${SCRIPTPATH}/synfig-studio/COPYING /Volumes/"$VOLNAME"/LICENSE.txt
+	cp -R ${SCRIPTPATH}/autobuild/osx/README_FIRST.pdf /Volumes/"$VOLNAME"/README_FIRST.pdf
 	mv /Volumes/"$VOLNAME"/SynfigStudio.app/Contents/MacOS/synfigstudio /Volumes/"$VOLNAME"/SynfigStudio.app/Contents/MacOS/SynfigStudio || true
 
 	# open the window so that the icon database is generated
