@@ -18,6 +18,7 @@
 _debug/
 _production/
 _packages/
+_cmake-build/
 
 .kdev4/
 

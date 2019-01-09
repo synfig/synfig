@@ -78,4 +78,33 @@ $ popd # build
 $ popd # synfig-studio
 ```
 
+### Auto building (portable)
+You can also build synfig-studio and run it without installation.
+To build change the directory to the project path (where the README is located) and start the build process with:
+```
+$ ./build-cmake.sh
+```
+
+This can take some time.
+If the build was successful, you can run Synfig Studio directly with:
+```
+$ ./run-cmake.sh
+```
+
+It is also passible to run the Synfig CLI program:
+```
+$ ./run-cmake.sh "synfig [PARAMETERS]"
+```
+
+You can also create a bash session, where you can run the binary's directly:
+```
+$ ./run-cmake.sh bash
+```
+
+Now you can type "synfig" or "synfigstudio" to run the build programs. It now behaves exactly as if Synfig Studio was installed to the system.
+To exit the session just type the following:
+```
+$ exit
+```
+
 [cmake]:        https://github.com/synfig/synfig/issues/279

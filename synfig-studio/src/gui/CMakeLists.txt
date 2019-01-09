@@ -7,6 +7,11 @@ set(SHOW_EXTRA_INFO OFF) # this needs some fixes to work
 configure_file(autorevision.h.cmake.in autorevision.h)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
+## Defines
+add_definitions(-DIMAGE_DIR="${CMAKE_INSTALL_PREFIX}/share/pixmaps")
+add_definitions(-DSOUND_DIR="${CMAKE_INSTALL_PREFIX}/share/synfig/sounds")
+add_definitions(-DPLUGIN_DIR="${CMAKE_INSTALL_PREFIX}/share/synfig/plugins")
+
 ##
 ## Targets
 ##
@@ -58,6 +63,8 @@ include(workarearenderer/CMakeLists.txt)
 target_link_libraries(synfigstudio
     ${GTKMM_LIBRARIES}
     ${Gettext_LIBRARIES}
+    ${SDL2_LIBRARIES}
+    ${SDL2MIXER_LIBRARIES}
     synfig
     synfigapp
 )

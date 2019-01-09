@@ -75,5 +75,5 @@ set(ETL_HEADERS
 
 install(
     FILES ${ETL_HEADERS}
-    DESTINATION include/ETL/ETL
+    DESTINATION include/ETL
 )
