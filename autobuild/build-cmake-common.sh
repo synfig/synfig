@@ -148,7 +148,7 @@ parse_build_arguments() {
     # Set cmake data prefix
     if [ ! $synfigstudio_data_prefix == "" ]
         then
-            cmake_dataprefix_option="-DDATA_PREFIX=\"${synfigstudio_data_prefix}\""
+            cmake_dataprefix_option="-DDATA_PREFIX=${synfigstudio_data_prefix}"
     fi
     
     # Check for plausible values in the jobs parameter
