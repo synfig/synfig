@@ -49,6 +49,11 @@ You may want to add `-jN` (where N is amount of threads you want to run) option
 to build commands, because default for `make` is to run single-threaded and
 `ninja` tends to use too much threads which eat up your RAM (may vary).
 
+Note for packagers: 
+On Unix systems, the Synfig Studio looks out for its symbols, sounds and plugins at CMAKE_INSTALL_PREFIX/share.
+If you want to change the prefix you need to overwrite the `DATA_PREFIX` variable.
+Pass `-DDATA_PREFIX=/usr` for example to made Synfig Studio look at /usr/share for its data.
+
 ### Building
 
 ```
