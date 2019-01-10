@@ -46,16 +46,12 @@ print_build_settings
 
 # Exec build steps
 clean_build_dir
-
 gen_dir_structure
-
 build_etl
-
 build_synfig_core
-
 build_synfig_studio
-
 write_portable_run_code
 
-echo "Build successfull"
+# Print success, restore the current directory and exit
+echo "Build successfull to: ${absolute_base_dir}/${cmake_build_dir}/${out_dir}"
 cd "$pwd_dir"
