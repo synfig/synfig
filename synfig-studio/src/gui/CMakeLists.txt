@@ -4,8 +4,8 @@
 
 set(STUDIO_VERSION "1.3.10")
 set(SHOW_EXTRA_INFO OFF) # this needs some fixes to work
-set(DATA_PREFIX "${CMAKE_INSTALL_PREFIX}")
-set(IMG_EXT "png")
+set(DATA_PREFIX "${CMAKE_INSTALL_PREFIX}" CACHE PATH "Path, where the share directory with the pixmaps, sounds, plugins and translations is located. Default: Prefix, where Synfig Studio is going to be installed")
+set(IMG_EXT "png" CACHE STRING "File extension of the pixmaps (without the \".\"). Default: png")
 
 configure_file(autorevision.h.cmake.in autorevision.h)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
