@@ -4,13 +4,18 @@
 
 set(STUDIO_VERSION "1.3.10")
 set(SHOW_EXTRA_INFO OFF) # this needs some fixes to work
+set(DATA_PREFIX "${CMAKE_INSTALL_PREFIX}")
+set(IMG_EXT "png")
+
 configure_file(autorevision.h.cmake.in autorevision.h)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 ## Defines
-add_definitions(-DIMAGE_DIR="${CMAKE_INSTALL_PREFIX}/share/pixmaps")
-add_definitions(-DSOUND_DIR="${CMAKE_INSTALL_PREFIX}/share/synfig/sounds")
-add_definitions(-DPLUGIN_DIR="${CMAKE_INSTALL_PREFIX}/share/synfig/plugins")
+add_definitions(-DIMAGE_EXT="${IMG_EXT}")
+add_definitions(-DIMAGE_DIR="${DATA_PREFIX}/share/pixmaps")
+add_definitions(-DSOUND_DIR="${DATA_PREFIX}/share/synfig/sounds")
+add_definitions(-DPLUGIN_DIR="${DATA_PREFIX}/share/synfig/plugins")
+add_definitions(-DLOCALEDIR="${DATA_PREFIX}/share/locale")
 
 ##
 ## Targets
