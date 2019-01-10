@@ -8,6 +8,7 @@
 # -r = Release build
 # -j NUMBER = Set parallel make jobs (1 <= NUMBER <= 999) (standard is 1)
 # -p = Only print out the current active build settings and exit
+# --data-prefix = The installed Synfig Studio looks for it's data (icons, sounds, etc) in [DATA_PREFIX]/share/. This option sets a custom DATA_PREFIX. (Standard is the out directory)
 #
 # = Examples =
 # Make a debug build
