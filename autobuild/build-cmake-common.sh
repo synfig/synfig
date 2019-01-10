@@ -165,7 +165,7 @@ print_build_settings() {
     echo "Build mode: $build_mode"
     echo "Build dir: $cmake_build_dir"
     echo "Build jobs: $make_jobs"
-    [ ! $cmake_dataprefix_option == "" ] && echo "Custom data prefix: $cmake_dataprefix_option"
+    [ ! $synfigstudio_data_prefix == "" ] && echo "Custom data prefix: $synfigstudio_data_prefix"
     
     # If script was startet with '-p' stop the script here
     if [ $print_build_settings_and_exit == "true" ]
