@@ -4,8 +4,6 @@
 #    ./run-cmake.sh [command]
 #
 # = Examples: =
-#
-# == Standard mode ==
 # Run Synfig Studio
 #    ./run-cmake.sh
 # Run Synfig CLI with parameters
