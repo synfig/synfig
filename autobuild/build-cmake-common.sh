@@ -1,11 +1,15 @@
 #!/usr/bin/env bash
+#
+# This file is required by build-cmake.sh and shouldn't be called directly.
+# It contains the functions and variable definitions which are needed
+# for the build process.
 
-# Define build vars
+# Define standard build settings
 build_mode="Debug"
 make_jobs=1
-make_build_command="make -j $make_jobs"
 print_build_settings_and_exit="false"
 write_portable_run_code="true"
+synfigstudio_data_prefix=""
 
 # Define build dirs
 cmake_debug_build_dir="_debug"
@@ -15,10 +19,10 @@ etl_build_dir="etl"
 synfig_build_dir="synfig-core"
 synfigstudio_build_dir="synfig-studio"
 out_dir="out"
-synfigstudio_data_prefix=""
 
 # Define commands
 env_run_command="synfigstudio"
+make_build_command="make -j $make_jobs"
 
 # Define cmake option strings
 cmake_build_type_option="-DCMAKE_BUILD_TYPE=$build_mode"
