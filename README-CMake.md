@@ -49,6 +49,11 @@ You may want to add `-jN` (where N is amount of threads you want to run) option
 to build commands, because default for `make` is to run single-threaded and
 `ninja` tends to use too much threads which eat up your RAM (may vary).
 
+Note for packagers:
+On Unix systems, the Synfig Studio looks out for its symbols, sounds and plugins at CMAKE_INSTALL_PREFIX/share.
+If you want to change the prefix you need to overwrite the `DATA_PREFIX` variable.
+Pass `-DDATA_PREFIX=/usr` for example to made Synfig Studio look at /usr/share for its data.
+
 ### Building
 
 ```
@@ -77,5 +82,37 @@ $ sudo cmake --build . -- install
 $ popd # build
 $ popd # synfig-studio
 ```
+
+### Auto building (portable)
+You can also build synfig-studio and run it without installation.
+To build change the directory to the project path (where README-CMake.md is located) and start the build process with:
+```
+$ ./build-cmake.sh
+```
+
+This can take some time.
+If the build was successful, cd to _debug/out and after that you can run Synfig Studio directly with:
+```
+$ ./run-portable.sh
+```
+
+It is also passible to run the Synfig CLI program:
+```
+$ ./run-portable.sh "synfig [PARAMETERS]"
+```
+
+You can also create a bash session, where you can run the binary's directly:
+```
+$ ./run-portable.sh bash
+```
+
+Now you can type "synfig" or "synfigstudio" to run the build programs. It now behaves exactly as if Synfig Studio was installed to the system.
+To exit the session just type the following:
+```
+$ exit
+```
+
+For for options open the build-cmake.sh in a text editor.
+The available options are on the top of the file (the same also in the run-portable.sh).
 
 [cmake]:        https://github.com/synfig/synfig/issues/279

@@ -4,8 +4,18 @@
 
 set(STUDIO_VERSION "1.3.10")
 set(SHOW_EXTRA_INFO OFF) # this needs some fixes to work
+set(DATA_PREFIX "${CMAKE_INSTALL_PREFIX}" CACHE PATH "Path, where the share directory with the pixmaps, sounds, plugins and translations is located. Default: Prefix, where Synfig Studio is going to be installed")
+set(IMG_EXT "png" CACHE STRING "File extension of the pixmaps (without the \".\"). Default: png")
+
 configure_file(autorevision.h.cmake.in autorevision.h)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
+
+## Defines
+add_definitions(-DIMAGE_EXT="${IMG_EXT}")
+add_definitions(-DIMAGE_DIR="${DATA_PREFIX}/share/pixmaps")
+add_definitions(-DSOUND_DIR="${DATA_PREFIX}/share/synfig/sounds")
+add_definitions(-DPLUGIN_DIR="${DATA_PREFIX}/share/synfig/plugins")
+add_definitions(-DLOCALEDIR="${DATA_PREFIX}/share/locale")
 
 ##
 ## Targets
@@ -58,6 +68,8 @@ include(workarearenderer/CMakeLists.txt)
 target_link_libraries(synfigstudio
     ${GTKMM_LIBRARIES}
     ${Gettext_LIBRARIES}
+    ${SDL2_LIBRARIES}
+    ${SDL2MIXER_LIBRARIES}
     synfig
     synfigapp
 )
