@@ -31,7 +31,7 @@ matrix:
       - HOMEBREW_NO_ANALYTICS=1
     cache: ccache
     before_install: brew reinstall libtool # fix no sed
-    install: ./1-setup-brew.sh
+    install: ./1-setup-osx-brew.sh
     before_script: ccache -s
     script: ./2-build-production.sh
     after_script: ccache -s # show ccache stats
@@ -46,7 +46,7 @@ matrix:
     cache: ccache
     # oclint already uninstalled (fixed in Nov 2018)
     #before_install: brew cask uninstall oclint # fix gcc installing
-    install: ./1-setup-brew.sh
+    install: ./1-setup-osx-brew.sh
     before_script:
       - ccache -s
       - ccache --set-config=compression=true
