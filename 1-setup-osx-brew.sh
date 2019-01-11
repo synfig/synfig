@@ -13,10 +13,31 @@
 
 set -e
 
-PACKAGES="autoconf automake ccache libtool intltool gettext pkg-config glibmm libxml++ cairo fftw pango mlt boost gtkmm3 sdl2 sdl2_mixer"
+if ! ( which brew >/dev/null ); then
+    echo "No brew found. Installing..."
+    /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+fi
+
+WORKDIR=`dirname "$0"`
+pushd "${WORKDIR}" > /dev/null
+WORKDIR=`pwd`
+popd > /dev/null
+
+PACKAGES="adwaita-icon-theme autoconf automake ccache libtool intltool imagemagick gettext pkg-config glibmm libxml++ cairo fftw pango mlt boost gtkmm3 sdl2 sdl2_mixer"
 
 export HOMEBREW_NO_AUTO_UPDATE=1
 export HOMEBREW_NO_ANALYTICS=1
+
+export OS=`uname -r | cut -d "." -f1`
+
+if [ $OS -lt 15 ] && [ -z "$TRAVIS_BUILD_DIR" ]; then # For OSX < 10.11
+    cd /usr/local/Homebrew/Library/Taps/homebrew/homebrew-core/
+    git fetch --unshallow || true
+    git checkout a91becd6afc177b0cada2cf9cce2e3bde514053b # librsvg 2.40.20 (wothout rust) 2017.12.16
+    cd /usr/local/Homebrew/
+    git checkout 1.4.1
+    brew info gobject-introspection | grep --quiet 'Not installed' && brew install ${WORKDIR}/autobuild/osx/gobject-introspection.rb
+fi
 
 for pkg in $PACKAGES;
 do

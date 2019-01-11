@@ -17,9 +17,9 @@ matrix:
     sudo: required
     dist: xenial
     cache: ccache
-    before_install: autobuild/install-requirements-linux.sh
+    before_install: ./1-setup-linux-native.sh
     before_script: ccache -s
-    script: autobuild/synfigstudio-linux-build.sh
+    script: ./2-build-production.sh
     after_script: autobuild/synfigrenderer-regression-test.sh
         
   - os: osx
@@ -31,9 +31,9 @@ matrix:
       - HOMEBREW_NO_ANALYTICS=1
     cache: ccache
     before_install: brew reinstall libtool # fix no sed
-    install: autobuild/osx/brew/install-requirements-osx.sh
+    install: ./1-setup-osx-brew.sh
     before_script: ccache -s
-    script: autobuild/osx/brew/synfigstudio-osx-build.sh
+    script: ./2-build-production.sh
     after_script: ccache -s # show ccache stats
     
   - os: osx
@@ -46,11 +46,11 @@ matrix:
     cache: ccache
     # oclint already uninstalled (fixed in Nov 2018)
     #before_install: brew cask uninstall oclint # fix gcc installing
-    install: autobuild/osx/brew/install-requirements-osx.sh
+    install: ./1-setup-osx-brew.sh
     before_script:
       - ccache -s
       - ccache --set-config=compression=true
-    script: autobuild/osx/brew/synfigstudio-osx-build.sh
+    script: ./2-build-production.sh
     after_script: ccache -s # show ccache stats
     
   #allow_failures:

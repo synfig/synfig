@@ -68,10 +68,40 @@ fi
 [ -d synfig-studio ] || mkdir synfig-studio
 [ -d "${PREFIX}" ] || mkdir "${PREFIX}"
 
-export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:${PREFIX}/lib64/pkgconfig:/usr/local/lib/pkgconfig:/usr/lib/`uname -i`-linux-gnu/pkgconfig/:$PKG_CONFIG_PATH
+#========================== VARIABLES ==================================
+
+if [[ `uname` == "Linux" ]]; then
+	export PKG_CONFIG_PATH=${PREFIX}/lib64/pkgconfig:/usr/local/lib/pkgconfig:/usr/lib/`uname -i`-linux-gnu/pkgconfig/:${PKG_CONFIG_PATH}
+fi
+if [[ `uname` == "Darwin" ]]; then
+	# autopoint is not in PATH after install via brew (conflicting with system gettext https://github.com/Homebrew/legacy-homebrew/issues/24070)
+	# so we can do `brew link --force gettext` or just add it to PATH before configuring which is preferable because we need it only for compiling
+	export PATH="/usr/local/opt/ccache/libexec:/usr/local/opt/gettext/bin:${PATH}"
+	export LDFLAGS="-L/usr/local/opt/gettext/lib ${LDFLAGS}"
+	export CPPFLAGS="-I/usr/local/opt/gettext/include ${CPPFLAGS}"
+fi
+export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:${PKG_CONFIG_PATH}
 export PATH=${PREFIX}/bin:$PATH
 export LD_LIBRARY_PATH=${PREFIX}/lib:${PREFIX}/lib64:/usr/local/lib:$LD_LIBRARY_PATH
-export LDFLAGS="-Wl,-rpath -Wl,\\\$\$ORIGIN/lib"
+export LDFLAGS="-Wl,-rpath -Wl,\\\$\$ORIGIN/lib ${LDFLAGS}"
+export CFLAGS="-fdiagnostics-color=always $CFLAGS"
+export CXXFLAGS="-fdiagnostics-color=always $CXXFLAGS"
+
+#========================== FUNCTIONS ==================================
+
+travis_fold_start()
+{
+	if [ -n "$TRAVIS" ]; then
+		echo -e "travis_fold:start:$1\033[33;1m$2\033[0m"
+	fi
+}
+
+travis_fold_end()
+{
+	if [ -n "$TRAVIS" ]; then
+		echo -e "\ntravis_fold:end:$1\r"
+	fi
+}
 
 #============================== ETL ====================================
 
@@ -97,7 +127,7 @@ etl_make()
 {
 cd ETL
 make -j$MAKE_THREADS
-sed -i "s|^Cflags: -I\\\${includedir}|Cflags: -I$REPO_DIR\/ETL -I\\\${includedir}|" ETL.pc
+sed -i.bak "s|^Cflags: -I\\\${includedir}|Cflags: -I$REPO_DIR\/ETL -I\\\${includedir}|" ETL.pc
 make install
 cd ..
 }
@@ -153,7 +183,7 @@ core_make()
 {
 cd synfig-core
 make -j$MAKE_THREADS
-sed -i "s|^includedir=.*$|includedir=$REPO_DIR\/synfig-core\/src|" synfig.pc
+sed -i.bak "s|^includedir=.*$|includedir=$REPO_DIR\/synfig-core\/src|" synfig.pc
 make install
 cd ..
 }
@@ -187,11 +217,17 @@ cd synfig-studio
 pushd ${REPO_DIR}/synfig-studio/ >/dev/null
 /bin/bash ${REPO_DIR}/synfig-studio/bootstrap.sh
 popd >/dev/null
+if [[ `uname` == "Linux" ]]; then
+	export CONFIGURE_OPTIONS="--enable-jack"
+else
+	export CONFIGURE_OPTIONS=""
+fi
+
 /bin/bash ${REPO_DIR}/synfig-studio/configure --prefix=${PREFIX} \
 	--includedir=${PREFIX}/include \
 	--disable-static \
 	--enable-shared \
-	--enable-jack \
+	${CONFIGURE_OPTIONS} \
 	--enable-warnings=max $DEBUG
 cd ..
 }
@@ -257,9 +293,17 @@ studio_make
 
 all_build()
 {
+travis_fold_start ETL "Building ETL"
 etl_build
+travis_fold_end ETL
+
+travis_fold_start synfig-core "Building Synfig Core"
 core_build
+travis_fold_end synfig-core
+
+travis_fold_start synfig-studio "Building Synfig Studio"
 studio_build
+travis_fold_end synfig-studio
 }
 
 all_full()
