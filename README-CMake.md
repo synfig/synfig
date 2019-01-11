@@ -27,6 +27,7 @@ You need development & library packages of the following libs:
 - pango
 - gtkmm-3.0 (only for studio)
 - gettext
+- SDL2_mixer
 - some threading support (e.g. pthread)
 
 Generally CMake will throw error if it doesn't find something, so you can just
@@ -87,7 +88,7 @@ $ popd # synfig-studio
 You can also build synfig-studio and run it without installation.
 To build change the directory to the project path (where README-CMake.md is located) and start the build process with:
 ```
-$ ./build-cmake.sh
+$ ./2-build-cmake.sh
 ```
 
 This can take some time.
