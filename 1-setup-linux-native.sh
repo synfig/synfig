@@ -2,153 +2,46 @@
 
 set -e
 
-# Make sure we have all dependencies installed
 echo "Checking dependencies..."
-DEB_LIST_MINIMAL="\
-    build-essential \
-    autoconf automake \
-    shared-mime-info \
-    libltdl3-dev \
-    libtool \
-    intltool \
-    gettext \
-    libpng-dev \
-    libfftw3-dev \
-    fontconfig \
-    libfreetype6-dev \
-    libfontconfig1-dev \
-    libxml2-dev \
-    libtiff5-dev \
-    libmlt-dev libmlt++-dev \
-    x11proto-xext-dev libdirectfb-dev libxfixes-dev libxinerama-dev libxdamage-dev libxcomposite-dev libxcursor-dev libxft-dev libxrender-dev libxt-dev libxrandr-dev libxi-dev libxext-dev libx11-dev \
-    libatk1.0-dev \
-    libgl1-mesa-dev \
-    imagemagick \
-    libsdl2-dev \
-    libsdl2-mixer-dev \
-    bzip2"
-if which dnf >/dev/null; then
-    #
-    #  Fedora >= 22
-    #
-    PKG_LIST="git"
-    if [[ $MODE == 'package' ]]; then
-        PKG_LIST="${PKG_LIST} \
-            debootstrap \
-            rsync"
-    else
-        PKG_LIST="${PKG_LIST} \
-            intltool \
-            libpng-devel \
-            libjpeg-devel \
-            fftw-devel \
-            freetype-devel \
-            fontconfig-devel \
-            atk-devel \
-            pango-devel \
-            cairo-devel \
-            gtk3-devel \
-            gettext-devel \
-            libxml2-devel \
-            libxml++-devel \
-            gcc-c++ \
-            autoconf \
-            automake \
-            libtool \
-            libtool-ltdl-devel \
-            boost-devel \
-            shared-mime-info \
-            OpenEXR-devel \
-            libmng-devel \
-            ImageMagick-c++-devel \
-            jack-audio-connection-kit-devel \
-            mlt-devel \
-            ocl-icd-devel \
-            opencl-headers \
-            gtkmm30-devel \
-            glibmm24-devel \
-            SDL2-devel \
-            SDL2_mixer-devel"
-    fi
-    if ! ( rpm -qv $PKG_LIST ); then
-        echo "Running dnf (you need root privelegies to do that)..."
-        su -c "dnf install $PKG_LIST" || true
-    fi
-elif which yum >/dev/null; then
-    #
-    #  Fedora
-    #
-    PKG_LIST="git"
-    if [[ $MODE == 'package' ]]; then
-        PKG_LIST="${PKG_LIST} \
-            debootstrap \
-            rsync"
-    else
-        PKG_LIST="${PKG_LIST} \
-            intltool \
-            libpng-devel \
-            libjpeg-devel \
-            fftw-devel \
-            freetype-devel \
-            fontconfig-devel \
-            atk-devel \
-            pango-devel \
-            cairo-devel \
-            gtk3-devel \
-            gettext-devel \
-            libxml2-devel \
-            libxml++-devel \
-            gcc-c++ \
-            autoconf \
-            automake \
-            libtool \
-            libtool-ltdl-devel \
-            boost-devel \
-            shared-mime-info \
-            OpenEXR-devel \
-            libmng-devel \
-            ImageMagick-c++-devel \
-            jack-audio-connection-kit-devel \
-            mlt-devel \
-            ocl-icd-devel \
-            opencl-headers \
-            gtkmm30-devel \
-            glibmm24-devel \
-            SDL2-devel \
-            SDL2_mixer-devel"
-    fi
-    if ! ( rpm -qv $PKG_LIST ); then
-        echo "Running yum (you need root privelegies to do that)..."
-        su -c "yum install $PKG_LIST" || true
-    fi
-elif which zypper >/dev/null; then
-    #
-    #  OpenSUSE
-    #
-    PKG_LIST="git"
-    if [[ $MODE == 'package' ]]; then
-        PKG_LIST="${PKG_LIST} \
-            debootstrap \
-            rsync"
-    else
-        PKG_LIST="${PKG_LIST} libpng-devel libjpeg-devel freetype-devel fontconfig-devel atk-devel pango-devel cairo-devel gtk3-devel gettext-devel libxml2-devel libxml++-devel gcc-c++ autoconf automake libtool libtool-ltdl-devel boost-devel shared-mime-info"
-        PKG_LIST="${PKG_LIST} OpenEXR-devel libmng-devel ImageMagick-c++-devel gtkmm3-devel glibmm2-devel"
-    fi
-    if ! ( rpm -qv $PKG_LIST ); then
-        echo "Running zypper (you need root privelegies to do that)..."
-        su -c "zypper install $PKG_LIST" || true
-    fi
-elif which apt-get >/dev/null; then
-    if [[ $MODE == 'package' ]]; then
-        if [[ `cat /etc/chroot.id` == "Synfig Packages Buildroot v${BUILDROOT_VERSION}" ]]; then
-            #we are inside of chroot
-            PKG_LIST="$DEB_LIST_MINIMAL rpm alien xsltproc wget python"
+if which apt-get >/dev/null; then
+        if [ ! -f /etc/altlinux-release ]; then
+            #
+            #  Ubuntu/Debian
+            #
+            PKG_LIST=" \
+                build-essential \
+                autoconf automake autopoint \
+                shared-mime-info \
+                libltdl3-dev \
+                libtool \
+                intltool \
+                gettext \
+                libpng-dev \
+                libfftw3-dev \
+                fontconfig \
+                libfreetype6-dev \
+                libfontconfig1-dev \
+                libxml2-dev \
+                libtiff5-dev \
+                libmlt-dev libmlt++-dev \
+                x11proto-xext-dev libdirectfb-dev libxfixes-dev libxinerama-dev libxdamage-dev libxcomposite-dev libxcursor-dev libxft-dev libxrender-dev libxt-dev libxrandr-dev libxi-dev libxext-dev libx11-dev \
+                libatk1.0-dev \
+                libgl1-mesa-dev \
+                imagemagick \
+                libsdl2-dev \
+                libsdl2-mixer-dev \
+                bzip2
+                git-core \
+                libmng-dev \
+                libjack-jackd2-dev \
+                libgtkmm-3.0-dev \
+                libglibmm-2.4-dev \
+                libsigc++-2.0-dev \
+                libxml++2.6-dev \
+                libboost-system-dev \
+                libmagick++-dev \
+            "
         else
-            #we have to prepare chroot
-            PKG_LIST="git-core debootstrap rsync"
-        fi
-    else
-        if ( cat /etc/altlinux-release | egrep "ALT Linux" ); then
             #
             #  ALT Linux case
             #
@@ -189,40 +82,107 @@ elif which apt-get >/dev/null; then
                 libsigc++2-devel \
                 libxml++2-devel \
             "
-        else
-            #
-            #  Ubuntu/Debian case
-            #
-            PKG_LIST=" \
-                ${DEB_LIST_MINIMAL} \
-                git-core \
-                libmng-dev \
-                libjack-jackd2-dev \
-                libgtkmm-3.0-dev \
-                libglibmm-2.4-dev \
-                libsigc++-2.0-dev \
-                libxml++2.6-dev \
-                libboost-system-dev \
-                libmagick++-dev \
-            "
         fi
-    fi
     echo "Running apt-get (you need root privelegies to do that)..."
     echo
     sudo apt-get update -qq || true
     sudo apt-get install -y -q $PKG_LIST
-    sudo apt-get install -y -q autopoint || true # Ubuntu special case
-else
-    if [[ $MODE == 'package' ]]; then
-        if ! ( which git && which debootstrap ) ; then
-            echo "ERROR: Please install 'git' and 'debootstrap'."
-            exit;
-        fi
-    else
-        echo "WARNING: This build script does not works with package mangement systems other than yum, zypper or apt! You should install dependent packages manually."
-        echo "REQUIRED PACKAGES: libpng-devel libjpeg-devel freetype-devel fontconfig-devel atk-devel pango-devel cairo-devel gtk3-devel gettext-devel libxml2-devel libxml++-devel gcc-c++ autoconf automake libtool libtool-ltdl-devel shared-mime-info OpenEXR-devel libmng-devel ImageMagick-c++-devel gtkmm30-devel glibmm24-devel"
-        echo ""
-        read
+    
+elif which dnf >/dev/null; then
+    #
+    #  Fedora >= 22
+    #
+    PKG_LIST="git \
+            intltool \
+            libpng-devel \
+            libjpeg-devel \
+            fftw-devel \
+            freetype-devel \
+            fontconfig-devel \
+            atk-devel \
+            pango-devel \
+            cairo-devel \
+            gtk3-devel \
+            gettext-devel \
+            libxml2-devel \
+            libxml++-devel \
+            gcc-c++ \
+            autoconf \
+            automake \
+            libtool \
+            libtool-ltdl-devel \
+            boost-devel \
+            shared-mime-info \
+            OpenEXR-devel \
+            libmng-devel \
+            ImageMagick-c++-devel \
+            jack-audio-connection-kit-devel \
+            mlt-devel \
+            ocl-icd-devel \
+            opencl-headers \
+            gtkmm30-devel \
+            glibmm24-devel \
+            SDL2-devel \
+            SDL2_mixer-devel"
+    if ! ( rpm -qv $PKG_LIST ); then
+        echo "Running dnf (you need root privelegies to do that)..."
+        su -c "dnf install $PKG_LIST" || true
     fi
+elif which yum >/dev/null; then
+    #
+    #  Fedora
+    #
+    PKG_LIST="git \
+            intltool \
+            libpng-devel \
+            libjpeg-devel \
+            fftw-devel \
+            freetype-devel \
+            fontconfig-devel \
+            atk-devel \
+            pango-devel \
+            cairo-devel \
+            gtk3-devel \
+            gettext-devel \
+            libxml2-devel \
+            libxml++-devel \
+            gcc-c++ \
+            autoconf \
+            automake \
+            libtool \
+            libtool-ltdl-devel \
+            boost-devel \
+            shared-mime-info \
+            OpenEXR-devel \
+            libmng-devel \
+            ImageMagick-c++-devel \
+            jack-audio-connection-kit-devel \
+            mlt-devel \
+            ocl-icd-devel \
+            opencl-headers \
+            gtkmm30-devel \
+            glibmm24-devel \
+            SDL2-devel \
+            SDL2_mixer-devel"
+    if ! ( rpm -qv $PKG_LIST ); then
+        echo "Running yum (you need root privelegies to do that)..."
+        su -c "yum install $PKG_LIST" || true
+    fi
+elif which zypper >/dev/null; then
+    #
+    #  OpenSUSE
+    #
+    PKG_LIST="git libpng-devel libjpeg-devel freetype-devel fontconfig-devel atk-devel pango-devel cairo-devel gtk3-devel gettext-devel libxml2-devel libxml++-devel gcc-c++ autoconf automake libtool libtool-ltdl-devel boost-devel shared-mime-info"
+    PKG_LIST="${PKG_LIST} OpenEXR-devel libmng-devel ImageMagick-c++-devel gtkmm3-devel glibmm2-devel"
+
+    if ! ( rpm -qv $PKG_LIST ); then
+        echo "Running zypper (you need root privelegies to do that)..."
+        su -c "zypper install $PKG_LIST" || true
+    fi
+else
+    echo "WARNING: This build script does not works with package mangement systems other than yum, zypper or apt! You should install dependent packages manually."
+    echo "REQUIRED PACKAGES: "
+    echo "libpng-devel libjpeg-devel freetype-devel fontconfig-devel atk-devel pango-devel cairo-devel gtk3-devel gettext-devel libxml2-devel libxml++-devel gcc-c++ autoconf automake libtool libtool-ltdl-devel shared-mime-info OpenEXR-devel libmng-devel ImageMagick-c++-devel gtkmm30-devel glibmm24-devel"
+    echo ""
 fi
 echo "Done."
