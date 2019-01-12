@@ -13,22 +13,7 @@ Tested to work on (this will be updated as reports come in):
 
 ### Dependencies
 
-You need development & library packages of the following libs:
-
-- boost (system)
-- zlib
-- libsigc++-2.0
-- glibmm-2.4
-- giomm-2.4
-- cairo
-- libxml++-2.6
-- mlt++
-- fftw3
-- pango
-- gtkmm-3.0 (only for studio)
-- gettext
-- SDL2_mixer
-- some threading support (e.g. pthread)
+For full list  of required libraries please check this page - https://synfig-docs-dev.readthedocs.io/en/latest/common/dependencies.html
 
 Generally CMake will throw error if it doesn't find something, so you can just
 run it and see what's missing. Also note that this list might not be full.
