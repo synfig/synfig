@@ -374,8 +374,12 @@ void FileContainerZip::read_history(std::list<HistoryRecord> &list, FILE *f, fil
 std::list<FileContainerZip::HistoryRecord> FileContainerZip::read_history(const String &container_filename)
 {
 	std::list<HistoryRecord> list;
-
+	
+#ifdef _WIN32
+	FILE *f = fopen(Glib::locale_from_utf8(fix_slashes(container_filename)).c_str(), "rb");
+#else
 	FILE *f = fopen(container_filename.c_str(), "rb");
+#endif
 	if (f == NULL) return list;
 
 	fseek(f, 0, SEEK_END);
@@ -393,14 +397,23 @@ std::list<FileContainerZip::HistoryRecord> FileContainerZip::read_history(const 
 bool FileContainerZip::create(const String &container_filename)
 {
 	if (is_opened()) return false;
+#ifdef _WIN32
+	storage_file_ = fopen(Glib::locale_from_utf8(fix_slashes(container_filename)).c_str(), "w+b");
+#else
 	storage_file_ = fopen(fix_slashes(container_filename).c_str(), "w+b");
+#endif	
+	
 	if (is_opened()) changed_ = true;
 	return is_opened();
 }
 
 bool FileContainerZip::open_from_history(const String &container_filename, file_size_t truncate_storage_size) {
 	if (is_opened()) return false;
+#ifdef _WIN32
+	FILE *f = fopen(Glib::locale_from_utf8(fix_slashes(container_filename)).c_str(), "r+b");
+#else
 	FILE *f = fopen(fix_slashes(container_filename).c_str(), "r+b");
+#endif		
 	if (f == NULL) return false;
 
 	// check size of file
