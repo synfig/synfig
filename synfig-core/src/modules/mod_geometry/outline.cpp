@@ -327,7 +327,7 @@ Outline::sync_vfunc()
 			p = points;
 			Vector pt = deriv(CUSP_TANGENT_ADJUST)/3.0;
 			for(Real n = 0.0, *ds = dists; n < 1.000001; n += 1.0/SAMPLES, ++p, ++ds) {
-				const Vector t = deriv(n > CUSP_TANGENT_ADJUST ? n : CUSP_TANGENT_ADJUST)/3.0;
+				const Vector t = deriv(std::min(std::max(n, CUSP_TANGENT_ADJUST), 1.0 - CUSP_TANGENT_ADJUST))/3.0;
 				const Vector d = t.perp().norm();
 				const Real k = homogeneous_width ? (*ds)*div_length : n;
 				const Real w = (next_w - iter_w)*k + iter_w;
