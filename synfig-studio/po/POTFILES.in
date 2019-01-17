@@ -1,5 +1,5 @@
-synfigstudio.desktop.in
-synfigstudio.appdata.xml.in
+org.synfig.SynfigStudio.desktop.in
+org.synfig.SynfigStudio.appdata.xml.in
 synfigstudio-thumbnailer.schemas.in
 synfigstudio.keys.in
 plugins/add-skeleton-simple/plugin.xml.in

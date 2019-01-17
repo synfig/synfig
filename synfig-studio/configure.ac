@@ -214,7 +214,7 @@ AC_CONFIG_FILES([
     po/Makefile.in
     synfigstudio.mime
     synfigstudio.keys
-    synfigstudio.xml
+    org.synfig.SynfigStudio.xml
     synfigstudio-thumbnailer.schemas
     brushes/Makefile
     brushes/CD_concept/Makefile

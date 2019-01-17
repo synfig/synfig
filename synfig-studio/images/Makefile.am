@@ -48,7 +48,7 @@ EXTRA_DIST = \
 	reset_colors_icon.sif \
 	swap_colors_icon.sif \
 	synfig_icon.sif \
-	synfig_icon.svg \
+	org.synfig.SynfigStudio.svg \
 	valuenode_icon.sif \
 	wallpaper.sif \
 	rename_icon.sif \
@@ -713,7 +713,7 @@ icons128_DATA = 128x128/synfig_icon.$(EXT)
 +icons256_DATA = 256x256/synfig_icon.$(EXT)
 
 iconsscalabledir = $(datadir)/icons/hicolor/scalable/apps
-iconsscalable_DATA = synfig_icon.svg
+iconsscalable_DATA = org.synfig.SynfigStudio.svg
 
 endif
 endif

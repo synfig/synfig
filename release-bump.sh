@@ -30,16 +30,16 @@ sed -i "s|synfig >= ${VERSION_CURRENT}|synfig >= ${VERSION_NEW}|" synfig-studio/
 
 sed -i "s|STUDIO_VERSION \"${VERSION_CURRENT}\"|STUDIO_VERSION \"${VERSION_NEW}\"|" synfig-studio/src/gui/CMakeLists.txt
 
-sed -i "s|version=\"${VERSION_CURRENT}\"|version=\"${VERSION_NEW}\"|" synfig-studio/synfigstudio.appdata.xml.in
+sed -i "s|version=\"${VERSION_CURRENT}\"|version=\"${VERSION_NEW}\"|" synfig-studio/org.synfig.SynfigStudio.appdata.xml.in
 DATE=`date +%Y-%m-%d`
-sed -i "s|date=\".*\">|date=\"${DATE}\">|" synfig-studio/synfigstudio.appdata.xml.in
+sed -i "s|date=\".*\">|date=\"${DATE}\">|" synfig-studio/org.synfig.SynfigStudio.appdata.xml.in
 
 git add \
 	ETL/configure.ac \
 	synfig-core/configure.ac \
 	synfig-studio/configure.ac \
 	synfig-studio/src/gui/CMakeLists.txt \
-	synfig-studio/synfigstudio.appdata.xml.in \
+	synfig-studio/org.synfig.SynfigStudio.appdata.xml.in \
 	# end
 
 git commit -m "Release version ${VERSION_NEW}"

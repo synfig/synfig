@@ -25,7 +25,7 @@ MAINTAINERCLEANFILES = \
 	.DS_Store
 
 DISTCLEANFILES = \
-	synfigstudio.desktop \
+	org.synfig.SynfigStudio.desktop \
 	$(appdata_DATA)
 
 if WITH_IMAGES
@@ -57,16 +57,16 @@ EXTRA_DIST = \
 	m4/cxx_macros.m4 \
 	m4/ETL.m4 \
 	ChangeLog.old \
-	synfigstudio.desktop.in \
-	synfigstudio.appdata.xml.in \
-	synfigstudio.xml.in \
+	org.synfig.SynfigStudio.desktop.in \
+	org.synfig.SynfigStudio.appdata.xml.in \
+	org.synfig.SynfigStudio.xml.in \
 	synfigstudio-thumbnailer.schemas.in
 
 DISTCHECK_CONFIGURE_FLAGS = --disable-update-mimedb
 
 # Desktop entry
 desktopdir = $(prefix)/share/applications
-desktop_DATA = synfigstudio.desktop
+desktop_DATA = org.synfig.SynfigStudio.desktop
 
 @INTLTOOL_DESKTOP_RULE@
 
@@ -75,7 +75,7 @@ mimeinfo_DATA            = synfigstudio.keys synfigstudio.mime
 
 # Appdata
 appdatadir = $(datadir)/appdata
-appdata_DATA = synfigstudio.appdata.xml
+appdata_DATA = org.synfig.SynfigStudio.appdata.xml
 @INTLTOOL_XML_RULE@
 
 # Icon
@@ -85,7 +85,7 @@ icon_DATA               = images/synfig_icon.png images/sif_icon.png
 endif
 
 mimedir              = $(prefix)/share/mime/packages
-mime_DATA            = synfigstudio.xml
+mime_DATA            = org.synfig.SynfigStudio.xml
 
 ACLOCAL_AMFLAGS=-I m4
 
