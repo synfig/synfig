@@ -34,6 +34,9 @@
 #include <cstddef>
 
 #include <libxml++/libxml++.h>
+#ifdef _WIN32
+#include <glibmm.h>
+#endif
 
 #include <ETL/stringf>
 
