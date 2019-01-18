@@ -631,7 +631,8 @@ TargetParam SynfigCommandLineParser::extract_targetparam()
 	TargetParam params;
 
 	// Both parameters are co-dependent
-	if (!(!video_codec.empty() && video_bitrate != 0))
+	if ( ( video_codec.empty() && video_bitrate != 0)
+	  || (!video_codec.empty() && video_bitrate == 0) )
 		throw (SynfigToolException(SYNFIGTOOL_MISSINGARGUMENT,
 									_("Both video codec and bitrate parameters are necessary.")));
 
