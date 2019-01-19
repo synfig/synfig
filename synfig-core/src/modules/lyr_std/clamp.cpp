@@ -150,8 +150,6 @@ TaskClampSW::run(RunParams&) const
 				const synfig::Surface &a = lsrc->get_surface();
 				synfig::Surface &c = ldst->get_surface();
 
-				synfig::Surface::pen pc = c.get_pen(ra.minx, ra.maxx);
-				synfig::Surface::pen pa = c.get_pen(ra.minx, ra.maxx);
 				for(int y = ra.miny; y < ra.maxy; ++y)
 				{
 					const Color *ca = &a[y - r.miny + offset[1]][ra.minx - r.minx + offset[0]];

@@ -129,12 +129,6 @@ SynfigCommandLineParser::SynfigCommandLineParser() :
 	video_codec(),
 	video_bitrate(),
 
-	// Debug group
-#ifdef _DEBUG
-	debug_guid(),
-	debug_signal(),
-#endif
-
 	// Synfig info group
 	show_help(),
 	show_importers(),
@@ -146,7 +140,13 @@ SynfigCommandLineParser::SynfigCommandLineParser() :
 	show_targets(),
 	show_codecs(),
 	show_value_nodes(),
-	show_version()
+	show_version(),
+
+	// Debug group
+#ifdef _DEBUG
+	debug_guid(),
+	debug_signal()
+#endif
 {
 	Glib::init();
 

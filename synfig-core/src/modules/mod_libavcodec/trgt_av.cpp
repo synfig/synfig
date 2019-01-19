@@ -96,43 +96,43 @@ static bool av_registered = false;
 class Target_LibAVCodec::Internal
 {
 private:
-    AVFormatContext *context;
-    AVPacket *packet;
-    bool file_opened;
-    bool headers_sent;
+	AVFormatContext *context;
+	AVPacket *packet;
+	bool file_opened;
+	bool headers_sent;
 
-    const AVCodec *video_codec;
-    AVStream *video_stream;
-    AVCodecContext *video_context;
-    AVFrame *video_frame;
-    AVFrame *video_frame_rgb;
-    SwsContext *video_swscale_context;
+	const AVCodec *video_codec;
+	AVStream *video_stream;
+	AVCodecContext *video_context;
+	AVFrame *video_frame;
+	AVFrame *video_frame_rgb;
+	SwsContext *video_swscale_context;
 
-    bool add_video_stream(enum AVCodecID codec_id, const RendDesc &desc) {
+	bool add_video_stream(enum AVCodecID codec_id, const RendDesc &desc) {
 		// find the video encoder
-    	video_codec = avcodec_find_encoder(codec_id);
+		video_codec = avcodec_find_encoder(codec_id);
 		if (!video_codec) {
 			synfig::error("Target_LibAVCodec: video codec not found");
-	    	close();
+			close();
 			return false;
 		}
 
 		video_stream = avformat_new_stream(context, video_codec);
 		if (!video_stream) {
 			synfig::error("Target_LibAVCodec: could not allocate video stream");
-	    	close();
+			close();
 			return false;
 		}
 
 		video_context = avcodec_alloc_context3(video_codec);
 		if (!video_context) {
 			synfig::error("Target_LibAVCodec: could not allocate an encoding video context");
-	    	close();
+			close();
 			return false;
 		}
 
 		// set parameters
-	    int fps = (int)roundf(desc.get_frame_rate());
+		int fps = (int)roundf(desc.get_frame_rate());
 		video_context->bit_rate     = 400*1024*1024/3600; // 400Mb per hour
 		video_context->width        = desc.get_w();       // in most cases resolution must be multiple of two
 		video_context->height       = desc.get_h();
@@ -152,79 +152,79 @@ private:
 		return true;
     }
 
-    bool open_video_stream() {
-        if (avcodec_open2(video_context, NULL, NULL) < 0) {
+	bool open_video_stream() {
+		if (avcodec_open2(video_context, NULL, NULL) < 0) {
 			synfig::error("Target_LibAVCodec: could not open video codec");
 			// seems the calling of avcodec_free_context after error will cause crash
 			// so just forget about this context
 			video_context = NULL;
-	    	close();
+			close();
 			return false;
         }
 
-        // allocate frame
-	    video_frame = av_frame_alloc();
-	    assert(video_frame);
-	    video_frame->format = video_context->pix_fmt;
-	    video_frame->width  = video_context->width;
-	    video_frame->height = video_context->height;
-	    video_frame->pts    = 0;
-	    if (av_frame_get_buffer(video_frame, 32) < 0) {
-	    	synfig::error("Target_LibAVCodec: could not allocate the video frame data");
-	    	close();
-	    	return false;
-	    }
+		// allocate frame
+		video_frame = av_frame_alloc();
+		assert(video_frame);
+		video_frame->format = video_context->pix_fmt;
+		video_frame->width  = video_context->width;
+		video_frame->height = video_context->height;
+		video_frame->pts    = 0;
+		if (av_frame_get_buffer(video_frame, 32) < 0) {
+			synfig::error("Target_LibAVCodec: could not allocate the video frame data");
+			close();
+			return false;
+		}
 
-        // if the output format is not RGB24, then a temporary picture is needed too.
-        if (video_frame->format != AV_PIX_FMT_RGB24) {
-        	video_frame_rgb = av_frame_alloc();
-    	    assert(video_frame_rgb);
-    	    video_frame_rgb->format = AV_PIX_FMT_RGB24;
-    	    video_frame_rgb->width  = video_frame->width;
-    	    video_frame_rgb->height = video_frame->height;
-    	    if (av_frame_get_buffer(video_frame_rgb, 32) < 0) {
-    	    	synfig::error("Target_LibAVCodec: could not allocate the temporary video frame data");
-    	    	close();
-    	    	return false;
-    	    }
+		// if the output format is not RGB24, then a temporary picture is needed too.
+		if (video_frame->format != AV_PIX_FMT_RGB24) {
+			video_frame_rgb = av_frame_alloc();
+			assert(video_frame_rgb);
+			video_frame_rgb->format = AV_PIX_FMT_RGB24;
+			video_frame_rgb->width  = video_frame->width;
+			video_frame_rgb->height = video_frame->height;
+			if (av_frame_get_buffer(video_frame_rgb, 32) < 0) {
+				synfig::error("Target_LibAVCodec: could not allocate the temporary video frame data");
+				close();
+				return false;
+			}
 
-    	    video_swscale_context = sws_getContext(
-    	    	video_frame_rgb->width,
+			video_swscale_context = sws_getContext(
+				video_frame_rgb->width,
 				video_frame_rgb->height,
 				(AVPixelFormat)video_frame_rgb->format,
-    	    	video_frame->width,
+				video_frame->width,
 				video_frame->height,
 				(AVPixelFormat)video_frame->format,
 				SWS_BICUBIC, NULL, NULL, NULL );
-            if (!video_swscale_context) {
-    	    	synfig::error("Target_LibAVCodec: cannot initialize the conversion context");
-    	    	close();
-    	    	return false;
-            }
-        }
+			if (!video_swscale_context) {
+				synfig::error("Target_LibAVCodec: cannot initialize the conversion context");
+				close();
+				return false;
+			}
+		}
 
-        // copy the stream parameters to the muxer
-        if (avcodec_parameters_from_context(video_stream->codecpar, video_context) < 0) {
-	    	synfig::error("Target_LibAVCodec: could not copy the video stream parameters");
-	    	close();
-	    	return false;
-        }
+		// copy the stream parameters to the muxer
+		if (avcodec_parameters_from_context(video_stream->codecpar, video_context) < 0) {
+			synfig::error("Target_LibAVCodec: could not copy the video stream parameters");
+			close();
+			return false;
+		}
 
-        return true;
-    }
+		return true;
+	}
 
 public:
 	Internal():
-	    context(),
+		context(),
 		packet(),
-	    file_opened(),
+		file_opened(),
 		headers_sent(),
 		video_codec(),
-	    video_stream(),
-	    video_context(),
-	    video_frame(),
-	    video_frame_rgb(),
-	    video_swscale_context()
+		video_stream(),
+		video_context(),
+		video_frame(),
+		video_frame_rgb(),
+		video_swscale_context()
 	{ }
 	~Internal() { close(); }
 
@@ -244,59 +244,59 @@ public:
 		}
 		if (!format) {
 			synfig::error("Target_LibAVCodec: unable to find 'mpeg' output format");
-	    	close();
+			close();
 			return false;
 		}
 
-	    // allocate output media context.
-	    context = avformat_alloc_context();
-	    assert(context);
-	    context->oformat = format;
-	    if (filename.size() + 1 > sizeof(context->filename)) {
+		// allocate output media context.
+		context = avformat_alloc_context();
+		assert(context);
+		context->oformat = format;
+		if (filename.size() + 1 > sizeof(context->filename)) {
 			synfig::error(
 				"Target_LibAVCodec: filename too long, max length is %d, filename is '%s'",
 				sizeof(context->filename) - 1,
 				filename.c_str() );
-	    	close();
+			close();
 			return false;
-	    }
-	    memcpy(context->filename, filename.c_str(), filename.size() + 1);
+		}
+		memcpy(context->filename, filename.c_str(), filename.size() + 1);
 
-	    packet = av_packet_alloc();
-	    assert(packet);
+		packet = av_packet_alloc();
+		assert(packet);
 
-	    // add video stream
-	    if (format->video_codec == AV_CODEC_ID_NONE) {
+		// add video stream
+		if (format->video_codec == AV_CODEC_ID_NONE) {
 			synfig::error("Target_LibAVCodec: selected format (%s) does not support video", format->name);
-	    	close();
+			close();
 			return false;
-	    }
-	    if (!add_video_stream(format->video_codec, desc))
-	    	return false;
-        if (!open_video_stream())
-        	return false;
+		}
+		if (!add_video_stream(format->video_codec, desc))
+			return false;
+		if (!open_video_stream())
+			return false;
 
-        // just print selected format options
-	    av_dump_format(context, 0, filename.c_str(), 1);
+		// just print selected format options
+		av_dump_format(context, 0, filename.c_str(), 1);
 
-	    // open the output file, if needed
-	    if (!(format->flags & AVFMT_NOFILE)) {
-	        if (avio_open(&context->pb, filename.c_str(), AVIO_FLAG_WRITE) < 0) {
+		// open the output file, if needed
+		if (!(format->flags & AVFMT_NOFILE)) {
+			if (avio_open(&context->pb, filename.c_str(), AVIO_FLAG_WRITE) < 0) {
 				synfig::error("Target_LibAVCodec: could not open file for write: %s", filename.c_str());
-		    	close();
-	            return false;
-	        }
-	        file_opened = true;
-	    } else {
+				close();
+				return false;
+			}
+			file_opened = true;
+		} else {
 	    	synfig::warning("Target_LibAVCodec: selected format (%s) does not write data to file.", format->name);
-	    }
+		}
 
-	    // write the stream header, if any.
-	    if (avformat_write_header(context, NULL) < 0) {
+		// write the stream header, if any.
+		if (avformat_write_header(context, NULL) < 0) {
 			synfig::error("Target_LibAVCodec: could not write header");
-	    	close();
+			close();
             return false;
-	    }
+		}
 
 		return true;
 	}
@@ -332,8 +332,8 @@ public:
 			surface.get_pitch() );
 
 		if (video_swscale_context)
-	        sws_scale(
-	        	video_swscale_context,
+			sws_scale(
+				video_swscale_context,
 				(const uint8_t * const *)video_frame_rgb->data,
 				video_frame_rgb->linesize,
 				0,
@@ -343,69 +343,69 @@ public:
 
 		// encode frame
 
-	    if (avcodec_send_frame(video_context, video_frame) < 0) {
-	    	synfig::error("Target_LibAVCodec: error sending a frame for encoding");
+		if (avcodec_send_frame(video_context, video_frame) < 0) {
+			synfig::error("Target_LibAVCodec: error sending a frame for encoding");
 			close();
 			return false;
-	    }
-	    while(true) {
-	        int res = avcodec_receive_packet(video_context, packet);
-	        if (res == AVERROR(EAGAIN) || res == AVERROR_EOF)
-	            break;
-	        if (res) {
-		    	synfig::error("Target_LibAVCodec: error during encoding");
+		}
+		while(true) {
+			int res = avcodec_receive_packet(video_context, packet);
+			if (res == AVERROR(EAGAIN) || res == AVERROR_EOF)
+				break;
+			if (res) {
+				synfig::error("Target_LibAVCodec: error during encoding");
 				close();
 				return false;
-	        }
+			}
 
-            av_packet_rescale_ts(packet, video_context->time_base, video_stream->time_base);
-            packet->stream_index = video_stream->index;
+			av_packet_rescale_ts(packet, video_context->time_base, video_stream->time_base);
+			packet->stream_index = video_stream->index;
 
-            res = av_interleaved_write_frame(context, packet);
-            av_packet_unref(packet);
-            if (res < 0) {
-		    	synfig::error("Target_LibAVCodec: error while writing video frame");
+			res = av_interleaved_write_frame(context, packet);
+			av_packet_unref(packet);
+			if (res < 0) {
+				synfig::error("Target_LibAVCodec: error while writing video frame");
 				close();
 				return false;
-	        }
+			}
 	    }
 
 	    // increment frame counter
 
-	    if (last_frame)
-	    	close();
-	    else
-	    	++video_frame->pts;
+		if (last_frame)
+			close();
+		else
+			++video_frame->pts;
 
 		return true;
 	}
 
 	void close() {
 		if (headers_sent) {
-	    	if (av_write_trailer(context) < 0)
-	    		synfig::error("Target_LibAVCodec: could not write format trailer");
+			if (av_write_trailer(context) < 0)
+				synfig::error("Target_LibAVCodec: could not write format trailer");
 			headers_sent = false;
 		}
 
-	    if (video_context) avcodec_free_context(&video_context);
-	    if (video_swscale_context) {
-	    	sws_freeContext(video_swscale_context);
-		    video_swscale_context = NULL;
-	    }
-	    if (video_frame) av_frame_free(&video_frame);
-	    if (video_frame_rgb) av_frame_free(&video_frame_rgb);
+		if (video_context) avcodec_free_context(&video_context);
+		if (video_swscale_context) {
+			sws_freeContext(video_swscale_context);
+			video_swscale_context = NULL;
+		}
+		if (video_frame) av_frame_free(&video_frame);
+		if (video_frame_rgb) av_frame_free(&video_frame_rgb);
 		video_stream = NULL;
 		video_codec = NULL;
 
-	    if (context) {
-	    	if (file_opened) {
-	    		avio_close(context->pb);
-		    	context->pb = NULL;
-		    	file_opened = false;
-	    	}
-	    	avformat_free_context(context);
-		    context = NULL;
-	    }
+		if (context) {
+			if (file_opened) {
+				avio_close(context->pb);
+				context->pb = NULL;
+				file_opened = false;
+			}
+			avformat_free_context(context);
+			context = NULL;
+		}
 	}
 };
 

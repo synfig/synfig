@@ -67,7 +67,7 @@ Importer_LibAVCodec::~Importer_LibAVCodec()
 }
 
 bool
-Importer_LibAVCodec::get_frame(synfig::Surface &/*surface*/, const synfig::RendDesc &renddesc, Time, synfig::ProgressCallback */*cb*/)
+Importer_LibAVCodec::get_frame(Surface &/*surface*/, const RendDesc &/*renddesc*/, Time /*time*/, ProgressCallback */*callback*/)
 {
 	return false;
 }

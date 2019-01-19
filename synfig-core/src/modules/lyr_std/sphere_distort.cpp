@@ -440,7 +440,8 @@ Layer_SphereDistort::accelerated_render(Context context,Surface *surface,int qua
 			t = (p_o*v[i])/v[i].mag_squared();
 
 			//clamp
-			if(t < 0) t = 0; if(t > 1) t = 1;
+			if (t < 0) t = 0;
+			if (t > 1) t = 1;
 
 			close = origin[i] + v[i]*t;
 
@@ -660,7 +661,8 @@ Layer_SphereDistort::accelerated_cairorender(Context context, cairo_t *cr, int q
 			t = (p_o*v[i])/v[i].mag_squared();
 			
 			//clamp
-			if(t < 0) t = 0; if(t > 1) t = 1;
+			if (t < 0) t = 0;
+			if (t > 1) t = 1;
 			
 			close = origin[i] + v[i]*t;
 			

@@ -178,11 +178,11 @@ ListImporter::get_sub_importer(const RendDesc &renddesc, Time time, ProgressCall
 	if(frame>=(signed)filename_list.size())frame=filename_list.size()-1;
 
 	const String &filename = filename_list[frame];
-	Importer::Handle importer(Importer::open(FileSystem::Identifier(FileSystemNative::instance(), filename_list[frame])));
+	Importer::Handle importer(Importer::open(FileSystem::Identifier(FileSystemNative::instance(), filename)));
 	if(!importer)
 	{
-		if(cb)cb->error(_("Unable to open ")+filename_list[frame]);
-		else synfig::error(_("Unable to open ")+filename_list[frame]);
+		if(cb)cb->error(_("Unable to open ")+filename);
+		else synfig::error(_("Unable to open ")+filename);
 		return Importer::Handle();
 	}
 

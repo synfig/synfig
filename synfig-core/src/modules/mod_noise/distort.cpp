@@ -107,8 +107,11 @@ NoiseDistort::point_func(const Point &point)const
 		vect[0]=random(RandomNoise::SmoothType(smooth),0+(detail-i)*5,x,y,time)+vect[0]*0.5;
 		vect[1]=random(RandomNoise::SmoothType(smooth),1+(detail-i)*5,x,y,time)+vect[1]*0.5;
 		
-		if(vect[0]<-1)vect[0]=-1;if(vect[0]>1)vect[0]=1;
-		if(vect[1]<-1)vect[1]=-1;if(vect[1]>1)vect[1]=1;
+		if (vect[0] < -1) vect[0] = -1;
+		if (vect[0] >  1) vect[0] =  1;
+		
+		if (vect[1] < -1) vect[1] = -1;
+		if (vect[1] >  1) vect[1] =  1;
 		
 		if(turbulent)
 		{

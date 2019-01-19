@@ -132,15 +132,18 @@ Noise::color_func(const Point &point, float pixel_size,Context /*context*/)const
 		for(i=0;i<detail;i++)
 		{
 			amount=random(RandomNoise::SmoothType(smooth),0+(detail-i)*5,x,y,ftime)+amount*0.5;
-			if(amount<-1)amount=-1;if(amount>1)amount=1;
+			if (amount < -1) amount = -1;
+			if (amount >  1) amount =  1;
 
 			if(super_sample&&pixel_size)
 			{
 				amount2=random(RandomNoise::SmoothType(smooth),0+(detail-i)*5,x2,y,ftime)+amount2*0.5;
-				if(amount2<-1)amount2=-1;if(amount2>1)amount2=1;
+				if (amount2 < -1) amount2 = -1;
+				if (amount2 >  1) amount2 =  1;
 
 				amount3=random(RandomNoise::SmoothType(smooth),0+(detail-i)*5,x,y2,ftime)+amount3*0.5;
-				if(amount3<-1)amount3=-1;if(amount3>1)amount3=1;
+				if (amount3 < -1) amount3 = -1;
+				if (amount3 >  1) amount3 =  1;
 
 				if(turbulent)
 				{
