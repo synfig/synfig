@@ -4,6 +4,6 @@
      <comment>Synfig Animation File</comment>
      <glob pattern="*.sif"/>
      <glob pattern="*.sifz"/>
-     <generic-icon name="sif_icon"/>
+     <icon name="org.synfig.SynfigStudio"/>
   </mime-type>
 </mime-info> 
