@@ -19,8 +19,6 @@ include(FindPkgConfig)
 pkg_check_modules(SIGCPP REQUIRED sigc++-2.0)
 pkg_check_modules(GTKMM REQUIRED gtkmm-3.0)
 pkg_check_modules(LIBXML REQUIRED libxml++-2.6)
-pkg_check_modules(SDL2 REQUIRED sdl2)
-pkg_check_modules(SDL2MIXER REQUIRED SDL2_mixer)
 
 ##
 ## Config

@@ -30,29 +30,30 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
+#include <cerrno>
 
-#include "render.h"
-#include "app.h"
+#include <glibmm.h>
+
 #include <gtkmm/frame.h>
 #include <gtkmm/alignment.h>
-#include <glibmm.h>
+
+#include <ETL/stringf>
+
+#include <synfig/general.h>
 #include <synfig/target_scanline.h>
 #include <synfig/canvas.h>
+#include <synfig/soundprocessor.h>
+
+#include "app.h"
 #include "asyncrenderer.h"
+#include "docks/dockmanager.h"
+#include "docks/dock_info.h"
 #include "dialogs/dialog_ffmpegparam.h"
 #include "dialogs/dialog_spritesheetparam.h"
 
+#include "render.h"
+
 #include <gui/localization.h>
-
-#include <ETL/stringf>
-#include <errno.h>
-
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_mixer.h>
-
-#include "docks/dockmanager.h"
-#include "docks/dock_info.h"
 
 #endif
 
@@ -446,9 +447,11 @@ RenderSettings::on_finished()
 	
 	submit_next_render_pass();
 
-	if (really_finished) { //Because of multi-pass render
-		//Sound effect - RenderDone (-1 : play on first free channel, 0 : no repeat)
-		if (App::use_render_done_sound) Mix_PlayChannel( -1, App::gRenderDone, 0 );
+	if (really_finished) { // Because of multi-pass render
+		if (App::use_render_done_sound && App::sound_render_done) {
+			App::sound_render_done->set_position(Time());
+			App::sound_render_done->set_playing(true);
+		}
 		App::dock_info_->set_render_progress(1.0);
 	}
 }

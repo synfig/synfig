@@ -95,26 +95,6 @@ esac
 
 # -- L I B R A R I E S ----------------------------------------
 
-#AC_INIT
-#m4_include([m4/sdl.m4])
-m4_include([m4/sdl2.m4])
-AC_CONFIG_MACRO_DIR([m4])
-
-dnl Check for SDL
-#SDL_VERSION=1.2.0
-#AM_PATH_SDL($SDL_VERSION,:,AC_MSG_ERROR([*** SDL version $SDL_VERSION not found! ***]))
-#SDL_CFLAGS=$(sdl-config --cflags)
-#SDL_LIBS=$(sdl-config --libs)
-
-SDL_VERSION=2.0
-AM_PATH_SDL2($SDL_VERSION,:,AC_MSG_ERROR([*** SDL version $SDL_VERSION not found! ***]))
-
-SDL_CFLAGS=$(sdl2-config --cflags)
-SDL_LIBS=$(sdl2-config --libs)
-
-CFLAGS="$CFLAGS $SDL_CFLAGS"
-LIBS="$LIBS $SDL_LIBS -lSDL2_mixer"
-
 # Gtk compatibility hacks:
 # Since 3.14 some our hacks for GUI decorations works in other way
 # Since 3.14 for checkboxes STATE_FLAG_ACTIVE replaced with STATE_FLAG_CHECKED
@@ -249,8 +229,6 @@ Build images ---------------------> $with_images
 "'$'"CXX ------------------------------> '$CXX'
 "'$'"CXXFLAGS -------------------------> '$CXXFLAGS'
 "'$'"LDFLAGS --------------------------> '$LDFLAGS'
-"'$'"SDL_CFLAGS -----------------------> '$SDL_CFLAGS'
-"'$'"SDL_LIBS -------------------------> '$SDL_LIBS'
 "'$'"SYNFIG_CFLAGS --------------------> '$SYNFIG_CFLAGS'
 "'$'"SYNFIG_LIBS ----------------------> '$SYNFIG_LIBS'
 "'$'"GTKMM_CFLAGS ---------------------> '$GTKMM_CFLAGS'

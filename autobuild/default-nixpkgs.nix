@@ -68,7 +68,7 @@ stdenv.mkDerivation rec {
   buildInputs = [
     ETL boost cairo fftw glibmm gnome3.defaultIconTheme gtk3 gtkmm3
     imagemagick intltool libjack2 libsigcxx libxmlxx makeWrapper mlt
-    synfig which SDL2 SDL2_mixer
+    synfig which
   ];
 
   postInstall = ''

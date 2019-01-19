@@ -84,6 +84,7 @@
 #include <synfig/loadcanvas.h>
 #include <synfig/savecanvas.h>
 #include <synfig/layer.h>
+#include <synfig/soundprocessor.h>
 
 #include "app.h"
 #include "splash.h"
@@ -152,9 +153,6 @@
 #include "ipc.h"
 
 #include <gui/localization.h>
-
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_mixer.h>
 
 #endif
 
@@ -358,8 +356,8 @@ delete_widget(Gtk::Widget *widget)
 }
 
 //Static members need to be initialized outside of class declaration
-Mix_Chunk* App::gRenderDone           = NULL;
-bool       App::use_render_done_sound = true;
+SoundProcessor *App::sound_render_done = NULL;
+bool App::use_render_done_sound = true;
 
 }; // END of namespace studio
 studio::StateManager* state_manager;
@@ -1451,24 +1449,42 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		Glib::setenv ("LANGUAGE",  App::ui_language.c_str(), 1);
 	}
 
-	std::string path_to_icons;
+	// paths
 #ifdef _WIN32
-	path_to_icons=basepath+ETL_DIRECTORY_SEPARATOR+".."+ETL_DIRECTORY_SEPARATOR+IMAGE_DIR;
+	String path_to_icons = get_base_path()
+		+ ETL_DIRECTORY_SEPARATOR + ".."
+		+ ETL_DIRECTORY_SEPARATOR + IMAGE_DIR;
+	String path_to_plugins = get_base_path()
+		+ ETL_DIRECTORY_SEPARATOR + PLUGIN_DIR;
+	String path_to_sounds = get_base_path()
+		+ ETL_DIRECTORY_SEPARATOR + ".."
+		+ ETL_DIRECTORY_SEPARATOR + SOUND_DIR;
 #else
-	path_to_icons=IMAGE_DIR;
+	String path_to_icons = IMAGE_DIR;
+	String path_to_plugins = PLUGIN_DIR;
+	String path_to_sounds = SOUND_DIR;
 #endif
-	char* synfig_root=getenv("SYNFIG_ROOT");
-	if(synfig_root) {
-		path_to_icons=synfig_root;
-		path_to_icons+=ETL_DIRECTORY_SEPARATOR;
-		path_to_icons+="share";
-		path_to_icons+=ETL_DIRECTORY_SEPARATOR;
-		path_to_icons+="pixmaps";
-		path_to_icons+=ETL_DIRECTORY_SEPARATOR;
-		path_to_icons+="synfigstudio";
+
+	if (char* synfig_root = getenv("SYNFIG_ROOT")) {
+		path_to_icons = String(synfig_root)
+			+ ETL_DIRECTORY_SEPARATOR + "share"
+			+ ETL_DIRECTORY_SEPARATOR + "pixmaps"
+			+ ETL_DIRECTORY_SEPARATOR + "synfigstudio";
+		path_to_plugins = String(synfig_root)
+			+ ETL_DIRECTORY_SEPARATOR + "share"
+			+ ETL_DIRECTORY_SEPARATOR + "synfig"
+			+ ETL_DIRECTORY_SEPARATOR + "plugins";
+		path_to_sounds = String(synfig_root)
+			+ ETL_DIRECTORY_SEPARATOR + "share"
+			+ ETL_DIRECTORY_SEPARATOR + "synfig"
+			+ ETL_DIRECTORY_SEPARATOR + "sounds";
 	}
-	path_to_icons+=ETL_DIRECTORY_SEPARATOR;
-	init_icons(path_to_icons);
+
+	String path_to_user_plugins = synfigapp::Main::get_user_app_directory()
+		+ ETL_DIRECTORY_SEPARATOR + "plugins";
+	
+	// icons
+	init_icons(path_to_icons + ETL_DIRECTORY_SEPARATOR);
 
 	ui_interface_=new GlobalUIInterface();
 
@@ -1556,27 +1572,8 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		load_settings("pref.preview_background_color");
 
 		studio_init_cb.task(_("Loading Plugins..."));
-
-		std::string pluginsprefix;
-
-		// system plugins path
-#ifdef _WIN32
-		pluginsprefix=App::get_base_path()+ETL_DIRECTORY_SEPARATOR+PLUGIN_DIR;
-#else
-		pluginsprefix=PLUGIN_DIR;
-#endif
-		char* synfig_root=getenv("SYNFIG_ROOT");
-		if(synfig_root) {
-			pluginsprefix=std::string(synfig_root)
-				+ETL_DIRECTORY_SEPARATOR+"share"
-				+ETL_DIRECTORY_SEPARATOR+"synfig"
-				+ETL_DIRECTORY_SEPARATOR+"plugins";
-		}
-		plugin_manager.load_dir(pluginsprefix);
-
-		// user plugins path
-		pluginsprefix=Glib::build_filename(synfigapp::Main::get_user_app_directory(),"plugins");
-		plugin_manager.load_dir(pluginsprefix);
+		plugin_manager.load_dir(path_to_plugins);
+		plugin_manager.load_dir(path_to_user_plugins);
 
 		studio_init_cb.task(_("Init UI Manager..."));
 		App::ui_manager_=studio::UIManager::create();
@@ -1840,49 +1837,13 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		get_ui_interface()->error(_("Unknown exception caught when constructing App.\nThis software may be unstable."));
 	}
 
-	//<!- ----- SDL2 - Sound effects -----
-	//Initialize SDL
-	if( SDL_Init( SDL_INIT_AUDIO ) < 0 )
-	{
-		synfig::error( _("SDL could not initialize! SDL Error: %s\n"), SDL_GetError() );
-	}
-
-	//Initialize SDL_mixer
-	if( Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, 2, 2048 ) == -1 )
-	{
-		synfig::error( _("SDL_mixer could not initialize! SDL_mixer Error: %s\n"), Mix_GetError() );
-	}
-
-	// system sounds path
-	std::string path_to_sounds;
-	#ifdef _WIN32
-    path_to_sounds = basepath + ETL_DIRECTORY_SEPARATOR + ".." + ETL_DIRECTORY_SEPARATOR + SOUND_DIR;
-  #else
-		path_to_sounds = SOUND_DIR;
-	#endif
-
-	//char* synfig_root = getenv("SYNFIG_ROOT"); //Already declared before
-	synfig_root = getenv("SYNFIG_ROOT"); //Already declared before
-	if(synfig_root) {
-		path_to_sounds = std::string(synfig_root)
-			+ ETL_DIRECTORY_SEPARATOR + "share"
-			+ ETL_DIRECTORY_SEPARATOR + "synfig"
-			+ ETL_DIRECTORY_SEPARATOR + "sounds";
-	}
-
-  path_to_sounds += ETL_DIRECTORY_SEPARATOR;
-
-  //Load sound effects
-	App::gRenderDone = Mix_LoadWAV( (path_to_sounds + "renderdone.wav").c_str() );
-	if ( App::gRenderDone == NULL ) {
-		synfig::error( _("SDL_mixer could not load gRenderDone : %s\n"), Mix_GetError() );
-	}  else {
-    Mix_VolumeChunk(App::gRenderDone, MIX_MAX_VOLUME/2);
-  }
-	//----- SDL2 - Sound effects ----- ->
+	// Load sound effects
+	sound_render_done = new SoundProcessor();
+	sound_render_done->addSound(
+		SoundProcessor::PlayOptions(),
+		SoundProcessor::Sound(path_to_sounds + ETL_DIRECTORY_SEPARATOR + "renderdone.wav") );
 	
 	App::dock_info_ = dock_info;
-
 }
 
 StateManager* App::get_state_manager() { return state_manager; }
@@ -1925,15 +1886,8 @@ App::~App()
 
 	instance_list.clear();
 
-	//<!- ----- SDL2 - Sound effects -----
-	//Free the sound effects
-	Mix_FreeChunk( App::gRenderDone );
-	App::gRenderDone = NULL;
-
-	//Quit SDL subsystems
-	Mix_Quit();
-	SDL_Quit();
-	//----- SDL2 - Sound effects ----- ->
+	if (sound_render_done) delete sound_render_done;
+	sound_render_done = NULL;
 }
 
 synfig::String

@@ -51,9 +51,6 @@
 #include "iconcontroller.h"
 #include "mainwindow.h"
 
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_mixer.h>
-
 /* === M A C R O S ========================================================= */
 
 #define MISC_DIR_PREFERENCE       "misc_dir"
@@ -75,6 +72,11 @@ namespace Gtk
 {
 	class UIManager;
 	class ActionGroup;
+};
+
+namespace synfig
+{
+	class SoundProcessor;
 };
 
 namespace synfigapp
@@ -245,8 +247,8 @@ public:
 	static synfig::Color  preview_background_color;
 
 	//The sound effects that will be used
-	static Mix_Chunk* gRenderDone;
-	static bool       use_render_done_sound;
+	static synfig::SoundProcessor* sound_render_done;
+	static bool use_render_done_sound;
 
 	static Dock_Info* dock_info_; //For Render ProgressBar
 

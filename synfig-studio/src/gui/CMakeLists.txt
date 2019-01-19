@@ -68,8 +68,6 @@ include(workarearenderer/CMakeLists.txt)
 target_link_libraries(synfigstudio
     ${GTKMM_LIBRARIES}
     ${Gettext_LIBRARIES}
-    ${SDL2_LIBRARIES}
-    ${SDL2MIXER_LIBRARIES}
     synfig
     synfigapp
 )
