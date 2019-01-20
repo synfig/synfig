@@ -1452,12 +1452,10 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 	// paths
 #ifdef _WIN32
 	String path_to_icons = get_base_path()
-		+ ETL_DIRECTORY_SEPARATOR + ".."
 		+ ETL_DIRECTORY_SEPARATOR + IMAGE_DIR;
 	String path_to_plugins = get_base_path()
 		+ ETL_DIRECTORY_SEPARATOR + PLUGIN_DIR;
 	String path_to_sounds = get_base_path()
-		+ ETL_DIRECTORY_SEPARATOR + ".."
 		+ ETL_DIRECTORY_SEPARATOR + SOUND_DIR;
 #else
 	String path_to_icons = IMAGE_DIR;
