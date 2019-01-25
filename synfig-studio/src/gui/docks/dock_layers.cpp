@@ -261,8 +261,8 @@ Dock_Layers::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
 	*/
 
 	// Hide the time bar
-	if(canvas_view->get_canvas()->rend_desc().get_time_start()==canvas_view->get_canvas()->rend_desc().get_time_end())
-		canvas_view->hide_timebar();
+	//if(canvas_view->get_canvas()->rend_desc().get_time_start()==canvas_view->get_canvas()->rend_desc().get_time_end())
+	//	canvas_view->hide_timebar();
 	layer_tree_store->rebuild();
 	present();
 }
