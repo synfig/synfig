@@ -61,7 +61,7 @@ using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
-#define SAMPLES		10
+#define SAMPLES		50
 #define ROUND_END_FACTOR	(4)
 #define CUSP_THRESHOLD		(0.40)
 #define SPIKE_AMOUNT		(4)
