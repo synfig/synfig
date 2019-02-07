@@ -1492,6 +1492,13 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		Glib::thread_init();
 
 	distance_system=Distance::SYSTEM_PIXELS;
+	
+#ifdef _WIN32
+	// Do not show "No disc in drive" errors
+	// - https://github.com/synfig/synfig/issues/489
+	// - https://github.com/synfig/synfig/issues/724
+	SetErrorMode(SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX | SEM_NOOPENFILEERRORBOX);
+#endif
 
 	if(mkdir(synfigapp::Main::get_user_app_directory().c_str(),ACCESSPERMS)<0)
 	{
