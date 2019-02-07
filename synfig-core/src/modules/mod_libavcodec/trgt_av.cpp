@@ -85,7 +85,9 @@ using namespace etl;
 
 SYNFIG_TARGET_INIT(Target_LibAVCodec);
 SYNFIG_TARGET_SET_NAME(Target_LibAVCodec,"libav");
+//Use some non-existing extension to disable exporting through this module
 //SYNFIG_TARGET_SET_EXT(Target_LibAVCodec,"avi");
+SYNFIG_TARGET_SET_EXT(Target_LibAVCodec,"NONEXISTING-EXTENSION");
 SYNFIG_TARGET_SET_VERSION(Target_LibAVCodec,"0.2");
 SYNFIG_TARGET_SET_CVS_ID(Target_LibAVCodec,"$Id$");
 
