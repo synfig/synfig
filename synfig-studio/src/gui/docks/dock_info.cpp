@@ -147,7 +147,7 @@ studio::Dock_Info::Dock_Info()
 	
 	//Render progress
 	set_n_passes_requested(1); //Default
-	set_n_passes_pending  (1); //Default
+	set_n_passes_pending  (0); //Default
 	set_render_progress (0.0); //Default, 0.0%
 }
 
