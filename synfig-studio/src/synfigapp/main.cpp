@@ -435,7 +435,10 @@ synfig::String
 synfigapp::Main::get_user_app_directory()
 {
 	String dir;
-	//! \todo do we need something like Glib::locale_from_utf8()?  (bug #1837445)
-	dir = Glib::get_home_dir()+ETL_DIRECTORY_SEPARATOR+SYNFIG_USER_APP_DIR;
+	if (char* synfig_user_settings_dir = getenv("SYNFIG_USER_SETTINGS")) {
+		dir =  Glib::locale_from_utf8(String(synfig_user_settings_dir));
+	} else {
+		dir = Glib::get_home_dir()+ETL_DIRECTORY_SEPARATOR+SYNFIG_USER_APP_DIR;
+	}
 	return dir;
 }
