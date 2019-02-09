@@ -49,7 +49,7 @@ mkapp()
 	[ ! -d ${APPDIR} ] || rm -rf ${APPDIR}
 	[ ! -d ${APPDIR_FINAL} ] || rm -rf ${APPDIR_FINAL}
 
-	cp -Rf "${SCRIPTPATH}/autobuild/app-template" "$APPDIR"
+	cp -Rf "${SCRIPTPATH}/autobuild/osx/app-template" "$APPDIR"
 	mv ${APPDIR}/Contents/MacOS/synfigstudio $APPDIR/Contents/MacOS/SynfigStudio || true
 
 	#mkdir -p "$APPCONTENTS/bin"
