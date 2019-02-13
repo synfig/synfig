@@ -240,9 +240,16 @@ RenderSettings::set_entry_filename()
 void
 RenderSettings::on_comboboxtext_target_changed()
 {
+	string ext[] = {"null", ".bmp", ".png", ".dv", ".avi", ".gif", ".png", ".jpg", ".gif", ".mng", "null", "null", ".exr", ".png", ".png", ".ppm", ".yuv"};
 	int i = comboboxtext_target.get_active_row_number();
 	if (i < 0 || i >= (int)target_names.size()) return;
 	if (target_name == target_names[i]) return;
+	if (!(i == 0 || i == 10 || i == 11))
+	{
+		String filename = entry_filename.get_text();
+		String newfilename = filename.substr(0,filename.find_last_of('.'))+ext[i];
+		entry_filename.set_text(newfilename);
+	}
 	set_target(target_names[i]);
 }
 
