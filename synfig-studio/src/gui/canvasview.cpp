@@ -1115,7 +1115,7 @@ CanvasView::create_display_bar()
 		displaybar->append( *create_action_toolbutton( App::ui_manager()->get_action("/toolbar-main/open") ) );
 		displaybar->append( *create_action_toolbutton( action_group->get_action("save") ) );
 		displaybar->append( *create_action_toolbutton( action_group->get_action("save-as") ) );
-		displaybar->append( *create_action_toolbutton( App::ui_manager()->get_action("/toolbar-main/save-all") ) );
+		displaybar->append( *create_action_toolbutton( action_group->get_action("save-all") ) );
 
 		// Separator
 		displaybar->append( *create_tool_separator() );
