@@ -269,7 +269,7 @@ RenderSettings::set_target(synfig::String name)
 {
 	target_name=name;
 	//TODO: Replace this condition
-	tparam_button->set_sensitive(target_name.compare("ffmpeg") && target_name.compare("png-spritesheet")?false:true);
+	tparam_button->set_sensitive(!(target_name.compare("ffmpeg") && target_name.compare("png-spritesheet")));
 }
 
 void
