@@ -31,7 +31,7 @@
 #endif
 
 #include <cerrno>
-
+#include <map>
 #include <glibmm.h>
 
 #include <gtkmm/frame.h>
@@ -240,14 +240,19 @@ RenderSettings::set_entry_filename()
 void
 RenderSettings::on_comboboxtext_target_changed()
 {
-	string ext[] = {"null", ".bmp", ".png", ".dv", ".avi", ".gif", ".png", ".jpg", ".gif", ".mng", "null", "null", ".exr", ".png", ".png", ".ppm", ".yuv"};
+	std::map<std::string,std::string> ext = {{"Auto","null"}, {"bmp",".bmp"}, {"cairo_png",".png"},{"dv",".dv"},
+					{"ffmpeg",".avi"},{"gif",".gif"},{"imagemagick",".png"}, {"jpeg",".jpg"},
+					{"magick++",".gif"},{"mng",".mng"}, {"null","null"},{"null-tile","null"},{"openexr",".exr"},
+					{"png",".png"}, {"png-spritesheet",".png"},{"ppm",".ppm"}, {"yuv420p",".yuv"}};
 	int i = comboboxtext_target.get_active_row_number();
 	if (i < 0 || i >= (int)target_names.size()) return;
 	if (target_name == target_names[i]) return;
-	if (!(i == 0 || i == 10 || i == 11))
+	auto itr = ext.find(target_names[i]); 
+    // check if target_name is there in map and if present it's .ext is not "null"
+    if(itr != ext.end() && (itr->second)!="null")
 	{
 		String filename = entry_filename.get_text();
-		String newfilename = filename.substr(0,filename.find_last_of('.'))+ext[i];
+		String newfilename = filename.substr(0,filename.find_last_of('.'))+itr->second;
 		entry_filename.set_text(newfilename);
 	}
 	set_target(target_names[i]);
