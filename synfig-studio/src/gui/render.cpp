@@ -31,7 +31,7 @@
 #endif
 
 #include <cerrno>
-
+#include <map>
 #include <glibmm.h>
 
 #include <gtkmm/frame.h>
@@ -240,9 +240,21 @@ RenderSettings::set_entry_filename()
 void
 RenderSettings::on_comboboxtext_target_changed()
 {
+	std::map<std::string,std::string> ext = {{"bmp",".bmp"}, {"cairo_png",".png"},{"dv",".dv"},
+					{"ffmpeg",".avi"},{"gif",".gif"},{"imagemagick",".png"}, {"jpeg",".jpg"},
+					{"magick++",".gif"},{"mng",".mng"},{"openexr",".exr"},{"png",".png"},
+					{"png-spritesheet",".png"},{"ppm",".ppm"}, {"yuv420p",".yuv"}, {"libav",".avi"}};
 	int i = comboboxtext_target.get_active_row_number();
 	if (i < 0 || i >= (int)target_names.size()) return;
 	if (target_name == target_names[i]) return;
+	auto itr = ext.find(target_names[i]); 
+    // check if target_name is there in map
+    if(itr != ext.end())
+	{
+		String filename = entry_filename.get_text();
+		String newfilename = filename.substr(0,filename.find_last_of('.'))+itr->second;
+		entry_filename.set_text(newfilename);
+	}
 	set_target(target_names[i]);
 }
 
@@ -257,7 +269,7 @@ RenderSettings::set_target(synfig::String name)
 {
 	target_name=name;
 	//TODO: Replace this condition
-	tparam_button->set_sensitive(target_name.compare("ffmpeg") && target_name.compare("png-spritesheet")?false:true);
+	tparam_button->set_sensitive(!(target_name.compare("ffmpeg") && target_name.compare("png-spritesheet")));
 }
 
 void
@@ -273,9 +285,9 @@ RenderSettings::on_targetparam_pressed()
 {
 	Dialog_TargetParam * dialogtp;
 	//TODO: Replace this conditions too
-	if (target_name.compare("ffmpeg") == 0)
+	if (!target_name.compare("ffmpeg"))
 		dialogtp = new Dialog_FFmpegParam (*this);
-	else if (target_name.compare("png-spritesheet") == 0)
+	else if (!target_name.compare("png-spritesheet"))
 		dialogtp = new Dialog_SpriteSheetParam (*this);
 	else
 		return;
