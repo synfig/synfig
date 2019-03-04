@@ -172,7 +172,7 @@ fi
 	--includedir=${PREFIX}/include \
 	--disable-static --enable-shared \
 	--with-magickpp \
-	--with-libavcodec \
+	--without-libavcodec \
 	--without-included-ltdl \
 	$BOOST_CONFIGURE_OPTIONS \
 	$DEBUG
