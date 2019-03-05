@@ -947,6 +947,7 @@ init_ui_manager()
 	menus_action_group->add( Gtk::Action::create("menu-edit",            _("_Edit")));
 
 	menus_action_group->add( Gtk::Action::create("menu-view",            _("_View")));
+	menus_action_group->add( Gtk::Action::create("menu-navigation",            _("_Navigation")));
 	menus_action_group->add( Gtk::Action::create("menu-duck-mask",       _("Show/Hide Handles")));
 	menus_action_group->add( Gtk::Action::create("menu-preview-quality", _("Preview Quality")));
 	menus_action_group->add( Gtk::Action::create("menu-lowres-pixel",    _("Low-Res Pixel Size")));
@@ -1040,11 +1041,6 @@ DEFINE_ACTION("quality-10", _("Use Quality Level 10"));
 for(list<int>::iterator iter = CanvasView::get_pixel_sizes().begin(); iter != CanvasView::get_pixel_sizes().end(); iter++)
   DEFINE_ACTION(strprintf("lowres-pixel-%d", *iter), strprintf(_("Set Low-Res pixel size to %d"), *iter));
 
-DEFINE_ACTION("play", _("Play"));
-// the stop is not a normal stop but a pause. So use "Pause" in UI, including TEXT and
-// icon. the internal code is still using stop.
-DEFINE_ACTION("stop", _("Pause"));
-
 DEFINE_ACTION("toggle-grid-show",  _("Toggle Grid Show"));
 DEFINE_ACTION("toggle-grid-snap",  _("Toggle Grid Snap"));
 DEFINE_ACTION("toggle-guide-show", _("Toggle Guide Show"));
@@ -1061,6 +1057,13 @@ DEFINE_ACTION("canvas-zoom-fit",             Gtk::StockID("gtk-zoom-fit"));
 DEFINE_ACTION("canvas-zoom-100",             Gtk::StockID("gtk-zoom-100"));
 DEFINE_ACTION("time-zoom-in",                Gtk::StockID("gtk-zoom-in"));
 DEFINE_ACTION("time-zoom-out",               Gtk::StockID("gtk-zoom-out"));
+
+//actions in Navigation menu
+DEFINE_ACTION("play", _("Play"));
+// the stop is not a normal stop but a pause. So use "Pause" in UI, including TEXT and
+// icon. the internal code is still using stop.
+DEFINE_ACTION("stop", _("Pause"));
+
 DEFINE_ACTION("jump-next-keyframe",          _("Seek to Next Keyframe"));
 DEFINE_ACTION("jump-prev-keyframe",          _("Seek to previous Keyframe"));
 DEFINE_ACTION("seek-next-frame",             _("Seek to Next Frame"));
@@ -1069,6 +1072,7 @@ DEFINE_ACTION("seek-next-second",            _("Seek Forward"));
 DEFINE_ACTION("seek-prev-second",            _("Seek Backward"));
 DEFINE_ACTION("seek-begin",                  _("Seek to Begin"));
 DEFINE_ACTION("seek-end",                    _("Seek to End"));
+
 
 // actions in Canvas menu
 DEFINE_ACTION("properties", _("Properties..."));
@@ -1190,9 +1194,6 @@ DEFINE_ACTION("keyframe-properties", "Properties");
 	ui_info_menu +=
 "		</menu>"
 "		<separator name='sep-view1'/>"
-"		<menuitem action='play'/>"
-"		<menuitem action='stop'/>"
-"		<separator name='sep-view2'/>"
 "		<menuitem action='toggle-grid-show'/>"
 "		<menuitem action='toggle-grid-snap'/>"
 "		<menuitem action='toggle-guide-show'/>"
@@ -1200,15 +1201,19 @@ DEFINE_ACTION("keyframe-properties", "Properties");
 "		<menuitem action='toggle-low-res'/>"
 "		<menuitem action='toggle-background-rendering'/>"
 "		<menuitem action='toggle-onion-skin'/>"
-"		<separator name='sep-view3'/>"
+"		<separator name='sep-view2'/>"
 "		<menuitem action='canvas-zoom-in'/>"
 "		<menuitem action='canvas-zoom-out'/>"
 "		<menuitem action='canvas-zoom-fit'/>"
 "		<menuitem action='canvas-zoom-100'/>"
-"		<separator name='sep-view4'/>"
+"		<separator name='sep-view3'/>"
 "		<menuitem action='time-zoom-in'/>"
 "		<menuitem action='time-zoom-out'/>"
-"		<separator name='sep-view5'/>"
+"	</menu>"
+"    <menu action='menu-navigation'>"
+"		<menuitem action='play'/>"
+"		<menuitem action='stop'/>"
+"		<separator name='sep-view1'/>"
 "		<menuitem action='jump-prev-keyframe'/>"
 "		<menuitem action='jump-next-keyframe'/>"
 "		<menuitem action='seek-prev-frame'/>"
