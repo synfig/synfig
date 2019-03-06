@@ -274,7 +274,7 @@ private:
 	Gtk::Button *stopbutton;
 	Gtk::ToggleToolButton *background_rendering_button;
 	Gtk::ToolButton *refreshbutton;
-	Gtk::ToggleToolButton *draft_button;
+	Gtk::ComboBoxText *render_combobox;
 	Gtk::VBox *timebar;
 	Gtk::Toolbar *displaybar;
 	Widget_Enum *widget_interpolation;
@@ -454,7 +454,7 @@ private:
 	void toggle_animatebutton();
 	void toggle_timetrackbutton();
 
-	void toggle_draft_render();
+	void toggle_render_combobox();
 
 	void on_play_timeout();
 	

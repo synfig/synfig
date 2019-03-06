@@ -1076,26 +1076,22 @@ CanvasView::create_tool_separator()
 	return separator;
 }
 
-void CanvasView::toggle_draft_render()
+void CanvasView::toggle_render_combobox()
 {
-	//if (App::workarea_renderer.empty()) return;
-
-	bool toggled = this->draft_button->get_active();
-	if (toggled) {
+	//get row number for value of render_combobox
+	int toggled = this->render_combobox->get_active_row_number();
+	// std::cout<<toggled<<" this is the value\n";
+	if (toggled == 0) {
+		
+		App::workarea_renderer = "software-preview";
+	}
+	if (toggled == 1) {
 		App::workarea_renderer = "software-draft";
-		this->draft_button->set_tooltip_text( _("Disable draft rendering"));
-	} else {
-		App::workarea_renderer = "";
-		this->draft_button->set_tooltip_text( _("Enable draft rendering"));
+	}
+	if (toggled == 2) {
+		App::workarea_renderer = "software";
 	}
 		
-
-	/*std::string test22 = "";
-	if (!App::workarea_renderer.empty()) test22 = App::workarea_renderer;
-	App::workarea_renderer = "software-draft";
-
-	test22 = App::workarea_renderer;*/
-
 	App::save_settings();
 	App::setup_changed();
 }
@@ -1240,15 +1236,20 @@ CanvasView::create_display_bar()
 		icon->set_padding(0, 0);
 		icon->show();
 
-		draft_button = Gtk::manage(new class Gtk::ToggleToolButton());
-		draft_button->set_icon_widget(*icon);
-		draft_button->signal_clicked().connect(sigc::mem_fun(*this, &CanvasView::toggle_draft_render));
-		draft_button->set_label(_("Draft"));
-		draft_button->set_tooltip_text( _("Enable draft rendering"));
-		draft_button->set_active(App::workarea_renderer == "software-draft");
-		draft_button->show();
+		render_combobox = Gtk::manage(new class Gtk::ComboBoxText());
+		render_combobox->append("Preview");
+		render_combobox->append("Draft");
+		render_combobox->append("Final");
+		render_combobox->signal_changed().connect(sigc::mem_fun(*this, &CanvasView::toggle_render_combobox));
+		render_combobox->set_tooltip_text( _("Select rendering mode"));
+		render_combobox->set_active(0);
+		render_combobox->show();
+		auto container = Gtk::manage(new class Gtk::ToolItem());
+		container->add(*render_combobox);
 
-		displaybar->append(*draft_button);
+		container->show();
+		displaybar->add(*container);// container pointer
+
 	}
 	
 	// Separator
