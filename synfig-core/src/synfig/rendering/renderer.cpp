@@ -46,6 +46,7 @@
 
 #include "software/renderersw.h"
 #include "software/rendererdraftsw.h"
+#include "software/rendererpreviewsw.h"
 #include "software/rendererlowressw.h"
 #include "software/renderersafe.h"
 #ifdef WITH_OPENGL
@@ -97,6 +98,7 @@ Renderer::initialize_renderers()
 
 	// register renderers
 	register_renderer("software", new RendererSW());
+	register_renderer("software-preview", new RendererPreviewSW());
 	register_renderer("software-draft", new RendererDraftSW());
 	register_renderer("software-low2",  new RendererLowResSW(2));
 	register_renderer("software-low4",  new RendererLowResSW(4));
@@ -1015,7 +1017,7 @@ Renderer::unregister_renderer(const String &name)
 const Renderer::Handle&
 Renderer::get_renderer(const String &name)
 {
-	static const char default_engine[] = "software";
+	static const char default_engine[] = "software-preview";
 	return get_renderers().count(name) > 0           ? get_renderers().find(name)->second
 		 : get_renderers().count(default_engine) > 0 ? get_renderers().find(default_engine)->second
 		 : blank;
