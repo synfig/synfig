@@ -85,7 +85,7 @@ export PATH=${PREFIX}/bin:$PATH
 export LD_LIBRARY_PATH=${PREFIX}/lib:${PREFIX}/lib64:/usr/local/lib:$LD_LIBRARY_PATH
 export LDFLAGS="-Wl,-rpath -Wl,\\\$\$ORIGIN/lib ${LDFLAGS}"
 export CFLAGS="-fdiagnostics-color=always $CFLAGS"
-export CXXFLAGS="-fdiagnostics-color=always $CXXFLAGS"
+export CXXFLAGS="-fdiagnostics-color=always -Wno-deprecated-declarations $CXXFLAGS"
 
 #========================== FUNCTIONS ==================================
 
