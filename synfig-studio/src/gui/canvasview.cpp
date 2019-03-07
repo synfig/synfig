@@ -1242,7 +1242,7 @@ CanvasView::create_display_bar()
 		render_combobox->append("Final");
 		render_combobox->signal_changed().connect(sigc::mem_fun(*this, &CanvasView::toggle_render_combobox));
 		render_combobox->set_tooltip_text( _("Select rendering mode"));
-		render_combobox->set_active(0);
+		render_combobox->set_active(1);
 		render_combobox->show();
 		auto container = Gtk::manage(new class Gtk::ToolItem());
 		container->add(*render_combobox);
