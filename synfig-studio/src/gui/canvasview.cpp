@@ -1083,10 +1083,10 @@ void CanvasView::toggle_render_combobox()
 	// std::cout<<toggled<<" this is the value\n";
 	if (toggled == 0) {
 		
-		App::workarea_renderer = "software-preview";
+		App::workarea_renderer = "software-draft";
 	}
 	if (toggled == 1) {
-		App::workarea_renderer = "software-draft";
+		App::workarea_renderer = "software-preview";
 	}
 	if (toggled == 2) {
 		App::workarea_renderer = "software";
@@ -1237,8 +1237,8 @@ CanvasView::create_display_bar()
 		icon->show();
 
 		render_combobox = Gtk::manage(new class Gtk::ComboBoxText());
-		render_combobox->append("Preview");
 		render_combobox->append("Draft");
+		render_combobox->append("Preview");
 		render_combobox->append("Final");
 		render_combobox->signal_changed().connect(sigc::mem_fun(*this, &CanvasView::toggle_render_combobox));
 		render_combobox->set_tooltip_text( _("Select rendering mode"));
