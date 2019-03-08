@@ -89,6 +89,14 @@ def gen_helpers_transform(lottie, layer):
                 gen_properties_value(
                     lottie["o"], val, index, DEFAULT_ANIMATED, NO_INFO)
                 index += 1
+            elif child.attrib["name"] == "origin":
+                x_val = float(child[0][0].text)
+                y_val = float(child[0][1].text)
+                factor = get_unit()
+                x_val = int(factor * x_val) + lottie_format["w"]/2
+                y_val = -int(factor * y_val) + lottie_format["h"]/2
+                gen_properties_value(lottie["p"], [x_val, y_val, 0], index, DEFAULT_ANIMATED, NO_INFO)
+                index += 1
 
     gen_properties_value(
         lottie["r"],
@@ -96,12 +104,6 @@ def gen_helpers_transform(lottie, layer):
         index,
         DEFAULT_ANIMATED,
         NO_INFO)
-    index += 1
-    gen_properties_value(lottie["p"],
-                         [lottie_format["w"] / 2, lottie_format["h"] / 2, 0],
-                         index,
-                         DEFAULT_ANIMATED,
-                         NO_INFO)
     index += 1
     gen_properties_value(
         lottie["a"], [
@@ -160,13 +162,6 @@ def gen_shapes_star(lottie, layer, idx):
                                      DEFAULT_ANIMATED,
                                      NO_INFO)
                 index += 1
-            elif child.attrib["name"] == "origin":
-                x_val = float(child[0][0].text)
-                y_val = float(child[0][1].text)
-                factor = get_unit()
-                gen_properties_value(lottie["p"], [int(
-                    factor * x_val), int(factor * y_val)], index, DEFAULT_ANIMATED, NO_INFO)
-                index += 1
             elif child.attrib["name"] == "angle":
                 theta = get_angle(float(child[0].attrib["value"]))
                 gen_properties_value(
@@ -193,6 +188,12 @@ def gen_shapes_star(lottie, layer, idx):
     index += 1
     gen_properties_value(lottie["os"], 0, index, DEFAULT_ANIMATED, NO_INFO)
     index += 1
+    gen_properties_value(lottie["p"],
+                         [0, 0],
+                         index,
+                         DEFAULT_ANIMATED,
+                         NO_INFO)
+
     lottie["ix"] = idx
 
 def gen_shapes_fill(lottie, layer):
@@ -231,7 +232,7 @@ def gen_layer_shape(lottie, layer, idx):
     lottie["ddd"] = DEFAULT_3D
     lottie["ind"] = idx
     lottie["ty"] = LAYER_SHAPE_TYPE
-    lottie["nm"] = LAYER_SHAPE_NAME + str(index)
+    lottie["nm"] = LAYER_SHAPE_NAME + str(idx)
     lottie["sr"] = LAYER_DEFAULT_STRETCH
     lottie["ks"] = {}   # Transform properties to be filled
     gen_helpers_transform(lottie["ks"], layer)
@@ -263,6 +264,8 @@ else:
     lottie_format["layers"] = []
     for child in root:
         if child.tag == "layer":
+            if child.attrib["type"] != "star":  # Only star conversion
+                continue
             lottie_format["layers"].append({})
             gen_layer_shape(
                 lottie_format["layers"][num_layers],
