@@ -206,6 +206,7 @@ AC_CONFIG_FILES([
     plugins/Makefile
     plugins/add-skeleton-simple/Makefile
     plugins/view-unhide-all-layers/Makefile
+    plugins/lottie-exporter/Makefile
     sounds/Makefile
 ])
 AC_OUTPUT

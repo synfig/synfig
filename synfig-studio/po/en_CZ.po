@@ -110,6 +110,10 @@ msgstr ""
 msgid "Unhide All Layers"
 msgstr ""
 
+#: ../plugins/lottie-exporter/plugin.xml.in.h:1
+msgid "Export to Lottie format"
+msgstr ""
+
 #: ../src/brushlib/brushsettings.py:26
 msgid "Pressure"
 msgstr ""
