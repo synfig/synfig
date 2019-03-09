@@ -1456,7 +1456,7 @@ CanvasView::init_menus()
 	// the stop is not as normal stop but pause. So use "Pause" in UI, including TEXT and
 	// icon. the internal code is still using stop.
 	action_group->add( Gtk::Action::create("stop", Gtk::StockID("synfig-animate_pause")),
-		SLOT_EVENT(EVENT_STOP)
+		sigc::mem_fun(*this, &CanvasView::stop_async)
 	);
 
 	action_group->add( Gtk::Action::create("refresh", Gtk::StockID("gtk-refresh")),
