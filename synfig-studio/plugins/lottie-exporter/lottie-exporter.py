@@ -134,7 +134,8 @@ def get_angle(theta):
     if theta < 90:
         theta = 90 - theta
     else:
-        theta = theta - 90
+        theta = 450 - theta
+    theta = theta % 360
     return theta
 
 def gen_shapes_star(lottie, layer, idx):
@@ -266,16 +267,17 @@ else:
         if child.tag == "layer":
             if child.attrib["type"] != "star":  # Only star conversion
                 continue
-            lottie_format["layers"].append({})
+            #lottie_format["layers"].append({})
+            lottie_format["layers"].insert(0, {})
             gen_layer_shape(
-                lottie_format["layers"][num_layers],
+                lottie_format["layers"][0],
                 child,
                 num_layers)
             num_layers += 1
 
     lottie_string = json.dumps(lottie_format)
     # Write the output to the file name with .json extension
-    NEW_FILE_NAME = FILE_NAME.split(".")[0] + ".json"
+    NEW_FILE_NAME = FILE_NAME[:-4] + ".json"    # -4 to remove .sif
     outputfile_f = open(NEW_FILE_NAME, 'w')
     outputfile_f.write(lottie_string)
     outputfile_f.close()
