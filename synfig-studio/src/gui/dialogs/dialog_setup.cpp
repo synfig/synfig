@@ -491,6 +491,32 @@ Option (ON by default) to make sure that if you ask for 50, you get 50% of the b
 (especially for radius) to be in the top right quadrant of the 2D space. Allow to set \
 the real value to any number and also easily reach the value of 0.0 just \
 dragging the handle to the left bottom part of your 2D space.");
+
+	attach_label_section(pi.grid, _("Edit in external"), ++row);
+	attach_label(pi.grid,_("Preferred image editor"), ++row);
+	pi.grid->attach(image_editor_path, 1, row, 1, 1);
+	image_editor_path.set_hexpand(true);
+
+
+
+// Brushes path buttons
+		// Gtk::Grid* brush_path_btn_grid(manage (new Gtk::Grid()));
+		// Gtk::Button* brush_path_add(manage (new Gtk::Button()));
+		// brush_path_add->set_image_from_icon_name("add", Gtk::ICON_SIZE_BUTTON);
+		// brush_path_btn_grid->attach(*brush_path_add, 0, 0, 1, 1);
+		// brush_path_add->set_halign(Gtk::ALIGN_END);
+		// brush_path_add->signal_clicked().connect(
+		// 		sigc::mem_fun(*this, &Dialog_Setup::on_brush_path_add_clicked));
+		// Gtk::Button* brush_path_remove(manage (new Gtk::Button()));
+		// brush_path_remove->set_image_from_icon_name("remove", Gtk::ICON_SIZE_BUTTON);
+		// brush_path_btn_grid->attach(*brush_path_remove, 0, 1, 1, 1);
+		// brush_path_remove->set_halign(Gtk::ALIGN_END);
+		// brush_path_remove->signal_clicked().connect(
+		// 		sigc::mem_fun(*this, &Dialog_Setup::on_brush_path_remove_clicked));
+		// pi.grid->attach(*brush_path_btn_grid, 0, ++row, 1, 2);
+		// brush_path_btn_grid->set_halign(Gtk::ALIGN_END);
+		// ++row;
+	
 }
 
 void

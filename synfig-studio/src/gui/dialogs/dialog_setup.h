@@ -226,6 +226,7 @@ class Dialog_Setup : public Dialog_Template
 	Gtk::Switch toggle_handle_tooltip_radius;
 	Gtk::Switch toggle_handle_tooltip_transformation;
 	Gtk::Switch toggle_autobackup;
+	Gtk::Entry image_editor_path;
 
 	long pref_modification_flag;
 	//! Do not update state flag on refreshing
