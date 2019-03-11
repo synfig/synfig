@@ -289,6 +289,7 @@ SurfaceResource::create(int width, int height)
 		this->width  = 0;
 		this->height = 0;
 	}
+	blank = true;
 	surfaces.clear();
 }
 
@@ -304,6 +305,7 @@ SurfaceResource::assign(Surface::Handle surface)
 
 	width = 0;
 	height = 0;
+	blank = true;
 	surfaces.clear();
 	if (!surface->is_exists())
 		return;
@@ -311,6 +313,7 @@ SurfaceResource::assign(Surface::Handle surface)
 	surfaces[surface->get_token()] = surface;
 	width = surface->get_width();
 	height = surface->get_height();
+	blank = surface->is_blank();
 }
 
 void
@@ -318,6 +321,7 @@ SurfaceResource::clear()
 {
 	Glib::Threads::RWLock::WriterLock lock(rwlock);
 	Glib::Threads::Mutex::Lock short_lock(mutex);
+	blank = true;
 	surfaces.clear();
 }
 
@@ -328,6 +332,7 @@ SurfaceResource::reset()
 	Glib::Threads::Mutex::Lock short_lock(mutex);
 	width = 0;
 	height = 0;
+	blank = true;
 	surfaces.clear();
 }
 
