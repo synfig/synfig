@@ -224,8 +224,8 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 							blockrd.set_subwindow(0,i*rowheight,desc.get_w(),rowheight);
 						}
 
-						synfig::info( " -- block %d/%d left, top, width, height: %d, %d, %d, %d",
-							i+1, rows, 0, i*rowheight, blockrd.get_w(), blockrd.get_h() );
+						//synfig::info( " -- block %d/%d left, top, width, height: %d, %d, %d, %d",
+						//	i+1, rows, 0, i*rowheight, blockrd.get_w(), blockrd.get_h() );
 
 						if(!call_renderer(context,surface,quality,blockrd,0))
 						{
@@ -370,8 +370,8 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 						blockrd.set_subwindow(0,i*rowheight,desc.get_w(),rowheight);
 					}
 
-					synfig::info( " -- block %d/%d left, top, width, height: %d, %d, %d, %d",
-						i+1, rows, 0, i*rowheight, blockrd.get_w(), blockrd.get_h() );
+					//synfig::info( " -- block %d/%d left, top, width, height: %d, %d, %d, %d",
+					//	i+1, rows, 0, i*rowheight, blockrd.get_w(), blockrd.get_h() );
 
 					SuperCallback sc(cb, i*rowheight, (i+1)*rowheight, totalheight);
 
