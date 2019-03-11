@@ -279,9 +279,8 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 									return false;
 								}
 							}
-
-							surface->reset();
 						}
+						surface->reset();
 					}
 
 					end_frame();
