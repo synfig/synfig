@@ -40,7 +40,6 @@
 #include <synfig/canvas.h>
 #include <synfig/string.h>
 #include "simplecircle.h"
-#include "filledrect.h"
 #include "metaballs.h"
 
 #endif
@@ -58,7 +57,6 @@ MODULE_DESC_END
 MODULE_INVENTORY_BEGIN(libmod_example)
 	BEGIN_LAYERS
 		LAYER(SimpleCircle)
-		LAYER(FilledRect)
 		LAYER(Metaballs)
 	END_LAYERS
 MODULE_INVENTORY_END
