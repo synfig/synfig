@@ -179,6 +179,46 @@ elif which zypper >/dev/null; then
         echo "Running zypper (you need root privelegies to do that)..."
         su -c "zypper install $PKG_LIST" || true
     fi
+elif which pacman >/dev/null; then
+    #
+    # Arch Linux
+    #
+    PKG_LIST="git \
+            atk \
+            automake autoconf \
+            boost \
+            bzip2 \
+            cairo \
+            freetype2 \
+            fftw \
+            fontconfig \
+            gtk3 \
+            gettext \
+            gtkmm3 \
+            glibmm \
+            gcc \
+            imagemagick \
+            jack \
+            libxml2 \
+            libxml++ \
+            libtiff \
+            libx11 libxext libxt libxi libxinerama libxfixes libxdamage libxcomposite libxcursor libxft libxrender libxrandr \
+            libtool \
+            libpng \
+            libsigc++ \
+            libjpeg \
+            libmng \
+            openexr \
+            ocl-icd \
+            opencl-headers \
+            pango \
+            sdl \
+            sdl2 \
+            shared-mime-info"
+    echo "Running pacman (you need root previllages to do that)..."
+    echo
+    sudo pacman -S --needed --noconfirm $PKG_LIST || true
+
 else
     echo "WARNING: This build script does not works with package mangement systems other than yum, zypper or apt! You should install dependent packages manually."
     echo "REQUIRED PACKAGES: "
