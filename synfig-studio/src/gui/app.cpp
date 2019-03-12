@@ -1724,7 +1724,7 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		/* other */
 		state_manager->add_state(&state_text);
 		if(!getenv("SYNFIG_DISABLE_SKETCH" )) state_manager->add_state(&state_sketch);
-		if(!getenv("SYNFIG_DISABLE_BRUSH"  )) state_manager->add_state(&state_brush);
+		if(!getenv("SYNFIG_DISABLE_BRUSH"  ) && App::enable_experimental_features) state_manager->add_state(&state_brush);
 		state_manager->add_state(&state_zoom);
 
 

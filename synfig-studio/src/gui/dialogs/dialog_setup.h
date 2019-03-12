@@ -185,7 +185,7 @@ class Dialog_Setup : public Dialog_Template
 
 	Gtk::Switch toggle_restrict_radius_ducks;
 	Gtk::Switch toggle_resize_imported_images;
-	Gtk::CheckButton toggle_enable_experimental_features;
+	Gtk::Switch toggle_enable_experimental_features;
 	Gtk::Switch toggle_use_dark_theme;
 	Gtk::Switch toggle_show_file_toolbar;
 

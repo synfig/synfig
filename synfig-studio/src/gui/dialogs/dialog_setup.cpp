@@ -263,10 +263,13 @@ Dialog_Setup::create_system_page(PageInfo pi)
 		brush_path_btn_grid->set_halign(Gtk::ALIGN_END);
 		++row;
 	}
-	// System - 11 enable_experimental_features
-	//attach_label(pi.grid, _("Experimental features (restart needed)"), ++row);
-	//pi.grid->attach(toggle_enable_experimental_features, 1, row, 1, 1);
-	//toggle_enable_experimental_features.set_hexpand(true);
+	// System - 11 Experimental Features section
+	// System - enable_experimental_features
+	attach_label_section(pi.grid, _("Experimental Features"), ++row);
+	attach_label(pi.grid, _("Experimental features (requires restart)"), ++row);
+	pi.grid->attach(toggle_enable_experimental_features, 1, row, 1, 1);
+	toggle_enable_experimental_features.set_halign(Gtk::ALIGN_START);
+	toggle_enable_experimental_features.set_hexpand(false);
 
 #ifdef SINGLE_THREADED
 	// System - 12 single_threaded
