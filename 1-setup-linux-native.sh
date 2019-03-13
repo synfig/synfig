@@ -210,6 +210,7 @@ elif which pacman >/dev/null; then
             libsigc++ \
             libjpeg \
             libmng \
+	    mlt \
             openexr \
             ocl-icd \
             opencl-headers \
