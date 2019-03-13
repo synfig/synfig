@@ -493,32 +493,51 @@ the real value to any number and also easily reach the value of 0.0 just \
 dragging the handle to the left bottom part of your 2D space.");
 
 	attach_label_section(pi.grid, _("Edit in external"), ++row);
-	attach_label(pi.grid,_("Preferred image editor"), ++row);
-	pi.grid->attach(image_editor_path, 1, row, 1, 1);
-	image_editor_path.set_hexpand(true);
-
-
-
-// Brushes path buttons
-		// Gtk::Grid* brush_path_btn_grid(manage (new Gtk::Grid()));
-		// Gtk::Button* brush_path_add(manage (new Gtk::Button()));
-		// brush_path_add->set_image_from_icon_name("add", Gtk::ICON_SIZE_BUTTON);
-		// brush_path_btn_grid->attach(*brush_path_add, 0, 0, 1, 1);
-		// brush_path_add->set_halign(Gtk::ALIGN_END);
-		// brush_path_add->signal_clicked().connect(
-		// 		sigc::mem_fun(*this, &Dialog_Setup::on_brush_path_add_clicked));
-		// Gtk::Button* brush_path_remove(manage (new Gtk::Button()));
-		// brush_path_remove->set_image_from_icon_name("remove", Gtk::ICON_SIZE_BUTTON);
-		// brush_path_btn_grid->attach(*brush_path_remove, 0, 1, 1, 1);
-		// brush_path_remove->set_halign(Gtk::ALIGN_END);
-		// brush_path_remove->signal_clicked().connect(
-		// 		sigc::mem_fun(*this, &Dialog_Setup::on_brush_path_remove_clicked));
-		// pi.grid->attach(*brush_path_btn_grid, 0, ++row, 1, 2);
-		// brush_path_btn_grid->set_halign(Gtk::ALIGN_END);
-		// ++row;
+	Gtk::Button *choose_button(manage(new class Gtk::Button(Gtk::StockID(_("Choose Preferred Image Editor")))));
+	choose_button->show();
+	//create a function to launch the dialog
+	choose_button->signal_clicked().connect(sigc::mem_fun(*this,&Dialog_Setup::on_choose_editor_pressed));
+	pi.grid->attach(*choose_button, 0,++row,1,1);
+	pi.grid->attach(image_editor_path, 1, row, 3, 2);
+	// image_editor_path.set_hexpand(true);
 	
 }
 
+
+void
+Dialog_Setup::on_choose_editor_pressed()
+{
+	String filepath=image_editor_path.get_text();
+	std::cout<<"Filename "<<filepath<<"\n";
+	if(some_cool_fun("Select Editor", filepath, RENDER_DIR_PREFERENCE))
+		image_editor_path.set_text(filepath);
+}
+
+bool Dialog_Setup::some_cool_fun(const std::string &title, std::string &filepath, std::string preference)
+{
+
+	Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(*App::main_window,
+				title, Gtk::FILE_CHOOSER_ACTION_OPEN);
+
+  dialog->set_transient_for(*App::main_window);
+  dialog->set_current_folder("/usr/bin");
+
+  //Add response buttons the the dialog:
+  dialog->add_button("_Cancel", Gtk::RESPONSE_CANCEL);
+  dialog->add_button("Select", Gtk::RESPONSE_OK);
+  	if(dialog->run() == Gtk::RESPONSE_OK) {
+		filepath = dialog->get_filename();
+		filepath = absolute_path(filepath);
+			std::cout<<"Filename "<<absolute_path(filepath)<<"\n";
+
+		// info("Saving preference %s = '%s' in App::dialog_open_file()", preference.c_str(), dirname(filename).c_str());
+		//_preferences.set_value(preference, dirname(filename));
+		delete dialog;
+		return true;
+	}
+	delete dialog;
+	return false;
+}
 void
 Dialog_Setup::create_render_page(PageInfo pi)
 {

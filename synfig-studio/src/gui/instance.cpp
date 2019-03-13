@@ -1592,14 +1592,14 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas,const st
 		make_param_menu(menu,canvas,value_desc, 0.f, false);
 }
 
-
+// this one is useful for me
 void
 Instance::gather_uri(std::set<synfig::String> &x, const synfig::ValueNode::Handle &value_node) const
-{
+{	//check for null value
 	if (!value_node || !value_node->get_parent_canvas()) return;
-
+	
 	LinkableValueNode::Handle linkable_value_node = LinkableValueNode::Handle::cast_dynamic(value_node);
-	if (!linkable_value_node) return;
+	if (!linkable_value_node) return;	//check that linkable_value_node is not empty
 
 	FileSystem::Handle file_system = value_node->get_parent_canvas()->get_file_system();
 	if (!file_system) return;
