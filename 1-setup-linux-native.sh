@@ -198,6 +198,7 @@ elif which pacman >/dev/null; then
             glibmm \
             gcc \
             imagemagick \
+	    intltool \
             jack \
             libxml2 \
             libxml++ \
