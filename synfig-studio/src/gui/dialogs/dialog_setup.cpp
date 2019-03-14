@@ -521,7 +521,15 @@ Dialog_Setup::select_path_dialog(const std::string &title, std::string &filepath
 {
 	Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(*App::main_window,title, Gtk::FILE_CHOOSER_ACTION_OPEN);
 	dialog->set_transient_for(*App::main_window);
-	dialog->set_current_folder("/usr/bin");
+	#ifdef WIN32
+	dialog->set_current_folder("C:/Program Files");
+
+	#elif defined(__APPLE__)
+    dialog->set_current_folder("/Applications");
+
+	#else
+    	dialog->set_current_folder("/usr/bin");
+	#endif
 
 	//Add response buttons the the dialog:
 	dialog->add_button("_Cancel", Gtk::RESPONSE_CANCEL);

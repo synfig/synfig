@@ -3517,11 +3517,25 @@ try_open_img_external(const std::string &uri)
 	std::string::size_type i = new_uri.find(s);
 	if (i != std::string::npos)
    		new_uri.erase(i, s.length());
+	size_t start_pos = 0;
+	std::string to = " ";
+	std::string from = "%20";
+    while((start_pos = new_uri.find(from, start_pos)) != std::string::npos) {
+        new_uri.replace(start_pos, from.length(), to);
+        start_pos += to.length(); // In case 'to' contains 'from', like replacing 'x' with 'yx'
+    }
+	new_uri = "\"" + new_uri + "\"";
 	if(App::IMAGE_EDITOR_PATH!="")
 	{
 		#ifdef WIN32
-    	ShellExecute(GetActiveWindow(),
-        	 "open", url, NULL, NULL, SW_SHOWNORMAL);
+		char buffer[512];
+    	::snprintf(buffer, sizeof(buffer), "%s %s",App::IMAGE_EDITOR_PATH.c_str(), new_uri.c_str());
+    	//::system(buffer);
+		Glib::spawn_command_line_sync(buffer);
+		#elif defined(__APPLE__)
+    	char buffer[512];
+    	::snprintf(buffer, sizeof(buffer), "open -a %s %s", App::IMAGE_EDITOR_PATH.c_str(), new_uri.c_str());
+    	::system(buffer);
 		#else
     	char buffer[512];
     	::snprintf(buffer, sizeof(buffer), "%s %s",App::IMAGE_EDITOR_PATH.c_str(), new_uri.c_str());
@@ -3549,6 +3563,7 @@ try_open_uri(const std::string &uri)
 	return gtk_show_uri(NULL, uri.c_str(), GDK_CURRENT_TIME, NULL);
 #endif
 }
+
 
 void
 App::dialog_help()
