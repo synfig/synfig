@@ -79,10 +79,9 @@ void
 Rectangle::sync_vfunc()
 {
 	Real expand = fabs(param_expand.get(Real()));
+	Real bevel = fabs(param_bevel.get(Real()));
 	Point p0 = param_point1.get(Point());
 	Point p1 = param_point2.get(Point());
-	Real bevel = fabs(param_bevel.get(Real()));
-	bool bev_circle = param_bevCircle.get(bool());
 	if (p1[0] < p0[0]) swap(p0[0], p1[0]);
 	if (p1[1] < p0[1]) swap(p0[1], p1[1]);
 
@@ -95,30 +94,32 @@ Rectangle::sync_vfunc()
 
 	set_stored_polygon(list);
 
-	Real w = p1[0] - p0[0];
-	Real h = p1[1] - p0[1];
+	bool bev_circle = param_bevCircle.get(bool());
+	
+	Real w = p1[0] - p0[0] + 2*expand;
+	Real h = p1[1] - p0[1] + 2*expand;
 	Real bev = (bevel > 1) ? 1 : bevel;
 	Real bevx = bev_circle ? min(w*bev/2.0, h*bev/2.0) : w*bev/2.0;
 	Real bevy = bev_circle ? min(w*bev/2.0, h*bev/2.0) : h*bev/2.0;
 	clear();
 	if (approximate_equal(bevel, 0.0))
 	{
-		move_to(p0[0], p0[1]);
-		line_to(p1[0], p0[1]);
-		line_to(p1[0], p1[1]);
-		line_to(p0[0], p1[1]);
+		move_to(p0[0] - expand, p0[1] - expand);
+		line_to(p1[0] + expand, p0[1] - expand);
+		line_to(p1[0] + expand, p1[1] + expand);
+		line_to(p0[0] - expand, p1[1] + expand);
 		close();
 	}
 	else
 	{
-		move_to (p1[0]-bevx, p0[1]);
-		conic_to(p1[0], p0[1]+bevy, p1[0], p0[1]);
-		line_to (p1[0], p1[1]-bevy);
-		conic_to(p1[0]-bevx, p1[1], p1[0], p1[1]);
-		line_to (p0[0]+bevx, p1[1]);
-		conic_to(p0[0], p1[1]-bevy, p0[0], p1[1]);
-		line_to (p0[0], p0[1]+bevy);
-		conic_to(p0[0]+bevx, p0[1], p0[0], p0[1]);
+		move_to (p1[0] + expand -bevx, p0[1]-expand);
+		conic_to(p1[0]+expand, p0[1]-expand+bevy, p1[0]+expand, p0[1]-expand);
+		line_to (p1[0]+expand, p1[1]+expand-bevy);
+		conic_to(p1[0]+expand-bevx, p1[1]+expand, p1[0]+expand, p1[1]+expand);
+		line_to (p0[0]-expand+bevx, p1[1]+expand);
+		conic_to(p0[0]-expand, p1[1]+expand-bevy, p0[0]-expand, p1[1]+expand);
+		line_to (p0[0]-expand, p0[1]-expand+bevy);
+		conic_to(p0[0]-expand+bevx, p0[1]-expand, p0[0]-expand, p0[1]-expand);
 		close();
 	}
 }
