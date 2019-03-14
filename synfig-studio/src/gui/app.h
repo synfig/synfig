@@ -227,7 +227,7 @@ public:
 	static bool show_file_toolbar;
 
 	static synfigapp::PluginManager plugin_manager;
-
+	static synfig::String IMAGE_EDITOR_PATH;
 	static std::set< synfig::String > brushes_path;
 	static synfig::String custom_filename_prefix;
 	static int preferred_x_size;
@@ -441,6 +441,8 @@ public:
 			const std::string &button3);
 
 	static void open_uri(const std::string &uri);
+	static void open_img_in_external(const std::string &uri);
+
 
 	static synfig::String get_config_file(const synfig::String& file);
 	// This will spread the changes made in preferences.

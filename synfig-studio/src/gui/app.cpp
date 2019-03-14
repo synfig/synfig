@@ -314,6 +314,8 @@ String studio::App::predefined_fps               (DEFAULT_PREDEFINED_FPS);
 float  studio::App::preferred_fps                = 24.0;
 synfigapp::PluginManager studio::App::plugin_manager;
 std::set< String >       studio::App::brushes_path;
+String studio::App::IMAGE_EDITOR_PATH;
+
 String studio::App::sequence_separator(".");
 String studio::App::navigator_renderer;
 String studio::App::workarea_renderer;
@@ -3507,7 +3509,35 @@ App::dialog_message_3b(const std::string &message,
 	return dialog.run();
 }
 
+static bool
+try_open_img_external(const std::string &uri)
+{
+	std::string new_uri=uri;
+	std::string s = "file://";
+	std::string::size_type i = new_uri.find(s);
+	if (i != std::string::npos)
+   		new_uri.erase(i, s.length());
+	if(App::IMAGE_EDITOR_PATH!="")
+	{
+		#ifdef WIN32
+    	ShellExecute(GetActiveWindow(),
+        	 "open", url, NULL, NULL, SW_SHOWNORMAL);
+		#else
+    	char buffer[512];
+    	::snprintf(buffer, sizeof(buffer), "%s %s",App::IMAGE_EDITOR_PATH.c_str(), new_uri.c_str());
+    	//::system(buffer);
+		Glib::spawn_command_line_sync(buffer);
+		#endif
+		return true;
 
+	}
+	else
+	{
+		return false;
+	}
+	
+	
+}
 static bool
 try_open_uri(const std::string &uri)
 {
@@ -3531,7 +3561,18 @@ App::dialog_help()
 		dialog.run();
 	}
 }
+void App::open_img_in_external(const std::string &uri)
+{
+	synfig::info("Opening with external tool: " + uri);
+	if(!try_open_img_external(uri))
+	{
+		Gtk::MessageDialog dialog(*App::main_window, _("No Preferred editing tool was set in Edit->Preferences->Editing:"), false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_CLOSE, true);
+		dialog.set_secondary_text(uri);
+		dialog.set_title(_("Error"));
+		dialog.run();
+	}
 
+}
 void App::open_uri(const std::string &uri)
 {
 	synfig::info("Opening URI: " + uri);

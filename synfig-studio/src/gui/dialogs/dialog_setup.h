@@ -150,7 +150,7 @@ class Dialog_Setup : public Dialog_Template
 	void on_brush_path_add_clicked();
 	void on_brush_path_remove_clicked();
 	void on_choose_editor_pressed();
-	bool some_cool_fun(const std::string &title, std::string &filename, std::string preference);
+	bool select_path_dialog(const std::string &title, std::string &filename, std::string preference);
 
 	void create_gamma_page(PageInfo pi);
 	void create_system_page(PageInfo pi);
@@ -229,7 +229,6 @@ class Dialog_Setup : public Dialog_Template
 	Gtk::Switch toggle_handle_tooltip_transformation;
 	Gtk::Switch toggle_autobackup;
 	Gtk::Entry image_editor_path;
-
 	long pref_modification_flag;
 	//! Do not update state flag on refreshing
 	bool refreshing;
