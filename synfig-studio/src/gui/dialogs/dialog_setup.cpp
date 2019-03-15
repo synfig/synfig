@@ -454,7 +454,8 @@ Dialog_Setup::create_editing_page(PageInfo pi)
 	 * OTHER
 	 *  [x] Linear color
 	 *  [x] Restrict radius
-	 *
+	 * EDIT IN EXTERNAL
+	 * 	Preferred image editor [image_editor_path] (choose..)
 	 *
 	 */
 
@@ -494,16 +495,19 @@ dragging the handle to the left bottom part of your 2D space.");
 
 	attach_label_section(pi.grid, _("Edit in external"), ++row);
 
+	attach_label(pi.grid,_("Preferred image editor"), ++row);
+
 	//create a button that will open the filechooserdialog to select image editor
-	Gtk::Button *choose_button(manage(new class Gtk::Button(Gtk::StockID(_("Choose preferred Image Editor")))));
+	Gtk::Button *choose_button(manage(new class Gtk::Button(Gtk::StockID(_("Choose..")))));
 	choose_button->show();
 	choose_button->set_tooltip_text("Choose the preferred Image editor for Edit in external tool option");
 	
 	//create a function to launch the dialog
 	choose_button->signal_clicked().connect(sigc::mem_fun(*this,&Dialog_Setup::on_choose_editor_pressed));
-	pi.grid->attach(*choose_button, 0,++row,1,1);
-	pi.grid->attach(image_editor_path, 1, row, 1, 1);
-	image_editor_path.set_hexpand(true);
+	pi.grid->attach(image_editor_path_entry, 1, row, 1, 1);
+	pi.grid->attach(*choose_button, 2,row,1,1);
+	image_editor_path_entry.set_hexpand(true);
+	image_editor_path_entry.set_text(App::image_editor_path);
 	
 }
 
@@ -511,9 +515,11 @@ dragging the handle to the left bottom part of your 2D space.");
 void
 Dialog_Setup::on_choose_editor_pressed()
 {
-	String filepath=image_editor_path.get_text();
+	//set the image editor path = filepath from dialog
+	String filepath=image_editor_path_entry.get_text();
 	if(select_path_dialog("Select Editor", filepath, RENDER_DIR_PREFERENCE))
-		image_editor_path.set_text(filepath);
+		image_editor_path_entry.set_text(filepath);
+		App::image_editor_path = filepath;
 }
 
 bool 
@@ -788,7 +794,7 @@ Dialog_Setup::on_apply_pressed()
 	App::custom_filename_prefix = textbox_custom_filename_prefix.get_text();
 
 	// Set the preferred image editor
-	App::IMAGE_EDITOR_PATH = image_editor_path.get_text();
+	App::image_editor_path = image_editor_path_entry.get_text();
 
 	// Set the preferred new Document X dimension
 	App::preferred_x_size       = int(adj_pref_x_size->get_value());
@@ -1045,7 +1051,7 @@ Dialog_Setup::refresh()
 	toggle_show_file_toolbar.set_active(App::show_file_toolbar);
 
 	// Refresh the preferred image editor path
-	image_editor_path.set_text("");
+	image_editor_path_entry.set_text(App::image_editor_path);
 
 	// Refresh the brush path(s)
 	Glib::RefPtr<Gtk::ListStore> liststore = Glib::RefPtr<Gtk::ListStore>::cast_dynamic(

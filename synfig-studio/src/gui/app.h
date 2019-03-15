@@ -227,7 +227,7 @@ public:
 	static bool show_file_toolbar;
 
 	static synfigapp::PluginManager plugin_manager;
-	static synfig::String IMAGE_EDITOR_PATH;
+	static synfig::String image_editor_path;
 	static std::set< synfig::String > brushes_path;
 	static synfig::String custom_filename_prefix;
 	static int preferred_x_size;
