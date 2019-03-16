@@ -3531,11 +3531,14 @@ try_open_img_external(const std::string &uri)
 	std::string s = "file://";
 	std::string::size_type i = new_uri.find(s);
 	if (i != std::string::npos)
-   		new_uri.erase(i, s.length());
-	size_t start_pos = 0;
+	{
+		new_uri.erase(i, s.length());
+	}
+   	size_t start_pos = 0;
 	std::string to = " ";
 	std::string from = "%20";
-    while((start_pos = new_uri.find(from, start_pos)) != std::string::npos) {
+    while((start_pos = new_uri.find(from, start_pos)) != std::string::npos) 
+	{
         new_uri.replace(start_pos, from.length(), to);
         start_pos += to.length(); // In case 'to' contains 'from', like replacing 'x' with 'yx'
     }
@@ -3543,19 +3546,17 @@ try_open_img_external(const std::string &uri)
 	if(App::image_editor_path!="")
 	{
 		#ifdef WIN32
-		char buffer[512];
-    	::snprintf(buffer, sizeof(buffer), "%s %s",App::image_editor_path.c_str(), new_uri.c_str());
-    	//::system(buffer);
-		Glib::spawn_command_line_sync(buffer);
+			char buffer[512];
+    		::snprintf(buffer, sizeof(buffer), "%s %s",App::image_editor_path.c_str(), new_uri.c_str());
+    		Glib::spawn_command_line_sync(buffer);
 		#elif defined(__APPLE__)
-    	char buffer[512];
-    	::snprintf(buffer, sizeof(buffer), "open -a %s %s", App::image_editor_path.c_str(), new_uri.c_str());
-    	::system(buffer);
+    		char buffer[512];
+    		::snprintf(buffer, sizeof(buffer), "open -a %s %s", App::image_editor_path.c_str(), new_uri.c_str());
+    		::system(buffer);
 		#else
-    	char buffer[512];
-    	::snprintf(buffer, sizeof(buffer), "%s %s",App::image_editor_path.c_str(), new_uri.c_str());
-    	//::system(buffer);
-		Glib::spawn_command_line_sync(buffer);
+    		char buffer[512];
+    		::snprintf(buffer, sizeof(buffer), "%s %s",App::image_editor_path.c_str(), new_uri.c_str());
+			Glib::spawn_command_line_sync(buffer);
 		#endif
 		return true;
 

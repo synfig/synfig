@@ -517,18 +517,18 @@ Dialog_Setup::on_choose_editor_pressed()
 {
 	//set the image editor path = filepath from dialog
 	String filepath=image_editor_path_entry.get_text();
-	if(select_path_dialog("Select Editor", filepath, RENDER_DIR_PREFERENCE))
+	if(select_path_dialog("Select Editor", filepath ))
 		image_editor_path_entry.set_text(filepath);
 		App::image_editor_path = filepath;
 }
 
 bool 
-Dialog_Setup::select_path_dialog(const std::string &title, std::string &filepath, std::string preference)
+Dialog_Setup::select_path_dialog(const std::string &title, std::string &filepath)
 {
 	Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(*App::main_window,title, Gtk::FILE_CHOOSER_ACTION_OPEN);
 	dialog->set_transient_for(*App::main_window);
 	#ifdef WIN32
-	dialog->set_current_folder("C:/Program Files");
+	dialog->set_current_folder("C:\Program Files");
 
 	#elif defined(__APPLE__)
     dialog->set_current_folder("/Applications");

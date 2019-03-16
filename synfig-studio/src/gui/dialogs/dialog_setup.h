@@ -150,7 +150,7 @@ class Dialog_Setup : public Dialog_Template
 	void on_brush_path_add_clicked();
 	void on_brush_path_remove_clicked();
 	void on_choose_editor_pressed();
-	bool select_path_dialog(const std::string &title, std::string &filename, std::string preference);
+	bool select_path_dialog(const std::string &title, std::string &filename);
 
 	void create_gamma_page(PageInfo pi);
 	void create_system_page(PageInfo pi);
