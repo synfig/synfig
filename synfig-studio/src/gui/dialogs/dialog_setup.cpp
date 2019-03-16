@@ -454,7 +454,8 @@ Dialog_Setup::create_editing_page(PageInfo pi)
 	 * OTHER
 	 *  [x] Linear color
 	 *  [x] Restrict radius
-	 *
+	 * EDIT IN EXTERNAL
+	 * 	Preferred image editor [image_editor_path] (choose..)
 	 *
 	 */
 
@@ -485,12 +486,68 @@ Option (ON by default) to make sure that if you ask for 50, you get 50% of the b
 	// Editing - Restrict Really-valued Handles to Top Right Quadrant
 	attach_label(pi.grid,_("Restrict really-valued handles to top right quadrant"), ++row);
 	pi.grid->attach(toggle_restrict_radius_ducks, 1, row, 1, 1);
-	toggle_restrict_radius_ducks.set_halign(Gtk::ALIGN_END);
+	toggle_restrict_radius_ducks.set_halign(Gtk::ALIGN_START);
 	toggle_restrict_radius_ducks.set_hexpand(false);
 	toggle_restrict_radius_ducks.set_tooltip_text("Restrict the position of the handle \
 (especially for radius) to be in the top right quadrant of the 2D space. Allow to set \
 the real value to any number and also easily reach the value of 0.0 just \
 dragging the handle to the left bottom part of your 2D space.");
+
+	attach_label_section(pi.grid, _("Edit in external"), ++row);
+
+	attach_label(pi.grid,_("Preferred image editor"), ++row);
+
+	//create a button that will open the filechooserdialog to select image editor
+	Gtk::Button *choose_button(manage(new class Gtk::Button(Gtk::StockID(_("Choose..")))));
+	choose_button->show();
+	choose_button->set_tooltip_text("Choose the preferred Image editor for Edit in external tool option");
+	
+	//create a function to launch the dialog
+	choose_button->signal_clicked().connect(sigc::mem_fun(*this,&Dialog_Setup::on_choose_editor_pressed));
+	pi.grid->attach(image_editor_path_entry, 1, row, 1, 1);
+	pi.grid->attach(*choose_button, 2,row,1,1);
+	image_editor_path_entry.set_hexpand(true);
+	image_editor_path_entry.set_text(App::image_editor_path);
+	
+}
+
+
+void
+Dialog_Setup::on_choose_editor_pressed()
+{
+	//set the image editor path = filepath from dialog
+	String filepath=image_editor_path_entry.get_text();
+	if(select_path_dialog("Select Editor", filepath ))
+		image_editor_path_entry.set_text(filepath);
+		App::image_editor_path = filepath;
+}
+
+bool 
+Dialog_Setup::select_path_dialog(const std::string &title, std::string &filepath)
+{
+	Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(*App::main_window,title, Gtk::FILE_CHOOSER_ACTION_OPEN);
+	dialog->set_transient_for(*App::main_window);
+	#ifdef WIN32
+	dialog->set_current_folder("C:\\Program Files");
+
+	#elif defined(__APPLE__)
+    dialog->set_current_folder("/Applications");
+
+	#else
+    	dialog->set_current_folder("/usr/bin");
+	#endif
+
+	//Add response buttons the the dialog:
+	dialog->add_button("_Cancel", Gtk::RESPONSE_CANCEL);
+	dialog->add_button("Select", Gtk::RESPONSE_OK);
+  	if(dialog->run() == Gtk::RESPONSE_OK) {
+		filepath = dialog->get_filename();
+		filepath = absolute_path(filepath);	//get the absolute path
+		delete dialog;
+		return true;
+	}
+	delete dialog;
+	return false;
 }
 
 void
@@ -735,6 +792,9 @@ Dialog_Setup::on_apply_pressed()
 
 	// Set the preferred file name prefix
 	App::custom_filename_prefix = textbox_custom_filename_prefix.get_text();
+
+	// Set the preferred image editor
+	App::image_editor_path = image_editor_path_entry.get_text();
 
 	// Set the preferred new Document X dimension
 	App::preferred_x_size       = int(adj_pref_x_size->get_value());
@@ -989,6 +1049,9 @@ Dialog_Setup::refresh()
 
 	// Refresh the status of file toolbar flag
 	toggle_show_file_toolbar.set_active(App::show_file_toolbar);
+
+	// Refresh the preferred image editor path
+	image_editor_path_entry.set_text(App::image_editor_path);
 
 	// Refresh the brush path(s)
 	Glib::RefPtr<Gtk::ListStore> liststore = Glib::RefPtr<Gtk::ListStore>::cast_dynamic(

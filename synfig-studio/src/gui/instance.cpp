@@ -1592,14 +1592,14 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas,const st
 		make_param_menu(menu,canvas,value_desc, 0.f, false);
 }
 
-
+// this one is useful for me
 void
 Instance::gather_uri(std::set<synfig::String> &x, const synfig::ValueNode::Handle &value_node) const
-{
+{	//check for null value
 	if (!value_node || !value_node->get_parent_canvas()) return;
-
+	
 	LinkableValueNode::Handle linkable_value_node = LinkableValueNode::Handle::cast_dynamic(value_node);
-	if (!linkable_value_node) return;
+	if (!linkable_value_node) return;	//check that linkable_value_node is not empty
 
 	FileSystem::Handle file_system = value_node->get_parent_canvas()->get_file_system();
 	if (!file_system) return;
@@ -1731,19 +1731,35 @@ Instance::add_special_layer_actions_to_menu(Gtk::Menu *menu, const synfigapp::Se
 void
 Instance::add_special_layer_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup>& action_group, synfig::String& ui_info, const synfigapp::SelectionManager::LayerList &layers) const
 {
+	vector <String> img_ext{".jpg",".jpeg",".png",".bmp",".gif"};
 	std::map<String, String> uris;
 	gather_uri(uris, layers);
 	int index = 0;
 	for(std::map<String, String>::const_iterator i = uris.begin(); i != uris.end(); ++i, ++index)
 	{
 		String action_name = etl::strprintf("special-action-open-file-%d", index);
-		String local_name = String(_("Open file")) + " '" + i->first + "'";
-		action_group->add(
-			Gtk::Action::create(
-				action_name,
-				Gtk::Stock::OPEN,
-				local_name, local_name ),
-			sigc::bind(sigc::ptr_fun(&App::open_uri), i->second) );
-		ui_info += strprintf("<menuitem action='%s' />", action_name.c_str());
+		//if the import layer is type image 
+		if(std::find(img_ext.begin(), img_ext.end(), filename_extension(i->second)) != img_ext.end())
+		{
+			String local_name = String(_("Edit image in external tool.."));
+			action_group->add(
+				Gtk::Action::create(
+					action_name,
+					Gtk::Stock::OPEN,
+					local_name, local_name ),
+				sigc::bind(sigc::ptr_fun(&App::open_img_in_external), i->second) );
+			ui_info += strprintf("<menuitem action='%s' />", action_name.c_str());
+		}
+		else
+		{
+			String local_name = String(_("Open file")) + " '" + i->first + "'";
+			action_group->add(
+				Gtk::Action::create(
+					action_name,
+					Gtk::Stock::OPEN,
+					local_name, local_name ),
+				sigc::bind(sigc::ptr_fun(&App::open_uri), i->second) );
+			ui_info += strprintf("<menuitem action='%s' />", action_name.c_str());
+		}
 	}
 }
