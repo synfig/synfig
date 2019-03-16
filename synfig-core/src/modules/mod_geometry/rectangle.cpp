@@ -69,7 +69,7 @@ Rectangle::Rectangle():
 	param_feather_x(ValueBase(Real(0))),
 	param_feather_y(ValueBase(Real(0))),
 	param_bevel(ValueBase(Real(0))),
-	param_bevCircle(ValueBase(bool(false)))
+	param_bevCircle(ValueBase(bool(true)))
 {
 	SET_INTERPOLATION_DEFAULTS();
 	SET_STATIC_DEFAULTS();
@@ -84,15 +84,6 @@ Rectangle::sync_vfunc()
 	Point p1 = param_point2.get(Point());
 	if (p1[0] < p0[0]) swap(p0[0], p1[0]);
 	if (p1[1] < p0[1]) swap(p0[1], p1[1]);
-
-	std::vector<Point> list(4);
-
-	list[0][0] = list[3][0] = p0[0] - expand;
-	list[0][1] = list[1][1] = p0[1] - expand;
-	list[2][0] = list[1][0] = p1[0] + expand;
-	list[2][1] = list[3][1] = p1[1] + expand;
-
-	set_stored_polygon(list);
 
 	bool bev_circle = param_bevCircle.get(bool());
 	
