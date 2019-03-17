@@ -1083,13 +1083,13 @@ void CanvasView::toggle_render_combobox()
 	// std::cout<<toggled<<" this is the value\n";
 	if (toggled == 0) {
 		
-		App::workarea_renderer = "software-draft";
+		App::navigator_renderer = App::workarea_renderer = "software-draft";
 	}
 	if (toggled == 1) {
-		App::workarea_renderer = "software-preview";
+		App::navigator_renderer = App::workarea_renderer = "software-preview";
 	}
 	if (toggled == 2) {
-		App::workarea_renderer = "software";
+		App::navigator_renderer = App::workarea_renderer = "software";
 	}
 		
 	App::save_settings();
