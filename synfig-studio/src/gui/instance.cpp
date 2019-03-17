@@ -1741,7 +1741,7 @@ Instance::add_special_layer_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup
 		//if the import layer is type image 
 		if(std::find(img_ext.begin(), img_ext.end(), filename_extension(i->second)) != img_ext.end())
 		{
-			String local_name = String(_("Edit image in external tool.."));
+			String local_name = String(_("Edit image in external tool..."));
 			action_group->add(
 				Gtk::Action::create(
 					action_name,
