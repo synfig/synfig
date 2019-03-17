@@ -220,7 +220,6 @@ class Dialog_Setup : public Dialog_Template
 	//Gtk::FileFilter         filter_any;
 
 	Gtk::Entry        image_sequence_separator;
-	Gtk::ComboBoxText navigator_renderer_combo;
 	Gtk::ComboBoxText workarea_renderer_combo;
 	Gtk::Switch       toggle_play_sound_on_render_done;
 

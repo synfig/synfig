@@ -556,7 +556,6 @@ Dialog_Setup::create_render_page(PageInfo pi)
 	/*---------Render------------------*\
 	 *
 	 *  sequence separator _________
-	 *   navigator [ Legacy ]
 	 *   workarea  [ Legacy ]
 	 *   play sound on render done  [x| ]
 	 *
@@ -567,9 +566,7 @@ Dialog_Setup::create_render_page(PageInfo pi)
 	attach_label(pi.grid, _("Image Sequence Separator String"), row);
 	pi.grid->attach(image_sequence_separator, 1, row, 1, 1);
 	image_sequence_separator.set_hexpand(true);
-	// Render - Navigator
-	attach_label(pi.grid, _("Navigator renderer"), ++row);
-	pi.grid->attach(navigator_renderer_combo, 1, row, 1, 1);
+
 	// Render - WorkArea
 	attach_label(pi.grid, _("WorkArea renderer"), ++row);
 	pi.grid->attach(workarea_renderer_combo, 1, row, 1, 1);
@@ -583,14 +580,12 @@ Dialog_Setup::create_render_page(PageInfo pi)
 			sigc::mem_fun(*this, &Dialog_Setup::on_play_sound_on_render_done_changed));
 
 	synfig::rendering::Renderer::Handle default_renderer = synfig::rendering::Renderer::get_renderer("");
-	navigator_renderer_combo.append("", String() + _("Default") + " - " + default_renderer->get_name());
 	workarea_renderer_combo.append("", String() + _("Default") + " - " + default_renderer->get_name());
 	typedef std::map<synfig::String, synfig::rendering::Renderer::Handle> RendererMap;
 	const RendererMap &renderers = synfig::rendering::Renderer::get_renderers();
 	for(RendererMap::const_iterator i = renderers.begin(); i != renderers.end(); ++i)
 	{
 		assert(!i->first.empty());
-		navigator_renderer_combo.append(i->first, i->second->get_name());
 		workarea_renderer_combo.append(i->first, i->second->get_name());
 	}
 
@@ -814,11 +809,8 @@ Dialog_Setup::on_apply_pressed()
 	// Set the preferred image sequence separator
 	App::sequence_separator     = image_sequence_separator.get_text();
 
-	// Set the navigator render flag
-	App::navigator_renderer     = navigator_renderer_combo.get_active_id();
-
-	// Set the workarea render flag
-	App::workarea_renderer      = workarea_renderer_combo.get_active_id();
+	// Set the workarea render and navigator render flag
+	App::navigator_renderer = App::workarea_renderer  = workarea_renderer_combo.get_active_id();
 
 	// Set the use of a render done sound
 	App::use_render_done_sound  = toggle_play_sound_on_render_done.get_active();
@@ -1108,9 +1100,6 @@ Dialog_Setup::refresh()
 
 	//Refresh the sequence separator
 	image_sequence_separator.set_text(App::sequence_separator);
-
-	// Refresh the status of the navigator_renderer
-	navigator_renderer_combo.set_active_id(App::navigator_renderer);
 
 	// Refresh the status of the workarea_renderer
 	workarea_renderer_combo.set_active_id(App::workarea_renderer);
