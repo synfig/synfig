@@ -140,7 +140,7 @@ public:
 	static void show_canvas_map(String file, int line, String text);
 #endif	// _DEBUG
 
-	//! Parse a Cavnas form a file with absolute path.
+	//! Parse a Cavnas from a file with absolute path.
 	Canvas::Handle parse_from_file_as(const FileSystem::Identifier &identifier,const String &as,String &errors);
 	//! Parse a Canvas from a xmlpp root node
 	Canvas::Handle parse_as(xmlpp::Element* node,String &errors);
