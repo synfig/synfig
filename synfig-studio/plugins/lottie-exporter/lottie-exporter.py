@@ -10,10 +10,16 @@ import xml.etree.ElementTree as ET
 import json
 import sys
 
-class count:
+class Count:
+    """
+    Class to keep count of variable
+    """
     def __init__(self):
         self.idx = -1
     def inc(self):
+        """
+        This method increases the count by 1 and returns the new count
+        """
         self.idx += 1
         return self.idx
 
@@ -41,6 +47,7 @@ DEFAULT_ROTATION = 0
 DEFAULT_OPACITY = 100
 GAMMA = 2.2
 PIX_PER_UNIT = 0
+TANGENT_FACTOR = 3
 
 def gen_canvas(lottie, root):
     """
@@ -83,16 +90,20 @@ def gen_properties_value(lottie, val, index, animated, expression):
     if expression != NO_INFO:
         lottie["x"] = expression
 
-def change_axis(x, y):
-    x, y = float(x), float(y)
-    x, y = x + lottie_format["w"]/2, -y + lottie_format["h"]/2
-    return [int(x), int(y)]
+def change_axis(x_val, y_val):
+    """
+    Convert synfig axis coordinates into lottie format
+    x_val and y_val should be in pixels
+    """
+    x_val, y_val = float(x_val), float(y_val)
+    x_val, y_val = x_val + lottie_format["w"]/2, -y_val + lottie_format["h"]/2
+    return [int(x_val), int(y_val)]
 
 def gen_helpers_transform(lottie, layer):
     """
     Generates the dictionary corresponding to helpers/transform.json
     """
-    index = count()
+    index = Count()
     lottie["o"] = {}    # opacity/Amount
     lottie["r"] = {}    # Rotation of the layer
     lottie["p"] = {}    # Position of the layer
@@ -109,9 +120,10 @@ def gen_helpers_transform(lottie, layer):
                     x_val = float(child[0][0].text) * PIX_PER_UNIT
                     y_val = float(child[0][1].text) * PIX_PER_UNIT
                     gen_properties_value(lottie["p"], change_axis(x_val, y_val),
-                            index.inc(), DEFAULT_ANIMATED, NO_INFO)
+                                         index.inc(), DEFAULT_ANIMATED, NO_INFO)
                 else:
-                    gen_properties_value(lottie["p"], [0, 0], index.inc(), DEFAULT_ANIMATED, NO_INFO)
+                    gen_properties_value(lottie["p"], [0, 0],
+                                         index.inc(), DEFAULT_ANIMATED, NO_INFO)
 
     gen_properties_value(
         lottie["r"],
@@ -151,7 +163,30 @@ def get_angle(theta):
     theta = theta % 360
     return theta
 
-def gen_properties_offsetKeyframe(lottie, waypoint, prev_Pos, cur_Pos, next_Pos, next_next_Pos, next_waypoint):
+def parse_position(animated, i):
+    """
+    To convert the synfig coordinates from units(initially a string) to pixels
+    """
+    pos = [float(animated[i][0][0].text),
+           float(animated[i][0][1].text)]
+    pos = [PIX_PER_UNIT*x for x in pos]
+    return pos
+
+def gen_properties_offset_keyframe(lottie, animated, i):
+    """
+     Generates the dictionary corresponding to properties/offsetKeyFrame.json
+    """
+    waypoint, next_waypoint = animated[i], animated[i+1]
+    # Calculate positions of waypoints
+    cur_pos = parse_position(animated, i)
+    prev_pos = cur_pos
+    next_pos = parse_position(animated, i + 1)
+    next_next_pos = next_pos
+    if i + 2 <= len(animated) - 1:
+        next_next_pos = parse_position(animated, i + 2)
+    if i - 1 >= 0:
+        prev_pos = parse_position(animated, i - 1)
+
     lottie["i"] = {}    # Time bezier curve, not used in synfig
     lottie["o"] = {}    # Time bezier curve, not used in synfig
     lottie["i"]["x"] = 0.7
@@ -159,75 +194,95 @@ def gen_properties_offsetKeyframe(lottie, waypoint, prev_Pos, cur_Pos, next_Pos,
     lottie["o"]["x"] = 0.3
     lottie["o"]["y"] = 0.0
     lottie["t"] = float(waypoint.attrib["time"][:-1]) * lottie_format["fr"]
-    lottie["s"] = change_axis(cur_Pos[0], cur_Pos[1])
-    lottie["e"] = change_axis(next_Pos[0], next_Pos[1])
-    t, b, c = 0, 0, 0   # default values
-    t1, b1, c1 = 0, 0, 0
+    lottie["s"] = change_axis(cur_pos[0], cur_pos[1])
+    lottie["e"] = change_axis(next_pos[0], next_pos[1])
+    tens, bias, cont = 0, 0, 0   # default values
+    tens1, bias1, cont1 = 0, 0, 0
     if "tension" in waypoint.keys():
-        t = float(waypoint.attrib["tension"])
+        tens = float(waypoint.attrib["tension"])
     if "continuity" in waypoint.keys():
-        c = float(waypoint.attrib["continuity"])
+        cont = float(waypoint.attrib["continuity"])
     if "bias" in waypoint.keys():
-        b = float(waypoint.attrib["bias"])
+        bias = float(waypoint.attrib["bias"])
     if "tension" in next_waypoint.keys():
-        t1 = float(next_waypoint.attrib["tension"])
+        tens1 = float(next_waypoint.attrib["tension"])
     if "continuity" in next_waypoint.keys():
-        c1 = float(next_waypoint.attrib["continuity"])
+        cont1 = float(next_waypoint.attrib["continuity"])
     if "bias" in next_waypoint.keys():
-        b1 = float(next_waypoint.attrib["bias"])
+        bias1 = float(next_waypoint.attrib["bias"])
     lottie["to"] = []
     lottie["ti"] = []
-    for dim in range(len(cur_Pos)):
-        out_val = ((1 - t) * (1 + b) * (1 + c) * (cur_Pos[dim] - prev_Pos[dim]))/2 + ((1 - t) * (1 - b) * (1 - c) * (next_Pos[dim] - cur_Pos[dim]))/2
+    for dim in range(len(cur_pos)):
+        if i >= 1:
+            out_val = ((1 - tens) * (1 + bias) * (1 + cont) *\
+                       (cur_pos[dim] - prev_pos[dim]))/2 +\
+                       ((1 - tens) * (1 - bias) * (1 - cont) *\
+                       (next_pos[dim] - cur_pos[dim]))/2
+        else:
+            out_val = next_pos[dim] - cur_pos[dim]      # t1 = p2 - p1
+        if i + 2 <= len(animated) - 1:
+            in_val = ((1 - tens1) * (1 + bias1) * (1 - cont1) *\
+                      (next_pos[dim] - cur_pos[dim]))/2 +\
+                      ((1 - tens1) * (1 - bias1) * (1 + cont1) *\
+                      (next_next_pos[dim] - next_pos[dim]))/2
+        else:
+            in_val = next_pos[dim] - cur_pos[dim]       # t2 = p2 - p1
         lottie["to"].append(out_val)
-        in_val = ((1 - t1) * (1 + b1) * (1 - c1) * (next_Pos[dim] - cur_Pos[dim]))/2 + ((1 - t1) * (1 - b1) * (1 + c1) * (next_next_Pos[dim] - next_Pos[dim]))/2
         lottie["ti"].append(in_val)
 
+    # Lottie and synfig use different tangents SEE DOCUMENTATION
+    lottie["ti"] = [-item for item in lottie["ti"]]
+
+    # Lottie tangent length is larger than synfig
+    lottie["ti"] = [item/TANGENT_FACTOR for item in lottie["ti"]]
+    lottie["to"] = [item/TANGENT_FACTOR for item in lottie["to"]]
+
     # IMPORTANT to and ti have to be relative
+    # The y-axis is different in lottie
     lottie["ti"][1] = -lottie["ti"][1]
     lottie["to"][1] = -lottie["to"][1]
-    print(lottie["ti"], lottie["to"])
 
 
-def gen_properties_multiDimensionalKeyframed(lottie, animated, idx):
+def gen_properties_multi_dimensional_keyframed(lottie, animated, idx):
+    """
+    Generates the dictionary corresponding to
+    properties/multiDimensionalKeyframed.json
+    """
     lottie["a"] = 1
     lottie["ix"] = idx
     lottie["k"] = []
     for i in range(len(animated) - 1):
         lottie["k"].append({})
-        cur_Pos = [float(animated[i][0][0].text) * PIX_PER_UNIT, float(animated[i][0][1].text) * PIX_PER_UNIT]
-        prev_Pos = cur_Pos
-        next_Pos = [float(animated[i+1][0][0].text) * PIX_PER_UNIT,
-                float(animated[i+1][0][1].text) * PIX_PER_UNIT]
-        next_next_Pos = next_Pos
-        if i + 2 <= len(animated) - 1:
-            next_next_Pos = [float(animated[i+2][0][0].text) * PIX_PER_UNIT,
-                    float(animated[i+1][0][1].text) * PIX_PER_UNIT]
-        if i - 1 >= 0:
-            prev_Pos = [float(animated[i-1][0][0].text) * PIX_PER_UNIT,
-                    float(animated[i-1][0][1].text) * PIX_PER_UNIT]
-        gen_properties_offsetKeyframe(lottie["k"][-1], animated[i], prev_Pos, cur_Pos, next_Pos, next_next_Pos, animated[i+1])
+        gen_properties_offset_keyframe(lottie["k"][-1], animated, i)
     last_waypoint_time = float(animated[-1].attrib["time"][:-1]) * lottie_format["fr"]
     lottie["k"].append({})
     lottie["k"][-1]["t"] = last_waypoint_time
 
+    # Time adjust of the curves
+    timeadjust = 0.5
     for i in range(len(animated) - 1):
         if i == 0:
             continue
-        print("i", i, lottie["k"][i]["t"], lottie["k"][i+1]["t"])
-        n_prev = lottie["k"][i]["t"] - lottie["k"][i-1]["t"]
-        n_i    = lottie["k"][i+1]["t"] - lottie["k"][i]["t"]
-        print("n_prev", "n_i", n_prev, n_i)
+        time_span_cur = lottie["k"][i+1]["t"] - lottie["k"][i]["t"]
+        time_span_prev = lottie["k"][i]["t"] - lottie["k"][i-1]["t"]
         for dim in range(len(lottie["k"][i]["to"])):
-            lottie["k"][i]["to"][dim] = lottie["k"][i]["to"][dim] * (2*n_prev) / (n_prev + n_i)
-            lottie["k"][i]["ti"][dim] = lottie["k"][i]["ti"][dim] * (2*n_i)    / (n_prev + n_i)
-        print(lottie["k"][i]["ti"], lottie["k"][i]["to"])
+            lottie["k"][i]["to"][dim] = lottie["k"][i]["to"][dim] *\
+            (time_span_cur * (timeadjust + 1)) /\
+            (time_span_cur * timeadjust + time_span_prev)
+
+            if i + 2 <= len(animated) - 1:
+                time_span_next = lottie["k"][i+2]["t"] - lottie["k"][i+1]["t"]
+                lottie["k"][i]["ti"][dim] = lottie["k"][i]["ti"][dim] *\
+                (time_span_cur * (timeadjust + 1)) /\
+                (time_span_cur * timeadjust + time_span_next)
+
+
 
 def gen_shapes_star(lottie, layer, idx):
     """
     Generates the dictionary corresponding to shapes/star.json
     """
-    index = count()
+    index = Count()
     lottie["ty"] = "sr"     # Type: star
     lottie["pt"] = {}       # Number of points on the star
     lottie["p"] = {}        # Position of star
@@ -263,10 +318,11 @@ def gen_shapes_star(lottie, layer, idx):
                         PIX_PER_UNIT * r_inner), index.inc(), DEFAULT_ANIMATED, NO_INFO)
             elif child.attrib["name"] == "origin":
                 if child[0].tag == "animated":
-                    gen_properties_multiDimensionalKeyframed(lottie["p"],
-                            child[0], index.inc())
+                    gen_properties_multi_dimensional_keyframed(lottie["p"],
+                                                             child[0], index.inc())
                 else:
-                    gen_properties_value(lottie["p"], [0, 0], index.inc(), DEFAULT_ANIMATED, NO_INFO)
+                    gen_properties_value(lottie["p"], [0, 0],
+                                         index.inc(), DEFAULT_ANIMATED, NO_INFO)
 
     if regular_polygon == "false":
         lottie["sy"] = 1    # Star Type
@@ -280,7 +336,7 @@ def gen_shapes_fill(lottie, layer):
     """
     Generates the dictionary corresponding to shapes/fill.json
     """
-    index = count()
+    index = Count()
     lottie["ty"] = "fl"     # Type if fill
     lottie["c"] = {}       # Color
     lottie["o"] = {}       # Opacity of the fill layer
@@ -307,7 +363,7 @@ def gen_layer_shape(lottie, layer, idx):
     """
     Generates the dictionary corresponding to layers/shape.json
     """
-    index = count()
+    index = Count()
     lottie["ddd"] = DEFAULT_3D
     lottie["ind"] = idx
     lottie["ty"] = LAYER_SHAPE_TYPE
@@ -338,7 +394,7 @@ else:
     root = tree.getroot()  # canvas
     gen_canvas(lottie_format, root)
 
-    num_layers = count()
+    num_layers = Count()
     lottie_format["layers"] = []
     for child in root:
         if child.tag == "layer":
