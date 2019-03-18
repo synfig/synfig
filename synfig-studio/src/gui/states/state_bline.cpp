@@ -1301,6 +1301,7 @@ StateBLine_Context::event_mouse_release_handler(const Smach::event& /*x*/)
 			curr_duck=next_duck;
 			next_duck=0;
 		}
+		refresh_ducks(false);
 		return Smach::RESULT_ACCEPT;
 	}
 	return Smach::RESULT_OK;
