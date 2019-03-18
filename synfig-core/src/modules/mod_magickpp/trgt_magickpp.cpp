@@ -255,12 +255,12 @@ magickpp_trgt::end_frame()
 bool
 magickpp_trgt::start_frame(synfig::ProgressCallback *callback __attribute__ ((unused)))
 {
-	previous_buffer_pointer = start_pointer;
-
 	if (start_pointer == buffer1)
 		start_pointer = buffer_pointer = buffer2;
 	else
 		start_pointer = buffer_pointer = buffer1;
+
+	previous_buffer_pointer = start_pointer;
 
 	transparent = false;
 	return true;
@@ -275,7 +275,8 @@ magickpp_trgt::start_scanline(int scanline __attribute__ ((unused)))
 bool
 magickpp_trgt::end_scanline()
 {
-	color_to_pixelformat(previous_buffer_pointer, color_buffer, PF_RGB|PF_A, &gamma(), width);
+	if (previous_buffer_pointer)
+		color_to_pixelformat(previous_buffer_pointer, color_buffer, PF_RGB|PF_A, &gamma(), width);
 
 	if (!transparent)
 		for (int i = 0; i < width; i++)
