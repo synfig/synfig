@@ -1,5 +1,5 @@
 #!/bin/sh
-
+# fghjk
 set -e
 
 DIRNAME=`dirname "$0"`
