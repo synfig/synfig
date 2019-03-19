@@ -1,7 +1,8 @@
-#!/bin/sh
+#!/bin/sh 
 # fghjk
 set -e
 
+#wefnwegflw
 DIRNAME=`dirname "$0"`
 cd $DIRNAME
 DIRNAME=`pwd`
