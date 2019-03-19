@@ -16,8 +16,6 @@ libmod_example_la_SOURCES = \
 	main.cpp \
 	simplecircle.cpp \
 	simplecircle.h \
-	filledrect.h \
-	filledrect.cpp \
 	metaballs.h \
 	metaballs.cpp
 
