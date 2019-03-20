@@ -483,8 +483,8 @@ is black and 100 is white, then 50 is only about 22 percent of the brightness \
 of white, rather than 50% as you might expect. \
 Option (ON by default) to make sure that if you ask for 50, you get 50% of the brightness of white."));
 
-	// Editing - Restrict Really-valued Handles to Top Right Quadrant
-	attach_label(pi.grid,_("Restrict really-valued handles to top right quadrant"), ++row);
+	// Editing - Restrict Real-value Handles to Top Right Quadrant
+	attach_label(pi.grid,_("Restrict real value handles to top right quadrant"), ++row);
 	pi.grid->attach(toggle_restrict_radius_ducks, 1, row, 1, 1);
 	toggle_restrict_radius_ducks.set_halign(Gtk::ALIGN_START);
 	toggle_restrict_radius_ducks.set_hexpand(false);
