@@ -694,8 +694,8 @@ CanvasView::~CanvasView()
 	// So here is a quick-hack. This error is mostly invisible because it fails on App exiting
 	// but i didn't think it worth to spend time to it, because remove_action_group is deprecated
 	// and this code is required to rewrite.
-	
-	if (!this->_action_group_removed) 
+
+	if (!this->_action_group_removed)
 		App::ui_manager()->remove_action_group(action_group);
 
 	// Shut down the smach
@@ -944,7 +944,13 @@ CanvasView::create_time_bar()
 	current_time_widget->show();
 
 	//Setup the FrameDial widget
+	//Setup end_time_widget
 	framedial = manage(new class FrameDial());
+	end_time_widget=manage(new Widget_Time);
+	end_time_widget = framedial->get_end_time_widget();
+	end_time_widget->set_fps(get_canvas()->rend_desc().get_frame_rate());
+	end_time_widget->set_value(get_canvas()->rend_desc().get_time_end());
+
 	framedial->signal_seek_begin().connect(
 		sigc::bind(sigc::mem_fun(*canvas_interface().get(), &CanvasInterface::seek_time), Time::begin()) );
 	framedial->signal_seek_prev_keyframe().connect(
@@ -961,6 +967,8 @@ CanvasView::create_time_bar()
 		sigc::mem_fun(*canvas_interface().get(), &CanvasInterface::jump_to_next_keyframe) );
 	framedial->signal_seek_end().connect(
 		sigc::bind(sigc::mem_fun(*canvas_interface().get(), &CanvasInterface::seek_time), Time::end()) );
+	framedial->signal_value_changed().connect(
+		sigc::mem_fun(*this,&CanvasView::on_set_end_time_widget_changed));
 	framedial->signal_repeat().connect(
 		sigc::mem_fun(*time_model(), &TimeModel::set_play_repeat) );
 	framedial->signal_bounds_enable().connect(
@@ -1013,7 +1021,7 @@ CanvasView::create_time_bar()
 
 	// fix thickness of statusbar
 	assert(statusbar);
-	
+
 	Gtk::Widget *widget = statusbar;
 	while(Gtk::Container *container = dynamic_cast<Gtk::Container*>(widget)) {
 		widget->set_margin_top(0);
@@ -1082,7 +1090,7 @@ void CanvasView::toggle_render_combobox()
 	int toggled = this->render_combobox->get_active_row_number();
 	// std::cout<<toggled<<" this is the value\n";
 	if (toggled == 0) {
-		
+
 		App::navigator_renderer = App::workarea_renderer = "software-draft";
 	}
 	if (toggled == 1) {
@@ -1091,7 +1099,7 @@ void CanvasView::toggle_render_combobox()
 	if (toggled == 2) {
 		App::navigator_renderer = App::workarea_renderer = "software";
 	}
-		
+
 	App::save_settings();
 	App::setup_changed();
 }
@@ -1251,7 +1259,7 @@ CanvasView::create_display_bar()
 		displaybar->add(*container);// container pointer
 
 	}
-	
+
 	// Separator
 	displaybar->append( *create_tool_separator() );
 
@@ -1271,7 +1279,7 @@ CanvasView::create_display_bar()
 
 		displaybar->append(*background_rendering_button);
 	}
-	
+
 	// Separator
 	displaybar->append( *create_tool_separator() );
 
@@ -1284,7 +1292,7 @@ CanvasView::create_display_bar()
 	resolutiondial.signal_use_low_resolution().connect(
 		sigc::mem_fun(*this, &CanvasView::toggle_low_res_pixel_flag));
 	resolutiondial.insert_to_toolbar(*displaybar);
-	
+
 	// Separator
 	displaybar->append( *create_tool_separator() );
 
@@ -1371,6 +1379,16 @@ CanvasView::on_current_time_widget_changed()
 	// be left in the display without the following line to fix it
 	current_time_widget->set_value(get_time());
 	current_time_widget->set_position(-1); // leave the cursor at the end
+}
+
+void
+CanvasView::on_set_end_time_widget_changed()
+{
+		get_canvas()->rend_desc().set_time_end(end_time_widget->get_value());
+		end_time_widget->set_position(-1);
+		//refresh the renddesc
+		refresh_rend_desc();
+		refresh_time_window();
 }
 
 void
@@ -1794,6 +1812,11 @@ CanvasView::refresh_rend_desc()
 	time_model()->set_visible_bounds(
 		time_model()->get_time() - Time(DEFAULT_TIME_WINDOW_SIZE)*0.5,
 		time_model()->get_time() + Time(DEFAULT_TIME_WINDOW_SIZE)*0.5 );
+
+		//Updates the end_time_widget
+		end_time_widget->set_fps(get_canvas()->rend_desc().get_frame_rate());
+		end_time_widget->set_value(get_canvas()->rend_desc().get_time_end());
+		end_time_widget->set_position(-1);
 
 	//if (begin_time == end_time) hide_timebar(); else show_timebar();
 
@@ -2667,7 +2690,7 @@ CanvasView::stop_async()
 	soundProcessor.set_playing(false);
 	ducks_playing_lock.reset();
 	framedial->toggle_play_pause_button(is_playing());
-	
+
 	on_time_changed();
 }
 
@@ -3435,7 +3458,7 @@ CanvasView::on_preview_option()
 				po->set_fps(r.get_frame_rate()/2);
 				set_ext_widget("prevoptions",po);
 			}
-			
+
 			if (!po->get_begin_override())
 				po->set_begintime(beg);
 			if (!po->get_end_override())

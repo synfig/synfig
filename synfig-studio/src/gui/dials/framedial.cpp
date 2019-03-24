@@ -65,6 +65,7 @@ FrameDial::FrameDial():
 	seek_next_frame    (create_button("synfig-animate_seek_next_frame"    , _("Seek to next frame")       )),
 	seek_next_keyframe (create_button("synfig-animate_seek_next_keyframe" , _("Seek to next keyframe")    )),
 	seek_end           (create_button("synfig-animate_seek_end"           , _("Seek to end")              )),
+  set_end_time       (create_entry()),
 	repeat             (create_toggle("synfig-animate_loop"               , _("Repeat")                   , true)),
 	bound_lower        (create_button("synfig-animate_bound_lower"        , _("Left bound")               , true)),
 	bounds_enable      (create_toggle("synfig-animate_bounds"             , _("Enable playback bounds")   )),
@@ -127,6 +128,17 @@ FrameDial::create_toggle(const char *stockid, const char *tooltip, bool separato
 	return toggle;
 }
 
+Widget_Time*
+FrameDial::create_entry()
+{
+  set_end_time = manage(new Widget_Time());
+  set_end_time->set_width_chars(3);
+	set_end_time->set_tooltip_text(_("Set end time"));
+	set_end_time->show();
+	add(*set_end_time);
+  return set_end_time;
+}
+
 void
 FrameDial::toggle_play_pause_button(bool is_playing)
 {
@@ -146,3 +158,9 @@ FrameDial::toggle_repeat(bool enable)
 void
 FrameDial::toggle_bounds_enable(bool enable)
 	{ bounds_enable->set_active(enable); }
+
+Widget_Time*
+FrameDial::get_end_time_widget()
+{
+	return set_end_time;
+}
