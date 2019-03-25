@@ -189,10 +189,10 @@ def gen_properties_offset_keyframe(lottie, animated, i):
 
     lottie["i"] = {}    # Time bezier curve, not used in synfig
     lottie["o"] = {}    # Time bezier curve, not used in synfig
-    lottie["i"]["x"] = 0.7
-    lottie["i"]["y"] = 1.0
-    lottie["o"]["x"] = 0.3
-    lottie["o"]["y"] = 0.0
+    lottie["i"]["x"] = 0.5
+    lottie["i"]["y"] = 0.5
+    lottie["o"]["x"] = 0.5
+    lottie["o"]["y"] = 0.5
     lottie["t"] = float(waypoint.attrib["time"][:-1]) * lottie_format["fr"]
     lottie["s"] = change_axis(cur_pos[0], cur_pos[1])
     lottie["e"] = change_axis(next_pos[0], next_pos[1])
@@ -409,6 +409,7 @@ else:
     lottie_string = json.dumps(lottie_format)
     # Write the output to the file name with .json extension
     NEW_FILE_NAME = FILE_NAME.split(".")
+    NEW_FILE_NAME = NEW_FILE_NAME[:-2]
     NEW_FILE_NAME[-1] = "json"
     NEW_FILE_NAME = ".".join(NEW_FILE_NAME)
     outputfile_f = open(NEW_FILE_NAME, 'w')

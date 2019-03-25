@@ -23,7 +23,7 @@ pushd "${WORKDIR}" > /dev/null
 WORKDIR=`pwd`
 popd > /dev/null
 
-PACKAGES="adwaita-icon-theme autoconf automake ccache libtool intltool imagemagick gettext pkg-config glibmm libxml++ cairo fftw pango mlt boost gtkmm3 sdl2 sdl2_mixer"
+PACKAGES="adwaita-icon-theme autoconf automake ccache libtool intltool imagemagick gettext pkg-config glibmm libxml++ cairo fftw pango mlt boost gtkmm3 sdl2 sdl2_mixer py27-lxml"
 
 export HOMEBREW_NO_AUTO_UPDATE=1
 export HOMEBREW_NO_ANALYTICS=1

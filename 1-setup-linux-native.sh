@@ -40,6 +40,7 @@ if which apt-get >/dev/null; then
                 libxml++2.6-dev \
                 libboost-system-dev \
                 libmagick++-dev \
+                libxslt-dev python-dev python3-lxml\
             "
         else
             #
@@ -81,6 +82,7 @@ if which apt-get >/dev/null; then
                 libglibmm-devel \
                 libsigc++2-devel \
                 libxml++2-devel \
+                libxslt-devel python-devel python3-lxml\
             "
         fi
     echo "Running apt-get (you need root privelegies to do that)..."
@@ -123,7 +125,8 @@ elif which dnf >/dev/null; then
             gtkmm30-devel \
             glibmm24-devel \
             SDL2-devel \
-            SDL2_mixer-devel"
+            SDL2_mixer-devel
+            libxslt-devel python-devel python3-lxml"
     if ! ( rpm -qv $PKG_LIST ); then
         echo "Running dnf (you need root privelegies to do that)..."
         sudo dnf install $PKG_LIST || true
@@ -163,7 +166,8 @@ elif which yum >/dev/null; then
             gtkmm30-devel \
             glibmm24-devel \
             SDL2-devel \
-            SDL2_mixer-devel"
+            SDL2_mixer-devel
+            libxslt-devel python-devel python3-lxml"
     if ! ( rpm -qv $PKG_LIST ); then
         echo "Running yum (you need root privelegies to do that)..."
         su -c "yum install $PKG_LIST" || true
@@ -178,6 +182,11 @@ elif which zypper >/dev/null; then
     if ! ( rpm -qv $PKG_LIST ); then
         echo "Running zypper (you need root privelegies to do that)..."
         su -c "zypper install $PKG_LIST" || true
+
+        # Add python lxml repository -> 3rd party
+        su -c "zypper addrepo https://download.opensuse.org/repositories/devel:languages:python/openSUSE_Tumbleweed/devel:languages:python.repo"
+        su -c "zypper refresh"
+        su -c "zypper install python-lxml"
     fi
 elif which pacman >/dev/null; then
     #
