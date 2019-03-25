@@ -125,7 +125,7 @@ elif which dnf >/dev/null; then
             gtkmm30-devel \
             glibmm24-devel \
             SDL2-devel \
-            SDL2_mixer-devel
+            SDL2_mixer-devel \
             libxslt-devel python-devel python3-lxml"
     if ! ( rpm -qv $PKG_LIST ); then
         echo "Running dnf (you need root privelegies to do that)..."
@@ -166,7 +166,7 @@ elif which yum >/dev/null; then
             gtkmm30-devel \
             glibmm24-devel \
             SDL2-devel \
-            SDL2_mixer-devel
+            SDL2_mixer-devel \
             libxslt-devel python-devel python3-lxml"
     if ! ( rpm -qv $PKG_LIST ); then
         echo "Running yum (you need root privelegies to do that)..."
