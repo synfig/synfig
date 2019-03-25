@@ -45,9 +45,9 @@ do
     brew info "$pkg" | grep --quiet 'Not installed' && brew install "$pkg"
 done
 
-echo "Running easy_install (you need root privelegies to do that)..."
+echo "Running python in sudo (you need root privelegies to do that)..."
 # Dependency for lxml
-sudo easy_install pip
+curl https://bootstrap.pypa.io/get-pip.py | sudo python
 # Installing lxml using pip
 STATIC_DEPS=true sudo pip install lxml
 
