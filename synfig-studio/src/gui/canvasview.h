@@ -310,6 +310,9 @@ private:
 	Widget_Time *current_time_widget;
 	void on_current_time_widget_changed();
 
+	//on end time changed
+	void on_set_end_time_widget_changed();
+
 	//! Time slider class. Same than the Time track panel
 	Widget_CanvasTimeslider *timeslider;
 
@@ -457,10 +460,10 @@ private:
 	void toggle_render_combobox();
 
 	void on_play_timeout();
-	
+
 	void interpolation_refresh();
 	void on_interpolation_changed();
-	
+
 	static void save_all();
 
 	/*

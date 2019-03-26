@@ -281,7 +281,6 @@ Widget_RendDesc::on_end_time_changed()
 	signal_changed()();
 }
 
-
 void
 Widget_RendDesc::on_duration_changed()
 {
