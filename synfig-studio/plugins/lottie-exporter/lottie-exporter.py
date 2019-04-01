@@ -6,7 +6,7 @@ output  : FILE_NAME.json
 Currently working for only star layers without animations
 Partially working for animations
 """
-import xml.etree.ElementTree as ET
+from lxml import etree
 import json
 import sys
 
@@ -177,13 +177,14 @@ def gen_properties_offset_keyframe(lottie, animated, i):
      Generates the dictionary corresponding to properties/offsetKeyFrame.json
     """
     waypoint, next_waypoint = animated[i], animated[i+1]
+    cur_get_after, next_get_before = waypoint.attrib["after"], next_waypoint.attrib["before"]
     # Calculate positions of waypoints
     cur_pos = parse_position(animated, i)
     prev_pos = cur_pos
     next_pos = parse_position(animated, i + 1)
-    next_next_pos = next_pos
+    after_next_pos = next_pos
     if i + 2 <= len(animated) - 1:
-        next_next_pos = parse_position(animated, i + 2)
+        after_next_pos = parse_position(animated, i + 2)
     if i - 1 >= 0:
         prev_pos = parse_position(animated, i - 1)
 
@@ -213,20 +214,37 @@ def gen_properties_offset_keyframe(lottie, animated, i):
     lottie["to"] = []
     lottie["ti"] = []
     for dim in range(len(cur_pos)):
-        if i >= 1:
-            out_val = ((1 - tens) * (1 + bias) * (1 + cont) *\
-                       (cur_pos[dim] - prev_pos[dim]))/2 +\
-                       ((1 - tens) * (1 - bias) * (1 - cont) *\
-                       (next_pos[dim] - cur_pos[dim]))/2
-        else:
-            out_val = next_pos[dim] - cur_pos[dim]      # t1 = p2 - p1
-        if i + 2 <= len(animated) - 1:
-            in_val = ((1 - tens1) * (1 + bias1) * (1 - cont1) *\
-                      (next_pos[dim] - cur_pos[dim]))/2 +\
-                      ((1 - tens1) * (1 - bias1) * (1 + cont1) *\
-                      (next_next_pos[dim] - next_pos[dim]))/2
-        else:
-            in_val = next_pos[dim] - cur_pos[dim]       # t2 = p2 - p1
+        # iter           next
+        # ANY/TCB ------ ANY/ANY 
+        if cur_get_after == "auto":
+            if i >= 1:
+                out_val = ((1 - tens) * (1 + bias) * (1 + cont) *\
+                           (cur_pos[dim] - prev_pos[dim]))/2 +\
+                           ((1 - tens) * (1 - bias) * (1 - cont) *\
+                           (next_pos[dim] - cur_pos[dim]))/2
+            else:
+                out_val = next_pos[dim] - cur_pos[dim]      # t1 = p2 - p1
+
+        # iter           next
+        # ANY/LINEAR --- ANY/ANY
+        if cur_get_after == "linear":
+            out_val = next_pos[dim] - cur_pos[dim]
+
+        # iter          next
+        # ANY/ANY ----- LINEAR/ANY
+        if next_get_before == "linear":
+            in_val = next_pos[dim] - cur_pos[dim]
+
+        # iter           next           after_next
+        # ANY/ANY ------ TCB/ANY ------ ANY/ANY
+        if next_get_before == "auto":
+            if i + 2 <= len(animated) - 1:
+                in_val = ((1 - tens1) * (1 + bias1) * (1 - cont1) *\
+                          (next_pos[dim] - cur_pos[dim]))/2 +\
+                          ((1 - tens1) * (1 - bias1) * (1 + cont1) *\
+                          (after_next_pos[dim] - next_pos[dim]))/2
+            else:
+                in_val = next_pos[dim] - cur_pos[dim]       # t2 = p2 - p1
         lottie["to"].append(out_val)
         lottie["ti"].append(in_val)
 
@@ -390,7 +408,7 @@ if len(sys.argv) < 2:
     sys.exit()
 else:
     FILE_NAME = sys.argv[1]
-    tree = ET.parse(FILE_NAME)
+    tree = etree.parse(FILE_NAME)
     root = tree.getroot()  # canvas
     gen_canvas(lottie_format, root)
 
@@ -409,6 +427,7 @@ else:
     lottie_string = json.dumps(lottie_format)
     # Write the output to the file name with .json extension
     NEW_FILE_NAME = FILE_NAME.split(".")
+    # Comment this when this file is not used as plugin
     NEW_FILE_NAME = NEW_FILE_NAME[:-2]
     NEW_FILE_NAME[-1] = "json"
     NEW_FILE_NAME = ".".join(NEW_FILE_NAME)
