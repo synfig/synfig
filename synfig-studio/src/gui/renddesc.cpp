@@ -363,10 +363,12 @@ Widget_RendDesc::on_ratio_wh_toggled()
 	{
 		rend_desc_.set_pixel_ratio(adjustment_width->get_value(), adjustment_height->get_value());
 		rend_desc_.set_flags(rend_desc_.get_flags()|RendDesc::LINK_IM_ASPECT);
+		rend_desc_.set_flags(rend_desc_.get_flags()&~RendDesc::PX_ASPECT);
 	}
 	else
 	{
 		rend_desc_.set_flags(rend_desc_.get_flags()&~RendDesc::LINK_IM_ASPECT);
+		rend_desc_.set_flags(rend_desc_.get_flags()|RendDesc::PX_ASPECT);
 	}
 }
 
