@@ -293,6 +293,7 @@ IconController::init_icons(const synfig::String& path_to_icons)
 	INIT_STOCK_ICON(keyframes, "keyframe_icon." IMAGE_EXT, _("Keyframes"));
 	INIT_STOCK_ICON(meta_data, "meta_data_icon." IMAGE_EXT, _("MetaData"));
 	INIT_STOCK_ICON(navigator, "navigator_icon." IMAGE_EXT, _("Navigator"));
+	INIT_STOCK_ICON(sound, "sound_icon." IMAGE_EXT, _("Waveform"));
 	INIT_STOCK_ICON(timetrack, "time_track_icon." IMAGE_EXT, _("Time Track"));
 	INIT_STOCK_ICON(history, "history_icon." IMAGE_EXT, _("History"));
 	INIT_STOCK_ICON(palette, "palette_icon." IMAGE_EXT, _("Palette"));
