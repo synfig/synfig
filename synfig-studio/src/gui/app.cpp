@@ -3968,7 +3968,7 @@ App::new_instance()
 	canvas->rend_desc().set_w(preferred_x_size);
 	canvas->rend_desc().set_h(preferred_y_size);
 	canvas->rend_desc().set_antialias(1);
-	canvas->rend_desc().set_flags(RendDesc::IM_SPAN|RendDesc::IM_ASPECT);
+	canvas->rend_desc().set_flags(RendDesc::PX_ASPECT|RendDesc::IM_SPAN|RendDesc::IM_ASPECT);
 	canvas->set_file_name(filename);
 	canvas->keyframe_list().add(synfig::Keyframe());
 
