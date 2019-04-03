@@ -142,6 +142,7 @@
 #include "docks/dock_layers.h"
 #include "docks/dock_layergroups.h"
 #include "docks/dock_params.h"
+#include "docks/dock_sound.h"
 #include "docks/dock_metadata.h"
 #include "docks/dock_navigator.h"
 #include "docks/dock_timetrack.h"
@@ -290,6 +291,7 @@ studio::Dock_LayerGroups   *dock_layer_groups;
 studio::Dock_Navigator     *dock_navigator;
 studio::Dock_Timetrack     *dock_timetrack;
 studio::Dock_Curves        *dock_curves;
+studio::Dock_Sound         *dock_sound;
 
 std::list< etl::handle< studio::Module > > module_list_;
 
@@ -1114,6 +1116,7 @@ DEFINE_ACTION("panel-info",            _("Info"));
 DEFINE_ACTION("panel-navigator",       _("Navigator"));
 DEFINE_ACTION("panel-timetrack",       _("Timetrack"));
 DEFINE_ACTION("panel-curves",          _("Graphs"));
+DEFINE_ACTION("panel-sound",           _("Waveform"));
 DEFINE_ACTION("panel-groups",          _("Sets"));
 DEFINE_ACTION("panel-pal_edit",        _("Palette Editor"));
 
@@ -1285,6 +1288,7 @@ DEFINE_ACTION("keyframe-properties", "Properties");
 "		<menuitem action='panel-info' />"
 "		<menuitem action='panel-navigator' />"
 "		<menuitem action='panel-timetrack' />"
+"		<menuitem action='panel-sound' />"
 "		<menuitem action='panel-curves' />"
 "		<menuitem action='panel-groups' />"
 "		<menuitem action='panel-pal_edit' />"
@@ -1667,6 +1671,10 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		studio_init_cb.task(_("Init Timetrack..."));
 		dock_timetrack = new studio::Dock_Timetrack();
 		dock_manager->register_dockable(*dock_timetrack);
+
+		studio_init_cb.task(_("Init Sound..."));
+		dock_sound = new studio::Dock_Sound();
+		dock_manager->register_dockable(*dock_sound);
 
 		studio_init_cb.task(_("Init Curve Editor..."));
 		dock_curves = new studio::Dock_Curves();
@@ -2183,7 +2191,7 @@ App::set_workspace_default()
 				"]"
 				"|[hor|%25x"
 					"|[book|params|keyframes]"
-					"|[book|timetrack|curves|children|meta_data]"
+					"|[book|timetrack|curves|children|meta_data|sound]"
 				"]"
 			"]"
 			"|[vert|%20y"
@@ -3968,7 +3976,7 @@ App::new_instance()
 	canvas->rend_desc().set_w(preferred_x_size);
 	canvas->rend_desc().set_h(preferred_y_size);
 	canvas->rend_desc().set_antialias(1);
-	canvas->rend_desc().set_flags(RendDesc::PX_ASPECT|RendDesc::IM_SPAN);
+	canvas->rend_desc().set_flags(RendDesc::IM_SPAN|RendDesc::IM_ASPECT);
 	canvas->set_file_name(filename);
 	canvas->keyframe_list().add(synfig::Keyframe());
 
