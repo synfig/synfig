@@ -441,7 +441,13 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 				if (j == p.begin())
 					cr->move_to(j->get_x(), j->get_y());
 				else
-					cr->line_to(j->get_x(), j->get_y());
+					{
+						cr->line_to(j->get_x(), j->get_y());
+						cr->arc(j->get_x(), j->get_y(), 0.2, 0.0, 2 * M_PI);
+						cr->set_source_rgba(11, 25, 218, 1);    
+  						cr->fill_preserve();
+
+					}
 			}
 			Gdk::Cairo::set_source_color(cr, i->channels[c].color);
 			cr->stroke();
