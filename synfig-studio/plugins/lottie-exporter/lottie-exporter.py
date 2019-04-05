@@ -172,12 +172,15 @@ def parse_position(animated, i):
     pos = [PIX_PER_UNIT*x for x in pos]
     return pos
 
-def gen_properties_offset_keyframe(lottie, animated, i):
+def gen_properties_offset_keyframe(curve_list, animated, i):
     """
      Generates the dictionary corresponding to properties/offsetKeyFrame.json
     """
+    lottie = curve_list[-1]
+
     waypoint, next_waypoint = animated[i], animated[i+1]
     cur_get_after, next_get_before = waypoint.attrib["after"], next_waypoint.attrib["before"]
+    cur_get_before, next_get_after = waypoint.attrib["before"], next_waypoint.attrib["after"]
     # Calculate positions of waypoints
     cur_pos = parse_position(animated, i)
     prev_pos = cur_pos
@@ -194,6 +197,12 @@ def gen_properties_offset_keyframe(lottie, animated, i):
     lottie["i"]["y"] = 0.5
     lottie["o"]["x"] = 0.5
     lottie["o"]["y"] = 0.5
+    if cur_get_after == "halt": # For ease out
+        lottie["o"]["x"] = 0.3
+        lottie["o"]["y"] = 0
+    if next_get_before == "halt": # For ease in
+        lottie["i"]["x"] = 0.7
+        lottie["i"]["y"] = 1
     lottie["t"] = float(waypoint.attrib["time"][:-1]) * lottie_format["fr"]
     lottie["s"] = change_axis(cur_pos[0], cur_pos[1])
     lottie["e"] = change_axis(next_pos[0], next_pos[1])
@@ -227,12 +236,14 @@ def gen_properties_offset_keyframe(lottie, animated, i):
 
         # iter           next
         # ANY/LINEAR --- ANY/ANY
-        if cur_get_after == "linear":
+        # ANY/EASE   --- ANY/ANY
+        if cur_get_after in {"linear", "halt"}:
             out_val = next_pos[dim] - cur_pos[dim]
 
         # iter          next
         # ANY/ANY ----- LINEAR/ANY
-        if next_get_before == "linear":
+        # ANY/ANY ----- EASE/ANY
+        if next_get_before in {"linear", "halt"}:
             in_val = next_pos[dim] - cur_pos[dim]
 
         # iter           next           after_next
@@ -247,6 +258,15 @@ def gen_properties_offset_keyframe(lottie, animated, i):
                 in_val = next_pos[dim] - cur_pos[dim]       # t2 = p2 - p1
         lottie["to"].append(out_val)
         lottie["ti"].append(in_val)
+
+    # TCB/!TCB and list is not empty
+    if cur_get_before == "auto" and cur_get_after != "auto" and i > 0:
+        curve_list[-2]["ti"] = lottie["to"]
+        curve_list[-2]["ti"] = [-item/TANGENT_FACTOR for item in curve_list[-2]["ti"]]
+        curve_list[-2]["ti"][1] = -curve_list[-2]["ti"][1]
+        if cur_get_after == "halt":
+            curve_list[-2]["i"]["x"] = 0.7
+            curve_list[-2]["i"]["y"] = 1
 
     # Lottie and synfig use different tangents SEE DOCUMENTATION
     lottie["ti"] = [-item for item in lottie["ti"]]
@@ -271,7 +291,7 @@ def gen_properties_multi_dimensional_keyframed(lottie, animated, idx):
     lottie["k"] = []
     for i in range(len(animated) - 1):
         lottie["k"].append({})
-        gen_properties_offset_keyframe(lottie["k"][-1], animated, i)
+        gen_properties_offset_keyframe(lottie["k"], animated, i)
     last_waypoint_time = float(animated[-1].attrib["time"][:-1]) * lottie_format["fr"]
     lottie["k"].append({})
     lottie["k"][-1]["t"] = last_waypoint_time
@@ -416,6 +436,8 @@ else:
     lottie_format["layers"] = []
     for child in root:
         if child.tag == "layer":
+            if child.attrib["active"] == "false":   # Only render the active layers
+                continue
             if child.attrib["type"] != "star":  # Only star conversion
                 continue
             lottie_format["layers"].insert(0, {})
