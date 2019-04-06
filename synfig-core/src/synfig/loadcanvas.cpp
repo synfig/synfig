@@ -1890,7 +1890,6 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 		printf("%s:%d parse_linkable_value_node done missing attr\n", __FILE__, __LINE__);
 		return 0;
 	}
-
 	Type &type = ValueBase::ident_type(element->get_attribute("type")->get_value());
 
 	if(type == type_nil)
@@ -2779,8 +2778,9 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 		error(element,_("Missing \"type\" attribute to \"layer\" element"));
 		return Layer::Handle();
 	}
-
-	layer=Layer::create(element->get_attribute("type")->get_value());
+	if(element->get_attribute("type")->get_value() == "filled_rectangle")
+	layer=Layer::create("rectangle");
+	else layer=Layer::create(element->get_attribute("type")->get_value());
 	layer->set_canvas(canvas);
 
 	if(element->get_attribute("group"))
@@ -3023,7 +3023,7 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 					layer->connect_dynamic_param(param_name,value_node);
 				} else {
 					// Set the layer's parameter, and make sure that
-					// the layer liked it
+					// the layer linked it
 					if(!layer->set_param(param_name,data))
 					{
 						warning((*iter),strprintf(_("Layer '%s' rejected value for parameter '%s'"),

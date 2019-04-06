@@ -121,7 +121,7 @@ public:
 			column2->pack_end(*text_cellrenderer,false);
 			text_cellrenderer->set_fixed_size (1,-1);
 
-			// Add a fixed size (1pixel widht, same height than value_type icon) empty (alpha) icon
+			// Add a fixed size (1pixel width, same height than value_type icon) empty (alpha) icon
 			// to align the rows with params dock when the text is smaller than value_type icons height
 			Gtk::CellRendererPixbuf* icon_cellrenderer = Gtk::manage( new Gtk::CellRendererPixbuf() );
 			Glib::RefPtr<Gdk::Pixbuf> pixbuf;

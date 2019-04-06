@@ -46,6 +46,7 @@
 
 #include "software/renderersw.h"
 #include "software/rendererdraftsw.h"
+#include "software/rendererpreviewsw.h"
 #include "software/rendererlowressw.h"
 #include "software/renderersafe.h"
 #ifdef WITH_OPENGL
@@ -97,6 +98,7 @@ Renderer::initialize_renderers()
 
 	// register renderers
 	register_renderer("software", new RendererSW());
+	register_renderer("software-preview", new RendererPreviewSW());
 	register_renderer("software-draft", new RendererDraftSW());
 	register_renderer("software-low2",  new RendererLowResSW(2));
 	register_renderer("software-low4",  new RendererLowResSW(4));

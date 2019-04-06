@@ -331,5 +331,20 @@ CompiledGradient::set(const Gradient &gradient, bool repeat, bool zigzag) {
 		prev_sum = list.back().next_sum;
 	}
 
+	// debug output, uncomment this when you does not know that's happening
+	//synfig::info("gradient cpoints:");
+	//for(Gradient::iterator i = cpoints.begin(); i != cpoints.end();  ++i)
+	//	synfig::info("  %f, (%f, %f, %f, %f)", i->pos, i->color.get_r(), i->color.get_g(), i->color.get_b(), i->color.get_a());
+	//synfig::info("compiled gradient:");
+	//for(List::const_iterator i = list.begin(); i != list.end(); ++i) {
+	//	synfig::info("  -- prev_k: %f, %f", i->prev_k1, i->prev_k2);
+	//	synfig::info("     prev: %f, (%f, %f, %f, %f), (%f, %f, %f, %f)",
+	//		i->prev_pos, i->prev_color.r, i->prev_color.g, i->prev_color.b, i->prev_color.a,
+	//		i->prev_sum.r, i->prev_sum.g, i->prev_sum.b, i->prev_sum.a );
+	//	synfig::info("     next: %f, (%f, %f, %f, %f), (%f, %f, %f, %f)",
+	//		i->next_pos, i->next_color.r, i->next_color.g, i->next_color.b, i->next_color.a,
+	//		i->next_sum.r, i->next_sum.g, i->next_sum.b, i->next_sum.a );
+	//}
+	
 	summary_color = find(1.0)->summary(1.0);
 }

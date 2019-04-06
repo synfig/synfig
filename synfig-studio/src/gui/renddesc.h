@@ -126,6 +126,7 @@ public:
 	void enable_time_section();
 
 	void refresh();
+	
 private:
 
 	void on_width_changed();

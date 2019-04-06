@@ -274,7 +274,7 @@ private:
 	Gtk::Button *stopbutton;
 	Gtk::ToggleToolButton *background_rendering_button;
 	Gtk::ToolButton *refreshbutton;
-	Gtk::ToggleToolButton *draft_button;
+	Gtk::ComboBoxText *render_combobox;
 	Gtk::VBox *timebar;
 	Gtk::Toolbar *displaybar;
 	Widget_Enum *widget_interpolation;
@@ -309,6 +309,9 @@ private:
 	//! Shows current time and allows edition
 	Widget_Time *current_time_widget;
 	void on_current_time_widget_changed();
+
+	//on end time changed
+	void on_set_end_time_widget_changed();
 
 	//! Time slider class. Same than the Time track panel
 	Widget_CanvasTimeslider *timeslider;
@@ -454,13 +457,13 @@ private:
 	void toggle_animatebutton();
 	void toggle_timetrackbutton();
 
-	void toggle_draft_render();
+	void toggle_render_combobox();
 
 	void on_play_timeout();
-	
+
 	void interpolation_refresh();
 	void on_interpolation_changed();
-	
+
 	static void save_all();
 
 	/*

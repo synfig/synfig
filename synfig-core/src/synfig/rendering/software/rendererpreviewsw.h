@@ -1,11 +1,11 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file filledrect.h
-**	\brief Header file for implementation of the "Rectangle" layer
+/*!	\file synfig/rendering/software/rendererpreviewsw.h
+**	\brief RendererPreviewSW Header
 **
 **	$Id$
 **
 **	\legal
-**	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**	......... ... 2015 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -22,12 +22,12 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_FILLEDRECT_H
-#define __SYNFIG_FILLEDRECT_H
+#ifndef __SYNFIG_RENDERING_RENDERERPREVIEWSW_H
+#define __SYNFIG_RENDERING_RENDERERPREVIEWSW_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/layers/layer_shape.h>
+#include "../renderer.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -35,40 +35,23 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-using namespace synfig;
-using namespace std;
-using namespace etl;
-
-class FilledRect : public Layer_Shape
+namespace synfig
 {
-	SYNFIG_LAYER_MODULE_EXT
+namespace rendering
+{
 
-private:
-	//! Parameter: (Point)
-	ValueBase param_point1;
-	//! Parameter: (Point)
-	ValueBase param_point2;
-	//! Parameter: Real)
-	ValueBase param_feather_x;
-	//! Parameter: (Real)
-	ValueBase param_feather_y;
-	//! Parameter: (Real)
-	ValueBase param_bevel;
-	//! Parameter: (bool)
-	ValueBase param_bevCircle;
-
-protected:
-	virtual void sync_vfunc();
-
+class RendererPreviewSW: public Renderer
+{
 public:
-	FilledRect();
+	typedef etl::handle<RendererPreviewSW> Handle;
 
-	virtual bool set_shape_param(const synfig::String & param, const synfig::ValueBase &value);
-	virtual bool set_param(const String & param, const ValueBase &value);
-	virtual ValueBase get_param(const String & param)const;
-	virtual Vocab get_param_vocab()const;
-}; // END of class FilledRect
+	RendererPreviewSW();
+	virtual String get_name() const;
+};
 
-/* === E N D =============================================================== */
+}; /* end namespace rendering */
+}; /* end namespace synfig */
+
+/* -- E N D ----------------------------------------------------------------- */
 
 #endif

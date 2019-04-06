@@ -314,6 +314,8 @@ String studio::App::predefined_fps               (DEFAULT_PREDEFINED_FPS);
 float  studio::App::preferred_fps                = 24.0;
 synfigapp::PluginManager studio::App::plugin_manager;
 std::set< String >       studio::App::brushes_path;
+String studio::App::image_editor_path;
+
 String studio::App::sequence_separator(".");
 String studio::App::navigator_renderer;
 String studio::App::workarea_renderer;
@@ -686,6 +688,11 @@ public:
 				value=strprintf("%il", (long)App::ui_handle_tooltip_flag);
 				return true;
 			}
+			if(key=="image_editor_path")
+			{
+				value=App::image_editor_path;
+				return true;
+			}
 		}
 		catch(...)
 		{
@@ -883,6 +890,11 @@ public:
 				App::ui_handle_tooltip_flag = l;
 				return true;
 			}
+			if(key=="image_editor_path")
+			{
+				App::image_editor_path=value;
+				return true;
+			}
 		}
 		catch(...)
 		{
@@ -927,6 +939,8 @@ public:
 		ret.push_back("use_render_done_sound");
 		ret.push_back("enable_mainwin_menubar");
 		ret.push_back("ui_handle_tooltip_flag");
+		ret.push_back("image_editor_path");
+
 
 		return ret;
 	}
@@ -947,6 +961,7 @@ init_ui_manager()
 	menus_action_group->add( Gtk::Action::create("menu-edit",            _("_Edit")));
 
 	menus_action_group->add( Gtk::Action::create("menu-view",            _("_View")));
+	menus_action_group->add( Gtk::Action::create("menu-navigation",            _("_Navigation")));
 	menus_action_group->add( Gtk::Action::create("menu-duck-mask",       _("Show/Hide Handles")));
 	menus_action_group->add( Gtk::Action::create("menu-preview-quality", _("Preview Quality")));
 	menus_action_group->add( Gtk::Action::create("menu-lowres-pixel",    _("Low-Res Pixel Size")));
@@ -1040,11 +1055,6 @@ DEFINE_ACTION("quality-10", _("Use Quality Level 10"));
 for(list<int>::iterator iter = CanvasView::get_pixel_sizes().begin(); iter != CanvasView::get_pixel_sizes().end(); iter++)
   DEFINE_ACTION(strprintf("lowres-pixel-%d", *iter), strprintf(_("Set Low-Res pixel size to %d"), *iter));
 
-DEFINE_ACTION("play", _("Play"));
-// the stop is not a normal stop but a pause. So use "Pause" in UI, including TEXT and
-// icon. the internal code is still using stop.
-DEFINE_ACTION("stop", _("Pause"));
-
 DEFINE_ACTION("toggle-grid-show",  _("Toggle Grid Show"));
 DEFINE_ACTION("toggle-grid-snap",  _("Toggle Grid Snap"));
 DEFINE_ACTION("toggle-guide-show", _("Toggle Guide Show"));
@@ -1061,6 +1071,13 @@ DEFINE_ACTION("canvas-zoom-fit",             Gtk::StockID("gtk-zoom-fit"));
 DEFINE_ACTION("canvas-zoom-100",             Gtk::StockID("gtk-zoom-100"));
 DEFINE_ACTION("time-zoom-in",                Gtk::StockID("gtk-zoom-in"));
 DEFINE_ACTION("time-zoom-out",               Gtk::StockID("gtk-zoom-out"));
+
+//actions in Navigation menu
+DEFINE_ACTION("play", _("Play"));
+// the stop is not a normal stop but a pause. So use "Pause" in UI, including TEXT and
+// icon. the internal code is still using stop.
+DEFINE_ACTION("stop", _("Pause"));
+
 DEFINE_ACTION("jump-next-keyframe",          _("Seek to Next Keyframe"));
 DEFINE_ACTION("jump-prev-keyframe",          _("Seek to previous Keyframe"));
 DEFINE_ACTION("seek-next-frame",             _("Seek to Next Frame"));
@@ -1069,6 +1086,7 @@ DEFINE_ACTION("seek-next-second",            _("Seek Forward"));
 DEFINE_ACTION("seek-prev-second",            _("Seek Backward"));
 DEFINE_ACTION("seek-begin",                  _("Seek to Begin"));
 DEFINE_ACTION("seek-end",                    _("Seek to End"));
+
 
 // actions in Canvas menu
 DEFINE_ACTION("properties", _("Properties..."));
@@ -1190,9 +1208,6 @@ DEFINE_ACTION("keyframe-properties", "Properties");
 	ui_info_menu +=
 "		</menu>"
 "		<separator name='sep-view1'/>"
-"		<menuitem action='play'/>"
-"		<menuitem action='stop'/>"
-"		<separator name='sep-view2'/>"
 "		<menuitem action='toggle-grid-show'/>"
 "		<menuitem action='toggle-grid-snap'/>"
 "		<menuitem action='toggle-guide-show'/>"
@@ -1200,15 +1215,19 @@ DEFINE_ACTION("keyframe-properties", "Properties");
 "		<menuitem action='toggle-low-res'/>"
 "		<menuitem action='toggle-background-rendering'/>"
 "		<menuitem action='toggle-onion-skin'/>"
-"		<separator name='sep-view3'/>"
+"		<separator name='sep-view2'/>"
 "		<menuitem action='canvas-zoom-in'/>"
 "		<menuitem action='canvas-zoom-out'/>"
 "		<menuitem action='canvas-zoom-fit'/>"
 "		<menuitem action='canvas-zoom-100'/>"
-"		<separator name='sep-view4'/>"
+"		<separator name='sep-view3'/>"
 "		<menuitem action='time-zoom-in'/>"
 "		<menuitem action='time-zoom-out'/>"
-"		<separator name='sep-view5'/>"
+"	</menu>"
+"    <menu action='menu-navigation'>"
+"		<menuitem action='play'/>"
+"		<menuitem action='stop'/>"
+"		<separator name='sep-view1'/>"
 "		<menuitem action='jump-prev-keyframe'/>"
 "		<menuitem action='jump-next-keyframe'/>"
 "		<menuitem action='seek-prev-frame'/>"
@@ -1575,6 +1594,7 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		load_settings("pref.default_background_layer_color");
 		load_settings("pref.default_background_layer_image");
 		load_settings("pref.preview_background_color");
+		load_settings("pref.image_editor_path");
 
 		studio_init_cb.task(_("Loading Plugins..."));
 		plugin_manager.load_dir(path_to_plugins);
@@ -1719,7 +1739,7 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		/* other */
 		state_manager->add_state(&state_text);
 		if(!getenv("SYNFIG_DISABLE_SKETCH" )) state_manager->add_state(&state_sketch);
-		if(!getenv("SYNFIG_DISABLE_BRUSH"  )) state_manager->add_state(&state_brush);
+		if(!getenv("SYNFIG_DISABLE_BRUSH"  ) && App::enable_experimental_features) state_manager->add_state(&state_brush);
 		state_manager->add_state(&state_zoom);
 
 
@@ -2281,6 +2301,8 @@ App::restore_default_settings()
 	synfigapp::Main::settings().set_value("pref.ui_handle_tooltip_flag",         temp.str());
 	synfigapp::Main::settings().set_value("pref.autosave_backup",                "1");
 	synfigapp::Main::settings().set_value("pref.autosave_backup_interval",       "15000");
+	synfigapp::Main::settings().set_value("pref.image_editor_path",             "");
+
 }
 
 void
@@ -3502,7 +3524,50 @@ App::dialog_message_3b(const std::string &message,
 	return dialog.run();
 }
 
+static bool
+try_open_img_external(const std::string &uri)
+{
+	std::string new_uri=uri;
+	std::string s = "file://";
+	std::string::size_type i = new_uri.find(s);
+	if (i != std::string::npos)
+	{
+		new_uri.erase(i, s.length());
+	}
+   	size_t start_pos = 0;
+	std::string to = " ";
+	std::string from = "%20";
+    while((start_pos = new_uri.find(from, start_pos)) != std::string::npos) 
+	{
+        new_uri.replace(start_pos, from.length(), to);
+        start_pos += to.length(); // In case 'to' contains 'from', like replacing 'x' with 'yx'
+    }
+	new_uri = "\"" + new_uri + "\"";
+	if(App::image_editor_path!="")
+	{
+		#ifdef WIN32
+			char buffer[512];
+    		::snprintf(buffer, sizeof(buffer), "%s %s",App::image_editor_path.c_str(), new_uri.c_str());
+    		Glib::spawn_command_line_sync(buffer);
+		#elif defined(__APPLE__)
+    		char buffer[512];
+    		::snprintf(buffer, sizeof(buffer), "open -a %s %s", App::image_editor_path.c_str(), new_uri.c_str());
+    		::system(buffer);
+		#else
+    		char buffer[512];
+    		::snprintf(buffer, sizeof(buffer), "%s %s",App::image_editor_path.c_str(), new_uri.c_str());
+			Glib::spawn_command_line_sync(buffer);
+		#endif
+		return true;
 
+	}
+	else
+	{
+		return false;
+	}
+	
+	
+}
 static bool
 try_open_uri(const std::string &uri)
 {
@@ -3515,6 +3580,7 @@ try_open_uri(const std::string &uri)
 #endif
 }
 
+
 void
 App::dialog_help()
 {
@@ -3526,7 +3592,18 @@ App::dialog_help()
 		dialog.run();
 	}
 }
+void App::open_img_in_external(const std::string &uri)
+{
+	synfig::info("Opening with external tool: " + uri);
+	if(!try_open_img_external(uri))
+	{
+		Gtk::MessageDialog dialog(*App::main_window, _("Make sure Preferred editing tool was set in \n Edit->Preferences->Editing:"), false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_CLOSE, true);
+		dialog.set_secondary_text(uri);
+		dialog.set_title(_("Error"));
+		dialog.run();
+	}
 
+}
 void App::open_uri(const std::string &uri)
 {
 	synfig::info("Opening URI: " + uri);

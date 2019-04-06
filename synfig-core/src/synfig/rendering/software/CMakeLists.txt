@@ -3,6 +3,7 @@ target_sources(synfig
         "${CMAKE_CURRENT_LIST_DIR}/rendererdraftsw.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/rendererlowressw.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/renderersafe.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/rendererpreviewsw.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/renderersw.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/surfacesw.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/surfaceswpacked.cpp"

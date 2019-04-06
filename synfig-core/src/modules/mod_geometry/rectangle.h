@@ -23,8 +23,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_FILLEDRECT_H
-#define __SYNFIG_FILLEDRECT_H
+#ifndef __SYNFIG_RECTANGLE_H
+#define __SYNFIG_RECTANGLE_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -47,6 +47,14 @@ private:
 	synfig::ValueBase param_point2;
 	//! Parameter: (Real)
 	synfig::ValueBase param_expand;
+	//! Parameter: (Real)
+	synfig::ValueBase param_feather_x;
+	//! Parameter: (Real)
+	synfig::ValueBase param_feather_y;
+	//! Parameter: (Real)
+	synfig::ValueBase param_bevel;
+	//! Parameter: (bool)
+	synfig::ValueBase param_bevCircle;
 
 protected:
 	virtual void sync_vfunc();
@@ -57,9 +65,8 @@ public:
 	virtual bool set_shape_param(const synfig::String & param, const synfig::ValueBase &value);
 	virtual bool set_param(const synfig::String & param, const synfig::ValueBase &value);
 	virtual synfig::ValueBase get_param(const synfig::String & param)const;
-
 	virtual Vocab get_param_vocab()const;
-}; // END of class FilledRect
+}; // END of class Rectangle
 
 /* === E N D =============================================================== */
 

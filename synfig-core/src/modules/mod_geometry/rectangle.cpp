@@ -65,7 +65,11 @@ SYNFIG_LAYER_SET_CVS_ID(Rectangle,"$Id$");
 Rectangle::Rectangle():
 	param_point1(ValueBase(Point(0,0))),
 	param_point2(ValueBase(Point(1,1))),
-	param_expand(ValueBase(Real(0)))
+	param_expand(ValueBase(Real(0))),
+	param_feather_x(ValueBase(Real(0))),
+	param_feather_y(ValueBase(Real(0))),
+	param_bevel(ValueBase(Real(0))),
+	param_bevCircle(ValueBase(bool(true)))
 {
 	SET_INTERPOLATION_DEFAULTS();
 	SET_STATIC_DEFAULTS();
@@ -75,19 +79,40 @@ void
 Rectangle::sync_vfunc()
 {
 	Real expand = fabs(param_expand.get(Real()));
+	Real bevel = fabs(param_bevel.get(Real()));
 	Point p0 = param_point1.get(Point());
 	Point p1 = param_point2.get(Point());
 	if (p1[0] < p0[0]) swap(p0[0], p1[0]);
 	if (p1[1] < p0[1]) swap(p0[1], p1[1]);
 
-	std::vector<Point> list(4);
-
-	list[0][0] = list[3][0] = p0[0] - expand;
-	list[0][1] = list[1][1] = p0[1] - expand;
-	list[2][0] = list[1][0] = p1[0] + expand;
-	list[2][1] = list[3][1] = p1[1] + expand;
-
-	set_stored_polygon(list);
+	bool bev_circle = param_bevCircle.get(bool());
+	
+	Real w = p1[0] - p0[0] + 2*expand;
+	Real h = p1[1] - p0[1] + 2*expand;
+	Real bev = (bevel > 1) ? 1 : bevel;
+	Real bevx = bev_circle ? min(w*bev/2.0, h*bev/2.0) : w*bev/2.0;
+	Real bevy = bev_circle ? min(w*bev/2.0, h*bev/2.0) : h*bev/2.0;
+	clear();
+	if (approximate_equal(bevel, 0.0))
+	{
+		move_to(p0[0] - expand, p0[1] - expand);
+		line_to(p1[0] + expand, p0[1] - expand);
+		line_to(p1[0] + expand, p1[1] + expand);
+		line_to(p0[0] - expand, p1[1] + expand);
+		close();
+	}
+	else
+	{
+		move_to (p1[0] + expand -bevx, p0[1]-expand);
+		conic_to(p1[0]+expand, p0[1]-expand+bevy, p1[0]+expand, p0[1]-expand);
+		line_to (p1[0]+expand, p1[1]+expand-bevy);
+		conic_to(p1[0]+expand-bevx, p1[1]+expand, p1[0]+expand, p1[1]+expand);
+		line_to (p0[0]-expand+bevx, p1[1]+expand);
+		conic_to(p0[0]-expand, p1[1]+expand-bevy, p0[0]-expand, p1[1]+expand);
+		line_to (p0[0]-expand, p0[1]-expand+bevy);
+		conic_to(p0[0]-expand+bevx, p0[1]-expand, p0[0]-expand, p0[1]-expand);
+		close();
+	}
 }
 
 bool
@@ -96,6 +121,8 @@ Rectangle::set_shape_param(const synfig::String & param, const synfig::ValueBase
 	IMPORT_VALUE(param_point1);
 	IMPORT_VALUE(param_point2);
 	IMPORT_VALUE(param_expand);
+	IMPORT_VALUE(param_bevel);
+	IMPORT_VALUE(param_bevCircle);
 	return false;
 }
 
@@ -104,6 +131,20 @@ Rectangle::set_param(const String & param, const ValueBase &value)
 {
 	if (set_shape_param(param, value))
 		{ force_sync(); return true; }
+	IMPORT_VALUE_PLUS(param_feather_x,
+		{
+			Real feather_x=param_feather_x.get(Real());
+			if(feather_x<0) feather_x=0;
+			param_feather_x.set(feather_x);
+			set_feather(Vector(feather_x, get_feather()[1]));
+		});
+	IMPORT_VALUE_PLUS(param_feather_y,
+		  {
+			  Real feather_y=param_feather_y.get(Real());
+			  if(feather_y<0) feather_y=0;
+			  param_feather_y.set(feather_y);
+			  set_feather(Vector(get_feather()[0], feather_y));
+		  });
 
 	if ( param == "color"
 	  || param == "invert" )
@@ -118,6 +159,10 @@ Rectangle::get_param(const String &param)const
 	EXPORT_VALUE(param_point1);
 	EXPORT_VALUE(param_point2);
 	EXPORT_VALUE(param_expand);
+	EXPORT_VALUE(param_feather_x);
+	EXPORT_VALUE(param_feather_y);
+	EXPORT_VALUE(param_bevel);
+	EXPORT_VALUE(param_bevCircle);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -150,6 +195,23 @@ Rectangle::get_param_vocab()const
 		.set_local_name(_("Expand amount"))
 	);
 	ret.push_back(polygon["invert"]);
+	ret.push_back(ParamDesc("feather_x")
+		.set_local_name(_("Feather X"))
+		.set_is_distance()
+	);
+	ret.push_back(ParamDesc("feather_y")
+		.set_local_name(_("Feather Y"))
+		.set_is_distance()
+	);
+	ret.push_back(ParamDesc("bevel")
+		.set_local_name(_("Bevel"))
+		.set_description(_("Use Bevel for the corners"))
+		.set_is_distance()
+	);
+	ret.push_back(ParamDesc("bevCircle")
+		.set_local_name(_("Keep Bevel Circular"))
+		.set_description(_("When checked the bevel is circular"))
+	);
 
 	return ret;
 }

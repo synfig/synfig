@@ -33,6 +33,7 @@
 #include <gtkmm/box.h>
 #include <gtkmm/button.h>
 #include <gtkmm/togglebutton.h>
+#include "widgets/widget_time.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -54,6 +55,7 @@ private:
 	Gtk::Button *seek_next_frame;
 	Gtk::Button *seek_next_keyframe;
 	Gtk::Button *seek_end;
+	Widget_Time *end_time;
 	Gtk::ToggleButton *repeat;
 	Gtk::Button *bound_lower;
 	Gtk::ToggleButton *bounds_enable;
@@ -69,6 +71,7 @@ private:
 
 	void on_repeat_toggled();
 	void on_bounds_toggled();
+	Widget_Time* create_end_time_entry(const char *tooltip);
 
 public:
 	FrameDial();
@@ -81,6 +84,7 @@ public:
 	Glib::SignalProxy0<void> signal_seek_next_frame()    { return seek_next_frame->signal_clicked(); }
 	Glib::SignalProxy0<void> signal_seek_next_keyframe() { return seek_next_keyframe->signal_clicked(); }
 	Glib::SignalProxy0<void> signal_seek_end()           { return seek_end->signal_clicked(); }
+	Glib::SignalProxy0<void> signal_end_time_changed()   { return end_time->signal_activate(); }
 	sigc::signal<void, bool> signal_repeat()             { return signal_repeat_; }
 	sigc::signal<void, bool> signal_bounds_enable()      { return signal_bounds_enable_; }
 	Glib::SignalProxy0<void> signal_bound_lower()        { return bound_lower->signal_clicked(); }
@@ -89,6 +93,9 @@ public:
 	void toggle_play_pause_button(bool is_playing);
 	void toggle_repeat(bool enable);
 	void toggle_bounds_enable(bool enable);
+	void set_end_time(float fps, float value);
+	void on_end_time_widget_changed();
+	float get_end_time();
 }; // END of class FrameDial
 
 }; // END of namespace studio

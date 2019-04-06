@@ -60,6 +60,10 @@ struct GradientCPoint : public UniqueID
 	GradientCPoint(const Real &pos, const Color &color):pos(pos),color(color) { }
 }; // END of class GradientCPoint
 
+// for use in std::upper_bound, std::lower_bound, etc
+// must be inline to avoid 'multiple definition' linker error
+inline bool operator<(const Real &a, const GradientCPoint &b)
+	{ return a < b.pos; }
 
 //! \class Gradient
 //! \brief Color Gradient Class
