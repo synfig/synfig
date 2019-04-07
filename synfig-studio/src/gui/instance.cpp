@@ -1631,26 +1631,47 @@ void
 Instance::gather_uri(std::set<synfig::String> &x, const synfig::Layer::Handle &layer) const
 {
 	if (!layer || !layer->get_canvas()) return;
+	int count =0; //will be used to count layers in the group
 
+	synfig::Layer::Handle layerfinal,child_layer;
+
+	//check if the layer is group layer
+	if (etl::handle<Layer_PasteCanvas> paste = etl::handle<Layer_PasteCanvas>::cast_dynamic(layer)) 
+	{
+		synfig::Canvas::Handle canvas = paste->get_sub_canvas();
+			if(canvas)
+			{
+				for(IndependentContext i = canvas->get_independent_context(); *i; i++)
+				{
+					child_layer = (*i);
+					count++;
+					if(count>1) break;
+				}
+			}
+	}
+	
 	FileSystem::Handle file_system = layer->get_canvas()->get_file_system();
 	if (!file_system) return;
 
-	ParamVocab vocab = layer->get_param_vocab();
+	//if yes then the layer inside group should be processed not the group!
+	(count==1)? layerfinal = child_layer: layerfinal=layer;
+
+	ParamVocab vocab = layerfinal->get_param_vocab();
 	for(ParamVocab::const_iterator i = vocab.begin(); i != vocab.end(); ++i)
 	{
 		if (i->get_hint() == "filename")
 		{
-			ValueBase v = layer->get_param(i->get_name());
+			ValueBase v = layerfinal->get_param(i->get_name());
 			if (v.can_get(String()))
 			{
-				String filename = CanvasFileNaming::make_full_filename(layer->get_canvas()->get_file_name(), v.get(String()));
+				String filename = CanvasFileNaming::make_full_filename(layerfinal->get_canvas()->get_file_name(), v.get(String()));
 				String uri = file_system->get_real_uri(filename);
 				if (!uri.empty()) x.insert(uri);
 			}
 		}
 
-		Layer::DynamicParamList::const_iterator j = layer->dynamic_param_list().find(i->get_name());
-		if (j != layer->dynamic_param_list().end() && j->second)
+		Layer::DynamicParamList::const_iterator j = layerfinal->dynamic_param_list().find(i->get_name());
+		if (j != layerfinal->dynamic_param_list().end() && j->second)
 			gather_uri(x, j->second);
 	}
 
@@ -1670,6 +1691,9 @@ Instance::gather_uri(std::set<synfig::String> &x, const synfig::Canvas::Handle &
 		gather_uri(x, *i);
 }
 
+// this is the second function for gather_uri - call it gather_uri(set, layerlist)
+// iterate through all the layers and call gather_uri(set, layer) for each saperate layer 
+
 void
 Instance::gather_uri(std::set<synfig::String> &x, const synfigapp::SelectionManager::LayerList &layers) const
 {
@@ -1677,6 +1701,7 @@ Instance::gather_uri(std::set<synfig::String> &x, const synfigapp::SelectionMana
 		gather_uri(x, *i);
 }
 
+// this is the entry point for gather_uri - call it gather_uri(map, layerlist)
 void
 Instance::gather_uri(std::map<synfig::String, synfig::String> &x, const synfigapp::SelectionManager::LayerList &layers) const
 {
@@ -1728,6 +1753,8 @@ Instance::add_special_layer_actions_to_menu(Gtk::Menu *menu, const synfigapp::Se
 	}
 }
 
+// called whenever we right click any layer under layers panel
+// arguments - action_group: the current group of actions on the right click menu, layers: layerlist(because we can select multiple layer and then right click) 
 void
 Instance::add_special_layer_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup>& action_group, synfig::String& ui_info, const synfigapp::SelectionManager::LayerList &layers) const
 {
