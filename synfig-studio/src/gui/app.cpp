@@ -3548,15 +3548,15 @@ try_open_img_external(const std::string &uri)
 		#ifdef WIN32
 			char buffer[512];
     		::snprintf(buffer, sizeof(buffer), "%s %s",App::image_editor_path.c_str(), new_uri.c_str());
-    		Glib::spawn_command_line_sync(buffer);
+    		Glib::spawn_command_line_async(buffer);
 		#elif defined(__APPLE__)
     		char buffer[512];
     		::snprintf(buffer, sizeof(buffer), "open -a %s %s", App::image_editor_path.c_str(), new_uri.c_str());
-    		::system(buffer);
+    		Glib::spawn_command_line_async(buffer);
 		#else
     		char buffer[512];
     		::snprintf(buffer, sizeof(buffer), "%s %s",App::image_editor_path.c_str(), new_uri.c_str());
-			Glib::spawn_command_line_sync(buffer);
+			Glib::spawn_command_line_async(buffer);
 		#endif
 		return true;
 
