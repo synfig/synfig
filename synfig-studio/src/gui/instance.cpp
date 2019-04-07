@@ -1632,47 +1632,31 @@ Instance::gather_uri(std::set<synfig::String> &x, const synfig::Layer::Handle &l
 {
 	if (!layer || !layer->get_canvas()) return;
 	int count =0; //will be used to count layers in the group
-	
+
+	synfig::Layer::Handle layerfinal,child_layer;
+
 	//check if the layer is group layer
-	ParamVocab vocab = layer->get_param_vocab();
-	synfig::Layer::Handle layerfinal,lay;
-	bool some_bool = false;
-	for(ParamVocab::const_iterator i = vocab.begin(); i != vocab.end(); ++i)
+	if (etl::handle<Layer_PasteCanvas> paste = etl::handle<Layer_PasteCanvas>::cast_dynamic(layer)) 
 	{
-		if(i->get_description() == "Group content")
-		{
-			etl::handle<synfig::Layer_PasteCanvas> p = etl::handle<synfig::Layer_PasteCanvas>::cast_dynamic(layer);
-			synfig::Canvas::Handle canvas = p->get_sub_canvas();
+		synfig::Canvas::Handle canvas = paste->get_sub_canvas();
 			if(canvas)
 			{
 				for(IndependentContext i = canvas->get_independent_context(); *i; i++)
 				{
-					lay = (*i);
+					child_layer = (*i);
 					count++;
+					if(count>1) break;
 				}
-				if(count==1)
-				{
-					some_bool = true;//yes only one layer 
-				}				
 			}
-		}
 	}
-
+	
 	FileSystem::Handle file_system = layer->get_canvas()->get_file_system();
 	if (!file_system) return;
 
 	//if yes then the layer inside group should be processed not the group!
-	if(some_bool)
-	{
-		vocab = lay->get_param_vocab();
-		layerfinal = lay;
-	}
-	else
-	{
-		layerfinal = layer;
-	}
-	
+	(count==1)? layerfinal = child_layer: layerfinal=layer;
 
+	ParamVocab vocab = layerfinal->get_param_vocab();
 	for(ParamVocab::const_iterator i = vocab.begin(); i != vocab.end(); ++i)
 	{
 		if (i->get_hint() == "filename")
