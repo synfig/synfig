@@ -87,6 +87,7 @@ if [[ `uname` == "Darwin" ]]; then
 
 /usr/bin/perl "\$@"
 EOF
+	chmod +x ${PREFIX}/bin/perl
 
 fi
 export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:${PKG_CONFIG_PATH}
