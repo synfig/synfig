@@ -67,6 +67,7 @@ fi
 [ -d synfig-core ] || mkdir synfig-core
 [ -d synfig-studio ] || mkdir synfig-studio
 [ -d "${PREFIX}" ] || mkdir "${PREFIX}"
+[ -d "${PREFIX}/bin" ] || mkdir "${PREFIX}/bin"
 
 #========================== VARIABLES ==================================
 
@@ -79,6 +80,14 @@ if [[ `uname` == "Darwin" ]]; then
 	export PATH="/usr/local/opt/ccache/libexec:/usr/local/opt/gettext/bin:${PATH}"
 	export LDFLAGS="-L/usr/local/opt/gettext/lib ${LDFLAGS}"
 	export CPPFLAGS="-I/usr/local/opt/gettext/include ${CPPFLAGS}"
+
+	# Force use system perl, see https://github.com/synfig/synfig/issues/794
+	cat > ${PREFIX}/bin/perl <<EOF
+#!/bin/sh
+
+/usr/bin/perl "\$@"
+EOF
+
 fi
 export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:${PKG_CONFIG_PATH}
 export PATH=${PREFIX}/bin:$PATH
