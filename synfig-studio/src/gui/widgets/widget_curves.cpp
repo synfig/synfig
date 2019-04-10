@@ -45,6 +45,7 @@
 #include <synfig/blinepoint.h>
 #include <synfig/widthpoint.h>
 #include <synfig/dashitem.h>
+#include<synfig/waypoint.h>
 
 #include <gui/app.h>
 #include <gui/helpers.h>
@@ -397,6 +398,8 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 		}
 	}
 
+
+
 	// Draw current time
 	cr->set_source_rgb(0, 0, 1);
 	cr->rectangle(etl::round_to_int((double)(time - lower)*k), 0, 0, h);
@@ -432,6 +435,9 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 			}
 		}
 
+
+
+
 		// Draw the graph curves with 0.5 width
 		cr->set_line_width(0.5);
 		for(int c = 0; c < channels; ++c) {
@@ -443,11 +449,23 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 				else
 					{
 						cr->line_to(j->get_x(), j->get_y());
-						cr->arc(j->get_x(), j->get_y(), 0.2, 0.0, 2 * M_PI);
-						cr->set_source_rgba(11, 25, 218, 1);    
-  						cr->fill_preserve();
-
 					}
+
+				for(WaypointList::const_iterator i = canvas->waypoint_list().begin(); i != canvas->waypoint_list().end(); ++i){
+						if (!i->get_time().is_valid())
+							continue;
+						int x = (i->get_time() - lower)*k;
+						if (j->get_x()==x) {
+								cr->arc(x, 0, 0.2, 0.0, 2 * M_PI);
+								cr->set_source_rgba(11, 25, 218, 1);
+								cr->fill_preserve();
+						}
+						if (j->get_y()==x) {
+								cr->arc(x, 0, 0.2, 0.0, 2 * M_PI);
+								cr->set_source_rgba(11, 25, 218, 1);
+								cr->fill_preserve();
+						}
+				}
 			}
 			Gdk::Cairo::set_source_color(cr, i->channels[c].color);
 			cr->stroke();
