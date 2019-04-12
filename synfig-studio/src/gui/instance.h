@@ -147,6 +147,8 @@ public:
 	sigc::signal<void,CanvasView*>& signal_canvas_view_created() { return signal_canvas_view_created_; }
 	sigc::signal<void,CanvasView*>& signal_canvas_view_deleted() { return signal_canvas_view_deleted_; }
 
+	bool is_img(synfig::String ext) const;
+
 	bool get_undo_status()const { return undo_status_; }
 
 	bool get_redo_status()const { return redo_status_; }
