@@ -21,6 +21,10 @@ def gen_properties_multi_dimensional_keyframed(lottie, animated, idx):
     lottie["k"].append({})
     lottie["k"][-1]["t"] = last_waypoint_time
 
+    if  "h" in lottie["k"][-2].keys():
+        lottie["k"][-1]["h"] = 1
+        lottie["k"][-1]["s"] = lottie["k"][-2]["e"]
+
     # Time adjust of the curves
     timeadjust = 0.5
     for i in range(len(animated) - 1):
@@ -30,6 +34,13 @@ def gen_properties_multi_dimensional_keyframed(lottie, animated, idx):
         time_span_prev = lottie["k"][i]["t"] - lottie["k"][i-1]["t"]
         cur_get_after = animated[i].attrib["after"]
         next_get_before = animated[i+1].attrib["before"]
+
+                # prev              iter
+        # ANY/CONSTANT ---- ANY/ANY
+        # ANY/ANY      ---- CONSTANT/ANY
+        if cur_get_after == "constant" or next_get_before == "constant":
+            continue
+            
         # prev    --- iter        --- next
         # ANY/ANY --- ANY/!LINEAR --- ANY/ANY
         if cur_get_after != "linear":

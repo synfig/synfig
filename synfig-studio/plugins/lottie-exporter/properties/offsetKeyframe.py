@@ -81,6 +81,17 @@ def gen_properties_offset_keyframe(curve_list, animated, i):
         if next_get_before in {"linear", "halt"}:
             in_val = next_pos[dim] - cur_pos[dim]
 
+        # iter              next
+        # ANY/CONSTANT ---- ANY/ANY
+        # ANY/ANY      ---- CONSTANT/ANY
+        if cur_get_after == "constant" or next_get_before == "constant":
+            lottie["h"] = 1
+            del lottie["to"], lottie["ti"]
+            del lottie["i"], lottie["o"]
+            # "e" is not needed, but is still not deleted as it is of use in the last iteration of animation
+            # del lottie["e"]
+            return
+
         # iter           next           after_next
         # ANY/ANY ------ TCB/ANY ------ ANY/ANY
         if next_get_before == "auto":
