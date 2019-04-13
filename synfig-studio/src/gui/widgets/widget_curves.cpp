@@ -450,8 +450,8 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 					{
 						cr->line_to(j->get_x(), j->get_y());
 					}
-
-				for(WaypointList::const_iterator i = canvas->waypoint_list().begin(); i != canvas->waypoint_list().end(); ++i){
+				ValueNode_Animated::WaypointList &list = value_node_animated->editable_waypoint_list();
+				for(ValueNode_Animated::WaypointList::iterator i = list().begin(); i != list().end(); ++i){
 						if (!i->get_time().is_valid())
 							continue;
 						int x = (i->get_time() - lower)*k;
