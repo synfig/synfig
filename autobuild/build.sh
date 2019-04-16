@@ -80,6 +80,7 @@ if [[ `uname` == "Darwin" ]]; then
 	export PATH="/usr/local/opt/ccache/libexec:/usr/local/opt/gettext/bin:${PATH}"
 	export LDFLAGS="-L/usr/local/opt/gettext/lib ${LDFLAGS}"
 	export LDFLAGS="-L$(brew --prefix libomp)/lib ${LDFLAGS}"
+	export LDFLAGS="-L$(brew --prefix libtool)/lib ${LDFLAGS}"
 	export CPPFLAGS="-I/usr/local/opt/gettext/include ${CPPFLAGS}"
 	export PKG_CONFIG_PATH="/usr/local/opt/libffi/lib/pkgconfig:${PKG_CONFIG_PATH}"
 
