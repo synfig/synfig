@@ -45,7 +45,7 @@
 #include <synfig/blinepoint.h>
 #include <synfig/widthpoint.h>
 #include <synfig/dashitem.h>
-#include<synfig/valuenodes/ValueNode_Animated.h>
+#include<synfig/valuenodes/valuenode_dynamiclist.h>
 
 #include <gui/app.h>
 #include <gui/helpers.h>
