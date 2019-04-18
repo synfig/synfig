@@ -213,7 +213,7 @@ Outline::sync_vfunc()
 		// Retrieve the parent canvas grow value
 		Real gv = exp(get_outline_grow_mark());
 
-		CurveList side_a, side_b;
+		rendering::Contour::ChunkList side_a, side_b;
 
 		// 				iter	next
 		//				----	----
@@ -294,20 +294,24 @@ Outline::sync_vfunc()
 				if (cross > CUSP_THRESHOLD) {
 					const Point p1(bp1.get_vertex() + t1*iter_w);
 					const Point p2(bp1.get_vertex() + t2*iter_w);
-					side_a.push_back( CurvePoint(line_intersection(p1, last_tangent, p2, curr_tangent)) );
+					side_a.push_back( rendering::Contour::Chunk(
+						line_intersection(p1, last_tangent, p2, curr_tangent) ));
 				} else
 				if (cross < -CUSP_THRESHOLD) {
 					const Point p1(bp1.get_vertex() - t1*iter_w);
 					const Point p2(bp1.get_vertex() - t2*iter_w);
-					side_b.push_back( CurvePoint(line_intersection(p1, last_tangent, p2, curr_tangent)) );
+					side_b.push_back( rendering::Contour::Chunk(
+						line_intersection(p1, last_tangent, p2, curr_tangent) ));
 				} else
 				if (cross > 0.0 && perp > 1.0) {
 					Real amount = std::max(Real(0.0), cross/CUSP_THRESHOLD)*(SPIKE_AMOUNT - 1.0) + 1.0;
-					side_a.push_back( CurvePoint(bp1.get_vertex() + (t1 + t2).norm()*iter_w*amount) );
+					side_a.push_back( rendering::Contour::Chunk(
+						bp1.get_vertex() + (t1 + t2).norm()*iter_w*amount ));
 				} else
 				if(cross<0 && perp>1) {
 					Real amount = std::max(Real(0.0), -cross/CUSP_THRESHOLD)*(SPIKE_AMOUNT - 1.0) + 1.0;
-					side_b.push_back( CurvePoint(bp1.get_vertex() - (t1 + t2).norm()*iter_w*amount) );
+					side_b.push_back( rendering::Contour::Chunk(
+						bp1.get_vertex() - (t1 + t2).norm()*iter_w*amount ));
 				}
 			}
 
@@ -336,29 +340,31 @@ Outline::sync_vfunc()
 					Vector a = *(p-1) + d*w;
 					Vector b = *p + d*w;
 					Real tk = (b - a).mag()*div_length;
-					side_a.push_back( CurvePoint(b, a + pt*tk, b - t*tk) );
+					side_a.push_back( rendering::Contour::Chunk(b, a + pt*tk, b - t*tk) );
 
 					a = *(p-1) - d*w;
 					b = *p - d*w;
 					tk = (b - a).mag()*div_length;
-					side_b.push_back( CurvePoint(b, a + pt*tk, b - t*tk) );
+					side_b.push_back( rendering::Contour::Chunk(b, a + pt*tk, b - t*tk) );
 				} else {
-					side_a.push_back( CurvePoint(*p + d*w) );
-					side_b.push_back( CurvePoint(*p - d*w) );
+					side_a.push_back( rendering::Contour::Chunk(*p + d*w) );
+					side_b.push_back( rendering::Contour::Chunk(*p - d*w) );
 				}
 				pt = t;
 			}
 
 			last_tangent = deriv(1.0 - CUSP_TANGENT_ADJUST);
-			side_a.push_back( CurvePoint(curve(1.0) + last_tangent.perp().norm()*next_w) );
-			side_b.push_back( CurvePoint(curve(1.0) - last_tangent.perp().norm()*next_w) );
+			side_a.push_back( rendering::Contour::Chunk(
+				curve(1.0) + last_tangent.perp().norm()*next_w ));
+			side_b.push_back( rendering::Contour::Chunk(
+				curve(1.0) - last_tangent.perp().norm()*next_w ));
 
 			first = false;
 		}
 
 		if (side_a.size() < 2 || side_b.size() < 2) return;
 
-		move_to(side_a.front().p);
+		move_to(side_a.front().p1);
 
 		if (loop) {
 			add(side_a);
@@ -377,9 +383,9 @@ Outline::sync_vfunc()
 				Vector p2 = b + tangent*w*(ROUND_END_FACTOR/3.0);
 
 				// replace the last point
-				side_a.back() = CurvePoint(a);
+				side_a.back() = rendering::Contour::Chunk(a);
 				add(side_a);
-				add(CurvePoint(b, p1, p2));
+				add(rendering::Contour::Chunk(b, p1, p2));
 			} else add(side_a);
 
 			// Insert code for adding begin tip
@@ -395,9 +401,9 @@ Outline::sync_vfunc()
 				Vector p2 = b - tangent*w*(ROUND_END_FACTOR/3.0);
 
 				// replace the first point
-				side_b.front() = CurvePoint(a);
+				side_b.front() = rendering::Contour::Chunk(a);
 				add_reverse(side_b);
-				add(CurvePoint(b, p1, p2));
+				add(rendering::Contour::Chunk(b, p1, p2));
 			} else add_reverse(side_b);
 		}
 	} catch (...) { synfig::error("Outline::sync(): Exception thrown"); throw; }

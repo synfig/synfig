@@ -93,6 +93,7 @@ public:
 		Polyspan polyspan;
 		polyspan.init(target_rect);
 		software::Contour::build_polyspan(contour->get_chunks(), matrix, polyspan, detail);
+		polyspan.close();
 		polyspan.sort_marks();
 
 		LockWrite la(this);

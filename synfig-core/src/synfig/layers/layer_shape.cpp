@@ -52,6 +52,7 @@
 #include <synfig/value.h>
 #include <synfig/valuenode.h>
 
+#include <synfig/rendering/primitive/intersector.h>
 #include <synfig/rendering/common/task/taskblend.h>
 #include <synfig/rendering/common/task/taskblur.h>
 #include <synfig/rendering/common/task/taskcontour.h>
@@ -75,721 +76,7 @@ SYNFIG_LAYER_SET_CATEGORY(Layer_Shape,N_("Internal"));
 SYNFIG_LAYER_SET_VERSION(Layer_Shape,"0.1");
 SYNFIG_LAYER_SET_CVS_ID(Layer_Shape,"$Id$");
 
-#define EPSILON	1e-12
-
-template < class T >
-inline bool IsZero(const T &n)
-{
-	return (n < EPSILON) && (n > -EPSILON);
-}
-
 /* === C L A S S E S ======================================================= */
-
-//Assumes 64 byte aligned structures if at all
-struct Primitive
-{
-	int		operation;
-	int		number;
-
-	//Point	data[0];
-
-	enum Operations
-	{
-		NONE = -1,
-		MOVE_TO = 0,		//(x,y)+ 				after first point treated as line_to
-		CLOSE,				//						NOT RUNLENGTH enabled
-		LINE_TO,			//(x,y)+				continuous func
-		CONIC_TO,			//(x1,y1,x,y)+			"   "
-		CONIC_TO_SMOOTH,	//(x,y)+				"   "
-		CUBIC_TO,			//(x1,y1,x2,y2,x,y)+	"   "
-		CUBIC_TO_SMOOTH,	//(x2,y2,x,y)+			"   "
-		END
-	};
-};
-
-//******** CURVE FUNCTIONS *****************
-const int	MAX_SUBDIVISION_SIZE = 64;
-const int	MIN_SUBDIVISION_DRAW_LEVELS = 4;
-
-//************** PARAMETRIC RENDERER SUPPORT STRUCTURES ****************
-
-// super segment
-struct MonoSegment
-{
-	Rect	aabb;
-	int		ydir;
-	vector<Point>	pointlist;
-
-	MonoSegment(int dir = 0, Real x0 = 0, Real x1 = 0, Real y0 = 0, Real y1 = 0)
-	{
-		aabb.minx = x0;
-		aabb.maxx = x1;
-		aabb.miny = y0;
-		aabb.maxy = y1;
-
-		ydir = dir;
-	}
-
-	int intersect(Real x,Real y) const
-	{
-		if((y < aabb.miny+EPSILON) || (y > aabb.maxy) || (x < aabb.minx)) return 0;
-		if(x > aabb.maxx) return ydir;
-
-		//int i = 0;
-		//int size = pointlist.size();
-		//vector<Point>::const_iterator end = pointlist.end();
-		vector<Point>::const_iterator p = pointlist.begin();
-
-		//assumes that the rect culled away anything that would be beyond the edges
-		if(ydir > 0)
-		{
-			while(y > (*++p)[1])
-				;
-		}
-		else
-		{
-			while(y < (*++p)[1])
-				;
-		}
-
-		//for the loop to break there must have been a slope (straight line would do nothing)
-		//vector<Point>::const_iterator p1 = p-1;
-		Real dy = p[-1][1] - p[0][1];
-		Real dx = p[-1][0] - p[0][0];
-
-		assert(dy != 0);
-
-		Real xi = p[0][0] + (y - p[0][1]) * dx / dy;
-		return (x > xi)*ydir;
-	}
-};
-
-struct CurveArray
-{
-	Rect	aabb;	//not necessarily as effective - can only reject values
-	vector<Point>	pointlist;	//run length - p0, p1, p2, p3 = p10, p11, p12, p13 = p20 ...
-	vector<char>	degrees;
-
-	CurveArray(Real x0 = 0, Real x1 = 0, Real y0 = 0, Real y1 = 0)
-	{
-		aabb.set(x0,y0,x1,y1);
-	}
-
-	void reset(Real x0 = 0, Real x1 = 0, Real y0 = 0, Real y1 = 0)
-	{
-		aabb.set(x0,y0,x1,y1);
-		pointlist.clear();
-		degrees.clear();
-	}
-
-	int size() const
-	{
-		return degrees.size();
-	}
-
-	void start(Point m)
-	{
-		reset(m[0],m[0],m[1],m[1]);
-		pointlist.push_back(m);
-	}
-
-	void add_cubic(Point dest, Point p1, Point p2)
-	{
-		aabb.expand(p1[0],p1[1]);
-		aabb.expand(p2[0],p2[1]);
-		aabb.expand(dest[0],dest[1]);
-
-		pointlist.push_back(p1);
-		pointlist.push_back(p2);
-		pointlist.push_back(dest);
-
-		degrees.push_back(3);
-	}
-
-	void add_conic(Point dest, Point p1)
-	{
-		aabb.expand(p1[0],p1[1]);
-		aabb.expand(dest[0],dest[1]);
-
-		pointlist.push_back(p1);
-		pointlist.push_back(dest);
-
-		degrees.push_back(2);
-	}
-
-	static int intersect_conic(Real x, Real y, Point *p, int /*level*/ = 0)
-	{
-		Real ymin,ymax,xmin,xmax;
-		int intersects = 0;
-
-		//sort the overall curve ys - degenerate detection
-		ymin = min(p[0][1],p[2][1]);
-		ymax = max(p[0][1],p[2][1]);
-
-		xmin = min(min(p[0][0],p[1][0]),p[2][0]);
-		xmax = max(max(p[0][0],p[1][0]),p[2][0]);
-
-		//to the left, to the right and out of range y, or completely out of range y
-		if( x < xmin ) return 0;
-		if( x > xmax  && (y > ymax || y < ymin) ) return 0;
-		if( (y > ymax && y > p[1][1]) || (y < ymin && y < p[1][1]) ) return 0;
-
-		//degenerate line max
-		if(ymin == ymax && ymax == p[1][1])
-			return 0;
-
-		//degenerate accept - to the right and crossing the base line
-		if(x > xmax)
-		{
-			return (y <= ymax && y >= ymin);
-		}
-
-		//solve for curve = y
-
-		//real roots:
-		//0 roots 	- 0 intersection
-		//1 root 	- get x, and figure out x
-		//2 roots (non-double root)	- get 2 xs, and count xs to the left
-
-		//for conic we can assume 1 intersection for monotonic curve
-		Real 	a = p[2][1] - 	2*p[1][1] + 	p[0][1],
-				b = 			2*p[1][1] - 	2*p[0][1],
-				c = 							p[0][1]		-	y;
-
-		Real t1 = -1, t2 = -1;
-
-		if(a == 0)
-		{
-			//linear - easier :)
-			if(b == 0) return 0; //may not need this check
-
-			t1 = - c / b; //bt + c = 0 solved
-		}else
-		{
-			//2 degree polynomial
-			Real b2_4ac = b*b - 4*a*c;
-
-			//if there are double/no roots - no intersections (in real #s that is)
-			if(b2_4ac <= 0)
-			{
-				return 0;
-			}
-
-			b2_4ac = sqrt(b2_4ac);
-
-			t1 = (-b - b2_4ac) / 2*a,
-			t2 = (-b + b2_4ac) / 2*a;
-		}
-
-		//calculate number of intersections
-		if(t1 >= 0 && t1 <= 1)
-		{
-			const Real t = t1;
-			const Real invt = 1 - t;
-
-			//find x val and it counts if it's to the left of the point
-			const Real xi = invt*invt*p[0][0] + 2*t*invt*p[1][0] + t*t*p[2][0];
-			const Real dy_t = 2*a*t + b;
-
-			if(dy_t)
-			{
-				intersects += (x >= xi) * ( dy_t > 0 ? 1 : -1);
-			}
-		}
-
-		if(t2 >= 0 && t2 <= 1)
-		{
-			const Real t = t2;
-			const Real invt = 1 - t;
-
-			//find x val and it counts if it's to the left of the point
-			const Real xi = invt*invt*p[0][0] + 2*t*invt*p[1][0] + t*t*p[2][0];
-			const Real dy_t = 2*a*t + b;
-
-			if(dy_t)
-			{
-				intersects += (x >= xi) * ( dy_t > 0 ? 1 : -1);
-			}
-		}
-
-		return intersects;
-	}
-
-	static int quadratic_eqn(Real a, Real b, Real c, Real *t0, Real *t1)
-	{
-		const Real b2_4ac = b*b - 4*a*c;
-
-		//degenerate reject (can't take sqrt)
-		if(b2_4ac < 0)
-		{
-			return 0;
-		}
-
-		const Real sqrtb2_4ac = sqrt(b2_4ac);
-		const Real signb = b < 0 ? -1 : 1;
-		const Real q = - 0.5 * (b + signb * sqrtb2_4ac);
-
-		*t0 = q/a;
-		*t1 = c/q;
-
-		return sqrtb2_4ac == 0 ? 1 : 2;
-	}
-
-	static int intersect_cubic(Real x, Real y, Point *p, int /*level*/ = 0)
-	{
-		const Real INVALIDROOT = -FLT_MAX;
-		Real ymin,ymax,xmin,xmax;
-		Real ymin2,ymax2,ymintot,ymaxtot;
-		int intersects = 0;
-
-		//sort the overall curve ys and xs - degenerate detection
-
-		//open span for the two end points
-		ymin = min(p[0][1],p[3][1]);
-		ymax = max(p[0][1],p[3][1]);
-
-		//other points etc.
-		ymin2 = min(p[1][1],p[2][1]);
-		ymax2 = max(p[1][1],p[2][1]);
-
-		ymintot = min(ymin,ymin2);
-		ymaxtot = max(ymax,ymax2);
-
-		//the entire curve control polygon is in this x range
-		xmin = min(min(p[0][0],p[1][0]),min(p[2][0],p[3][0]));
-		xmax = max(max(p[0][0],p[1][0]),max(p[2][0],p[3][0]));
-
-		//outside all y boundaries (no intersect)
-		if( (y > ymaxtot) || (y < ymintot) ) return 0;
-
-		//left of curve (no intersect)
-		if(x < xmin) return 0;
-
-		//right of curve (and outside base range)
-		if( x > xmax )
-		{
-			if( (y > ymax) || (y < ymin) ) return 0;
-
-			//degenerate accept - to the right and inside the [ymin,ymax] range (already rejected if out of range)
-			const Real n = p[3][1] - p[0][1];
-
-			//extract the sign from the value (we need valid data)
-			return n < 0 ? -1 : 1;
-		}
-
-		//degenerate horizontal line max -- doesn't happen enough to check for
-		if( ymintot == ymaxtot ) return 0;
-
-		//calculate roots:
-		// can have 0,1,2, or 3 real roots
-		// if any of them are double then reject the two...
-
-		// y-coefficients for f_y(t) - y = 0
-		Real 	a = p[3][1] 	- 3*p[2][1]	+ 3*p[1][1]	-   p[0][1],
-				b = 			  3*p[2][1]	- 6*p[1][1]	+ 3*p[0][1],
-				c =							  3*p[1][1]	- 3*p[0][1],
-				d = 										p[0][1]	- y;
-
-		Real 	ax = p[3][0] 	- 3*p[2][0]	+ 3*p[1][0]	-   p[0][0],
-				bx = 			  3*p[2][0]	- 6*p[1][0]	+ 3*p[0][0],
-				cx =						  3*p[1][0]	- 3*p[0][0],
-				dx = 										p[0][0];
-
-		Real t1 = INVALIDROOT, t2 = INVALIDROOT, t3 = INVALIDROOT, t, dydt;
-
-		if(a == 0)
-		{
-			//only 2nd degree
-			if(b == 0)
-			{
-				//linear
-				if(c == 0) return 0;
-
-				t1 = - d / c; //equation devolved into: ct + d = 0 - solve...
-			}else
-			{
-				//0 roots = 0 intersections, 1 root = 2 intersections at the same place (0 effective)
-				if(quadratic_eqn(a,b,c,&t1,&t2) != 2) return 0;
-			}
-		}else
-		{
-			//cubic - sigh....
-
-			//algorithm courtesy of Numerical Recipes in C (algorithm copied from pg. 184/185)
-			Real an = b / a,
-				 bn = c / a,
-				 cn = d / a;
-
-			//if cn is 0 (or really really close), then we can simplify this...
-			if(IsZero(cn))
-			{
-				t3 = 0;
-
-				//0 roots = 0 intersections, 1 root = 2 intersections at the same place (0 effective)
-				if(quadratic_eqn(a,b,c,&t1,&t2) != 2)
-				{
-					t1 = t2 = INVALIDROOT;
-				}
-			}
-			else
-			{
-				//otherwise run the normal cubic root equation
-				Real Q = (an*an - 3.0*bn) / 9.0;
-				Real R = ((2.0*an*an - 9.0*bn)*an + 27.0*cn)/54.0;
-
-				if(R*R < Q*Q*Q)
-				{
-					Real theta = acos(R / sqrt(Q*Q*Q));
-
-					t1 = -2.0*sqrt(Q)*cos(theta/3) - an/3.0;
-					t2 = -2.0*sqrt(Q)*cos((theta+2*PI)/3.0) - an/3.0;
-					t3 = -2.0*sqrt(Q)*cos((theta-2*PI)/3.0) - an/3.0;
-
-					//don't need to reorder,l just need to eliminate double/triple roots
-					//if(t3 == t2 && t1 == t2) t2 = t3 = INVALIDROOT;
-					if(t3 == t2) t2 = t3 = INVALIDROOT;
-					if(t1 == t2) t1 = t2 = INVALIDROOT;
-					if(t1 == t3) t1 = t3 = INVALIDROOT;
-				}else
-				{
-					Real signR = R < 0 ? -1 : 1;
-					Real A = - signR * pow(signR*R + sqrt(R*R - Q*Q*Q),1/3.0);
-
-					Real B;
-					if(A == 0) B = 0;
-					else B = Q / A;
-
-					//single real root in this case
-					t1 = (A + B) - an/3.0;
-				}
-			}
-		}
-
-		//if(t1 != INVALIDROOT)
-		{
-			t = t1;//polish_cubicroot(a,b,c,d,t1,&dydt);
-			if(t >= 0 && t < 1)
-			{
-				//const Real invt = 1 - t;
-
-				//find x val and it counts if it's to the left of the point
-				const Real xi = ((ax*t + bx)*t + cx)*t + dx;
-				dydt = (3*a*t + 2*b)*t + c;
-
-				if(dydt)
-				{
-					intersects += (x >= xi) * ( dydt > 0 ? 1 : -1);
-				}
-			}
-		}
-
-		//if(t2 != INVALIDROOT)
-		{
-			t = t2;//polish_cubicroot(a,b,c,d,t2,&dydt);
-			if(t >= 0 && t < 1)
-			{
-				//const Real invt = 1 - t;
-
-				//find x val and it counts if it's to the left of the point
-				const Real xi = ((ax*t + bx)*t + cx)*t + dx;
-				dydt = (3*a*t + 2*b)*t + c;
-
-				if(dydt)
-				{
-					intersects += (x >= xi) * ( dydt > 0 ? 1 : -1);
-				}
-			}
-		}
-
-		//if(t3 != INVALIDROOT)
-		{
-			t = t3;//polish_cubicroot(a,b,c,d,t3,&dydt);
-			if(t >= 0 && t < 1)
-			{
-				//const Real invt = 1 - t;
-
-				//find x val and it counts if it's to the left of the point
-				const Real xi = ((ax*t + bx)*t + cx)*t + dx;
-				dydt = (3*a*t + 2*b)*t + c;
-
-				if(dydt)
-				{
-					intersects += (x >= xi) * ( dydt > 0 ? 1 : -1);
-				}
-			}
-		}
-
-		return intersects;
-	}
-
-	int intersect(Real x,Real y, Point *table) const
-	{
-		if((y < aabb.miny) || (y > aabb.maxy) || (x < aabb.minx)) return 0;
-
-		int i, curdeg, intersects = 0;
-		const int numcurves = degrees.size();
-
-		vector<Point>::const_iterator	p = pointlist.begin();
-
-		for(i=0; i < numcurves; i++)
-		{
-			curdeg = degrees[i];
-
-			switch(curdeg)
-			{
-				case 2:
-				{
-					table[0] = *p++;
-					table[1] = *p++;
-					table[2] = *p;	//we want to include the last point for the next curve
-
-					intersects += intersect_conic(x,y,table);
-
-					break;
-				}
-
-				case 3:
-				{
-					table[0] = *p++;
-					table[1] = *p++;
-					table[2] = *p++;
-					table[3] = *p;	//we want to include the last point for the next curve
-
-					intersects += intersect_cubic(x,y,table);
-
-					break;
-				}
-
-				default:
-				{
-					warning("Invalid degree (%d) inserted into the list (index: %d)\n", curdeg, i);
-					return 0;
-				}
-			}
-		}
-
-		return intersects;
-	}
-};
-
-struct Layer_Shape::Intersector
-{
-	Rect	aabb;
-
-	//! true iff aabb hasn't been initialized yet
-	bool	initaabb;
-
-	int 	flags;
-
-	enum IntersectorFlags
-	{
-		NotClosed = 0x8000
-	};
-
-	enum PrimitiveType
-	{
-		TYPE_NONE = 0,
-		TYPE_LINE,
-		TYPE_CURVE
-	};
-
-	Real	cur_x,cur_y;
-	Real	close_x,close_y;
-
-	vector<MonoSegment>				segs;	//monotonically increasing
-	vector<CurveArray>				curves; //big array of consecutive curves
-
-	int								prim;
-	Vector							tangent;
-
-	Intersector()
-	{
-		clear();
-	}
-
-	bool notclosed()
-	{
-		return (flags & NotClosed) || (cur_x != close_x) || (cur_y != close_y);
-	}
-
-	void move_to(Real x, Real y)
-	{
-		close();
-
-		close_x = cur_x = x;
-		close_y = cur_y = y;
-
-		tangent[0] = tangent[1] = 0;
-
-		if(initaabb)
-		{
-			aabb.set_point(x,y);
-			initaabb = false;
-		}else aabb.expand(x,y);
-
-		prim = TYPE_NONE;
-	}
-
-	void line_to(Real x, Real y)
-	{
-		int dir = (y > cur_y)*1 + (-1)*(y < cur_y);
-
-		//check for context (if not line start a new segment)
-		//if we're not in line mode (covers 0 set case), or if directions are different (not valid for 0 direction)
-		if(prim != TYPE_LINE || (dir && segs.back().ydir != dir))
-		{
-			MonoSegment		seg(dir,x,x,y,y);
-
-			seg.aabb.expand(cur_x,cur_y);
-			seg.pointlist.push_back(Point(cur_x,cur_y));
-			seg.pointlist.push_back(Point(x,y));
-			segs.push_back(seg);
-		}
-		//add to the last segment, because it works
-		else
-		{
-			segs.back().pointlist.push_back(Point(x,y));
-			segs.back().aabb.expand(x,y);
-		}
-
-
-
-		cur_x = x;
-		cur_y = y;
-		aabb.expand(x,y); //expand the entire thing's bounding box
-
-		tangent[0] = x - cur_x;
-		tangent[1] = x - cur_y;
-
-		flags |= NotClosed;
-		prim = TYPE_LINE;
-	}
-
-	void conic_to_smooth(Real x, Real y)
-	{
-		const Real x1 = tangent[0]/2.0 + cur_x;
-		const Real y1 = tangent[1]/2.0 + cur_y;
-
-		conic_to(x,y,x1,y1);
-	}
-
-	void conic_to(Real x, Real y, Real x1, Real y1)
-	{
-		//if we're not already a curve start one
-		if(prim != TYPE_CURVE)
-		{
-			CurveArray	c;
-
-			c.start(Point(cur_x,cur_y));
-			c.add_conic(Point(x,y),Point(x1,y1));
-
-			curves.push_back(c);
-		}else
-		{
-			curves.back().add_conic(Point(x,y),Point(x1,y1));
-		}
-
-		cur_x = x;
-		cur_y = y;
-
-		aabb.expand(x1,y1);
-		aabb.expand(x,y);
-
-		tangent[0] = 2*(x - x1);
-		tangent[1] = 2*(y - y1);
-
-		flags |= NotClosed;
-		prim = TYPE_CURVE;
-	}
-
-	void curve_to_smooth(Real x, Real y, Real x2, Real y2)
-	{
-		Real x1 = tangent[0]/3.0 + cur_x;
-		Real y1 = tangent[1]/3.0 + cur_y;
-
-		cubic_to(x,y,x1,y1,x2,y2);
-	}
-
-	void cubic_to(Real x, Real y,Real x1, Real y1, Real x2, Real y2)
-	{
-		//if we're not already a curve start one
-		if(prim != TYPE_CURVE)
-		{
-			CurveArray	c;
-
-			c.start(Point(cur_x,cur_y));
-			c.add_cubic(Point(x,y),Point(x1,y1),Point(x2,y2));
-
-			curves.push_back(c);
-		}else
-		{
-			curves.back().add_cubic(Point(x,y),Point(x1,y1),Point(x2,y2));
-		}
-
-		cur_x = x;
-		cur_y = y;
-
-		//expand bounding box around ALL of it
-		aabb.expand(x1,y1);
-		aabb.expand(x2,y2);
-		aabb.expand(x,y);
-
-		tangent[0] = 3*(x - x2);
-		tangent[1] = 3*(y - y2);
-
-		flags |= NotClosed;
-		prim = TYPE_CURVE;
-	}
-
-	void close()
-	{
-		if(flags & NotClosed)
-		{
-			if(cur_x != close_x || cur_y != close_y)
-			{
-				line_to(close_x,close_y);
-			}
-
-			flags &= ~NotClosed;
-		}
-	}
-
-	//assumes the line to count the intersections with is (-1,0)
-	int	intersect(Real x, Real y) const
-	{
-		int inter = 0;
-		unsigned int i;
-		vector<MonoSegment>::const_iterator s = segs.begin();
-		vector<CurveArray>::const_iterator c = curves.begin();
-
-		Point	memory[3*MAX_SUBDIVISION_SIZE + 1];
-
-		for(i = 0; i < segs.size(); i++,s++)
-		{
-			inter += s->intersect(x,y);
-		}
-
-		for(i=0; i < curves.size(); i++,c++)
-			inter += c->intersect(x,y,memory);
-
-		return inter;
-	}
-
-	//intersect an arbitrary line
-	//int	intersect (Real x, Real y, Real vx, Real vy) {return 0;}
-
-	void clear()
-	{
-		segs.clear();
-		curves.clear();
-
-		flags = 0;
-		cur_x = cur_y = close_x = close_y = 0;
-		prim = TYPE_NONE;
-		tangent[0] = tangent[1] = 0;
-		initaabb = true;
-	}
-};
 
 /* === M E T H O D S ======================================================= */
 
@@ -802,28 +89,19 @@ Layer_Shape::Layer_Shape(const Real &a, const Color::BlendMethod m):
 	param_blurtype       (int(Blur::FASTGAUSSIAN)),
 	param_feather        (Real(0.0)),
 	param_winding_style	 (int(rendering::Contour::WINDING_NON_ZERO)),
-	edge_table	         (new Intersector),
 	contour				 (new rendering::Contour)
-{
-}
+{ }
 
 Layer_Shape::~Layer_Shape()
-{
-	delete edge_table;
-}
+	{ }
 
 void
 Layer_Shape::clear()
-{
-	edge_table->clear();
-	contour->clear();
-}
+	{ contour->clear(); }
 
 bool
 Layer_Shape::set_shape_param(const String &/* param */, const synfig::ValueBase &/* value */)
-{
-	return false;
-}
+	{ return false; }
 
 bool
 Layer_Shape::set_param(const String & param, const ValueBase &value)
@@ -934,51 +212,43 @@ Layer_Shape::get_param_vocab()const
 }
 
 synfig::Layer::Handle
-Layer_Shape::hit_check(synfig::Context context, const synfig::Point &p)const
+Layer_Shape::hit_check(synfig::Context context, const synfig::Point &point) const
 {
 	sync();
 
-	Color color=param_color.get(Color());
-	Point origin=param_origin.get(Point());
-	bool invert =param_invert.get(bool(true));
-	
-	Point pos(p-origin);
+	Color::BlendMethod blend_method = get_blend_method();
+	Color color = param_color.get(Color());
+	bool invert = param_invert.get(bool(true));
+	Point origin = param_origin.get(Point());
+	rendering::Contour::WindingStyle winding_style = (rendering::Contour::WindingStyle)param_winding_style.get(int());
 
-	int intercepts = edge_table->intersect(pos[0],pos[1]);
+	bool inside = false;
+	if (get_amount() && blend_method != Color::BLEND_ALPHA_OVER)
+		inside = contour->is_inside(point - origin, winding_style, invert);
 
-	// If we have an odd number of intercepts, we are inside.
-	// If we have an even number of intercepts, we are outside.
-	bool intersect = ((!!intercepts) ^ invert);
-
-	if(get_amount() == 0 || get_blend_method() == Color::BLEND_ALPHA_OVER)
-	{
-		intersect = false;
-	}
-
-	if(intersect)
-	{
-		synfig::Layer::Handle tmp;
-		if(get_blend_method()==Color::BLEND_BEHIND && (tmp=context.hit_check(p)))
-			return tmp;
-		if(Color::is_onto(get_blend_method()))
-		{
+	if (inside) {
+		if (blend_method == Color::BLEND_BEHIND) {
+			synfig::Layer::Handle layer = context.hit_check(point);
+			if (layer) return layer;
+		}
+		
+		if (Color::is_onto(blend_method)) {
 			//if there's something in the lower layer then we're set...
-			if(!context.hit_check(p).empty())
+			if (context.hit_check(point))
 				return const_cast<Layer_Shape*>(this);
-		}else if(get_blend_method() == Color::BLEND_ALPHA_OVER)
-		{
+		} else
+		if (blend_method == Color::BLEND_ALPHA_OVER) {
 			synfig::info("layer_shape::hit_check - we've got alphaover");
 			//if there's something in the lower layer then we're set...
-			if(color.get_a() < 0.1 && get_amount() > .9)
-			{
+			if (color.get_a() < 0.1 && get_amount() > .9) {
 				synfig::info("layer_shape::hit_check - can see through us... so nothing");
 				return Handle();
-			}else return context.hit_check(p);
-		}else
+			}
+		} else
 			return const_cast<Layer_Shape*>(this);
 	}
 
-	return context.hit_check(p);
+	return context.hit_check(point);
 }
 
 Color
@@ -986,93 +256,44 @@ Layer_Shape::get_color(Context context, const Point &p)const
 {
 	sync();
 
-	Color color=param_color.get(Color());
-	Point origin=param_origin.get(Point());
-	bool invert =param_invert.get(bool(true));
-	int blurtype=param_blurtype.get(int());
-	Real feather=param_feather.get(Real());
+	Color color = param_color.get(Color());
+	Point origin = param_origin.get(Point());
+	bool invert = param_invert.get(bool(true));
+	int blurtype = param_blurtype.get(int());
+	Real feather = param_feather.get(Real());
+	rendering::Contour::WindingStyle winding_style = (rendering::Contour::WindingStyle)param_winding_style.get(int());
 
 	Point pp = p;
-
-	if(feather)
+	if (feather)
 		pp = Blur(feather,feather,blurtype)(p);
 
-	Point pos(pp-origin);
-
-	int intercepts = edge_table->intersect(pos[0],pos[1]);
-
-	// If we have an odd number of intercepts, we are inside.
-	// If we have an even number of intercepts, we are outside.
-	bool intersect = ((!!intercepts) ^ invert);
-
-	if(!intersect)
-		return Color::blend(Color::alpha(),context.get_color(pp),get_amount(),get_blend_method());
+	bool inside = contour->is_inside(pp - origin, winding_style, invert);
+	if (!inside)
+		return Color::blend(Color::alpha(), context.get_color(pp), get_amount(), get_blend_method());
 
 	//Ok, we're inside... bummmm ba bum buM...
-	if(get_blend_method() == Color::BLEND_STRAIGHT && get_amount() == 1)
+	if (get_blend_method() == Color::BLEND_STRAIGHT && get_amount() == 1)
 		return color;
-	else
-		return Color::blend(color,context.get_color(p),get_amount(),get_blend_method());
+	
+	return Color::blend(color, context.get_color(p), get_amount(), get_blend_method());
 }
 
 void Layer_Shape::move_to(Real x, Real y)
-{
-	contour->move_to(Vector(x, y));
-	edge_table->move_to(x, y);
-}
-
+	{ contour->move_to(Vector(x, y)); }
 void Layer_Shape::close()
-{
-	contour->close();
-	edge_table->close();
-}
-
+	{ contour->close(); }
 void Layer_Shape::line_to(Real x, Real y)
-{
-	contour->line_to(Vector(x, y));
-	edge_table->line_to(x,y);
-}
-
+	{ contour->line_to(Vector(x, y)); }
 void Layer_Shape::conic_to(Real x, Real y, Real x1, Real y1)
-{
-	contour->conic_to(Vector(x, y), Vector(x1, y1));
-	edge_table->conic_to(x,y,x1,y1);
-}
-
+	{ contour->conic_to(Vector(x, y), Vector(x1, y1)); }
 void Layer_Shape::cubic_to(Real x, Real y, Real x1, Real y1, Real x2, Real y2)
-{
-	contour->cubic_to(Vector(x, y), Vector(x1, y1), Vector(x2, y2));
-	edge_table->cubic_to(x,y,x1,y1,x2,y2);
-}
-
-void
-Layer_Shape::add(const CurvePoint &cp)
-{
-	switch(cp.level) {
-	case 1: line_to(cp.p); break;
-	case 2: conic_to(cp.p, cp.p1); break;
-	case 3: cubic_to(cp.p, cp.p1, cp.p2); break;
-	default: move_to(cp.p);
-	}
-}
-
-void
-Layer_Shape::add(const CurveList &list)
-	{ for(CurveList::const_iterator i = list.begin(); i != list.end(); ++i) add(*i); }
-
-void
-Layer_Shape::add_reverse(const CurveList &list) {
-	if (list.empty()) return;
-	line_to(list.back().p);
-	for(CurveList::const_reverse_iterator rj = list.rbegin(), ri = rj++; rj != list.rend(); ri = rj++) {
-		switch(ri->level) {
-		case 1: line_to(rj->p); break;
-		case 2: conic_to(rj->p, ri->p1); break;
-		case 3: cubic_to(rj->p, ri->p2, ri->p1); break;
-		default: move_to(rj->p);
-		}
-	}
-}
+	{ contour->cubic_to(Vector(x, y), Vector(x1, y1), Vector(x2, y2)); }
+void Layer_Shape::add(const rendering::Contour::Chunk &chunk)
+	{ contour->add_chunk(chunk); }
+void Layer_Shape::add(const rendering::Contour::ChunkList &chunks)
+	{ contour->add_chunks(chunks); }
+void Layer_Shape::add_reverse(const rendering::Contour::ChunkList &chunks)
+	{ contour->add_chunks_reverse(chunks); }
 
 void
 Layer_Shape::set_time_vfunc(IndependentContext context, Time time)const
@@ -1091,6 +312,7 @@ Layer_Shape::sync(bool force) const
 		last_sync_time = get_time_mark();
 		last_sync_outline_grow = get_outline_grow_mark();
 		const_cast<Layer_Shape*>(this)->sync_vfunc();
+		contour->close();
 	}
 }
 
@@ -1114,7 +336,6 @@ Layer_Shape::accelerated_render(Context context,Surface *surface,int quality, co
 	const Real pw = abs(renddesc.get_pw());
 	const Real ph = abs(renddesc.get_ph());
 
-	//const Real OFFSET_EPSILON = 1e-8;
 	SuperCallback stageone(cb,1,10000,15001+renddesc.get_h());
 	SuperCallback stagetwo(cb,10000,10001+renddesc.get_h(),15001+renddesc.get_h());
 	SuperCallback stagethree(cb,10001+renddesc.get_h(),15001+renddesc.get_h(),15001+renddesc.get_h());
@@ -1124,7 +345,7 @@ Layer_Shape::accelerated_render(Context context,Surface *surface,int quality, co
 	//clip if it satisfies the invert solid thing
 	if(is_solid_color() && invert)
 	{
-		Rect aabb = edge_table->aabb;
+		Rect aabb = contour->get_bounds();
 		Point tl = renddesc.get_tl() - origin;
 
 		Real	pw = renddesc.get_pw(),
@@ -1339,10 +560,11 @@ Layer_Shape::get_bounding_rect()const
 	if(invert)
 		return Rect::full_plane();
 
-	if (edge_table->initaabb)
+	Rect bounds = contour->get_bounds();
+	if (!bounds.is_valid())
 		return Rect::zero();
-
-	Rect bounds(edge_table->aabb+origin);
+	
+	bounds += origin;
 	bounds.expand((bounds.get_min() - bounds.get_max()).mag()*0.01);
 	bounds.expand_x( fabs(feather_amplifier * feather[0]) );
 	bounds.expand_x( fabs(feather_amplifier * feather[1]) );

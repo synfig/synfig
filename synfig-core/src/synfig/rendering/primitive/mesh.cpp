@@ -44,25 +44,158 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
-void
-Mesh::calculate_resolution_transfrom() const
-{
-	if (resolution_transfrom_calculated) return;
-	resolution_transfrom_calculated = true;
+Mesh::Mesh():
+	resolution_transfrom_calculated(false) { }
 
+void
+Mesh::assign(const Mesh &other) {
+	vertices = other.vertices;
+	triangles = other.triangles;
+	
+	// other mesh is constant, so we need to lock mutexes for read the relolution data
+	// see comment for calculate_resolution_transfrom() declaration
+	{
+		Mutex::Lock lock(other.resolution_transfrom_read_mutex);
+		resolution_transfrom_calculated = other.resolution_transfrom_calculated;
+		target_rectangle = other.target_rectangle;
+		source_rectangle = other.source_rectangle;
+		resolution_transfrom = other.resolution_transfrom;
+	}
+}
+
+void
+Mesh::clear()
+{
+	vertices.clear();
+	triangles.clear();
+	reset_resolution_transfrom();
+}
+
+void
+Mesh::reset_resolution_transfrom()
+	{ resolution_transfrom_calculated = false; }
+
+void
+Mesh::calculate_resolution_transfrom_no_lock(bool force) const
+{
+	if (resolution_transfrom_calculated && !force)
+		return;
 	// TODO:
 	resolution_transfrom.set_identity();
-
-	if (vertices.empty())
-	{
+	if (vertices.empty()) {
+		target_rectangle = Rect::zero();
 		source_rectangle = Rect::zero();
-	}
-	else
-	{
+	} else {
+		target_rectangle = Rect(vertices[0].position);
 		source_rectangle = Rect(vertices[0].tex_coords);
-		for(std::vector<Vertex>::const_iterator i = vertices.begin(); i != vertices.end(); ++i)
+		for(std::vector<Vertex>::const_iterator i = vertices.begin(); i != vertices.end(); ++i) {
+			target_rectangle.expand(i->position);
 			source_rectangle.expand(i->tex_coords);
+		}
 	}
+	resolution_transfrom_calculated = true;
+}
+
+void
+Mesh::calculate_resolution_transfrom(bool force) const
+{
+	Mutex::Lock lock(resolution_transfrom_read_mutex);
+	calculate_resolution_transfrom_no_lock(force);
+}
+
+Matrix2
+Mesh::get_resolution_transfrom() const
+{
+	Mutex::Lock lock(resolution_transfrom_read_mutex);
+	calculate_resolution_transfrom_no_lock();
+	return resolution_transfrom;
+}
+
+Rect
+Mesh::get_target_rectangle() const
+{
+	Mutex::Lock lock(resolution_transfrom_read_mutex);
+	calculate_resolution_transfrom_no_lock();
+	return target_rectangle;
+}
+
+Rect
+Mesh::get_source_rectangle() const
+{
+	Mutex::Lock lock(resolution_transfrom_read_mutex);
+	calculate_resolution_transfrom_no_lock();
+	return source_rectangle;
+}
+
+bool
+Mesh::transform_coord_world_to_texture(
+	const Vector &src,
+	Vector &dest,
+	const Vector &p0,
+	const Vector &t0,
+	const Vector &p1,
+	const Vector &t1,
+	const Vector &p2,
+	const Vector &t2 )
+{
+	// is point inside triangle?
+	Matrix matrix_of_base_triangle(
+		p1[0]-p0[0], p1[1]-p0[1], 0.0,
+		p2[0]-p0[0], p2[1]-p0[1], 0.0,
+		p0[0], p0[1], 1.0 );
+	if (!matrix_of_base_triangle.is_invertible()) return false;
+
+	matrix_of_base_triangle.invert();
+	Vector v = matrix_of_base_triangle.get_transformed(src);
+	if (v[0] < 0.0 || v[0] > 1.0
+	 || v[1] < 0.0 || v[1] > 1.0
+	 || v[0] + v[1] > 1.0) return false;
+
+	// get coords at texture
+	Matrix matrix_of_texture_triangle(
+		t1[0]-t0[0], t1[1]-t0[1], 0.0,
+		t2[0]-t0[0], t2[1]-t0[1], 0.0,
+		t0[0], t0[1], 1.0 );
+	dest = matrix_of_texture_triangle.get_transformed(v);
+	return true;
+}
+
+bool
+Mesh::transform_coord_world_to_texture(const Vector &src, Vector &dest) const
+{
+	// process triangles backward
+	for(TriangleList::const_reverse_iterator ri = triangles.rbegin(); ri != triangles.rend(); ++ri)
+		if (transform_coord_world_to_texture(
+			src,
+			dest,
+			vertices[ri->vertices[0]].position,
+			vertices[ri->vertices[0]].tex_coords,
+			vertices[ri->vertices[1]].position,
+			vertices[ri->vertices[1]].tex_coords,
+			vertices[ri->vertices[2]].position,
+			vertices[ri->vertices[2]].tex_coords
+		))
+			return true;
+	return false;
+}
+
+bool
+Mesh::transform_coord_texture_to_world(const Vector &src, Vector &dest) const
+{
+	// process triangles backward
+	for(TriangleList::const_reverse_iterator ri = triangles.rbegin(); ri != triangles.rend(); ++ri)
+		if (transform_coord_texture_to_world(
+			src,
+			dest,
+			vertices[ri->vertices[0]].position,
+			vertices[ri->vertices[0]].tex_coords,
+			vertices[ri->vertices[1]].position,
+			vertices[ri->vertices[1]].tex_coords,
+			vertices[ri->vertices[2]].position,
+			vertices[ri->vertices[2]].tex_coords
+		))
+			return true;
+	return false;
 }
 
 /* === E N T R Y P O I N T ================================================= */

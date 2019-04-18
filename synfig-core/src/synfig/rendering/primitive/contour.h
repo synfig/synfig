@@ -35,6 +35,7 @@
 #include <synfig/rect.h>
 #include <synfig/matrix.h>
 #include <synfig/color.h>
+#include <synfig/mutex.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -47,6 +48,8 @@ namespace synfig
 namespace rendering
 {
 
+class Intersector;
+
 class Contour: public etl::shared_object
 {
 public:
@@ -54,12 +57,12 @@ public:
 
 	enum WindingStyle
 	{
-	    WINDING_NON_ZERO=0,			//!< less than -1 --> 1;  -1 --> 1;   0 --> 0;   1 --> 1;  greater than 1 --> 1
-	    WINDING_EVEN_ODD=1,			//!< add or subtract multiples of 2 to get into range -1:1, then as above
+	    WINDING_NON_ZERO = 0,  //!< less than -1 --> 1;  -1 --> 1;   0 --> 0;   1 --> 1;  greater than 1 --> 1
+	    WINDING_EVEN_ODD = 1,  //!< add or subtract multiples of 2 to get into range -1:1, then as above
 	};
 
 	enum {
-	    WINDING_END=2				//!< \internal
+	    WINDING_END = 2        //!< \internal
 	};
 
 	enum ChunkType {
@@ -81,6 +84,13 @@ public:
 			type(type), p1(p1), pp0(pp0), pp1(pp0) { }
 		Chunk(ChunkType type, const Vector &p1, const Vector &pp0, const Vector &pp1):
 			type(type), p1(p1), pp0(pp0), pp1(pp1) { }
+
+		explicit Chunk(const Vector &p1):
+			type(LINE), p1(p1), pp0(p1), pp1(p1) { }
+		Chunk(const Vector &p1, const Vector &pp0):
+			type(CONIC), p1(p1), pp0(pp0), pp1(pp0) { }
+		Chunk(const Vector &p1, const Vector &pp0, const Vector &pp1):
+			type(CUBIC), p1(p1), pp0(pp0), pp1(pp1) { }
 	};
 
 	typedef std::vector<Chunk> ChunkList;
@@ -89,7 +99,17 @@ private:
 	class Helper;
 
 	ChunkList chunks;
-	size_t first;
+	int first;
+	
+	mutable Mutex bounds_read_mutex;
+	mutable bool bounds_calculated;
+	mutable Rect bounds;
+	
+	mutable Mutex intersector_read_mutex;
+	mutable etl::handle<Intersector> intersector;
+
+	//! call this when 'chunks' or 'first' was changed
+	void touch_chunks();
 
 public:
 	// TODO: is it valid place for these fields
@@ -98,23 +118,49 @@ public:
 	WindingStyle winding_style;
 	Color color;
 
-	Contour():
-		first(0), invert(false), antialias(false),
-		winding_style(WINDING_NON_ZERO)
-		{ }
+	Contour();
 
+	inline bool closed() const
+		{ return (int)chunks.size() <= first; }
+	
 	void clear();
 	void move_to(const Vector &v);
 	void line_to(const Vector &v);
 	void conic_to(const Vector &v, const Vector &pp0);
 	void cubic_to(const Vector &v, const Vector &pp0, const Vector &pp1);
 	void close();
-
+	
 	void assign(const Contour &other);
+	
+	void add_chunk(const Chunk &chunk);
+	void add_chunks(const Chunk *begin, const Chunk *end);
+	void add_chunks(const ChunkList &chunks)
+		{ if (!chunks.empty()) add_chunks(&chunks.front(), &chunks.back() + 1); }
+
+	//! attache list from (end-1) to begin
+	//! list will attached as line
+	//! curve information for first segment (begin) of incoming list will ignored, only p1 will used
+	void add_chunks_reverse(const Chunk *begin, const Chunk *end);
+	void add_chunks_reverse(const ChunkList &chunks)
+		{ if (!chunks.empty()) add_chunks_reverse(&chunks.front(), &chunks.back() + 1); }
+		
+	void arc(const Vector &center, Real radius, Real angle0, Real angle1, bool connect = false);
 
 	const ChunkList& get_chunks() const { return chunks; }
 
+	Rect calc_bounds() const;
 	Rect calc_bounds(const Matrix &transform_matrix) const;
+
+	//! actualize internal value of bounds (if need) and return it
+	//! method is thread-safe for constant contours - you must not modify a contour while this call
+	Rect get_bounds() const;
+	
+	void to_intersector(Intersector &intersector) const;
+	etl::handle<Intersector> crerate_intersector() const;
+
+	//! actualize internal copy of intersector (if need) and return it
+	//! method is thread-safe for constant contours - you must not modify a contour while this call
+	const Intersector& get_intersector() const;
 
 	void split(
 		Contour &out_contour,
@@ -153,6 +199,13 @@ public:
 		const Vector &pp0,
 		const Vector &pp1 )
 	{ return Rect(p0).expand(p1).expand(pp0).expand(pp1); }
+	
+	static bool check_is_inside(int intersections, WindingStyle winding_style = WINDING_NON_ZERO, bool invert = false);
+	bool is_inside(int intersections) const
+		{ return check_is_inside(intersections, winding_style, invert); }
+	bool is_inside(const Point &p, WindingStyle winding_style, bool invert) const;
+	bool is_inside(const Point &p) const
+		{ return is_inside(p, winding_style, invert); }
 };
 
 } /* end namespace rendering */

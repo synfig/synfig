@@ -31,6 +31,8 @@
 
 #include "contour.h"
 
+#include "intersector.h"
+
 #endif
 
 using namespace synfig;
@@ -270,6 +272,17 @@ public:
 };
 
 
+Contour::Contour():
+	first(0), invert(false), antialias(false),
+	winding_style(WINDING_NON_ZERO)
+	{ }
+
+void
+Contour::touch_chunks()
+{
+	bounds_calculated = false;
+	intersector.reset();
+}
 
 void
 Contour::clear()
@@ -277,6 +290,7 @@ Contour::clear()
 	if (!chunks.empty()) {
 		chunks.clear();
 		first = 0;
+		touch_chunks();
 	}
 }
 
@@ -284,57 +298,59 @@ void
 Contour::move_to(const Vector &v)
 {
 	if (chunks.empty()) {
-		first = chunks.size();
+		first = (int)chunks.size();
 		chunks.push_back(Chunk(MOVE, v));
-	} else {
-		if (!v.is_equal_to(chunks.back().p1)) {
-			if (chunks.back().type == MOVE)
-			{
-				chunks.back().p1 = v;
-			}
-			else
-			if (chunks.back().type == CLOSE)
-			{
-				chunks.push_back(Chunk(MOVE, v));
-			}
-			else
-			{
-				chunks.push_back(Chunk(CLOSE, chunks[first].p1));
-				chunks.push_back(Chunk(MOVE, v));
-			}
-			first = chunks.size();
+		touch_chunks();
+	} else
+	if (!v.is_equal_to(chunks.back().p1)) {
+		if (chunks.back().type == MOVE) {
+			chunks.back().p1 = v;
+		} else
+		if (chunks.back().type == CLOSE) {
+			chunks.push_back(Chunk(MOVE, v));
+		} else {
+			chunks.push_back(Chunk(CLOSE, chunks[first].p1));
+			chunks.push_back(Chunk(MOVE, v));
 		}
+		first = (int)chunks.size();
+		touch_chunks();
 	}
 }
 
 void
 Contour::line_to(const Vector &v)
 {
-	if (!v.is_equal_to(chunks.empty() ? Vector::zero() : chunks.back().p1))
+	if (!v.is_equal_to(chunks.empty() ? Vector::zero() : chunks.back().p1)) {
 		chunks.push_back(Chunk(LINE, v));
+		touch_chunks();
+	}
 }
 
 void
 Contour::conic_to(const Vector &v, const Vector &pp0)
 {
-	if (!v.is_equal_to(chunks.empty() ? Vector::zero() : chunks.back().p1))
+	if (!v.is_equal_to(chunks.empty() ? Vector::zero() : chunks.back().p1)) {
 		chunks.push_back(Chunk(CONIC, v, pp0));
+		touch_chunks();
+	}
 }
 
 void
 Contour::cubic_to(const Vector &v, const Vector &pp0, const Vector &pp1)
 {
-	if (!v.is_equal_to(chunks.empty() ? Vector::zero() : chunks.back().p1))
+	if (!v.is_equal_to(chunks.empty() ? Vector::zero() : chunks.back().p1)) {
 		chunks.push_back(Chunk(CUBIC, v, pp0, pp1));
+		touch_chunks();
+	}
 }
 
 void
 Contour::close()
 {
-	if (chunks.size() > first)
-	{
+	if (!closed()) {
 		chunks.push_back(Chunk(CLOSE, chunks[first].p1));
-		first = chunks.size();
+		first = (int)chunks.size();
+		touch_chunks();
 	}
 }
 
@@ -347,14 +363,102 @@ Contour::assign(const Contour &other)
 	antialias = other.antialias;
 	winding_style = other.winding_style;
 	color = other.color;
+	
+	// other contour is constant, so we need to lock mutexes for read the bounds and intersector
+	// see comments for get_bounds() and get_intersector() declarations
+	{
+		Mutex::Lock lock(other.bounds_read_mutex);
+		bounds_calculated = other.bounds_calculated;
+		bounds = other.bounds;
+	}
+	{
+		Mutex::Lock lock(other.intersector_read_mutex);
+		intersector = other.intersector;
+	}
+}
+
+void
+Contour::add_chunk(const Chunk &chunk) {
+	switch(chunk.type) {
+	case CLOSE: close(); break;
+	case LINE:  line_to (chunk.p1); break;
+	case MOVE:  move_to (chunk.p1); break;
+	case CONIC: conic_to(chunk.p1, chunk.pp0); break;
+	case CUBIC: cubic_to(chunk.p1, chunk.pp0, chunk.pp1); break;
+	default: break;
+	}
+}
+
+void
+Contour::add_chunks(const Chunk *begin, const Chunk *end)
+{
+	assert(begin);
+	while(begin < end) add_chunk(*(begin++));
+}
+
+void
+Contour::add_chunks_reverse(const Chunk *begin, const Chunk *end)
+{
+	assert(begin);
+	if (end <= begin) return;
+	line_to((end-1)->p1);
+	for(const Chunk *curr = end - 1, *prev = curr - 1; prev >= begin; curr = prev--)
+		switch(curr->type) {
+		case CLOSE:
+		case LINE:  line_to (prev->p1); break;
+		case MOVE:  move_to (prev->p1); break;
+		case CONIC: conic_to(prev->p1, curr->pp0); break;
+		case CUBIC: cubic_to(prev->p1, curr->pp1, curr->pp0); break;
+		default: break;
+		}
+}
+
+void
+Contour::arc(const Vector &center, Real radius, Real angle0, Real angle1, bool connect)
+{
+	int segments = (int)ceil(2.0*fabs(angle1 - angle0)/PI);
+	Real da = 0.5*(angle1 - angle0)/segments;
+	Real radius2 = (sin(fabs(da)) + cos(da))*radius;
+	
+	Real angle = angle0;
+	Vector p0 = center + Vector(radius*cos(angle), radius*sin(angle));
+	if (connect) line_to(p0); else move_to(p0);
+	for(int i = 0; i < segments; ++i) {
+		angle += da;
+		Vector pp0 = center + Vector(radius2*cos(angle), radius2*sin(angle));
+		angle += da;
+		Vector p1 = center + Vector(radius*cos(angle), radius*sin(angle));
+		conic_to(p1, pp0);
+	}
+}
+
+Rect
+Contour::calc_bounds() const
+{
+	if (chunks.empty()) return Rect::zero();
+	Rect bounds(chunks.front().p1);
+	for(ChunkList::const_iterator i = chunks.begin(); i != chunks.end(); ++i)
+		switch(i->type) {
+		case CUBIC:
+			bounds.expand(i->pp1);
+		case CONIC:
+			bounds.expand(i->pp0);
+		case CLOSE:
+		case MOVE:
+		case LINE:
+			bounds.expand(i->p1);
+		default:
+			break;
+		}
+	return bounds;
 }
 
 Rect
 Contour::calc_bounds(const Matrix &transform_matrix) const
 {
 	if (chunks.empty()) return Rect::zero();
-	Rect bounds(chunks.front().p1);
-	for(ChunkList::const_iterator i = chunks.begin(); i != chunks.end(); ++i) {
+	Rect bounds( transform_matrix.get_transformed(chunks.front().p1) );
+	for(ChunkList::const_iterator i = chunks.begin(); i != chunks.end(); ++i)
 		switch(i->type) {
 		case CUBIC:
 			bounds.expand( transform_matrix.get_transformed(i->pp1) );
@@ -367,11 +471,61 @@ Contour::calc_bounds(const Matrix &transform_matrix) const
 		default:
 			break;
 		}
+	return bounds;
+}
+
+Rect
+Contour::get_bounds() const
+{
+	Mutex::Lock lock(bounds_read_mutex);
+	if (!bounds_calculated) {
+		bounds = calc_bounds();
+		bounds_calculated = true;
 	}
 	return bounds;
 }
 
 void
+Contour::to_intersector(Intersector &intersector) const
+{
+	if (chunks.empty()) return;
+	if (chunks.front().type != MOVE) intersector.move_to(Point());
+	for(ChunkList::const_iterator i = chunks.begin(); i != chunks.end(); ++i)
+		switch(i->type) {
+		case CLOSE:
+		case LINE:  intersector.line_to (i->p1); break;
+		case MOVE:  intersector.move_to (i->p1); break;
+		case CONIC: intersector.conic_to(i->p1, i->pp0); break;
+		case CUBIC: intersector.cubic_to(i->p1, i->pp0, i->pp1); break;
+		default: break;
+		}
+}
+
+Intersector::Handle
+Contour::crerate_intersector() const
+{
+	Intersector::Handle intersector(new Intersector());
+	to_intersector(*intersector);
+	intersector->close();
+	return intersector;
+}
+
+const Intersector&
+Contour::get_intersector() const
+{
+	Mutex::Lock lock(intersector_read_mutex);
+	if (!intersector) {
+		intersector = crerate_intersector();
+		Mutex::Lock lock(bounds_read_mutex);
+		if (!bounds_calculated) {
+			bounds = intersector->get_bounds();
+			bounds_calculated = true;
+		}
+	}
+	return *intersector;
+}
+
+void
 Contour::split(
 	Contour &out_contour,
 	Rect &ref_bounds,
@@ -379,6 +533,7 @@ Contour::split(
 {
 	Helper::SplitParams<Contour> params(out_contour, ref_bounds, min_size);
 	Helper::contour_split(params, *this);
+	out_contour.touch_chunks();
 }
 
 void
@@ -400,6 +555,7 @@ Contour::split(
 {
 	Helper::SplitParams<Contour> params(out_contour, ref_bounds, min_size);
 	Helper::contour_split(params, *this, transform_matrix);
+	out_contour.touch_chunks();
 }
 
 void
@@ -412,5 +568,18 @@ Contour::split(
 	Helper::SplitParams< std::vector<Vector> > params(out_contour, ref_bounds, min_size);
 	Helper::contour_split(params, *this, transform_matrix);
 }
+
+bool
+Contour::check_is_inside(int intersections, WindingStyle winding_style, bool invert)
+{
+	bool inside = winding_style == WINDING_NON_ZERO ? !!intersections
+	            : winding_style == WINDING_EVEN_ODD ? !!(intersections % 2)
+				: false;
+	return invert ? !inside : inside;
+}
+
+bool
+Contour::is_inside(const Point &p, WindingStyle winding_style, bool invert) const
+	{ return check_is_inside(get_intersector().intersect(p), winding_style, invert); }
 
 /* === E N T R Y P O I N T ================================================= */

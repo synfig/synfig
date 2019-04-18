@@ -35,6 +35,7 @@
 
 #include <synfig/rect.h>
 #include <synfig/matrix.h>
+#include <synfig/mutex.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -52,7 +53,6 @@ class Mesh: public etl::shared_object
 public:
 	typedef etl::handle<Mesh> Handle;
 
-	#pragma pack(push, 1)
 	struct Vertex
 	{
 		Vector position;
@@ -61,51 +61,68 @@ public:
 		Vertex(const Vector &position, const Vector &tex_coords):
 			position(position), tex_coords(tex_coords) { }
 	};
-	#pragma pack(pop)
 
 	struct Triangle
 	{
 		int vertices[3];
 		Triangle()
-			{ memset(vertices, 0, sizeof(vertices)); }
+			{ vertices[0] = vertices[1] = vertices[2] = 0; }
 		Triangle(int v0, int v1, int v2)
 			{ vertices[0] = v0; vertices[1] = v1; vertices[2] = v2; }
 	};
 
-	std::vector<Vertex> vertices;
-	std::vector<Triangle> triangles;
+	typedef std::vector<Vertex> VertexList;
+	typedef std::vector<Triangle> TriangleList;
+
+	VertexList vertices;
+	TriangleList triangles;
 
 private:
+	mutable Mutex resolution_transfrom_read_mutex;
+	mutable bool resolution_transfrom_calculated;
+	mutable Rect target_rectangle;
 	mutable Rect source_rectangle;
 	mutable Matrix2 resolution_transfrom;
-	mutable bool resolution_transfrom_calculated;
+	
+	void calculate_resolution_transfrom_no_lock(bool force = false) const;
 
 public:
-	Mesh(): resolution_transfrom_calculated(false) { }
+	Mesh();
+	void assign(const Mesh &other);
+	void clear();
+	void reset_resolution_transfrom();
 
-	void reset_resolution_transfrom()
-		{ resolution_transfrom_calculated = false; }
+	// actualize internal resolution data (if need) and return it
+	// method is thread-safe for constant meshes - you must not modify a mesh while call these methods
+	void calculate_resolution_transfrom(bool force = false) const;
+	Matrix2 get_resolution_transfrom() const;
+	Rect get_target_rectangle() const;
+	Rect get_source_rectangle() const;
 
-	void calculate_resolution_transfrom() const;
+	bool transform_coord_world_to_texture(const Vector &src, Vector &dest) const;
+	bool transform_coord_texture_to_world(const Vector &src, Vector &dest) const;
 
-	void recalculate_resolution_transfrom()
+	static bool transform_coord_world_to_texture(
+		const Vector &src,
+		Vector &dest,
+		const Vector &p0,
+		const Vector &t0,
+		const Vector &p1,
+		const Vector &t1,
+		const Vector &p2,
+		const Vector &t2 );
+
+	inline static bool transform_coord_texture_to_world(
+		const Vector &src,
+		Vector &dest,
+		const Vector &p0,
+		const Vector &t0,
+		const Vector &p1,
+		const Vector &t1,
+		const Vector &p2,
+		const Vector &t2 )
 	{
-		reset_resolution_transfrom();
-		calculate_resolution_transfrom();
-	}
-
-	const Matrix2& get_resolution_transfrom() const
-	{
-		if (!resolution_transfrom_calculated)
-			calculate_resolution_transfrom();
-		return resolution_transfrom;
-	}
-
-	const Rect& get_source_rectangle() const
-	{
-		if (!resolution_transfrom_calculated)
-			calculate_resolution_transfrom();
-		return source_rectangle;
+		return transform_coord_world_to_texture(src, dest, t0, p0, t1, p1, t2, p2);
 	}
 };
 
