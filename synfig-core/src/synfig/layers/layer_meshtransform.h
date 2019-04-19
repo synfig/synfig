@@ -49,7 +49,7 @@ protected:
 
 public:
 	//! Default constructor
-	Layer_MeshTransform();
+	explicit Layer_MeshTransform(Real amount=1.0, Color::BlendMethod blend_method=Color::BLEND_COMPOSITE);
 	//! Destructor
 	virtual ~Layer_MeshTransform();
 

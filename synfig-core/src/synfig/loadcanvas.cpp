@@ -3116,6 +3116,15 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 		}
 	}
 
+	// init blending for skeleton_deformation
+	if (layer->get_name() == "skeleton_deformation" && (version == "0.0" || version == "0.1"))
+	{
+		layer->disconnect_dynamic_param("amount");
+		layer->disconnect_dynamic_param("blend_method");
+		layer->set_param("amount", 1.0);
+		layer->set_param("blend_method", Color::BLEND_STRAIGHT);
+	}
+
 	layer->reset_version();
 	return layer;
 }

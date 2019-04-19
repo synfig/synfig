@@ -67,12 +67,13 @@ SYNFIG_LAYER_INIT(Layer_SkeletonDeformation);
 SYNFIG_LAYER_SET_NAME(Layer_SkeletonDeformation,"skeleton_deformation");
 SYNFIG_LAYER_SET_LOCAL_NAME(Layer_SkeletonDeformation,N_("Skeleton Deformation"));
 SYNFIG_LAYER_SET_CATEGORY(Layer_SkeletonDeformation,N_("Distortions"));
-SYNFIG_LAYER_SET_VERSION(Layer_SkeletonDeformation,"0.1");
+SYNFIG_LAYER_SET_VERSION(Layer_SkeletonDeformation,"0.2");
 SYNFIG_LAYER_SET_CVS_ID(Layer_SkeletonDeformation,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 
 Layer_SkeletonDeformation::Layer_SkeletonDeformation():
+	Layer_MeshTransform(1.0, Color::BLEND_STRAIGHT),
 	param_point1(ValueBase(Point(-4,4))),
 	param_point2(ValueBase(Point(4,-4))),
 	param_x_subdivisions(32),

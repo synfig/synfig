@@ -87,7 +87,8 @@ namespace {
 
 /* === M E T H O D S ======================================================= */
 
-Layer_MeshTransform::Layer_MeshTransform():
+Layer_MeshTransform::Layer_MeshTransform(Real amount, Color::BlendMethod blend_method):
+	Layer_CompositeFork(amount, blend_method),
 	mesh(new rendering::Mesh())
 {
 	SET_INTERPOLATION_DEFAULTS();
