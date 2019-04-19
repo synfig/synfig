@@ -32,8 +32,6 @@
 #include <cmath>
 #include <climits>
 
-#include <algorithm>
-
 #include "layer_meshtransform.h"
 
 #include <synfig/general.h>
@@ -42,7 +40,9 @@
 #include <synfig/context.h>
 #include <synfig/transform.h>
 
-#include <synfig/rendering/software/task/taskmeshsw.h>
+#include <synfig/rendering/common/task/taskmesh.h>
+#include <synfig/rendering/common/task/taskblend.h>
+#include <synfig/rendering/common/task/taskcontour.h>
 
 #endif
 
@@ -56,268 +56,98 @@ using namespace synfig;
 
 /* === C L A S S E S ======================================================= */
 
-class synfig::Mesh_Trans : public Transform
-{
-	etl::handle<const Layer_MeshTransform> layer;
-public:
-	Mesh_Trans(const Layer_MeshTransform* x):Transform(x->get_guid()),layer(x) { }
-
-	synfig::Vector perform(const synfig::Vector& x)const
+namespace {
+	class MeshTransform : public Transform
 	{
-		Vector v(INFINITY, INFINITY);
-		layer->mesh.transform_coord_texture_to_world(x, v);
-		return v;
-	}
+	private:
+		rendering::Mesh::Handle mesh;
+	public:
+		MeshTransform(const GUID& guid, const rendering::Mesh::Handle &mesh):
+			Transform(guid), mesh(mesh) { }
 
-	synfig::Vector unperform(const synfig::Vector& x)const
-	{
-		Vector v(INFINITY, INFINITY);
-		layer->mesh.transform_coord_world_to_texture(x, v);
-		return v;
-	}
+		synfig::Vector perform(const synfig::Vector& x)const
+		{
+			Vector v(INFINITY, INFINITY);
+			mesh->transform_coord_texture_to_world(x, v);
+			return v;
+		}
 
-	synfig::String get_string()const
-	{
-		return "mesh";
-	}
-};
+		synfig::Vector unperform(const synfig::Vector& x)const
+		{
+			Vector v(INFINITY, INFINITY);
+			mesh->transform_coord_world_to_texture(x, v);
+			return v;
+		}
+
+		synfig::String get_string()const { return "mesh"; }
+	};
+}
 
 /* === G L O B A L S ======================================================= */
 
 /* === M E T H O D S ======================================================= */
 
 Layer_MeshTransform::Layer_MeshTransform():
-	max_texture_size(4096),
-	max_texture_scale(INFINITY),
-	world_bounds(Rect::zero()),
-	texture_bounds(Rect::zero())
+	mesh(new rendering::Mesh())
 {
 	SET_INTERPOLATION_DEFAULTS();
 	SET_STATIC_DEFAULTS();
 }
 
 Layer_MeshTransform::~Layer_MeshTransform()
-{
-}
-
-void
-Layer_MeshTransform::update_mesh_and_mask()
-{
-	// TODO: check mask to calculate bounds
-
-	texture_scale_dependency_from_x = Vector::zero();
-	texture_scale_dependency_from_y = Vector::zero();
-
-	if (mesh.vertices.empty())
-	{
-		world_bounds = Rect::zero();
-		texture_bounds = Rect::zero();
-	}
-	else
-	{
-		Mesh::VertexList::const_iterator i = mesh.vertices.begin();
-		world_bounds.set_point(i->position);
-		texture_bounds.set_point(i->tex_coords);
-		for(++i; i != mesh.vertices.end(); ++i)
-		{
-			world_bounds.expand(i->position);
-			texture_bounds.expand(i->position);
-		}
-
-		const Real epsilon = 1e-10;
-		for(Mesh::TriangleList::const_iterator i = mesh.triangles.begin(); i != mesh.triangles.end(); ++i)
-		{
-			for(int j = 0; j < 3; ++j)
-			{
-				const Mesh::Vertex &v0 = mesh.vertices[i->vertices[j]];
-				const Mesh::Vertex &v1 = mesh.vertices[i->vertices[(j+1)%3]];
-				Vector wd( fabs(v1.position[0] - v0.position[0]),
-						   fabs(v1.position[1] - v0.position[1]) );
-				Vector td( fabs(v1.tex_coords[0] - v0.tex_coords[0]),
-						   fabs(v1.tex_coords[1] - v0.tex_coords[1]) );
-				if (td[0] > epsilon)
-				{
-					Vector dep(wd[0]/td[0], wd[1]/td[0]);
-					if (dep[0] > texture_scale_dependency_from_x[0])
-						texture_scale_dependency_from_x[0] = dep[0];
-					if (dep[1] > texture_scale_dependency_from_y[0])
-						texture_scale_dependency_from_y[0] = dep[1];
-				}
-				if (td[1] > epsilon)
-				{
-					Vector dep(wd[0]/td[1], wd[1]/td[1]);
-					if (dep[0] > texture_scale_dependency_from_x[1])
-						texture_scale_dependency_from_x[1] = dep[0];
-					if (dep[1] > texture_scale_dependency_from_y[1])
-						texture_scale_dependency_from_y[1] = dep[1];
-				}
-			}
-		}
-
-		if (max_texture_scale > 0.0)
-		{
-			if (texture_scale_dependency_from_x[0] > max_texture_scale)
-				texture_scale_dependency_from_x[0] = max_texture_scale;
-			if (texture_scale_dependency_from_x[1] > max_texture_scale)
-				texture_scale_dependency_from_x[1] = max_texture_scale;
-			if (texture_scale_dependency_from_y[0] > max_texture_scale)
-				texture_scale_dependency_from_y[0] = max_texture_scale;
-			if (texture_scale_dependency_from_y[1] > max_texture_scale)
-				texture_scale_dependency_from_y[1] = max_texture_scale;
-		}
-	}
-}
+	{ }
 
 Layer::Handle
 Layer_MeshTransform::hit_check(synfig::Context context, const synfig::Point &point)const
 {
-	// TODO: check mask
 	Vector v;
-	return mesh.transform_coord_world_to_texture(point, v)
-		 ? context.hit_check(v)
-		 : Layer::Handle();
+	Layer::Handle layer;
+	if ( get_amount() > 0.1
+	  && mesh->transform_coord_world_to_texture(point, v)
+	  && mask->is_inside(v)
+	  && (layer = context.hit_check(v)) )
+		return layer;
+	return context.hit_check(point);
 }
 
 Color
 Layer_MeshTransform::get_color(Context context, const Point &pos)const
 {
-	// TODO: check mask
 	Vector v;
-	return mesh.transform_coord_world_to_texture(pos, v)
-		 ? context.get_color(v)
-		 : Color();
+	if ( get_amount() > 0.1
+	  && mesh->transform_coord_world_to_texture(pos, v)
+	  && mask->is_inside(v) )
+		return Color::blend(context.get_color(v), context.get_color(pos), get_amount(), get_blend_method());
+	return context.get_color(pos);
 }
 
 Rect
-Layer_MeshTransform::get_full_bounding_rect(Context /* context */)const
-{
-	return world_bounds;
-}
+Layer_MeshTransform::get_bounding_rect()const
+	{ return mesh->get_target_rectangle(); }
 
 etl::handle<synfig::Transform>
 Layer_MeshTransform::get_transform()const
-{
-	return new Mesh_Trans(this);
-}
-
-RendDesc
-Layer_MeshTransform::get_sub_renddesc_vfunc(const RendDesc &renddesc) const
-{
-	// calculate texture size
-	RendDesc texture_renddesc(renddesc);
-	texture_renddesc.set_transformation_matrix(Matrix());
-	texture_renddesc.set_tl(texture_bounds.get_min());
-	texture_renddesc.set_br(texture_bounds.get_max());
-	{
-		int texture_width, texture_height;
-		Real pw = fabs(renddesc.get_pw());
-		Real ph = fabs(renddesc.get_ph());
-		if (approximate_equal(pw, 0.0) || approximate_equal(ph, 0.0))
-			return RendDesc::zero();
-		pw = 1.0/pw;
-		ph = 1.0/ph;
-		Vector texture_size = texture_bounds.get_max() - texture_bounds.get_min();
-		Real texture_pw = std::max(
-			texture_scale_dependency_from_x[0]*pw,
-			texture_scale_dependency_from_y[0]*ph );
-		Real texture_ph = std::max(
-			texture_scale_dependency_from_x[1]*pw,
-			texture_scale_dependency_from_y[1]*ph );
-		texture_width = std::max(1, (int)roundf(texture_pw*texture_size[0]));
-		texture_height = std::max(1, (int)roundf(texture_ph*texture_size[1]));
-		if (max_texture_size > 0)
-		{
-			if (texture_width > max_texture_size) texture_width = max_texture_size;
-			if (texture_height > max_texture_size) texture_height = max_texture_size;
-		}
-		texture_renddesc.set_w(texture_width);
-		texture_renddesc.set_h(texture_height);
-	}
-	return texture_renddesc;
-}
-
-bool
-Layer_MeshTransform::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
-{
-	// initialize surface
-	surface->set_wh(renddesc.get_w(),renddesc.get_h());
-	surface->clear();
-
-	// calculate texture size
-	RendDesc texture_renddesc = get_sub_renddesc(renddesc);
-	if (texture_renddesc.is_zero())
-		return true;
-
-	// render texture
-	Surface texture;
-	if(!context.accelerated_render(&texture,quality,texture_renddesc,cb))
-	{
-		if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Renderer Failure",__LINE__));
-		return false;
-	}
-
-	{ // render mask
-		Surface maskSurface;
-		maskSurface.set_wh(texture.get_w(), texture.get_h());
-		maskSurface.fill(Color::alpha());
-		rendering::TaskMeshSW::render_polygon(
-			maskSurface,
-			&*mask.vertices.begin(),
-			sizeof(*mask.vertices.begin()),
-			mask.triangles.begin()->vertices,
-			sizeof(*mask.triangles.begin()),
-			mask.triangles.size(),
-			texture_renddesc.get_transformation_matrix()
-		  * texture_renddesc.get_world_to_pixels_matrix(),
-			Color::white(),
-			1.0,
-			Color::BLEND_COMPOSITE );
-
-		// apply mask
-		Surface::pen a(texture.get_pen(0, 0));
-		Surface::pen b(maskSurface.get_pen(0, 0));
-		for(int i = 0; i < texture.get_h(); ++i)
-		{
-			for(int j = 0; j < texture.get_w(); ++j)
-			{
-				a.put_value(a.get_value()*b.get_value().get_a());
-				a.inc_x();
-				b.inc_x();
-			}
-			a.dec_x(texture.get_w());
-			b.dec_x(texture.get_w());
-			a.inc_y();
-			b.inc_y();
-		}
-	}
-
-	// prepare transformation matrices
-	Matrix world_to_pixels_matrix =
-		renddesc.get_world_to_pixels_matrix()
-	  * renddesc.get_transformation_matrix();
-	Matrix texture_to_texels_matrix =
-		texture_renddesc.get_world_to_pixels_matrix();
-
-	// render mesh
-	rendering::TaskMeshSW::render_mesh(
-		*surface,
-		&mesh.vertices.begin()->position,
-		sizeof(*mesh.vertices.begin()),
-		&mesh.vertices.begin()->tex_coords,
-		sizeof(*mesh.vertices.begin()),
-		mesh.triangles.begin()->vertices,
-		sizeof(*mesh.triangles.begin()),
-		mesh.triangles.size(),
-		texture,
-		world_to_pixels_matrix,
-		texture_to_texels_matrix,
-		1.0,
-		Color::BLEND_COMPOSITE
-	);
-
-	return true;
-}
+	{ return new MeshTransform(get_guid(), mesh); }
 
 rendering::Task::Handle
-Layer_MeshTransform::build_rendering_task_vfunc(Context context) const
-	{ return Layer::build_rendering_task_vfunc(context); }
+Layer_MeshTransform::build_composite_fork_task_vfunc(ContextParams /* context_params */, rendering::Task::Handle sub_task)const
+{
+	if (!sub_task) return rendering::Task::Handle();
+	
+	rendering::TaskContour::Handle task_contour(new rendering::TaskContour());
+	task_contour->contour = new rendering::Contour();
+	task_contour->contour->assign(*mask);
+	task_contour->contour->color = Color(1, 1, 1, 1);
+	task_contour->contour->invert = !mask->invert;
+
+	rendering::TaskBlend::Handle task_blend(new rendering::TaskBlend());
+	task_blend->blend_method = Color::BLEND_ALPHA_OVER;
+	task_blend->sub_task_a() = sub_task->clone_recursive();
+	task_blend->sub_task_b() = task_contour;
+
+	rendering::TaskMesh::Handle task_mesh(new rendering::TaskMesh());
+	task_mesh->mesh = new rendering::Mesh();
+	task_mesh->mesh->assign(*mesh);
+	task_mesh->sub_task() = task_blend;
+	return task_mesh;
+}

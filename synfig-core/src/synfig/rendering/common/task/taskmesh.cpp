@@ -51,20 +51,17 @@ Task::Token TaskMesh::token(
 
 Rect
 TaskMesh::calc_bounds() const
-{
-	// TODO:
-	return Rect();
-}
+	{ return mesh && sub_task() ? mesh->get_target_rectangle() : Rect(); }
 
 void
 TaskMesh::set_coords_sub_tasks()
 {
-	if (!sub_task())
+	if (!mesh || !sub_task())
 		{ trunc_to_zero(); return; }
 	if (!is_valid_coords())
 		{ sub_task()->set_coords_zero(); return; }
-
-	// TODO:
+	// TODO: use mesh->get_resolution_transfrom()
+	sub_task()->set_coords(mesh->get_source_rectangle(), target_rect.get_size()*3/2);
 }
 
 /* === E N T R Y P O I N T ================================================= */

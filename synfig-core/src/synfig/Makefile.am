@@ -137,7 +137,6 @@ SYNFIGHEADERS = \
 	zstreambuf.h \
 	valueoperations.h \
 	valuetransformation.h \
-	mesh.h \
 	soundprocessor.h \
 	polygon.h \
 	canvasfilenaming.h \
@@ -192,7 +191,6 @@ SYNFIGSOURCES = \
 	filecontainerzip.cpp \
 	zstreambuf.cpp \
 	valueoperations.cpp \
-	mesh.cpp \
 	soundprocessor.cpp \
 	canvasfilenaming.cpp \
 	token.cpp \

@@ -78,7 +78,6 @@ Layer_SkeletonDeformation::Layer_SkeletonDeformation():
 	param_x_subdivisions(32),
 	param_y_subdivisions(32)
 {
-	max_texture_scale = 1.f;
 	param_bones.set_list_of(std::vector<BonePair>(1));
 
 	SET_INTERPOLATION_DEFAULTS();
@@ -134,68 +133,47 @@ Layer_SkeletonDeformation::get_param_vocab()const
 void
 Layer_SkeletonDeformation::prepare_mask()
 {
- 	const std::vector<ValueBase> &list = param_bones.get_list();
-
-	static const Real precision = 0.000000001;
-	int segments_count = 64;
-	Real segment_angle = 2*PI/(Real)segments_count;
-
-	mask.clear();
-	for(std::vector<ValueBase>::const_iterator i = list.begin(); i != list.end(); ++i)
- 	{
+	rendering::Contour::Handle mask(new rendering::Contour());
+	mask->antialias = true;
+  
+	const std::vector<ValueBase> &list = param_bones.get_list();
+	for(std::vector<ValueBase>::const_iterator i = list.begin(); i != list.end(); ++i) {
 		if (!i->same_type_as(BonePair())) continue;
- 		const BonePair &bonePair = i->get(BonePair());
- 		const Bone &bone = bonePair.first;
- 		Matrix matrix = bone.get_animated_matrix();
- 		Vector origin = matrix.get_transformed(Vector(0.0, 0.0));
- 		Vector direction = matrix.get_transformed(Vector(1.0, 0.0), false).norm();
- 		Real length = bone.get_length() * bone.get_scalelx();
+		const BonePair &bonePair = i->get(BonePair());
+		const Bone &bone = bonePair.first;
+		Matrix matrix = bone.get_animated_matrix();
+		Vector origin = matrix.get_transformed(Vector(0.0, 0.0));
+		Vector direction = matrix.get_transformed(Vector(1.0, 0.0), false).norm();
+		Real length = bone.get_length() * bone.get_scalelx();
 
- 		if (length < 0) {
- 			length *= -1;
- 			direction *= -1;
- 		}
-
- 		const Vector &p0 = origin;
- 		const Vector p1 = origin + direction * length;
-
- 		Real r0 = fabs(bone.get_width());
- 		Real r1 = fabs(bone.get_tipwidth());
- 		Real direction_angle = atan2(direction[1], direction[0]);
-
- 		Real angle0_base = length - precision > fabs(r1 - r0)
- 				         ? acos((r0 - r1)/length)
- 				         : (r0 > r1 ? 0.0 : PI);
- 		Real angle1_base = PI - angle0_base;
-
- 		int segments_count0 = (int)round(2*angle1_base / segment_angle);
- 		Real segment_angle0 = 2*angle1_base / (Real)segments_count0;
-
- 		int segments_count1 = (int)round(2*angle0_base / segment_angle);
- 		Real segment_angle1 = 2*angle0_base / (Real)segments_count1;
-
- 		// add vertices
- 		int first = (int)mask.vertices.size();
- 		mask.vertices.reserve(first + segments_count0 + segments_count1 + 2);
-
- 		int j = 0;
-		Real angle = direction_angle + angle0_base;
-		while(true)
-		{
-			mask.vertices.push_back( Point(r0*cos(angle) + p0[0], r0*sin(angle) + p0[1]) );
-			if (j++ >= segments_count0) break; else angle += segment_angle0;
-		}
-		j = 0;
-		while(true)
-		{
-			mask.vertices.push_back( Point(r1*cos(angle) + p1[0], r1*sin(angle) + p1[1]) );
-			if (j++ >= segments_count1) break; else angle += segment_angle1;
+		if (length < 0) {
+			length *= -1;
+			direction *= -1;
 		}
 
-		// add triangles
-		for(int i = first+2; i < (int)mask.vertices.size(); ++i)
-			mask.triangles.push_back(Polygon::Triangle(first, i-1, i));
- 	}
+		const Vector &p0 = origin;
+		const Vector p1 = origin + direction * length;
+
+		Real r0 = fabs(bone.get_width());
+		Real r1 = fabs(bone.get_tipwidth());
+		
+		if (approximate_greater_or_equal(r0, length + r1)) {
+			mask->arc(p0, r0, 0.0, 2*PI, false);
+			mask->close();
+		} else
+		if (approximate_greater_or_equal(r1, length + r0)) {
+			mask->arc(p1, r1, 0.0, 2*PI, false);
+			mask->close();
+		} else {
+			Real dr = r1 - r0;
+			Real direction_angle = atan2(direction[1], direction[0]);
+			Real da = PI - atan2(sqrt(length*length - dr*dr), dr);
+			mask->arc(p0, r0, direction_angle + da, direction_angle + 2*PI - da, false);
+			mask->arc(p1, r1, direction_angle - da, direction_angle + da, true);
+			mask->close();
+		}
+	}
+	this->mask = mask;
 }
 
 struct Layer_SkeletonDeformation::GridPoint {
@@ -210,7 +188,9 @@ struct Layer_SkeletonDeformation::GridPoint {
 		summary_depth(0.0), summary_weight(0.0), average_depth(0.0), used(false) { }
 	inline explicit GridPoint(const Vector &initial_position):
 		initial_position(initial_position), summary_depth(0.0), summary_weight(0.0), average_depth(0.0), used(false) { }
-	static bool compare_triagles(const std::pair<Real, Mesh::Triangle> &a, const std::pair<Real, Mesh::Triangle> &b)
+	static bool compare_triagles(
+		const std::pair<Real, rendering::Mesh::Triangle> &a,
+		const std::pair<Real, rendering::Mesh::Triangle> &b )
 	{
 		return a.first < b.first ? false
 			 : b.first < a.first ? true
@@ -248,7 +228,7 @@ Layer_SkeletonDeformation::prepare_mesh()
 {
 	static const Real precision = 1e-10;
 
-	mesh.clear();
+	rendering::Mesh::Handle mesh(new rendering::Mesh());
 
 	// TODO: build grid with dynamic size
 
@@ -297,7 +277,7 @@ Layer_SkeletonDeformation::prepare_mesh()
 					shape1.p0[1] - shape1.p1[1], shape1.p1[0] - shape1.p0[0], 0.0,
 					shape1.p0[0], shape1.p0[1], 1.0
 				);
-				Matrix matrix = into_bone * from_bone;
+				Matrix matrix = from_bone * into_bone;
 
 				for(std::vector<GridPoint>::iterator j = grid.begin(); j != grid.end(); ++j)
 				{
@@ -322,15 +302,16 @@ Layer_SkeletonDeformation::prepare_mesh()
 	}
 
 	// build vertices
-	mesh.vertices.reserve(grid.size());
+	mesh->vertices.reserve(grid.size());
 	for(std::vector<GridPoint>::iterator i = grid.begin(); i != grid.end(); ++i) {
 		Vector average_position = i->summary_weight > precision ? i->summary_position/i->summary_weight : i->initial_position;
 		i->average_depth = i->summary_weight > precision ? i->summary_depth/i->summary_weight : 0.0;
-		mesh.vertices.push_back(Mesh::Vertex(average_position, i->initial_position));
+		mesh->vertices.push_back( rendering::Mesh::Vertex(
+			average_position, i->initial_position ));
 	}
 
 	// build triangles
-	std::vector< std::pair<Real, Mesh::Triangle> > triangles;
+	std::vector< std::pair<Real, rendering::Mesh::Triangle> > triangles;
 	triangles.reserve(2*(grid_side_count_x-1)*(grid_side_count_y-1));
 	for(int j = 1; j < grid_side_count_y; ++j)
 	{
@@ -348,31 +329,31 @@ Layer_SkeletonDeformation::prepare_mesh()
 						         + grid[v[1]].average_depth
 								 + grid[v[2]].average_depth
 								 + grid[v[3]].average_depth);
-				triangles.push_back(std::make_pair(depth, Mesh::Triangle(v[0], v[1], v[3])));
-				triangles.push_back(std::make_pair(depth, Mesh::Triangle(v[1], v[2], v[3])));
+				triangles.push_back(std::make_pair(depth, rendering::Mesh::Triangle(v[0], v[1], v[3])));
+				triangles.push_back(std::make_pair(depth, rendering::Mesh::Triangle(v[1], v[2], v[3])));
 			}
 		}
 	}
 
 	// sort triangles
 	std::sort(triangles.begin(), triangles.end(), GridPoint::compare_triagles);
-	mesh.triangles.reserve(triangles.size());
-	for(std::vector< std::pair<Real, Mesh::Triangle> >::iterator i = triangles.begin(); i != triangles.end(); ++i)
-		mesh.triangles.push_back(i->second);
+	mesh->triangles.reserve(triangles.size());
+	for(std::vector< std::pair<Real, rendering::Mesh::Triangle> >::iterator i = triangles.begin(); i != triangles.end(); ++i)
+		mesh->triangles.push_back(i->second);
 
 	prepare_mask();
-	update_mesh_and_mask();
+	this->mesh = mesh;
 }
 
 bool
 Layer_SkeletonDeformation::set_param(const String & param, const ValueBase &value)
 {
-    IMPORT_VALUE_PLUS(param_bones, prepare_mesh());
+	IMPORT_VALUE_PLUS(param_bones, prepare_mesh());
 	IMPORT_VALUE_PLUS(param_point1, prepare_mesh());
 	IMPORT_VALUE_PLUS(param_point2, prepare_mesh());
 	IMPORT_VALUE_PLUS(param_x_subdivisions, prepare_mesh());
 	IMPORT_VALUE_PLUS(param_y_subdivisions, prepare_mesh());
-    return Layer_MeshTransform::set_param(param,value);
+	return Layer_MeshTransform::set_param(param,value);
 }
 
 ValueBase
@@ -388,16 +369,5 @@ Layer_SkeletonDeformation::get_param(const String& param)const
 	EXPORT_VERSION();
 
 	return Layer_MeshTransform::get_param(param);
-}
-
-rendering::Task::Handle
-Layer_SkeletonDeformation::build_rendering_task_vfunc(Context context)const
-{
-	// TODO: This is not thread-safe
-	rendering::TaskLayer::Handle task = new rendering::TaskLayer();
-	task->layer = const_cast<Layer_SkeletonDeformation*>(this);
-	task->layer->set_canvas(get_canvas());
-	task->sub_task() = context.build_rendering_task();
-	return task;
 }
 

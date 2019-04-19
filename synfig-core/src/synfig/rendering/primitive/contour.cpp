@@ -416,13 +416,14 @@ Contour::add_chunks_reverse(const Chunk *begin, const Chunk *end)
 void
 Contour::arc(const Vector &center, Real radius, Real angle0, Real angle1, bool connect)
 {
-	int segments = (int)ceil(2.0*fabs(angle1 - angle0)/PI);
-	Real da = 0.5*(angle1 - angle0)/segments;
-	Real radius2 = (sin(fabs(da)) + cos(da))*radius;
-	
 	Real angle = angle0;
 	Vector p0 = center + Vector(radius*cos(angle), radius*sin(angle));
 	if (connect) line_to(p0); else move_to(p0);
+
+	int segments = (int)ceil(4.0*fabs(angle1 - angle0)/PI);
+	if (segments <= 0) return;
+	Real da = 0.5*(angle1 - angle0)/segments;
+	Real radius2 = radius/cos(da);
 	for(int i = 0; i < segments; ++i) {
 		angle += da;
 		Vector pp0 = center + Vector(radius2*cos(angle), radius2*sin(angle));

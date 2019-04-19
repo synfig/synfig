@@ -67,7 +67,6 @@ target_sources(synfig
         "${CMAKE_CURRENT_LIST_DIR}/filecontainerzip.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/zstreambuf.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/valueoperations.cpp"
-        "${CMAKE_CURRENT_LIST_DIR}/mesh.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/soundprocessor.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/canvasfilenaming.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/token.cpp"

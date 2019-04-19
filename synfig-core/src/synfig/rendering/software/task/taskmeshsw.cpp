@@ -33,6 +33,7 @@
 
 #include "../surfacesw.h"
 
+
 #endif
 
 using namespace synfig;
@@ -120,33 +121,33 @@ TaskMeshSW::render_triangle(
 	apen.set_alpha(opacity);
 	apen.set_blend_method(blend_method);
 
-    // sort points
-    if (ip0.y > ip1.y) std::swap(ip0, ip1);
-    if (ip0.y > ip2.y) std::swap(ip0, ip2);
-    if (ip1.y > ip2.y) std::swap(ip1, ip2);
+	// sort points
+	if (ip0.y > ip1.y) std::swap(ip0, ip1);
+	if (ip0.y > ip2.y) std::swap(ip0, ip2);
+	if (ip1.y > ip2.y) std::swap(ip1, ip2);
 
-    // increments
-    long long dx02 = (ip2-ip0).get_fixed_x_div_y();
-    long long dx01 = (ip1-ip0).get_fixed_x_div_y();
-    long long dx12 = (ip2-ip1).get_fixed_x_div_y();
+	// increments
+	long long dx02 = (ip2-ip0).get_fixed_x_div_y();
+	long long dx01 = (ip1-ip0).get_fixed_x_div_y();
+	long long dx12 = (ip2-ip1).get_fixed_x_div_y();
 
-    // work points
-    // initially at top point (p0)
-    long long wx0 = Internal::int_to_fixed(ip0.x);
-    long long wx1 = wx0;
+	// work points
+	// initially at top point (p0)
+	long long wx0 = Internal::int_to_fixed(ip0.x);
+	long long wx1 = wx0;
 
-    // process top part of triangle
+	// process top part of triangle
 
-    // make copy of dx02
-    long long dx02_copy = dx02;
-    // sort increments
-    if (dx01 < dx02) std::swap(dx02, dx01);
-    // rasterize
-    for (int y = ip0.y; y < ip1.y; ++y)
-    {
+	// make copy of dx02
+	long long dx02_copy = dx02;
+	// sort increments
+	if (dx01 < dx02) std::swap(dx02, dx01);
+	// rasterize
+	for (int y = ip0.y; y < ip1.y; ++y)
+	{
 		// draw horizontal line (this code has a copy below)
-    	if (y >= 0 && y < height)
-    	{
+		if (y >= 0 && y < height)
+		{
 			int x0 = Internal::fixed_to_int(wx0);
 			int x1 = Internal::fixed_to_int(wx1);
 			if (x0 < 0) x0 = 0;
@@ -307,6 +308,8 @@ TaskMeshSW::render_triangle(
 						apen.set_alpha(opacity);
 						apen.put_value(texture.cubic_sample(tex_point[0], tex_point[1]));
 					}
+					// uncomment following line to debug
+					//apen.put_value(Color(0,0,1,0.5));
 					apen.inc_x();
 					tex_point += tdx;
 				}
@@ -354,6 +357,8 @@ TaskMeshSW::render_triangle(
 						apen.set_alpha(opacity);
 						apen.put_value(texture.cubic_sample(tex_point[0], tex_point[1]));
 					}
+					// uncomment following line to debug
+					//apen.put_value(Color(1,0,0,0.5));
 					apen.inc_x();
 					tex_point += tdx;
 				}
@@ -443,21 +448,21 @@ TaskMeshSW::run(RunParams & /* params */) const
 	if (!is_valid() || !sub_task() || !sub_task()->is_valid())
 		return true;
 
-	// TODO: target_rect
+	// TODO: clip by target_rect
 
-	Vector upp = get_units_per_pixel();
+	Vector ppu = get_pixels_per_unit();
 	Matrix transfromation_matrix;
-	transfromation_matrix.m00 = upp[0];
-	transfromation_matrix.m11 = upp[1];
-	transfromation_matrix.m20 = source_rect.minx;
-	transfromation_matrix.m21 = source_rect.miny;
+	transfromation_matrix.m00 = ppu[0];
+	transfromation_matrix.m11 = ppu[1];
+	transfromation_matrix.m20 = target_rect.minx - source_rect.minx*ppu[0];
+	transfromation_matrix.m21 = target_rect.miny - source_rect.miny*ppu[1];
 
-	Vector sub_upp = get_units_per_pixel();
+	Vector sub_ppu = sub_task()->get_pixels_per_unit();
 	Matrix texture_transfromation_matrix;
-	texture_transfromation_matrix.m00 = sub_upp[0];
-	texture_transfromation_matrix.m11 = sub_upp[1];
-	texture_transfromation_matrix.m20 = sub_task()->source_rect.minx;
-	texture_transfromation_matrix.m21 = sub_task()->source_rect.miny;
+	texture_transfromation_matrix.m00 = sub_ppu[0];
+	texture_transfromation_matrix.m11 = sub_ppu[1];
+	texture_transfromation_matrix.m20 = sub_task()->target_rect.minx - sub_task()->source_rect.minx*sub_ppu[0];
+	texture_transfromation_matrix.m21 = sub_task()->target_rect.miny - sub_task()->source_rect.miny*sub_ppu[1];
 
 	if (target_surface == sub_task()->target_surface)
 		return false;
