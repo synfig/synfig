@@ -75,6 +75,46 @@ void
 Mesh::reset_resolution_transfrom()
 	{ resolution_transfrom_calculated = false; }
 
+Rect
+Mesh::calc_target_rectangle() const
+{
+	if (vertices.empty()) return Rect::zero();
+	Rect target_rectangle = Rect(vertices[0].position);
+	for(std::vector<Vertex>::const_iterator i = vertices.begin(); i != vertices.end(); ++i)
+		target_rectangle.expand(i->position);
+	return target_rectangle;
+}
+
+Rect
+Mesh::calc_target_rectangle(const Matrix &transform_matrix) const
+{
+	if (vertices.empty()) return Rect::zero();
+	Rect target_rectangle = Rect(transform_matrix.get_transformed(vertices[0].position));
+	for(std::vector<Vertex>::const_iterator i = vertices.begin(); i != vertices.end(); ++i)
+		target_rectangle.expand( transform_matrix.get_transformed(i->position) );
+	return target_rectangle;
+}
+
+
+Rect
+Mesh::calc_source_rectangle() const
+{
+	if (vertices.empty()) return Rect::zero();
+	Rect source_rectangle = Rect(vertices[0].position);
+	for(std::vector<Vertex>::const_iterator i = vertices.begin(); i != vertices.end(); ++i)
+		source_rectangle.expand(i->position);
+	return source_rectangle;
+}
+Rect
+Mesh::calc_source_rectangle(const Matrix &transform_matrix) const
+{
+	if (vertices.empty()) return Rect::zero();
+	Rect source_rectangle = Rect(transform_matrix.get_transformed(vertices[0].tex_coords));
+	for(std::vector<Vertex>::const_iterator i = vertices.begin(); i != vertices.end(); ++i)
+		source_rectangle.expand( transform_matrix.get_transformed(i->tex_coords) );
+	return source_rectangle;
+}
+
 void
 Mesh::calculate_resolution_transfrom_no_lock(bool force) const
 {
@@ -82,17 +122,8 @@ Mesh::calculate_resolution_transfrom_no_lock(bool force) const
 		return;
 	// TODO:
 	resolution_transfrom.set_identity();
-	if (vertices.empty()) {
-		target_rectangle = Rect::zero();
-		source_rectangle = Rect::zero();
-	} else {
-		target_rectangle = Rect(vertices[0].position);
-		source_rectangle = Rect(vertices[0].tex_coords);
-		for(std::vector<Vertex>::const_iterator i = vertices.begin(); i != vertices.end(); ++i) {
-			target_rectangle.expand(i->position);
-			source_rectangle.expand(i->tex_coords);
-		}
-	}
+	target_rectangle = calc_target_rectangle();
+	source_rectangle = calc_source_rectangle();
 	resolution_transfrom_calculated = true;
 }
 

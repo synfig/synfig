@@ -92,6 +92,12 @@ public:
 	void clear();
 	void reset_resolution_transfrom();
 
+	Rect calc_target_rectangle() const;
+	Rect calc_target_rectangle(const Matrix &transform_matrix) const;
+
+	Rect calc_source_rectangle() const;
+	Rect calc_source_rectangle(const Matrix &transform_matrix) const;
+
 	// actualize internal resolution data (if need) and return it
 	// method is thread-safe for constant meshes - you must not modify a mesh while call these methods
 	void calculate_resolution_transfrom(bool force = false) const;

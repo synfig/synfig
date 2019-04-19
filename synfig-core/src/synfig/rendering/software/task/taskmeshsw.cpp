@@ -86,6 +86,7 @@ class TaskMeshSW: public TaskMesh, public TaskSW,
 		transfromation_matrix.m11 = ppu[1];
 		transfromation_matrix.m20 = target_rect.minx - source_rect.minx*ppu[0];
 		transfromation_matrix.m21 = target_rect.miny - source_rect.miny*ppu[1];
+		transfromation_matrix *=  transformation->matrix;
 
 		Vector sub_ppu = sub_task()->get_pixels_per_unit();
 		Matrix texture_transfromation_matrix;

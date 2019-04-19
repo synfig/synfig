@@ -51,7 +51,7 @@ Task::Token TaskMesh::token(
 
 Rect
 TaskMesh::calc_bounds() const
-	{ return mesh && sub_task() ? mesh->get_target_rectangle() : Rect(); }
+	{ return mesh && sub_task() ? mesh->calc_target_rectangle(transformation->matrix) : Rect(); }
 
 void
 TaskMesh::set_coords_sub_tasks()

@@ -29,6 +29,7 @@
 
 #include "../../task.h"
 #include "../../primitive/mesh.h"
+#include "tasktransformation.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -41,7 +42,7 @@ namespace synfig
 namespace rendering
 {
 
-class TaskMesh: public Task
+class TaskMesh: public Task, public TaskInterfaceTransformation
 {
 public:
 	typedef etl::handle<TaskMesh> Handle;
@@ -49,9 +50,12 @@ public:
 	virtual Token::Handle get_token() const { return token.handle(); }
 
 	Mesh::Handle mesh;
+	Holder<TransformationAffine> transformation;
 
 	virtual int get_pass_subtask_index() const
 		{ return sub_task() ? PASSTO_THIS_TASK : PASSTO_NO_TASK; }
+	virtual const Transformation::Handle get_transformation() const
+		{ return transformation.handle(); }
 
 	const Task::Handle& sub_task() const { return Task::sub_task(0); }
 	Task::Handle& sub_task() { return Task::sub_task(0); }
