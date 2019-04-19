@@ -67,6 +67,7 @@
 #include <gtk/gtk.h>
 
 #include <gdk/gdk.h>
+#include <synfig/canvasfilenaming.h>
 
 #include <synfig/valuenodes/valuenode_reference.h>
 #include <synfig/valuenodes/valuenode_subtract.h>
@@ -1662,12 +1663,28 @@ CanvasView::add_layer(String x)
 		canvas = layer_list.front()->get_canvas();
 		target_depth=canvas->get_depth(*layer_list.begin());
 	}
-
 	Layer::Handle layer(canvas_interface()->add_layer_to(x,canvas,target_depth));
 	if(layer)
 	{
 		get_selection_manager()->clear_selected_layers();
 		get_selection_manager()->set_selected_layer(layer);
+	}
+	// check if filename == empty then show an input dialog window
+	if(x=="import"||x=="sound")
+	{
+		String filename = layer->get_param("filename").get(String()); 
+		if (filename == "")
+		{
+			bool selected = false;
+			x == "sound" ? selected = App::dialog_open_file_audio(_("Please choose an audio file"), filename, ANIMATION_DIR_PREFERENCE): 
+			selected = App::dialog_open_file_image(_("Please choose an image file"), filename, IMAGE_DIR_PREFERENCE);
+
+			if (selected)
+			{
+				filename = synfig::CanvasFileNaming::make_short_filename(canvas->get_file_name(), filename);
+				layer->set_param("filename",filename);
+			}
+		}
 	}
 }
 
