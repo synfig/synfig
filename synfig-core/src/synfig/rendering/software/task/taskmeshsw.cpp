@@ -30,7 +30,6 @@
 #endif
 
 #include "../../common/task/taskmesh.h"
-#include "../../common/task/taskblend.h"
 #include "tasksw.h"
 #include "../function/mesh.h"
 
@@ -49,30 +48,11 @@ using namespace rendering;
 
 namespace {
 
-class TaskMeshSW: public TaskMesh, public TaskSW,
-	public TaskInterfaceBlendToTarget
+class TaskMeshSW: public TaskMesh, public TaskSW
 {
 	typedef etl::handle<TaskMeshSW> Handle;
 	static Token token;
 	virtual Token::Handle get_token() const { return token.handle(); }
-
-	virtual int get_target_subtask_index() const
-		{ return 1; }
-	
-	virtual void on_target_set_as_source() {
-		Task::Handle &subtask = target_subtask();
-		if ( subtask
-		  && subtask->target_surface == target_surface
-		  && !Color::is_straight(blend_method) )
-		{
-			trunc_by_bounds();
-			subtask->source_rect = source_rect;
-			subtask->target_rect = target_rect;
-		}
-	}
-
-	virtual Color::BlendMethodFlags get_supported_blend_methods() const
-		{ return Color::BLEND_METHODS_ALL & ~Color::BLEND_METHODS_STRAIGHT; }
 
 	virtual bool run(RunParams&) const {
 		if (!is_valid() || !sub_task() || !sub_task()->is_valid())
@@ -118,8 +98,8 @@ class TaskMeshSW: public TaskMesh, public TaskSW,
 			sub_target_rect,
 			transfromation_matrix,
 			texture_transfromation_matrix,
-			blend ? amount : 1.0,
-			blend ? blend_method : Color::BLEND_COMPOSITE );
+			1.0,
+			Color::BLEND_COMPOSITE );
 
 		return true;
 	}
