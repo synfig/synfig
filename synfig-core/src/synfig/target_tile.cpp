@@ -421,6 +421,7 @@ synfig::Target_Tile::render(ProgressCallback *cb)
 				//if(!get_avoid_time_sync() || canvas->get_time()!=t)
 				// Why the above line was commented here and not in TargetScaline?
 					canvas->set_time(t);
+				canvas->load_resources(t);
 				canvas->set_outline_grow(desc.get_outline_grow());
 
 				context=canvas->get_context(context_params);
@@ -441,6 +442,7 @@ synfig::Target_Tile::render(ProgressCallback *cb)
 			// Set the time that we wish to render
 			//if(!get_avoid_time_sync() || canvas->get_time()!=t)
 				canvas->set_time(t);
+			canvas->load_resources(t);
 			canvas->set_outline_grow(desc.get_outline_grow());
 
 			//synfig::info("2time_set_to %s",t.get_string().c_str());

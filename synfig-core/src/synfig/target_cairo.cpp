@@ -125,8 +125,10 @@ synfig::Target_Cairo::render(ProgressCallback *cb)
 			context.set_render_method(CAIRO);
 
 			// Set the time that we wish to render
-			if(!get_avoid_time_sync() || canvas->get_time()!=t)
+			if(!get_avoid_time_sync() || canvas->get_time()!=t) {
 				canvas->set_time(t);
+				canvas->load_resources(t);
+			}
 
 	#ifdef SYNFIG_OPTIMIZE_LAYER_TREE
 			Canvas::Handle op_canvas;

@@ -180,8 +180,10 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 			context.set_render_method(SOFTWARE);
 
 			// Set the time that we wish to render
-			if(!get_avoid_time_sync() || canvas->get_time()!=t)
+			if(!get_avoid_time_sync() || canvas->get_time()!=t) {
 				canvas->set_time(t);
+				canvas->load_resources(t);
+			}
 			canvas->set_outline_grow(desc.get_outline_grow());
 
 			// If quality is set otherwise, then we use the accelerated renderer
@@ -324,8 +326,10 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
     else
     {
 		// Set the time that we wish to render
-		if(!get_avoid_time_sync() || canvas->get_time()!=t)
+		if(!get_avoid_time_sync() || canvas->get_time()!=t) {
 			canvas->set_time(t);
+			canvas->load_resources(t);
+		}
 		canvas->set_outline_grow(desc.get_outline_grow());
 		Context context = canvas->get_context(context_params);
 
