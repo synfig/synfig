@@ -1,7 +1,5 @@
 RENDERING_SOFTWARE_TASK_HH = \
-	rendering/software/task/taskmeshsw.h \
-	rendering/software/task/tasksw.h \
-	rendering/software/task/tasktransformationaffinesw.h
+	rendering/software/task/tasksw.h
 
 RENDERING_SOFTWARE_TASK_CC = \
 	rendering/software/task/taskblendsw.cpp \

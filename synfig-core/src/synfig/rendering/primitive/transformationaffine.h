@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/primitive/affinetransformation.h
-**	\brief AffineTransformation Header
+/*!	\file synfig/rendering/primitive/transformationaffine.h
+**	\brief TransformationAffine Header
 **
 **	$Id$
 **
@@ -22,8 +22,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_RENDERING_AFFINETRANSFORMATION_H
-#define __SYNFIG_RENDERING_AFFINETRANSFORMATION_H
+#ifndef __SYNFIG_RENDERING_TRANSFORMATIONAFFINE_H
+#define __SYNFIG_RENDERING_TRANSFORMATIONAFFINE_H
 
 /* === H E A D E R S ======================================================= */
 

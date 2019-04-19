@@ -36,7 +36,7 @@
 
 #include <synfig/context.h>
 #include <synfig/rendering/software/surfacesw.h>
-#include <synfig/rendering/software/task/tasktransformationaffinesw.h>
+#include <synfig/rendering/software/function/resample.h>
 
 #include <synfig/debug/debugsurface.h>
 
@@ -134,7 +134,7 @@ Layer_RenderingTask::accelerated_render(Context /* context */, Surface *surface,
 
 				rendering::SurfaceResource::LockRead<rendering::SurfaceSW> lock((*ri)->target_surface);
 				if (lock)
-					rendering::TaskTransformationAffineSW::resample(
+					rendering::software::Resample::resample(
 						*surface,
 						dest_target_rect,
 						lock->get_surface(),

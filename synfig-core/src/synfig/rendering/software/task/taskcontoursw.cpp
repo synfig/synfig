@@ -79,6 +79,8 @@ public:
 	virtual bool run(RunParams&) const {
 		if (!is_valid())
 			return true;
+		if (!contour)
+			return false;
 
 		Vector ppu = get_pixels_per_unit();
 
