@@ -311,15 +311,6 @@ LayerParamTreeStore::set_value_impl(const Gtk::TreeModel::iterator& iter, int co
 	}
 }
 
-
-
-
-
-
-
-
-
-
 void
 LayerParamTreeStore::rebuild()
 {
