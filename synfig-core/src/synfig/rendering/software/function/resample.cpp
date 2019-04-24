@@ -450,7 +450,7 @@ namespace {
 						Matrix new_transformation = transformation
 												* Matrix().set_translate(src_bounds.minx, src_bounds.miny)
 												* Matrix().set_scale((Real)sw/(Real)w, (Real)sh/(Real)h);
-						Helper::Generic<synfig::Surface::reader, synfig::Surface::reader_cook>::resample(
+						Helper::Generic<synfig::Surface::reader, synfig::Surface::reader>::resample(
 							dest,
 							dest_bounds,
 							&new_src,
