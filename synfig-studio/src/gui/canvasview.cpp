@@ -67,6 +67,7 @@
 #include <gtk/gtk.h>
 
 #include <gdk/gdk.h>
+#include <synfig/canvasfilenaming.h>
 
 #include <synfig/valuenodes/valuenode_reference.h>
 #include <synfig/valuenodes/valuenode_subtract.h>
@@ -1651,24 +1652,43 @@ void
 CanvasView::add_layer(String x)
 {
 	Canvas::Handle canvas;
-
 	SelectionManager::LayerList layer_list(get_selection_manager()->get_selected_layers());
-
 	int target_depth(0);
 
 	if (layer_list.empty()) {
 		canvas = get_canvas();
-	} else {
+	} 
+	else 
+	{
 		canvas = layer_list.front()->get_canvas();
 		target_depth=canvas->get_depth(*layer_list.begin());
 	}
-
-	Layer::Handle layer(canvas_interface()->add_layer_to(x,canvas,target_depth));
-	if(layer)
+	// check if import or sound layer then show an input dialog window
+	if(x=="import"||x=="sound")
 	{
-		get_selection_manager()->clear_selected_layers();
-		get_selection_manager()->set_selected_layer(layer);
+		String filename="";
+		bool selected = false;
+		x == "sound" ? selected = App::dialog_open_file_audio(_("Please choose an audio file"), filename, ANIMATION_DIR_PREFERENCE): 
+		selected = App::dialog_open_file_image(_("Please choose an image file"), filename, IMAGE_DIR_PREFERENCE);
+		if (selected)
+		{
+			String errors, warnings;
+			canvas_interface()->import(filename, errors, warnings, App::resize_imported_images);
+			if (warnings != "")
+			App::dialog_message_1b("WARNING", etl::strprintf("%s:\n\n%s", _("Warning"), warnings.c_str()),
+				"details",	_("Close"));
+		}		
 	}
+	else
+	{
+		Layer::Handle layer(canvas_interface()->add_layer_to(x,canvas,target_depth));
+		if(layer)
+		{
+			get_selection_manager()->clear_selected_layers();
+			get_selection_manager()->set_selected_layer(layer);
+		}
+	}
+	
 }
 
 void
