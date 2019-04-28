@@ -17,6 +17,46 @@ class Count:
         self.idx += 1
         return self.idx
 
+class Vector:
+    """
+    To store the position of layers
+    """
+    def __init__(self, x = 0, y = 0):
+        self.x = x
+        self.y = y
+
+    def __str__(self):
+        return "({0},{1})".format(self.x,self.y)
+
+    def __add__(self, other):
+        x = self.x + other.x
+        y = self.y + other.y
+        return Vector(x, y)
+
+    def __sub__(self, other):
+        x = self.x - other.x
+        y = self.y - other.y
+        return Vector(x, y)
+
+    # other can only be of type real
+    def __mul__(self, other):
+        if not isinstance(other, self.__class__):
+            x = self.x * other
+            y = self.y * other
+            return Vector(x, y)
+
+    def __rmul__(self, other):
+        return self.__mul__(other)
+
+    def __truediv__(self, other):
+        if not isinstance(other, self.__class__):
+            x = self.x / other
+            y = self.y / other
+            return Vector(x, y)
+
+    def get_list(self):
+        return [self.x, self.y]
+
 def calculate_pixels_per_unit():
     """ 
     Gives the value of 1 unit in terms of pixels according to the canvas defined
@@ -42,7 +82,7 @@ def parse_position(animated, i):
     pos = [float(animated[i][0][0].text),
            float(animated[i][0][1].text)]
     pos = [settings.PIX_PER_UNIT*x for x in pos]
-    return pos
+    return Vector(pos[0], pos[1])
 
 def get_angle(theta):
     """

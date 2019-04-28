@@ -2,10 +2,30 @@
 Fill this
 """
 import sys
+import copy
 sys.path.append("..")
 import settings
 from misc import parse_position, change_axis
 
+"""
+See this for details: https://github.com/synfig/synfig/blob/master/synfig-core/src/synfig/vector.h#L187
+return value: 
+    True if p1 < p2
+    False if p1 >= p2
+"""
+
+"""
+	To be completed. Waiting for answer of my query
+"""
+def clamped_tangent(p1, p2, p3, animated, i):
+    # pw -> prev_waypoint, w -> waypoint, nw -> next_waypoint
+    pw, w, nw = animated[i-1], animated[i], animated[i+1]
+    t1 = float(pw.attrib["time"][:-1]) * settings.lottie_format["fr"]
+    t2 = float(w.attrib["time"][:-1]) * settings.lottie_format["fr"]
+    t3 = float(nw.attrib["time"][:-1]) * settings.lottie_format["fr"]
+    bias = 0.0
+    tangent = [0 for i in range(len(p1))]
+    pm = []
 
 def gen_properties_offset_keyframe(curve_list, animated, i):
     """
@@ -18,9 +38,10 @@ def gen_properties_offset_keyframe(curve_list, animated, i):
     cur_get_before, next_get_after = waypoint.attrib["before"], next_waypoint.attrib["after"]
     # Calculate positions of waypoints
     cur_pos = parse_position(animated, i)
-    prev_pos = cur_pos
+    prev_pos = copy.deepcopy(cur_pos)
     next_pos = parse_position(animated, i + 1)
-    after_next_pos = next_pos
+    after_next_pos = copy.deepcopy(next_pos)
+
     if i + 2 <= len(animated) - 1:
         after_next_pos = parse_position(animated, i + 2)
     if i - 1 >= 0:
@@ -39,8 +60,8 @@ def gen_properties_offset_keyframe(curve_list, animated, i):
         lottie["i"]["x"] = 0.7
         lottie["i"]["y"] = 1
     lottie["t"] = float(waypoint.attrib["time"][:-1]) * settings.lottie_format["fr"]
-    lottie["s"] = change_axis(cur_pos[0], cur_pos[1])
-    lottie["e"] = change_axis(next_pos[0], next_pos[1])
+    lottie["s"] = change_axis(cur_pos.x, cur_pos.y)
+    lottie["e"] = change_axis(next_pos.x, next_pos.y)
     tens, bias, cont = 0, 0, 0   # default values
     tens1, bias1, cont1 = 0, 0, 0
     if "tension" in waypoint.keys():
@@ -57,53 +78,65 @@ def gen_properties_offset_keyframe(curve_list, animated, i):
         bias1 = float(next_waypoint.attrib["bias"])
     lottie["to"] = []
     lottie["ti"] = []
-    for dim in range(len(cur_pos)):
-        # iter           next
-        # ANY/TCB ------ ANY/ANY
-        if cur_get_after == "auto":
-            if i >= 1:
-                out_val = ((1 - tens) * (1 + bias) * (1 + cont) *\
-                           (cur_pos[dim] - prev_pos[dim]))/2 +\
-                           ((1 - tens) * (1 - bias) * (1 - cont) *\
-                           (next_pos[dim] - cur_pos[dim]))/2
-            else:
-                out_val = next_pos[dim] - cur_pos[dim]      # t1 = p2 - p1
 
-        # iter           next
-        # ANY/LINEAR --- ANY/ANY
-        # ANY/EASE   --- ANY/ANY
-        if cur_get_after in {"linear", "halt"}:
-            out_val = next_pos[dim] - cur_pos[dim]
+    ######################### TESTING ########################################
+    # iter           next
+    # ANY/TCB ------ ANY/ANY
+    if cur_get_after == "auto":
+        if i >= 1:
+            out_val = ((1 - tens) * (1 + bias) * (1 + cont) *\
+                       (cur_pos - prev_pos))/2 +\
+                       ((1 - tens) * (1 - bias) * (1 - cont) *\
+                       (next_pos - cur_pos))/2
+        else:
+            out_val = next_pos - cur_pos      # t1 = p2 - p1
 
-        # iter          next
-        # ANY/ANY ----- LINEAR/ANY
-        # ANY/ANY ----- EASE/ANY
-        if next_get_before in {"linear", "halt"}:
-            in_val = next_pos[dim] - cur_pos[dim]
+    # iter           next
+    # ANY/LINEAR --- ANY/ANY
+    # ANY/EASE   --- ANY/ANY
+    if cur_get_after in {"linear", "halt"}:
+        out_val = next_pos - cur_pos
 
-        # iter              next
-        # ANY/CONSTANT ---- ANY/ANY
-        # ANY/ANY      ---- CONSTANT/ANY
-        if cur_get_after == "constant" or next_get_before == "constant":
-            lottie["h"] = 1
-            del lottie["to"], lottie["ti"]
-            del lottie["i"], lottie["o"]
-            # "e" is not needed, but is still not deleted as it is of use in the last iteration of animation
-            # del lottie["e"]
-            return
+    # iter          next
+    # ANY/ANY ----- LINEAR/ANY
+    # ANY/ANY ----- EASE/ANY
+    if next_get_before in {"linear", "halt"}:
+        in_val = next_pos - cur_pos
 
-        # iter           next           after_next
-        # ANY/ANY ------ TCB/ANY ------ ANY/ANY
-        if next_get_before == "auto":
-            if i + 2 <= len(animated) - 1:
-                in_val = ((1 - tens1) * (1 + bias1) * (1 - cont1) *\
-                          (next_pos[dim] - cur_pos[dim]))/2 +\
-                          ((1 - tens1) * (1 - bias1) * (1 + cont1) *\
-                          (after_next_pos[dim] - next_pos[dim]))/2
-            else:
-                in_val = next_pos[dim] - cur_pos[dim]       # t2 = p2 - p1
-        lottie["to"].append(out_val)
-        lottie["ti"].append(in_val)
+    # iter          next
+    # ANY/CLAMPED - ANY/ANY
+    if cur_get_after == "clamped":
+        if i >= 1:
+            out_val = clamped_tangent(prev_pos, cur_pos, next_pos, animated, i) 
+        else:
+            out_val = next_pos - cur_pos      # t1 = p2 - p1
+
+    # iter              next
+    # ANY/CONSTANT ---- ANY/ANY
+    # ANY/ANY      ---- CONSTANT/ANY
+    if cur_get_after == "constant" or next_get_before == "constant":
+        lottie["h"] = 1
+        del lottie["to"], lottie["ti"]
+        del lottie["i"], lottie["o"]
+        # "e" is not needed, but is still not deleted as it is of use in the last iteration of animation
+        # del lottie["e"]
+        return
+
+    # iter           next           after_next
+    # ANY/ANY ------ TCB/ANY ------ ANY/ANY
+    if next_get_before == "auto":
+        if i + 2 <= len(animated) - 1:
+            in_val = ((1 - tens1) * (1 + bias1) * (1 - cont1) *\
+                      (next_pos - cur_pos))/2 +\
+                      ((1 - tens1) * (1 - bias1) * (1 + cont1) *\
+                      (after_next_pos - next_pos))/2
+        else:
+            in_val = next_pos - cur_pos      # t2 = p2 - p1
+    print(cur_get_after, next_get_before)
+    lottie["to"] = out_val.get_list()
+    lottie["ti"] = in_val.get_list()
+
+    ##################################################################################################
 
     # TCB/!TCB and list is not empty
     if cur_get_before == "auto" and cur_get_after != "auto" and i > 0:
