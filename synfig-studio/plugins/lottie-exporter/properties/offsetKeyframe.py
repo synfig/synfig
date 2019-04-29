@@ -5,18 +5,14 @@ import sys
 import copy
 sys.path.append("..")
 import settings
-from misc import parse_position, change_axis
+from misc import parse_position, change_axis, Vector
 
 """
-See this for details: https://github.com/synfig/synfig/blob/master/synfig-core/src/synfig/vector.h#L187
-return value: 
-    True if p1 < p2
-    False if p1 >= p2
+A Function for testing approximate equality
 """
+def isclose(a, b, rel_tol=1e-09, abs_tol=0.0):
+    return abs(a-b) <= max(rel_tol * max(abs(a), abs(b)), abs_tol)
 
-"""
-	To be completed. Waiting for answer of my query
-"""
 def clamped_tangent(p1, p2, p3, animated, i):
     # pw -> prev_waypoint, w -> waypoint, nw -> next_waypoint
     pw, w, nw = animated[i-1], animated[i], animated[i+1]
@@ -24,8 +20,51 @@ def clamped_tangent(p1, p2, p3, animated, i):
     t2 = float(w.attrib["time"][:-1]) * settings.lottie_format["fr"]
     t3 = float(nw.attrib["time"][:-1]) * settings.lottie_format["fr"]
     bias = 0.0
-    tangent = [0 for i in range(len(p1))]
-    pm = []
+    tangent = 0.0
+    pm = p1 + (p3 - p1)*(t2 - t1)/(t3 - t1)
+    if p3 > p1:
+        if p2 >= p3 or p2 <= p1:
+            tangent = tangent * 0.0
+        else:
+            if p2 > pm:
+                bias = (pm - p2) / (p3 - pm)
+            elif p2 < pm:
+                bias = (pm - p2) / (pm - p1)
+            else:
+                bias = 0.0
+            tangent = (p2 - p1) * (1.0 + bias) / 2.0 + (p3 - p2) * (1.0 - bias) / 2.0
+    elif p1 > p2:
+        if p2 >= p1 or p2 <= p3:
+            tangent = tangent * 0.0
+        else:
+            if p2 > pm:
+                bias = (pm - p2) / (pm - p1)
+            elif p2 < pm:
+                bias = (pm - p2) / (p3 - pm)
+            else:
+                bias = 0.0
+            tangent = (p2 - p1) * (1.0 + bias) / 2.0 + (p3 - p2) * (1.0 - bias) / 2.0
+    else:
+        tangent = tangent * 0.0
+    return tangent
+
+def clamped_vector(p1, p2, p3, animated, i, lottie, ease):
+    x_tan = clamped_tangent(p1.x, p2.x, p3.x, animated, i)
+    y_tan = clamped_tangent(p1.y, p2.y, p3.y, animated, i)
+    if isclose(x_tan, 0.0) or isclose(y_tan, 0.0):
+        if ease == "in":
+            ease_in(lottie)
+        else:
+            ease_out(lottie)
+    return Vector(clamped_tangent(p1.x, p2.x, p3.x, animated, i), clamped_tangent(p1.y, p2.y, p3.y, animated, i))
+
+def ease_out(lottie):
+    lottie["o"]["x"] = 0.42
+    lottie["o"]["y"] = 0
+
+def ease_in(lottie):
+    lottie["i"]["x"] = 0.58
+    lottie["i"]["y"] = 1
 
 def gen_properties_offset_keyframe(curve_list, animated, i):
     """
@@ -54,11 +93,9 @@ def gen_properties_offset_keyframe(curve_list, animated, i):
     lottie["o"]["x"] = 0.5
     lottie["o"]["y"] = 0.5
     if cur_get_after == "halt": # For ease out
-        lottie["o"]["x"] = 0.3
-        lottie["o"]["y"] = 0
+        ease_out(lottie)
     if next_get_before == "halt": # For ease in
-        lottie["i"]["x"] = 0.7
-        lottie["i"]["y"] = 1
+        ease_in(lottie)
     lottie["t"] = float(waypoint.attrib["time"][:-1]) * settings.lottie_format["fr"]
     lottie["s"] = change_axis(cur_pos.x, cur_pos.y)
     lottie["e"] = change_axis(next_pos.x, next_pos.y)
@@ -79,7 +116,6 @@ def gen_properties_offset_keyframe(curve_list, animated, i):
     lottie["to"] = []
     lottie["ti"] = []
 
-    ######################### TESTING ########################################
     # iter           next
     # ANY/TCB ------ ANY/ANY
     if cur_get_after == "auto":
@@ -107,9 +143,20 @@ def gen_properties_offset_keyframe(curve_list, animated, i):
     # ANY/CLAMPED - ANY/ANY
     if cur_get_after == "clamped":
         if i >= 1:
-            out_val = clamped_tangent(prev_pos, cur_pos, next_pos, animated, i) 
+            ease = "out"
+            out_val = clamped_vector(prev_pos, cur_pos, next_pos, animated, i, lottie, ease) 
         else:
             out_val = next_pos - cur_pos      # t1 = p2 - p1
+
+    # iter          next             after_next
+    # ANY/ANY ----- CLAMPED/ANY ---- ANY/ANY
+    if next_get_before == "clamped":
+        if i + 2 <= len(animated) - 1:
+            ease = "in"
+            in_val = clamped_vector(cur_pos, next_pos, after_next_pos, animated, i + 1, lottie, ease)
+        else:
+            in_val = next_pos - cur_pos     # t2 = p2 - p1
+
 
     # iter              next
     # ANY/CONSTANT ---- ANY/ANY
@@ -136,12 +183,10 @@ def gen_properties_offset_keyframe(curve_list, animated, i):
     lottie["to"] = out_val.get_list()
     lottie["ti"] = in_val.get_list()
 
-    ##################################################################################################
-
     # TCB/!TCB and list is not empty
     if cur_get_before == "auto" and cur_get_after != "auto" and i > 0:
         curve_list[-2]["ti"] = lottie["to"]
-        curve_list[-2]["ti"] = [-item/settings.TANGENT_IN_FACTOR for item in curve_list[-2]["ti"]]
+        curve_list[-2]["ti"] = [-item/settings.TANGENT_FACTOR for item in curve_list[-2]["ti"]]
         curve_list[-2]["ti"][1] = -curve_list[-2]["ti"][1]
         if cur_get_after == "halt":
             curve_list[-2]["i"]["x"] = 0.7
@@ -151,8 +196,8 @@ def gen_properties_offset_keyframe(curve_list, animated, i):
     lottie["ti"] = [-item for item in lottie["ti"]]
 
     # Lottie tangent length is larger than synfig
-    lottie["ti"] = [item/settings.TANGENT_IN_FACTOR for item in lottie["ti"]]
-    lottie["to"] = [item/settings.TANGENT_OUT_FACTOR for item in lottie["to"]]
+    lottie["ti"] = [item/settings.TANGENT_FACTOR for item in lottie["ti"]]
+    lottie["to"] = [item/settings.TANGENT_FACTOR for item in lottie["to"]]
 
     # IMPORTANT to and ti have to be relative
     # The y-axis is different in lottie
