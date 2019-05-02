@@ -53,9 +53,9 @@ namespace studio {
 
 class AsyncRenderer : public etl::shared_object, public sigc::trackable
 {
-	//! Signal emmited when target has been stopped or has finished
+	//! Signal emitted when target has been stopped or has finished
 	sigc::signal<void> signal_finished_;
-	//! Signal emmited when target has succedded
+	//! Signal emitted when target has succeeded
 	sigc::signal<void> signal_success_;
 
 	//! Seems to be unused
@@ -66,11 +66,11 @@ class AsyncRenderer : public etl::shared_object, public sigc::trackable
 
 	//! Set to true when target render fails.
 	bool error;
-	//! Set to true when target render succedded
+	//! Set to true when target render succeeded
 	bool success;
 
 	synfig::ProgressCallback *cb;
-	//! Signal to be emmited when the target is requested to stop
+	//! Signal to be emitted when the target is requested to stop
 	sigc::signal<void> signal_stop_;
 
 	Glib::Thread* render_thread;

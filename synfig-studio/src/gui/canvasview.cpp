@@ -753,7 +753,7 @@ void CanvasView::present()
 	App::set_selected_canvas_view(this);
 
 	Dockable::present();
-	// If hided by CanvasView::close_view, time to come back to the show
+	// If hidden by CanvasView::close_view, time to come back to the show
 	if(!get_visible())show();
 	update_title();
 }

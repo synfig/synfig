@@ -47,7 +47,7 @@ namespace synfig {
 /*! \class Keyframe
 **  \brief Keyframe is used to record the state of the animation at that point (time_)
 *
-* A Keyframe can be described, actived or disabled and have an associated Waypoint::Model.
+* A Keyframe can be described, activated or disabled and have an associated Waypoint::Model.
 * Common comparison operators can be used for Keyframes operation ==, <, != .
 * \see Keyframe::set_description(String x), Keyframe::get_description(), Keyframe::enable(), Keyframe::disable ()
 */

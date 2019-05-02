@@ -180,7 +180,7 @@ public:
 
 	//! operator*=. Multiplication and assignment of one matrix by a scalar
 	//! @param rhs the number to multiply by
-	//! @return the modifed resulting matrix
+	//! @return the modified resulting matrix
 	ColorMatrix operator*=(const value_type &rhs);
 
 	//! operator*. Multiplication of one matrix by another

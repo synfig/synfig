@@ -52,7 +52,7 @@ class Settings;
 **  \see  studio::DeviceTracker
 **  \see  synfigapp::Settings
 **
-**   The represenation includes both the GDK state (e.g., mode) and synfigstudio
+**   The representation includes both the GDK state (e.g., mode) and synfigstudio
 **   state (e.g., outline color). An object of this class can be saved and
 **   restored using its Settings object, provided by the settings method.
 */

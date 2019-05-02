@@ -33,7 +33,7 @@
 
 /* === M A C R O S ========================================================= */
 
-/** DUCK_COLOR_NOT_EDITABLE : light grey - for parameter (hanlde) like converted (linked also?) for example*/
+/** DUCK_COLOR_NOT_EDITABLE : light grey - for parameter (handle) like converted (linked also?) for example*/
 #define DUCK_COLOR_NOT_EDITABLE	Gdk::Color("#cfcfcf")
 /** DUCK_COLOR_ORIGIN : green */
 #define DUCK_COLOR_ORIGIN        Gdk::Color("#00ff00") // green

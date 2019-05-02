@@ -43,7 +43,7 @@
 
 namespace studio {
 
-///@brief Abstract parrent for extra target parameters dialogs. 	
+///@brief Abstract parent for extra target parameters dialogs. 	
 class Dialog_TargetParam: public Gtk::Dialog
 {
 public:

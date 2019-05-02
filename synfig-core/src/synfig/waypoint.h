@@ -70,7 +70,7 @@ public:
 /*! \class Waypoint::Model
  * 	\brief Waypoint::Model is a Waypoint model. It is used to store and
  * 	retrieve the values of the waypoint that is going to be modified. Once
- * 	the model is completely modifed then it can be applied to the waypoint
+ * 	the model is completely modified then it can be applied to the waypoint
  * 	itself by using the \apply_model() member
  */
 	class Model
@@ -241,7 +241,7 @@ public:
 	//!Gets the value hold by the Waypoint at time \t when it is animated
 	ValueBase get_value(const Time &t)const;
 	//!Sets the value of the Waypoint.
-	//!Maybe it would be posible to define set_value(const ValueBase &x, Time &t) ?
+	//!Maybe it would be possible to define set_value(const ValueBase &x, Time &t) ?
 	void set_value(const ValueBase &x);
 	//! Returns the handle to the value node
 	const etl::rhandle<ValueNode> &get_value_node()const { return value_node; }

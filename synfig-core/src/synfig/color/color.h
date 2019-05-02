@@ -119,7 +119,7 @@ public:
 	//! Converts a ColorReal \a c (0.0-1.0) into a 2 character hex string (00-ff)
 	static const String real2hex(ColorReal c);
 
-	//! Returns the color as a 6 character hex sting
+	//! Returns the color as a 6 character hex string
 	inline const String get_hex()const;
 
 	//! Sets the color's R, G, and B from a 3 or 6 character hex string

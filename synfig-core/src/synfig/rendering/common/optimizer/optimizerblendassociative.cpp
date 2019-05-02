@@ -66,7 +66,7 @@ OptimizerBlendAssociative::run(const RunParams& params) const
 	//   blend1(a, blend0(b, c)) -> blend1(blend0(a, b), c)
 	// result chain may be converted to list
 	//
-	// as result actualy we will do following:
+	// as result actually we will do following:
 	//   blend1(a, list(...)) -> list(a, ...)
 	// if each task in list suits for this optimization
 	//

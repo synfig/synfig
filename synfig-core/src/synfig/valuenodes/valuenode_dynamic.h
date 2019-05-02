@@ -48,10 +48,10 @@ private:
 	ValueNode::RHandle origin_;        // Basement of the dynamic system
 	ValueNode::RHandle force_;         // External force applied on the mass center of gravity
 	ValueNode::RHandle torque_;        // Momentum applied at the origin
-	ValueNode::RHandle damping_coef_;  // Radial Damping coeficient 
-	ValueNode::RHandle friction_coef_; // Rotational friction coeficient
-	ValueNode::RHandle spring_coef_;   // Spring coeficient 
-	ValueNode::RHandle torsion_coef_;  // Torsion coeficient
+	ValueNode::RHandle damping_coef_;  // Radial Damping coefficient 
+	ValueNode::RHandle friction_coef_; // Rotational friction coefficient
+	ValueNode::RHandle spring_coef_;   // Spring coefficient 
+	ValueNode::RHandle torsion_coef_;  // Torsion coefficient
 	ValueNode::RHandle mass_;          // Mass 
 	ValueNode::RHandle inertia_;       // Moment of Inertia
 	ValueNode::RHandle spring_rigid_;  // True if spring is solid rigid

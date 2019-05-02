@@ -90,7 +90,7 @@ synfig::Layer_Bitmap::Layer_Bitmap():
 synfig::Surface&
 Layer_Bitmap::get_surface() const
 {
-	// TODO: not thread safe, return SurfaceResource instread
+	// TODO: not thread safe, return SurfaceResource instead
 	if (!rendering_surface || !rendering_surface->is_exists())
 		rendering_surface->create(128, 128);
 	rendering::SurfaceResource::LockWrite<rendering::SurfaceSW> lock(rendering_surface);

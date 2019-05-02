@@ -141,7 +141,7 @@ KeyframeTree::KeyframeTree() : editable_(false)
 	// Make us more sensitive to several events
 	add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK);
 
-	// Listen to the changed selection signal to perform kf synchro thrue canvas interface
+	// Listen to the changed selection signal to perform kf synchro thru canvas interface
 	get_selection()->signal_changed().connect(sigc::mem_fun(*this, &studio::KeyframeTree::on_selection_changed));
 	send_selection = false;
 }

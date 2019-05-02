@@ -121,7 +121,7 @@ cairo_renddesc_untransform(cairo_t* cr, RendDesc &renddesc)
 		return false;
 	}
 	
-	// Now let's tranform the renddesc corners with the calculated matrix
+	// Now let's transform the renddesc corners with the calculated matrix
 	cairo_matrix_transform_point(&cr_result, &tl_x, &tl_y);
 	cairo_matrix_transform_point(&cr_result, &tr_x, &tr_y);
 	cairo_matrix_transform_point(&cr_result, &bl_x, &bl_y);
@@ -132,7 +132,7 @@ cairo_renddesc_untransform(cairo_t* cr, RendDesc &renddesc)
 	pminy=min(min(min(tl_y, tr_y), bl_y), br_y);
 	pmaxx=max(max(max(tl_x, tr_x), bl_x), br_x);
 	pmaxy=max(max(max(tl_y, tr_y), bl_y), br_y);
-	// let's assign the right values to the meaningfull variables :)
+	// let's assign the right values to the meaningful variables :)
 	mtlx=pminx;
 	mtly=pmaxy;
 	mbrx=pmaxx;

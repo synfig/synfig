@@ -311,7 +311,7 @@ protected:
 
 
 /*!	\class PlaceholderValueNode
-**	Seems to be a Place to hold a Value Node temporarly.
+**	Seems to be a Place to hold a Value Node temporarily.
 *
 * 	Doesn't seem to implement any functionality. Seems to be used when the
 * 	value node cannot be created using the Const, Animated or Linkable
@@ -444,7 +444,7 @@ protected:
 	//! Pure Virtual member to get the children vocabulary
 	virtual Vocab get_children_vocab_vfunc()const=0;
 
-	//! Virtual memebr to set the children vocabulary to a given value
+	//! Virtual member to set the children vocabulary to a given value
 	virtual void set_children_vocab(const Vocab& rvocab);
 
 	virtual void get_values_vfunc(std::map<Time, ValueBase> &x) const;

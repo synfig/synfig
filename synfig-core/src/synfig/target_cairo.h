@@ -43,8 +43,8 @@ namespace synfig {
 class CairoSurface;
 
 /*!	\class Target_Cairo
-**	\brief This is a Target class that implements the render fucntion
-* for a CairoSurface
+**	\brief This is a Target class that implements the render function
+**     for a CairoSurface
 */
 class Target_Cairo : public Target
 {

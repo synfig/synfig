@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file dialogs/dialog_template.cpp
-**	\brief Dialog design list and panel template Implemetation
+**	\brief Dialog design list and panel template Implementation
 **
 **	$Id$
 **

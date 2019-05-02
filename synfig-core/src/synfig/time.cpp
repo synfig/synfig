@@ -326,7 +326,7 @@ Time::get_string(float fps, Time::Format format)const
 Time
 Time::round(float fps)const
 {
-	// the aim is to make results for the same frame are absolutelly idential
+	// the aim is to make results for the same frame absolutely identical
 	assert(approximate_greater_lp(fps, 0.f));
 	if (!approximate_greater_lp(fps, 0.f)) return *this;
 	return Time(floor(value_*fps + 0.5)/fps);

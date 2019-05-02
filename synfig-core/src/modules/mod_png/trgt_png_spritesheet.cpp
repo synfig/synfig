@@ -357,7 +357,7 @@ png_trgt_spritesheet::read_png_file()
 	//Also see gamma.h and gamma.cpp
 	Gamma gamma_png(2.2);
 	
-	//From png bytes to synfig::Color convertion
+	//From png bytes to synfig::Color conversion
     for (unsigned int y = 0; y < in_image.height; y++) 
 	{
         png_byte* row = row_pointers[y];

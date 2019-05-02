@@ -363,7 +363,7 @@ Action::ValueDescLink::prepare()
 	if(value_desc_list.begin()->parent_is_linkable_value_node())
 		current_scalar=value_desc_list.begin()->get_scalar();
 	bool found_inverse(false);
-	// Check if we are dealing the case of linking differnt types of tangents
+	// Check if we are dealing the case of linking different types of tangents
 	for(iter=value_desc_list.begin();iter!=value_desc_list.end();++iter)
 	{
 		ValueDesc& v_desc(*iter);
@@ -374,7 +374,7 @@ Action::ValueDescLink::prepare()
 			if(v_desc.get_index() == 4 || v_desc.get_index() == 5)
 			{
 				synfig::Real iter_scalar=v_desc.get_scalar();
-				// Let's compare the sign  of scalar of the value node witht the current one
+				// Let's compare the sign  of scalar of the value node with the current one
 				// and remember if a change of sign is seen.
 				if(iter_scalar*current_scalar < 0) // if they have different signs
 				{
@@ -395,7 +395,7 @@ Action::ValueDescLink::prepare()
 		}
 	}
 	// found_inverse =  true only if all they are tangents and some are inversed tangents
-	//Noe let's loop throug all the value desc
+	//Now let's loop through all the value desc
 	for(iter=value_desc_list.begin();iter!=value_desc_list.end();++iter)
 	{
 		ValueDesc& value_desc(*iter);
@@ -501,7 +501,7 @@ Action::ValueDescLink::prepare()
 				add_action_front(action);
 			}
 		} // found inverse
-		else // Not found inverse so do a regualr link
+		else // Not found inverse so do a regular link
 		{
 			//Let's connect the link value node to the value node
 			Action::Handle action(Action::create("ValueDescConnect"));

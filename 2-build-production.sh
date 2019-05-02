@@ -10,7 +10,7 @@
 #
 # = Examples: =
 #
-# == Standart mode ==
+# == Standard mode ==
 # Configure and (re)build:
 #    ./build.sh
 # Configure and make clean build:

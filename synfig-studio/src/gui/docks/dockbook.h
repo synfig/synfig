@@ -80,7 +80,7 @@ public:
 
 	bool tab_button_pressed(GdkEventButton* event, Dockable* dockable);
 	void on_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& context, int, int, const Gtk::SelectionData& selection_data, guint, guint time);
-	//! Overide the default handler of the signal Gtk::Notebook::signal_switch_page().
+	//! Override the default handler of the signal Gtk::Notebook::signal_switch_page().
 	//! to do some extra work in case of CanvasView Dockable type
 	/*! \see App::set_selected_canvas_view */
 	void on_switch_page(Gtk::Widget* page, guint page_num);

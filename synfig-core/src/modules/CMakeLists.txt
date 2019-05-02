@@ -40,7 +40,7 @@ set(MODS_ENABLED
     mod_ppm
     mod_svg
     mod_yuv420p
-#     mptr_mplayer - "This code has vulnerabilites"
+#     mptr_mplayer - "This code has vulnerabilities"
 )
 
 ## Magick++ support

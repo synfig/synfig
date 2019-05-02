@@ -113,8 +113,8 @@ Canvas::on_changed()
 Canvas::~Canvas()
 {
 	// we were having a crash where pastecanvas layers were still
-	// refering to a canvas after it had been destroyed;  this code
-	// will stop the pastecanvas layers from refering to the canvas
+	// referring to a canvas after it had been destroyed;  this code
+	// will stop the pastecanvas layers from referring to the canvas
 	// before the canvas is destroyed
 
 	// the set_sub_canvas(0) ends up deleting the parent-child link,
@@ -1610,7 +1610,7 @@ Canvas::show_structure(int i) const
 // #define DEBUG_INVOKE_SVNCR
 
 // this is only ever called from valuenode_dynamiclist.cpp and valuenode_staticlist.cpp
-// the container is a ValueNode_{Static,Dyanmic}List
+// the container is a ValueNode_{Static,Dynamic}List
 // the content is the entry
 void
 Canvas::invoke_signal_value_node_child_removed(etl::handle<ValueNode> container, etl::handle<ValueNode> content)

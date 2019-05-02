@@ -78,7 +78,7 @@ class Widget_Keyframe_List : public Gtk::DrawingArea
 	//! The time of the selected keyframe
 	synfig::Time selected_kf_time;
 
-	//! The time of the selected keyframe during draging
+	//! The time of the selected keyframe during dragging
 	synfig::Time dragging_kf_time;
 
 	//! The Moving handmade tooltip window
@@ -123,7 +123,7 @@ public:
 	bool is_keyframe_selected() const { return selected; }
 	const synfig::Keyframe& get_selected_keyframe() const { return selected_kf; }
 
-	//! Performs the keyframe movement. Returns true if it was sucessful
+	//! Performs the keyframe movement. Returns true if it was successful
 	//! \param[in] delta If false permorm normal move. If true perform delta movement.
 	//! \return true: if success otherwise false
 	bool perform_move_kf(bool delta);

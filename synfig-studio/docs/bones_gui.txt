@@ -14,7 +14,7 @@ PRINCIPLES
    needed. (PEND)
 2) The bones are visible when the user select a skeleton layer.(DONE) When
    the user selects a layer that has a vertex under bone influence then
-   the correspoinding bones are shown too (DONE)
+   the corresponding bones are shown too (DONE)
 
 BASIC USAGE -WORKFLOW
 ---------------------
@@ -84,7 +84,7 @@ blob around the line that connects the Origin(0) and the Tip(0). It can
 be represented by a dashed line like the one I draw in the wiki to explain
 the "distance to a bone": See http://synfig.org/Image:Strength.png. (PEND)
 
-The usage of Strenght will be seen later.
+The usage of Strength will be seen later.
 
 All those ducks are modified by the Normal Tool of synfigstudio by click
 and drag.
@@ -193,8 +193,8 @@ templates to create the new bone tool.
 WEIGHT DUCKS (PEND)
 ------------
 There are weights per vertex and per bone. So the weights can be seen
-form the point of vew of the bone or from the point of view of the vertex.
-The most useful way of see the weigths are form the point of vew of the
+from the point of view of the bone or from the point of view of the vertex.
+The most useful way of see the weights are frpm the point of view of the
 vertex (or bilinepoint) that is bone influenced.
 
 So a proposal for the interface is:
@@ -226,10 +226,10 @@ Remove:
 When the user selects a bone in the skeleton layer can do right click
 and select remove item smart then the bone is removed from the list and
 that DOESN'T DELETE A VALUENODE, it just removed the valuenode
-form the list and keep it alive meanwhile anyone refereces to that
+form the list and keep it alive meanwhile anyone references to that
 valuenode. Even the history can keep a valuenode alive if it is not
 cleaned. So, any other bone that has that bone as parent keeps it as
-parent. It will be alive until any children refereces to it as parent,
+parent. It will be alive until any children references to it as parent,
 there were no history entry of it and it is not referenced in the child
 panel or any other valuenode. (DONE)
 
@@ -260,7 +260,7 @@ WORKFLOW:
 1) The user selects the drawn stuff
 2) The user selects a skeleton layer too.
 3) The user selects a vertex/blinepoint or a group of them
-4) The user does rigth click on a bone and select "Add to Bone Influence"
+4) The user does right click on a bone and select "Add to Bone Influence"
 
 Then the GUI should add the current bone where the right click was done
 to the Bone Weight Pair list of the selected vertices/blinepoints.

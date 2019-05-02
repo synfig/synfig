@@ -171,7 +171,7 @@ print_build_settings() {
     echo "Build jobs: $make_jobs"
     [ ! $synfigstudio_data_prefix == "" ] && echo "Custom data prefix: $synfigstudio_data_prefix"
     
-    # If script was startet with '-p' stop the script here
+    # If script was started with '-p' stop the script here
     if [ $print_build_settings_and_exit == "true" ]
         then
             exit

@@ -70,7 +70,7 @@ For example, to compile for Linux:
 INSTALLATION
 ============
 Install the dumpkeymap executable image in a location mentioned in the PATH
-environment variable.  Typicall locations for executable files are:
+environment variable.  Typical locations for executable files are:
 
     /usr/local/bin
     $(HOME)/bin

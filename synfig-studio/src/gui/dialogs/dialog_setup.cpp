@@ -763,7 +763,7 @@ Dialog_Setup::on_apply_pressed()
 	// Set file toolbar flag
 	App::show_file_toolbar=toggle_show_file_toolbar.get_active();
 
-	//! TODO Create Change mecanism has Class for being used elsewhere
+	//! TODO Create Change mechanism has Class for being used elsewhere
 	// Set the preferred brush path(s)
 	if (pref_modification_flag&CHANGE_BRUSH_PATH)
 	{
@@ -821,8 +821,8 @@ Dialog_Setup::on_apply_pressed()
 
 	if (pref_modification_flag & CHANGE_UI_HANDLE_TOOLTIP)
 	{
-		// Set ui tooltip on widht point
-		App::ui_handle_tooltip_flag  = toggle_handle_tooltip_widthpoint.get_active()?Duck::STRUCT_WIDTHPOINT:Duck::STRUCT_NONE;
+		// Set ui tooltip on width point
+		App::ui_handle_tooltip_flag=toggle_handle_tooltip_widthpoint.get_active()?Duck::STRUCT_WIDTHPOINT:Duck::STRUCT_NONE;
 		// Set ui tooltip on radius
 		App::ui_handle_tooltip_flag |= toggle_handle_tooltip_radius.get_active()?Duck::STRUCT_RADIUS:Duck::STRUCT_NONE;
 		// Set ui tooltip on transformation
@@ -1048,7 +1048,7 @@ Dialog_Setup::refresh()
 	// Refresh the brush path(s)
 	Glib::RefPtr<Gtk::ListStore> liststore = Glib::RefPtr<Gtk::ListStore>::cast_dynamic(
 			listviewtext_brushes_path->get_model());
-	//! Keep "brushes_path" preferences entry for backward compatibilty (15/12 - v1.0.3)
+	//! Keep "brushes_path" preferences entry for backward compatibility (15/12 - v1.0.3)
 	//! Now brush path(s) are hold by input preferences : brush.path_count & brush.path_%d
 	String value;
 	Gtk::TreeIter ui_iter;

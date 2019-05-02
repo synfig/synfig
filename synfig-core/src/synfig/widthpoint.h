@@ -69,7 +69,7 @@ public:
 	void set_position(const Real& x);
 	// gets the normalised position: converts it to be inside [0,1]
 	Real get_norm_position(bool wplistloop)const;
-	// gets the postion inside the lower and upper boundaries
+	// gets the position inside the lower and upper boundaries
 	Real get_bound_position(bool wplistloop)const;
 	// changes the widthpoint's position to be inside [0,1)
 	void normalize(bool loop);

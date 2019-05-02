@@ -89,7 +89,7 @@ public:
 	/*! A new smart_ptr is created with a pointer
 		to a newly allocated object. We need
 		to be explicit with this so we don't
-		accidently have two smart_ptrs for one
+		accidentally have two smart_ptrs for one
 		object -- that would be bad.	*/
 	explicit smart_ptr(value_type* x):obj(x),refcount(x?true:false) {  }
 

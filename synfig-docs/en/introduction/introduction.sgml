@@ -41,10 +41,10 @@
  <para>darco has some fairly major re-implementations and optimizations that 
  he plans to implement that should quite dramatically improve the performance 
  of Synfig on all platforms. The goal is not a 200% speed increase, it is at 
- least a 2000% speed increase. With the optimizations that are planned to be 
- implemented, we will be able to pipeline operations in such a way that this 
- performance improvement can be realized. It should also pave the way to hardware 
- acceleration using todays powerful graphics processors, which should yield 
+ least a 2000% speed increase. With the optimizations that are planned to be
+ implemented, we will be able to pipeline operations in such a way that this
+ performance improvement can be realized. It should also pave the way to hardware
+ acceleration using today's powerful graphics processors, which should yield 
  further performance improvements measurable in orders of magnitude.</para>
 </chapter>
 <!-- Local Variables: -->

@@ -130,7 +130,7 @@ Action::BLinePointTangentSplit::is_candidate(const ParamList &x)
 			ValueNode_RadialComposite::Handle radial_value_node;
 			radial_value_node=ValueNode_RadialComposite::Handle::cast_dynamic(x.find("value_node")->second.get_value_node());
 			if(radial_value_node && radial_value_node->get_type()==type_vector)
-			// value_node is radial composite and vector (user rigth click on a tangent)
+			// value_node is radial composite and vector (user right click on a tangent)
 			{
 				ValueNode_Composite::Handle blinepoint=NULL;
 				std::set<Node*>::iterator iter;
@@ -170,7 +170,7 @@ Action::BLinePointTangentSplit::set_param(const synfig::String& name, const Acti
 		ValueNode_RadialComposite::Handle radial_value_node;
 		radial_value_node=ValueNode_RadialComposite::Handle::cast_dynamic(param.get_value_node());
 		if(radial_value_node && radial_value_node->get_type()==type_vector)
-		// value_node is radial composite and vector (user rigth click on a tangent)
+		// value_node is radial composite and vector (user right click on a tangent)
 		{
 			ValueNode_Composite::Handle blinepoint;
 			std::set<Node*>::iterator iter;
@@ -285,7 +285,7 @@ Action::BLinePointTangentSplitRadius::is_candidate(const ParamList &x)
 			ValueNode_RadialComposite::Handle radial_value_node;
 			radial_value_node=ValueNode_RadialComposite::Handle::cast_dynamic(x.find("value_node")->second.get_value_node());
 			if(radial_value_node && radial_value_node->get_type()==type_vector)
-				// value_node is radial composite and vector (user rigth click on a tangent)
+				// value_node is radial composite and vector (user right click on a tangent)
 			{
 				ValueNode_Composite::Handle blinepoint=NULL;
 				std::set<Node*>::iterator iter;
@@ -324,7 +324,7 @@ Action::BLinePointTangentSplitRadius::set_param(const synfig::String& name, cons
 		ValueNode_RadialComposite::Handle radial_value_node;
 		radial_value_node=ValueNode_RadialComposite::Handle::cast_dynamic(param.get_value_node());
 		if(radial_value_node && radial_value_node->get_type()==type_vector)
-			// value_node is radial composite and vector (user rigth click on a tangent)
+			// value_node is radial composite and vector (user right click on a tangent)
 		{
 			ValueNode_Composite::Handle blinepoint;
 			std::set<Node*>::iterator iter;
@@ -423,7 +423,7 @@ Action::BLinePointTangentSplitAngle::is_candidate(const ParamList &x)
 			ValueNode_RadialComposite::Handle radial_value_node;
 			radial_value_node=ValueNode_RadialComposite::Handle::cast_dynamic(x.find("value_node")->second.get_value_node());
 			if(radial_value_node && radial_value_node->get_type()==type_vector)
-				// value_node is radial composite and vector (user rigth click on a tangent)
+				// value_node is radial composite and vector (user right click on a tangent)
 			{
 				ValueNode_Composite::Handle blinepoint=NULL;
 				std::set<Node*>::iterator iter;
@@ -462,7 +462,7 @@ Action::BLinePointTangentSplitAngle::set_param(const synfig::String& name, const
 		ValueNode_RadialComposite::Handle radial_value_node;
 		radial_value_node=ValueNode_RadialComposite::Handle::cast_dynamic(param.get_value_node());
 		if(radial_value_node && radial_value_node->get_type()==type_vector)
-			// value_node is radial composite and vector (user rigth click on a tangent)
+			// value_node is radial composite and vector (user right click on a tangent)
 		{
 			ValueNode_Composite::Handle blinepoint;
 			std::set<Node*>::iterator iter;

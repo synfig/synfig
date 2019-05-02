@@ -196,7 +196,7 @@ Action::ValueDescBoneLink::prepare()
 		{
 			ValueNode_BoneLink::Handle bone_link_node = ValueNode_BoneLink::Handle::cast_dynamic(value_desc.get_value_node());
 			if (bone_link_node) {
-				// add bone into existant BoneLink
+				// add bone into existent BoneLink
 				Action::Handle action = ValueNodeStaticListInsert::create();
 				action->set_param("canvas", get_canvas());
 				action->set_param("canvas_interface", get_canvas_interface());

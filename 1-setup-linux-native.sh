@@ -223,7 +223,7 @@ elif which pacman >/dev/null; then
     sudo pacman -S --needed --noconfirm $PKG_LIST || true
 
 else
-    echo "WARNING: This build script does not works with package mangement systems other than yum, zypper or apt! You should install dependent packages manually."
+    echo "WARNING: This build script does not works with package management systems other than yum, zypper or apt! You should install dependent packages manually."
     echo "REQUIRED PACKAGES: "
     echo "libpng-devel libjpeg-devel freetype-devel fontconfig-devel atk-devel pango-devel cairo-devel gtk3-devel gettext-devel libxml2-devel libxml++-devel gcc-c++ autoconf automake libtool libtool-ltdl-devel shared-mime-info OpenEXR-devel libmng-devel ImageMagick-c++-devel gtkmm30-devel glibmm24-devel"
     echo ""

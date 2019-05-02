@@ -69,7 +69,7 @@ public:
 	virtual String get_local_name()const;
 	//! Inserts a new entry between the previous found
 	//! dashitem and the one where the action was called
-	//! \param index the index of the entry wher the action is done
+	//! \param index the index of the entry where the action is done
 	//! \param time the time when inserted in animation mode
 	//! \param origin unused. Always is in the middle.
 	//! \return the new List Entry

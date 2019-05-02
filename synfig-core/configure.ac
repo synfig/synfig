@@ -17,7 +17,7 @@ AC_LIBLTDL_CONVENIENCE
 AC_SUBST(INCLTDL)
 AC_SUBST(LIBLTDL)
 
-AC_DEFINE(LT_SCOPE,[extern],[LibLTDL is linked staticly])
+AC_DEFINE(LT_SCOPE,[extern],[LibLTDL is linked statically])
 
 # -- V A R I A B L E S ----------------------------------------
 

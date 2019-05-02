@@ -131,7 +131,7 @@ Layer_Composite::accelerated_render(Context context,Surface *surface,int quality
 	// Sets the blend method to straight. See below
 	surfacelayer->set_blend_method(Color::BLEND_STRAIGHT);
 	// Push this layer on the image. The blending result is only this layer
-	// adn the surface layer. The rest of the context is ignored by the straight
+	// and the surface layer. The rest of the context is ignored by the straight
 	// blend method of surface layer
 	image.push_front(const_cast<synfig::Layer_Composite*>(this));
 

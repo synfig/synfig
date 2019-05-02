@@ -20,7 +20,7 @@
 ** This is an internal header file, included by other ETL headers.
 ** You should not attempt to use it directly.
 **
-** These template functions have not yet been throughly tested,
+** These template functions have not yet been thoroughly tested,
 ** and may be inaccurate or just plain wrong. You have been warned.
 **
 ** ========================================================================= */

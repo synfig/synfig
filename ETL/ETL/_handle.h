@@ -99,7 +99,7 @@ public:
 	}
 
 	//! Decrease reference counter without deletion of object
-	//! Returns \c false if references exeed and object should be deleted
+	//! Returns \c false if references exceed and object should be deleted
 	virtual bool unref_inactive()const
 	{
 		return (bool)(--refcount);
@@ -201,7 +201,7 @@ public:
 	{
 		if(x.get()==obj)
 			return *this;
-		// add referense before detach
+		// add reference before detach
 		pointer xobj(x.get());
 		if(xobj) xobj->ref();
 		detach();

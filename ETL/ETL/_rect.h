@@ -107,7 +107,7 @@ public:
 };
 
 
-//! We wan to do the edge compare test
+//! We want to do the edge compare test
 //!          |-----|
 //!    |------|        intersecting
 //!

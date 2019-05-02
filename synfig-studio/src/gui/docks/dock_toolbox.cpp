@@ -230,7 +230,7 @@ Dock_Toolbox::change_state_(const Smach::state_base *state)
 
 
 /*! \fn Dock_Toolbox::add_state(const Smach::state_base *state)
- *  \brief Add and connect a toogle button to the toolbox defined by a state
+ *  \brief Add and connect a toggle button to the toolbox defined by a state
  *  \param state a const pointer to Smach::state_base
 */
 void
@@ -250,7 +250,7 @@ Dock_Toolbox::add_state(const Smach::state_base *state)
 		stock_item.get_label() ));
 
 	Gtk::AccelKey key;
-	//Have a look to global fonction init_ui_manager() from app.cpp for "accel_path" definition
+	//Have a look to global function init_ui_manager() from app.cpp for "accel_path" definition
 	Gtk::AccelMap::lookup_entry ("<Actions>/action_group_state_manager/state-"+name, key);
 	//Gets the, is exist, accelerator representation for labels
 	Glib::ustring accel_path = !key.is_null() ? key.get_abbrev () :"";

@@ -114,7 +114,7 @@ public:
 	Bone();
 	//!Constructor by origin and tip
 	Bone(const Point &origin, const Point &tip);
-	//!Construtor by origin, legth and parent (default no parent)
+	//!Constructor by origin, length and parent (default no parent)
 	Bone(const String &name, const Point &origin, const Angle &angle, const Real &length, ValueNode_Bone* p=0);
 	//!Wrappers for name_
 	const String& get_name()const {return name_;}
@@ -254,7 +254,7 @@ public:
  *       ValueNode_Bone BoneN
  *
  * To perform the tasks 1), 2), 3) or 4) the ValueNode_Skeletons should perform a seek into the
- * list of bones by its UniqueID value. For example to calcualte the setup matrix it should
+ * list of bones by its UniqueID value. For example to calculate the setup matrix it should
  * reconstruct the bone hierarchy from the current bone to the root parent. Due to that now,
  * it is only stored the UniqueID of the parent (and not a pointer), it is the skeletons veluenode
  * who have to perform all the job: find all the parents and multiply in the correct order (depth) its

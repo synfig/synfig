@@ -87,7 +87,7 @@ namespace {
 		}
 
 
-		// transfrom func generator
+		// transform func generator
 
 		template<int channel, int mode_r, int mode_g, int mode_b, int mode_a, int mode_o>
 		static ColorMatrix::transform_func_ptr get_transform_func_crgbao()

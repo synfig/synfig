@@ -14,7 +14,7 @@ the layer(s) will still remain selected in the Layers Dialog. This is
 normal. Anything you create in the bline tool will be inserted above the
 currently selected layer. Keep in mind that if you want to insert a shape
 somewhere, you should select where you want to insert it before you go
-into the Bline tool-changing the selection afterward will automaticly
+into the Bline tool-changing the selection afterward will automatically
 swap you back to the normal tool.</para>
   <para>If you take a look at the tool options dialog, you'll notice that the
 first things you see are three checkboxes. Make sure that only "Fill"

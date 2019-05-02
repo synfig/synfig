@@ -125,7 +125,7 @@ Action::ValueNodeDynamicListLoop::set_param(const synfig::String& name, const Ac
 		value_node=ValueNode_DynamicList::Handle::cast_dynamic(value_desc.get_parent_value_node());
 		if (!value_node)
 		{
-			// we didn't found a dynamic list, let's check wheter the parent is a composite
+			// we didn't found a dynamic list, let's check whether the parent is a composite
 			if(ValueNode_Composite::Handle::cast_dynamic(value_desc.get_parent_value_node()))
 			{
 				ValueNode_Composite::Handle compo(ValueNode_Composite::Handle::cast_dynamic(value_desc.get_parent_value_node()));

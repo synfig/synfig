@@ -133,7 +133,7 @@ PluginLauncher::execute( std::string script_path, const std::string& /* synfig_r
 {
 	String command = "";
 	
-	// Path to python binary can be overriden
+	// Path to python binary can be overridden
 	// with SYNFIG_PYTHON_BINARY env variable:
 	char* custom_python_binary=getenv("SYNFIG_PYTHON_BINARY");
 	if(custom_python_binary) {

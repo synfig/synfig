@@ -279,7 +279,7 @@ public:
 
 	//! Stage 1/4 of add_layer_to. Create new layer and assign canvas
 	synfig::Layer::Handle layer_create(const synfig::String &id, const synfig::Canvas::Handle &canvas);
-	//! Stage 2/4 of add_layer_to. Apply defaut parameters (canvas should be assigned before)
+	//! Stage 2/4 of add_layer_to. Apply default parameters (canvas should be assigned before)
 	void layer_set_defaults(const synfig::Layer::Handle &layer);
 	//! Stage 3/4 of add_layer_to. Perform action to add the layer
 	bool layer_add_action(const synfig::Layer::Handle &layer);

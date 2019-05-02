@@ -62,7 +62,7 @@ bool
 mplayer_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &renddesc, synfig::Time time, synfig::ProgressCallback *callback)
 {
 
-#error This code has vulnerabilites: arbitrary shell command execution and tmpfile issues
+#error This code has vulnerabilities: arbitrary shell command execution and tmpfile issues
 
 	int ret;
 	ret=system(

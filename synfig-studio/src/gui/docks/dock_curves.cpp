@@ -95,7 +95,7 @@ _curve_selection_changed(Gtk::TreeView* param_tree_view,Widget_Curves* curves)
 void
 Dock_Curves::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
 {
-	//! Curves is registred thrue CanvasView::set_ext_widget
+	//! Curves is registered thru CanvasView::set_ext_widget
 	//! and will be deleted during CanvasView::~CanvasView()
 	//! \see CanvasView::set_ext_widget
 	//! \see CanvasView::~CanvasView

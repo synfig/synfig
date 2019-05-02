@@ -95,7 +95,7 @@ Waypoint::Waypoint():
 void
 Waypoint::set_value(const ValueBase &x)
 {
-	//! If the value node is not set and we are seting the value
+	//! If the value node is not set and we are setting the value
 	//! of an angle, then set both interpolation to linear... why?
 	if(!value_node && x.get_type()==type_angle)
 		after=before=INTERPOLATION_LINEAR;
@@ -109,7 +109,7 @@ Waypoint::set_value_node(const etl::handle<ValueNode> &x)
 
 	// printf("%s:%d Waypoint::set_value_node(%lx) = %lx (%s)\n", __FILE__, __LINE__, uintptr_t(this), uintptr_t(x), x->get_string().c_str());
 
-	//! If the value node is not set and we are seting the value
+	//! If the value node is not set and we are setting the value
 	//! of an angle, then set both interpolation to linear... why?
 
 	if(!value_node && x->get_type()==type_angle)

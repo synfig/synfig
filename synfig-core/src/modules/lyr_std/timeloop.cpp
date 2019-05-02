@@ -148,7 +148,7 @@ Layer_TimeLoop::get_param_vocab()const
 
 	ret.push_back(ParamDesc("duration")
 		.set_local_name(_("Duration"))
-		.set_description(_("Lenght of the loop"))
+		.set_description(_("Length of the loop"))
 		.set_static(true)
 	);
 

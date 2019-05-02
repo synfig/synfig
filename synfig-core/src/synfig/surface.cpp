@@ -335,12 +335,12 @@ CairoSurface::set_wh(int w, int h, int /*pitch*/)
 		cairo_surface_destroy(cs_image_);
 	// create a new cairo_surface image type
 	cs_image_=cairo_image_surface_create(CAIRO_FORMAT_ARGB32, w, h);
-	// check wheter the new cairo surface is sane
+	// check whether the new cairo surface is sane
 	if(!cairo_surface_status(cs_image_))
 	{
 		int stride(cairo_image_surface_get_stride(cs_image_));
 		unsigned char* data(cairo_image_surface_get_data(cs_image_));
-		// pass the infromation to the etl::surface to be used directly.
+		// pass the information to the etl::surface to be used directly.
 		set_wh(w, h, data, stride);
 	}
 	else

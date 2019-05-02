@@ -3,7 +3,7 @@
 <sect2 id="using">
 <title>Using</title> 
 <para> However, there is still a problem: The gradient still covers the whole 
-canvas althought we wanted it to be restricted on the rectangle. To do so, 
+canvas although we wanted it to be restricted on the rectangle. To do so, 
 activate the gradient layer in the Layer tab. Now go to the Params Dialog (by 
 default a tab in the Params-Children-Keyframes window), and search the attribute
 called 'Blend Method'. Double-click the entry and select 'Onto' from the

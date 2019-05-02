@@ -6,7 +6,7 @@
 tool from the Synfig Toolbox, and click into the canvas once. You should note
 that another layer was added in the Layers Dialog called 'Gradient'. This is 
 nothing special. If you see no gradient but just a plain color, pick the normal
-tool, click into the canvas to acivate the gradient's ducks. You need to grab 
+tool, click into the canvas to activate the gradient's ducks. You need to grab 
 the one you see and move it a bit until a gradient appears.</para>
 
 <para>You now have a gradient but it is not what you wanted: It spreads the 

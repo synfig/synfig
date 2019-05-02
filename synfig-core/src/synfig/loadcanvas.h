@@ -66,7 +66,7 @@ class CanvasParser
 	*/
 
 private:
-	//! Maximun number of allowed warnings before fatal error is thrown
+	//! Maximum number of allowed warnings before fatal error is thrown
 	int max_warnings_;
 	//! Total number of warning during canvas parsing
     int total_warnings_;

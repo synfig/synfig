@@ -91,7 +91,7 @@ Action::ValueNodeConstUnSetStatic::is_candidate(const ParamList &x)
 		value_node = value_desc.get_value_node();
 	else
 		value_node = x.find("value_node")->second.get_value_node();
-	// Don't allow to unset static to lower and upper boundaries of the WidhtPoint
+	// Don't allow to unset static to lower and upper boundaries of the WidthPoint
 	if(value_desc.parent_is_linkable_value_node()
 		&& value_desc.get_parent_value_node()->get_name()=="composite"
 		&& value_desc.get_parent_value_node()->get_type()==type_width_point

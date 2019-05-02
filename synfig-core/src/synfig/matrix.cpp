@@ -267,7 +267,7 @@ Matrix3::get_inverted()const
 		// result of transformation is not 3d
 		// all points always transforms into one plane (2d), or line (1d), or dot (0d)
 
-		// we cannot do thre real back transform, but we will try
+		// we cannot do the real back transform, but we will try
 		// to make valid matrix for X-axis only or for Y-axis only
 
 		// try to make back transform for X-axis

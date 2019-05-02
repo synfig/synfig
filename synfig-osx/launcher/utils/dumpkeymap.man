@@ -159,7 +159,7 @@
 //-----------------------------------------------------------------------------
 ..
 .SH NAME
-dumpkeymap \- Dianostic dump of a .keymapping file
+dumpkeymap \- Diagnostic dump of a .keymapping file
 .SH SYNOPSIS
 .B dumpkeymap
 .RI [ options "] [-] [" file "...]"
