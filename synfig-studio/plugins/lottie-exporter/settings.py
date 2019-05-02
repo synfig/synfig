@@ -24,6 +24,10 @@ DEFAULT_OPACITY = 100
 GAMMA = 2.2
 PIX_PER_UNIT = 0
 TANGENT_FACTOR = 3.0
+IN_TANGENT_X = 0.58
+IN_TANGENT_Y = 1
+OUT_TANGENT_X = 0.42
+OUT_TANGENT_Y = 0
 
 def init():
     # Final converted dictionary

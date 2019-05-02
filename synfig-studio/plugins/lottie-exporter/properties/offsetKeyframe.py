@@ -59,12 +59,12 @@ def clamped_vector(p1, p2, p3, animated, i, lottie, ease):
     return Vector(clamped_tangent(p1.x, p2.x, p3.x, animated, i), clamped_tangent(p1.y, p2.y, p3.y, animated, i))
 
 def ease_out(lottie):
-    lottie["o"]["x"] = 0.42
-    lottie["o"]["y"] = 0
+    lottie["o"]["x"] = settings.OUT_TANGENT_X 
+    lottie["o"]["y"] = settings.OUT_TANGENT_Y
 
 def ease_in(lottie):
-    lottie["i"]["x"] = 0.58
-    lottie["i"]["y"] = 1
+    lottie["i"]["x"] = settings.IN_TANGENT_X
+    lottie["i"]["y"] = settings.IN_TANGENT_Y
 
 def gen_properties_offset_keyframe(curve_list, animated, i):
     """
@@ -189,8 +189,8 @@ def gen_properties_offset_keyframe(curve_list, animated, i):
         curve_list[-2]["ti"] = [-item/settings.TANGENT_FACTOR for item in curve_list[-2]["ti"]]
         curve_list[-2]["ti"][1] = -curve_list[-2]["ti"][1]
         if cur_get_after == "halt":
-            curve_list[-2]["i"]["x"] = 0.7
-            curve_list[-2]["i"]["y"] = 1
+            curve_list[-2]["i"]["x"] = settings.IN_TANGENT_X
+            curve_list[-2]["i"]["y"] = settings.IN_TANGENT_Y
 
     # Lottie and synfig use different tangents SEE DOCUMENTATION
     lottie["ti"] = [-item for item in lottie["ti"]]
