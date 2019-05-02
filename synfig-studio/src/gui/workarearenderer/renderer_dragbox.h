@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file renderer_dragbox.h
-**	\brief Renderer_Dragbox classe is used to display in the workarea
+**	\brief Renderer_Dragbox class is used to display in the workarea
 **  the interactive selection box, and select workarea objects (actually handles)
 **  accordingly to the shift/control modifier keys.
 **

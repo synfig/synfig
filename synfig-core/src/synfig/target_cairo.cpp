@@ -165,7 +165,7 @@ synfig::Target_Cairo::render(ProgressCallback *cb)
 				else
 				{
 					// Put the surface we renderer onto the target's device.
-					// and destrois cairo_surface_t
+					// and destroys cairo_surface_t
 					if(!put_surface(cairo_surface_reference(surface), cb))
 					{
 						if(cb)cb->error(_("Unable to put surface on target"));

@@ -158,7 +158,7 @@ KeyframeActionManager::on_keyframe_properties()
 }
 
 /*! \fn KeyframeActionManager::on_keyframe_toggle()
-**	\brief Signal handler for selected keyframe toogle
+**	\brief Signal handler for selected keyframe toggle
 */
 void
 KeyframeActionManager::on_keyframe_toggle()
@@ -259,7 +259,7 @@ KeyframeActionManager::refresh()
 	Glib::RefPtr<Gtk::Action> action_kf_toggle(Gtk::Action::create("keyframe-toggle", _("Toggle Keyframe"), _("Toggle Keyframe")));
 	action_group_->add(action_kf_toggle,sigc::mem_fun(*this,&KeyframeActionManager::on_keyframe_toggle));
 
-	// Keyframe description defintion
+	// Keyframe description definition
 	Glib::RefPtr<Gtk::Action> action_kf_description(Gtk::Action::create("keyframe-description-set", _("Set Keyframe Description"), _("Set Keyframe Description")));
 	action_group_->add(action_kf_description,sigc::mem_fun(*this,&KeyframeActionManager::on_keyframe_description_set));
 

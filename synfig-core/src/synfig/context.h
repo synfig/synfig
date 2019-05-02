@@ -95,7 +95,7 @@ public:
 	Real z_range_position;
 	//! Defines the depth of the range of the Z_Depth visibility
 	Real z_range_depth;
-	//! Layers with z_Depth inside transition are partially visibile
+	//! Layers with z_Depth inside transition are partially visible
 	Real z_range_blur;
 
 	explicit ContextParams(bool render_excluded_contexts = false):

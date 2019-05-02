@@ -143,7 +143,7 @@ jpeg_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddes
 	/* Now we can initialize the JPEG decompression object. */
 	jpeg_create_decompress(&cinfo);
 
-	/* Step 2: specify data source (eg, from memory thrue a String) */
+	/* Step 2: specify data source (eg, from memory thru a String) */
 
 	std::ostringstream tmp;
 	tmp << stream->rdbuf();

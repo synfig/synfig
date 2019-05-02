@@ -200,7 +200,7 @@ public:
 	//! Set of categories of optimizers which should be processed again when this optimizer applied,
 	//! see Optimizer::CATEGORY_XXX enumerations
 	Category affects_to;
-	//! Mode determines what shoud do optimization system when this optimizer applied,
+	//! Mode determines what should do optimization system when this optimizer applied,
 	//! see Optimizer::MODE_XXXX enumerations
 	Mode mode;
 	//! Optimizer uses for list of tasks

@@ -52,9 +52,9 @@ using namespace studio;
 /* === G L O B A L S ======================================================= */
 //! Allowed video codecs
 /*! \warning This variable is linked to allowed_video_codecs_description,
- *  if you change this you must change the other acordingly.
+ *  if you change this you must change the other accordingly.
  *  \warning These codecs are linked to the filename extensions for
- *  mod_ffmpeg. If you change this you must change the others acordingly.
+ *  mod_ffmpeg. If you change this you must change the others accordingly.
  */
 const char* allowed_video_codecs[] =
 {
@@ -65,7 +65,7 @@ const char* allowed_video_codecs[] =
 
 //! Allowed video codecs description.
 /*! \warning This variable is linked to allowed_video_codecs,
- *  if you change this you must change the other acordingly.
+ *  if you change this you must change the other accordingly.
  */
 const char* allowed_video_codecs_description[] =
 {
@@ -130,7 +130,7 @@ Dialog_FFmpegParam::Dialog_FFmpegParam(Gtk::Window &parent):
 void
 Dialog_FFmpegParam::init()
 {
-	// By defaut, set the active text to the Custom Video Codec
+	// By default, set the active text to the Custom Video Codec
 	vcodec->set_active_text(CUSTOM_VCODEC_DESCRIPTION);
 	customvcodec->set_text(CUSTOM_VCODEC);
 	//Compare the passed vcodec to the available and set it active if found

@@ -143,7 +143,7 @@ public:
 	//!Operator asignation for ValueBase classes. Does a exact copy of \x
 	ValueBase& operator=(const ValueBase& x);
 
-	//! Eqaul than operator. Segment, Gradient and Bline Points cannot be compared.
+	//! Equal than operator. Segment, Gradient and Bline Points cannot be compared.
 	bool operator==(const ValueBase& rhs)const;
 
 	//! Not equal than operator.

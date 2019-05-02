@@ -175,7 +175,7 @@ Advanced_Outline::sync_vfunc()
 		vector<DashItem> dilist(dilist_.get_list_of(DashItem()));
 		// This is the list of widthpoints created for the dashed outlines
 		vector<WidthPoint> dwplist;
-		// This is the temporarly filtered (removed unused) list of dash widthpoints
+		// This is the temporarily filtered (removed unused) list of dash widthpoints
 		// it is a partial filtered of the previous dwplist and merged with wplist
 		// only allowing visible widthpoints.
 		vector<WidthPoint> fdwplist;
@@ -212,7 +212,7 @@ Advanced_Outline::sync_vfunc()
 		// last tangent: used to remember second tangent of the previous bezier
 		// when doing the cusp at the first blinepoint of the current bezier
 		Vector last_tangent;
-		// Bezier size is differnt depending on whether the bline is looped or not.
+		// Bezier size is different depending on whether the bline is looped or not.
 		// For one single blinepoint, bezier size is always 1.0
 		Real bezier_size = 1.0/(blineloop?bline_size:(bline_size==1?1.0:(bline_size-1)));
 		const vector<BLinePoint>::const_iterator bend(bline.end());
@@ -296,7 +296,7 @@ Advanced_Outline::sync_vfunc()
 				if(wpfront.get_side_type_before() == WidthPoint::TYPE_INTERPOLATE && wpfront.get_position()!=0.0)
 					// Add a fake widthpoint at position 0.0
 					wplist.push_back(WidthPoint(0.0, wpfront.get_width() , start_tip_, WidthPoint::TYPE_INTERPOLATE));
-				// if last widhtpoint interpolation after is INTERPOLATE and it is not exactly at 1.0
+				// if last widthpoint interpolation after is INTERPOLATE and it is not exactly at 1.0
 				if(wpback.get_side_type_after() == WidthPoint::TYPE_INTERPOLATE && wpback.get_position()!=1.0)
 				// Add a fake withpoint at position 1.0
 					wplist.push_back(WidthPoint(1.0, wpback.get_width() , WidthPoint::TYPE_INTERPOLATE, end_tip_));
@@ -370,7 +370,7 @@ Advanced_Outline::sync_vfunc()
 		// i.e.: where in the bline, and where in wplist so we could go
 		// faster or slower when needed.
 		Real step(1.0/SAMPLES/bline_size);
-		//////////////////// prepare the widhtpoints from the dash list
+		//////////////////// prepare the widthpoints from the dash list
 		if(dash_enabled)
 		{
 			Real blinelength(bline_length(bline, blineloop, NULL));
@@ -411,7 +411,7 @@ Advanced_Outline::sync_vfunc()
 						if(diter==dilist.end())
 							diter=dilist.begin();
 					};
-					// Correct the two last widthpoints triming its position to be <= 1.0
+					// Correct the two last widthpoints trimming its position to be <= 1.0
 					if(inserted_to_blinelength)
 					{
 						after=dwplist.back();
@@ -440,7 +440,7 @@ Advanced_Outline::sync_vfunc()
 					}
 					int inserted_to_zero(0);
 					//
-					// Now insert the widhtpoints from Dash Offset to 0.0
+					// Now insert the widthpoints from Dash Offset to 0.0
 					dpos=dash_offset>=0?dash_offset:dashes_length+dash_offset;;
 					while(dpos > 0.0)
 					{
@@ -459,7 +459,7 @@ Advanced_Outline::sync_vfunc()
 						if(rditer==dilist.rend())
 							rditer=dilist.rbegin();
 					};
-					// Correct the two first widthpoints triming its position to be >= 0.0
+					// Correct the two first widthpoints trimming its position to be >= 0.0
 					if(inserted_to_zero)
 					{
 						before=dwplist.front();
@@ -581,7 +581,7 @@ Advanced_Outline::sync_vfunc()
 		if(dash_enabled)
 		{
 			// ... replace the original widthpoint list
-			// with the filtered one, inlcuding the visible dash withpoints and
+			// with the filtered one, including the visible dash withpoints and
 			// the visible regular widthpoints.
 			wplist.assign(fdwplist.begin(), fdwplist.end());
 			// sort again the wplist
@@ -702,7 +702,7 @@ Advanced_Outline::sync_vfunc()
 				first_tangent=iter_t;
 				first=false;
 			}
-			// get the position of the next widhtpoint.
+			// get the position of the next widthpoint.
 			// Remember that it is the first widthpoint the first time
 			// code passes by here.
 			Real wnext_pos(wnext->get_position());
@@ -805,12 +805,12 @@ Advanced_Outline::sync_vfunc()
 					// widthpoint in the list, if the current one has not
 					//  interpolate side after the interpolated width is zero.
 					// see synfig::interpolate_width
-					// This modification fixes bad render when first widht
-					// point is not interpolate after and next widhtpoint is
-					//  interpolate before. Noticiable for the FLAT case
+					// This modification fixes bad render when first width
+					// point is not interpolate after and next widthpoint is
+					//  interpolate before. Noticeable for the FLAT case
 					// or when the width is smaller than the step on the bezier.
 					ipos=ipos+EPSILON;
-					// If we have just done a tip width side tipe after not interpolate
+					// If we have just done a tip width side type after not interpolate
 					if(witer->get_side_type_after()!=WidthPoint::TYPE_INTERPOLATE)
 						done_tip=true;
 					else
@@ -875,7 +875,7 @@ Advanced_Outline::sync_vfunc()
 			// If we stopped on an intermediate blinepoint (middle corner=true)...
 			if(middle_corner==true)
 			{
-				// ... do cusp at ipos if tangents are splitted
+				// ... do cusp at ipos if tangents are split
 				// Notice that if we are in the second blinepoint
 				// for the last bezier, we will be over a widthpoint
 				// artificially inserted, so here we only insert cusps

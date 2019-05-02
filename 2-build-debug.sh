@@ -10,14 +10,14 @@
 #
 # = Examples: =
 #
-# == Standart mode ==
+# == Standard mode ==
 # Configure and (re)build:
 #    ./build.sh
 # Configure and make clean build:
 #    ./build.sh all full
 # Quick rebuild (without configure):
 #    ./build.sh all make
-# Quick rebuild od synfig-core (without configure):
+# Quick rebuild of synfig-core (without configure):
 #    ./build.sh core make
 
 set -e

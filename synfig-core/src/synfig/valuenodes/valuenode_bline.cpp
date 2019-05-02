@@ -338,7 +338,7 @@ synfig::std_to_hom(const ValueBase &bline, Real pos, bool index_loop, bool bline
 							blinepoint0.get_tangent2(), blinepoint1.get_tangent1());
 	// add the distance on the bezier we are on.
 	pl+=curve.find_distance(0.0, pos*size - from_vertex);
-	// and return the homogenous position
+	// and return the homogeneous position
 	return int_pos+pl/tl-one;
 }
 
@@ -408,12 +408,12 @@ synfig::hom_to_std(const ValueBase &bline, Real pos, bool index_loop, bool bline
 	blinepoint1 = *next;
 	etl::hermite<Vector> curve(blinepoint0.get_vertex(),   blinepoint1.get_vertex(),
 							blinepoint0.get_tangent2(), blinepoint1.get_tangent1());
-	// Find the solution to which is the standard postion which matches the current
-	// homogenous position
+	// Find the solution to which is the standard position which matches the current
+	// homogeneous position
 	// Secant method: http://en.wikipedia.org/wiki/Secant_method
 	Real sn(0.0); // the standard position on current bezier
 	Real sn1(0.0), sn2(1.0);
-	Real t0((mpl-pl)/bl); // the homogenous position on the current bezier
+	Real t0((mpl-pl)/bl); // the homogeneous position on the current bezier
 	int iterations=0;
 	int max_iterations=100;
 	Real max_error(0.00001);

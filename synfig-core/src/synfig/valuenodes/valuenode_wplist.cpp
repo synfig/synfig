@@ -84,7 +84,7 @@ synfig::convert_bline_to_wplist(const ValueBase& bline)
 	// If the bline is not looped then make the cups type rounded for the
 	// first and last width points.
 	// In the future when this function is used to convert old blines to
-	// new wlines the end and start cups should be readed from the oultline
+	// new wlines the end and start cups should be read from the outline
 	// layer
 	if(!bline.get_loop())
 	{
@@ -329,7 +329,7 @@ ValueNode_WPList::operator()(Time t)const
 			Real curr_width(curr.get_width());
 			// linear interpolation by amount
 			curr.set_width(i_width*(1.0-amount)+(curr_width)*amount);
-			// now insert the calculated width point into the widht list
+			// now insert the calculated width point into the width list
 			ret_list.push_back(curr);
 		}
 	}

@@ -46,7 +46,7 @@ using namespace synfig;
 
 //PARSER PREFERENCES
 
-//Seperate transformations: apply transformations on a per-layer basis, rather than on canvases
+//Separate transformations: apply transformations on a per-layer basis, rather than on canvases
 #define SVG_SEP_TRANSFORMS 1
 
 //Resolve BLine transformations: resolve transformations instead of creating transformation layers
@@ -1203,7 +1203,7 @@ Svg_parser::parser_radialGradient(const xmlpp::Node* node){
 
 		std::list<ColorStop*> *stops=NULL;
 		if(!link.empty()){
-			//inkscape always use link, i dont need parser stops here, but it's posible
+			//inkscape always use link, i don't need parser stops here, but it's possible
 			stops=find_colorStop (link);
 		}
 		if(stops)

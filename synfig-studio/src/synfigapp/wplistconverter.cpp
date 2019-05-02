@@ -109,7 +109,7 @@ WPListConverter::operator()(std::list<synfig::WidthPoint> &wp_out, const std::li
 	ek2.resize(n);
 	// Initially I insert all widthpoints with a dash set to true
 	// Why?: dash=true means that the widthpoint has to be discarded later
-	// Only setting dash to false will validate the widhtpoint based on the
+	// Only setting dash to false will validate the widthpoint based on the
 	// error rules.
 	for(i=0; i<n; i++)
 		work_out[i]=WidthPoint(norm_distances[i], widths[i], WidthPoint::TYPE_INTERPOLATE, WidthPoint::TYPE_INTERPOLATE, true);

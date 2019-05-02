@@ -58,7 +58,7 @@ public:
 private:
 	//! Parameter: (Origin) Position offset
 	ValueBase param_origin;
-	//! Parameter: (Transfromation) Position, rotation and scale of the paste canvas layer
+	//! Parameter: (Transformation) Position, rotation and scale of the paste canvas layer
 	ValueBase param_transformation;
 	//! Parameter: (etl::loose_handle<synfig::Canvas>) The canvas parameter
 	etl::loose_handle<synfig::Canvas> sub_canvas;

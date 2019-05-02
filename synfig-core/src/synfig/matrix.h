@@ -104,13 +104,13 @@ public:
 	//! @return A matrix reference filled with the sx, sy values
 	Matrix2& set_scale(const value_type &sx, const value_type &sy);
 
-	//!set_scale member fucntion. Sets a scale matrix
+	//!set_scale member function. Sets a scale matrix
 	//! @param sxy Scale by X and Y axis
 	//! @return A matrix reference filled with the sxy values
 	Matrix2& set_scale(const value_type &sxy)
 		{ return set_scale(sxy, sxy); }
 
-	//!set_scale member fucntion. Sets a scale matrix
+	//!set_scale member function. Sets a scale matrix
 	//! @param s Vector that defines the scale
 	//! @return A matrix reference filled with the proper scale parameters
 	Matrix2& set_scale(const Vector &s)
@@ -144,7 +144,7 @@ public:
 
 	//! operator*=. Multiplication and assignment of one matrix by a scalar
 	//! @param rhs the number to multiply by
-	//! @return the modifed resulting matrix
+	//! @return the modified resulting matrix
 	Matrix2& operator*=(const value_type &rhs);
 
 	//! operator+=. Sum and assignment of two matrixes
@@ -280,13 +280,13 @@ public:
 	//! @return A matrix reference filled with the sx, sy values
 	Matrix3& set_scale(const value_type &sx, const value_type &sy);
 
-	//!set_scale member fucntion. Sets a scale matrix
+	//!set_scale member function. Sets a scale matrix
 	//! @param sxy Scale by X and Y axis
 	//! @return A matrix reference filled with the sxy values
 	Matrix3& set_scale(const value_type &sxy)
 		{ return set_scale(sxy, sxy); }
 
-	//!set_scale member fucntion. Sets a scale matrix
+	//!set_scale member function. Sets a scale matrix
 	//! @param s Vector that defines the scale
 	//! @return A matrix reference filled with the proper scale parameters
 	Matrix3& set_scale(const Vector &s)
@@ -337,7 +337,7 @@ public:
 
 	//! operator*=. Multiplication and assignment of one matrix by a scalar
 	//! @param rhs the number to multiply by
-	//! @return the modifed resulting matrix
+	//! @return the modified resulting matrix
 	Matrix3& operator*=(const value_type &rhs);
 
 	//! operator+=. Sum and assignment of two matrixes

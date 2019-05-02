@@ -856,7 +856,7 @@ void SynfigCommandLineParser::print_target_video_codecs_help() const
 
 #ifdef _DEBUG
 
-// DEBUG auxiliar functions
+// DEBUG auxiliary functions
 void guid_test()
 {
 	std::cout << "GUID Test" << std::endl;

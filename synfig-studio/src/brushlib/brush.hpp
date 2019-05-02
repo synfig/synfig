@@ -151,13 +151,13 @@ private:
     // precalculate stuff that does not change dynamically
 
     // Precalculate how the physical speed will be mapped to the speed input value.
-    // The forumla for this mapping is:
+    // The formula for this mapping is:
     //
     // y = log(gamma+x)*m + q;
     //
     // x: the physical speed (pixels per basic dab radius)
     // y: the speed input that will be reported
-    // gamma: parameter set by ths user (small means a logarithmic mapping, big linear)
+    // gamma: parameter set by this user (small means a logarithmic mapping, big linear)
     // m, q: parameters to scale and translate the curve
     //
     // The code below calculates m and q given gamma and two hardcoded constraints.
@@ -342,7 +342,7 @@ private:
     if (states[STATE_ACTUAL_RADIUS] < ACTUAL_RADIUS_MIN) states[STATE_ACTUAL_RADIUS] = ACTUAL_RADIUS_MIN;
     if (states[STATE_ACTUAL_RADIUS] > ACTUAL_RADIUS_MAX) states[STATE_ACTUAL_RADIUS] = ACTUAL_RADIUS_MAX;
 
-    // aspect ratio (needs to be caluclated here because it can affect the dab spacing)
+    // aspect ratio (needs to be calculated here because it can affect the dab spacing)
     states[STATE_ACTUAL_ELLIPTICAL_DAB_RATIO] = settings_value[BRUSH_ELLIPTICAL_DAB_RATIO];
     states[STATE_ACTUAL_ELLIPTICAL_DAB_ANGLE] = settings_value[BRUSH_ELLIPTICAL_DAB_ANGLE];
   }
@@ -508,7 +508,7 @@ private:
 
     // HSL color change
     if (settings_value[BRUSH_CHANGE_COLOR_L] || settings_value[BRUSH_CHANGE_COLOR_HSL_S]) {
-      // (calculating way too much here, can be optimized if neccessary)
+      // (calculating way too much here, can be optimized if necessary)
       // this function will CLAMP the inputs
       hsv_to_rgb_float (&color_h, &color_s, &color_v);
       rgb_to_hsl_float (&color_h, &color_s, &color_v);
@@ -686,7 +686,7 @@ public:
         TODO:
         if (dist_todo > 300) {
         // this happens quite often, eg when moving the cursor back into the window
-        // FIXME: bad to hardcode a distance treshold here - might look at zoomed image
+        // FIXME: bad to hardcode a distance threshold here - might look at zoomed image
         //        better detect leaving/entering the window and reset then.
         g_print ("Warning: NOT drawing %f dabs.\n", dist_todo);
         g_print ("dtime=%f, dx=%f\n", dtime, x-states[STATE_X]);
@@ -813,7 +813,7 @@ public:
       } else {
         // Usually we have pressure==0 here. But some brushes can paint
         // nothing at full pressure (eg gappy lines, or a stroke that
-        // fades out). In either case this is the prefered moment to split.
+        // fades out). In either case this is the preferred moment to split.
         if (stroke_total_painting_time+stroke_current_idling_time > 0.9 + 5*pressure) {
           return true;
         }

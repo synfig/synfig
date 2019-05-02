@@ -55,12 +55,12 @@ update_languages_inc() {
             NAME_MAP[$CODE]="$NAME"
             COMMENT_MAP[$CODE]="$COMMENT"
         else
-            # write all unknown rows to begining of file
+            # write all unknown rows to beginning of file
             echo "$LINE" >> "$TMPFILE"
         fi
     done < "$LANGUAGES_FILE"
 
-    # fit the colums to make beautifulest table in the world
+    # fit the columns to make beautifulest table in the world
     local CODE_LEN=0
     local NAME_LEN=0
     for i in ${!CODE_MAP[@]}; do

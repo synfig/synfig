@@ -206,7 +206,7 @@ studio::Instance::run_plugin(std::string plugin_path)
 {
 	handle<synfigapp::UIInterface> uim = this->find_canvas_view(this->get_canvas())->get_ui_interface();
 
-	string message = strprintf(_("Do you realy want to run plugin for file \"%s\"?" ),
+	string message = strprintf(_("Do you really want to run plugin for file \"%s\"?" ),
 				this->get_canvas()->get_name().c_str());
 
 	string details = strprintf(_("This operation cannot be undone and all undo history will be cleared."));

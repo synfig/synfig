@@ -116,7 +116,7 @@ Action::ValueDescConvert::is_candidate(const ParamList &x)
 		ValueDesc value_desc=x.find("value_desc")->second.get_value_desc();
 		if(!value_desc)
 			return false;
-		// Don't allow to export lower and upper boundaries of the WidhtPoint
+		// Don't allow to export lower and upper boundaries of the WidthPoint
 		if(value_desc.parent_is_linkable_value_node()
 			&& value_desc.get_parent_value_node()->get_name()=="composite"
 			&& value_desc.get_parent_value_node()->get_type()==type_width_point

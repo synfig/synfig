@@ -79,7 +79,7 @@ public:
 	virtual bool is_solid_color()const { return param_amount.get(Real())==1.0f && param_blend_method.get(int())==Color::BLEND_STRAIGHT; }
 	//! Returns true if the amount is zero.
 	bool is_disabled()const { return param_amount.get(Real())==0.0f; }
-	//! Gets the parameter vocabulary. To be overrided by the derived.
+	//! Gets the parameter vocabulary. To be overridden by the derived.
 	virtual Vocab get_param_vocab()const;
 	//! Sets the value for the given parameter.
 	virtual bool set_param(const String &param, const ValueBase &value);

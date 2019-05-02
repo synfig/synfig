@@ -1,5 +1,5 @@
 #! /bin/csh -ef
-# this file was orignally distributed by Apple in the Developer Tools package 
+# this file was originally distributed by Apple in the Developer Tools package 
 #it is distributed under the Apple Open Source License
 set version=0.2
 set prog = `/usr/bin/basename $0`
@@ -76,7 +76,7 @@ while ( $#argv > 0 )
 		breaksw
 	    endif
 	case -traditional:
-            echo useing standard tar
+            echo using standard tar
 	    set usetar
             unset usegnutar
 	    unset usepax

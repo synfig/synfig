@@ -16,7 +16,7 @@ There are some solutions to solve that:
 
 
 
-1) PROPOSAL FOR TANGENTS 'CALCULATED' BASED ON NEIGBOUR VERTICES
+1) PROPOSAL FOR TANGENTS 'CALCULATED' BASED ON NEIGHBOR VERTICES
 ================================================================
 
 	param						convert type					value type
@@ -59,7 +59,7 @@ global position of the tangent:
 TG=V+T
 TG'=V'+T'
 
-T'=TG'-V' = (V+T)' -V' where ' means tranformed by bones.
+T'=TG'-V' = (V+T)' -V' where ' means transformed by bones.
 
 	param						convert type					value type
 	-----						------------					----------

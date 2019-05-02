@@ -82,7 +82,7 @@ public:
 	//! Inserts a new entry between the previous found
 	//! widthpoint and the one where the action was called
 	//! with an average width and a middle position.
-	//! \param index the index of the entry wher the action is done
+	//! \param index the index of the entry where the action is done
 	//! \param time the time when inserted in animation mode
 	//! \param origin unused. Always is in the middle.
 	//! \return the new List Entry
@@ -97,7 +97,7 @@ public:
 	//! \param time the time when things are evaluated
 	//! \return a width point reference with the proper values
 	WidthPoint find_prev_valid_entry_by_position(Real position, Time time=0)const;
-	//! Interpolated width at a a given time based on surrounding full 'on' widht points
+	//! Interpolated width at a a given time based on surrounding full 'on' width points
 	//! \param position the position where to evaluate the width
 	//! \param time the time when evaluates
 	//! \return the interpolated width

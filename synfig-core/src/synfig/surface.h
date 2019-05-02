@@ -168,7 +168,7 @@ public:
 	// Use this function to reference one given generic cairo_surface 
 	// by this surface class.
 	// When the CairoSurface instance is destructed the reference counter of the
-	// cairo_surface_t shoud be decreased.
+	// cairo_surface_t should be decreased.
 	// It is also possible to detach the cairo surface passing NULL as argument.
 	// If the cairo surface is mapped at the time of call this function, then
 	// it is unmaped first.

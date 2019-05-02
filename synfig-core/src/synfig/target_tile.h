@@ -111,9 +111,9 @@ public:
 	void set_threads(int x) { threads_=x; }
 	//!Gets the number of threads
 	int get_threads()const { return threads_; }
-	//!Sets the tile widht
+	//!Sets the tile width
 	void set_tile_w(int w) { tile_w_=w; }
-	//!Gets the tile widht
+	//!Gets the tile width
 	int get_tile_w()const { return tile_w_; }
 	//!Sets the tile height
 	void set_tile_h(int h) { tile_h_=h; }

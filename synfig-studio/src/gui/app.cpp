@@ -589,7 +589,7 @@ public:
 				value=strprintf("%i",(int)App::show_file_toolbar);
 				return true;
 			}
-			//! "Keep brushes_path" preferences entry for backward compatibilty (15/12 - v1.0.3)
+			//! "Keep brushes_path" preferences entry for backward compatibility (15/12 - v1.0.3)
 			//! Now brush path(s) are hold by input preferences : brush.path_count & brush.path_%d
 			if(key=="brushes_path")
 			{
@@ -793,7 +793,7 @@ public:
 				App::show_file_toolbar=i;
 				return true;
 			}
-			//! "Keep brushes_path" preferences entry for backward compatibilty (15/12 - v1.0.3)
+			//! "Keep brushes_path" preferences entry for backward compatibility (15/12 - v1.0.3)
 			//! Now brush path(s) are hold by input preferences : brush.path_count & brush.path_%d
 			if(key=="brushes_path")
 			{
@@ -3901,7 +3901,7 @@ App::open_from_temporary_filesystem(std::string temporary_filename)
 			one_moment.hide();
 
 			if(instance->is_updated() && App::dialog_message_2b(
-				_("Newer version of this file avaliable on the CVS repository!"),
+				_("Newer version of this file available on the CVS repository!"),
 				_("Would you like to update now (It would probably be a good idea)"),
 				Gtk::MESSAGE_QUESTION,
 				_("Cancel"),
@@ -3961,7 +3961,7 @@ App::new_instance()
 	canvas->rend_desc().set_time_end(5.0);
 	canvas->rend_desc().set_x_res(DPI2DPM(72.0f));
 	canvas->rend_desc().set_y_res(DPI2DPM(72.0f));
-	// The top left and botton right positions are expressed in units
+	// The top left and bottom right positions are expressed in units
 	// Original convention is that 1 unit = 60 pixels
 	canvas->rend_desc().set_tl(Vector(-(preferred_x_size/60.0)/2.0,  (preferred_y_size/60.0)/2.0));
 	canvas->rend_desc().set_br(Vector( (preferred_x_size/60.0)/2.0, -(preferred_y_size/60.0)/2.0));

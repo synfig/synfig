@@ -233,7 +233,7 @@ Dock_Layers::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
 
 	canvas_view->set_tree_model(get_name(),layer_tree_store);
 
-	//! layer_tree is registred thrue CanvasView::set_ext_widget
+	//! layer_tree is registered thru CanvasView::set_ext_widget
 	//! and will be deleted during CanvasView::~CanvasView()
 	//! \see CanvasView::set_ext_widget
 	//! \see CanvasView::~CanvasView

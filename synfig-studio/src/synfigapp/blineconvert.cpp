@@ -330,7 +330,7 @@ int tessellate_curves(const std::vector<cpindex> &inds, const std::vector<Point>
 		if(j->error < 0)
 		{
 			//get the stepsize etc. for the number of points in here
-			unsigned int n = j->curind - j2->curind + 1; //thats the number of points in the span
+			unsigned int n = j->curind - j2->curind + 1; //that's the number of points in the span
 			unsigned int k, kend, i0, i3;
 			//so reset the right chunk
 
@@ -488,7 +488,7 @@ synfigapp::BLineConverter::operator()(std::list<synfig::BLinePoint>  &blinepoint
 		break_tangents.push_back(0);
 
 		// loop through the curvatures; in each continuous run of
-		// curvatures that exceed the tolerence, find the one with the
+		// curvatures that exceed the tolerance, find the one with the
 		// sharpest curvature and add its index to the list of indices
 		// at which to split tangents
 		for (i = 1; i < curvature.size()-1; ++i)

@@ -109,7 +109,7 @@ vstrprintf(const char *format, va_list args)
 #ifdef HAVE_VASPRINTF	// This is the preferred method (and safest)
 	char *buffer;
 	int count = vasprintf(&buffer,format,args);
-	if (count < 0) return ""; // error occured
+	if (count < 0) return ""; // error occurred
 
 	std::string rv(buffer, count); // passing size (count) for faster copying
 	free(buffer);

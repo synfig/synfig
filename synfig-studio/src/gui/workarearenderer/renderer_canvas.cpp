@@ -101,7 +101,7 @@ Renderer_Canvas::Renderer_Canvas():
 	tiles_size(),
 	pixel_format()
 {
-	// check endianess
+	// check endianness
     union { int i; char c[4]; } checker = {0x01020304};
     bool big_endian = checker.c[0] == 1;
 

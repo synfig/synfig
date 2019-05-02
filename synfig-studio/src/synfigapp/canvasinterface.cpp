@@ -532,7 +532,7 @@ CanvasInterface::generate_param_list(const ValueDesc &value_desc)
 		// into the param_list and then export the canvas, the handle
 		// will miss out of having its reference count reduced,
 		// because by the time the handle is destructed the canvas
-		// will no longer be inline.  So let's not propogate that
+		// will no longer be inline.  So let's not propagate that
 		// ValueBase any further than here.
 		if (value_desc.get_value_type() == type_canvas)
 			param_list.add("value",Canvas::LooseHandle(value_desc.get_value().get(Canvas::LooseHandle())));

@@ -94,7 +94,7 @@ public:
 	//! Creates a Linkable Value Node based on the name and the returned
 	//! value type. Returns a valid Handle if both (name and type) match
 	static LinkableValueNode::Handle create(const String &name, const ValueBase& x);
-	//! Each derived Linkable Value Node has to implement this fucntion and
+	//! Each derived Linkable Value Node has to implement this function and
 	//! should return true only if the type matches. \name is the name of
 	//! the linked value node and \x is the returned value type
 	static bool check_type(const String &name, Type &x);

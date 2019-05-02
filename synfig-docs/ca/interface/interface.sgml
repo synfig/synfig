@@ -14,7 +14,7 @@ customizable dock dialogs. You can rearrange the contents of these however
 you wish by simply dragging the tab to where you want it. You can even create a 
 new dock dialog by dragging a tab out of the dock dialog it was inside of.</para>
 
-<para>If you ever accidently close a dock tabs (by dragging it out of the dock 
+<para>If you ever accidentally close a dock tabs (by dragging it out of the dock 
 dialog, and closing the new dock dialog that gets created), no worries. Simply 
 goto the toolbox and goto "File->Dialogs", and then click on the name of the 
 dialog you need.</para>

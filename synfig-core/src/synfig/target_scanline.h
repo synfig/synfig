@@ -41,8 +41,8 @@ namespace synfig {
 namespace rendering { class SurfaceResource; }
 
 /*!	\class Target_Scanline
-**	\brief This is a Target class that implements the render fucntion
-* for a line by line render procedure
+**	\brief This is a Target class that implements the render function
+**     for a line by line render procedure
 */
 class Target_Scanline : public Target
 {

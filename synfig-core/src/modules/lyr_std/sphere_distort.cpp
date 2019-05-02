@@ -163,7 +163,7 @@ Layer_SphereDistort::get_param_vocab()const
 
 	ret.push_back(ParamDesc("clip")
 		.set_local_name(_("Clip"))
-		.set_description(_("When cheked, the area outside the Radius are not distorted"))
+		.set_description(_("When checked, the area outside the Radius are not distorted"))
 	);
 
 	ret.push_back(ParamDesc("type")

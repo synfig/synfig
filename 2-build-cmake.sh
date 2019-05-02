@@ -53,5 +53,5 @@ build_synfig_studio
 write_portable_run_code
 
 # Print success, restore the current directory and exit
-echo "Build successfull to: ${absolute_base_dir}/${cmake_build_dir}/${out_dir}"
+echo "Build successful to: ${absolute_base_dir}/${cmake_build_dir}/${out_dir}"
 cd "$pwd_dir"
