@@ -31,5 +31,10 @@ def gen_canvas(lottie, root):
     lottie["v"] = settings.LOTTIE_VERSION
     lottie["fr"] = float(root.attrib["fps"])
     lottie["ip"] = float(root.attrib["begin-time"][:-1])
-    lottie["op"] = float(root.attrib["end-time"][:-1]) * lottie["fr"]
+    time = root.attrib["end-time"].split(" ")
+    # Adding time in seconds
+    lottie["op"] = float(time[0][:-1]) * lottie["fr"]
+    # Adding time in frames
+    if len(time) > 1:
+        lottie["op"] += float(time[1][:-1])
     calculate_pixels_per_unit()
