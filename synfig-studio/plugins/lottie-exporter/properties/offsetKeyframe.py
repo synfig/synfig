@@ -144,7 +144,8 @@ def calc_tangent(animated, lottie, i):
     # ANY/ANY      ---- CONSTANT/ANY
     if cur_get_after == "constant" or next_get_before == "constant":
         lottie["h"] = 1
-        del lottie["to"], lottie["ti"]
+        if animated.attrib["type"] == "vector":
+            del lottie["to"], lottie["ti"]
         del lottie["i"], lottie["o"]
         # "e" is not needed, but is still not deleted as it is of use in the last iteration of animation
         # del lottie["e"]

@@ -48,7 +48,11 @@ def gen_value_Keyframe(curve_list, animated, i):
     lottie["i"] = {}    
     lottie["o"] = {}    
 
-    out_val, in_val = calc_tangent(animated, lottie, i)
+    try:
+        out_val, in_val = calc_tangent(animated, lottie, i)
+    except:
+        # That means halt/constant interval
+        return
     out_lst = out_val.get_list()
     in_lst = in_val.get_list()
 
