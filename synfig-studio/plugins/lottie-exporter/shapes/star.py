@@ -7,6 +7,7 @@ import settings
 from properties.value import gen_properties_value
 from misc import get_angle, Count
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
+from properties.valueKeyframed import gen_value_Keyframed
 
 def gen_shapes_star(lottie, layer, idx):
     """
@@ -38,17 +39,23 @@ def gen_shapes_star(lottie, layer, idx):
                     lottie["r"], theta, index.inc(), settings.DEFAULT_ANIMATED,
                     settings.NO_INFO)
             elif child.attrib["name"] == "radius1":
-                r_outer = float(child[0].attrib["value"])
-                gen_properties_value(
-                    lottie["or"], int(
-                        settings.PIX_PER_UNIT * r_outer), index.inc(),
-                    settings.DEFAULT_ANIMATED, settings.NO_INFO)
+                if child[0].tag == "animated":
+                    gen_value_Keyframed(lottie["or"], child[0], index.inc())
+                else:
+                    r_outer = float(child[0].attrib["value"])
+                    gen_properties_value(
+                        lottie["or"], int(
+                            settings.PIX_PER_UNIT * r_outer), index.inc(),
+                        settings.DEFAULT_ANIMATED, settings.NO_INFO)
             elif child.attrib["name"] == "radius2":
-                r_inner = float(child[0].attrib["value"])
-                gen_properties_value(
-                    lottie["ir"], int(
-                        settings.PIX_PER_UNIT * r_inner), index.inc(),
-                    settings.DEFAULT_ANIMATED, settings.NO_INFO)
+                if child[0].tag == "animated":
+                    gen_value_Keyframed(lottie["ir"], child[0], index.inc())
+                else:
+                    r_inner = float(child[0].attrib["value"])
+                    gen_properties_value(
+                        lottie["ir"], int(
+                            settings.PIX_PER_UNIT * r_inner), index.inc(),
+                        settings.DEFAULT_ANIMATED, settings.NO_INFO)
             elif child.attrib["name"] == "origin":
                 if child[0].tag == "animated":
                     gen_properties_multi_dimensional_keyframed(lottie["p"],

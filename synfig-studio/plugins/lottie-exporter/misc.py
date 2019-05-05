@@ -78,11 +78,26 @@ def change_axis(x_val, y_val):
 def parse_position(animated, i):
     """
     To convert the synfig coordinates from units(initially a string) to pixels
+    Depends on whether a vector is provided to it or a real value
+    If real value is provided, then time is also taken into consideration
     """
-    pos = [float(animated[i][0][0].text),
-           float(animated[i][0][1].text)]
-    pos = [settings.PIX_PER_UNIT*x for x in pos]
+    if animated.attrib["type"] == "vector":
+        pos = [float(animated[i][0][0].text),
+               float(animated[i][0][1].text)]
+        pos = [settings.PIX_PER_UNIT*x for x in pos]
+    elif animated.attrib["type"] == "real":
+        pos = parse_value(animated, i)
     return Vector(pos[0], pos[1])
+
+def parse_value(animated, i):
+    """
+    To convert the synfig value parameter from units to pixels
+    and also take into consideration the time parameter
+    return: Vector(value, time)
+    """
+    pos = [float(animated[i][0].attrib["value"]) * settings.PIX_PER_UNIT,
+            float(animated[i].attrib["time"][:-1]) * settings.lottie_format["fr"]]
+    return pos 
 
 def get_angle(theta):
     """

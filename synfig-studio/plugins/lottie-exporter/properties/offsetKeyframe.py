@@ -66,15 +66,12 @@ def ease_in(lottie):
     lottie["i"]["x"] = settings.IN_TANGENT_X
     lottie["i"]["y"] = settings.IN_TANGENT_Y
 
-def gen_properties_offset_keyframe(curve_list, animated, i):
-    """
-     Generates the dictionary corresponding to properties/offsetKeyFrame.json
-    """
-    lottie = curve_list[-1]
+def calc_tangent(animated, lottie, i):
 
     waypoint, next_waypoint = animated[i], animated[i+1]
     cur_get_after, next_get_before = waypoint.attrib["after"], next_waypoint.attrib["before"]
     cur_get_before, next_get_after = waypoint.attrib["before"], next_waypoint.attrib["after"]
+
     # Calculate positions of waypoints
     cur_pos = parse_position(animated, i)
     prev_pos = copy.deepcopy(cur_pos)
@@ -86,19 +83,6 @@ def gen_properties_offset_keyframe(curve_list, animated, i):
     if i - 1 >= 0:
         prev_pos = parse_position(animated, i - 1)
 
-    lottie["i"] = {}    # Time bezier curve, not used in synfig
-    lottie["o"] = {}    # Time bezier curve, not used in synfig
-    lottie["i"]["x"] = 0.5
-    lottie["i"]["y"] = 0.5
-    lottie["o"]["x"] = 0.5
-    lottie["o"]["y"] = 0.5
-    if cur_get_after == "halt": # For ease out
-        ease_out(lottie)
-    if next_get_before == "halt": # For ease in
-        ease_in(lottie)
-    lottie["t"] = float(waypoint.attrib["time"][:-1]) * settings.lottie_format["fr"]
-    lottie["s"] = change_axis(cur_pos.x, cur_pos.y)
-    lottie["e"] = change_axis(next_pos.x, next_pos.y)
     tens, bias, cont = 0, 0, 0   # default values
     tens1, bias1, cont1 = 0, 0, 0
     if "tension" in waypoint.keys():
@@ -113,8 +97,6 @@ def gen_properties_offset_keyframe(curve_list, animated, i):
         cont1 = float(next_waypoint.attrib["continuity"])
     if "bias" in next_waypoint.keys():
         bias1 = float(next_waypoint.attrib["bias"])
-    lottie["to"] = []
-    lottie["ti"] = []
 
     # iter           next
     # ANY/TCB ------ ANY/ANY
@@ -144,7 +126,7 @@ def gen_properties_offset_keyframe(curve_list, animated, i):
     if cur_get_after == "clamped":
         if i >= 1:
             ease = "out"
-            out_val = clamped_vector(prev_pos, cur_pos, next_pos, animated, i, lottie, ease) 
+            out_val = clamped_vector(prev_pos, cur_pos, next_pos, animated, i, lottie, ease)
         else:
             out_val = next_pos - cur_pos      # t1 = p2 - p1
 
@@ -156,7 +138,6 @@ def gen_properties_offset_keyframe(curve_list, animated, i):
             in_val = clamped_vector(cur_pos, next_pos, after_next_pos, animated, i + 1, lottie, ease)
         else:
             in_val = next_pos - cur_pos     # t2 = p2 - p1
-
 
     # iter              next
     # ANY/CONSTANT ---- ANY/ANY
@@ -180,12 +161,47 @@ def gen_properties_offset_keyframe(curve_list, animated, i):
         else:
             in_val = next_pos - cur_pos      # t2 = p2 - p1
     print(cur_get_after, next_get_before)
+    return out_val, in_val
+
+def gen_properties_offset_keyframe(curve_list, animated, i):
+    """
+     Generates the dictionary corresponding to properties/offsetKeyFrame.json
+    """
+    lottie = curve_list[-1]
+
+    waypoint, next_waypoint = animated[i], animated[i+1]
+    cur_get_after, next_get_before = waypoint.attrib["after"], next_waypoint.attrib["before"]
+    cur_get_before, next_get_after = waypoint.attrib["before"], next_waypoint.attrib["after"]
+
+    # Calculate positions of waypoints
+    cur_pos = parse_position(animated, i)
+    next_pos = parse_position(animated, i + 1)
+
+    lottie["i"] = {}    # Time bezier curve, not used in synfig
+    lottie["o"] = {}    # Time bezier curve, not used in synfig
+    lottie["i"]["x"] = 0.5
+    lottie["i"]["y"] = 0.5
+    lottie["o"]["x"] = 0.5
+    lottie["o"]["y"] = 0.5
+    if cur_get_after == "halt": # For ease out
+        ease_out(lottie)
+    if next_get_before == "halt": # For ease in
+        ease_in(lottie)
+    lottie["t"] = float(waypoint.attrib["time"][:-1]) * settings.lottie_format["fr"]
+    lottie["s"] = change_axis(cur_pos.x, cur_pos.y)
+    lottie["e"] = change_axis(next_pos.x, next_pos.y)
+    lottie["to"] = []
+    lottie["ti"] = []
+
+    # Calculating the unchanged tangent
+    out_val, in_val = calc_tangent(animated, lottie, i)
+
     lottie["to"] = out_val.get_list()
     lottie["ti"] = in_val.get_list()
 
     # TCB/!TCB and list is not empty
     if cur_get_before == "auto" and cur_get_after != "auto" and i > 0:
-        curve_list[-2]["ti"] = lottie["to"]
+        curve_list[-2]["ti"] = copy.deepcopy(lottie["to"])
         curve_list[-2]["ti"] = [-item/settings.TANGENT_FACTOR for item in curve_list[-2]["ti"]]
         curve_list[-2]["ti"][1] = -curve_list[-2]["ti"][1]
         if cur_get_after == "halt":
