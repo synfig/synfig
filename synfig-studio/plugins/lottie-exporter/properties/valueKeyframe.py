@@ -53,6 +53,36 @@ def gen_value_Keyframe(curve_list, animated, i):
     except:
         # That means halt/constant interval
         return
+
+    set_tangents(out_val, in_val, cur_pos, next_pos, lottie)
+
+    """
+    Need to confirm whether to put a -ve sign for in tangent(relative)
+    Ans:
+    YES, this negative sign is put in the normalize tangents part
+    """
+
+    if cur_get_after == "halt": # For ease out
+        lottie["o"]["x"][0] = settings.OUT_TANGENT_X 
+        lottie["o"]["y"][0] = settings.OUT_TANGENT_Y
+    if next_get_before == "halt": # For ease in
+        lottie["i"]["x"][0] = settings.IN_TANGENT_X
+        lottie["i"]["y"][0] = settings.IN_TANGENT_Y
+
+    # TCB/!TCB and list is not empty
+    if cur_get_before == "auto" and cur_get_after != "auto" and i > 0:
+
+        # need value for previous tangents
+        # It may be helpful to store them somewhere
+        ov, iv = calc_tangent(animated, curve_list[-2], i - 1)  
+        iv = out_val
+        set_tangents(ov, iv, parse_position(animated, i-1), cur_pos, curve_list[-2])
+        if cur_get_after == "halt":
+            curve_list[-2]["i"]["x"][0] = settings.IN_TANGENT_X
+            curve_list[-2]["i"]["y"][0] = settings.IN_TANGENT_Y
+
+def set_tangents(out_val, in_val, cur_pos, next_pos, lottie):
+     
     out_lst = out_val.get_list()
     in_lst = in_val.get_list()
 
@@ -68,22 +98,3 @@ def gen_value_Keyframe(curve_list, animated, i):
     lottie["o"]["y"][0] /= settings.TANGENT_FACTOR
 
     normalize_tangents(cur_pos, next_pos, lottie["i"], lottie["o"])
-
-    """
-    Need to confirm whether to put a -ve sign for in tangent(relative)
-    Ans:
-    YES, this negative sign is put in the normalize tangents part
-    """
-
-    if cur_get_after == "halt": # For ease out
-        lottie["o"]["x"][0] = settings.OUT_TANGENT_X 
-        lottie["o"]["y"][0] = settings.OUT_TANGENT_Y
-    if next_get_before == "halt": # For ease in
-        lottie["i"]["x"][0] = settings.IN_TANGENT_X
-        lottie["i"]["y"][0] = settings.IN_TANGENT_Y
-
-"""
-NOT SURE IF NEEDED, Need to check with konstantin
-    # TCB/!TCB and list is not empty
-    if cur_get_before == "auto" and cur_get_after != "auto" and i > 0:
-"""
