@@ -57,6 +57,50 @@ class Vector:
     def get_list(self):
         return [self.x, self.y]
 
+class Color:
+    """
+    To store the colors in Synfig and operations on them
+    """
+    def __init__(self, r = 1, g = 1, b = 1):
+        self.r = r
+        self.g = g
+        self.b = b
+
+    def __str__(self):
+        return "({0}, {1}, {2})".format(self.r, self.g, self.b)
+
+    def __add__(self, other):
+        r = self.r + other.r
+        g = self.g + other.g
+        b = self.b + other.b
+        return Color(r, g, b)
+
+    def __sub__(self, other):
+        r = self.r - other.r
+        g = self.g - other.g
+        b = self.b - other.b
+        return Color(r, g, b)
+
+    def __mul__(self, other):
+        if not isinstance(other, self.__class__):
+            r = self.r * other
+            g = self.g * other
+            b = self.b * other
+            return Color(r, g, b)
+
+    def __rmul__(self, other):
+        return self.__mul__(other)
+
+    def __truediv__(self, other):
+        if not isinstance(other, self.__class__):
+            r = self.r / other
+            g = self.g / other
+            b = self.b / other
+            return Color(r, g, b)
+
+    def get_list(self):
+        return [self.r, self.g, self.b]
+
 def calculate_pixels_per_unit():
     """ 
     Gives the value of 1 unit in terms of pixels according to the canvas defined
