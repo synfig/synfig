@@ -38,6 +38,16 @@ def gen_value_Keyframe(curve_list, animated, i):
     cur_get_before, next_get_after = waypoint.attrib["before"], next_waypoint.attrib["after"]
     # Calculate positions of waypoints
 
+    if animated.attrib["type"] == "angle":
+        if cur_get_after == "auto":
+            cur_get_after = "linear"
+        if cur_get_before == "auto":
+            cur_get_before = "linear"
+        if next_get_before == "auto":
+            next_get_before = "linear"
+        if next_get_after == "auto":
+            next_get_after = "linear"
+
     cur_pos = parse_position(animated, i)
     next_pos = parse_position(animated, i + 1)
 

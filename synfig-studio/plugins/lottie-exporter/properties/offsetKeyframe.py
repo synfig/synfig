@@ -72,6 +72,16 @@ def calc_tangent(animated, lottie, i):
     cur_get_after, next_get_before = waypoint.attrib["after"], next_waypoint.attrib["before"]
     cur_get_before, next_get_after = waypoint.attrib["before"], next_waypoint.attrib["after"]
 
+    if animated.attrib["type"] == "angle":
+        if cur_get_after == "auto":
+            cur_get_after = "linear"
+        if cur_get_before == "auto":
+            cur_get_before = "linear"
+        if next_get_before == "auto":
+            next_get_before = "linear"
+        if next_get_after == "auto":
+            next_get_after = "linear"
+
     # Calculate positions of waypoints
     cur_pos = parse_position(animated, i)
     prev_pos = copy.deepcopy(cur_pos)
@@ -173,6 +183,16 @@ def gen_properties_offset_keyframe(curve_list, animated, i):
     waypoint, next_waypoint = animated[i], animated[i+1]
     cur_get_after, next_get_before = waypoint.attrib["after"], next_waypoint.attrib["before"]
     cur_get_before, next_get_after = waypoint.attrib["before"], next_waypoint.attrib["after"]
+
+    if animated.attrib["type"] == "angle":
+        if cur_get_after == "auto":
+            cur_get_after = "linear"
+        if cur_get_before == "auto":
+            cur_get_before = "linear"
+        if next_get_before == "auto":
+            next_get_before = "linear"
+        if next_get_after == "auto":
+            next_get_after = "linear"
 
     # Calculate positions of waypoints
     cur_pos = parse_position(animated, i)
