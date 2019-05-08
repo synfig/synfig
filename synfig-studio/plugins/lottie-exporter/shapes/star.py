@@ -5,7 +5,7 @@ import sys
 sys.path.append("..")
 import settings
 from properties.value import gen_properties_value
-from misc import get_angle, Count
+from misc import get_angle, Count, change_axis
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
 from properties.valueKeyframed import gen_value_Keyframed
 
@@ -72,10 +72,16 @@ def gen_shapes_star(lottie, layer, idx):
 
     if regular_polygon == "false":
         lottie["sy"] = 1    # Star Type
+
+        # inner property is only needed if type is star
+        gen_properties_value(lottie["is"], 0, index.inc(),
+                settings.DEFAULT_ANIMATED, settings.NO_INFO)
     else:
         lottie["sy"] = 2    # Polygon Type
-    gen_properties_value(lottie["is"], 0, index.inc(),
-            settings.DEFAULT_ANIMATED, settings.NO_INFO)
+
+        # for polygon type, "ir" and "is" must not be present
+        del lottie["ir"]
+
     gen_properties_value(lottie["os"], 0, index.inc(),
             settings.DEFAULT_ANIMATED, settings.NO_INFO)
     lottie["ix"] = idx
