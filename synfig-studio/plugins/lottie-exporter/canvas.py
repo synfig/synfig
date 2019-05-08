@@ -4,6 +4,22 @@ This module converts the canvas to lottie format
 import settings
 from misc import calculate_pixels_per_unit
 
+def calc_time(root, lottie, which):
+    if which == "ip":
+        st = "begin-time"
+    elif which == "op":
+        st = "end-time"
+    time = root.attrib[st].split(" ")
+    lottie[which] = 0
+    for fr in time:
+        # Adding time in seconds
+        if fr[-1] == "s":
+            lottie[which] += float(fr[:-1]) * lottie["fr"]
+        # Adding time in frames
+        elif fr[-1] == "f":
+            lottie[which] += float(fr[:-1])
+
+
 def gen_canvas(lottie, root):
     """ 
     Generates the canvas for the lottie format
@@ -30,14 +46,6 @@ def gen_canvas(lottie, root):
     lottie["ddd"] = settings.DEFAULT_3D
     lottie["v"] = settings.LOTTIE_VERSION
     lottie["fr"] = float(root.attrib["fps"])
-    lottie["ip"] = float(root.attrib["begin-time"][:-1])
-    time = root.attrib["end-time"].split(" ")
-    lottie["op"] = 0
-    for fr in time:
-        # Adding time in seconds
-        if fr[-1] == "s":
-            lottie["op"] += float(fr[:-1]) * lottie["fr"]
-        # Adding time in frames
-        elif fr[-1] == "f":
-            lottie["op"] += float(fr[:-1])
+    calc_time(root, lottie, "ip")
+    calc_time(root, lottie, "op")
     calculate_pixels_per_unit()
