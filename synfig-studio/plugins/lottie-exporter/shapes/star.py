@@ -34,10 +34,13 @@ def gen_shapes_star(lottie, layer, idx):
                                      settings.DEFAULT_ANIMATED,
                                      settings.NO_INFO)
             elif child.attrib["name"] == "angle":
-                theta = get_angle(float(child[0].attrib["value"]))
-                gen_properties_value(
-                    lottie["r"], theta, index.inc(), settings.DEFAULT_ANIMATED,
-                    settings.NO_INFO)
+                if child[0].tag == "animated":
+                    gen_value_Keyframed(lottie["r"], child[0], index.inc())
+                else:
+                    theta = get_angle(float(child[0].attrib["value"]))
+                    gen_properties_value(
+                        lottie["r"], theta, index.inc(), settings.DEFAULT_ANIMATED,
+                        settings.NO_INFO)
             elif child.attrib["name"] == "radius1":
                 if child[0].tag == "animated":
                     gen_value_Keyframed(lottie["or"], child[0], index.inc())
@@ -61,7 +64,9 @@ def gen_shapes_star(lottie, layer, idx):
                     gen_properties_multi_dimensional_keyframed(lottie["p"],
                                                              child[0], index.inc())
                 else:
-                    gen_properties_value(lottie["p"], [0, 0],
+                    x_val = float(child[0][0].text) * settings.PIX_PER_UNIT
+                    y_val = float(child[0][0].text) * settings.PIX_PER_UNIT
+                    gen_properties_value(lottie["p"], change_axis(x_val, y_val),
                                          index.inc(), settings.DEFAULT_ANIMATED,
                                          settings.NO_INFO)
 

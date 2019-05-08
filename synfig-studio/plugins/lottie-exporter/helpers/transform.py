@@ -4,7 +4,7 @@ Fill this
 import sys
 sys.path.append("../")
 import settings
-from misc import Count
+from misc import Count, change_axis
 from properties.value import gen_properties_value
 
 def gen_helpers_transform(lottie, layer):
@@ -17,24 +17,13 @@ def gen_helpers_transform(lottie, layer):
     lottie["p"] = {}    # Position of the layer
     lottie["a"] = {}    # Anchor point of the layer
     lottie["s"] = {}    # Scale of the layer
-    for child in layer:
-        if child.tag == "param":
-            if child.attrib["name"] == "amount":
-                val = int(settings.OPACITY_CONSTANT * float(child[0].attrib["value"]))
-                gen_properties_value(
-                    lottie["o"], val, index.inc(), settings.DEFAULT_ANIMATED,
-                    settings.NO_INFO)
-            elif child.attrib["name"] == "origin":
-                if child[0].tag == "vector":
-                    x_val = float(child[0][0].text) * settings.PIX_PER_UNIT
-                    y_val = float(child[0][1].text) * settings.PIX_PER_UNIT
-                    gen_properties_value(lottie["p"], change_axis(x_val, y_val),
-                                         index.inc(), settings.DEFAULT_ANIMATED,
-                                         settings.NO_INFO)
-                else:
-                    gen_properties_value(lottie["p"], [0, 0],
-                                         index.inc(), settings.DEFAULT_ANIMATED,
-                                         settings.NO_INFO)
+
+    # setting the default location
+    gen_properties_value(lottie["p"], [0, 0], index.inc(), settings.DEFAULT_ANIMATED, settings.NO_INFO)
+
+    # setting the default opacity i.e. 100
+    gen_properties_value(lottie["o"], settings.DEFAULT_OPACITY, index.inc(),
+            settings.DEFAULT_ANIMATED, settings.NO_INFO)
 
     gen_properties_value(
         lottie["r"],

@@ -5,6 +5,7 @@ import sys
 sys.path.append("..")
 import settings
 from properties.value import gen_properties_value
+from properties.valueKeyframed import gen_value_Keyframed
 from misc import Count
 
 def gen_shapes_fill(lottie, layer):
@@ -28,11 +29,12 @@ def gen_shapes_fill(lottie, layer):
                     lottie["c"], [
                         red, green, blue, a_val], index.inc(),
                     settings.DEFAULT_ANIMATED, settings.NO_INFO)
-
-    gen_properties_value(
-        lottie["o"],
-        settings.DEFAULT_OPACITY,
-        index.inc(),
-        settings.DEFAULT_ANIMATED,
-        settings.NO_INFO)
-
+            elif child.attrib["name"] == "amount":
+                if child[0].tag == "animated":
+                    # Telling the function that this is for opacity
+                    child[0].attrib['type'] = 'opacity'
+                    gen_value_Keyframed(lottie["o"], child[0], index.inc())
+                else:
+                    val = float(child[0].attrib["value"]) * settings.OPACITY_CONSTANT
+                    gen_properties_value(lottie["o"], val, index.inc(), settings.DEFAULT_ANIMATED, settings.NO_INFO)
+                 
