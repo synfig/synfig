@@ -82,6 +82,13 @@ def calc_tangent(animated, lottie, i):
         if next_get_after == "auto":
             next_get_after = "linear"
 
+    # Synfig only supports constant interpolations for points
+    if animated.attrib["type"] == "points":
+        cur_get_after = "constant"
+        cur_get_before = "constant"
+        next_get_after = "constant"
+        next_get_before = "constant"
+
     # Calculate positions of waypoints
     cur_pos = parse_position(animated, i)
     prev_pos = copy.deepcopy(cur_pos)
@@ -159,6 +166,16 @@ def calc_tangent(animated, lottie, i):
         del lottie["i"], lottie["o"]
         # "e" is not needed, but is still not deleted as it is of use in the last iteration of animation
         # del lottie["e"]
+
+        # If the number of points is decresing, then hold interpolation should
+        # have reverse effect. The value should instantly decrease and remain
+        # same for the rest of the interval
+        if animated.attrib["type"] == "points":
+            print("I am here")
+            print(prev_pos.x, cur_pos.x)
+            if i > 0 and prev_pos.x > cur_pos.x:
+                t_now = float(animated[i-1].attrib["time"][:-1]) * settings.lottie_format["fr"] + 1
+                lottie["t"] = t_now
         return
 
     # iter           next           after_next
@@ -184,6 +201,7 @@ def gen_properties_offset_keyframe(curve_list, animated, i):
     cur_get_after, next_get_before = waypoint.attrib["after"], next_waypoint.attrib["before"]
     cur_get_before, next_get_after = waypoint.attrib["before"], next_waypoint.attrib["after"]
 
+    # "angle" interpolations never call this function, can be removed by confirming
     if animated.attrib["type"] == "angle":
         if cur_get_after == "auto":
             cur_get_after = "linear"
@@ -193,6 +211,14 @@ def gen_properties_offset_keyframe(curve_list, animated, i):
             next_get_before = "linear"
         if next_get_after == "auto":
             next_get_after = "linear"
+
+    # Synfig only supports constant interpolations for points
+    # "points" never call this function, can be removed by confirming
+    if animated.attrib["type"] == "points":
+        cur_get_after = "constant"
+        cur_get_before = "constant"
+        next_get_after = "constant"
+        next_get_before = "constant"
 
     # Calculate positions of waypoints
     cur_pos = parse_position(animated, i)

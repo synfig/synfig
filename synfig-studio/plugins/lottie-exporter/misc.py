@@ -129,14 +129,22 @@ def parse_position(animated, i):
         pos = [float(animated[i][0][0].text),
                float(animated[i][0][1].text)]
         pos = [settings.PIX_PER_UNIT*x for x in pos]
+
     elif animated.attrib["type"] == "real":
         pos = parse_value(animated, i)
+
     elif animated.attrib["type"] == "angle":
         pos = [get_angle(float(animated[i][0].attrib["value"])),
                 float(animated[i].attrib["time"][:-1]) * settings.lottie_format["fr"]]
+
     elif animated.attrib["type"] == "opacity":
         pos = [float(animated[i][0].attrib["value"]) * settings.OPACITY_CONSTANT,
                 float(animated[i].attrib["time"][:-1]) * settings.lottie_format["fr"]]
+
+    elif animated.attrib["type"] == "points":
+        pos = [int(animated[i][0].attrib["value"]),
+                float(animated[i].attrib["time"][:-1]) * settings.lottie_format["fr"]]
+
     return Vector(pos[0], pos[1])
 
 def parse_value(animated, i):

@@ -48,6 +48,13 @@ def gen_value_Keyframe(curve_list, animated, i):
         if next_get_after == "auto":
             next_get_after = "linear"
 
+    # Synfig only supports constant interpolations for points
+    if animated.attrib["type"] == "points":
+        cur_get_after = "constant"
+        cur_get_before = "constant"
+        next_get_after = "constant"
+        next_get_before = "constant"
+
     cur_pos = parse_position(animated, i)
     next_pos = parse_position(animated, i + 1)
 
@@ -62,6 +69,7 @@ def gen_value_Keyframe(curve_list, animated, i):
         out_val, in_val = calc_tangent(animated, lottie, i)
     except:
         # That means halt/constant interval
+        print("come")
         return
 
     set_tangents(out_val, in_val, cur_pos, next_pos, lottie)

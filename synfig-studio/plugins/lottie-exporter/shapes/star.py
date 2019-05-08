@@ -28,11 +28,17 @@ def gen_shapes_star(lottie, layer, idx):
             if child.attrib["name"] == "regular_polygon":
                 regular_polygon = child[0].attrib["value"]
             elif child.attrib["name"] == "points":
-                gen_properties_value(lottie["pt"],
-                                     int(child[0].attrib["value"]),
-                                     index.inc(),
-                                     settings.DEFAULT_ANIMATED,
-                                     settings.NO_INFO)
+                if child[0].tag == "animated":
+
+                    # To uniquely identify the points, attribute type is changed
+                    child[0].attrib['type'] = 'points'
+                    gen_value_Keyframed(lottie["pt"], child[0], index.inc())
+                else:
+                    gen_properties_value(lottie["pt"],
+                                         int(child[0].attrib["value"]),
+                                         index.inc(),
+                                         settings.DEFAULT_ANIMATED,
+                                         settings.NO_INFO)
             elif child.attrib["name"] == "angle":
                 if child[0].tag == "animated":
                     gen_value_Keyframed(lottie["r"], child[0], index.inc())
