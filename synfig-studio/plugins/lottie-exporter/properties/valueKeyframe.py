@@ -3,13 +3,22 @@ Fill this
 """
 import sys
 import settings
+import random
 sys.path.append("../")
 from misc import parse_position
-from properties.offsetKeyframe import ease_in, ease_out, calc_tangent
+from properties.offsetKeyframe import ease_in, ease_out, calc_tangent, isclose
 
 def normalize_tangents(cur_pos, next_pos, t_in, t_out):
     time_scale = next_pos.y - cur_pos.y    # time_scale means converting time(on x-axis) to 0-1 range
     value_scale = next_pos.x - cur_pos.x   # value_scale -> converting value(on y-axis to 0-1 range)
+
+    # If ever the value scale equals to absolute zero, randomly add or subtract
+    # 1e-9 to it, in order to avoid division by zero
+    # This difference in value is not caught by bare human eyes, so should not effect
+    if value_scale == 0.0:
+        bias = 1 if random.random() < 0.5 else -1
+        bias *= 1e-9
+        value_scale += bias
 
     time_diff = cur_pos.y / time_scale
     value_diff = cur_pos.x / value_scale
