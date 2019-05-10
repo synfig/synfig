@@ -66,6 +66,11 @@ def ease_in(lottie):
     lottie["i"]["x"] = settings.IN_TANGENT_X
     lottie["i"]["y"] = settings.IN_TANGENT_Y
 
+def handle_color():
+    out_val = Vector(0.5, 0.5)
+    in_val = Vector(0.5, 0.5)
+    return out_val, in_val
+
 def calc_tangent(animated, lottie, i):
 
     waypoint, next_waypoint = animated[i], animated[i+1]
@@ -88,6 +93,18 @@ def calc_tangent(animated, lottie, i):
         cur_get_before = "constant"
         next_get_after = "constant"
         next_get_before = "constant"
+
+    # After effects only supports linear,ease-in,ease-out and constant interpolations for color
+    ##### No support for TCB and clamped interpolations in color is there yet #####
+    if animated.attrib["type"] == "color":
+        if cur_get_after in {"auto", "clamped"}:
+            cur_get_after = "linear"
+        if cur_get_before in {"auto", "clamped"}:
+            cur_get_before = "linear"
+        if next_get_before in {"auto", "clamped"}:
+            next_get_before = "linear"
+        if next_get_after in {"auto", "clamped"}:
+            next_get_after = "linear"
 
     # Calculate positions of waypoints
     cur_pos = parse_position(animated, i)
@@ -114,6 +131,12 @@ def calc_tangent(animated, lottie, i):
         cont1 = float(next_waypoint.attrib["continuity"])
     if "bias" in next_waypoint.keys():
         bias1 = float(next_waypoint.attrib["bias"])
+
+
+    ### Special case for color interpolations ###
+    if animated.attrib["type"] == "color":
+        if cur_get_after == "linear" and next_get_before == "linear":
+            return handle_color()
 
     # iter           next
     # ANY/TCB ------ ANY/ANY
@@ -171,8 +194,6 @@ def calc_tangent(animated, lottie, i):
         # have reverse effect. The value should instantly decrease and remain
         # same for the rest of the interval
         if animated.attrib["type"] == "points":
-            print("I am here")
-            print(prev_pos.x, cur_pos.x)
             if i > 0 and prev_pos.x > cur_pos.x:
                 t_now = float(animated[i-1].attrib["time"][:-1]) * settings.lottie_format["fr"] + 1
                 lottie["t"] = t_now

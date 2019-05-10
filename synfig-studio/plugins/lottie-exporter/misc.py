@@ -57,36 +57,40 @@ class Vector:
     def get_list(self):
         return [self.x, self.y]
 
+    def get_val(self):
+        return [self.x]
+
 class Color:
     """
     To store the colors in Synfig and operations on them
     """
-    def __init__(self, r = 1, g = 1, b = 1):
+    def __init__(self, r = 1, g = 1, b = 1, a = 1):
         self.r = r
         self.g = g
         self.b = b
+        self.a = a
 
     def __str__(self):
-        return "({0}, {1}, {2})".format(self.r, self.g, self.b)
+        return "({0}, {1}, {2}, {3})".format(self.r, self.g, self.b, self.a)
 
     def __add__(self, other):
         r = self.r + other.r
         g = self.g + other.g
         b = self.b + other.b
-        return Color(r, g, b)
+        return Color(r, g, b, self.a)
 
     def __sub__(self, other):
         r = self.r - other.r
         g = self.g - other.g
         b = self.b - other.b
-        return Color(r, g, b)
+        return Color(r, g, b, self.a)
 
     def __mul__(self, other):
         if not isinstance(other, self.__class__):
             r = self.r * other
             g = self.g * other
             b = self.b * other
-            return Color(r, g, b)
+            return Color(r, g, b, self.a)
 
     def __rmul__(self, other):
         return self.__mul__(other)
@@ -96,10 +100,10 @@ class Color:
             r = self.r / other
             g = self.g / other
             b = self.b / other
-            return Color(r, g, b)
+            return Color(r, g, b, self.a)
 
-    def get_list(self):
-        return [self.r, self.g, self.b]
+    def get_val(self):
+        return [self.r, self.g, self.b, self.a]
 
 def calculate_pixels_per_unit():
     """ 
@@ -144,6 +148,11 @@ def parse_position(animated, i):
     elif animated.attrib["type"] == "points":
         pos = [int(animated[i][0].attrib["value"]),
                 float(animated[i].attrib["time"][:-1]) * settings.lottie_format["fr"]]
+
+    elif animated.attrib["type"] == "color":
+        red, green, blue, alpha = float(animated[i][0][0].text), float(animated[i][0][1].text), float(animated[i][0][2].text), float(animated[i][0][3].text)
+        red, green, blue = red ** (1/settings.GAMMA), green ** (1/settings.GAMMA), blue ** (1/settings.GAMMA)
+        return Color(red, green, blue, alpha)
 
     return Vector(pos[0], pos[1])
 

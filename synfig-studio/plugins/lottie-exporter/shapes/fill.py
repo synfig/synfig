@@ -19,16 +19,19 @@ def gen_shapes_fill(lottie, layer):
     for child in layer:
         if child.tag == "param":
             if child.attrib["name"] == "color":
-                red = float(child[0][0].text)
-                green = float(child[0][1].text)
-                blue = float(child[0][2].text)
-                red, green, blue = red ** (1/settings.GAMMA), green **\
-                (1/settings.GAMMA), blue ** (1/ settings.GAMMA)
-                a_val = child[0][3].text
-                gen_properties_value(
-                    lottie["c"], [
-                        red, green, blue, a_val], index.inc(),
-                    settings.DEFAULT_ANIMATED, settings.NO_INFO)
+                if child[0].tag == "animated":
+                    gen_value_Keyframed(lottie["c"], child[0], index.inc())
+                else:
+                    red = float(child[0][0].text)
+                    green = float(child[0][1].text)
+                    blue = float(child[0][2].text)
+                    red, green, blue = red ** (1/settings.GAMMA), green **\
+                    (1/settings.GAMMA), blue ** (1/ settings.GAMMA)
+                    alpha = float(child[0][3].text)
+                    gen_properties_value(
+                        lottie["c"], [
+                            red, green, blue, alpha], index.inc(),
+                        settings.DEFAULT_ANIMATED, settings.NO_INFO)
             elif child.attrib["name"] == "amount":
                 if child[0].tag == "animated":
                     # Telling the function that this is for opacity

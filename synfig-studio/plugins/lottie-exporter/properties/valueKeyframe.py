@@ -37,7 +37,6 @@ def gen_value_Keyframe(curve_list, animated, i):
     cur_get_after, next_get_before = waypoint.attrib["after"], next_waypoint.attrib["before"]
     cur_get_before, next_get_after = waypoint.attrib["before"], next_waypoint.attrib["after"]
     # Calculate positions of waypoints
-
     if animated.attrib["type"] == "angle":
         if cur_get_after == "auto":
             cur_get_after = "linear"
@@ -55,12 +54,24 @@ def gen_value_Keyframe(curve_list, animated, i):
         next_get_after = "constant"
         next_get_before = "constant"
 
+    # After effects only supports linear,ease-in,ease-out and constant interpolations for color
+    ##### No support for TCB and clamped interpolations in color is there yet #####
+    if animated.attrib["type"] == "color":
+        if cur_get_after in {"auto", "clamped"}:
+            cur_get_after = "linear"
+        if cur_get_before in {"auto", "clamped"}:
+            cur_get_before = "linear"
+        if next_get_before in {"auto", "clamped"}:
+            next_get_before = "linear"
+        if next_get_after in {"auto", "clamped"}:
+            next_get_after = "linear"
+
     cur_pos = parse_position(animated, i)
     next_pos = parse_position(animated, i + 1)
 
     lottie["t"] = float(waypoint.attrib["time"][:-1]) * settings.lottie_format["fr"]
-    lottie["s"] = [cur_pos.x]
-    lottie["e"] = [next_pos.x]
+    lottie["s"] = cur_pos.get_val()
+    lottie["e"] = next_pos.get_val()
 
     lottie["i"] = {}    
     lottie["o"] = {}    
@@ -69,16 +80,9 @@ def gen_value_Keyframe(curve_list, animated, i):
         out_val, in_val = calc_tangent(animated, lottie, i)
     except:
         # That means halt/constant interval
-        print("come")
         return
 
-    set_tangents(out_val, in_val, cur_pos, next_pos, lottie)
-
-    """
-    Need to confirm whether to put a -ve sign for in tangent(relative)
-    Ans:
-    YES, this negative sign is put in the normalize tangents part
-    """
+    set_tangents(out_val, in_val, cur_pos, next_pos, lottie, animated)
 
     if cur_get_after == "halt": # For ease out
         lottie["o"]["x"][0] = settings.OUT_TANGENT_X 
@@ -99,7 +103,7 @@ def gen_value_Keyframe(curve_list, animated, i):
             curve_list[-2]["i"]["x"][0] = settings.IN_TANGENT_X
             curve_list[-2]["i"]["y"][0] = settings.IN_TANGENT_Y
 
-def set_tangents(out_val, in_val, cur_pos, next_pos, lottie):
+def set_tangents(out_val, in_val, cur_pos, next_pos, lottie, animated):
      
     out_lst = out_val.get_list()
     in_lst = in_val.get_list()
@@ -115,4 +119,6 @@ def set_tangents(out_val, in_val, cur_pos, next_pos, lottie):
     lottie["o"]["x"][0] /= settings.TANGENT_FACTOR
     lottie["o"]["y"][0] /= settings.TANGENT_FACTOR
 
-    normalize_tangents(cur_pos, next_pos, lottie["i"], lottie["o"])
+    # If type is color, the tangents are already normalized
+    if animated.attrib["type"] != "color":
+        normalize_tangents(cur_pos, next_pos, lottie["i"], lottie["o"])
