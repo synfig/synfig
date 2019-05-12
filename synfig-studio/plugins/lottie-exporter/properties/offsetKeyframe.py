@@ -209,7 +209,6 @@ def calc_tangent(animated, lottie, i):
                       (after_next_pos - next_pos))/2
         else:
             in_val = next_pos - cur_pos      # t2 = p2 - p1
-    print(cur_get_after, next_get_before)
     return out_val, in_val
 
 def gen_properties_offset_keyframe(curve_list, animated, i):
@@ -262,7 +261,11 @@ def gen_properties_offset_keyframe(curve_list, animated, i):
     lottie["ti"] = []
 
     # Calculating the unchanged tangent
-    out_val, in_val = calc_tangent(animated, lottie, i)
+    try:
+        out_val, in_val = calc_tangent(animated, lottie, i)
+    except:
+        # This means constant interval
+        return
 
     lottie["to"] = out_val.get_list()
     lottie["ti"] = in_val.get_list()

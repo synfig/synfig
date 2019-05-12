@@ -22,7 +22,7 @@ def gen_value_Keyframed(lottie, animated, idx):
     lottie["k"].append({})
     lottie["k"][-1]["t"] = last_waypoint_time
 
-    if  "h" in lottie["k"][-2].keys():
+    if "h" in lottie["k"][-2].keys():
         lottie["k"][-1]["h"] = 1
         lottie["k"][-1]["s"] = lottie["k"][-2]["e"]
 

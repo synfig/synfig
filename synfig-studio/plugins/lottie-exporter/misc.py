@@ -180,3 +180,15 @@ def get_angle(theta):
         theta = 450 - theta
     theta = theta % 360
     return theta
+
+def is_animated(node):
+    if node.tag == "animated":
+        if len(node) == 1:
+            # This means not animated
+            return 1
+        else:
+            # This means animated
+            return 2
+    else:
+        # Not animated
+        return 0
