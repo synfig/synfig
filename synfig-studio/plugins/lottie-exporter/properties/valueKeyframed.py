@@ -1,11 +1,11 @@
 """
-Fill this
+Stores all the functions required for generating value key frames in lottie
 """
 import sys
 import settings
-sys.path.append("../")
 from properties.timeAdjust import time_adjust
 from properties.valueKeyframe import gen_value_Keyframe
+sys.path.append("../")
 
 def gen_value_Keyframed(lottie, animated, idx):
     """
@@ -30,6 +30,7 @@ def gen_value_Keyframed(lottie, animated, idx):
         if animated.attrib["type"] == "points":
             if lottie["k"][-2]["s"][0] > lottie["k"][-1]["s"][0]:
                 # Adding 1 frame to the previous time
-                lottie["k"][-1]["t"] = float(animated[-2].attrib["time"][:-1]) * settings.lottie_format["fr"] + 1
+                prev_frames = float(animated[-2].attrib["time"][:-1]) * settings.lottie_format["fr"]
+                lottie["k"][-1]["t"] = prev_frames + 1
 
     time_adjust(lottie, animated)

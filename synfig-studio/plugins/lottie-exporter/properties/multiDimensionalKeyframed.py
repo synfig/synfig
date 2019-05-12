@@ -1,11 +1,12 @@
 """
-Fill this
+Will store all the functions required for generation of
+multiDimensionalKeyframed file in lottie
 """
 import sys
-sys.path.append("..")
 import settings
 from properties.offsetKeyframe import gen_properties_offset_keyframe
 from properties.timeAdjust import time_adjust
+sys.path.append("..")
 
 def gen_properties_multi_dimensional_keyframed(lottie, animated, idx):
     """

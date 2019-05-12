@@ -1,13 +1,13 @@
 """
-Fill this
+Will store all the functions corresponding to shapes in lottie
 """
 import sys
-sys.path.append("..")
 import settings
 from helpers.transform import gen_helpers_transform
 from misc import Count
 from shapes.star import gen_shapes_star
 from shapes.fill import gen_shapes_fill
+sys.path.append("..")
 
 def gen_layer_shape(lottie, layer, idx):
     """

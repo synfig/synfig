@@ -1,8 +1,15 @@
-import sys 
-import settings
+"""
+Stores the functions required for adjusting time factor in the neighbouring
+waypoints in Synfig
+"""
+import sys
 sys.path.append("../")
 
 def time_adjust(lottie, animated):
+    """
+    Adjusts the tangents between neighbouring waypoints depending upon the time
+    factor between previous waypoints or next waypoints
+    """
     timeadjust = 0.5
     for i in range(len(animated) - 1):
         if i == 0:

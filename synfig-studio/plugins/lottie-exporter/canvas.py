@@ -5,28 +5,30 @@ import settings
 from misc import calculate_pixels_per_unit
 
 def calc_time(root, lottie, which):
+    """
+    Converts the starting time and ending time to lottie format
+    """
     if which == "ip":
-        st = "begin-time"
+        phase = "begin-time"
     elif which == "op":
-        st = "end-time"
-    time = root.attrib[st].split(" ")
+        phase = "end-time"
+    time = root.attrib[phase].split(" ")
     lottie[which] = 0
-    for fr in time:
+    for frame in time:
         # Adding time in seconds
-        if fr[-1] == "s":
-            lottie[which] += float(fr[:-1]) * lottie["fr"]
+        if frame[-1] == "s":
+            lottie[which] += float(frame[:-1]) * lottie["fr"]
         # Adding time in frames
-        elif fr[-1] == "f":
-            lottie[which] += float(fr[:-1])
+        elif frame[-1] == "f":
+            lottie[which] += float(frame[:-1])
 
 
 def gen_canvas(lottie, root):
-    """ 
+    """
     Generates the canvas for the lottie format
     It is the outer most dictionary in the lottie json format
     """
-    settings.view_box_canvas["val"] = [float(itr)
-                              for itr in root.attrib["view-box"].split()]
+    settings.view_box_canvas["val"] = [float(itr) for itr in root.attrib["view-box"].split()]
     if "width" in root.attrib.keys():
         lottie["w"] = int(root.attrib["width"])
     else:

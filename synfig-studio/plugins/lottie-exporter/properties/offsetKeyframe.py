@@ -1,19 +1,24 @@
 """
-Fill this
+Will store all the function necessary for generation of offset properties of a
+keyframe in lottie
 """
 import sys
 import copy
-sys.path.append("..")
 import settings
 from misc import parse_position, change_axis, Vector
+sys.path.append("..")
 
-"""
-A Function for testing approximate equality
-"""
-def isclose(a, b, rel_tol=1e-09, abs_tol=0.0):
-    return abs(a-b) <= max(rel_tol * max(abs(a), abs(b)), abs_tol)
+def isclose(a_val, b_val, rel_tol=1e-09, abs_tol=0.0):
+    """
+    A Function for testing approximate equality
+    """
+    return abs(a_val - b_val) <= max(rel_tol * max(abs(a_val), abs(b_val)), abs_tol)
 
 def clamped_tangent(p1, p2, p3, animated, i):
+    """
+    Function corresponding to clamped function in Synfig
+    It generates the tangent when clamped waypoints are used
+    """
     # pw -> prev_waypoint, w -> waypoint, nw -> next_waypoint
     pw, w, nw = animated[i-1], animated[i], animated[i+1]
     t1 = float(pw.attrib["time"][:-1]) * settings.lottie_format["fr"]
@@ -49,30 +54,45 @@ def clamped_tangent(p1, p2, p3, animated, i):
     return tangent
 
 def clamped_vector(p1, p2, p3, animated, i, lottie, ease):
-    x_tan = clamped_tangent(p1.x, p2.x, p3.x, animated, i)
-    y_tan = clamped_tangent(p1.y, p2.y, p3.y, animated, i)
+    """
+    Function to generate the collective tangents i.e. x tangent and y tangent
+    when clamped waypoints are used
+    """
+    x_tan = clamped_tangent(p1.val1, p2.val1, p3.val1, animated, i)
+    y_tan = clamped_tangent(p1.val2, p2.val2, p3.val2, animated, i)
     if isclose(x_tan, 0.0) or isclose(y_tan, 0.0):
         if ease == "in":
             ease_in(lottie)
         else:
             ease_out(lottie)
-    return Vector(clamped_tangent(p1.x, p2.x, p3.x, animated, i), clamped_tangent(p1.y, p2.y, p3.y, animated, i))
+    return Vector(x_tan, y_tan)
 
 def ease_out(lottie):
-    lottie["o"]["x"] = settings.OUT_TANGENT_X 
+    """
+    To set the ease out values in lottie format
+    """
+    lottie["o"]["x"] = settings.OUT_TANGENT_X
     lottie["o"]["y"] = settings.OUT_TANGENT_Y
 
 def ease_in(lottie):
+    """
+    To set the ease in values in lottie format
+    """
     lottie["i"]["x"] = settings.IN_TANGENT_X
     lottie["i"]["y"] = settings.IN_TANGENT_Y
 
 def handle_color():
+    """
+    Default linear tangent values for color interpolations
+    """
     out_val = Vector(0.5, 0.5)
     in_val = Vector(0.5, 0.5)
     return out_val, in_val
 
 def calc_tangent(animated, lottie, i):
-
+    """
+    Calculates the tangent, given two waypoints and there interpolation methods
+    """
     waypoint, next_waypoint = animated[i], animated[i+1]
     cur_get_after, next_get_before = waypoint.attrib["after"], next_waypoint.attrib["before"]
     cur_get_before, next_get_after = waypoint.attrib["before"], next_waypoint.attrib["after"]
@@ -175,7 +195,13 @@ def calc_tangent(animated, lottie, i):
     if next_get_before == "clamped":
         if i + 2 <= len(animated) - 1:
             ease = "in"
-            in_val = clamped_vector(cur_pos, next_pos, after_next_pos, animated, i + 1, lottie, ease)
+            in_val = clamped_vector(cur_pos,
+                                    next_pos,
+                                    after_next_pos,
+                                    animated,
+                                    i + 1,
+                                    lottie,
+                                    ease)
         else:
             in_val = next_pos - cur_pos     # t2 = p2 - p1
 
@@ -187,14 +213,16 @@ def calc_tangent(animated, lottie, i):
         if animated.attrib["type"] == "vector":
             del lottie["to"], lottie["ti"]
         del lottie["i"], lottie["o"]
-        # "e" is not needed, but is still not deleted as it is of use in the last iteration of animation
+        # "e" is not needed, but is still not deleted as
+        # it is of use in the last iteration of animation
+        # See properties/multiDimenstionalKeyframed.py for more details
         # del lottie["e"]
 
         # If the number of points is decresing, then hold interpolation should
         # have reverse effect. The value should instantly decrease and remain
         # same for the rest of the interval
         if animated.attrib["type"] == "points":
-            if i > 0 and prev_pos.x > cur_pos.x:
+            if i > 0 and prev_pos.val1 > cur_pos.val1:
                 t_now = float(animated[i-1].attrib["time"][:-1]) * settings.lottie_format["fr"] + 1
                 lottie["t"] = t_now
         return
@@ -255,17 +283,17 @@ def gen_properties_offset_keyframe(curve_list, animated, i):
     if next_get_before == "halt": # For ease in
         ease_in(lottie)
     lottie["t"] = float(waypoint.attrib["time"][:-1]) * settings.lottie_format["fr"]
-    lottie["s"] = change_axis(cur_pos.x, cur_pos.y)
-    lottie["e"] = change_axis(next_pos.x, next_pos.y)
+    lottie["s"] = change_axis(cur_pos.val1, cur_pos.val2)
+    lottie["e"] = change_axis(next_pos.val1, next_pos.val2)
     lottie["to"] = []
     lottie["ti"] = []
 
     # Calculating the unchanged tangent
     try:
         out_val, in_val = calc_tangent(animated, lottie, i)
-    except:
+    except Exception as excep:
         # This means constant interval
-        return
+        return excep
 
     lottie["to"] = out_val.get_list()
     lottie["ti"] = in_val.get_list()

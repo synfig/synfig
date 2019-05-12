@@ -30,6 +30,10 @@ OUT_TANGENT_X = 0.42
 OUT_TANGENT_Y = 0
 
 def init():
+    """
+    Initialises the final dictionary corresponding to conversion and
+    also the canvas dictionary needed in misc functions
+    """
     # Final converted dictionary
     global lottie_format
     lottie_format = {}

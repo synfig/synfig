@@ -1,16 +1,22 @@
 """
-Fill this
+Implements function required for generating tangent between two value key frames
 """
 import sys
-import settings
 import random
-sys.path.append("../")
+import settings
 from misc import parse_position
-from properties.offsetKeyframe import ease_in, ease_out, calc_tangent, isclose
+from properties.offsetKeyframe import calc_tangent
+sys.path.append("../")
 
 def normalize_tangents(cur_pos, next_pos, t_in, t_out):
-    time_scale = next_pos.y - cur_pos.y    # time_scale means converting time(on x-axis) to 0-1 range
-    value_scale = next_pos.x - cur_pos.x   # value_scale -> converting value(on y-axis to 0-1 range)
+    """
+    Converts the tangents from arbitrary range to the range of 0-1
+    """
+    # time_scale means converting time(on x-axis) to 0-1 range
+    time_scale = next_pos.val2 - cur_pos.val2
+
+    # value_scale -> converting value(on y-axis to 0-1 range)
+    value_scale = next_pos.val1 - cur_pos.val1
 
     # If ever the value scale equals to absolute zero, randomly add or subtract
     # 1e-9 to it, in order to avoid division by zero
@@ -20,14 +26,15 @@ def normalize_tangents(cur_pos, next_pos, t_in, t_out):
         bias *= 1e-9
         value_scale += bias
 
-    time_diff = cur_pos.y / time_scale
-    value_diff = cur_pos.x / value_scale
+    time_diff = cur_pos.val2 / time_scale
+    value_diff = cur_pos.val1 / value_scale
 
-    t_out["x"][0] += cur_pos.y     # The tangents were relative to cur_pos, now relative to 0
-    t_out["y"][0] += cur_pos.x
+    t_out["x"][0] += cur_pos.val2     # The tangents were relative to cur_pos, now relative to 0
+    t_out["y"][0] += cur_pos.val1
 
-    t_in["x"][0] = next_pos.y - t_in["x"][0]     # -ve sign because lottie and synfig use opposite in tangents
-    t_in["y"][0] = next_pos.x - t_in["y"][0]
+    # -ve sign because lottie and synfig use opposite "in" tangents
+    t_in["x"][0] = next_pos.val2 - t_in["x"][0]
+    t_in["y"][0] = next_pos.val1 - t_in["y"][0]
 
     # abs is put in order to deal with decreasing value
     t_out["x"][0] = abs(t_out["x"][0] / time_scale - time_diff)
@@ -82,19 +89,19 @@ def gen_value_Keyframe(curve_list, animated, i):
     lottie["s"] = cur_pos.get_val()
     lottie["e"] = next_pos.get_val()
 
-    lottie["i"] = {}    
-    lottie["o"] = {}    
+    lottie["i"] = {}
+    lottie["o"] = {}
 
     try:
         out_val, in_val = calc_tangent(animated, lottie, i)
-    except:
+    except Exception as excep:
         # That means halt/constant interval
-        return
+        return excep
 
     set_tangents(out_val, in_val, cur_pos, next_pos, lottie, animated)
 
     if cur_get_after == "halt": # For ease out
-        lottie["o"]["x"][0] = settings.OUT_TANGENT_X 
+        lottie["o"]["x"][0] = settings.OUT_TANGENT_X
         lottie["o"]["y"][0] = settings.OUT_TANGENT_Y
     if next_get_before == "halt": # For ease in
         lottie["i"]["x"][0] = settings.IN_TANGENT_X
@@ -105,15 +112,17 @@ def gen_value_Keyframe(curve_list, animated, i):
 
         # need value for previous tangents
         # It may be helpful to store them somewhere
-        ov, iv = calc_tangent(animated, curve_list[-2], i - 1)  
-        iv = out_val
-        set_tangents(ov, iv, parse_position(animated, i-1), cur_pos, curve_list[-2])
+        prev_ov, prev_iv = calc_tangent(animated, curve_list[-2], i - 1)
+        prev_iv = out_val
+        set_tangents(prev_ov, prev_iv, parse_position(animated, i-1), cur_pos, curve_list[-2])
         if cur_get_after == "halt":
             curve_list[-2]["i"]["x"][0] = settings.IN_TANGENT_X
             curve_list[-2]["i"]["y"][0] = settings.IN_TANGENT_Y
 
 def set_tangents(out_val, in_val, cur_pos, next_pos, lottie, animated):
-     
+    """
+    To set the tangents as required by the lottie format for value waypoints
+    """
     out_lst = out_val.get_list()
     in_lst = in_val.get_list()
 

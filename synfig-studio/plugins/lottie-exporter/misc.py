@@ -20,93 +20,113 @@ class Count:
 class Vector:
     """
     To store the position of layers
+    val1 represents the x-axis value
+    val2 represents the y-axis value
+
+    For other parameters
+    val1 represents the value of the parameter
+    val2 represents the time parameter
     """
-    def __init__(self, x = 0, y = 0):
-        self.x = x
-        self.y = y
+    def __init__(self, val1=0, val2=0):
+        self.val1 = val1
+        self.val2 = val2
 
     def __str__(self):
-        return "({0},{1})".format(self.x,self.y)
+        return "({0},{1})".format(self.val1, self.val2)
 
     def __add__(self, other):
-        x = self.x + other.x
-        y = self.y + other.y
-        return Vector(x, y)
+        val1 = self.val1 + other.val1
+        val2 = self.val2 + other.val2
+        return Vector(val1, val2)
 
     def __sub__(self, other):
-        x = self.x - other.x
-        y = self.y - other.y
-        return Vector(x, y)
+        val1 = self.val1 - other.val1
+        val2 = self.val2 - other.val2
+        return Vector(val1, val2)
 
     # other can only be of type real
     def __mul__(self, other):
         if not isinstance(other, self.__class__):
-            x = self.x * other
-            y = self.y * other
-            return Vector(x, y)
+            val1 = self.val1 * other
+            val2 = self.val2 * other
+            return Vector(val1, val2)
+        raise Exception('Multiplication with {} not defined'.format(type(other)))
 
     def __rmul__(self, other):
         return self.__mul__(other)
 
     def __truediv__(self, other):
         if not isinstance(other, self.__class__):
-            x = self.x / other
-            y = self.y / other
-            return Vector(x, y)
+            val1 = self.val1 / other
+            val2 = self.val2 / other
+            return Vector(val1, val2)
+        raise Exception('Division with {} not defined'.format(type(other)))
 
     def get_list(self):
-        return [self.x, self.y]
+        """
+        Get val1 and val2 values in the format required by lottie
+        """
+        return [self.val1, self.val2]
 
     def get_val(self):
-        return [self.x]
+        """
+        Get only val1 value in the format required by lottie
+        """
+        return [self.val1]
 
 class Color:
     """
     To store the colors in Synfig and operations on them
     """
-    def __init__(self, r = 1, g = 1, b = 1, a = 1):
-        self.r = r
-        self.g = g
-        self.b = b
-        self.a = a
+    def __init__(self, red=1, green=1, blue=1, alpha=1):
+        self.red = red
+        self.green = green
+        self.blue = blue
+        self.alpha = alpha
 
     def __str__(self):
-        return "({0}, {1}, {2}, {3})".format(self.r, self.g, self.b, self.a)
+        return "({0}, {1}, {2}, {3})".format(self.red, self.green, self.blue,
+                                             self.alpha)
 
     def __add__(self, other):
-        r = self.r + other.r
-        g = self.g + other.g
-        b = self.b + other.b
-        return Color(r, g, b, self.a)
+        red = self.red + other.red
+        green = self.green + other.green
+        blue = self.blue + other.blue
+        return Color(red, green, blue, self.alpha)
 
     def __sub__(self, other):
-        r = self.r - other.r
-        g = self.g - other.g
-        b = self.b - other.b
-        return Color(r, g, b, self.a)
+        red = self.red - other.red
+        green = self.green - other.green
+        blue = self.blue - other.blue
+        return Color(red, green, blue, self.alpha)
 
     def __mul__(self, other):
         if not isinstance(other, self.__class__):
-            r = self.r * other
-            g = self.g * other
-            b = self.b * other
-            return Color(r, g, b, self.a)
+            red = self.red * other
+            green = self.green * other
+            blue = self.blue * other
+            return Color(red, green, blue, self.alpha)
+        raise Exception('Multiplication with {} not defined'.format(type(other)))
 
     def __rmul__(self, other):
         return self.__mul__(other)
 
     def __truediv__(self, other):
         if not isinstance(other, self.__class__):
-            r = self.r / other
-            g = self.g / other
-            b = self.b / other
-            return Color(r, g, b, self.a)
+            red = self.red / other
+            green = self.green / other
+            blue = self.blue / other
+            return Color(red, green, blue, self.alpha)
+        raise Exception('Division with {} not defined'.format(type(other)))
 
     def get_val(self):
-        return [self.r, self.g, self.b, self.a]
+        """
+        Get the color in the format required by lottie
+        """
+        return [self.red, self.green, self.blue, self.alpha]
 
 def calculate_pixels_per_unit():
-    """ 
+    """
     Gives the value of 1 unit in terms of pixels according to the canvas defined
     """
     image_width = float(settings.lottie_format["w"])
@@ -139,19 +159,24 @@ def parse_position(animated, i):
 
     elif animated.attrib["type"] == "angle":
         pos = [get_angle(float(animated[i][0].attrib["value"])),
-                float(animated[i].attrib["time"][:-1]) * settings.lottie_format["fr"]]
+               float(animated[i].attrib["time"][:-1]) * settings.lottie_format["fr"]]
 
     elif animated.attrib["type"] == "opacity":
         pos = [float(animated[i][0].attrib["value"]) * settings.OPACITY_CONSTANT,
-                float(animated[i].attrib["time"][:-1]) * settings.lottie_format["fr"]]
+               float(animated[i].attrib["time"][:-1]) * settings.lottie_format["fr"]]
 
     elif animated.attrib["type"] == "points":
         pos = [int(animated[i][0].attrib["value"]),
-                float(animated[i].attrib["time"][:-1]) * settings.lottie_format["fr"]]
+               float(animated[i].attrib["time"][:-1]) * settings.lottie_format["fr"]]
 
     elif animated.attrib["type"] == "color":
-        red, green, blue, alpha = float(animated[i][0][0].text), float(animated[i][0][1].text), float(animated[i][0][2].text), float(animated[i][0][3].text)
-        red, green, blue = red ** (1/settings.GAMMA), green ** (1/settings.GAMMA), blue ** (1/settings.GAMMA)
+        red = float(animated[i][0][0].text)
+        green = float(animated[i][0][1].text)
+        blue = float(animated[i][0][2].text)
+        alpha = float(animated[i][0][3].text)
+        red = red ** (1/settings.GAMMA)
+        green = green ** (1/settings.GAMMA)
+        blue = blue ** (1/settings.GAMMA)
         return Color(red, green, blue, alpha)
 
     return Vector(pos[0], pos[1])
@@ -163,8 +188,8 @@ def parse_value(animated, i):
     return: Vector(value, time)
     """
     pos = [float(animated[i][0].attrib["value"]) * settings.PIX_PER_UNIT,
-            float(animated[i].attrib["time"][:-1]) * settings.lottie_format["fr"]]
-    return pos 
+           float(animated[i].attrib["time"][:-1]) * settings.lottie_format["fr"]]
+    return pos
 
 def get_angle(theta):
     """
@@ -182,13 +207,18 @@ def get_angle(theta):
     return theta
 
 def is_animated(node):
+    """
+    Tells whether a parater is animated or not
+    Return: 0, if not animated
+          : 1, if only single waypoint is present
+          : 2, if more than one waypoint is present
+    """
+    case = 0
     if node.tag == "animated":
         if len(node) == 1:
-            # This means not animated
-            return 1
+            case = 1
         else:
-            # This means animated
-            return 2
+            case = 2
     else:
-        # Not animated
-        return 0
+        case = 0
+    return case
