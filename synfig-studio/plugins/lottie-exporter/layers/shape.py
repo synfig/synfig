@@ -7,6 +7,7 @@ from helpers.transform import gen_helpers_transform
 from misc import Count
 from shapes.star import gen_shapes_star
 from shapes.fill import gen_shapes_fill
+from helpers.blendMode import get_blend
 sys.path.append("..")
 
 def gen_layer_shape(lottie, layer, idx):
@@ -33,5 +34,6 @@ def gen_layer_shape(lottie, layer, idx):
     lottie["ip"] = settings.lottie_format["ip"]
     lottie["op"] = settings.lottie_format["op"]
     lottie["st"] = 0            # Don't know yet
-    lottie["bm"] = settings.DEFAULT_BLEND
+    get_blend(lottie, layer)
+    #lottie["bm"] = settings.DEFAULT_BLEND
     lottie["markers"] = []      # Markers to be filled yet

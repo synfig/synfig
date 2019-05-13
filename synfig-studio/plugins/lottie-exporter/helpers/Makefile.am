@@ -3,7 +3,8 @@
 PLUGIN_NAME = helpers
 
 EXTRA_FILES = \
-			  transform.py
+			  transform.py \
+			  blendMode.py
 
 plugindir = ${datadir}/synfig/plugins/lottie-exporter/$(PLUGIN_NAME)
 plugin_DATA = \
