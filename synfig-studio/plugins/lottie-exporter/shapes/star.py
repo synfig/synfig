@@ -22,11 +22,20 @@ def gen_shapes_star(lottie, layer, idx):
     lottie["or"] = {}       # Outer radius
     lottie["is"] = {}       # Inner roundness of the star
     lottie["os"] = {}       # Outer roundness of the star
-    regular_polygon = "false"
+    regular_polygon = {"prop" : "false"}
     for child in layer:
         if child.tag == "param":
             if child.attrib["name"] == "regular_polygon":
-                regular_polygon = child[0].attrib["value"]
+                is_animate = is_animated(child[0])
+                if is_animate == 2:
+                    regular_polygon["prop"] = "changing"
+                    # Copy the child address to dictionary
+                    regular_polygon["animated"] = child[0]
+                elif is_animate == 1:
+                    regular_polygon["prop"] = child[0][0][0].attrib["value"]
+                else:
+                    regular_polygon["prop"] = child[0].attrib["value"]
+                regular_polygon["animate"] = is_animate
 
             elif child.attrib["name"] == "points":
                 is_animate = is_animated(child[0])
@@ -112,20 +121,33 @@ def gen_shapes_star(lottie, layer, idx):
                                          settings.DEFAULT_ANIMATED,
                                          settings.NO_INFO)
 
-    if regular_polygon == "false":
-        lottie["sy"] = 1    # Star Type
+    # If not animated, then go to if, else
+    if regular_polygon["animate"] in {0, 1}:
+        if regular_polygon["prop"] == "false":
+            lottie["sy"] = 1    # Star Type
 
-        # inner property is only needed if type is star
+            # inner property is only needed if type is star
+            gen_properties_value(lottie["is"],
+                                 0,
+                                 index.inc(),
+                                 settings.DEFAULT_ANIMATED,
+                                 settings.NO_INFO)
+        else:
+            lottie["sy"] = 2    # Polygon Type
+
+            # for polygon type, "ir" and "is" must not be present
+            del lottie["ir"]
+
+    # If animated, it will always be of type star
+    else:
+        polygon_correction(lottie, regular_polygon["animated"])
+
+        lottie["sy"] = 1
         gen_properties_value(lottie["is"],
                              0,
                              index.inc(),
                              settings.DEFAULT_ANIMATED,
                              settings.NO_INFO)
-    else:
-        lottie["sy"] = 2    # Polygon Type
-
-        # for polygon type, "ir" and "is" must not be present
-        del lottie["ir"]
 
     gen_properties_value(lottie["os"],
                          0,
@@ -133,3 +155,37 @@ def gen_shapes_star(lottie, layer, idx):
                          settings.DEFAULT_ANIMATED,
                          settings.NO_INFO)
     lottie["ix"] = idx
+
+"""
+Below 2 functions are not complete yet:
+Issues: If outer radius is animated, how do I change inner radius along with it
+such that the shape remains polygon only
+"""
+def polygon_correction(lottie, animated):
+    length = len(animated) - 1
+    st = 0
+    prev = "false"
+    if animated[0][0].attrib["value"] == "false":
+        prev = "true"
+    else:
+        prev = "false"
+
+    while st <= length:
+        while st <= length and animated[st][0].attrib["value"] == prev:
+            st += 1
+        if st > length:
+            break
+        insert(lottie, animated, st)
+        prev = animated[st][0].attrib["value"]
+
+def insert(lottie, animated, i):
+    t_insert = float(animated[i].attrib["time"][:-1]) * settings.lottie_format["fr"]
+    # If animated
+    if lottie["ir"]["a"] == 1:
+        st = 0
+        length = len(lottie["ir"]["k"]) - 1
+        while st <= length:
+            if lottie["ir"]["k"][st]["t"] > t_insert:
+                break
+            st += 1
+    return 
