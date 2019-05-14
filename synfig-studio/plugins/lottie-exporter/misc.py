@@ -198,12 +198,11 @@ def get_angle(theta):
     lottie uses positive y-axis as the start point and goes clockwise
     """
     theta = int(theta)
+    shift = -int(theta / 360)
     theta = theta % 360
-    if theta < 90:
-        theta = 90 - theta
-    else:
-        theta = 450 - theta
-    theta = theta % 360
+    theta = (90 - theta) % 360
+
+    theta = theta + shift * 360
     return theta
 
 def is_animated(node):

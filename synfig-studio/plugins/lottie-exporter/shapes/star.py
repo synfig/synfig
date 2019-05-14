@@ -56,9 +56,11 @@ def gen_shapes_star(lottie, layer, idx):
                         theta = get_angle(float(child[0].attrib["value"]))
                     else:
                         theta = get_angle(float(child[0][0][0].attrib["value"]))
-                    gen_properties_value(
-                        lottie["r"], theta, index.inc(), settings.DEFAULT_ANIMATED,
-                        settings.NO_INFO)
+                    gen_properties_value(lottie["r"],
+                                         theta,
+                                         index.inc(),
+                                         settings.DEFAULT_ANIMATED,
+                                         settings.NO_INFO)
             elif child.attrib["name"] == "radius1":
                 is_animate = is_animated(child[0])
                 if is_animate == 2:
@@ -70,10 +72,11 @@ def gen_shapes_star(lottie, layer, idx):
                     else:
                         r_outer = float(child[0][0][0].attrib["value"])
 
-                    gen_properties_value(
-                        lottie["or"], int(
-                            settings.PIX_PER_UNIT * r_outer), index.inc(),
-                        settings.DEFAULT_ANIMATED, settings.NO_INFO)
+                    gen_properties_value(lottie["or"],
+                                         int(settings.PIX_PER_UNIT * r_outer),
+                                         index.inc(),
+                                         settings.DEFAULT_ANIMATED,
+                                         settings.NO_INFO)
             elif child.attrib["name"] == "radius2":
                 is_animate = is_animated(child[0])
                 if is_animate == 2:
@@ -84,10 +87,11 @@ def gen_shapes_star(lottie, layer, idx):
                         r_inner = float(child[0].attrib["value"])
                     else:
                         r_inner = float(child[0][0][0].attrib["value"])
-                    gen_properties_value(
-                        lottie["ir"], int(
-                            settings.PIX_PER_UNIT * r_inner), index.inc(),
-                        settings.DEFAULT_ANIMATED, settings.NO_INFO)
+                    gen_properties_value(lottie["ir"],
+                                         int(settings.PIX_PER_UNIT * r_inner),
+                                         index.inc(),
+                                         settings.DEFAULT_ANIMATED,
+                                         settings.NO_INFO)
             elif child.attrib["name"] == "origin":
                 is_animate = is_animated(child[0])
                 if is_animate == 2:
