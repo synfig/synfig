@@ -171,10 +171,10 @@ def polygon_correction(lottie, animated):
 
     while st <= length:
         j = st + 1
-        while st <= length and animated[st][0].attrib["value"] == animated[j][0].attrib["value"]:
+        while j <= length and animated[st][0].attrib["value"] == animated[j][0].attrib["value"]:
             j += 1
-        st = j - 1
-        true_arr["arr"].append(st)
+        true_arr["arr"].append(j - 1)
+        st = j
 
     # These operations will be performed on this new array created
     now = true_arr["start"]
@@ -189,11 +189,11 @@ def polygon_correction(lottie, animated):
                 break
             else:
                 j = true_arr["arr"][st+1]
-                e_frame = float(animated[j].attrib["time"][:-1]) * settings.lottie_format["fr"]) 
+                e_frame = float(animated[j].attrib["time"][:-1]) * settings.lottie_format["fr"]
                 e_frame -= 1
         elif now == "true":
             pass
-        modify(lottie, animated, s_frame, e_frame)
+        #modify(lottie, animated, s_frame, e_frame)
         now = toggle(now)
 
 def toggle(val):
