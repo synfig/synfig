@@ -164,22 +164,47 @@ such that the shape remains polygon only
 def polygon_correction(lottie, animated):
     length = len(animated) - 1
     st = 0
-    prev = "false"
-    if animated[0][0].attrib["value"] == "false":
-        prev = "true"
-    else:
-        prev = "false"
+
+    true_arr = {}
+    true_arr["arr"] = []
+    true_arr["start"] = animated[0][0].attrib["value"]
 
     while st <= length:
-        while st <= length and animated[st][0].attrib["value"] == prev:
-            st += 1
-        if st > length:
-            break
-        insert(lottie, animated, st)
-        prev = animated[st][0].attrib["value"]
+        j = st + 1
+        while st <= length and animated[st][0].attrib["value"] == animated[j][0].attrib["value"]:
+            j += 1
+        st = j - 1
+        true_arr["arr"].append(st)
 
-def insert(lottie, animated, i):
-    t_insert = float(animated[i].attrib["time"][:-1]) * settings.lottie_format["fr"]
+    # These operations will be performed on this new array created
+    now = true_arr["start"]
+    for st in range(len(true_arr["arr"])):
+        if now == "false":
+            i = true_arr["arr"][st]
+            s_frame = float(animated[i].attrib["time"][:-1]) * settings.lottie_format["fr"]
+            s_frame += 1
+
+            # Till the end it is a star
+            if st + 1 == len(true_arr["arr"]):
+                break
+            else:
+                j = true_arr["arr"][st+1]
+                e_frame = float(animated[j].attrib["time"][:-1]) * settings.lottie_format["fr"]) 
+                e_frame -= 1
+        elif now == "true":
+            pass
+        modify(lottie, animated, s_frame, e_frame)
+        now = toggle(now)
+
+def toggle(val):
+    ret = "false"
+    if val == "false":
+        ret = "true"
+    return ret
+
+def modify(lottie, animated, s_frame, e_frame):
+    if e_frame < s_frame:
+        return
     # If animated
     if lottie["ir"]["a"] == 1:
         st = 0
