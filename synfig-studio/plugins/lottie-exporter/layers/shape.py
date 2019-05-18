@@ -6,6 +6,7 @@ import settings
 from helpers.transform import gen_helpers_transform
 from misc import Count
 from shapes.star import gen_shapes_star
+from shapes.circle import gen_shapes_circle
 from shapes.fill import gen_shapes_fill
 from helpers.blendMode import get_blend
 sys.path.append("..")
@@ -28,6 +29,9 @@ def gen_layer_shape(lottie, layer, idx):
     lottie["shapes"].append({})
     if layer.attrib["type"] == "star":
         gen_shapes_star(lottie["shapes"][0], layer, index.inc())
+    elif layer.attrib["type"] == "circle":
+        gen_shapes_circle(lottie["shapes"][0], layer, index.inc())
+
     lottie["shapes"].append({})  # For the fill or color
     gen_shapes_fill(lottie["shapes"][1], layer)
 
