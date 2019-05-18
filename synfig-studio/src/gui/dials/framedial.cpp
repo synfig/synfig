@@ -132,7 +132,7 @@ Widget_Time*
 FrameDial::create_end_time_entry(const char *tooltip)
 {
 	end_time = manage(new Widget_Time());
-	end_time->set_width_chars(4);
+	end_time->set_width_chars(6);
 	end_time->set_tooltip_text(tooltip);
 	end_time->show();
 	add(*end_time);
