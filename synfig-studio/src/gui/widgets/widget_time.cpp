@@ -143,7 +143,7 @@ Widget_Time::on_event(GdkEvent* event)
 	case GDK_2BUTTON_PRESS:
 	case GDK_3BUTTON_PRESS:
 		if (!has_focus())
-			grab_focus();
+			grab_focus_without_selecting();
 		break;
 	default:
 		break;
