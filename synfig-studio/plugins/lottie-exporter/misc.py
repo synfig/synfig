@@ -26,10 +26,13 @@ class Vector:
     For other parameters
     val1 represents the value of the parameter
     val2 represents the time parameter
+
+    type represents what this vector is representing
     """
     def __init__(self, val1=0, val2=0):
         self.val1 = val1
         self.val2 = val2
+        self.type = None
 
     def __str__(self):
         return "({0},{1})".format(self.val1, self.val2)
@@ -72,7 +75,18 @@ class Vector:
         """
         Get only val1 value in the format required by lottie
         """
+        if self.type == "circle_radius":
+            return self.get_val2()
         return [self.val1]
+    
+    def get_val2(self):
+        """
+        Get val1 value twice as required in circle layer by lottie format
+        """
+        return [self.val1, self.val1]
+
+    def set_type(self, _type):
+        self.type = _type
 
 class Color:
     """
@@ -154,7 +168,7 @@ def parse_position(animated, i):
                float(animated[i][0][1].text)]
         pos = [settings.PIX_PER_UNIT*x for x in pos]
 
-    elif animated.attrib["type"] == "real":
+    elif animated.attrib["type"] in {"real", "circle_radius"}:
         pos = parse_value(animated, i)
 
     elif animated.attrib["type"] == "angle":
@@ -179,7 +193,9 @@ def parse_position(animated, i):
         blue = blue ** (1/settings.GAMMA)
         return Color(red, green, blue, alpha)
 
-    return Vector(pos[0], pos[1])
+    ret = Vector(pos[0], pos[1])
+    ret.set_type(animated.attrib["type"])
+    return ret
 
 def parse_value(animated, i):
     """

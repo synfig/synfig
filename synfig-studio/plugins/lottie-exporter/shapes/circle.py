@@ -47,6 +47,7 @@ def gen_shapes_circle(lottie, layer, idx):
             elif child.attrib["name"] == "radius":
                 is_animate = is_animated(child[0])
                 if is_animate == 2:
+                    child[0].attrib['type'] = "circle_radius"
                     gen_value_Keyframed(lottie["s"], child[0], index.inc())
                 else:
                     radius = 0             # default value for radius
