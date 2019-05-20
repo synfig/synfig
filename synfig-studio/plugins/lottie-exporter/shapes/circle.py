@@ -57,8 +57,9 @@ def gen_shapes_circle(lottie, layer, idx):
                         radius = float(child[0][0][0].attrib["value"])
 
                     radius_pix = int(settings.PIX_PER_UNIT) * radius
+                    diam = radius_pix * 2
                     gen_properties_value(lottie["s"],
-                                         [radius_pix, radius_pix],
+                                         [diam, diam],
                                          index.inc(),
                                          settings.DEFAULT_ANIMATED,
                                          settings.NO_INFO)

@@ -295,8 +295,11 @@ def gen_properties_offset_keyframe(curve_list, animated, i):
         # This means constant interval
         return excep
 
-    lottie["to"] = out_val.get_list()
-    lottie["ti"] = in_val.get_list()
+    # This module is only needed for origin animation
+    out_val.set_type("origin")
+    in_val.set_type("origin")
+    lottie["to"] = out_val.get_val()
+    lottie["ti"] = in_val.get_val()
 
     # TCB/!TCB and list is not empty
     if cur_get_before == "auto" and cur_get_after != "auto" and i > 0:

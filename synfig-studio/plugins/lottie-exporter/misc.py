@@ -35,7 +35,7 @@ class Vector:
         self.type = None
 
     def __str__(self):
-        return "({0},{1})".format(self.val1, self.val2)
+        return "({0},{1}, {2})".format(self.val1, self.val2, self.type)
 
     def __add__(self, other):
         val1 = self.val1 + other.val1
@@ -65,26 +65,17 @@ class Vector:
             return Vector(val1, val2)
         raise Exception('Division with {} not defined'.format(type(other)))
 
-    def get_list(self):
-        """
-        Get val1 and val2 values in the format required by lottie
-        """
-        return [self.val1, self.val2]
-
     def get_val(self):
         """
-        Get only val1 value in the format required by lottie
+        Get value in the format required by lottie
         """
-        if self.type == "circle_radius":
-            return self.get_val2()
-        return [self.val1]
+        if self.type == "origin":
+            return [self.val1, self.val2]
+        elif self.type == "circle_radius":
+            return [self.val1, self.val1]
+        else:
+            return [self.val1]
     
-    def get_val2(self):
-        """
-        Get val1 value twice as required in circle layer by lottie format
-        """
-        return [self.val1, self.val1]
-
     def set_type(self, _type):
         self.type = _type
 
@@ -168,8 +159,12 @@ def parse_position(animated, i):
                float(animated[i][0][1].text)]
         pos = [settings.PIX_PER_UNIT*x for x in pos]
 
-    elif animated.attrib["type"] in {"real", "circle_radius"}:
+    elif animated.attrib["type"] == "real":
         pos = parse_value(animated, i)
+
+    elif animated.attrib["type"] == "circle_radius":
+        pos = parse_value(animated, i)
+        pos[0] *= 2 # Diameter
 
     elif animated.attrib["type"] == "angle":
         pos = [get_angle(float(animated[i][0].attrib["value"])),
