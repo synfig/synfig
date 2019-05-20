@@ -29,10 +29,10 @@ class Vector:
 
     type represents what this vector is representing
     """
-    def __init__(self, val1=0, val2=0):
+    def __init__(self, val1=0, val2=0, _type=None):
         self.val1 = val1
         self.val2 = val2
-        self.type = None
+        self.type = _type
 
     def __str__(self):
         return "({0},{1}, {2})".format(self.val1, self.val2, self.type)
@@ -40,19 +40,19 @@ class Vector:
     def __add__(self, other):
         val1 = self.val1 + other.val1
         val2 = self.val2 + other.val2
-        return Vector(val1, val2)
+        return Vector(val1, val2, self.type)
 
     def __sub__(self, other):
         val1 = self.val1 - other.val1
         val2 = self.val2 - other.val2
-        return Vector(val1, val2)
+        return Vector(val1, val2, self.type)
 
     # other can only be of type real
     def __mul__(self, other):
         if not isinstance(other, self.__class__):
             val1 = self.val1 * other
             val2 = self.val2 * other
-            return Vector(val1, val2)
+            return Vector(val1, val2, self.type)
         raise Exception('Multiplication with {} not defined'.format(type(other)))
 
     def __rmul__(self, other):
@@ -62,8 +62,14 @@ class Vector:
         if not isinstance(other, self.__class__):
             val1 = self.val1 / other
             val2 = self.val2 / other
-            return Vector(val1, val2)
+            return Vector(val1, val2, self.type)
         raise Exception('Division with {} not defined'.format(type(other)))
+
+    def get_list(self):
+        """
+        Get val1 and val2 values in the format required by lottie
+        """
+        return [self.val1, self.val2]
 
     def get_val(self):
         """
@@ -188,9 +194,7 @@ def parse_position(animated, i):
         blue = blue ** (1/settings.GAMMA)
         return Color(red, green, blue, alpha)
 
-    ret = Vector(pos[0], pos[1])
-    ret.set_type(animated.attrib["type"])
-    return ret
+    return Vector(pos[0], pos[1], animated.attrib["type"])
 
 def parse_value(animated, i):
     """

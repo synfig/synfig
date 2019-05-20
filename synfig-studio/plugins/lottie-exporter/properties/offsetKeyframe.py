@@ -65,7 +65,9 @@ def clamped_vector(p1, p2, p3, animated, i, lottie, ease):
             ease_in(lottie)
         else:
             ease_out(lottie)
-    return Vector(x_tan, y_tan)
+    ret = Vector(x_tan, y_tan, animated.attrib["type"])
+    print(ret)
+    return ret
 
 def ease_out(lottie):
     """
@@ -85,8 +87,8 @@ def handle_color():
     """
     Default linear tangent values for color interpolations
     """
-    out_val = Vector(0.5, 0.5)
-    in_val = Vector(0.5, 0.5)
+    out_val = Vector(0.5, 0.5, "color")
+    in_val = Vector(0.5, 0.5, "color")
     return out_val, in_val
 
 def calc_tangent(animated, lottie, i):
@@ -296,10 +298,8 @@ def gen_properties_offset_keyframe(curve_list, animated, i):
         return excep
 
     # This module is only needed for origin animation
-    out_val.set_type("origin")
-    in_val.set_type("origin")
-    lottie["to"] = out_val.get_val()
-    lottie["ti"] = in_val.get_val()
+    lottie["to"] = out_val.get_list()
+    lottie["ti"] = in_val.get_list()
 
     # TCB/!TCB and list is not empty
     if cur_get_before == "auto" and cur_get_after != "auto" and i > 0:
