@@ -5,6 +5,7 @@ PLUGIN_NAME = shapes
 EXTRA_FILES = \
 			  star.py \
 			  circle.py \
+			  rectanle.py \
 			  fill.py
 
 plugindir = ${datadir}/synfig/plugins/lottie-exporter/$(PLUGIN_NAME)

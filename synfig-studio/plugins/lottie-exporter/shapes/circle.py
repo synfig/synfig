@@ -15,8 +15,8 @@ def gen_shapes_circle(lottie, layer, idx):
     will always be considered as circle
     """
     index = Count()
-    lottie["ty"] = "el"     # Type: star
-    lottie["p"] = {}        # Position of star
+    lottie["ty"] = "el"     # Type: circle
+    lottie["p"] = {}        # Position of circle
     lottie["d"] = settings.DEFAULT_DIRECTION
     lottie["s"] = {}        # Size of circle
     lottie["ix"] = idx      # setting the index
