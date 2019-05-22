@@ -100,7 +100,7 @@ RenderSettings::RenderSettings(Gtk::Window& parent, etl::handle<synfigapp::Canva
 		target_names.push_back(iter->first);
 	}
 	comboboxtext_target.set_active(0);
-	comboboxtext_target.signal_changed().connect(sigc::mem_fun(this, &RenderSettings::on_comboboxtext_target_changed));
+	comboboxtext_target.signal_changed().connect(sigc::mem_fun(this, &RenderSettings::set_entry_filename));
 
 	Gtk::Alignment *dialogPadding = manage(new Gtk::Alignment(0, 0, 1, 1));
 	dialogPadding->set_padding(12, 12, 12, 12);
@@ -213,7 +213,11 @@ void
 RenderSettings::set_entry_filename()
 {
 	String filename(filename_sans_extension(canvas_interface_->get_canvas()->get_file_name()));
-
+	//a map containing (target and corresponding .ext)
+	std::map<std::string,std::string> ext = {{"bmp",".bmp"}, {"cairo_png",".png"},{"dv",".dv"},
+					{"ffmpeg",".avi"},{"gif",".gif"},{"imagemagick",".png"}, {"jpeg",".jpg"},
+					{"magick++",".gif"},{"mng",".mng"},{"openexr",".exr"},{"png",".png"},
+					{"png-spritesheet",".png"},{"ppm",".ppm"}, {"yuv420p",".yuv"}, {"libav",".avi"}};
 	// if this isn't the root canvas, append (<canvasname>) to the filename
 	etl::handle<synfig::Canvas> canvas = canvas_interface_->get_canvas();
 	if (!canvas->is_root())
@@ -223,39 +227,35 @@ RenderSettings::set_entry_filename()
 		else
 			filename+=" ("+canvas->get_name()+')';
 	}
-
-	filename += ".avi";
-
-	try
-	{
-		entry_filename.set_text((filename));
-	}
-	catch(...)
-	{
-		synfig::warning("Averted crash!");
-		entry_filename.set_text("output.avi");
-	}
-}
-
-void
-RenderSettings::on_comboboxtext_target_changed()
-{
-	std::map<std::string,std::string> ext = {{"bmp",".bmp"}, {"cairo_png",".png"},{"dv",".dv"},
-					{"ffmpeg",".avi"},{"gif",".gif"},{"imagemagick",".png"}, {"jpeg",".jpg"},
-					{"magick++",".gif"},{"mng",".mng"},{"openexr",".exr"},{"png",".png"},
-					{"png-spritesheet",".png"},{"ppm",".ppm"}, {"yuv420p",".yuv"}, {"libav",".avi"}};
+	
 	int i = comboboxtext_target.get_active_row_number();
+	//if auto is selected then append .avi and function will return at next if
+	if(!i)
+	{
+		filename += ".avi";
+
+		try
+		{
+			entry_filename.set_text((filename));
+		}
+		catch(...)
+		{
+			synfig::warning("Averted crash!");
+			entry_filename.set_text("output.avi");
+		}
+	}
+	
+	//if it was auto function will return else proceed to append corresponding filename .ext
 	if (i < 0 || i >= (int)target_names.size()) return;
 	if (target_name == target_names[i]) return;
 	auto itr = ext.find(target_names[i]); 
     // check if target_name is there in map
     if(itr != ext.end())
 	{
-		String filename = entry_filename.get_text();
-		String newfilename = filename.substr(0,filename.find_last_of('.'))+itr->second;
-		entry_filename.set_text(newfilename);
+		filename = filename.substr(0,filename.find_last_of('.'))+itr->second;
+		entry_filename.set_text(filename);
 	}
-	set_target(target_names[i]);
+	set_target(target_names[i]);	
 }
 
 void
