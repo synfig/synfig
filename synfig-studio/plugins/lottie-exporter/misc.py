@@ -79,8 +79,17 @@ class Vector:
             return [self.val1, self.val2]
         elif self.type == "circle_radius":
             return [self.val1, self.val1]
+        elif self.type == "rectangle_size":
+            return [self.val1, self.val3]
         else:
             return [self.val1]
+
+    def add_new_val(self, val3):
+        """
+        This function store an additional value in the vector. 
+        This is currently required by the rectangle layer
+        """
+        self.val3 = val3
     
     def set_type(self, _type):
         self.type = _type
@@ -183,6 +192,12 @@ def parse_position(animated, i):
     elif animated.attrib["type"] == "points":
         pos = [int(animated[i][0].attrib["value"]),
                float(animated[i].attrib["time"][:-1]) * settings.lottie_format["fr"]]
+
+    elif animated.attrib["type"] == "rectangle_size":
+        pos = parse_value(animated, i)
+        vec = Vector(pos[0], pos[1], animated.attrib["type"])
+        vec.add_new_val(float(animated[i][0].attrib["value2"]) * settings.PIX_PER_UNIT)
+        return vec
 
     elif animated.attrib["type"] == "color":
         red = float(animated[i][0][0].text)

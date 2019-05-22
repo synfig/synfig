@@ -65,9 +65,7 @@ def clamped_vector(p1, p2, p3, animated, i, lottie, ease):
             ease_in(lottie)
         else:
             ease_out(lottie)
-    ret = Vector(x_tan, y_tan, animated.attrib["type"])
-    print(ret)
-    return ret
+    return Vector(x_tan, y_tan, animated.attrib["type"])
 
 def ease_out(lottie):
     """
