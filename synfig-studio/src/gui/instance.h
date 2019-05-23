@@ -37,6 +37,7 @@
 #include <synfigapp/value_desc.h>
 #include "trees/historytreestore.h"
 #include <synfig/canvas.h>
+#include "dialogs/vectorizer.h"
 
 /* === M A C R O S ========================================================= */
 #define DEFAULT_FILENAME_PREFIX _("Synfig Animation ") // will be followed by a different number for each document
@@ -174,6 +175,7 @@ public:
 	void focus(etl::handle<synfig::Canvas> canvas);
 
 	CanvasViewList & canvas_view_list() { return canvas_view_list_; }
+	VectorizerSettings vectorizerpopup;
 
 	const CanvasViewList & canvas_view_list()const { return canvas_view_list_; }
 

@@ -98,6 +98,7 @@ Instance::Instance(synfig::Canvas::Handle canvas, synfig::FileSystem::Handle con
 	synfigapp::Instance		(canvas, container),
 	canvas_tree_store_		(Gtk::TreeStore::create(canvas_tree_model)),
 	history_tree_store_		(HistoryTreeStore::create(this)),
+	vectorizerpopup (*App::main_window),
 	undo_status_(false),
 	redo_status_(false)
 {
@@ -1760,6 +1761,11 @@ Instance::add_special_layer_actions_to_menu(Gtk::Menu *menu, const synfigapp::Se
 				sigc::bind(sigc::ptr_fun(&App::open_img_in_external), i->second) );
 			item->show();
 			menu->append(*item);
+			Gtk::MenuItem *item2 = manage(new Gtk::ImageMenuItem(Gtk::Stock::OPEN));
+			item2->set_label( (String(_("Convert to Vector"))).c_str() );
+			item2->signal_activate().connect(sigc::mem_fun0(vectorizerpopup,&VectorizerSettings::present) );
+			item2->show();
+			menu->append(*item2);
 		}
 		else
 		{
@@ -1784,17 +1790,27 @@ Instance::add_special_layer_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup
 	for(std::map<String, String>::const_iterator i = uris.begin(); i != uris.end(); ++i, ++index)
 	{
 		String action_name = etl::strprintf("special-action-open-file-%d", index);
+		// String action_name2 = etl::strprintf("special-action-convert-file-%d", index);
 		//if the import layer is type image 
 		if(is_img(filename_extension(i->second)))
 		{
 			String local_name = String(_("Edit image in external tool..."));
+			// String local_name2 = String(_("Convert to Vector"));
 			action_group->add(
 				Gtk::Action::create(
 					action_name,
 					Gtk::Stock::OPEN,
 					local_name, local_name ),
 				sigc::bind(sigc::ptr_fun(&App::open_img_in_external), i->second) );
+			// action_group->add(
+			// 	Gtk::Action::create(
+			// 		action_name2,
+			// 		Gtk::Stock::CONVERT,
+			// 		local_name2, local_name2 ),
+			// 	sigc::bind(sigc::ptr_fun(&App::open_img_in_external), i->second) );
+			// 
 			ui_info += strprintf("<menuitem action='%s' />", action_name.c_str());
+			// ui_info += strprintf("<menuitem action='%s' />", action_name2.c_str());
 		}
 		else
 		{
