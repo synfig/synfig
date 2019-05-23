@@ -3,11 +3,13 @@ Will store all functions needed to generate the rectangle layer in lottie
 """
 import sys
 import copy
+from lxml import etree
 import settings
 from properties.value import gen_properties_value
 from misc import Count, is_animated, change_axis
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
 from properties.valueKeyframed import gen_value_Keyframed
+from helpers.bezier import get_bezier_time, get_bezier_val
 sys.path.append("..")
 
 def get_child_value(is_animate, child, what_type):
@@ -106,25 +108,93 @@ def only_one_point_animated(non_animated, yes_animated, is_animate, lottie, inde
 
     # Creating a new copy, we will modify this so as to store the position
     # of the rectangle layer[position means center of the rectangle here]
-    new_child = copy.deepcopy(yes_animated)
-    animated = new_child[0]
-    for i in range(len(animated)):
-        animated[i][0][0].text = str((float(animated[i][0][0].text) + x2_val) / 2)
-        animated[i][0][1].text = str((float(animated[i][0][1].text) + y2_val) / 2)
+    divided_child = copy.deepcopy(yes_animated)
+    div_animated = divided_child[0]
+
+    o_animated = yes_animated[0]   # Original copy of animated
+    orig_len = len(div_animated)
+    j = 0                           # Iterator for newly created animation
+
+    orig_path = {}
+    gen_properties_multi_dimensional_keyframed(orig_path, o_animated, 0)
+
+    for i in range(orig_len - 1):
+        # Need to check if a point crosses other point's min or max value
+        # Will add new waypoint if a point crosses that value
+        waypoint, next_waypoint = o_animated[i], o_animated[i+1]
+        cur_get_after, next_get_before = waypoint.attrib["after"], next_waypoint.attrib["before"]
+        if cur_get_after == "constant" or next_get_before == "constant":
+            # No waypoint is to be added
+            pass
+        else:
+            flag = check(o_animated, i, x2_val, y2_val)
+            if flag == 0:
+                # No waypoint is to be added
+                pass
+            elif flag == 1:
+                new_waypoint = copy.deepcopy(o_animated[i])
+                new_waypoint.attrib["before"] = waypoint.attrib["after"]
+                new_waypoint.attrib["after"] = next_waypoint.attrib["before"]
+                num_frames = orig_path["k"][i+1]["t"] - orig_path["k"][i]["t"]
+                t = get_bezier_time(orig_path["k"][i]["s"][0],
+                                    orig_path["k"][i]["to"][0], 
+                                    orig_path["k"][i]["ti"][0],
+                                    orig_path["k"][i]["e"][0],
+                                    x2_val * settings.PIX_PER_UNIT,
+                                    num_frames)
+                y_change_val = get_bezier_val(orig_path["k"][i]["s"][1],
+                                              orig_path["k"][i]["to"][1],
+                                              orig_path["k"][i]["ti"][1],
+                                              orig_path["k"][i]["e"][1],
+                                              t)
+                y_change_val /= settings.PIX_PER_UNIT  # As this value if to be put back in xml format
+                new_waypoint[0][0].text = str(x2_val)
+                new_waypoint[0][1].text = str(y_change_val)
+                time_diff = float(next_waypoint.attrib["time"][:-1]) - float(waypoint.attrib["time"][:-1])
+                new_waypoint.attrib["time"] = str(float(waypoint.attrib["time"][:-1]) + time_diff * t) + "s"
+                print("New time", new_waypoint.attrib["time"])
+                div_animated.insert(j + 1, new_waypoint)
+                j += 1
+        j += 1
+
+    print(etree.tostring(div_animated))
+    pos_animated = copy.deepcopy(div_animated)
+
+    print("This is my length", len(pos_animated))
+    for i in range(len(pos_animated)):
+        pos_animated[i][0][0].text = str((float(pos_animated[i][0][0].text) + x2_val) / 2)
+        pos_animated[i][0][1].text = str((float(pos_animated[i][0][1].text) + y2_val) / 2)
 
     gen_properties_multi_dimensional_keyframed(lottie["p"],
-                                              animated,
+                                              pos_animated,
                                               index.inc())
 
     # Have to store the size of the rectangle as per the lottie format
     # Hence we will create a new node in xml format that is to be supplied
     # to the already build function
-    new_child = copy.deepcopy(yes_animated)
-    animated = new_child[0]
-    animated.attrib["type"] = "rectangle_size"
-    for i in range(len(animated)):
-        animated[i][0].tag = "real" # It was vector before
-        animated[i][0].attrib["value"] = str(abs(x2_val - float(animated[i][0][0].text)))
-        animated[i][0].attrib["value2"] = str(abs(y2_val - float(animated[i][0][1].text)))
-    gen_value_Keyframed(lottie["s"], animated, index.inc())
+    size_animated = copy.deepcopy(div_animated)
+    size_animated.attrib["type"] = "rectangle_size"
+    for i in range(len(size_animated)):
+        size_animated[i][0].tag = "real" # It was vector before
+        size_animated[i][0].attrib["value"] = str(abs(x2_val - float(size_animated[i][0][0].text)))
+        size_animated[i][0].attrib["value2"] = str(abs(y2_val - float(size_animated[i][0][1].text)))
+    gen_value_Keyframed(lottie["s"], size_animated, index.inc())
 
+def check(animated, i, x2_val, y2_val):
+    x_now, y_now = float(animated[i][0][0].text), float(animated[i][0][1].text)
+    x_next, y_next = float(animated[i+1][0][0].text), float(animated[i+1][0][1].text)
+    sign = lambda a: (1, -1)[a < 0]
+    x_change, y_change = 0, 0
+    if sign(x_now - x2_val) != sign(x_next - x2_val):
+        x_change = 1
+    if sign(y_now - y2_val) != sign(y_next - y2_val):
+        y_change = 1
+    
+    if x_change == 0 and y_change == 0:
+        return 0
+    elif x_change == 1 and y_change == 0:
+        return 1
+    elif x_change == 0 and y_change == 1:
+        return 2
+    elif x_change == 1 and y_change == 1:
+        return 3
