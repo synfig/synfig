@@ -100,6 +100,7 @@ class Dialog_Gradient;
 class Dialog_Input;
 class Dialog_Color;
 class Dialog_ToolOptions;
+class VectorizerSettings;
 class DeviceTracker;
 class AutoRecover;
 
@@ -201,7 +202,7 @@ public:
 	static Dialog_Color* dialog_color;
 //	static Dialog_Palette* dialog_palette;
 	static Dialog_ToolOptions *dialog_tool_options;
-
+	static VectorizerSettings *vectorizerpopup;
 	static synfig::Distance::System distance_system;
 
 	static synfig::Gamma gamma;
@@ -442,6 +443,8 @@ public:
 
 	static void open_uri(const std::string &uri);
 	static void open_img_in_external(const std::string &uri);
+	static void open_vectorizerpopup(const std::string &uri);
+
 
 
 	static synfig::String get_config_file(const synfig::String& file);

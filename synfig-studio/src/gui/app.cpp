@@ -95,6 +95,7 @@
 #include "dialogs/dialog_gradient.h"
 #include "dialogs/dialog_input.h"
 #include "dialogs/dialog_setup.h"
+#include "dialogs/vectorizer.h"
 #include "onemoment.h"
 #include "devicetracker.h"
 #include "widgets/widget_enum.h"
@@ -268,6 +269,7 @@ studio::Dialog_Gradient    *studio::App::dialog_gradient;
 studio::Dialog_Color       *studio::App::dialog_color;
 studio::Dialog_Input       *studio::App::dialog_input;
 studio::Dialog_ToolOptions *studio::App::dialog_tool_options;
+studio::VectorizerSettings *studio::App::vectorizerpopup;
 
 studio::Dock_History       *dock_history;
 studio::Dock_Canvases      *dock_canvases;
@@ -1686,6 +1688,7 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 
 		studio_init_cb.amount_complete(9250,10000);
 		studio_init_cb.task(_("Loading Settings..."));
+		vectorizerpopup=new studio::VectorizerSettings(*App::main_window);
 		load_accel_map();
 		if (!load_settings())
 		{
@@ -3533,6 +3536,12 @@ void App::open_img_in_external(const std::string &uri)
 		dialog.set_title(_("Error"));
 		dialog.run();
 	}
+
+}
+void App::open_vectorizerpopup(const std::string &uri)
+{
+	synfig::info("Opening Vectorizerpopup");
+	App::vectorizerpopup->show();
 
 }
 void App::open_uri(const std::string &uri)
