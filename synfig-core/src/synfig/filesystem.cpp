@@ -185,7 +185,7 @@ String FileSystem::fix_slashes(const String &filename)
 {
 	String fixed = etl::cleanup_path(filename);
 	if (fixed == ".") fixed = "";
-	for(size_t i = 0; i < filename.size(); ++i)
+	for(size_t i = 0; i < fixed.size(); ++i)
 		if (fixed[i] == '\\') fixed[i] = '/';
 	return fixed;
 }

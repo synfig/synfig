@@ -126,7 +126,7 @@ elif which dnf >/dev/null; then
             SDL2_mixer-devel"
     if ! ( rpm -qv $PKG_LIST ); then
         echo "Running dnf (you need root privelegies to do that)..."
-        su -c "dnf install $PKG_LIST" || true
+        sudo dnf install $PKG_LIST || true
     fi
 elif which yum >/dev/null; then
     #
