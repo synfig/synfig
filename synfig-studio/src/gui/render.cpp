@@ -223,13 +223,11 @@ RenderSettings::set_entry_filename()
 		else
 			filename+=" ("+canvas->get_name()+')';
 	}
-
-	filename += ".avi";
-
+	
 	try
 	{
 		if(!comboboxtext_target.get_active_row_number())
-			entry_filename.set_text((filename));
+			entry_filename.set_text((filename +".avi"));
 		// in case the file was saved and loaded again then .ext should be according to target
 		else on_comboboxtext_target_changed();
 	}
