@@ -45,10 +45,38 @@ def parse(file_name):
     outputfile_f = open(new_file_name, 'w')
     outputfile_f.write(lottie_string)
     outputfile_f.close()
+    return new_file_name
+
+def gen_html(file_name):
+    """
+    Generates an HTML file which will allow end user to easily playback
+    animation in a web browser
+    """
+    page = etree.Element('html', style="width: 100%;height: 100%")
+    doc = etree.ElementTree(page)
+    headElt = etree.SubElement(page, 'head')
+    bodyElt = etree.SubElement(page, 'body', style="background-color:#ccc; margin: 0px;height: 100%; font-family: sans-serif;font-size: 10px")
+    scriptElt = etree.SubElement(headElt, 'script', src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.5.3/lottie.js")
+    scriptElt.text = ""
+
+    div = etree.SubElement(bodyElt, 'div', style="width:100%;height:100%;background-color:#333;", id="bodymovin")
+    div.text = ""
+    script = etree.SubElement(bodyElt, 'script')
+    fir = "var animData = {wrapper:document.getElementById('bodymovin'),animType: 'html',loop: true,prerender: true,autoplay: true,path:\'" + file_name + "\'};"
+    sec = "var anim = bodymovin.loadAnimation(animData);"
+    script.text = fir + sec
+    html_name = file_name.split(".")
+    html_name[-1] = "html"
+    html_name = ".".join(html_name)
+    outFile = open(html_name, "w")
+    s = etree.tostring(doc, encoding="UTF-8", pretty_print=True,doctype = '<!DOCTYPE html>')
+    outFile.write(s.decode("utf-8"))
+    outFile.close()
 
 if len(sys.argv) < 2:
     sys.exit()
 else:
     settings.init()
     FILE_NAME = sys.argv[1]
-    parse(FILE_NAME)
+    new_file_name = parse(FILE_NAME)
+    gen_html(new_file_name)

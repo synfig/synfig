@@ -117,6 +117,7 @@ def only_one_point_animated(non_animated, yes_animated, is_animate, lottie, inde
 
     orig_path = {}
     gen_properties_multi_dimensional_keyframed(orig_path, o_animated, 0)
+    print("Original", orig_path)
 
     for i in range(orig_len - 1):
         # Need to check if a point crosses other point's min or max value
@@ -140,24 +141,36 @@ def only_one_point_animated(non_animated, yes_animated, is_animate, lottie, inde
                                     orig_path["k"][i]["to"][0], 
                                     orig_path["k"][i]["ti"][0],
                                     orig_path["k"][i]["e"][0],
-                                    x2_val * settings.PIX_PER_UNIT,
+                                    x2_val * settings.PIX_PER_UNIT +\
+                                    settings.lottie_format["w"]/2,
                                     num_frames)
                 y_change_val = get_bezier_val(orig_path["k"][i]["s"][1],
                                               orig_path["k"][i]["to"][1],
                                               orig_path["k"][i]["ti"][1],
                                               orig_path["k"][i]["e"][1],
                                               t)
+                # Convert y value from lottie format to synfig format
+                print("TO REACH", x2_val * settings.PIX_PER_UNIT +\
+                        settings.lottie_format["w"]/2, x2_val *\
+                        settings.PIX_PER_UNIT)
+                print("bezier values", orig_path["k"][i]["to"][1], orig_path["k"][i]["ti"][1])
+                print("check ", y_change_val, orig_path["k"][i]["s"][1], orig_path["k"][i]["e"][1])
+                y_change_val -= settings.lottie_format["h"]/2
+                y_change_val = -y_change_val
                 y_change_val /= settings.PIX_PER_UNIT  # As this value if to be put back in xml format
+                print("Y val", y_change_val, orig_path["k"][i]["e"][1])
                 new_waypoint[0][0].text = str(x2_val)
                 new_waypoint[0][1].text = str(y_change_val)
                 time_diff = float(next_waypoint.attrib["time"][:-1]) - float(waypoint.attrib["time"][:-1])
                 new_waypoint.attrib["time"] = str(float(waypoint.attrib["time"][:-1]) + time_diff * t) + "s"
-                print("New time", new_waypoint.attrib["time"])
+                print("New time", t, float(new_waypoint.attrib["time"][:-1]) *\
+                        settings.lottie_format["fr"], time_diff *\
+                        settings.lottie_format["fr"])
                 div_animated.insert(j + 1, new_waypoint)
                 j += 1
         j += 1
 
-    print(etree.tostring(div_animated))
+    #print(etree.tostring(div_animated))
     pos_animated = copy.deepcopy(div_animated)
 
     print("This is my length", len(pos_animated))
