@@ -23,7 +23,7 @@ def parse(file_name):
 
     num_layers = Count()
     settings.lottie_format["layers"] = []
-    supported_layers = {"star", "circle", "rectangle"}
+    supported_layers = {"star", "circle", "rectangle", "simple_circle"}
     for child in root:
         if child.tag == "layer":
             if child.attrib["active"] == "false":   # Only render the active layers

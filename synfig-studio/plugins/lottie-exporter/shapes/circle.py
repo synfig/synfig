@@ -1,5 +1,6 @@
 """
 Will store all functions needed to generate the circle layer in lottie
+This will also support the simple_circle layer of Synfig
 """
 import sys
 import settings
@@ -23,7 +24,7 @@ def gen_shapes_circle(lottie, layer, idx):
 
     for child in layer:
         if child.tag == "param":
-            if child.attrib["name"] == "origin":
+            if child.attrib["name"] in {"origin", "center"}:
                 is_animate = is_animated(child[0])
                 if is_animate == 2:
                     gen_properties_multi_dimensional_keyframed(lottie["p"],
