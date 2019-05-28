@@ -252,3 +252,32 @@ def is_animated(node):
     else:
         case = 0
     return case
+
+def clamp_col(color):
+    """
+    This function converts the colors into int and takes them to the range of
+    0-255
+    """
+    color = color ** (1/settings.GAMMA)
+    color *= 255
+    color = int(color)
+    return max(0, min(color, 255))
+
+def get_color_hex(node):
+    """
+    Convert the <color></color> from rgba to hex format
+    """
+    red, green, blue = 1, 0, 0
+    for col in node:
+        if col.tag == "r":
+            red = float(col.text)
+        elif col.tag == "g":
+            green = float(col.text)
+        elif col.tag == "b":
+            blue = float(col.text)
+    # Convert to 0-255 range
+    red, green, blue = clamp_col(red), clamp_col(green), clamp_col(blue)
+
+    # https://stackoverflow.com/questions/3380726/converting-a-rgb-color-tuple-to-a-six-digit-code-in-python/3380739#3380739
+    ret = "#{0:02x}{1:02x}{2:02x}".format(red, green, blue)
+    return ret

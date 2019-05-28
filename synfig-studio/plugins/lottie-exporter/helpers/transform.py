@@ -8,7 +8,7 @@ from misc import Count
 from properties.value import gen_properties_value
 sys.path.append("../")
 
-def gen_helpers_transform(lottie, layer):
+def gen_helpers_transform(lottie, layer, pos = [0, 0], anchor = [0, 0, 0]):
     """
     Generates the dictionary corresponding to helpers/transform.json
     """
@@ -21,7 +21,7 @@ def gen_helpers_transform(lottie, layer):
 
     # setting the default location
     gen_properties_value(lottie["p"],
-                         [0, 0],
+                         pos,
                          index.inc(),
                          settings.DEFAULT_ANIMATED,
                          settings.NO_INFO)
@@ -40,12 +40,14 @@ def gen_helpers_transform(lottie, layer):
                          settings.DEFAULT_ANIMATED,
                          settings.NO_INFO)
 
+    # setting the anchor point
     gen_properties_value(lottie["a"],
-                         [0, 0, 0],
+                         anchor,
                          index.inc(),
                          settings.DEFAULT_ANIMATED,
                          settings.NO_INFO)
 
+    # setting the scale
     gen_properties_value(lottie["s"],
                          [100, 100, 100],
                          index.inc(),

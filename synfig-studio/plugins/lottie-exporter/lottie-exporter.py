@@ -10,6 +10,7 @@ import sys
 from lxml import etree
 from canvas import gen_canvas
 from layers.shape import gen_layer_shape
+from layers.solid import gen_layer_solid
 from misc import Count
 import settings
 
@@ -23,7 +24,9 @@ def parse(file_name):
 
     num_layers = Count()
     settings.lottie_format["layers"] = []
-    supported_layers = {"star", "circle", "rectangle", "simple_circle"}
+    shape_layer = {"star", "circle", "rectangle", "simple_circle"}
+    solid_layer = {"SolidColor"}
+    supported_layers = shape_layer.union(solid_layer)
     for child in root:
         if child.tag == "layer":
             if child.attrib["active"] == "false":   # Only render the active layers
@@ -31,9 +34,14 @@ def parse(file_name):
             if child.attrib["type"] not in supported_layers:  # Only supported layers
                 continue
             settings.lottie_format["layers"].insert(0, {})
-            gen_layer_shape(settings.lottie_format["layers"][0],
-                            child,
-                            num_layers.inc())
+            if child.attrib["type"] in shape_layer:           # Goto shape layer
+                gen_layer_shape(settings.lottie_format["layers"][0],
+                                child,
+                                num_layers.inc())
+            elif child.attrib["type"] in solid_layer:         # Goto solid layer
+                gen_layer_solid(settings.lottie_format["layers"][0],
+                                child,
+                                num_layers.inc())
 
     lottie_string = json.dumps(settings.lottie_format)
     # Write the output to the file name with .json extension
@@ -52,6 +60,7 @@ def gen_html(file_name):
     Generates an HTML file which will allow end user to easily playback
     animation in a web browser
     """
+
     html_text = \
 """<!DOCTYPE html>
 <html style="width: 100%;height: 100%">

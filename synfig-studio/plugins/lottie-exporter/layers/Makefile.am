@@ -3,7 +3,8 @@
 PLUGIN_NAME = layers
 
 EXTRA_FILES = \
-              shape.py
+              shape.py \
+			  solid.py
 
 plugindir = ${datadir}/synfig/plugins/lottie-exporter/$(PLUGIN_NAME)
 plugin_DATA = \
