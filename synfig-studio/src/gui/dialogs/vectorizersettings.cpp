@@ -83,7 +83,7 @@ VectorizerSettings::VectorizerSettings(Gtk::Window& parent):
 	comboboxtext_mode.signal_changed().connect(
 		sigc::mem_fun(this, &VectorizerSettings::on_comboboxtext_mode_changed));
 
-	Gtk::Alignment *dialogPadding = manage(new Gtk::Alignment(10, 10, 1, 1));
+	Gtk::Alignment *dialogPadding = manage(new Gtk::Alignment(1, 1, 1, 1));
 	get_vbox()->pack_start(*dialogPadding, false, false, 0);
 	Gtk::VBox *dialogBox = manage(new Gtk::VBox(false, 12));
 	dialogPadding->add(*dialogBox);
@@ -92,9 +92,9 @@ VectorizerSettings::VectorizerSettings(Gtk::Window& parent):
 	target_frame->set_shadow_type(Gtk::SHADOW_NONE);
 	dialogBox->pack_start(*target_frame);
 	Gtk::Grid *mode_grid = manage(new Gtk::Grid());
-	Gtk::Label *mode_label = manage(new Gtk::Label(_("_Mode"), 0, 0.5, true));
+	Gtk::Label *mode_label = manage(new Gtk::Label(_("_Mode"), Gtk::ALIGN_END,Gtk::ALIGN_FILL, true));
 	mode_label->set_mnemonic_widget(comboboxtext_mode);
-	mode_label->set_margin_left(10);
+	mode_label->set_margin_right(10);
 	mode_grid->attach(*mode_label, 0, 0, 1, 1);
 	mode_grid->attach(comboboxtext_mode, 1, 0, 1, 1);
 	mode_grid->set_column_homogeneous(true);
@@ -105,60 +105,60 @@ VectorizerSettings::VectorizerSettings(Gtk::Window& parent):
 	dialogBox->pack_start(*settings_box);
 
 	//-----------------------------------Centerline--------------------------------------//
-	Gtk::Label *threshold_label = manage(new Gtk::Label(_("_Threshold"), 0, 0.5, true));
+	Gtk::Label *threshold_label = manage(new Gtk::Label(_("_Threshold"), Gtk::ALIGN_END,Gtk::ALIGN_FILL, true));
 	threshold_label->set_mnemonic_widget(entry_threshold);
-		threshold_label->set_margin_left(10);
+	threshold_label->set_margin_right(10);
 
 	Centerline_setting_grid->attach(*threshold_label, 0, 0, 1, 1);
 	Centerline_setting_grid->attach(entry_threshold, 1, 0, 1, 1);
 	
-	Gtk::Label *accuracy_label = manage(new Gtk::Label(_("_Accuracy"), 0, 0.5, true));
+	Gtk::Label *accuracy_label = manage(new Gtk::Label(_("_Accuracy"), Gtk::ALIGN_END,Gtk::ALIGN_FILL, true));
 	accuracy_label->set_mnemonic_widget(entry_accuracy);
-		accuracy_label->set_margin_left(10);
+		accuracy_label->set_margin_right(10);
 
 	Centerline_setting_grid->attach(*accuracy_label, 0, 1, 1, 1);
 	Centerline_setting_grid->attach(entry_accuracy, 1, 1, 1, 1);
 
-	Gtk::Label *despeckling_abel = manage(new Gtk::Label(_("_Despeckling"), 0, 0.5, true));
+	Gtk::Label *despeckling_abel = manage(new Gtk::Label(_("_Despeckling"), Gtk::ALIGN_END,Gtk::ALIGN_FILL, true));
 	despeckling_abel->set_mnemonic_widget(entry_despeckling);
-		despeckling_abel->set_margin_left(10);
+	despeckling_abel->set_margin_right(10);
 
 	Centerline_setting_grid->attach(*despeckling_abel, 0, 2, 1, 1);
 	Centerline_setting_grid->attach(entry_despeckling, 1, 2, 1, 1);
 
-	Gtk::Label *thickness_label = manage(new Gtk::Label(_("_Max Thickness"), 0, 0.5, true));
+	Gtk::Label *thickness_label = manage(new Gtk::Label(_("_Max Thickness"), Gtk::ALIGN_END,Gtk::ALIGN_FILL, true));
 	thickness_label->set_mnemonic_widget(entry_maxthickness);
-		thickness_label->set_margin_left(10);
+	thickness_label->set_margin_right(10);
 
 	Centerline_setting_grid->attach(*thickness_label, 0, 3, 1, 1);
 	Centerline_setting_grid->attach(entry_maxthickness, 1, 3, 1, 1);
 
-	Gtk::Label *tcalibration_start_label = manage(new Gtk::Label(_("_Thickness Calibration (Start)"), 0, 0.5, true));
+	Gtk::Label *tcalibration_start_label = manage(new Gtk::Label(_("_Thickness Calibration (Start)"), Gtk::ALIGN_END,Gtk::ALIGN_FILL, true));
 	tcalibration_start_label->set_mnemonic_widget(entry_tcalibration_start);
-		tcalibration_start_label->set_margin_left(10);
-		tcalibration_start_label->set_margin_right(10);
+	tcalibration_start_label->set_margin_right(10);
+	tcalibration_start_label->set_margin_left(10);
 
 	Centerline_setting_grid->attach(*tcalibration_start_label, 0, 4, 1, 1);
 	Centerline_setting_grid->attach(entry_tcalibration_start, 1, 4, 1, 1);
 	
-	Gtk::Label *tcalibration_end_label = manage(new Gtk::Label(_("_Thickness Calibration (End)"), 0, 0.5, true));
+	Gtk::Label *tcalibration_end_label = manage(new Gtk::Label(_("_Thickness Calibration (End)"), Gtk::ALIGN_END,Gtk::ALIGN_FILL, true));
 	tcalibration_end_label->set_mnemonic_widget(entry_tcalibration_end);
-		tcalibration_end_label->set_margin_left(10);
+	tcalibration_end_label->set_margin_right(10);
 
 	Centerline_setting_grid->attach(*tcalibration_end_label, 0, 5, 1, 1);
 	Centerline_setting_grid->attach(entry_tcalibration_end, 1, 5, 1, 1);
 	
-	Gtk::Label *ppa_label = manage(new Gtk::Label(_("_Preserve Painted Areas"), 0, 0.5, true));
+	Gtk::Label *ppa_label = manage(new Gtk::Label(_("_Preserve Painted Areas"), Gtk::ALIGN_END,Gtk::ALIGN_FILL, true));
 	ppa_label->set_mnemonic_widget(toggle_pparea);
-		ppa_label->set_margin_left(10);
+	ppa_label->set_margin_right(10);
 
 	toggle_pparea.set_halign(Gtk::ALIGN_START);
 	Centerline_setting_grid->attach(*ppa_label, 0, 6, 1, 1);
 	Centerline_setting_grid->attach(toggle_pparea, 1, 6, 1, 1);
 	
-	Gtk::Label *add_border_label = manage(new Gtk::Label(_("_Add Border"), 0, 0.5, true));
+	Gtk::Label *add_border_label = manage(new Gtk::Label(_("_Add Border"), Gtk::ALIGN_END,Gtk::ALIGN_FILL, true));
 	add_border_label->set_mnemonic_widget(toggle_add_border);
-		add_border_label->set_margin_left(10);
+	add_border_label->set_margin_right(10);
 
 	toggle_add_border.set_halign(Gtk::ALIGN_START);
 	Centerline_setting_grid->attach(*add_border_label, 0, 7, 1, 1);
@@ -173,35 +173,40 @@ VectorizerSettings::VectorizerSettings(Gtk::Window& parent):
 
 	//-----------------------------------Outline--------------------------------------//
 	
-	Gtk::Label *accuracy_label2 = manage(new Gtk::Label(_("_Accuracy"), 0, 0.5, true));
+	Gtk::Label *accuracy_label2 = manage(new Gtk::Label(_("_Accuracy"), Gtk::ALIGN_END,Gtk::ALIGN_FILL, true));
 	accuracy_label2->set_mnemonic_widget(entry_accuracy2);
-	accuracy_label2->set_margin_left(10);
+	accuracy_label2->set_margin_right(10);
 	Outline_setting_grid->attach(*accuracy_label2, 0, 0, 1, 1);
 	Outline_setting_grid->attach(entry_accuracy2, 1, 0, 1, 1);
 
-	Gtk::Label *despeckling_label2 = manage(new Gtk::Label(_("_Despeckling"), 0, 0.5, true));
+	Gtk::Label *despeckling_label2 = manage(new Gtk::Label(_("_Despeckling"), Gtk::ALIGN_END,Gtk::ALIGN_FILL, true));
 	despeckling_label2->set_mnemonic_widget(entry_despeckling2);
+	despeckling_label2->set_margin_right(10);
 	Outline_setting_grid->attach(*despeckling_label2, 0, 1, 1, 1);
 	Outline_setting_grid->attach(entry_despeckling2, 1, 1, 1, 1);
 
-	Gtk::Label *ppa_label2 = manage(new Gtk::Label(_("_Preserve Painted Areas"), 0, 0.5, true));
+	Gtk::Label *ppa_label2 = manage(new Gtk::Label(_("_Preserve Painted Areas"), Gtk::ALIGN_END,Gtk::ALIGN_FILL, true));
 	ppa_label2->set_mnemonic_widget(toggle_pparea2);
+	ppa_label2->set_margin_right(10);
 	toggle_pparea2.set_halign(Gtk::ALIGN_START);
 	Outline_setting_grid->attach(*ppa_label2, 0, 2, 1, 1);
 	Outline_setting_grid->attach(toggle_pparea2, 1, 2, 1, 1);
 	
-	Gtk::Label *adherence_label = manage(new Gtk::Label(_("_Corners Adherenece"), 0, 0.5, true));
+	Gtk::Label *adherence_label = manage(new Gtk::Label(_("_Corners Adherenece"), Gtk::ALIGN_END,Gtk::ALIGN_FILL, true));
 	adherence_label->set_mnemonic_widget(entry_adherence);
+	adherence_label->set_margin_right(10);
 	Outline_setting_grid->attach(*adherence_label, 0, 3, 1, 1);
 	Outline_setting_grid->attach(entry_adherence, 1, 3, 1, 1);
 
-	Gtk::Label *angle_label = manage(new Gtk::Label(_("_Corners Angle"), 0, 0.5, true));
+	Gtk::Label *angle_label = manage(new Gtk::Label(_("_Corners Angle"), Gtk::ALIGN_END,Gtk::ALIGN_FILL, true));
 	angle_label->set_mnemonic_widget(entry_angle);
+	angle_label->set_margin_right(10);
 	Outline_setting_grid->attach(*angle_label, 0, 4, 1, 1);
 	Outline_setting_grid->attach(entry_angle, 1, 4, 1, 1);
 
-	Gtk::Label *radius_label = manage(new Gtk::Label(_("_Corners Curve Radius"), 0, 0.5, true));
+	Gtk::Label *radius_label = manage(new Gtk::Label(_("_Corners Curve Radius"), Gtk::ALIGN_END,Gtk::ALIGN_FILL, true));
 	radius_label->set_mnemonic_widget(entry_radius);
+	radius_label->set_margin_right(10);
 	Outline_setting_grid->attach(*radius_label, 0, 5, 1, 1);
 	Outline_setting_grid->attach(entry_radius, 1, 5, 1, 1);
 
