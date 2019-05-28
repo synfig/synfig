@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file dialog/vectorizer.h
+/*!	\file dialog/vectorizersettings.h
 **
 **	$Id$
 **

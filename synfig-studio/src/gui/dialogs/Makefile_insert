@@ -14,7 +14,7 @@ DIALOGS_HH = \
 	dialogs/dialog_spritesheetparam.h \
 	dialogs/dialog_waypoint.h \
 	dialogs/dialog_template.h \
-	dialogs/vectorizer.h
+	dialogs/vectorizersettings.h
 
 DIALOGS_CC = \
 	dialogs/about.cpp \
@@ -32,7 +32,7 @@ DIALOGS_CC = \
 	dialogs/dialog_spritesheetparam.cpp \
 	dialogs/dialog_waypoint.cpp \
 	dialogs/dialog_template.cpp \
-	dialogs/vectorizer.cpp
+	dialogs/vectorizersettings.cpp
 
 
 synfigstudio_src += \

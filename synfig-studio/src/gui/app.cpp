@@ -95,7 +95,7 @@
 #include "dialogs/dialog_gradient.h"
 #include "dialogs/dialog_input.h"
 #include "dialogs/dialog_setup.h"
-#include "dialogs/vectorizer.h"
+#include "dialogs/vectorizersettings.h"
 #include "onemoment.h"
 #include "devicetracker.h"
 #include "widgets/widget_enum.h"

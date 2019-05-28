@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file dialog/vectorizer.cpp
+/*!	\file dialog/vectorizersettings.cpp
 **
 **	$Id$
 **
@@ -31,7 +31,7 @@
 #include <gtkmm/alignment.h>
 
 #include <ETL/stringf>
-#include "vectorizer.h"
+#include "vectorizersettings.h"
 
 #include <gui/localization.h>
 
