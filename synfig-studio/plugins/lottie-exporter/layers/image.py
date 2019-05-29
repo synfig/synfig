@@ -4,9 +4,8 @@ Will store all the functions corresponding to Image Layer in lottie
 import sys
 import settings
 from helpers.transform import gen_helpers_transform
-from misc import Count, get_color_hex
+from misc import Count, change_axis
 from helpers.blendMode import get_blend
-from effects.fill import gen_effects_fill
 from sources.image import add_image_asset
 sys.path.append("..")
 
@@ -38,6 +37,7 @@ def gen_layer_image(lottie, layer, idx):
     x_val *= settings.PIX_PER_UNIT
     y_val *= settings.PIX_PER_UNIT
     pos = [x_val, y_val]
+    pos = change_axis(pos[0], pos[1])
     anchor = pos
     gen_helpers_transform(lottie["ks"], layer, pos, anchor)
 
