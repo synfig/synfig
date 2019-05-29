@@ -138,15 +138,15 @@ def only_one_point_animated(non_animated, yes_animated, is_animate, lottie, inde
                 new_waypoint.attrib["after"] = next_waypoint.attrib["before"]
                 num_frames = orig_path["k"][i+1]["t"] - orig_path["k"][i]["t"]
                 t = get_bezier_time(orig_path["k"][i]["s"][0],
-                                    orig_path["k"][i]["to"][0], 
-                                    orig_path["k"][i]["ti"][0],
+                                    orig_path["k"][i]["s"][0] + orig_path["k"][i]["to"][0], # Convert to bezier format
+                                    orig_path["k"][i]["e"][0] + orig_path["k"][i]["ti"][0], # Convert to bezier format
                                     orig_path["k"][i]["e"][0],
                                     x2_val * settings.PIX_PER_UNIT +\
                                     settings.lottie_format["w"]/2,
                                     num_frames)
                 y_change_val = get_bezier_val(orig_path["k"][i]["s"][1],
-                                              orig_path["k"][i]["to"][1],
-                                              orig_path["k"][i]["ti"][1],
+                                              orig_path["k"][i]["s"][1] + orig_path["k"][i]["to"][1], # Convert to bezier format
+                                              orig_path["k"][i]["e"][1] + orig_path["k"][i]["ti"][1], # Convert to bezier format
                                               orig_path["k"][i]["e"][1],
                                               t)
                 # Convert y value from lottie format to synfig format
