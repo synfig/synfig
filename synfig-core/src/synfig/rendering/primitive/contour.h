@@ -138,8 +138,8 @@ public:
 		{ if (!chunks.empty()) add_chunks(&chunks.front(), &chunks.back() + 1); }
 
 	//! attach list from (end-1) to begin
-	//! list will attached as line
-	//! curve information for first segment (begin) of incoming list will ignored, only p1 will used
+	//! list will be attached as line
+	//! curve information for first segment (begin) of incoming list will be ignored, only p1 will be used
 	void add_chunks_reverse(const Chunk *begin, const Chunk *end);
 	void add_chunks_reverse(const ChunkList &chunks)
 		{ if (!chunks.empty()) add_chunks_reverse(&chunks.front(), &chunks.back() + 1); }
@@ -151,14 +151,14 @@ public:
 	Rect calc_bounds() const;
 	Rect calc_bounds(const Matrix &transform_matrix) const;
 
-	//! actualize internal value of bounds (if need) and return it
+	//! actualize internal value of bounds (if needed) and return it
 	//! method is thread-safe for constant contours - you must not modify a contour while this call
 	Rect get_bounds() const;
 	
 	void to_intersector(Intersector &intersector) const;
 	etl::handle<Intersector> crerate_intersector() const;
 
-	//! actualize internal copy of intersector (if need) and return it
+	//! actualize internal copy of intersector (if needed) and return it
 	//! method is thread-safe for constant contours - you must not modify a contour while this call
 	const Intersector& get_intersector() const;
 
