@@ -207,6 +207,7 @@ AC_CONFIG_FILES([
     plugins/add-skeleton-simple/Makefile
     plugins/view-unhide-all-layers/Makefile
     plugins/lottie-exporter/Makefile
+    plugins/lottie-exporter/effects/Makefile
     plugins/lottie-exporter/helpers/Makefile
     plugins/lottie-exporter/layers/Makefile
     plugins/lottie-exporter/properties/Makefile
