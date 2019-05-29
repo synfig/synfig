@@ -137,7 +137,7 @@ public:
 	void add_chunks(const ChunkList &chunks)
 		{ if (!chunks.empty()) add_chunks(&chunks.front(), &chunks.back() + 1); }
 
-	//! attached list from (end-1) to begin
+	//! attach list from (end-1) to begin
 	//! list will attached as line
 	//! curve information for first segment (begin) of incoming list will ignored, only p1 will used
 	void add_chunks_reverse(const Chunk *begin, const Chunk *end);
