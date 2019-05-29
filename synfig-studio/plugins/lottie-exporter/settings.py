@@ -2,6 +2,7 @@
 settings.py
 This module contains all the global variables and constants
 """
+from misc import Count
 
 # Constants
 LOTTIE_VERSION = "5.3.4"
@@ -16,6 +17,8 @@ LAYER_SHAPE_TYPE = 4
 LAYER_SHAPE_NAME = "Shape Layer "
 LAYER_SOLID_TYPE = 1
 LAYER_SOLID_NAME = "Solid Layer "
+LAYER_IMAGE_TYPE = 2
+LAYER_IMAGE_NAME = "Image Layer "
 LAYER_DEFAULT_STRETCH = 1
 LAYER_DEFAULT_AUTO_ORIENT = 0
 OPACITY_CONSTANT = 100
@@ -50,3 +53,5 @@ def init():
     lottie_format = {}
     global view_box_canvas
     view_box_canvas = {}
+    global num_images
+    num_images = Count()

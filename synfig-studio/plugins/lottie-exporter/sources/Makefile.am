@@ -1,11 +1,9 @@
 # Id $
 
-PLUGIN_NAME = layers
+PLUGIN_NAME = sources
 
 EXTRA_FILES = \
-			  image.py \
-              shape.py \
-			  solid.py
+			  image.py
 
 plugindir = ${datadir}/synfig/plugins/lottie-exporter/$(PLUGIN_NAME)
 plugin_DATA = \

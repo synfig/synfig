@@ -27,4 +27,5 @@ SUBDIRS = \
           helpers \
           layers \
           properties \
-          shapes
+          shapes \
+		  sources

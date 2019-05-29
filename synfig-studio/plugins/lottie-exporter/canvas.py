@@ -48,6 +48,7 @@ def gen_canvas(lottie, root):
     lottie["ddd"] = settings.DEFAULT_3D
     lottie["v"] = settings.LOTTIE_VERSION
     lottie["fr"] = float(root.attrib["fps"])
+    lottie["assets"] = []       # Creating array for storing assets
     calc_time(root, lottie, "ip")
     calc_time(root, lottie, "op")
     calculate_pixels_per_unit()

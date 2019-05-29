@@ -11,6 +11,7 @@ from lxml import etree
 from canvas import gen_canvas
 from layers.shape import gen_layer_shape
 from layers.solid import gen_layer_solid
+from layers.image import gen_layer_image
 from misc import Count
 import settings
 
@@ -26,7 +27,9 @@ def parse(file_name):
     settings.lottie_format["layers"] = []
     shape_layer = {"star", "circle", "rectangle", "simple_circle"}
     solid_layer = {"SolidColor"}
+    image_layer = {"import"}
     supported_layers = shape_layer.union(solid_layer)
+    supported_layers = supported_layers.union(image_layer)
     for child in root:
         if child.tag == "layer":
             if child.attrib["active"] == "false":   # Only render the active layers
@@ -40,6 +43,10 @@ def parse(file_name):
                                 num_layers.inc())
             elif child.attrib["type"] in solid_layer:         # Goto solid layer
                 gen_layer_solid(settings.lottie_format["layers"][0],
+                                child,
+                                num_layers.inc())
+            elif child.attrib["type"] in image_layer:
+                gen_layer_image(settings.lottie_format["layers"][0],
                                 child,
                                 num_layers.inc())
 
