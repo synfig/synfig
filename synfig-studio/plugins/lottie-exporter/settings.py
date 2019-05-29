@@ -31,6 +31,14 @@ IN_TANGENT_X = 0.58
 IN_TANGENT_Y = 1
 OUT_TANGENT_X = 0.42
 OUT_TANGENT_Y = 0
+EFFECTS_FILL = 21
+EFFECTS_FILL_MASK = 10
+EFFECTS_ALL_MASK = 7
+EFFECTS_COLOR = 2
+EFFECTS_INVERT = 7  # same as All mask, don't know why
+EFFECTS_HFEATHER = 0    # horizontal feather
+EFFECTS_VFEATHER = 0    # vertical feather
+EFFECTS_OPACITY = 0     # Opacity ty = 0
 
 def init():
     """

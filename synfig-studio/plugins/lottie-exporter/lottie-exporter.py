@@ -73,10 +73,9 @@ def gen_html(file_name):
 
 <script>
     var animData = {
-        wrapper: document.getElementById('bodymovin'),
-        animType: 'html',
+        container: document.getElementById('bodymovin'),
+        renderer: 'svg',
         loop: true,
-        prerender: true,
         autoplay: true,
         path:\'""" + file_name + """\'
     };

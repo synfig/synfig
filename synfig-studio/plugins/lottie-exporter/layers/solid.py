@@ -6,6 +6,7 @@ import settings
 from helpers.transform import gen_helpers_transform
 from misc import Count, get_color_hex
 from helpers.blendMode import get_blend
+from effects.fill import gen_effects_fill
 sys.path.append("..")
 
 def gen_layer_solid(lottie, layer, idx):
@@ -19,9 +20,14 @@ def gen_layer_solid(lottie, layer, idx):
     lottie["nm"] = settings.LAYER_SOLID_NAME + str(idx)
     lottie["sr"] = settings.LAYER_DEFAULT_STRETCH
     lottie["ks"] = {}   # Transform properties to be filled
+    lottie["ef"] = []   # Stores the effects
+
     pos = [settings.lottie_format["w"]/2, settings.lottie_format["h"]/2]
     anchor = pos
     gen_helpers_transform(lottie["ks"], layer, pos, anchor)
+
+    lottie["ef"].append({})
+    gen_effects_fill(lottie["ef"][-1], layer, index.inc())
 
     lottie["ao"] = settings.LAYER_DEFAULT_AUTO_ORIENT
     lottie["sw"] = settings.lottie_format["w"]  # Solid Width

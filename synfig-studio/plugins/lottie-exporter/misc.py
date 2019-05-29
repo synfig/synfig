@@ -190,6 +190,10 @@ def parse_position(animated, i):
         pos = [float(animated[i][0].attrib["value"]) * settings.OPACITY_CONSTANT,
                float(animated[i].attrib["time"][:-1]) * settings.lottie_format["fr"]]
 
+    elif animated.attrib["type"] == "effects_opacity":
+        pos = [float(animated[i][0].attrib["value"]),
+               float(animated[i].attrib["time"][:-1]) * settings.lottie_format["fr"]]
+
     elif animated.attrib["type"] == "points":
         pos = [int(animated[i][0].attrib["value"]),
                float(animated[i].attrib["time"][:-1]) * settings.lottie_format["fr"]]
