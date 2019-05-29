@@ -23,6 +23,7 @@ MAINTAINERCLEANFILES = Makefile.in
 DISTCLEANFILES = plugin.xml
 
 SUBDIRS = \
+		  effects \
           helpers \
           layers \
           properties \
