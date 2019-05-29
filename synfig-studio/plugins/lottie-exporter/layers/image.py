@@ -23,9 +23,21 @@ def gen_layer_image(lottie, layer, idx):
     lottie["ks"] = {}   # Transform properties to be filled
 
     settings.lottie_format["assets"].append({})
-    add_image_asset(settings.lottie_format["assets"][-1], layer)
+    st = add_image_asset(settings.lottie_format["assets"][-1], layer)
+    asset = settings.lottie_format["assets"][-1]
 
-    pos = [settings.lottie_format["w"]/2, settings.lottie_format["h"]/2]
+    # setting class (jpg, png)
+    lottie["cl"] = asset["p"].split(".")[-1] 
+
+    # setting the reference id
+    lottie["refId"] = asset["id"]
+
+    # finding the center of image
+    x_val = (float(st["br"][0][0].text) + float(st["tl"][0][0].text)) / 2
+    y_val = (float(st["br"][0][1].text) + float(st["tl"][0][1].text)) / 2
+    x_val *= settings.PIX_PER_UNIT
+    y_val *= settings.PIX_PER_UNIT
+    pos = [x_val, y_val]
     anchor = pos
     gen_helpers_transform(lottie["ks"], layer, pos, anchor)
 
