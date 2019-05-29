@@ -1401,7 +1401,7 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 		if(composite && layer_visibility < 1.0)
 		{
 			// Let's clone the composite layer if it is not a Paste Canvas
-			// (because paste will be always new layer)
+			// (because paste will always be new layer)
 			// Oops... not always...
 			//if(dynamic_cast<Layer_PasteCanvas*>(layer.get()) != NULL)
 				composite = etl::handle<Layer_Composite>::cast_dynamic(composite->simple_clone());

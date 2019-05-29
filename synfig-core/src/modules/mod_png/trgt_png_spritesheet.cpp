@@ -138,7 +138,7 @@ png_trgt_spritesheet::set_rend_desc(RendDesc *given_desc)
 	//Reset on uninitialized values
 	if ((params.columns == 0) || (params.rows == 0))
 	{
-		cout << "Uninitialized sheet parameteras. Reset parameters." << endl;
+		cout << "Uninitialized sheet parameters. Reset parameters." << endl;
 		params.columns = numimages;
 		params.rows = 1;
 		params.append = true;
@@ -178,7 +178,7 @@ png_trgt_spritesheet::set_rend_desc(RendDesc *given_desc)
 
 	if (sheet_width * sheet_height > 5000 * 2000)
 	{
-		synfig::error(strprintf(_("The image is too large. It's size must be not more than 5000*2000=10000000 px. Now is %d*%d=%d px."), 
+		synfig::error(strprintf(_("The image is too large. It's size must be not more than 5000*2000=10000000 px. Currently it's %d*%d=%d px."), 
 		                          sheet_width, sheet_height, sheet_width * sheet_height));
 		return false;
 	}
