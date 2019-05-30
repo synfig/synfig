@@ -199,16 +199,26 @@ def only_one_point_animated(non_animated, yes_animated, is_animate, lottie, inde
                     new_waypoint[0][0].text = str(x2_val)
                     new_waypoint[0][1].text = str(y_change_val)
                     new_waypoint.attrib["time"] = str(float(waypoint.attrib["time"][:-1]) + time_diff * t_x_cross) + "s"
-                    div_animated.insert(j + 1, new_waypoint)
-                    j += 1
+                    # The waypoints to be inserted should not be conjusted i.e.
+                    # be on same frame
+                    if equal_time_frame(waypoint, new_waypoint) or equal_time_frame(new_waypoint, next_waypoint):
+                        pass
+                    else:
+                        div_animated.insert(j + 1, new_waypoint)
+                        j += 1
 
                 # y value is crossing the extrema
                 elif flag == 2:
                     new_waypoint[0][0].text = str(x_change_val)
                     new_waypoint[0][1].text = str(y2_val)
                     new_waypoint.attrib["time"] = str(float(waypoint.attrib["time"][:-1]) + time_diff * t_y_cross) + "s"
-                    div_animated.insert(j + 1, new_waypoint)
-                    j += 1
+                    # The waypoints to be inserted should not be conjusted i.e.
+                    # be on same frame
+                    if equal_time_frame(waypoint, new_waypoint) or equal_time_frame(new_waypoint, next_waypoint):
+                        pass
+                    else:
+                        div_animated.insert(j + 1, new_waypoint)
+                        j += 1
                 # both x value and y value are crossing the extrema
                 elif flag == 3:
                     two_new_waypoint = copy.deepcopy(new_waypoint)
@@ -220,12 +230,19 @@ def only_one_point_animated(non_animated, yes_animated, is_animate, lottie, inde
                     two_new_waypoint[0][1].text = str(y2_val)
                     two_new_waypoint.attrib["time"] = str(float(waypoint.attrib["time"][:-1]) + time_diff * t_y_cross) + "s"
                     if t_x_cross < t_y_cross:
-                        div_animated.insert(j + 1, new_waypoint)
-                        div_animated.insert(j + 2, two_new_waypoint)
+                        if not equal_time_frame(waypoint, new_waypoint) and not equal_time_frame(new_waypoint, two_new_waypoint):
+                            div_animated.insert(j + 1, new_waypoint)
+                            j += 1
+                        if not equal_time_frame(waypoint, two_new_waypoint) and not equal_time_frame(two_new_waypoint, next_waypoint):
+                            div_animated.insert(j + 1, two_new_waypoint)
+                            j += 1
                     else:
-                        div_animated.insert(j + 1, two_new_waypoint)
-                        div_animated.insert(j + 2, new_waypoint)
-                    j += 2
+                        if not equal_time_frame(waypoint, two_new_waypoint) and not equal_time_frame(two_new_waypoint, new_waypoint):
+                            div_animated.insert(j + 1, two_new_waypoint)
+                            j += 1
+                        if not equal_time_frame(waypoint, new_waypoint) and not equal_time_frame(new_waypoint, next_waypoint):
+                            div_animated.insert(j + 1, new_waypoint)
+                            j += 1
         j += 1
 
     pos_animated = copy.deepcopy(div_animated)
@@ -267,3 +284,10 @@ def switch_case(animated, i, x2_val, y2_val):
         return 2
     elif x_change == 1 and y_change == 1:
         return 3
+
+def equal_time_frame(waypoint1, waypoint2):
+    t1 = float(waypoint1.attrib["time"][:-1]) * settings.lottie_format["fr"] 
+    t2 = float(waypoint2.attrib["time"][:-1]) * settings.lottie_format["fr"] 
+    if abs(t1 - t2) < 0.9999999:
+        return 1
+    return 0
