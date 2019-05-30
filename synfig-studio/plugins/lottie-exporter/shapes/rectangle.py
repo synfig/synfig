@@ -117,7 +117,6 @@ def only_one_point_animated(non_animated, yes_animated, is_animate, lottie, inde
 
     orig_path = {}
     gen_properties_multi_dimensional_keyframed(orig_path, o_animated, 0)
-    print("Original", orig_path)
 
     for i in range(orig_len - 1):
         # Need to check if a point crosses other point's min or max value
@@ -132,48 +131,85 @@ def only_one_point_animated(non_animated, yes_animated, is_animate, lottie, inde
             if flag == 0:
                 # No waypoint is to be added
                 pass
-            elif flag == 1:
+            # Only one of x value or y value is crossing the extrema
+            elif flag in {1, 2}:
                 new_waypoint = copy.deepcopy(o_animated[i])
                 new_waypoint.attrib["before"] = waypoint.attrib["after"]
                 new_waypoint.attrib["after"] = next_waypoint.attrib["before"]
                 num_frames = orig_path["k"][i+1]["t"] - orig_path["k"][i]["t"]
-                t = get_bezier_time(orig_path["k"][i]["s"][0],
-                                    orig_path["k"][i]["s"][0] + orig_path["k"][i]["to"][0], # Convert to bezier format
-                                    orig_path["k"][i]["e"][0] + orig_path["k"][i]["ti"][0], # Convert to bezier format
-                                    orig_path["k"][i]["e"][0],
-                                    x2_val * settings.PIX_PER_UNIT +\
-                                    settings.lottie_format["w"]/2,
-                                    num_frames)
-                y_change_val = get_bezier_val(orig_path["k"][i]["s"][1],
-                                              orig_path["k"][i]["s"][1] + orig_path["k"][i]["to"][1], # Convert to bezier format
-                                              orig_path["k"][i]["e"][1] + orig_path["k"][i]["ti"][1], # Convert to bezier format
-                                              orig_path["k"][i]["e"][1],
-                                              t)
-                # Convert y value from lottie format to synfig format
-                print("TO REACH", x2_val * settings.PIX_PER_UNIT +\
-                        settings.lottie_format["w"]/2, x2_val *\
-                        settings.PIX_PER_UNIT)
-                print("bezier values", orig_path["k"][i]["to"][1], orig_path["k"][i]["ti"][1])
-                print("check ", y_change_val, orig_path["k"][i]["s"][1], orig_path["k"][i]["e"][1])
-                y_change_val -= settings.lottie_format["h"]/2
-                y_change_val = -y_change_val
-                y_change_val /= settings.PIX_PER_UNIT  # As this value if to be put back in xml format
-                print("Y val", y_change_val, orig_path["k"][i]["e"][1])
-                new_waypoint[0][0].text = str(x2_val)
-                new_waypoint[0][1].text = str(y_change_val)
+                
+                ############# COPY THE TCB VALUES TO NEW WAYPOINT AS AVERAGE ##############
+                tens, bias, cont = 0, 0, 0      # default values
+                tens1, bias1, cont1 = 0, 0, 0   # default values
+                if "tension" in waypoint.keys():
+                    tens = float(waypoint.attrib["tension"])
+                if "continuity" in waypoint.keys():
+                    cont = float(waypoint.attrib["continuity"])
+                if "bias" in waypoint.keys():
+                    bias = float(waypoint.attrib["bias"])
+                if "tension" in next_waypoint.keys():
+                    tens1 = float(next_waypoint.attrib["tension"])
+                if "continuity" in next_waypoint.keys():
+                    cont1 = float(next_waypoint.attrib["continuity"])
+                if "bias" in next_waypoint.keys():
+                    bias1 = float(next_waypoint.attrib["bias"])
+                f_tens, f_bias, f_cont = (tens + tens1) / 2, (bias + bias1) / 2, (cont + cont1) / 2
+                new_waypoint.attrib["tension"] = str(f_tens)
+                new_waypoint.attrib["continuity"] = str(f_cont)
+                new_waypoint.attrib["bias"] = str(f_bias)
+                ###################### IMP ##################################
+
+                if flag == 1:
+                    t = get_bezier_time(orig_path["k"][i]["s"][0],
+                                        orig_path["k"][i]["s"][0] + orig_path["k"][i]["to"][0], # Convert to bezier format
+                                        orig_path["k"][i]["e"][0] + orig_path["k"][i]["ti"][0], # Convert to bezier format
+                                        orig_path["k"][i]["e"][0],
+                                        x2_val * settings.PIX_PER_UNIT +\
+                                        settings.lottie_format["w"]/2,
+                                        num_frames)
+                    y_change_val = get_bezier_val(orig_path["k"][i]["s"][1],
+                                                  orig_path["k"][i]["s"][1] + orig_path["k"][i]["to"][1], # Convert to bezier format
+                                                  orig_path["k"][i]["e"][1] + orig_path["k"][i]["ti"][1], # Convert to bezier format
+                                                  orig_path["k"][i]["e"][1],
+                                                  t)
+                    # Convert y value from lottie format to synfig format
+                    y_change_val -= settings.lottie_format["h"]/2
+                    y_change_val = -y_change_val
+                    y_change_val /= settings.PIX_PER_UNIT  # As this value if to be put back in xml format
+
+                    new_waypoint[0][0].text = str(x2_val)
+                    new_waypoint[0][1].text = str(y_change_val)
+                elif flag == 2:
+                    t = get_bezier_time(orig_path["k"][i]["s"][1],
+                                        orig_path["k"][i]["s"][1] + orig_path["k"][i]["to"][1], # Convert to bezier format
+                                        orig_path["k"][i]["e"][1] + orig_path["k"][i]["ti"][1], # Convert to bezier format
+                                        orig_path["k"][i]["e"][1],
+                                        -y2_val * settings.PIX_PER_UNIT +\
+                                        settings.lottie_format["h"]/2,
+                                        num_frames)
+                    x_change_val = get_bezier_val(orig_path["k"][i]["s"][0],
+                                                  orig_path["k"][i]["s"][0] + orig_path["k"][i]["to"][0], # Convert to bezier format
+                                                  orig_path["k"][i]["e"][0] + orig_path["k"][i]["ti"][0], # Convert to bezier format
+                                                  orig_path["k"][i]["e"][0],
+                                                  t)
+                    x_change_val -= settings.lottie_format["w"]/2
+                    x_change_val /= settings.PIX_PER_UNIT
+
+                    new_waypoint[0][0].text = str(x_change_val)
+                    new_waypoint[0][1].text = str(y2_val)
+
                 time_diff = float(next_waypoint.attrib["time"][:-1]) - float(waypoint.attrib["time"][:-1])
                 new_waypoint.attrib["time"] = str(float(waypoint.attrib["time"][:-1]) + time_diff * t) + "s"
-                print("New time", t, float(new_waypoint.attrib["time"][:-1]) *\
-                        settings.lottie_format["fr"], time_diff *\
-                        settings.lottie_format["fr"])
                 div_animated.insert(j + 1, new_waypoint)
                 j += 1
+            # both x value and y value are crossing the extrema
+            elif flag == 3:
+                pass
         j += 1
 
     #print(etree.tostring(div_animated))
     pos_animated = copy.deepcopy(div_animated)
 
-    print("This is my length", len(pos_animated))
     for i in range(len(pos_animated)):
         pos_animated[i][0][0].text = str((float(pos_animated[i][0][0].text) + x2_val) / 2)
         pos_animated[i][0][1].text = str((float(pos_animated[i][0][1].text) + y2_val) / 2)
