@@ -100,6 +100,113 @@ def gen_shapes_rectangle(lottie, layer, idx):
     elif p1_animate in {0, 1} and p2_animate == 2:
         only_one_point_animated(points["1"], points["2"], p1_animate, lottie, index)
 
+    # p1 is animated and p2 is animated
+    elif p1_animate == 2 and p2_animate == 2:
+        both_points_animated(points["1"], points["2"], lottie, index)
+
+def both_points_animated(animated_1, animated_2, lottie, index):
+    #################### SECTION 1 #############################
+    # Place waypoint at other point if one point has a waypoint
+    animated_1, animated_2 = animated_1[0], animated_2[0]
+    c_anim_1, c_anim_2 = copy.deepcopy(animated_1), copy.deepcopy(animated_2)
+    orig_path_1, orig_path_2 = {}, {}
+    gen_properties_multi_dimensional_keyframed(orig_path_1, animated_1, 0)
+    gen_properties_multi_dimensional_keyframed(orig_path_2, animated_2, 0)
+
+    i, j = 0, 0 # iterator for 1st and 2nd animations 
+    i1, j1 = 0, 0 # copy iterator for 1st and 2nd animations
+    while i < len(animated_1) and j < len(animated_2):
+        if equal_time_frame(animated_1[i], animated_2[j]):
+            i, j = i+1, j+1
+            i1, j1 = i1+1, j1+1
+            continue
+        t1 = float(animated_1[i].attrib["time"][:-1])
+        t2 = float(animated_2[j].attrib["time"][:-1])
+        if t2 < t1:
+            # Insert waypoint in first animation
+            insert_waypoint(c_anim_1, i1, animated_1, i, t1, t2, orig_path_1)
+            j += 1
+            j1 += 1
+            i1 += 1
+        elif t1 < t2:
+            # Insert waypoint in second animation
+            insert_waypoint(c_anim_2, j1, animated_2, j, t2, t1, orig_path_2)
+            i += 1
+            i1 += 1
+            j1 += 1
+
+    # This means for sure animated_1's last point's time < animated_2's points
+    while i == len(animated_1) and j < len(animated_2):
+        t2 = float(animated_2[j].attrib["time"][:-1])
+        new_waypoint = copy.deepcopy(animated_1[i-1])
+        new_waypoint.attrib["time"] = str(t2) + "s"
+        new_waypoint.attrib["before"] = new_waypoint.attrib["after"] = "linear"
+        c_anim_1.insert(i1 + 1, new_waypoint)
+        i1 += 1
+        j += 1
+
+    # This means for sure animated_2's last points's time < animated_1's points
+    while j == len(animated_2) and i < len(animated_1):
+        t1 = float(animated_1[i].attrib["time"][:-1])
+        new_waypoint = copy.deepcopy(animated_2[j-1])
+        new_waypoint.attrib["time"] = str(t1) + "s"
+        new_waypoint.attrib["before"] = new_waypoint.attrib["after"] = "linear"
+        c_anim_2.insert(j1 + 1, new_waypoint)
+        j1 += 1
+        i += 1
+    ################## END OF SECTION 1 ##########################################
+
+def insert_waypoint(at_insert, i1, orig_at_insert, i, more_t, less_t, orig_path):
+    assert more_t > less_t 
+    new_waypoint = copy.deepcopy(orig_at_insert[i])
+    new_waypoint.attrib["time"] = str(less_t) + "s"
+
+    if orig_at_insert[i].attrib["before"] != "constant" and (i == 0 or orig_at_insert[i-1].attrib["after"] != "constant"):
+        if i == 0:
+            # Means same values of x and y will be taken from next waypoint
+            # But the before and after interpolations need to be changed to
+            # linear type
+            new_waypoint.attrib["before"] = new_waypoint.attrib["after"] = "linear"
+
+        else:
+            copy_tcb_average(orig_at_insert[i-1], orig_at_insert[i], new_waypoint) 
+            prev_t = float(at_insert[i1-1].attrib["time"][:-1])
+            t_at = (less_t - prev_t) / (more_t - prev_t)
+            y_val = get_bezier_val(orig_path["k"][i-1]["s"][1],
+                                   orig_path["k"][i-1]["s"][1] + orig_path["k"][i-1]["to"][1], # Convert to bezier format
+                                   orig_path["k"][i-1]["e"][1] + orig_path["k"][i-1]["ti"][1], # Convert to bezier format
+                                   orig_path["k"][i-1]["e"][1],
+                                   t_at)
+            ## Convert y value from lottie format to synfig format
+            y_val -= settings.lottie_format["h"]/2
+            y_val = -y_val
+            y_val /= settings.PIX_PER_UNIT  # As this value if to be put back in xml format
+
+            x_val = get_bezier_val(orig_path["k"][i-1]["s"][0],
+                                   orig_path["k"][i-1]["s"][0] + orig_path["k"][i-1]["to"][0], # Convert to bezier format
+                                   orig_path["k"][i-1]["e"][0] + orig_path["k"][i-1]["ti"][0], # Convert to bezier format
+                                   orig_path["k"][i-1]["e"][0],
+                                   t_at)
+            ## Convert x value from lottie format to synfig format
+            x_val -= settings.lottie_format["w"]/2
+            x_val /= settings.PIX_PER_UNIT
+
+            # Setting the x and y value for the new waypoint
+            new_waypoint[0][0].text = str(x_val)
+            new_waypoint[0][1].text = str(y_val)
+    elif orig_at_insert[i].attrib["before"] == "constant":
+        new_waypoint.attrib["after"] = "constant"
+        if i != 0:
+            new_waypoint[0][0].text = orig_at_insert[i-1][0][0].text
+            new_waypoint[0][1].text = orig_at_insert[i-1][0][1].text
+    elif i != 0 and orig_at_insert[i-1].attrib["after"] == "constant":
+        new_waypoint.attrib["after"] = new_waypoint.attrib["before"] = "constant"
+        new_waypoint[0][0].text = orig_at_insert[i-1][0][0].text
+        new_waypoint[0][1].text = orig_at_insert[i-1][0][1].text
+
+    # Need to set interpolations and vectors before this
+    at_insert.insert(i1 + 1, new_waypoint)
+
 def only_one_point_animated(non_animated, yes_animated, is_animate, lottie, index):
     child = non_animated
     x2_val, y2_val = get_child_value(is_animate, child, "position")
@@ -136,25 +243,7 @@ def only_one_point_animated(non_animated, yes_animated, is_animate, lottie, inde
                 num_frames = orig_path["k"][i+1]["t"] - orig_path["k"][i]["t"]
                 
                 ############# COPY THE TCB VALUES TO NEW WAYPOINT AS AVERAGE ##############
-                tens, bias, cont = 0, 0, 0      # default values
-                tens1, bias1, cont1 = 0, 0, 0   # default values
-                if "tension" in waypoint.keys():
-                    tens = float(waypoint.attrib["tension"])
-                if "continuity" in waypoint.keys():
-                    cont = float(waypoint.attrib["continuity"])
-                if "bias" in waypoint.keys():
-                    bias = float(waypoint.attrib["bias"])
-                if "tension" in next_waypoint.keys():
-                    tens1 = float(next_waypoint.attrib["tension"])
-                if "continuity" in next_waypoint.keys():
-                    cont1 = float(next_waypoint.attrib["continuity"])
-                if "bias" in next_waypoint.keys():
-                    bias1 = float(next_waypoint.attrib["bias"])
-                f_tens, f_bias, f_cont = (tens + tens1) / 2, (bias + bias1) / 2, (cont + cont1) / 2
-                new_waypoint.attrib["tension"] = str(f_tens)
-                new_waypoint.attrib["continuity"] = str(f_cont)
-                new_waypoint.attrib["bias"] = str(f_bias)
-                ###################### IMP ##################################
+                copy_tcb_average(waypoint, next_waypoint, new_waypoint)
 
                 # Calculate the time at which it crosses the x extrema
                 t_x_cross = get_bezier_time(orig_path["k"][i]["s"][0],
@@ -265,6 +354,26 @@ def only_one_point_animated(non_animated, yes_animated, is_animate, lottie, inde
         size_animated[i][0].attrib["value"] = str(abs(x2_val - float(size_animated[i][0][0].text)))
         size_animated[i][0].attrib["value2"] = str(abs(y2_val - float(size_animated[i][0][1].text)))
     gen_value_Keyframed(lottie["s"], size_animated, index.inc())
+
+def copy_tcb_average(waypoint, next_waypoint, new_waypoint):
+    tens, bias, cont = 0, 0, 0      # default values
+    tens1, bias1, cont1 = 0, 0, 0   # default values
+    if "tension" in waypoint.keys():
+        tens = float(waypoint.attrib["tension"])
+    if "continuity" in waypoint.keys():
+        cont = float(waypoint.attrib["continuity"])
+    if "bias" in waypoint.keys():
+        bias = float(waypoint.attrib["bias"])
+    if "tension" in next_waypoint.keys():
+        tens1 = float(next_waypoint.attrib["tension"])
+    if "continuity" in next_waypoint.keys():
+        cont1 = float(next_waypoint.attrib["continuity"])
+    if "bias" in next_waypoint.keys():
+        bias1 = float(next_waypoint.attrib["bias"])
+    f_tens, f_bias, f_cont = (tens + tens1) / 2, (bias + bias1) / 2, (cont + cont1) / 2
+    new_waypoint.attrib["tension"] = str(f_tens)
+    new_waypoint.attrib["continuity"] = str(f_cont)
+    new_waypoint.attrib["bias"] = str(f_bias)
 
 def switch_case(animated, i, x2_val, y2_val):
     x_now, y_now = float(animated[i][0][0].text), float(animated[i][0][1].text)
