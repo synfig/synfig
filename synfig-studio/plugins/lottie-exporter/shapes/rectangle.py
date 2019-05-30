@@ -127,12 +127,9 @@ def only_one_point_animated(non_animated, yes_animated, is_animate, lottie, inde
             # No waypoint is to be added
             pass
         else:
-            flag = check(o_animated, i, x2_val, y2_val)
-            if flag == 0:
-                # No waypoint is to be added
-                pass
-            # Only one of x value or y value is crossing the extrema
-            elif flag in {1, 2}:
+            flag = switch_case(o_animated, i, x2_val, y2_val)
+            # One of x value or y value is crossing the extrema
+            if flag in {1, 2, 3}:
                 new_waypoint = copy.deepcopy(o_animated[i])
                 new_waypoint.attrib["before"] = waypoint.attrib["after"]
                 new_waypoint.attrib["after"] = next_waypoint.attrib["before"]
@@ -159,55 +156,78 @@ def only_one_point_animated(non_animated, yes_animated, is_animate, lottie, inde
                 new_waypoint.attrib["bias"] = str(f_bias)
                 ###################### IMP ##################################
 
-                if flag == 1:
-                    t = get_bezier_time(orig_path["k"][i]["s"][0],
-                                        orig_path["k"][i]["s"][0] + orig_path["k"][i]["to"][0], # Convert to bezier format
-                                        orig_path["k"][i]["e"][0] + orig_path["k"][i]["ti"][0], # Convert to bezier format
-                                        orig_path["k"][i]["e"][0],
-                                        x2_val * settings.PIX_PER_UNIT +\
-                                        settings.lottie_format["w"]/2,
-                                        num_frames)
-                    y_change_val = get_bezier_val(orig_path["k"][i]["s"][1],
-                                                  orig_path["k"][i]["s"][1] + orig_path["k"][i]["to"][1], # Convert to bezier format
-                                                  orig_path["k"][i]["e"][1] + orig_path["k"][i]["ti"][1], # Convert to bezier format
-                                                  orig_path["k"][i]["e"][1],
-                                                  t)
-                    # Convert y value from lottie format to synfig format
-                    y_change_val -= settings.lottie_format["h"]/2
-                    y_change_val = -y_change_val
-                    y_change_val /= settings.PIX_PER_UNIT  # As this value if to be put back in xml format
+                # Calculate the time at which it crosses the x extrema
+                t_x_cross = get_bezier_time(orig_path["k"][i]["s"][0],
+                                    orig_path["k"][i]["s"][0] + orig_path["k"][i]["to"][0], # Convert to bezier format
+                                    orig_path["k"][i]["e"][0] + orig_path["k"][i]["ti"][0], # Convert to bezier format
+                                    orig_path["k"][i]["e"][0],
+                                    x2_val * settings.PIX_PER_UNIT +\
+                                    settings.lottie_format["w"]/2,
+                                    num_frames)
+                y_change_val = get_bezier_val(orig_path["k"][i]["s"][1],
+                                              orig_path["k"][i]["s"][1] + orig_path["k"][i]["to"][1], # Convert to bezier format
+                                              orig_path["k"][i]["e"][1] + orig_path["k"][i]["ti"][1], # Convert to bezier format
+                                              orig_path["k"][i]["e"][1],
+                                              t_x_cross)
+                ## Convert y value from lottie format to synfig format
+                y_change_val -= settings.lottie_format["h"]/2
+                y_change_val = -y_change_val
+                y_change_val /= settings.PIX_PER_UNIT  # As this value if to be put back in xml format
 
+                # Calculate the time at which it crosses the y extrema
+                t_y_cross = get_bezier_time(orig_path["k"][i]["s"][1],
+                                    orig_path["k"][i]["s"][1] + orig_path["k"][i]["to"][1], # Convert to bezier format
+                                    orig_path["k"][i]["e"][1] + orig_path["k"][i]["ti"][1], # Convert to bezier format
+                                    orig_path["k"][i]["e"][1],
+                                    -y2_val * settings.PIX_PER_UNIT +\
+                                    settings.lottie_format["h"]/2,
+                                    num_frames)
+                x_change_val = get_bezier_val(orig_path["k"][i]["s"][0],
+                                              orig_path["k"][i]["s"][0] + orig_path["k"][i]["to"][0], # Convert to bezier format
+                                              orig_path["k"][i]["e"][0] + orig_path["k"][i]["ti"][0], # Convert to bezier format
+                                              orig_path["k"][i]["e"][0],
+                                              t_y_cross)
+                ## Convert x value from lottie format to synfig format
+                x_change_val -= settings.lottie_format["w"]/2
+                x_change_val /= settings.PIX_PER_UNIT
+
+                # Time difference calculation
+                time_diff = float(next_waypoint.attrib["time"][:-1]) - float(waypoint.attrib["time"][:-1])
+
+                # x value is crossing the extrema
+                if flag == 1:
                     new_waypoint[0][0].text = str(x2_val)
                     new_waypoint[0][1].text = str(y_change_val)
-                elif flag == 2:
-                    t = get_bezier_time(orig_path["k"][i]["s"][1],
-                                        orig_path["k"][i]["s"][1] + orig_path["k"][i]["to"][1], # Convert to bezier format
-                                        orig_path["k"][i]["e"][1] + orig_path["k"][i]["ti"][1], # Convert to bezier format
-                                        orig_path["k"][i]["e"][1],
-                                        -y2_val * settings.PIX_PER_UNIT +\
-                                        settings.lottie_format["h"]/2,
-                                        num_frames)
-                    x_change_val = get_bezier_val(orig_path["k"][i]["s"][0],
-                                                  orig_path["k"][i]["s"][0] + orig_path["k"][i]["to"][0], # Convert to bezier format
-                                                  orig_path["k"][i]["e"][0] + orig_path["k"][i]["ti"][0], # Convert to bezier format
-                                                  orig_path["k"][i]["e"][0],
-                                                  t)
-                    x_change_val -= settings.lottie_format["w"]/2
-                    x_change_val /= settings.PIX_PER_UNIT
+                    new_waypoint.attrib["time"] = str(float(waypoint.attrib["time"][:-1]) + time_diff * t_x_cross) + "s"
+                    div_animated.insert(j + 1, new_waypoint)
+                    j += 1
 
+                # y value is crossing the extrema
+                elif flag == 2:
                     new_waypoint[0][0].text = str(x_change_val)
                     new_waypoint[0][1].text = str(y2_val)
-
-                time_diff = float(next_waypoint.attrib["time"][:-1]) - float(waypoint.attrib["time"][:-1])
-                new_waypoint.attrib["time"] = str(float(waypoint.attrib["time"][:-1]) + time_diff * t) + "s"
-                div_animated.insert(j + 1, new_waypoint)
-                j += 1
-            # both x value and y value are crossing the extrema
-            elif flag == 3:
-                pass
+                    new_waypoint.attrib["time"] = str(float(waypoint.attrib["time"][:-1]) + time_diff * t_y_cross) + "s"
+                    div_animated.insert(j + 1, new_waypoint)
+                    j += 1
+                # both x value and y value are crossing the extrema
+                elif flag == 3:
+                    two_new_waypoint = copy.deepcopy(new_waypoint)
+                    new_waypoint[0][0].text = str(x2_val)
+                    new_waypoint[0][1].text = str(y_change_val)
+                    new_waypoint.attrib["time"] = str(float(waypoint.attrib["time"][:-1]) + time_diff * t_x_cross) + "s"
+                     
+                    two_new_waypoint[0][0].text = str(x_change_val)
+                    two_new_waypoint[0][1].text = str(y2_val)
+                    two_new_waypoint.attrib["time"] = str(float(waypoint.attrib["time"][:-1]) + time_diff * t_y_cross) + "s"
+                    if t_x_cross < t_y_cross:
+                        div_animated.insert(j + 1, new_waypoint)
+                        div_animated.insert(j + 2, two_new_waypoint)
+                    else:
+                        div_animated.insert(j + 1, two_new_waypoint)
+                        div_animated.insert(j + 2, new_waypoint)
+                    j += 2
         j += 1
 
-    #print(etree.tostring(div_animated))
     pos_animated = copy.deepcopy(div_animated)
 
     for i in range(len(pos_animated)):
@@ -229,7 +249,7 @@ def only_one_point_animated(non_animated, yes_animated, is_animate, lottie, inde
         size_animated[i][0].attrib["value2"] = str(abs(y2_val - float(size_animated[i][0][1].text)))
     gen_value_Keyframed(lottie["s"], size_animated, index.inc())
 
-def check(animated, i, x2_val, y2_val):
+def switch_case(animated, i, x2_val, y2_val):
     x_now, y_now = float(animated[i][0][0].text), float(animated[i][0][1].text)
     x_next, y_next = float(animated[i+1][0][0].text), float(animated[i+1][0][1].text)
     sign = lambda a: (1, -1)[a < 0]

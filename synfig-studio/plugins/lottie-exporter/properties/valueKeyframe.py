@@ -114,7 +114,7 @@ def gen_value_Keyframe(curve_list, animated, i):
         # It may be helpful to store them somewhere
         prev_ov, prev_iv = calc_tangent(animated, curve_list[-2], i - 1)
         prev_iv = out_val
-        set_tangents(prev_ov, prev_iv, parse_position(animated, i-1), cur_pos, curve_list[-2])
+        set_tangents(prev_ov, prev_iv, parse_position(animated, i-1), cur_pos, curve_list[-2], animated)
         if cur_get_after == "halt":
             curve_list[-2]["i"]["x"][0] = settings.IN_TANGENT_X
             curve_list[-2]["i"]["y"][0] = settings.IN_TANGENT_Y
