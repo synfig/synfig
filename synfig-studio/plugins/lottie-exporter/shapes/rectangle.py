@@ -7,7 +7,7 @@ import copy
 from lxml import etree
 import settings
 from properties.value import gen_properties_value
-from misc import Count, is_animated, change_axis
+from misc import Count, is_animated, change_axis, Vector
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
 from properties.valueKeyframed import gen_value_Keyframed
 from helpers.bezier import get_bezier_time, get_bezier_val
@@ -171,7 +171,8 @@ def both_points_animated(animated_1, animated_2, lottie, index):
     size_animated.attrib["type"] = "rectangle_size"
 
     i, i1 = 0, 0
-    while i < len(pos_animated) - 1:
+    while i < len(c_anim_1) - 1:
+        print("check", i)
         cur_get_after_1, cur_get_after_2 = c_anim_1[i].attrib["after"], c_anim_2[i].attrib["after"]
         next_get_before_1, next_get_before_2 = c_anim_1[i+1].attrib["before"], c_anim_2[i+1].attrib["before"]
 
@@ -220,7 +221,7 @@ def both_points_animated(animated_1, animated_2, lottie, index):
     gen_value_Keyframed(lottie["s"], size_animated, index.inc())
                 
 
-def pos_helper(pos_animated, c_anim_1, c_anim_2, orig_path, i, i1):
+def pos_helper(size_animated, pos_animated, c_anim_1, c_anim_2, orig_path, i, i1):
     pos_animated[i1].attrib["after"] = c_anim_2[i].attrib["after"]
     size_animated[i1].attrib["after"] = c_anim_2[i].attrib["after"]
 
@@ -233,7 +234,7 @@ def pos_helper(pos_animated, c_anim_1, c_anim_2, orig_path, i, i1):
     t_next = float(c_anim_2[i+1].attrib["time"][:-1]) * settings.lottie_format["fr"]
 
     ######### Need to check if t_next - t_present <= 1 #####
-    pos = get_vector_at_t(orig_path_2, t_next - 1)
+    pos = get_vector_at_t(orig_path, t_next - 1)
     pos = to_Synfig_axis(pos)
     new_waypoint = copy.deepcopy(pos_animated[i1])
     new_waypoint.attrib["before"] = new_waypoint.attrib["after"]
@@ -242,14 +243,14 @@ def pos_helper(pos_animated, c_anim_1, c_anim_2, orig_path, i, i1):
 
     n_size_waypoint = copy.deepcopy(new_waypoint)
     get_average(new_waypoint, new_waypoint, c_anim_1[i])
-    get_differnce(n_size_waypoint, n_size_waypoint, c_anim_1[i])
+    get_difference(n_size_waypoint, n_size_waypoint, c_anim_1[i])
 
     pos_animated.insert(i1 + 1, new_waypoint)
     size_animated.insert(i1 + 1, n_size_waypoint)
     i1 += 1
     i, i1 = i + 1, i1 + 1
     get_average(pos_animated[i1], c_anim_1[i], c_anim_2[i])
-    get_differnce(size_animated[i1], c_anim_1[i], c_anim_2[i])
+    get_difference(size_animated[i1], c_anim_1[i], c_anim_2[i])
     return i, i1
 
 
