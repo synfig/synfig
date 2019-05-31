@@ -120,7 +120,6 @@ def both_points_animated(animated_1, animated_2, lottie, index):
     i, j = 0, 0 # iterator for 1st and 2nd animations 
     i1, j1 = 0, 0 # copy iterator for 1st and 2nd animations
     while i < len(animated_1) and j < len(animated_2):
-        print(i, j, i1, j1)
         if equal_time_frame(animated_1[i], animated_2[j]):
             i, j = i+1, j+1
             i1, j1 = i1+1, j1+1
@@ -145,7 +144,7 @@ def both_points_animated(animated_1, animated_2, lottie, index):
         t2 = float(animated_2[j].attrib["time"][:-1])
         new_waypoint = copy.deepcopy(animated_1[i-1])
         new_waypoint.attrib["time"] = str(t2) + "s"
-        new_waypoint.attrib["before"] = new_waypoint.attrib["after"] = "linear"
+        new_waypoint.attrib["before"] = new_waypoint.attrib["after"] = "constant"
         c_anim_1.insert(i1 + 1, new_waypoint)
         i1 += 1
         j += 1
@@ -155,11 +154,10 @@ def both_points_animated(animated_1, animated_2, lottie, index):
         t1 = float(animated_1[i].attrib["time"][:-1])
         new_waypoint = copy.deepcopy(animated_2[j-1])
         new_waypoint.attrib["time"] = str(t1) + "s"
-        new_waypoint.attrib["before"] = new_waypoint.attrib["after"] = "linear"
+        new_waypoint.attrib["before"] = new_waypoint.attrib["after"] = "constant"
         c_anim_2.insert(j1 + 1, new_waypoint)
         j1 += 1
         i += 1
-    print(len(c_anim_1), len(c_anim_2))
     assert len(c_anim_1) == len(c_anim_2)
     ################## END OF SECTION 1 ##########################################
 
@@ -172,14 +170,14 @@ def both_points_animated(animated_1, animated_2, lottie, index):
 
     i, i1 = 0, 0
     while i < len(c_anim_1) - 1:
-        print("check", i)
         cur_get_after_1, cur_get_after_2 = c_anim_1[i].attrib["after"], c_anim_2[i].attrib["after"]
         next_get_before_1, next_get_before_2 = c_anim_1[i+1].attrib["before"], c_anim_2[i+1].attrib["before"]
 
         dic_1 = {"linear", "auto", "clamped", "halt"}
         dic_2 = {"constant"}
-        constant_interval_1 = cur_get_after_1 in dic_2 or cur_get_after_2 in dic_2
-        constant_interval_2 = next_get_before_1 in dic_2 or next_get_before_2 in dic_2
+        constant_interval_1 = cur_get_after_1 in dic_2 or next_get_before_1 in dic_2
+        constant_interval_2 = cur_get_after_2 in dic_2 or next_get_before_2 in dic_2
+        print(i, constant_interval_1, constant_interval_2)
 
         # Case 1 no "constant" interval is present
         if (cur_get_after_1 in dic_1) and (cur_get_after_2 in dic_1) and (next_get_before_1 in dic_1) and (next_get_before_2 in dic_1):
@@ -204,6 +202,7 @@ def both_points_animated(animated_1, animated_2, lottie, index):
 
         # Case 3 both are constant
         elif constant_interval_1 and constant_interval_2:
+            print(i)
             # No need to copy tcb, as it's pos should be "constant"
             get_average(pos_animated[i1], c_anim_1[i], c_anim_2[i])
             get_difference(size_animated[i1], c_anim_1[i], c_anim_2[i])
@@ -214,11 +213,20 @@ def both_points_animated(animated_1, animated_2, lottie, index):
     ######################### SECTION 2 END ##############################
 
     ######################### SECTION 3 ##################################
+    print_animation(pos_animated)
     # Generate the position and size for lottie format
     gen_properties_multi_dimensional_keyframed(lottie["p"],
                                                pos_animated,
                                                index.inc())
     gen_value_Keyframed(lottie["s"], size_animated, index.inc())
+
+
+def print_animation(b):
+    a = copy.deepcopy(b)
+    for i in range(len(a)):
+        a[i][0][0].text = str(float(a[i][0][0].text) * settings.PIX_PER_UNIT)
+        a[i][0][1].text = str(float(a[i][0][1].text) * settings.PIX_PER_UNIT)
+    print(etree.tostring(a, method='xml', encoding='utf8').decode())
                 
 
 def pos_helper(size_animated, pos_animated, c_anim_1, c_anim_2, orig_path, i, i1):
@@ -297,8 +305,8 @@ def get_difference(waypoint, way_1, way_2):
 
 
 def get_average(waypoint, way_1, way_2):
-    waypoint[0][0].text = str(float(way_1[0][0].text) + float(way_2[0][0].text) / 2)
-    waypoint[0][1].text = str(float(way_1[0][1].text) + float(way_2[0][1].text) / 2)
+    waypoint[0][0].text = str((float(way_1[0][0].text) + float(way_2[0][0].text)) / 2)
+    waypoint[0][1].text = str((float(way_1[0][1].text) + float(way_2[0][1].text)) / 2)
 
 
 def insert_waypoint(at_insert, i1, orig_at_insert, i, more_t, less_t, orig_path):
@@ -350,7 +358,7 @@ def insert_waypoint(at_insert, i1, orig_at_insert, i, more_t, less_t, orig_path)
         new_waypoint[0][1].text = orig_at_insert[i-1][0][1].text
 
     # Need to set interpolations and vectors before this
-    at_insert.insert(i1 + 1, new_waypoint)
+    at_insert.insert(i1, new_waypoint)
 
 
 def only_one_point_animated(non_animated, yes_animated, is_animate, lottie, index):
