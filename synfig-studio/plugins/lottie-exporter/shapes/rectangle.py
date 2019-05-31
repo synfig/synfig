@@ -177,7 +177,6 @@ def both_points_animated(animated_1, animated_2, lottie, index):
         dic_2 = {"constant"}
         constant_interval_1 = cur_get_after_1 in dic_2 or next_get_before_1 in dic_2
         constant_interval_2 = cur_get_after_2 in dic_2 or next_get_before_2 in dic_2
-        print(i, constant_interval_1, constant_interval_2)
 
         # Case 1 no "constant" interval is present
         if (cur_get_after_1 in dic_1) and (cur_get_after_2 in dic_1) and (next_get_before_1 in dic_1) and (next_get_before_2 in dic_1):
@@ -202,7 +201,6 @@ def both_points_animated(animated_1, animated_2, lottie, index):
 
         # Case 3 both are constant
         elif constant_interval_1 and constant_interval_2:
-            print(i)
             # No need to copy tcb, as it's pos should be "constant"
             get_average(pos_animated[i1], c_anim_1[i], c_anim_2[i])
             get_difference(size_animated[i1], c_anim_1[i], c_anim_2[i])
@@ -278,10 +276,9 @@ def get_vector_at_t(path, t):
         if t < t_key:
             break
         i += 1
-    i -= 1
     if i < 0:
         return keyfr[0]["s"]
-    if i != len(keyfr):
+    if i < len(keyfr) - 1:
         # If hold interpolation
         if "h" in keyfr[i].keys():
             return keyfr[i]["s"]
@@ -293,7 +290,7 @@ def get_vector_at_t(path, t):
         next_fr = keyfr[i+1]["t"]
         percent = (t - this_fr) / (next_fr - this_fr) 
         pos = get_bezier_val(st, st + to, en + ti, ti, percent)
-    elif i == len(keyfr):
+    elif i >= len(keyfr) - 1:
         pos = Vector(keyfr[i-1]["e"][0], keyfr[i-1]["e"][1])
     return [pos.val1, pos.val2]
 
