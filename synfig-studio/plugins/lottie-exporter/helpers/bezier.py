@@ -2,10 +2,12 @@
 Module contains all functions required for calculation/help in bezier related
 queries 
 """
+
 import sys
 import settings
 import numpy as np
 sys.path.append("..")
+
 
 def get_bezier_time(P0, P1, P2, P3, point, frames):
     """
@@ -26,6 +28,7 @@ def get_bezier_time(P0, P1, P2, P3, point, frames):
             ret = t
         fr += 1
     return ret
+
      
 def get_bezier_val(P0, P1, P2, P3, t):
     """

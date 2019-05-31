@@ -4,6 +4,7 @@ This module converts the canvas to lottie format
 import settings
 from misc import calculate_pixels_per_unit
 
+
 def calc_time(root, lottie, which):
     """
     Converts the starting time and ending time to lottie format

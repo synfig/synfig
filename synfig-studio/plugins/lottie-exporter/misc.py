@@ -2,7 +2,9 @@
 helpers.py
 Some helper functions will be written here
 """
+
 import settings
+
 
 class Count:
     """
@@ -17,6 +19,7 @@ class Count:
         self.idx += 1
         return self.idx
 
+
 class Vector:
     """
     To store the position of layers
@@ -29,6 +32,7 @@ class Vector:
 
     type represents what this vector is representing
     """
+
     def __init__(self, val1=0, val2=0, _type=None):
         self.val1 = val1
         self.val2 = val2
@@ -94,10 +98,12 @@ class Vector:
     def set_type(self, _type):
         self.type = _type
 
+
 class Color:
     """
     To store the colors in Synfig and operations on them
     """
+
     def __init__(self, red=1, green=1, blue=1, alpha=1):
         self.red = red
         self.green = green
@@ -145,6 +151,7 @@ class Color:
         """
         return [self.red, self.green, self.blue, self.alpha]
 
+
 def calculate_pixels_per_unit():
     """
     Gives the value of 1 unit in terms of pixels according to the canvas defined
@@ -154,6 +161,7 @@ def calculate_pixels_per_unit():
     settings.PIX_PER_UNIT = image_width / image_area_width
     return settings.PIX_PER_UNIT
 
+
 def change_axis(x_val, y_val):
     """
     Convert synfig axis coordinates into lottie format
@@ -162,6 +170,7 @@ def change_axis(x_val, y_val):
     x_val, y_val = float(x_val), float(y_val)
     x_val, y_val = x_val + settings.lottie_format["w"]/2, -y_val + settings.lottie_format["h"]/2
     return [int(x_val), int(y_val)]
+
 
 def parse_position(animated, i):
     """
@@ -216,6 +225,7 @@ def parse_position(animated, i):
 
     return Vector(pos[0], pos[1], animated.attrib["type"])
 
+
 def parse_value(animated, i):
     """
     To convert the synfig value parameter from units to pixels
@@ -225,6 +235,7 @@ def parse_value(animated, i):
     pos = [float(animated[i][0].attrib["value"]) * settings.PIX_PER_UNIT,
            float(animated[i].attrib["time"][:-1]) * settings.lottie_format["fr"]]
     return pos
+
 
 def get_angle(theta):
     """
@@ -239,6 +250,7 @@ def get_angle(theta):
 
     theta = theta + shift * 360
     return theta
+
 
 def is_animated(node):
     """
@@ -257,6 +269,7 @@ def is_animated(node):
         case = 0
     return case
 
+
 def clamp_col(color):
     """
     This function converts the colors into int and takes them to the range of
@@ -266,6 +279,7 @@ def clamp_col(color):
     color *= 255
     color = int(color)
     return max(0, min(color, 255))
+
 
 def get_color_hex(node):
     """

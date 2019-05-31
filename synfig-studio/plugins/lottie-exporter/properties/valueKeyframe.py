@@ -1,12 +1,14 @@
 """
 Implements function required for generating tangent between two value key frames
 """
+
 import sys
 import random
 import settings
 from misc import parse_position
 from properties.offsetKeyframe import calc_tangent
 sys.path.append("../")
+
 
 def normalize_tangents(cur_pos, next_pos, t_in, t_out):
     """
@@ -43,6 +45,7 @@ def normalize_tangents(cur_pos, next_pos, t_in, t_out):
 
     t_in["x"][0] = abs(t_in["x"][0] / time_scale - time_diff)
     t_in["y"][0] = abs(t_in["y"][0] / value_scale - value_diff)
+
 
 def gen_value_Keyframe(curve_list, animated, i):
     """
@@ -119,6 +122,7 @@ def gen_value_Keyframe(curve_list, animated, i):
         if cur_get_after == "halt":
             curve_list[-2]["i"]["x"][0] = settings.IN_TANGENT_X
             curve_list[-2]["i"]["y"][0] = settings.IN_TANGENT_Y
+
 
 def set_tangents(out_val, in_val, cur_pos, next_pos, lottie, animated):
     """

@@ -2,17 +2,20 @@
 Will store all the function necessary for generation of offset properties of a
 keyframe in lottie
 """
+
 import sys
 import copy
 import settings
 from misc import parse_position, change_axis, Vector
 sys.path.append("..")
 
+
 def isclose(a_val, b_val, rel_tol=1e-09, abs_tol=0.0):
     """
     A Function for testing approximate equality
     """
     return abs(a_val - b_val) <= max(rel_tol * max(abs(a_val), abs(b_val)), abs_tol)
+
 
 def clamped_tangent(p1, p2, p3, animated, i):
     """
@@ -53,6 +56,7 @@ def clamped_tangent(p1, p2, p3, animated, i):
         tangent = tangent * 0.0
     return tangent
 
+
 def clamped_vector(p1, p2, p3, animated, i, lottie, ease):
     """
     Function to generate the collective tangents i.e. x tangent and y tangent
@@ -67,12 +71,14 @@ def clamped_vector(p1, p2, p3, animated, i, lottie, ease):
             ease_out(lottie)
     return Vector(x_tan, y_tan, animated.attrib["type"])
 
+
 def ease_out(lottie):
     """
     To set the ease out values in lottie format
     """
     lottie["o"]["x"] = settings.OUT_TANGENT_X
     lottie["o"]["y"] = settings.OUT_TANGENT_Y
+
 
 def ease_in(lottie):
     """
@@ -81,6 +87,7 @@ def ease_in(lottie):
     lottie["i"]["x"] = settings.IN_TANGENT_X
     lottie["i"]["y"] = settings.IN_TANGENT_Y
 
+
 def handle_color():
     """
     Default linear tangent values for color interpolations
@@ -88,6 +95,7 @@ def handle_color():
     out_val = Vector(0.5, 0.5, "color")
     in_val = Vector(0.5, 0.5, "color")
     return out_val, in_val
+
 
 def calc_tangent(animated, lottie, i):
     """
@@ -238,6 +246,7 @@ def calc_tangent(animated, lottie, i):
         else:
             in_val = next_pos - cur_pos      # t2 = p2 - p1
     return out_val, in_val
+
 
 def gen_properties_offset_keyframe(curve_list, animated, i):
     """

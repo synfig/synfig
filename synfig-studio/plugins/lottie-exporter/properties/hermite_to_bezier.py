@@ -1,8 +1,10 @@
 """
 Stores all methods necassary for conversion of hermite curve to bezier curve
 """
+
 import sys
 sys.path.append("../")
+
 
 def hermite_to_bezier(lottie, animated):
     """

@@ -1,12 +1,14 @@
 """
 Will have all the functions required for generate the fill(color) in lottie
 """
+
 import sys
 import settings
 from properties.value import gen_properties_value
 from properties.valueKeyframed import gen_value_Keyframed
 from misc import Count, is_animated
 sys.path.append("..")
+
 
 def gen_shapes_fill(lottie, layer):
     """

@@ -1,6 +1,7 @@
 """
 Will store all functions needed to generate the rectangle layer in lottie
 """
+
 import sys
 import copy
 from lxml import etree
@@ -11,6 +12,7 @@ from properties.multiDimensionalKeyframed import gen_properties_multi_dimensiona
 from properties.valueKeyframed import gen_value_Keyframed
 from helpers.bezier import get_bezier_time, get_bezier_val
 sys.path.append("..")
+
 
 def get_child_value(is_animate, child, what_type):
     """
@@ -31,6 +33,7 @@ def get_child_value(is_animate, child, what_type):
         elif is_animate == 1:
             val = float(child[0][0][0].attrib["value"])
         return val
+
 
 def gen_shapes_rectangle(lottie, layer, idx):
     """
@@ -104,6 +107,7 @@ def gen_shapes_rectangle(lottie, layer, idx):
     elif p1_animate == 2 and p2_animate == 2:
         both_points_animated(points["1"], points["2"], lottie, index)
 
+
 def both_points_animated(animated_1, animated_2, lottie, index):
     #################### SECTION 1 #############################
     # Place waypoint at other point if one point has a waypoint
@@ -156,6 +160,7 @@ def both_points_animated(animated_1, animated_2, lottie, index):
         i += 1
     ################## END OF SECTION 1 ##########################################
 
+
 def insert_waypoint(at_insert, i1, orig_at_insert, i, more_t, less_t, orig_path):
     assert more_t > less_t 
     new_waypoint = copy.deepcopy(orig_at_insert[i])
@@ -206,6 +211,7 @@ def insert_waypoint(at_insert, i1, orig_at_insert, i, more_t, less_t, orig_path)
 
     # Need to set interpolations and vectors before this
     at_insert.insert(i1 + 1, new_waypoint)
+
 
 def only_one_point_animated(non_animated, yes_animated, is_animate, lottie, index):
     child = non_animated
@@ -355,6 +361,7 @@ def only_one_point_animated(non_animated, yes_animated, is_animate, lottie, inde
         size_animated[i][0].attrib["value2"] = str(abs(y2_val - float(size_animated[i][0][1].text)))
     gen_value_Keyframed(lottie["s"], size_animated, index.inc())
 
+
 def copy_tcb_average(waypoint, next_waypoint, new_waypoint):
     tens, bias, cont = 0, 0, 0      # default values
     tens1, bias1, cont1 = 0, 0, 0   # default values
@@ -375,6 +382,7 @@ def copy_tcb_average(waypoint, next_waypoint, new_waypoint):
     new_waypoint.attrib["continuity"] = str(f_cont)
     new_waypoint.attrib["bias"] = str(f_bias)
 
+
 def switch_case(animated, i, x2_val, y2_val):
     x_now, y_now = float(animated[i][0][0].text), float(animated[i][0][1].text)
     x_next, y_next = float(animated[i+1][0][0].text), float(animated[i+1][0][1].text)
@@ -393,6 +401,7 @@ def switch_case(animated, i, x2_val, y2_val):
         return 2
     elif x_change == 1 and y_change == 1:
         return 3
+
 
 def equal_time_frame(waypoint1, waypoint2):
     t1 = float(waypoint1.attrib["time"][:-1]) * settings.lottie_format["fr"] 

@@ -1,6 +1,7 @@
 """
 Will store all the functions corresponding to Image Layer in lottie
 """
+
 import sys
 import settings
 from helpers.transform import gen_helpers_transform
@@ -8,6 +9,7 @@ from misc import Count, change_axis
 from helpers.blendMode import get_blend
 from sources.image import add_image_asset
 sys.path.append("..")
+
 
 def gen_layer_image(lottie, layer, idx):
     """

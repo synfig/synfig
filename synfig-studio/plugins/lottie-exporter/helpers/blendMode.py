@@ -2,9 +2,11 @@
 Module contains all functions required for setting up the blend mode of any
 layer
 """
+
 import sys
 import settings
 sys.path.append("..")
+
 
 def get_blend(lottie, layer):
     """

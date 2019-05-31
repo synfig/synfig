@@ -1,6 +1,7 @@
 """
 Will store all functions needed to generate the star layer in lottie
 """
+
 import sys
 import settings
 from properties.value import gen_properties_value
@@ -8,6 +9,7 @@ from misc import get_angle, Count, change_axis, is_animated
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
 from properties.valueKeyframed import gen_value_Keyframed
 sys.path.append("..")
+
 
 def gen_shapes_star(lottie, layer, idx):
     """
@@ -156,6 +158,7 @@ def gen_shapes_star(lottie, layer, idx):
                          settings.NO_INFO)
     lottie["ix"] = idx
 
+
 """
 Below 2 functions are not complete yet:
 Issues: If outer radius is animated, how do I change inner radius along with it
@@ -196,11 +199,13 @@ def polygon_correction(lottie, animated):
         #modify(lottie, animated, s_frame, e_frame)
         now = toggle(now)
 
+
 def toggle(val):
     ret = "false"
     if val == "false":
         ret = "true"
     return ret
+
 
 def modify(lottie, animated, s_frame, e_frame):
     if e_frame < s_frame:

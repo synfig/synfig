@@ -1,12 +1,14 @@
 """
 This module will store all the functions required for color property of lottie
 """
+
 import sys
 import settings
 from misc import Count, is_animated
 from properties.value import gen_properties_value
 from properties.valueKeyframed import gen_value_Keyframed
 sys.path.append("../")
+
 
 def gen_effects_color(lottie, layer, idx):
     """

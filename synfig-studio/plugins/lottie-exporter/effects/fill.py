@@ -1,6 +1,7 @@
 """
 This module will store all the functions required for fill effects of lottie
 """
+
 import sys
 import settings
 from misc import Count
@@ -11,6 +12,7 @@ from effects.invert import gen_effects_invert
 from effects.feather import gen_effects_hfeather, gen_effects_vfeather
 from effects.opacity import gen_effects_opacity
 sys.path.append("../")
+
 
 def gen_effects_fill(lottie, layer, idx):
     """

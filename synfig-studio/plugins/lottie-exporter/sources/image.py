@@ -1,11 +1,13 @@
 """
 Will store all the functions corresponding to Image Assets in lottie
 """
+
 import sys
 import struct
 import imghdr
 import settings
 sys.path.append("..")
+
 
 def get_image_size(fname):
     '''
@@ -43,6 +45,7 @@ def get_image_size(fname):
         else:
             return
         return width, height
+
 
 def add_image_asset(lottie, layer):
     """

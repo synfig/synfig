@@ -2,12 +2,14 @@
 Will store all the functions required for generation of
 multiDimensionalKeyframed file in lottie
 """
+
 import sys
 import settings
 from properties.offsetKeyframe import gen_properties_offset_keyframe
 from properties.timeAdjust import time_adjust
 from properties.hermite_to_bezier import hermite_to_bezier
 sys.path.append("..")
+
 
 def gen_properties_multi_dimensional_keyframed(lottie, animated, idx):
     """

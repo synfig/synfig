@@ -2,8 +2,9 @@
 Python plugin to convert the .sif format into lottie json format
 input   : FILE_NAME.sif
 output  : FILE_NAME.json
+        : FILE_NAME.html
 
-Currently working for star and circle layers along with animations
+Supported Layers are mentioned below
 """
 import json
 import sys
@@ -14,6 +15,16 @@ from layers.solid import gen_layer_solid
 from layers.image import gen_layer_image
 from misc import Count
 import settings
+
+
+def write_to(filename, extension, data):
+    new_name = filename.split(".")
+    new_name[-1] = extension
+    new_name = ".".join(new_name)
+    with open(new_name, "w") as f:
+        f.write(data)
+    return new_name
+
 
 def parse(file_name):
     """
@@ -51,16 +62,8 @@ def parse(file_name):
                                 num_layers.inc())
 
     lottie_string = json.dumps(settings.lottie_format)
-    # Write the output to the file name with .json extension
-    new_file_name = file_name.split(".")
-    # Uncomment this when this file is used as plugin
-    # new_file_name = new_file_name[:-2]
-    new_file_name[-1] = "json"
-    new_file_name = ".".join(new_file_name)
-    outputfile_f = open(new_file_name, 'w')
-    outputfile_f.write(lottie_string)
-    outputfile_f.close()
-    return new_file_name
+    return write_to(file_name, "json", lottie_string)
+
 
 def gen_html(file_name):
     """
@@ -79,23 +82,19 @@ def gen_html(file_name):
 <div style="width:100%;height:100%;background-color:#333;" id="bodymovin"></div>
 
 <script>
-    var animData = {
+    var animData = {{
         container: document.getElementById('bodymovin'),
         renderer: 'svg',
         loop: true,
         autoplay: true,
-        path:\'""" + file_name + """\'
-    };
+        path:'{file_name}'
+    }};
     var anim = bodymovin.loadAnimation(animData);
 </script>
 </body>
 </html>"""
-    html_name = file_name.split(".")
-    html_name[-1] = "html"
-    html_name = ".".join(html_name)
-    outFile = open(html_name, "w")
-    outFile.write(html_text)
-    outFile.close()
+    write_to(file_name, "html", html_text.format(file_name=file_name))
+
 
 if len(sys.argv) < 2:
     sys.exit()

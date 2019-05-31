@@ -1,6 +1,7 @@
 """
 Will store all the functions corresponding to shapes in lottie
 """
+
 import sys
 import settings
 from helpers.transform import gen_helpers_transform
@@ -11,6 +12,7 @@ from shapes.fill import gen_shapes_fill
 from shapes.rectangle import gen_shapes_rectangle
 from helpers.blendMode import get_blend
 sys.path.append("..")
+
 
 def gen_layer_shape(lottie, layer, idx):
     """

@@ -1,6 +1,7 @@
 """
 Will store all the functions corresponding to solids in lottie
 """
+
 import sys
 import settings
 from helpers.transform import gen_helpers_transform
@@ -8,6 +9,7 @@ from misc import Count, get_color_hex
 from helpers.blendMode import get_blend
 from effects.fill import gen_effects_fill
 sys.path.append("..")
+
 
 def gen_layer_solid(lottie, layer, idx):
     """

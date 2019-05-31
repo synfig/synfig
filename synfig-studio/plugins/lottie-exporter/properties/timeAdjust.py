@@ -2,8 +2,10 @@
 Stores the functions required for adjusting time factor in the neighbouring
 waypoints in Synfig
 """
+
 import sys
 sys.path.append("../")
+
 
 def time_adjust(lottie, animated):
     """

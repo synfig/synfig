@@ -2,6 +2,7 @@
 Will store all functions needed to generate the circle layer in lottie
 This will also support the simple_circle layer of Synfig
 """
+
 import sys
 import settings
 from properties.value import gen_properties_value
@@ -9,6 +10,7 @@ from misc import Count, is_animated, change_axis
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
 from properties.valueKeyframed import gen_value_Keyframed
 sys.path.append("..")
+
 
 def gen_shapes_circle(lottie, layer, idx):
     """

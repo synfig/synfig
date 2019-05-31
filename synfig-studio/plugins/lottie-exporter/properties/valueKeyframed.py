@@ -1,11 +1,13 @@
 """
 Stores all the functions required for generating value key frames in lottie
 """
+
 import sys
 import settings
 from properties.timeAdjust import time_adjust
 from properties.valueKeyframe import gen_value_Keyframe
 sys.path.append("../")
+
 
 def gen_value_Keyframed(lottie, animated, idx):
     """

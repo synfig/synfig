@@ -2,11 +2,13 @@
 This module will store all the functions required for transformations
 corresponding to lottie
 """
+
 import sys
 import settings
 from misc import Count
 from properties.value import gen_properties_value
 sys.path.append("../")
+
 
 def gen_helpers_transform(lottie, layer, pos = [0, 0], anchor = [0, 0, 0]):
     """
