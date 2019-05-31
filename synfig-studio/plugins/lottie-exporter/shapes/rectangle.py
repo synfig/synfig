@@ -168,6 +168,7 @@ def both_points_animated(animated_1, animated_2, lottie, index):
     # Store the size of rectangle according to the waypoints in size_animated
     pos_animated = copy.deepcopy(c_anim_1)
     size_animated = copy.deepcopy(c_anim_1)
+    size_animated.attrib["type"] = "rectangle_size"
 
     i, i1 = 0, 0
     while i < len(pos_animated) - 1:
