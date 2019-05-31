@@ -110,7 +110,7 @@ def gen_shapes_rectangle(lottie, layer, idx):
 
 def both_points_animated(animated_1, animated_2, lottie, index):
     #################### SECTION 1 #############################
-    # Place waypoint at other point if one point has a waypoint
+    # Place waypoint at point1 if point2 has a waypoint at that time and vice-versa
     animated_1, animated_2 = animated_1[0], animated_2[0]
     c_anim_1, c_anim_2 = copy.deepcopy(animated_1), copy.deepcopy(animated_2)
     orig_path_1, orig_path_2 = {}, {}
@@ -120,6 +120,7 @@ def both_points_animated(animated_1, animated_2, lottie, index):
     i, j = 0, 0 # iterator for 1st and 2nd animations 
     i1, j1 = 0, 0 # copy iterator for 1st and 2nd animations
     while i < len(animated_1) and j < len(animated_2):
+        print(i, j, i1, j1)
         if equal_time_frame(animated_1[i], animated_2[j]):
             i, j = i+1, j+1
             i1, j1 = i1+1, j1+1
@@ -158,7 +159,144 @@ def both_points_animated(animated_1, animated_2, lottie, index):
         c_anim_2.insert(j1 + 1, new_waypoint)
         j1 += 1
         i += 1
+    print(len(c_anim_1), len(c_anim_2))
+    assert len(c_anim_1) == len(c_anim_2)
     ################## END OF SECTION 1 ##########################################
+
+    ################## SECTION 2 ################################################
+    # Store the position of rectangle according to the waypoints in pos_animated
+    # Store the size of rectangle according to the waypoints in size_animated
+    pos_animated = copy.deepcopy(c_anim_1)
+    size_animated = copy.deepcopy(c_anim_1)
+
+    i, i1 = 0, 0
+    while i < len(pos_animated) - 1:
+        cur_get_after_1, cur_get_after_2 = c_anim_1[i].attrib["after"], c_anim_2[i].attrib["after"]
+        next_get_before_1, next_get_before_2 = c_anim_1[i+1].attrib["before"], c_anim_2[i+1].attrib["before"]
+
+        dic_1 = {"linear", "auto", "clamped", "halt"}
+        dic_2 = {"constant"}
+        constant_interval_1 = cur_get_after_1 in dic_2 or cur_get_after_2 in dic_2
+        constant_interval_2 = next_get_before_1 in dic_2 or next_get_before_2 in dic_2
+
+        # Case 1 no "constant" interval is present
+        if (cur_get_after_1 in dic_1) and (cur_get_after_2 in dic_1) and (next_get_before_1 in dic_1) and (next_get_before_2 in dic_1):
+            get_average(pos_animated[i1], c_anim_1[i], c_anim_2[i])
+            copy_tcb_average(pos_animated[i1], c_anim_1[i], c_anim_2[i])
+
+            get_difference(size_animated[i1], c_anim_1[i], c_anim_2[i])
+            copy_tcb(size_animated[i1], pos_animated[i1])
+            i, i1 = i + 1, i1 + 1
+            get_average(pos_animated[i1], c_anim_1[i], c_anim_2[i])
+            copy_tcb_average(pos_animated[i1], c_anim_1[i], c_anim_2[i])
+
+            get_difference(size_animated[i1], c_anim_1[i], c_anim_2[i])
+            copy_tcb(size_animated[i1], pos_animated[i1])
+
+        # Case 2 only one "constant" interval: could mean two "constant"'s are present
+        elif (constant_interval_1 and not constant_interval_2) or (not constant_interval_1 and constant_interval_2):
+            if constant_interval_1:
+                i, i1 = pos_helper(size_animated, pos_animated, c_anim_1, c_anim_2, orig_path_2, i, i1)
+            elif constant_interval_2:
+                i, i1 = pos_helper(size_animated, pos_animated, c_anim_2, c_anim_1, orig_path_1, i, i1)
+
+        # Case 3 both are constant
+        elif constant_interval_1 and constant_interval_2:
+            # No need to copy tcb, as it's pos should be "constant"
+            get_average(pos_animated[i1], c_anim_1[i], c_anim_2[i])
+            get_difference(size_animated[i1], c_anim_1[i], c_anim_2[i])
+
+            i, i1 = i + 1, i1 + 1
+            get_difference(size_animated[i1], c_anim_1[i], c_anim_2[i])
+            get_average(pos_animated[i1], c_anim_1[i], c_anim_2[i])
+    ######################### SECTION 2 END ##############################
+
+    ######################### SECTION 3 ##################################
+    # Generate the position and size for lottie format
+    gen_properties_multi_dimensional_keyframed(lottie["p"],
+                                               pos_animated,
+                                               index.inc())
+    gen_value_Keyframed(lottie["s"], size_animated, index.inc())
+                
+
+def pos_helper(pos_animated, c_anim_1, c_anim_2, orig_path, i, i1):
+    pos_animated[i1].attrib["after"] = c_anim_2[i].attrib["after"]
+    size_animated[i1].attrib["after"] = c_anim_2[i].attrib["after"]
+
+    copy_tcb(pos_animated[i1], c_anim_2[i])
+    copy_tcb(size_animated[i1], c_anim_2[i])
+
+    get_average(pos_animated[i1], c_anim_1[i], c_anim_2[i])
+    get_difference(size_animated[i1], c_anim_1[i], c_anim_2[i])
+    # Inserting a waypoint just before the nextwaypoint
+    t_next = float(c_anim_2[i+1].attrib["time"][:-1]) * settings.lottie_format["fr"]
+
+    ######### Need to check if t_next - t_present <= 1 #####
+    pos = get_vector_at_t(orig_path_2, t_next - 1)
+    pos = to_Synfig_axis(pos)
+    new_waypoint = copy.deepcopy(pos_animated[i1])
+    new_waypoint.attrib["before"] = new_waypoint.attrib["after"]
+    new_waypoint.attrib["time"] = str((t_next - 1) / settings.lottie_format["fr"]) + "s"
+    new_waypoint[0][0].text, new_waypoint[0][1].text = str(pos[0]), str(pos[1])
+
+    n_size_waypoint = copy.deepcopy(new_waypoint)
+    get_average(new_waypoint, new_waypoint, c_anim_1[i])
+    get_differnce(n_size_waypoint, n_size_waypoint, c_anim_1[i])
+
+    pos_animated.insert(i1 + 1, new_waypoint)
+    size_animated.insert(i1 + 1, n_size_waypoint)
+    i1 += 1
+    i, i1 = i + 1, i1 + 1
+    get_average(pos_animated[i1], c_anim_1[i], c_anim_2[i])
+    get_differnce(size_animated[i1], c_anim_1[i], c_anim_2[i])
+    return i, i1
+
+
+def to_Synfig_axis(pos):
+    pos[0], pos[1] = pos[0] - settings.lottie_format["w"]/2, pos[1] - settings.lottie_format["h"]/2
+    pos[1] = -pos[1]
+    ret = [x/settings.PIX_PER_UNIT for x in pos]
+    return ret
+
+
+def get_vector_at_t(path, t):
+    keyfr = path["k"]
+    # Find the interval in which it lies
+    i = 0
+    while i < len(keyfr):
+        t_key = keyfr[i]["t"]
+        if t < t_key:
+            break
+        i += 1
+    i -= 1
+    if i < 0:
+        return keyfr[0]["s"]
+    if i != len(keyfr):
+        # If hold interpolation
+        if "h" in keyfr[i].keys():
+            return keyfr[i]["s"]
+        st = Vector(keyfr[i]["s"][0], keyfr[i]["s"][1])
+        en = Vector(keyfr[i]["e"][0], keyfr[i]["e"][1])
+        to = Vector(keyfr[i]["to"][0], keyfr[i]["to"][1])
+        ti = Vector(keyfr[i]["ti"][0], keyfr[i]["ti"][1])
+        this_fr = keyfr[i]["t"]
+        next_fr = keyfr[i+1]["t"]
+        percent = (t - this_fr) / (next_fr - this_fr) 
+        pos = get_bezier_val(st, st + to, en + ti, ti, percent)
+    elif i == len(keyfr):
+        pos = Vector(keyfr[i-1]["e"][0], keyfr[i-1]["e"][1])
+    return [pos.val1, pos.val2]
+
+
+def get_difference(waypoint, way_1, way_2):
+    waypoint[0].tag = "real" # If was vector before
+    waypoint[0].attrib["value"] = str(abs(float(way_1[0][0].text) - float(way_2[0][0].text)))
+    waypoint[0].attrib["value2"] = str(abs(float(way_1[0][1].text) - float(way_2[0][1].text)))
+
+
+def get_average(waypoint, way_1, way_2):
+    waypoint[0][0].text = str(float(way_1[0][0].text) + float(way_2[0][0].text) / 2)
+    waypoint[0][1].text = str(float(way_1[0][1].text) + float(way_2[0][1].text) / 2)
 
 
 def insert_waypoint(at_insert, i1, orig_at_insert, i, more_t, less_t, orig_path):
@@ -174,7 +312,7 @@ def insert_waypoint(at_insert, i1, orig_at_insert, i, more_t, less_t, orig_path)
             new_waypoint.attrib["before"] = new_waypoint.attrib["after"] = "linear"
 
         else:
-            copy_tcb_average(orig_at_insert[i-1], orig_at_insert[i], new_waypoint) 
+            copy_tcb_average(new_waypoint, orig_at_insert[i-1], orig_at_insert[i]) 
             prev_t = float(at_insert[i1-1].attrib["time"][:-1])
             t_at = (less_t - prev_t) / (more_t - prev_t)
             y_val = get_bezier_val(orig_path["k"][i-1]["s"][1],
@@ -249,7 +387,7 @@ def only_one_point_animated(non_animated, yes_animated, is_animate, lottie, inde
                 num_frames = orig_path["k"][i+1]["t"] - orig_path["k"][i]["t"]
                 
                 ############# COPY THE TCB VALUES TO NEW WAYPOINT AS AVERAGE ##############
-                copy_tcb_average(waypoint, next_waypoint, new_waypoint)
+                copy_tcb_average(new_waypoint, waypoint, next_waypoint)
 
                 # Calculate the time at which it crosses the x extrema
                 t_x_cross = get_bezier_time(orig_path["k"][i]["s"][0],
@@ -362,7 +500,7 @@ def only_one_point_animated(non_animated, yes_animated, is_animate, lottie, inde
     gen_value_Keyframed(lottie["s"], size_animated, index.inc())
 
 
-def copy_tcb_average(waypoint, next_waypoint, new_waypoint):
+def copy_tcb_average(new_waypoint, waypoint, next_waypoint):
     tens, bias, cont = 0, 0, 0      # default values
     tens1, bias1, cont1 = 0, 0, 0   # default values
     if "tension" in waypoint.keys():
@@ -381,6 +519,19 @@ def copy_tcb_average(waypoint, next_waypoint, new_waypoint):
     new_waypoint.attrib["tension"] = str(f_tens)
     new_waypoint.attrib["continuity"] = str(f_cont)
     new_waypoint.attrib["bias"] = str(f_bias)
+
+
+def copy_tcb(new_waypoint, waypoint):
+    tens, bias, cont = 0, 0, 0      # default values
+    if "tension" in waypoint.keys():
+        tens = float(waypoint.attrib["tension"])
+    if "continuity" in waypoint.keys():
+        cont = float(waypoint.attrib["continuity"])
+    if "bias" in waypoint.keys():
+        bias = float(waypoint.attrib["bias"])
+    new_waypoint.attrib["tension"] = str(tens)
+    new_waypoint.attrib["continuity"] = str(cont)
+    new_waypoint.attrib["bias"] = str(bias)
 
 
 def switch_case(animated, i, x2_val, y2_val):
