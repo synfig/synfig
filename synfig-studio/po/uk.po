@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: Synfig UI\n"
 "Report-Msgid-Bugs-To: https://github.com/synfig/synfig/issues\n"
 "POT-Creation-Date: 2018-07-20 05:21+0000\n"
-"PO-Revision-Date: 2018-07-20 05:22+0000\n"
-"Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
-"Language-Team: Greek (Greece) (http://www.transifex.com/morevnaproject/synfig/language/el_GR/)\n"
+"PO-Revision-Date: 2011-04-15 08:11+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Ukrainian (http://www.transifex.com/morevnaproject/synfig/language/uk/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: el_GR\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: uk\n"
+"Plural-Forms: nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != 11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || (n % 100 >=11 && n % 100 <=14 )) ? 2: 3);\n"
 
 #: ../synfigstudio.desktop.in.h:1 ../src/gui/dialogs/about.cpp:94
 msgid "2D vector animation studio"
@@ -243,7 +243,7 @@ msgstr ""
 #: ../src/brushlib/brushsettings.py:47 ../src/gui/dialogs/dialog_setup.cpp:542
 #: ../src/gui/states/state_smoothmove.cpp:203
 msgid "Radius"
-msgstr "Ακτίνα"
+msgstr ""
 
 #: ../src/brushlib/brushsettings.py:47
 msgid ""
@@ -1324,7 +1324,7 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:418 ../src/gui/renddesc.cpp:100
 msgid "Other"
-msgstr "Άλλο"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:421
 msgid "Visually linear color selection"
@@ -4335,7 +4335,7 @@ msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:153
 msgid "Color"
-msgstr "Χρώμα"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:154
 msgid "Segment"
@@ -4596,7 +4596,7 @@ msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:255
 msgid "Text Layer"
-msgstr "Στρώση κειμένου"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:256
 msgid "Time Loop Layer"
