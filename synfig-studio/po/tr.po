@@ -3979,7 +3979,7 @@ msgid ""
 msgstr ""
 
 #: ../src/gui/app.cpp:3694
-msgid "Newer version of this file avaliable on the CVS repository!"
+msgid "Newer version of this file available on the CVS repository!"
 msgstr ""
 
 #: ../src/gui/app.cpp:3695
@@ -4849,7 +4849,7 @@ msgstr ""
 
 #: ../src/gui/instance.cpp:201
 #, c-format
-msgid "Do you realy want to run plugin for file \"%s\"?"
+msgid "Do you really want to run plugin for file \"%s\"?"
 msgstr ""
 
 #: ../src/gui/instance.cpp:204
@@ -7311,7 +7311,7 @@ msgid ""
 "Error: No Python 3 binary found.\n"
 "\n"
 "Hint: You can set SYNFIG_PYTHON_BINARY environment variable pointing at your custom python installation."
-msgstr "hata: Pyton 3 ikili kodu bulunamadı.İpucu: Pyton yüklemesini yaptığınız noktada SYNFIG_PHYTON_BINARY ortam değişkenini ayarlayabilirsiniz."
+msgstr "hata: Python 3 ikili kodu bulunamadı.İpucu: Python yüklemesini yaptığınız noktada SYNFIG_PYTHON_BINARY ortam değişkenini ayarlayabilirsiniz."
 
 #: ../src/synfigapp/uimanager.cpp:98
 msgid "(no/yes)"

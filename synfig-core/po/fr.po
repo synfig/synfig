@@ -730,7 +730,7 @@ msgid "Clip"
 msgstr "Couper"
 
 #: ../src/modules/lyr_std/sphere_distort.cpp:166
-msgid "When cheked, the area outside the Radius are not distorted"
+msgid "When checked, the area outside the Radius are not distorted"
 msgstr "Si coché, la zone en dehors du rayon n'est pas déformée"
 
 #: ../src/modules/lyr_std/sphere_distort.cpp:170
@@ -848,7 +848,7 @@ msgid "Duration"
 msgstr "Durée"
 
 #: ../src/modules/lyr_std/timeloop.cpp:151
-msgid "Lenght of the loop"
+msgid "Length of the loop"
 msgstr "Longueur de la boucle"
 
 #: ../src/modules/lyr_std/timeloop.cpp:156

@@ -719,7 +719,7 @@ msgid "Clip"
 msgstr "修剪"
 
 #: ../src/modules/lyr_std/sphere_distort.cpp:166
-msgid "When cheked, the area outside the Radius are not distorted"
+msgid "When checked, the area outside the Radius are not distorted"
 msgstr "选中后，半径之外的区域不做变形"
 
 #: ../src/modules/lyr_std/sphere_distort.cpp:170
@@ -837,7 +837,7 @@ msgid "Duration"
 msgstr "持续"
 
 #: ../src/modules/lyr_std/timeloop.cpp:151
-msgid "Lenght of the loop"
+msgid "Length of the loop"
 msgstr "循环的长度"
 
 #: ../src/modules/lyr_std/timeloop.cpp:156

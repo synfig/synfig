@@ -3992,7 +3992,7 @@ msgid ""
 msgstr "Nombre de fichero original no estaba en el contenedor termporal \"%s\"\n\n"
 
 #: ../src/gui/app.cpp:3694
-msgid "Newer version of this file avaliable on the CVS repository!"
+msgid "Newer version of this file available on the CVS repository!"
 msgstr "¡Versión más nueva de este archivo habilitada en el repositorio  CVS!"
 
 #: ../src/gui/app.cpp:3695
@@ -4862,7 +4862,7 @@ msgstr "Revertir CVS"
 
 #: ../src/gui/instance.cpp:201
 #, c-format
-msgid "Do you realy want to run plugin for file \"%s\"?"
+msgid "Do you really want to run plugin for file \"%s\"?"
 msgstr "¿Quiere correr el complemento en este archivo \"%s\"?"
 
 #: ../src/gui/instance.cpp:204

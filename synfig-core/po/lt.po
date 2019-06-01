@@ -718,7 +718,7 @@ msgid "Clip"
 msgstr " Apkarpymas"
 
 #: ../src/modules/lyr_std/sphere_distort.cpp:166
-msgid "When cheked, the area outside the Radius are not distorted"
+msgid "When checked, the area outside the Radius are not distorted"
 msgstr "Kai įjungta, spindulio išorėje nebus iškreipimo"
 
 #: ../src/modules/lyr_std/sphere_distort.cpp:170
@@ -836,7 +836,7 @@ msgid "Duration"
 msgstr "Trukmė"
 
 #: ../src/modules/lyr_std/timeloop.cpp:151
-msgid "Lenght of the loop"
+msgid "Length of the loop"
 msgstr "Ciklo ilgis"
 
 #: ../src/modules/lyr_std/timeloop.cpp:156

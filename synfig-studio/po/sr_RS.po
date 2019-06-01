@@ -3976,7 +3976,7 @@ msgid ""
 msgstr ""
 
 #: ../src/gui/app.cpp:3694
-msgid "Newer version of this file avaliable on the CVS repository!"
+msgid "Newer version of this file available on the CVS repository!"
 msgstr "Најновије издање ове датотеке је доступно у ЦВС ризници!"
 
 #: ../src/gui/app.cpp:3695
@@ -4846,7 +4846,7 @@ msgstr "ЦВС враћање"
 
 #: ../src/gui/instance.cpp:201
 #, c-format
-msgid "Do you realy want to run plugin for file \"%s\"?"
+msgid "Do you really want to run plugin for file \"%s\"?"
 msgstr "Да ли заиста желите да покренете прикључак за датотеку „%s“?"
 
 #: ../src/gui/instance.cpp:204
