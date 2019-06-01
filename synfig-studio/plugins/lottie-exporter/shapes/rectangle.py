@@ -136,13 +136,13 @@ def both_points_animated(animated_1, animated_2, lottie, index):
         t2 = float(animated_2[j].attrib["time"][:-1])
         if t2 < t1:
             # Insert waypoint in first animation
-            insert_waypoint(c_anim_1, i1, animated_1, i, t1, t2, orig_path_1)
+            insert_waypoint_param(c_anim_1, i1, animated_1, i, t1, t2, orig_path_1)
             j += 1
             j1 += 1
             i1 += 1
         elif t1 < t2:
             # Insert waypoint in second animation
-            insert_waypoint(c_anim_2, j1, animated_2, j, t2, t1, orig_path_2)
+            insert_waypoint_param(c_anim_2, j1, animated_2, j, t2, t1, orig_path_2)
             i += 1
             i1 += 1
             j1 += 1
@@ -404,7 +404,7 @@ def get_average(waypoint, way_1, way_2):
     waypoint[0][1].text = str((float(way_1[0][1].text) + float(way_2[0][1].text)) / 2)
 
 
-def insert_waypoint(at_insert, i1, orig_at_insert, i, more_t, less_t, orig_path):
+def insert_waypoint_param(at_insert, i1, orig_at_insert, i, more_t, less_t, orig_path):
     assert more_t > less_t 
     new_waypoint = copy.deepcopy(orig_at_insert[i])
     new_waypoint.attrib["time"] = str(less_t) + "s"
@@ -418,30 +418,12 @@ def insert_waypoint(at_insert, i1, orig_at_insert, i, more_t, less_t, orig_path)
 
         else:
             copy_tcb_average(new_waypoint, orig_at_insert[i-1], orig_at_insert[i]) 
-            prev_t = orig_path["k"][i-1]["t"] / settings.lottie_format["fr"]
-            t_at = (less_t - prev_t) / (more_t - prev_t)
-            y_val = get_bezier_val(orig_path["k"][i-1]["s"][1],
-                                   orig_path["k"][i-1]["s"][1] + orig_path["k"][i-1]["to"][1], # Convert to bezier format
-                                   orig_path["k"][i-1]["e"][1] + orig_path["k"][i-1]["ti"][1], # Convert to bezier format
-                                   orig_path["k"][i-1]["e"][1],
-                                   t_at)
-            ## Convert y value from lottie format to synfig format
-            y_val -= settings.lottie_format["h"]/2
-            y_val = -y_val
-            y_val /= settings.PIX_PER_UNIT  # As this value if to be put back in xml format
-
-            x_val = get_bezier_val(orig_path["k"][i-1]["s"][0],
-                                   orig_path["k"][i-1]["s"][0] + orig_path["k"][i-1]["to"][0], # Convert to bezier format
-                                   orig_path["k"][i-1]["e"][0] + orig_path["k"][i-1]["ti"][0], # Convert to bezier format
-                                   orig_path["k"][i-1]["e"][0],
-                                   t_at)
-            ## Convert x value from lottie format to synfig format
-            x_val -= settings.lottie_format["w"]/2
-            x_val /= settings.PIX_PER_UNIT
+            pos = get_vector_at_frame(orig_path, less_t * settings.lottie_format["fr"])
+            pos = to_Synfig_axis(pos)
 
             # Setting the x and y value for the new waypoint
-            new_waypoint[0][0].text = str(x_val)
-            new_waypoint[0][1].text = str(y_val)
+            new_waypoint[0][0].text = str(pos[0])
+            new_waypoint[0][1].text = str(pos[1])
     elif orig_at_insert[i].attrib["before"] == "constant":
         new_waypoint.attrib["after"] = "constant"
         if i != 0:
