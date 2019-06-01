@@ -219,7 +219,7 @@ def both_points_animated(animated_1, animated_2, lottie, index):
     ######################### SECTION 2 END ##############################
 
     ######################### SECTION 3 ##################################
-    print_animation(c_anim_1)
+    print_animation(c_anim_2)
     # Generate the position and size for lottie format
     gen_properties_multi_dimensional_keyframed(lottie["p"],
                                                pos_animated,
@@ -242,7 +242,6 @@ def insert_waypoint_at_frame(animated, orig_path, frame):
         elif frame < at_frame:
             break
         i += 1
-    print(i, len(animated))
     pos = get_vector_at_frame(orig_path, frame)
     pos = to_Synfig_axis(pos)
     if i == len(animated):
@@ -419,7 +418,7 @@ def insert_waypoint(at_insert, i1, orig_at_insert, i, more_t, less_t, orig_path)
 
         else:
             copy_tcb_average(new_waypoint, orig_at_insert[i-1], orig_at_insert[i]) 
-            prev_t = float(at_insert[i1-1].attrib["time"][:-1])
+            prev_t = orig_path["k"][i-1]["t"] / settings.lottie_format["fr"]
             t_at = (less_t - prev_t) / (more_t - prev_t)
             y_val = get_bezier_val(orig_path["k"][i-1]["s"][1],
                                    orig_path["k"][i-1]["s"][1] + orig_path["k"][i-1]["to"][1], # Convert to bezier format
