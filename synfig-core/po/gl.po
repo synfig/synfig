@@ -717,7 +717,7 @@ msgid "Clip"
 msgstr "Recortar"
 
 #: ../src/modules/lyr_std/sphere_distort.cpp:166
-msgid "When cheked, the area outside the Radius are not distorted"
+msgid "When checked, the area outside the Radius are not distorted"
 msgstr "Cando está marcado, a área fora do radio non se distorsiona"
 
 #: ../src/modules/lyr_std/sphere_distort.cpp:170
@@ -835,7 +835,7 @@ msgid "Duration"
 msgstr "Duración"
 
 #: ../src/modules/lyr_std/timeloop.cpp:151
-msgid "Lenght of the loop"
+msgid "Length of the loop"
 msgstr "Lonxitude do bucle"
 
 #: ../src/modules/lyr_std/timeloop.cpp:156

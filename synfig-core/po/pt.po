@@ -723,7 +723,7 @@ msgid "Clip"
 msgstr "Clipe"
 
 #: ../src/modules/lyr_std/sphere_distort.cpp:166
-msgid "When cheked, the area outside the Radius are not distorted"
+msgid "When checked, the area outside the Radius are not distorted"
 msgstr "Quando marcada, a área fora do Raio não é distorcida"
 
 #: ../src/modules/lyr_std/sphere_distort.cpp:170
@@ -841,7 +841,7 @@ msgid "Duration"
 msgstr "Duração"
 
 #: ../src/modules/lyr_std/timeloop.cpp:151
-msgid "Lenght of the loop"
+msgid "Length of the loop"
 msgstr "Comprimento do laço"
 
 #: ../src/modules/lyr_std/timeloop.cpp:156

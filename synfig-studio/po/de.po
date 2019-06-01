@@ -3987,7 +3987,7 @@ msgid ""
 msgstr ""
 
 #: ../src/gui/app.cpp:3694
-msgid "Newer version of this file avaliable on the CVS repository!"
+msgid "Newer version of this file available on the CVS repository!"
 msgstr "Eine neuere Version dieser Datei ist im CVS-Repository verfügbar!"
 
 #: ../src/gui/app.cpp:3695
@@ -4857,7 +4857,7 @@ msgstr "CVS zurückrollen"
 
 #: ../src/gui/instance.cpp:201
 #, c-format
-msgid "Do you realy want to run plugin for file \"%s\"?"
+msgid "Do you really want to run plugin for file \"%s\"?"
 msgstr "Wollen Sie das Plug-in für die Datei „%s“ wirklich ausführen?"
 
 #: ../src/gui/instance.cpp:204
