@@ -30,6 +30,7 @@
 #endif
 
 #include <synfig/vector.h>
+#include "polygonizerclasses.h"
 
 /*
 ** Insert headers here
@@ -50,6 +51,33 @@ using namespace studio;
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
+
+
+///////////////////////////////////////////
+
+// ...
+// using namespace synfig;
+// ...
+// etl::handle<Layer_Bitmap> my_layer_bitmap;
+// ...
+// // lock surface for read
+// // in most cases surface will be in different format,
+// // but it will be automatically converted to synfig::Surface while locking
+// // after that SurfaceResource will contain both original and converted surfaces
+// if ( rendering::SurfaceResource::LockRead<Surface> lock(my_layer_bitmap->rendering_surface) ) {
+//     // operator 'lock->' returns a pointer to synfig::Surface,
+//     // so see methods of synfig::Surface (aka etl::surface<synfig::Color>)
+//     int width = lock->get_w();
+//     int height = lock->get_h();
+//     int pitch = lock->get_pitch(); // offset from one row to next row
+    
+//     // returns an array of pixels of row #5 (pointer to first pixel in row)
+//     // see also synfig::Color, it represents pixel in four float32 values (RGBA)
+//     const Color *row5 = (*lock)[5];
+//}
+
+
+///////////////////////////////////////////
 class RawBorderPoint {
   PointInt m_position;
   int m_ambiguousTurn;  // used to remember cases of multiple turning directions
@@ -98,5 +126,19 @@ typedef std::vector<BorderFamily> BorderList;
 
 
 /* === E N T R Y P O I N T ================================================= */
+//===========================
+//    Polygonization Main
+//===========================
+
+// Extracts a polygonal, minimal yet faithful representation of image contours
+// Contours* polygonize(const TRasterP &ras){
+// void polygonize(const TRasterP &ras, Contours &polygons,
+//                 VectorizerCoreGlobals &g) {
+//   BorderList *borders;
+
+//   borders = extractBorders(ras, g.currConfig->m_threshold,
+//                            g.currConfig->m_despeckling);
+//   reduceBorders(*borders, polygons, g.currConfig->m_maxThickness > 0.0);
+//}
 
 
