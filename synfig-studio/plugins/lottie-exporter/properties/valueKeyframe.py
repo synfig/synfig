@@ -15,7 +15,6 @@ def normalize_tangents(cur_pos, next_pos, t_in, t_out):
     Converts the tangents from arbitrary range to the range of 0-1
     """
     # time_scale means converting time(on x-axis) to 0-1 range
-    print(next_pos.val2, cur_pos.val2)
     time_scale = next_pos.val2 - cur_pos.val2
 
     # value_scale -> converting value(on y-axis to 0-1 range)
