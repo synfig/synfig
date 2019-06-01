@@ -36,7 +36,7 @@
 #include <gtkmm/spinbutton.h>
 #include <gtkmm/checkbutton.h>
 #include <gtkmm/comboboxtext.h>
-
+#include <vectorizer/vectorizerparameters.h>
 #include <synfig/string.h>
 
 /* === M A C R O S ========================================================= */
@@ -84,8 +84,18 @@ class VectorizerSettings : public Gtk::Dialog
 
 	
 public:
+
+	bool isOutline;
 	VectorizerSettings(Gtk::Window& parent);
 	~VectorizerSettings();
+	CenterlineConfiguration getCenterlineConfiguration(double weight) const;
+  	NewOutlineConfiguration getOutlineConfiguration(double weight) const;
+
+  
+  	VectorizerConfiguration *getCurrentConfiguration(double weight) const {
+    	return isOutline ? (VectorizerConfiguration *)new NewOutlineConfiguration(getOutlineConfiguration(weight))
+                       : (VectorizerConfiguration *)new CenterlineConfiguration(getCenterlineConfiguration(weight));
+  	}
 	
 private:
 	void on_comboboxtext_mode_changed();
