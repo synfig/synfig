@@ -231,6 +231,7 @@ VectorizerSettings::VectorizerSettings(Gtk::Window& parent):
 
 	get_vbox()->show_all();
 	Outline_setting_grid->hide();
+	on_comboboxtext_mode_changed();
 
 }
 
@@ -242,8 +243,8 @@ VectorizerSettings::~VectorizerSettings()
 void
 VectorizerSettings::on_comboboxtext_mode_changed()
 {
-	int i = comboboxtext_mode.get_active_row_number();
-	if(i==0)
+	isOutline = comboboxtext_mode.get_active_row_number();
+	if(!isOutline)
 	{
 		//Centerline is active
 		Outline_setting_grid->hide();
@@ -263,9 +264,58 @@ VectorizerSettings::on_finished()
 // after conversion is finished
 }
 
+CenterlineConfiguration VectorizerSettings::getCenterlineConfiguration( double frame) const 
+{
+  CenterlineConfiguration conf;
+
+  conf.m_outline      = false;
+  conf.m_threshold    = ((int)adjustment_threshold->get_value()) * 25;
+  conf.m_penalty      = 10 - ((int)adjustment_accuracy->get_value());  // adjustment_accuracy in [1,10]
+  conf.m_despeckling  = ((int)adjustment_despeckling->get_value()) * 2;
+  conf.m_maxThickness = ((int)adjustment_maxthickness->get_value()) / 2.0;
+  conf.m_thicknessRatio =
+      (1 - frame) * ((int)adjustment_tcalibration_start->get_value()) + 
+	  frame * ((int)adjustment_tcalibration_end->get_value());
+  conf.m_leaveUnpainted = toggle_pparea.get_state();
+  conf.m_makeFrame      = toggle_add_border.get_state();
+  conf.m_naaSource      = false;//currently not in use
+
+  return conf;
+}
+
+NewOutlineConfiguration VectorizerSettings::getOutlineConfiguration(
+    double frame) const {
+  NewOutlineConfiguration conf;
+
+   conf.m_outline          = true;
+//   conf.m_despeckling      = m_oDespeckling;
+//   conf.m_adherenceTol     = m_oAdherence * 0.01;
+//   conf.m_angleTol         = m_oAngle / 180.0;
+//   conf.m_relativeTol      = m_oRelative * 0.01;
+//   conf.m_mergeTol         = 5.0 - m_oAccuracy * 0.5;
+//   conf.m_leaveUnpainted   = !m_oPaintFill;
+//   conf.m_maxColors        = m_oMaxColors;
+//   conf.m_transparentColor = m_oTransparentColor;
+//   conf.m_toneTol          = m_oToneThreshold;
+
+  return conf;
+}
+
+
 void
 VectorizerSettings::on_convert_pressed()
 {
+	CenterlineConfiguration m_cConf;
+    NewOutlineConfiguration m_oConf;
+	VectorizerConfiguration &configuration = isOutline ? static_cast<VectorizerConfiguration &>(m_oConf)
+        									  : static_cast<VectorizerConfiguration &>(m_cConf);
+
+    if (isOutline)
+        m_oConf = getOutlineConfiguration(0.0);
+    else
+        m_cConf = getCenterlineConfiguration(0.0);
+    
+	// doVectorize(configuration);
 	std::cout<<"Convert Pressed....";
 }
 
