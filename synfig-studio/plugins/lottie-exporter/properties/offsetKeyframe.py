@@ -64,6 +64,8 @@ def clamped_vector(p1, p2, p3, animated, i, lottie, ease):
     """
     x_tan = clamped_tangent(p1.val1, p2.val1, p3.val1, animated, i)
     y_tan = clamped_tangent(p1.val2, p2.val2, p3.val2, animated, i)
+    #if animated.attrib["name"] == "radius2":
+    #    print(x_tan, y_tan)
     if isclose(x_tan, 0.0) or isclose(y_tan, 0.0):
         if ease == "in":
             ease_in(lottie)

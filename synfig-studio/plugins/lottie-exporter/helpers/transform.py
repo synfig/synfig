@@ -7,10 +7,11 @@ import sys
 import settings
 from misc import Count
 from properties.value import gen_properties_value
+from properties.valueKeyframed import gen_value_Keyframed
 sys.path.append("../")
 
 
-def gen_helpers_transform(lottie, layer, pos = [0, 0], anchor = [0, 0, 0]):
+def gen_helpers_transform(lottie, layer, pos = [0, 0], anchor = [0, 0, 0], scale = [100, 100, 100]):
     """
     Generates the dictionary corresponding to helpers/transform.json
     """
@@ -50,8 +51,12 @@ def gen_helpers_transform(lottie, layer, pos = [0, 0], anchor = [0, 0, 0]):
                          settings.NO_INFO)
 
     # setting the scale
-    gen_properties_value(lottie["s"],
-                         [100, 100, 100],
-                         index.inc(),
-                         settings.DEFAULT_ANIMATED,
-                         settings.NO_INFO)
+    if isinstance(scale, list):
+        gen_properties_value(lottie["s"],
+                             scale,
+                             index.inc(),
+                             settings.DEFAULT_ANIMATED,
+                             settings.NO_INFO)
+    # This means scale parameter is animated
+    else:
+        gen_value_Keyframed(lottie["s"], scale, index.inc())

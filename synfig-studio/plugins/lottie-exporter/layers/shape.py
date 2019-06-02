@@ -9,7 +9,7 @@ from misc import Count
 from shapes.star import gen_shapes_star
 from shapes.circle import gen_shapes_circle
 from shapes.fill import gen_shapes_fill
-from shapes.rectangle import gen_shapes_rectangle
+from shapes.rectangle import gen_shapes_rectangle, gen_param_expand
 from helpers.blendMode import get_blend
 sys.path.append("..")
 
@@ -25,7 +25,12 @@ def gen_layer_shape(lottie, layer, idx):
     lottie["nm"] = settings.LAYER_SHAPE_NAME + str(idx)
     lottie["sr"] = settings.LAYER_DEFAULT_STRETCH
     lottie["ks"] = {}   # Transform properties to be filled
-    gen_helpers_transform(lottie["ks"], layer)
+    pos = [0, 0]            # default
+    anchor = [0, 0, 0]      # default
+    scale = [100, 100, 100]  # default
+    if layer.attrib["type"] == "rectangle":
+        scale = gen_param_expand(layer)
+    gen_helpers_transform(lottie["ks"], layer, pos, anchor, scale)
 
     lottie["ao"] = settings.LAYER_DEFAULT_AUTO_ORIENT
     lottie["shapes"] = []   # Shapes to be filled yet

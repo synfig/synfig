@@ -141,6 +141,10 @@ def set_tangents(out_val, in_val, cur_pos, next_pos, lottie, animated):
     lottie["o"]["x"][0] /= settings.TANGENT_FACTOR
     lottie["o"]["y"][0] /= settings.TANGENT_FACTOR
 
+    # Keeping original Synfig format tangents in dictionary
+    lottie["synfig_i"] = [lottie["i"]["y"][0]]
+    lottie["synfig_o"] = [lottie["o"]["y"][0]]
+
     # If type is color, the tangents are already normalized
     if animated.attrib["type"] != "color":
         normalize_tangents(cur_pos, next_pos, lottie["i"], lottie["o"])

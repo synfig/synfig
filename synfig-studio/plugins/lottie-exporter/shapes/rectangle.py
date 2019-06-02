@@ -7,7 +7,7 @@ import copy
 from lxml import etree
 import settings
 from properties.value import gen_properties_value
-from misc import Count, is_animated, change_axis, Vector
+from misc import Count, is_animated, change_axis, Vector, get_time, get_frame
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
 from properties.valueKeyframed import gen_value_Keyframed
 from helpers.bezier import get_bezier_time, get_bezier_val
@@ -125,7 +125,7 @@ def only_one_point_animated_wrapper(non_animated, yes_animated, is_animate, lott
         non_animated[0][0].attrib["before"] = non_animated[0][0].attrib["after"] = "constant"
 
     new_waypoint = copy.deepcopy(non_animated[0][0])
-    frame = float(non_animated[0][0].attrib["time"][:-1]) * settings.lottie_format["fr"]
+    frame = get_frame(non_animated[0][0])
     t_new = (frame + 1) / settings.lottie_format["fr"]
     t_new = str(t_new) + "s"
     new_waypoint.attrib["time"] = t_new
@@ -149,7 +149,7 @@ def both_points_animated(animated_1, animated_2, lottie, index):
     # Place waypoints at which the x and y cross each other/cross the extremas
     cross_list = get_cross_list(animated_1, animated_2, orig_path_1, orig_path_2) 
     for frame in cross_list:
-        insert_waypoint_at_frame(animated_1, orig_path_1, frame)
+        insert_waypoint_at_frame(animated_1, orig_path_1, frame, "vector")
     #################### END SECTION 0 #########################
 
     #################### SECTION 1 #############################
@@ -163,8 +163,8 @@ def both_points_animated(animated_1, animated_2, lottie, index):
             i, j = i+1, j+1
             i1, j1 = i1+1, j1+1
             continue
-        t1 = float(animated_1[i].attrib["time"][:-1])
-        t2 = float(animated_2[j].attrib["time"][:-1])
+        t1 = get_time(animated_1[i])
+        t2 = get_time(animated_2[j])
         if t2 < t1:
             # Insert waypoint in first animation
             insert_waypoint_param(c_anim_1, i1, animated_1, i, t1, t2, orig_path_1)
@@ -180,7 +180,7 @@ def both_points_animated(animated_1, animated_2, lottie, index):
 
     # This means for sure animated_1's last point's time < animated_2's points
     while i == len(animated_1) and j < len(animated_2):
-        t2 = float(animated_2[j].attrib["time"][:-1])
+        t2 = get_time(animated_2[j])
         new_waypoint = copy.deepcopy(animated_1[i-1])
         new_waypoint.attrib["time"] = str(t2) + "s"
         new_waypoint.attrib["before"] = new_waypoint.attrib["after"] = "constant"
@@ -190,7 +190,7 @@ def both_points_animated(animated_1, animated_2, lottie, index):
 
     # This means for sure animated_2's last points's time < animated_1's points
     while j == len(animated_2) and i < len(animated_1):
-        t1 = float(animated_1[i].attrib["time"][:-1])
+        t1 = get_time(animated_1[i])
         new_waypoint = copy.deepcopy(animated_2[j-1])
         new_waypoint.attrib["time"] = str(t1) + "s"
         new_waypoint.attrib["before"] = new_waypoint.attrib["after"] = "constant"
@@ -250,7 +250,6 @@ def both_points_animated(animated_1, animated_2, lottie, index):
     ######################### SECTION 2 END ##############################
 
     ######################### SECTION 3 ##################################
-    print_animation(c_anim_2)
     # Generate the position and size for lottie format
     gen_properties_multi_dimensional_keyframed(lottie["p"],
                                                pos_animated,
@@ -259,28 +258,32 @@ def both_points_animated(animated_1, animated_2, lottie, index):
     ########################## END OF SECTION 3 ###########################
 
 
-def insert_waypoint_at_frame(animated, orig_path, frame):
+def insert_waypoint_at_frame(animated, orig_path, frame, animated_name):
     """
     This function will only insert a waypoint at 'frame' if no waypoint is
     present at that 'frame' already
     """
     i = 0
     while i < len(animated):
-        at_frame = float(animated[i].attrib["time"][:-1]) * settings.lottie_format["fr"]
-        at_frame = round(at_frame)
+        at_frame = get_frame(animated[i])
         if frame == at_frame:
             return
         elif frame < at_frame:
             break
         i += 1
     pos = get_vector_at_frame(orig_path, frame)
-    pos = to_Synfig_axis(pos)
+    pos = to_Synfig_axis(pos, animated_name)
+
     if i == len(animated):
         new_waypoint = copy.deepcopy(animated[i-1])
     else:
         new_waypoint = copy.deepcopy(animated[i])
-    new_waypoint[0][0].text = str(pos[0])
-    new_waypoint[0][1].text = str(pos[1])
+    if animated_name == "vector":
+        new_waypoint[0][0].text = str(pos[0])
+        new_waypoint[0][1].text = str(pos[1])
+    else:
+        new_waypoint[0].attrib["value"] = str(pos)
+
     new_waypoint.attrib["time"] = str(frame/settings.lottie_format["fr"]) + "s" 
     if i == 0 or i == len(animated):
         # No need of tcb value copy as halt interpolation need to be copied here
@@ -303,9 +306,7 @@ def get_cross_list(animation_1, animation_2, orig_path_1, orig_path_2):
     This set might contain frames at which waypoints are already present, hence
     this need to be taken care of
     """
-    en_fr = max(float(animation_1[-1].attrib["time"][:-1]), float(animation_2[-1].attrib["time"][:-1]))
-    en_fr = en_fr * settings.lottie_format["fr"]
-    en_fr = round(en_fr)
+    en_fr = max(get_frame(animation_1[-1]), get_frame(animation_2[-1]))
     # Function to determine the sign of a variable
     sign = lambda a: (1, -1)[a < 0]
     prev_1 = float(animation_1[0][0][0].text), float(animation_1[0][0][1].text)
@@ -317,9 +318,9 @@ def get_cross_list(animation_1, animation_2, orig_path_1, orig_path_2):
     # Loop for all the frames
     while frame <= en_fr:
         now_1 = get_vector_at_frame(orig_path_1, frame) 
-        now_1 = to_Synfig_axis(now_1)
+        now_1 = to_Synfig_axis(now_1, "vector")
         now_2 = get_vector_at_frame(orig_path_2, frame)
-        now_2 = to_Synfig_axis(now_2)
+        now_2 = to_Synfig_axis(now_2, "vector")
         is_needed = False
         if sign(prev_1[0] - prev_2[0]) != sign(now_1[0] - now_2[0]):
             is_needed = True
@@ -339,10 +340,12 @@ def print_animation(b):
     Helpful in debugging
     """
     a = copy.deepcopy(b)
+    """
     for i in range(len(a)):
-        a[i].attrib["frames"] = str(float(a[i].attrib["time"][:-1]) * settings.lottie_format["fr"])
+        a[i].attrib["frames"] = str(get_frame(a[i]))
         a[i][0][0].text = str(float(a[i][0][0].text) * settings.PIX_PER_UNIT)
         a[i][0][1].text = str(float(a[i][0][1].text) * settings.PIX_PER_UNIT)
+        """
     print(etree.tostring(a, method='xml', encoding='utf8').decode())
                 
 
@@ -363,13 +366,13 @@ def calc_pos_and_size(size_animated, pos_animated, c_anim_1, c_anim_2, orig_path
     get_difference(size_animated[i1], c_anim_1[i], c_anim_2[i])
     # Inserting a waypoint just before the nextwaypoint
     # Only if a waypoint can be inserted
-    t_next = float(c_anim_2[i+1].attrib["time"][:-1]) * settings.lottie_format["fr"]
-    t_present = float(c_anim_2[i].attrib["time"][:-1]) * settings.lottie_format["fr"]
+    t_next = get_frame(c_anim_2[i+1])
+    t_present = get_frame(c_anim_2[i])
 
     ######### Need to check if t_next - t_present < 2 #####
     if abs(t_next - t_present) >= 2:
         pos = get_vector_at_frame(orig_path, t_next - 1)
-        pos = to_Synfig_axis(pos)
+        pos = to_Synfig_axis(pos, "vector")
         new_waypoint = copy.deepcopy(pos_animated[i1])
         new_waypoint.attrib["before"] = new_waypoint.attrib["after"]
         new_waypoint.attrib["time"] = str((t_next - 1) / settings.lottie_format["fr"]) + "s"
@@ -388,20 +391,41 @@ def calc_pos_and_size(size_animated, pos_animated, c_anim_1, c_anim_2, orig_path
     return i, i1
 
 
-def to_Synfig_axis(pos):
+def to_Synfig_axis(pos, animated_name):
     """
-    Converts a Lottie format vector into Synfig format vector
+    Converts a Lottie format vector or values into Synfig format vector or
+    values
     """
-    pos[0], pos[1] = pos[0] - settings.lottie_format["w"]/2, pos[1] - settings.lottie_format["h"]/2
-    pos[1] = -pos[1]
-    ret = [x/settings.PIX_PER_UNIT for x in pos]
+    if animated_name == "vector":
+        pos[0], pos[1] = pos[0] - settings.lottie_format["w"]/2, pos[1] - settings.lottie_format["h"]/2
+        pos[1] = -pos[1]
+        ret = [x/settings.PIX_PER_UNIT for x in pos]
+    elif animated_name == "real":
+        ret = pos / settings.PIX_PER_UNIT
     return ret
+
+
+def get_control_points(interval):
+    # If the interval is for position or vector
+    if "to" in interval.keys():
+        st = Vector(interval["s"][0], interval["s"][1])
+        en = Vector(interval["e"][0], interval["e"][1])
+        to = Vector(interval["to"][0], interval["to"][1])
+        ti = Vector(interval["ti"][0], interval["ti"][1])
+
+    # If the interval is for real values
+    else:
+        st = interval["s"][0]
+        en = interval["e"][0]
+        to = interval["synfig_o"][0]
+        ti = interval["synfig_i"][0]
+    return st, to, ti, en
 
 
 def get_vector_at_frame(path, t):
     """
     Given 'path' in lottie format and t(in frames), this function returns the
-    vector value at frame t
+    vector or real value at frame t depending on the type of path supplied to it
     """
     keyfr = path["k"]
     # Find the interval in which it lies
@@ -413,22 +437,85 @@ def get_vector_at_frame(path, t):
         i += 1
     i -= 1
     if i < 0:
-        return keyfr[0]["s"]
+        st, to, ti, en = get_control_points(keyfr[0])
+        pos = st
     if i < len(keyfr) - 1:
         # If hold interpolation
         if 'h' in keyfr[i].keys():
             return copy.deepcopy(keyfr[i]["s"])
-        st = Vector(keyfr[i]["s"][0], keyfr[i]["s"][1])
-        en = Vector(keyfr[i]["e"][0], keyfr[i]["e"][1])
-        to = Vector(keyfr[i]["to"][0], keyfr[i]["to"][1])
-        ti = Vector(keyfr[i]["ti"][0], keyfr[i]["ti"][1])
+        st, to, ti, en = get_control_points(keyfr[i])
         this_fr = keyfr[i]["t"]
         next_fr = keyfr[i+1]["t"]
         percent = (t - this_fr) / (next_fr - this_fr) 
         pos = get_bezier_val(st, st + to, en + ti, en, percent)
     elif i >= len(keyfr) - 1:
-        pos = Vector(keyfr[-2]["e"][0], keyfr[-2]["e"][1])
-    return [pos.val1, pos.val2]
+        st, to, ti, en = get_control_points(keyfr[-2])
+        pos = en
+    if isinstance(pos, Vector):
+        return [pos.val1, pos.val2]
+    else:
+        return pos
+
+
+def get_animated_time_list(child, time_list):
+    """
+    Appends all the frames corresponding to the waypoints in the
+    animated(child[0]) list, in time_list
+    """
+    animated = child[0]
+    is_animate = is_animated(animated)
+    if is_animate in {0, 1}:
+        return
+    for waypoint in animated:
+        frame = get_frame(waypoint)
+        time_list.add(frame)
+
+
+def gen_param_expand(layer):
+    points = {}
+    for chld in layer:
+        if chld.tag == "param":
+            if chld.attrib["name"] == "expand":
+                child = chld
+            elif chld.attrib["name"] == "point1":
+                points["1"] = chld
+            elif chld.attrib["name"] == "point2":
+                points["2"] = chld
+
+    expand_path, point1_path, point2_path = {}, {}, {}
+    gen_value_Keyframed(expand_path, child[0], 0)
+    gen_properties_multi_dimensional_keyframed(point1_path, points["1"][0], 0)
+    gen_properties_multi_dimensional_keyframed(point2_path, points["2"][0], 0)
+
+    time_list = set()
+    get_animated_time_list(points["1"], time_list)
+    get_animated_time_list(points["2"], time_list)
+    is_animate = is_animated(child[0]) 
+    if is_animate == 2:
+        for frame in time_list:
+            insert_waypoint_at_frame(child[0], expand_path, frame, "real")
+
+    # Will handle these cases later
+    """
+    elif is_animate == 1:
+        pass
+    else:
+        expand = float(child[0].attrib["value"]) * settings.PIX_PER_UNIT
+        pass
+    """     
+    for waypoint in child[0]:
+        expand = float(waypoint[0].attrib["value"]) * settings.PIX_PER_UNIT
+        expand = abs(expand)    # Negative value is treated positive in synfig expand parameter
+        frame = get_frame(waypoint)
+        point1_pos, point2_pos = get_vector_at_frame(point1_path, frame), get_vector_at_frame(point2_path, frame) 
+        scale_x = 1 + (2 * expand) / abs(point1_pos[0] - point2_pos[0])
+        scale_y = 1 + (2 * expand) / abs(point1_pos[1] - point2_pos[1])
+        scale_x, scale_y = scale_x * 100, scale_y * 100
+        waypoint[0].attrib["scale_x"] = str(scale_x)
+        waypoint[0].attrib["scale_y"] = str(scale_y)
+    child[0].attrib["type"] = "rectangle_expand"
+    print_animation(child[0])
+    return child[0]
 
 
 def get_difference(waypoint, way_1, way_2):
@@ -471,7 +558,7 @@ def insert_waypoint_param(at_insert, i1, orig_at_insert, i, more_t, less_t, orig
         else:
             copy_tcb_average(new_waypoint, orig_at_insert[i-1], orig_at_insert[i]) 
             pos = get_vector_at_frame(orig_path, less_t * settings.lottie_format["fr"])
-            pos = to_Synfig_axis(pos)
+            pos = to_Synfig_axis(pos, "vector")
 
             # Setting the x and y value for the new waypoint
             new_waypoint[0][0].text = str(pos[0])
@@ -538,11 +625,11 @@ def copy_tcb(new_waypoint, waypoint):
 
 def equal_time_frame(waypoint1, waypoint2):
     """
-    Returns True if two waypoints are present on the same frame
-    Else returns false
+    Returns 1 if two waypoints are present on the same frame
+    Else returns 0
     """
-    t1 = float(waypoint1.attrib["time"][:-1]) * settings.lottie_format["fr"] 
-    t2 = float(waypoint2.attrib["time"][:-1]) * settings.lottie_format["fr"] 
+    t1 = get_frame(waypoint1)
+    t2 = get_frame(waypoint2)
     if abs(t1 - t2) < 0.9999999:
         return 1
     return 0

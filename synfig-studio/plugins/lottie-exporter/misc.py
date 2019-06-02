@@ -85,6 +85,8 @@ class Vector:
             return [self.val1, self.val1]
         elif self.type == "rectangle_size":
             return [self.val1, self.val3]
+        elif self.type == "rectangle_expand":
+            return self.val3
         else:
             return [self.val1]
 
@@ -213,6 +215,12 @@ def parse_position(animated, i):
         vec.add_new_val(float(animated[i][0].attrib["value2"]) * settings.PIX_PER_UNIT)
         return vec
 
+    elif animated.attrib["type"] == "rectangle_expand":
+        pos = parse_value(animated, i)
+        vec = Vector(pos[0], pos[1], animated.attrib["type"])
+        vec.add_new_val([float(animated[i][0].attrib["scale_x"]), float(animated[i][0].attrib["scale_y"])])
+        return vec
+
     elif animated.attrib["type"] == "color":
         red = float(animated[i][0][0].text)
         green = float(animated[i][0][1].text)
@@ -299,3 +307,18 @@ def get_color_hex(node):
     # https://stackoverflow.com/questions/3380726/converting-a-rgb-color-tuple-to-a-six-digit-code-in-python/3380739#3380739
     ret = "#{0:02x}{1:02x}{2:02x}".format(red, green, blue)
     return ret
+
+def get_frame(waypoint):
+    """
+    Given a waypoint, it parses the time to frames
+    """
+    frame = float(waypoint.attrib["time"][:-1]) * settings.lottie_format["fr"]
+    frame = round(frame)
+    return frame
+
+def get_time(waypoint):
+    """
+    Given a waypoint, it parses the string time to float time
+    """
+    time = float(waypoint.attrib["time"][:-1])
+    return time
