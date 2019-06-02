@@ -109,6 +109,13 @@ def gen_shapes_rectangle(lottie, layer, idx):
 
 
 def only_one_point_animated_wrapper(non_animated, yes_animated, is_animate, lottie, index):
+    """
+    This function serves as a wrapper when only one of the point is
+    animated(point1 or point2). It creates dummy waypoints(whose value will
+    remain same all the time), and makes it look like if they were also
+    animated. Hence these animations can be passes to "both_points_animated()"
+    function.
+    """
     if is_animate == 0:
         st = '<param name="anything"><animated type="vector"><waypoint time="0s" before="constant" after="constant"></waypoint></animated></param>'
         root = etree.fromstring(st)
@@ -128,6 +135,11 @@ def only_one_point_animated_wrapper(non_animated, yes_animated, is_animate, lott
 
 
 def both_points_animated(animated_1, animated_2, lottie, index):
+    """
+    This function generates the lottie dictionary for position and size property
+    of lottie(point1 and point2 are used from Synfig), when both point1 and
+    point2 are animated
+    """
     animated_1, animated_2 = animated_1[0], animated_2[0]
     orig_path_1, orig_path_2 = {}, {}
     gen_properties_multi_dimensional_keyframed(orig_path_1, animated_1, 0)
@@ -322,6 +334,10 @@ def get_cross_list(animation_1, animation_2, orig_path_1, orig_path_2):
 
 
 def print_animation(b):
+    """
+    Given any animation, b, It prints the animation in pretty way.
+    Helpful in debugging
+    """
     a = copy.deepcopy(b)
     for i in range(len(a)):
         a[i].attrib["frames"] = str(float(a[i].attrib["time"][:-1]) * settings.lottie_format["fr"])
@@ -331,6 +347,12 @@ def print_animation(b):
                 
 
 def calc_pos_and_size(size_animated, pos_animated, c_anim_1, c_anim_2, orig_path, i, i1):
+    """
+    Between two frames, this function is called if either "only point1's
+    interval is constant" or "only point2's interval is constant". It calculates
+    the position and size property for lottie format. It also adds a new
+    waypoint just before the end of the frame if required.
+    """
     pos_animated[i1].attrib["after"] = c_anim_2[i].attrib["after"]
     size_animated[i1].attrib["after"] = c_anim_2[i].attrib["after"]
 
@@ -367,6 +389,9 @@ def calc_pos_and_size(size_animated, pos_animated, c_anim_1, c_anim_2, orig_path
 
 
 def to_Synfig_axis(pos):
+    """
+    Converts a Lottie format vector into Synfig format vector
+    """
     pos[0], pos[1] = pos[0] - settings.lottie_format["w"]/2, pos[1] - settings.lottie_format["h"]/2
     pos[1] = -pos[1]
     ret = [x/settings.PIX_PER_UNIT for x in pos]
@@ -374,6 +399,10 @@ def to_Synfig_axis(pos):
 
 
 def get_vector_at_frame(path, t):
+    """
+    Given 'path' in lottie format and t(in frames), this function returns the
+    vector value at frame t
+    """
     keyfr = path["k"]
     # Find the interval in which it lies
     i = 0
@@ -403,17 +432,31 @@ def get_vector_at_frame(path, t):
 
 
 def get_difference(waypoint, way_1, way_2):
+    """
+    Returns the absolute difference of vector's of way_1 and way_2 in "waypoint"
+    Helpful in calculating 'size' parameter of lottie format from 'point1' and
+    'point2' of Synfig format
+    """
     waypoint[0].tag = "real" # If was vector before
     waypoint[0].attrib["value"] = str(abs(float(way_1[0][0].text) - float(way_2[0][0].text)))
     waypoint[0].attrib["value2"] = str(abs(float(way_1[0][1].text) - float(way_2[0][1].text)))
 
 
 def get_average(waypoint, way_1, way_2):
+    """
+    Returns the average of vector's of way_1 and way_2 in "waypoint"
+    Helpful in calculating 'position' parameter of lottie format from 'point1'
+    and 'point2' of Synfig format
+    """
     waypoint[0][0].text = str((float(way_1[0][0].text) + float(way_2[0][0].text)) / 2)
     waypoint[0][1].text = str((float(way_1[0][1].text) + float(way_2[0][1].text)) / 2)
 
 
 def insert_waypoint_param(at_insert, i1, orig_at_insert, i, more_t, less_t, orig_path):
+    """
+    Given point1 and point2, this function helps in inserting waypoints at
+    corresponding time, if a waypoint is not present there already
+    """
     assert more_t > less_t 
     new_waypoint = copy.deepcopy(orig_at_insert[i])
     new_waypoint.attrib["time"] = str(less_t) + "s"
@@ -448,6 +491,14 @@ def insert_waypoint_param(at_insert, i1, orig_at_insert, i, more_t, less_t, orig
 
 
 def copy_tcb_average(new_waypoint, waypoint, next_waypoint):
+    """
+    Copies the average of TCB values of waypoint and next_waypoint to
+    'new_waypoint'
+    This is just a way around to determine TCB values at in-between intervals,
+    where new waypoints are introduced. Technically we will first calculate the
+    tangents at those new waypoints and then calculate any random TCB values
+    from those tangents: IMPROVEMENT
+    """
     tens, bias, cont = 0, 0, 0      # default values
     tens1, bias1, cont1 = 0, 0, 0   # default values
     if "tension" in waypoint.keys():
@@ -469,6 +520,10 @@ def copy_tcb_average(new_waypoint, waypoint, next_waypoint):
 
 
 def copy_tcb(new_waypoint, waypoint):
+    """
+    Copies the tension, bias and continuity values from 'waypoint' to
+    'new_waypoint'
+    """
     tens, bias, cont = 0, 0, 0      # default values
     if "tension" in waypoint.keys():
         tens = float(waypoint.attrib["tension"])
@@ -481,27 +536,11 @@ def copy_tcb(new_waypoint, waypoint):
     new_waypoint.attrib["bias"] = str(bias)
 
 
-def switch_case(animated, i, x2_val, y2_val):
-    x_now, y_now = float(animated[i][0][0].text), float(animated[i][0][1].text)
-    x_next, y_next = float(animated[i+1][0][0].text), float(animated[i+1][0][1].text)
-    sign = lambda a: (1, -1)[a < 0]
-    x_change, y_change = 0, 0
-    if sign(x_now - x2_val) != sign(x_next - x2_val):
-        x_change = 1
-    if sign(y_now - y2_val) != sign(y_next - y2_val):
-        y_change = 1
-    
-    if x_change == 0 and y_change == 0:
-        return 0
-    elif x_change == 1 and y_change == 0:
-        return 1
-    elif x_change == 0 and y_change == 1:
-        return 2
-    elif x_change == 1 and y_change == 1:
-        return 3
-
-
 def equal_time_frame(waypoint1, waypoint2):
+    """
+    Returns True if two waypoints are present on the same frame
+    Else returns false
+    """
     t1 = float(waypoint1.attrib["time"][:-1]) * settings.lottie_format["fr"] 
     t2 = float(waypoint2.attrib["time"][:-1]) * settings.lottie_format["fr"] 
     if abs(t1 - t2) < 0.9999999:
