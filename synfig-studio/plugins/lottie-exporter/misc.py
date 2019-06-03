@@ -1,6 +1,6 @@
 """
-helpers.py
-Some helper functions will be written here
+misc.py
+Some miscellaneous functions will be provided here
 """
 
 import settings
@@ -11,10 +11,24 @@ class Count:
     Class to keep count of variable
     """
     def __init__(self):
+        """
+        Args:
+            (None)
+
+        Returns:
+            (None)
+        """
         self.idx = -1
+
     def inc(self):
         """
         This method increases the count by 1 and returns the new count
+        
+        Args:
+            (None)
+
+        Returns:
+            (int) : The updated count is returned
         """
         self.idx += 1
         return self.idx
@@ -34,6 +48,15 @@ class Vector:
     """
 
     def __init__(self, val1=0, val2=0, _type=None):
+        """
+        Args:
+            val1  (float) : First value of the vector
+            val2  (float) : Second value of the vector
+            _type (:obj: `str`, optional)  : Type of vector
+
+        Returns:
+            (None)
+        """
         self.val1 = val1
         self.val2 = val2
         self.type = _type
@@ -72,12 +95,24 @@ class Vector:
     def get_list(self):
         """
         Get val1 and val2 values in the format required by lottie
+
+        Args:
+            (None)
+
+        Returns:
+            (list) : Contains the Vector in list format 
         """
         return [self.val1, self.val2]
 
     def get_val(self):
         """
         Get value in the format required by lottie
+
+        Args:
+            (None)
+
+        Returns:
+            (list) : Depending upon _type a list is returned
         """
         if self.type == "origin":
             return [self.val1, self.val2]
@@ -92,6 +127,12 @@ class Vector:
         """
         This function store an additional value in the vector. 
         This is currently required by the rectangle layer
+        
+        Args:
+            val3 (float) : Some Vectors need additional value to be used later
+
+        Returns:
+            (None)
         """
         self.val3 = val3
     
@@ -105,6 +146,16 @@ class Color:
     """
 
     def __init__(self, red=1, green=1, blue=1, alpha=1):
+        """
+        Args:
+            red (:obj: `float`, optional) : Red value of color
+            green (:obj: `float`, optional) : Green value of color
+            blue (:obj: `float`, optional) : Blue value of color
+            alpha (:obj: `float`, optional) : Alpha value of color
+
+        Returns:
+            (None)
+        """
         self.red = red
         self.green = green
         self.blue = blue
@@ -148,6 +199,12 @@ class Color:
     def get_val(self):
         """
         Get the color in the format required by lottie
+
+        Args:
+            (None)
+
+        Returns:
+            (list) : Stores color in list format
         """
         return [self.red, self.green, self.blue, self.alpha]
 
@@ -155,6 +212,12 @@ class Color:
 def calculate_pixels_per_unit():
     """
     Gives the value of 1 unit in terms of pixels according to the canvas defined
+
+    Args:
+        (None)
+
+    Returns:
+        (float) : Pixels per unit
     """
     image_width = float(settings.lottie_format["w"])
     image_area_width = settings.view_box_canvas["val"][2] - settings.view_box_canvas["val"][0]
@@ -165,7 +228,13 @@ def calculate_pixels_per_unit():
 def change_axis(x_val, y_val):
     """
     Convert synfig axis coordinates into lottie format
-    x_val and y_val should be in pixels
+
+    Args:
+        x_val (float | str) : x axis value in pixels
+        y_val (float | str) : y axis value in pixels
+
+    Returns:
+        (list)  : x and y axis value in Lottie format
     """
     x_val, y_val = float(x_val), float(y_val)
     x_val, y_val = x_val + settings.lottie_format["w"]/2, -y_val + settings.lottie_format["h"]/2
@@ -177,6 +246,14 @@ def parse_position(animated, i):
     To convert the synfig coordinates from units(initially a string) to pixels
     Depends on whether a vector is provided to it or a real value
     If real value is provided, then time is also taken into consideration
+
+    Args:
+        animated (lxml.etree._Element) : Stores animation which contains waypoints
+        i        (int)                 : Iterator over animation
+
+    Returns:
+        (misc.Vector) If the animated type is not color
+        (misc.Color)  Else if the animated type is color
     """
     if animated.attrib["type"] == "vector":
         pos = [float(animated[i][0][0].text),
@@ -230,7 +307,13 @@ def parse_value(animated, i):
     """
     To convert the synfig value parameter from units to pixels
     and also take into consideration the time parameter
-    return: Vector(value, time)
+
+    Args:
+        animated (lxml.etree._Element) : Stores animation which holds waypoints
+        i        (int)                 : Iterator for animation
+
+    Returns:
+        (list)  : [value, time] is returned
     """
     pos = [float(animated[i][0].attrib["value"]) * settings.PIX_PER_UNIT,
            float(animated[i].attrib["time"][:-1]) * settings.lottie_format["fr"]]
@@ -242,6 +325,12 @@ def get_angle(theta):
     Converts the .sif angle into lottie angle
     .sif uses positive x-axis as the start point and goes anticlockwise
     lottie uses positive y-axis as the start point and goes clockwise
+
+    Args:
+        theta (float) : Stores Synfig format angle
+
+    Returns:
+        (int)   : Lottie format angle
     """
     theta = int(theta)
     shift = -int(theta / 360)
@@ -255,9 +344,16 @@ def get_angle(theta):
 def is_animated(node):
     """
     Tells whether a parater is animated or not
-    Return: 0, if not animated
-          : 1, if only single waypoint is present
-          : 2, if more than one waypoint is present
+
+    Args:
+        node (lxml.etree._Element) : Animation which stores waypoints
+
+    Returns:
+        (int) : Depending upon whether the parameter is animated, following
+                values are returned
+                0: If not animated
+                1: If only single waypoint is present
+                2: If more than one waypoint is present
     """
     case = 0
     if node.tag == "animated":
@@ -274,6 +370,12 @@ def clamp_col(color):
     """
     This function converts the colors into int and takes them to the range of
     0-255
+
+    Args:
+        color (float) : Synfig format color value
+
+    Returns:
+        (int) : Color value between 0-255
     """
     color = color ** (1/settings.GAMMA)
     color *= 255
@@ -284,6 +386,12 @@ def clamp_col(color):
 def get_color_hex(node):
     """
     Convert the <color></color> from rgba to hex format
+
+    Args:
+        node (lxml.etree._Element) : Synfig format color parameter
+
+    Returns:
+        (str) : hex format of color
     """
     red, green, blue = 1, 0, 0
     for col in node:
@@ -303,6 +411,12 @@ def get_color_hex(node):
 def get_frame(waypoint):
     """
     Given a waypoint, it parses the time to frames
+
+    Args:
+        waypoint (lxml.etree._Element) : Synfig format waypoint
+
+    Returns:
+        (int) : the frame at which waypoint is present
     """
     frame = float(waypoint.attrib["time"][:-1]) * settings.lottie_format["fr"]
     frame = round(frame)
@@ -311,6 +425,12 @@ def get_frame(waypoint):
 def get_time(waypoint):
     """
     Given a waypoint, it parses the string time to float time
+
+    Args:
+        waypoint (lxml.etree._Element) : Synfig format waypoint
+
+    Returns:
+        (float) : the time in seconds at which the waypoint is present
     """
     time = float(waypoint.attrib["time"][:-1])
     return time
@@ -319,6 +439,12 @@ def get_vector(waypoint):
     """
     Given a waypoint, it parses the string vector into Vector class defined in
     this convertor
+
+    Args:
+        waypoint (lxml.etree._Element) : Synfig format waypoint
+
+    Returns:
+        (misc.Vector) : x and y axis values stores in Vector format
     """
     x = float(waypoint[0][0].text)
     y = float(waypoint[0][1].text)
@@ -327,6 +453,12 @@ def get_vector(waypoint):
 def set_vector(waypoint, pos):
     """
     Given a waypoint and pos(Vector), it set's the waypoint's vectors
+
+    Args:
+        waypoint (lxml.etree._Element) : Synfig format waypoint
+
+    Returns:
+        (None)
     """
     waypoint[0][0].text = str(pos.val1)
     waypoint[0][1].text = str(pos.val2)

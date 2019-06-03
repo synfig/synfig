@@ -8,6 +8,14 @@ from misc import calculate_pixels_per_unit
 def calc_time(root, lottie, which):
     """
     Converts the starting time and ending time to lottie format
+
+    Args:
+        root   (lxml.etree._Element) : Synfig format animation file 
+        lottie (dict)                : Lottie format animation file
+        which  (str)                 : Differentiates between in time and out time
+
+    Returns:
+        (None)
     """
     if which == "ip":
         phase = "begin-time"
@@ -28,6 +36,13 @@ def gen_canvas(lottie, root):
     """
     Generates the canvas for the lottie format
     It is the outer most dictionary in the lottie json format
+
+    Args:
+        lottie (dict)               : Lottie format animation file
+        root   (lxml.etree._Element): Synfig format animation file
+
+    Returns:
+        (None)
     """
     settings.view_box_canvas["val"] = [float(itr) for itr in root.attrib["view-box"].split()]
     if "width" in root.attrib.keys():
