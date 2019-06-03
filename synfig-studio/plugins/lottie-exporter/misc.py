@@ -85,8 +85,6 @@ class Vector:
             return [self.val1, self.val1]
         elif self.type == "rectangle_size":
             return [self.val1, self.val3]
-        elif self.type == "rectangle_expand":
-            return self.val3
         else:
             return [self.val1]
 
@@ -213,12 +211,6 @@ def parse_position(animated, i):
         pos = parse_value(animated, i)
         vec = Vector(pos[0], pos[1], animated.attrib["type"])
         vec.add_new_val(float(animated[i][0].attrib["value2"]) * settings.PIX_PER_UNIT)
-        return vec
-
-    elif animated.attrib["type"] == "rectangle_expand":
-        pos = parse_value(animated, i)
-        vec = Vector(pos[0], pos[1], animated.attrib["type"])
-        vec.add_new_val([float(animated[i][0].attrib["scale_x"]), float(animated[i][0].attrib["scale_y"])])
         return vec
 
     elif animated.attrib["type"] == "color":

@@ -56,6 +56,9 @@ def gen_shapes_rectangle(lottie, layer, idx):
             elif child.attrib["name"] == "point2":
                 points["2"] = child # Store address of child here
 
+            elif child.attrib["name"] == "expand":
+                param_expand = child
+
             elif child.attrib["name"] == "bevel":
                 is_animate = is_animated(child[0])
                 if is_animate == 2:
@@ -97,18 +100,18 @@ def gen_shapes_rectangle(lottie, layer, idx):
 
     # p1 is animated and p2 is not animated
     elif p1_animate == 2 and p2_animate in {0, 1}:
-        only_one_point_animated_wrapper(points["2"], points["1"], p2_animate, lottie, index)
+        only_one_point_animated_wrapper(points["2"], points["1"], p2_animate, param_expand, lottie, index)
 
     # p1 is not animated and p2 is animated
     elif p1_animate in {0, 1} and p2_animate == 2:
-        only_one_point_animated_wrapper(points["1"], points["2"], p1_animate, lottie, index)
+        only_one_point_animated_wrapper(points["1"], points["2"], p1_animate, param_expand, lottie, index)
 
     # p1 is animated and p2 is animated
     elif p1_animate == 2 and p2_animate == 2:
-        both_points_animated(points["1"], points["2"], lottie, index)
+        both_points_animated(points["1"], points["2"], param_expand, lottie, index)
 
 
-def only_one_point_animated_wrapper(non_animated, yes_animated, is_animate, lottie, index):
+def only_one_point_animated_wrapper(non_animated, yes_animated, is_animate, param_expand , lottie, index):
     """
     This function serves as a wrapper when only one of the point is
     animated(point1 or point2). It creates dummy waypoints(whose value will
@@ -131,10 +134,10 @@ def only_one_point_animated_wrapper(non_animated, yes_animated, is_animate, lott
     new_waypoint.attrib["time"] = t_new
     non_animated[0].insert(1, new_waypoint)
 
-    both_points_animated(non_animated, yes_animated, lottie, index)
+    both_points_animated(non_animated, yes_animated, param_expand, lottie, index)
 
 
-def both_points_animated(animated_1, animated_2, lottie, index):
+def both_points_animated(animated_1, animated_2, param_expand, lottie, index):
     """
     This function generates the lottie dictionary for position and size property
     of lottie(point1 and point2 are used from Synfig), when both point1 and
@@ -199,6 +202,16 @@ def both_points_animated(animated_1, animated_2, lottie, index):
         i += 1
     assert len(c_anim_1) == len(c_anim_2)
     ################## END OF SECTION 1 ##########################################
+    ################## SECTION 1.5 ###############################################
+    # Insert waypoints in the point1 and point2 parameter at the place where
+    # expand parameter is animated
+    time_list = set()
+    get_animated_time_list(param_expand, time_list)
+    for frame in time_list:
+        insert_waypoint_at_frame(c_anim_1, orig_path_1, frame, "vector")
+        insert_waypoint_at_frame(c_anim_2, orig_path_2, frame, "vector")
+
+    ################## END OF SECTION 1.5 #######################################
 
     ################## SECTION 2 ################################################
     # Store the position of rectangle according to the waypoints in pos_animated
@@ -248,6 +261,18 @@ def both_points_animated(animated_1, animated_2, lottie, index):
             get_difference(size_animated[i1], c_anim_1[i], c_anim_2[i])
             get_average(pos_animated[i1], c_anim_1[i], c_anim_2[i])
     ######################### SECTION 2 END ##############################
+    ######################## SECTION 2.5 #################################
+    # Will increase the length of "size" parameter by the amount = expand
+    expand_path = {}
+    gen_value_Keyframed(expand_path, param_expand[0], 0)
+    for waypoint in size_animated:
+        frame = get_frame(waypoint)
+        expand_amount = get_vector_at_frame(expand_path, frame)
+        # Assuming the expand_amount to be possitive
+        waypoint[0].attrib["value"] = str(float(waypoint[0].attrib["value"]) + (2*expand_amount) / settings.PIX_PER_UNIT)
+        waypoint[0].attrib["value2"] = str(float(waypoint[0].attrib["value2"]) + (2*expand_amount) / settings.PIX_PER_UNIT)
+
+    ######################## END OF SECTION 2.5 ##########################
 
     ######################### SECTION 3 ##################################
     # Generate the position and size for lottie format
@@ -471,53 +496,6 @@ def get_animated_time_list(child, time_list):
         time_list.add(frame)
 
 
-def gen_param_expand(layer):
-    points = {}
-    for chld in layer:
-        if chld.tag == "param":
-            if chld.attrib["name"] == "expand":
-                child = chld
-            elif chld.attrib["name"] == "point1":
-                points["1"] = chld
-            elif chld.attrib["name"] == "point2":
-                points["2"] = chld
-
-    expand_path, point1_path, point2_path = {}, {}, {}
-    gen_value_Keyframed(expand_path, child[0], 0)
-    gen_properties_multi_dimensional_keyframed(point1_path, points["1"][0], 0)
-    gen_properties_multi_dimensional_keyframed(point2_path, points["2"][0], 0)
-
-    time_list = set()
-    get_animated_time_list(points["1"], time_list)
-    get_animated_time_list(points["2"], time_list)
-    is_animate = is_animated(child[0]) 
-    if is_animate == 2:
-        for frame in time_list:
-            insert_waypoint_at_frame(child[0], expand_path, frame, "real")
-
-    # Will handle these cases later
-    """
-    elif is_animate == 1:
-        pass
-    else:
-        expand = float(child[0].attrib["value"]) * settings.PIX_PER_UNIT
-        pass
-    """     
-    for waypoint in child[0]:
-        expand = float(waypoint[0].attrib["value"]) * settings.PIX_PER_UNIT
-        expand = abs(expand)    # Negative value is treated positive in synfig expand parameter
-        frame = get_frame(waypoint)
-        point1_pos, point2_pos = get_vector_at_frame(point1_path, frame), get_vector_at_frame(point2_path, frame) 
-        scale_x = 1 + (2 * expand) / abs(point1_pos[0] - point2_pos[0])
-        scale_y = 1 + (2 * expand) / abs(point1_pos[1] - point2_pos[1])
-        scale_x, scale_y = scale_x * 100, scale_y * 100
-        waypoint[0].attrib["scale_x"] = str(scale_x)
-        waypoint[0].attrib["scale_y"] = str(scale_y)
-    child[0].attrib["type"] = "rectangle_expand"
-    print_animation(child[0])
-    return child[0]
-
-
 def get_difference(waypoint, way_1, way_2):
     """
     Returns the absolute difference of vector's of way_1 and way_2 in "waypoint"
@@ -625,8 +603,8 @@ def copy_tcb(new_waypoint, waypoint):
 
 def equal_time_frame(waypoint1, waypoint2):
     """
-    Returns 1 if two waypoints are present on the same frame
-    Else returns 0
+    Returns True if two waypoints are present on the same frame
+    Else returns false
     """
     t1 = get_frame(waypoint1)
     t2 = get_frame(waypoint2)
