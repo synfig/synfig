@@ -314,3 +314,19 @@ def get_time(waypoint):
     """
     time = float(waypoint.attrib["time"][:-1])
     return time
+
+def get_vector(waypoint):
+    """
+    Given a waypoint, it parses the string vector into Vector class defined in
+    this convertor
+    """
+    x = float(waypoint[0][0].text)
+    y = float(waypoint[0][1].text)
+    return Vector(x, y)
+
+def set_vector(waypoint, pos):
+    """
+    Given a waypoint and pos(Vector), it set's the waypoint's vectors
+    """
+    waypoint[0][0].text = str(pos.val1)
+    waypoint[0][1].text = str(pos.val2)
