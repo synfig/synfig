@@ -63,8 +63,7 @@ def gen_shapes_rectangle(lottie, layer, idx):
             elif child.attrib["name"] == "bevel":
                 is_animate = is_animated(child[0])
                 if is_animate == 2:
-                    #gen_value_Keyframed(lottie["r"], child[0], index.inc())
-                    pass
+                    gen_value_Keyframed(lottie["r"], child[0], index.inc())
                 else:
                     bevel = get_child_value(is_animate, child, "value")
                     bevel *= settings.PIX_PER_UNIT
@@ -78,32 +77,35 @@ def gen_shapes_rectangle(lottie, layer, idx):
 
     # If expand parameter is not animated
     if expand_animate in {0, 1}:
-        gen_dummy_waypoint(param_expand, expand_animate)
+        param_expand = gen_dummy_waypoint(param_expand, expand_animate, "real")
 
     # p1 not animated and p2 not animated
     if p1_animate in {0, 1} and p2_animate in {0, 1}:
-        gen_dummy_waypoint(points["1"], p1_animate)
-        gen_dummy_waypoint(points["2"], p2_animate)
+        points["1"] = gen_dummy_waypoint(points["1"], p1_animate, "vector")
+        points["2"] = gen_dummy_waypoint(points["2"], p2_animate, "vector")
 
     # p1 is animated and p2 is not animated
     elif p1_animate == 2 and p2_animate in {0, 1}:
-        gen_dummy_waypoint(points["2"], p2_animate)
+        points["2"] = gen_dummy_waypoint(points["2"], p2_animate, "vector")
 
     # p1 is not animated and p2 is animated
     elif p1_animate in {0, 1} and p2_animate == 2:
-        gen_dummy_waypoint(points["1"], p1_animate)
+        points["1"] = gen_dummy_waypoint(points["1"], p1_animate, "vector")
 
     print_animation(param_expand[0])
+    print_animation(points["1"][0])
+    print_animation(points["2"][0])
     both_points_animated(points["1"], points["2"], param_expand, lottie, index)
 
 
-def gen_dummy_waypoint(non_animated, is_animate):
+def gen_dummy_waypoint(non_animated, is_animate, anim_type):
     """
     Makes a non animated parameter to animated parameter by creating a new dummy
     waypoint with constant animation
     """
     if is_animate == 0:
-        st = '<param name="anything"><animated type="vector"><waypoint time="0s" before="constant" after="constant"></waypoint></animated></param>'
+        st = '<param name="anything"><animated type="{anim_type}"><waypoint time="0s" before="constant" after="constant"></waypoint></animated></param>'
+        st = st.format(anim_type=anim_type)
         root = etree.fromstring(st)
         root[0][0].append(copy.deepcopy(non_animated[0]))
         non_animated = root
@@ -117,6 +119,7 @@ def gen_dummy_waypoint(non_animated, is_animate):
     time = str(time) + "s"
     new_waypoint.attrib["time"] = time
     non_animated[0].insert(1, new_waypoint)
+    return non_animated
 
 
 def both_points_animated(animated_1, animated_2, param_expand, lottie, index):
@@ -163,7 +166,6 @@ def both_points_animated(animated_1, animated_2, param_expand, lottie, index):
         frame = get_frame(waypoint1)
         assert frame == get_frame(waypoint2)
         expand_amount = get_vector_at_frame(expand_path, frame)
-        print(expand_amount)
         expand_amount = to_Synfig_axis(expand_amount, "real")
 
         pos1, pos2 = get_vector(waypoint1), get_vector(waypoint2)
