@@ -54,7 +54,6 @@ using namespace studio;
 
 
 ///////////////////////////////////////////
-
 // ...
 // using namespace synfig;
 // ...

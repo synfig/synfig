@@ -50,8 +50,9 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-VectorizerSettings::VectorizerSettings(Gtk::Window& parent):
+VectorizerSettings::VectorizerSettings(Gtk::Window& parent,etl::handle<synfig::Layer_Bitmap> my_layer_bitmap):
 	Gtk::Dialog(_("Convert-to-Vector Settings"),parent),
+	layer_bitmap_(my_layer_bitmap),
 	adjustment_threshold(Gtk::Adjustment::create(3,1,10)),
 	entry_threshold(adjustment_threshold,1,0),
 	adjustment_accuracy(Gtk::Adjustment::create(5,1,10)),
@@ -227,7 +228,7 @@ VectorizerSettings::VectorizerSettings(Gtk::Window& parent):
 	cancel_button->signal_clicked().connect(sigc::mem_fun(*this, &studio::VectorizerSettings::on_cancel_pressed));
 
 
-	set_title(_("Vectorizer Settings"));
+	set_title(_("Vectorizer Settings - ")+ layer_bitmap_->get_description());
 
 	get_vbox()->show_all();
 	Outline_setting_grid->hide();
@@ -264,6 +265,7 @@ VectorizerSettings::on_finished()
 // after conversion is finished
 }
 
+// what is frame????
 CenterlineConfiguration VectorizerSettings::getCenterlineConfiguration( double frame) const 
 {
   CenterlineConfiguration conf;

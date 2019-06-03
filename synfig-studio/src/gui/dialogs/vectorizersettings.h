@@ -24,7 +24,7 @@
 
 
 /* === H E A D E R S ======================================================= */
-
+#include <ETL/handle>
 #include <vector>
 #include <gtkmm/grid.h>
 #include <gtkmm/dialog.h>
@@ -38,6 +38,8 @@
 #include <gtkmm/comboboxtext.h>
 #include <vectorizer/vectorizerparameters.h>
 #include <synfig/string.h>
+#include <synfig/layers/layer_bitmap.h>
+
 
 /* === M A C R O S ========================================================= */
 
@@ -81,12 +83,12 @@ class VectorizerSettings : public Gtk::Dialog
 	Gtk::Grid *Centerline_setting_grid = manage(new Gtk::Grid());
 
 	Gtk::ComboBoxText comboboxtext_mode;
-
+	etl::handle<synfig::Layer_Bitmap> layer_bitmap_;
 	
 public:
 
 	bool isOutline;
-	VectorizerSettings(Gtk::Window& parent);
+	VectorizerSettings(Gtk::Window& parent,etl::handle<synfig::Layer_Bitmap> my_layer_bitmap);
 	~VectorizerSettings();
 	CenterlineConfiguration getCenterlineConfiguration(double weight) const;
   	NewOutlineConfiguration getOutlineConfiguration(double weight) const;

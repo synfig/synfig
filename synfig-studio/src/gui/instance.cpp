@@ -89,6 +89,7 @@ using namespace sigc;
 /* === G L O B A L S ======================================================= */
 
 int studio::Instance::instance_count_=0;
+etl::handle<Layer_Bitmap> my_layer_bitmap;
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -1600,7 +1601,6 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas,const st
 		make_param_menu(menu,canvas,value_desc, 0.f, false);
 }
 
-// this one is useful for me
 void
 Instance::gather_uri(std::set<synfig::String> &x, const synfig::ValueNode::Handle &value_node) const
 {	//check for null value
@@ -1663,6 +1663,12 @@ Instance::gather_uri(std::set<synfig::String> &x, const synfig::Layer::Handle &l
 
 	//if yes then the layer inside group should be processed not the group!
 	(count==1)? layerfinal = child_layer: layerfinal=layer;
+
+	if (etl::handle<Layer_Bitmap> bitmap = etl::handle<Layer_Bitmap>::cast_dynamic(child_layer)) 
+	{
+		my_layer_bitmap = bitmap;
+		std::cout<<"found layer bitmap and assigned\n";
+	}	
 
 	ParamVocab vocab = layerfinal->get_param_vocab();
 	for(ParamVocab::const_iterator i = vocab.begin(); i != vocab.end(); ++i)
@@ -1763,7 +1769,7 @@ Instance::add_special_layer_actions_to_menu(Gtk::Menu *menu, const synfigapp::Se
 			Gtk::MenuItem *item2 = manage(new Gtk::ImageMenuItem(Gtk::Stock::CONVERT));
 			item2->set_label( (String(_("Convert to Vector"))).c_str() );
 			item2->signal_activate().connect(
-				sigc::bind(sigc::ptr_fun(&App::open_vectorizerpopup), i->second) );
+				sigc::bind(sigc::ptr_fun(&App::open_vectorizerpopup), my_layer_bitmap) );
 			item2->show();
 			menu->append(*item2);
 		}
@@ -1807,7 +1813,7 @@ Instance::add_special_layer_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup
 			 		action_name2,
 			 		Gtk::Stock::CONVERT,
 			 		local_name2, local_name2 ),
-			 	sigc::bind(sigc::ptr_fun(&App::open_vectorizerpopup), i->second) );
+			 	sigc::bind(sigc::ptr_fun(&App::open_vectorizerpopup), my_layer_bitmap) );
 			 
 			ui_info += strprintf("<menuitem action='%s' />", action_name.c_str());
 			ui_info += strprintf("<menuitem action='%s' />", action_name2.c_str());
