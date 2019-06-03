@@ -57,6 +57,7 @@ def gen_shapes_rectangle(lottie, layer, idx):
                 points["2"] = child # Store address of child here
 
             elif child.attrib["name"] == "expand":
+                expand_animate = is_animated(child[0])
                 param_expand = child
 
             elif child.attrib["name"] == "bevel":
@@ -75,49 +76,31 @@ def gen_shapes_rectangle(lottie, layer, idx):
     p1_animate = is_animated(points["1"][0])
     p2_animate = is_animated(points["2"][0])
 
+    # If expand parameter is not animated
+    if expand_animate in {0, 1}:
+        gen_dummy_waypoint(param_expand, expand_animate)
+
     # p1 not animated and p2 not animated
     if p1_animate in {0, 1} and p2_animate in {0, 1}:
-        child = points["1"]
-        x1_val, y1_val = get_child_value(p1_animate, child, "position")
-
-        child = points["2"]
-        x2_val, y2_val = get_child_value(p2_animate, child, "position")
-
-        x_val = (x1_val + x2_val) / 2
-        y_val = (y1_val + y2_val) / 2
-        gen_properties_value(lottie["p"],
-                            change_axis(x_val, y_val),
-                            index.inc(),
-                            settings.DEFAULT_ANIMATED,
-                            settings.NO_INFO)
-
-        size = [abs(x2_val - x1_val), abs(y2_val - y1_val)]
-        gen_properties_value(lottie["s"],
-                             size,
-                             index.inc(),
-                             settings.DEFAULT_ANIMATED,
-                             settings.NO_INFO)
+        gen_dummy_waypoint(points["1"], p1_animate)
+        gen_dummy_waypoint(points["2"], p2_animate)
 
     # p1 is animated and p2 is not animated
     elif p1_animate == 2 and p2_animate in {0, 1}:
-        only_one_point_animated_wrapper(points["2"], points["1"], p2_animate, param_expand, lottie, index)
+        gen_dummy_waypoint(points["2"], p2_animate)
 
     # p1 is not animated and p2 is animated
     elif p1_animate in {0, 1} and p2_animate == 2:
-        only_one_point_animated_wrapper(points["1"], points["2"], p1_animate, param_expand, lottie, index)
+        gen_dummy_waypoint(points["1"], p1_animate)
 
-    # p1 is animated and p2 is animated
-    elif p1_animate == 2 and p2_animate == 2:
-        both_points_animated(points["1"], points["2"], param_expand, lottie, index)
+    print_animation(param_expand[0])
+    both_points_animated(points["1"], points["2"], param_expand, lottie, index)
 
 
-def only_one_point_animated_wrapper(non_animated, yes_animated, is_animate, param_expand , lottie, index):
+def gen_dummy_waypoint(non_animated, is_animate):
     """
-    This function serves as a wrapper when only one of the point is
-    animated(point1 or point2). It creates dummy waypoints(whose value will
-    remain same all the time), and makes it look like if they were also
-    animated. Hence these animations can be passes to "both_points_animated()"
-    function.
+    Makes a non animated parameter to animated parameter by creating a new dummy
+    waypoint with constant animation
     """
     if is_animate == 0:
         st = '<param name="anything"><animated type="vector"><waypoint time="0s" before="constant" after="constant"></waypoint></animated></param>'
@@ -129,12 +112,11 @@ def only_one_point_animated_wrapper(non_animated, yes_animated, is_animate, para
 
     new_waypoint = copy.deepcopy(non_animated[0][0])
     frame = get_frame(non_animated[0][0])
-    t_new = (frame + 1) / settings.lottie_format["fr"]
-    t_new = str(t_new) + "s"
-    new_waypoint.attrib["time"] = t_new
+    frame += 1
+    time = frame / settings.lottie_format["fr"]
+    time = str(time) + "s"
+    new_waypoint.attrib["time"] = time
     non_animated[0].insert(1, new_waypoint)
-
-    both_points_animated(non_animated, yes_animated, param_expand, lottie, index)
 
 
 def both_points_animated(animated_1, animated_2, param_expand, lottie, index):
@@ -181,6 +163,7 @@ def both_points_animated(animated_1, animated_2, param_expand, lottie, index):
         frame = get_frame(waypoint1)
         assert frame == get_frame(waypoint2)
         expand_amount = get_vector_at_frame(expand_path, frame)
+        print(expand_amount)
         expand_amount = to_Synfig_axis(expand_amount, "real")
 
         pos1, pos2 = get_vector(waypoint1), get_vector(waypoint2)
@@ -416,7 +399,32 @@ def to_Synfig_axis(pos, animated_name):
     return ret
 
 
+def get_first_control_point(interval):
+    """
+    Returns the first control point of a bezier interval
+    """
+    if len(interval["s"]) >= 2:
+        st = Vector(interval["s"][0], interval["s"][1])
+    else:
+        st = interval["s"][0]
+    return st
+
+
+def get_last_control_point(interval):
+    """
+    Returns the last control point of a bezier interval
+    """
+    if len(interval["e"]) >= 2:
+        en = Vector(interval["e"][0], interval["e"][1])
+    else:
+        en = interval["e"][0]
+    return en
+
+
 def get_control_points(interval):
+    """
+    Returns all 4 control points of a bezier interval
+    """
     # If the interval is for position or vector
     if "to" in interval.keys():
         st = Vector(interval["s"][0], interval["s"][1])
@@ -448,20 +456,20 @@ def get_vector_at_frame(path, t):
         i += 1
     i -= 1
     if i < 0:
-        st, to, ti, en = get_control_points(keyfr[0])
-        pos = st
+        pos = get_first_control_point(keyfr[0])
     if i < len(keyfr) - 1:
         # If hold interpolation
         if 'h' in keyfr[i].keys():
-            return copy.deepcopy(keyfr[i]["s"])
-        st, to, ti, en = get_control_points(keyfr[i])
-        this_fr = keyfr[i]["t"]
-        next_fr = keyfr[i+1]["t"]
-        percent = (t - this_fr) / (next_fr - this_fr) 
-        pos = get_bezier_val(st, st + to, en + ti, en, percent)
+            pos = get_first_control_point(keyfr[i])
+        else:
+            st, to, ti, en = get_control_points(keyfr[i])
+            this_fr = keyfr[i]["t"]
+            next_fr = keyfr[i+1]["t"]
+            percent = (t - this_fr) / (next_fr - this_fr) 
+            pos = get_bezier_val(st, st + to, en + ti, en, percent)
     elif i >= len(keyfr) - 1:
-        st, to, ti, en = get_control_points(keyfr[-2])
-        pos = en
+        pos = get_last_control_point(keyfr[-2])
+
     if isinstance(pos, Vector):
         return [pos.val1, pos.val2]
     else:
