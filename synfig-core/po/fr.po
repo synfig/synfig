@@ -4632,10 +4632,6 @@ msgstr "Le noeud de valeur de boucle temporelle"
 msgid "Start time of the loop for the value node Timeline"
 msgstr "Point de départ de la boucle pour le nœud de valeur Axe de Temps"
 
-#: ../src/synfig/valuenodes/valuenode_timeloop.cpp:184
-msgid "Length of the loop"
-msgstr "Durée de la boucle"
-
 #: ../src/synfig/valuenodes/valuenode_timestring.cpp:151
 msgid "The time that is converted to string"
 msgstr "Le temps qui est converti vers la chaîne"

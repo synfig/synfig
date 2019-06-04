@@ -4625,10 +4625,6 @@ msgstr "O nó de valor para o laço de tempo"
 msgid "Start time of the loop for the value node Timeline"
 msgstr "Iniciar tempo do laço para a linha de tempo do nó de valor"
 
-#: ../src/synfig/valuenodes/valuenode_timeloop.cpp:184
-msgid "Length of the loop"
-msgstr "Comprimento do laço"
-
 #: ../src/synfig/valuenodes/valuenode_timestring.cpp:151
 msgid "The time that is converted to string"
 msgstr "O tempo que é convertido para sequência"

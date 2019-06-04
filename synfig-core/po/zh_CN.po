@@ -4621,10 +4621,6 @@ msgstr "时间循环的值节点"
 msgid "Start time of the loop for the value node Timeline"
 msgstr "时间轴值节点的循环起始时间"
 
-#: ../src/synfig/valuenodes/valuenode_timeloop.cpp:184
-msgid "Length of the loop"
-msgstr "循环长度"
-
 #: ../src/synfig/valuenodes/valuenode_timestring.cpp:151
 msgid "The time that is converted to string"
 msgstr "转换为字符串的时间"

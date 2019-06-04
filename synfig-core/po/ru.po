@@ -4630,10 +4630,6 @@ msgstr "Значение узла во временном цикле"
 msgid "Start time of the loop for the value node Timeline"
 msgstr "Время начала цикла для значения узла Линии времени"
 
-#: ../src/synfig/valuenodes/valuenode_timeloop.cpp:184
-msgid "Length of the loop"
-msgstr "Длина цикла"
-
 #: ../src/synfig/valuenodes/valuenode_timestring.cpp:151
 msgid "The time that is converted to string"
 msgstr "Врямя, преобразованное в строку"

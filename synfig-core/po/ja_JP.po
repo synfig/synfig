@@ -4621,10 +4621,6 @@ msgstr ""
 msgid "Start time of the loop for the value node Timeline"
 msgstr ""
 
-#: ../src/synfig/valuenodes/valuenode_timeloop.cpp:184
-msgid "Length of the loop"
-msgstr ""
-
 #: ../src/synfig/valuenodes/valuenode_timestring.cpp:151
 msgid "The time that is converted to string"
 msgstr ""
