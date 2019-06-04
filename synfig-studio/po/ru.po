@@ -1346,13 +1346,12 @@ msgid "Visually linear color selection"
 msgstr "Выбор визуально линейного цвета"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:425
-#, c-format
 msgid ""
 "Color output is non-linear, if 0 is black and 100 is white, then 50 is only "
 "about 22 percent of the brightness of white, rather than 50% as you might "
 "expect. Option (ON by default) to make sure that if you ask for 50, you get "
 "50% of the brightness of white."
-msgstr "Выход цвета является нелинейным, если 0 - это чёрный, а 100 белый, тогда 50 составляет лишь около 22 процентов от яркости белого, а не 50%, как вы могли ожидать. Опция (включена по умолчанию), чтобы быть уверенным, что если вы попросите 50, вы получите 50% яркости белого."
+msgstr "Вывод цвета является нелинейным, если 0 - это чёрный, а 100 белый, тогда 50 составляет лишь около 22 процентов от яркости белого, а не 50%, как вы могли ожидать. Опция (включена по умолчанию), чтобы быть уверенным, что если вы попросите 50, вы получите 50% яркости белого."
 
 #: ../src/gui/dialogs/dialog_setup.cpp:431
 msgid "Restrict really-valued handles to top right quadrant"

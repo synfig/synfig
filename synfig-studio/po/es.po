@@ -1350,13 +1350,12 @@ msgid "Visually linear color selection"
 msgstr "Selección Visual de color lineal"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:425
-#, c-format
 msgid ""
 "Color output is non-linear, if 0 is black and 100 is white, then 50 is only "
 "about 22 percent of the brightness of white, rather than 50% as you might "
 "expect. Option (ON by default) to make sure that if you ask for 50, you get "
 "50% of the brightness of white."
-msgstr "La salida de color no es lineal. Si su valor es 0 es negro y 100 si es blanco, por la tanto 50 es aproximadamente el 22% del brillo de blanco el lugar del 50% que se podría esperar. La opcion (ON por defecto)  asegura que si se solicita el 50%, se consigue el 50% del brillo del blanco."
+msgstr "La salida de color no es lineal. Si su valor es 0 es negro y 100 si es blanco, por la tanto 50 es aproximadamente el 22 porcentaje del brillo de blanco el lugar del 50% que se podría esperar. La opcion (ON por defecto)  asegura que si se solicita el 50, se consigue el 50% del brillo del blanco."
 
 #: ../src/gui/dialogs/dialog_setup.cpp:431
 msgid "Restrict really-valued handles to top right quadrant"
