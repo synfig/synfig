@@ -52,8 +52,6 @@ src/modules/mod_bmp/trgt_bmp.h
 src/modules/mod_dv/main.cpp
 src/modules/mod_dv/trgt_dv.cpp
 src/modules/mod_dv/trgt_dv.h
-src/modules/mod_example/filledrect.cpp
-src/modules/mod_example/filledrect.h
 src/modules/mod_example/main.cpp
 src/modules/mod_example/metaballs.cpp
 src/modules/mod_example/metaballs.h
