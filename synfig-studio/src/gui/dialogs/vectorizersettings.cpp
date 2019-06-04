@@ -319,6 +319,20 @@ VectorizerSettings::on_convert_pressed()
     
 	// doVectorize(configuration);
 	std::cout<<"Convert Pressed....";
+	
+	rendering::SurfaceResource::LockRead<Surface> lock( layer_bitmap_->rendering_surface ); 
+	if (!lock)
+	{ std::cout<<"Cannot take a surface from the Layer_Bitmap.";
+	 return; 
+	}
+	 int width = lock->get_w();
+	 int height = lock->get_h();
+	 const Color *row5 = (*lock)[5]; 
+	const Color &pixel_18_10 = (*lock)[10][18]; // [row][col]
+		std::cout<<"Width: "<<width<<"\n";
+		std::cout<<"height: "<<height<<"\n";
+		std::cout<<row5[1].get_r()<<"\n";
+
 }
 
 void
