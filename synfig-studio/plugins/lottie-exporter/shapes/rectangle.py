@@ -178,6 +178,17 @@ def both_points_animated(animated_1, animated_2, param_expand, lottie, index):
 
     #################### END OF SECTION 1 ####################
 
+    ### SECTION TRY ###
+    # Every frames value is precomputed in order to achieve maximum similarity
+    # to that of Synfig 
+    en_fr = max(get_frame(animated_1[-1]), get_frame(animated_2[-1]))
+    fra = 1
+    while fra <= en_fr:
+        insert_waypoint_at_frame(animated_1, orig_path_1, fra, "vector")
+        insert_waypoint_at_frame(animated_2, orig_path_2, fra, "vector")
+        fra += 1
+    ### END SECTION ###
+
     ######################### SECTION 2 ##########################
     # Insert the waypoints at corresponding positions where point1 is animated
     # and point2 is animated
@@ -530,7 +541,7 @@ def get_control_points(interval):
         st = Vector(interval["s"][0], interval["s"][1])
         en = Vector(interval["e"][0], interval["e"][1])
         to = Vector(interval["to"][0], interval["to"][1])
-        ti = Vector(interval["ti"][0], interval["ti"][1])
+        ti = Vector(interval["ti"][0], -interval["ti"][1])
 
     # If the interval is for real values
     else:
@@ -574,7 +585,7 @@ def get_vector_at_frame(path, t):
             this_fr = keyfr[i]["t"]
             next_fr = keyfr[i+1]["t"]
             percent = (t - this_fr) / (next_fr - this_fr) 
-            pos = get_bezier_val(st, st + to, en + ti, en, percent)
+            pos = get_bezier_val(st, st + to, en - ti, en, percent)
     elif i >= len(keyfr) - 1:
         pos = get_last_control_point(keyfr[-2])
 
