@@ -3,7 +3,6 @@
 PLUGIN_NAME = properties
 
 EXTRA_FILES = \
-			  hermite_to_bezier.py \
 			  multiDimensionalKeyframed.py \
 			  offsetKeyframe.py \
 			  timeAdjust.py \
