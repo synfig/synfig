@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: Synfig UI\n"
 "Report-Msgid-Bugs-To: https://github.com/synfig/synfig/issues\n"
 "POT-Creation-Date: 2018-07-20 05:21+0000\n"
-"PO-Revision-Date: 2018-07-20 05:22+0000\n"
-"Last-Translator: NordicTroll <blenderkurs@gmail.com>\n"
-"Language-Team: Norwegian (Norway) (http://www.transifex.com/morevnaproject/synfig/language/no_NO/)\n"
+"PO-Revision-Date: 2019-06-04 14:41+0000\n"
+"Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
+"Language-Team: Norwegian Bokmål (http://www.transifex.com/morevnaproject/synfig/language/nb/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: no_NO\n"
+"Language: nb\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../synfigstudio.desktop.in.h:1 ../src/gui/dialogs/about.cpp:94
@@ -3972,6 +3972,10 @@ msgid ""
 "\n"
 msgstr ""
 
+#: ../src/gui/app.cpp:3694
+msgid "Newer version of this file avaliable on the CVS repository!"
+msgstr ""
+
 #: ../src/gui/app.cpp:3695
 msgid "Would you like to update now (It would probably be a good idea)"
 msgstr ""
@@ -4839,7 +4843,7 @@ msgstr ""
 
 #: ../src/gui/instance.cpp:201
 #, c-format
-msgid "Do you really want to run plugin for file \"%s\"?"
+msgid "Do you realy want to run plugin for file \"%s\"?"
 msgstr ""
 
 #: ../src/gui/instance.cpp:204
