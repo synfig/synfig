@@ -325,15 +325,6 @@ def gen_properties_offset_keyframe(curve_list, animated, i):
     lottie["ti"] = [item/settings.TANGENT_FACTOR for item in lottie["ti"]]
     lottie["to"] = [item/settings.TANGENT_FACTOR for item in lottie["to"]]
 
-    # These tangents will be used in actual calculation of points according to
-    # Synfig
-    lottie["synfig_to"] = lottie["to"]
-    lottie["synfig_ti"] = lottie["ti"]
-    if cur_get_after == "halt":
-        lottie["synfig_to"] = [0 for val in lottie["synfig_to"]]
-    if next_get_before == "halt":
-        lottie["synfig_ti"] = [0 for val in lottie["synfig_ti"]]
-
     # Lottie and synfig use different tangents SEE DOCUMENTATION
     lottie["ti"] = [-item for item in lottie["ti"]]
 
@@ -341,3 +332,13 @@ def gen_properties_offset_keyframe(curve_list, animated, i):
     # The y-axis is different in lottie
     lottie["ti"][1] = -lottie["ti"][1]
     lottie["to"][1] = -lottie["to"][1]
+
+    # These tangents will be used in actual calculation of points according to
+    # Synfig
+    lottie["synfig_to"] = [tangent for tangent in lottie["to"]]
+    lottie["synfig_ti"] = [-tangent for tangent in lottie["ti"]] 
+    if cur_get_after == "halt":
+        lottie["synfig_to"] = [0 for val in lottie["synfig_to"]]
+    if next_get_before == "halt":
+        lottie["synfig_ti"] = [0 for val in lottie["synfig_ti"]]
+
