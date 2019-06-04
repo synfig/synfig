@@ -29,6 +29,8 @@
 #	include <config.h>
 #endif
 
+#include <ETL/handle>
+#include <synfig/layers/layer_bitmap.h>
 #include <synfig/vector.h>
 #include "polygonizerclasses.h"
 
@@ -44,6 +46,7 @@ using namespace std;
 using namespace etl;
 using namespace studio;
 
+typedef etl::handle<synfig::Layer_Bitmap> Handle;
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
@@ -77,7 +80,8 @@ using namespace studio;
 
 
 ///////////////////////////////////////////
-class RawBorderPoint {
+class RawBorderPoint 
+{
   PointInt m_position;
   int m_ambiguousTurn;  // used to remember cases of multiple turning directions
   // in a RawBorder extraction.
@@ -97,7 +101,8 @@ public:
 
 //--------------------------------------------------------------------------
 
-class RawBorder final : public std::vector<RawBorderPoint> {
+class RawBorder final : public std::vector<RawBorderPoint> 
+{
   int m_xExternal;  // x coordinate of a specific vertex in the outer
   // RawBorder which contains this inner one.
 
@@ -123,6 +128,154 @@ public:
 typedef std::vector<RawBorder *> BorderFamily;
 typedef std::vector<BorderFamily> BorderList;
 
+//============================
+//    Polygonizer Locals
+//============================
+
+namespace 
+{
+// Const names
+enum { white = 0, black = 1 };
+enum { inner = 0, outer = 1, none = 2, invalid = 3 };
+}
+
+//=======================================================================================
+
+//-------------------------------
+//    Raster Data Functions
+//-------------------------------
+
+//--------------------------------------------------------------------------
+
+class PixelEvaluator 
+{
+  Handle m_ras;
+  int m_threshold;
+
+public:
+  PixelEvaluator(const Handle &ras, int threshold)
+      : m_ras(ras), m_threshold(threshold) {}
+
+  inline unsigned char getBlackOrWhite(int x, int y);
+};
+
+// //--------------------------------------------------------------------------
+
+inline unsigned char PixelEvaluator::getBlackOrWhite(int x, int y) 
+{
+  
+  // return std::max(m_ras->pixels(y)[x].r,
+  //                 std::max(m_ras->pixels(y)[x].g, m_ras->pixels(y)[x].b)) <
+  //        m_threshold * (m_ras->pixels(y)[x].m / 255.0);
+}
+
+//--------------------------------------------------------------------------
+
+// Signaturemap format:
+//  stores a map of bytes, whose first bit represents the color (black/white) of
+//  corresponding pixel, and
+//  the rest its 'signature', used as an int to store information.
+
+class Signaturemap 
+{
+  std::unique_ptr<unsigned char[]> m_array;
+  int m_rowSize;
+  int m_colSize;
+
+public:
+  Signaturemap(const Handle &ras, int threshold);
+
+  //not needed 
+  //void readRasterData(const Handle &ras, int threshold);
+
+  inline int getRowSize() const { return m_rowSize; }
+  inline int getColSize() const { return m_colSize; }
+
+  unsigned char *pixelByte(int x, int y) 
+  {
+    return &m_array[(y + 1) * m_rowSize + x + 1];
+  }
+
+  bool getBitmapColor(int x, int y) const 
+  {
+    return m_array[(y + 1) * m_rowSize + x + 1] & 1;
+  }
+
+  inline unsigned char getSignature(int x, int y) const 
+  {
+    return m_array[(y + 1) * m_rowSize + x + 1] >> 1;
+  }
+
+  void setSignature(int x, int y, int val) 
+  {
+    unsigned char *pixel = pixelByte(x, y);
+    *pixel &= 1;
+    *pixel |= (val << 1);  // Si puo' fare meglio??
+  }
+};
+
+//--------------------------------------------------------------------------
+
+Signaturemap::Signaturemap(const Handle &ras, int threshold) 
+{
+  // read the raster data
+  unsigned char *currByte;
+  int x, y;
+
+  PixelEvaluator evaluator(ras, threshold);//evaluator object with ras, threshold as constructor args
+
+  // TODO replace with pixel width and height 
+  m_rowSize = ras->getLx() + 2;
+  m_colSize = ras->getLy() + 2;
+  m_array.reset(new unsigned char[m_rowSize * m_colSize]);
+
+  memset(m_array.get(), none << 1, m_rowSize);
+
+  currByte = m_array.get() + m_rowSize;
+  for (y = 0; y < ras->getLy(); ++y) {
+    *currByte = none << 1;
+    currByte++;
+
+    for (x = 0; x < ras->getLx(); ++x, ++currByte)
+      *currByte = evaluator.getBlackOrWhite(x, y) | (none << 1);
+
+    *currByte = none << 1;
+    currByte++;
+  }
+
+  memset(currByte, none << 1, m_rowSize);
+}
+
+//--------------------------------------------------------------------------
+
+// Minority check for amiguous turning directions
+inline bool getMinorityCheck(const Signaturemap &ras, int x, int y) {
+  // Assumes (x,y) is ambiguous case: 2 immediate surrounding pixels are white
+  // and 2 black
+  return (ras.getBitmapColor(x + 1, y) + ras.getBitmapColor(x + 1, y - 1) +
+          ras.getBitmapColor(x - 2, y) + ras.getBitmapColor(x - 2, y - 1) +
+          ras.getBitmapColor(x - 1, y + 1) + ras.getBitmapColor(x - 1, y - 2) +
+          ras.getBitmapColor(x, y + 1) + ras.getBitmapColor(x, y - 2)) > 4;
+}
+
+//--------------------------------------------------------------------------
+
+// Sets signature of a given border
+inline void setSignature(Signaturemap &ras, const RawBorder &border, int val) {
+  unsigned int j;
+  int yOld;
+
+  // Set border's alpha channel
+  yOld = border.back().y();
+  for (j = 0; j < border.size(); ++j) {
+    if (border[j].y() < yOld) {
+      ras.setSignature(border[j].x(), border[j].y(), val);
+    } else if (border[j].y() > yOld) {
+      ras.setSignature(border[j].x(), yOld, val);
+    }
+    yOld = border[j].y();
+  }
+}
 
 /* === E N T R Y P O I N T ================================================= */
 //===========================
