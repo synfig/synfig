@@ -3991,10 +3991,6 @@ msgid ""
 "\n"
 msgstr "Le nom de fichier original n'a pas été défini dans le conteneur temporaire \"%s\"\n\n"
 
-#: ../src/gui/app.cpp:3694
-msgid "Newer version of this file available on the CVS repository!"
-msgstr "Une nouvelle version de ce fichier est disponible sur le dépôt CVS !"
-
 #: ../src/gui/app.cpp:3695
 msgid "Would you like to update now (It would probably be a good idea)"
 msgstr "Voulez-vous mettre à jour maintenant (Ce serait probablement une bonne idée)"

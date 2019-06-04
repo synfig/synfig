@@ -839,10 +839,6 @@ msgstr "Il momento in cui inizia il ciclo risultante"
 msgid "Duration"
 msgstr "Durata"
 
-#: ../src/modules/lyr_std/timeloop.cpp:151
-msgid "Length of the loop"
-msgstr "Lunghezza del ciclo"
-
 #: ../src/modules/lyr_std/timeloop.cpp:156
 msgid "Only For Positive Duration"
 msgstr "Solo Per Durata Positiva"

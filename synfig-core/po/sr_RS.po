@@ -4621,10 +4621,6 @@ msgstr "Чвор вредности за понављање времена"
 msgid "Start time of the loop for the value node Timeline"
 msgstr "Почетно време понављања за временску линију чвора вредности"
 
-#: ../src/synfig/valuenodes/valuenode_timeloop.cpp:184
-msgid "Length of the loop"
-msgstr "Трајање понављања"
-
 #: ../src/synfig/valuenodes/valuenode_timestring.cpp:151
 msgid "The time that is converted to string"
 msgstr "Време које је претворено у ниску"

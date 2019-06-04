@@ -3979,10 +3979,6 @@ msgid ""
 "\n"
 msgstr ""
 
-#: ../src/gui/app.cpp:3694
-msgid "Newer version of this file available on the CVS repository!"
-msgstr "Nowsza wersja tego pliku dostępna w repozytorium CVS!"
-
 #: ../src/gui/app.cpp:3695
 msgid "Would you like to update now (It would probably be a good idea)"
 msgstr "Czy chcesz go teraz zaktualizować? (Prawdopodobnie to dobry pomysł)"

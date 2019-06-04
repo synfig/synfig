@@ -4630,10 +4630,6 @@ msgstr "Wartość węzła w pętli czasu"
 msgid "Start time of the loop for the value node Timeline"
 msgstr "Czas rozpoczęcia pętli dla węzła na Osi czasu"
 
-#: ../src/synfig/valuenodes/valuenode_timeloop.cpp:184
-msgid "Length of the loop"
-msgstr "Długość pętli"
-
 #: ../src/synfig/valuenodes/valuenode_timestring.cpp:151
 msgid "The time that is converted to string"
 msgstr "Czas, który jest konwertowany na ciąg znaków"

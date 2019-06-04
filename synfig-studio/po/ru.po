@@ -3987,10 +3987,6 @@ msgid ""
 "\n"
 msgstr "Исходное имя файла не было установлено во временном контейнере \"%s\"\n\n"
 
-#: ../src/gui/app.cpp:3694
-msgid "Newer version of this file available on the CVS repository!"
-msgstr "В CVS репозитории доступна новее версия этого файла!"
-
 #: ../src/gui/app.cpp:3695
 msgid "Would you like to update now (It would probably be a good idea)"
 msgstr "Хотите обновить сейчас? (Это, вероятно, будет хорошей идеей)"
