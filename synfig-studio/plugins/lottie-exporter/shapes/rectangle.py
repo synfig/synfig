@@ -540,8 +540,8 @@ def get_control_points(interval):
     if "to" in interval.keys():
         st = Vector(interval["s"][0], interval["s"][1])
         en = Vector(interval["e"][0], interval["e"][1])
-        to = Vector(interval["to"][0], interval["to"][1])
-        ti = Vector(interval["ti"][0], -interval["ti"][1])
+        to = Vector(interval["synfig_to"][0], interval["synfig_to"][1])
+        ti = Vector(interval["synfig_ti"][0], interval["synfig_ti"][1])
 
     # If the interval is for real values
     else:

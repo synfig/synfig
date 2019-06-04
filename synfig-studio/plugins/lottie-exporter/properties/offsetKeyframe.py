@@ -321,12 +321,21 @@ def gen_properties_offset_keyframe(curve_list, animated, i):
             curve_list[-2]["i"]["x"] = settings.IN_TANGENT_X
             curve_list[-2]["i"]["y"] = settings.IN_TANGENT_Y
 
-    # Lottie and synfig use different tangents SEE DOCUMENTATION
-    lottie["ti"] = [-item for item in lottie["ti"]]
-
     # Lottie tangent length is larger than synfig
     lottie["ti"] = [item/settings.TANGENT_FACTOR for item in lottie["ti"]]
     lottie["to"] = [item/settings.TANGENT_FACTOR for item in lottie["to"]]
+
+    # These tangents will be used in actual calculation of points according to
+    # Synfig
+    lottie["synfig_to"] = lottie["to"]
+    lottie["synfig_ti"] = lottie["ti"]
+    if cur_get_after == "halt":
+        lottie["synfig_to"] = [0 for val in lottie["synfig_to"]]
+    if next_get_before == "halt":
+        lottie["synfig_ti"] = [0 for val in lottie["synfig_ti"]]
+
+    # Lottie and synfig use different tangents SEE DOCUMENTATION
+    lottie["ti"] = [-item for item in lottie["ti"]]
 
     # IMPORTANT to and ti have to be relative
     # The y-axis is different in lottie

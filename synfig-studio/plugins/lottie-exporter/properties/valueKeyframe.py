@@ -106,9 +106,11 @@ def gen_value_Keyframe(curve_list, animated, i):
     if cur_get_after == "halt": # For ease out
         lottie["o"]["x"][0] = settings.OUT_TANGENT_X
         lottie["o"]["y"][0] = settings.OUT_TANGENT_Y
+        lottie["synfig_o"] = [0]
     if next_get_before == "halt": # For ease in
         lottie["i"]["x"][0] = settings.IN_TANGENT_X
         lottie["i"]["y"][0] = settings.IN_TANGENT_Y
+        lottie["synfig_i"] = [0]
 
     # TCB/!TCB and list is not empty
     if cur_get_before == "auto" and cur_get_after != "auto" and i > 0:
@@ -121,6 +123,7 @@ def gen_value_Keyframe(curve_list, animated, i):
         if cur_get_after == "halt":
             curve_list[-2]["i"]["x"][0] = settings.IN_TANGENT_X
             curve_list[-2]["i"]["y"][0] = settings.IN_TANGENT_Y
+            lottie["synfig_i"] = [0]
 
 
 def set_tangents(out_val, in_val, cur_pos, next_pos, lottie, animated):
