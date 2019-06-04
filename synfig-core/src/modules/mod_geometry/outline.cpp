@@ -228,10 +228,9 @@ Outline::sync_vfunc()
 		Vector last_tangent = first_point.get_tangent1();
 
 		// If we are looped and drawing sharp cusps, we'll need a value
-		// for the incoming tangent. That said, if we are simply
-		// drawing a line, this code path fails, so we skip it since it
-		// doesn't really make semantic sense anyway
-		if (loop && sharp_cusps && last_tangent.is_equal_to(Vector::zero()) && bline.size() > 2) {
+		// for the incoming tangent. This code fails if we have
+		// a "degraded" spline with just one vertex, so we avoid such case.
+		if (loop && sharp_cusps && last_tangent.is_equal_to(Vector::zero()) && bline.size() > 1) {
 			ValueBase::List::const_iterator prev = iter; --prev;
 			const BLinePoint &prev_point = prev->get(blank);
 			etl::hermite<Vector> curve(
