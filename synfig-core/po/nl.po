@@ -3859,15 +3859,15 @@ msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:710
 msgid "Angle Split"
-msgstr ""
+msgstr "Hoek Splitsing"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:711
 msgid "When checked, tangent's angles are independent"
-msgstr ""
+msgstr "Wanneer aangevinkt, zijn de hoeken van de raaklijn onafhankelijk"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:720
 msgid "The [0,1] position of the Width Point over the Spline"
-msgstr ""
+msgstr "De [0,1] positie van het Breedte Punt over de Spline"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:724
 msgid "The width of the Width Point"
@@ -3907,7 +3907,7 @@ msgstr "Bovengrens"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:752
 msgid "Defines the position at end of the Spline"
-msgstr ""
+msgstr "Definieert de positie op het einde van de Spline"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:761
 msgid "The offset length of the Dash Item over the Spline"
@@ -3929,11 +3929,11 @@ msgstr "Bepaalt het type van de zijkant van de streep"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:794
 msgid "The Offset component of the transformation"
-msgstr ""
+msgstr "De Offset-component van de transformatie"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:798
 msgid "The Angle component of the transformation"
-msgstr ""
+msgstr "De Hoek-component van de transformatie"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:801
 msgid "Skew Angle"
@@ -3945,11 +3945,11 @@ msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:806
 msgid "The Scale component of the transformation"
-msgstr ""
+msgstr "De Schaal-component van de transformatie"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:815
 msgid "The Weight of the value"
-msgstr ""
+msgstr "Het Gewicht van de waarde"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:818
 msgid "Value"
@@ -3957,23 +3957,23 @@ msgstr "Waarde"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:819
 msgid "The Value"
-msgstr ""
+msgstr "De Waarde"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:827
 msgid "First"
-msgstr ""
+msgstr "Eerst"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:828
 msgid "The First Value"
-msgstr ""
+msgstr "De Eerste Waarde"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:831
 msgid "Second"
-msgstr ""
+msgstr "Tweede"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:832
 msgid "The Second Value"
-msgstr ""
+msgstr "De Tweede Waarde"
 
 #: ../src/synfig/valuenodes/valuenode_cos.cpp:150
 msgid "Value to calculate the cosine"
@@ -3990,43 +3990,43 @@ msgstr "Vermenigvuldigingswaarde voor de totale cosinus"
 
 #: ../src/synfig/valuenodes/valuenode_derivative.cpp:362
 msgid "Value to calculate the derivative"
-msgstr ""
+msgstr "Waarde om het derivaat te berekenen"
 
 #: ../src/synfig/valuenodes/valuenode_derivative.cpp:365
 msgid "Interval"
-msgstr ""
+msgstr "Interval"
 
 #: ../src/synfig/valuenodes/valuenode_derivative.cpp:366
 msgid "Interval of time to calculate the finite differences"
-msgstr ""
+msgstr "Tijdsinterval om de eindige verschillen te berekenen"
 
 #: ../src/synfig/valuenodes/valuenode_derivative.cpp:369
 msgid "Accuracy"
-msgstr ""
+msgstr "Nauwkeurigheid"
 
 #: ../src/synfig/valuenodes/valuenode_derivative.cpp:370
 msgid "Accuracy of the derivative"
-msgstr ""
+msgstr "Nauwkeurigheid van het derivaat"
 
 #: ../src/synfig/valuenodes/valuenode_derivative.cpp:372
 msgid "Rough"
-msgstr ""
+msgstr "Ruw"
 
 #: ../src/synfig/valuenodes/valuenode_derivative.cpp:374
 msgid "Fine"
-msgstr ""
+msgstr "Fijn"
 
 #: ../src/synfig/valuenodes/valuenode_derivative.cpp:375
 msgid "Extreme"
-msgstr ""
+msgstr "Extreem"
 
 #: ../src/synfig/valuenodes/valuenode_derivative.cpp:378
 msgid "Order"
-msgstr ""
+msgstr "Volgorde"
 
 #: ../src/synfig/valuenodes/valuenode_derivative.cpp:379
 msgid "Order of the derivative"
-msgstr ""
+msgstr "Volgorde van het derivaat"
 
 #: ../src/synfig/valuenodes/valuenode_derivative.cpp:381
 msgid "First Derivative"
