@@ -7,7 +7,6 @@ import sys
 import settings
 from properties.offsetKeyframe import gen_properties_offset_keyframe
 from properties.timeAdjust import time_adjust
-from properties.hermite_to_bezier import hermite_to_bezier
 sys.path.append("..")
 
 
@@ -32,6 +31,3 @@ def gen_properties_multi_dimensional_keyframed(lottie, animated, idx):
 
     # Time adjust of the curves
     time_adjust(lottie, animated)
-
-    # This function needs to be called later, leaving it for now
-    # hermite_to_bezier(lottie, animated)

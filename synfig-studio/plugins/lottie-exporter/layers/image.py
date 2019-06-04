@@ -98,13 +98,12 @@ def fill_image_scale_at_frame(scale_animated, animated_1, animated_2, anim1_path
     """
     pos1 = get_vector_at_frame(anim1_path, frame)
     pos2 = get_vector_at_frame(anim2_path, frame)
-    y, z = to_Synfig_axis(pos1, "vector"), to_Synfig_axis(pos2, "vector")
-    y = [x * settings.PIX_PER_UNIT for x in y]
-    z = [x * settings.PIX_PER_UNIT for x in z]
-    print(frame, y, z)
+    pos1, pos2 = to_Synfig_axis(pos1, "vector"), to_Synfig_axis(pos2, "vector")
+    pos1 = [x * settings.PIX_PER_UNIT for x in pos1]
+    pos2 = [x * settings.PIX_PER_UNIT for x in pos2]
     
-    scale_x = abs(pos1[0] - pos2[0]) * 100 / width
-    scale_y = abs(pos1[1] - pos2[1]) * 100 / height
+    scale_x = (pos2[0] - pos1[0]) * 100 / width
+    scale_y = (pos1[1] - pos2[1]) * 100 / height
     
     # Assumption: all frames till the maximum are present in the animation
     scale_animated[frame][0].attrib["value"] = str(scale_x)
