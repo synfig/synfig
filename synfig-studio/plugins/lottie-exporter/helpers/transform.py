@@ -8,6 +8,7 @@ import settings
 from misc import Count
 from properties.value import gen_properties_value
 from properties.valueKeyframed import gen_value_Keyframed
+from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
 sys.path.append("../")
 
 
@@ -23,11 +24,16 @@ def gen_helpers_transform(lottie, layer, pos = [0, 0], anchor = [0, 0, 0], scale
     lottie["s"] = {}    # Scale of the layer
 
     # setting the default location
-    gen_properties_value(lottie["p"],
-                         pos,
-                         index.inc(),
-                         settings.DEFAULT_ANIMATED,
-                         settings.NO_INFO)
+    if isinstance(pos, list):
+        gen_properties_value(lottie["p"],
+                             pos,
+                             index.inc(),
+                             settings.DEFAULT_ANIMATED,
+                             settings.NO_INFO)
+    else:
+        gen_properties_multi_dimensional_keyframed(lottie["p"],
+                                                   pos,
+                                                   index.inc()) 
 
     # setting the default opacity i.e. 100
     gen_properties_value(lottie["o"],

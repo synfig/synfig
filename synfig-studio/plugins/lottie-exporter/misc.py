@@ -118,7 +118,7 @@ class Vector:
             return [self.val1, self.val2]
         elif self.type == "circle_radius":
             return [self.val1, self.val1]
-        elif self.type == "rectangle_size":
+        elif self.type in {"rectangle_size", "image_scale"}:
             return [self.val1, self.val3]
         else:
             return [self.val1]
@@ -288,6 +288,13 @@ def parse_position(animated, i):
         pos = parse_value(animated, i)
         vec = Vector(pos[0], pos[1], animated.attrib["type"])
         vec.add_new_val(float(animated[i][0].attrib["value2"]) * settings.PIX_PER_UNIT)
+        return vec
+
+    elif animated.attrib["type"] == "image_scale":
+        val = float(animated[i][0].attrib["value"])
+        val2 = get_frame(animated[i])
+        vec = Vector(val, val2, animated.attrib["type"])
+        vec.add_new_val(float(animated[i][0].attrib["value2"]))
         return vec
 
     elif animated.attrib["type"] == "color":

@@ -409,7 +409,7 @@ def print_animation(b):
         a[i][0][0].text = str(float(a[i][0][0].text) * settings.PIX_PER_UNIT)
         a[i][0][1].text = str(float(a[i][0][1].text) * settings.PIX_PER_UNIT)
         """
-    print(etree.tostring(a, method='xml', encoding='utf8').decode())
+    print(etree.tostring(a, method='xml', encoding='utf8', pretty_print=True).decode())
                 
 
 def calc_pos_and_size(size_animated, pos_animated, animated_1, animated_2, orig_path, i, i1):
