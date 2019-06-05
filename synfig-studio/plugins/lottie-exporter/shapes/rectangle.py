@@ -1,3 +1,4 @@
+# pylint: disable=line-too-long
 """
 Will store all functions needed to generate the rectangle layer in lottie
 """
@@ -7,10 +8,10 @@ import copy
 from lxml import etree
 import settings
 from properties.value import gen_properties_value
-from misc import Count, is_animated, change_axis, Vector, get_time, get_frame, get_vector, set_vector
+from misc import Count, is_animated, Vector, get_frame, get_vector, set_vector
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
 from properties.valueKeyframed import gen_value_Keyframed
-from helpers.bezier import get_bezier_time, get_bezier_val
+from helpers.bezier import get_bezier_val
 sys.path.append("..")
 
 
@@ -180,7 +181,7 @@ def both_points_animated(animated_1, animated_2, param_expand, lottie, index):
 
     ### SECTION TRY ###
     # Every frames value is precomputed in order to achieve maximum similarity
-    # to that of Synfig 
+    # to that of Synfig
     en_fr = max(get_frame(animated_1[-1]), get_frame(animated_2[-1]))
     fra = 1
     while fra <= en_fr:
@@ -204,7 +205,7 @@ def both_points_animated(animated_1, animated_2, param_expand, lottie, index):
     ##################### SECTION 3 ##############################
     # Add the impact of expand parameter amount towards point1 and point2
     # parameter
-    assert len(animated_1) == len(animated_2) 
+    assert len(animated_1) == len(animated_2)
     for waypoint1, waypoint2 in zip(animated_1, animated_2):
         frame = get_frame(waypoint1)
         assert frame == get_frame(waypoint2)
@@ -232,7 +233,7 @@ def both_points_animated(animated_1, animated_2, param_expand, lottie, index):
 
     #################### SECTION 4 #############################
     # Place waypoints at which the x and y cross each other/cross the extremas
-    cross_list = get_cross_list(animated_1, animated_2, orig_path_1, orig_path_2) 
+    cross_list = get_cross_list(animated_1, animated_2, orig_path_1, orig_path_2)
     for frame in cross_list:
         insert_waypoint_at_frame(animated_1, orig_path_1, frame, "vector")
         insert_waypoint_at_frame(animated_2, orig_path_2, frame, "vector")
@@ -332,7 +333,7 @@ def insert_waypoint_at_frame(animated, orig_path, frame, animated_name):
     else:
         new_waypoint[0].attrib["value"] = str(pos)
 
-    new_waypoint.attrib["time"] = str(frame/settings.lottie_format["fr"]) + "s" 
+    new_waypoint.attrib["time"] = str(frame/settings.lottie_format["fr"]) + "s"
     if i == 0 or i == len(animated):
         # No need of tcb value copy as halt interpolation need to be copied here
         new_waypoint.attrib["before"] = new_waypoint.attrib["after"] = "constant"
@@ -355,13 +356,13 @@ def get_cross_list(animation_1, animation_2, orig_path_1, orig_path_2):
     this need to be taken care of
 
     Args:
-        animation_1 (lxml.etree._Element): Stores the animation of `point1` parameter in Synfig format 
-        animation_2 (lxml.etree._Element): Stores the animation of `point2` parameter in Synfig format 
+        animation_1 (lxml.etree._Element): Stores the animation of `point1` parameter in Synfig format
+        animation_2 (lxml.etree._Element): Stores the animation of `point2` parameter in Synfig format
         orig_path_1 (dict)               : Stores the animation of `point1` parameter in Lottie format
         orig_path_2 (dict)               : Stores the animation of `point2` parameter in Lottie format
 
     Returns:
-        (set) : Contains the frames at which point1 and point2 cross each other 
+        (set) : Contains the frames at which point1 and point2 cross each other
     """
     en_fr = max(get_frame(animation_1[-1]), get_frame(animation_2[-1]))
     # Function to determine the sign of a variable
@@ -374,7 +375,7 @@ def get_cross_list(animation_1, animation_2, orig_path_1, orig_path_2):
     frame = 1
     # Loop for all the frames
     while frame <= en_fr:
-        now_1 = get_vector_at_frame(orig_path_1, frame) 
+        now_1 = get_vector_at_frame(orig_path_1, frame)
         now_1 = to_Synfig_axis(now_1, "vector")
         now_2 = get_vector_at_frame(orig_path_2, frame)
         now_2 = to_Synfig_axis(now_2, "vector")
@@ -410,7 +411,7 @@ def print_animation(b):
         a[i][0][1].text = str(float(a[i][0][1].text) * settings.PIX_PER_UNIT)
         """
     print(etree.tostring(a, method='xml', encoding='utf8', pretty_print=True).decode())
-                
+
 
 def calc_pos_and_size(size_animated, pos_animated, animated_1, animated_2, orig_path, i, i1):
     """
@@ -422,11 +423,11 @@ def calc_pos_and_size(size_animated, pos_animated, animated_1, animated_2, orig_
     param4: Can be param2 or param1 of rectangle layer, but opposite of param3
 
     Args:
-        size_animated (lxml.etree._Element): Holds the size parameter of rectangle layer in Synfig format 
+        size_animated (lxml.etree._Element): Holds the size parameter of rectangle layer in Synfig format
         pos_animated  (lxml.etree._Element): Holds the position parameter of rectangle layer in Synfig format
         animated_1    (lxml.etree._Element): Holds the param3 in Synfig format
         animated_2    (lxml.etree._Element): Holds the param4 in Synfig format
-        orig_path     (dict)               : Holds the param4 in Lottie format 
+        orig_path     (dict)               : Holds the param4 in Lottie format
         i             (int)                : Iterator for animated_2
         i1            (int)                : Iterator for pos_animated and size_animated
     Returns:
@@ -478,7 +479,7 @@ def to_Synfig_axis(pos, animated_name):
 
     Returns:
         (float) If pos is of type float
-        (list)  Else 
+        (list)  Else
     """
     if animated_name == "vector":
         pos[0], pos[1] = pos[0] - settings.lottie_format["w"]/2, pos[1] - settings.lottie_format["h"]/2
@@ -584,7 +585,7 @@ def get_vector_at_frame(path, t):
             st, to, ti, en = get_control_points(keyfr[i])
             this_fr = keyfr[i]["t"]
             next_fr = keyfr[i+1]["t"]
-            percent = (t - this_fr) / (next_fr - this_fr) 
+            percent = (t - this_fr) / (next_fr - this_fr)
             pos = get_bezier_val(st, st + to, en - ti, en, percent)
     elif i >= len(keyfr) - 1:
         pos = get_last_control_point(keyfr[-2])

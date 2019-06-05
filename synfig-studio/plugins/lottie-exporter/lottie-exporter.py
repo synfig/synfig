@@ -1,3 +1,4 @@
+# pylint: disable=line-too-long
 """
 Python plugin to convert the .sif format into lottie json format
 input   : FILE_NAME.sif
@@ -18,17 +19,34 @@ import settings
 
 
 def write_to(filename, extension, data):
+    """
+    Helps in writing data to a specified file name
+
+    Args:
+        filename  (str) : Original file name
+        extension (str) : original file name needs to be converted to this
+        data      (str) : Data that needs to be written
+
+    Returns:
+        (str) : changed file name according to the extension specified
+    """
     new_name = filename.split(".")
     new_name[-1] = extension
     new_name = ".".join(new_name)
-    with open(new_name, "w") as f:
-        f.write(data)
+    with open(new_name, "w") as fil:
+        fil.write(data)
     return new_name
 
 
 def parse(file_name):
     """
     Driver function for parsing .sif to lottie(.json) format
+
+    Args:
+        file_name (str) : Synfig file name that needs to be parsed to Lottie format
+
+    Returns:
+        (str) : File name in json format
     """
     tree = etree.parse(file_name)
     root = tree.getroot()  # canvas
@@ -69,6 +87,12 @@ def gen_html(file_name):
     """
     Generates an HTML file which will allow end user to easily playback
     animation in a web browser
+
+    Args:
+        file_name (str) : Stores the HTML file name
+
+    Returns:
+        (None)
     """
 
     html_text = \

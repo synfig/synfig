@@ -11,6 +11,13 @@ def time_adjust(lottie, animated):
     """
     Adjusts the tangents between neighbouring waypoints depending upon the time
     factor between previous waypoints or next waypoints
+
+    Args:
+        lottie   (dict)                : Holds bezier curve in Lottie format
+        animated (lxml.etree._Element) : Synfig format animation
+
+    Returns:
+        (None)
     """
     timeadjust = 0.5
     for i in range(len(animated) - 1):

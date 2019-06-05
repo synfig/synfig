@@ -14,6 +14,14 @@ sys.path.append("..")
 def gen_shapes_star(lottie, layer, idx):
     """
     Generates the dictionary corresponding to shapes/star.json
+
+    Args:
+        lottie (dict)               : The lottie generated star layer will be stored in it
+        layer  (lxml.etree._Element): Synfig format star layer
+        idx    (int)                : Stores the index of the star layer
+
+    Returns:
+        (None)
     """
     index = Count()
     lottie["ty"] = "sr"     # Type: star
@@ -160,11 +168,14 @@ def gen_shapes_star(lottie, layer, idx):
 
 
 """
-Below 2 functions are not complete yet:
+Below 3 functions are not complete yet:
 Issues: If outer radius is animated, how do I change inner radius along with it
 such that the shape remains polygon only
 """
 def polygon_correction(lottie, animated):
+    """
+    Nothing here
+    """
     length = len(animated) - 1
     st = 0
 
@@ -201,6 +212,9 @@ def polygon_correction(lottie, animated):
 
 
 def toggle(val):
+    """
+    Nothing here
+    """
     ret = "false"
     if val == "false":
         ret = "true"
@@ -208,6 +222,9 @@ def toggle(val):
 
 
 def modify(lottie, animated, s_frame, e_frame):
+    """
+    Nothing here
+    """
     if e_frame < s_frame:
         return
     # If animated
@@ -218,4 +235,4 @@ def modify(lottie, animated, s_frame, e_frame):
             if lottie["ir"]["k"][st]["t"] > t_insert:
                 break
             st += 1
-    return 
+    return

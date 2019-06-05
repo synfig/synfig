@@ -14,6 +14,14 @@ sys.path.append("..")
 def gen_layer_solid(lottie, layer, idx):
     """
     Generates the dictionary corresponding to layers/solid.json
+
+    Args:
+        lottie (dict)               : Lottie generated solid layer stored here
+        layer  (lxml.etree._Element): Synfig format solid layer
+        idx    (int)                : Stores the index(number of) of solid layer
+
+    Returns:
+        (None)
     """
     index = Count()
     lottie["ddd"] = settings.DEFAULT_3D
@@ -34,7 +42,7 @@ def gen_layer_solid(lottie, layer, idx):
     lottie["ao"] = settings.LAYER_DEFAULT_AUTO_ORIENT
     lottie["sw"] = settings.lottie_format["w"]  # Solid Width
     lottie["sh"] = settings.lottie_format["h"]  # Solid Height
-    
+
     for chld in layer:
         if chld.tag == "param":
             if chld.attrib["name"] == "color":

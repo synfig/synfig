@@ -23,7 +23,7 @@ class Count:
     def inc(self):
         """
         This method increases the count by 1 and returns the new count
-        
+
         Args:
             (None)
 
@@ -100,7 +100,7 @@ class Vector:
             (None)
 
         Returns:
-            (list) : Contains the Vector in list format 
+            (list) : Contains the Vector in list format
         """
         return [self.val1, self.val2]
 
@@ -125,9 +125,9 @@ class Vector:
 
     def add_new_val(self, val3):
         """
-        This function store an additional value in the vector. 
+        This function store an additional value in the vector.
         This is currently required by the rectangle layer
-        
+
         Args:
             val3 (float) : Some Vectors need additional value to be used later
 
@@ -135,8 +135,17 @@ class Vector:
             (None)
         """
         self.val3 = val3
-    
+
     def set_type(self, _type):
+        """
+        This set's the type of the Vector
+
+        Args:
+            _type (str) : Type of Vector to be set
+
+        Returns:
+            (None)
+        """
         self.type = _type
 
 

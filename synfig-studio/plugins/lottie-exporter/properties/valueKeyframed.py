@@ -13,6 +13,14 @@ def gen_value_Keyframed(lottie, animated, idx):
     """
     Generates the dictionary corresponding to properties/valueKeyframed.json in
     lottie documentation
+
+    Args:
+        lottie (dict)                  : Lottie bezier curve stored in this
+        animated (lxml.etree._Element) : Synfig format animation
+        idx      (int)                 : Index of animation
+
+    Returns:
+        (None)
     """
     lottie["ix"] = idx
     lottie["a"] = 1

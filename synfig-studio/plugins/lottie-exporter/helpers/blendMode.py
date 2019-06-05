@@ -23,6 +23,13 @@ def get_blend(lottie, layer):
     Brighten   :  2,
     Overlay    : 20,    Does not work perfectly :(
     Screen     : 16
+
+    Args:
+        lottie (dict)                : Lottie format layer
+        layer  (lxml.etree._Element) : Synfig format layer
+
+    Returns:
+        (None)
     """
     blend_map = {0 : 0, 18 : 10, 6 : 1, 17 : 8, 11 : 15, 10 : 13, 9 : 12, 8 : 14,
                  3 : 4, 2 : 5, 20 : 3, 16 : 2}

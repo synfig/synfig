@@ -49,6 +49,12 @@ def init():
     """
     Initialises the final dictionary corresponding to conversion and
     also the canvas dictionary needed in misc functions
+
+    Args:
+        (None)
+
+    Returns:
+        (None)
     """
     # Final converted dictionary
     global lottie_format

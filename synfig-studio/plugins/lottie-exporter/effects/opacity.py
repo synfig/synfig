@@ -13,6 +13,14 @@ sys.path.append("../")
 def gen_effects_opacity(lottie, layer, idx):
     """
     Generates the dictionary corresponding to effects/opacity.json
+
+    Args:
+        lottie (dict)                : Lottie format effects stored in this
+        layer  (lxml.etree._Element) : Synfig format layer
+        idx    (int)                 : Index/Count of effect
+
+    Returns:
+        (None)
     """
     index = Count()
     lottie["ty"] = settings.EFFECTS_OPACITY     # Effect type
@@ -37,4 +45,3 @@ def gen_effects_opacity(lottie, layer, idx):
                                      index.inc(),
                                      settings.DEFAULT_ANIMATED,
                                      settings.NO_INFO)
-

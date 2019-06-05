@@ -14,6 +14,14 @@ def gen_properties_multi_dimensional_keyframed(lottie, animated, idx):
     """
     Generates the dictionary corresponding to
     properties/multiDimensionalKeyframed.json
+
+    Args:
+        lottie   (dict)                : Lottie generated keyframes will be stored here
+        animated (lxml.etree._Element) : Synfig format animation
+        idx      (int)                 : Index/Count of animation
+
+    Returns:
+        (None)
     """
     lottie["a"] = 1
     lottie["ix"] = idx

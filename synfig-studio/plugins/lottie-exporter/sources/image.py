@@ -13,7 +13,15 @@ def get_image_size(fname):
     '''
     https://stackoverflow.com/questions/8032642/how-to-obtain-image-size-using-standard-python-class-without-using-external-lib
     Determine the image type of fhandle and return its size.
-    from draco'''
+    from draco
+
+    Args:
+        fname (str) : File name
+
+    Returns:
+        (int, int) : width and height of image file is returned
+        (None)     : If some exception occurs while calculating
+    '''
     with open(fname, 'rb') as fhandle:
         head = fhandle.read(24)
         if len(head) != 24:
@@ -51,10 +59,17 @@ def add_image_asset(lottie, layer):
     """
     Generates the dictionary corresponding to sources/image.json
     Returns: st required in calling function
+
+    Args:
+        lottie (dict)                : Lottie layer
+        layer  (lxml.etree._Element) : Synfig layer
+
+    Returns:
+        (dict) : Stores address of parameters: "tl", "br", "filename"
     """
     lottie["id"] = "image_" + str(settings.num_images.inc())
     st = {}     # Store the address of children
-    
+
     for chld in layer:
         if chld.tag == "param":
             if chld.attrib["name"] == "tl":
@@ -65,7 +80,7 @@ def add_image_asset(lottie, layer):
                 st["filename"] = chld
 
     width, height = get_image_size(st["filename"][0].text)
-    lottie["w"] = width 
+    lottie["w"] = width
 
     lottie["h"] = height
 

@@ -13,6 +13,16 @@ sys.path.append("..")
 def isclose(a_val, b_val, rel_tol=1e-09, abs_tol=0.0):
     """
     A Function for testing approximate equality
+
+    Args:
+        a_val (float) : First value that needs equality testing
+        b_val (float) : Second value that needs equality testing
+        rel_tol (:obj: `float`, optional) : Relative tolerance
+        abs_tol (:obj: `float`, optional) : Absolutte tolerance
+
+    Returns:
+        (bool) : Returns True If two numbers are equal according to specified tolerance
+                         False Else
     """
     return abs(a_val - b_val) <= max(rel_tol * max(abs(a_val), abs(b_val)), abs_tol)
 
@@ -21,6 +31,16 @@ def clamped_tangent(p1, p2, p3, animated, i):
     """
     Function corresponding to clamped function in Synfig
     It generates the tangent when clamped waypoints are used
+
+    Args:
+        p1       (float)               : First point
+        p2       (float)               : Second point
+        p3       (float)               : Third point
+        animated (lxml.etree._Element) : Synfig format animation
+        i        (int)                 : Iterator over animation
+
+    Returns:
+        (float) : Clamped tangent is returned
     """
     # pw -> prev_waypoint, w -> waypoint, nw -> next_waypoint
     pw, w, nw = animated[i-1], animated[i], animated[i+1]
@@ -61,11 +81,21 @@ def clamped_vector(p1, p2, p3, animated, i, lottie, ease):
     """
     Function to generate the collective tangents i.e. x tangent and y tangent
     when clamped waypoints are used
+
+    Args:
+        p1       (misc.Vector)         : First point in Co-ordinate System
+        p2       (misc.Vector)         : Second point in Co-ordinate System
+        p3       (misc.Vector)         : Third point in Co-ordinate System
+        animated (lxml.etree._Element) : Synfig format animation
+        i        (int)                 : Iterator over animation
+        ease     (str)                 : Specifies if it is an ease in animation ease out
+
+    Returns:
+        (misc.Vector) : Clamped Vector is returned
     """
     x_tan = clamped_tangent(p1.val1, p2.val1, p3.val1, animated, i)
     y_tan = clamped_tangent(p1.val2, p2.val2, p3.val2, animated, i)
-    #if animated.attrib["name"] == "radius2":
-    #    print(x_tan, y_tan)
+
     if isclose(x_tan, 0.0) or isclose(y_tan, 0.0):
         if ease == "in":
             ease_in(lottie)
@@ -77,6 +107,12 @@ def clamped_vector(p1, p2, p3, animated, i, lottie, ease):
 def ease_out(lottie):
     """
     To set the ease out values in lottie format
+
+    Args:
+        lottie (dict) : Bezier interval of lottie
+
+    Returns:
+        (None)
     """
     lottie["o"]["x"] = settings.OUT_TANGENT_X
     lottie["o"]["y"] = settings.OUT_TANGENT_Y
@@ -85,6 +121,12 @@ def ease_out(lottie):
 def ease_in(lottie):
     """
     To set the ease in values in lottie format
+
+    Args:
+        lottie (dict) : Bezier interval of lottie
+
+    Returns:
+        (None)
     """
     lottie["i"]["x"] = settings.IN_TANGENT_X
     lottie["i"]["y"] = settings.IN_TANGENT_Y
@@ -93,6 +135,12 @@ def ease_in(lottie):
 def handle_color():
     """
     Default linear tangent values for color interpolations
+
+    Args:
+        (None)
+
+    Returns:
+        (misc.Vector, misc.Vector) : out and in tangents for color parameter
     """
     out_val = Vector(0.5, 0.5, "color")
     in_val = Vector(0.5, 0.5, "color")
@@ -102,6 +150,17 @@ def handle_color():
 def calc_tangent(animated, lottie, i):
     """
     Calculates the tangent, given two waypoints and there interpolation methods
+
+    Args:
+        animated (lxml.etree._Element) : Synfig format animation
+        lottie   (dict)                : Lottie format animation stored here
+        i        (int)                 : Iterator for animation
+
+    Returns:
+        (Misc.Vector) : If waypoint's value is parsed to misc.Vector by misc.parse_position()
+        (Misc.Color)  : If waypoint's value is parsed to misc.Color ...
+        (float)       : If waypoint's value is parsed to float ...
+        (None)        : If "constant" interval is detected
     """
     waypoint, next_waypoint = animated[i], animated[i+1]
     cur_get_after, next_get_before = waypoint.attrib["after"], next_waypoint.attrib["before"]
@@ -252,7 +311,16 @@ def calc_tangent(animated, lottie, i):
 
 def gen_properties_offset_keyframe(curve_list, animated, i):
     """
-     Generates the dictionary corresponding to properties/offsetKeyFrame.json
+    Generates the dictionary corresponding to properties/offsetKeyFrame.json
+
+    Args:
+        curve_list (list)                : Stores bezier curve in Lottie format
+        animated   (lxml.etree._Element) : Synfig format animation
+        i          (int)                 : Iterator for animation
+
+    Returns:
+        (TypeError) : If a constant interval is encountered
+        (None)      : In all other cases
     """
     lottie = curve_list[-1]
 
@@ -336,9 +404,8 @@ def gen_properties_offset_keyframe(curve_list, animated, i):
     # These tangents will be used in actual calculation of points according to
     # Synfig
     lottie["synfig_to"] = [tangent for tangent in lottie["to"]]
-    lottie["synfig_ti"] = [-tangent for tangent in lottie["ti"]] 
+    lottie["synfig_ti"] = [-tangent for tangent in lottie["ti"]]
     if cur_get_after == "halt":
         lottie["synfig_to"] = [0 for val in lottie["synfig_to"]]
     if next_get_before == "halt":
         lottie["synfig_ti"] = [0 for val in lottie["synfig_ti"]]
-

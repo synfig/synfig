@@ -1,3 +1,4 @@
+# pylint: disable=line-too-long
 """
 Implements function required for generating tangent between two value key frames
 """
@@ -13,6 +14,15 @@ sys.path.append("../")
 def normalize_tangents(cur_pos, next_pos, t_in, t_out):
     """
     Converts the tangents from arbitrary range to the range of 0-1
+
+    Args:
+        cur_pos  (misc.Vector) : Current position in co-ordinate system
+        next_pos (misc.Vector) : Next position in co-ordinate system
+        t_in     (dict)        : In tangent in Lottie format
+        t_out    (dict)        : Out tangent in Lottie format
+
+    Returns:
+        (None)
     """
     # time_scale means converting time(on x-axis) to 0-1 range
     time_scale = next_pos.val2 - cur_pos.val2
@@ -50,6 +60,15 @@ def gen_value_Keyframe(curve_list, animated, i):
     """
     Generates the dictionary corresponding to properties/valueKeyframe.json in lottie
     documentation
+
+    Args:
+        curve_list (list)                : Bezier curve in Lottie format
+        animated   (lxml.etree._Element) : Synfig format animation
+        i          (int)                 : Iterator for animation
+
+    Returns:
+        (TypeError) : If hold interval is encountered
+        (None)      : Otherwise
     """
     lottie = curve_list[-1]
     waypoint, next_waypoint = animated[i], animated[i+1]
@@ -129,6 +148,17 @@ def gen_value_Keyframe(curve_list, animated, i):
 def set_tangents(out_val, in_val, cur_pos, next_pos, lottie, animated):
     """
     To set the tangents as required by the lottie format for value waypoints
+
+    Args:
+        out_val   (misc.Vector)         : Tangent out value
+        in_val    (misc.Vector)         : Tangent in value
+        cur_pos   (misc.Vector)         : Current position in co-ordinate system
+        next_pos  (misc.Vector)         : Next position in co-ordinate system
+        lottie    (dict)                : bezier interval in lottie format
+        animation (lxml.etree._Element) : Synfig format animation
+
+    Returns:
+        (None)
     """
     out_lst = out_val.get_list()
     in_lst = in_val.get_list()

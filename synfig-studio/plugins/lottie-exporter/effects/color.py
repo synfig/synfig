@@ -13,6 +13,15 @@ sys.path.append("../")
 def gen_effects_color(lottie, layer, idx):
     """
     Generates the dictionary corresponding to effects/color.json
+
+    Args:
+        lottie (dict)                : Lottie format effects stored in this
+        layer  (lxml.etree._Element) : Synfig format layer
+        idx    (int)                 : Index/Count of effect
+
+    Returns:
+        (None)
+
     """
     index = Count()
     lottie["ty"] = settings.EFFECTS_COLOR   # Effect type

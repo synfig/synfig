@@ -12,9 +12,19 @@ from properties.multiDimensionalKeyframed import gen_properties_multi_dimensiona
 sys.path.append("../")
 
 
-def gen_helpers_transform(lottie, layer, pos = [0, 0], anchor = [0, 0, 0], scale = [100, 100, 100]):
+def gen_helpers_transform(lottie, layer, pos=[0, 0], anchor=[0, 0, 0], scale=[100, 100, 100]):
     """
     Generates the dictionary corresponding to helpers/transform.json
+
+    Args:
+        lottie (dict)                : Lottie format layer
+        layer  (lxml.etree._Element) : Synfig format layer
+        pos    (:obj: `list | lxml.etree._Element`, optional) : position of layer
+        anchor (:obj: `list`) : anchor point of layer
+        scale (:obj: `list | lxml.etree._Element`, optional) : scale of layer
+
+    Returns:
+        (None)
     """
     index = Count()
     lottie["o"] = {}    # opacity/Amount
@@ -33,7 +43,7 @@ def gen_helpers_transform(lottie, layer, pos = [0, 0], anchor = [0, 0, 0], scale
     else:
         gen_properties_multi_dimensional_keyframed(lottie["p"],
                                                    pos,
-                                                   index.inc()) 
+                                                   index.inc())
 
     # setting the default opacity i.e. 100
     gen_properties_value(lottie["o"],

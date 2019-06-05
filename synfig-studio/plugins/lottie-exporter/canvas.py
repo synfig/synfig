@@ -10,7 +10,7 @@ def calc_time(root, lottie, which):
     Converts the starting time and ending time to lottie format
 
     Args:
-        root   (lxml.etree._Element) : Synfig format animation file 
+        root   (lxml.etree._Element) : Synfig format animation file
         lottie (dict)                : Lottie format animation file
         which  (str)                 : Differentiates between in time and out time
 

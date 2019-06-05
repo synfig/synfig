@@ -13,6 +13,14 @@ sys.path.append("..")
 def gen_shapes_fill(lottie, layer):
     """
     Generates the dictionary corresponding to shapes/fill.json
+
+    Args:
+        lottie (dict)               : The lottie generated fill layer will be stored in it
+        layer  (lxml.etree._Element): Synfig format fill (can be shape/solid anything, we
+                                      only need color and opacity part from it) layer
+
+    Returns:
+        (None)
     """
     index = Count()
     lottie["ty"] = "fl"     # Type if fill

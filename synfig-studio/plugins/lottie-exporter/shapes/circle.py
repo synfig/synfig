@@ -16,6 +16,14 @@ def gen_shapes_circle(lottie, layer, idx):
     """
     Generates the dictionary corresponding to shapes/ellipse.json where ellipse
     will always be considered as circle
+
+    Args:
+        lottie (dict)               : The lottie generated circle layer will be stored in it
+        layer  (lxml.etree._Element): Synfig format circle layer
+        idx    (int)                : Stores the index of the circle layer
+
+    Returns:
+        (None)
     """
     index = Count()
     lottie["ty"] = "el"     # Type: circle

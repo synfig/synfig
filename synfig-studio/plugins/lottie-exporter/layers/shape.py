@@ -17,6 +17,14 @@ sys.path.append("..")
 def gen_layer_shape(lottie, layer, idx):
     """
     Generates the dictionary corresponding to layers/shape.json
+
+    Args:
+        lottie (dict)               : Lottie generate shape stored here
+        layer  (lxml.etree._Element): Synfig format shape layer
+        idx    (int)                : Stores the index(number of) of shape layer
+
+    Returns:
+        (None)
     """
     index = Count()
     lottie["ddd"] = settings.DEFAULT_3D
