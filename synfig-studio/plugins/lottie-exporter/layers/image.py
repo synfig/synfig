@@ -140,3 +140,5 @@ def fill_image_scale_at_frame(scale_animated, anim1_path, anim2_path, width, hei
     # Assumption: all frames till the maximum are present in the animation
     scale_animated[frame][0].attrib["value"] = str(scale_x)
     scale_animated[frame][0].attrib["value2"] = str(scale_y)
+    scale_animated[frame].attrib["before"] = "linear"
+    scale_animated[frame].attrib["after"] = "linear"
