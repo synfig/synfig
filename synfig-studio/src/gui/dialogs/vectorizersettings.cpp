@@ -29,11 +29,12 @@
 #include <gtkmm/grid.h>
 #include <gtkmm/frame.h>
 #include <gtkmm/alignment.h>
-
+#include <math.h>
 #include <ETL/stringf>
 #include "vectorizersettings.h"
-
+#include <synfig/rendering/software/surfacesw.h>
 #include <gui/localization.h>
+#include <vectorizer/outlinevectorizer.cpp>
 
 /* === U S I N G =========================================================== */
 
@@ -303,12 +304,18 @@ NewOutlineConfiguration VectorizerSettings::getOutlineConfiguration(
   return conf;
 }
 
+void
+VectorizerSettings::doVectorize(const VectorizerConfiguration &conf) 
+{
+  VectorizerCore vCore;
+  vCore.vectorize(layer_bitmap_, conf);
+}
 
 void
 VectorizerSettings::on_convert_pressed()
 {
 	CenterlineConfiguration m_cConf;
-    NewOutlineConfiguration m_oConf;
+  NewOutlineConfiguration m_oConf;
 	VectorizerConfiguration &configuration = isOutline ? static_cast<VectorizerConfiguration &>(m_oConf)
         									  : static_cast<VectorizerConfiguration &>(m_cConf);
 
@@ -317,21 +324,25 @@ VectorizerSettings::on_convert_pressed()
     else
         m_cConf = getCenterlineConfiguration(0.0);
     
-	// doVectorize(configuration);
+	doVectorize(configuration);
 	std::cout<<"Convert Pressed....";
-	
-	rendering::SurfaceResource::LockRead<Surface> lock( layer_bitmap_->rendering_surface ); 
-	if (!lock)
-	{ std::cout<<"Cannot take a surface from the Layer_Bitmap.";
-	 return; 
-	}
-	 int width = lock->get_w();
-	 int height = lock->get_h();
-	 const Color *row5 = (*lock)[5]; 
-	const Color &pixel_18_10 = (*lock)[10][18]; // [row][col]
-		std::cout<<"Width: "<<width<<"\n";
-		std::cout<<"height: "<<height<<"\n";
-		std::cout<<row5[1].get_r()<<"\n";
+
+	// rendering::SurfaceResource::LockRead<rendering::SurfaceSW> lock( layer_bitmap_->rendering_surface );
+	//  if (!lock) 
+	// 	{
+	// 	  std::cout<<"Cannot take a surface from the Layer_Bitmap.";
+	// 		return; 
+	// 	} 
+	// const Surface &surface = lock->get_surface(); 
+	// int width = surface.get_w(); 
+	// int height = surface.get_h(); 
+	// const Color *row5 = surface[5]; 
+	// 	std::cout<<"Width: "<<width<<"\n";
+	// 	std::cout<<"Height: "<<height<<"\n";
+	// 	std::cout<<"R:"<<255.0*pow(row5[2].get_r(),1/2.2)<<"\n";
+	// 	std::cout<<"G:"<<255.0*pow(row5[2].get_g(),1/2.2)<<"\n";
+	// 	std::cout<<"B:"<<255.0*pow(row5[2].get_b(),1/2.2)<<"\n";
+	// 	std::cout<<"A:"<<255.0*pow(row5[1].get_a(),1/2.2)<<"\n";
 
 }
 

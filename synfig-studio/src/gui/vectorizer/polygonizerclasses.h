@@ -22,8 +22,6 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_STUDIO_TEMPLATE_H
-#define __SYNFIG_STUDIO_TEMPLATE_H
 
 /* === H E A D E R S ======================================================= */
 #include <synfig/vector.h>
@@ -59,7 +57,7 @@ public:
 
 public:
   // Node kinematics infos
-  Point3 m_position,      //!< Node's position.
+  synfig::Point3 m_position,      //!< Node's position.
       m_direction,           //!< Node's direction.
       m_AngularMomentum,     //!< Angular momentum with the next node's edge.
       m_AuxiliaryMomentum1,  // Used only when this vertex is convex
@@ -86,7 +84,7 @@ public:
 public:
   ContourNode() : m_attributes(0) {}
   ContourNode(double x, double y) : m_position(x, y, 0), m_attributes(0) {}
-  ContourNode(const Point &P) : m_position(P[0], P[1], 0), m_attributes(0) {}
+  ContourNode(const synfig::Point &P) : m_position(P[0], P[1], 0), m_attributes(0) {}
   ContourNode(double x, double y, unsigned short attrib)
       : m_position(x, y, 0), m_attributes(attrib) {}
 
@@ -108,8 +106,52 @@ typedef std::vector<ContourNode> Contour;
 typedef std::vector<Contour> ContourFamily;
 typedef std::vector<ContourFamily> Contours;
 
+class VectorizerCoreGlobals {
+public:
+  const CenterlineConfiguration *currConfig;
+
+  // JointSequenceGraphList organizedGraphs;
+  // SequenceList singleSequences;
+  // PointList singlePoints;
+
+  VectorizerCoreGlobals() {}
+  ~VectorizerCoreGlobals() {}
+};
+
+namespace {
+// SkeletonGraph nodes global signatures - used for various purposes
+enum {
+  ORGANIZEGRAPHS_SIGN = 0x10,
+  SAMPLECOLOR_SIGN    = 0x20,
+  COLORORDERING_SIGN  = 0x40
+};
+const int infinity = 1000000;  // just a great enough number
+};
+
+//--------------------------------------------------------------------------
+
+//===============================
+//    Function prototypes
+//===============================
+
+void polygonize(const etl::handle<synfig::Layer_Bitmap> &ras, Contours &polygons,VectorizerCoreGlobals &g);
+
+// SkeletonList *skeletonize(Contours &contours, VectorizerCore *thisVectorizer,
+//                           VectorizerCoreGlobals &g);
+
+// void organizeGraphs(SkeletonList *skeleton, VectorizerCoreGlobals &g);
+
+// void junctionRecovery(Contours *polygons, VectorizerCoreGlobals &g);
+
+// void conversionToStrokes(std::vector<TStroke *> &strokes,
+//                          VectorizerCoreGlobals &g);
+
+// void calculateSequenceColors(const TRasterP &ras, VectorizerCoreGlobals &g);
+
+// void applyStrokeColors(std::vector<TStroke *> &strokes, const TRasterP &ras,
+//                        TPalette *palette, VectorizerCoreGlobals &g);
+
+
 }; // END of namespace studio
 
 /* === E N D =============================================================== */
-
-#endif

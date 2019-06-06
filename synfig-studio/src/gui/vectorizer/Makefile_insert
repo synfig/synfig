@@ -1,9 +1,12 @@
 VECTORIZER_HH = \
 	vectorizer/polygonizerclasses.h \
+	vectorizer/centerlinevectorizer.h \
 	vectorizer/vectorizerparameters.h
 	
 vectorizer_CC = \
-	vectorizer/centerlinepolygonizer.cpp 
+	vectorizer/centerlinepolygonizer.cpp\
+	vectorizer/centerlinevectorizer.cpp\
+	vectorizer/outlinevectorizer.cpp
 	
 synfigstudio_src += \
 	$(VECTORIZER_HH) \

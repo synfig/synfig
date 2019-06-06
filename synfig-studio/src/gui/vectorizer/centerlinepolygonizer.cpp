@@ -1,6 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file template.cpp
-**	\brief Template File
+/*!	\file centerlinepolygonizer.cpp
 **
 **	$Id$
 **
@@ -28,11 +27,11 @@
 #ifdef HAVE_CONFIG_H
 #	include <config.h>
 #endif
+#include "polygonizerclasses.h"
 
 #include <ETL/handle>
 #include <synfig/layers/layer_bitmap.h>
 #include <synfig/vector.h>
-#include "polygonizerclasses.h"
 
 /*
 ** Insert headers here
@@ -82,7 +81,7 @@ typedef etl::handle<synfig::Layer_Bitmap> Handle;
 ///////////////////////////////////////////
 class RawBorderPoint 
 {
-  PointInt m_position;
+  synfig::PointInt m_position;
   int m_ambiguousTurn;  // used to remember cases of multiple turning directions
   // in a RawBorder extraction.
 
@@ -90,7 +89,7 @@ public:
   RawBorderPoint() : m_ambiguousTurn(0) {}
   RawBorderPoint(int i, int j) : m_position(i,j), m_ambiguousTurn(0) {}
 
-  inline PointInt pos() const { return m_position; }
+  inline synfig::PointInt pos() const { return m_position; }
   inline int x() const { return m_position[0]; }
   inline int y() const { return m_position[1]; }
 
@@ -106,8 +105,8 @@ class RawBorder final : public std::vector<RawBorderPoint>
   int m_xExternal;  // x coordinate of a specific vertex in the outer
   // RawBorder which contains this inner one.
 
-  Point *m_coordinateSums;
-  Point *m_coordinateSquareSums;
+  synfig::Point *m_coordinateSums;
+  synfig::Point *m_coordinateSquareSums;
   double *m_coordinateMixedSums;
 
 public:
@@ -116,8 +115,8 @@ public:
 
   void setXExternalPixel(int a) { m_xExternal = a; }
   int xExternalPixel() { return m_xExternal; }
-  Point *&sums() { return m_coordinateSums; }
-  Point *&sums2() { return m_coordinateSquareSums; }
+  synfig::Point *&sums() { return m_coordinateSums; }
+  synfig::Point *&sums2() { return m_coordinateSquareSums; }
   double *&sumsMix() { return m_coordinateMixedSums; }
 };
 
@@ -146,7 +145,7 @@ enum { inner = 0, outer = 1, none = 2, invalid = 3 };
 //-------------------------------
 
 //--------------------------------------------------------------------------
-
+/*
 class PixelEvaluator 
 {
   Handle m_ras;
@@ -539,7 +538,7 @@ inline std::unique_ptr<int[]> findNextCorners(RawBorder &path)
 
 //--------------------------------------------------------------------------
 
-inline int cross(const PointInt &a, const PointInt &b) 
+inline int cross(const synfig::PointInt &a, const synfig::PointInt &b) 
 {
   return a[0] * b[1] - a[1] * b[0];
 }
@@ -557,16 +556,16 @@ inline std::unique_ptr<int[]> furthestKs(RawBorder &path, std::unique_ptr<int[]>
   nextCorners = findNextCorners(path);
 
   int i, j, k;
-  PointInt shift;
-  PointInt leftConstraint, rightConstraint, violatedConstraint;
-  PointInt newLeftConstraint, newRightConstraint;
-  PointInt jPoint, jNextPoint, iPoint, temp;
+  synfig::PointInt shift;
+  synfig::PointInt leftConstraint, rightConstraint, violatedConstraint;
+  synfig::PointInt newLeftConstraint, newRightConstraint;
+  synfig::PointInt jPoint, jNextPoint, iPoint, temp;
 
   int directionSignature;
 
   for (i = 0; i < n; ++i) {
     // Initialize search
-    leftConstraint = rightConstraint = PointInt();
+    leftConstraint = rightConstraint = synfig::PointInt();
     directionsOccurred[0] = directionsOccurred[1] = directionsOccurred[2] = directionsOccurred[3] = 0;
     j = i;
     jNextPoint = iPoint = path[i].pos();
@@ -644,9 +643,9 @@ inline std::unique_ptr<int[]> furthestKs(RawBorder &path, std::unique_ptr<int[]>
     // At this point, constraints are violated by the next corner.
     // Then, search for the last k between j and corners[j] not violating them.
     temp =  jNextPoint - jPoint;
-    Point tempD(temp[0],temp[1]);
+    synfig::Point tempD(temp[0],temp[1]);
     tempD = tempD.norm();
-    PointInt direction(round(tempD[0]),round(tempD[1])) ;
+    synfig::PointInt direction(round(tempD[0]),round(tempD[1])) ;
     k = (j + cross(jPoint - iPoint, violatedConstraint) / cross(violatedConstraint, direction)) % n;
 
   foundK:
@@ -741,16 +740,16 @@ inline std::unique_ptr<int[]> calculateForwardArcs(RawBorder &border, bool ambig
 inline void calculateSums(RawBorder &path) 
 {
   unsigned int i, n = path.size();
-  PointInt temp;
-  path.sums()    = new Point[n + 1];
-  path.sums2()   = new Point[n + 1];
+  synfig::PointInt temp;
+  path.sums()    = new synfig::Point[n + 1];
+  path.sums2()   = new synfig::Point[n + 1];
   path.sumsMix() = new double[n + 1];
 
   path.sums()[0][0] = path.sums()[0][1] = path.sums2()[0][0] = path.sums2()[0][1] = 0;
   for (i = 1; i < path.size(); ++i) 
   {
     temp = path[i].pos() - path[0].pos();
-    Point currentRelativePos(temp[0],temp[1]);
+    synfig::Point currentRelativePos(temp[0],temp[1]);
 
     path.sums()[i] = path.sums()[i - 1] + currentRelativePos;
 
@@ -774,9 +773,9 @@ inline double penalty(RawBorder &path, int a, int b)
   int n = b - a + 1;
   PonitInt p = path[b == path.size() ? 0 : b].pos() - path[a].pos();
 
-  Point v(-p[1],p[0]);//convert(rotate90(p))
-  Point sum   = path.sums()[b] - path.sums()[a];
-  Point sum2  = path.sums2()[b] - path.sums2()[a];
+  synfig::Point v(-p[1],p[0]);//convert(rotate90(p))
+  synfig::Point sum   = path.sums()[b] - path.sums()[a];
+  synfig::Point sum2  = path.sums2()[b] - path.sums2()[a];
   double sumMix = path.sumsMix()[b] - path.sumsMix()[a];
 
   double F1 = sum2[0] - 2 * sum[0] * path[a].x() + n * path[a].x() * path[a].x();
@@ -894,14 +893,15 @@ inline void reduceBorders(BorderList &borders, Contours &result,bool ambiguities
 
 //Extracts a polygonal, minimal yet faithful representation of image contours
 
-void polygonize(const TRasterP &ras, Contours &polygons, VectorizerCoreGlobals &g) 
+void polygonize(const Handle &ras, Contours &polygons, VectorizerCoreGlobals &g) 
 {
+  std::cout<<"Welcome to polygonize\n";
 
-  BorderList *borders;
+  // BorderList *borders;
   
-  borders = extractBorders(ras, g.currConfig->m_threshold, g.currConfig->m_despeckling);
+  // borders = extractBorders(ras, g.currConfig->m_threshold, g.currConfig->m_despeckling);
   
-  reduceBorders(*borders, polygons, g.currConfig->m_maxThickness > 0.0);
+  // reduceBorders(*borders, polygons, g.currConfig->m_maxThickness > 0.0);
 }
 
 

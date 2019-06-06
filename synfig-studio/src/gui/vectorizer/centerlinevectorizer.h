@@ -1,0 +1,102 @@
+/* === S Y N F I G ========================================================= */
+/*!	\file centerlinevectorizer.h
+**
+**	$Id$
+**
+**	\legal
+**	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**
+**	This package is free software; you can redistribute it and/or
+**	modify it under the terms of the GNU General Public License as
+**	published by the Free Software Foundation; either version 2 of
+**	the License, or (at your option) any later version.
+**
+**	This package is distributed in the hope that it will be useful,
+**	but WITHOUT ANY WARRANTY; without even the implied warranty of
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+**	General Public License for more details.
+**	\endlegal
+*/
+/* ========================================================================= */
+
+/* === S T A R T =========================================================== */
+
+#ifndef __SYNFIG_STUDIO_TEMPLATE_H
+#define __SYNFIG_STUDIO_TEMPLATE_H
+
+/* === H E A D E R S ======================================================= */
+#include "vectorizerparameters.h"
+#include <ETL/handle>
+#include <synfig/layers/layer_bitmap.h>
+#include <synfig/vector.h>
+
+/* === M A C R O S ========================================================= */
+
+/* === T Y P E D E F S ===================================================== */
+typedef etl::handle<synfig::Layer_Bitmap> Handle;
+
+
+/* === C L A S S E S & S T R U C T S ======================================= */
+
+namespace studio {
+
+//==============================
+//    Core vectorizer class
+//==============================
+
+//! Contains specific vectorization methods and deals with partial progress
+//! notifications (using Qt signals).
+/*!VectorizerCore class is the lowest layer of a vectorization process, it
+provides vectorization of a
+single input raster image by calling the \b vectorize method.
+
+It can also deal notifications about its progress status, and is receptive to
+user cancels.
+
+\sa VectorizerPopup, Vectorizer, VectorizerConfiguration classes.*/
+class VectorizerCore
+{
+  int m_currPartial;
+  int m_totalPartials;
+
+  bool m_isCanceled;
+
+public:
+  VectorizerCore() : m_currPartial(0), m_isCanceled(false) {}
+  ~VectorizerCore() {}
+
+  /*!Calls the appropriate technique to convert \b image to vectors depending on c.*/
+ 
+  void vectorize(const Handle &image, const VectorizerConfiguration &c);
+
+private:
+  void centerlineVectorize(Handle &image, const CenterlineConfiguration &configuration);
+
+/*
+  void outlineVectorize(const Handle &image, const OutlineConfiguration &configuration);
+
+  void newOutlineVectorize(const Handle &image, const NewOutlineConfiguration &configuration);
+*/
+  //! Calculates and applies fill colors once regions of \b vi have been
+  //! computed.
+  // void applyFillColors(TVectorImageP vi, const TImageP &img, TPalette *palette,
+  //                      const VectorizerConfiguration &c);
+  // void applyFillColors(TRegion *r, const TRasterP &ras, TPalette *palette,
+  //                      const CenterlineConfiguration &c, int regionCount);
+  // void applyFillColors(TRegion *r, const TRasterP &ras, TPalette *palette,
+  //                      const OutlineConfiguration &c, int regionCount);
+
+  // //! Traduces the input VectorizerConfiguration into an edible form.
+  // VectorizerConfiguration traduceConfiguration(const VectorizerConfiguration &configuration);
+
+  // bool isInkRegionEdge(TStroke *stroke);
+  // bool isInkRegionEdgeReversed(TStroke *stroke);
+  // void clearInkRegionFlags(TVectorImageP vi);
+
+};
+
+}; // END of namespace studio
+
+/* === E N D =============================================================== */
+
+#endif

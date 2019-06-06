@@ -36,7 +36,7 @@
 #include <gtkmm/spinbutton.h>
 #include <gtkmm/checkbutton.h>
 #include <gtkmm/comboboxtext.h>
-#include <vectorizer/vectorizerparameters.h>
+#include <vectorizer/centerlinevectorizer.h>
 #include <synfig/string.h>
 #include <synfig/layers/layer_bitmap.h>
 
@@ -93,7 +93,8 @@ public:
 	CenterlineConfiguration getCenterlineConfiguration(double weight) const;
   	NewOutlineConfiguration getOutlineConfiguration(double weight) const;
 
-  
+	void doVectorize(const VectorizerConfiguration &conf); 
+
   	VectorizerConfiguration *getCurrentConfiguration(double weight) const {
     	return isOutline ? (VectorizerConfiguration *)new NewOutlineConfiguration(getOutlineConfiguration(weight))
                        : (VectorizerConfiguration *)new CenterlineConfiguration(getCenterlineConfiguration(weight));
