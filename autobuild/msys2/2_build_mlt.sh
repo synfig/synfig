@@ -25,5 +25,7 @@ tar xzf ./mlt-6.16.0.tar.gz
 
 pushd mlt-6.16.0/
 echo "Install path: ${PREFIX}"
-./configure --prefix=${PREFIX} --target-arch=$MSYS2_ARCH --disable-gtk2 && make && make install
+./configure --prefix=${PREFIX} --target-arch=$MSYS2_ARCH --disable-gtk2
+make
+make install
 popd
