@@ -1,5 +1,6 @@
 environment:
   CCACHE_DIR: "%APPVEYOR_BUILD_FOLDER%\\.ccache"
+  APPVEYOR_SAVE_CACHE_ON_ERROR: true
   matrix:
     - MSYSTEM: MINGW64
     - MSYSTEM: MINGW32
