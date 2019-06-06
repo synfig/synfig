@@ -7,11 +7,11 @@ set -e # exit on error
 case "$MSYSTEM" in
   MINGW32)
     PREFIX=/mingw32
-    $MSYS2_ARCH=i686
+    MSYS2_ARCH=i686
     ;;
   MINGW64)
     PREFIX=/mingw64
-    $MSYS2_ARCH=x86_64
+    MSYS2_ARCH=x86_64
     ;;
   *)
     printf "Unsupported mode! Choose MinGW64 (32 or 64 bit)"
