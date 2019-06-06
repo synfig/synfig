@@ -4,8 +4,10 @@
 # -------------------------------------------------------------------------------
 set -e # exit on error
 
+SCRIPT_DIR=`dirname "$0"`
+
 # set environment variables
-source ./set_env.sh
+source ${SCRIPT_DIR}/set_env.sh
 
 echo " ======================= Compiling MLT++ ======================= "
 wget "https://github.com/mltframework/mlt/releases/download/v6.16.0/mlt-6.16.0.tar.gz"

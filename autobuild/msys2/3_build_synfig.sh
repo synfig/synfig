@@ -4,8 +4,12 @@
 # -------------------------------------------------------------------------------
 set -e # exit on error
 
+SCRIPT_DIR=`dirname "$0"`
+
 # set environment variables
-source ./set_env.sh
+source ${SCRIPT_DIR}/set_env.sh
+
+ccache -s
 
 # assume we are in synfig's root folder
 pushd ETL
@@ -21,6 +25,8 @@ pushd synfig-core
 make -j${NUM_THREADS} --silent
 make install
 popd
+
+ccache -s
 
 # currently where is a bug in synfig-core (in MinGW build) which causes 
 # synfig-core to halt before exit, so we skip image generation

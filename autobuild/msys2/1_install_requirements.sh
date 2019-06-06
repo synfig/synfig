@@ -10,8 +10,10 @@
 # in an MSYS shell
 # -------------------------------------------------------------------------------
 
+SCRIPT_DIR=`dirname "$0"`
+
 # set environment variables
-source ./set_env.sh
+source ${SCRIPT_DIR}/set_env.sh
 
 echo "Selected ARCH: ${ARCH}"
 
@@ -46,5 +48,4 @@ $ARCH-gtkmm3
 # and std::sprintf is stop working. But std::sprintf is used by Boost::Odeint library
 # so we need it.
 
-SCRIPT_DIR=`dirname "$0"`
 patch $PREFIX/include/libintl.h < $SCRIPT_DIR/libintl.h.patch
