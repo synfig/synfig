@@ -7,6 +7,7 @@ output  : FILE_NAME.json
 
 Supported Layers are mentioned below
 """
+import os
 import json
 import sys
 from lxml import etree
@@ -52,6 +53,12 @@ def parse(file_name):
     root = tree.getroot()  # canvas
     gen_canvas(settings.lottie_format, root)
 
+    # Storing the file name
+    settings.file_name["fn"] = file_name
+
+    # Storing the file directory
+    settings.file_name["fd"] = os.path.dirname(file_name)
+
     num_layers = Count()
     settings.lottie_format["layers"] = []
     shape_layer = {"star", "circle", "rectangle", "simple_circle"}
@@ -96,7 +103,7 @@ def gen_html(file_name):
     """
 
     # Take only the file name, to take relative file path
-    store_file_name = file_name.split("/")[-1]
+    store_file_name = os.path.basename(file_name)
 
     html_text = \
 """<!DOCTYPE html>

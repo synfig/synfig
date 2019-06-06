@@ -63,3 +63,5 @@ def init():
     view_box_canvas = {}
     global num_images
     num_images = Count()
+    global file_name
+    file_name = {}

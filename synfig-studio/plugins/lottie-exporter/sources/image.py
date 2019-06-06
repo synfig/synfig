@@ -2,6 +2,7 @@
 Will store all the functions corresponding to Image Assets in lottie
 """
 
+import os
 import sys
 import struct
 import imghdr
@@ -79,7 +80,9 @@ def add_image_asset(lottie, layer):
             elif chld.attrib["name"] == "filename":
                 st["filename"] = chld
 
-    width, height = get_image_size(st["filename"][0].text)
+    file_path = os.path.join(settings.file_name["fd"], st["filename"][0].text)
+    file_path = os.path.abspath(file_path)
+    width, height = get_image_size(file_path)
     lottie["w"] = width
 
     lottie["h"] = height
