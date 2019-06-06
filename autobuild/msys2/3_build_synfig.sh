@@ -4,18 +4,21 @@
 # -------------------------------------------------------------------------------
 set -e # exit on error
 
+# set environment variables
+source ./set_env.sh
+
 # assume we are in synfig's root folder
 pushd ETL
 ./bootstrap.sh
 ./configure --enable-optimization=0
-make -j2 --silent
+make -j${NUM_THREADS} --silent
 make install
 popd
 
 pushd synfig-core
 ./bootstrap.sh
 ./configure --enable-optimization=0
-make -j2 --silent
+make -j${NUM_THREADS} --silent
 make install
 popd
 
@@ -24,7 +27,7 @@ popd
 pushd synfig-studio
 ./bootstrap.sh
 ./configure --enable-optimization=0 --without-images
-make -j2 --silent
+make -j${NUM_THREADS} --silent
 make install
 popd
 
