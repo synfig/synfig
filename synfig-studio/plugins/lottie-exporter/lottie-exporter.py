@@ -95,6 +95,9 @@ def gen_html(file_name):
         (None)
     """
 
+    # Take only the file name, to take relative file path
+    store_file_name = file_name.split("/")[-1]
+
     html_text = \
 """<!DOCTYPE html>
 <html style="width: 100%;height: 100%">
@@ -117,7 +120,8 @@ def gen_html(file_name):
 </script>
 </body>
 </html>"""
-    write_to(file_name, "html", html_text.format(file_name=file_name))
+
+    write_to(file_name, "html", html_text.format(file_name=store_file_name))
 
 
 if len(sys.argv) < 2:
