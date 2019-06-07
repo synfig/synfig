@@ -3,7 +3,7 @@ VECTORIZER_HH = \
 	vectorizer/centerlinevectorizer.h \
 	vectorizer/vectorizerparameters.h
 	
-vectorizer_CC = \
+VECTORIZER_CC = \
 	vectorizer/centerlinepolygonizer.cpp\
 	vectorizer/centerlinevectorizer.cpp\
 	vectorizer/outlinevectorizer.cpp
