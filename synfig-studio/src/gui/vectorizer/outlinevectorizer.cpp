@@ -50,33 +50,3 @@ using namespace studio;
 
 //=================================================================
 
-void studio::VectorizerCore::vectorize(const etl::handle<synfig::Layer_Bitmap> &img, const VectorizerConfiguration &c) 
-{
-
-  if (c.m_outline)
-  {
-    std::cout<<"newOutlineVectorize called/n";
-    // vi = newOutlineVectorize(img, static_cast<const NewOutlineConfiguration &>(c), plt);
-  }
-  else 
-  {
-    Handle img2(img);
-    centerlineVectorize(img2, static_cast<const CenterlineConfiguration &>(c));
-
-    // if (vi) {
-    //   for (int i = 0; i < (int)vi->getStrokeCount(); ++i) {
-    //     TStroke *stroke = vi->getStroke(i);
-
-    //     for (int j = 0; j < stroke->getControlPointCount(); ++j) {
-    //       TThickPoint p = stroke->getControlPoint(j);
-    //       p             = TThickPoint(c.m_affine * p, c.m_thickScale * p.thick);
-
-    //       stroke->setControlPoint(j, p);
-    //     }
-    //   }
-
-    //   applyFillColors(vi, img2, plt, c);
-    // }
-  }
-
-}

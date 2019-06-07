@@ -21,15 +21,14 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_STUDIO_TEMPLATE_H
-#define __SYNFIG_STUDIO_TEMPLATE_H
+#ifndef __SYNFIG_STUDIO_CENTERLINEVECTORIZER_H
+#define __SYNFIG_STUDIO_CENTERLINEVECTORIZER_H
 
 /* === H E A D E R S ======================================================= */
 #include "vectorizerparameters.h"
 #include <ETL/handle>
 #include <synfig/layers/layer_bitmap.h>
 #include <synfig/vector.h>
-#include "polygonizerclasses.h"
 /* === M A C R O S ========================================================= */
 
 /* === T Y P E D E F S ===================================================== */
@@ -67,7 +66,7 @@ public:
 
   /*!Calls the appropriate technique to convert \b image to vectors depending on c.*/
  
-  void vectorize(const Handle &image, const VectorizerConfiguration &c);
+  void vectorize(const etl::handle<synfig::Layer_Bitmap> &image, const VectorizerConfiguration &c);
 
 private:
   void centerlineVectorize(Handle &image, const CenterlineConfiguration &configuration);
