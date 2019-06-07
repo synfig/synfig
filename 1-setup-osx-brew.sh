@@ -23,7 +23,7 @@ pushd "${WORKDIR}" > /dev/null
 WORKDIR=`pwd`
 popd > /dev/null
 
-PACKAGES="adwaita-icon-theme autoconf automake ccache libtool intltool imagemagick gettext pkg-config glibmm libxml++ cairo fftw pango mlt boost gtkmm3 sdl2 sdl2_mixer"
+PACKAGES="adwaita-icon-theme autoconf automake ccache libtool intltool imagemagick gettext pkg-config glibmm libxml++ cairo fftw pango mlt boost gtkmm3 sdl2 sdl2_mixer libxml2 libxslt"
 
 export HOMEBREW_NO_AUTO_UPDATE=1
 export HOMEBREW_NO_ANALYTICS=1
@@ -44,6 +44,17 @@ do
     echo "Checking $pkg..."
     brew info "$pkg" | grep --quiet 'Not installed' && brew install "$pkg"
 done
+
+if ! ( which pip >/dev/null ); then
+    echo "No pip found. Installing..."
+    echo "Running python in sudo (you need root privelegies to do that)..."
+    # Dependency for lxml
+    curl https://bootstrap.pypa.io/get-pip.py | sudo python
+fi
+
+# Installing lxml using pip
+STATIC_DEPS=true sudo pip install lxml
+
 
 #HOMEBREW_NO_AUTO_UPDATE=1 brew bundle -no-upgrade --file=-<<-EOF
 #brew "autoconf"
