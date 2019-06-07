@@ -29,7 +29,7 @@
 #include <ETL/handle>
 #include <synfig/layers/layer_bitmap.h>
 #include <synfig/vector.h>
-
+#include "polygonizerclasses.h"
 /* === M A C R O S ========================================================= */
 
 /* === T Y P E D E F S ===================================================== */

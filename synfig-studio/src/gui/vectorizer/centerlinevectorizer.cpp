@@ -32,9 +32,8 @@
 /*
 ** Insert headers here
 */
-#include "centerlinepolygonizer.cpp"
 #include "centerlinevectorizer.h"
-
+#include "polygonizerclasses.h"
 #endif
 
 /* === U S I N G =========================================================== */
@@ -67,7 +66,7 @@ void VectorizerCore::centerlineVectorize(etl::handle<synfig::Layer_Bitmap> &imag
   // step 2 
   // Extracts a polygonal, minimal yet faithful representation of image contours
   Contours polygons;
-  polygonize(image, polygons, globals);
+  studio::polygonize(image, polygons, globals);
 
   // step 3
   // The process of skeletonization reduces all objects in an image to lines, 
@@ -127,4 +126,34 @@ void VectorizerCore::centerlineVectorize(etl::handle<synfig::Layer_Bitmap> &imag
 //   deleteSkeletonList(skeletons);
 
 //   return result;
+}
+void VectorizerCore::vectorize(const etl::handle<synfig::Layer_Bitmap> &img, const VectorizerConfiguration &c) 
+{
+
+  if (c.m_outline)
+  {
+    std::cout<<"newOutlineVectorize called/n";
+    // vi = newOutlineVectorize(img, static_cast<const NewOutlineConfiguration &>(c), plt);
+  }
+  else 
+  {
+    Handle img2(img);
+    centerlineVectorize(img2, static_cast<const CenterlineConfiguration &>(c));
+
+    // if (vi) {
+    //   for (int i = 0; i < (int)vi->getStrokeCount(); ++i) {
+    //     TStroke *stroke = vi->getStroke(i);
+
+    //     for (int j = 0; j < stroke->getControlPointCount(); ++j) {
+    //       TThickPoint p = stroke->getControlPoint(j);
+    //       p             = TThickPoint(c.m_affine * p, c.m_thickScale * p.thick);
+
+    //       stroke->setControlPoint(j, p);
+    //     }
+    //   }
+
+    //   applyFillColors(vi, img2, plt, c);
+    // }
+  }
+
 }

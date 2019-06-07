@@ -29,7 +29,7 @@
 #	include <config.h>
 #endif
 
-#include "centerlinevectorizer.cpp"
+#include "centerlinevectorizer.h"
 #endif
 
 /* === U S I N G =========================================================== */
@@ -50,7 +50,7 @@ using namespace studio;
 
 //=================================================================
 
-void VectorizerCore::vectorize(const Handle &img, const VectorizerConfiguration &c) 
+void studio::VectorizerCore::vectorize(const etl::handle<synfig::Layer_Bitmap> &img, const VectorizerConfiguration &c) 
 {
 
   if (c.m_outline)

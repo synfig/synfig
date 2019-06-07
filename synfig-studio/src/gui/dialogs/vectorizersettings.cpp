@@ -32,9 +32,9 @@
 #include <math.h>
 #include <ETL/stringf>
 #include "vectorizersettings.h"
+#include "vectorizer/centerlinevectorizer.h"
 #include <synfig/rendering/software/surfacesw.h>
 #include <gui/localization.h>
-#include <vectorizer/outlinevectorizer.cpp>
 
 /* === U S I N G =========================================================== */
 
@@ -307,7 +307,7 @@ NewOutlineConfiguration VectorizerSettings::getOutlineConfiguration(
 void
 VectorizerSettings::doVectorize(const VectorizerConfiguration &conf) 
 {
-  VectorizerCore vCore;
+  studio::VectorizerCore vCore;
   vCore.vectorize(layer_bitmap_, conf);
 }
 

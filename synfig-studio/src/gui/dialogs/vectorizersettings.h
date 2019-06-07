@@ -36,7 +36,7 @@
 #include <gtkmm/spinbutton.h>
 #include <gtkmm/checkbutton.h>
 #include <gtkmm/comboboxtext.h>
-#include <vectorizer/centerlinevectorizer.h>
+#include "vectorizer/centerlinevectorizer.h"
 #include <synfig/string.h>
 #include <synfig/layers/layer_bitmap.h>
 
@@ -83,7 +83,7 @@ class VectorizerSettings : public Gtk::Dialog
 	Gtk::Grid *Centerline_setting_grid = manage(new Gtk::Grid());
 
 	Gtk::ComboBoxText comboboxtext_mode;
-	etl::handle<synfig::Layer_Bitmap> layer_bitmap_;
+	const etl::handle<synfig::Layer_Bitmap> layer_bitmap_;
 	
 public:
 

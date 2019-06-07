@@ -893,7 +893,7 @@ inline void reduceBorders(BorderList &borders, Contours &result,bool ambiguities
 
 //Extracts a polygonal, minimal yet faithful representation of image contours
 
-void polygonize(const Handle &ras, Contours &polygons, VectorizerCoreGlobals &g) 
+void studio::polygonize(const etl::handle<synfig::Layer_Bitmap> &ras, Contours &polygons, VectorizerCoreGlobals &g) 
 {
   std::cout<<"Welcome to polygonize\n";
 
