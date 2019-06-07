@@ -1,0 +1,10 @@
+--- libintl.h	2019-05-14 10:23:44.000000000 +0000
++++ libintl.h.fixed	2019-06-01 12:43:18.365057100 +0000
+@@ -359,6 +359,7 @@
+ #undef sprintf
+ #define sprintf libintl_sprintf
+ extern int sprintf (char *, const char *, ...);
++namespace std { using ::sprintf; }
+ #endif
+ #if !(defined vsprintf && defined _GL_STDIO_H) /* don't override gnulib */
+ #undef vsprintf
