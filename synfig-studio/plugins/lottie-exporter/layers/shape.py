@@ -10,6 +10,7 @@ from shapes.star import gen_shapes_star
 from shapes.circle import gen_shapes_circle
 from shapes.fill import gen_shapes_fill
 from shapes.rectangle import gen_shapes_rectangle
+from shapes.shape import gen_shapes_shape
 from helpers.blendMode import get_blend
 sys.path.append("..")
 
@@ -36,6 +37,12 @@ def gen_layer_shape(lottie, layer, idx):
     pos = [0, 0]            # default
     anchor = [0, 0, 0]      # default
     scale = [100, 100, 100]  # default
+    
+    if layer.attrib["type"] == "region":    # region uses position of whole layer
+        for chld in layer:
+            if chld.tag == "param":
+                if chld.attrib["name"] == "origin":
+                    pos = chld[0]
     gen_helpers_transform(lottie["ks"], layer, pos, anchor, scale)
 
     lottie["ao"] = settings.LAYER_DEFAULT_AUTO_ORIENT
@@ -47,6 +54,8 @@ def gen_layer_shape(lottie, layer, idx):
         gen_shapes_circle(lottie["shapes"][0], layer, index.inc())
     elif layer.attrib["type"] == "rectangle":
         gen_shapes_rectangle(lottie["shapes"][0], layer, index.inc())
+    elif layer.attrib["type"] == "region":
+        gen_shapes_shape(lottie["shapes"][0], layer, index.inc())
 
     lottie["shapes"].append({})  # For the fill or color
     gen_shapes_fill(lottie["shapes"][1], layer)

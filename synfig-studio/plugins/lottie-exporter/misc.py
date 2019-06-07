@@ -3,6 +3,7 @@ misc.py
 Some miscellaneous functions will be provided here
 """
 
+import math
 import settings
 
 
@@ -234,19 +235,23 @@ def calculate_pixels_per_unit():
     return settings.PIX_PER_UNIT
 
 
-def change_axis(x_val, y_val):
+def change_axis(x_val, y_val, is_transform=False):
     """
     Convert synfig axis coordinates into lottie format
 
     Args:
         x_val (float | str) : x axis value in pixels
         y_val (float | str) : y axis value in pixels
+        is_transform (`obj`: bool, optional) : Is this value used in transform module?
 
     Returns:
         (list)  : x and y axis value in Lottie format
     """
     x_val, y_val = float(x_val), float(y_val)
-    x_val, y_val = x_val + settings.lottie_format["w"]/2, -y_val + settings.lottie_format["h"]/2
+    if is_transform:
+        x_val, y_val = x_val, -y_val
+    else:
+        x_val, y_val = x_val + settings.lottie_format["w"]/2, -y_val + settings.lottie_format["h"]/2
     return [int(x_val), int(y_val)]
 
 
@@ -268,7 +273,6 @@ def parse_position(animated, i):
         pos = [float(animated[i][0][0].text),
                float(animated[i][0][1].text)]
         pos = [settings.PIX_PER_UNIT*x for x in pos]
-        #pos = change_axis(pos[0], pos[1])   # This is very important
 
     elif animated.attrib["type"] == "real":
         pos = parse_value(animated, i)
@@ -462,8 +466,20 @@ def get_vector(waypoint):
     Returns:
         (misc.Vector) : x and y axis values stores in Vector format
     """
-    x = float(waypoint[0][0].text)
-    y = float(waypoint[0][1].text)
+    # converting radius and angle to a vector
+    if waypoint.tag == "radial_composite":
+        for child in waypoint:
+            if child.tag == "radius":
+                radius = float(child[0].attrib["value"])
+                radius *= settings.PIX_PER_UNIT
+            elif child.tag == "theta":
+                angle = float(child[0].attrib["value"])
+                angle = math.radians(angle)
+        x = radius * math.cos(angle)
+        y = radius * math.sin(angle)
+    else:
+        x = float(waypoint[0][0].text)
+        y = float(waypoint[0][1].text)
     return Vector(x, y)
 
 def set_vector(waypoint, pos):

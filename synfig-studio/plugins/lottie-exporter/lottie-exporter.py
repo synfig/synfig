@@ -61,7 +61,7 @@ def parse(file_name):
 
     num_layers = Count()
     settings.lottie_format["layers"] = []
-    shape_layer = {"star", "circle", "rectangle", "simple_circle"}
+    shape_layer = {"star", "circle", "rectangle", "simple_circle", "region"}
     solid_layer = {"SolidColor"}
     image_layer = {"import"}
     supported_layers = shape_layer.union(solid_layer)

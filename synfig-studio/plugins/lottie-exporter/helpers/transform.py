@@ -5,7 +5,7 @@ corresponding to lottie
 
 import sys
 import settings
-from misc import Count
+from misc import Count, is_animated, change_axis
 from properties.value import gen_properties_value
 from properties.valueKeyframed import gen_value_Keyframed
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
@@ -33,7 +33,7 @@ def gen_helpers_transform(lottie, layer, pos=[0, 0], anchor=[0, 0, 0], scale=[10
     lottie["a"] = {}    # Anchor point of the layer
     lottie["s"] = {}    # Scale of the layer
 
-    # setting the default location
+    # setting the position
     if isinstance(pos, list):
         gen_properties_value(lottie["p"],
                              pos,
@@ -41,9 +41,25 @@ def gen_helpers_transform(lottie, layer, pos=[0, 0], anchor=[0, 0, 0], scale=[10
                              settings.DEFAULT_ANIMATED,
                              settings.NO_INFO)
     else:
-        gen_properties_multi_dimensional_keyframed(lottie["p"],
-                                                   pos,
-                                                   index.inc())
+        is_animate = is_animated(pos)
+        if is_animate == 2:
+            pos.attrib["transform_axis"] = "true"
+            gen_properties_multi_dimensional_keyframed(lottie["p"],
+                                                       pos,
+                                                       index.inc())
+        else:
+            x_val, y_val = 0, 0
+            if is_animate == 0:
+                x_val = float(pos[0].text) * settings.PIX_PER_UNIT
+                y_val = float(pos[1].text) * settings.PIX_PER_UNIT
+            else:
+                x_val = float(pos[0][0][0].text) * settings.PIX_PER_UNIT
+                y_val = float(pos[0][0][1].text) * settings.PIX_PER_UNIT
+            gen_properties_value(lottie["p"],
+                                 change_axis(x_val, y_val, True),
+                                 index.inc(),
+                                 settings.DEFAULT_ANIMATED,
+                                 settings.NO_INFO)
 
     # setting the default opacity i.e. 100
     gen_properties_value(lottie["o"],

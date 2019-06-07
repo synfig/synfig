@@ -362,10 +362,12 @@ def gen_properties_offset_keyframe(curve_list, animated, i):
     if next_get_before == "halt": # For ease in
         ease_in(lottie)
     lottie["t"] = float(waypoint.attrib["time"][:-1]) * settings.lottie_format["fr"]
-    #lottie["s"] = [cur_pos.val1, cur_pos.val2]
-    #lottie["e"] = [next_pos.val1, next_pos.val2]
-    lottie["s"] = change_axis(cur_pos.val1, cur_pos.val2)
-    lottie["e"] = change_axis(next_pos.val1, next_pos.val2)
+
+    is_transform_axis = False
+    if "transform_axis" in animated.keys():
+        is_transform_axis = True
+    lottie["s"] = change_axis(cur_pos.val1, cur_pos.val2, is_transform_axis)
+    lottie["e"] = change_axis(next_pos.val1, next_pos.val2, is_transform_axis)
     lottie["to"] = []
     lottie["ti"] = []
 
